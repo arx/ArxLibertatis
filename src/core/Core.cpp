@@ -1279,8 +1279,10 @@ void ManageCombatModeAnimations() {
 					if(useanim->ctime > useanim->cur_anim->anims[useanim->altidx_cur]->anim_time * 0.3f
 						&& useanim->ctime < useanim->cur_anim->anims[useanim->altidx_cur]->anim_time * 0.7f)
 					{
+						Entity * weapon = entities[player.equiped[EQUIP_SLOT_WEAPON]];
+						
 						if(PlayerWeaponBlocked == -1
-							&& ARX_EQUIPMENT_Strike_Check(io, entities[player.equiped[EQUIP_SLOT_WEAPON]], STRIKE_AIMTIME, 0))
+							&& ARX_EQUIPMENT_Strike_Check(io, weapon, STRIKE_AIMTIME, 0))
 						{
 							PlayerWeaponBlocked = useanim->ctime;
 						}
@@ -1295,7 +1297,8 @@ void ManageCombatModeAnimations() {
 					}
 
 					if(PlayerWeaponBlocked != -1 && useanim->ctime < useanim->cur_anim->anims[useanim->altidx_cur]->anim_time * 0.9f) {
-						ARX_EQUIPMENT_Strike_Check(io, entities[player.equiped[EQUIP_SLOT_WEAPON]], STRIKE_AIMTIME, 1);
+						Entity * weapon = entities[player.equiped[EQUIP_SLOT_WEAPON]];
+						ARX_EQUIPMENT_Strike_Check(io, weapon, STRIKE_AIMTIME, 1);
 					}
 				}
 			}
@@ -1327,8 +1330,10 @@ void ManageCombatModeAnimations() {
 					if(useanim->ctime > useanim->cur_anim->anims[useanim->altidx_cur]->anim_time * 0.3f
 						&& useanim->ctime < useanim->cur_anim->anims[useanim->altidx_cur]->anim_time * 0.7f)
 					{
+						Entity * weapon = entities[player.equiped[EQUIP_SLOT_WEAPON]];
+						
 						if(PlayerWeaponBlocked == -1
-							&& ARX_EQUIPMENT_Strike_Check(io, entities[player.equiped[EQUIP_SLOT_WEAPON]], STRIKE_AIMTIME, 0))
+							&& ARX_EQUIPMENT_Strike_Check(io, weapon, STRIKE_AIMTIME, 0))
 						{
 							PlayerWeaponBlocked = useanim->ctime;
 						}
@@ -1343,7 +1348,8 @@ void ManageCombatModeAnimations() {
 					}
 
 					if(PlayerWeaponBlocked != -1 && useanim->ctime < useanim->cur_anim->anims[useanim->altidx_cur]->anim_time * 0.9f) {
-						ARX_EQUIPMENT_Strike_Check(io, entities[player.equiped[EQUIP_SLOT_WEAPON]], STRIKE_AIMTIME, 1);
+						Entity * weapon = entities[player.equiped[EQUIP_SLOT_WEAPON]];
+						ARX_EQUIPMENT_Strike_Check(io, weapon, STRIKE_AIMTIME, 1);
 					}
 				}
 			}
@@ -1374,8 +1380,10 @@ void ManageCombatModeAnimations() {
 					if(useanim->ctime > useanim->cur_anim->anims[useanim->altidx_cur]->anim_time * 0.3f
 						&& useanim->ctime < useanim->cur_anim->anims[useanim->altidx_cur]->anim_time * 0.7f)
 					{
+						Entity * weapon = entities[player.equiped[EQUIP_SLOT_WEAPON]];
+						
 						if(PlayerWeaponBlocked == -1
-							&& ARX_EQUIPMENT_Strike_Check(io, entities[player.equiped[EQUIP_SLOT_WEAPON]], STRIKE_AIMTIME, 0))
+							&& ARX_EQUIPMENT_Strike_Check(io, weapon, STRIKE_AIMTIME, 0))
 						{
 							PlayerWeaponBlocked = useanim->ctime;
 						}
@@ -1390,7 +1398,8 @@ void ManageCombatModeAnimations() {
 					}
 
 					if(PlayerWeaponBlocked != -1 && useanim->ctime < useanim->cur_anim->anims[useanim->altidx_cur]->anim_time * 0.9f) {
-						ARX_EQUIPMENT_Strike_Check(io, entities[player.equiped[EQUIP_SLOT_WEAPON]], STRIKE_AIMTIME, 1);
+						Entity * weapon = entities[player.equiped[EQUIP_SLOT_WEAPON]];
+						ARX_EQUIPMENT_Strike_Check(io, weapon, STRIKE_AIMTIME, 1);
 					}
 				}
 			}

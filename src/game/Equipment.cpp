@@ -662,6 +662,7 @@ static float ARX_EQUIPMENT_GetSpecialValue(Entity * io, long val) {
 bool ARX_EQUIPMENT_Strike_Check(Entity * io_source, Entity * io_weapon, float ratioaim, long flags, EntityHandle targ) {
 	
 	arx_assert(io_source);
+	arx_assert(io_weapon);
 	
 	bool ret = false;
 	EntityHandle source = io_source->index();
@@ -677,9 +678,6 @@ bool ARX_EQUIPMENT_Strike_Check(Entity * io_source, Entity * io_weapon, float ra
 
 	for (long j = 0; j < nbact; j++) // TODO iterator
 	{
-		if(!ValidIONum(weapon))
-			return false;
-
 		float rad = GetHitValue(io_weapon->obj->actionlist[j].name);
 
 		if(rad == -1)
@@ -800,9 +798,6 @@ bool ARX_EQUIPMENT_Strike_Check(Entity * io_source, Entity * io_weapon, float ra
 							}
 
 							ARX_PARTICLES_Spawn_Blood2(pos, dmgs, color, target);
-
-							if(!ValidIONum(weapon))
-								io_weapon = NULL;
 						} else {
 							if(target->ioflags & IO_ITEM)
 								ARX_PARTICLES_Spawn_Spark(pos, rnd() * 3.f, 0);
@@ -855,13 +850,10 @@ bool ARX_EQUIPMENT_Strike_Check(Entity * io_source, Entity * io_weapon, float ra
 							ARX_DAMAGES_DurabilityCheck(io_weapon, 1.f);
 							io_source->isHit = true;
 							
-							if(!ValidIONum(weapon)) {
-								io_weapon = NULL;
-							} else {
 								string _weapon_material = "metal";
 								const string * weapon_material = &_weapon_material;
 
-								if(io_weapon && !io_weapon->weaponmaterial.empty()) {
+								if(!io_weapon->weaponmaterial.empty()) {
 									weapon_material = &io_weapon->weaponmaterial;
 								}
 
@@ -869,7 +861,6 @@ bool ARX_EQUIPMENT_Strike_Check(Entity * io_source, Entity * io_weapon, float ra
 
 								if(ARX_MATERIAL_GetNameById(target->material, bkg_material))
 									ARX_SOUND_PlayCollision(*weapon_material, bkg_material, 1.f, 1.f, sphere.origin, NULL);
-							}
 						}
 					}
 				}
@@ -882,13 +873,10 @@ bool ARX_EQUIPMENT_Strike_Check(Entity * io_source, Entity * io_weapon, float ra
 				if(!io_source->isHit) {
 					ARX_DAMAGES_DurabilityCheck(io_weapon, 1.f);
 					io_source->isHit = true;
-
-					if(!ValidIONum(weapon)) {
-						io_weapon = NULL;
-					} else {
+					
 						string _weapon_material = "metal";
 						const string * weapon_material = &_weapon_material;
-						if(io_weapon && !io_weapon->weaponmaterial.empty()) {
+						if(!io_weapon->weaponmaterial.empty()) {
 							weapon_material = &io_weapon->weaponmaterial;
 						}
 
@@ -898,7 +886,6 @@ bool ARX_EQUIPMENT_Strike_Check(Entity * io_source, Entity * io_weapon, float ra
 							bkg_material = GetMaterialString(ep->tex->m_texName);
 
 						ARX_SOUND_PlayCollision(*weapon_material, bkg_material, 1.f, 1.f, sphere.origin, io_source);
-					}
 				}
 			}
 
