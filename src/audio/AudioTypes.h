@@ -128,7 +128,7 @@ const s32 INVALID_ID = -1;
 
 typedef s32 SourceId;
 typedef s32 SampleId;
-typedef s32 MixerId;
+ARX_HANDLE_TYPEDEF(s32, MixerId, -1)
 ARX_HANDLE_TYPEDEF(s32, EnvId, -1)
 ARX_HANDLE_TYPEDEF(s32, AmbianceId, -1)
 

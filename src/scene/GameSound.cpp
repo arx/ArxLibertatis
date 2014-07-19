@@ -190,16 +190,14 @@ static PresenceFactors presence;
 
 }
 
- 
-
-SampleId ARX_SOUND_MixerGame(INVALID_ID);
-SampleId ARX_SOUND_MixerGameSample(INVALID_ID);
-SampleId ARX_SOUND_MixerGameSpeech(INVALID_ID);
-SampleId ARX_SOUND_MixerGameAmbiance(INVALID_ID);
-SampleId ARX_SOUND_MixerMenu(INVALID_ID);
-SampleId ARX_SOUND_MixerMenuSample(INVALID_ID);
-SampleId ARX_SOUND_MixerMenuSpeech(INVALID_ID);
-SampleId ARX_SOUND_MixerMenuAmbiance(INVALID_ID);
+audio::MixerId ARX_SOUND_MixerGame;
+audio::MixerId ARX_SOUND_MixerGameSample;
+audio::MixerId ARX_SOUND_MixerGameSpeech;
+audio::MixerId ARX_SOUND_MixerGameAmbiance;
+audio::MixerId ARX_SOUND_MixerMenu;
+audio::MixerId ARX_SOUND_MixerMenuSample;
+audio::MixerId ARX_SOUND_MixerMenuSpeech;
+audio::MixerId ARX_SOUND_MixerMenuAmbiance;
 
 // Menu samples
 SampleId SND_MENU_CLICK(INVALID_ID);
