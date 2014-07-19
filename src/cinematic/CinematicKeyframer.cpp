@@ -237,114 +237,112 @@ void UpDateAllKeyLight(void)
 	}
 }
 
-bool AddKey(C_KEY * key)
-{
+bool AddKey(const C_KEY & key) {
 	int			num;
 
-	if(!CKTrack || (key->frame < CKTrack->startframe) || (key->frame > CKTrack->endframe))
+	if(!CKTrack || (key.frame < CKTrack->startframe) || (key.frame > CKTrack->endframe))
 		return false;
 
-	C_KEY * k = SearchKey(key->frame, &num);
+	C_KEY * k = SearchKey(key.frame, &num);
 	if(!k) {
 		if(!CKTrack->nbkey) {
 			CKTrack->key = k = (C_KEY *)malloc(sizeof(C_KEY));
 		} else {
 			CKTrack->key = (C_KEY *)realloc(CKTrack->key, sizeof(C_KEY) * (CKTrack->nbkey + 1));
-			k = SearchAndMoveKey(key->frame);
+			k = SearchAndMoveKey(key.frame);
 		}
 
 		CKTrack->nbkey++;
 
-		k->frame = key->frame;
+		k->frame = key.frame;
 	}
 
-	if(key->numbitmap > -2)
-		k->numbitmap = key->numbitmap;
+	if(key.numbitmap > -2)
+		k->numbitmap = key.numbitmap;
 
-	if(key->fx > -2) {
-		if((key->fx > 255) && (k->fx > 0)) {
-			k->fx |= key->fx;
+	if(key.fx > -2) {
+		if((key.fx > 255) && (k->fx > 0)) {
+			k->fx |= key.fx;
 		} else {
-			if((k->fx >= 255) && (key->fx >= 0)) {
-				k->fx |= key->fx;
+			if((k->fx >= 255) && (key.fx >= 0)) {
+				k->fx |= key.fx;
 			} else {
-				k->fx = key->fx;
+				k->fx = key.fx;
 			}
 		}
 	}
 
-	if(key->speed > -1.f) {
-		k->speed = key->speed;
+	if(key.speed > -1.f) {
+		k->speed = key.speed;
 	}
 	
-	k->color = key->color;
-	k->colord = key->colord;
-	k->colorf = key->colorf;
+	k->color = key.color;
+	k->colord = key.colord;
+	k->colorf = key.colorf;
 	
-	if(key->idsound > -2) {
-		k->idsound = key->idsound;
+	if(key.idsound > -2) {
+		k->idsound = key.idsound;
 	}
 
-	if(key->force > -2)
-		k->force = key->force;
+	if(key.force > -2)
+		k->force = key.force;
 
-	k->frame = key->frame;
-	k->pos = key->pos;
-	k->angz = key->angz;
+	k->frame = key.frame;
+	k->pos = key.pos;
+	k->angz = key.angz;
 
-	if(key->typeinterp > -2)
-		k->typeinterp = key->typeinterp;
+	if(key.typeinterp > -2)
+		k->typeinterp = key.typeinterp;
 
 	float a = -2.f;
 
-	if(C_NEQUAL_F32(key->light.intensity, a)) {
-		k->light = key->light;
+	if(C_NEQUAL_F32(key.light.intensity, a)) {
+		k->light = key.light;
 	}
 
-	k->posgrille = key->posgrille;
-	k->angzgrille = key->angzgrille;
-	k->speedtrack = key->speedtrack;
+	k->posgrille = key.posgrille;
+	k->angzgrille = key.angzgrille;
+	k->speedtrack = key.speedtrack;
 
 	UpDateAllKeyLight();
 
 	return true;
 }
 
-bool AddKeyLoad(C_KEY * key)
-{
+bool AddKeyLoad(const C_KEY & key) {
 	int num;
 
-	if(!CKTrack || (key->frame < CKTrack->startframe) || (key->frame > CKTrack->endframe))
+	if(!CKTrack || (key.frame < CKTrack->startframe) || (key.frame > CKTrack->endframe))
 		return false;
 	
-	C_KEY * k = SearchKey(key->frame, &num);
+	C_KEY * k = SearchKey(key.frame, &num);
 	if(!k) {
 		if(!CKTrack->nbkey) {
 			CKTrack->key = k = (C_KEY *)malloc(sizeof(C_KEY));
 		} else {
 			CKTrack->key = (C_KEY *)realloc(CKTrack->key, sizeof(C_KEY) * (CKTrack->nbkey + 1));
-			k = SearchAndMoveKey(key->frame);
+			k = SearchAndMoveKey(key.frame);
 		}
 
 		CKTrack->nbkey++;
 	}
 
-	k->numbitmap = key->numbitmap;
-	k->fx = key->fx;
-	k->speed = key->speed;
-	k->color = key->color;
-	k->colord = key->colord;
-	k->colorf = key->colorf;
-	k->frame = key->frame;
-	k->pos = key->pos;
-	k->angz = key->angz;
-	k->typeinterp = key->typeinterp;
-	k->idsound = key->idsound;
-	k->force = key->force;
-	k->light = key->light;
-	k->posgrille = key->posgrille;
-	k->angzgrille = key->angzgrille;
-	k->speedtrack = key->speedtrack;
+	k->numbitmap = key.numbitmap;
+	k->fx = key.fx;
+	k->speed = key.speed;
+	k->color = key.color;
+	k->colord = key.colord;
+	k->colorf = key.colorf;
+	k->frame = key.frame;
+	k->pos = key.pos;
+	k->angz = key.angz;
+	k->typeinterp = key.typeinterp;
+	k->idsound = key.idsound;
+	k->force = key.force;
+	k->light = key.light;
+	k->posgrille = key.posgrille;
+	k->angzgrille = key.angzgrille;
+	k->speedtrack = key.speedtrack;
 
 	return true;
 }

@@ -192,7 +192,7 @@ void Cinematic::New() {
 	key.angzgrille = angzgrille;
 	key.speedtrack = 1.f;
 	
-	AddKey(&key);
+	AddKey(key);
 	}
 	
 	{
@@ -214,7 +214,7 @@ void Cinematic::New() {
 	key.speedtrack = 1.f;
 	key.light.intensity = -2.f;
 	
-	AddKey(&key);
+	AddKey(key);
 	}
 	this->lightd = this->light;
 	

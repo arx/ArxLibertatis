@@ -334,7 +334,7 @@ bool parseCinematic(Cinematic * c, const char * data, size_t size) {
 		key.speedtrack = k.speedtrack;
 		key.light = k.light;
 		
-		AddKeyLoad(&key);
+		AddKeyLoad(key);
 		}
 		
 		LogDebug(" - " << i << ": frame " << k.frame << " image: " << k.numbitmap);
