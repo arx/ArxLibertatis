@@ -73,8 +73,6 @@ TexturedVertex AllTLVertex[40000];
 
 extern float DreamTable[];
 
-C_KEY KeyTemp;
-
 static bool FlashBlancEnCours;
 static float OldSpeedFlashBlanc;
 static int OldColorFlashBlanc;
@@ -183,44 +181,46 @@ void Cinematic::New() {
 	AllocTrack(0, 100, 30.f);
 	
 	{
-	KeyTemp.frame = 0;
-	KeyTemp.numbitmap = -1;
-	KeyTemp.fx = -1;
-	KeyTemp.typeinterp = INTERP_BEZIER;
-	KeyTemp.force = 1;
-	KeyTemp.pos = pos;
-	KeyTemp.angz = angz;
-	KeyTemp.color = 0x00FFFFFF;
-	KeyTemp.colord = 0x00FFFFFF;
-	KeyTemp.colorf = 0x00FFFFFF;
-	KeyTemp.idsound = -1;
-	KeyTemp.speed = 1.f;
-	KeyTemp.posgrille = posgrille;
-	KeyTemp.angzgrille = angzgrille;
-	KeyTemp.speedtrack = 1.f;
+	C_KEY key;
+	key.frame = 0;
+	key.numbitmap = -1;
+	key.fx = -1;
+	key.typeinterp = INTERP_BEZIER;
+	key.force = 1;
+	key.pos = pos;
+	key.angz = angz;
+	key.color = 0x00FFFFFF;
+	key.colord = 0x00FFFFFF;
+	key.colorf = 0x00FFFFFF;
+	key.idsound = -1;
+	key.speed = 1.f;
+	key.posgrille = posgrille;
+	key.angzgrille = angzgrille;
+	key.speedtrack = 1.f;
 	
-	AddKey(&KeyTemp);
+	AddKey(&key);
 	}
 	
 	{
-	KeyTemp.frame = 100;
-	KeyTemp.numbitmap = -1;
-	KeyTemp.fx = -1;
-	KeyTemp.typeinterp = INTERP_BEZIER;
-	KeyTemp.force = 1;
-	KeyTemp.pos = pos;
-	KeyTemp.angz = angz;
-	KeyTemp.color = 0x00FFFFFF;
-	KeyTemp.colord = 0x00FFFFFF;
-	KeyTemp.colorf = 0x00FFFFFF;
-	KeyTemp.idsound = -1;
-	KeyTemp.speed = 1.f;
-	KeyTemp.posgrille = posgrille;
-	KeyTemp.angzgrille = angzgrille;
-	KeyTemp.speedtrack = 1.f;
-	KeyTemp.light.intensity = -2.f;
+	C_KEY key;
+	key.frame = 100;
+	key.numbitmap = -1;
+	key.fx = -1;
+	key.typeinterp = INTERP_BEZIER;
+	key.force = 1;
+	key.pos = pos;
+	key.angz = angz;
+	key.color = 0x00FFFFFF;
+	key.colord = 0x00FFFFFF;
+	key.colorf = 0x00FFFFFF;
+	key.idsound = -1;
+	key.speed = 1.f;
+	key.posgrille = posgrille;
+	key.angzgrille = angzgrille;
+	key.speedtrack = 1.f;
+	key.light.intensity = -2.f;
 	
-	AddKey(&KeyTemp);
+	AddKey(&key);
 	}
 	this->lightd = this->lightchoose = this->light;
 	

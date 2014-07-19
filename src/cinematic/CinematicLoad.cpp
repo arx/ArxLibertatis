@@ -66,8 +66,6 @@ ZeniMax Media Inc., Suite 120, Rockville, Maryland 20850 USA.
 
 #include "util/String.h"
 
-extern C_KEY KeyTemp;
-
 static res::path fixTexturePath(const std::string & path) {
 	
 	std::string copy = boost::to_lower_copy(path);
@@ -317,24 +315,26 @@ bool parseCinematic(Cinematic * c, const char * data, size_t size) {
 		}
 		
 		{
-		KeyTemp.frame = k.frame;
-		KeyTemp.numbitmap = k.numbitmap;
-		KeyTemp.fx = k.fx;
-		KeyTemp.typeinterp = k.typeinterp;
-		KeyTemp.force = k.force;
-		KeyTemp.pos = k.pos;
-		KeyTemp.angz = k.angz;
-		KeyTemp.color = k.color;
-		KeyTemp.colord = k.colord;
-		KeyTemp.colorf = k.colorf;
-		KeyTemp.idsound = k.idsound;
-		KeyTemp.speed = k.speed;
-		KeyTemp.posgrille = k.posgrille;
-		KeyTemp.angzgrille = k.angzgrille;
-		KeyTemp.speedtrack = k.speedtrack;
-		KeyTemp.light = k.light;
+		C_KEY key;
 		
-		AddKeyLoad(&KeyTemp);
+		key.frame = k.frame;
+		key.numbitmap = k.numbitmap;
+		key.fx = k.fx;
+		key.typeinterp = k.typeinterp;
+		key.force = k.force;
+		key.pos = k.pos;
+		key.angz = k.angz;
+		key.color = k.color;
+		key.colord = k.colord;
+		key.colorf = k.colorf;
+		key.idsound = k.idsound;
+		key.speed = k.speed;
+		key.posgrille = k.posgrille;
+		key.angzgrille = k.angzgrille;
+		key.speedtrack = k.speedtrack;
+		key.light = k.light;
+		
+		AddKeyLoad(&key);
 		}
 		
 		LogDebug(" - " << i << ": frame " << k.frame << " image: " << k.numbitmap);
