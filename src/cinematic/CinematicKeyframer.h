@@ -56,7 +56,8 @@ struct C_KEY {
 	int frame;
 	int numbitmap;
 	int fx; // associated fx
-	short typeinterp, force;
+	short typeinterp;
+	short force;
 	Vec3f pos;
 	float angz;
 	int color;
@@ -67,9 +68,7 @@ struct C_KEY {
 	Vec3f posgrille;
 	float angzgrille;
 	float speedtrack;
-	
 	int idsound;
-	
 };
 
 struct CinematicTrack {
