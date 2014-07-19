@@ -309,8 +309,9 @@ void SpellManager::freeSlot(SpellBase * spell)
 {
 	for(size_t i = 0; i < MAX_SPELLS; i++) {
 		if(m_spells[i] == spell) {
-			delete spell;
+			delete m_spells[i];
 			m_spells[i] = NULL;
+			return;
 		}
 	}
 }
