@@ -1339,7 +1339,7 @@ void TreatBackgroundActions() {
 			damage.damages = gl->ex_radius * (1.0f / 7);
 			damage.area = DAMAGE_FULL;
 			damage.duration = 1;
-			damage.source = EntityHandle(-5); // FIXME WTF
+			damage.source = EntityHandle::Invalid;
 			damage.flags = 0;
 			damage.type = DAMAGE_TYPE_MAGICAL | DAMAGE_TYPE_FIRE | DAMAGE_TYPE_NO_FIX;
 			damage.pos = gl->pos;

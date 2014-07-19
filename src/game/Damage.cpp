@@ -952,7 +952,7 @@ void ARX_DAMAGES_UpdateDamage(DamageHandle j, float tim) {
 	}
 		
 	if(damage.params.flags & DAMAGE_FLAG_FOLLOW_SOURCE) {
-		if(damage.params.source == 0) {
+		if(damage.params.source == PlayerEntityHandle) {
 			damage.params.pos = player.pos;
 		} else if (ValidIONum(damage.params.source)) {
 			damage.params.pos = entities[damage.params.source]->pos;
@@ -1065,7 +1065,7 @@ void ARX_DAMAGES_UpdateDamage(DamageHandle j, float tim) {
 							}
 						}
 						
-						if (damage.params.source == 0) {
+						if (damage.params.source == PlayerEntityHandle) {
 							player.manaPool.current = min(player.manaPool.current + manadrained, player.Full_maxmana);
 						} else {
 							if(ValidIONum(damage.params.source) && (entities[damage.params.source]->_npcdata)) {
