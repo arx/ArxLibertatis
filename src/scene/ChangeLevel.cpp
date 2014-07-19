@@ -1374,7 +1374,7 @@ static long ARX_CHANGELEVEL_Push_IO(const Entity * io, long level) {
 			as->walk_start_time = io->_npcdata->walk_start_time;
 			as->aiming_start = io->_npcdata->aiming_start;
 			as->npcflags = io->_npcdata->npcflags;
-			memset(&as->pathfind, 0, sizeof(IO_PATHFIND));
+			as->pathfind = IO_PATHFIND();
 
 			if (io->_npcdata->pathfind.listnb > 0)
 				as->pathfind.truetarget = io->_npcdata->pathfind.truetarget;
@@ -2265,7 +2265,7 @@ static Entity * ARX_CHANGELEVEL_Pop_IO(const string & ident, long num) {
 				io->_npcdata->fDetect = as->fDetect;
 				io->_npcdata->cuts = as->cuts;
 				
-				memset(&io->_npcdata->pathfind, 0, sizeof(IO_PATHFIND));
+				io->_npcdata->pathfind = IO_PATHFIND();
 				
 				io->_npcdata->pathfind.truetarget = EntityHandle(as->pathfind.truetarget);
 				

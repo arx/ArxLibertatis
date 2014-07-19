@@ -239,7 +239,7 @@ void ARX_INTERACTIVE_DestroyDynamicInfo(Entity * io)
 			Thread::sleep(1);
 		}
 		free(io->_npcdata->pathfind.list);
-		memset(&io->_npcdata->pathfind, 0, sizeof(IO_PATHFIND));
+		io->_npcdata->pathfind = IO_PATHFIND();
 	}
 	
 	lightHandleDestroy(io->dynlight);
@@ -801,7 +801,7 @@ void ARX_INTERACTIVE_ClearIODynData_II(Entity * io)
 	if(io->ioflags & IO_NPC) {
 		free(io->_npcdata->pathfind.list);
 		io->_npcdata->pathfind.list = NULL;
-		memset(&io->_npcdata->pathfind, 0, sizeof(IO_PATHFIND));
+		io->_npcdata->pathfind = IO_PATHFIND();
 		io->_npcdata->pathfind.truetarget = EntityHandle::Invalid;
 		io->_npcdata->pathfind.listnb = -1;
 		ARX_NPC_Behaviour_Reset(io);
@@ -1676,7 +1676,7 @@ IO_NPCDATA::IO_NPCDATA() {
 	walk_start_time = 0;
 	aiming_start = 0l;
 	npcflags = 0l;
-	memset(&pathfind, 0, sizeof(IO_PATHFIND)); // TODO use constructor
+	pathfind = IO_PATHFIND();
 	ex_rotate = 0;
 	blood_color = Color::red;
 	

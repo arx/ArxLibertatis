@@ -109,6 +109,15 @@ struct IO_PATHFIND {
 	unsigned short listpos;
 	short pathwait;
 	EntityHandle truetarget;
+	
+	IO_PATHFIND()
+		: flags(0)
+		, listnb(0)
+		, list(NULL)
+		, listpos(0)
+		, pathwait(0)
+		, truetarget(0) // TODO is this correct ? use EntityHandle::Invalid ?
+	{}
 };
 
 enum ExtraRotateFlag {
