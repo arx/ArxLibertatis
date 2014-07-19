@@ -316,8 +316,26 @@ bool parseCinematic(Cinematic * c, const char * data, size_t size) {
 			k.force = 1;
 		}
 		
-		FillKeyTemp(&k.pos, k.angz, k.frame, k.numbitmap, k.fx, k.typeinterp, k.color, k.colord, k.colorf, k.speed, k.idsound, k.force, &k.light, &k.posgrille, k.angzgrille, k.speedtrack);
+		{
+		KeyTemp.frame = k.frame;
+		KeyTemp.numbitmap = k.numbitmap;
+		KeyTemp.fx = k.fx;
+		KeyTemp.typeinterp = k.typeinterp;
+		KeyTemp.force = k.force;
+		KeyTemp.pos = k.pos;
+		KeyTemp.angz = k.angz;
+		KeyTemp.color = k.color;
+		KeyTemp.colord = k.colord;
+		KeyTemp.colorf = k.colorf;
+		KeyTemp.idsound = k.idsound;
+		KeyTemp.speed = k.speed;
+		KeyTemp.posgrille = k.posgrille;
+		KeyTemp.angzgrille = k.angzgrille;
+		KeyTemp.speedtrack = k.speedtrack;
+		KeyTemp.light = k.light;
+		
 		AddKeyLoad(&KeyTemp);
+		}
 		
 		LogDebug(" - " << i << ": frame " << k.frame << " image: " << k.numbitmap);
 		if(k.idsound >= 0) {

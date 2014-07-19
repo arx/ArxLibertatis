@@ -135,35 +135,6 @@ Cinematic::~Cinematic() {
 	DeleteAllBitmap();
 }
 
-/*-------------------------------------------------------------------*/
-void FillKeyTemp(Vec3f * pos, float az, int frame, int numbitmap, int numfx, short ti, int color, int colord, int colorf, float speed, int idsound, short force, CinematicLight * light, Vec3f * posgrille, float azgrille, float speedtrack)
-{
-	KeyTemp.frame = frame;
-	KeyTemp.numbitmap = numbitmap;
-	KeyTemp.fx = numfx;
-	KeyTemp.typeinterp = ti;
-	KeyTemp.force = force;
-	KeyTemp.pos = *pos;
-	KeyTemp.angz = az;
-	KeyTemp.color = color;
-	KeyTemp.colord = colord;
-	KeyTemp.colorf = colorf;
-	KeyTemp.idsound = idsound;
-	KeyTemp.speed = speed;
-	KeyTemp.posgrille = *posgrille;
-	KeyTemp.angzgrille = azgrille;
-	KeyTemp.speedtrack = speedtrack;
-
-	if (light)
-	{
-		KeyTemp.light = *light;
-	}
-	else
-	{
-		KeyTemp.light.intensity = -2.f;
-	}
-}
-
 /* Reinit */
 void Cinematic::OneTimeSceneReInit() {
 	
@@ -210,10 +181,47 @@ void Cinematic::New() {
 	DeleteAllSound();
 	
 	AllocTrack(0, 100, 30.f);
-	FillKeyTemp(&pos, angz, 0, -1, -1, INTERP_BEZIER, 0x00FFFFFF, 0x00FFFFFF, 0x00FFFFFF, 1.f, -1, 1, NULL, &posgrille, angzgrille, 1.f);
+	
+	{
+	KeyTemp.frame = 0;
+	KeyTemp.numbitmap = -1;
+	KeyTemp.fx = -1;
+	KeyTemp.typeinterp = INTERP_BEZIER;
+	KeyTemp.force = 1;
+	KeyTemp.pos = pos;
+	KeyTemp.angz = angz;
+	KeyTemp.color = 0x00FFFFFF;
+	KeyTemp.colord = 0x00FFFFFF;
+	KeyTemp.colorf = 0x00FFFFFF;
+	KeyTemp.idsound = -1;
+	KeyTemp.speed = 1.f;
+	KeyTemp.posgrille = posgrille;
+	KeyTemp.angzgrille = angzgrille;
+	KeyTemp.speedtrack = 1.f;
+	
 	AddKey(&KeyTemp);
-	FillKeyTemp(&pos, angz, 100, -1, -1, INTERP_BEZIER, 0x00FFFFFF, 0x00FFFFFF, 0x00FFFFFF, 1.f, -1, 1, NULL, &posgrille, angzgrille, 1.f);
+	}
+	
+	{
+	KeyTemp.frame = 100;
+	KeyTemp.numbitmap = -1;
+	KeyTemp.fx = -1;
+	KeyTemp.typeinterp = INTERP_BEZIER;
+	KeyTemp.force = 1;
+	KeyTemp.pos = pos;
+	KeyTemp.angz = angz;
+	KeyTemp.color = 0x00FFFFFF;
+	KeyTemp.colord = 0x00FFFFFF;
+	KeyTemp.colorf = 0x00FFFFFF;
+	KeyTemp.idsound = -1;
+	KeyTemp.speed = 1.f;
+	KeyTemp.posgrille = posgrille;
+	KeyTemp.angzgrille = angzgrille;
+	KeyTemp.speedtrack = 1.f;
+	KeyTemp.light.intensity = -2.f;
+	
 	AddKey(&KeyTemp);
+	}
 	this->lightd = this->lightchoose = this->light;
 	
 	SetCurrFrame(GetStartFrame());
