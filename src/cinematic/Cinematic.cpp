@@ -211,9 +211,9 @@ void Cinematic::New() {
 	
 	AllocTrack(0, 100, 30.f);
 	FillKeyTemp(&pos, angz, 0, -1, -1, INTERP_BEZIER, 0x00FFFFFF, 0x00FFFFFF, 0x00FFFFFF, 1.f, -1, 1, NULL, &posgrille, angzgrille, 1.f);
-	AddKey(&KeyTemp, true, true, true);
+	AddKey(&KeyTemp);
 	FillKeyTemp(&pos, angz, 100, -1, -1, INTERP_BEZIER, 0x00FFFFFF, 0x00FFFFFF, 0x00FFFFFF, 1.f, -1, 1, NULL, &posgrille, angzgrille, 1.f);
-	AddKey(&KeyTemp, true, true, true);
+	AddKey(&KeyTemp);
 	this->lightd = this->lightchoose = this->light;
 	
 	SetCurrFrame(GetStartFrame());

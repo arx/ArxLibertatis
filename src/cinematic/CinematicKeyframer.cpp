@@ -237,7 +237,7 @@ void UpDateAllKeyLight(void)
 	}
 }
 
-bool AddKey(C_KEY * key, bool writecolor, bool writecolord, bool writecolorf)
+bool AddKey(C_KEY * key)
 {
 	int			num;
 
@@ -276,16 +276,11 @@ bool AddKey(C_KEY * key, bool writecolor, bool writecolord, bool writecolorf)
 	if(key->speed > -1.f) {
 		k->speed = key->speed;
 	}
-
-	if(writecolor)
-		k->color = key->color;
-
-	if(writecolord)
-		k->colord = key->colord;
-
-	if(writecolorf)
-		k->colorf = key->colorf;
-
+	
+	k->color = key->color;
+	k->colord = key->colord;
+	k->colorf = key->colorf;
+	
 	if(key->idsound > -2) {
 		k->idsound = key->idsound;
 	}
