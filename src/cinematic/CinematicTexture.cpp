@@ -80,14 +80,14 @@ CinematicBitmap* CreateCinematicBitmap(const res::path & path, int scale) {
 
 	LogDebug("loading cinematic texture " << path);
 
-	size_t size = 0;
+	size_t dataSize = 0;
 	
 	res::path filename = path;
 	filename.set_ext("bmp");
-	char * data = resources->readAlloc(filename, size);
+	char * data = resources->readAlloc(filename, dataSize);
 	if(!data) {
 		filename.set_ext("tga");
-		data = resources->readAlloc(filename, size);
+		data = resources->readAlloc(filename, dataSize);
 	}
 
 	if(!data) {
@@ -97,7 +97,7 @@ CinematicBitmap* CreateCinematicBitmap(const res::path & path, int scale) {
 	}
 
 	Image cinematicImage;
-	cinematicImage.LoadFromMemory(data, size);
+	cinematicImage.LoadFromMemory(data, dataSize);
 
 	free(data);
 
