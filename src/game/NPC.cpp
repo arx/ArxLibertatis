@@ -995,7 +995,7 @@ void ARX_PHYSICS_Apply() {
 			if(io->obj->pbox->active == 1) {
 				PHYSICS_CURIO = io;
 
-				ARX_PHYSICS_BOX_ApplyModel(io->obj, (float)framedelay, io->rubber, treatio[i].num);
+				ARX_PHYSICS_BOX_ApplyModel(io->obj->pbox, (float)framedelay, io->rubber, treatio[i].num);
 				
 				if(io->soundcount > 12) {
 					io->soundtime = 0;

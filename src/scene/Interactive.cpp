@@ -2199,7 +2199,7 @@ void SetYlsideDeath(Entity * io) {
 	io->sfx_time = (unsigned long)(arxtime);
 }
 
-bool ARX_INTERACTIVE_CheckFULLCollision(EERIE_3DOBJ * obj, EntityHandle source)
+bool ARX_INTERACTIVE_CheckFULLCollision(PHYSICS_BOX_DATA * pbox, EntityHandle source)
 {
 	bool col = false;
 	EntityHandle avoid = EntityHandle::Invalid;
@@ -2225,15 +2225,15 @@ bool ARX_INTERACTIVE_CheckFULLCollision(EERIE_3DOBJ * obj, EntityHandle source)
 		   || (io->ioflags & (IO_CAMERA | IO_MARKER | IO_ITEM))
 		   || io->usepath
 		   || ((io->ioflags & IO_NPC) && io_source && (io_source->ioflags & IO_NO_NPC_COLLIDE))
-		   || !closerThan(io->pos, obj->pbox->vert[0].pos, 600.f)
-		   || !In3DBBoxTolerance(obj->pbox->vert[0].pos, io->bbox3D, obj->pbox->radius)
+		   || !closerThan(io->pos, pbox->vert[0].pos, 600.f)
+		   || !In3DBBoxTolerance(pbox->vert[0].pos, io->bbox3D, pbox->radius)
 		) {
 			continue;
 		}
 
 		if((io->ioflags & IO_NPC) && io->_npcdata->lifePool.current > 0.f) {
-			for(long kk = 0; kk < obj->pbox->nb_physvert; kk++)
-				if(PointInCylinder(io->physics.cyl, &obj->pbox->vert[kk].pos))
+			for(long kk = 0; kk < pbox->nb_physvert; kk++)
+				if(PointInCylinder(io->physics.cyl, &pbox->vert[kk].pos))
 					return true;
 		} else if(io->ioflags & IO_FIX) {
 			long step;
@@ -2255,9 +2255,9 @@ bool ARX_INTERACTIVE_CheckFULLCollision(EERIE_3DOBJ * obj, EntityHandle source)
 			vector<EERIE_VERTEX> & vlist = io->obj->vertexlist3;
 
 			if(io->gameFlags & GFLAG_PLATFORM) {
-				for(long kk = 0; kk < obj->pbox->nb_physvert; kk++) {
+				for(long kk = 0; kk < pbox->nb_physvert; kk++) {
 					Sphere sphere;
-					sphere.origin = obj->pbox->vert[kk].pos;
+					sphere.origin = pbox->vert[kk].pos;
 					sphere.radius = 30.f;
 					float miny, maxy;
 					miny = io->bbox3D.min.y;
@@ -2304,8 +2304,8 @@ bool ARX_INTERACTIVE_CheckFULLCollision(EERIE_3DOBJ * obj, EntityHandle source)
 				if(ii != io->obj->origin) {
 					sp.origin = vlist[ii].v;
 
-					for(long kk = 0; kk < obj->pbox->nb_physvert; kk++) {
-						if(sp.contains(obj->pbox->vert[kk].pos)) {
+					for(long kk = 0; kk < pbox->nb_physvert; kk++) {
+						if(sp.contains(pbox->vert[kk].pos)) {
 							if(io_source && (io->gameFlags & GFLAG_DOOR)) {
 								if(float(arxtime) > io->collide_door_time + 500) {
 									EVENT_SENDER = io_source;

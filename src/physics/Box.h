@@ -52,10 +52,11 @@ ZeniMax Media Inc., Suite 120, Rockville, Maryland 20850 USA.
 #include "math/Types.h"
 
 struct EERIE_3DOBJ;
+struct PHYSICS_BOX_DATA;
 
 void EERIE_PHYSICS_BOX_Create(EERIE_3DOBJ * obj);
 void EERIE_PHYSICS_BOX_Release(EERIE_3DOBJ * obj);
 void EERIE_PHYSICS_BOX_Launch(EERIE_3DOBJ * obj, const Vec3f & pos, const Anglef & angle, const Vec3f & vect);
-bool IsObjectVertexCollidingTriangle(EERIE_3DOBJ * obj, Vec3f * verts);
+bool IsObjectVertexCollidingTriangle(PHYSICS_BOX_DATA * pbox, Vec3f * verts);
 
 #endif // ARX_PHYSICS_BOX_H
