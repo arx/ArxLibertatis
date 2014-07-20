@@ -273,15 +273,13 @@ void Cinematic::DeleteDeviceObjects() {
 
 static float LightRND;
 
-int CalculLight(CinematicLight * light, float x, float y, int col)
+int CalculLight(CinematicLight * light, Vec2f pos, int col)
 {
-	float	ra = (float)sqrt((light->pos.x - x) * (light->pos.x - x) + (light->pos.y - y) * (light->pos.y - y));
+	float	ra = (float)sqrt((light->pos.x - pos.x) * (light->pos.x - pos.x) + (light->pos.y - pos.y) * (light->pos.y - pos.y));
 
 	if(ra > light->fallout) {
 		return (Color::fromBGRA(col) * LightRND).toBGRA();
-	}
-	else
-	{
+	} else {
 		Color3f color;
 
 		if(ra < light->fallin) {
@@ -330,7 +328,7 @@ void DrawGrille(CinematicGrid * grille, int col, int fx, CinematicLight * light,
 			TransformLocalVertex(&t, &vtemp);
 			EE_RTP(vtemp.p, d3dv);
 			if(light) {
-				d3dv->color = CalculLight(light, d3dv->p.x, d3dv->p.y, col);
+				d3dv->color = CalculLight(light, Vec2f(d3dv->p.x, d3dv->p.y), col);
 				d3dv->p.x = ADJUSTX(d3dv->p.x);
 				d3dv->p.y = ADJUSTY(d3dv->p.y);
 			} else {
@@ -347,7 +345,7 @@ void DrawGrille(CinematicGrid * grille, int col, int fx, CinematicLight * light,
 				TexturedVertex vtemp;
 				TransformLocalVertex(v, &vtemp);
 				EE_RTP(vtemp.p, d3dv);
-				d3dv->color = CalculLight(light, d3dv->p.x, d3dv->p.y, col);
+				d3dv->color = CalculLight(light, Vec2f(d3dv->p.x, d3dv->p.y), col);
 				d3dv->p.x = ADJUSTX(d3dv->p.x);
 				d3dv->p.y = ADJUSTY(d3dv->p.y);
 				v++;
