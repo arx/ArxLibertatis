@@ -326,24 +326,9 @@ bool AddKeyLoad(const C_KEY & key) {
 
 		CKTrack->nbkey++;
 	}
-
-	k->numbitmap = key.numbitmap;
-	k->fx = key.fx;
-	k->speed = key.speed;
-	k->color = key.color;
-	k->colord = key.colord;
-	k->colorf = key.colorf;
-	k->frame = key.frame;
-	k->pos = key.pos;
-	k->angz = key.angz;
-	k->typeinterp = key.typeinterp;
-	k->idsound = key.idsound;
-	k->force = key.force;
-	k->light = key.light;
-	k->posgrille = key.posgrille;
-	k->angzgrille = key.angzgrille;
-	k->speedtrack = key.speedtrack;
-
+	
+	*k = key;
+	
 	return true;
 }
 
