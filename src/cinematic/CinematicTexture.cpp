@@ -270,17 +270,14 @@ void AddQuadUVs(CinematicGrid * grille, int depcx, int depcy, int tcx, int tcy, 
 }
 
 CinematicBitmap* CreateCinematicBitmap(const res::path & path, int scale) {
-
-	int nbx, nby, h, num;
-	CinematicBitmap	* bi;
 	
 	string name = path.basename();
 	if(name.empty()) {
 		return 0;
 	}
 	
-	bi = new CinematicBitmap();
-	if (!bi) 
+	CinematicBitmap	* bi = new CinematicBitmap();
+	if(!bi)
 		return 0;
 
 	LogDebug("loading cinematic texture " << path);
@@ -308,8 +305,8 @@ CinematicBitmap* CreateCinematicBitmap(const res::path & path, int scale) {
 
 	unsigned int width = cinematicImage.GetWidth();
 	unsigned int height = cinematicImage.GetHeight();
-	nbx = width / MaxW;
-	nby = height / MaxH;
+	int nbx = width / MaxW;
+	int nby = height / MaxH;
 
 	if(width % MaxW)
 		nbx++;
@@ -325,8 +322,8 @@ CinematicBitmap* CreateCinematicBitmap(const res::path & path, int scale) {
 
 	AllocGrille(&bi->grid, nbx, nby, (float)bi->w, (float)bi->h, (float)((bi->w > MaxW) ? MaxW : bi->w), (float)((bi->h > MaxH) ? MaxH : bi->h), scale);
 
-	num = 0;
-	h = bi->h;
+	int num = 0;
+	int h = bi->h;
 
 	while(nby) {
 
