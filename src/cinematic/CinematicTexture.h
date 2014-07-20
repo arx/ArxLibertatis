@@ -88,6 +88,11 @@ struct CinematicGrid {
 	Vec2i m_count;
 	int echelle;
 	
+	void AddQuadUVs(int depcx, int depcy, int tcx, int tcy, int bitmapposx, int bitmapposy, int bitmapwx, int bitmapwy, Texture2D* tex);
+	
+private:
+	void GetIndNumCube(int cx, int cy, int * i1, int * i2, int * i3, int * i4);
+	int AddMaterial(Texture2D* tex);
 	void AddPoly(int matIdx, int i0, int i1, int i2);
 };
 
