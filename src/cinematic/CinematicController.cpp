@@ -147,11 +147,11 @@ void cinematicRender() {
 
 	ControlCinematique->Render(FrameTicks - LastFrameTicks);
 
-	//fin de l'anim
-	if ((!ControlCinematique->key)
-		|| (GInput->isKeyPressedNowUnPressed(Keyboard::Key_Escape))
-		|| (GInput->isKeyPressedNowUnPressed(Keyboard::Key_Escape)))
-	{
+	// end the animation
+	if(   !ControlCinematique->key
+	   || GInput->isKeyPressedNowUnPressed(Keyboard::Key_Escape)
+	   || GInput->isKeyPressedNowUnPressed(Keyboard::Key_Escape)
+	) {
 		ControlCinematique->projectload=false;
 		StopSoundKeyFramer();
 		ControlCinematique->OneTimeSceneReInit();
