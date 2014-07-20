@@ -57,8 +57,7 @@ ZeniMax Media Inc., Suite 120, Rockville, Maryland 20850 USA.
 #include "io/resource/PakReader.h"
 #include "io/log/Logger.h"
 
-static const int MaxW = 256;
-static const int MaxH = 256;
+static const Vec2i cinMaxSize = Vec2i(256, 256);
 
 using std::string;
 
@@ -101,58 +100,53 @@ CinematicBitmap* CreateCinematicBitmap(const res::path & path, int scale) {
 
 	free(data);
 
-	unsigned int width = cinematicImage.GetWidth();
-	unsigned int height = cinematicImage.GetHeight();
-	int nbx = width / MaxW;
-	int nby = height / MaxH;
+	Vec2i size = Vec2i(cinematicImage.GetWidth(), cinematicImage.GetHeight());
+	Vec2i nb = size / cinMaxSize;
+	
+	if(size.x % cinMaxSize.x)
+		nb.x++;
 
-	if(width % MaxW)
-		nbx++;
-
-	if(height % MaxH)
-		nby++;
-
-	bi->m_size.x = width;
-	bi->m_size.y = height;
-
-	bi->m_count.x = nbx;
-	bi->m_count.y = nby;
-
-	bi->grid.AllocGrille(bi->m_count, Vec2f(bi->m_size), Vec2f(((bi->m_size.x > MaxW) ? MaxW : bi->m_size.x), ((bi->m_size.y > MaxH) ? MaxH : bi->m_size.y)), scale);
+	if(size.y % cinMaxSize.y)
+		nb.y++;
+	
+	bi->m_size = size;
+	bi->m_count = nb;
+	
+	bi->grid.AllocGrille(bi->m_count, Vec2f(bi->m_size), Vec2f(((bi->m_size.x > cinMaxSize.x) ? cinMaxSize.x : bi->m_size.x), ((bi->m_size.y > cinMaxSize.y) ? cinMaxSize.y : bi->m_size.y)), scale);
 
 	int num = 0;
 	int h = bi->m_size.y;
 
-	while(nby) {
+	while(nb.y) {
 
 		int h2;
 
-		if((h - MaxH) < 0)
+		if((h - cinMaxSize.y) < 0)
 			h2 = h;
 		else
-			h2 = MaxH;
+			h2 = cinMaxSize.y;
 
 		int w = bi->m_size.x;
-		int nbxx = nbx;
+		int nbxx = nb.x;
 
 		while(nbxx) {
-			int w2 = (w - MaxW) < 0 ? w : MaxW;
+			int w2 = (w - cinMaxSize.x) < 0 ? w : cinMaxSize.x;
 
 			Texture2D* tex = GRenderer->CreateTexture2D();
 			tex->Init(w2, h2, cinematicImage.GetFormat());
 			tex->GetImage().Copy(cinematicImage, 0, 0, bi->m_size.x - w, bi->m_size.y - h, w2, h2);
 			tex->Upload();
 
-			bi->grid.AddQuadUVs((bi->m_count.x - nbxx) * scale, (bi->m_count.y - nby) * scale, scale, scale, bi->m_size.x - w, bi->m_size.y - h, w2, h2, tex);
+			bi->grid.AddQuadUVs((bi->m_count.x - nbxx) * scale, (bi->m_count.y - nb.y) * scale, scale, scale, bi->m_size.x - w, bi->m_size.y - h, w2, h2, tex);
 
-			w -= MaxW;
+			w -= cinMaxSize.x;
 
 			num++;
 			nbxx--;
 		}
 
-		h -= MaxH;
-		nby--;
+		h -= cinMaxSize.y;
+		nb.y--;
 	}
 
 	bi->grid.m_scale = scale;
