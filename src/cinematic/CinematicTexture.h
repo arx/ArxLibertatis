@@ -102,7 +102,6 @@ public:
 	int w, h;
 	int nbx, nby;
 	CinematicGrid grid;
-	int dreaming;
 };
 
 CinematicBitmap * CreateCinematicBitmap(const res::path & path, int scale);
