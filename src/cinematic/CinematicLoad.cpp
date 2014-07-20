@@ -314,28 +314,7 @@ bool parseCinematic(Cinematic * c, const char * data, size_t size) {
 			k.force = 1;
 		}
 		
-		{
-		C_KEY key;
-		
-		key.frame = k.frame;
-		key.numbitmap = k.numbitmap;
-		key.fx = k.fx;
-		key.typeinterp = k.typeinterp;
-		key.force = k.force;
-		key.pos = k.pos;
-		key.angz = k.angz;
-		key.color = k.color;
-		key.colord = k.colord;
-		key.colorf = k.colorf;
-		key.idsound = k.idsound;
-		key.speed = k.speed;
-		key.posgrille = k.posgrille;
-		key.angzgrille = k.angzgrille;
-		key.speedtrack = k.speedtrack;
-		key.light = k.light;
-		
-		AddKeyLoad(key);
-		}
+		AddKeyLoad(k);
 		
 		LogDebug(" - " << i << ": frame " << k.frame << " image: " << k.numbitmap);
 		if(k.idsound >= 0) {
