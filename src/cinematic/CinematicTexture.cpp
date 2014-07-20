@@ -62,108 +62,11 @@ static const int MaxH = 256;
 
 using std::string;
 
-void FreeGrille(CinematicGrid * grille);
-
 static void ReajustUV(CinematicBitmap* bi);
 
 CinematicBitmap::~CinematicBitmap()
 {
-	FreeGrille(&grid);
-}
-
-bool AllocGrille(CinematicGrid * grille, int nbx, int nby, float tx, float ty, float dx, float dy, int echelle)
-{
-	grille->m_echelle = echelle;
-	int oldnbx = nbx + 1;
-	int oldnby = nby + 1;
-	nbx *= echelle;
-	nby *= echelle;
-	float olddx = dx;
-	float olddy = dy;
-	dx /= ((float)echelle);
-	dy /= ((float)echelle);
-
-	grille->m_nbuvs = 0;
-	grille->m_nbinds = 0;
-	grille->m_nbuvsmalloc = grille->m_nbvertexs = (nbx + 1) * (nby + 1);
-	grille->m_nbfaces = (nbx * nby) << 1;
-	grille->m_nbindsmalloc = grille->m_nbfaces;
-	grille->m_vertexs = (Vec3f *)malloc(grille->m_nbvertexs * sizeof(Vec3f));
-	grille->m_uvs = (C_UV *)malloc(grille->m_nbvertexs * sizeof(C_UV));
-	grille->m_inds = (C_IND *)malloc(grille->m_nbindsmalloc * sizeof(C_IND));
-
-	//vertexs
-	grille->m_count.x = nbx;
-	grille->m_count.y = nby;
-	tx *= .5f;
-	ty *= .5f;
-	float depx = -tx;
-	float depy = -ty;
- 
-	Vec3f * v = grille->m_vertexs;
-	float olddyy = olddy;
-
-	while(oldnby--) {
-		nby = echelle;
-
-		if(!oldnby)
-			nby = 1;
-
-		while(nby--) {
-			float olddxx = olddx;
-			float depxx = depx;
-			float dxx = dx;
-			int oldnbxx = oldnbx;
-
-			while(oldnbxx--) {
-				nbx = echelle;
-
-				if (!oldnbxx) nbx = 1;
-
-				while(nbx--) {
-					*v = Vec3f(depxx, depy, 0.f);
-					depxx += dxx;
-					v++;
-				}
-
-				olddxx += olddx;
-
-				if(olddxx > (tx * 2.f)) {
-					dxx = tx - depxx;
-					dxx /= (float)echelle;
-				}
-				
-			}
-
-			depy += dy;
-		}
-		
-			olddyy += olddy;
-
-			if(olddyy > (ty * 2.f)) {
-				dy = ty - depy;
-				dy /= (float)echelle;
-			}
-		
-	}
-
-	return true;
-}
-
-void FreeGrille(CinematicGrid * grille) {
-	
-	free(grille->m_vertexs);
-	grille->m_vertexs = NULL;
-	free(grille->m_uvs);
-	grille->m_uvs = NULL;
-	free(grille->m_inds);
-	grille->m_inds = NULL;
-	
-	BOOST_FOREACH(C_INDEXED & mat, grille->m_mats) {
-		delete mat.tex;
-	}
-	
-	grille->m_mats.clear();
+	grid.FreeGrille();
 }
 
 CinematicBitmap* CreateCinematicBitmap(const res::path & path, int scale) {
@@ -217,7 +120,7 @@ CinematicBitmap* CreateCinematicBitmap(const res::path & path, int scale) {
 	bi->m_count.x = nbx;
 	bi->m_count.y = nby;
 
-	AllocGrille(&bi->grid, nbx, nby, (float)bi->m_size.x, (float)bi->m_size.y, (float)((bi->m_size.x > MaxW) ? MaxW : bi->m_size.x), (float)((bi->m_size.y > MaxH) ? MaxH : bi->m_size.y), scale);
+	bi->grid.AllocGrille(nbx, nby, (float)bi->m_size.x, (float)bi->m_size.y, (float)((bi->m_size.x > MaxW) ? MaxW : bi->m_size.x), (float)((bi->m_size.y > MaxH) ? MaxH : bi->m_size.y), scale);
 
 	int num = 0;
 	int h = bi->m_size.y;
@@ -294,6 +197,100 @@ static void ReajustUV(CinematicBitmap* cb) {
 	}
 }
 
+
+bool CinematicGrid::AllocGrille(int nbx, int nby, float tx, float ty, float dx, float dy, int echelle) {
+	m_echelle = echelle;
+	int oldnbx = nbx + 1;
+	int oldnby = nby + 1;
+	nbx *= echelle;
+	nby *= echelle;
+	float olddx = dx;
+	float olddy = dy;
+	dx /= ((float)echelle);
+	dy /= ((float)echelle);
+
+	m_nbuvs = 0;
+	m_nbinds = 0;
+	m_nbuvsmalloc = m_nbvertexs = (nbx + 1) * (nby + 1);
+	m_nbfaces = (nbx * nby) << 1;
+	m_nbindsmalloc = m_nbfaces;
+	m_vertexs = (Vec3f *)malloc(m_nbvertexs * sizeof(Vec3f));
+	m_uvs = (C_UV *)malloc(m_nbvertexs * sizeof(C_UV));
+	m_inds = (C_IND *)malloc(m_nbindsmalloc * sizeof(C_IND));
+
+	//vertexs
+	m_count.x = nbx;
+	m_count.y = nby;
+	tx *= .5f;
+	ty *= .5f;
+	float depx = -tx;
+	float depy = -ty;
+ 
+	Vec3f * v = m_vertexs;
+	float olddyy = olddy;
+
+	while(oldnby--) {
+		nby = echelle;
+
+		if(!oldnby)
+			nby = 1;
+
+		while(nby--) {
+			float olddxx = olddx;
+			float depxx = depx;
+			float dxx = dx;
+			int oldnbxx = oldnbx;
+
+			while(oldnbxx--) {
+				nbx = echelle;
+
+				if (!oldnbxx) nbx = 1;
+
+				while(nbx--) {
+					*v = Vec3f(depxx, depy, 0.f);
+					depxx += dxx;
+					v++;
+				}
+
+				olddxx += olddx;
+
+				if(olddxx > (tx * 2.f)) {
+					dxx = tx - depxx;
+					dxx /= (float)echelle;
+				}
+				
+			}
+
+			depy += dy;
+		}
+		
+			olddyy += olddy;
+
+			if(olddyy > (ty * 2.f)) {
+				dy = ty - depy;
+				dy /= (float)echelle;
+			}
+		
+	}
+
+	return true;
+}
+
+void CinematicGrid::FreeGrille() {
+	
+	free(m_vertexs);
+	m_vertexs = NULL;
+	free(m_uvs);
+	m_uvs = NULL;
+	free(m_inds);
+	m_inds = NULL;
+	
+	BOOST_FOREACH(C_INDEXED & mat, m_mats) {
+		delete mat.tex;
+	}
+	
+	m_mats.clear();
+}
 
 void CinematicGrid::AddQuadUVs(int depcx, int depcy, int tcx, int tcy, int bitmapposx, int bitmapposy, int bitmapwx, int bitmapwy, Texture2D * tex) {
 	int matIdx = AddMaterial(tex);

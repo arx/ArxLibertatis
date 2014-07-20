@@ -88,6 +88,9 @@ struct CinematicGrid {
 	Vec2i m_count;
 	int m_echelle;
 	
+	bool AllocGrille(int nbx, int nby, float tx, float ty, float dx, float dy, int echelle);
+	void FreeGrille();
+	
 	void AddQuadUVs(int depcx, int depcy, int tcx, int tcy, int bitmapposx, int bitmapposy, int bitmapwx, int bitmapwy, Texture2D* tex);
 	
 private:
