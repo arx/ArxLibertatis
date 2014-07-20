@@ -93,8 +93,8 @@ bool AllocGrille(CinematicGrid * grille, int nbx, int nby, float tx, float ty, f
 	grille->inds = (C_IND *)malloc(grille->nbindsmalloc * sizeof(C_IND));
 
 	//vertexs
-	grille->nbx = nbx;
-	grille->nby = nby;
+	grille->m_count.x = nbx;
+	grille->m_count.y = nby;
 	tx *= .5f;
 	ty *= .5f;
 	float depx = -tx;
@@ -186,9 +186,9 @@ void FreeGrille(CinematicGrid * grille) {
 
 void GetIndNumCube(CinematicGrid * grille, int cx, int cy, int * i1, int * i2, int * i3, int * i4)
 {
-	*i1 = cy * (grille->nbx + 1) + cx;
+	*i1 = cy * (grille->m_count.x + 1) + cx;
 	*i2 = *i1 + 1;
-	*i3 = *i1 + (grille->nbx + 1);
+	*i3 = *i1 + (grille->m_count.x + 1);
 	*i4 = *i3 + 1;
 }
 

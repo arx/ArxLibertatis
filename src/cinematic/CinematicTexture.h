@@ -85,8 +85,7 @@ struct CinematicGrid {
 	C_UV * uvs;
 	C_IND * inds;
 	std::vector<C_INDEXED> mats;
-	int nbx;
-	int nby;
+	Vec2i m_count;
 	int echelle;
 };
 
