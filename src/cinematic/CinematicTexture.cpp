@@ -192,20 +192,6 @@ void GetIndNumCube(CinematicGrid * grille, int cx, int cy, int * i1, int * i2, i
 	*i4 = *i3 + 1;
 }
 
-void AddPoly(CinematicGrid * grille, int matIdx, int i0, int i1, int i2) {
-	
-	if(grille->nbinds == grille->nbindsmalloc) {
-		grille->nbindsmalloc += 100;
-		grille->inds = (C_IND *)realloc((void *)grille->inds, grille->nbindsmalloc * sizeof(C_IND));
-	}
-
-	grille->inds[grille->nbinds].i1 = checked_range_cast<unsigned short>(i0);
-	grille->inds[grille->nbinds].i2 = checked_range_cast<unsigned short>(i1);
-	grille->inds[grille->nbinds++].i3 = checked_range_cast<unsigned short>(i2);
-	grille->mats[matIdx].nbind += 3;
-
-}
-
 void AddQuadUVs(CinematicGrid * grille, int depcx, int depcy, int tcx, int tcy, int bitmapposx, int bitmapposy, int bitmapwx, int bitmapwy, Texture2D* tex)
 {
 	int matIdx = AddMaterial(grille, tex);
@@ -260,8 +246,8 @@ void AddQuadUVs(CinematicGrid * grille, int depcx, int depcy, int tcx, int tcy, 
 			int i0, i1, i2, i3;
 			GetIndNumCube(grille, depcxx, depcy, &i0, &i1, &i2, &i3);
 
-			AddPoly(grille, matIdx, i0, i1, i2);
-			AddPoly(grille, matIdx, i1, i2, i3);
+			grille->AddPoly(matIdx, i0, i1, i2);
+			grille->AddPoly(matIdx, i1, i2, i3);
 			depcxx++;
 		}
 
@@ -395,4 +381,19 @@ static void ReajustUV(CinematicBitmap* cb) {
 			uvs += mat->nbvertexs;
 		}
 	}
+}
+
+
+void CinematicGrid::AddPoly(int matIdx, int i0, int i1, int i2) {
+	
+	if(nbinds == nbindsmalloc) {
+		nbindsmalloc += 100;
+		inds = (C_IND *)realloc((void *)inds, nbindsmalloc * sizeof(C_IND));
+	}
+
+	inds[nbinds].i1 = checked_range_cast<unsigned short>(i0);
+	inds[nbinds].i2 = checked_range_cast<unsigned short>(i1);
+	inds[nbinds++].i3 = checked_range_cast<unsigned short>(i2);
+	mats[matIdx].nbind += 3;
+
 }

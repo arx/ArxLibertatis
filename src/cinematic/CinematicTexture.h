@@ -87,6 +87,8 @@ struct CinematicGrid {
 	std::vector<C_INDEXED> mats;
 	Vec2i m_count;
 	int echelle;
+	
+	void AddPoly(int matIdx, int i0, int i1, int i2);
 };
 
 class CinematicBitmap {
