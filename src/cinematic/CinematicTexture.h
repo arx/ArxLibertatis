@@ -75,18 +75,18 @@ struct C_UV {
 };
 
 struct CinematicGrid {
-	int nbvertexs;
-	int nbfaces;
-	int nbinds;
-	int nbindsmalloc;
-	int nbuvs;
-	int nbuvsmalloc;
-	Vec3f * vertexs;
-	C_UV * uvs;
-	C_IND * inds;
-	std::vector<C_INDEXED> mats;
+	int m_nbvertexs;
+	int m_nbfaces;
+	int m_nbinds;
+	int m_nbindsmalloc;
+	int m_nbuvs;
+	int m_nbuvsmalloc;
+	Vec3f * m_vertexs;
+	C_UV * m_uvs;
+	C_IND * m_inds;
+	std::vector<C_INDEXED> m_mats;
 	Vec2i m_count;
-	int echelle;
+	int m_echelle;
 	
 	void AddQuadUVs(int depcx, int depcy, int tcx, int tcy, int bitmapposx, int bitmapposy, int bitmapwx, int bitmapwy, Texture2D* tex);
 	

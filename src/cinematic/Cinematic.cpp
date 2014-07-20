@@ -309,8 +309,8 @@ void TransformLocalVertex(Vec3f * vbase, TexturedVertex * d3dv) {
 
 void DrawGrille(CinematicGrid * grille, int col, int fx, CinematicLight * light, Vec3f * posgrille, float angzgrille)
 {
-	int nb = grille->nbvertexs;
-	Vec3f * v = grille->vertexs;
+	int nb = grille->m_nbvertexs;
+	Vec3f * v = grille->m_vertexs;
 	TexturedVertex * d3dv = AllTLVertex;
 
 	LocalPos = *posgrille;
@@ -366,9 +366,9 @@ void DrawGrille(CinematicGrid * grille, int col, int fx, CinematicLight * light,
 		}
 	}
 
-	C_UV* uvs = grille->uvs;
+	C_UV* uvs = grille->m_uvs;
 
-	for(std::vector<C_INDEXED>::iterator it = grille->mats.begin(); it != grille->mats.end(); ++it)
+	for(std::vector<C_INDEXED>::iterator it = grille->m_mats.begin(); it != grille->m_mats.end(); ++it)
 	{
 		C_INDEXED* mat = &(*it);
 
@@ -383,8 +383,8 @@ void DrawGrille(CinematicGrid * grille, int col, int fx, CinematicLight * light,
 			uvs++;
 		}
 		
-		GRenderer->drawIndexed(Renderer::TriangleList, AllTLVertex, grille->nbvertexs,
-		                       &grille->inds->i1 + mat->startind, mat->nbind);
+		GRenderer->drawIndexed(Renderer::TriangleList, AllTLVertex, grille->m_nbvertexs,
+		                       &grille->m_inds->i1 + mat->startind, mat->nbind);
 	}
 }
 /*---------------------------------------------------------------*/
@@ -482,7 +482,7 @@ void Cinematic::Render(float FDIFF) {
 			l = &lightt;
 		}
 
-		if(tb->grid.nbvertexs)
+		if(tb->grid.m_nbvertexs)
 			DrawGrille(&tb->grid, col, fx, l, &posgrille, angzgrille);
 
 		//PASS #2
@@ -521,7 +521,7 @@ void Cinematic::Render(float FDIFF) {
 				l = &lightt;
 			}
 
-			if(tb->grid.nbvertexs)
+			if(tb->grid.m_nbvertexs)
 				DrawGrille(&tb->grid, col, fx, l, &posgrillesuiv, angzgrillesuiv);
 		}
 
