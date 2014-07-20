@@ -95,7 +95,7 @@ public:
 	~CinematicBitmap();
 
 public:
-	int w, h;
+	Vec2i m_size;
 	int nbx, nby;
 	CinematicGrid grid;
 };

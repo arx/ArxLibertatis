@@ -314,16 +314,16 @@ CinematicBitmap* CreateCinematicBitmap(const res::path & path, int scale) {
 	if(height % MaxH)
 		nby++;
 
-	bi->w = width;
-	bi->h = height;
+	bi->m_size.x = width;
+	bi->m_size.y = height;
 
 	bi->nbx = nbx;
 	bi->nby = nby;
 
-	AllocGrille(&bi->grid, nbx, nby, (float)bi->w, (float)bi->h, (float)((bi->w > MaxW) ? MaxW : bi->w), (float)((bi->h > MaxH) ? MaxH : bi->h), scale);
+	AllocGrille(&bi->grid, nbx, nby, (float)bi->m_size.x, (float)bi->m_size.y, (float)((bi->m_size.x > MaxW) ? MaxW : bi->m_size.x), (float)((bi->m_size.y > MaxH) ? MaxH : bi->m_size.y), scale);
 
 	int num = 0;
-	int h = bi->h;
+	int h = bi->m_size.y;
 
 	while(nby) {
 
@@ -334,7 +334,7 @@ CinematicBitmap* CreateCinematicBitmap(const res::path & path, int scale) {
 		else
 			h2 = MaxH;
 
-		int w = bi->w;
+		int w = bi->m_size.x;
 		int nbxx = nbx;
 
 		while(nbxx) {
@@ -342,10 +342,10 @@ CinematicBitmap* CreateCinematicBitmap(const res::path & path, int scale) {
 
 			Texture2D* tex = GRenderer->CreateTexture2D();
 			tex->Init(w2, h2, cinematicImage.GetFormat());
-			tex->GetImage().Copy(cinematicImage, 0, 0, bi->w - w, bi->h - h, w2, h2);
+			tex->GetImage().Copy(cinematicImage, 0, 0, bi->m_size.x - w, bi->m_size.y - h, w2, h2);
 			tex->Upload();
 
-			AddQuadUVs(&bi->grid, (bi->nbx - nbxx) * scale, (bi->nby - nby) * scale, scale, scale, bi->w - w, bi->h - h, w2, h2, tex);
+			AddQuadUVs(&bi->grid, (bi->nbx - nbxx) * scale, (bi->nby - nby) * scale, scale, scale, bi->m_size.x - w, bi->m_size.y - h, w2, h2, tex);
 
 			w -= MaxW;
 
