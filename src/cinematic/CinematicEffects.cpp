@@ -160,36 +160,33 @@ bool FX_Blur(Cinematic *c, CinematicBitmap *tb, EERIE_CAMERA &camera)
 }
 
 //POST FX
-bool FX_FlashBlanc(float w, float h, float speed, int color, float fps, float currfps)
-{
-	TexturedVertex	v[4];
-	int			col;
+bool FX_FlashBlanc(Vec2f size, float speed, int color, float fps, float currfps) {
 	
-	if (FlashAlpha < 0.f)
-	{
+	if(FlashAlpha < 0.f)
 		return false;
-	}
 	
-	if (FlashAlpha == 0.f) FlashAlpha = 1.f;
+	if(FlashAlpha == 0.f)
+		FlashAlpha = 1.f;
 	
 	GRenderer->GetTextureStage(0)->setColorOp(TextureStage::ArgDiffuse);
 	GRenderer->GetTextureStage(0)->setAlphaOp(TextureStage::ArgDiffuse);
 	GRenderer->SetBlendFunc(Renderer::BlendSrcAlpha, Renderer::BlendOne);
 	
-	col = (int)(255.f * FlashAlpha);
+	int col = (int)(255.f * FlashAlpha);
 	col <<= 24;
 	col |= color;
 	
+	TexturedVertex v[4];
 	v[0].p = Vec3f(0.f, 0.f, 0.01f);
 	v[0].rhw = 1.f;
 	v[0].color = col;
-	v[1].p = Vec3f(w - 1.f, 0.f, 0.01f);
+	v[1].p = Vec3f(size.x - 1.f, 0.f, 0.01f);
 	v[1].rhw = 1.f;
 	v[1].color = col;
-	v[2].p = Vec3f(0.f, h - 1.f, 0.01f);
+	v[2].p = Vec3f(0.f, size.y - 1.f, 0.01f);
 	v[2].rhw = 1.f;
 	v[2].color = col;
-	v[3].p = Vec3f(w - 1.f, h - 1.f, 0.01f);
+	v[3].p = Vec3f(size.x - 1.f, size.y - 1.f, 0.01f);
 	v[3].rhw = 1.f;
 	v[3].color = col;
 	

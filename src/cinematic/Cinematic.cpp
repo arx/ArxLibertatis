@@ -68,7 +68,7 @@ ZeniMax Media Inc., Suite 120, Rockville, Maryland 20850 USA.
 static const int WIDTHS = 512;
 static const int HEIGHTS = 384;
 
-static int LargeurRender, HauteurRender;
+static Vec2i cinRenderSize;
 
 TexturedVertex AllTLVertex[40000];
 
@@ -83,11 +83,11 @@ extern float	FlashAlpha;
 extern Rect g_size;
 
 float ADJUSTX(float a) {
-	return (((((a)-(WIDTHS>>1))*((float)LargeurRender/(float)WIDTHS))+(WIDTHS>>1)))*(640.f/(float)LargeurRender); //*((float)LARGEURS/(float)LargeurRender)
+	return (((((a)-(WIDTHS>>1))*((float)cinRenderSize.x/(float)WIDTHS))+(WIDTHS>>1)))*(640.f/(float)cinRenderSize.x);
 }
 
 float ADJUSTY(float a) {
-	return (((((a)-(HEIGHTS>>1))*((float)HauteurRender/(float)HEIGHTS))+(HEIGHTS>>1)))*(480.f/(float)HauteurRender);  //*((float)HAUTEURS/(float)HauteurRender)
+	return (((((a)-(HEIGHTS>>1))*((float)cinRenderSize.y/(float)HEIGHTS))+(HEIGHTS>>1)))*(480.f/(float)cinRenderSize.y);
 }
 
 Cinematic::Cinematic(int _w, int _h)
@@ -120,8 +120,8 @@ Cinematic::Cinematic(int _w, int _h)
 	, flTime()
 	, m_flIntensityRND(0.f)
 {
-	LargeurRender = _w;
-	HauteurRender = _h;
+	cinRenderSize.x = _w;
+	cinRenderSize.y = _h;
 }
 
 Cinematic::~Cinematic() {
@@ -134,7 +134,7 @@ void Cinematic::OneTimeSceneReInit() {
 	m_camera.size = Anglef(160.f, 60.f, 60.f);
 	m_camera.orgTrans.pos = Vec3f(900.f, -160.f, 4340.f);
 	m_camera.angle = Anglef(3.f, 268.f, 0.f);
-	m_camera.clip = Rect(LargeurRender, HauteurRender);
+	m_camera.clip = Rect(cinRenderSize.x, cinRenderSize.y);
 	m_camera.center = m_camera.clip.center();
 	m_camera.focal = 350.f;
 	m_camera.bkgcolor = Color::none;
@@ -393,8 +393,8 @@ void Cinematic::Render(float FDIFF) {
 	
 	CinematicBitmap * tb;
 
-	LargeurRender = g_size.width();
-	HauteurRender = g_size.height();
+	cinRenderSize.x = g_size.width();
+	cinRenderSize.y = g_size.height();
 
 	if(projectload) {
 		GRenderer->Clear(Renderer::ColorBuffer);
@@ -451,7 +451,7 @@ void Cinematic::Render(float FDIFF) {
 		m_camera.setTargetCamera(m_camera.orgTrans.pos.x, m_camera.orgTrans.pos.y, 0.f);
 		m_camera.angle.setPitch(0);
 		m_camera.angle.setRoll(angz);
-		m_camera.clip = Rect(LargeurRender, HauteurRender);
+		m_camera.clip = Rect(cinRenderSize.x, cinRenderSize.y);
 		m_camera.center = m_camera.clip.center();
 		PrepareCamera(&m_camera, g_size);
 		SetActiveCamera(&m_camera);
@@ -467,8 +467,8 @@ void Cinematic::Render(float FDIFF) {
 
 		if(this->light.intensity >= 0.f && this->lightd.intensity >= 0.f) {
 			lightt = this->light;
-			lightt.pos.x += (float)(LargeurRender >> 1);
-			lightt.pos.y += (float)(HauteurRender >> 1);
+			lightt.pos.x += (float)(cinRenderSize.x >> 1);
+			lightt.pos.y += (float)(cinRenderSize.y >> 1);
 
 			static const float SPEEDINTENSITYRND = 10.f;
 			float flIntensityRNDToReach = lightt.intensiternd * rnd();
@@ -512,8 +512,8 @@ void Cinematic::Render(float FDIFF) {
 
 			if(this->light.intensity >= 0.f && this->lightd.intensity >= 0.f) {
 				lightt = this->lightd;
-				lightt.pos.x += (float)(LargeurRender >> 1);
-				lightt.pos.y += (float)(HauteurRender >> 1);
+				lightt.pos.x += (float)(cinRenderSize.x >> 1);
+				lightt.pos.y += (float)(cinRenderSize.y >> 1);
 				LightRND = lightt.intensity + (lightt.intensiternd * rnd());
 
 				if(LightRND > 1.f)
@@ -550,7 +550,7 @@ void Cinematic::Render(float FDIFF) {
 		//post fx
 		switch(fx & 0x00ff0000) {
 			case FX_FLASH:
-				FlashBlancEnCours = FX_FlashBlanc((float)LargeurRender, (float)HauteurRender, speed, colorflash, GetTrackFPS(), FPS);
+				FlashBlancEnCours = FX_FlashBlanc(Vec2f(cinRenderSize), speed, colorflash, GetTrackFPS(), FPS);
 				break;
 			case FX_APPEAR:
 
