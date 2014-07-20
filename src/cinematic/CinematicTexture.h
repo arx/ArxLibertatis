@@ -86,9 +86,9 @@ struct CinematicGrid {
 	C_IND * m_inds;
 	std::vector<C_INDEXED> m_mats;
 	Vec2i m_count;
-	int m_echelle;
+	int m_scale;
 	
-	bool AllocGrille(int nbx, int nby, float tx, float ty, float dx, float dy, int echelle);
+	bool AllocGrille(int nbx, int nby, float tx, float ty, float dx, float dy, int scale);
 	void FreeGrille();
 	
 	void AddQuadUVs(int depcx, int depcy, int tcx, int tcy, int bitmapposx, int bitmapposy, int bitmapwx, int bitmapwy, Texture2D* tex);

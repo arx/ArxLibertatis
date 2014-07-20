@@ -155,23 +155,23 @@ CinematicBitmap* CreateCinematicBitmap(const res::path & path, int scale) {
 		nby--;
 	}
 
-	bi->grid.m_echelle = scale;
+	bi->grid.m_scale = scale;
 
 	bi->grid.ReajustUV();
 
 	return bi;
 }
 
-bool CinematicGrid::AllocGrille(int nbx, int nby, float tx, float ty, float dx, float dy, int echelle) {
-	m_echelle = echelle;
+bool CinematicGrid::AllocGrille(int nbx, int nby, float tx, float ty, float dx, float dy, int scale) {
+	m_scale = scale;
 	int oldnbx = nbx + 1;
 	int oldnby = nby + 1;
-	nbx *= echelle;
-	nby *= echelle;
+	nbx *= scale;
+	nby *= scale;
 	float olddx = dx;
 	float olddy = dy;
-	dx /= ((float)echelle);
-	dy /= ((float)echelle);
+	dx /= ((float)scale);
+	dy /= ((float)scale);
 
 	m_nbuvs = 0;
 	m_nbinds = 0;
@@ -194,7 +194,7 @@ bool CinematicGrid::AllocGrille(int nbx, int nby, float tx, float ty, float dx, 
 	float olddyy = olddy;
 
 	while(oldnby--) {
-		nby = echelle;
+		nby = scale;
 
 		if(!oldnby)
 			nby = 1;
@@ -206,7 +206,7 @@ bool CinematicGrid::AllocGrille(int nbx, int nby, float tx, float ty, float dx, 
 			int oldnbxx = oldnbx;
 
 			while(oldnbxx--) {
-				nbx = echelle;
+				nbx = scale;
 
 				if (!oldnbxx) nbx = 1;
 
@@ -220,7 +220,7 @@ bool CinematicGrid::AllocGrille(int nbx, int nby, float tx, float ty, float dx, 
 
 				if(olddxx > (tx * 2.f)) {
 					dxx = tx - depxx;
-					dxx /= (float)echelle;
+					dxx /= (float)scale;
 				}
 				
 			}
@@ -232,7 +232,7 @@ bool CinematicGrid::AllocGrille(int nbx, int nby, float tx, float ty, float dx, 
 
 			if(olddyy > (ty * 2.f)) {
 				dy = ty - depy;
-				dy /= (float)echelle;
+				dy /= (float)scale;
 			}
 		
 	}

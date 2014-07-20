@@ -226,10 +226,10 @@ void FX_DreamPrecalc(CinematicBitmap * bi, float amp, float fps) {
 	              + std::cos(hypot(384 - nnx, (274 - nny / 9)) / 51))));
 	
 	float * t = DreamTable;
-	ny = ((bi->m_count.y * bi->grid.m_echelle) + 1);
+	ny = ((bi->m_count.y * bi->grid.m_scale) + 1);
 	
 	while(ny) {
-		nx = ((bi->m_count.x * bi->grid.m_echelle) + 1);
+		nx = ((bi->m_count.x * bi->grid.m_scale) + 1);
 		while(nx) {
 			s1 = bi->m_count.x * std::cos(radians(a));
 			s2 = bi->m_count.y * std::cos(radians(a2));
