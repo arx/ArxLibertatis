@@ -118,7 +118,7 @@ CinematicBitmap* CreateCinematicBitmap(const res::path & path, int scale) {
 	bi->m_count.x = nbx;
 	bi->m_count.y = nby;
 
-	bi->grid.AllocGrille(nbx, nby, (float)bi->m_size.x, (float)bi->m_size.y, (float)((bi->m_size.x > MaxW) ? MaxW : bi->m_size.x), (float)((bi->m_size.y > MaxH) ? MaxH : bi->m_size.y), scale);
+	bi->grid.AllocGrille(bi->m_count, Vec2f(bi->m_size), Vec2f(((bi->m_size.x > MaxW) ? MaxW : bi->m_size.x), ((bi->m_size.y > MaxH) ? MaxH : bi->m_size.y)), scale);
 
 	int num = 0;
 	int h = bi->m_size.y;
@@ -162,55 +162,55 @@ CinematicBitmap* CreateCinematicBitmap(const res::path & path, int scale) {
 	return bi;
 }
 
-bool CinematicGrid::AllocGrille(int nbx, int nby, float tx, float ty, float dx, float dy, int scale) {
+bool CinematicGrid::AllocGrille(Vec2i nb, Vec2f t, Vec2f d, int scale) {
 	m_scale = scale;
-	int oldnbx = nbx + 1;
-	int oldnby = nby + 1;
-	nbx *= scale;
-	nby *= scale;
-	float olddx = dx;
-	float olddy = dy;
-	dx /= ((float)scale);
-	dy /= ((float)scale);
+	int oldnbx = nb.x + 1;
+	int oldnby = nb.y + 1;
+	nb.x *= scale;
+	nb.y *= scale;
+	float olddx = d.x;
+	float olddy = d.y;
+	d.x /= ((float)scale);
+	d.y /= ((float)scale);
 
 	m_nbuvs = 0;
 	m_nbinds = 0;
-	m_nbuvsmalloc = m_nbvertexs = (nbx + 1) * (nby + 1);
-	m_nbfaces = (nbx * nby) << 1;
+	m_nbuvsmalloc = m_nbvertexs = (nb.x + 1) * (nb.y + 1);
+	m_nbfaces = (nb.x * nb.y) << 1;
 	m_nbindsmalloc = m_nbfaces;
 	m_vertexs = (Vec3f *)malloc(m_nbvertexs * sizeof(Vec3f));
 	m_uvs = (C_UV *)malloc(m_nbvertexs * sizeof(C_UV));
 	m_inds = (C_IND *)malloc(m_nbindsmalloc * sizeof(C_IND));
 
 	//vertexs
-	m_count.x = nbx;
-	m_count.y = nby;
-	tx *= .5f;
-	ty *= .5f;
-	float depx = -tx;
-	float depy = -ty;
+	m_count.x = nb.x;
+	m_count.y = nb.y;
+	t.x *= .5f;
+	t.y *= .5f;
+	float depx = -t.x;
+	float depy = -t.y;
  
 	Vec3f * v = m_vertexs;
 	float olddyy = olddy;
 
 	while(oldnby--) {
-		nby = scale;
+		nb.y = scale;
 
 		if(!oldnby)
-			nby = 1;
+			nb.y = 1;
 
-		while(nby--) {
+		while(nb.y--) {
 			float olddxx = olddx;
 			float depxx = depx;
-			float dxx = dx;
+			float dxx = d.x;
 			int oldnbxx = oldnbx;
 
 			while(oldnbxx--) {
-				nbx = scale;
+				nb.x = scale;
 
-				if (!oldnbxx) nbx = 1;
+				if (!oldnbxx) nb.x = 1;
 
-				while(nbx--) {
+				while(nb.x--) {
 					*v = Vec3f(depxx, depy, 0.f);
 					depxx += dxx;
 					v++;
@@ -218,21 +218,21 @@ bool CinematicGrid::AllocGrille(int nbx, int nby, float tx, float ty, float dx, 
 
 				olddxx += olddx;
 
-				if(olddxx > (tx * 2.f)) {
-					dxx = tx - depxx;
+				if(olddxx > (t.x * 2.f)) {
+					dxx = t.x - depxx;
 					dxx /= (float)scale;
 				}
 				
 			}
 
-			depy += dy;
+			depy += d.y;
 		}
 		
 			olddyy += olddy;
 
-			if(olddyy > (ty * 2.f)) {
-				dy = ty - depy;
-				dy /= (float)scale;
+			if(olddyy > (t.y * 2.f)) {
+				d.y = t.y - depy;
+				d.y /= (float)scale;
 			}
 		
 	}
