@@ -51,21 +51,6 @@ ZeniMax Media Inc., Suite 120, Rockville, Maryland 20850 USA.
 #include "math/Vector.h"
 #include "game/Camera.h"
 
-// TODO macros
-//fx
-#define FX_FADEIN  1
-#define FX_FADEOUT 2
-#define FX_BLUR    3
-//prefx
-#define FX_DREAM   (1<<8)
-//post fx
-#define FX_FLASH   (1<<16)
-#define FX_APPEAR  (2<<16)
-#define FX_APPEAR2 (3<<16)
-//all time
-#define FX_LIGHT   (1<<24)
-
-
 struct C_KEY;
 struct CinematicGrid;
 class CinematicBitmap;

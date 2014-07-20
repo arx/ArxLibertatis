@@ -55,6 +55,7 @@ ZeniMax Media Inc., Suite 120, Rockville, Maryland 20850 USA.
 #include "graphics/Renderer.h"
 #include "graphics/Vertex.h"
 #include "graphics/data/Mesh.h"
+#include "cinematic/CinematicFormat.h"
 #include "cinematic/CinematicTexture.h"
 #include "cinematic/CinematicEffects.h"
 #include "graphics/texture/TextureStage.h"

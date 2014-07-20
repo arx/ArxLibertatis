@@ -81,6 +81,20 @@ struct CinematicLight_1_71 {
 	
 };
 
+// TODO macros
+//fx
+#define FX_FADEIN  1
+#define FX_FADEOUT 2
+#define FX_BLUR    3
+//prefx
+#define FX_DREAM   (1<<8)
+//post fx
+#define FX_FLASH   (1<<16)
+#define FX_APPEAR  (2<<16)
+#define FX_APPEAR2 (3<<16)
+//all time
+#define FX_LIGHT   (1<<24)
+
 struct C_KEY_1_75 {
 	s32 frame;
 	s32 numbitmap;

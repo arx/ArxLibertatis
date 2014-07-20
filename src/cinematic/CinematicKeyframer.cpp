@@ -48,6 +48,7 @@ ZeniMax Media Inc., Suite 120, Rockville, Maryland 20850 USA.
 #include <cstring>
 
 #include "cinematic/Cinematic.h"
+#include "cinematic/CinematicFormat.h"
 #include "core/GameTime.h"
 
 static const float C_MIN_F32 = 1.175494351e-38F;
