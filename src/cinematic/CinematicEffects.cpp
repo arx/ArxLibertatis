@@ -209,10 +209,10 @@ void FX_DreamPrecalc(CinematicBitmap * bi, float amp, float fps) {
 	float a = DreamAng;
 	float a2 = DreamAng2;
 	
-	float s1 = bi->nbx * std::cos(radians(0));
-	float s2 = bi->nby * std::cos(radians(0));
-	int nx = (bi->nbx + 1) << 1;
-	int ny = (bi->nby + 1) << 1;
+	float s1 = bi->m_count.x * std::cos(radians(0));
+	float s2 = bi->m_count.y * std::cos(radians(0));
+	int nx = (bi->m_count.x + 1) << 1;
+	int ny = (bi->m_count.y + 1) << 1;
 	float nnx = ((float)nx) + s1;
 	float nny = ((float)ny) + s2;
 	
@@ -226,13 +226,13 @@ void FX_DreamPrecalc(CinematicBitmap * bi, float amp, float fps) {
 	              + std::cos(hypot(384 - nnx, (274 - nny / 9)) / 51))));
 	
 	float * t = DreamTable;
-	ny = ((bi->nby * bi->grid.echelle) + 1); 
+	ny = ((bi->m_count.y * bi->grid.echelle) + 1);
 	
 	while(ny) {
-		nx = ((bi->nbx * bi->grid.echelle) + 1);
+		nx = ((bi->m_count.x * bi->grid.echelle) + 1);
 		while(nx) {
-			s1 = bi->nbx * std::cos(radians(a));
-			s2 = bi->nby * std::cos(radians(a2));
+			s1 = bi->m_count.x * std::cos(radians(a));
+			s2 = bi->m_count.y * std::cos(radians(a2));
 			a -= 15.f;
 			a2 += 8.f;
 			

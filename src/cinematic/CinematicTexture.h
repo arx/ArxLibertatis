@@ -96,7 +96,7 @@ public:
 
 public:
 	Vec2i m_size;
-	int nbx, nby;
+	Vec2i m_count;
 	CinematicGrid grid;
 };
 

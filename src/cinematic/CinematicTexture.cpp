@@ -317,8 +317,8 @@ CinematicBitmap* CreateCinematicBitmap(const res::path & path, int scale) {
 	bi->m_size.x = width;
 	bi->m_size.y = height;
 
-	bi->nbx = nbx;
-	bi->nby = nby;
+	bi->m_count.x = nbx;
+	bi->m_count.y = nby;
 
 	AllocGrille(&bi->grid, nbx, nby, (float)bi->m_size.x, (float)bi->m_size.y, (float)((bi->m_size.x > MaxW) ? MaxW : bi->m_size.x), (float)((bi->m_size.y > MaxH) ? MaxH : bi->m_size.y), scale);
 
@@ -345,7 +345,7 @@ CinematicBitmap* CreateCinematicBitmap(const res::path & path, int scale) {
 			tex->GetImage().Copy(cinematicImage, 0, 0, bi->m_size.x - w, bi->m_size.y - h, w2, h2);
 			tex->Upload();
 
-			AddQuadUVs(&bi->grid, (bi->nbx - nbxx) * scale, (bi->nby - nby) * scale, scale, scale, bi->m_size.x - w, bi->m_size.y - h, w2, h2, tex);
+			AddQuadUVs(&bi->grid, (bi->m_count.x - nbxx) * scale, (bi->m_count.y - nby) * scale, scale, scale, bi->m_size.x - w, bi->m_size.y - h, w2, h2, tex);
 
 			w -= MaxW;
 
