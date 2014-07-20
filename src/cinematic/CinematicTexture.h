@@ -85,8 +85,6 @@ struct CinematicGrid {
 	C_UV * uvs;
 	C_IND * inds;
 	std::vector<C_INDEXED> mats;
-	float dx;
-	float dy;
 	int nbx;
 	int nby;
 	int echelle;
