@@ -62,8 +62,6 @@ static const int MaxH = 256;
 
 using std::string;
 
-static void ReajustUV(CinematicBitmap* bi);
-
 CinematicBitmap::~CinematicBitmap()
 {
 	grid.FreeGrille();
@@ -159,44 +157,10 @@ CinematicBitmap* CreateCinematicBitmap(const res::path & path, int scale) {
 
 	bi->grid.m_echelle = scale;
 
-	ReajustUV(bi);
+	bi->grid.ReajustUV();
 
 	return bi;
 }
-
-static void ReajustUV(CinematicBitmap* cb) {
-
-	C_UV* uvs = cb->grid.m_uvs;
-
-	for(std::vector<C_INDEXED>::iterator mat = cb->grid.m_mats.begin(); mat != cb->grid.m_mats.end(); ++mat)
-	{
-		Texture2D* tex = mat->tex;
-
-		if(!tex)
-			return;
-
-		int w, h;
-
-		w = tex->getStoredSize().x;
-		h = tex->getStoredSize().y;
-
-		if((w != (int)mat->bitmap.x) || (h != (int)mat->bitmap.y)) {
-			float dx = (.999999f * (float)mat->bitmap.x) / ((float)w);
-			float dy = (.999999f * (float)mat->bitmap.y) / ((float)h);
-
-			int nb2 = mat->nbvertexs;
-
-			while(nb2--) {
-				uvs->uv.x *= dx;
-				uvs->uv.y *= dy;
-				uvs++;
-			}
-		} else {
-			uvs += mat->nbvertexs;
-		}
-	}
-}
-
 
 bool CinematicGrid::AllocGrille(int nbx, int nby, float tx, float ty, float dx, float dy, int echelle) {
 	m_echelle = echelle;
@@ -351,6 +315,39 @@ void CinematicGrid::AddQuadUVs(int depcx, int depcy, int tcx, int tcy, int bitma
 		}
 
 		depcy++;
+	}
+}
+
+void CinematicGrid::ReajustUV() {
+	
+	C_UV* uvs = m_uvs;
+
+	for(std::vector<C_INDEXED>::iterator mat = m_mats.begin(); mat != m_mats.end(); ++mat)
+	{
+		Texture2D* tex = mat->tex;
+
+		if(!tex)
+			return;
+
+		int w, h;
+
+		w = tex->getStoredSize().x;
+		h = tex->getStoredSize().y;
+
+		if((w != (int)mat->bitmap.x) || (h != (int)mat->bitmap.y)) {
+			float dx = (.999999f * (float)mat->bitmap.x) / ((float)w);
+			float dy = (.999999f * (float)mat->bitmap.y) / ((float)h);
+
+			int nb2 = mat->nbvertexs;
+
+			while(nb2--) {
+				uvs->uv.x *= dx;
+				uvs->uv.y *= dy;
+				uvs++;
+			}
+		} else {
+			uvs += mat->nbvertexs;
+		}
 	}
 }
 
