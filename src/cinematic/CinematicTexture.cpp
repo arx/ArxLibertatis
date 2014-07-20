@@ -209,10 +209,10 @@ void AddPoly(CinematicGrid * grille, int matIdx, int i0, int i1, int i2) {
 void AddQuadUVs(CinematicGrid * grille, int depcx, int depcy, int tcx, int tcy, int bitmapposx, int bitmapposy, int bitmapwx, int bitmapwy, Texture2D* tex)
 {
 	int matIdx = AddMaterial(grille, tex);
-	grille->mats[matIdx].bitmapdepx = bitmapposx;
-	grille->mats[matIdx].bitmapdepy = bitmapposy;
-	grille->mats[matIdx].bitmapw = bitmapwx;
-	grille->mats[matIdx].bitmaph = bitmapwy;
+	grille->mats[matIdx].bitmapdep.x = bitmapposx;
+	grille->mats[matIdx].bitmapdep.y = bitmapposy;
+	grille->mats[matIdx].bitmap.x = bitmapwx;
+	grille->mats[matIdx].bitmap.y = bitmapwy;
 	grille->mats[matIdx].nbvertexs = (tcx + 1) * (tcy + 1);
 
 	if((grille->nbuvs + (4 *(tcx * tcy))) > grille->nbuvsmalloc) {
@@ -380,9 +380,9 @@ static void ReajustUV(CinematicBitmap* cb) {
 		w = tex->getStoredSize().x;
 		h = tex->getStoredSize().y;
 
-		if((w != (int)mat->bitmapw) || (h != (int)mat->bitmaph)) {
-			float dx = (.999999f * (float)mat->bitmapw) / ((float)w);
-			float dy = (.999999f * (float)mat->bitmaph) / ((float)h);
+		if((w != (int)mat->bitmap.x) || (h != (int)mat->bitmap.y)) {
+			float dx = (.999999f * (float)mat->bitmap.x) / ((float)w);
+			float dy = (.999999f * (float)mat->bitmap.y) / ((float)h);
 
 			int nb2 = mat->nbvertexs;
 

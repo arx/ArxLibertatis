@@ -54,10 +54,8 @@ namespace res { class path; }
 
 // TODO better name
 struct C_INDEXED {
-	int bitmapdepx;
-	int bitmapdepy;
-	int bitmapw;
-	int bitmaph;
+	Vec2i bitmapdep;
+	Vec2i bitmap;
 	int nbvertexs;
 	Texture2D * tex;
 	int startind;
