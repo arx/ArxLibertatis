@@ -136,8 +136,15 @@ CinematicBitmap* CreateCinematicBitmap(const res::path & path, int scale) {
 			tex->Init(w2, h2, cinematicImage.GetFormat());
 			tex->GetImage().Copy(cinematicImage, 0, 0, bi->m_size.x - w, bi->m_size.y - h, w2, h2);
 			tex->Upload();
-
-			bi->grid.AddQuadUVs((bi->m_count.x - nbxx) * scale, (bi->m_count.y - nb.y) * scale, scale, scale, bi->m_size.x - w, bi->m_size.y - h, w2, h2, tex);
+			
+			{
+			Vec2i depc = Vec2i((bi->m_count.x - nbxx) * scale, (bi->m_count.y - nb.y) * scale);
+			Vec2i tc = Vec2i(scale, scale);
+			Vec2i bitmappos = Vec2i(bi->m_size.x - w, bi->m_size.y - h);
+			Vec2i bitmapw = Vec2i(w2, h2);
+			
+			bi->grid.AddQuadUVs(depc, tc, bitmappos, bitmapw, tex);
+			}
 
 			w -= cinMaxSize.x;
 
@@ -243,31 +250,29 @@ void CinematicGrid::FreeGrille() {
 	m_mats.clear();
 }
 
-void CinematicGrid::AddQuadUVs(int depcx, int depcy, int tcx, int tcy, int bitmapposx, int bitmapposy, int bitmapwx, int bitmapwy, Texture2D * tex) {
+void CinematicGrid::AddQuadUVs(Vec2i depc, Vec2i tc, Vec2i bitmappos, Vec2i bitmapw, Texture2D * tex) {
 	int matIdx = AddMaterial(tex);
-	m_mats[matIdx].bitmapdep.x = bitmapposx;
-	m_mats[matIdx].bitmapdep.y = bitmapposy;
-	m_mats[matIdx].bitmap.x = bitmapwx;
-	m_mats[matIdx].bitmap.y = bitmapwy;
-	m_mats[matIdx].nbvertexs = (tcx + 1) * (tcy + 1);
+	m_mats[matIdx].bitmapdep = bitmappos;
+	m_mats[matIdx].bitmap = bitmapw;
+	m_mats[matIdx].nbvertexs = (tc.x + 1) * (tc.y + 1);
 
-	if((m_nbuvs + (4 *(tcx * tcy))) > m_nbuvsmalloc) {
-		m_nbuvsmalloc += 4 * (tcx * tcy);
+	if((m_nbuvs + (4 *(tc.x * tc.y))) > m_nbuvsmalloc) {
+		m_nbuvsmalloc += 4 * (tc.x * tc.y);
 		m_uvs = (C_UV *)realloc((void *)m_uvs, m_nbuvsmalloc * sizeof(C_UV));
 	}
 
 	float v = 0.f;
-	float du = 0.999999f / (float)tcx;
-	float dv = 0.999999f / (float)tcy;
-	tcy++;
-	tcx++;
-	int tcyy = tcy;
-	int depcyy = depcy;
+	float du = 0.999999f / (float)tc.x;
+	float dv = 0.999999f / (float)tc.y;
+	tc.y++;
+	tc.x++;
+	int tcyy = tc.y;
+	int depcyy = depc.y;
 
 	while(tcyy--) {
 		float u = 0.f;
-		int depcxx = depcx;
-		int tcxx = tcx;
+		int depcxx = depc.x;
+		int tcxx = tc.x;
 
 		while(tcxx--) {
 			int i0, i1, i2, i3;
@@ -285,23 +290,23 @@ void CinematicGrid::AddQuadUVs(int depcx, int depcy, int tcx, int tcy, int bitma
 		v += dv;
 	}
 
-	tcx--;
-	tcy--;
+	tc.x--;
+	tc.y--;
 
-	while(tcy--) {
-		int depcxx = depcx;
-		int tcxx = tcx;
+	while(tc.y--) {
+		int depcxx = depc.x;
+		int tcxx = tc.x;
 
 		while(tcxx--) {
 			int i0, i1, i2, i3;
-			GetIndNumCube(depcxx, depcy, &i0, &i1, &i2, &i3);
+			GetIndNumCube(depcxx, depc.y, &i0, &i1, &i2, &i3);
 
 			AddPoly(matIdx, i0, i1, i2);
 			AddPoly(matIdx, i1, i2, i3);
 			depcxx++;
 		}
 
-		depcy++;
+		depc.y++;
 	}
 }
 
