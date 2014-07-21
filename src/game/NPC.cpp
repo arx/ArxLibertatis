@@ -937,7 +937,7 @@ void ARX_PHYSICS_Apply() {
 		CURRENT_DETECT = 1;
 
 	// We don't manage Player(0) this way
-	for (long i = 1; i < TREATZONE_CUR; i++) {
+	for(long i = 1; i < TREATZONE_CUR; i++) {
 		if(treatio[i].show != 1)
 			continue;
 
@@ -952,13 +952,12 @@ void ARX_PHYSICS_Apply() {
 		if((io->ioflags & IO_NPC) && io->_npcdata->poisonned > 0.f)
 			ARX_NPC_ManagePoison(io);
 
-		if((io->ioflags & IO_ITEM)
-				&& (io->gameFlags & GFLAG_GOREEXPLODE)
-				&& float(arxtime) - io->animBlend.lastanimtime > 300
-				&& io->obj
-				&& !io->obj->vertexlist.empty()
-		   )
-		{
+		if(   (io->ioflags & IO_ITEM)
+		   && (io->gameFlags & GFLAG_GOREEXPLODE)
+		   && float(arxtime) - io->animBlend.lastanimtime > 300
+		   && io->obj
+		   && !io->obj->vertexlist.empty()
+		) {
 			arx_assert(io->show != SHOW_FLAG_DESTROYED);
 			long cnt = (io->obj->vertexlist.size() << 12) + 1;
 
@@ -977,7 +976,10 @@ void ARX_PHYSICS_Apply() {
 
 		EERIEPOLY * ep = CheckInPoly(io->pos);
 
-		if(ep && (ep->type & POLY_LAVA) && EEfabs(ep->center.y - io->pos.y) < 40) {
+		if(   ep
+		   && (ep->type & POLY_LAVA)
+		   && EEfabs(ep->center.y - io->pos.y) < 40
+		) {
 			ARX_PARTICLES_Spawn_Lava_Burn(&io->pos, io);
 
 			if(io->ioflags & IO_NPC) {
