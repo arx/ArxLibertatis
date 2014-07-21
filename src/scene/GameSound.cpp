@@ -648,18 +648,19 @@ long ARX_SOUND_PlaySpeech(const res::path & name, const Entity * io)
 
 long ARX_SOUND_PlayCollision(long mat1, long mat2, float volume, float power, const Vec3f & position, Entity * source)
 {
-	if (!bIsActive) return 0;
+	if(!bIsActive)
+		return 0;
 
-	if (mat1 == MATERIAL_NONE || mat2 == MATERIAL_NONE) return 0;
+	if(mat1 == MATERIAL_NONE || mat2 == MATERIAL_NONE)
+		return 0;
 
-	if (mat1 == MATERIAL_WATER || mat2 == MATERIAL_WATER)
+	if(mat1 == MATERIAL_WATER || mat2 == MATERIAL_WATER)
 		ARX_PARTICLES_SpawnWaterSplash(position);
 
-	SampleId sample_id;
+	SampleId sample_id = Inter_Materials[mat1][mat2][0];
 
-	sample_id = Inter_Materials[mat1][mat2][0];
-
-	if (sample_id == INVALID_ID) return 0;
+	if(sample_id == INVALID_ID)
+		return 0;
 
 	audio::Channel channel;
 	float presence;
