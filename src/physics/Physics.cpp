@@ -443,13 +443,11 @@ long ARX_PHYSICS_BOX_ApplyModel(PHYSICS_BOX_DATA * pbox, float framediff, float 
 
 	if(framediff == 0.f)
 		return ret;
-
-	PHYSVERT * pv;
-
+	
 	// Memorizes initpos
 	for(long k = 0; k < pbox->nb_physvert; k++) {
-		pv = &pbox->vert[k];
-		pv->temp = pv->pos;
+		PHYSVERT & pv = pbox->vert[k];
+		pv.temp = pv.pos;
 	}
 
 	float timing = pbox->storedtiming + framediff * rubber * 0.0055f;
