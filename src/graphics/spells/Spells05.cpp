@@ -603,6 +603,9 @@ void CPoisonProjectile::Render() {
 }
 
 CMultiPoisonProjectile::CMultiPoisonProjectile(long nbmissiles)
+	: m_caster(EntityHandle::Invalid)
+	, m_level(1)
+	, m_timcreation(0)
 {
 	SetDuration(2000);
 	
