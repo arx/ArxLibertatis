@@ -62,6 +62,8 @@ ZeniMax Media Inc., Suite 120, Rockville, Maryland 20850 USA.
 
 CBless::CBless()
 	: eSrc(Vec3f_ZERO)
+	, m_yaw(0.f)
+	, m_scale(0.f)
 	, eTarget(Vec3f_ZERO)
 	, fRot(0.f)
 	, fRotPerMSec(0.25f)
