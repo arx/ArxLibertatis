@@ -51,7 +51,6 @@ ZeniMax Media Inc., Suite 120, Rockville, Maryland 20850 USA.
 class CSummonCreature : public CSpellFx {
 public:
 	Vec3f eSrc;
-	Color3f fColorRays1;
 	
 	CSummonCreature();
 	
@@ -70,6 +69,7 @@ public:
 	void Update(float timeDelta);
 	void Render();
 	
+private:
 	float	fBetaRadCos;
 	float	fBetaRadSin;
 	void SetAngle(float afAngle) {
@@ -78,7 +78,8 @@ public:
 		fBetaRadSin = (float) sin(fBetaRad);
 	}
 	
-private:
+	Color3f fColorRays1;
+	
 	void Split(Vec3f * v, int a, int b, float yo);
 	void RenderFissure();
 	

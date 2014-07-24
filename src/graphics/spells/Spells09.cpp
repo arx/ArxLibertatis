@@ -67,7 +67,9 @@ ZeniMax Media Inc., Suite 120, Rockville, Maryland 20850 USA.
 #include "scene/Interactive.h"
 
 CSummonCreature::CSummonCreature()
-	: fColorRays1(Color3f::white)
+	: fBetaRadCos(0.f)
+	, fBetaRadSin(0.f)
+	, fColorRays1(Color3f::white)
 	, end(0)
 	, bIntro(true)
 	, sizeF(0.f)
