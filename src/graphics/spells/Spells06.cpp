@@ -406,6 +406,8 @@ CRiseDead::~CRiseDead()
 
 CRiseDead::CRiseDead()
 	: eSrc(Vec3f_ZERO)
+	, fBetaRadCos(0.f)
+	, fBetaRadSin(0.f)
 	, tex_light(NULL)
 	, end(40 - 1)
 	, iSize(100)

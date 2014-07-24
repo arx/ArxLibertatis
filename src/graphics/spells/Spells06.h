@@ -116,6 +116,7 @@ public:
 	
 	Vec3f eSrc;
 	
+private:
 	float	fBetaRadCos;
 	float	fBetaRadSin;
 	void SetAngle(float afAngle) {
@@ -124,7 +125,6 @@ public:
 		fBetaRadSin = (float) sin(fBetaRad);
 	}
 	
-private:
 	void Split(Vec3f * v, int a, int b, float yo);
 	void RenderFissure();
 	
