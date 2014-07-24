@@ -572,29 +572,29 @@ consequences on light :
 	return true;
 }
 
-bool GereTrackNoPlay(Cinematic * c)
-{
-	float	a, unmoinsa, alight = 0, unmoinsalight = 0;
-	int		num;
-	C_KEY	* kprec, *ksuivsuiv;
-	float	t1, t2, t3, f0, f1, f2, f3, p0, p1, temp;
-	C_KEY	* lightprec, *lightnext;
-
+bool GereTrackNoPlay(Cinematic * c) {
+	
 	if(!CKTrack || !CKTrack->nbkey || !CKTrack->pause)
 		return false;
-
+	
+	int num;
+	
 	C_KEY * k = GetKey((int) CKTrack->currframe, &num);
 
 	if(!k)
 		return false;
 
 	C_KEY * ksuiv = (num == CKTrack->nbkey) ? k : k + 1;
-
+	
+	float a;
+	
 	if(ksuiv->frame != k->frame)
 		a = (CKTrack->currframe - (float)k->frame) / ((float)(ksuiv->frame - k->frame));
 	else
 		a = 1.f;
-
+	
+	float unmoinsa;
+	
 	c->a = unmoinsa = 1.0f - a;
 
 	c->numbitmap		= k->numbitmap;
@@ -608,16 +608,21 @@ bool GereTrackNoPlay(Cinematic * c)
 	c->speed			= k->speed;
 	c->idsound			= k->idsound;
 	c->force			= k->force;
-
+	
+	C_KEY * lightprec;
+	
 	if((k->fx & 0xFF000000) == FX_LIGHT) {
 		lightprec = k;
 	} else {
 		lightprec = k->light.prev;
 	}
 
-	lightnext = k->light.next;
+	C_KEY * lightnext = k->light.next;
 	c->lightd = lightnext->light;
-
+	
+	float alight = 0;
+	float unmoinsalight = 0;
+	
 	if(lightprec != lightnext) {
 		alight = (CKTrack->currframe - (float)lightprec->frame) / ((float)(lightnext->frame - lightprec->frame));
 
@@ -699,9 +704,11 @@ bool GereTrackNoPlay(Cinematic * c)
 			}
 			break;
 			
-		case INTERP_BEZIER:
-			ksuivsuiv = ((num + 1) < CKTrack->nbkey) ? ksuiv + 1 : ksuiv;
-			kprec = (num > 1) ? k - 1 : k;
+		case INTERP_BEZIER: {
+			float	t1, t2, t3, f0, f1, f2, f3, p0, p1, temp;
+			
+			C_KEY * ksuivsuiv = ((num + 1) < CKTrack->nbkey) ? ksuiv + 1 : ksuiv;
+			C_KEY * kprec = (num > 1) ? k - 1 : k;
 
 			t1 = a;
 			t2 = t1 * t1;
@@ -759,6 +766,7 @@ bool GereTrackNoPlay(Cinematic * c)
 				                        + unmoinsalight * ldep.intensiternd;
 			}
 			break;
+		}
 	}
 
 	if(k != c->key) {
