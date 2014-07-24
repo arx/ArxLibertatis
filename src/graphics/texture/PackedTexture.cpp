@@ -54,6 +54,7 @@ PackedTexture::TextureTree::TextureTree(unsigned int textureSize,
 		LogError << "Could not create texture for size " << textureSize
 		         << " and format " << textureFormat;
 		delete texture, texture = NULL;
+		dirty = false;
 		return;
 	}
 	texture->GetImage().Clear();
