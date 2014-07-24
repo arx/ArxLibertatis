@@ -59,6 +59,8 @@ ZeniMax Media Inc., Suite 120, Rockville, Maryland 20850 USA.
 #include "scene/Interactive.h"
 
 CMassLightning::CMassLightning(long nbmissiles)
+	: m_caster(EntityHandle::Invalid)
+	, m_level(1.f)
 {
 	SetDuration(2000);
 	number = std::min(10L, nbmissiles);
