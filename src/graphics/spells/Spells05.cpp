@@ -398,6 +398,8 @@ void LaunchPoisonExplosion(const Vec3f & aePos) {
 CPoisonProjectile::CPoisonProjectile()
 	: eSrc(Vec3f_ZERO)
 	, lightIntensityFactor(1.f)
+	, fBetaRadCos(0.f)
+	, fBetaRadSin(0.f)
 	, bOk(false)
 	, fTrail(-1.f)
 {

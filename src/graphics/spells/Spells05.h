@@ -162,6 +162,7 @@ public:
 	Vec3f eCurPos;
 	float lightIntensityFactor;
 	
+private:
 	float	fBetaRadCos;
 	float	fBetaRadSin;
 	void SetAngle(float afAngle) {
@@ -170,7 +171,6 @@ public:
 		fBetaRadSin = (float) sin(fBetaRad);
 	}
 	
-private:
 	bool  bOk;
 	float fTrail;
 	
