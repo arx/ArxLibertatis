@@ -751,10 +751,10 @@ void CMultiPoisonProjectile::AddPoisonFog(Vec3f * pos, float power) {
 	}
 }
 
-CRepelUndead::CRepelUndead() {
-	
-	eSrc = Vec3f_ZERO;
-	
+CRepelUndead::CRepelUndead()
+	: eSrc(Vec3f_ZERO)
+	, m_yaw(0.f)
+{
 	ulCurrentTime = ulDuration + 1;
 	
 	tex_p2 = TextureContainer::Load("graph/obj3d/textures/(fx)_tsu_blueting");
