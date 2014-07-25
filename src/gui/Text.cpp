@@ -269,6 +269,10 @@ static Font * createFont(const res::path & fontFace,
                          const string & fontProfileName, unsigned int fontSize,
                          float scaleFactor) {
 
+	arx_assert(fontSize > 0);
+	arx_assert(scaleFactor > 0.f);
+	arx_assert(scaleFactor < 1000.f); // TODO better maximum
+	
 	std::string szFontSize = boost::lexical_cast<std::string>(fontSize);
 	std::string szUT = getLocalised(fontProfileName, szFontSize);
 	fontSize = boost::lexical_cast<unsigned int>(szUT);
