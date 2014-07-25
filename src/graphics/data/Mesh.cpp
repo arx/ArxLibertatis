@@ -2190,7 +2190,7 @@ static int BkgAddPoly(EERIEPOLY * ep, EERIE_3DOBJ * eobj) {
 
 	eg->treat = false;
 
-	if(ep && ep->tex && !ep->tex->m_texName.empty()) {
+	if(ep->tex && !ep->tex->m_texName.empty()) {
 				if ( ep->tex->m_texName.string().find("stone") != std::string::npos )         ep->type |= POLY_STONE;
 				else if ( ep->tex->m_texName.string().find("pierre") != std::string::npos )   ep->type |= POLY_STONE;
 				else if ( ep->tex->m_texName.string().find("wood") != std::string::npos )     ep->type |= POLY_WOOD;
