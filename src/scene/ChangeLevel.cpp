@@ -1821,6 +1821,7 @@ static long ARX_CHANGELEVEL_Pop_Player() {
 	
 	if(size < pos + (asp->nb_PlayerQuest * 80)) {
 		LogError << "Truncated data";
+		free(dat);
 		return -1;
 	}
 	ARX_PLAYER_Quest_Init();
@@ -1831,6 +1832,7 @@ static long ARX_CHANGELEVEL_Pop_Player() {
 	
 	if(size < pos + (asp->keyring_nb * SAVED_KEYRING_SLOT_SIZE)) {
 		LogError << "Truncated data";
+		free(dat);
 		return -1;
 	}
 	ARX_KEYRING_Init();
@@ -1842,6 +1844,7 @@ static long ARX_CHANGELEVEL_Pop_Player() {
 	
 	if(size < pos + (asp->Nb_Mapmarkers * sizeof(SavedMapMarkerData))) {
 		LogError << "Truncated data";
+		free(dat);
 		return -1;
 	}
 	g_miniMap.mapMarkerInit(asp->Nb_Mapmarkers);
