@@ -81,8 +81,14 @@ struct CLightning::LIGHTNING {
 	float fAngleZMax;
 };
 
-CLightning::CLightning() :
-	fDamage(1),
+CLightning::CLightning()
+	: m_pos(Vec3f_ZERO)
+	, m_beta(0.f)
+	, m_alpha(0.f)
+	, m_caster(EntityHandle::Invalid)
+	, m_level(1.f)
+	, fDamage(1)
+	, m_isMassLightning(false),
 	nbtotal(0),
 	lNbSegments(40),
 	invNbSegments(1.0f / 40.0f),
