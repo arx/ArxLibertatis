@@ -46,6 +46,8 @@ ZeniMax Media Inc., Suite 120, Rockville, Maryland 20850 USA.
 
 #include <sstream>
 
+#include <boost/lexical_cast.hpp>
+
 #include "core/Localisation.h"
 #include "core/Config.h"
 #include "core/Core.h"
@@ -266,20 +268,11 @@ long UNICODE_ARXDrawTextCenteredScroll(Font* font, float x, float y, float x2, c
 static Font * createFont(const res::path & fontFace,
                          const string & fontProfileName, unsigned int fontSize,
                          float scaleFactor) {
+
+	std::string szFontSize = boost::lexical_cast<std::string>(fontSize);
+	std::string szUT = getLocalised(fontProfileName, szFontSize);
+	fontSize = boost::lexical_cast<unsigned int>(szUT);
 	
-	std::stringstream ss;
-
-	std::string szFontSize;
-	ss << fontSize;
-	ss >> szFontSize;
-	ss.clear();
-
-	std::string szUT;
-	szUT = getLocalised(fontProfileName, szFontSize);
-	ss << szUT;
-	ss >> fontSize;
-	ss.clear();
-
 	fontSize *= scaleFactor;
 
 	Font * newFont = FontCache::getFont(fontFace, fontSize);
