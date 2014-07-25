@@ -100,7 +100,7 @@ void LegacyMathTest::quaternionTests() {
 		
 		glm::quat inverseA = A;
 		Quat_Reverse(&inverseA);
-		glm::quat inverseB = glm::gtc::quaternion::inverse(B);
+		glm::quat inverseB = glm::inverse(B);
 		
 		CPPUNIT_ASSERT_EQUAL(inverseA, inverseB);
 	

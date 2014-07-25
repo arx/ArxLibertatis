@@ -24,7 +24,9 @@
 #include <iomanip>
 
 #include <glm/glm.hpp>
-#include <glm/ext.hpp>
+#include <glm/gtc/matrix_access.hpp>
+#include <glm/gtx/epsilon.hpp>
+#include <glm/gtx/string_cast.hpp>
 
 #include "graphics/Math.h"
 
@@ -38,8 +40,8 @@ namespace CppUnit {
 			glm::vec4 b = glm::vec4(other.w, other.x, other.y, other.z);
 			
 			return
-			   glm::all(glm::gtx::epsilon::equalEpsilon(a, b, 0.001f))
-			|| glm::all(glm::gtx::epsilon::equalEpsilon(a, b * -1, 0.001f));
+			   glm::all(glm::epsilonEqual(a, b, 0.001f))
+			|| glm::all(glm::epsilonEqual(a, b * -1.f, 0.001f));
 		}
 		
 		static std::string toString(const glm::quat quat) {
@@ -58,7 +60,7 @@ namespace CppUnit {
 	template <>
 	struct assertion_traits<Vec3f> {
 		static bool equal(const Vec3f & v, const Vec3f & other) {
-			return glm::all(glm::gtx::epsilon::equalEpsilon(v, other, 0.001f));
+			return glm::all(glm::epsilonEqual(v, other, 0.001f));
 		}
 		
 		static std::string toString(const Vec3f &v) {
@@ -69,7 +71,7 @@ namespace CppUnit {
 	template <>
 	struct assertion_traits<Vec4f> {
 		static bool equal(const Vec4f & v, const Vec4f & other) {
-			return glm::all(glm::gtx::epsilon::equalEpsilon(v, other, 0.001f));
+			return glm::all(glm::epsilonEqual(v, other, 0.001f));
 		}
 		
 		static std::string toString(const Vec4f &v) {
@@ -82,7 +84,7 @@ namespace CppUnit {
 		static bool equal(const glm::mat4x4 & mat, const glm::mat4x4 & other) {
 			
 			for(int i = 0; i < 4; i++) {
-				if(! glm::all(glm::gtx::epsilon::equalEpsilon(glm::row(mat, i), glm::row(other, i), 0.001f))) {
+				if(! glm::all(glm::epsilonEqual(glm::row(mat, i), glm::row(other, i), 0.001f))) {
 					return false;
 				}
 			}
