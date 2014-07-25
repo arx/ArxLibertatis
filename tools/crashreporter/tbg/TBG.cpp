@@ -38,6 +38,7 @@ namespace TBG
 Server::Server(const QString& serverAddress)
 	: m_ServerAddress(serverAddress)
 	, m_ServerPrefix(serverAddress + "/arxcrashreporter/v1")
+	, m_CurrentReply(NULL)
 {
 }
 
