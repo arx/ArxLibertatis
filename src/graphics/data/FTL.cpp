@@ -219,10 +219,10 @@ bool ARX_FTL_Save(const fs::path & file, const EERIE_3DOBJ * obj) {
 	{
 		char ficc[256];
 		memset(ficc, 0, 256);
-
-		if (obj->texturecontainer[i])
-			strcpy(ficc, obj->texturecontainer[i]->m_texName.string().c_str());
-
+		
+		if(obj->texturecontainer[i])
+			util::storeString(ficc, obj->texturecontainer[i]->m_texName.string());
+		
 		memcpy(dat + pos, ficc, 256);
 		pos += 256;
 
