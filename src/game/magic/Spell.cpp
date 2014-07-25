@@ -23,7 +23,18 @@
 
 #include "core/GameTime.h"
 
-SpellBase::SpellBase() {
+SpellBase::SpellBase()
+	: m_level(1.f)
+	, m_hand_group(-1)
+	, m_type(SPELL_NONE)
+	, m_timcreation(0)
+	, m_hasDuration(false)
+	, m_duration(0)
+	, m_fManaCostPerSecond(0.f)
+	, m_snd_loop(audio::INVALID_ID)
+	, m_pSpellFx(NULL)
+	, m_launchDuration(-1)
+{
 	
 	m_targets.clear();
 }
