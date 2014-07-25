@@ -29,7 +29,7 @@ XByteArray::XByteArray()
     _oldSize = -99;
     _addressNumbers = 4;
     _addressOffset = 0;
-
+    _realAddressNumbers = 0;
 }
 
 int XByteArray::addressOffset()
