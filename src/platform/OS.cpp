@@ -175,9 +175,9 @@ std::string getOSName() {
 	return "BSD";
 	#elif ARX_PLATFORM == ARX_PLATFORM_UNIX
 	return "UNIX";
-	#endif
-	
+	#else
 	return std::string();
+	#endif
 }
 
 
