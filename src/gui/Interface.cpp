@@ -2912,15 +2912,14 @@ void ARX_INTERFACE_ManageOpenedBook() {
 			}
 		}
 	} else {
-		float x = 0;
-		
 		arx_assert(ITC.playerbook);
-		x = static_cast<float>((640 - ITC.playerbook->m_dwWidth) / 2);
-		float y = static_cast<float>((480 - ITC.playerbook->m_dwHeight) / 2);
+		float x = (640 - ITC.playerbook->m_dwWidth) / 2.f;
+		float y = (480 - ITC.playerbook->m_dwHeight) / 2.f;
 		
 		DrawBookInterfaceItem(ITC.playerbook, Vec2f(x, y));
 
 		BOOKDEC.x = x - 97;
+		// TODO copy paste error ?
 		BOOKDEC.y = x - 64 + 19;
 	}
 	
