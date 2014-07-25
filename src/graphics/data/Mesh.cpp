@@ -2119,7 +2119,7 @@ static int BkgAddPoly(EERIEPOLY * ep, EERIE_3DOBJ * eobj) {
 	
 	long type = -1;
 	long val1 = -1;
-
+	
 	if(TryToQuadify(ep, eobj))
 		return 0;
 	
@@ -2128,27 +2128,27 @@ static int BkgAddPoly(EERIEPOLY * ep, EERIE_3DOBJ * eobj) {
 	long posx = (long)(float)(center.x * ACTIVEBKG->Xmul);
 	long posz = (long)(float)(center.z * ACTIVEBKG->Zmul);
 	long posy = (long)(float)(center.y * ACTIVEBKG->Xmul + ACTIVEBKG->Xsize * .5f);
-
+	
 	if (posy < 0) return 0;
 	else if (posy >= ACTIVEBKG->Xsize) return 0;
-
+	
 	if (posx < 0) return 0;
 	else if (posx >= ACTIVEBKG->Xsize) return 0;
-
+	
 	if (posz < 0) return 0;
 	else if (posz >= ACTIVEBKG->Zsize) return 0;
-
+	
 	EERIE_BKG_INFO *eg = &ACTIVEBKG->Backg[posx+posz*ACTIVEBKG->Xsize];
 	
 	long t = (((eg->nbpoly) >> 1) << 1) + 2; 
 	long tt = (((eg->nbpoly - 1) >> 1) << 1) + 2; 
-
+	
 	if(!eg->polydata) {
 		eg->polydata = (EERIEPOLY *)malloc(sizeof(EERIEPOLY) * t);
 	} else if(tt != t) {
 		eg->polydata = (EERIEPOLY *)realloc(eg->polydata, sizeof(EERIEPOLY) * t);
 	}
-
+	
 	memcpy(&eg->polydata[eg->nbpoly], ep, sizeof(EERIEPOLY));
 	
 	EERIEPOLY * epp = &eg->polydata[eg->nbpoly];
@@ -2164,19 +2164,19 @@ static int BkgAddPoly(EERIEPOLY * ep, EERIE_3DOBJ * eobj) {
 	epp->max.x = max(epp->max.x, epp->v[2].p.x);
 	epp->min.x = min(epp->v[0].p.x, epp->v[1].p.x);
 	epp->min.x = min(epp->min.x, epp->v[2].p.x);
-
+	
 	epp->max.y = max(epp->v[0].p.y, epp->v[1].p.y);
 	epp->max.y = max(epp->max.y, epp->v[2].p.y);
 	epp->min.y = min(epp->v[0].p.y, epp->v[1].p.y);
 	epp->min.y = min(epp->min.y, epp->v[2].p.y);
-
+	
 	epp->max.z = max(epp->v[0].p.z, epp->v[1].p.z);
 	epp->max.z = max(epp->max.z, epp->v[2].p.z);
 	epp->min.z = min(epp->v[0].p.z, epp->v[1].p.z);
 	epp->min.z = min(epp->min.z, epp->v[2].p.z);
 	epp->type = ep->type;
 	epp->type &= ~POLY_QUAD;
-
+	
 	CalcFaceNormal(epp, epp->v);
 	epp->area = fdist((epp->v[0].p + epp->v[1].p) * .5f, epp->v[2].p)
 	            * fdist(epp->v[0].p, epp->v[1].p) * .5f;
@@ -2185,20 +2185,20 @@ static int BkgAddPoly(EERIEPOLY * ep, EERIE_3DOBJ * eobj) {
 		epp->room = checked_range_cast<short>(val1);
 	else
 		epp->room = -1;
-
+	
 	eg->nbpoly++;
-
+	
 	eg->treat = false;
-
+	
 	if(ep->tex && !ep->tex->m_texName.empty()) {
-				if ( ep->tex->m_texName.string().find("stone") != std::string::npos )         ep->type |= POLY_STONE;
-				else if ( ep->tex->m_texName.string().find("pierre") != std::string::npos )   ep->type |= POLY_STONE;
-				else if ( ep->tex->m_texName.string().find("wood") != std::string::npos )     ep->type |= POLY_WOOD;
-				else if ( ep->tex->m_texName.string().find("bois") != std::string::npos )     ep->type |= POLY_STONE;
-				else if ( ep->tex->m_texName.string().find("gavier") != std::string::npos )   ep->type |= POLY_GRAVEL;
-				else if ( ep->tex->m_texName.string().find("earth") != std::string::npos )    ep->type |= POLY_EARTH;
+		if ( ep->tex->m_texName.string().find("stone") != std::string::npos )         ep->type |= POLY_STONE;
+		else if ( ep->tex->m_texName.string().find("pierre") != std::string::npos )   ep->type |= POLY_STONE;
+		else if ( ep->tex->m_texName.string().find("wood") != std::string::npos )     ep->type |= POLY_WOOD;
+		else if ( ep->tex->m_texName.string().find("bois") != std::string::npos )     ep->type |= POLY_STONE;
+		else if ( ep->tex->m_texName.string().find("gavier") != std::string::npos )   ep->type |= POLY_GRAVEL;
+		else if ( ep->tex->m_texName.string().find("earth") != std::string::npos )    ep->type |= POLY_EARTH;
 	}
-
+	
 	EERIE_PORTAL_Poly_Add(epp, eobj->name, posx, posz, eg->nbpoly - 1);
 	return 1;
 }
