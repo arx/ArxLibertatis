@@ -91,7 +91,6 @@ public:
 	};
 	
 	DECLARE_FLAGS(TCFlag, TCFlags)
-	static const TCFlags UI;
 	
 	/*!
 	 * Constructor.

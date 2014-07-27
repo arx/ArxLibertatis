@@ -74,9 +74,6 @@ long GLOBAL_EERIETEXTUREFLAG_LOADSCENE_RELEASE = 0;
 // Local list of textures
 //-----------------------------------------------------------------------------
 
-
-const TextureContainer::TCFlags TextureContainer::UI = (TextureContainer::NoMipmap);
-
 static TextureContainer * g_ptcTextureList = NULL;
 
 TextureContainer * GetTextureList() {
@@ -276,7 +273,7 @@ TextureContainer * TextureContainer::Load(const res::path & name, TCFlags flags)
 }
 
 TextureContainer * TextureContainer::LoadUI(const res::path & strName, TCFlags flags) {
-	return Load(strName, flags | UI);
+	return Load(strName, flags | TextureContainer::NoMipmap);
 }
 
 bool TextureContainer::CreateHalo() {
