@@ -23,7 +23,6 @@
 #include "graphics/VertexBuffer.h"
 #include "graphics/Vertex.h"
 #include "graphics/opengl/OpenGLRenderer.h"
-#include "graphics/opengl/OpenGLUtil.h"
 
 template <class Vertex>
 static void renderVertex(const Vertex & vertex);
@@ -105,8 +104,6 @@ public:
 		}
 		
 		glEnd();
-		
-		CHECK_GL;
 	}
 	
 	void drawIndexed(Renderer::Primitive primitive, size_t count, size_t offset, unsigned short * indices, size_t nbindices) const {
@@ -126,8 +123,6 @@ public:
 		}
 		
 		glEnd();
-		
-		CHECK_GL;
 	}
 	
 	~GLNoVertexBuffer() {

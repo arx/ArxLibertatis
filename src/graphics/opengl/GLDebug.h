@@ -28,6 +28,8 @@ namespace gldebug {
 	//! Check if debug output should be enabled.
 	bool isEnabled();
 	
+	//! Must be called at the end of each frame
+	void endFrame();
 }
 
 #endif // ARX_GRAPHICS_OPENGL_GLDEBUG_H

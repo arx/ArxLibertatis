@@ -24,7 +24,8 @@
 #include "graphics/Vertex.h"
 #include "graphics/Math.h"
 #include "graphics/opengl/OpenGLRenderer.h"
-#include "graphics/opengl/OpenGLUtil.h"
+
+#include "io/log/Logger.h"
 
 template <class Vertex>
 static void setVertexArray(const Vertex * vertex, const void * ref);
@@ -59,8 +60,6 @@ inline void setVertexArray(const TexturedVertex * vertices, const void * ref) {
 	glColorPointer(GL_BGRA, GL_UNSIGNED_BYTE, sizeof(TexturedVertex), &vertices->color);
 
 	setVertexArrayTexCoord(0, &vertices->uv, sizeof(TexturedVertex));
-
-	CHECK_GL;
 }
 
 template <>
@@ -77,8 +76,6 @@ inline void setVertexArray(const SMY_VERTEX * vertices, const void * ref) {
 	glColorPointer(GL_BGRA, GL_UNSIGNED_BYTE, sizeof(SMY_VERTEX), &vertices->color);
 	
 	setVertexArrayTexCoord(0, &vertices->uv, sizeof(SMY_VERTEX));
-	
-	CHECK_GL;
 }
 
 template <>
@@ -97,8 +94,6 @@ inline void setVertexArray(const SMY_VERTEX3 * vertices, const void * ref) {
 	setVertexArrayTexCoord(0, &vertices->uv[0], sizeof(SMY_VERTEX3));
 	setVertexArrayTexCoord(1, &vertices->uv[1], sizeof(SMY_VERTEX3));
 	setVertexArrayTexCoord(2, &vertices->uv[2], sizeof(SMY_VERTEX3));
-	
-	CHECK_GL;
 }
 
 static const GLenum arxToGlBufferUsage[] = {
@@ -127,8 +122,6 @@ public:
 		
 		bindBuffer(buffer);
 		glBufferData(GL_ARRAY_BUFFER, capacity * sizeof(Vertex), NULL, arxToGlBufferUsage[usage]);
-		
-		CHECK_GL;
 	}
 	
 	void setData(const Vertex * vertices, size_t count, size_t offset, BufferFlags flags) {
@@ -177,8 +170,6 @@ public:
 			}
 			
 		}
-		
-		CHECK_GL;
 	}
 	
 	Vertex * lock(BufferFlags flags, size_t offset, size_t count) {
@@ -220,8 +211,6 @@ public:
 			}
 		}
 		
-		CHECK_GL;
-		
 		arx_assert(buf != NULL); // TODO OpenGL doesn't guarantee this
 		
 		return buf;
@@ -237,8 +226,6 @@ public:
 			// TODO handle GL_FALSE return (buffer invalidated)
 			LogWarning << "Vertex buffer invalidated";
 		}
-		
-		CHECK_GL;
 	}
 	
 	void draw(Renderer::Primitive primitive, size_t count, size_t offset) const {
@@ -252,8 +239,6 @@ public:
 		setVertexArray<Vertex>(NULL, this);
 		
 		glDrawArrays(arxToGlPrimitiveType[primitive], offset, count);
-		
-		CHECK_GL;
 	}
 	
 	void drawIndexed(Renderer::Primitive primitive, size_t count, size_t offset, unsigned short * indices, size_t nbindices) const {
@@ -270,9 +255,6 @@ public:
 		if(GLEW_ARB_draw_elements_base_vertex) {
 			
 			glDrawRangeElementsBaseVertex(arxToGlPrimitiveType[primitive], 0, count - 1, nbindices, GL_UNSIGNED_SHORT, indices, offset);
-			
-			CHECK_GL;
-			
 		} else if(offset + count - 1 <= std::numeric_limits<GLushort>::max()) {
 			
 			glShortIndexBuffer.resize(std::max(glShortIndexBuffer.size(), nbindices));
@@ -281,9 +263,6 @@ public:
 			}
 			
 			glDrawRangeElements(arxToGlPrimitiveType[primitive], offset, offset + count - 1, nbindices, GL_UNSIGNED_SHORT, &glShortIndexBuffer[0]);
-			
-			CHECK_GL;
-			
 		} else {
 			
 			glIntIndexBuffer.resize(std::max(glIntIndexBuffer.size(), nbindices));
@@ -292,15 +271,12 @@ public:
 			}
 			
 			glDrawRangeElements(arxToGlPrimitiveType[primitive], offset, offset + count - 1, nbindices, GL_UNSIGNED_INT, &glIntIndexBuffer[0]);
-			
-			CHECK_GL;
 		}
 	}
 	
 	~GLVertexBuffer() {
 		unbindBuffer(buffer);
 		glDeleteBuffers(1, &buffer);
-		CHECK_GL;
 	};
 	
 private:

@@ -95,6 +95,7 @@ ZeniMax Media Inc., Suite 120, Rockville, Maryland 20850 USA.
 #include "graphics/effects/Fade.h"
 #include "graphics/effects/Fog.h"
 #include "graphics/font/Font.h"
+#include "graphics/opengl/GLDebug.h"
 #include "graphics/particle/ParticleEffects.h"
 #include "graphics/particle/ParticleManager.h"
 #include "graphics/particle/MagicFlare.h"
@@ -1720,6 +1721,8 @@ void ArxGame::render() {
 
 	arxtime.update_last_frame_time();
 	LastMouseClick = EERIEMouseButton;
+	
+	gldebug::endFrame();
 }
 
 void ArxGame::update2DFX()

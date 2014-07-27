@@ -228,8 +228,6 @@ void OpenGLRenderer::reinit() {
 	currentTransform = GL_UnsetTransform;
 	switchVertexArray(GL_NoArray, 0, 0);
 	
-	CHECK_GL;
-	
 	if(useVertexArrays && useVBOs) {
 		if(!GLEW_ARB_shader_objects) {
 			LogWarning << "Missing OpenGL extension ARB_shader_objects.";
@@ -237,7 +235,6 @@ void OpenGLRenderer::reinit() {
 			LogWarning << "Missing OpenGL extension ARB_vertex_program.";
 		} else {
 			shader = loadVertexShader(vertexShaderSource);
-			CHECK_GL;
 		}
 		if(!shader) {
 			LogWarning << "Missing vertex shader, cannot use vertex arrays for pre-transformed vertices.";
@@ -246,7 +243,6 @@ void OpenGLRenderer::reinit() {
 	
 	if(GLEW_EXT_texture_filter_anisotropic) {
 		glGetFloatv(GL_MAX_TEXTURE_MAX_ANISOTROPY_EXT, &maximumAnisotropy);
-		CHECK_GL;
 	}
 	
 	onRendererInit();
@@ -269,7 +265,6 @@ void OpenGLRenderer::shutdown() {
 	
 	if(shader) {
 		glDeleteObjectARB(shader);
-		CHECK_GL;
 	}
 	
 	for(size_t i = 0; i < m_TextureStages.size(); ++i) {
@@ -301,8 +296,6 @@ void OpenGLRenderer::enableTransform() {
 	glLoadMatrixf(glm::value_ptr(projection));
 	
 	currentTransform = GL_ModelViewProjectionTransform;
-	
-	CHECK_GL;
 }
 
 void OpenGLRenderer::disableTransform() {
@@ -332,8 +325,6 @@ void OpenGLRenderer::disableTransform() {
 	glTranslatef(.5f - viewport.left, .5f - viewport.top, 0.f);
 	
 	currentTransform = GL_NoTransform;
-	
-	CHECK_GL;
 }
 
 void OpenGLRenderer::SetViewMatrix(const glm::mat4x4 & matView) {
@@ -524,8 +515,6 @@ void OpenGLRenderer::SetRenderState(RenderState renderState, bool enable) {
 		default:
 			LogWarning << "Unsupported render state: " << renderState;
 	}
-	
-	CHECK_GL;
 }
 
 static const GLenum arxToGlPixelCompareFunc[] = {
@@ -541,7 +530,6 @@ static const GLenum arxToGlPixelCompareFunc[] = {
 
 void OpenGLRenderer::SetAlphaFunc(PixelCompareFunc func, float ref) {
 	glAlphaFunc(arxToGlPixelCompareFunc[func], ref);
-	CHECK_GL;
 }
 
 static const GLenum arxToGlBlendFactor[] = {
@@ -568,7 +556,6 @@ void OpenGLRenderer::SetBlendFunc(PixelBlendingFactor srcFactor, PixelBlendingFa
 		glBlendFunc(arxToGlBlendFactor[srcFactor], arxToGlBlendFactor[dstFactor]);
 		m_cachedSrcBlend = srcFactor;
 		m_cachedDstBlend = dstFactor;
-		CHECK_GL;
 	}
 }
 
@@ -585,8 +572,6 @@ void OpenGLRenderer::SetViewport(const Rect & _viewport) {
 	if(currentTransform == GL_NoTransform) {
 		currentTransform = GL_UnsetTransform;
 	}
-	
-	CHECK_GL;
 }
 
 Rect OpenGLRenderer::GetViewport() {
@@ -639,15 +624,12 @@ void OpenGLRenderer::Clear(BufferFlags bufferFlags, Color clearColor, float clea
 		glClear(buffers);
 		
 	}
-	
-	CHECK_GL;
 }
 
 void OpenGLRenderer::SetFogColor(Color color) {
 	Color4f colorf = color.to<float>();
 	GLfloat fogColor[4]= {colorf.r, colorf.g, colorf.b, colorf.a};
 	glFogfv(GL_FOG_COLOR, fogColor);
-	CHECK_GL;
 }
 
 static const GLint arxToGlFogMode[] = {
@@ -665,8 +647,6 @@ void OpenGLRenderer::SetFogParams(FogMode fogMode, float fogStart, float fogEnd,
 	glFogf(GL_FOG_START, fogStart);
 	glFogf(GL_FOG_END, fogEnd);
 	glFogf(GL_FOG_DENSITY, fogDensity);
-	
-	CHECK_GL;
 }
 
 void OpenGLRenderer::SetAntialiasing(bool enable) {
@@ -684,8 +664,6 @@ void OpenGLRenderer::SetAntialiasing(bool enable) {
 	if(colorkey) {
 		SetRenderState(ColorKey, true);
 	}
-	
-	CHECK_GL;
 }
 
 static const GLenum arxToGlCullMode[] = {
@@ -710,8 +688,6 @@ void OpenGLRenderer::SetCulling(CullingMode mode) {
 		setGLState(GL_CULL_FACE, true);
 		glCullFace(arxToGlCullMode[mode]);
 	}
-
-	CHECK_GL;
 }
 
 int OpenGLRenderer::GetDepthBias() const {
@@ -727,8 +703,6 @@ void OpenGLRenderer::SetDepthBias(int depthBias) {
 	float bias = -(float)m_cachedDepthBias;
 	
 	glPolygonOffset(bias, bias);
-	
-	CHECK_GL;
 }
 
 static const GLenum arxToGlFillMode[] = {
@@ -739,7 +713,6 @@ static const GLenum arxToGlFillMode[] = {
 
 void OpenGLRenderer::SetFillMode(FillMode mode) {
 	glPolygonMode(GL_FRONT_AND_BACK, arxToGlFillMode[mode]);
-	CHECK_GL;
 }
 
 VertexBuffer<TexturedVertex> * OpenGLRenderer::createVertexBufferTL(size_t capacity, BufferUsage usage) {
@@ -797,8 +770,6 @@ void OpenGLRenderer::drawIndexed(Primitive primitive, const TexturedVertex * ver
 		glEnd();
 		
 	}
-	
-	CHECK_GL;
 }
 
 bool OpenGLRenderer::getSnapshot(Image & image) {
@@ -810,8 +781,6 @@ bool OpenGLRenderer::getSnapshot(Image & image) {
 	glReadPixels(0, 0, size.x, size.y, GL_RGB, GL_UNSIGNED_BYTE, image.GetData()); 
 	
 	image.FlipY();
-	
-	CHECK_GL;
 	
 	return true;
 }
@@ -839,17 +808,4 @@ void OpenGLRenderer::applyTextureStages() {
 
 bool OpenGLRenderer::isFogInEyeCoordinates() {
 	return true;
-}
-
-const char * getGLErrorString(GLenum error) {
-	switch(error) {
-		case GL_NO_ERROR: return "GL_NO_ERROR";
-		case GL_INVALID_ENUM: return "GL_INVALID_ENUM";
-		case GL_INVALID_VALUE: return "GL_INVALID_VALUE";
-		case GL_INVALID_OPERATION: return "GL_INVALID_OPERATION";
-		case GL_STACK_OVERFLOW: return "GL_STACK_OVERFLOW";
-		case GL_STACK_UNDERFLOW: return "GL_STACK_UNDERFLOW";
-		case GL_OUT_OF_MEMORY: return "GL_OUT_OF_MEMORY";
-		default: return "(unknown error)";
-	}
 }

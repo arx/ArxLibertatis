@@ -54,8 +54,6 @@ bool GLTexture2D::Create() {
 		storedSize = Vec2i(GetNextPowerOf2(size.x), GetNextPowerOf2(size.y));
 	}
 	
-	CHECK_GL;
-	
 	return (tex != GL_NONE);
 }
 
@@ -105,15 +103,12 @@ void GLTexture2D::Upload() {
 	if(renderer->GetMaxAnisotropy() != 1.f) {
 		glTexParameterf(GL_TEXTURE_2D, GL_TEXTURE_MAX_ANISOTROPY_EXT, renderer->GetMaxAnisotropy());
 	}
-	
-	CHECK_GL;
 }
 
 void GLTexture2D::Destroy() {
 	
 	if(tex) {
 		glDeleteTextures(1, &tex), tex = GL_NONE;
-		CHECK_GL;
 	}
 	
 	for(size_t i = 0; i < renderer->GetTextureStageCount(); i++) {

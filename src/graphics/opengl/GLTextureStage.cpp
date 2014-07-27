@@ -21,6 +21,7 @@
 
 #include "graphics/opengl/GLTexture2D.h"
 #include "graphics/opengl/OpenGLRenderer.h"
+#include "io/log/Logger.h"
 
 GLTextureStage::GLTextureStage(OpenGLRenderer * _renderer, unsigned stage) : TextureStage(stage), renderer(_renderer), tex(NULL), current(NULL) {
 	
@@ -146,28 +147,23 @@ void GLTextureStage::setOp(OpType alpha, TextureOp op) {
 		}
 	}
 	
-	CHECK_GL;
-	
 	switch(op) {
 		
 		case OpDisable: {
 			setOp(alpha, GL_REPLACE, 1);
 			setArg(alpha, Arg0, ArgCurrent);
-			CHECK_GL;
 			break;
 		}
 		
 		case OpSelectArg1: {
 			setOp(alpha, GL_REPLACE, 1);
 			setArg(alpha, Arg0, args[alpha][Arg0]);
-			CHECK_GL;
 			break;
 		}
 		
 		case OpSelectArg2: {
 			setOp(alpha, GL_REPLACE, 1);
 			setArg(alpha, Arg0, args[alpha][Arg1]);
-			CHECK_GL;
 			break;
 		}
 		
@@ -175,7 +171,6 @@ void GLTextureStage::setOp(OpType alpha, TextureOp op) {
 			setOp(alpha, GL_MODULATE, 1);
 			setArg(alpha, Arg0, args[alpha][Arg0]);
 			setArg(alpha, Arg1, args[alpha][Arg1]);
-			CHECK_GL;
 			break;
 		}
 		
@@ -183,7 +178,6 @@ void GLTextureStage::setOp(OpType alpha, TextureOp op) {
 			setOp(alpha, GL_MODULATE, 2);
 			setArg(alpha, Arg0, args[alpha][Arg0]);
 			setArg(alpha, Arg1, args[alpha][Arg1]);
-			CHECK_GL;
 			break;
 		}
 		
@@ -191,7 +185,6 @@ void GLTextureStage::setOp(OpType alpha, TextureOp op) {
 			setOp(alpha, GL_MODULATE, 4);
 			setArg(alpha, Arg0, args[alpha][Arg0]);
 			setArg(alpha, Arg1, args[alpha][Arg1]);
-			CHECK_GL;
 			break;
 		}
 		
@@ -199,7 +192,6 @@ void GLTextureStage::setOp(OpType alpha, TextureOp op) {
 			setOp(alpha, GL_ADD_SIGNED, 1);
 			setArg(alpha, Arg0, args[alpha][Arg0]);
 			setArg(alpha, Arg1, args[alpha][Arg1]);
-			CHECK_GL;
 			break;
 		}
 		
@@ -289,8 +281,6 @@ void GLTextureStage::setMipMapLODBias(float bias) {
 	if(mStage != 0) {
 		glActiveTexture(GL_TEXTURE0);
 	}
-
-	CHECK_GL;
 }
 
 void GLTextureStage::apply() {
@@ -336,6 +326,4 @@ void GLTextureStage::apply() {
 	if(mStage != 0) {
 		glActiveTexture(GL_TEXTURE0);
 	}
-
-	CHECK_GL;
 }
