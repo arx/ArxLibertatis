@@ -524,7 +524,7 @@ bool Menu2_Render() {
 					me->SetShortCut(Keyboard::Key_Escape);
 					pPanel->AddElementNoCenterIn(me);
 
-					pPanel->Move(0, checked_range_cast<int>(fPosBDAY));
+					pPanel->Move(Vec2i(0, checked_range_cast<int>(fPosBDAY)));
 
 					pWindowMenuConsole->AddMenu(pPanel);
 					pWindowMenu->AddConsole(pWindowMenuConsole);
@@ -829,7 +829,7 @@ bool Menu2_Render() {
 #endif
 						
 						float fRatio    = (RATIO_X(iWindowConsoleWidth-9) - slider->GetWidth()); 
-						slider->Move(checked_range_cast<int>(fRatio), 0); 
+						slider->Move(Vec2i(checked_range_cast<int>(fRatio), 0));
 						pc->AddElement(slider);
 						pWindowMenuConsole->AddMenuCenterY(pc);
 						
@@ -903,7 +903,7 @@ bool Menu2_Render() {
 
 					float fRatio    = (RATIO_X(iWindowConsoleWidth-9) - pMenuSliderResol->GetWidth()); 
 
-					pMenuSliderResol->Move(checked_range_cast<int>(fRatio), 0); 
+					pMenuSliderResol->Move(Vec2i(checked_range_cast<int>(fRatio), 0));
 
 
 					pc->AddElement(pMenuSliderResol);
@@ -926,7 +926,7 @@ bool Menu2_Render() {
 
 					
 					fRatio    = (RATIO_X(iWindowConsoleWidth-9) - me->GetWidth()); 
-					me->Move(checked_range_cast<int>(fRatio), 0); 
+					me->Move(Vec2i(checked_range_cast<int>(fRatio), 0));
 
 
 					pc->AddElement(me);
@@ -1021,7 +1021,7 @@ bool Menu2_Render() {
 #endif
 						
 						float fRatio    = (RATIO_X(iWindowConsoleWidth-9) - slider->GetWidth()); 
-						slider->Move(checked_range_cast<int>(fRatio), 0); 
+						slider->Move(Vec2i(checked_range_cast<int>(fRatio), 0));
 						pc->AddElement(slider);
 						pWindowMenuConsole->AddMenuCenterY(pc);
 						
@@ -1197,7 +1197,7 @@ bool Menu2_Render() {
 							((CMenuElementText*)me)->lColor=Color(127,127,127);\
 						}\
 						pc->AddElement(me);\
-						pc->Move(0,fControlPosY);\
+						pc->Move(Vec2i(0, fControlPosY));\
 						pWindowMenuConsole->AddMenu(pc);\
 						fControlPosY += static_cast<long>( pc->GetHeight() + RATIO_Y(3.f) );\
 					};
@@ -1226,7 +1226,7 @@ bool Menu2_Render() {
 							((CMenuElementText*)me)->lColor=Color(127,127,127);\
 						}\
 						pc->AddElement(me);\
-						pc->Move(0,fControlPosY);\
+						pc->Move(Vec2i(0, fControlPosY));\
 						pWindowMenuConsole->AddMenu(pc);\
 						fControlPosY += static_cast<long>( pc->GetHeight() + RATIO_Y(3.f) );\
 					};
@@ -1254,7 +1254,7 @@ bool Menu2_Render() {
 							((CMenuElementText*)me)->lColor=Color(127,127,127);\
 						}\
 						pc->AddElement(me);\
-						pc->Move(0,fControlPosY);\
+						pc->Move(Vec2i(0, fControlPosY));\
 						pWindowMenuConsole->AddMenu(pc);\
 						fControlPosY += static_cast<long>( pc->GetHeight() + RATIO_Y(3.f) );\
 					};
@@ -1393,7 +1393,7 @@ bool Menu2_Render() {
 					me->SetShortCut(Keyboard::Key_Escape);
 					pPanel->AddElementNoCenterIn(me);
 
-					pPanel->Move(0, checked_range_cast<int>(fPosBDAY));
+					pPanel->Move(Vec2i(0, checked_range_cast<int>(fPosBDAY)));
 					pWindowMenuConsole->AddMenu(pPanel);
 					pWindowMenu->AddConsole(pWindowMenuConsole);
 					pWindowMenu->eCurrentMenuState=QUIT;
@@ -2165,11 +2165,8 @@ CMenuZone::~CMenuZone() {
 
 }
 
-void CMenuZone::Move(int _iX, int _iY) {
-	rZone.left   += _iX;
-	rZone.top    += _iY;
-	rZone.right  += _iX;
-	rZone.bottom += _iY;
+void CMenuZone::Move(const Vec2i & offset) {
+	rZone.move(offset.x, offset.y);
 }
 
 void CMenuZone::SetPos(float _fX, float _fY) {
@@ -2274,10 +2271,10 @@ CMenuZone * CMenuAllZone::GetZoneWithID(int _iID) {
 	return NULL;
 }
 
-void CMenuAllZone::Move(int _iPosX, int _iPosY) {
+void CMenuAllZone::Move(const Vec2i & offset) {
 
 	for(std::vector<CMenuZone*>::iterator i = vMenuZone.begin(), i_end = vMenuZone.end(); i != i_end; ++i) {
-		(*i)->Move(_iPosX, _iPosY);
+		(*i)->Move(offset);
 	}
 }
 
@@ -2334,8 +2331,8 @@ CMenuCheckButton::CMenuCheckButton(int _iID, float _fPosX,float _fPosY,int _iTai
 	iState    = 0;
 	iOldState = -1;
 
-	iPosX = checked_range_cast<int>(_fPosX);
-	iPosY = checked_range_cast<int>(_fPosY);
+	m_pos.x = checked_range_cast<int>(_fPosX);
+	m_pos.y = checked_range_cast<int>(_fPosY);
 
 	iTaille = _iTaille;
 
@@ -2364,7 +2361,7 @@ CMenuCheckButton::CMenuCheckButton(int _iID, float _fPosX,float _fPosY,int _iTai
 
 		_iTaille = std::max<int>(_iTaille, textSize.y);
 		textSize.x += pText->rZone.left;
-		pText->Move(iPosX, iPosY + (_iTaille - textSize.y) / 2);
+		pText->Move(m_pos + Vec2i(0, (_iTaille - textSize.y) / 2));
 	}
 
 	rZone.left = checked_range_cast<Rect::Num>(_fPosX);
@@ -2378,19 +2375,19 @@ CMenuCheckButton::CMenuCheckButton(int _iID, float _fPosX,float _fPosY,int _iTai
 		rZone.right = checked_range_cast<Rect::Num>(rZoneR);
 	}
 	
-	Move(iPosX, iPosY);
+	Move(m_pos);
 }
 
 CMenuCheckButton::~CMenuCheckButton() {
 	delete pText;
 }
 
-void CMenuCheckButton::Move(int _iX, int _iY) {
+void CMenuCheckButton::Move(const Vec2i & offset) {
 	
-	CMenuElement::Move(_iX, _iY);
+	CMenuElement::Move(offset);
 	
 	if(pText) {
-		pText->Move(_iX, _iY);
+		pText->Move(offset);
 	}
 	
 	ComputeTexturesPosition();
@@ -2717,7 +2714,7 @@ void CWindowMenuConsole::AddMenu(CMenuElement *_pMenuElement)
 {
 	_pMenuElement->ePlace=NOCENTER;
 
-	_pMenuElement->Move(iOX,iOY);
+	_pMenuElement->Move(Vec2i(iOX, iOY));
 	MenuAllZone.AddZone((CMenuZone*)_pMenuElement);
 }
 
@@ -2757,10 +2754,10 @@ void CWindowMenuConsole::AddMenuCenterY(CMenuElement * _pMenuElement) {
 		CMenuZone *pZone    =    MenuAllZone.GetZoneNum(iJ);
 		iDy                    =    pZone->rZone.bottom - pZone->rZone.top;
 		iDepY                +=    iDy + iInterligne;
-		pZone->Move( 0, dy );
+		pZone->Move(Vec2i(0, dy));
 	}
 
-	_pMenuElement->Move( 0, iDepY );
+	_pMenuElement->Move(Vec2i(0, iDepY));
 
 	MenuAllZone.AddZone( (CMenuZone*) _pMenuElement );
 }
@@ -2807,23 +2804,23 @@ void CWindowMenuConsole::AddMenuCenter(CMenuElement * _pMenuElement) {
 	for(int iJ = 0; iJ < iI; iJ++) {
 		CMenuZone *pZone = MenuAllZone.GetZoneNum( iJ );
 		iDepY += pZone->rZone.bottom - pZone->rZone.top + iInterligne;
-		pZone->Move( 0, dy );
+		pZone->Move(Vec2i(0, dy));
 	}
 
-	_pMenuElement->Move( dx, iDepY );
+	_pMenuElement->Move(Vec2i(dx, iDepY));
 
 	MenuAllZone.AddZone( (CMenuZone*) _pMenuElement );
 }
 
 void CWindowMenuConsole::AlignElementCenter(CMenuElement *_pMenuElement) {
 	
-	_pMenuElement->Move(-_pMenuElement->rZone.left, 0);
+	_pMenuElement->Move(Vec2i(-_pMenuElement->rZone.left, 0));
 	_pMenuElement->ePlace = CENTER;
 	
 	int iDx = _pMenuElement->rZone.right - _pMenuElement->rZone.left;
 	int dx = (iWidth - iDx) / 2 - _pMenuElement->rZone.left;
 	
-	_pMenuElement->Move(std::max(dx, 0), 0);
+	_pMenuElement->Move(Vec2i(std::max(dx, 0), 0));
 }
 
 void CWindowMenuConsole::UpdateText() {
@@ -3030,7 +3027,7 @@ MENUSTATE CWindowMenuConsole::Update(int _iPosX, int _iPosY, int _iOffsetY) {
 		_iPosY-=(MenuAllZone.GetZoneNum(_iOffsetY)->rZone.top)-(MenuAllZone.GetZoneNum(0)->rZone.top);
 	}
 
-	MenuAllZone.Move((m_pos.x-m_oldPos.x),(m_pos.y-m_oldPos.y));
+	MenuAllZone.Move(m_pos - m_oldPos);
 
 	int iI = MenuAllZone.GetNbZone();
 
@@ -3475,15 +3472,12 @@ CMenuPanel::~CMenuPanel()
 		delete (*it);
 }
 
-void CMenuPanel::Move(int _iX, int _iY)
+void CMenuPanel::Move(const Vec2i & offset)
 {
-	rZone.left += _iX;
-	rZone.top += _iY;
-	rZone.right += _iX;
-	rZone.bottom += _iY;
-
+	rZone.move(offset.x, offset.y);
+	
 	for(std::vector<CMenuElement*>::iterator it = vElement.begin(), it_end = vElement.end(); it != it_end; ++it)
-		(*it)->Move(_iX, _iY);
+		(*it)->Move(offset);
 }
 
 // patch on ajoute à droite en ligne
@@ -3502,7 +3496,7 @@ void CMenuPanel::AddElement(CMenuElement* _pElem)
 	rZone.right = std::max(rZone.right, _pElem->rZone.right);
 	rZone.bottom = std::max(rZone.bottom, _pElem->rZone.bottom);
 
-	_pElem->Move(0, ((GetHeight() - _pElem->rZone.bottom) / 2));
+	_pElem->Move(Vec2i(0, ((GetHeight() - _pElem->rZone.bottom) / 2)));
 }
 
 // patch on ajoute à droite en ligne
@@ -3811,7 +3805,7 @@ void CMenuSliderText::AddText(CMenuElementText *_pText) {
 	
 	_pText->setEnabled(enabled);
 	
-	_pText->Move(rZone.left + pLeftButton->GetWidth(), rZone.top + 0);
+	_pText->Move(Vec2i(rZone.left + pLeftButton->GetWidth(), rZone.top + 0));
 	vText.push_back(_pText);
 
 	Vec2i textSize = _pText->GetTextSize();
@@ -3836,15 +3830,15 @@ void CMenuSliderText::AddText(CMenuElementText *_pText) {
 	}
 }
 
-void CMenuSliderText::Move(int _iX, int _iY) {
+void CMenuSliderText::Move(const Vec2i & offset) {
 
-	CMenuZone::Move(_iX, _iY);
+	CMenuZone::Move(offset);
 
-	pLeftButton->Move(_iX, _iY);
-	pRightButton->Move(_iX, _iY);
+	pLeftButton->Move(offset);
+	pRightButton->Move(offset);
 
 	for(std::vector<CMenuElementText*>::const_iterator i = vText.begin(), i_end = vText.end(); i != i_end; ++i)
-		(*i)->Move(_iX, _iY);
+		(*i)->Move(offset);
 }
 
 void CMenuSliderText::EmptyFunction() {
@@ -4055,7 +4049,7 @@ CMenuSlider::CMenuSlider(int _iID, int _iPosX, int _iPosY)
 	rZone.bottom = max( static_cast<unsigned long>( rZone.bottom ), (unsigned long)max( pTex1->m_dwHeight, pTex2->m_dwHeight ) );
 
 
-	pRightButton->Move(pLeftButton->GetWidth() + 10*max(pTex1->m_dwWidth, pTex2->m_dwWidth), 0);
+	pRightButton->Move(Vec2i(pLeftButton->GetWidth() + 10*max(pTex1->m_dwWidth, pTex2->m_dwWidth), 0));
 
 	pRef = this;
 }
@@ -4065,10 +4059,10 @@ CMenuSlider::~CMenuSlider() {
 	delete pRightButton;
 }
 
-void CMenuSlider::Move(int _iX, int _iY) {
-	CMenuZone::Move(_iX, _iY);
-	pLeftButton->Move(_iX, _iY);
-	pRightButton->Move(_iX, _iY);
+void CMenuSlider::Move(const Vec2i & offset) {
+	CMenuZone::Move(offset);
+	pLeftButton->Move(offset);
+	pRightButton->Move(offset);
 }
 
 void CMenuSlider::EmptyFunction() {
@@ -4164,7 +4158,7 @@ void CMenuSlider::Update(int _iTime) {
 
 
 	float fWidth = pLeftButton->GetWidth() + RATIO_X(10*max(pTex1->m_dwWidth, pTex2->m_dwWidth)) ;
-	pRightButton->Move(checked_range_cast<int>(fWidth), 0);
+	pRightButton->Move(Vec2i(checked_range_cast<int>(fWidth), 0));
 
 	rZone.right  = checked_range_cast<Rect::Num>( rZone.left + pLeftButton->GetWidth() + pRightButton->GetWidth() + RATIO_X(10*std::max(pTex1->m_dwWidth, pTex2->m_dwWidth)) );
 

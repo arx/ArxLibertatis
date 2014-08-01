@@ -277,7 +277,7 @@ class CMenuZone
 		{
 			return (rZone.bottom - rZone.top);
 		}
-		virtual void Move(int, int);
+		virtual void Move(const Vec2i & offset);
 		virtual void SetPos(float, float);
  
 		void SetCheckOff()
@@ -306,7 +306,7 @@ class CMenuAllZone
  
 		CMenuZone * GetZoneNum(int zoneNumber);
 		CMenuZone * GetZoneWithID(int zoneId);
-		void Move(int dx, int dy);
+		void Move(const Vec2i & offset);
 		void DrawZone();
 		int GetNbZone();
 };
@@ -374,7 +374,7 @@ class CMenuPanel : public CMenuElement {
 		CMenuPanel();
 		virtual ~CMenuPanel();
 
-		void Move(int dx, int dy);
+		void Move(const Vec2i & offset);
 		void AddElement(CMenuElement * element);
 		void AddElementNoCenterIn(CMenuElement * element);
  
@@ -459,7 +459,7 @@ class CMenuSliderText: public CMenuElement {
 		void AddText(CMenuElementText * text);
 
 	public:
-		void Move(int dx, int dy);
+		void Move(const Vec2i & offset);
 		bool OnMouseClick(int button);
 		CMenuElement * OnShortCut() { return NULL; }
 		void Update(int time);
@@ -487,7 +487,7 @@ class CMenuSlider: public CMenuElement {
 		virtual ~CMenuSlider();
 
 	public:
-		void Move(int dx, int dy);
+		void Move(const Vec2i & offset);
 		bool OnMouseClick(int button);
 		CMenuElement * OnShortCut() { return NULL; }
 		void Update(int time);
@@ -503,8 +503,7 @@ class CMenuCheckButton : public CMenuElement {
 	public:
 		int					iState;
 		int					iOldState;
-		int					iPosX;
-		int					iPosY;
+		Vec2i m_pos;
 		int					iTaille;
 		CMenuAllZone	*	pAllCheckZone;
 		std::vector<TextureContainer *> vTex;
@@ -515,7 +514,7 @@ class CMenuCheckButton : public CMenuElement {
 		                 TextureContainer * tex2, CMenuElementText * label = NULL); 
 		virtual ~CMenuCheckButton();
 
-		void Move(int dx, int dy);
+		void Move(const Vec2i & offset);
 		bool OnMouseClick(int button);
 		void Update(int time);
 		void Render();
