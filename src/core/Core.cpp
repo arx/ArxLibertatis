@@ -170,8 +170,6 @@ using std::ostringstream;
 
 Image savegame_thumbnail;
 
-#define MAX_EXPLO 24
-
 static bool initializeGame();
 static void shutdownGame();
 
