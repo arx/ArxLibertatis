@@ -2695,8 +2695,8 @@ CWindowMenuConsole::CWindowMenuConsole(int _iPosX, int _iPosY, int _iWidth, int 
 	, pData(NULL)
 	, bMouseAttack(false)
 {
-	iOX=(int)RATIO_X(_iPosX);
-	iOY=(int)RATIO_Y(_iPosY);
+	m_offset.x=(int)RATIO_X(_iPosX);
+	m_offset.y=(int)RATIO_Y(_iPosY);
 	iWidth=(int)RATIO_X(_iWidth);
 	iHeight=(int)RATIO_Y(_iHeight);
 
@@ -2714,7 +2714,7 @@ void CWindowMenuConsole::AddMenu(CMenuElement *_pMenuElement)
 {
 	_pMenuElement->ePlace=NOCENTER;
 
-	_pMenuElement->Move(Vec2i(iOX, iOY));
+	_pMenuElement->Move(Vec2i(m_offset.x, m_offset.y));
 	MenuAllZone.AddZone((CMenuZone*)_pMenuElement);
 }
 
@@ -2735,9 +2735,9 @@ void CWindowMenuConsole::AddMenuCenterY(CMenuElement * _pMenuElement) {
 	int iDepY;
 
 	if(iDy < iHeight) {
-		iDepY = iOY + ((iHeight - iDy) >> 1);
+		iDepY = m_offset.y + ((iHeight - iDy) >> 1);
 	} else {
-		iDepY = iOY;
+		iDepY = m_offset.y;
 	}
 
 	int dy = 0;
@@ -2786,9 +2786,9 @@ void CWindowMenuConsole::AddMenuCenter(CMenuElement * _pMenuElement) {
 	int iDepY;
 
 	if(iDy < iHeight ) {
-		iDepY = iOY + ( ( iHeight - iDy ) >> 1 );
+		iDepY = m_offset.y + ( ( iHeight - iDy ) >> 1 );
 	} else {
-		iDepY = iOY;
+		iDepY = m_offset.y;
 	}
 
 	int dy = 0;
