@@ -309,9 +309,7 @@ bool ProcessFadeInOut(bool _bFadeIn, float _fspeed) {
 	return false;
 }
 
-void MACRO_MENU_PRINCIPALE(int iPosMenuPrincipaleX,
-						   int & iPosMenuPrincipaleY,
-						   int iDecMenuPrincipaleY,
+void MACRO_MENU_PRINCIPALE(Vec2s & pos,
 						   Color lColor,
 						   int MACRO_button,
 						   MENUSTATE MACRO_menu,
@@ -319,7 +317,7 @@ void MACRO_MENU_PRINCIPALE(int iPosMenuPrincipaleX,
 						   int MACRO_check)
 {
 	std::string szMenuText = getLocalised( MACRO_locate );
-	CMenuElementText *me = new CMenuElementText(MACRO_button, hFontMainMenu, szMenuText, RATIO_X(iPosMenuPrincipaleX), RATIO_Y(iPosMenuPrincipaleY), lColor, 1.8f, MACRO_menu);
+	CMenuElementText *me = new CMenuElementText(MACRO_button, hFontMainMenu, szMenuText, RATIO_X(pos.x), RATIO_Y(pos.y), lColor, 1.8f, MACRO_menu);
 	if(MACRO_check) {
 		pMenuElementResume=me;
 		if(ARXMenu_CanResumeGame()) {
@@ -330,7 +328,6 @@ void MACRO_MENU_PRINCIPALE(int iPosMenuPrincipaleX,
 		}
 	}
 	pMenu->AddMenuElement(me);
-	iPosMenuPrincipaleY+=iDecMenuPrincipaleY;
 }
 
 bool Menu2_Render() {
@@ -402,16 +399,21 @@ bool Menu2_Render() {
 
 		pMenu->pTexBackGround = TextureContainer::LoadUI("graph/interface/menus/menu_main_background", TextureContainer::NoColorKey);
 
-		int mainPosX = 370;
-		int mainPosY = 100;
-		int mainDecY = 50;
-
-	MACRO_MENU_PRINCIPALE(mainPosX, mainPosY, mainDecY, lColor, BUTTON_MENUMAIN_RESUMEGAME,RESUME_GAME,"system_menus_main_resumegame",1);
-	MACRO_MENU_PRINCIPALE(mainPosX, mainPosY, mainDecY, lColor, BUTTON_MENUMAIN_NEWQUEST,NEW_QUEST,"system_menus_main_newquest",0);
-	MACRO_MENU_PRINCIPALE(mainPosX, mainPosY, mainDecY, lColor, -1,EDIT_QUEST,"system_menus_main_editquest",0);
-	MACRO_MENU_PRINCIPALE(mainPosX, mainPosY, mainDecY, lColor, BUTTON_MENUMAIN_OPTIONS,OPTIONS,"system_menus_main_options",0);
-	MACRO_MENU_PRINCIPALE(mainPosX, mainPosY, mainDecY, lColor, BUTTON_MENUMAIN_CREDITS,CREDITS,"system_menus_main_credits",0);
-	MACRO_MENU_PRINCIPALE(mainPosX, mainPosY, mainDecY, lColor, -1,QUIT,"system_menus_main_quit",0);
+		Vec2s pos = Vec2s(370, 100);
+		int yOffset = 50;
+		
+		MACRO_MENU_PRINCIPALE(pos, lColor, BUTTON_MENUMAIN_RESUMEGAME,RESUME_GAME,"system_menus_main_resumegame",1);
+		pos.y += yOffset;
+		MACRO_MENU_PRINCIPALE(pos, lColor, BUTTON_MENUMAIN_NEWQUEST,NEW_QUEST,"system_menus_main_newquest",0);
+		pos.y += yOffset;
+		MACRO_MENU_PRINCIPALE(pos, lColor, -1,EDIT_QUEST,"system_menus_main_editquest",0);
+		pos.y += yOffset;
+		MACRO_MENU_PRINCIPALE(pos, lColor, BUTTON_MENUMAIN_OPTIONS,OPTIONS,"system_menus_main_options",0);
+		pos.y += yOffset;
+		MACRO_MENU_PRINCIPALE(pos, lColor, BUTTON_MENUMAIN_CREDITS,CREDITS,"system_menus_main_credits",0);
+		pos.y += yOffset;
+		MACRO_MENU_PRINCIPALE(pos, lColor, -1,QUIT,"system_menus_main_quit",0);
+		pos.y += yOffset;
 
 		std::string version = arx_version;
 		if(!arx_release_codename.empty()) {
