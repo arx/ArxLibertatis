@@ -106,8 +106,6 @@ static void EERIE_PORTAL_Release();
 
 static bool RayIn3DPolyNoCull(const Vec3f & orgn, const Vec3f & dest, EERIEPOLY * epp);
 
-extern TextureContainer * sphere_particle;
-
 static bool IntersectLinePlane(const Vec3f & l1, const Vec3f & l2, const EERIEPOLY * ep, Vec3f * intersect) {
 	
 	Vec3f v = l2 - l1;

@@ -196,19 +196,13 @@ static TextureContainer * ombrignon = NULL;
 TextureContainer *	GoldCoinsTC[MAX_GOLD_COINS_VISUALS]; // Gold Coins Icons
 
 TextureContainer *	tflare = NULL;
-static TextureContainer * npc_fight = NULL;
-static TextureContainer * npc_follow = NULL;
-static TextureContainer * npc_stop = NULL;
-TextureContainer *	sphere_particle=NULL;
 TextureContainer *	inventory_font=NULL;
 TextureContainer *	enviro=NULL;
 TextureContainer *	arx_logo_tc=NULL;
 TextureContainer *	TC_fire2=NULL;
 TextureContainer *	TC_fire=NULL;
 TextureContainer *	TC_smoke=NULL;
-static TextureContainer *	Z_map = NULL;
 TextureContainer *	Boom=NULL;
-//TextureContainer *	zbtex=NULL;
 
 #if BUILD_EDIT_LOADSAVE
 EERIE_MULTI3DSCENE * mse = NULL;
@@ -675,11 +669,7 @@ void LoadSysTextures()
 	spellDataInit();
 
 	enviro=				TextureContainer::LoadUI("graph/particles/enviro");
-	sphere_particle=	TextureContainer::LoadUI("graph/particles/sphere");
 	inventory_font=		TextureContainer::LoadUI("graph/interface/font/font10x10_inventory");
-	npc_fight=			TextureContainer::LoadUI("graph/interface/icons/follower_attack");
-	npc_follow=			TextureContainer::LoadUI("graph/interface/icons/follower_follow");
-	npc_stop=			TextureContainer::LoadUI("graph/interface/icons/follower_stop");
 	tflare=				TextureContainer::LoadUI("graph/particles/flare");
 	ombrignon=			TextureContainer::LoadUI("graph/particles/ombrignon");
 	TextureContainer::LoadUI("graph/particles/teleportae");
@@ -687,7 +677,6 @@ void LoadSysTextures()
 	TC_fire2=			TextureContainer::LoadUI("graph/particles/fire2");
 	TC_smoke=			TextureContainer::LoadUI("graph/particles/smoke");
 	TextureContainer::LoadUI("graph/particles/missile");
-	Z_map = TextureContainer::LoadUI("graph/interface/misc/z-map");
 	Boom=				TextureContainer::LoadUI("graph/particles/boom");
 	arx_logo_tc=		TextureContainer::LoadUI("graph/interface/icons/arx_logo_32");
 	
