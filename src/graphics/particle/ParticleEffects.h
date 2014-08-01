@@ -156,9 +156,6 @@ static const float FLARE_MUL = 2.f;
 static const float BOOM_RADIUS = 420.f;
 static const float BOOM_RADIUS2 = 250.f;
 
-static const size_t MAX_EXPLO = 24;
-extern TextureContainer * explo[MAX_EXPLO];
-
 extern short OPIPOrgb;
 extern short PIPOrgb;
 extern std::vector<POLYBOOM> polyboom;

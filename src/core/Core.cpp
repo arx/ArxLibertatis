@@ -194,7 +194,6 @@ Vec3f PUSH_PLAYER_FORCE;
 ParticleManager	*pParticleManager = NULL;
 static TextureContainer * ombrignon = NULL;
 TextureContainer *	GoldCoinsTC[MAX_GOLD_COINS_VISUALS]; // Gold Coins Icons
-TextureContainer *	explo[MAX_EXPLO];		// TextureContainer for animated explosion bitmaps (24 frames)
 
 TextureContainer *	tflare = NULL;
 static TextureContainer * npc_fight = NULL;
@@ -514,8 +513,6 @@ static bool initializeGame() {
 	
 	ARX_SPELLS_CancelSpellTarget();
 	
-	memset(explo, 0, sizeof(explo));
-	
 	LogDebug("Danae Start");
 	
 	LogDebug("Project Init");
@@ -694,12 +691,6 @@ void LoadSysTextures()
 	Boom=				TextureContainer::LoadUI("graph/particles/boom");
 	arx_logo_tc=		TextureContainer::LoadUI("graph/interface/icons/arx_logo_32");
 	
-	for(long i = 0; i < MAX_EXPLO; i++) {
-		char temp[256];
-		sprintf(temp,"graph/particles/fireb_%02ld",i+1);
-		explo[i]= TextureContainer::LoadUI(temp);
-	}
-
 	TextureContainer::LoadUI("graph/particles/square");
 	
 	TextureContainer::LoadUI("graph/particles/fire_hit");

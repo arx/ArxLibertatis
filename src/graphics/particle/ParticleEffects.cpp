@@ -97,6 +97,10 @@ TextureContainer * healing = NULL;
 static TextureContainer * tzupouf = NULL;
 TextureContainer * fire2=NULL;
 
+static const size_t MAX_EXPLO = 24;
+static TextureContainer * explo[MAX_EXPLO]; // TextureContainer for animated explosion bitmaps (24 frames)
+
+
 short			OPIPOrgb=0;
 short			PIPOrgb=0;
 
@@ -838,6 +842,12 @@ void ARX_PARTICLES_FirstInit() {
 	healing=TextureContainer::Load("graph/particles/heal_0005");
 	tzupouf=TextureContainer::Load("graph/obj3d/textures/(fx)_tsu_greypouf");
 	fire2=TextureContainer::Load("graph/particles/fire2");
+	
+	for(size_t i = 0; i < MAX_EXPLO; i++) {
+		char temp[256];
+		sprintf(temp,"graph/particles/fireb_%02ld",i+1);
+		explo[i]= TextureContainer::LoadUI(temp);
+	}
 }
 
 void ARX_PARTICLES_ClearAll() {
