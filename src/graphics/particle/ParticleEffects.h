@@ -171,7 +171,6 @@ void TreatBackgroundDynlights();
 void Add3DBoom(const Vec3f & position);
 void AddRandomSmoke(Entity * io, long amount = 1);
 
-void LaunchDummyParticle();
 void ManageTorch();
 
 void MakePlayerAppearsFX(Entity * io);

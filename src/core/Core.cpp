@@ -263,7 +263,6 @@ bool g_cursorOverBook = false;
 //-----------------------------------------------------------------------------
 // DEBUG FLAGS/Vars
 //-----------------------------------------------------------------------------
-long LaunchDemo=0;
 bool FirstFrame=true;
 unsigned long WILLADDSPEECHTIME=0;
 unsigned long AimTime;
@@ -392,8 +391,6 @@ enum LevelNumber {
 	NOLEVEL    = 32
 };
 
-LevelNumber g_initialLevel = LEVEL10;
-
 void InitializeDanae() {
 	
 	InitTileLights();
@@ -406,14 +403,6 @@ void InitializeDanae() {
 	ARX_MAGICAL_FLARES_FirstInit();
 	
 	LastLoadedScene.clear();
-	
-	res::path levelPath;
-	res::path levelFullPath;
-	
-	char levelId[256];
-	GetLevelNameByNum(g_initialLevel, levelId);
-	levelPath = std::string("graph/levels/level") + levelId;
-	levelFullPath = levelPath.string() + "/level" + levelId + ".dlf";
 	
 	memset(&DefaultBkg, 0, sizeof(EERIE_BACKGROUND));
 	ACTIVEBKG=&DefaultBkg;
@@ -452,27 +441,9 @@ void InitializeDanae() {
 	LoadSysTextures();
 	cursorTexturesInit();
 	
-	if(LaunchDemo) {
-		LogInfo << "Launching splash screens.";
-		LaunchDemo = 0;
-		if(GameFlow::getTransition() == GameFlow::NoTransition) {
-			GameFlow::setTransition(GameFlow::FirstLogo);
-		}
-	} else if(!levelPath.empty())	{
-		LogInfo << "Launching Level " << levelPath;
-		if (FastSceneLoad(levelPath)) {
-			FASTmse = 1;
-		} else {
-#if BUILD_EDIT_LOADSAVE
-			ARX_SOUND_PlayCinematic("editor_humiliation", false);
-			mse = PAK_MultiSceneToEerie(levelPath);
-#else
-			LogError << "FastSceneLoad failed";
-#endif
-		}
-		EERIEPOLY_Compute_PolyIn();
-		LastLoadedScene = levelPath;
-		USE_PLAYERCOLLISIONS = false;
+	LogInfo << "Launching splash screens.";
+	if(GameFlow::getTransition() == GameFlow::NoTransition) {
+		GameFlow::setTransition(GameFlow::FirstLogo);
 	}
 }
 
@@ -558,8 +529,6 @@ static bool initializeGame() {
 	RemoveQuakeFX();
 	
 	LogDebug("Launching DANAE");
-	
-	LaunchDemo = 1;
 	
 	if(!AdjustUI()) {
 		return false;

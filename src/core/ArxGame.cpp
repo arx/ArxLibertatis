@@ -168,7 +168,6 @@ extern long START_NEW_QUEST;
 long LOADQUEST_SLOT = -1; // OH NO, ANOTHER GLOBAL! - TEMP PATCH TO CLEAN CODE FLOW
 extern long PLAYER_PARALYSED;
 extern long DeadTime;
-extern long LaunchDemo;
 
 static const float CURRENT_BASE_FOCAL = 310.f;
 extern float BOW_FOCAL;
@@ -1702,11 +1701,6 @@ void ArxGame::render() {
 		}
 		default: break;
 		}
-	}
-	
-	if(LaunchDemo) {
-		LaunchDemo = 0;
-		LaunchDummyParticle();
 	}
 	
 	if(ARXmenu.currentmode == AMCM_OFF) {

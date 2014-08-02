@@ -110,22 +110,6 @@ long getParticleCount() {
 	return ParticleCount;
 }
 
-void LaunchDummyParticle() {
-		
-	PARTICLE_DEF * pd = createParticle();
-	if(!pd) {
-		return;
-	}
-	
-	float f = radians(player.angle.getPitch());
-	pd->ov = player.pos + Vec3f(std::sin(f) * 100.f, 0.f, -std::cos(f) * 100.f);
-	pd->tolive = 600;
-	pd->tc = smokeparticle;
-	pd->siz = 15.f;
-	pd->scale = randomVec(-15.f, -10.f);
-	pd->special = FIRE_TO_SMOKE;
-}
-
 void ARX_PARTICLES_Spawn_Lava_Burn(Vec3f * poss, Entity * io) {
 	
 	Vec3f pos = *poss;
