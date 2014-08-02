@@ -100,8 +100,6 @@ using std::copy;
 using std::string;
 using std::vector;
 
-void ComputeFastBkgData(EERIE_BACKGROUND * eb);
-
 static void EERIE_PORTAL_Release();
 
 static bool RayIn3DPolyNoCull(const Vec3f & orgn, const Vec3f & dest, EERIEPOLY * epp);
