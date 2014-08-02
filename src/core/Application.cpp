@@ -72,10 +72,6 @@ ZeniMax Media Inc., Suite 120, Rockville, Maryland 20850 USA.
 
 #include "window/RenderWindow.h"
 
-using std::max;
-using std::string;
-
-//-----------------------------------------------------------------------------
 long EERIEMouseButton = 0;
 long EERIEMouseGrab = 0;
 
@@ -138,8 +134,8 @@ void Application::quit() {
 
 static bool migrateFilenames(fs::path path, bool is_dir) {
 	
-	string name = path.filename();
-	string lowercase = boost::to_lower_copy(name);
+	std::string name = path.filename();
+	std::string lowercase = boost::to_lower_copy(name);
 	
 	bool migrated = true;
 	
@@ -173,7 +169,7 @@ static bool migrateFilenames(const fs::path & configFile) {
 	 "sfx.pak", "loc.pak", "data2.pak", "data.pak", "speech.pak", "loc_default.pak", "speech_default.pak",
 	 "save", "editor", "game", "graph", "localisation", "misc", "sfx", "speech" };
 	
-	std::set<string> fileset;
+	std::set<std::string> fileset;
 	for(size_t i = 0; i < ARRAY_SIZE(files); i++) {
 		fileset.insert(files[i]);
 	}
@@ -181,7 +177,7 @@ static bool migrateFilenames(const fs::path & configFile) {
 	bool migrated = true;
 	
 	for(fs::directory_iterator it(fs::paths.user); !it.end(); ++it) {
-		string file = it.name();
+		std::string file = it.name();
 		if(fileset.find(boost::to_lower_copy(file)) != fileset.end()) {
 			migrated &= migrateFilenames(fs::paths.user / file, it.is_directory());
 		}
