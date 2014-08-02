@@ -700,6 +700,7 @@ set(GAME_SOURCES
 	src/game/magic/spells/SpellsLvl08.cpp
 	src/game/magic/spells/SpellsLvl09.cpp
 	src/game/magic/spells/SpellsLvl10.cpp
+	src/game/npc/Dismemberment.cpp
 	src/game/spell/FlyingEye.cpp
 	src/game/spell/Cheat.cpp
 )

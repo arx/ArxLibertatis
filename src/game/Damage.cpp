@@ -66,6 +66,7 @@ ZeniMax Media Inc., Suite 120, Rockville, Maryland 20850 USA.
 #include "game/Player.h"
 #include "game/Spells.h"
 #include "game/effect/Quake.h"
+#include "game/npc/Dismemberment.h"
 
 #include "gui/Speech.h"
 #include "gui/Hud.h"

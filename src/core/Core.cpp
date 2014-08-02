@@ -85,6 +85,7 @@ ZeniMax Media Inc., Suite 120, Rockville, Maryland 20850 USA.
 #include "game/NPC.h"
 #include "game/Player.h"
 #include "game/Spells.h"
+#include "game/npc/Dismemberment.h"
 #include "game/spell/FlyingEye.h"
 #include "game/spell/Cheat.h"
 #include "game/effect/Quake.h"
@@ -658,8 +659,6 @@ Entity * FlyingOverObject(const Vec2s & pos)
 	return NULL;
 }
 
-extern long ARX_NPC_ApplyCuts(Entity * io);
-
 void LoadSysTextures()
 {
 	MagicFlareLoadTextures();
@@ -1000,15 +999,7 @@ void FirstFrameHandling() {
 		WILL_RESTORE_PLAYER_POSITION_FLAG = 0;
 	}
 	
-	for(size_t i = 0; i < entities.size(); i++) {
-		const EntityHandle handle = EntityHandle(i);
-		Entity * e = entities[handle];
-		
-		if(e && (e->ioflags & IO_NPC)
-		   && e->_npcdata->cuts) {
-			ARX_NPC_ApplyCuts(e);
-		}
-	}
+	ARX_NPC_RestoreCuts();
 	
 	ResetVVPos(entities.player());
 	
