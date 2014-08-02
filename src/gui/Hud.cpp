@@ -200,7 +200,7 @@ public:
 		if(io) {
 			float dist = fdist(io->pos, player.pos + (Vec3f_Y_AXIS * 80.f));
 			
-			float maxDist = Project.telekinesis ? 900.f : 350.f;
+			float maxDist = player.m_telekinesis ? 900.f : 350.f;
 			
 			if(dist > maxDist) {
 				if(InventoryDir != -1) {

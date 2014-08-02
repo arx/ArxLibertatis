@@ -1383,7 +1383,7 @@ void ArxGame::updateLevel() {
 
 	ManageTorch();
 
-	if(!Project.improve) {
+	if(!player.m_improve) {
 		if(subj.focal < BASE_FOCAL) {
 			static const float INC_FOCAL = 75.0f;
 			subj.focal += INC_FOCAL;
@@ -1455,7 +1455,7 @@ void ArxGame::renderLevel() {
 	// Checks some specific spell FX
 	CheckMr();
 
-	if(Project.improve) {
+	if(player.m_improve) {
 		DrawImproveVisionInterface();
 	}
 

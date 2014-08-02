@@ -3914,8 +3914,8 @@ void ARX_INTERFACE_ManageOpenedBook() {
 			ARX_EQUIPMENT_AttachPlayerWeaponToHand();
 		}
 
-		bool ti = Project.improve;
-		Project.improve = false;
+		bool ti = player.m_improve;
+		player.m_improve = false;
 
 
 		float invisibility = entities.player()->invisibility;
@@ -3952,7 +3952,7 @@ void ARX_INTERFACE_ManageOpenedBook() {
 		entities.player()->obj->vertexlist3 = vertexlist;
 		vertexlist.clear();
 
-		Project.improve = ti;
+		player.m_improve = ti;
 
 		GRenderer->SetViewport(Rect(g_size.width(), g_size.height()));
 
@@ -4353,7 +4353,7 @@ void ArxGame::manageEditorControls() {
 			} else { // GLights
 				float fMaxdist = 300;
 	
-				if(Project.telekinesis)
+				if(player.m_telekinesis)
 					fMaxdist = 850;
 	
 				for(size_t i = 0; i < MAX_LIGHTS; i++) {
@@ -4403,7 +4403,7 @@ void ArxGame::manageEditorControls() {
 		if(COMBINE) {
 			float fMaxdist = 300;
 			
-			if(Project.telekinesis)
+			if(player.m_telekinesis)
 				fMaxdist = 850;
 			
 			for(size_t i = 0; i < MAX_LIGHTS; i++) {

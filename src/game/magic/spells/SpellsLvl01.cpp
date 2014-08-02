@@ -50,7 +50,7 @@ void MagicSightSpell::Launch()
 	ARX_SOUND_PlaySFX(SND_SPELL_VISION_START, &m_caster_pos);
 	
 	if(m_caster == PlayerEntityHandle) {
-		Project.improve = true;
+		player.m_improve = true;
 		m_snd_loop = SND_SPELL_VISION_LOOP;
 		ARX_SOUND_PlaySFX(m_snd_loop, &m_caster_pos, 1.f, ARX_SOUND_PLAY_LOOPED);
 	}
@@ -59,7 +59,7 @@ void MagicSightSpell::Launch()
 void MagicSightSpell::End()
 {
 	if(m_caster == PlayerEntityHandle) {
-		Project.improve = false;
+		player.m_improve = false;
 		ARX_SOUND_Stop(m_snd_loop);
 	}
 	ARX_SOUND_PlaySFX(SND_SPELL_VISION_START, &entities[m_caster]->pos);

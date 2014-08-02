@@ -145,7 +145,11 @@ struct ARXCHARACTER {
 	JumpPhase jumpphase;
 	
 	bool climbing;
+	
+	// Updated by spells
 	bool levitate;
+	bool m_telekinesis;
+	bool m_improve;
 	
 	Anglef desiredangle;
 	Vec3f size;
@@ -163,6 +167,8 @@ struct ARXCHARACTER {
 	Entity * leftIO;
 	Entity * equipsecondaryIO;
 	Entity * equipshieldIO;
+	
+	Color3f m_torchColor;
 	Entity * torch;
 	
 	EntityHandle equiped[MAX_EQUIPED]; 

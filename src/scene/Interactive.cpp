@@ -1960,7 +1960,7 @@ Entity * GetFirstInterAtPos(const Vec2s & pos, long flag, Vec3f * _pRef, Entity 
 	Entity * foundPixel = NULL;
 	bool bPlayerEquiped = false;
 
-	if(Project.telekinesis) {
+	if(player.m_telekinesis) {
 		fMaxDist = 850;
 	}
 
@@ -2120,7 +2120,7 @@ Entity * InterClick(const Vec2s & pos) {
 			if(closerThan(player.pos, io->pos, dist_Threshold)) {
 				return io;
 			}
-		} else if(Project.telekinesis) {
+		} else if(player.m_telekinesis) {
 			return io;
 		} else if(IsEquipedByPlayer(io) || closerThan(player.pos, io->pos, dist_Threshold)) {
 			return io;

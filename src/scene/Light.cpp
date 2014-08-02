@@ -51,6 +51,7 @@ ZeniMax Media Inc., Suite 120, Rockville, Maryland 20850 USA.
 #include "game/Entity.h"
 #include "game/EntityManager.h"
 #include "game/Inventory.h"
+#include "game/Player.h"
 
 #include "graphics/Math.h"
 #include "graphics/Draw.h"
@@ -79,7 +80,7 @@ void ColorMod::updateFromEntity(Entity *io, bool inBook) {
 	   term += io->highlightColor;
 	}
 
-	if(Project.improve) {
+	if(player.m_improve) {
 	   Color3f infra = (io) ? io->infracolor : Color3f(0.6f, 0.f, 1.f);
 
 	   factor *= infra;
@@ -199,7 +200,7 @@ void ComputeLight2DPos(EERIE_LIGHT * _pL) {
 		float siz = 50;
 		float fMaxdist = 300;
 
-		if(Project.telekinesis)
+		if(player.m_telekinesis)
 			fMaxdist = 850;
 
 		float t = siz * (1.0f - 1.0f / (out.rhw * fMaxdist)) + 10;
@@ -219,7 +220,7 @@ void TreatBackgroundDynlights()
 		if(light && (light->extras & EXTRAS_SEMIDYNAMIC)) {
 
 			float fMaxdist = 300;
-			if(Project.telekinesis)
+			if(player.m_telekinesis)
 				fMaxdist = 850;
 
 			if(!fartherThan(light->pos, ACTIVECAM->orgTrans.pos, fMaxdist)) {
@@ -674,7 +675,7 @@ void ApplyTileLights(EERIEPOLY * ep, const Vec2s & pos)
 {
 
 	Color3f lightInfraFactor = Color3f::white;
-	if(Project.improve) {
+	if(player.m_improve) {
 		lightInfraFactor.r = 4.f;
 	}
 

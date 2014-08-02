@@ -639,8 +639,8 @@ void ManageTorch() {
 		el->fallstart = 280.f + rr * 20.f;
 		el->fallend = el->fallstart + 280.f;
 		el->exist = 1;
-		el->rgb = Color3f(Project.torch.r - rr * 0.1f, Project.torch.g - rr * 0.1f,
-		                  Project.torch.b - rr * 0.1f);
+		el->rgb = Color3f(player.m_torchColor.r - rr * 0.1f, player.m_torchColor.g - rr * 0.1f,
+		                  player.m_torchColor.b - rr * 0.1f);
 		el->duration = 0;
 		el->extras = 0;
 		
@@ -1249,7 +1249,7 @@ void ARX_PARTICLES_Update(EERIE_CAMERA * cam)  {
 		}
 		
 		Color color = (part->rgb * r).to<u8>();
-		if(Project.improve) {
+		if(player.m_improve) {
 			color.g = 0;
 		}
 		

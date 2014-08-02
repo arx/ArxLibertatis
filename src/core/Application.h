@@ -66,22 +66,6 @@ enum LightModeFlag {
 DECLARE_FLAGS(LightModeFlag, LightMode)
 DECLARE_FLAGS_OPERATORS(LightMode)
 
-struct PROJECT {
-	
-	PROJECT() :
-		improve(false),
-		telekinesis(false),
-		demo(0),
-		torch(Color3f::black)
-	{}
-	
-	bool improve;
-	bool telekinesis;
-	long demo;
-	Color3f torch;
-};
-
-extern PROJECT Project;
 extern float FPS;
 extern LightMode ModeLight;
 

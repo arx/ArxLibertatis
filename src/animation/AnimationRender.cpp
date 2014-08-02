@@ -776,7 +776,7 @@ void DrawEERIEInter_Render(EERIE_3DOBJ *eobj, const TransformInfo &t, Entity *io
 			}
 
 			// TODO copy-paste
-			if(io && Project.improve) {
+			if(io && player.m_improve) {
 				long lr=(tvList[n].color>>16) & 255;
 				float ffr=(float)(lr);
 

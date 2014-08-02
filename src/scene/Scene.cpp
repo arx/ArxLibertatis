@@ -1136,7 +1136,7 @@ void ARX_PORTALS_Frustrum_RenderRoomTCullSoft(long room_num, const EERIE_FRUSTRU
 
 		SMY_VERTEX * pMyVertexCurr = &pMyVertex[roomMat.uslStartVertex];
 
-		if(!Project.improve) { // Normal View...
+		if(!player.m_improve) { // Normal View...
 			if(ep->type & POLY_GLOW) {
 				pMyVertexCurr[ep->uslInd[0]].color = 0xFFFFFFFF;
 				pMyVertexCurr[ep->uslInd[1]].color = 0xFFFFFFFF;
@@ -1469,7 +1469,7 @@ void ARX_SCENE_Render() {
 		ARX_PORTALS_Frustrum_RenderRoomTCullSoftRender(RoomDrawList[i]);
 	}
 
-	if(!Project.improve) {
+	if(!player.m_improve) {
 		ARXDRAW_DrawInterShadows();
 	}
 

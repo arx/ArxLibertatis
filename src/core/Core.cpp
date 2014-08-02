@@ -184,10 +184,6 @@ extern long		TOTPDL;
 extern long		COLLIDED_CLIMB_POLY;
 
 //-----------------------------------------------------------------------------
-// Our Main Danae Application.& Instance and Project
-PROJECT Project;
-
-//-----------------------------------------------------------------------------
 Vec3f PUSH_PLAYER_FORCE;
 
 ParticleManager	*pParticleManager = NULL;
@@ -396,6 +392,8 @@ enum LevelNumber {
 	NOLEVEL    = 32
 };
 
+LevelNumber g_initialLevel = LEVEL10;
+
 void InitializeDanae() {
 	
 	InitTileLights();
@@ -412,12 +410,10 @@ void InitializeDanae() {
 	res::path levelPath;
 	res::path levelFullPath;
 	
-	if(Project.demo != NOLEVEL) {
-		char levelId[256];
-		GetLevelNameByNum(Project.demo, levelId);
-		levelPath = std::string("graph/levels/level") + levelId;
-		levelFullPath = levelPath.string() + "/level" + levelId + ".dlf";
-	}
+	char levelId[256];
+	GetLevelNameByNum(g_initialLevel, levelId);
+	levelPath = std::string("graph/levels/level") + levelId;
+	levelFullPath = levelPath.string() + "/level" + levelId + ".dlf";
 	
 	memset(&DefaultBkg, 0, sizeof(EERIE_BACKGROUND));
 	ACTIVEBKG=&DefaultBkg;
@@ -563,10 +559,7 @@ static bool initializeGame() {
 	
 	LogDebug("Launching DANAE");
 	
-	Project = PROJECT();
-	
 	LaunchDemo = 1;
-	Project.demo = LEVEL10;
 	
 	if(!AdjustUI()) {
 		return false;
@@ -586,7 +579,7 @@ static bool initializeGame() {
 	
 	g_miniMap.firstInit(&player, resources, &entities);
 	
-	Project.torch = Color3f(1.f, 0.8f, 0.66666f);
+	player.m_torchColor = Color3f(1.f, 0.8f, 0.66666f);
 	LogDebug("InitializeDanae");
 	InitializeDanae();
 	

@@ -54,6 +54,7 @@ ZeniMax Media Inc., Suite 120, Rockville, Maryland 20850 USA.
 #include "core/GameTime.h"
 
 #include "game/Entity.h"
+#include "game/Player.h"
 #include "game/Spells.h"
 
 #include "graphics/Draw.h"
@@ -286,10 +287,10 @@ void ARXDRAW_DrawPolyBoom()
 				EE_RT(ltv[k].p, ltv[k].p);
 				ltv[k].uv.x=pb->u[k];
 				ltv[k].uv.y=pb->v[k];
-				ltv[k].color = (Project.improve ? (Color3f::red * (tt*.5f)) : Color3f::gray(tt)).toBGR();
+				ltv[k].color = (player.m_improve ? (Color3f::red * (tt*.5f)) : Color3f::gray(tt)).toBGR();
 			}
 			
-			if(Project.improve) {
+			if(player.m_improve) {
 				mat.setBlendType(RenderMaterial::Additive);
 			} else {
 				mat.setBlendType(RenderMaterial::Subtractive);
