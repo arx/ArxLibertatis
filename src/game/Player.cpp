@@ -2716,7 +2716,7 @@ void ARX_GAME_Reset(long type) {
 	ARX_PLAYER_Reset_Fall();
 
 	player.levitate = false;
-	Project.telekinesis = 0;
+	Project.telekinesis = false;
 	player.onfirmground = false;
 	TRUE_FIRM_GROUND = 0;
 
@@ -2850,7 +2850,7 @@ void ARX_GAME_Reset(long type) {
 	player.inzone = NULL;
 
 	RemoveQuakeFX();
-	Project.improve = 0;
+	Project.improve = false;
 
 	if(eyeball.exist) {
 		eyeball.exist = -100;

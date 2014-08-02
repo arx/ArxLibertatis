@@ -303,7 +303,7 @@ void TelekinesisSpell::Launch()
 	m_fManaCostPerSecond = 0.9f;
 	
 	if(m_caster == PlayerEntityHandle) {
-		Project.telekinesis = 1;
+		Project.telekinesis = true;
 	}
 	
 	ARX_SOUND_PlaySFX(SND_SPELL_TELEKINESIS_START, &m_caster_pos);
@@ -312,7 +312,7 @@ void TelekinesisSpell::Launch()
 void TelekinesisSpell::End()
 {
 	if(m_caster == PlayerEntityHandle)
-		Project.telekinesis = 0;
+		Project.telekinesis = false;
 	
 	ARX_SOUND_PlaySFX(SND_SPELL_TELEKINESIS_END, &entities[m_caster]->pos);
 }

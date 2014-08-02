@@ -69,14 +69,14 @@ DECLARE_FLAGS_OPERATORS(LightMode)
 struct PROJECT {
 	
 	PROJECT() :
-		improve(0),
-		telekinesis(0),
+		improve(false),
+		telekinesis(false),
 		demo(0),
 		torch(Color3f::black)
 	{}
 	
-	long improve;
-	long telekinesis;
+	bool improve;
+	bool telekinesis;
 	long demo;
 	Color3f torch;
 };

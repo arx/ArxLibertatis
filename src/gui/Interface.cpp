@@ -3914,8 +3914,8 @@ void ARX_INTERFACE_ManageOpenedBook() {
 			ARX_EQUIPMENT_AttachPlayerWeaponToHand();
 		}
 
-		long ti=Project.improve;
-		Project.improve=0;
+		bool ti = Project.improve;
+		Project.improve = false;
 
 
 		float invisibility = entities.player()->invisibility;
@@ -3952,7 +3952,7 @@ void ARX_INTERFACE_ManageOpenedBook() {
 		entities.player()->obj->vertexlist3 = vertexlist;
 		vertexlist.clear();
 
-		Project.improve=ti;
+		Project.improve = ti;
 
 		GRenderer->SetViewport(Rect(g_size.width(), g_size.height()));
 
