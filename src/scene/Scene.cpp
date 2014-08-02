@@ -1418,7 +1418,7 @@ void ARX_SCENE_Update() {
 	short minz = std::max(tilez - radius, 0);
 	short maxz = std::min(tilez + radius, ACTIVEBKG->Zsize - 1);
 
-	ACTIVEBKG->Backg[tilex + tilez * ACTIVEBKG->Xsize].treat = true;
+	ACTIVEBKG->fastdata[tilex][tilez].treat = true;
 	TreatBackgroundDynlights();
 	PrecalcDynamicLighting(minx, minz, maxx, maxz);
 

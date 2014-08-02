@@ -96,7 +96,7 @@ void MiniMap::getData(int showLevel) {
 			for(int j = 0; j < m_activeBkg->Zsize; j++) {
 				
 				for(int i = 0; i < m_activeBkg->Xsize; i++) {
-					EERIE_BKG_INFO * eg = &m_activeBkg->Backg[i+j*m_activeBkg->Xsize];
+					EERIE_BKG_INFO * eg = &m_activeBkg->fastdata[i][j];
 					for(int k = 0; k < eg->nbpoly; k++) {
 						EERIEPOLY * ep = &eg->polydata[k];
 						if(ep) {

@@ -393,7 +393,7 @@ long DanaeSaveLevel(const fs::path & _fic) {
 	// TODO copy-paste poly iteration
 	for(short z = 0; z < eb->Zsize; z++)
 	for(short x = 0; x < eb->Xsize; x++) {
-		EERIE_BKG_INFO & eg = eb->Backg[x + z * eb->Xsize];
+		EERIE_BKG_INFO & eg = eb->fastdata[x][z];
 		for(long l = 0; l < eg.nbpoly; l++) {
 			EERIEPOLY & ep = eg.polydata[l];
 			
@@ -1059,7 +1059,7 @@ void RestoreLastLoadedLightning(EERIE_BACKGROUND & eb)
 	// TODO copy-paste poly iteration
 	for(short z = 0; z < eb.Zsize; z++)
 	for(short x = 0; x < eb.Xsize; x++) {
-		EERIE_BKG_INFO & eg = eb.Backg[x + z * eb.Xsize];
+		EERIE_BKG_INFO & eg = eb.fastdata[x][z];
 		for(long l = 0; l < eg.nbpoly; l++) {
 			EERIEPOLY & ep = eg.polydata[l];
 			

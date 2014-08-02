@@ -322,7 +322,7 @@ void SpawnGroundSplat(const Sphere & sp, const Color3f & col, long flags) {
 
 	for(short z = minz; z <= maxz; z++)
 	for(short x = minx; x <= maxx; x++) {
-		EERIE_BKG_INFO *eg = &ACTIVEBKG->Backg[x + z * ACTIVEBKG->Xsize];
+		EERIE_BKG_INFO *eg = &ACTIVEBKG->fastdata[x][z];
 
 		for(long l = 0; l < eg->nbpolyin; l++) {
 			EERIEPOLY *ep = eg->polyin[l];
@@ -733,7 +733,7 @@ void ARX_BOOMS_Add(const Vec3f & poss,long type) {
 
 	for(short z = minz; z <= maxz; z++)
 	for(short x = minx; x <= maxx; x++) {
-		EERIE_BKG_INFO & eg = ACTIVEBKG->Backg[x + z * ACTIVEBKG->Xsize];
+		EERIE_BKG_INFO & eg = ACTIVEBKG->fastdata[x][z];
 		for(long l = 0; l < eg.nbpoly; l++) {
 			EERIEPOLY * ep = &eg.polydata[l];
 			

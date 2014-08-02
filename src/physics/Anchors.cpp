@@ -527,7 +527,7 @@ void AnchorData_ClearAll(EERIE_BACKGROUND * eb) {
 
 	for(long j = 0; j < eb->Zsize; j++) {
 		for(long i = 0; i < eb->Xsize; i++) {
-			EERIE_BKG_INFO * eg = &eb->Backg[i+j*eb->Xsize];
+			EERIE_BKG_INFO * eg = &eb->fastdata[i][j];
 
 			if(eg->nbianchors && eg->ianchors)
 				free(eg->ianchors);
@@ -849,7 +849,7 @@ static void AnchorData_Create_Links_Original_Method(EERIE_BACKGROUND * eb) {
 		}
 		
 		count++;
-		EERIE_BKG_INFO * eg = &eb->Backg[i+j*eb->Xsize];
+		EERIE_BKG_INFO * eg = &eb->fastdata[i][j];
 		long precise = 0;
 		
 		for(long kkk = 0; kkk < eg->nbpolyin; kkk++) {
@@ -870,7 +870,7 @@ static void AnchorData_Create_Links_Original_Method(EERIE_BACKGROUND * eb) {
 			
 			for(long j2 = ji; j2 <= ja; j2++)
 			for(long i2 = ii; i2 <= ia; i2++) {
-				EERIE_BKG_INFO * eg2 = &eb->Backg[i2+j2*eb->Xsize];
+				EERIE_BKG_INFO * eg2 = &eb->fastdata[i2][j2];
 				long precise2 = 0;
 				
 				for(long kkk = 0; kkk < eg2->nbpolyin; kkk++) {
@@ -992,7 +992,7 @@ static void AnchorData_Create_Phase_II_Original_Method(EERIE_BACKGROUND * eb) {
 		
 		count += 1.f;
 		
-		EERIE_BKG_INFO * eg = &eb->Backg[i+j*eb->Xsize];
+		EERIE_BKG_INFO * eg = &eb->fastdata[i][j];
 		pos.x = (float)((float)((float)i) * (float)eb->Xdiv);
 		pos.y = 0.f;
 		pos.z = (float)((float)((float)j) * (float)eb->Zdiv);
@@ -1136,7 +1136,7 @@ void AnchorData_Create(EERIE_BACKGROUND * eb) {
 			if(LASTFOUND)
 				break;
 			
-			EERIE_BKG_INFO * eg = &eb->Backg[i+j*eb->Xsize];
+			EERIE_BKG_INFO * eg = &eb->fastdata[i][j];
 			pos.x = (float)((float)((float)i + 0.33f * (float)divvx) * (float)eb->Xdiv);
 			pos.y = 0.f;
 			pos.z = (float)((float)((float)j + 0.33f * (float)divvy) * (float)eb->Zdiv);

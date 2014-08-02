@@ -738,7 +738,7 @@ int EERIELaunchRay3(const Vec3f & orgn, const Vec3f & dest,  Vec3f * hit, EERIEP
 		long minz = glm::clamp(tilez - 1l, 0l, ACTIVEBKG->Zsize - 1l);
 		long maxz = glm::clamp(tilez + 1l, 0l, ACTIVEBKG->Zsize - 1l);
 		
-		EERIE_BKG_INFO * eg = &ACTIVEBKG->Backg[tilex + tilez * ACTIVEBKG->Xsize];
+		EERIE_BKG_INFO * eg = &ACTIVEBKG->fastdata[tilex][tilez];
 		if(eg->nbpoly == 0) {
 			*hit = p;
 			return 1;
@@ -746,7 +746,7 @@ int EERIELaunchRay3(const Vec3f & orgn, const Vec3f & dest,  Vec3f * hit, EERIEP
 		
 		for(short z = minz; z < maxz; z++)
 		for(short x = minx; x < maxx; x++) {
-			EERIE_BKG_INFO * eg = &ACTIVEBKG->Backg[x + z * ACTIVEBKG->Xsize];
+			EERIE_BKG_INFO * eg = &ACTIVEBKG->fastdata[x][z];
 			for(long k = 0; k < eg->nbpoly; k++) {
 				EERIEPOLY * ep = &eg->polydata[k];
 				if(ep->type & POLY_TRANS) {
@@ -853,7 +853,7 @@ bool Visible(const Vec3f & orgn, const Vec3f & dest, EERIEPOLY * epp, Vec3f * hi
 		if(px < 0 || px > ACTIVEBKG->Xsize - 1 || pz < 0 || pz > ACTIVEBKG->Zsize - 1)
 			break;
 
-		EERIE_BKG_INFO * eg = &ACTIVEBKG->Backg[px+pz*ACTIVEBKG->Xsize];
+		EERIE_BKG_INFO * eg = &ACTIVEBKG->fastdata[px][pz];
 
 		for(long k = 0; k < eg->nbpolyin; k++) {
 			EERIEPOLY * ep = eg->polyin[k];
@@ -892,8 +892,9 @@ bool Visible(const Vec3f & orgn, const Vec3f & dest, EERIEPOLY * epp, Vec3f * hi
 long BKG_CountPolys(const EERIE_BACKGROUND & eb) {
 	long count = 0;
 
-	for(long i = 0; i < eb.Xsize * eb.Zsize; i++) {
-		const EERIE_BKG_INFO & eg = eb.Backg[i];
+	for(long z = 0; z < eb.Zsize; z++)
+	for(long x = 0; x < eb.Xsize; x++) {
+		const EERIE_BKG_INFO & eg = eb.fastdata[x][z];
 		count += eg.nbpoly;
 	}
 
@@ -907,8 +908,9 @@ long BKG_CountPolys(const EERIE_BACKGROUND & eb) {
 long BKG_CountIgnoredPolys(const EERIE_BACKGROUND & eb) {
 	long count = 0;
 
-	for(long i = 0; i < eb.Xsize * eb.Zsize; i++) {
-		const EERIE_BKG_INFO & eg = eb.Backg[i];
+	for(long z = 0; z < eb.Zsize; z++)
+	for(long x = 0; x < eb.Xsize; x++) {
+		const EERIE_BKG_INFO & eg = eb.fastdata[x][z];
 
 		for(long k = 0; k < eg.nbpoly; k++){
 			const EERIEPOLY & pol = eg.polydata[k];
@@ -1057,11 +1059,10 @@ void ClearBackground(EERIE_BACKGROUND * eb) {
 	free(eb->minmax);
 	eb->minmax = NULL;
 	
-	for(long i = 0; i < eb->Xsize * eb->Zsize; i++) {
-		ReleaseBKG_INFO(&eb->Backg[i]);
+	for(long z = 0; z < eb->Zsize; z++)
+	for(long x = 0; x < eb->Xsize; x++) {
+		ReleaseBKG_INFO(&eb->fastdata[x][z]);
 	}
-	free(eb->Backg);
-	eb->Backg = NULL;
 	
 	free(RoomDistance);
 	RoomDistance = NULL;
@@ -1091,19 +1092,7 @@ int InitBkg(EERIE_BACKGROUND * eb, short sx, short sz, short Xdiv, short Zdiv) {
 	eb->Zdiv = Zdiv;
 	eb->Xmul = 1.f / (float)eb->Xdiv;
 	eb->Zmul = 1.f / (float)eb->Zdiv;
-
-	//todo free
-	eb->Backg = (EERIE_BKG_INFO *)malloc(sizeof(EERIE_BKG_INFO) * sx * sz);
-
-	memset(eb->Backg, 0, sizeof(EERIE_BKG_INFO) * sx * sz);
-
-	for(int i = 0; i < eb->Xsize * eb->Zsize; i++) {
-		EERIE_BKG_INFO *eg = &eb->Backg[i];
-		eg->treat = false;
-		eg->nbianchors = 0;
-		eg->ianchors = NULL;
-	}
-
+	
 	for(short z = 0; z < eb->Zsize; z++)
 	for(short x = 0; x < eb->Xsize; x++) {
 		EERIE_BKG_INFO *feg = &eb->fastdata[x][z];
@@ -1152,7 +1141,7 @@ void EERIEPOLY_Compute_PolyIn()
 {
 	for(long j = 0; j < ACTIVEBKG->Zsize; j++)
 	for(long i = 0; i < ACTIVEBKG->Xsize; i++) {
-		EERIE_BKG_INFO *eg = &ACTIVEBKG->Backg[i+j*ACTIVEBKG->Xsize];
+		EERIE_BKG_INFO *eg = &ACTIVEBKG->fastdata[i][j];
 		
 		free(eg->polyin);
 		eg->polyin = NULL;
@@ -1174,7 +1163,7 @@ void EERIEPOLY_Compute_PolyIn()
 		
 		for(long cj = ij; cj < aj; cj++)
 		for(long ci = ii; ci < ai; ci++) {
-			EERIE_BKG_INFO *eg2 = &ACTIVEBKG->Backg[ci+cj*ACTIVEBKG->Xsize];
+			EERIE_BKG_INFO *eg2 = &ACTIVEBKG->fastdata[ci][cj];
 			
 			for(long l = 0; l < eg2->nbpoly; l++) {
 				EERIEPOLY *ep2 = &eg2->polydata[l];
@@ -1203,27 +1192,11 @@ void EERIEPOLY_Compute_PolyIn()
 			}
 		}
 	}
-	
-	for(short z = 0; z < ACTIVEBKG->Zsize; z++)
-	for(short x = 0; x < ACTIVEBKG->Xsize; x++) {
-		EERIE_BKG_INFO * eg = &ACTIVEBKG->Backg[x + z * ACTIVEBKG->Xsize];
-		EERIE_BKG_INFO * fbd = &ACTIVEBKG->fastdata[x][z];
-		
-		fbd->treat = eg->treat;
-		fbd->nbpoly = eg->nbpoly;
-		fbd->nbianchors = eg->nbianchors;
-		fbd->nbpolyin = eg->nbpolyin;
-		fbd->frustrum_miny = eg->frustrum_miny;
-		fbd->frustrum_maxy = eg->frustrum_maxy;
-		fbd->polydata = eg->polydata;
-		fbd->polyin = eg->polyin;
-		fbd->ianchors = eg->ianchors;
-	}
 }
 
 float GetTileMinY(long i, long j) {
 	float minf = 9999999999.f;
-	EERIE_BKG_INFO *eg = &ACTIVEBKG->Backg[i+j*ACTIVEBKG->Xsize];
+	EERIE_BKG_INFO *eg = &ACTIVEBKG->fastdata[i][j];
 
 	for (long kk = 0; kk < eg->nbpolyin; kk++) {
 		EERIEPOLY * ep = eg->polyin[kk];
@@ -1235,7 +1208,7 @@ float GetTileMinY(long i, long j) {
 
 float GetTileMaxY(long i, long j) {
 	float maxf = -9999999999.f;
-	EERIE_BKG_INFO *eg = &ACTIVEBKG->Backg[i+j*ACTIVEBKG->Xsize];
+	EERIE_BKG_INFO *eg = &ACTIVEBKG->fastdata[i][j];
 
 	for(long kk = 0; kk < eg->nbpolyin; kk++) {
 		EERIEPOLY * ep = eg->polyin[kk];
@@ -1357,7 +1330,7 @@ long CountBkgVertex() {
 
 	for(long j = 0; j < ACTIVEBKG->Zsize; j++) {
 		for(long i = 0; i < ACTIVEBKG->Xsize; i++) {
-			EERIE_BKG_INFO *eg = &ACTIVEBKG->Backg[i + j*ACTIVEBKG->Xsize];
+			EERIE_BKG_INFO *eg = &ACTIVEBKG->fastdata[i][j];
 
 			for(long l = 0; l < eg->nbpoly; l++) {
 				EERIEPOLY *ep = &eg->polydata[l];
@@ -1602,7 +1575,7 @@ static bool loadFastScene(const res::path & file, const char * data, const char 
 			
 			const FAST_SCENE_INFO * fsi = fts_read<FAST_SCENE_INFO>(data, end);
 			
-			EERIE_BKG_INFO & bkg = ACTIVEBKG->Backg[i + (j * fsh->sizex)];
+			EERIE_BKG_INFO & bkg = ACTIVEBKG->fastdata[i][j];
 			
 			bkg.nbianchors = (short)fsi->nbianchors;
 			bkg.nbpoly = (short)fsi->nbpoly;
@@ -2136,7 +2109,7 @@ static int BkgAddPoly(EERIEPOLY * ep, EERIE_3DOBJ * eobj) {
 	if (posz < 0) return 0;
 	else if (posz >= ACTIVEBKG->Zsize) return 0;
 	
-	EERIE_BKG_INFO *eg = &ACTIVEBKG->Backg[posx+posz*ACTIVEBKG->Xsize];
+	EERIE_BKG_INFO *eg = &ACTIVEBKG->fastdata[posx][posz];
 	
 	long t = (((eg->nbpoly) >> 1) << 1) + 2; 
 	long tt = (((eg->nbpoly - 1) >> 1) << 1) + 2; 
@@ -2331,7 +2304,7 @@ static bool FastSceneSave(const fs::path & partial_path) {
 	for(long j = 0; j < ACTIVEBKG->Zsize; j++) {
 		for(long i = 0; i < ACTIVEBKG->Xsize; i++) {
 			allocsize += sizeof(FAST_SCENE_INFO);
-			allocsize += ACTIVEBKG->Backg[i+j*ACTIVEBKG->Xsize].nbpoly * (sizeof(EERIEPOLY) + 1);
+			allocsize += ACTIVEBKG->fastdata[i][j].nbpoly * (sizeof(EERIEPOLY) + 1);
 		}
 	}
 	
@@ -2403,9 +2376,9 @@ static bool FastSceneSave(const fs::path & partial_path) {
 	s32 texid = 0;
 	for(long j = 0; j < fsh->sizez; j++) {
 		for(long i = 0; i < fsh->sizex; i++) {
-			for(long k = 0; k < ACTIVEBKG->Backg[i+j*fsh->sizex].nbpoly; k++) {
+			for(long k = 0; k < ACTIVEBKG->fastdata[i][j].nbpoly; k++) {
 				
-				EERIEPOLY * ep = &ACTIVEBKG->Backg[i+j*fsh->sizex].polydata[k];
+				EERIEPOLY * ep = &ACTIVEBKG->fastdata[i][j].polydata[k];
 				
 				if(ep && ep->tex) {
 					
@@ -2439,15 +2412,15 @@ static bool FastSceneSave(const fs::path & partial_path) {
 				return false;
 			}
 			
-			fsi->nbianchors = ACTIVEBKG->Backg[i+j*fsh->sizex].nbianchors;
-			fsi->nbpoly = ACTIVEBKG->Backg[i+j*fsh->sizex].nbpoly;
+			fsi->nbianchors = ACTIVEBKG->fastdata[i][j].nbianchors;
+			fsi->nbpoly = ACTIVEBKG->fastdata[i][j].nbpoly;
 			
 			for(long k = 0; k < fsi->nbpoly; k++) {
 				fsh->nb_polys++;
 				
 				FAST_EERIEPOLY * ep = reinterpret_cast<FAST_EERIEPOLY *>(dat + pos);
 				pos += sizeof(FAST_EERIEPOLY);
-				EERIEPOLY * ep2 = &ACTIVEBKG->Backg[i+j*fsh->sizex].polydata[k];
+				EERIEPOLY * ep2 = &ACTIVEBKG->fastdata[i][j].polydata[k];
 				
 				if(pos >= allocsize - 100000) {
 					delete[] dat;
@@ -2480,7 +2453,7 @@ static bool FastSceneSave(const fs::path & partial_path) {
 					delete[] dat;
 					return false;
 				}
-				*ianch = ACTIVEBKG->Backg[i+j*fsh->sizex].ianchors[k];
+				*ianch = ACTIVEBKG->fastdata[i][j].ianchors[k];
 			}
 		}
 	}
@@ -2724,7 +2697,7 @@ void ComputePortalVertexBuffer() {
 		for(int j = 0; j < room->nb_polys; j++) {
 			int x = room->epdata[j].p.x;
 			int y = room->epdata[j].p.y;
-			EERIE_BKG_INFO & cell = ACTIVEBKG->Backg[x + y * ACTIVEBKG->Xsize];
+			EERIE_BKG_INFO & cell = ACTIVEBKG->fastdata[x][y];
 			EERIEPOLY & poly = cell.polydata[room->epdata[j].idx];
 			
 			if(poly.type & POLY_IGNORE) {
@@ -2827,7 +2800,7 @@ void ComputePortalVertexBuffer() {
 			for(int j = 0; j < room->nb_polys; j++) {
 				int x = room->epdata[j].p.x;
 				int y = room->epdata[j].p.y;
-				EERIE_BKG_INFO & cell = ACTIVEBKG->Backg[x + y * ACTIVEBKG->Xsize];
+				EERIE_BKG_INFO & cell = ACTIVEBKG->fastdata[x][y];
 				EERIEPOLY & poly = cell.polydata[room->epdata[j].idx];
 				
 				if((poly.type & POLY_IGNORE) || (poly.type & POLY_HIDE) || !poly.tex) {

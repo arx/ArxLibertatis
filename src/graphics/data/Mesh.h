@@ -91,7 +91,6 @@ struct EERIE_BACKGROUND
 	short		Zdiv;
 	float		Xmul;
 	float		Zmul;
-	EERIE_BKG_INFO * Backg;
 	Color3f ambient;
 	EERIE_SMINMAX *	minmax;
 	long		  nbanchors;

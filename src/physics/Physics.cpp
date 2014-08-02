@@ -283,7 +283,7 @@ static bool IsFULLObjectVertexInValidPosition(PHYSICS_BOX_DATA * pbox, EERIEPOLY
 	
 	for(short z = minz; z <= maxz; z++)
 	for(short x = minx; x <= maxx; x++) {
-		EERIE_BKG_INFO & eg = ACTIVEBKG->Backg[x + z * ACTIVEBKG->Xsize];
+		EERIE_BKG_INFO & eg = ACTIVEBKG->fastdata[x][z];
 		
 		for(long k = 0; k < eg.nbpoly; k++) {
 			EERIEPOLY & ep = eg.polydata[k];
