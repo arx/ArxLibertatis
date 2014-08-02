@@ -97,7 +97,6 @@ public:
 	/* Virtual functions which may be overridden for specific implementations */
 	
 	virtual void run() = 0;
-	virtual void pause(bool bPause);
 	virtual void render() { }
 	virtual bool finalCleanup() = 0;
 	virtual void cleanup3DEnvironment() = 0;

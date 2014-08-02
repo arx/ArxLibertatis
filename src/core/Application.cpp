@@ -248,30 +248,6 @@ bool Application::initConfig() {
 	return true;
 }
 
-//*************************************************************************************
-// Pause()
-// Called in to toggle the pause state of the app. This function
-// brings the GDI surface to the front of the display, so drawing
-// output like message boxes and menus may be displayed.
-//*************************************************************************************
-void Application::pause(bool bPause)
-{
-	static u32 dwAppPausedCount = 0L;
-
-	dwAppPausedCount += (bPause ? +1 : -1);
-	m_bReady          = (dwAppPausedCount ? false : true);
-
-	// Handle the first pause request (of many, nestable pause requests)
-	if (bPause && (1 == dwAppPausedCount))
-	{
-		// Get a surface for the GDI
-		//if (m_pFramework)
-		//	m_pFramework->FlipToGDISurface(true); TODO
-	}
-}
-
-//*************************************************************************************
-//*************************************************************************************
 void CalcFPS(bool reset)
 {
 	static float fLastTime = 0.0f;
