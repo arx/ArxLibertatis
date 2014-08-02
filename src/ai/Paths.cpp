@@ -281,7 +281,7 @@ void ARX_PATH_UpdateAllZoneInOutInside() {
 	// player check*************************************************
 	{
 		ARX_PATH * p = ARX_PATH_CheckPlayerInZone();
-		ARX_PATH * op = (ARX_PATH *)player.inzone;
+		ARX_PATH * op = player.inzone;
 
 		if((op == NULL) && (p == NULL))
 			goto suite; // Not in a zone
