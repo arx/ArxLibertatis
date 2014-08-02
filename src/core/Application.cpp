@@ -81,7 +81,6 @@ long EERIEMouseGrab = 0;
 
 Application * mainApp = 0;
 float FPS;
-LightMode ModeLight = 0;
 
 //*************************************************************************************
 // Application()

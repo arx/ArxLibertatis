@@ -1909,9 +1909,7 @@ void ARX_PLAYER_Frame_Update()
 
 	if(spells.getSpellOnTarget(PlayerEntityHandle, SPELL_DETECT_TRAP))
 		player.TRAP_DETECT = 100.f;
-
-	ModeLight |= MODE_DEPTHCUEING;
-
+	
 	ARX_PLAYER_ManageTorch();
 }
 

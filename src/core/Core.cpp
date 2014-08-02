@@ -489,7 +489,6 @@ static bool initializeGame() {
 	}
 	
 	LogDebug("LSV Init");
-	ModeLight = MODE_DEPTHCUEING;
 	
 	memset(&DefaultBkg,0,sizeof(EERIE_BACKGROUND));
 	TELEPORT_TO_LEVEL.clear();
