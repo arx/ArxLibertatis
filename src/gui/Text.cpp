@@ -266,16 +266,20 @@ long UNICODE_ARXDrawTextCenteredScroll(Font* font, float x, float y, float x2, c
 }
 
 static Font * createFont(const res::path & fontFace,
-                         const string & fontProfileName, unsigned int fontSize,
+                         const string & configSizeKey, unsigned int fontSize,
                          float scaleFactor) {
 
 	arx_assert(fontSize > 0);
 	arx_assert(scaleFactor > 0.f);
 	arx_assert(scaleFactor < 1000.f); // TODO better maximum
 	
-	std::string szFontSize = boost::lexical_cast<std::string>(fontSize);
-	std::string szUT = getLocalised(fontProfileName, szFontSize);
-	fontSize = boost::lexical_cast<unsigned int>(szUT);
+	try {
+		std::string szFontSize = boost::lexical_cast<std::string>(fontSize);
+		std::string configSize = getLocalised(configSizeKey, szFontSize);
+		fontSize = boost::lexical_cast<unsigned int>(configSize);
+	} catch(const boost::bad_lexical_cast &) {
+		LogError << "Invalid font size for: " << configSizeKey;
+	}
 	
 	fontSize *= scaleFactor;
 
