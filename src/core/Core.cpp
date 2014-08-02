@@ -563,7 +563,7 @@ static bool initializeGame() {
 	
 	LogDebug("Launching DANAE");
 	
-	memset(&Project, 0, sizeof(PROJECT));
+	Project = PROJECT();
 	
 	LaunchDemo = 1;
 	Project.demo = LEVEL10;
