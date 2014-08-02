@@ -68,12 +68,6 @@ struct EERIE_BKG_INFO
 	long *				ianchors; // index on anchors list
 };
 
-struct EERIE_SMINMAX
-{
-	short min;
-	short max;
-};
-
 static const short MAX_BKGX = 160;
 static const short MAX_BKGZ = 160;
 static const short BKG_SIZX = 100;
@@ -92,7 +86,6 @@ struct EERIE_BACKGROUND
 	float		Xmul;
 	float		Zmul;
 	Color3f ambient;
-	EERIE_SMINMAX *	minmax;
 	long		  nbanchors;
 	ANCHOR_DATA * anchors;
 	char		name[256];

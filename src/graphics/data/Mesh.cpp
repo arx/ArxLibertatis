@@ -1056,9 +1056,6 @@ void ClearBackground(EERIE_BACKGROUND * eb) {
 	
 	AnchorData_ClearAll(eb);
 	
-	free(eb->minmax);
-	eb->minmax = NULL;
-	
 	for(long z = 0; z < eb->Zsize; z++)
 	for(long x = 0; x < eb->Xsize; x++) {
 		ReleaseBKG_INFO(&eb->fastdata[x][z]);
@@ -1098,15 +1095,7 @@ int InitBkg(EERIE_BACKGROUND * eb, short sx, short sz, short Xdiv, short Zdiv) {
 		EERIE_BKG_INFO *feg = &eb->fastdata[x][z];
 		memset(feg, 0, sizeof(EERIE_BKG_INFO));
 	}
-
-	//todo free
-	eb->minmax = (EERIE_SMINMAX *)malloc(sizeof(EERIE_SMINMAX) * eb->Zsize);
-
-	for(int i = 0; i < eb->Zsize; i++) {
-		eb->minmax[i].min = 9999;
-		eb->minmax[i].max = -1;
-	}
-
+	
 	return 1;
 }
 
