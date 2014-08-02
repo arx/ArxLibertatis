@@ -1575,9 +1575,6 @@ static bool loadFastScene(const res::path & file, const char * data, const char 
 			
 			bkg.treat = false;
 			
-			bkg.frustrum_maxy = -99999999.f;
-			bkg.frustrum_miny = 99999999.f;
-			
 			const FAST_EERIEPOLY * eps;
 			eps = fts_read<FAST_EERIEPOLY>(data, end, fsi->nbpoly);
 			for(long k = 0; k < fsi->nbpoly; k++) {

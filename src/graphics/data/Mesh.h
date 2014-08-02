@@ -61,8 +61,6 @@ struct EERIE_BKG_INFO
 	short				nbpoly;
 	short				nbianchors;
 	short				nbpolyin;
-	float				frustrum_miny;
-	float				frustrum_maxy;
 	EERIEPOLY *			polydata;
 	EERIEPOLY **		polyin;
 	long *				ianchors; // index on anchors list
