@@ -1551,9 +1551,9 @@ public:
 			}
 			if(player.SpellToMemorize.iSpellSymbols[i] != RUNE_NONE) {
 				EERIEDrawBitmap2(Rectf(m_pos, 32, 32), 0,
-					necklace.pTexTab[player.SpellToMemorize.iSpellSymbols[i]], Color::white);
+					gui::necklace.pTexTab[player.SpellToMemorize.iSpellSymbols[i]], Color::white);
 				if(bHalo) {				
-					TextureContainer *tc = necklace.pTexTab[player.SpellToMemorize.iSpellSymbols[i]];
+					TextureContainer *tc = gui::necklace.pTexTab[player.SpellToMemorize.iSpellSymbols[i]];
 					DrawHalo(0.2f, 0.4f, 0.8f, tc->getHalo(), Vec2f(m_pos.x, m_pos.y));
 				}
 				if(!(player.rune_flags & (RuneFlag)(1<<player.SpellToMemorize.iSpellSymbols[i]))) {

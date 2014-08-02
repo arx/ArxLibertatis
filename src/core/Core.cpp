@@ -1841,16 +1841,6 @@ void ReleaseSystemObjects() {
 	}
 }
 
-void ReleaseNecklace() {
-	
-	delete necklace.lacet, necklace.lacet = NULL;
-	
-	for(long i = 0; i < 20; i++) {
-		delete necklace.runes[i], necklace.runes[i] = NULL;
-		necklace.pTexTab[i] = NULL;
-	}
-}
-
 extern Cinematic* ControlCinematique;
 
 void shutdownGame() {
@@ -1915,7 +1905,7 @@ void shutdownGame() {
 	ARX_Text_Close();
 	
 	//object loaders from beforerun
-	ReleaseNecklace();
+	gui::ReleaseNecklace();
 	
 	delete resources;
 	

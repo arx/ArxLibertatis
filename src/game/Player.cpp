@@ -169,8 +169,6 @@ static unsigned long ROTATE_START = 0;
 ANIM_HANDLE * herowaitbook = NULL;
 ANIM_HANDLE * herowait_2h = NULL;
 
-ARX_NECKLACE necklace;
-
 vector<KEYRING_SLOT> Keyring;
 
 static unsigned long FALLING_TIME = 0;
@@ -1909,7 +1907,7 @@ void ARX_PLAYER_Frame_Update()
 
 	if(spells.getSpellOnTarget(PlayerEntityHandle, SPELL_DETECT_TRAP))
 		player.TRAP_DETECT = 100.f;
-	
+
 	ARX_PLAYER_ManageTorch();
 }
 

@@ -55,17 +55,12 @@ ZeniMax Media Inc., Suite 120, Rockville, Maryland 20850 USA.
 #include "game/GameTypes.h"
 #include "math/Types.h"
 #include "platform/Flags.h"
+#include "gui/Necklace.h"
 
 struct EERIE_3DOBJ;
 class TextureContainer;
 
 #define MAX_EQUIPED 12
-
-struct ARX_NECKLACE {
-	EERIE_3DOBJ * lacet;
-	EERIE_3DOBJ * runes[RUNE_COUNT];
-	TextureContainer * pTexTab[RUNE_COUNT];
-};
 
 struct ARX_INTERFACE_MEMORIZE_SPELL {
 	bool bSpell;
@@ -339,7 +334,6 @@ struct STRUCT_QUEST {
 };
 
 extern ARXCHARACTER player;
-extern ARX_NECKLACE necklace;
 extern EERIE_3DOBJ * hero;
 extern ANIM_HANDLE * herowaitbook;
 extern ANIM_HANDLE * herowait_2h;
