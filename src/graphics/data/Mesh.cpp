@@ -928,7 +928,7 @@ void ReleaseBKG_INFO(EERIE_BKG_INFO * eg) {
 	free(eg->polyin);
 	eg->polyin = NULL;
 	eg->nbpolyin = 0;
-	memset(eg, 0, sizeof(EERIE_BKG_INFO));
+	*eg = EERIE_BKG_INFO();
 }
 
 //*************************************************************************************
@@ -1090,8 +1090,7 @@ int InitBkg(EERIE_BACKGROUND * eb, short sx, short sz, short Xdiv, short Zdiv) {
 	
 	for(short z = 0; z < eb->Zsize; z++)
 	for(short x = 0; x < eb->Xsize; x++) {
-		EERIE_BKG_INFO *feg = &eb->fastdata[x][z];
-		memset(feg, 0, sizeof(EERIE_BKG_INFO));
+		eb->fastdata[x][z] = EERIE_BKG_INFO();
 	}
 	
 	return 1;

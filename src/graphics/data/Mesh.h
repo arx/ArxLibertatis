@@ -64,6 +64,16 @@ struct EERIE_BKG_INFO
 	EERIEPOLY *			polydata;
 	EERIEPOLY **		polyin;
 	long *				ianchors; // index on anchors list
+	
+	EERIE_BKG_INFO()
+		: treat(false)
+		, nbpoly(0)
+		, nbianchors(0)
+		, nbpolyin(0)
+		, polydata(NULL)
+		, polyin(NULL)
+		, ianchors(NULL)
+	{}
 };
 
 static const short MAX_BKGX = 160;
