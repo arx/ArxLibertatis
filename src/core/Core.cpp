@@ -404,7 +404,7 @@ void InitializeDanae() {
 	
 	LastLoadedScene.clear();
 	
-	memset(&DefaultBkg, 0, sizeof(EERIE_BACKGROUND));
+	DefaultBkg = EERIE_BACKGROUND();
 	ACTIVEBKG=&DefaultBkg;
 	InitBkg(ACTIVEBKG,MAX_BKGX,MAX_BKGZ,BKG_SIZX,BKG_SIZZ);
 	
@@ -489,8 +489,6 @@ static bool initializeGame() {
 	}
 	
 	LogDebug("LSV Init");
-	
-	memset(&DefaultBkg,0,sizeof(EERIE_BACKGROUND));
 	TELEPORT_TO_LEVEL.clear();
 	TELEPORT_TO_POSITION.clear();
 	LogDebug("Mset");
