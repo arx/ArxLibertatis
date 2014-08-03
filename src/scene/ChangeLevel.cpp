@@ -1627,16 +1627,11 @@ long ARX_CHANGELEVEL_Pop_Level(ARX_CHANGELEVEL_INDEX * asi, long num, bool first
 				ARX_SCRIPT_Reset(e, true);
 			}
 		}
-		
-		BLOCK_PLAYER_CONTROLS = false;
-		ARX_INTERFACE_Reset();
-		EERIE_ANIMMANAGER_PurgeUnused();
-		
-	} else {
-		BLOCK_PLAYER_CONTROLS = false;
-		ARX_INTERFACE_Reset();
-		EERIE_ANIMMANAGER_PurgeUnused();
 	}
+	
+	BLOCK_PLAYER_CONTROLS = false;
+	ARX_INTERFACE_Reset();
+	EERIE_ANIMMANAGER_PurgeUnused();
 	
 	stacked = asi->gmods_stacked;
 	desired = asi->gmods_desired;
