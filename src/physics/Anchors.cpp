@@ -129,30 +129,29 @@ static EERIEPOLY * ANCHOR_CheckInPoly(const Vec3f & pos) {
 
 extern Vec3f vector2D;
 
-float ANCHOR_IsPolyInCylinder(EERIEPOLY * ep, const Cylinder & cyl,
-                              CollisionFlags flags) {
+float ANCHOR_IsPolyInCylinder(const EERIEPOLY & ep, const Cylinder & cyl, CollisionFlags flags) {
 	
 	if (!(flags & CFLAG_EXTRA_PRECISION))
 	{
-		if (ep->area < 100.f) return 999999.f;
+		if (ep.area < 100.f) return 999999.f;
 	}
 
-	if (PointInCylinder(cyl, &ep->center)) 
+	if (PointInCylinder(cyl, &ep.center))
 	{
-		if (ep->norm.y < 0.5f)
-			return ep->min.y;
+		if (ep.norm.y < 0.5f)
+			return ep.min.y;
 
-		return ep->center.y;
+		return ep.center.y;
 	}
 
 	float minf = std::min(cyl.origin.y, cyl.origin.y + cyl.height);
 	float maxf = std::max(cyl.origin.y, cyl.origin.y + cyl.height);
 
-	if (minf > ep->max.y) return 999999.f;
+	if (minf > ep.max.y) return 999999.f;
 
-	if (maxf < ep->min.y) return 999999.f;
+	if (maxf < ep.min.y) return 999999.f;
 
-	long to = (ep->type & POLY_QUAD) ? 4 : 3;
+	long to = (ep.type & POLY_QUAD) ? 4 : 3;
 
 	long r = to - 1;
 	float anything = 999999.f;
@@ -166,7 +165,7 @@ float ANCHOR_IsPolyInCylinder(EERIEPOLY * ep, const Cylinder & cyl,
 			for (long o = 0; o < 5; o++)
 			{
 				float p = (float)o * ( 1.0f / 5 );
-				center = ep->v[n].p * p + ep->center * (1.f - p);
+				center = ep.v[n].p * p + ep.center * (1.f - p);
 				if(PointInCylinder(cyl, &center)) {
 					anything = std::min(anything, center.y);
 					return anything;
@@ -175,28 +174,28 @@ float ANCHOR_IsPolyInCylinder(EERIEPOLY * ep, const Cylinder & cyl,
 		}
 
 
-		if ((ep->area > 2000.f)
+		if ((ep.area > 2000.f)
 		        || (flags & CFLAG_EXTRA_PRECISION)
 		   )
 		{
-			center = (ep->v[n].p + ep->v[r].p) * 0.5f;
+			center = (ep.v[n].p + ep.v[r].p) * 0.5f;
 			if(PointInCylinder(cyl, &center)) {
 				anything = std::min(anything, center.y);
 				return anything;
 			}
 
-			if ((ep->area > 4000.f) || (flags & CFLAG_EXTRA_PRECISION))
+			if ((ep.area > 4000.f) || (flags & CFLAG_EXTRA_PRECISION))
 			{
-				center = (ep->v[n].p + ep->center) * 0.5f;
+				center = (ep.v[n].p + ep.center) * 0.5f;
 				if(PointInCylinder(cyl, &center)) {
 					anything = std::min(anything, center.y);
 					return anything;
 				}
 			}
 
-			if ((ep->area > 6000.f) || (flags & CFLAG_EXTRA_PRECISION))
+			if ((ep.area > 6000.f) || (flags & CFLAG_EXTRA_PRECISION))
 			{
-				center = (center + ep->v[n].p) * 0.5f;
+				center = (center + ep.v[n].p) * 0.5f;
 				if(PointInCylinder(cyl, &center)) {
 					anything = std::min(anything, center.y);
 					return anything;
@@ -204,8 +203,8 @@ float ANCHOR_IsPolyInCylinder(EERIEPOLY * ep, const Cylinder & cyl,
 			}
 		}
 
-		if(PointInCylinder(cyl, &ep->v[n].p)) {
-			anything = std::min(anything, ep->v[n].p.y);
+		if(PointInCylinder(cyl, &ep.v[n].p)) {
+			anything = std::min(anything, ep.v[n].p.y);
 			return anything;
 		}
 
@@ -215,8 +214,8 @@ float ANCHOR_IsPolyInCylinder(EERIEPOLY * ep, const Cylinder & cyl,
 
 	}
 
-	if ((anything != 999999.f) && (ep->norm.y < 0.1f) && (ep->norm.y > -0.1f))
-		anything = std::min(anything, ep->min.y);
+	if ((anything != 999999.f) && (ep.norm.y < 0.1f) && (ep.norm.y > -0.1f))
+		anything = std::min(anything, ep.min.y);
 
 	return anything;
 }
@@ -247,15 +246,15 @@ static float ANCHOR_CheckAnythingInCylinder(const Cylinder & cyl, CollisionFlags
 	
 	for(short z = pz - rad; z <= pz + rad; z++)
 	for(short x = px - rad; x <= px + rad; x++) {
-		EERIE_BKG_INFO *feg = &ACTIVEBKG->fastdata[x][z];
+		const EERIE_BKG_INFO feg = ACTIVEBKG->fastdata[x][z];
 		
-		for(long k = 0; k < feg->nbpoly; k++) {
-			EERIEPOLY *ep = &feg->polydata[k];
+		for(long k = 0; k < feg.nbpoly; k++) {
+			const EERIEPOLY ep = feg.polydata[k];
 			
-			if(ep->type & (POLY_WATER | POLY_TRANS | POLY_NOCOL))
+			if(ep.type & (POLY_WATER | POLY_TRANS | POLY_NOCOL))
 				continue;
 			
-			if(ep->min.y < anything) {
+			if(ep.min.y < anything) {
 				float minanything = std::min(anything, ANCHOR_IsPolyInCylinder(ep, cyl, flags));
 				
 				if(anything != minanything)
