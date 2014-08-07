@@ -2318,36 +2318,31 @@ void ArxGame::manageKeyMouse() {
 
 		mouseSensitivity *= (float)g_size.width() * ( 1.0f / 640 );
 		mouseSensitivity *= (1.0f / 5);
-
-		float mouseSensitivityY = mouseSensitivity;
-		float mouseSensitivityX = mouseSensitivity;
-
+		
+		Vec2f rotation = Vec2f(mouseDiff) * mouseSensitivity;
+		
 		if(INVERTMOUSE)
-			mouseSensitivityY *= -1.f;
-
-		float ia = (float)mouseDiff.y * mouseSensitivityY;
-		float ib = (float)mouseDiff.x * mouseSensitivityX;
-
-
+			rotation.y *= -1.f;
+		
 		if(PLAYER_MOUSELOOK_ON || bKeySpecialMove) {
 
 			if(eyeball.exist == 2) {
 				if(eyeball.angle.getYaw() < 70.f) {
-					if(eyeball.angle.getYaw() + ia < 70.f)
-						eyeball.angle.setYaw(eyeball.angle.getYaw() + ia);
+					if(eyeball.angle.getYaw() + rotation.y < 70.f)
+						eyeball.angle.setYaw(eyeball.angle.getYaw() + rotation.y);
 				} else if(eyeball.angle.getYaw() > 300.f) {
-					if(eyeball.angle.getYaw() + ia > 300.f)
-						eyeball.angle.setYaw(eyeball.angle.getYaw() + ia);
+					if(eyeball.angle.getYaw() + rotation.y > 300.f)
+						eyeball.angle.setYaw(eyeball.angle.getYaw() + rotation.y);
 				}
 
 				eyeball.angle.setYaw(MAKEANGLE(eyeball.angle.getYaw()));
-				eyeball.angle.setPitch(MAKEANGLE(eyeball.angle.getPitch() - ib));
+				eyeball.angle.setPitch(MAKEANGLE(eyeball.angle.getPitch() - rotation.x));
 			} else if(ARXmenu.currentmode != AMCM_NEWQUEST) {
 
 				float iangle = player.angle.getYaw();
 
 				player.desiredangle.setYaw(player.angle.getYaw());
-				player.desiredangle.setYaw(player.desiredangle.getYaw() + ia);
+				player.desiredangle.setYaw(player.desiredangle.getYaw() + rotation.y);
 				player.desiredangle.setYaw(MAKEANGLE(player.desiredangle.getYaw()));
 
 				if(player.desiredangle.getYaw() >= 74.9f && player.desiredangle.getYaw() <= 301.f) {
@@ -2357,16 +2352,16 @@ void ArxGame::manageKeyMouse() {
 						player.desiredangle.setYaw(301.f);
 				}
 
-				if(EEfabs(ia) > 2.f)
+				if(EEfabs(rotation.y) > 2.f)
 					entities.player()->animBlend.lastanimtime = 0;
 
-				if(ib != 0.f)
+				if(rotation.x != 0.f)
 					player.Current_Movement|=PLAYER_ROTATE;
 
-				PLAYER_ROTATION = ib;
+				PLAYER_ROTATION = rotation.x;
 
 				player.desiredangle.setPitch(player.angle.getPitch());
-				player.desiredangle.setPitch(MAKEANGLE(player.desiredangle.getPitch() - ib));
+				player.desiredangle.setPitch(MAKEANGLE(player.desiredangle.getPitch() - rotation.x));
 			}
 		}
 	}
