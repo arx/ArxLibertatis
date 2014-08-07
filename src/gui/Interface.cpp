@@ -2187,8 +2187,7 @@ void ArxGame::manageKeyMouse() {
 	LAST_PLAYER_MOUSELOOK_ON=PLAYER_MOUSELOOK_ON;
 	PLAYER_ROTATION=0;
 
-	long mouseDiffX = GInput->getMousePosRel().x;
-	long mouseDiffY = GInput->getMousePosRel().y;
+	Vec2s mouseDiff = GInput->getMousePosRel();
 	
 	ARX_Menu_Manage();
 	
@@ -2258,46 +2257,46 @@ void ArxGame::manageKeyMouse() {
 
 			if(flPushTimeX[0] || flPushTimeX[1]) {
 				if(flPushTimeX[0] < flPushTimeX[1])
-					mouseDiffX=10;
+					mouseDiff.x = 10;
 				else
-					mouseDiffX=-10;
+					mouseDiff.x = -10;
 
 				iAction |= 1;
 			}
 
 			if(flPushTimeY[0] || flPushTimeY[1]) {
 				if(flPushTimeY[0]<flPushTimeY[1])
-					mouseDiffY=10;
+					mouseDiff.y = 10;
 				else
-					mouseDiffY=-10;
+					mouseDiff.y = -10;
 
 				iAction |= 2;
 			}
 
 			if(!(iAction & 1))
-				mouseDiffX=0;
+				mouseDiff.x = 0;
 
 			if(!(iAction & 2))
-				mouseDiffY=0;
+				mouseDiff.y = 0;
 		} else {
 			if(bRenderInCursorMode) {
 				Vec2s mousePosRel = GInput->getMousePosRel();
 				if(DANAEMouse.x == g_size.width() - 1 && mousePosRel.x > 8) {
-					mouseDiffY = 0;
-					mouseDiffX = mousePosRel.x;
+					mouseDiff.y = 0;
+					mouseDiff.x = mousePosRel.x;
 					bKeySpecialMove = true;
 				} else if(DANAEMouse.x == 0 && mousePosRel.x < -8) {
-					mouseDiffY = 0;
-					mouseDiffX = mousePosRel.x;
+					mouseDiff.y = 0;
+					mouseDiff.x = mousePosRel.x;
 					bKeySpecialMove = true;
 				}
 				if(DANAEMouse.y == g_size.height() - 1 && mousePosRel.y > 8) {
-					mouseDiffY = mousePosRel.y;
-					mouseDiffX = 0;
+					mouseDiff.y = mousePosRel.y;
+					mouseDiff.x = 0;
 					bKeySpecialMove = true;
 				} else if(DANAEMouse.y == 0 && mousePosRel.y < -8) {
-					mouseDiffY = mousePosRel.y;
-					mouseDiffX = 0;
+					mouseDiff.y = mousePosRel.y;
+					mouseDiff.x = 0;
 					bKeySpecialMove = true;
 				}
 			}
@@ -2326,8 +2325,8 @@ void ArxGame::manageKeyMouse() {
 		if(INVERTMOUSE)
 			mouseSensitivityY *= -1.f;
 
-		float ia = (float)mouseDiffY * mouseSensitivityY;
-		float ib = (float)mouseDiffX * mouseSensitivityX;
+		float ia = (float)mouseDiff.y * mouseSensitivityY;
+		float ib = (float)mouseDiff.x * mouseSensitivityX;
 
 
 		if(PLAYER_MOUSELOOK_ON || bKeySpecialMove) {
