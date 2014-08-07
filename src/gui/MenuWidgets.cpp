@@ -933,8 +933,6 @@ bool Menu2_Render() {
 					((CMenuSliderText *)me)->iPos = config.video.levelOfDetail;
 
 					pWindowMenuConsole->AddMenuCenterY(pc);
-
-					bool bBOOL = false;
 					
 					pc = new CMenuPanel();
 					szMenuText = getLocalised("system_menus_options_video_brouillard");
@@ -1098,10 +1096,8 @@ bool Menu2_Render() {
 					pTex1 = TextureContainer::Load("graph/interface/menus/menu_checkbox_off");
 					pTex2 = TextureContainer::Load("graph/interface/menus/menu_checkbox_on");
 					me = new CMenuCheckButton(BUTTON_MENUOPTIONS_CONTROLS_INVERTMOUSE, 0, 0, pTex1->m_dwWidth, pTex1, pTex2, new CMenuElementText(-1, hFontMenu, szMenuText, fPosX1, 0.f, lColor, 1.f, OPTIONS_INPUT));
-					bBOOL = false;
-					ARXMenu_Options_Control_GetInvertMouse(bBOOL);
-
-					if(bBOOL) {
+					
+					if(config.input.invertMouse) {
 						((CMenuCheckButton*)me)->iState=1;
 					} else {
 						((CMenuCheckButton*)me)->iState=0;

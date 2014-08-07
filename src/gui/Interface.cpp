@@ -211,7 +211,6 @@ long				Book_SpellPage=1;
 long				SMOOTHSLID=0;
 
 bool				DRAGGING = false;
-long				INVERTMOUSE=0;
 bool				PLAYER_INTERFACE_HIDE_COUNT = true;
 bool				MAGICMODE = false;
 long				SpecialCursor=0;
@@ -2321,7 +2320,7 @@ void ArxGame::manageKeyMouse() {
 		
 		Vec2f rotation = Vec2f(mouseDiff) * mouseSensitivity;
 		
-		if(INVERTMOUSE)
+		if(config.input.invertMouse)
 			rotation.y *= -1.f;
 		
 		if(PLAYER_MOUSELOOK_ON || bKeySpecialMove) {

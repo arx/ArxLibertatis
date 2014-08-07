@@ -268,7 +268,6 @@ extern ARX_INTERFACE_BOOK_MODE Book_Mode;
 extern long SpecialCursor;
 
 extern long LastMouseClick;
-extern long INVERTMOUSE;
 extern long CurrFightPos;
 extern long lSLID_VALUE;
 extern bool bInventoryClosing;

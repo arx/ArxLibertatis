@@ -63,7 +63,6 @@ void ARXMenu_Options_Audio_ApplyGameVolumes();
 
 // Input options
 
-void ARXMenu_Options_Control_GetInvertMouse(bool & invert);
 void ARXMenu_Options_Control_SetInvertMouse(bool invert);
 void ARXMenu_Options_Control_SetMouseSensitivity(int sensitivity);
 

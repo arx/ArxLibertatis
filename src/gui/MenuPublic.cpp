@@ -215,12 +215,7 @@ bool ARXMenu_Options_Audio_SetEAX(bool _bEnable) {
 	return config.audio.eax;
 }
 
-void ARXMenu_Options_Control_GetInvertMouse(bool & enabled) {
-	enabled = (INVERTMOUSE == 1);
-}
-
 void ARXMenu_Options_Control_SetInvertMouse(bool enable) {
-	INVERTMOUSE = enable ? 1 : 0;
 	config.input.invertMouse = enable;
 }
 
