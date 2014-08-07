@@ -437,12 +437,14 @@ float ARX_DAMAGES_DrainMana(Entity * io, float dmg)
 
 void ARX_DAMAGES_DamageFIX(Entity * io, float dmg, EntityHandle source, bool isSpellHit)
 {
-	if ((!io)
-	        ||	(!io->show)
-	        ||	(!(io->ioflags & IO_FIX))
-	        ||	(io->ioflags & IO_INVULNERABILITY)
-	        ||	(!io->script.data))
+	if(   !io
+	   || !io->show
+	   || !(io->ioflags & IO_FIX)
+	   || (io->ioflags & IO_INVULNERABILITY)
+	   || !io->script.data
+	) {
 		return;
+	}
 
 	io->dmg_sum += dmg;
 
@@ -731,8 +733,13 @@ float ARX_DAMAGES_DealDamages(EntityHandle target, float dmg, EntityHandle sourc
 //*************************************************************************************
 float ARX_DAMAGES_DamageNPC(Entity * io, float dmg, EntityHandle source, bool isSpellHit, const Vec3f * pos) {
 	
-	if(!io || !io->show || (io->ioflags & IO_INVULNERABILITY) || !(io->ioflags & IO_NPC))
+	if(   !io
+	   || !io->show
+	   || !(io->ioflags & IO_NPC)
+	   || (io->ioflags & IO_INVULNERABILITY)
+	) {
 		return 0.f;
+	}
 
 	float damagesdone = 0.f;
 
