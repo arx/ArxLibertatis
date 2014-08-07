@@ -65,10 +65,7 @@ class TextureContainer;
 struct ARX_INTERFACE_MEMORIZE_SPELL {
 	bool bSpell;
 	unsigned long lTimeCreation;
-	unsigned long lDuration;
 	Rune iSpellSymbols[6];
-	float fPosX;
-	float fPosY;
 };
 
 enum PlayerMovementFlag {
