@@ -190,8 +190,6 @@ extern CMenuState * pMenu;
 
 extern glm::mat4x4 ProjectionMatrix;
 
-TextureContainer * Movable = NULL;   // TextureContainer for Movable Items (Red Cross)
-
 long STOP_KEYBOARD_INPUT= 0;
 
 long BOOKBUTTON=0;
@@ -679,8 +677,6 @@ bool ArxGame::beforeRun() {
 		
 		GoldCoinsTC[i] = TextureContainer::LoadUI(oss.str());
 	}
-	
-	Movable = TextureContainer::LoadUI("graph/interface/cursors/wrong");
 	
 	ARX_PLAYER_LoadHeroAnimsAndMesh();
 	

@@ -71,6 +71,8 @@ TextureContainer * ptexcursorredist = NULL;
 TextureContainer *	scursor[8];			// Animated Hand Cursor TC
 TextureContainer *	pTCCrossHair;			// Animated Hand Cursor TC
 
+TextureContainer * Movable = NULL;   // TextureContainer for Movable Items (Red Cross)
+
 void cursorTexturesInit() {
 	ITC.Reset();
 	
@@ -82,6 +84,7 @@ void cursorTexturesInit() {
 	ThrowObject = TextureContainer::LoadUI("graph/interface/cursors/throw");
 	ptexcursorredist =  TextureContainer::LoadUI("graph/interface/cursors/add_points");
 	pTCCrossHair = TextureContainer::LoadUI("graph/interface/cursors/cruz");
+	Movable = TextureContainer::LoadUI("graph/interface/cursors/wrong");
 	
 	arx_assert(cursorTargetOn);
 	arx_assert(cursorTargetOff);
@@ -322,7 +325,6 @@ extern long LOOKING_FOR_SPELL_TARGET;
 extern unsigned long LOOKING_FOR_SPELL_TARGET_TIME;
 extern bool PLAYER_INTERFACE_HIDE_COUNT;
 extern long lCursorRedistValue;
-extern TextureContainer * Movable;
 
 int iHighLight=0;
 float fHighLightAng=0.f;

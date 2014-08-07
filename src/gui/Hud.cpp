@@ -42,6 +42,7 @@
 #include "graphics/particle/ParticleEffects.h"
 #include "graphics/data/TextureContainer.h"
 
+#include "gui/Cursor.h"
 #include "gui/Interface.h"
 #include "gui/Speech.h"
 
@@ -53,7 +54,6 @@
 extern float GLOBAL_SLOWDOWN;
 extern float InventoryDir;
 extern bool WILLRETURNTOFREELOOK;
-extern TextureContainer * Movable;
 
 bool bIsAiming = false;
 TextureContainer * BasicInventorySkin=NULL;

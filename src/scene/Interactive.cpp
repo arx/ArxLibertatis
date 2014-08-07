@@ -78,6 +78,7 @@ ZeniMax Media Inc., Suite 120, Rockville, Maryland 20850 USA.
 #include "game/NPC.h"
 #include "game/Player.h"
 
+#include "gui/Cursor.h"
 #include "gui/Speech.h"
 #include "gui/Interface.h"
 
@@ -120,7 +121,6 @@ using std::min;
 using std::vector;
 
 extern Entity * CAMERACONTROLLER;
-extern TextureContainer * Movable;
 
 long HERO_SHOW_1ST = 1;
 

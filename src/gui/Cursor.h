@@ -20,6 +20,10 @@
 #ifndef ARX_GUI_CURSOR_H
 #define ARX_GUI_CURSOR_H
 
+class TextureContainer;
+
+extern TextureContainer * Movable;
+
 void cursorTexturesInit();
 
 bool Manage3DCursor(bool simulate);
