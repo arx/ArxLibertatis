@@ -92,6 +92,7 @@ ZeniMax Media Inc., Suite 120, Rockville, Maryland 20850 USA.
 #include "graphics/Math.h"
 #include "graphics/Vertex.h"
 #include "graphics/VertexBuffer.h"
+#include "graphics/data/FTL.h"
 #include "graphics/data/Mesh.h"
 #include "graphics/data/TextureContainer.h"
 #include "graphics/effects/Fade.h"
@@ -1073,6 +1074,125 @@ bool ArxGame::addPaks() {
 	}
 	
 	return true;
+}
+
+void ClearSysTextures() {
+	for(size_t i = 0; i < SPELL_TYPES_COUNT; i++) {
+		if(!spellicons[i].name.empty())
+			//free(spellicons[i].name);
+			spellicons[i].name.clear();
+
+		if(!spellicons[i].description.empty())
+			//free(spellicons[i].description);
+			spellicons[i].description.clear();
+	}
+}
+
+void ReleaseSystemObjects() {
+	
+	delete hero, hero = NULL;
+	
+	if(entities.size() > 0 && entities.player() != NULL) {
+		entities.player()->obj = NULL; // already deleted above (hero)
+		delete entities.player();
+		arx_assert(entities.size() > 0 && entities.player() == NULL);
+	}
+	
+	FlyingEye_Release();
+
+	delete cabal, cabal = NULL;
+	delete cameraobj, cameraobj = NULL;
+	delete markerobj, markerobj = NULL;
+	delete arrowobj, arrowobj = NULL;
+	
+	drawDebugRelease();
+
+	BOOST_FOREACH(EERIE_3DOBJ * & obj, GoldCoinsObj) {
+		delete obj, obj = NULL;
+	}
+}
+
+long EXITING = 0;
+
+void ArxGame::shutdown()
+{
+	ARX_Menu_Resources_Release();
+	arxtime.resume();
+	
+	mainApp->getWindow()->hide();
+	
+	KillInterfaceTextureContainers();
+	Menu2_Close();
+	DanaeClearLevel(2);
+	TextureContainer::DeleteAll();
+	
+	delete ControlCinematique, ControlCinematique = NULL;
+	
+	config.save();
+	
+	RoomDrawRelease();
+	EXITING=1;
+	TREATZONE_Release();
+	ClearTileLights();
+	
+	// texts and textures
+	ClearSysTextures();
+	
+	delete pParticleManager, pParticleManager = NULL;
+	
+	//sound
+	ARX_SOUND_Release();
+	MCache_ClearAll();
+	
+	//pathfinding
+	ARX_PATH_ReleaseAllPath();
+	ReleaseSystemObjects();
+	
+	//background
+	ClearBackground(ACTIVEBKG);
+	
+	//animations
+	EERIE_ANIMMANAGER_ClearAll();
+
+	//sprites
+	RenderBatcher::getInstance().reset();
+	
+	//Scripts
+	if(svar) {
+		for(long i = 0; i < NB_GLOBALS; i++) {
+			free(svar[i].text);
+			svar[i].text = NULL;
+		}
+		free(svar);
+		svar = NULL;
+	}
+	
+	ARX_SCRIPT_Timer_ClearAll();
+	
+	delete[] scr_timer, scr_timer = NULL;
+	
+	//Speech
+	ARX_SPEECH_ClearAll();
+	ARX_Text_Close();
+	
+	//object loaders from beforerun
+	gui::ReleaseNecklace();
+	
+	delete resources;
+	
+	// Current game
+	ARX_Changelevel_CurGame_Clear();
+	
+	//Halo
+	ReleaseHalo();
+	FreeSnapShot();
+	ARX_INPUT_Release();
+	
+	mainApp->cleanup3DEnvironment();
+	
+	Application::shutdown();
+	
+	LogInfo << "Clean shutdown";
 }
 
 void ArxGame::onWindowGotFocus(const Window &) {

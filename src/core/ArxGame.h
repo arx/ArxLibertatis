@@ -66,6 +66,8 @@ protected:
 	bool initGame();
 	bool addPaks();
 	
+	virtual void shutdown();
+	
 	void doFrame();
 	void update();
 	void render();	

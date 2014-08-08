@@ -108,7 +108,6 @@ ZeniMax Media Inc., Suite 120, Rockville, Maryland 20850 USA.
 #include "graphics/Math.h"
 #include "graphics/Renderer.h"
 #include "graphics/Vertex.h"
-#include "graphics/data/FTL.h"
 #include "graphics/data/TextureContainer.h"
 #include "graphics/effects/Fade.h"
 #include "graphics/effects/Fog.h"
@@ -167,8 +166,6 @@ using std::string;
 using std::ostringstream;
 
 Image savegame_thumbnail;
-
-static void shutdownGame();
 
 extern TextManager	*pTextManage;
 extern float FORCE_TIME_RESTORE;
@@ -257,7 +254,6 @@ static long LAST_WEAPON_TYPE = -1;
 float Original_framedelay=0.f;
 
 float PULSATE;
-long EXITING=0;
 
 extern EERIE_CAMERA * ACTIVECAM;
 
@@ -319,9 +315,6 @@ void runGame() {
 	if(mainApp->initialize()) {
 		// Init all done, start the main loop
 		mainApp->run();
-		
-		// TODO run cleanup on partial initialization
-		shutdownGame();
 	} else {
 		// Fallback to a generic critical error in case none was set yet...
 		LogCritical << "Application failed to initialize properly.";
@@ -356,18 +349,6 @@ Entity * FlyingOverObject(const Vec2s & pos)
 		return io;
 
 	return NULL;
-}
-
-void ClearSysTextures() {
-	for(size_t i = 0; i < SPELL_TYPES_COUNT; i++) {
-		if(!spellicons[i].name.empty())
-			//free(spellicons[i].name);
-			spellicons[i].name.clear();
-
-		if(!spellicons[i].description.empty())
-			//free(spellicons[i].description);
-			spellicons[i].description.clear();
-	}
 }
 
 static void PlayerLaunchArrow_Test(float aimratio, float poisonous, const Vec3f & pos, const Anglef & angle) {
@@ -1411,108 +1392,5 @@ void ARX_SetAntiAliasing() {
 	GRenderer->SetAntialiasing(enabled);
 }
 
-void ReleaseSystemObjects() {
-	
-	delete hero, hero = NULL;
-	
-	if(entities.size() > 0 && entities.player() != NULL) {
-		entities.player()->obj = NULL; // already deleted above (hero)
-		delete entities.player();
-		arx_assert(entities.size() > 0 && entities.player() == NULL);
-	}
-	
-	FlyingEye_Release();
-
-	delete cabal, cabal = NULL;
-	delete cameraobj, cameraobj = NULL;
-	delete markerobj, markerobj = NULL;
-	delete arrowobj, arrowobj = NULL;
-	
-	drawDebugRelease();
-
-	BOOST_FOREACH(EERIE_3DOBJ * & obj, GoldCoinsObj) {
-		delete obj, obj = NULL;
-	}
-}
-
 extern Cinematic* ControlCinematique;
 
-void shutdownGame() {
-	
-	ARX_Menu_Resources_Release();
-	arxtime.resume();
-	
-	mainApp->getWindow()->hide();
-	
-	KillInterfaceTextureContainers();
-	Menu2_Close();
-	DanaeClearLevel(2);
-	TextureContainer::DeleteAll();
-	
-	delete ControlCinematique, ControlCinematique = NULL;
-	
-	config.save();
-	
-	RoomDrawRelease();
-	EXITING=1;
-	TREATZONE_Release();
-	ClearTileLights();
-	
-	// texts and textures
-	ClearSysTextures();
-	
-	delete pParticleManager, pParticleManager = NULL;
-	
-	//sound
-	ARX_SOUND_Release();
-	MCache_ClearAll();
-	
-	//pathfinding
-	ARX_PATH_ReleaseAllPath();
-	ReleaseSystemObjects();
-	
-	//background
-	ClearBackground(ACTIVEBKG);
-	
-	//animations
-	EERIE_ANIMMANAGER_ClearAll();
-
-	//sprites
-	RenderBatcher::getInstance().reset();
-	
-	//Scripts
-	if(svar) {
-		for(long i = 0; i < NB_GLOBALS; i++) {
-			free(svar[i].text);
-			svar[i].text = NULL;
-		}
-		free(svar);
-		svar = NULL;
-	}
-	
-	ARX_SCRIPT_Timer_ClearAll();
-	
-	delete[] scr_timer, scr_timer = NULL;
-	
-	//Speech
-	ARX_SPEECH_ClearAll();
-	ARX_Text_Close();
-	
-	//object loaders from beforerun
-	gui::ReleaseNecklace();
-	
-	delete resources;
-	
-	// Current game
-	ARX_Changelevel_CurGame_Clear();
-	
-	//Halo
-	ReleaseHalo();
-	FreeSnapShot();
-	ARX_INPUT_Release();
-	
-	mainApp->cleanup3DEnvironment();
-	
-	
-	LogInfo << "Clean shutdown";
-}
