@@ -2168,11 +2168,11 @@ void ArxGame::manageKeyMouse() {
 	if(PLAYER_MOUSELOOK_ON && !LAST_PLAYER_MOUSELOOK_ON) {
 		
 		MemoMouse = DANAEMouse;
-		EERIEMouseGrab = 1;
+		EERIEMouseGrab = true;
 		
 	} else if(!PLAYER_MOUSELOOK_ON && LAST_PLAYER_MOUSELOOK_ON) {
 		
-		EERIEMouseGrab = 0;
+		EERIEMouseGrab = false;
 		DANAEMouse = MemoMouse;
 		
 		if(mainApp->getWindow()->isFullScreen()) {
