@@ -391,62 +391,6 @@ enum LevelNumber {
 	NOLEVEL    = 32
 };
 
-void InitializeDanae() {
-	
-	InitTileLights();
-	
-	ARX_MISSILES_ClearAll();
-	spells.init();
-
-	ARX_SPELLS_ClearAllSymbolDraw();
-	ARX_PARTICLES_ClearAll();
-	ARX_MAGICAL_FLARES_FirstInit();
-	
-	LastLoadedScene.clear();
-	
-	DefaultBkg = EERIE_BACKGROUND();
-	ACTIVEBKG=&DefaultBkg;
-	InitBkg(ACTIVEBKG,MAX_BKGX,MAX_BKGZ,BKG_SIZX,BKG_SIZZ);
-	
-	player.size.y = -player.baseHeight();
-	player.size.x = player.baseRadius();
-	player.size.z = player.baseRadius();
-	subj.size.setYaw(player.size.y);
-	subj.size.setPitch(player.size.x);
-	subj.size.setRoll(player.size.z);
-	player.desiredangle = player.angle = subj.angle = Anglef(3.f, 268.f, 0.f);
-
-	subj.orgTrans.pos = Vec3f(900.f, player.baseHeight(), 4340.f);
-	subj.clip = Rect(0, 0, 640, 480);
-	subj.center = subj.clip.center();
-	subj.focal = BASE_FOCAL;
-	subj.bkgcolor = Color::none;
-	subj.cdepth = 2100.f;
-	
-	SetActiveCamera(&subj);
-
-	bookcam = subj;
-	raycam = subj;
-	conversationcamera = subj;
-	
-	raycam.clip = Rect(0, 0, 640, 640);
-	raycam.center = raycam.clip.center();
-	
-	bookcam.angle = Anglef::ZERO;
-	bookcam.orgTrans.pos = Vec3f_ZERO;
-	bookcam.focal = BASE_FOCAL;
-	
-	ACTIVEBKG->ambient = Color3f(0.09f, 0.09f, 0.09f);
-	
-	LoadSysTextures();
-	cursorTexturesInit();
-	
-	LogInfo << "Launching splash screens.";
-	if(GameFlow::getTransition() == GameFlow::NoTransition) {
-		GameFlow::setTransition(GameFlow::FirstLogo);
-	}
-}
-
 static bool initializeGame() {
 	
 	// TODO Time will be re-initialized later, but if we don't initialize it now casts to int might overflow.
@@ -547,7 +491,59 @@ static bool initializeGame() {
 	
 	player.m_torchColor = Color3f(1.f, 0.8f, 0.66666f);
 	LogDebug("InitializeDanae");
-	InitializeDanae();
+	
+	InitTileLights();
+	
+	ARX_MISSILES_ClearAll();
+	spells.init();
+
+	ARX_SPELLS_ClearAllSymbolDraw();
+	ARX_PARTICLES_ClearAll();
+	ARX_MAGICAL_FLARES_FirstInit();
+	
+	LastLoadedScene.clear();
+	
+	DefaultBkg = EERIE_BACKGROUND();
+	ACTIVEBKG=&DefaultBkg;
+	InitBkg(ACTIVEBKG,MAX_BKGX,MAX_BKGZ,BKG_SIZX,BKG_SIZZ);
+	
+	player.size.y = -player.baseHeight();
+	player.size.x = player.baseRadius();
+	player.size.z = player.baseRadius();
+	subj.size.setYaw(player.size.y);
+	subj.size.setPitch(player.size.x);
+	subj.size.setRoll(player.size.z);
+	player.desiredangle = player.angle = subj.angle = Anglef(3.f, 268.f, 0.f);
+
+	subj.orgTrans.pos = Vec3f(900.f, player.baseHeight(), 4340.f);
+	subj.clip = Rect(0, 0, 640, 480);
+	subj.center = subj.clip.center();
+	subj.focal = BASE_FOCAL;
+	subj.bkgcolor = Color::none;
+	subj.cdepth = 2100.f;
+	
+	SetActiveCamera(&subj);
+
+	bookcam = subj;
+	raycam = subj;
+	conversationcamera = subj;
+	
+	raycam.clip = Rect(0, 0, 640, 640);
+	raycam.center = raycam.clip.center();
+	
+	bookcam.angle = Anglef::ZERO;
+	bookcam.orgTrans.pos = Vec3f_ZERO;
+	bookcam.focal = BASE_FOCAL;
+	
+	ACTIVEBKG->ambient = Color3f(0.09f, 0.09f, 0.09f);
+	
+	LoadSysTextures();
+	cursorTexturesInit();
+	
+	LogInfo << "Launching splash screens.";
+	if(GameFlow::getTransition() == GameFlow::NoTransition) {
+		GameFlow::setTransition(GameFlow::FirstLogo);
+	}
 	
 	switch(resources->getReleaseType()) {
 		
