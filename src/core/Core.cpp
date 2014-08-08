@@ -353,8 +353,6 @@ void DanaeRestoreFullScreen() {
 	LoadScreen();
 }
 
-extern void InitTileLights();
-
 enum LevelNumber {
 	LEVEL0     = 0,
 	LEVEL1     = 1,
