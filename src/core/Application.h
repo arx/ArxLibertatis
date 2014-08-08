@@ -90,7 +90,6 @@ public:
 	virtual void run() = 0;
 	virtual void render() { }
 	virtual bool finalCleanup() = 0;
-	virtual void cleanup3DEnvironment() = 0;
 	
 	virtual void setWindowSize(bool fullscreen) = 0;
 

@@ -91,7 +91,6 @@ public:
 
 	bool initDeviceObjects();
 	bool finalCleanup();
-	virtual void cleanup3DEnvironment();
 	
 private:
 	void updateTime();

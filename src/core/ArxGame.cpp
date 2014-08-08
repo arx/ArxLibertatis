@@ -1188,7 +1188,9 @@ void ArxGame::shutdown()
 	FreeSnapShot();
 	ARX_INPUT_Release();
 	
-	mainApp->cleanup3DEnvironment();
+	if(getWindow()) {
+		finalCleanup();
+	}
 	
 	Application::shutdown();
 	
@@ -1325,17 +1327,6 @@ void ArxGame::doFrame() {
 		update();
 		render();
 	}
-}
-
-/*!
- * \brief Cleanup scene objects
- */
-void ArxGame::cleanup3DEnvironment() {
-	
-	if(getWindow()) {
-		finalCleanup();
-	}
-	
 }
 
 void ArxGame::updateFirstPersonCamera() {
