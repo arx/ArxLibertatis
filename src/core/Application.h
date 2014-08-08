@@ -72,15 +72,8 @@ protected:
 	
 public:
 	
-	virtual bool initialize();
+	virtual bool initialize() = 0;
 	virtual void shutdown();
-	
-private:
-	
-	virtual bool initConfig();
-	virtual bool initWindow() = 0;
-	virtual bool initInput() = 0;
-	virtual bool initSound() = 0;
 	
 public:
 	

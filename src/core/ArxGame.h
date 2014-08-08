@@ -58,9 +58,10 @@ class ArxGame : public Application, public Window::Listener, public Renderer::Li
 protected:
 	
 	virtual bool initialize();
-	virtual bool initWindow();
-	virtual bool initInput();
-	virtual bool initSound();
+	bool initConfig();
+	bool initWindow();
+	bool initInput();
+	bool initSound();
 	bool initGameData();
 	bool addPaks();
 	
