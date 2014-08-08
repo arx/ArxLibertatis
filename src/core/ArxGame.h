@@ -88,8 +88,6 @@ public:
 	virtual ~ArxGame();
 	
 	virtual void run();
-
-	bool initDeviceObjects();
 	
 private:
 	void updateTime();

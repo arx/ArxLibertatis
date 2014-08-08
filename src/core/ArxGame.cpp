@@ -2426,9 +2426,18 @@ void ArxGame::goFor2DFX()
 	GRenderer->SetRenderState(Renderer::Fog, false);
 }
 
-
-bool ArxGame::initDeviceObjects() {
+void ArxGame::onRendererInit(Renderer & renderer) {
 	
+	arx_assert(GRenderer == NULL);
+	
+	GRenderer = &renderer;
+	
+	arx_assert(GRenderer->GetTextureStageCount() >= 3, "not enough texture units");
+	arx_assert(m_MainWindow);
+	
+	GRenderer->Clear(Renderer::ColorBuffer);
+	m_MainWindow->showFrame();
+		
 	// Enable Z-buffering RenderState
 	GRenderer->SetRenderState(Renderer::DepthTest, true);
 	
@@ -2468,23 +2477,6 @@ bool ArxGame::initDeviceObjects() {
 	}
 
 	ARX_SetAntiAliasing();
-
-	return true;
-}
-
-void ArxGame::onRendererInit(Renderer & renderer) {
-	
-	arx_assert(GRenderer == NULL);
-	
-	GRenderer = &renderer;
-	
-	arx_assert(GRenderer->GetTextureStageCount() >= 3, "not enough texture units");
-	arx_assert(m_MainWindow);
-	
-	GRenderer->Clear(Renderer::ColorBuffer);
-	m_MainWindow->showFrame();
-		
-	initDeviceObjects();
 	
 	// The app is ready to go
 	m_bReady = true;
