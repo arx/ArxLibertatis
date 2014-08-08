@@ -86,7 +86,6 @@ public:
 	ArxGame();
 	virtual ~ArxGame();
 	
-	bool create();
 	virtual void run();
 
 	bool initDeviceObjects();

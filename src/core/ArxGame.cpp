@@ -258,8 +258,6 @@ bool ArxGame::initialize()
 		return false;
 	}
 	
-	create();
-	
 	return true;
 }
 
@@ -619,11 +617,6 @@ bool ArxGame::addPaks() {
 		resources->addFiles(base / "sfx", "sfx");
 		resources->addFiles(base / "speech", "speech");
 	}
-	
-	return true;
-}
-
-bool ArxGame::create() {
 	
 	return true;
 }
