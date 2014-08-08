@@ -48,11 +48,6 @@ ZeniMax Media Inc., Suite 120, Rockville, Maryland 20850 USA.
 #ifndef  ARX_CORE_APPLICATION_H
 #define  ARX_CORE_APPLICATION_H
 
-#include <string>
-
-#include "graphics/Color.h"
-#include "platform/Flags.h"
-
 class RenderWindow;
 
 extern float FPS;
@@ -60,39 +55,26 @@ extern float FPS;
 extern long EERIEMouseButton, EERIEMouseGrab;
 
 class Application {
-
-protected:
-	
-	RenderWindow * m_MainWindow;
-	
-	/* Virtual functions to be overriden for the 3D scene in the Application */
-	virtual void update() { }
 	
 public:
+	Application();
+	virtual ~Application();
 	
 	virtual bool initialize() = 0;
 	virtual void shutdown();
 	
-public:
-	
 	RenderWindow * getWindow() { return m_MainWindow; }
 	
-	// Class constructor
-	Application();
-	virtual ~Application();
-	
-
 	//! Ask the game to quit at the end of the current frame.
 	void quit();
 	
-	/* Virtual functions which may be overridden for specific implementations */
-	
 	virtual void run() = 0;
-	virtual void render() { }
 	
 	virtual void setWindowSize(bool fullscreen) = 0;
 
 protected:
+	RenderWindow * m_MainWindow;
+	
 	bool m_RunLoop;
 	bool m_bReady;
 };
