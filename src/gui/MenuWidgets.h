@@ -587,7 +587,7 @@ class CWindowMenuConsole {
 
 class CWindowMenu {
 	
-	public:
+	private:
 		bool				bMouseListen;
 		int					iPosX;
 		int					iPosY;
@@ -600,12 +600,10 @@ class CWindowMenu {
 		TextureContainer	* pTexMain;
 		TextureContainer	* pTexGlissiere;
 		TextureContainer	* pTexGlissiereButton;
-		std::vector<CWindowMenuConsole *>	vWindowConsoleElement;
 		float				fPosXCalc;
 		float				fDist;
-		float				fAngle;
-		MENUSTATE			eCurrentMenuState;
 		bool				bChangeConsole;
+		
 	public:
 		CWindowMenu(int px, int py, int width, int height, int nButton);
 		virtual ~CWindowMenu();
@@ -613,6 +611,10 @@ class CWindowMenu {
 		void AddConsole(CWindowMenuConsole * console);
 		void Update(float time);
 		MENUSTATE Render();
+		
+		std::vector<CWindowMenuConsole *>	vWindowConsoleElement;
+		float				fAngle;
+		MENUSTATE			eCurrentMenuState;
 };
 
 class MenuCursor {
