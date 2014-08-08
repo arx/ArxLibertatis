@@ -196,7 +196,6 @@ extern EERIE_CAMERA conversationcamera;
 extern ParticleManager * pParticleManager;
 extern CircularVertexBuffer<TexturedVertex> * pDynamicVertexBuffer_TLVERTEX; // VB using TLVERTEX format.
 extern CircularVertexBuffer<SMY_VERTEX3> * pDynamicVertexBuffer;
-extern CMenuState * pMenu;
 
 extern glm::mat4x4 ProjectionMatrix;
 
@@ -2505,11 +2504,9 @@ void ArxGame::onRendererInit(Renderer & renderer) {
 	pDynamicVertexBuffer_TLVERTEX = new CircularVertexBuffer<TexturedVertex>(vb);
 
 	RenderBatcher::getInstance().initialize();
-
-	if(pMenu) {
-		pMenu->bReInitAll=true;
-	}
-
+	
+	MenuReInitAll();
+	
 	ARX_SetAntiAliasing();
 	
 	// The app is ready to go

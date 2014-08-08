@@ -4471,3 +4471,11 @@ void Menu2_Close() {
 	delete pMenu, pMenu = NULL;
 	delete pMenuCursor, pMenuCursor = NULL;
 }
+
+void MenuReInitAll() {
+	
+	if(!pMenu)
+		return;
+	
+	pMenu->bReInitAll=true;
+}

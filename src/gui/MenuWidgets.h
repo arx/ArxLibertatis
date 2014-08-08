@@ -657,6 +657,8 @@ private:
 	
 };
 
+void MenuReInitAll();
+
 void Menu2_Open();
 bool Menu2_Render();
 void Menu2_Close();

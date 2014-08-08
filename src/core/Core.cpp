@@ -169,7 +169,6 @@ Image savegame_thumbnail;
 
 extern TextManager	*pTextManage;
 extern float FORCE_TIME_RESTORE;
-extern CMenuState		*pMenu;
 extern float	InventoryX;
 
 extern long		DONT_WANT_PLAYER_INZONE;
@@ -288,18 +287,14 @@ bool AdjustUI() {
 		return false;
 	}
 	
-	if(pMenu) {
-		pMenu->bReInitAll=true;
-	}
+	MenuReInitAll();
 	
 	return true;
 }
 
 void DanaeRestoreFullScreen() {
 	
-	if(pMenu) {
-		pMenu->bReInitAll=true;
-	}
+	MenuReInitAll();
 	
 	AdjustUI();
 
