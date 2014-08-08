@@ -391,15 +391,7 @@ enum LevelNumber {
 
 static bool initializeGame() {
 	
-	// TODO Time will be re-initialized later, but if we don't initialize it now casts to int might overflow.
-	arxtime.init();
-	
-	mainApp = new ArxGame();
-	if(!mainApp->initialize()) {
-		// Fallback to a generic critical error in case none was set yet...
-		LogCritical << "Application failed to initialize properly.";
-		return false;
-	}
+
 	
 	// Check if the game will be able to use the current game directory.
 	if(!ARX_Changelevel_CurGame_Clear()) {
@@ -573,12 +565,21 @@ static bool initializeGame() {
 
 void runGame() {
 	
-	if(initializeGame()) {
-		// Init all done, start the main loop
-		mainApp->run();
-		
-		// TODO run cleanup on partial initialization
-		shutdownGame();
+	// TODO Time will be re-initialized later, but if we don't initialize it now casts to int might overflow.
+	arxtime.init();
+	
+	mainApp = new ArxGame();
+	if(mainApp->initialize()) {
+		if(initializeGame()) {
+			// Init all done, start the main loop
+			mainApp->run();
+			
+			// TODO run cleanup on partial initialization
+			shutdownGame();
+		}
+	} else {
+		// Fallback to a generic critical error in case none was set yet...
+		LogCritical << "Application failed to initialize properly.";
 	}
 	
 	if(mainApp) {
