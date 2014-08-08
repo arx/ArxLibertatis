@@ -2432,42 +2432,42 @@ void ArxGame::onRendererInit(Renderer & renderer) {
 	
 	GRenderer = &renderer;
 	
-	arx_assert(GRenderer->GetTextureStageCount() >= 3, "not enough texture units");
+	arx_assert(renderer.GetTextureStageCount() >= 3, "not enough texture units");
 	arx_assert(m_MainWindow);
 	
-	GRenderer->Clear(Renderer::ColorBuffer);
+	renderer.Clear(Renderer::ColorBuffer);
 	m_MainWindow->showFrame();
 		
 	// Enable Z-buffering RenderState
-	GRenderer->SetRenderState(Renderer::DepthTest, true);
+	renderer.SetRenderState(Renderer::DepthTest, true);
 	
 	// Restore All Textures RenderState
-	GRenderer->RestoreAllTextures();
+	renderer.RestoreAllTextures();
 
 	ARX_PLAYER_Restore_Skin();
 	
 	// Disable Lighting RenderState
-	GRenderer->SetRenderState(Renderer::Lighting, false);
+	renderer.SetRenderState(Renderer::Lighting, false);
 
 	// Setup Texture Border RenderState
-	GRenderer->GetTextureStage(0)->setWrapMode(TextureStage::WrapRepeat);
+	renderer.GetTextureStage(0)->setWrapMode(TextureStage::WrapRepeat);
 
-	GRenderer->GetTextureStage(1)->disableColor();
+	renderer.GetTextureStage(1)->disableColor();
 	
 	// Fog
 	float fogEnd = 0.48f;
 	float fogStart = fogEnd * 0.65f;
-	GRenderer->SetFogParams(Renderer::FogLinear, fogStart, fogEnd);
-	GRenderer->SetFogColor(current.depthcolor.to<u8>());
-	GRenderer->SetRenderState(Renderer::Fog, true);
+	renderer.SetFogParams(Renderer::FogLinear, fogStart, fogEnd);
+	renderer.SetFogColor(current.depthcolor.to<u8>());
+	renderer.SetRenderState(Renderer::Fog, true);
 	
-	GRenderer->SetDepthBias(0);
+	renderer.SetDepthBias(0);
 
 	ComputePortalVertexBuffer();
-	VertexBuffer<SMY_VERTEX3> * vb3 = GRenderer->createVertexBuffer3(4000, Renderer::Stream);
+	VertexBuffer<SMY_VERTEX3> * vb3 = renderer.createVertexBuffer3(4000, Renderer::Stream);
 	pDynamicVertexBuffer = new CircularVertexBuffer<SMY_VERTEX3>(vb3);
 	
-	VertexBuffer<TexturedVertex> * vb = GRenderer->createVertexBufferTL(4000, Renderer::Stream);
+	VertexBuffer<TexturedVertex> * vb = renderer.createVertexBufferTL(4000, Renderer::Stream);
 	pDynamicVertexBuffer_TLVERTEX = new CircularVertexBuffer<TexturedVertex>(vb);
 
 	RenderBatcher::getInstance().initialize();
