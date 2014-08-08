@@ -1374,15 +1374,9 @@ void ReMappDanaeButton() {
 
 void AdjustMousePosition()
 {
-	if (EERIEMouseGrab && GInput->hasMouseMoved())
-	{
-		Vec2s pos;
-		pos.x = (short)(g_size.width() >> 1);
-		pos.y = (short)(g_size.height() >> 1);
-
-		if (!((ARXmenu.currentmode == AMCM_NEWQUEST)
-				||	(player.Interface & INTER_MAP && (Book_Mode != BOOKMODE_MINIMAP)))) {
-			GInput->setMousePosAbs(pos);
+	if(EERIEMouseGrab && GInput->hasMouseMoved()) {
+		if(!(ARXmenu.currentmode == AMCM_NEWQUEST || (player.Interface & INTER_MAP && (Book_Mode != BOOKMODE_MINIMAP)))) {
+			GInput->setMousePosAbs(Vec2s(g_size.center()));
 		}
 	}
 }
