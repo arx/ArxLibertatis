@@ -66,7 +66,6 @@ protected:
 	RenderWindow * m_MainWindow;
 	
 	/* Virtual functions to be overriden for the 3D scene in the Application */
-	virtual bool deleteDeviceObjects() { return true; }
 	virtual void update() { }
 	virtual bool beforeRun() { return true; }
 	
