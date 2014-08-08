@@ -90,7 +90,6 @@ public:
 	virtual void run();
 
 	bool initDeviceObjects();
-	bool finalCleanup();
 	
 private:
 	void updateTime();

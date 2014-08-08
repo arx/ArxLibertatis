@@ -89,7 +89,6 @@ public:
 	
 	virtual void run() = 0;
 	virtual void render() { }
-	virtual bool finalCleanup() = 0;
 	
 	virtual void setWindowSize(bool fullscreen) = 0;
 

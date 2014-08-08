@@ -1189,7 +1189,9 @@ void ArxGame::shutdown()
 	ARX_INPUT_Release();
 	
 	if(getWindow()) {
-		finalCleanup();
+		EERIE_PATHFINDER_Release();
+		ARX_INPUT_Release();
+		ARX_SOUND_Release();
 	}
 	
 	Application::shutdown();
@@ -2467,15 +2469,6 @@ bool ArxGame::initDeviceObjects() {
 
 	ARX_SetAntiAliasing();
 
-	return true;
-}
-
-bool ArxGame::finalCleanup() {
-	
-	EERIE_PATHFINDER_Release();
-	ARX_INPUT_Release();
-	ARX_SOUND_Release();
-	
 	return true;
 }
 
