@@ -2479,12 +2479,11 @@ void ArxGame::onRendererInit(Renderer & renderer) {
 	GRenderer = &renderer;
 	
 	arx_assert(GRenderer->GetTextureStageCount() >= 3, "not enough texture units");
+	arx_assert(m_MainWindow);
 	
-	if(m_MainWindow) {
-		GRenderer->Clear(Renderer::ColorBuffer);
-		m_MainWindow->showFrame();
-	}
-	
+	GRenderer->Clear(Renderer::ColorBuffer);
+	m_MainWindow->showFrame();
+		
 	initDeviceObjects();
 	
 	// The app is ready to go
