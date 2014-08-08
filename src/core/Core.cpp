@@ -1372,15 +1372,6 @@ void ReMappDanaeButton() {
 	
 }
 
-void AdjustMousePosition()
-{
-	if(EERIEMouseGrab && GInput->hasMouseMoved()) {
-		if(!(ARXmenu.currentmode == AMCM_NEWQUEST || (player.Interface & INTER_MAP && (Book_Mode != BOOKMODE_MINIMAP)))) {
-			GInput->setMousePosAbs(Vec2s(g_size.center()));
-		}
-	}
-}
-
 void ARX_SetAntiAliasing() {
 	bool enabled = config.video.antialiasing && mainApp->getWindow()->getMSAALevel() > 0;
 	GRenderer->SetAntialiasing(enabled);

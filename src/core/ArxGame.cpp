@@ -1768,7 +1768,12 @@ void ArxGame::updateInput() {
 	// Update input
 	GInput->update();
 	ReMappDanaeButton();
-	AdjustMousePosition();
+	
+	if(EERIEMouseGrab && GInput->hasMouseMoved()) {
+		if(!(ARXmenu.currentmode == AMCM_NEWQUEST || (player.Interface & INTER_MAP && (Book_Mode != BOOKMODE_MINIMAP)))) {
+			GInput->setMousePosAbs(Vec2s(g_size.center()));
+		}
+	}
 
 	if(GInput->actionNowPressed(CONTROLS_CUST_TOGGLE_FULLSCREEN)) {
 		setWindowSize(!getWindow()->isFullScreen());

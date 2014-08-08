@@ -122,7 +122,6 @@ void SendGameReadyMsg();
 void DanaeSwitchFullScreen();
 void ARX_SetAntiAliasing();
 void ReMappDanaeButton();
-void AdjustMousePosition();
 void DANAE_StartNewQuest();
 bool HandleGameFlowTransitions();
 void DanaeRestoreFullScreen();
