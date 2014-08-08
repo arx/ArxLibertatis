@@ -4252,14 +4252,7 @@ MenuCursor::MenuCursor() {
 	m_storedTime = 0;
 	
 	bMouseOver=false;
-
-	if(scursor[0]) {
-		fTailleX = scursor[0]->m_dwWidth;
-		fTailleY = scursor[0]->m_dwHeight;
-	} else {
-		fTailleX=fTailleY=0.f;
-	}
-
+	
 	iNumCursor=0;
 	lFrameDiff=0;
 	

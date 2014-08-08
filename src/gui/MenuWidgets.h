@@ -646,8 +646,6 @@ private:
 	long				lFrameDiff;
 	CURSORSTATE			eNumTex;
 	int					iNumCursor;
-	float				fTailleX;
-	float				fTailleY;
 	bool				bMouseOver;
 	bool				bDrawCursor;
 	
