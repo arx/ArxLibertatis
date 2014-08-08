@@ -168,6 +168,8 @@ void ARX_MISSILES_Spawn(Entity * io, ARX_SPELLS_MISSILE_TYPE type, const Vec3f *
 	}
 }
 
+extern TextureContainer * TC_fire;
+
 //-----------------------------------------------------------------------------
 // Updates all currently launched projectiles
 void ARX_MISSILES_Update()

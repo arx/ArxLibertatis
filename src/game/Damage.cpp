@@ -899,6 +899,8 @@ void ARX_DAMAGES_Reset()
 	memset(damages, 0, sizeof(DAMAGE_INFO)*MAX_DAMAGES);
 }
 
+extern TextureContainer * TC_fire2;
+
 void ARX_DAMAGES_AddVisual(DAMAGE_INFO * di, Vec3f * pos, float dmg, Entity * io) {
 	
 	if(!(di->params.type & DAMAGE_TYPE_FAKEFIRE)) {

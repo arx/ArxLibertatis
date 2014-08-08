@@ -63,6 +63,7 @@ protected:
 	bool initInput();
 	bool initSound();
 	bool initGameData();
+	bool initGame();
 	bool addPaks();
 	
 	void doFrame();

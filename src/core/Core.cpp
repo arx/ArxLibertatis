@@ -92,7 +92,6 @@ ZeniMax Media Inc., Suite 120, Rockville, Maryland 20850 USA.
 
 #include "gui/Hud.h"
 #include "gui/LoadLevelScreen.h"
-#include "gui/MenuPublic.h"
 #include "gui/Menu.h"
 #include "gui/MenuWidgets.h"
 #include "gui/Speech.h"
@@ -139,7 +138,6 @@ ZeniMax Media Inc., Suite 120, Rockville, Maryland 20850 USA.
 #include "math/Vector.h"
  
 #include "physics/Collisions.h"
-#include "physics/Attractors.h"
 #include "physics/Projectile.h"
 
 #include "platform/CrashHandler.h"
@@ -158,7 +156,6 @@ ZeniMax Media Inc., Suite 120, Rockville, Maryland 20850 USA.
 #include "scene/Object.h"
 
 #include "script/Script.h"
-#include "script/ScriptEvent.h"
 
 #include "window/RenderWindow.h"
 
@@ -171,7 +168,6 @@ using std::ostringstream;
 
 Image savegame_thumbnail;
 
-static bool initializeGame();
 static void shutdownGame();
 
 extern TextManager	*pTextManage;
@@ -184,20 +180,10 @@ extern long		TOTPDL;
 extern long		COLLIDED_CLIMB_POLY;
 
 //-----------------------------------------------------------------------------
-Vec3f PUSH_PLAYER_FORCE;
 
 ParticleManager	*pParticleManager = NULL;
-static TextureContainer * ombrignon = NULL;
-TextureContainer *	GoldCoinsTC[MAX_GOLD_COINS_VISUALS]; // Gold Coins Icons
 
-TextureContainer *	tflare = NULL;
-TextureContainer *	inventory_font=NULL;
-TextureContainer *	enviro=NULL;
-TextureContainer *	arx_logo_tc=NULL;
-TextureContainer *	TC_fire2=NULL;
-TextureContainer *	TC_fire=NULL;
-TextureContainer *	TC_smoke=NULL;
-TextureContainer *	Boom=NULL;
+TextureContainer *	GoldCoinsTC[MAX_GOLD_COINS_VISUALS]; // Gold Coins Icons
 
 #if BUILD_EDIT_LOADSAVE
 EERIE_MULTI3DSCENE * mse = NULL;
@@ -213,9 +199,6 @@ EERIE_3DOBJ	* arrowobj=NULL;			// 3D Object for arrows
 EERIE_3DOBJ * cameraobj=NULL;			// Camera 3D Object		// NEEDTO: Remove for Final
 EERIE_3DOBJ * markerobj=NULL;			// Marker 3D Object		// NEEDTO: Remove for Final
 EERIE_3DOBJ * cabal=NULL;				// Cabalistic 3D Object // NEEDTO: Load dynamically
-static EERIE_BACKGROUND DefaultBkg;
-
-EERIE_CAMERA subj,bookcam,raycam,conversationcamera;
 
 string WILLADDSPEECH;
 
@@ -283,35 +266,9 @@ bool g_debugToggles[10];
 
 //-----------------------------------------------------------------------------
 
-void LoadSysTextures();
 void ManageNONCombatModeAnimations();
 
 //-----------------------------------------------------------------------------
-
-class GameFlow {
-
-public:
-	enum Transition {
-		NoTransition,
-		FirstLogo,
-		SecondLogo,
-		LoadingScreen,
-		InGame
-	};
-
-	static void setTransition(Transition newTransition) {
-		s_currentTransition = newTransition;
-	}
-
-	static Transition getTransition() {
-		return s_currentTransition;
-	}
-
-private:
-	static Transition s_currentTransition;
-};
-
-GameFlow::Transition GameFlow::s_currentTransition = GameFlow::NoTransition;
 
 
 // Sends ON GAME_READY msg to all IOs
@@ -321,7 +278,7 @@ void SendGameReadyMsg()
 	SendMsgToAllIO(SM_GAME_READY);
 }
 
-static bool AdjustUI() {
+bool AdjustUI() {
 	
 	// Sets Danae Screen size depending on windowed/full-screen state
 	g_size = Rect(mainApp->getWindow()->getSize().x, mainApp->getWindow()->getSize().y);
@@ -353,216 +310,6 @@ void DanaeRestoreFullScreen() {
 	LoadScreen();
 }
 
-enum LevelNumber {
-	LEVEL0     = 0,
-	LEVEL1     = 1,
-	LEVEL2     = 2,
-	LEVEL3     = 3,
-	LEVEL4     = 4,
-	LEVEL5     = 5,
-	LEVEL6     = 6,
-	LEVEL7     = 7,
-	LEVEL8     = 8,
-	LEVEL9     = 9,
-	LEVEL10    = 10,
-	LEVEL11    = 11,
-	LEVEL12    = 12,
-	LEVEL13    = 13,
-	LEVEL14    = 14,
-	LEVEL15    = 15,
-	LEVEL16    = 16,
-	LEVEL17    = 17,
-	LEVEL18    = 18,
-	LEVEL19    = 19,
-	LEVEL20    = 20,
-	LEVEL21    = 21,
-	LEVEL22    = 22,
-	LEVEL23    = 23,
-	LEVEL24    = 24,
-	LEVEL25    = 25,
-	LEVEL26    = 26,
-	LEVEL27    = 27,
-	LEVELDEMO  = 28,
-	LEVELDEMO2 = 29,
-	LEVELDEMO3 = 30,
-	LEVELDEMO4 = 31,
-	NOLEVEL    = 32
-};
-
-static bool initializeGame() {
-	
-
-	
-	// Check if the game will be able to use the current game directory.
-	if(!ARX_Changelevel_CurGame_Clear()) {
-		LogCritical << "Error accessing current game directory.";
-		return false;
-	}
-	
-	ScriptEvent::init();
-	
-	CalcFPS(true);
-	
-	g_miniMap.mapMarkerInit();
-	
-	ARX_SPELLS_CancelSpellTarget();
-	
-	LogDebug("Danae Start");
-	
-	LogDebug("Project Init");
-	
-	PUSH_PLAYER_FORCE = Vec3f_ZERO;
-	ARX_SPECIAL_ATTRACTORS_Reset();
-	LogDebug("Attractors Init");
-	ARX_SPELLS_Precast_Reset();
-	LogDebug("Spell Init");
-	
-	for(size_t t = 0; t < MAX_GOLD_COINS_VISUALS; t++) {
-		GoldCoinsObj[t] = NULL;
-		GoldCoinsTC[t] = NULL;
-	}
-	
-	LogDebug("LSV Init");
-	TELEPORT_TO_LEVEL.clear();
-	TELEPORT_TO_POSITION.clear();
-	LogDebug("Mset");
-	
-	LogDebug("AnimManager Init");
-	ARX_SCRIPT_EventStackInit();
-	LogDebug("EventStack Init");
-	ARX_EQUIPMENT_Init();
-	LogDebug("AEQ Init");
-	
-	ARX_SCRIPT_Timer_FirstInit(512);
-	LogDebug("Timer Init");
-	ARX_FOGS_Clear();
-	LogDebug("Fogs Init");
-	
-	EERIE_LIGHT_GlobalInit();
-	LogDebug("Lights Init");
-	
-	LogDebug("Svars Init");
-	
-	// Script Test
-	lastteleport = player.baseOffset();
-	
-	entities.init();
-	
-	memset(&player,0,sizeof(ARXCHARACTER));
-	ARX_PLAYER_InitPlayer();
-	
-	CleanInventory();
-	
-	ARX_SPEECH_FirstInit();
-	ARX_CONVERSATION_FirstInit();
-	ARX_SPEECH_Init();
-	ARX_SPEECH_ClearAll();
-	RemoveQuakeFX();
-	
-	LogDebug("Launching DANAE");
-	
-	if(!AdjustUI()) {
-		return false;
-	}
-	
-	ARX_SetAntiAliasing();
-	ARXMenu_Options_Video_SetFogDistance(config.video.fogDistance);
-	ARXMenu_Options_Video_SetDetailsQuality(config.video.levelOfDetail);
-	ARXMenu_Options_Audio_SetMasterVolume(config.audio.volume);
-	ARXMenu_Options_Audio_SetSfxVolume(config.audio.sfxVolume);
-	ARXMenu_Options_Audio_SetSpeechVolume(config.audio.speechVolume);
-	ARXMenu_Options_Audio_SetAmbianceVolume(config.audio.ambianceVolume);
-	ARXMenu_Options_Audio_ApplyGameVolumes();
-	
-	ARXMenu_Options_Control_SetInvertMouse(config.input.invertMouse);
-	ARXMenu_Options_Control_SetMouseSensitivity(config.input.mouseSensitivity);
-	
-	g_miniMap.firstInit(&player, resources, &entities);
-	
-	player.m_torchColor = Color3f(1.f, 0.8f, 0.66666f);
-	LogDebug("InitializeDanae");
-	
-	InitTileLights();
-	
-	ARX_MISSILES_ClearAll();
-	spells.init();
-
-	ARX_SPELLS_ClearAllSymbolDraw();
-	ARX_PARTICLES_ClearAll();
-	ARX_MAGICAL_FLARES_FirstInit();
-	
-	LastLoadedScene.clear();
-	
-	DefaultBkg = EERIE_BACKGROUND();
-	ACTIVEBKG=&DefaultBkg;
-	InitBkg(ACTIVEBKG,MAX_BKGX,MAX_BKGZ,BKG_SIZX,BKG_SIZZ);
-	
-	player.size.y = -player.baseHeight();
-	player.size.x = player.baseRadius();
-	player.size.z = player.baseRadius();
-	subj.size.setYaw(player.size.y);
-	subj.size.setPitch(player.size.x);
-	subj.size.setRoll(player.size.z);
-	player.desiredangle = player.angle = subj.angle = Anglef(3.f, 268.f, 0.f);
-
-	subj.orgTrans.pos = Vec3f(900.f, player.baseHeight(), 4340.f);
-	subj.clip = Rect(0, 0, 640, 480);
-	subj.center = subj.clip.center();
-	subj.focal = BASE_FOCAL;
-	subj.bkgcolor = Color::none;
-	subj.cdepth = 2100.f;
-	
-	SetActiveCamera(&subj);
-
-	bookcam = subj;
-	raycam = subj;
-	conversationcamera = subj;
-	
-	raycam.clip = Rect(0, 0, 640, 640);
-	raycam.center = raycam.clip.center();
-	
-	bookcam.angle = Anglef::ZERO;
-	bookcam.orgTrans.pos = Vec3f_ZERO;
-	bookcam.focal = BASE_FOCAL;
-	
-	ACTIVEBKG->ambient = Color3f(0.09f, 0.09f, 0.09f);
-	
-	LoadSysTextures();
-	cursorTexturesInit();
-	
-	LogInfo << "Launching splash screens.";
-	if(GameFlow::getTransition() == GameFlow::NoTransition) {
-		GameFlow::setTransition(GameFlow::FirstLogo);
-	}
-	
-	switch(resources->getReleaseType()) {
-		
-		case 0: LogWarning << "Neither demo nor full game data files loaded."; break;
-		
-		case PakReader::Demo: {
-			LogInfo << "Initialized Arx Fatalis (demo)";
-			CrashHandler::setVariable("Data files", "demo");
-			break;
-		}
-		
-		case PakReader::FullGame: {
-			LogInfo << "Initialized Arx Fatalis (full game)";
-			CrashHandler::setVariable("Data files", "full");
-			break;
-		}
-		
-		case (int(PakReader::Demo) | int(PakReader::FullGame)): {
-			LogWarning << "Mixed demo and full game data files!";
-			CrashHandler::setVariable("Data files", "mixed");
-			break;
-		}
-		
-		default: ARX_DEAD_CODE();
-	}
-	
-	return true;
-}
-
 void runGame() {
 	
 	// TODO Time will be re-initialized later, but if we don't initialize it now casts to int might overflow.
@@ -570,13 +317,11 @@ void runGame() {
 	
 	mainApp = new ArxGame();
 	if(mainApp->initialize()) {
-		if(initializeGame()) {
-			// Init all done, start the main loop
-			mainApp->run();
-			
-			// TODO run cleanup on partial initialization
-			shutdownGame();
-		}
+		// Init all done, start the main loop
+		mainApp->run();
+		
+		// TODO run cleanup on partial initialization
+		shutdownGame();
 	} else {
 		// Fallback to a generic critical error in case none was set yet...
 		LogCritical << "Application failed to initialize properly.";
@@ -611,37 +356,6 @@ Entity * FlyingOverObject(const Vec2s & pos)
 		return io;
 
 	return NULL;
-}
-
-void LoadSysTextures()
-{
-	MagicFlareLoadTextures();
-
-	spellDataInit();
-
-	enviro=				TextureContainer::LoadUI("graph/particles/enviro");
-	inventory_font=		TextureContainer::LoadUI("graph/interface/font/font10x10_inventory");
-	tflare=				TextureContainer::LoadUI("graph/particles/flare");
-	ombrignon=			TextureContainer::LoadUI("graph/particles/ombrignon");
-	TC_fire=			TextureContainer::LoadUI("graph/particles/fire");
-	TC_fire2=			TextureContainer::LoadUI("graph/particles/fire2");
-	TC_smoke=			TextureContainer::LoadUI("graph/particles/smoke");
-	Boom=				TextureContainer::LoadUI("graph/particles/boom");
-	arx_logo_tc=		TextureContainer::LoadUI("graph/interface/icons/arx_logo_32");
-	
-	TextureContainer::LoadUI("graph/particles/fire_hit");
-	TextureContainer::LoadUI("graph/particles/light");
-	
-	//INTERFACE LOADING
-	hudElementsInit();
-	
-	// Load book textures and text
-	ITC.init();
-	
-	// MENU2
-	TextureContainer::LoadUI("graph/interface/menus/menu_main_background", TextureContainer::NoColorKey);
-	TextureContainer::LoadUI("graph/interface/menus/menu_console_background");
-	TextureContainer::LoadUI("graph/interface/menus/menu_console_background_border");
 }
 
 void ClearSysTextures() {
@@ -1615,6 +1329,8 @@ void ManageCombatModeAnimationsEND() {
 	}
 }
 
+extern TextureContainer * ombrignon;
+
 void DrawImproveVisionInterface() {
 
 	if(ombrignon) {
@@ -1639,121 +1355,6 @@ void DANAE_StartNewQuest()
 	BLOCK_PLAYER_CONTROLS = false;
 	fadeReset();
 	player.Interface = INTER_LIFE_MANA | INTER_MINIBACK | INTER_MINIBOOK;
-}
-
-LevelNumber LEVEL_TO_LOAD = LEVEL10;
-
-void loadLevel(u32 lvl) {
-	
-	if(lvl < NOLEVEL) {
-		if(GameFlow::getTransition() != GameFlow::LoadingScreen) {
-			LEVEL_TO_LOAD = static_cast<LevelNumber>(lvl);
-			GameFlow::setTransition(GameFlow::LoadingScreen);
-		}
-	}
-}
-ARX_PROGRAM_OPTION("loadlevel", "", "Load a specific level", &loadLevel, "LEVELID");
-
-extern long LOADQUEST_SLOT;
-void loadSlot(u32 saveSlot) {
-
-	LOADQUEST_SLOT = saveSlot;
-	GameFlow::setTransition(GameFlow::InGame);
-}
-ARX_PROGRAM_OPTION("loadslot", "", "Load a specific savegame slot", &loadSlot, "SAVESLOT");
-
-void skipLogo() {
-	loadLevel(LEVEL10);
-}
-ARX_PROGRAM_OPTION("skiplogo", "", "Skip logos at startup", &skipLogo);
-
-bool HandleGameFlowTransitions() {
-	
-	const int TRANSITION_DURATION = 3600;
-	static unsigned long TRANSITION_START = 0;
-
-	if(GameFlow::getTransition() == GameFlow::NoTransition) {
-		return false;
-	}
-
-	if(GInput->isAnyKeyPressed()) {
-		ARXmenu.currentmode = AMCM_MAIN;
-		ARX_MENU_Launch(false);
-		GameFlow::setTransition(GameFlow::InGame);
-	}
-		
-	if(GameFlow::getTransition() == GameFlow::FirstLogo) {
-		//firsttime
-		if(TRANSITION_START == 0) {
-			if(!ARX_INTERFACE_InitFISHTANK()) {
-				GameFlow::setTransition(GameFlow::SecondLogo);
-				return true;
-			}
-
-			TRANSITION_START = arxtime.get_updated_ul();
-		}
-
-		ARX_INTERFACE_ShowFISHTANK();
-
-		unsigned long tim = arxtime.get_updated_ul();
-		float pos = (float)tim - (float)TRANSITION_START;
-
-		if(pos > TRANSITION_DURATION) {
-			TRANSITION_START = 0;
-			GameFlow::setTransition(GameFlow::SecondLogo);
-		}
-
-		return true;			
-	}
-
-	if(GameFlow::getTransition() == GameFlow::SecondLogo) {
-		//firsttime
-		if(TRANSITION_START == 0) {
-			if(!ARX_INTERFACE_InitARKANE()) {
-				GameFlow::setTransition(GameFlow::LoadingScreen);
-				return true;
-			}
-
-			TRANSITION_START = arxtime.get_updated_ul();
-			ARX_SOUND_PlayInterface(SND_PLAYER_HEART_BEAT);
-		}
-
-		ARX_INTERFACE_ShowARKANE();
-		unsigned long tim = arxtime.get_updated_ul();
-		float pos = (float)tim - (float)TRANSITION_START;
-
-		if(pos > TRANSITION_DURATION) {
-			TRANSITION_START = 0;
-			GameFlow::setTransition(GameFlow::LoadingScreen);
-		}
-
-		return true;
-	}
-
-	if(GameFlow::getTransition() == GameFlow::LoadingScreen) {
-		ARX_INTERFACE_KillFISHTANK();
-		ARX_INTERFACE_KillARKANE();
-		char loadfrom[256];
-		
-		ARX_CHANGELEVEL_StartNew();
-		
-		sprintf(loadfrom, "graph/levels/level%d/level%d.dlf", LEVEL_TO_LOAD, LEVEL_TO_LOAD);
-		progressBarReset();
-		progressBarSetTotal(108);
-		LoadLevelScreen(LEVEL_TO_LOAD);
-
-		DanaeLoadLevel(loadfrom);
-		GameFlow::setTransition(GameFlow::InGame);
-		return true;
-	}
-
-	if(GameFlow::getTransition() == GameFlow::InGame) {
-		GameFlow::setTransition(GameFlow::NoTransition);
-		FirstFrame = true;
-		return true;
-	}
-
-	return false;
 }
 
 void ReMappDanaeButton() {

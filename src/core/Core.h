@@ -62,11 +62,10 @@ struct EERIE_3DOBJ;
 struct EERIE_MULTI3DSCENE;
 
 const size_t MAX_GOLD_COINS_VISUALS = 7;
-
-extern TextureContainer * TC_fire2;
-extern TextureContainer * TC_fire;
-extern TextureContainer * TC_smoke;
 extern TextureContainer * GoldCoinsTC[MAX_GOLD_COINS_VISUALS];
+
+extern TextureContainer * TC_smoke;
+
 extern EERIE_3DOBJ * cabal;
 extern EERIE_3DOBJ * cameraobj;
 extern EERIE_3DOBJ * markerobj;
@@ -127,6 +126,8 @@ void AdjustMousePosition();
 void DANAE_StartNewQuest();
 bool HandleGameFlowTransitions();
 void DanaeRestoreFullScreen();
+bool AdjustUI();
+
 void FirstFrameHandling();
 
 void DrawImproveVisionInterface();
