@@ -244,8 +244,6 @@ bool ArxGame::initialize()
 		return false;
 	}
 	
-	Random::seed();
-	
 	init = initGameData();
 	if(!init) {
 		LogCritical << "Failed to initialize the game data.";
