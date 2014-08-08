@@ -121,7 +121,6 @@ void SetEditMode(long ed, const bool stop_sound = true);
 void SendGameReadyMsg();
 void DanaeSwitchFullScreen();
 void ARX_SetAntiAliasing();
-void ReMappDanaeButton();
 void DANAE_StartNewQuest();
 bool HandleGameFlowTransitions();
 void DanaeRestoreFullScreen();

@@ -1338,40 +1338,6 @@ void DANAE_StartNewQuest()
 	player.Interface = INTER_LIFE_MANA | INTER_MINIBACK | INTER_MINIBOOK;
 }
 
-void ReMappDanaeButton() {
-	
-	// Handle double clicks.
-	const ActionKey & button = config.actions[CONTROLS_CUST_ACTION].key[0];
-	if((button.key[0] != -1 && (button.key[0] & Mouse::ButtonBase)
-	    && GInput->getMouseButtonDoubleClick(button.key[0], 300))
-	   || (button.key[1] != -1 && (button.key[1] & Mouse::ButtonBase)
-	    && GInput->getMouseButtonDoubleClick(button.key[1], 300))) {
-		EERIEMouseButton |= 4;
-		EERIEMouseButton &= ~1;
-	}
-	
-	if(GInput->actionNowPressed(CONTROLS_CUST_ACTION)) {
-		if(EERIEMouseButton & 4) {
-			EERIEMouseButton &= ~1;
-		} else {
-			EERIEMouseButton |= 1;
-		}
-		
-	}
-	if(GInput->actionNowReleased(CONTROLS_CUST_ACTION)) {
-		EERIEMouseButton &= ~1;
-		EERIEMouseButton &= ~4;
-	}
-	
-	if(GInput->actionNowPressed(CONTROLS_CUST_USE)) {
-		EERIEMouseButton |= 2;
-	}
-	if(GInput->actionNowReleased(CONTROLS_CUST_USE)) {
-		EERIEMouseButton &= ~2;
-	}
-	
-}
-
 void ARX_SetAntiAliasing() {
 	bool enabled = config.video.antialiasing && mainApp->getWindow()->getMSAALevel() > 0;
 	GRenderer->SetAntialiasing(enabled);

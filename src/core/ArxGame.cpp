@@ -1767,7 +1767,36 @@ void ArxGame::updateInput() {
 
 	// Update input
 	GInput->update();
-	ReMappDanaeButton();
+	
+	// Handle double clicks.
+	const ActionKey & button = config.actions[CONTROLS_CUST_ACTION].key[0];
+	if((button.key[0] != -1 && (button.key[0] & Mouse::ButtonBase)
+	    && GInput->getMouseButtonDoubleClick(button.key[0], 300))
+	   || (button.key[1] != -1 && (button.key[1] & Mouse::ButtonBase)
+	    && GInput->getMouseButtonDoubleClick(button.key[1], 300))) {
+		EERIEMouseButton |= 4;
+		EERIEMouseButton &= ~1;
+	}
+	
+	if(GInput->actionNowPressed(CONTROLS_CUST_ACTION)) {
+		if(EERIEMouseButton & 4) {
+			EERIEMouseButton &= ~1;
+		} else {
+			EERIEMouseButton |= 1;
+		}
+		
+	}
+	if(GInput->actionNowReleased(CONTROLS_CUST_ACTION)) {
+		EERIEMouseButton &= ~1;
+		EERIEMouseButton &= ~4;
+	}
+	
+	if(GInput->actionNowPressed(CONTROLS_CUST_USE)) {
+		EERIEMouseButton |= 2;
+	}
+	if(GInput->actionNowReleased(CONTROLS_CUST_USE)) {
+		EERIEMouseButton &= ~2;
+	}
 	
 	if(EERIEMouseGrab && GInput->hasMouseMoved()) {
 		if(!(ARXmenu.currentmode == AMCM_NEWQUEST || (player.Interface & INTER_MAP && (Book_Mode != BOOKMODE_MINIMAP)))) {
