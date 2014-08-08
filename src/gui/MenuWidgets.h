@@ -647,7 +647,6 @@ private:
 	CURSORSTATE			eNumTex;
 	int					iNumCursor;
 	bool				bMouseOver;
-	bool				bDrawCursor;
 	
 	// For the ribbon effect
 	int					iNbOldCoord;

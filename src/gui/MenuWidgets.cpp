@@ -4255,8 +4255,6 @@ MenuCursor::MenuCursor() {
 	
 	iNumCursor=0;
 	lFrameDiff=0;
-	
-	bDrawCursor=true;
 }
 
 MenuCursor::~MenuCursor()
@@ -4414,11 +4412,8 @@ static void DrawLine2D(const Vec2s * points, int _iNbPt, float _fSize, float _fR
 	GRenderer->SetRenderState(Renderer::AlphaBlending, false);
 }
 
-void MenuCursor::DrawCursor()
-{
-	if(!bDrawCursor)
-		return;
-
+void MenuCursor::DrawCursor() {
+	
 	GRenderer->SetRenderState(Renderer::AlphaBlending, true);
 	DrawLine2D(iOldCoord, iNbOldCoord, 10.f, .725f, .619f, 0.56f);
 
