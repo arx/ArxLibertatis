@@ -79,8 +79,6 @@ protected:
 
 	void update2DFX();
 	void goFor2DFX();
-
-	bool beforeRun();
 		
 public:
 	

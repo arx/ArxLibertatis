@@ -940,6 +940,54 @@ bool ArxGame::initGame()
 		default: ARX_DEAD_CODE();
 	}
 	
+	LogDebug("Before Run...");
+	
+	const Vec2i & size = getWindow()->getSize();
+	ControlCinematique = new Cinematic(size.x, size.y);
+	
+	long old = GLOBAL_EERIETEXTUREFLAG_LOADSCENE_RELEASE;
+	GLOBAL_EERIETEXTUREFLAG_LOADSCENE_RELEASE = -1;
+	
+	gui::NecklaceInit();
+
+	
+	drawDebugInitialize();
+
+	FlyingEye_Init();
+	
+	cabal = LoadTheObj("editor/obj3d/cabal.teo", "cabal_teo maps");
+	
+	cameraobj = loadObject("graph/obj3d/interactive/system/camera/camera.teo");
+	markerobj = loadObject("graph/obj3d/interactive/system/marker/marker.teo");
+	arrowobj = loadObject("graph/obj3d/interactive/items/weapons/arrow/arrow.teo");
+	
+	for(size_t i = 0; i < MAX_GOLD_COINS_VISUALS; i++) {
+		
+		std::ostringstream oss;
+		
+		if(i == 0) {
+			oss << "graph/obj3d/interactive/items/jewelry/gold_coin/gold_coin.teo";
+		} else {
+			oss << "graph/obj3d/interactive/items/jewelry/gold_coin/gold_coin" << (i + 1) << ".teo";
+		}
+		
+		GoldCoinsObj[i] = loadObject(oss.str());
+		
+		oss.str(string());
+		
+		if(i == 0) {
+			oss << "graph/obj3d/interactive/items/jewelry/gold_coin/gold_coin[icon]";
+		} else {
+			oss << "graph/obj3d/interactive/items/jewelry/gold_coin/gold_coin" << (i + 1) << "[icon]";
+		}
+		
+		GoldCoinsTC[i] = TextureContainer::LoadUI(oss.str());
+	}
+	
+	ARX_PLAYER_LoadHeroAnimsAndMesh();
+	
+	GLOBAL_EERIETEXTUREFLAG_LOADSCENE_RELEASE = old;
+	
 	return true;
 }
 
@@ -1078,8 +1126,6 @@ void ArxGame::onToggleFullscreen(const Window & window) {
  */
 void ArxGame::run() {
 	
-	beforeRun();
-	
 	while(m_RunLoop) {
 		
 		m_MainWindow->tick();
@@ -1170,59 +1216,6 @@ void ArxGame::cleanup3DEnvironment() {
 		finalCleanup();
 	}
 	
-}
-
-bool ArxGame::beforeRun() {
-	
-	LogDebug("Before Run...");
-	
-	const Vec2i & size = getWindow()->getSize();
-	ControlCinematique = new Cinematic(size.x, size.y);
-	
-	long old = GLOBAL_EERIETEXTUREFLAG_LOADSCENE_RELEASE;
-	GLOBAL_EERIETEXTUREFLAG_LOADSCENE_RELEASE = -1;
-	
-	gui::NecklaceInit();
-
-	
-	drawDebugInitialize();
-
-	FlyingEye_Init();
-	
-	cabal = LoadTheObj("editor/obj3d/cabal.teo", "cabal_teo maps");
-	
-	cameraobj = loadObject("graph/obj3d/interactive/system/camera/camera.teo");
-	markerobj = loadObject("graph/obj3d/interactive/system/marker/marker.teo");
-	arrowobj = loadObject("graph/obj3d/interactive/items/weapons/arrow/arrow.teo");
-	
-	for(size_t i = 0; i < MAX_GOLD_COINS_VISUALS; i++) {
-		
-		std::ostringstream oss;
-		
-		if(i == 0) {
-			oss << "graph/obj3d/interactive/items/jewelry/gold_coin/gold_coin.teo";
-		} else {
-			oss << "graph/obj3d/interactive/items/jewelry/gold_coin/gold_coin" << (i + 1) << ".teo";
-		}
-		
-		GoldCoinsObj[i] = loadObject(oss.str());
-		
-		oss.str(string());
-		
-		if(i == 0) {
-			oss << "graph/obj3d/interactive/items/jewelry/gold_coin/gold_coin[icon]";
-		} else {
-			oss << "graph/obj3d/interactive/items/jewelry/gold_coin/gold_coin" << (i + 1) << "[icon]";
-		}
-		
-		GoldCoinsTC[i] = TextureContainer::LoadUI(oss.str());
-	}
-	
-	ARX_PLAYER_LoadHeroAnimsAndMesh();
-	
-	GLOBAL_EERIETEXTUREFLAG_LOADSCENE_RELEASE = old;
-	
-	return true;
 }
 
 void ArxGame::updateFirstPersonCamera() {

@@ -67,7 +67,6 @@ protected:
 	
 	/* Virtual functions to be overriden for the 3D scene in the Application */
 	virtual void update() { }
-	virtual bool beforeRun() { return true; }
 	
 public:
 	
