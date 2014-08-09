@@ -885,7 +885,7 @@ bool Menu2_Render() {
 					me = new CMenuElementText(-1, hFontMenu, szMenuText, fPosX1, 0.f, lColor, 1.f, NOP);
 					me->SetCheckOff();
 					pc->AddElement(me);
-					me = new CMenuSlider(BUTTON_MENUOPTIONSVIDEO_FOG, iPosX2, 0);
+					me = new CMenuSlider(BUTTON_MENUOPTIONSVIDEO_FOG, Vec2i(iPosX2, 0));
 					((CMenuSlider *)me)->setValue(config.video.fogDistance);
 					pc->AddElement(me);
 
@@ -976,7 +976,7 @@ bool Menu2_Render() {
 					me = new CMenuElementText(-1, hFontMenu, szMenuText, fPosX1, 0.f, lColor, 1.f, OPTIONS_AUDIO_VOLUME);
 					me->SetCheckOff();
 					pc->AddElement(me);
-					me = new CMenuSlider(BUTTON_MENUOPTIONSAUDIO_MASTER, iPosX2, 0);
+					me = new CMenuSlider(BUTTON_MENUOPTIONSAUDIO_MASTER, Vec2i(iPosX2, 0));
 					((CMenuSlider *)me)->setValue((int)config.audio.volume); // TODO use float sliders
 					pc->AddElement(me);
 					pWindowMenuConsole->AddMenuCenterY(pc);
@@ -986,7 +986,7 @@ bool Menu2_Render() {
 					me = new CMenuElementText(-1, hFontMenu, szMenuText, fPosX1, 0.f, lColor, 1.f, OPTIONS_AUDIO);
 					me->SetCheckOff();
 					pc->AddElement(me);
-					me = new CMenuSlider(BUTTON_MENUOPTIONSAUDIO_SFX, iPosX2, 0);
+					me = new CMenuSlider(BUTTON_MENUOPTIONSAUDIO_SFX, Vec2i(iPosX2, 0));
 					((CMenuSlider *)me)->setValue((int)config.audio.sfxVolume);
 					pc->AddElement(me);
 					pWindowMenuConsole->AddMenuCenterY(pc);
@@ -996,7 +996,7 @@ bool Menu2_Render() {
 					me = new CMenuElementText(-1, hFontMenu, szMenuText, fPosX1, 0.f, lColor, 1.f, OPTIONS_AUDIO);
 					me->SetCheckOff();
 					pc->AddElement(me);
-					me = new CMenuSlider(BUTTON_MENUOPTIONSAUDIO_SPEECH, iPosX2, 0);
+					me = new CMenuSlider(BUTTON_MENUOPTIONSAUDIO_SPEECH, Vec2i(iPosX2, 0));
 					((CMenuSlider *)me)->setValue((int)config.audio.speechVolume);
 					pc->AddElement(me);
 					pWindowMenuConsole->AddMenuCenterY(pc);
@@ -1006,7 +1006,7 @@ bool Menu2_Render() {
 					me = new CMenuElementText(-1, hFontMenu, szMenuText, fPosX1, 0.f, lColor, 1.f, OPTIONS_AUDIO);
 					me->SetCheckOff();
 					pc->AddElement(me);
-					me = new CMenuSlider(BUTTON_MENUOPTIONSAUDIO_AMBIANCE, iPosX2, 0);
+					me = new CMenuSlider(BUTTON_MENUOPTIONSAUDIO_AMBIANCE, Vec2i(iPosX2, 0));
 					((CMenuSlider *)me)->setValue((int)config.audio.ambianceVolume);
 					pc->AddElement(me);
 					pWindowMenuConsole->AddMenuCenterY(pc);
@@ -1076,7 +1076,7 @@ bool Menu2_Render() {
 					me = new CMenuElementText(-1, hFontMenu, szMenuText, fPosX1, 0.f, lColor, 1.f, NOP);
 					me->SetCheckOff();
 					pc->AddElement(me);
-					me = new CMenuSlider(BUTTON_MENUOPTIONS_CONTROLS_MOUSESENSITIVITY, iPosX2, 0);
+					me = new CMenuSlider(BUTTON_MENUOPTIONS_CONTROLS_MOUSESENSITIVITY, Vec2i(iPosX2, 0));
 					((CMenuSlider*)me)->setValue(config.input.mouseSensitivity);
 					pc->AddElement(me);
 					pWindowMenuConsole->AddMenuCenterY(pc);
@@ -1096,7 +1096,7 @@ bool Menu2_Render() {
 					me = new CMenuElementText(-1, hFontMenu, szMenuText, fPosX1, 0.f, lColor, 1.f, NOP);
 					me->SetCheckOff();
 					pc->AddElement(me);
-					me = new CMenuSlider(BUTTON_MENUOPTIONS_CONTROLS_QUICKSAVESLOTS, iPosX2, 0);
+					me = new CMenuSlider(BUTTON_MENUOPTIONS_CONTROLS_QUICKSAVESLOTS, Vec2i(iPosX2, 0));
 					((CMenuSlider*)me)->setValue(config.misc.quicksaveSlots);
 					pc->AddElement(me);
 					pWindowMenuConsole->AddMenuCenterY(pc);
@@ -3917,24 +3917,24 @@ void CMenuSliderText::RenderMouseOver() {
 // CMenuSlider
 //-----------------------------------------------------------------------------
 
-CMenuSlider::CMenuSlider(int _iID, int _iPosX, int _iPosY)
+CMenuSlider::CMenuSlider(int _iID, Vec2i pos)
 	: CMenuElement(NOP)
 {
 	iID = _iID;
 
 	TextureContainer *pTexL = TextureContainer::Load("graph/interface/menus/menu_slider_button_left");
 	TextureContainer *pTexR = TextureContainer::Load("graph/interface/menus/menu_slider_button_right");
-	pLeftButton = new CMenuButton(-1, hFontMenu, NOP, _iPosX, _iPosY, string(), 1, pTexL, pTexR, -1);
-	pRightButton = new CMenuButton(-1, hFontMenu, NOP, _iPosX, _iPosY, string(), 1, pTexR, pTexL, -1);
+	pLeftButton = new CMenuButton(-1, hFontMenu, NOP, pos.x, pos.y, string(), 1, pTexL, pTexR, -1);
+	pRightButton = new CMenuButton(-1, hFontMenu, NOP, pos.x, pos.y, string(), 1, pTexR, pTexL, -1);
 	pTex1 = TextureContainer::Load("graph/interface/menus/menu_slider_on");
 	pTex2 = TextureContainer::Load("graph/interface/menus/menu_slider_off");
 
 	iPos = 0;
 
-	rZone.left   = _iPosX;
-	rZone.top    = _iPosY;
-	rZone.right  = _iPosX + pLeftButton->GetWidth() + pRightButton->GetWidth() + 10*max(pTex1->m_dwWidth, pTex2->m_dwWidth);
-	rZone.bottom = _iPosY + max(pLeftButton->GetHeight(), pRightButton->GetHeight());
+	rZone.left   = pos.x;
+	rZone.top    = pos.y;
+	rZone.right  = pos.x + pLeftButton->GetWidth() + pRightButton->GetWidth() + 10*max(pTex1->m_dwWidth, pTex2->m_dwWidth);
+	rZone.bottom = pos.y + max(pLeftButton->GetHeight(), pRightButton->GetHeight());
 
 	arx_assert(rZone.bottom >= 0);
 	rZone.bottom = max( static_cast<unsigned long>( rZone.bottom ), (unsigned long)max( pTex1->m_dwHeight, pTex2->m_dwHeight ) );

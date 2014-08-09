@@ -482,7 +482,7 @@ class CMenuSlider: public CMenuElement {
 		int getValue() const { return iPos; }
 
 	public:
-		CMenuSlider(int id, int px, int py);
+		CMenuSlider(int id, Vec2i pos);
 		virtual ~CMenuSlider();
 
 	public:
