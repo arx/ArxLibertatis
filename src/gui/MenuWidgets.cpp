@@ -385,8 +385,6 @@ bool Menu2_Render() {
 	Color lColor = Color(232, 204, 142);
 
 	if(!pMenu || (pMenu && pMenu->bReInitAll)) {
-
-		CMenuElementText *me;
 		
 		if(pMenu && pMenu->bReInitAll) {
 			eOldMenuState = pMenu->eOldMenuState;
@@ -423,7 +421,7 @@ bool Menu2_Render() {
 		}
 
 		float verPosX = RATIO_X(620) - hFontControls->getTextSize(version).x;
-		me = new CMenuElementText( -1, hFontControls, version, verPosX, RATIO_Y(80), lColor, 1.0f, NOP );
+		CMenuElementText * me = new CMenuElementText( -1, hFontControls, version, verPosX, RATIO_Y(80), lColor, 1.0f, NOP );
 		
 		me->SetCheckOff();
 		me->lColor=Color(127,127,127);
