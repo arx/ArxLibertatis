@@ -309,27 +309,6 @@ bool ProcessFadeInOut(bool _bFadeIn, float _fspeed) {
 	return false;
 }
 
-void MACRO_MENU_PRINCIPALE(Vec2s & pos,
-						   Color lColor,
-						   int MACRO_button,
-						   MENUSTATE MACRO_menu,
-						   const char * MACRO_locate,
-						   int MACRO_check)
-{
-	std::string szMenuText = getLocalised( MACRO_locate );
-	CMenuElementText *me = new CMenuElementText(MACRO_button, hFontMainMenu, szMenuText, RATIO_X(pos.x), RATIO_Y(pos.y), lColor, 1.8f, MACRO_menu);
-	if(MACRO_check) {
-		pMenuElementResume=me;
-		if(ARXMenu_CanResumeGame()) {
-			me->SetCheckOn();
-		} else {
-			me->SetCheckOff();
-			me->lColor=Color(127,127,127);
-		}
-	}
-	pMenu->AddMenuElement(me);
-}
-
 bool Menu2_Render() {
 	
 	ARXOldTimeMenu = ARXTimeMenu;
@@ -394,38 +373,8 @@ bool Menu2_Render() {
 		
 		pMenu = new CMenuState();
 		pMenu->eOldMenuWindowState=eM;
-
-		pMenu->pTexBackGround = TextureContainer::LoadUI("graph/interface/menus/menu_main_background", TextureContainer::NoColorKey);
-
-		Vec2s pos = Vec2s(370, 100);
-		int yOffset = 50;
 		
-		MACRO_MENU_PRINCIPALE(pos, lColor, BUTTON_MENUMAIN_RESUMEGAME,RESUME_GAME,"system_menus_main_resumegame",1);
-		pos.y += yOffset;
-		MACRO_MENU_PRINCIPALE(pos, lColor, BUTTON_MENUMAIN_NEWQUEST,NEW_QUEST,"system_menus_main_newquest",0);
-		pos.y += yOffset;
-		MACRO_MENU_PRINCIPALE(pos, lColor, -1,EDIT_QUEST,"system_menus_main_editquest",0);
-		pos.y += yOffset;
-		MACRO_MENU_PRINCIPALE(pos, lColor, BUTTON_MENUMAIN_OPTIONS,OPTIONS,"system_menus_main_options",0);
-		pos.y += yOffset;
-		MACRO_MENU_PRINCIPALE(pos, lColor, BUTTON_MENUMAIN_CREDITS,CREDITS,"system_menus_main_credits",0);
-		pos.y += yOffset;
-		MACRO_MENU_PRINCIPALE(pos, lColor, -1,QUIT,"system_menus_main_quit",0);
-		pos.y += yOffset;
-
-		std::string version = arx_version;
-		if(!arx_release_codename.empty()) {
-			version += " \"";
-			version += arx_release_codename;
-			version += "\"";
-		}
-
-		float verPosX = RATIO_X(620) - hFontControls->getTextSize(version).x;
-		CMenuElementText * me = new CMenuElementText( -1, hFontControls, version, verPosX, RATIO_Y(80), lColor, 1.0f, NOP );
-		
-		me->SetCheckOff();
-		me->lColor=Color(127,127,127);
-		pMenu->AddMenuElement(me);
+		pMenu->createChildElements(lColor);
 	}
 
 	bool bScroll=true;
@@ -2072,6 +2021,62 @@ CMenuState::CMenuState()
 CMenuState::~CMenuState() {
 	delete pMenuAllZone;
 	delete pTexBackGround;
+}
+
+void MACRO_MENU_PRINCIPALE(Vec2s & pos,
+						   Color lColor,
+						   int MACRO_button,
+						   MENUSTATE MACRO_menu,
+						   const char * MACRO_locate,
+						   int MACRO_check)
+{
+	std::string szMenuText = getLocalised( MACRO_locate );
+	CMenuElementText *me = new CMenuElementText(MACRO_button, hFontMainMenu, szMenuText, RATIO_X(pos.x), RATIO_Y(pos.y), lColor, 1.8f, MACRO_menu);
+	if(MACRO_check) {
+		pMenuElementResume=me;
+		if(ARXMenu_CanResumeGame()) {
+			me->SetCheckOn();
+		} else {
+			me->SetCheckOff();
+			me->lColor=Color(127,127,127);
+		}
+	}
+	pMenu->AddMenuElement(me);
+}
+
+void CMenuState::createChildElements(Color lColor)
+{
+	pMenu->pTexBackGround = TextureContainer::LoadUI("graph/interface/menus/menu_main_background", TextureContainer::NoColorKey);
+
+	Vec2s pos = Vec2s(370, 100);
+	int yOffset = 50;
+	
+	MACRO_MENU_PRINCIPALE(pos, lColor, BUTTON_MENUMAIN_RESUMEGAME,RESUME_GAME,"system_menus_main_resumegame",1);
+	pos.y += yOffset;
+	MACRO_MENU_PRINCIPALE(pos, lColor, BUTTON_MENUMAIN_NEWQUEST,NEW_QUEST,"system_menus_main_newquest",0);
+	pos.y += yOffset;
+	MACRO_MENU_PRINCIPALE(pos, lColor, -1,EDIT_QUEST,"system_menus_main_editquest",0);
+	pos.y += yOffset;
+	MACRO_MENU_PRINCIPALE(pos, lColor, BUTTON_MENUMAIN_OPTIONS,OPTIONS,"system_menus_main_options",0);
+	pos.y += yOffset;
+	MACRO_MENU_PRINCIPALE(pos, lColor, BUTTON_MENUMAIN_CREDITS,CREDITS,"system_menus_main_credits",0);
+	pos.y += yOffset;
+	MACRO_MENU_PRINCIPALE(pos, lColor, -1,QUIT,"system_menus_main_quit",0);
+	pos.y += yOffset;
+
+	std::string version = arx_version;
+	if(!arx_release_codename.empty()) {
+		version += " \"";
+		version += arx_release_codename;
+		version += "\"";
+	}
+
+	float verPosX = RATIO_X(620) - hFontControls->getTextSize(version).x;
+	CMenuElementText * me = new CMenuElementText( -1, hFontControls, version, verPosX, RATIO_Y(80), lColor, 1.0f, NOP );
+	
+	me->SetCheckOff();
+	me->lColor=Color(127,127,127);
+	pMenu->AddMenuElement(me);
 }
 
 void CMenuState::AddMenuElement(CMenuElement * _me) {

@@ -534,6 +534,8 @@ class CMenuState {
 	public:
 		explicit CMenuState();
 		virtual ~CMenuState();
+		
+		void createChildElements(Color lColor);
 
 		void AddMenuElement(CMenuElement * element);
 		MENUSTATE Update();
