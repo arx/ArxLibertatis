@@ -438,7 +438,7 @@ bool Menu2_Render() {
 
 			float fPosBDAY  = RATIO_Y(380);
 
-			pWindowMenu = new CWindowMenu(iWindowMenuPosX,iWindowMenuPosY,iWindowMenuWidth,iWindowMenuHeight,1);
+			pWindowMenu = new CWindowMenu(iWindowMenuPosX,iWindowMenuPosY,iWindowMenuWidth,iWindowMenuHeight);
 
 			switch(eMenuState) {
 			case NEW_QUEST: {
@@ -2562,23 +2562,12 @@ void CMenuCheckButton::ComputeTexturesPosition()
 	}*/
 }
 
-CWindowMenu::CWindowMenu(int _iPosX, int _iPosY, int _iTailleX, int _iTailleY, int _iNbButton)
-	: bMouseListen(true)
+CWindowMenu::CWindowMenu(int _iPosX, int _iPosY, int _iTailleX, int _iTailleY)
 {
 	iPosX=(int)RATIO_X(_iPosX);
 	iPosY=(int)RATIO_Y(_iPosY);
 	iTailleX=(int)RATIO_X(_iTailleX);
 	iTailleY=(int)RATIO_Y(_iTailleY);
-	iNbButton=_iNbButton;
-
-	pTexButton=TextureContainer::LoadUI("graph/interface/menus/menu_left_1button");
-	pTexButton2=TextureContainer::LoadUI("graph/interface/menus/menu_left_2button");
-	pTexButton3=TextureContainer::LoadUI("graph/interface/menus/menu_left_3button");
-
-	pTexMain=TextureContainer::LoadUI("graph/interface/menus/menu_left_main");
-
-	pTexGlissiere=TextureContainer::LoadUI("graph/interface/menus/menu_left_main_glissiere");
-	pTexGlissiereButton=TextureContainer::LoadUI("graph/interface/menus/menu_left_main_glissiere_button");
 
 	vWindowConsoleElement.clear();
 
@@ -2644,7 +2633,6 @@ MENUSTATE CWindowMenu::Render() {
 
 	MENUSTATE eMS=NOP;
 
-	if(bMouseListen) {
 		vector<CWindowMenuConsole*>::iterator i;
 
 		for(i = vWindowConsoleElement.begin(); i != vWindowConsoleElement.end(); ++i) {
@@ -2655,7 +2643,6 @@ MENUSTATE CWindowMenu::Render() {
 					break;
 			}
 		}
-	}
 
 	for(std::vector<CWindowMenuConsole*>::iterator i = vWindowConsoleElement.begin(); i != vWindowConsoleElement.end(); ++i) {
 		if(eCurrentMenuState == (*i)->eMenuState) {

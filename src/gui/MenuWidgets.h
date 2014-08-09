@@ -582,24 +582,16 @@ class CWindowMenuConsole {
 class CWindowMenu {
 	
 	private:
-		bool				bMouseListen;
 		int					iPosX;
 		int					iPosY;
-		int					iNbButton;
 		int					iTailleX;
 		int					iTailleY;
-		TextureContainer	* pTexButton;
-		TextureContainer	* pTexButton2;
-		TextureContainer	* pTexButton3;
-		TextureContainer	* pTexMain;
-		TextureContainer	* pTexGlissiere;
-		TextureContainer	* pTexGlissiereButton;
 		float				fPosXCalc;
 		float				fDist;
 		bool				bChangeConsole;
 		
 	public:
-		CWindowMenu(int px, int py, int width, int height, int nButton);
+		CWindowMenu(int px, int py, int width, int height);
 		virtual ~CWindowMenu();
 
 		void AddConsole(CWindowMenuConsole * console);
