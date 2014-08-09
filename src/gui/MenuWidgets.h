@@ -428,7 +428,7 @@ class CMenuButton: public CMenuElement {
 		float               fSize;
 
 	public:
-		CMenuButton(int id, Font * font, MENUSTATE state, int px, int py,
+		CMenuButton(int id, Font * font, MENUSTATE state, Vec2i pos,
 		            const std::string & label, float size = 1.f, TextureContainer * tex = NULL, 
 		            TextureContainer * texOver = NULL, int color = -1);
 		~CMenuButton();
