@@ -584,7 +584,6 @@ class CWindowMenu {
 		Vec2i m_size;
 		float				fPosXCalc;
 		float				fDist;
-		bool				bChangeConsole;
 		
 	public:
 		CWindowMenu(Vec2i pos, Vec2i size);

@@ -2539,8 +2539,6 @@ CWindowMenu::CWindowMenu(Vec2i pos, Vec2i size)
 	float fCalc	= fPosXCalc + (fDist * sin(radians(fAngle)));
 
 	m_pos.x = checked_range_cast<int>(fCalc);
-
-	bChangeConsole=false;
 }
 
 CWindowMenu::~CWindowMenu() {
@@ -2572,12 +2570,7 @@ MENUSTATE CWindowMenu::Render() {
 
 	if(bNoMenu)
 		return NOP;
-
-	if(bChangeConsole) {
-		//TO DO: faire ce que l'on veut
-		bChangeConsole=false;
-	}
-
+	
 	GRenderer->SetRenderState(Renderer::AlphaBlending, false);
 
 	TexturedVertex v[4];
@@ -2614,7 +2607,6 @@ MENUSTATE CWindowMenu::Render() {
 
 	if(eMS != NOP) {
 		eCurrentMenuState=eMS;
-		bChangeConsole=true;
 	}
 
 	return eMS;
