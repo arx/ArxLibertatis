@@ -1544,11 +1544,11 @@ void CMenuElementText::Update(int _iDTime) {
 	(void)_iDTime;
 }
 
-bool CMenuElementText::OnMouseDoubleClick(int _iMouseButton) {
+bool CMenuElementText::OnMouseDoubleClick() {
 
 	switch(iID) {
 	case BUTTON_MENUEDITQUEST_LOAD:
-		OnMouseClick(_iMouseButton);
+		OnMouseClick();
 
 		if(pWindowMenu) {
 			for(size_t i = 0; i < pWindowMenu->vWindowConsoleElement.size(); i++) {
@@ -1559,7 +1559,7 @@ bool CMenuElementText::OnMouseDoubleClick(int _iMouseButton) {
 						CMenuElement *pMenuElement = (CMenuElement*) ( (CMenuElement*)p->MenuAllZone.vMenuZone[j] )->GetZoneWithID(BUTTON_MENUEDITQUEST_LOAD_CONFIRM);
 
 						if(pMenuElement) {
-							pMenuElement->OnMouseClick(_iMouseButton);
+							pMenuElement->OnMouseClick();
 						}
 					}
 				}
@@ -1573,13 +1573,11 @@ bool CMenuElementText::OnMouseDoubleClick(int _iMouseButton) {
 }
 
 // true: block les zones de checks
-bool CMenuElementText::OnMouseClick(int _iMouseButton) {
+bool CMenuElementText::OnMouseClick() {
 	
 	if(!enabled) {
 		return false;
 	}
-	
-	(void)_iMouseButton;
 	
 	switch(eState) {
 	case EDIT:
@@ -2092,7 +2090,7 @@ MENUSTATE CMenuState::Update() {
 	if(GInput->getMouseButton(Mouse::Button_0)) {
 		if(iR) {
 			pZoneClick = (CMenuElement*)iR;
-			pZoneClick->OnMouseClick(1);
+			pZoneClick->OnMouseClick();
 			return pZoneClick->eMenuState;
 		}
 	} else {
@@ -2382,9 +2380,7 @@ void CMenuCheckButton::Move(const Vec2i & offset) {
 	}
 }
 
-bool CMenuCheckButton::OnMouseClick(int _iMouseButton) {
-	
-	(void)_iMouseButton;
+bool CMenuCheckButton::OnMouseClick() {
 	
 	if(iOldState<0)
 		iOldState=iState;
@@ -3009,7 +3005,7 @@ MENUSTATE CWindowMenuConsole::Update(int _iPosX, int _iPosY, int _iOffsetY) {
 
 				if(GInput->getMouseButtonDoubleClick(Mouse::Button_0, 300)) {
 					MENUSTATE e = pZoneClick->eMenuState;
-					bEdit = pZoneClick->OnMouseDoubleClick(0);
+					bEdit = pZoneClick->OnMouseDoubleClick();
 
 					if(pZoneClick->iID == BUTTON_MENUEDITQUEST_LOAD)
 						return MAIN;
@@ -3022,7 +3018,7 @@ MENUSTATE CWindowMenuConsole::Update(int _iPosX, int _iPosY, int _iOffsetY) {
 
 				if(GInput->getMouseButton(Mouse::Button_0)) {
 					MENUSTATE e = pZoneClick->eMenuState;
-					bEdit = pZoneClick->OnMouseClick(0);
+					bEdit = pZoneClick->OnMouseClick();
 					return e;
 				} else {
 					pZoneClick->EmptyFunction();
@@ -3036,7 +3032,7 @@ MENUSTATE CWindowMenuConsole::Update(int _iPosX, int _iPosY, int _iOffsetY) {
 					pZoneClick=(CMenuElement*)iR;
 
 					if(GInput->getMouseButtonDoubleClick(Mouse::Button_0, 300)) {
-						bEdit = pZoneClick->OnMouseDoubleClick(0);
+						bEdit = pZoneClick->OnMouseDoubleClick();
 
 						if(bEdit)
 							return pZoneClick->eMenuState;
@@ -3056,7 +3052,7 @@ MENUSTATE CWindowMenuConsole::Update(int _iPosX, int _iPosY, int _iOffsetY) {
 			if(CMenuElementShortCut) {
 				pZoneClick=CMenuElementShortCut;
 				MENUSTATE e = pZoneClick->eMenuState;
-				bEdit = pZoneClick->OnMouseClick(0);
+				bEdit = pZoneClick->OnMouseClick();
 				pZoneClick=CMenuElementShortCut;
 				return e;
 			}
@@ -3617,9 +3613,7 @@ void CMenuButton::AddText(const std::string & _pText)
 	rZone.bottom=rZone.top+iSizeYButton;
 }
 
-bool CMenuButton::OnMouseClick(int _iMouseButton) {
-	
-	(void)_iMouseButton;
+bool CMenuButton::OnMouseClick() {
 	
 	if(!enabled) {
 		return false;
@@ -3810,10 +3804,8 @@ void CMenuSliderText::EmptyFunction() {
 	}
 }
 
-bool CMenuSliderText::OnMouseClick(int _iMouseButton) {
-
-	ARX_UNUSED(_iMouseButton);
-
+bool CMenuSliderText::OnMouseClick() {
+	
 	if(!enabled) {
 		return false;
 	}
@@ -4032,9 +4024,8 @@ void CMenuSlider::EmptyFunction() {
 	}
 }
 
-bool CMenuSlider::OnMouseClick(int _iMouseButton) {
-
-	ARX_UNUSED(_iMouseButton);
+bool CMenuSlider::OnMouseClick() {
+	
 	ARX_SOUND_PlayMenu(SND_MENU_CLICK);
 
 	int iX = GInput->getMousePosAbs().x;

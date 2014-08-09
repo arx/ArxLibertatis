@@ -341,12 +341,12 @@ class CMenuElement : public CMenuZone
 		virtual ~CMenuElement();
 
 		virtual CMenuElement * OnShortCut();
-		virtual bool OnMouseClick(int button) = 0;
+		virtual bool OnMouseClick() = 0;
 		virtual void Update(int time) = 0;
 		virtual void Render() = 0;
 		virtual void RenderMouseOver() { }
 		virtual void EmptyFunction() { }
-		virtual bool OnMouseDoubleClick(int button) { ARX_UNUSED(button); return false; }
+		virtual bool OnMouseDoubleClick() { return false; }
 		virtual CMenuZone * GetZoneWithID(int zoneId) {
 			return (iID == zoneId) ? (CMenuZone *)this : NULL;
 		}
@@ -380,7 +380,7 @@ class CMenuPanel : public CMenuElement {
  
 		void Update(int time);
 		void Render();
-		bool OnMouseClick(int button) { ARX_UNUSED(button); return false; }
+		bool OnMouseClick() { return false; }
 		CMenuElement * OnShortCut();
 		void RenderMouseOver() { }
 		CMenuZone * IsMouseOver(const Vec2s & mousePos) const;
@@ -406,7 +406,7 @@ class CMenuElementText: public CMenuElement {
 		virtual ~CMenuElementText();
 
 		CMenuElement * OnShortCut();
-		bool OnMouseClick(int button);
+		bool OnMouseClick();
 		void Update(int time);
 		void Render();
 		void SetText(const std::string & _pText);
@@ -414,7 +414,7 @@ class CMenuElementText: public CMenuElement {
  
 		Vec2i GetTextSize() const;
 
-		bool OnMouseDoubleClick(int button);
+		bool OnMouseDoubleClick();
 };
 
 class CMenuButton: public CMenuElement {
@@ -438,7 +438,7 @@ class CMenuButton: public CMenuElement {
 		void SetPos(float px, float py);
 		void AddText(const std::string & label);
 		CMenuElement * OnShortCut() { return NULL; }
-		bool OnMouseClick(int button);
+		bool OnMouseClick();
 		void Update(int time);
 		void Render();
 		void RenderMouseOver();
@@ -460,7 +460,7 @@ class CMenuSliderText: public CMenuElement {
 
 	public:
 		void Move(const Vec2i & offset);
-		bool OnMouseClick(int button);
+		bool OnMouseClick();
 		CMenuElement * OnShortCut() { return NULL; }
 		void Update(int time);
 		void Render();
@@ -488,7 +488,7 @@ class CMenuSlider: public CMenuElement {
 
 	public:
 		void Move(const Vec2i & offset);
-		bool OnMouseClick(int button);
+		bool OnMouseClick();
 		CMenuElement * OnShortCut() { return NULL; }
 		void Update(int time);
 		void Render();
@@ -513,7 +513,7 @@ class CMenuCheckButton : public CMenuElement {
 		virtual ~CMenuCheckButton();
 
 		void Move(const Vec2i & offset);
-		bool OnMouseClick(int button);
+		bool OnMouseClick();
 		void Update(int time);
 		void Render();
 		void RenderMouseOver();
