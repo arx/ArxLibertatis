@@ -451,7 +451,7 @@ class CMenuSliderText: public CMenuElement {
 		int					iPos;
 		int					iOldPos;
 	public:
-		CMenuSliderText(int, int, int);
+		CMenuSliderText(int, Vec2i pos);
 		virtual ~CMenuSliderText();
 
 	public:

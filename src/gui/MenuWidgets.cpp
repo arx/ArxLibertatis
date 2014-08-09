@@ -763,7 +763,7 @@ bool Menu2_Render() {
 						me = new CMenuElementText(-1, hFontMenu, szMenuText, fPosX1, 0.f, lColor, 1.f, NOP);
 						me->SetCheckOff();
 						pc->AddElement(me);
-						CMenuSliderText * slider = new CMenuSliderText(BUTTON_MENUOPTIONSVIDEO_RENDERER, 0, 0);
+						CMenuSliderText * slider = new CMenuSliderText(BUTTON_MENUOPTIONSVIDEO_RENDERER, Vec2i(0, 0));
 						
 						slider->AddText(new CMenuElementText(-1, hFontMenu, "Auto-Select", 0, 0, lColor, 1.f, OPTIONS_VIDEO_RENDERER_AUTOMATIC));
 						slider->iPos = slider->vText.size() - 1;
@@ -806,7 +806,7 @@ bool Menu2_Render() {
 					me = new CMenuElementText(-1, hFontMenu, szMenuText, fPosX1, 0.f, lColor, 1.f, NOP);
 					me->SetCheckOff();
 					pc->AddElement(me);
-					pMenuSliderResol = new CMenuSliderText(BUTTON_MENUOPTIONSVIDEO_RESOLUTION, 0, 0);
+					pMenuSliderResol = new CMenuSliderText(BUTTON_MENUOPTIONSVIDEO_RESOLUTION, Vec2i(0, 0));
 					
 					pMenuSliderResol->setEnabled(config.video.fullscreen);
 					
@@ -862,7 +862,7 @@ bool Menu2_Render() {
 					me = new CMenuElementText(-1, hFontMenu, szMenuText, fPosX1, 0.f, lColor, 1.f, NOP);
 					me->SetCheckOff();
 					pc->AddElement(me);
-					me = new CMenuSliderText(BUTTON_MENUOPTIONSVIDEO_OTHERSDETAILS, 0, 0);
+					me = new CMenuSliderText(BUTTON_MENUOPTIONSVIDEO_OTHERSDETAILS, Vec2i(0, 0));
 					szMenuText = getLocalised("system_menus_options_video_texture_low");
 					((CMenuSliderText *)me)->AddText(new CMenuElementText(-1, hFontMenu, szMenuText, 0, 0,lColor,1.f, OPTIONS_OTHERDETAILS));
 					szMenuText = getLocalised("system_menus_options_video_texture_med");
@@ -953,7 +953,7 @@ bool Menu2_Render() {
 						me = new CMenuElementText(-1, hFontMenu, szMenuText, fPosX1, 0.f, lColor, 1.f, NOP);
 						me->SetCheckOff();
 						pc->AddElement(me);
-						CMenuSliderText * slider = new CMenuSliderText(BUTTON_MENUOPTIONSAUDIO_BACKEND, 0, 0);
+						CMenuSliderText * slider = new CMenuSliderText(BUTTON_MENUOPTIONSAUDIO_BACKEND, Vec2i(0, 0));
 						
 						slider->AddText(new CMenuElementText(-1, hFontMenu, "Auto-Select", 0, 0, lColor, 1.f, OPTIONS_AUDIO_BACKEND_AUTOMATIC));
 						slider->iPos = slider->vText.size() - 1;
@@ -3664,24 +3664,24 @@ void CMenuButton::RenderMouseOver() {
 	}
 }
 
-CMenuSliderText::CMenuSliderText(int _iID, int _iPosX, int _iPosY)
+CMenuSliderText::CMenuSliderText(int _iID, Vec2i pos)
 	: CMenuElement(NOP)
 {
 	iID = _iID;
 	TextureContainer *pTex = TextureContainer::Load("graph/interface/menus/menu_slider_button_left");
-	pLeftButton = new CMenuButton(-1, hFontMenu, NOP, _iPosX, _iPosY, string(), 1, pTex, pTex, -1);
+	pLeftButton = new CMenuButton(-1, hFontMenu, NOP, pos.x, pos.y, string(), 1, pTex, pTex, -1);
 	pTex = TextureContainer::Load("graph/interface/menus/menu_slider_button_right");
-	pRightButton = new CMenuButton(-1, hFontMenu, NOP, _iPosX, _iPosY, string(), 1, pTex, pTex, -1);
+	pRightButton = new CMenuButton(-1, hFontMenu, NOP, pos.x, pos.y, string(), 1, pTex, pTex, -1);
 
 	vText.clear();
 
 	iPos = 0;
 	iOldPos = -1;
 
-	rZone.left   = _iPosX;
-	rZone.top    = _iPosY;
-	rZone.right  = _iPosX + pLeftButton->GetWidth() + pRightButton->GetWidth();
-	rZone.bottom = _iPosY + max(pLeftButton->GetHeight(), pRightButton->GetHeight());
+	rZone.left   = pos.x;
+	rZone.top    = pos.y;
+	rZone.right  = pos.x + pLeftButton->GetWidth() + pRightButton->GetWidth();
+	rZone.bottom = pos.y + max(pLeftButton->GetHeight(), pRightButton->GetHeight());
 
 	pRef = this;
 }
