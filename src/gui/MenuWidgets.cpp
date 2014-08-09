@@ -3475,7 +3475,7 @@ CMenuZone * CMenuPanel::IsMouseOver(const Vec2s& mousePos) const {
 	return NULL;
 }
 
-CMenuButton::CMenuButton(int _iID, Font* _pFont, MENUSTATE _eMenuState, Vec2i pos, const std::string& _pText, float _fSize, TextureContainer *_pTex, TextureContainer *_pTexOver, int _iColor)
+CMenuButton::CMenuButton(int _iID, Font* _pFont, MENUSTATE _eMenuState, Vec2i pos, const std::string& _pText, float _fSize, TextureContainer *_pTex, TextureContainer *_pTexOver)
 	: CMenuElement(_eMenuState)
 {
 	iID = _iID;
@@ -3510,9 +3510,7 @@ CMenuButton::CMenuButton(int _iID, Font* _pFont, MENUSTATE _eMenuState, Vec2i po
 		rZone.right  = max(rZone.right, checked_range_cast<Rect::Num>(rZoneR));
 		rZone.bottom = max(rZone.bottom, checked_range_cast<Rect::Num>(rZoneB));
 	}
-
-	iColor=_iColor;
-
+	
 	pRef=this;
 }
 
@@ -3669,9 +3667,9 @@ CMenuSliderText::CMenuSliderText(int _iID, Vec2i pos)
 {
 	iID = _iID;
 	TextureContainer *pTex = TextureContainer::Load("graph/interface/menus/menu_slider_button_left");
-	pLeftButton = new CMenuButton(-1, hFontMenu, NOP, pos, string(), 1, pTex, pTex, -1);
+	pLeftButton = new CMenuButton(-1, hFontMenu, NOP, pos, string(), 1, pTex, pTex);
 	pTex = TextureContainer::Load("graph/interface/menus/menu_slider_button_right");
-	pRightButton = new CMenuButton(-1, hFontMenu, NOP, pos, string(), 1, pTex, pTex, -1);
+	pRightButton = new CMenuButton(-1, hFontMenu, NOP, pos, string(), 1, pTex, pTex);
 
 	vText.clear();
 
@@ -3924,8 +3922,8 @@ CMenuSlider::CMenuSlider(int _iID, Vec2i pos)
 
 	TextureContainer *pTexL = TextureContainer::Load("graph/interface/menus/menu_slider_button_left");
 	TextureContainer *pTexR = TextureContainer::Load("graph/interface/menus/menu_slider_button_right");
-	pLeftButton = new CMenuButton(-1, hFontMenu, NOP, pos, string(), 1, pTexL, pTexR, -1);
-	pRightButton = new CMenuButton(-1, hFontMenu, NOP, pos, string(), 1, pTexR, pTexL, -1);
+	pLeftButton = new CMenuButton(-1, hFontMenu, NOP, pos, string(), 1, pTexL, pTexR);
+	pRightButton = new CMenuButton(-1, hFontMenu, NOP, pos, string(), 1, pTexR, pTexL);
 	pTex1 = TextureContainer::Load("graph/interface/menus/menu_slider_on");
 	pTex2 = TextureContainer::Load("graph/interface/menus/menu_slider_off");
 

@@ -424,13 +424,12 @@ class CMenuButton: public CMenuElement {
 		TextureContainer*   pTex;
 		TextureContainer*   pTexOver;
 		Font*               pFont;
-		int                 iColor;
 		float               fSize;
 
 	public:
 		CMenuButton(int id, Font * font, MENUSTATE state, Vec2i pos,
 		            const std::string & label, float size = 1.f, TextureContainer * tex = NULL, 
-		            TextureContainer * texOver = NULL, int color = -1);
+		            TextureContainer * texOver = NULL);
 		~CMenuButton();
 
 	public:
