@@ -2380,8 +2380,6 @@ void CMenuCheckButton::Move(const Vec2i & offset) {
 	if(pText) {
 		pText->Move(offset);
 	}
-	
-	ComputeTexturesPosition();
 }
 
 bool CMenuCheckButton::OnMouseClick(int _iMouseButton) {
@@ -2539,27 +2537,6 @@ void CMenuCheckButton::RenderMouseOver() {
 
 	//DEBUG
 	GRenderer->SetRenderState(Renderer::AlphaBlending, false);
-}
-
-//! Compute members fTexX, fTexY, fTexSX and fTexSY according to rZone and iTaille
-void CMenuCheckButton::ComputeTexturesPosition()
-{
-	// Nuky - for now I split into 2 cases, because I don't know yet how to fix position with text
-	// TODO Merge with master
-	/*if (!pText)
-	{
-		fTexX_ = static_cast<float>(rZone.left);
-		fTexY_ = static_cast<float>(rZone.top);
-		fTexSX_ = RATIO_X(iTaille);
-		fTexSY_ = RATIO_Y(iTaille);
-	}
-	else
-	{
-		fTexX_ = static_cast<float>(rZone.right - iTaille);
-		fTexY_ = rZone.top + (static_cast<float>(rZone.bottom - rZone.top) - iTaille) * 0.5f;
-		fTexSX_ = RATIO_X(iTaille);
-		fTexSY_ = RATIO_Y(iTaille);
-	}*/
 }
 
 CWindowMenu::CWindowMenu(int _iPosX, int _iPosY, int _iTailleX, int _iTailleY)

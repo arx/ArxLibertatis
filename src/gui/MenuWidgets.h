@@ -498,8 +498,6 @@ class CMenuSlider: public CMenuElement {
 
 class CMenuCheckButton : public CMenuElement {
 	
-	void ComputeTexturesPosition();
-
 	public:
 		int					iState;
 		int					iOldState;
