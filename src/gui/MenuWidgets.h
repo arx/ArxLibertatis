@@ -543,7 +543,6 @@ class CMenuState {
 class CWindowMenuConsole {
 	
 	public:
-		bool					bMouseListen;
 		bool					bFrameOdd;
 
 		Vec2i m_pos;
@@ -559,12 +558,9 @@ class CWindowMenuConsole {
 		bool					bEdit;
 		TextureContainer	*	pTexBackground;
 		TextureContainer	*	pTexBackgroundBorder;
-
 		long					lData;
-		long			*		pData;
-
-		int						iPosMenu;
 		bool				bMouseAttack;
+		
 	private:
 		void UpdateText();
 	public:

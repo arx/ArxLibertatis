@@ -2672,13 +2672,11 @@ MENUSTATE CWindowMenu::Render() {
 }
 
 CWindowMenuConsole::CWindowMenuConsole(int _iPosX, int _iPosY, int _iWidth, int _iHeight, MENUSTATE _eMenuState)
-	: bMouseListen(true)
-	, iSavePosY(0)
+	: iSavePosY(0)
 	, iInterligne(10)
 	, pZoneClick(NULL)
 	, bEdit(false)
 	, lData(0)
-	, pData(NULL)
 	, bMouseAttack(false)
 {
 	m_offset.x=(int)RATIO_X(_iPosX);
@@ -2692,8 +2690,6 @@ CWindowMenuConsole::CWindowMenuConsole(int _iPosX, int _iPosY, int _iWidth, int 
 	pTexBackgroundBorder = TextureContainer::LoadUI("graph/interface/menus/menu_console_background_border");
 
 	bFrameOdd=false;
-
-	iPosMenu=-1;
 }
 
 void CWindowMenuConsole::AddMenu(CMenuElement *_pMenuElement)
@@ -3035,7 +3031,6 @@ MENUSTATE CWindowMenuConsole::Update(int _iPosX, int _iPosY, int _iOffsetY) {
 	m_pos.y=_iPosY;
 
 	// Check if mouse over
-	if(bMouseListen) {
 		if(!bEdit) {
 			pZoneClick=NULL;
 			CMenuZone * iR = MenuAllZone.CheckZone(GInput->getMousePosAbs());
@@ -3080,7 +3075,6 @@ MENUSTATE CWindowMenuConsole::Update(int _iPosX, int _iPosY, int _iOffsetY) {
 				}
 			}
 		}
-	}
 
 	//check les shortcuts
 	if(!bEdit) {
