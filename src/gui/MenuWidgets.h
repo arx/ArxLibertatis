@@ -500,7 +500,7 @@ class CMenuCheckButton : public CMenuElement {
 		CMenuElementText	* pText;
 
 	public:
-		CMenuCheckButton(int id, float px, float py, int size, TextureContainer * tex1,
+		CMenuCheckButton(int id, Vec2f pos, int size, TextureContainer * tex1,
 		                 TextureContainer * tex2, CMenuElementText * label = NULL); 
 		virtual ~CMenuCheckButton();
 
