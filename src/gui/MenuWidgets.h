@@ -266,7 +266,6 @@ class CMenuZone
 		long		lData;
 	public:
 		CMenuZone();
-		CMenuZone(int, int, int, int, CMenuZone *);
 		virtual ~CMenuZone();
 
 		int GetWidth() const
