@@ -419,16 +419,11 @@ class CMenuElementText: public CMenuElement {
 class CMenuButton: public CMenuElement {
 	
 	public:
-		std::string         vText;
-		int                 iPos;
 		TextureContainer*   pTex;
 		TextureContainer*   pTexOver;
-		Font*               pFont;
-
+	
 	public:
-		CMenuButton(int id, Font * font, MENUSTATE state, Vec2i pos,
-		            const std::string & label, TextureContainer * tex = NULL, 
-		            TextureContainer * texOver = NULL);
+		CMenuButton(int id, MENUSTATE state, Vec2i pos, TextureContainer * tex = NULL, TextureContainer * texOver = NULL);
 		~CMenuButton();
 
 	public:

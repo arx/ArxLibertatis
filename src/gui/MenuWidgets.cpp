@@ -3475,24 +3475,16 @@ CMenuZone * CMenuPanel::IsMouseOver(const Vec2s& mousePos) const {
 	return NULL;
 }
 
-CMenuButton::CMenuButton(int _iID, Font* _pFont, MENUSTATE _eMenuState, Vec2i pos, const std::string& _pText, TextureContainer *_pTex, TextureContainer *_pTexOver)
+CMenuButton::CMenuButton(int _iID, MENUSTATE _eMenuState, Vec2i pos, TextureContainer *_pTex, TextureContainer *_pTexOver)
 	: CMenuElement(_eMenuState)
 {
 	iID = _iID;
-	pFont = _pFont;
 
 	rZone.left=pos.x;
 	rZone.top=pos.y;
 	rZone.right  = rZone.left ;
 	rZone.bottom = rZone.top ;
-
-	vText.clear();
-	iPos=0;
-
-	if(!_pText.empty()) {
-		AddText(_pText);
-	}
-
+	
 	pTex=_pTex;
 	pTexOver=_pTexOver;
 
@@ -3538,41 +3530,12 @@ void CMenuButton::SetPos(float _iX,float _iY)
 	rZone.bottom = static_cast<int>(_iY) + max(iHeight, iHeight2);
 }
 
-void CMenuButton::AddText(const std::string & _pText)
-{
-	if(_pText.empty())
-		return;
-
-	vText += _pText;
-
-	int iSizeXButton=rZone.right-rZone.left;
-	int iSizeYButton=rZone.bottom-rZone.top;
-	
-	Vec2i textSize = pFont->getTextSize(_pText);
-
-	if(textSize.x>iSizeXButton)
-		iSizeXButton=textSize.x;
-
-	if(textSize.y>iSizeYButton)
-		iSizeYButton=textSize.y;
-
-	rZone.right=rZone.left+iSizeXButton;
-	rZone.bottom=rZone.top+iSizeYButton;
-}
-
 bool CMenuButton::OnMouseClick() {
 	
 	if(!enabled) {
 		return false;
 	}
 	
-	iPos++;
-
-	arx_assert(iPos >= 0);
-
-	if((size_t)iPos >= vText.size() )
-		iPos = 0;
-
 	ARX_SOUND_PlayMenu(SND_MENU_CLICK);
 
 	return false;
@@ -3590,23 +3553,6 @@ void CMenuButton::Render() {
 	//affichage de la texture
 	if(pTex) {
 		EERIEDrawBitmap2(Rectf(Vec2f(rZone.topLeft()), RATIO_X(pTex->m_dwWidth), RATIO_Y(pTex->m_dwHeight)), 0, pTex, Color::white);
-	}
-
-	//affichage de la font
-	if(vText.size()) {
-		char pText = vText[iPos];
-
-		GRenderer->SetRenderState(Renderer::AlphaBlending, true);
-		GRenderer->SetBlendFunc(Renderer::BlendOne, Renderer::BlendOne);
-
-		Vec3f ePos;
-		ePos.x = (float)rZone.left;
-		ePos.y = (float)rZone.top;
-		ePos.z = 1;
-		
-		FontRenderText(pFont, ePos, &pText, Color(232, 204, 142));
-
-		GRenderer->SetRenderState(Renderer::AlphaBlending, false);
 	}
 }
 
@@ -3643,22 +3589,6 @@ void CMenuButton::RenderMouseOver() {
 		v[3].uv.y = 0.999999f;
 		EERIEDRAWPRIM(Renderer::TriangleStrip, v, 4);
 	}
-
-	if(vText.size()) {
-		char pText=vText[iPos];
-
-		GRenderer->SetRenderState(Renderer::AlphaBlending, true);
-		GRenderer->SetBlendFunc(Renderer::BlendOne, Renderer::BlendOne);
-		
-		Vec3f ePos;
-		ePos.x = (float)rZone.left;
-		ePos.y = (float)rZone.top;
-		ePos.z = 1;
-		
-		FontRenderText(pFont, ePos, &pText, Color(255, 255, 255));
-		
-		GRenderer->SetRenderState(Renderer::AlphaBlending, false);
-	}
 }
 
 CMenuSliderText::CMenuSliderText(int _iID, Vec2i pos)
@@ -3666,9 +3596,9 @@ CMenuSliderText::CMenuSliderText(int _iID, Vec2i pos)
 {
 	iID = _iID;
 	TextureContainer *pTex = TextureContainer::Load("graph/interface/menus/menu_slider_button_left");
-	pLeftButton = new CMenuButton(-1, hFontMenu, NOP, pos, string(), pTex, pTex);
+	pLeftButton = new CMenuButton(-1, NOP, pos, pTex, pTex);
 	pTex = TextureContainer::Load("graph/interface/menus/menu_slider_button_right");
-	pRightButton = new CMenuButton(-1, hFontMenu, NOP, pos, string(), pTex, pTex);
+	pRightButton = new CMenuButton(-1, NOP, pos, pTex, pTex);
 
 	vText.clear();
 
@@ -3921,8 +3851,8 @@ CMenuSlider::CMenuSlider(int _iID, Vec2i pos)
 
 	TextureContainer *pTexL = TextureContainer::Load("graph/interface/menus/menu_slider_button_left");
 	TextureContainer *pTexR = TextureContainer::Load("graph/interface/menus/menu_slider_button_right");
-	pLeftButton = new CMenuButton(-1, hFontMenu, NOP, pos, string(), pTexL, pTexR);
-	pRightButton = new CMenuButton(-1, hFontMenu, NOP, pos, string(), pTexR, pTexL);
+	pLeftButton = new CMenuButton(-1, NOP, pos, pTexL, pTexR);
+	pRightButton = new CMenuButton(-1, NOP, pos, pTexR, pTexL);
 	pTex1 = TextureContainer::Load("graph/interface/menus/menu_slider_on");
 	pTex2 = TextureContainer::Load("graph/interface/menus/menu_slider_off");
 
