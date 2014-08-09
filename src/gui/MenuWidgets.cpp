@@ -2109,12 +2109,10 @@ void CMenuState::Render() {
 
 	if(pTexBackGround)
 		EERIEDrawBitmap2(Rectf(Vec2f(0, 0), g_size.width(), g_size.height()), 0.999f, pTexBackGround, Color::white);
-
-	int t=pMenuAllZone->GetNbZone();
-
+	
 	int iARXDiffTimeMenu = checked_range_cast<int>(ARXDiffTimeMenu);
 
-	for(int i = 0; i < t; ++i) {
+	for(int i = 0; i < pMenuAllZone->GetNbZone(); ++i) {
 		CMenuElement *pMe=(CMenuElement*)pMenuAllZone->GetZoneNum(i);
 		pMe->Update(iARXDiffTimeMenu);
 		pMe->Render();
