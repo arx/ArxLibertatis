@@ -438,7 +438,7 @@ bool Menu2_Render() {
 
 			float fPosBDAY  = RATIO_Y(380);
 
-			pWindowMenu = new CWindowMenu(iWindowMenuPosX,iWindowMenuPosY,iWindowMenuWidth,iWindowMenuHeight);
+			pWindowMenu = new CWindowMenu(Vec2i(iWindowMenuPosX, iWindowMenuPosY), Vec2i(iWindowMenuWidth, iWindowMenuHeight));
 
 			switch(eMenuState) {
 			case NEW_QUEST: {
@@ -2535,17 +2535,17 @@ void CMenuCheckButton::RenderMouseOver() {
 	GRenderer->SetRenderState(Renderer::AlphaBlending, false);
 }
 
-CWindowMenu::CWindowMenu(int _iPosX, int _iPosY, int _iTailleX, int _iTailleY)
+CWindowMenu::CWindowMenu(Vec2i pos, Vec2i size)
 {
-	iPosX=(int)RATIO_X(_iPosX);
-	iPosY=(int)RATIO_Y(_iPosY);
-	iTailleX=(int)RATIO_X(_iTailleX);
-	iTailleY=(int)RATIO_Y(_iTailleY);
+	m_pos.x=(int)RATIO_X(pos.x);
+	m_pos.y=(int)RATIO_Y(pos.y);
+	m_size.x=(int)RATIO_X(size.x);
+	m_size.y=(int)RATIO_Y(size.y);
 
 	vWindowConsoleElement.clear();
 
-	fPosXCalc=((float)-iTailleX);
-	fDist=((float)(iTailleX+iPosX));
+	fPosXCalc=((float)-m_size.x);
+	fDist=((float)(m_size.x+m_pos.x));
 	fAngle=0.f;
 
 	eCurrentMenuState=NOP;
@@ -2553,7 +2553,7 @@ CWindowMenu::CWindowMenu(int _iPosX, int _iPosY, int _iTailleX, int _iTailleY)
 
 	float fCalc	= fPosXCalc + (fDist * sin(radians(fAngle)));
 
-	iPosX = checked_range_cast<int>(fCalc);
+	m_pos.x = checked_range_cast<int>(fCalc);
 
 	bChangeConsole=false;
 }
@@ -2569,15 +2569,14 @@ void CWindowMenu::AddConsole(CWindowMenuConsole *_pMenuConsoleElement) {
 	vWindowConsoleElement.push_back(_pMenuConsoleElement);
 	_pMenuConsoleElement->m_oldPos.x = 0;
 	_pMenuConsoleElement->m_oldPos.y = 0;
-	_pMenuConsoleElement->m_pos.x = iPosX;
-	_pMenuConsoleElement->m_pos.y = iPosY;
+	_pMenuConsoleElement->m_pos = m_pos;
 }
 
 void CWindowMenu::Update(float _fDTime) {
 
 	float fCalc	= fPosXCalc + (fDist * sin(radians(fAngle)));
 
-	iPosX = checked_range_cast<int>(fCalc);
+	m_pos.x = checked_range_cast<int>(fCalc);
 	fAngle += _fDTime * 0.08f;
 
 	if(fAngle > 90.f)
@@ -2610,7 +2609,7 @@ MENUSTATE CWindowMenu::Render() {
 
 		for(i = vWindowConsoleElement.begin(); i != vWindowConsoleElement.end(); ++i) {
 			if(eCurrentMenuState==(*i)->eMenuState) {
-				eMS=(*i)->Update(iPosX, iPosY, 0);
+				eMS=(*i)->Update(m_pos.x, m_pos.y, 0);
 				
 				if(eMS != NOP)
 					break;

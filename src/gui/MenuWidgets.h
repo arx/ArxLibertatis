@@ -580,16 +580,14 @@ class CWindowMenuConsole {
 class CWindowMenu {
 	
 	private:
-		int					iPosX;
-		int					iPosY;
-		int					iTailleX;
-		int					iTailleY;
+		Vec2i m_pos;
+		Vec2i m_size;
 		float				fPosXCalc;
 		float				fDist;
 		bool				bChangeConsole;
 		
 	public:
-		CWindowMenu(int px, int py, int width, int height);
+		CWindowMenu(Vec2i pos, Vec2i size);
 		virtual ~CWindowMenu();
 
 		void AddConsole(CWindowMenuConsole * console);
