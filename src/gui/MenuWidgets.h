@@ -304,11 +304,11 @@ class CMenuAllZone
 		void AddZone(CMenuZone * menuZone);
 		CMenuZone * CheckZone(const Vec2s & mousePos) const;
  
-		CMenuZone * GetZoneNum(int zoneNumber);
+		CMenuZone * GetZoneNum(size_t index);
 		CMenuZone * GetZoneWithID(int zoneId);
 		void Move(const Vec2i & offset);
 		void DrawZone();
-		int GetNbZone();
+		size_t GetNbZone();
 };
 
 enum ELEMSTATE

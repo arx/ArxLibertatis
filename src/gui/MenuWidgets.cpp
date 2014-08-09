@@ -2112,7 +2112,7 @@ void CMenuState::Render() {
 	
 	int iARXDiffTimeMenu = checked_range_cast<int>(ARXDiffTimeMenu);
 
-	for(int i = 0; i < pMenuAllZone->GetNbZone(); ++i) {
+	for(size_t i = 0; i < pMenuAllZone->GetNbZone(); ++i) {
 		CMenuElement *pMe=(CMenuElement*)pMenuAllZone->GetZoneNum(i);
 		pMe->Update(iARXDiffTimeMenu);
 		pMe->Render();
@@ -2231,21 +2231,8 @@ CMenuZone * CMenuAllZone::CheckZone(const Vec2s& mousePos) const {
 	return NULL;
 }
 
-CMenuZone * CMenuAllZone::GetZoneNum(int _iNum) {
-
-	vector<CMenuZone*>::iterator i;
-	int iNum = 0;
-
-	for(i = vMenuZone.begin(); i != vMenuZone.end(); ++i) {
-		CMenuZone *zone = *i;
-
-		if(iNum == _iNum)
-			return zone;
-
-		iNum++;
-	}
-
-	return NULL;
+CMenuZone * CMenuAllZone::GetZoneNum(size_t index) {
+	return vMenuZone[index];
 }
 
 CMenuZone * CMenuAllZone::GetZoneWithID(int _iID) {
@@ -2265,7 +2252,7 @@ void CMenuAllZone::Move(const Vec2i & offset) {
 	}
 }
 
-int CMenuAllZone::GetNbZone() {
+size_t CMenuAllZone::GetNbZone() {
 	return vMenuZone.size();
 }
 
@@ -2667,9 +2654,8 @@ void CWindowMenuConsole::AddMenuCenterY(CMenuElement * _pMenuElement) {
 	_pMenuElement->ePlace    =    CENTERY;
 
 	int iDy = _pMenuElement->rZone.bottom-_pMenuElement->rZone.top;
-	int iI  = MenuAllZone.GetNbZone();
 
-	for(int iJ = 0; iJ < iI; iJ++ ) {
+	for(size_t iJ = 0; iJ < MenuAllZone.GetNbZone(); iJ++ ) {
 		CMenuZone * pZone = MenuAllZone.GetZoneNum(iJ);
 
 		iDy += iInterligne;
@@ -2685,16 +2671,12 @@ void CWindowMenuConsole::AddMenuCenterY(CMenuElement * _pMenuElement) {
 	}
 
 	int dy = 0;
-	iI = MenuAllZone.GetNbZone();
 
-	if(iI) {
+	if(MenuAllZone.GetNbZone()) {
 		dy    =    iDepY - MenuAllZone.GetZoneNum(0)->rZone.top;
-	}else {
-		//We can't go inside the for-loop
-		arx_assert( !( 0 < iI ) );
 	}
-
-	for(int iJ = 0; iJ < iI; iJ++) {
+	
+	for(size_t iJ = 0; iJ < MenuAllZone.GetNbZone(); iJ++) {
 		CMenuZone *pZone    =    MenuAllZone.GetZoneNum(iJ);
 		iDy                    =    pZone->rZone.bottom - pZone->rZone.top;
 		iDepY                +=    iDy + iInterligne;
@@ -2718,9 +2700,8 @@ void CWindowMenuConsole::AddMenuCenter(CMenuElement * _pMenuElement) {
 	}
 
 	int iDy = _pMenuElement->rZone.bottom - _pMenuElement->rZone.top;
-	int iI  = MenuAllZone.GetNbZone();
 
-	for(int iJ = 0; iJ < iI; iJ++) {
+	for(size_t iJ = 0; iJ < MenuAllZone.GetNbZone(); iJ++) {
 		CMenuZone *pZone = MenuAllZone.GetZoneNum(iJ);
 
 		iDy += iInterligne;
@@ -2736,16 +2717,12 @@ void CWindowMenuConsole::AddMenuCenter(CMenuElement * _pMenuElement) {
 	}
 
 	int dy = 0;
-	iI = MenuAllZone.GetNbZone();
 
-	if(iI) {
+	if(MenuAllZone.GetNbZone()) {
 		dy = iDepY - MenuAllZone.GetZoneNum(0)->rZone.top;
-	} else {
-		//We can't go inside the for-loop
-		arx_assert( !( 0 < iI ) );
 	}
-
-	for(int iJ = 0; iJ < iI; iJ++) {
+	
+	for(size_t iJ = 0; iJ < MenuAllZone.GetNbZone(); iJ++) {
 		CMenuZone *pZone = MenuAllZone.GetZoneNum( iJ );
 		iDepY += pZone->rZone.bottom - pZone->rZone.top + iInterligne;
 		pZone->Move(Vec2i(0, dy));
@@ -2972,10 +2949,8 @@ MENUSTATE CWindowMenuConsole::Update(int _iPosX, int _iPosY, int _iOffsetY) {
 	}
 
 	MenuAllZone.Move(m_pos - m_oldPos);
-
-	int iI = MenuAllZone.GetNbZone();
-
-	for(int iJ = 0; iJ < iI; ++iJ) {
+	
+	for(size_t iJ = 0; iJ < MenuAllZone.GetNbZone(); ++iJ) {
 		CMenuZone *pZone = MenuAllZone.GetZoneNum(iJ);
 
 		if(pZone->rZone.top < iSavePosY || pZone->rZone.bottom + iInterligne > iSavePosY + iHeight) {
@@ -3040,9 +3015,7 @@ MENUSTATE CWindowMenuConsole::Update(int _iPosX, int _iPosY, int _iOffsetY) {
 
 	//check les shortcuts
 	if(!bEdit) {
-		iI=MenuAllZone.GetNbZone();
-
-		for(int iJ = 0; iJ < iI; ++iJ) {
+		for(size_t iJ = 0; iJ < MenuAllZone.GetNbZone(); ++iJ) {
 			CMenuElement *pMenuElement=(CMenuElement*)MenuAllZone.GetZoneNum(iJ);
 			CMenuElement *CMenuElementShortCut = pMenuElement->OnShortCut();
 
@@ -3262,11 +3235,9 @@ int CWindowMenuConsole::Render() {
 
 	//------------------------------------------------------------------------
 
-	int t = MenuAllZone.GetNbZone();
-
 	int iARXDiffTimeMenu  = checked_range_cast<int>(ARXDiffTimeMenu);
 
-	for(int i = 0; i < t; ++i) {
+	for(size_t i = 0; i < MenuAllZone.GetNbZone(); ++i) {
 		CMenuElement *pMe=(CMenuElement*)MenuAllZone.GetZoneNum(i);
 
 		if(pMe->bActif) {
