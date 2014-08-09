@@ -525,22 +525,18 @@ class CMenuState {
 	
 	public:
 		bool					bReInitAll;
-		MENUSTATE				eMenuState;
 		MENUSTATE				eOldMenuState;
 		MENUSTATE				eOldMenuWindowState;
 		TextureContainer	*	pTexBackGround;
-		TextureContainer	*	pTexBackGround1;
 		CMenuAllZone		*	pMenuAllZone;
 		CMenuElement		*	pZoneClick;
-		float					fPos;
-
-		int						iPosMenu;
+		
 	public:
-		explicit CMenuState(MENUSTATE state);
+		explicit CMenuState();
 		virtual ~CMenuState();
 
 		void AddMenuElement(CMenuElement * element);
-		MENUSTATE Update(int time);
+		MENUSTATE Update();
 		void Render();
 };
 

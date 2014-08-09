@@ -392,7 +392,7 @@ bool Menu2_Render() {
 			delete pMenu, pMenu = NULL;
 		}
 		
-		pMenu = new CMenuState(MAIN);
+		pMenu = new CMenuState();
 		pMenu->eOldMenuWindowState=eM;
 
 		pMenu->pTexBackGround = TextureContainer::LoadUI("graph/interface/menus/menu_main_background", TextureContainer::NoColorKey);
@@ -441,7 +441,7 @@ bool Menu2_Render() {
 			}
 		}
 
-		MENUSTATE eMenuState = pMenu->Update(checked_range_cast<int>(ARXDiffTimeMenu));
+		MENUSTATE eMenuState = pMenu->Update();
 
 		if(eOldMenuState != NOP) {
 			eMenuState=eOldMenuState;
@@ -451,7 +451,6 @@ bool Menu2_Render() {
 		if(eMenuState == RESUME_GAME) {
 			pTextManage->Clear();
 			ARXmenu.currentmode = AMCM_OFF;
-			pMenu->eMenuState = NOP;
 			pMenu->pZoneClick = NULL;
 			
 			delete pWindowMenu, pWindowMenu = NULL;
@@ -2061,33 +2060,26 @@ Vec2i CMenuElementText::GetTextSize() const {
 	return pFont->getTextSize(lpszText);
 }
 
-CMenuState::CMenuState(MENUSTATE _ms)
+CMenuState::CMenuState()
 	: bReInitAll(false)
-	, eMenuState(_ms)
 	, eOldMenuState(NOP)
 	, eOldMenuWindowState(NOP)
 	, pTexBackGround(NULL)
-	, pTexBackGround1(NULL)
 	, pMenuAllZone(new CMenuAllZone())
 	, pZoneClick(NULL)
-	, fPos(0.f)
-	, iPosMenu(-1)
 {}
 
 CMenuState::~CMenuState() {
 	delete pMenuAllZone;
 	delete pTexBackGround;
-	delete pTexBackGround1;
 }
 
 void CMenuState::AddMenuElement(CMenuElement * _me) {
 	pMenuAllZone->AddZone((CMenuZone *)_me);
 }
 
-MENUSTATE CMenuState::Update(int _iDTime) {
+MENUSTATE CMenuState::Update() {
 	
-	fPos += _iDTime*( 1.0f / 700 );
-
 	pZoneClick=NULL;
 
 	CMenuZone * iR=pMenuAllZone->CheckZone(GInput->getMousePosAbs());
