@@ -556,7 +556,7 @@ public:
 private:
 	void UpdateText();
 public:
-	CWindowMenuConsole(int px, int py, int width, int height, MENUSTATE state);
+	CWindowMenuConsole(Vec2i pos, int width, int height, MENUSTATE state);
 	
 	void AddMenu(CMenuElement * menu);
 	void AddMenuCenter(CMenuElement * menu);
