@@ -321,7 +321,7 @@ void Menu2_Render_NewQuest(Vec2i posBack, Vec2i size, Vec2i offset, float fPosBD
 	std::string szMenuText;
 	CMenuElement *me = NULL;
 	
-	CWindowMenuConsole * console = new CWindowMenuConsole(offset, size.x, size.y, NEW_QUEST);
+	CWindowMenuConsole * console = new CWindowMenuConsole(offset, size, NEW_QUEST);
 	
 	szMenuText = getLocalised("system_menus_main_editquest_confirm");
 	me = new CMenuElementText(-1, hFontMenu, szMenuText, Vec2i(0, 0), NOP);
@@ -359,7 +359,7 @@ void Menu2_Render_EditQuest(Vec2i size, float fPosBDAY, Vec2i offset, float fPos
 	CMenuPanel *pPanel;
 	TextureContainer *pTex;
 	std::string szMenuText;
-	CWindowMenuConsole *pWindowMenuConsole=new CWindowMenuConsole(offset, size.x, size.y, EDIT_QUEST);
+	CWindowMenuConsole *pWindowMenuConsole=new CWindowMenuConsole(offset, size, EDIT_QUEST);
 
 	szMenuText = getLocalised( "system_menus_main_editquest_load");
 	me = new CMenuElementText(BUTTON_MENUEDITQUEST_LOAD_INIT, hFontMenu, szMenuText, Vec2i(0, 0), EDIT_QUEST_LOAD);
@@ -386,7 +386,7 @@ void Menu2_Render_EditQuest(Vec2i size, float fPosBDAY, Vec2i offset, float fPos
 	pWindowMenu->AddConsole(pWindowMenuConsole);
 
 	// LOAD ---------------------------------------------------
-	pWindowMenuConsole=new CWindowMenuConsole(offset + Vec2i(0, -40), size.x, size.y, EDIT_QUEST_LOAD);
+	pWindowMenuConsole=new CWindowMenuConsole(offset + Vec2i(0, -40), size, EDIT_QUEST_LOAD);
 	pWindowMenuConsole->lData = -1;
 	pWindowMenuConsole->iInterligne = 5;
 
@@ -473,7 +473,7 @@ void Menu2_Render_EditQuest(Vec2i size, float fPosBDAY, Vec2i offset, float fPos
 	pWindowMenu->AddConsole(pWindowMenuConsole);
 
 	// SAVE----------------------------------------------------
-	pWindowMenuConsole=new CWindowMenuConsole(offset + Vec2i(0, -40), size.x,size.y,EDIT_QUEST_SAVE);
+	pWindowMenuConsole=new CWindowMenuConsole(offset + Vec2i(0, -40), size, EDIT_QUEST_SAVE);
 	pWindowMenuConsole->iInterligne = 5;
 
 	pTex = TextureContainer::Load("graph/interface/icons/menu_main_save");
@@ -545,7 +545,7 @@ void Menu2_Render_EditQuest(Vec2i size, float fPosBDAY, Vec2i offset, float fPos
 	pWindowMenu->AddConsole(pWindowMenuConsole);
 
 	// SAVE CONFIRM--------------------------------------------
-	pWindowMenuConsole = new CWindowMenuConsole(offset, size.x, size.y, EDIT_QUEST_SAVE_CONFIRM);
+	pWindowMenuConsole = new CWindowMenuConsole(offset, size, EDIT_QUEST_SAVE_CONFIRM);
 	pWindowMenuConsole->lData = -1;
 
 	pTex = TextureContainer::Load("graph/interface/icons/menu_main_save");
@@ -597,7 +597,7 @@ void Menu2_Render_Options(Vec2i size, int iPosX2, float fPosBDAY, float fPosX1, 
 	CMenuPanel *pc;
 	TextureContainer *pTex;
 
-	CWindowMenuConsole *pWindowMenuConsole=new CWindowMenuConsole(offset, size.x, size.y, OPTIONS);
+	CWindowMenuConsole *pWindowMenuConsole=new CWindowMenuConsole(offset, size, OPTIONS);
 
 	szMenuText = getLocalised("system_menus_options_video");
 	me = new CMenuElementText(BUTTON_MENUOPTIONSVIDEO_INIT, hFontMenu, szMenuText, Vec2i(0, 0), OPTIONS_VIDEO);
@@ -621,7 +621,7 @@ void Menu2_Render_Options(Vec2i size, int iPosX2, float fPosBDAY, float fPosX1, 
 //------------------ END OPTIONS
 
 //------------------ START VIDEO
-	pWindowMenuConsole=new CWindowMenuConsole(offset + Vec2i(0, -35),size.x,size.y, OPTIONS_VIDEO);
+	pWindowMenuConsole=new CWindowMenuConsole(offset + Vec2i(0, -35), size, OPTIONS_VIDEO);
 
 	
 	// Renderer selection
@@ -812,7 +812,7 @@ void Menu2_Render_Options(Vec2i size, int iPosX2, float fPosBDAY, float fPosX1, 
 	//------------------ END VIDEO
 
 	//------------------ START AUDIO
-	pWindowMenuConsole = new CWindowMenuConsole(offset, size.x, size.y, OPTIONS_AUDIO);
+	pWindowMenuConsole = new CWindowMenuConsole(offset, size, OPTIONS_AUDIO);
 
 	// Audio backend selection
 	{
@@ -901,7 +901,7 @@ void Menu2_Render_Options(Vec2i size, int iPosX2, float fPosBDAY, float fPosX1, 
 	//------------------ END AUDIO
 
 	//------------------ START INPUT
-	pWindowMenuConsole = new CWindowMenuConsole(offset, size.x, size.y, OPTIONS_INPUT);
+	pWindowMenuConsole = new CWindowMenuConsole(offset, size, OPTIONS_INPUT);
 	
 	szMenuText = getLocalised("system_menus_options_input_customize_controls");
 	me = new CMenuElementText(-1, hFontMenu, szMenuText, Vec2i(fPosX1, 0), OPTIONS_INPUT_CUSTOMIZE_KEYS_1);
@@ -1072,7 +1072,7 @@ char pNoDef2[]="---";
 	};
 
 
-	pWindowMenuConsole=new CWindowMenuConsole(offset, size.x, size.y, OPTIONS_INPUT_CUSTOMIZE_KEYS_1);
+	pWindowMenuConsole=new CWindowMenuConsole(offset, size, OPTIONS_INPUT_CUSTOMIZE_KEYS_1);
 
 	CUSTOM_CTRL_FUNC("system_menus_options_input_customize_controls_mouselook",1, BUTTON_MENUOPTIONS_CONTROLS_CUST_USE1, BUTTON_MENUOPTIONS_CONTROLS_CUST_USE2);
 
@@ -1120,7 +1120,7 @@ char pNoDef2[]="---";
 	pWindowMenu->AddConsole(pWindowMenuConsole);
 	pWindowMenuConsole->ReInitActionKey();
 
-	pWindowMenuConsole=new CWindowMenuConsole(offset, size.x, size.y, OPTIONS_INPUT_CUSTOMIZE_KEYS_2);
+	pWindowMenuConsole=new CWindowMenuConsole(offset, size, OPTIONS_INPUT_CUSTOMIZE_KEYS_2);
 
 	fControlPosY = static_cast<long>(RATIO_Y(8.f));
 	CUSTOM_CTRL_FUNC("system_menus_options_input_customize_controls_inventory",1, BUTTON_MENUOPTIONS_CONTROLS_CUST_INVENTORY1, BUTTON_MENUOPTIONS_CONTROLS_CUST_INVENTORY2);
@@ -1182,7 +1182,7 @@ void Menu2_Render_Quit(float fPosBDAY, Vec2i posBack, Vec2i size, Vec2i offset)
 {
 	std::string szMenuText;
 	CMenuElement *me = NULL;
-	CWindowMenuConsole *pWindowMenuConsole=new CWindowMenuConsole(offset, size.x, size.y, QUIT);
+	CWindowMenuConsole *pWindowMenuConsole=new CWindowMenuConsole(offset, size, QUIT);
 	szMenuText = getLocalised("system_menus_main_quit");
 	me=new CMenuElementText(-1, hFontMenu, szMenuText, Vec2i(0, 0), NOP);
 	me->bCheck = false;
@@ -2606,7 +2606,7 @@ MENUSTATE CWindowMenu::Render() {
 	return eMS;
 }
 
-CWindowMenuConsole::CWindowMenuConsole(Vec2i pos, int _iWidth, int _iHeight, MENUSTATE _eMenuState)
+CWindowMenuConsole::CWindowMenuConsole(Vec2i pos, Vec2i size, MENUSTATE _eMenuState)
 	: iSavePosY(0)
 	, iInterligne(10)
 	, pZoneClick(NULL)
@@ -2615,9 +2615,8 @@ CWindowMenuConsole::CWindowMenuConsole(Vec2i pos, int _iWidth, int _iHeight, MEN
 	, bMouseAttack(false)
 {
 	m_offset = RATIO_2(pos);
-	iWidth=(int)RATIO_X(_iWidth);
-	iHeight=(int)RATIO_Y(_iHeight);
-
+	m_size = RATIO_2(size);
+	
 	eMenuState=_eMenuState;
 
 	pTexBackground = TextureContainer::LoadUI("graph/interface/menus/menu_console_background");
@@ -2649,8 +2648,8 @@ void CWindowMenuConsole::AddMenuCenterY(CMenuElement * _pMenuElement) {
 
 	int iDepY;
 
-	if(iDy < iHeight) {
-		iDepY = m_offset.y + ((iHeight - iDy) >> 1);
+	if(iDy < m_size.y) {
+		iDepY = m_offset.y + ((m_size.y - iDy) >> 1);
 	} else {
 		iDepY = m_offset.y;
 	}
@@ -2678,7 +2677,7 @@ void CWindowMenuConsole::AddMenuCenter(CMenuElement * _pMenuElement) {
 	_pMenuElement->ePlace    =    CENTER;
 
 	int iDx = _pMenuElement->rZone.right - _pMenuElement->rZone.left;
-	int dx  = ((iWidth - iDx) >> 1) - _pMenuElement->rZone.left;
+	int dx  = ((m_size.x - iDx) >> 1) - _pMenuElement->rZone.left;
 
 	if(dx < 0) {
 		dx = 0;
@@ -2695,8 +2694,8 @@ void CWindowMenuConsole::AddMenuCenter(CMenuElement * _pMenuElement) {
 
 	int iDepY;
 
-	if(iDy < iHeight ) {
-		iDepY = m_offset.y + ( ( iHeight - iDy ) >> 1 );
+	if(iDy < m_size.y ) {
+		iDepY = m_offset.y + ( ( m_size.y - iDy ) >> 1 );
 	} else {
 		iDepY = m_offset.y;
 	}
@@ -2724,7 +2723,7 @@ void CWindowMenuConsole::AlignElementCenter(CMenuElement *_pMenuElement) {
 	_pMenuElement->ePlace = CENTER;
 	
 	int iDx = _pMenuElement->rZone.right - _pMenuElement->rZone.left;
-	int dx = (iWidth - iDx) / 2 - _pMenuElement->rZone.left;
+	int dx = (m_size.x - iDx) / 2 - _pMenuElement->rZone.left;
 	
 	_pMenuElement->Move(Vec2i(std::max(dx, 0), 0));
 }
@@ -2749,7 +2748,7 @@ void CWindowMenuConsole::UpdateText() {
 				int iDx=pZoneClick->rZone.right-pZoneClick->rZone.left;
 
 				if(pZoneClick->ePlace) {
-					pZoneClick->rZone.left=m_pos.x+((iWidth-iDx)>>1);
+					pZoneClick->rZone.left=m_pos.x+((m_size.x-iDx)>>1);
 
 					if(pZoneClick->rZone.left < 0) {
 						pZoneClick->rZone.left=0;
@@ -2798,7 +2797,7 @@ void CWindowMenuConsole::UpdateText() {
 		if(bKey) {
 			pZoneText->SetText(tText);
 
-			if(pZoneText->rZone.right - pZoneText->rZone.left > iWidth - RATIO_X(64)) {
+			if(pZoneText->rZone.right - pZoneText->rZone.left > m_size.x - RATIO_X(64)) {
 				if(!tText.empty()) {
 					tText.resize(tText.size() - 1);
 					pZoneText->SetText(tText);
@@ -2808,7 +2807,7 @@ void CWindowMenuConsole::UpdateText() {
 			int iDx=pZoneClick->rZone.right-pZoneClick->rZone.left;
 
 			if(pZoneClick->ePlace) {
-				pZoneClick->rZone.left=m_pos.x+((iWidth-iDx)>>1);
+				pZoneClick->rZone.left=m_pos.x+((m_size.x-iDx)>>1);
 
 				if(pZoneClick->rZone.left < 0) {
 					pZoneClick->rZone.left=0;
@@ -2896,7 +2895,7 @@ CMenuElement * CWindowMenuConsole::GetTouch(bool keyTouched, int keyId, InputKey
 			int iDx=pZoneClick->rZone.right-pZoneClick->rZone.left;
 
 			if(pZoneClick->ePlace) {
-				pZoneClick->rZone.left=(iWidth-iDx)>>1;
+				pZoneClick->rZone.left=(m_size.x-iDx)>>1;
 
 				if(pZoneClick->rZone.left < 0) {
 					pZoneClick->rZone.left=0;
@@ -2938,7 +2937,7 @@ MENUSTATE CWindowMenuConsole::Update(Vec2i pos, int _iOffsetY) {
 	for(size_t iJ = 0; iJ < MenuAllZone.GetNbZone(); ++iJ) {
 		CMenuZone *pZone = MenuAllZone.GetZoneNum(iJ);
 
-		if(pZone->rZone.top < iSavePosY || pZone->rZone.bottom + iInterligne > iSavePosY + iHeight) {
+		if(pZone->rZone.top < iSavePosY || pZone->rZone.bottom + iInterligne > iSavePosY + m_size.y) {
 			pZone->bActif=false;
 		} else {
 			pZone->bActif=true;

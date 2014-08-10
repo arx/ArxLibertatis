@@ -541,8 +541,7 @@ public:
 	int						iSavePosY;
 	Vec2i m_oldPos;
 	Vec2i m_offset;
-	int						iWidth;
-	int						iHeight;
+	Vec2i m_size;
 	int						iInterligne;
 	MENUSTATE				eMenuState;
 	CMenuAllZone			MenuAllZone;
@@ -556,7 +555,7 @@ public:
 private:
 	void UpdateText();
 public:
-	CWindowMenuConsole(Vec2i pos, int width, int height, MENUSTATE state);
+	CWindowMenuConsole(Vec2i pos, Vec2i size, MENUSTATE state);
 	
 	void AddMenu(CMenuElement * menu);
 	void AddMenuCenter(CMenuElement * menu);
