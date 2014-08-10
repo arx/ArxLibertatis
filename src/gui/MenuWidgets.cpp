@@ -1542,8 +1542,6 @@ CMenuElementText::CMenuElementText(int _iID, Font* _pFont, const std::string& _p
 	pRef=this;
 
 	bSelected = false;
-
-	iPosCursor = _pText.length() + 1;
 }
 
 CMenuElementText::~CMenuElementText()

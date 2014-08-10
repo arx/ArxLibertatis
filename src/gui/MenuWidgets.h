@@ -397,7 +397,6 @@ public:
 	Color lColorHighlight;
 	float	fSize;
 	bool	bSelected;
-	int		iPosCursor;
 	
 public:
 	
