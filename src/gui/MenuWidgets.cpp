@@ -309,7 +309,7 @@ bool ProcessFadeInOut(bool _bFadeIn, float _fspeed) {
 	return false;
 }
 
-void Menu2_Render_NewQuest(Vec2f posBack, int iWindowConsoleWidth, int iWindowConsoleHeight, Vec2i offset, float fPosBDAY, Color lColor)
+void Menu2_Render_NewQuest(Vec2f posBack, Vec2i size, Vec2i offset, float fPosBDAY, Color lColor)
 {
 	if(!ARXMenu_CanResumeGame())
 		return;
@@ -317,7 +317,7 @@ void Menu2_Render_NewQuest(Vec2f posBack, int iWindowConsoleWidth, int iWindowCo
 	std::string szMenuText;
 	CMenuElement *me = NULL;
 	
-	CWindowMenuConsole * console = new CWindowMenuConsole(offset.x, offset.y, iWindowConsoleWidth, iWindowConsoleHeight, NEW_QUEST);
+	CWindowMenuConsole * console = new CWindowMenuConsole(offset.x, offset.y, size.x, size.y, NEW_QUEST);
 	
 	szMenuText = getLocalised("system_menus_main_editquest_confirm");
 	me = new CMenuElementText(-1, hFontMenu, szMenuText, 0, 0, lColor, 1.f, NOP);
@@ -333,7 +333,7 @@ void Menu2_Render_NewQuest(Vec2f posBack, int iWindowConsoleWidth, int iWindowCo
 	szMenuText = getLocalised("system_yes");
 	szMenuText += "   "; // TODO This space can probably go
 	me = new CMenuElementText(BUTTON_MENUNEWQUEST_CONFIRM, hFontMenu, szMenuText, 0, 0, lColor, 1.f, NEW_QUEST_ENTER_GAME);
-	me->SetPos(RATIO_X(iWindowConsoleWidth - (me->GetWidth() + 10)), 0);
+	me->SetPos(RATIO_X(size.x - (me->GetWidth() + 10)), 0);
 	pPanel->AddElementNoCenterIn(me);
 	
 	szMenuText = getLocalised("system_no");
@@ -1342,7 +1342,7 @@ bool Menu2_Render() {
 		
 		switch(eMenuState) {
 		case NEW_QUEST: {
-				Menu2_Render_NewQuest(posBack, windowConsoleSize.x, windowConsoleSize.y, windowConsoleOffset, fPosBDAY, lColor);
+				Menu2_Render_NewQuest(posBack, windowConsoleSize, windowConsoleOffset, fPosBDAY, lColor);
 			
 			break;
 		}
