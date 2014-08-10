@@ -401,9 +401,10 @@ public:
 	
 public:
 	
-	CMenuElementText(int id, Font * font, const std::string & text, Vec2i pos,
-					 Color color, float size, MENUSTATE state);
+	CMenuElementText(int id, Font * font, const std::string & text, Vec2i pos, float size, MENUSTATE state);
 	virtual ~CMenuElementText();
+	
+	void setColor(Color color) { lColor = color; }
 	
 	CMenuElement * OnShortCut();
 	bool OnMouseClick();
@@ -526,7 +527,7 @@ public:
 	explicit CMenuState();
 	virtual ~CMenuState();
 	
-	void createChildElements(Color lColor);
+	void createChildElements();
 	
 	void AddMenuElement(CMenuElement * element);
 	MENUSTATE Update();
