@@ -2594,20 +2594,18 @@ MENUSTATE CWindowMenu::Render() {
 	
 	MENUSTATE eMS=NOP;
 	
-	vector<CWindowMenuConsole*>::iterator i;
-	
-	for(i = vWindowConsoleElement.begin(); i != vWindowConsoleElement.end(); ++i) {
-		if(eCurrentMenuState==(*i)->eMenuState) {
-			eMS=(*i)->Update(m_pos, 0);
+	BOOST_FOREACH(CWindowMenuConsole * c, vWindowConsoleElement) {
+		if(eCurrentMenuState == c->eMenuState) {
+			eMS = c->Update(m_pos, 0);
 			
 			if(eMS != NOP)
 				break;
 		}
 	}
 	
-	for(std::vector<CWindowMenuConsole*>::iterator i = vWindowConsoleElement.begin(); i != vWindowConsoleElement.end(); ++i) {
-		if(eCurrentMenuState == (*i)->eMenuState) {
-			if((*i)->Render())
+	BOOST_FOREACH(CWindowMenuConsole * c, vWindowConsoleElement) {
+		if(eCurrentMenuState == c->eMenuState) {
+			if(c->Render())
 				GRenderer->SetRenderState(Renderer::AlphaBlending, false);
 			
 			break;
