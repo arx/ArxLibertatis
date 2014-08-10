@@ -1180,11 +1180,11 @@ char pNoDef2[]="---";
 	pWindowMenu->eCurrentMenuState=OPTIONS;	
 }
 
-void Menu2_Render_Quit(float fPosBDAY, Vec2f posBack, int iWindowConsoleWidth, int iWindowConsoleOffsetX, int iWindowConsoleHeight, int iWindowConsoleOffsetY, Color lColor)
+void Menu2_Render_Quit(float fPosBDAY, Vec2f posBack, int iWindowConsoleWidth, int iWindowConsoleHeight, Vec2i offset, Color lColor)
 {
 	std::string szMenuText;
 	CMenuElement *me = NULL;
-	CWindowMenuConsole *pWindowMenuConsole=new CWindowMenuConsole(iWindowConsoleOffsetX,iWindowConsoleOffsetY,iWindowConsoleWidth,iWindowConsoleHeight,QUIT);
+	CWindowMenuConsole *pWindowMenuConsole=new CWindowMenuConsole(offset.x,offset.y,iWindowConsoleWidth,iWindowConsoleHeight,QUIT);
 	szMenuText = getLocalised("system_menus_main_quit");
 	me=new CMenuElementText(-1, hFontMenu, szMenuText,0,0,lColor,1.f, NOP);
 	me->bCheck = false;
@@ -1356,7 +1356,7 @@ bool Menu2_Render() {
 			break;
 		
 		case QUIT: {
-				Menu2_Render_Quit(fPosBDAY, posBack, windowConsoleSize.x, windowConsoleOffset.x, windowConsoleSize.y, windowConsoleOffset.y, lColor);
+				Menu2_Render_Quit(fPosBDAY, posBack, windowConsoleSize.x, windowConsoleSize.y, windowConsoleOffset, lColor);
 			
 			
 			break;
