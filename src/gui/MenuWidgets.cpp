@@ -348,14 +348,14 @@ void Menu2_Render_NewQuest(Vec2f posBack, int iWindowConsoleWidth, int iWindowCo
 	pWindowMenu->eCurrentMenuState=NEW_QUEST;
 }
 
-void Menu2_Render_EditQuest(int iWindowConsoleHeight, float fPosBDAY, int iWindowConsoleOffsetX, int iWindowConsoleOffsetY, Color lColor, float fPosX1, int iWindowConsoleWidth, Vec2f posBack)
+void Menu2_Render_EditQuest(int iWindowConsoleHeight, float fPosBDAY, Vec2i offset, Color lColor, float fPosX1, int iWindowConsoleWidth, Vec2f posBack)
 {
 	CMenuElement *me;
 	CMenuElement *me01;
 	CMenuPanel *pPanel;
 	TextureContainer *pTex;
 	std::string szMenuText;
-	CWindowMenuConsole *pWindowMenuConsole=new CWindowMenuConsole(iWindowConsoleOffsetX,iWindowConsoleOffsetY,iWindowConsoleWidth,iWindowConsoleHeight,EDIT_QUEST);
+	CWindowMenuConsole *pWindowMenuConsole=new CWindowMenuConsole(offset.x,offset.y,iWindowConsoleWidth,iWindowConsoleHeight,EDIT_QUEST);
 
 	szMenuText = getLocalised( "system_menus_main_editquest_load");
 	me = new CMenuElementText(BUTTON_MENUEDITQUEST_LOAD_INIT, hFontMenu, szMenuText, 0, 0, lColor, 1.f, EDIT_QUEST_LOAD);
@@ -382,7 +382,7 @@ void Menu2_Render_EditQuest(int iWindowConsoleHeight, float fPosBDAY, int iWindo
 	pWindowMenu->AddConsole(pWindowMenuConsole);
 
 	// LOAD ---------------------------------------------------
-	pWindowMenuConsole=new CWindowMenuConsole(iWindowConsoleOffsetX,iWindowConsoleOffsetY-(40),iWindowConsoleWidth,iWindowConsoleHeight,EDIT_QUEST_LOAD);
+	pWindowMenuConsole=new CWindowMenuConsole(offset.x,offset.y-(40),iWindowConsoleWidth,iWindowConsoleHeight,EDIT_QUEST_LOAD);
 	pWindowMenuConsole->lData = -1;
 	pWindowMenuConsole->iInterligne = 5;
 
@@ -472,7 +472,7 @@ void Menu2_Render_EditQuest(int iWindowConsoleHeight, float fPosBDAY, int iWindo
 	pWindowMenu->AddConsole(pWindowMenuConsole);
 
 	// SAVE----------------------------------------------------
-	pWindowMenuConsole=new CWindowMenuConsole(iWindowConsoleOffsetX,iWindowConsoleOffsetY - (40), iWindowConsoleWidth,iWindowConsoleHeight,EDIT_QUEST_SAVE);
+	pWindowMenuConsole=new CWindowMenuConsole(offset.x,offset.y - (40), iWindowConsoleWidth,iWindowConsoleHeight,EDIT_QUEST_SAVE);
 	pWindowMenuConsole->iInterligne = 5;
 
 	pTex = TextureContainer::Load("graph/interface/icons/menu_main_save");
@@ -547,7 +547,7 @@ void Menu2_Render_EditQuest(int iWindowConsoleHeight, float fPosBDAY, int iWindo
 	pWindowMenu->AddConsole(pWindowMenuConsole);
 
 	// SAVE CONFIRM--------------------------------------------
-	pWindowMenuConsole = new CWindowMenuConsole(iWindowConsoleOffsetX,iWindowConsoleOffsetY,iWindowConsoleWidth,iWindowConsoleHeight,EDIT_QUEST_SAVE_CONFIRM);
+	pWindowMenuConsole = new CWindowMenuConsole(offset.x,offset.y,iWindowConsoleWidth,iWindowConsoleHeight,EDIT_QUEST_SAVE_CONFIRM);
 	pWindowMenuConsole->lData = -1;
 
 	pTex = TextureContainer::Load("graph/interface/icons/menu_main_save");
@@ -1347,7 +1347,7 @@ bool Menu2_Render() {
 			break;
 		}
 		case EDIT_QUEST: {
-				Menu2_Render_EditQuest(windowConsoleSize.y, fPosBDAY, windowConsoleOffset.x, windowConsoleOffset.y, lColor, fPosX1, windowConsoleSize.x, posBack);
+				Menu2_Render_EditQuest(windowConsoleSize.y, fPosBDAY, windowConsoleOffset, lColor, fPosX1, windowConsoleSize.x, posBack);
 				}
 			break;
 		case OPTIONS: {
