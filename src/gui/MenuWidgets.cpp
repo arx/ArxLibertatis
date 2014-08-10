@@ -311,38 +311,40 @@ bool ProcessFadeInOut(bool _bFadeIn, float _fspeed) {
 
 void Menu2_Render_NewQuest(Vec2f posBack, int iWindowConsoleWidth, int iWindowConsoleOffsetY, int iWindowConsoleHeight, int iWindowConsoleOffsetX, float fPosBDAY, Color lColor)
 {
-	std::string szMenuText;
-
 	if(!ARXMenu_CanResumeGame())
 		return;
-
+	
+	std::string szMenuText;
 	CMenuElement *me = NULL;
-	CWindowMenuConsole *pWindowMenuConsole=new CWindowMenuConsole(iWindowConsoleOffsetX,iWindowConsoleOffsetY,iWindowConsoleWidth,iWindowConsoleHeight,NEW_QUEST);
+	
+	CWindowMenuConsole * console = new CWindowMenuConsole(iWindowConsoleOffsetX, iWindowConsoleOffsetY, iWindowConsoleWidth, iWindowConsoleHeight, NEW_QUEST);
+	
 	szMenuText = getLocalised("system_menus_main_editquest_confirm");
-	me=new CMenuElementText(-1, hFontMenu, szMenuText,0,0,lColor,1.f, NOP);
+	me = new CMenuElementText(-1, hFontMenu, szMenuText, 0, 0, lColor, 1.f, NOP);
 	me->bCheck = false;
-	pWindowMenuConsole->AddMenuCenter(me);
-
+	console->AddMenuCenter(me);
+	
 	szMenuText = getLocalised("system_menus_main_newquest_confirm");
-	me=new CMenuElementText(-1, hFontMenu, szMenuText,0,0,lColor,1.f, NOP);
+	me = new CMenuElementText(-1, hFontMenu, szMenuText, 0, 0, lColor, 1.f, NOP);
 	me->bCheck = false;
-	pWindowMenuConsole->AddMenuCenter(me);
-
+	console->AddMenuCenter(me);
+	
 	CMenuPanel *pPanel = new CMenuPanel();
 	szMenuText = getLocalised("system_yes");
 	szMenuText += "   "; // TODO This space can probably go
-	me = new CMenuElementText(BUTTON_MENUNEWQUEST_CONFIRM, hFontMenu, szMenuText, 0, 0,lColor,1.f, NEW_QUEST_ENTER_GAME);
-	me->SetPos(RATIO_X(iWindowConsoleWidth - (me->GetWidth() + 10)),0);
+	me = new CMenuElementText(BUTTON_MENUNEWQUEST_CONFIRM, hFontMenu, szMenuText, 0, 0, lColor, 1.f, NEW_QUEST_ENTER_GAME);
+	me->SetPos(RATIO_X(iWindowConsoleWidth - (me->GetWidth() + 10)), 0);
 	pPanel->AddElementNoCenterIn(me);
+	
 	szMenuText = getLocalised("system_no");
-	me = new CMenuElementText(-1, hFontMenu, szMenuText, posBack.x, 0,lColor,1.f, MAIN);
+	me = new CMenuElementText(-1, hFontMenu, szMenuText, posBack.x, 0, lColor, 1.f, MAIN);
 	me->SetShortCut(Keyboard::Key_Escape);
 	pPanel->AddElementNoCenterIn(me);
 
 	pPanel->Move(Vec2i(0, checked_range_cast<int>(fPosBDAY)));
 
-	pWindowMenuConsole->AddMenu(pPanel);
-	pWindowMenu->AddConsole(pWindowMenuConsole);
+	console->AddMenu(pPanel);
+	pWindowMenu->AddConsole(console);
 	pWindowMenu->eCurrentMenuState=NEW_QUEST;
 }
 
