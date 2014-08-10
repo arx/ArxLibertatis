@@ -1178,6 +1178,39 @@ char pNoDef2[]="---";
 	pWindowMenu->eCurrentMenuState=OPTIONS;	
 }
 
+void Menu2_Render_Quit(float fPosBDAY, Vec2f posBack, int iWindowConsoleWidth, int iWindowConsoleOffsetX, int iWindowConsoleHeight, int iWindowConsoleOffsetY, Color lColor)
+{
+	std::string szMenuText;
+	CMenuElement *me = NULL;
+	CWindowMenuConsole *pWindowMenuConsole=new CWindowMenuConsole(iWindowConsoleOffsetX,iWindowConsoleOffsetY,iWindowConsoleWidth,iWindowConsoleHeight,QUIT);
+	szMenuText = getLocalised("system_menus_main_quit");
+	me=new CMenuElementText(-1, hFontMenu, szMenuText,0,0,lColor,1.f, NOP);
+	me->bCheck = false;
+	pWindowMenuConsole->AddMenuCenter(me);
+
+	szMenuText = getLocalised("system_menus_main_editquest_confirm");
+	me=new CMenuElementText(-1, hFontMenu, szMenuText,0,0,lColor,1.f, NOP);
+	me->bCheck = false;
+	pWindowMenuConsole->AddMenuCenter(me);
+
+	CMenuPanel *pPanel = new CMenuPanel();
+	szMenuText = getLocalised("system_yes");
+
+	me = new CMenuElementText(BUTTON_MENUMAIN_QUIT, hFontMenu, szMenuText, 0, 0,lColor,1.f, NEW_QUEST_ENTER_GAME);
+
+	me->SetPos(RATIO_X(iWindowConsoleWidth-10)-me->GetWidth(), 0);
+	pPanel->AddElementNoCenterIn(me);
+	szMenuText = getLocalised("system_no");
+	me = new CMenuElementText(-1, hFontMenu, szMenuText, posBack.x, 0,lColor,1.f, MAIN);
+	me->SetShortCut(Keyboard::Key_Escape);
+	pPanel->AddElementNoCenterIn(me);
+
+	pPanel->Move(Vec2i(0, checked_range_cast<int>(fPosBDAY)));
+	pWindowMenuConsole->AddMenu(pPanel);
+	pWindowMenu->AddConsole(pWindowMenuConsole);
+	pWindowMenu->eCurrentMenuState=QUIT;
+}
+
 bool Menu2_Render() {
 	
 	ARXOldTimeMenu = ARXTimeMenu;
@@ -1325,35 +1358,7 @@ bool Menu2_Render() {
 				break;
 
 			case QUIT: {
-					std::string szMenuText;
-					CMenuElement *me = NULL;
-					CWindowMenuConsole *pWindowMenuConsole=new CWindowMenuConsole(iWindowConsoleOffsetX,iWindowConsoleOffsetY,iWindowConsoleWidth,iWindowConsoleHeight,QUIT);
-					szMenuText = getLocalised("system_menus_main_quit");
-					me=new CMenuElementText(-1, hFontMenu, szMenuText,0,0,lColor,1.f, NOP);
-					me->bCheck = false;
-					pWindowMenuConsole->AddMenuCenter(me);
-
-					szMenuText = getLocalised("system_menus_main_editquest_confirm");
-					me=new CMenuElementText(-1, hFontMenu, szMenuText,0,0,lColor,1.f, NOP);
-					me->bCheck = false;
-					pWindowMenuConsole->AddMenuCenter(me);
-
-					CMenuPanel *pPanel = new CMenuPanel();
-					szMenuText = getLocalised("system_yes");
-
-					me = new CMenuElementText(BUTTON_MENUMAIN_QUIT, hFontMenu, szMenuText, 0, 0,lColor,1.f, NEW_QUEST_ENTER_GAME);
-
-					me->SetPos(RATIO_X(iWindowConsoleWidth-10)-me->GetWidth(), 0);
-					pPanel->AddElementNoCenterIn(me);
-					szMenuText = getLocalised("system_no");
-					me = new CMenuElementText(-1, hFontMenu, szMenuText, posBack.x, 0,lColor,1.f, MAIN);
-					me->SetShortCut(Keyboard::Key_Escape);
-					pPanel->AddElementNoCenterIn(me);
-
-					pPanel->Move(Vec2i(0, checked_range_cast<int>(fPosBDAY)));
-					pWindowMenuConsole->AddMenu(pPanel);
-					pWindowMenu->AddConsole(pWindowMenuConsole);
-					pWindowMenu->eCurrentMenuState=QUIT;
+					Menu2_Render_Quit(fPosBDAY, posBack, iWindowConsoleWidth, iWindowConsoleOffsetX, iWindowConsoleHeight, iWindowConsoleOffsetY, lColor);
 
 
 				break;
