@@ -395,12 +395,11 @@ public:
 	Color lColor;
 	Color lOldColor;
 	Color lColorHighlight;
-	float	fSize;
 	bool	bSelected;
 	
 public:
 	
-	CMenuElementText(int id, Font * font, const std::string & text, Vec2i pos, float size, MENUSTATE state);
+	CMenuElementText(int id, Font * font, const std::string & text, Vec2i pos, MENUSTATE state);
 	virtual ~CMenuElementText();
 	
 	void setColor(Color color) { lColor = color; }
