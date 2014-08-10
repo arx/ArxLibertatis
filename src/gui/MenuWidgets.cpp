@@ -309,7 +309,7 @@ bool ProcessFadeInOut(bool _bFadeIn, float _fspeed) {
 	return false;
 }
 
-void Menu2_Render_NewQuest(Vec2f posBack, int iWindowConsoleWidth, int iWindowConsoleOffsetY, int iWindowConsoleHeight, int iWindowConsoleOffsetX, float fPosBDAY, Color lColor)
+void Menu2_Render_NewQuest(Vec2f posBack, int iWindowConsoleWidth, int iWindowConsoleHeight, Vec2i offset, float fPosBDAY, Color lColor)
 {
 	if(!ARXMenu_CanResumeGame())
 		return;
@@ -317,7 +317,7 @@ void Menu2_Render_NewQuest(Vec2f posBack, int iWindowConsoleWidth, int iWindowCo
 	std::string szMenuText;
 	CMenuElement *me = NULL;
 	
-	CWindowMenuConsole * console = new CWindowMenuConsole(iWindowConsoleOffsetX, iWindowConsoleOffsetY, iWindowConsoleWidth, iWindowConsoleHeight, NEW_QUEST);
+	CWindowMenuConsole * console = new CWindowMenuConsole(offset.x, offset.y, iWindowConsoleWidth, iWindowConsoleHeight, NEW_QUEST);
 	
 	szMenuText = getLocalised("system_menus_main_editquest_confirm");
 	me = new CMenuElementText(-1, hFontMenu, szMenuText, 0, 0, lColor, 1.f, NOP);
@@ -1342,7 +1342,7 @@ bool Menu2_Render() {
 		
 		switch(eMenuState) {
 		case NEW_QUEST: {
-				Menu2_Render_NewQuest(posBack, windowConsoleSize.x, windowConsoleOffset.y, windowConsoleSize.y, windowConsoleOffset.x, fPosBDAY, lColor);
+				Menu2_Render_NewQuest(posBack, windowConsoleSize.x, windowConsoleSize.y, windowConsoleOffset, fPosBDAY, lColor);
 			
 			break;
 		}
