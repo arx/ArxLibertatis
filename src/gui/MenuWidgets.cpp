@@ -590,6 +590,594 @@ void Menu2_Render_EditQuest(int iWindowConsoleHeight, float fPosBDAY, int iWindo
 	pWindowMenu->AddConsole(pWindowMenuConsole);
 }
 
+void Menu2_Render_Options(int iWindowConsoleHeight, int iPosX2, int iWindowConsoleWidth, float fPosBDAY, float fPosX1, int iWindowConsoleOffsetY, int iWindowConsoleOffsetX, float fPosApply, Vec2f posBack, Color lColor, Vec2f posNext)
+{
+	std::string szMenuText;
+	CMenuElement *me;
+	CMenuPanel *pc;
+	TextureContainer *pTex;
+
+	CWindowMenuConsole *pWindowMenuConsole=new CWindowMenuConsole(iWindowConsoleOffsetX,iWindowConsoleOffsetY,iWindowConsoleWidth,iWindowConsoleHeight,OPTIONS);
+
+	szMenuText = getLocalised("system_menus_options_video");
+	me = new CMenuElementText(BUTTON_MENUOPTIONSVIDEO_INIT, hFontMenu, szMenuText, 0, 0,lColor,1.f,OPTIONS_VIDEO);
+	pWindowMenuConsole->AddMenuCenter(me);
+	
+	szMenuText = getLocalised("system_menus_options_audio");
+	me = new CMenuElementText(-1, hFontMenu, szMenuText, 0, 0,lColor,1.f,OPTIONS_AUDIO);
+	pWindowMenuConsole->AddMenuCenter(me);
+	
+	szMenuText = getLocalised("system_menus_options_input");
+	me = new CMenuElementText(-1, hFontMenu, szMenuText, 0, 0,lColor,1.f,OPTIONS_INPUT);
+	pWindowMenuConsole->AddMenuCenter(me);
+
+	pTex = TextureContainer::Load("graph/interface/menus/back");
+	me = new CMenuCheckButton(-1, posBack, pTex?pTex->m_dwWidth:0, pTex, NULL, NULL);
+	me->eMenuState = MAIN;
+	me->SetShortCut(Keyboard::Key_Escape);
+	pWindowMenuConsole->AddMenu(me);
+
+	pWindowMenu->AddConsole(pWindowMenuConsole);
+//------------------ END OPTIONS
+
+//------------------ START VIDEO
+	pWindowMenuConsole=new CWindowMenuConsole(iWindowConsoleOffsetX,iWindowConsoleOffsetY - (35),iWindowConsoleWidth,iWindowConsoleHeight, OPTIONS_VIDEO);
+
+	
+	// Renderer selection
+	{
+		
+		pc = new CMenuPanel();
+		szMenuText = getLocalised("system_menus_options_video_renderer", "Renderer");
+		szMenuText += "  ";
+		me = new CMenuElementText(-1, hFontMenu, szMenuText, fPosX1, 0.f, lColor, 1.f, NOP);
+		me->SetCheckOff();
+		pc->AddElement(me);
+		CMenuSliderText * slider = new CMenuSliderText(BUTTON_MENUOPTIONSVIDEO_RENDERER, Vec2i(0, 0));
+		
+		slider->AddText(new CMenuElementText(-1, hFontMenu, "Auto-Select", 0, 0, lColor, 1.f, OPTIONS_VIDEO_RENDERER_AUTOMATIC));
+		slider->iPos = slider->vText.size() - 1;
+#if ARX_HAVE_SDL1 || ARX_HAVE_SDL2
+		slider->AddText(new CMenuElementText(-1, hFontMenu, "OpenGL", 0, 0, lColor, 1.f, OPTIONS_VIDEO_RENDERER_OPENGL));
+		if(config.window.framework == "SDL") {
+			slider->iPos = slider->vText.size() - 1;
+		}
+#endif
+		
+		float fRatio    = (RATIO_X(iWindowConsoleWidth-9) - slider->GetWidth()); 
+		slider->Move(Vec2i(checked_range_cast<int>(fRatio), 0));
+		pc->AddElement(slider);
+		pWindowMenuConsole->AddMenuCenterY(pc);
+		
+	}
+	
+	
+	szMenuText = getLocalised("system_menus_options_videos_full_screen");
+	if(szMenuText.empty()) {
+		// TODO once we ship our own amendmends to the loc files a cleaner
+		// fix would be to just define system_menus_options_videos_full_screen
+		// for the german version there
+		szMenuText = getLocalised("system_menus_options_video_full_screen");
+	}
+	szMenuText += "  ";
+	CMenuElementText * metemp = new CMenuElementText(-1, hFontMenu, szMenuText, fPosX1, 0.f, lColor, 1.f, NOP);
+	metemp->SetCheckOff();
+	TextureContainer *pTex1 = TextureContainer::Load("graph/interface/menus/menu_checkbox_off");
+	TextureContainer *pTex2 = TextureContainer::Load("graph/interface/menus/menu_checkbox_on");
+	fullscreenCheckbox = new CMenuCheckButton(BUTTON_MENUOPTIONSVIDEO_FULLSCREEN, Vec2f(0.f, 0.f), pTex1->m_dwWidth, pTex1, pTex2, metemp);
+
+	fullscreenCheckbox->iState= config.video.fullscreen ? 1 : 0;
+
+	pWindowMenuConsole->AddMenuCenterY(fullscreenCheckbox);
+	
+	pc = new CMenuPanel();
+	szMenuText = getLocalised("system_menus_options_video_resolution");
+	szMenuText += "  ";
+	me = new CMenuElementText(-1, hFontMenu, szMenuText, fPosX1, 0.f, lColor, 1.f, NOP);
+	me->SetCheckOff();
+	pc->AddElement(me);
+	pMenuSliderResol = new CMenuSliderText(BUTTON_MENUOPTIONSVIDEO_RESOLUTION, Vec2i(0, 0));
+	
+	pMenuSliderResol->setEnabled(config.video.fullscreen);
+	
+	const RenderWindow::DisplayModes & modes = mainApp->getWindow()->getDisplayModes();
+	for(size_t i = 0; i != modes.size(); ++i) {
+		
+		const DisplayMode & mode = modes[i];
+		
+		// find the aspect ratio
+		unsigned a = mode.resolution.x;
+		unsigned b = mode.resolution.y;
+		while(b != 0) {
+			unsigned t = a % b;
+			a = b, b = t;
+		}
+		Vec2i aspect = mode.resolution / Vec2i(a);
+		
+		std::stringstream ss;
+		ss << mode;
+		
+		if(aspect.x < 100 && aspect.y < 100) {
+			if(aspect == Vec2i(8, 5)) {
+				aspect = Vec2i(16, 10);
+			}
+			ss << " (" << aspect.x << ':' << aspect.y << ')';
+		}
+		
+		pMenuSliderResol->AddText(new CMenuElementText(-1, hFontMenu, ss.str(), 0, 0, lColor, 1.f, MENUSTATE(OPTIONS_VIDEO_RESOLUTION_0 + i)));
+		
+		if(mode.resolution == config.video.resolution) {
+			pMenuSliderResol->iPos = pMenuSliderResol->vText.size() - 1;
+		}
+	}
+	
+	pMenuSliderResol->AddText(new CMenuElementText(-1, hFontMenu, AUTO_RESOLUTION_STRING, 0, 0, lColor, 1.f, MENUSTATE(OPTIONS_VIDEO_RESOLUTION_0 + modes.size())));
+	
+	if(config.video.resolution == Vec2i_ZERO) {
+		pMenuSliderResol->iPos = pMenuSliderResol->vText.size() - 1;
+	}
+
+	float fRatio    = (RATIO_X(iWindowConsoleWidth-9) - pMenuSliderResol->GetWidth()); 
+
+	pMenuSliderResol->Move(Vec2i(checked_range_cast<int>(fRatio), 0));
+
+
+	pc->AddElement(pMenuSliderResol);
+
+	pWindowMenuConsole->AddMenuCenterY(pc);
+
+	pc = new CMenuPanel();
+	szMenuText = getLocalised("system_menus_options_detail");
+	szMenuText += " ";
+	me = new CMenuElementText(-1, hFontMenu, szMenuText, fPosX1, 0.f, lColor, 1.f, NOP);
+	me->SetCheckOff();
+	pc->AddElement(me);
+	me = new CMenuSliderText(BUTTON_MENUOPTIONSVIDEO_OTHERSDETAILS, Vec2i(0, 0));
+	szMenuText = getLocalised("system_menus_options_video_texture_low");
+	((CMenuSliderText *)me)->AddText(new CMenuElementText(-1, hFontMenu, szMenuText, 0, 0,lColor,1.f, OPTIONS_OTHERDETAILS));
+	szMenuText = getLocalised("system_menus_options_video_texture_med");
+	((CMenuSliderText *)me)->AddText(new CMenuElementText(-1, hFontMenu, szMenuText, 0, 0,lColor,1.f, OPTIONS_OTHERDETAILS));
+	szMenuText = getLocalised("system_menus_options_video_texture_high");
+	((CMenuSliderText *)me)->AddText(new CMenuElementText(-1, hFontMenu, szMenuText, 0, 0,lColor,1.f, OPTIONS_OTHERDETAILS));
+
+	
+	fRatio    = (RATIO_X(iWindowConsoleWidth-9) - me->GetWidth()); 
+	me->Move(Vec2i(checked_range_cast<int>(fRatio), 0));
+
+
+	pc->AddElement(me);
+	((CMenuSliderText *)me)->iPos = config.video.levelOfDetail;
+
+	pWindowMenuConsole->AddMenuCenterY(pc);
+	
+	pc = new CMenuPanel();
+	szMenuText = getLocalised("system_menus_options_video_brouillard");
+	me = new CMenuElementText(-1, hFontMenu, szMenuText, fPosX1, 0.f, lColor, 1.f, NOP);
+	me->SetCheckOff();
+	pc->AddElement(me);
+	me = new CMenuSlider(BUTTON_MENUOPTIONSVIDEO_FOG, Vec2i(iPosX2, 0));
+	((CMenuSlider *)me)->setValue(config.video.fogDistance);
+	pc->AddElement(me);
+
+	pWindowMenuConsole->AddMenuCenterY(pc);
+
+	szMenuText = getLocalised("system_menus_options_video_crosshair", "Show Crosshair");
+	szMenuText += " ";
+	metemp = new CMenuElementText(-1, hFontMenu, szMenuText, fPosX1, 0.f, lColor, 1.f, NOP);
+	metemp->SetCheckOff();
+	me = new CMenuCheckButton(BUTTON_MENUOPTIONSVIDEO_CROSSHAIR, Vec2f(0.f, 0.f), pTex1->m_dwWidth, pTex1, pTex2, metemp);
+
+	((CMenuCheckButton*)me)->iState= config.video.showCrosshair ? 1 : 0;
+
+	pWindowMenuConsole->AddMenuCenterY(me);
+
+	szMenuText = getLocalised("system_menus_options_video_antialiasing", "antialiasing");
+	szMenuText += " ";
+	pTex1 = TextureContainer::Load("graph/interface/menus/menu_checkbox_off");
+	pTex2 = TextureContainer::Load("graph/interface/menus/menu_checkbox_on");
+	metemp = new CMenuElementText(-1, hFontMenu, szMenuText, fPosX1, 0.f, lColor, 1.f, NOP);
+	metemp->SetCheckOff();
+	me = new CMenuCheckButton(BUTTON_MENUOPTIONSVIDEO_ANTIALIASING, Vec2f(0.f, 0.f), pTex1->m_dwWidth, pTex1, pTex2, metemp);
+	((CMenuCheckButton*)me)->iState= config.video.antialiasing ? 1 : 0;
+	pWindowMenuConsole->AddMenuCenterY(me);
+	ARX_SetAntiAliasing();
+
+	szMenuText = getLocalised("system_menus_options_video_vsync", "VSync");
+	szMenuText += " ";
+	pTex1 = TextureContainer::Load("graph/interface/menus/menu_checkbox_off");
+	pTex2 = TextureContainer::Load("graph/interface/menus/menu_checkbox_on");
+	metemp = new CMenuElementText(-1, hFontMenu, szMenuText, fPosX1, 0.f, lColor, 1.f, NOP);
+	metemp->SetCheckOff();
+	me = new CMenuCheckButton(BUTTON_MENUOPTIONSVIDEO_VSYNC, Vec2f(0.f, 0.f), pTex1->m_dwWidth, pTex1, pTex2, metemp);
+	((CMenuCheckButton*)me)->iState= config.video.vsync ? 1 : 0;
+	pWindowMenuConsole->AddMenuCenterY(me);
+
+	pc = new CMenuPanel();
+	szMenuText = getLocalised("system_menus_video_apply");
+	szMenuText += "   ";
+	pMenuElementApply = me = new CMenuElementText(BUTTON_MENUOPTIONSVIDEO_APPLY, hFontMenu, szMenuText, fPosApply, 0.f, lColor, 1.f, NOP);
+	me->SetPos(RATIO_X(iWindowConsoleWidth-10)-me->GetWidth(), fPosBDAY + RATIO_Y(40));
+	me->SetCheckOff();
+	pc->AddElementNoCenterIn(me);
+
+	pTex = TextureContainer::Load("graph/interface/menus/back");
+	me = new CMenuCheckButton(BUTTON_MENUOPTIONSVIDEO_BACK, posBack + Vec2f(0.f, RATIO_Y(20)), pTex?pTex->m_dwWidth:0, pTex, NULL, NULL);
+	me->eMenuState = OPTIONS;
+	me->SetShortCut(Keyboard::Key_Escape);
+	pc->AddElementNoCenterIn(me);
+
+	pWindowMenuConsole->AddMenu(pc);
+
+	pWindowMenu->AddConsole(pWindowMenuConsole);
+	//------------------ END VIDEO
+
+	//------------------ START AUDIO
+	pWindowMenuConsole = new CWindowMenuConsole(iWindowConsoleOffsetX,iWindowConsoleOffsetY,iWindowConsoleWidth,iWindowConsoleHeight,OPTIONS_AUDIO);
+
+	// Audio backend selection
+	{
+		
+		pc = new CMenuPanel();
+		szMenuText = getLocalised("system_menus_options_audio_backend", "Backend");
+		szMenuText += "  ";
+		me = new CMenuElementText(-1, hFontMenu, szMenuText, fPosX1, 0.f, lColor, 1.f, NOP);
+		me->SetCheckOff();
+		pc->AddElement(me);
+		CMenuSliderText * slider = new CMenuSliderText(BUTTON_MENUOPTIONSAUDIO_BACKEND, Vec2i(0, 0));
+		
+		slider->AddText(new CMenuElementText(-1, hFontMenu, "Auto-Select", 0, 0, lColor, 1.f, OPTIONS_AUDIO_BACKEND_AUTOMATIC));
+		slider->iPos = slider->vText.size() - 1;
+#if ARX_HAVE_OPENAL
+		slider->AddText(new CMenuElementText(-1, hFontMenu, "OpenAL", 0, 0, lColor, 1.f, OPTIONS_AUDIO_BACKEND_OPENAL));
+		if(config.audio.backend == "OpenAL") {
+			slider->iPos = slider->vText.size() - 1;
+		}
+#endif
+		
+		float fRatio    = (RATIO_X(iWindowConsoleWidth-9) - slider->GetWidth()); 
+		slider->Move(Vec2i(checked_range_cast<int>(fRatio), 0));
+		pc->AddElement(slider);
+		pWindowMenuConsole->AddMenuCenterY(pc);
+		
+	}
+	
+	pc = new CMenuPanel();
+	szMenuText = getLocalised("system_menus_options_audio_master_volume");
+	me = new CMenuElementText(-1, hFontMenu, szMenuText, fPosX1, 0.f, lColor, 1.f, OPTIONS_AUDIO_VOLUME);
+	me->SetCheckOff();
+	pc->AddElement(me);
+	me = new CMenuSlider(BUTTON_MENUOPTIONSAUDIO_MASTER, Vec2i(iPosX2, 0));
+	((CMenuSlider *)me)->setValue((int)config.audio.volume); // TODO use float sliders
+	pc->AddElement(me);
+	pWindowMenuConsole->AddMenuCenterY(pc);
+
+	pc = new CMenuPanel();
+	szMenuText = getLocalised("system_menus_options_audio_effects_volume");
+	me = new CMenuElementText(-1, hFontMenu, szMenuText, fPosX1, 0.f, lColor, 1.f, OPTIONS_AUDIO);
+	me->SetCheckOff();
+	pc->AddElement(me);
+	me = new CMenuSlider(BUTTON_MENUOPTIONSAUDIO_SFX, Vec2i(iPosX2, 0));
+	((CMenuSlider *)me)->setValue((int)config.audio.sfxVolume);
+	pc->AddElement(me);
+	pWindowMenuConsole->AddMenuCenterY(pc);
+
+	pc = new CMenuPanel();
+	szMenuText = getLocalised("system_menus_options_audio_speech_volume");
+	me = new CMenuElementText(-1, hFontMenu, szMenuText, fPosX1, 0.f, lColor, 1.f, OPTIONS_AUDIO);
+	me->SetCheckOff();
+	pc->AddElement(me);
+	me = new CMenuSlider(BUTTON_MENUOPTIONSAUDIO_SPEECH, Vec2i(iPosX2, 0));
+	((CMenuSlider *)me)->setValue((int)config.audio.speechVolume);
+	pc->AddElement(me);
+	pWindowMenuConsole->AddMenuCenterY(pc);
+
+	pc = new CMenuPanel();
+	szMenuText = getLocalised("system_menus_options_audio_ambiance_volume");
+	me = new CMenuElementText(-1, hFontMenu, szMenuText, fPosX1, 0.f, lColor, 1.f, OPTIONS_AUDIO);
+	me->SetCheckOff();
+	pc->AddElement(me);
+	me = new CMenuSlider(BUTTON_MENUOPTIONSAUDIO_AMBIANCE, Vec2i(iPosX2, 0));
+	((CMenuSlider *)me)->setValue((int)config.audio.ambianceVolume);
+	pc->AddElement(me);
+	pWindowMenuConsole->AddMenuCenterY(pc);
+
+	szMenuText = getLocalised("system_menus_options_audio_eax", "EAX");
+	szMenuText += " ";
+	pTex1 = TextureContainer::Load("graph/interface/menus/menu_checkbox_off");
+	pTex2 = TextureContainer::Load("graph/interface/menus/menu_checkbox_on");
+	CMenuElementText * pElementText = new CMenuElementText(-1, hFontMenu, szMenuText, fPosX1, 0.f, lColor, 1.f, OPTIONS_INPUT);
+	me = new CMenuCheckButton(BUTTON_MENUOPTIONSAUDIO_EAX, Vec2f(0.f, 0.f), pTex1->m_dwWidth, pTex1, pTex2, pElementText);
+	((CMenuCheckButton*)me)->iState = config.audio.eax ? 1 : 0;
+
+	pWindowMenuConsole->AddMenuCenterY(me);
+
+	pTex = TextureContainer::Load("graph/interface/menus/back");
+	me = new CMenuCheckButton(-1, posBack, pTex?pTex->m_dwWidth:0, pTex, NULL, NULL);
+	me->eMenuState = OPTIONS;
+	me->SetShortCut(Keyboard::Key_Escape);
+	pWindowMenuConsole->AddMenu(me);
+
+	pWindowMenu->AddConsole(pWindowMenuConsole);
+	//------------------ END AUDIO
+
+	//------------------ START INPUT
+	pWindowMenuConsole = new CWindowMenuConsole(iWindowConsoleOffsetX,iWindowConsoleOffsetY,iWindowConsoleWidth,iWindowConsoleHeight, OPTIONS_INPUT);
+	
+	szMenuText = getLocalised("system_menus_options_input_customize_controls");
+	me = new CMenuElementText(-1, hFontMenu, szMenuText, fPosX1, 0.f, lColor, 1.f, OPTIONS_INPUT_CUSTOMIZE_KEYS_1);
+	pWindowMenuConsole->AddMenuCenterY(me);
+	
+	szMenuText = getLocalised("system_menus_options_input_invert_mouse");
+	szMenuText += " ";
+	pTex1 = TextureContainer::Load("graph/interface/menus/menu_checkbox_off");
+	pTex2 = TextureContainer::Load("graph/interface/menus/menu_checkbox_on");
+	me = new CMenuCheckButton(BUTTON_MENUOPTIONS_CONTROLS_INVERTMOUSE, Vec2f(0.f, 0.f), pTex1->m_dwWidth, pTex1, pTex2, new CMenuElementText(-1, hFontMenu, szMenuText, fPosX1, 0.f, lColor, 1.f, OPTIONS_INPUT));
+	
+	if(config.input.invertMouse) {
+		((CMenuCheckButton*)me)->iState=1;
+	} else {
+		((CMenuCheckButton*)me)->iState=0;
+	}
+
+	pWindowMenuConsole->AddMenuCenterY(me);
+
+	szMenuText = getLocalised("system_menus_options_auto_ready_weapon");
+	szMenuText += " ";
+	pTex1 = TextureContainer::Load("graph/interface/menus/menu_checkbox_off");
+	pTex2 = TextureContainer::Load("graph/interface/menus/menu_checkbox_on");
+	me = new CMenuCheckButton(BUTTON_MENUOPTIONS_CONTROLS_AUTOREADYWEAPON, Vec2f(0.f, 0.f), pTex1->m_dwWidth, pTex1, pTex2, new CMenuElementText(-1, hFontMenu, szMenuText, fPosX1, 0.f, lColor, 1.f, OPTIONS_INPUT));
+
+	((CMenuCheckButton*)me)->iState = config.input.autoReadyWeapon ? 1 : 0;
+
+	pWindowMenuConsole->AddMenuCenterY(me);
+
+	szMenuText = getLocalised("system_menus_options_input_mouse_look_toggle");
+	szMenuText += " ";
+	pTex1 = TextureContainer::Load("graph/interface/menus/menu_checkbox_off");
+	pTex2 = TextureContainer::Load("graph/interface/menus/menu_checkbox_on");
+	me = new CMenuCheckButton(BUTTON_MENUOPTIONS_CONTROLS_MOUSELOOK, Vec2f(0.f, 0.f), pTex1->m_dwWidth, pTex1, pTex2, new CMenuElementText(-1, hFontMenu, szMenuText, fPosX1, 0.f, lColor, 1.f, OPTIONS_INPUT));
+
+	((CMenuCheckButton*)me)->iState = config.input.mouseLookToggle ? 1 : 0;
+
+	pWindowMenuConsole->AddMenuCenterY(me);
+
+	pc = new CMenuPanel();
+	szMenuText = getLocalised("system_menus_options_input_mouse_sensitivity");
+	me = new CMenuElementText(-1, hFontMenu, szMenuText, fPosX1, 0.f, lColor, 1.f, NOP);
+	me->SetCheckOff();
+	pc->AddElement(me);
+	me = new CMenuSlider(BUTTON_MENUOPTIONS_CONTROLS_MOUSESENSITIVITY, Vec2i(iPosX2, 0));
+	((CMenuSlider*)me)->setValue(config.input.mouseSensitivity);
+	pc->AddElement(me);
+	pWindowMenuConsole->AddMenuCenterY(pc);
+
+	szMenuText = getLocalised("system_menus_autodescription", "auto_description");
+	szMenuText += " ";
+	pTex1 = TextureContainer::Load("graph/interface/menus/menu_checkbox_off");
+	pTex2 = TextureContainer::Load("graph/interface/menus/menu_checkbox_on");
+	me = new CMenuCheckButton(BUTTON_MENUOPTIONS_CONTROLS_AUTODESCRIPTION, Vec2f(0.f, 0.f), pTex1->m_dwWidth, pTex1, pTex2, new CMenuElementText(-1, hFontMenu, szMenuText, fPosX1, 0.f, lColor, 1.f, OPTIONS_INPUT));
+
+	((CMenuCheckButton*)me)->iState = config.input.autoDescription ? 1 : 0;
+
+	pWindowMenuConsole->AddMenuCenterY(me);
+
+	pc = new CMenuPanel();
+	szMenuText = getLocalised("system_menus_options_misc_quicksave_slots", "Quicksave slots");
+	me = new CMenuElementText(-1, hFontMenu, szMenuText, fPosX1, 0.f, lColor, 1.f, NOP);
+	me->SetCheckOff();
+	pc->AddElement(me);
+	me = new CMenuSlider(BUTTON_MENUOPTIONS_CONTROLS_QUICKSAVESLOTS, Vec2i(iPosX2, 0));
+	((CMenuSlider*)me)->setValue(config.misc.quicksaveSlots);
+	pc->AddElement(me);
+	pWindowMenuConsole->AddMenuCenterY(pc);
+
+	pTex = TextureContainer::Load("graph/interface/menus/back");
+	me = new CMenuCheckButton(-1, posBack, pTex?pTex->m_dwWidth:0, pTex, NULL, NULL);
+	me->eMenuState = OPTIONS;
+	me->SetShortCut(Keyboard::Key_Escape);
+	pWindowMenuConsole->AddMenu(me);
+	pWindowMenu->AddConsole(pWindowMenuConsole);
+//------------------ END INPUT
+
+//------------------ START CUSTOM CONTROLS
+char pNoDef1[]="---";
+char pNoDef2[]="---";
+
+#define CUSTOM_CTRL_X0    RATIO_X(20)
+#define CUSTOM_CTRL_X1    RATIO_X(150)
+#define CUSTOM_CTRL_X2    RATIO_X(245)
+	long fControlPosY    =    static_cast<long>(RATIO_Y(8.f));
+#define CUSTOM_CTRL_FUNC(a,b,c,d){\
+		pc=new CMenuPanel();\
+		szMenuText = getLocalised(a, "?");\
+		me = new CMenuElementText(-1, hFontControls, szMenuText, CUSTOM_CTRL_X0, 0,lColor,.7f, NOP);\
+		me->SetCheckOff();\
+		pc->AddElement(me);\
+		me = new CMenuElementText(c, hFontControls, pNoDef1, CUSTOM_CTRL_X1, 0,lColor,.7f, NOP);\
+		me->eState=GETTOUCH;\
+		if((!b)||(c<0))\
+		{\
+			me->SetCheckOff();\
+			((CMenuElementText*)me)->lColor=Color(127,127,127);\
+		}\
+		pc->AddElement(me);\
+		me = new CMenuElementText(d, hFontControls, pNoDef2, CUSTOM_CTRL_X2, 0,lColor,.7f, NOP);\
+		me->eState=GETTOUCH;\
+		if(d<0)\
+		{\
+			me->SetCheckOff();\
+			((CMenuElementText*)me)->lColor=Color(127,127,127);\
+		}\
+		pc->AddElement(me);\
+		pc->Move(Vec2i(0, fControlPosY));\
+		pWindowMenuConsole->AddMenu(pc);\
+		fControlPosY += static_cast<long>( pc->GetHeight() + RATIO_Y(3.f) );\
+	};
+
+
+#define CUSTOM_CTRL_FUNC2(a,b,c,d){\
+		pc=new CMenuPanel();\
+		szMenuText = getLocalised(a, "?");\
+		szMenuText += "2";\
+		me = new CMenuElementText(-1, hFontControls, szMenuText, CUSTOM_CTRL_X0, 0,lColor,.7f, NOP);\
+		me->SetCheckOff();\
+		pc->AddElement(me);\
+		me = new CMenuElementText(c, hFontControls, pNoDef1, CUSTOM_CTRL_X1, 0,lColor,.7f, NOP);\
+		me->eState=GETTOUCH;\
+		if((!b)||(c<0))\
+		{\
+			me->SetCheckOff();\
+			((CMenuElementText*)me)->lColor=Color(127,127,127);\
+		}\
+		pc->AddElement(me);\
+		me = new CMenuElementText(d, hFontControls, pNoDef2, CUSTOM_CTRL_X2, 0,lColor,.7f, NOP);\
+		me->eState=GETTOUCH;\
+		if(d<0)\
+		{\
+			me->SetCheckOff();\
+			((CMenuElementText*)me)->lColor=Color(127,127,127);\
+		}\
+		pc->AddElement(me);\
+		pc->Move(Vec2i(0, fControlPosY));\
+		pWindowMenuConsole->AddMenu(pc);\
+		fControlPosY += static_cast<long>( pc->GetHeight() + RATIO_Y(3.f) );\
+	};
+	
+	
+#define CUSTOM_CTRL_FUNC3(a,default,b,c,d){\
+		pc=new CMenuPanel();\
+		szMenuText = getLocalised(a, default);\
+		me = new CMenuElementText(-1, hFontControls, szMenuText, CUSTOM_CTRL_X0, 0,lColor,.7f, NOP);\
+		me->SetCheckOff();\
+		pc->AddElement(me);\
+		me = new CMenuElementText(c, hFontControls, pNoDef1, CUSTOM_CTRL_X1, 0,lColor,.7f, NOP);\
+		me->eState=GETTOUCH;\
+		if((!b)||(c<0))\
+		{\
+			me->SetCheckOff();\
+			((CMenuElementText*)me)->lColor=Color(127,127,127);\
+		}\
+		pc->AddElement(me);\
+		me = new CMenuElementText(d, hFontControls, pNoDef2, CUSTOM_CTRL_X2, 0,lColor,.7f, NOP);\
+		me->eState=GETTOUCH;\
+		if(d<0)\
+		{\
+			me->SetCheckOff();\
+			((CMenuElementText*)me)->lColor=Color(127,127,127);\
+		}\
+		pc->AddElement(me);\
+		pc->Move(Vec2i(0, fControlPosY));\
+		pWindowMenuConsole->AddMenu(pc);\
+		fControlPosY += static_cast<long>( pc->GetHeight() + RATIO_Y(3.f) );\
+	};
+
+
+	pWindowMenuConsole=new CWindowMenuConsole(iWindowConsoleOffsetX,iWindowConsoleOffsetY,iWindowConsoleWidth,iWindowConsoleHeight,OPTIONS_INPUT_CUSTOMIZE_KEYS_1);
+
+	CUSTOM_CTRL_FUNC("system_menus_options_input_customize_controls_mouselook",1, BUTTON_MENUOPTIONS_CONTROLS_CUST_USE1, BUTTON_MENUOPTIONS_CONTROLS_CUST_USE2);
+
+	CUSTOM_CTRL_FUNC("system_menus_options_input_customize_controls_action_combine",1, BUTTON_MENUOPTIONS_CONTROLS_CUST_ACTIONCOMBINE1, BUTTON_MENUOPTIONS_CONTROLS_CUST_ACTIONCOMBINE2);
+	CUSTOM_CTRL_FUNC("system_menus_options_input_customize_controls_jump",1,BUTTON_MENUOPTIONS_CONTROLS_CUST_JUMP1, BUTTON_MENUOPTIONS_CONTROLS_CUST_JUMP2);
+	CUSTOM_CTRL_FUNC("system_menus_options_input_customize_controls_magic_mode",1, BUTTON_MENUOPTIONS_CONTROLS_CUST_MAGICMODE1, BUTTON_MENUOPTIONS_CONTROLS_CUST_MAGICMODE2);
+	CUSTOM_CTRL_FUNC("system_menus_options_input_customize_controls_stealth_mode",1, BUTTON_MENUOPTIONS_CONTROLS_CUST_STEALTHMODE1, BUTTON_MENUOPTIONS_CONTROLS_CUST_STEALTHMODE2);
+	CUSTOM_CTRL_FUNC("system_menus_options_input_customize_controls_walk_forward",1, BUTTON_MENUOPTIONS_CONTROLS_CUST_WALKFORWARD1, BUTTON_MENUOPTIONS_CONTROLS_CUST_WALKFORWARD2);
+	CUSTOM_CTRL_FUNC("system_menus_options_input_customize_controls_walk_backward",1, BUTTON_MENUOPTIONS_CONTROLS_CUST_WALKBACKWARD1, BUTTON_MENUOPTIONS_CONTROLS_CUST_WALKBACKWARD2);
+	CUSTOM_CTRL_FUNC("system_menus_options_input_customize_controls_strafe_left",1, BUTTON_MENUOPTIONS_CONTROLS_CUST_STRAFELEFT1, BUTTON_MENUOPTIONS_CONTROLS_CUST_STRAFELEFT2);
+	CUSTOM_CTRL_FUNC("system_menus_options_input_customize_controls_strafe_right",1, BUTTON_MENUOPTIONS_CONTROLS_CUST_STRAFERIGHT1, BUTTON_MENUOPTIONS_CONTROLS_CUST_STRAFERIGHT2);
+	CUSTOM_CTRL_FUNC("system_menus_options_input_customize_controls_lean_left",1, BUTTON_MENUOPTIONS_CONTROLS_CUST_LEANLEFT1, BUTTON_MENUOPTIONS_CONTROLS_CUST_LEANLEFT2);
+	CUSTOM_CTRL_FUNC("system_menus_options_input_customize_controls_lean_right",1, BUTTON_MENUOPTIONS_CONTROLS_CUST_LEANRIGHT1, BUTTON_MENUOPTIONS_CONTROLS_CUST_LEANRIGHT2);
+	CUSTOM_CTRL_FUNC("system_menus_options_input_customize_controls_crouch",1, BUTTON_MENUOPTIONS_CONTROLS_CUST_CROUCH1, BUTTON_MENUOPTIONS_CONTROLS_CUST_CROUCH2);
+	CUSTOM_CTRL_FUNC("system_menus_options_input_customize_controls_crouch_toggle",1, BUTTON_MENUOPTIONS_CONTROLS_CUST_CROUCHTOGGLE1, BUTTON_MENUOPTIONS_CONTROLS_CUST_CROUCHTOGGLE2);
+
+	CUSTOM_CTRL_FUNC("system_menus_options_input_customize_controls_strafe",1, BUTTON_MENUOPTIONS_CONTROLS_CUST_STRAFE1, BUTTON_MENUOPTIONS_CONTROLS_CUST_STRAFE2);
+	CUSTOM_CTRL_FUNC("system_menus_options_input_customize_controls_center_view",1, BUTTON_MENUOPTIONS_CONTROLS_CUST_CENTERVIEW1, BUTTON_MENUOPTIONS_CONTROLS_CUST_CENTERVIEW2);
+	CUSTOM_CTRL_FUNC("system_menus_options_input_customize_controls_freelook",1, BUTTON_MENUOPTIONS_CONTROLS_CUST_FREELOOK1, BUTTON_MENUOPTIONS_CONTROLS_CUST_FREELOOK2);
+
+	CUSTOM_CTRL_FUNC("system_menus_options_input_customize_controls_turn_left",1, BUTTON_MENUOPTIONS_CONTROLS_CUST_TURNLEFT1, BUTTON_MENUOPTIONS_CONTROLS_CUST_TURNLEFT2);
+	CUSTOM_CTRL_FUNC("system_menus_options_input_customize_controls_turn_right",1, BUTTON_MENUOPTIONS_CONTROLS_CUST_TURNRIGHT1, BUTTON_MENUOPTIONS_CONTROLS_CUST_TURNRIGHT2);
+	CUSTOM_CTRL_FUNC("system_menus_options_input_customize_controls_look_up",1, BUTTON_MENUOPTIONS_CONTROLS_CUST_LOOKUP1, BUTTON_MENUOPTIONS_CONTROLS_CUST_LOOKUP2);
+	CUSTOM_CTRL_FUNC("system_menus_options_input_customize_controls_look_down",1, BUTTON_MENUOPTIONS_CONTROLS_CUST_LOOKDOWN1, BUTTON_MENUOPTIONS_CONTROLS_CUST_LOOKDOWN2);
+
+	pc=new CMenuPanel();
+
+	pTex = TextureContainer::Load("graph/interface/menus/back");
+	me = new CMenuCheckButton(BUTTON_MENUOPTIONS_CONTROLS_CUST_BACK, posBack, pTex?pTex->m_dwWidth:0, pTex, NULL, NULL);
+	me->eMenuState = OPTIONS_INPUT;
+	me->SetShortCut(Keyboard::Key_Escape);
+	pc->AddElementNoCenterIn(me);
+	szMenuText = getLocalised( "system_menus_options_input_customize_default" );
+	me = new CMenuElementText(BUTTON_MENUOPTIONS_CONTROLS_CUST_DEFAULT, hFontMenu, szMenuText, 0, 0,lColor,1.f, NOP);
+	me->SetPos((RATIO_X(iWindowConsoleWidth) - me->GetWidth())*0.5f, fPosBDAY);
+	pc->AddElementNoCenterIn(me);
+	pTex = TextureContainer::Load("graph/interface/menus/next");
+	me = new CMenuCheckButton(BUTTON_MENUOPTIONS_CONTROLS_CUST_BACK, posNext, pTex?pTex->m_dwWidth:0, pTex, NULL, NULL);
+	me->eMenuState = OPTIONS_INPUT_CUSTOMIZE_KEYS_2;
+	me->SetShortCut(Keyboard::Key_Escape);
+	pc->AddElementNoCenterIn(me);
+
+	pWindowMenuConsole->AddMenu(pc);
+
+	pWindowMenu->AddConsole(pWindowMenuConsole);
+	pWindowMenuConsole->ReInitActionKey();
+
+	pWindowMenuConsole=new CWindowMenuConsole(iWindowConsoleOffsetX,iWindowConsoleOffsetY,iWindowConsoleWidth,iWindowConsoleHeight,OPTIONS_INPUT_CUSTOMIZE_KEYS_2);
+
+	fControlPosY = static_cast<long>(RATIO_Y(8.f));
+	CUSTOM_CTRL_FUNC("system_menus_options_input_customize_controls_inventory",1, BUTTON_MENUOPTIONS_CONTROLS_CUST_INVENTORY1, BUTTON_MENUOPTIONS_CONTROLS_CUST_INVENTORY2);
+	CUSTOM_CTRL_FUNC("system_menus_options_input_customize_controls_book",1, BUTTON_MENUOPTIONS_CONTROLS_CUST_BOOK1, BUTTON_MENUOPTIONS_CONTROLS_CUST_BOOK2);
+	CUSTOM_CTRL_FUNC("system_menus_options_input_customize_controls_bookcharsheet",1, BUTTON_MENUOPTIONS_CONTROLS_CUST_BOOKCHARSHEET1, BUTTON_MENUOPTIONS_CONTROLS_CUST_BOOKCHARSHEET2);
+	CUSTOM_CTRL_FUNC("system_menus_options_input_customize_controls_bookmap",1, BUTTON_MENUOPTIONS_CONTROLS_CUST_BOOKMAP1, BUTTON_MENUOPTIONS_CONTROLS_CUST_BOOKMAP2);
+	CUSTOM_CTRL_FUNC("system_menus_options_input_customize_controls_bookspell",1, BUTTON_MENUOPTIONS_CONTROLS_CUST_BOOKSPELL1, BUTTON_MENUOPTIONS_CONTROLS_CUST_BOOKSPELL2);
+	CUSTOM_CTRL_FUNC("system_menus_options_input_customize_controls_bookquest",1, BUTTON_MENUOPTIONS_CONTROLS_CUST_BOOKQUEST1, BUTTON_MENUOPTIONS_CONTROLS_CUST_BOOKQUEST2);
+	CUSTOM_CTRL_FUNC("system_menus_options_input_customize_controls_drink_potion_life",1, BUTTON_MENUOPTIONS_CONTROLS_CUST_DRINKPOTIONLIFE1, BUTTON_MENUOPTIONS_CONTROLS_CUST_DRINKPOTIONLIFE2);
+	CUSTOM_CTRL_FUNC("system_menus_options_input_customize_controls_drink_potion_mana",1, BUTTON_MENUOPTIONS_CONTROLS_CUST_DRINKPOTIONMANA1, BUTTON_MENUOPTIONS_CONTROLS_CUST_DRINKPOTIONMANA2);
+	CUSTOM_CTRL_FUNC("system_menus_options_input_customize_controls_torch",1, BUTTON_MENUOPTIONS_CONTROLS_CUST_TORCH1, BUTTON_MENUOPTIONS_CONTROLS_CUST_TORCH2);
+
+	CUSTOM_CTRL_FUNC("system_menus_options_input_customize_controls_cancelcurrentspell",1, BUTTON_MENUOPTIONS_CONTROLS_CUST_CANCELCURSPELL1, BUTTON_MENUOPTIONS_CONTROLS_CUST_CANCELCURSPELL2);
+	CUSTOM_CTRL_FUNC("system_menus_options_input_customize_controls_precast1",1, BUTTON_MENUOPTIONS_CONTROLS_CUST_PRECAST1, BUTTON_MENUOPTIONS_CONTROLS_CUST_PRECAST1_2);
+	CUSTOM_CTRL_FUNC("system_menus_options_input_customize_controls_precast2",1, BUTTON_MENUOPTIONS_CONTROLS_CUST_PRECAST2, BUTTON_MENUOPTIONS_CONTROLS_CUST_PRECAST2_2);
+	CUSTOM_CTRL_FUNC("system_menus_options_input_customize_controls_precast3",1, BUTTON_MENUOPTIONS_CONTROLS_CUST_PRECAST3, BUTTON_MENUOPTIONS_CONTROLS_CUST_PRECAST3_2);
+	CUSTOM_CTRL_FUNC("system_menus_options_input_customize_controls_weapon",1, BUTTON_MENUOPTIONS_CONTROLS_CUST_WEAPON1, BUTTON_MENUOPTIONS_CONTROLS_CUST_WEAPON2);
+
+	CUSTOM_CTRL_FUNC("system_menus_options_input_customize_controls_unequipweapon",1, BUTTON_MENUOPTIONS_CONTROLS_CUST_UNEQUIPWEAPON1, BUTTON_MENUOPTIONS_CONTROLS_CUST_UNEQUIPWEAPON2);
+
+	CUSTOM_CTRL_FUNC("system_menus_options_input_customize_controls_previous",1, BUTTON_MENUOPTIONS_CONTROLS_CUST_PREVIOUS1, BUTTON_MENUOPTIONS_CONTROLS_CUST_PREVIOUS2);
+	CUSTOM_CTRL_FUNC("system_menus_options_input_customize_controls_next",1, BUTTON_MENUOPTIONS_CONTROLS_CUST_NEXT1, BUTTON_MENUOPTIONS_CONTROLS_CUST_NEXT2);
+
+	CUSTOM_CTRL_FUNC("system_menus_options_input_customize_controls_quickload",1, BUTTON_MENUOPTIONS_CONTROLS_CUST_QUICKLOAD, BUTTON_MENUOPTIONS_CONTROLS_CUST_QUICKLOAD2);
+	CUSTOM_CTRL_FUNC("system_menus_options_input_customize_controls_quicksave",1, BUTTON_MENUOPTIONS_CONTROLS_CUST_QUICKSAVE, BUTTON_MENUOPTIONS_CONTROLS_CUST_QUICKSAVE2);
+
+	CUSTOM_CTRL_FUNC2("system_menus_options_input_customize_controls_bookmap",1, BUTTON_MENUOPTIONS_CONTROLS_CUST_MINIMAP1, BUTTON_MENUOPTIONS_CONTROLS_CUST_MINIMAP2);
+
+	CUSTOM_CTRL_FUNC3("system_menus_options_input_customize_controls_toggle_fullscreen", "Toggle fullscreen", 1,  BUTTON_MENUOPTIONS_CONTROLS_CUST_TOGGLE_FULLSCREEN1, BUTTON_MENUOPTIONS_CONTROLS_CUST_TOGGLE_FULLSCREEN2);
+
+	pc=new CMenuPanel();
+
+	pTex = TextureContainer::Load("graph/interface/menus/back");
+	me = new CMenuCheckButton(BUTTON_MENUOPTIONS_CONTROLS_CUST_BACK, posBack, pTex?pTex->m_dwWidth:0, pTex, NULL, NULL);
+	me->eMenuState = OPTIONS_INPUT_CUSTOMIZE_KEYS_1;
+	me->SetShortCut(Keyboard::Key_Escape);
+	pc->AddElementNoCenterIn(me);
+	szMenuText = getLocalised( "system_menus_options_input_customize_default" );
+	me = new CMenuElementText(BUTTON_MENUOPTIONS_CONTROLS_CUST_DEFAULT, hFontMenu, szMenuText, 0, 0,lColor,1.f, NOP);
+	me->SetPos((RATIO_X(iWindowConsoleWidth) - me->GetWidth())*0.5f, fPosBDAY);
+	pc->AddElementNoCenterIn(me);
+
+	pWindowMenuConsole->AddMenu(pc);
+
+	pWindowMenu->AddConsole(pWindowMenuConsole);
+	pWindowMenuConsole->ReInitActionKey();
+	#undef CUSTOM_CTRL_X0
+	#undef CUSTOM_CTRL_X1
+	#undef CUSTOM_CTRL_X2
+	#undef CUSTOM_CTRL_FUNC
+	#undef CUSTOM_CTRL_FUNC2
+	#undef CUSTOM_CTRL_FUNC3
+//------------------ END CUSTOM CONTROLS
+
+	pWindowMenu->eCurrentMenuState=OPTIONS;	
+}
+
 bool Menu2_Render() {
 	
 	ARXOldTimeMenu = ARXTimeMenu;
@@ -732,590 +1320,7 @@ bool Menu2_Render() {
 					}
 				break;
 			case OPTIONS: {
-					std::string szMenuText;
-					CMenuElement *me;
-					CMenuPanel *pc;
-					TextureContainer *pTex;
-
-					CWindowMenuConsole *pWindowMenuConsole=new CWindowMenuConsole(iWindowConsoleOffsetX,iWindowConsoleOffsetY,iWindowConsoleWidth,iWindowConsoleHeight,OPTIONS);
-
-					szMenuText = getLocalised("system_menus_options_video");
-					me = new CMenuElementText(BUTTON_MENUOPTIONSVIDEO_INIT, hFontMenu, szMenuText, 0, 0,lColor,1.f,OPTIONS_VIDEO);
-					pWindowMenuConsole->AddMenuCenter(me);
-					
-					szMenuText = getLocalised("system_menus_options_audio");
-					me = new CMenuElementText(-1, hFontMenu, szMenuText, 0, 0,lColor,1.f,OPTIONS_AUDIO);
-					pWindowMenuConsole->AddMenuCenter(me);
-					
-					szMenuText = getLocalised("system_menus_options_input");
-					me = new CMenuElementText(-1, hFontMenu, szMenuText, 0, 0,lColor,1.f,OPTIONS_INPUT);
-					pWindowMenuConsole->AddMenuCenter(me);
-
-					pTex = TextureContainer::Load("graph/interface/menus/back");
-					me = new CMenuCheckButton(-1, posBack, pTex?pTex->m_dwWidth:0, pTex, NULL, NULL);
-					me->eMenuState = MAIN;
-					me->SetShortCut(Keyboard::Key_Escape);
-					pWindowMenuConsole->AddMenu(me);
-
-					pWindowMenu->AddConsole(pWindowMenuConsole);
-				//------------------ END OPTIONS
-
-				//------------------ START VIDEO
-					pWindowMenuConsole=new CWindowMenuConsole(iWindowConsoleOffsetX,iWindowConsoleOffsetY - (35),iWindowConsoleWidth,iWindowConsoleHeight, OPTIONS_VIDEO);
-
-					
-					// Renderer selection
-					{
-						
-						pc = new CMenuPanel();
-						szMenuText = getLocalised("system_menus_options_video_renderer", "Renderer");
-						szMenuText += "  ";
-						me = new CMenuElementText(-1, hFontMenu, szMenuText, fPosX1, 0.f, lColor, 1.f, NOP);
-						me->SetCheckOff();
-						pc->AddElement(me);
-						CMenuSliderText * slider = new CMenuSliderText(BUTTON_MENUOPTIONSVIDEO_RENDERER, Vec2i(0, 0));
-						
-						slider->AddText(new CMenuElementText(-1, hFontMenu, "Auto-Select", 0, 0, lColor, 1.f, OPTIONS_VIDEO_RENDERER_AUTOMATIC));
-						slider->iPos = slider->vText.size() - 1;
-#if ARX_HAVE_SDL1 || ARX_HAVE_SDL2
-						slider->AddText(new CMenuElementText(-1, hFontMenu, "OpenGL", 0, 0, lColor, 1.f, OPTIONS_VIDEO_RENDERER_OPENGL));
-						if(config.window.framework == "SDL") {
-							slider->iPos = slider->vText.size() - 1;
-						}
-#endif
-						
-						float fRatio    = (RATIO_X(iWindowConsoleWidth-9) - slider->GetWidth()); 
-						slider->Move(Vec2i(checked_range_cast<int>(fRatio), 0));
-						pc->AddElement(slider);
-						pWindowMenuConsole->AddMenuCenterY(pc);
-						
-					}
-					
-					
-					szMenuText = getLocalised("system_menus_options_videos_full_screen");
-					if(szMenuText.empty()) {
-						// TODO once we ship our own amendmends to the loc files a cleaner
-						// fix would be to just define system_menus_options_videos_full_screen
-						// for the german version there
-						szMenuText = getLocalised("system_menus_options_video_full_screen");
-					}
-					szMenuText += "  ";
-					CMenuElementText * metemp = new CMenuElementText(-1, hFontMenu, szMenuText, fPosX1, 0.f, lColor, 1.f, NOP);
-					metemp->SetCheckOff();
-					TextureContainer *pTex1 = TextureContainer::Load("graph/interface/menus/menu_checkbox_off");
-					TextureContainer *pTex2 = TextureContainer::Load("graph/interface/menus/menu_checkbox_on");
-					fullscreenCheckbox = new CMenuCheckButton(BUTTON_MENUOPTIONSVIDEO_FULLSCREEN, Vec2f(0.f, 0.f), pTex1->m_dwWidth, pTex1, pTex2, metemp);
-
-					fullscreenCheckbox->iState= config.video.fullscreen ? 1 : 0;
-
-					pWindowMenuConsole->AddMenuCenterY(fullscreenCheckbox);
-					
-					pc = new CMenuPanel();
-					szMenuText = getLocalised("system_menus_options_video_resolution");
-					szMenuText += "  ";
-					me = new CMenuElementText(-1, hFontMenu, szMenuText, fPosX1, 0.f, lColor, 1.f, NOP);
-					me->SetCheckOff();
-					pc->AddElement(me);
-					pMenuSliderResol = new CMenuSliderText(BUTTON_MENUOPTIONSVIDEO_RESOLUTION, Vec2i(0, 0));
-					
-					pMenuSliderResol->setEnabled(config.video.fullscreen);
-					
-					const RenderWindow::DisplayModes & modes = mainApp->getWindow()->getDisplayModes();
-					for(size_t i = 0; i != modes.size(); ++i) {
-						
-						const DisplayMode & mode = modes[i];
-						
-						// find the aspect ratio
-						unsigned a = mode.resolution.x;
-						unsigned b = mode.resolution.y;
-						while(b != 0) {
-							unsigned t = a % b;
-							a = b, b = t;
-						}
-						Vec2i aspect = mode.resolution / Vec2i(a);
-						
-						std::stringstream ss;
-						ss << mode;
-						
-						if(aspect.x < 100 && aspect.y < 100) {
-							if(aspect == Vec2i(8, 5)) {
-								aspect = Vec2i(16, 10);
-							}
-							ss << " (" << aspect.x << ':' << aspect.y << ')';
-						}
-						
-						pMenuSliderResol->AddText(new CMenuElementText(-1, hFontMenu, ss.str(), 0, 0, lColor, 1.f, MENUSTATE(OPTIONS_VIDEO_RESOLUTION_0 + i)));
-						
-						if(mode.resolution == config.video.resolution) {
-							pMenuSliderResol->iPos = pMenuSliderResol->vText.size() - 1;
-						}
-					}
-					
-					pMenuSliderResol->AddText(new CMenuElementText(-1, hFontMenu, AUTO_RESOLUTION_STRING, 0, 0, lColor, 1.f, MENUSTATE(OPTIONS_VIDEO_RESOLUTION_0 + modes.size())));
-					
-					if(config.video.resolution == Vec2i_ZERO) {
-						pMenuSliderResol->iPos = pMenuSliderResol->vText.size() - 1;
-					}
-
-					float fRatio    = (RATIO_X(iWindowConsoleWidth-9) - pMenuSliderResol->GetWidth()); 
-
-					pMenuSliderResol->Move(Vec2i(checked_range_cast<int>(fRatio), 0));
-
-
-					pc->AddElement(pMenuSliderResol);
-
-					pWindowMenuConsole->AddMenuCenterY(pc);
-
-					pc = new CMenuPanel();
-					szMenuText = getLocalised("system_menus_options_detail");
-					szMenuText += " ";
-					me = new CMenuElementText(-1, hFontMenu, szMenuText, fPosX1, 0.f, lColor, 1.f, NOP);
-					me->SetCheckOff();
-					pc->AddElement(me);
-					me = new CMenuSliderText(BUTTON_MENUOPTIONSVIDEO_OTHERSDETAILS, Vec2i(0, 0));
-					szMenuText = getLocalised("system_menus_options_video_texture_low");
-					((CMenuSliderText *)me)->AddText(new CMenuElementText(-1, hFontMenu, szMenuText, 0, 0,lColor,1.f, OPTIONS_OTHERDETAILS));
-					szMenuText = getLocalised("system_menus_options_video_texture_med");
-					((CMenuSliderText *)me)->AddText(new CMenuElementText(-1, hFontMenu, szMenuText, 0, 0,lColor,1.f, OPTIONS_OTHERDETAILS));
-					szMenuText = getLocalised("system_menus_options_video_texture_high");
-					((CMenuSliderText *)me)->AddText(new CMenuElementText(-1, hFontMenu, szMenuText, 0, 0,lColor,1.f, OPTIONS_OTHERDETAILS));
-
-					
-					fRatio    = (RATIO_X(iWindowConsoleWidth-9) - me->GetWidth()); 
-					me->Move(Vec2i(checked_range_cast<int>(fRatio), 0));
-
-
-					pc->AddElement(me);
-					((CMenuSliderText *)me)->iPos = config.video.levelOfDetail;
-
-					pWindowMenuConsole->AddMenuCenterY(pc);
-					
-					pc = new CMenuPanel();
-					szMenuText = getLocalised("system_menus_options_video_brouillard");
-					me = new CMenuElementText(-1, hFontMenu, szMenuText, fPosX1, 0.f, lColor, 1.f, NOP);
-					me->SetCheckOff();
-					pc->AddElement(me);
-					me = new CMenuSlider(BUTTON_MENUOPTIONSVIDEO_FOG, Vec2i(iPosX2, 0));
-					((CMenuSlider *)me)->setValue(config.video.fogDistance);
-					pc->AddElement(me);
-
-					pWindowMenuConsole->AddMenuCenterY(pc);
-
-					szMenuText = getLocalised("system_menus_options_video_crosshair", "Show Crosshair");
-					szMenuText += " ";
-					metemp = new CMenuElementText(-1, hFontMenu, szMenuText, fPosX1, 0.f, lColor, 1.f, NOP);
-					metemp->SetCheckOff();
-					me = new CMenuCheckButton(BUTTON_MENUOPTIONSVIDEO_CROSSHAIR, Vec2f(0.f, 0.f), pTex1->m_dwWidth, pTex1, pTex2, metemp);
-
-					((CMenuCheckButton*)me)->iState= config.video.showCrosshair ? 1 : 0;
-
-					pWindowMenuConsole->AddMenuCenterY(me);
-
-					szMenuText = getLocalised("system_menus_options_video_antialiasing", "antialiasing");
-					szMenuText += " ";
-					pTex1 = TextureContainer::Load("graph/interface/menus/menu_checkbox_off");
-					pTex2 = TextureContainer::Load("graph/interface/menus/menu_checkbox_on");
-					metemp = new CMenuElementText(-1, hFontMenu, szMenuText, fPosX1, 0.f, lColor, 1.f, NOP);
-					metemp->SetCheckOff();
-					me = new CMenuCheckButton(BUTTON_MENUOPTIONSVIDEO_ANTIALIASING, Vec2f(0.f, 0.f), pTex1->m_dwWidth, pTex1, pTex2, metemp);
-					((CMenuCheckButton*)me)->iState= config.video.antialiasing ? 1 : 0;
-					pWindowMenuConsole->AddMenuCenterY(me);
-					ARX_SetAntiAliasing();
-
-					szMenuText = getLocalised("system_menus_options_video_vsync", "VSync");
-					szMenuText += " ";
-					pTex1 = TextureContainer::Load("graph/interface/menus/menu_checkbox_off");
-					pTex2 = TextureContainer::Load("graph/interface/menus/menu_checkbox_on");
-					metemp = new CMenuElementText(-1, hFontMenu, szMenuText, fPosX1, 0.f, lColor, 1.f, NOP);
-					metemp->SetCheckOff();
-					me = new CMenuCheckButton(BUTTON_MENUOPTIONSVIDEO_VSYNC, Vec2f(0.f, 0.f), pTex1->m_dwWidth, pTex1, pTex2, metemp);
-					((CMenuCheckButton*)me)->iState= config.video.vsync ? 1 : 0;
-					pWindowMenuConsole->AddMenuCenterY(me);
-
-					pc = new CMenuPanel();
-					szMenuText = getLocalised("system_menus_video_apply");
-					szMenuText += "   ";
-					pMenuElementApply = me = new CMenuElementText(BUTTON_MENUOPTIONSVIDEO_APPLY, hFontMenu, szMenuText, fPosApply, 0.f, lColor, 1.f, NOP);
-					me->SetPos(RATIO_X(iWindowConsoleWidth-10)-me->GetWidth(), fPosBDAY + RATIO_Y(40));
-					me->SetCheckOff();
-					pc->AddElementNoCenterIn(me);
-
-					pTex = TextureContainer::Load("graph/interface/menus/back");
-					me = new CMenuCheckButton(BUTTON_MENUOPTIONSVIDEO_BACK, posBack + Vec2f(0.f, RATIO_Y(20)), pTex?pTex->m_dwWidth:0, pTex, NULL, NULL);
-					me->eMenuState = OPTIONS;
-					me->SetShortCut(Keyboard::Key_Escape);
-					pc->AddElementNoCenterIn(me);
-
-					pWindowMenuConsole->AddMenu(pc);
-
-					pWindowMenu->AddConsole(pWindowMenuConsole);
-					//------------------ END VIDEO
-
-					//------------------ START AUDIO
-					pWindowMenuConsole = new CWindowMenuConsole(iWindowConsoleOffsetX,iWindowConsoleOffsetY,iWindowConsoleWidth,iWindowConsoleHeight,OPTIONS_AUDIO);
-
-					// Audio backend selection
-					{
-						
-						pc = new CMenuPanel();
-						szMenuText = getLocalised("system_menus_options_audio_backend", "Backend");
-						szMenuText += "  ";
-						me = new CMenuElementText(-1, hFontMenu, szMenuText, fPosX1, 0.f, lColor, 1.f, NOP);
-						me->SetCheckOff();
-						pc->AddElement(me);
-						CMenuSliderText * slider = new CMenuSliderText(BUTTON_MENUOPTIONSAUDIO_BACKEND, Vec2i(0, 0));
-						
-						slider->AddText(new CMenuElementText(-1, hFontMenu, "Auto-Select", 0, 0, lColor, 1.f, OPTIONS_AUDIO_BACKEND_AUTOMATIC));
-						slider->iPos = slider->vText.size() - 1;
-#if ARX_HAVE_OPENAL
-						slider->AddText(new CMenuElementText(-1, hFontMenu, "OpenAL", 0, 0, lColor, 1.f, OPTIONS_AUDIO_BACKEND_OPENAL));
-						if(config.audio.backend == "OpenAL") {
-							slider->iPos = slider->vText.size() - 1;
-						}
-#endif
-						
-						float fRatio    = (RATIO_X(iWindowConsoleWidth-9) - slider->GetWidth()); 
-						slider->Move(Vec2i(checked_range_cast<int>(fRatio), 0));
-						pc->AddElement(slider);
-						pWindowMenuConsole->AddMenuCenterY(pc);
-						
-					}
-					
-					pc = new CMenuPanel();
-					szMenuText = getLocalised("system_menus_options_audio_master_volume");
-					me = new CMenuElementText(-1, hFontMenu, szMenuText, fPosX1, 0.f, lColor, 1.f, OPTIONS_AUDIO_VOLUME);
-					me->SetCheckOff();
-					pc->AddElement(me);
-					me = new CMenuSlider(BUTTON_MENUOPTIONSAUDIO_MASTER, Vec2i(iPosX2, 0));
-					((CMenuSlider *)me)->setValue((int)config.audio.volume); // TODO use float sliders
-					pc->AddElement(me);
-					pWindowMenuConsole->AddMenuCenterY(pc);
-
-					pc = new CMenuPanel();
-					szMenuText = getLocalised("system_menus_options_audio_effects_volume");
-					me = new CMenuElementText(-1, hFontMenu, szMenuText, fPosX1, 0.f, lColor, 1.f, OPTIONS_AUDIO);
-					me->SetCheckOff();
-					pc->AddElement(me);
-					me = new CMenuSlider(BUTTON_MENUOPTIONSAUDIO_SFX, Vec2i(iPosX2, 0));
-					((CMenuSlider *)me)->setValue((int)config.audio.sfxVolume);
-					pc->AddElement(me);
-					pWindowMenuConsole->AddMenuCenterY(pc);
-
-					pc = new CMenuPanel();
-					szMenuText = getLocalised("system_menus_options_audio_speech_volume");
-					me = new CMenuElementText(-1, hFontMenu, szMenuText, fPosX1, 0.f, lColor, 1.f, OPTIONS_AUDIO);
-					me->SetCheckOff();
-					pc->AddElement(me);
-					me = new CMenuSlider(BUTTON_MENUOPTIONSAUDIO_SPEECH, Vec2i(iPosX2, 0));
-					((CMenuSlider *)me)->setValue((int)config.audio.speechVolume);
-					pc->AddElement(me);
-					pWindowMenuConsole->AddMenuCenterY(pc);
-
-					pc = new CMenuPanel();
-					szMenuText = getLocalised("system_menus_options_audio_ambiance_volume");
-					me = new CMenuElementText(-1, hFontMenu, szMenuText, fPosX1, 0.f, lColor, 1.f, OPTIONS_AUDIO);
-					me->SetCheckOff();
-					pc->AddElement(me);
-					me = new CMenuSlider(BUTTON_MENUOPTIONSAUDIO_AMBIANCE, Vec2i(iPosX2, 0));
-					((CMenuSlider *)me)->setValue((int)config.audio.ambianceVolume);
-					pc->AddElement(me);
-					pWindowMenuConsole->AddMenuCenterY(pc);
-
-					szMenuText = getLocalised("system_menus_options_audio_eax", "EAX");
-					szMenuText += " ";
-					pTex1 = TextureContainer::Load("graph/interface/menus/menu_checkbox_off");
-					pTex2 = TextureContainer::Load("graph/interface/menus/menu_checkbox_on");
-					CMenuElementText * pElementText = new CMenuElementText(-1, hFontMenu, szMenuText, fPosX1, 0.f, lColor, 1.f, OPTIONS_INPUT);
-					me = new CMenuCheckButton(BUTTON_MENUOPTIONSAUDIO_EAX, Vec2f(0.f, 0.f), pTex1->m_dwWidth, pTex1, pTex2, pElementText);
-					((CMenuCheckButton*)me)->iState = config.audio.eax ? 1 : 0;
-
-					pWindowMenuConsole->AddMenuCenterY(me);
-
-					pTex = TextureContainer::Load("graph/interface/menus/back");
-					me = new CMenuCheckButton(-1, posBack, pTex?pTex->m_dwWidth:0, pTex, NULL, NULL);
-					me->eMenuState = OPTIONS;
-					me->SetShortCut(Keyboard::Key_Escape);
-					pWindowMenuConsole->AddMenu(me);
-
-					pWindowMenu->AddConsole(pWindowMenuConsole);
-					//------------------ END AUDIO
-
-					//------------------ START INPUT
-					pWindowMenuConsole = new CWindowMenuConsole(iWindowConsoleOffsetX,iWindowConsoleOffsetY,iWindowConsoleWidth,iWindowConsoleHeight, OPTIONS_INPUT);
-					
-					szMenuText = getLocalised("system_menus_options_input_customize_controls");
-					me = new CMenuElementText(-1, hFontMenu, szMenuText, fPosX1, 0.f, lColor, 1.f, OPTIONS_INPUT_CUSTOMIZE_KEYS_1);
-					pWindowMenuConsole->AddMenuCenterY(me);
-					
-					szMenuText = getLocalised("system_menus_options_input_invert_mouse");
-					szMenuText += " ";
-					pTex1 = TextureContainer::Load("graph/interface/menus/menu_checkbox_off");
-					pTex2 = TextureContainer::Load("graph/interface/menus/menu_checkbox_on");
-					me = new CMenuCheckButton(BUTTON_MENUOPTIONS_CONTROLS_INVERTMOUSE, Vec2f(0.f, 0.f), pTex1->m_dwWidth, pTex1, pTex2, new CMenuElementText(-1, hFontMenu, szMenuText, fPosX1, 0.f, lColor, 1.f, OPTIONS_INPUT));
-					
-					if(config.input.invertMouse) {
-						((CMenuCheckButton*)me)->iState=1;
-					} else {
-						((CMenuCheckButton*)me)->iState=0;
-					}
-
-					pWindowMenuConsole->AddMenuCenterY(me);
-
-					szMenuText = getLocalised("system_menus_options_auto_ready_weapon");
-					szMenuText += " ";
-					pTex1 = TextureContainer::Load("graph/interface/menus/menu_checkbox_off");
-					pTex2 = TextureContainer::Load("graph/interface/menus/menu_checkbox_on");
-					me = new CMenuCheckButton(BUTTON_MENUOPTIONS_CONTROLS_AUTOREADYWEAPON, Vec2f(0.f, 0.f), pTex1->m_dwWidth, pTex1, pTex2, new CMenuElementText(-1, hFontMenu, szMenuText, fPosX1, 0.f, lColor, 1.f, OPTIONS_INPUT));
-
-					((CMenuCheckButton*)me)->iState = config.input.autoReadyWeapon ? 1 : 0;
-
-					pWindowMenuConsole->AddMenuCenterY(me);
-
-					szMenuText = getLocalised("system_menus_options_input_mouse_look_toggle");
-					szMenuText += " ";
-					pTex1 = TextureContainer::Load("graph/interface/menus/menu_checkbox_off");
-					pTex2 = TextureContainer::Load("graph/interface/menus/menu_checkbox_on");
-					me = new CMenuCheckButton(BUTTON_MENUOPTIONS_CONTROLS_MOUSELOOK, Vec2f(0.f, 0.f), pTex1->m_dwWidth, pTex1, pTex2, new CMenuElementText(-1, hFontMenu, szMenuText, fPosX1, 0.f, lColor, 1.f, OPTIONS_INPUT));
-
-					((CMenuCheckButton*)me)->iState = config.input.mouseLookToggle ? 1 : 0;
-
-					pWindowMenuConsole->AddMenuCenterY(me);
-
-					pc = new CMenuPanel();
-					szMenuText = getLocalised("system_menus_options_input_mouse_sensitivity");
-					me = new CMenuElementText(-1, hFontMenu, szMenuText, fPosX1, 0.f, lColor, 1.f, NOP);
-					me->SetCheckOff();
-					pc->AddElement(me);
-					me = new CMenuSlider(BUTTON_MENUOPTIONS_CONTROLS_MOUSESENSITIVITY, Vec2i(iPosX2, 0));
-					((CMenuSlider*)me)->setValue(config.input.mouseSensitivity);
-					pc->AddElement(me);
-					pWindowMenuConsole->AddMenuCenterY(pc);
-
-					szMenuText = getLocalised("system_menus_autodescription", "auto_description");
-					szMenuText += " ";
-					pTex1 = TextureContainer::Load("graph/interface/menus/menu_checkbox_off");
-					pTex2 = TextureContainer::Load("graph/interface/menus/menu_checkbox_on");
-					me = new CMenuCheckButton(BUTTON_MENUOPTIONS_CONTROLS_AUTODESCRIPTION, Vec2f(0.f, 0.f), pTex1->m_dwWidth, pTex1, pTex2, new CMenuElementText(-1, hFontMenu, szMenuText, fPosX1, 0.f, lColor, 1.f, OPTIONS_INPUT));
-
-					((CMenuCheckButton*)me)->iState = config.input.autoDescription ? 1 : 0;
-
-					pWindowMenuConsole->AddMenuCenterY(me);
-
-					pc = new CMenuPanel();
-					szMenuText = getLocalised("system_menus_options_misc_quicksave_slots", "Quicksave slots");
-					me = new CMenuElementText(-1, hFontMenu, szMenuText, fPosX1, 0.f, lColor, 1.f, NOP);
-					me->SetCheckOff();
-					pc->AddElement(me);
-					me = new CMenuSlider(BUTTON_MENUOPTIONS_CONTROLS_QUICKSAVESLOTS, Vec2i(iPosX2, 0));
-					((CMenuSlider*)me)->setValue(config.misc.quicksaveSlots);
-					pc->AddElement(me);
-					pWindowMenuConsole->AddMenuCenterY(pc);
-
-					pTex = TextureContainer::Load("graph/interface/menus/back");
-					me = new CMenuCheckButton(-1, posBack, pTex?pTex->m_dwWidth:0, pTex, NULL, NULL);
-					me->eMenuState = OPTIONS;
-					me->SetShortCut(Keyboard::Key_Escape);
-					pWindowMenuConsole->AddMenu(me);
-					pWindowMenu->AddConsole(pWindowMenuConsole);
-				//------------------ END INPUT
-
-				//------------------ START CUSTOM CONTROLS
-				char pNoDef1[]="---";
-				char pNoDef2[]="---";
-
-				#define CUSTOM_CTRL_X0    RATIO_X(20)
-				#define CUSTOM_CTRL_X1    RATIO_X(150)
-				#define CUSTOM_CTRL_X2    RATIO_X(245)
-					long fControlPosY    =    static_cast<long>(RATIO_Y(8.f));
-				#define CUSTOM_CTRL_FUNC(a,b,c,d){\
-						pc=new CMenuPanel();\
-						szMenuText = getLocalised(a, "?");\
-						me = new CMenuElementText(-1, hFontControls, szMenuText, CUSTOM_CTRL_X0, 0,lColor,.7f, NOP);\
-						me->SetCheckOff();\
-						pc->AddElement(me);\
-						me = new CMenuElementText(c, hFontControls, pNoDef1, CUSTOM_CTRL_X1, 0,lColor,.7f, NOP);\
-						me->eState=GETTOUCH;\
-						if((!b)||(c<0))\
-						{\
-							me->SetCheckOff();\
-							((CMenuElementText*)me)->lColor=Color(127,127,127);\
-						}\
-						pc->AddElement(me);\
-						me = new CMenuElementText(d, hFontControls, pNoDef2, CUSTOM_CTRL_X2, 0,lColor,.7f, NOP);\
-						me->eState=GETTOUCH;\
-						if(d<0)\
-						{\
-							me->SetCheckOff();\
-							((CMenuElementText*)me)->lColor=Color(127,127,127);\
-						}\
-						pc->AddElement(me);\
-						pc->Move(Vec2i(0, fControlPosY));\
-						pWindowMenuConsole->AddMenu(pc);\
-						fControlPosY += static_cast<long>( pc->GetHeight() + RATIO_Y(3.f) );\
-					};
-
-
-				#define CUSTOM_CTRL_FUNC2(a,b,c,d){\
-						pc=new CMenuPanel();\
-						szMenuText = getLocalised(a, "?");\
-						szMenuText += "2";\
-						me = new CMenuElementText(-1, hFontControls, szMenuText, CUSTOM_CTRL_X0, 0,lColor,.7f, NOP);\
-						me->SetCheckOff();\
-						pc->AddElement(me);\
-						me = new CMenuElementText(c, hFontControls, pNoDef1, CUSTOM_CTRL_X1, 0,lColor,.7f, NOP);\
-						me->eState=GETTOUCH;\
-						if((!b)||(c<0))\
-						{\
-							me->SetCheckOff();\
-							((CMenuElementText*)me)->lColor=Color(127,127,127);\
-						}\
-						pc->AddElement(me);\
-						me = new CMenuElementText(d, hFontControls, pNoDef2, CUSTOM_CTRL_X2, 0,lColor,.7f, NOP);\
-						me->eState=GETTOUCH;\
-						if(d<0)\
-						{\
-							me->SetCheckOff();\
-							((CMenuElementText*)me)->lColor=Color(127,127,127);\
-						}\
-						pc->AddElement(me);\
-						pc->Move(Vec2i(0, fControlPosY));\
-						pWindowMenuConsole->AddMenu(pc);\
-						fControlPosY += static_cast<long>( pc->GetHeight() + RATIO_Y(3.f) );\
-					};
-					
-					
-				#define CUSTOM_CTRL_FUNC3(a,default,b,c,d){\
-						pc=new CMenuPanel();\
-						szMenuText = getLocalised(a, default);\
-						me = new CMenuElementText(-1, hFontControls, szMenuText, CUSTOM_CTRL_X0, 0,lColor,.7f, NOP);\
-						me->SetCheckOff();\
-						pc->AddElement(me);\
-						me = new CMenuElementText(c, hFontControls, pNoDef1, CUSTOM_CTRL_X1, 0,lColor,.7f, NOP);\
-						me->eState=GETTOUCH;\
-						if((!b)||(c<0))\
-						{\
-							me->SetCheckOff();\
-							((CMenuElementText*)me)->lColor=Color(127,127,127);\
-						}\
-						pc->AddElement(me);\
-						me = new CMenuElementText(d, hFontControls, pNoDef2, CUSTOM_CTRL_X2, 0,lColor,.7f, NOP);\
-						me->eState=GETTOUCH;\
-						if(d<0)\
-						{\
-							me->SetCheckOff();\
-							((CMenuElementText*)me)->lColor=Color(127,127,127);\
-						}\
-						pc->AddElement(me);\
-						pc->Move(Vec2i(0, fControlPosY));\
-						pWindowMenuConsole->AddMenu(pc);\
-						fControlPosY += static_cast<long>( pc->GetHeight() + RATIO_Y(3.f) );\
-					};
-
-
-					pWindowMenuConsole=new CWindowMenuConsole(iWindowConsoleOffsetX,iWindowConsoleOffsetY,iWindowConsoleWidth,iWindowConsoleHeight,OPTIONS_INPUT_CUSTOMIZE_KEYS_1);
-
-					CUSTOM_CTRL_FUNC("system_menus_options_input_customize_controls_mouselook",1, BUTTON_MENUOPTIONS_CONTROLS_CUST_USE1, BUTTON_MENUOPTIONS_CONTROLS_CUST_USE2);
-
-					CUSTOM_CTRL_FUNC("system_menus_options_input_customize_controls_action_combine",1, BUTTON_MENUOPTIONS_CONTROLS_CUST_ACTIONCOMBINE1, BUTTON_MENUOPTIONS_CONTROLS_CUST_ACTIONCOMBINE2);
-					CUSTOM_CTRL_FUNC("system_menus_options_input_customize_controls_jump",1,BUTTON_MENUOPTIONS_CONTROLS_CUST_JUMP1, BUTTON_MENUOPTIONS_CONTROLS_CUST_JUMP2);
-					CUSTOM_CTRL_FUNC("system_menus_options_input_customize_controls_magic_mode",1, BUTTON_MENUOPTIONS_CONTROLS_CUST_MAGICMODE1, BUTTON_MENUOPTIONS_CONTROLS_CUST_MAGICMODE2);
-					CUSTOM_CTRL_FUNC("system_menus_options_input_customize_controls_stealth_mode",1, BUTTON_MENUOPTIONS_CONTROLS_CUST_STEALTHMODE1, BUTTON_MENUOPTIONS_CONTROLS_CUST_STEALTHMODE2);
-					CUSTOM_CTRL_FUNC("system_menus_options_input_customize_controls_walk_forward",1, BUTTON_MENUOPTIONS_CONTROLS_CUST_WALKFORWARD1, BUTTON_MENUOPTIONS_CONTROLS_CUST_WALKFORWARD2);
-					CUSTOM_CTRL_FUNC("system_menus_options_input_customize_controls_walk_backward",1, BUTTON_MENUOPTIONS_CONTROLS_CUST_WALKBACKWARD1, BUTTON_MENUOPTIONS_CONTROLS_CUST_WALKBACKWARD2);
-					CUSTOM_CTRL_FUNC("system_menus_options_input_customize_controls_strafe_left",1, BUTTON_MENUOPTIONS_CONTROLS_CUST_STRAFELEFT1, BUTTON_MENUOPTIONS_CONTROLS_CUST_STRAFELEFT2);
-					CUSTOM_CTRL_FUNC("system_menus_options_input_customize_controls_strafe_right",1, BUTTON_MENUOPTIONS_CONTROLS_CUST_STRAFERIGHT1, BUTTON_MENUOPTIONS_CONTROLS_CUST_STRAFERIGHT2);
-					CUSTOM_CTRL_FUNC("system_menus_options_input_customize_controls_lean_left",1, BUTTON_MENUOPTIONS_CONTROLS_CUST_LEANLEFT1, BUTTON_MENUOPTIONS_CONTROLS_CUST_LEANLEFT2);
-					CUSTOM_CTRL_FUNC("system_menus_options_input_customize_controls_lean_right",1, BUTTON_MENUOPTIONS_CONTROLS_CUST_LEANRIGHT1, BUTTON_MENUOPTIONS_CONTROLS_CUST_LEANRIGHT2);
-					CUSTOM_CTRL_FUNC("system_menus_options_input_customize_controls_crouch",1, BUTTON_MENUOPTIONS_CONTROLS_CUST_CROUCH1, BUTTON_MENUOPTIONS_CONTROLS_CUST_CROUCH2);
-					CUSTOM_CTRL_FUNC("system_menus_options_input_customize_controls_crouch_toggle",1, BUTTON_MENUOPTIONS_CONTROLS_CUST_CROUCHTOGGLE1, BUTTON_MENUOPTIONS_CONTROLS_CUST_CROUCHTOGGLE2);
-
-					CUSTOM_CTRL_FUNC("system_menus_options_input_customize_controls_strafe",1, BUTTON_MENUOPTIONS_CONTROLS_CUST_STRAFE1, BUTTON_MENUOPTIONS_CONTROLS_CUST_STRAFE2);
-					CUSTOM_CTRL_FUNC("system_menus_options_input_customize_controls_center_view",1, BUTTON_MENUOPTIONS_CONTROLS_CUST_CENTERVIEW1, BUTTON_MENUOPTIONS_CONTROLS_CUST_CENTERVIEW2);
-					CUSTOM_CTRL_FUNC("system_menus_options_input_customize_controls_freelook",1, BUTTON_MENUOPTIONS_CONTROLS_CUST_FREELOOK1, BUTTON_MENUOPTIONS_CONTROLS_CUST_FREELOOK2);
-
-					CUSTOM_CTRL_FUNC("system_menus_options_input_customize_controls_turn_left",1, BUTTON_MENUOPTIONS_CONTROLS_CUST_TURNLEFT1, BUTTON_MENUOPTIONS_CONTROLS_CUST_TURNLEFT2);
-					CUSTOM_CTRL_FUNC("system_menus_options_input_customize_controls_turn_right",1, BUTTON_MENUOPTIONS_CONTROLS_CUST_TURNRIGHT1, BUTTON_MENUOPTIONS_CONTROLS_CUST_TURNRIGHT2);
-					CUSTOM_CTRL_FUNC("system_menus_options_input_customize_controls_look_up",1, BUTTON_MENUOPTIONS_CONTROLS_CUST_LOOKUP1, BUTTON_MENUOPTIONS_CONTROLS_CUST_LOOKUP2);
-					CUSTOM_CTRL_FUNC("system_menus_options_input_customize_controls_look_down",1, BUTTON_MENUOPTIONS_CONTROLS_CUST_LOOKDOWN1, BUTTON_MENUOPTIONS_CONTROLS_CUST_LOOKDOWN2);
-
-					pc=new CMenuPanel();
-
-					pTex = TextureContainer::Load("graph/interface/menus/back");
-					me = new CMenuCheckButton(BUTTON_MENUOPTIONS_CONTROLS_CUST_BACK, posBack, pTex?pTex->m_dwWidth:0, pTex, NULL, NULL);
-					me->eMenuState = OPTIONS_INPUT;
-					me->SetShortCut(Keyboard::Key_Escape);
-					pc->AddElementNoCenterIn(me);
-					szMenuText = getLocalised( "system_menus_options_input_customize_default" );
-					me = new CMenuElementText(BUTTON_MENUOPTIONS_CONTROLS_CUST_DEFAULT, hFontMenu, szMenuText, 0, 0,lColor,1.f, NOP);
-					me->SetPos((RATIO_X(iWindowConsoleWidth) - me->GetWidth())*0.5f, fPosBDAY);
-					pc->AddElementNoCenterIn(me);
-					pTex = TextureContainer::Load("graph/interface/menus/next");
-					me = new CMenuCheckButton(BUTTON_MENUOPTIONS_CONTROLS_CUST_BACK, posNext, pTex?pTex->m_dwWidth:0, pTex, NULL, NULL);
-					me->eMenuState = OPTIONS_INPUT_CUSTOMIZE_KEYS_2;
-					me->SetShortCut(Keyboard::Key_Escape);
-					pc->AddElementNoCenterIn(me);
-
-					pWindowMenuConsole->AddMenu(pc);
-
-					pWindowMenu->AddConsole(pWindowMenuConsole);
-					pWindowMenuConsole->ReInitActionKey();
-
-					pWindowMenuConsole=new CWindowMenuConsole(iWindowConsoleOffsetX,iWindowConsoleOffsetY,iWindowConsoleWidth,iWindowConsoleHeight,OPTIONS_INPUT_CUSTOMIZE_KEYS_2);
-
-					fControlPosY = static_cast<long>(RATIO_Y(8.f));
-					CUSTOM_CTRL_FUNC("system_menus_options_input_customize_controls_inventory",1, BUTTON_MENUOPTIONS_CONTROLS_CUST_INVENTORY1, BUTTON_MENUOPTIONS_CONTROLS_CUST_INVENTORY2);
-					CUSTOM_CTRL_FUNC("system_menus_options_input_customize_controls_book",1, BUTTON_MENUOPTIONS_CONTROLS_CUST_BOOK1, BUTTON_MENUOPTIONS_CONTROLS_CUST_BOOK2);
-					CUSTOM_CTRL_FUNC("system_menus_options_input_customize_controls_bookcharsheet",1, BUTTON_MENUOPTIONS_CONTROLS_CUST_BOOKCHARSHEET1, BUTTON_MENUOPTIONS_CONTROLS_CUST_BOOKCHARSHEET2);
-					CUSTOM_CTRL_FUNC("system_menus_options_input_customize_controls_bookmap",1, BUTTON_MENUOPTIONS_CONTROLS_CUST_BOOKMAP1, BUTTON_MENUOPTIONS_CONTROLS_CUST_BOOKMAP2);
-					CUSTOM_CTRL_FUNC("system_menus_options_input_customize_controls_bookspell",1, BUTTON_MENUOPTIONS_CONTROLS_CUST_BOOKSPELL1, BUTTON_MENUOPTIONS_CONTROLS_CUST_BOOKSPELL2);
-					CUSTOM_CTRL_FUNC("system_menus_options_input_customize_controls_bookquest",1, BUTTON_MENUOPTIONS_CONTROLS_CUST_BOOKQUEST1, BUTTON_MENUOPTIONS_CONTROLS_CUST_BOOKQUEST2);
-					CUSTOM_CTRL_FUNC("system_menus_options_input_customize_controls_drink_potion_life",1, BUTTON_MENUOPTIONS_CONTROLS_CUST_DRINKPOTIONLIFE1, BUTTON_MENUOPTIONS_CONTROLS_CUST_DRINKPOTIONLIFE2);
-					CUSTOM_CTRL_FUNC("system_menus_options_input_customize_controls_drink_potion_mana",1, BUTTON_MENUOPTIONS_CONTROLS_CUST_DRINKPOTIONMANA1, BUTTON_MENUOPTIONS_CONTROLS_CUST_DRINKPOTIONMANA2);
-					CUSTOM_CTRL_FUNC("system_menus_options_input_customize_controls_torch",1, BUTTON_MENUOPTIONS_CONTROLS_CUST_TORCH1, BUTTON_MENUOPTIONS_CONTROLS_CUST_TORCH2);
-
-					CUSTOM_CTRL_FUNC("system_menus_options_input_customize_controls_cancelcurrentspell",1, BUTTON_MENUOPTIONS_CONTROLS_CUST_CANCELCURSPELL1, BUTTON_MENUOPTIONS_CONTROLS_CUST_CANCELCURSPELL2);
-					CUSTOM_CTRL_FUNC("system_menus_options_input_customize_controls_precast1",1, BUTTON_MENUOPTIONS_CONTROLS_CUST_PRECAST1, BUTTON_MENUOPTIONS_CONTROLS_CUST_PRECAST1_2);
-					CUSTOM_CTRL_FUNC("system_menus_options_input_customize_controls_precast2",1, BUTTON_MENUOPTIONS_CONTROLS_CUST_PRECAST2, BUTTON_MENUOPTIONS_CONTROLS_CUST_PRECAST2_2);
-					CUSTOM_CTRL_FUNC("system_menus_options_input_customize_controls_precast3",1, BUTTON_MENUOPTIONS_CONTROLS_CUST_PRECAST3, BUTTON_MENUOPTIONS_CONTROLS_CUST_PRECAST3_2);
-					CUSTOM_CTRL_FUNC("system_menus_options_input_customize_controls_weapon",1, BUTTON_MENUOPTIONS_CONTROLS_CUST_WEAPON1, BUTTON_MENUOPTIONS_CONTROLS_CUST_WEAPON2);
-
-					CUSTOM_CTRL_FUNC("system_menus_options_input_customize_controls_unequipweapon",1, BUTTON_MENUOPTIONS_CONTROLS_CUST_UNEQUIPWEAPON1, BUTTON_MENUOPTIONS_CONTROLS_CUST_UNEQUIPWEAPON2);
-
-					CUSTOM_CTRL_FUNC("system_menus_options_input_customize_controls_previous",1, BUTTON_MENUOPTIONS_CONTROLS_CUST_PREVIOUS1, BUTTON_MENUOPTIONS_CONTROLS_CUST_PREVIOUS2);
-					CUSTOM_CTRL_FUNC("system_menus_options_input_customize_controls_next",1, BUTTON_MENUOPTIONS_CONTROLS_CUST_NEXT1, BUTTON_MENUOPTIONS_CONTROLS_CUST_NEXT2);
-
-					CUSTOM_CTRL_FUNC("system_menus_options_input_customize_controls_quickload",1, BUTTON_MENUOPTIONS_CONTROLS_CUST_QUICKLOAD, BUTTON_MENUOPTIONS_CONTROLS_CUST_QUICKLOAD2);
-					CUSTOM_CTRL_FUNC("system_menus_options_input_customize_controls_quicksave",1, BUTTON_MENUOPTIONS_CONTROLS_CUST_QUICKSAVE, BUTTON_MENUOPTIONS_CONTROLS_CUST_QUICKSAVE2);
-
-					CUSTOM_CTRL_FUNC2("system_menus_options_input_customize_controls_bookmap",1, BUTTON_MENUOPTIONS_CONTROLS_CUST_MINIMAP1, BUTTON_MENUOPTIONS_CONTROLS_CUST_MINIMAP2);
-
-					CUSTOM_CTRL_FUNC3("system_menus_options_input_customize_controls_toggle_fullscreen", "Toggle fullscreen", 1,  BUTTON_MENUOPTIONS_CONTROLS_CUST_TOGGLE_FULLSCREEN1, BUTTON_MENUOPTIONS_CONTROLS_CUST_TOGGLE_FULLSCREEN2);
-
-					pc=new CMenuPanel();
-
-					pTex = TextureContainer::Load("graph/interface/menus/back");
-					me = new CMenuCheckButton(BUTTON_MENUOPTIONS_CONTROLS_CUST_BACK, posBack, pTex?pTex->m_dwWidth:0, pTex, NULL, NULL);
-					me->eMenuState = OPTIONS_INPUT_CUSTOMIZE_KEYS_1;
-					me->SetShortCut(Keyboard::Key_Escape);
-					pc->AddElementNoCenterIn(me);
-					szMenuText = getLocalised( "system_menus_options_input_customize_default" );
-					me = new CMenuElementText(BUTTON_MENUOPTIONS_CONTROLS_CUST_DEFAULT, hFontMenu, szMenuText, 0, 0,lColor,1.f, NOP);
-					me->SetPos((RATIO_X(iWindowConsoleWidth) - me->GetWidth())*0.5f, fPosBDAY);
-					pc->AddElementNoCenterIn(me);
-
-					pWindowMenuConsole->AddMenu(pc);
-
-					pWindowMenu->AddConsole(pWindowMenuConsole);
-					pWindowMenuConsole->ReInitActionKey();
-					#undef CUSTOM_CTRL_X0
-					#undef CUSTOM_CTRL_X1
-					#undef CUSTOM_CTRL_X2
-					#undef CUSTOM_CTRL_FUNC
-					#undef CUSTOM_CTRL_FUNC2
-					#undef CUSTOM_CTRL_FUNC3
-				//------------------ END CUSTOM CONTROLS
-
-					pWindowMenu->eCurrentMenuState=OPTIONS;
+					Menu2_Render_Options(iWindowConsoleHeight, iPosX2, iWindowConsoleWidth, fPosBDAY, fPosX1, iWindowConsoleOffsetY, iWindowConsoleOffsetX, fPosApply, posBack, lColor, posNext);
 				}
 				break;
 
