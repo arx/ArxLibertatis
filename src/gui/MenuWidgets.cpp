@@ -2598,7 +2598,7 @@ MENUSTATE CWindowMenu::Render() {
 
 		for(i = vWindowConsoleElement.begin(); i != vWindowConsoleElement.end(); ++i) {
 			if(eCurrentMenuState==(*i)->eMenuState) {
-				eMS=(*i)->Update(m_pos.x, m_pos.y, 0);
+				eMS=(*i)->Update(m_pos, 0);
 				
 				if(eMS != NOP)
 					break;
@@ -2940,15 +2940,15 @@ CMenuElement * CWindowMenuConsole::GetTouch(bool keyTouched, int keyId, InputKey
 	return NULL;
 }
 
-MENUSTATE CWindowMenuConsole::Update(int _iPosX, int _iPosY, int _iOffsetY) {
+MENUSTATE CWindowMenuConsole::Update(Vec2i pos, int _iOffsetY) {
 
 	bFrameOdd=!bFrameOdd;
 
-	iSavePosY=_iPosY;
+	iSavePosY=pos.y;
 
 	//move les zones
 	if(_iOffsetY) {
-		_iPosY-=(MenuAllZone.GetZoneNum(_iOffsetY)->rZone.top)-(MenuAllZone.GetZoneNum(0)->rZone.top);
+		pos.y-=(MenuAllZone.GetZoneNum(_iOffsetY)->rZone.top)-(MenuAllZone.GetZoneNum(0)->rZone.top);
 	}
 
 	MenuAllZone.Move(m_pos - m_oldPos);
@@ -2967,8 +2967,7 @@ MENUSTATE CWindowMenuConsole::Update(int _iPosX, int _iPosY, int _iOffsetY) {
 
 	m_oldPos.x=m_pos.x;
 	m_oldPos.y=m_pos.y;
-	m_pos.x=_iPosX;
-	m_pos.y=_iPosY;
+	m_pos = pos;
 
 	// Check if mouse over
 		if(!bEdit) {
