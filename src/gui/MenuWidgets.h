@@ -492,14 +492,6 @@ public:
 class CMenuCheckButton : public CMenuElement {
 	
 public:
-	int					iState;
-	int					iOldState;
-	Vec2i m_pos;
-	int					iTaille;
-	std::vector<TextureContainer *> vTex;
-	CMenuElementText	* pText;
-	
-public:
 	CMenuCheckButton(int id, Vec2f pos, int size, TextureContainer * tex1,
 					 TextureContainer * tex2, CMenuElementText * label = NULL); 
 	virtual ~CMenuCheckButton();
@@ -509,6 +501,15 @@ public:
 	void Update(int time);
 	void Render();
 	void RenderMouseOver();
+	
+	int					iState;
+	int					iOldState;
+	
+private:
+	Vec2i m_pos;
+	int					iTaille;
+	std::vector<TextureContainer *> vTex;
+	CMenuElementText	* pText;
 };
 
 class CMenuState {
