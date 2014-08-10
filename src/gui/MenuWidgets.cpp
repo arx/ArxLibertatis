@@ -2578,48 +2578,48 @@ void CWindowMenu::Update(float _fDTime) {
 }
 
 MENUSTATE CWindowMenu::Render() {
-
+	
 	if(bNoMenu)
 		return NOP;
 	
 	GRenderer->SetRenderState(Renderer::AlphaBlending, false);
-
+	
 	TexturedVertex v[4];
 	v[0].color = v[1].color = v[2].color = v[3].color = Color::white.toBGR();
 	v[0].p.z=v[1].p.z=v[2].p.z=v[3].p.z=0.f;    
 	v[0].rhw=v[1].rhw=v[2].rhw=v[3].rhw=0.999999f;
-
+	
 	GRenderer->SetRenderState(Renderer::AlphaBlending, false);
 	GRenderer->SetBlendFunc(Renderer::BlendOne, Renderer::BlendOne);
-
+	
 	MENUSTATE eMS=NOP;
-
-		vector<CWindowMenuConsole*>::iterator i;
-
-		for(i = vWindowConsoleElement.begin(); i != vWindowConsoleElement.end(); ++i) {
-			if(eCurrentMenuState==(*i)->eMenuState) {
-				eMS=(*i)->Update(m_pos, 0);
-				
-				if(eMS != NOP)
-					break;
-			}
+	
+	vector<CWindowMenuConsole*>::iterator i;
+	
+	for(i = vWindowConsoleElement.begin(); i != vWindowConsoleElement.end(); ++i) {
+		if(eCurrentMenuState==(*i)->eMenuState) {
+			eMS=(*i)->Update(m_pos, 0);
+			
+			if(eMS != NOP)
+				break;
 		}
-
+	}
+	
 	for(std::vector<CWindowMenuConsole*>::iterator i = vWindowConsoleElement.begin(); i != vWindowConsoleElement.end(); ++i) {
 		if(eCurrentMenuState == (*i)->eMenuState) {
 			if((*i)->Render())
 				GRenderer->SetRenderState(Renderer::AlphaBlending, false);
-
+			
 			break;
 		}
 	}
-
+	
 	GRenderer->SetRenderState(Renderer::AlphaBlending, false);
-
+	
 	if(eMS != NOP) {
 		eCurrentMenuState=eMS;
 	}
-
+	
 	return eMS;
 }
 
