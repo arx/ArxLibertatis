@@ -2228,14 +2228,15 @@ CMenuZone * CMenuAllZone::CheckZone(const Vec2s& mousePos) const {
 	std::vector<CMenuZone*>::const_iterator i;
 
 	for(i = vMenuZone.begin(); i != vMenuZone.end(); ++i) {
-		CMenuZone *zone=*i;
-
-		if(zone->bCheck && zone->bActif) {
-			CMenuZone * pRef = ((*i)->IsMouseOver(mousePos));
-
-            if(pRef)
-                return pRef;
-		}
+		CMenuZone *zone = *i;
+		
+		if(!zone->bCheck || !zone->bActif)
+			continue;
+		
+		CMenuZone * pRef = zone->IsMouseOver(mousePos);
+		
+		if(pRef)
+			return pRef;
 	}
 
 	return NULL;
