@@ -1600,14 +1600,14 @@ bool CMenuElementText::OnMouseClick() {
 	}
 	
 	switch(eState) {
-	case EDIT:
-		eState=EDIT_TIME;
-		return true;
-	case GETTOUCH:
-		eState=GETTOUCH_TIME;
-		lOldColor=lColorHighlight;
-		return true;
-	default: break;
+		case EDIT:
+			eState=EDIT_TIME;
+			return true;
+		case GETTOUCH:
+			eState=GETTOUCH_TIME;
+			lOldColor=lColorHighlight;
+			return true;
+		default: break;
 	}
 
 	if(iID != BUTTON_MENUMAIN_RESUMEGAME) {
@@ -1615,136 +1615,136 @@ bool CMenuElementText::OnMouseClick() {
 	}
 
 	switch(iID) {
-	case -1: {
-			return false;
-		}
-		break;
-	// MENUMAIN
-	case BUTTON_MENUMAIN_RESUMEGAME: {
-			pTextManage->Clear();
-			ARXMenu_ResumeGame();
-			ARX_SOUND_PlayMenu(SND_MENU_CLICK);
-		}
-		break;
-	case BUTTON_MENUMAIN_NEWQUEST: {
-			
-			if(!ARXMenu_CanResumeGame()) {
+		case -1: {
+				return false;
+			}
+			break;
+		// MENUMAIN
+		case BUTTON_MENUMAIN_RESUMEGAME: {
+				pTextManage->Clear();
+				ARXMenu_ResumeGame();
+				ARX_SOUND_PlayMenu(SND_MENU_CLICK);
+			}
+			break;
+		case BUTTON_MENUMAIN_NEWQUEST: {
+				
+				if(!ARXMenu_CanResumeGame()) {
+					ARXMenu_NewQuest();
+				}
+			}
+			break;
+		case BUTTON_MENUMAIN_LOADQUEST: {
+			}break;
+		case BUTTON_MENUMAIN_SAVEQUEST: {
+			}break;
+		case BUTTON_MENUMAIN_MULTIPLAYER: {
+			}break;
+		case BUTTON_MENUMAIN_OPTIONS: {
+			}break;
+		case BUTTON_MENUMAIN_CREDITS: {
+				ARXMenu_Credits();
+			}
+			break;
+		case BUTTON_MENUMAIN_QUIT: {
+				ARXMenu_Quit();
+			}
+			break;
+		case BUTTON_MENUNEWQUEST_CONFIRM: {
 				ARXMenu_NewQuest();
 			}
-		}
-		break;
-	case BUTTON_MENUMAIN_LOADQUEST: {
-		}break;
-	case BUTTON_MENUMAIN_SAVEQUEST: {
-		}break;
-	case BUTTON_MENUMAIN_MULTIPLAYER: {
-		}break;
-	case BUTTON_MENUMAIN_OPTIONS: {
-		}break;
-	case BUTTON_MENUMAIN_CREDITS: {
-			ARXMenu_Credits();
-		}
-		break;
-	case BUTTON_MENUMAIN_QUIT: {
-			ARXMenu_Quit();
-		}
-		break;
-	case BUTTON_MENUNEWQUEST_CONFIRM: {
-			ARXMenu_NewQuest();
-		}
-		break;
-		// MENULOADQUEST
-		case BUTTON_MENUOPTIONSVIDEO_INIT: {
-			newWidth = config.video.resolution.x;
-			newHeight = config.video.resolution.y;
-			newFullscreen = config.video.fullscreen;
 			break;
-		}
-	case BUTTON_MENUEDITQUEST_LOAD_INIT: {
+			// MENULOADQUEST
+			case BUTTON_MENUOPTIONSVIDEO_INIT: {
+				newWidth = config.video.resolution.x;
+				newHeight = config.video.resolution.y;
+				newFullscreen = config.video.fullscreen;
+				break;
+			}
+		case BUTTON_MENUEDITQUEST_LOAD_INIT: {
 			if(pWindowMenu)
-				for(size_t i = 0; i < pWindowMenu->vWindowConsoleElement.size(); i++) {
-					CWindowMenuConsole * p = pWindowMenu->vWindowConsoleElement[i];
-
-					if(p->eMenuState == EDIT_QUEST_LOAD) {						
-						p->lData = lData;
-
-						for(size_t j = 0; j < p->MenuAllZone.vMenuZone.size(); j++) {
-							CMenuZone *cz = p->MenuAllZone.vMenuZone[j];
-
-							if(cz->iID == BUTTON_MENUEDITQUEST_LOAD) {
-								((CMenuElementText *)cz)->bSelected = false;
-							}
-						}
-					}
-				}
-		}
-		break;
-	case BUTTON_MENUEDITQUEST_LOAD: {
-			if(pWindowMenu) {
-			pLoadConfirm->SetCheckOn();
-			pLoadConfirm->lColor = pLoadConfirm->lOldColor;
-			pDeleteConfirm->SetCheckOn();
-			pDeleteConfirm->lColor = pDeleteConfirm->lOldColor;
-
 			for(size_t i = 0; i < pWindowMenu->vWindowConsoleElement.size(); i++) {
-				CWindowMenuConsole *p = pWindowMenu->vWindowConsoleElement[i];
+				CWindowMenuConsole * p = pWindowMenu->vWindowConsoleElement[i];
 				
-				if(p->eMenuState == EDIT_QUEST_LOAD) {
+				if(p->eMenuState == EDIT_QUEST_LOAD) {						
 					p->lData = lData;
 					
 					for(size_t j = 0; j < p->MenuAllZone.vMenuZone.size(); j++) {
 						CMenuZone *cz = p->MenuAllZone.vMenuZone[j];
-
+						
 						if(cz->iID == BUTTON_MENUEDITQUEST_LOAD) {
 							((CMenuElementText *)cz)->bSelected = false;
 						}
 					}
-					bSelected = true;
+				}
+			}
+		}
+			break;
+		case BUTTON_MENUEDITQUEST_LOAD: {
+			if(pWindowMenu) {
+				pLoadConfirm->SetCheckOn();
+				pLoadConfirm->lColor = pLoadConfirm->lOldColor;
+				pDeleteConfirm->SetCheckOn();
+				pDeleteConfirm->lColor = pDeleteConfirm->lOldColor;
+				
+				for(size_t i = 0; i < pWindowMenu->vWindowConsoleElement.size(); i++) {
+					CWindowMenuConsole *p = pWindowMenu->vWindowConsoleElement[i];
+					
+					if(p->eMenuState == EDIT_QUEST_LOAD) {
+						p->lData = lData;
+						
+						for(size_t j = 0; j < p->MenuAllZone.vMenuZone.size(); j++) {
+							CMenuZone *cz = p->MenuAllZone.vMenuZone[j];
+							
+							if(cz->iID == BUTTON_MENUEDITQUEST_LOAD) {
+								((CMenuElementText *)cz)->bSelected = false;
+							}
+						}
+						bSelected = true;
 					}
 				}
 			}
-			}
+		}
 		break;
-	case BUTTON_MENUEDITQUEST_LOAD_CONFIRM: {
+		case BUTTON_MENUEDITQUEST_LOAD_CONFIRM: {
 			if(pWindowMenu) {
 				for(size_t i = 0; i < pWindowMenu->vWindowConsoleElement.size(); i++) {
-				CWindowMenuConsole *p = pWindowMenu->vWindowConsoleElement[i];
-
-				if(p->eMenuState == EDIT_QUEST_LOAD) {
-					
-					lData = p->lData;
-					if(lData != -1) {
-						eMenuState = MAIN;
-						GRenderer->Clear(Renderer::DepthBuffer);
-						ARXMenu_LoadQuest(lData);
-						bNoMenu=true;
-						if(pTextManage) {
-							pTextManage->Clear();
+					CWindowMenuConsole *p = pWindowMenu->vWindowConsoleElement[i];
+		
+					if(p->eMenuState == EDIT_QUEST_LOAD) {
+						
+						lData = p->lData;
+						if(lData != -1) {
+							eMenuState = MAIN;
+							GRenderer->Clear(Renderer::DepthBuffer);
+							ARXMenu_LoadQuest(lData);
+							bNoMenu=true;
+							if(pTextManage) {
+								pTextManage->Clear();
+							}
+							break;
 						}
-						break;
 					}
 				}
+				
+				pLoadConfirm->SetCheckOff();
+				pLoadConfirm->lColor = Color::grayb(127);
+				pDeleteConfirm->SetCheckOff();
+				pDeleteConfirm->lColor = Color::grayb(127);
 			}
-			
+		}
+		break;
+		case BUTTON_MENUEDITQUEST_LOAD_CONFIRM_BACK:
 			pLoadConfirm->SetCheckOff();
 			pLoadConfirm->lColor = Color::grayb(127);
 			pDeleteConfirm->SetCheckOff();
 			pDeleteConfirm->lColor = Color::grayb(127);
-			}
-		}
-		break;
-	case BUTTON_MENUEDITQUEST_LOAD_CONFIRM_BACK:
-		pLoadConfirm->SetCheckOff();
-		pLoadConfirm->lColor = Color::grayb(127);
-		pDeleteConfirm->SetCheckOff();
-		pDeleteConfirm->lColor = Color::grayb(127);
-		break;
-	// MENUSAVEQUEST
-	case BUTTON_MENUEDITQUEST_SAVE: {
+			break;
+		// MENUSAVEQUEST
+		case BUTTON_MENUEDITQUEST_SAVE: {
 			if(pWindowMenu)
-				for(size_t i = 0; i < pWindowMenu->vWindowConsoleElement.size(); i++) {
+			for(size_t i = 0; i < pWindowMenu->vWindowConsoleElement.size(); i++) {
 				CWindowMenuConsole *p = pWindowMenu->vWindowConsoleElement[i];
-
+				
 				if(p->eMenuState == EDIT_QUEST_SAVE_CONFIRM) {
 					p->lData = lData;
 					CMenuElementText * me = (CMenuElementText *) p->MenuAllZone.vMenuZone[1];
@@ -1781,7 +1781,7 @@ bool CMenuElementText::OnMouseClick() {
 			pDeleteConfirm->lColor = Color::grayb(127);
 			break;
 		}
-		
+			
 		// Delete save from the save menu
 		case BUTTON_MENUEDITQUEST_DELETE: {
 			if(pWindowMenu) {
@@ -1801,7 +1801,7 @@ bool CMenuElementText::OnMouseClick() {
 			}
 			break;
 		}
-		
+			
 		case BUTTON_MENUOPTIONSVIDEO_APPLY: {
 			if(newWidth != config.video.resolution.x
 			   || newHeight!=config.video.resolution.y
@@ -1814,105 +1814,105 @@ bool CMenuElementText::OnMouseClick() {
 			pMenu->bReInitAll=true;
 		}
 		break;
-	// MENUOPTIONS_CONTROLS
-	case BUTTON_MENUOPTIONS_CONTROLS_CUST_JUMP1:
-		{
-		}break;
-	case BUTTON_MENUOPTIONS_CONTROLS_CUST_JUMP2:
-		{
-		}break;
-	case BUTTON_MENUOPTIONS_CONTROLS_CUST_MAGICMODE1:
-		{
-		}break;
-	case BUTTON_MENUOPTIONS_CONTROLS_CUST_MAGICMODE2:
-		{
-		}break;
-	case BUTTON_MENUOPTIONS_CONTROLS_CUST_STEALTHMODE1:
-		{
-		}break;
-	case BUTTON_MENUOPTIONS_CONTROLS_CUST_STEALTHMODE2:
-		{
-		}break;
-	case BUTTON_MENUOPTIONS_CONTROLS_CUST_WALKFORWARD1:
-		{
-		}break;
-	case BUTTON_MENUOPTIONS_CONTROLS_CUST_WALKFORWARD2:
-		{
-		}break;
-	case BUTTON_MENUOPTIONS_CONTROLS_CUST_WALKBACKWARD1:
-		{
-		}break;
-	case BUTTON_MENUOPTIONS_CONTROLS_CUST_WALKBACKWARD2:
-		{
-		}break;
-	case BUTTON_MENUOPTIONS_CONTROLS_CUST_STRAFELEFT1:
-		{
-		}break;
-	case BUTTON_MENUOPTIONS_CONTROLS_CUST_STRAFELEFT2:
-		{
-		}break;
-	case BUTTON_MENUOPTIONS_CONTROLS_CUST_STRAFERIGHT1:
-		{
-		}break;
-	case BUTTON_MENUOPTIONS_CONTROLS_CUST_STRAFERIGHT2:
-		{
-		}break;
-	case BUTTON_MENUOPTIONS_CONTROLS_CUST_LEANLEFT1:
-		{
-		}break;
-	case BUTTON_MENUOPTIONS_CONTROLS_CUST_LEANLEFT2:
-		{
-		}break;
-	case BUTTON_MENUOPTIONS_CONTROLS_CUST_LEANRIGHT1:
-		{
-		}break;
-	case BUTTON_MENUOPTIONS_CONTROLS_CUST_LEANRIGHT2:
-		{
-		}break;
-	case BUTTON_MENUOPTIONS_CONTROLS_CUST_CROUCH1:
-		{
-		}break;
-	case BUTTON_MENUOPTIONS_CONTROLS_CUST_CROUCH2:
-		{
-		}break;
-	case BUTTON_MENUOPTIONS_CONTROLS_CUST_USE1:
-		{
-		}break;
-	case BUTTON_MENUOPTIONS_CONTROLS_CUST_ACTIONCOMBINE1:
-		{
-		}break;
-	case BUTTON_MENUOPTIONS_CONTROLS_CUST_INVENTORY1:
-		{
-		}break;
-	case BUTTON_MENUOPTIONS_CONTROLS_CUST_INVENTORY2:
-		{
-		}break;
-	case BUTTON_MENUOPTIONS_CONTROLS_CUST_BOOK1:
-		{
-		}break;
-	case BUTTON_MENUOPTIONS_CONTROLS_CUST_BOOK2:
-		{
-		}break;
-	case BUTTON_MENUOPTIONS_CONTROLS_CUST_DRINKPOTIONLIFE1:
-		{
-		}break;
-	case BUTTON_MENUOPTIONS_CONTROLS_CUST_DRINKPOTIONLIFE2:
-		{
-		}break;
-	case BUTTON_MENUOPTIONS_CONTROLS_CUST_DRINKPOTIONMANA1:
-		{
-		}break;
-	case BUTTON_MENUOPTIONS_CONTROLS_CUST_DRINKPOTIONMANA2:
-		{
-		}break;
-	case BUTTON_MENUOPTIONS_CONTROLS_CUST_DEFAULT:
-		{
-		}break;
-	case BUTTON_MENUOPTIONS_CONTROLS_BACK:
-		{
-			config.save();
-		}
-		break;
+		// MENUOPTIONS_CONTROLS
+		case BUTTON_MENUOPTIONS_CONTROLS_CUST_JUMP1:
+			{
+			}break;
+		case BUTTON_MENUOPTIONS_CONTROLS_CUST_JUMP2:
+			{
+			}break;
+		case BUTTON_MENUOPTIONS_CONTROLS_CUST_MAGICMODE1:
+			{
+			}break;
+		case BUTTON_MENUOPTIONS_CONTROLS_CUST_MAGICMODE2:
+			{
+			}break;
+		case BUTTON_MENUOPTIONS_CONTROLS_CUST_STEALTHMODE1:
+			{
+			}break;
+		case BUTTON_MENUOPTIONS_CONTROLS_CUST_STEALTHMODE2:
+			{
+			}break;
+		case BUTTON_MENUOPTIONS_CONTROLS_CUST_WALKFORWARD1:
+			{
+			}break;
+		case BUTTON_MENUOPTIONS_CONTROLS_CUST_WALKFORWARD2:
+			{
+			}break;
+		case BUTTON_MENUOPTIONS_CONTROLS_CUST_WALKBACKWARD1:
+			{
+			}break;
+		case BUTTON_MENUOPTIONS_CONTROLS_CUST_WALKBACKWARD2:
+			{
+			}break;
+		case BUTTON_MENUOPTIONS_CONTROLS_CUST_STRAFELEFT1:
+			{
+			}break;
+		case BUTTON_MENUOPTIONS_CONTROLS_CUST_STRAFELEFT2:
+			{
+			}break;
+		case BUTTON_MENUOPTIONS_CONTROLS_CUST_STRAFERIGHT1:
+			{
+			}break;
+		case BUTTON_MENUOPTIONS_CONTROLS_CUST_STRAFERIGHT2:
+			{
+			}break;
+		case BUTTON_MENUOPTIONS_CONTROLS_CUST_LEANLEFT1:
+			{
+			}break;
+		case BUTTON_MENUOPTIONS_CONTROLS_CUST_LEANLEFT2:
+			{
+			}break;
+		case BUTTON_MENUOPTIONS_CONTROLS_CUST_LEANRIGHT1:
+			{
+			}break;
+		case BUTTON_MENUOPTIONS_CONTROLS_CUST_LEANRIGHT2:
+			{
+			}break;
+		case BUTTON_MENUOPTIONS_CONTROLS_CUST_CROUCH1:
+			{
+			}break;
+		case BUTTON_MENUOPTIONS_CONTROLS_CUST_CROUCH2:
+			{
+			}break;
+		case BUTTON_MENUOPTIONS_CONTROLS_CUST_USE1:
+			{
+			}break;
+		case BUTTON_MENUOPTIONS_CONTROLS_CUST_ACTIONCOMBINE1:
+			{
+			}break;
+		case BUTTON_MENUOPTIONS_CONTROLS_CUST_INVENTORY1:
+			{
+			}break;
+		case BUTTON_MENUOPTIONS_CONTROLS_CUST_INVENTORY2:
+			{
+			}break;
+		case BUTTON_MENUOPTIONS_CONTROLS_CUST_BOOK1:
+			{
+			}break;
+		case BUTTON_MENUOPTIONS_CONTROLS_CUST_BOOK2:
+			{
+			}break;
+		case BUTTON_MENUOPTIONS_CONTROLS_CUST_DRINKPOTIONLIFE1:
+			{
+			}break;
+		case BUTTON_MENUOPTIONS_CONTROLS_CUST_DRINKPOTIONLIFE2:
+			{
+			}break;
+		case BUTTON_MENUOPTIONS_CONTROLS_CUST_DRINKPOTIONMANA1:
+			{
+			}break;
+		case BUTTON_MENUOPTIONS_CONTROLS_CUST_DRINKPOTIONMANA2:
+			{
+			}break;
+		case BUTTON_MENUOPTIONS_CONTROLS_CUST_DEFAULT:
+			{
+			}break;
+		case BUTTON_MENUOPTIONS_CONTROLS_BACK:
+			{
+				config.save();
+			}
+			break;
 	}
 
 	if(eMenuState == EDIT_QUEST_SAVE_CONFIRM) {
