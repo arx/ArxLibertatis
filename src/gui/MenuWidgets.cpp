@@ -1319,14 +1319,10 @@ bool Menu2_Render() {
 		delete pWindowMenu, pWindowMenu = NULL;
 		
 		//suivant la resolution
-		int iWindowMenuWidth = (321);
-		int iWindowMenuHeight = (430);
-		int iWindowMenuPosX = (20);
-		int iWindowMenuPosY = (480-iWindowMenuHeight)>>1;
-		int iWindowConsoleOffsetX = (0);
-		int iWindowConsoleOffsetY = (14-10);
-		int iWindowConsoleWidth = (iWindowMenuWidth-iWindowConsoleOffsetX);
-		int iWindowConsoleHeight = (iWindowMenuHeight-iWindowConsoleOffsetY+20);
+		Vec2i windowMenuSize = Vec2i(321, 430);
+		Vec2i windowMenuPos = Vec2i(20, (480-windowMenuSize.y)>>1);
+		Vec2i windowConsoleOffset = Vec2i(0, 14 - 10);
+		Vec2i windowConsoleSize = windowMenuSize - windowConsoleOffset + Vec2i(0, 20);
 		
 		float fPosX1 = RATIO_X(20);
 		float fPosX2 = RATIO_X(200);
@@ -1340,25 +1336,25 @@ bool Menu2_Render() {
 		
 		float fPosBDAY  = RATIO_Y(380);
 		
-		pWindowMenu = new CWindowMenu(Vec2i(iWindowMenuPosX, iWindowMenuPosY), Vec2i(iWindowMenuWidth, iWindowMenuHeight));
+		pWindowMenu = new CWindowMenu(windowMenuPos, windowMenuSize);
 		
 		switch(eMenuState) {
 		case NEW_QUEST: {
-				Menu2_Render_NewQuest(posBack, iWindowConsoleWidth, iWindowConsoleOffsetY, iWindowConsoleHeight, iWindowConsoleOffsetX, fPosBDAY, lColor);
+				Menu2_Render_NewQuest(posBack, windowConsoleSize.x, windowConsoleOffset.y, windowConsoleSize.y, windowConsoleOffset.x, fPosBDAY, lColor);
 			
 			break;
 		}
 		case EDIT_QUEST: {
-				Menu2_Render_EditQuest(iWindowConsoleHeight, fPosBDAY, iWindowConsoleOffsetX, iWindowConsoleOffsetY, lColor, fPosX1, iWindowConsoleWidth, posBack);
+				Menu2_Render_EditQuest(windowConsoleSize.y, fPosBDAY, windowConsoleOffset.x, windowConsoleOffset.y, lColor, fPosX1, windowConsoleSize.x, posBack);
 				}
 			break;
 		case OPTIONS: {
-				Menu2_Render_Options(iWindowConsoleHeight, iPosX2, iWindowConsoleWidth, fPosBDAY, fPosX1, iWindowConsoleOffsetY, iWindowConsoleOffsetX, fPosApply, posBack, lColor, posNext);
+				Menu2_Render_Options(windowConsoleSize.y, iPosX2, windowConsoleSize.x, fPosBDAY, fPosX1, windowConsoleOffset.y, windowConsoleOffset.x, fPosApply, posBack, lColor, posNext);
 			}
 			break;
 		
 		case QUIT: {
-				Menu2_Render_Quit(fPosBDAY, posBack, iWindowConsoleWidth, iWindowConsoleOffsetX, iWindowConsoleHeight, iWindowConsoleOffsetY, lColor);
+				Menu2_Render_Quit(fPosBDAY, posBack, windowConsoleSize.x, windowConsoleOffset.x, windowConsoleSize.y, windowConsoleOffset.y, lColor);
 			
 			
 			break;
