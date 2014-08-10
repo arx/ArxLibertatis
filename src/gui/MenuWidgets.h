@@ -401,7 +401,7 @@ public:
 	
 public:
 	
-	CMenuElementText(int id, Font * font, const std::string & text, float px, float py,
+	CMenuElementText(int id, Font * font, const std::string & text, Vec2i pos,
 					 Color color, float size, MENUSTATE state);
 	virtual ~CMenuElementText();
 	

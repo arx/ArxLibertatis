@@ -320,24 +320,24 @@ void Menu2_Render_NewQuest(Vec2f posBack, Vec2i size, Vec2i offset, float fPosBD
 	CWindowMenuConsole * console = new CWindowMenuConsole(offset.x, offset.y, size.x, size.y, NEW_QUEST);
 	
 	szMenuText = getLocalised("system_menus_main_editquest_confirm");
-	me = new CMenuElementText(-1, hFontMenu, szMenuText, 0, 0, lColor, 1.f, NOP);
+	me = new CMenuElementText(-1, hFontMenu, szMenuText, Vec2i(0, 0), lColor, 1.f, NOP);
 	me->bCheck = false;
 	console->AddMenuCenter(me);
 	
 	szMenuText = getLocalised("system_menus_main_newquest_confirm");
-	me = new CMenuElementText(-1, hFontMenu, szMenuText, 0, 0, lColor, 1.f, NOP);
+	me = new CMenuElementText(-1, hFontMenu, szMenuText, Vec2i(0, 0), lColor, 1.f, NOP);
 	me->bCheck = false;
 	console->AddMenuCenter(me);
 	
 	CMenuPanel *pPanel = new CMenuPanel();
 	szMenuText = getLocalised("system_yes");
 	szMenuText += "   "; // TODO This space can probably go
-	me = new CMenuElementText(BUTTON_MENUNEWQUEST_CONFIRM, hFontMenu, szMenuText, 0, 0, lColor, 1.f, NEW_QUEST_ENTER_GAME);
+	me = new CMenuElementText(BUTTON_MENUNEWQUEST_CONFIRM, hFontMenu, szMenuText, Vec2i(0, 0), lColor, 1.f, NEW_QUEST_ENTER_GAME);
 	me->SetPos(RATIO_X(size.x - (me->GetWidth() + 10)), 0);
 	pPanel->AddElementNoCenterIn(me);
 	
 	szMenuText = getLocalised("system_no");
-	me = new CMenuElementText(-1, hFontMenu, szMenuText, posBack.x, 0, lColor, 1.f, MAIN);
+	me = new CMenuElementText(-1, hFontMenu, szMenuText, Vec2i(posBack.x, 0), lColor, 1.f, MAIN);
 	me->SetShortCut(Keyboard::Key_Escape);
 	pPanel->AddElementNoCenterIn(me);
 
@@ -358,12 +358,12 @@ void Menu2_Render_EditQuest(Vec2i size, float fPosBDAY, Vec2i offset, Color lCol
 	CWindowMenuConsole *pWindowMenuConsole=new CWindowMenuConsole(offset.x,offset.y,size.x,size.y,EDIT_QUEST);
 
 	szMenuText = getLocalised( "system_menus_main_editquest_load");
-	me = new CMenuElementText(BUTTON_MENUEDITQUEST_LOAD_INIT, hFontMenu, szMenuText, 0, 0, lColor, 1.f, EDIT_QUEST_LOAD);
+	me = new CMenuElementText(BUTTON_MENUEDITQUEST_LOAD_INIT, hFontMenu, szMenuText, Vec2i(0, 0), lColor, 1.f, EDIT_QUEST_LOAD);
 	me->lData = -1;
 	pWindowMenuConsole->AddMenuCenter(me);
 
 	szMenuText = getLocalised( "system_menus_main_editquest_save");
-	me = new CMenuElementText(-1, hFontMenu, szMenuText, 0, 0, lColor, 1.f, EDIT_QUEST_SAVE);
+	me = new CMenuElementText(-1, hFontMenu, szMenuText, Vec2i(0, 0), lColor, 1.f, EDIT_QUEST_SAVE);
 	
 	if(!ARXMenu_CanResumeGame()) {
 		me->SetCheckOff();
@@ -411,7 +411,7 @@ void Menu2_Render_EditQuest(Vec2i size, float fPosBDAY, Vec2i offset, Color lCol
 			text << quicksaveName << ' ' << ++quicksaveNum << "   " << save.time;
 			
 			CMenuElement * e = new CMenuElementText(BUTTON_MENUEDITQUEST_LOAD, hFontControls,
-			                                        text.str(), fPosX1, 0.f, lColor, .8f, NOP);
+			                                        text.str(), Vec2i(fPosX1, 0), lColor, .8f, NOP);
 			e->lData = i;
 			pWindowMenuConsole->AddMenuCenterY(e);
 		}
@@ -427,12 +427,12 @@ void Menu2_Render_EditQuest(Vec2i size, float fPosBDAY, Vec2i offset, Color lCol
 			string text = save.name +  "   " + save.time;
 			
 			CMenuElement * e = new CMenuElementText(BUTTON_MENUEDITQUEST_LOAD, hFontControls,
-			                                        text, fPosX1, 0.f, lColor, 0.8f, NOP);
+			                                        text, Vec2i(fPosX1, 0), lColor, 0.8f, NOP);
 			e->lData = i;
 			pWindowMenuConsole->AddMenuCenterY(e);
 		}
 		
-		CMenuElement * confirm = new CMenuElementText(-1, hFontControls, " ", fPosX1, 0.f,
+		CMenuElement * confirm = new CMenuElementText(-1, hFontControls, " ", Vec2i(fPosX1, 0),
 		                                              lColor, 0.8f, EDIT_QUEST_SAVE_CONFIRM);
 		confirm->SetCheckOff();
 		confirm->lData = -1;
@@ -441,7 +441,7 @@ void Menu2_Render_EditQuest(Vec2i size, float fPosBDAY, Vec2i offset, Color lCol
 		// Delete button
 		szMenuText = getLocalised("system_menus_main_editquest_delete");
 		szMenuText += "   ";
-		me = new CMenuElementText(BUTTON_MENUEDITQUEST_DELETE_CONFIRM, hFontMenu, szMenuText, 0, 0,lColor,1.f, EDIT_QUEST_LOAD);
+		me = new CMenuElementText(BUTTON_MENUEDITQUEST_DELETE_CONFIRM, hFontMenu, szMenuText, Vec2i(0, 0), lColor,1.f, EDIT_QUEST_LOAD);
 		me->SetPos(RATIO_X(size.x-10)-me->GetWidth(), RATIO_Y(42));
 		pDeleteConfirm=(CMenuElementText*)me;
 		me->SetCheckOff();
@@ -452,7 +452,7 @@ void Menu2_Render_EditQuest(Vec2i size, float fPosBDAY, Vec2i offset, Color lCol
 		// Load button
 		szMenuText = getLocalised("system_menus_main_editquest_load");
 		szMenuText += "   ";
-		me = new CMenuElementText(BUTTON_MENUEDITQUEST_LOAD_CONFIRM, hFontMenu, szMenuText, 0, 0,lColor,1.f, MAIN);
+		me = new CMenuElementText(BUTTON_MENUEDITQUEST_LOAD_CONFIRM, hFontMenu, szMenuText, Vec2i(0, 0), lColor,1.f, MAIN);
 		me->SetPos(RATIO_X(size.x-10)-me->GetWidth(), fPosBDAY + RATIO_Y(40));
 		pLoadConfirm=(CMenuElementText*)me;
 		me->SetCheckOff();
@@ -494,7 +494,7 @@ void Menu2_Render_EditQuest(Vec2i size, float fPosBDAY, Vec2i offset, Color lCol
 		text << quicksaveName << ' ' << ++quicksaveNum << "   " << save.time;
 		
 		CMenuElement * e = new CMenuElementText(BUTTON_MENUEDITQUEST_SAVEINFO, hFontControls,
-		                                        text.str(), fPosX1, 0.f, Color::grayb(127),
+		                                        text.str(), Vec2i(fPosX1, 0.f), Color::grayb(127),
 		                                        .8f, EDIT_QUEST_SAVE_CONFIRM);
 		e->SetCheckOff();
 		e->lData = i;
@@ -512,7 +512,7 @@ void Menu2_Render_EditQuest(Vec2i size, float fPosBDAY, Vec2i offset, Color lCol
 		string text = save.name +  "   " + save.time;
 		
 		CMenuElement * e = new CMenuElementText(BUTTON_MENUEDITQUEST_SAVEINFO, hFontControls,
-		                                        text, fPosX1, 0.f, lColor, .8f,
+		                                        text, Vec2i(fPosX1, 0.f), lColor, .8f,
 		                                        EDIT_QUEST_SAVE_CONFIRM);
 		e->lData = i;
 		pWindowMenuConsole->AddMenuCenterY(e);
@@ -523,8 +523,7 @@ void Menu2_Render_EditQuest(Vec2i size, float fPosBDAY, Vec2i offset, Color lCol
 		std::ostringstream text;
 		text << '-' << std::setfill('0') << std::setw(4) << i << '-';
 		
-		CMenuElementText * e = new CMenuElementText(BUTTON_MENUEDITQUEST_SAVEINFO, hFontControls, text.str(), fPosX1,
-		                                            0.f, lColor, .8f,
+		CMenuElementText * e = new CMenuElementText(BUTTON_MENUEDITQUEST_SAVEINFO, hFontControls, text.str(), Vec2i(fPosX1, 0), lColor, .8f,
 		                                            EDIT_QUEST_SAVE_CONFIRM);
 
 		e->eMenuState = EDIT_QUEST_SAVE_CONFIRM;
@@ -532,7 +531,7 @@ void Menu2_Render_EditQuest(Vec2i size, float fPosBDAY, Vec2i offset, Color lCol
 		pWindowMenuConsole->AddMenuCenterY(e);
 	}
 
-	me01 = new CMenuElementText(-1, hFontControls, " ", fPosX1, 0.f, lColor, 0.8f, EDIT_QUEST_SAVE_CONFIRM);
+	me01 = new CMenuElementText(-1, hFontControls, " ", Vec2i(fPosX1, 0), lColor, 0.8f, EDIT_QUEST_SAVE_CONFIRM);
 	me01->lData = -1;
 	me01->SetCheckOff();
 	pWindowMenuConsole->AddMenuCenterY((CMenuElementText*)me01);
@@ -557,7 +556,7 @@ void Menu2_Render_EditQuest(Vec2i size, float fPosBDAY, Vec2i offset, Color lCol
 	
 	szMenuText = getLocalised("system_menu_editquest_newsavegame", "---");
 
-	me = new CMenuElementText(-1, hFontMenu, szMenuText, fPosX1, 0.f, lColor, 1.f, NOP);
+	me = new CMenuElementText(-1, hFontMenu, szMenuText, Vec2i(fPosX1, 0), lColor, 1.f, NOP);
 	me->lData = -1;
 
 	pWindowMenuConsole->AddMenuCenter(me);
@@ -568,7 +567,7 @@ void Menu2_Render_EditQuest(Vec2i size, float fPosBDAY, Vec2i offset, Color lCol
 	
 	// Delete button
 	szMenuText = getLocalised("system_menus_main_editquest_delete");
-	me = new CMenuElementText(BUTTON_MENUEDITQUEST_DELETE, hFontMenu, szMenuText, 0, 0,lColor,1.f, EDIT_QUEST_SAVE);
+	me = new CMenuElementText(BUTTON_MENUEDITQUEST_DELETE, hFontMenu, szMenuText, Vec2i(0, 0), lColor,1.f, EDIT_QUEST_SAVE);
 	me->SetPos(RATIO_X(size.x-10)-me->GetWidth(), RATIO_Y(5));
 	pDeleteButton = (CMenuElementText*)me;
 	((CMenuElementText*)me)->lOldColor = ((CMenuElementText*)me)->lColor;
@@ -576,7 +575,7 @@ void Menu2_Render_EditQuest(Vec2i size, float fPosBDAY, Vec2i offset, Color lCol
 	
 	// Save button
 	szMenuText = getLocalised("system_menus_main_editquest_save");
-	me = new CMenuElementText(BUTTON_MENUEDITQUEST_SAVE, hFontMenu, szMenuText, 0, 0,lColor,1.f, MAIN);
+	me = new CMenuElementText(BUTTON_MENUEDITQUEST_SAVE, hFontMenu, szMenuText, Vec2i(0, 0), lColor,1.f, MAIN);
 	me->SetPos(RATIO_X(size.x-10)-me->GetWidth(), fPosBDAY);
 	pPanel->AddElementNoCenterIn(me);
 	
@@ -602,15 +601,15 @@ void Menu2_Render_Options(Vec2i size, int iPosX2, float fPosBDAY, float fPosX1, 
 	CWindowMenuConsole *pWindowMenuConsole=new CWindowMenuConsole(offset.x,offset.y,size.x,size.y,OPTIONS);
 
 	szMenuText = getLocalised("system_menus_options_video");
-	me = new CMenuElementText(BUTTON_MENUOPTIONSVIDEO_INIT, hFontMenu, szMenuText, 0, 0,lColor,1.f,OPTIONS_VIDEO);
+	me = new CMenuElementText(BUTTON_MENUOPTIONSVIDEO_INIT, hFontMenu, szMenuText, Vec2i(0, 0), lColor,1.f,OPTIONS_VIDEO);
 	pWindowMenuConsole->AddMenuCenter(me);
 	
 	szMenuText = getLocalised("system_menus_options_audio");
-	me = new CMenuElementText(-1, hFontMenu, szMenuText, 0, 0,lColor,1.f,OPTIONS_AUDIO);
+	me = new CMenuElementText(-1, hFontMenu, szMenuText, Vec2i(0, 0), lColor,1.f,OPTIONS_AUDIO);
 	pWindowMenuConsole->AddMenuCenter(me);
 	
 	szMenuText = getLocalised("system_menus_options_input");
-	me = new CMenuElementText(-1, hFontMenu, szMenuText, 0, 0,lColor,1.f,OPTIONS_INPUT);
+	me = new CMenuElementText(-1, hFontMenu, szMenuText, Vec2i(0, 0), lColor,1.f,OPTIONS_INPUT);
 	pWindowMenuConsole->AddMenuCenter(me);
 
 	pTex = TextureContainer::Load("graph/interface/menus/back");
@@ -632,15 +631,15 @@ void Menu2_Render_Options(Vec2i size, int iPosX2, float fPosBDAY, float fPosX1, 
 		pc = new CMenuPanel();
 		szMenuText = getLocalised("system_menus_options_video_renderer", "Renderer");
 		szMenuText += "  ";
-		me = new CMenuElementText(-1, hFontMenu, szMenuText, fPosX1, 0.f, lColor, 1.f, NOP);
+		me = new CMenuElementText(-1, hFontMenu, szMenuText, Vec2i(fPosX1, 0), lColor, 1.f, NOP);
 		me->SetCheckOff();
 		pc->AddElement(me);
 		CMenuSliderText * slider = new CMenuSliderText(BUTTON_MENUOPTIONSVIDEO_RENDERER, Vec2i(0, 0));
 		
-		slider->AddText(new CMenuElementText(-1, hFontMenu, "Auto-Select", 0, 0, lColor, 1.f, OPTIONS_VIDEO_RENDERER_AUTOMATIC));
+		slider->AddText(new CMenuElementText(-1, hFontMenu, "Auto-Select", Vec2i(0, 0), lColor, 1.f, OPTIONS_VIDEO_RENDERER_AUTOMATIC));
 		slider->iPos = slider->vText.size() - 1;
 #if ARX_HAVE_SDL1 || ARX_HAVE_SDL2
-		slider->AddText(new CMenuElementText(-1, hFontMenu, "OpenGL", 0, 0, lColor, 1.f, OPTIONS_VIDEO_RENDERER_OPENGL));
+		slider->AddText(new CMenuElementText(-1, hFontMenu, "OpenGL", Vec2i(0, 0), lColor, 1.f, OPTIONS_VIDEO_RENDERER_OPENGL));
 		if(config.window.framework == "SDL") {
 			slider->iPos = slider->vText.size() - 1;
 		}
@@ -662,7 +661,7 @@ void Menu2_Render_Options(Vec2i size, int iPosX2, float fPosBDAY, float fPosX1, 
 		szMenuText = getLocalised("system_menus_options_video_full_screen");
 	}
 	szMenuText += "  ";
-	CMenuElementText * metemp = new CMenuElementText(-1, hFontMenu, szMenuText, fPosX1, 0.f, lColor, 1.f, NOP);
+	CMenuElementText * metemp = new CMenuElementText(-1, hFontMenu, szMenuText, Vec2i(fPosX1, 0.f), lColor, 1.f, NOP);
 	metemp->SetCheckOff();
 	TextureContainer *pTex1 = TextureContainer::Load("graph/interface/menus/menu_checkbox_off");
 	TextureContainer *pTex2 = TextureContainer::Load("graph/interface/menus/menu_checkbox_on");
@@ -675,7 +674,7 @@ void Menu2_Render_Options(Vec2i size, int iPosX2, float fPosBDAY, float fPosX1, 
 	pc = new CMenuPanel();
 	szMenuText = getLocalised("system_menus_options_video_resolution");
 	szMenuText += "  ";
-	me = new CMenuElementText(-1, hFontMenu, szMenuText, fPosX1, 0.f, lColor, 1.f, NOP);
+	me = new CMenuElementText(-1, hFontMenu, szMenuText, Vec2i(fPosX1, 0.f), lColor, 1.f, NOP);
 	me->SetCheckOff();
 	pc->AddElement(me);
 	pMenuSliderResol = new CMenuSliderText(BUTTON_MENUOPTIONSVIDEO_RESOLUTION, Vec2i(0, 0));
@@ -706,14 +705,14 @@ void Menu2_Render_Options(Vec2i size, int iPosX2, float fPosBDAY, float fPosX1, 
 			ss << " (" << aspect.x << ':' << aspect.y << ')';
 		}
 		
-		pMenuSliderResol->AddText(new CMenuElementText(-1, hFontMenu, ss.str(), 0, 0, lColor, 1.f, MENUSTATE(OPTIONS_VIDEO_RESOLUTION_0 + i)));
+		pMenuSliderResol->AddText(new CMenuElementText(-1, hFontMenu, ss.str(), Vec2i(0, 0), lColor, 1.f, MENUSTATE(OPTIONS_VIDEO_RESOLUTION_0 + i)));
 		
 		if(mode.resolution == config.video.resolution) {
 			pMenuSliderResol->iPos = pMenuSliderResol->vText.size() - 1;
 		}
 	}
 	
-	pMenuSliderResol->AddText(new CMenuElementText(-1, hFontMenu, AUTO_RESOLUTION_STRING, 0, 0, lColor, 1.f, MENUSTATE(OPTIONS_VIDEO_RESOLUTION_0 + modes.size())));
+	pMenuSliderResol->AddText(new CMenuElementText(-1, hFontMenu, AUTO_RESOLUTION_STRING, Vec2i(0, 0), lColor, 1.f, MENUSTATE(OPTIONS_VIDEO_RESOLUTION_0 + modes.size())));
 	
 	if(config.video.resolution == Vec2i_ZERO) {
 		pMenuSliderResol->iPos = pMenuSliderResol->vText.size() - 1;
@@ -731,16 +730,16 @@ void Menu2_Render_Options(Vec2i size, int iPosX2, float fPosBDAY, float fPosX1, 
 	pc = new CMenuPanel();
 	szMenuText = getLocalised("system_menus_options_detail");
 	szMenuText += " ";
-	me = new CMenuElementText(-1, hFontMenu, szMenuText, fPosX1, 0.f, lColor, 1.f, NOP);
+	me = new CMenuElementText(-1, hFontMenu, szMenuText, Vec2i(fPosX1, 0), lColor, 1.f, NOP);
 	me->SetCheckOff();
 	pc->AddElement(me);
 	me = new CMenuSliderText(BUTTON_MENUOPTIONSVIDEO_OTHERSDETAILS, Vec2i(0, 0));
 	szMenuText = getLocalised("system_menus_options_video_texture_low");
-	((CMenuSliderText *)me)->AddText(new CMenuElementText(-1, hFontMenu, szMenuText, 0, 0,lColor,1.f, OPTIONS_OTHERDETAILS));
+	((CMenuSliderText *)me)->AddText(new CMenuElementText(-1, hFontMenu, szMenuText, Vec2i(0, 0),lColor,1.f, OPTIONS_OTHERDETAILS));
 	szMenuText = getLocalised("system_menus_options_video_texture_med");
-	((CMenuSliderText *)me)->AddText(new CMenuElementText(-1, hFontMenu, szMenuText, 0, 0,lColor,1.f, OPTIONS_OTHERDETAILS));
+	((CMenuSliderText *)me)->AddText(new CMenuElementText(-1, hFontMenu, szMenuText, Vec2i(0, 0),lColor,1.f, OPTIONS_OTHERDETAILS));
 	szMenuText = getLocalised("system_menus_options_video_texture_high");
-	((CMenuSliderText *)me)->AddText(new CMenuElementText(-1, hFontMenu, szMenuText, 0, 0,lColor,1.f, OPTIONS_OTHERDETAILS));
+	((CMenuSliderText *)me)->AddText(new CMenuElementText(-1, hFontMenu, szMenuText, Vec2i(0, 0),lColor,1.f, OPTIONS_OTHERDETAILS));
 
 	
 	fRatio    = (RATIO_X(size.x-9) - me->GetWidth()); 
@@ -754,7 +753,7 @@ void Menu2_Render_Options(Vec2i size, int iPosX2, float fPosBDAY, float fPosX1, 
 	
 	pc = new CMenuPanel();
 	szMenuText = getLocalised("system_menus_options_video_brouillard");
-	me = new CMenuElementText(-1, hFontMenu, szMenuText, fPosX1, 0.f, lColor, 1.f, NOP);
+	me = new CMenuElementText(-1, hFontMenu, szMenuText, Vec2i(fPosX1, 0.f), lColor, 1.f, NOP);
 	me->SetCheckOff();
 	pc->AddElement(me);
 	me = new CMenuSlider(BUTTON_MENUOPTIONSVIDEO_FOG, Vec2i(iPosX2, 0));
@@ -765,7 +764,7 @@ void Menu2_Render_Options(Vec2i size, int iPosX2, float fPosBDAY, float fPosX1, 
 
 	szMenuText = getLocalised("system_menus_options_video_crosshair", "Show Crosshair");
 	szMenuText += " ";
-	metemp = new CMenuElementText(-1, hFontMenu, szMenuText, fPosX1, 0.f, lColor, 1.f, NOP);
+	metemp = new CMenuElementText(-1, hFontMenu, szMenuText, Vec2i(fPosX1, 0.f), lColor, 1.f, NOP);
 	metemp->SetCheckOff();
 	me = new CMenuCheckButton(BUTTON_MENUOPTIONSVIDEO_CROSSHAIR, Vec2f(0.f, 0.f), pTex1->m_dwWidth, pTex1, pTex2, metemp);
 
@@ -777,7 +776,7 @@ void Menu2_Render_Options(Vec2i size, int iPosX2, float fPosBDAY, float fPosX1, 
 	szMenuText += " ";
 	pTex1 = TextureContainer::Load("graph/interface/menus/menu_checkbox_off");
 	pTex2 = TextureContainer::Load("graph/interface/menus/menu_checkbox_on");
-	metemp = new CMenuElementText(-1, hFontMenu, szMenuText, fPosX1, 0.f, lColor, 1.f, NOP);
+	metemp = new CMenuElementText(-1, hFontMenu, szMenuText, Vec2i(fPosX1, 0), lColor, 1.f, NOP);
 	metemp->SetCheckOff();
 	me = new CMenuCheckButton(BUTTON_MENUOPTIONSVIDEO_ANTIALIASING, Vec2f(0.f, 0.f), pTex1->m_dwWidth, pTex1, pTex2, metemp);
 	((CMenuCheckButton*)me)->iState= config.video.antialiasing ? 1 : 0;
@@ -788,7 +787,7 @@ void Menu2_Render_Options(Vec2i size, int iPosX2, float fPosBDAY, float fPosX1, 
 	szMenuText += " ";
 	pTex1 = TextureContainer::Load("graph/interface/menus/menu_checkbox_off");
 	pTex2 = TextureContainer::Load("graph/interface/menus/menu_checkbox_on");
-	metemp = new CMenuElementText(-1, hFontMenu, szMenuText, fPosX1, 0.f, lColor, 1.f, NOP);
+	metemp = new CMenuElementText(-1, hFontMenu, szMenuText, Vec2i(fPosX1, 0), lColor, 1.f, NOP);
 	metemp->SetCheckOff();
 	me = new CMenuCheckButton(BUTTON_MENUOPTIONSVIDEO_VSYNC, Vec2f(0.f, 0.f), pTex1->m_dwWidth, pTex1, pTex2, metemp);
 	((CMenuCheckButton*)me)->iState= config.video.vsync ? 1 : 0;
@@ -797,7 +796,7 @@ void Menu2_Render_Options(Vec2i size, int iPosX2, float fPosBDAY, float fPosX1, 
 	pc = new CMenuPanel();
 	szMenuText = getLocalised("system_menus_video_apply");
 	szMenuText += "   ";
-	pMenuElementApply = me = new CMenuElementText(BUTTON_MENUOPTIONSVIDEO_APPLY, hFontMenu, szMenuText, fPosApply, 0.f, lColor, 1.f, NOP);
+	pMenuElementApply = me = new CMenuElementText(BUTTON_MENUOPTIONSVIDEO_APPLY, hFontMenu, szMenuText, Vec2i(fPosApply, 0), lColor, 1.f, NOP);
 	me->SetPos(RATIO_X(size.x-10)-me->GetWidth(), fPosBDAY + RATIO_Y(40));
 	me->SetCheckOff();
 	pc->AddElementNoCenterIn(me);
@@ -822,15 +821,15 @@ void Menu2_Render_Options(Vec2i size, int iPosX2, float fPosBDAY, float fPosX1, 
 		pc = new CMenuPanel();
 		szMenuText = getLocalised("system_menus_options_audio_backend", "Backend");
 		szMenuText += "  ";
-		me = new CMenuElementText(-1, hFontMenu, szMenuText, fPosX1, 0.f, lColor, 1.f, NOP);
+		me = new CMenuElementText(-1, hFontMenu, szMenuText, Vec2i(fPosX1, 0), lColor, 1.f, NOP);
 		me->SetCheckOff();
 		pc->AddElement(me);
 		CMenuSliderText * slider = new CMenuSliderText(BUTTON_MENUOPTIONSAUDIO_BACKEND, Vec2i(0, 0));
 		
-		slider->AddText(new CMenuElementText(-1, hFontMenu, "Auto-Select", 0, 0, lColor, 1.f, OPTIONS_AUDIO_BACKEND_AUTOMATIC));
+		slider->AddText(new CMenuElementText(-1, hFontMenu, "Auto-Select", Vec2i(0, 0), lColor, 1.f, OPTIONS_AUDIO_BACKEND_AUTOMATIC));
 		slider->iPos = slider->vText.size() - 1;
 #if ARX_HAVE_OPENAL
-		slider->AddText(new CMenuElementText(-1, hFontMenu, "OpenAL", 0, 0, lColor, 1.f, OPTIONS_AUDIO_BACKEND_OPENAL));
+		slider->AddText(new CMenuElementText(-1, hFontMenu, "OpenAL", Vec2i(0, 0), lColor, 1.f, OPTIONS_AUDIO_BACKEND_OPENAL));
 		if(config.audio.backend == "OpenAL") {
 			slider->iPos = slider->vText.size() - 1;
 		}
@@ -845,7 +844,7 @@ void Menu2_Render_Options(Vec2i size, int iPosX2, float fPosBDAY, float fPosX1, 
 	
 	pc = new CMenuPanel();
 	szMenuText = getLocalised("system_menus_options_audio_master_volume");
-	me = new CMenuElementText(-1, hFontMenu, szMenuText, fPosX1, 0.f, lColor, 1.f, OPTIONS_AUDIO_VOLUME);
+	me = new CMenuElementText(-1, hFontMenu, szMenuText, Vec2i(fPosX1, 0.f), lColor, 1.f, OPTIONS_AUDIO_VOLUME);
 	me->SetCheckOff();
 	pc->AddElement(me);
 	me = new CMenuSlider(BUTTON_MENUOPTIONSAUDIO_MASTER, Vec2i(iPosX2, 0));
@@ -855,7 +854,7 @@ void Menu2_Render_Options(Vec2i size, int iPosX2, float fPosBDAY, float fPosX1, 
 
 	pc = new CMenuPanel();
 	szMenuText = getLocalised("system_menus_options_audio_effects_volume");
-	me = new CMenuElementText(-1, hFontMenu, szMenuText, fPosX1, 0.f, lColor, 1.f, OPTIONS_AUDIO);
+	me = new CMenuElementText(-1, hFontMenu, szMenuText, Vec2i(fPosX1, 0.f), lColor, 1.f, OPTIONS_AUDIO);
 	me->SetCheckOff();
 	pc->AddElement(me);
 	me = new CMenuSlider(BUTTON_MENUOPTIONSAUDIO_SFX, Vec2i(iPosX2, 0));
@@ -865,7 +864,7 @@ void Menu2_Render_Options(Vec2i size, int iPosX2, float fPosBDAY, float fPosX1, 
 
 	pc = new CMenuPanel();
 	szMenuText = getLocalised("system_menus_options_audio_speech_volume");
-	me = new CMenuElementText(-1, hFontMenu, szMenuText, fPosX1, 0.f, lColor, 1.f, OPTIONS_AUDIO);
+	me = new CMenuElementText(-1, hFontMenu, szMenuText, Vec2i(fPosX1, 0.f), lColor, 1.f, OPTIONS_AUDIO);
 	me->SetCheckOff();
 	pc->AddElement(me);
 	me = new CMenuSlider(BUTTON_MENUOPTIONSAUDIO_SPEECH, Vec2i(iPosX2, 0));
@@ -875,7 +874,7 @@ void Menu2_Render_Options(Vec2i size, int iPosX2, float fPosBDAY, float fPosX1, 
 
 	pc = new CMenuPanel();
 	szMenuText = getLocalised("system_menus_options_audio_ambiance_volume");
-	me = new CMenuElementText(-1, hFontMenu, szMenuText, fPosX1, 0.f, lColor, 1.f, OPTIONS_AUDIO);
+	me = new CMenuElementText(-1, hFontMenu, szMenuText, Vec2i(fPosX1, 0), lColor, 1.f, OPTIONS_AUDIO);
 	me->SetCheckOff();
 	pc->AddElement(me);
 	me = new CMenuSlider(BUTTON_MENUOPTIONSAUDIO_AMBIANCE, Vec2i(iPosX2, 0));
@@ -887,7 +886,7 @@ void Menu2_Render_Options(Vec2i size, int iPosX2, float fPosBDAY, float fPosX1, 
 	szMenuText += " ";
 	pTex1 = TextureContainer::Load("graph/interface/menus/menu_checkbox_off");
 	pTex2 = TextureContainer::Load("graph/interface/menus/menu_checkbox_on");
-	CMenuElementText * pElementText = new CMenuElementText(-1, hFontMenu, szMenuText, fPosX1, 0.f, lColor, 1.f, OPTIONS_INPUT);
+	CMenuElementText * pElementText = new CMenuElementText(-1, hFontMenu, szMenuText, Vec2i(fPosX1, 0), lColor, 1.f, OPTIONS_INPUT);
 	me = new CMenuCheckButton(BUTTON_MENUOPTIONSAUDIO_EAX, Vec2f(0.f, 0.f), pTex1->m_dwWidth, pTex1, pTex2, pElementText);
 	((CMenuCheckButton*)me)->iState = config.audio.eax ? 1 : 0;
 
@@ -906,14 +905,14 @@ void Menu2_Render_Options(Vec2i size, int iPosX2, float fPosBDAY, float fPosX1, 
 	pWindowMenuConsole = new CWindowMenuConsole(offset.x,offset.y,size.x,size.y, OPTIONS_INPUT);
 	
 	szMenuText = getLocalised("system_menus_options_input_customize_controls");
-	me = new CMenuElementText(-1, hFontMenu, szMenuText, fPosX1, 0.f, lColor, 1.f, OPTIONS_INPUT_CUSTOMIZE_KEYS_1);
+	me = new CMenuElementText(-1, hFontMenu, szMenuText, Vec2i(fPosX1, 0), lColor, 1.f, OPTIONS_INPUT_CUSTOMIZE_KEYS_1);
 	pWindowMenuConsole->AddMenuCenterY(me);
 	
 	szMenuText = getLocalised("system_menus_options_input_invert_mouse");
 	szMenuText += " ";
 	pTex1 = TextureContainer::Load("graph/interface/menus/menu_checkbox_off");
 	pTex2 = TextureContainer::Load("graph/interface/menus/menu_checkbox_on");
-	me = new CMenuCheckButton(BUTTON_MENUOPTIONS_CONTROLS_INVERTMOUSE, Vec2f(0.f, 0.f), pTex1->m_dwWidth, pTex1, pTex2, new CMenuElementText(-1, hFontMenu, szMenuText, fPosX1, 0.f, lColor, 1.f, OPTIONS_INPUT));
+	me = new CMenuCheckButton(BUTTON_MENUOPTIONS_CONTROLS_INVERTMOUSE, Vec2f(0.f, 0.f), pTex1->m_dwWidth, pTex1, pTex2, new CMenuElementText(-1, hFontMenu, szMenuText, Vec2i(fPosX1, 0), lColor, 1.f, OPTIONS_INPUT));
 	
 	if(config.input.invertMouse) {
 		((CMenuCheckButton*)me)->iState=1;
@@ -927,7 +926,7 @@ void Menu2_Render_Options(Vec2i size, int iPosX2, float fPosBDAY, float fPosX1, 
 	szMenuText += " ";
 	pTex1 = TextureContainer::Load("graph/interface/menus/menu_checkbox_off");
 	pTex2 = TextureContainer::Load("graph/interface/menus/menu_checkbox_on");
-	me = new CMenuCheckButton(BUTTON_MENUOPTIONS_CONTROLS_AUTOREADYWEAPON, Vec2f(0.f, 0.f), pTex1->m_dwWidth, pTex1, pTex2, new CMenuElementText(-1, hFontMenu, szMenuText, fPosX1, 0.f, lColor, 1.f, OPTIONS_INPUT));
+	me = new CMenuCheckButton(BUTTON_MENUOPTIONS_CONTROLS_AUTOREADYWEAPON, Vec2f(0.f, 0.f), pTex1->m_dwWidth, pTex1, pTex2, new CMenuElementText(-1, hFontMenu, szMenuText, Vec2i(fPosX1, 0), lColor, 1.f, OPTIONS_INPUT));
 
 	((CMenuCheckButton*)me)->iState = config.input.autoReadyWeapon ? 1 : 0;
 
@@ -937,7 +936,7 @@ void Menu2_Render_Options(Vec2i size, int iPosX2, float fPosBDAY, float fPosX1, 
 	szMenuText += " ";
 	pTex1 = TextureContainer::Load("graph/interface/menus/menu_checkbox_off");
 	pTex2 = TextureContainer::Load("graph/interface/menus/menu_checkbox_on");
-	me = new CMenuCheckButton(BUTTON_MENUOPTIONS_CONTROLS_MOUSELOOK, Vec2f(0.f, 0.f), pTex1->m_dwWidth, pTex1, pTex2, new CMenuElementText(-1, hFontMenu, szMenuText, fPosX1, 0.f, lColor, 1.f, OPTIONS_INPUT));
+	me = new CMenuCheckButton(BUTTON_MENUOPTIONS_CONTROLS_MOUSELOOK, Vec2f(0.f, 0.f), pTex1->m_dwWidth, pTex1, pTex2, new CMenuElementText(-1, hFontMenu, szMenuText, Vec2i(fPosX1, 0.f), lColor, 1.f, OPTIONS_INPUT));
 
 	((CMenuCheckButton*)me)->iState = config.input.mouseLookToggle ? 1 : 0;
 
@@ -945,7 +944,7 @@ void Menu2_Render_Options(Vec2i size, int iPosX2, float fPosBDAY, float fPosX1, 
 
 	pc = new CMenuPanel();
 	szMenuText = getLocalised("system_menus_options_input_mouse_sensitivity");
-	me = new CMenuElementText(-1, hFontMenu, szMenuText, fPosX1, 0.f, lColor, 1.f, NOP);
+	me = new CMenuElementText(-1, hFontMenu, szMenuText, Vec2i(fPosX1, 0.f), lColor, 1.f, NOP);
 	me->SetCheckOff();
 	pc->AddElement(me);
 	me = new CMenuSlider(BUTTON_MENUOPTIONS_CONTROLS_MOUSESENSITIVITY, Vec2i(iPosX2, 0));
@@ -957,7 +956,7 @@ void Menu2_Render_Options(Vec2i size, int iPosX2, float fPosBDAY, float fPosX1, 
 	szMenuText += " ";
 	pTex1 = TextureContainer::Load("graph/interface/menus/menu_checkbox_off");
 	pTex2 = TextureContainer::Load("graph/interface/menus/menu_checkbox_on");
-	me = new CMenuCheckButton(BUTTON_MENUOPTIONS_CONTROLS_AUTODESCRIPTION, Vec2f(0.f, 0.f), pTex1->m_dwWidth, pTex1, pTex2, new CMenuElementText(-1, hFontMenu, szMenuText, fPosX1, 0.f, lColor, 1.f, OPTIONS_INPUT));
+	me = new CMenuCheckButton(BUTTON_MENUOPTIONS_CONTROLS_AUTODESCRIPTION, Vec2f(0.f, 0.f), pTex1->m_dwWidth, pTex1, pTex2, new CMenuElementText(-1, hFontMenu, szMenuText, Vec2i(fPosX1, 0), lColor, 1.f, OPTIONS_INPUT));
 
 	((CMenuCheckButton*)me)->iState = config.input.autoDescription ? 1 : 0;
 
@@ -965,7 +964,7 @@ void Menu2_Render_Options(Vec2i size, int iPosX2, float fPosBDAY, float fPosX1, 
 
 	pc = new CMenuPanel();
 	szMenuText = getLocalised("system_menus_options_misc_quicksave_slots", "Quicksave slots");
-	me = new CMenuElementText(-1, hFontMenu, szMenuText, fPosX1, 0.f, lColor, 1.f, NOP);
+	me = new CMenuElementText(-1, hFontMenu, szMenuText, Vec2i(fPosX1, 0), lColor, 1.f, NOP);
 	me->SetCheckOff();
 	pc->AddElement(me);
 	me = new CMenuSlider(BUTTON_MENUOPTIONS_CONTROLS_QUICKSAVESLOTS, Vec2i(iPosX2, 0));
@@ -992,10 +991,10 @@ char pNoDef2[]="---";
 #define CUSTOM_CTRL_FUNC(a,b,c,d){\
 		pc=new CMenuPanel();\
 		szMenuText = getLocalised(a, "?");\
-		me = new CMenuElementText(-1, hFontControls, szMenuText, CUSTOM_CTRL_X0, 0,lColor,.7f, NOP);\
+		me = new CMenuElementText(-1, hFontControls, szMenuText, Vec2i(CUSTOM_CTRL_X0, 0), lColor,.7f, NOP);\
 		me->SetCheckOff();\
 		pc->AddElement(me);\
-		me = new CMenuElementText(c, hFontControls, pNoDef1, CUSTOM_CTRL_X1, 0,lColor,.7f, NOP);\
+		me = new CMenuElementText(c, hFontControls, pNoDef1, Vec2i(CUSTOM_CTRL_X1, 0), lColor,.7f, NOP);\
 		me->eState=GETTOUCH;\
 		if((!b)||(c<0))\
 		{\
@@ -1003,7 +1002,7 @@ char pNoDef2[]="---";
 			((CMenuElementText*)me)->lColor=Color(127,127,127);\
 		}\
 		pc->AddElement(me);\
-		me = new CMenuElementText(d, hFontControls, pNoDef2, CUSTOM_CTRL_X2, 0,lColor,.7f, NOP);\
+		me = new CMenuElementText(d, hFontControls, pNoDef2, Vec2i(CUSTOM_CTRL_X2, 0), lColor,.7f, NOP);\
 		me->eState=GETTOUCH;\
 		if(d<0)\
 		{\
@@ -1021,10 +1020,10 @@ char pNoDef2[]="---";
 		pc=new CMenuPanel();\
 		szMenuText = getLocalised(a, "?");\
 		szMenuText += "2";\
-		me = new CMenuElementText(-1, hFontControls, szMenuText, CUSTOM_CTRL_X0, 0,lColor,.7f, NOP);\
+		me = new CMenuElementText(-1, hFontControls, szMenuText, Vec2i(CUSTOM_CTRL_X0, 0), lColor,.7f, NOP);\
 		me->SetCheckOff();\
 		pc->AddElement(me);\
-		me = new CMenuElementText(c, hFontControls, pNoDef1, CUSTOM_CTRL_X1, 0,lColor,.7f, NOP);\
+		me = new CMenuElementText(c, hFontControls, pNoDef1, Vec2i(CUSTOM_CTRL_X1, 0), lColor,.7f, NOP);\
 		me->eState=GETTOUCH;\
 		if((!b)||(c<0))\
 		{\
@@ -1032,7 +1031,7 @@ char pNoDef2[]="---";
 			((CMenuElementText*)me)->lColor=Color(127,127,127);\
 		}\
 		pc->AddElement(me);\
-		me = new CMenuElementText(d, hFontControls, pNoDef2, CUSTOM_CTRL_X2, 0,lColor,.7f, NOP);\
+		me = new CMenuElementText(d, hFontControls, pNoDef2, Vec2i(CUSTOM_CTRL_X2, 0), lColor,.7f, NOP);\
 		me->eState=GETTOUCH;\
 		if(d<0)\
 		{\
@@ -1049,10 +1048,10 @@ char pNoDef2[]="---";
 #define CUSTOM_CTRL_FUNC3(a,default,b,c,d){\
 		pc=new CMenuPanel();\
 		szMenuText = getLocalised(a, default);\
-		me = new CMenuElementText(-1, hFontControls, szMenuText, CUSTOM_CTRL_X0, 0,lColor,.7f, NOP);\
+		me = new CMenuElementText(-1, hFontControls, szMenuText, Vec2i(CUSTOM_CTRL_X0, 0), lColor,.7f, NOP);\
 		me->SetCheckOff();\
 		pc->AddElement(me);\
-		me = new CMenuElementText(c, hFontControls, pNoDef1, CUSTOM_CTRL_X1, 0,lColor,.7f, NOP);\
+		me = new CMenuElementText(c, hFontControls, pNoDef1, Vec2i(CUSTOM_CTRL_X1, 0), lColor,.7f, NOP);\
 		me->eState=GETTOUCH;\
 		if((!b)||(c<0))\
 		{\
@@ -1060,7 +1059,7 @@ char pNoDef2[]="---";
 			((CMenuElementText*)me)->lColor=Color(127,127,127);\
 		}\
 		pc->AddElement(me);\
-		me = new CMenuElementText(d, hFontControls, pNoDef2, CUSTOM_CTRL_X2, 0,lColor,.7f, NOP);\
+		me = new CMenuElementText(d, hFontControls, pNoDef2, Vec2i(CUSTOM_CTRL_X2, 0), lColor,.7f, NOP);\
 		me->eState=GETTOUCH;\
 		if(d<0)\
 		{\
@@ -1108,7 +1107,7 @@ char pNoDef2[]="---";
 	me->SetShortCut(Keyboard::Key_Escape);
 	pc->AddElementNoCenterIn(me);
 	szMenuText = getLocalised( "system_menus_options_input_customize_default" );
-	me = new CMenuElementText(BUTTON_MENUOPTIONS_CONTROLS_CUST_DEFAULT, hFontMenu, szMenuText, 0, 0,lColor,1.f, NOP);
+	me = new CMenuElementText(BUTTON_MENUOPTIONS_CONTROLS_CUST_DEFAULT, hFontMenu, szMenuText, Vec2i(0, 0), lColor,1.f, NOP);
 	me->SetPos((RATIO_X(size.x) - me->GetWidth())*0.5f, fPosBDAY);
 	pc->AddElementNoCenterIn(me);
 	pTex = TextureContainer::Load("graph/interface/menus/next");
@@ -1161,7 +1160,7 @@ char pNoDef2[]="---";
 	me->SetShortCut(Keyboard::Key_Escape);
 	pc->AddElementNoCenterIn(me);
 	szMenuText = getLocalised( "system_menus_options_input_customize_default" );
-	me = new CMenuElementText(BUTTON_MENUOPTIONS_CONTROLS_CUST_DEFAULT, hFontMenu, szMenuText, 0, 0,lColor,1.f, NOP);
+	me = new CMenuElementText(BUTTON_MENUOPTIONS_CONTROLS_CUST_DEFAULT, hFontMenu, szMenuText, Vec2i(0, 0), lColor,1.f, NOP);
 	me->SetPos((RATIO_X(size.x) - me->GetWidth())*0.5f, fPosBDAY);
 	pc->AddElementNoCenterIn(me);
 
@@ -1186,24 +1185,24 @@ void Menu2_Render_Quit(float fPosBDAY, Vec2f posBack, Vec2i size, Vec2i offset, 
 	CMenuElement *me = NULL;
 	CWindowMenuConsole *pWindowMenuConsole=new CWindowMenuConsole(offset.x,offset.y,size.x,size.y,QUIT);
 	szMenuText = getLocalised("system_menus_main_quit");
-	me=new CMenuElementText(-1, hFontMenu, szMenuText,0,0,lColor,1.f, NOP);
+	me=new CMenuElementText(-1, hFontMenu, szMenuText, Vec2i(0, 0), lColor,1.f, NOP);
 	me->bCheck = false;
 	pWindowMenuConsole->AddMenuCenter(me);
 
 	szMenuText = getLocalised("system_menus_main_editquest_confirm");
-	me=new CMenuElementText(-1, hFontMenu, szMenuText,0,0,lColor,1.f, NOP);
+	me=new CMenuElementText(-1, hFontMenu, szMenuText, Vec2i(0, 0), lColor,1.f, NOP);
 	me->bCheck = false;
 	pWindowMenuConsole->AddMenuCenter(me);
 
 	CMenuPanel *pPanel = new CMenuPanel();
 	szMenuText = getLocalised("system_yes");
 
-	me = new CMenuElementText(BUTTON_MENUMAIN_QUIT, hFontMenu, szMenuText, 0, 0,lColor,1.f, NEW_QUEST_ENTER_GAME);
+	me = new CMenuElementText(BUTTON_MENUMAIN_QUIT, hFontMenu, szMenuText, Vec2i(0, 0), lColor,1.f, NEW_QUEST_ENTER_GAME);
 
 	me->SetPos(RATIO_X(size.x-10)-me->GetWidth(), 0);
 	pPanel->AddElementNoCenterIn(me);
 	szMenuText = getLocalised("system_no");
-	me = new CMenuElementText(-1, hFontMenu, szMenuText, posBack.x, 0,lColor,1.f, MAIN);
+	me = new CMenuElementText(-1, hFontMenu, szMenuText, Vec2i(posBack.x, 0), lColor,1.f, MAIN);
 	me->SetShortCut(Keyboard::Key_Escape);
 	pPanel->AddElementNoCenterIn(me);
 
@@ -1515,7 +1514,7 @@ CMenuElement* CMenuElement::OnShortCut() {
 	return NULL;
 }
 
-CMenuElementText::CMenuElementText(int _iID, Font* _pFont, const std::string& _pText,float _fPosX,float _fPosY,Color _lColor,float _fSize,MENUSTATE _eMs) : CMenuElement(_eMs)
+CMenuElementText::CMenuElementText(int _iID, Font* _pFont, const std::string& _pText, Vec2i pos, Color _lColor,float _fSize,MENUSTATE _eMs) : CMenuElement(_eMs)
 {
 	iID = _iID;
 
@@ -1528,8 +1527,8 @@ CMenuElementText::CMenuElementText(int _iID, Font* _pFont, const std::string& _p
 	lpszText= _pText;
 
 	Vec2i textSize = _pFont->getTextSize(_pText);
-	rZone.left = checked_range_cast<Rect::Num>(_fPosX);
-	rZone.top = checked_range_cast<Rect::Num>(_fPosY);
+	rZone.left = checked_range_cast<Rect::Num>(pos.x);
+	rZone.top = checked_range_cast<Rect::Num>(pos.y);
 	rZone.right  = rZone.left + textSize.x;
 	rZone.bottom = rZone.top + textSize.y;
 
@@ -2047,7 +2046,7 @@ void MACRO_MENU_PRINCIPALE(Vec2s & pos,
 						   int MACRO_check)
 {
 	std::string szMenuText = getLocalised( MACRO_locate );
-	CMenuElementText *me = new CMenuElementText(MACRO_button, hFontMainMenu, szMenuText, RATIO_X(pos.x), RATIO_Y(pos.y), lColor, 1.8f, MACRO_menu);
+	CMenuElementText *me = new CMenuElementText(MACRO_button, hFontMainMenu, szMenuText, Vec2i(RATIO_X(pos.x), RATIO_Y(pos.y)), lColor, 1.8f, MACRO_menu);
 	if(MACRO_check) {
 		pMenuElementResume=me;
 		if(ARXMenu_CanResumeGame()) {
@@ -2088,7 +2087,7 @@ void CMenuState::createChildElements(Color lColor)
 	}
 
 	float verPosX = RATIO_X(620) - hFontControls->getTextSize(version).x;
-	CMenuElementText * me = new CMenuElementText( -1, hFontControls, version, verPosX, RATIO_Y(80), lColor, 1.0f, NOP );
+	CMenuElementText * me = new CMenuElementText( -1, hFontControls, version, Vec2i(verPosX, RATIO_Y(80)), lColor, 1.0f, NOP );
 	
 	me->SetCheckOff();
 	me->lColor=Color(127,127,127);
