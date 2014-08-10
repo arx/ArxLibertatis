@@ -346,6 +346,250 @@ void Menu2_Render_NewQuest(Vec2f posBack, int iWindowConsoleWidth, int iWindowCo
 	pWindowMenu->eCurrentMenuState=NEW_QUEST;
 }
 
+void Menu2_Render_EditQuest(int iWindowConsoleHeight, float fPosBDAY, int iWindowConsoleOffsetX, int iWindowConsoleOffsetY, Color lColor, float fPosX1, int iWindowConsoleWidth, Vec2f posBack)
+{
+	CMenuElement *me;
+	CMenuElement *me01;
+	CMenuPanel *pPanel;
+	TextureContainer *pTex;
+	std::string szMenuText;
+	CWindowMenuConsole *pWindowMenuConsole=new CWindowMenuConsole(iWindowConsoleOffsetX,iWindowConsoleOffsetY,iWindowConsoleWidth,iWindowConsoleHeight,EDIT_QUEST);
+
+	szMenuText = getLocalised( "system_menus_main_editquest_load");
+	me = new CMenuElementText(BUTTON_MENUEDITQUEST_LOAD_INIT, hFontMenu, szMenuText, 0, 0, lColor, 1.f, EDIT_QUEST_LOAD);
+	me->lData = -1;
+	pWindowMenuConsole->AddMenuCenter(me);
+
+	szMenuText = getLocalised( "system_menus_main_editquest_save");
+	me = new CMenuElementText(-1, hFontMenu, szMenuText, 0, 0, lColor, 1.f, EDIT_QUEST_SAVE);
+	
+	if(!ARXMenu_CanResumeGame()) {
+		me->SetCheckOff();
+		((CMenuElementText*)me)->lColor=Color(127,127,127);
+	}
+
+	pWindowMenuConsole->AddMenuCenter(me);
+
+	pTex = TextureContainer::Load("graph/interface/menus/back");
+	me = new CMenuCheckButton(-1, posBack, pTex?pTex->m_dwWidth:0, pTex, NULL, NULL);
+	me->eMenuState = MAIN;
+	me->SetShortCut(Keyboard::Key_Escape);
+	pWindowMenuConsole->AddMenu(me);
+
+	pWindowMenu->eCurrentMenuState = EDIT_QUEST;
+	pWindowMenu->AddConsole(pWindowMenuConsole);
+
+	// LOAD ---------------------------------------------------
+	pWindowMenuConsole=new CWindowMenuConsole(iWindowConsoleOffsetX,iWindowConsoleOffsetY-(40),iWindowConsoleWidth,iWindowConsoleHeight,EDIT_QUEST_LOAD);
+	pWindowMenuConsole->lData = -1;
+	pWindowMenuConsole->iInterligne = 5;
+
+	pTex = TextureContainer::Load("graph/interface/icons/menu_main_load");
+	me = new CMenuCheckButton(-1, Vec2f(0.f, 0.f), pTex?pTex->m_dwWidth:0, pTex, NULL, NULL);
+	((CMenuCheckButton *)me)->bCheck = false;
+	pWindowMenuConsole->AddMenuCenter(me);
+	
+	string quicksaveName = getLocalised("system_menus_main_quickloadsave", "Quicksave");
+	
+	// TODO make this list scrollable
+	// TODO align the date part to the right!
+	
+	{
+		size_t quicksaveNum = 0;
+		
+		// Show quicksaves.
+		for(size_t i = 0; i < savegames.size(); i++) {
+			const SaveGame & save = savegames[i];
+			
+			if(!save.quicksave) {
+				continue;
+			}
+			
+			std::ostringstream text;
+			text << quicksaveName << ' ' << ++quicksaveNum << "   " << save.time;
+			
+			CMenuElement * e = new CMenuElementText(BUTTON_MENUEDITQUEST_LOAD, hFontControls,
+			                                        text.str(), fPosX1, 0.f, lColor, .8f, NOP);
+			e->lData = i;
+			pWindowMenuConsole->AddMenuCenterY(e);
+		}
+		
+		// Show regular saves.
+		for(size_t i = 0; i < savegames.size(); i++) {
+			const SaveGame & save = savegames[i];
+			
+			if(save.quicksave) {
+				continue;
+			}
+			
+			string text = save.name +  "   " + save.time;
+			
+			CMenuElement * e = new CMenuElementText(BUTTON_MENUEDITQUEST_LOAD, hFontControls,
+			                                        text, fPosX1, 0.f, lColor, 0.8f, NOP);
+			e->lData = i;
+			pWindowMenuConsole->AddMenuCenterY(e);
+		}
+		
+		CMenuElement * confirm = new CMenuElementText(-1, hFontControls, " ", fPosX1, 0.f,
+		                                              lColor, 0.8f, EDIT_QUEST_SAVE_CONFIRM);
+		confirm->SetCheckOff();
+		confirm->lData = -1;
+		pWindowMenuConsole->AddMenuCenterY(confirm);
+		
+		// Delete button
+		szMenuText = getLocalised("system_menus_main_editquest_delete");
+		szMenuText += "   ";
+		me = new CMenuElementText(BUTTON_MENUEDITQUEST_DELETE_CONFIRM, hFontMenu, szMenuText, 0, 0,lColor,1.f, EDIT_QUEST_LOAD);
+		me->SetPos(RATIO_X(iWindowConsoleWidth-10)-me->GetWidth(), RATIO_Y(42));
+		pDeleteConfirm=(CMenuElementText*)me;
+		me->SetCheckOff();
+		((CMenuElementText*)me)->lOldColor = ((CMenuElementText*)me)->lColor;
+		((CMenuElementText*)me)->lColor = Color::grayb(127);
+		pWindowMenuConsole->AddMenu(me);
+		
+		// Load button
+		szMenuText = getLocalised("system_menus_main_editquest_load");
+		szMenuText += "   ";
+		me = new CMenuElementText(BUTTON_MENUEDITQUEST_LOAD_CONFIRM, hFontMenu, szMenuText, 0, 0,lColor,1.f, MAIN);
+		me->SetPos(RATIO_X(iWindowConsoleWidth-10)-me->GetWidth(), fPosBDAY + RATIO_Y(40));
+		pLoadConfirm=(CMenuElementText*)me;
+		me->SetCheckOff();
+		((CMenuElementText*)me)->lOldColor = ((CMenuElementText*)me)->lColor;
+		((CMenuElementText*)me)->lColor = Color::grayb(127);
+		pWindowMenuConsole->AddMenu(me);
+		
+		// Back button
+		CMenuPanel *pc = new CMenuPanel();
+		pTex = TextureContainer::Load("graph/interface/menus/back");
+		me = new CMenuCheckButton(-1, posBack + Vec2f(0.f, RATIO_Y(20)), pTex?pTex->m_dwWidth:0, pTex, NULL, NULL);
+		me->eMenuState = EDIT_QUEST;
+		me->SetShortCut(Keyboard::Key_Escape);
+		pc->AddElementNoCenterIn(me);
+		pWindowMenuConsole->AddMenu(pc);
+	}
+	pWindowMenu->AddConsole(pWindowMenuConsole);
+
+	// SAVE----------------------------------------------------
+	pWindowMenuConsole=new CWindowMenuConsole(iWindowConsoleOffsetX,iWindowConsoleOffsetY - (40), iWindowConsoleWidth,iWindowConsoleHeight,EDIT_QUEST_SAVE);
+	pWindowMenuConsole->iInterligne = 5;
+
+	pTex = TextureContainer::Load("graph/interface/icons/menu_main_save");
+	me = new CMenuCheckButton(-1, Vec2f(posBack.x, 0), pTex?pTex->m_dwWidth:0, pTex, NULL, NULL);
+	((CMenuCheckButton *)me)->bCheck = false;
+	pWindowMenuConsole->AddMenuCenter(me);
+	
+	size_t quicksaveNum = 0;
+	
+	// Show quicksaves.
+	for(size_t i = 0; i < savegames.size(); i++) {
+		const SaveGame & save = savegames[i];
+		
+		if(!save.quicksave) {
+			continue;
+		}
+		
+		std::ostringstream text;
+		text << quicksaveName << ' ' << ++quicksaveNum << "   " << save.time;
+		
+		CMenuElement * e = new CMenuElementText(BUTTON_MENUEDITQUEST_SAVEINFO, hFontControls,
+		                                        text.str(), fPosX1, 0.f, Color::grayb(127),
+		                                        .8f, EDIT_QUEST_SAVE_CONFIRM);
+		e->SetCheckOff();
+		e->lData = i;
+		pWindowMenuConsole->AddMenuCenterY(e);
+	}
+	
+	// Show regular saves.
+	for(size_t i = 0; i < savegames.size(); i++) {
+		const SaveGame & save = savegames[i];
+		
+		if(save.quicksave) {
+			continue;
+		}
+		
+		string text = save.name +  "   " + save.time;
+		
+		CMenuElement * e = new CMenuElementText(BUTTON_MENUEDITQUEST_SAVEINFO, hFontControls,
+		                                        text, fPosX1, 0.f, lColor, .8f,
+		                                        EDIT_QUEST_SAVE_CONFIRM);
+		e->lData = i;
+		pWindowMenuConsole->AddMenuCenterY(e);
+	}
+	
+	for(size_t i = savegames.size(); i <= 15; i++) {
+		
+		std::ostringstream text;
+		text << '-' << std::setfill('0') << std::setw(4) << i << '-';
+		
+		CMenuElementText * e = new CMenuElementText(BUTTON_MENUEDITQUEST_SAVEINFO, hFontControls, text.str(), fPosX1,
+		                                            0.f, lColor, .8f,
+		                                            EDIT_QUEST_SAVE_CONFIRM);
+
+		e->eMenuState = EDIT_QUEST_SAVE_CONFIRM;
+		e->lData = -1;
+		pWindowMenuConsole->AddMenuCenterY(e);
+	}
+
+	me01 = new CMenuElementText(-1, hFontControls, " ", fPosX1, 0.f, lColor, 0.8f, EDIT_QUEST_SAVE_CONFIRM);
+	me01->lData = -1;
+	me01->SetCheckOff();
+	pWindowMenuConsole->AddMenuCenterY((CMenuElementText*)me01);
+
+	pTex = TextureContainer::Load("graph/interface/menus/back");
+	me = new CMenuCheckButton(-1, posBack + Vec2f(0.f, RATIO_Y(20)), pTex?pTex->m_dwWidth:0, pTex, NULL, NULL);
+
+	me->eMenuState = EDIT_QUEST;
+	me->SetShortCut(Keyboard::Key_Escape);
+	pWindowMenuConsole->AddMenu(me);
+
+	pWindowMenu->AddConsole(pWindowMenuConsole);
+
+	// SAVE CONFIRM--------------------------------------------
+	pWindowMenuConsole = new CWindowMenuConsole(iWindowConsoleOffsetX,iWindowConsoleOffsetY,iWindowConsoleWidth,iWindowConsoleHeight,EDIT_QUEST_SAVE_CONFIRM);
+	pWindowMenuConsole->lData = -1;
+
+	pTex = TextureContainer::Load("graph/interface/icons/menu_main_save");
+	me = new CMenuCheckButton(-1, Vec2f(0.f, 0.f), pTex?pTex->m_dwWidth:0, pTex, NULL, NULL);
+	((CMenuCheckButton *)me)->bCheck = false;
+	pWindowMenuConsole->AddMenuCenter(me);
+	
+	szMenuText = getLocalised("system_menu_editquest_newsavegame", "---");
+
+	me = new CMenuElementText(-1, hFontMenu, szMenuText, fPosX1, 0.f, lColor, 1.f, NOP);
+	me->lData = -1;
+
+	pWindowMenuConsole->AddMenuCenter(me);
+	me->eState=EDIT;
+	me->ePlace=CENTER;
+
+	pPanel = new CMenuPanel();
+	
+	// Delete button
+	szMenuText = getLocalised("system_menus_main_editquest_delete");
+	me = new CMenuElementText(BUTTON_MENUEDITQUEST_DELETE, hFontMenu, szMenuText, 0, 0,lColor,1.f, EDIT_QUEST_SAVE);
+	me->SetPos(RATIO_X(iWindowConsoleWidth-10)-me->GetWidth(), RATIO_Y(5));
+	pDeleteButton = (CMenuElementText*)me;
+	((CMenuElementText*)me)->lOldColor = ((CMenuElementText*)me)->lColor;
+	pPanel->AddElementNoCenterIn(me);
+	
+	// Save button
+	szMenuText = getLocalised("system_menus_main_editquest_save");
+	me = new CMenuElementText(BUTTON_MENUEDITQUEST_SAVE, hFontMenu, szMenuText, 0, 0,lColor,1.f, MAIN);
+	me->SetPos(RATIO_X(iWindowConsoleWidth-10)-me->GetWidth(), fPosBDAY);
+	pPanel->AddElementNoCenterIn(me);
+	
+	// Back button
+	pTex = TextureContainer::Load("graph/interface/menus/back");
+	me = new CMenuCheckButton(-1, posBack, pTex?pTex->m_dwWidth:0, pTex, NULL, NULL);
+	me->eMenuState = EDIT_QUEST_SAVE;
+	me->SetShortCut(Keyboard::Key_Escape);
+	pPanel->AddElementNoCenterIn(me);
+
+	pWindowMenuConsole->AddMenu(pPanel);
+
+	pWindowMenu->AddConsole(pWindowMenuConsole);
+}
+
 bool Menu2_Render() {
 	
 	ARXOldTimeMenu = ARXTimeMenu;
@@ -484,246 +728,7 @@ bool Menu2_Render() {
 				break;
 			}
 			case EDIT_QUEST: {
-					CMenuElement *me;
-					CMenuElement *me01;
-					CMenuPanel *pPanel;
-					TextureContainer *pTex;
-					std::string szMenuText;
-					CWindowMenuConsole *pWindowMenuConsole=new CWindowMenuConsole(iWindowConsoleOffsetX,iWindowConsoleOffsetY,iWindowConsoleWidth,iWindowConsoleHeight,EDIT_QUEST);
-
-					szMenuText = getLocalised( "system_menus_main_editquest_load");
-					me = new CMenuElementText(BUTTON_MENUEDITQUEST_LOAD_INIT, hFontMenu, szMenuText, 0, 0, lColor, 1.f, EDIT_QUEST_LOAD);
-					me->lData = -1;
-					pWindowMenuConsole->AddMenuCenter(me);
-
-					szMenuText = getLocalised( "system_menus_main_editquest_save");
-					me = new CMenuElementText(-1, hFontMenu, szMenuText, 0, 0, lColor, 1.f, EDIT_QUEST_SAVE);
-					
-					if(!ARXMenu_CanResumeGame()) {
-						me->SetCheckOff();
-						((CMenuElementText*)me)->lColor=Color(127,127,127);
-					}
-
-					pWindowMenuConsole->AddMenuCenter(me);
-
-					pTex = TextureContainer::Load("graph/interface/menus/back");
-					me = new CMenuCheckButton(-1, posBack, pTex?pTex->m_dwWidth:0, pTex, NULL, NULL);
-					me->eMenuState = MAIN;
-					me->SetShortCut(Keyboard::Key_Escape);
-					pWindowMenuConsole->AddMenu(me);
-
-					pWindowMenu->eCurrentMenuState = EDIT_QUEST;
-					pWindowMenu->AddConsole(pWindowMenuConsole);
-
-					// LOAD ---------------------------------------------------
-					pWindowMenuConsole=new CWindowMenuConsole(iWindowConsoleOffsetX,iWindowConsoleOffsetY-(40),iWindowConsoleWidth,iWindowConsoleHeight,EDIT_QUEST_LOAD);
-					pWindowMenuConsole->lData = -1;
-					pWindowMenuConsole->iInterligne = 5;
-
-					pTex = TextureContainer::Load("graph/interface/icons/menu_main_load");
-					me = new CMenuCheckButton(-1, Vec2f(0.f, 0.f), pTex?pTex->m_dwWidth:0, pTex, NULL, NULL);
-					((CMenuCheckButton *)me)->bCheck = false;
-					pWindowMenuConsole->AddMenuCenter(me);
-					
-					string quicksaveName = getLocalised("system_menus_main_quickloadsave", "Quicksave");
-					
-					// TODO make this list scrollable
-					// TODO align the date part to the right!
-					
-					{
-						size_t quicksaveNum = 0;
-						
-						// Show quicksaves.
-						for(size_t i = 0; i < savegames.size(); i++) {
-							const SaveGame & save = savegames[i];
-							
-							if(!save.quicksave) {
-								continue;
-							}
-							
-							std::ostringstream text;
-							text << quicksaveName << ' ' << ++quicksaveNum << "   " << save.time;
-							
-							CMenuElement * e = new CMenuElementText(BUTTON_MENUEDITQUEST_LOAD, hFontControls,
-							                                        text.str(), fPosX1, 0.f, lColor, .8f, NOP);
-							e->lData = i;
-							pWindowMenuConsole->AddMenuCenterY(e);
-						}
-						
-						// Show regular saves.
-						for(size_t i = 0; i < savegames.size(); i++) {
-							const SaveGame & save = savegames[i];
-							
-							if(save.quicksave) {
-								continue;
-							}
-							
-							string text = save.name +  "   " + save.time;
-							
-							CMenuElement * e = new CMenuElementText(BUTTON_MENUEDITQUEST_LOAD, hFontControls,
-							                                        text, fPosX1, 0.f, lColor, 0.8f, NOP);
-							e->lData = i;
-							pWindowMenuConsole->AddMenuCenterY(e);
-						}
-						
-						CMenuElement * confirm = new CMenuElementText(-1, hFontControls, " ", fPosX1, 0.f,
-						                                              lColor, 0.8f, EDIT_QUEST_SAVE_CONFIRM);
-						confirm->SetCheckOff();
-						confirm->lData = -1;
-						pWindowMenuConsole->AddMenuCenterY(confirm);
-						
-						// Delete button
-						szMenuText = getLocalised("system_menus_main_editquest_delete");
-						szMenuText += "   ";
-						me = new CMenuElementText(BUTTON_MENUEDITQUEST_DELETE_CONFIRM, hFontMenu, szMenuText, 0, 0,lColor,1.f, EDIT_QUEST_LOAD);
-						me->SetPos(RATIO_X(iWindowConsoleWidth-10)-me->GetWidth(), RATIO_Y(42));
-						pDeleteConfirm=(CMenuElementText*)me;
-						me->SetCheckOff();
-						((CMenuElementText*)me)->lOldColor = ((CMenuElementText*)me)->lColor;
-						((CMenuElementText*)me)->lColor = Color::grayb(127);
-						pWindowMenuConsole->AddMenu(me);
-						
-						// Load button
-						szMenuText = getLocalised("system_menus_main_editquest_load");
-						szMenuText += "   ";
-						me = new CMenuElementText(BUTTON_MENUEDITQUEST_LOAD_CONFIRM, hFontMenu, szMenuText, 0, 0,lColor,1.f, MAIN);
-						me->SetPos(RATIO_X(iWindowConsoleWidth-10)-me->GetWidth(), fPosBDAY + RATIO_Y(40));
-						pLoadConfirm=(CMenuElementText*)me;
-						me->SetCheckOff();
-						((CMenuElementText*)me)->lOldColor = ((CMenuElementText*)me)->lColor;
-						((CMenuElementText*)me)->lColor = Color::grayb(127);
-						pWindowMenuConsole->AddMenu(me);
-						
-						// Back button
-						CMenuPanel *pc = new CMenuPanel();
-						pTex = TextureContainer::Load("graph/interface/menus/back");
-						me = new CMenuCheckButton(-1, posBack + Vec2f(0.f, RATIO_Y(20)), pTex?pTex->m_dwWidth:0, pTex, NULL, NULL);
-						me->eMenuState = EDIT_QUEST;
-						me->SetShortCut(Keyboard::Key_Escape);
-						pc->AddElementNoCenterIn(me);
-						pWindowMenuConsole->AddMenu(pc);
-					}
-					pWindowMenu->AddConsole(pWindowMenuConsole);
-
-					// SAVE----------------------------------------------------
-					pWindowMenuConsole=new CWindowMenuConsole(iWindowConsoleOffsetX,iWindowConsoleOffsetY - (40), iWindowConsoleWidth,iWindowConsoleHeight,EDIT_QUEST_SAVE);
-					pWindowMenuConsole->iInterligne = 5;
-
-					pTex = TextureContainer::Load("graph/interface/icons/menu_main_save");
-					me = new CMenuCheckButton(-1, Vec2f(posBack.x, 0), pTex?pTex->m_dwWidth:0, pTex, NULL, NULL);
-					((CMenuCheckButton *)me)->bCheck = false;
-					pWindowMenuConsole->AddMenuCenter(me);
-					
-					size_t quicksaveNum = 0;
-					
-					// Show quicksaves.
-					for(size_t i = 0; i < savegames.size(); i++) {
-						const SaveGame & save = savegames[i];
-						
-						if(!save.quicksave) {
-							continue;
-						}
-						
-						std::ostringstream text;
-						text << quicksaveName << ' ' << ++quicksaveNum << "   " << save.time;
-						
-						CMenuElement * e = new CMenuElementText(BUTTON_MENUEDITQUEST_SAVEINFO, hFontControls,
-						                                        text.str(), fPosX1, 0.f, Color::grayb(127),
-						                                        .8f, EDIT_QUEST_SAVE_CONFIRM);
-						e->SetCheckOff();
-						e->lData = i;
-						pWindowMenuConsole->AddMenuCenterY(e);
-					}
-					
-					// Show regular saves.
-					for(size_t i = 0; i < savegames.size(); i++) {
-						const SaveGame & save = savegames[i];
-						
-						if(save.quicksave) {
-							continue;
-						}
-						
-						string text = save.name +  "   " + save.time;
-						
-						CMenuElement * e = new CMenuElementText(BUTTON_MENUEDITQUEST_SAVEINFO, hFontControls,
-						                                        text, fPosX1, 0.f, lColor, .8f,
-						                                        EDIT_QUEST_SAVE_CONFIRM);
-						e->lData = i;
-						pWindowMenuConsole->AddMenuCenterY(e);
-					}
-					
-					for(size_t i = savegames.size(); i <= 15; i++) {
-						
-						std::ostringstream text;
-						text << '-' << std::setfill('0') << std::setw(4) << i << '-';
-						
-						CMenuElementText * e = new CMenuElementText(BUTTON_MENUEDITQUEST_SAVEINFO, hFontControls, text.str(), fPosX1,
-						                                            0.f, lColor, .8f,
-						                                            EDIT_QUEST_SAVE_CONFIRM);
-
-						e->eMenuState = EDIT_QUEST_SAVE_CONFIRM;
-						e->lData = -1;
-						pWindowMenuConsole->AddMenuCenterY(e);
-					}
-
-					me01 = new CMenuElementText(-1, hFontControls, " ", fPosX1, 0.f, lColor, 0.8f, EDIT_QUEST_SAVE_CONFIRM);
-					me01->lData = -1;
-					me01->SetCheckOff();
-					pWindowMenuConsole->AddMenuCenterY((CMenuElementText*)me01);
-
-					pTex = TextureContainer::Load("graph/interface/menus/back");
-					me = new CMenuCheckButton(-1, posBack + Vec2f(0.f, RATIO_Y(20)), pTex?pTex->m_dwWidth:0, pTex, NULL, NULL);
-
-					me->eMenuState = EDIT_QUEST;
-					me->SetShortCut(Keyboard::Key_Escape);
-					pWindowMenuConsole->AddMenu(me);
-
-					pWindowMenu->AddConsole(pWindowMenuConsole);
-
-					// SAVE CONFIRM--------------------------------------------
-					pWindowMenuConsole = new CWindowMenuConsole(iWindowConsoleOffsetX,iWindowConsoleOffsetY,iWindowConsoleWidth,iWindowConsoleHeight,EDIT_QUEST_SAVE_CONFIRM);
-					pWindowMenuConsole->lData = -1;
-
-					pTex = TextureContainer::Load("graph/interface/icons/menu_main_save");
-					me = new CMenuCheckButton(-1, Vec2f(0.f, 0.f), pTex?pTex->m_dwWidth:0, pTex, NULL, NULL);
-					((CMenuCheckButton *)me)->bCheck = false;
-					pWindowMenuConsole->AddMenuCenter(me);
-					
-					szMenuText = getLocalised("system_menu_editquest_newsavegame", "---");
-
-					me = new CMenuElementText(-1, hFontMenu, szMenuText, fPosX1, 0.f, lColor, 1.f, NOP);
-					me->lData = -1;
-
-					pWindowMenuConsole->AddMenuCenter(me);
-					me->eState=EDIT;
-					me->ePlace=CENTER;
-
-					pPanel = new CMenuPanel();
-					
-					// Delete button
-					szMenuText = getLocalised("system_menus_main_editquest_delete");
-					me = new CMenuElementText(BUTTON_MENUEDITQUEST_DELETE, hFontMenu, szMenuText, 0, 0,lColor,1.f, EDIT_QUEST_SAVE);
-					me->SetPos(RATIO_X(iWindowConsoleWidth-10)-me->GetWidth(), RATIO_Y(5));
-					pDeleteButton = (CMenuElementText*)me;
-					((CMenuElementText*)me)->lOldColor = ((CMenuElementText*)me)->lColor;
-					pPanel->AddElementNoCenterIn(me);
-					
-					// Save button
-					szMenuText = getLocalised("system_menus_main_editquest_save");
-					me = new CMenuElementText(BUTTON_MENUEDITQUEST_SAVE, hFontMenu, szMenuText, 0, 0,lColor,1.f, MAIN);
-					me->SetPos(RATIO_X(iWindowConsoleWidth-10)-me->GetWidth(), fPosBDAY);
-					pPanel->AddElementNoCenterIn(me);
-					
-					// Back button
-					pTex = TextureContainer::Load("graph/interface/menus/back");
-					me = new CMenuCheckButton(-1, posBack, pTex?pTex->m_dwWidth:0, pTex, NULL, NULL);
-					me->eMenuState = EDIT_QUEST_SAVE;
-					me->SetShortCut(Keyboard::Key_Escape);
-					pPanel->AddElementNoCenterIn(me);
-
-					pWindowMenuConsole->AddMenu(pPanel);
-
-					pWindowMenu->AddConsole(pWindowMenuConsole);
+					Menu2_Render_EditQuest(iWindowConsoleHeight, fPosBDAY, iWindowConsoleOffsetX, iWindowConsoleOffsetY, lColor, fPosX1, iWindowConsoleWidth, posBack);
 					}
 				break;
 			case OPTIONS: {
