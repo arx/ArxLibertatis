@@ -559,7 +559,7 @@ public:
 	
 	void AddMenu(CMenuElement * menu);
 	void AddMenuCenter(CMenuElement * menu);
-	void AddMenuCenterY(CMenuElement * menu);
+	void AddMenuCenterY(CMenuElement * element);
 	void AlignElementCenter(CMenuElement * element);
 	MENUSTATE Update(Vec2i pos, int offsety);
 	int Render();
