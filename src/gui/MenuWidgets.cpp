@@ -2633,13 +2633,14 @@ void CWindowMenuConsole::AddMenu(CMenuElement *_pMenuElement)
 	MenuAllZone.AddZone((CMenuZone*)_pMenuElement);
 }
 
+// TODO copy-paste
 void CWindowMenuConsole::AddMenuCenterY(CMenuElement * element) {
 
 	element->ePlace = CENTERY;
 
 	int iDy = element->rZone.bottom - element->rZone.top;
 
-	for(size_t iJ = 0; iJ < MenuAllZone.GetNbZone(); iJ++ ) {
+	for(size_t iJ = 0; iJ < MenuAllZone.GetNbZone(); iJ++) {
 		CMenuZone * pZone = MenuAllZone.GetZoneNum(iJ);
 
 		iDy += iInterligne;
@@ -2660,8 +2661,7 @@ void CWindowMenuConsole::AddMenuCenterY(CMenuElement * element) {
 	
 	for(size_t iJ = 0; iJ < MenuAllZone.GetNbZone(); iJ++) {
 		CMenuZone *pZone = MenuAllZone.GetZoneNum(iJ);
-		iDy = pZone->rZone.bottom - pZone->rZone.top;
-		iDepY += iDy + iInterligne;
+		iDepY += (pZone->rZone.bottom - pZone->rZone.top) + iInterligne;
 		
 		pZone->Move(Vec2i(0, dy));
 	}
@@ -2671,32 +2671,31 @@ void CWindowMenuConsole::AddMenuCenterY(CMenuElement * element) {
 	MenuAllZone.AddZone(element);
 }
 
-void CWindowMenuConsole::AddMenuCenter(CMenuElement * _pMenuElement) {
+// TODO copy-paste
+void CWindowMenuConsole::AddMenuCenter(CMenuElement * element) {
 
-	_pMenuElement->ePlace    =    CENTER;
+	element->ePlace = CENTER;
 
-	int iDx = _pMenuElement->rZone.right - _pMenuElement->rZone.left;
-	int dx  = ((m_size.x - iDx) >> 1) - _pMenuElement->rZone.left;
+	int iDx = element->rZone.right - element->rZone.left;
+	int dx  = ((m_size.x - iDx) >> 1) - element->rZone.left;
 
 	if(dx < 0) {
 		dx = 0;
 	}
 
-	int iDy = _pMenuElement->rZone.bottom - _pMenuElement->rZone.top;
+	int iDy = element->rZone.bottom - element->rZone.top;
 
 	for(size_t iJ = 0; iJ < MenuAllZone.GetNbZone(); iJ++) {
-		CMenuZone *pZone = MenuAllZone.GetZoneNum(iJ);
+		CMenuZone * pZone = MenuAllZone.GetZoneNum(iJ);
 
 		iDy += iInterligne;
 		iDy += pZone->rZone.bottom - pZone->rZone.top;
 	}
 
-	int iDepY;
+	int iDepY = m_offset.y;
 
-	if(iDy < m_size.y ) {
-		iDepY = m_offset.y + ( ( m_size.y - iDy ) >> 1 );
-	} else {
-		iDepY = m_offset.y;
+	if(iDy < m_size.y) {
+		iDepY += ((m_size.y - iDy) >> 1);
 	}
 
 	int dy = 0;
@@ -2706,14 +2705,15 @@ void CWindowMenuConsole::AddMenuCenter(CMenuElement * _pMenuElement) {
 	}
 	
 	for(size_t iJ = 0; iJ < MenuAllZone.GetNbZone(); iJ++) {
-		CMenuZone *pZone = MenuAllZone.GetZoneNum( iJ );
-		iDepY += pZone->rZone.bottom - pZone->rZone.top + iInterligne;
+		CMenuZone *pZone = MenuAllZone.GetZoneNum(iJ);
+		iDepY += (pZone->rZone.bottom - pZone->rZone.top) + iInterligne;
+		
 		pZone->Move(Vec2i(0, dy));
 	}
 
-	_pMenuElement->Move(Vec2i(dx, iDepY));
+	element->Move(Vec2i(dx, iDepY));
 
-	MenuAllZone.AddZone( (CMenuZone*) _pMenuElement );
+	MenuAllZone.AddZone(element);
 }
 
 void CWindowMenuConsole::AlignElementCenter(CMenuElement *_pMenuElement) {
