@@ -1520,15 +1520,12 @@ CMenuElementText::CMenuElementText(int _iID, Font* _pFont, const std::string& _p
 	if(!_pText.compare("---")) {
 		bTestYDouble=true;
 	}
-
-	lpszText= _pText;
-
-	Vec2i textSize = _pFont->getTextSize(_pText);
+	
 	rZone.left = checked_range_cast<Rect::Num>(pos.x);
 	rZone.top = checked_range_cast<Rect::Num>(pos.y);
-	rZone.right  = rZone.left + textSize.x;
-	rZone.bottom = rZone.top + textSize.y;
-
+	
+	SetText(_pText);
+	
 	lColor = Color(232, 204, 142);
 	lColorHighlight=lOldColor=Color(255, 255, 255);
 
