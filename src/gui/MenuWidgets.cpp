@@ -1180,11 +1180,11 @@ char pNoDef2[]="---";
 	pWindowMenu->eCurrentMenuState=OPTIONS;	
 }
 
-void Menu2_Render_Quit(float fPosBDAY, Vec2f posBack, int iWindowConsoleWidth, int iWindowConsoleHeight, Vec2i offset, Color lColor)
+void Menu2_Render_Quit(float fPosBDAY, Vec2f posBack, Vec2i size, Vec2i offset, Color lColor)
 {
 	std::string szMenuText;
 	CMenuElement *me = NULL;
-	CWindowMenuConsole *pWindowMenuConsole=new CWindowMenuConsole(offset.x,offset.y,iWindowConsoleWidth,iWindowConsoleHeight,QUIT);
+	CWindowMenuConsole *pWindowMenuConsole=new CWindowMenuConsole(offset.x,offset.y,size.x,size.y,QUIT);
 	szMenuText = getLocalised("system_menus_main_quit");
 	me=new CMenuElementText(-1, hFontMenu, szMenuText,0,0,lColor,1.f, NOP);
 	me->bCheck = false;
@@ -1200,7 +1200,7 @@ void Menu2_Render_Quit(float fPosBDAY, Vec2f posBack, int iWindowConsoleWidth, i
 
 	me = new CMenuElementText(BUTTON_MENUMAIN_QUIT, hFontMenu, szMenuText, 0, 0,lColor,1.f, NEW_QUEST_ENTER_GAME);
 
-	me->SetPos(RATIO_X(iWindowConsoleWidth-10)-me->GetWidth(), 0);
+	me->SetPos(RATIO_X(size.x-10)-me->GetWidth(), 0);
 	pPanel->AddElementNoCenterIn(me);
 	szMenuText = getLocalised("system_no");
 	me = new CMenuElementText(-1, hFontMenu, szMenuText, posBack.x, 0,lColor,1.f, MAIN);
@@ -1356,7 +1356,7 @@ bool Menu2_Render() {
 			break;
 		
 		case QUIT: {
-				Menu2_Render_Quit(fPosBDAY, posBack, windowConsoleSize.x, windowConsoleSize.y, windowConsoleOffset, lColor);
+				Menu2_Render_Quit(fPosBDAY, posBack, windowConsoleSize, windowConsoleOffset, lColor);
 			
 			
 			break;
