@@ -592,14 +592,14 @@ void Menu2_Render_EditQuest(Vec2i size, float fPosBDAY, Vec2i offset, Color lCol
 	pWindowMenu->AddConsole(pWindowMenuConsole);
 }
 
-void Menu2_Render_Options(int iWindowConsoleHeight, int iPosX2, int iWindowConsoleWidth, float fPosBDAY, float fPosX1, Vec2i offset, float fPosApply, Vec2f posBack, Color lColor, Vec2f posNext)
+void Menu2_Render_Options(Vec2i size, int iPosX2, float fPosBDAY, float fPosX1, Vec2i offset, float fPosApply, Vec2f posBack, Color lColor, Vec2f posNext)
 {
 	std::string szMenuText;
 	CMenuElement *me;
 	CMenuPanel *pc;
 	TextureContainer *pTex;
 
-	CWindowMenuConsole *pWindowMenuConsole=new CWindowMenuConsole(offset.x,offset.y,iWindowConsoleWidth,iWindowConsoleHeight,OPTIONS);
+	CWindowMenuConsole *pWindowMenuConsole=new CWindowMenuConsole(offset.x,offset.y,size.x,size.y,OPTIONS);
 
 	szMenuText = getLocalised("system_menus_options_video");
 	me = new CMenuElementText(BUTTON_MENUOPTIONSVIDEO_INIT, hFontMenu, szMenuText, 0, 0,lColor,1.f,OPTIONS_VIDEO);
@@ -623,7 +623,7 @@ void Menu2_Render_Options(int iWindowConsoleHeight, int iPosX2, int iWindowConso
 //------------------ END OPTIONS
 
 //------------------ START VIDEO
-	pWindowMenuConsole=new CWindowMenuConsole(offset.x,offset.y - (35),iWindowConsoleWidth,iWindowConsoleHeight, OPTIONS_VIDEO);
+	pWindowMenuConsole=new CWindowMenuConsole(offset.x,offset.y - (35),size.x,size.y, OPTIONS_VIDEO);
 
 	
 	// Renderer selection
@@ -646,7 +646,7 @@ void Menu2_Render_Options(int iWindowConsoleHeight, int iPosX2, int iWindowConso
 		}
 #endif
 		
-		float fRatio    = (RATIO_X(iWindowConsoleWidth-9) - slider->GetWidth()); 
+		float fRatio    = (RATIO_X(size.x-9) - slider->GetWidth()); 
 		slider->Move(Vec2i(checked_range_cast<int>(fRatio), 0));
 		pc->AddElement(slider);
 		pWindowMenuConsole->AddMenuCenterY(pc);
@@ -719,7 +719,7 @@ void Menu2_Render_Options(int iWindowConsoleHeight, int iPosX2, int iWindowConso
 		pMenuSliderResol->iPos = pMenuSliderResol->vText.size() - 1;
 	}
 
-	float fRatio    = (RATIO_X(iWindowConsoleWidth-9) - pMenuSliderResol->GetWidth()); 
+	float fRatio    = (RATIO_X(size.x-9) - pMenuSliderResol->GetWidth()); 
 
 	pMenuSliderResol->Move(Vec2i(checked_range_cast<int>(fRatio), 0));
 
@@ -743,7 +743,7 @@ void Menu2_Render_Options(int iWindowConsoleHeight, int iPosX2, int iWindowConso
 	((CMenuSliderText *)me)->AddText(new CMenuElementText(-1, hFontMenu, szMenuText, 0, 0,lColor,1.f, OPTIONS_OTHERDETAILS));
 
 	
-	fRatio    = (RATIO_X(iWindowConsoleWidth-9) - me->GetWidth()); 
+	fRatio    = (RATIO_X(size.x-9) - me->GetWidth()); 
 	me->Move(Vec2i(checked_range_cast<int>(fRatio), 0));
 
 
@@ -798,7 +798,7 @@ void Menu2_Render_Options(int iWindowConsoleHeight, int iPosX2, int iWindowConso
 	szMenuText = getLocalised("system_menus_video_apply");
 	szMenuText += "   ";
 	pMenuElementApply = me = new CMenuElementText(BUTTON_MENUOPTIONSVIDEO_APPLY, hFontMenu, szMenuText, fPosApply, 0.f, lColor, 1.f, NOP);
-	me->SetPos(RATIO_X(iWindowConsoleWidth-10)-me->GetWidth(), fPosBDAY + RATIO_Y(40));
+	me->SetPos(RATIO_X(size.x-10)-me->GetWidth(), fPosBDAY + RATIO_Y(40));
 	me->SetCheckOff();
 	pc->AddElementNoCenterIn(me);
 
@@ -814,7 +814,7 @@ void Menu2_Render_Options(int iWindowConsoleHeight, int iPosX2, int iWindowConso
 	//------------------ END VIDEO
 
 	//------------------ START AUDIO
-	pWindowMenuConsole = new CWindowMenuConsole(offset.x,offset.y,iWindowConsoleWidth,iWindowConsoleHeight,OPTIONS_AUDIO);
+	pWindowMenuConsole = new CWindowMenuConsole(offset.x,offset.y,size.x,size.y,OPTIONS_AUDIO);
 
 	// Audio backend selection
 	{
@@ -836,7 +836,7 @@ void Menu2_Render_Options(int iWindowConsoleHeight, int iPosX2, int iWindowConso
 		}
 #endif
 		
-		float fRatio    = (RATIO_X(iWindowConsoleWidth-9) - slider->GetWidth()); 
+		float fRatio    = (RATIO_X(size.x-9) - slider->GetWidth()); 
 		slider->Move(Vec2i(checked_range_cast<int>(fRatio), 0));
 		pc->AddElement(slider);
 		pWindowMenuConsole->AddMenuCenterY(pc);
@@ -903,7 +903,7 @@ void Menu2_Render_Options(int iWindowConsoleHeight, int iPosX2, int iWindowConso
 	//------------------ END AUDIO
 
 	//------------------ START INPUT
-	pWindowMenuConsole = new CWindowMenuConsole(offset.x,offset.y,iWindowConsoleWidth,iWindowConsoleHeight, OPTIONS_INPUT);
+	pWindowMenuConsole = new CWindowMenuConsole(offset.x,offset.y,size.x,size.y, OPTIONS_INPUT);
 	
 	szMenuText = getLocalised("system_menus_options_input_customize_controls");
 	me = new CMenuElementText(-1, hFontMenu, szMenuText, fPosX1, 0.f, lColor, 1.f, OPTIONS_INPUT_CUSTOMIZE_KEYS_1);
@@ -1074,7 +1074,7 @@ char pNoDef2[]="---";
 	};
 
 
-	pWindowMenuConsole=new CWindowMenuConsole(offset.x,offset.y,iWindowConsoleWidth,iWindowConsoleHeight,OPTIONS_INPUT_CUSTOMIZE_KEYS_1);
+	pWindowMenuConsole=new CWindowMenuConsole(offset.x,offset.y,size.x,size.y,OPTIONS_INPUT_CUSTOMIZE_KEYS_1);
 
 	CUSTOM_CTRL_FUNC("system_menus_options_input_customize_controls_mouselook",1, BUTTON_MENUOPTIONS_CONTROLS_CUST_USE1, BUTTON_MENUOPTIONS_CONTROLS_CUST_USE2);
 
@@ -1109,7 +1109,7 @@ char pNoDef2[]="---";
 	pc->AddElementNoCenterIn(me);
 	szMenuText = getLocalised( "system_menus_options_input_customize_default" );
 	me = new CMenuElementText(BUTTON_MENUOPTIONS_CONTROLS_CUST_DEFAULT, hFontMenu, szMenuText, 0, 0,lColor,1.f, NOP);
-	me->SetPos((RATIO_X(iWindowConsoleWidth) - me->GetWidth())*0.5f, fPosBDAY);
+	me->SetPos((RATIO_X(size.x) - me->GetWidth())*0.5f, fPosBDAY);
 	pc->AddElementNoCenterIn(me);
 	pTex = TextureContainer::Load("graph/interface/menus/next");
 	me = new CMenuCheckButton(BUTTON_MENUOPTIONS_CONTROLS_CUST_BACK, posNext, pTex?pTex->m_dwWidth:0, pTex, NULL, NULL);
@@ -1122,7 +1122,7 @@ char pNoDef2[]="---";
 	pWindowMenu->AddConsole(pWindowMenuConsole);
 	pWindowMenuConsole->ReInitActionKey();
 
-	pWindowMenuConsole=new CWindowMenuConsole(offset.x,offset.y,iWindowConsoleWidth,iWindowConsoleHeight,OPTIONS_INPUT_CUSTOMIZE_KEYS_2);
+	pWindowMenuConsole=new CWindowMenuConsole(offset.x,offset.y,size.x,size.y,OPTIONS_INPUT_CUSTOMIZE_KEYS_2);
 
 	fControlPosY = static_cast<long>(RATIO_Y(8.f));
 	CUSTOM_CTRL_FUNC("system_menus_options_input_customize_controls_inventory",1, BUTTON_MENUOPTIONS_CONTROLS_CUST_INVENTORY1, BUTTON_MENUOPTIONS_CONTROLS_CUST_INVENTORY2);
@@ -1162,7 +1162,7 @@ char pNoDef2[]="---";
 	pc->AddElementNoCenterIn(me);
 	szMenuText = getLocalised( "system_menus_options_input_customize_default" );
 	me = new CMenuElementText(BUTTON_MENUOPTIONS_CONTROLS_CUST_DEFAULT, hFontMenu, szMenuText, 0, 0,lColor,1.f, NOP);
-	me->SetPos((RATIO_X(iWindowConsoleWidth) - me->GetWidth())*0.5f, fPosBDAY);
+	me->SetPos((RATIO_X(size.x) - me->GetWidth())*0.5f, fPosBDAY);
 	pc->AddElementNoCenterIn(me);
 
 	pWindowMenuConsole->AddMenu(pc);
@@ -1351,7 +1351,7 @@ bool Menu2_Render() {
 				}
 			break;
 		case OPTIONS: {
-				Menu2_Render_Options(windowConsoleSize.y, iPosX2, windowConsoleSize.x, fPosBDAY, fPosX1, windowConsoleOffset, fPosApply, posBack, lColor, posNext);
+				Menu2_Render_Options(windowConsoleSize, iPosX2, fPosBDAY, fPosX1, windowConsoleOffset, fPosApply, posBack, lColor, posNext);
 			}
 			break;
 		
