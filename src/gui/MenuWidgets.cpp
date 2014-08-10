@@ -348,14 +348,14 @@ void Menu2_Render_NewQuest(Vec2f posBack, Vec2i size, Vec2i offset, float fPosBD
 	pWindowMenu->eCurrentMenuState=NEW_QUEST;
 }
 
-void Menu2_Render_EditQuest(int iWindowConsoleHeight, float fPosBDAY, Vec2i offset, Color lColor, float fPosX1, int iWindowConsoleWidth, Vec2f posBack)
+void Menu2_Render_EditQuest(Vec2i size, float fPosBDAY, Vec2i offset, Color lColor, float fPosX1, Vec2f posBack)
 {
 	CMenuElement *me;
 	CMenuElement *me01;
 	CMenuPanel *pPanel;
 	TextureContainer *pTex;
 	std::string szMenuText;
-	CWindowMenuConsole *pWindowMenuConsole=new CWindowMenuConsole(offset.x,offset.y,iWindowConsoleWidth,iWindowConsoleHeight,EDIT_QUEST);
+	CWindowMenuConsole *pWindowMenuConsole=new CWindowMenuConsole(offset.x,offset.y,size.x,size.y,EDIT_QUEST);
 
 	szMenuText = getLocalised( "system_menus_main_editquest_load");
 	me = new CMenuElementText(BUTTON_MENUEDITQUEST_LOAD_INIT, hFontMenu, szMenuText, 0, 0, lColor, 1.f, EDIT_QUEST_LOAD);
@@ -382,7 +382,7 @@ void Menu2_Render_EditQuest(int iWindowConsoleHeight, float fPosBDAY, Vec2i offs
 	pWindowMenu->AddConsole(pWindowMenuConsole);
 
 	// LOAD ---------------------------------------------------
-	pWindowMenuConsole=new CWindowMenuConsole(offset.x,offset.y-(40),iWindowConsoleWidth,iWindowConsoleHeight,EDIT_QUEST_LOAD);
+	pWindowMenuConsole=new CWindowMenuConsole(offset.x,offset.y-(40),size.x,size.y,EDIT_QUEST_LOAD);
 	pWindowMenuConsole->lData = -1;
 	pWindowMenuConsole->iInterligne = 5;
 
@@ -442,7 +442,7 @@ void Menu2_Render_EditQuest(int iWindowConsoleHeight, float fPosBDAY, Vec2i offs
 		szMenuText = getLocalised("system_menus_main_editquest_delete");
 		szMenuText += "   ";
 		me = new CMenuElementText(BUTTON_MENUEDITQUEST_DELETE_CONFIRM, hFontMenu, szMenuText, 0, 0,lColor,1.f, EDIT_QUEST_LOAD);
-		me->SetPos(RATIO_X(iWindowConsoleWidth-10)-me->GetWidth(), RATIO_Y(42));
+		me->SetPos(RATIO_X(size.x-10)-me->GetWidth(), RATIO_Y(42));
 		pDeleteConfirm=(CMenuElementText*)me;
 		me->SetCheckOff();
 		((CMenuElementText*)me)->lOldColor = ((CMenuElementText*)me)->lColor;
@@ -453,7 +453,7 @@ void Menu2_Render_EditQuest(int iWindowConsoleHeight, float fPosBDAY, Vec2i offs
 		szMenuText = getLocalised("system_menus_main_editquest_load");
 		szMenuText += "   ";
 		me = new CMenuElementText(BUTTON_MENUEDITQUEST_LOAD_CONFIRM, hFontMenu, szMenuText, 0, 0,lColor,1.f, MAIN);
-		me->SetPos(RATIO_X(iWindowConsoleWidth-10)-me->GetWidth(), fPosBDAY + RATIO_Y(40));
+		me->SetPos(RATIO_X(size.x-10)-me->GetWidth(), fPosBDAY + RATIO_Y(40));
 		pLoadConfirm=(CMenuElementText*)me;
 		me->SetCheckOff();
 		((CMenuElementText*)me)->lOldColor = ((CMenuElementText*)me)->lColor;
@@ -472,7 +472,7 @@ void Menu2_Render_EditQuest(int iWindowConsoleHeight, float fPosBDAY, Vec2i offs
 	pWindowMenu->AddConsole(pWindowMenuConsole);
 
 	// SAVE----------------------------------------------------
-	pWindowMenuConsole=new CWindowMenuConsole(offset.x,offset.y - (40), iWindowConsoleWidth,iWindowConsoleHeight,EDIT_QUEST_SAVE);
+	pWindowMenuConsole=new CWindowMenuConsole(offset.x,offset.y - (40), size.x,size.y,EDIT_QUEST_SAVE);
 	pWindowMenuConsole->iInterligne = 5;
 
 	pTex = TextureContainer::Load("graph/interface/icons/menu_main_save");
@@ -547,7 +547,7 @@ void Menu2_Render_EditQuest(int iWindowConsoleHeight, float fPosBDAY, Vec2i offs
 	pWindowMenu->AddConsole(pWindowMenuConsole);
 
 	// SAVE CONFIRM--------------------------------------------
-	pWindowMenuConsole = new CWindowMenuConsole(offset.x,offset.y,iWindowConsoleWidth,iWindowConsoleHeight,EDIT_QUEST_SAVE_CONFIRM);
+	pWindowMenuConsole = new CWindowMenuConsole(offset.x,offset.y,size.x,size.y,EDIT_QUEST_SAVE_CONFIRM);
 	pWindowMenuConsole->lData = -1;
 
 	pTex = TextureContainer::Load("graph/interface/icons/menu_main_save");
@@ -569,7 +569,7 @@ void Menu2_Render_EditQuest(int iWindowConsoleHeight, float fPosBDAY, Vec2i offs
 	// Delete button
 	szMenuText = getLocalised("system_menus_main_editquest_delete");
 	me = new CMenuElementText(BUTTON_MENUEDITQUEST_DELETE, hFontMenu, szMenuText, 0, 0,lColor,1.f, EDIT_QUEST_SAVE);
-	me->SetPos(RATIO_X(iWindowConsoleWidth-10)-me->GetWidth(), RATIO_Y(5));
+	me->SetPos(RATIO_X(size.x-10)-me->GetWidth(), RATIO_Y(5));
 	pDeleteButton = (CMenuElementText*)me;
 	((CMenuElementText*)me)->lOldColor = ((CMenuElementText*)me)->lColor;
 	pPanel->AddElementNoCenterIn(me);
@@ -577,7 +577,7 @@ void Menu2_Render_EditQuest(int iWindowConsoleHeight, float fPosBDAY, Vec2i offs
 	// Save button
 	szMenuText = getLocalised("system_menus_main_editquest_save");
 	me = new CMenuElementText(BUTTON_MENUEDITQUEST_SAVE, hFontMenu, szMenuText, 0, 0,lColor,1.f, MAIN);
-	me->SetPos(RATIO_X(iWindowConsoleWidth-10)-me->GetWidth(), fPosBDAY);
+	me->SetPos(RATIO_X(size.x-10)-me->GetWidth(), fPosBDAY);
 	pPanel->AddElementNoCenterIn(me);
 	
 	// Back button
@@ -1347,7 +1347,7 @@ bool Menu2_Render() {
 			break;
 		}
 		case EDIT_QUEST: {
-				Menu2_Render_EditQuest(windowConsoleSize.y, fPosBDAY, windowConsoleOffset, lColor, fPosX1, windowConsoleSize.x, posBack);
+				Menu2_Render_EditQuest(windowConsoleSize, fPosBDAY, windowConsoleOffset, lColor, fPosX1, posBack);
 				}
 			break;
 		case OPTIONS: {
