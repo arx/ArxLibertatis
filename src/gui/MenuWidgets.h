@@ -368,8 +368,6 @@ protected:
 class CMenuPanel : public CMenuElement {
 	
 	public:
-		std::vector<CMenuElement *>	vElement;
-	public:
 		CMenuPanel();
 		virtual ~CMenuPanel();
 
@@ -384,6 +382,9 @@ class CMenuPanel : public CMenuElement {
 		void RenderMouseOver() { }
 		CMenuZone * IsMouseOver(const Vec2s & mousePos) const;
 		CMenuZone * GetZoneWithID(int zoneId);
+		
+private:
+	std::vector<CMenuElement *>	vElement;
 };
 
 class CMenuElementText: public CMenuElement {
