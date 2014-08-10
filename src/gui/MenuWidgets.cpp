@@ -1281,92 +1281,92 @@ bool Menu2_Render() {
 
 	bool bScroll=true;
 	{
-		if(pMenuElementResume) {
-
-			if(ARXMenu_CanResumeGame()) {
-				pMenuElementResume->SetCheckOn();
-				((CMenuElementText*)pMenuElementResume)->lColor=lColor;
-			} else {
-				pMenuElementResume->SetCheckOff();
-				((CMenuElementText*)pMenuElementResume)->lColor=Color(127,127,127);
-			}
+	if(pMenuElementResume) {
+		
+		if(ARXMenu_CanResumeGame()) {
+			pMenuElementResume->SetCheckOn();
+			((CMenuElementText*)pMenuElementResume)->lColor=lColor;
+		} else {
+			pMenuElementResume->SetCheckOff();
+			((CMenuElementText*)pMenuElementResume)->lColor=Color(127,127,127);
 		}
-
-		MENUSTATE eMenuState = pMenu->Update();
-
-		if(eOldMenuState != NOP) {
-			eMenuState=eOldMenuState;
-			bScroll=false;
+	}
+	
+	MENUSTATE eMenuState = pMenu->Update();
+	
+	if(eOldMenuState != NOP) {
+		eMenuState=eOldMenuState;
+		bScroll=false;
+	}
+	
+	if(eMenuState == RESUME_GAME) {
+		pTextManage->Clear();
+		ARXmenu.currentmode = AMCM_OFF;
+		pMenu->pZoneClick = NULL;
+		
+		delete pWindowMenu, pWindowMenu = NULL;
+		delete pMenu, pMenu = NULL;
+		
+		GRenderer->SetRenderState(Renderer::AlphaBlending, false);
+		GRenderer->GetTextureStage(0)->setWrapMode(TextureStage::WrapRepeat);
+		GRenderer->SetRenderState(Renderer::DepthWrite, true);
+		GRenderer->SetRenderState(Renderer::DepthTest, true);
+		
+		return true;
+	} else if(eMenuState != NOP) {
+		pMenu->eOldMenuState=eMenuState;
+		
+		delete pWindowMenu, pWindowMenu = NULL;
+		
+		//suivant la resolution
+		int iWindowMenuWidth = (321);
+		int iWindowMenuHeight = (430);
+		int iWindowMenuPosX = (20);
+		int iWindowMenuPosY = (480-iWindowMenuHeight)>>1;
+		int iWindowConsoleOffsetX = (0);
+		int iWindowConsoleOffsetY = (14-10);
+		int iWindowConsoleWidth = (iWindowMenuWidth-iWindowConsoleOffsetX);
+		int iWindowConsoleHeight = (iWindowMenuHeight-iWindowConsoleOffsetY+20);
+		
+		float fPosX1 = RATIO_X(20);
+		float fPosX2 = RATIO_X(200);
+		
+		int iPosX2 = checked_range_cast<int>(fPosX2);
+		
+		Vec2f posBack = Vec2f(RATIO_X(10), RATIO_Y(190));
+		Vec2f posNext = Vec2f(RATIO_X(140), RATIO_Y(190));
+		
+		float fPosApply = RATIO_X(240);
+		
+		float fPosBDAY  = RATIO_Y(380);
+		
+		pWindowMenu = new CWindowMenu(Vec2i(iWindowMenuPosX, iWindowMenuPosY), Vec2i(iWindowMenuWidth, iWindowMenuHeight));
+		
+		switch(eMenuState) {
+		case NEW_QUEST: {
+				Menu2_Render_NewQuest(posBack, iWindowConsoleWidth, iWindowConsoleOffsetY, iWindowConsoleHeight, iWindowConsoleOffsetX, fPosBDAY, lColor);
+			
+			break;
 		}
-
-		if(eMenuState == RESUME_GAME) {
-			pTextManage->Clear();
-			ARXmenu.currentmode = AMCM_OFF;
-			pMenu->pZoneClick = NULL;
-			
-			delete pWindowMenu, pWindowMenu = NULL;
-			delete pMenu, pMenu = NULL;
-			
-			GRenderer->SetRenderState(Renderer::AlphaBlending, false);
-			GRenderer->GetTextureStage(0)->setWrapMode(TextureStage::WrapRepeat);
-			GRenderer->SetRenderState(Renderer::DepthWrite, true);
-			GRenderer->SetRenderState(Renderer::DepthTest, true);
-
-			return true;
-		} else if(eMenuState != NOP) {
-			pMenu->eOldMenuState=eMenuState;
-			
-			delete pWindowMenu, pWindowMenu = NULL;
-			
-			//suivant la resolution
-			int iWindowMenuWidth = (321);
-			int iWindowMenuHeight = (430);
-			int iWindowMenuPosX = (20);
-			int iWindowMenuPosY = (480-iWindowMenuHeight)>>1;
-			int iWindowConsoleOffsetX = (0);
-			int iWindowConsoleOffsetY = (14-10);
-			int iWindowConsoleWidth = (iWindowMenuWidth-iWindowConsoleOffsetX);
-			int iWindowConsoleHeight = (iWindowMenuHeight-iWindowConsoleOffsetY+20);
-
-			float fPosX1 = RATIO_X(20);
-			float fPosX2 = RATIO_X(200);
-
-			int iPosX2 = checked_range_cast<int>(fPosX2);
-			
-			Vec2f posBack = Vec2f(RATIO_X(10), RATIO_Y(190));
-			Vec2f posNext = Vec2f(RATIO_X(140), RATIO_Y(190));
-
-			float fPosApply = RATIO_X(240);
-
-			float fPosBDAY  = RATIO_Y(380);
-
-			pWindowMenu = new CWindowMenu(Vec2i(iWindowMenuPosX, iWindowMenuPosY), Vec2i(iWindowMenuWidth, iWindowMenuHeight));
-
-			switch(eMenuState) {
-			case NEW_QUEST: {
-					Menu2_Render_NewQuest(posBack, iWindowConsoleWidth, iWindowConsoleOffsetY, iWindowConsoleHeight, iWindowConsoleOffsetX, fPosBDAY, lColor);
-
-				break;
-			}
-			case EDIT_QUEST: {
-					Menu2_Render_EditQuest(iWindowConsoleHeight, fPosBDAY, iWindowConsoleOffsetX, iWindowConsoleOffsetY, lColor, fPosX1, iWindowConsoleWidth, posBack);
-					}
-				break;
-			case OPTIONS: {
-					Menu2_Render_Options(iWindowConsoleHeight, iPosX2, iWindowConsoleWidth, fPosBDAY, fPosX1, iWindowConsoleOffsetY, iWindowConsoleOffsetX, fPosApply, posBack, lColor, posNext);
+		case EDIT_QUEST: {
+				Menu2_Render_EditQuest(iWindowConsoleHeight, fPosBDAY, iWindowConsoleOffsetX, iWindowConsoleOffsetY, lColor, fPosX1, iWindowConsoleWidth, posBack);
 				}
-				break;
-
-			case QUIT: {
-					Menu2_Render_Quit(fPosBDAY, posBack, iWindowConsoleWidth, iWindowConsoleOffsetX, iWindowConsoleHeight, iWindowConsoleOffsetY, lColor);
-
-
-				break;
+			break;
+		case OPTIONS: {
+				Menu2_Render_Options(iWindowConsoleHeight, iPosX2, iWindowConsoleWidth, fPosBDAY, fPosX1, iWindowConsoleOffsetY, iWindowConsoleOffsetX, fPosApply, posBack, lColor, posNext);
 			}
-			default: break; // Unhandled menu state.
-			}
-
+			break;
+		
+		case QUIT: {
+				Menu2_Render_Quit(fPosBDAY, posBack, iWindowConsoleWidth, iWindowConsoleOffsetX, iWindowConsoleHeight, iWindowConsoleOffsetY, lColor);
+			
+			
+			break;
 		}
+		default: break; // Unhandled menu state.
+		}
+	
+	}
 	}
 	pMenu->Render();
 
