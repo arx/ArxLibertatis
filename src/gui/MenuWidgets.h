@@ -496,7 +496,6 @@ public:
 	int					iOldState;
 	Vec2i m_pos;
 	int					iTaille;
-	CMenuAllZone	*	pAllCheckZone;
 	std::vector<TextureContainer *> vTex;
 	CMenuElementText	* pText;
 	
