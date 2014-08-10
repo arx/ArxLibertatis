@@ -592,14 +592,14 @@ void Menu2_Render_EditQuest(int iWindowConsoleHeight, float fPosBDAY, Vec2i offs
 	pWindowMenu->AddConsole(pWindowMenuConsole);
 }
 
-void Menu2_Render_Options(int iWindowConsoleHeight, int iPosX2, int iWindowConsoleWidth, float fPosBDAY, float fPosX1, int iWindowConsoleOffsetY, int iWindowConsoleOffsetX, float fPosApply, Vec2f posBack, Color lColor, Vec2f posNext)
+void Menu2_Render_Options(int iWindowConsoleHeight, int iPosX2, int iWindowConsoleWidth, float fPosBDAY, float fPosX1, Vec2i offset, float fPosApply, Vec2f posBack, Color lColor, Vec2f posNext)
 {
 	std::string szMenuText;
 	CMenuElement *me;
 	CMenuPanel *pc;
 	TextureContainer *pTex;
 
-	CWindowMenuConsole *pWindowMenuConsole=new CWindowMenuConsole(iWindowConsoleOffsetX,iWindowConsoleOffsetY,iWindowConsoleWidth,iWindowConsoleHeight,OPTIONS);
+	CWindowMenuConsole *pWindowMenuConsole=new CWindowMenuConsole(offset.x,offset.y,iWindowConsoleWidth,iWindowConsoleHeight,OPTIONS);
 
 	szMenuText = getLocalised("system_menus_options_video");
 	me = new CMenuElementText(BUTTON_MENUOPTIONSVIDEO_INIT, hFontMenu, szMenuText, 0, 0,lColor,1.f,OPTIONS_VIDEO);
@@ -623,7 +623,7 @@ void Menu2_Render_Options(int iWindowConsoleHeight, int iPosX2, int iWindowConso
 //------------------ END OPTIONS
 
 //------------------ START VIDEO
-	pWindowMenuConsole=new CWindowMenuConsole(iWindowConsoleOffsetX,iWindowConsoleOffsetY - (35),iWindowConsoleWidth,iWindowConsoleHeight, OPTIONS_VIDEO);
+	pWindowMenuConsole=new CWindowMenuConsole(offset.x,offset.y - (35),iWindowConsoleWidth,iWindowConsoleHeight, OPTIONS_VIDEO);
 
 	
 	// Renderer selection
@@ -814,7 +814,7 @@ void Menu2_Render_Options(int iWindowConsoleHeight, int iPosX2, int iWindowConso
 	//------------------ END VIDEO
 
 	//------------------ START AUDIO
-	pWindowMenuConsole = new CWindowMenuConsole(iWindowConsoleOffsetX,iWindowConsoleOffsetY,iWindowConsoleWidth,iWindowConsoleHeight,OPTIONS_AUDIO);
+	pWindowMenuConsole = new CWindowMenuConsole(offset.x,offset.y,iWindowConsoleWidth,iWindowConsoleHeight,OPTIONS_AUDIO);
 
 	// Audio backend selection
 	{
@@ -903,7 +903,7 @@ void Menu2_Render_Options(int iWindowConsoleHeight, int iPosX2, int iWindowConso
 	//------------------ END AUDIO
 
 	//------------------ START INPUT
-	pWindowMenuConsole = new CWindowMenuConsole(iWindowConsoleOffsetX,iWindowConsoleOffsetY,iWindowConsoleWidth,iWindowConsoleHeight, OPTIONS_INPUT);
+	pWindowMenuConsole = new CWindowMenuConsole(offset.x,offset.y,iWindowConsoleWidth,iWindowConsoleHeight, OPTIONS_INPUT);
 	
 	szMenuText = getLocalised("system_menus_options_input_customize_controls");
 	me = new CMenuElementText(-1, hFontMenu, szMenuText, fPosX1, 0.f, lColor, 1.f, OPTIONS_INPUT_CUSTOMIZE_KEYS_1);
@@ -1074,7 +1074,7 @@ char pNoDef2[]="---";
 	};
 
 
-	pWindowMenuConsole=new CWindowMenuConsole(iWindowConsoleOffsetX,iWindowConsoleOffsetY,iWindowConsoleWidth,iWindowConsoleHeight,OPTIONS_INPUT_CUSTOMIZE_KEYS_1);
+	pWindowMenuConsole=new CWindowMenuConsole(offset.x,offset.y,iWindowConsoleWidth,iWindowConsoleHeight,OPTIONS_INPUT_CUSTOMIZE_KEYS_1);
 
 	CUSTOM_CTRL_FUNC("system_menus_options_input_customize_controls_mouselook",1, BUTTON_MENUOPTIONS_CONTROLS_CUST_USE1, BUTTON_MENUOPTIONS_CONTROLS_CUST_USE2);
 
@@ -1122,7 +1122,7 @@ char pNoDef2[]="---";
 	pWindowMenu->AddConsole(pWindowMenuConsole);
 	pWindowMenuConsole->ReInitActionKey();
 
-	pWindowMenuConsole=new CWindowMenuConsole(iWindowConsoleOffsetX,iWindowConsoleOffsetY,iWindowConsoleWidth,iWindowConsoleHeight,OPTIONS_INPUT_CUSTOMIZE_KEYS_2);
+	pWindowMenuConsole=new CWindowMenuConsole(offset.x,offset.y,iWindowConsoleWidth,iWindowConsoleHeight,OPTIONS_INPUT_CUSTOMIZE_KEYS_2);
 
 	fControlPosY = static_cast<long>(RATIO_Y(8.f));
 	CUSTOM_CTRL_FUNC("system_menus_options_input_customize_controls_inventory",1, BUTTON_MENUOPTIONS_CONTROLS_CUST_INVENTORY1, BUTTON_MENUOPTIONS_CONTROLS_CUST_INVENTORY2);
@@ -1351,7 +1351,7 @@ bool Menu2_Render() {
 				}
 			break;
 		case OPTIONS: {
-				Menu2_Render_Options(windowConsoleSize.y, iPosX2, windowConsoleSize.x, fPosBDAY, fPosX1, windowConsoleOffset.y, windowConsoleOffset.x, fPosApply, posBack, lColor, posNext);
+				Menu2_Render_Options(windowConsoleSize.y, iPosX2, windowConsoleSize.x, fPosBDAY, fPosX1, windowConsoleOffset, fPosApply, posBack, lColor, posNext);
 			}
 			break;
 		
