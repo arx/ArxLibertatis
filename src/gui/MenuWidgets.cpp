@@ -2547,9 +2547,7 @@ MENUSTATE CWindowMenu::Render() {
 	
 	BOOST_FOREACH(CWindowMenuConsole * c, vWindowConsoleElement) {
 		if(eCurrentMenuState == c->eMenuState) {
-			if(c->Render())
-				GRenderer->SetRenderState(Renderer::AlphaBlending, false);
-			
+			c->Render();
 			break;
 		}
 	}
@@ -3141,13 +3139,11 @@ static bool UpdateGameKey(bool bEdit, CMenuElement *pmeElement, InputKeyId input
 	return bChange;
 }
 
-int CWindowMenuConsole::Render() {
+void CWindowMenuConsole::Render() {
 
 	if(bNoMenu)
-		return 0;
-
-	int iSlider=0;
-
+		return;
+	
 	//------------------------------------------------------------------------
 	// Console display
 	GRenderer->SetRenderState(Renderer::AlphaBlending, true);
@@ -3177,8 +3173,6 @@ int CWindowMenuConsole::Render() {
 		if(pMe->bActif) {
 			pMe->Update(iARXDiffTimeMenu);
 			pMe->Render();
-		} else {
-			iSlider++;
 		}
 	}
 
@@ -3274,8 +3268,6 @@ int CWindowMenuConsole::Render() {
 
 	//DEBUG ZONE
 	MenuAllZone.DrawZone();
-
-	return iSlider;
 }
 
 void CWindowMenuConsole::ReInitActionKey()

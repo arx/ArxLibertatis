@@ -562,7 +562,7 @@ public:
 	void AddMenuCenterY(CMenuElement * element);
 	void AlignElementCenter(CMenuElement * element);
 	MENUSTATE Update(Vec2i pos);
-	int Render();
+	void Render();
 	
 	CMenuElement * GetTouch(bool keyTouched, int keyId, InputKeyId* pInputKeyId = NULL, bool _bValidateTest = false);
 	void ReInitActionKey();
