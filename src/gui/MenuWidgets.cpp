@@ -3307,16 +3307,18 @@ CMenuPanel::CMenuPanel()
 
 CMenuPanel::~CMenuPanel()
 {
-	for(std::vector<CMenuElement*>::iterator it = vElement.begin(), it_end = vElement.end(); it != it_end; ++it)
-		delete (*it);
+	BOOST_FOREACH(CMenuElement * e, vElement) {
+		delete e;
+	}
 }
 
 void CMenuPanel::Move(const Vec2i & offset)
 {
 	rZone.move(offset.x, offset.y);
 	
-	for(std::vector<CMenuElement*>::iterator it = vElement.begin(), it_end = vElement.end(); it != it_end; ++it)
-		(*it)->Move(offset);
+	BOOST_FOREACH(CMenuElement * e, vElement) {
+		e->Move(offset);
+	}
 }
 
 // patch on ajoute à droite en ligne
@@ -3357,9 +3359,10 @@ void CMenuPanel::AddElementNoCenterIn(CMenuElement* _pElem)
 
 CMenuElement* CMenuPanel::OnShortCut()
 {
-	for(std::vector<CMenuElement*>::iterator it = vElement.begin(), it_end = vElement.end(); it != it_end; ++it)
-		if((*it)->OnShortCut())
-			return *it;
+	BOOST_FOREACH(CMenuElement * e, vElement) {
+		if(e->OnShortCut())
+			return e;
+	}
 
 	return NULL;
 }
@@ -3369,10 +3372,10 @@ void CMenuPanel::Update(int _iTime)
 	rZone.right = rZone.left;
 	rZone.bottom = rZone.top;
 
-	for(std::vector<CMenuElement*>::iterator it = vElement.begin(), it_end = vElement.end(); it != it_end; ++it) {
-		(*it)->Update(_iTime);
-		rZone.right = std::max(rZone.right, (*it)->rZone.right);
-		rZone.bottom = std::max(rZone.bottom, (*it)->rZone.bottom);
+	BOOST_FOREACH(CMenuElement * e, vElement) {
+		e->Update(_iTime);
+		rZone.right = std::max(rZone.right, e->rZone.right);
+		rZone.bottom = std::max(rZone.bottom, e->rZone.bottom);
 	}
 }
 
@@ -3381,16 +3384,18 @@ void CMenuPanel::Render() {
 	if(bNoMenu)
 		return;
 
-	for(std::vector<CMenuElement*>::iterator it = vElement.begin(), it_end = vElement.end(); it != it_end; ++it)
-		(*it)->Render();
+	BOOST_FOREACH(CMenuElement * e, vElement) {
+		e->Render();
+	}
 }
 
 CMenuZone * CMenuPanel::GetZoneWithID(int _iID)
 {
-	for(std::vector<CMenuElement*>::iterator it = vElement.begin(), it_end = vElement.end(); it != it_end; ++it)
-		if(CMenuZone* pZone = (*it)->GetZoneWithID(_iID))
+	BOOST_FOREACH(CMenuElement * e, vElement) {
+		if(CMenuZone * pZone = e->GetZoneWithID(_iID))
 			return pZone;
-
+	}
+	
 	return NULL;
 }
 
