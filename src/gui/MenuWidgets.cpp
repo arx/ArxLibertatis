@@ -2538,7 +2538,7 @@ MENUSTATE CWindowMenu::Render() {
 	
 	BOOST_FOREACH(CWindowMenuConsole * c, vWindowConsoleElement) {
 		if(eCurrentMenuState == c->eMenuState) {
-			eMS = c->Update(m_pos, 0);
+			eMS = c->Update(m_pos);
 			
 			if(eMS != NOP)
 				break;
@@ -2877,17 +2877,12 @@ CMenuElement * CWindowMenuConsole::GetTouch(bool keyTouched, int keyId, InputKey
 	return NULL;
 }
 
-MENUSTATE CWindowMenuConsole::Update(Vec2i pos, int _iOffsetY) {
+MENUSTATE CWindowMenuConsole::Update(Vec2i pos) {
 
 	bFrameOdd=!bFrameOdd;
 
 	iSavePosY=pos.y;
-
-	//move les zones
-	if(_iOffsetY) {
-		pos.y-=(MenuAllZone.GetZoneNum(_iOffsetY)->rZone.top)-(MenuAllZone.GetZoneNum(0)->rZone.top);
-	}
-
+	
 	MenuAllZone.Move(m_pos - m_oldPos);
 	
 	for(size_t iJ = 0; iJ < MenuAllZone.GetNbZone(); ++iJ) {
