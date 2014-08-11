@@ -3643,30 +3643,19 @@ bool CMenuSliderText::OnMouseClick() {
 
 	if(iOldPos<0)
 		iOldPos=iPos;
+	
+	const Vec2i cursor = Vec2i(GInput->getMousePosAbs());
 
-	int iX = GInput->getMousePosAbs().x;
-	int iY = GInput->getMousePosAbs().y;
-
-	if(iX >= rZone.left
-	   && iY >= rZone.top
-	   && iX <= rZone.right
-	   && iY <= rZone.bottom
-	) {
-		if(iX >= pLeftButton->rZone.left
-		   && iY >= pLeftButton->rZone.top
-		   && iX <= pLeftButton->rZone.right
-		   && iY <= pLeftButton->rZone.bottom
-		) {
+	if(rZone.contains(cursor)) {
+		if(pLeftButton->rZone.contains(cursor)) {
 			iPos--;
 
 			if(iPos < 0) {
 				iPos = vText.size() - 1;
 			}
-		} else if(iX >= pRightButton->rZone.left
-				  && iY >= pRightButton->rZone.top
-				  && iX <= pRightButton->rZone.right
-				  && iY <= pRightButton->rZone.bottom
-		) {
+		}
+		
+		if(pRightButton->rZone.contains(cursor)) {
 			iPos++;
 
 			arx_assert(iPos >= 0);
