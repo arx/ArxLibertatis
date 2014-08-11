@@ -3859,36 +3859,22 @@ bool CMenuSlider::OnMouseClick() {
 	
 	ARX_SOUND_PlayMenu(SND_MENU_CLICK);
 
-	int iX = GInput->getMousePosAbs().x;
-	int iY = GInput->getMousePosAbs().y;
-
-	if(iX >= rZone.left
-	   && iY >= rZone.top
-	   && iX <= rZone.right
-	   && iY <= rZone.bottom
-	) {
-		if(iX >= pLeftButton->rZone.left
-		   && iY >= pLeftButton->rZone.top
-		   && iX <= pLeftButton->rZone.right
-		   && iY <= pLeftButton->rZone.bottom
-		) {
+	const Vec2i cursor = Vec2i(GInput->getMousePosAbs());
+	
+	if(rZone.contains(cursor)) {
+		if(pLeftButton->rZone.contains(cursor)) {
 			iPos--;
-
 			if(iPos <= 0)
 				iPos = 0;
 		}
-		else if(iX >= pRightButton->rZone.left
-				&& iY >= pRightButton->rZone.top
-				&& iX <= pRightButton->rZone.right
-				&& iY <= pRightButton->rZone.bottom
-		) {
+		
+		if(pRightButton->rZone.contains(cursor)) {
 			iPos++;
-
 			if(iPos >= 10)
 				iPos = 10;
 		}
 	}
-
+	
 	switch (iID) {
 	// MENUOPTIONS_VIDEO
 	case BUTTON_MENUOPTIONSVIDEO_FOG:
