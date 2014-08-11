@@ -3404,22 +3404,10 @@ CMenuZone * CMenuPanel::GetZoneWithID(int _iID)
 
 CMenuZone * CMenuPanel::IsMouseOver(const Vec2s& mousePos) const {
 
-	if(mousePos.x >= rZone.left
-	   && mousePos.y >= rZone.top
-	   && mousePos.x <= rZone.right
-	   && mousePos.y <= rZone.bottom
-	) {
-		vector<CMenuElement *>::const_iterator i;
-		
-		for(i = vElement.begin(); i != vElement.end(); ++i) {
-			if((*i)->bCheck
-			   && (*i)->bActif
-			   && mousePos.x >= (*i)->rZone.left
-			   && mousePos.y >= (*i)->rZone.top
-			   && mousePos.x <= (*i)->rZone.right
-			   && mousePos.y <= (*i)->rZone.bottom
-			) {
-				return (*i)->pRef;
+	if(rZone.contains(Vec2i(mousePos))) {
+		BOOST_FOREACH(CMenuElement * e, vElement) {
+			if(e->bCheck && e->bActif && e->rZone.contains(Vec2i(mousePos))) {
+				return e->pRef;
 			}
 		}
 	}
