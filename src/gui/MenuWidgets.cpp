@@ -2491,12 +2491,7 @@ void CMenuCheckButton::RenderMouseOver() {
 
 	if(pTex) GRenderer->SetTexture(0, pTex);
 	else GRenderer->ResetTexture(0);
-
-	TexturedVertex v[4];
-	v[0].color = v[1].color = v[2].color = v[3].color = Color::white.toBGR();
-	v[0].p.z=v[1].p.z=v[2].p.z=v[3].p.z=0.f;    
-	v[0].rhw=v[1].rhw=v[2].rhw=v[3].rhw=0.999999f;
-
+	
 	float iY = 0;
 	iY = static_cast<float>(rZone.bottom - rZone.top);
 	iY -= iTaille;
