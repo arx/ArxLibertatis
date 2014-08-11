@@ -3807,7 +3807,9 @@ CMenuSlider::CMenuSlider(int _iID, Vec2i pos)
 	pRightButton = new CMenuButton(-1, NOP, pos, pTexR, pTexL);
 	pTex1 = TextureContainer::Load("graph/interface/menus/menu_slider_on");
 	pTex2 = TextureContainer::Load("graph/interface/menus/menu_slider_off");
-
+	arx_assert(pTex1);
+	arx_assert(pTex2);
+	
 	iPos = 0;
 
 	rZone.left   = pos.x;
@@ -3953,11 +3955,9 @@ void CMenuSlider::Render() {
 		float iTexW = 0;
 
 		if(i < iPos) {
-			if(pTex1) {
-				pTex = pTex1;
-				iTexW = RATIO_X(pTex1->m_dwWidth);
-			}
-		} else if(pTex2) {
+			pTex = pTex1;
+			iTexW = RATIO_X(pTex1->m_dwWidth);
+		} else {
 			pTex = pTex2;
 			iTexW = RATIO_X(pTex2->m_dwWidth);
 		}
