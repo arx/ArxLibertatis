@@ -3949,24 +3949,13 @@ void CMenuSlider::Render() {
 	GRenderer->SetRenderState(Renderer::AlphaBlending, true);
 	GRenderer->SetBlendFunc(Renderer::BlendOne, Renderer::BlendOne);
 	
-	TextureContainer *pTex = pTex1;
-
 	for(int i = 0; i < 10; i++) {
-		float iTexW = 0;
-
-		if(i < iPos) {
-			pTex = pTex1;
-			iTexW = RATIO_X(pTex1->m_dwWidth);
-		} else {
-			pTex = pTex2;
-			iTexW = RATIO_X(pTex2->m_dwWidth);
-		}
+		TextureContainer * pTex = (i < iPos) ? pTex1 : pTex2;
+		Rectf rect = Rectf(pos, RATIO_X(pTex->m_dwWidth), RATIO_Y(pTex->m_dwHeight));
 		
-		if(pTex) {
-			EERIEDrawBitmap2(Rectf(pos, RATIO_X(pTex->m_dwWidth), RATIO_Y(pTex->m_dwHeight)), 0, pTex, Color::white);
-		}
+		EERIEDrawBitmap2(rect, 0, pTex, Color::white);
 		
-		pos.x += iTexW;
+		pos.x += rect.width();
 	}
 
 	GRenderer->SetRenderState(Renderer::AlphaBlending, false);
