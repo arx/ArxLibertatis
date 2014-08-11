@@ -2456,12 +2456,8 @@ void CMenuCheckButton::Render() {
 
 	if(!vTex.empty()) {
 		TextureContainer *pTex = vTex[iState];
-
-		TexturedVertex v[4];
+		
 		Color color = (bCheck) ? Color::white : Color::fromBGRA(0xFF3F3F3F);
-
-		v[0].p.z=v[1].p.z=v[2].p.z=v[3].p.z=0.f;
-		v[0].rhw=v[1].rhw=v[2].rhw=v[3].rhw=0.999999f;
 		
 		float iY = 0;
 		{
