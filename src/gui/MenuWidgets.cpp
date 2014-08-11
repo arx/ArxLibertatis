@@ -3748,8 +3748,7 @@ void CMenuSliderText::RenderMouseOver() {
 
 	pMenuCursor->SetMouseOver();
 
-	int iX = GInput->getMousePosAbs().x;
-	int iY = GInput->getMousePosAbs().y;
+	Vec2i cursor = Vec2i(GInput->getMousePosAbs());
 	
 	if(!enabled) {
 		return;
@@ -3758,23 +3757,12 @@ void CMenuSliderText::RenderMouseOver() {
 	GRenderer->SetRenderState(Renderer::AlphaBlending, true);
 	GRenderer->SetBlendFunc(Renderer::BlendOne, Renderer::BlendOne);
 
-	if(iX >= rZone.left
-	   && iY >= rZone.top
-	   && iX <= rZone.right
-	   && iY <= rZone.bottom
-	) {
-		if(iX >= pLeftButton->rZone.left
-		   && iY >= pLeftButton->rZone.top
-		   && iX <= pLeftButton->rZone.right
-		   && iY <= pLeftButton->rZone.bottom
-		) {
+	if(rZone.contains(cursor)) {
+		if(pLeftButton->rZone.contains(cursor)) {
 			pLeftButton->Render();
-
-		} else if(iX >= pRightButton->rZone.left
-				  && iY >= pRightButton->rZone.top
-				  && iX <= pRightButton->rZone.right
-				  && iY <= pRightButton->rZone.bottom
-		) {
+		}
+		
+		if(pRightButton->rZone.contains(cursor)) {
 			pRightButton->Render();
 		}
 	}
