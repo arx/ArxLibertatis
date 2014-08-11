@@ -3541,7 +3541,7 @@ void CMenuButton::Render() {
 
 	//affichage de la texture
 	if(pTex) {
-		EERIEDrawBitmap2(Rectf(Vec2f(rZone.topLeft()), RATIO_X(pTex->m_dwWidth), RATIO_Y(pTex->m_dwHeight)), 0, pTex, Color::white);
+		EERIEDrawBitmap2(Rectf(rZone), 0, pTex, Color::white);
 	}
 }
 
