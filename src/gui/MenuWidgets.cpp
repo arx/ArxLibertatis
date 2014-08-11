@@ -3412,7 +3412,7 @@ CMenuZone * CMenuPanel::IsMouseOver(const Vec2s& mousePos) const {
 	return NULL;
 }
 
-CMenuButton::CMenuButton(int _iID, MENUSTATE _eMenuState, Vec2i pos, TextureContainer *_pTex, TextureContainer *_pTexOver)
+CMenuButton::CMenuButton(int _iID, MENUSTATE _eMenuState, Vec2i pos, TextureContainer *_pTex)
 	: CMenuElement(_eMenuState)
 {
 	iID = _iID;
@@ -3423,19 +3423,11 @@ CMenuButton::CMenuButton(int _iID, MENUSTATE _eMenuState, Vec2i pos, TextureCont
 	rZone.bottom = rZone.top ;
 	
 	pTex=_pTex;
-	pTexOver=_pTexOver;
-
+	
 	if(pTex) {
 		float rZoneR = rZone.left + RATIO_X(pTex->m_dwWidth);
 		float rZoneB = rZone.top + RATIO_Y(pTex->m_dwHeight);
 		rZone.right  = max(rZone.right,  checked_range_cast<Rect::Num>(rZoneR));
-		rZone.bottom = max(rZone.bottom, checked_range_cast<Rect::Num>(rZoneB));
-	}
-
-	if(pTexOver) {
-		float rZoneR = rZone.left + RATIO_X(pTexOver->m_dwWidth);
-		float rZoneB = rZone.top + RATIO_Y(pTexOver->m_dwHeight);
-		rZone.right  = max(rZone.right, checked_range_cast<Rect::Num>(rZoneR));
 		rZone.bottom = max(rZone.bottom, checked_range_cast<Rect::Num>(rZoneB));
 	}
 	
@@ -3455,16 +3447,9 @@ void CMenuButton::SetPos(float _iX,float _iY)
 		iWidth = checked_range_cast<int>(RATIO_X(pTex->m_dwWidth));
 		iHeight = checked_range_cast<int>(RATIO_Y(pTex->m_dwHeight));
 	}
-
-	int iWidth2 = 0;
-	int iHeight2 = 0;
-	if(pTexOver) {
-		iWidth2 = checked_range_cast<int>(RATIO_X(pTexOver->m_dwWidth));
-		iHeight2 = checked_range_cast<int>(RATIO_Y(pTexOver->m_dwHeight));
-	}
-
-	rZone.right = static_cast<int>(_iX) + max(iWidth, iWidth2);
-	rZone.bottom = static_cast<int>(_iY) + max(iHeight, iHeight2);
+	
+	rZone.right = static_cast<int>(_iX) + iWidth;
+	rZone.bottom = static_cast<int>(_iY) + iHeight;
 }
 
 bool CMenuButton::OnMouseClick() {
@@ -3499,33 +3484,6 @@ void CMenuButton::RenderMouseOver() {
 		return;
 
 	pMenuCursor->SetMouseOver();
-
-	//affichage de la texture
-	if(pTexOver) {
-		TexturedVertex v[4];
-		v[0].color = v[1].color = v[2].color = v[3].color = Color::white.toBGR();
-		v[0].p.z=v[1].p.z=v[2].p.z=v[3].p.z=0.f;
-		v[0].rhw=v[1].rhw=v[2].rhw=v[3].rhw=0.999999f;
-
-		GRenderer->SetTexture(0, pTexOver);
-		v[0].p.x = (float)rZone.left;
-		v[0].p.y = (float)rZone.top;
-		v[0].uv.x = 0.f;
-		v[0].uv.y = 0.f;
-		v[1].p.x = (float)(rZone.right);
-		v[1].p.y = v[0].p.y;
-		v[1].uv.x = 0.999999f;
-		v[1].uv.y = 0.f;
-		v[2].p.x = v[0].p.x;
-		v[2].p.y = (float)(rZone.bottom);
-		v[2].uv.x = 0.f;
-		v[2].uv.y = 0.999999f;
-		v[3].p.x = v[1].p.x;
-		v[3].p.y = v[2].p.y;
-		v[3].uv.x = 0.999999f;
-		v[3].uv.y = 0.999999f;
-		EERIEDRAWPRIM(Renderer::TriangleStrip, v, 4);
-	}
 }
 
 CMenuSliderText::CMenuSliderText(int _iID, Vec2i pos)
@@ -3533,9 +3491,9 @@ CMenuSliderText::CMenuSliderText(int _iID, Vec2i pos)
 {
 	iID = _iID;
 	TextureContainer *pTex = TextureContainer::Load("graph/interface/menus/menu_slider_button_left");
-	pLeftButton = new CMenuButton(-1, NOP, pos, pTex, pTex);
+	pLeftButton = new CMenuButton(-1, NOP, pos, pTex);
 	pTex = TextureContainer::Load("graph/interface/menus/menu_slider_button_right");
-	pRightButton = new CMenuButton(-1, NOP, pos, pTex, pTex);
+	pRightButton = new CMenuButton(-1, NOP, pos, pTex);
 
 	vText.clear();
 
@@ -3765,8 +3723,8 @@ CMenuSlider::CMenuSlider(int _iID, Vec2i pos)
 
 	TextureContainer *pTexL = TextureContainer::Load("graph/interface/menus/menu_slider_button_left");
 	TextureContainer *pTexR = TextureContainer::Load("graph/interface/menus/menu_slider_button_right");
-	pLeftButton = new CMenuButton(-1, NOP, pos, pTexL, pTexR);
-	pRightButton = new CMenuButton(-1, NOP, pos, pTexR, pTexL);
+	pLeftButton = new CMenuButton(-1, NOP, pos, pTexL);
+	pRightButton = new CMenuButton(-1, NOP, pos, pTexR);
 	pTex1 = TextureContainer::Load("graph/interface/menus/menu_slider_on");
 	pTex2 = TextureContainer::Load("graph/interface/menus/menu_slider_off");
 	arx_assert(pTex1);

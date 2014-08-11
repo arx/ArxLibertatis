@@ -420,10 +420,9 @@ class CMenuButton: public CMenuElement {
 	
 public:
 	TextureContainer*   pTex;
-	TextureContainer*   pTexOver;
 	
 public:
-	CMenuButton(int id, MENUSTATE state, Vec2i pos, TextureContainer * tex = NULL, TextureContainer * texOver = NULL);
+	CMenuButton(int id, MENUSTATE state, Vec2i pos, TextureContainer * tex = NULL);
 	~CMenuButton();
 	
 public:
