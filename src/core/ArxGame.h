@@ -125,5 +125,18 @@ private:
 	void setWindowSize(bool fullscreen);
 };
 
+enum InfoPanels {
+	InfoPanelNone,
+	InfoPanelFramerate,
+	InfoPanelFramerateGraph,
+	InfoPanelDebug,
+	InfoPanelTest,
+	InfoPanelDebugToggles,
+	InfoPanelGuiDebug,
+	InfoPanelEnumSize
+};
+
+extern InfoPanels g_debugInfo;
+
 #endif // ARX_CORE_ARXGAME_H
 

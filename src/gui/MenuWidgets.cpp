@@ -58,6 +58,7 @@ ZeniMax Media Inc., Suite 120, Rockville, Maryland 20850 USA.
 #include <boost/foreach.hpp>
 
 #include "core/Application.h"
+#include "core/ArxGame.h"
 #include "core/Config.h"
 #include "core/Core.h"
 #include "core/GameTime.h"
@@ -100,8 +101,6 @@ const std::string AUTO_RESOLUTION_STRING = "Automatic";
 static int newWidth;
 static int newHeight;
 static bool newFullscreen;
-
-#define NODEBUGZONE
 
 #define RATIO_X(a)    (((float)a)*g_sizeRatio.x)
 #define RATIO_Y(a)    (((float)a)*g_sizeRatio.y)
@@ -2256,44 +2255,18 @@ size_t CMenuAllZone::GetNbZone() {
 
 void CMenuAllZone::DrawZone()
 {
-#ifndef NODEBUGZONE
+	if(g_debugInfo != InfoPanelGuiDebug)
+		return;
+	
 	GRenderer->SetBlendFunc(Renderer::BlendOne, Renderer::BlendOne);
 	GRenderer->SetRenderState(Renderer::AlphaBlending, true);
-
 	GRenderer->ResetTexture(0);
 
-	for(std::vector<CMenuZone*>::const_iterator i = vMenuZone.begin(), i_end = vMenuZone.end(); i != i_end; ++i)
-	{
-		CMenuZone *zone=*i;
-
-		if(zone->bActif)
-		{
-			TexturedVertex v1[3],v2[3];
-			v1[0].p.x = (float)zone->rZone.left;
-			v1[0].p.y = (float)zone->rZone.top;
-			v1[1].p.x = (float)zone->rZone.left;
-			v1[1].p.y = (float)zone->rZone.bottom;
-			v1[2].p.x = (float)zone->rZone.right;
-			v1[2].p.y = (float)zone->rZone.bottom;
-
-			v2[0].p.x = (float)zone->rZone.left;
-			v2[0].p.y = (float)zone->rZone.top;
-			v2[1].p.x = (float)zone->rZone.right;
-			v2[1].p.y = (float)zone->rZone.top;
-			v2[2].p.x = (float)zone->rZone.right;
-			v2[2].p.y = (float)zone->rZone.bottom;
-			
-			v1[0].color=v1[1].color=v1[2].color=v2[0].color=v2[1].color=v2[2].color=0xFFFFA000;    
-			v1[0].p.z=v1[1].p.z=v1[2].p.z=v2[0].p.z=v2[1].p.z=v2[2].p.z=0.f;    
-			v1[0].rhw=v1[1].rhw=v1[2].rhw=v2[0].rhw=v2[1].rhw=v2[2].rhw=0.999999f;    
-			
-			EERIEDRAWPRIM(Renderer::TriangleStrip, v1);
-			EERIEDRAWPRIM(Renderer::TriangleStrip, v2);
-		}
+	BOOST_FOREACH(CMenuZone * zone, vMenuZone) {
+		drawLineRectangle(Rectf(zone->rZone), 0.f, Color::red);
 	}
 
 	GRenderer->SetRenderState(Renderer::AlphaBlending, false);
-#endif // #ifndef NODEBUGZONE
 }
 
 CMenuCheckButton::CMenuCheckButton(int _iID, Vec2i pos, int _iTaille, TextureContainer *_pTex1, TextureContainer *_pTex2, CMenuElementText *_pText)

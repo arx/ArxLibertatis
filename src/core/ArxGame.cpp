@@ -161,17 +161,7 @@ ZeniMax Media Inc., Suite 120, Rockville, Maryland 20850 USA.
 #include "window/SDL1Window.h"
 #endif
 
-enum InfoPanels {
-	InfoPanelNone,
-	InfoPanelFramerate,
-	InfoPanelFramerateGraph,
-	InfoPanelDebug,
-	InfoPanelTest,
-	InfoPanelDebugToggles,
-	InfoPanelEnumSize
-};
-
-static InfoPanels g_debugInfo = InfoPanelNone;
+InfoPanels g_debugInfo = InfoPanelNone;
 
 using std::string;
 
