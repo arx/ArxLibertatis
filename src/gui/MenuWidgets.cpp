@@ -305,8 +305,6 @@ bool ProcessFadeInOut(bool _bFadeIn, float _fspeed) {
 	return false;
 }
 
-
-
 bool Menu2_Render() {
 	
 	ARXOldTimeMenu = ARXTimeMenu;
@@ -408,46 +406,7 @@ bool Menu2_Render() {
 		
 		return true;
 	} else if(eMenuState != NOP) {
-		pMenu->eOldMenuState=eMenuState;
-		
-		delete pWindowMenu, pWindowMenu = NULL;
-		
-		//suivant la resolution
-		Vec2i windowMenuSize = Vec2i(321, 430);
-		Vec2i windowMenuPos = Vec2i(20, (480-windowMenuSize.y)>>1);
-		Vec2i windowConsoleOffset = Vec2i(0, 14 - 10);
-		Vec2i windowConsoleSize = windowMenuSize - windowConsoleOffset + Vec2i(0, 20);
-		
-		float fPosX1 = RATIO_X(20);
-		
-		Vec2i posBack = RATIO_2(Vec2i(10, 190));
-		Vec2i posNext = RATIO_2(Vec2i(140, 190));
-		
-		pWindowMenu = new CWindowMenu(windowMenuPos, windowMenuSize);
-		
-		switch(eMenuState) {
-		case NEW_QUEST: {
-				Menu2_Render_NewQuest(posBack, windowConsoleSize, windowConsoleOffset);
-			
-			break;
-		}
-		case EDIT_QUEST: {
-				Menu2_Render_EditQuest(windowConsoleSize, windowConsoleOffset, fPosX1, posBack);
-				}
-			break;
-		case OPTIONS: {
-				Menu2_Render_Options(windowConsoleSize, fPosX1, windowConsoleOffset, posBack, posNext);
-			}
-			break;
-		
-		case QUIT: {
-				Menu2_Render_Quit(posBack, windowConsoleSize, windowConsoleOffset);
-			
-			
-			break;
-		}
-		default: break; // Unhandled menu state.
-		}
+		MainMenuLeftCreate(eMenuState);
 	
 	}
 	}

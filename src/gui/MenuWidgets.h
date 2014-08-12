@@ -48,6 +48,7 @@ ZeniMax Media Inc., Suite 120, Rockville, Maryland 20850 USA.
 #include <string>
 
 #include "graphics/Color.h"
+#include "gui/MainMenu.h"
 #include "input/InputKey.h"
 #include "math/Vector.h"
 #include "math/Rectangle.h"
@@ -210,48 +211,7 @@ enum MenuButton {
 };
 
 //-----------------------------------------------------------------------------
-enum MENUSTATE
-{
-	MAIN,
-	RESUME_GAME,
-	NEW_QUEST,
-	NEW_QUEST_ENTER_GAME,
-	EDIT_QUEST,
-	EDIT_QUEST_LOAD,
-	EDIT_QUEST_SAVE,
-	EDIT_QUEST_SAVE_CONFIRM,
-	MULTIPLAYER,
-	OPTIONS,
-	OPTIONS_VIDEO,
-	OPTIONS_VIDEO_RESOLUTION,
-	OPTIONS_AUDIO,
-	OPTIONS_INPUT,
-	OPTIONS_INPUT_CUSTOMIZE_KEYS_1,
-	OPTIONS_INPUT_CUSTOMIZE_KEYS_2,
-	CREDITS,
-	BACK,
-	QUIT,
-	NOP,
-	OPTIONS_LOD,
-	OPTIONS_OTHERDETAILS,
-	OPTIONS_VIDEO_RENDERER_OPENGL,
-	OPTIONS_VIDEO_RENDERER_AUTOMATIC,
-	OPTIONS_AUDIO_BACKEND_OPENAL,
-	OPTIONS_AUDIO_BACKEND_AUTOMATIC,
-	SAVE_QUEST_0 = 100,
-	SAVE_QUEST_1 = 101,
-	SAVE_QUEST_2 = 102,
-	SAVE_QUEST_3 = 103,
-	SAVE_QUEST_4 = 104,
-	SAVE_QUEST_5 = 105,
-	SAVE_QUEST_6 = 106,
-	SAVE_QUEST_7 = 107,
-	SAVE_QUEST_8 = 108,
-	SAVE_QUEST_9 = 109,
-	OPTIONS_VIDEO_RESOLUTION_0 = 200,
-	OPTIONS_AUDIO_VOLUME = 300,
-	OPTIONS_INPUT_KEY_0 = 400
-};
+
 
 //-----------------------------------------------------------------------------
 class CMenuZone
