@@ -423,27 +423,25 @@ bool Menu2_Render() {
 		Vec2i posBack = RATIO_2(Vec2i(10, 190));
 		Vec2i posNext = RATIO_2(Vec2i(140, 190));
 		
-		float fPosBDAY  = RATIO_Y(380);
-		
 		pWindowMenu = new CWindowMenu(windowMenuPos, windowMenuSize);
 		
 		switch(eMenuState) {
 		case NEW_QUEST: {
-				Menu2_Render_NewQuest(posBack, windowConsoleSize, windowConsoleOffset, fPosBDAY);
+				Menu2_Render_NewQuest(posBack, windowConsoleSize, windowConsoleOffset);
 			
 			break;
 		}
 		case EDIT_QUEST: {
-				Menu2_Render_EditQuest(windowConsoleSize, fPosBDAY, windowConsoleOffset, fPosX1, posBack);
+				Menu2_Render_EditQuest(windowConsoleSize, windowConsoleOffset, fPosX1, posBack);
 				}
 			break;
 		case OPTIONS: {
-				Menu2_Render_Options(windowConsoleSize, fPosBDAY, fPosX1, windowConsoleOffset, posBack, posNext);
+				Menu2_Render_Options(windowConsoleSize, fPosX1, windowConsoleOffset, posBack, posNext);
 			}
 			break;
 		
 		case QUIT: {
-				Menu2_Render_Quit(fPosBDAY, posBack, windowConsoleSize, windowConsoleOffset);
+				Menu2_Render_Quit(posBack, windowConsoleSize, windowConsoleOffset);
 			
 			
 			break;

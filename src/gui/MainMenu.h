@@ -27,9 +27,9 @@
 // FIXME remove this
 const std::string AUTO_RESOLUTION_STRING = "Automatic";
 
-void Menu2_Render_NewQuest(Vec2i posBack, Vec2i size, Vec2i offset, float fPosBDAY);
-void Menu2_Render_EditQuest(Vec2i size, float fPosBDAY, Vec2i offset, float fPosX1, Vec2i posBack);
-void Menu2_Render_Options(Vec2i size, float fPosBDAY, float fPosX1, Vec2i offset, Vec2i posBack, Vec2i posNext);
-void Menu2_Render_Quit(float fPosBDAY, Vec2i posBack, Vec2i size, Vec2i offset);
+void Menu2_Render_NewQuest(Vec2i posBack, Vec2i size, Vec2i offset);
+void Menu2_Render_EditQuest(Vec2i size, Vec2i offset, float fPosX1, Vec2i posBack);
+void Menu2_Render_Options(Vec2i size, float fPosX1, Vec2i offset, Vec2i posBack, Vec2i posNext);
+void Menu2_Render_Quit(Vec2i posBack, Vec2i size, Vec2i offset);
 
 #endif // ARX_GUI_MAINMENU_H

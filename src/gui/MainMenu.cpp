@@ -42,7 +42,7 @@ CMenuCheckButton * fullscreenCheckbox = NULL;
 CMenuSliderText * pMenuSliderResol = NULL;
 CMenuElement * pMenuElementApply = NULL;
 
-void Menu2_Render_NewQuest(Vec2i posBack, Vec2i size, Vec2i offset, float fPosBDAY)
+void Menu2_Render_NewQuest(Vec2i posBack, Vec2i size, Vec2i offset)
 {
 	if(!ARXMenu_CanResumeGame())
 		return;
@@ -73,15 +73,15 @@ void Menu2_Render_NewQuest(Vec2i posBack, Vec2i size, Vec2i offset, float fPosBD
 	me = new CMenuElementText(-1, hFontMenu, szMenuText, Vec2i(posBack.x, 0), MAIN);
 	me->SetShortCut(Keyboard::Key_Escape);
 	pPanel->AddElementNoCenterIn(me);
-
-	pPanel->Move(Vec2i(0, checked_range_cast<int>(fPosBDAY)));
+	
+	pPanel->Move(Vec2i(0, RATIO_Y(380)));
 
 	console->AddMenu(pPanel);
 	pWindowMenu->AddConsole(console);
 	pWindowMenu->eCurrentMenuState=NEW_QUEST;
 }
 
-void Menu2_Render_EditQuest(Vec2i size, float fPosBDAY, Vec2i offset, float fPosX1, Vec2i posBack)
+void Menu2_Render_EditQuest(Vec2i size, Vec2i offset, float fPosX1, Vec2i posBack)
 {
 	CMenuElement *me;
 	CMenuElement *me01;
@@ -183,7 +183,7 @@ void Menu2_Render_EditQuest(Vec2i size, float fPosBDAY, Vec2i offset, float fPos
 		szMenuText = getLocalised("system_menus_main_editquest_load");
 		szMenuText += "   ";
 		me = new CMenuElementText(BUTTON_MENUEDITQUEST_LOAD_CONFIRM, hFontMenu, szMenuText, Vec2i(0, 0), MAIN);
-		me->SetPos(RATIO_X(size.x-10)-me->GetWidth(), fPosBDAY + RATIO_Y(40));
+		me->SetPos(RATIO_X(size.x-10)-me->GetWidth(), RATIO_Y(380) + RATIO_Y(40));
 		pLoadConfirm=(CMenuElementText*)me;
 		me->SetCheckOff();
 		((CMenuElementText*)me)->lOldColor = ((CMenuElementText*)me)->lColor;
@@ -304,7 +304,7 @@ void Menu2_Render_EditQuest(Vec2i size, float fPosBDAY, Vec2i offset, float fPos
 	// Save button
 	szMenuText = getLocalised("system_menus_main_editquest_save");
 	me = new CMenuElementText(BUTTON_MENUEDITQUEST_SAVE, hFontMenu, szMenuText, Vec2i(0, 0), MAIN);
-	me->SetPos(RATIO_X(size.x-10)-me->GetWidth(), fPosBDAY);
+	me->SetPos(RATIO_X(size.x-10)-me->GetWidth(), RATIO_Y(380));
 	pPanel->AddElementNoCenterIn(me);
 	
 	// Back button
@@ -319,7 +319,7 @@ void Menu2_Render_EditQuest(Vec2i size, float fPosBDAY, Vec2i offset, float fPos
 	pWindowMenu->AddConsole(pWindowMenuConsole);
 }
 
-void Menu2_Render_Options(Vec2i size, float fPosBDAY, float fPosX1, Vec2i offset, Vec2i posBack, Vec2i posNext)
+void Menu2_Render_Options(Vec2i size, float fPosX1, Vec2i offset, Vec2i posBack, Vec2i posNext)
 {
 	
 	int iPosX2 = RATIO_X(200);
@@ -530,7 +530,7 @@ void Menu2_Render_Options(Vec2i size, float fPosBDAY, float fPosX1, Vec2i offset
 	szMenuText = getLocalised("system_menus_video_apply");
 	szMenuText += "   ";
 	pMenuElementApply = me = new CMenuElementText(BUTTON_MENUOPTIONSVIDEO_APPLY, hFontMenu, szMenuText, Vec2i(fPosApply, 0), NOP);
-	me->SetPos(RATIO_X(size.x-10)-me->GetWidth(), fPosBDAY + RATIO_Y(40));
+	me->SetPos(RATIO_X(size.x-10)-me->GetWidth(), RATIO_Y(380) + RATIO_Y(40));
 	me->SetCheckOff();
 	pc->AddElementNoCenterIn(me);
 
@@ -841,7 +841,7 @@ char pNoDef2[]="---";
 	pc->AddElementNoCenterIn(me);
 	szMenuText = getLocalised( "system_menus_options_input_customize_default" );
 	me = new CMenuElementText(BUTTON_MENUOPTIONS_CONTROLS_CUST_DEFAULT, hFontMenu, szMenuText, Vec2i(0, 0), NOP);
-	me->SetPos((RATIO_X(size.x) - me->GetWidth())*0.5f, fPosBDAY);
+	me->SetPos((RATIO_X(size.x) - me->GetWidth())*0.5f, RATIO_Y(380));
 	pc->AddElementNoCenterIn(me);
 	pTex = TextureContainer::Load("graph/interface/menus/next");
 	me = new CMenuCheckButton(BUTTON_MENUOPTIONS_CONTROLS_CUST_BACK, posNext, pTex?pTex->m_dwWidth:0, pTex, NULL, NULL);
@@ -894,7 +894,7 @@ char pNoDef2[]="---";
 	pc->AddElementNoCenterIn(me);
 	szMenuText = getLocalised( "system_menus_options_input_customize_default" );
 	me = new CMenuElementText(BUTTON_MENUOPTIONS_CONTROLS_CUST_DEFAULT, hFontMenu, szMenuText, Vec2i(0, 0), NOP);
-	me->SetPos((RATIO_X(size.x) - me->GetWidth())*0.5f, fPosBDAY);
+	me->SetPos((RATIO_X(size.x) - me->GetWidth())*0.5f, RATIO_Y(380));
 	pc->AddElementNoCenterIn(me);
 
 	pWindowMenuConsole->AddMenu(pc);
@@ -912,7 +912,7 @@ char pNoDef2[]="---";
 	pWindowMenu->eCurrentMenuState=OPTIONS;	
 }
 
-void Menu2_Render_Quit(float fPosBDAY, Vec2i posBack, Vec2i size, Vec2i offset)
+void Menu2_Render_Quit(Vec2i posBack, Vec2i size, Vec2i offset)
 {
 	std::string szMenuText;
 	CMenuElement *me = NULL;
@@ -939,7 +939,7 @@ void Menu2_Render_Quit(float fPosBDAY, Vec2i posBack, Vec2i size, Vec2i offset)
 	me->SetShortCut(Keyboard::Key_Escape);
 	pPanel->AddElementNoCenterIn(me);
 
-	pPanel->Move(Vec2i(0, checked_range_cast<int>(fPosBDAY)));
+	pPanel->Move(Vec2i(0, RATIO_Y(380)));
 	pWindowMenuConsole->AddMenu(pPanel);
 	pWindowMenu->AddConsole(pWindowMenuConsole);
 	pWindowMenu->eCurrentMenuState=QUIT;
