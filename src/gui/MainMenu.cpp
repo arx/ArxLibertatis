@@ -42,7 +42,7 @@ CMenuCheckButton * fullscreenCheckbox = NULL;
 CMenuSliderText * pMenuSliderResol = NULL;
 CMenuElement * pMenuElementApply = NULL;
 
-void Menu2_Render_NewQuest(Vec2i posBack, Vec2i size, Vec2i offset)
+void Menu2_Render_NewQuest(Vec2i size, Vec2i offset)
 {
 	if(!ARXMenu_CanResumeGame())
 		return;
@@ -70,7 +70,7 @@ void Menu2_Render_NewQuest(Vec2i posBack, Vec2i size, Vec2i offset)
 	pPanel->AddElementNoCenterIn(me);
 	
 	szMenuText = getLocalised("system_no");
-	me = new CMenuElementText(-1, hFontMenu, szMenuText, Vec2i(posBack.x, 0), MAIN);
+	me = new CMenuElementText(-1, hFontMenu, szMenuText, Vec2i(RATIO_X(10), 0), MAIN);
 	me->SetShortCut(Keyboard::Key_Escape);
 	pPanel->AddElementNoCenterIn(me);
 	
@@ -81,7 +81,7 @@ void Menu2_Render_NewQuest(Vec2i posBack, Vec2i size, Vec2i offset)
 	pWindowMenu->eCurrentMenuState=NEW_QUEST;
 }
 
-void Menu2_Render_EditQuest(Vec2i size, Vec2i offset, Vec2i posBack)
+void Menu2_Render_EditQuest(Vec2i size, Vec2i offset)
 {
 	CMenuElement *me;
 	CMenuElement *me01;
@@ -106,7 +106,7 @@ void Menu2_Render_EditQuest(Vec2i size, Vec2i offset, Vec2i posBack)
 	pWindowMenuConsole->AddMenuCenter(me);
 
 	pTex = TextureContainer::Load("graph/interface/menus/back");
-	me = new CMenuCheckButton(-1, posBack, pTex?pTex->m_dwWidth:0, pTex, NULL, NULL);
+	me = new CMenuCheckButton(-1, RATIO_2(Vec2i(10, 190)), pTex?pTex->m_dwWidth:0, pTex, NULL, NULL);
 	me->eMenuState = MAIN;
 	me->SetShortCut(Keyboard::Key_Escape);
 	pWindowMenuConsole->AddMenu(me);
@@ -193,7 +193,7 @@ void Menu2_Render_EditQuest(Vec2i size, Vec2i offset, Vec2i posBack)
 		// Back button
 		CMenuPanel *pc = new CMenuPanel();
 		pTex = TextureContainer::Load("graph/interface/menus/back");
-		me = new CMenuCheckButton(-1, posBack + Vec2i(0, RATIO_Y(20)), pTex?pTex->m_dwWidth:0, pTex, NULL, NULL);
+		me = new CMenuCheckButton(-1, RATIO_2(Vec2i(10, 190)) + Vec2i(0, RATIO_Y(20)), pTex?pTex->m_dwWidth:0, pTex, NULL, NULL);
 		me->eMenuState = EDIT_QUEST;
 		me->SetShortCut(Keyboard::Key_Escape);
 		pc->AddElementNoCenterIn(me);
@@ -206,7 +206,7 @@ void Menu2_Render_EditQuest(Vec2i size, Vec2i offset, Vec2i posBack)
 	pWindowMenuConsole->iInterligne = 5;
 
 	pTex = TextureContainer::Load("graph/interface/icons/menu_main_save");
-	me = new CMenuCheckButton(-1, Vec2i(posBack.x, 0), pTex?pTex->m_dwWidth:0, pTex, NULL, NULL);
+	me = new CMenuCheckButton(-1, Vec2i(RATIO_X(10), 0), pTex?pTex->m_dwWidth:0, pTex, NULL, NULL);
 	((CMenuCheckButton *)me)->bCheck = false;
 	pWindowMenuConsole->AddMenuCenter(me);
 	
@@ -265,7 +265,7 @@ void Menu2_Render_EditQuest(Vec2i size, Vec2i offset, Vec2i posBack)
 	pWindowMenuConsole->AddMenuCenterY((CMenuElementText*)me01);
 
 	pTex = TextureContainer::Load("graph/interface/menus/back");
-	me = new CMenuCheckButton(-1, posBack + Vec2i(0, RATIO_Y(20)), pTex?pTex->m_dwWidth:0, pTex, NULL, NULL);
+	me = new CMenuCheckButton(-1, RATIO_2(Vec2i(10, 190)) + Vec2i(0, RATIO_Y(20)), pTex?pTex->m_dwWidth:0, pTex, NULL, NULL);
 
 	me->eMenuState = EDIT_QUEST;
 	me->SetShortCut(Keyboard::Key_Escape);
@@ -309,7 +309,7 @@ void Menu2_Render_EditQuest(Vec2i size, Vec2i offset, Vec2i posBack)
 	
 	// Back button
 	pTex = TextureContainer::Load("graph/interface/menus/back");
-	me = new CMenuCheckButton(-1, posBack, pTex?pTex->m_dwWidth:0, pTex, NULL, NULL);
+	me = new CMenuCheckButton(-1, RATIO_2(Vec2i(10, 190)), pTex?pTex->m_dwWidth:0, pTex, NULL, NULL);
 	me->eMenuState = EDIT_QUEST_SAVE;
 	me->SetShortCut(Keyboard::Key_Escape);
 	pPanel->AddElementNoCenterIn(me);
@@ -319,7 +319,7 @@ void Menu2_Render_EditQuest(Vec2i size, Vec2i offset, Vec2i posBack)
 	pWindowMenu->AddConsole(pWindowMenuConsole);
 }
 
-void Menu2_Render_Options(Vec2i size, Vec2i offset, Vec2i posBack, Vec2i posNext)
+void Menu2_Render_Options(Vec2i size, Vec2i offset, Vec2i posNext)
 {
 	{
 	std::string szMenuText;
@@ -341,7 +341,7 @@ void Menu2_Render_Options(Vec2i size, Vec2i offset, Vec2i posBack, Vec2i posNext
 	pWindowMenuConsole->AddMenuCenter(me);
 
 	pTex = TextureContainer::Load("graph/interface/menus/back");
-	me = new CMenuCheckButton(-1, posBack, pTex?pTex->m_dwWidth:0, pTex, NULL, NULL);
+	me = new CMenuCheckButton(-1, RATIO_2(Vec2i(10, 190)), pTex?pTex->m_dwWidth:0, pTex, NULL, NULL);
 	me->eMenuState = MAIN;
 	me->SetShortCut(Keyboard::Key_Escape);
 	pWindowMenuConsole->AddMenu(me);
@@ -538,7 +538,7 @@ void Menu2_Render_Options(Vec2i size, Vec2i offset, Vec2i posBack, Vec2i posNext
 	pc->AddElementNoCenterIn(me);
 
 	pTex = TextureContainer::Load("graph/interface/menus/back");
-	me = new CMenuCheckButton(BUTTON_MENUOPTIONSVIDEO_BACK, posBack + Vec2i(0, RATIO_Y(20)), pTex?pTex->m_dwWidth:0, pTex, NULL, NULL);
+	me = new CMenuCheckButton(BUTTON_MENUOPTIONSVIDEO_BACK, RATIO_2(Vec2i(10, 190)) + Vec2i(0, RATIO_Y(20)), pTex?pTex->m_dwWidth:0, pTex, NULL, NULL);
 	me->eMenuState = OPTIONS;
 	me->SetShortCut(Keyboard::Key_Escape);
 	pc->AddElementNoCenterIn(me);
@@ -638,7 +638,7 @@ void Menu2_Render_Options(Vec2i size, Vec2i offset, Vec2i posBack, Vec2i posNext
 	pWindowMenuConsole->AddMenuCenterY(me);
 
 	pTex = TextureContainer::Load("graph/interface/menus/back");
-	me = new CMenuCheckButton(-1, posBack, pTex?pTex->m_dwWidth:0, pTex, NULL, NULL);
+	me = new CMenuCheckButton(-1, RATIO_2(Vec2i(10, 190)), pTex?pTex->m_dwWidth:0, pTex, NULL, NULL);
 	me->eMenuState = OPTIONS;
 	me->SetShortCut(Keyboard::Key_Escape);
 	pWindowMenuConsole->AddMenu(me);
@@ -727,7 +727,7 @@ void Menu2_Render_Options(Vec2i size, Vec2i offset, Vec2i posBack, Vec2i posNext
 	pWindowMenuConsole->AddMenuCenterY(pc);
 
 	pTex = TextureContainer::Load("graph/interface/menus/back");
-	me = new CMenuCheckButton(-1, posBack, pTex?pTex->m_dwWidth:0, pTex, NULL, NULL);
+	me = new CMenuCheckButton(-1, RATIO_2(Vec2i(10, 190)), pTex?pTex->m_dwWidth:0, pTex, NULL, NULL);
 	me->eMenuState = OPTIONS;
 	me->SetShortCut(Keyboard::Key_Escape);
 	pWindowMenuConsole->AddMenu(me);
@@ -856,7 +856,7 @@ char pNoDef2[]="---";
 	pc=new CMenuPanel();
 
 	pTex = TextureContainer::Load("graph/interface/menus/back");
-	me = new CMenuCheckButton(BUTTON_MENUOPTIONS_CONTROLS_CUST_BACK, posBack, pTex?pTex->m_dwWidth:0, pTex, NULL, NULL);
+	me = new CMenuCheckButton(BUTTON_MENUOPTIONS_CONTROLS_CUST_BACK, RATIO_2(Vec2i(10, 190)), pTex?pTex->m_dwWidth:0, pTex, NULL, NULL);
 	me->eMenuState = OPTIONS_INPUT;
 	me->SetShortCut(Keyboard::Key_Escape);
 	pc->AddElementNoCenterIn(me);
@@ -909,7 +909,7 @@ char pNoDef2[]="---";
 	pc=new CMenuPanel();
 
 	pTex = TextureContainer::Load("graph/interface/menus/back");
-	me = new CMenuCheckButton(BUTTON_MENUOPTIONS_CONTROLS_CUST_BACK, posBack, pTex?pTex->m_dwWidth:0, pTex, NULL, NULL);
+	me = new CMenuCheckButton(BUTTON_MENUOPTIONS_CONTROLS_CUST_BACK, RATIO_2(Vec2i(10, 190)), pTex?pTex->m_dwWidth:0, pTex, NULL, NULL);
 	me->eMenuState = OPTIONS_INPUT_CUSTOMIZE_KEYS_1;
 	me->SetShortCut(Keyboard::Key_Escape);
 	pc->AddElementNoCenterIn(me);
@@ -934,7 +934,7 @@ char pNoDef2[]="---";
 	pWindowMenu->eCurrentMenuState=OPTIONS;	
 }
 
-void Menu2_Render_Quit(Vec2i posBack, Vec2i size, Vec2i offset)
+void Menu2_Render_Quit(Vec2i size, Vec2i offset)
 {
 	std::string szMenuText;
 	CMenuElement *me = NULL;
@@ -957,7 +957,7 @@ void Menu2_Render_Quit(Vec2i posBack, Vec2i size, Vec2i offset)
 	me->SetPos(RATIO_X(size.x-10)-me->GetWidth(), 0);
 	pPanel->AddElementNoCenterIn(me);
 	szMenuText = getLocalised("system_no");
-	me = new CMenuElementText(-1, hFontMenu, szMenuText, Vec2i(posBack.x, 0), MAIN);
+	me = new CMenuElementText(-1, hFontMenu, szMenuText, Vec2i(RATIO_X(10), 0), MAIN);
 	me->SetShortCut(Keyboard::Key_Escape);
 	pPanel->AddElementNoCenterIn(me);
 
@@ -980,29 +980,28 @@ void MainMenuLeftCreate(MENUSTATE eMenuState)
 	Vec2i windowMenuPos = Vec2i(20, (480-windowMenuSize.y)>>1);
 	Vec2i windowConsoleOffset = Vec2i(0, 14 - 10);
 	Vec2i windowConsoleSize = windowMenuSize - windowConsoleOffset + Vec2i(0, 20);
-		
-	Vec2i posBack = RATIO_2(Vec2i(10, 190));
+	
 	Vec2i posNext = RATIO_2(Vec2i(140, 190));
 	
 	pWindowMenu = new CWindowMenu(windowMenuPos, windowMenuSize);
 	
 	switch(eMenuState) {
 	case NEW_QUEST: {
-			Menu2_Render_NewQuest(posBack, windowConsoleSize, windowConsoleOffset);
+			Menu2_Render_NewQuest(windowConsoleSize, windowConsoleOffset);
 		
 		break;
 	}
 	case EDIT_QUEST: {
-			Menu2_Render_EditQuest(windowConsoleSize, windowConsoleOffset, posBack);
+			Menu2_Render_EditQuest(windowConsoleSize, windowConsoleOffset);
 			}
 		break;
 	case OPTIONS: {
-			Menu2_Render_Options(windowConsoleSize, windowConsoleOffset, posBack, posNext);
+			Menu2_Render_Options(windowConsoleSize, windowConsoleOffset, posNext);
 		}
 		break;
 	
 	case QUIT: {
-			Menu2_Render_Quit(posBack, windowConsoleSize, windowConsoleOffset);
+			Menu2_Render_Quit(windowConsoleSize, windowConsoleOffset);
 		
 		
 		break;
