@@ -643,15 +643,8 @@ void MainMenuOptionAudioCreate(Vec2i offset, Vec2i size)
 	pWindowMenu->AddConsole(pWindowMenuConsole);
 }
 
-void Menu2_Render_Options(Vec2i size, Vec2i offset)
+void MainMenuOptionInputCreate(Vec2i size, Vec2i offset)
 {
-	MainMenuOptionGroupsCreate(size, offset);
-	MainMenuOptionVideoCreate(offset, size);
-	MainMenuOptionAudioCreate(offset, size);
-	//------------------ END AUDIO
-
-	//------------------ START INPUT
-	{
 	std::string szMenuText;
 	CMenuElement *me;
 	CMenuPanel *pc;
@@ -735,9 +728,15 @@ void Menu2_Render_Options(Vec2i size, Vec2i offset)
 	me->SetShortCut(Keyboard::Key_Escape);
 	pWindowMenuConsole->AddMenu(me);
 	pWindowMenu->AddConsole(pWindowMenuConsole);
-//------------------ END INPUT
+}
 
-//------------------ START CUSTOM CONTROLS
+void MainMenuOptionControlsCreate(Vec2i offset, Vec2i size)
+{
+	std::string szMenuText;
+	CMenuElement *me;
+	CMenuPanel *pc;
+	TextureContainer *pTex;
+	
 char pNoDef1[]="---";
 char pNoDef2[]="---";
 
@@ -830,7 +829,7 @@ char pNoDef2[]="---";
 	};
 
 
-	pWindowMenuConsole=new CWindowMenuConsole(offset, size, OPTIONS_INPUT_CUSTOMIZE_KEYS_1);
+	CWindowMenuConsole * pWindowMenuConsole=new CWindowMenuConsole(offset, size, OPTIONS_INPUT_CUSTOMIZE_KEYS_1);
 
 	CUSTOM_CTRL_FUNC("system_menus_options_input_customize_controls_mouselook",1, BUTTON_MENUOPTIONS_CONTROLS_CUST_USE1, BUTTON_MENUOPTIONS_CONTROLS_CUST_USE2);
 
@@ -931,9 +930,16 @@ char pNoDef2[]="---";
 	#undef CUSTOM_CTRL_FUNC
 	#undef CUSTOM_CTRL_FUNC2
 	#undef CUSTOM_CTRL_FUNC3
-	}
-//------------------ END CUSTOM CONTROLS
+}
 
+void Menu2_Render_Options(Vec2i size, Vec2i offset)
+{
+	MainMenuOptionGroupsCreate(size, offset);
+	MainMenuOptionVideoCreate(offset, size);
+	MainMenuOptionAudioCreate(offset, size);
+	MainMenuOptionInputCreate(size, offset);
+	MainMenuOptionControlsCreate(offset, size);
+	
 	pWindowMenu->eCurrentMenuState=OPTIONS;	
 }
 
