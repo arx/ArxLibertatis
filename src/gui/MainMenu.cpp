@@ -81,7 +81,7 @@ void Menu2_Render_NewQuest(Vec2i posBack, Vec2i size, Vec2i offset)
 	pWindowMenu->eCurrentMenuState=NEW_QUEST;
 }
 
-void Menu2_Render_EditQuest(Vec2i size, Vec2i offset, float fPosX1, Vec2i posBack)
+void Menu2_Render_EditQuest(Vec2i size, Vec2i offset, Vec2i posBack)
 {
 	CMenuElement *me;
 	CMenuElement *me01;
@@ -143,7 +143,7 @@ void Menu2_Render_EditQuest(Vec2i size, Vec2i offset, float fPosX1, Vec2i posBac
 			std::ostringstream text;
 			text << quicksaveName << ' ' << ++quicksaveNum << "   " << save.time;
 			
-			CMenuElement * e = new CMenuElementText(BUTTON_MENUEDITQUEST_LOAD, hFontControls, text.str(), Vec2i(fPosX1, 0), NOP);
+			CMenuElement * e = new CMenuElementText(BUTTON_MENUEDITQUEST_LOAD, hFontControls, text.str(), Vec2i(RATIO_X(20), 0), NOP);
 			e->lData = i;
 			pWindowMenuConsole->AddMenuCenterY(e);
 		}
@@ -158,12 +158,12 @@ void Menu2_Render_EditQuest(Vec2i size, Vec2i offset, float fPosX1, Vec2i posBac
 			
 			std::string text = save.name +  "   " + save.time;
 			
-			CMenuElement * e = new CMenuElementText(BUTTON_MENUEDITQUEST_LOAD, hFontControls, text, Vec2i(fPosX1, 0), NOP);
+			CMenuElement * e = new CMenuElementText(BUTTON_MENUEDITQUEST_LOAD, hFontControls, text, Vec2i(RATIO_X(20), 0), NOP);
 			e->lData = i;
 			pWindowMenuConsole->AddMenuCenterY(e);
 		}
 		
-		CMenuElement * confirm = new CMenuElementText(-1, hFontControls, " ", Vec2i(fPosX1, 0), EDIT_QUEST_SAVE_CONFIRM);
+		CMenuElement * confirm = new CMenuElementText(-1, hFontControls, " ", Vec2i(RATIO_X(20), 0), EDIT_QUEST_SAVE_CONFIRM);
 		confirm->SetCheckOff();
 		confirm->lData = -1;
 		pWindowMenuConsole->AddMenuCenterY(confirm);
@@ -224,7 +224,7 @@ void Menu2_Render_EditQuest(Vec2i size, Vec2i offset, float fPosX1, Vec2i posBac
 		text << quicksaveName << ' ' << ++quicksaveNum << "   " << save.time;
 		
 		CMenuElementText * e = new CMenuElementText(BUTTON_MENUEDITQUEST_SAVEINFO, hFontControls,
-		                                        text.str(), Vec2i(fPosX1, 0.f), EDIT_QUEST_SAVE_CONFIRM);
+		                                        text.str(), Vec2i(RATIO_X(20), 0.f), EDIT_QUEST_SAVE_CONFIRM);
 		e->setColor(Color::grayb(127));
 		e->SetCheckOff();
 		e->lData = i;
@@ -242,7 +242,7 @@ void Menu2_Render_EditQuest(Vec2i size, Vec2i offset, float fPosX1, Vec2i posBac
 		std::string text = save.name +  "   " + save.time;
 		
 		CMenuElement * e = new CMenuElementText(BUTTON_MENUEDITQUEST_SAVEINFO, hFontControls,
-		                                        text, Vec2i(fPosX1, 0.f), EDIT_QUEST_SAVE_CONFIRM);
+		                                        text, Vec2i(RATIO_X(20), 0.f), EDIT_QUEST_SAVE_CONFIRM);
 		e->lData = i;
 		pWindowMenuConsole->AddMenuCenterY(e);
 	}
@@ -252,14 +252,14 @@ void Menu2_Render_EditQuest(Vec2i size, Vec2i offset, float fPosX1, Vec2i posBac
 		std::ostringstream text;
 		text << '-' << std::setfill('0') << std::setw(4) << i << '-';
 		
-		CMenuElementText * e = new CMenuElementText(BUTTON_MENUEDITQUEST_SAVEINFO, hFontControls, text.str(), Vec2i(fPosX1, 0), EDIT_QUEST_SAVE_CONFIRM);
+		CMenuElementText * e = new CMenuElementText(BUTTON_MENUEDITQUEST_SAVEINFO, hFontControls, text.str(), Vec2i(RATIO_X(20), 0), EDIT_QUEST_SAVE_CONFIRM);
 
 		e->eMenuState = EDIT_QUEST_SAVE_CONFIRM;
 		e->lData = -1;
 		pWindowMenuConsole->AddMenuCenterY(e);
 	}
 
-	me01 = new CMenuElementText(-1, hFontControls, " ", Vec2i(fPosX1, 0), EDIT_QUEST_SAVE_CONFIRM);
+	me01 = new CMenuElementText(-1, hFontControls, " ", Vec2i(RATIO_X(20), 0), EDIT_QUEST_SAVE_CONFIRM);
 	me01->lData = -1;
 	me01->SetCheckOff();
 	pWindowMenuConsole->AddMenuCenterY((CMenuElementText*)me01);
@@ -284,7 +284,7 @@ void Menu2_Render_EditQuest(Vec2i size, Vec2i offset, float fPosX1, Vec2i posBac
 	
 	szMenuText = getLocalised("system_menu_editquest_newsavegame", "---");
 
-	me = new CMenuElementText(-1, hFontMenu, szMenuText, Vec2i(fPosX1, 0), NOP);
+	me = new CMenuElementText(-1, hFontMenu, szMenuText, Vec2i(RATIO_X(20), 0), NOP);
 	me->lData = -1;
 
 	pWindowMenuConsole->AddMenuCenter(me);
@@ -319,7 +319,7 @@ void Menu2_Render_EditQuest(Vec2i size, Vec2i offset, float fPosX1, Vec2i posBac
 	pWindowMenu->AddConsole(pWindowMenuConsole);
 }
 
-void Menu2_Render_Options(Vec2i size, float fPosX1, Vec2i offset, Vec2i posBack, Vec2i posNext)
+void Menu2_Render_Options(Vec2i size, Vec2i offset, Vec2i posBack, Vec2i posNext)
 {
 	{
 	std::string szMenuText;
@@ -365,7 +365,7 @@ void Menu2_Render_Options(Vec2i size, float fPosX1, Vec2i offset, Vec2i posBack,
 		pc = new CMenuPanel();
 		szMenuText = getLocalised("system_menus_options_video_renderer", "Renderer");
 		szMenuText += "  ";
-		me = new CMenuElementText(-1, hFontMenu, szMenuText, Vec2i(fPosX1, 0), NOP);
+		me = new CMenuElementText(-1, hFontMenu, szMenuText, Vec2i(RATIO_X(20), 0), NOP);
 		me->SetCheckOff();
 		pc->AddElement(me);
 		CMenuSliderText * slider = new CMenuSliderText(BUTTON_MENUOPTIONSVIDEO_RENDERER, Vec2i(0, 0));
@@ -395,7 +395,7 @@ void Menu2_Render_Options(Vec2i size, float fPosX1, Vec2i offset, Vec2i posBack,
 		szMenuText = getLocalised("system_menus_options_video_full_screen");
 	}
 	szMenuText += "  ";
-	CMenuElementText * metemp = new CMenuElementText(-1, hFontMenu, szMenuText, Vec2i(fPosX1, 0.f), NOP);
+	CMenuElementText * metemp = new CMenuElementText(-1, hFontMenu, szMenuText, Vec2i(RATIO_X(20), 0.f), NOP);
 	metemp->SetCheckOff();
 	TextureContainer *pTex1 = TextureContainer::Load("graph/interface/menus/menu_checkbox_off");
 	TextureContainer *pTex2 = TextureContainer::Load("graph/interface/menus/menu_checkbox_on");
@@ -408,7 +408,7 @@ void Menu2_Render_Options(Vec2i size, float fPosX1, Vec2i offset, Vec2i posBack,
 	pc = new CMenuPanel();
 	szMenuText = getLocalised("system_menus_options_video_resolution");
 	szMenuText += "  ";
-	me = new CMenuElementText(-1, hFontMenu, szMenuText, Vec2i(fPosX1, 0.f), NOP);
+	me = new CMenuElementText(-1, hFontMenu, szMenuText, Vec2i(RATIO_X(20), 0.f), NOP);
 	me->SetCheckOff();
 	pc->AddElement(me);
 	pMenuSliderResol = new CMenuSliderText(BUTTON_MENUOPTIONSVIDEO_RESOLUTION, Vec2i(0, 0));
@@ -464,7 +464,7 @@ void Menu2_Render_Options(Vec2i size, float fPosX1, Vec2i offset, Vec2i posBack,
 	pc = new CMenuPanel();
 	szMenuText = getLocalised("system_menus_options_detail");
 	szMenuText += " ";
-	me = new CMenuElementText(-1, hFontMenu, szMenuText, Vec2i(fPosX1, 0), NOP);
+	me = new CMenuElementText(-1, hFontMenu, szMenuText, Vec2i(RATIO_X(20), 0), NOP);
 	me->SetCheckOff();
 	pc->AddElement(me);
 	me = new CMenuSliderText(BUTTON_MENUOPTIONSVIDEO_OTHERSDETAILS, Vec2i(0, 0));
@@ -487,7 +487,7 @@ void Menu2_Render_Options(Vec2i size, float fPosX1, Vec2i offset, Vec2i posBack,
 	
 	pc = new CMenuPanel();
 	szMenuText = getLocalised("system_menus_options_video_brouillard");
-	me = new CMenuElementText(-1, hFontMenu, szMenuText, Vec2i(fPosX1, 0.f), NOP);
+	me = new CMenuElementText(-1, hFontMenu, szMenuText, Vec2i(RATIO_X(20), 0.f), NOP);
 	me->SetCheckOff();
 	pc->AddElement(me);
 	me = new CMenuSlider(BUTTON_MENUOPTIONSVIDEO_FOG, Vec2i(RATIO_X(200), 0));
@@ -498,7 +498,7 @@ void Menu2_Render_Options(Vec2i size, float fPosX1, Vec2i offset, Vec2i posBack,
 
 	szMenuText = getLocalised("system_menus_options_video_crosshair", "Show Crosshair");
 	szMenuText += " ";
-	metemp = new CMenuElementText(-1, hFontMenu, szMenuText, Vec2i(fPosX1, 0.f), NOP);
+	metemp = new CMenuElementText(-1, hFontMenu, szMenuText, Vec2i(RATIO_X(20), 0.f), NOP);
 	metemp->SetCheckOff();
 	me = new CMenuCheckButton(BUTTON_MENUOPTIONSVIDEO_CROSSHAIR, Vec2i(0, 0), pTex1->m_dwWidth, pTex1, pTex2, metemp);
 
@@ -510,7 +510,7 @@ void Menu2_Render_Options(Vec2i size, float fPosX1, Vec2i offset, Vec2i posBack,
 	szMenuText += " ";
 	pTex1 = TextureContainer::Load("graph/interface/menus/menu_checkbox_off");
 	pTex2 = TextureContainer::Load("graph/interface/menus/menu_checkbox_on");
-	metemp = new CMenuElementText(-1, hFontMenu, szMenuText, Vec2i(fPosX1, 0), NOP);
+	metemp = new CMenuElementText(-1, hFontMenu, szMenuText, Vec2i(RATIO_X(20), 0), NOP);
 	metemp->SetCheckOff();
 	me = new CMenuCheckButton(BUTTON_MENUOPTIONSVIDEO_ANTIALIASING, Vec2i(0, 0), pTex1->m_dwWidth, pTex1, pTex2, metemp);
 	((CMenuCheckButton*)me)->iState= config.video.antialiasing ? 1 : 0;
@@ -521,7 +521,7 @@ void Menu2_Render_Options(Vec2i size, float fPosX1, Vec2i offset, Vec2i posBack,
 	szMenuText += " ";
 	pTex1 = TextureContainer::Load("graph/interface/menus/menu_checkbox_off");
 	pTex2 = TextureContainer::Load("graph/interface/menus/menu_checkbox_on");
-	metemp = new CMenuElementText(-1, hFontMenu, szMenuText, Vec2i(fPosX1, 0), NOP);
+	metemp = new CMenuElementText(-1, hFontMenu, szMenuText, Vec2i(RATIO_X(20), 0), NOP);
 	metemp->SetCheckOff();
 	me = new CMenuCheckButton(BUTTON_MENUOPTIONSVIDEO_VSYNC, Vec2i(0, 0), pTex1->m_dwWidth, pTex1, pTex2, metemp);
 	((CMenuCheckButton*)me)->iState= config.video.vsync ? 1 : 0;
@@ -566,7 +566,7 @@ void Menu2_Render_Options(Vec2i size, float fPosX1, Vec2i offset, Vec2i posBack,
 		pc = new CMenuPanel();
 		szMenuText = getLocalised("system_menus_options_audio_backend", "Backend");
 		szMenuText += "  ";
-		me = new CMenuElementText(-1, hFontMenu, szMenuText, Vec2i(fPosX1, 0), NOP);
+		me = new CMenuElementText(-1, hFontMenu, szMenuText, Vec2i(RATIO_X(20), 0), NOP);
 		me->SetCheckOff();
 		pc->AddElement(me);
 		CMenuSliderText * slider = new CMenuSliderText(BUTTON_MENUOPTIONSAUDIO_BACKEND, Vec2i(0, 0));
@@ -589,7 +589,7 @@ void Menu2_Render_Options(Vec2i size, float fPosX1, Vec2i offset, Vec2i posBack,
 	
 	pc = new CMenuPanel();
 	szMenuText = getLocalised("system_menus_options_audio_master_volume");
-	me = new CMenuElementText(-1, hFontMenu, szMenuText, Vec2i(fPosX1, 0.f), OPTIONS_AUDIO_VOLUME);
+	me = new CMenuElementText(-1, hFontMenu, szMenuText, Vec2i(RATIO_X(20), 0.f), OPTIONS_AUDIO_VOLUME);
 	me->SetCheckOff();
 	pc->AddElement(me);
 	me = new CMenuSlider(BUTTON_MENUOPTIONSAUDIO_MASTER, Vec2i(RATIO_X(200), 0));
@@ -599,7 +599,7 @@ void Menu2_Render_Options(Vec2i size, float fPosX1, Vec2i offset, Vec2i posBack,
 
 	pc = new CMenuPanel();
 	szMenuText = getLocalised("system_menus_options_audio_effects_volume");
-	me = new CMenuElementText(-1, hFontMenu, szMenuText, Vec2i(fPosX1, 0.f), OPTIONS_AUDIO);
+	me = new CMenuElementText(-1, hFontMenu, szMenuText, Vec2i(RATIO_X(20), 0.f), OPTIONS_AUDIO);
 	me->SetCheckOff();
 	pc->AddElement(me);
 	me = new CMenuSlider(BUTTON_MENUOPTIONSAUDIO_SFX, Vec2i(RATIO_X(200), 0));
@@ -609,7 +609,7 @@ void Menu2_Render_Options(Vec2i size, float fPosX1, Vec2i offset, Vec2i posBack,
 
 	pc = new CMenuPanel();
 	szMenuText = getLocalised("system_menus_options_audio_speech_volume");
-	me = new CMenuElementText(-1, hFontMenu, szMenuText, Vec2i(fPosX1, 0.f), OPTIONS_AUDIO);
+	me = new CMenuElementText(-1, hFontMenu, szMenuText, Vec2i(RATIO_X(20), 0.f), OPTIONS_AUDIO);
 	me->SetCheckOff();
 	pc->AddElement(me);
 	me = new CMenuSlider(BUTTON_MENUOPTIONSAUDIO_SPEECH, Vec2i(RATIO_X(200), 0));
@@ -619,7 +619,7 @@ void Menu2_Render_Options(Vec2i size, float fPosX1, Vec2i offset, Vec2i posBack,
 
 	pc = new CMenuPanel();
 	szMenuText = getLocalised("system_menus_options_audio_ambiance_volume");
-	me = new CMenuElementText(-1, hFontMenu, szMenuText, Vec2i(fPosX1, 0), OPTIONS_AUDIO);
+	me = new CMenuElementText(-1, hFontMenu, szMenuText, Vec2i(RATIO_X(20), 0), OPTIONS_AUDIO);
 	me->SetCheckOff();
 	pc->AddElement(me);
 	me = new CMenuSlider(BUTTON_MENUOPTIONSAUDIO_AMBIANCE, Vec2i(RATIO_X(200), 0));
@@ -631,7 +631,7 @@ void Menu2_Render_Options(Vec2i size, float fPosX1, Vec2i offset, Vec2i posBack,
 	szMenuText += " ";
 	pTex1 = TextureContainer::Load("graph/interface/menus/menu_checkbox_off");
 	pTex2 = TextureContainer::Load("graph/interface/menus/menu_checkbox_on");
-	CMenuElementText * pElementText = new CMenuElementText(-1, hFontMenu, szMenuText, Vec2i(fPosX1, 0), OPTIONS_INPUT);
+	CMenuElementText * pElementText = new CMenuElementText(-1, hFontMenu, szMenuText, Vec2i(RATIO_X(20), 0), OPTIONS_INPUT);
 	me = new CMenuCheckButton(BUTTON_MENUOPTIONSAUDIO_EAX, Vec2i(0, 0), pTex1->m_dwWidth, pTex1, pTex2, pElementText);
 	((CMenuCheckButton*)me)->iState = config.audio.eax ? 1 : 0;
 
@@ -659,14 +659,14 @@ void Menu2_Render_Options(Vec2i size, float fPosX1, Vec2i offset, Vec2i posBack,
 	CWindowMenuConsole * pWindowMenuConsole = new CWindowMenuConsole(offset, size, OPTIONS_INPUT);
 	
 	szMenuText = getLocalised("system_menus_options_input_customize_controls");
-	me = new CMenuElementText(-1, hFontMenu, szMenuText, Vec2i(fPosX1, 0), OPTIONS_INPUT_CUSTOMIZE_KEYS_1);
+	me = new CMenuElementText(-1, hFontMenu, szMenuText, Vec2i(RATIO_X(20), 0), OPTIONS_INPUT_CUSTOMIZE_KEYS_1);
 	pWindowMenuConsole->AddMenuCenterY(me);
 	
 	szMenuText = getLocalised("system_menus_options_input_invert_mouse");
 	szMenuText += " ";
 	pTex1 = TextureContainer::Load("graph/interface/menus/menu_checkbox_off");
 	pTex2 = TextureContainer::Load("graph/interface/menus/menu_checkbox_on");
-	me = new CMenuCheckButton(BUTTON_MENUOPTIONS_CONTROLS_INVERTMOUSE, Vec2i(0, 0), pTex1->m_dwWidth, pTex1, pTex2, new CMenuElementText(-1, hFontMenu, szMenuText, Vec2i(fPosX1, 0), OPTIONS_INPUT));
+	me = new CMenuCheckButton(BUTTON_MENUOPTIONS_CONTROLS_INVERTMOUSE, Vec2i(0, 0), pTex1->m_dwWidth, pTex1, pTex2, new CMenuElementText(-1, hFontMenu, szMenuText, Vec2i(RATIO_X(20), 0), OPTIONS_INPUT));
 	
 	if(config.input.invertMouse) {
 		((CMenuCheckButton*)me)->iState=1;
@@ -680,7 +680,7 @@ void Menu2_Render_Options(Vec2i size, float fPosX1, Vec2i offset, Vec2i posBack,
 	szMenuText += " ";
 	pTex1 = TextureContainer::Load("graph/interface/menus/menu_checkbox_off");
 	pTex2 = TextureContainer::Load("graph/interface/menus/menu_checkbox_on");
-	me = new CMenuCheckButton(BUTTON_MENUOPTIONS_CONTROLS_AUTOREADYWEAPON, Vec2i(0, 0), pTex1->m_dwWidth, pTex1, pTex2, new CMenuElementText(-1, hFontMenu, szMenuText, Vec2i(fPosX1, 0), OPTIONS_INPUT));
+	me = new CMenuCheckButton(BUTTON_MENUOPTIONS_CONTROLS_AUTOREADYWEAPON, Vec2i(0, 0), pTex1->m_dwWidth, pTex1, pTex2, new CMenuElementText(-1, hFontMenu, szMenuText, Vec2i(RATIO_X(20), 0), OPTIONS_INPUT));
 
 	((CMenuCheckButton*)me)->iState = config.input.autoReadyWeapon ? 1 : 0;
 
@@ -690,7 +690,7 @@ void Menu2_Render_Options(Vec2i size, float fPosX1, Vec2i offset, Vec2i posBack,
 	szMenuText += " ";
 	pTex1 = TextureContainer::Load("graph/interface/menus/menu_checkbox_off");
 	pTex2 = TextureContainer::Load("graph/interface/menus/menu_checkbox_on");
-	me = new CMenuCheckButton(BUTTON_MENUOPTIONS_CONTROLS_MOUSELOOK, Vec2i(0, 0), pTex1->m_dwWidth, pTex1, pTex2, new CMenuElementText(-1, hFontMenu, szMenuText, Vec2i(fPosX1, 0.f), OPTIONS_INPUT));
+	me = new CMenuCheckButton(BUTTON_MENUOPTIONS_CONTROLS_MOUSELOOK, Vec2i(0, 0), pTex1->m_dwWidth, pTex1, pTex2, new CMenuElementText(-1, hFontMenu, szMenuText, Vec2i(RATIO_X(20), 0.f), OPTIONS_INPUT));
 
 	((CMenuCheckButton*)me)->iState = config.input.mouseLookToggle ? 1 : 0;
 
@@ -698,7 +698,7 @@ void Menu2_Render_Options(Vec2i size, float fPosX1, Vec2i offset, Vec2i posBack,
 
 	pc = new CMenuPanel();
 	szMenuText = getLocalised("system_menus_options_input_mouse_sensitivity");
-	me = new CMenuElementText(-1, hFontMenu, szMenuText, Vec2i(fPosX1, 0.f), NOP);
+	me = new CMenuElementText(-1, hFontMenu, szMenuText, Vec2i(RATIO_X(20), 0.f), NOP);
 	me->SetCheckOff();
 	pc->AddElement(me);
 	me = new CMenuSlider(BUTTON_MENUOPTIONS_CONTROLS_MOUSESENSITIVITY, Vec2i(RATIO_X(200), 0));
@@ -710,7 +710,7 @@ void Menu2_Render_Options(Vec2i size, float fPosX1, Vec2i offset, Vec2i posBack,
 	szMenuText += " ";
 	pTex1 = TextureContainer::Load("graph/interface/menus/menu_checkbox_off");
 	pTex2 = TextureContainer::Load("graph/interface/menus/menu_checkbox_on");
-	me = new CMenuCheckButton(BUTTON_MENUOPTIONS_CONTROLS_AUTODESCRIPTION, Vec2i(0, 0), pTex1->m_dwWidth, pTex1, pTex2, new CMenuElementText(-1, hFontMenu, szMenuText, Vec2i(fPosX1, 0), OPTIONS_INPUT));
+	me = new CMenuCheckButton(BUTTON_MENUOPTIONS_CONTROLS_AUTODESCRIPTION, Vec2i(0, 0), pTex1->m_dwWidth, pTex1, pTex2, new CMenuElementText(-1, hFontMenu, szMenuText, Vec2i(RATIO_X(20), 0), OPTIONS_INPUT));
 
 	((CMenuCheckButton*)me)->iState = config.input.autoDescription ? 1 : 0;
 
@@ -718,7 +718,7 @@ void Menu2_Render_Options(Vec2i size, float fPosX1, Vec2i offset, Vec2i posBack,
 
 	pc = new CMenuPanel();
 	szMenuText = getLocalised("system_menus_options_misc_quicksave_slots", "Quicksave slots");
-	me = new CMenuElementText(-1, hFontMenu, szMenuText, Vec2i(fPosX1, 0), NOP);
+	me = new CMenuElementText(-1, hFontMenu, szMenuText, Vec2i(RATIO_X(20), 0), NOP);
 	me->SetCheckOff();
 	pc->AddElement(me);
 	me = new CMenuSlider(BUTTON_MENUOPTIONS_CONTROLS_QUICKSAVESLOTS, Vec2i(RATIO_X(200), 0));
@@ -980,9 +980,7 @@ void MainMenuLeftCreate(MENUSTATE eMenuState)
 	Vec2i windowMenuPos = Vec2i(20, (480-windowMenuSize.y)>>1);
 	Vec2i windowConsoleOffset = Vec2i(0, 14 - 10);
 	Vec2i windowConsoleSize = windowMenuSize - windowConsoleOffset + Vec2i(0, 20);
-	
-	float fPosX1 = RATIO_X(20);
-	
+		
 	Vec2i posBack = RATIO_2(Vec2i(10, 190));
 	Vec2i posNext = RATIO_2(Vec2i(140, 190));
 	
@@ -995,11 +993,11 @@ void MainMenuLeftCreate(MENUSTATE eMenuState)
 		break;
 	}
 	case EDIT_QUEST: {
-			Menu2_Render_EditQuest(windowConsoleSize, windowConsoleOffset, fPosX1, posBack);
+			Menu2_Render_EditQuest(windowConsoleSize, windowConsoleOffset, posBack);
 			}
 		break;
 	case OPTIONS: {
-			Menu2_Render_Options(windowConsoleSize, fPosX1, windowConsoleOffset, posBack, posNext);
+			Menu2_Render_Options(windowConsoleSize, windowConsoleOffset, posBack, posNext);
 		}
 		break;
 	
