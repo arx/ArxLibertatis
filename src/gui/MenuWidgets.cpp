@@ -589,8 +589,11 @@ void Menu2_Render_EditQuest(Vec2i size, float fPosBDAY, Vec2i offset, float fPos
 	pWindowMenu->AddConsole(pWindowMenuConsole);
 }
 
-void Menu2_Render_Options(Vec2i size, int iPosX2, float fPosBDAY, float fPosX1, Vec2i offset, float fPosApply, Vec2i posBack, Vec2i posNext)
+void Menu2_Render_Options(Vec2i size, float fPosBDAY, float fPosX1, Vec2i offset, Vec2i posBack, Vec2i posNext)
 {
+	
+	int iPosX2 = RATIO_X(200);
+	
 	std::string szMenuText;
 	CMenuElement *me;
 	CMenuPanel *pc;
@@ -791,6 +794,8 @@ void Menu2_Render_Options(Vec2i size, int iPosX2, float fPosBDAY, float fPosX1, 
 	((CMenuCheckButton*)me)->iState= config.video.vsync ? 1 : 0;
 	pWindowMenuConsole->AddMenuCenterY(me);
 
+	float fPosApply = RATIO_X(240);
+	
 	pc = new CMenuPanel();
 	szMenuText = getLocalised("system_menus_video_apply");
 	szMenuText += "   ";
@@ -1322,14 +1327,9 @@ bool Menu2_Render() {
 		Vec2i windowConsoleSize = windowMenuSize - windowConsoleOffset + Vec2i(0, 20);
 		
 		float fPosX1 = RATIO_X(20);
-		float fPosX2 = RATIO_X(200);
-		
-		int iPosX2 = checked_range_cast<int>(fPosX2);
 		
 		Vec2i posBack = RATIO_2(Vec2i(10, 190));
 		Vec2i posNext = RATIO_2(Vec2i(140, 190));
-		
-		float fPosApply = RATIO_X(240);
 		
 		float fPosBDAY  = RATIO_Y(380);
 		
@@ -1346,7 +1346,7 @@ bool Menu2_Render() {
 				}
 			break;
 		case OPTIONS: {
-				Menu2_Render_Options(windowConsoleSize, iPosX2, fPosBDAY, fPosX1, windowConsoleOffset, fPosApply, posBack, posNext);
+				Menu2_Render_Options(windowConsoleSize, fPosBDAY, fPosX1, windowConsoleOffset, posBack, posNext);
 			}
 			break;
 		
