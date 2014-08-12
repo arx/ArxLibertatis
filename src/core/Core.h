@@ -99,8 +99,16 @@ extern long TELEPORT_TO_ANGLE;
 extern float BOW_FOCAL;
 
 extern Rect g_size;
+
 extern Vec2f g_sizeRatio;
 inline float minSizeRatio() { return std::min(g_sizeRatio.x, g_sizeRatio.y); }
+#define RATIO_X(a)    (((float)a)*g_sizeRatio.x)
+#define RATIO_Y(a)    (((float)a)*g_sizeRatio.y)
+
+inline Vec2i RATIO_2(const Vec2i & in) {
+	return Vec2i(RATIO_X(in.x), RATIO_Y(in.y));
+}
+
 
 extern unsigned long AimTime;
 
