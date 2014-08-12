@@ -319,7 +319,7 @@ void Menu2_Render_EditQuest(Vec2i size, Vec2i offset)
 	pWindowMenu->AddConsole(pWindowMenuConsole);
 }
 
-void Menu2_Render_Options(Vec2i size, Vec2i offset, Vec2i posNext)
+void Menu2_Render_Options(Vec2i size, Vec2i offset)
 {
 	{
 	std::string szMenuText;
@@ -865,7 +865,7 @@ char pNoDef2[]="---";
 	me->SetPos((RATIO_X(size.x) - me->GetWidth())*0.5f, RATIO_Y(380));
 	pc->AddElementNoCenterIn(me);
 	pTex = TextureContainer::Load("graph/interface/menus/next");
-	me = new CMenuCheckButton(BUTTON_MENUOPTIONS_CONTROLS_CUST_BACK, posNext, pTex?pTex->m_dwWidth:0, pTex, NULL, NULL);
+	me = new CMenuCheckButton(BUTTON_MENUOPTIONS_CONTROLS_CUST_BACK, RATIO_2(Vec2i(140, 190)), pTex?pTex->m_dwWidth:0, pTex, NULL, NULL);
 	me->eMenuState = OPTIONS_INPUT_CUSTOMIZE_KEYS_2;
 	me->SetShortCut(Keyboard::Key_Escape);
 	pc->AddElementNoCenterIn(me);
@@ -981,8 +981,6 @@ void MainMenuLeftCreate(MENUSTATE eMenuState)
 	Vec2i windowConsoleOffset = Vec2i(0, 14 - 10);
 	Vec2i windowConsoleSize = windowMenuSize - windowConsoleOffset + Vec2i(0, 20);
 	
-	Vec2i posNext = RATIO_2(Vec2i(140, 190));
-	
 	pWindowMenu = new CWindowMenu(windowMenuPos, windowMenuSize);
 	
 	switch(eMenuState) {
@@ -996,7 +994,7 @@ void MainMenuLeftCreate(MENUSTATE eMenuState)
 			}
 		break;
 	case OPTIONS: {
-			Menu2_Render_Options(windowConsoleSize, windowConsoleOffset, posNext);
+			Menu2_Render_Options(windowConsoleSize, windowConsoleOffset);
 		}
 		break;
 	
