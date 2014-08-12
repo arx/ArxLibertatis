@@ -321,9 +321,6 @@ void Menu2_Render_EditQuest(Vec2i size, Vec2i offset, float fPosX1, Vec2i posBac
 
 void Menu2_Render_Options(Vec2i size, float fPosX1, Vec2i offset, Vec2i posBack, Vec2i posNext)
 {
-	
-	int iPosX2 = RATIO_X(200);
-	
 	{
 	std::string szMenuText;
 	CMenuElement *me;
@@ -493,7 +490,7 @@ void Menu2_Render_Options(Vec2i size, float fPosX1, Vec2i offset, Vec2i posBack,
 	me = new CMenuElementText(-1, hFontMenu, szMenuText, Vec2i(fPosX1, 0.f), NOP);
 	me->SetCheckOff();
 	pc->AddElement(me);
-	me = new CMenuSlider(BUTTON_MENUOPTIONSVIDEO_FOG, Vec2i(iPosX2, 0));
+	me = new CMenuSlider(BUTTON_MENUOPTIONSVIDEO_FOG, Vec2i(RATIO_X(200), 0));
 	((CMenuSlider *)me)->setValue(config.video.fogDistance);
 	pc->AddElement(me);
 
@@ -595,7 +592,7 @@ void Menu2_Render_Options(Vec2i size, float fPosX1, Vec2i offset, Vec2i posBack,
 	me = new CMenuElementText(-1, hFontMenu, szMenuText, Vec2i(fPosX1, 0.f), OPTIONS_AUDIO_VOLUME);
 	me->SetCheckOff();
 	pc->AddElement(me);
-	me = new CMenuSlider(BUTTON_MENUOPTIONSAUDIO_MASTER, Vec2i(iPosX2, 0));
+	me = new CMenuSlider(BUTTON_MENUOPTIONSAUDIO_MASTER, Vec2i(RATIO_X(200), 0));
 	((CMenuSlider *)me)->setValue((int)config.audio.volume); // TODO use float sliders
 	pc->AddElement(me);
 	pWindowMenuConsole->AddMenuCenterY(pc);
@@ -605,7 +602,7 @@ void Menu2_Render_Options(Vec2i size, float fPosX1, Vec2i offset, Vec2i posBack,
 	me = new CMenuElementText(-1, hFontMenu, szMenuText, Vec2i(fPosX1, 0.f), OPTIONS_AUDIO);
 	me->SetCheckOff();
 	pc->AddElement(me);
-	me = new CMenuSlider(BUTTON_MENUOPTIONSAUDIO_SFX, Vec2i(iPosX2, 0));
+	me = new CMenuSlider(BUTTON_MENUOPTIONSAUDIO_SFX, Vec2i(RATIO_X(200), 0));
 	((CMenuSlider *)me)->setValue((int)config.audio.sfxVolume);
 	pc->AddElement(me);
 	pWindowMenuConsole->AddMenuCenterY(pc);
@@ -615,7 +612,7 @@ void Menu2_Render_Options(Vec2i size, float fPosX1, Vec2i offset, Vec2i posBack,
 	me = new CMenuElementText(-1, hFontMenu, szMenuText, Vec2i(fPosX1, 0.f), OPTIONS_AUDIO);
 	me->SetCheckOff();
 	pc->AddElement(me);
-	me = new CMenuSlider(BUTTON_MENUOPTIONSAUDIO_SPEECH, Vec2i(iPosX2, 0));
+	me = new CMenuSlider(BUTTON_MENUOPTIONSAUDIO_SPEECH, Vec2i(RATIO_X(200), 0));
 	((CMenuSlider *)me)->setValue((int)config.audio.speechVolume);
 	pc->AddElement(me);
 	pWindowMenuConsole->AddMenuCenterY(pc);
@@ -625,7 +622,7 @@ void Menu2_Render_Options(Vec2i size, float fPosX1, Vec2i offset, Vec2i posBack,
 	me = new CMenuElementText(-1, hFontMenu, szMenuText, Vec2i(fPosX1, 0), OPTIONS_AUDIO);
 	me->SetCheckOff();
 	pc->AddElement(me);
-	me = new CMenuSlider(BUTTON_MENUOPTIONSAUDIO_AMBIANCE, Vec2i(iPosX2, 0));
+	me = new CMenuSlider(BUTTON_MENUOPTIONSAUDIO_AMBIANCE, Vec2i(RATIO_X(200), 0));
 	((CMenuSlider *)me)->setValue((int)config.audio.ambianceVolume);
 	pc->AddElement(me);
 	pWindowMenuConsole->AddMenuCenterY(pc);
@@ -704,7 +701,7 @@ void Menu2_Render_Options(Vec2i size, float fPosX1, Vec2i offset, Vec2i posBack,
 	me = new CMenuElementText(-1, hFontMenu, szMenuText, Vec2i(fPosX1, 0.f), NOP);
 	me->SetCheckOff();
 	pc->AddElement(me);
-	me = new CMenuSlider(BUTTON_MENUOPTIONS_CONTROLS_MOUSESENSITIVITY, Vec2i(iPosX2, 0));
+	me = new CMenuSlider(BUTTON_MENUOPTIONS_CONTROLS_MOUSESENSITIVITY, Vec2i(RATIO_X(200), 0));
 	((CMenuSlider*)me)->setValue(config.input.mouseSensitivity);
 	pc->AddElement(me);
 	pWindowMenuConsole->AddMenuCenterY(pc);
@@ -724,7 +721,7 @@ void Menu2_Render_Options(Vec2i size, float fPosX1, Vec2i offset, Vec2i posBack,
 	me = new CMenuElementText(-1, hFontMenu, szMenuText, Vec2i(fPosX1, 0), NOP);
 	me->SetCheckOff();
 	pc->AddElement(me);
-	me = new CMenuSlider(BUTTON_MENUOPTIONS_CONTROLS_QUICKSAVESLOTS, Vec2i(iPosX2, 0));
+	me = new CMenuSlider(BUTTON_MENUOPTIONS_CONTROLS_QUICKSAVESLOTS, Vec2i(RATIO_X(200), 0));
 	((CMenuSlider*)me)->setValue(config.misc.quicksaveSlots);
 	pc->AddElement(me);
 	pWindowMenuConsole->AddMenuCenterY(pc);
