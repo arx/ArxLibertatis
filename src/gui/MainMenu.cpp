@@ -945,11 +945,11 @@ void Menu2_Render_Quit(Vec2i posBack, Vec2i size, Vec2i offset)
 	pWindowMenu->eCurrentMenuState=QUIT;
 }
 
-extern CMenuState *pMenu;
+extern CMenuState *mainMenu;
 
 void MainMenuLeftCreate(MENUSTATE eMenuState)
 {
-	pMenu->eOldMenuState=eMenuState;
+	mainMenu->eOldMenuState=eMenuState;
 	
 	delete pWindowMenu, pWindowMenu = NULL;
 	

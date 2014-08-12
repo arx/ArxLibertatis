@@ -118,7 +118,7 @@ void ARXMenu_Private_Options_Video_SetResolution(bool fullscreen, int _iWidth, i
 static MenuCursor * pMenuCursor = NULL;
 
 extern CWindowMenu * pWindowMenu;
-CMenuState *pMenu;
+CMenuState *mainMenu;
 
 static CMenuElement * pMenuElementResume = NULL;
 extern CMenuElement * pMenuElementApply;
@@ -327,7 +327,7 @@ bool Menu2_Render() {
 	if(AMCM_NEWQUEST == ARXmenu.currentmode || AMCM_CREDITS == ARXmenu.currentmode) {
 		
 		delete pWindowMenu, pWindowMenu = NULL;
-		delete pMenu, pMenu = NULL;
+		delete mainMenu, mainMenu = NULL;
 		
 		if(ARXmenu.currentmode == AMCM_CREDITS){
 			Credits::render();
@@ -351,24 +351,24 @@ bool Menu2_Render() {
 	MENUSTATE eOldMenuState=NOP;
 	MENUSTATE eM;
 
-	if(!pMenu) {
+	if(!mainMenu) {
 		eM = NOP;
 	} else {
-		eM = pMenu->eOldMenuWindowState;
+		eM = mainMenu->eOldMenuWindowState;
 	}
 	
-	if(!pMenu || (pMenu && pMenu->bReInitAll)) {
+	if(!mainMenu || (mainMenu && mainMenu->bReInitAll)) {
 		
-		if(pMenu && pMenu->bReInitAll) {
-			eOldMenuState = pMenu->eOldMenuState;
+		if(mainMenu && mainMenu->bReInitAll) {
+			eOldMenuState = mainMenu->eOldMenuState;
 			delete pWindowMenu, pWindowMenu = NULL;
-			delete pMenu, pMenu = NULL;
+			delete mainMenu, mainMenu = NULL;
 		}
 		
-		pMenu = new CMenuState();
-		pMenu->eOldMenuWindowState=eM;
+		mainMenu = new CMenuState();
+		mainMenu->eOldMenuWindowState=eM;
 		
-		pMenu->createChildElements();
+		mainMenu->createChildElements();
 	}
 
 	bool bScroll=true;
@@ -384,7 +384,7 @@ bool Menu2_Render() {
 		}
 	}
 	
-	MENUSTATE eMenuState = pMenu->Update();
+	MENUSTATE eMenuState = mainMenu->Update();
 	
 	if(eOldMenuState != NOP) {
 		eMenuState=eOldMenuState;
@@ -394,10 +394,10 @@ bool Menu2_Render() {
 	if(eMenuState == RESUME_GAME) {
 		pTextManage->Clear();
 		ARXmenu.currentmode = AMCM_OFF;
-		pMenu->pZoneClick = NULL;
+		mainMenu->pZoneClick = NULL;
 		
 		delete pWindowMenu, pWindowMenu = NULL;
-		delete pMenu, pMenu = NULL;
+		delete mainMenu, mainMenu = NULL;
 		
 		GRenderer->SetRenderState(Renderer::AlphaBlending, false);
 		GRenderer->GetTextureStage(0)->setWrapMode(TextureStage::WrapRepeat);
@@ -410,12 +410,12 @@ bool Menu2_Render() {
 	
 	}
 	}
-	pMenu->Render();
+	mainMenu->Render();
 
 	if(pWindowMenu) {
 		if(!bScroll) {
 			pWindowMenu->fAngle=90.f;
-			pWindowMenu->eCurrentMenuState=pMenu->eOldMenuWindowState;
+			pWindowMenu->eCurrentMenuState=mainMenu->eOldMenuWindowState;
 		}
 
 		pWindowMenu->Update(ARXDiffTimeMenu);
@@ -424,7 +424,7 @@ bool Menu2_Render() {
 			MENUSTATE eMS=pWindowMenu->Render();
 
 			if(eMS != NOP) {
-				pMenu->eOldMenuWindowState=eMS;
+				mainMenu->eOldMenuWindowState=eMS;
 			}
 		}
 
@@ -435,7 +435,7 @@ bool Menu2_Render() {
 
 	// If the menu needs to be reinitialized, then the text in the TextManager is probably using bad fonts that were deleted already
 	// Skip one update in this case
-	if(pTextManage && !pMenu->bReInitAll) {
+	if(pTextManage && !mainMenu->bReInitAll) {
 		pTextManage->Update(ARXDiffTimeMenu);
 		pTextManage->Render();
 	}
@@ -804,7 +804,7 @@ bool CMenuElementText::OnMouseClick() {
 						lData = p->lData;
 						if(lData != -1) {
 							eMenuState = EDIT_QUEST_LOAD;
-							pMenu->bReInitAll = true;
+							mainMenu->bReInitAll = true;
 							savegames.remove(lData);
 							break;
 						}
@@ -828,7 +828,7 @@ bool CMenuElementText::OnMouseClick() {
 						CMenuElementText * me = (CMenuElementText *) p->MenuAllZone.vMenuZone[1];
 						if(me) {
 							eMenuState = EDIT_QUEST_SAVE;
-							pMenu->bReInitAll = true;
+							mainMenu->bReInitAll = true;
 							savegames.remove(me->lData);
 							break;
 						}
@@ -847,7 +847,7 @@ bool CMenuElementText::OnMouseClick() {
 				pMenuSliderResol->iOldPos = -1;
 				fullscreenCheckbox->iOldState = -1;
 			}
-			pMenu->bReInitAll=true;
+			mainMenu->bReInitAll=true;
 		}
 		break;
 		// MENUOPTIONS_CONTROLS
@@ -1094,12 +1094,12 @@ void MACRO_MENU_PRINCIPALE(Vec2s & pos,
 			me->lColor=Color(127,127,127);
 		}
 	}
-	pMenu->AddMenuElement(me);
+	mainMenu->AddMenuElement(me);
 }
 
 void CMenuState::createChildElements()
 {
-	pMenu->pTexBackGround = TextureContainer::LoadUI("graph/interface/menus/menu_main_background", TextureContainer::NoColorKey);
+	mainMenu->pTexBackGround = TextureContainer::LoadUI("graph/interface/menus/menu_main_background", TextureContainer::NoColorKey);
 
 	Vec2s pos = Vec2s(370, 100);
 	int yOffset = 50;
@@ -1129,7 +1129,7 @@ void CMenuState::createChildElements()
 	
 	me->SetCheckOff();
 	me->lColor=Color(127,127,127);
-	pMenu->AddMenuElement(me);
+	mainMenu->AddMenuElement(me);
 }
 
 void CMenuState::AddMenuElement(CMenuElement * _me) {
@@ -3168,14 +3168,14 @@ void Menu2_Close() {
 	ARXmenu.currentmode = AMCM_OFF;
 	
 	delete pWindowMenu, pWindowMenu = NULL;
-	delete pMenu, pMenu = NULL;
+	delete mainMenu, mainMenu = NULL;
 	delete pMenuCursor, pMenuCursor = NULL;
 }
 
 void MenuReInitAll() {
 	
-	if(!pMenu)
+	if(!mainMenu)
 		return;
 	
-	pMenu->bReInitAll=true;
+	mainMenu->bReInitAll=true;
 }
