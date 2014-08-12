@@ -319,9 +319,8 @@ void Menu2_Render_EditQuest(Vec2i size, Vec2i offset)
 	pWindowMenu->AddConsole(pWindowMenuConsole);
 }
 
-void Menu2_Render_Options(Vec2i size, Vec2i offset)
+void MainMenuOptionGroupsCreate(Vec2i size, Vec2i offset)
 {
-	{
 	std::string szMenuText;
 	CMenuElement *me;
 	TextureContainer *pTex;
@@ -347,11 +346,10 @@ void Menu2_Render_Options(Vec2i size, Vec2i offset)
 	pWindowMenuConsole->AddMenu(me);
 
 	pWindowMenu->AddConsole(pWindowMenuConsole);
-	}
-//------------------ END OPTIONS
+}
 
-//------------------ START VIDEO
-	{
+void MainMenuOptionVideoCreate(Vec2i offset, Vec2i size)
+{
 	std::string szMenuText;
 	CMenuElement *me;
 	CMenuPanel *pc;
@@ -546,11 +544,10 @@ void Menu2_Render_Options(Vec2i size, Vec2i offset)
 	pWindowMenuConsole->AddMenu(pc);
 
 	pWindowMenu->AddConsole(pWindowMenuConsole);
-	}
-	//------------------ END VIDEO
+}
 
-	//------------------ START AUDIO
-	{
+void MainMenuOptionAudioCreate(Vec2i offset, Vec2i size)
+{
 	std::string szMenuText;
 	CMenuElement *me;
 	CMenuPanel *pc;
@@ -644,7 +641,13 @@ void Menu2_Render_Options(Vec2i size, Vec2i offset)
 	pWindowMenuConsole->AddMenu(me);
 
 	pWindowMenu->AddConsole(pWindowMenuConsole);
-	}
+}
+
+void Menu2_Render_Options(Vec2i size, Vec2i offset)
+{
+	MainMenuOptionGroupsCreate(size, offset);
+	MainMenuOptionVideoCreate(offset, size);
+	MainMenuOptionAudioCreate(offset, size);
 	//------------------ END AUDIO
 
 	//------------------ START INPUT
