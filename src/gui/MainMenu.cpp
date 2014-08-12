@@ -324,11 +324,11 @@ void Menu2_Render_Options(Vec2i size, float fPosX1, Vec2i offset, Vec2i posBack,
 	
 	int iPosX2 = RATIO_X(200);
 	
+	{
 	std::string szMenuText;
 	CMenuElement *me;
-	CMenuPanel *pc;
 	TextureContainer *pTex;
-
+	
 	CWindowMenuConsole *pWindowMenuConsole=new CWindowMenuConsole(offset, size, OPTIONS);
 
 	szMenuText = getLocalised("system_menus_options_video");
@@ -350,11 +350,17 @@ void Menu2_Render_Options(Vec2i size, float fPosX1, Vec2i offset, Vec2i posBack,
 	pWindowMenuConsole->AddMenu(me);
 
 	pWindowMenu->AddConsole(pWindowMenuConsole);
+	}
 //------------------ END OPTIONS
 
 //------------------ START VIDEO
-	pWindowMenuConsole=new CWindowMenuConsole(offset + Vec2i(0, -35), size, OPTIONS_VIDEO);
-
+	{
+	std::string szMenuText;
+	CMenuElement *me;
+	CMenuPanel *pc;
+	TextureContainer *pTex;
+	
+	CWindowMenuConsole * pWindowMenuConsole=new CWindowMenuConsole(offset + Vec2i(0, -35), size, OPTIONS_VIDEO);
 	
 	// Renderer selection
 	{
@@ -543,10 +549,19 @@ void Menu2_Render_Options(Vec2i size, float fPosX1, Vec2i offset, Vec2i posBack,
 	pWindowMenuConsole->AddMenu(pc);
 
 	pWindowMenu->AddConsole(pWindowMenuConsole);
+	}
 	//------------------ END VIDEO
 
 	//------------------ START AUDIO
-	pWindowMenuConsole = new CWindowMenuConsole(offset, size, OPTIONS_AUDIO);
+	{
+	std::string szMenuText;
+	CMenuElement *me;
+	CMenuPanel *pc;
+	TextureContainer *pTex;
+	TextureContainer *pTex1;
+	TextureContainer *pTex2;
+	
+	CWindowMenuConsole * pWindowMenuConsole = new CWindowMenuConsole(offset, size, OPTIONS_AUDIO);
 
 	// Audio backend selection
 	{
@@ -632,10 +647,19 @@ void Menu2_Render_Options(Vec2i size, float fPosX1, Vec2i offset, Vec2i posBack,
 	pWindowMenuConsole->AddMenu(me);
 
 	pWindowMenu->AddConsole(pWindowMenuConsole);
+	}
 	//------------------ END AUDIO
 
 	//------------------ START INPUT
-	pWindowMenuConsole = new CWindowMenuConsole(offset, size, OPTIONS_INPUT);
+	{
+	std::string szMenuText;
+	CMenuElement *me;
+	CMenuPanel *pc;
+	TextureContainer *pTex;
+	TextureContainer *pTex1;
+	TextureContainer *pTex2;
+	
+	CWindowMenuConsole * pWindowMenuConsole = new CWindowMenuConsole(offset, size, OPTIONS_INPUT);
 	
 	szMenuText = getLocalised("system_menus_options_input_customize_controls");
 	me = new CMenuElementText(-1, hFontMenu, szMenuText, Vec2i(fPosX1, 0), OPTIONS_INPUT_CUSTOMIZE_KEYS_1);
@@ -907,6 +931,7 @@ char pNoDef2[]="---";
 	#undef CUSTOM_CTRL_FUNC
 	#undef CUSTOM_CTRL_FUNC2
 	#undef CUSTOM_CTRL_FUNC3
+	}
 //------------------ END CUSTOM CONTROLS
 
 	pWindowMenu->eCurrentMenuState=OPTIONS;	
