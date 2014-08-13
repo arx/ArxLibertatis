@@ -2198,8 +2198,7 @@ void CWindowMenuConsole::Render() {
 	GRenderer->SetRenderState(Renderer::DepthTest, true);
 	GRenderer->SetBlendFunc(Renderer::BlendOne, Renderer::BlendOne);
 	GRenderer->SetRenderState(Renderer::AlphaBlending, false);
-
-	GRenderer->SetRenderState(Renderer::AlphaBlending, false);
+	
 	EERIEDrawBitmap2(Rectf(Vec2f(m_pos.x, iSavePosY),
 	                 RATIO_X(pTexBackgroundBorder->m_dwWidth), RATIO_Y(pTexBackgroundBorder->m_dwHeight)),
 	                 0, pTexBackgroundBorder, Color::white);
