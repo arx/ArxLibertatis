@@ -649,7 +649,7 @@ bool CMenuElementText::OnMouseDoubleClick() {
 
 				if(p->eMenuState == EDIT_QUEST_LOAD) {
 					for(size_t j = 0; j < p->MenuAllZone.vMenuZone.size(); j++) {
-						CMenuElement *pMenuElement = (CMenuElement*) ( (CMenuElement*)p->MenuAllZone.vMenuZone[j] )->GetZoneWithID(BUTTON_MENUEDITQUEST_LOAD_CONFIRM);
+						CMenuElement *pMenuElement = p->MenuAllZone.vMenuZone[j]->GetZoneWithID(BUTTON_MENUEDITQUEST_LOAD_CONFIRM);
 
 						if(pMenuElement) {
 							pMenuElement->OnMouseClick();
@@ -1170,7 +1170,7 @@ void CMenuState::createChildElements()
 }
 
 void CMenuState::AddMenuElement(CMenuElement * _me) {
-	pMenuAllZone->AddZone((CMenuElement *)_me);
+	pMenuAllZone->AddZone(_me);
 }
 
 MENUSTATE CMenuState::Update() {
@@ -1181,13 +1181,13 @@ MENUSTATE CMenuState::Update() {
 
 	if(GInput->getMouseButton(Mouse::Button_0)) {
 		if(iR) {
-			pZoneClick = (CMenuElement*)iR;
+			pZoneClick = iR;
 			pZoneClick->OnMouseClick();
 			return pZoneClick->eMenuState;
 		}
 	} else {
 		if(iR) {
-			pZoneClick = (CMenuElement*)iR;
+			pZoneClick = iR;
 		}
 	}
 
@@ -1205,7 +1205,7 @@ void CMenuState::Render() {
 	int iARXDiffTimeMenu = checked_range_cast<int>(ARXDiffTimeMenu);
 
 	for(size_t i = 0; i < pMenuAllZone->GetNbZone(); ++i) {
-		CMenuElement *pMe=(CMenuElement*)pMenuAllZone->GetZoneNum(i);
+		CMenuElement * pMe = pMenuAllZone->GetZoneNum(i);
 		pMe->Update(iARXDiffTimeMenu);
 		pMe->Render();
 	}
@@ -1271,7 +1271,7 @@ CMenuElement * CMenuAllZone::GetZoneNum(size_t index) {
 CMenuElement * CMenuAllZone::GetZoneWithID(int _iID) {
 
 	for(std::vector<CMenuElement*>::iterator i = vMenuZone.begin(), i_end = vMenuZone.end(); i != i_end; ++i) {
-		if(CMenuElement *zone = ((CMenuElement*)(*i))->GetZoneWithID(_iID))
+		if(CMenuElement *zone = (*i)->GetZoneWithID(_iID))
 			return zone;
 	}
 
@@ -1900,7 +1900,7 @@ CMenuElement * CWindowMenuConsole::GetTouch(bool keyTouched, int keyId, InputKey
 
 			bMouseAttack=false;
 
-			return (CMenuElement*)pZoneText;
+			return pZoneText;
 		}
 	}
 
@@ -1923,7 +1923,7 @@ MENUSTATE CWindowMenuConsole::Update(Vec2i pos) {
 			CMenuElement * iR = MenuAllZone.CheckZone(GInput->getMousePosAbs());
 
 			if(iR) {
-				pZoneClick=(CMenuElement*)iR;
+				pZoneClick = iR;
 
 				if(GInput->getMouseButtonDoubleClick(Mouse::Button_0, 300)) {
 					MENUSTATE e = pZoneClick->eMenuState;
@@ -1951,7 +1951,7 @@ MENUSTATE CWindowMenuConsole::Update(Vec2i pos) {
 				CMenuElement * iR = MenuAllZone.CheckZone(GInput->getMousePosAbs());
 
 				if(iR) {
-					pZoneClick=(CMenuElement*)iR;
+					pZoneClick = iR;
 
 					if(GInput->getMouseButtonDoubleClick(Mouse::Button_0, 300)) {
 						bEdit = pZoneClick->OnMouseDoubleClick();
@@ -1966,7 +1966,7 @@ MENUSTATE CWindowMenuConsole::Update(Vec2i pos) {
 	//check les shortcuts
 	if(!bEdit) {
 		for(size_t iJ = 0; iJ < MenuAllZone.GetNbZone(); ++iJ) {
-			CMenuElement *pMenuElement=(CMenuElement*)MenuAllZone.GetZoneNum(iJ);
+			CMenuElement * pMenuElement = MenuAllZone.GetZoneNum(iJ);
 			CMenuElement *CMenuElementShortCut = pMenuElement->OnShortCut();
 
 			if(CMenuElementShortCut) {
@@ -2185,7 +2185,7 @@ void CWindowMenuConsole::Render() {
 	int iARXDiffTimeMenu  = checked_range_cast<int>(ARXDiffTimeMenu);
 
 	for(size_t i = 0; i < MenuAllZone.GetNbZone(); ++i) {
-		CMenuElement *pMe=(CMenuElement*)MenuAllZone.GetZoneNum(i);
+		CMenuElement * pMe = MenuAllZone.GetZoneNum(i);
 		
 		pMe->Update(iARXDiffTimeMenu);
 		pMe->Render();
@@ -2297,14 +2297,14 @@ void CWindowMenuConsole::ReInitActionKey()
 
 		if(pmzMenuZone) {
 			if(pmzMenuZone) {
-				pZoneClick = (CMenuElement*)pmzMenuZone;
+				pZoneClick = pmzMenuZone;
 				GetTouch(true, config.actions[iTab].key[0]);
 			}
 
 			pmzMenuZone = MenuAllZone.GetZoneWithID(iID+1);
 
 			if(pmzMenuZone) {
-				pZoneClick = (CMenuElement*)pmzMenuZone;
+				pZoneClick = pmzMenuZone;
 				GetTouch(true, config.actions[iTab].key[1]);
 			}
 		}

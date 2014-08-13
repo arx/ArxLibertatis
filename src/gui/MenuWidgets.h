@@ -253,7 +253,7 @@ public:
 	virtual void EmptyFunction() { }
 	virtual bool OnMouseDoubleClick() { return false; }
 	virtual CMenuElement * GetZoneWithID(int zoneId) {
-		return (iID == zoneId) ? (CMenuElement *)this : NULL;
+		return (iID == zoneId) ? this : NULL;
 	}
 	
 	void SetShortCut(int _iShortCut)
