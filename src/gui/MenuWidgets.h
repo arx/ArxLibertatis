@@ -402,20 +402,12 @@ public:
 class CMenuSlider: public CMenuElement {
 	
 public:
-	CMenuButton		*	pLeftButton;
-	CMenuButton		*	pRightButton;
-	TextureContainer	* pTex1;
-	TextureContainer	* pTex2;
-	int					iPos;
+	CMenuSlider(int id, Vec2i pos);
+	virtual ~CMenuSlider();
 	
 	void setValue(int value) { iPos = value; }
 	int getValue() const { return iPos; }
 	
-public:
-	CMenuSlider(int id, Vec2i pos);
-	virtual ~CMenuSlider();
-	
-public:
 	void Move(const Vec2i & offset);
 	bool OnMouseClick();
 	CMenuElement * OnShortCut() { return NULL; }
@@ -423,6 +415,13 @@ public:
 	void Render();
 	void RenderMouseOver();
 	void EmptyFunction();
+	
+private:
+	CMenuButton		*	pLeftButton;
+	CMenuButton		*	pRightButton;
+	TextureContainer	* pTex1;
+	TextureContainer	* pTex2;
+	int					iPos;
 };
 
 class CMenuCheckButton : public CMenuElement {
