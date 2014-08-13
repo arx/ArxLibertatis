@@ -881,7 +881,7 @@ bool CMenuElementText::OnMouseClick() {
 			   || newFullscreen != config.video.fullscreen
 			) {
 				ARXMenu_Private_Options_Video_SetResolution(newFullscreen, newWidth, newHeight);
-				pMenuSliderResol->iOldPos = -1;
+				pMenuSliderResol->setOldValue(-1);
 				fullscreenCheckbox->iOldState = -1;
 			}
 			mainMenu->bReInitAll=true;
@@ -1431,9 +1431,9 @@ bool CMenuCheckButton::OnMouseClick() {
 		break;
 	}
 	case BUTTON_MENUOPTIONSVIDEO_BACK: {
-		if(pMenuSliderResol && pMenuSliderResol->iOldPos >= 0) {
-			pMenuSliderResol->iPos=pMenuSliderResol->iOldPos;
-			pMenuSliderResol->iOldPos=-1;
+		if(pMenuSliderResol && pMenuSliderResol->getOldValue() >= 0) {
+			pMenuSliderResol->setValue(pMenuSliderResol->getOldValue());
+			pMenuSliderResol->setOldValue(-1);
 			newWidth=config.video.resolution.x;
 			newHeight=config.video.resolution.y;
 		}
@@ -2529,6 +2529,10 @@ CMenuSliderText::~CMenuSliderText() {
 	BOOST_FOREACH(CMenuElementText * e, vText) {
 		delete e;
 	}
+}
+
+void CMenuSliderText::selectLast() {
+	iPos = vText.size() - 1;
 }
 
 void CMenuSliderText::AddText(CMenuElementText *_pText) {

@@ -369,11 +369,11 @@ void MainMenuOptionVideoCreate(Vec2i offset, Vec2i size)
 		CMenuSliderText * slider = new CMenuSliderText(BUTTON_MENUOPTIONSVIDEO_RENDERER, Vec2i(0, 0));
 		
 		slider->AddText(new CMenuElementText(-1, hFontMenu, "Auto-Select", Vec2i(0, 0), OPTIONS_VIDEO_RENDERER_AUTOMATIC));
-		slider->iPos = slider->vText.size() - 1;
+		slider->selectLast();
 #if ARX_HAVE_SDL1 || ARX_HAVE_SDL2
 		slider->AddText(new CMenuElementText(-1, hFontMenu, "OpenGL", Vec2i(0, 0), OPTIONS_VIDEO_RENDERER_OPENGL));
 		if(config.window.framework == "SDL") {
-			slider->iPos = slider->vText.size() - 1;
+			slider->selectLast();
 		}
 #endif
 		
@@ -440,14 +440,14 @@ void MainMenuOptionVideoCreate(Vec2i offset, Vec2i size)
 		pMenuSliderResol->AddText(new CMenuElementText(-1, hFontMenu, ss.str(), Vec2i(0, 0), MENUSTATE(OPTIONS_VIDEO_RESOLUTION_0 + i)));
 		
 		if(mode.resolution == config.video.resolution) {
-			pMenuSliderResol->iPos = pMenuSliderResol->vText.size() - 1;
+			pMenuSliderResol->selectLast();
 		}
 	}
 	
 	pMenuSliderResol->AddText(new CMenuElementText(-1, hFontMenu, AUTO_RESOLUTION_STRING, Vec2i(0, 0), MENUSTATE(OPTIONS_VIDEO_RESOLUTION_0 + modes.size())));
 	
 	if(config.video.resolution == Vec2i_ZERO) {
-		pMenuSliderResol->iPos = pMenuSliderResol->vText.size() - 1;
+		pMenuSliderResol->selectLast();
 	}
 
 	float fRatio    = (RATIO_X(size.x-9) - pMenuSliderResol->rZone.width()); 
@@ -479,7 +479,7 @@ void MainMenuOptionVideoCreate(Vec2i offset, Vec2i size)
 
 
 	pc->AddElement(me);
-	((CMenuSliderText *)me)->iPos = config.video.levelOfDetail;
+	((CMenuSliderText *)me)->setValue(config.video.levelOfDetail);
 
 	pWindowMenuConsole->AddMenuCenterY(pc);
 	
@@ -569,11 +569,11 @@ void MainMenuOptionAudioCreate(Vec2i offset, Vec2i size)
 		CMenuSliderText * slider = new CMenuSliderText(BUTTON_MENUOPTIONSAUDIO_BACKEND, Vec2i(0, 0));
 		
 		slider->AddText(new CMenuElementText(-1, hFontMenu, "Auto-Select", Vec2i(0, 0), OPTIONS_AUDIO_BACKEND_AUTOMATIC));
-		slider->iPos = slider->vText.size() - 1;
+		slider->selectLast();
 #if ARX_HAVE_OPENAL
 		slider->AddText(new CMenuElementText(-1, hFontMenu, "OpenAL", Vec2i(0, 0), OPTIONS_AUDIO_BACKEND_OPENAL));
 		if(config.audio.backend == "OpenAL") {
-			slider->iPos = slider->vText.size() - 1;
+			slider->selectLast();
 		}
 #endif
 		

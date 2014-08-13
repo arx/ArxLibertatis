@@ -374,20 +374,20 @@ public:
 };
 
 class CMenuSliderText: public CMenuElement {
-public:
-	CMenuButton		*	pLeftButton;
-	CMenuButton		*	pRightButton;
-	std::vector<CMenuElementText*>	vText;
-	int					iPos;
-	int					iOldPos;
+	
 public:
 	CMenuSliderText(int, Vec2i pos);
 	virtual ~CMenuSliderText();
 	
-public:
+	void setValue(int value) { iPos = value; }
+	int getValue() const { return iPos; }
+	void setOldValue(int value) { iOldPos = value; }
+	int getOldValue() const { return iOldPos; }
+	
+	void selectLast();
+	
 	void AddText(CMenuElementText * text);
 	
-public:
 	void Move(const Vec2i & offset);
 	bool OnMouseClick();
 	CMenuElement * OnShortCut() { return NULL; }
@@ -396,6 +396,13 @@ public:
 	void RenderMouseOver();
 	void EmptyFunction();
 	virtual void setEnabled(bool enable);
+	
+private:
+	CMenuButton		*	pLeftButton;
+	CMenuButton		*	pRightButton;
+	std::vector<CMenuElementText*>	vText;
+	int					iPos;
+	int					iOldPos;
 };
 
 //! Slider with value in the range [0..10]
