@@ -2378,7 +2378,7 @@ void CMenuPanel::AddElement(CMenuElement* _pElem)
 	rZone.right = std::max(rZone.right, _pElem->rZone.right);
 	rZone.bottom = std::max(rZone.bottom, _pElem->rZone.bottom);
 
-	_pElem->Move(Vec2i(0, ((GetHeight() - _pElem->rZone.bottom) / 2)));
+	_pElem->Move(Vec2i(0, ((rZone.height() - _pElem->rZone.bottom) / 2)));
 }
 
 // patch on ajoute à droite en ligne
@@ -2543,8 +2543,8 @@ CMenuSliderText::CMenuSliderText(int _iID, Vec2i pos)
 
 	rZone.left   = pos.x;
 	rZone.top    = pos.y;
-	rZone.right  = pos.x + pLeftButton->GetWidth() + pRightButton->GetWidth();
-	rZone.bottom = pos.y + max(pLeftButton->GetHeight(), pRightButton->GetHeight());
+	rZone.right  = pos.x + pLeftButton->rZone.width() + pRightButton->rZone.width();
+	rZone.bottom = pos.y + max(pLeftButton->rZone.height(), pRightButton->rZone.height());
 
 	pRef = this;
 }
@@ -2561,18 +2561,18 @@ void CMenuSliderText::AddText(CMenuElementText *_pText) {
 	
 	_pText->setEnabled(enabled);
 	
-	_pText->Move(Vec2i(rZone.left + pLeftButton->GetWidth(), rZone.top + 0));
+	_pText->Move(Vec2i(rZone.left + pLeftButton->rZone.width(), rZone.top + 0));
 	vText.push_back(_pText);
 
 	Vec2i textSize = _pText->GetTextSize();
 
-	rZone.right  = max(rZone.right, rZone.left + pLeftButton->GetWidth() + pRightButton->GetWidth() + textSize.x);
+	rZone.right  = max(rZone.right, rZone.left + pLeftButton->rZone.width() + pRightButton->rZone.width() + textSize.x);
 	rZone.bottom = max(rZone.bottom, rZone.top + textSize.y);
 
 	pLeftButton->SetPos(Vec2i(rZone.left, rZone.top+(textSize.y>>2)));
-	pRightButton->SetPos(Vec2i(rZone.right-pRightButton->GetWidth(), rZone.top+(textSize.y>>2)));
+	pRightButton->SetPos(Vec2i(rZone.right-pRightButton->rZone.width(), rZone.top+(textSize.y>>2)));
 
-	int dx=rZone.right-rZone.left-pLeftButton->GetWidth()-pRightButton->GetWidth();
+	int dx=rZone.right-rZone.left-pLeftButton->rZone.width()-pRightButton->rZone.width();
 	//on recentre tout
 	vector<CMenuElementText*>::iterator it;
 
@@ -2775,14 +2775,14 @@ CMenuSlider::CMenuSlider(int _iID, Vec2i pos)
 
 	rZone.left   = pos.x;
 	rZone.top    = pos.y;
-	rZone.right  = pos.x + pLeftButton->GetWidth() + pRightButton->GetWidth() + 10*max(pTex1->m_dwWidth, pTex2->m_dwWidth);
-	rZone.bottom = pos.y + max(pLeftButton->GetHeight(), pRightButton->GetHeight());
+	rZone.right  = pos.x + pLeftButton->rZone.width() + pRightButton->rZone.width() + 10*max(pTex1->m_dwWidth, pTex2->m_dwWidth);
+	rZone.bottom = pos.y + max(pLeftButton->rZone.height(), pRightButton->rZone.height());
 
 	arx_assert(rZone.bottom >= 0);
 	rZone.bottom = max( static_cast<unsigned long>( rZone.bottom ), (unsigned long)max( pTex1->m_dwHeight, pTex2->m_dwHeight ) );
 
 
-	pRightButton->Move(Vec2i(pLeftButton->GetWidth() + 10*max(pTex1->m_dwWidth, pTex2->m_dwWidth), 0));
+	pRightButton->Move(Vec2i(pLeftButton->rZone.width() + 10*max(pTex1->m_dwWidth, pTex2->m_dwWidth), 0));
 
 	pRef = this;
 }
@@ -2875,12 +2875,12 @@ void CMenuSlider::Update(int _iTime) {
 	pRightButton->SetPos(rZone.topLeft());
 
 
-	float fWidth = pLeftButton->GetWidth() + RATIO_X(10*max(pTex1->m_dwWidth, pTex2->m_dwWidth)) ;
+	float fWidth = pLeftButton->rZone.width() + RATIO_X(10*max(pTex1->m_dwWidth, pTex2->m_dwWidth)) ;
 	pRightButton->Move(Vec2i(fWidth, 0));
 
-	rZone.right = rZone.left + pLeftButton->GetWidth() + pRightButton->GetWidth() + RATIO_X(10*std::max(pTex1->m_dwWidth, pTex2->m_dwWidth));
+	rZone.right = rZone.left + pLeftButton->rZone.width() + pRightButton->rZone.width() + RATIO_X(10*std::max(pTex1->m_dwWidth, pTex2->m_dwWidth));
 
-	rZone.bottom = rZone.top + std::max(pLeftButton->GetHeight(), pRightButton->GetHeight());
+	rZone.bottom = rZone.top + std::max(pLeftButton->rZone.height(), pRightButton->rZone.height());
 }
 
 void CMenuSlider::Render() {
@@ -2891,7 +2891,7 @@ void CMenuSlider::Render() {
 	pLeftButton->Render();
 	pRightButton->Render();
 
-	Vec2f pos(rZone.left + pLeftButton->GetWidth(), rZone.top);
+	Vec2f pos(rZone.left + pLeftButton->rZone.width(), rZone.top);
 	
 	GRenderer->SetRenderState(Renderer::AlphaBlending, true);
 	GRenderer->SetBlendFunc(Renderer::BlendOne, Renderer::BlendOne);

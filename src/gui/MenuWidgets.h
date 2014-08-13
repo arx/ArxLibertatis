@@ -228,14 +228,6 @@ public:
 	CMenuZone();
 	virtual ~CMenuZone();
 	
-	int GetWidth() const
-	{
-		return (rZone.right - rZone.left);
-	}
-	int GetHeight() const
-	{
-		return (rZone.bottom - rZone.top);
-	}
 	virtual void Move(const Vec2i & offset);
 	virtual void SetPos(Vec2i pos);
 	
