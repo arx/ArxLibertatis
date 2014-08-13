@@ -217,7 +217,6 @@ enum MenuButton {
 class CMenuZone
 {
 public:
-	bool	bActif;
 	bool	bCheck;
 	bool	bTestYDouble;
 	CMenuZone *	pRef;

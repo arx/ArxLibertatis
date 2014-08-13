@@ -1182,8 +1182,7 @@ void CMenuState::Render() {
 }
 
 CMenuZone::CMenuZone()
-	: bActif(true)
-	, bCheck(true)
+	: bCheck(true)
 	, bTestYDouble(false)
 	, pRef(NULL)
 	, rZone(0, 0, 0, 0)
@@ -1218,8 +1217,7 @@ CMenuZone * CMenuZone::IsMouseOver(const Vec2s& mousePos) const {
 		iYDouble=(rZone.bottom-rZone.top)>>1;
 	}
 
-	if(bActif
-	   && mousePos.x >= rZone.left
+	if(   mousePos.x >= rZone.left
 	   && mousePos.y >= rZone.top - iYDouble
 	   && mousePos.x <= rZone.right
 	   && mousePos.y <= rZone.bottom + iYDouble
@@ -1260,7 +1258,7 @@ CMenuZone * CMenuAllZone::CheckZone(const Vec2s& mousePos) const {
 	for(i = vMenuZone.begin(); i != vMenuZone.end(); ++i) {
 		CMenuZone *zone = *i;
 		
-		if(!zone->bCheck || !zone->bActif)
+		if(!zone->bCheck)
 			continue;
 		
 		CMenuZone * pRef = zone->IsMouseOver(mousePos);
@@ -1924,18 +1922,6 @@ MENUSTATE CWindowMenuConsole::Update(Vec2i pos) {
 	
 	MenuAllZone.Move(m_pos - m_oldPos);
 	
-	for(size_t iJ = 0; iJ < MenuAllZone.GetNbZone(); ++iJ) {
-		CMenuZone *pZone = MenuAllZone.GetZoneNum(iJ);
-
-		if(pZone->rZone.top < iSavePosY || pZone->rZone.bottom + iInterligne > iSavePosY + m_size.y) {
-			pZone->bActif=false;
-		} else {
-			pZone->bActif=true;
-		}
-
-		pZone->bActif=true;
-	}
-
 	m_oldPos.x=m_pos.x;
 	m_oldPos.y=m_pos.y;
 	m_pos = pos;
@@ -2209,15 +2195,13 @@ void CWindowMenuConsole::Render() {
 
 	for(size_t i = 0; i < MenuAllZone.GetNbZone(); ++i) {
 		CMenuElement *pMe=(CMenuElement*)MenuAllZone.GetZoneNum(i);
-
-		if(pMe->bActif) {
-			pMe->Update(iARXDiffTimeMenu);
-			pMe->Render();
-		}
+		
+		pMe->Update(iARXDiffTimeMenu);
+		pMe->Render();
 	}
 
 	//HIGHLIGHT
-	if(pZoneClick && pZoneClick->bActif) {
+	if(pZoneClick) {
 		bool bReInit=false;
 
 		pZoneClick->RenderMouseOver();
@@ -2443,7 +2427,7 @@ CMenuZone * CMenuPanel::IsMouseOver(const Vec2s& mousePos) const {
 
 	if(rZone.contains(Vec2i(mousePos))) {
 		BOOST_FOREACH(CMenuElement * e, vElement) {
-			if(e->bCheck && e->bActif && e->rZone.contains(Vec2i(mousePos))) {
+			if(e->bCheck && e->rZone.contains(Vec2i(mousePos))) {
 				return e->pRef;
 			}
 		}
