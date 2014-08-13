@@ -2751,11 +2751,7 @@ CMenuSlider::CMenuSlider(int _iID, Vec2i pos)
 	rZone.top    = pos.y;
 	rZone.right  = pos.x + pLeftButton->rZone.width() + pRightButton->rZone.width() + 10*max(pTex1->m_dwWidth, pTex2->m_dwWidth);
 	rZone.bottom = pos.y + max(pLeftButton->rZone.height(), pRightButton->rZone.height());
-
-	arx_assert(rZone.bottom >= 0);
-	rZone.bottom = max( static_cast<unsigned long>( rZone.bottom ), (unsigned long)max( pTex1->m_dwHeight, pTex2->m_dwHeight ) );
-
-
+	
 	pRightButton->Move(Vec2i(pLeftButton->rZone.width() + 10*max(pTex1->m_dwWidth, pTex2->m_dwWidth), 0));
 
 	pRef = this;
