@@ -948,28 +948,29 @@ void Menu2_Render_Quit(Vec2i size, Vec2i offset)
 	std::string szMenuText;
 	CMenuElement *me = NULL;
 	CWindowMenuConsole *pWindowMenuConsole=new CWindowMenuConsole(offset, size, QUIT);
+	
 	szMenuText = getLocalised("system_menus_main_quit");
 	me=new CMenuElementText(-1, hFontMenu, szMenuText, Vec2i(0, 0), NOP);
 	me->bCheck = false;
 	pWindowMenuConsole->AddMenuCenter(me);
-
+	
 	szMenuText = getLocalised("system_menus_main_editquest_confirm");
 	me=new CMenuElementText(-1, hFontMenu, szMenuText, Vec2i(0, 0), NOP);
 	me->bCheck = false;
 	pWindowMenuConsole->AddMenuCenter(me);
-
+	
 	CMenuPanel *pPanel = new CMenuPanel();
+	
 	szMenuText = getLocalised("system_yes");
-
 	me = new CMenuElementText(BUTTON_MENUMAIN_QUIT, hFontMenu, szMenuText, Vec2i(0, 0), NEW_QUEST_ENTER_GAME);
-
 	me->SetPos(Vec2i(RATIO_X(size.x-10)-me->rZone.width(), 0));
 	pPanel->AddElementNoCenterIn(me);
+	
 	szMenuText = getLocalised("system_no");
 	me = new CMenuElementText(-1, hFontMenu, szMenuText, Vec2i(RATIO_X(10), 0), MAIN);
 	me->SetShortCut(Keyboard::Key_Escape);
 	pPanel->AddElementNoCenterIn(me);
-
+	
 	pPanel->Move(Vec2i(0, RATIO_Y(380)));
 	pWindowMenuConsole->AddMenu(pPanel);
 	pWindowMenu->AddConsole(pWindowMenuConsole);
