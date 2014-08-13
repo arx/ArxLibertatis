@@ -516,7 +516,7 @@ private:
 public:
 	CWindowMenuConsole(Vec2i pos, Vec2i size, MENUSTATE state);
 	
-	void AddMenu(CMenuElement * menu);
+	void AddMenu(CMenuElement * element);
 	void AddMenuCenter(CMenuElement * element);
 	void AddMenuCenterY(CMenuElement * element);
 	void AlignElementCenter(CMenuElement * element);

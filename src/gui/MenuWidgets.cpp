@@ -1623,12 +1623,10 @@ CWindowMenuConsole::CWindowMenuConsole(Vec2i pos, Vec2i size, MENUSTATE _eMenuSt
 	bFrameOdd=false;
 }
 
-void CWindowMenuConsole::AddMenu(CMenuElement *_pMenuElement)
-{
-	_pMenuElement->ePlace=NOCENTER;
-
-	_pMenuElement->Move(Vec2i(m_offset.x, m_offset.y));
-	MenuAllZone.AddZone((CMenuZone*)_pMenuElement);
+void CWindowMenuConsole::AddMenu(CMenuElement * element) {
+	element->ePlace = NOCENTER;
+	element->Move(m_offset);
+	MenuAllZone.AddZone(element);
 }
 
 // TODO copy-paste
