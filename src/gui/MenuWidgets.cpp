@@ -3056,7 +3056,7 @@ bool MenuCursor::ComputePer(const Vec2s & _psPoint1, const Vec2s & _psPoint2, Te
 	return true;
 }
 
-void MenuCursor::DrawLine2D(float _fSize, float _fRed, float _fGreen, float _fBlue) {
+void MenuCursor::DrawLine2D(float _fSize, Color3f color) {
 	
 	if(iNbOldCoord < 2) {
 		return;
@@ -3065,11 +3065,11 @@ void MenuCursor::DrawLine2D(float _fSize, float _fRed, float _fGreen, float _fBl
 	float fSize = _fSize / iNbOldCoord;
 	float fTaille = fSize;
 	
-	float fDColorRed = _fRed / iNbOldCoord;
+	float fDColorRed = color.r / iNbOldCoord;
 	float fColorRed = fDColorRed;
-	float fDColorGreen = _fGreen / iNbOldCoord;
+	float fDColorGreen = color.g / iNbOldCoord;
 	float fColorGreen = fDColorGreen;
-	float fDColorBlue = _fBlue / iNbOldCoord;
+	float fDColorBlue = color.b / iNbOldCoord;
 	float fColorBlue = fDColorBlue;
 	
 	GRenderer->SetBlendFunc(Renderer::BlendDstColor, Renderer::BlendInvDstColor);
@@ -3115,7 +3115,7 @@ void MenuCursor::DrawLine2D(float _fSize, float _fRed, float _fGreen, float _fBl
 void MenuCursor::DrawCursor() {
 	
 	GRenderer->SetRenderState(Renderer::AlphaBlending, true);
-	DrawLine2D(10.f, .725f, .619f, 0.56f);
+	DrawLine2D(10.f, Color3f(.725f, .619f, 0.56f));
 
 	if(scursor[iNumCursor])
 		GRenderer->SetTexture(0, scursor[iNumCursor]);

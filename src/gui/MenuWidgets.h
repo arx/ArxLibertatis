@@ -571,7 +571,7 @@ public:
 	
 private:
 	bool ComputePer(const Vec2s & _psPoint1, const Vec2s & _psPoint2, TexturedVertex * _psd3dv1, TexturedVertex * _psd3dv2, float _fSize);
-	void DrawLine2D(float _fSize, float _fRed, float _fGreen, float _fBlue);
+	void DrawLine2D(float _fSize, Color3f color);
 	
 	void DrawOneCursor(const Vec2s & mousePos);
 	
