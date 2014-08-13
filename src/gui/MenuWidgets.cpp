@@ -505,7 +505,12 @@ bool Menu2_Render() {
 
 
 CMenuElement::CMenuElement(MENUSTATE _ms)
-	: CMenuZone()
+	: bCheck(true)
+	, bTestYDouble(false)
+	, pRef(NULL)
+	, rZone(0, 0, 0, 0)
+	, iID(-1)
+	, lData(0)
 	, enabled(true)
 {
 	ePlace=NOCENTER;
@@ -552,6 +557,40 @@ CMenuElement* CMenuElement::OnShortCut() {
 
 	if(GInput->isKeyPressedNowUnPressed(iShortCut)) {
 		return this;
+	}
+
+	return NULL;
+}
+
+void CMenuElement::Move(const Vec2i & offset) {
+	rZone.move(offset.x, offset.y);
+}
+
+void CMenuElement::SetPos(Vec2i pos) {
+
+	int iWidth  = rZone.right - rZone.left;
+	int iHeight = rZone.bottom - rZone.top;
+	
+	rZone.left   = pos.x;
+	rZone.top    = pos.y;
+	rZone.right  = pos.x + abs(iWidth);
+	rZone.bottom = pos.y + abs(iHeight);
+}
+
+CMenuElement * CMenuElement::IsMouseOver(const Vec2s& mousePos) const {
+
+	int iYDouble=0;
+
+	if(bTestYDouble) {
+		iYDouble=(rZone.bottom-rZone.top)>>1;
+	}
+
+	if(   mousePos.x >= rZone.left
+	   && mousePos.y >= rZone.top - iYDouble
+	   && mousePos.x <= rZone.right
+	   && mousePos.y <= rZone.bottom + iYDouble
+	) {
+		return pRef;
 	}
 
 	return NULL;
@@ -703,7 +742,7 @@ bool CMenuElementText::OnMouseClick() {
 					p->lData = lData;
 					
 					for(size_t j = 0; j < p->MenuAllZone.vMenuZone.size(); j++) {
-						CMenuZone *cz = p->MenuAllZone.vMenuZone[j];
+						CMenuElement *cz = p->MenuAllZone.vMenuZone[j];
 						
 						if(cz->iID == BUTTON_MENUEDITQUEST_LOAD) {
 							((CMenuElementText *)cz)->bSelected = false;
@@ -727,7 +766,7 @@ bool CMenuElementText::OnMouseClick() {
 						p->lData = lData;
 						
 						for(size_t j = 0; j < p->MenuAllZone.vMenuZone.size(); j++) {
-							CMenuZone *cz = p->MenuAllZone.vMenuZone[j];
+							CMenuElement *cz = p->MenuAllZone.vMenuZone[j];
 							
 							if(cz->iID == BUTTON_MENUEDITQUEST_LOAD) {
 								((CMenuElementText *)cz)->bSelected = false;
@@ -1131,14 +1170,14 @@ void CMenuState::createChildElements()
 }
 
 void CMenuState::AddMenuElement(CMenuElement * _me) {
-	pMenuAllZone->AddZone((CMenuZone *)_me);
+	pMenuAllZone->AddZone((CMenuElement *)_me);
 }
 
 MENUSTATE CMenuState::Update() {
 	
 	pZoneClick=NULL;
 
-	CMenuZone * iR=pMenuAllZone->CheckZone(GInput->getMousePosAbs());
+	CMenuElement * iR=pMenuAllZone->CheckZone(GInput->getMousePosAbs());
 
 	if(GInput->getMouseButton(Mouse::Button_0)) {
 		if(iR) {
@@ -1181,87 +1220,42 @@ void CMenuState::Render() {
 	pMenuAllZone->DrawZone();
 }
 
-CMenuZone::CMenuZone()
-	: bCheck(true)
-	, bTestYDouble(false)
-	, pRef(NULL)
-	, rZone(0, 0, 0, 0)
-	, iID(-1)
-	, lData(0)
-{}
 
-CMenuZone::~CMenuZone() {
-
-}
-
-void CMenuZone::Move(const Vec2i & offset) {
-	rZone.move(offset.x, offset.y);
-}
-
-void CMenuZone::SetPos(Vec2i pos) {
-
-	int iWidth  = rZone.right - rZone.left;
-	int iHeight = rZone.bottom - rZone.top;
-	
-	rZone.left   = pos.x;
-	rZone.top    = pos.y;
-	rZone.right  = pos.x + abs(iWidth);
-	rZone.bottom = pos.y + abs(iHeight);
-}
-
-CMenuZone * CMenuZone::IsMouseOver(const Vec2s& mousePos) const {
-
-	int iYDouble=0;
-
-	if(bTestYDouble) {
-		iYDouble=(rZone.bottom-rZone.top)>>1;
-	}
-
-	if(   mousePos.x >= rZone.left
-	   && mousePos.y >= rZone.top - iYDouble
-	   && mousePos.x <= rZone.right
-	   && mousePos.y <= rZone.bottom + iYDouble
-	) {
-		return pRef;
-	}
-
-	return NULL;
-}
 
 CMenuAllZone::CMenuAllZone() {
 
 	vMenuZone.clear();
 
-	vector<CMenuZone*>::iterator i;
+	vector<CMenuElement*>::iterator i;
 
 	for(i = vMenuZone.begin(); i != vMenuZone.end(); ++i) {
-		CMenuZone *zone = *i;
+		CMenuElement *zone = *i;
 		delete zone;
 	}
 }
 
 CMenuAllZone::~CMenuAllZone() {
 
-	for(std::vector<CMenuZone*>::iterator it = vMenuZone.begin(), it_end = vMenuZone.end(); it != it_end; ++it)
+	for(std::vector<CMenuElement*>::iterator it = vMenuZone.begin(), it_end = vMenuZone.end(); it != it_end; ++it)
 		delete *it;
 }
 
-void CMenuAllZone::AddZone(CMenuZone *_pMenuZone) {
+void CMenuAllZone::AddZone(CMenuElement *_pMenuZone) {
 
 	vMenuZone.push_back(_pMenuZone);
 }
 
-CMenuZone * CMenuAllZone::CheckZone(const Vec2s& mousePos) const {
+CMenuElement * CMenuAllZone::CheckZone(const Vec2s& mousePos) const {
 
-	std::vector<CMenuZone*>::const_iterator i;
+	std::vector<CMenuElement*>::const_iterator i;
 
 	for(i = vMenuZone.begin(); i != vMenuZone.end(); ++i) {
-		CMenuZone *zone = *i;
+		CMenuElement *zone = *i;
 		
 		if(!zone->bCheck)
 			continue;
 		
-		CMenuZone * pRef = zone->IsMouseOver(mousePos);
+		CMenuElement * pRef = zone->IsMouseOver(mousePos);
 		
 		if(pRef)
 			return pRef;
@@ -1270,14 +1264,14 @@ CMenuZone * CMenuAllZone::CheckZone(const Vec2s& mousePos) const {
 	return NULL;
 }
 
-CMenuZone * CMenuAllZone::GetZoneNum(size_t index) {
+CMenuElement * CMenuAllZone::GetZoneNum(size_t index) {
 	return vMenuZone[index];
 }
 
-CMenuZone * CMenuAllZone::GetZoneWithID(int _iID) {
+CMenuElement * CMenuAllZone::GetZoneWithID(int _iID) {
 
-	for(std::vector<CMenuZone*>::iterator i = vMenuZone.begin(), i_end = vMenuZone.end(); i != i_end; ++i) {
-		if(CMenuZone *zone = ((CMenuElement*)(*i))->GetZoneWithID(_iID))
+	for(std::vector<CMenuElement*>::iterator i = vMenuZone.begin(), i_end = vMenuZone.end(); i != i_end; ++i) {
+		if(CMenuElement *zone = ((CMenuElement*)(*i))->GetZoneWithID(_iID))
 			return zone;
 	}
 
@@ -1286,7 +1280,7 @@ CMenuZone * CMenuAllZone::GetZoneWithID(int _iID) {
 
 void CMenuAllZone::Move(const Vec2i & offset) {
 
-	for(std::vector<CMenuZone*>::iterator i = vMenuZone.begin(), i_end = vMenuZone.end(); i != i_end; ++i) {
+	for(std::vector<CMenuElement*>::iterator i = vMenuZone.begin(), i_end = vMenuZone.end(); i != i_end; ++i) {
 		(*i)->Move(offset);
 	}
 }
@@ -1304,7 +1298,7 @@ void CMenuAllZone::DrawZone()
 	GRenderer->SetRenderState(Renderer::AlphaBlending, true);
 	GRenderer->ResetTexture(0);
 
-	BOOST_FOREACH(CMenuZone * zone, vMenuZone) {
+	BOOST_FOREACH(CMenuElement * zone, vMenuZone) {
 		drawLineRectangle(Rectf(zone->rZone), 0.f, Color::red);
 	}
 
@@ -1634,7 +1628,7 @@ void CWindowMenuConsole::AddMenuCenterY(CMenuElement * element) {
 	int iDy = element->rZone.bottom - element->rZone.top;
 
 	for(size_t iJ = 0; iJ < MenuAllZone.GetNbZone(); iJ++) {
-		CMenuZone * pZone = MenuAllZone.GetZoneNum(iJ);
+		CMenuElement * pZone = MenuAllZone.GetZoneNum(iJ);
 
 		iDy += iInterligne;
 		iDy += pZone->rZone.bottom - pZone->rZone.top;
@@ -1653,7 +1647,7 @@ void CWindowMenuConsole::AddMenuCenterY(CMenuElement * element) {
 	}
 	
 	for(size_t iJ = 0; iJ < MenuAllZone.GetNbZone(); iJ++) {
-		CMenuZone *pZone = MenuAllZone.GetZoneNum(iJ);
+		CMenuElement *pZone = MenuAllZone.GetZoneNum(iJ);
 		iDepY += (pZone->rZone.bottom - pZone->rZone.top) + iInterligne;
 		
 		pZone->Move(Vec2i(0, dy));
@@ -1679,7 +1673,7 @@ void CWindowMenuConsole::AddMenuCenter(CMenuElement * element) {
 	int iDy = element->rZone.bottom - element->rZone.top;
 
 	for(size_t iJ = 0; iJ < MenuAllZone.GetNbZone(); iJ++) {
-		CMenuZone * pZone = MenuAllZone.GetZoneNum(iJ);
+		CMenuElement * pZone = MenuAllZone.GetZoneNum(iJ);
 
 		iDy += iInterligne;
 		iDy += pZone->rZone.bottom - pZone->rZone.top;
@@ -1698,7 +1692,7 @@ void CWindowMenuConsole::AddMenuCenter(CMenuElement * element) {
 	}
 	
 	for(size_t iJ = 0; iJ < MenuAllZone.GetNbZone(); iJ++) {
-		CMenuZone *pZone = MenuAllZone.GetZoneNum(iJ);
+		CMenuElement *pZone = MenuAllZone.GetZoneNum(iJ);
 		iDepY += (pZone->rZone.bottom - pZone->rZone.top) + iInterligne;
 		
 		pZone->Move(Vec2i(0, dy));
@@ -1926,7 +1920,7 @@ MENUSTATE CWindowMenuConsole::Update(Vec2i pos) {
 	// Check if mouse over
 		if(!bEdit) {
 			pZoneClick=NULL;
-			CMenuZone * iR = MenuAllZone.CheckZone(GInput->getMousePosAbs());
+			CMenuElement * iR = MenuAllZone.CheckZone(GInput->getMousePosAbs());
 
 			if(iR) {
 				pZoneClick=(CMenuElement*)iR;
@@ -1954,7 +1948,7 @@ MENUSTATE CWindowMenuConsole::Update(Vec2i pos) {
 			}
 		} else {
 			if(!pZoneClick) {
-				CMenuZone * iR = MenuAllZone.CheckZone(GInput->getMousePosAbs());
+				CMenuElement * iR = MenuAllZone.CheckZone(GInput->getMousePosAbs());
 
 				if(iR) {
 					pZoneClick=(CMenuElement*)iR;
@@ -2270,7 +2264,7 @@ void CWindowMenuConsole::Render() {
 		default:
 			{
 				if(GInput->getMouseButtonNowPressed(Mouse::Button_0)) {
-					CMenuZone *pmzMenuZone = MenuAllZone.GetZoneWithID(BUTTON_MENUOPTIONS_CONTROLS_CUST_DEFAULT);
+					CMenuElement *pmzMenuZone = MenuAllZone.GetZoneWithID(BUTTON_MENUOPTIONS_CONTROLS_CUST_DEFAULT);
 
 					if(pmzMenuZone==pZoneClick) {
 						config.setDefaultActionKeys();
@@ -2299,7 +2293,7 @@ void CWindowMenuConsole::ReInitActionKey()
 	while(iI--) {
 		int iTab=(iID-BUTTON_MENUOPTIONS_CONTROLS_CUST_JUMP1)>>1;
 
-		CMenuZone *pmzMenuZone = MenuAllZone.GetZoneWithID(iID);
+		CMenuElement *pmzMenuZone = MenuAllZone.GetZoneWithID(iID);
 
 		if(pmzMenuZone) {
 			if(pmzMenuZone) {
@@ -2410,17 +2404,17 @@ void CMenuPanel::Render() {
 	}
 }
 
-CMenuZone * CMenuPanel::GetZoneWithID(int _iID)
+CMenuElement * CMenuPanel::GetZoneWithID(int _iID)
 {
 	BOOST_FOREACH(CMenuElement * e, vElement) {
-		if(CMenuZone * pZone = e->GetZoneWithID(_iID))
+		if(CMenuElement * pZone = e->GetZoneWithID(_iID))
 			return pZone;
 	}
 	
 	return NULL;
 }
 
-CMenuZone * CMenuPanel::IsMouseOver(const Vec2s& mousePos) const {
+CMenuElement * CMenuPanel::IsMouseOver(const Vec2s& mousePos) const {
 
 	if(rZone.contains(Vec2i(mousePos))) {
 		BOOST_FOREACH(CMenuElement * e, vElement) {
@@ -2460,7 +2454,7 @@ CMenuButton::~CMenuButton() {
 
 void CMenuButton::SetPos(Vec2i pos)
 {
-	CMenuZone::SetPos(pos);
+	CMenuElement::SetPos(pos);
 
 	int iWidth = 0;
 	int iHeight = 0;
@@ -2568,7 +2562,7 @@ void CMenuSliderText::AddText(CMenuElementText *_pText) {
 
 void CMenuSliderText::Move(const Vec2i & offset) {
 
-	CMenuZone::Move(offset);
+	CMenuElement::Move(offset);
 
 	pLeftButton->Move(offset);
 	pRightButton->Move(offset);
@@ -2773,7 +2767,7 @@ CMenuSlider::~CMenuSlider() {
 }
 
 void CMenuSlider::Move(const Vec2i & offset) {
-	CMenuZone::Move(offset);
+	CMenuElement::Move(offset);
 	pLeftButton->Move(offset);
 	pRightButton->Move(offset);
 }

@@ -210,57 +210,6 @@ enum MenuButton {
 	BUTTON_MENUEDITQUEST_SAVEINFO,
 };
 
-//-----------------------------------------------------------------------------
-
-
-//-----------------------------------------------------------------------------
-class CMenuZone
-{
-public:
-	bool	bCheck;
-	bool	bTestYDouble;
-	CMenuZone *	pRef;
-	Rect	rZone;
-	int			iID;
-	long		lData;
-public:
-	CMenuZone();
-	virtual ~CMenuZone();
-	
-	virtual void Move(const Vec2i & offset);
-	virtual void SetPos(Vec2i pos);
-	
-	void SetCheckOff()
-	{
-		bCheck = false;
-	}
-	void SetCheckOn()
-	{
-		bCheck = true;
-	};
-	
-	virtual CMenuZone * IsMouseOver(const Vec2s& mousePos) const;
-};
-
-//-----------------------------------------------------------------------------
-class CMenuAllZone
-{
-public:
-	std::vector<CMenuZone *>	vMenuZone;
-public:
-	CMenuAllZone();
-	virtual ~CMenuAllZone();
-	
-	void AddZone(CMenuZone * menuZone);
-	CMenuZone * CheckZone(const Vec2s & mousePos) const;
-	
-	CMenuZone * GetZoneNum(size_t index);
-	CMenuZone * GetZoneWithID(int zoneId);
-	void Move(const Vec2i & offset);
-	void DrawZone();
-	size_t GetNbZone();
-};
-
 enum ELEMSTATE
 {
 	TNOP,
@@ -278,14 +227,20 @@ enum ELEMPOS
 	CENTERY
 };
 
-//-----------------------------------------------------------------------------
-class CMenuElement : public CMenuZone
-{
+class CMenuElement {
+	
 public:
+	bool	bCheck;
+	bool	bTestYDouble;
+	CMenuElement *	pRef;
+	Rect	rZone;
+	int			iID;
+	long		lData;
 	ELEMPOS     ePlace;			//placement de la zone
 	ELEMSTATE   eState;			//etat de l'element en cours
 	MENUSTATE   eMenuState;		//etat de retour de l'element
 	int         iShortCut;
+	
 public:
 	explicit CMenuElement(MENUSTATE);
 	virtual ~CMenuElement();
@@ -297,8 +252,8 @@ public:
 	virtual void RenderMouseOver() { }
 	virtual void EmptyFunction() { }
 	virtual bool OnMouseDoubleClick() { return false; }
-	virtual CMenuZone * GetZoneWithID(int zoneId) {
-		return (iID == zoneId) ? (CMenuZone *)this : NULL;
+	virtual CMenuElement * GetZoneWithID(int zoneId) {
+		return (iID == zoneId) ? (CMenuElement *)this : NULL;
 	}
 	
 	void SetShortCut(int _iShortCut)
@@ -308,8 +263,40 @@ public:
 	virtual void setEnabled(bool enable) {
 		enabled = enable;
 	}
+	
+	virtual void Move(const Vec2i & offset);
+	virtual void SetPos(Vec2i pos);
+	
+	void SetCheckOff()
+	{
+		bCheck = false;
+	}
+	void SetCheckOn()
+	{
+		bCheck = true;
+	};
+	
+	virtual CMenuElement * IsMouseOver(const Vec2s& mousePos) const;
 protected:
 	bool enabled;
+};
+
+class CMenuAllZone
+{
+public:
+	std::vector<CMenuElement *>	vMenuZone;
+public:
+	CMenuAllZone();
+	virtual ~CMenuAllZone();
+	
+	void AddZone(CMenuElement * menuZone);
+	CMenuElement * CheckZone(const Vec2s & mousePos) const;
+	
+	CMenuElement * GetZoneNum(size_t index);
+	CMenuElement * GetZoneWithID(int zoneId);
+	void Move(const Vec2i & offset);
+	void DrawZone();
+	size_t GetNbZone();
 };
 
 //-----------------------------------------------------------------------------
@@ -331,8 +318,8 @@ public:
 	bool OnMouseClick() { return false; }
 	CMenuElement * OnShortCut();
 	void RenderMouseOver() { }
-	CMenuZone * IsMouseOver(const Vec2s & mousePos) const;
-	CMenuZone * GetZoneWithID(int zoneId);
+	CMenuElement * IsMouseOver(const Vec2s & mousePos) const;
+	CMenuElement * GetZoneWithID(int zoneId);
 	
 private:
 	std::vector<CMenuElement *>	vElement;
