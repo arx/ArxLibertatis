@@ -548,6 +548,8 @@ public:
 	MENUSTATE			eCurrentMenuState;
 };
 
+struct TexturedVertex;
+
 class MenuCursor {
 
 public:
@@ -568,6 +570,8 @@ public:
 	void DrawCursor();
 	
 private:
+	bool ComputePer(const Vec2s & _psPoint1, const Vec2s & _psPoint2, TexturedVertex * _psd3dv1, TexturedVertex * _psd3dv2, float _fSize);
+	void DrawLine2D(float _fSize, float _fRed, float _fGreen, float _fBlue);
 	
 	void DrawOneCursor(const Vec2s & mousePos);
 	

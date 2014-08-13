@@ -3033,7 +3033,7 @@ void MenuCursor::update(float time) {
 	
 }
 
-static bool ComputePer(const Vec2s & _psPoint1, const Vec2s & _psPoint2, TexturedVertex * _psd3dv1, TexturedVertex * _psd3dv2, float _fSize) {
+bool MenuCursor::ComputePer(const Vec2s & _psPoint1, const Vec2s & _psPoint2, TexturedVertex * _psd3dv1, TexturedVertex * _psd3dv2, float _fSize) {
 	
 	Vec2f sTemp((float)(_psPoint2.x - _psPoint1.x), (float)(_psPoint2.y - _psPoint1.y));
 	float fTemp = sTemp.x;
@@ -3056,20 +3056,20 @@ static bool ComputePer(const Vec2s & _psPoint1, const Vec2s & _psPoint2, Texture
 	return true;
 }
 
-static void DrawLine2D(const Vec2s * points, int _iNbPt, float _fSize, float _fRed, float _fGreen, float _fBlue) {
+void MenuCursor::DrawLine2D(float _fSize, float _fRed, float _fGreen, float _fBlue) {
 	
-	if(_iNbPt < 2) {
+	if(iNbOldCoord < 2) {
 		return;
 	}
 	
-	float fSize = _fSize / _iNbPt;
+	float fSize = _fSize / iNbOldCoord;
 	float fTaille = fSize;
 	
-	float fDColorRed = _fRed / _iNbPt;
+	float fDColorRed = _fRed / iNbOldCoord;
 	float fColorRed = fDColorRed;
-	float fDColorGreen = _fGreen / _iNbPt;
+	float fDColorGreen = _fGreen / iNbOldCoord;
 	float fColorGreen = fDColorGreen;
-	float fDColorBlue = _fBlue / _iNbPt;
+	float fDColorBlue = _fBlue / iNbOldCoord;
 	float fColorBlue = fDColorBlue;
 	
 	GRenderer->SetBlendFunc(Renderer::BlendDstColor, Renderer::BlendInvDstColor);
@@ -3082,19 +3082,19 @@ static void DrawLine2D(const Vec2s * points, int _iNbPt, float _fSize, float _fR
 	
 	v[0].color = v[2].color = Color3f(fColorRed, fColorGreen, fColorBlue).toBGR();
 	
-	if(!ComputePer(points[0], points[1], &v[0], &v[2], fTaille)) {
-		v[0].p.x = v[2].p.x = points[0].x;
-		v[0].p.y = v[2].p.y = points[1].y;
+	if(!ComputePer(iOldCoord[0], iOldCoord[1], &v[0], &v[2], fTaille)) {
+		v[0].p.x = v[2].p.x = iOldCoord[0].x;
+		v[0].p.y = v[2].p.y = iOldCoord[1].y;
 	}
 	
-	for(int i = 1; i < _iNbPt - 1; i++) {
+	for(int i = 1; i < iNbOldCoord - 1; i++) {
 		
 		fTaille += fSize;
 		fColorRed += fDColorRed;
 		fColorGreen += fDColorGreen;
 		fColorBlue += fDColorBlue;
 		
-		if(ComputePer(points[i], points[i + 1], &v[1], &v[3], fTaille)) {
+		if(ComputePer(iOldCoord[i], iOldCoord[i + 1], &v[1], &v[3], fTaille)) {
 			
 			v[1].color = v[3].color = Color3f(fColorRed, fColorGreen, fColorBlue).toBGR();
 			EERIEDRAWPRIM(Renderer::TriangleStrip, v, 4);
@@ -3115,7 +3115,7 @@ static void DrawLine2D(const Vec2s * points, int _iNbPt, float _fSize, float _fR
 void MenuCursor::DrawCursor() {
 	
 	GRenderer->SetRenderState(Renderer::AlphaBlending, true);
-	DrawLine2D(iOldCoord, iNbOldCoord, 10.f, .725f, .619f, 0.56f);
+	DrawLine2D(10.f, .725f, .619f, 0.56f);
 
 	if(scursor[iNumCursor])
 		GRenderer->SetTexture(0, scursor[iNumCursor]);
