@@ -66,7 +66,7 @@ void Menu2_Render_NewQuest(Vec2i size, Vec2i offset)
 	szMenuText = getLocalised("system_yes");
 	szMenuText += "   "; // TODO This space can probably go
 	me = new CMenuElementText(BUTTON_MENUNEWQUEST_CONFIRM, hFontMenu, szMenuText, Vec2i(0, 0), NEW_QUEST_ENTER_GAME);
-	me->SetPos(RATIO_X(size.x - (me->GetWidth() + 10)), 0);
+	me->SetPos(Vec2i(RATIO_X(size.x - (me->GetWidth() + 10)), 0));
 	pPanel->AddElementNoCenterIn(me);
 	
 	szMenuText = getLocalised("system_no");
@@ -172,7 +172,7 @@ void Menu2_Render_EditQuest(Vec2i size, Vec2i offset)
 		szMenuText = getLocalised("system_menus_main_editquest_delete");
 		szMenuText += "   ";
 		me = new CMenuElementText(BUTTON_MENUEDITQUEST_DELETE_CONFIRM, hFontMenu, szMenuText, Vec2i(0, 0), EDIT_QUEST_LOAD);
-		me->SetPos(RATIO_X(size.x-10)-me->GetWidth(), RATIO_Y(42));
+		me->SetPos(Vec2i(RATIO_X(size.x-10)-me->GetWidth(), RATIO_Y(42)));
 		pDeleteConfirm=(CMenuElementText*)me;
 		me->SetCheckOff();
 		((CMenuElementText*)me)->lOldColor = ((CMenuElementText*)me)->lColor;
@@ -183,7 +183,7 @@ void Menu2_Render_EditQuest(Vec2i size, Vec2i offset)
 		szMenuText = getLocalised("system_menus_main_editquest_load");
 		szMenuText += "   ";
 		me = new CMenuElementText(BUTTON_MENUEDITQUEST_LOAD_CONFIRM, hFontMenu, szMenuText, Vec2i(0, 0), MAIN);
-		me->SetPos(RATIO_X(size.x-10)-me->GetWidth(), RATIO_Y(380) + RATIO_Y(40));
+		me->SetPos(Vec2i(RATIO_X(size.x-10)-me->GetWidth(), RATIO_Y(380) + RATIO_Y(40)));
 		pLoadConfirm=(CMenuElementText*)me;
 		me->SetCheckOff();
 		((CMenuElementText*)me)->lOldColor = ((CMenuElementText*)me)->lColor;
@@ -296,7 +296,7 @@ void Menu2_Render_EditQuest(Vec2i size, Vec2i offset)
 	// Delete button
 	szMenuText = getLocalised("system_menus_main_editquest_delete");
 	me = new CMenuElementText(BUTTON_MENUEDITQUEST_DELETE, hFontMenu, szMenuText, Vec2i(0, 0), EDIT_QUEST_SAVE);
-	me->SetPos(RATIO_X(size.x-10)-me->GetWidth(), RATIO_Y(5));
+	me->SetPos(Vec2i(RATIO_X(size.x-10)-me->GetWidth(), RATIO_Y(5)));
 	pDeleteButton = (CMenuElementText*)me;
 	((CMenuElementText*)me)->lOldColor = ((CMenuElementText*)me)->lColor;
 	pPanel->AddElementNoCenterIn(me);
@@ -304,7 +304,7 @@ void Menu2_Render_EditQuest(Vec2i size, Vec2i offset)
 	// Save button
 	szMenuText = getLocalised("system_menus_main_editquest_save");
 	me = new CMenuElementText(BUTTON_MENUEDITQUEST_SAVE, hFontMenu, szMenuText, Vec2i(0, 0), MAIN);
-	me->SetPos(RATIO_X(size.x-10)-me->GetWidth(), RATIO_Y(380));
+	me->SetPos(Vec2i(RATIO_X(size.x-10)-me->GetWidth(), RATIO_Y(380)));
 	pPanel->AddElementNoCenterIn(me);
 	
 	// Back button
@@ -531,7 +531,7 @@ void MainMenuOptionVideoCreate(Vec2i offset, Vec2i size)
 	szMenuText = getLocalised("system_menus_video_apply");
 	szMenuText += "   ";
 	pMenuElementApply = me = new CMenuElementText(BUTTON_MENUOPTIONSVIDEO_APPLY, hFontMenu, szMenuText, Vec2i(fPosApply, 0), NOP);
-	me->SetPos(RATIO_X(size.x-10)-me->GetWidth(), RATIO_Y(380) + RATIO_Y(40));
+	me->SetPos(Vec2i(RATIO_X(size.x-10)-me->GetWidth(), RATIO_Y(380) + RATIO_Y(40)));
 	me->SetCheckOff();
 	pc->AddElementNoCenterIn(me);
 
@@ -864,7 +864,7 @@ char pNoDef2[]="---";
 	pc->AddElementNoCenterIn(me);
 	szMenuText = getLocalised( "system_menus_options_input_customize_default" );
 	me = new CMenuElementText(BUTTON_MENUOPTIONS_CONTROLS_CUST_DEFAULT, hFontMenu, szMenuText, Vec2i(0, 0), NOP);
-	me->SetPos((RATIO_X(size.x) - me->GetWidth())*0.5f, RATIO_Y(380));
+	me->SetPos(Vec2i((RATIO_X(size.x) - me->GetWidth())*0.5f, RATIO_Y(380)));
 	pc->AddElementNoCenterIn(me);
 	pTex = TextureContainer::Load("graph/interface/menus/next");
 	me = new CMenuCheckButton(BUTTON_MENUOPTIONS_CONTROLS_CUST_BACK, RATIO_2(Vec2i(140, 190)), pTex?pTex->m_dwWidth:0, pTex, NULL, NULL);
@@ -917,7 +917,7 @@ char pNoDef2[]="---";
 	pc->AddElementNoCenterIn(me);
 	szMenuText = getLocalised( "system_menus_options_input_customize_default" );
 	me = new CMenuElementText(BUTTON_MENUOPTIONS_CONTROLS_CUST_DEFAULT, hFontMenu, szMenuText, Vec2i(0, 0), NOP);
-	me->SetPos((RATIO_X(size.x) - me->GetWidth())*0.5f, RATIO_Y(380));
+	me->SetPos(Vec2i((RATIO_X(size.x) - me->GetWidth())*0.5f, RATIO_Y(380)));
 	pc->AddElementNoCenterIn(me);
 
 	pWindowMenuConsole->AddMenu(pc);
@@ -963,7 +963,7 @@ void Menu2_Render_Quit(Vec2i size, Vec2i offset)
 
 	me = new CMenuElementText(BUTTON_MENUMAIN_QUIT, hFontMenu, szMenuText, Vec2i(0, 0), NEW_QUEST_ENTER_GAME);
 
-	me->SetPos(RATIO_X(size.x-10)-me->GetWidth(), 0);
+	me->SetPos(Vec2i(RATIO_X(size.x-10)-me->GetWidth(), 0));
 	pPanel->AddElementNoCenterIn(me);
 	szMenuText = getLocalised("system_no");
 	me = new CMenuElementText(-1, hFontMenu, szMenuText, Vec2i(RATIO_X(10), 0), MAIN);

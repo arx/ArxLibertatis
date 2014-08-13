@@ -237,7 +237,7 @@ public:
 		return (rZone.bottom - rZone.top);
 	}
 	virtual void Move(const Vec2i & offset);
-	virtual void SetPos(float, float);
+	virtual void SetPos(Vec2i pos);
 	
 	void SetCheckOff()
 	{
@@ -386,7 +386,7 @@ public:
 	~CMenuButton();
 	
 public:
-	void SetPos(float px, float py);
+	void SetPos(Vec2i pos);
 	void AddText(const std::string & label);
 	CMenuElement * OnShortCut() { return NULL; }
 	bool OnMouseClick();

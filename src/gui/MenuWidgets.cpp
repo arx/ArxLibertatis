@@ -210,9 +210,7 @@ bool MENU_NoActiveWindow() {
 
 void FontRenderText(Font* _pFont, Vec3f pos, const std::string& _pText, Color _c) {
 	if(pTextManage) {
-		long x = checked_range_cast<long>(pos.x);
-		long y = checked_range_cast<long>(pos.y);
-		pTextManage->AddText(_pFont, _pText, x, y, _c);
+		pTextManage->AddText(_pFont, _pText, pos.x, pos.y, _c);
 	}
 }
 
@@ -569,8 +567,8 @@ CMenuElementText::CMenuElementText(int _iID, Font* _pFont, const std::string& _p
 		bTestYDouble=true;
 	}
 	
-	rZone.left = checked_range_cast<Rect::Num>(pos.x);
-	rZone.top = checked_range_cast<Rect::Num>(pos.y);
+	rZone.left = pos.x;
+	rZone.top = pos.y;
 	
 	SetText(_pText);
 	
@@ -1201,18 +1199,15 @@ void CMenuZone::Move(const Vec2i & offset) {
 	rZone.move(offset.x, offset.y);
 }
 
-void CMenuZone::SetPos(float _fX, float _fY) {
+void CMenuZone::SetPos(Vec2i pos) {
 
 	int iWidth  = rZone.right - rZone.left;
 	int iHeight = rZone.bottom - rZone.top;
-
-	int iX = checked_range_cast<int>(_fX);
-	int iY = checked_range_cast<int>(_fY);
-
-	rZone.left   = iX;
-	rZone.top    = iY;
-	rZone.right  = iX + abs(iWidth);
-	rZone.bottom = iY + abs(iHeight);
+	
+	rZone.left   = pos.x;
+	rZone.top    = pos.y;
+	rZone.right  = pos.x + abs(iWidth);
+	rZone.bottom = pos.y + abs(iHeight);
 }
 
 CMenuZone * CMenuZone::IsMouseOver(const Vec2s& mousePos) const {
@@ -1325,27 +1320,26 @@ CMenuCheckButton::CMenuCheckButton(int _iID, Vec2i pos, int _iTaille, TextureCon
 	iState    = 0;
 	iOldState = -1;
 
-	m_pos.x = checked_range_cast<int>(pos.x);
-	m_pos.y = checked_range_cast<int>(pos.y);
+	m_pos = pos;
 
 	iTaille = _iTaille;
 
 	pText    = _pText;
 
 	if(_pTex1) {
-		float fRatioX = RATIO_X(_pTex1->m_dwWidth) ;
-		float fRatioY = RATIO_Y(_pTex1->m_dwHeight);
+		int fRatioX = RATIO_X(_pTex1->m_dwWidth) ;
+		int fRatioY = RATIO_Y(_pTex1->m_dwHeight);
 		vTex.push_back(_pTex1);
-		_iTaille = std::max(_iTaille, checked_range_cast<int>(fRatioX));
-		_iTaille = std::max(_iTaille, checked_range_cast<int>(fRatioY));
+		_iTaille = std::max(_iTaille, fRatioX);
+		_iTaille = std::max(_iTaille, fRatioY);
 	}
 
 	if(_pTex2) {
-		float fRatioX = RATIO_X(_pTex2->m_dwWidth) ;
-		float fRatioY = RATIO_Y(_pTex2->m_dwHeight);
+		int fRatioX = RATIO_X(_pTex2->m_dwWidth) ;
+		int fRatioY = RATIO_Y(_pTex2->m_dwHeight);
 		vTex.push_back(_pTex2);
-		_iTaille = std::max(_iTaille, checked_range_cast<int>(fRatioX));
-		_iTaille = std::max(_iTaille, checked_range_cast<int>(fRatioY));
+		_iTaille = std::max(_iTaille, fRatioX);
+		_iTaille = std::max(_iTaille, fRatioY);
 	}
 
 	Vec2i textSize(0,0);
@@ -1358,15 +1352,15 @@ CMenuCheckButton::CMenuCheckButton(int _iID, Vec2i pos, int _iTaille, TextureCon
 		pText->Move(m_pos + Vec2i(0, (_iTaille - textSize.y) / 2));
 	}
 
-	rZone.left = checked_range_cast<Rect::Num>(pos.x);
-	rZone.top = checked_range_cast<Rect::Num>(pos.y);
-	rZone.right = checked_range_cast<Rect::Num>(pos.x + _iTaille + textSize.x);
-	rZone.bottom = checked_range_cast<Rect::Num>(pos.y + std::max<int>(_iTaille, textSize.y));
+	rZone.left = pos.x;
+	rZone.top = pos.y;
+	rZone.right = pos.x + _iTaille + textSize.x;
+	rZone.bottom = pos.y + std::max<int>(_iTaille, textSize.y);
 	pRef=this;
 	
 	if(_pTex1 && _pTex2) {
-		float rZoneR = ( RATIO_X(200.f) + RATIO_X(_pTex1->m_dwWidth) + (RATIO_X(12*9) - RATIO_X(_pTex1->m_dwWidth))*0.5f );
-		rZone.right = checked_range_cast<Rect::Num>(rZoneR);
+		float rZoneR = RATIO_X(200.f) + RATIO_X(_pTex1->m_dwWidth) + (RATIO_X(12*9) - RATIO_X(_pTex1->m_dwWidth))*0.5f;
+		rZone.right = rZoneR;
 	}
 	
 	Move(m_pos);
@@ -2474,10 +2468,10 @@ CMenuButton::CMenuButton(int _iID, MENUSTATE _eMenuState, Vec2i pos, TextureCont
 	pTex=_pTex;
 	
 	if(pTex) {
-		float rZoneR = rZone.left + RATIO_X(pTex->m_dwWidth);
-		float rZoneB = rZone.top + RATIO_Y(pTex->m_dwHeight);
-		rZone.right  = max(rZone.right,  checked_range_cast<Rect::Num>(rZoneR));
-		rZone.bottom = max(rZone.bottom, checked_range_cast<Rect::Num>(rZoneB));
+		int rZoneR = rZone.left + RATIO_X(pTex->m_dwWidth);
+		int rZoneB = rZone.top + RATIO_Y(pTex->m_dwHeight);
+		rZone.right  = max(rZone.right,  rZoneR);
+		rZone.bottom = max(rZone.bottom, rZoneB);
 	}
 	
 	pRef=this;
@@ -2486,19 +2480,19 @@ CMenuButton::CMenuButton(int _iID, MENUSTATE _eMenuState, Vec2i pos, TextureCont
 CMenuButton::~CMenuButton() {
 }
 
-void CMenuButton::SetPos(float _iX,float _iY)
+void CMenuButton::SetPos(Vec2i pos)
 {
-	CMenuZone::SetPos(_iX, _iY);
+	CMenuZone::SetPos(pos);
 
 	int iWidth = 0;
 	int iHeight = 0;
 	if(pTex) {
-		iWidth = checked_range_cast<int>(RATIO_X(pTex->m_dwWidth));
-		iHeight = checked_range_cast<int>(RATIO_Y(pTex->m_dwHeight));
+		iWidth = RATIO_X(pTex->m_dwWidth);
+		iHeight = RATIO_Y(pTex->m_dwHeight);
 	}
 	
-	rZone.right = static_cast<int>(_iX) + iWidth;
-	rZone.bottom = static_cast<int>(_iY) + iHeight;
+	rZone.right = pos.x + iWidth;
+	rZone.bottom = pos.y + iHeight;
 }
 
 bool CMenuButton::OnMouseClick() {
@@ -2577,8 +2571,8 @@ void CMenuSliderText::AddText(CMenuElementText *_pText) {
 	rZone.right  = max(rZone.right, rZone.left + pLeftButton->GetWidth() + pRightButton->GetWidth() + textSize.x);
 	rZone.bottom = max(rZone.bottom, rZone.top + textSize.y);
 
-	pLeftButton->SetPos(rZone.left, rZone.top+(textSize.y>>2));
-	pRightButton->SetPos(rZone.right-pRightButton->GetWidth(), rZone.top+(textSize.y>>2));
+	pLeftButton->SetPos(Vec2i(rZone.left, rZone.top+(textSize.y>>2)));
+	pRightButton->SetPos(Vec2i(rZone.right-pRightButton->GetWidth(), rZone.top+(textSize.y>>2)));
 
 	int dx=rZone.right-rZone.left-pLeftButton->GetWidth()-pRightButton->GetWidth();
 	//on recentre tout
@@ -2590,7 +2584,7 @@ void CMenuSliderText::AddText(CMenuElementText *_pText) {
 		textSize = pMenuElementText->GetTextSize();
 
 		int dxx=(dx-textSize.x)>>1;
-		pMenuElementText->SetPos(static_cast<float>(pLeftButton->rZone.right + dxx), static_cast<float>(rZone.top));
+		pMenuElementText->SetPos(Vec2i(pLeftButton->rZone.right + dxx, rZone.top));
 	}
 }
 
@@ -2880,13 +2874,13 @@ void CMenuSlider::Update(int _iTime) {
 	
 	pLeftButton->Update(_iTime);
 	pRightButton->Update(_iTime);
-	pRightButton->SetPos(rZone.left, rZone.top);
+	pRightButton->SetPos(rZone.topLeft());
 
 
 	float fWidth = pLeftButton->GetWidth() + RATIO_X(10*max(pTex1->m_dwWidth, pTex2->m_dwWidth)) ;
-	pRightButton->Move(Vec2i(checked_range_cast<int>(fWidth), 0));
+	pRightButton->Move(Vec2i(fWidth, 0));
 
-	rZone.right  = checked_range_cast<Rect::Num>( rZone.left + pLeftButton->GetWidth() + pRightButton->GetWidth() + RATIO_X(10*std::max(pTex1->m_dwWidth, pTex2->m_dwWidth)) );
+	rZone.right = rZone.left + pLeftButton->GetWidth() + pRightButton->GetWidth() + RATIO_X(10*std::max(pTex1->m_dwWidth, pTex2->m_dwWidth));
 
 	rZone.bottom = rZone.top + std::max(pLeftButton->GetHeight(), pRightButton->GetHeight());
 }
