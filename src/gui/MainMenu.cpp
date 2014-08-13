@@ -121,7 +121,7 @@ void Menu2_Render_EditQuest(Vec2i size, Vec2i offset)
 
 	pTex = TextureContainer::Load("graph/interface/icons/menu_main_load");
 	me = new CMenuCheckButton(-1, Vec2i(0, 0), pTex?pTex->m_dwWidth:0, pTex, NULL, NULL);
-	((CMenuCheckButton *)me)->bCheck = false;
+	me->bCheck = false;
 	pWindowMenuConsole->AddMenuCenter(me);
 	
 	std::string quicksaveName = getLocalised("system_menus_main_quickloadsave", "Quicksave");
@@ -207,7 +207,7 @@ void Menu2_Render_EditQuest(Vec2i size, Vec2i offset)
 
 	pTex = TextureContainer::Load("graph/interface/icons/menu_main_save");
 	me = new CMenuCheckButton(-1, Vec2i(RATIO_X(10), 0), pTex?pTex->m_dwWidth:0, pTex, NULL, NULL);
-	((CMenuCheckButton *)me)->bCheck = false;
+	me->bCheck = false;
 	pWindowMenuConsole->AddMenuCenter(me);
 	
 	size_t quicksaveNum = 0;
@@ -279,7 +279,7 @@ void Menu2_Render_EditQuest(Vec2i size, Vec2i offset)
 
 	pTex = TextureContainer::Load("graph/interface/icons/menu_main_save");
 	me = new CMenuCheckButton(-1, Vec2i(0, 0), pTex?pTex->m_dwWidth:0, pTex, NULL, NULL);
-	((CMenuCheckButton *)me)->bCheck = false;
+	me->bCheck = false;
 	pWindowMenuConsole->AddMenuCenter(me);
 	
 	szMenuText = getLocalised("system_menu_editquest_newsavegame", "---");
