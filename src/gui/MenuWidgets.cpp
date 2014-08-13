@@ -1603,8 +1603,7 @@ MENUSTATE CWindowMenu::Render() {
 }
 
 CWindowMenuConsole::CWindowMenuConsole(Vec2i pos, Vec2i size, MENUSTATE _eMenuState)
-	: iSavePosY(0)
-	, iInterligne(10)
+	: iInterligne(10)
 	, pZoneClick(NULL)
 	, bEdit(false)
 	, lData(0)
@@ -1917,8 +1916,6 @@ CMenuElement * CWindowMenuConsole::GetTouch(bool keyTouched, int keyId, InputKey
 MENUSTATE CWindowMenuConsole::Update(Vec2i pos) {
 
 	bFrameOdd=!bFrameOdd;
-
-	iSavePosY=pos.y;
 	
 	MenuAllZone.Move(m_pos - m_oldPos);
 	
@@ -2177,7 +2174,7 @@ void CWindowMenuConsole::Render() {
 	GRenderer->SetBlendFunc(Renderer::BlendZero, Renderer::BlendInvSrcColor);
 	GRenderer->SetRenderState(Renderer::DepthTest, false);
 
-	EERIEDrawBitmap2(Rectf(Vec2f(m_pos.x, iSavePosY),
+	EERIEDrawBitmap2(Rectf(Vec2f(m_pos.x, m_pos.y),
 	                 RATIO_X(pTexBackground->m_dwWidth), RATIO_Y(pTexBackground->m_dwHeight)),
 	                 0, pTexBackground, Color::white);
 
@@ -2185,7 +2182,7 @@ void CWindowMenuConsole::Render() {
 	GRenderer->SetBlendFunc(Renderer::BlendOne, Renderer::BlendOne);
 	GRenderer->SetRenderState(Renderer::AlphaBlending, false);
 	
-	EERIEDrawBitmap2(Rectf(Vec2f(m_pos.x, iSavePosY),
+	EERIEDrawBitmap2(Rectf(Vec2f(m_pos.x, m_pos.y),
 	                 RATIO_X(pTexBackgroundBorder->m_dwWidth), RATIO_Y(pTexBackgroundBorder->m_dwHeight)),
 	                 0, pTexBackgroundBorder, Color::white);
 

@@ -488,7 +488,6 @@ public:
 	bool					bFrameOdd;
 	
 	Vec2i m_pos;
-	int						iSavePosY;
 	Vec2i m_oldPos;
 	Vec2i m_offset;
 	Vec2i m_size;
