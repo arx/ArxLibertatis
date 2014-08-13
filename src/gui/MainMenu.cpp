@@ -984,9 +984,9 @@ void MainMenuLeftCreate(MENUSTATE eMenuState)
 	
 	delete pWindowMenu, pWindowMenu = NULL;
 	
-	//suivant la resolution
+	Vec2i windowMenuPos = Vec2i(20, 25);
 	Vec2i windowMenuSize = Vec2i(321, 430);
-	Vec2i windowMenuPos = Vec2i(20, (480-windowMenuSize.y)>>1);
+	
 	Vec2i windowConsoleOffset = Vec2i(0, 14 - 10);
 	Vec2i windowConsoleSize = windowMenuSize - windowConsoleOffset + Vec2i(0, 20);
 	
