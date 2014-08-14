@@ -1916,59 +1916,59 @@ MENUSTATE CWindowMenuConsole::Update(Vec2i pos) {
 	m_oldPos.x=m_pos.x;
 	m_oldPos.y=m_pos.y;
 	m_pos = pos;
-
+	
 	// Check if mouse over
-		if(!bEdit) {
-			pZoneClick=NULL;
+	if(!bEdit) {
+		pZoneClick=NULL;
+		CMenuElement * iR = MenuAllZone.CheckZone(GInput->getMousePosAbs());
+		
+		if(iR) {
+			pZoneClick = iR;
+			
+			if(GInput->getMouseButtonDoubleClick(Mouse::Button_0, 300)) {
+				MENUSTATE e = pZoneClick->eMenuState;
+				bEdit = pZoneClick->OnMouseDoubleClick();
+				
+				if(pZoneClick->iID == BUTTON_MENUEDITQUEST_LOAD)
+					return MAIN;
+				
+				if(bEdit)
+					return pZoneClick->eMenuState;
+				
+				return e;
+			}
+			
+			if(GInput->getMouseButton(Mouse::Button_0)) {
+				MENUSTATE e = pZoneClick->eMenuState;
+				bEdit = pZoneClick->OnMouseClick();
+				return e;
+			} else {
+				pZoneClick->EmptyFunction();
+			}
+		}
+	} else {
+		if(!pZoneClick) {
 			CMenuElement * iR = MenuAllZone.CheckZone(GInput->getMousePosAbs());
-
+			
 			if(iR) {
 				pZoneClick = iR;
-
+				
 				if(GInput->getMouseButtonDoubleClick(Mouse::Button_0, 300)) {
-					MENUSTATE e = pZoneClick->eMenuState;
 					bEdit = pZoneClick->OnMouseDoubleClick();
-
-					if(pZoneClick->iID == BUTTON_MENUEDITQUEST_LOAD)
-						return MAIN;
-
+					
 					if(bEdit)
 						return pZoneClick->eMenuState;
-
-					return e;
-				}
-
-				if(GInput->getMouseButton(Mouse::Button_0)) {
-					MENUSTATE e = pZoneClick->eMenuState;
-					bEdit = pZoneClick->OnMouseClick();
-					return e;
-				} else {
-					pZoneClick->EmptyFunction();
-				}
-			}
-		} else {
-			if(!pZoneClick) {
-				CMenuElement * iR = MenuAllZone.CheckZone(GInput->getMousePosAbs());
-
-				if(iR) {
-					pZoneClick = iR;
-
-					if(GInput->getMouseButtonDoubleClick(Mouse::Button_0, 300)) {
-						bEdit = pZoneClick->OnMouseDoubleClick();
-
-						if(bEdit)
-							return pZoneClick->eMenuState;
-					}
 				}
 			}
 		}
-
+	}
+	
 	//check les shortcuts
 	if(!bEdit) {
 		for(size_t iJ = 0; iJ < MenuAllZone.GetNbZone(); ++iJ) {
 			CMenuElement * pMenuElement = MenuAllZone.GetZoneNum(iJ);
 			CMenuElement *CMenuElementShortCut = pMenuElement->OnShortCut();
-
+			
 			if(CMenuElementShortCut) {
 				pZoneClick=CMenuElementShortCut;
 				MENUSTATE e = pZoneClick->eMenuState;
@@ -1978,7 +1978,7 @@ MENUSTATE CWindowMenuConsole::Update(Vec2i pos) {
 			}
 		}
 	}
-
+	
 	return NOP;
 }
 
