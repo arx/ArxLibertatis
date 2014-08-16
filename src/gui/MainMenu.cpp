@@ -765,7 +765,7 @@ void CUSTOM_CTRL_FUNC(CWindowMenuConsole * console, long & y, const std::string 
 	if((!b)||(c<0))
 	{
 		me->SetCheckOff();
-		((CMenuElementText*)me)->lColor=Color(127,127,127);
+		me->lColor=Color(127,127,127);
 	}
 	pc->AddElement(me);
 	me = new CMenuElementText(d, hFontControls, pNoDef2, Vec2i(CUSTOM_CTRL_X2, 0), NOP);
@@ -773,12 +773,12 @@ void CUSTOM_CTRL_FUNC(CWindowMenuConsole * console, long & y, const std::string 
 	if(d<0)
 	{
 		me->SetCheckOff();
-		((CMenuElementText*)me)->lColor=Color(127,127,127);
+		me->lColor=Color(127,127,127);
 	}
 	pc->AddElement(me);
 	pc->Move(Vec2i(0, y));
 	console->AddMenu(pc);
-	y += static_cast<long>( pc->rZone.height() + RATIO_Y(3.f) );
+	y += pc->rZone.height() + RATIO_Y(3.f);
 }
 
 void MainMenuOptionControlsCreate(Vec2i offset, Vec2i size)
