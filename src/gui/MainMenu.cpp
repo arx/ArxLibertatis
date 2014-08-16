@@ -196,13 +196,11 @@ void Menu2_Render_EditQuest(Vec2i size, Vec2i offset)
 		
 		// Back button
 		{
-		CMenuPanel *pc = new CMenuPanel();
 		pTex = TextureContainer::Load("graph/interface/menus/back");
-		CMenuCheckButton * cb = new CMenuCheckButton(RATIO_2(Vec2i(10, 190)) + Vec2i(0, RATIO_Y(20)), pTex?pTex->m_dwWidth:0, pTex, NULL, NULL);
+		CMenuButton * cb = new CMenuButton(RATIO_2(Vec2i(20, 420)), pTex);
 		cb->eMenuState = EDIT_QUEST;
 		cb->SetShortCut(Keyboard::Key_Escape);
-		pc->AddElementNoCenterIn(cb);
-		pWindowMenuConsole->AddMenu(pc);
+		pWindowMenuConsole->AddMenu(cb);
 		}
 	}
 	pWindowMenu->AddConsole(pWindowMenuConsole);
