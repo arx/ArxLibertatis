@@ -746,6 +746,97 @@ void MainMenuOptionInputCreate(Vec2i size, Vec2i offset)
 	pWindowMenu->AddConsole(pWindowMenuConsole);
 }
 
+char pNoDef1[]="---";
+char pNoDef2[]="---";
+
+#define CUSTOM_CTRL_X0    RATIO_X(20)
+#define CUSTOM_CTRL_X1    RATIO_X(150)
+#define CUSTOM_CTRL_X2    RATIO_X(245)
+
+void CUSTOM_CTRL_FUNC(CWindowMenuConsole * console, long & y, const std::string & a, int b, int c, int d){
+	CMenuPanel * pc = new CMenuPanel();
+	std::string szMenuText = getLocalised(a, "?");
+	CMenuElementText * me = new CMenuElementText(-1, hFontControls, szMenuText, Vec2i(CUSTOM_CTRL_X0, 0), NOP);
+	me->SetCheckOff();
+	pc->AddElement(me);
+	me = new CMenuElementText(c, hFontControls, pNoDef1, Vec2i(CUSTOM_CTRL_X1, 0), NOP);
+	me->eState=GETTOUCH;
+	if((!b)||(c<0))
+	{
+		me->SetCheckOff();
+		((CMenuElementText*)me)->lColor=Color(127,127,127);
+	}
+	pc->AddElement(me);
+	me = new CMenuElementText(d, hFontControls, pNoDef2, Vec2i(CUSTOM_CTRL_X2, 0), NOP);
+	me->eState=GETTOUCH;
+	if(d<0)
+	{
+		me->SetCheckOff();
+		((CMenuElementText*)me)->lColor=Color(127,127,127);
+	}
+	pc->AddElement(me);
+	pc->Move(Vec2i(0, y));
+	console->AddMenu(pc);
+	y += static_cast<long>( pc->rZone.height() + RATIO_Y(3.f) );
+}
+
+
+void CUSTOM_CTRL_FUNC2(CWindowMenuConsole * console, long & y, const std::string & a, int b, int c, int d){
+	CMenuPanel * pc = new CMenuPanel();
+	std::string szMenuText = getLocalised(a, "?");
+	szMenuText += "2";
+	CMenuElementText * me = new CMenuElementText(-1, hFontControls, szMenuText, Vec2i(CUSTOM_CTRL_X0, 0), NOP);
+	me->SetCheckOff();
+	pc->AddElement(me);
+	me = new CMenuElementText(c, hFontControls, pNoDef1, Vec2i(CUSTOM_CTRL_X1, 0), NOP);
+	me->eState=GETTOUCH;
+	if((!b)||(c<0))
+	{
+		me->SetCheckOff();
+		((CMenuElementText*)me)->lColor=Color(127,127,127);
+	}
+	pc->AddElement(me);
+	me = new CMenuElementText(d, hFontControls, pNoDef2, Vec2i(CUSTOM_CTRL_X2, 0), NOP);
+	me->eState=GETTOUCH;
+	if(d<0)
+	{
+		me->SetCheckOff();
+		((CMenuElementText*)me)->lColor=Color(127,127,127);
+	}
+	pc->AddElement(me);
+	pc->Move(Vec2i(0, y));
+	console->AddMenu(pc);
+	y += static_cast<long>( pc->rZone.height() + RATIO_Y(3.f) );
+}
+	
+	
+void CUSTOM_CTRL_FUNC3(CWindowMenuConsole * console, long & y, const std::string & a,const std::string & def, int b, int c, int d){
+	CMenuPanel * pc = new CMenuPanel();
+	std::string szMenuText = getLocalised(a, def);
+	CMenuElementText * me = new CMenuElementText(-1, hFontControls, szMenuText, Vec2i(CUSTOM_CTRL_X0, 0), NOP);
+	me->SetCheckOff();
+	pc->AddElement(me);
+	me = new CMenuElementText(c, hFontControls, pNoDef1, Vec2i(CUSTOM_CTRL_X1, 0), NOP);
+	me->eState=GETTOUCH;
+	if((!b)||(c<0))
+	{
+		me->SetCheckOff();
+		((CMenuElementText*)me)->lColor=Color(127,127,127);
+	}
+	pc->AddElement(me);
+	me = new CMenuElementText(d, hFontControls, pNoDef2, Vec2i(CUSTOM_CTRL_X2, 0), NOP);
+	me->eState=GETTOUCH;
+	if(d<0)
+	{
+		me->SetCheckOff();
+		((CMenuElementText*)me)->lColor=Color(127,127,127);
+	}
+	pc->AddElement(me);
+	pc->Move(Vec2i(0, y));
+	console->AddMenu(pc);
+	y += static_cast<long>( pc->rZone.height() + RATIO_Y(3.f) );
+}
+
 void MainMenuOptionControlsCreate(Vec2i offset, Vec2i size)
 {
 	std::string szMenuText;
@@ -753,123 +844,33 @@ void MainMenuOptionControlsCreate(Vec2i offset, Vec2i size)
 	CMenuPanel *pc;
 	TextureContainer *pTex;
 	
-char pNoDef1[]="---";
-char pNoDef2[]="---";
+	long y = static_cast<long>(RATIO_Y(8.f));
 
-#define CUSTOM_CTRL_X0    RATIO_X(20)
-#define CUSTOM_CTRL_X1    RATIO_X(150)
-#define CUSTOM_CTRL_X2    RATIO_X(245)
-	long fControlPosY    =    static_cast<long>(RATIO_Y(8.f));
-#define CUSTOM_CTRL_FUNC(a,b,c,d){\
-		pc=new CMenuPanel();\
-		szMenuText = getLocalised(a, "?");\
-		me = new CMenuElementText(-1, hFontControls, szMenuText, Vec2i(CUSTOM_CTRL_X0, 0), NOP);\
-		me->SetCheckOff();\
-		pc->AddElement(me);\
-		me = new CMenuElementText(c, hFontControls, pNoDef1, Vec2i(CUSTOM_CTRL_X1, 0), NOP);\
-		me->eState=GETTOUCH;\
-		if((!b)||(c<0))\
-		{\
-			me->SetCheckOff();\
-			((CMenuElementText*)me)->lColor=Color(127,127,127);\
-		}\
-		pc->AddElement(me);\
-		me = new CMenuElementText(d, hFontControls, pNoDef2, Vec2i(CUSTOM_CTRL_X2, 0), NOP);\
-		me->eState=GETTOUCH;\
-		if(d<0)\
-		{\
-			me->SetCheckOff();\
-			((CMenuElementText*)me)->lColor=Color(127,127,127);\
-		}\
-		pc->AddElement(me);\
-		pc->Move(Vec2i(0, fControlPosY));\
-		pWindowMenuConsole->AddMenu(pc);\
-		fControlPosY += static_cast<long>( pc->rZone.height() + RATIO_Y(3.f) );\
-	};
+	CWindowMenuConsole * c=new CWindowMenuConsole(offset, size, OPTIONS_INPUT_CUSTOMIZE_KEYS_1);
 
+	CUSTOM_CTRL_FUNC(c, y, "system_menus_options_input_customize_controls_mouselook",1, BUTTON_MENUOPTIONS_CONTROLS_CUST_USE1, BUTTON_MENUOPTIONS_CONTROLS_CUST_USE2);
 
-#define CUSTOM_CTRL_FUNC2(a,b,c,d){\
-		pc=new CMenuPanel();\
-		szMenuText = getLocalised(a, "?");\
-		szMenuText += "2";\
-		me = new CMenuElementText(-1, hFontControls, szMenuText, Vec2i(CUSTOM_CTRL_X0, 0), NOP);\
-		me->SetCheckOff();\
-		pc->AddElement(me);\
-		me = new CMenuElementText(c, hFontControls, pNoDef1, Vec2i(CUSTOM_CTRL_X1, 0), NOP);\
-		me->eState=GETTOUCH;\
-		if((!b)||(c<0))\
-		{\
-			me->SetCheckOff();\
-			((CMenuElementText*)me)->lColor=Color(127,127,127);\
-		}\
-		pc->AddElement(me);\
-		me = new CMenuElementText(d, hFontControls, pNoDef2, Vec2i(CUSTOM_CTRL_X2, 0), NOP);\
-		me->eState=GETTOUCH;\
-		if(d<0)\
-		{\
-			me->SetCheckOff();\
-			((CMenuElementText*)me)->lColor=Color(127,127,127);\
-		}\
-		pc->AddElement(me);\
-		pc->Move(Vec2i(0, fControlPosY));\
-		pWindowMenuConsole->AddMenu(pc);\
-		fControlPosY += static_cast<long>( pc->rZone.height() + RATIO_Y(3.f) );\
-	};
-	
-	
-#define CUSTOM_CTRL_FUNC3(a,default,b,c,d){\
-		pc=new CMenuPanel();\
-		szMenuText = getLocalised(a, default);\
-		me = new CMenuElementText(-1, hFontControls, szMenuText, Vec2i(CUSTOM_CTRL_X0, 0), NOP);\
-		me->SetCheckOff();\
-		pc->AddElement(me);\
-		me = new CMenuElementText(c, hFontControls, pNoDef1, Vec2i(CUSTOM_CTRL_X1, 0), NOP);\
-		me->eState=GETTOUCH;\
-		if((!b)||(c<0))\
-		{\
-			me->SetCheckOff();\
-			((CMenuElementText*)me)->lColor=Color(127,127,127);\
-		}\
-		pc->AddElement(me);\
-		me = new CMenuElementText(d, hFontControls, pNoDef2, Vec2i(CUSTOM_CTRL_X2, 0), NOP);\
-		me->eState=GETTOUCH;\
-		if(d<0)\
-		{\
-			me->SetCheckOff();\
-			((CMenuElementText*)me)->lColor=Color(127,127,127);\
-		}\
-		pc->AddElement(me);\
-		pc->Move(Vec2i(0, fControlPosY));\
-		pWindowMenuConsole->AddMenu(pc);\
-		fControlPosY += static_cast<long>( pc->rZone.height() + RATIO_Y(3.f) );\
-	};
+	CUSTOM_CTRL_FUNC(c, y, "system_menus_options_input_customize_controls_action_combine",1, BUTTON_MENUOPTIONS_CONTROLS_CUST_ACTIONCOMBINE1, BUTTON_MENUOPTIONS_CONTROLS_CUST_ACTIONCOMBINE2);
+	CUSTOM_CTRL_FUNC(c, y, "system_menus_options_input_customize_controls_jump",1,BUTTON_MENUOPTIONS_CONTROLS_CUST_JUMP1, BUTTON_MENUOPTIONS_CONTROLS_CUST_JUMP2);
+	CUSTOM_CTRL_FUNC(c, y, "system_menus_options_input_customize_controls_magic_mode",1, BUTTON_MENUOPTIONS_CONTROLS_CUST_MAGICMODE1, BUTTON_MENUOPTIONS_CONTROLS_CUST_MAGICMODE2);
+	CUSTOM_CTRL_FUNC(c, y, "system_menus_options_input_customize_controls_stealth_mode",1, BUTTON_MENUOPTIONS_CONTROLS_CUST_STEALTHMODE1, BUTTON_MENUOPTIONS_CONTROLS_CUST_STEALTHMODE2);
+	CUSTOM_CTRL_FUNC(c, y, "system_menus_options_input_customize_controls_walk_forward",1, BUTTON_MENUOPTIONS_CONTROLS_CUST_WALKFORWARD1, BUTTON_MENUOPTIONS_CONTROLS_CUST_WALKFORWARD2);
+	CUSTOM_CTRL_FUNC(c, y, "system_menus_options_input_customize_controls_walk_backward",1, BUTTON_MENUOPTIONS_CONTROLS_CUST_WALKBACKWARD1, BUTTON_MENUOPTIONS_CONTROLS_CUST_WALKBACKWARD2);
+	CUSTOM_CTRL_FUNC(c, y, "system_menus_options_input_customize_controls_strafe_left",1, BUTTON_MENUOPTIONS_CONTROLS_CUST_STRAFELEFT1, BUTTON_MENUOPTIONS_CONTROLS_CUST_STRAFELEFT2);
+	CUSTOM_CTRL_FUNC(c, y, "system_menus_options_input_customize_controls_strafe_right",1, BUTTON_MENUOPTIONS_CONTROLS_CUST_STRAFERIGHT1, BUTTON_MENUOPTIONS_CONTROLS_CUST_STRAFERIGHT2);
+	CUSTOM_CTRL_FUNC(c, y, "system_menus_options_input_customize_controls_lean_left",1, BUTTON_MENUOPTIONS_CONTROLS_CUST_LEANLEFT1, BUTTON_MENUOPTIONS_CONTROLS_CUST_LEANLEFT2);
+	CUSTOM_CTRL_FUNC(c, y, "system_menus_options_input_customize_controls_lean_right",1, BUTTON_MENUOPTIONS_CONTROLS_CUST_LEANRIGHT1, BUTTON_MENUOPTIONS_CONTROLS_CUST_LEANRIGHT2);
+	CUSTOM_CTRL_FUNC(c, y, "system_menus_options_input_customize_controls_crouch",1, BUTTON_MENUOPTIONS_CONTROLS_CUST_CROUCH1, BUTTON_MENUOPTIONS_CONTROLS_CUST_CROUCH2);
+	CUSTOM_CTRL_FUNC(c, y, "system_menus_options_input_customize_controls_crouch_toggle",1, BUTTON_MENUOPTIONS_CONTROLS_CUST_CROUCHTOGGLE1, BUTTON_MENUOPTIONS_CONTROLS_CUST_CROUCHTOGGLE2);
 
+	CUSTOM_CTRL_FUNC(c, y, "system_menus_options_input_customize_controls_strafe",1, BUTTON_MENUOPTIONS_CONTROLS_CUST_STRAFE1, BUTTON_MENUOPTIONS_CONTROLS_CUST_STRAFE2);
+	CUSTOM_CTRL_FUNC(c, y, "system_menus_options_input_customize_controls_center_view",1, BUTTON_MENUOPTIONS_CONTROLS_CUST_CENTERVIEW1, BUTTON_MENUOPTIONS_CONTROLS_CUST_CENTERVIEW2);
+	CUSTOM_CTRL_FUNC(c, y, "system_menus_options_input_customize_controls_freelook",1, BUTTON_MENUOPTIONS_CONTROLS_CUST_FREELOOK1, BUTTON_MENUOPTIONS_CONTROLS_CUST_FREELOOK2);
 
-	CWindowMenuConsole * pWindowMenuConsole=new CWindowMenuConsole(offset, size, OPTIONS_INPUT_CUSTOMIZE_KEYS_1);
-
-	CUSTOM_CTRL_FUNC("system_menus_options_input_customize_controls_mouselook",1, BUTTON_MENUOPTIONS_CONTROLS_CUST_USE1, BUTTON_MENUOPTIONS_CONTROLS_CUST_USE2);
-
-	CUSTOM_CTRL_FUNC("system_menus_options_input_customize_controls_action_combine",1, BUTTON_MENUOPTIONS_CONTROLS_CUST_ACTIONCOMBINE1, BUTTON_MENUOPTIONS_CONTROLS_CUST_ACTIONCOMBINE2);
-	CUSTOM_CTRL_FUNC("system_menus_options_input_customize_controls_jump",1,BUTTON_MENUOPTIONS_CONTROLS_CUST_JUMP1, BUTTON_MENUOPTIONS_CONTROLS_CUST_JUMP2);
-	CUSTOM_CTRL_FUNC("system_menus_options_input_customize_controls_magic_mode",1, BUTTON_MENUOPTIONS_CONTROLS_CUST_MAGICMODE1, BUTTON_MENUOPTIONS_CONTROLS_CUST_MAGICMODE2);
-	CUSTOM_CTRL_FUNC("system_menus_options_input_customize_controls_stealth_mode",1, BUTTON_MENUOPTIONS_CONTROLS_CUST_STEALTHMODE1, BUTTON_MENUOPTIONS_CONTROLS_CUST_STEALTHMODE2);
-	CUSTOM_CTRL_FUNC("system_menus_options_input_customize_controls_walk_forward",1, BUTTON_MENUOPTIONS_CONTROLS_CUST_WALKFORWARD1, BUTTON_MENUOPTIONS_CONTROLS_CUST_WALKFORWARD2);
-	CUSTOM_CTRL_FUNC("system_menus_options_input_customize_controls_walk_backward",1, BUTTON_MENUOPTIONS_CONTROLS_CUST_WALKBACKWARD1, BUTTON_MENUOPTIONS_CONTROLS_CUST_WALKBACKWARD2);
-	CUSTOM_CTRL_FUNC("system_menus_options_input_customize_controls_strafe_left",1, BUTTON_MENUOPTIONS_CONTROLS_CUST_STRAFELEFT1, BUTTON_MENUOPTIONS_CONTROLS_CUST_STRAFELEFT2);
-	CUSTOM_CTRL_FUNC("system_menus_options_input_customize_controls_strafe_right",1, BUTTON_MENUOPTIONS_CONTROLS_CUST_STRAFERIGHT1, BUTTON_MENUOPTIONS_CONTROLS_CUST_STRAFERIGHT2);
-	CUSTOM_CTRL_FUNC("system_menus_options_input_customize_controls_lean_left",1, BUTTON_MENUOPTIONS_CONTROLS_CUST_LEANLEFT1, BUTTON_MENUOPTIONS_CONTROLS_CUST_LEANLEFT2);
-	CUSTOM_CTRL_FUNC("system_menus_options_input_customize_controls_lean_right",1, BUTTON_MENUOPTIONS_CONTROLS_CUST_LEANRIGHT1, BUTTON_MENUOPTIONS_CONTROLS_CUST_LEANRIGHT2);
-	CUSTOM_CTRL_FUNC("system_menus_options_input_customize_controls_crouch",1, BUTTON_MENUOPTIONS_CONTROLS_CUST_CROUCH1, BUTTON_MENUOPTIONS_CONTROLS_CUST_CROUCH2);
-	CUSTOM_CTRL_FUNC("system_menus_options_input_customize_controls_crouch_toggle",1, BUTTON_MENUOPTIONS_CONTROLS_CUST_CROUCHTOGGLE1, BUTTON_MENUOPTIONS_CONTROLS_CUST_CROUCHTOGGLE2);
-
-	CUSTOM_CTRL_FUNC("system_menus_options_input_customize_controls_strafe",1, BUTTON_MENUOPTIONS_CONTROLS_CUST_STRAFE1, BUTTON_MENUOPTIONS_CONTROLS_CUST_STRAFE2);
-	CUSTOM_CTRL_FUNC("system_menus_options_input_customize_controls_center_view",1, BUTTON_MENUOPTIONS_CONTROLS_CUST_CENTERVIEW1, BUTTON_MENUOPTIONS_CONTROLS_CUST_CENTERVIEW2);
-	CUSTOM_CTRL_FUNC("system_menus_options_input_customize_controls_freelook",1, BUTTON_MENUOPTIONS_CONTROLS_CUST_FREELOOK1, BUTTON_MENUOPTIONS_CONTROLS_CUST_FREELOOK2);
-
-	CUSTOM_CTRL_FUNC("system_menus_options_input_customize_controls_turn_left",1, BUTTON_MENUOPTIONS_CONTROLS_CUST_TURNLEFT1, BUTTON_MENUOPTIONS_CONTROLS_CUST_TURNLEFT2);
-	CUSTOM_CTRL_FUNC("system_menus_options_input_customize_controls_turn_right",1, BUTTON_MENUOPTIONS_CONTROLS_CUST_TURNRIGHT1, BUTTON_MENUOPTIONS_CONTROLS_CUST_TURNRIGHT2);
-	CUSTOM_CTRL_FUNC("system_menus_options_input_customize_controls_look_up",1, BUTTON_MENUOPTIONS_CONTROLS_CUST_LOOKUP1, BUTTON_MENUOPTIONS_CONTROLS_CUST_LOOKUP2);
-	CUSTOM_CTRL_FUNC("system_menus_options_input_customize_controls_look_down",1, BUTTON_MENUOPTIONS_CONTROLS_CUST_LOOKDOWN1, BUTTON_MENUOPTIONS_CONTROLS_CUST_LOOKDOWN2);
+	CUSTOM_CTRL_FUNC(c, y, "system_menus_options_input_customize_controls_turn_left",1, BUTTON_MENUOPTIONS_CONTROLS_CUST_TURNLEFT1, BUTTON_MENUOPTIONS_CONTROLS_CUST_TURNLEFT2);
+	CUSTOM_CTRL_FUNC(c, y, "system_menus_options_input_customize_controls_turn_right",1, BUTTON_MENUOPTIONS_CONTROLS_CUST_TURNRIGHT1, BUTTON_MENUOPTIONS_CONTROLS_CUST_TURNRIGHT2);
+	CUSTOM_CTRL_FUNC(c, y, "system_menus_options_input_customize_controls_look_up",1, BUTTON_MENUOPTIONS_CONTROLS_CUST_LOOKUP1, BUTTON_MENUOPTIONS_CONTROLS_CUST_LOOKUP2);
+	CUSTOM_CTRL_FUNC(c, y, "system_menus_options_input_customize_controls_look_down",1, BUTTON_MENUOPTIONS_CONTROLS_CUST_LOOKDOWN1, BUTTON_MENUOPTIONS_CONTROLS_CUST_LOOKDOWN2);
 
 	pc=new CMenuPanel();
 	
@@ -896,41 +897,41 @@ char pNoDef2[]="---";
 	pc->AddElementNoCenterIn(cb);
 	}
 
-	pWindowMenuConsole->AddMenu(pc);
+	c->AddMenu(pc);
 
-	pWindowMenu->AddConsole(pWindowMenuConsole);
-	pWindowMenuConsole->ReInitActionKey();
+	pWindowMenu->AddConsole(c);
+	c->ReInitActionKey();
 
-	pWindowMenuConsole=new CWindowMenuConsole(offset, size, OPTIONS_INPUT_CUSTOMIZE_KEYS_2);
+	c=new CWindowMenuConsole(offset, size, OPTIONS_INPUT_CUSTOMIZE_KEYS_2);
 
-	fControlPosY = static_cast<long>(RATIO_Y(8.f));
-	CUSTOM_CTRL_FUNC("system_menus_options_input_customize_controls_inventory",1, BUTTON_MENUOPTIONS_CONTROLS_CUST_INVENTORY1, BUTTON_MENUOPTIONS_CONTROLS_CUST_INVENTORY2);
-	CUSTOM_CTRL_FUNC("system_menus_options_input_customize_controls_book",1, BUTTON_MENUOPTIONS_CONTROLS_CUST_BOOK1, BUTTON_MENUOPTIONS_CONTROLS_CUST_BOOK2);
-	CUSTOM_CTRL_FUNC("system_menus_options_input_customize_controls_bookcharsheet",1, BUTTON_MENUOPTIONS_CONTROLS_CUST_BOOKCHARSHEET1, BUTTON_MENUOPTIONS_CONTROLS_CUST_BOOKCHARSHEET2);
-	CUSTOM_CTRL_FUNC("system_menus_options_input_customize_controls_bookmap",1, BUTTON_MENUOPTIONS_CONTROLS_CUST_BOOKMAP1, BUTTON_MENUOPTIONS_CONTROLS_CUST_BOOKMAP2);
-	CUSTOM_CTRL_FUNC("system_menus_options_input_customize_controls_bookspell",1, BUTTON_MENUOPTIONS_CONTROLS_CUST_BOOKSPELL1, BUTTON_MENUOPTIONS_CONTROLS_CUST_BOOKSPELL2);
-	CUSTOM_CTRL_FUNC("system_menus_options_input_customize_controls_bookquest",1, BUTTON_MENUOPTIONS_CONTROLS_CUST_BOOKQUEST1, BUTTON_MENUOPTIONS_CONTROLS_CUST_BOOKQUEST2);
-	CUSTOM_CTRL_FUNC("system_menus_options_input_customize_controls_drink_potion_life",1, BUTTON_MENUOPTIONS_CONTROLS_CUST_DRINKPOTIONLIFE1, BUTTON_MENUOPTIONS_CONTROLS_CUST_DRINKPOTIONLIFE2);
-	CUSTOM_CTRL_FUNC("system_menus_options_input_customize_controls_drink_potion_mana",1, BUTTON_MENUOPTIONS_CONTROLS_CUST_DRINKPOTIONMANA1, BUTTON_MENUOPTIONS_CONTROLS_CUST_DRINKPOTIONMANA2);
-	CUSTOM_CTRL_FUNC("system_menus_options_input_customize_controls_torch",1, BUTTON_MENUOPTIONS_CONTROLS_CUST_TORCH1, BUTTON_MENUOPTIONS_CONTROLS_CUST_TORCH2);
+	y = static_cast<long>(RATIO_Y(8.f));
+	CUSTOM_CTRL_FUNC(c, y, "system_menus_options_input_customize_controls_inventory",1, BUTTON_MENUOPTIONS_CONTROLS_CUST_INVENTORY1, BUTTON_MENUOPTIONS_CONTROLS_CUST_INVENTORY2);
+	CUSTOM_CTRL_FUNC(c, y, "system_menus_options_input_customize_controls_book",1, BUTTON_MENUOPTIONS_CONTROLS_CUST_BOOK1, BUTTON_MENUOPTIONS_CONTROLS_CUST_BOOK2);
+	CUSTOM_CTRL_FUNC(c, y, "system_menus_options_input_customize_controls_bookcharsheet",1, BUTTON_MENUOPTIONS_CONTROLS_CUST_BOOKCHARSHEET1, BUTTON_MENUOPTIONS_CONTROLS_CUST_BOOKCHARSHEET2);
+	CUSTOM_CTRL_FUNC(c, y, "system_menus_options_input_customize_controls_bookmap",1, BUTTON_MENUOPTIONS_CONTROLS_CUST_BOOKMAP1, BUTTON_MENUOPTIONS_CONTROLS_CUST_BOOKMAP2);
+	CUSTOM_CTRL_FUNC(c, y, "system_menus_options_input_customize_controls_bookspell",1, BUTTON_MENUOPTIONS_CONTROLS_CUST_BOOKSPELL1, BUTTON_MENUOPTIONS_CONTROLS_CUST_BOOKSPELL2);
+	CUSTOM_CTRL_FUNC(c, y, "system_menus_options_input_customize_controls_bookquest",1, BUTTON_MENUOPTIONS_CONTROLS_CUST_BOOKQUEST1, BUTTON_MENUOPTIONS_CONTROLS_CUST_BOOKQUEST2);
+	CUSTOM_CTRL_FUNC(c, y, "system_menus_options_input_customize_controls_drink_potion_life",1, BUTTON_MENUOPTIONS_CONTROLS_CUST_DRINKPOTIONLIFE1, BUTTON_MENUOPTIONS_CONTROLS_CUST_DRINKPOTIONLIFE2);
+	CUSTOM_CTRL_FUNC(c, y, "system_menus_options_input_customize_controls_drink_potion_mana",1, BUTTON_MENUOPTIONS_CONTROLS_CUST_DRINKPOTIONMANA1, BUTTON_MENUOPTIONS_CONTROLS_CUST_DRINKPOTIONMANA2);
+	CUSTOM_CTRL_FUNC(c, y, "system_menus_options_input_customize_controls_torch",1, BUTTON_MENUOPTIONS_CONTROLS_CUST_TORCH1, BUTTON_MENUOPTIONS_CONTROLS_CUST_TORCH2);
 
-	CUSTOM_CTRL_FUNC("system_menus_options_input_customize_controls_cancelcurrentspell",1, BUTTON_MENUOPTIONS_CONTROLS_CUST_CANCELCURSPELL1, BUTTON_MENUOPTIONS_CONTROLS_CUST_CANCELCURSPELL2);
-	CUSTOM_CTRL_FUNC("system_menus_options_input_customize_controls_precast1",1, BUTTON_MENUOPTIONS_CONTROLS_CUST_PRECAST1, BUTTON_MENUOPTIONS_CONTROLS_CUST_PRECAST1_2);
-	CUSTOM_CTRL_FUNC("system_menus_options_input_customize_controls_precast2",1, BUTTON_MENUOPTIONS_CONTROLS_CUST_PRECAST2, BUTTON_MENUOPTIONS_CONTROLS_CUST_PRECAST2_2);
-	CUSTOM_CTRL_FUNC("system_menus_options_input_customize_controls_precast3",1, BUTTON_MENUOPTIONS_CONTROLS_CUST_PRECAST3, BUTTON_MENUOPTIONS_CONTROLS_CUST_PRECAST3_2);
-	CUSTOM_CTRL_FUNC("system_menus_options_input_customize_controls_weapon",1, BUTTON_MENUOPTIONS_CONTROLS_CUST_WEAPON1, BUTTON_MENUOPTIONS_CONTROLS_CUST_WEAPON2);
+	CUSTOM_CTRL_FUNC(c, y, "system_menus_options_input_customize_controls_cancelcurrentspell",1, BUTTON_MENUOPTIONS_CONTROLS_CUST_CANCELCURSPELL1, BUTTON_MENUOPTIONS_CONTROLS_CUST_CANCELCURSPELL2);
+	CUSTOM_CTRL_FUNC(c, y, "system_menus_options_input_customize_controls_precast1",1, BUTTON_MENUOPTIONS_CONTROLS_CUST_PRECAST1, BUTTON_MENUOPTIONS_CONTROLS_CUST_PRECAST1_2);
+	CUSTOM_CTRL_FUNC(c, y, "system_menus_options_input_customize_controls_precast2",1, BUTTON_MENUOPTIONS_CONTROLS_CUST_PRECAST2, BUTTON_MENUOPTIONS_CONTROLS_CUST_PRECAST2_2);
+	CUSTOM_CTRL_FUNC(c, y, "system_menus_options_input_customize_controls_precast3",1, BUTTON_MENUOPTIONS_CONTROLS_CUST_PRECAST3, BUTTON_MENUOPTIONS_CONTROLS_CUST_PRECAST3_2);
+	CUSTOM_CTRL_FUNC(c, y, "system_menus_options_input_customize_controls_weapon",1, BUTTON_MENUOPTIONS_CONTROLS_CUST_WEAPON1, BUTTON_MENUOPTIONS_CONTROLS_CUST_WEAPON2);
 
-	CUSTOM_CTRL_FUNC("system_menus_options_input_customize_controls_unequipweapon",1, BUTTON_MENUOPTIONS_CONTROLS_CUST_UNEQUIPWEAPON1, BUTTON_MENUOPTIONS_CONTROLS_CUST_UNEQUIPWEAPON2);
+	CUSTOM_CTRL_FUNC(c, y, "system_menus_options_input_customize_controls_unequipweapon",1, BUTTON_MENUOPTIONS_CONTROLS_CUST_UNEQUIPWEAPON1, BUTTON_MENUOPTIONS_CONTROLS_CUST_UNEQUIPWEAPON2);
 
-	CUSTOM_CTRL_FUNC("system_menus_options_input_customize_controls_previous",1, BUTTON_MENUOPTIONS_CONTROLS_CUST_PREVIOUS1, BUTTON_MENUOPTIONS_CONTROLS_CUST_PREVIOUS2);
-	CUSTOM_CTRL_FUNC("system_menus_options_input_customize_controls_next",1, BUTTON_MENUOPTIONS_CONTROLS_CUST_NEXT1, BUTTON_MENUOPTIONS_CONTROLS_CUST_NEXT2);
+	CUSTOM_CTRL_FUNC(c, y, "system_menus_options_input_customize_controls_previous",1, BUTTON_MENUOPTIONS_CONTROLS_CUST_PREVIOUS1, BUTTON_MENUOPTIONS_CONTROLS_CUST_PREVIOUS2);
+	CUSTOM_CTRL_FUNC(c, y, "system_menus_options_input_customize_controls_next",1, BUTTON_MENUOPTIONS_CONTROLS_CUST_NEXT1, BUTTON_MENUOPTIONS_CONTROLS_CUST_NEXT2);
 
-	CUSTOM_CTRL_FUNC("system_menus_options_input_customize_controls_quickload",1, BUTTON_MENUOPTIONS_CONTROLS_CUST_QUICKLOAD, BUTTON_MENUOPTIONS_CONTROLS_CUST_QUICKLOAD2);
-	CUSTOM_CTRL_FUNC("system_menus_options_input_customize_controls_quicksave",1, BUTTON_MENUOPTIONS_CONTROLS_CUST_QUICKSAVE, BUTTON_MENUOPTIONS_CONTROLS_CUST_QUICKSAVE2);
+	CUSTOM_CTRL_FUNC(c, y, "system_menus_options_input_customize_controls_quickload",1, BUTTON_MENUOPTIONS_CONTROLS_CUST_QUICKLOAD, BUTTON_MENUOPTIONS_CONTROLS_CUST_QUICKLOAD2);
+	CUSTOM_CTRL_FUNC(c, y, "system_menus_options_input_customize_controls_quicksave",1, BUTTON_MENUOPTIONS_CONTROLS_CUST_QUICKSAVE, BUTTON_MENUOPTIONS_CONTROLS_CUST_QUICKSAVE2);
 
-	CUSTOM_CTRL_FUNC2("system_menus_options_input_customize_controls_bookmap",1, BUTTON_MENUOPTIONS_CONTROLS_CUST_MINIMAP1, BUTTON_MENUOPTIONS_CONTROLS_CUST_MINIMAP2);
+	CUSTOM_CTRL_FUNC2(c, y, "system_menus_options_input_customize_controls_bookmap",1, BUTTON_MENUOPTIONS_CONTROLS_CUST_MINIMAP1, BUTTON_MENUOPTIONS_CONTROLS_CUST_MINIMAP2);
 
-	CUSTOM_CTRL_FUNC3("system_menus_options_input_customize_controls_toggle_fullscreen", "Toggle fullscreen", 1,  BUTTON_MENUOPTIONS_CONTROLS_CUST_TOGGLE_FULLSCREEN1, BUTTON_MENUOPTIONS_CONTROLS_CUST_TOGGLE_FULLSCREEN2);
+	CUSTOM_CTRL_FUNC3(c, y, "system_menus_options_input_customize_controls_toggle_fullscreen", "Toggle fullscreen", 1,  BUTTON_MENUOPTIONS_CONTROLS_CUST_TOGGLE_FULLSCREEN1, BUTTON_MENUOPTIONS_CONTROLS_CUST_TOGGLE_FULLSCREEN2);
 
 	pc=new CMenuPanel();
 
@@ -948,16 +949,10 @@ char pNoDef2[]="---";
 	me->SetPos(Vec2i((RATIO_X(size.x) - me->rZone.width())*0.5f, RATIO_Y(380)));
 	pc->AddElementNoCenterIn(me);
 
-	pWindowMenuConsole->AddMenu(pc);
+	c->AddMenu(pc);
 
-	pWindowMenu->AddConsole(pWindowMenuConsole);
-	pWindowMenuConsole->ReInitActionKey();
-	#undef CUSTOM_CTRL_X0
-	#undef CUSTOM_CTRL_X1
-	#undef CUSTOM_CTRL_X2
-	#undef CUSTOM_CTRL_FUNC
-	#undef CUSTOM_CTRL_FUNC2
-	#undef CUSTOM_CTRL_FUNC3
+	pWindowMenu->AddConsole(c);
+	c->ReInitActionKey();
 }
 
 void Menu2_Render_Options(Vec2i size, Vec2i offset)
