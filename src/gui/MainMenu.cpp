@@ -746,36 +746,24 @@ void MainMenuOptionInputCreate(Vec2i size, Vec2i offset)
 	pWindowMenu->AddConsole(pWindowMenuConsole);
 }
 
-char pNoDef1[]="---";
-char pNoDef2[]="---";
-
-#define CUSTOM_CTRL_X0    RATIO_X(20)
-#define CUSTOM_CTRL_X1    RATIO_X(150)
-#define CUSTOM_CTRL_X2    RATIO_X(245)
 
 void CUSTOM_CTRL_FUNC(CWindowMenuConsole * console, long & y, const std::string & a, int c, int d, const char * defaultText = "?", const char * specialSuffix = ""){
 	CMenuPanel * pc = new CMenuPanel();
+	
 	std::string szMenuText = getLocalised(a, defaultText);
 	szMenuText += specialSuffix;
-	CMenuElementText * me = new CMenuElementText(-1, hFontControls, szMenuText, Vec2i(CUSTOM_CTRL_X0, 0), NOP);
+	CMenuElementText * me = new CMenuElementText(-1, hFontControls, szMenuText, Vec2i(RATIO_X(20), 0), NOP);
 	me->SetCheckOff();
 	pc->AddElement(me);
-	me = new CMenuElementText(c, hFontControls, pNoDef1, Vec2i(CUSTOM_CTRL_X1, 0), NOP);
+	
+	me = new CMenuElementText(c, hFontControls, "---", Vec2i(RATIO_X(150), 0), NOP);
 	me->eState=GETTOUCH;
-	if(c < 0)
-	{
-		me->SetCheckOff();
-		me->lColor=Color(127,127,127);
-	}
 	pc->AddElement(me);
-	me = new CMenuElementText(d, hFontControls, pNoDef2, Vec2i(CUSTOM_CTRL_X2, 0), NOP);
+	
+	me = new CMenuElementText(d, hFontControls, "---", Vec2i(RATIO_X(245), 0), NOP);
 	me->eState=GETTOUCH;
-	if(d<0)
-	{
-		me->SetCheckOff();
-		me->lColor=Color(127,127,127);
-	}
 	pc->AddElement(me);
+	
 	pc->Move(Vec2i(0, y));
 	console->AddMenu(pc);
 	y += pc->rZone.height() + RATIO_Y(3.f);
