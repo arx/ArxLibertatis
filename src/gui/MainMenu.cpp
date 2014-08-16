@@ -408,11 +408,11 @@ void MainMenuOptionVideoCreate(Vec2i offset, Vec2i size)
 		szMenuText = getLocalised("system_menus_options_video_full_screen");
 	}
 	szMenuText += "  ";
-	CMenuElementText * metemp = new CMenuElementText(-1, hFontMenu, szMenuText, Vec2i(RATIO_X(20), 0.f), NOP);
-	metemp->SetCheckOff();
+	CMenuElementText * text = new CMenuElementText(-1, hFontMenu, szMenuText, Vec2i(RATIO_X(20), 0.f), NOP);
+	text->SetCheckOff();
 	TextureContainer *pTex1 = TextureContainer::Load("graph/interface/menus/menu_checkbox_off");
 	TextureContainer *pTex2 = TextureContainer::Load("graph/interface/menus/menu_checkbox_on");
-	CMenuCheckButton * cb = new CMenuCheckButton(Vec2i(0, 0), pTex1->m_dwWidth, pTex1, pTex2, metemp);
+	CMenuCheckButton * cb = new CMenuCheckButton(Vec2i(0, 0), pTex1->m_dwWidth, pTex1, pTex2, text);
 	cb->iID = BUTTON_MENUOPTIONSVIDEO_FULLSCREEN;
 	cb->iState = config.video.fullscreen ? 1 : 0;
 	pWindowMenuConsole->AddMenuCenterY(cb);
@@ -513,11 +513,11 @@ void MainMenuOptionVideoCreate(Vec2i offset, Vec2i size)
 	{
 	szMenuText = getLocalised("system_menus_options_video_crosshair", "Show Crosshair");
 	szMenuText += " ";
-	CMenuElementText * metemp = new CMenuElementText(-1, hFontMenu, szMenuText, Vec2i(RATIO_X(20), 0.f), NOP);
-	metemp->SetCheckOff();
+	CMenuElementText * text = new CMenuElementText(-1, hFontMenu, szMenuText, Vec2i(RATIO_X(20), 0.f), NOP);
+	text->SetCheckOff();
 	TextureContainer *pTex1 = TextureContainer::Load("graph/interface/menus/menu_checkbox_off");
 	TextureContainer *pTex2 = TextureContainer::Load("graph/interface/menus/menu_checkbox_on");
-	CMenuCheckButton * cb = new CMenuCheckButton(Vec2i(0, 0), pTex1->m_dwWidth, pTex1, pTex2, metemp);
+	CMenuCheckButton * cb = new CMenuCheckButton(Vec2i(0, 0), pTex1->m_dwWidth, pTex1, pTex2, text);
 	cb->iID = BUTTON_MENUOPTIONSVIDEO_CROSSHAIR;
 	cb->iState = config.video.showCrosshair ? 1 : 0;
 	pWindowMenuConsole->AddMenuCenterY(cb);
@@ -526,11 +526,11 @@ void MainMenuOptionVideoCreate(Vec2i offset, Vec2i size)
 	{
 	szMenuText = getLocalised("system_menus_options_video_antialiasing", "antialiasing");
 	szMenuText += " ";
+	CMenuElementText * text = new CMenuElementText(-1, hFontMenu, szMenuText, Vec2i(RATIO_X(20), 0), NOP);
+	text->SetCheckOff();
 	TextureContainer *pTex1 = TextureContainer::Load("graph/interface/menus/menu_checkbox_off");
 	TextureContainer *pTex2 = TextureContainer::Load("graph/interface/menus/menu_checkbox_on");
-	CMenuElementText * metemp = new CMenuElementText(-1, hFontMenu, szMenuText, Vec2i(RATIO_X(20), 0), NOP);
-	metemp->SetCheckOff();
-	CMenuCheckButton * cb = new CMenuCheckButton(Vec2i(0, 0), pTex1->m_dwWidth, pTex1, pTex2, metemp);
+	CMenuCheckButton * cb = new CMenuCheckButton(Vec2i(0, 0), pTex1->m_dwWidth, pTex1, pTex2, text);
 	cb->iID = BUTTON_MENUOPTIONSVIDEO_ANTIALIASING;
 	cb->iState = config.video.antialiasing ? 1 : 0;
 	pWindowMenuConsole->AddMenuCenterY(cb);
@@ -541,11 +541,11 @@ void MainMenuOptionVideoCreate(Vec2i offset, Vec2i size)
 	{
 	szMenuText = getLocalised("system_menus_options_video_vsync", "VSync");
 	szMenuText += " ";
+	CMenuElementText * text = new CMenuElementText(-1, hFontMenu, szMenuText, Vec2i(RATIO_X(20), 0), NOP);
+	text->SetCheckOff();
 	TextureContainer *pTex1 = TextureContainer::Load("graph/interface/menus/menu_checkbox_off");
 	TextureContainer *pTex2 = TextureContainer::Load("graph/interface/menus/menu_checkbox_on");
-	CMenuElementText * metemp = new CMenuElementText(-1, hFontMenu, szMenuText, Vec2i(RATIO_X(20), 0), NOP);
-	metemp->SetCheckOff();
-	CMenuCheckButton * cb = new CMenuCheckButton(Vec2i(0, 0), pTex1->m_dwWidth, pTex1, pTex2, metemp);
+	CMenuCheckButton * cb = new CMenuCheckButton(Vec2i(0, 0), pTex1->m_dwWidth, pTex1, pTex2, text);
 	cb->iID = BUTTON_MENUOPTIONSVIDEO_VSYNC;
 	cb->iState = config.video.vsync ? 1 : 0;
 	pWindowMenuConsole->AddMenuCenterY(cb);
@@ -656,10 +656,10 @@ void MainMenuOptionAudioCreate(Vec2i offset, Vec2i size)
 	{
 	szMenuText = getLocalised("system_menus_options_audio_eax", "EAX");
 	szMenuText += " ";
+	CMenuElementText * text = new CMenuElementText(-1, hFontMenu, szMenuText, Vec2i(RATIO_X(20), 0), OPTIONS_INPUT);
 	pTex1 = TextureContainer::Load("graph/interface/menus/menu_checkbox_off");
 	pTex2 = TextureContainer::Load("graph/interface/menus/menu_checkbox_on");
-	CMenuElementText * pElementText = new CMenuElementText(-1, hFontMenu, szMenuText, Vec2i(RATIO_X(20), 0), OPTIONS_INPUT);
-	CMenuCheckButton * cb = new CMenuCheckButton(Vec2i(0, 0), pTex1->m_dwWidth, pTex1, pTex2, pElementText);
+	CMenuCheckButton * cb = new CMenuCheckButton(Vec2i(0, 0), pTex1->m_dwWidth, pTex1, pTex2, text);
 	cb->iID = BUTTON_MENUOPTIONSAUDIO_EAX;
 	cb->iState = config.audio.eax ? 1 : 0;
 	pWindowMenuConsole->AddMenuCenterY(cb);
