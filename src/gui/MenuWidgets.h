@@ -360,7 +360,7 @@ public:
 	TextureContainer*   pTex;
 	
 public:
-	CMenuButton(int id, MENUSTATE state, Vec2i pos, TextureContainer * tex = NULL);
+	CMenuButton(Vec2i pos, TextureContainer * tex = NULL);
 	~CMenuButton();
 	
 public:

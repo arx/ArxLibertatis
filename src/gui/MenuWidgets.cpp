@@ -2427,10 +2427,10 @@ CMenuElement * CMenuPanel::IsMouseOver(const Vec2s& mousePos) const {
 	return NULL;
 }
 
-CMenuButton::CMenuButton(int _iID, MENUSTATE _eMenuState, Vec2i pos, TextureContainer *_pTex)
-	: CMenuElement(_eMenuState)
+CMenuButton::CMenuButton(Vec2i pos, TextureContainer *_pTex)
+	: CMenuElement(NOP)
 {
-	iID = _iID;
+	iID = -1;
 
 	rZone.left=pos.x;
 	rZone.top=pos.y;
@@ -2506,9 +2506,9 @@ CMenuSliderText::CMenuSliderText(int _iID, Vec2i pos)
 {
 	iID = _iID;
 	TextureContainer *pTex = TextureContainer::Load("graph/interface/menus/menu_slider_button_left");
-	pLeftButton = new CMenuButton(-1, NOP, pos, pTex);
+	pLeftButton = new CMenuButton(pos, pTex);
 	pTex = TextureContainer::Load("graph/interface/menus/menu_slider_button_right");
-	pRightButton = new CMenuButton(-1, NOP, pos, pTex);
+	pRightButton = new CMenuButton(pos, pTex);
 
 	vText.clear();
 
@@ -2742,8 +2742,8 @@ CMenuSlider::CMenuSlider(int _iID, Vec2i pos)
 
 	TextureContainer *pTexL = TextureContainer::Load("graph/interface/menus/menu_slider_button_left");
 	TextureContainer *pTexR = TextureContainer::Load("graph/interface/menus/menu_slider_button_right");
-	pLeftButton = new CMenuButton(-1, NOP, pos, pTexL);
-	pRightButton = new CMenuButton(-1, NOP, pos, pTexR);
+	pLeftButton = new CMenuButton(pos, pTexL);
+	pRightButton = new CMenuButton(pos, pTexR);
 	pTex1 = TextureContainer::Load("graph/interface/menus/menu_slider_on");
 	pTex2 = TextureContainer::Load("graph/interface/menus/menu_slider_off");
 	arx_assert(pTex1);
