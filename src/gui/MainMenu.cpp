@@ -753,38 +753,10 @@ char pNoDef2[]="---";
 #define CUSTOM_CTRL_X1    RATIO_X(150)
 #define CUSTOM_CTRL_X2    RATIO_X(245)
 
-void CUSTOM_CTRL_FUNC(CWindowMenuConsole * console, long & y, const std::string & a, int b, int c, int d, const char * defaultText = "?"){
+void CUSTOM_CTRL_FUNC(CWindowMenuConsole * console, long & y, const std::string & a, int b, int c, int d, const char * defaultText = "?", const char * specialSuffix = ""){
 	CMenuPanel * pc = new CMenuPanel();
 	std::string szMenuText = getLocalised(a, defaultText);
-	CMenuElementText * me = new CMenuElementText(-1, hFontControls, szMenuText, Vec2i(CUSTOM_CTRL_X0, 0), NOP);
-	me->SetCheckOff();
-	pc->AddElement(me);
-	me = new CMenuElementText(c, hFontControls, pNoDef1, Vec2i(CUSTOM_CTRL_X1, 0), NOP);
-	me->eState=GETTOUCH;
-	if((!b)||(c<0))
-	{
-		me->SetCheckOff();
-		((CMenuElementText*)me)->lColor=Color(127,127,127);
-	}
-	pc->AddElement(me);
-	me = new CMenuElementText(d, hFontControls, pNoDef2, Vec2i(CUSTOM_CTRL_X2, 0), NOP);
-	me->eState=GETTOUCH;
-	if(d<0)
-	{
-		me->SetCheckOff();
-		((CMenuElementText*)me)->lColor=Color(127,127,127);
-	}
-	pc->AddElement(me);
-	pc->Move(Vec2i(0, y));
-	console->AddMenu(pc);
-	y += static_cast<long>( pc->rZone.height() + RATIO_Y(3.f) );
-}
-
-
-void CUSTOM_CTRL_FUNC2(CWindowMenuConsole * console, long & y, const std::string & a, int b, int c, int d){
-	CMenuPanel * pc = new CMenuPanel();
-	std::string szMenuText = getLocalised(a, "?");
-	szMenuText += "2";
+	szMenuText += specialSuffix;
 	CMenuElementText * me = new CMenuElementText(-1, hFontControls, szMenuText, Vec2i(CUSTOM_CTRL_X0, 0), NOP);
 	me->SetCheckOff();
 	pc->AddElement(me);
@@ -901,7 +873,7 @@ void MainMenuOptionControlsCreate(Vec2i offset, Vec2i size)
 	CUSTOM_CTRL_FUNC(c, y, "system_menus_options_input_customize_controls_quickload",1, BUTTON_MENUOPTIONS_CONTROLS_CUST_QUICKLOAD, BUTTON_MENUOPTIONS_CONTROLS_CUST_QUICKLOAD2);
 	CUSTOM_CTRL_FUNC(c, y, "system_menus_options_input_customize_controls_quicksave",1, BUTTON_MENUOPTIONS_CONTROLS_CUST_QUICKSAVE, BUTTON_MENUOPTIONS_CONTROLS_CUST_QUICKSAVE2);
 
-	CUSTOM_CTRL_FUNC2(c, y, "system_menus_options_input_customize_controls_bookmap",1, BUTTON_MENUOPTIONS_CONTROLS_CUST_MINIMAP1, BUTTON_MENUOPTIONS_CONTROLS_CUST_MINIMAP2);
+	CUSTOM_CTRL_FUNC(c, y, "system_menus_options_input_customize_controls_bookmap",1, BUTTON_MENUOPTIONS_CONTROLS_CUST_MINIMAP1, BUTTON_MENUOPTIONS_CONTROLS_CUST_MINIMAP2, "?", "2");
 
 	CUSTOM_CTRL_FUNC(c, y, "system_menus_options_input_customize_controls_toggle_fullscreen", 1,  BUTTON_MENUOPTIONS_CONTROLS_CUST_TOGGLE_FULLSCREEN1, BUTTON_MENUOPTIONS_CONTROLS_CUST_TOGGLE_FULLSCREEN2, "Toggle fullscreen");
 
