@@ -694,9 +694,10 @@ void MainMenuOptionInputCreate(Vec2i size, Vec2i offset)
 	{
 	szMenuText = getLocalised("system_menus_options_input_invert_mouse");
 	szMenuText += " ";
+	CMenuElementText * text = new CMenuElementText(-1, hFontMenu, szMenuText, Vec2i(RATIO_X(20), 0), OPTIONS_INPUT);
 	pTex1 = TextureContainer::Load("graph/interface/menus/menu_checkbox_off");
 	pTex2 = TextureContainer::Load("graph/interface/menus/menu_checkbox_on");
-	CMenuCheckButton * cb = new CMenuCheckButton(Vec2i(0, 0), pTex1->m_dwWidth, pTex1, pTex2, new CMenuElementText(-1, hFontMenu, szMenuText, Vec2i(RATIO_X(20), 0), OPTIONS_INPUT));
+	CMenuCheckButton * cb = new CMenuCheckButton(Vec2i(0, 0), pTex1->m_dwWidth, pTex1, pTex2, text);
 	cb->iID = BUTTON_MENUOPTIONS_CONTROLS_INVERTMOUSE;
 	cb->iState = config.input.invertMouse ? 1 : 0;
 	pWindowMenuConsole->AddMenuCenterY(cb);
@@ -705,9 +706,10 @@ void MainMenuOptionInputCreate(Vec2i size, Vec2i offset)
 	{
 	szMenuText = getLocalised("system_menus_options_auto_ready_weapon");
 	szMenuText += " ";
+	CMenuElementText * text = new CMenuElementText(-1, hFontMenu, szMenuText, Vec2i(RATIO_X(20), 0), OPTIONS_INPUT);
 	pTex1 = TextureContainer::Load("graph/interface/menus/menu_checkbox_off");
 	pTex2 = TextureContainer::Load("graph/interface/menus/menu_checkbox_on");
-	CMenuCheckButton * cb = new CMenuCheckButton(Vec2i(0, 0), pTex1->m_dwWidth, pTex1, pTex2, new CMenuElementText(-1, hFontMenu, szMenuText, Vec2i(RATIO_X(20), 0), OPTIONS_INPUT));
+	CMenuCheckButton * cb = new CMenuCheckButton(Vec2i(0, 0), pTex1->m_dwWidth, pTex1, pTex2, text);
 	cb->iID = BUTTON_MENUOPTIONS_CONTROLS_AUTOREADYWEAPON;
 	cb->iState = config.input.autoReadyWeapon ? 1 : 0;
 	pWindowMenuConsole->AddMenuCenterY(cb);
@@ -716,9 +718,10 @@ void MainMenuOptionInputCreate(Vec2i size, Vec2i offset)
 	{
 	szMenuText = getLocalised("system_menus_options_input_mouse_look_toggle");
 	szMenuText += " ";
+	CMenuElementText * text = new CMenuElementText(-1, hFontMenu, szMenuText, Vec2i(RATIO_X(20), 0.f), OPTIONS_INPUT);
 	pTex1 = TextureContainer::Load("graph/interface/menus/menu_checkbox_off");
 	pTex2 = TextureContainer::Load("graph/interface/menus/menu_checkbox_on");
-	CMenuCheckButton * cb = new CMenuCheckButton(Vec2i(0, 0), pTex1->m_dwWidth, pTex1, pTex2, new CMenuElementText(-1, hFontMenu, szMenuText, Vec2i(RATIO_X(20), 0.f), OPTIONS_INPUT));
+	CMenuCheckButton * cb = new CMenuCheckButton(Vec2i(0, 0), pTex1->m_dwWidth, pTex1, pTex2, text);
 	cb->iID = BUTTON_MENUOPTIONS_CONTROLS_MOUSELOOK;
 	cb->iState = config.input.mouseLookToggle ? 1 : 0;
 	pWindowMenuConsole->AddMenuCenterY(cb);
@@ -737,9 +740,10 @@ void MainMenuOptionInputCreate(Vec2i size, Vec2i offset)
 	{
 	szMenuText = getLocalised("system_menus_autodescription", "auto_description");
 	szMenuText += " ";
+	CMenuElementText * text = new CMenuElementText(-1, hFontMenu, szMenuText, Vec2i(RATIO_X(20), 0), OPTIONS_INPUT);
 	pTex1 = TextureContainer::Load("graph/interface/menus/menu_checkbox_off");
 	pTex2 = TextureContainer::Load("graph/interface/menus/menu_checkbox_on");
-	CMenuCheckButton * cb = new CMenuCheckButton(Vec2i(0, 0), pTex1->m_dwWidth, pTex1, pTex2, new CMenuElementText(-1, hFontMenu, szMenuText, Vec2i(RATIO_X(20), 0), OPTIONS_INPUT));
+	CMenuCheckButton * cb = new CMenuCheckButton(Vec2i(0, 0), pTex1->m_dwWidth, pTex1, pTex2, text);
 	cb->iID = BUTTON_MENUOPTIONS_CONTROLS_AUTODESCRIPTION;
 	cb->iState = config.input.autoDescription ? 1 : 0;
 	pWindowMenuConsole->AddMenuCenterY(cb);
