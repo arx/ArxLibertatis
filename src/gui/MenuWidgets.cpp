@@ -2489,7 +2489,9 @@ void CMenuButton::Render() {
 
 	//affichage de la texture
 	if(pTex) {
-		EERIEDrawBitmap2(Rectf(rZone), 0, pTex, Color::white);
+		Color color = (bCheck) ? Color::white : Color::fromBGRA(0xFF3F3F3F);
+		
+		EERIEDrawBitmap2(Rectf(rZone), 0, pTex, color);
 	}
 }
 

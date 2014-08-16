@@ -123,7 +123,7 @@ void Menu2_Render_EditQuest(Vec2i size, Vec2i offset)
 	
 	{
 	pTex = TextureContainer::Load("graph/interface/icons/menu_main_load");
-	CMenuCheckButton * cb = new CMenuCheckButton(Vec2i(0, 0), pTex?pTex->m_dwWidth:0, pTex, NULL, NULL);
+	CMenuButton * cb = new CMenuButton(Vec2i(0, 0), pTex);
 	cb->bCheck = false;
 	pWindowMenuConsole->AddMenuCenter(cb);
 	}
