@@ -434,7 +434,7 @@ private:
 class CMenuCheckButton : public CMenuElement {
 	
 public:
-	CMenuCheckButton(Vec2i pos, CMenuElementText * label);
+	CMenuCheckButton(CMenuElementText * label);
 	virtual ~CMenuCheckButton();
 	
 	void Move(const Vec2i & offset);

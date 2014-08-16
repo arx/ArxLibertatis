@@ -408,7 +408,7 @@ void MainMenuOptionVideoCreate(Vec2i offset, Vec2i size)
 	szMenuText += "  ";
 	CMenuElementText * text = new CMenuElementText(-1, hFontMenu, szMenuText, Vec2i(RATIO_X(20), 0.f), NOP);
 	text->SetCheckOff();
-	CMenuCheckButton * cb = new CMenuCheckButton(Vec2i(0, 0), text);
+	CMenuCheckButton * cb = new CMenuCheckButton(text);
 	cb->iID = BUTTON_MENUOPTIONSVIDEO_FULLSCREEN;
 	cb->iState = config.video.fullscreen ? 1 : 0;
 	pWindowMenuConsole->AddMenuCenterY(cb);
@@ -511,7 +511,7 @@ void MainMenuOptionVideoCreate(Vec2i offset, Vec2i size)
 	szMenuText += " ";
 	CMenuElementText * text = new CMenuElementText(-1, hFontMenu, szMenuText, Vec2i(RATIO_X(20), 0.f), NOP);
 	text->SetCheckOff();
-	CMenuCheckButton * cb = new CMenuCheckButton(Vec2i(0, 0), text);
+	CMenuCheckButton * cb = new CMenuCheckButton(text);
 	cb->iID = BUTTON_MENUOPTIONSVIDEO_CROSSHAIR;
 	cb->iState = config.video.showCrosshair ? 1 : 0;
 	pWindowMenuConsole->AddMenuCenterY(cb);
@@ -522,7 +522,7 @@ void MainMenuOptionVideoCreate(Vec2i offset, Vec2i size)
 	szMenuText += " ";
 	CMenuElementText * text = new CMenuElementText(-1, hFontMenu, szMenuText, Vec2i(RATIO_X(20), 0), NOP);
 	text->SetCheckOff();
-	CMenuCheckButton * cb = new CMenuCheckButton(Vec2i(0, 0), text);
+	CMenuCheckButton * cb = new CMenuCheckButton(text);
 	cb->iID = BUTTON_MENUOPTIONSVIDEO_ANTIALIASING;
 	cb->iState = config.video.antialiasing ? 1 : 0;
 	pWindowMenuConsole->AddMenuCenterY(cb);
@@ -535,7 +535,7 @@ void MainMenuOptionVideoCreate(Vec2i offset, Vec2i size)
 	szMenuText += " ";
 	CMenuElementText * text = new CMenuElementText(-1, hFontMenu, szMenuText, Vec2i(RATIO_X(20), 0), NOP);
 	text->SetCheckOff();
-	CMenuCheckButton * cb = new CMenuCheckButton(Vec2i(0, 0), text);
+	CMenuCheckButton * cb = new CMenuCheckButton(text);
 	cb->iID = BUTTON_MENUOPTIONSVIDEO_VSYNC;
 	cb->iState = config.video.vsync ? 1 : 0;
 	pWindowMenuConsole->AddMenuCenterY(cb);
@@ -645,7 +645,7 @@ void MainMenuOptionAudioCreate(Vec2i offset, Vec2i size)
 	szMenuText = getLocalised("system_menus_options_audio_eax", "EAX");
 	szMenuText += " ";
 	CMenuElementText * text = new CMenuElementText(-1, hFontMenu, szMenuText, Vec2i(RATIO_X(20), 0), OPTIONS_INPUT);
-	CMenuCheckButton * cb = new CMenuCheckButton(Vec2i(0, 0), text);
+	CMenuCheckButton * cb = new CMenuCheckButton(text);
 	cb->iID = BUTTON_MENUOPTIONSAUDIO_EAX;
 	cb->iState = config.audio.eax ? 1 : 0;
 	pWindowMenuConsole->AddMenuCenterY(cb);
@@ -679,7 +679,7 @@ void MainMenuOptionInputCreate(Vec2i size, Vec2i offset)
 	szMenuText = getLocalised("system_menus_options_input_invert_mouse");
 	szMenuText += " ";
 	CMenuElementText * text = new CMenuElementText(-1, hFontMenu, szMenuText, Vec2i(RATIO_X(20), 0), OPTIONS_INPUT);
-	CMenuCheckButton * cb = new CMenuCheckButton(Vec2i(0, 0), text);
+	CMenuCheckButton * cb = new CMenuCheckButton(text);
 	cb->iID = BUTTON_MENUOPTIONS_CONTROLS_INVERTMOUSE;
 	cb->iState = config.input.invertMouse ? 1 : 0;
 	pWindowMenuConsole->AddMenuCenterY(cb);
@@ -689,7 +689,7 @@ void MainMenuOptionInputCreate(Vec2i size, Vec2i offset)
 	szMenuText = getLocalised("system_menus_options_auto_ready_weapon");
 	szMenuText += " ";
 	CMenuElementText * text = new CMenuElementText(-1, hFontMenu, szMenuText, Vec2i(RATIO_X(20), 0), OPTIONS_INPUT);
-	CMenuCheckButton * cb = new CMenuCheckButton(Vec2i(0, 0), text);
+	CMenuCheckButton * cb = new CMenuCheckButton(text);
 	cb->iID = BUTTON_MENUOPTIONS_CONTROLS_AUTOREADYWEAPON;
 	cb->iState = config.input.autoReadyWeapon ? 1 : 0;
 	pWindowMenuConsole->AddMenuCenterY(cb);
@@ -699,7 +699,7 @@ void MainMenuOptionInputCreate(Vec2i size, Vec2i offset)
 	szMenuText = getLocalised("system_menus_options_input_mouse_look_toggle");
 	szMenuText += " ";
 	CMenuElementText * text = new CMenuElementText(-1, hFontMenu, szMenuText, Vec2i(RATIO_X(20), 0.f), OPTIONS_INPUT);
-	CMenuCheckButton * cb = new CMenuCheckButton(Vec2i(0, 0), text);
+	CMenuCheckButton * cb = new CMenuCheckButton(text);
 	cb->iID = BUTTON_MENUOPTIONS_CONTROLS_MOUSELOOK;
 	cb->iState = config.input.mouseLookToggle ? 1 : 0;
 	pWindowMenuConsole->AddMenuCenterY(cb);
@@ -719,7 +719,7 @@ void MainMenuOptionInputCreate(Vec2i size, Vec2i offset)
 	szMenuText = getLocalised("system_menus_autodescription", "auto_description");
 	szMenuText += " ";
 	CMenuElementText * text = new CMenuElementText(-1, hFontMenu, szMenuText, Vec2i(RATIO_X(20), 0), OPTIONS_INPUT);
-	CMenuCheckButton * cb = new CMenuCheckButton(Vec2i(0, 0), text);
+	CMenuCheckButton * cb = new CMenuCheckButton(text);
 	cb->iID = BUTTON_MENUOPTIONS_CONTROLS_AUTODESCRIPTION;
 	cb->iState = config.input.autoDescription ? 1 : 0;
 	pWindowMenuConsole->AddMenuCenterY(cb);
