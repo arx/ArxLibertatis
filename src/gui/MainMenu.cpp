@@ -449,14 +449,14 @@ void MainMenuOptionVideoCreate(Vec2i offset, Vec2i size)
 			ss << " (" << aspect.x << ':' << aspect.y << ')';
 		}
 		
-		pMenuSliderResol->AddText(new CMenuElementText(-1, hFontMenu, ss.str(), Vec2i(0, 0), MENUSTATE(OPTIONS_VIDEO_RESOLUTION_0 + i)));
+		pMenuSliderResol->AddText(new CMenuElementText(-1, hFontMenu, ss.str(), Vec2i(0, 0), NOP));
 		
 		if(mode.resolution == config.video.resolution) {
 			pMenuSliderResol->selectLast();
 		}
 	}
 	
-	pMenuSliderResol->AddText(new CMenuElementText(-1, hFontMenu, AUTO_RESOLUTION_STRING, Vec2i(0, 0), MENUSTATE(OPTIONS_VIDEO_RESOLUTION_0 + modes.size())));
+	pMenuSliderResol->AddText(new CMenuElementText(-1, hFontMenu, AUTO_RESOLUTION_STRING, Vec2i(0, 0), NOP));
 	
 	if(config.video.resolution == Vec2i_ZERO) {
 		pMenuSliderResol->selectLast();
@@ -603,7 +603,7 @@ void MainMenuOptionAudioCreate(Vec2i offset, Vec2i size)
 	
 	pc = new CMenuPanel();
 	szMenuText = getLocalised("system_menus_options_audio_master_volume");
-	me = new CMenuElementText(-1, hFontMenu, szMenuText, Vec2i(RATIO_X(20), 0.f), OPTIONS_AUDIO_VOLUME);
+	me = new CMenuElementText(-1, hFontMenu, szMenuText, Vec2i(RATIO_X(20), 0.f), NOP);
 	me->SetCheckOff();
 	pc->AddElement(me);
 	me = new CMenuSlider(BUTTON_MENUOPTIONSAUDIO_MASTER, Vec2i(RATIO_X(200), 0));
