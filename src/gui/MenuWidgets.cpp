@@ -1305,9 +1305,16 @@ void CMenuAllZone::DrawZone()
 	GRenderer->SetRenderState(Renderer::AlphaBlending, false);
 }
 
-CMenuCheckButton::CMenuCheckButton(Vec2i pos, int _iTaille, TextureContainer *_pTex1, TextureContainer *_pTex2, CMenuElementText *_pText)
+CMenuCheckButton::CMenuCheckButton(Vec2i pos, CMenuElementText *_pText)
 	:CMenuElement(NOP)
 {
+	TextureContainer *_pTex1 = TextureContainer::Load("graph/interface/menus/menu_checkbox_off");
+	TextureContainer *_pTex2 = TextureContainer::Load("graph/interface/menus/menu_checkbox_on");
+	arx_assert(_pTex1);
+	arx_assert(_pTex2);
+	
+	int _iTaille = _pTex1->m_dwWidth;
+	
 	iID = -1;
 	iState    = 0;
 	iOldState = -1;
