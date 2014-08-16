@@ -107,7 +107,7 @@ void Menu2_Render_EditQuest(Vec2i size, Vec2i offset)
 	
 	{
 	pTex = TextureContainer::Load("graph/interface/menus/back");
-	CMenuCheckButton * cb = new CMenuCheckButton(RATIO_2(Vec2i(10, 190)), pTex?pTex->m_dwWidth:0, pTex, NULL, NULL);
+	CMenuButton * cb = new CMenuButton(RATIO_2(Vec2i(20, 380)), pTex);
 	cb->eMenuState = MAIN;
 	cb->SetShortCut(Keyboard::Key_Escape);
 	pWindowMenuConsole->AddMenu(cb);

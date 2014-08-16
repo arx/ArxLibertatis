@@ -2497,8 +2497,18 @@ void CMenuButton::RenderMouseOver() {
 
 	if(bNoMenu)
 		return;
-
+	
 	pMenuCursor->SetMouseOver();
+	
+	const Vec2i cursor = Vec2i(GInput->getMousePosAbs());
+	if(rZone.contains(cursor)) {
+		GRenderer->SetRenderState(Renderer::AlphaBlending, true);
+		GRenderer->SetBlendFunc(Renderer::BlendOne, Renderer::BlendOne);
+		
+		Render();
+		
+		GRenderer->SetRenderState(Renderer::AlphaBlending, false);
+	}
 }
 
 CMenuSliderText::CMenuSliderText(int _iID, Vec2i pos)
