@@ -1305,10 +1305,10 @@ void CMenuAllZone::DrawZone()
 	GRenderer->SetRenderState(Renderer::AlphaBlending, false);
 }
 
-CMenuCheckButton::CMenuCheckButton(int _iID, Vec2i pos, int _iTaille, TextureContainer *_pTex1, TextureContainer *_pTex2, CMenuElementText *_pText)
+CMenuCheckButton::CMenuCheckButton(Vec2i pos, int _iTaille, TextureContainer *_pTex1, TextureContainer *_pTex2, CMenuElementText *_pText)
 	:CMenuElement(NOP)
 {
-	iID = _iID;
+	iID = -1;
 	iState    = 0;
 	iOldState = -1;
 

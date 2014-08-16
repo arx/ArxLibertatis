@@ -434,7 +434,7 @@ private:
 class CMenuCheckButton : public CMenuElement {
 	
 public:
-	CMenuCheckButton(int id, Vec2i pos, int size, TextureContainer * tex1,
+	CMenuCheckButton(Vec2i pos, int size, TextureContainer * tex1,
 					 TextureContainer * tex2, CMenuElementText * label = NULL); 
 	virtual ~CMenuCheckButton();
 	

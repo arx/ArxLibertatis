@@ -107,7 +107,7 @@ void Menu2_Render_EditQuest(Vec2i size, Vec2i offset)
 	
 	{
 	pTex = TextureContainer::Load("graph/interface/menus/back");
-	CMenuCheckButton * cb = new CMenuCheckButton(-1, RATIO_2(Vec2i(10, 190)), pTex?pTex->m_dwWidth:0, pTex, NULL, NULL);
+	CMenuCheckButton * cb = new CMenuCheckButton(RATIO_2(Vec2i(10, 190)), pTex?pTex->m_dwWidth:0, pTex, NULL, NULL);
 	cb->eMenuState = MAIN;
 	cb->SetShortCut(Keyboard::Key_Escape);
 	pWindowMenuConsole->AddMenu(cb);
@@ -123,7 +123,7 @@ void Menu2_Render_EditQuest(Vec2i size, Vec2i offset)
 	
 	{
 	pTex = TextureContainer::Load("graph/interface/icons/menu_main_load");
-	CMenuCheckButton * cb = new CMenuCheckButton(-1, Vec2i(0, 0), pTex?pTex->m_dwWidth:0, pTex, NULL, NULL);
+	CMenuCheckButton * cb = new CMenuCheckButton(Vec2i(0, 0), pTex?pTex->m_dwWidth:0, pTex, NULL, NULL);
 	cb->bCheck = false;
 	pWindowMenuConsole->AddMenuCenter(cb);
 	}
@@ -198,7 +198,7 @@ void Menu2_Render_EditQuest(Vec2i size, Vec2i offset)
 		{
 		CMenuPanel *pc = new CMenuPanel();
 		pTex = TextureContainer::Load("graph/interface/menus/back");
-		CMenuCheckButton * cb = new CMenuCheckButton(-1, RATIO_2(Vec2i(10, 190)) + Vec2i(0, RATIO_Y(20)), pTex?pTex->m_dwWidth:0, pTex, NULL, NULL);
+		CMenuCheckButton * cb = new CMenuCheckButton(RATIO_2(Vec2i(10, 190)) + Vec2i(0, RATIO_Y(20)), pTex?pTex->m_dwWidth:0, pTex, NULL, NULL);
 		cb->eMenuState = EDIT_QUEST;
 		cb->SetShortCut(Keyboard::Key_Escape);
 		pc->AddElementNoCenterIn(cb);
@@ -213,7 +213,7 @@ void Menu2_Render_EditQuest(Vec2i size, Vec2i offset)
 
 	{
 	pTex = TextureContainer::Load("graph/interface/icons/menu_main_save");
-	CMenuCheckButton * cb = new CMenuCheckButton(-1, Vec2i(RATIO_X(10), 0), pTex?pTex->m_dwWidth:0, pTex, NULL, NULL);
+	CMenuCheckButton * cb = new CMenuCheckButton(Vec2i(RATIO_X(10), 0), pTex?pTex->m_dwWidth:0, pTex, NULL, NULL);
 	cb->bCheck = false;
 	pWindowMenuConsole->AddMenuCenter(cb);
 	}
@@ -274,7 +274,7 @@ void Menu2_Render_EditQuest(Vec2i size, Vec2i offset)
 	
 	{
 	pTex = TextureContainer::Load("graph/interface/menus/back");
-	CMenuCheckButton * cb = new CMenuCheckButton(-1, RATIO_2(Vec2i(10, 190)) + Vec2i(0, RATIO_Y(20)), pTex?pTex->m_dwWidth:0, pTex, NULL, NULL);
+	CMenuCheckButton * cb = new CMenuCheckButton(RATIO_2(Vec2i(10, 190)) + Vec2i(0, RATIO_Y(20)), pTex?pTex->m_dwWidth:0, pTex, NULL, NULL);
 	cb->eMenuState = EDIT_QUEST;
 	cb->SetShortCut(Keyboard::Key_Escape);
 	pWindowMenuConsole->AddMenu(cb);
@@ -288,7 +288,7 @@ void Menu2_Render_EditQuest(Vec2i size, Vec2i offset)
 	
 	{
 	pTex = TextureContainer::Load("graph/interface/icons/menu_main_save");
-	CMenuCheckButton * cb = new CMenuCheckButton(-1, Vec2i(0, 0), pTex?pTex->m_dwWidth:0, pTex, NULL, NULL);
+	CMenuCheckButton * cb = new CMenuCheckButton(Vec2i(0, 0), pTex?pTex->m_dwWidth:0, pTex, NULL, NULL);
 	cb->bCheck = false;
 	pWindowMenuConsole->AddMenuCenter(cb);
 	}
@@ -321,7 +321,7 @@ void Menu2_Render_EditQuest(Vec2i size, Vec2i offset)
 	// Back button
 	{
 	pTex = TextureContainer::Load("graph/interface/menus/back");
-	CMenuCheckButton * cb = new CMenuCheckButton(-1, RATIO_2(Vec2i(10, 190)), pTex?pTex->m_dwWidth:0, pTex, NULL, NULL);
+	CMenuCheckButton * cb = new CMenuCheckButton(RATIO_2(Vec2i(10, 190)), pTex?pTex->m_dwWidth:0, pTex, NULL, NULL);
 	cb->eMenuState = EDIT_QUEST_SAVE;
 	cb->SetShortCut(Keyboard::Key_Escape);
 	pPanel->AddElementNoCenterIn(cb);
@@ -354,7 +354,7 @@ void MainMenuOptionGroupsCreate(Vec2i size, Vec2i offset)
 	
 	{
 	pTex = TextureContainer::Load("graph/interface/menus/back");
-	CMenuCheckButton * cb = new CMenuCheckButton(-1, RATIO_2(Vec2i(10, 190)), pTex?pTex->m_dwWidth:0, pTex, NULL, NULL);
+	CMenuCheckButton * cb = new CMenuCheckButton(RATIO_2(Vec2i(10, 190)), pTex?pTex->m_dwWidth:0, pTex, NULL, NULL);
 	cb->eMenuState = MAIN;
 	cb->SetShortCut(Keyboard::Key_Escape);
 	pWindowMenuConsole->AddMenu(cb);
@@ -412,7 +412,8 @@ void MainMenuOptionVideoCreate(Vec2i offset, Vec2i size)
 	metemp->SetCheckOff();
 	TextureContainer *pTex1 = TextureContainer::Load("graph/interface/menus/menu_checkbox_off");
 	TextureContainer *pTex2 = TextureContainer::Load("graph/interface/menus/menu_checkbox_on");
-	CMenuCheckButton * cb = new CMenuCheckButton(BUTTON_MENUOPTIONSVIDEO_FULLSCREEN, Vec2i(0, 0), pTex1->m_dwWidth, pTex1, pTex2, metemp);
+	CMenuCheckButton * cb = new CMenuCheckButton(Vec2i(0, 0), pTex1->m_dwWidth, pTex1, pTex2, metemp);
+	cb->iID = BUTTON_MENUOPTIONSVIDEO_FULLSCREEN;
 	cb->iState = config.video.fullscreen ? 1 : 0;
 	pWindowMenuConsole->AddMenuCenterY(cb);
 	fullscreenCheckbox = cb;
@@ -516,7 +517,8 @@ void MainMenuOptionVideoCreate(Vec2i offset, Vec2i size)
 	metemp->SetCheckOff();
 	TextureContainer *pTex1 = TextureContainer::Load("graph/interface/menus/menu_checkbox_off");
 	TextureContainer *pTex2 = TextureContainer::Load("graph/interface/menus/menu_checkbox_on");
-	CMenuCheckButton * cb = new CMenuCheckButton(BUTTON_MENUOPTIONSVIDEO_CROSSHAIR, Vec2i(0, 0), pTex1->m_dwWidth, pTex1, pTex2, metemp);
+	CMenuCheckButton * cb = new CMenuCheckButton(Vec2i(0, 0), pTex1->m_dwWidth, pTex1, pTex2, metemp);
+	cb->iID = BUTTON_MENUOPTIONSVIDEO_CROSSHAIR;
 	cb->iState = config.video.showCrosshair ? 1 : 0;
 	pWindowMenuConsole->AddMenuCenterY(cb);
 	}
@@ -528,7 +530,8 @@ void MainMenuOptionVideoCreate(Vec2i offset, Vec2i size)
 	TextureContainer *pTex2 = TextureContainer::Load("graph/interface/menus/menu_checkbox_on");
 	CMenuElementText * metemp = new CMenuElementText(-1, hFontMenu, szMenuText, Vec2i(RATIO_X(20), 0), NOP);
 	metemp->SetCheckOff();
-	CMenuCheckButton * cb = new CMenuCheckButton(BUTTON_MENUOPTIONSVIDEO_ANTIALIASING, Vec2i(0, 0), pTex1->m_dwWidth, pTex1, pTex2, metemp);
+	CMenuCheckButton * cb = new CMenuCheckButton(Vec2i(0, 0), pTex1->m_dwWidth, pTex1, pTex2, metemp);
+	cb->iID = BUTTON_MENUOPTIONSVIDEO_ANTIALIASING;
 	cb->iState = config.video.antialiasing ? 1 : 0;
 	pWindowMenuConsole->AddMenuCenterY(cb);
 	}
@@ -542,7 +545,8 @@ void MainMenuOptionVideoCreate(Vec2i offset, Vec2i size)
 	TextureContainer *pTex2 = TextureContainer::Load("graph/interface/menus/menu_checkbox_on");
 	CMenuElementText * metemp = new CMenuElementText(-1, hFontMenu, szMenuText, Vec2i(RATIO_X(20), 0), NOP);
 	metemp->SetCheckOff();
-	CMenuCheckButton * cb = new CMenuCheckButton(BUTTON_MENUOPTIONSVIDEO_VSYNC, Vec2i(0, 0), pTex1->m_dwWidth, pTex1, pTex2, metemp);
+	CMenuCheckButton * cb = new CMenuCheckButton(Vec2i(0, 0), pTex1->m_dwWidth, pTex1, pTex2, metemp);
+	cb->iID = BUTTON_MENUOPTIONSVIDEO_VSYNC;
 	cb->iState = config.video.vsync ? 1 : 0;
 	pWindowMenuConsole->AddMenuCenterY(cb);
 	}
@@ -559,7 +563,8 @@ void MainMenuOptionVideoCreate(Vec2i offset, Vec2i size)
 	
 	{
 	pTex = TextureContainer::Load("graph/interface/menus/back");
-	CMenuCheckButton * cb = new CMenuCheckButton(BUTTON_MENUOPTIONSVIDEO_BACK, RATIO_2(Vec2i(10, 190)) + Vec2i(0, RATIO_Y(20)), pTex?pTex->m_dwWidth:0, pTex, NULL, NULL);
+	CMenuCheckButton * cb = new CMenuCheckButton(RATIO_2(Vec2i(10, 190)) + Vec2i(0, RATIO_Y(20)), pTex?pTex->m_dwWidth:0, pTex, NULL, NULL);
+	cb->iID = BUTTON_MENUOPTIONSVIDEO_BACK;
 	cb->eMenuState = OPTIONS;
 	cb->SetShortCut(Keyboard::Key_Escape);
 	pc->AddElementNoCenterIn(cb);
@@ -654,14 +659,15 @@ void MainMenuOptionAudioCreate(Vec2i offset, Vec2i size)
 	pTex1 = TextureContainer::Load("graph/interface/menus/menu_checkbox_off");
 	pTex2 = TextureContainer::Load("graph/interface/menus/menu_checkbox_on");
 	CMenuElementText * pElementText = new CMenuElementText(-1, hFontMenu, szMenuText, Vec2i(RATIO_X(20), 0), OPTIONS_INPUT);
-	CMenuCheckButton * cb = new CMenuCheckButton(BUTTON_MENUOPTIONSAUDIO_EAX, Vec2i(0, 0), pTex1->m_dwWidth, pTex1, pTex2, pElementText);
+	CMenuCheckButton * cb = new CMenuCheckButton(Vec2i(0, 0), pTex1->m_dwWidth, pTex1, pTex2, pElementText);
+	cb->iID = BUTTON_MENUOPTIONSAUDIO_EAX;
 	cb->iState = config.audio.eax ? 1 : 0;
 	pWindowMenuConsole->AddMenuCenterY(cb);
 	}
 	
 	{
 	pTex = TextureContainer::Load("graph/interface/menus/back");
-	CMenuCheckButton * cb = new CMenuCheckButton(-1, RATIO_2(Vec2i(10, 190)), pTex?pTex->m_dwWidth:0, pTex, NULL, NULL);
+	CMenuCheckButton * cb = new CMenuCheckButton(RATIO_2(Vec2i(10, 190)), pTex?pTex->m_dwWidth:0, pTex, NULL, NULL);
 	cb->eMenuState = OPTIONS;
 	cb->SetShortCut(Keyboard::Key_Escape);
 	pWindowMenuConsole->AddMenu(cb);
@@ -690,7 +696,8 @@ void MainMenuOptionInputCreate(Vec2i size, Vec2i offset)
 	szMenuText += " ";
 	pTex1 = TextureContainer::Load("graph/interface/menus/menu_checkbox_off");
 	pTex2 = TextureContainer::Load("graph/interface/menus/menu_checkbox_on");
-	CMenuCheckButton * cb = new CMenuCheckButton(BUTTON_MENUOPTIONS_CONTROLS_INVERTMOUSE, Vec2i(0, 0), pTex1->m_dwWidth, pTex1, pTex2, new CMenuElementText(-1, hFontMenu, szMenuText, Vec2i(RATIO_X(20), 0), OPTIONS_INPUT));
+	CMenuCheckButton * cb = new CMenuCheckButton(Vec2i(0, 0), pTex1->m_dwWidth, pTex1, pTex2, new CMenuElementText(-1, hFontMenu, szMenuText, Vec2i(RATIO_X(20), 0), OPTIONS_INPUT));
+	cb->iID = BUTTON_MENUOPTIONS_CONTROLS_INVERTMOUSE;
 	cb->iState = config.input.invertMouse ? 1 : 0;
 	pWindowMenuConsole->AddMenuCenterY(cb);
 	}
@@ -700,7 +707,8 @@ void MainMenuOptionInputCreate(Vec2i size, Vec2i offset)
 	szMenuText += " ";
 	pTex1 = TextureContainer::Load("graph/interface/menus/menu_checkbox_off");
 	pTex2 = TextureContainer::Load("graph/interface/menus/menu_checkbox_on");
-	CMenuCheckButton * cb = new CMenuCheckButton(BUTTON_MENUOPTIONS_CONTROLS_AUTOREADYWEAPON, Vec2i(0, 0), pTex1->m_dwWidth, pTex1, pTex2, new CMenuElementText(-1, hFontMenu, szMenuText, Vec2i(RATIO_X(20), 0), OPTIONS_INPUT));
+	CMenuCheckButton * cb = new CMenuCheckButton(Vec2i(0, 0), pTex1->m_dwWidth, pTex1, pTex2, new CMenuElementText(-1, hFontMenu, szMenuText, Vec2i(RATIO_X(20), 0), OPTIONS_INPUT));
+	cb->iID = BUTTON_MENUOPTIONS_CONTROLS_AUTOREADYWEAPON;
 	cb->iState = config.input.autoReadyWeapon ? 1 : 0;
 	pWindowMenuConsole->AddMenuCenterY(cb);
 	}
@@ -710,7 +718,8 @@ void MainMenuOptionInputCreate(Vec2i size, Vec2i offset)
 	szMenuText += " ";
 	pTex1 = TextureContainer::Load("graph/interface/menus/menu_checkbox_off");
 	pTex2 = TextureContainer::Load("graph/interface/menus/menu_checkbox_on");
-	CMenuCheckButton * cb = new CMenuCheckButton(BUTTON_MENUOPTIONS_CONTROLS_MOUSELOOK, Vec2i(0, 0), pTex1->m_dwWidth, pTex1, pTex2, new CMenuElementText(-1, hFontMenu, szMenuText, Vec2i(RATIO_X(20), 0.f), OPTIONS_INPUT));
+	CMenuCheckButton * cb = new CMenuCheckButton(Vec2i(0, 0), pTex1->m_dwWidth, pTex1, pTex2, new CMenuElementText(-1, hFontMenu, szMenuText, Vec2i(RATIO_X(20), 0.f), OPTIONS_INPUT));
+	cb->iID = BUTTON_MENUOPTIONS_CONTROLS_MOUSELOOK;
 	cb->iState = config.input.mouseLookToggle ? 1 : 0;
 	pWindowMenuConsole->AddMenuCenterY(cb);
 	}
@@ -730,7 +739,8 @@ void MainMenuOptionInputCreate(Vec2i size, Vec2i offset)
 	szMenuText += " ";
 	pTex1 = TextureContainer::Load("graph/interface/menus/menu_checkbox_off");
 	pTex2 = TextureContainer::Load("graph/interface/menus/menu_checkbox_on");
-	CMenuCheckButton * cb = new CMenuCheckButton(BUTTON_MENUOPTIONS_CONTROLS_AUTODESCRIPTION, Vec2i(0, 0), pTex1->m_dwWidth, pTex1, pTex2, new CMenuElementText(-1, hFontMenu, szMenuText, Vec2i(RATIO_X(20), 0), OPTIONS_INPUT));
+	CMenuCheckButton * cb = new CMenuCheckButton(Vec2i(0, 0), pTex1->m_dwWidth, pTex1, pTex2, new CMenuElementText(-1, hFontMenu, szMenuText, Vec2i(RATIO_X(20), 0), OPTIONS_INPUT));
+	cb->iID = BUTTON_MENUOPTIONS_CONTROLS_AUTODESCRIPTION;
 	cb->iState = config.input.autoDescription ? 1 : 0;
 	pWindowMenuConsole->AddMenuCenterY(cb);
 	}
@@ -747,7 +757,7 @@ void MainMenuOptionInputCreate(Vec2i size, Vec2i offset)
 	
 	{
 	pTex = TextureContainer::Load("graph/interface/menus/back");
-	CMenuCheckButton * cb = new CMenuCheckButton(-1, RATIO_2(Vec2i(10, 190)), pTex?pTex->m_dwWidth:0, pTex, NULL, NULL);
+	CMenuCheckButton * cb = new CMenuCheckButton(RATIO_2(Vec2i(10, 190)), pTex?pTex->m_dwWidth:0, pTex, NULL, NULL);
 	cb->eMenuState = OPTIONS;
 	cb->SetShortCut(Keyboard::Key_Escape);
 	pWindowMenuConsole->AddMenu(cb);
@@ -885,7 +895,8 @@ char pNoDef2[]="---";
 	
 	{
 	pTex = TextureContainer::Load("graph/interface/menus/back");
-	CMenuCheckButton * cb = new CMenuCheckButton(BUTTON_MENUOPTIONS_CONTROLS_CUST_BACK, RATIO_2(Vec2i(10, 190)), pTex?pTex->m_dwWidth:0, pTex, NULL, NULL);
+	CMenuCheckButton * cb = new CMenuCheckButton(RATIO_2(Vec2i(10, 190)), pTex?pTex->m_dwWidth:0, pTex, NULL, NULL);
+	cb->iID = BUTTON_MENUOPTIONS_CONTROLS_CUST_BACK;
 	cb->eMenuState = OPTIONS_INPUT;
 	cb->SetShortCut(Keyboard::Key_Escape);
 	pc->AddElementNoCenterIn(cb);
@@ -898,7 +909,8 @@ char pNoDef2[]="---";
 	
 	{
 	pTex = TextureContainer::Load("graph/interface/menus/next");
-	CMenuCheckButton * cb = new CMenuCheckButton(BUTTON_MENUOPTIONS_CONTROLS_CUST_BACK, RATIO_2(Vec2i(140, 190)), pTex?pTex->m_dwWidth:0, pTex, NULL, NULL);
+	CMenuCheckButton * cb = new CMenuCheckButton(RATIO_2(Vec2i(140, 190)), pTex?pTex->m_dwWidth:0, pTex, NULL, NULL);
+	cb->iID = BUTTON_MENUOPTIONS_CONTROLS_CUST_BACK;
 	cb->eMenuState = OPTIONS_INPUT_CUSTOMIZE_KEYS_2;
 	cb->SetShortCut(Keyboard::Key_Escape);
 	pc->AddElementNoCenterIn(cb);
@@ -944,7 +956,8 @@ char pNoDef2[]="---";
 
 	{
 	pTex = TextureContainer::Load("graph/interface/menus/back");
-	CMenuCheckButton * cb = new CMenuCheckButton(BUTTON_MENUOPTIONS_CONTROLS_CUST_BACK, RATIO_2(Vec2i(10, 190)), pTex?pTex->m_dwWidth:0, pTex, NULL, NULL);
+	CMenuCheckButton * cb = new CMenuCheckButton(RATIO_2(Vec2i(10, 190)), pTex?pTex->m_dwWidth:0, pTex, NULL, NULL);
+	cb->iID = BUTTON_MENUOPTIONS_CONTROLS_CUST_BACK;
 	cb->eMenuState = OPTIONS_INPUT_CUSTOMIZE_KEYS_1;
 	cb->SetShortCut(Keyboard::Key_Escape);
 	pc->AddElementNoCenterIn(cb);
