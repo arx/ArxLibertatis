@@ -771,11 +771,6 @@ void CUSTOM_CTRL_FUNC(CWindowMenuConsole * console, long & y, const std::string 
 
 void MainMenuOptionControlsCreatePage1(Vec2i size, Vec2i offset) {
 	
-	std::string szMenuText;
-	CMenuElement *me;
-	CMenuPanel *pc;
-	TextureContainer *pTex;
-	
 	long y = static_cast<long>(RATIO_Y(8.f));
 
 	CWindowMenuConsole * c=new CWindowMenuConsole(offset, size, OPTIONS_INPUT_CUSTOMIZE_KEYS_1);
@@ -803,11 +798,11 @@ void MainMenuOptionControlsCreatePage1(Vec2i size, Vec2i offset) {
 	CUSTOM_CTRL_FUNC(c, y, "system_menus_options_input_customize_controls_turn_right", BUTTON_MENUOPTIONS_CONTROLS_CUST_TURNRIGHT1, BUTTON_MENUOPTIONS_CONTROLS_CUST_TURNRIGHT2);
 	CUSTOM_CTRL_FUNC(c, y, "system_menus_options_input_customize_controls_look_up", BUTTON_MENUOPTIONS_CONTROLS_CUST_LOOKUP1, BUTTON_MENUOPTIONS_CONTROLS_CUST_LOOKUP2);
 	CUSTOM_CTRL_FUNC(c, y, "system_menus_options_input_customize_controls_look_down", BUTTON_MENUOPTIONS_CONTROLS_CUST_LOOKDOWN1, BUTTON_MENUOPTIONS_CONTROLS_CUST_LOOKDOWN2);
-
-	pc=new CMenuPanel();
+	
+	CMenuPanel * pc = new CMenuPanel();
 	
 	{
-	pTex = TextureContainer::Load("graph/interface/menus/back");
+	TextureContainer * pTex = TextureContainer::Load("graph/interface/menus/back");
 	CMenuButton * cb = new CMenuButton(RATIO_2(Vec2i(20, 380)), pTex);
 	cb->iID = BUTTON_MENUOPTIONS_CONTROLS_CUST_BACK;
 	cb->eMenuState = OPTIONS_INPUT;
@@ -815,13 +810,15 @@ void MainMenuOptionControlsCreatePage1(Vec2i size, Vec2i offset) {
 	pc->AddElementNoCenterIn(cb);
 	}
 	
-	szMenuText = getLocalised( "system_menus_options_input_customize_default" );
-	me = new CMenuElementText(BUTTON_MENUOPTIONS_CONTROLS_CUST_DEFAULT, hFontMenu, szMenuText, Vec2i(0, 0), NOP);
+	{
+	std::string szMenuText = getLocalised( "system_menus_options_input_customize_default" );
+	CMenuElementText * me = new CMenuElementText(BUTTON_MENUOPTIONS_CONTROLS_CUST_DEFAULT, hFontMenu, szMenuText, Vec2i(0, 0), NOP);
 	me->SetPos(Vec2i((RATIO_X(size.x) - me->rZone.width())*0.5f, RATIO_Y(380)));
 	pc->AddElementNoCenterIn(me);
+	}
 	
 	{
-	pTex = TextureContainer::Load("graph/interface/menus/next");
+	TextureContainer * pTex = TextureContainer::Load("graph/interface/menus/next");
 	CMenuButton * cb = new CMenuButton(RATIO_2(Vec2i(280, 380)), pTex);
 	cb->iID = BUTTON_MENUOPTIONS_CONTROLS_CUST_BACK;
 	cb->eMenuState = OPTIONS_INPUT_CUSTOMIZE_KEYS_2;
@@ -836,11 +833,6 @@ void MainMenuOptionControlsCreatePage1(Vec2i size, Vec2i offset) {
 }
 
 void MainMenuOptionControlsCreatePage2(Vec2i size, Vec2i offset) {
-	
-	std::string szMenuText;
-	CMenuElement *me;
-	CMenuPanel *pc;
-	TextureContainer *pTex;
 	
 	CWindowMenuConsole * c=new CWindowMenuConsole(offset, size, OPTIONS_INPUT_CUSTOMIZE_KEYS_2);
 
@@ -873,11 +865,11 @@ void MainMenuOptionControlsCreatePage2(Vec2i size, Vec2i offset) {
 	CUSTOM_CTRL_FUNC(c, y, "system_menus_options_input_customize_controls_bookmap", BUTTON_MENUOPTIONS_CONTROLS_CUST_MINIMAP1, BUTTON_MENUOPTIONS_CONTROLS_CUST_MINIMAP2, "?", "2");
 
 	CUSTOM_CTRL_FUNC(c, y, "system_menus_options_input_customize_controls_toggle_fullscreen", BUTTON_MENUOPTIONS_CONTROLS_CUST_TOGGLE_FULLSCREEN1, BUTTON_MENUOPTIONS_CONTROLS_CUST_TOGGLE_FULLSCREEN2, "Toggle fullscreen");
-
-	pc=new CMenuPanel();
-
+	
+	CMenuPanel * pc = new CMenuPanel();
+	
 	{
-	pTex = TextureContainer::Load("graph/interface/menus/back");
+	TextureContainer * pTex = TextureContainer::Load("graph/interface/menus/back");
 	CMenuButton * cb = new CMenuButton(RATIO_2(Vec2i(20, 380)), pTex);
 	cb->iID = BUTTON_MENUOPTIONS_CONTROLS_CUST_BACK;
 	cb->eMenuState = OPTIONS_INPUT_CUSTOMIZE_KEYS_1;
@@ -885,10 +877,12 @@ void MainMenuOptionControlsCreatePage2(Vec2i size, Vec2i offset) {
 	pc->AddElementNoCenterIn(cb);
 	}
 	
-	szMenuText = getLocalised( "system_menus_options_input_customize_default" );
-	me = new CMenuElementText(BUTTON_MENUOPTIONS_CONTROLS_CUST_DEFAULT, hFontMenu, szMenuText, Vec2i(0, 0), NOP);
+	{
+	std::string szMenuText = getLocalised( "system_menus_options_input_customize_default" );
+	CMenuElementText * me = new CMenuElementText(BUTTON_MENUOPTIONS_CONTROLS_CUST_DEFAULT, hFontMenu, szMenuText, Vec2i(0, 0), NOP);
 	me->SetPos(Vec2i((RATIO_X(size.x) - me->rZone.width())*0.5f, RATIO_Y(380)));
 	pc->AddElementNoCenterIn(me);
+	}
 
 	c->AddMenu(pc);
 
