@@ -769,8 +769,8 @@ void CUSTOM_CTRL_FUNC(CWindowMenuConsole * console, long & y, const std::string 
 	y += pc->rZone.height() + RATIO_Y(3.f);
 }
 
-void MainMenuOptionControlsCreate(Vec2i offset, Vec2i size)
-{
+void MainMenuOptionControlsCreatePage1(Vec2i size, Vec2i offset) {
+	
 	std::string szMenuText;
 	CMenuElement *me;
 	CMenuPanel *pc;
@@ -833,10 +833,19 @@ void MainMenuOptionControlsCreate(Vec2i offset, Vec2i size)
 
 	pWindowMenu->AddConsole(c);
 	c->ReInitActionKey();
+}
 
-	c=new CWindowMenuConsole(offset, size, OPTIONS_INPUT_CUSTOMIZE_KEYS_2);
+void MainMenuOptionControlsCreatePage2(Vec2i size, Vec2i offset) {
+	
+	std::string szMenuText;
+	CMenuElement *me;
+	CMenuPanel *pc;
+	TextureContainer *pTex;
+	
+	CWindowMenuConsole * c=new CWindowMenuConsole(offset, size, OPTIONS_INPUT_CUSTOMIZE_KEYS_2);
 
-	y = static_cast<long>(RATIO_Y(8.f));
+	long y = static_cast<long>(RATIO_Y(8.f));
+	
 	CUSTOM_CTRL_FUNC(c, y, "system_menus_options_input_customize_controls_inventory", BUTTON_MENUOPTIONS_CONTROLS_CUST_INVENTORY1, BUTTON_MENUOPTIONS_CONTROLS_CUST_INVENTORY2);
 	CUSTOM_CTRL_FUNC(c, y, "system_menus_options_input_customize_controls_book", BUTTON_MENUOPTIONS_CONTROLS_CUST_BOOK1, BUTTON_MENUOPTIONS_CONTROLS_CUST_BOOK2);
 	CUSTOM_CTRL_FUNC(c, y, "system_menus_options_input_customize_controls_bookcharsheet", BUTTON_MENUOPTIONS_CONTROLS_CUST_BOOKCHARSHEET1, BUTTON_MENUOPTIONS_CONTROLS_CUST_BOOKCHARSHEET2);
@@ -893,9 +902,10 @@ void Menu2_Render_Options(Vec2i size, Vec2i offset)
 	MainMenuOptionVideoCreate(offset, size);
 	MainMenuOptionAudioCreate(offset, size);
 	MainMenuOptionInputCreate(size, offset);
-	MainMenuOptionControlsCreate(offset, size);
+	MainMenuOptionControlsCreatePage1(size, offset);
+	MainMenuOptionControlsCreatePage2(size, offset);
 	
-	pWindowMenu->eCurrentMenuState=OPTIONS;	
+	pWindowMenu->eCurrentMenuState=OPTIONS;
 }
 
 void Menu2_Render_Quit(Vec2i size, Vec2i offset)
