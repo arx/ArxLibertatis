@@ -917,20 +917,16 @@ void MainMenuLeftCreate(MENUSTATE eMenuState)
 				break;
 			
 			CWindowMenuConsole * console = new CWindowMenuConsole(offset, size, NEW_QUEST);
-			
 			Menu2_Render_NewQuest(console, size);
-			
 			pWindowMenu->AddConsole(console);
-			pWindowMenu->eCurrentMenuState=NEW_QUEST;
 			
+			pWindowMenu->eCurrentMenuState = NEW_QUEST;
 			break;
 		}
 		case EDIT_QUEST: {
 			{
 			CWindowMenuConsole * console = new CWindowMenuConsole(offset, size, EDIT_QUEST);
 			MainMenuCreateEditQuest(console);
-			
-			pWindowMenu->eCurrentMenuState = EDIT_QUEST;
 			pWindowMenu->AddConsole(console);
 			}
 			
@@ -944,7 +940,7 @@ void MainMenuLeftCreate(MENUSTATE eMenuState)
 			}
 			
 			{
-			CWindowMenuConsole * console=new CWindowMenuConsole(offset + Vec2i(0, -40), size, EDIT_QUEST_SAVE);
+			CWindowMenuConsole * console = new CWindowMenuConsole(offset + Vec2i(0, -40), size, EDIT_QUEST_SAVE);
 			console->iInterligne = 5;
 			
 			MainMenuCreateEditQuestSave(console);
@@ -959,6 +955,7 @@ void MainMenuLeftCreate(MENUSTATE eMenuState)
 			pWindowMenu->AddConsole(console);
 			}
 			
+			pWindowMenu->eCurrentMenuState = EDIT_QUEST;
 			break;
 		}
 		case OPTIONS: {
