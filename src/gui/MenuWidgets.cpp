@@ -2435,7 +2435,7 @@ CMenuElement * CMenuPanel::IsMouseOver(const Vec2s& mousePos) const {
 	return NULL;
 }
 
-CMenuButton::CMenuButton(Vec2i pos, TextureContainer *_pTex)
+ButtonWidget::ButtonWidget(Vec2i pos, TextureContainer *_pTex)
 	: CMenuElement(NOP)
 {
 	iID = -1;
@@ -2457,10 +2457,10 @@ CMenuButton::CMenuButton(Vec2i pos, TextureContainer *_pTex)
 	pRef=this;
 }
 
-CMenuButton::~CMenuButton() {
+ButtonWidget::~ButtonWidget() {
 }
 
-void CMenuButton::SetPos(Vec2i pos)
+void ButtonWidget::SetPos(Vec2i pos)
 {
 	CMenuElement::SetPos(pos);
 
@@ -2475,7 +2475,7 @@ void CMenuButton::SetPos(Vec2i pos)
 	rZone.bottom = pos.y + iHeight;
 }
 
-bool CMenuButton::OnMouseClick() {
+bool ButtonWidget::OnMouseClick() {
 	
 	if(!enabled) {
 		return false;
@@ -2486,11 +2486,11 @@ bool CMenuButton::OnMouseClick() {
 	return false;
 }
 
-void CMenuButton::Update(int _iDTime) {
+void ButtonWidget::Update(int _iDTime) {
 	(void)_iDTime;
 }
 
-void CMenuButton::Render() {
+void ButtonWidget::Render() {
 
 	if(bNoMenu)
 		return;
@@ -2503,7 +2503,7 @@ void CMenuButton::Render() {
 	}
 }
 
-void CMenuButton::RenderMouseOver() {
+void ButtonWidget::RenderMouseOver() {
 
 	if(bNoMenu)
 		return;
@@ -2526,9 +2526,9 @@ CycleTextWidget::CycleTextWidget(int _iID, Vec2i pos)
 {
 	iID = _iID;
 	TextureContainer *pTex = TextureContainer::Load("graph/interface/menus/menu_slider_button_left");
-	pLeftButton = new CMenuButton(pos, pTex);
+	pLeftButton = new ButtonWidget(pos, pTex);
 	pTex = TextureContainer::Load("graph/interface/menus/menu_slider_button_right");
-	pRightButton = new CMenuButton(pos, pTex);
+	pRightButton = new ButtonWidget(pos, pTex);
 
 	vText.clear();
 
@@ -2762,8 +2762,8 @@ CMenuSlider::CMenuSlider(int _iID, Vec2i pos)
 
 	TextureContainer *pTexL = TextureContainer::Load("graph/interface/menus/menu_slider_button_left");
 	TextureContainer *pTexR = TextureContainer::Load("graph/interface/menus/menu_slider_button_right");
-	pLeftButton = new CMenuButton(pos, pTexL);
-	pRightButton = new CMenuButton(pos, pTexR);
+	pLeftButton = new ButtonWidget(pos, pTexL);
+	pRightButton = new ButtonWidget(pos, pTexR);
 	pTex1 = TextureContainer::Load("graph/interface/menus/menu_slider_on");
 	pTex2 = TextureContainer::Load("graph/interface/menus/menu_slider_off");
 	arx_assert(pTex1);

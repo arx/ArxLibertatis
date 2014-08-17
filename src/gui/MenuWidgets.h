@@ -354,14 +354,14 @@ public:
 	bool OnMouseDoubleClick();
 };
 
-class CMenuButton: public CMenuElement {
+class ButtonWidget: public CMenuElement {
 	
 public:
 	TextureContainer*   pTex;
 	
 public:
-	CMenuButton(Vec2i pos, TextureContainer * tex = NULL);
-	~CMenuButton();
+	ButtonWidget(Vec2i pos, TextureContainer * tex = NULL);
+	~ButtonWidget();
 	
 public:
 	void SetPos(Vec2i pos);
@@ -398,8 +398,8 @@ public:
 	virtual void setEnabled(bool enable);
 	
 private:
-	CMenuButton		*	pLeftButton;
-	CMenuButton		*	pRightButton;
+	ButtonWidget		*	pLeftButton;
+	ButtonWidget		*	pRightButton;
 	std::vector<CMenuElementText*>	vText;
 	int					iPos;
 	int					iOldPos;
@@ -424,8 +424,8 @@ public:
 	void EmptyFunction();
 	
 private:
-	CMenuButton		*	pLeftButton;
-	CMenuButton		*	pRightButton;
+	ButtonWidget		*	pLeftButton;
+	ButtonWidget		*	pRightButton;
 	TextureContainer	* pTex1;
 	TextureContainer	* pTex2;
 	int					iPos;
