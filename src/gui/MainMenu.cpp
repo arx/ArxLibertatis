@@ -913,83 +913,83 @@ void MainMenuLeftCreate(MENUSTATE eMenuState)
 	
 	pWindowMenu->eCurrentMenuState = eMenuState;
 	
-		// TODO Special case to prevent displaying confirmation dialog on new game during fade
-		if(ARXMenu_CanResumeGame()){
-			CWindowMenuConsole * console = new CWindowMenuConsole(offset, size, NEW_QUEST);
-			Menu2_Render_NewQuest(console, size);
-			pWindowMenu->AddConsole(console);
-		}
-		
-			{
-			CWindowMenuConsole * console = new CWindowMenuConsole(offset, size, EDIT_QUEST);
-			MainMenuCreateEditQuest(console);
-			pWindowMenu->AddConsole(console);
-			}
-			
-			{
-			CWindowMenuConsole * console = new CWindowMenuConsole(offset + Vec2i(0, -40), size, EDIT_QUEST_LOAD);
-			console->lData = -1;
-			console->iInterligne = 5;
-			
-			MainMenuCreateEditQuestLoad(console, size);
-			pWindowMenu->AddConsole(console);
-			}
-			
-			{
-			CWindowMenuConsole * console = new CWindowMenuConsole(offset + Vec2i(0, -40), size, EDIT_QUEST_SAVE);
-			console->iInterligne = 5;
-			
-			MainMenuCreateEditQuestSave(console);
-			pWindowMenu->AddConsole(console);
-			}
-			
-			{
-			CWindowMenuConsole * console = new CWindowMenuConsole(offset, size, EDIT_QUEST_SAVE_CONFIRM);
-			console->lData = -1;
-			
-			MainMenuCreateEditQuestSaveConfirm(console, size);
-			pWindowMenu->AddConsole(console);
-			}
-			
-			{
-			CWindowMenuConsole * console = new CWindowMenuConsole(offset, size, OPTIONS);
-			MainMenuOptionGroupsCreate(console);
-			pWindowMenu->AddConsole(console);
-			}
-			
-			{
-			CWindowMenuConsole * console = new CWindowMenuConsole(offset + Vec2i(0, -35), size, OPTIONS_VIDEO);
-			MainMenuOptionVideoCreate(console, size);
-			pWindowMenu->AddConsole(console);
-			}
-			
-			{
-			CWindowMenuConsole * console = new CWindowMenuConsole(offset, size, OPTIONS_AUDIO);
-			MainMenuOptionAudioCreate(console, size);
-			pWindowMenu->AddConsole(console);
-			}
-			
-			{
-			CWindowMenuConsole * console = new CWindowMenuConsole(offset, size, OPTIONS_INPUT);
-			MainMenuOptionInputCreate(console);
-			pWindowMenu->AddConsole(console);
-			}
-			
-			{
-			CWindowMenuConsole * console = new CWindowMenuConsole(offset, size, OPTIONS_INPUT_CUSTOMIZE_KEYS_1);
-			MainMenuOptionControlsCreatePage1(console, size);
-			pWindowMenu->AddConsole(console);
-			}
-			
-			{
-			CWindowMenuConsole * console = new CWindowMenuConsole(offset, size, OPTIONS_INPUT_CUSTOMIZE_KEYS_2);
-			MainMenuOptionControlsCreatePage2(console, size);
-			pWindowMenu->AddConsole(console);
-			}
-			
-			{
-			CWindowMenuConsole * console = new CWindowMenuConsole(offset, size, QUIT);
-			Menu2_Render_Quit(console, size);
-			pWindowMenu->AddConsole(console);
-			}
+	// TODO Special case to prevent displaying confirmation dialog on new game during fade
+	if(ARXMenu_CanResumeGame()){
+		CWindowMenuConsole * console = new CWindowMenuConsole(offset, size, NEW_QUEST);
+		Menu2_Render_NewQuest(console, size);
+		pWindowMenu->AddConsole(console);
+	}
+
+	{
+	CWindowMenuConsole * console = new CWindowMenuConsole(offset, size, EDIT_QUEST);
+	MainMenuCreateEditQuest(console);
+	pWindowMenu->AddConsole(console);
+	}
+	
+	{
+	CWindowMenuConsole * console = new CWindowMenuConsole(offset + Vec2i(0, -40), size, EDIT_QUEST_LOAD);
+	console->lData = -1;
+	console->iInterligne = 5;
+	
+	MainMenuCreateEditQuestLoad(console, size);
+	pWindowMenu->AddConsole(console);
+	}
+	
+	{
+	CWindowMenuConsole * console = new CWindowMenuConsole(offset + Vec2i(0, -40), size, EDIT_QUEST_SAVE);
+	console->iInterligne = 5;
+	
+	MainMenuCreateEditQuestSave(console);
+	pWindowMenu->AddConsole(console);
+	}
+	
+	{
+	CWindowMenuConsole * console = new CWindowMenuConsole(offset, size, EDIT_QUEST_SAVE_CONFIRM);
+	console->lData = -1;
+	
+	MainMenuCreateEditQuestSaveConfirm(console, size);
+	pWindowMenu->AddConsole(console);
+	}
+	
+	{
+	CWindowMenuConsole * console = new CWindowMenuConsole(offset, size, OPTIONS);
+	MainMenuOptionGroupsCreate(console);
+	pWindowMenu->AddConsole(console);
+	}
+	
+	{
+	CWindowMenuConsole * console = new CWindowMenuConsole(offset + Vec2i(0, -35), size, OPTIONS_VIDEO);
+	MainMenuOptionVideoCreate(console, size);
+	pWindowMenu->AddConsole(console);
+	}
+	
+	{
+	CWindowMenuConsole * console = new CWindowMenuConsole(offset, size, OPTIONS_AUDIO);
+	MainMenuOptionAudioCreate(console, size);
+	pWindowMenu->AddConsole(console);
+	}
+	
+	{
+	CWindowMenuConsole * console = new CWindowMenuConsole(offset, size, OPTIONS_INPUT);
+	MainMenuOptionInputCreate(console);
+	pWindowMenu->AddConsole(console);
+	}
+	
+	{
+	CWindowMenuConsole * console = new CWindowMenuConsole(offset, size, OPTIONS_INPUT_CUSTOMIZE_KEYS_1);
+	MainMenuOptionControlsCreatePage1(console, size);
+	pWindowMenu->AddConsole(console);
+	}
+	
+	{
+	CWindowMenuConsole * console = new CWindowMenuConsole(offset, size, OPTIONS_INPUT_CUSTOMIZE_KEYS_2);
+	MainMenuOptionControlsCreatePage2(console, size);
+	pWindowMenu->AddConsole(console);
+	}
+	
+	{
+	CWindowMenuConsole * console = new CWindowMenuConsole(offset, size, QUIT);
+	Menu2_Render_Quit(console, size);
+	pWindowMenu->AddConsole(console);
+	}
 }
