@@ -555,15 +555,13 @@ void MainMenuOptionVideoCreate(CWindowMenuConsole * console, Vec2i size)
 	console->AddMenu(pc);
 }
 
-void MainMenuOptionAudioCreate(Vec2i offset, Vec2i size)
+void MainMenuOptionAudioCreate(CWindowMenuConsole * console, Vec2i size)
 {
 	std::string szMenuText;
 	CMenuElement *me;
 	CMenuPanel *pc;
 	TextureContainer *pTex;
 	
-	CWindowMenuConsole * pWindowMenuConsole = new CWindowMenuConsole(offset, size, OPTIONS_AUDIO);
-
 	// Audio backend selection
 	{
 		
@@ -587,7 +585,7 @@ void MainMenuOptionAudioCreate(Vec2i offset, Vec2i size)
 		float fRatio    = (RATIO_X(size.x-9) - slider->rZone.width()); 
 		slider->Move(Vec2i(checked_range_cast<int>(fRatio), 0));
 		pc->AddElement(slider);
-		pWindowMenuConsole->AddMenuCenterY(pc);
+		console->AddMenuCenterY(pc);
 		
 	}
 	
@@ -599,7 +597,7 @@ void MainMenuOptionAudioCreate(Vec2i offset, Vec2i size)
 	me = new CMenuSlider(BUTTON_MENUOPTIONSAUDIO_MASTER, Vec2i(RATIO_X(200), 0));
 	((CMenuSlider *)me)->setValue((int)config.audio.volume); // TODO use float sliders
 	pc->AddElement(me);
-	pWindowMenuConsole->AddMenuCenterY(pc);
+	console->AddMenuCenterY(pc);
 
 	pc = new CMenuPanel();
 	szMenuText = getLocalised("system_menus_options_audio_effects_volume");
@@ -609,7 +607,7 @@ void MainMenuOptionAudioCreate(Vec2i offset, Vec2i size)
 	me = new CMenuSlider(BUTTON_MENUOPTIONSAUDIO_SFX, Vec2i(RATIO_X(200), 0));
 	((CMenuSlider *)me)->setValue((int)config.audio.sfxVolume);
 	pc->AddElement(me);
-	pWindowMenuConsole->AddMenuCenterY(pc);
+	console->AddMenuCenterY(pc);
 
 	pc = new CMenuPanel();
 	szMenuText = getLocalised("system_menus_options_audio_speech_volume");
@@ -619,7 +617,7 @@ void MainMenuOptionAudioCreate(Vec2i offset, Vec2i size)
 	me = new CMenuSlider(BUTTON_MENUOPTIONSAUDIO_SPEECH, Vec2i(RATIO_X(200), 0));
 	((CMenuSlider *)me)->setValue((int)config.audio.speechVolume);
 	pc->AddElement(me);
-	pWindowMenuConsole->AddMenuCenterY(pc);
+	console->AddMenuCenterY(pc);
 
 	pc = new CMenuPanel();
 	szMenuText = getLocalised("system_menus_options_audio_ambiance_volume");
@@ -629,7 +627,7 @@ void MainMenuOptionAudioCreate(Vec2i offset, Vec2i size)
 	me = new CMenuSlider(BUTTON_MENUOPTIONSAUDIO_AMBIANCE, Vec2i(RATIO_X(200), 0));
 	((CMenuSlider *)me)->setValue((int)config.audio.ambianceVolume);
 	pc->AddElement(me);
-	pWindowMenuConsole->AddMenuCenterY(pc);
+	console->AddMenuCenterY(pc);
 	
 	{
 	szMenuText = getLocalised("system_menus_options_audio_eax", "EAX");
@@ -638,7 +636,7 @@ void MainMenuOptionAudioCreate(Vec2i offset, Vec2i size)
 	CMenuCheckButton * cb = new CMenuCheckButton(text);
 	cb->iID = BUTTON_MENUOPTIONSAUDIO_EAX;
 	cb->iState = config.audio.eax ? 1 : 0;
-	pWindowMenuConsole->AddMenuCenterY(cb);
+	console->AddMenuCenterY(cb);
 	}
 	
 	{
@@ -646,24 +644,20 @@ void MainMenuOptionAudioCreate(Vec2i offset, Vec2i size)
 	CMenuButton * cb = new CMenuButton(RATIO_2(Vec2i(20, 380)), pTex);
 	cb->eMenuState = OPTIONS;
 	cb->SetShortCut(Keyboard::Key_Escape);
-	pWindowMenuConsole->AddMenu(cb);
+	console->AddMenu(cb);
 	}
-
-	pWindowMenu->AddConsole(pWindowMenuConsole);
 }
 
-void MainMenuOptionInputCreate(Vec2i size, Vec2i offset)
+void MainMenuOptionInputCreate(CWindowMenuConsole * console)
 {
 	std::string szMenuText;
 	CMenuElement *me;
 	CMenuPanel *pc;
 	TextureContainer *pTex;
 	
-	CWindowMenuConsole * pWindowMenuConsole = new CWindowMenuConsole(offset, size, OPTIONS_INPUT);
-	
 	szMenuText = getLocalised("system_menus_options_input_customize_controls");
 	me = new CMenuElementText(-1, hFontMenu, szMenuText, Vec2i(RATIO_X(20), 0), OPTIONS_INPUT_CUSTOMIZE_KEYS_1);
-	pWindowMenuConsole->AddMenuCenterY(me);
+	console->AddMenuCenterY(me);
 	
 	{
 	szMenuText = getLocalised("system_menus_options_input_invert_mouse");
@@ -672,7 +666,7 @@ void MainMenuOptionInputCreate(Vec2i size, Vec2i offset)
 	CMenuCheckButton * cb = new CMenuCheckButton(text);
 	cb->iID = BUTTON_MENUOPTIONS_CONTROLS_INVERTMOUSE;
 	cb->iState = config.input.invertMouse ? 1 : 0;
-	pWindowMenuConsole->AddMenuCenterY(cb);
+	console->AddMenuCenterY(cb);
 	}
 	
 	{
@@ -682,7 +676,7 @@ void MainMenuOptionInputCreate(Vec2i size, Vec2i offset)
 	CMenuCheckButton * cb = new CMenuCheckButton(text);
 	cb->iID = BUTTON_MENUOPTIONS_CONTROLS_AUTOREADYWEAPON;
 	cb->iState = config.input.autoReadyWeapon ? 1 : 0;
-	pWindowMenuConsole->AddMenuCenterY(cb);
+	console->AddMenuCenterY(cb);
 	}
 
 	{
@@ -692,7 +686,7 @@ void MainMenuOptionInputCreate(Vec2i size, Vec2i offset)
 	CMenuCheckButton * cb = new CMenuCheckButton(text);
 	cb->iID = BUTTON_MENUOPTIONS_CONTROLS_MOUSELOOK;
 	cb->iState = config.input.mouseLookToggle ? 1 : 0;
-	pWindowMenuConsole->AddMenuCenterY(cb);
+	console->AddMenuCenterY(cb);
 	}
 
 	pc = new CMenuPanel();
@@ -703,7 +697,7 @@ void MainMenuOptionInputCreate(Vec2i size, Vec2i offset)
 	me = new CMenuSlider(BUTTON_MENUOPTIONS_CONTROLS_MOUSESENSITIVITY, Vec2i(RATIO_X(200), 0));
 	((CMenuSlider*)me)->setValue(config.input.mouseSensitivity);
 	pc->AddElement(me);
-	pWindowMenuConsole->AddMenuCenterY(pc);
+	console->AddMenuCenterY(pc);
 	
 	{
 	szMenuText = getLocalised("system_menus_autodescription", "auto_description");
@@ -712,7 +706,7 @@ void MainMenuOptionInputCreate(Vec2i size, Vec2i offset)
 	CMenuCheckButton * cb = new CMenuCheckButton(text);
 	cb->iID = BUTTON_MENUOPTIONS_CONTROLS_AUTODESCRIPTION;
 	cb->iState = config.input.autoDescription ? 1 : 0;
-	pWindowMenuConsole->AddMenuCenterY(cb);
+	console->AddMenuCenterY(cb);
 	}
 
 	pc = new CMenuPanel();
@@ -723,17 +717,15 @@ void MainMenuOptionInputCreate(Vec2i size, Vec2i offset)
 	me = new CMenuSlider(BUTTON_MENUOPTIONS_CONTROLS_QUICKSAVESLOTS, Vec2i(RATIO_X(200), 0));
 	((CMenuSlider*)me)->setValue(config.misc.quicksaveSlots);
 	pc->AddElement(me);
-	pWindowMenuConsole->AddMenuCenterY(pc);
+	console->AddMenuCenterY(pc);
 	
 	{
 	pTex = TextureContainer::Load("graph/interface/menus/back");
 	CMenuButton * cb = new CMenuButton(RATIO_2(Vec2i(20, 380)), pTex);
 	cb->eMenuState = OPTIONS;
 	cb->SetShortCut(Keyboard::Key_Escape);
-	pWindowMenuConsole->AddMenu(cb);
+	console->AddMenu(cb);
 	}
-	
-	pWindowMenu->AddConsole(pWindowMenuConsole);
 }
 
 
@@ -759,35 +751,33 @@ void CUSTOM_CTRL_FUNC(CWindowMenuConsole * console, long & y, const std::string 
 	y += pc->rZone.height() + RATIO_Y(3.f);
 }
 
-void MainMenuOptionControlsCreatePage1(Vec2i size, Vec2i offset) {
+void MainMenuOptionControlsCreatePage1(CWindowMenuConsole * console, Vec2i size) {
 	
 	long y = static_cast<long>(RATIO_Y(8.f));
 
-	CWindowMenuConsole * c=new CWindowMenuConsole(offset, size, OPTIONS_INPUT_CUSTOMIZE_KEYS_1);
+	CUSTOM_CTRL_FUNC(console, y, "system_menus_options_input_customize_controls_mouselook", BUTTON_MENUOPTIONS_CONTROLS_CUST_USE1, BUTTON_MENUOPTIONS_CONTROLS_CUST_USE2);
 
-	CUSTOM_CTRL_FUNC(c, y, "system_menus_options_input_customize_controls_mouselook", BUTTON_MENUOPTIONS_CONTROLS_CUST_USE1, BUTTON_MENUOPTIONS_CONTROLS_CUST_USE2);
+	CUSTOM_CTRL_FUNC(console, y, "system_menus_options_input_customize_controls_action_combine", BUTTON_MENUOPTIONS_CONTROLS_CUST_ACTIONCOMBINE1, BUTTON_MENUOPTIONS_CONTROLS_CUST_ACTIONCOMBINE2);
+	CUSTOM_CTRL_FUNC(console, y, "system_menus_options_input_customize_controls_jump", BUTTON_MENUOPTIONS_CONTROLS_CUST_JUMP1, BUTTON_MENUOPTIONS_CONTROLS_CUST_JUMP2);
+	CUSTOM_CTRL_FUNC(console, y, "system_menus_options_input_customize_controls_magic_mode", BUTTON_MENUOPTIONS_CONTROLS_CUST_MAGICMODE1, BUTTON_MENUOPTIONS_CONTROLS_CUST_MAGICMODE2);
+	CUSTOM_CTRL_FUNC(console, y, "system_menus_options_input_customize_controls_stealth_mode", BUTTON_MENUOPTIONS_CONTROLS_CUST_STEALTHMODE1, BUTTON_MENUOPTIONS_CONTROLS_CUST_STEALTHMODE2);
+	CUSTOM_CTRL_FUNC(console, y, "system_menus_options_input_customize_controls_walk_forward", BUTTON_MENUOPTIONS_CONTROLS_CUST_WALKFORWARD1, BUTTON_MENUOPTIONS_CONTROLS_CUST_WALKFORWARD2);
+	CUSTOM_CTRL_FUNC(console, y, "system_menus_options_input_customize_controls_walk_backward", BUTTON_MENUOPTIONS_CONTROLS_CUST_WALKBACKWARD1, BUTTON_MENUOPTIONS_CONTROLS_CUST_WALKBACKWARD2);
+	CUSTOM_CTRL_FUNC(console, y, "system_menus_options_input_customize_controls_strafe_left", BUTTON_MENUOPTIONS_CONTROLS_CUST_STRAFELEFT1, BUTTON_MENUOPTIONS_CONTROLS_CUST_STRAFELEFT2);
+	CUSTOM_CTRL_FUNC(console, y, "system_menus_options_input_customize_controls_strafe_right", BUTTON_MENUOPTIONS_CONTROLS_CUST_STRAFERIGHT1, BUTTON_MENUOPTIONS_CONTROLS_CUST_STRAFERIGHT2);
+	CUSTOM_CTRL_FUNC(console, y, "system_menus_options_input_customize_controls_lean_left", BUTTON_MENUOPTIONS_CONTROLS_CUST_LEANLEFT1, BUTTON_MENUOPTIONS_CONTROLS_CUST_LEANLEFT2);
+	CUSTOM_CTRL_FUNC(console, y, "system_menus_options_input_customize_controls_lean_right", BUTTON_MENUOPTIONS_CONTROLS_CUST_LEANRIGHT1, BUTTON_MENUOPTIONS_CONTROLS_CUST_LEANRIGHT2);
+	CUSTOM_CTRL_FUNC(console, y, "system_menus_options_input_customize_controls_crouch", BUTTON_MENUOPTIONS_CONTROLS_CUST_CROUCH1, BUTTON_MENUOPTIONS_CONTROLS_CUST_CROUCH2);
+	CUSTOM_CTRL_FUNC(console, y, "system_menus_options_input_customize_controls_crouch_toggle", BUTTON_MENUOPTIONS_CONTROLS_CUST_CROUCHTOGGLE1, BUTTON_MENUOPTIONS_CONTROLS_CUST_CROUCHTOGGLE2);
 
-	CUSTOM_CTRL_FUNC(c, y, "system_menus_options_input_customize_controls_action_combine", BUTTON_MENUOPTIONS_CONTROLS_CUST_ACTIONCOMBINE1, BUTTON_MENUOPTIONS_CONTROLS_CUST_ACTIONCOMBINE2);
-	CUSTOM_CTRL_FUNC(c, y, "system_menus_options_input_customize_controls_jump", BUTTON_MENUOPTIONS_CONTROLS_CUST_JUMP1, BUTTON_MENUOPTIONS_CONTROLS_CUST_JUMP2);
-	CUSTOM_CTRL_FUNC(c, y, "system_menus_options_input_customize_controls_magic_mode", BUTTON_MENUOPTIONS_CONTROLS_CUST_MAGICMODE1, BUTTON_MENUOPTIONS_CONTROLS_CUST_MAGICMODE2);
-	CUSTOM_CTRL_FUNC(c, y, "system_menus_options_input_customize_controls_stealth_mode", BUTTON_MENUOPTIONS_CONTROLS_CUST_STEALTHMODE1, BUTTON_MENUOPTIONS_CONTROLS_CUST_STEALTHMODE2);
-	CUSTOM_CTRL_FUNC(c, y, "system_menus_options_input_customize_controls_walk_forward", BUTTON_MENUOPTIONS_CONTROLS_CUST_WALKFORWARD1, BUTTON_MENUOPTIONS_CONTROLS_CUST_WALKFORWARD2);
-	CUSTOM_CTRL_FUNC(c, y, "system_menus_options_input_customize_controls_walk_backward", BUTTON_MENUOPTIONS_CONTROLS_CUST_WALKBACKWARD1, BUTTON_MENUOPTIONS_CONTROLS_CUST_WALKBACKWARD2);
-	CUSTOM_CTRL_FUNC(c, y, "system_menus_options_input_customize_controls_strafe_left", BUTTON_MENUOPTIONS_CONTROLS_CUST_STRAFELEFT1, BUTTON_MENUOPTIONS_CONTROLS_CUST_STRAFELEFT2);
-	CUSTOM_CTRL_FUNC(c, y, "system_menus_options_input_customize_controls_strafe_right", BUTTON_MENUOPTIONS_CONTROLS_CUST_STRAFERIGHT1, BUTTON_MENUOPTIONS_CONTROLS_CUST_STRAFERIGHT2);
-	CUSTOM_CTRL_FUNC(c, y, "system_menus_options_input_customize_controls_lean_left", BUTTON_MENUOPTIONS_CONTROLS_CUST_LEANLEFT1, BUTTON_MENUOPTIONS_CONTROLS_CUST_LEANLEFT2);
-	CUSTOM_CTRL_FUNC(c, y, "system_menus_options_input_customize_controls_lean_right", BUTTON_MENUOPTIONS_CONTROLS_CUST_LEANRIGHT1, BUTTON_MENUOPTIONS_CONTROLS_CUST_LEANRIGHT2);
-	CUSTOM_CTRL_FUNC(c, y, "system_menus_options_input_customize_controls_crouch", BUTTON_MENUOPTIONS_CONTROLS_CUST_CROUCH1, BUTTON_MENUOPTIONS_CONTROLS_CUST_CROUCH2);
-	CUSTOM_CTRL_FUNC(c, y, "system_menus_options_input_customize_controls_crouch_toggle", BUTTON_MENUOPTIONS_CONTROLS_CUST_CROUCHTOGGLE1, BUTTON_MENUOPTIONS_CONTROLS_CUST_CROUCHTOGGLE2);
+	CUSTOM_CTRL_FUNC(console, y, "system_menus_options_input_customize_controls_strafe", BUTTON_MENUOPTIONS_CONTROLS_CUST_STRAFE1, BUTTON_MENUOPTIONS_CONTROLS_CUST_STRAFE2);
+	CUSTOM_CTRL_FUNC(console, y, "system_menus_options_input_customize_controls_center_view", BUTTON_MENUOPTIONS_CONTROLS_CUST_CENTERVIEW1, BUTTON_MENUOPTIONS_CONTROLS_CUST_CENTERVIEW2);
+	CUSTOM_CTRL_FUNC(console, y, "system_menus_options_input_customize_controls_freelook", BUTTON_MENUOPTIONS_CONTROLS_CUST_FREELOOK1, BUTTON_MENUOPTIONS_CONTROLS_CUST_FREELOOK2);
 
-	CUSTOM_CTRL_FUNC(c, y, "system_menus_options_input_customize_controls_strafe", BUTTON_MENUOPTIONS_CONTROLS_CUST_STRAFE1, BUTTON_MENUOPTIONS_CONTROLS_CUST_STRAFE2);
-	CUSTOM_CTRL_FUNC(c, y, "system_menus_options_input_customize_controls_center_view", BUTTON_MENUOPTIONS_CONTROLS_CUST_CENTERVIEW1, BUTTON_MENUOPTIONS_CONTROLS_CUST_CENTERVIEW2);
-	CUSTOM_CTRL_FUNC(c, y, "system_menus_options_input_customize_controls_freelook", BUTTON_MENUOPTIONS_CONTROLS_CUST_FREELOOK1, BUTTON_MENUOPTIONS_CONTROLS_CUST_FREELOOK2);
-
-	CUSTOM_CTRL_FUNC(c, y, "system_menus_options_input_customize_controls_turn_left", BUTTON_MENUOPTIONS_CONTROLS_CUST_TURNLEFT1, BUTTON_MENUOPTIONS_CONTROLS_CUST_TURNLEFT2);
-	CUSTOM_CTRL_FUNC(c, y, "system_menus_options_input_customize_controls_turn_right", BUTTON_MENUOPTIONS_CONTROLS_CUST_TURNRIGHT1, BUTTON_MENUOPTIONS_CONTROLS_CUST_TURNRIGHT2);
-	CUSTOM_CTRL_FUNC(c, y, "system_menus_options_input_customize_controls_look_up", BUTTON_MENUOPTIONS_CONTROLS_CUST_LOOKUP1, BUTTON_MENUOPTIONS_CONTROLS_CUST_LOOKUP2);
-	CUSTOM_CTRL_FUNC(c, y, "system_menus_options_input_customize_controls_look_down", BUTTON_MENUOPTIONS_CONTROLS_CUST_LOOKDOWN1, BUTTON_MENUOPTIONS_CONTROLS_CUST_LOOKDOWN2);
+	CUSTOM_CTRL_FUNC(console, y, "system_menus_options_input_customize_controls_turn_left", BUTTON_MENUOPTIONS_CONTROLS_CUST_TURNLEFT1, BUTTON_MENUOPTIONS_CONTROLS_CUST_TURNLEFT2);
+	CUSTOM_CTRL_FUNC(console, y, "system_menus_options_input_customize_controls_turn_right", BUTTON_MENUOPTIONS_CONTROLS_CUST_TURNRIGHT1, BUTTON_MENUOPTIONS_CONTROLS_CUST_TURNRIGHT2);
+	CUSTOM_CTRL_FUNC(console, y, "system_menus_options_input_customize_controls_look_up", BUTTON_MENUOPTIONS_CONTROLS_CUST_LOOKUP1, BUTTON_MENUOPTIONS_CONTROLS_CUST_LOOKUP2);
+	CUSTOM_CTRL_FUNC(console, y, "system_menus_options_input_customize_controls_look_down", BUTTON_MENUOPTIONS_CONTROLS_CUST_LOOKDOWN1, BUTTON_MENUOPTIONS_CONTROLS_CUST_LOOKDOWN2);
 	
 	CMenuPanel * pc = new CMenuPanel();
 	
@@ -816,45 +806,41 @@ void MainMenuOptionControlsCreatePage1(Vec2i size, Vec2i offset) {
 	pc->AddElementNoCenterIn(cb);
 	}
 
-	c->AddMenu(pc);
-
-	pWindowMenu->AddConsole(c);
-	c->ReInitActionKey();
+	console->AddMenu(pc);
+	console->ReInitActionKey();
 }
 
-void MainMenuOptionControlsCreatePage2(Vec2i size, Vec2i offset) {
+void MainMenuOptionControlsCreatePage2(CWindowMenuConsole * console, Vec2i size) {
 	
-	CWindowMenuConsole * c=new CWindowMenuConsole(offset, size, OPTIONS_INPUT_CUSTOMIZE_KEYS_2);
-
 	long y = static_cast<long>(RATIO_Y(8.f));
 	
-	CUSTOM_CTRL_FUNC(c, y, "system_menus_options_input_customize_controls_inventory", BUTTON_MENUOPTIONS_CONTROLS_CUST_INVENTORY1, BUTTON_MENUOPTIONS_CONTROLS_CUST_INVENTORY2);
-	CUSTOM_CTRL_FUNC(c, y, "system_menus_options_input_customize_controls_book", BUTTON_MENUOPTIONS_CONTROLS_CUST_BOOK1, BUTTON_MENUOPTIONS_CONTROLS_CUST_BOOK2);
-	CUSTOM_CTRL_FUNC(c, y, "system_menus_options_input_customize_controls_bookcharsheet", BUTTON_MENUOPTIONS_CONTROLS_CUST_BOOKCHARSHEET1, BUTTON_MENUOPTIONS_CONTROLS_CUST_BOOKCHARSHEET2);
-	CUSTOM_CTRL_FUNC(c, y, "system_menus_options_input_customize_controls_bookmap", BUTTON_MENUOPTIONS_CONTROLS_CUST_BOOKMAP1, BUTTON_MENUOPTIONS_CONTROLS_CUST_BOOKMAP2);
-	CUSTOM_CTRL_FUNC(c, y, "system_menus_options_input_customize_controls_bookspell", BUTTON_MENUOPTIONS_CONTROLS_CUST_BOOKSPELL1, BUTTON_MENUOPTIONS_CONTROLS_CUST_BOOKSPELL2);
-	CUSTOM_CTRL_FUNC(c, y, "system_menus_options_input_customize_controls_bookquest", BUTTON_MENUOPTIONS_CONTROLS_CUST_BOOKQUEST1, BUTTON_MENUOPTIONS_CONTROLS_CUST_BOOKQUEST2);
-	CUSTOM_CTRL_FUNC(c, y, "system_menus_options_input_customize_controls_drink_potion_life", BUTTON_MENUOPTIONS_CONTROLS_CUST_DRINKPOTIONLIFE1, BUTTON_MENUOPTIONS_CONTROLS_CUST_DRINKPOTIONLIFE2);
-	CUSTOM_CTRL_FUNC(c, y, "system_menus_options_input_customize_controls_drink_potion_mana", BUTTON_MENUOPTIONS_CONTROLS_CUST_DRINKPOTIONMANA1, BUTTON_MENUOPTIONS_CONTROLS_CUST_DRINKPOTIONMANA2);
-	CUSTOM_CTRL_FUNC(c, y, "system_menus_options_input_customize_controls_torch", BUTTON_MENUOPTIONS_CONTROLS_CUST_TORCH1, BUTTON_MENUOPTIONS_CONTROLS_CUST_TORCH2);
+	CUSTOM_CTRL_FUNC(console, y, "system_menus_options_input_customize_controls_inventory", BUTTON_MENUOPTIONS_CONTROLS_CUST_INVENTORY1, BUTTON_MENUOPTIONS_CONTROLS_CUST_INVENTORY2);
+	CUSTOM_CTRL_FUNC(console, y, "system_menus_options_input_customize_controls_book", BUTTON_MENUOPTIONS_CONTROLS_CUST_BOOK1, BUTTON_MENUOPTIONS_CONTROLS_CUST_BOOK2);
+	CUSTOM_CTRL_FUNC(console, y, "system_menus_options_input_customize_controls_bookcharsheet", BUTTON_MENUOPTIONS_CONTROLS_CUST_BOOKCHARSHEET1, BUTTON_MENUOPTIONS_CONTROLS_CUST_BOOKCHARSHEET2);
+	CUSTOM_CTRL_FUNC(console, y, "system_menus_options_input_customize_controls_bookmap", BUTTON_MENUOPTIONS_CONTROLS_CUST_BOOKMAP1, BUTTON_MENUOPTIONS_CONTROLS_CUST_BOOKMAP2);
+	CUSTOM_CTRL_FUNC(console, y, "system_menus_options_input_customize_controls_bookspell", BUTTON_MENUOPTIONS_CONTROLS_CUST_BOOKSPELL1, BUTTON_MENUOPTIONS_CONTROLS_CUST_BOOKSPELL2);
+	CUSTOM_CTRL_FUNC(console, y, "system_menus_options_input_customize_controls_bookquest", BUTTON_MENUOPTIONS_CONTROLS_CUST_BOOKQUEST1, BUTTON_MENUOPTIONS_CONTROLS_CUST_BOOKQUEST2);
+	CUSTOM_CTRL_FUNC(console, y, "system_menus_options_input_customize_controls_drink_potion_life", BUTTON_MENUOPTIONS_CONTROLS_CUST_DRINKPOTIONLIFE1, BUTTON_MENUOPTIONS_CONTROLS_CUST_DRINKPOTIONLIFE2);
+	CUSTOM_CTRL_FUNC(console, y, "system_menus_options_input_customize_controls_drink_potion_mana", BUTTON_MENUOPTIONS_CONTROLS_CUST_DRINKPOTIONMANA1, BUTTON_MENUOPTIONS_CONTROLS_CUST_DRINKPOTIONMANA2);
+	CUSTOM_CTRL_FUNC(console, y, "system_menus_options_input_customize_controls_torch", BUTTON_MENUOPTIONS_CONTROLS_CUST_TORCH1, BUTTON_MENUOPTIONS_CONTROLS_CUST_TORCH2);
 
-	CUSTOM_CTRL_FUNC(c, y, "system_menus_options_input_customize_controls_cancelcurrentspell", BUTTON_MENUOPTIONS_CONTROLS_CUST_CANCELCURSPELL1, BUTTON_MENUOPTIONS_CONTROLS_CUST_CANCELCURSPELL2);
-	CUSTOM_CTRL_FUNC(c, y, "system_menus_options_input_customize_controls_precast1", BUTTON_MENUOPTIONS_CONTROLS_CUST_PRECAST1, BUTTON_MENUOPTIONS_CONTROLS_CUST_PRECAST1_2);
-	CUSTOM_CTRL_FUNC(c, y, "system_menus_options_input_customize_controls_precast2", BUTTON_MENUOPTIONS_CONTROLS_CUST_PRECAST2, BUTTON_MENUOPTIONS_CONTROLS_CUST_PRECAST2_2);
-	CUSTOM_CTRL_FUNC(c, y, "system_menus_options_input_customize_controls_precast3", BUTTON_MENUOPTIONS_CONTROLS_CUST_PRECAST3, BUTTON_MENUOPTIONS_CONTROLS_CUST_PRECAST3_2);
-	CUSTOM_CTRL_FUNC(c, y, "system_menus_options_input_customize_controls_weapon", BUTTON_MENUOPTIONS_CONTROLS_CUST_WEAPON1, BUTTON_MENUOPTIONS_CONTROLS_CUST_WEAPON2);
+	CUSTOM_CTRL_FUNC(console, y, "system_menus_options_input_customize_controls_cancelcurrentspell", BUTTON_MENUOPTIONS_CONTROLS_CUST_CANCELCURSPELL1, BUTTON_MENUOPTIONS_CONTROLS_CUST_CANCELCURSPELL2);
+	CUSTOM_CTRL_FUNC(console, y, "system_menus_options_input_customize_controls_precast1", BUTTON_MENUOPTIONS_CONTROLS_CUST_PRECAST1, BUTTON_MENUOPTIONS_CONTROLS_CUST_PRECAST1_2);
+	CUSTOM_CTRL_FUNC(console, y, "system_menus_options_input_customize_controls_precast2", BUTTON_MENUOPTIONS_CONTROLS_CUST_PRECAST2, BUTTON_MENUOPTIONS_CONTROLS_CUST_PRECAST2_2);
+	CUSTOM_CTRL_FUNC(console, y, "system_menus_options_input_customize_controls_precast3", BUTTON_MENUOPTIONS_CONTROLS_CUST_PRECAST3, BUTTON_MENUOPTIONS_CONTROLS_CUST_PRECAST3_2);
+	CUSTOM_CTRL_FUNC(console, y, "system_menus_options_input_customize_controls_weapon", BUTTON_MENUOPTIONS_CONTROLS_CUST_WEAPON1, BUTTON_MENUOPTIONS_CONTROLS_CUST_WEAPON2);
 
-	CUSTOM_CTRL_FUNC(c, y, "system_menus_options_input_customize_controls_unequipweapon", BUTTON_MENUOPTIONS_CONTROLS_CUST_UNEQUIPWEAPON1, BUTTON_MENUOPTIONS_CONTROLS_CUST_UNEQUIPWEAPON2);
+	CUSTOM_CTRL_FUNC(console, y, "system_menus_options_input_customize_controls_unequipweapon", BUTTON_MENUOPTIONS_CONTROLS_CUST_UNEQUIPWEAPON1, BUTTON_MENUOPTIONS_CONTROLS_CUST_UNEQUIPWEAPON2);
 
-	CUSTOM_CTRL_FUNC(c, y, "system_menus_options_input_customize_controls_previous", BUTTON_MENUOPTIONS_CONTROLS_CUST_PREVIOUS1, BUTTON_MENUOPTIONS_CONTROLS_CUST_PREVIOUS2);
-	CUSTOM_CTRL_FUNC(c, y, "system_menus_options_input_customize_controls_next", BUTTON_MENUOPTIONS_CONTROLS_CUST_NEXT1, BUTTON_MENUOPTIONS_CONTROLS_CUST_NEXT2);
+	CUSTOM_CTRL_FUNC(console, y, "system_menus_options_input_customize_controls_previous", BUTTON_MENUOPTIONS_CONTROLS_CUST_PREVIOUS1, BUTTON_MENUOPTIONS_CONTROLS_CUST_PREVIOUS2);
+	CUSTOM_CTRL_FUNC(console, y, "system_menus_options_input_customize_controls_next", BUTTON_MENUOPTIONS_CONTROLS_CUST_NEXT1, BUTTON_MENUOPTIONS_CONTROLS_CUST_NEXT2);
 
-	CUSTOM_CTRL_FUNC(c, y, "system_menus_options_input_customize_controls_quickload", BUTTON_MENUOPTIONS_CONTROLS_CUST_QUICKLOAD, BUTTON_MENUOPTIONS_CONTROLS_CUST_QUICKLOAD2);
-	CUSTOM_CTRL_FUNC(c, y, "system_menus_options_input_customize_controls_quicksave", BUTTON_MENUOPTIONS_CONTROLS_CUST_QUICKSAVE, BUTTON_MENUOPTIONS_CONTROLS_CUST_QUICKSAVE2);
+	CUSTOM_CTRL_FUNC(console, y, "system_menus_options_input_customize_controls_quickload", BUTTON_MENUOPTIONS_CONTROLS_CUST_QUICKLOAD, BUTTON_MENUOPTIONS_CONTROLS_CUST_QUICKLOAD2);
+	CUSTOM_CTRL_FUNC(console, y, "system_menus_options_input_customize_controls_quicksave", BUTTON_MENUOPTIONS_CONTROLS_CUST_QUICKSAVE, BUTTON_MENUOPTIONS_CONTROLS_CUST_QUICKSAVE2);
 
-	CUSTOM_CTRL_FUNC(c, y, "system_menus_options_input_customize_controls_bookmap", BUTTON_MENUOPTIONS_CONTROLS_CUST_MINIMAP1, BUTTON_MENUOPTIONS_CONTROLS_CUST_MINIMAP2, "?", "2");
+	CUSTOM_CTRL_FUNC(console, y, "system_menus_options_input_customize_controls_bookmap", BUTTON_MENUOPTIONS_CONTROLS_CUST_MINIMAP1, BUTTON_MENUOPTIONS_CONTROLS_CUST_MINIMAP2, "?", "2");
 
-	CUSTOM_CTRL_FUNC(c, y, "system_menus_options_input_customize_controls_toggle_fullscreen", BUTTON_MENUOPTIONS_CONTROLS_CUST_TOGGLE_FULLSCREEN1, BUTTON_MENUOPTIONS_CONTROLS_CUST_TOGGLE_FULLSCREEN2, "Toggle fullscreen");
+	CUSTOM_CTRL_FUNC(console, y, "system_menus_options_input_customize_controls_toggle_fullscreen", BUTTON_MENUOPTIONS_CONTROLS_CUST_TOGGLE_FULLSCREEN1, BUTTON_MENUOPTIONS_CONTROLS_CUST_TOGGLE_FULLSCREEN2, "Toggle fullscreen");
 	
 	CMenuPanel * pc = new CMenuPanel();
 	
@@ -874,10 +860,8 @@ void MainMenuOptionControlsCreatePage2(Vec2i size, Vec2i offset) {
 	pc->AddElementNoCenterIn(me);
 	}
 
-	c->AddMenu(pc);
-
-	pWindowMenu->AddConsole(c);
-	c->ReInitActionKey();
+	console->AddMenu(pc);
+	console->ReInitActionKey();
 }
 
 void Menu2_Render_Quit(Vec2i size, Vec2i offset)
@@ -993,10 +977,29 @@ void MainMenuLeftCreate(MENUSTATE eMenuState)
 			pWindowMenu->AddConsole(console);
 			}
 			
-			MainMenuOptionAudioCreate(offset, size);
-			MainMenuOptionInputCreate(size, offset);
-			MainMenuOptionControlsCreatePage1(size, offset);
-			MainMenuOptionControlsCreatePage2(size, offset);
+			{
+			CWindowMenuConsole * console = new CWindowMenuConsole(offset, size, OPTIONS_AUDIO);
+			MainMenuOptionAudioCreate(console, size);
+			pWindowMenu->AddConsole(console);
+			}
+			
+			{
+			CWindowMenuConsole * console = new CWindowMenuConsole(offset, size, OPTIONS_INPUT);
+			MainMenuOptionInputCreate(console);
+			pWindowMenu->AddConsole(console);
+			}
+			
+			{
+			CWindowMenuConsole * console = new CWindowMenuConsole(offset, size, OPTIONS_INPUT_CUSTOMIZE_KEYS_1);
+			MainMenuOptionControlsCreatePage1(console, size);
+			pWindowMenu->AddConsole(console);
+			}
+			
+			{
+			CWindowMenuConsole * console = new CWindowMenuConsole(offset, size, OPTIONS_INPUT_CUSTOMIZE_KEYS_2);
+			MainMenuOptionControlsCreatePage2(console, size);
+			pWindowMenu->AddConsole(console);
+			}
 			
 			pWindowMenu->eCurrentMenuState = OPTIONS;
 			break;
