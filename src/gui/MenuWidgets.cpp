@@ -1312,36 +1312,24 @@ CheckboxWidget::CheckboxWidget(TextWidget *_pText)
 	TextureContainer *_pTex2 = TextureContainer::Load("graph/interface/menus/menu_checkbox_on");
 	arx_assert(_pTex1);
 	arx_assert(_pTex2);
+	arx_assert(_pTex1->size() == _pTex2->size());
+	
+	vTex.push_back(_pTex1);
+	vTex.push_back(_pTex2);
 	
 	int _iTaille = _pTex1->m_dwWidth;
 	
 	iID = -1;
 	iState    = 0;
 	iOldState = -1;
-	
-	Vec2i pos = Vec2i(0, 0);
-	m_pos = pos;
+	m_pos = Vec2i(0, 0);
 
 	iTaille = _iTaille;
-
 	pText    = _pText;
-
-	if(_pTex1) {
-		int fRatioX = RATIO_X(_pTex1->m_dwWidth) ;
-		int fRatioY = RATIO_Y(_pTex1->m_dwHeight);
-		vTex.push_back(_pTex1);
-		_iTaille = std::max(_iTaille, fRatioX);
-		_iTaille = std::max(_iTaille, fRatioY);
-	}
-
-	if(_pTex2) {
-		int fRatioX = RATIO_X(_pTex2->m_dwWidth) ;
-		int fRatioY = RATIO_Y(_pTex2->m_dwHeight);
-		vTex.push_back(_pTex2);
-		_iTaille = std::max(_iTaille, fRatioX);
-		_iTaille = std::max(_iTaille, fRatioY);
-	}
-
+	
+	_iTaille = std::max(_iTaille, (int)RATIO_X(_pTex1->m_dwWidth));
+	_iTaille = std::max(_iTaille, (int)RATIO_Y(_pTex1->m_dwHeight));
+	
 	Vec2i textSize(0,0);
 
 	if(pText) {
@@ -1352,16 +1340,14 @@ CheckboxWidget::CheckboxWidget(TextWidget *_pText)
 		pText->Move(m_pos + Vec2i(0, (_iTaille - textSize.y) / 2));
 	}
 
-	rZone.left = pos.x;
-	rZone.top = pos.y;
-	rZone.right = pos.x + _iTaille + textSize.x;
-	rZone.bottom = pos.y + std::max<int>(_iTaille, textSize.y);
+	rZone.left = m_pos.x;
+	rZone.top = m_pos.y;
+	rZone.right = m_pos.x + _iTaille + textSize.x;
+	rZone.bottom = m_pos.y + std::max<int>(_iTaille, textSize.y);
 	pRef=this;
 	
-	if(_pTex1 && _pTex2) {
-		float rZoneR = RATIO_X(200.f) + RATIO_X(_pTex1->m_dwWidth) + (RATIO_X(12*9) - RATIO_X(_pTex1->m_dwWidth))*0.5f;
-		rZone.right = rZoneR;
-	}
+	float rZoneR = RATIO_X(200.f) + RATIO_X(_pTex1->m_dwWidth) + (RATIO_X(12*9) - RATIO_X(_pTex1->m_dwWidth))*0.5f;
+	rZone.right = rZoneR;
 	
 	Move(m_pos);
 }
