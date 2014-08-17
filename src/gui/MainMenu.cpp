@@ -88,13 +88,12 @@ void Menu2_Render_NewQuest(Vec2i size, Vec2i offset)
 	pWindowMenu->eCurrentMenuState=NEW_QUEST;
 }
 
-void Menu2_Render_EditQuest(Vec2i size, Vec2i offset)
-{
+void MainMenuCreateEditQuest(Vec2i size, Vec2i offset) {
+	
 	CMenuElement *me;
-	CMenuElement *me01;
-	CMenuPanel *pPanel;
 	TextureContainer *pTex;
 	std::string szMenuText;
+	
 	CWindowMenuConsole *pWindowMenuConsole=new CWindowMenuConsole(offset, size, EDIT_QUEST);
 
 	szMenuText = getLocalised( "system_menus_main_editquest_load");
@@ -122,9 +121,15 @@ void Menu2_Render_EditQuest(Vec2i size, Vec2i offset)
 
 	pWindowMenu->eCurrentMenuState = EDIT_QUEST;
 	pWindowMenu->AddConsole(pWindowMenuConsole);
+}
 
-	// LOAD ---------------------------------------------------
-	pWindowMenuConsole=new CWindowMenuConsole(offset + Vec2i(0, -40), size, EDIT_QUEST_LOAD);
+void MainMenuCreateEditQuestLoad(Vec2i size, Vec2i offset) {
+	
+	CMenuElement *me;
+	TextureContainer *pTex;
+	std::string szMenuText;
+	
+	CWindowMenuConsole * pWindowMenuConsole=new CWindowMenuConsole(offset + Vec2i(0, -40), size, EDIT_QUEST_LOAD);
 	pWindowMenuConsole->lData = -1;
 	pWindowMenuConsole->iInterligne = 5;
 	
@@ -211,9 +216,14 @@ void Menu2_Render_EditQuest(Vec2i size, Vec2i offset)
 		}
 	}
 	pWindowMenu->AddConsole(pWindowMenuConsole);
+}
 
-	// SAVE----------------------------------------------------
-	pWindowMenuConsole=new CWindowMenuConsole(offset + Vec2i(0, -40), size, EDIT_QUEST_SAVE);
+void MainMenuCreateEditQuestSave(Vec2i size, Vec2i offset) {
+	
+	CMenuElement *me01;
+	TextureContainer *pTex;
+	
+	CWindowMenuConsole * pWindowMenuConsole=new CWindowMenuConsole(offset + Vec2i(0, -40), size, EDIT_QUEST_SAVE);
 	pWindowMenuConsole->iInterligne = 5;
 
 	{
@@ -223,6 +233,7 @@ void Menu2_Render_EditQuest(Vec2i size, Vec2i offset)
 	pWindowMenuConsole->AddMenuCenter(cb);
 	}
 	
+	std::string quicksaveName = getLocalised("system_menus_main_quickloadsave", "Quicksave");
 	size_t quicksaveNum = 0;
 	
 	// Show quicksaves.
@@ -286,9 +297,16 @@ void Menu2_Render_EditQuest(Vec2i size, Vec2i offset)
 	}
 
 	pWindowMenu->AddConsole(pWindowMenuConsole);
+}
 
-	// SAVE CONFIRM--------------------------------------------
-	pWindowMenuConsole = new CWindowMenuConsole(offset, size, EDIT_QUEST_SAVE_CONFIRM);
+void MainMenuCreateEditQuestSaveConfirm(Vec2i size, Vec2i offset) {
+	
+	CMenuElement *me;
+	CMenuPanel *pPanel;
+	TextureContainer *pTex;
+	std::string szMenuText;
+	
+	CWindowMenuConsole * pWindowMenuConsole = new CWindowMenuConsole(offset, size, EDIT_QUEST_SAVE_CONFIRM);
 	pWindowMenuConsole->lData = -1;
 	
 	{
@@ -335,6 +353,14 @@ void Menu2_Render_EditQuest(Vec2i size, Vec2i offset)
 	pWindowMenuConsole->AddMenu(pPanel);
 
 	pWindowMenu->AddConsole(pWindowMenuConsole);
+}
+
+void Menu2_Render_EditQuest(Vec2i size, Vec2i offset)
+{
+	MainMenuCreateEditQuest(size, offset);
+	MainMenuCreateEditQuestLoad(size, offset);
+	MainMenuCreateEditQuestSave(size, offset);
+	MainMenuCreateEditQuestSaveConfirm(size, offset);
 }
 
 void MainMenuOptionGroupsCreate(Vec2i size, Vec2i offset) {
