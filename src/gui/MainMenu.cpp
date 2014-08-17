@@ -888,18 +888,6 @@ void MainMenuOptionControlsCreatePage2(Vec2i size, Vec2i offset) {
 	c->ReInitActionKey();
 }
 
-void Menu2_Render_Options(Vec2i size, Vec2i offset)
-{
-	MainMenuOptionGroupsCreate(size, offset);
-	MainMenuOptionVideoCreate(offset, size);
-	MainMenuOptionAudioCreate(offset, size);
-	MainMenuOptionInputCreate(size, offset);
-	MainMenuOptionControlsCreatePage1(size, offset);
-	MainMenuOptionControlsCreatePage2(size, offset);
-	
-	pWindowMenu->eCurrentMenuState=OPTIONS;
-}
-
 void Menu2_Render_Quit(Vec2i size, Vec2i offset)
 {
 	std::string szMenuText;
@@ -1000,11 +988,17 @@ void MainMenuLeftCreate(MENUSTATE eMenuState)
 			
 			break;
 		}
-	case OPTIONS: {
-			Menu2_Render_Options(size, offset);
+		case OPTIONS: {
+			MainMenuOptionGroupsCreate(size, offset);
+			MainMenuOptionVideoCreate(offset, size);
+			MainMenuOptionAudioCreate(offset, size);
+			MainMenuOptionInputCreate(size, offset);
+			MainMenuOptionControlsCreatePage1(size, offset);
+			MainMenuOptionControlsCreatePage2(size, offset);
+			
+			pWindowMenu->eCurrentMenuState = OPTIONS;
+			break;
 		}
-		break;
-	
 	case QUIT: {
 			Menu2_Render_Quit(size, offset);
 		
