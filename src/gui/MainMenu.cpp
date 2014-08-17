@@ -201,16 +201,13 @@ void MainMenuCreateEditQuestLoad(CWindowMenuConsole * console, Vec2i size) {
 	}
 }
 
-void MainMenuCreateEditQuestSave(Vec2i size, Vec2i offset) {
-	
-	CWindowMenuConsole * pWindowMenuConsole=new CWindowMenuConsole(offset + Vec2i(0, -40), size, EDIT_QUEST_SAVE);
-	pWindowMenuConsole->iInterligne = 5;
+void MainMenuCreateEditQuestSave(CWindowMenuConsole * console) {
 	
 	{
 	TextureContainer * pTex = TextureContainer::Load("graph/interface/icons/menu_main_save");
 	CMenuButton * cb = new CMenuButton(Vec2i(RATIO_X(10), 0), pTex);
 	cb->bCheck = false;
-	pWindowMenuConsole->AddMenuCenter(cb);
+	console->AddMenuCenter(cb);
 	}
 	
 	std::string quicksaveName = getLocalised("system_menus_main_quickloadsave", "Quicksave");
@@ -232,7 +229,7 @@ void MainMenuCreateEditQuestSave(Vec2i size, Vec2i offset) {
 		e->setColor(Color::grayb(127));
 		e->SetCheckOff();
 		e->lData = i;
-		pWindowMenuConsole->AddMenuCenterY(e);
+		console->AddMenuCenterY(e);
 	}
 	
 	// Show regular saves.
@@ -248,7 +245,7 @@ void MainMenuCreateEditQuestSave(Vec2i size, Vec2i offset) {
 		CMenuElement * e = new CMenuElementText(BUTTON_MENUEDITQUEST_SAVEINFO, hFontControls,
 		                                        text, Vec2i(RATIO_X(20), 0.f), EDIT_QUEST_SAVE_CONFIRM);
 		e->lData = i;
-		pWindowMenuConsole->AddMenuCenterY(e);
+		console->AddMenuCenterY(e);
 	}
 	
 	for(size_t i = savegames.size(); i <= 15; i++) {
@@ -260,14 +257,14 @@ void MainMenuCreateEditQuestSave(Vec2i size, Vec2i offset) {
 
 		e->eMenuState = EDIT_QUEST_SAVE_CONFIRM;
 		e->lData = -1;
-		pWindowMenuConsole->AddMenuCenterY(e);
+		console->AddMenuCenterY(e);
 	}
 
 	{
 	CMenuElementText * me01 = new CMenuElementText(-1, hFontControls, " ", Vec2i(RATIO_X(20), 0), EDIT_QUEST_SAVE_CONFIRM);
 	me01->lData = -1;
 	me01->SetCheckOff();
-	pWindowMenuConsole->AddMenuCenterY(me01);
+	console->AddMenuCenterY(me01);
 	}
 	
 	{
@@ -275,10 +272,8 @@ void MainMenuCreateEditQuestSave(Vec2i size, Vec2i offset) {
 	CMenuButton * cb = new CMenuButton(RATIO_2(Vec2i(20, 420)), pTex);
 	cb->eMenuState = EDIT_QUEST;
 	cb->SetShortCut(Keyboard::Key_Escape);
-	pWindowMenuConsole->AddMenu(cb);
+	console->AddMenu(cb);
 	}
-
-	pWindowMenu->AddConsole(pWindowMenuConsole);
 }
 
 void MainMenuCreateEditQuestSaveConfirm(Vec2i size, Vec2i offset) {
@@ -992,7 +987,14 @@ void MainMenuLeftCreate(MENUSTATE eMenuState)
 			pWindowMenu->AddConsole(console);
 			}
 			
-			MainMenuCreateEditQuestSave(size, offset);
+			{
+			CWindowMenuConsole * console=new CWindowMenuConsole(offset + Vec2i(0, -40), size, EDIT_QUEST_SAVE);
+			console->iInterligne = 5;
+			
+			MainMenuCreateEditQuestSave(console);
+			pWindowMenu->AddConsole(console);
+			}
+			
 			MainMenuCreateEditQuestSaveConfirm(size, offset);
 			
 			break;
