@@ -276,16 +276,13 @@ void MainMenuCreateEditQuestSave(CWindowMenuConsole * console) {
 	}
 }
 
-void MainMenuCreateEditQuestSaveConfirm(Vec2i size, Vec2i offset) {
-	
-	CWindowMenuConsole * pWindowMenuConsole = new CWindowMenuConsole(offset, size, EDIT_QUEST_SAVE_CONFIRM);
-	pWindowMenuConsole->lData = -1;
+void MainMenuCreateEditQuestSaveConfirm(CWindowMenuConsole * console, Vec2i size) {
 	
 	{
 	TextureContainer * pTex = TextureContainer::Load("graph/interface/icons/menu_main_save");
 	CMenuButton * cb = new CMenuButton(Vec2i(0, 0), pTex);
 	cb->bCheck = false;
-	pWindowMenuConsole->AddMenuCenter(cb);
+	console->AddMenuCenter(cb);
 	}
 	
 	{
@@ -294,7 +291,7 @@ void MainMenuCreateEditQuestSaveConfirm(Vec2i size, Vec2i offset) {
 	me->lData = -1;
 	me->eState=EDIT;
 	me->ePlace=CENTER;
-	pWindowMenuConsole->AddMenuCenter(me);
+	console->AddMenuCenter(me);
 	}
 	
 	CMenuPanel * pPanel = new CMenuPanel();
@@ -326,9 +323,7 @@ void MainMenuCreateEditQuestSaveConfirm(Vec2i size, Vec2i offset) {
 	pPanel->AddElementNoCenterIn(cb);
 	}
 
-	pWindowMenuConsole->AddMenu(pPanel);
-
-	pWindowMenu->AddConsole(pWindowMenuConsole);
+	console->AddMenu(pPanel);
 }
 
 void MainMenuOptionGroupsCreate(Vec2i size, Vec2i offset) {
@@ -995,7 +990,13 @@ void MainMenuLeftCreate(MENUSTATE eMenuState)
 			pWindowMenu->AddConsole(console);
 			}
 			
-			MainMenuCreateEditQuestSaveConfirm(size, offset);
+			{
+			CWindowMenuConsole * console = new CWindowMenuConsole(offset, size, EDIT_QUEST_SAVE_CONFIRM);
+			console->lData = -1;
+			
+			MainMenuCreateEditQuestSaveConfirm(console, size);
+			pWindowMenu->AddConsole(console);
+			}
 			
 			break;
 		}
