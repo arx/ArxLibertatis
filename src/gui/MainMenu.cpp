@@ -477,21 +477,20 @@ void MainMenuOptionVideoCreate(Vec2i offset, Vec2i size)
 	me = new CMenuElementText(-1, hFontMenu, szMenuText, Vec2i(RATIO_X(20), 0), NOP);
 	me->SetCheckOff();
 	pc->AddElement(me);
-	me = new CMenuSliderText(BUTTON_MENUOPTIONSVIDEO_OTHERSDETAILS, Vec2i(0, 0));
-	szMenuText = getLocalised("system_menus_options_video_texture_low");
-	((CMenuSliderText *)me)->AddText(new CMenuElementText(-1, hFontMenu, szMenuText, Vec2i(0, 0), OPTIONS_OTHERDETAILS));
-	szMenuText = getLocalised("system_menus_options_video_texture_med");
-	((CMenuSliderText *)me)->AddText(new CMenuElementText(-1, hFontMenu, szMenuText, Vec2i(0, 0), OPTIONS_OTHERDETAILS));
-	szMenuText = getLocalised("system_menus_options_video_texture_high");
-	((CMenuSliderText *)me)->AddText(new CMenuElementText(-1, hFontMenu, szMenuText, Vec2i(0, 0), OPTIONS_OTHERDETAILS));
-
 	
-	fRatio    = (RATIO_X(size.x-9) - me->rZone.width()); 
-	me->Move(Vec2i(checked_range_cast<int>(fRatio), 0));
-
-
-	pc->AddElement(me);
-	((CMenuSliderText *)me)->setValue(config.video.levelOfDetail);
+	{
+	CMenuSliderText * cb = new CMenuSliderText(BUTTON_MENUOPTIONSVIDEO_OTHERSDETAILS, Vec2i(0, 0));
+	szMenuText = getLocalised("system_menus_options_video_texture_low");
+	cb->AddText(new CMenuElementText(-1, hFontMenu, szMenuText, Vec2i(0, 0), OPTIONS_OTHERDETAILS));
+	szMenuText = getLocalised("system_menus_options_video_texture_med");
+	cb->AddText(new CMenuElementText(-1, hFontMenu, szMenuText, Vec2i(0, 0), OPTIONS_OTHERDETAILS));
+	szMenuText = getLocalised("system_menus_options_video_texture_high");
+	cb->AddText(new CMenuElementText(-1, hFontMenu, szMenuText, Vec2i(0, 0), OPTIONS_OTHERDETAILS));
+	cb->setValue(config.video.levelOfDetail);
+	
+	cb->Move(Vec2i(RATIO_X(size.x-9) - cb->rZone.width(), 0));
+	pc->AddElement(cb);
+	}
 
 	pWindowMenuConsole->AddMenuCenterY(pc);
 	
