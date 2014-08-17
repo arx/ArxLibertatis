@@ -326,26 +326,24 @@ void MainMenuCreateEditQuestSaveConfirm(CWindowMenuConsole * console, Vec2i size
 	console->AddMenu(pPanel);
 }
 
-void MainMenuOptionGroupsCreate(Vec2i size, Vec2i offset) {
-	
-	CWindowMenuConsole *pWindowMenuConsole=new CWindowMenuConsole(offset, size, OPTIONS);
+void MainMenuOptionGroupsCreate(CWindowMenuConsole * console) {
 	
 	{
 	std::string szMenuText = getLocalised("system_menus_options_video");
 	CMenuElementText * me = new CMenuElementText(BUTTON_MENUOPTIONSVIDEO_INIT, hFontMenu, szMenuText, Vec2i(0, 0), OPTIONS_VIDEO);
-	pWindowMenuConsole->AddMenuCenter(me);
+	console->AddMenuCenter(me);
 	}
 	
 	{
 	std::string szMenuText = getLocalised("system_menus_options_audio");
 	CMenuElementText * me = new CMenuElementText(-1, hFontMenu, szMenuText, Vec2i(0, 0), OPTIONS_AUDIO);
-	pWindowMenuConsole->AddMenuCenter(me);
+	console->AddMenuCenter(me);
 	}
 	
 	{
 	std::string szMenuText = getLocalised("system_menus_options_input");
 	CMenuElementText * me = new CMenuElementText(-1, hFontMenu, szMenuText, Vec2i(0, 0), OPTIONS_INPUT);
-	pWindowMenuConsole->AddMenuCenter(me);
+	console->AddMenuCenter(me);
 	}
 	
 	{
@@ -353,20 +351,16 @@ void MainMenuOptionGroupsCreate(Vec2i size, Vec2i offset) {
 	CMenuButton * cb = new CMenuButton(RATIO_2(Vec2i(20, 380)), pTex);
 	cb->eMenuState = MAIN;
 	cb->SetShortCut(Keyboard::Key_Escape);
-	pWindowMenuConsole->AddMenu(cb);
+	console->AddMenu(cb);
 	}
-
-	pWindowMenu->AddConsole(pWindowMenuConsole);
 }
 
-void MainMenuOptionVideoCreate(Vec2i offset, Vec2i size)
+void MainMenuOptionVideoCreate(CWindowMenuConsole * console, Vec2i size)
 {
 	std::string szMenuText;
 	CMenuElement *me;
 	CMenuPanel *pc;
 	TextureContainer *pTex;
-	
-	CWindowMenuConsole * pWindowMenuConsole=new CWindowMenuConsole(offset + Vec2i(0, -35), size, OPTIONS_VIDEO);
 	
 	// Renderer selection
 	{
@@ -391,7 +385,7 @@ void MainMenuOptionVideoCreate(Vec2i offset, Vec2i size)
 		float fRatio    = (RATIO_X(size.x-9) - slider->rZone.width()); 
 		slider->Move(Vec2i(checked_range_cast<int>(fRatio), 0));
 		pc->AddElement(slider);
-		pWindowMenuConsole->AddMenuCenterY(pc);
+		console->AddMenuCenterY(pc);
 		
 	}
 	
@@ -409,7 +403,7 @@ void MainMenuOptionVideoCreate(Vec2i offset, Vec2i size)
 	CMenuCheckButton * cb = new CMenuCheckButton(text);
 	cb->iID = BUTTON_MENUOPTIONSVIDEO_FULLSCREEN;
 	cb->iState = config.video.fullscreen ? 1 : 0;
-	pWindowMenuConsole->AddMenuCenterY(cb);
+	console->AddMenuCenterY(cb);
 	fullscreenCheckbox = cb;
 	}
 	
@@ -467,7 +461,7 @@ void MainMenuOptionVideoCreate(Vec2i offset, Vec2i size)
 
 	pc->AddElement(pMenuSliderResol);
 
-	pWindowMenuConsole->AddMenuCenterY(pc);
+	console->AddMenuCenterY(pc);
 
 	pc = new CMenuPanel();
 	szMenuText = getLocalised("system_menus_options_detail");
@@ -490,7 +484,7 @@ void MainMenuOptionVideoCreate(Vec2i offset, Vec2i size)
 	pc->AddElement(cb);
 	}
 
-	pWindowMenuConsole->AddMenuCenterY(pc);
+	console->AddMenuCenterY(pc);
 	
 	pc = new CMenuPanel();
 	szMenuText = getLocalised("system_menus_options_video_brouillard");
@@ -501,7 +495,7 @@ void MainMenuOptionVideoCreate(Vec2i offset, Vec2i size)
 	((CMenuSlider *)me)->setValue(config.video.fogDistance);
 	pc->AddElement(me);
 
-	pWindowMenuConsole->AddMenuCenterY(pc);
+	console->AddMenuCenterY(pc);
 	
 	{
 	szMenuText = getLocalised("system_menus_options_video_crosshair", "Show Crosshair");
@@ -511,7 +505,7 @@ void MainMenuOptionVideoCreate(Vec2i offset, Vec2i size)
 	CMenuCheckButton * cb = new CMenuCheckButton(text);
 	cb->iID = BUTTON_MENUOPTIONSVIDEO_CROSSHAIR;
 	cb->iState = config.video.showCrosshair ? 1 : 0;
-	pWindowMenuConsole->AddMenuCenterY(cb);
+	console->AddMenuCenterY(cb);
 	}
 	
 	{
@@ -522,7 +516,7 @@ void MainMenuOptionVideoCreate(Vec2i offset, Vec2i size)
 	CMenuCheckButton * cb = new CMenuCheckButton(text);
 	cb->iID = BUTTON_MENUOPTIONSVIDEO_ANTIALIASING;
 	cb->iState = config.video.antialiasing ? 1 : 0;
-	pWindowMenuConsole->AddMenuCenterY(cb);
+	console->AddMenuCenterY(cb);
 	}
 	
 	ARX_SetAntiAliasing();
@@ -535,7 +529,7 @@ void MainMenuOptionVideoCreate(Vec2i offset, Vec2i size)
 	CMenuCheckButton * cb = new CMenuCheckButton(text);
 	cb->iID = BUTTON_MENUOPTIONSVIDEO_VSYNC;
 	cb->iState = config.video.vsync ? 1 : 0;
-	pWindowMenuConsole->AddMenuCenterY(cb);
+	console->AddMenuCenterY(cb);
 	}
 	
 	{
@@ -558,9 +552,7 @@ void MainMenuOptionVideoCreate(Vec2i offset, Vec2i size)
 	pc->AddElementNoCenterIn(cb);
 	}
 
-	pWindowMenuConsole->AddMenu(pc);
-
-	pWindowMenu->AddConsole(pWindowMenuConsole);
+	console->AddMenu(pc);
 }
 
 void MainMenuOptionAudioCreate(Vec2i offset, Vec2i size)
@@ -989,8 +981,18 @@ void MainMenuLeftCreate(MENUSTATE eMenuState)
 			break;
 		}
 		case OPTIONS: {
-			MainMenuOptionGroupsCreate(size, offset);
-			MainMenuOptionVideoCreate(offset, size);
+			{
+			CWindowMenuConsole * console = new CWindowMenuConsole(offset, size, OPTIONS);
+			MainMenuOptionGroupsCreate(console);
+			pWindowMenu->AddConsole(console);
+			}
+			
+			{
+			CWindowMenuConsole * console = new CWindowMenuConsole(offset + Vec2i(0, -35), size, OPTIONS_VIDEO);
+			MainMenuOptionVideoCreate(console, size);
+			pWindowMenu->AddConsole(console);
+			}
+			
 			MainMenuOptionAudioCreate(offset, size);
 			MainMenuOptionInputCreate(size, offset);
 			MainMenuOptionControlsCreatePage1(size, offset);
