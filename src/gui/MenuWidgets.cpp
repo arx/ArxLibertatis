@@ -120,7 +120,7 @@ static MenuCursor * pMenuCursor = NULL;
 extern CWindowMenu * pWindowMenu;
 CMenuState *mainMenu;
 
-static Widget * pMenuElementResume = NULL;
+static TextWidget * pMenuElementResume = NULL;
 extern TextWidget * pMenuElementApply;
 extern TextWidget * pLoadConfirm;
 extern TextWidget * pDeleteConfirm;
@@ -375,10 +375,10 @@ bool Menu2_Render() {
 		
 		if(ARXMenu_CanResumeGame()) {
 			pMenuElementResume->SetCheckOn();
-			((TextWidget*)pMenuElementResume)->lColor = Color(232, 204, 142);
+			pMenuElementResume->lColor = Color(232, 204, 142);
 		} else {
 			pMenuElementResume->SetCheckOff();
-			((TextWidget*)pMenuElementResume)->lColor=Color(127,127,127);
+			pMenuElementResume->lColor = Color(127, 127, 127);
 		}
 	}
 	
