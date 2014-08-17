@@ -120,8 +120,8 @@ static MenuCursor * pMenuCursor = NULL;
 extern CWindowMenu * pWindowMenu;
 CMenuState *mainMenu;
 
-static CMenuElement * pMenuElementResume = NULL;
-extern CMenuElement * pMenuElementApply;
+static Widget * pMenuElementResume = NULL;
+extern Widget * pMenuElementApply;
 extern TextWidget * pLoadConfirm;
 extern TextWidget * pDeleteConfirm;
 extern TextWidget * pDeleteButton;
@@ -504,7 +504,7 @@ bool Menu2_Render() {
 }
 
 
-CMenuElement::CMenuElement(MENUSTATE _ms)
+Widget::Widget(MENUSTATE _ms)
 	: bCheck(true)
 	, bTestYDouble(false)
 	, pRef(NULL)
@@ -519,7 +519,7 @@ CMenuElement::CMenuElement(MENUSTATE _ms)
 	iShortCut=-1;
 }
 
-CMenuElement::~CMenuElement() {
+Widget::~Widget() {
 
 	if(this == pMenuElementApply) {
 		pMenuElementApply = NULL;
@@ -550,7 +550,7 @@ CMenuElement::~CMenuElement() {
 	}
 }
 
-CMenuElement* CMenuElement::OnShortCut() {
+Widget* Widget::OnShortCut() {
 
 	if(iShortCut == -1)
 		return NULL;
@@ -562,11 +562,11 @@ CMenuElement* CMenuElement::OnShortCut() {
 	return NULL;
 }
 
-void CMenuElement::Move(const Vec2i & offset) {
+void Widget::Move(const Vec2i & offset) {
 	rZone.move(offset.x, offset.y);
 }
 
-void CMenuElement::SetPos(Vec2i pos) {
+void Widget::SetPos(Vec2i pos) {
 
 	int iWidth  = rZone.right - rZone.left;
 	int iHeight = rZone.bottom - rZone.top;
@@ -577,7 +577,7 @@ void CMenuElement::SetPos(Vec2i pos) {
 	rZone.bottom = pos.y + abs(iHeight);
 }
 
-CMenuElement * CMenuElement::IsMouseOver(const Vec2s& mousePos) const {
+Widget * Widget::IsMouseOver(const Vec2s& mousePos) const {
 
 	int iYDouble=0;
 
@@ -596,7 +596,7 @@ CMenuElement * CMenuElement::IsMouseOver(const Vec2s& mousePos) const {
 	return NULL;
 }
 
-TextWidget::TextWidget(int _iID, Font* _pFont, const std::string& _pText, Vec2i pos, MENUSTATE _eMs) : CMenuElement(_eMs)
+TextWidget::TextWidget(int _iID, Font* _pFont, const std::string& _pText, Vec2i pos, MENUSTATE _eMs) : Widget(_eMs)
 {
 	iID = _iID;
 
@@ -649,7 +649,7 @@ bool TextWidget::OnMouseDoubleClick() {
 
 				if(p->eMenuState == EDIT_QUEST_LOAD) {
 					for(size_t j = 0; j < p->MenuAllZone.vMenuZone.size(); j++) {
-						CMenuElement *pMenuElement = p->MenuAllZone.vMenuZone[j]->GetZoneWithID(BUTTON_MENUEDITQUEST_LOAD_CONFIRM);
+						Widget *pMenuElement = p->MenuAllZone.vMenuZone[j]->GetZoneWithID(BUTTON_MENUEDITQUEST_LOAD_CONFIRM);
 
 						if(pMenuElement) {
 							pMenuElement->OnMouseClick();
@@ -742,7 +742,7 @@ bool TextWidget::OnMouseClick() {
 					p->lData = lData;
 					
 					for(size_t j = 0; j < p->MenuAllZone.vMenuZone.size(); j++) {
-						CMenuElement *cz = p->MenuAllZone.vMenuZone[j];
+						Widget *cz = p->MenuAllZone.vMenuZone[j];
 						
 						if(cz->iID == BUTTON_MENUEDITQUEST_LOAD) {
 							((TextWidget *)cz)->bSelected = false;
@@ -766,7 +766,7 @@ bool TextWidget::OnMouseClick() {
 						p->lData = lData;
 						
 						for(size_t j = 0; j < p->MenuAllZone.vMenuZone.size(); j++) {
-							CMenuElement *cz = p->MenuAllZone.vMenuZone[j];
+							Widget *cz = p->MenuAllZone.vMenuZone[j];
 							
 							if(cz->iID == BUTTON_MENUEDITQUEST_LOAD) {
 								((TextWidget *)cz)->bSelected = false;
@@ -1019,7 +1019,7 @@ bool TextWidget::OnMouseClick() {
 }
 
 // true: block les zones de checks
-CMenuElement* TextWidget::OnShortCut() {
+Widget* TextWidget::OnShortCut() {
 
 	if(iShortCut==-1)
 		return NULL;
@@ -1169,7 +1169,7 @@ void CMenuState::createChildElements()
 	mainMenu->AddMenuElement(me);
 }
 
-void CMenuState::AddMenuElement(CMenuElement * _me) {
+void CMenuState::AddMenuElement(Widget * _me) {
 	pMenuAllZone->AddZone(_me);
 }
 
@@ -1177,7 +1177,7 @@ MENUSTATE CMenuState::Update() {
 	
 	pZoneClick=NULL;
 
-	CMenuElement * iR=pMenuAllZone->CheckZone(GInput->getMousePosAbs());
+	Widget * iR=pMenuAllZone->CheckZone(GInput->getMousePosAbs());
 
 	if(GInput->getMouseButton(Mouse::Button_0)) {
 		if(iR) {
@@ -1205,7 +1205,7 @@ void CMenuState::Render() {
 	int iARXDiffTimeMenu = checked_range_cast<int>(ARXDiffTimeMenu);
 
 	for(size_t i = 0; i < pMenuAllZone->GetNbZone(); ++i) {
-		CMenuElement * pMe = pMenuAllZone->GetZoneNum(i);
+		Widget * pMe = pMenuAllZone->GetZoneNum(i);
 		pMe->Update(iARXDiffTimeMenu);
 		pMe->Render();
 	}
@@ -1226,36 +1226,36 @@ CMenuAllZone::CMenuAllZone() {
 
 	vMenuZone.clear();
 
-	vector<CMenuElement*>::iterator i;
+	vector<Widget*>::iterator i;
 
 	for(i = vMenuZone.begin(); i != vMenuZone.end(); ++i) {
-		CMenuElement *zone = *i;
+		Widget *zone = *i;
 		delete zone;
 	}
 }
 
 CMenuAllZone::~CMenuAllZone() {
 
-	for(std::vector<CMenuElement*>::iterator it = vMenuZone.begin(), it_end = vMenuZone.end(); it != it_end; ++it)
+	for(std::vector<Widget*>::iterator it = vMenuZone.begin(), it_end = vMenuZone.end(); it != it_end; ++it)
 		delete *it;
 }
 
-void CMenuAllZone::AddZone(CMenuElement *_pMenuZone) {
+void CMenuAllZone::AddZone(Widget *_pMenuZone) {
 
 	vMenuZone.push_back(_pMenuZone);
 }
 
-CMenuElement * CMenuAllZone::CheckZone(const Vec2s& mousePos) const {
+Widget * CMenuAllZone::CheckZone(const Vec2s& mousePos) const {
 
-	std::vector<CMenuElement*>::const_iterator i;
+	std::vector<Widget*>::const_iterator i;
 
 	for(i = vMenuZone.begin(); i != vMenuZone.end(); ++i) {
-		CMenuElement *zone = *i;
+		Widget *zone = *i;
 		
 		if(!zone->bCheck)
 			continue;
 		
-		CMenuElement * pRef = zone->IsMouseOver(mousePos);
+		Widget * pRef = zone->IsMouseOver(mousePos);
 		
 		if(pRef)
 			return pRef;
@@ -1264,14 +1264,14 @@ CMenuElement * CMenuAllZone::CheckZone(const Vec2s& mousePos) const {
 	return NULL;
 }
 
-CMenuElement * CMenuAllZone::GetZoneNum(size_t index) {
+Widget * CMenuAllZone::GetZoneNum(size_t index) {
 	return vMenuZone[index];
 }
 
-CMenuElement * CMenuAllZone::GetZoneWithID(int _iID) {
+Widget * CMenuAllZone::GetZoneWithID(int _iID) {
 
-	for(std::vector<CMenuElement*>::iterator i = vMenuZone.begin(), i_end = vMenuZone.end(); i != i_end; ++i) {
-		if(CMenuElement *zone = (*i)->GetZoneWithID(_iID))
+	for(std::vector<Widget*>::iterator i = vMenuZone.begin(), i_end = vMenuZone.end(); i != i_end; ++i) {
+		if(Widget *zone = (*i)->GetZoneWithID(_iID))
 			return zone;
 	}
 
@@ -1280,7 +1280,7 @@ CMenuElement * CMenuAllZone::GetZoneWithID(int _iID) {
 
 void CMenuAllZone::Move(const Vec2i & offset) {
 
-	for(std::vector<CMenuElement*>::iterator i = vMenuZone.begin(), i_end = vMenuZone.end(); i != i_end; ++i) {
+	for(std::vector<Widget*>::iterator i = vMenuZone.begin(), i_end = vMenuZone.end(); i != i_end; ++i) {
 		(*i)->Move(offset);
 	}
 }
@@ -1298,7 +1298,7 @@ void CMenuAllZone::DrawZone()
 	GRenderer->SetRenderState(Renderer::AlphaBlending, true);
 	GRenderer->ResetTexture(0);
 
-	BOOST_FOREACH(CMenuElement * zone, vMenuZone) {
+	BOOST_FOREACH(Widget * zone, vMenuZone) {
 		drawLineRectangle(Rectf(zone->rZone), 0.f, Color::red);
 	}
 
@@ -1306,7 +1306,7 @@ void CMenuAllZone::DrawZone()
 }
 
 CheckboxWidget::CheckboxWidget(TextWidget *_pText)
-	:CMenuElement(NOP)
+	:Widget(NOP)
 {
 	TextureContainer *_pTex1 = TextureContainer::Load("graph/interface/menus/menu_checkbox_off");
 	TextureContainer *_pTex2 = TextureContainer::Load("graph/interface/menus/menu_checkbox_on");
@@ -1372,7 +1372,7 @@ CheckboxWidget::~CheckboxWidget() {
 
 void CheckboxWidget::Move(const Vec2i & offset) {
 	
-	CMenuElement::Move(offset);
+	Widget::Move(offset);
 	
 	if(pText) {
 		pText->Move(offset);
@@ -1622,21 +1622,21 @@ CWindowMenuConsole::CWindowMenuConsole(Vec2i pos, Vec2i size, MENUSTATE _eMenuSt
 	bFrameOdd=false;
 }
 
-void CWindowMenuConsole::AddMenu(CMenuElement * element) {
+void CWindowMenuConsole::AddMenu(Widget * element) {
 	element->ePlace = NOCENTER;
 	element->Move(m_offset);
 	MenuAllZone.AddZone(element);
 }
 
 // TODO copy-paste
-void CWindowMenuConsole::AddMenuCenterY(CMenuElement * element) {
+void CWindowMenuConsole::AddMenuCenterY(Widget * element) {
 
 	element->ePlace = CENTERY;
 
 	int iDy = element->rZone.bottom - element->rZone.top;
 
 	for(size_t iJ = 0; iJ < MenuAllZone.GetNbZone(); iJ++) {
-		CMenuElement * pZone = MenuAllZone.GetZoneNum(iJ);
+		Widget * pZone = MenuAllZone.GetZoneNum(iJ);
 
 		iDy += iInterligne;
 		iDy += pZone->rZone.bottom - pZone->rZone.top;
@@ -1655,7 +1655,7 @@ void CWindowMenuConsole::AddMenuCenterY(CMenuElement * element) {
 	}
 	
 	for(size_t iJ = 0; iJ < MenuAllZone.GetNbZone(); iJ++) {
-		CMenuElement *pZone = MenuAllZone.GetZoneNum(iJ);
+		Widget *pZone = MenuAllZone.GetZoneNum(iJ);
 		iDepY += (pZone->rZone.bottom - pZone->rZone.top) + iInterligne;
 		
 		pZone->Move(Vec2i(0, dy));
@@ -1667,7 +1667,7 @@ void CWindowMenuConsole::AddMenuCenterY(CMenuElement * element) {
 }
 
 // TODO copy-paste
-void CWindowMenuConsole::AddMenuCenter(CMenuElement * element) {
+void CWindowMenuConsole::AddMenuCenter(Widget * element) {
 
 	element->ePlace = CENTER;
 
@@ -1681,7 +1681,7 @@ void CWindowMenuConsole::AddMenuCenter(CMenuElement * element) {
 	int iDy = element->rZone.bottom - element->rZone.top;
 
 	for(size_t iJ = 0; iJ < MenuAllZone.GetNbZone(); iJ++) {
-		CMenuElement * pZone = MenuAllZone.GetZoneNum(iJ);
+		Widget * pZone = MenuAllZone.GetZoneNum(iJ);
 
 		iDy += iInterligne;
 		iDy += pZone->rZone.bottom - pZone->rZone.top;
@@ -1700,7 +1700,7 @@ void CWindowMenuConsole::AddMenuCenter(CMenuElement * element) {
 	}
 	
 	for(size_t iJ = 0; iJ < MenuAllZone.GetNbZone(); iJ++) {
-		CMenuElement *pZone = MenuAllZone.GetZoneNum(iJ);
+		Widget *pZone = MenuAllZone.GetZoneNum(iJ);
 		iDepY += (pZone->rZone.bottom - pZone->rZone.top) + iInterligne;
 		
 		pZone->Move(Vec2i(0, dy));
@@ -1711,7 +1711,7 @@ void CWindowMenuConsole::AddMenuCenter(CMenuElement * element) {
 	MenuAllZone.AddZone(element);
 }
 
-void CWindowMenuConsole::AlignElementCenter(CMenuElement *_pMenuElement) {
+void CWindowMenuConsole::AlignElementCenter(Widget *_pMenuElement) {
 	
 	_pMenuElement->Move(Vec2i(-_pMenuElement->rZone.left, 0));
 	_pMenuElement->ePlace = CENTER;
@@ -1837,7 +1837,7 @@ void CWindowMenuConsole::UpdateText() {
 	EERIEDRAWPRIM(Renderer::TriangleStrip, v, 4);
 }
 
-CMenuElement * CWindowMenuConsole::GetTouch(bool keyTouched, int keyId, InputKeyId* pInputKeyId, bool _bValidateTest)
+Widget * CWindowMenuConsole::GetTouch(bool keyTouched, int keyId, InputKeyId* pInputKeyId, bool _bValidateTest)
 {
 	int iMouseButton = keyTouched ? 0 : GInput->getMouseButtonClicked();
 	
@@ -1928,7 +1928,7 @@ MENUSTATE CWindowMenuConsole::Update(Vec2i pos) {
 	// Check if mouse over
 	if(!bEdit) {
 		pZoneClick=NULL;
-		CMenuElement * iR = MenuAllZone.CheckZone(GInput->getMousePosAbs());
+		Widget * iR = MenuAllZone.CheckZone(GInput->getMousePosAbs());
 		
 		if(iR) {
 			pZoneClick = iR;
@@ -1956,7 +1956,7 @@ MENUSTATE CWindowMenuConsole::Update(Vec2i pos) {
 		}
 	} else {
 		if(!pZoneClick) {
-			CMenuElement * iR = MenuAllZone.CheckZone(GInput->getMousePosAbs());
+			Widget * iR = MenuAllZone.CheckZone(GInput->getMousePosAbs());
 			
 			if(iR) {
 				pZoneClick = iR;
@@ -1974,8 +1974,8 @@ MENUSTATE CWindowMenuConsole::Update(Vec2i pos) {
 	//check les shortcuts
 	if(!bEdit) {
 		for(size_t iJ = 0; iJ < MenuAllZone.GetNbZone(); ++iJ) {
-			CMenuElement * pMenuElement = MenuAllZone.GetZoneNum(iJ);
-			CMenuElement *CMenuElementShortCut = pMenuElement->OnShortCut();
+			Widget * pMenuElement = MenuAllZone.GetZoneNum(iJ);
+			Widget *CMenuElementShortCut = pMenuElement->OnShortCut();
 			
 			if(CMenuElementShortCut) {
 				pZoneClick=CMenuElementShortCut;
@@ -1990,7 +1990,7 @@ MENUSTATE CWindowMenuConsole::Update(Vec2i pos) {
 	return NOP;
 }
 
-static bool UpdateGameKey(bool bEdit, CMenuElement *pmeElement, InputKeyId inputKeyId) {
+static bool UpdateGameKey(bool bEdit, Widget *pmeElement, InputKeyId inputKeyId) {
 	bool bChange=false;
 
 	if(!bEdit && pmeElement) {
@@ -2193,7 +2193,7 @@ void CWindowMenuConsole::Render() {
 	int iARXDiffTimeMenu  = checked_range_cast<int>(ARXDiffTimeMenu);
 
 	for(size_t i = 0; i < MenuAllZone.GetNbZone(); ++i) {
-		CMenuElement * pMe = MenuAllZone.GetZoneNum(i);
+		Widget * pMe = MenuAllZone.GetZoneNum(i);
 		
 		pMe->Update(iARXDiffTimeMenu);
 		pMe->Render();
@@ -2260,7 +2260,7 @@ void CWindowMenuConsole::Render() {
 				}
 
 				InputKeyId inputKeyId;
-				CMenuElement *pmeElement = GetTouch(keyTouched, keyId, &inputKeyId, true);
+				Widget *pmeElement = GetTouch(keyTouched, keyId, &inputKeyId, true);
 
 				if(pmeElement) {
 					if(UpdateGameKey(bEdit,pmeElement, inputKeyId)) {
@@ -2272,7 +2272,7 @@ void CWindowMenuConsole::Render() {
 		default:
 			{
 				if(GInput->getMouseButtonNowPressed(Mouse::Button_0)) {
-					CMenuElement *pmzMenuZone = MenuAllZone.GetZoneWithID(BUTTON_MENUOPTIONS_CONTROLS_CUST_DEFAULT);
+					Widget *pmzMenuZone = MenuAllZone.GetZoneWithID(BUTTON_MENUOPTIONS_CONTROLS_CUST_DEFAULT);
 
 					if(pmzMenuZone==pZoneClick) {
 						config.setDefaultActionKeys();
@@ -2301,7 +2301,7 @@ void CWindowMenuConsole::ReInitActionKey()
 	while(iI--) {
 		int iTab=(iID-BUTTON_MENUOPTIONS_CONTROLS_CUST_JUMP1)>>1;
 
-		CMenuElement *pmzMenuZone = MenuAllZone.GetZoneWithID(iID);
+		Widget *pmzMenuZone = MenuAllZone.GetZoneWithID(iID);
 
 		if(pmzMenuZone) {
 			if(pmzMenuZone) {
@@ -2322,7 +2322,7 @@ void CWindowMenuConsole::ReInitActionKey()
 }
 
 CMenuPanel::CMenuPanel()
-	: CMenuElement(NOP)
+	: Widget(NOP)
 {
 	vElement.clear();
 	pRef = this;
@@ -2330,7 +2330,7 @@ CMenuPanel::CMenuPanel()
 
 CMenuPanel::~CMenuPanel()
 {
-	BOOST_FOREACH(CMenuElement * e, vElement) {
+	BOOST_FOREACH(Widget * e, vElement) {
 		delete e;
 	}
 }
@@ -2339,13 +2339,13 @@ void CMenuPanel::Move(const Vec2i & offset)
 {
 	rZone.move(offset.x, offset.y);
 	
-	BOOST_FOREACH(CMenuElement * e, vElement) {
+	BOOST_FOREACH(Widget * e, vElement) {
 		e->Move(offset);
 	}
 }
 
 // patch on ajoute à droite en ligne
-void CMenuPanel::AddElement(CMenuElement* _pElem)
+void CMenuPanel::AddElement(Widget* _pElem)
 {
 	vElement.push_back(_pElem);
 
@@ -2364,7 +2364,7 @@ void CMenuPanel::AddElement(CMenuElement* _pElem)
 }
 
 // patch on ajoute à droite en ligne
-void CMenuPanel::AddElementNoCenterIn(CMenuElement* _pElem)
+void CMenuPanel::AddElementNoCenterIn(Widget* _pElem)
 {
 	vElement.push_back(_pElem);
 
@@ -2380,9 +2380,9 @@ void CMenuPanel::AddElementNoCenterIn(CMenuElement* _pElem)
 	rZone.bottom = std::max(rZone.bottom, _pElem->rZone.bottom);
 }
 
-CMenuElement* CMenuPanel::OnShortCut()
+Widget* CMenuPanel::OnShortCut()
 {
-	BOOST_FOREACH(CMenuElement * e, vElement) {
+	BOOST_FOREACH(Widget * e, vElement) {
 		if(e->OnShortCut())
 			return e;
 	}
@@ -2395,7 +2395,7 @@ void CMenuPanel::Update(int _iTime)
 	rZone.right = rZone.left;
 	rZone.bottom = rZone.top;
 
-	BOOST_FOREACH(CMenuElement * e, vElement) {
+	BOOST_FOREACH(Widget * e, vElement) {
 		e->Update(_iTime);
 		rZone.right = std::max(rZone.right, e->rZone.right);
 		rZone.bottom = std::max(rZone.bottom, e->rZone.bottom);
@@ -2407,25 +2407,25 @@ void CMenuPanel::Render() {
 	if(bNoMenu)
 		return;
 
-	BOOST_FOREACH(CMenuElement * e, vElement) {
+	BOOST_FOREACH(Widget * e, vElement) {
 		e->Render();
 	}
 }
 
-CMenuElement * CMenuPanel::GetZoneWithID(int _iID)
+Widget * CMenuPanel::GetZoneWithID(int _iID)
 {
-	BOOST_FOREACH(CMenuElement * e, vElement) {
-		if(CMenuElement * pZone = e->GetZoneWithID(_iID))
+	BOOST_FOREACH(Widget * e, vElement) {
+		if(Widget * pZone = e->GetZoneWithID(_iID))
 			return pZone;
 	}
 	
 	return NULL;
 }
 
-CMenuElement * CMenuPanel::IsMouseOver(const Vec2s& mousePos) const {
+Widget * CMenuPanel::IsMouseOver(const Vec2s& mousePos) const {
 
 	if(rZone.contains(Vec2i(mousePos))) {
-		BOOST_FOREACH(CMenuElement * e, vElement) {
+		BOOST_FOREACH(Widget * e, vElement) {
 			if(e->bCheck && e->rZone.contains(Vec2i(mousePos))) {
 				return e->pRef;
 			}
@@ -2436,7 +2436,7 @@ CMenuElement * CMenuPanel::IsMouseOver(const Vec2s& mousePos) const {
 }
 
 ButtonWidget::ButtonWidget(Vec2i pos, TextureContainer *_pTex)
-	: CMenuElement(NOP)
+	: Widget(NOP)
 {
 	iID = -1;
 
@@ -2462,7 +2462,7 @@ ButtonWidget::~ButtonWidget() {
 
 void ButtonWidget::SetPos(Vec2i pos)
 {
-	CMenuElement::SetPos(pos);
+	Widget::SetPos(pos);
 
 	int iWidth = 0;
 	int iHeight = 0;
@@ -2522,7 +2522,7 @@ void ButtonWidget::RenderMouseOver() {
 }
 
 CycleTextWidget::CycleTextWidget(int _iID, Vec2i pos)
-	: CMenuElement(NOP)
+	: Widget(NOP)
 {
 	iID = _iID;
 	TextureContainer *pTex = TextureContainer::Load("graph/interface/menus/menu_slider_button_left");
@@ -2586,7 +2586,7 @@ void CycleTextWidget::AddText(TextWidget *_pText) {
 
 void CycleTextWidget::Move(const Vec2i & offset) {
 
-	CMenuElement::Move(offset);
+	Widget::Move(offset);
 
 	pLeftButton->Move(offset);
 	pRightButton->Move(offset);
@@ -2715,7 +2715,7 @@ void CycleTextWidget::Render() {
 }
 
 void CycleTextWidget::setEnabled(bool enable) {
-	CMenuElement::setEnabled(enable);
+	Widget::setEnabled(enable);
 	pLeftButton->setEnabled(enable);
 	pRightButton->setEnabled(enable);
 	for(size_t i = 0; i < vText.size(); i++) {
@@ -2756,7 +2756,7 @@ void CycleTextWidget::RenderMouseOver() {
 //-----------------------------------------------------------------------------
 
 SliderWidget::SliderWidget(int _iID, Vec2i pos)
-	: CMenuElement(NOP)
+	: Widget(NOP)
 {
 	iID = _iID;
 
@@ -2787,7 +2787,7 @@ SliderWidget::~SliderWidget() {
 }
 
 void SliderWidget::Move(const Vec2i & offset) {
-	CMenuElement::Move(offset);
+	Widget::Move(offset);
 	pLeftButton->Move(offset);
 	pRightButton->Move(offset);
 }

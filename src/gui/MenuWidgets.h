@@ -227,12 +227,12 @@ enum ELEMPOS
 	CENTERY
 };
 
-class CMenuElement {
+class Widget {
 	
 public:
 	bool	bCheck;
 	bool	bTestYDouble;
-	CMenuElement *	pRef;
+	Widget *	pRef;
 	Rect	rZone;
 	int			iID;
 	long		lData;
@@ -242,17 +242,17 @@ public:
 	int         iShortCut;
 	
 public:
-	explicit CMenuElement(MENUSTATE);
-	virtual ~CMenuElement();
+	explicit Widget(MENUSTATE);
+	virtual ~Widget();
 	
-	virtual CMenuElement * OnShortCut();
+	virtual Widget * OnShortCut();
 	virtual bool OnMouseClick() = 0;
 	virtual void Update(int time) = 0;
 	virtual void Render() = 0;
 	virtual void RenderMouseOver() { }
 	virtual void EmptyFunction() { }
 	virtual bool OnMouseDoubleClick() { return false; }
-	virtual CMenuElement * GetZoneWithID(int zoneId) {
+	virtual Widget * GetZoneWithID(int zoneId) {
 		return (iID == zoneId) ? this : NULL;
 	}
 	
@@ -276,7 +276,7 @@ public:
 		bCheck = true;
 	};
 	
-	virtual CMenuElement * IsMouseOver(const Vec2s& mousePos) const;
+	virtual Widget * IsMouseOver(const Vec2s& mousePos) const;
 protected:
 	bool enabled;
 };
@@ -284,16 +284,16 @@ protected:
 class CMenuAllZone
 {
 public:
-	std::vector<CMenuElement *>	vMenuZone;
+	std::vector<Widget *>	vMenuZone;
 public:
 	CMenuAllZone();
 	virtual ~CMenuAllZone();
 	
-	void AddZone(CMenuElement * menuZone);
-	CMenuElement * CheckZone(const Vec2s & mousePos) const;
+	void AddZone(Widget * menuZone);
+	Widget * CheckZone(const Vec2s & mousePos) const;
 	
-	CMenuElement * GetZoneNum(size_t index);
-	CMenuElement * GetZoneWithID(int zoneId);
+	Widget * GetZoneNum(size_t index);
+	Widget * GetZoneWithID(int zoneId);
 	void Move(const Vec2i & offset);
 	void DrawZone();
 	size_t GetNbZone();
@@ -303,29 +303,29 @@ public:
 // faire une classe
 // like a container in java
 
-class CMenuPanel : public CMenuElement {
+class CMenuPanel : public Widget {
 	
 public:
 	CMenuPanel();
 	virtual ~CMenuPanel();
 	
 	void Move(const Vec2i & offset);
-	void AddElement(CMenuElement * element);
-	void AddElementNoCenterIn(CMenuElement * element);
+	void AddElement(Widget * element);
+	void AddElementNoCenterIn(Widget * element);
 	
 	void Update(int time);
 	void Render();
 	bool OnMouseClick() { return false; }
-	CMenuElement * OnShortCut();
+	Widget * OnShortCut();
 	void RenderMouseOver() { }
-	CMenuElement * IsMouseOver(const Vec2s & mousePos) const;
-	CMenuElement * GetZoneWithID(int zoneId);
+	Widget * IsMouseOver(const Vec2s & mousePos) const;
+	Widget * GetZoneWithID(int zoneId);
 	
 private:
-	std::vector<CMenuElement *>	vElement;
+	std::vector<Widget *>	vElement;
 };
 
-class TextWidget: public CMenuElement {
+class TextWidget: public Widget {
 	
 public:
 	std::string lpszText;
@@ -342,7 +342,7 @@ public:
 	
 	void setColor(Color color) { lColor = color; }
 	
-	CMenuElement * OnShortCut();
+	Widget * OnShortCut();
 	bool OnMouseClick();
 	void Update(int time);
 	void Render();
@@ -354,7 +354,7 @@ public:
 	bool OnMouseDoubleClick();
 };
 
-class ButtonWidget: public CMenuElement {
+class ButtonWidget: public Widget {
 	
 public:
 	TextureContainer*   pTex;
@@ -366,14 +366,14 @@ public:
 public:
 	void SetPos(Vec2i pos);
 	void AddText(const std::string & label);
-	CMenuElement * OnShortCut() { return NULL; }
+	Widget * OnShortCut() { return NULL; }
 	bool OnMouseClick();
 	void Update(int time);
 	void Render();
 	void RenderMouseOver();
 };
 
-class CycleTextWidget: public CMenuElement {
+class CycleTextWidget: public Widget {
 	
 public:
 	CycleTextWidget(int, Vec2i pos);
@@ -390,7 +390,7 @@ public:
 	
 	void Move(const Vec2i & offset);
 	bool OnMouseClick();
-	CMenuElement * OnShortCut() { return NULL; }
+	Widget * OnShortCut() { return NULL; }
 	void Update(int time);
 	void Render();
 	void RenderMouseOver();
@@ -406,7 +406,7 @@ private:
 };
 
 //! Slider with value in the range [0..10]
-class SliderWidget: public CMenuElement {
+class SliderWidget: public Widget {
 	
 public:
 	SliderWidget(int id, Vec2i pos);
@@ -417,7 +417,7 @@ public:
 	
 	void Move(const Vec2i & offset);
 	bool OnMouseClick();
-	CMenuElement * OnShortCut() { return NULL; }
+	Widget * OnShortCut() { return NULL; }
 	void Update(int time);
 	void Render();
 	void RenderMouseOver();
@@ -431,7 +431,7 @@ private:
 	int					iPos;
 };
 
-class CheckboxWidget : public CMenuElement {
+class CheckboxWidget : public Widget {
 	
 public:
 	CheckboxWidget(TextWidget * label);
@@ -461,7 +461,7 @@ public:
 	MENUSTATE				eOldMenuWindowState;
 	TextureContainer	*	pTexBackGround;
 	CMenuAllZone		*	pMenuAllZone;
-	CMenuElement		*	pZoneClick;
+	Widget		*	pZoneClick;
 	
 public:
 	explicit CMenuState();
@@ -469,7 +469,7 @@ public:
 	
 	void createChildElements();
 	
-	void AddMenuElement(CMenuElement * element);
+	void AddMenuElement(Widget * element);
 	MENUSTATE Update();
 	void Render();
 };
@@ -486,7 +486,7 @@ public:
 	int						iInterligne;
 	MENUSTATE				eMenuState;
 	CMenuAllZone			MenuAllZone;
-	CMenuElement		*	pZoneClick;
+	Widget		*	pZoneClick;
 	bool					bEdit;
 	TextureContainer	*	pTexBackground;
 	TextureContainer	*	pTexBackgroundBorder;
@@ -498,14 +498,14 @@ private:
 public:
 	CWindowMenuConsole(Vec2i pos, Vec2i size, MENUSTATE state);
 	
-	void AddMenu(CMenuElement * element);
-	void AddMenuCenter(CMenuElement * element);
-	void AddMenuCenterY(CMenuElement * element);
-	void AlignElementCenter(CMenuElement * element);
+	void AddMenu(Widget * element);
+	void AddMenuCenter(Widget * element);
+	void AddMenuCenterY(Widget * element);
+	void AlignElementCenter(Widget * element);
 	MENUSTATE Update(Vec2i pos);
 	void Render();
 	
-	CMenuElement * GetTouch(bool keyTouched, int keyId, InputKeyId* pInputKeyId = NULL, bool _bValidateTest = false);
+	Widget * GetTouch(bool keyTouched, int keyId, InputKeyId* pInputKeyId = NULL, bool _bValidateTest = false);
 	void ReInitActionKey();
 };
 

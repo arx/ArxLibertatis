@@ -40,7 +40,7 @@ TextWidget * pLoadConfirm = NULL;
 TextWidget * pDeleteButton = NULL;
 CheckboxWidget * fullscreenCheckbox = NULL;
 CycleTextWidget * pMenuSliderResol = NULL;
-CMenuElement * pMenuElementApply = NULL;
+Widget * pMenuElementApply = NULL;
 
 void Menu2_Render_NewQuest(CWindowMenuConsole * console, Vec2i size) {
 	
@@ -137,7 +137,7 @@ void MainMenuCreateEditQuestLoad(CWindowMenuConsole * console, Vec2i size) {
 		std::ostringstream text;
 		text << quicksaveName << ' ' << ++quicksaveNum << "   " << save.time;
 		
-		CMenuElement * e = new TextWidget(BUTTON_MENUEDITQUEST_LOAD, hFontControls, text.str(), Vec2i(RATIO_X(20), 0), NOP);
+		Widget * e = new TextWidget(BUTTON_MENUEDITQUEST_LOAD, hFontControls, text.str(), Vec2i(RATIO_X(20), 0), NOP);
 		e->lData = i;
 		console->AddMenuCenterY(e);
 	}
@@ -152,13 +152,13 @@ void MainMenuCreateEditQuestLoad(CWindowMenuConsole * console, Vec2i size) {
 		
 		std::string text = save.name +  "   " + save.time;
 		
-		CMenuElement * e = new TextWidget(BUTTON_MENUEDITQUEST_LOAD, hFontControls, text, Vec2i(RATIO_X(20), 0), NOP);
+		Widget * e = new TextWidget(BUTTON_MENUEDITQUEST_LOAD, hFontControls, text, Vec2i(RATIO_X(20), 0), NOP);
 		e->lData = i;
 		console->AddMenuCenterY(e);
 	}
 	
 	{
-	CMenuElement * confirm = new TextWidget(-1, hFontControls, " ", Vec2i(RATIO_X(20), 0), EDIT_QUEST_SAVE_CONFIRM);
+	Widget * confirm = new TextWidget(-1, hFontControls, " ", Vec2i(RATIO_X(20), 0), EDIT_QUEST_SAVE_CONFIRM);
 	confirm->SetCheckOff();
 	confirm->lData = -1;
 	console->AddMenuCenterY(confirm);
@@ -242,7 +242,7 @@ void MainMenuCreateEditQuestSave(CWindowMenuConsole * console) {
 		
 		std::string text = save.name +  "   " + save.time;
 		
-		CMenuElement * e = new TextWidget(BUTTON_MENUEDITQUEST_SAVEINFO, hFontControls,
+		Widget * e = new TextWidget(BUTTON_MENUEDITQUEST_SAVEINFO, hFontControls,
 		                                        text, Vec2i(RATIO_X(20), 0.f), EDIT_QUEST_SAVE_CONFIRM);
 		e->lData = i;
 		console->AddMenuCenterY(e);
@@ -358,7 +358,7 @@ void MainMenuOptionGroupsCreate(CWindowMenuConsole * console) {
 void MainMenuOptionVideoCreate(CWindowMenuConsole * console, Vec2i size)
 {
 	std::string szMenuText;
-	CMenuElement *me;
+	Widget *me;
 	CMenuPanel *pc;
 	TextureContainer *pTex;
 	
@@ -558,7 +558,7 @@ void MainMenuOptionVideoCreate(CWindowMenuConsole * console, Vec2i size)
 void MainMenuOptionAudioCreate(CWindowMenuConsole * console, Vec2i size)
 {
 	std::string szMenuText;
-	CMenuElement *me;
+	Widget *me;
 	CMenuPanel *pc;
 	TextureContainer *pTex;
 	
@@ -651,7 +651,7 @@ void MainMenuOptionAudioCreate(CWindowMenuConsole * console, Vec2i size)
 void MainMenuOptionInputCreate(CWindowMenuConsole * console)
 {
 	std::string szMenuText;
-	CMenuElement *me;
+	Widget *me;
 	CMenuPanel *pc;
 	TextureContainer *pTex;
 	
@@ -867,7 +867,7 @@ void MainMenuOptionControlsCreatePage2(CWindowMenuConsole * console, Vec2i size)
 void Menu2_Render_Quit(CWindowMenuConsole * console, Vec2i size)
 {
 	std::string szMenuText;
-	CMenuElement *me = NULL;
+	Widget *me = NULL;
 	
 	szMenuText = getLocalised("system_menus_main_quit");
 	me=new TextWidget(-1, hFontMenu, szMenuText, Vec2i(0, 0), NOP);
