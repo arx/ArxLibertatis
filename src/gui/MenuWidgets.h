@@ -431,11 +431,11 @@ private:
 	int					iPos;
 };
 
-class CMenuCheckButton : public CMenuElement {
+class CheckboxWidget : public CMenuElement {
 	
 public:
-	CMenuCheckButton(TextWidget * label);
-	virtual ~CMenuCheckButton();
+	CheckboxWidget(TextWidget * label);
+	virtual ~CheckboxWidget();
 	
 	void Move(const Vec2i & offset);
 	bool OnMouseClick();

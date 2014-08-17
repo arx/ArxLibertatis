@@ -125,7 +125,7 @@ extern CMenuElement * pMenuElementApply;
 extern TextWidget * pLoadConfirm;
 extern TextWidget * pDeleteConfirm;
 extern TextWidget * pDeleteButton;
-extern CMenuCheckButton * fullscreenCheckbox;
+extern CheckboxWidget * fullscreenCheckbox;
 extern CycleTextWidget * pMenuSliderResol;
 
 float ARXTimeMenu;
@@ -1305,7 +1305,7 @@ void CMenuAllZone::DrawZone()
 	GRenderer->SetRenderState(Renderer::AlphaBlending, false);
 }
 
-CMenuCheckButton::CMenuCheckButton(TextWidget *_pText)
+CheckboxWidget::CheckboxWidget(TextWidget *_pText)
 	:CMenuElement(NOP)
 {
 	TextureContainer *_pTex1 = TextureContainer::Load("graph/interface/menus/menu_checkbox_off");
@@ -1366,11 +1366,11 @@ CMenuCheckButton::CMenuCheckButton(TextWidget *_pText)
 	Move(m_pos);
 }
 
-CMenuCheckButton::~CMenuCheckButton() {
+CheckboxWidget::~CheckboxWidget() {
 	delete pText;
 }
 
-void CMenuCheckButton::Move(const Vec2i & offset) {
+void CheckboxWidget::Move(const Vec2i & offset) {
 	
 	CMenuElement::Move(offset);
 	
@@ -1379,7 +1379,7 @@ void CMenuCheckButton::Move(const Vec2i & offset) {
 	}
 }
 
-bool CMenuCheckButton::OnMouseClick() {
+bool CheckboxWidget::OnMouseClick() {
 	
 	if(iOldState<0)
 		iOldState=iState;
@@ -1458,11 +1458,11 @@ bool CMenuCheckButton::OnMouseClick() {
 	return false;
 }
 
-void CMenuCheckButton::Update(int /*_iDTime*/)
+void CheckboxWidget::Update(int /*_iDTime*/)
 {
 }
 
-void CMenuCheckButton::Render() {
+void CheckboxWidget::Render() {
 
 	if(bNoMenu)
 		return;
@@ -1493,7 +1493,7 @@ void CMenuCheckButton::Render() {
 	GRenderer->SetRenderState(Renderer::AlphaBlending, false);
 }
 
-void CMenuCheckButton::RenderMouseOver() {
+void CheckboxWidget::RenderMouseOver() {
 
 	if(bNoMenu)
 		return;

@@ -38,7 +38,7 @@ CWindowMenu * pWindowMenu = NULL;
 TextWidget * pDeleteConfirm = NULL;
 TextWidget * pLoadConfirm = NULL;
 TextWidget * pDeleteButton = NULL;
-CMenuCheckButton * fullscreenCheckbox = NULL;
+CheckboxWidget * fullscreenCheckbox = NULL;
 CycleTextWidget * pMenuSliderResol = NULL;
 CMenuElement * pMenuElementApply = NULL;
 
@@ -400,7 +400,7 @@ void MainMenuOptionVideoCreate(CWindowMenuConsole * console, Vec2i size)
 	szMenuText += "  ";
 	TextWidget * text = new TextWidget(-1, hFontMenu, szMenuText, Vec2i(RATIO_X(20), 0.f), NOP);
 	text->SetCheckOff();
-	CMenuCheckButton * cb = new CMenuCheckButton(text);
+	CheckboxWidget * cb = new CheckboxWidget(text);
 	cb->iID = BUTTON_MENUOPTIONSVIDEO_FULLSCREEN;
 	cb->iState = config.video.fullscreen ? 1 : 0;
 	console->AddMenuCenterY(cb);
@@ -502,7 +502,7 @@ void MainMenuOptionVideoCreate(CWindowMenuConsole * console, Vec2i size)
 	szMenuText += " ";
 	TextWidget * text = new TextWidget(-1, hFontMenu, szMenuText, Vec2i(RATIO_X(20), 0.f), NOP);
 	text->SetCheckOff();
-	CMenuCheckButton * cb = new CMenuCheckButton(text);
+	CheckboxWidget * cb = new CheckboxWidget(text);
 	cb->iID = BUTTON_MENUOPTIONSVIDEO_CROSSHAIR;
 	cb->iState = config.video.showCrosshair ? 1 : 0;
 	console->AddMenuCenterY(cb);
@@ -513,7 +513,7 @@ void MainMenuOptionVideoCreate(CWindowMenuConsole * console, Vec2i size)
 	szMenuText += " ";
 	TextWidget * text = new TextWidget(-1, hFontMenu, szMenuText, Vec2i(RATIO_X(20), 0), NOP);
 	text->SetCheckOff();
-	CMenuCheckButton * cb = new CMenuCheckButton(text);
+	CheckboxWidget * cb = new CheckboxWidget(text);
 	cb->iID = BUTTON_MENUOPTIONSVIDEO_ANTIALIASING;
 	cb->iState = config.video.antialiasing ? 1 : 0;
 	console->AddMenuCenterY(cb);
@@ -526,7 +526,7 @@ void MainMenuOptionVideoCreate(CWindowMenuConsole * console, Vec2i size)
 	szMenuText += " ";
 	TextWidget * text = new TextWidget(-1, hFontMenu, szMenuText, Vec2i(RATIO_X(20), 0), NOP);
 	text->SetCheckOff();
-	CMenuCheckButton * cb = new CMenuCheckButton(text);
+	CheckboxWidget * cb = new CheckboxWidget(text);
 	cb->iID = BUTTON_MENUOPTIONSVIDEO_VSYNC;
 	cb->iState = config.video.vsync ? 1 : 0;
 	console->AddMenuCenterY(cb);
@@ -633,7 +633,7 @@ void MainMenuOptionAudioCreate(CWindowMenuConsole * console, Vec2i size)
 	szMenuText = getLocalised("system_menus_options_audio_eax", "EAX");
 	szMenuText += " ";
 	TextWidget * text = new TextWidget(-1, hFontMenu, szMenuText, Vec2i(RATIO_X(20), 0), OPTIONS_INPUT);
-	CMenuCheckButton * cb = new CMenuCheckButton(text);
+	CheckboxWidget * cb = new CheckboxWidget(text);
 	cb->iID = BUTTON_MENUOPTIONSAUDIO_EAX;
 	cb->iState = config.audio.eax ? 1 : 0;
 	console->AddMenuCenterY(cb);
@@ -663,7 +663,7 @@ void MainMenuOptionInputCreate(CWindowMenuConsole * console)
 	szMenuText = getLocalised("system_menus_options_input_invert_mouse");
 	szMenuText += " ";
 	TextWidget * text = new TextWidget(-1, hFontMenu, szMenuText, Vec2i(RATIO_X(20), 0), OPTIONS_INPUT);
-	CMenuCheckButton * cb = new CMenuCheckButton(text);
+	CheckboxWidget * cb = new CheckboxWidget(text);
 	cb->iID = BUTTON_MENUOPTIONS_CONTROLS_INVERTMOUSE;
 	cb->iState = config.input.invertMouse ? 1 : 0;
 	console->AddMenuCenterY(cb);
@@ -673,7 +673,7 @@ void MainMenuOptionInputCreate(CWindowMenuConsole * console)
 	szMenuText = getLocalised("system_menus_options_auto_ready_weapon");
 	szMenuText += " ";
 	TextWidget * text = new TextWidget(-1, hFontMenu, szMenuText, Vec2i(RATIO_X(20), 0), OPTIONS_INPUT);
-	CMenuCheckButton * cb = new CMenuCheckButton(text);
+	CheckboxWidget * cb = new CheckboxWidget(text);
 	cb->iID = BUTTON_MENUOPTIONS_CONTROLS_AUTOREADYWEAPON;
 	cb->iState = config.input.autoReadyWeapon ? 1 : 0;
 	console->AddMenuCenterY(cb);
@@ -683,7 +683,7 @@ void MainMenuOptionInputCreate(CWindowMenuConsole * console)
 	szMenuText = getLocalised("system_menus_options_input_mouse_look_toggle");
 	szMenuText += " ";
 	TextWidget * text = new TextWidget(-1, hFontMenu, szMenuText, Vec2i(RATIO_X(20), 0.f), OPTIONS_INPUT);
-	CMenuCheckButton * cb = new CMenuCheckButton(text);
+	CheckboxWidget * cb = new CheckboxWidget(text);
 	cb->iID = BUTTON_MENUOPTIONS_CONTROLS_MOUSELOOK;
 	cb->iState = config.input.mouseLookToggle ? 1 : 0;
 	console->AddMenuCenterY(cb);
@@ -703,7 +703,7 @@ void MainMenuOptionInputCreate(CWindowMenuConsole * console)
 	szMenuText = getLocalised("system_menus_autodescription", "auto_description");
 	szMenuText += " ";
 	TextWidget * text = new TextWidget(-1, hFontMenu, szMenuText, Vec2i(RATIO_X(20), 0), OPTIONS_INPUT);
-	CMenuCheckButton * cb = new CMenuCheckButton(text);
+	CheckboxWidget * cb = new CheckboxWidget(text);
 	cb->iID = BUTTON_MENUOPTIONS_CONTROLS_AUTODESCRIPTION;
 	cb->iState = config.input.autoDescription ? 1 : 0;
 	console->AddMenuCenterY(cb);
