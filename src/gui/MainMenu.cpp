@@ -330,28 +330,30 @@ void Menu2_Render_EditQuest(Vec2i size, Vec2i offset)
 	pWindowMenu->AddConsole(pWindowMenuConsole);
 }
 
-void MainMenuOptionGroupsCreate(Vec2i size, Vec2i offset)
-{
-	std::string szMenuText;
-	CMenuElement *me;
-	TextureContainer *pTex;
+void MainMenuOptionGroupsCreate(Vec2i size, Vec2i offset) {
 	
 	CWindowMenuConsole *pWindowMenuConsole=new CWindowMenuConsole(offset, size, OPTIONS);
-
-	szMenuText = getLocalised("system_menus_options_video");
-	me = new CMenuElementText(BUTTON_MENUOPTIONSVIDEO_INIT, hFontMenu, szMenuText, Vec2i(0, 0), OPTIONS_VIDEO);
-	pWindowMenuConsole->AddMenuCenter(me);
-	
-	szMenuText = getLocalised("system_menus_options_audio");
-	me = new CMenuElementText(-1, hFontMenu, szMenuText, Vec2i(0, 0), OPTIONS_AUDIO);
-	pWindowMenuConsole->AddMenuCenter(me);
-	
-	szMenuText = getLocalised("system_menus_options_input");
-	me = new CMenuElementText(-1, hFontMenu, szMenuText, Vec2i(0, 0), OPTIONS_INPUT);
-	pWindowMenuConsole->AddMenuCenter(me);
 	
 	{
-	pTex = TextureContainer::Load("graph/interface/menus/back");
+	std::string szMenuText = getLocalised("system_menus_options_video");
+	CMenuElementText * me = new CMenuElementText(BUTTON_MENUOPTIONSVIDEO_INIT, hFontMenu, szMenuText, Vec2i(0, 0), OPTIONS_VIDEO);
+	pWindowMenuConsole->AddMenuCenter(me);
+	}
+	
+	{
+	std::string szMenuText = getLocalised("system_menus_options_audio");
+	CMenuElementText * me = new CMenuElementText(-1, hFontMenu, szMenuText, Vec2i(0, 0), OPTIONS_AUDIO);
+	pWindowMenuConsole->AddMenuCenter(me);
+	}
+	
+	{
+	std::string szMenuText = getLocalised("system_menus_options_input");
+	CMenuElementText * me = new CMenuElementText(-1, hFontMenu, szMenuText, Vec2i(0, 0), OPTIONS_INPUT);
+	pWindowMenuConsole->AddMenuCenter(me);
+	}
+	
+	{
+	TextureContainer * pTex = TextureContainer::Load("graph/interface/menus/back");
 	CMenuButton * cb = new CMenuButton(RATIO_2(Vec2i(20, 380)), pTex);
 	cb->eMenuState = MAIN;
 	cb->SetShortCut(Keyboard::Key_Escape);
