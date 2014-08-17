@@ -981,28 +981,28 @@ void MainMenuLeftCreate(MENUSTATE eMenuState)
 	Vec2i windowMenuPos = Vec2i(20, 25);
 	Vec2i windowMenuSize = Vec2i(321, 430);
 	
-	Vec2i windowConsoleOffset = Vec2i(0, 14 - 10);
-	Vec2i windowConsoleSize = windowMenuSize - windowConsoleOffset + Vec2i(0, 20);
-	
 	pWindowMenu = new CWindowMenu(windowMenuPos, windowMenuSize);
+	
+	Vec2i offset = Vec2i(0, 14 - 10);
+	Vec2i size = windowMenuSize - offset + Vec2i(0, 20);
 	
 	switch(eMenuState) {
 	case NEW_QUEST: {
-			Menu2_Render_NewQuest(windowConsoleSize, windowConsoleOffset);
+			Menu2_Render_NewQuest(size, offset);
 		
 		break;
 	}
 	case EDIT_QUEST: {
-			Menu2_Render_EditQuest(windowConsoleSize, windowConsoleOffset);
+			Menu2_Render_EditQuest(size, offset);
 			}
 		break;
 	case OPTIONS: {
-			Menu2_Render_Options(windowConsoleSize, windowConsoleOffset);
+			Menu2_Render_Options(size, offset);
 		}
 		break;
 	
 	case QUIT: {
-			Menu2_Render_Quit(windowConsoleSize, windowConsoleOffset);
+			Menu2_Render_Quit(size, offset);
 		
 		
 		break;
