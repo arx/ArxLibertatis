@@ -80,15 +80,13 @@ void Menu2_Render_NewQuest(CWindowMenuConsole * console, Vec2i size) {
 	console->AddMenu(pPanel);
 }
 
-void MainMenuCreateEditQuest(Vec2i size, Vec2i offset) {
+void MainMenuCreateEditQuest(CWindowMenuConsole * console) {
 	
-	CWindowMenuConsole *pWindowMenuConsole=new CWindowMenuConsole(offset, size, EDIT_QUEST);
-
 	{
 	std::string szMenuText = getLocalised("system_menus_main_editquest_load");
 	CMenuElementText * me = new CMenuElementText(BUTTON_MENUEDITQUEST_LOAD_INIT, hFontMenu, szMenuText, Vec2i(0, 0), EDIT_QUEST_LOAD);
 	me->lData = -1;
-	pWindowMenuConsole->AddMenuCenter(me);
+	console->AddMenuCenter(me);
 	}
 
 	{
@@ -99,7 +97,7 @@ void MainMenuCreateEditQuest(Vec2i size, Vec2i offset) {
 		me->SetCheckOff();
 		((CMenuElementText*)me)->lColor=Color(127,127,127);
 	}
-	pWindowMenuConsole->AddMenuCenter(me);
+	console->AddMenuCenter(me);
 	}
 	
 	{
@@ -107,11 +105,8 @@ void MainMenuCreateEditQuest(Vec2i size, Vec2i offset) {
 	CMenuButton * cb = new CMenuButton(RATIO_2(Vec2i(20, 380)), pTex);
 	cb->eMenuState = MAIN;
 	cb->SetShortCut(Keyboard::Key_Escape);
-	pWindowMenuConsole->AddMenu(cb);
+	console->AddMenu(cb);
 	}
-
-	pWindowMenu->eCurrentMenuState = EDIT_QUEST;
-	pWindowMenu->AddConsole(pWindowMenuConsole);
 }
 
 void MainMenuCreateEditQuestLoad(Vec2i size, Vec2i offset) {
@@ -344,14 +339,6 @@ void MainMenuCreateEditQuestSaveConfirm(Vec2i size, Vec2i offset) {
 	pWindowMenuConsole->AddMenu(pPanel);
 
 	pWindowMenu->AddConsole(pWindowMenuConsole);
-}
-
-void Menu2_Render_EditQuest(Vec2i size, Vec2i offset)
-{
-	MainMenuCreateEditQuest(size, offset);
-	MainMenuCreateEditQuestLoad(size, offset);
-	MainMenuCreateEditQuestSave(size, offset);
-	MainMenuCreateEditQuestSaveConfirm(size, offset);
 }
 
 void MainMenuOptionGroupsCreate(Vec2i size, Vec2i offset) {
@@ -992,10 +979,21 @@ void MainMenuLeftCreate(MENUSTATE eMenuState)
 			
 			break;
 		}
-	case EDIT_QUEST: {
-			Menu2_Render_EditQuest(size, offset);
+		case EDIT_QUEST: {
+			{
+			CWindowMenuConsole * console = new CWindowMenuConsole(offset, size, EDIT_QUEST);
+			MainMenuCreateEditQuest(console);
+			
+			pWindowMenu->eCurrentMenuState = EDIT_QUEST;
+			pWindowMenu->AddConsole(console);
 			}
-		break;
+			
+			MainMenuCreateEditQuestLoad(size, offset);
+			MainMenuCreateEditQuestSave(size, offset);
+			MainMenuCreateEditQuestSaveConfirm(size, offset);
+			
+			break;
+		}
 	case OPTIONS: {
 			Menu2_Render_Options(size, offset);
 		}
