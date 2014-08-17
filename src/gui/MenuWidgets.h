@@ -230,7 +230,7 @@ enum ELEMPOS
 class Widget {
 	
 public:
-	bool	bCheck;
+
 	bool	bTestYDouble;
 	Widget *	pRef;
 	Rect	rZone;
@@ -276,9 +276,13 @@ public:
 		bCheck = true;
 	};
 	
+	bool getCheck() { return bCheck; }
+	
 	virtual Widget * IsMouseOver(const Vec2s& mousePos) const;
+	
 protected:
 	bool enabled;
+	bool bCheck;
 };
 
 class CMenuAllZone

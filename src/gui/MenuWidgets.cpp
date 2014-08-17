@@ -505,13 +505,13 @@ bool Menu2_Render() {
 
 
 Widget::Widget(MENUSTATE _ms)
-	: bCheck(true)
-	, bTestYDouble(false)
+	: bTestYDouble(false)
 	, pRef(NULL)
 	, rZone(0, 0, 0, 0)
 	, iID(-1)
 	, lData(0)
 	, enabled(true)
+	, bCheck(true)
 {
 	ePlace=NOCENTER;
 	eState=TNOP;
@@ -1252,7 +1252,7 @@ Widget * CMenuAllZone::CheckZone(const Vec2s& mousePos) const {
 	for(i = vMenuZone.begin(); i != vMenuZone.end(); ++i) {
 		Widget *zone = *i;
 		
-		if(!zone->bCheck)
+		if(!zone->getCheck())
 			continue;
 		
 		Widget * pRef = zone->IsMouseOver(mousePos);
@@ -2379,7 +2379,7 @@ Widget * CMenuPanel::IsMouseOver(const Vec2s& mousePos) const {
 
 	if(rZone.contains(Vec2i(mousePos))) {
 		BOOST_FOREACH(Widget * e, vElement) {
-			if(e->bCheck && e->rZone.contains(Vec2i(mousePos))) {
+			if(e->getCheck() && e->rZone.contains(Vec2i(mousePos))) {
 				return e->pRef;
 			}
 		}

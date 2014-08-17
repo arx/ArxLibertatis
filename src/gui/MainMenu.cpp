@@ -47,14 +47,14 @@ void Menu2_Render_NewQuest(CWindowMenuConsole * console, Vec2i size) {
 	{
 	std::string szMenuText = getLocalised("system_menus_main_editquest_confirm");
 	TextWidget * me = new TextWidget(-1, hFontMenu, szMenuText, Vec2i(0, 0), NOP);
-	me->bCheck = false;
+	me->SetCheckOff();
 	console->AddMenuCenter(me, true);
 	}
 	
 	{
 	std::string szMenuText = getLocalised("system_menus_main_newquest_confirm");
 	TextWidget * me = new TextWidget(-1, hFontMenu, szMenuText, Vec2i(0, 0), NOP);
-	me->bCheck = false;
+	me->SetCheckOff();
 	console->AddMenuCenter(me, true);
 	}
 	
@@ -114,7 +114,7 @@ void MainMenuCreateEditQuestLoad(CWindowMenuConsole * console, Vec2i size) {
 	{
 	TextureContainer * pTex = TextureContainer::Load("graph/interface/icons/menu_main_load");
 	ButtonWidget * cb = new ButtonWidget(Vec2i(0, 0), pTex);
-	cb->bCheck = false;
+	cb->SetCheckOff();
 	console->AddMenuCenter(cb, true);
 	}
 	
@@ -206,7 +206,7 @@ void MainMenuCreateEditQuestSave(CWindowMenuConsole * console) {
 	{
 	TextureContainer * pTex = TextureContainer::Load("graph/interface/icons/menu_main_save");
 	ButtonWidget * cb = new ButtonWidget(Vec2i(RATIO_X(10), 0), pTex);
-	cb->bCheck = false;
+	cb->SetCheckOff();
 	console->AddMenuCenter(cb, true);
 	}
 	
@@ -281,7 +281,7 @@ void MainMenuCreateEditQuestSaveConfirm(CWindowMenuConsole * console, Vec2i size
 	{
 	TextureContainer * pTex = TextureContainer::Load("graph/interface/icons/menu_main_save");
 	ButtonWidget * cb = new ButtonWidget(Vec2i(0, 0), pTex);
-	cb->bCheck = false;
+	cb->SetCheckOff();
 	console->AddMenuCenter(cb, true);
 	}
 	
@@ -871,12 +871,12 @@ void Menu2_Render_Quit(CWindowMenuConsole * console, Vec2i size)
 	
 	szMenuText = getLocalised("system_menus_main_quit");
 	me=new TextWidget(-1, hFontMenu, szMenuText, Vec2i(0, 0), NOP);
-	me->bCheck = false;
+	me->SetCheckOff();
 	console->AddMenuCenter(me, true);
 	
 	szMenuText = getLocalised("system_menus_main_editquest_confirm");
 	me=new TextWidget(-1, hFontMenu, szMenuText, Vec2i(0, 0), NOP);
-	me->bCheck = false;
+	me->SetCheckOff();
 	console->AddMenuCenter(me, true);
 	
 	CMenuPanel *pPanel = new CMenuPanel();
