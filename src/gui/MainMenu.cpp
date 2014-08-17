@@ -109,17 +109,13 @@ void MainMenuCreateEditQuest(CWindowMenuConsole * console) {
 	}
 }
 
-void MainMenuCreateEditQuestLoad(Vec2i size, Vec2i offset) {
-	
-	CWindowMenuConsole * pWindowMenuConsole=new CWindowMenuConsole(offset + Vec2i(0, -40), size, EDIT_QUEST_LOAD);
-	pWindowMenuConsole->lData = -1;
-	pWindowMenuConsole->iInterligne = 5;
+void MainMenuCreateEditQuestLoad(CWindowMenuConsole * console, Vec2i size) {
 	
 	{
 	TextureContainer * pTex = TextureContainer::Load("graph/interface/icons/menu_main_load");
 	CMenuButton * cb = new CMenuButton(Vec2i(0, 0), pTex);
 	cb->bCheck = false;
-	pWindowMenuConsole->AddMenuCenter(cb);
+	console->AddMenuCenter(cb);
 	}
 	
 	std::string quicksaveName = getLocalised("system_menus_main_quickloadsave", "Quicksave");
@@ -143,7 +139,7 @@ void MainMenuCreateEditQuestLoad(Vec2i size, Vec2i offset) {
 		
 		CMenuElement * e = new CMenuElementText(BUTTON_MENUEDITQUEST_LOAD, hFontControls, text.str(), Vec2i(RATIO_X(20), 0), NOP);
 		e->lData = i;
-		pWindowMenuConsole->AddMenuCenterY(e);
+		console->AddMenuCenterY(e);
 	}
 	
 	// Show regular saves.
@@ -158,14 +154,14 @@ void MainMenuCreateEditQuestLoad(Vec2i size, Vec2i offset) {
 		
 		CMenuElement * e = new CMenuElementText(BUTTON_MENUEDITQUEST_LOAD, hFontControls, text, Vec2i(RATIO_X(20), 0), NOP);
 		e->lData = i;
-		pWindowMenuConsole->AddMenuCenterY(e);
+		console->AddMenuCenterY(e);
 	}
 	
 	{
 	CMenuElement * confirm = new CMenuElementText(-1, hFontControls, " ", Vec2i(RATIO_X(20), 0), EDIT_QUEST_SAVE_CONFIRM);
 	confirm->SetCheckOff();
 	confirm->lData = -1;
-	pWindowMenuConsole->AddMenuCenterY(confirm);
+	console->AddMenuCenterY(confirm);
 	}
 	
 	// Delete button
@@ -177,7 +173,7 @@ void MainMenuCreateEditQuestLoad(Vec2i size, Vec2i offset) {
 	me->SetCheckOff();
 	me->lOldColor = me->lColor;
 	me->lColor = Color::grayb(127);
-	pWindowMenuConsole->AddMenu(me);
+	console->AddMenu(me);
 	pDeleteConfirm = me;
 	}
 	
@@ -190,7 +186,7 @@ void MainMenuCreateEditQuestLoad(Vec2i size, Vec2i offset) {
 	me->SetCheckOff();
 	me->lOldColor = me->lColor;
 	me->lColor = Color::grayb(127);
-	pWindowMenuConsole->AddMenu(me);
+	console->AddMenu(me);
 	pLoadConfirm = me;
 	}
 	
@@ -200,10 +196,9 @@ void MainMenuCreateEditQuestLoad(Vec2i size, Vec2i offset) {
 	CMenuButton * cb = new CMenuButton(RATIO_2(Vec2i(20, 420)), pTex);
 	cb->eMenuState = EDIT_QUEST;
 	cb->SetShortCut(Keyboard::Key_Escape);
-	pWindowMenuConsole->AddMenu(cb);
+	console->AddMenu(cb);
 	}
 	}
-	pWindowMenu->AddConsole(pWindowMenuConsole);
 }
 
 void MainMenuCreateEditQuestSave(Vec2i size, Vec2i offset) {
@@ -988,7 +983,15 @@ void MainMenuLeftCreate(MENUSTATE eMenuState)
 			pWindowMenu->AddConsole(console);
 			}
 			
-			MainMenuCreateEditQuestLoad(size, offset);
+			{
+			CWindowMenuConsole * console = new CWindowMenuConsole(offset + Vec2i(0, -40), size, EDIT_QUEST_LOAD);
+			console->lData = -1;
+			console->iInterligne = 5;
+			
+			MainMenuCreateEditQuestLoad(console, size);
+			pWindowMenu->AddConsole(console);
+			}
+			
 			MainMenuCreateEditQuestSave(size, offset);
 			MainMenuCreateEditQuestSaveConfirm(size, offset);
 			
