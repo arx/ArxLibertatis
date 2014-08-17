@@ -1614,56 +1614,23 @@ void CWindowMenuConsole::AddMenu(Widget * element) {
 	MenuAllZone.AddZone(element);
 }
 
-// TODO copy-paste
-void CWindowMenuConsole::AddMenuCenterY(Widget * element) {
+void CWindowMenuConsole::AddMenuCenter(Widget * element, bool centerX) {
 
-	element->ePlace = CENTERY;
-
-	int iDy = element->rZone.bottom - element->rZone.top;
-
-	for(size_t iJ = 0; iJ < MenuAllZone.GetNbZone(); iJ++) {
-		Widget * pZone = MenuAllZone.GetZoneNum(iJ);
-
-		iDy += iInterligne;
-		iDy += pZone->rZone.bottom - pZone->rZone.top;
-	}
-
-	int iDepY = m_offset.y;
-
-	if(iDy < m_size.y) {
-		iDepY += ((m_size.y - iDy) >> 1);
-	}
-
-	int dy = 0;
-
-	if(MenuAllZone.GetNbZone()) {
-		dy = iDepY - MenuAllZone.GetZoneNum(0)->rZone.top;
-	}
+	int dx;
 	
-	for(size_t iJ = 0; iJ < MenuAllZone.GetNbZone(); iJ++) {
-		Widget *pZone = MenuAllZone.GetZoneNum(iJ);
-		iDepY += (pZone->rZone.bottom - pZone->rZone.top) + iInterligne;
+	if(centerX) {
+		element->ePlace = CENTER;
 		
-		pZone->Move(Vec2i(0, dy));
-	}
-
-	element->Move(Vec2i(0, iDepY));
-
-	MenuAllZone.AddZone(element);
-}
-
-// TODO copy-paste
-void CWindowMenuConsole::AddMenuCenter(Widget * element) {
-
-	element->ePlace = CENTER;
-
-	int iDx = element->rZone.right - element->rZone.left;
-	int dx  = ((m_size.x - iDx) >> 1) - element->rZone.left;
-
-	if(dx < 0) {
+		int iDx = element->rZone.right - element->rZone.left;
+		dx  = ((m_size.x - iDx) >> 1) - element->rZone.left;
+	
+		if(dx < 0) {
+			dx = 0;
+		}
+	} else {
 		dx = 0;
 	}
-
+	
 	int iDy = element->rZone.bottom - element->rZone.top;
 
 	for(size_t iJ = 0; iJ < MenuAllZone.GetNbZone(); iJ++) {

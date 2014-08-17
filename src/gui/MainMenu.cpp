@@ -48,14 +48,14 @@ void Menu2_Render_NewQuest(CWindowMenuConsole * console, Vec2i size) {
 	std::string szMenuText = getLocalised("system_menus_main_editquest_confirm");
 	TextWidget * me = new TextWidget(-1, hFontMenu, szMenuText, Vec2i(0, 0), NOP);
 	me->bCheck = false;
-	console->AddMenuCenter(me);
+	console->AddMenuCenter(me, true);
 	}
 	
 	{
 	std::string szMenuText = getLocalised("system_menus_main_newquest_confirm");
 	TextWidget * me = new TextWidget(-1, hFontMenu, szMenuText, Vec2i(0, 0), NOP);
 	me->bCheck = false;
-	console->AddMenuCenter(me);
+	console->AddMenuCenter(me, true);
 	}
 	
 	CMenuPanel *pPanel = new CMenuPanel();
@@ -86,7 +86,7 @@ void MainMenuCreateEditQuest(CWindowMenuConsole * console) {
 	std::string szMenuText = getLocalised("system_menus_main_editquest_load");
 	TextWidget * me = new TextWidget(BUTTON_MENUEDITQUEST_LOAD_INIT, hFontMenu, szMenuText, Vec2i(0, 0), EDIT_QUEST_LOAD);
 	me->lData = -1;
-	console->AddMenuCenter(me);
+	console->AddMenuCenter(me, true);
 	}
 
 	{
@@ -97,7 +97,7 @@ void MainMenuCreateEditQuest(CWindowMenuConsole * console) {
 		me->SetCheckOff();
 		((TextWidget*)me)->lColor=Color(127,127,127);
 	}
-	console->AddMenuCenter(me);
+	console->AddMenuCenter(me, true);
 	}
 	
 	{
@@ -115,7 +115,7 @@ void MainMenuCreateEditQuestLoad(CWindowMenuConsole * console, Vec2i size) {
 	TextureContainer * pTex = TextureContainer::Load("graph/interface/icons/menu_main_load");
 	ButtonWidget * cb = new ButtonWidget(Vec2i(0, 0), pTex);
 	cb->bCheck = false;
-	console->AddMenuCenter(cb);
+	console->AddMenuCenter(cb, true);
 	}
 	
 	std::string quicksaveName = getLocalised("system_menus_main_quickloadsave", "Quicksave");
@@ -139,7 +139,7 @@ void MainMenuCreateEditQuestLoad(CWindowMenuConsole * console, Vec2i size) {
 		
 		Widget * e = new TextWidget(BUTTON_MENUEDITQUEST_LOAD, hFontControls, text.str(), Vec2i(RATIO_X(20), 0), NOP);
 		e->lData = i;
-		console->AddMenuCenterY(e);
+		console->AddMenuCenter(e);
 	}
 	
 	// Show regular saves.
@@ -154,14 +154,14 @@ void MainMenuCreateEditQuestLoad(CWindowMenuConsole * console, Vec2i size) {
 		
 		Widget * e = new TextWidget(BUTTON_MENUEDITQUEST_LOAD, hFontControls, text, Vec2i(RATIO_X(20), 0), NOP);
 		e->lData = i;
-		console->AddMenuCenterY(e);
+		console->AddMenuCenter(e);
 	}
 	
 	{
 	Widget * confirm = new TextWidget(-1, hFontControls, " ", Vec2i(RATIO_X(20), 0), EDIT_QUEST_SAVE_CONFIRM);
 	confirm->SetCheckOff();
 	confirm->lData = -1;
-	console->AddMenuCenterY(confirm);
+	console->AddMenuCenter(confirm);
 	}
 	
 	// Delete button
@@ -207,7 +207,7 @@ void MainMenuCreateEditQuestSave(CWindowMenuConsole * console) {
 	TextureContainer * pTex = TextureContainer::Load("graph/interface/icons/menu_main_save");
 	ButtonWidget * cb = new ButtonWidget(Vec2i(RATIO_X(10), 0), pTex);
 	cb->bCheck = false;
-	console->AddMenuCenter(cb);
+	console->AddMenuCenter(cb, true);
 	}
 	
 	std::string quicksaveName = getLocalised("system_menus_main_quickloadsave", "Quicksave");
@@ -229,7 +229,7 @@ void MainMenuCreateEditQuestSave(CWindowMenuConsole * console) {
 		e->setColor(Color::grayb(127));
 		e->SetCheckOff();
 		e->lData = i;
-		console->AddMenuCenterY(e);
+		console->AddMenuCenter(e);
 	}
 	
 	// Show regular saves.
@@ -245,7 +245,7 @@ void MainMenuCreateEditQuestSave(CWindowMenuConsole * console) {
 		Widget * e = new TextWidget(BUTTON_MENUEDITQUEST_SAVEINFO, hFontControls,
 		                                        text, Vec2i(RATIO_X(20), 0.f), EDIT_QUEST_SAVE_CONFIRM);
 		e->lData = i;
-		console->AddMenuCenterY(e);
+		console->AddMenuCenter(e);
 	}
 	
 	for(size_t i = savegames.size(); i <= 15; i++) {
@@ -257,14 +257,14 @@ void MainMenuCreateEditQuestSave(CWindowMenuConsole * console) {
 
 		e->eMenuState = EDIT_QUEST_SAVE_CONFIRM;
 		e->lData = -1;
-		console->AddMenuCenterY(e);
+		console->AddMenuCenter(e);
 	}
 
 	{
 	TextWidget * me01 = new TextWidget(-1, hFontControls, " ", Vec2i(RATIO_X(20), 0), EDIT_QUEST_SAVE_CONFIRM);
 	me01->lData = -1;
 	me01->SetCheckOff();
-	console->AddMenuCenterY(me01);
+	console->AddMenuCenter(me01);
 	}
 	
 	{
@@ -282,7 +282,7 @@ void MainMenuCreateEditQuestSaveConfirm(CWindowMenuConsole * console, Vec2i size
 	TextureContainer * pTex = TextureContainer::Load("graph/interface/icons/menu_main_save");
 	ButtonWidget * cb = new ButtonWidget(Vec2i(0, 0), pTex);
 	cb->bCheck = false;
-	console->AddMenuCenter(cb);
+	console->AddMenuCenter(cb, true);
 	}
 	
 	{
@@ -291,7 +291,7 @@ void MainMenuCreateEditQuestSaveConfirm(CWindowMenuConsole * console, Vec2i size
 	me->lData = -1;
 	me->eState=EDIT;
 	me->ePlace=CENTER;
-	console->AddMenuCenter(me);
+	console->AddMenuCenter(me, true);
 	}
 	
 	CMenuPanel * pPanel = new CMenuPanel();
@@ -331,19 +331,19 @@ void MainMenuOptionGroupsCreate(CWindowMenuConsole * console) {
 	{
 	std::string szMenuText = getLocalised("system_menus_options_video");
 	TextWidget * me = new TextWidget(BUTTON_MENUOPTIONSVIDEO_INIT, hFontMenu, szMenuText, Vec2i(0, 0), OPTIONS_VIDEO);
-	console->AddMenuCenter(me);
+	console->AddMenuCenter(me, true);
 	}
 	
 	{
 	std::string szMenuText = getLocalised("system_menus_options_audio");
 	TextWidget * me = new TextWidget(-1, hFontMenu, szMenuText, Vec2i(0, 0), OPTIONS_AUDIO);
-	console->AddMenuCenter(me);
+	console->AddMenuCenter(me, true);
 	}
 	
 	{
 	std::string szMenuText = getLocalised("system_menus_options_input");
 	TextWidget * me = new TextWidget(-1, hFontMenu, szMenuText, Vec2i(0, 0), OPTIONS_INPUT);
-	console->AddMenuCenter(me);
+	console->AddMenuCenter(me, true);
 	}
 	
 	{
@@ -385,7 +385,7 @@ void MainMenuOptionVideoCreate(CWindowMenuConsole * console, Vec2i size)
 		float fRatio    = (RATIO_X(size.x-9) - slider->rZone.width()); 
 		slider->Move(Vec2i(checked_range_cast<int>(fRatio), 0));
 		pc->AddElement(slider);
-		console->AddMenuCenterY(pc);
+		console->AddMenuCenter(pc);
 		
 	}
 	
@@ -403,7 +403,7 @@ void MainMenuOptionVideoCreate(CWindowMenuConsole * console, Vec2i size)
 	CheckboxWidget * cb = new CheckboxWidget(text);
 	cb->iID = BUTTON_MENUOPTIONSVIDEO_FULLSCREEN;
 	cb->iState = config.video.fullscreen ? 1 : 0;
-	console->AddMenuCenterY(cb);
+	console->AddMenuCenter(cb);
 	fullscreenCheckbox = cb;
 	}
 	
@@ -461,7 +461,7 @@ void MainMenuOptionVideoCreate(CWindowMenuConsole * console, Vec2i size)
 
 	pc->AddElement(pMenuSliderResol);
 
-	console->AddMenuCenterY(pc);
+	console->AddMenuCenter(pc);
 
 	pc = new CMenuPanel();
 	szMenuText = getLocalised("system_menus_options_detail");
@@ -484,7 +484,7 @@ void MainMenuOptionVideoCreate(CWindowMenuConsole * console, Vec2i size)
 	pc->AddElement(cb);
 	}
 
-	console->AddMenuCenterY(pc);
+	console->AddMenuCenter(pc);
 	
 	pc = new CMenuPanel();
 	szMenuText = getLocalised("system_menus_options_video_brouillard");
@@ -495,7 +495,7 @@ void MainMenuOptionVideoCreate(CWindowMenuConsole * console, Vec2i size)
 	((SliderWidget *)me)->setValue(config.video.fogDistance);
 	pc->AddElement(me);
 
-	console->AddMenuCenterY(pc);
+	console->AddMenuCenter(pc);
 	
 	{
 	szMenuText = getLocalised("system_menus_options_video_crosshair", "Show Crosshair");
@@ -505,7 +505,7 @@ void MainMenuOptionVideoCreate(CWindowMenuConsole * console, Vec2i size)
 	CheckboxWidget * cb = new CheckboxWidget(text);
 	cb->iID = BUTTON_MENUOPTIONSVIDEO_CROSSHAIR;
 	cb->iState = config.video.showCrosshair ? 1 : 0;
-	console->AddMenuCenterY(cb);
+	console->AddMenuCenter(cb);
 	}
 	
 	{
@@ -516,7 +516,7 @@ void MainMenuOptionVideoCreate(CWindowMenuConsole * console, Vec2i size)
 	CheckboxWidget * cb = new CheckboxWidget(text);
 	cb->iID = BUTTON_MENUOPTIONSVIDEO_ANTIALIASING;
 	cb->iState = config.video.antialiasing ? 1 : 0;
-	console->AddMenuCenterY(cb);
+	console->AddMenuCenter(cb);
 	}
 	
 	ARX_SetAntiAliasing();
@@ -529,7 +529,7 @@ void MainMenuOptionVideoCreate(CWindowMenuConsole * console, Vec2i size)
 	CheckboxWidget * cb = new CheckboxWidget(text);
 	cb->iID = BUTTON_MENUOPTIONSVIDEO_VSYNC;
 	cb->iState = config.video.vsync ? 1 : 0;
-	console->AddMenuCenterY(cb);
+	console->AddMenuCenter(cb);
 	}
 	
 	{
@@ -585,7 +585,7 @@ void MainMenuOptionAudioCreate(CWindowMenuConsole * console, Vec2i size)
 		float fRatio    = (RATIO_X(size.x-9) - slider->rZone.width()); 
 		slider->Move(Vec2i(checked_range_cast<int>(fRatio), 0));
 		pc->AddElement(slider);
-		console->AddMenuCenterY(pc);
+		console->AddMenuCenter(pc);
 		
 	}
 	
@@ -597,7 +597,7 @@ void MainMenuOptionAudioCreate(CWindowMenuConsole * console, Vec2i size)
 	me = new SliderWidget(BUTTON_MENUOPTIONSAUDIO_MASTER, Vec2i(RATIO_X(200), 0));
 	((SliderWidget *)me)->setValue((int)config.audio.volume); // TODO use float sliders
 	pc->AddElement(me);
-	console->AddMenuCenterY(pc);
+	console->AddMenuCenter(pc);
 
 	pc = new CMenuPanel();
 	szMenuText = getLocalised("system_menus_options_audio_effects_volume");
@@ -607,7 +607,7 @@ void MainMenuOptionAudioCreate(CWindowMenuConsole * console, Vec2i size)
 	me = new SliderWidget(BUTTON_MENUOPTIONSAUDIO_SFX, Vec2i(RATIO_X(200), 0));
 	((SliderWidget *)me)->setValue((int)config.audio.sfxVolume);
 	pc->AddElement(me);
-	console->AddMenuCenterY(pc);
+	console->AddMenuCenter(pc);
 
 	pc = new CMenuPanel();
 	szMenuText = getLocalised("system_menus_options_audio_speech_volume");
@@ -617,7 +617,7 @@ void MainMenuOptionAudioCreate(CWindowMenuConsole * console, Vec2i size)
 	me = new SliderWidget(BUTTON_MENUOPTIONSAUDIO_SPEECH, Vec2i(RATIO_X(200), 0));
 	((SliderWidget *)me)->setValue((int)config.audio.speechVolume);
 	pc->AddElement(me);
-	console->AddMenuCenterY(pc);
+	console->AddMenuCenter(pc);
 
 	pc = new CMenuPanel();
 	szMenuText = getLocalised("system_menus_options_audio_ambiance_volume");
@@ -627,7 +627,7 @@ void MainMenuOptionAudioCreate(CWindowMenuConsole * console, Vec2i size)
 	me = new SliderWidget(BUTTON_MENUOPTIONSAUDIO_AMBIANCE, Vec2i(RATIO_X(200), 0));
 	((SliderWidget *)me)->setValue((int)config.audio.ambianceVolume);
 	pc->AddElement(me);
-	console->AddMenuCenterY(pc);
+	console->AddMenuCenter(pc);
 	
 	{
 	szMenuText = getLocalised("system_menus_options_audio_eax", "EAX");
@@ -636,7 +636,7 @@ void MainMenuOptionAudioCreate(CWindowMenuConsole * console, Vec2i size)
 	CheckboxWidget * cb = new CheckboxWidget(text);
 	cb->iID = BUTTON_MENUOPTIONSAUDIO_EAX;
 	cb->iState = config.audio.eax ? 1 : 0;
-	console->AddMenuCenterY(cb);
+	console->AddMenuCenter(cb);
 	}
 	
 	{
@@ -657,7 +657,7 @@ void MainMenuOptionInputCreate(CWindowMenuConsole * console)
 	
 	szMenuText = getLocalised("system_menus_options_input_customize_controls");
 	me = new TextWidget(-1, hFontMenu, szMenuText, Vec2i(RATIO_X(20), 0), OPTIONS_INPUT_CUSTOMIZE_KEYS_1);
-	console->AddMenuCenterY(me);
+	console->AddMenuCenter(me);
 	
 	{
 	szMenuText = getLocalised("system_menus_options_input_invert_mouse");
@@ -666,7 +666,7 @@ void MainMenuOptionInputCreate(CWindowMenuConsole * console)
 	CheckboxWidget * cb = new CheckboxWidget(text);
 	cb->iID = BUTTON_MENUOPTIONS_CONTROLS_INVERTMOUSE;
 	cb->iState = config.input.invertMouse ? 1 : 0;
-	console->AddMenuCenterY(cb);
+	console->AddMenuCenter(cb);
 	}
 	
 	{
@@ -676,7 +676,7 @@ void MainMenuOptionInputCreate(CWindowMenuConsole * console)
 	CheckboxWidget * cb = new CheckboxWidget(text);
 	cb->iID = BUTTON_MENUOPTIONS_CONTROLS_AUTOREADYWEAPON;
 	cb->iState = config.input.autoReadyWeapon ? 1 : 0;
-	console->AddMenuCenterY(cb);
+	console->AddMenuCenter(cb);
 	}
 
 	{
@@ -686,7 +686,7 @@ void MainMenuOptionInputCreate(CWindowMenuConsole * console)
 	CheckboxWidget * cb = new CheckboxWidget(text);
 	cb->iID = BUTTON_MENUOPTIONS_CONTROLS_MOUSELOOK;
 	cb->iState = config.input.mouseLookToggle ? 1 : 0;
-	console->AddMenuCenterY(cb);
+	console->AddMenuCenter(cb);
 	}
 
 	pc = new CMenuPanel();
@@ -697,7 +697,7 @@ void MainMenuOptionInputCreate(CWindowMenuConsole * console)
 	me = new SliderWidget(BUTTON_MENUOPTIONS_CONTROLS_MOUSESENSITIVITY, Vec2i(RATIO_X(200), 0));
 	((SliderWidget*)me)->setValue(config.input.mouseSensitivity);
 	pc->AddElement(me);
-	console->AddMenuCenterY(pc);
+	console->AddMenuCenter(pc);
 	
 	{
 	szMenuText = getLocalised("system_menus_autodescription", "auto_description");
@@ -706,7 +706,7 @@ void MainMenuOptionInputCreate(CWindowMenuConsole * console)
 	CheckboxWidget * cb = new CheckboxWidget(text);
 	cb->iID = BUTTON_MENUOPTIONS_CONTROLS_AUTODESCRIPTION;
 	cb->iState = config.input.autoDescription ? 1 : 0;
-	console->AddMenuCenterY(cb);
+	console->AddMenuCenter(cb);
 	}
 
 	pc = new CMenuPanel();
@@ -717,7 +717,7 @@ void MainMenuOptionInputCreate(CWindowMenuConsole * console)
 	me = new SliderWidget(BUTTON_MENUOPTIONS_CONTROLS_QUICKSAVESLOTS, Vec2i(RATIO_X(200), 0));
 	((SliderWidget*)me)->setValue(config.misc.quicksaveSlots);
 	pc->AddElement(me);
-	console->AddMenuCenterY(pc);
+	console->AddMenuCenter(pc);
 	
 	{
 	pTex = TextureContainer::Load("graph/interface/menus/back");
@@ -872,12 +872,12 @@ void Menu2_Render_Quit(CWindowMenuConsole * console, Vec2i size)
 	szMenuText = getLocalised("system_menus_main_quit");
 	me=new TextWidget(-1, hFontMenu, szMenuText, Vec2i(0, 0), NOP);
 	me->bCheck = false;
-	console->AddMenuCenter(me);
+	console->AddMenuCenter(me, true);
 	
 	szMenuText = getLocalised("system_menus_main_editquest_confirm");
 	me=new TextWidget(-1, hFontMenu, szMenuText, Vec2i(0, 0), NOP);
 	me->bCheck = false;
-	console->AddMenuCenter(me);
+	console->AddMenuCenter(me, true);
 	
 	CMenuPanel *pPanel = new CMenuPanel();
 	

@@ -499,8 +499,7 @@ public:
 	CWindowMenuConsole(Vec2i pos, Vec2i size, MENUSTATE state);
 	
 	void AddMenu(Widget * element);
-	void AddMenuCenter(Widget * element);
-	void AddMenuCenterY(Widget * element);
+	void AddMenuCenter(Widget * element, bool centerX = false);
 	void AlignElementCenter(Widget * element);
 	MENUSTATE Update(Vec2i pos);
 	void Render();
