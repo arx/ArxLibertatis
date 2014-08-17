@@ -42,12 +42,7 @@ CMenuCheckButton * fullscreenCheckbox = NULL;
 CMenuSliderText * pMenuSliderResol = NULL;
 CMenuElement * pMenuElementApply = NULL;
 
-void Menu2_Render_NewQuest(Vec2i size, Vec2i offset)
-{
-	if(!ARXMenu_CanResumeGame())
-		return;
-	
-	CWindowMenuConsole * console = new CWindowMenuConsole(offset, size, NEW_QUEST);
+void Menu2_Render_NewQuest(CWindowMenuConsole * console, Vec2i size) {
 	
 	{
 	std::string szMenuText = getLocalised("system_menus_main_editquest_confirm");
@@ -83,9 +78,6 @@ void Menu2_Render_NewQuest(Vec2i size, Vec2i offset)
 	pPanel->Move(Vec2i(0, RATIO_Y(380)));
 	
 	console->AddMenu(pPanel);
-	
-	pWindowMenu->AddConsole(console);
-	pWindowMenu->eCurrentMenuState=NEW_QUEST;
 }
 
 void MainMenuCreateEditQuest(Vec2i size, Vec2i offset) {
@@ -987,11 +979,19 @@ void MainMenuLeftCreate(MENUSTATE eMenuState)
 	Vec2i size = windowMenuSize - offset + Vec2i(0, 20);
 	
 	switch(eMenuState) {
-	case NEW_QUEST: {
-			Menu2_Render_NewQuest(size, offset);
-		
-		break;
-	}
+		case NEW_QUEST: {
+			if(!ARXMenu_CanResumeGame())
+				break;
+			
+			CWindowMenuConsole * console = new CWindowMenuConsole(offset, size, NEW_QUEST);
+			
+			Menu2_Render_NewQuest(console, size);
+			
+			pWindowMenu->AddConsole(console);
+			pWindowMenu->eCurrentMenuState=NEW_QUEST;
+			
+			break;
+		}
 	case EDIT_QUEST: {
 			Menu2_Render_EditQuest(size, offset);
 			}
