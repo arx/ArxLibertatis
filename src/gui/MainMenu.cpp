@@ -124,16 +124,12 @@ void MainMenuCreateEditQuest(Vec2i size, Vec2i offset) {
 
 void MainMenuCreateEditQuestLoad(Vec2i size, Vec2i offset) {
 	
-	CMenuElement *me;
-	TextureContainer *pTex;
-	std::string szMenuText;
-	
 	CWindowMenuConsole * pWindowMenuConsole=new CWindowMenuConsole(offset + Vec2i(0, -40), size, EDIT_QUEST_LOAD);
 	pWindowMenuConsole->lData = -1;
 	pWindowMenuConsole->iInterligne = 5;
 	
 	{
-	pTex = TextureContainer::Load("graph/interface/icons/menu_main_load");
+	TextureContainer * pTex = TextureContainer::Load("graph/interface/icons/menu_main_load");
 	CMenuButton * cb = new CMenuButton(Vec2i(0, 0), pTex);
 	cb->bCheck = false;
 	pWindowMenuConsole->AddMenuCenter(cb);
@@ -178,36 +174,42 @@ void MainMenuCreateEditQuestLoad(Vec2i size, Vec2i offset) {
 			pWindowMenuConsole->AddMenuCenterY(e);
 		}
 		
+		{
 		CMenuElement * confirm = new CMenuElementText(-1, hFontControls, " ", Vec2i(RATIO_X(20), 0), EDIT_QUEST_SAVE_CONFIRM);
 		confirm->SetCheckOff();
 		confirm->lData = -1;
 		pWindowMenuConsole->AddMenuCenterY(confirm);
+		}
 		
 		// Delete button
-		szMenuText = getLocalised("system_menus_main_editquest_delete");
+		{
+		std::string szMenuText = getLocalised("system_menus_main_editquest_delete");
 		szMenuText += "   ";
-		me = new CMenuElementText(BUTTON_MENUEDITQUEST_DELETE_CONFIRM, hFontMenu, szMenuText, Vec2i(0, 0), EDIT_QUEST_LOAD);
+		CMenuElementText * me = new CMenuElementText(BUTTON_MENUEDITQUEST_DELETE_CONFIRM, hFontMenu, szMenuText, Vec2i(0, 0), EDIT_QUEST_LOAD);
 		me->SetPos(Vec2i(RATIO_X(size.x-10)-me->rZone.width(), RATIO_Y(42)));
-		pDeleteConfirm=(CMenuElementText*)me;
 		me->SetCheckOff();
-		((CMenuElementText*)me)->lOldColor = ((CMenuElementText*)me)->lColor;
-		((CMenuElementText*)me)->lColor = Color::grayb(127);
+		me->lOldColor = me->lColor;
+		me->lColor = Color::grayb(127);
 		pWindowMenuConsole->AddMenu(me);
+		pDeleteConfirm = me;
+		}
 		
 		// Load button
-		szMenuText = getLocalised("system_menus_main_editquest_load");
+		{
+		std::string szMenuText = getLocalised("system_menus_main_editquest_load");
 		szMenuText += "   ";
-		me = new CMenuElementText(BUTTON_MENUEDITQUEST_LOAD_CONFIRM, hFontMenu, szMenuText, Vec2i(0, 0), MAIN);
+		CMenuElementText * me = new CMenuElementText(BUTTON_MENUEDITQUEST_LOAD_CONFIRM, hFontMenu, szMenuText, Vec2i(0, 0), MAIN);
 		me->SetPos(Vec2i(RATIO_X(size.x-10)-me->rZone.width(), RATIO_Y(380) + RATIO_Y(40)));
-		pLoadConfirm=(CMenuElementText*)me;
 		me->SetCheckOff();
-		((CMenuElementText*)me)->lOldColor = ((CMenuElementText*)me)->lColor;
-		((CMenuElementText*)me)->lColor = Color::grayb(127);
+		me->lOldColor = me->lColor;
+		me->lColor = Color::grayb(127);
 		pWindowMenuConsole->AddMenu(me);
+		pLoadConfirm = me;
+		}
 		
 		// Back button
 		{
-		pTex = TextureContainer::Load("graph/interface/menus/back");
+		TextureContainer * pTex = TextureContainer::Load("graph/interface/menus/back");
 		CMenuButton * cb = new CMenuButton(RATIO_2(Vec2i(20, 420)), pTex);
 		cb->eMenuState = EDIT_QUEST;
 		cb->SetShortCut(Keyboard::Key_Escape);
