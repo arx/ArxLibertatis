@@ -221,14 +221,11 @@ void MainMenuCreateEditQuestLoad(Vec2i size, Vec2i offset) {
 
 void MainMenuCreateEditQuestSave(Vec2i size, Vec2i offset) {
 	
-	CMenuElement *me01;
-	TextureContainer *pTex;
-	
 	CWindowMenuConsole * pWindowMenuConsole=new CWindowMenuConsole(offset + Vec2i(0, -40), size, EDIT_QUEST_SAVE);
 	pWindowMenuConsole->iInterligne = 5;
-
+	
 	{
-	pTex = TextureContainer::Load("graph/interface/icons/menu_main_save");
+	TextureContainer * pTex = TextureContainer::Load("graph/interface/icons/menu_main_save");
 	CMenuButton * cb = new CMenuButton(Vec2i(RATIO_X(10), 0), pTex);
 	cb->bCheck = false;
 	pWindowMenuConsole->AddMenuCenter(cb);
@@ -284,13 +281,15 @@ void MainMenuCreateEditQuestSave(Vec2i size, Vec2i offset) {
 		pWindowMenuConsole->AddMenuCenterY(e);
 	}
 
-	me01 = new CMenuElementText(-1, hFontControls, " ", Vec2i(RATIO_X(20), 0), EDIT_QUEST_SAVE_CONFIRM);
+	{
+	CMenuElementText * me01 = new CMenuElementText(-1, hFontControls, " ", Vec2i(RATIO_X(20), 0), EDIT_QUEST_SAVE_CONFIRM);
 	me01->lData = -1;
 	me01->SetCheckOff();
-	pWindowMenuConsole->AddMenuCenterY((CMenuElementText*)me01);
+	pWindowMenuConsole->AddMenuCenterY(me01);
+	}
 	
 	{
-	pTex = TextureContainer::Load("graph/interface/menus/back");
+	TextureContainer * pTex = TextureContainer::Load("graph/interface/menus/back");
 	CMenuButton * cb = new CMenuButton(RATIO_2(Vec2i(20, 420)), pTex);
 	cb->eMenuState = EDIT_QUEST;
 	cb->SetShortCut(Keyboard::Key_Escape);
