@@ -47,36 +47,43 @@ void Menu2_Render_NewQuest(Vec2i size, Vec2i offset)
 	if(!ARXMenu_CanResumeGame())
 		return;
 	
-	std::string szMenuText;
-	CMenuElement *me = NULL;
-	
 	CWindowMenuConsole * console = new CWindowMenuConsole(offset, size, NEW_QUEST);
 	
-	szMenuText = getLocalised("system_menus_main_editquest_confirm");
-	me = new CMenuElementText(-1, hFontMenu, szMenuText, Vec2i(0, 0), NOP);
+	{
+	std::string szMenuText = getLocalised("system_menus_main_editquest_confirm");
+	CMenuElementText * me = new CMenuElementText(-1, hFontMenu, szMenuText, Vec2i(0, 0), NOP);
 	me->bCheck = false;
 	console->AddMenuCenter(me);
+	}
 	
-	szMenuText = getLocalised("system_menus_main_newquest_confirm");
-	me = new CMenuElementText(-1, hFontMenu, szMenuText, Vec2i(0, 0), NOP);
+	{
+	std::string szMenuText = getLocalised("system_menus_main_newquest_confirm");
+	CMenuElementText * me = new CMenuElementText(-1, hFontMenu, szMenuText, Vec2i(0, 0), NOP);
 	me->bCheck = false;
 	console->AddMenuCenter(me);
+	}
 	
 	CMenuPanel *pPanel = new CMenuPanel();
-	szMenuText = getLocalised("system_yes");
+	
+	{
+	std::string szMenuText = getLocalised("system_yes");
 	szMenuText += "   "; // TODO This space can probably go
-	me = new CMenuElementText(BUTTON_MENUNEWQUEST_CONFIRM, hFontMenu, szMenuText, Vec2i(0, 0), NOP);
+	CMenuElementText * me = new CMenuElementText(BUTTON_MENUNEWQUEST_CONFIRM, hFontMenu, szMenuText, Vec2i(0, 0), NOP);
 	me->SetPos(Vec2i(RATIO_X(size.x - (me->rZone.width() + 10)), 0));
 	pPanel->AddElementNoCenterIn(me);
+	}
 	
-	szMenuText = getLocalised("system_no");
-	me = new CMenuElementText(-1, hFontMenu, szMenuText, Vec2i(RATIO_X(10), 0), MAIN);
+	{
+	std::string szMenuText = getLocalised("system_no");
+	CMenuElementText * me = new CMenuElementText(-1, hFontMenu, szMenuText, Vec2i(RATIO_X(10), 0), MAIN);
 	me->SetShortCut(Keyboard::Key_Escape);
 	pPanel->AddElementNoCenterIn(me);
+	}
 	
 	pPanel->Move(Vec2i(0, RATIO_Y(380)));
-
+	
 	console->AddMenu(pPanel);
+	
 	pWindowMenu->AddConsole(console);
 	pWindowMenu->eCurrentMenuState=NEW_QUEST;
 }
