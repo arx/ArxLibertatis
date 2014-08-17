@@ -911,19 +911,15 @@ void MainMenuLeftCreate(MENUSTATE eMenuState)
 	Vec2i offset = Vec2i(0, 14 - 10);
 	Vec2i size = windowMenuSize - offset + Vec2i(0, 20);
 	
-	switch(eMenuState) {
-		case NEW_QUEST: {
-			if(!ARXMenu_CanResumeGame())
-				break;
-			
+	pWindowMenu->eCurrentMenuState = eMenuState;
+	
+		// TODO Special case to prevent displaying confirmation dialog on new game during fade
+		if(ARXMenu_CanResumeGame()){
 			CWindowMenuConsole * console = new CWindowMenuConsole(offset, size, NEW_QUEST);
 			Menu2_Render_NewQuest(console, size);
 			pWindowMenu->AddConsole(console);
-			
-			pWindowMenu->eCurrentMenuState = NEW_QUEST;
-			break;
 		}
-		case EDIT_QUEST: {
+		
 			{
 			CWindowMenuConsole * console = new CWindowMenuConsole(offset, size, EDIT_QUEST);
 			MainMenuCreateEditQuest(console);
@@ -955,10 +951,6 @@ void MainMenuLeftCreate(MENUSTATE eMenuState)
 			pWindowMenu->AddConsole(console);
 			}
 			
-			pWindowMenu->eCurrentMenuState = EDIT_QUEST;
-			break;
-		}
-		case OPTIONS: {
 			{
 			CWindowMenuConsole * console = new CWindowMenuConsole(offset, size, OPTIONS);
 			MainMenuOptionGroupsCreate(console);
@@ -995,17 +987,9 @@ void MainMenuLeftCreate(MENUSTATE eMenuState)
 			pWindowMenu->AddConsole(console);
 			}
 			
-			pWindowMenu->eCurrentMenuState = OPTIONS;
-			break;
-		}
-		case QUIT: {
+			{
 			CWindowMenuConsole * console = new CWindowMenuConsole(offset, size, QUIT);
 			Menu2_Render_Quit(console, size);
 			pWindowMenu->AddConsole(console);
-			
-			pWindowMenu->eCurrentMenuState = QUIT;
-			break;
-		}
-	default: break; // Unhandled menu state.
-	}	
+			}
 }
