@@ -301,49 +301,48 @@ void MainMenuCreateEditQuestSave(Vec2i size, Vec2i offset) {
 
 void MainMenuCreateEditQuestSaveConfirm(Vec2i size, Vec2i offset) {
 	
-	CMenuElement *me;
-	CMenuPanel *pPanel;
-	TextureContainer *pTex;
-	std::string szMenuText;
-	
 	CWindowMenuConsole * pWindowMenuConsole = new CWindowMenuConsole(offset, size, EDIT_QUEST_SAVE_CONFIRM);
 	pWindowMenuConsole->lData = -1;
 	
 	{
-	pTex = TextureContainer::Load("graph/interface/icons/menu_main_save");
+	TextureContainer * pTex = TextureContainer::Load("graph/interface/icons/menu_main_save");
 	CMenuButton * cb = new CMenuButton(Vec2i(0, 0), pTex);
 	cb->bCheck = false;
 	pWindowMenuConsole->AddMenuCenter(cb);
 	}
 	
-	szMenuText = getLocalised("system_menu_editquest_newsavegame", "---");
-
-	me = new CMenuElementText(-1, hFontMenu, szMenuText, Vec2i(RATIO_X(20), 0), NOP);
+	{
+	std::string szMenuText = getLocalised("system_menu_editquest_newsavegame", "---");
+	CMenuElementText * me = new CMenuElementText(-1, hFontMenu, szMenuText, Vec2i(RATIO_X(20), 0), NOP);
 	me->lData = -1;
-
-	pWindowMenuConsole->AddMenuCenter(me);
 	me->eState=EDIT;
 	me->ePlace=CENTER;
-
-	pPanel = new CMenuPanel();
+	pWindowMenuConsole->AddMenuCenter(me);
+	}
+	
+	CMenuPanel * pPanel = new CMenuPanel();
 	
 	// Delete button
-	szMenuText = getLocalised("system_menus_main_editquest_delete");
-	me = new CMenuElementText(BUTTON_MENUEDITQUEST_DELETE, hFontMenu, szMenuText, Vec2i(0, 0), EDIT_QUEST_SAVE);
+	{
+	std::string szMenuText = getLocalised("system_menus_main_editquest_delete");
+	CMenuElementText * me = new CMenuElementText(BUTTON_MENUEDITQUEST_DELETE, hFontMenu, szMenuText, Vec2i(0, 0), EDIT_QUEST_SAVE);
 	me->SetPos(Vec2i(RATIO_X(size.x-10)-me->rZone.width(), RATIO_Y(5)));
-	pDeleteButton = (CMenuElementText*)me;
-	((CMenuElementText*)me)->lOldColor = ((CMenuElementText*)me)->lColor;
+	me->lOldColor = me->lColor;
 	pPanel->AddElementNoCenterIn(me);
+	pDeleteButton = me;
+	}
 	
 	// Save button
-	szMenuText = getLocalised("system_menus_main_editquest_save");
-	me = new CMenuElementText(BUTTON_MENUEDITQUEST_SAVE, hFontMenu, szMenuText, Vec2i(0, 0), MAIN);
+	{
+	std::string szMenuText = getLocalised("system_menus_main_editquest_save");
+	CMenuElementText * me = new CMenuElementText(BUTTON_MENUEDITQUEST_SAVE, hFontMenu, szMenuText, Vec2i(0, 0), MAIN);
 	me->SetPos(Vec2i(RATIO_X(size.x-10)-me->rZone.width(), RATIO_Y(380)));
 	pPanel->AddElementNoCenterIn(me);
+	}
 	
 	// Back button
 	{
-	pTex = TextureContainer::Load("graph/interface/menus/back");
+	TextureContainer * pTex = TextureContainer::Load("graph/interface/menus/back");
 	CMenuButton * cb = new CMenuButton(RATIO_2(Vec2i(20, 380)), pTex);
 	cb->eMenuState = EDIT_QUEST_SAVE;
 	cb->SetShortCut(Keyboard::Key_Escape);
