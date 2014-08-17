@@ -539,16 +539,17 @@ void MainMenuOptionVideoCreate(Vec2i offset, Vec2i size)
 	cb->iState = config.video.vsync ? 1 : 0;
 	pWindowMenuConsole->AddMenuCenterY(cb);
 	}
-
-	float fPosApply = RATIO_X(240);
 	
+	{
 	pc = new CMenuPanel();
 	szMenuText = getLocalised("system_menus_video_apply");
 	szMenuText += "   ";
-	pMenuElementApply = me = new CMenuElementText(BUTTON_MENUOPTIONSVIDEO_APPLY, hFontMenu, szMenuText, Vec2i(fPosApply, 0), NOP);
+	me = new CMenuElementText(BUTTON_MENUOPTIONSVIDEO_APPLY, hFontMenu, szMenuText, Vec2i(RATIO_X(240), 0), NOP);
 	me->SetPos(Vec2i(RATIO_X(size.x-10)-me->rZone.width(), RATIO_Y(380) + RATIO_Y(40)));
 	me->SetCheckOff();
 	pc->AddElementNoCenterIn(me);
+	pMenuElementApply = me;
+	}
 	
 	{
 	pTex = TextureContainer::Load("graph/interface/menus/back");
