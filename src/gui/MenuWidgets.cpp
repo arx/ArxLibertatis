@@ -2755,7 +2755,7 @@ void CycleTextWidget::RenderMouseOver() {
 // CMenuSlider
 //-----------------------------------------------------------------------------
 
-CMenuSlider::CMenuSlider(int _iID, Vec2i pos)
+SliderWidget::SliderWidget(int _iID, Vec2i pos)
 	: CMenuElement(NOP)
 {
 	iID = _iID;
@@ -2781,18 +2781,18 @@ CMenuSlider::CMenuSlider(int _iID, Vec2i pos)
 	pRef = this;
 }
 
-CMenuSlider::~CMenuSlider() {
+SliderWidget::~SliderWidget() {
 	delete pLeftButton;
 	delete pRightButton;
 }
 
-void CMenuSlider::Move(const Vec2i & offset) {
+void SliderWidget::Move(const Vec2i & offset) {
 	CMenuElement::Move(offset);
 	pLeftButton->Move(offset);
 	pRightButton->Move(offset);
 }
 
-void CMenuSlider::EmptyFunction() {
+void SliderWidget::EmptyFunction() {
 
 	//Touche pour la selection
 	if(GInput->isKeyPressedNowPressed(Keyboard::Key_LeftArrow)) {
@@ -2810,7 +2810,7 @@ void CMenuSlider::EmptyFunction() {
 	}
 }
 
-bool CMenuSlider::OnMouseClick() {
+bool SliderWidget::OnMouseClick() {
 	
 	ARX_SOUND_PlayMenu(SND_MENU_CLICK);
 
@@ -2862,7 +2862,7 @@ bool CMenuSlider::OnMouseClick() {
 	return false;
 }
 
-void CMenuSlider::Update(int _iTime) {
+void SliderWidget::Update(int _iTime) {
 	
 	pLeftButton->Update(_iTime);
 	pRightButton->Update(_iTime);
@@ -2877,7 +2877,7 @@ void CMenuSlider::Update(int _iTime) {
 	rZone.bottom = rZone.top + std::max(pLeftButton->rZone.height(), pRightButton->rZone.height());
 }
 
-void CMenuSlider::Render() {
+void SliderWidget::Render() {
 
 	if(bNoMenu)
 		return;
@@ -2902,7 +2902,7 @@ void CMenuSlider::Render() {
 	GRenderer->SetRenderState(Renderer::AlphaBlending, false);
 }
 
-void CMenuSlider::RenderMouseOver() {
+void SliderWidget::RenderMouseOver() {
 
 	if(bNoMenu)
 		return;

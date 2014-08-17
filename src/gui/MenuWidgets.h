@@ -406,11 +406,11 @@ private:
 };
 
 //! Slider with value in the range [0..10]
-class CMenuSlider: public CMenuElement {
+class SliderWidget: public CMenuElement {
 	
 public:
-	CMenuSlider(int id, Vec2i pos);
-	virtual ~CMenuSlider();
+	SliderWidget(int id, Vec2i pos);
+	virtual ~SliderWidget();
 	
 	void setValue(int value) { iPos = value; }
 	int getValue() const { return iPos; }

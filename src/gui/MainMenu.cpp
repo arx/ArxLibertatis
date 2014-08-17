@@ -491,8 +491,8 @@ void MainMenuOptionVideoCreate(CWindowMenuConsole * console, Vec2i size)
 	me = new TextWidget(-1, hFontMenu, szMenuText, Vec2i(RATIO_X(20), 0.f), NOP);
 	me->SetCheckOff();
 	pc->AddElement(me);
-	me = new CMenuSlider(BUTTON_MENUOPTIONSVIDEO_FOG, Vec2i(RATIO_X(200), 0));
-	((CMenuSlider *)me)->setValue(config.video.fogDistance);
+	me = new SliderWidget(BUTTON_MENUOPTIONSVIDEO_FOG, Vec2i(RATIO_X(200), 0));
+	((SliderWidget *)me)->setValue(config.video.fogDistance);
 	pc->AddElement(me);
 
 	console->AddMenuCenterY(pc);
@@ -594,8 +594,8 @@ void MainMenuOptionAudioCreate(CWindowMenuConsole * console, Vec2i size)
 	me = new TextWidget(-1, hFontMenu, szMenuText, Vec2i(RATIO_X(20), 0.f), NOP);
 	me->SetCheckOff();
 	pc->AddElement(me);
-	me = new CMenuSlider(BUTTON_MENUOPTIONSAUDIO_MASTER, Vec2i(RATIO_X(200), 0));
-	((CMenuSlider *)me)->setValue((int)config.audio.volume); // TODO use float sliders
+	me = new SliderWidget(BUTTON_MENUOPTIONSAUDIO_MASTER, Vec2i(RATIO_X(200), 0));
+	((SliderWidget *)me)->setValue((int)config.audio.volume); // TODO use float sliders
 	pc->AddElement(me);
 	console->AddMenuCenterY(pc);
 
@@ -604,8 +604,8 @@ void MainMenuOptionAudioCreate(CWindowMenuConsole * console, Vec2i size)
 	me = new TextWidget(-1, hFontMenu, szMenuText, Vec2i(RATIO_X(20), 0.f), OPTIONS_AUDIO);
 	me->SetCheckOff();
 	pc->AddElement(me);
-	me = new CMenuSlider(BUTTON_MENUOPTIONSAUDIO_SFX, Vec2i(RATIO_X(200), 0));
-	((CMenuSlider *)me)->setValue((int)config.audio.sfxVolume);
+	me = new SliderWidget(BUTTON_MENUOPTIONSAUDIO_SFX, Vec2i(RATIO_X(200), 0));
+	((SliderWidget *)me)->setValue((int)config.audio.sfxVolume);
 	pc->AddElement(me);
 	console->AddMenuCenterY(pc);
 
@@ -614,8 +614,8 @@ void MainMenuOptionAudioCreate(CWindowMenuConsole * console, Vec2i size)
 	me = new TextWidget(-1, hFontMenu, szMenuText, Vec2i(RATIO_X(20), 0.f), OPTIONS_AUDIO);
 	me->SetCheckOff();
 	pc->AddElement(me);
-	me = new CMenuSlider(BUTTON_MENUOPTIONSAUDIO_SPEECH, Vec2i(RATIO_X(200), 0));
-	((CMenuSlider *)me)->setValue((int)config.audio.speechVolume);
+	me = new SliderWidget(BUTTON_MENUOPTIONSAUDIO_SPEECH, Vec2i(RATIO_X(200), 0));
+	((SliderWidget *)me)->setValue((int)config.audio.speechVolume);
 	pc->AddElement(me);
 	console->AddMenuCenterY(pc);
 
@@ -624,8 +624,8 @@ void MainMenuOptionAudioCreate(CWindowMenuConsole * console, Vec2i size)
 	me = new TextWidget(-1, hFontMenu, szMenuText, Vec2i(RATIO_X(20), 0), OPTIONS_AUDIO);
 	me->SetCheckOff();
 	pc->AddElement(me);
-	me = new CMenuSlider(BUTTON_MENUOPTIONSAUDIO_AMBIANCE, Vec2i(RATIO_X(200), 0));
-	((CMenuSlider *)me)->setValue((int)config.audio.ambianceVolume);
+	me = new SliderWidget(BUTTON_MENUOPTIONSAUDIO_AMBIANCE, Vec2i(RATIO_X(200), 0));
+	((SliderWidget *)me)->setValue((int)config.audio.ambianceVolume);
 	pc->AddElement(me);
 	console->AddMenuCenterY(pc);
 	
@@ -694,8 +694,8 @@ void MainMenuOptionInputCreate(CWindowMenuConsole * console)
 	me = new TextWidget(-1, hFontMenu, szMenuText, Vec2i(RATIO_X(20), 0.f), NOP);
 	me->SetCheckOff();
 	pc->AddElement(me);
-	me = new CMenuSlider(BUTTON_MENUOPTIONS_CONTROLS_MOUSESENSITIVITY, Vec2i(RATIO_X(200), 0));
-	((CMenuSlider*)me)->setValue(config.input.mouseSensitivity);
+	me = new SliderWidget(BUTTON_MENUOPTIONS_CONTROLS_MOUSESENSITIVITY, Vec2i(RATIO_X(200), 0));
+	((SliderWidget*)me)->setValue(config.input.mouseSensitivity);
 	pc->AddElement(me);
 	console->AddMenuCenterY(pc);
 	
@@ -714,8 +714,8 @@ void MainMenuOptionInputCreate(CWindowMenuConsole * console)
 	me = new TextWidget(-1, hFontMenu, szMenuText, Vec2i(RATIO_X(20), 0), NOP);
 	me->SetCheckOff();
 	pc->AddElement(me);
-	me = new CMenuSlider(BUTTON_MENUOPTIONS_CONTROLS_QUICKSAVESLOTS, Vec2i(RATIO_X(200), 0));
-	((CMenuSlider*)me)->setValue(config.misc.quicksaveSlots);
+	me = new SliderWidget(BUTTON_MENUOPTIONS_CONTROLS_QUICKSAVESLOTS, Vec2i(RATIO_X(200), 0));
+	((SliderWidget*)me)->setValue(config.misc.quicksaveSlots);
 	pc->AddElement(me);
 	console->AddMenuCenterY(pc);
 	
