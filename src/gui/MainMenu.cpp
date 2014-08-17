@@ -90,29 +90,28 @@ void Menu2_Render_NewQuest(Vec2i size, Vec2i offset)
 
 void MainMenuCreateEditQuest(Vec2i size, Vec2i offset) {
 	
-	CMenuElement *me;
-	TextureContainer *pTex;
-	std::string szMenuText;
-	
 	CWindowMenuConsole *pWindowMenuConsole=new CWindowMenuConsole(offset, size, EDIT_QUEST);
 
-	szMenuText = getLocalised( "system_menus_main_editquest_load");
-	me = new CMenuElementText(BUTTON_MENUEDITQUEST_LOAD_INIT, hFontMenu, szMenuText, Vec2i(0, 0), EDIT_QUEST_LOAD);
+	{
+	std::string szMenuText = getLocalised("system_menus_main_editquest_load");
+	CMenuElementText * me = new CMenuElementText(BUTTON_MENUEDITQUEST_LOAD_INIT, hFontMenu, szMenuText, Vec2i(0, 0), EDIT_QUEST_LOAD);
 	me->lData = -1;
 	pWindowMenuConsole->AddMenuCenter(me);
+	}
 
-	szMenuText = getLocalised( "system_menus_main_editquest_save");
-	me = new CMenuElementText(-1, hFontMenu, szMenuText, Vec2i(0, 0), EDIT_QUEST_SAVE);
+	{
+	std::string szMenuText = getLocalised( "system_menus_main_editquest_save");
+	CMenuElementText * me = new CMenuElementText(-1, hFontMenu, szMenuText, Vec2i(0, 0), EDIT_QUEST_SAVE);
 	
 	if(!ARXMenu_CanResumeGame()) {
 		me->SetCheckOff();
 		((CMenuElementText*)me)->lColor=Color(127,127,127);
 	}
-
 	pWindowMenuConsole->AddMenuCenter(me);
+	}
 	
 	{
-	pTex = TextureContainer::Load("graph/interface/menus/back");
+	TextureContainer * pTex = TextureContainer::Load("graph/interface/menus/back");
 	CMenuButton * cb = new CMenuButton(RATIO_2(Vec2i(20, 380)), pTex);
 	cb->eMenuState = MAIN;
 	cb->SetShortCut(Keyboard::Key_Escape);
