@@ -65,7 +65,7 @@ void Menu2_Render_NewQuest(Vec2i size, Vec2i offset)
 	CMenuPanel *pPanel = new CMenuPanel();
 	szMenuText = getLocalised("system_yes");
 	szMenuText += "   "; // TODO This space can probably go
-	me = new CMenuElementText(BUTTON_MENUNEWQUEST_CONFIRM, hFontMenu, szMenuText, Vec2i(0, 0), NEW_QUEST_ENTER_GAME);
+	me = new CMenuElementText(BUTTON_MENUNEWQUEST_CONFIRM, hFontMenu, szMenuText, Vec2i(0, 0), NOP);
 	me->SetPos(Vec2i(RATIO_X(size.x - (me->rZone.width() + 10)), 0));
 	pPanel->AddElementNoCenterIn(me);
 	
@@ -481,11 +481,11 @@ void MainMenuOptionVideoCreate(Vec2i offset, Vec2i size)
 	{
 	CMenuSliderText * cb = new CMenuSliderText(BUTTON_MENUOPTIONSVIDEO_OTHERSDETAILS, Vec2i(0, 0));
 	szMenuText = getLocalised("system_menus_options_video_texture_low");
-	cb->AddText(new CMenuElementText(-1, hFontMenu, szMenuText, Vec2i(0, 0), OPTIONS_OTHERDETAILS));
+	cb->AddText(new CMenuElementText(-1, hFontMenu, szMenuText, Vec2i(0, 0), NOP));
 	szMenuText = getLocalised("system_menus_options_video_texture_med");
-	cb->AddText(new CMenuElementText(-1, hFontMenu, szMenuText, Vec2i(0, 0), OPTIONS_OTHERDETAILS));
+	cb->AddText(new CMenuElementText(-1, hFontMenu, szMenuText, Vec2i(0, 0), NOP));
 	szMenuText = getLocalised("system_menus_options_video_texture_high");
-	cb->AddText(new CMenuElementText(-1, hFontMenu, szMenuText, Vec2i(0, 0), OPTIONS_OTHERDETAILS));
+	cb->AddText(new CMenuElementText(-1, hFontMenu, szMenuText, Vec2i(0, 0), NOP));
 	cb->setValue(config.video.levelOfDetail);
 	
 	cb->Move(Vec2i(RATIO_X(size.x-9) - cb->rZone.width(), 0));
@@ -920,7 +920,7 @@ void Menu2_Render_Quit(Vec2i size, Vec2i offset)
 	CMenuPanel *pPanel = new CMenuPanel();
 	
 	szMenuText = getLocalised("system_yes");
-	me = new CMenuElementText(BUTTON_MENUMAIN_QUIT, hFontMenu, szMenuText, Vec2i(0, 0), NEW_QUEST_ENTER_GAME);
+	me = new CMenuElementText(BUTTON_MENUMAIN_QUIT, hFontMenu, szMenuText, Vec2i(0, 0), NOP);
 	me->SetPos(Vec2i(RATIO_X(size.x-10)-me->rZone.width(), 0));
 	pPanel->AddElementNoCenterIn(me);
 	
