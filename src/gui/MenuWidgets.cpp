@@ -121,7 +121,7 @@ extern CWindowMenu * pWindowMenu;
 CMenuState *mainMenu;
 
 static Widget * pMenuElementResume = NULL;
-extern Widget * pMenuElementApply;
+extern TextWidget * pMenuElementApply;
 extern TextWidget * pLoadConfirm;
 extern TextWidget * pDeleteConfirm;
 extern TextWidget * pDeleteButton;
@@ -221,12 +221,12 @@ void Check_Apply() {
 		   || config.video.fullscreen != newFullscreen
 		) {
 			pMenuElementApply->SetCheckOn();
-			((TextWidget*)pMenuElementApply)->lColor=((TextWidget*)pMenuElementApply)->lOldColor;
+			pMenuElementApply->lColor = pMenuElementApply->lOldColor;
 		} else {
-			if(((TextWidget*)pMenuElementApply)->lColor != Color(127,127,127)) {
+			if(pMenuElementApply->lColor != Color(127,127,127)) {
 				pMenuElementApply->SetCheckOff();
-				((TextWidget*)pMenuElementApply)->lOldColor=((TextWidget*)pMenuElementApply)->lColor;
-				((TextWidget*)pMenuElementApply)->lColor=Color(127,127,127);
+				pMenuElementApply->lOldColor = pMenuElementApply->lColor;
+				pMenuElementApply->lColor = Color(127,127,127);
 			}
 		}
 	}

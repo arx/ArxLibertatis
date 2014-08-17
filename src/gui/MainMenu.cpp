@@ -40,7 +40,7 @@ TextWidget * pLoadConfirm = NULL;
 TextWidget * pDeleteButton = NULL;
 CheckboxWidget * fullscreenCheckbox = NULL;
 CycleTextWidget * pMenuSliderResol = NULL;
-Widget * pMenuElementApply = NULL;
+TextWidget * pMenuElementApply = NULL;
 
 void Menu2_Render_NewQuest(CWindowMenuConsole * console, Vec2i size) {
 	
@@ -536,7 +536,7 @@ void MainMenuOptionVideoCreate(CWindowMenuConsole * console, Vec2i size)
 	pc = new CMenuPanel();
 	szMenuText = getLocalised("system_menus_video_apply");
 	szMenuText += "   ";
-	me = new TextWidget(BUTTON_MENUOPTIONSVIDEO_APPLY, hFontMenu, szMenuText, Vec2i(RATIO_X(240), 0), NOP);
+	TextWidget * me = new TextWidget(BUTTON_MENUOPTIONSVIDEO_APPLY, hFontMenu, szMenuText, Vec2i(RATIO_X(240), 0), NOP);
 	me->SetPos(Vec2i(RATIO_X(size.x-10)-me->rZone.width(), RATIO_Y(380) + RATIO_Y(40)));
 	me->SetCheckOff();
 	pc->AddElementNoCenterIn(me);
