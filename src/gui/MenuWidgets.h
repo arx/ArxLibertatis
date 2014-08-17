@@ -373,11 +373,11 @@ public:
 	void RenderMouseOver();
 };
 
-class CMenuSliderText: public CMenuElement {
+class CycleTextWidget: public CMenuElement {
 	
 public:
-	CMenuSliderText(int, Vec2i pos);
-	virtual ~CMenuSliderText();
+	CycleTextWidget(int, Vec2i pos);
+	virtual ~CycleTextWidget();
 	
 	void setValue(int value) { iPos = value; }
 	int getValue() const { return iPos; }

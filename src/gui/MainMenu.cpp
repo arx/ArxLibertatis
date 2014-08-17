@@ -39,7 +39,7 @@ CMenuElementText * pDeleteConfirm = NULL;
 CMenuElementText * pLoadConfirm = NULL;
 CMenuElementText * pDeleteButton = NULL;
 CMenuCheckButton * fullscreenCheckbox = NULL;
-CMenuSliderText * pMenuSliderResol = NULL;
+CycleTextWidget * pMenuSliderResol = NULL;
 CMenuElement * pMenuElementApply = NULL;
 
 void Menu2_Render_NewQuest(CWindowMenuConsole * console, Vec2i size) {
@@ -371,7 +371,7 @@ void MainMenuOptionVideoCreate(CWindowMenuConsole * console, Vec2i size)
 		me = new CMenuElementText(-1, hFontMenu, szMenuText, Vec2i(RATIO_X(20), 0), NOP);
 		me->SetCheckOff();
 		pc->AddElement(me);
-		CMenuSliderText * slider = new CMenuSliderText(BUTTON_MENUOPTIONSVIDEO_RENDERER, Vec2i(0, 0));
+		CycleTextWidget * slider = new CycleTextWidget(BUTTON_MENUOPTIONSVIDEO_RENDERER, Vec2i(0, 0));
 		
 		slider->AddText(new CMenuElementText(-1, hFontMenu, "Auto-Select", Vec2i(0, 0), OPTIONS_VIDEO_RENDERER_AUTOMATIC));
 		slider->selectLast();
@@ -413,7 +413,7 @@ void MainMenuOptionVideoCreate(CWindowMenuConsole * console, Vec2i size)
 	me = new CMenuElementText(-1, hFontMenu, szMenuText, Vec2i(RATIO_X(20), 0.f), NOP);
 	me->SetCheckOff();
 	pc->AddElement(me);
-	pMenuSliderResol = new CMenuSliderText(BUTTON_MENUOPTIONSVIDEO_RESOLUTION, Vec2i(0, 0));
+	pMenuSliderResol = new CycleTextWidget(BUTTON_MENUOPTIONSVIDEO_RESOLUTION, Vec2i(0, 0));
 	
 	pMenuSliderResol->setEnabled(config.video.fullscreen);
 	
@@ -471,7 +471,7 @@ void MainMenuOptionVideoCreate(CWindowMenuConsole * console, Vec2i size)
 	pc->AddElement(me);
 	
 	{
-	CMenuSliderText * cb = new CMenuSliderText(BUTTON_MENUOPTIONSVIDEO_OTHERSDETAILS, Vec2i(0, 0));
+	CycleTextWidget * cb = new CycleTextWidget(BUTTON_MENUOPTIONSVIDEO_OTHERSDETAILS, Vec2i(0, 0));
 	szMenuText = getLocalised("system_menus_options_video_texture_low");
 	cb->AddText(new CMenuElementText(-1, hFontMenu, szMenuText, Vec2i(0, 0), NOP));
 	szMenuText = getLocalised("system_menus_options_video_texture_med");
@@ -571,7 +571,7 @@ void MainMenuOptionAudioCreate(CWindowMenuConsole * console, Vec2i size)
 		me = new CMenuElementText(-1, hFontMenu, szMenuText, Vec2i(RATIO_X(20), 0), NOP);
 		me->SetCheckOff();
 		pc->AddElement(me);
-		CMenuSliderText * slider = new CMenuSliderText(BUTTON_MENUOPTIONSAUDIO_BACKEND, Vec2i(0, 0));
+		CycleTextWidget * slider = new CycleTextWidget(BUTTON_MENUOPTIONSAUDIO_BACKEND, Vec2i(0, 0));
 		
 		slider->AddText(new CMenuElementText(-1, hFontMenu, "Auto-Select", Vec2i(0, 0), OPTIONS_AUDIO_BACKEND_AUTOMATIC));
 		slider->selectLast();

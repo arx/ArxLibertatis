@@ -126,7 +126,7 @@ extern CMenuElementText * pLoadConfirm;
 extern CMenuElementText * pDeleteConfirm;
 extern CMenuElementText * pDeleteButton;
 extern CMenuCheckButton * fullscreenCheckbox;
-extern CMenuSliderText * pMenuSliderResol;
+extern CycleTextWidget * pMenuSliderResol;
 
 float ARXTimeMenu;
 float ARXOldTimeMenu;
@@ -2521,7 +2521,7 @@ void CMenuButton::RenderMouseOver() {
 	}
 }
 
-CMenuSliderText::CMenuSliderText(int _iID, Vec2i pos)
+CycleTextWidget::CycleTextWidget(int _iID, Vec2i pos)
 	: CMenuElement(NOP)
 {
 	iID = _iID;
@@ -2543,7 +2543,7 @@ CMenuSliderText::CMenuSliderText(int _iID, Vec2i pos)
 	pRef = this;
 }
 
-CMenuSliderText::~CMenuSliderText() {
+CycleTextWidget::~CycleTextWidget() {
 	delete pLeftButton;
 	delete pRightButton;
 	BOOST_FOREACH(CMenuElementText * e, vText) {
@@ -2551,11 +2551,11 @@ CMenuSliderText::~CMenuSliderText() {
 	}
 }
 
-void CMenuSliderText::selectLast() {
+void CycleTextWidget::selectLast() {
 	iPos = vText.size() - 1;
 }
 
-void CMenuSliderText::AddText(CMenuElementText *_pText) {
+void CycleTextWidget::AddText(CMenuElementText *_pText) {
 	
 	_pText->setEnabled(enabled);
 	
@@ -2584,7 +2584,7 @@ void CMenuSliderText::AddText(CMenuElementText *_pText) {
 	}
 }
 
-void CMenuSliderText::Move(const Vec2i & offset) {
+void CycleTextWidget::Move(const Vec2i & offset) {
 
 	CMenuElement::Move(offset);
 
@@ -2595,7 +2595,7 @@ void CMenuSliderText::Move(const Vec2i & offset) {
 		(*i)->Move(offset);
 }
 
-void CMenuSliderText::EmptyFunction() {
+void CycleTextWidget::EmptyFunction() {
 
 	//Touche pour la selection
 	if(GInput->isKeyPressedNowPressed(Keyboard::Key_LeftArrow)) {
@@ -2615,7 +2615,7 @@ void CMenuSliderText::EmptyFunction() {
 	}
 }
 
-bool CMenuSliderText::OnMouseClick() {
+bool CycleTextWidget::OnMouseClick() {
 	
 	if(!enabled) {
 		return false;
@@ -2691,13 +2691,13 @@ bool CMenuSliderText::OnMouseClick() {
 	return false;
 }
 
-void CMenuSliderText::Update(int _iTime) {
+void CycleTextWidget::Update(int _iTime) {
 
 	pLeftButton->Update(_iTime);
 	pRightButton->Update(_iTime);
 }
 
-void CMenuSliderText::Render() {
+void CycleTextWidget::Render() {
 	
 	if(bNoMenu)
 		return;
@@ -2714,7 +2714,7 @@ void CMenuSliderText::Render() {
 	}
 }
 
-void CMenuSliderText::setEnabled(bool enable) {
+void CycleTextWidget::setEnabled(bool enable) {
 	CMenuElement::setEnabled(enable);
 	pLeftButton->setEnabled(enable);
 	pRightButton->setEnabled(enable);
@@ -2723,7 +2723,7 @@ void CMenuSliderText::setEnabled(bool enable) {
 	}
 }
 
-void CMenuSliderText::RenderMouseOver() {
+void CycleTextWidget::RenderMouseOver() {
 
 	if(bNoMenu)
 		return;
