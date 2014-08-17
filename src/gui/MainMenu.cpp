@@ -864,21 +864,20 @@ void MainMenuOptionControlsCreatePage2(CWindowMenuConsole * console, Vec2i size)
 	console->ReInitActionKey();
 }
 
-void Menu2_Render_Quit(Vec2i size, Vec2i offset)
+void Menu2_Render_Quit(CWindowMenuConsole * console, Vec2i size)
 {
 	std::string szMenuText;
 	CMenuElement *me = NULL;
-	CWindowMenuConsole *pWindowMenuConsole=new CWindowMenuConsole(offset, size, QUIT);
 	
 	szMenuText = getLocalised("system_menus_main_quit");
 	me=new CMenuElementText(-1, hFontMenu, szMenuText, Vec2i(0, 0), NOP);
 	me->bCheck = false;
-	pWindowMenuConsole->AddMenuCenter(me);
+	console->AddMenuCenter(me);
 	
 	szMenuText = getLocalised("system_menus_main_editquest_confirm");
 	me=new CMenuElementText(-1, hFontMenu, szMenuText, Vec2i(0, 0), NOP);
 	me->bCheck = false;
-	pWindowMenuConsole->AddMenuCenter(me);
+	console->AddMenuCenter(me);
 	
 	CMenuPanel *pPanel = new CMenuPanel();
 	
@@ -893,9 +892,7 @@ void Menu2_Render_Quit(Vec2i size, Vec2i offset)
 	pPanel->AddElementNoCenterIn(me);
 	
 	pPanel->Move(Vec2i(0, RATIO_Y(380)));
-	pWindowMenuConsole->AddMenu(pPanel);
-	pWindowMenu->AddConsole(pWindowMenuConsole);
-	pWindowMenu->eCurrentMenuState=QUIT;
+	console->AddMenu(pPanel);
 }
 
 extern CMenuState *mainMenu;
@@ -1004,12 +1001,14 @@ void MainMenuLeftCreate(MENUSTATE eMenuState)
 			pWindowMenu->eCurrentMenuState = OPTIONS;
 			break;
 		}
-	case QUIT: {
-			Menu2_Render_Quit(size, offset);
-		
-		
-		break;
-	}
+		case QUIT: {
+			CWindowMenuConsole * console = new CWindowMenuConsole(offset, size, QUIT);
+			Menu2_Render_Quit(console, size);
+			pWindowMenu->AddConsole(console);
+			
+			pWindowMenu->eCurrentMenuState = QUIT;
+			break;
+		}
 	default: break; // Unhandled menu state.
 	}	
 }
