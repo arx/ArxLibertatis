@@ -122,9 +122,9 @@ CMenuState *mainMenu;
 
 static CMenuElement * pMenuElementResume = NULL;
 extern CMenuElement * pMenuElementApply;
-extern CMenuElementText * pLoadConfirm;
-extern CMenuElementText * pDeleteConfirm;
-extern CMenuElementText * pDeleteButton;
+extern TextWidget * pLoadConfirm;
+extern TextWidget * pDeleteConfirm;
+extern TextWidget * pDeleteButton;
 extern CMenuCheckButton * fullscreenCheckbox;
 extern CycleTextWidget * pMenuSliderResol;
 
@@ -221,12 +221,12 @@ void Check_Apply() {
 		   || config.video.fullscreen != newFullscreen
 		) {
 			pMenuElementApply->SetCheckOn();
-			((CMenuElementText*)pMenuElementApply)->lColor=((CMenuElementText*)pMenuElementApply)->lOldColor;
+			((TextWidget*)pMenuElementApply)->lColor=((TextWidget*)pMenuElementApply)->lOldColor;
 		} else {
-			if(((CMenuElementText*)pMenuElementApply)->lColor != Color(127,127,127)) {
+			if(((TextWidget*)pMenuElementApply)->lColor != Color(127,127,127)) {
 				pMenuElementApply->SetCheckOff();
-				((CMenuElementText*)pMenuElementApply)->lOldColor=((CMenuElementText*)pMenuElementApply)->lColor;
-				((CMenuElementText*)pMenuElementApply)->lColor=Color(127,127,127);
+				((TextWidget*)pMenuElementApply)->lOldColor=((TextWidget*)pMenuElementApply)->lColor;
+				((TextWidget*)pMenuElementApply)->lColor=Color(127,127,127);
 			}
 		}
 	}
@@ -375,10 +375,10 @@ bool Menu2_Render() {
 		
 		if(ARXMenu_CanResumeGame()) {
 			pMenuElementResume->SetCheckOn();
-			((CMenuElementText*)pMenuElementResume)->lColor = Color(232, 204, 142);
+			((TextWidget*)pMenuElementResume)->lColor = Color(232, 204, 142);
 		} else {
 			pMenuElementResume->SetCheckOff();
-			((CMenuElementText*)pMenuElementResume)->lColor=Color(127,127,127);
+			((TextWidget*)pMenuElementResume)->lColor=Color(127,127,127);
 		}
 	}
 	
@@ -596,7 +596,7 @@ CMenuElement * CMenuElement::IsMouseOver(const Vec2s& mousePos) const {
 	return NULL;
 }
 
-CMenuElementText::CMenuElementText(int _iID, Font* _pFont, const std::string& _pText, Vec2i pos, MENUSTATE _eMs) : CMenuElement(_eMs)
+TextWidget::TextWidget(int _iID, Font* _pFont, const std::string& _pText, Vec2i pos, MENUSTATE _eMs) : CMenuElement(_eMs)
 {
 	iID = _iID;
 
@@ -619,11 +619,11 @@ CMenuElementText::CMenuElementText(int _iID, Font* _pFont, const std::string& _p
 	bSelected = false;
 }
 
-CMenuElementText::~CMenuElementText()
+TextWidget::~TextWidget()
 {
 }
 
-void CMenuElementText::SetText(const std::string & _pText)
+void TextWidget::SetText(const std::string & _pText)
 {
 	lpszText = _pText;
 
@@ -633,11 +633,11 @@ void CMenuElementText::SetText(const std::string & _pText)
 	rZone.bottom = textSize.y + rZone.top;
 }
 
-void CMenuElementText::Update(int _iDTime) {
+void TextWidget::Update(int _iDTime) {
 	(void)_iDTime;
 }
 
-bool CMenuElementText::OnMouseDoubleClick() {
+bool TextWidget::OnMouseDoubleClick() {
 
 	switch(iID) {
 	case BUTTON_MENUEDITQUEST_LOAD:
@@ -666,7 +666,7 @@ bool CMenuElementText::OnMouseDoubleClick() {
 }
 
 // true: block les zones de checks
-bool CMenuElementText::OnMouseClick() {
+bool TextWidget::OnMouseClick() {
 	
 	if(!enabled) {
 		return false;
@@ -745,7 +745,7 @@ bool CMenuElementText::OnMouseClick() {
 						CMenuElement *cz = p->MenuAllZone.vMenuZone[j];
 						
 						if(cz->iID == BUTTON_MENUEDITQUEST_LOAD) {
-							((CMenuElementText *)cz)->bSelected = false;
+							((TextWidget *)cz)->bSelected = false;
 						}
 					}
 				}
@@ -769,7 +769,7 @@ bool CMenuElementText::OnMouseClick() {
 							CMenuElement *cz = p->MenuAllZone.vMenuZone[j];
 							
 							if(cz->iID == BUTTON_MENUEDITQUEST_LOAD) {
-								((CMenuElementText *)cz)->bSelected = false;
+								((TextWidget *)cz)->bSelected = false;
 							}
 						}
 						bSelected = true;
@@ -820,7 +820,7 @@ bool CMenuElementText::OnMouseClick() {
 				
 				if(p->eMenuState == EDIT_QUEST_SAVE_CONFIRM) {
 					p->lData = lData;
-					CMenuElementText * me = (CMenuElementText *) p->MenuAllZone.vMenuZone[1];
+					TextWidget * me = (TextWidget *) p->MenuAllZone.vMenuZone[1];
 					
 					if(me) {
 						eMenuState = MAIN;
@@ -862,7 +862,7 @@ bool CMenuElementText::OnMouseClick() {
 					CWindowMenuConsole *p = pWindowMenu->vWindowConsoleElement[i];
 					if(p->eMenuState == EDIT_QUEST_SAVE_CONFIRM) {
 						p->lData = lData;
-						CMenuElementText * me = (CMenuElementText *) p->MenuAllZone.vMenuZone[1];
+						TextWidget * me = (TextWidget *) p->MenuAllZone.vMenuZone[1];
 						if(me) {
 							eMenuState = EDIT_QUEST_SAVE;
 							mainMenu->bReInitAll = true;
@@ -994,7 +994,7 @@ bool CMenuElementText::OnMouseClick() {
 
 			if(p->eMenuState == eMenuState) {
 				p->lData = lData;
-				CMenuElementText * me = (CMenuElementText *) p->MenuAllZone.vMenuZone[1];
+				TextWidget * me = (TextWidget *) p->MenuAllZone.vMenuZone[1];
 
 				if(me) {
 					me->lData = lData;
@@ -1019,7 +1019,7 @@ bool CMenuElementText::OnMouseClick() {
 }
 
 // true: block les zones de checks
-CMenuElement* CMenuElementText::OnShortCut() {
+CMenuElement* TextWidget::OnShortCut() {
 
 	if(iShortCut==-1)
 		return NULL;
@@ -1031,7 +1031,7 @@ CMenuElement* CMenuElementText::OnShortCut() {
 	return NULL;
 }
 
-void CMenuElementText::Render() {
+void TextWidget::Render() {
 
 	if(bNoMenu)
 		return;
@@ -1051,7 +1051,7 @@ void CMenuElementText::Render() {
 
 }
 
-void CMenuElementText::RenderMouseOver() {
+void TextWidget::RenderMouseOver() {
 
 	if(bNoMenu)
 		return;
@@ -1096,7 +1096,7 @@ void CMenuElementText::RenderMouseOver() {
 	}
 }
 
-Vec2i CMenuElementText::GetTextSize() const {
+Vec2i TextWidget::GetTextSize() const {
 	return pFont->getTextSize(lpszText);
 }
 
@@ -1121,7 +1121,7 @@ void MACRO_MENU_PRINCIPALE(Vec2s & pos,
 						   int MACRO_check)
 {
 	std::string szMenuText = getLocalised( MACRO_locate );
-	CMenuElementText *me = new CMenuElementText(MACRO_button, hFontMainMenu, szMenuText, Vec2i(RATIO_X(pos.x), RATIO_Y(pos.y)), MACRO_menu);
+	TextWidget *me = new TextWidget(MACRO_button, hFontMainMenu, szMenuText, Vec2i(RATIO_X(pos.x), RATIO_Y(pos.y)), MACRO_menu);
 	if(MACRO_check) {
 		pMenuElementResume=me;
 		if(ARXMenu_CanResumeGame()) {
@@ -1162,7 +1162,7 @@ void CMenuState::createChildElements()
 	}
 
 	float verPosX = RATIO_X(620) - hFontControls->getTextSize(version).x;
-	CMenuElementText * me = new CMenuElementText( -1, hFontControls, version, Vec2i(verPosX, RATIO_Y(80)), NOP );
+	TextWidget * me = new TextWidget( -1, hFontControls, version, Vec2i(verPosX, RATIO_Y(80)), NOP );
 	
 	me->SetCheckOff();
 	me->lColor=Color(127,127,127);
@@ -1305,7 +1305,7 @@ void CMenuAllZone::DrawZone()
 	GRenderer->SetRenderState(Renderer::AlphaBlending, false);
 }
 
-CMenuCheckButton::CMenuCheckButton(CMenuElementText *_pText)
+CMenuCheckButton::CMenuCheckButton(TextWidget *_pText)
 	:CMenuElement(NOP)
 {
 	TextureContainer *_pTex1 = TextureContainer::Load("graph/interface/menus/menu_checkbox_off");
@@ -1731,13 +1731,13 @@ void CWindowMenuConsole::UpdateText() {
 		   || GInput->isKeyPressed(Keyboard::Key_Escape)
 		) {
 			ARX_SOUND_PlayMenu(SND_MENU_CLICK);
-			((CMenuElementText*)pZoneClick)->eState=EDIT;
+			((TextWidget*)pZoneClick)->eState=EDIT;
 
-			if(((CMenuElementText*)pZoneClick)->lpszText.empty()) {
+			if(((TextWidget*)pZoneClick)->lpszText.empty()) {
 				std::string szMenuText;
 				szMenuText = getLocalised("system_menu_editquest_newsavegame");
 
-				((CMenuElementText*)pZoneClick)->SetText(szMenuText);
+				((TextWidget*)pZoneClick)->SetText(szMenuText);
 
 				int iDx=pZoneClick->rZone.right-pZoneClick->rZone.left;
 
@@ -1760,7 +1760,7 @@ void CWindowMenuConsole::UpdateText() {
 		bool bKey=false;
 		std::string tText;
 		
-		CMenuElementText *pZoneText=(CMenuElementText*)pZoneClick;
+		TextWidget *pZoneText=(TextWidget*)pZoneClick;
 
 		if(GInput->isKeyPressedNowPressed(Keyboard::Key_Backspace)) {
 			tText = pZoneText->lpszText;
@@ -1813,7 +1813,7 @@ void CWindowMenuConsole::UpdateText() {
 	}
 
 	if(pZoneClick->rZone.top == pZoneClick->rZone.bottom) {
-		Vec2i textSize = ((CMenuElementText*)pZoneClick)->pFont->getTextSize("|");
+		Vec2i textSize = ((TextWidget*)pZoneClick)->pFont->getTextSize("|");
 		pZoneClick->rZone.bottom += textSize.y;
 	}
 
@@ -1850,7 +1850,7 @@ CMenuElement * CWindowMenuConsole::GetTouch(bool keyTouched, int keyId, InputKey
 			return NULL;
 		}
 
-		CMenuElementText *pZoneText=(CMenuElementText*)pZoneClick;
+		TextWidget *pZoneText=(TextWidget*)pZoneClick;
 
 		if(_bValidateTest) {
 			if(pZoneClick->iID == BUTTON_MENUOPTIONS_CONTROLS_CUST_ACTIONCOMBINE1 ||
@@ -2211,9 +2211,9 @@ void CWindowMenuConsole::Render() {
 			break;
 		case GETTOUCH_TIME: {
 				if(bFrameOdd)
-					((CMenuElementText*)pZoneClick)->lColorHighlight = Color(255, 0, 0);
+					((TextWidget*)pZoneClick)->lColorHighlight = Color(255, 0, 0);
 				else
-					((CMenuElementText*)pZoneClick)->lColorHighlight = Color(50, 0, 0);
+					((TextWidget*)pZoneClick)->lColorHighlight = Color(50, 0, 0);
 
 				bool keyTouched = GInput->isAnyKeyPressed();
 				int keyId = GInput->getKeyPressed();
@@ -2546,7 +2546,7 @@ CycleTextWidget::CycleTextWidget(int _iID, Vec2i pos)
 CycleTextWidget::~CycleTextWidget() {
 	delete pLeftButton;
 	delete pRightButton;
-	BOOST_FOREACH(CMenuElementText * e, vText) {
+	BOOST_FOREACH(TextWidget * e, vText) {
 		delete e;
 	}
 }
@@ -2555,7 +2555,7 @@ void CycleTextWidget::selectLast() {
 	iPos = vText.size() - 1;
 }
 
-void CycleTextWidget::AddText(CMenuElementText *_pText) {
+void CycleTextWidget::AddText(TextWidget *_pText) {
 	
 	_pText->setEnabled(enabled);
 	
@@ -2572,10 +2572,10 @@ void CycleTextWidget::AddText(CMenuElementText *_pText) {
 
 	int dx=rZone.right-rZone.left-pLeftButton->rZone.width()-pRightButton->rZone.width();
 	//on recentre tout
-	vector<CMenuElementText*>::iterator it;
+	vector<TextWidget*>::iterator it;
 
 	for(it = vText.begin(); it < vText.end(); ++it) {
-		CMenuElementText *pMenuElementText=*it;
+		TextWidget *pMenuElementText=*it;
 		
 		textSize = pMenuElementText->GetTextSize();
 
@@ -2591,7 +2591,7 @@ void CycleTextWidget::Move(const Vec2i & offset) {
 	pLeftButton->Move(offset);
 	pRightButton->Move(offset);
 
-	for(std::vector<CMenuElementText*>::const_iterator i = vText.begin(), i_end = vText.end(); i != i_end; ++i)
+	for(std::vector<TextWidget*>::const_iterator i = vText.begin(), i_end = vText.end(); i != i_end; ++i)
 		(*i)->Move(offset);
 }
 

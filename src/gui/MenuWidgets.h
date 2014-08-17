@@ -325,7 +325,7 @@ private:
 	std::vector<CMenuElement *>	vElement;
 };
 
-class CMenuElementText: public CMenuElement {
+class TextWidget: public CMenuElement {
 	
 public:
 	std::string lpszText;
@@ -337,8 +337,8 @@ public:
 	
 public:
 	
-	CMenuElementText(int id, Font * font, const std::string & text, Vec2i pos, MENUSTATE state);
-	virtual ~CMenuElementText();
+	TextWidget(int id, Font * font, const std::string & text, Vec2i pos, MENUSTATE state);
+	virtual ~TextWidget();
 	
 	void setColor(Color color) { lColor = color; }
 	
@@ -386,7 +386,7 @@ public:
 	
 	void selectLast();
 	
-	void AddText(CMenuElementText * text);
+	void AddText(TextWidget * text);
 	
 	void Move(const Vec2i & offset);
 	bool OnMouseClick();
@@ -400,7 +400,7 @@ public:
 private:
 	ButtonWidget		*	pLeftButton;
 	ButtonWidget		*	pRightButton;
-	std::vector<CMenuElementText*>	vText;
+	std::vector<TextWidget*>	vText;
 	int					iPos;
 	int					iOldPos;
 };
@@ -434,7 +434,7 @@ private:
 class CMenuCheckButton : public CMenuElement {
 	
 public:
-	CMenuCheckButton(CMenuElementText * label);
+	CMenuCheckButton(TextWidget * label);
 	virtual ~CMenuCheckButton();
 	
 	void Move(const Vec2i & offset);
@@ -450,7 +450,7 @@ private:
 	Vec2i m_pos;
 	int					iTaille;
 	std::vector<TextureContainer *> vTex;
-	CMenuElementText	* pText;
+	TextWidget	* pText;
 };
 
 class CMenuState {
