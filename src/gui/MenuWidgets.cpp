@@ -1114,46 +1114,57 @@ CMenuState::~CMenuState() {
 	delete pTexBackGround;
 }
 
-void MACRO_MENU_PRINCIPALE(Vec2s & pos,
-						   int MACRO_button,
-						   MENUSTATE MACRO_menu,
-						   const char * MACRO_locate,
-						   int MACRO_check)
-{
-	std::string szMenuText = getLocalised( MACRO_locate );
-	TextWidget *me = new TextWidget(MACRO_button, hFontMainMenu, szMenuText, Vec2i(RATIO_X(pos.x), RATIO_Y(pos.y)), MACRO_menu);
-	if(MACRO_check) {
-		pMenuElementResume=me;
-		if(ARXMenu_CanResumeGame()) {
-			me->SetCheckOn();
-		} else {
-			me->SetCheckOff();
-			me->lColor=Color(127,127,127);
-		}
-	}
-	mainMenu->AddMenuElement(me);
-}
-
 void CMenuState::createChildElements()
 {
 	mainMenu->pTexBackGround = TextureContainer::LoadUI("graph/interface/menus/menu_main_background", TextureContainer::NoColorKey);
 
-	Vec2s pos = Vec2s(370, 100);
+	Vec2i pos = Vec2i(370, 100);
 	int yOffset = 50;
 	
-	MACRO_MENU_PRINCIPALE(pos, BUTTON_MENUMAIN_RESUMEGAME,RESUME_GAME,"system_menus_main_resumegame",1);
+	{
+	std::string szMenuText = getLocalised("system_menus_main_resumegame");
+	TextWidget *me = new TextWidget(BUTTON_MENUMAIN_RESUMEGAME, hFontMainMenu, szMenuText, RATIO_2(pos), RESUME_GAME);
+	if(ARXMenu_CanResumeGame()) {
+		me->SetCheckOn();
+	} else {
+		me->SetCheckOff();
+		me->lColor = Color(127,127,127);
+	}
+	mainMenu->AddMenuElement(me);
+	pMenuElementResume = me;
+	}
 	pos.y += yOffset;
-	MACRO_MENU_PRINCIPALE(pos, BUTTON_MENUMAIN_NEWQUEST,NEW_QUEST,"system_menus_main_newquest",0);
+	{
+	std::string szMenuText = getLocalised("system_menus_main_newquest");
+	TextWidget *me = new TextWidget(BUTTON_MENUMAIN_NEWQUEST, hFontMainMenu, szMenuText, RATIO_2(pos), NEW_QUEST);
+	mainMenu->AddMenuElement(me);
+	}
 	pos.y += yOffset;
-	MACRO_MENU_PRINCIPALE(pos, -1,EDIT_QUEST,"system_menus_main_editquest",0);
+	{
+	std::string szMenuText = getLocalised("system_menus_main_editquest");
+	TextWidget *me = new TextWidget(-1, hFontMainMenu, szMenuText, RATIO_2(pos), EDIT_QUEST);
+	mainMenu->AddMenuElement(me);
+	}
 	pos.y += yOffset;
-	MACRO_MENU_PRINCIPALE(pos, BUTTON_MENUMAIN_OPTIONS,OPTIONS,"system_menus_main_options",0);
+	{
+	std::string szMenuText = getLocalised("system_menus_main_options");
+	TextWidget *me = new TextWidget(BUTTON_MENUMAIN_OPTIONS, hFontMainMenu, szMenuText, RATIO_2(pos), OPTIONS);
+	mainMenu->AddMenuElement(me);
+	}
 	pos.y += yOffset;
-	MACRO_MENU_PRINCIPALE(pos, BUTTON_MENUMAIN_CREDITS,CREDITS,"system_menus_main_credits",0);
+	{
+	std::string szMenuText = getLocalised("system_menus_main_credits");
+	TextWidget *me = new TextWidget(BUTTON_MENUMAIN_CREDITS, hFontMainMenu, szMenuText, RATIO_2(pos), CREDITS);
+	mainMenu->AddMenuElement(me);
+	}
 	pos.y += yOffset;
-	MACRO_MENU_PRINCIPALE(pos, -1,QUIT,"system_menus_main_quit",0);
+	{
+	std::string szMenuText = getLocalised("system_menus_main_quit");
+	TextWidget *me = new TextWidget(-1, hFontMainMenu, szMenuText, RATIO_2(pos), QUIT);
+	mainMenu->AddMenuElement(me);
+	}
 	pos.y += yOffset;
-
+	
 	std::string version = arx_version;
 	if(!arx_release_codename.empty()) {
 		version += " \"";
