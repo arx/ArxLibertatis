@@ -873,11 +873,13 @@ private:
 	
 	void setGammaState(SliderWidget * sld, bool fullscreen) {
 		
+		/* FIXME shader gamma
 		if(!fullscreen) {
 			sld->setValue(5);
 			sld->SetCheckOff();
 			return;
 		}
+		*/
 		
 		sld->setValue(int(config.video.gamma));
 		sld->SetCheckOn();

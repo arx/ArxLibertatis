@@ -21,6 +21,8 @@
 
 #include "graphics/opengl/OpenGLUtil.h"
 
+#include "core/Config.h"
+
 #include "graphics/opengl/GLProgram.h"
 #include "graphics/opengl/GLRenderTexture.h"
 #include "graphics/opengl/GLVertexBuffer.h"
@@ -40,6 +42,10 @@ GLPostProcess::GLPostProcess(const Vec2s & size)
 	if(uniform_fbo_texture == -1) {
 		LogWarning << "Could not bind uniform: fbo_texture";
 	}
+	
+	m_uniform_gamma = m_program->getUniform("gamma");
+	if(m_uniform_gamma == -1)
+		LogWarning << "Could not bind uniform: " << "gamma";
 	
 	
 	GLfloat fbo_vertices[] = {
@@ -95,6 +101,13 @@ void GLPostProcess::render(Rect viewport) {
 	m_texture->bind();
 	
 	glUniform1i(uniform_fbo_texture, /*GL_TEXTURE*/0);
+	
+	{
+		float gammaMax = (1.f / 6.f);
+		float gammaMin = 2.f;
+		float gamma = ((gammaMax - gammaMin) / 11.f) * (config.video.gamma + 1.f) + gammaMin;
+		glUniform1f(m_uniform_gamma, gamma);
+	}
 	
 	glEnableVertexAttribArray(attribute_v_coord_postproc);
 	bindBuffer(m_vertices);
