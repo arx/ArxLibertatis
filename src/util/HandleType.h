@@ -27,8 +27,8 @@ struct D                                                        \
         Invalid = INVALID_VALUE                                 \
     };                                                          \
     T t;                                                        \
-    explicit D(const T t_) : t(t_) {};                          \
-    D() : t(Invalid) {};                                        \
+    explicit D(const T t_) : t(t_) {}                           \
+    D() : t(Invalid) {}                                         \
     D(const D & t_) : t(t_.t){}                                 \
     D(const SpecialHandles & value) : t(value){}                \
     D & operator=(const D & rhs) { t = rhs.t; return *this;}    \
