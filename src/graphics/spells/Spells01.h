@@ -50,7 +50,7 @@ ZeniMax Media Inc., Suite 120, Rockville, Maryland 20850 USA.
 class CMagicMissile : public CSpellFx {
 	
 public:
-	CMagicMissile(bool mrCheat);
+	explicit CMagicMissile(bool mrCheat);
 	~CMagicMissile();
 	
 	void SetTTL(unsigned long);

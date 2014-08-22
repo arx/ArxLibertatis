@@ -438,7 +438,7 @@ private:
 class CheckboxWidget : public Widget {
 	
 public:
-	CheckboxWidget(TextWidget * label);
+	explicit CheckboxWidget(TextWidget * label);
 	virtual ~CheckboxWidget();
 	
 	void Move(const Vec2i & offset);
