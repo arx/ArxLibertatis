@@ -165,7 +165,7 @@ CinematicBitmap* CreateCinematicBitmap(const res::path & path, int scale) {
 
 bool CinematicGrid::AllocGrille(Vec2i nb, Vec2f t, Vec2f d, int scale) {
 	m_scale = scale;
-	Vec2i oldnb = nb + 1;
+	Vec2i oldnb = nb + Vec2i(1);
 	nb *= scale;
 	Vec2f oldd = d;
 	d /= (float)scale;
