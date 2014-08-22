@@ -2412,10 +2412,10 @@ ButtonWidget::ButtonWidget(Vec2i pos, TextureContainer *_pTex)
 	pTex=_pTex;
 	
 	if(pTex) {
-		int rZoneR = rZone.left + RATIO_X(pTex->m_dwWidth);
-		int rZoneB = rZone.top + RATIO_Y(pTex->m_dwHeight);
-		rZone.right  = max(rZone.right,  rZoneR);
-		rZone.bottom = max(rZone.bottom, rZoneB);
+		s32 rZoneR = rZone.left + RATIO_X(pTex->m_dwWidth);
+		s32 rZoneB = rZone.top + RATIO_Y(pTex->m_dwHeight);
+		rZone.right  = std::max(rZone.right,  rZoneR);
+		rZone.bottom = std::max(rZone.bottom, rZoneB);
 	}
 	
 	pRef=this;
