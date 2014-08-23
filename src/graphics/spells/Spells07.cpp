@@ -697,22 +697,9 @@ void CFireField::Update(float timeDelta)
 	pPSStream1.Update(timeDelta);
 }
 
-void CFireField::Render()
-{
-	GRenderer->SetRenderState(Renderer::AlphaBlending, true);
-	GRenderer->SetRenderState(Renderer::DepthWrite, false);
-	GRenderer->SetBlendFunc(Renderer::BlendOne, Renderer::BlendOne);
-
-	GRenderer->SetCulling(Renderer::CullNone);
-	GRenderer->SetRenderState(Renderer::DepthWrite, false);
-	GRenderer->SetRenderState(Renderer::AlphaBlending, true);
-
+void CFireField::Render() {
 	pPSStream.Render();
 	pPSStream1.Render();
-
-	GRenderer->SetBlendFunc(Renderer::BlendOne, Renderer::BlendZero);
-	GRenderer->SetRenderState(Renderer::AlphaBlending, false);
-	GRenderer->SetRenderState(Renderer::DepthWrite, true);
 }
 
 CIceField::~CIceField()
