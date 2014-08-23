@@ -248,8 +248,14 @@ void CSummonCreature::RenderFissure()
 	etarget.x = fBetaRadCos;
 	etarget.y = 0;
 	etarget.z = fBetaRadSin;
-
-	RenderMaterial mat = RenderMaterial::getCurrent();
+	
+	RenderMaterial mat;
+	mat.setCulling(Renderer::CullNone);
+	mat.setDepthTest(false);
+	mat.setWrapMode(TextureStage::WrapClamp);
+	mat.setBlendType(RenderMaterial::Opaque);
+	
+	
 	mat.setLayer(RenderMaterial::EffectForeground);
 
 	//-------------------------------------------------------------------------
@@ -406,15 +412,7 @@ void CSummonCreature::Render()
 {
 	if(ulCurrentTime >= (ulDurationIntro + ulDurationRender + ulDurationOuttro))
 		return;
-
-	GRenderer->ResetTexture(0);
-	GRenderer->SetCulling(Renderer::CullNone);
-	GRenderer->SetRenderState(Renderer::DepthWrite, false);
-
-	GRenderer->GetTextureStage(0)->setWrapMode(TextureStage::WrapClamp);
-	GRenderer->SetBlendFunc(Renderer::BlendOne, Renderer::BlendOne);
-	GRenderer->SetRenderState(Renderer::AlphaBlending, true);
-
+	
 	//-------------------------------------------------------------------------
 	fTexWrap += 0.02f;
 
@@ -446,14 +444,9 @@ void CSummonCreature::Render()
 			sizeF = iSize - (iSize) * fOneOnDurationOuttro * (ulCurrentTime - (ulDurationIntro + ulDurationRender));
 		}
 	}
-
-	GRenderer->SetRenderState(Renderer::AlphaBlending, false);
+	
 	RenderFissure();
-
-	GRenderer->SetRenderState(Renderer::DepthWrite, true);
-	GRenderer->SetRenderState(Renderer::AlphaBlending, false);
-	GRenderer->GetTextureStage(0)->setWrapMode(TextureStage::WrapRepeat);
-
+	
 	//return (fSizeIntro / end);
 }
 
