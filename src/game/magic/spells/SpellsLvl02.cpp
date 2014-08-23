@@ -410,11 +410,9 @@ void HarmSpell::Update(float timeDelta)
 		light->fallstart=Es*1.5f;
 	}
 	
-	GRenderer->SetBlendFunc(Renderer::BlendOne, Renderer::BlendOne);
-	GRenderer->SetRenderState(Renderer::AlphaBlending, true);
-	GRenderer->SetRenderState(Renderer::DepthWrite, false);
-	RenderMaterial mat = RenderMaterial::getCurrent();
-	
+	RenderMaterial mat;
+	mat.setBlendType(RenderMaterial::Additive);
+	mat.setDepthTest(true);
 	
 	Anglef cabalangle(0.f, 0.f, 0.f);
 	cabalangle.setPitch(m_pitch+(float)timeDelta*0.1f);
@@ -438,9 +436,6 @@ void HarmSpell::Update(float timeDelta)
 	cabalpos.y=refpos-mov;
 	cabalcolor = Color3f(0.15f, 0.1f, 0.f);
 	Draw3DObject(cabal, cabalangle, cabalpos, cabalscale, cabalcolor, mat);
-	
-	GRenderer->SetRenderState(Renderer::AlphaBlending, false);
-	GRenderer->SetRenderState(Renderer::DepthWrite, true);
 	
 	ARX_SOUND_RefreshPosition(m_snd_loop, cabalpos);
 }
