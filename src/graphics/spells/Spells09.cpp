@@ -497,13 +497,12 @@ void CNegateMagic::Render() {
 
 	if(ulCurrentTime >= ulDuration)
 		return;
-
-	GRenderer->SetRenderState(Renderer::DepthWrite, false);
-	GRenderer->SetTexture(0, tex_sol);
-	GRenderer->SetBlendFunc(Renderer::BlendOne, Renderer::BlendOne);
-	GRenderer->SetRenderState(Renderer::AlphaBlending, true);
 	
-	RenderMaterial mat = RenderMaterial::getCurrent();
+	RenderMaterial mat;
+	mat.setLayer(RenderMaterial::Decal);
+	mat.setDepthTest(true);
+	mat.setTexture(tex_sol);
+	mat.setBlendType(RenderMaterial::Additive);
 	
 	for(i = 0; i < 360; i++) {
 		float t = rnd();
