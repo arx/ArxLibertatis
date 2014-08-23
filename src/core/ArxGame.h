@@ -67,6 +67,7 @@ protected:
 	bool addPaks();
 	
 	virtual void shutdown();
+	void shutdownGame();
 	
 	void doFrame();
 	void update();
@@ -123,6 +124,8 @@ private:
 	bool initWindow(RenderWindow * window);
 	
 	void setWindowSize(bool fullscreen);
+	
+	bool m_gameInitialized;
 };
 
 enum InfoPanels {

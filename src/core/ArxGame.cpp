@@ -208,7 +208,10 @@ Entity * CAMERACONTROLLER=NULL;
 Entity *lastCAMERACONTROLLER=NULL;
 
 // ArxGame constructor. Sets attributes for the app.
-ArxGame::ArxGame() : wasResized(false) { }
+ArxGame::ArxGame()
+	: wasResized(false)
+	, m_gameInitialized(false)
+{}
 
 ArxGame::~ArxGame() {
 }
@@ -978,6 +981,8 @@ bool ArxGame::initGame()
 	
 	GLOBAL_EERIETEXTUREFLAG_LOADSCENE_RELEASE = old;
 	
+	m_gameInitialized = true;
+	
 	return true;
 }
 
@@ -1103,8 +1108,18 @@ void ReleaseSystemObjects() {
 
 long EXITING = 0;
 
-void ArxGame::shutdown()
-{
+void ArxGame::shutdown() {
+	
+	if(m_gameInitialized)
+		shutdownGame();
+	
+	Application::shutdown();
+	
+	LogInfo << "Clean shutdown";
+}
+
+void ArxGame::shutdownGame() {
+	
 	ARX_Menu_Resources_Release();
 	arxtime.resume();
 	
@@ -1182,10 +1197,6 @@ void ArxGame::shutdown()
 		ARX_INPUT_Release();
 		ARX_SOUND_Release();
 	}
-	
-	Application::shutdown();
-	
-	LogInfo << "Clean shutdown";
 }
 
 void ArxGame::onWindowGotFocus(const Window &) {
