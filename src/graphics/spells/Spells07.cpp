@@ -341,21 +341,14 @@ void CLightning::Render()
 		fBeta = m_beta;
 		falpha = m_alpha;
 	}
-
-	//-------------------------------------------------------------------------
-	// rendu
-
-	GRenderer->SetCulling(Renderer::CullNone);
-	GRenderer->SetRenderState(Renderer::DepthWrite, false);
-
+	
 	float f = 1.5f * fMySize;
 	cnodetab[0].f = randomVec(-f, f);
-
-	GRenderer->SetBlendFunc(Renderer::BlendOne, Renderer::BlendOne);
-	GRenderer->SetRenderState(Renderer::AlphaBlending, true);
-	GRenderer->ResetTexture(0);
 	
-	const RenderMaterial & mat = RenderMaterial::getCurrent();
+	RenderMaterial mat;
+	mat.setCulling(Renderer::CullNone);
+	mat.setDepthTest(false);
+	mat.setBlendType(RenderMaterial::Additive);
 	
 	float fbeta = fBeta + rnd() * 2 * fMySize;
 
@@ -480,11 +473,6 @@ void CLightning::Render()
 		drawQuadRTP(mat, q);
 		}
 	}
-	
-	GRenderer->SetRenderState(Renderer::DepthWrite, true);
-	GRenderer->SetRenderState(Renderer::AlphaBlending, false);
-	
-	//return falpha;
 }
 
 CConfuse::~CConfuse()
