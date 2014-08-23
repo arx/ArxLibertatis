@@ -812,13 +812,10 @@ void CIceField::Render()
 		return;
 
 	int i = 0;
-
 	
-	GRenderer->SetRenderState(Renderer::DepthWrite, true);
-	GRenderer->SetBlendFunc(Renderer::BlendOne, Renderer::BlendOne);
-	GRenderer->SetRenderState(Renderer::AlphaBlending, true);
-	
-	RenderMaterial mat = RenderMaterial::getCurrent();
+	RenderMaterial mat;
+	mat.setDepthTest(true);
+	mat.setBlendType(RenderMaterial::Additive);
 	
 	for(i = 0; i < iMax; i++) {
 		
@@ -891,6 +888,4 @@ void CIceField::Render()
 			
 		}
 	}
-
-	GRenderer->SetCulling(Renderer::CullNone);
 }
