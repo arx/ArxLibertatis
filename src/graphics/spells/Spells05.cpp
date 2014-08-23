@@ -1156,10 +1156,7 @@ void CLevitate::Render()
 {
 	if(this->key > 1)
 		return;
-
-	GRenderer->SetRenderState(Renderer::AlphaBlending, true);
-	GRenderer->SetRenderState(Renderer::DepthWrite, false);
-
+	
 	//calcul du cone
 	TexturedVertex *d3dv;
 	Vec3f	* vertex;
@@ -1264,6 +1261,7 @@ void CLevitate::Render()
 	}
 
 	//tracé du cone back
+	GRenderer->SetRenderState(Renderer::DepthWrite, false);
 	GRenderer->SetBlendFunc(Renderer::BlendOne, Renderer::BlendOne);
 	GRenderer->SetRenderState(Renderer::AlphaBlending, true);
 	GRenderer->GetTextureStage(0)->setWrapMode(TextureStage::WrapMirror);
@@ -1309,11 +1307,11 @@ void CLevitate::Render()
 
 	//tracé des pierres
 	GRenderer->SetBlendFunc(Renderer::BlendSrcAlpha, Renderer::BlendInvSrcAlpha);
+	
 	this->DrawStone();
-
+	
 	GRenderer->SetBlendFunc(Renderer::BlendOne, Renderer::BlendZero);
 	GRenderer->SetRenderState(Renderer::AlphaBlending, false);
 	GRenderer->SetRenderState(Renderer::DepthWrite, true);
-
 	GRenderer->SetCulling(Renderer::CullNone);
 }
