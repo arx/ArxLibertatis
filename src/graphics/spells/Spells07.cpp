@@ -535,12 +535,11 @@ void CConfuse::Render() {
 	
 	if(ulCurrentTime >= ulDuration)
 		return;
-
-	GRenderer->SetRenderState(Renderer::DepthWrite, false);
-	GRenderer->SetBlendFunc(Renderer::BlendOne, Renderer::BlendOne);
-	GRenderer->SetRenderState(Renderer::AlphaBlending, true);
-	GRenderer->SetTexture(0, tex_trail);
-	RenderMaterial mat = RenderMaterial::getCurrent();
+	
+	RenderMaterial mat;
+	mat.setDepthTest(false);
+	mat.setBlendType(RenderMaterial::Additive);
+	mat.setTexture(tex_trail);
 	
 	Vec3f stitepos = eCurPos;
 	Anglef stiteangle = Anglef(0.f, -degrees(arxtime.get_updated() * ( 1.0f / 500 )), 0.f);
