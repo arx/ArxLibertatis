@@ -74,12 +74,9 @@ void Trail::Update(float timeDelta) {
 
 void Trail::Render()
 {
-	GRenderer->SetCulling(Renderer::CullNone);
-	GRenderer->SetRenderState(Renderer::AlphaBlending, true);
-	GRenderer->SetBlendFunc(Renderer::BlendOne, Renderer::BlendOne);
-	GRenderer->ResetTexture(0);
-	
-	RenderMaterial mat = RenderMaterial::getCurrent();
+	RenderMaterial mat;
+	mat.setCulling(Renderer::CullNone);
+	mat.setBlendType(RenderMaterial::Additive);
 	
 	for(size_t i = 0; i + 1 < m_positions.size() && i + 1 < m_segments.size(); i++) {
 		Draw3DLineTexNew(mat,
@@ -90,9 +87,6 @@ void Trail::Render()
 						 m_segments[i].m_size,
 						 m_segments[i + 1].m_size);
 	}
-
-	GRenderer->SetRenderState(Renderer::AlphaBlending, false);
-	GRenderer->SetBlendFunc(Renderer::BlendOne, Renderer::BlendZero);
 }
 
 
