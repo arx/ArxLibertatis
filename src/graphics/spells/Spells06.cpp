@@ -922,15 +922,7 @@ void CRiseDead::Render()
 {
 	if(ulCurrentTime >= (ulDurationIntro + ulDurationRender + ulDurationOuttro))
 		return;
-
-	GRenderer->ResetTexture(0);
-	GRenderer->SetCulling(Renderer::CullNone);
-	GRenderer->SetRenderState(Renderer::DepthWrite, false);
-
-	GRenderer->GetTextureStage(0)->setWrapMode(TextureStage::WrapClamp);
-	GRenderer->SetBlendFunc(Renderer::BlendOne, Renderer::BlendOne);
-	GRenderer->SetRenderState(Renderer::AlphaBlending, true);
-
+	
 	if(fTexWrap >= 1.0f)
 		fTexWrap -= 1.0f;
 
@@ -959,10 +951,7 @@ void CRiseDead::Render()
 			sizeF = iSize - (iSize) * fOneOnDurationOuttro * (ulCurrentTime - (ulDurationIntro + ulDurationRender));
 		}
 	}
-
-	GRenderer->SetRenderState(Renderer::AlphaBlending, false);
-	RenderFissure();
-
+	
 	//cailloux
 	if(this->timestone <= 0) {
 		this->timestone = Random::get(50, 150);
@@ -973,11 +962,23 @@ void CRiseDead::Render()
 		pos.z = this->eSrc.z + r;
 		this->AddStone(&pos);
 	}
-
+	
+	GRenderer->ResetTexture(0);
+	GRenderer->SetCulling(Renderer::CullNone);
+	GRenderer->SetRenderState(Renderer::DepthWrite, false);
+	GRenderer->GetTextureStage(0)->setWrapMode(TextureStage::WrapClamp);
+	GRenderer->SetBlendFunc(Renderer::BlendOne, Renderer::BlendOne);
+	GRenderer->SetRenderState(Renderer::AlphaBlending, true);
+	GRenderer->SetRenderState(Renderer::AlphaBlending, false);
+	
+	RenderFissure();
+	
 	GRenderer->SetRenderState(Renderer::DepthWrite, true);
 	GRenderer->SetRenderState(Renderer::AlphaBlending, true);
 	GRenderer->SetBlendFunc(Renderer::BlendSrcAlpha, Renderer::BlendInvSrcAlpha);
+	
 	this->DrawStone();
+	
 	GRenderer->GetTextureStage(0)->setWrapMode(TextureStage::WrapRepeat);
 	GRenderer->SetRenderState(Renderer::AlphaBlending, false);
 	GRenderer->SetRenderState(Renderer::DepthWrite, true);
