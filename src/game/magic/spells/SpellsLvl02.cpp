@@ -27,6 +27,7 @@
 #include "game/Player.h"
 #include "game/Spells.h"
 #include "graphics/spells/Spells02.h"
+#include "graphics/RenderBatcher.h"
 #include "graphics/Renderer.h"
 #include "scene/GameSound.h"
 #include "scene/Interactive.h"
@@ -412,6 +413,8 @@ void HarmSpell::Update(float timeDelta)
 	GRenderer->SetBlendFunc(Renderer::BlendOne, Renderer::BlendOne);
 	GRenderer->SetRenderState(Renderer::AlphaBlending, true);
 	GRenderer->SetRenderState(Renderer::DepthWrite, false);
+	RenderMaterial mat = RenderMaterial::getCurrent();
+	
 	
 	Anglef cabalangle(0.f, 0.f, 0.f);
 	cabalangle.setPitch(m_pitch+(float)timeDelta*0.1f);
@@ -419,22 +422,22 @@ void HarmSpell::Update(float timeDelta)
 	
 	Vec3f cabalscale = Vec3f(Es);
 	Color3f cabalcolor = Color3f(0.8f, 0.4f, 0.f);
-	Draw3DObject(cabal, cabalangle, cabalpos, cabalscale, cabalcolor);
+	Draw3DObject(cabal, cabalangle, cabalpos, cabalscale, cabalcolor, mat);
 	
 	mov=std::sin((float)(arxtime.get_frame_time()-30.f)*( 1.0f / 800 ))*scaley;
 	cabalpos.y = refpos - mov;
 	cabalcolor = Color3f(0.5f, 3.f, 0.f);
-	Draw3DObject(cabal, cabalangle, cabalpos, cabalscale, cabalcolor);
+	Draw3DObject(cabal, cabalangle, cabalpos, cabalscale, cabalcolor, mat);
 	
 	mov=std::sin((float)(arxtime.get_frame_time()-60.f)*( 1.0f / 800 ))*scaley;
 	cabalpos.y=refpos-mov;
 	cabalcolor = Color3f(0.25f, 0.1f, 0.f);
-	Draw3DObject(cabal, cabalangle, cabalpos, cabalscale, cabalcolor);
+	Draw3DObject(cabal, cabalangle, cabalpos, cabalscale, cabalcolor, mat);
 	
 	mov=std::sin((float)(arxtime.get_frame_time()-120.f)*( 1.0f / 800 ))*scaley;
 	cabalpos.y=refpos-mov;
 	cabalcolor = Color3f(0.15f, 0.1f, 0.f);
-	Draw3DObject(cabal, cabalangle, cabalpos, cabalscale, cabalcolor);
+	Draw3DObject(cabal, cabalangle, cabalpos, cabalscale, cabalcolor, mat);
 	
 	GRenderer->SetRenderState(Renderer::AlphaBlending, false);
 	GRenderer->SetRenderState(Renderer::DepthWrite, true);

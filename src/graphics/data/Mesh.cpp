@@ -1334,14 +1334,11 @@ long CountBkgVertex() {
 	return count;
 }
 
-void Draw3DObject(EERIE_3DOBJ *eobj, const Anglef & angle, const Vec3f & pos, const Vec3f & scale, const Color4f & coll)
+void Draw3DObject(EERIE_3DOBJ *eobj, const Anglef & angle, const Vec3f & pos, const Vec3f & scale, const Color4f & coll, RenderMaterial mat)
 {
 	if(!eobj)
 		return;
 	
-	// TODO: move to caller!
-	RenderMaterial mat = RenderMaterial::getCurrent();
-
 	TexturedVertex v;
 	TexturedVertex rv;
 	TexturedVertex vert_list[3];

@@ -141,8 +141,9 @@ void EE_RTP(const Vec3f & in,TexturedVertex *out);
 // FAST SAVE LOAD
 bool FastSceneLoad(const res::path & path);
 
+struct RenderMaterial;
 
-void Draw3DObject(EERIE_3DOBJ * eobj, const Anglef & angle, const Vec3f & pos, const Vec3f & scale, const Color4f & coll);
+void Draw3DObject(EERIE_3DOBJ * eobj, const Anglef & angle, const Vec3f & pos, const Vec3f & scale, const Color4f & coll, RenderMaterial mat);
 
 //****************************************************************************
 // BACKGROUND MANAGEMENT FUNCTIONS START

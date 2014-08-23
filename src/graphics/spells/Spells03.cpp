@@ -273,6 +273,7 @@ void CIceProjectile::Render()
 	GRenderer->SetRenderState(Renderer::DepthWrite, false);
 	GRenderer->SetBlendFunc(Renderer::BlendInvDstColor, Renderer::BlendOne);
 	GRenderer->SetRenderState(Renderer::AlphaBlending, true);
+	RenderMaterial mat = RenderMaterial::getCurrent();
 
 	float fOneOnDuration = 1.f / (float)(ulDuration);
 	iMax = (int)((iNumber * 2) * fOneOnDuration * ulCurrentTime);
@@ -307,9 +308,9 @@ void CIceProjectile::Render()
 			stitecolor.b = 1;
 
 		if(icicle.type == 0)
-			Draw3DObject(smotte, stiteangle, icicle.pos, icicle.size, stitecolor);
+			Draw3DObject(smotte, stiteangle, icicle.pos, icicle.size, stitecolor, mat);
 		else
-			Draw3DObject(stite, stiteangle, icicle.pos, icicle.size, stitecolor);
+			Draw3DObject(stite, stiteangle, icicle.pos, icicle.size, stitecolor, mat);
 	}
 	
 	for(int i = 0; i < min(iNumber, iMax + 1); i++) {

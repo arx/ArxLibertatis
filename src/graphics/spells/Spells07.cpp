@@ -540,12 +540,13 @@ void CConfuse::Render() {
 	GRenderer->SetBlendFunc(Renderer::BlendOne, Renderer::BlendOne);
 	GRenderer->SetRenderState(Renderer::AlphaBlending, true);
 	GRenderer->SetTexture(0, tex_trail);
+	RenderMaterial mat = RenderMaterial::getCurrent();
 	
 	Vec3f stitepos = eCurPos;
 	Anglef stiteangle = Anglef(0.f, -degrees(arxtime.get_updated() * ( 1.0f / 500 )), 0.f);
 	Color3f stitecolor = Color3f::white;
 	Vec3f stitescale = Vec3f_ONE;
-	Draw3DObject(spapi, stiteangle, stitepos, stitescale, stitecolor);
+	Draw3DObject(spapi, stiteangle, stitepos, stitescale, stitecolor, mat);
 	
 	for(i = 0; i < 6; i++) {
 		
@@ -817,6 +818,8 @@ void CIceField::Render()
 	GRenderer->SetBlendFunc(Renderer::BlendOne, Renderer::BlendOne);
 	GRenderer->SetRenderState(Renderer::AlphaBlending, true);
 	
+	RenderMaterial mat = RenderMaterial::getCurrent();
+	
 	for(i = 0; i < iMax; i++) {
 		
 		tSize[i] += Vec3f(0.1f);
@@ -850,9 +853,9 @@ void CIceField::Render()
 		stitescale.x = tSize[i].z;
 
 		if(tType[i] == 0)
-			Draw3DObject(smotte, stiteangle, stitepos, stitescale, stitecolor);
+			Draw3DObject(smotte, stiteangle, stitepos, stitescale, stitecolor, mat);
 		else
-			Draw3DObject(stite, stiteangle, stitepos, stitescale, stitecolor);
+			Draw3DObject(stite, stiteangle, stitepos, stitescale, stitecolor, mat);
 	}
 	
 	for(i = 0; i < iMax * 0.5f; i++) {

@@ -622,7 +622,8 @@ void CRiseDead::DrawStone()
 	int	nb = 256;
 	GRenderer->SetBlendFunc(Renderer::BlendInvDstColor, Renderer::BlendOne);
 	GRenderer->SetRenderState(Renderer::AlphaBlending, true);
-
+	RenderMaterial mat = RenderMaterial::getCurrent();
+	
 	while(nb--) {
 		if(this->tstone[nb].actif) {
 			float a = (float)this->tstone[nb].currtime / (float)this->tstone[nb].time;
@@ -633,7 +634,7 @@ void CRiseDead::DrawStone()
 			}
 
 			Color4f col = Color4f(Color3f::white, 1.f - a);
-			Draw3DObject(stone[tstone[nb].numstone], tstone[nb].ang, tstone[nb].pos, tstone[nb].scale, col);
+			Draw3DObject(stone[tstone[nb].numstone], tstone[nb].ang, tstone[nb].pos, tstone[nb].scale, col, mat);
 			
 			PARTICLE_DEF * pd = createParticle();
 			if(pd) {

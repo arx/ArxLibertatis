@@ -499,12 +499,12 @@ void CNegateMagic::Render() {
 		return;
 
 	GRenderer->SetRenderState(Renderer::DepthWrite, false);
-	GRenderer->SetRenderState(Renderer::AlphaBlending, true);
 	GRenderer->SetTexture(0, tex_sol);
-
 	GRenderer->SetBlendFunc(Renderer::BlendOne, Renderer::BlendOne);
 	GRenderer->SetRenderState(Renderer::AlphaBlending, true);
-
+	
+	RenderMaterial mat = RenderMaterial::getCurrent();
+	
 	for(i = 0; i < 360; i++) {
 		float t = rnd();
 		if(t < 0.04f) {
@@ -525,17 +525,15 @@ void CNegateMagic::Render() {
 		}
 	}
 	
-	GRenderer->SetRenderState(Renderer::AlphaBlending, true);
-	
 	Anglef stiteangle(0.f, -(float) ulCurrentTime * 0.02f, 0.f);
 	Color3f stitecolor = Color3f::gray(.4f);
 	float scalediff = std::sin(ulCurrentTime * 0.004f);
 	Vec3f stitescale = Vec3f(3.f + 0.5f * scalediff);
-	Draw3DObject(ssol, stiteangle, stitepos, stitescale, stitecolor);
-	GRenderer->SetBlendFunc(Renderer::BlendOne, Renderer::BlendOne);
+	Draw3DObject(ssol, stiteangle, stitepos, stitescale, stitecolor, mat);
+	
 	stitecolor = Color3f(.5f, 0.f, .5f);
 	stitescale = Vec3f(3.1f + 0.2f * scalediff);
-	Draw3DObject(ssol, stiteangle, stitepos, stitescale, stitecolor);
+	Draw3DObject(ssol, stiteangle, stitepos, stitescale, stitecolor, mat);
 }
 
 void CNegateMagic::SetPos(Vec3f pos)

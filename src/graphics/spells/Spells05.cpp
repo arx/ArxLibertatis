@@ -298,6 +298,7 @@ void CRuneOfGuarding::Render()
 	GRenderer->SetRenderState(Renderer::DepthWrite, false);
 	GRenderer->SetBlendFunc(Renderer::BlendOne, Renderer::BlendOne);
 	GRenderer->SetRenderState(Renderer::AlphaBlending, true);
+	RenderMaterial mat = RenderMaterial::getCurrent();
 	
 	Anglef stiteangle;
 	Color3f stitecolor;
@@ -311,18 +312,18 @@ void CRuneOfGuarding::Render()
 	float scale = std::sin(ulCurrentTime * 0.015f);
 	Vec3f stitescale = Vec3f(1.f, -0.1f, 1.f);
 	
-	Draw3DObject(slight, stiteangle, pos, stitescale, stitecolor);
+	Draw3DObject(slight, stiteangle, pos, stitescale, stitecolor, mat);
 	
 	stiteangle.setPitch(stiteangleb);
 	stitecolor = Color3f(0.6f, 0.f, 0.f);
 	stitescale = Vec3f(2.f) * (1.f + 0.01f * scale);
 	
-	Draw3DObject(ssol, stiteangle, pos, stitescale, stitecolor);
+	Draw3DObject(ssol, stiteangle, pos, stitescale, stitecolor, mat);
 	
 	stitecolor = Color3f(0.6f, 0.3f, 0.45f);
 	stitescale = Vec3f(1.8f) * (1.f + 0.02f * scale);
 	
-	Draw3DObject(srune, stiteangle, pos, stitescale, stitecolor);
+	Draw3DObject(srune, stiteangle, pos, stitescale, stitecolor, mat);
 	
 	for(int n = 0; n < 4; n++) {
 		
@@ -829,6 +830,7 @@ void CRepelUndead::Render() {
 	GRenderer->SetRenderState(Renderer::DepthWrite, false);
 	GRenderer->SetBlendFunc(Renderer::BlendOne, Renderer::BlendOne);
 	GRenderer->SetRenderState(Renderer::AlphaBlending, true);
+	RenderMaterial mat = RenderMaterial::getCurrent();
 	
 	Anglef  eObjAngle;
 
@@ -840,7 +842,7 @@ void CRepelUndead::Render() {
 	vv *= ( 1.0f / 2 );
 	vv += 1.1f;
 	
-	Draw3DObject(ssol, eObjAngle, eSrc + Vec3f(0.f, -5.f, 0.f), Vec3f(vv), Color3f(0.6f, 0.6f, 0.8f));
+	Draw3DObject(ssol, eObjAngle, eSrc + Vec3f(0.f, -5.f, 0.f), Vec3f(vv), Color3f(0.6f, 0.6f, 0.8f), mat);
 	
 	vv *= 100.f;
 	
@@ -1029,6 +1031,8 @@ void CLevitate::DrawStone()
 {
 	GRenderer->SetBlendFunc(Renderer::BlendInvDstColor, Renderer::BlendOne);
 	GRenderer->SetRenderState(Renderer::AlphaBlending, true);
+	RenderMaterial mat = RenderMaterial::getCurrent();
+	
 	int	nb = 256;
 
 	while(nb--) {
@@ -1044,7 +1048,7 @@ void CLevitate::DrawStone()
 
 			EERIE_3DOBJ * obj = (tstone[nb].numstone == 0) ? stone0 : stone1;
 			
-			Draw3DObject(obj, tstone[nb].ang, tstone[nb].pos, tstone[nb].scale, Color4f(col));
+			Draw3DObject(obj, tstone[nb].ang, tstone[nb].pos, tstone[nb].scale, Color4f(col), mat);
 			
 			PARTICLE_DEF * pd = createParticle();
 			if(pd) {

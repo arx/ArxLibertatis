@@ -328,7 +328,9 @@ static void drawDebugPathFinding() {
 		if(k0 >= 0 && k0 < ACTIVEBKG->nbanchors) {
 			Anglef angle(0.f, 0.f, 0.f);
 			Vec3f scale(0.5f);
-			Draw3DObject(g_nodeObject, angle, ACTIVEBKG->anchors[k0].pos, scale, Color3f::white);
+			RenderMaterial mat = RenderMaterial::getCurrent();
+			
+			Draw3DObject(g_nodeObject, angle, ACTIVEBKG->anchors[k0].pos, scale, Color3f::white, mat);
 		}
 		
 		// Show entity ID at the active node
@@ -357,7 +359,9 @@ static void drawDebugFogs() {
 		
 			Anglef angle(0.f, 0.f, 0.f);
 			Vec3f scale(1.f);
-			Draw3DObject(g_fogObject, angle, fog->pos, scale, Color3f::white);
+			RenderMaterial mat = RenderMaterial::getCurrent();
+			
+			Draw3DObject(g_fogObject, angle, fog->pos, scale, Color3f::white, mat);
 		
 		if(fog->special & FOG_DIRECTIONAL) {
 			drawLine(fog->pos, fog->pos + fog->move * 50.f, Color::white);
