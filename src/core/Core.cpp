@@ -1337,6 +1337,3 @@ void ARX_SetAntiAliasing() {
 	bool enabled = config.video.antialiasing && mainApp->getWindow()->getMSAALevel() > 0;
 	GRenderer->SetAntialiasing(enabled);
 }
-
-extern Cinematic* ControlCinematique;
-
