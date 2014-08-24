@@ -371,13 +371,14 @@ void HarmSpell::End()
 
 extern EERIE_3DOBJ * cabal;
 
+// TODO copy-paste cabal
 void HarmSpell::Update(float timeDelta)
 {
 	float refpos;
 	float scaley;
 	
 	if(m_caster == PlayerEntityHandle)
-		scaley=90.f;
+		scaley = 90.f;
 	else
 		scaley = EEfabs(entities[m_caster]->physics.cyl.height*( 1.0f / 2 ))+30.f;
 	
@@ -405,17 +406,18 @@ void HarmSpell::Update(float timeDelta)
 		light->pos.x = cabalpos.x;
 		light->pos.y = refpos;
 		light->pos.z = cabalpos.z;
-		light->rgb.r=rnd()*0.2f+0.8f;
-		light->rgb.g=rnd()*0.2f+0.6f;
-		light->fallstart=Es*1.5f;
+		light->rgb.r = rnd() * 0.2f + 0.8f;
+		light->rgb.g = rnd() * 0.2f + 0.6f;
+		light->fallstart = Es * 1.5f;
 	}
 	
 	RenderMaterial mat;
-	mat.setBlendType(RenderMaterial::Additive);
+	mat.setCulling(Renderer::CullNone);
 	mat.setDepthTest(true);
+	mat.setBlendType(RenderMaterial::Additive);
 	
 	Anglef cabalangle(0.f, 0.f, 0.f);
-	cabalangle.setPitch(m_pitch+(float)timeDelta*0.1f);
+	cabalangle.setPitch(m_pitch + (float)timeDelta*0.1f);
 	m_pitch = cabalangle.getPitch();
 	
 	Vec3f cabalscale = Vec3f(Es);

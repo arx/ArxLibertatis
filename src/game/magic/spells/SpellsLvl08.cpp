@@ -144,15 +144,16 @@ void ManaDrainSpell::End()
 
 extern EERIE_3DOBJ * cabal;
 
+// TODO copy-paste cabal
 void ManaDrainSpell::Update(float timeDelta)
 {
 	float refpos;
 	float scaley;
 	
 	if(m_caster == PlayerEntityHandle)
-		scaley=90.f;
+		scaley = 90.f;
 	else
-		scaley=EEfabs(entities[m_caster]->physics.cyl.height*( 1.0f / 2 ))+30.f;
+		scaley = EEfabs(entities[m_caster]->physics.cyl.height*( 1.0f / 2 ))+30.f;
 	
 	float mov=std::sin((float)arxtime.get_frame_time()*( 1.0f / 800 ))*scaley;
 	
@@ -422,15 +423,16 @@ void LifeDrainSpell::End()
 	ARX_SOUND_Stop(m_snd_loop);
 }
 
+// TODO copy-paste cabal
 void LifeDrainSpell::Update(float timeDelta)
 {
 	float refpos;
 	float scaley;
 	
 	if(m_caster == PlayerEntityHandle)
-		scaley=90.f;
+		scaley = 90.f;
 	else
-		scaley=EEfabs(entities[m_caster]->physics.cyl.height*( 1.0f / 2 ))+30.f;
+		scaley = EEfabs(entities[m_caster]->physics.cyl.height*( 1.0f / 2 ))+30.f;
 	
 	float mov=std::sin((float)arxtime.get_frame_time()*( 1.0f / 800 ))*scaley;
 	
