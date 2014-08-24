@@ -281,22 +281,14 @@ void CMagicMissile::Render()
 
 	if(ulCurrentTime >= ulDuration)
 		return;
-
-	// Set Appropriate Renderstates
-	GRenderer->SetCulling(Renderer::CullNone);
-	GRenderer->SetRenderState(Renderer::DepthWrite, false);
-	GRenderer->SetBlendFunc(Renderer::BlendOne, Renderer::BlendOne);
-	GRenderer->SetRenderState(Renderer::AlphaBlending, true);
-
-	// Set Texture
-	if(tex_mm) {
-		if(m_mrCheat)
-			GRenderer->ResetTexture(0);
-		else
-			GRenderer->SetTexture(0, tex_mm);
-	}
 	
-	RenderMaterial mat = RenderMaterial::getCurrent();
+	RenderMaterial mat;
+	mat.setCulling(Renderer::CullNone);
+	mat.setDepthTest(true);
+	mat.setBlendType(RenderMaterial::Additive);
+	
+	if(tex_mm && !m_mrCheat)
+		mat.setTexture(tex_mm);
 	
 	if(bMove) {
 		float fOneOnDuration = 1.f / (float)(ulDuration);
