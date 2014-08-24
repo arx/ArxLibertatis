@@ -461,11 +461,10 @@ void LifeDrainSpell::Update(float timeDelta)
 		light->fallstart = Es * 1.5f;
 	}
 	
-	GRenderer->SetCulling(Renderer::CullNone);
-	GRenderer->SetBlendFunc(Renderer::BlendOne, Renderer::BlendOne);
-	GRenderer->SetRenderState(Renderer::AlphaBlending, true);
-	GRenderer->SetRenderState(Renderer::DepthWrite, false);
-	RenderMaterial mat = RenderMaterial::getCurrent();
+	RenderMaterial mat;
+	mat.setCulling(Renderer::CullNone);
+	mat.setDepthTest(true);
+	mat.setBlendType(RenderMaterial::Additive);
 	
 	Anglef cabalangle(0.f, 0.f, 0.f);
 	cabalangle.setPitch(m_pitch + (float)timeDelta*0.1f);
@@ -512,8 +511,6 @@ void LifeDrainSpell::Update(float timeDelta)
 	Draw3DObject(cabal, cabalangle, cabalpos, cabalscale, cabalcolor, mat);
 	
 	cabalangle.setPitch(-cabalangle.getPitch());
-	GRenderer->SetRenderState(Renderer::AlphaBlending, false);
-	GRenderer->SetRenderState(Renderer::DepthWrite, true);
 	
 	ARX_SOUND_RefreshPosition(m_snd_loop, cabalpos);
 }
