@@ -211,10 +211,10 @@ void CCurse::Update(float timeDelta)
 
 void CCurse::Render() {
 	
-	GRenderer->SetCulling(Renderer::CullCW);
-	GRenderer->SetRenderState(Renderer::DepthWrite, true);
-	GRenderer->SetRenderState(Renderer::AlphaBlending, false);
-	RenderMaterial mat = RenderMaterial::getCurrent();
+	RenderMaterial mat;
+	mat.setCulling(Renderer::CullCW);
+	mat.setDepthTest(true);
+	mat.setBlendType(RenderMaterial::Opaque);
 	
 		Anglef stiteangle = Anglef(0, fRot, 0);
 		Vec3f stitepos = eTarget;
@@ -237,6 +237,4 @@ void CCurse::Render() {
 		pd->special = ROTATING | MODULATE_ROTATION | DISSIPATING | SUBSTRACT | GRAVITY;
 		pd->fparam = 0.0000001f;
 	}
-
-	GRenderer->SetCulling(Renderer::CullNone);
 }
