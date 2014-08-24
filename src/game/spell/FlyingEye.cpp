@@ -107,9 +107,10 @@ void ARXDRAW_DrawEyeBall() {
 
 	Vec3f scale = Vec3f(d);
 	Color3f rgb = Color3f::gray(d);
-	GRenderer->SetBlendFunc(Renderer::BlendOne, Renderer::BlendOne);
-	GRenderer->SetRenderState(Renderer::AlphaBlending, true);
-	RenderMaterial mat = RenderMaterial::getCurrent();
+	
+	RenderMaterial mat;
+	mat.setDepthTest(true);
+	mat.setBlendType(RenderMaterial::Additive);
 	
 	Draw3DObject(eyeballobj, angle, pos, scale, rgb, mat);
 }
