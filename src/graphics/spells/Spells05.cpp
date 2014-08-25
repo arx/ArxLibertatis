@@ -826,10 +826,9 @@ void CRepelUndead::Render() {
 	if(ulCurrentTime >= ulDuration)
 		return;
 	
-	GRenderer->SetRenderState(Renderer::DepthWrite, false);
-	GRenderer->SetBlendFunc(Renderer::BlendOne, Renderer::BlendOne);
-	GRenderer->SetRenderState(Renderer::AlphaBlending, true);
-	RenderMaterial mat = RenderMaterial::getCurrent();
+	RenderMaterial mat;
+	mat.setDepthTest(true);
+	mat.setBlendType(RenderMaterial::Additive);
 	
 	Anglef  eObjAngle;
 
