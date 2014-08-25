@@ -328,7 +328,9 @@ static void drawDebugPathFinding() {
 		if(k0 >= 0 && k0 < ACTIVEBKG->nbanchors) {
 			Anglef angle(0.f, 0.f, 0.f);
 			Vec3f scale(0.5f);
-			RenderMaterial mat = RenderMaterial::getCurrent();
+			RenderMaterial mat;
+			mat.setBlendType(RenderMaterial::Opaque);
+			mat.setDepthTest(true);
 			
 			Draw3DObject(g_nodeObject, angle, ACTIVEBKG->anchors[k0].pos, scale, Color3f::white, mat);
 		}
@@ -359,7 +361,9 @@ static void drawDebugFogs() {
 		
 			Anglef angle(0.f, 0.f, 0.f);
 			Vec3f scale(1.f);
-			RenderMaterial mat = RenderMaterial::getCurrent();
+			RenderMaterial mat;
+			mat.setBlendType(RenderMaterial::Opaque);
+			mat.setDepthTest(true);
 			
 			Draw3DObject(g_fogObject, angle, fog->pos, scale, Color3f::white, mat);
 		
