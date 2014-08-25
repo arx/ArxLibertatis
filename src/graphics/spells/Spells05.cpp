@@ -295,10 +295,9 @@ void CRuneOfGuarding::Render()
 {
 	Vec3f pos = eSrc + Vec3f(0.f, -20.f, 0.f);
 	
-	GRenderer->SetRenderState(Renderer::DepthWrite, false);
-	GRenderer->SetBlendFunc(Renderer::BlendOne, Renderer::BlendOne);
-	GRenderer->SetRenderState(Renderer::AlphaBlending, true);
-	RenderMaterial mat = RenderMaterial::getCurrent();
+	RenderMaterial mat;
+	mat.setDepthTest(true);
+	mat.setBlendType(RenderMaterial::Additive);
 	
 	Anglef stiteangle;
 	Color3f stitecolor;
