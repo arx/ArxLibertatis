@@ -1027,9 +1027,9 @@ void CLevitate::AddStone(const Vec3f & pos) {
 
 void CLevitate::DrawStone()
 {
-	GRenderer->SetBlendFunc(Renderer::BlendInvDstColor, Renderer::BlendOne);
-	GRenderer->SetRenderState(Renderer::AlphaBlending, true);
-	RenderMaterial mat = RenderMaterial::getCurrent();
+	RenderMaterial mat;
+	mat.setDepthTest(true);
+	mat.setBlendType(RenderMaterial::Screen);
 	
 	int	nb = 256;
 
@@ -1263,14 +1263,13 @@ void CLevitate::Render()
 	}
 
 	//tracé du cone back
-	GRenderer->SetRenderState(Renderer::DepthWrite, false);
-	GRenderer->SetBlendFunc(Renderer::BlendOne, Renderer::BlendOne);
-	GRenderer->SetRenderState(Renderer::AlphaBlending, true);
-	GRenderer->GetTextureStage(0)->setWrapMode(TextureStage::WrapMirror);
-	GRenderer->SetTexture(0, tsouffle);
-	GRenderer->SetCulling(Renderer::CullCW);
 	
-	RenderMaterial mat = RenderMaterial::getCurrent();
+	RenderMaterial mat;
+	mat.setDepthTest(true);
+	mat.setBlendType(RenderMaterial::Additive);
+	mat.setWrapMode(TextureStage::WrapMirror);
+	mat.setTexture(tsouffle);
+	mat.setCulling(Renderer::CullCW);
 	
 	int i = cone[1].conenbfaces - 2;
 	int j = 0;
@@ -1306,14 +1305,6 @@ void CLevitate::Render()
 		drawTriangle(mat, &cone[0].coned3d[j]);
 		j++;
 	}
-
-	//tracé des pierres
-	GRenderer->SetBlendFunc(Renderer::BlendSrcAlpha, Renderer::BlendInvSrcAlpha);
 	
 	this->DrawStone();
-	
-	GRenderer->SetBlendFunc(Renderer::BlendOne, Renderer::BlendZero);
-	GRenderer->SetRenderState(Renderer::AlphaBlending, false);
-	GRenderer->SetRenderState(Renderer::DepthWrite, true);
-	GRenderer->SetCulling(Renderer::CullNone);
 }
