@@ -268,13 +268,12 @@ void CIceProjectile::Render()
 {
 	if(ulCurrentTime >= ulDuration)
 		return;
-
-	GRenderer->SetCulling(Renderer::CullCW);
-	GRenderer->SetRenderState(Renderer::DepthWrite, false);
-	GRenderer->SetBlendFunc(Renderer::BlendInvDstColor, Renderer::BlendOne);
-	GRenderer->SetRenderState(Renderer::AlphaBlending, true);
-	RenderMaterial mat = RenderMaterial::getCurrent();
-
+	
+	RenderMaterial mat;
+	mat.setCulling(Renderer::CullCW);
+	mat.setDepthTest(true);
+	mat.setBlendType(RenderMaterial::Screen);
+	
 	float fOneOnDuration = 1.f / (float)(ulDuration);
 	iMax = (int)((iNumber * 2) * fOneOnDuration * ulCurrentTime);
 
