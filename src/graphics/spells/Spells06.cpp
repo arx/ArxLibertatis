@@ -96,7 +96,7 @@ void CCreateField::Create(Vec3f aeSrc) {
 	youp = true;
 }
 
-void CCreateField::RenderQuad(const Vec3f & p1, const Vec3f & p2, const Vec3f & p3, const Vec3f & p4, int rec, Vec3f norm)
+void CCreateField::RenderQuad(const Vec3f & p1, const Vec3f & p2, const Vec3f & p3, const Vec3f & p4, int rec, Vec3f norm, RenderMaterial & mat)
 {
 	if(rec < 3) {
 		rec ++;
@@ -131,14 +131,12 @@ void CCreateField::RenderQuad(const Vec3f & p1, const Vec3f & p2, const Vec3f & 
 		v[4].y += (float) sin(radians((v[4].y - eSrc.y) * patchsize + fwrap)) * 5;
 		v[4].z += (float) sin(radians((v[4].z - eSrc.z) * patchsize + fwrap)) * 5;
 
-		RenderQuad(p1, v[4], v[0], v[1], rec, norm);
-		RenderQuad(v[4], p2, v[2], v[0], rec, norm);
-		RenderQuad(v[0], v[2], p3, v[3], rec, norm);
-		RenderQuad(v[1], v[0], v[3], p4, rec, norm);
+		RenderQuad(p1, v[4], v[0], v[1], rec, norm, mat);
+		RenderQuad(v[4], p2, v[2], v[0], rec, norm, mat);
+		RenderQuad(v[0], v[2], p3, v[3], rec, norm, mat);
+		RenderQuad(v[1], v[0], v[3], p4, rec, norm, mat);
 	} else if(rec == 3) {
 		float zab = (float) sin(radians(ft));
-		
-		RenderMaterial mat = RenderMaterial::getCurrent();
 		
 		TexturedQuad q;
 		
@@ -163,10 +161,10 @@ void CCreateField::RenderQuad(const Vec3f & p1, const Vec3f & p2, const Vec3f & 
 	}
 }
 
-void CCreateField::RenderSubDivFace(Vec3f * b, Vec3f * t, int b1, int b2, int t1, int t2) {
+void CCreateField::RenderSubDivFace(Vec3f * b, Vec3f * t, int b1, int b2, int t1, int t2, RenderMaterial & mat) {
 	Vec3f norm = (b[b1] + b[b2] + t[t1] + t[t2]) * 0.25f - eSrc;
 	norm = glm::normalize(norm);
-	RenderQuad(b[b1], b[b2], t[t1], t[t2], 1, norm);
+	RenderQuad(b[b1], b[b2], t[t1], t[t2], 1, norm, mat);
 }
 
 void CCreateField::Update(float timeDelta)
@@ -188,13 +186,7 @@ void CCreateField::Render()
 	falpha = 1.f - (((float)(ulCurrentTime)) * fOneOnDuration);
 
 	if (falpha > 1.f) falpha = 1.f;
-
-	GRenderer->SetCulling(Renderer::CullNone);
-	GRenderer->SetRenderState(Renderer::DepthWrite, false);
-	GRenderer->GetTextureStage(0)->setWrapMode(TextureStage::WrapClamp);
-	GRenderer->SetBlendFunc(Renderer::BlendOne, Renderer::BlendOne);
-	GRenderer->SetRenderState(Renderer::AlphaBlending, true);
-
+	
 	//-------------------------------------------------------------------------
 	// rendu
 	if(youp) {
@@ -276,20 +268,20 @@ void CCreateField::Render()
 	while(fwrap < 0) {
 		fwrap += 360;
 	}
+	
+	RenderMaterial mat = RenderMaterial::getCurrent();
+	mat.setTexture(tex_jelly);
+	mat.setWrapMode(TextureStage::WrapRepeat);
+	mat.setDepthTest(true);
+	mat.setBlendType(RenderMaterial::Additive);
 
-	GRenderer->GetTextureStage(0)->setWrapMode(TextureStage::WrapRepeat);
-	GRenderer->SetTexture(0, tex_jelly);
-
-	RenderSubDivFace(b, b, 0, 1, 2, 3);
-	RenderSubDivFace(t, t, 0, 3, 2, 1);
-	RenderSubDivFace(b, t, 1, 0, 0, 1);
-	RenderSubDivFace(b, t, 3, 2, 2, 3);
-	RenderSubDivFace(b, t, 0, 3, 3, 0);
-	RenderSubDivFace(b, t, 2, 1, 1, 2);
-
-	GRenderer->SetRenderState(Renderer::DepthWrite, true);
-	GRenderer->SetRenderState(Renderer::AlphaBlending, false);
-
+	RenderSubDivFace(b, b, 0, 1, 2, 3, mat);
+	RenderSubDivFace(t, t, 0, 3, 2, 1, mat);
+	RenderSubDivFace(b, t, 1, 0, 0, 1, mat);
+	RenderSubDivFace(b, t, 3, 2, 2, 3, mat);
+	RenderSubDivFace(b, t, 0, 3, 3, 0, mat);
+	RenderSubDivFace(b, t, 2, 1, 1, 2, mat);
+	
 	if(lightHandleIsValid(lLightId)) {
 		EERIE_LIGHT * light = lightHandleGet(lLightId);
 		

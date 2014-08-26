@@ -71,8 +71,8 @@ private:
 	
 	float falpha;
 	
-	void RenderQuad(const Vec3f & p1, const Vec3f & p2, const Vec3f & p3, const Vec3f & p4, int rec, Vec3f norm);
-	void RenderSubDivFace(Vec3f * b, Vec3f * t, int b1, int b2, int t1, int t2);
+	void RenderQuad(const Vec3f & p1, const Vec3f & p2, const Vec3f & p3, const Vec3f & p4, int rec, Vec3f norm, RenderMaterial & mat);
+	void RenderSubDivFace(Vec3f * b, Vec3f * t, int b1, int b2, int t1, int t2, RenderMaterial & mat);
 };
 
 class CSlowDown : public CSpellFx {
