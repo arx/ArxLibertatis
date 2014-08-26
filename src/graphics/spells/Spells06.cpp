@@ -679,6 +679,7 @@ void CRiseDead::Split(Vec3f * v, int a, int b, float yo)
 	}
 }
 
+// TODO copy-paste spell effect Fissure
 void CRiseDead::RenderFissure()
 {
 	int i;
@@ -698,7 +699,7 @@ void CRiseDead::RenderFissure()
 	//-------------------------------------------------------------------------
 	// computation des sommets
 
-	for(i = 0; i <= min(end, (int)fSizeIntro); i++) {
+	for(i = 0; i <= std::min(end, int(fSizeIntro)); i++) {
 		if(i <= end * 0.5f)
 			ff = i / (end * 0.5f);
 		else
@@ -727,7 +728,7 @@ void CRiseDead::RenderFissure()
 	vr[0].color = vr[1].color = vr[2].color = vr[3].color = Color::black.toBGR();
 
 	if(bIntro) {
-		for(i = 0; i < min(end, (int)fSizeIntro); i++) {
+		for(i = 0; i < std::min(end, (int)fSizeIntro); i++) {
 			EE_RT(v1a[i], vr[0].p);
 			EE_RT(v1b[i], vr[1].p);
 			EE_RT(v1a[i+1], vr[2].p);
@@ -736,7 +737,7 @@ void CRiseDead::RenderFissure()
 			drawTriangle(mat, &vr[1]);
 		}
 	} else {
-		for(i = 0; i < min(end, (int)fSizeIntro); i++) {
+		for(i = 0; i < std::min(end, (int)fSizeIntro); i++) {
 			EE_RT(va[i], vr[0].p);
 			EE_RT(vb[i], vr[1].p);
 			EE_RT(va[i+1], vr[2].p);
@@ -748,13 +749,13 @@ void CRiseDead::RenderFissure()
 
 	//-------------------------------------------------------------------------
 	// rendu de la bordure
-	mat.setBlendType(RenderMaterial::Additive);	
+	mat.setBlendType(RenderMaterial::Additive);
 	vr[0].color = vr[1].color = Color::black.toBGR();
 	vr[2].color = vr[3].color = Color3f(fColorBorder[0], fColorBorder[1], fColorBorder[2]).toBGR();
 
-	for(i = 0; i < min(end, (int)fSizeIntro); i++) {
-		vt[2] = va[i].p - (va[i].p - eSrc) * 0.2f;
-		vt[3] = va[i + 1].p - (va[i + 1].p - eSrc) * 0.2f;
+	for(i = 0; i < std::min(end, (int)fSizeIntro); i++) {
+		vt[2] = va[i] - (va[i] - eSrc) * 0.2f;
+		vt[3] = va[i + 1] - (va[i + 1] - eSrc) * 0.2f;
 		
 		EE_RT(vt[3], vr[0].p);
 		EE_RT(vt[2], vr[1].p);
@@ -763,8 +764,8 @@ void CRiseDead::RenderFissure()
 		drawTriangle(mat, &vr[0]);
 		drawTriangle(mat, &vr[1]);
 		
-		vt[2] = vb[i].p - (vb[i].p - eSrc) * 0.2f;
-		vt[3] = vb[i + 1].p - (vb[i + 1].p - eSrc) * 0.2f;
+		vt[2] = vb[i] - (vb[i] - eSrc) * 0.2f;
+		vt[3] = vb[i + 1] - (vb[i + 1] - eSrc) * 0.2f;
 		
 		EE_RT(vb[i], vr[3].p);
 		EE_RT(vb[i+1], vr[2].p);
@@ -792,11 +793,11 @@ void CRiseDead::RenderFissure()
 
 	vr[0].uv.x = fTexWrap;
 	vr[0].uv.y = 1;
-	vr[1].uv.x = 1 + fTexWrap;
+	vr[1].uv.x = 1.0f + fTexWrap;
 	vr[1].uv.y = 1;
 	vr[2].uv.x = fTexWrap;
 	vr[2].uv.y = 0;
-	vr[3].uv.x = 1 + fTexWrap;
+	vr[3].uv.x = 1.0f + fTexWrap;
 	vr[3].uv.y = 0;
 
 	for(i = 0; i < end - 1; i++) {

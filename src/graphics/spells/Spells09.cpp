@@ -236,13 +236,14 @@ void CSummonCreature::Split(Vec3f * v, int a, int b, float yo)
 	}
 }
 
+// TODO copy-paste spell effect Fissure
 void CSummonCreature::RenderFissure()
 {
 	int i;
 	float ff;
 	Vec3f vt[4];
 	TexturedVertex vr[4];
-	TexturedVertex target;
+	Vec3f target;
 
 	Vec3f etarget;
 	etarget.x = fBetaRadCos;
@@ -345,9 +346,9 @@ void CSummonCreature::RenderFissure()
 	mat.setWrapMode(TextureStage::WrapMirror);
 	mat.setTexture(tex_light);
 
-	target.p.x = eSrc.x + -fBetaRadSin * (1.5f * sizeF); 
-	target.p.y = eSrc.y;
-	target.p.z = eSrc.z + fBetaRadCos * (1.5f * sizeF); 
+	target.x = eSrc.x + -fBetaRadSin * (1.5f * sizeF); 
+	target.y = eSrc.y;
+	target.z = eSrc.z + fBetaRadCos * (1.5f * sizeF); 
 
 	EE_RTP(vt[1], &vr[0]);
 	vr[0].color = vr[1].color = fColorRays1.toBGR();
@@ -367,12 +368,14 @@ void CSummonCreature::RenderFissure()
 		if(i < fSizeIntro) {
 			vt[0] = va[i];
 			vt[1] = va[i + 1];
-			vt[2] = va[i] + (va[i] - target.p) * 2.f;
-			vt[3] = va[i + 1] + (va[i + 1] - target.p) * 2.f;
+			vt[2] = va[i] + (va[i] - target) * 2.f;
+			vt[3] = va[i + 1] + (va[i + 1] - target) * 2.f;
+			
 			vr[0].color = (fColorRays1 * tfRaysa[i]).toBGR();
 			vr[1].color = (fColorRays1 * tfRaysa[i + 1]).toBGR();
 			vr[2].color = (fColorRays2 * tfRaysa[i]).toBGR();
 			vr[3].color = (fColorRays2 * tfRaysa[i + 1]).toBGR();
+			
 			EE_RT(vt[0], vr[3].p);
 			EE_RT(vt[1], vr[2].p);
 			EE_RT(vt[2], vr[1].p);
@@ -384,12 +387,14 @@ void CSummonCreature::RenderFissure()
 		if(i < fSizeIntro) {
 			vt[0] = vb[i + 1];
 			vt[1] = vb[i];
-			vt[2] = vb[i + 1] + (vb[i + 1] - target.p) * 2.f;
-			vt[3] = vb[i] + (vb[i] - target.p) * 2.f;
+			vt[2] = vb[i + 1] + (vb[i + 1] - target) * 2.f;
+			vt[3] = vb[i] + (vb[i] - target) * 2.f;
+			
 			vr[0].color = (fColorRays1 * tfRaysb[i]).toBGR();
 			vr[1].color = (fColorRays1 * tfRaysb[i + 1]).toBGR();
 			vr[2].color = (fColorRays2 * tfRaysb[i]).toBGR();
 			vr[3].color = (fColorRays2 * tfRaysb[i + 1]).toBGR();
+			
 			EE_RT(vt[0], vr[3].p);
 			EE_RT(vt[1], vr[2].p);
 			EE_RT(vt[2], vr[1].p);
@@ -397,7 +402,6 @@ void CSummonCreature::RenderFissure()
 			drawTriangle(mat, &vr[0]);
 			drawTriangle(mat, &vr[1]);
 		}
-		
 	}
 }
 
