@@ -369,9 +369,6 @@ void CSlowDown::Render() {
 	
 	if(ulCurrentTime >= ulDuration)
 		return;
-	
-	GRenderer->SetRenderState(Renderer::DepthWrite, false);
-	GRenderer->SetRenderState(Renderer::AlphaBlending, true);
 }
 
 //-----------------------------------------------------------------------------

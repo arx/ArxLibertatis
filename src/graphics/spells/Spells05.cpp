@@ -1072,8 +1072,6 @@ void CLevitate::DrawStone()
 			}
 		}
 	}
-
-	GRenderer->SetRenderState(Renderer::AlphaBlending, false);
 }
 
 void CLevitate::Update(float timeDelta)
