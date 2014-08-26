@@ -620,9 +620,10 @@ void CRiseDead::AddStone(Vec3f * pos) {
 void CRiseDead::DrawStone()
 {
 	int	nb = 256;
-	GRenderer->SetBlendFunc(Renderer::BlendInvDstColor, Renderer::BlendOne);
-	GRenderer->SetRenderState(Renderer::AlphaBlending, true);
-	RenderMaterial mat = RenderMaterial::getCurrent();
+	
+	RenderMaterial mat;
+	mat.setDepthTest(true);
+	mat.setBlendType(RenderMaterial::Screen);
 	
 	while(nb--) {
 		if(this->tstone[nb].actif) {
@@ -660,8 +661,6 @@ void CRiseDead::DrawStone()
 			}
 		}
 	}
-
-	GRenderer->SetRenderState(Renderer::AlphaBlending, false);
 }
 
 void CRiseDead::Split(Vec3f * v, int a, int b, float yo)
@@ -693,7 +692,12 @@ void CRiseDead::RenderFissure()
 	etarget.y = 0;
 	etarget.z = fBetaRadSin;
 
-	RenderMaterial mat = RenderMaterial::getCurrent();
+	RenderMaterial mat;
+	mat.setCulling(Renderer::CullNone);
+	mat.setDepthTest(false);
+	mat.setWrapMode(TextureStage::WrapClamp);
+	mat.setBlendType(RenderMaterial::Opaque);
+	
 	mat.setLayer(RenderMaterial::EffectForeground);
 
 	//-------------------------------------------------------------------------
@@ -965,26 +969,7 @@ void CRiseDead::Render()
 		this->AddStone(&pos);
 	}
 	
-	GRenderer->ResetTexture(0);
-	GRenderer->SetCulling(Renderer::CullNone);
-	GRenderer->SetRenderState(Renderer::DepthWrite, false);
-	GRenderer->GetTextureStage(0)->setWrapMode(TextureStage::WrapClamp);
-	GRenderer->SetBlendFunc(Renderer::BlendOne, Renderer::BlendOne);
-	GRenderer->SetRenderState(Renderer::AlphaBlending, true);
-	GRenderer->SetRenderState(Renderer::AlphaBlending, false);
-	
 	RenderFissure();
 	
-	GRenderer->SetRenderState(Renderer::DepthWrite, true);
-	GRenderer->SetRenderState(Renderer::AlphaBlending, true);
-	GRenderer->SetBlendFunc(Renderer::BlendSrcAlpha, Renderer::BlendInvSrcAlpha);
-	
 	this->DrawStone();
-	
-	GRenderer->GetTextureStage(0)->setWrapMode(TextureStage::WrapRepeat);
-	GRenderer->SetRenderState(Renderer::AlphaBlending, false);
-	GRenderer->SetRenderState(Renderer::DepthWrite, true);
-	GRenderer->SetCulling(Renderer::CullNone);
-
-	//return (fSizeIntro / end);
 }
