@@ -407,9 +407,9 @@ void SystemPaths::list(std::ostream & os, const std::string & forceUser,
 	if(!forceData.empty()) {
 		os << forceData;
 	}
-	path exepath = platform::getExecutablePath();
-	os << " - Paths specifed in " << getSearchPathVar(exepath) << "\n";
-	os << " - The directory containing the game executable\n";
+	std::string exevar = getSearchPathVar(platform::getExecutablePath());
+	os << " - Paths specifed in \"" << exevar << "\" and \"" << exevar << "/data\"\n";
+	os << " - The directory containing the game executable and the \"data\" subdirectory or file\n";
 	listDirectoriesFor(os, "DataDir", data_dir_prefixes, data_dir);
 	os << "selected:";
 	if(data.empty()) {
