@@ -30,6 +30,7 @@
 #include <boost/foreach.hpp>
 
 #include "io/fs/Filesystem.h"
+#include "io/fs/FileStream.h"
 #include "io/fs/PathConstants.h"
 #include "io/log/Logger.h"
 
@@ -138,8 +139,7 @@ static path findUserPath(const char * name, const path & force,
 	return fallback;
 }
 
-static bool addSearchPath(std::vector<path> & result, const path & dir,
-                          bool filter) {
+static bool addSearchPath(std::vector<path> & result, const path & dir, bool filter) {
 	
 	if(filter && !is_directory(dir)) {
 		return false;
@@ -151,6 +151,28 @@ static bool addSearchPath(std::vector<path> & result, const path & dir,
 	
 	result.push_back(dir);
 	return true;
+}
+
+static bool addExeSearchPath(std::vector<path> & result, const path & dir, bool filter) {
+	
+	// Add "data" subdirectory or dirs referenced in "data" file
+	fs::path subdir = dir / "data";
+	if(fs::is_regular_file(subdir)) {
+		fs::ifstream ifs(subdir);
+		std::string line;
+		while(std::getline(ifs, line)) {
+			fs::path datadir = dir / line;
+			if(addSearchPath(result, datadir, filter)) {
+				LogDebug("got data dir from data file in exe dir: " << datadir);
+			} else {
+				LogDebug("ignoring data dir from data file in exe dir: " << datadir);
+			}
+		}
+	} else if(addSearchPath(result, subdir, filter)) {
+		LogDebug("got data dir from exe subdir: " << subdir);
+	}
+	
+	return addSearchPath(result, dir, filter);
 }
 
 static std::string getSearchPathVar(const path & exepath) {
@@ -205,7 +227,11 @@ std::vector<path> SystemPaths::getSearchPaths(bool filter) const {
 				continue; // not defined
 			}
 			#endif
-			addSearchPath(result, p, filter);
+			if(addExeSearchPath(result, p, filter)) {
+				LogDebug("got data dir from exe: " << var << " = " << p);
+			} else {
+				LogDebug("ignoring data dir from exe: " << var << " = " << p);
+			}
 		}
 	}
 	
@@ -218,7 +244,7 @@ std::vector<path> SystemPaths::getSearchPaths(bool filter) const {
 			ignored = (std::find(ignored_dirs.begin(), ignored_dirs.end(), dir)
 			           != ignored_dirs.end());
 		}
-		if(!ignored && addSearchPath(result, dir, filter)) {
+		if(!ignored && addExeSearchPath(result, dir, filter)) {
 			LogDebug("got data dir from exe: " << exepath << " -> " << dir);
 		} else {
 			LogDebug("ignoring data dir from exe: " << exepath << " -> " << dir);
