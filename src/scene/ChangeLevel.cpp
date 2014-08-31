@@ -1914,7 +1914,10 @@ static bool loadScriptVariables(SCRIPT_VARIABLES& var, const char * dat, size_t 
 			}
 		}
 		
-		LogDebug(((type & (TYPE_G_TEXT|TYPE_G_LONG|TYPE_G_FLOAT)) ? "global " : "local ") << ((type & (TYPE_L_TEXT|TYPE_G_TEXT)) ? "text" : (type & (TYPE_L_LONG|TYPE_G_LONG)) ? "long" : (type & (TYPE_L_FLOAT|TYPE_G_FLOAT)) ? "float" : "unknown") << " \"" << util::loadString(var[i].name).substr(1) << "\" = " << var[i].fval << ' ' << Logger::nullstr(var[i].text));
+		LogDebug(((type & (TYPE_G_TEXT|TYPE_G_LONG|TYPE_G_FLOAT)) ? "global " : "local ") \
+		<< ((type & (TYPE_L_TEXT|TYPE_G_TEXT)) ? "text" : (type & (TYPE_L_LONG|TYPE_G_LONG)) ? "long" : (type & (TYPE_L_FLOAT|TYPE_G_FLOAT)) ? "float" : "unknown") \
+		<< " \"" << var[i].name.substr(1) << "\" = " << var[i].fval << ' ' << var[i].text \
+		);
 		
 	}
 	
