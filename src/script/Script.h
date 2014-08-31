@@ -106,7 +106,6 @@ DECLARE_FLAGS_OPERATORS(DisabledEvents)
 struct EERIE_SCRIPT {
 	size_t size;
 	char * data;
-	long nblvar;
 	std::vector<SCRIPT_VAR> lvar;
 	unsigned long lastcall;
 	unsigned long timers[MAX_SCRIPTTIMERS];

@@ -1112,9 +1112,9 @@ static long ARX_CHANGELEVEL_Push_IO(const Entity * io, long level) {
 	long allocsize =
 		sizeof(ARX_CHANGELEVEL_IO_SAVE)
 		+ sizeof(ARX_CHANGELEVEL_SCRIPT_SAVE)
-		+ io->script.nblvar * (sizeof(ARX_CHANGELEVEL_VARIABLE_SAVE) + 500)
+		+ io->script.lvar.size() * (sizeof(ARX_CHANGELEVEL_VARIABLE_SAVE) + 500)
 		+ sizeof(ARX_CHANGELEVEL_SCRIPT_SAVE)
-		+ io->over_script.nblvar * (sizeof(ARX_CHANGELEVEL_VARIABLE_SAVE) + 500)
+		+ io->over_script.lvar.size() * (sizeof(ARX_CHANGELEVEL_VARIABLE_SAVE) + 500)
 		+ struct_size
 		+ sizeof(SavedTweakerInfo)
 		+ sizeof(ARX_CHANGELEVEL_INVENTORY_DATA_SAVE) + 1024
@@ -1165,10 +1165,10 @@ static long ARX_CHANGELEVEL_Push_IO(const Entity * io, long level) {
 	ARX_CHANGELEVEL_SCRIPT_SAVE * ass = (ARX_CHANGELEVEL_SCRIPT_SAVE *)(dat + pos);
 	ass->allowevents = io->script.allowevents;
 	ass->lastcall = io->script.lastcall;
-	ass->nblvar = io->script.nblvar;
+	ass->nblvar = io->script.lvar.size();
 	pos += sizeof(ARX_CHANGELEVEL_SCRIPT_SAVE);
 
-	for (int i = 0; i < io->script.nblvar; i++)
+	for (int i = 0; i < io->script.lvar.size(); i++)
 	{
 		ARX_CHANGELEVEL_VARIABLE_SAVE * avs = (ARX_CHANGELEVEL_VARIABLE_SAVE *)(dat + pos);
 		memset(avs, 0, sizeof(ARX_CHANGELEVEL_VARIABLE_SAVE));
@@ -1239,10 +1239,10 @@ static long ARX_CHANGELEVEL_Push_IO(const Entity * io, long level) {
 	ass = (ARX_CHANGELEVEL_SCRIPT_SAVE *)(dat + pos);
 	ass->allowevents = io->over_script.allowevents;
 	ass->lastcall = io->over_script.lastcall;
-	ass->nblvar = io->over_script.nblvar;
+	ass->nblvar = io->over_script.lvar.size();
 	pos += sizeof(ARX_CHANGELEVEL_SCRIPT_SAVE);
 
-	for (int i = 0; i < io->over_script.nblvar; i++)
+	for (int i = 0; i < io->over_script.lvar.size(); i++)
 	{
 		ARX_CHANGELEVEL_VARIABLE_SAVE * avs = (ARX_CHANGELEVEL_VARIABLE_SAVE *)(dat + pos);
 		memset(avs, 0, sizeof(ARX_CHANGELEVEL_VARIABLE_SAVE));
@@ -1882,9 +1882,9 @@ static long ARX_CHANGELEVEL_Pop_Player() {
 	return 1;
 }
 
-static bool loadScriptVariables(std::vector<SCRIPT_VAR>& var, long & n, const char * dat, size_t & pos, VariableType ttext, VariableType tlong, VariableType tfloat) {
+static bool loadScriptVariables(std::vector<SCRIPT_VAR>& var, const char * dat, size_t & pos, VariableType ttext, VariableType tlong, VariableType tfloat) {
 	
-	for(long i = 0; i < n; i++) {
+	for(long i = 0; i < var.size(); i++) {
 		
 		const ARX_CHANGELEVEL_VARIABLE_SAVE * avs;
 		avs = reinterpret_cast<const ARX_CHANGELEVEL_VARIABLE_SAVE *>(dat + pos);
@@ -1908,7 +1908,7 @@ static bool loadScriptVariables(std::vector<SCRIPT_VAR>& var, long & n, const ch
 			type = tlong;
 		} else {
 			LogError << "Unknown script variable type: " << avs->type;
-			n = i;
+			var.resize(i);
 			return false;
 		}
 		
@@ -1941,16 +1941,13 @@ static bool loadScriptData(EERIE_SCRIPT & script, const char * dat, size_t & pos
 	pos += sizeof(ARX_CHANGELEVEL_SCRIPT_SAVE);
 	
 	script.allowevents = DisabledEvents::load(ass->allowevents); // TODO save/load flags
-	script.nblvar = ass->nblvar;
-	
-	
-	script.lvar.resize(script.nblvar);
+	script.lvar.resize(ass->nblvar);
 
 	if(ass->nblvar > 0) {
-		memset(script.lvar.data(), 0, sizeof(SCRIPT_VAR)* script.nblvar);
+		memset(script.lvar.data(), 0, sizeof(SCRIPT_VAR)* ass->nblvar);
 	}
 	
-	return loadScriptVariables(script.lvar, script.nblvar, dat, pos,
+	return loadScriptVariables(script.lvar, dat, pos,
 	                           TYPE_L_TEXT, TYPE_L_LONG, TYPE_L_FLOAT);
 }
 
@@ -2616,7 +2613,7 @@ static void ARX_CHANGELEVEL_Pop_Globals() {
 		
 	NB_GLOBALS = acsg->nb_globals;
 	
-	bool ret = loadScriptVariables(svar, NB_GLOBALS, dat, pos, TYPE_G_TEXT, TYPE_G_LONG, TYPE_G_FLOAT);
+	bool ret = loadScriptVariables(svar, dat, pos, TYPE_G_TEXT, TYPE_G_LONG, TYPE_G_FLOAT);
 	if(!ret) {
 		LogError << "Error loading globals";
 	}

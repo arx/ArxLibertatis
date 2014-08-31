@@ -2090,8 +2090,6 @@ void loadScript(EERIE_SCRIPT & script, PakFile * file) {
 	
 	script.lvar.clear();
 	
-	script.nblvar = 0;
-	
 	script.master = NULL;
 	
 	for(size_t j = 0; j < MAX_SCRIPTTIMERS; j++) {
