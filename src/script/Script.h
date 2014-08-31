@@ -106,10 +106,12 @@ enum DisabledEvent {
 DECLARE_FLAGS(DisabledEvent, DisabledEvents)
 DECLARE_FLAGS_OPERATORS(DisabledEvents)
 
+typedef std::vector<SCRIPT_VAR> SCRIPT_VARIABLES;
+
 struct EERIE_SCRIPT {
 	size_t size;
 	char * data;
-	std::vector<SCRIPT_VAR> lvar;
+	SCRIPT_VARIABLES lvar;
 	unsigned long lastcall;
 	unsigned long timers[MAX_SCRIPTTIMERS];
 	DisabledEvents allowevents;
@@ -407,7 +409,7 @@ enum ScriptMessage {
 	SM_DUMMY = 256
 };
 
-extern std::vector<SCRIPT_VAR> svar;
+extern SCRIPT_VARIABLES svar;
 extern Entity * EVENT_SENDER;
 extern SCR_TIMER * scr_timer;
 extern long ActiveTimers;
@@ -451,14 +453,14 @@ std::string GetVarValueInterpretedAsText(const std::string & temp1, const EERIE_
 std::string ARX_SCRIPT_Timer_GetDefaultName();
 
 // Use to set the value of a script variable
-SCRIPT_VAR * SETVarValueText(std::vector<SCRIPT_VAR>& svf, const std::string &  name, const std::string & val);
-SCRIPT_VAR * SETVarValueLong(std::vector<SCRIPT_VAR>& svf, const std::string & name, long val);
-SCRIPT_VAR * SETVarValueFloat(std::vector<SCRIPT_VAR>& svf, const std::string & name, float val);
+SCRIPT_VAR * SETVarValueText(SCRIPT_VARIABLES& svf, const std::string &  name, const std::string & val);
+SCRIPT_VAR * SETVarValueLong(SCRIPT_VARIABLES& svf, const std::string & name, long val);
+SCRIPT_VAR * SETVarValueFloat(SCRIPT_VARIABLES& svf, const std::string & name, float val);
 
 // Use to get the value of a script variable
-long GETVarValueLong(const std::vector<SCRIPT_VAR>& svf, const std::string & name);
-float GETVarValueFloat(const std::vector<SCRIPT_VAR>& svf, const std::string & name);
-std::string GETVarValueText(const std::vector<SCRIPT_VAR>& svf, const std::string & name);
+long GETVarValueLong(const SCRIPT_VARIABLES& svf, const std::string & name);
+float GETVarValueFloat(const SCRIPT_VARIABLES& svf, const std::string & name);
+std::string GETVarValueText(const SCRIPT_VARIABLES& svf, const std::string & name);
 
 ValueType getSystemVar(const EERIE_SCRIPT * es, Entity * io, const std::string & name, std::string & txtcontent, float * fcontent, long * lcontent);
 void ARX_SCRIPT_Timer_Clear_All_Locals_For_IO(Entity * io);

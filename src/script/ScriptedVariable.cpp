@@ -272,9 +272,9 @@ class UnsetCommand : public Command {
 	}
 	
 	// TODO move to variable context
-	static bool UNSETVar(std::vector<SCRIPT_VAR>& svf, const string & name) {
+	static bool UNSETVar(SCRIPT_VARIABLES& svf, const string & name) {
 		
-		std::vector<SCRIPT_VAR>::iterator it;
+		SCRIPT_VARIABLES::iterator it;
 		for(it = svf.begin(); it != svf.end(); ++it) {
 			if(it->type != 0 && name == it->name) {
 				break;

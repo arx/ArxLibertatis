@@ -97,7 +97,7 @@ extern Entity * pIOChangeWeapon;
 
 Entity * LASTSPAWNED = NULL;
 Entity * EVENT_SENDER = NULL;
-std::vector<SCRIPT_VAR> svar;
+SCRIPT_VARIABLES svar;
 
 static char SSEPARAMS[MAX_SSEPARAMS][64];
 long FORBID_SCRIPT_IO_CREATION = 0;
@@ -1123,7 +1123,7 @@ void CloneLocalVars(Entity * ioo, Entity * io) {
 	ioo->script.lvar = io->script.lvar;
 }
 
-SCRIPT_VAR * GetFreeVarSlot(std::vector<SCRIPT_VAR>& _svff)
+SCRIPT_VAR * GetFreeVarSlot(SCRIPT_VARIABLES& _svff)
 {
 	_svff.resize(_svff.size() + 1);
 
@@ -1132,9 +1132,9 @@ SCRIPT_VAR * GetFreeVarSlot(std::vector<SCRIPT_VAR>& _svff)
 	return v;
 }
 
-SCRIPT_VAR * GetVarAddress(std::vector<SCRIPT_VAR>& svf, const string & name) {
+SCRIPT_VAR * GetVarAddress(SCRIPT_VARIABLES& svf, const string & name) {
 	
-	for(std::vector<SCRIPT_VAR>::iterator it = svf.begin(); it != svf.end(); ++it) {
+	for(SCRIPT_VARIABLES::iterator it = svf.begin(); it != svf.end(); ++it) {
 		if(it->type != TYPE_UNKNOWN) {
 			if(name == it->name) {
 				return &(*it);
@@ -1145,9 +1145,9 @@ SCRIPT_VAR * GetVarAddress(std::vector<SCRIPT_VAR>& svf, const string & name) {
 	return NULL;
 }
 
-const SCRIPT_VAR * GetVarAddress(const std::vector<SCRIPT_VAR>& svf, const string & name) {
+const SCRIPT_VAR * GetVarAddress(const SCRIPT_VARIABLES& svf, const string & name) {
 	
-	for(std::vector<SCRIPT_VAR>::const_iterator it = svf.begin(); it != svf.end(); ++it) {
+	for(SCRIPT_VARIABLES::const_iterator it = svf.begin(); it != svf.end(); ++it) {
 		if(it->type != TYPE_UNKNOWN) {
 			if(name == it->name) {
 				return &(*it);
@@ -1158,7 +1158,7 @@ const SCRIPT_VAR * GetVarAddress(const std::vector<SCRIPT_VAR>& svf, const strin
 	return NULL;
 }
 
-long GETVarValueLong(const std::vector<SCRIPT_VAR>& svf, const string & name) {
+long GETVarValueLong(const SCRIPT_VARIABLES& svf, const string & name) {
 	
 	const SCRIPT_VAR * tsv = GetVarAddress(svf, name);
 
@@ -1167,7 +1167,7 @@ long GETVarValueLong(const std::vector<SCRIPT_VAR>& svf, const string & name) {
 	return tsv->ival;
 }
 
-float GETVarValueFloat(const std::vector<SCRIPT_VAR>& svf, const string & name) {
+float GETVarValueFloat(const SCRIPT_VARIABLES& svf, const string & name) {
 	
 	const SCRIPT_VAR * tsv = GetVarAddress(svf, name);
 
@@ -1176,7 +1176,7 @@ float GETVarValueFloat(const std::vector<SCRIPT_VAR>& svf, const string & name) 
 	return tsv->fval;
 }
 
-std::string GETVarValueText(const std::vector<SCRIPT_VAR>& svf, const string & name) {
+std::string GETVarValueText(const SCRIPT_VARIABLES& svf, const string & name) {
 	
 	const SCRIPT_VAR* tsv = GetVarAddress(svf, name);
 
@@ -1283,7 +1283,7 @@ float GetVarValueInterpretedAsFloat(const string & temp1, const EERIE_SCRIPT * e
 	return (float)atof(temp1.c_str());
 }
 
-SCRIPT_VAR* SETVarValueLong(std::vector<SCRIPT_VAR>& svf, const std::string& name, long val)
+SCRIPT_VAR* SETVarValueLong(SCRIPT_VARIABLES& svf, const std::string& name, long val)
 {
 	SCRIPT_VAR* tsv = GetVarAddress(svf, name);
 
@@ -1301,7 +1301,7 @@ SCRIPT_VAR* SETVarValueLong(std::vector<SCRIPT_VAR>& svf, const std::string& nam
 	return tsv;
 }
 
-SCRIPT_VAR* SETVarValueFloat(std::vector<SCRIPT_VAR>& svf, const std::string& name, float val)
+SCRIPT_VAR* SETVarValueFloat(SCRIPT_VARIABLES& svf, const std::string& name, float val)
 {
 	SCRIPT_VAR* tsv = GetVarAddress(svf, name);
 
@@ -1319,7 +1319,7 @@ SCRIPT_VAR* SETVarValueFloat(std::vector<SCRIPT_VAR>& svf, const std::string& na
 	return tsv;
 }
 
-SCRIPT_VAR* SETVarValueText(std::vector<SCRIPT_VAR>& svf, const std::string& name, const std::string& val)
+SCRIPT_VAR* SETVarValueText(SCRIPT_VARIABLES& svf, const std::string& name, const std::string& val)
 {
 	SCRIPT_VAR* tsv = GetVarAddress(svf, name);
 

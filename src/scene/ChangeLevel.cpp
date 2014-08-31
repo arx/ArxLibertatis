@@ -1871,7 +1871,7 @@ static long ARX_CHANGELEVEL_Pop_Player() {
 	return 1;
 }
 
-static bool loadScriptVariables(std::vector<SCRIPT_VAR>& var, const char * dat, size_t & pos, VariableType ttext, VariableType tlong, VariableType tfloat) {
+static bool loadScriptVariables(SCRIPT_VARIABLES& var, const char * dat, size_t & pos, VariableType ttext, VariableType tlong, VariableType tfloat) {
 	
 	for(size_t i = 0; i < var.size(); i++) {
 		
