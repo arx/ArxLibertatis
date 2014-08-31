@@ -1383,8 +1383,9 @@ void MakeLocalText(EERIE_SCRIPT * es, std::string& tx)
 
 	if (es->master != NULL) es = es->master;
 
-	for (const SCRIPT_VAR& v : es->lvar)
+	for(SCRIPT_VARIABLES::const_iterator it = es->lvar.begin(); it != es->lvar.end(); ++it)
 	{
+		const SCRIPT_VAR& v = *it;
 		switch (v.type)
 		{
 			case TYPE_L_TEXT:
