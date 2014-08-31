@@ -85,6 +85,10 @@ void GLTexture2D::Upload() {
 		return;
 	}
 	
+	if(!renderer->hasTextureNPOT() && storedSize != size) {
+		flags &= ~HasMipmaps;
+	}
+	
 	if(hasMipmaps()) {
 		glTexParameteri(GL_TEXTURE_2D, GL_GENERATE_MIPMAP, GL_TRUE);
 	} else {
