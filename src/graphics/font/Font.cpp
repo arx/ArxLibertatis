@@ -335,7 +335,7 @@ Vec2i Font::process(int x, int y, text_iterator start, text_iterator end, Color 
 		// Auto hinting adjustments
 		if(prevRsbDelta - glyph.lsb_delta >= 32) {
 			pen.x--;
-		} else if( prevRsbDelta - glyph.lsb_delta < -32) {
+		} else if(prevRsbDelta - glyph.lsb_delta < -32) {
 			pen.x++;
 		}
 		prevRsbDelta = glyph.rsb_delta;
