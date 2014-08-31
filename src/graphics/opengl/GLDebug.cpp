@@ -57,8 +57,10 @@ static const char * typeToString(GLenum type) {
 	}
 }
 
-// GLEW undefines GLAPIENTRY after using it
-#if ARX_PLATFORM == ARX_PLATFORM_WIN32
+// GLEW versions before 1.11.0 undefine GLAPIENTRY after using it - fix that
+#if defined(GLEW_VERSION_4_5)
+	#define ARX_GLAPIENTRY GLAPIENTRY // GLEW 1.11.0 or newer
+#elif ARX_PLATFORM == ARX_PLATFORM_WIN32
 	#define ARX_GLAPIENTRY __stdcall
 #else
 	#define ARX_GLAPIENTRY
