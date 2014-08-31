@@ -381,17 +381,18 @@ bool Image::Copy(const Image & srcImage, unsigned int dstX, unsigned int dstY, u
 		return false;
 	}
 	
+	unsigned char * dst = mData + dstY * mWidth * bpp + dstX * bpp;
+	const unsigned char * src = srcImage.mData + srcY * srcImage.mWidth * bpp + srcX * bpp;
+	
+	// Copy in one step
+	if(dstX == 0 && srcX == 0 && width == srcImage.mWidth && width == mWidth) {
+		memcpy(dst, src, bpp * width * height);
+		return true;
+	}
+	
 	// Copy line by line
-	unsigned char * dst = &mData[dstY * mWidth * bpp];
-	const unsigned char * src = &srcImage.GetData()[srcY * srcImage.GetWidth() * bpp];
-	for(unsigned int i = 0; i < height; i++) {
-		
-		// Copy line
-		memcpy( &dst[dstX * bpp], &src[srcX * bpp], width * bpp );
-		
-		// Advance to next line
-		dst += mWidth * bpp;
-		src += srcImage.GetWidth() * bpp;
+	for(unsigned int i = 0; i < height; i++, src += srcImage.mWidth * bpp, dst += mWidth * bpp) {
+		memcpy(dst, src, bpp * width);
 	}
 	
 	return true;
@@ -625,6 +626,90 @@ void Image::ApplyColorKeyToAlpha(Color key) {
 	mData = dataTemp;
 	mDataSize = dataSize;
 	mFormat = (mFormat == Format_R8G8B8) ? Format_R8G8B8A8 : Format_B8G8R8A8;
+}
+
+template <size_t N>
+static void extendImageRight(u8 * in, unsigned win, unsigned wout, unsigned h) {
+	u8 * out = in + N;
+	for(size_t y = 0; y < h; y++, in += wout * N) {
+		for(size_t x = win; x < wout; x++, out += N) {
+			std::memcpy(out, in, N);
+		}
+		out += win * N;
+	}
+}
+
+template <>
+void extendImageRight<1>(u8 * in, unsigned win, unsigned wout, unsigned h) {
+	u8 * out = in + 1;
+	for(size_t y = 0; y < h; y++, in += win, out += wout) {
+		std::memset(out, *in, wout - win);
+	}
+}
+
+template <size_t N>
+static void extendImageBottomRight(u8 * in, u8 * out, unsigned win, unsigned wout,
+                                   unsigned h) {
+	for(size_t y = 0; y < h; y++) {
+		for(size_t x = win; x < wout; x++, out += N) {
+			std::memcpy(out, in, N);
+		}
+		out += win * N;
+	}
+}
+
+template <>
+void extendImageBottomRight<1>(u8 * in, u8 * out, unsigned win, unsigned wout,
+                                      unsigned h) {
+	for(size_t y = 0; y < h; y++, out += wout) {
+		std::memset(out, *in, wout - win);
+	}
+}
+
+void Image::extendClampToEdgeBorder(const Image & src) {
+	
+	arx_assert(mFormat == src.mFormat, "extendClampToEdgeBorder Cannot change format!");
+	arx_assert(!IsCompressed(), "extendClampToEdgeBorder Not supported for compressed textures!");
+	arx_assert(!IsCompressed(), "extendClampToEdgeBorder Not supported for compressed textures!");
+	arx_assert(!IsVolume(), "extendClampToEdgeBorder Not supported for 3d textures!");
+	arx_assert(mWidth >= src.mWidth && mHeight >= src.mHeight, "extendClampToEdgeBorder Cannot decrease size!");
+	
+	Copy(src, 0, 0);
+	
+	unsigned pixsize = GetSize(mFormat);
+	unsigned insize = pixsize * src.mWidth, outsize = pixsize * mWidth;
+	
+	if(mWidth > src.mWidth) {
+		u8 * in =  mData + (src.mWidth - 1) * pixsize;
+		switch(pixsize) {
+			case 1: extendImageRight<1>(in, src.mWidth, mWidth, src.mHeight); break;
+			case 2: extendImageRight<2>(in, src.mWidth, mWidth, src.mHeight); break;
+			case 3: extendImageRight<3>(in, src.mWidth, mWidth, src.mHeight); break;
+			case 4: extendImageRight<4>(in, src.mWidth, mWidth, src.mHeight); break;
+			default: ARX_DEAD_CODE();
+		}
+	}
+	
+	if(mHeight > src.mHeight) {
+		u8 * in = mData + outsize * (src.mHeight - 1);
+		u8 * out = mData + outsize * src.mHeight;
+		for(size_t y = src.mHeight; y < mHeight; y++, out += outsize) {
+			std::memcpy(out, in, insize);
+		}
+	}
+	
+	if(mWidth > src.mWidth && mHeight > src.mHeight) {
+		u8 * in = mData + outsize * (src.mHeight - 1) + pixsize * (src.mWidth - 1);
+		u8 * out = mData + outsize * src.mHeight + insize;
+		unsigned h = mHeight - src.mHeight;
+		switch(pixsize) {
+			case 1: extendImageBottomRight<1>(in, out, src.mWidth, mWidth, h); break;
+			case 2: extendImageBottomRight<2>(in, out, src.mWidth, mWidth, h); break;
+			case 3: extendImageBottomRight<3>(in, out, src.mWidth, mWidth, h); break;
+			case 4: extendImageBottomRight<4>(in, out, src.mWidth, mWidth, h); break;
+			default: ARX_DEAD_CODE();
+		}
+	}
 }
 
 bool Image::ToGrayscale(Image::Format newFormat) {

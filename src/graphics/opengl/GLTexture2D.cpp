@@ -22,6 +22,7 @@
 #include "graphics/Math.h"
 #include "graphics/opengl/GLTextureStage.h"
 #include "graphics/opengl/OpenGLRenderer.h"
+#include "io/fs/FilePath.h" // TODO remove
 
 
 GLTexture2D::GLTexture2D(OpenGLRenderer * _renderer)
@@ -98,10 +99,14 @@ void GLTexture2D::Upload() {
 	// TODO handle GL_MAX_TEXTURE_SIZE
 	
 	if(storedSize != size) {
-		glTexImage2D(GL_TEXTURE_2D, 0, internal, storedSize.x, storedSize.y, 0, format, GL_UNSIGNED_BYTE, NULL);
-		glTexSubImage2D(GL_TEXTURE_2D, 0, 0, 0, size.x, size.y, format, GL_UNSIGNED_BYTE, mImage.GetData());
+		Image extended;
+		extended.Create(storedSize.x, storedSize.y, mImage.GetFormat());
+		extended.extendClampToEdgeBorder(mImage);
+		glTexImage2D(GL_TEXTURE_2D, 0, internal, storedSize.x, storedSize.y, 0, format,
+		             GL_UNSIGNED_BYTE, extended.GetData());
 	} else {
-		glTexImage2D(GL_TEXTURE_2D, 0, internal, size.x, size.y, 0, format, GL_UNSIGNED_BYTE, mImage.GetData());
+		glTexImage2D(GL_TEXTURE_2D, 0, internal, size.x, size.y, 0, format,
+		             GL_UNSIGNED_BYTE, mImage.GetData());
 	}
 	
 	if(renderer->GetMaxAnisotropy() != 1.f) {

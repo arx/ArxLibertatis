@@ -104,6 +104,12 @@ public:
 	void ApplyColorKeyToAlpha(Color colorKey = Color::black);
 	
 	/*!
+	 * Extend the image and fill ne new space by sampling at the nearest border
+	 * of the original image.
+	 */
+	void extendClampToEdgeBorder(const Image & srcImage);
+	
+	/*!
 	 * \brief Copy an image into this image's buffer
 	 *
 	 * Works only with uncompressed formats
