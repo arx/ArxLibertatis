@@ -1352,7 +1352,7 @@ else()
 endif()
 foreach(dir IN LISTS arx_data_dirs)
 	add_custom_command(TARGET copy_data_dirs PRE_BUILD
-		COMMAND "${remove_directory}" -E remove_directory "${arx_location}/${dir}"
+		COMMAND "${CMAKE_COMMAND}" -E remove_directory "${arx_location}/${dir}"
 		COMMAND "${CMAKE_COMMAND}" -E
 			"${symlink_command}" "${arx_core_dir}/${dir}" "${arx_location}/${dir}"
 		VERBATIM
