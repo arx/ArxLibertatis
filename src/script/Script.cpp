@@ -1128,7 +1128,6 @@ SCRIPT_VAR * GetFreeVarSlot(std::vector<SCRIPT_VAR>& _svff)
 	_svff.resize(_svff.size() + 1);
 
 	SCRIPT_VAR * v = &_svff.back();
-	memset(v, 0, sizeof(SCRIPT_VAR));
 	
 	return v;
 }

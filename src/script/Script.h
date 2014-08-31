@@ -81,6 +81,10 @@ struct SCRIPT_VAR {
 	float fval;
 	std::string text;
 	char name[64];
+
+	SCRIPT_VAR() : type(TYPE_UNKNOWN), ival(), fval() {
+		name[0] = 0;
+	}
 };
 
 struct LABEL_INFO {
