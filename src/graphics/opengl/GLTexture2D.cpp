@@ -23,6 +23,7 @@
 #include "graphics/opengl/GLTextureStage.h"
 #include "graphics/opengl/OpenGLRenderer.h"
 
+
 GLTexture2D::GLTexture2D(OpenGLRenderer * _renderer)
 	: renderer(_renderer)
 	, tex(GL_NONE)
@@ -30,6 +31,7 @@ GLTexture2D::GLTexture2D(OpenGLRenderer * _renderer)
 	, minFilter(TextureStage::FilterLinear)
 	, magFilter(TextureStage::FilterNearest)
 	, mipFilter(TextureStage::FilterLinear)
+	, isNPOT(false)
 {}
 
 GLTexture2D::~GLTexture2D() {
@@ -47,12 +49,10 @@ bool GLTexture2D::Create() {
 	mipFilter = TextureStage::FilterLinear;
 	minFilter = TextureStage::FilterNearest;
 	magFilter = TextureStage::FilterLinear;
-
-	if(renderer->hasTextureNPOT()) {
-		storedSize = size;
-	} else {
-		storedSize = Vec2i(GetNextPowerOf2(size.x), GetNextPowerOf2(size.y));
-	}
+	
+	Vec2i nextPowerOfTwo(GetNextPowerOf2(size.x), GetNextPowerOf2(size.y));
+	storedSize = renderer->hasTextureNPOT() ? size : nextPowerOfTwo;
+	isNPOT = (size != nextPowerOfTwo);
 	
 	return (tex != GL_NONE);
 }
@@ -85,7 +85,7 @@ void GLTexture2D::Upload() {
 		return;
 	}
 	
-	if(!renderer->hasTextureNPOT() && storedSize != size) {
+	if(storedSize != size) {
 		flags &= ~HasMipmaps;
 	}
 	
@@ -158,15 +158,18 @@ void GLTexture2D::apply(GLTextureStage * stage) {
 	arx_assert(stage != NULL);
 	arx_assert(stage->tex == this);
 	
-	if(stage->wrapMode != wrapMode) {
-		wrapMode = stage->wrapMode;
+	// TODO: Fix callers and change this into an assert/error/warning.
+	TextureStage::WrapMode newWrapMode = (!isNPOT) ? stage->wrapMode
+	                                               : TextureStage::WrapClamp;
+	if(newWrapMode != wrapMode) {
+		wrapMode = newWrapMode;
 		GLint glwrap = arxToGlWrapMode[wrapMode];
 		glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_WRAP_T, glwrap);
 		glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_WRAP_S, glwrap);
 	}
 	
-	TextureStage::FilterMode newMipFilter = hasMipmaps() ? stage->mipFilter : TextureStage::FilterNone;
-	
+	TextureStage::FilterMode newMipFilter = hasMipmaps() ? stage->mipFilter
+	                                                     : TextureStage::FilterNone;
 	if(newMipFilter != mipFilter || stage->minFilter != minFilter) {
 		minFilter = stage->minFilter, mipFilter = newMipFilter;
 		arx_assert(minFilter != TextureStage::FilterNone);

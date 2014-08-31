@@ -55,6 +55,8 @@ private:
 	TextureStage::FilterMode magFilter;
 	TextureStage::FilterMode mipFilter;
 	
+	bool isNPOT;
+	
 	friend class GLTextureStage;
 };
 
