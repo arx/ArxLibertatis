@@ -2072,8 +2072,24 @@ probe_data_dirs() {
 		if [ ! -z "$data_path" ] ; then
 			eval "set -- $(to_list "$data_path")"
 			for _probe_data_dirs_path ; do
-				probe_data_dir $_probe_data_dirs_existing "$_probe_data_dirs_path" "portable" \
-					&& return $true
+				if [ -f "$_probe_data_dirs_path/data" ] ; then
+					eval "set -- $(cat "$_probe_data_dirs_path/data" | lines_to_list)"
+					for _probe_data_dirs_line ; do
+						case "$_probe_data_dirs_line" in
+							/*) ;; *) _probe_data_dirs_line="$(
+							 canonicalize "$_probe_data_dirs_path/$_probe_data_dirs_line"
+							)"
+						esac
+						probe_data_dir $_probe_data_dirs_existing "$_probe_data_dirs_line" \
+							"portable" && return $true
+					done
+				else if [ -d "$_probe_data_dirs_path/data" ] ; then
+					probe_data_dir $_probe_data_dirs_existing "$_probe_data_dirs_path/data" \
+						"portable" && return $true
+				else
+					probe_data_dir $_probe_data_dirs_existing "$_probe_data_dirs_path" "portable" \
+						&& return $true
+				fi ; fi
 			done
 		fi
 		
