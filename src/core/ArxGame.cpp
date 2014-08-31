@@ -1163,10 +1163,6 @@ void ArxGame::shutdownGame() {
 	RenderBatcher::getInstance().reset();
 	
 	//Scripts
-	
-	for(std::vector<SCRIPT_VAR>::iterator it = svar.begin(); it != svar.end(); ++it) {
-		free(it->text);
-	}
 	svar.clear();
 	
 	

@@ -562,18 +562,15 @@ static void ARX_CHANGELEVEL_Push_Globals() {
 				{
 					strcpy(avs.name, svar[i].name);
 
-					if (svar[i].text)
-						count = strlen(svar[i].text);
-					else
-						count = 0;
-
+					count = svar[i].text.size();
+					
 					avs.fval = (float)count; 
 					avs.type = TYPE_G_TEXT;
 					memcpy(dat + pos, &avs, sizeof(ARX_VARIABLE_SAVE));
 					pos += sizeof(ARX_VARIABLE_SAVE);
 
 					if (count > 0)
-						memcpy(dat + pos, svar[i].text, count + 1); 
+						memcpy(dat + pos, svar[i].text.c_str(), count + 1); 
 
 					pos += (long)avs.fval; 
 				}
@@ -1181,12 +1178,8 @@ static long ARX_CHANGELEVEL_Push_IO(const Entity * io, long level) {
 				{
 					strcpy(avs->name, io->script.lvar[i].name);
 					
-					long count;
-					if (io->script.lvar[i].text)
-						count = strlen(io->script.lvar[i].text);
-					else
-						count = 0;
-
+					long count = io->script.lvar[i].text.size();
+					
 					avs->fval = (float)(count + 1);
 					avs->type = TYPE_L_TEXT;
 					pos += sizeof(ARX_CHANGELEVEL_VARIABLE_SAVE);
@@ -1194,7 +1187,7 @@ static long ARX_CHANGELEVEL_Push_IO(const Entity * io, long level) {
 					if(avs->fval > 0) {
 						memset(dat + pos, 0, checked_range_cast<size_t>(avs->fval)); //count+1);
 						if(count > 0) {
-							memcpy(dat + pos, io->script.lvar[i].text, count);
+							memcpy(dat + pos, io->script.lvar[i].text.c_str(), count);
 						}
 					}
 
@@ -1256,11 +1249,7 @@ static long ARX_CHANGELEVEL_Push_IO(const Entity * io, long level) {
 				{
 					strcpy(avs->name, io->over_script.lvar[i].name);
 					
-					long count;
-					if (io->over_script.lvar[i].text)
-						count = strlen(io->over_script.lvar[i].text);
-					else
-						count = 0;
+					long count = io->over_script.lvar[i].text.size();
 
 					avs->fval	= (float)(count + 1);
 					avs->type	= TYPE_L_TEXT;
@@ -1269,7 +1258,7 @@ static long ARX_CHANGELEVEL_Push_IO(const Entity * io, long level) {
 					if(avs->fval > 0) {
 						memset(dat + pos, 0, checked_range_cast<size_t>(avs->fval));
 						if(count > 0) {
-							memcpy(dat + pos, io->over_script.lvar[i].text, count);
+							memcpy(dat + pos, io->over_script.lvar[i].text.c_str(), count);
 						}
 					}
 
@@ -1918,12 +1907,11 @@ static bool loadScriptVariables(std::vector<SCRIPT_VAR>& var, const char * dat, 
 		
 		if(type == ttext) {
 			if(var[i].ival) {
-				var[i].text = strdup(boost::to_lower_copy(util::loadString(dat + pos, var[i].ival)).c_str());
-				pos += var[i].ival;
+				var[i].text = boost::to_lower_copy(util::loadString(dat + pos, (long)avs->fval));
+				pos += (long)avs->fval;
 				if(var[i].text[0] == '\xCC') {
 					var[i].text[0] = 0;
 				}
-				var[i].ival = strlen(var[i].text) + 1;
 			}
 		}
 		

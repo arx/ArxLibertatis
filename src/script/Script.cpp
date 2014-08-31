@@ -209,16 +209,9 @@ void ARX_SCRIPT_ResetObject(Entity * io, bool init) {
 void ARX_SCRIPT_Reset(Entity * io, bool init) {
 	
 	//Release Script Local Variables
-	for(std::vector<SCRIPT_VAR>::iterator it = io->script.lvar.begin(); it != io->script.lvar.end(); ++it) {
-		free(it->text);
-	}
 	io->script.lvar.clear();
-	
-	
+		
 	//Release Script Over-Script Local Variables
-	for(std::vector<SCRIPT_VAR>::iterator it = io->over_script.lvar.begin(); it != io->over_script.lvar.end(); ++it) {
-		free(it->text);
-	}
 	io->over_script.lvar.clear();
 	
 	if(!io->scriptload) {
@@ -296,9 +289,6 @@ void ReleaseScript(EERIE_SCRIPT * es) {
 		return;
 	}
 	
-	for(std::vector<SCRIPT_VAR>::iterator it = es->lvar.begin(); it != es->lvar.end(); ++it) {
-		free(it->text);
-	}
 	es->lvar.clear();
 	
 	free(es->data);
@@ -1121,10 +1111,6 @@ ValueType getSystemVar(const EERIE_SCRIPT * es, Entity * entity, const string & 
 }
 
 void ARX_SCRIPT_Free_All_Global_Variables() {
-	
-	for(std::vector<SCRIPT_VAR>::iterator it = svar.begin(); it != svar.end(); ++it) {
-		free(it->text);
-	}
 	svar.clear();
 }
 
@@ -1134,22 +1120,7 @@ void CloneLocalVars(Entity * ioo, Entity * io) {
 		return;
 	}
 	
-	for(std::vector<SCRIPT_VAR>::iterator it = ioo->script.lvar.begin(); it != ioo->script.lvar.end(); ++it) {
-		free(it->text);
-	}
-		
-	ioo->script.lvar.resize(io->script.lvar.size());
-		
-	for (size_t n = 0; n < io->script.lvar.size(); n++)
-	{
-		memcpy(&ioo->script.lvar[n], &io->script.lvar[n], sizeof(SCRIPT_VAR));
-
-		if (io->script.lvar[n].text)
-		{
-			ioo->script.lvar[n].text = (char *)malloc(strlen(io->script.lvar[n].text) + 1);
-			strcpy(ioo->script.lvar[n].text, io->script.lvar[n].text);
-		}
-	}
+	ioo->script.lvar = io->script.lvar;
 }
 
 SCRIPT_VAR * GetFreeVarSlot(std::vector<SCRIPT_VAR>& _svff)
@@ -1363,11 +1334,7 @@ SCRIPT_VAR* SETVarValueText(std::vector<SCRIPT_VAR>& svf, const std::string& nam
 		strcpy(tsv->name, name.c_str());
 	}
 	
-	
-	tsv->ival = val.length() + 1;
-	
-	free(tsv->text);
-	tsv->text = (tsv->ival) ? strdup(val.c_str()) : NULL;
+	tsv->text = val;
 	
 	return tsv;
 }

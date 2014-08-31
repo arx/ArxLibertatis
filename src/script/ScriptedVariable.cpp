@@ -283,8 +283,6 @@ class UnsetCommand : public Command {
 		
 		if(it == svf.end())
 			return false;
-
-		free(it->text);
 		
 		svf.erase(it);
 		

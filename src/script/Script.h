@@ -79,7 +79,7 @@ struct SCRIPT_VAR {
 	VariableType type;
 	long ival;
 	float fval;
-	char * text;  // for a TEXT type ival equals strlen(text).
+	std::string text;
 	char name[64];
 };
 
