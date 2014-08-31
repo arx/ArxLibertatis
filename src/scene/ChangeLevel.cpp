@@ -1882,7 +1882,7 @@ static long ARX_CHANGELEVEL_Pop_Player() {
 	return 1;
 }
 
-static bool loadScriptVariables(SCRIPT_VAR * var, long & n, const char * dat, size_t & pos, VariableType ttext, VariableType tlong, VariableType tfloat) {
+static bool loadScriptVariables(std::vector<SCRIPT_VAR>& var, long & n, const char * dat, size_t & pos, VariableType ttext, VariableType tlong, VariableType tfloat) {
 	
 	for(long i = 0; i < n; i++) {
 		
@@ -1943,12 +1943,11 @@ static bool loadScriptData(EERIE_SCRIPT & script, const char * dat, size_t & pos
 	script.allowevents = DisabledEvents::load(ass->allowevents); // TODO save/load flags
 	script.nblvar = ass->nblvar;
 	
-	free(script.lvar);
-	script.lvar = NULL;
 	
+	script.lvar.resize(script.nblvar);
+
 	if(ass->nblvar > 0) {
-		script.lvar = (SCRIPT_VAR *)malloc(sizeof(SCRIPT_VAR) * script.nblvar);
-		memset(script.lvar, 0, sizeof(SCRIPT_VAR)* script.nblvar);
+		memset(script.lvar.data(), 0, sizeof(SCRIPT_VAR)* script.nblvar);
 	}
 	
 	return loadScriptVariables(script.lvar, script.nblvar, dat, pos,
@@ -2612,12 +2611,9 @@ static void ARX_CHANGELEVEL_Pop_Globals() {
 		return;
 	}
 	
-	arx_assert(!svar);
-	if(acsg->nb_globals > 0) {
-		svar = (SCRIPT_VAR *)malloc(sizeof(SCRIPT_VAR) * acsg->nb_globals);
-		memset(svar, 0, sizeof(SCRIPT_VAR)* acsg->nb_globals);
-	}
-	
+	svar.resize(acsg->nb_globals);
+	memset(svar.data(), 0, sizeof(SCRIPT_VAR)* acsg->nb_globals);
+		
 	NB_GLOBALS = acsg->nb_globals;
 	
 	bool ret = loadScriptVariables(svar, NB_GLOBALS, dat, pos, TYPE_G_TEXT, TYPE_G_LONG, TYPE_G_FLOAT);

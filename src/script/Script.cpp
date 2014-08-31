@@ -97,7 +97,7 @@ extern Entity * pIOChangeWeapon;
 
 Entity * LASTSPAWNED = NULL;
 Entity * EVENT_SENDER = NULL;
-SCRIPT_VAR * svar = NULL;
+std::vector<SCRIPT_VAR> svar;
 
 static char SSEPARAMS[MAX_SSEPARAMS][64];
 long FORBID_SCRIPT_IO_CREATION = 0;
@@ -210,26 +210,17 @@ void ARX_SCRIPT_ResetObject(Entity * io, bool init) {
 void ARX_SCRIPT_Reset(Entity * io, bool init) {
 	
 	//Release Script Local Variables
-	if(io->script.lvar) {
-		for(long n = 0; n < io->script.nblvar; n++) {
-			free(io->script.lvar[n].text);
-			io->script.lvar[n].text = NULL;
-		}
-		io->script.nblvar = 0;
-		free(io->script.lvar);
-		io->script.lvar = NULL;
+	for(std::vector<SCRIPT_VAR>::iterator it = io->script.lvar.begin(); it != io->script.lvar.end(); ++it) {
+		free(it->text);
 	}
+	io->script.lvar.clear();
+	
 	
 	//Release Script Over-Script Local Variables
-	if(io->over_script.lvar) {
-		for(long n = 0; n < io->over_script.nblvar; n++) {
-			free(io->over_script.lvar[n].text);
-			io->over_script.lvar[n].text = NULL;
-		}
-		io->over_script.nblvar = 0;
-		free(io->over_script.lvar);
-		io->over_script.lvar = NULL;
+	for(std::vector<SCRIPT_VAR>::iterator it = io->over_script.lvar.begin(); it != io->over_script.lvar.end(); ++it) {
+		free(it->text);
 	}
+	io->over_script.lvar.clear();
 	
 	if(!io->scriptload) {
 		ARX_SCRIPT_ResetObject(io, init);
@@ -306,13 +297,10 @@ void ReleaseScript(EERIE_SCRIPT * es) {
 		return;
 	}
 	
-	if(es->lvar) {
-		for(long i = 0; i < es->nblvar; i++) {
-			free(es->lvar[i].text);
-		}
-		free(es->lvar);
-		es->lvar = NULL;
+	for(std::vector<SCRIPT_VAR>::iterator it = es->lvar.begin(); it != es->lvar.end(); ++it) {
+		free(it->text);
 	}
+	es->lvar.clear();
 	
 	free(es->data);
 	es->data = NULL;
@@ -1135,15 +1123,11 @@ ValueType getSystemVar(const EERIE_SCRIPT * es, Entity * entity, const string & 
 
 void ARX_SCRIPT_Free_All_Global_Variables() {
 	
-	if(svar) {
-		for(long i = 0; i < NB_GLOBALS; i++) {
-			free(svar[i].text);
-		}
-		free(svar);
-		svar = NULL;
-		NB_GLOBALS = 0;
+	for(std::vector<SCRIPT_VAR>::iterator it = svar.begin(); it != svar.end(); ++it) {
+		free(it->text);
 	}
-	
+	svar.clear();
+	NB_GLOBALS = 0;
 }
 
 void CloneLocalVars(Entity * ioo, Entity * io) {
@@ -1152,50 +1136,40 @@ void CloneLocalVars(Entity * ioo, Entity * io) {
 		return;
 	}
 	
-	if(ioo->script.lvar) {
-		for(long n = 0; n < ioo->script.nblvar; n++) {
-			free(ioo->script.lvar[n].text);
-		}
-		free(ioo->script.lvar);
-		ioo->script.lvar = NULL;
-		ioo->script.nblvar = 0;
+	for(std::vector<SCRIPT_VAR>::iterator it = ioo->script.lvar.begin(); it != ioo->script.lvar.end(); ++it) {
+		free(it->text);
 	}
-	
-	if (io->script.lvar)
+		
+	ioo->script.lvar.resize(io->script.lvar.size());
+		
+	for (size_t n = 0; n < io->script.lvar.size(); n++)
 	{
-		ioo->script.nblvar = io->script.nblvar;
-		ioo->script.lvar = (SCRIPT_VAR *)malloc(sizeof(SCRIPT_VAR) * io->script.nblvar);
+		memcpy(&ioo->script.lvar[n], &io->script.lvar[n], sizeof(SCRIPT_VAR));
 
-		for (long n = 0; n < io->script.nblvar; n++)
+		if (io->script.lvar[n].text)
 		{
-			memcpy(&ioo->script.lvar[n], &io->script.lvar[n], sizeof(SCRIPT_VAR));
-
-			if (io->script.lvar[n].text)
-			{
-				ioo->script.lvar[n].text = (char *)malloc(strlen(io->script.lvar[n].text) + 1);
-				strcpy(ioo->script.lvar[n].text, io->script.lvar[n].text);
-			}
+			ioo->script.lvar[n].text = (char *)malloc(strlen(io->script.lvar[n].text) + 1);
+			strcpy(ioo->script.lvar[n].text, io->script.lvar[n].text);
 		}
 	}
 }
 
-SCRIPT_VAR * GetFreeVarSlot(SCRIPT_VAR*& _svff, long& _nb)
+SCRIPT_VAR * GetFreeVarSlot(std::vector<SCRIPT_VAR>& _svff)
 {
+	_svff.resize(_svff.size() + 1);
 
-	SCRIPT_VAR * svf = _svff;
-	_svff = (SCRIPT_VAR *) realloc(svf, sizeof(SCRIPT_VAR) * ((_nb) + 1));
-	svf = _svff;
-	memset(&svf[_nb], 0, sizeof(SCRIPT_VAR));
-	_nb++;
-	return &svf[_nb-1];
+	SCRIPT_VAR * v = &_svff.back();
+	memset(v, 0, sizeof(SCRIPT_VAR));
+	
+	return v;
 }
 
-SCRIPT_VAR * GetVarAddress(SCRIPT_VAR svf[], size_t nb, const string & name) {
+SCRIPT_VAR * GetVarAddress(std::vector<SCRIPT_VAR>& svf, const string & name) {
 	
-	for(size_t i = 0; i < nb; i++) {
-		if(svf[i].type != TYPE_UNKNOWN) {
-			if(name == svf[i].name) {
-				return &svf[i];
+	for(std::vector<SCRIPT_VAR>::iterator it = svf.begin(); it != svf.end(); ++it) {
+		if(it->type != TYPE_UNKNOWN) {
+			if(name == it->name) {
+				return &(*it);
 			}
 		}
 	}
@@ -1203,27 +1177,40 @@ SCRIPT_VAR * GetVarAddress(SCRIPT_VAR svf[], size_t nb, const string & name) {
 	return NULL;
 }
 
-long GETVarValueLong(SCRIPT_VAR svf[], size_t nb, const string & name) {
+const SCRIPT_VAR * GetVarAddress(const std::vector<SCRIPT_VAR>& svf, const string & name) {
 	
-	const SCRIPT_VAR * tsv = GetVarAddress(svf, nb, name);
+	for(std::vector<SCRIPT_VAR>::const_iterator it = svf.begin(); it != svf.end(); ++it) {
+		if(it->type != TYPE_UNKNOWN) {
+			if(name == it->name) {
+				return &(*it);
+			}
+		}
+	}
+
+	return NULL;
+}
+
+long GETVarValueLong(const std::vector<SCRIPT_VAR>& svf, const string & name) {
+	
+	const SCRIPT_VAR * tsv = GetVarAddress(svf, name);
 
 	if (tsv == NULL) return 0;
 
 	return tsv->ival;
 }
 
-float GETVarValueFloat(SCRIPT_VAR svf[], size_t nb, const string & name) {
+float GETVarValueFloat(const std::vector<SCRIPT_VAR>& svf, const string & name) {
 	
-	const SCRIPT_VAR * tsv = GetVarAddress(svf, nb, name);
+	const SCRIPT_VAR * tsv = GetVarAddress(svf, name);
 
 	if (tsv == NULL) return 0;
 
 	return tsv->fval;
 }
 
-std::string GETVarValueText(SCRIPT_VAR svf[], size_t nb, const string & name) {
+std::string GETVarValueText(const std::vector<SCRIPT_VAR>& svf, const string & name) {
 	
-	const SCRIPT_VAR* tsv = GetVarAddress(svf, nb, name);
+	const SCRIPT_VAR* tsv = GetVarAddress(svf, name);
 
 	if (!tsv) return "";
 
@@ -1261,28 +1248,28 @@ string GetVarValueInterpretedAsText(const string & temp1, const EERIE_SCRIPT * e
 		}
 		else if (temp1[0] == '#')
 		{
-			long l1 = GETVarValueLong(svar, NB_GLOBALS, temp1);
+			long l1 = GETVarValueLong(svar, temp1);
 			sprintf(var_text, "%ld", l1);
 			return var_text;
 		}
 		else if (temp1[0] == '\xA7')
 		{
-			long l1 = GETVarValueLong(esss->lvar, esss->nblvar, temp1);
+			long l1 = GETVarValueLong(esss->lvar, temp1);
 			sprintf(var_text, "%ld", l1);
 			return var_text;
 		}
-		else if (temp1[0] == '&') t1 = GETVarValueFloat(svar, NB_GLOBALS, temp1);
-		else if (temp1[0] == '@') t1 = GETVarValueFloat(esss->lvar, esss->nblvar, temp1);
+		else if (temp1[0] == '&') t1 = GETVarValueFloat(svar, temp1);
+		else if (temp1[0] == '@') t1 = GETVarValueFloat(esss->lvar, temp1);
 		else if (temp1[0] == '$')
 		{
-			SCRIPT_VAR * var = GetVarAddress(svar, NB_GLOBALS, temp1);
+			const SCRIPT_VAR * var = GetVarAddress(svar, temp1);
 
 			if (!var) return "void";
 			else return var->text;
 		}
 		else if (temp1[0] == '\xA3')
 		{
-			SCRIPT_VAR * var = GetVarAddress(esss->lvar, esss->nblvar, temp1);
+			const SCRIPT_VAR * var = GetVarAddress(esss->lvar, temp1);
 
 			if (!var) return "void";
 			else return var->text;
@@ -1316,25 +1303,25 @@ float GetVarValueInterpretedAsFloat(const string & temp1, const EERIE_SCRIPT * e
 				return fv;
 		}
 	} else if(temp1[0] == '#') {
-		return (float)GETVarValueLong(svar, NB_GLOBALS, temp1);
+		return (float)GETVarValueLong(svar, temp1);
 	} else if(temp1[0] == '\xA7') {
-		return (float)GETVarValueLong(esss->lvar, esss->nblvar, temp1);
+		return (float)GETVarValueLong(esss->lvar, temp1);
 	} else if(temp1[0] == '&') {
-		return GETVarValueFloat(svar, NB_GLOBALS, temp1);
+		return GETVarValueFloat(svar, temp1);
 	} else if(temp1[0] == '@') {
-		return GETVarValueFloat(esss->lvar, esss->nblvar, temp1);
+		return GETVarValueFloat(esss->lvar, temp1);
 	}
 	
 	return (float)atof(temp1.c_str());
 }
 
-SCRIPT_VAR* SETVarValueLong(SCRIPT_VAR*& svf, long& nb, const std::string& name, long val)
+SCRIPT_VAR* SETVarValueLong(std::vector<SCRIPT_VAR>& svf, const std::string& name, long val)
 {
-	SCRIPT_VAR* tsv = GetVarAddress(svf, nb, name);
+	SCRIPT_VAR* tsv = GetVarAddress(svf, name);
 
 	if (!tsv)
 	{
-		tsv = GetFreeVarSlot(svf, nb);
+		tsv = GetFreeVarSlot(svf);
 
 		if (!tsv)
 			return NULL;
@@ -1346,13 +1333,13 @@ SCRIPT_VAR* SETVarValueLong(SCRIPT_VAR*& svf, long& nb, const std::string& name,
 	return tsv;
 }
 
-SCRIPT_VAR* SETVarValueFloat(SCRIPT_VAR*& svf, long& nb, const std::string& name, float val)
+SCRIPT_VAR* SETVarValueFloat(std::vector<SCRIPT_VAR>& svf, const std::string& name, float val)
 {
-	SCRIPT_VAR* tsv = GetVarAddress(svf, nb, name);
+	SCRIPT_VAR* tsv = GetVarAddress(svf, name);
 
 	if (!tsv)
 	{
-		tsv = GetFreeVarSlot(svf, nb);
+		tsv = GetFreeVarSlot(svf);
 
 		if (!tsv)
 			return NULL;
@@ -1364,13 +1351,13 @@ SCRIPT_VAR* SETVarValueFloat(SCRIPT_VAR*& svf, long& nb, const std::string& name
 	return tsv;
 }
 
-SCRIPT_VAR* SETVarValueText(SCRIPT_VAR*& svf, long& nb, const std::string& name, const std::string& val)
+SCRIPT_VAR* SETVarValueText(std::vector<SCRIPT_VAR>& svf, const std::string& name, const std::string& val)
 {
-	SCRIPT_VAR* tsv = GetVarAddress(svf, nb, name);
+	SCRIPT_VAR* tsv = GetVarAddress(svf, name);
 
 	if (!tsv)
 	{
-		tsv = GetFreeVarSlot(svf, nb);
+		tsv = GetFreeVarSlot(svf);
 
 		if (!tsv)
 			return NULL;
@@ -1432,29 +1419,27 @@ void MakeLocalText(EERIE_SCRIPT * es, std::string& tx)
 
 	if (es->master != NULL) es = es->master;
 
-	if (es->lvar == NULL) return;
-
-	for (long i = 0; i < es->nblvar; i++)
+	for (const SCRIPT_VAR& v : es->lvar)
 	{
-		switch (es->lvar[i].type)
+		switch (v.type)
 		{
 			case TYPE_L_TEXT:
-				tx += es->lvar[i].name;
+				tx += v.name;
 				tx += " = ";
-				tx += es->lvar[i].text;
+				tx += v.text;
 				tx += "\r\n";
 				break;
 			case TYPE_L_LONG:
-				tx += es->lvar[i].name;
+				tx += v.name;
 				tx += " = ";
-				sprintf(texx, "%ld", es->lvar[i].ival);
+				sprintf(texx, "%ld", v.ival);
 				tx += texx;
 				tx += "\r\n";
 				break;
 			case TYPE_L_FLOAT:
-				tx += es->lvar[i].name;
+				tx += v.name;
 				tx += " = ";
-				sprintf(texx, "%f", es->lvar[i].fval);
+				sprintf(texx, "%f", v.fval);
 				tx += texx;
 				tx += "\r\n";
 				break;
@@ -2103,8 +2088,8 @@ void loadScript(EERIE_SCRIPT & script, PakFile * file) {
 	
 	script.allowevents = 0;
 	
-	free(script.lvar);
-	script.lvar = NULL;
+	script.lvar.clear();
+	
 	script.nblvar = 0;
 	
 	script.master = NULL;

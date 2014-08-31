@@ -489,32 +489,32 @@ class IfCommand : public Command {
 			}
 			
 			case '#': {
-				f = GETVarValueLong(svar, NB_GLOBALS, var);
+				f = GETVarValueLong(svar, var);
 				return TYPE_FLOAT;
 			}
 			
 			case '\xA7': {
-				f = GETVarValueLong(es->lvar, es->nblvar, var);
+				f = GETVarValueLong(es->lvar, var);
 				return TYPE_FLOAT;
 			}
 			
 			case '&': {
-				f = GETVarValueFloat(svar, NB_GLOBALS, var);
+				f = GETVarValueFloat(svar, var);
 				return TYPE_FLOAT;
 			}
 			
 			case '@': {
-				f = GETVarValueFloat(es->lvar, es->nblvar, var);
+				f = GETVarValueFloat(es->lvar, var);
 				return TYPE_FLOAT;
 			}
 			
 			case '$': {
-				s = GETVarValueText(svar, NB_GLOBALS, var);
+				s = GETVarValueText(svar, var);
 				return TYPE_TEXT;
 			}
 			
 			case '\xA3': {
-				s = GETVarValueText(es->lvar, es->nblvar, var);
+				s = GETVarValueText(es->lvar, var);
 				return TYPE_TEXT;
 			}
 			

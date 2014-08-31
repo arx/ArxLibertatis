@@ -81,7 +81,7 @@ public:
 			
 			case '$': { // global text
 				string v = context.getStringVar(val);
-				SCRIPT_VAR * sv = SETVarValueText(svar, NB_GLOBALS, var, v);
+				SCRIPT_VAR * sv = SETVarValueText(svar, var, v);
 				if(!sv) {
 					ScriptWarning << "unable to set var " << var << " to \"" << v << '"';
 					return Failed;
@@ -92,7 +92,7 @@ public:
 			
 			case '\xA3': { // local text
 				string v = context.getStringVar(val);
-				SCRIPT_VAR * sv = SETVarValueText(es.lvar, es.nblvar, var, v);
+				SCRIPT_VAR * sv = SETVarValueText(es.lvar, var, v);
 				if(!sv) {
 					ScriptWarning << "unable to set var " << var << " to \"" << v << '"';
 					return Failed;
@@ -103,7 +103,7 @@ public:
 			
 			case '#': { // global long
 				long v = (long)context.getFloatVar(val);
-				SCRIPT_VAR * sv = SETVarValueLong(svar, NB_GLOBALS, var, v);
+				SCRIPT_VAR * sv = SETVarValueLong(svar, var, v);
 				if(!sv) {
 					ScriptWarning << "unable to set var " << var << " to " << v;
 					return Failed;
@@ -114,7 +114,7 @@ public:
 			
 			case '\xA7': { // local long
 				long v = (long)context.getFloatVar(val);
-				SCRIPT_VAR * sv = SETVarValueLong(es.lvar, es.nblvar, var, v);
+				SCRIPT_VAR * sv = SETVarValueLong(es.lvar, var, v);
 				if(!sv) {
 					ScriptWarning << "unable to set var " << var << " to " << v;
 					return Failed;
@@ -125,7 +125,7 @@ public:
 			
 			case '&': { // global float
 				float v = context.getFloatVar(val);
-				SCRIPT_VAR * sv = SETVarValueFloat(svar, NB_GLOBALS, var, v);
+				SCRIPT_VAR * sv = SETVarValueFloat(svar, var, v);
 				if(!sv) {
 					ScriptWarning << "unable to set var " << var << " to " << v;
 					return Failed;
@@ -136,7 +136,7 @@ public:
 			
 			case '@': { // local float
 				float v = context.getFloatVar(val);
-				SCRIPT_VAR * sv = SETVarValueFloat(es.lvar, es.nblvar, var, v);
+				SCRIPT_VAR * sv = SETVarValueFloat(es.lvar, var, v);
 				if(!sv) {
 					ScriptWarning << "unable to set var " << var << " to " << v;
 					return Failed;
@@ -210,8 +210,8 @@ public:
 			}
 			
 			case '#':  {// global long
-				float old = (float)GETVarValueLong(svar, NB_GLOBALS, var);
-				SCRIPT_VAR * sv = SETVarValueLong(svar, NB_GLOBALS, var, (long)calculate(old, val));
+				float old = (float)GETVarValueLong(svar, var);
+				SCRIPT_VAR * sv = SETVarValueLong(svar, var, (long)calculate(old, val));
 				if(!sv) {
 					ScriptWarning << "unable to set var " << var;
 					return Failed;
@@ -221,8 +221,8 @@ public:
 			}
 			
 			case '\xA7': { // local long
-				float old = (float)GETVarValueLong(es->lvar, es->nblvar, var);
-				SCRIPT_VAR * sv = SETVarValueLong(es->lvar, es->nblvar, var, (long)calculate(old, val));
+				float old = (float)GETVarValueLong(es->lvar, var);
+				SCRIPT_VAR * sv = SETVarValueLong(es->lvar, var, (long)calculate(old, val));
 				if(!sv) {
 					ScriptWarning << "unable to set var " << var;
 					return Failed;
@@ -232,8 +232,8 @@ public:
 			}
 			
 			case '&': { // global float
-				float old = GETVarValueFloat(svar, NB_GLOBALS, var);
-				SCRIPT_VAR * sv = SETVarValueFloat(svar, NB_GLOBALS, var, calculate(old, val));
+				float old = GETVarValueFloat(svar, var);
+				SCRIPT_VAR * sv = SETVarValueFloat(svar, var, calculate(old, val));
 				if(!sv) {
 					ScriptWarning << "unable to set var " << var;
 					return Failed;
@@ -243,8 +243,8 @@ public:
 			}
 			
 			case '@': { // local float
-				float old = GETVarValueFloat(es->lvar, es->nblvar, var);
-				SCRIPT_VAR * sv = SETVarValueFloat(es->lvar, es->nblvar, var, calculate(old, val));
+				float old = GETVarValueFloat(es->lvar, var);
+				SCRIPT_VAR * sv = SETVarValueFloat(es->lvar, var, calculate(old, val));
 				if(!sv) {
 					ScriptWarning << "unable to set var " << var;
 					return Failed;
@@ -267,42 +267,27 @@ public:
 
 class UnsetCommand : public Command {
 	
-	static long GetVarNum(SCRIPT_VAR * svf, size_t nb, const string & name) {
-		
-		if(!svf) {
-			return -1;
-		}
-		
-		for(size_t i = 0; i < nb; i++) {
-			if(svf[i].type != 0 && name == svf[i].name) {
-				return i;
-			}
-		}
-		
-		return -1;
-	}
-	
 	static bool isGlobal(char c) {
 		return (c == '$' || c == '#' || c == '&');
 	}
 	
 	// TODO move to variable context
-	static bool UNSETVar(SCRIPT_VAR * & svf, long & nb, const string & name) {
+	static bool UNSETVar(std::vector<SCRIPT_VAR>& svf, const string & name) {
 		
-		long i = GetVarNum(svf, nb, name);
-		if(i < 0) {
+		std::vector<SCRIPT_VAR>::iterator it;
+		for(it = svf.begin(); it != svf.end(); ++it) {
+			if(it->type != 0 && name == it->name) {
+				break;
+			}
+		}
+		
+		if(it == svf.end())
 			return false;
-		}
+
+		free(it->text);
 		
-		free(svf[i].text);
-		svf[i].text = NULL;
+		svf.erase(it);
 		
-		if(i + 1 < nb) {
-			memcpy(&svf[i], &svf[i + 1], sizeof(SCRIPT_VAR) * (nb - i - 1));
-		}
-		
-		svf = (SCRIPT_VAR *)realloc(svf, sizeof(SCRIPT_VAR) * (nb - 1));
-		nb--;
 		return true;
 	}
 	
@@ -322,9 +307,9 @@ public:
 		}
 		
 		if(isGlobal(var[0])) {
-			UNSETVar(svar, NB_GLOBALS, var);
+			UNSETVar(svar, var);
 		} else {
-			UNSETVar(context.getMaster()->lvar, context.getMaster()->nblvar, var);
+			UNSETVar(context.getMaster()->lvar, var);
 		}
 		
 		return Success;
@@ -356,26 +341,26 @@ public:
 		switch(var[0]) {
 			
 			case '#': {
-				long ival = GETVarValueLong(svar, NB_GLOBALS, var);
-				SETVarValueLong(svar, NB_GLOBALS, var, ival + (long)diff);
+				long ival = GETVarValueLong(svar, var);
+				SETVarValueLong(svar, var, ival + (long)diff);
 				break;
 			}
 			
 			case '\xA3': {
-				long ival = GETVarValueLong(es.lvar, es.nblvar, var);
-				SETVarValueLong(es.lvar, es.nblvar, var, ival + (long)diff);
+				long ival = GETVarValueLong(es.lvar, var);
+				SETVarValueLong(es.lvar, var, ival + (long)diff);
 				break;
 			}
 			
 			case '&': {
-				float fval = GETVarValueFloat(svar, NB_GLOBALS, var);
-				SETVarValueFloat(svar, NB_GLOBALS, var, fval + diff);
+				float fval = GETVarValueFloat(svar, var);
+				SETVarValueFloat(svar, var, fval + diff);
 				break;
 			}
 			
 			case '@': {
-				float fval = GETVarValueFloat(es.lvar, es.nblvar, var);
-				SETVarValueFloat(es.lvar, es.nblvar, var, fval + diff);
+				float fval = GETVarValueFloat(es.lvar, var);
+				SETVarValueFloat(es.lvar, var, fval + diff);
 				break;
 			}
 			

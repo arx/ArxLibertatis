@@ -107,7 +107,7 @@ struct EERIE_SCRIPT {
 	size_t size;
 	char * data;
 	long nblvar;
-	SCRIPT_VAR * lvar;
+	std::vector<SCRIPT_VAR> lvar;
 	unsigned long lastcall;
 	unsigned long timers[MAX_SCRIPTTIMERS];
 	DisabledEvents allowevents;
@@ -405,7 +405,7 @@ enum ScriptMessage {
 	SM_DUMMY = 256
 };
 
-extern SCRIPT_VAR * svar;
+extern std::vector<SCRIPT_VAR> svar;
 extern Entity * EVENT_SENDER;
 extern SCR_TIMER * scr_timer;
 extern long NB_GLOBALS;
@@ -450,14 +450,14 @@ std::string GetVarValueInterpretedAsText(const std::string & temp1, const EERIE_
 std::string ARX_SCRIPT_Timer_GetDefaultName();
 
 // Use to set the value of a script variable
-SCRIPT_VAR * SETVarValueText(SCRIPT_VAR *& svf, long & nb, const std::string &  name, const std::string & val);
-SCRIPT_VAR * SETVarValueLong(SCRIPT_VAR *& svf, long & nb, const std::string & name, long val);
-SCRIPT_VAR * SETVarValueFloat(SCRIPT_VAR *& svf, long & nb, const std::string & name, float val);
+SCRIPT_VAR * SETVarValueText(std::vector<SCRIPT_VAR>& svf, const std::string &  name, const std::string & val);
+SCRIPT_VAR * SETVarValueLong(std::vector<SCRIPT_VAR>& svf, const std::string & name, long val);
+SCRIPT_VAR * SETVarValueFloat(std::vector<SCRIPT_VAR>& svf, const std::string & name, float val);
 
 // Use to get the value of a script variable
-long GETVarValueLong(SCRIPT_VAR svf[], size_t nb, const std::string & name);
-float GETVarValueFloat(SCRIPT_VAR svf[], size_t nb, const std::string & name);
-std::string GETVarValueText(SCRIPT_VAR svf[], size_t nb, const std::string & name);
+long GETVarValueLong(const std::vector<SCRIPT_VAR>& svf, const std::string & name);
+float GETVarValueFloat(const std::vector<SCRIPT_VAR>& svf, const std::string & name);
+std::string GETVarValueText(const std::vector<SCRIPT_VAR>& svf, const std::string & name);
 
 ValueType getSystemVar(const EERIE_SCRIPT * es, Entity * io, const std::string & name, std::string & txtcontent, float * fcontent, long * lcontent);
 void ARX_SCRIPT_Timer_Clear_All_Locals_For_IO(Entity * io);
