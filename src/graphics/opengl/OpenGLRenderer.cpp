@@ -53,6 +53,7 @@ OpenGLRenderer::OpenGLRenderer()
 	, m_hasMSAA(false)
 	, m_hasColorKey(false)
 	, m_hasBlend(false)
+	, m_hasTextureNPOT(false)
 {
 	resetStateCache();
 }
@@ -187,6 +188,18 @@ void OpenGLRenderer::afterResize() {
 void OpenGLRenderer::reinit() {
 	
 	arx_assert(!isInitialized());
+	
+	m_hasTextureNPOT = GLEW_ARB_texture_non_power_of_two || GLEW_VERSION_2_0;
+	if(!m_hasTextureNPOT) {
+		LogWarning << "Missing OpenGL extension ARB_texture_non_power_of_two.";
+	} else if(!GLEW_VERSION_3_0) {
+		GLint max = 0;
+		glGetIntegerv(GL_MAX_TEXTURE_SIZE, &max);
+		if(max < 8192) {
+			LogWarning << "Old hardware detected, ignoring OpenGL extension ARB_texture_non_power_of_two.";
+			m_hasTextureNPOT = false;
+		}
+	}
 	
 	if(!GLEW_ARB_vertex_array_bgra) {
 		LogWarning << "Missing OpenGL extension ARB_vertex_array_bgra, not using vertex arrays!";

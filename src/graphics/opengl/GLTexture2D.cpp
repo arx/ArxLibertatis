@@ -48,7 +48,7 @@ bool GLTexture2D::Create() {
 	minFilter = TextureStage::FilterNearest;
 	magFilter = TextureStage::FilterLinear;
 
-	if(GLEW_ARB_texture_non_power_of_two) {
+	if(renderer->hasTextureNPOT()) {
 		storedSize = size;
 	} else {
 		storedSize = Vec2i(GetNextPowerOf2(size.x), GetNextPowerOf2(size.y));

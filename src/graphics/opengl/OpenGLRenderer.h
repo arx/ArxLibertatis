@@ -103,6 +103,8 @@ public:
 		return reinterpret_cast<GLTextureStage *>(Renderer::GetTextureStage(textureStage));
 	}
 	
+	bool hasTextureNPOT() { return m_hasTextureNPOT; }
+	
 private:
 	
 	void shutdown();
@@ -155,6 +157,7 @@ private:
 	bool m_hasMSAA;
 	bool m_hasColorKey;
 	bool m_hasBlend;
+	bool m_hasTextureNPOT;
 	
 };
 
