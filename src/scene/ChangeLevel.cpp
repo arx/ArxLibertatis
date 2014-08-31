@@ -1929,12 +1929,10 @@ static bool loadScriptData(EERIE_SCRIPT & script, const char * dat, size_t & pos
 	pos += sizeof(ARX_CHANGELEVEL_SCRIPT_SAVE);
 	
 	script.allowevents = DisabledEvents::load(ass->allowevents); // TODO save/load flags
+
+	script.lvar.clear();
 	script.lvar.resize(ass->nblvar);
 
-	if(ass->nblvar > 0) {
-		memset(script.lvar.data(), 0, sizeof(SCRIPT_VAR)* ass->nblvar);
-	}
-	
 	return loadScriptVariables(script.lvar, dat, pos,
 	                           TYPE_L_TEXT, TYPE_L_LONG, TYPE_L_FLOAT);
 }
@@ -2596,9 +2594,9 @@ static void ARX_CHANGELEVEL_Pop_Globals() {
 		return;
 	}
 	
+	svar.clear();
 	svar.resize(acsg->nb_globals);
-	memset(svar.data(), 0, sizeof(SCRIPT_VAR)* acsg->nb_globals);
-	
+		
 	bool ret = loadScriptVariables(svar, dat, pos, TYPE_G_TEXT, TYPE_G_LONG, TYPE_G_FLOAT);
 	if(!ret) {
 		LogError << "Error loading globals";
