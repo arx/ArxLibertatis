@@ -80,10 +80,9 @@ struct SCRIPT_VAR {
 	long ival;
 	float fval;
 	std::string text;
-	char name[64];
+	std::string name;
 
 	SCRIPT_VAR() : type(TYPE_UNKNOWN), ival(), fval() {
-		name[0] = 0;
 	}
 };
 

@@ -1294,7 +1294,7 @@ SCRIPT_VAR* SETVarValueLong(std::vector<SCRIPT_VAR>& svf, const std::string& nam
 		if (!tsv)
 			return NULL;
 
-		strcpy(tsv->name, name.c_str());
+		tsv->name = name;
 	}
 
 	tsv->ival = val;
@@ -1312,7 +1312,7 @@ SCRIPT_VAR* SETVarValueFloat(std::vector<SCRIPT_VAR>& svf, const std::string& na
 		if (!tsv)
 			return NULL;
 
-		strcpy(tsv->name, name.c_str());
+		tsv->name = name;
 	}
 
 	tsv->fval = val;
@@ -1330,7 +1330,7 @@ SCRIPT_VAR* SETVarValueText(std::vector<SCRIPT_VAR>& svf, const std::string& nam
 		if (!tsv)
 			return NULL;
 
-		strcpy(tsv->name, name.c_str());
+		tsv->name = name.c_str();
 	}
 	
 	tsv->text = val;

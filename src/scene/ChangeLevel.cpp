@@ -560,7 +560,7 @@ static void ARX_CHANGELEVEL_Push_Globals() {
 
 				if ((svar[i].name[0] == '$') || (svar[i].name[0] == '\xA3'))
 				{
-					strcpy(avs.name, svar[i].name);
+					strcpy(avs.name, svar[i].name.c_str());
 
 					count = svar[i].text.size();
 					
@@ -582,7 +582,7 @@ static void ARX_CHANGELEVEL_Push_Globals() {
 
 				if ((svar[i].name[0] == '#') || (svar[i].name[0] == '\xA7'))
 				{
-					strcpy(avs.name, svar[i].name);
+					strcpy(avs.name, svar[i].name.c_str());
 					avs.fval = (float)svar[i].ival;
 					avs.type = TYPE_G_LONG;
 					memcpy(dat + pos, &avs, sizeof(ARX_VARIABLE_SAVE));
@@ -596,7 +596,7 @@ static void ARX_CHANGELEVEL_Push_Globals() {
 
 				if ((svar[i].name[0] == '&') || (svar[i].name[0] == '@'))
 				{
-					strcpy(avs.name, svar[i].name);
+					strcpy(avs.name, svar[i].name.c_str());
 					avs.fval = svar[i].fval;
 					avs.type = TYPE_G_FLOAT;
 					memcpy(dat + pos, &avs, sizeof(ARX_VARIABLE_SAVE));
@@ -1176,7 +1176,7 @@ static long ARX_CHANGELEVEL_Push_IO(const Entity * io, long level) {
 
 				if ((io->script.lvar[i].name[0] == '$') || (io->script.lvar[i].name[0] == '\xA3'))
 				{
-					strcpy(avs->name, io->script.lvar[i].name);
+					strcpy(avs->name, io->script.lvar[i].name.c_str());
 					
 					long count = io->script.lvar[i].text.size();
 					
@@ -1201,7 +1201,7 @@ static long ARX_CHANGELEVEL_Push_IO(const Entity * io, long level) {
 
 				if ((io->script.lvar[i].name[0] == '#') || (io->script.lvar[i].name[0] == '\xA7'))
 				{
-					strcpy(avs->name, io->script.lvar[i].name);
+					strcpy(avs->name, io->script.lvar[i].name.c_str());
 					avs->fval = (float)io->script.lvar[i].ival;
 					avs->type = TYPE_L_LONG;
 					pos += sizeof(ARX_CHANGELEVEL_VARIABLE_SAVE);
@@ -1214,7 +1214,7 @@ static long ARX_CHANGELEVEL_Push_IO(const Entity * io, long level) {
 
 				if ((io->script.lvar[i].name[0] == '&') || (io->script.lvar[i].name[0] == '@'))
 				{
-					strcpy(avs->name, io->script.lvar[i].name);
+					strcpy(avs->name, io->script.lvar[i].name.c_str());
 					avs->fval = io->script.lvar[i].fval;
 					avs->type = TYPE_L_FLOAT;
 					pos += sizeof(ARX_CHANGELEVEL_VARIABLE_SAVE);
@@ -1247,7 +1247,7 @@ static long ARX_CHANGELEVEL_Push_IO(const Entity * io, long level) {
 
 				if ((io->script.lvar[i].name[0] == '$') || (io->script.lvar[i].name[0] == '\xA3'))
 				{
-					strcpy(avs->name, io->over_script.lvar[i].name);
+					strcpy(avs->name, io->over_script.lvar[i].name.c_str());
 					
 					long count = io->over_script.lvar[i].text.size();
 
@@ -1272,7 +1272,7 @@ static long ARX_CHANGELEVEL_Push_IO(const Entity * io, long level) {
 
 				if ((io->script.lvar[i].name[0] == '#') || (io->script.lvar[i].name[0] == '\xA7'))
 				{
-					strcpy(avs->name, io->over_script.lvar[i].name);
+					strcpy(avs->name, io->over_script.lvar[i].name.c_str());
 					avs->fval	= (float)io->over_script.lvar[i].ival;
 					avs->type	= TYPE_L_LONG;
 					pos			+= sizeof(ARX_CHANGELEVEL_VARIABLE_SAVE);
@@ -1285,7 +1285,7 @@ static long ARX_CHANGELEVEL_Push_IO(const Entity * io, long level) {
 
 				if ((io->script.lvar[i].name[0] == '&') || (io->script.lvar[i].name[0] == '@'))
 				{
-					strcpy(avs->name, io->over_script.lvar[i].name);
+					strcpy(avs->name, io->over_script.lvar[i].name.c_str());
 					avs->fval	= io->over_script.lvar[i].fval;
 					avs->type	= TYPE_L_FLOAT;
 					pos			+= sizeof(ARX_CHANGELEVEL_VARIABLE_SAVE);
@@ -1879,11 +1879,10 @@ static bool loadScriptVariables(std::vector<SCRIPT_VAR>& var, const char * dat, 
 		avs = reinterpret_cast<const ARX_CHANGELEVEL_VARIABLE_SAVE *>(dat + pos);
 		pos += sizeof(ARX_CHANGELEVEL_VARIABLE_SAVE);
 		
-		string name = boost::to_lower_copy(util::loadString(avs->name));
-		strcpy(var[i].name, name.c_str());
-		
-		if(name.find_first_not_of("abcdefghijklmnopqrstuvwxyz_0123456789", 1) != string::npos) {
-			LogWarning << "Unexpected variable name \"" << name.substr(1) << '"';
+		var[i].name = boost::to_lower_copy(util::loadString(avs->name));
+			
+		if(var[i].name.find_first_not_of("abcdefghijklmnopqrstuvwxyz_0123456789", 1) != string::npos) {
+			LogWarning << "Unexpected variable name \"" << var[i].name.substr(1) << '"';
 		}
 		
 		VariableType type;
