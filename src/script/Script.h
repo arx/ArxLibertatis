@@ -407,7 +407,6 @@ enum ScriptMessage {
 extern std::vector<SCRIPT_VAR> svar;
 extern Entity * EVENT_SENDER;
 extern SCR_TIMER * scr_timer;
-extern long NB_GLOBALS;
 extern long ActiveTimers;
 extern long FORBID_SCRIPT_IO_CREATION;
 extern long MAX_TIMER_SCRIPT;

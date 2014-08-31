@@ -539,7 +539,7 @@ static void ARX_CHANGELEVEL_Push_Globals() {
 	long pos = 0;
 	
 	memset(&acsg, 0, sizeof(ARX_CHANGELEVEL_SAVE_GLOBALS));
-	acsg.nb_globals = NB_GLOBALS;
+	acsg.nb_globals = svar.size();
 	acsg.version = ARX_GAMESAVE_VERSION;
 	
 	long allocsize = sizeof(ARX_VARIABLE_SAVE) * acsg.nb_globals
@@ -552,7 +552,7 @@ static void ARX_CHANGELEVEL_Push_Globals() {
 	long count;
 	ARX_VARIABLE_SAVE avs;
 
-	for (long i = 0; i < NB_GLOBALS; i++)
+	for (size_t i = 0; i < svar.size(); i++)
 	{
 		switch (svar[i].type)
 		{
@@ -1168,7 +1168,7 @@ static long ARX_CHANGELEVEL_Push_IO(const Entity * io, long level) {
 	ass->nblvar = io->script.lvar.size();
 	pos += sizeof(ARX_CHANGELEVEL_SCRIPT_SAVE);
 
-	for (int i = 0; i < io->script.lvar.size(); i++)
+	for (size_t i = 0; i < io->script.lvar.size(); i++)
 	{
 		ARX_CHANGELEVEL_VARIABLE_SAVE * avs = (ARX_CHANGELEVEL_VARIABLE_SAVE *)(dat + pos);
 		memset(avs, 0, sizeof(ARX_CHANGELEVEL_VARIABLE_SAVE));
@@ -1242,7 +1242,7 @@ static long ARX_CHANGELEVEL_Push_IO(const Entity * io, long level) {
 	ass->nblvar = io->over_script.lvar.size();
 	pos += sizeof(ARX_CHANGELEVEL_SCRIPT_SAVE);
 
-	for (int i = 0; i < io->over_script.lvar.size(); i++)
+	for (size_t i = 0; i < io->over_script.lvar.size(); i++)
 	{
 		ARX_CHANGELEVEL_VARIABLE_SAVE * avs = (ARX_CHANGELEVEL_VARIABLE_SAVE *)(dat + pos);
 		memset(avs, 0, sizeof(ARX_CHANGELEVEL_VARIABLE_SAVE));
@@ -1884,7 +1884,7 @@ static long ARX_CHANGELEVEL_Pop_Player() {
 
 static bool loadScriptVariables(std::vector<SCRIPT_VAR>& var, const char * dat, size_t & pos, VariableType ttext, VariableType tlong, VariableType tfloat) {
 	
-	for(long i = 0; i < var.size(); i++) {
+	for(size_t i = 0; i < var.size(); i++) {
 		
 		const ARX_CHANGELEVEL_VARIABLE_SAVE * avs;
 		avs = reinterpret_cast<const ARX_CHANGELEVEL_VARIABLE_SAVE *>(dat + pos);
@@ -2610,8 +2610,6 @@ static void ARX_CHANGELEVEL_Pop_Globals() {
 	
 	svar.resize(acsg->nb_globals);
 	memset(svar.data(), 0, sizeof(SCRIPT_VAR)* acsg->nb_globals);
-		
-	NB_GLOBALS = acsg->nb_globals;
 	
 	bool ret = loadScriptVariables(svar, dat, pos, TYPE_G_TEXT, TYPE_G_LONG, TYPE_G_FLOAT);
 	if(!ret) {

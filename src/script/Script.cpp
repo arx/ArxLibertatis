@@ -101,7 +101,6 @@ std::vector<SCRIPT_VAR> svar;
 
 static char SSEPARAMS[MAX_SSEPARAMS][64];
 long FORBID_SCRIPT_IO_CREATION = 0;
-long NB_GLOBALS = 0;
 SCR_TIMER * scr_timer = NULL;
 long ActiveTimers = 0;
 
@@ -1127,7 +1126,6 @@ void ARX_SCRIPT_Free_All_Global_Variables() {
 		free(it->text);
 	}
 	svar.clear();
-	NB_GLOBALS = 0;
 }
 
 void CloneLocalVars(Entity * ioo, Entity * io) {
@@ -1382,7 +1380,7 @@ void MakeGlobalText(std::string & tx)
 {
 	char texx[256];
 
-	for(long i = 0; i < NB_GLOBALS; i++) {
+	for(size_t i = 0; i < svar.size(); i++) {
 		switch(svar[i].type) {
 			case TYPE_G_TEXT:
 				tx += svar[i].name;
