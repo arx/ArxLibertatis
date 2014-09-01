@@ -146,8 +146,6 @@ Entity::Entity(const res::path & classPath)
 	ARX_HALO_SetToNative(this);
 	halo.dynlight = LightHandle::Invalid;
 	
-	std::memset(&script, 0, sizeof(EERIE_SCRIPT)); // TODO use constructor
-	std::memset(&over_script, 0, sizeof(EERIE_SCRIPT)); // TODO use constructor
 	stat_count = 0;
 	stat_sent = 0;
 	tweakerinfo = NULL;
