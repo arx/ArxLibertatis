@@ -37,7 +37,7 @@ function(enable_unity_build UB_SUFFIX SOURCE_VARIABLE_NAME)
 	if(MSVC)
 		set(compile_flags "/bigobj")
 	else()
-	  set(compile_flags "")
+		set(compile_flags "")
 	endif()
 	
 	# Add include statement for each translation unit
