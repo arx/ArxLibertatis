@@ -48,6 +48,7 @@ ZeniMax Media Inc., Suite 120, Rockville, Maryland 20850 USA.
 #define ARX_SCRIPT_SCRIPT_H
 
 #include <stddef.h>
+#include <cstring>
 #include <string>
 #include <vector>
 
