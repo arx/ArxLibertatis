@@ -447,8 +447,6 @@ struct EERIE_ROOM_DATA {
 
 struct EERIE_PORTAL_DATA
 {
-	long nb_rooms;
-	
 	std::vector<EERIE_ROOM_DATA> room;
 	std::vector<EERIE_PORTALS> portals;
 };

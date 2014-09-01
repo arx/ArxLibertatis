@@ -961,8 +961,7 @@ void UpdateIORoom(Entity * io)
 
 bool GetRoomCenter(long room_num, Vec3f * center) {
 	
-	//TODO off by one ? (portals->nb_rooms + 1)
-	if(!portals || room_num > portals->nb_rooms || portals->room[room_num].nb_polys <= 0)
+	if(!portals || (size_t)room_num >= portals->room.size() || portals->room[room_num].nb_polys <= 0)
 		return false;
 	
 	EERIE_ROOM_DATA & room = portals->room[room_num];
@@ -1686,9 +1685,7 @@ static bool loadFastScene(const res::path & file, const char * data, const char 
 	EERIE_PORTAL_Release();
 	
 	portals = new EERIE_PORTAL_DATA;
-	portals->nb_rooms = fsh->nb_rooms;
-	portals->room.resize(fsh->nb_rooms + 1);
-	
+	portals->room.resize(fsh->nb_rooms + 1);	
 	portals->portals.resize(fsh->nb_portals);
 	
 	LogDebug("FTS: loading " << portals->portals.size() << " portals ...");
@@ -2003,11 +2000,8 @@ static void EERIE_PORTAL_Poly_Add(EERIEPOLY * ep, const std::string& name, long 
 
 	if(portals == NULL) {
 		portals = new EERIE_PORTAL_DATA;
-
 		if(!portals)
 			return;
-
-		portals->nb_rooms = 0;
 	}
 
 	if(type == TYPE_PORTAL) {
@@ -2039,9 +2033,8 @@ static void EERIE_PORTAL_Poly_Add(EERIEPOLY * ep, const std::string& name, long 
 
 		portals->portals.push_back(portal);
 	} else if(type == TYPE_ROOM) {
-		if(val1 > portals->nb_rooms) {
+		if(size_t(val1+1) > portals->room.size()) {
 			portals->room.resize(val1 + 1);
-			portals->nb_rooms = val1;
 		}
 
 		EERIE_PORTAL_Room_Poly_Add(ep, val1, px, py, idx);
@@ -2327,7 +2320,8 @@ static bool FastSceneSave(const fs::path & partial_path) {
 	
 	if(portals) {
 		fsh->nb_portals = portals->portals.size();
-		fsh->nb_rooms = portals->nb_rooms;
+		arx_assert(portals->room.size() > 0);
+		fsh->nb_rooms = portals->room.size() - 1;
 	}
 	
 	fsh->nb_polys = 0;
@@ -2634,7 +2628,7 @@ void ComputePortalVertexBuffer() {
 	
 	LogDebug("Creating scene VBOs");
 	
-	if(portals->nb_rooms > 255) {
+	if(portals->room.size() > 255) {
 		LogError << "Too many rooms: " << portals->room.size();
 		return;
 	}

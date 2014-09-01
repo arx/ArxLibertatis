@@ -573,7 +573,7 @@ long ARX_PORTALS_GetRoomNumForPosition(const Vec3f & pos,long flag)
 		long nearest = -1;
 		float nearest_dist = 99999.f;
 
-		for(long n = 0; n < portals->nb_rooms; n++) { //TODO off by one ? (portals->nb_rooms + 1)
+		for(size_t n = 0; n < portals->room.size(); n++) {
 			for(long lll = 0; lll < portals->room[n].nb_portals; lll++) {
 				EERIE_PORTALS *po = &portals->portals[portals->room[n].portals[lll]];
 				EERIEPOLY *epp = &po->poly;
