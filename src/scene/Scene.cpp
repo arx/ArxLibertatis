@@ -573,9 +573,9 @@ long ARX_PORTALS_GetRoomNumForPosition(const Vec3f & pos,long flag)
 		long nearest = -1;
 		float nearest_dist = 99999.f;
 
-		for(size_t n = 0; n < portals->room.size(); n++) {
-			for(long lll = 0; lll < portals->room[n].nb_portals; lll++) {
-				EERIE_PORTALS *po = &portals->portals[portals->room[n].portals[lll]];
+		for(size_t n = 0; n < portals->rooms.size(); n++) {
+			for(long lll = 0; lll < portals->rooms[n].nb_portals; lll++) {
+				EERIE_PORTALS *po = &portals->portals[portals->rooms[n].portals[lll]];
 				EERIEPOLY *epp = &po->poly;
 
 				if(PointIn2DPolyXZ(epp, pos.x, pos.z)) {
@@ -606,7 +606,7 @@ long ARX_PORTALS_GetRoomNumForPosition(const Vec3f & pos,long flag)
 
 void ARX_PORTALS_Frustrum_ClearIndexCount(long room_num) {
 
-	EERIE_ROOM_DATA & room = portals->room[room_num];
+	EERIE_ROOM_DATA & room = portals->rooms[room_num];
 	
 	std::vector<TextureContainer *>::const_iterator itr;
 	for(itr = room.ppTextureContainer.begin(); itr != room.ppTextureContainer.end(); ++itr) {
@@ -635,11 +635,11 @@ void ARX_PORTALS_InitDrawnRooms()
 		ep->useportal = 0;
 	}
 
-	for(size_t i = 0; i < portals->room.size(); i++) {
+	for(size_t i = 0; i < portals->rooms.size(); i++) {
 		ARX_PORTALS_Frustrum_ClearIndexCount(i);
 	}
 
-	RoomDraw.resize(portals->room.size());
+	RoomDraw.resize(portals->rooms.size());
 
 	for(size_t i = 0; i < RoomDraw.size(); i++) {
 		RoomDraw[i].count=0;
@@ -1039,7 +1039,7 @@ void ARX_PORTALS_Frustrum_RenderRoomTCullSoft(long room_num, const EERIE_FRUSTRU
 	if(!RoomDraw[room_num].count)
 		return;
 
-	EERIE_ROOM_DATA & room = portals->room[room_num];
+	EERIE_ROOM_DATA & room = portals->rooms[room_num];
 
 	if(!room.pVertexBuffer) {
 		// No need to spam this for every frame as there will already be an
@@ -1225,7 +1225,7 @@ void ARX_PORTALS_Frustrum_RenderRoomTCullSoft(long room_num, const EERIE_FRUSTRU
 
 void ARX_PORTALS_Frustrum_RenderRoomTCullSoftRender(long room_num) {
 
-	EERIE_ROOM_DATA & room = portals->room[room_num];
+	EERIE_ROOM_DATA & room = portals->rooms[room_num];
 
 	//render opaque
 	GRenderer->SetCulling(Renderer::CullNone);
@@ -1276,7 +1276,7 @@ static const SMY_ARXMAT::TransparencyType transRenderOrder[] = {
 void ARX_PORTALS_Frustrum_RenderRoom_TransparencyTSoftCull(long room_num)
 {
 	//render transparency
-	EERIE_ROOM_DATA & room = portals->room[room_num];
+	EERIE_ROOM_DATA & room = portals->rooms[room_num];
 	
 	std::vector<TextureContainer *>::const_iterator itr;
 	for(itr = room.ppTextureContainer.begin(); itr != room.ppTextureContainer.end(); ++itr) {
@@ -1344,11 +1344,11 @@ void ARX_PORTALS_Frustrum_ComputeRoom(long room_num, const EERIE_FRUSTRUM & frus
 	float fClippZFar = ACTIVECAM->cdepth * (fZFogEnd*1.1f);
 
 	// Now Checks For room Portals !!!
-	for(long lll=0; lll<portals->room[room_num].nb_portals; lll++) {
-		if(portals->portals[portals->room[room_num].portals[lll]].useportal)
+	for(long lll=0; lll<portals->rooms[room_num].nb_portals; lll++) {
+		if(portals->portals[portals->rooms[room_num].portals[lll]].useportal)
 			continue;
 
-		EERIE_PORTALS *po = &portals->portals[portals->room[room_num].portals[lll]];
+		EERIE_PORTALS *po = &portals->portals[portals->rooms[room_num].portals[lll]];
 		EERIEPOLY *epp = &po->poly;
 	
 		//clipp NEAR & FAR

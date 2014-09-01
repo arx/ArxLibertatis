@@ -597,7 +597,7 @@ float GetColorz(const Vec3f &pos) {
 		long to = (ep->type & POLY_QUAD) ? 4 : 3;
 		float div = (1.0f / to);
 
-		EP_DATA & epdata = portals->room[ep->room].epdata[0];
+		EP_DATA & epdata = portals->rooms[ep->room].epdata[0];
 		ApplyTileLights(ep, epdata.p);
 
 		for(long i = 0; i < to; i++) {
