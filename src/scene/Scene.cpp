@@ -635,11 +635,11 @@ void ARX_PORTALS_InitDrawnRooms()
 		ep->useportal = 0;
 	}
 
-	for(long i = 0; i < portals->roomsize(); i++) {
+	for(size_t i = 0; i < portals->room.size(); i++) {
 		ARX_PORTALS_Frustrum_ClearIndexCount(i);
 	}
 
-	RoomDraw.resize(portals->roomsize());
+	RoomDraw.resize(portals->room.size());
 
 	for(size_t i = 0; i < RoomDraw.size(); i++) {
 		RoomDraw[i].count=0;

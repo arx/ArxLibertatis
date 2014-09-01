@@ -448,10 +448,7 @@ struct EERIE_ROOM_DATA {
 struct EERIE_PORTAL_DATA
 {
 	long nb_rooms;
-	inline long roomsize() {
-		return nb_rooms + 1;
-	}
-
+	
 	std::vector<EERIE_ROOM_DATA> room;
 	std::vector<EERIE_PORTALS> portals;
 };
