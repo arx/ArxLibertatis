@@ -1286,25 +1286,19 @@ static void EERIE_PORTAL_Release() {
 	if(!portals)
 		return;
 	
-	if(portals->room) {
-		if(portals->nb_rooms > 0) {
-			for(long nn = 0; nn < portals->roomsize(); nn++) {
-				free(portals->room[nn].epdata);
-				portals->room[nn].epdata = NULL;
-				free(portals->room[nn].portals);
-				portals->room[nn].portals = NULL;
-				delete portals->room[nn].pVertexBuffer;
-				portals->room[nn].pVertexBuffer = NULL;
-				free(portals->room[nn].pussIndice);
-				portals->room[nn].pussIndice = NULL;
+	for(long nn = 0; nn < portals->roomsize(); nn++) {
+		free(portals->room[nn].epdata);
+		portals->room[nn].epdata = NULL;
+		free(portals->room[nn].portals);
+		portals->room[nn].portals = NULL;
+		delete portals->room[nn].pVertexBuffer;
+		portals->room[nn].pVertexBuffer = NULL;
+		free(portals->room[nn].pussIndice);
+		portals->room[nn].pussIndice = NULL;
 				
-				portals->room[nn].ppTextureContainer.clear();
-			}
-		}
-		free(portals->room);
-		portals->room = NULL;
+		portals->room[nn].ppTextureContainer.clear();
 	}
-	
+		
 	delete portals;
 	portals = NULL;
 }
@@ -1693,8 +1687,7 @@ static bool loadFastScene(const res::path & file, const char * data, const char 
 	
 	portals = new EERIE_PORTAL_DATA;
 	portals->nb_rooms = fsh->nb_rooms;
-	portals->room = (EERIE_ROOM_DATA *)malloc(sizeof(EERIE_ROOM_DATA)
-											  * (portals->roomsize()));
+	portals->room.resize(portals->roomsize());
 	
 	portals->portals.resize(fsh->nb_portals);
 	
@@ -1739,7 +1732,6 @@ static bool loadFastScene(const res::path & file, const char * data, const char 
 		
 		EERIE_ROOM_DATA & room = portals->room[i];
 		
-		memset(&room, 0, sizeof(EERIE_ROOM_DATA));
 		room.nb_portals = erd->nb_portals;
 		room.nb_polys = erd->nb_polys;
 		
@@ -2016,7 +2008,6 @@ static void EERIE_PORTAL_Poly_Add(EERIEPOLY * ep, const std::string& name, long 
 			return;
 
 		portals->nb_rooms = 0;
-		portals->room = NULL;
 	}
 
 	if(type == TYPE_PORTAL) {
@@ -2049,16 +2040,7 @@ static void EERIE_PORTAL_Poly_Add(EERIEPOLY * ep, const std::string& name, long 
 		portals->portals.push_back(portal);
 	} else if(type == TYPE_ROOM) {
 		if(val1 > portals->nb_rooms) {
-			portals->room = (EERIE_ROOM_DATA *)realloc(portals->room, sizeof(EERIE_ROOM_DATA) * (val1 + 1));
-
-			if(portals->nb_rooms == 0) {
-				memset(portals->room, 0, sizeof(EERIE_ROOM_DATA)*(val1 + 1));
-			} else {
-				for(long i = portals->nb_rooms + 1; i <= val1; i++) {
-					memset(&portals->room[i], 0, sizeof(EERIE_ROOM_DATA));
-				}
-			}
-
+			portals->room.resize(val1 + 1);
 			portals->nb_rooms = val1;
 		}
 
@@ -2606,7 +2588,7 @@ void EERIE_PORTAL_ReleaseOnlyVertexBuffer() {
 		return;
 	}
 	
-	if(!portals->room || portals->nb_rooms <= 0) {
+	if(portals->room.empty()) {
 		return;
 	}
 	
