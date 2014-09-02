@@ -1721,7 +1721,7 @@ static bool loadFastScene(const res::path & file, const char * data, const char 
 	}
 	
 	
-	LogDebug("FTS: loading " << portals->room.size() << " rooms ...");
+	LogDebug("FTS: loading " << portals->rooms.size() << " rooms ...");
 	for(size_t i = 0; i < portals->rooms.size(); i++) {
 		
 		const EERIE_SAVE_ROOM_DATA * erd;
@@ -2320,7 +2320,7 @@ static bool FastSceneSave(const fs::path & partial_path) {
 	
 	if(portals) {
 		fsh->nb_portals = portals->portals.size();
-		arx_assert(portals->room.size() > 0);
+		arx_assert(portals->rooms.size() > 0);
 		fsh->nb_rooms = portals->rooms.size() - 1;
 	}
 	
