@@ -188,6 +188,9 @@ void ProfilerView::setData(ThreadsData * data) {
 	// reverse iterate
 	int nextPos = 0;
 	
+	QPen profilePointPen(Qt::black);
+	profilePointPen.setCosmetic(true);
+	
 	for(ThreadsData::iterator it = data->begin(); it != data->end(); ++it) {
 		ThreadData& threadData = it->second;
 		
@@ -232,6 +235,8 @@ void ProfilerView::setData(ThreadsData * data) {
 			tagColor.setGreen(100 + qrand() % 155);
 			tagColor.setBlue(100 + qrand() % 155);
 			profilePoint->setBrush(QBrush(tagColor));
+
+			profilePoint->setPen(profilePointPen);
 		}
 		group->setPos(0, nextPos);
 		
