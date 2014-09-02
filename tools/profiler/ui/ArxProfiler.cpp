@@ -146,7 +146,7 @@ private:
 };
 
 
-const quint32 ITEM_HEIGHT = 20;
+const quint32 ITEM_HEIGHT = 15;
 const quint32 THREAD_SPACING = 50;
 
 ProfilerView::ProfilerView(QWidget* parent)
