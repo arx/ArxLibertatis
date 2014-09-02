@@ -79,6 +79,8 @@ ZeniMax Media Inc., Suite 120, Rockville, Maryland 20850 USA.
 #include "io/resource/PakReader.h"
 #include "io/log/Logger.h"
 
+#include "platform/profiler/Profiler.h"
+
 #include "scene/Scene.h"
 #include "scene/Interactive.h"
 
@@ -1830,6 +1832,8 @@ long Manage_Specific_RAT_Timer(SCR_TIMER * st)
 }
 
 void ARX_SCRIPT_Timer_Check() {
+	
+	ARX_PROFILE_FUNC();
 	
 	if(!ActiveTimers) {
 		return;

@@ -113,6 +113,7 @@ ZeniMax Media Inc., Suite 120, Rockville, Maryland 20850 USA.
 
 #include "physics/Box.h"
 #include "physics/Collisions.h"
+#include "platform/profiler/Profiler.h"
 
 #include "scene/LinkedObject.h"
 #include "scene/GameSound.h"
@@ -1253,8 +1254,10 @@ static ARX_INTERFACE_BOOK_MODE prevBookPage() {
 
 extern unsigned long REQUEST_JUMP;
 //-----------------------------------------------------------------------------
-void ArxGame::managePlayerControls()
-{
+void ArxGame::managePlayerControls() {
+	
+	ARX_PROFILE_FUNC();
+	
 	if(   (EERIEMouseButton & 4)
 	   && !(player.Interface & INTER_COMBATMODE)
 	   && !player.doingmagic
@@ -4083,7 +4086,9 @@ void ARX_INTERFACE_ManageOpenedBook() {
 
 //-----------------------------------------------------------------------------
 void ArxGame::manageEditorControls() {
-
+	
+	ARX_PROFILE_FUNC();
+	
 	eMouseState = MOUSE_IN_WORLD;
 
 	if(   TRUE_PLAYER_MOUSELOOK_ON

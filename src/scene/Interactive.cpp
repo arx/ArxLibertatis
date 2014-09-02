@@ -474,8 +474,10 @@ void CheckSetAnimOutOfTreatZone(Entity * io, long num)
 	}
 }
 
-void PrepareIOTreatZone(long flag)
-{
+void PrepareIOTreatZone(long flag) {
+	
+	ARX_PROFILE_FUNC();
+	
 	static long status = -1;
 	static Vec3f lastpos;
 

@@ -52,7 +52,7 @@ public:
 	void addProfilePoint(const char* tag, thread_id_type threadId, u64 startTime, u64 endTime);
 	
 private:
-	static const u32 NB_POINTS = 20 * 1024;
+	static const u32 NB_POINTS = 40 * 1024;
 	
 	struct ProfilePoint {
 		const char*    tag;

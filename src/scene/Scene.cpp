@@ -559,8 +559,10 @@ long ARX_PORTALS_GetRoomNumForCamera(float * height)
 }
 
 // flag==1 for player
-long ARX_PORTALS_GetRoomNumForPosition(const Vec3f & pos,long flag)
-{
+long ARX_PORTALS_GetRoomNumForPosition(const Vec3f & pos,long flag) {
+	
+	ARX_PROFILE_FUNC();
+	
 	long num;
 	float height;
 

@@ -1878,7 +1878,8 @@ void ArxGame::updateLevel() {
 		}
 	}
 
-
+	{ ARX_PROFILE("Entity preprocessing");
+	
 	for(size_t i = 0; i < entities.size(); i++) {
 		const EntityHandle handle = EntityHandle(i);
 		Entity *entity = entities[handle];
@@ -1922,7 +1923,7 @@ void ArxGame::updateLevel() {
 		
 		entity->speed_modif = speedModifier;
 	}
-
+	}
 
 	ARX_PLAYER_Manage_Movement();
 

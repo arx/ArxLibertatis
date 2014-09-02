@@ -105,6 +105,7 @@ ZeniMax Media Inc., Suite 120, Rockville, Maryland 20850 USA.
 
 #include "platform/Flags.h"
 #include "platform/Platform.h"
+#include "platform/profiler/Profiler.h"
 
 #include "scene/Object.h"
 #include "scene/Interactive.h"
@@ -929,6 +930,9 @@ static void ManageNPCMovement(Entity * io);
 extern float MAX_ALLOWED_PER_SECOND;
 
 void ARX_PHYSICS_Apply() {
+	
+	ARX_PROFILE_FUNC();
+	
 	static long CURRENT_DETECT = 0;
 
 	CURRENT_DETECT++;

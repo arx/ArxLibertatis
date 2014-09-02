@@ -57,6 +57,8 @@ ZeniMax Media Inc., Suite 120, Rockville, Maryland 20850 USA.
 #include "graphics/Draw.h"
 #include "graphics/DrawLine.h"
 
+#include "platform/profiler/Profiler.h"
+
 #include "scene/Object.h"
 #include "scene/GameSound.h"
 #include "scene/Interactive.h"
@@ -212,8 +214,10 @@ void ComputeLight2DPos(EERIE_LIGHT * _pL) {
 	}
 }
 
-void TreatBackgroundDynlights()
-{
+void TreatBackgroundDynlights() {
+	
+	ARX_PROFILE_FUNC();
+	
 	for(size_t i = 0; i < MAX_LIGHTS; i++) {
 		EERIE_LIGHT *light = GLight[i];
 
@@ -322,7 +326,9 @@ void TreatBackgroundDynlights()
 }
 
 void PrecalcDynamicLighting(long x0, long z0, long x1, long z1) {
-
+	
+	ARX_PROFILE_FUNC();
+	
 	TOTPDL = 0;
 	
 	float fx0 = ACTIVEBKG->Xdiv * (float)x0;

@@ -23,6 +23,8 @@
 #include <map>
 #include <vector>
 
+#include "platform/profiler/Profiler.h"
+
 RenderBatcher::RenderBatcher() : m_VertexBuffer(NULL) {
 }
 
@@ -74,6 +76,9 @@ void RenderBatcher::clear() {
 }
 
 void RenderBatcher::reset() {
+	
+	ARX_PROFILE_FUNC();
+	
 	clear();
 	m_BatchedSprites.clear();
 }
