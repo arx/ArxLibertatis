@@ -129,7 +129,10 @@ public:
 			
 			QRectF newRect = transBefore.mapRect(rect());
 			newRect.adjust(4, 1, 0, 0);
-			painter->drawText(newRect, m_Text);
+
+			QTextOption textOption;
+			textOption.setWrapMode(QTextOption::NoWrap);
+			painter->drawText(newRect, m_Text, textOption);
 			
 			painter->setTransform(transBefore);
 		}
