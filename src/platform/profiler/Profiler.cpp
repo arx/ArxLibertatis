@@ -184,14 +184,18 @@ std::string Profiler::getDateTimeString() const {
 	boost::posix_time::time_duration hms = localTime.time_of_day();
 	
 	std::stringstream localTimeString;
-	localTimeString << std::setfill('0') 
-		            << ymd.year << "." 
-		            << std::setw(2)
-		            << ymd.month.as_number() << "." 
-		            << ymd.day.as_number() << "-" 
-		            << hms.hours() << "." 
-		            << hms.minutes() << "." 
-		            << hms.seconds();
+	localTimeString << std::setfill('0')
+	                << ymd.year << "."
+	                << std::setw(2)
+	                << ymd.month.as_number() << "."
+	                << std::setw(2)
+	                << ymd.day.as_number() << "-"
+	                << std::setw(2)
+	                << hms.hours() << "."
+	                << std::setw(2)
+	                << hms.minutes() << "."
+	                << std::setw(2)
+	                << hms.seconds();
 	
 	return localTimeString.str();
 }
