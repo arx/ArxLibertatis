@@ -166,6 +166,10 @@ ProfilerView::ProfilerView(QWidget* parent)
 
 	m_scene = new QGraphicsScene(this);
 	setScene(m_scene);
+
+	QFont font;
+	font.setPixelSize(11);
+	setFont(font);
 }
 
 void ProfilerView::setData(ThreadsData * data) {
