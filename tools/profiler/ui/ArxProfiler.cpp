@@ -45,14 +45,14 @@ ArxProfiler::ArxProfiler(QWidget *parent, Qt::WindowFlags flags)
 	, ui(new Ui::ArxProfilerClass)
 {
 	ui->setupUi(this);
-	
+
 	// Fix missing menu bar in Ubuntu
 	ui->menuBar->setNativeMenuBar(false);
 
-    view = new ProfilerView(this);
+	view = new ProfilerView(this);
 	setCentralWidget(view);
-    
-    connect(ui->action_Open, SIGNAL(triggered()), this, SLOT(openFile()));
+
+	connect(ui->action_Open, SIGNAL(triggered()), this, SLOT(openFile()));
 }
 
 ArxProfiler::~ArxProfiler() {
@@ -63,7 +63,7 @@ void ArxProfiler::openFile() {
 	QString fileName = QFileDialog::getOpenFileName(this, tr("Open File"), "", tr("Ax performance log (*.perf)"));
 	
 	QFile file(fileName);
-	
+
 	if(!file.open(QIODevice::ReadOnly))
 		return;
 	
@@ -161,7 +161,9 @@ ProfilerView::ProfilerView(QWidget* parent)
 	setRenderHint(QPainter::HighQualityAntialiasing, true);
 	setViewportUpdateMode(QGraphicsView::FullViewportUpdate);
 	setOptimizationFlags(QGraphicsView::DontSavePainterState);
-	
+	setHorizontalScrollBarPolicy(Qt::ScrollBarAlwaysOff);
+	setVerticalScrollBarPolicy(Qt::ScrollBarAlwaysOff);
+
 	m_scene = new QGraphicsScene(this);
 	setScene(m_scene);
 }
@@ -189,7 +191,7 @@ void ProfilerView::setData(ThreadsData * data) {
 	m_scene->clear();
 	
 	// reverse iterate
-	int nextPos = 0;
+	int nextPos = 8;
 	
 	QPen profilePointPen(Qt::black);
 	profilePointPen.setCosmetic(true);
@@ -247,7 +249,12 @@ void ProfilerView::setData(ThreadsData * data) {
 	}
 	
 	setSceneRect(0, 0, lastTimestamp - firstTimestamp, nextPos);
+
+	scale(size().width() / (qreal)(lastTimestamp - firstTimestamp), 1.0);
 	
+	setDragMode(ScrollHandDrag);
+	setInteractive(false);
+
 	m_data = data;
 }
 
@@ -259,10 +266,9 @@ void ProfilerView::paintEvent(QPaintEvent * event) {
 		return;
 	
 	QPainter painter(viewport());
-	painter.setRenderHints(QPainter::Antialiasing);
 	painter.setPen(Qt::white);
 	
-	int nextY = 0;
+	int nextY = 5;
 	
 	for(ThreadsData::iterator it = m_data->begin(); it != m_data->end(); ++it) {
 		ThreadData& threadData = it->second;
@@ -276,68 +282,10 @@ void ProfilerView::paintEvent(QPaintEvent * event) {
 	painter.end();
 }
 
-void ProfilerView::centerOn(const QPointF& pos) {
-	
-	QRectF visibleArea = mapToScene(rect()).boundingRect();
-	QRectF sceneBounds = sceneRect();
-	
-	double boundX = visibleArea.width() / 2.0;
-	double boundY = visibleArea.height() / 2.0;
-	double boundWidth = sceneBounds.width() - 2.0 * boundX;
-	double boundHeight = sceneBounds.height() - 2.0 * boundY;
-	
-	//The max boundary that the centerPoint can be to
-	QRectF bounds(boundX, boundY, boundWidth, boundHeight);
-	
-	if(bounds.contains(pos)) {
-		m_sceneCenter = pos;
-	} else {
-		//We need to clamp or use the center of the screen
-		if(visibleArea.contains(sceneBounds)) {
-			//Use the center of scene ie. we can see the whole scene
-			m_sceneCenter = sceneBounds.center();
-		} else {
-			m_sceneCenter = pos;
-			
-			//We need to clamp the center. The centerPoint is too large
-			if(pos.x() > bounds.x() + bounds.width()) {
-				m_sceneCenter.setX(bounds.x() + bounds.width());
-			} else if(pos.x() < bounds.x()) {
-				m_sceneCenter.setX(bounds.x());
-			}
-			
-			if(pos.y() > bounds.y() + bounds.height()) {
-				m_sceneCenter.setY(bounds.y() + bounds.height());
-			} else if(pos.y() < bounds.y()) {
-				m_sceneCenter.setY(bounds.y());
-			}
-		}
-	}
-	
-	QGraphicsView::centerOn(m_sceneCenter);
+QPointF ProfilerView::viewCenter() const {
+	return mapToScene(viewport()->rect()).boundingRect().center();
 }
 
-void ProfilerView::mousePressEvent(QMouseEvent* event) {
-	m_dragStartPos = event->pos();
-	setCursor(Qt::ClosedHandCursor);
-}
-
-void ProfilerView::mouseReleaseEvent(QMouseEvent* event) {
-	Q_UNUSED(event);
-	
-	m_dragStartPos = QPoint();
-	setCursor(Qt::ArrowCursor);
-}
-
-void ProfilerView::mouseMoveEvent(QMouseEvent* event) {
-	if(!m_dragStartPos.isNull()) {
-		QPointF delta = mapToScene(m_dragStartPos) - mapToScene(event->pos());
-		m_dragStartPos = event->pos();
-		
-		centerOn(m_sceneCenter + delta);
-	}
-}
- 
 void ProfilerView::zoomEvent(QPoint mousePos, bool zoomIn) {
 	
 	QPointF oldScenePos(mapToScene(mousePos));
@@ -350,7 +298,7 @@ void ProfilerView::zoomEvent(QPoint mousePos, bool zoomIn) {
 	}
 	
 	QPointF offset = oldScenePos - mapToScene(mousePos);
-	centerOn(m_sceneCenter + offset);
+	centerOn(viewCenter() + offset);
 }
 
 void ProfilerView::wheelEvent(QWheelEvent* event) {
@@ -366,17 +314,10 @@ void ProfilerView::keyPressEvent(QKeyEvent* event) {
 	} else if(event->key() == Qt::Key_Minus) {
 		zoomEvent(QCursor::pos(), false);
 	} else if(event->key() == Qt::Key_Right) {
-		centerOn(m_sceneCenter + QPointF(1000, 0));
+		centerOn(viewCenter() + QPointF(1000, 0));
 	} else if(event->key() == Qt::Key_Left) {
-		centerOn(m_sceneCenter - QPointF(1000, 0));
+		centerOn(viewCenter() - QPointF(1000, 0));
 	}
-}
-
-void ProfilerView::resizeEvent(QResizeEvent* event) {
-	QRectF visibleArea = mapToScene(rect()).boundingRect();
-	centerOn(visibleArea.center());
-	
-	QGraphicsView::resizeEvent(event);
 }
 
 const char * ProfilerView::humanReadableTime(double & duration) {
@@ -399,4 +340,3 @@ const char * ProfilerView::humanReadableTime(double & duration) {
 	
 	return unitName;
 }
-

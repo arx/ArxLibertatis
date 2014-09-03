@@ -66,22 +66,14 @@ public:
 protected:
 	void paintEvent(QPaintEvent *event);
 	
-	void centerOn(const QPointF& pos);
-	
-	virtual void mousePressEvent(QMouseEvent* event);
-	virtual void mouseReleaseEvent(QMouseEvent* event);
-	virtual void mouseMoveEvent(QMouseEvent* event);
 	virtual void wheelEvent(QWheelEvent* event);
-	virtual void resizeEvent(QResizeEvent* event);
 	virtual void keyPressEvent(QKeyEvent* event);
 	
 private:
 	ThreadsData * m_data;
 	QGraphicsScene * m_scene;
 	
-	QPointF m_sceneCenter;
-	QPoint m_dragStartPos;
-	
+	QPointF viewCenter() const;
 	void zoomEvent(QPoint mousePos, bool zoomIn);
 	const char * humanReadableTime(double & duration);
 };
