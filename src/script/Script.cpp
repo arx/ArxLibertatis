@@ -1586,6 +1586,8 @@ static ScriptResult SendIOScriptEventReverse(Entity * io, ScriptMessage msg, con
 ScriptResult SendIOScriptEvent(Entity * io, ScriptMessage msg, const std::string& params, const std::string& eventname)
 {
 	
+	ARX_PROFILE_FUNC();
+
 	if(!io) {
 		return REFUSE;
 	}

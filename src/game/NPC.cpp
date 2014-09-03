@@ -942,6 +942,8 @@ void ARX_PHYSICS_Apply() {
 
 	// We don't manage Player(0) this way
 	for(long i = 1; i < TREATZONE_CUR; i++) {
+		ARX_PROFILE(IO);
+
 		if(treatio[i].show != 1)
 			continue;
 
@@ -1045,6 +1047,7 @@ void ARX_PHYSICS_Apply() {
 		}
 
 		if(io->ioflags & IO_NPC) {
+			ARX_PROFILE(IO_NPC);
 			if(io->_npcdata->climb_count != 0.f && framedelay > 0) {
 				io->_npcdata->climb_count -= MAX_ALLOWED_PER_SECOND * (float)framedelay * ( 1.0f / 1000 );
 
@@ -1907,6 +1910,8 @@ void ComputeTolerance(Entity * io, EntityHandle targ, float * dst) {
 
 static void ManageNPCMovement(Entity * io)
 {
+	ARX_PROFILE_FUNC();
+	
 	float dis = std::numeric_limits<float>::max();
 	IO_PHYSICS phys;
 	float TOLERANCE = 0.f;
@@ -2749,6 +2754,8 @@ void CheckNPC(Entity * io)
  */
 void CheckNPCEx(Entity * io) {
 	
+	ARX_PROFILE_FUNC();
+
 	// Distance Between Player and IO
 	float ds = glm::distance2(io->pos, player.basePosition());
 	
