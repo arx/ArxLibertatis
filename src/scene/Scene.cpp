@@ -1347,10 +1347,11 @@ void ARX_PORTALS_Frustrum_ComputeRoom(size_t roomIndex, const EERIE_FRUSTRUM & f
 
 	// Now Checks For room Portals !!!
 	for(long lll=0; lll<portals->rooms[roomIndex].nb_portals; lll++) {
-		if(portals->portals[portals->rooms[roomIndex].portals[lll]].useportal)
-			continue;
-
 		EERIE_PORTALS *po = &portals->portals[portals->rooms[roomIndex].portals[lll]];
+		
+		if(po->useportal)
+			continue;
+		
 		EERIEPOLY *epp = &po->poly;
 	
 		//clipp NEAR & FAR
