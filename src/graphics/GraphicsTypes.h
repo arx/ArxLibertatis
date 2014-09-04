@@ -419,8 +419,8 @@ struct EERIE_MULTI3DSCENE {
 struct EERIE_PORTALS
 {
 	EERIEPOLY	poly;
-	long		room_1; // facing normal
-	long		room_2;
+	size_t		room_1; // facing normal
+	size_t		room_2;
 	short		useportal;
 	short		paddy;
 };

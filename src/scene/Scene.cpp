@@ -791,7 +791,7 @@ void RoomDrawRelease() {
 	RoomDraw.resize(0);
 }
 
-void RoomFrustrumAdd(long num, const EERIE_FRUSTRUM & fr)
+void RoomFrustrumAdd(size_t num, const EERIE_FRUSTRUM & fr)
 {
 	if(RoomDraw[num].frustrum.nb_frustrums < MAX_FRUSTRUMS - 1) {
 		RoomDraw[num].frustrum.frustrums[RoomDraw[num].frustrum.nb_frustrums] = fr;
@@ -1334,23 +1334,23 @@ void ARX_PORTALS_Frustrum_RenderRoom_TransparencyTSoftCull(long room_num)
 	}
 }
 
-void ARX_PORTALS_Frustrum_ComputeRoom(long room_num, const EERIE_FRUSTRUM & frustrum)
+void ARX_PORTALS_Frustrum_ComputeRoom(size_t roomIndex, const EERIE_FRUSTRUM & frustrum)
 {
-	if(RoomDraw[room_num].count == 0) {
-		RoomDrawList.push_back(room_num);
+	if(RoomDraw[roomIndex].count == 0) {
+		RoomDrawList.push_back(roomIndex);
 	}
 
-	RoomFrustrumAdd(room_num, frustrum);
-	RoomDraw[room_num].count++;
+	RoomFrustrumAdd(roomIndex, frustrum);
+	RoomDraw[roomIndex].count++;
 
 	float fClippZFar = ACTIVECAM->cdepth * (fZFogEnd*1.1f);
 
 	// Now Checks For room Portals !!!
-	for(long lll=0; lll<portals->rooms[room_num].nb_portals; lll++) {
-		if(portals->portals[portals->rooms[room_num].portals[lll]].useportal)
+	for(long lll=0; lll<portals->rooms[roomIndex].nb_portals; lll++) {
+		if(portals->portals[portals->rooms[roomIndex].portals[lll]].useportal)
 			continue;
 
-		EERIE_PORTALS *po = &portals->portals[portals->rooms[room_num].portals[lll]];
+		EERIE_PORTALS *po = &portals->portals[portals->rooms[roomIndex].portals[lll]];
 		EERIEPOLY *epp = &po->poly;
 	
 		//clipp NEAR & FAR
@@ -1385,13 +1385,13 @@ void ARX_PORTALS_Frustrum_ComputeRoom(long room_num, const EERIE_FRUSTRUM & frus
 		EERIE_FRUSTRUM fd;
 		CreateFrustrum(fd, ACTIVECAM->orgTrans.pos, *epp, Cull);
 
-		long roomToCompute = 0;
+		size_t roomToCompute = 0;
 		bool computeRoom = false;
 
-		if(po->room_1 == room_num && !Cull) {
+		if(po->room_1 == roomIndex && !Cull) {
 			roomToCompute = po->room_2;
 			computeRoom = true;
-		}else if(po->room_2 == room_num && Cull) {
+		}else if(po->room_2 == roomIndex && Cull) {
 			roomToCompute = po->room_1;
 			computeRoom = true;
 		}
@@ -1445,9 +1445,10 @@ void ARX_SCENE_Update() {
 	if(room_num>-1) {
 
 		ARX_PORTALS_InitDrawnRooms();
+		size_t roomIndex = static_cast<size_t>(room_num);
 		EERIE_FRUSTRUM frustrum;
 		CreateScreenFrustrum(&frustrum);
-		ARX_PORTALS_Frustrum_ComputeRoom(room_num, frustrum);
+		ARX_PORTALS_Frustrum_ComputeRoom(roomIndex, frustrum);
 
 		for(size_t i = 0; i < RoomDrawList.size(); i++) {
 			ARX_PORTALS_Frustrum_RenderRoomTCullSoft(RoomDrawList[i], RoomDraw[RoomDrawList[i]].frustrum, tim);
