@@ -1272,10 +1272,6 @@ if(BUILD_PROFILER)
 		tools/profiler/ui/ArxProfiler.h
 	)
 	
-	set(arxprofiler_RESOURCES
-		tools/profiler/resources/ArxProfiler.qrc
-	)
-	
 	set(arxprofiler_MANUAL_SOURCES
 		${arxprofiler_SOURCES}
 		${arxprofiler_Qt_SOURCES}
@@ -1294,7 +1290,6 @@ if(BUILD_PROFILER)
 		
 		qt5_wrap_ui(arxprofiler_Qt_SOURCES ${arxprofiler_UIs})
 		qt5_wrap_cpp(arxprofiler_Qt_SOURCES ${arxprofiler_MOC_HEADERS})
-		qt5_add_resources(arxprofiler_Qt_SOURCES ${arxprofiler_RESOURCES})
 		
 		set_property(
 			SOURCE ${arxprofiler_Qt_SOURCES}
@@ -1328,7 +1323,6 @@ if(BUILD_PROFILER)
 		
 		qt4_wrap_ui(arxprofiler_Qt_SOURCES ${arxprofiler_UIs})
 		qt4_wrap_cpp(arxprofiler_Qt_SOURCES ${arxprofiler_MOC_HEADERS})
-		qt4_add_resources(arxprofiler_Qt_SOURCES ${arxprofiler_RESOURCES})
 		
 		set(arxprofiler_qt_LIBRARIES
 			${QT_QTCORE_LIBRARY_RELEASE}

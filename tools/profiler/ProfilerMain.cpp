@@ -33,8 +33,6 @@ INT WINAPI WinMain(HINSTANCE, HINSTANCE, PSTR, INT) {
 
 int main(int argc, char **argv) {
 	
-	Q_INIT_RESOURCE(ArxProfiler);
-	
 	QApplication app(argc, argv);
 	
 #endif
