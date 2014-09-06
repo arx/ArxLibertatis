@@ -133,7 +133,7 @@ bool EERIE_PATHFINDER_Add_To_Queue(const PATHFINDER_REQUEST & req) {
 	}
 
 	// Create a New element for the queue
-	temp = (PATHFINDER_QUEUE_ELEMENT *)malloc(sizeof(PATHFINDER_QUEUE_ELEMENT));
+	temp = new PATHFINDER_QUEUE_ELEMENT;
 
 	if(!temp) {
 		return false;
@@ -195,7 +195,7 @@ static void EERIE_PATHFINDER_Clear_Private() {
 	
 	while(cur) {
 		next = cur->next;
-		free(cur);
+		delete cur;
 		cur = next;
 	}
 	
@@ -229,13 +229,13 @@ static bool EERIE_PATHFINDER_Get_Next_Request(PATHFINDER_REQUEST & request) {
 	        && (cur->req.ioid->ioflags & IO_NPC)
 	        && (cur->req.ioid->_npcdata->behavior == BEHAVIOUR_NONE)) {
 		pathfinder_queue_start = cur->next;
-		free(cur);
+		delete cur;
 		return false;
 	}
 
 	request = cur->req;
 	pathfinder_queue_start = cur->next;
-	free(cur);
+	delete cur;
 
 	return true;
 }
