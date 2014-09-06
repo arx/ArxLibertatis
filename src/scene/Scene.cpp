@@ -1339,15 +1339,17 @@ void ARX_PORTALS_Frustrum_ComputeRoom(size_t roomIndex, const EERIE_FRUSTRUM & f
 	if(RoomDraw[roomIndex].count == 0) {
 		RoomDrawList.push_back(roomIndex);
 	}
-
+	
 	RoomFrustrumAdd(roomIndex, frustrum);
 	RoomDraw[roomIndex].count++;
 
 	float fClippZFar = ACTIVECAM->cdepth * (fZFogEnd*1.1f);
-
+	
+	EERIE_ROOM_DATA & room = portals->rooms[roomIndex];
+	
 	// Now Checks For room Portals !!!
-	for(long lll=0; lll<portals->rooms[roomIndex].nb_portals; lll++) {
-		EERIE_PORTALS *po = &portals->portals[portals->rooms[roomIndex].portals[lll]];
+	for(long lll = 0; lll < room.nb_portals; lll++) {
+		EERIE_PORTALS *po = &portals->portals[room.portals[lll]];
 		
 		if(po->useportal)
 			continue;
