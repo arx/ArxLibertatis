@@ -1292,8 +1292,8 @@ static void EERIE_PORTAL_Release() {
 		portals->rooms[nn].portals = NULL;
 		delete portals->rooms[nn].pVertexBuffer;
 		portals->rooms[nn].pVertexBuffer = NULL;
-		free(portals->rooms[nn].pussIndice);
-		portals->rooms[nn].pussIndice = NULL;
+		free(portals->rooms[nn].indexBuffer);
+		portals->rooms[nn].indexBuffer = NULL;
 				
 		portals->rooms[nn].ppTextureContainer.clear();
 	}
@@ -2591,8 +2591,8 @@ void EERIE_PORTAL_ReleaseOnlyVertexBuffer() {
 	for(size_t i = 0; i < portals->rooms.size(); i++) {
 		delete portals->rooms[i].pVertexBuffer;
 		portals->rooms[i].pVertexBuffer = NULL;
-		free(portals->rooms[i].pussIndice);
-		portals->rooms[i].pussIndice = NULL;
+		free(portals->rooms[i].indexBuffer);
+		portals->rooms[i].indexBuffer = NULL;
 		portals->rooms[i].ppTextureContainer.clear();
 	}
 }
@@ -2720,7 +2720,7 @@ void ComputePortalVertexBuffer() {
 		
 		
 		// Allocate the index buffer for this room
-		room->pussIndice = (unsigned short *)malloc(sizeof(unsigned short)
+		room->indexBuffer = (unsigned short *)malloc(sizeof(unsigned short)
 		                                            * indexCount);
 		
 		// Allocate the vertex buffer for this room

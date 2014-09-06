@@ -1052,7 +1052,7 @@ void ARX_PORTALS_Frustrum_RenderRoomTCullSoft(long room_num, const EERIE_FRUSTRU
 
 	SMY_VERTEX * pMyVertex = room.pVertexBuffer->lock(NoOverwrite);
 
-	unsigned short *pIndices=room.pussIndice;
+	unsigned short *pIndices=room.indexBuffer;
 
 	EP_DATA *pEPDATA = &room.epdata[0];
 
@@ -1253,7 +1253,7 @@ void ARX_PORTALS_Frustrum_RenderRoomTCullSoftRender(long room_num) {
 				Renderer::TriangleList,
 				roomMat.uslNbVertex,
 				roomMat.uslStartVertex,
-				&room.pussIndice[roomMat.offset[SMY_ARXMAT::Opaque]],
+				&room.indexBuffer[roomMat.offset[SMY_ARXMAT::Opaque]],
 				roomMat.count[SMY_ARXMAT::Opaque]);
 
 			EERIEDrawnPolys += roomMat.count[SMY_ARXMAT::Opaque];
@@ -1326,7 +1326,7 @@ void ARX_PORTALS_Frustrum_RenderRoom_TransparencyTSoftCull(long room_num)
 				Renderer::TriangleList,
 				roomMat.uslNbVertex,
 				roomMat.uslStartVertex,
-				&room.pussIndice[roomMat.offset[transType]],
+				&room.indexBuffer[roomMat.offset[transType]],
 				roomMat.count[transType]);
 
 			EERIEDrawnPolys += roomMat.count[transType];
