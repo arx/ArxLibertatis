@@ -42,7 +42,7 @@ namespace profiler {
 
 class ProfileScope {
 public:
-	ProfileScope(const char* tag)
+	explicit ProfileScope(const char* tag)
 		: m_tag(tag)
 		, m_startTime(platform::getTimeUs())
 	{
