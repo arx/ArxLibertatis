@@ -2625,8 +2625,6 @@ void RenderInter() {
 						glm::mat4x4 mat = convertToMatrixForDrawEERIEInter(*io->obj->pbox);
 						glm::quat rotation = glm::toQuat(mat);
 						
-						arx_assert(io->obj->point0 == Vec3f_ZERO);
-
 						TransformInfo t(io->pos, rotation, io->scale, io->obj->pbox->vert[0].initpos);
 
 						float invisibility = Cedric_GetInvisibility(io);
