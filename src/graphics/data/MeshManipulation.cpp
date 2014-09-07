@@ -393,7 +393,7 @@ static EERIE_3DOBJ * CreateIntermediaryMesh(const EERIE_3DOBJ * obj1, const EERI
 	std::vector<EERIE_VERTEX> obj2vertexlist2 = obj2->vertexlist;
 
 	// Work will contain the Tweaked object
-	EERIE_3DOBJ * work = new EERIE_3DOBJ();
+	EERIE_3DOBJ * work = new EERIE_3DOBJ;
 	work->pos = obj1->pos;
 	work->angle = obj1->angle;
 	

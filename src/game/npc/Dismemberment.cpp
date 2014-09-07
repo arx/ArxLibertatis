@@ -65,7 +65,7 @@ void ARX_NPC_SpawnMember(Entity * ioo, long num) {
 	if(!from || num < 0 || (size_t)num >= from->selections.size())
 		return;
 
-	EERIE_3DOBJ * nouvo = new EERIE_3DOBJ(); 
+	EERIE_3DOBJ * nouvo = new EERIE_3DOBJ;
 
 	if(!nouvo)
 		return;
