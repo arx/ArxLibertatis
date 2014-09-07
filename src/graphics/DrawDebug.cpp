@@ -58,6 +58,7 @@ static EERIE_3DOBJ * g_fogObject = NULL;
 static EERIE_3DOBJ * g_nodeObject = NULL;
 
 const float DebugTextMaxDistance = 1000.f;
+const float DebugPhysicsMaxDistance = 2000.f;
 
 void drawDebugInitialize() {
 	g_lightSourceTexture = TextureContainer::LoadUI("graph/particles/light");
@@ -440,10 +441,11 @@ static void drawDebugEntityPhysicsCylinders() {
 		const EntityHandle handle = EntityHandle(i);
 		Entity * entity = entities[handle];
 		
-		if(entity) {
-			drawDebugCollisionShape(entity->obj);
-			drawDebugEntityPhysicsCylinder(entity);
-		}
+		if(!entity || !closerThan(entity->pos, player.pos, DebugPhysicsMaxDistance))
+			continue;
+		
+		drawDebugCollisionShape(entity->obj);
+		drawDebugEntityPhysicsCylinder(entity);
 	}
 }
 
