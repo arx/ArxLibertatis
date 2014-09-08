@@ -133,7 +133,6 @@ enum InfoPanels {
 	InfoPanelFramerate,
 	InfoPanelFramerateGraph,
 	InfoPanelDebug,
-	InfoPanelTest,
 	InfoPanelDebugToggles,
 	InfoPanelGuiDebug,
 	InfoPanelEnumSize

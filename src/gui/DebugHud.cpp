@@ -51,12 +51,13 @@
 
 #include "window/RenderWindow.h"
 
-struct EntityFlagName {
-	EntityFlags flag;
+template<typename T>
+struct FlagName {
+	T flag;
 	const char * name;
 };
 
-const EntityFlagName EntityFlagNames[] = {
+const FlagName<EntityFlags> EntityFlagNames[] = {
 	{IO_UNDERWATER          , "UNDERWATER"},
 	{IO_FREEZESCRIPT        , "FREEZESCRIPT"},
 	{IO_ITEM                , "ITEM"},
@@ -90,121 +91,138 @@ const EntityFlagName EntityFlagNames[] = {
 	{IO_CAN_COMBINE         , "CAN_COMBINE"}
 };
 
-std::string debugPrintEntityFlags(EntityFlags flags) {
-	
+const FlagName<Behaviour> BehaviourFlagNames[] = {
+	{BEHAVIOUR_NONE          , "NONE"},
+	{BEHAVIOUR_FRIENDLY      , "FRIENDLY"},
+	{BEHAVIOUR_MOVE_TO       , "MOVE_TO"},
+	{BEHAVIOUR_WANDER_AROUND , "WANDER_AROUND"},
+	{BEHAVIOUR_FLEE          , "FLEE"},
+	{BEHAVIOUR_HIDE          , "HIDE"},
+	{BEHAVIOUR_LOOK_FOR      , "LOOK_FOR"},
+	{BEHAVIOUR_SNEAK         , "SNEAK"},
+	{BEHAVIOUR_FIGHT         , "FIGHT"},
+	{BEHAVIOUR_DISTANT       , "DISTANT"},
+	{BEHAVIOUR_MAGIC         , "MAGIC"},
+	{BEHAVIOUR_GUARD         , "GUARD"},
+	{BEHAVIOUR_GO_HOME       , "GO_HOME"},
+	{BEHAVIOUR_LOOK_AROUND   , "LOOK_AROUND"},
+	{BEHAVIOUR_STARE_AT      , "STARE_AT"}
+};
+
+template<typename T, size_t N>
+std::string flagNames(const FlagName<T> (&names)[N], const T flags) {
 	std::stringstream ss;
-	for(size_t i = 0; i < ARRAY_SIZE(EntityFlagNames); i++) {
-		ss << ((EntityFlagNames[i].flag & flags) ? "▣" : "□") << " " << EntityFlagNames[i].name << "\n";
+	for(size_t i = 0; i < N; i++) {
+		if(names[i].flag & flags) {
+			ss << names[i].name << " ";
+		}
 	}
-	
 	return ss.str();
 }
 
-void drawMultilineText(Vec2i originPos, const std::string & lines) {
+class DebugBox {
+public:
+	DebugBox(const Vec2i & pos, const std::string & title)
+		: m_pos(pos)
+		, m_title(title)
+		, m_maxKeyLen(0)
+	{}
 	
-	int lineHeight = hFontDebug->getLineHeight();
-	int lineOffset = 0;
-	
-	std::stringstream ss(lines);
-	std::string line;
-	while(std::getline(ss, line, '\n')){
-		hFontDebug->draw(originPos.x, originPos.y + lineOffset, line, Color::white);
-		lineOffset += lineHeight;
+	void add(std::string key, const std::string value) {
+		m_maxKeyLen = std::max(m_maxKeyLen, key.length());
+		m_elements.push_back(std::pair<std::string, std::string>(key, value));
 	}
-}
+	
+	void add(std::string key, const long value) {
+		m_maxKeyLen = std::max(m_maxKeyLen, key.length());
+		std::string valueStr = boost::str(boost::format("%ld") % value);
+		m_elements.push_back(std::pair<std::string, std::string>(key, valueStr));
+	}
+	
+	void add(std::string key, const double value) {
+		m_maxKeyLen = std::max(m_maxKeyLen, key.length());
+		std::string valueStr = boost::str(boost::format("%4.2f") % value);
+		m_elements.push_back(std::pair<std::string, std::string>(key, valueStr));
+	}
+	
+	void add(std::string key, const Vec2i value) {
+		m_maxKeyLen = std::max(m_maxKeyLen, key.length());
+		std::string valueStr = boost::str(boost::format("(%d, %d)") % value.x % value.y);
+		m_elements.push_back(std::pair<std::string, std::string>(key, valueStr));
+	}
+	
+	void add(std::string key, const Vec3f value) {
+		m_maxKeyLen = std::max(m_maxKeyLen, key.length());
+		std::string valueStr = boost::str(boost::format("%4.2f %4.2f %4.2f") % value.x % value.y % value.z);
+		m_elements.push_back(std::pair<std::string, std::string>(key, valueStr));
+	}
+	
+	void add(std::string key, const Anglef value) {
+		m_maxKeyLen = std::max(m_maxKeyLen, key.length());
+		std::string valueStr = boost::str(boost::format("%4.2f %4.2f %4.2f") % value.getYaw() % value.getPitch() % value.getRoll());
+		m_elements.push_back(std::pair<std::string, std::string>(key, valueStr));
+	}
+	
+	void add(std::string key, const ResourcePool value) {
+		m_maxKeyLen = std::max(m_maxKeyLen, key.length());
+		std::string valueStr = boost::str(boost::format("%4.2f/%4.2f") % value.current % value.max);
+		m_elements.push_back(std::pair<std::string, std::string>(key, valueStr));
+	}
+	
+	void print() {
+		int lineHeight = hFontDebug->getLineHeight();
+		Vec2i lineOffset = m_pos;
+		
+		hFontDebug->draw(lineOffset, std::string("╭─ ") + m_title, Color::white);
+		lineOffset.y += lineHeight;
+		
+		std::vector<std::pair<std::string, std::string> >::const_iterator itr;
+		for(itr = m_elements.begin(); itr != m_elements.end(); ++itr) {
+			std::stringstream out;
+			out << "│ " << std::left << std::setw(m_maxKeyLen) << std::setfill(' ') << itr->first << " " << itr->second;
+			hFontDebug->draw(lineOffset, out.str(), Color::white);
+			lineOffset.y += lineHeight;
+		}
+		
+		hFontDebug->draw(lineOffset, std::string("╰─ "), Color::white);
+		lineOffset.y += lineHeight;
+		
+		m_size = lineOffset;
+	}
+	
+	Vec2i size() {
+		return m_size;
+	}
+	
+private:
+	Vec2i m_pos;
+	std::string m_title;
+	size_t m_maxKeyLen;
+	Vec2i m_size;
+	
+	
+	std::vector<std::pair<std::string, std::string> > m_elements;
+};
 
 std::string LAST_FAILED_SEQUENCE = "none";
-
-static long LASTfpscount = 0;
-static float LASTfps2 = 0;
-static float fps2 = 0;
-static float fps2min = 0;
-
-void ShowTestText() {
-
-	char tex[256];
-
-	Vec2i pos(10, 10);
-	s32 lineOffset = hFontDebug->getLineHeight() + 2;
-
-	hFontDebug->draw(pos, arx_version, Color::red + Color::green);
-	pos.y += lineOffset;
-
-	sprintf(tex, "Level: %s", LastLoadedScene.string().c_str());
-	hFontDebug->draw(pos, tex, Color::white);
-	pos.y += lineOffset;
-
-	sprintf(tex, "Position: %5.0f %5.0f %5.0f",player.pos.x,player.pos.y,player.pos.z);
-	hFontDebug->draw(pos, tex, Color::white);
-	pos.y += lineOffset;
-
-	sprintf(tex, "Last Failed Sequence: %s", LAST_FAILED_SEQUENCE.c_str());
-	hFontDebug->draw(pos, tex, Color::white);
-	pos.y += lineOffset;
-
-}
-
 extern float CURRENT_PLAYER_COLOR;
 EntityHandle LastSelectedIONum = EntityHandle::Invalid;
 
 void ShowInfoText() {
-
-	unsigned long uGAT = (unsigned long)(arxtime) / 1000;
-	long GAT=(long)uGAT;
-	float fpss2=1000.f/framedelay;
-	LASTfpscount++;
-
-	float fps2v = std::max(fpss2, LASTfps2);
-	float fps2vmin = std::min(fpss2, LASTfps2);
-
-	if(LASTfpscount > 49)  {
-		LASTfps2 = 0;
-		LASTfpscount = 0;
-		fps2 = fps2v;
-		fps2min = fps2vmin;
-	} else {
-		LASTfps2 = fpss2;
-	}
 	
-	std::stringstream ss;
+	DebugBox frameInfo = DebugBox(Vec2i(10, 10), "FrameInfo");
+	frameInfo.add("Prims", EERIEDrawnPolys);
+	frameInfo.add("Particles", getParticleCount());
+	frameInfo.add("TIME", static_cast<long>((unsigned long)(arxtime) / 1000));
+	frameInfo.print();
 	
-	ss << boost::format("%4.02f fps ( %3.02f - %3.02f ) [%3.0fms]\n")
-	% FPS
-	% fps2min
-	% fps2
-	% framedelay;
-	
-	ss << boost::format("Prims %ld, Particles %ld\n")
-	% EERIEDrawnPolys
-	% getParticleCount();
-	
-	ss << boost::format("TIME %lds\n") % GAT;
-	
-	ss << "Player:\n";
-	ss << boost::format(" ├─ Position:  Vec3f(%6.0f,%6.0f,%6.0f)\n")
-	% player.pos.x
-	% (player.pos.y + player.size.y)
-	% player.pos.z;
-	
-	ss << boost::format(" ├─ AnchorPos: Vec3f(%6.0f,%6.0f,%6.0f)\n")
-	% (player.pos.x - Mscenepos.x)
-	% (player.pos.y + player.size.y - Mscenepos.y)
-	% (player.pos.z - Mscenepos.z);
-	
-	ss << boost::format(" ├─ Rotation:  Angle(%3.0f,%3.0f,%3.0f)\n")
-	% player.angle.getYaw()
-	% player.angle.getPitch()
-	% player.angle.getRoll();
-	
-	ss << boost::format(" ├─ Velocity:  Vec3f(%3.0f,%3.0f,%3.0f)\n")
-	% player.physics.velocity.x
-	% player.physics.velocity.y
-	% player.physics.velocity.z;
-	
-	ss << " ├─ Ground\n";
+	DebugBox playerBox = DebugBox(Vec2i(10, frameInfo.size().y + 5), "Player");
+	playerBox.add("Position", player.pos);
+	playerBox.add("AnchorPos", player.pos - Mscenepos);
+	playerBox.add("Rotation", player.angle);
+	playerBox.add("Velocity", player.physics.velocity);
 	
 	EERIEPOLY * ep = CheckInPoly(player.pos);
-
 	float truePolyY = -666.66f;
 	if(ep) {
 		float tempY = 0.f;
@@ -220,119 +238,121 @@ void ShowInfoText() {
 	
 	long zap = IsAnyPolyThere(player.pos.x,player.pos.z);
 	
-	ss << boost::format(" ├─  ├─ Slope %3.3f\n ├─  ├─ truePolyY %6.0f\n ├─  └─ POLY %ld\n")
-	% slope
-	% truePolyY
-	% zap;
+	playerBox.add("Ground Slope", slope);
+	playerBox.add("Ground truePolyY", truePolyY);
+	playerBox.add("Ground POLY", zap);
+	playerBox.add("Color", CURRENT_PLAYER_COLOR);
+	playerBox.add("Stealth", GetPlayerStealth());
 	
-	ss << boost::format("Color: %3.0f; Stealth %3.0f\n")
-	% CURRENT_PLAYER_COLOR
-	% GetPlayerStealth();
+	playerBox.add("Jump", player.jumplastposition);
+	playerBox.add("OFFGRND", (!player.onfirmground ? "OFFGRND" : ""));
 	
-	ss << boost::format("Jump %f %s\n")
-	% player.jumplastposition
-	% (!player.onfirmground ? "OFFGRND" : "");
+	playerBox.add("Life", player.lifePool);
+	playerBox.add("Mana", player.manaPool);
+	playerBox.add("Poisoned", player.poison);
+	playerBox.add("Hunger", player.hunger);
+	playerBox.add("Magic", static_cast<long>(player.doingmagic));
+	playerBox.print();
 	
-	ss << boost::format("Life %4.0f/%4.0f Mana %4.0f/%4.0f Poisoned %3.1f Hunger %4.1f\n")
-	% player.lifePool.current
-	% player.lifePool.max
-	% player.manaPool.current
-	% player.manaPool.max
-	% player.poison
-	% player.hunger;
+	DebugBox miscBox = DebugBox(Vec2i(10, playerBox.size().y + 5), "Misc");
+	miscBox.add("Arx version", arx_version);
+	miscBox.add("Level", LastLoadedScene.string().c_str());
+	miscBox.add("Spell failed seq", LAST_FAILED_SEQUENCE.c_str());
+	miscBox.add("Camera focal", ACTIVECAM->focal);
+	miscBox.add("Cinema", CINEMA_DECAL);
+	miscBox.add("Mouse", Vec2i(DANAEMouse));
+	miscBox.add("Pathfind queue", EERIE_PATHFINDER_Get_Queued_Number());
+	miscBox.add("Pathfind status", (PATHFINDER_WORKING ? "Working" : "Idled"));
+	miscBox.print();
 	
-	ss << boost::format("Magic: %d\n")
-	% player.doingmagic;
+	{
+	struct ScriptDebugReport {
+		std::string entityName;
+		long events;
+		long sends;
+		
+		ScriptDebugReport()
+			: entityName("")
+			, events(0)
+			, sends(0)
+		{}
+	};
 	
-	ss << boost::format("Camera focal: %3.0f\n")
-	% ACTIVECAM->focal;
-	
-	ss << boost::format("Cinema: %f; Mouse: (%d, %d); Pathfind %ld(%s)\n")
-	% CINEMA_DECAL
-	% DANAEMouse.x
-	% DANAEMouse.y
-	% EERIE_PATHFINDER_Get_Queued_Number()
-	% (PATHFINDER_WORKING ? "Working" : "Idled");
-	
-	ss << boost::format("Events %ld\nTimers %ld\n")
-	% ScriptEvent::totalCount
-	% ARX_SCRIPT_CountTimers();
-	
+	ScriptDebugReport maxEvents;
 	Entity * io = ARX_SCRIPT_Get_IO_Max_Events();
-	
-	ss << "Max events ";
 	if(io) {
-		ss << boost::format("%d %s\n")
-		% io->stat_count
-		% io->idString();
-	} else {
-		ss << "\n";
+		maxEvents.entityName = io->idString();
+		maxEvents.events = io->stat_count;
 	}
 	
+	ScriptDebugReport maxSender;
 	io = ARX_SCRIPT_Get_IO_Max_Events_Sent();
-	ss << "Max sender ";
 	if(io) {
-		ss << boost::format("%d %s\n")
-		% io->stat_sent
-		% io->idString();
-	} else {
-		ss << "\n";
+		maxSender.entityName = io->idString();
+		maxSender.sends = io->stat_sent;
+	}
+	
+	DebugBox scriptBox = DebugBox(Vec2i(10, miscBox.size().y + 5), "Script");
+	scriptBox.add("Events", ScriptEvent::totalCount);
+	scriptBox.add("Timers", ARX_SCRIPT_CountTimers());
+	scriptBox.add("Max events", maxEvents.entityName);
+	scriptBox.add("Max events#", maxEvents.events);
+	scriptBox.add("Max sender", maxSender.entityName);
+	scriptBox.add("Max sender#", maxSender.sends);
+	scriptBox.print();
 	}
 	
 	if(ValidIONum(LastSelectedIONum)) {
-		io = entities[LastSelectedIONum];
+		Entity * io = entities[LastSelectedIONum];
 
 		if(io) {
-			ss << boost::format("%4.0f %4.0f %4.0f - %4.0f %4.0f %4.0f\n")
-			% io->pos.x % io->pos.y % io->pos.z
-			% io->move.x % io->move.y % io->move.z;
+			DebugBox entityBox = DebugBox(Vec2i(500, 10), "Entity " + io->idString());
+			entityBox.add("Pos", io->pos);
+			entityBox.add("Angle", io->angle);
+			entityBox.add("Room", static_cast<long>(io->room));
+			entityBox.add("Move", io->move);
+			entityBox.add("Flags", flagNames(EntityFlagNames, io->ioflags));
+			entityBox.print();
 			
 			if(io->ioflags & IO_NPC) {
 				IO_NPCDATA * npcData = io->_npcdata;
 				
-				ss << boost::format("Life %4.0f/%4.0f\n")
-				% npcData->lifePool.current
-				% npcData->lifePool.max;
+				DebugBox npcBox = DebugBox(Vec2i(500, entityBox.size().y + 5), "NPC");
+				npcBox.add("Life", npcData->lifePool);
+				npcBox.add("Mana", npcData->manaPool);
+				npcBox.add("Poisoned", npcData->poisonned);
+				npcBox.add("ArmorClass", ARX_INTERACTIVE_GetArmorClass(io));
+				npcBox.add("Absorb", npcData->absorb);
 				
-				ss << boost::format("Mana %4.0f/%4.0f\n")
-				% npcData->manaPool.current
-				% npcData->manaPool.max;
+				npcBox.add("Moveproblem", npcData->moveproblem);
+				npcBox.add("Pathfind listpos", static_cast<long>(npcData->pathfind.listpos));
+				npcBox.add("Pathfind listnb", npcData->pathfind.listnb);
+				npcBox.add("Pathfind targ", npcData->pathfind.truetarget);
+				npcBox.add("Behavior", flagNames(BehaviourFlagNames, npcData->behavior));
 				
-				ss << boost::format("Poisoned %3.1f\n")
-				% npcData->poisonned;
-
-				ss << boost::format("ArmorClass %3.0f\nAbsorb %3.0f\n")
-				% ARX_INTERACTIVE_GetArmorClass(io)
-				% npcData->absorb;
+				// TODO should those really be flags ?
+				PathfindFlags pflag = io->_npcdata->pathfind.flags;
+				std::string pflags;
+				if(pflag & PATHFIND_ALWAYS)    pflags += "ALWAYS ";
+				if(pflag & PATHFIND_ONCE)      pflags += "ONCE ";
+				if(pflag & PATHFIND_NO_UPDATE) pflags += "NO_UPDATE ";
+				npcBox.add("Pathfind flgs", pflags);
 				
-				ss << boost::format("Moveproblem %3.0f %d/%ld targ %ld\nbehavior %ld\n")
-				% npcData->moveproblem
-				% npcData->pathfind.listpos
-				% npcData->pathfind.listnb
-				% npcData->pathfind.truetarget
-				% npcData->behavior;
-
-				if(io->_npcdata->pathfind.flags & PATHFIND_ALWAYS) {
-					ss << "PF_ALWAYS\n";
-				} else {
-					ss << boost::format("PF_%ld\n") % (long)io->_npcdata->pathfind.flags;
-				}
+				npcBox.print();
 			}
 
 			if(io->ioflags & (IO_FIX | IO_ITEM)) {
-				ss << boost::format("Durability %4.0f/%4.0f Poisonous %3d count %d\n")
-				% io->durability
-				% io->max_durability
-				% io->poisonous
-				% io->poisonous_count;
+				DebugBox itemBox = DebugBox(Vec2i(500, entityBox.size().y + 5), "Item");
+				
+				itemBox.add("Durability", io->durability);
+				itemBox.add("Durability max", io->max_durability);
+				itemBox.add("Poisonous", static_cast<long>(io->poisonous));
+				itemBox.add("Poisonous count", static_cast<long>(io->poisonous_count));
+				itemBox.print();
 			}
-			
-			drawMultilineText(Vec2i(10, 450), debugPrintEntityFlags(io->ioflags));
 		}
 	}
 	
-	drawMultilineText(Vec2i(10, 10), ss.str());
-
 	ARX_SCRIPT_Init_Event_Stats();
 }
 

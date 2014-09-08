@@ -2327,10 +2327,6 @@ void ArxGame::render() {
 			ShowInfoText();
 			break;
 		}
-		case InfoPanelTest: {
-			ShowTestText();
-			break;
-		}
 		case InfoPanelDebugToggles: {
 			ShowDebugToggles();
 			break;

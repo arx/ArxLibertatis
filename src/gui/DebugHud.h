@@ -20,7 +20,6 @@
 #ifndef ARX_GUI_DEBUGHUD_H
 #define ARX_GUI_DEBUGHUD_H
 
-void ShowTestText();
 void ShowInfoText();
 void ShowFPS();
 void ShowFpsGraph();
