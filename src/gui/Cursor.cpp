@@ -146,11 +146,10 @@ bool Manage3DCursor(bool simulate) {
 	mvectx.y = 0;
 	mvectx.z = +std::cos(radians(player.angle.getPitch() - 90.f));
 	mvectx = glm::normalize(mvectx);
-
-	float xmod = (float)(DANAEMouse.x-g_size.center().x) / (float)g_size.center().x*160.f;
-	float ymod = (float)(DANAEMouse.y-g_size.center().y) / (float)g_size.center().y*220.f;
-	mvectx *= xmod;
-	Vec3f mvecty(0, ymod, 0);
+	
+	Vec2f mod = Vec2f(Vec2i(DANAEMouse) - g_size.center()) / Vec2f(g_size.center()) * Vec2f(160.f, 220.f);
+	mvectx *= mod.x;
+	Vec3f mvecty(0, mod.y, 0);
 
 	Vec3f orgn;
 	orgn.x=player.pos.x- std::sin(radians(player.angle.getPitch())) * std::cos(radians(player.angle.getYaw()))*50.f + mvectx.x;
