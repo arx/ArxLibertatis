@@ -171,11 +171,8 @@ bool Manage3DCursor(bool simulate) {
 	if(height > -30.f)
 		height = -30.f;
 	
-	Vec3f objcenter = Vec3f_ZERO;
-	objcenter.x = bbox.min.x + (bbox.max.x - bbox.min.x) * 0.5f;
-	objcenter.y = 0;
-	objcenter.z = bbox.min.z + (bbox.max.z - bbox.min.z) * 0.5f;
-
+	Vec3f objcenter = bbox.min + (bbox.max - bbox.min) * Vec3f(0.5f);
+	
 	Vec3f collidpos = Vec3f_ZERO;
 	bool collidpos_ok = false;
 	
