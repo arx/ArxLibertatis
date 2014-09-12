@@ -136,8 +136,6 @@ bool Manage3DCursor(bool simulate) {
 		temp.setPitch(MAKEANGLE(270.f - io->angle.getPitch() - (player.angle.getPitch() - STARTED_ANGLE)));
 	}
 	
-	float maxdist = 0.f;
-	
 	EERIE_3D_BBOX bbox;
 	for(size_t i = 0; i < io->obj->vertexlist.size(); i++) {
 		bbox.add(io->obj->vertexlist[i].v);
@@ -178,6 +176,12 @@ bool Manage3DCursor(bool simulate) {
 	objcenter.y = 0;
 	objcenter.z = bbox.min.z + (bbox.max.z - bbox.min.z) * 0.5f;
 
+	Vec3f collidpos = Vec3f_ZERO;
+	bool collidpos_ok = false;
+	
+	{
+	float maxdist = 0.f;
+	
 	for(size_t i = 0; i < io->obj->vertexlist.size(); i++) {
 		const EERIE_VERTEX & vert = io->obj->vertexlist[i];
 		
@@ -195,17 +199,14 @@ bool Manage3DCursor(bool simulate) {
 			maxdist = std::max(maxdist, dist);
 		}
 	}
-
-	objcenter = VRotateY(objcenter, temp.getPitch());
-
-	maxdist = glm::clamp(maxdist, 15.f, 150.f);
 	
-	Vec3f collidpos = Vec3f_ZERO;
 	Cylinder cyl2;
 	float inc = 10.f;
 	long iterating = 40;
 
 	cyl2.height = std::min(-30.f, height);
+	
+	maxdist = glm::clamp(maxdist, 15.f, 150.f);
 	cyl2.radius = std::max(20.f, maxdist);
 
 
@@ -238,19 +239,24 @@ bool Manage3DCursor(bool simulate) {
 
 		iterating--;
 	}
-
+	collidpos_ok = iterating == -1;
+	
+	}
+	
+	objcenter = VRotateY(objcenter, temp.getPitch());
+	
 	collidpos.x -= objcenter.x;
 	collidpos.z -= objcenter.z;
 
 	pos.x -= objcenter.x;
 	pos.z -= objcenter.z;
 
-	if(iterating != -1) {
+	if(!collidpos_ok) {
 		CANNOT_PUT_IT_HERE = 1;
 		return false;
 	}
 
-	if(iterating == -1 && closerThan(player.pos, pos, 300.f)) {
+	if(collidpos_ok && closerThan(player.pos, pos, 300.f)) {
 		if(simulate) {
 			ARX_INTERACTIVE_Teleport(io, pos, true);
 
