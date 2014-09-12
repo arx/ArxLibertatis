@@ -198,7 +198,7 @@ bool Manage3DCursor(bool simulate) {
 	}
 	
 	Cylinder cyl2;
-	float inc = 10.f;
+	const float inc = 10.f;
 	long iterating = 40;
 
 	cyl2.height = std::min(-30.f, height);
