@@ -661,8 +661,11 @@ void ARX_INTERFACE_RenderCursorInternal(bool flag) {
 						}
 
 						//cross not over inventory icon
-						if(CANNOT_PUT_IT_HERE && (eMouseState != MOUSE_IN_INVENTORY_ICON)) {
-							if(!InInventoryPos(DANAEMouse) && !InSecondaryInventoryPos(DANAEMouse) && !ARX_INTERFACE_MouseInBook()) {
+						if(   CANNOT_PUT_IT_HERE
+						   && (eMouseState != MOUSE_IN_INVENTORY_ICON)
+						   && !InInventoryPos(DANAEMouse)
+						   && !InSecondaryInventoryPos(DANAEMouse)
+						   && !ARX_INTERFACE_MouseInBook()) {
 								TextureContainer * tcc = Movable;
 
 								if(CANNOT_PUT_IT_HERE == -1)
@@ -670,7 +673,6 @@ void ARX_INTERFACE_RenderCursorInternal(bool flag) {
 
 								if(tcc && tcc != tc) // to avoid movable double red cross...
 									EERIEDrawBitmap(Rectf(Vec2f(pos.x + 16, pos.y), tcc->m_dwWidth, tcc->m_dwHeight), 0.00001f, tcc, Color::white);
-							}
 						}
 
 						if(tc2) {
