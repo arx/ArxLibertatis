@@ -439,7 +439,10 @@ void ARX_INTERFACE_RenderCursorInternal(bool flag) {
 		return;
 	}
 	
-	if(flag || (!BLOCK_PLAYER_CONTROLS && PLAYER_INTERFACE_HIDE_COUNT)) {
+	if(!(flag || (!BLOCK_PLAYER_CONTROLS && PLAYER_INTERFACE_HIDE_COUNT))) {
+		return;
+	}
+		
 		if(!SPECIAL_DRAGINTER_RENDER)
 			GRenderer->SetCulling(Renderer::CullNone);
 
@@ -707,7 +710,6 @@ void ARX_INTERFACE_RenderCursorInternal(bool flag) {
 				}
 			}
 		}
-	}
 }
 
 void ARX_INTERFACE_RenderCursor(bool flag)
