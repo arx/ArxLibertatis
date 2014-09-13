@@ -690,8 +690,9 @@ void ARX_INTERFACE_RenderCursorInternal(bool flag) {
 			if(SPECIAL_DRAGINTER_RENDER)
 				return;
 
-			if(TRUE_PLAYER_MOUSELOOK_ON && config.video.showCrosshair) {
-				if(!(player.Interface & (INTER_COMBATMODE | INTER_NOTE | INTER_MAP))) {
+			if(   TRUE_PLAYER_MOUSELOOK_ON
+			   && config.video.showCrosshair
+			   && !(player.Interface & (INTER_COMBATMODE | INTER_NOTE | INTER_MAP))) {
 					
 					cursorAnimatedHand.reset();
 					
@@ -707,7 +708,6 @@ void ARX_INTERFACE_RenderCursorInternal(bool flag) {
 					EERIEDrawBitmap(Rectf(Vec2f(POSX, POSY), surf->m_dwWidth, surf->m_dwHeight), 0.f, surf, Color3f::gray(.5f).to<u8>());
 					
 					GRenderer->SetRenderState(Renderer::AlphaBlending, false);
-				}
 			}
 		}
 }
