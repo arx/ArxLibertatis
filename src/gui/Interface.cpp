@@ -2086,7 +2086,7 @@ void ArxGame::manageKeyMouse() {
 						bool bOk = true;
 
 						if(SecondaryInventory != NULL) {
-							Entity * temp = (Entity *)SecondaryInventory->io;
+							Entity * temp = SecondaryInventory->io;
 
 							if(IsInSecondaryInventory(FlyingOverIO))
 								if(temp->ioflags & IO_SHOP)
@@ -4105,7 +4105,7 @@ void ArxGame::manageEditorControls() {
 		Entity * io = NULL;
 
 		if(SecondaryInventory)
-			io = (Entity *)SecondaryInventory->io;
+			io = SecondaryInventory->io;
 		else if (player.Interface & INTER_STEAL)
 			io = ioSteal;
 
@@ -4422,7 +4422,7 @@ void ArxGame::manageEditorControls() {
 			bool accept_combine = true;
 			
 			if((SecondaryInventory!=NULL) && (InSecondaryInventoryPos(DANAEMouse))) {
-				Entity * io=(Entity *)SecondaryInventory->io;
+				Entity * io = SecondaryInventory->io;
 				
 				if(io->ioflags & IO_SHOP)
 					accept_combine = false;

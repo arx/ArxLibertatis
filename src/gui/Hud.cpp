@@ -1070,7 +1070,7 @@ public:
 				Entity * io = NULL;
 
 				if(SecondaryInventory)
-					io = (Entity *)SecondaryInventory->io;
+					io = SecondaryInventory->io;
 				else if (player.Interface & INTER_STEAL)
 					io = ioSteal;
 
@@ -2325,7 +2325,7 @@ void manageEditorControlsHUD2()
 {
 	if(TSecondaryInventory) {
 		
-		Entity * temp=(Entity *)TSecondaryInventory->io;
+		Entity * temp = TSecondaryInventory->io;
 
 		if(temp && !(temp->ioflags & IO_SHOP) && !(temp == ioSteal)) {
 			pickAllIconGui.updateInput();

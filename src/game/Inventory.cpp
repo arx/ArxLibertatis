@@ -1182,7 +1182,7 @@ bool PutInInventory() {
 	
 	// First Look for Identical Item...
 	if(SecondaryInventory && InSecondaryInventoryPos(DANAEMouse)) {
-		Entity * io = (Entity *)SecondaryInventory->io;
+		Entity * io = SecondaryInventory->io;
 		
 		float fcos = ARX_INTERACTIVE_GetPrice(DRAGINTER, io) / 3.0f; //>>1;
 		long cos = checked_range_cast<long>(fcos);
@@ -1786,7 +1786,7 @@ bool TakeFromInventory(const Vec2s & pos) {
 
 	if(SecondaryInventory != NULL) {
 		if(InSecondaryInventoryPos(pos)) {
-			ioo = (Entity *)SecondaryInventory->io;
+			ioo = SecondaryInventory->io;
 
 			if(ioo->ioflags & IO_SHOP) {
 					if(io->ioflags & IO_ITEM) {
