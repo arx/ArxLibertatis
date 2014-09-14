@@ -1559,7 +1559,7 @@ public:
 				if(!(player.rune_flags & (RuneFlag)(1<<player.SpellToMemorize.iSpellSymbols[i]))) {
 					GRenderer->SetBlendFunc(Renderer::BlendInvDstColor, Renderer::BlendOne);
 					GRenderer->SetRenderState(Renderer::AlphaBlending, true);
-					EERIEDrawBitmap2(Rectf(m_pos, 32, 32), 0, Movable, Color3f::gray(.8f).to<u8>());
+					EERIEDrawBitmap2(Rectf(m_pos, 32, 32), 0, cursorMovable, Color3f::gray(.8f).to<u8>());
 					GRenderer->SetRenderState(Renderer::AlphaBlending, false);
 				}
 				m_pos.x += INTERFACE_RATIO(32);

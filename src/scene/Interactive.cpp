@@ -1903,7 +1903,7 @@ Entity * AddItem(const res::path & classPath_, EntityInstance instance, AddInter
 	
 	TextureContainer * tc;
 	if (io->ioflags & IO_MOVABLE) {
-		tc = Movable;
+		tc = cursorMovable;
 	} else if (io->ioflags & IO_GOLD) {
 		tc = GoldCoinsTC[0];
 	} else {

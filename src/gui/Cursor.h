@@ -22,7 +22,7 @@
 
 class TextureContainer;
 
-extern TextureContainer * Movable;
+extern TextureContainer * cursorMovable;
 
 void cursorTexturesInit();
 

@@ -65,13 +65,12 @@ static TextureContainer * cursorTargetOff = NULL;
 static TextureContainer * cursorInteractionOn = NULL;
 static TextureContainer * cursorInteractionOff = NULL;
 static TextureContainer * cursorMagic = NULL;
-TextureContainer * ThrowObject = NULL;
-TextureContainer * ptexcursorredist = NULL;
+static TextureContainer * cursorThrowObject = NULL;
+static TextureContainer * cursorRedist = NULL;
+static TextureContainer * cursorCrossHair = NULL; // Animated Hand Cursor TC
+TextureContainer * cursorMovable = NULL;   // TextureContainer for Movable Items (Red Cross)
 
 TextureContainer *	scursor[8];			// Animated Hand Cursor TC
-TextureContainer *	pTCCrossHair;			// Animated Hand Cursor TC
-
-TextureContainer * Movable = NULL;   // TextureContainer for Movable Items (Red Cross)
 
 void cursorTexturesInit() {
 	ITC.Reset();
@@ -81,19 +80,19 @@ void cursorTexturesInit() {
 	cursorInteractionOn = TextureContainer::LoadUI("graph/interface/cursors/interaction_on");
 	cursorInteractionOff = TextureContainer::LoadUI("graph/interface/cursors/interaction_off");
 	cursorMagic = TextureContainer::LoadUI("graph/interface/cursors/magic");
-	ThrowObject = TextureContainer::LoadUI("graph/interface/cursors/throw");
-	ptexcursorredist =  TextureContainer::LoadUI("graph/interface/cursors/add_points");
-	pTCCrossHair = TextureContainer::LoadUI("graph/interface/cursors/cruz");
-	Movable = TextureContainer::LoadUI("graph/interface/cursors/wrong");
+	cursorThrowObject = TextureContainer::LoadUI("graph/interface/cursors/throw");
+	cursorRedist =  TextureContainer::LoadUI("graph/interface/cursors/add_points");
+	cursorCrossHair = TextureContainer::LoadUI("graph/interface/cursors/cruz");
+	cursorMovable = TextureContainer::LoadUI("graph/interface/cursors/wrong");
 	
 	arx_assert(cursorTargetOn);
 	arx_assert(cursorTargetOff);
 	arx_assert(cursorInteractionOn);
 	arx_assert(cursorInteractionOff);
 	arx_assert(cursorMagic);
-	arx_assert(ThrowObject);
-	arx_assert(ptexcursorredist);
-	arx_assert(pTCCrossHair);
+	arx_assert(cursorThrowObject);
+	arx_assert(cursorRedist);
+	arx_assert(cursorCrossHair);
 	
 	for(long i = 0; i < 8; i++) {
 		char temp[256];
@@ -546,7 +545,7 @@ void ARX_INTERFACE_RenderCursorInternal(bool flag) {
 			
 			switch(SpecialCursor) {
 			case CURSOR_REDIST:
-				surf = ptexcursorredist;
+				surf = cursorRedist;
 				break;
 			case CURSOR_COMBINEOFF:
 				surf = cursorTargetOff;
@@ -666,10 +665,10 @@ void ARX_INTERFACE_RenderCursorInternal(bool flag) {
 					   && !InInventoryPos(DANAEMouse)
 					   && !InSecondaryInventoryPos(DANAEMouse)
 					   && !ARX_INTERFACE_MouseInBook()) {
-						TextureContainer * tcc = Movable;
+						TextureContainer * tcc = cursorMovable;
 						
 						if(CANNOT_PUT_IT_HERE == -1)
-							tcc = ThrowObject;
+							tcc = cursorThrowObject;
 						
 						if(tcc && tcc != tc) // to avoid movable double red cross...
 							EERIEDrawBitmap(Rectf(Vec2f(pos.x + 16, pos.y), tcc->m_dwWidth, tcc->m_dwHeight), 0.00001f, tcc, Color::white);
@@ -698,7 +697,7 @@ void ARX_INTERFACE_RenderCursorInternal(bool flag) {
 			
 			cursorAnimatedHand.reset();
 			
-			TextureContainer * surf = pTCCrossHair;
+			TextureContainer * surf = cursorCrossHair;
 			arx_assert(surf);
 			
 			GRenderer->SetRenderState(Renderer::AlphaBlending, true);
