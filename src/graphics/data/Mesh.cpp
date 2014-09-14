@@ -1856,14 +1856,11 @@ void ComputeRoomDistance() {
 
 	memset(ad, 0, sizeof(ANCHOR_DATA)*nb_anchors);
 
-	void ** ptr = NULL;
-	ptr = (void **)malloc(sizeof(*ptr) * nb_anchors);
-	memset(ptr, 0, sizeof(*ptr)*nb_anchors);
-
-
+	std::vector<EERIE_PORTALS *> ptr(nb_anchors, NULL);
+	
 	for(long i = 0; i < NbRoomDistance; i++) {
 		GetRoomCenter(i, &ad[i].pos);
-		ptr[i] = (void *)&portals->rooms[i];
+		ptr[i] = (EERIE_PORTALS *)&portals->rooms[i]; // FIXME mixing of pointer types
 	}
 
 	long curpos = NbRoomDistance;
@@ -1872,20 +1869,20 @@ void ComputeRoomDistance() {
 		// Add 4 portal vertices
 		for(int nn = 0; nn < 4; nn++) {
 			ad[curpos].pos = portals->portals[i].poly.v[nn].p;
-			ptr[curpos] = (void *)&portals->portals[i];
+			ptr[curpos] = &portals->portals[i];
 			curpos++;
 		}
 
 		// Add center;
 		ad[curpos].pos = portals->portals[i].poly.center;
-		ptr[curpos] = (void *)&portals->portals[i];
+		ptr[curpos] = &portals->portals[i];
 		curpos++;
 
 		// Add V centers;
 		for(int nn = 0, nk = 3; nn < 4; nk = nn++) {
 			ad[curpos].pos = (portals->portals[i].poly.v[nn].p
 			                + portals->portals[i].poly.v[nk].p) * 0.5f;
-			ptr[curpos] = (void *)&portals->portals[i];
+			ptr[curpos] = &portals->portals[i];
 			curpos++;
 		}
 	}
@@ -1896,7 +1893,7 @@ void ComputeRoomDistance() {
 			if(portals->portals[j].room_1 == i || portals->portals[j].room_2 == i) {
 				for(long tt = 0; tt < nb_anchors; tt++) {
 
-					if(ptr[tt] == (void *)(&portals->portals[j])) {
+					if(ptr[tt] == &portals->portals[j]) {
 						AddAData(&ad[tt], i);
 						AddAData(&ad[i], tt);
 					}
@@ -1916,10 +1913,10 @@ void ComputeRoomDistance() {
 						long p2 = -1;
 
 						for(long tt = 0; tt < nb_anchors; tt++) {
-							if(ptr[tt] == (void *)(&portals->portals[jj]))
+							if(ptr[tt] == &portals->portals[jj])
 								p1 = tt;
 
-							if(ptr[tt] == (void *)(&portals->portals[j]))
+							if(ptr[tt] == &portals->portals[j])
 								p2 = tt;
 						}
 
@@ -1978,7 +1975,6 @@ void ComputeRoomDistance() {
 	}
 
 	free(ad);
-	free(ptr);
 }
 
 static void EERIE_PORTAL_Room_Poly_Add(EERIEPOLY * ep, long nr, long px, long py, long idx) {
