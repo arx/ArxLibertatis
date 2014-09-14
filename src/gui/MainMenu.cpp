@@ -486,16 +486,17 @@ void MainMenuOptionVideoCreate(CWindowMenuConsole * console, Vec2i size)
 
 	console->AddMenuCenter(pc);
 	
+	{
 	pc = new CMenuPanel();
 	szMenuText = getLocalised("system_menus_options_video_brouillard");
 	me = new TextWidget(-1, hFontMenu, szMenuText, Vec2i(RATIO_X(20), 0.f), NOP);
 	me->SetCheckOff();
 	pc->AddElement(me);
-	me = new SliderWidget(BUTTON_MENUOPTIONSVIDEO_FOG, Vec2i(RATIO_X(200), 0));
-	((SliderWidget *)me)->setValue(config.video.fogDistance);
-	pc->AddElement(me);
-
+	SliderWidget * sld = new SliderWidget(BUTTON_MENUOPTIONSVIDEO_FOG, Vec2i(RATIO_X(200), 0));
+	sld->setValue(config.video.fogDistance);
+	pc->AddElement(sld);
 	console->AddMenuCenter(pc);
+	}
 	
 	{
 	szMenuText = getLocalised("system_menus_options_video_crosshair", "Show Crosshair");
@@ -589,45 +590,53 @@ void MainMenuOptionAudioCreate(CWindowMenuConsole * console, Vec2i size)
 		
 	}
 	
+	{
 	pc = new CMenuPanel();
 	szMenuText = getLocalised("system_menus_options_audio_master_volume");
 	me = new TextWidget(-1, hFontMenu, szMenuText, Vec2i(RATIO_X(20), 0.f), NOP);
 	me->SetCheckOff();
 	pc->AddElement(me);
-	me = new SliderWidget(BUTTON_MENUOPTIONSAUDIO_MASTER, Vec2i(RATIO_X(200), 0));
-	((SliderWidget *)me)->setValue((int)config.audio.volume); // TODO use float sliders
-	pc->AddElement(me);
+	SliderWidget * sld = new SliderWidget(BUTTON_MENUOPTIONSAUDIO_MASTER, Vec2i(RATIO_X(200), 0));
+	sld->setValue((int)config.audio.volume); // TODO use float sliders
+	pc->AddElement(sld);
 	console->AddMenuCenter(pc);
-
+	}
+	
+	{
 	pc = new CMenuPanel();
 	szMenuText = getLocalised("system_menus_options_audio_effects_volume");
 	me = new TextWidget(-1, hFontMenu, szMenuText, Vec2i(RATIO_X(20), 0.f), OPTIONS_AUDIO);
 	me->SetCheckOff();
 	pc->AddElement(me);
-	me = new SliderWidget(BUTTON_MENUOPTIONSAUDIO_SFX, Vec2i(RATIO_X(200), 0));
-	((SliderWidget *)me)->setValue((int)config.audio.sfxVolume);
-	pc->AddElement(me);
+	SliderWidget * sld = new SliderWidget(BUTTON_MENUOPTIONSAUDIO_SFX, Vec2i(RATIO_X(200), 0));
+	sld->setValue((int)config.audio.sfxVolume);
+	pc->AddElement(sld);
 	console->AddMenuCenter(pc);
-
+	}
+	
+	{
 	pc = new CMenuPanel();
 	szMenuText = getLocalised("system_menus_options_audio_speech_volume");
 	me = new TextWidget(-1, hFontMenu, szMenuText, Vec2i(RATIO_X(20), 0.f), OPTIONS_AUDIO);
 	me->SetCheckOff();
 	pc->AddElement(me);
-	me = new SliderWidget(BUTTON_MENUOPTIONSAUDIO_SPEECH, Vec2i(RATIO_X(200), 0));
-	((SliderWidget *)me)->setValue((int)config.audio.speechVolume);
-	pc->AddElement(me);
+	SliderWidget * sld = new SliderWidget(BUTTON_MENUOPTIONSAUDIO_SPEECH, Vec2i(RATIO_X(200), 0));
+	sld->setValue((int)config.audio.speechVolume);
+	pc->AddElement(sld);
 	console->AddMenuCenter(pc);
-
+	}
+	
+	{
 	pc = new CMenuPanel();
 	szMenuText = getLocalised("system_menus_options_audio_ambiance_volume");
 	me = new TextWidget(-1, hFontMenu, szMenuText, Vec2i(RATIO_X(20), 0), OPTIONS_AUDIO);
 	me->SetCheckOff();
 	pc->AddElement(me);
-	me = new SliderWidget(BUTTON_MENUOPTIONSAUDIO_AMBIANCE, Vec2i(RATIO_X(200), 0));
-	((SliderWidget *)me)->setValue((int)config.audio.ambianceVolume);
-	pc->AddElement(me);
+	SliderWidget * sld = new SliderWidget(BUTTON_MENUOPTIONSAUDIO_AMBIANCE, Vec2i(RATIO_X(200), 0));
+	sld->setValue((int)config.audio.ambianceVolume);
+	pc->AddElement(sld);
 	console->AddMenuCenter(pc);
+	}
 	
 	{
 	szMenuText = getLocalised("system_menus_options_audio_eax", "EAX");
@@ -688,16 +697,18 @@ void MainMenuOptionInputCreate(CWindowMenuConsole * console)
 	cb->iState = config.input.mouseLookToggle ? 1 : 0;
 	console->AddMenuCenter(cb);
 	}
-
+	
+	{
 	pc = new CMenuPanel();
 	szMenuText = getLocalised("system_menus_options_input_mouse_sensitivity");
 	me = new TextWidget(-1, hFontMenu, szMenuText, Vec2i(RATIO_X(20), 0.f), NOP);
 	me->SetCheckOff();
 	pc->AddElement(me);
-	me = new SliderWidget(BUTTON_MENUOPTIONS_CONTROLS_MOUSESENSITIVITY, Vec2i(RATIO_X(200), 0));
-	((SliderWidget*)me)->setValue(config.input.mouseSensitivity);
-	pc->AddElement(me);
+	SliderWidget * sld = new SliderWidget(BUTTON_MENUOPTIONS_CONTROLS_MOUSESENSITIVITY, Vec2i(RATIO_X(200), 0));
+	sld->setValue(config.input.mouseSensitivity);
+	pc->AddElement(sld);
 	console->AddMenuCenter(pc);
+	}
 	
 	{
 	szMenuText = getLocalised("system_menus_autodescription", "auto_description");
@@ -708,16 +719,18 @@ void MainMenuOptionInputCreate(CWindowMenuConsole * console)
 	cb->iState = config.input.autoDescription ? 1 : 0;
 	console->AddMenuCenter(cb);
 	}
-
+	
+	{
 	pc = new CMenuPanel();
 	szMenuText = getLocalised("system_menus_options_misc_quicksave_slots", "Quicksave slots");
 	me = new TextWidget(-1, hFontMenu, szMenuText, Vec2i(RATIO_X(20), 0), NOP);
 	me->SetCheckOff();
 	pc->AddElement(me);
-	me = new SliderWidget(BUTTON_MENUOPTIONS_CONTROLS_QUICKSAVESLOTS, Vec2i(RATIO_X(200), 0));
-	((SliderWidget*)me)->setValue(config.misc.quicksaveSlots);
-	pc->AddElement(me);
+	SliderWidget * sld = new SliderWidget(BUTTON_MENUOPTIONS_CONTROLS_QUICKSAVESLOTS, Vec2i(RATIO_X(200), 0));
+	sld->setValue(config.misc.quicksaveSlots);
+	pc->AddElement(sld);
 	console->AddMenuCenter(pc);
+	}
 	
 	{
 	pTex = TextureContainer::Load("graph/interface/menus/back");
