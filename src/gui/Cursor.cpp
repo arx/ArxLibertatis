@@ -75,15 +75,15 @@ TextureContainer *	scursor[8];			// Animated Hand Cursor TC
 void cursorTexturesInit() {
 	ITC.Reset();
 	
-	cursorTargetOn = TextureContainer::LoadUI("graph/interface/cursors/target_on");
-	cursorTargetOff = TextureContainer::LoadUI("graph/interface/cursors/target_off");
-	cursorInteractionOn = TextureContainer::LoadUI("graph/interface/cursors/interaction_on");
+	cursorTargetOn       = TextureContainer::LoadUI("graph/interface/cursors/target_on");
+	cursorTargetOff      = TextureContainer::LoadUI("graph/interface/cursors/target_off");
+	cursorInteractionOn  = TextureContainer::LoadUI("graph/interface/cursors/interaction_on");
 	cursorInteractionOff = TextureContainer::LoadUI("graph/interface/cursors/interaction_off");
-	cursorMagic = TextureContainer::LoadUI("graph/interface/cursors/magic");
-	cursorThrowObject = TextureContainer::LoadUI("graph/interface/cursors/throw");
-	cursorRedist =  TextureContainer::LoadUI("graph/interface/cursors/add_points");
-	cursorCrossHair = TextureContainer::LoadUI("graph/interface/cursors/cruz");
-	cursorMovable = TextureContainer::LoadUI("graph/interface/cursors/wrong");
+	cursorMagic          = TextureContainer::LoadUI("graph/interface/cursors/magic");
+	cursorThrowObject    = TextureContainer::LoadUI("graph/interface/cursors/throw");
+	cursorRedist         = TextureContainer::LoadUI("graph/interface/cursors/add_points");
+	cursorCrossHair      = TextureContainer::LoadUI("graph/interface/cursors/cruz");
+	cursorMovable        = TextureContainer::LoadUI("graph/interface/cursors/wrong");
 	
 	arx_assert(cursorTargetOn);
 	arx_assert(cursorTargetOff);
