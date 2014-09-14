@@ -631,10 +631,10 @@ void ARX_INTERFACE_RenderCursorInternal(bool flag) {
 				
 				if(DRAGINTER && DRAGINTER->inv) {
 					TextureContainer * tc = DRAGINTER->inv;
-					TextureContainer * tc2 = NULL;
+					TextureContainer * haloTc = NULL;
 					
 					if(NeedHalo(DRAGINTER))
-						tc2 = DRAGINTER->inv->getHalo();//>_itemdata->halo_tc;
+						haloTc = DRAGINTER->inv->getHalo();//>_itemdata->halo_tc;
 					
 					Color color = (DRAGINTER->poisonous && DRAGINTER->poisonous_count != 0) ? Color::green : Color::white;
 					
@@ -674,8 +674,8 @@ void ARX_INTERFACE_RenderCursorInternal(bool flag) {
 							EERIEDrawBitmap(Rectf(Vec2f(pos.x + 16, pos.y), tcc->m_dwWidth, tcc->m_dwHeight), 0.00001f, tcc, Color::white);
 					}
 					
-					if(tc2) {
-						ARX_INTERFACE_HALO_Draw(DRAGINTER, tc, tc2, pos.x, pos.y, 1.f, 1.f);
+					if(haloTc) {
+						ARX_INTERFACE_HALO_Draw(DRAGINTER, tc, haloTc, pos.x, pos.y, 1.f, 1.f);
 					}
 				} else {
 					cursorAnimatedHand.update2();
