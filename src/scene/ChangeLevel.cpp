@@ -1026,7 +1026,7 @@ static long ARX_CHANGELEVEL_Push_IO(const Entity * io, long level) {
 
 		for (size_t n = 0; n < io->obj->linked.size(); n++)
 		{
-			if (GetObjIOSource((EERIE_3DOBJ *)io->obj->linked[n].obj))
+			if (GetObjIOSource(io->obj->linked[n].obj))
 				ais.nb_linked++;
 		}
 
@@ -1036,7 +1036,7 @@ static long ARX_CHANGELEVEL_Push_IO(const Entity * io, long level) {
 
 		for (size_t n = 0; n < io->obj->linked.size(); n++)
 		{
-			if (GetObjIOSource((EERIE_3DOBJ *)io->obj->linked[n].obj))
+			if (GetObjIOSource(io->obj->linked[n].obj))
 			{
 				ais.linked_data[count].lgroup = io->obj->linked[count].lgroup;
 				ais.linked_data[count].lidx = io->obj->linked[count].lidx;
