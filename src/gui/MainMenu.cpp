@@ -95,7 +95,7 @@ void MainMenuCreateEditQuest(CWindowMenuConsole * console) {
 	
 	if(!ARXMenu_CanResumeGame()) {
 		me->SetCheckOff();
-		((TextWidget*)me)->lColor=Color(127,127,127);
+		me->lColor = Color(127, 127, 127);
 	}
 	console->AddMenuCenter(me, true);
 	}
