@@ -4118,13 +4118,8 @@ void ArxGame::manageEditorControls() {
 	}
 	
 	playerInterfaceFader.update();
-	
 	cinematicBorder.update();
-
-
-
-	/////////////////////////////////////////////////////
-
+	
 	if(EERIEMouseButton & 1) {
 		static Vec2s dragThreshold = Vec2s_ZERO;
 		
@@ -4143,15 +4138,9 @@ void ArxGame::manageEditorControls() {
 	} else {
 		DRAGGING = false;
 	}
-
-	//-------------------------------------------------------------------------
-	// interface
-	//-------------------------------------------------------------------------
-	// torch
+	
 	manageEditorControlsHUD();
-
-
-
+	
 	// gros player book
 	if(player.Interface & INTER_MAP) {
 		Vec2f pos(97 * g_sizeRatio.x, 64 * g_sizeRatio.y);
@@ -4169,7 +4158,7 @@ void ArxGame::manageEditorControls() {
 		if(mouseTestRect.contains(Vec2i(DANAEMouse))) {
 			eMouseState = MOUSE_IN_BOOK;
 		}
-}
+	}
 	
 	// gros book/note
 	if(player.Interface & INTER_NOTE) {
@@ -4180,10 +4169,7 @@ void ArxGame::manageEditorControls() {
 	}
 	
 	manageEditorControlsHUD2();
-
-	//-------------------------------------------------------------------------
-
-
+	
 	// Single Click On Object
 	if(   (LastMouseClick & 1)
 	   && !(EERIEMouseButton & 1)
