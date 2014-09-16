@@ -51,7 +51,7 @@
 
 #include "window/RenderWindow.h"
 
-template<typename T>
+template <typename T>
 struct FlagName {
 	T flag;
 	const char * name;
@@ -109,7 +109,7 @@ const FlagName<Behaviour> BehaviourFlagNames[] = {
 	{BEHAVIOUR_STARE_AT      , "STARE_AT"}
 };
 
-template<typename T, size_t N>
+template <typename T, size_t N>
 std::string flagNames(const FlagName<T> (&names)[N], const T flags) {
 	std::stringstream ss;
 	for(size_t i = 0; i < N; i++) {
