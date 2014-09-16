@@ -91,9 +91,9 @@ void CMassLightning::Create(Vec3f aePos) {
 	for(int i = 0; i < number; i++) {
 		CLightning * lightning = pTab[i];
 		
-		eTarget.x = aePos.x - std::sin(radians(i * ft)) * 500.0f;
+		eTarget.x = aePos.x - std::sin(glm::radians(i * ft)) * 500.0f;
 		eTarget.y = aePos.y;
-		eTarget.z = aePos.z + std::cos(radians(i * ft)) * 500.0f;
+		eTarget.z = aePos.z + std::cos(glm::radians(i * ft)) * 500.0f;
 		lightning->Create(aePos, eTarget);
 		long lTime = ulDuration + Random::get(0, 5000);
 		lightning->SetDuration(lTime);
@@ -149,7 +149,7 @@ void CControlTarget::Create(Vec3f aeSrc, float afBeta) {
 	
 	eSrc = aeSrc;
 	
-	float fBetaRad = radians(afBeta);
+	float fBetaRad = glm::radians(afBeta);
 	float fBetaRadCos = (float) cos(fBetaRad);
 	float fBetaRadSin = (float) sin(fBetaRad);
 	

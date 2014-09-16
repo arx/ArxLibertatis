@@ -298,7 +298,7 @@ public:
 								GRenderer->SetBlendFunc(Renderer::BlendOne, Renderer::BlendOne);
 								GRenderer->SetRenderState(Renderer::AlphaBlending, true);
 								
-								float fColorPulse = fabs(cos(radians(fDecPulse)));
+								float fColorPulse = fabs(cos(glm::radians(fDecPulse)));
 								
 								Rectf rect(
 									Vec2f(px, py),
@@ -515,7 +515,7 @@ public:
 							EERIEDrawBitmap(rect, 0.001f, tc, Color::white);
 							GRenderer->SetRenderState(Renderer::AlphaBlending, false);
 						} else if(io->ioflags & IO_CAN_COMBINE) {
-							float fColorPulse = fabs(cos(radians(fDecPulse)));
+							float fColorPulse = fabs(cos(glm::radians(fDecPulse)));
 							GRenderer->SetBlendFunc(Renderer::BlendOne, Renderer::BlendOne);
 							GRenderer->SetRenderState(Renderer::AlphaBlending, true);
 							
@@ -1754,7 +1754,7 @@ public:
 		if(fArrowMove > 180.f) {
 			fArrowMove=0.f;
 		}
-		fMove=fabs(sin(radians(fArrowMove)))*m_arrowSize.x*.5f;
+		fMove=fabs(sin(glm::radians(fArrowMove)))*m_arrowSize.x*.5f;
 	}
 	
 	void draw() {

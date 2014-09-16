@@ -398,7 +398,7 @@ void HarmSpell::Update(float timeDelta)
 		refpos=entities[m_caster]->pos.y-scaley;
 	}
 	
-	float Es=std::sin((float)arxtime.get_frame_time()*( 1.0f / 800 ) + radians(scaley));
+	float Es=std::sin((float)arxtime.get_frame_time()*( 1.0f / 800 ) + glm::radians(scaley));
 	
 	if(lightHandleIsValid(m_light)) {
 		EERIE_LIGHT * light = lightHandleGet(m_light);

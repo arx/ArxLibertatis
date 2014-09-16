@@ -541,7 +541,7 @@ static long AnchorData_GetNearest(Vec3f * pos, Cylinder * cyl, long except = -1)
 
 static long AnchorData_GetNearest_2(float beta, Vec3f * pos, Cylinder * cyl) {
 	
-	float d = radians(beta);
+	float d = glm::radians(beta);
 	Vec3f vect(-std::sin(d), 0, std::cos(d));
 	vect = glm::normalize(vect);
 
@@ -1109,7 +1109,7 @@ void FaceTarget2(Entity * io)
 		return;
 	}
 
-	float tangle = MAKEANGLE(180.f + degrees(getAngle(io->target.x, io->target.z, tv.x, tv.z)));
+	float tangle = MAKEANGLE(180.f + glm::degrees(getAngle(io->target.x, io->target.z, tv.x, tv.z)));
 	float cangle = io->angle.getPitch();
 
 	float tt = (cangle - tangle);
@@ -1172,7 +1172,7 @@ void StareAtTarget(Entity * io)
 	float rot = 0.27f * framedelay;
 	float alpha = MAKEANGLE(io->angle.getPitch());
 	float beta = -io->head_rot; 
-	float pouet = MAKEANGLE(180.f + degrees(getAngle(io->target.x, io->target.z, tv.x, tv.z)));
+	float pouet = MAKEANGLE(180.f + glm::degrees(getAngle(io->target.x, io->target.z, tv.x, tv.z)));
 	float A = MAKEANGLE((MAKEANGLE(alpha + beta) - pouet));
 	float B = MAKEANGLE(alpha - pouet);
 
@@ -1933,12 +1933,12 @@ static void ManageNPCMovement(Entity * io)
 			aup->_curtime -= 500;
 			ARX_PATHS_Interpolate(aup, &tv);
 			aup->_curtime += 500;
-			io->angle.setPitch(MAKEANGLE(degrees(getAngle(tv.x, tv.z, io->pos.x, io->pos.z))));
+			io->angle.setPitch(MAKEANGLE(glm::degrees(getAngle(tv.x, tv.z, io->pos.x, io->pos.z))));
 		} else {
 			aup->_curtime += 500;
 			ARX_PATHS_Interpolate(aup, &tv);
 			aup->_curtime -= 500;
-			io->angle.setPitch(MAKEANGLE(180.f + degrees(getAngle(tv.x, tv.z, io->pos.x, io->pos.z))));
+			io->angle.setPitch(MAKEANGLE(180.f + glm::degrees(getAngle(tv.x, tv.z, io->pos.x, io->pos.z))));
 		}
 		return;
 	}
@@ -2685,7 +2685,7 @@ Entity * ARX_NPC_GetFirstNPCInSight(Entity * ioo)
 
 
 		float aa = getAngle(orgn.x, orgn.z, dest.x, dest.z);
-		aa = MAKEANGLE(degrees(aa));
+		aa = MAKEANGLE(glm::degrees(aa));
 
 		if(EEfabs(AngularDifference(aa, ab)) < 110.f) {
 			if(dist_io < square(200)) {
@@ -2789,7 +2789,7 @@ void CheckNPCEx(Entity * io) {
 
 			// Check for Field of vision angle
 			float aa = getAngle(orgn.x, orgn.z, dest.x, dest.z);
-			aa = MAKEANGLE(degrees(aa));
+			aa = MAKEANGLE(glm::degrees(aa));
 			float ab = MAKEANGLE(io->angle.getPitch());
 			if(EEfabs(AngularDifference(aa, ab)) < 110.f) {
 				

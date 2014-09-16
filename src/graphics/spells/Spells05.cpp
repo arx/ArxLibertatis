@@ -95,7 +95,7 @@ void CCurePoison::Create()
 	cp.m_lifeRandom = 2000;
 	cp.m_pos = Vec3f(100, 0, 100);
 	cp.m_direction = Vec3f(0, -10, 0) * 0.1f;
-	cp.m_angle = radians(5);
+	cp.m_angle = glm::radians(5.f);
 	cp.m_speed = 120;
 	cp.m_speedRandom = 84;
 	cp.m_gravity = Vec3f(0, -10, 0);
@@ -351,7 +351,7 @@ void LaunchPoisonExplosion(const Vec3f & aePos) {
 	cp.m_lifeRandom = 500;
 	cp.m_pos = Vec3f(5);
 	cp.m_direction = Vec3f(0, 4, 0) * 0.1f;
-	cp.m_angle = radians(360);
+	cp.m_angle = glm::radians(360.f);
 	cp.m_speed = 200;
 	cp.m_speedRandom = 0;
 	cp.m_gravity = Vec3f(0, 17, 0);
@@ -497,7 +497,7 @@ void CPoisonProjectile::Update(float timeDelta)
 
 			cp.m_direction = -eMove * 0.1f;
 
-			cp.m_angle = radians(4);
+			cp.m_angle = glm::radians(4.f);
 			cp.m_speed = 150;
 			cp.m_speedRandom = 50;//15;
 			cp.m_gravity = Vec3f(0, 10, 0);
@@ -963,8 +963,8 @@ void CLevitate::CreateConeStrip(float rbase, float rhaut, float hauteur, int def
 	while(nb) {
 		*pind++ = ind++;
 		*pind++ = ind++;
-		*vertex++ = Vec3f(rhaut * std::cos(radians(a)), -hauteur, rhaut * std::sin(radians(a)));
-		*vertex++ = Vec3f(rbase * std::cos(radians(a)), 0.f, rbase * std::sin(radians(a)));
+		*vertex++ = Vec3f(rhaut * std::cos(glm::radians(a)), -hauteur, rhaut * std::sin(glm::radians(a)));
+		*vertex++ = Vec3f(rbase * std::cos(glm::radians(a)), 0.f, rbase * std::sin(glm::radians(a)));
 		a += da;
 		nb--;
 	}
@@ -1140,7 +1140,7 @@ void CLevitate::createDustParticle()
 		return;
 	}
 	
-	float a = radians(360.f * rnd());
+	float a = glm::radians(360.f * rnd());
 	pd->ov = m_pos + Vec3f(m_baseRadius * std::cos(a), 0.f, m_baseRadius * std::sin(a));
 	float t = fdist(pd->ov, m_pos);
 	pd->move = Vec3f((5.f + 5.f * rnd()) * ((pd->ov.x - m_pos.x) / t), 3.f * rnd(),

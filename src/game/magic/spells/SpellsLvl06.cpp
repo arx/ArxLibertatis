@@ -48,8 +48,8 @@ void RiseDeadSpell::GetTargetAndBeta(Vec3f & target, float & beta)
 		displace = (entities[m_caster]->ioflags & IO_NPC) == IO_NPC;
 	}
 	if(displace) {
-		target.x -= std::sin(radians(beta)) * 300.f;
-		target.z += std::cos(radians(beta)) * 300.f;
+		target.x -= std::sin(glm::radians(beta)) * 300.f;
+		target.z += std::cos(glm::radians(beta)) * 300.f;
 	}
 }
 
@@ -305,8 +305,8 @@ void CreateFieldSpell::Launch()
 		}
 	}
 	if(displace) {
-		target.x -= std::sin(radians(MAKEANGLE(beta))) * 250.f;
-		target.z += std::cos(radians(MAKEANGLE(beta))) * 250.f;
+		target.x -= std::sin(glm::radians(MAKEANGLE(beta))) * 250.f;
+		target.z += std::cos(glm::radians(MAKEANGLE(beta))) * 250.f;
 	}
 	
 	ARX_SOUND_PlaySFX(SND_SPELL_CREATE_FIELD, &target);

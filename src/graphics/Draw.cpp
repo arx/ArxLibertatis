@@ -122,7 +122,7 @@ bool EERIECreateSprite(TexturedQuad& sprite, const Vec3f & in, float siz, Color 
 			sprite.v[3].p = Vec3f(mins.x, maxs.y, out.p.z);
 		} else {
 			for(long i=0;i<4;i++) {
-				float tt = radians(MAKEANGLE(rot+90.f*i+45+90));
+				float tt = glm::radians(MAKEANGLE(rot+90.f*i+45+90));
 				sprite.v[i].p.x = std::sin(tt) * t + out.p.x;
 				sprite.v[i].p.y = std::cos(tt) * t + out.p.y;
 				sprite.v[i].p.z = out.p.z;

@@ -1355,7 +1355,7 @@ void ArxGame::updateFirstPersonCamera() {
 		subj.d_angle = eyeball.angle;
 		EXTERNALVIEW = true;
 	} else if(EXTERNALVIEW) {
-		float t=radians(player.angle.getPitch());
+		float t=glm::radians(player.angle.getPitch());
 
 		for(long l=0; l < 250; l += 10) {
 			Vec3f tt = player.pos;
@@ -1455,7 +1455,7 @@ void ArxGame::updateConversationCamera() {
 			sourcepos = conversationcamera.orgTrans.pos;
 		} else {
 			targetpos = player.pos;
-			float t = radians(player.angle.getPitch());
+			float t = glm::radians(player.angle.getPitch());
 			sourcepos.x=targetpos.x+std::sin(t)*100.f;
 			sourcepos.y=targetpos.y;
 			sourcepos.z=targetpos.z-std::cos(t)*100.f;
@@ -1535,9 +1535,9 @@ void ArxGame::speechControlledCinematic() {
 				float beta = acs->startangle.getPitch() * itime + acs->endangle.getPitch() * rtime;
 				float distance = acs->startpos * itime + acs->endpos * rtime;
 				Vec3f targetpos = acs->pos1;
-				conversationcamera.orgTrans.pos.x=-std::sin(radians(MAKEANGLE(io->angle.getPitch()+beta)))*distance+targetpos.x;
-				conversationcamera.orgTrans.pos.y= std::sin(radians(MAKEANGLE(io->angle.getYaw()+alpha)))*distance+targetpos.y;
-				conversationcamera.orgTrans.pos.z= std::cos(radians(MAKEANGLE(io->angle.getPitch()+beta)))*distance+targetpos.z;
+				conversationcamera.orgTrans.pos.x=-std::sin(glm::radians(MAKEANGLE(io->angle.getPitch()+beta)))*distance+targetpos.x;
+				conversationcamera.orgTrans.pos.y= std::sin(glm::radians(MAKEANGLE(io->angle.getYaw()+alpha)))*distance+targetpos.y;
+				conversationcamera.orgTrans.pos.z= std::cos(glm::radians(MAKEANGLE(io->angle.getPitch()+beta)))*distance+targetpos.z;
 				conversationcamera.setTargetCamera(targetpos);
 				subj.orgTrans.pos = conversationcamera.orgTrans.pos;
 				subj.angle.setYaw(MAKEANGLE(-conversationcamera.angle.getYaw()));
@@ -1692,7 +1692,7 @@ void ArxGame::handleCameraController() {
 			delta_angle_t = delta_angle;
 
 		currentbeta += delta_angle_t;
-		float t=radians(MAKEANGLE(currentbeta));
+		float t=glm::radians(MAKEANGLE(currentbeta));
 		conversationcamera.orgTrans.pos.x=targetpos.x+std::sin(t)*160.f;
 		conversationcamera.orgTrans.pos.y=targetpos.y+40.f;
 		conversationcamera.orgTrans.pos.z=targetpos.z-std::cos(t)*160.f;

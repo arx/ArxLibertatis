@@ -170,7 +170,7 @@ void ManaDrainSpell::Update(float timeDelta)
 		refpos=entities[m_caster]->pos.y-scaley;
 	}
 	
-	float Es=std::sin((float)arxtime.get_frame_time()*( 1.0f / 800 ) + radians(scaley));
+	float Es=std::sin((float)arxtime.get_frame_time()*( 1.0f / 800 ) + glm::radians(scaley));
 	
 	if(lightHandleIsValid(m_light)) {
 		EERIE_LIGHT * light = lightHandleGet(m_light);
@@ -284,7 +284,7 @@ void ExplosionSpell::Launch()
 	
 	for(long i_angle = 0 ; i_angle < 360 ; i_angle += 12) {
 		for(long j = -100 ; j < 100 ; j += 50) {
-			float rr = radians(float(i_angle));
+			float rr = glm::radians(float(i_angle));
 			Vec3f pos(target.x - std::sin(rr) * 360.f, target.y,
 			          target.z + std::cos(rr) * 360.f);
 			Vec3f dir = glm::normalize(Vec3f(pos.x - target.x, 
@@ -321,23 +321,23 @@ void ExplosionSpell::Update(float timeDelta)
 		float choice = rnd();
 		if(choice > .8f) {
 			long lvl = Random::get(9, 13);
-			rr=radians(rnd()*360.f);
-			r2=radians(rnd()*360.f);
+			rr=glm::radians(rnd()*360.f);
+			r2=glm::radians(rnd()*360.f);
 			pos.x=light->pos.x-std::sin(rr)*260;
 			pos.y=light->pos.y-std::sin(r2)*260;
 			pos.z=light->pos.z+std::cos(rr)*260;
 			Color3f rgb(0.1f + rnd()*(1.f/3), 0.1f + rnd()*(1.0f/3), 0.8f + rnd()*(1.0f/5));
 			LaunchFireballBoom(&pos, static_cast<float>(lvl), NULL, &rgb);
 		} else if(choice > .6f) {
-			rr=radians(rnd()*360.f);
-			r2=radians(rnd()*360.f);
+			rr=glm::radians(rnd()*360.f);
+			r2=glm::radians(rnd()*360.f);
 			pos.x=light->pos.x-std::sin(rr)*260;
 			pos.y=light->pos.y-std::sin(r2)*260;
 			pos.z=light->pos.z+std::cos(rr)*260;
 			MakeCoolFx(pos);
 		} else if(choice > 0.4f) {
-			rr=radians(rnd()*360.f);
-			r2=radians(rnd()*360.f);
+			rr=glm::radians(rnd()*360.f);
+			r2=glm::radians(rnd()*360.f);
 			pos.x=light->pos.x-std::sin(rr)*160;
 			pos.y=light->pos.y-std::sin(r2)*160;
 			pos.z=light->pos.z+std::cos(rr)*160;
@@ -449,7 +449,7 @@ void LifeDrainSpell::Update(float timeDelta)
 		refpos=entities[m_caster]->pos.y-scaley;
 	}
 	
-	float Es=std::sin((float)arxtime.get_frame_time()*( 1.0f / 800 ) + radians(scaley));
+	float Es=std::sin((float)arxtime.get_frame_time()*( 1.0f / 800 ) + glm::radians(scaley));
 	
 	if(lightHandleIsValid(m_light)) {
 		EERIE_LIGHT * light = lightHandleGet(m_light);

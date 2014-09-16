@@ -141,9 +141,9 @@ bool Manage3DCursor(bool simulate) {
 	}
 	
 	Vec3f mvectx;
-	mvectx.x = -std::sin(radians(player.angle.getPitch() - 90.f));
+	mvectx.x = -std::sin(glm::radians(player.angle.getPitch() - 90.f));
 	mvectx.y = 0;
-	mvectx.z = +std::cos(radians(player.angle.getPitch() - 90.f));
+	mvectx.z = +std::cos(glm::radians(player.angle.getPitch() - 90.f));
 	mvectx = glm::normalize(mvectx);
 	
 	Vec2f mod = Vec2f(Vec2i(DANAEMouse) - g_size.center()) / Vec2f(g_size.center()) * Vec2f(160.f, 220.f);
@@ -151,14 +151,14 @@ bool Manage3DCursor(bool simulate) {
 	Vec3f mvecty(0, mod.y, 0);
 
 	Vec3f orgn;
-	orgn.x=player.pos.x- std::sin(radians(player.angle.getPitch())) * std::cos(radians(player.angle.getYaw()))*50.f + mvectx.x;
-	orgn.y=player.pos.y+ std::sin(radians(player.angle.getYaw()))*50.f + mvectx.y + mvecty.y;
-	orgn.z=player.pos.z+ std::cos(radians(player.angle.getPitch())) * std::cos(radians(player.angle.getYaw()))*50.f + mvectx.z;
+	orgn.x=player.pos.x- std::sin(glm::radians(player.angle.getPitch())) * std::cos(glm::radians(player.angle.getYaw()))*50.f + mvectx.x;
+	orgn.y=player.pos.y+ std::sin(glm::radians(player.angle.getYaw()))*50.f + mvectx.y + mvecty.y;
+	orgn.z=player.pos.z+ std::cos(glm::radians(player.angle.getPitch())) * std::cos(glm::radians(player.angle.getYaw()))*50.f + mvectx.z;
 
 	Vec3f dest;
-	dest.x=player.pos.x- std::sin(radians(player.angle.getPitch())) * std::cos(radians(player.angle.getYaw()))*10000.f + mvectx.x;
-	dest.y=player.pos.y+ std::sin(radians(player.angle.getYaw()))*10000.f + mvectx.y + mvecty.y * 5.f;
-	dest.z=player.pos.z+ std::cos(radians(player.angle.getPitch())) * std::cos(radians(player.angle.getYaw()))*10000.f + mvectx.z;
+	dest.x=player.pos.x- std::sin(glm::radians(player.angle.getPitch())) * std::cos(glm::radians(player.angle.getYaw()))*10000.f + mvectx.x;
+	dest.y=player.pos.y+ std::sin(glm::radians(player.angle.getYaw()))*10000.f + mvectx.y + mvecty.y * 5.f;
+	dest.z=player.pos.z+ std::cos(glm::radians(player.angle.getPitch())) * std::cos(glm::radians(player.angle.getYaw()))*10000.f + mvectx.z;
 	Vec3f pos = orgn;
 
 	Vec3f movev = glm::normalize(dest - orgn);
@@ -459,7 +459,7 @@ void ARX_INTERFACE_RenderCursorInternal(bool flag) {
 			if(fHighLightAng > 90.f)
 				fHighLightAng = 90.f;
 			
-			float fHLight = 100.f * sin(radians(fHighLightAng));
+			float fHLight = 100.f * sin(glm::radians(fHighLightAng));
 			
 			iHighLight = checked_range_cast<int>(fHLight);
 		} else {

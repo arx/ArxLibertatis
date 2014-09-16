@@ -160,9 +160,9 @@ void ARX_SPELLS_UpdateSymbolDraw() {
 				EERIE_LIGHT * light = lightHandleGet(io->dynlight);
 				
 				float rr = rnd();
-				light->pos.x = io->pos.x - std::sin(radians(MAKEANGLE(io->angle.getPitch() - 45.f)))*60.f;
+				light->pos.x = io->pos.x - std::sin(glm::radians(MAKEANGLE(io->angle.getPitch() - 45.f)))*60.f;
 				light->pos.y = io->pos.y - 120.f;
-				light->pos.z = io->pos.z + std::cos(radians(MAKEANGLE(io->angle.getPitch() - 45.f)))*60.f;
+				light->pos.z = io->pos.z + std::cos(glm::radians(MAKEANGLE(io->angle.getPitch() - 45.f)))*60.f;
 				light->fallstart=140.f+(float)io->flarecount*0.333333f+rr*5.f;
 				light->fallend=220.f+(float)io->flarecount*0.5f+rr*5.f;
 				light->intensity=1.6f;
@@ -346,9 +346,9 @@ void ARX_SPELLS_RequestSymbolDrawCommon(Entity *io, float duration, RuneInfo & i
 
 	sd->starttime = (unsigned long)(arxtime);
 	sd->lasttim = 0;
-	sd->lastpos.x = io->pos.x - std::sin(radians(MAKEANGLE(io->angle.getPitch() - 45.0F + info.startOffset.x*2))) * 60.0F;
+	sd->lastpos.x = io->pos.x - std::sin(glm::radians(MAKEANGLE(io->angle.getPitch() - 45.0F + info.startOffset.x*2))) * 60.0F;
 	sd->lastpos.y = io->pos.y - 120.0F - info.startOffset.y*5;
-	sd->lastpos.z = io->pos.z + std::cos(radians(MAKEANGLE(io->angle.getPitch() - 45.0F + info.startOffset.x * 2))) * 60.0F;
+	sd->lastpos.z = io->pos.z + std::cos(glm::radians(MAKEANGLE(io->angle.getPitch() - 45.0F + info.startOffset.x * 2))) * 60.0F;
 
 	sd->cPosStartX = checked_range_cast<char>(info.startOffset.x);
 	sd->cPosStartY = checked_range_cast<char>(info.startOffset.y);

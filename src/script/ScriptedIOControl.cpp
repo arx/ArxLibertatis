@@ -271,8 +271,8 @@ public:
 				
 				if(t->ioflags & IO_NPC) {
 					float dist = t->physics.cyl.radius + ioo->physics.cyl.radius + 10;
-					ioo->pos.x += -std::sin(radians(t->angle.getPitch())) * dist;
-					ioo->pos.z +=  std::cos(radians(t->angle.getPitch())) * dist;
+					ioo->pos.x += -std::sin(glm::radians(t->angle.getPitch())) * dist;
+					ioo->pos.z +=  std::cos(glm::radians(t->angle.getPitch())) * dist;
 				}
 				
 				TREATZONE_AddIO(ioo);
@@ -428,7 +428,7 @@ class IfVisibleCommand : public Command {
 		
 		float ab = MAKEANGLE(io->angle.getPitch());
 		float aa = getAngle(io->pos.x, io->pos.z, ioo->pos.x, ioo->pos.z);
-		aa = MAKEANGLE(degrees(aa));
+		aa = MAKEANGLE(glm::degrees(aa));
 		
 		if((aa < ab + 90.f) && (aa > ab - 90.f)) {
 			//font

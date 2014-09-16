@@ -67,8 +67,8 @@ void MassLightningStrikeSpell::Launch()
 		target = io->pos + Vec3f(0.f, -20.f, 0.f);
 		beta = io->angle.getPitch();
 	}
-	target.x -= std::sin(radians(MAKEANGLE(beta))) * 500.f;
-	target.z += std::cos(radians(MAKEANGLE(beta))) * 500.f;
+	target.x -= std::sin(glm::radians(MAKEANGLE(beta))) * 500.f;
+	target.z += std::cos(glm::radians(MAKEANGLE(beta))) * 500.f;
 	m_targetPos = target;
 	
 	long count = std::max(long(m_level), 1l);

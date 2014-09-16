@@ -72,8 +72,8 @@ unsigned long CSpellFx::GetDuration() {
 void Draw3DLineTexNew(const RenderMaterial & mat, Vec3f startPos, Vec3f endPos, Color startColor, Color endColor, float startSize, float endSize) {
 	
 	float fBeta = MAKEANGLE(player.angle.getPitch());
-	float xxs = (float)(startSize * cos(radians(fBeta)));
-	float xxe = (float)(endSize * cos(radians(fBeta)));
+	float xxs = (float)(startSize * cos(glm::radians(fBeta)));
+	float xxe = (float)(endSize * cos(glm::radians(fBeta)));
 	float zzs = startSize;
 	float zze = endSize;
 	
@@ -103,8 +103,8 @@ void Draw3DLineTexNew(const RenderMaterial & mat, Vec3f startPos, Vec3f endPos, 
 	drawQuadRTP(mat, q1);
 	}
 	
-	zzs *= (float) sin(radians(fBeta));
-	zze *= (float) sin(radians(fBeta));
+	zzs *= (float) sin(glm::radians(fBeta));
+	zze *= (float) sin(glm::radians(fBeta));
 	
 	{
 	TexturedQuad q2;

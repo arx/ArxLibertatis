@@ -553,14 +553,14 @@ glm::quat Quat_Slerp(const glm::quat & from, glm::quat to, float ratio)
 //*************************************************************************************
 glm::quat QuatFromAngles(const Anglef & angle) {
 	float A, B;
-	A = radians(angle.getYaw()) * ( 1.0f / 2 );
-	B = radians(angle.getPitch()) * ( 1.0f / 2 );
+	A = glm::radians(angle.getYaw()) * ( 1.0f / 2 );
+	B = glm::radians(angle.getPitch()) * ( 1.0f / 2 );
 
 	float fSinYaw   = sinf(A);
 	float fCosYaw   = cosf(A);
 	float fSinPitch = sinf(B);
 	float fCosPitch = cosf(B);
-	A = radians(angle.getRoll()) * ( 1.0f / 2 );
+	A = glm::radians(angle.getRoll()) * ( 1.0f / 2 );
 	float fSinRoll  = sinf(A);
 	float fCosRoll  = cosf(A);
 	A = fCosRoll * fCosPitch;
@@ -575,9 +575,9 @@ glm::quat QuatFromAngles(const Anglef & angle) {
 }
 
 glm::mat4 toRotationMatrix(const Anglef & angle) {
-	float yaw = radians(angle.getYaw());
-	float pitch = radians(angle.getPitch());
-	float roll = radians(angle.getRoll());
+	float yaw = glm::radians(angle.getYaw());
+	float pitch = glm::radians(angle.getPitch());
+	float roll = glm::radians(angle.getRoll());
 	
 	// 0.9.4.5 and older have a reversed sign in glm::eulerAngleY()
 #if GLM_VERSION_MAJOR == 0 \
@@ -614,8 +614,8 @@ glm::quat angleToQuatForArrow(const Anglef & angle) {
 }
 
 Vec3f angleToVecForArrow(const Anglef & angle) {
-	float anglea = radians(angle.getYaw());
-	float angleb = radians(angle.getPitch());
+	float anglea = glm::radians(angle.getYaw());
+	float angleb = glm::radians(angle.getPitch());
 	
 	Vec3f vect;
 	vect.x=-std::sin(angleb)*std::cos(anglea);
@@ -636,7 +636,7 @@ glm::quat angleToQuatForExtraRotation(const Anglef & angle) {
 
 std::pair<Vec3f, Vec3f> angleToFrontUpVecForSound(const Anglef & angle) {
 	
-	float t = radians(MAKEANGLE(angle.getPitch()));
+	float t = glm::radians(MAKEANGLE(angle.getPitch()));
 	Vec3f front(-std::sin(t), 0.f, std::cos(t));
 	front = glm::normalize(front);
 
@@ -652,7 +652,7 @@ std::pair<Vec3f, Vec3f> angleToFrontUpVecForSound(const Anglef & angle) {
 
 // Rotates a Vector around X. angle is given in degrees
 Vec3f VRotateX(const Vec3f in, const float angle) {
-	float s = radians(angle);
+	float s = glm::radians(angle);
 	float c = std::cos(s);
 	s = std::sin(s);
 	return Vec3f(in.x, (in.y * c) + (in.z * s), (in.z * c) - (in.y * s));
@@ -660,7 +660,7 @@ Vec3f VRotateX(const Vec3f in, const float angle) {
 
 // Rotates a Vector around Y. angle is given in degrees
 Vec3f VRotateY(const Vec3f in, const float angle) {
-	float s = radians(angle);
+	float s = glm::radians(angle);
 	float c = std::cos(s);
 	s = std::sin(s);
 	return Vec3f((in.x * c) + (in.z * s), in.y, (in.z * c) - (in.x * s));
@@ -668,7 +668,7 @@ Vec3f VRotateY(const Vec3f in, const float angle) {
 
 // Rotates a Vector around Z. angle is given in degrees
 Vec3f VRotateZ(const Vec3f in, const float angle) {
-	float s = radians(angle);
+	float s = glm::radians(angle);
 	float c = std::cos(s);
 	s = std::sin(s);
 	return Vec3f((in.x * c) + (in.y * s), (in.y * c) - (in.x * s), in.z);
@@ -762,10 +762,10 @@ void GenerateMatrixUsingVector(glm::mat4x4 & matrix, const Vec3f & vect, float r
 	// Generate the Z rotation matrix for roll
 	roll[2][2] = 1.f;
 	roll[3][3] = 1.f;
-	roll[0][0] =  std::cos(radians(rollDegrees));
-	roll[0][1] = -std::sin(radians(rollDegrees));
-	roll[1][0] =  std::sin(radians(rollDegrees));
-	roll[1][1] =  std::cos(radians(rollDegrees));
+	roll[0][0] =  std::cos(glm::radians(rollDegrees));
+	roll[0][1] = -std::sin(glm::radians(rollDegrees));
+	roll[1][0] =  std::sin(glm::radians(rollDegrees));
+	roll[1][1] =  std::cos(glm::radians(rollDegrees));
 
 	// Concatinate them for a complete rotation matrix that includes
 	// all rotations

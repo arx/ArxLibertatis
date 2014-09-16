@@ -398,9 +398,9 @@ void IO_UnlinkAllLinkedObjects(Entity * io) {
 		
 		Vec3f pos = io->obj->vertexlist3[io->obj->linked[k].lidx].v;
 		Vec3f vector;
-		vector.x = -std::sin(radians(linked->angle.getPitch())) * 0.5f;
-		vector.y =  std::sin(radians(linked->angle.getYaw()));
-		vector.z =  std::cos(radians(linked->angle.getPitch())) * 0.5f;
+		vector.x = -std::sin(glm::radians(linked->angle.getPitch())) * 0.5f;
+		vector.y =  std::sin(glm::radians(linked->angle.getYaw()));
+		vector.z =  std::cos(glm::radians(linked->angle.getPitch())) * 0.5f;
 		EERIE_PHYSICS_BOX_Launch(linked->obj, pos, linked->angle, vector);
 		
 	}
@@ -1487,8 +1487,8 @@ Entity * AddFix(const res::path & classPath, EntityInstance instance, AddInterac
 	
 	io->spellcast_data.castingspell = SPELL_NONE;
 	io->pos = player.pos;
-	io->pos.x -= std::sin(radians(player.angle.getPitch())) * 140.f;
-	io->pos.z += std::cos(radians(player.angle.getPitch())) * 140.f;
+	io->pos.x -= std::sin(glm::radians(player.angle.getPitch())) * 140.f;
+	io->pos.z += std::cos(glm::radians(player.angle.getPitch())) * 140.f;
 	io->lastpos = io->initpos = io->pos;
 	io->lastpos.x = io->initpos.x = EEfabs(io->initpos.x / 20) * 20.f;
 	io->lastpos.z = io->initpos.z = EEfabs(io->initpos.z / 20) * 20.f;
@@ -1549,8 +1549,8 @@ static Entity * AddCamera(const res::path & classPath, EntityInstance instance) 
 	GetIOScript(io, script);
 	
 	io->pos = player.pos;
-	io->pos.x -= std::sin(radians(player.angle.getPitch())) * 140.f;
-	io->pos.z += std::cos(radians(player.angle.getPitch())) * 140.f;
+	io->pos.x -= std::sin(glm::radians(player.angle.getPitch())) * 140.f;
+	io->pos.z += std::cos(glm::radians(player.angle.getPitch())) * 140.f;
 	io->lastpos = io->initpos = io->pos;
 	io->lastpos.x = io->initpos.x = EEfabs(io->initpos.x / 20) * 20.f;
 	io->lastpos.z = io->initpos.z = EEfabs(io->initpos.z / 20) * 20.f;
@@ -1603,8 +1603,8 @@ static Entity * AddMarker(const res::path & classPath, EntityInstance instance) 
 	GetIOScript(io, script);
 	
 	io->pos = player.pos;
-	io->pos.x -= std::sin(radians(player.angle.getPitch())) * 140.f;
-	io->pos.z += std::cos(radians(player.angle.getPitch())) * 140.f;
+	io->pos.x -= std::sin(glm::radians(player.angle.getPitch())) * 140.f;
+	io->pos.z += std::cos(glm::radians(player.angle.getPitch())) * 140.f;
 	io->lastpos = io->initpos = io->pos;
 	io->lastpos.x = io->initpos.x = EEfabs(io->initpos.x / 20) * 20.f;
 	io->lastpos.z = io->initpos.z = EEfabs(io->initpos.z / 20) * 20.f;
@@ -1738,8 +1738,8 @@ Entity * AddNPC(const res::path & classPath, EntityInstance instance, AddInterac
 	}
 	
 	io->pos = player.pos;
-	io->pos.x -= std::sin(radians(player.angle.getPitch())) * 140.f;
-	io->pos.z += std::cos(radians(player.angle.getPitch())) * 140.f;
+	io->pos.x -= std::sin(glm::radians(player.angle.getPitch())) * 140.f;
+	io->pos.z += std::cos(glm::radians(player.angle.getPitch())) * 140.f;
 	io->lastpos = io->initpos = io->pos;
 	io->lastpos.x = io->initpos.x = EEfabs(io->initpos.x / 20) * 20.f;
 	io->lastpos.z = io->initpos.z = EEfabs(io->initpos.z / 20) * 20.f;
@@ -1870,8 +1870,8 @@ Entity * AddItem(const res::path & classPath_, EntityInstance instance, AddInter
 	
 	io->pos = player.pos;
 	
-	io->pos.x = io->pos.x - std::sin(radians(player.angle.getPitch())) * 140.f;
-	io->pos.z = io->pos.z + std::cos(radians(player.angle.getPitch())) * 140.f;
+	io->pos.x = io->pos.x - std::sin(glm::radians(player.angle.getPitch())) * 140.f;
+	io->pos.z = io->pos.z + std::cos(glm::radians(player.angle.getPitch())) * 140.f;
 	
 	io->lastpos.x = io->initpos.x = (float)((long)(io->pos.x / 20)) * 20.f;
 	io->lastpos.z = io->initpos.z = (float)((long)(io->pos.z / 20)) * 20.f;
@@ -2478,7 +2478,7 @@ void UpdateCameras() {
 				io->angle.setRoll(0.f);
 			} else {
 				// no target...
-				float tr = radians(MAKEANGLE(io->angle.getPitch() + 90));
+				float tr = glm::radians(MAKEANGLE(io->angle.getPitch() + 90));
 				io->target.x = io->pos.x - std::sin(tr) * 20.f;
 				io->target.y = io->pos.y;
 				io->target.z = io->pos.z + std::cos(tr) * 20.f;

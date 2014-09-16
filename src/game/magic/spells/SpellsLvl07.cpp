@@ -83,9 +83,9 @@ void FlyingEyeSpell::Launch()
 	m_fManaCostPerSecond = 3.2f;
 	eyeball.exist = 1;
 	float angleb = MAKEANGLE(player.angle.getPitch());
-	eyeball.pos.x = player.pos.x - std::sin(radians(angleb)) * 200.f;
+	eyeball.pos.x = player.pos.x - std::sin(glm::radians(angleb)) * 200.f;
 	eyeball.pos.y = player.pos.y + 50.f;
-	eyeball.pos.z = player.pos.z + std::cos(radians(angleb)) * 200.f;
+	eyeball.pos.z = player.pos.z + std::cos(glm::radians(angleb)) * 200.f;
 	eyeball.angle = player.angle;
 	
 	for(long n = 0; n < 12; n++) {
@@ -253,8 +253,8 @@ void FireFieldSpell::Launch()
 		}
 	}
 	if(displace) {
-		target.x -= std::sin(radians(MAKEANGLE(beta))) * 250.f;
-		target.z += std::cos(radians(MAKEANGLE(beta))) * 250.f;
+		target.x -= std::sin(glm::radians(MAKEANGLE(beta))) * 250.f;
+		target.z += std::cos(glm::radians(MAKEANGLE(beta))) * 250.f;
 	}
 	
 	DamageParameters damage;
@@ -387,8 +387,8 @@ void IceFieldSpell::Launch()
 		}
 	}
 	if(displace) {
-		target.x -= std::sin(radians(MAKEANGLE(beta))) * 250.f;
-		target.z += std::cos(radians(MAKEANGLE(beta))) * 250.f;
+		target.x -= std::sin(glm::radians(MAKEANGLE(beta))) * 250.f;
+		target.z += std::cos(glm::radians(MAKEANGLE(beta))) * 250.f;
 	}
 	
 	DamageParameters damage;
@@ -527,14 +527,14 @@ void LightningStrikeSpell::Update(float timeDelta)
 				Vec3f * p1 = &m_caster_pos;
 				Vec3f p2;
 				GetChestPos(caster->targetinfo, &p2); 
-				falpha = MAKEANGLE(degrees(getAngle(p1->y, p1->z, p2.y, p2.z + glm::distance(Vec2f(p2.x, p2.z), Vec2f(p1->x, p1->z))))); //alpha entre orgn et dest;
+				falpha = MAKEANGLE(glm::degrees(getAngle(p1->y, p1->z, p2.y, p2.z + glm::distance(Vec2f(p2.x, p2.z), Vec2f(p1->x, p1->z))))); //alpha entre orgn et dest;
 			}
 			else if (ValidIONum(m_target))
 			{
 				Vec3f * p1 = &m_caster_pos;
 				Vec3f p2;
 				GetChestPos(m_target, &p2); //
-				falpha = MAKEANGLE(degrees(getAngle(p1->y, p1->z, p2.y, p2.z + glm::distance(Vec2f(p2.x, p2.z), Vec2f(p1->x, p1->z))))); //alpha entre orgn et dest;
+				falpha = MAKEANGLE(glm::degrees(getAngle(p1->y, p1->z, p2.y, p2.z + glm::distance(Vec2f(p2.x, p2.z), Vec2f(p1->x, p1->z))))); //alpha entre orgn et dest;
 			}
 		}
 		

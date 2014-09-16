@@ -94,13 +94,13 @@ void CFireBall::Create(Vec3f aeSrc, float afBeta, float afAlpha)
 {
 	SetDuration(ulDuration);
 	
-	eSrc.x = aeSrc.x - std::sin(radians(afBeta)) * 60;
+	eSrc.x = aeSrc.x - std::sin(glm::radians(afBeta)) * 60;
 	eSrc.y = aeSrc.y;
-	eSrc.z = aeSrc.z + std::cos(radians(afBeta)) * 60;
+	eSrc.z = aeSrc.z + std::cos(glm::radians(afBeta)) * 60;
 
-	eMove.x = - std::sin(radians(afBeta)) * 80 * cos(radians(MAKEANGLE(afAlpha)));
-	eMove.y = sin(radians(MAKEANGLE(afAlpha))) * 80;
-	eMove.z = + std::cos(radians(afBeta)) * 80 * cos(radians(MAKEANGLE(afAlpha)));
+	eMove.x = - std::sin(glm::radians(afBeta)) * 80 * cos(glm::radians(MAKEANGLE(afAlpha)));
+	eMove.y = sin(glm::radians(MAKEANGLE(afAlpha))) * 80;
+	eMove.z = + std::cos(glm::radians(afBeta)) * 80 * cos(glm::radians(MAKEANGLE(afAlpha)));
 	
 	// Light
 	lLightId = LightHandle::Invalid;
@@ -168,7 +168,7 @@ void CIceProjectile::Create(Vec3f aeSrc, float afBeta, float fLevel, EntityHandl
 	
 	SetDuration(ulDuration);
 	
-	float fBetaRad = radians(afBeta);
+	float fBetaRad = glm::radians(afBeta);
 	float fBetaRadCos = (float) cos(fBetaRad);
 	float fBetaRadSin = (float) sin(fBetaRad);
 	
@@ -289,7 +289,7 @@ void CIceProjectile::Render()
 		Anglef stiteangle;
 		Color3f stitecolor;
 
-		stiteangle.setPitch((float) cos(radians(icicle.pos.x)) * 360);
+		stiteangle.setPitch((float) cos(glm::radians(icicle.pos.x)) * 360);
 		stiteangle.setYaw(0);
 		stiteangle.setRoll(0);
 		
@@ -429,7 +429,7 @@ void CCreateFood::Create() {
 	cp.m_lifeRandom = 2000;
 	cp.m_pos = Vec3f(100, 200, 100);
 	cp.m_direction = Vec3f(0, -10, 0) * 0.1f;
-	cp.m_angle = radians(5);
+	cp.m_angle = glm::radians(5.f);
 	cp.m_speed = 120;
 	cp.m_speedRandom = 84;
 	cp.m_gravity = Vec3f(0, -10, 0);

@@ -280,8 +280,8 @@ void PoisonProjectileSpell::Launch()
 		}
 	}
 	
-	srcPos.x -= std::sin(radians(afBeta)) * 90;
-	srcPos.z += std::cos(radians(afBeta)) * 90;
+	srcPos.x -= std::sin(glm::radians(afBeta)) * 90;
+	srcPos.z += std::cos(glm::radians(afBeta)) * 90;
 	
 	effect->Create(srcPos, afBeta);
 	

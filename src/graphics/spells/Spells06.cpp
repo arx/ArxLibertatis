@@ -115,28 +115,28 @@ void CCreateField::RenderQuad(const Vec3f & p1, const Vec3f & p2, const Vec3f & 
 
 		float patchsize = 0.005f;
 
-		v[0].x += (float) sin(radians((v[0].x - eSrc.x) * patchsize + fwrap)) * 5;
-		v[0].y += (float) sin(radians((v[0].y - eSrc.y) * patchsize + fwrap)) * 5;
-		v[0].z += (float) sin(radians((v[0].z - eSrc.z) * patchsize + fwrap)) * 5;
-		v[1].x += (float) sin(radians((v[1].x - eSrc.x) * patchsize + fwrap)) * 5;
-		v[1].y += (float) sin(radians((v[1].y - eSrc.y) * patchsize + fwrap)) * 5;
-		v[1].z += (float) sin(radians((v[1].z - eSrc.z) * patchsize + fwrap)) * 5;
-		v[2].x += (float) sin(radians((v[2].x - eSrc.x) * patchsize + fwrap)) * 5;
-		v[2].y += (float) sin(radians((v[2].y - eSrc.y) * patchsize + fwrap)) * 5;
-		v[2].z += (float) sin(radians((v[2].z - eSrc.z) * patchsize + fwrap)) * 5;
-		v[3].x += (float) sin(radians((v[3].x - eSrc.x) * patchsize + fwrap)) * 5;
-		v[3].y += (float) sin(radians((v[3].y - eSrc.y) * patchsize + fwrap)) * 5;
-		v[3].z += (float) sin(radians((v[3].z - eSrc.z) * patchsize + fwrap)) * 5;
-		v[4].x += (float) sin(radians((v[4].x - eSrc.x) * patchsize + fwrap)) * 5;
-		v[4].y += (float) sin(radians((v[4].y - eSrc.y) * patchsize + fwrap)) * 5;
-		v[4].z += (float) sin(radians((v[4].z - eSrc.z) * patchsize + fwrap)) * 5;
+		v[0].x += (float) sin(glm::radians((v[0].x - eSrc.x) * patchsize + fwrap)) * 5;
+		v[0].y += (float) sin(glm::radians((v[0].y - eSrc.y) * patchsize + fwrap)) * 5;
+		v[0].z += (float) sin(glm::radians((v[0].z - eSrc.z) * patchsize + fwrap)) * 5;
+		v[1].x += (float) sin(glm::radians((v[1].x - eSrc.x) * patchsize + fwrap)) * 5;
+		v[1].y += (float) sin(glm::radians((v[1].y - eSrc.y) * patchsize + fwrap)) * 5;
+		v[1].z += (float) sin(glm::radians((v[1].z - eSrc.z) * patchsize + fwrap)) * 5;
+		v[2].x += (float) sin(glm::radians((v[2].x - eSrc.x) * patchsize + fwrap)) * 5;
+		v[2].y += (float) sin(glm::radians((v[2].y - eSrc.y) * patchsize + fwrap)) * 5;
+		v[2].z += (float) sin(glm::radians((v[2].z - eSrc.z) * patchsize + fwrap)) * 5;
+		v[3].x += (float) sin(glm::radians((v[3].x - eSrc.x) * patchsize + fwrap)) * 5;
+		v[3].y += (float) sin(glm::radians((v[3].y - eSrc.y) * patchsize + fwrap)) * 5;
+		v[3].z += (float) sin(glm::radians((v[3].z - eSrc.z) * patchsize + fwrap)) * 5;
+		v[4].x += (float) sin(glm::radians((v[4].x - eSrc.x) * patchsize + fwrap)) * 5;
+		v[4].y += (float) sin(glm::radians((v[4].y - eSrc.y) * patchsize + fwrap)) * 5;
+		v[4].z += (float) sin(glm::radians((v[4].z - eSrc.z) * patchsize + fwrap)) * 5;
 
 		RenderQuad(p1, v[4], v[0], v[1], rec, norm, mat);
 		RenderQuad(v[4], p2, v[2], v[0], rec, norm, mat);
 		RenderQuad(v[0], v[2], p3, v[3], rec, norm, mat);
 		RenderQuad(v[1], v[0], v[3], p4, rec, norm, mat);
 	} else if(rec == 3) {
-		float zab = (float) sin(radians(ft));
+		float zab = (float) sin(glm::radians(ft));
 		
 		TexturedQuad q;
 		
@@ -217,7 +217,7 @@ void CCreateField::Render()
 		ft = 0.0f;
 	}
 
-	falpha = (float) sin(radians(fglow)) + rnd() * 0.2f;
+	falpha = (float) sin(glm::radians(fglow)) + rnd() * 0.2f;
 
 	if(falpha > 1.0f)
 		falpha = 1.0f;

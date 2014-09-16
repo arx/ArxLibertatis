@@ -85,7 +85,7 @@ public:
 		m_lifeRandom = 0;
 		m_pos = Vec3f(10.f);
 		m_direction = Vec3f(0.f, -10.f, 0.f) * 0.1f;
-		m_angle = radians(360);
+		m_angle = glm::radians(360.f);
 		m_speed = 130;
 		m_speedRandom = 100;
 		m_gravity = Vec3f(0.f, 10.f, 0.f);
@@ -221,9 +221,9 @@ void CMagicMissile::Create(const Vec3f & aeSrc, const Anglef & angles)
 	Vec3f e = eSrc;
 
 	int i = 40;
-	e.x -= std::sin(radians(angles.getPitch())) * 50 * i;
-	e.y += std::sin(radians(MAKEANGLE(angles.getYaw()))) * 50 * i;
-	e.z += std::cos(radians(angles.getPitch())) * 50 * i;
+	e.x -= std::sin(glm::radians(angles.getPitch())) * 50 * i;
+	e.y += std::sin(glm::radians(MAKEANGLE(angles.getYaw()))) * 50 * i;
+	e.z += std::cos(glm::radians(angles.getPitch())) * 50 * i;
 
 	pathways[0].p = eSrc;
 	pathways[5].p = e;
@@ -380,9 +380,9 @@ void CMagicMissile::Render()
 	Vec3f stitepos = lastpos;
 
 	Anglef stiteangle;
-	stiteangle.setPitch(-degrees(bubu));
+	stiteangle.setPitch(-glm::degrees(bubu));
 	stiteangle.setYaw(0);
-	stiteangle.setRoll(-(degrees(bubu1)));
+	stiteangle.setRoll(-(glm::degrees(bubu1)));
 
 	if(av.x < 0)
 		stiteangle.setRoll(stiteangle.getRoll() - 90);

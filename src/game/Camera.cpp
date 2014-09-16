@@ -28,13 +28,13 @@
 
 void EERIE_TRANSFORM::updateFromAngle(const Anglef &angle) {
 	float yaw, pitch, roll;
-	yaw = radians(angle.getYaw());
+	yaw = glm::radians(angle.getYaw());
 	xcos = std::cos(yaw);
 	xsin = std::sin(yaw);
-	pitch = radians(angle.getPitch());
+	pitch = glm::radians(angle.getPitch());
 	ycos = std::cos(pitch);
 	ysin = std::sin(pitch);
-	roll = radians(angle.getRoll());
+	roll = glm::radians(angle.getRoll());
 	zcos = std::cos(roll);
 	zsin = std::sin(roll);
 	
@@ -76,7 +76,7 @@ void EERIE_CreateMatriceProj(float _fWidth, float _fHeight, EERIE_CAMERA * cam) 
 
 
 	float fAspect = _fHeight / _fWidth;
-	float fFOV = radians(_fFOV);
+	float fFOV = glm::radians(_fFOV);
 	float fFarPlane = _fZFar;
 	float fNearPlane = _fZNear;
 	float w = fAspect * (cosf(fFOV / 2) / sinf(fFOV / 2));

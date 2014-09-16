@@ -233,7 +233,7 @@ void ParticleSystem::SetParticleParams(Particle * pP) {
 	vv1 = -Vec3f_Y_AXIS;
 	
 	VectorRotateZ(vv1, vvz, fAngleX); 
-	VectorRotateY(vvz, vv1, radians(rnd() * 360.0f));
+	VectorRotateY(vvz, vv1, glm::radians(rnd() * 360.0f));
 	
 	vvz = Vec3f(eMat * Vec4f(vv1, 1.f));
 

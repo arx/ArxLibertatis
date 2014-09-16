@@ -252,7 +252,7 @@ void PutInFrontOfPlayer(Entity * io)
 	if(!io)
 		return;
 
-	float t = radians(player.angle.getPitch());
+	float t = glm::radians(player.angle.getPitch());
 	io->pos.x = player.pos.x - std::sin(t) * 80.f;
 	io->pos.y = player.pos.y + 20.f; 
 	io->pos.z = player.pos.z + std::cos(t) * 80.f;

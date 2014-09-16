@@ -271,9 +271,9 @@ void ARX_NPC_SpawnMember(Entity * ioo, long num) {
 	io->stopped = 1;
 	
 	Vec3f vector;
-	vector.x = -std::sin(radians(io->angle.getPitch()));
-	vector.y = std::sin(radians(io->angle.getYaw())) * 2.f;
-	vector.z = std::cos(radians(io->angle.getPitch()));
+	vector.x = -std::sin(glm::radians(io->angle.getPitch()));
+	vector.y = std::sin(glm::radians(io->angle.getYaw())) * 2.f;
+	vector.z = std::cos(glm::radians(io->angle.getPitch()));
 	vector = glm::normalize(vector);
 	io->rubber = 0.6f;
 	

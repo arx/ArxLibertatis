@@ -313,8 +313,8 @@ void DrawGrille(CinematicGrid * grille, int col, int fx, CinematicLight * light,
 	TexturedVertex * d3dv = AllTLVertex;
 
 	LocalPos = *posgrille;
-	LocalSin = (float)sin(radians(angzgrille));
-	LocalCos = (float)cos(radians(angzgrille));
+	LocalSin = (float)sin(glm::radians(angzgrille));
+	LocalCos = (float)cos(glm::radians(angzgrille));
 
 	if((fx & 0x0000FF00) == FX_DREAM) {
 		float * dream = DreamTable;

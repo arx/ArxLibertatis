@@ -120,7 +120,7 @@ private:
 	float	fBetaRadCos;
 	float	fBetaRadSin;
 	void SetAngle(float afAngle) {
-		float fBetaRad = radians(afAngle);
+		float fBetaRad = glm::radians(afAngle);
 		fBetaRadCos = (float) cos(fBetaRad);
 		fBetaRadSin = (float) sin(fBetaRad);
 	}

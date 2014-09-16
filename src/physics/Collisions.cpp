@@ -456,15 +456,15 @@ bool CollidedFromBack(Entity * io,Entity * ioo)
 	ep.v[0].p.x=io->pos.x;
 	ep.v[0].p.z=io->pos.z;
 
-	float ft = radians(135.f + 90.f);
+	float ft = glm::radians(135.f + 90.f);
 	ep.v[1].p.x =  std::sin(ft) * 180.f;
 	ep.v[1].p.z = -std::cos(ft) * 180.f;
 
-	ft = radians(225.f + 90.f);
+	ft = glm::radians(225.f + 90.f);
 	ep.v[2].p.x =  std::sin(ft) * 180.f;
 	ep.v[2].p.z = -std::cos(ft) * 180.f;
 
-	ft=radians(270.f-io->angle.getPitch());
+	ft = glm::radians(270.f-io->angle.getPitch());
 	float ec=std::cos(ft);
 	float es=std::sin(ft);
 	EE_RotateY(&ep.v[1], &ep.tv[1], ec, es);

@@ -115,24 +115,24 @@ void MagicMissileSpell::Launch()
 		afBeta = player.angle.getPitch();
 		afAlpha = player.angle.getYaw();
 		Vec3f vector;
-		vector.x = -std::sin(radians(afBeta)) * std::cos(radians(afAlpha)) * 60.f;
-		vector.y = std::sin(radians(afAlpha)) * 60.f;
-		vector.z = std::cos(radians(afBeta)) * std::cos(radians(afAlpha)) * 60.f;
+		vector.x = -std::sin(glm::radians(afBeta)) * std::cos(glm::radians(afAlpha)) * 60.f;
+		vector.y = std::sin(glm::radians(afAlpha)) * 60.f;
+		vector.z = std::cos(glm::radians(afBeta)) * std::cos(glm::radians(afAlpha)) * 60.f;
 		
 		if(m_hand_group != -1) {
 			aePos = m_hand_pos + vector;
 		} else {
-			aePos.x = player.pos.x - std::sin(radians(afBeta)) + vector.x;
+			aePos.x = player.pos.x - std::sin(glm::radians(afBeta)) + vector.x;
 			aePos.y = player.pos.y + vector.y; //;
-			aePos.z = player.pos.z + std::cos(radians(afBeta)) + vector.z;
+			aePos.z = player.pos.z + std::cos(glm::radians(afBeta)) + vector.z;
 		}
 	} else {
 		afAlpha = 0;
 		afBeta = entities[m_caster]->angle.getPitch();
 		Vec3f vector;
-		vector.x = -std::sin(radians(afBeta)) * std::cos(radians(afAlpha)) * 60;
-		vector.y =  std::sin(radians(afAlpha)) * 60;
-		vector.z =  std::cos(radians(afBeta)) * std::cos(radians(afAlpha)) * 60;
+		vector.x = -std::sin(glm::radians(afBeta)) * std::cos(glm::radians(afAlpha)) * 60;
+		vector.y =  std::sin(glm::radians(afAlpha)) * 60;
+		vector.z =  std::cos(glm::radians(afBeta)) * std::cos(glm::radians(afAlpha)) * 60;
 		
 		if(m_hand_group != -1) {
 			aePos = m_hand_pos + vector;
@@ -145,11 +145,11 @@ void MagicMissileSpell::Launch()
 		if(ValidIONum(io->targetinfo)) {
 			Vec3f * p1 = &m_caster_pos;
 			Vec3f * p2 = &entities[io->targetinfo]->pos;
-			afAlpha = -(degrees(getAngle(p1->y, p1->z, p2->y, p2->z + glm::distance(Vec2f(p2->x, p2->z), Vec2f(p1->x, p1->z))))); //alpha entre orgn et dest;
+			afAlpha = -(glm::degrees(getAngle(p1->y, p1->z, p2->y, p2->z + glm::distance(Vec2f(p2->x, p2->z), Vec2f(p1->x, p1->z))))); //alpha entre orgn et dest;
 		} else if (ValidIONum(m_target)) {
 			Vec3f * p1 = &m_caster_pos;
 			Vec3f * p2 = &entities[m_target]->pos;
-			afAlpha = -(degrees(getAngle(p1->y, p1->z, p2->y, p2->z + glm::distance(Vec2f(p2->x, p2->z), Vec2f(p1->x, p1->z))))); //alpha entre orgn et dest;
+			afAlpha = -(glm::degrees(getAngle(p1->y, p1->z, p2->y, p2->z + glm::distance(Vec2f(p2->x, p2->z), Vec2f(p1->x, p1->z))))); //alpha entre orgn et dest;
 		}
 	}
 	

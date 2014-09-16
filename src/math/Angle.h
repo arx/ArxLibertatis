@@ -59,9 +59,9 @@ public:
 
 	explicit Angle(const glm::quat & quat) {
 		typename vec3_traits<T>::type v = glm::eulerAngles(quat);
-		m_yaw = degrees(v.x);
-		m_pitch = degrees(v.y);
-		m_roll = degrees(v.z);
+		m_yaw = glm::degrees(v.x);
+		m_pitch = glm::degrees(v.y);
+		m_roll = glm::degrees(v.z);
 	}
 
 	T getYaw() const {
@@ -210,16 +210,6 @@ inline float getAngle(float x, float y) {
 //! Get the angle of the 2D vector (x0,y0)--(x1,y1), in radians.
 inline float getAngle(float x0, float y0, float x1, float y1) {
 	return getAngle(x1 - x0, y1 - y0);
-}
-
-//! Convert from degrees to radians.
-inline float radians(float degrees) {
-	return degrees * (2 * PI/360);
-}
-
-//! Convert from radians to degrees.
-inline float degrees(float radians) {
-	return radians * (360 / (2 * PI));
 }
 
 #endif // ARX_MATH_ANGLE_H

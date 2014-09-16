@@ -1536,7 +1536,7 @@ CWindowMenu::CWindowMenu(Vec2i pos, Vec2i size)
 	eCurrentMenuState=NOP;
 
 
-	float fCalc	= fPosXCalc + (fDist * sin(radians(fAngle)));
+	float fCalc	= fPosXCalc + (fDist * sin(glm::radians(fAngle)));
 
 	m_pos.x = checked_range_cast<int>(fCalc);
 }
@@ -1557,7 +1557,7 @@ void CWindowMenu::AddConsole(CWindowMenuConsole *_pMenuConsoleElement) {
 
 void CWindowMenu::Update(float _fDTime) {
 
-	float fCalc	= fPosXCalc + (fDist * sin(radians(fAngle)));
+	float fCalc	= fPosXCalc + (fDist * sin(glm::radians(fAngle)));
 
 	m_pos.x = checked_range_cast<int>(fCalc);
 	fAngle += _fDTime * 0.08f;
