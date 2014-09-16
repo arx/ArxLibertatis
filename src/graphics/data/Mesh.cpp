@@ -1856,7 +1856,7 @@ void ComputeRoomDistance() {
 
 	memset(ad, 0, sizeof(ANCHOR_DATA)*nb_anchors);
 
-	std::vector<EERIE_PORTALS *> ptr(nb_anchors, NULL);
+	std::vector<EERIE_PORTALS *> ptr(nb_anchors, static_cast<EERIE_PORTALS *>(NULL));
 	
 	for(long i = 0; i < NbRoomDistance; i++) {
 		GetRoomCenter(i, &ad[i].pos);
