@@ -459,7 +459,7 @@ void ARX_INTERFACE_RenderCursorInternal(bool flag) {
 			if(fHighLightAng > 90.f)
 				fHighLightAng = 90.f;
 			
-			float fHLight = 100.f * sin(glm::radians(fHighLightAng));
+			float fHLight = 100.f * glm::sin(glm::radians(fHighLightAng));
 			
 			iHighLight = checked_range_cast<int>(fHLight);
 		} else {

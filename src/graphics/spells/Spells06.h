@@ -121,8 +121,8 @@ private:
 	float	fBetaRadSin;
 	void SetAngle(float afAngle) {
 		float fBetaRad = glm::radians(afAngle);
-		fBetaRadCos = (float) cos(fBetaRad);
-		fBetaRadSin = (float) sin(fBetaRad);
+		fBetaRadCos = glm::cos(fBetaRad);
+		fBetaRadSin = glm::sin(fBetaRad);
 	}
 	
 	void Split(Vec3f * v, int a, int b, float yo);

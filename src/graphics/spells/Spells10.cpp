@@ -150,8 +150,8 @@ void CControlTarget::Create(Vec3f aeSrc, float afBeta) {
 	eSrc = aeSrc;
 	
 	float fBetaRad = glm::radians(afBeta);
-	float fBetaRadCos = (float) cos(fBetaRad);
-	float fBetaRadSin = (float) sin(fBetaRad);
+	float fBetaRadCos = glm::cos(fBetaRad);
+	float fBetaRadSin = glm::sin(fBetaRad);
 	
 	eTarget = eSrc + Vec3f(-fBetaRadSin * 1000.f, 100.f, fBetaRadCos * 1000.f);
 	

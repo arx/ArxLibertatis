@@ -134,9 +134,9 @@ void CLightning::BuildS(LIGHTNING * pLInfo)
 		float fAngleZ = frand2() * (pLInfo->fAngleZMax - pLInfo->fAngleZMin) + pLInfo->fAngleZMin;
 
 		Vec3f av;
-		av.x = (float) cos(acos(avect.x) - glm::radians(fAngleX));
-		av.y = (float) sin(asin(avect.y) - glm::radians(fAngleY));
-		av.z = (float) tan(atan(avect.z) - glm::radians(fAngleZ));
+		av.x = glm::cos(glm::acos(avect.x) - glm::radians(fAngleX));
+		av.y = glm::sin(glm::asin(avect.y) - glm::radians(fAngleY));
+		av.z = glm::tan(glm::atan(avect.z) - glm::radians(fAngleZ));
 		av = glm::normalize(av);
 		avect = av;
 
@@ -357,7 +357,7 @@ void CLightning::Render()
 		float temp = 1.5f * fMySize;
 		Vec3f z_z = cnodetab[cnodetab[i].parent].f + randomVec(-temp, temp);
 		float zz = cnodetab[i].size + cnodetab[i].size * 0.3f * rnd();
-		float xx = (float)(cnodetab[i].size * cos(glm::radians(-fbeta)));
+		float xx = cnodetab[i].size * glm::cos(glm::radians(-fbeta));
 		cnodetab[i].f = z_z;
 		
 		Vec3f a = cnodetab[i].pos + z_z;
@@ -433,7 +433,7 @@ void CLightning::Render()
 		drawQuadRTP(mat, q);
 		}
 		
-		zz *= (float) sin(glm::radians(fbeta));
+		zz *= glm::sin(glm::radians(fbeta));
 		
 		{
 		TexturedQuad q;
@@ -813,7 +813,7 @@ void CIceField::Render()
 		Vec3f stitescale;
 		Color3f stitecolor;
 
-		stiteangle.setPitch((float)cos(glm::radians(tPos[i].x)) * 360);
+		stiteangle.setPitch(glm::cos(glm::radians(tPos[i].x)) * 360);
 		stitepos.x = tPos[i].x;
 		stitepos.y = eSrc.y;
 		stitepos.z = tPos[i].z;

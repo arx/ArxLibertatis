@@ -98,9 +98,9 @@ void CFireBall::Create(Vec3f aeSrc, float afBeta, float afAlpha)
 	eSrc.y = aeSrc.y;
 	eSrc.z = aeSrc.z + std::cos(glm::radians(afBeta)) * 60;
 
-	eMove.x = - std::sin(glm::radians(afBeta)) * 80 * cos(glm::radians(MAKEANGLE(afAlpha)));
-	eMove.y = sin(glm::radians(MAKEANGLE(afAlpha))) * 80;
-	eMove.z = + std::cos(glm::radians(afBeta)) * 80 * cos(glm::radians(MAKEANGLE(afAlpha)));
+	eMove.x = - std::sin(glm::radians(afBeta)) * 80 * glm::cos(glm::radians(MAKEANGLE(afAlpha)));
+	eMove.y = glm::sin(glm::radians(MAKEANGLE(afAlpha))) * 80;
+	eMove.z = + std::cos(glm::radians(afBeta)) * 80 * glm::cos(glm::radians(MAKEANGLE(afAlpha)));
 	
 	// Light
 	lLightId = LightHandle::Invalid;
@@ -169,8 +169,8 @@ void CIceProjectile::Create(Vec3f aeSrc, float afBeta, float fLevel, EntityHandl
 	SetDuration(ulDuration);
 	
 	float fBetaRad = glm::radians(afBeta);
-	float fBetaRadCos = (float) cos(fBetaRad);
-	float fBetaRadSin = (float) sin(fBetaRad);
+	float fBetaRadCos = glm::cos(fBetaRad);
+	float fBetaRadSin = glm::sin(fBetaRad);
 	
 	Vec3f s, e, h;
 
@@ -289,7 +289,7 @@ void CIceProjectile::Render()
 		Anglef stiteangle;
 		Color3f stitecolor;
 
-		stiteangle.setPitch((float) cos(glm::radians(icicle.pos.x)) * 360);
+		stiteangle.setPitch(glm::cos(glm::radians(icicle.pos.x)) * 360);
 		stiteangle.setYaw(0);
 		stiteangle.setRoll(0);
 		

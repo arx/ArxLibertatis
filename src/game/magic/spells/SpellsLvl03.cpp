@@ -249,9 +249,9 @@ void FireballSpell::Update(float timeDelta)
 			}
 		}
 
-		effect->eMove.x = - std::sin(glm::radians(afBeta)) * 100 * cos(glm::radians(MAKEANGLE(afAlpha)));
-		effect->eMove.y = sin(glm::radians(MAKEANGLE(afAlpha))) * 100;
-		effect->eMove.z = + std::cos(glm::radians(afBeta)) * 100 * cos(glm::radians(MAKEANGLE(afAlpha)));
+		effect->eMove.x = - std::sin(glm::radians(afBeta)) * 100 * glm::cos(glm::radians(MAKEANGLE(afAlpha)));
+		effect->eMove.y = glm::sin(glm::radians(MAKEANGLE(afAlpha))) * 100;
+		effect->eMove.z = + std::cos(glm::radians(afBeta)) * 100 * glm::cos(glm::radians(MAKEANGLE(afAlpha)));
 	}
 	
 	effect->eCurPos += effect->eMove * (timeDelta * 0.0045f);

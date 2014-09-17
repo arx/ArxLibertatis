@@ -79,8 +79,8 @@ void EERIE_CreateMatriceProj(float _fWidth, float _fHeight, EERIE_CAMERA * cam) 
 	float fFOV = glm::radians(_fFOV);
 	float fFarPlane = _fZFar;
 	float fNearPlane = _fZNear;
-	float w = fAspect * (cosf(fFOV / 2) / sinf(fFOV / 2));
-	float h =   1.0f  * (cosf(fFOV / 2) / sinf(fFOV / 2));
+	float w = fAspect * (glm::cos(fFOV / 2) / glm::sin(fFOV / 2));
+	float h =   1.0f  * (glm::cos(fFOV / 2) / glm::sin(fFOV / 2));
 	float Q = fFarPlane / (fFarPlane - fNearPlane);
 
 	memset(&ProjectionMatrix, 0, sizeof(glm::mat4x4));

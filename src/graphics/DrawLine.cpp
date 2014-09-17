@@ -97,9 +97,9 @@ void drawLineSphere(const Sphere & sphere, Color color) {
 			float b = j * ((2 * PI) / sections);
 
 			Vec3f pos;
-			pos.x = cos(b) * sin(a);
-			pos.y = sin(b) * sin(a);
-			pos.z = cos(a);
+			pos.x = glm::cos(b) * glm::sin(a);
+			pos.y = glm::sin(b) * glm::sin(a);
+			pos.z = glm::cos(a);
 
 			pos *= sphere.radius;
 			pos += sphere.origin;
@@ -136,10 +136,10 @@ void drawLineCylinder(const Cylinder & cyl, Color col) {
 	
 	for(long i = 0; i < 360 - STEPCYL; i += STEPCYL) {
 
-		float es = sin(glm::radians(MAKEANGLE((float)i))) * cyl.radius;
-		float ec = cos(glm::radians(MAKEANGLE((float)i))) * cyl.radius;
-		float es2 = sin(glm::radians(MAKEANGLE((float)(i + STEPCYL)))) * cyl.radius;
-		float ec2 = cos(glm::radians(MAKEANGLE((float)(i + STEPCYL)))) * cyl.radius;
+		float es = glm::sin(glm::radians(MAKEANGLE((float)i))) * cyl.radius;
+		float ec = glm::cos(glm::radians(MAKEANGLE((float)i))) * cyl.radius;
+		float es2 = glm::sin(glm::radians(MAKEANGLE((float)(i + STEPCYL)))) * cyl.radius;
+		float ec2 = glm::cos(glm::radians(MAKEANGLE((float)(i + STEPCYL)))) * cyl.radius;
 
 		// Draw low pos
 		drawLine(cyl.origin + Vec3f(es, 0.f, ec), cyl.origin + Vec3f(es2, 0.f, ec2),  col);

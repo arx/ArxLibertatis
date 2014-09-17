@@ -821,9 +821,9 @@ static void RenderWaterBatch() {
 float FluidTextureDisplacement(bool calcSin, const TexturedVertex& v, float time, float divVar1, float divVar2, 
                                float divVar3, float divVar4, float addVar1 = 0, float addVar2 = 0, float sign = 1) {
 	if(calcSin) {
-		return (v.p.x + addVar1)*(1.f/divVar1) + sign * (sin((v.p.x + addVar2)*(1.f/divVar2) + time * (1.f/divVar3))) * (1.f/divVar4);
+		return (v.p.x + addVar1)*(1.f/divVar1) + sign * (glm::sin((v.p.x + addVar2)*(1.f/divVar2) + time * (1.f/divVar3))) * (1.f/divVar4);
 	}
-	return (v.p.z + addVar1)*(1.f/divVar1) + sign * (cos((v.p.z + addVar2)*(1.f/divVar2) + time * (1.f/divVar3))) * (1.f/divVar4);
+	return (v.p.z + addVar1)*(1.f/divVar1) + sign * (glm::cos((v.p.z + addVar2)*(1.f/divVar2) + time * (1.f/divVar3))) * (1.f/divVar4);
 }
 
 void CalculateWaterDisplacement(float& fTu, float& fTv, EERIEPOLY* ep, float time, int vertIndex, int step) {
