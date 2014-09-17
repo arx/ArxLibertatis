@@ -334,7 +334,7 @@ static bool ANCHOR_AttemptValidCylinderPos(Cylinder & cyl, Entity * io,
 
 				float dist = std::max(glm::length(vector2D), 1.f);
 				float pente;
-				pente = EEfabs(anything) / dist * ( 1.0f / 2 ); 
+				pente = glm::abs(anything) / dist * ( 1.0f / 2 ); 
 				io->_npcdata->climb_count += pente;
 
 				if(io->_npcdata->climb_count > MAX_ALLOWED_PER_SECOND) {
@@ -579,7 +579,7 @@ bool CylinderAboveInvalidZone(const Cylinder & cyl) {
 			float vy;
 			GetTruePolyY(ep, pos, &vy);
 
-			if(EEfabs(vy - cyl.origin.y) > 160.f)
+			if(glm::abs(vy - cyl.origin.y) > 160.f)
 				failcount++;
 		}
 	}
@@ -627,7 +627,7 @@ static bool DirectAddAnchor_Original_Method(EERIE_BACKGROUND * eb, EERIE_BKG_INF
 		else
 		{
 			if ((testcyl.origin.y != currcyl.origin.y)
-			        && (EEfabs(testcyl.origin.y - pos->y) < 50))
+			        && (glm::abs(testcyl.origin.y - pos->y) < 50))
 			{
 				testcyl.radius -= INC_RADIUS;
 				currcyl = testcyl;
@@ -662,7 +662,7 @@ static bool DirectAddAnchor_Original_Method(EERIE_BACKGROUND * eb, EERIE_BKG_INF
 
 		if(closerThan(Vec2f(ad->pos.x, ad->pos.z), Vec2f(bestcyl.origin.x, bestcyl.origin.z), 45.f)) {
 			
-			if (EEfabs(ad->pos.y - bestcyl.origin.y) < 90.f) return false;
+			if (glm::abs(ad->pos.y - bestcyl.origin.y) < 90.f) return false;
 
 			EERIEPOLY * ep = ANCHOR_CheckInPolyPrecis(ad->pos);
 			EERIEPOLY * ep2 = ANCHOR_CheckInPolyPrecis(Vec3f(ad->pos.x, bestcyl.origin.y, ad->pos.z));
@@ -733,7 +733,7 @@ static bool AddAnchor_Original_Method(EERIE_BACKGROUND * eb, EERIE_BKG_INFO * eg
 				else
 				{
 					if ((testcyl.origin.y != currcyl.origin.y)
-					        && (EEfabs(testcyl.origin.y - pos->y) < 50))
+					        && (glm::abs(testcyl.origin.y - pos->y) < 50))
 					{
 						testcyl.radius -= INC_RADIUS;
 						currcyl = testcyl;
@@ -908,7 +908,7 @@ static void AnchorData_Create_Links_Original_Method(EERIE_BACKGROUND * eb) {
 						continue;
 					}
 					
-					if(EEfabs(p1.y - p2.y) > dd * 0.9f)
+					if(glm::abs(p1.y - p2.y) > dd * 0.9f)
 						continue;
 					
 					IO_PHYSICS ip;

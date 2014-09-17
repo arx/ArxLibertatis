@@ -260,7 +260,7 @@ bool Manage3DCursor(bool simulate) {
 			glm::quat rotation = glm::toQuat(toRotationMatrix(temp));
 			
 			if(SPECIAL_DRAGINTER_RENDER) {
-			if(EEfabs(lastanything) > EEfabs(height)) {
+			if(glm::abs(lastanything) > glm::abs(height)) {
 				TransformInfo t(collidpos, rotation, io->scale);
 
 				static const float invisibility = 0.5f;
@@ -275,7 +275,7 @@ bool Manage3DCursor(bool simulate) {
 			}
 			}
 		} else {
-			if(EEfabs(lastanything) > std::min(EEfabs(height), 12.0f)) {
+			if(glm::abs(lastanything) > std::min(glm::abs(height), 12.0f)) {
 				Entity * io = DRAGINTER;
 				ARX_PLAYER_Remove_Invisibility();
 				io->obj->pbox->active = 1;

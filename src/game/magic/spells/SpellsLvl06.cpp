@@ -192,7 +192,7 @@ void RiseDeadSpell::Update(float timeDelta)
 		
 		float anything = CheckAnythingInCylinder(phys, NULL, CFLAG_JUST_TEST);
 		
-		if(EEfabs(anything) < 30) {
+		if(glm::abs(anything) < 30) {
 			
 			const char * cls = "graph/obj3d/interactive/npc/undead_base/undead_base";
 			Entity * io = AddNPC(cls, -1, IO_IMMEDIATELOAD);

@@ -1348,7 +1348,7 @@ bool AttemptValidCylinderPos(Cylinder & cyl, Entity * io, CollisionFlags flags) 
 				}
 
 				float dist = std::max(glm::length(vector2D), 1.f);
-				float pente = EEfabs(anything) / dist * ( 1.0f / 2 ); 
+				float pente = glm::abs(anything) / dist * ( 1.0f / 2 ); 
 				io->_npcdata->climb_count += pente;
 
 				if(io->_npcdata->climb_count > MAX_ALLOWED_PER_SECOND) {
@@ -1567,7 +1567,7 @@ bool ARX_COLLISION_Move_Cylinder(IO_PHYSICS * ip, Entity * io, float MOVE_CYLIND
 		}
 
 		if(flags & CFLAG_NO_HEIGHT_MOD) {
-			if(EEfabs(ip->startpos.y - ip->cyl.origin.y) > 30.f)
+			if(glm::abs(ip->startpos.y - ip->cyl.origin.y) > 30.f)
 				return false;
 		}
 
@@ -1610,9 +1610,9 @@ bool IO_Visible(const Vec3f & orgn, const Vec3f & dest, EERIEPOLY * epp, Vec3f *
 	float dz = (dest.z - orgn.z);
 
 	// absolute ray incs
-	float adx = EEfabs(dx);
-	float ady = EEfabs(dy);
-	float adz = EEfabs(dz);
+	float adx = glm::abs(dx);
+	float ady = glm::abs(dy);
+	float adz = glm::abs(dz);
 
 	if(adx >= ady && adx >= adz) {
 		if(adx != dx)

@@ -380,7 +380,7 @@ void HarmSpell::Update(float timeDelta)
 	if(m_caster == PlayerEntityHandle)
 		scaley = 90.f;
 	else
-		scaley = EEfabs(entities[m_caster]->physics.cyl.height*( 1.0f / 2 ))+30.f;
+		scaley = glm::abs(entities[m_caster]->physics.cyl.height*( 1.0f / 2 ))+30.f;
 	
 	
 	float mov=std::sin((float)arxtime.get_frame_time()*( 1.0f / 800 ))*scaley;

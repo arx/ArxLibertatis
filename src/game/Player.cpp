@@ -1711,8 +1711,8 @@ void ARX_PLAYER_Manage_Visual() {
 						player.jumpphase = NotJumping;
 						goto retry;
 					} else if(ause0->cur_anim == alist[ANIM_JUMP_END_PART2]
-					         && EEfabs(player.physics.velocity.x)
-					             + EEfabs(player.physics.velocity.z) > (4.f/TARGET_DT)
+					         && glm::abs(player.physics.velocity.x)
+					             + glm::abs(player.physics.velocity.z) > (4.f/TARGET_DT)
 					         && ause0->ctime > 1) {
 						AcquireLastAnim(io);
 						player.jumpphase = NotJumping;
@@ -2122,7 +2122,7 @@ void PlayerMovementIterate(float DeltaTime) {
 			player.physics.cyl.origin = player.basePosition();
 		}
 		
-		if(EEfabs(lastposy - player.pos.y) < DeltaTime * 0.1f) {
+		if(glm::abs(lastposy - player.pos.y) < DeltaTime * 0.1f) {
 			TRUE_FIRM_GROUND = 1;
 		} else {
 			TRUE_FIRM_GROUND = 0;
@@ -2287,8 +2287,8 @@ void PlayerMovementIterate(float DeltaTime) {
 			float epcentery;
 			EERIEPOLY *ep = CheckInPoly(player.pos + Vec3f(0.f, 150.f, 0.f), &epcentery);
 			if(ep) {
-				if((ep->type & POLY_LAVA) && EEfabs(epcentery - (player.pos.y - player.baseHeight())) < 30) {
-					float mul = 1.f - (EEfabs(epcentery - (player.pos.y - player.baseHeight())) * (1.0f / 30));
+				if((ep->type & POLY_LAVA) && glm::abs(epcentery - (player.pos.y - player.baseHeight())) < 30) {
+					float mul = 1.f - (glm::abs(epcentery - (player.pos.y - player.baseHeight())) * (1.0f / 30));
 					const float LAVA_DAMAGE = 10.f;
 					float damages = LAVA_DAMAGE * framedelay * 0.01f * mul;
 					damages = ARX_SPELLS_ApplyFireProtection(entities.player(), damages);
@@ -2308,10 +2308,10 @@ void PlayerMovementIterate(float DeltaTime) {
 		}
 		player.physics.velocity.x *= dampen;
 		player.physics.velocity.z *= dampen;
-		if(EEfabs(player.physics.velocity.x) < 0.001f) {
+		if(glm::abs(player.physics.velocity.x) < 0.001f) {
 			player.physics.velocity.x = 0;
 		}
-		if(EEfabs(player.physics.velocity.z) < 0.001f) {
+		if(glm::abs(player.physics.velocity.z) < 0.001f) {
 			player.physics.velocity.z = 0;
 		}
 		
@@ -2354,8 +2354,8 @@ void PlayerMovementIterate(float DeltaTime) {
 		player.physics.forces = Vec3f_ZERO;
 		
 		// Check if player is already on firm ground AND not moving
-		if(EEfabs(player.physics.velocity.x) < 0.001f
-		   && EEfabs(player.physics.velocity.z) < 0.001f
+		if(glm::abs(player.physics.velocity.x) < 0.001f
+		   && glm::abs(player.physics.velocity.z) < 0.001f
 		   && player.onfirmground
 		   && player.jumpphase == NotJumping
 		) {

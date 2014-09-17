@@ -567,7 +567,7 @@ void CConfuse::Render() {
 		float t1 = rnd() * 0.4f + 0.4f;
 		float t2 = rnd() * 0.6f + 0.2f;
 		float t3 = rnd() * 0.4f + 0.4f;
-		while(EEfabs(t1 - t2) > 0.3f && EEfabs(t2 - t3) > 0.3f) {
+		while(glm::abs(t1 - t2) > 0.3f && glm::abs(t2 - t3) > 0.3f) {
 			t1 = rnd() * 0.4f + 0.4f;
 			t2 = rnd() * 0.6f + 0.2f;
 			t3 = rnd() * 0.4f + 0.4f;

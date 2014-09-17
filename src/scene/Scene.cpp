@@ -1192,8 +1192,8 @@ void ARX_PORTALS_Frustrum_RenderRoomTCullSoft(long room_num, const EERIE_FRUSTRU
 
 					Vec3f & norm = ep->nrml[k];
 
-					float fb=((1.f-dd)*6.f + (EEfabs(norm.x) + EEfabs(norm.y))) * 0.125f;
-					float fr=((.6f-dd)*6.f + (EEfabs(norm.z) + EEfabs(norm.y))) * 0.125f;
+					float fb=((1.f-dd)*6.f + (glm::abs(norm.x) + glm::abs(norm.y))) * 0.125f;
+					float fr=((.6f-dd)*6.f + (glm::abs(norm.z) + glm::abs(norm.y))) * 0.125f;
 
 					if(fr < 0.f)
 						fr = 0.f;

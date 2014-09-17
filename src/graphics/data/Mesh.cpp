@@ -154,7 +154,7 @@ long MakeTopObjString(Entity * io,  string & dest) {
 			&& player.pos.z > box.min.z
 			&& player.pos.z < box.max.z)
 	{
-		if(EEfabs(player.pos.y + 160.f - box.min.y) < 50.f)
+		if(glm::abs(player.pos.y + 160.f - box.min.y) < 50.f)
 			dest += " player";
 	}
 
@@ -170,7 +170,7 @@ long MakeTopObjString(Entity * io,  string & dest) {
 							&& e->pos.z > box.min.z
 							&& e->pos.z < box.max.z)
 					{
-						if(EEfabs(e->pos.y - box.min.y) < 40.f) {
+						if(glm::abs(e->pos.y - box.min.y) < 40.f) {
 							dest += ' ' + e->idString();
 						}
 					}
@@ -299,7 +299,7 @@ EERIEPOLY * CheckTopPoly(const Vec3f & pos) {
 		   && (pos.z >= ep->min.z) && (pos.z <= ep->max.z)
 		   && (PointIn2DPolyXZ(ep, pos.x, pos.z))) {
 			
-			if((EEfabs(ep->max.y - ep->min.y) > 50.f) && (pos.y - ep->center.y < 60.f)) {
+			if((glm::abs(ep->max.y - ep->min.y) > 50.f) && (pos.y - ep->center.y < 60.f)) {
 				continue;
 			}
 			
@@ -798,9 +798,9 @@ bool Visible(const Vec3f & orgn, const Vec3f & dest, EERIEPOLY * epp, Vec3f * hi
 	float dz = (dest.z - orgn.z);
 
 	// absolute ray incs
-	float adx = EEfabs(dx);
-	float ady = EEfabs(dy);
-	float adz = EEfabs(dz);
+	float adx = glm::abs(dx);
+	float ady = glm::abs(dy);
+	float adz = glm::abs(dz);
 
 	if(adx >= ady && adx >= adz) {
 		if(adx != dx)

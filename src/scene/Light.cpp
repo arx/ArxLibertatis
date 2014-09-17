@@ -617,7 +617,7 @@ float GetColorz(const Vec3f &pos) {
 		_ffg *= div;
 		_ffb *= div;
 		float ratio, ratio2;
-		ratio = EEfabs(needy - pos.y) * ( 1.0f / 300 );
+		ratio = glm::abs(needy - pos.y) * ( 1.0f / 300 );
 		ratio = (1.f - ratio);
 		ratio2 = 1.f - ratio;
 		ffr = ffr * ratio2 + _ffr * ratio;

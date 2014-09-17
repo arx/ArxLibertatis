@@ -30,9 +30,9 @@ void CopyVertices(EERIEPOLY * ep,long to, long from) {
 
 bool NearlyEqual(float a,float b)
 {
-	if (EEfabs(a-b)<0.01f) return true;
+	if (glm::abs(a-b)<0.01f) return true;
 
-	if (EEfabs(b-a)<0.01f) return true;
+	if (glm::abs(b-a)<0.01f) return true;
 
 	return false;
 }
@@ -64,7 +64,7 @@ bool Quadable(EERIEPOLY * ep, EERIEPOLY * ep2, float tolerance)
 
 	CalcFaceNormal(ep,ep->v);
 
-	if(fabs(glm::dot(ep->norm, ep2->norm)) < 1.f - tolerance)
+	if(glm::abs(glm::dot(ep->norm, ep2->norm)) < 1.f - tolerance)
 		return false;
 
 	for (long i=0;i<3;i++)
@@ -257,9 +257,9 @@ void ARX_PrepareBackgroundNRMLs() {
 
 						if(ep != ep2)
 							for(u8 k2 = 0; k2 < nbvert2; k2++) {
-								if(EEfabs(ep2->v[k2].p.x - ep->v[k].p.x) < 2.f
-								   && EEfabs(ep2->v[k2].p.y - ep->v[k].p.y) < 2.f
-								   && EEfabs(ep2->v[k2].p.z - ep->v[k].p.z) < 2.f
+								if(glm::abs(ep2->v[k2].p.x - ep->v[k].p.x) < 2.f
+								   && glm::abs(ep2->v[k2].p.y - ep->v[k].p.y) < 2.f
+								   && glm::abs(ep2->v[k2].p.z - ep->v[k].p.z) < 2.f
 								) {
 									if(k2 == 3) {
 										if(LittleAngularDiff(&cur_nrml, &ep2->norm2)) {

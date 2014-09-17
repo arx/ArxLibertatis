@@ -191,7 +191,7 @@ void SummonCreatureSpell::Update(float timeDelta)
 				phys.origin = m_targetPos;
 				float anything = CheckAnythingInCylinder(phys, NULL, CFLAG_JUST_TEST);
 
-				if(EEfabs(anything) < 30) {
+				if(glm::abs(anything) < 30) {
 				
 				long tokeep;
 				res::path cls;

@@ -137,7 +137,7 @@ void ARXDRAW_DrawInterShadows()
 				
 				Vec3f in;
 				in.y = ep->min.y - 3.f;
-				float r = 0.5f - ((float)EEfabs(io->obj->vertexlist3[k].v.y - in.y)) * (1.f/500);
+				float r = 0.5f - ((float)glm::abs(io->obj->vertexlist3[k].v.y - in.y)) * (1.f/500);
 				r -= io->invisibility;
 				r *= io->scale;
 				
@@ -176,7 +176,7 @@ void ARXDRAW_DrawInterShadows()
 				
 				Vec3f in;
 				in.y = ep->min.y - 3.f;
-				float r = 0.8f - ((float)EEfabs(io->obj->vertexlist3[origin].v.y - in.y)) * (1.f/500);
+				float r = 0.8f - ((float)glm::abs(io->obj->vertexlist3[origin].v.y - in.y)) * (1.f/500);
 				r *= io->obj->grouplist[k].siz;
 				r -= io->invisibility;
 				

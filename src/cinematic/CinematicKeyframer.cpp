@@ -53,7 +53,7 @@ ZeniMax Media Inc., Suite 120, Rockville, Maryland 20850 USA.
 
 static const float C_MIN_F32 = 1.175494351e-38F;
 inline bool C_NEQUAL_F32(float f1, float f2) {
-	return fabs(f1 - f2) >= C_MIN_F32;
+	return glm::abs(f1 - f2) >= C_MIN_F32;
 }
 
 using std::malloc;
@@ -358,7 +358,7 @@ float GetAngleInterpolation(float d, float e)
 {
 	float da = e - d;
 
-	if(fabs(da) > 180.f) {
+	if(glm::abs(da) > 180.f) {
 		if(da > 0.f)
 			da -= 360.f;
 		else

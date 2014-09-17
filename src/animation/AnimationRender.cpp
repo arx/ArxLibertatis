@@ -617,7 +617,7 @@ void AddFixedObjectHalo(const EERIE_FACE & face, const TransformInfo & t, const 
 		Vec3f temporary3D;
 		temporary3D = t.rotation * eobj->vertexlist[face.vid[o]].norm;
 
-		float power = 255.f-(float)EEfabs(255.f*(temporary3D.z)*( 1.0f / 2 ));
+		float power = 255.f- glm::abs(255.f*(temporary3D.z)*( 1.0f / 2 ));
 
 		power = glm::clamp(power, 0.f, 255.f);
 
@@ -787,8 +787,8 @@ void DrawEERIEInter_Render(EERIE_3DOBJ *eobj, const TransformInfo &t, Entity *io
 
 				Vec3f & norm = eobj->vertexlist[face.vid[n]].norm;
 
-				float fb=((1.f-dd)*6.f + (EEfabs(norm.x) + EEfabs(norm.y))) * 0.125f;
-				float fr=((.6f-dd)*6.f + (EEfabs(norm.z) + EEfabs(norm.y))) * 0.125f;
+				float fb=((1.f-dd)*6.f + (glm::abs(norm.x) + glm::abs(norm.y))) * 0.125f;
+				float fr=((.6f-dd)*6.f + (glm::abs(norm.z) + glm::abs(norm.y))) * 0.125f;
 
 				if(fr < 0.f)
 					fr = 0.f;
@@ -951,7 +951,7 @@ void AddAnimatedObjectHalo(HaloInfo & haloInfo, const unsigned short * paf, floa
 	ColorBGRA colors[3];
 
 	for(size_t o = 0; o < 3; o++) {
-		float tttz	= EEfabs(eobj->vertexlist3[paf[o]].norm.z) * ( 1.0f / 2 );
+		float tttz	= glm::abs(eobj->vertexlist3[paf[o]].norm.z) * ( 1.0f / 2 );
 		float power = 255.f - (float)(255.f * tttz);
 		power *= (1.f - invisibility);
 
@@ -1042,8 +1042,8 @@ void AddAnimatedObjectHalo(HaloInfo & haloInfo, const unsigned short * paf, floa
 			vert[1].color = 0xFF000000;
 
 			float valll;
-			valll = 0.005f + (EEfabs(tvList[first].p.z) - EEfabs(tvList[third].p.z))
-						   + (EEfabs(tvList[second].p.z) - EEfabs(tvList[third].p.z));
+			valll = 0.005f + (glm::abs(tvList[first].p.z) - glm::abs(tvList[third].p.z))
+						   + (glm::abs(tvList[second].p.z) - glm::abs(tvList[third].p.z));
 			valll = 0.0001f + valll * ( 1.0f / 10 );
 
 			if(valll < 0.f)

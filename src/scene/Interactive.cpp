@@ -356,7 +356,7 @@ bool ForceNPC_Above_Ground(Entity * io) {
 	if(io && (io->ioflags & IO_NPC) && !(io->ioflags & IO_PHYSICAL_OFF)) {
 		io->physics.cyl.origin = io->pos;
 		AttemptValidCylinderPos(io->physics.cyl, io, CFLAG_NO_INTERCOL);
-		if(EEfabs(io->pos.y - io->physics.cyl.origin.y) < 45.f) {
+		if(glm::abs(io->pos.y - io->physics.cyl.origin.y) < 45.f) {
 			io->pos.y = io->physics.cyl.origin.y;
 			return true;
 		}
@@ -1149,11 +1149,11 @@ bool ARX_INTERACTIVE_ConvertToValidPosForIO(Entity * io, Vec3f * target) {
 		phys.origin.z = target->z + modz;
 		float anything = CheckAnythingInCylinder(phys, io, CFLAG_JUST_TEST);
 
-		if(EEfabs(anything) < 150.f) {
+		if(glm::abs(anything) < 150.f) {
 			EERIEPOLY * ep = CheckInPoly(phys.origin + Vec3f(0.f, -20.f, 0.f));
 			EERIEPOLY * ep2 = CheckTopPoly(phys.origin + Vec3f(0.f, anything, 0.f));
 
-			if(ep && ep2 && EEfabs((phys.origin.y + anything) - ep->center.y) < 20.f) {
+			if(ep && ep2 && glm::abs((phys.origin.y + anything) - ep->center.y) < 20.f) {
 				target->x = phys.origin.x;
 				target->y = phys.origin.y + anything;
 				target->z = phys.origin.z;
@@ -1219,7 +1219,7 @@ void ComputeVVPos(Entity * io)
 		}
 
 		float diff = io->pos.y - vvp;
-		float fdiff = EEfabs(diff);
+		float fdiff = glm::abs(diff);
 		float eediff = fdiff;
 
 		if(fdiff > 120.f) {
@@ -1490,8 +1490,8 @@ Entity * AddFix(const res::path & classPath, EntityInstance instance, AddInterac
 	io->pos.x -= std::sin(glm::radians(player.angle.getPitch())) * 140.f;
 	io->pos.z += std::cos(glm::radians(player.angle.getPitch())) * 140.f;
 	io->lastpos = io->initpos = io->pos;
-	io->lastpos.x = io->initpos.x = EEfabs(io->initpos.x / 20) * 20.f;
-	io->lastpos.z = io->initpos.z = EEfabs(io->initpos.z / 20) * 20.f;
+	io->lastpos.x = io->initpos.x = glm::abs(io->initpos.x / 20) * 20.f;
+	io->lastpos.z = io->initpos.z = glm::abs(io->initpos.z / 20) * 20.f;
 	
 	float tempo;
 	EERIEPOLY * ep = CheckInPoly(io->pos + Vec3f(0.f, player.baseHeight(), 0.f));
@@ -1552,8 +1552,8 @@ static Entity * AddCamera(const res::path & classPath, EntityInstance instance) 
 	io->pos.x -= std::sin(glm::radians(player.angle.getPitch())) * 140.f;
 	io->pos.z += std::cos(glm::radians(player.angle.getPitch())) * 140.f;
 	io->lastpos = io->initpos = io->pos;
-	io->lastpos.x = io->initpos.x = EEfabs(io->initpos.x / 20) * 20.f;
-	io->lastpos.z = io->initpos.z = EEfabs(io->initpos.z / 20) * 20.f;
+	io->lastpos.x = io->initpos.x = glm::abs(io->initpos.x / 20) * 20.f;
+	io->lastpos.z = io->initpos.z = glm::abs(io->initpos.z / 20) * 20.f;
 	
 	float tempo;
 	EERIEPOLY * ep;
@@ -1606,8 +1606,8 @@ static Entity * AddMarker(const res::path & classPath, EntityInstance instance) 
 	io->pos.x -= std::sin(glm::radians(player.angle.getPitch())) * 140.f;
 	io->pos.z += std::cos(glm::radians(player.angle.getPitch())) * 140.f;
 	io->lastpos = io->initpos = io->pos;
-	io->lastpos.x = io->initpos.x = EEfabs(io->initpos.x / 20) * 20.f;
-	io->lastpos.z = io->initpos.z = EEfabs(io->initpos.z / 20) * 20.f;
+	io->lastpos.x = io->initpos.x = glm::abs(io->initpos.x / 20) * 20.f;
+	io->lastpos.z = io->initpos.z = glm::abs(io->initpos.z / 20) * 20.f;
 	
 	float tempo;
 	EERIEPOLY * ep;
@@ -1741,8 +1741,8 @@ Entity * AddNPC(const res::path & classPath, EntityInstance instance, AddInterac
 	io->pos.x -= std::sin(glm::radians(player.angle.getPitch())) * 140.f;
 	io->pos.z += std::cos(glm::radians(player.angle.getPitch())) * 140.f;
 	io->lastpos = io->initpos = io->pos;
-	io->lastpos.x = io->initpos.x = EEfabs(io->initpos.x / 20) * 20.f;
-	io->lastpos.z = io->initpos.z = EEfabs(io->initpos.z / 20) * 20.f;
+	io->lastpos.x = io->initpos.x = glm::abs(io->initpos.x / 20) * 20.f;
+	io->lastpos.z = io->initpos.z = glm::abs(io->initpos.z / 20) * 20.f;
 	
 	float tempo;
 	EERIEPOLY * ep = CheckInPoly(io->pos + Vec3f(0.f, player.baseHeight(), 0.f));

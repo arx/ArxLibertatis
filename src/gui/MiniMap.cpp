@@ -781,7 +781,7 @@ void MiniMap::drawDetectedEntities(int showLevel, float startX, float startY, fl
 		- (npc->pos.z + 200 + ofy - ofy2) * ( 1.0f / 100 ) * caseY + m_miniOffsetY[m_currentLevel] * ratio * m_modZ) / m_modZ;
 		
 		float d = fdist(Vec2f(m_player->pos.x, m_player->pos.z), Vec2f(npc->pos.x, npc->pos.z));
-		if(d > 800 || fabs(ents.player()->pos.y - npc->pos.y) > 250.f) {
+		if(d > 800 || glm::abs(ents.player()->pos.y - npc->pos.y) > 250.f) {
 			continue; // the NPC is too far away to be detected
 		}
 		

@@ -169,9 +169,9 @@ int coplanar_tri_tri(const float N[3], const float V0[3], const float V1[3], con
 	short i0, i1;
 	/* first project onto an axis-aligned plane, that maximizes the area */
 	/* of the triangles, compute indices: i0,i1. */
-	A[0] = EEfabs(N[0]);
-	A[1] = EEfabs(N[1]);
-	A[2] = EEfabs(N[2]);
+	A[0] = glm::abs(N[0]);
+	A[1] = glm::abs(N[1]);
+	A[2] = glm::abs(N[2]);
 
 	if (A[0] > A[1])
 	{
@@ -309,10 +309,10 @@ int tri_tri_intersect(const EERIE_TRI * VV, const EERIE_TRI * UU)
 	CROSS(D, N1, N2);
 
 	// compute and index to the largest component of D
-	max = (float)EEfabs(D[0]);
+	max = glm::abs(D[0]);
 	index = 0;
-	bb = (float)EEfabs(D[1]);
-	cc = (float)EEfabs(D[2]);
+	bb = glm::abs(D[1]);
+	cc = glm::abs(D[2]);
 
 	if (bb > max) max = bb, index = 1;
 

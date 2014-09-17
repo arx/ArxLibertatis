@@ -76,7 +76,7 @@ void EERIE_COLLISION_Cylinder_Create(Entity * io)
 	float d = 0.f;
 	float height = 0.f;
 	for(size_t i = 0; i < obj->vertexlist.size(); i++) {
-		if(i != (size_t)obj->origin && EEfabs(io->physics.cyl.origin.y - obj->vertexlist[i].v.y) < 20.f) {
+		if(i != (size_t)obj->origin && glm::abs(io->physics.cyl.origin.y - obj->vertexlist[i].v.y) < 20.f) {
 			d = max(d, glm::distance(io->physics.cyl.origin, obj->vertexlist[i].v));
 		}
 		height = max(height, io->physics.cyl.origin.y - obj->vertexlist[i].v.y);
@@ -200,7 +200,7 @@ float GetSphereRadiusForGroup(EERIE_3DOBJ * obj, Vec3f * center, Vec3f * dirvect
 		Vec3f targvect = (target - *center) * 1.f / distance;
 		float val = glm::dot(*dirvect, targvect);
 
-		if(fabs(val) < 1.2f) {
+		if(glm::abs(val) < 1.2f) {
 			if(distance > maxi)
 				distance = maxi;
 

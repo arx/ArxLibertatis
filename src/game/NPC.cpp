@@ -196,7 +196,7 @@ static void CheckHit(Entity * io, float ratioaim) {
 		for(size_t k = 0; k < ioo->obj->vertexlist.size(); k += 2) {
 			float dist = fdist(pos, entities[i]->obj->vertexlist3[k].v);
 
-			if(dist <= dist_limit && EEfabs(pos.y - entities[i]->obj->vertexlist3[k].v.y) < 60.f) {
+			if(dist <= dist_limit && glm::abs(pos.y - entities[i]->obj->vertexlist3[k].v.y) < 60.f) {
 				count++;
 
 				if(dist < mindist)
@@ -491,7 +491,7 @@ long ARX_NPC_GetNextAttainableNodeIncrement(Entity * io)
 		long pos = io->_npcdata->pathfind.list[io->_npcdata->pathfind.listpos+l_try];
 		io->physics.targetpos = ACTIVEBKG->anchors[pos].pos;
 
-		if(EEfabs(io->physics.startpos.y - io->physics.targetpos.y) > 60.f)
+		if(glm::abs(io->physics.startpos.y - io->physics.targetpos.y) > 60.f)
 			continue;
 
 		io->physics.targetpos.y += 60.f; // FAKE Gravity !
@@ -631,7 +631,7 @@ bool ARX_NPC_LaunchPathfind(Entity * io, EntityHandle target)
 	io->_npcdata->pathfind.truetarget = target;
 	
 	if ((closerThan(pos1, ACTIVECAM->orgTrans.pos, ACTIVECAM->cdepth) * square(1.0f / 2))
-	        &&	(EEfabs(pos1.y - pos2.y) < 50.f)
+	        &&	(glm::abs(pos1.y - pos2.y) < 50.f)
 	        && (closerThan(pos1, pos2, 520)) && (io->_npcdata->behavior & BEHAVIOUR_MOVE_TO)
 	        && (!(io->_npcdata->behavior & BEHAVIOUR_SNEAK))
 	        && (!(io->_npcdata->behavior & BEHAVIOUR_FLEE))
@@ -984,7 +984,7 @@ void ARX_PHYSICS_Apply() {
 
 		if(   ep
 		   && (ep->type & POLY_LAVA)
-		   && EEfabs(ep->center.y - io->pos.y) < 40
+		   && glm::abs(ep->center.y - io->pos.y) < 40
 		) {
 			ARX_PARTICLES_Spawn_Lava_Burn(&io->pos, io);
 
@@ -1119,8 +1119,8 @@ void FaceTarget2(Entity * io)
 
 	float rot = 0.33f * framedelay; 
 
-	if(EEfabs(tt) < rot)
-		rot = (float)EEfabs(tt);
+	if(glm::abs(tt) < rot)
+		rot = glm::abs(tt);
 
 	rot = -rot;
 
@@ -1508,7 +1508,7 @@ bool TryIOAnimMove(Entity * io, long animnum)
 	phys.targetpos = io->pos + trans2;
 	bool res = ARX_COLLISION_Move_Cylinder(&phys, io, 30, CFLAG_JUST_TEST | CFLAG_NPC);
 
-	if(res && EEfabs(phys.cyl.origin.y - io->pos.y) < 20.f)
+	if(res && glm::abs(phys.cyl.origin.y - io->pos.y) < 20.f)
 		return true;
 
 	return false;
@@ -2072,7 +2072,7 @@ static void ManageNPCMovement(Entity * io)
 				for(long n = 0; n < 4; n++) {
 					extraRotation->group_rotate[n].setPitch(extraRotation->group_rotate[n].getPitch() - extraRotation->group_rotate[n].getPitch() * (1.0f / 3));
 
-					if(fabs(extraRotation->group_rotate[n].getPitch()) < 0.01f)
+					if(glm::abs(extraRotation->group_rotate[n].getPitch()) < 0.01f)
 						extraRotation->group_rotate[n].setPitch(0.f);
 				}
 			} else {
@@ -2099,7 +2099,7 @@ static void ManageNPCMovement(Entity * io)
 			for(long n = 0; n < 4; n++) {
 				io->_npcdata->ex_rotate->group_rotate[n].setPitch(io->_npcdata->ex_rotate->group_rotate[n].getPitch() - io->_npcdata->ex_rotate->group_rotate[n].getPitch() * (1.0f / 3));
 
-				if(fabs(io->_npcdata->ex_rotate->group_rotate[n].getPitch()) < 0.01f)
+				if(glm::abs(io->_npcdata->ex_rotate->group_rotate[n].getPitch()) < 0.01f)
 					io->_npcdata->ex_rotate->group_rotate[n].setPitch(0.f);
 			}
 		}
@@ -2535,7 +2535,7 @@ static void ManageNPCMovement(Entity * io)
 						io->targetinfo = io->_npcdata->pathfind.truetarget;
 						GetTargetPos(io);
 
-						if(fabs(io->pos.y - io->target.y) > 200.f) {
+						if(glm::abs(io->pos.y - io->target.y) > 200.f) {
 							io->_npcdata->pathfind.listnb = -2;
 						}
 					}
@@ -2687,7 +2687,7 @@ Entity * ARX_NPC_GetFirstNPCInSight(Entity * ioo)
 		float aa = getAngle(orgn.x, orgn.z, dest.x, dest.z);
 		aa = MAKEANGLE(glm::degrees(aa));
 
-		if(EEfabs(AngularDifference(aa, ab)) < 110.f) {
+		if(glm::abs(AngularDifference(aa, ab)) < 110.f) {
 			if(dist_io < square(200)) {
 				if(found_dist > dist_io) {
 					found_io = io;
@@ -2778,7 +2778,7 @@ void CheckNPCEx(Entity * io) {
 		if(playerRoom > -1 && io->room > -1 && fdist > 2000.f) {
 			// nothing to do
 		} else if(ds < square(GetIORadius(io) + GetIORadius(entities.player()) + 15.f)
-		          && EEfabs(player.pos.y - io->pos.y) < 200.f) {
+		          && glm::abs(player.pos.y - io->pos.y) < 200.f) {
 			Visible = 1;
 		} else { // Make full visibility test
 			
@@ -2791,7 +2791,7 @@ void CheckNPCEx(Entity * io) {
 			float aa = getAngle(orgn.x, orgn.z, dest.x, dest.z);
 			aa = MAKEANGLE(glm::degrees(aa));
 			float ab = MAKEANGLE(io->angle.getPitch());
-			if(EEfabs(AngularDifference(aa, ab)) < 110.f) {
+			if(glm::abs(AngularDifference(aa, ab)) < 110.f) {
 				
 				// Check for Darkness/Stealth
 				if(CURRENT_PLAYER_COLOR > GetPlayerStealth() || player.torch

@@ -2353,7 +2353,7 @@ void ArxGame::manageKeyMouse() {
 						player.desiredangle.setYaw(301.f);
 				}
 
-				if(EEfabs(rotation.y) > 2.f)
+				if(glm::abs(rotation.y) > 2.f)
 					entities.player()->animBlend.lastanimtime = 0;
 
 				if(rotation.x != 0.f)

@@ -125,7 +125,7 @@ void ARX_PARTICLES_Spawn_Lava_Burn(Vec3f * poss, Entity * io) {
 			if(io->obj->facelist[num].facetype & POLY_HIDE) {
 				continue;
 			}
-			if(EEfabs(pos.y-io->obj->vertexlist3[io->obj->facelist[num].vid[0]].v.y) > 50.f) {
+			if(glm::abs(pos.y-io->obj->vertexlist3[io->obj->facelist[num].vid[0]].v.y) > 50.f) {
 				continue;
 			}
 			notok = -1;
@@ -326,21 +326,21 @@ void SpawnGroundSplat(const Sphere & sp, const Color3f & col, long flags) {
 
 			for(long k = 0; k < nbvert; k++) {
 				if(PointIn2DPolyXZ(&TheoricalSplat, ep->v[k].p.x, ep->v[k].p.z)
-					&& fabs(ep->v[k].p.y-py) < 100.f)
+					&& glm::abs(ep->v[k].p.y-py) < 100.f)
 				{
 					oki = true;
 					break;
 				}
 
 				if(PointIn2DPolyXZ(&TheoricalSplat, (ep->v[k].p.x+ep->center.x) * 0.5f, (ep->v[k].p.z+ep->center.z) * 0.5f)
-					&& fabs(ep->v[k].p.y-py) < 100.f)
+					&& glm::abs(ep->v[k].p.y-py) < 100.f)
 				{
 					oki = true;
 					break;
 				}
 			}
 
-			if(!oki && PointIn2DPolyXZ(&TheoricalSplat, ep->center.x, ep->center.z) && EEfabs(ep->center.y-py) < 100.f)
+			if(!oki && PointIn2DPolyXZ(&TheoricalSplat, ep->center.x, ep->center.z) && glm::abs(ep->center.y-py) < 100.f)
 				oki = true;
 
 			if(oki) {
@@ -374,7 +374,7 @@ void SpawnGroundSplat(const Sphere & sp, const Color3f & col, long flags) {
 					pb.rgb = col;
 
 					for(int k = 0; k < nbvert; k++) {
-						float vdiff=EEfabs(ep->v[k].p.y-RealSplatStart.y);
+						float vdiff=glm::abs(ep->v[k].p.y-RealSplatStart.y);
 						pb.u[k]=(ep->v[k].p.x-RealSplatStart.x)*hdiv;
 
 						if(pb.u[k]<0.5f)

@@ -308,9 +308,9 @@ void FlareLine(const Vec2s & pos0, const Vec2s & pos1, Entity * io)
 	float y1 = pos1.y;
 
 	float dx = (x1 - x0);
-	float adx = EEfabs(dx);
+	float adx = glm::abs(dx);
 	float dy = (y1 - y0);
-	float ady = EEfabs(dy);
+	float ady = glm::abs(dy);
 
 	if(adx > ady) {
 		if(x0 > x1) {

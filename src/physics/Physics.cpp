@@ -385,9 +385,9 @@ static bool ARX_EERIE_PHYSICS_BOX_Compute(PHYSICS_BOX_DATA * pbox, float framedi
 	   || IsObjectInField(pbox)
 	) {
 		colidd = 1;
-		float power = (EEfabs(pbox->vert[0].velocity.x)
-					   + EEfabs(pbox->vert[0].velocity.y)
-					   + EEfabs(pbox->vert[0].velocity.z)) * .01f;
+		float power = (glm::abs(pbox->vert[0].velocity.x)
+					   + glm::abs(pbox->vert[0].velocity.y)
+					   + glm::abs(pbox->vert[0].velocity.z)) * .01f;
 
 
 		if(!(ValidIONum(source) && (entities[source]->ioflags & IO_BODY_CHUNK)))

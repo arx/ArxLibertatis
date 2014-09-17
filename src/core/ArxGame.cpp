@@ -1639,7 +1639,7 @@ void ArxGame::speechControlledCinematic() {
 void ArxGame::handlePlayerDeath() {
 	if(player.lifePool.current <= 0) {
 		DeadTime += static_cast<long>(framedelay);
-		float mdist = EEfabs(player.physics.cyl.height)-60;
+		float mdist = glm::abs(player.physics.cyl.height)-60;
 
 		float startDistance = 40.f;
 
@@ -1688,7 +1688,7 @@ void ArxGame::handleCameraController() {
 		float delta_angle = AngleDifference(currentbeta, CAMERACONTROLLER->angle.getPitch());
 		float delta_angle_t = delta_angle * framedelay * ( 1.0f / 1000 );
 
-		if(EEfabs(delta_angle_t) > EEfabs(delta_angle))
+		if(glm::abs(delta_angle_t) > glm::abs(delta_angle))
 			delta_angle_t = delta_angle;
 
 		currentbeta += delta_angle_t;
