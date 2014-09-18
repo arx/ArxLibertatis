@@ -227,6 +227,12 @@ bool ArxGame::initialize()
 		return false;
 	}
 	
+	init = initGameData();
+	if(!init) {
+		LogCritical << "Failed to initialize the game data.";
+		return false;
+	}
+	
 	init = initWindow();
 	if(!init) {
 		LogCritical << "Failed to initialize the windowing subsystem.";
@@ -242,12 +248,6 @@ bool ArxGame::initialize()
 	init = initSound();
 	if(!init) {
 		LogCritical << "Failed to initialize the sound subsystem.";
-		return false;
-	}
-	
-	init = initGameData();
-	if(!init) {
-		LogCritical << "Failed to initialize the game data.";
 		return false;
 	}
 	
@@ -534,8 +534,6 @@ bool ArxGame::initGameData() {
 		LogCritical << "Error loading pak files";
 		return false;
 	}
-
-	ARX_SOUND_LoadData();
 	
 	savegames.update(true);
 	

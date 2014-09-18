@@ -415,17 +415,6 @@ bool ARX_SOUND_Init() {
 	
 	ARX_SOUND_LaunchUpdateThread();
 	
-	bIsActive = true;
-	
-	return true;
-}
-
-void ARX_SOUND_LoadData() {
-	
-	if(!bIsActive) {
-		return;
-	}
-	
 	// Load samples
 	ARX_SOUND_CreateStaticSamples();
 	ARX_SOUND_CreateMaterials();
@@ -435,10 +424,14 @@ void ARX_SOUND_LoadData() {
 	// Load environments, enable environment system and set default one if required
 	ARX_SOUND_CreateEnvironments();
 	
+	bIsActive = true;
+	
 	if(config.audio.eax) {
 		audio::setReverbEnabled(true);
 		ARX_SOUND_EnvironmentSet("alley.aef");
 	}
+	
+	return true;
 }
  
 void ARX_SOUND_Release() {

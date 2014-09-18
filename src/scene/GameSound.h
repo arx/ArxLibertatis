@@ -225,7 +225,6 @@ extern audio::SampleId SND_SPELL_VISION_LOOP;
 bool ARX_MATERIAL_GetNameById(long id, char * name);
 
 bool ARX_SOUND_Init();
-void ARX_SOUND_LoadData();
 void ARX_SOUND_Release();
 
 long ARX_SOUND_IsEnabled();
