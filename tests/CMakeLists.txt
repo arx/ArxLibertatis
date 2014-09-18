@@ -9,6 +9,7 @@ set(ENABLE_TESTING TRUE)
 
 include_directories(
 	../src
+	../
 )
 
 add_executable(arxtest

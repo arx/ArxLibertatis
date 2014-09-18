@@ -22,6 +22,7 @@
 
 #include <sstream>
 #include <iomanip>
+#include <iostream>
 
 #include <glm/glm.hpp>
 #include <glm/gtc/matrix_access.hpp>
@@ -103,6 +104,22 @@ namespace CppUnit {
 				ost << std::endl;
 			}
 			
+			return ost.str();
+		}
+	};
+	
+	template <>
+	struct assertion_traits<Color> {
+		static bool equal(const Color & col, const Color & other) {
+			return col.r == other.r && col.g == other.g && col.b == other.b && col.a == other.a;
+		}
+		
+		static std::string toString(const Color &col) {
+			OStringStream ost;
+			ost << std::setw(3) << int(col.r) << "r ";
+			ost << std::setw(3) << int(col.g) << "g ";
+			ost << std::setw(3) << int(col.b) << "b ";
+			ost << std::setw(3) << int(col.a) << "a";
 			return ost.str();
 		}
 	};

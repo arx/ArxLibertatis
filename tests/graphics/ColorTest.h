@@ -27,11 +27,11 @@
 
 class ColorTest : public CppUnit::TestFixture {
 	CPPUNIT_TEST_SUITE(ColorTest);
-	CPPUNIT_TEST(Color3fToColorBGRA);
+	CPPUNIT_TEST(ColorTypeConversionTests);
 	CPPUNIT_TEST_SUITE_END();
 
 public:
-	void Color3fToColorBGRA();
+	void ColorTypeConversionTests();
 };
 
 CPPUNIT_TEST_SUITE_REGISTRATION(ColorTest);
