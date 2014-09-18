@@ -23,6 +23,8 @@
 #include <limits>
 #include <algorithm>
 
+#include <boost/serialization/strong_typedef.hpp>
+
 #include "platform/Platform.h"
 
 template <class T>
@@ -37,10 +39,10 @@ struct ColorLimits<float> {
 	inline static float max() { return 1.f; }
 };
 
-typedef u32 ColorBGR;
-typedef u32 ColorRGB;
-typedef u32 ColorRGBA;
-typedef u32 ColorBGRA;
+BOOST_STRONG_TYPEDEF(u32, ColorBGR)
+BOOST_STRONG_TYPEDEF(u32, ColorRGB)
+BOOST_STRONG_TYPEDEF(u32, ColorRGBA)
+BOOST_STRONG_TYPEDEF(u32, ColorBGRA)
 
 /*!
  * A color with red, blue and green components.
@@ -88,7 +90,7 @@ public:
 	}
 	
 	inline ColorBGRA toBGR(u8 _a = Limits::max()) const {
-		return byteval(b) | (byteval(g) << 8) | (byteval(r) << 16) | (u32(_a) << 24);
+		return ColorBGRA(byteval(b) | (byteval(g) << 8) | (byteval(r) << 16) | (u32(_a) << 24));
 	}
 	
 	inline static u32 byteval(T val) {
@@ -213,11 +215,11 @@ public:
 	}
 	
 	inline static Color4 fromRGBA(ColorRGBA rgba) {
-		return fromRGB(rgba, C3::value(rgba >> 24));
+		return fromRGB(ColorRGB(rgba), C3::value(rgba >> 24));
 	}
 	
 	inline static Color4 fromBGRA(ColorBGRA bgra) {
-		return fromBGR(bgra, C3::value(bgra >> 24));
+		return fromBGR(ColorBGR(bgra), C3::value(bgra >> 24));
 	}
 	
 	template <class O>

@@ -273,7 +273,7 @@ void Cinematic::DeleteDeviceObjects() {
 
 static float LightRND;
 
-int CalculLight(CinematicLight * light, Vec2f pos, int col)
+ColorBGRA CalculLight(CinematicLight * light, Vec2f pos, ColorBGRA col)
 {
 	float	ra = (float)sqrt((light->pos.x - pos.x) * (light->pos.x - pos.x) + (light->pos.y - pos.y) * (light->pos.y - pos.y));
 
@@ -306,7 +306,7 @@ void TransformLocalVertex(Vec3f * vbase, TexturedVertex * d3dv) {
 	d3dv->p.z = vbase->z + LocalPos.z;
 }
 
-void DrawGrille(CinematicGrid * grille, int col, int fx, CinematicLight * light, Vec3f * posgrille, float angzgrille)
+void DrawGrille(CinematicGrid * grille, ColorBGRA col, int fx, CinematicLight * light, Vec3f * posgrille, float angzgrille)
 {
 	int nb = grille->m_nbvertexs;
 	Vec3f * v = grille->m_vertexs;
@@ -404,7 +404,7 @@ void Cinematic::Render(float FDIFF) {
 		tb = m_bitmaps[numbitmap];
 
 		//fx
-		int col = 0x00FFFFFF;
+		ColorBGRA col = ColorBGRA(0x00FFFFFF);
 
 		switch(fx & 0x000000FF) {
 			case FX_FADEIN:

@@ -1470,7 +1470,7 @@ void CheckboxWidget::Render() {
 	if(!vTex.empty()) {
 		TextureContainer *pTex = vTex[iState];
 		
-		Color color = (bCheck) ? Color::white : Color::fromBGRA(0xFF3F3F3F);
+		Color color = (bCheck) ? Color::white : Color::fromBGRA(ColorBGRA(0xFF3F3F3F));
 		
 		float iY = 0;
 		{
@@ -2461,7 +2461,7 @@ void ButtonWidget::Render() {
 
 	//affichage de la texture
 	if(pTex) {
-		Color color = (bCheck) ? Color::white : Color::fromBGRA(0xFF3F3F3F);
+		Color color = (bCheck) ? Color::white : Color::fromBGRA(ColorBGRA(0xFF3F3F3F));
 		
 		EERIEDrawBitmap2(Rectf(rZone), 0, pTex, color);
 	}

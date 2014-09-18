@@ -128,6 +128,6 @@ private:
 	EERIE_CAMERA	m_camera;
 };
 
-void DrawGrille(CinematicGrid * grille, int col, int fx, CinematicLight * light, Vec3f * posgrillesuiv, float angzgrillesuiv);
+void DrawGrille(CinematicGrid * grille, ColorBGRA col, int fx, CinematicLight * light, Vec3f * posgrillesuiv, float angzgrillesuiv);
 
 #endif // ARX_CINEMATIC_CINEMATIC_H

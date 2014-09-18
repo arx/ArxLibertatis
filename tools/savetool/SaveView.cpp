@@ -1572,7 +1572,7 @@ int view_io(SaveBlock & save, const char * dat, size_t size) {
 				}
 			}
 			
-			Color c = Color::fromBGRA(as->blood_color);
+			Color c = Color::fromBGRA(ColorBGRA(as->blood_color));
 			if(c != Color::red) {
 				cout << "  Blood color: (" << (int)c.r << ", " << (int)c.g << ", " << (int)c.b << ')' << endl;
 			}

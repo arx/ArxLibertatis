@@ -607,7 +607,7 @@ float GetColorz(const Vec3f &pos) {
 		ApplyTileLights(ep, epdata.p);
 
 		for(long i = 0; i < to; i++) {
-			Color col = Color::fromBGR(ep->tv[i].color);
+			Color col = Color::fromBGRA(ep->tv[i].color);
 			_ffr += float(col.r);
 			_ffg += float(col.g);
 			_ffb += float(col.b);
@@ -674,7 +674,7 @@ ColorBGRA ApplyLight(const glm::quat * quat, const Vec3f & position, const Vec3f
 	u8 ig = clipByte255(tempColor.g);
 	u8 ib = clipByte255(tempColor.b);
 
-	return (0xFF000000L | (ir << 16) | (ig << 8) | (ib));
+	return ColorBGRA(0xFF000000L | (ir << 16) | (ig << 8) | (ib));
 }
 
 void ApplyTileLights(EERIEPOLY * ep, const Vec2s & pos)

@@ -28,17 +28,16 @@ void ColorTest::ColorTypeConversionTests()
 	Color3f white(1.f, 1.f, 1.f);
 
 	ColorBGRA result = white.toBGR(255);
-
-	CPPUNIT_ASSERT_EQUAL(0xFFFFFFFF, result);
+	CPPUNIT_ASSERT_EQUAL(ColorBGRA(0xFFFFFFFF), result);
 	
-	CPPUNIT_ASSERT_EQUAL(Color::fromRGBA(0xFF000000), Color(0, 0, 0, 255));
-	CPPUNIT_ASSERT_EQUAL(Color::fromRGBA(0x00FF0000), Color(0, 0, 255, 0));
-	CPPUNIT_ASSERT_EQUAL(Color::fromRGBA(0x0000FF00), Color(0, 255, 0, 0));
-	CPPUNIT_ASSERT_EQUAL(Color::fromRGBA(0x000000FF), Color(255, 0, 0, 0));
+	CPPUNIT_ASSERT_EQUAL(Color::fromRGBA(ColorRGBA(0xFF000000)), Color(0, 0, 0, 255));
+	CPPUNIT_ASSERT_EQUAL(Color::fromRGBA(ColorRGBA(0x00FF0000)), Color(0, 0, 255, 0));
+	CPPUNIT_ASSERT_EQUAL(Color::fromRGBA(ColorRGBA(0x0000FF00)), Color(0, 255, 0, 0));
+	CPPUNIT_ASSERT_EQUAL(Color::fromRGBA(ColorRGBA(0x000000FF)), Color(255, 0, 0, 0));
 	
-	CPPUNIT_ASSERT_EQUAL(Color::fromBGRA(0xFF000000), Color(0, 0, 0, 255));
-	CPPUNIT_ASSERT_EQUAL(Color::fromBGRA(0x00FF0000), Color(255, 0, 0, 0));
-	CPPUNIT_ASSERT_EQUAL(Color::fromBGRA(0x0000FF00), Color(0, 255, 0, 0));
-	CPPUNIT_ASSERT_EQUAL(Color::fromBGRA(0x000000FF), Color(0, 0, 255, 0));
-	CPPUNIT_ASSERT_EQUAL(Color::fromBGRA(0xFFa8d0df), Color(168, 208, 223, 255));
+	CPPUNIT_ASSERT_EQUAL(Color::fromBGRA(ColorBGRA(0xFF000000)), Color(0, 0, 0, 255));
+	CPPUNIT_ASSERT_EQUAL(Color::fromBGRA(ColorBGRA(0x00FF0000)), Color(255, 0, 0, 0));
+	CPPUNIT_ASSERT_EQUAL(Color::fromBGRA(ColorBGRA(0x0000FF00)), Color(0, 255, 0, 0));
+	CPPUNIT_ASSERT_EQUAL(Color::fromBGRA(ColorBGRA(0x000000FF)), Color(0, 0, 255, 0));
+	CPPUNIT_ASSERT_EQUAL(Color::fromBGRA(ColorBGRA(0xFFa8d0df)), Color(168, 208, 223, 255));
 }

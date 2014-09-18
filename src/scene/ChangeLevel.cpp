@@ -2258,7 +2258,7 @@ static Entity * ARX_CHANGELEVEL_Pop_IO(const string & ident, long num) {
 					*io->_npcdata->ex_rotate = as->ex_rotate;
 				}
 				
-				io->_npcdata->blood_color = Color::fromBGRA(as->blood_color);
+				io->_npcdata->blood_color = Color::fromBGRA(ColorBGRA(as->blood_color));
 				
 				break;
 			}

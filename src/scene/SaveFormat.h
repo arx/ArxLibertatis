@@ -1087,7 +1087,7 @@ struct SavedCamera {
 		
 		a.smoothing = smoothing;
 		
-		a.bkgcolor = Color::fromBGRA(bkgcolor);
+		a.bkgcolor = Color::fromBGRA(ColorBGRA(bkgcolor));
 		a.cdepth = cdepth;
 		
 		a.size = size;
