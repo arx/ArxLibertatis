@@ -537,7 +537,7 @@ void ARX_INTERFACE_RenderCursorInternal(bool flag) {
 						}
 					}
 				} else {
-					EERIEDrawBitmap(Rectf(mousePos, size.x, size.y), 0.00001f, tc, Color::fromBGRA(ColorBGRA(0xFFFFAA66)));
+					EERIEDrawBitmap(Rectf(mousePos, size.x, size.y), 0.00001f, tc, Color(255, 170, 102, 255));
 				}
 			}
 			
