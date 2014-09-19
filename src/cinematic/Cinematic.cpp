@@ -404,7 +404,7 @@ void Cinematic::Render(float FDIFF) {
 		tb = m_bitmaps[numbitmap];
 
 		//fx
-		ColorBGRA col = Color(255, 255, 255, 0).toBGRA();
+		Color col = Color(255, 255, 255, 0);
 
 		switch(fx & 0x000000FF) {
 			case FX_FADEIN:
@@ -443,12 +443,12 @@ void Cinematic::Render(float FDIFF) {
 		PrepareCamera(&m_camera, g_size);
 		SetActiveCamera(&m_camera);
 
-		int alpha = ((int)(a * 255.f)) << 24;
+		int alpha = (int)(a * 255.f);
 
 		if(force ^ 1)
-			alpha = 0xFF000000;
-
-		col |= alpha;
+			alpha = 255;
+		
+		col.a = alpha;
 
 		CinematicLight lightt, *l = NULL;
 
@@ -471,7 +471,7 @@ void Cinematic::Render(float FDIFF) {
 		}
 
 		if(tb->grid.m_nbvertexs)
-			DrawGrille(&tb->grid, col, fx, l, &posgrille, angzgrille);
+			DrawGrille(&tb->grid, col.toBGRA(), fx, l, &posgrille, angzgrille);
 
 		//PASS #2
 		if(force & 1) {
@@ -491,9 +491,8 @@ void Cinematic::Render(float FDIFF) {
 
 			tb = m_bitmaps[numbitmapsuiv];
 
-			alpha = 0xFF000000 - alpha;
-			col &= 0x00FFFFFF;
-			col |= alpha;
+			alpha = 255 - alpha;
+			col.a = alpha;
 
 			l = NULL;
 
@@ -510,7 +509,7 @@ void Cinematic::Render(float FDIFF) {
 			}
 
 			if(tb->grid.m_nbvertexs)
-				DrawGrille(&tb->grid, col, fx, l, &posgrillesuiv, angzgrillesuiv);
+				DrawGrille(&tb->grid, col.toBGRA(), fx, l, &posgrillesuiv, angzgrillesuiv);
 		}
 
 		//effets qui continuent avec le temps

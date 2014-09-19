@@ -63,7 +63,7 @@ static Vec3f OldPos[NBOLDPOS];
 static float OldAz[NBOLDPOS];
 
 /*---------------------------------------------------------------------------------*/
-ColorBGRA FX_FadeIN(float a, ColorBGRA color, ColorBGRA colord)
+Color FX_FadeIN(float a, ColorBGRA color, ColorBGRA colord)
 {
 	float	r, g, b;
 	float	rd, gd, bd;
@@ -82,11 +82,11 @@ ColorBGRA FX_FadeIN(float a, ColorBGRA color, ColorBGRA colord)
 	g = (g - gd) * a + gd;
 	b = (b - bd) * a + bd;
 	
-	return Color((int)r, (int)g, (int)b, 0).toBGR();
+	return Color((int)r, (int)g, (int)b, 0);
 
 }
 /*---------------------------------------------------------------------------------*/
-ColorBGRA FX_FadeOUT(float a, ColorBGRA color, ColorBGRA colord)
+Color FX_FadeOUT(float a, ColorBGRA color, ColorBGRA colord)
 {
 	float	r, g, b;
 	float	rd, gd, bd;
@@ -107,7 +107,7 @@ ColorBGRA FX_FadeOUT(float a, ColorBGRA color, ColorBGRA colord)
 	g = (g - gd) * a + gd;
 	b = (b - bd) * a + bd;
 
-	return Color((int)r, (int)g, (int)b, 0).toBGR();
+	return Color((int)r, (int)g, (int)b, 0);
 }
 
 static float LastTime;
