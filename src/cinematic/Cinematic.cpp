@@ -536,7 +536,7 @@ void Cinematic::Render(float FDIFF) {
 		//post fx
 		switch(fx & 0x00ff0000) {
 			case FX_FLASH:
-				FlashBlancEnCours = FX_FlashBlanc(Vec2f(cinRenderSize), speed, colorflash, GetTrackFPS(), FPS);
+				FlashBlancEnCours = FX_FlashBlanc(Vec2f(cinRenderSize), speed, Color::fromBGRA(colorflash), GetTrackFPS(), FPS);
 				break;
 			case FX_APPEAR:
 

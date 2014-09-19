@@ -158,7 +158,7 @@ bool FX_Blur(Cinematic *c, CinematicBitmap *tb, EERIE_CAMERA &camera)
 }
 
 //POST FX
-bool FX_FlashBlanc(Vec2f size, float speed, ColorBGRA color, float fps, float currfps) {
+bool FX_FlashBlanc(Vec2f size, float speed, Color color, float fps, float currfps) {
 	
 	if(FlashAlpha < 0.f)
 		return false;
@@ -170,9 +170,8 @@ bool FX_FlashBlanc(Vec2f size, float speed, ColorBGRA color, float fps, float cu
 	GRenderer->GetTextureStage(0)->setAlphaOp(TextureStage::ArgDiffuse);
 	GRenderer->SetBlendFunc(Renderer::BlendSrcAlpha, Renderer::BlendOne);
 	
-	ColorBGRA col = ColorBGRA(255.f * FlashAlpha);
-	col <<= 24;
-	col |= color;
+	color.a = 255.f * FlashAlpha;
+	ColorBGRA col = color.toBGRA();
 	
 	TexturedVertex v[4];
 	v[0].p = Vec3f(0.f, 0.f, 0.01f);
