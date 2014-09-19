@@ -97,9 +97,9 @@ public:
 	bool projectload;
 	short ti;
 	short force;
-	ColorBGRA color;
-	ColorBGRA colord;
-	ColorBGRA colorflash;
+	Color color;
+	Color colord;
+	Color colorflash;
 	float speed;
 	int idsound;
 	CinematicLight light;
@@ -128,6 +128,6 @@ private:
 	EERIE_CAMERA	m_camera;
 };
 
-void DrawGrille(CinematicGrid * grille, ColorBGRA col, int fx, CinematicLight * light, Vec3f * posgrillesuiv, float angzgrillesuiv);
+void DrawGrille(CinematicGrid * grille, Color col, int fx, CinematicLight * light, Vec3f * posgrillesuiv, float angzgrillesuiv);
 
 #endif // ARX_CINEMATIC_CINEMATIC_H

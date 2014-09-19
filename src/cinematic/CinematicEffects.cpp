@@ -63,20 +63,18 @@ static Vec3f OldPos[NBOLDPOS];
 static float OldAz[NBOLDPOS];
 
 /*---------------------------------------------------------------------------------*/
-Color FX_FadeIN(float a, ColorBGRA color, ColorBGRA colord)
+Color FX_FadeIN(float a, Color color, Color colord)
 {
 	float	r, g, b;
 	float	rd, gd, bd;
 	
-	Color colA = Color::fromBGRA(color);
-	r = colA.r;
-	g = colA.g;
-	b = colA.b;
+	r = color.r;
+	g = color.g;
+	b = color.b;
 	
-	Color colB = Color::fromBGRA(colord);
-	rd = colB.r;
-	gd = colB.g;
-	bd = colB.b;
+	rd = colord.r;
+	gd = colord.g;
+	bd = colord.b;
 
 	r = (r - rd) * a + rd;
 	g = (g - gd) * a + gd;
@@ -86,22 +84,20 @@ Color FX_FadeIN(float a, ColorBGRA color, ColorBGRA colord)
 
 }
 /*---------------------------------------------------------------------------------*/
-Color FX_FadeOUT(float a, ColorBGRA color, ColorBGRA colord)
+Color FX_FadeOUT(float a, Color color, Color colord)
 {
 	float	r, g, b;
 	float	rd, gd, bd;
 
 	a = 1.f - a;
-
-	Color colA = Color::fromBGRA(color);
-	r = colA.r;
-	g = colA.g;
-	b = colA.b;
 	
-	Color colB = Color::fromBGRA(colord);
-	rd = colB.r;
-	gd = colB.g;
-	bd = colB.b;
+	r = color.r;
+	g = color.g;
+	b = color.b;
+	
+	rd = colord.r;
+	gd = colord.g;
+	bd = colord.b;
 
 	r = (r - rd) * a + rd;
 	g = (g - gd) * a + gd;
@@ -146,7 +142,7 @@ bool FX_Blur(Cinematic *c, CinematicBitmap *tb, EERIE_CAMERA &camera)
 		PrepareCamera(&camera, g_size);
 		
 		Color col = Color(255, 255, 255, int(alpha));
-		DrawGrille(&tb->grid, col.toBGRA(), 0, NULL, &c->posgrille, c->angzgrille);
+		DrawGrille(&tb->grid, col, 0, NULL, &c->posgrille, c->angzgrille);
 
 		alpha += dalpha;
 		pos++;

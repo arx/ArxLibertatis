@@ -76,7 +76,7 @@ extern float DreamTable[];
 
 static bool FlashBlancEnCours;
 static float OldSpeedFlashBlanc;
-static ColorBGRA OldColorFlashBlanc;
+static Color OldColorFlashBlanc;
 
 extern float	FlashAlpha;
 
@@ -184,9 +184,9 @@ void Cinematic::New() {
 	key.force = 1;
 	key.pos = pos;
 	key.angz = angz;
-	key.color = Color(255, 255, 255, 0).toBGRA();
-	key.colord = Color(255, 255, 255, 0).toBGRA();
-	key.colorf = Color(255, 255, 255, 0).toBGRA();
+	key.color = Color(255, 255, 255, 0);
+	key.colord = Color(255, 255, 255, 0);
+	key.colorf = Color(255, 255, 255, 0);
 	key.idsound = -1;
 	key.speed = 1.f;
 	key.posgrille = posgrille;
@@ -205,9 +205,9 @@ void Cinematic::New() {
 	key.force = 1;
 	key.pos = pos;
 	key.angz = angz;
-	key.color = Color(255, 255, 255, 0).toBGRA();
-	key.colord = Color(255, 255, 255, 0).toBGRA();
-	key.colorf = Color(255, 255, 255, 0).toBGRA();
+	key.color = Color(255, 255, 255, 0);
+	key.colord = Color(255, 255, 255, 0);
+	key.colorf = Color(255, 255, 255, 0);
 	key.idsound = -1;
 	key.speed = 1.f;
 	key.posgrille = posgrille;
@@ -273,12 +273,12 @@ void Cinematic::DeleteDeviceObjects() {
 
 static float LightRND;
 
-ColorBGRA CalculLight(CinematicLight * light, Vec2f pos, ColorBGRA col)
+Color CalculLight(CinematicLight * light, Vec2f pos, Color col)
 {
 	float	ra = (float)sqrt((light->pos.x - pos.x) * (light->pos.x - pos.x) + (light->pos.y - pos.y) * (light->pos.y - pos.y));
 
 	if(ra > light->fallout) {
-		return (Color::fromBGRA(col) * LightRND).toBGRA();
+		return (col * LightRND);
 	} else {
 		Color3f color;
 
@@ -289,11 +289,11 @@ ColorBGRA CalculLight(CinematicLight * light, Vec2f pos, ColorBGRA col)
 			color = light->color * (LightRND * ra);
 		}
 		
-		Color in = Color::fromBGRA(col);
+		Color in = col;
 		in.r = min(in.r + (int)color.r, 255);
 		in.g = min(in.g + (int)color.g, 255);
 		in.b = min(in.b + (int)color.b, 255);
-		return in.toBGRA();
+		return in;
 	}
 }
 
@@ -306,7 +306,7 @@ void TransformLocalVertex(Vec3f * vbase, TexturedVertex * d3dv) {
 	d3dv->p.z = vbase->z + LocalPos.z;
 }
 
-void DrawGrille(CinematicGrid * grille, ColorBGRA col, int fx, CinematicLight * light, Vec3f * posgrille, float angzgrille)
+void DrawGrille(CinematicGrid * grille, Color col, int fx, CinematicLight * light, Vec3f * posgrille, float angzgrille)
 {
 	int nb = grille->m_nbvertexs;
 	Vec3f * v = grille->m_vertexs;
@@ -328,9 +328,9 @@ void DrawGrille(CinematicGrid * grille, ColorBGRA col, int fx, CinematicLight * 
 			TransformLocalVertex(&t, &vtemp);
 			EE_RTP(vtemp.p, d3dv);
 			if(light) {
-				d3dv->color = CalculLight(light, Vec2f(d3dv->p.x, d3dv->p.y), col);
+				d3dv->color = CalculLight(light, Vec2f(d3dv->p.x, d3dv->p.y), col).toBGRA();
 			} else {
-				d3dv->color = col;
+				d3dv->color = col.toBGRA();
 			}
 			d3dv->p.x = ADJUSTX(d3dv->p.x);
 			d3dv->p.y = ADJUSTY(d3dv->p.y);
@@ -343,9 +343,9 @@ void DrawGrille(CinematicGrid * grille, ColorBGRA col, int fx, CinematicLight * 
 			TransformLocalVertex(v, &vtemp);
 			EE_RTP(vtemp.p, d3dv);
 			if(light) {
-				d3dv->color = CalculLight(light, Vec2f(d3dv->p.x, d3dv->p.y), col);
+				d3dv->color = CalculLight(light, Vec2f(d3dv->p.x, d3dv->p.y), col).toBGRA();
 			} else {
-				d3dv->color = col;
+				d3dv->color = col.toBGRA();
 			}
 			d3dv->p.x = ADJUSTX(d3dv->p.x);
 			d3dv->p.y = ADJUSTY(d3dv->p.y);
@@ -471,7 +471,7 @@ void Cinematic::Render(float FDIFF) {
 		}
 
 		if(tb->grid.m_nbvertexs)
-			DrawGrille(&tb->grid, col.toBGRA(), fx, l, &posgrille, angzgrille);
+			DrawGrille(&tb->grid, col, fx, l, &posgrille, angzgrille);
 
 		//PASS #2
 		if(force & 1) {
@@ -509,7 +509,7 @@ void Cinematic::Render(float FDIFF) {
 			}
 
 			if(tb->grid.m_nbvertexs)
-				DrawGrille(&tb->grid, col.toBGRA(), fx, l, &posgrillesuiv, angzgrillesuiv);
+				DrawGrille(&tb->grid, col, fx, l, &posgrillesuiv, angzgrillesuiv);
 		}
 
 		//effets qui continuent avec le temps
@@ -536,7 +536,7 @@ void Cinematic::Render(float FDIFF) {
 		//post fx
 		switch(fx & 0x00ff0000) {
 			case FX_FLASH:
-				FlashBlancEnCours = FX_FlashBlanc(Vec2f(cinRenderSize), speed, Color::fromBGRA(colorflash), GetTrackFPS(), FPS);
+				FlashBlancEnCours = FX_FlashBlanc(Vec2f(cinRenderSize), speed, colorflash, GetTrackFPS(), FPS);
 				break;
 			case FX_APPEAR:
 
