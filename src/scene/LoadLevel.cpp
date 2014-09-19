@@ -1066,10 +1066,10 @@ void RestoreLastLoadedLightning(EERIE_BACKGROUND & eb)
 			long nbvert = (ep.type & POLY_QUAD) ? 4 : 3;
 			
 			for(long k = 0; k < nbvert; k++) {
-				ColorBGRA dc = LastLoadedLightning[pos];
+				Color dc = Color::fromBGRA(LastLoadedLightning[pos]);
 				pos++;
-				dc = ColorBGRA(dc | 0xFF000000);
-				ep.tv[k].color = ep.v[k].color = dc;
+				dc.a = 255;
+				ep.tv[k].color = ep.v[k].color = dc.toBGRA();
 				bcount--;
 				
 				if(bcount <= 0)
