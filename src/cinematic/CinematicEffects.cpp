@@ -63,7 +63,7 @@ static Vec3f OldPos[NBOLDPOS];
 static float OldAz[NBOLDPOS];
 
 /*---------------------------------------------------------------------------------*/
-ColorBGRA FX_FadeIN(float a, int color, int colord)
+ColorBGRA FX_FadeIN(float a, ColorBGRA color, ColorBGRA colord)
 {
 	float	r, g, b;
 	float	rd, gd, bd;
@@ -84,7 +84,7 @@ ColorBGRA FX_FadeIN(float a, int color, int colord)
 
 }
 /*---------------------------------------------------------------------------------*/
-ColorBGRA FX_FadeOUT(float a, int color, int colord)
+ColorBGRA FX_FadeOUT(float a, ColorBGRA color, ColorBGRA colord)
 {
 	float	r, g, b;
 	float	rd, gd, bd;
@@ -154,7 +154,7 @@ bool FX_Blur(Cinematic *c, CinematicBitmap *tb, EERIE_CAMERA &camera)
 }
 
 //POST FX
-bool FX_FlashBlanc(Vec2f size, float speed, int color, float fps, float currfps) {
+bool FX_FlashBlanc(Vec2f size, float speed, ColorBGRA color, float fps, float currfps) {
 	
 	if(FlashAlpha < 0.f)
 		return false;

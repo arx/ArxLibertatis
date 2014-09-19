@@ -76,7 +76,7 @@ extern float DreamTable[];
 
 static bool FlashBlancEnCours;
 static float OldSpeedFlashBlanc;
-static int OldColorFlashBlanc;
+static ColorBGRA OldColorFlashBlanc;
 
 extern float	FlashAlpha;
 
@@ -184,9 +184,9 @@ void Cinematic::New() {
 	key.force = 1;
 	key.pos = pos;
 	key.angz = angz;
-	key.color = 0x00FFFFFF;
-	key.colord = 0x00FFFFFF;
-	key.colorf = 0x00FFFFFF;
+	key.color = ColorBGRA(0x00FFFFFF);
+	key.colord = ColorBGRA(0x00FFFFFF);
+	key.colorf = ColorBGRA(0x00FFFFFF);
 	key.idsound = -1;
 	key.speed = 1.f;
 	key.posgrille = posgrille;
@@ -205,9 +205,9 @@ void Cinematic::New() {
 	key.force = 1;
 	key.pos = pos;
 	key.angz = angz;
-	key.color = 0x00FFFFFF;
-	key.colord = 0x00FFFFFF;
-	key.colorf = 0x00FFFFFF;
+	key.color = ColorBGRA(0x00FFFFFF);
+	key.colord = ColorBGRA(0x00FFFFFF);
+	key.colorf = ColorBGRA(0x00FFFFFF);
 	key.idsound = -1;
 	key.speed = 1.f;
 	key.posgrille = posgrille;

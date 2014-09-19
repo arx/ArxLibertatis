@@ -265,9 +265,9 @@ bool parseCinematic(Cinematic * c, const char * data, size_t size) {
 			}
 			
 			k.angz = k175.angz;
-			k.color = k175.color;
-			k.colord = k175.colord;
-			k.colorf = k175.colorf;
+			k.color = ColorBGRA(k175.color);
+			k.colord = ColorBGRA(k175.colord);
+			k.colorf = ColorBGRA(k175.colorf);
 			k.frame = k175.frame;
 			k.fx = k175.fx;
 			k.numbitmap = k175.numbitmap;
@@ -291,9 +291,9 @@ bool parseCinematic(Cinematic * c, const char * data, size_t size) {
 			}
 			
 			k.angz = k176.angz;
-			k.color = k176.color;
-			k.colord = k176.colord;
-			k.colorf = k176.colorf;
+			k.color = ColorBGRA(k176.color);
+			k.colord = ColorBGRA(k176.colord);
+			k.colorf = ColorBGRA(k176.colorf);
 			k.frame = k176.frame;
 			k.fx = k176.fx;
 			k.numbitmap = k176.numbitmap;

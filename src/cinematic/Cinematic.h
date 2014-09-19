@@ -97,9 +97,9 @@ public:
 	bool projectload;
 	short ti;
 	short force;
-	int color;
-	int colord;
-	int colorflash;
+	ColorBGRA color;
+	ColorBGRA colord;
+	ColorBGRA colorflash;
 	float speed;
 	int idsound;
 	CinematicLight light;

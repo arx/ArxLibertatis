@@ -60,9 +60,9 @@ struct C_KEY {
 	short force;
 	Vec3f pos;
 	float angz;
-	int color;
-	int colord;
-	int colorf;
+	ColorBGRA color;
+	ColorBGRA colord;
+	ColorBGRA colorf;
 	float speed;
 	CinematicLight light;
 	Vec3f posgrille;

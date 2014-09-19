@@ -51,9 +51,9 @@ class CinematicBitmap;
 class Cinematic;
 
 
-ColorBGRA FX_FadeIN(float a, int color, int colord);
-ColorBGRA FX_FadeOUT(float a, int color, int colord);
-bool FX_FlashBlanc(Vec2f size, float speed, int color, float fps, float currfps);
+ColorBGRA FX_FadeIN(float a, ColorBGRA color, ColorBGRA colord);
+ColorBGRA FX_FadeOUT(float a, ColorBGRA color, ColorBGRA colord);
+bool FX_FlashBlanc(Vec2f size, float speed, ColorBGRA color, float fps, float currfps);
 bool FX_Blur(Cinematic * c, CinematicBitmap * tb, EERIE_CAMERA &camera);
 void FX_DreamPrecalc(CinematicBitmap * bi, float amp, float fps);
 
