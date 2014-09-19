@@ -117,7 +117,7 @@ void CBless::Render()
 	float fBetaRadCos = glm::cos(glm::radians(MAKEANGLE(m_yaw))) * m_scale;
 	float fBetaRadSin = glm::sin(glm::radians(MAKEANGLE(m_yaw))) * m_scale;
 
-	ColorBGRA color = Color::white.toBGR();
+	ColorRGBA color = Color::white.toRGB();
 	
 	{
 	TexturedQuad q;

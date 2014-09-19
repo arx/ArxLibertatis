@@ -30,7 +30,7 @@ static void renderVertex(const Vertex & vertex);
 template <>
 void renderVertex(const TexturedVertex & vertex) {
 	
-	Color c = Color::fromBGRA(vertex.color);
+	Color c = Color::fromRGBA(vertex.color);
 	glColor4ub(c.r, c.g, c.b, c.a);
 	
 	glMultiTexCoord2f(GL_TEXTURE0, vertex.uv.x, vertex.uv.y);
@@ -42,7 +42,7 @@ void renderVertex(const TexturedVertex & vertex) {
 template <>
 void renderVertex(const SMY_VERTEX & vertex) {
 	
-	Color c = Color::fromBGRA(vertex.color);
+	Color c = Color::fromRGBA(vertex.color);
 	glColor4ub(c.r, c.g, c.b, c.a);
 	
 	glMultiTexCoord2f(GL_TEXTURE0, vertex.uv.x, vertex.uv.y);
@@ -53,7 +53,7 @@ void renderVertex(const SMY_VERTEX & vertex) {
 template <>
 void renderVertex(const SMY_VERTEX3 & vertex) {
 	
-	Color c = Color::fromBGRA(vertex.color);
+	Color c = Color::fromRGBA(vertex.color);
 	glColor4ub(c.r, c.g, c.b, c.a);
 	
 	glMultiTexCoord2f(GL_TEXTURE0, vertex.uv[0].x, vertex.uv[0].y);

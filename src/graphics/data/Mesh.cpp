@@ -1363,7 +1363,7 @@ void Draw3DObject(EERIE_3DOBJ *eobj, const Anglef & angle, const Vec3f & pos, co
 		vert_list[1].uv.y = face.v[1];
 		vert_list[2].uv.x = face.u[2];
 		vert_list[2].uv.y = face.v[2];
-		vert_list[0].color = vert_list[1].color = vert_list[2].color = coll.toBGRA();
+		vert_list[0].color = vert_list[1].color = vert_list[2].color = coll.toRGBA();
 
 		if(face.facetype == 0 || eobj->texturecontainer[face.texid] == NULL)
 			mat.resetTexture();
@@ -1592,7 +1592,7 @@ static bool loadFastScene(const res::path & file, const char * data, const char 
 				ep2->type = PolyType::load(ep->type);
 				
 				for(size_t kk = 0; kk < 4; kk++) {
-					ep2->v[kk].color = Color(255, 255, 255, 255).toBGRA();
+					ep2->v[kk].color = Color(255, 255, 255, 255).toRGBA();
 					ep2->v[kk].rhw = 1;
 					ep2->v[kk].p.x = ep->v[kk].ssx;
 					ep2->v[kk].p.y = ep->v[kk].sy;
@@ -1604,7 +1604,7 @@ static bool loadFastScene(const res::path & file, const char * data, const char 
 				memcpy(ep2->tv, ep2->v, sizeof(TexturedVertex) * 4);
 				
 				for(size_t kk = 0; kk < 4; kk++) {
-					ep2->tv[kk].color = Color(0, 0, 0, 255).toBGRA();
+					ep2->tv[kk].color = Color(0, 0, 0, 255).toRGBA();
 				}
 				
 				long to = (ep->type & POLY_QUAD) ? 4 : 3;
@@ -2192,7 +2192,7 @@ static void SceneAddObjToBackground(EERIE_3DOBJ * eobj) {
 		vlist[1] = eobj->vertexlist[eobj->facelist[i].vid[1]].vert;
 		vlist[2] = eobj->vertexlist[eobj->facelist[i].vid[2]].vert;
 
-		vlist[0].color = vlist[1].color = vlist[2].color = Color::white.toBGR();
+		vlist[0].color = vlist[1].color = vlist[2].color = Color::white.toRGB();
 
 		TextureContainer *tex = NULL;
 		bool addToBackground = true;
@@ -2696,7 +2696,7 @@ void ComputePortalVertexBuffer() {
 				}
 				
 				poly.v[3].color = poly.v[2].color = poly.v[1].color = poly.v[0].color
-					= Color::gray(trans).toBGR();
+					= Color::gray(trans).toRGB();
 				
 			} else {
 				info.opaque += nindices;

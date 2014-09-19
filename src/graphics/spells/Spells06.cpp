@@ -149,8 +149,8 @@ void CCreateField::RenderQuad(const Vec3f & p1, const Vec3f & p2, const Vec3f & 
 		q.v[3].uv.x = 0 + zab;
 		q.v[3].uv.y = 1 + zab;
 
-		q.v[1].color = q.v[2].color = Color3f(falpha * .3f + rnd() * .025f, 0.f, falpha * .5f + rnd() * .025f).toBGR();
-		q.v[0].color = q.v[3].color = Color3f(falpha * .3f + rnd() * .025f, 0.f, falpha * .5f + rnd() * .025f).toBGR();
+		q.v[1].color = q.v[2].color = Color3f(falpha * .3f + rnd() * .025f, 0.f, falpha * .5f + rnd() * .025f).toRGB();
+		q.v[0].color = q.v[3].color = Color3f(falpha * .3f + rnd() * .025f, 0.f, falpha * .5f + rnd() * .025f).toRGB();
 	
 		q.v[0].p = p1;
 		q.v[1].p = p2;
@@ -718,7 +718,7 @@ void CRiseDead::RenderFissure()
 	//-------------------------------------------------------------------------
 	// rendu de la fissure
 	mat.setBlendType(RenderMaterial::Opaque);
-	vr[0].color = vr[1].color = vr[2].color = vr[3].color = Color::black.toBGR();
+	vr[0].color = vr[1].color = vr[2].color = vr[3].color = Color::black.toRGB();
 
 	if(bIntro) {
 		for(i = 0; i < std::min(end, (int)fSizeIntro); i++) {
@@ -743,8 +743,8 @@ void CRiseDead::RenderFissure()
 	//-------------------------------------------------------------------------
 	// rendu de la bordure
 	mat.setBlendType(RenderMaterial::Additive);
-	vr[0].color = vr[1].color = Color::black.toBGR();
-	vr[2].color = vr[3].color = Color3f(fColorBorder[0], fColorBorder[1], fColorBorder[2]).toBGR();
+	vr[0].color = vr[1].color = Color::black.toRGB();
+	vr[2].color = vr[3].color = Color3f(fColorBorder[0], fColorBorder[1], fColorBorder[2]).toRGB();
 
 	for(i = 0; i < std::min(end, (int)fSizeIntro); i++) {
 		vt[2] = va[i] - (va[i] - eSrc) * 0.2f;
@@ -781,8 +781,8 @@ void CRiseDead::RenderFissure()
 	target.z = eSrc.z ;
 
 	EE_RTP(vt[1], &vr[0]);
-	vr[0].color = vr[1].color = Color3f(fColorRays1[0], fColorRays1[1], fColorRays1[2]).toBGR();
-	vr[2].color = vr[3].color = Color3f(fColorRays2[0], fColorRays2[1], fColorRays2[2]).toBGR();
+	vr[0].color = vr[1].color = Color3f(fColorRays1[0], fColorRays1[1], fColorRays1[2]).toRGB();
+	vr[2].color = vr[3].color = Color3f(fColorRays2[0], fColorRays2[1], fColorRays2[2]).toRGB();
 
 	vr[0].uv.x = fTexWrap;
 	vr[0].uv.y = 1;
@@ -864,10 +864,10 @@ void CRiseDead::RenderFissure()
 			vt[3].y = va[i+1].y + (va[i+1].y - target.y) * 2;
 			vt[3].z = va[i+1].z ;
 
-			vr[0].color = (Color3f(fColorRays1[0], fColorRays1[1], fColorRays1[2]) * tfRaysa[i]).toBGR();
-			vr[1].color = (Color3f(fColorRays1[0], fColorRays1[1], fColorRays1[2]) * tfRaysa[i + 1]).toBGR();
-			vr[2].color = (Color3f(fColorRays2[0], fColorRays2[1], fColorRays2[2]) * tfRaysa[i]).toBGR();
-			vr[3].color = (Color3f(fColorRays2[0], fColorRays2[1], fColorRays2[2]) * tfRaysa[i + 1]).toBGR();
+			vr[0].color = (Color3f(fColorRays1[0], fColorRays1[1], fColorRays1[2]) * tfRaysa[i]).toRGB();
+			vr[1].color = (Color3f(fColorRays1[0], fColorRays1[1], fColorRays1[2]) * tfRaysa[i + 1]).toRGB();
+			vr[2].color = (Color3f(fColorRays2[0], fColorRays2[1], fColorRays2[2]) * tfRaysa[i]).toRGB();
+			vr[3].color = (Color3f(fColorRays2[0], fColorRays2[1], fColorRays2[2]) * tfRaysa[i + 1]).toRGB();
 			
 			EE_RT(vt[0], vr[0].p);
 			EE_RT(vt[1], vr[1].p);
@@ -887,10 +887,10 @@ void CRiseDead::RenderFissure()
 			vt[3].y = vb[i].y + (vb[i].y - target.y) * 2;
 			vt[3].z = vb[i].z ;
 
-			vr[0].color = (Color3f(fColorRays1[0], fColorRays1[1], fColorRays1[2]) * tfRaysb[i]).toBGR();
-			vr[1].color = (Color3f(fColorRays1[0], fColorRays1[1], fColorRays1[2]) * tfRaysb[i + 1]).toBGR();
-			vr[2].color = (Color3f(fColorRays2[0], fColorRays2[1], fColorRays2[2]) * tfRaysb[i]).toBGR();
-			vr[3].color = (Color3f(fColorRays2[0], fColorRays2[1], fColorRays2[2]) * tfRaysb[i + 1]).toBGR();
+			vr[0].color = (Color3f(fColorRays1[0], fColorRays1[1], fColorRays1[2]) * tfRaysb[i]).toRGB();
+			vr[1].color = (Color3f(fColorRays1[0], fColorRays1[1], fColorRays1[2]) * tfRaysb[i + 1]).toRGB();
+			vr[2].color = (Color3f(fColorRays2[0], fColorRays2[1], fColorRays2[2]) * tfRaysb[i]).toRGB();
+			vr[3].color = (Color3f(fColorRays2[0], fColorRays2[1], fColorRays2[2]) * tfRaysb[i + 1]).toRGB();
 
 			EE_RT(vt[0], vr[0].p);
 			EE_RT(vt[1], vr[1].p);

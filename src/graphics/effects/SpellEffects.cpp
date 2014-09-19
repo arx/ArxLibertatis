@@ -79,8 +79,8 @@ void Draw3DLineTexNew(const RenderMaterial & mat, Vec3f startPos, Vec3f endPos, 
 	
 	{
 	TexturedQuad q1;
-	q1.v[0].color = q1.v[1].color = startColor.toBGRA();
-	q1.v[2].color = q1.v[3].color = endColor.toBGRA();
+	q1.v[0].color = q1.v[1].color = startColor.toRGBA();
+	q1.v[2].color = q1.v[3].color = endColor.toRGBA();
 	
 	q1.v[0].uv = Vec2f_ZERO;
 	q1.v[1].uv = Vec2f_X_AXIS;
@@ -109,8 +109,8 @@ void Draw3DLineTexNew(const RenderMaterial & mat, Vec3f startPos, Vec3f endPos, 
 	{
 	TexturedQuad q2;
 	
-	q2.v[0].color = q2.v[1].color = startColor.toBGRA();
-	q2.v[2].color = q2.v[3].color = endColor.toBGRA();
+	q2.v[0].color = q2.v[1].color = startColor.toRGBA();
+	q2.v[2].color = q2.v[3].color = endColor.toRGBA();
 	
 	q2.v[0].uv = Vec2f_ZERO;
 	q2.v[1].uv = Vec2f_X_AXIS;

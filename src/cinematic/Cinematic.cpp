@@ -328,9 +328,9 @@ void DrawGrille(CinematicGrid * grille, Color col, int fx, CinematicLight * ligh
 			TransformLocalVertex(&t, &vtemp);
 			EE_RTP(vtemp.p, d3dv);
 			if(light) {
-				d3dv->color = CalculLight(light, Vec2f(d3dv->p.x, d3dv->p.y), col).toBGRA();
+				d3dv->color = CalculLight(light, Vec2f(d3dv->p.x, d3dv->p.y), col).toRGBA();
 			} else {
-				d3dv->color = col.toBGRA();
+				d3dv->color = col.toRGBA();
 			}
 			d3dv->p.x = ADJUSTX(d3dv->p.x);
 			d3dv->p.y = ADJUSTY(d3dv->p.y);
@@ -343,9 +343,9 @@ void DrawGrille(CinematicGrid * grille, Color col, int fx, CinematicLight * ligh
 			TransformLocalVertex(v, &vtemp);
 			EE_RTP(vtemp.p, d3dv);
 			if(light) {
-				d3dv->color = CalculLight(light, Vec2f(d3dv->p.x, d3dv->p.y), col).toBGRA();
+				d3dv->color = CalculLight(light, Vec2f(d3dv->p.x, d3dv->p.y), col).toRGBA();
 			} else {
-				d3dv->color = col.toBGRA();
+				d3dv->color = col.toRGBA();
 			}
 			d3dv->p.x = ADJUSTX(d3dv->p.x);
 			d3dv->p.y = ADJUSTY(d3dv->p.y);

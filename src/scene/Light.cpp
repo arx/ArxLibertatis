@@ -607,7 +607,7 @@ float GetColorz(const Vec3f &pos) {
 		ApplyTileLights(ep, epdata.p);
 
 		for(long i = 0; i < to; i++) {
-			Color col = Color::fromBGRA(ep->tv[i].color);
+			Color col = Color::fromRGBA(ep->tv[i].color);
 			_ffr += float(col.r);
 			_ffg += float(col.g);
 			_ffb += float(col.b);
@@ -628,7 +628,7 @@ float GetColorz(const Vec3f &pos) {
 	return (std::min(ffr, 255.f) + std::min(ffg, 255.f) + std::min(ffb, 255.f)) * (1.f/3);
 }
 
-ColorBGRA ApplyLight(const glm::quat * quat, const Vec3f & position, const Vec3f & normal, const ColorMod & colorMod, float materialDiffuse) {
+ColorRGBA ApplyLight(const glm::quat * quat, const Vec3f & position, const Vec3f & normal, const ColorMod & colorMod, float materialDiffuse) {
 
 	Color3f tempColor = colorMod.ambientColor;
 
@@ -674,7 +674,7 @@ ColorBGRA ApplyLight(const glm::quat * quat, const Vec3f & position, const Vec3f
 	u8 ig = clipByte255(tempColor.g);
 	u8 ib = clipByte255(tempColor.b);
 
-	return Color(ir, ig, ib, 255).toBGRA();
+	return Color(ir, ig, ib, 255).toRGBA();
 }
 
 void ApplyTileLights(EERIEPOLY * ep, const Vec2s & pos)
@@ -696,7 +696,7 @@ void ApplyTileLights(EERIEPOLY * ep, const Vec2s & pos)
 		}
 
 		Color3f tempColor;
-		Color c = Color::fromBGRA(ep->v[j].color);
+		Color c = Color::fromRGBA(ep->v[j].color);
 		tempColor.r = c.r;
 		tempColor.g = c.g;
 		tempColor.b = c.b;
@@ -733,7 +733,7 @@ void ApplyTileLights(EERIEPOLY * ep, const Vec2s & pos)
 		u8 ir = clipByte255(tempColor.r);
 		u8 ig = clipByte255(tempColor.g);
 		u8 ib = clipByte255(tempColor.b);
-		ep->tv[j].color = Color(ir, ig, ib, 255).toBGRA();
+		ep->tv[j].color = Color(ir, ig, ib, 255).toRGBA();
 	}
 }
 
@@ -757,7 +757,7 @@ void EERIERemovePrecalcLights() {
 		for(short l = 0; l < eg.nbpoly; l++) {
 			EERIEPOLY & ep = eg.polydata[l];
 			
-			ep.v[3].color = ep.v[2].color = ep.v[1].color = ep.v[0].color = Color::white.toBGR();
+			ep.v[3].color = ep.v[2].color = ep.v[1].color = ep.v[0].color = Color::white.toRGB();
 		}
 	}
 }

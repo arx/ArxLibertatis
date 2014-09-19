@@ -201,10 +201,7 @@ void OpenGLRenderer::reinit() {
 		}
 	}
 	
-	if(!GLEW_ARB_vertex_array_bgra) {
-		LogWarning << "Missing OpenGL extension ARB_vertex_array_bgra, not using vertex arrays!";
-	}
-	useVertexArrays = GLEW_ARB_vertex_array_bgra == GL_TRUE;
+	useVertexArrays = true;
 	
 	if(!GLEW_ARB_draw_elements_base_vertex) {
 		LogWarning << "Missing OpenGL extension ARB_draw_elements_base_vertex!";

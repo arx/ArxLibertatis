@@ -460,7 +460,7 @@ void ARX_MAGICAL_FLARES_Update() {
 			}
 
 			Color3f c = flare.rgb * z;
-			flare.tv.color = c.toBGR();
+			flare.tv.color = c.toRGB();
 			flare.v.p = flare.tv.p;
 
 			light->rgb = componentwise_max(light->rgb, c);
@@ -476,10 +476,10 @@ void ARX_MAGICAL_FLARES_Update() {
 			if(flare.bDrawBitmap) {
 				s *= 2.f;
 				EERIEAddBitmap(mat, flare.v.p.x, flare.v.p.y, s, s, flare.v.p.z,
-								surf, Color::fromBGRA(flare.tv.color));
+								surf, Color::fromRGBA(flare.tv.color));
 			} else {
 				EERIEAddSprite(mat, flare.v.p, s * 0.025f + 1.f,
-				               Color::fromBGRA(flare.tv.color), 2.f);
+				               Color::fromRGBA(flare.tv.color), 2.f);
 			}
 
 		}

@@ -53,7 +53,7 @@ struct TexturedVertex {
 	Vec3f p;
 	float rhw;
 	
-	ColorBGRA color;
+	ColorRGBA color;
 	
 	Vec2f uv;
 	
@@ -71,7 +71,7 @@ struct TexturedVertex {
 		, uv(o.uv)
 	{}
 
-	TexturedVertex(const Vec3f & _p, float _rhw, ColorBGRA _color, Vec2f _uv)
+	TexturedVertex(const Vec3f & _p, float _rhw, ColorRGBA _color, Vec2f _uv)
 		: p(_p)
 		, rhw(_rhw)
 		, color(_color)
@@ -84,13 +84,13 @@ class VertexBuffer;
 
 struct SMY_VERTEX {
 	Vec3f p;
-	ColorBGRA color;
+	ColorRGBA color;
 	Vec2f uv;
 };
 
 struct SMY_VERTEX3 {
 	Vec3f p;
-	ColorBGRA color;
+	ColorRGBA color;
 	Vec2f uv[3];
 };
 

@@ -94,7 +94,7 @@ struct SavedTextureVertex {
 		TexturedVertex a;
 		a.p.x = pos.x, a.p.y = pos.y, a.p.z = pos.z;
 		a.rhw = rhw;
-		a.color = ColorBGRA(color);
+		a.color = Color::fromBGRA(ColorBGRA(color)).toRGBA();
 		a.uv.x = tu;
 		a.uv.y = tv;
 		return a;
@@ -103,7 +103,7 @@ struct SavedTextureVertex {
 	inline SavedTextureVertex & operator=(const TexturedVertex & b) {
 		pos.x = b.p.x, pos.y = b.p.y, pos.z = b.p.z;
 		rhw = b.rhw;
-		color = b.color;
+		color = Color::fromRGBA(b.color).toBGRA();
 		specular = 0xFF000000; // TODO unused
 		tu = b.uv.x;
 		tv = b.uv.y;

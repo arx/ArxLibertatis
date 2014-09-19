@@ -398,10 +398,10 @@ void CLightning::Render()
 		{
 		TexturedQuad q;
 		
-		q.v[0].color = Color(255, 255, 255, 255).toBGRA();
-		q.v[1].color = Color(0, 0, 90, 255).toBGRA();
-		q.v[2].color = Color(0, 0, 90, 255).toBGRA();
-		q.v[3].color = Color(255, 255, 255, 255).toBGRA();
+		q.v[0].color = Color(255, 255, 255, 255).toRGBA();
+		q.v[1].color = Color(0, 0, 90, 255).toRGBA();
+		q.v[2].color = Color(0, 0, 90, 255).toRGBA();
+		q.v[3].color = Color(255, 255, 255, 255).toRGBA();
 		q.v[0].uv = Vec2f(0.5f, 0.f);
 		q.v[1].uv = Vec2f_ZERO;
 		q.v[2].uv = Vec2f_Y_AXIS;
@@ -417,10 +417,10 @@ void CLightning::Render()
 		{
 		TexturedQuad q;
 
-		q.v[0].color = Color(255, 255, 255, 255).toBGRA();
-		q.v[1].color = Color(0, 0, 90, 255).toBGRA();
-		q.v[2].color = Color(0, 0, 90, 255).toBGRA();
-		q.v[3].color = Color(255, 255, 255, 255).toBGRA();
+		q.v[0].color = Color(255, 255, 255, 255).toRGBA();
+		q.v[1].color = Color(0, 0, 90, 255).toRGBA();
+		q.v[2].color = Color(0, 0, 90, 255).toRGBA();
+		q.v[3].color = Color(255, 255, 255, 255).toRGBA();
 		q.v[0].uv = Vec2f(0.5f, 0.f);
 		q.v[1].uv = Vec2f_X_AXIS;
 		q.v[2].uv = Vec2f_ONE;
@@ -438,10 +438,10 @@ void CLightning::Render()
 		{
 		TexturedQuad q;
 		
-		q.v[0].color = Color(255, 255, 255, 255).toBGRA();
-		q.v[1].color = Color(0, 0, 90, 255).toBGRA();
-		q.v[2].color = Color(0, 0, 90, 255).toBGRA();
-		q.v[3].color = Color(255, 255, 255, 255).toBGRA();
+		q.v[0].color = Color(255, 255, 255, 255).toRGBA();
+		q.v[1].color = Color(0, 0, 90, 255).toRGBA();
+		q.v[2].color = Color(0, 0, 90, 255).toRGBA();
+		q.v[3].color = Color(255, 255, 255, 255).toRGBA();
 		q.v[0].uv = Vec2f(0.5f, 0.f);
 		q.v[1].uv = Vec2f_X_AXIS;
 		q.v[2].uv = Vec2f_ONE;
@@ -457,10 +457,10 @@ void CLightning::Render()
 		{
 		TexturedQuad q;
 		
-		q.v[0].color = Color(255, 255, 255, 255).toBGRA();
-		q.v[1].color = Color(0, 0, 90, 255).toBGRA();
-		q.v[2].color = Color(0, 0, 90, 255).toBGRA();
-		q.v[3].color = Color(255, 255, 255, 255).toBGRA();
+		q.v[0].color = Color(255, 255, 255, 255).toRGBA();
+		q.v[1].color = Color(0, 0, 90, 255).toRGBA();
+		q.v[2].color = Color(0, 0, 90, 255).toRGBA();
+		q.v[3].color = Color(255, 255, 255, 255).toRGBA();
 		q.v[0].uv = Vec2f(0.5f, 0.f);
 		q.v[1].uv = Vec2f_ZERO;
 		q.v[2].uv = Vec2f_Y_AXIS;

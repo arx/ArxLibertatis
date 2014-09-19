@@ -205,7 +205,7 @@ static void ApplyLavaGlowToVertex(Vec3f * odtv,TexturedVertex * dtv, float power
 	float f;
 	long lr, lg, lb;
 	power = 1.f - std::sin(WATEREFFECT + odtv->x + odtv->z) * 0.05f * power;
-	Color inColor = Color::fromBGRA(dtv->color);
+	Color inColor = Color::fromRGBA(dtv->color);
 	f = inColor.r * power;
 	lr = clipByte(f);
 
@@ -215,7 +215,7 @@ static void ApplyLavaGlowToVertex(Vec3f * odtv,TexturedVertex * dtv, float power
 	f = inColor.b * power;
 	lb = clipByte(f);
 
-	dtv->color = Color(lr, lg, lb, 255).toBGRA();
+	dtv->color = Color(lr, lg, lb, 255).toRGBA();
 }
 
 void ManageWater_VertexBuffer(EERIEPOLY * ep, const long to, const unsigned long tim, SMY_VERTEX * _pVertex) {
@@ -901,7 +901,7 @@ static void RenderWater() {
 			pVertex->p.x = ep->v[j].p.x;
 			pVertex->p.y = -ep->v[j].p.y;
 			pVertex->p.z = ep->v[j].p.z;
-			pVertex->color = Color(80, 80, 80, 255).toBGRA();
+			pVertex->color = Color(80, 80, 80, 255).toRGBA();
 
 			for(int i = 0; i < FTVU_STEP_COUNT; ++i) {
 				CalculateWaterDisplacement(fTu, fTv, ep, time, j, i);
@@ -1006,7 +1006,7 @@ void RenderLava() {
 			pVertex->p.x = ep->v[j].p.x;
 			pVertex->p.y = -ep->v[j].p.y;
 			pVertex->p.z = ep->v[j].p.z;
-			pVertex->color = Color(102, 102, 102, 255).toBGRA();
+			pVertex->color = Color(102, 102, 102, 255).toRGBA();
 			for(int i = 0; i < FTVU_STEP_COUNT; ++i) {
 				CalculateLavaDisplacement(fTu, fTv, ep, time, j, i);
 				pVertex->uv[i].x = fTu;
@@ -1146,12 +1146,12 @@ void ARX_PORTALS_Frustrum_RenderRoomTCullSoft(long room_num, const EERIE_FRUSTRU
 
 		if(!player.m_improve) { // Normal View...
 			if(ep->type & POLY_GLOW) {
-				pMyVertexCurr[ep->uslInd[0]].color = Color(255, 255, 255, 255).toBGRA();
-				pMyVertexCurr[ep->uslInd[1]].color = Color(255, 255, 255, 255).toBGRA();
-				pMyVertexCurr[ep->uslInd[2]].color = Color(255, 255, 255, 255).toBGRA();
+				pMyVertexCurr[ep->uslInd[0]].color = Color(255, 255, 255, 255).toRGBA();
+				pMyVertexCurr[ep->uslInd[1]].color = Color(255, 255, 255, 255).toRGBA();
+				pMyVertexCurr[ep->uslInd[2]].color = Color(255, 255, 255, 255).toRGBA();
 
 				if(to == 4) {
-					pMyVertexCurr[ep->uslInd[3]].color = Color(255, 255, 255, 255).toBGRA();
+					pMyVertexCurr[ep->uslInd[3]].color = Color(255, 255, 255, 255).toRGBA();
 				}
 			} else {
 				if(!(ep->type & POLY_TRANS)) {
@@ -1184,7 +1184,7 @@ void ARX_PORTALS_Frustrum_RenderRoomTCullSoft(long room_num, const EERIE_FRUSTRU
 				ApplyTileLights(ep, pEPDATA->p);
 
 				for(int k = 0; k < to; k++) {
-					long lr = Color::fromBGRA(ep->tv[k].color).r;
+					long lr = Color::fromRGBA(ep->tv[k].color).r;
 					float ffr=(float)(lr);
 
 					float dd = ep->tv[k].rhw;
@@ -1208,7 +1208,7 @@ void ARX_PORTALS_Frustrum_RenderRoomTCullSoft(long room_num, const EERIE_FRUSTRU
 					u8 lfb = fb;
 					u8 lfg = 0x1E;
 					
-					ep->tv[k].color = Color(lfr, lfg, lfb, 255).toBGRA();
+					ep->tv[k].color = Color(lfr, lfg, lfb, 255).toRGBA();
 				}
 
 				pMyVertexCurr[ep->uslInd[0]].color = ep->tv[0].color;

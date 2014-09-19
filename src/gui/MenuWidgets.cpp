@@ -236,7 +236,7 @@ static void FadeInOut(float _fVal) {
 
 	TexturedVertex d3dvertex[4];
 
-	ColorBGRA iColor = Color::gray(_fVal).toBGR();
+	ColorRGBA iColor = Color::gray(_fVal).toRGB();
 	d3dvertex[0].p.x=0;
 	d3dvertex[0].p.y=0;
 	d3dvertex[0].p.z=0.f;
@@ -1785,7 +1785,7 @@ void CWindowMenuConsole::UpdateText() {
 	TexturedVertex v[4];
 	GRenderer->ResetTexture(0);
 	float col=.5f+rnd()*.5f;
-	v[0].color = v[1].color = v[2].color = v[3].color = Color::gray(col).toBGR();
+	v[0].color = v[1].color = v[2].color = v[3].color = Color::gray(col).toRGB();
 	v[0].p.z=v[1].p.z=v[2].p.z=v[3].p.z=0.f;    
 	v[0].rhw=v[1].rhw=v[2].rhw=v[3].rhw=0.999999f;
 
@@ -3030,7 +3030,7 @@ void MenuCursor::DrawLine2D(float _fSize, Color3f color) {
 	v[0].p.z = v[1].p.z = v[2].p.z = v[3].p.z = 0.f;
 	v[0].rhw = v[1].rhw = v[2].rhw = v[3].rhw = 0.999999f;
 	
-	v[0].color = v[2].color = Color3f(fColorRed, fColorGreen, fColorBlue).toBGR();
+	v[0].color = v[2].color = Color3f(fColorRed, fColorGreen, fColorBlue).toRGB();
 	
 	if(!ComputePer(iOldCoord[0], iOldCoord[1], &v[0], &v[2], fTaille)) {
 		v[0].p.x = v[2].p.x = iOldCoord[0].x;
@@ -3046,7 +3046,7 @@ void MenuCursor::DrawLine2D(float _fSize, Color3f color) {
 		
 		if(ComputePer(iOldCoord[i], iOldCoord[i + 1], &v[1], &v[3], fTaille)) {
 			
-			v[1].color = v[3].color = Color3f(fColorRed, fColorGreen, fColorBlue).toBGR();
+			v[1].color = v[3].color = Color3f(fColorRed, fColorGreen, fColorBlue).toRGB();
 			EERIEDRAWPRIM(Renderer::TriangleStrip, v, 4);
 			
 			v[0].p.x = v[1].p.x;

@@ -1183,7 +1183,7 @@ void CLevitate::Render()
 					col = Random::get(0, 80);
 
 					if(!arxtime.is_paused())
-						d3dv->color = Color::grayb(col).toBGR(col);
+						d3dv->color = Color::grayb(col).toRGB(col);
 
 					d3dv->uv.x = u;
 					d3dv->uv.y = 0.f;
@@ -1198,7 +1198,7 @@ void CLevitate::Render()
 					col = Random::get(0, 80);
 
 					if(!arxtime.is_paused())
-						d3dv->color = Color::black.toBGR(col);
+						d3dv->color = Color::black.toRGB(col);
 
 					d3dv->uv.x = u;
 					d3dv->uv.y = 1.f;
@@ -1228,7 +1228,7 @@ void CLevitate::Render()
 					col = Random::get(0, 80);
 
 					if(!arxtime.is_paused())
-						d3dv->color = Color::grayb(col).toBGR(col);
+						d3dv->color = Color::grayb(col).toRGB(col);
 
 					d3dv->uv.x = u;
 					d3dv->uv.y = 0.f;
@@ -1243,7 +1243,7 @@ void CLevitate::Render()
 					col = Random::get(0, 80);
 
 					if(!arxtime.is_paused())
-						d3dv->color = Color::black.toBGR(col);
+						d3dv->color = Color::black.toRGB(col);
 
 					d3dv->uv.x = u;
 					d3dv->uv.y = 1.f;

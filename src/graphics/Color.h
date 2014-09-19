@@ -85,7 +85,7 @@ public:
 	}
 	
 	inline ColorRGBA toRGB(u8 _a = Limits::max()) const {
-		return byteval(r) | (byteval(g) << 8) | (byteval(b) << 16) | (u32(_a) << 24);
+		return ColorRGBA(byteval(r) | (byteval(g) << 8) | (byteval(b) << 16) | (u32(_a) << 24));
 	}
 	
 	inline ColorBGRA toBGR(u8 _a = Limits::max()) const {

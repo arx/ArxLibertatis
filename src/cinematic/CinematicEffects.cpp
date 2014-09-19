@@ -167,7 +167,7 @@ bool FX_FlashBlanc(Vec2f size, float speed, Color color, float fps, float currfp
 	GRenderer->SetBlendFunc(Renderer::BlendSrcAlpha, Renderer::BlendOne);
 	
 	color.a = 255.f * FlashAlpha;
-	ColorBGRA col = color.toBGRA();
+	ColorRGBA col = color.toRGBA();
 	
 	TexturedVertex v[4];
 	v[0].p = Vec3f(0.f, 0.f, 0.01f);

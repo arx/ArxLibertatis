@@ -288,7 +288,7 @@ void CSummonCreature::RenderFissure()
 	//-------------------------------------------------------------------------
 	// rendu de la fissure
 	mat.setBlendType(RenderMaterial::Opaque);
-	vr[0].color = vr[1].color = vr[2].color = vr[3].color = Color::black.toBGR();
+	vr[0].color = vr[1].color = vr[2].color = vr[3].color = Color::black.toRGB();
 
 	if(bIntro) {
 		for(i = 0; i < std::min(end, (int)fSizeIntro); i++) {
@@ -313,8 +313,8 @@ void CSummonCreature::RenderFissure()
 	//-------------------------------------------------------------------------
 	// rendu de la bordure
 	mat.setBlendType(RenderMaterial::Additive);
-	vr[0].color = vr[1].color = Color::black.toBGR();
-	vr[2].color = vr[3].color = fColorBorder.toBGR();
+	vr[0].color = vr[1].color = Color::black.toRGB();
+	vr[2].color = vr[3].color = fColorBorder.toRGB();
 
 	for(i = 0; i < std::min(end, (int)fSizeIntro); i++) {
 		vt[2] = va[i] - (va[i] - eSrc) * 0.2f;
@@ -351,8 +351,8 @@ void CSummonCreature::RenderFissure()
 	target.z = eSrc.z + fBetaRadCos * (1.5f * sizeF); 
 
 	EE_RTP(vt[1], &vr[0]);
-	vr[0].color = vr[1].color = fColorRays1.toBGR();
-	vr[2].color = vr[3].color = fColorRays2.toBGR();
+	vr[0].color = vr[1].color = fColorRays1.toRGB();
+	vr[2].color = vr[3].color = fColorRays2.toRGB();
 
 	vr[0].uv.x = fTexWrap;
 	vr[0].uv.y = 1;
@@ -371,10 +371,10 @@ void CSummonCreature::RenderFissure()
 			vt[2] = va[i] + (va[i] - target) * 2.f;
 			vt[3] = va[i + 1] + (va[i + 1] - target) * 2.f;
 			
-			vr[0].color = (fColorRays1 * tfRaysa[i]).toBGR();
-			vr[1].color = (fColorRays1 * tfRaysa[i + 1]).toBGR();
-			vr[2].color = (fColorRays2 * tfRaysa[i]).toBGR();
-			vr[3].color = (fColorRays2 * tfRaysa[i + 1]).toBGR();
+			vr[0].color = (fColorRays1 * tfRaysa[i]).toRGB();
+			vr[1].color = (fColorRays1 * tfRaysa[i + 1]).toRGB();
+			vr[2].color = (fColorRays2 * tfRaysa[i]).toRGB();
+			vr[3].color = (fColorRays2 * tfRaysa[i + 1]).toRGB();
 			
 			EE_RT(vt[0], vr[3].p);
 			EE_RT(vt[1], vr[2].p);
@@ -390,10 +390,10 @@ void CSummonCreature::RenderFissure()
 			vt[2] = vb[i + 1] + (vb[i + 1] - target) * 2.f;
 			vt[3] = vb[i] + (vb[i] - target) * 2.f;
 			
-			vr[0].color = (fColorRays1 * tfRaysb[i]).toBGR();
-			vr[1].color = (fColorRays1 * tfRaysb[i + 1]).toBGR();
-			vr[2].color = (fColorRays2 * tfRaysb[i]).toBGR();
-			vr[3].color = (fColorRays2 * tfRaysb[i + 1]).toBGR();
+			vr[0].color = (fColorRays1 * tfRaysb[i]).toRGB();
+			vr[1].color = (fColorRays1 * tfRaysb[i + 1]).toRGB();
+			vr[2].color = (fColorRays2 * tfRaysb[i]).toRGB();
+			vr[3].color = (fColorRays2 * tfRaysb[i + 1]).toRGB();
 			
 			EE_RT(vt[0], vr[3].p);
 			EE_RT(vt[1], vr[2].p);

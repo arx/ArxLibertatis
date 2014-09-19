@@ -1069,7 +1069,7 @@ void RestoreLastLoadedLightning(EERIE_BACKGROUND & eb)
 				Color dc = Color::fromBGRA(LastLoadedLightning[pos]);
 				pos++;
 				dc.a = 255;
-				ep.tv[k].color = ep.v[k].color = dc.toBGRA();
+				ep.tv[k].color = ep.v[k].color = dc.toRGB();
 				bcount--;
 				
 				if(bcount <= 0)

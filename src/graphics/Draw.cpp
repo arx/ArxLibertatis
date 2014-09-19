@@ -105,7 +105,7 @@ bool EERIECreateSprite(TexturedQuad& sprite, const Vec3f & in, float siz, Color 
 			out.rhw *= (1.f/3000.f);
 		}		
 		
-		ColorBGRA col = color.toBGRA();
+		ColorRGBA col = color.toRGBA();
 		
 		sprite.v[0] = TexturedVertex(Vec3f(), out.rhw, col, Vec2f_ZERO);
 		sprite.v[1] = TexturedVertex(Vec3f(), out.rhw, col, Vec2f_X_AXIS);
@@ -162,7 +162,7 @@ void CreateBitmap(TexturedQuad& s, Rectf rect, float z, TextureContainer * tex, 
 	rect.move(-.5f, -.5f);
 	
 	Vec2f uv = (tex) ? tex->uv : Vec2f_ZERO;
-	ColorBGRA col = color.toBGRA();
+	ColorRGBA col = color.toRGBA();
 	float val = 1.f;
 
 	if(isRhw) {
@@ -213,7 +213,7 @@ void EERIEDrawBitmap_uv(Rectf rect, float z, TextureContainer * tex,
 	Vec2f uv = (tex) ? tex->uv : Vec2f_ONE;
 	u0 *= uv.x, u1 *= uv.x, v0 *= uv.y, v1 *= uv.y;
 
-	ColorBGRA col = color.toBGRA();
+	ColorRGBA col = color.toRGBA();
 	TexturedVertex v[4];
 	v[0] = TexturedVertex(Vec3f(rect.topLeft(),     z), 1.f, col, Vec2f(u0, v0));
 	v[1] = TexturedVertex(Vec3f(rect.topRight(),    z), 1.f, col, Vec2f(u1, v0));
@@ -228,7 +228,7 @@ void EERIEDrawBitmapUVs(float x, float y, float sx, float sy, float z, TextureCo
 	
 	MatchPixTex(x, y);
 	
-	ColorBGRA col = color.toBGRA();
+	ColorRGBA col = color.toRGBA();
 	TexturedVertex v[4];
 	v[0] = TexturedVertex(Vec3f(x,      y,      z), 1.f, col, Vec2f(u0, v0));
 	v[1] = TexturedVertex(Vec3f(x + sx, y,      z), 1.f, col, Vec2f(u1, v1));
@@ -243,7 +243,7 @@ void EERIEDrawBitmap2DecalY(float x, float y, float sx, float sy, float z, Textu
 	MatchPixTex(x, y);	
 	Vec2f uv = (tex) ? tex->uv : Vec2f_ZERO;
 	float sv = uv.y * _fDeltaY;	
-	ColorBGRA col = color.toBGRA();
+	ColorRGBA col = color.toRGBA();
 	TexturedVertex v[4];
 	float fDy = _fDeltaY * sy;	
 
