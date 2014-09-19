@@ -67,14 +67,16 @@ ColorBGRA FX_FadeIN(float a, ColorBGRA color, ColorBGRA colord)
 {
 	float	r, g, b;
 	float	rd, gd, bd;
-
-	r = (float)((color >> 16) & 0xFF);
-	g = (float)((color >> 8) & 0xFF);
-	b = (float)(color & 0xFF);
-
-	rd = (float)((colord >> 16) & 0xFF);
-	gd = (float)((colord >> 8) & 0xFF);
-	bd = (float)(colord & 0xFF);
+	
+	Color colA = Color::fromBGRA(color);
+	r = colA.r;
+	g = colA.g;
+	b = colA.b;
+	
+	Color colB = Color::fromBGRA(colord);
+	rd = colB.r;
+	gd = colB.g;
+	bd = colB.b;
 
 	r = (r - rd) * a + rd;
 	g = (g - gd) * a + gd;
@@ -91,13 +93,15 @@ ColorBGRA FX_FadeOUT(float a, ColorBGRA color, ColorBGRA colord)
 
 	a = 1.f - a;
 
-	r = (float)((color >> 16) & 0xFF);
-	g = (float)((color >> 8) & 0xFF);
-	b = (float)(color & 0xFF);
-
-	rd = (float)((colord >> 16) & 0xFF);
-	gd = (float)((colord >> 8) & 0xFF);
-	bd = (float)(colord & 0xFF);
+	Color colA = Color::fromBGRA(color);
+	r = colA.r;
+	g = colA.g;
+	b = colA.b;
+	
+	Color colB = Color::fromBGRA(colord);
+	rd = colB.r;
+	gd = colB.g;
+	bd = colB.b;
 
 	r = (r - rd) * a + rd;
 	g = (g - gd) * a + gd;

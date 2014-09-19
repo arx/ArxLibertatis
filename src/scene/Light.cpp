@@ -674,7 +674,7 @@ ColorBGRA ApplyLight(const glm::quat * quat, const Vec3f & position, const Vec3f
 	u8 ig = clipByte255(tempColor.g);
 	u8 ib = clipByte255(tempColor.b);
 
-	return ColorBGRA(0xFF000000L | (ir << 16) | (ig << 8) | (ib));
+	return Color(ir, ig, ib, 255).toBGRA();
 }
 
 void ApplyTileLights(EERIEPOLY * ep, const Vec2s & pos)
@@ -696,10 +696,10 @@ void ApplyTileLights(EERIEPOLY * ep, const Vec2s & pos)
 		}
 
 		Color3f tempColor;
-		long c = ep->v[j].color;
-		tempColor.r = (float)((c >> 16) & 255);
-		tempColor.g = (float)((c >> 8) & 255);
-		tempColor.b = (float)(c & 255);
+		Color c = Color::fromBGRA(ep->v[j].color);
+		tempColor.r = c.r;
+		tempColor.g = c.g;
+		tempColor.b = c.b;
 
 		Vec3f & position = ep->v[j].p;
 		Vec3f & normal = ep->nrml[j];
@@ -733,7 +733,7 @@ void ApplyTileLights(EERIEPOLY * ep, const Vec2s & pos)
 		u8 ir = clipByte255(tempColor.r);
 		u8 ig = clipByte255(tempColor.g);
 		u8 ib = clipByte255(tempColor.b);
-		ep->tv[j].color = ColorBGRA(0xFF000000L | (ir << 16) | (ig << 8) | (ib));
+		ep->tv[j].color = Color(ir, ig, ib, 255).toBGRA();
 	}
 }
 

@@ -627,7 +627,7 @@ void AddFixedObjectHalo(const EERIE_FACE & face, const TransformInfo & t, const 
 		u8 lfr = io->halo.color.r * power;
 		u8 lfg = io->halo.color.g * power;
 		u8 lfb = io->halo.color.b * power;
-		tvList[o].color = ColorBGRA((0xFF << 24) | (lfr << 16) | (lfg << 8) | (lfb));
+		tvList[o].color = Color(lfr, lfg, lfb, 255).toBGRA();
 	}
 
 	if(tot > 150.f) {
@@ -778,7 +778,7 @@ void DrawEERIEInter_Render(EERIE_3DOBJ *eobj, const TransformInfo &t, Entity *io
 
 			// TODO copy-paste
 			if(io && player.m_improve) {
-				long lr=(tvList[n].color>>16) & 255;
+				long lr = Color::fromBGRA(tvList[n].color).r;
 				float ffr=(float)(lr);
 
 				float dd = tvList[n].rhw;
@@ -801,7 +801,7 @@ void DrawEERIEInter_Render(EERIE_3DOBJ *eobj, const TransformInfo &t, Entity *io
 				u8 lfr = fr;
 				u8 lfb = fb;
 				u8 lfg = 0x1E;
-				tvList[n].color = ColorBGRA(0xff000000L | (lfr << 16) | (lfg << 8) | (lfb));
+				tvList[n].color = Color(lfr, lfg, lfb, 255).toBGRA();
 			}
 
 			// Transparent poly: storing info to draw later
@@ -963,7 +963,7 @@ void AddAnimatedObjectHalo(HaloInfo & haloInfo, const unsigned short * paf, floa
 		u8 lfr = curhalo->color.r * power;
 		u8 lfg = curhalo->color.g * power;
 		u8 lfb = curhalo->color.b * power;
-		colors[o] = ColorBGRA((0xFF << 24) | (lfr << 16) | (lfg << 8) | (lfb));
+		colors[o] = Color(lfr, lfg, lfb, 255).toBGRA();
 	}
 
 	if(tot > 260) {

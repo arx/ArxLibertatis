@@ -151,7 +151,7 @@ void ARXDRAW_DrawInterShadows()
 				
 				r *= 255.f;
 				long lv = r;
-				ltv[0].color = ltv[1].color = ltv[2].color = ltv[3].color = ColorBGRA(0xFF000000 | lv<<16 | lv<<8 | lv);
+				ltv[0].color = ltv[1].color = ltv[2].color = ltv[3].color = Color(lv, lv, lv, 255).toBGRA();
 				
 				EE_RT(in, ltv[0].p);
 				in.x += s1;
@@ -190,7 +190,7 @@ void ARXDRAW_DrawInterShadows()
 				
 				r *= 255.f;
 				long lv = r;
-				ltv[0].color = ltv[1].color = ltv[2].color = ltv[3].color = ColorBGRA(0xFF000000 | lv<<16 | lv<<8 | lv);
+				ltv[0].color = ltv[1].color = ltv[2].color = ltv[3].color = Color(lv, lv, lv, 255).toBGRA();
 				
 				EE_RT(in, ltv[0].p);
 				in.x += s1;

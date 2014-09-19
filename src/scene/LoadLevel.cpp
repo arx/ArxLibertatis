@@ -691,7 +691,7 @@ bool DanaeLoadLevel(const res::path & file, bool loadEntities) {
 				while(bcount) {
 					const DANAE_LS_VLIGHTING * dlv = reinterpret_cast<const DANAE_LS_VLIGHTING *>(dat + pos);
 					pos += sizeof(DANAE_LS_VLIGHTING);
-					*ll = ColorBGRA(0xff000000L | ((dlv->r & 255) << 16) | ((dlv->g & 255) << 8) | (dlv->b & 255));
+					*ll = Color((dlv->r & 255), (dlv->g & 255), (dlv->b & 255), 255).toBGRA();
 					ll++;
 					bcount--;
 				}
@@ -955,7 +955,7 @@ bool DanaeLoadLevel(const res::path & file, bool loadEntities) {
 		while(bcount) {
 			const DANAE_LS_VLIGHTING * dlv = reinterpret_cast<const DANAE_LS_VLIGHTING *>(dat + pos);
 			pos += sizeof(DANAE_LS_VLIGHTING);
-			*ll = ColorBGRA(0xff000000L | ((dlv->r & 255) << 16) | ((dlv->g & 255) << 8) | (dlv->b & 255));
+			*ll = Color((dlv->r & 255), (dlv->g & 255), (dlv->b & 255), 255).toBGRA();
 			ll++;
 			bcount--;
 		}

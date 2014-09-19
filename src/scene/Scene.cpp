@@ -205,16 +205,17 @@ static void ApplyLavaGlowToVertex(Vec3f * odtv,TexturedVertex * dtv, float power
 	float f;
 	long lr, lg, lb;
 	power = 1.f - std::sin(WATEREFFECT + odtv->x + odtv->z) * 0.05f * power;
-	f = ((dtv->color >> 16) & 255) * power;
+	Color inColor = Color::fromBGRA(dtv->color);
+	f = inColor.r * power;
 	lr = clipByte(f);
 
-	f = ((dtv->color >> 8) & 255) * power;
+	f = inColor.g * power;
 	lg = clipByte(f);
 
-	f = ((dtv->color) & 255) * power;
+	f = inColor.b * power;
 	lb = clipByte(f);
 
-	dtv->color = ColorBGRA(0xFF000000L | (lr << 16) | (lg << 8) | (lb));
+	dtv->color = Color(lr, lg, lb, 255).toBGRA();
 }
 
 void ManageWater_VertexBuffer(EERIEPOLY * ep, const long to, const unsigned long tim, SMY_VERTEX * _pVertex) {
@@ -1183,7 +1184,7 @@ void ARX_PORTALS_Frustrum_RenderRoomTCullSoft(long room_num, const EERIE_FRUSTRU
 				ApplyTileLights(ep, pEPDATA->p);
 
 				for(int k = 0; k < to; k++) {
-					long lr=(ep->tv[k].color>>16) & 255;
+					long lr = Color::fromBGRA(ep->tv[k].color).r;
 					float ffr=(float)(lr);
 
 					float dd = ep->tv[k].rhw;
@@ -1206,8 +1207,8 @@ void ARX_PORTALS_Frustrum_RenderRoomTCullSoft(long room_num, const EERIE_FRUSTRU
 					u8 lfr = fr;
 					u8 lfb = fb;
 					u8 lfg = 0x1E;
-
-					ep->tv[k].color = ColorBGRA(0xff000000L | (lfr << 16) | (lfg << 8) | (lfb));
+					
+					ep->tv[k].color = Color(lfr, lfg, lfb, 255).toBGRA();
 				}
 
 				pMyVertexCurr[ep->uslInd[0]].color = ep->tv[0].color;
