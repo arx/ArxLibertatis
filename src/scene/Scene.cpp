@@ -900,7 +900,7 @@ static void RenderWater() {
 			pVertex->p.x = ep->v[j].p.x;
 			pVertex->p.y = -ep->v[j].p.y;
 			pVertex->p.z = ep->v[j].p.z;
-			pVertex->color = ColorBGRA(0xFF505050);
+			pVertex->color = Color(80, 80, 80, 255).toBGRA();
 
 			for(int i = 0; i < FTVU_STEP_COUNT; ++i) {
 				CalculateWaterDisplacement(fTu, fTv, ep, time, j, i);
@@ -1005,7 +1005,7 @@ void RenderLava() {
 			pVertex->p.x = ep->v[j].p.x;
 			pVertex->p.y = -ep->v[j].p.y;
 			pVertex->p.z = ep->v[j].p.z;
-			pVertex->color = ColorBGRA(0xFF666666);
+			pVertex->color = Color(102, 102, 102, 255).toBGRA();
 			for(int i = 0; i < FTVU_STEP_COUNT; ++i) {
 				CalculateLavaDisplacement(fTu, fTv, ep, time, j, i);
 				pVertex->uv[i].x = fTu;
@@ -1145,12 +1145,12 @@ void ARX_PORTALS_Frustrum_RenderRoomTCullSoft(long room_num, const EERIE_FRUSTRU
 
 		if(!player.m_improve) { // Normal View...
 			if(ep->type & POLY_GLOW) {
-				pMyVertexCurr[ep->uslInd[0]].color = ColorBGRA(0xFFFFFFFF);
-				pMyVertexCurr[ep->uslInd[1]].color = ColorBGRA(0xFFFFFFFF);
-				pMyVertexCurr[ep->uslInd[2]].color = ColorBGRA(0xFFFFFFFF);
+				pMyVertexCurr[ep->uslInd[0]].color = Color(255, 255, 255, 255).toBGRA();
+				pMyVertexCurr[ep->uslInd[1]].color = Color(255, 255, 255, 255).toBGRA();
+				pMyVertexCurr[ep->uslInd[2]].color = Color(255, 255, 255, 255).toBGRA();
 
 				if(to == 4) {
-					pMyVertexCurr[ep->uslInd[3]].color = ColorBGRA(0xFFFFFFFF);
+					pMyVertexCurr[ep->uslInd[3]].color = Color(255, 255, 255, 255).toBGRA();
 				}
 			} else {
 				if(!(ep->type & POLY_TRANS)) {

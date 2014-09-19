@@ -399,7 +399,7 @@ void MiniMap::showBookEntireMap(int showLevel) {
 	
 	TexturedVertex verts[4];
 	for(int k = 0; k < 4; k++) {
-		verts[k].color = ColorBGRA(0xFFFFFFFF);
+		verts[k].color = Color(255, 255, 255, 255).toBGRA();
 		verts[k].rhw = 1;
 		verts[k].p.z = 0.00001f;
 	}
@@ -416,10 +416,10 @@ void MiniMap::showBookEntireMap(int showLevel) {
 		float pos_x = m_mapMarkers[i].m_pos.x * 8 * ratio * m_activeBkg->Xmul * casePos.x + start.x;
 		float pos_y = m_mapMarkers[i].m_pos.y * 8 * ratio * m_activeBkg->Zmul * casePos.y + start.y;
 		float size = 5.f * ratio;
-		verts[0].color = ColorBGRA(0xFFFF0000);
-		verts[1].color = ColorBGRA(0xFFFF0000);
-		verts[2].color = ColorBGRA(0xFFFF0000);
-		verts[3].color = ColorBGRA(0xFFFF0000);
+		verts[0].color = Color(255, 0, 0, 255).toBGRA();
+		verts[1].color = Color(255, 0, 0, 255).toBGRA();
+		verts[2].color = Color(255, 0, 0, 255).toBGRA();
+		verts[3].color = Color(255, 0, 0, 255).toBGRA();
 		verts[0].p.x = (pos_x - size) * g_sizeRatio.x;
 		verts[0].p.y = (pos_y - size) * g_sizeRatio.y;
 		verts[1].p.x = (pos_x + size) * g_sizeRatio.x;
@@ -604,7 +604,7 @@ void MiniMap::drawBackground(int showLevel, Rect boundaries, float startX, float
 			float oo = 0.f;
 			
 			for(int vert = 0; vert < 4; vert++) {
-				verts[vert].color = ColorBGRA(0xFFFFFFFF);
+				verts[vert].color = Color(255, 255, 255, 255).toBGRA();
 				verts[vert].rhw = 1;
 				verts[vert].p.z = 0.00001f;
 
@@ -697,7 +697,7 @@ void MiniMap::drawPlayer(float playerSize, float playerX, float playerY, bool al
 	TexturedVertex verts[4];
 	
 	for(int k = 0; k < 4; k++) {
-		verts[k].color = ColorBGRA(0xFFFF0000); // red
+		verts[k].color = Color(255, 0, 0, 255).toBGRA();
 		verts[k].rhw = 1;
 		verts[k].p.z = 0.00001f;
 	}

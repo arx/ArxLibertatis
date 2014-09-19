@@ -1592,7 +1592,7 @@ static bool loadFastScene(const res::path & file, const char * data, const char 
 				ep2->type = PolyType::load(ep->type);
 				
 				for(size_t kk = 0; kk < 4; kk++) {
-					ep2->v[kk].color = ColorBGRA(0xFFFFFFFF);
+					ep2->v[kk].color = Color(255, 255, 255, 255).toBGRA();
 					ep2->v[kk].rhw = 1;
 					ep2->v[kk].p.x = ep->v[kk].ssx;
 					ep2->v[kk].p.y = ep->v[kk].sy;
@@ -1604,7 +1604,7 @@ static bool loadFastScene(const res::path & file, const char * data, const char 
 				memcpy(ep2->tv, ep2->v, sizeof(TexturedVertex) * 4);
 				
 				for(size_t kk = 0; kk < 4; kk++) {
-					ep2->tv[kk].color = ColorBGRA(0xFF000000);
+					ep2->tv[kk].color = Color(0, 0, 0, 255).toBGRA();
 				}
 				
 				long to = (ep->type & POLY_QUAD) ? 4 : 3;

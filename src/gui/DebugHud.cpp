@@ -398,7 +398,7 @@ void ShowFpsGraph() {
 		avg += lastFPSArray[i];
 		worst = std::min(worst, lastFPSArray[i]);
 
-		vertices[i].color = ColorBGRA(0xFFFFFFFF);
+		vertices[i].color = Color(255, 255, 255, 255).toBGRA();
 		vertices[i].p.x = i;
 		vertices[i].p.y = windowSize.y - (time * SCALE_Y);
 		vertices[i].p.z = 1.0f;

@@ -2843,7 +2843,7 @@ void ARX_INTERFACE_ManageOpenedBook_Finish()
 									player.SpellToMemorize.lTimeCreation = (unsigned long)(arxtime);
 								}
 							} else {
-								color = Color::fromBGRA(ColorBGRA(0xFFa8d0df));
+								color = Color(168, 208, 223, 255);
 							}
 							
 							GRenderer->GetTextureStage(0)->setMagFilter(TextureStage::FilterLinear);

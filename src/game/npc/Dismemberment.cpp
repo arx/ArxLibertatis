@@ -168,7 +168,7 @@ void ARX_NPC_SpawnMember(Entity * ioo, long num) {
 	
 	for(size_t k = 0; k < nouvo->vertexlist.size(); k++) {
 		nouvo->vertexlist[k].vert.p = nouvo->vertexlist[k].v -= nouvo->point0;
-		nouvo->vertexlist[k].vert.color = ColorBGRA(0xFFFFFFFF);
+		nouvo->vertexlist[k].vert.color = Color(255, 255, 255, 255).toBGRA();
 	}
 	
 	nouvo->point0 = Vec3f_ZERO;

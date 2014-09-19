@@ -184,9 +184,9 @@ void Cinematic::New() {
 	key.force = 1;
 	key.pos = pos;
 	key.angz = angz;
-	key.color = ColorBGRA(0x00FFFFFF);
-	key.colord = ColorBGRA(0x00FFFFFF);
-	key.colorf = ColorBGRA(0x00FFFFFF);
+	key.color = Color(255, 255, 255, 0).toBGRA();
+	key.colord = Color(255, 255, 255, 0).toBGRA();
+	key.colorf = Color(255, 255, 255, 0).toBGRA();
 	key.idsound = -1;
 	key.speed = 1.f;
 	key.posgrille = posgrille;
@@ -205,9 +205,9 @@ void Cinematic::New() {
 	key.force = 1;
 	key.pos = pos;
 	key.angz = angz;
-	key.color = ColorBGRA(0x00FFFFFF);
-	key.colord = ColorBGRA(0x00FFFFFF);
-	key.colorf = ColorBGRA(0x00FFFFFF);
+	key.color = Color(255, 255, 255, 0).toBGRA();
+	key.colord = Color(255, 255, 255, 0).toBGRA();
+	key.colorf = Color(255, 255, 255, 0).toBGRA();
 	key.idsound = -1;
 	key.speed = 1.f;
 	key.posgrille = posgrille;
@@ -404,7 +404,7 @@ void Cinematic::Render(float FDIFF) {
 		tb = m_bitmaps[numbitmap];
 
 		//fx
-		ColorBGRA col = ColorBGRA(0x00FFFFFF);
+		ColorBGRA col = Color(255, 255, 255, 0).toBGRA();
 
 		switch(fx & 0x000000FF) {
 			case FX_FADEIN:

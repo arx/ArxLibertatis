@@ -695,7 +695,7 @@ void AddFixedObjectHalo(const EERIE_FACE & face, const TransformInfo & t, const 
 
 			vert[1].p.x += (vect1.x + 0.2f - rnd() * 0.1f) * siz;
 			vert[1].p.y += (vect1.y + 0.2f - rnd() * 0.1f) * siz;
-			vert[1].color = ColorBGRA(0xFF000000);
+			vert[1].color = Color(0, 0, 0, 255).toBGRA();
 
 			vert[0].p.z += 0.0001f;
 			vert[3].p.z += 0.0001f;
@@ -706,9 +706,9 @@ void AddFixedObjectHalo(const EERIE_FACE & face, const TransformInfo & t, const 
 			vert[2].p.y += (vect2.y + 0.2f - rnd() * 0.1f) * siz;
 
 			if(io->halo.flags & HALO_NEGATIVE)
-				vert[2].color = ColorBGRA(0x00000000);
+				vert[2].color = Color(0, 0, 0, 0).toBGRA();
 			else
-				vert[2].color = ColorBGRA(0xFF000000);
+				vert[2].color = Color(0, 0, 0, 255).toBGRA();
 
 			Halo_AddVertices(vert);
 		}
@@ -770,7 +770,7 @@ void DrawEERIEInter_Render(EERIE_3DOBJ *eobj, const TransformInfo &t, Entity *io
 
 			if(face.facetype & POLY_GLOW) {
 				// unaffected by light
-				tvList[n].color = ColorBGRA(0xffffffff);
+				tvList[n].color = Color(255, 255, 255, 255).toBGRA();
 			} else {
 				// Normal Illuminations
 				tvList[n].color = eobj->vertexlist3[face.vid[n]].vert.color;
@@ -1039,7 +1039,7 @@ void AddAnimatedObjectHalo(HaloInfo & haloInfo, const unsigned short * paf, floa
 
 			vert[1].p.x += (vect1.x + 0.2f - rnd() * 0.1f) * siz;
 			vert[1].p.y += (vect1.y + 0.2f - rnd() * 0.1f) * siz;
-			vert[1].color = ColorBGRA(0xFF000000);
+			vert[1].color = Color(0, 0, 0, 255).toBGRA();
 
 			float valll;
 			valll = 0.005f + (glm::abs(tvList[first].p.z) - glm::abs(tvList[third].p.z))
@@ -1066,9 +1066,9 @@ void AddAnimatedObjectHalo(HaloInfo & haloInfo, const unsigned short * paf, floa
 			vert[2].p.z = (vert[2].p.z + MAX_ZEDE) * ( 1.0f / 2 );
 
 			if(curhalo->flags & HALO_NEGATIVE)
-				vert[2].color = ColorBGRA(0x00000000);
+				vert[2].color = Color(0, 0, 0, 0).toBGRA();
 			else
-				vert[2].color = ColorBGRA(0xFF000000);
+				vert[2].color = Color(0, 0, 0, 255).toBGRA();
 
 			Halo_AddVertices(vert);
 		}
