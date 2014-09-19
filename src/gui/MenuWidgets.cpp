@@ -236,7 +236,7 @@ static void FadeInOut(float _fVal) {
 
 	TexturedVertex d3dvertex[4];
 
-	u32 iColor = Color::gray(_fVal).toBGR();
+	ColorBGRA iColor = Color::gray(_fVal).toBGR();
 	d3dvertex[0].p.x=0;
 	d3dvertex[0].p.y=0;
 	d3dvertex[0].p.z=0.f;

@@ -733,7 +733,7 @@ void ApplyTileLights(EERIEPOLY * ep, const Vec2s & pos)
 		u8 ir = clipByte255(tempColor.r);
 		u8 ig = clipByte255(tempColor.g);
 		u8 ib = clipByte255(tempColor.b);
-		ep->tv[j].color = (0xFF000000L | (ir << 16) | (ig << 8) | (ib));
+		ep->tv[j].color = ColorBGRA(0xFF000000L | (ir << 16) | (ig << 8) | (ib));
 	}
 }
 

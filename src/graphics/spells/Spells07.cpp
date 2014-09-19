@@ -398,10 +398,10 @@ void CLightning::Render()
 		{
 		TexturedQuad q;
 		
-		q.v[0].color = 0xFFFFFFFF;
-		q.v[1].color = 0xFF00005A;
-		q.v[2].color = 0xFF00005A;
-		q.v[3].color = 0xFFFFFFFF;
+		q.v[0].color = ColorBGRA(0xFFFFFFFF);
+		q.v[1].color = ColorBGRA(0xFF00005A);
+		q.v[2].color = ColorBGRA(0xFF00005A);
+		q.v[3].color = ColorBGRA(0xFFFFFFFF);
 		q.v[0].uv = Vec2f(0.5f, 0.f);
 		q.v[1].uv = Vec2f_ZERO;
 		q.v[2].uv = Vec2f_Y_AXIS;
@@ -417,10 +417,10 @@ void CLightning::Render()
 		{
 		TexturedQuad q;
 
-		q.v[0].color = 0xFFFFFFFF;
-		q.v[1].color = 0xFF00005A;
-		q.v[2].color = 0xFF00005A;
-		q.v[3].color = 0xFFFFFFFF;
+		q.v[0].color = ColorBGRA(0xFFFFFFFF);
+		q.v[1].color = ColorBGRA(0xFF00005A);
+		q.v[2].color = ColorBGRA(0xFF00005A);
+		q.v[3].color = ColorBGRA(0xFFFFFFFF);
 		q.v[0].uv = Vec2f(0.5f, 0.f);
 		q.v[1].uv = Vec2f_X_AXIS;
 		q.v[2].uv = Vec2f_ONE;
@@ -438,10 +438,10 @@ void CLightning::Render()
 		{
 		TexturedQuad q;
 		
-		q.v[0].color = 0xFFFFFFFF;
-		q.v[1].color = 0xFF00005A;
-		q.v[2].color = 0xFF00005A;
-		q.v[3].color = 0xFFFFFFFF;
+		q.v[0].color = ColorBGRA(0xFFFFFFFF);
+		q.v[1].color = ColorBGRA(0xFF00005A);
+		q.v[2].color = ColorBGRA(0xFF00005A);
+		q.v[3].color = ColorBGRA(0xFFFFFFFF);
 		q.v[0].uv = Vec2f(0.5f, 0.f);
 		q.v[1].uv = Vec2f_X_AXIS;
 		q.v[2].uv = Vec2f_ONE;
@@ -457,10 +457,10 @@ void CLightning::Render()
 		{
 		TexturedQuad q;
 		
-		q.v[0].color = 0xFFFFFFFF;
-		q.v[1].color = 0xFF00005A;
-		q.v[2].color = 0xFF00005A;
-		q.v[3].color = 0xFFFFFFFF;
+		q.v[0].color = ColorBGRA(0xFFFFFFFF);
+		q.v[1].color = ColorBGRA(0xFF00005A);
+		q.v[2].color = ColorBGRA(0xFF00005A);
+		q.v[3].color = ColorBGRA(0xFFFFFFFF);
 		q.v[0].uv = Vec2f(0.5f, 0.f);
 		q.v[1].uv = Vec2f_ZERO;
 		q.v[2].uv = Vec2f_Y_AXIS;

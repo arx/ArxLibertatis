@@ -94,7 +94,7 @@ struct SavedTextureVertex {
 		TexturedVertex a;
 		a.p.x = pos.x, a.p.y = pos.y, a.p.z = pos.z;
 		a.rhw = rhw;
-		a.color = color;
+		a.color = ColorBGRA(color);
 		a.uv.x = tu;
 		a.uv.y = tv;
 		return a;

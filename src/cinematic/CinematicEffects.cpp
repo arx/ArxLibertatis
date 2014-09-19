@@ -63,9 +63,8 @@ static Vec3f OldPos[NBOLDPOS];
 static float OldAz[NBOLDPOS];
 
 /*---------------------------------------------------------------------------------*/
-int FX_FadeIN(float a, int color, int colord)
+ColorBGRA FX_FadeIN(float a, int color, int colord)
 {
-	int		c;
 	float	r, g, b;
 	float	rd, gd, bd;
 
@@ -80,15 +79,13 @@ int FX_FadeIN(float a, int color, int colord)
 	r = (r - rd) * a + rd;
 	g = (g - gd) * a + gd;
 	b = (b - bd) * a + bd;
+	
+	return Color((int)r, (int)g, (int)b, 0).toBGR();
 
-	c = Color((int)r, (int)g, (int)b, 0).toBGR();
-
-	return c;
 }
 /*---------------------------------------------------------------------------------*/
-int FX_FadeOUT(float a, int color, int colord)
+ColorBGRA FX_FadeOUT(float a, int color, int colord)
 {
-	int	c;
 	float	r, g, b;
 	float	rd, gd, bd;
 
@@ -106,9 +103,7 @@ int FX_FadeOUT(float a, int color, int colord)
 	g = (g - gd) * a + gd;
 	b = (b - bd) * a + bd;
 
-	c = Color((int)r, (int)g, (int)b, 0).toBGR();
-
-	return c;
+	return Color((int)r, (int)g, (int)b, 0).toBGR();
 }
 
 static float LastTime;
@@ -171,7 +166,7 @@ bool FX_FlashBlanc(Vec2f size, float speed, int color, float fps, float currfps)
 	GRenderer->GetTextureStage(0)->setAlphaOp(TextureStage::ArgDiffuse);
 	GRenderer->SetBlendFunc(Renderer::BlendSrcAlpha, Renderer::BlendOne);
 	
-	int col = (int)(255.f * FlashAlpha);
+	ColorBGRA col = ColorBGRA(255.f * FlashAlpha);
 	col <<= 24;
 	col |= color;
 	

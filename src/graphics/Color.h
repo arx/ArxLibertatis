@@ -23,9 +23,8 @@
 #include <limits>
 #include <algorithm>
 
-#include <boost/serialization/strong_typedef.hpp>
-
 #include "platform/Platform.h"
+#include "util/StrongType.h"
 
 template <class T>
 class Color4;
@@ -39,10 +38,10 @@ struct ColorLimits<float> {
 	inline static float max() { return 1.f; }
 };
 
-BOOST_STRONG_TYPEDEF(u32, ColorBGR)
-BOOST_STRONG_TYPEDEF(u32, ColorRGB)
-BOOST_STRONG_TYPEDEF(u32, ColorRGBA)
-BOOST_STRONG_TYPEDEF(u32, ColorBGRA)
+ARX_STRONG_TYPEDEF(u32, ColorBGR)
+ARX_STRONG_TYPEDEF(u32, ColorRGB)
+ARX_STRONG_TYPEDEF(u32, ColorRGBA)
+ARX_STRONG_TYPEDEF(u32, ColorBGRA)
 
 /*!
  * A color with red, blue and green components.

@@ -510,8 +510,12 @@ Entity * LoadInter_Ex(const res::path & classPath, EntityInstance instance,
 	return io;
 }
 
+ColorBGRA savedColorConversion(u32 bgra) {
+	return ColorBGRA(bgra);
+}
+
 static long LastLoadedLightningNb = 0;
-static u32 * LastLoadedLightning = NULL;
+static ColorBGRA * LastLoadedLightning = NULL;
 Vec3f loddpos;
 Vec3f MSP;
 
@@ -678,16 +682,16 @@ bool DanaeLoadLevel(const res::path & file, bool loadEntities) {
 			
 			// DANAE_LS_VLIGHTING
 			free(LastLoadedLightning);
-			u32 * ll = LastLoadedLightning = (u32 *)malloc(sizeof(u32) * bcount);
+			ColorBGRA * ll = LastLoadedLightning = (ColorBGRA *)malloc(sizeof(ColorBGRA) * bcount);
 			
 			if(dlh.version > 1.001f) {
-				std::copy((u32*)(dat + pos), (u32*)(dat + pos) + bcount, LastLoadedLightning);
+				std::transform((u32*)(dat + pos), (u32*)(dat + pos) + bcount, LastLoadedLightning, savedColorConversion);
 				pos += sizeof(u32) * bcount;
 			} else {
 				while(bcount) {
 					const DANAE_LS_VLIGHTING * dlv = reinterpret_cast<const DANAE_LS_VLIGHTING *>(dat + pos);
 					pos += sizeof(DANAE_LS_VLIGHTING);
-					*ll = 0xff000000L | ((dlv->r & 255) << 16) | ((dlv->g & 255) << 8) | (dlv->b & 255);
+					*ll = ColorBGRA(0xff000000L | ((dlv->r & 255) << 16) | ((dlv->g & 255) << 8) | (dlv->b & 255));
 					ll++;
 					bcount--;
 				}
@@ -943,15 +947,15 @@ bool DanaeLoadLevel(const res::path & file, bool loadEntities) {
 	
 	//DANAE_LS_VLIGHTING
 	free(LastLoadedLightning);
-	u32 * ll = LastLoadedLightning = (u32 *)malloc(sizeof(u32) * bcount);
+	ColorBGRA * ll = LastLoadedLightning = (ColorBGRA *)malloc(sizeof(ColorBGRA) * bcount);
 	if(dlh.version > 1.001f) {
-		std::copy((u32*)(dat + pos), (u32*)(dat + pos) + bcount, LastLoadedLightning);
+		std::transform((u32*)(dat + pos), (u32*)(dat + pos) + bcount, LastLoadedLightning, savedColorConversion);
 		pos += sizeof(u32) * bcount;
 	} else {
 		while(bcount) {
 			const DANAE_LS_VLIGHTING * dlv = reinterpret_cast<const DANAE_LS_VLIGHTING *>(dat + pos);
 			pos += sizeof(DANAE_LS_VLIGHTING);
-			*ll = 0xff000000L | ((dlv->r & 255) << 16) | ((dlv->g & 255) << 8) | (dlv->b & 255);
+			*ll = ColorBGRA(0xff000000L | ((dlv->r & 255) << 16) | ((dlv->g & 255) << 8) | (dlv->b & 255));
 			ll++;
 			bcount--;
 		}
@@ -1062,9 +1066,9 @@ void RestoreLastLoadedLightning(EERIE_BACKGROUND & eb)
 			long nbvert = (ep.type & POLY_QUAD) ? 4 : 3;
 			
 			for(long k = 0; k < nbvert; k++) {
-				u32 dc = LastLoadedLightning[pos];
+				ColorBGRA dc = LastLoadedLightning[pos];
 				pos++;
-				dc = dc | 0xFF000000;
+				dc = ColorBGRA(dc | 0xFF000000);
 				ep.tv[k].color = ep.v[k].color = dc;
 				bcount--;
 				

@@ -214,7 +214,7 @@ static void ApplyLavaGlowToVertex(Vec3f * odtv,TexturedVertex * dtv, float power
 	f = ((dtv->color) & 255) * power;
 	lb = clipByte(f);
 
-	dtv->color = (0xFF000000L | (lr << 16) | (lg << 8) | (lb));
+	dtv->color = ColorBGRA(0xFF000000L | (lr << 16) | (lg << 8) | (lb));
 }
 
 void ManageWater_VertexBuffer(EERIEPOLY * ep, const long to, const unsigned long tim, SMY_VERTEX * _pVertex) {
@@ -900,7 +900,7 @@ static void RenderWater() {
 			pVertex->p.x = ep->v[j].p.x;
 			pVertex->p.y = -ep->v[j].p.y;
 			pVertex->p.z = ep->v[j].p.z;
-			pVertex->color = 0xFF505050;
+			pVertex->color = ColorBGRA(0xFF505050);
 
 			for(int i = 0; i < FTVU_STEP_COUNT; ++i) {
 				CalculateWaterDisplacement(fTu, fTv, ep, time, j, i);
@@ -1005,7 +1005,7 @@ void RenderLava() {
 			pVertex->p.x = ep->v[j].p.x;
 			pVertex->p.y = -ep->v[j].p.y;
 			pVertex->p.z = ep->v[j].p.z;
-			pVertex->color = 0xFF666666;
+			pVertex->color = ColorBGRA(0xFF666666);
 			for(int i = 0; i < FTVU_STEP_COUNT; ++i) {
 				CalculateLavaDisplacement(fTu, fTv, ep, time, j, i);
 				pVertex->uv[i].x = fTu;
@@ -1145,12 +1145,12 @@ void ARX_PORTALS_Frustrum_RenderRoomTCullSoft(long room_num, const EERIE_FRUSTRU
 
 		if(!player.m_improve) { // Normal View...
 			if(ep->type & POLY_GLOW) {
-				pMyVertexCurr[ep->uslInd[0]].color = 0xFFFFFFFF;
-				pMyVertexCurr[ep->uslInd[1]].color = 0xFFFFFFFF;
-				pMyVertexCurr[ep->uslInd[2]].color = 0xFFFFFFFF;
+				pMyVertexCurr[ep->uslInd[0]].color = ColorBGRA(0xFFFFFFFF);
+				pMyVertexCurr[ep->uslInd[1]].color = ColorBGRA(0xFFFFFFFF);
+				pMyVertexCurr[ep->uslInd[2]].color = ColorBGRA(0xFFFFFFFF);
 
 				if(to == 4) {
-					pMyVertexCurr[ep->uslInd[3]].color = 0xFFFFFFFF;
+					pMyVertexCurr[ep->uslInd[3]].color = ColorBGRA(0xFFFFFFFF);
 				}
 			} else {
 				if(!(ep->type & POLY_TRANS)) {
@@ -1207,7 +1207,7 @@ void ARX_PORTALS_Frustrum_RenderRoomTCullSoft(long room_num, const EERIE_FRUSTRU
 					u8 lfb = fb;
 					u8 lfg = 0x1E;
 
-					ep->tv[k].color = (0xff000000L | (lfr << 16) | (lfg << 8) | (lfb));
+					ep->tv[k].color = ColorBGRA(0xff000000L | (lfr << 16) | (lfg << 8) | (lfb));
 				}
 
 				pMyVertexCurr[ep->uslInd[0]].color = ep->tv[0].color;

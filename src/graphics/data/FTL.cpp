@@ -526,7 +526,7 @@ EERIE_3DOBJ * ARX_FTL_Load(const res::path & file) {
 			obj->vertexlist[ii] = *reinterpret_cast<const EERIE_OLD_VERTEX *>(dat + pos);
 			pos += sizeof(EERIE_OLD_VERTEX);
 			
-			obj->vertexlist[ii].vert.color = 0xFF000000;
+			obj->vertexlist[ii].vert.color = ColorBGRA(0xFF000000);
 		}
 		
 		// Set the origin point of the mesh

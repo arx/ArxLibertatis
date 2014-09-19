@@ -1164,8 +1164,8 @@ void ARX_PARTICLES_Update(EERIE_CAMERA * cam)  {
 				vect = glm::normalize(vect);
 				TexturedVertex tv[3];
 				tv[0].color = part->rgb.toBGR();
-				tv[1].color = 0xFF666666;
-				tv[2].color = 0xFF000000;
+				tv[1].color = ColorBGRA(0xFF666666);
+				tv[2].color = ColorBGRA(0xFF000000);
 				tv[0].p = out.p;
 				tv[0].rhw = out.rhw;
 				Vec3f temp;

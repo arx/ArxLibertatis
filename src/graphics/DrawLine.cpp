@@ -111,7 +111,7 @@ void drawLineSphere(const Sphere & sphere, Color color) {
 
 			if(skip) {
 				skip = false;
-				out.color = 0x00000000;
+				out.color = ColorBGRA(0x00000000);
 				vertices.push_back(out);
 			}
 
@@ -120,7 +120,7 @@ void drawLineSphere(const Sphere & sphere, Color color) {
 
 			if(j == sections) {
 				skip = true;
-				out.color = 0x00000000;
+				out.color = ColorBGRA(0x00000000);
 				vertices.push_back(out);
 			}
 		}
