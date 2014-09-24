@@ -38,8 +38,7 @@ struct SYMBOL_DRAW {
 	short			lasttim;
 	short			duration;
 	char			sequence[32];
-	char			cPosStartX;
-	char			cPosStartY;
+	Vec2s cPosStart;
 };
 
 Vec2s GetSymbVector(char c) {
@@ -212,8 +211,8 @@ void ARX_SPELLS_UpdateSymbolDraw() {
 
 			sd->lasttim=(short)tim;
 
-			pos1.x = (short)subj.center.x - symbolVecScale.x * 2 + sd->cPosStartX * symbolVecScale.x;
-			pos1.y = (short)subj.center.y - symbolVecScale.y * 2 + sd->cPosStartY * symbolVecScale.y;
+			pos1.x = (short)subj.center.x - symbolVecScale.x * 2 + sd->cPosStart.x * symbolVecScale.x;
+			pos1.y = (short)subj.center.y - symbolVecScale.y * 2 + sd->cPosStart.y * symbolVecScale.y;
 
 			float div_ti=1.f/ti;
 
@@ -326,8 +325,7 @@ void ARX_SPELLS_RequestSymbolDrawCommon(Entity *io, float duration, RuneInfo & i
 	sd->lastpos.y = io->pos.y - 120.0F - info.startOffset.y*5;
 	sd->lastpos.z = io->pos.z + std::cos(glm::radians(MAKEANGLE(io->angle.getPitch() - 45.0F + info.startOffset.x * 2))) * 60.0F;
 
-	sd->cPosStartX = checked_range_cast<char>(info.startOffset.x);
-	sd->cPosStartY = checked_range_cast<char>(info.startOffset.y);
+	sd->cPosStart = info.startOffset;
 
 	io->gameFlags &= ~GFLAG_INVISIBILITY;
 }
