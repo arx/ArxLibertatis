@@ -46,8 +46,7 @@ struct FLARES {
 	short flags;
 	TexturedVertex v;
 	TexturedVertex tv;
-	float x;
-	float y;
+	Vec2f pos;
 	float tolive;
 	Color3f rgb;
 	float size;
@@ -169,8 +168,8 @@ void AddFlare(const Vec2s & pos, float sm, short typ, Entity * io, bool bookDraw
 		fl->flags = 0;
 	}
 
-	fl->x = float(pos.x) - rnd() * 4.f;
-	fl->y = float(pos.y) - rnd() * 4.f - 50.f;
+	fl->pos.x = float(pos.x) - rnd() * 4.f;
+	fl->pos.y = float(pos.y) - rnd() * 4.f - 50.f;
 	fl->tv.rhw = fl->v.rhw = 1.f;
 
 	if(!bookDraw) {
@@ -183,8 +182,8 @@ void AddFlare(const Vec2s & pos, float sm, short typ, Entity * io, bool bookDraw
 		EE_RTP(fl->tv.p, &fl->v);
 		fl->v.p += ka.orgTrans.pos;
 
-		float vx = -(fl->x - subj.center.x) * 0.2173913f;
-		float vy = (fl->y - subj.center.y) * 0.1515151515151515f;
+		float vx = -(fl->pos.x - subj.center.x) * 0.2173913f;
+		float vy = (fl->pos.y - subj.center.y) * 0.1515151515151515f;
 		if(io) {
 			fl->v.p.x = io->pos.x - std::sin(glm::radians(MAKEANGLE(io->angle.getPitch() + vx))) * 100.f;
 			fl->v.p.y = io->pos.y + std::sin(glm::radians(MAKEANGLE(io->angle.getYaw() + vy))) * 100.f - 150.f;
@@ -206,7 +205,7 @@ void AddFlare(const Vec2s & pos, float sm, short typ, Entity * io, bool bookDraw
 		SetActiveCamera(oldcam);
 		PrepareCamera(oldcam, g_size);
 	} else {
-		fl->tv.p = Vec3f(fl->x, fl->y, 0.001f);
+		fl->tv.p = Vec3f(fl->pos.x, fl->pos.y, 0.001f);
 	}
 
 	switch(PIPOrgb) {
@@ -441,7 +440,7 @@ void ARX_MAGICAL_FLARES_Update() {
 				s = flare.size;
 			}
 
-			if(flare.tolive <= 0.f || flare.y < -64.f || s < 3.f) {
+			if(flare.tolive <= 0.f || flare.pos.y < -64.f || s < 3.f) {
 
 				if(flare.io && ValidIOAddress(flare.io)) {
 					flare.io->flarecount--;
