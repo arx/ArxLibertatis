@@ -57,45 +57,45 @@ Vec2s GetSymbVector(char c) {
 	}
 }
 
-void ReCenterSequence(const char *_pcSequence, int & _iMinX, int & _iMinY,
-                      int & _iMaxX, int & _iMaxY) {
+void ReCenterSequence(const char *_pcSequence, Vec2i & iMin, Vec2i & iMax) {
 	
-	int iSizeX=0,iSizeY=0;
-	_iMinX=_iMinY=0;
-	_iMaxX=_iMaxY=0;
+	Vec2i iSize = Vec2i(0, 0);
+	iMin = Vec2i(0, 0);
+	iMax = Vec2i(0, 0);
+	
 	int iLenght=strlen(_pcSequence);
 
 	for(int iI = 0; iI < iLenght; iI++) {
 		Vec2s es2dVector = GetSymbVector(_pcSequence[iI]);
 		es2dVector *= symbolVecScale;
-		iSizeX+=es2dVector.x;
-		iSizeY+=es2dVector.y;
-		_iMinX=std::min(_iMinX,iSizeX);
-		_iMinY=std::min(_iMinY,iSizeY);
-		_iMaxX=std::max(_iMaxX,iSizeX);
-		_iMaxY=std::max(_iMaxY,iSizeY);
+		iSize.x+=es2dVector.x;
+		iSize.y+=es2dVector.y;
+		iMin.x=std::min(iMin.x,iSize.x);
+		iMin.y=std::min(iMin.y,iSize.y);
+		iMax.x=std::max(iMax.x,iSize.x);
+		iMax.y=std::max(iMax.y,iSize.y);
 	}
 }
 
-static long lMaxSymbolDrawSizeX;
-static long lMaxSymbolDrawSizeY;
+static Vec2i lMaxSymbolDrawSize;
 
 //-----------------------------------------------------------------------------
 // Initializes Spell engine (Called once at DANAE startup)
 void ARX_SPELLS_Init_Rects() {
-	lMaxSymbolDrawSizeX = std::numeric_limits<long>::min();
-	lMaxSymbolDrawSizeY = std::numeric_limits<long>::min();
+	lMaxSymbolDrawSize.x = std::numeric_limits<int>::min();
+	lMaxSymbolDrawSize.y = std::numeric_limits<int>::min();
 
 	BOOST_FOREACH(RuneInfo & info, runeInfos) {
-
-		int iMinX,iMinY,iMaxX,iMaxY;
-		long iSizeX,iSizeY;
-
-		ReCenterSequence(info.sequence.c_str(), iMinX, iMinY, iMaxX, iMaxY);
-		iSizeX=iMaxX-iMinX;
-		iSizeY=iMaxY-iMinY;
-		lMaxSymbolDrawSizeX=std::max(iSizeX, lMaxSymbolDrawSizeX);
-		lMaxSymbolDrawSizeY=std::max(iSizeY, lMaxSymbolDrawSizeY);
+		
+		Vec2i iMin;
+		Vec2i iMax;
+		Vec2i iSize;
+		
+		ReCenterSequence(info.sequence.c_str(), iMin, iMax);
+		iSize.x=iMax.x-iMin.x;
+		iSize.y=iMax.y-iMin.y;
+		lMaxSymbolDrawSize.x=std::max(iSize.x, lMaxSymbolDrawSize.x);
+		lMaxSymbolDrawSize.y=std::max(iSize.y, lMaxSymbolDrawSize.y);
 	}
 }
 
@@ -258,28 +258,30 @@ void ARX_SPELLS_UpdateSymbolDraw() {
 					newtime -= (long)ti;
 				}
 			} else {
-				int iMinX,iMinY,iMaxX,iMaxY;
-				int iSizeX,iSizeY;
-				ReCenterSequence(sd->sequence,iMinX,iMinY,iMaxX,iMaxY);
-				iSizeX=iMaxX-iMinX;
-				iSizeY=iMaxY-iMinY;
+				Vec2i iMin;
+				Vec2i iMax;
+				Vec2i iSize;
+				
+				ReCenterSequence(sd->sequence, iMin, iMax);
+				iSize.x=iMax.x-iMin.x;
+				iSize.y=iMax.y-iMin.y;
 				pos1.x = 97;
 				pos1.y = 64;
 
-				long lPosX	= (((513>>1)-lMaxSymbolDrawSizeX)>>1);
-				long lPosY	= (313-(((313*3/4)-lMaxSymbolDrawSizeY)>>1));
+				long lPosX	= (((513>>1)-lMaxSymbolDrawSize.x)>>1);
+				long lPosY	= (313-(((313*3/4)-lMaxSymbolDrawSize.y)>>1));
 
 				pos1.x = checked_range_cast<short>(pos1.x + lPosX);
 				pos1.y = checked_range_cast<short>(pos1.y + lPosY);
 
-				lPosX =  ((lMaxSymbolDrawSizeX-iSizeX)>>1);
-				lPosY =  ((lMaxSymbolDrawSizeY-iSizeY)>>1);
+				lPosX =  ((lMaxSymbolDrawSize.x-iSize.x)>>1);
+				lPosY =  ((lMaxSymbolDrawSize.y-iSize.y)>>1);
 
 				pos1.x = checked_range_cast<short>(pos1.x + lPosX);
 				pos1.y = checked_range_cast<short>(pos1.y + lPosY);
 
-				int iX = pos1.x-iMinX;
-				int iY = pos1.y-iMinY;
+				int iX = pos1.x-iMin.x;
+				int iY = pos1.y-iMin.y;
 
 				pos1.x = checked_range_cast<short>(iX);
 				pos1.y = checked_range_cast<short>(iY);
