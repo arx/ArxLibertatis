@@ -68,12 +68,9 @@ void ReCenterSequence(const char *_pcSequence, Vec2i & iMin, Vec2i & iMax) {
 	for(int iI = 0; iI < iLenght; iI++) {
 		Vec2s es2dVector = GetSymbVector(_pcSequence[iI]);
 		es2dVector *= symbolVecScale;
-		iSize.x+=es2dVector.x;
-		iSize.y+=es2dVector.y;
-		iMin.x=std::min(iMin.x,iSize.x);
-		iMin.y=std::min(iMin.y,iSize.y);
-		iMax.x=std::max(iMax.x,iSize.x);
-		iMax.y=std::max(iMax.y,iSize.y);
+		iSize += es2dVector;
+		iMin = glm::min(iMin, iSize);
+		iMax = glm::max(iMax, iSize);
 	}
 }
 
@@ -89,13 +86,10 @@ void ARX_SPELLS_Init_Rects() {
 		
 		Vec2i iMin;
 		Vec2i iMax;
-		Vec2i iSize;
-		
 		ReCenterSequence(info.sequence.c_str(), iMin, iMax);
-		iSize.x=iMax.x-iMin.x;
-		iSize.y=iMax.y-iMin.y;
-		lMaxSymbolDrawSize.x=std::max(iSize.x, lMaxSymbolDrawSize.x);
-		lMaxSymbolDrawSize.y=std::max(iSize.y, lMaxSymbolDrawSize.y);
+		
+		Vec2i iSize = iMax - iMin;
+		lMaxSymbolDrawSize = glm::max(iSize, lMaxSymbolDrawSize);
 	}
 }
 
@@ -263,10 +257,8 @@ void ARX_SPELLS_UpdateSymbolDraw() {
 				Vec2i iSize;
 				
 				ReCenterSequence(sd->sequence, iMin, iMax);
-				iSize.x=iMax.x-iMin.x;
-				iSize.y=iMax.y-iMin.y;
-				pos1.x = 97;
-				pos1.y = 64;
+				iSize = iMax - iMin;
+				pos1 = Vec2i(97, 64);
 				
 				Vec2i lPos;
 				lPos.x = (((513>>1)-lMaxSymbolDrawSize.x)>>1);
@@ -281,10 +273,8 @@ void ARX_SPELLS_UpdateSymbolDraw() {
 				pos1.x = checked_range_cast<short>(pos1.x + lPos.x);
 				pos1.y = checked_range_cast<short>(pos1.y + lPos.y);
 				
-				Vec2i i;
-				i.x = pos1.x-iMin.x;
-				i.y = pos1.y-iMin.y;
-
+				Vec2i i = Vec2i(pos1) - iMin;
+				
 				pos1.x = checked_range_cast<short>(i.x);
 				pos1.y = checked_range_cast<short>(i.y);
 
