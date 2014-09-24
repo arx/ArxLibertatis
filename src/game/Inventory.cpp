@@ -164,13 +164,12 @@ static Entity * GetInventoryObj(const Vec2s & pos) {
 	
 	float fCenterX	= g_size.center().x - INTERFACE_RATIO(320) + INTERFACE_RATIO(35);
 	float fSizY		= g_size.height() - INTERFACE_RATIO(101) + INTERFACE_RATIO_LONG(InventoryY);
-
-	int iPosX = checked_range_cast<int>(fCenterX);
-	int iPosY = checked_range_cast<int>(fSizY);
-
+	
+	Vec2i iPos = Vec2i(fCenterX, fSizY);
+	
 	if(player.Interface & INTER_INVENTORY) {
-		long tx = pos.x - iPosX; //-4
-		long ty = pos.y - iPosY; //-2
+		long tx = pos.x - iPos.x; //-4
+		long ty = pos.y - iPos.y; //-2
 
 		if(tx >= 0 && ty >= 0) {
 			tx = checked_range_cast<long>(tx / INTERFACE_RATIO(32));
@@ -194,8 +193,8 @@ static Entity * GetInventoryObj(const Vec2s & pos) {
 		int iY = checked_range_cast<int>(fBag);
 
 		for(int i = 0; i < player.bag; i++) {
-			long tx = pos.x - iPosX;
-			long ty = pos.y - iPosY - iY;
+			long tx = pos.x - iPos.x;
+			long ty = pos.y - iPos.y - iY;
 
 			tx = checked_range_cast<long>(tx / INTERFACE_RATIO(32));
 			ty = checked_range_cast<long>(ty / INTERFACE_RATIO(32));
