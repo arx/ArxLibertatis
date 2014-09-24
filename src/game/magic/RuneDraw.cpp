@@ -267,24 +267,26 @@ void ARX_SPELLS_UpdateSymbolDraw() {
 				iSize.y=iMax.y-iMin.y;
 				pos1.x = 97;
 				pos1.y = 64;
+				
+				Vec2i lPos;
+				lPos.x = (((513>>1)-lMaxSymbolDrawSize.x)>>1);
+				lPos.y = (313-(((313*3/4)-lMaxSymbolDrawSize.y)>>1));
 
-				long lPosX	= (((513>>1)-lMaxSymbolDrawSize.x)>>1);
-				long lPosY	= (313-(((313*3/4)-lMaxSymbolDrawSize.y)>>1));
+				pos1.x = checked_range_cast<short>(pos1.x + lPos.x);
+				pos1.y = checked_range_cast<short>(pos1.y + lPos.y);
 
-				pos1.x = checked_range_cast<short>(pos1.x + lPosX);
-				pos1.y = checked_range_cast<short>(pos1.y + lPosY);
+				lPos.x =  ((lMaxSymbolDrawSize.x-iSize.x)>>1);
+				lPos.y =  ((lMaxSymbolDrawSize.y-iSize.y)>>1);
 
-				lPosX =  ((lMaxSymbolDrawSize.x-iSize.x)>>1);
-				lPosY =  ((lMaxSymbolDrawSize.y-iSize.y)>>1);
+				pos1.x = checked_range_cast<short>(pos1.x + lPos.x);
+				pos1.y = checked_range_cast<short>(pos1.y + lPos.y);
+				
+				Vec2i i;
+				i.x = pos1.x-iMin.x;
+				i.y = pos1.y-iMin.y;
 
-				pos1.x = checked_range_cast<short>(pos1.x + lPosX);
-				pos1.y = checked_range_cast<short>(pos1.y + lPosY);
-
-				int iX = pos1.x-iMin.x;
-				int iY = pos1.y-iMin.y;
-
-				pos1.x = checked_range_cast<short>(iX);
-				pos1.y = checked_range_cast<short>(iY);
+				pos1.x = checked_range_cast<short>(i.x);
+				pos1.y = checked_range_cast<short>(i.y);
 
 				for(long j = 0; j < nbcomponents; j++) {
 
@@ -293,12 +295,13 @@ void ARX_SPELLS_UpdateSymbolDraw() {
 
 					if(newtime < ti) {
 						float ratio = (float)(newtime) * div_ti;
+						
+						Vec2f f;
+						f.x = pos1.x + (ratio*vect.x)*0.5f;
+						f.y = pos1.y + (ratio*vect.y)*0.5f;
 
-						float fX = pos1.x + (ratio*vect.x)*0.5f;
-						float fY = pos1.y + (ratio*vect.y)*0.5f;
-
-						pos1.x = checked_range_cast<short>(fX);
-						pos1.y = checked_range_cast<short>(fY);
+						pos1.x = checked_range_cast<short>(f.x);
+						pos1.y = checked_range_cast<short>(f.y);
 
 						Vec2s pos;
 						pos.x=(short)(pos1.x*g_sizeRatio.x);
