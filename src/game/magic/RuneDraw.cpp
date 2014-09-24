@@ -57,11 +57,11 @@ Vec2s GetSymbVector(char c) {
 	}
 }
 
-void ReCenterSequence(const char *_pcSequence, Vec2i & iMin, Vec2i & iMax) {
+void ReCenterSequence(const char *_pcSequence, Vec2s & iMin, Vec2s & iMax) {
 	
-	Vec2i iSize = Vec2i(0, 0);
-	iMin = Vec2i(0, 0);
-	iMax = Vec2i(0, 0);
+	Vec2s iSize = Vec2s(0, 0);
+	iMin = Vec2s(0, 0);
+	iMax = Vec2s(0, 0);
 	
 	int iLenght=strlen(_pcSequence);
 
@@ -74,21 +74,21 @@ void ReCenterSequence(const char *_pcSequence, Vec2i & iMin, Vec2i & iMax) {
 	}
 }
 
-static Vec2i lMaxSymbolDrawSize;
+static Vec2s lMaxSymbolDrawSize;
 
 //-----------------------------------------------------------------------------
 // Initializes Spell engine (Called once at DANAE startup)
 void ARX_SPELLS_Init_Rects() {
-	lMaxSymbolDrawSize.x = std::numeric_limits<int>::min();
-	lMaxSymbolDrawSize.y = std::numeric_limits<int>::min();
+	lMaxSymbolDrawSize.x = std::numeric_limits<s16>::min();
+	lMaxSymbolDrawSize.y = std::numeric_limits<s16>::min();
 
 	BOOST_FOREACH(RuneInfo & info, runeInfos) {
 		
-		Vec2i iMin;
-		Vec2i iMax;
+		Vec2s iMin;
+		Vec2s iMax;
 		ReCenterSequence(info.sequence.c_str(), iMin, iMax);
 		
-		Vec2i iSize = iMax - iMin;
+		Vec2s iSize = iMax - iMin;
 		lMaxSymbolDrawSize = glm::max(iSize, lMaxSymbolDrawSize);
 	}
 }
@@ -252,31 +252,20 @@ void ARX_SPELLS_UpdateSymbolDraw() {
 					newtime -= (long)ti;
 				}
 			} else {
-				Vec2i iMin;
-				Vec2i iMax;
-				Vec2i iSize;
+				Vec2s iMin;
+				Vec2s iMax;
 				
 				ReCenterSequence(sd->sequence, iMin, iMax);
-				iSize = iMax - iMin;
-				pos1 = Vec2i(97, 64);
+				Vec2s iSize = iMax - iMin;
+				pos1 = Vec2s(97, 64);
 				
-				Vec2i lPos;
+				Vec2s lPos;
 				lPos.x = (((513>>1)-lMaxSymbolDrawSize.x)>>1);
 				lPos.y = (313-(((313*3/4)-lMaxSymbolDrawSize.y)>>1));
 
-				pos1.x = checked_range_cast<short>(pos1.x + lPos.x);
-				pos1.y = checked_range_cast<short>(pos1.y + lPos.y);
-
-				lPos.x =  ((lMaxSymbolDrawSize.x-iSize.x)>>1);
-				lPos.y =  ((lMaxSymbolDrawSize.y-iSize.y)>>1);
-
-				pos1.x = checked_range_cast<short>(pos1.x + lPos.x);
-				pos1.y = checked_range_cast<short>(pos1.y + lPos.y);
-				
-				Vec2i i = Vec2i(pos1) - iMin;
-				
-				pos1.x = checked_range_cast<short>(i.x);
-				pos1.y = checked_range_cast<short>(i.y);
+				pos1 += lPos;
+				pos1 += (lMaxSymbolDrawSize - iSize) / Vec2s(2);
+				pos1 -= iMin;
 
 				for(long j = 0; j < nbcomponents; j++) {
 
@@ -286,17 +275,9 @@ void ARX_SPELLS_UpdateSymbolDraw() {
 					if(newtime < ti) {
 						float ratio = (float)(newtime) * div_ti;
 						
-						Vec2f f;
-						f.x = pos1.x + (ratio*vect.x)*0.5f;
-						f.y = pos1.y + (ratio*vect.y)*0.5f;
-
-						pos1.x = checked_range_cast<short>(f.x);
-						pos1.y = checked_range_cast<short>(f.y);
-
-						Vec2s pos;
-						pos.x=(short)(pos1.x*g_sizeRatio.x);
-						pos.y=(short)(pos1.y*g_sizeRatio.y);
-
+						pos1 += Vec2s(Vec2f(ratio) * Vec2f(vect) * 0.5f);
+						
+						Vec2s pos = Vec2s(Vec2f(pos1) * g_sizeRatio);
 						AddFlare(pos, 0.1f, 1, entities[handle], true);
 
 						break;
