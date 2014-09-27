@@ -1408,15 +1408,12 @@ void LinkObjToMe(Entity * io, Entity * io2, const std::string & attach) {
  * \brief Creates a Temporary IO Ident
  * \param io
  */
-static void MakeTemporaryIOIdent(Entity * io) {
+static EntityInstance getFreeInstanceNumber(const res::path & classPath) {
 	
-	if(!io)
-		return;
+	std::string className = classPath.filename();
+	res::path classDir = classPath.parent();
 	
-	std::string className = io->className();
-	res::path classDir = io->classPath().parent();
-	
-	for(long t = 1; ; t++) {
+	for(EntityInstance t = 1; ; t++) {
 		
 		// Check if the candidate instance number is used in the current scene
 		bool used = false;
@@ -1425,7 +1422,7 @@ static void MakeTemporaryIOIdent(Entity * io) {
 			const EntityHandle handle = EntityHandle(i);
 			Entity * e = entities[handle];
 			
-			if(e && e->ident == t && io != e) {
+			if(e && e->ident == t) {
 				if(e->className() == className) {
 					used = true;
 					break;
@@ -1449,9 +1446,7 @@ static void MakeTemporaryIOIdent(Entity * io) {
 			continue;
 		}
 		
-		io->ident = t;
-		
-		return;
+		return t;
 	}
 }
 
@@ -1465,14 +1460,14 @@ Entity * AddFix(const res::path & classPath, EntityInstance instance, AddInterac
 		return NULL;
 	}
 	
+	if(instance == -1) {
+		instance = getFreeInstanceNumber(classPath);
+	}
+	
 	Entity * io = new Entity(classPath);
 	
-	if(instance == -1) {
-		MakeTemporaryIOIdent(io);
-	} else {
-		arx_assert(instance > 0);
-		io->ident = instance;
-	}
+	arx_assert(instance > 0);
+	io->ident = instance;
 	
 	io->_fixdata = (IO_FIXDATA *)malloc(sizeof(IO_FIXDATA));
 	memset(io->_fixdata, 0, sizeof(IO_FIXDATA));
@@ -1537,14 +1532,14 @@ static Entity * AddCamera(const res::path & classPath, EntityInstance instance) 
 		return NULL;
 	}
 	
+	if(instance == -1) {
+		instance = getFreeInstanceNumber(classPath);
+	}
+	
 	Entity * io = new Entity(classPath);
 	
-	if(instance == -1) {
-		MakeTemporaryIOIdent(io);
-	} else {
-		arx_assert(instance > 0);
-		io->ident = instance;
-	}
+	arx_assert(instance > 0);
+	io->ident = instance;
 	
 	GetIOScript(io, script);
 	
@@ -1591,14 +1586,14 @@ static Entity * AddMarker(const res::path & classPath, EntityInstance instance) 
 		return NULL;
 	}
 	
+	if(instance == -1) {
+		instance = getFreeInstanceNumber(classPath);
+	}
+	
 	Entity * io = new Entity(classPath);
 	
-	if(instance == -1) {
-		MakeTemporaryIOIdent(io);
-	} else {
-		arx_assert(instance > 0);
-		io->ident = instance;
-	}
+	arx_assert(instance > 0);
+	io->ident = instance;
 	
 	GetIOScript(io, script);
 	
@@ -1711,14 +1706,14 @@ Entity * AddNPC(const res::path & classPath, EntityInstance instance, AddInterac
 		return NULL;
 	}
 	
+	if(instance == -1) {
+		instance = getFreeInstanceNumber(classPath);
+	}
+	
 	Entity * io = new Entity(classPath);
 	
-	if(instance == -1) {
-		MakeTemporaryIOIdent(io);
-	} else {
-		arx_assert(instance > 0);
-		io->ident = instance;
-	}
+	arx_assert(instance > 0);
+	io->ident = instance;
 	
 	io->forcedmove = Vec3f_ZERO;
 	
@@ -1836,14 +1831,14 @@ Entity * AddItem(const res::path & classPath_, EntityInstance instance, AddInter
 		return NULL;
 	}
 	
+	if(instance == -1) {
+		instance = getFreeInstanceNumber(classPath);
+	}
+	
 	Entity * io = new Entity(classPath);
 	
-	if(instance == -1) {
-		MakeTemporaryIOIdent(io);
-	} else {
-		arx_assert(instance > 0);
-		io->ident = instance;
-	}
+	arx_assert(instance > 0);
+	io->ident = instance;
 	
 	io->ioflags = type;
 	io->_itemdata = (IO_ITEMDATA *)malloc(sizeof(IO_ITEMDATA));
