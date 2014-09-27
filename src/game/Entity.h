@@ -386,7 +386,7 @@ public:
 	 * in the form of "%s_%04ld"
 	 * \return The short name combined with a 4 digit ident, padded with 0
 	 */
-	std::string idString() const;
+	std::string idString() const { return id().string(); }
 	
 	/*!
 	 *  Returns the full name for this entity where the

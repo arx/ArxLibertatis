@@ -270,12 +270,6 @@ Entity::~Entity() {
 	
 }
 
-std::string Entity::idString() const {
-	std::stringstream ss;
-	ss << className() << '_' << std::setw(4) << std::setfill('0') << instance();
-	return ss.str();
-}
-
 res::path Entity::instancePath() const {
 	return m_classPath.parent() / idString();
 }
