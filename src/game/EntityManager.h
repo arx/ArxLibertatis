@@ -46,8 +46,7 @@ public:
 	void clear();
 	
 	EntityHandle getById(const std::string & idString) const;
-	EntityHandle getById(const std::string & className, EntityInstance instance) const;
-	EntityHandle getById(const EntityId & id) const { return getById(id.className(), id.instance()); }
+	EntityHandle getById(const EntityId & id) const;
 	
 	Entity * getById(const std::string & idString, Entity * self) const;
 	
@@ -78,7 +77,9 @@ public:
 private:
 	
 	Entries entries;
-	size_t minfree; // first unused index (value == NULL)
+	
+	struct Impl;
+	Impl * m_impl;
 	
 	size_t add(Entity * entity);
 	

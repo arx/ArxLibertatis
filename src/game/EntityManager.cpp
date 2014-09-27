@@ -46,12 +46,30 @@ ZeniMax Media Inc., Suite 120, Rockville, Maryland 20850 USA.
 #include <cstdlib>
 #include <algorithm>
 
+#include <boost/unordered_map.hpp>
+
 #include "game/Entity.h"
 #include "platform/Platform.h"
 
+struct EntityManager::Impl {
+	
+	size_t m_minfree; // first unused index (value == NULL)
+	
+	typedef boost::unordered_map<std::string, Entity *> Index;
+	Index m_index;
+	
+	Impl() : m_minfree(0) { }
+	
+	EntityHandle getById(const std::string & idString) const {
+		Impl::Index::const_iterator i = m_index.find(idString);
+		return (i != m_index.end()) ? i->second->index() : EntityHandle::Invalid;
+	}
+	
+};
+
 EntityManager entities;
 
-EntityManager::EntityManager() : minfree(0) { }
+EntityManager::EntityManager() : m_impl(new Impl) { }
 
 EntityManager::~EntityManager() {
 	
@@ -61,13 +79,15 @@ EntityManager::~EntityManager() {
 	}
 #endif
 	
+	delete m_impl;
+	
 }
 
 void EntityManager::init() {
 	arx_assert(size() == 0);
 	entries.resize(1);
 	entries[0] = NULL;
-	minfree = 0;
+	m_impl->m_minfree = 0;
 }
 
 void EntityManager::clear() {
@@ -79,7 +99,7 @@ void EntityManager::clear() {
 	}
 	
 	entries.resize(1);
-	minfree = 0;
+	m_impl->m_minfree = 0;
 }
 
 EntityHandle EntityManager::getById(const std::string & idString) const {
@@ -92,40 +112,22 @@ EntityHandle EntityManager::getById(const std::string & idString) const {
 		return PlayerEntityHandle;
 	}
 	
-	for(size_t i = 0 ; i < size() ; i++) {
-		if(entries[i] != NULL && entries[i]->instance() > -1) {
-			// TODO this check is inefficient!
-			if(idString == entries[i]->idString()) {
-				return EntityHandle(i);
-			}
-		}
-	}
-	
-	return EntityHandle::Invalid;
+	return m_impl->getById(idString);
 }
 
-EntityHandle EntityManager::getById(const std::string & className, EntityInstance instance) const {
+EntityHandle EntityManager::getById(const EntityId & id) const {
 	
-	if(instance <= 0) {
-		if(className.empty() || className == "none") {
+	if(id.isSpecial()) {
+		if(id.className().empty()) {
 			return EntityHandle::Invalid;
-		} else if(className == "self" || className == "me") {
+		} else if(id.className() == "self" || id.className() == "me") {
 			return EntityHandle(-2);
-		} else if(className == "player") {
+		} else if(id.className() == "player") {
 			return PlayerEntityHandle;
 		}
 	}
 	
-	for(size_t i = 0 ; i < size() ; i++) {
-		if(entries[i] != NULL && entries[i]->instance() == instance) {
-			// TODO this check is inefficient!
-			if(className == entries[i]->className()) {
-				return EntityHandle(i);
-			}
-		}
-	}
-	
-	return EntityHandle::Invalid;
+	return m_impl->getById(id.string());
 }
 
 Entity * EntityManager::getById(const std::string & name, Entity * self) const {
@@ -135,17 +137,19 @@ Entity * EntityManager::getById(const std::string & name, Entity * self) const {
 
 size_t EntityManager::add(Entity * entity) {
 	
-	for(size_t i = minfree; i < size(); i++) {
+	m_impl->m_index[entity->idString()] = entity;
+	
+	for(size_t i = m_impl->m_minfree; i < size(); i++) {
 		if(entries[i] == NULL) {
 			entries[i] = entity;
-			minfree = i + 1;
+			m_impl->m_minfree = i + 1;
 			return i;
 		}
 	}
 	
 	size_t i = size();
 	entries.push_back(entity);
-	minfree = i + 1;
+	m_impl->m_minfree = i + 1;
 	return i;
 }
 
@@ -154,8 +158,10 @@ void EntityManager::remove(size_t index) {
 	arx_assert(index < size() && entries[index] != NULL,
 	           "double free or memory corruption detected: index=%lu", (unsigned long)index);
 	
-	if(index < minfree) {
-		minfree = index;
+	m_impl->m_index.erase(entries[index]->idString());
+	
+	if(index < m_impl->m_minfree) {
+		m_impl->m_minfree = index;
 	}
 	
 	entries[index] = NULL;
