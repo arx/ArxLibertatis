@@ -231,7 +231,7 @@ void ARX_NPC_SpawnMember(Entity * ioo, long num) {
 	nouvo->linked.clear();
 	nouvo->originaltextures = NULL;
 	
-	Entity * io = new Entity("noname");
+	Entity * io = new Entity("noname", EntityInstance(0));
 	
 	io->_itemdata = (IO_ITEMDATA *)malloc(sizeof(IO_ITEMDATA));
 	

@@ -56,8 +56,6 @@ ZeniMax Media Inc., Suite 120, Rockville, Maryland 20850 USA.
 #include "math/Vector.h"
 #include "platform/Flags.h"
 
-#include "Configure.h"
-
 struct EERIE_3DOBJ;
 
 namespace res { class path; }
@@ -123,10 +121,6 @@ void SetWeapon_Back(Entity * io);
 bool ForceNPC_Above_Ground(Entity * io);
 
 void RestoreInitialIOStatus();
-
-#ifdef BUILD_EDIT_LOADSAVE
-void MakeIOIdent(Entity * io);
-#endif
 
 long GetNumberInterWithOutScriptLoad();
 

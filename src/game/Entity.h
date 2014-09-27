@@ -53,6 +53,7 @@ ZeniMax Media Inc., Suite 120, Rockville, Maryland 20850 USA.
 #include "animation/Animation.h"
 #include "audio/AudioTypes.h"
 #include "game/Damage.h" // TODO needed for DamageType
+#include "game/EntityId.h"
 #include "game/Spells.h" // TODO needed for Spell, Rune, SpellcastFlags
 #include "graphics/Color.h"
 #include "graphics/BaseGraphicsTypes.h"
@@ -231,7 +232,7 @@ class Entity {
 	
 public:
 	
-	explicit Entity(const res::path & classPath);
+	explicit Entity(const res::path & classPath, EntityInstance instance);
 	~Entity();
 	
 	EntityFlags ioflags; // IO type
@@ -280,7 +281,6 @@ public:
 	Color3f infracolor; // Improve Vision Color (Heat)
 	long changeanim;
 	
-	long ident; // Ident num
 	float weight;
 	std::string locname; //localisation
 	GameFlags gameFlags;
@@ -360,14 +360,26 @@ public:
 	Color3f highlightColor;
 	
 	/*!
-	 * Return the short name for this Object where only the name
-	 * of the file is returned
-	 * \return The name of the file at the end of the filename path
+	 * Get the class name for this entity
+	 *
+	 * This is equal to the last component of the class path
+	 * 
+	 * \return the entity's class name
 	 */
 	std::string className() const;
 	
 	/*!
-	 *  Returns the long name for this Object where the short name
+	 * Get the instance number of this entity
+	 * 
+	 * This is a unique number for this entity amongst all entities of the
+	 * same class (name) in the entire game.
+	 * 
+	 * \return the entity's instance number
+	 */
+	EntityInstance instance() const { return m_instance; }
+	
+	/*!
+	 *  Returns the long name for this entity where the short name
 	 * is combined with the identifying number
 	 * in the form of "%s_%04ld"
 	 * \return The short name combined with a 4 digit ident, padded with 0
@@ -375,7 +387,7 @@ public:
 	std::string idString() const;
 	
 	/*!
-	 *  Returns the full name for this Object where the
+	 *  Returns the full name for this entity where the
 	 * directory portion of the filename member is combined
 	 * with the the result of idString()
 	 * \return The directory of filename + idString()
@@ -388,8 +400,8 @@ public:
 	/*!
 	 * Marks the entity as destroyed.
 	 * 
-	 * If the entity was loaded by a script, the object is deleted.
-	 * Otherwise the object is kept so that the id won't be reused.
+	 * If the entity was loaded by a script, the entity is deleted.
+	 * Otherwise the entity is kept so that the id won't be reused.
 	 */
 	void destroy();
 	
@@ -414,6 +426,7 @@ private:
 	size_t m_index; //!< index of this Entity in the EntityManager
 	
 	const res::path m_classPath; //!< the full path to this entity's class
+	const EntityInstance m_instance; //!< the instance number for this entity
 	
 };
 

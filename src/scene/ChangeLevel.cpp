@@ -491,7 +491,7 @@ static bool ARX_CHANGELEVEL_Push_Index(long num) {
 			ARX_CHANGELEVEL_IO_INDEX aii;
 			memset(&aii, 0, sizeof(aii));
 			util::storeString(aii.filename, (e->classPath() + ".teo").string().c_str());
-			aii.ident = e->ident;
+			aii.ident = e->instance();
 			aii.level = num;
 			aii.truelevel = num;
 			aii.num = i; // !!!
@@ -925,7 +925,7 @@ static long ARX_CHANGELEVEL_Push_IO(const Entity * io, long level) {
 	ais.savesystem_type = type;
 	ais.saveflags = 0;
 	util::storeString(ais.filename, (io->classPath() + ".teo").string().c_str());
-	ais.ident = io->ident;
+	ais.ident = io->instance();
 	ais.ioflags = io->ioflags;
 
 	if(   (ais.ioflags & IO_FREEZESCRIPT)

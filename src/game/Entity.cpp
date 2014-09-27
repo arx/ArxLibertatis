@@ -74,9 +74,11 @@ ZeniMax Media Inc., Suite 120, Rockville, Maryland 20850 USA.
 
 extern Entity * pIOChangeWeapon;
 
-Entity::Entity(const res::path & classPath)
+Entity::Entity(const res::path & classPath, EntityInstance instance)
 	: m_index(size_t(-1)),
-	  m_classPath(classPath) {
+	  m_classPath(classPath),
+	  m_instance(instance)
+{
 	
 	m_index = entities.add(this);
 	
@@ -121,7 +123,6 @@ Entity::Entity(const res::path & classPath)
 	infracolor = Color3f::blue;
 	changeanim = -1;
 	
-	ident = 0;
 	weight = 1.f;
 	gameFlags = GFLAG_NEEDINIT | GFLAG_INTERACTIVITY;
 	velocity = Vec3f_ZERO;
@@ -275,7 +276,7 @@ std::string Entity::className() const {
 
 std::string Entity::idString() const {
 	std::stringstream ss;
-	ss << className() << '_' << std::setw(4) << std::setfill('0') << ident;
+	ss << className() << '_' << std::setw(4) << std::setfill('0') << instance();
 	return ss.str();
 }
 
@@ -326,7 +327,7 @@ void Entity::destroy() {
 	
 	LogDebug("destroying entity " << idString());
 	
-	if(ident > 0 && !(ioflags & IO_NOSAVE)) {
+	if(instance() > 0 && !(ioflags & IO_NOSAVE)) {
 		if(scriptload) {
 			// In case we previously saved this entity...
 			currentSavedGameRemoveEntity(idString());

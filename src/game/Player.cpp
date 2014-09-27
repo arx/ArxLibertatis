@@ -1245,7 +1245,7 @@ void ARX_PLAYER_LoadHeroAnimsAndMesh(){
 	const char ANIM_WAIT_TWOHANDED[] = "graph/obj3d/anims/npc/human_wait_book_2handed.tea";
 	herowait_2h = EERIE_ANIMMANAGER_Load(ANIM_WAIT_TWOHANDED);
 	
-	Entity * io = new Entity("graph/obj3d/interactive/player/player");
+	Entity * io = new Entity("graph/obj3d/interactive/player/player", EntityInstance(-1));
 	arx_assert(io->index() == 0, "player entity didn't get index 0");
 	arx_assert(entities.player() == io);
 	
@@ -1256,7 +1256,6 @@ void ARX_PLAYER_LoadHeroAnimsAndMesh(){
 
 	ARX_INTERACTIVE_Show_Hide_1st(entities.player(), 0);
 	ARX_INTERACTIVE_HideGore(entities.player(), 1);
-	io->ident = -1;
 	
 	ANIM_Set(&player.bookAnimation[0], herowaitbook);
 	player.bookAnimation[0].flags |= EA_LOOP;

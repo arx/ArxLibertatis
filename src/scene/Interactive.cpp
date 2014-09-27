@@ -1422,7 +1422,7 @@ static EntityInstance getFreeInstanceNumber(const res::path & classPath) {
 			const EntityHandle handle = EntityHandle(i);
 			Entity * e = entities[handle];
 			
-			if(e && e->ident == t) {
+			if(e && e->instance() == t) {
 				if(e->className() == className) {
 					used = true;
 					break;
@@ -1463,11 +1463,9 @@ Entity * AddFix(const res::path & classPath, EntityInstance instance, AddInterac
 	if(instance == -1) {
 		instance = getFreeInstanceNumber(classPath);
 	}
-	
-	Entity * io = new Entity(classPath);
-	
 	arx_assert(instance > 0);
-	io->ident = instance;
+	
+	Entity * io = new Entity(classPath, instance);
 	
 	io->_fixdata = (IO_FIXDATA *)malloc(sizeof(IO_FIXDATA));
 	memset(io->_fixdata, 0, sizeof(IO_FIXDATA));
@@ -1535,11 +1533,9 @@ static Entity * AddCamera(const res::path & classPath, EntityInstance instance) 
 	if(instance == -1) {
 		instance = getFreeInstanceNumber(classPath);
 	}
-	
-	Entity * io = new Entity(classPath);
-	
 	arx_assert(instance > 0);
-	io->ident = instance;
+	
+	Entity * io = new Entity(classPath, instance);
 	
 	GetIOScript(io, script);
 	
@@ -1589,11 +1585,9 @@ static Entity * AddMarker(const res::path & classPath, EntityInstance instance) 
 	if(instance == -1) {
 		instance = getFreeInstanceNumber(classPath);
 	}
-	
-	Entity * io = new Entity(classPath);
-	
 	arx_assert(instance > 0);
-	io->ident = instance;
+	
+	Entity * io = new Entity(classPath, instance);
 	
 	GetIOScript(io, script);
 	
@@ -1709,11 +1703,9 @@ Entity * AddNPC(const res::path & classPath, EntityInstance instance, AddInterac
 	if(instance == -1) {
 		instance = getFreeInstanceNumber(classPath);
 	}
-	
-	Entity * io = new Entity(classPath);
-	
 	arx_assert(instance > 0);
-	io->ident = instance;
+	
+	Entity * io = new Entity(classPath, instance);
 	
 	io->forcedmove = Vec3f_ZERO;
 	
@@ -1771,38 +1763,6 @@ Entity * AddNPC(const res::path & classPath, EntityInstance instance, AddInterac
 	return io;
 }
 
-#if BUILD_EDIT_LOADSAVE
-
-/*!
- * \brief Creates an unique identifier for an IO
- * \param io
- */
-void MakeIOIdent(Entity * io) {
-	if(!io)
-		return;
-	
-	long t = 1;
-	
-	while(io->ident == 0) {	
-		fs::path temp = fs::paths.user / io->instancePath().string();
-		
-		if(!fs::is_directory(temp)) {
-			io->ident = t;
-			
-			if(fs::create_directories(temp)) {
-				LogDirCreation(temp);
-				WriteIOInfo(io, temp);
-			} else {
-				LogError << "Could not create a unique identifier " << temp;
-			}
-		}
-
-		t++;
-	}
-}
-
-#endif // BUILD_EDIT_LOADSAVE
-
 Entity * AddItem(const res::path & classPath_, EntityInstance instance, AddInteractiveFlags flags) {
 	
 	EntityFlags type = IO_ITEM;
@@ -1834,11 +1794,9 @@ Entity * AddItem(const res::path & classPath_, EntityInstance instance, AddInter
 	if(instance == -1) {
 		instance = getFreeInstanceNumber(classPath);
 	}
-	
-	Entity * io = new Entity(classPath);
-	
 	arx_assert(instance > 0);
-	io->ident = instance;
+	
+	Entity * io = new Entity(classPath, instance);
 	
 	io->ioflags = type;
 	io->_itemdata = (IO_ITEMDATA *)malloc(sizeof(IO_ITEMDATA));

@@ -225,10 +225,8 @@ long DanaeSaveLevel(const fs::path & _fic) {
 			dli.angle = io->initangle;
 			util::storeString(dli.name, (io->classPath() + ".teo").string().c_str());
 			
-			if(io->ident == 0) {
-				MakeIOIdent(io);
-			}
-			dli.ident = io->ident;
+			arx_assert(io->instance() > 0);
+			dli.ident = io->instance();
 			
 			if(io->ioflags & IO_FREEZESCRIPT) {
 				dli.flags = IO_FREEZESCRIPT;
