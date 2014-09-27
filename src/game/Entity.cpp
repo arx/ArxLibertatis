@@ -75,9 +75,9 @@ ZeniMax Media Inc., Suite 120, Rockville, Maryland 20850 USA.
 extern Entity * pIOChangeWeapon;
 
 Entity::Entity(const res::path & classPath, EntityInstance instance)
-	: m_index(size_t(-1)),
-	  m_id(classPath.filename(), instance),
-	  m_classPath(classPath)
+	: m_index(size_t(-1))
+	, m_id(classPath, instance)
+	, m_classPath(classPath)
 {
 	
 	m_index = entities.add(this);
