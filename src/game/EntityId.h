@@ -79,7 +79,7 @@ public:
 	}
 	
 	//! \return a string representation of this id
-	std::string string();
+	std::string string() const;
 	
 private:
 	

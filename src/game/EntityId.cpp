@@ -53,7 +53,7 @@ EntityId::EntityId(const std::string & id) : m_instance(-1) {
 	}
 }
 
-std::string EntityId::string() {
+std::string EntityId::string() const {
 	return boost::lexical_cast<std::string>(*this);
 }
 
