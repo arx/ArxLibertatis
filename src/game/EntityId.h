@@ -32,17 +32,17 @@ typedef s32 EntityInstance;
  */
 struct EntityId {
 	
-	EntityId() : instance_(-1) { }
+	EntityId() : m_instance(-1) { }
 	
 	EntityId(const std::string & className, EntityInstance instance)
-		: className_(className), instance_(instance) { }
+		: m_className(className), m_instance(instance) { }
 	
 	/*!
 	 * Construct an entity id by parsing an id string as used in save files
 	 * and scripts.
 	 *
 	 * Valid ID strings are "", "none", "me", "self", "player" as well
-	 * as "className_xxxx" where className is any string and xxx is a 4-digit
+	 * as "m_classNamexxxx" where className is any string and xxx is a 4-digit
 	 * instance number (padded with leading zeros).
 	 *
 	 * "" and "none" are interpreted as an <i>invalid</i> id ad will result
@@ -56,8 +56,8 @@ struct EntityId {
 	 */
 	explicit EntityId(const std::string & idString);
 	
-	const std::string & className() const { return className_; }
-	EntityInstance instance() const { return instance_; }
+	const std::string & className() const { return m_className; }
+	EntityInstance instance() const { return m_instance; }
 	
 private:
 	
@@ -67,7 +67,7 @@ public:
 	
 	//! \return true if this id is valid
 	operator unspecified_bool() {
-		return unspecified_bool(instance_ >= 0);
+		return unspecified_bool(m_instance >= 0);
 	}
 	
 	//! Static instance of the "self" id
@@ -75,7 +75,7 @@ public:
 	
 	//! \return true if this id doesn't have an instance number (self, player)
 	bool isSpecial() {
-		return instance_ == 0;
+		return m_instance == 0;
 	}
 	
 	//! \return a string representation of this id
@@ -83,8 +83,8 @@ public:
 	
 private:
 	
-	std::string className_;
-	EntityInstance instance_;
+	std::string m_className;
+	EntityInstance m_instance;
 	
 };
 
