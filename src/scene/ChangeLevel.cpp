@@ -130,38 +130,38 @@ static SaveBlock * g_currentSavedGame = NULL;
 static ARX_CHANGELEVEL_IO_INDEX * idx_io = NULL;
 static ARX_CHANGELEVEL_INVENTORY_DATA_SAVE ** Gaids = NULL;
 
-static Entity * convertToValidIO(const string & ident) {
+static Entity * convertToValidIO(const std::string & idString) {
 	
 	CONVERT_CREATED = 0;
 	
-	if(ident.empty() || ident == "none") {
+	if(idString.empty() || idString == "none") {
 		return NULL;
 	}
 	
 	arx_assert(
-		ident.find_first_not_of("abcdefghijklmnopqrstuvwxyz_0123456789") == string::npos,
-		"bad interactive object ident: \"%s\"", ident.c_str()
+		idString.find_first_not_of("abcdefghijklmnopqrstuvwxyz_0123456789") == string::npos,
+		"bad interactive object id: \"%s\"", idString.c_str()
 	);
 	
-	EntityHandle t = entities.getById(ident);
+	EntityHandle t = entities.getById(idString);
 	
 	if(t > 0) {
 		arx_assert(ValidIONum(t), "got invalid IO num %ld", long(t));
 		return entities[t];
 	}
 	
-	LogDebug("Call to ConvertToValidIO(" << ident << ")");
+	LogDebug("Call to ConvertToValidIO(" << idString << ")");
 	
-	size_t pos = ident.find_last_of('_');
-	if(pos == string::npos || pos == ident.length() - 1) {
+	size_t pos = idString.find_last_of('_');
+	if(pos == string::npos || pos == idString.length() - 1) {
 		return NULL;
 	}
-	pos = ident.find_first_not_of('0', pos + 1);
+	pos = idString.find_first_not_of('0', pos + 1);
 	if(pos == string::npos) {
 		return NULL;
 	}
 	
-	return ARX_CHANGELEVEL_Pop_IO(ident, atoi(ident.substr(pos).c_str()));
+	return ARX_CHANGELEVEL_Pop_IO(idString, atoi(idString.substr(pos).c_str()));
 }
 
 template <size_t N>
@@ -172,16 +172,16 @@ static Entity * ConvertToValidIO(const char (&str)[N]) {
 template <size_t N>
 static EntityHandle ReadTargetInfo(const char (&str)[N]) {
 	
-	string ident = boost::to_lower_copy(util::loadString(str));
+	std::string idString = boost::to_lower_copy(util::loadString(str));
 	
-	if(ident == "none") {
+	if(idString == "none") {
 		return EntityHandle::Invalid;
-	} else if(ident == "self") {
+	} else if(idString == "self") {
 		return EntityHandle(-2);
-	} else if(ident == "player") {
+	} else if(idString == "player") {
 		return PlayerEntityHandle;
 	} else {
-		Entity * e = convertToValidIO(ident);
+		Entity * e = convertToValidIO(idString);
 		return (e == NULL) ? EntityHandle::Invalid : e->index();
 	}
 }
@@ -254,9 +254,9 @@ bool ARX_CHANGELEVEL_StartNew() {
 	return true;
 }
 
-bool currentSavedGameHasEntity(const std::string & ident) {
+bool currentSavedGameHasEntity(const std::string & idString) {
 	if(g_currentSavedGame) {
-		return g_currentSavedGame->hasFile(ident);
+		return g_currentSavedGame->hasFile(idString);
 	} else {
 		ARX_DEAD_CODE();
 		return false;
