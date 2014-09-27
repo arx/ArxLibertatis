@@ -75,7 +75,7 @@ public:
 	 * \return true if this id is valid
 	 * \note Currently the player Entity always has instance -1 and is thus considered invalid by this function.
 	 */
-	operator unspecified_bool() {
+	operator unspecified_bool() const {
 		return unspecified_bool(m_instance >= 0);
 	}
 	
@@ -83,7 +83,7 @@ public:
 	static const EntityId self;
 	
 	//! \return true if this id doesn't have an instance number (self, player)
-	bool isSpecial() {
+	bool isSpecial() const {
 		return m_instance <= 0;
 	}
 	
