@@ -618,17 +618,17 @@ static void ARX_CHANGELEVEL_Push_Globals() {
 }
 
 template <size_t N>
-void FillIOIdent(char (&tofill)[N], const Entity * io) {
+static void storeIdString(char (&tofill)[N], const Entity * io) {
 	
 	if(!io || !ValidIOAddress(io)) {
 		BOOST_STATIC_ASSERT(N >= 4);
 		strcpy(tofill, "none");
 	} else {
 		
-		string ident = io->idString();
+		std::string idString = io->idString();
 		
-		arx_assert(ident.length() <= N);
-		strncpy(tofill, ident.c_str(),  N);
+		arx_assert(idString.length() <= N);
+		strncpy(tofill, idString.c_str(),  N);
 	}
 }
 
@@ -670,11 +670,11 @@ static long ARX_CHANGELEVEL_Push_Player(long level) {
 	asp->TELEPORT_TO_ANGLE = TELEPORT_TO_ANGLE;
 	asp->CHANGE_LEVEL_ICON = CHANGE_LEVEL_ICON;
 	asp->bag = player.bag;
-	FillIOIdent(asp->equipsecondaryIO, player.equipsecondaryIO);
-	FillIOIdent(asp->equipshieldIO, player.equipshieldIO);
-	FillIOIdent(asp->leftIO, player.leftIO);
-	FillIOIdent(asp->rightIO, player.rightIO);
-	FillIOIdent(asp->curtorch, player.torch);
+	storeIdString(asp->equipsecondaryIO, player.equipsecondaryIO);
+	storeIdString(asp->equipshieldIO, player.equipshieldIO);
+	storeIdString(asp->leftIO, player.leftIO);
+	storeIdString(asp->rightIO, player.rightIO);
+	storeIdString(asp->curtorch, player.torch);
 	
 	for(size_t i = 0; i < SAVED_MAX_PRECAST; i++) {
 		asp->precast[i].typ = SPELL_NONE;
@@ -688,7 +688,7 @@ static long ARX_CHANGELEVEL_Push_Player(long level) {
 	for(long iNbBag = 0; iNbBag < 3; iNbBag++) {
 		for(size_t m = 0; m < INVENTORY_Y; m++) {
 			for(size_t n = 0; n < INVENTORY_X; n++) {
-				FillIOIdent(asp->id_inventory[iNbBag][n][m], inventory[iNbBag][n][m].io);
+				storeIdString(asp->id_inventory[iNbBag][n][m], inventory[iNbBag][n][m].io);
 				asp->inventory_show[iNbBag][n][m] = inventory[iNbBag][n][m].show;
 			}
 		}
@@ -786,7 +786,7 @@ static long ARX_CHANGELEVEL_Push_Player(long level) {
 	{
 		if (ValidIONum(player.equiped[k])
 				&&	(player.equiped[k] > 0))
-			FillIOIdent(asp->equiped[k], entities[player.equiped[k]]);
+			storeIdString(asp->equiped[k], entities[player.equiped[k]]);
 		else
 			strcpy(asp->equiped[k], "");
 	}
@@ -877,7 +877,7 @@ void FillTargetInfo(char (&info)[N], EntityHandle numtarget) {
 	} else if(numtarget == 0) {
 		strcpy(info, "player");
 	} else if(ValidIONum(numtarget)) {
-		FillIOIdent(info, entities[numtarget]);
+		storeIdString(info, entities[numtarget]);
 	} else {
 		strcpy(info, "none");
 	}
@@ -1042,7 +1042,7 @@ static long ARX_CHANGELEVEL_Push_IO(const Entity * io, long level) {
 				ais.linked_data[count].lidx = io->obj->linked[count].lidx;
 				ais.linked_data[count].lidx2 = io->obj->linked[count].lidx2;
 				ais.linked_data[count].modinfo = SavedModInfo();
-				FillIOIdent(ais.linked_data[count].linked_id, GetObjIOSource(io->obj->linked[count].obj));
+				storeIdString(ais.linked_data[count].linked_id, GetObjIOSource(io->obj->linked[count].obj));
 				count++;
 			}
 		}
@@ -1318,7 +1318,7 @@ static long ARX_CHANGELEVEL_Push_IO(const Entity * io, long level) {
 			as->fightdecision = io->_npcdata->fightdecision;
 
 			if(io->_npcdata->lifePool.current > 0.f) {
-				FillIOIdent(as->id_weapon, io->_npcdata->weapon);
+				storeIdString(as->id_weapon, io->_npcdata->weapon);
 			} else {
 				as->id_weapon[0] = 0;
 			}
@@ -1426,7 +1426,7 @@ static long ARX_CHANGELEVEL_Push_IO(const Entity * io, long level) {
 		long m, n;
 
 		INVENTORY_DATA * inv = io->inventory;
-		FillIOIdent(aids->io, inv->io);
+		storeIdString(aids->io, inv->io);
 		aids->sizex = inv->m_size.x;
 		aids->sizey = inv->m_size.y;
 
@@ -1436,7 +1436,7 @@ static long ARX_CHANGELEVEL_Push_IO(const Entity * io, long level) {
 				aids->initio[m][n][0] = 0;
 
 				if (inv->slot[m][n].io)
-					FillIOIdent(aids->slot_io[m][n], inv->slot[m][n].io);
+					storeIdString(aids->slot_io[m][n], inv->slot[m][n].io);
 				else
 					aids->slot_io[m][n][0] = 0;
 				
