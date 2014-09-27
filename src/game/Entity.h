@@ -359,6 +359,8 @@ public:
 	Color3f special_color;
 	Color3f highlightColor;
 	
+	const EntityId & id() const { return m_id; }
+	
 	/*!
 	 * Get the class name for this entity
 	 *
@@ -366,7 +368,7 @@ public:
 	 * 
 	 * \return the entity's class name
 	 */
-	std::string className() const;
+	std::string className() const { return id().className(); }
 	
 	/*!
 	 * Get the instance number of this entity
@@ -376,7 +378,7 @@ public:
 	 * 
 	 * \return the entity's instance number
 	 */
-	EntityInstance instance() const { return m_instance; }
+	EntityInstance instance() const { return id().instance(); }
 	
 	/*!
 	 *  Returns the long name for this entity where the short name
@@ -425,8 +427,8 @@ private:
 	
 	size_t m_index; //!< index of this Entity in the EntityManager
 	
+	const EntityId m_id; //!< unique ID for this entity
 	const res::path m_classPath; //!< the full path to this entity's class
-	const EntityInstance m_instance; //!< the instance number for this entity
 	
 };
 

@@ -76,8 +76,8 @@ extern Entity * pIOChangeWeapon;
 
 Entity::Entity(const res::path & classPath, EntityInstance instance)
 	: m_index(size_t(-1)),
-	  m_classPath(classPath),
-	  m_instance(instance)
+	  m_id(classPath.filename(), instance),
+	  m_classPath(classPath)
 {
 	
 	m_index = entities.add(this);
@@ -268,10 +268,6 @@ Entity::~Entity() {
 		entities.remove(m_index);
 	}
 	
-}
-
-std::string Entity::className() const {
-	return m_classPath.filename();
 }
 
 std::string Entity::idString() const {
