@@ -82,20 +82,44 @@ void EntityManager::clear() {
 	minfree = 0;
 }
 
-EntityHandle EntityManager::getById(const std::string & name) const {
+EntityHandle EntityManager::getById(const std::string & idString) const {
 	
-	if(name.empty() || name == "none") {
+	if(idString.empty() || idString == "none") {
 		return EntityHandle::Invalid;
-	} else if(name == "self" || name == "me") {
+	} else if(idString == "self" || idString == "me") {
 		return EntityHandle(-2);
-	} else if(name == "player") {
+	} else if(idString == "player") {
 		return PlayerEntityHandle;
 	}
 	
 	for(size_t i = 0 ; i < size() ; i++) {
 		if(entries[i] != NULL && entries[i]->instance() > -1) {
 			// TODO this check is inefficient!
-			if(name == entries[i]->idString()) {
+			if(idString == entries[i]->idString()) {
+				return EntityHandle(i);
+			}
+		}
+	}
+	
+	return EntityHandle::Invalid;
+}
+
+EntityHandle EntityManager::getById(const std::string & className, EntityInstance instance) const {
+	
+	if(instance <= 0) {
+		if(className.empty() || className == "none") {
+			return EntityHandle::Invalid;
+		} else if(className == "self" || className == "me") {
+			return EntityHandle(-2);
+		} else if(className == "player") {
+			return PlayerEntityHandle;
+		}
+	}
+	
+	for(size_t i = 0 ; i < size() ; i++) {
+		if(entries[i] != NULL && entries[i]->instance() == instance) {
+			// TODO this check is inefficient!
+			if(className == entries[i]->className()) {
 				return EntityHandle(i);
 			}
 		}
