@@ -1408,45 +1408,33 @@ void LinkObjToMe(Entity * io, Entity * io2, const std::string & attach) {
  * \brief Creates a Temporary IO Ident
  * \param io
  */
-static EntityInstance getFreeInstanceNumber(const res::path & classPath) {
+static EntityInstance getFreeEntityInstance(const res::path & classPath) {
 	
 	std::string className = classPath.filename();
 	res::path classDir = classPath.parent();
 	
-	for(EntityInstance t = 1; ; t++) {
+	std::ostringstream oss;
+	
+	for(EntityInstance instance = 1; ; instance++) {
+		
+		std::string idString = EntityId(className, instance).string();
 		
 		// Check if the candidate instance number is used in the current scene
-		bool used = false;
-		// TODO replace this loop by an (className, instance) index
-		for(size_t i = 0; i < entities.size(); i++) {
-			const EntityHandle handle = EntityHandle(i);
-			Entity * e = entities[handle];
-			
-			if(e && e->instance() == t) {
-				if(e->className() == className) {
-					used = true;
-					break;
-				}
-			}
-		}
-		if(used) {
-			continue;
-		}
-		
-		std::stringstream ss;
-		ss << className << '_' << std::setw(4) << std::setfill('0') << t;
-		
-		// Check if the candidate instance number is reserved for any scene
-		if(resources->getDirectory(classDir / ss.str())) {
+		if(entities.getById(idString) != EntityHandle::Invalid) {
 			continue;
 		}
 		
 		// Check if the candidate instance number is used in any visited area
-		if(currentSavedGameHasEntity(ss.str())) {
+		if(currentSavedGameHasEntity(idString)) {
 			continue;
 		}
 		
-		return t;
+		// Check if the candidate instance number is reserved for any scene
+		if(resources->getDirectory(classDir / idString)) {
+			continue;
+		}
+		
+		return instance;
 	}
 }
 
@@ -1461,7 +1449,7 @@ Entity * AddFix(const res::path & classPath, EntityInstance instance, AddInterac
 	}
 	
 	if(instance == -1) {
-		instance = getFreeInstanceNumber(classPath);
+		instance = getFreeEntityInstance(classPath);
 	}
 	arx_assert(instance > 0);
 	
@@ -1531,7 +1519,7 @@ static Entity * AddCamera(const res::path & classPath, EntityInstance instance) 
 	}
 	
 	if(instance == -1) {
-		instance = getFreeInstanceNumber(classPath);
+		instance = getFreeEntityInstance(classPath);
 	}
 	arx_assert(instance > 0);
 	
@@ -1583,7 +1571,7 @@ static Entity * AddMarker(const res::path & classPath, EntityInstance instance) 
 	}
 	
 	if(instance == -1) {
-		instance = getFreeInstanceNumber(classPath);
+		instance = getFreeEntityInstance(classPath);
 	}
 	arx_assert(instance > 0);
 	
@@ -1701,7 +1689,7 @@ Entity * AddNPC(const res::path & classPath, EntityInstance instance, AddInterac
 	}
 	
 	if(instance == -1) {
-		instance = getFreeInstanceNumber(classPath);
+		instance = getFreeEntityInstance(classPath);
 	}
 	arx_assert(instance > 0);
 	
@@ -1792,7 +1780,7 @@ Entity * AddItem(const res::path & classPath_, EntityInstance instance, AddInter
 	}
 	
 	if(instance == -1) {
-		instance = getFreeInstanceNumber(classPath);
+		instance = getFreeEntityInstance(classPath);
 	}
 	arx_assert(instance > 0);
 	
