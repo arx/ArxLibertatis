@@ -2177,12 +2177,12 @@ static Entity * ARX_CHANGELEVEL_Pop_IO(const std::string & idString, EntityInsta
 		}
 		
 		if(!loadScriptData(io->script, dat, pos) || !loadScriptData(io->over_script, dat, pos)) {
-				LogError << "Save file is corrupted, trying to fix " << idString;
-				free(dat);
-				io->inventory = NULL;
-				RestoreInitialIOStatusOfIO(io);
-				SendInitScriptEvent(io);
-				return io;
+			LogError << "Save file is corrupted, trying to fix " << idString;
+			free(dat);
+			io->inventory = NULL;
+			RestoreInitialIOStatusOfIO(io);
+			SendInitScriptEvent(io);
+			return io;
 		}
 		
 		Gaids[Gaids_Number]->weapon[0] = '\0';
