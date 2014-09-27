@@ -108,7 +108,6 @@ extern s8 SKIN_MOD;
 extern char QUICK_MOD;
 
 extern float ARXTimeMenu;
-extern float ARXOldTimeMenu;
 
 extern long	REQUEST_SPEECH_SKIP;
 
@@ -283,7 +282,6 @@ void ARX_MENU_Clicked_QUIT_GAME() {
 void ARX_MENU_Launch(bool allowResume) {
 	
 	ARXTimeMenu = arxtime.get_updated();
-	ARXOldTimeMenu = ARXTimeMenu;
 	
 	REFUSE_GAME_RETURN = !allowResume;
 

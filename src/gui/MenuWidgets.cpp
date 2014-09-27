@@ -129,7 +129,6 @@ extern CheckboxWidget * fullscreenCheckbox;
 extern CycleTextWidget * pMenuSliderResol;
 
 float ARXTimeMenu;
-float ARXOldTimeMenu;
 float ARXDiffTimeMenu;
 
 bool bFade=false;
@@ -305,9 +304,9 @@ bool ProcessFadeInOut(bool _bFadeIn, float _fspeed) {
 
 bool Menu2_Render() {
 	
-	ARXOldTimeMenu = ARXTimeMenu;
-	ARXTimeMenu = arxtime.get_updated(false);
-	ARXDiffTimeMenu = ARXTimeMenu - ARXOldTimeMenu;
+	float time = arxtime.get_updated(false);
+	ARXDiffTimeMenu = time - ARXTimeMenu;
+	ARXTimeMenu = time;
 	
 	// this means ArxTimeMenu is reset
 	if(ARXDiffTimeMenu < 0) {
