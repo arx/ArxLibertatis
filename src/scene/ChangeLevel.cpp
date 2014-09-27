@@ -118,7 +118,7 @@ static void ARX_CHANGELEVEL_Pop_Globals();
 static long ARX_CHANGELEVEL_Push_Player(long level);
 static long ARX_CHANGELEVEL_Push_AllIO(long level);
 static long ARX_CHANGELEVEL_Push_IO(const Entity * io, long level);
-static Entity * ARX_CHANGELEVEL_Pop_IO(const string & ident, long num);
+static Entity * ARX_CHANGELEVEL_Pop_IO(const std::string & idString, EntityInstance instance);
 
 static fs::path CURRENT_GAME_FILE;
 
@@ -1939,14 +1939,14 @@ static bool loadScriptData(EERIE_SCRIPT & script, const char * dat, size_t & pos
 	                           TYPE_L_TEXT, TYPE_L_LONG, TYPE_L_FLOAT);
 }
 
-static Entity * ARX_CHANGELEVEL_Pop_IO(const string & ident, long num) {
+static Entity * ARX_CHANGELEVEL_Pop_IO(const std::string & idString, EntityInstance instance) {
 	
-	LogDebug("--> loading interactive object " << ident);
+	LogDebug("--> loading interactive object " << idString);
 	
 	size_t size = 0; // TODO size not used
-	char * dat = g_currentSavedGame->load(ident, size);
+	char * dat = g_currentSavedGame->load(idString, size);
 	if(!dat) {
-		LogError << "Unable to Open " << ident << " for Read...";
+		LogError << "Unable to Open " << idString << " for Read...";
 		return NULL;
 	}
 	
@@ -1963,14 +1963,14 @@ static Entity * ARX_CHANGELEVEL_Pop_IO(const string & ident, long num) {
 	
 	if(ais->ioflags & IO_NOSAVE) {
 		// This item should not have been saved, yet here it is :(
-		LogWarning << "Tried to load entity that should never have been saved: " << ident;
+		LogWarning << "Tried to load entity that should never have been saved: " << idString;
 		free(dat);
 		return NULL;
 	}
 	
 	if(ais->show == SHOW_FLAG_DESTROYED || ais->show == SHOW_FLAG_KILLED) {
 		// Not supposed to happen anymore, but older saves have these (this is harmless bloat)
-		LogWarning << "Found destroyed entity " << ident << " in save file";
+		LogWarning << "Found destroyed entity " << idString << " in save file";
 		free(dat);
 		return NULL;
 	}
@@ -1991,10 +1991,10 @@ static Entity * ARX_CHANGELEVEL_Pop_IO(const string & ident, long num) {
 	// TODO when we bump the save version, remove the ext in the save file
 	// if no class names contain dots, we might get away without changing the ver
 	res::path classPath = res::path::load(path).remove_ext();
-	Entity * io = LoadInter_Ex(classPath, num, ais->pos.toVec3(), ais->angle, MSP);
+	Entity * io = LoadInter_Ex(classPath, instance, ais->pos.toVec3(), ais->angle, MSP);
 	
 	if(!io) {
-		LogError << "CHANGELEVEL Error: Unable to load " << ident;
+		LogError << "CHANGELEVEL Error: Unable to load " << idString;
 	} else {
 		
 		EntityHandle Gaids_Number = io->index();
@@ -2177,7 +2177,7 @@ static Entity * ARX_CHANGELEVEL_Pop_IO(const string & ident, long num) {
 		}
 		
 		if(!loadScriptData(io->script, dat, pos) || !loadScriptData(io->over_script, dat, pos)) {
-				LogError << "Save file is corrupted, trying to fix " << ident;
+				LogError << "Save file is corrupted, trying to fix " << idString;
 				free(dat);
 				io->inventory = NULL;
 				RestoreInitialIOStatusOfIO(io);
