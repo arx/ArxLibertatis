@@ -465,11 +465,7 @@ Entity * LoadInter_Ex(const res::path & classPath, EntityInstance instance,
                       const Vec3f & pos, const Anglef & angle,
                       const Vec3f & trans) {
 	
-	std::ostringstream nameident;
-	nameident << classPath.filename()
-	          << std::setfill('0') << std::setw(4) << instance;
-	
-	EntityHandle t = entities.getById(nameident.str());
+	EntityHandle t = entities.getById(classPath.filename(), instance);
 	if(t != EntityHandle::Invalid) {
 		return entities[t];
 	}
