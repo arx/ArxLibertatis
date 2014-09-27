@@ -27,6 +27,8 @@
 
 typedef s32 EntityInstance;
 
+namespace res { class path; }
+
 /*!
  * An ID that can be used to identify \class Entity instances
  */
@@ -36,6 +38,10 @@ struct EntityId {
 	
 	EntityId(const std::string & className, EntityInstance instance)
 		: m_className(className), m_instance(instance) { }
+	EntityId(const char * className, EntityInstance instance)
+		: m_className(className), m_instance(instance) { }
+	
+	EntityId(const res::path & classPath, EntityInstance instance);
 	
 	/*!
 	 * Construct an entity id by parsing an id string as used in save files

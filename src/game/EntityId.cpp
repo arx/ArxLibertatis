@@ -25,8 +25,14 @@
 #include <boost/lexical_cast.hpp>
 
 #include "game/Entity.h"
+#include "io/resource/ResourcePath.h"
 
 const EntityId EntityId::self("self", 0);
+
+EntityId::EntityId(const res::path & classPath, EntityInstance instance)
+	: m_className(classPath.filename())
+	, m_instance(instance)
+{ }
 
 EntityId::EntityId(const std::string & id) : m_instance(-1) {
 	
