@@ -71,7 +71,10 @@ private:
 	
 public:
 	
-	//! \return true if this id is valid
+	/*!
+	 * \return true if this id is valid
+	 * \note Currently the player Entity always has instance -1 and is thus considered invalid by this function.
+	 */
 	operator unspecified_bool() {
 		return unspecified_bool(m_instance >= 0);
 	}
@@ -81,7 +84,7 @@ public:
 	
 	//! \return true if this id doesn't have an instance number (self, player)
 	bool isSpecial() {
-		return m_instance == 0;
+		return m_instance <= 0;
 	}
 	
 	//! \return a string representation of this id
