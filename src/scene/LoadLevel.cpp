@@ -465,7 +465,7 @@ Entity * LoadInter_Ex(const res::path & classPath, EntityInstance instance,
                       const Vec3f & pos, const Anglef & angle,
                       const Vec3f & trans) {
 	
-	EntityHandle t = entities.getById(classPath.filename(), instance);
+	EntityHandle t = entities.getById(EntityId(classPath, instance));
 	if(t != EntityHandle::Invalid) {
 		return entities[t];
 	}
