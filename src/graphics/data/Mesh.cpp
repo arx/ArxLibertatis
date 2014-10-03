@@ -474,10 +474,10 @@ void EE_RTP(const Vec3f & in, TexturedVertex * out) {
 	EE_P(&out->p, out);
 }
 
-static void camEE_RTP(TexturedVertex * in, TexturedVertex * out, EERIE_CAMERA * cam) {
+static void camEE_RTP(const Vec3f & in, TexturedVertex * out, EERIE_CAMERA * cam) {
 	
 	TexturedVertex tout;
-	out->p = in->p - cam->orgTrans.pos;
+	out->p = in - cam->orgTrans.pos;
 
 	tout.p.x = (out->p.x * cam->orgTrans.ycos) + (out->p.z * cam->orgTrans.ysin);
 	tout.p.z = (out->p.z * cam->orgTrans.ycos) - (out->p.x * cam->orgTrans.ysin);
@@ -505,11 +505,12 @@ static void camEE_RTP(TexturedVertex * in, TexturedVertex * out, EERIE_CAMERA * 
 //*************************************************************************************
 static void EERIERTPPolyCam(EERIEPOLY * ep, EERIE_CAMERA * cam) {
 	
-	camEE_RTP(&ep->v[0], &ep->tv[0], cam);
-	camEE_RTP(&ep->v[1], &ep->tv[1], cam);
-	camEE_RTP(&ep->v[2], &ep->tv[2], cam);
+	camEE_RTP(ep->v[0].p, &ep->tv[0], cam);
+	camEE_RTP(ep->v[1].p, &ep->tv[1], cam);
+	camEE_RTP(ep->v[2].p, &ep->tv[2], cam);
 
-	if (ep->type & POLY_QUAD) camEE_RTP(&ep->v[3], &ep->tv[3], cam);
+	if (ep->type & POLY_QUAD)
+		camEE_RTP(ep->v[3].p, &ep->tv[3], cam);
 }
 
 
