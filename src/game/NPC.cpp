@@ -2634,10 +2634,14 @@ Entity * ARX_NPC_GetFirstNPCInSight(Entity * ioo)
 		const EntityHandle handle = EntityHandle(i);
 		Entity * io = entities[handle];
 
-		if(!io || IsDeadNPC(io) || io == ioo
-				|| !(io->ioflags & IO_NPC)
-				|| io->show != SHOW_FLAG_IN_SCENE)
+		if(   !io
+		   || IsDeadNPC(io)
+		   || io == ioo
+		   || !(io->ioflags & IO_NPC)
+		   || io->show != SHOW_FLAG_IN_SCENE
+		) {
 			continue;
+		}
 
 		float dist_io = glm::distance2(io->pos, ioo->pos);
 
