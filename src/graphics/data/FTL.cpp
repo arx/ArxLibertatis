@@ -74,9 +74,6 @@ ZeniMax Media Inc., Suite 120, Rockville, Maryland 20850 USA.
 
 #include "util/String.h"
 
-using std::string;
-using std::vector;
-
 #if BUILD_EDIT_LOADSAVE
 
 bool ARX_FTL_Save(const fs::path & file, const EERIE_3DOBJ * obj) {
@@ -367,7 +364,7 @@ struct MCACHE_DATA {
 	char * data;
 	size_t size;
 };
-static vector<MCACHE_DATA> meshCache;
+static std::vector<MCACHE_DATA> meshCache;
 
 // Checks for Mesh file existence in cache
 static long MCache_Get(const res::path & file) {
@@ -400,7 +397,7 @@ static bool MCache_Push(const res::path & file, char * data, size_t size) {
 }
 
 void MCache_ClearAll(){
-	for(vector<MCACHE_DATA>::iterator it = meshCache.begin(); it != meshCache.end(); ++it) {
+	for(std::vector<MCACHE_DATA>::iterator it = meshCache.begin(); it != meshCache.end(); ++it) {
 		free(it->data);
 	}
 

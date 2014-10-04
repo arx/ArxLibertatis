@@ -92,10 +92,6 @@ ZeniMax Media Inc., Suite 120, Rockville, Maryland 20850 USA.
 
 #include "script/Script.h"
 
-using std::min;
-using std::max;
-using std::string;
-
 struct EQUIP_INFO
 {
 	char name[64];
@@ -113,7 +109,7 @@ extern EERIE_3DOBJ * arrowobj;
 EQUIP_INFO equipinfo[IO_EQUIPITEM_ELEMENT_Number];
 
 //! \brief Returns the object type flag corresponding to a string
-ItemType ARX_EQUIPMENT_GetObjectTypeFlag(const string & temp) {
+ItemType ARX_EQUIPMENT_GetObjectTypeFlag(const std::string & temp) {
 	
 	if(temp.empty()) {
 		return 0;
@@ -177,7 +173,7 @@ void ARX_EQUIPMENT_ReleaseAll(Entity * io) {
 extern long EXITING;
 
 //! \brief Recreates player mesh from scratch
-static void applyTweak(EquipmentSlot equip, TweakType tw, const string & selection) {
+static void applyTweak(EquipmentSlot equip, TweakType tw, const std::string & selection) {
 	
 	if(!player.equiped[equip] || !ValidIONum(player.equiped[equip])) {
 		return;
@@ -487,11 +483,11 @@ float ARX_EQUIPMENT_ComputeDamages(Entity * io_source, Entity * io_target, float
 	float attack, ac, damages;
 	float backstab = 1.f;
 
-	string _wmat = "bare";
-	const string * wmat = &_wmat;
+	std::string _wmat = "bare";
+	const std::string * wmat = &_wmat;
 	
-	string _amat = "flesh";
-	const string * amat = &_amat;
+	std::string _amat = "flesh";
+	const std::string * amat = &_amat;
 
 	bool critical = false;
 
@@ -750,14 +746,14 @@ bool ARX_EQUIPMENT_Strike_Check(Entity * io_source, Entity * io_weapon, float ra
 							target->_npcdata->SPLAT_TOT_NB = 0;
 
 							if(drain_life > 0.f) {
-								float life_gain = min(dmgs, drain_life);
-								life_gain = min(life_gain, target->_npcdata->lifePool.current);
-								life_gain = max(life_gain, 0.f);
+								float life_gain = std::min(dmgs, drain_life);
+								life_gain = std::min(life_gain, target->_npcdata->lifePool.current);
+								life_gain = std::max(life_gain, 0.f);
 								ARX_DAMAGES_HealInter(io_source, life_gain);
 							}
 
 							if(paralyse > 0.f) {
-								float ptime = min(dmgs * 1000.f, paralyse);
+								float ptime = std::min(dmgs * 1000.f, paralyse);
 								ARX_SPELLS_Launch(SPELL_PARALYSE, weapon, SPELLCAST_FLAG_NOMANA | SPELLCAST_FLAG_NOCHECKCANCAST
 												  , 5, sphereContent[jj], (long)(ptime));
 							}
@@ -850,8 +846,8 @@ bool ARX_EQUIPMENT_Strike_Check(Entity * io_source, Entity * io_weapon, float ra
 							ARX_DAMAGES_DurabilityCheck(io_weapon, 1.f);
 							io_source->isHit = true;
 							
-								string _weapon_material = "metal";
-								const string * weapon_material = &_weapon_material;
+								std::string _weapon_material = "metal";
+								const std::string * weapon_material = &_weapon_material;
 
 								if(!io_weapon->weaponmaterial.empty()) {
 									weapon_material = &io_weapon->weaponmaterial;
@@ -874,8 +870,8 @@ bool ARX_EQUIPMENT_Strike_Check(Entity * io_source, Entity * io_weapon, float ra
 					ARX_DAMAGES_DurabilityCheck(io_weapon, 1.f);
 					io_source->isHit = true;
 					
-						string _weapon_material = "metal";
-						const string * weapon_material = &_weapon_material;
+						std::string _weapon_material = "metal";
+						const std::string * weapon_material = &_weapon_material;
 						if(!io_weapon->weaponmaterial.empty()) {
 							weapon_material = &io_weapon->weaponmaterial;
 						}
@@ -1050,7 +1046,7 @@ void ARX_EQUIPMENT_Equip(Entity * target, Entity * toequip)
 	ARX_PLAYER_ComputePlayerFullStats();
 }
 
-bool ARX_EQUIPMENT_SetObjectType(Entity & io, const string & temp, bool set) {
+bool ARX_EQUIPMENT_SetObjectType(Entity & io, const std::string & temp, bool set) {
 	
 	ItemType flag = ARX_EQUIPMENT_GetObjectTypeFlag(temp);
 	

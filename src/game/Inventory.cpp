@@ -85,9 +85,6 @@ ZeniMax Media Inc., Suite 120, Rockville, Maryland 20850 USA.
 
 #include "script/Script.h"
 
-using std::vector;
-using std::string;
-
 extern float InventoryX;
 extern float InventoryDir;
 
@@ -587,7 +584,7 @@ public:
 		LogDebug("collecting items");
 		
 		// Collect all inventory items
-		vector<Entity *> items;
+		std::vector<Entity *> items;
 		for(size_t bag = 0; bag < bags; bag++) {
 			for(size_t j = 0 ; j < height; j++) {
 				for(size_t i = 0 ; i < width; i++) {
@@ -1949,7 +1946,7 @@ bool IsInSecondaryInventory(Entity * io) {
 	return false;
 }
 
-void SendInventoryObjectCommand(const string & _lpszText, ScriptMessage _lCommand) {
+void SendInventoryObjectCommand(const std::string & _lpszText, ScriptMessage _lCommand) {
 	
 	if(player.bag) {
 		for(int iNbBag = 0; iNbBag < player.bag; iNbBag++) {

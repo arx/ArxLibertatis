@@ -125,8 +125,6 @@ ZeniMax Media Inc., Suite 120, Rockville, Maryland 20850 USA.
 
 #include "script/Script.h"
 
-using std::vector;
-
 extern bool		ARX_CONVERSATION;
 extern long		HERO_SHOW_1ST;
 extern long		REQUEST_SPEECH_SKIP;
@@ -170,11 +168,11 @@ static unsigned long ROTATE_START = 0;
 ANIM_HANDLE * herowaitbook = NULL;
 ANIM_HANDLE * herowait_2h = NULL;
 
-vector<KEYRING_SLOT> Keyring;
+std::vector<KEYRING_SLOT> Keyring;
 
 static unsigned long FALLING_TIME = 0;
 
-vector<STRUCT_QUEST> PlayerQuest;
+std::vector<STRUCT_QUEST> PlayerQuest;
 
 bool ARX_PLAYER_IsInFightMode() {
 	arx_assert(entities.player());

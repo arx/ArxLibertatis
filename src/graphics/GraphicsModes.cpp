@@ -53,8 +53,6 @@ ZeniMax Media Inc., Suite 120, Rockville, Maryland 20850 USA.
 #include "graphics/Renderer.h"
 #include "graphics/data/Mesh.h"
 
-using std::min;
-
 GLOBAL_MODS current;
 GLOBAL_MODS desired;
 GLOBAL_MODS stacked;
@@ -129,7 +127,7 @@ void ARX_GLOBALMODS_Apply() {
 	
 	float fZclipp = ((((float)config.video.fogDistance) * 1.2f) * (DEFAULT_ZCLIP - DEFAULT_MINZCLIP) / 10.f) + DEFAULT_MINZCLIP;
 	fZclipp += (ACTIVECAM->focal - 310.f) * 5.f;
-	ACTIVECAM->cdepth = min(current.zclip, fZclipp);
+	ACTIVECAM->cdepth = std::min(current.zclip, fZclipp);
 
 	ulBKGColor = current.depthcolor.to<u8>();
 }

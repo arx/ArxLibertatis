@@ -115,11 +115,6 @@ ZeniMax Media Inc., Suite 120, Rockville, Maryland 20850 USA.
 
 #include "script/Script.h"
 
-using std::sprintf;
-using std::min;
-using std::max;
-using std::string;
-
 void CheckNPCEx(Entity * io);
 
 static const float ARX_NPC_ON_HEAR_MAX_DISTANCE_STEP(600.0F);
@@ -740,7 +735,7 @@ failure:
 	return false;
 }
 
-bool ARX_NPC_SetStat(Entity& io, const string & statname, float value) {
+bool ARX_NPC_SetStat(Entity& io, const std::string & statname, float value) {
 	
 	arx_assert(io.ioflags & IO_NPC);
 	
@@ -1825,7 +1820,7 @@ float GetIOHeight(Entity * io)
 	if(v < -165.f)
 		return -165.f;
 
-	return min(v, -45.f);
+	return std::min(v, -45.f);
 }
 
 float GetIORadius(Entity * io) {
@@ -1861,13 +1856,13 @@ void ComputeTolerance(Entity * io, EntityHandle targ, float * dst) {
 		if(entities[targ]->ioflags & IO_NO_COLLISIONS)
 			targ_dist = 0.f;
 		else
-			targ_dist = max(entities[targ]->physics.cyl.radius, GetIORadius(entities[targ])); //entities[targ]->physics.cyl.radius;
+			targ_dist = std::max(entities[targ]->physics.cyl.radius, GetIORadius(entities[targ])); //entities[targ]->physics.cyl.radius;
 
 		// Compute min self close-dist
 		if(io->ioflags & IO_NO_COLLISIONS)
 			self_dist = 0.f;
 		else
-			self_dist = max(io->physics.cyl.radius, GetIORadius(io)); //io->physics.cyl.radius;
+			self_dist = std::max(io->physics.cyl.radius, GetIORadius(io)); //io->physics.cyl.radius;
 
 		// Base tolerance = radius added
 		TOLERANCE = targ_dist + self_dist + 5.f;
@@ -2304,7 +2299,7 @@ static void ManageNPCMovement(Entity * io)
 	if(io->forcedmove == Vec3f_ZERO) {
 		ForcedMove = Vec3f_ZERO;
 	} else {
-		float dd = min(1.f, (float)framedelay * (1.0f / 6) / glm::length(io->forcedmove));
+		float dd = std::min(1.f, (float)framedelay * (1.0f / 6) / glm::length(io->forcedmove));
 		ForcedMove = io->forcedmove * dd;
 	}
 
@@ -2499,7 +2494,7 @@ static void ManageNPCMovement(Entity * io)
 			if(io->_npcdata->pathfind.listnb > 0) {
 			argh:;
 
-				long lMax = max(ARX_NPC_GetNextAttainableNodeIncrement(io), 1L);
+				long lMax = std::max(ARX_NPC_GetNextAttainableNodeIncrement(io), 1L);
 
 				io->_npcdata->pathfind.listpos = checked_range_cast<unsigned short>(io->_npcdata->pathfind.listpos + lMax);
 
@@ -2606,7 +2601,7 @@ float AngularDifference(float a1, float a2)
 	}
 
 	ret = a1 - a2;
-	ret = min(ret, (a2 + 360) - a1);
+	ret = std::min(ret, (a2 + 360) - a1);
 	return ret;
 
 }
@@ -2828,9 +2823,9 @@ void CheckNPCEx(Entity * io) {
 
 void ARX_NPC_NeedStepSound(Entity * io, const Vec3f & pos, const float volume, const float power) {
 	
-	string _step_material = "foot_bare";
-	const string * step_material = &_step_material;
-	string floor_material = "earth";
+	std::string _step_material = "foot_bare";
+	const std::string * step_material = &_step_material;
+	std::string floor_material = "earth";
 
 	if(EEIsUnderWater(pos)) {
 		floor_material = "water";
@@ -3076,11 +3071,11 @@ void ManageIgnition_2(Entity * io) {
 		if(lightHandleIsValid(io->ignit_light)) {
 			EERIE_LIGHT * light = lightHandleGet(io->ignit_light);
 			
-			light->intensity = max(io->ignition * ( 1.0f / 10 ), 1.f);
-			light->fallstart = max(io->ignition * 10.f, 100.f);
-			light->fallend   = max(io->ignition * 25.f, 240.f);
-			float v = max((io->ignition * ( 1.0f / 10 )), 0.5f);
-			v = min(v, 1.f);
+			light->intensity = std::max(io->ignition * ( 1.0f / 10 ), 1.f);
+			light->fallstart = std::max(io->ignition * 10.f, 100.f);
+			light->fallend   = std::max(io->ignition * 25.f, 240.f);
+			float v = std::max((io->ignition * ( 1.0f / 10 )), 0.5f);
+			v = std::min(v, 1.f);
 			light->rgb.r = (1.f - rnd() * 0.2f) * v;
 			light->rgb.g = (0.8f - rnd() * 0.2f) * v;
 			light->rgb.b = (0.6f - rnd() * 0.2f) * v;
