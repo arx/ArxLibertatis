@@ -82,10 +82,13 @@ bool EERIECreateSprite(TexturedQuad& sprite, const Vec3f & in, float siz, Color 
 	EE_RTP(in, &out);
 	out.rhw *= 3000.f;
 
-	if ((out.p.z>0.f) && (out.p.z<1000.f)
-		&& (out.p.x>-1000) && (out.p.x<2500.f)
-		&& (out.p.y>-500) && (out.p.y<1800.f))
-	{
+	if(   out.p.z > 0.f
+	   && out.p.z < 1000.f
+	   && out.p.x > -1000.f
+	   && out.p.x < 2500.f
+	   && out.p.y > -500.f
+	   && out.p.y < 1800.f
+	) {
 		float use_focal=BASICFOCAL*g_sizeRatio.x;
 		float t;
 
