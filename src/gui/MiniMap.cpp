@@ -100,10 +100,10 @@ void MiniMap::getData(int showLevel) {
 					for(int k = 0; k < eg->nbpoly; k++) {
 						EERIEPOLY * ep = &eg->polydata[k];
 						if(ep) {
-							minX = min(minX, ep->min.x);
-							maxX = max(maxX, ep->max.x);
-							minY = min(minY, ep->min.z);
-							maxY = max(maxY, ep->max.z);
+							minX = std::min(minX, ep->min.x);
+							maxX = std::max(maxX, ep->max.x);
+							minY = std::min(minY, ep->min.z);
+							maxY = std::max(maxY, ep->max.z);
 						}
 					}
 				}
@@ -504,7 +504,7 @@ void MiniMap::revealPlayerPos(int showLevel) {
 			
 			int r = vv * 255.f;
 			
-			int ucLevel =  max(r, (int)m_levels[showLevel].m_revealed[i][j]);
+			int ucLevel = std::max(r, (int)m_levels[showLevel].m_revealed[i][j]);
 			m_levels[showLevel].m_revealed[i][j] = checked_range_cast<unsigned char>(ucLevel);
 		}
 	}
@@ -620,7 +620,7 @@ void MiniMap::drawBackground(int showLevel, Rect boundaries, float startX, float
 				if((i + iOffset < 0) || (i + iOffset >= MINIMAP_MAX_X) || (j + jOffset < 0) || (j + jOffset >= MINIMAP_MAX_Z)) {
 					v = 0;
 				} else {
-					v = ((float)m_levels[showLevel].m_revealed[min(i+iOffset, MINIMAP_MAX_X-iOffset)][min(j+jOffset, MINIMAP_MAX_Z-jOffset)]) * (1.0f / 255);
+					v = ((float)m_levels[showLevel].m_revealed[std::min(i+iOffset, MINIMAP_MAX_X-iOffset)][std::min(j+jOffset, MINIMAP_MAX_Z-jOffset)]) * (1.0f / 255);
 				}
 				
 				if(fadeBorder > 0.f) {

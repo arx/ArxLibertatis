@@ -252,7 +252,7 @@ void ParalyseSpell::Launch()
 		resist_magic = entities[m_target]->_npcdata->resist_magic;
 	}
 	if(rnd() * 100.f < resist_magic) {
-		float mul = max(0.5f, 1.f - (resist_magic * 0.005f));
+		float mul = std::max(0.5f, 1.f - (resist_magic * 0.005f));
 		m_duration = long(m_duration * mul);
 	}
 	

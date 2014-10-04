@@ -30,8 +30,6 @@
 #include "io/resource/PakReader.h"
 #include "scene/ChangeLevel.h"
 
-using std::string;
-
 namespace {
 
 static const fs::path SAVEGAME_NAME = "gsave.sav";
@@ -92,7 +90,7 @@ void SaveGameList::update(bool verbose) {
 			continue;
 		}
 		
-		string name;
+		std::string name;
 		float version;
 		long level;
 		unsigned long ignored;
@@ -212,7 +210,7 @@ void SaveGameList::remove(iterator save) {
 	update();
 }
 
-bool SaveGameList::save(const string & name, iterator overwrite, const Image & thumbnail) {
+bool SaveGameList::save(const std::string & name, iterator overwrite, const Image & thumbnail) {
 	
 	arx_assert(overwrite >= begin() && overwrite <= end());
 	

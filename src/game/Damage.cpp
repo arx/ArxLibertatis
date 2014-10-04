@@ -96,9 +96,6 @@ ZeniMax Media Inc., Suite 120, Rockville, Maryland 20850 USA.
 
 class TextureContainer;
 
-using std::min;
-using std::max;
-
 extern long REFUSE_GAME_RETURN;
 
 struct DAMAGE_INFO {
@@ -679,7 +676,7 @@ float ARX_DAMAGES_DealDamages(EntityHandle target, float dmg, EntityHandle sourc
 
 		if((flags & DAMAGE_TYPE_MAGICAL) && !(flags & (DAMAGE_TYPE_FIRE | DAMAGE_TYPE_COLD))) {
 			damagesdone -= player.m_miscFull.resistMagic * ( 1.0f / 100 ) * damagesdone;
-			damagesdone = max(0.0f, damagesdone);
+			damagesdone = std::max(0.0f, damagesdone);
 		}
 
 		return damagesdone;
@@ -718,7 +715,7 @@ float ARX_DAMAGES_DealDamages(EntityHandle target, float dmg, EntityHandle sourc
 
 			if((flags & DAMAGE_TYPE_MAGICAL) && !(flags & (DAMAGE_TYPE_FIRE | DAMAGE_TYPE_COLD))) {
 				damagesdone -= io_target->_npcdata->resist_magic * ( 1.0f / 100 ) * damagesdone;
-				damagesdone = max(0.0f, damagesdone);
+				damagesdone = std::max(0.0f, damagesdone);
 			}
 
 			return damagesdone;
@@ -860,7 +857,7 @@ float ARX_DAMAGES_DamageNPC(Entity * io, float dmg, EntityHandle source, bool is
 			}
 		}
 
-		damagesdone = min(dmg, io->_npcdata->lifePool.current);
+		damagesdone = std::min(dmg, io->_npcdata->lifePool.current);
 		io->_npcdata->lifePool.current -= dmg;
 		
 		float fHitFlash = 0;
@@ -1064,22 +1061,22 @@ void ARX_DAMAGES_UpdateDamage(DamageHandle j, float tim) {
 						float manadrained;
 						
 						if(i == 0) {
-							manadrained = min(dmg, player.manaPool.current);
+							manadrained = std::min(dmg, player.manaPool.current);
 							player.manaPool.current -= manadrained;
 						} else {
 							manadrained = dmg;
 							
 							if(io && io->_npcdata) {
-								manadrained = min(dmg, io->_npcdata->manaPool.current);
+								manadrained = std::min(dmg, io->_npcdata->manaPool.current);
 								io->_npcdata->manaPool.current -= manadrained;
 							}
 						}
 						
 						if (damage.params.source == PlayerEntityHandle) {
-							player.manaPool.current = min(player.manaPool.current + manadrained, player.Full_maxmana);
+							player.manaPool.current = std::min(player.manaPool.current + manadrained, player.Full_maxmana);
 						} else {
 							if(ValidIONum(damage.params.source) && (entities[damage.params.source]->_npcdata)) {
-								entities[damage.params.source]->_npcdata->manaPool.current = min(entities[damage.params.source]->_npcdata->manaPool.current + manadrained, entities[damage.params.source]->_npcdata->manaPool.max);
+								entities[damage.params.source]->_npcdata->manaPool.current = std::min(entities[damage.params.source]->_npcdata->manaPool.current + manadrained, entities[damage.params.source]->_npcdata->manaPool.max);
 							}
 						}
 					} else {
@@ -1101,7 +1098,7 @@ void ARX_DAMAGES_UpdateDamage(DamageHandle j, float tim) {
 								   && !(damage.params.type & DAMAGE_TYPE_COLD)
 								) {
 									dmg -= player.m_miscFull.resistMagic * ( 1.0f / 100 ) * dmg;
-									dmg = max(0.0f, dmg);
+									dmg = std::max(0.0f, dmg);
 								}
 								if(damage.params.type & DAMAGE_TYPE_FIRE) {
 									dmg = ARX_SPELLS_ApplyFireProtection(entities.player(), dmg);
@@ -1133,7 +1130,7 @@ void ARX_DAMAGES_UpdateDamage(DamageHandle j, float tim) {
 								   && !(damage.params.type & DAMAGE_TYPE_COLD)
 								) {
 									dmg -= entities[handle]->_npcdata->resist_magic * ( 1.0f / 100 ) * dmg;
-									dmg = max(0.0f, dmg);
+									dmg = std::max(0.0f, dmg);
 								}
 								if(damage.params.type & DAMAGE_TYPE_COLD) {
 									dmg = ARX_SPELLS_ApplyColdProtection(entities[handle], dmg);

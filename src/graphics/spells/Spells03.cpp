@@ -83,7 +83,7 @@ CFireBall::~CFireBall()
 void CFireBall::SetTTL(unsigned long aulTTL)
 {
 	unsigned long t = ulCurrentTime;
-	ulDuration = min(ulCurrentTime + aulTTL, ulDuration);
+	ulDuration = std::min(ulCurrentTime + aulTTL, ulDuration);
 	SetDuration(ulDuration);
 	ulCurrentTime = t;
 	
@@ -180,8 +180,8 @@ void CIceProjectile::Create(Vec3f aeSrc, float afBeta, float fLevel, EntityHandl
 
 	float fspelldist	= static_cast<float>(iMax * 15);
 
-	fspelldist = min(fspelldist, 200.0f);
-	fspelldist = max(fspelldist, 450.0f);
+	fspelldist = std::min(fspelldist, 200.0f);
+	fspelldist = std::max(fspelldist, 450.0f);
 	e.x = aeSrc.x - fBetaRadSin * fspelldist;
 	e.y = aeSrc.y - 100;
 	e.z = aeSrc.z + fBetaRadCos * fspelldist;
@@ -312,7 +312,7 @@ void CIceProjectile::Render()
 			Draw3DObject(stite, stiteangle, icicle.pos, icicle.size, stitecolor, mat);
 	}
 	
-	for(int i = 0; i < min(iNumber, iMax + 1); i++) {
+	for(int i = 0; i < std::min(iNumber, iMax + 1); i++) {
 		Icicle & icicle = m_icicles[i];
 		
 		float t = rnd();
@@ -323,7 +323,7 @@ void CIceProjectile::Render()
 				pd->ov = icicle.pos + randomVec(-5.f, 5.f);
 				pd->move = randomVec(-2.f, 2.f);
 				pd->siz = 20.f;
-				float t = min(2000.f + rnd() * 2000.f,
+				float t = std::min(2000.f + rnd() * 2000.f,
 				              ulDuration - ulCurrentTime + 500.0f * rnd());
 				pd->tolive = checked_range_cast<unsigned long>(t);
 				pd->tc = tex_p2;
@@ -339,7 +339,7 @@ void CIceProjectile::Render()
 				pd->ov = icicle.pos + randomVec(-5.f, 5.f) - Vec3f(0.f, 50.f, 0.f);
 				pd->move = Vec3f(0.f, 2.f - 4.f * rnd(), 0.f);
 				pd->siz = 0.5f;
-				float t = min(2000.f + rnd() * 1000.f,
+				float t = std::min(2000.f + rnd() * 1000.f,
 				              ulDuration - ulCurrentTime + 500.0f * rnd());
 				pd->tolive = checked_range_cast<unsigned long>(t);
 				pd->tc = tex_p1;

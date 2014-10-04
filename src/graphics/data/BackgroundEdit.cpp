@@ -307,7 +307,7 @@ void ARX_PrepareBackgroundNRMLs() {
 			float d = 0.f;
 			
 			for(long ii = 0; ii < nbvert; ii++) {
-				d = max(d, glm::distance(ep->center, ep->v[ii].p));
+				d = std::max(d, glm::distance(ep->center, ep->v[ii].p));
 			}
 			
 			ep->v[0].rhw = d;

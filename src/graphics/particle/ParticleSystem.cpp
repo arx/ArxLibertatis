@@ -170,7 +170,7 @@ void ParticleSystem::SetTexture(const char * _pszTex, int _iNbTex, int _iTime) {
 		tex_tab[0] = TextureContainer::Load(_pszTex);
 		iNbTex = 0;
 	} else {
-		_iNbTex = min(_iNbTex, 20);
+		_iNbTex = std::min(_iNbTex, 20);
 		char cBuf[256];
 
 		for(int i = 0; i < _iNbTex; i++) {

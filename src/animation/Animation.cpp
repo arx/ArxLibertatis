@@ -96,14 +96,14 @@ short ANIM_GetAltIdx(ANIM_HANDLE * ah, long old) {
 	long tot = anim_power[0];
 
 	for(long i = 1; i < ah->alt_nb; i++) {
-		tot += anim_power[min(i, 14L)];
+		tot += anim_power[std::min(i, 14L)];
 	}
 
 	while(1) {
 		for(short i = 0; i < ah->alt_nb; i++) {
 			float r = rnd() * tot;
 
-			if(r < anim_power[min((int)i,14)] && i != old)
+			if(r < anim_power[std::min((int)i,14)] && i != old)
 				return i;
 		}
 	}

@@ -37,8 +37,6 @@
 
 #include "util/Unicode.h"
 
-using std::string;
-
 namespace {
 IniReader localisation;
 }
@@ -166,13 +164,13 @@ bool initLocalisation() {
 	return true;
 }
 
-long getLocalisedKeyCount(const string & sectionname) {
+long getLocalisedKeyCount(const std::string & sectionname) {
 	return localisation.getKeyCount(sectionname);
 }
 
-string getLocalised(const string & name, const string & default_value) {
+std::string getLocalised(const std::string & name, const std::string & default_value) {
 	
-	arx_assert(name.find_first_of("ABCDEFGHIJKLMNOPQRSTUVWXYZ[]") == string::npos);
+	arx_assert(name.find_first_of("ABCDEFGHIJKLMNOPQRSTUVWXYZ[]") == std::string::npos);
 	
-	return localisation.getKey(name, string(), default_value);
+	return localisation.getKey(name, std::string(), default_value);
 }

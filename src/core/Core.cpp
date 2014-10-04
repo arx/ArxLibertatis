@@ -160,11 +160,6 @@ ZeniMax Media Inc., Suite 120, Rockville, Maryland 20850 USA.
 
 class TextManager;
 
-using std::min;
-using std::max;
-using std::string;
-using std::ostringstream;
-
 Image savegame_thumbnail;
 
 extern TextManager	*pTextManage;
@@ -196,7 +191,7 @@ EERIE_3DOBJ * cameraobj=NULL;			// Camera 3D Object		// NEEDTO: Remove for Final
 EERIE_3DOBJ * markerobj=NULL;			// Marker 3D Object		// NEEDTO: Remove for Final
 EERIE_3DOBJ * cabal=NULL;				// Cabalistic 3D Object // NEEDTO: Load dynamically
 
-string WILLADDSPEECH;
+std::string WILLADDSPEECH;
 
 Vec2s STARTDRAG;
 Entity * COMBINE=NULL;
@@ -763,7 +758,7 @@ void strikeSpeak(Entity * io) {
 		return;
 	}
 	
-	const string * str;
+	const std::string * str;
 	EntityHandle equiped = player.equiped[EQUIP_SLOT_WEAPON];
 	if(equiped != PlayerEntityHandle && !entities[equiped]->strikespeech.empty()) {
 		str = &entities[equiped]->strikespeech;

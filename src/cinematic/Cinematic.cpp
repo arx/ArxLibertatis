@@ -290,9 +290,9 @@ Color CalculLight(CinematicLight * light, Vec2f pos, Color col)
 		}
 		
 		Color in = col;
-		in.r = min(in.r + (int)color.r, 255);
-		in.g = min(in.g + (int)color.g, 255);
-		in.b = min(in.b + (int)color.b, 255);
+		in.r = std::min(in.r + (int)color.r, 255);
+		in.g = std::min(in.g + (int)color.g, 255);
+		in.b = std::min(in.b + (int)color.b, 255);
 		return in;
 	}
 }

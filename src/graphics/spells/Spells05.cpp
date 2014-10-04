@@ -611,7 +611,7 @@ CMultiPoisonProjectile::CMultiPoisonProjectile(long nbmissiles)
 {
 	SetDuration(2000);
 	
-	size_t uiNumber = min(5L, nbmissiles);
+	size_t uiNumber = std::min(5L, nbmissiles);
 	
 	for(size_t i = 0; i < uiNumber; i++) {
 		CPoisonProjectile * projectile = new CPoisonProjectile();
@@ -648,7 +648,7 @@ void CMultiPoisonProjectile::Create(Vec3f srcPos, float afBeta) {
 		projectile->Create(srcPos, afBeta + frand2() * 10.0f);
 		long lTime = ulDuration + Random::get(0, 5000);
 		projectile->SetDuration(lTime);
-		lMax = max(lMax, lTime);
+		lMax = std::max(lMax, lTime);
 
 		projectile->lLightId = GetFreeDynLight();
 
