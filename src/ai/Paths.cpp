@@ -71,10 +71,6 @@ ZeniMax Media Inc., Suite 120, Rockville, Maryland 20850 USA.
 
 #include "script/Script.h"
 
-using std::min;
-using std::max;
-using std::string;
-
 extern float framedelay;
 
 ARX_PATH ** ARXpaths = NULL;
@@ -219,7 +215,7 @@ void ARX_PATH_UpdateAllZoneInOutInside() {
 						EntityHandle t = entities.getById(op->controled);
 
 						if(t != EntityHandle::Invalid) {
-							string str = io->idString() + ' ' + op->name;
+							std::string str = io->idString() + ' ' + op->name;
 							SendIOScriptEvent(entities[t], SM_CONTROLLEDZONE_LEAVE, str);
 						}
 					}
@@ -238,7 +234,7 @@ void ARX_PATH_UpdateAllZoneInOutInside() {
 							EntityHandle t = entities.getById(p->controled);
 
 							if(t != EntityHandle::Invalid) {
-								string params = io->idString() + ' ' + p->name;
+								std::string params = io->idString() + ' ' + p->name;
 								SendIOScriptEvent(entities[t], SM_CONTROLLEDZONE_ENTER, params);
 							}
 						}
@@ -250,7 +246,7 @@ void ARX_PATH_UpdateAllZoneInOutInside() {
 						EntityHandle t = entities.getById(op->controled);
 
 						if(t != EntityHandle::Invalid) {
-							string str = io->idString() + ' ' + op->name;
+							std::string str = io->idString() + ' ' + op->name;
 							SendIOScriptEvent(entities[t], SM_CONTROLLEDZONE_LEAVE, str);
 						}
 					}
@@ -262,7 +258,7 @@ void ARX_PATH_UpdateAllZoneInOutInside() {
 						EntityHandle t = entities.getById(p->controled);
 
 						if(t != EntityHandle::Invalid) {
-							string str = io->idString() + ' ' + p->name;
+							std::string str = io->idString() + ' ' + p->name;
 							SendIOScriptEvent(entities[t], SM_CONTROLLEDZONE_ENTER, str);
 						}
 					}
@@ -392,7 +388,7 @@ void ARX_PATH_ClearAllControled() {
 	}
 }
 
-ARX_PATH * ARX_PATH_GetAddressByName(const string & name) {
+ARX_PATH * ARX_PATH_GetAddressByName(const std::string & name) {
 
 	if(name.empty() || !ARXpaths) {
 		return NULL;

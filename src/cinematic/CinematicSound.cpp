@@ -51,8 +51,6 @@ ZeniMax Media Inc., Suite 120, Rockville, Maryland 20850 USA.
 #include "io/resource/ResourcePath.h"
 #include "scene/GameSound.h"
 
-using std::string;
-
 namespace {
 
 // TODO move this into the Cinematic class

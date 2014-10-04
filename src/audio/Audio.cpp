@@ -62,15 +62,13 @@ ZeniMax Media Inc., Suite 120, Rockville, Maryland 20850 USA.
 #include "platform/Lock.h"
 #include "platform/Time.h"
 
-using std::string;
-
 namespace audio {
 
 namespace {
 static Lock * mutex = NULL;
 }
 
-aalError init(const string & backendName, bool enableEAX) {
+aalError init(const std::string & backendName, bool enableEAX) {
 	
 	// Clean any initialized data
 	clean();
@@ -658,7 +656,7 @@ aalError sampleStop(SourceId & sample_id) {
 
 // Track setup
 
-aalError muteAmbianceTrack(AmbianceId a_id, const string & track, bool mute) {
+aalError muteAmbianceTrack(AmbianceId a_id, const std::string & track, bool mute) {
 	
 	AAL_ENTRY
 	

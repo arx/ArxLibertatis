@@ -68,8 +68,6 @@ ZeniMax Media Inc., Suite 120, Rockville, Maryland 20850 USA.
 
 #include "Configure.h"
 
-using std::string;
-
 namespace ARX_ANONYMOUS_NAMESPACE {
 
 static const u32 AMBIANCE_FILE_SIGNATURE = 0x424d4147; //'GAMB'
@@ -255,7 +253,7 @@ private:
 	
 	Ambiance * ambiance; // Ambiance id
 	
-	string name; // Track name
+	std::string name; // Track name
 	
 	TrackFlags flags;
 
@@ -515,7 +513,7 @@ void Ambiance::Track::update(size_t time, size_t diff) {
 	
 }
 
-static aalError loadString(PakFileHandle * file, string & str) {
+static aalError loadString(PakFileHandle * file, std::string & str) {
 	
 	std::ostringstream oss;
 	
@@ -533,7 +531,7 @@ static aalError loadString(PakFileHandle * file, string & str) {
 aalError Ambiance::Track::load(PakFileHandle * file, u32 version) {
 	
 	// Get track sample name
-	string sampleName;
+	std::string sampleName;
 	if(aalError error = loadString(file, sampleName)) {
 		return error;
 	}
@@ -667,7 +665,7 @@ aalError Ambiance::setVolume(float volume) {
 	return AAL_OK;
 }
 
-aalError Ambiance::muteTrack(const string & name, bool mute) {
+aalError Ambiance::muteTrack(const std::string & name, bool mute) {
 	
 	if(tracks.empty()) {
 		return AAL_OK;

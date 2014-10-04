@@ -164,8 +164,6 @@ ZeniMax Media Inc., Suite 120, Rockville, Maryland 20850 USA.
 
 InfoPanels g_debugInfo = InfoPanelNone;
 
-using std::string;
-
 extern long START_NEW_QUEST;
 long LOADQUEST_SLOT = -1; // OH NO, ANOTHER GLOBAL! - TEMP PATCH TO CLEAN CODE FLOW
 extern long PLAYER_PARALYSED;
@@ -966,7 +964,7 @@ bool ArxGame::initGame()
 		
 		GoldCoinsObj[i] = loadObject(oss.str());
 		
-		oss.str(string());
+		oss.str(std::string());
 		
 		if(i == 0) {
 			oss << "graph/obj3d/interactive/items/jewelry/gold_coin/gold_coin[icon]";

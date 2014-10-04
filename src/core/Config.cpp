@@ -36,8 +36,6 @@
 #include "math/Vector.h"
 #include "platform/CrashHandler.h"
 
-using std::string;
-
 // To avoid conflicts with potential other classes/namespaces
 namespace {
 
@@ -47,8 +45,8 @@ namespace Default {
 #define ARX_DEFAULT_WIDTH 640
 #define ARX_DEFAULT_HEIGHT 480
 
-const string
-	language = string(),
+const std::string
+	language = std::string(),
 	resolution = "auto",
 	audioBackend = "auto",
 	windowFramework = "auto",
@@ -127,7 +125,7 @@ ActionKey actions[NUM_ACTION_KEY] = {
 
 namespace Section {
 
-const string
+const std::string
 	Language = "language",
 	Video = "video",
 	Window = "window",
@@ -140,10 +138,10 @@ const string
 namespace Key {
 
 // Language options
-const string language = "string";
+const std::string language = "string";
 
 // Video options
-const string
+const std::string
 	resolution = "resolution",
 	fullscreen = "full_screen",
 	levelOfDetail = "others_details",
@@ -153,12 +151,12 @@ const string
 	vsync = "vsync";
 
 // Window options
-const string
+const std::string
 	windowSize = "size",
 	windowFramework = "framework";
 
 // Audio options
-const string
+const std::string
 	volume = "master_volume",
 	sfxVolume = "effects_volume",
 	speechVolume = "speech_volume",
@@ -167,7 +165,7 @@ const string
 	audioBackend = "backend";
 
 // Input options
-const string
+const std::string
 	invertMouse = "invert_mouse",
 	autoReadyWeapon = "auto_ready_weapon",
 	mouseLookToggle = "mouse_look_toggle",
@@ -175,7 +173,7 @@ const string
 	autoDescription = "auto_description";
 
 // Input key options
-const string actions[NUM_ACTION_KEY] = {
+const std::string actions[NUM_ACTION_KEY] = {
 	"jump",
 	"magic_mode",
 	"stealth_mode",
@@ -220,7 +218,7 @@ const string actions[NUM_ACTION_KEY] = {
 };
 
 // Misc options
-const string
+const std::string
 	forceToggle = "forcetoggle",
 	migration = "migration",
 	quicksaveSlots = "quicksave_slots",
@@ -231,7 +229,7 @@ const string
 class ConfigReader : public IniReader {
 	
 public:
-	ActionKey getActionKey(const string & section, ControlAction index) const;
+	ActionKey getActionKey(const std::string & section, ControlAction index) const;
 	
 };
 
@@ -247,16 +245,16 @@ public:
 
 void ConfigWriter::writeActionKey(ControlAction index, const ActionKey & actionKey) {
 	
-	string v1 = Input::getKeyName(actionKey.key[0]);
+	std::string v1 = Input::getKeyName(actionKey.key[0]);
 	writeKey(Key::actions[index] + "_k0", v1);
 	
-	string v2 = Input::getKeyName(actionKey.key[1]);
+	std::string v2 = Input::getKeyName(actionKey.key[1]);
 	writeKey(Key::actions[index] + "_k1", v2);
 }
 
-ActionKey ConfigReader::getActionKey(const string & section, ControlAction index) const {
+ActionKey ConfigReader::getActionKey(const std::string & section, ControlAction index) const {
 	
-	const string & key = Key::actions[index];
+	const std::string & key = Key::actions[index];
 	ActionKey action_key = Default::actions[index];
 	
 	const IniKey * k0 = getKey(section, key + "_k0");
@@ -411,7 +409,7 @@ bool Config::save() {
 	return writer.flush();
 }
 
-static Vec2i parseResolution(const string & resolution) {
+static Vec2i parseResolution(const std::string & resolution) {
 	
 	Vec2i res;
 	
@@ -444,7 +442,7 @@ bool Config::init(const fs::path & file) {
 	language = reader.getKey(Section::Language, Key::language, Default::language);
 	
 	// Get video settings
-	string resolution = reader.getKey(Section::Video, Key::resolution, Default::resolution);
+	std::string resolution = reader.getKey(Section::Video, Key::resolution, Default::resolution);
 	if(resolution == "auto") {
 		video.resolution = Vec2i_ZERO;
 	} else {
@@ -458,7 +456,7 @@ bool Config::init(const fs::path & file) {
 	video.vsync = reader.getKey(Section::Video, Key::vsync, Default::vsync);
 	
 	// Get window settings
-	string windowSize = reader.getKey(Section::Window, Key::windowSize, Default::windowSize);
+	std::string windowSize = reader.getKey(Section::Window, Key::windowSize, Default::windowSize);
 	window.size = parseResolution(windowSize);
 	window.framework = reader.getKey(Section::Window, Key::windowFramework, Default::windowFramework);
 	

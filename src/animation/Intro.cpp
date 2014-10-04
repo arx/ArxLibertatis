@@ -65,9 +65,6 @@ ZeniMax Media Inc., Suite 120, Rockville, Maryland 20850 USA.
 
 #include "window/RenderWindow.h"
 
-using std::min;
-using std::max;
-
 static TextureContainer * FISHTANK_img = NULL;
 static TextureContainer * ARKANE_img = NULL;
 

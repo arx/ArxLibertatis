@@ -59,8 +59,6 @@ ZeniMax Media Inc., Suite 120, Rockville, Maryland 20850 USA.
 
 static const Vec2i cinMaxSize = Vec2i(256, 256);
 
-using std::string;
-
 CinematicBitmap::~CinematicBitmap()
 {
 	grid.FreeGrille();
@@ -68,7 +66,7 @@ CinematicBitmap::~CinematicBitmap()
 
 CinematicBitmap* CreateCinematicBitmap(const res::path & path, int scale) {
 	
-	string name = path.basename();
+	std::string name = path.basename();
 	if(name.empty()) {
 		return 0;
 	}
