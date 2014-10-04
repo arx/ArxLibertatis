@@ -1606,6 +1606,7 @@ CWindowMenuConsole::CWindowMenuConsole(Vec2i pos, Vec2i size, MENUSTATE _eMenuSt
 	, bEdit(false)
 	, lData(0)
 	, bMouseAttack(false)
+	, m_textCursorCurrentTime(0.f)
 {
 	m_offset = RATIO_2(pos);
 	m_size = RATIO_2(size);
@@ -1779,12 +1780,18 @@ void CWindowMenuConsole::UpdateText() {
 		Vec2i textSize = ((TextWidget*)pZoneClick)->pFont->getTextSize("|");
 		pZoneClick->rZone.bottom += textSize.y;
 	}
-
+	
+	m_textCursorCurrentTime += ARXDiffTimeMenu;
+	if(m_textCursorCurrentTime > m_textCursorFlashDuration * 2)
+		m_textCursorCurrentTime = 0;
+	
+	bool showTextCursor = m_textCursorCurrentTime > m_textCursorFlashDuration;
+	
+	if(showTextCursor) {
 	//DRAW CURSOR
 	TexturedVertex v[4];
 	GRenderer->ResetTexture(0);
-	float col=.5f+rnd()*.5f;
-	v[0].color = v[1].color = v[2].color = v[3].color = Color::gray(col).toRGB();
+	v[0].color = v[1].color = v[2].color = v[3].color = Color::white.toRGB();
 	v[0].p.z=v[1].p.z=v[2].p.z=v[3].p.z=0.f;    
 	v[0].rhw=v[1].rhw=v[2].rhw=v[3].rhw=0.999999f;
 
@@ -1798,6 +1805,7 @@ void CWindowMenuConsole::UpdateText() {
 	v[3].p.y = v[2].p.y;
 
 	EERIEDRAWPRIM(Renderer::TriangleStrip, v, 4);
+	}
 }
 
 Widget * CWindowMenuConsole::GetTouch(bool keyTouched, int keyId, InputKeyId* pInputKeyId, bool _bValidateTest)

@@ -497,6 +497,9 @@ public:
 	long					lData;
 	bool				bMouseAttack;
 	
+	static const int m_textCursorFlashDuration = 300;
+	float m_textCursorCurrentTime;
+	
 private:
 	void UpdateText();
 public:
