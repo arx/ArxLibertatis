@@ -77,12 +77,6 @@ ZeniMax Media Inc., Suite 120, Rockville, Maryland 20850 USA.
 
 #include "util/String.h"
 
-using std::map;
-using std::string;
-using std::istringstream;
-using std::ostringstream;
-using std::vector;
-using std::sprintf;
 
 using audio::AmbianceId;
 using audio::SampleId;
@@ -132,8 +126,8 @@ static const char ARX_SOUND_PATH_SAMPLE[] = "sfx";
 static const char ARX_SOUND_PATH_AMBIANCE[] = "sfx/ambiance";
 static const char ARX_SOUND_PATH_ENVIRONMENT[] = "sfx/environment";
 static const res::path ARX_SOUND_PRESENCE_NAME = "presence";
-static const string ARX_SOUND_FILE_EXTENSION_WAV = ".wav";
-static const string ARX_SOUND_FILE_EXTENSION_INI = ".ini";
+static const std::string ARX_SOUND_FILE_EXTENSION_WAV = ".wav";
+static const std::string ARX_SOUND_FILE_EXTENSION_INI = ".ini";
 
 static const unsigned long ARX_SOUND_COLLISION_MAP_COUNT = 3;
 static const res::path ARX_SOUND_COLLISION_MAP_NAMES[] = {
@@ -154,12 +148,12 @@ namespace {
 
 struct SoundMaterial {
 	
-	vector<SampleId> variants;
+	std::vector<SampleId> variants;
 	
 	SoundMaterial() : current(0) { }
 	
 	~SoundMaterial() {
-		for(vector<SampleId>::const_iterator i = variants.begin(); i !=  variants.end(); ++i) {
+		for(std::vector<SampleId>::const_iterator i = variants.begin(); i !=  variants.end(); ++i) {
 			audio::deleteSample(*i);
 		}
 	}
@@ -177,15 +171,15 @@ private:
 	
 };
 
-typedef map<string, SoundMaterial> CollisionMap;
-typedef map<string, CollisionMap> CollisionMaps;
+typedef std::map<std::string, SoundMaterial> CollisionMap;
+typedef std::map<std::string, CollisionMap> CollisionMaps;
 static CollisionMaps collisionMaps;
 
 namespace Section {
-static const string presence = "presence";
+static const std::string presence = "presence";
 }
 
-typedef map<res::path, float> PresenceFactors;
+typedef std::map<res::path, float> PresenceFactors;
 static PresenceFactors presence;
 
 }
@@ -685,7 +679,7 @@ long ARX_SOUND_PlayCollision(long mat1, long mat2, float volume, float power, co
 	return (long)(channel.pitch * length);
 }
 
-long ARX_SOUND_PlayCollision(const string & name1, const string & name2, float volume, float power, const Vec3f & position, Entity * source) {
+long ARX_SOUND_PlayCollision(const std::string & name1, const std::string & name2, float volume, float power, const Vec3f & position, Entity * source) {
 	
 	if(!bIsActive) {
 		return 0;
@@ -1526,7 +1520,7 @@ static void ARX_SOUND_CreateCollisionMaps() {
 			return;
 		}
 		
-		istringstream iss(string(data, fileSize));
+		std::istringstream iss(std::string(data, fileSize));
 		free(data);
 		
 		IniReader reader;
@@ -1544,7 +1538,7 @@ static void ARX_SOUND_CreateCollisionMaps() {
 				
 				for(size_t mi = 0; mi < MAX_VARIANTS; mi++) {
 					
-					ostringstream oss;
+					std::ostringstream oss;
 					oss << boost::to_lower_copy(key.getValue());
 					if(mi) {
 						oss << mi;
@@ -1553,7 +1547,7 @@ static void ARX_SOUND_CreateCollisionMaps() {
 					SampleId sample = audio::createSample(oss.str());
 					
 					if(sample == INVALID_ID) {
-						ostringstream oss2;
+						std::ostringstream oss2;
 						oss2 << boost::to_lower_copy(key.getValue()) << '_' << mi << ARX_SOUND_FILE_EXTENSION_WAV;
 						sample = audio::createSample(oss2.str());
 					}
@@ -1675,7 +1669,7 @@ static void ARX_SOUND_CreatePresenceMap() {
 		return;
 	}
 	
-	istringstream iss(string(data, fileSize));
+	std::istringstream iss(std::string(data, fileSize));
 	free(data);
 	
 	IniReader reader;
@@ -1698,7 +1692,7 @@ static void ARX_SOUND_CreatePresenceMap() {
 
 static float GetSamplePresenceFactor(const res::path & name) {
 	
-	arx_assert(name.string().find_first_of("ABCDEFGHIJKLMNOPQRSTUVWXYZ") == string::npos,
+	arx_assert(name.string().find_first_of("ABCDEFGHIJKLMNOPQRSTUVWXYZ") == std::string::npos,
 	           "bad sample name: \"%s\"", name.string().c_str());
 	
 	PresenceFactors::const_iterator it = presence.find(name);

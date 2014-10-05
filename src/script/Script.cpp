@@ -86,11 +86,6 @@ ZeniMax Media Inc., Suite 120, Rockville, Maryland 20850 USA.
 
 #include "script/ScriptEvent.h"
 
-using std::sprintf;
-using std::min;
-using std::max;
-using std::transform;
-using std::string;
 
 #define MAX_SSEPARAMS 5
 
@@ -106,7 +101,7 @@ long FORBID_SCRIPT_IO_CREATION = 0;
 SCR_TIMER * scr_timer = NULL;
 long ActiveTimers = 0;
 
-long FindScriptPos(const EERIE_SCRIPT * es, const string & str) {
+long FindScriptPos(const EERIE_SCRIPT * es, const std::string & str) {
 	
 	// TODO(script-parser) remove, respect quoted strings
 	
@@ -137,7 +132,7 @@ long FindScriptPos(const EERIE_SCRIPT * es, const string & str) {
 	return -1;
 }
 
-ScriptResult SendMsgToAllIO(ScriptMessage msg, const string & params) {
+ScriptResult SendMsgToAllIO(ScriptMessage msg, const std::string & params) {
 	
 	ScriptResult ret = ACCEPT;
 	
@@ -155,7 +150,7 @@ ScriptResult SendMsgToAllIO(ScriptMessage msg, const string & params) {
 	return ret;
 }
 
-void ARX_SCRIPT_SetMainEvent(Entity * io, const string & newevent) {
+void ARX_SCRIPT_SetMainEvent(Entity * io, const std::string & newevent) {
 	
 	if(!io) {
 		return;
@@ -243,7 +238,7 @@ void ARX_SCRIPT_AllowInterScriptExec() {
 	
 	EVENT_SENDER = NULL;
 	
-	long heartbeat_count = min(long(entities.size()), 10l);
+	long heartbeat_count = std::min(long(entities.size()), 10l);
 	
 	for(long n = 0; n < heartbeat_count; n++) {
 		
@@ -300,7 +295,7 @@ void ReleaseScript(EERIE_SCRIPT * es) {
 	memset(es->shortcut, 0, sizeof(long) * MAX_SHORTCUT);
 }
 
-ValueType getSystemVar(const EERIE_SCRIPT * es, Entity * entity, const string & name,
+ValueType getSystemVar(const EERIE_SCRIPT * es, Entity * entity, const std::string & name,
                        std::string& txtcontent, float * fcontent,long * lcontent) {
 	
 	arx_assert(!name.empty() && name[0] == '^', "bad system variable: \"%s\"", name.c_str());
@@ -585,7 +580,7 @@ ValueType getSystemVar(const EERIE_SCRIPT * es, Entity * entity, const string & 
 			}
 			
 			if(boost::starts_with(name, "^rune_")) {
-				string temp = name.substr(6);
+				std::string temp = name.substr(6);
 				*lcontent = 0;
 				if(temp == "aam") {
 					*lcontent = player.rune_flags & FLAG_AAM;
@@ -1032,7 +1027,7 @@ ValueType getSystemVar(const EERIE_SCRIPT * es, Entity * entity, const string & 
 			}
 			
 			if(boost::starts_with(name, "^playerspell_")) {
-				string temp = name.substr(13);
+				std::string temp = name.substr(13);
 				
 				SpellType id = GetSpellId(temp);
 				if(id != SPELL_NONE) {
@@ -1134,7 +1129,7 @@ SCRIPT_VAR * GetFreeVarSlot(SCRIPT_VARIABLES& _svff)
 	return v;
 }
 
-SCRIPT_VAR * GetVarAddress(SCRIPT_VARIABLES& svf, const string & name) {
+SCRIPT_VAR * GetVarAddress(SCRIPT_VARIABLES& svf, const std::string & name) {
 	
 	for(SCRIPT_VARIABLES::iterator it = svf.begin(); it != svf.end(); ++it) {
 		if(it->type != TYPE_UNKNOWN) {
@@ -1147,7 +1142,7 @@ SCRIPT_VAR * GetVarAddress(SCRIPT_VARIABLES& svf, const string & name) {
 	return NULL;
 }
 
-const SCRIPT_VAR * GetVarAddress(const SCRIPT_VARIABLES& svf, const string & name) {
+const SCRIPT_VAR * GetVarAddress(const SCRIPT_VARIABLES& svf, const std::string & name) {
 	
 	for(SCRIPT_VARIABLES::const_iterator it = svf.begin(); it != svf.end(); ++it) {
 		if(it->type != TYPE_UNKNOWN) {
@@ -1160,7 +1155,7 @@ const SCRIPT_VAR * GetVarAddress(const SCRIPT_VARIABLES& svf, const string & nam
 	return NULL;
 }
 
-long GETVarValueLong(const SCRIPT_VARIABLES& svf, const string & name) {
+long GETVarValueLong(const SCRIPT_VARIABLES& svf, const std::string & name) {
 	
 	const SCRIPT_VAR * tsv = GetVarAddress(svf, name);
 
@@ -1169,7 +1164,7 @@ long GETVarValueLong(const SCRIPT_VARIABLES& svf, const string & name) {
 	return tsv->ival;
 }
 
-float GETVarValueFloat(const SCRIPT_VARIABLES& svf, const string & name) {
+float GETVarValueFloat(const SCRIPT_VARIABLES& svf, const std::string & name) {
 	
 	const SCRIPT_VAR * tsv = GetVarAddress(svf, name);
 
@@ -1178,7 +1173,7 @@ float GETVarValueFloat(const SCRIPT_VARIABLES& svf, const string & name) {
 	return tsv->fval;
 }
 
-std::string GETVarValueText(const SCRIPT_VARIABLES& svf, const string & name) {
+std::string GETVarValueText(const SCRIPT_VARIABLES& svf, const std::string & name) {
 	
 	const SCRIPT_VAR* tsv = GetVarAddress(svf, name);
 
@@ -1187,7 +1182,7 @@ std::string GETVarValueText(const SCRIPT_VARIABLES& svf, const string & name) {
 	return tsv->text;
 }
 
-string GetVarValueInterpretedAsText(const string & temp1, const EERIE_SCRIPT * esss, Entity * io) {
+std::string GetVarValueInterpretedAsText(const std::string & temp1, const EERIE_SCRIPT * esss, Entity * io) {
 	
 	char var_text[256];
 	float t1;
@@ -1258,7 +1253,7 @@ string GetVarValueInterpretedAsText(const string & temp1, const EERIE_SCRIPT * e
 	return var_text;
 }
 
-float GetVarValueInterpretedAsFloat(const string & temp1, const EERIE_SCRIPT * esss, Entity * io) {
+float GetVarValueInterpretedAsFloat(const std::string & temp1, const EERIE_SCRIPT * esss, Entity * io) {
 	
 	if(temp1[0] == '^') {
 		long lv;
@@ -1678,7 +1673,7 @@ static bool ARX_SCRIPT_Timer_Exist(const std::string & texx) {
 	return false;
 }
 
-string ARX_SCRIPT_Timer_GetDefaultName() {
+std::string ARX_SCRIPT_Timer_GetDefaultName() {
 	
 	for(size_t i = 1; ; i++) {
 		
@@ -1724,7 +1719,7 @@ void ARX_SCRIPT_Timer_ClearByNum(long timer_idx) {
 	}
 }
 
-void ARX_SCRIPT_Timer_Clear_By_Name_And_IO(const string & timername, Entity * io) {
+void ARX_SCRIPT_Timer_Clear_By_Name_And_IO(const std::string & timername, Entity * io) {
 	for(long i = 0; i < MAX_TIMER_SCRIPT; i++) {
 		if(scr_timer[i].exist && scr_timer[i].io == io && scr_timer[i].name == timername) {
 			ARX_SCRIPT_Timer_ClearByNum(i);

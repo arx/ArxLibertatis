@@ -87,7 +87,6 @@ ZeniMax Media Inc., Suite 120, Rockville, Maryland 20850 USA.
 
 #include "platform/profiler/Profiler.h"
 
-using std::vector;
 
 extern TextureContainer *enviro;
 extern Color ulBKGColor;
@@ -184,8 +183,8 @@ public:
 
 EERIE_FRUSTRUM_PLANE efpPlaneNear;
 
-static vector<EERIEPOLY*> vPolyWater;
-static vector<EERIEPOLY*> vPolyLava;
+static std::vector<EERIEPOLY*> vPolyWater;
+static std::vector<EERIEPOLY*> vPolyLava;
 
 void PopAllTriangleListTransparency();
 
