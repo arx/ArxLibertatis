@@ -54,8 +54,6 @@ ZeniMax Media Inc., Suite 120, Rockville, Maryland 20850 USA.
 #include "graphics/image/Image.h"
 #include "io/fs/Filesystem.h"
 
-using std::ostringstream;
-
 static SnapShot * pSnapShot;
 
 SnapShot::SnapShot(const fs::path & name)
@@ -71,7 +69,7 @@ fs::path SnapShot::getNextFilePath() {
 	fs::path file;
 
 	do {
-		ostringstream oss;
+		std::ostringstream oss;
 		oss << m_basePath.filename() << '_' << num << ".bmp";
 
 		file = m_basePath.parent() / oss.str();

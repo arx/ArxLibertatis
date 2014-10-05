@@ -36,8 +36,6 @@
 
 #include "Configure.h"
 
-using std::string;
-
 namespace {
 
 struct LogManager {
@@ -54,7 +52,7 @@ struct LogManager {
 	typedef std::vector<logger::Backend *> Backends;
 	static Backends backends;
 	
-	typedef boost::unordered_map<string, Logger::LogLevel> Rules;
+	typedef boost::unordered_map<std::string, Logger::LogLevel> Rules;
 	static Rules rules;
 	
 	static logger::Source * getSource(const char * file);
@@ -84,11 +82,11 @@ logger::Source * LogManager::getSource(const char * file) {
 	for(const char * p = end; ; p--) {
 		if(p == file || *(p - 1) == '/' || *(p - 1) == '\\') {
 			
-			string component(p, end);
+			std::string component(p, end);
 			
 			if(first) {
 				size_t pos = component.find_last_of('.');
-				if(pos != string::npos) {
+				if(pos != std::string::npos) {
 					component.resize(pos);
 				}
 				source->name = component;
@@ -151,7 +149,7 @@ bool Logger::isEnabled(const char * file, LogLevel level) {
 	return (LogManager::getSource(file)->level <= level);
 }
 
-void Logger::log(const char * file, int line, LogLevel level, const string & str) {
+void Logger::log(const char * file, int line, LogLevel level, const std::string & str) {
 	
 	if(level == None) {
 		return;
@@ -169,7 +167,7 @@ void Logger::log(const char * file, int line, LogLevel level, const string & str
 	LogManager::lock.unlock();
 }
 
-void Logger::set(const string & prefix, Logger::LogLevel level) {
+void Logger::set(const std::string & prefix, Logger::LogLevel level) {
 	
 	Autolock lock(LogManager::lock);
 	
@@ -201,7 +199,7 @@ void Logger::set(const string & prefix, Logger::LogLevel level) {
 	LogManager::sources.clear();
 }
 
-void Logger::reset(const string & prefix) {
+void Logger::reset(const std::string & prefix) {
 	
 	Autolock lock(LogManager::lock);
 	
@@ -233,14 +231,14 @@ void Logger::flush() {
 	}
 }
 
-void Logger::configure(const string config) {
+void Logger::configure(const std::string config) {
 	
 	size_t start = 0;
 	
 	while(start < config.length()) {
 		
 		size_t pos = config.find(',', start);
-		if(pos == string::npos) {
+		if(pos == std::string::npos) {
 			pos = config.length();
 		}
 		if(pos == start) {
@@ -248,12 +246,12 @@ void Logger::configure(const string config) {
 			continue;
 		}
 		
-		string entry = config.substr(start, pos - start);
+		std::string entry = config.substr(start, pos - start);
 		start = pos + 1;
 		
 		size_t eq = entry.find('=');
-		string level;
-		if(eq != string::npos) {
+		std::string level;
+		if(eq != std::string::npos) {
 			level = entry.substr(eq + 1), entry.resize(eq);
 		}
 		

@@ -57,9 +57,6 @@ ZeniMax Media Inc., Suite 120, Rockville, Maryland 20850 USA.
 #include "platform/profiler/Profiler.h"
 #include "scene/Interactive.h"
 
-using std::min;
-using std::max;
-using std::vector;
 
 //-----------------------------------------------------------------------------
 long ON_PLATFORM=0;
@@ -98,7 +95,7 @@ inline float IsPolyInCylinder(EERIEPOLY * ep, const Cylinder & cyl, long flag) {
 		}		
 	}
 
-	if(nearest > max(82.f, cyl.radius))
+	if(nearest > std::max(82.f, cyl.radius))
 		return 999999.f;
 
 	if(cyl.radius < 30.f
@@ -119,9 +116,9 @@ inline float IsPolyInCylinder(EERIEPOLY * ep, const Cylinder & cyl, long flag) {
 		POLYIN = 1;
 		
 		if(ep->norm.y < 0.5f)
-			anything = min(anything, ep->min.y);
+			anything = std::min(anything, ep->min.y);
 		else
-			anything = min(anything, ep->center.y);
+			anything = std::min(anything, ep->center.y);
 
 		if(!(flags & CFLAG_EXTRA_PRECISION))
 			return anything;
@@ -139,7 +136,7 @@ inline float IsPolyInCylinder(EERIEPOLY * ep, const Cylinder & cyl, long flag) {
 				float p = (float)o * (1.f/5);
 				center = ep->v[n].p * p + ep->center * (1.f - p);
 				if(PointInCylinder(cyl, &center)) {
-					anything = min(anything, center.y);
+					anything = std::min(anything, center.y);
 					POLYIN = 1;
 
 					if(!(flags & CFLAG_EXTRA_PRECISION))
@@ -151,7 +148,7 @@ inline float IsPolyInCylinder(EERIEPOLY * ep, const Cylinder & cyl, long flag) {
 		if(ep->area > 2000.f || (flags & CFLAG_EXTRA_PRECISION)) {
 			center = (ep->v[n].p + ep->v[r].p) * 0.5f;
 			if(PointInCylinder(cyl, &center)) {
-				anything = min(anything, center.y);
+				anything = std::min(anything, center.y);
 				POLYIN = 1;
 
 				if(!(flags & CFLAG_EXTRA_PRECISION))
@@ -161,7 +158,7 @@ inline float IsPolyInCylinder(EERIEPOLY * ep, const Cylinder & cyl, long flag) {
 			if(ep->area > 4000.f || (flags & CFLAG_EXTRA_PRECISION)) {
 				center = (ep->v[n].p + ep->center) * 0.5f;
 				if(PointInCylinder(cyl, &center)) {
-					anything = min(anything, center.y);
+					anything = std::min(anything, center.y);
 					POLYIN = 1;
 
 					if(!(flags & CFLAG_EXTRA_PRECISION))
@@ -172,7 +169,7 @@ inline float IsPolyInCylinder(EERIEPOLY * ep, const Cylinder & cyl, long flag) {
 			if(ep->area > 6000.f || (flags & CFLAG_EXTRA_PRECISION)) {
 				center = (center + ep->v[n].p) * 0.5f;
 				if(PointInCylinder(cyl, &center)) {
-					anything = min(anything, center.y);
+					anything = std::min(anything, center.y);
 					POLYIN = 1;
 
 					if(!(flags & CFLAG_EXTRA_PRECISION))
@@ -183,7 +180,7 @@ inline float IsPolyInCylinder(EERIEPOLY * ep, const Cylinder & cyl, long flag) {
 
 		if(PointInCylinder(cyl, &ep->v[n].p)) {
 			
-			anything = min(anything, ep->v[n].p.y);
+			anything = std::min(anything, ep->v[n].p.y);
 			POLYIN = 1;
 
 			if(!(flags & CFLAG_EXTRA_PRECISION))
@@ -223,7 +220,7 @@ inline float IsPolyInCylinder(EERIEPOLY * ep, const Cylinder & cyl, long flag) {
 	} 
 //}*/
 	if(anything != 999999.f && ep->norm.y < 0.1f && ep->norm.y > -0.1f)
-		anything = min(anything, ep->min.y);
+		anything = std::min(anything, ep->min.y);
 
 	return anything;
 }
@@ -322,8 +319,8 @@ void PushIO_ON_Top(Entity * ioo, float ydec) {
 				float maxy = -9999999.f;
 
 				for(size_t ii = 0; ii < ioo->obj->vertexlist3.size(); ii++) {
-					miny = min(miny, ioo->obj->vertexlist3[ii].v.y);
-					maxy = max(maxy, ioo->obj->vertexlist3[ii].v.y);
+					miny = std::min(miny, ioo->obj->vertexlist3[ii].v.y);
+					maxy = std::max(maxy, ioo->obj->vertexlist3[ii].v.y);
 				}
 
 				float posy = (io == entities.player()) ? player.basePosition().y : io->pos.y;
@@ -533,7 +530,7 @@ float CheckAnythingInCylinder(const Cylinder & cyl, Entity * ioo, long flags) {
 			}
 		}
 
-		if(nearest > max(82.f, cyl.radius))
+		if(nearest > std::max(82.f, cyl.radius))
 			continue;
 
 
@@ -545,7 +542,7 @@ float CheckAnythingInCylinder(const Cylinder & cyl, Entity * ioo, long flags) {
 				continue;
 
 			if(ep->min.y < anything) {
-				anything= min(anything, IsPolyInCylinder(ep, cyl, flags));
+				anything = std::min(anything, IsPolyInCylinder(ep, cyl, flags));
 
 				if(POLYIN) {
 					if(ep->type & POLY_CLIMB)
@@ -560,7 +557,7 @@ float CheckAnythingInCylinder(const Cylinder & cyl, Entity * ioo, long flags) {
 	ep = CheckInPoly(cyl.origin + Vec3f(0.f, cyl.height, 0.f), &tempo);
 	
 	if(ep) {
-		anything = min(anything, tempo);
+		anything = std::min(anything, tempo);
 	}
 
 	if(!(flags & CFLAG_NO_INTERCOL)) {
@@ -616,7 +613,7 @@ float CheckAnythingInCylinder(const Cylinder & cyl, Entity * ioo, long flags) {
 								if(res == 2)
 									ON_PLATFORM = 1;
 
-								anything = min(anything, io->obj->vertexlist3[ii].v.y - 10.f);
+								anything = std::min(anything, io->obj->vertexlist3[ii].v.y - 10.f);
 							}			
 						}
 
@@ -629,7 +626,7 @@ float CheckAnythingInCylinder(const Cylinder & cyl, Entity * ioo, long flags) {
 								c.y += io->obj->vertexlist3[io->obj->facelist[ii].vid[kk]].v.y;
 								c.z += io->obj->vertexlist3[io->obj->facelist[ii].vid[kk]].v.z;
 
-								height = min(height, io->obj->vertexlist3[io->obj->facelist[ii].vid[kk]].v.y);
+								height = std::min(height, io->obj->vertexlist3[io->obj->facelist[ii].vid[kk]].v.y);
 							}
 
 							c.x *= ( 1.0f / 3 );
@@ -642,7 +639,7 @@ float CheckAnythingInCylinder(const Cylinder & cyl, Entity * ioo, long flags) {
 								if(res == 2)
 									ON_PLATFORM = 1;
 
-								anything = min(anything, height);
+								anything = std::min(anything, height);
 							}
 						}
 						}
@@ -657,7 +654,7 @@ float CheckAnythingInCylinder(const Cylinder & cyl, Entity * ioo, long flags) {
 					
 					if(CylinderInCylinder(cyl, io_cyl)) {
  						NPC_IN_CYLINDER = 1;
-						anything = min(anything, io_cyl.origin.y + io_cyl.height);
+						anything = std::min(anything, io_cyl.origin.y + io_cyl.height);
 
 						if(!(flags & CFLAG_JUST_TEST) && ioo) {
 							if(float(arxtime) > io->collide_door_time + 500) {
@@ -718,7 +715,7 @@ float CheckAnythingInCylinder(const Cylinder & cyl, Entity * ioo, long flags) {
 						goto suivant;
 
 					if(In3DBBoxTolerance(cyl.origin, io->bbox3D, cyl.radius + 30.f)) {
-						vector<EERIE_VERTEX> & vlist = io->obj->vertexlist3;
+						std::vector<EERIE_VERTEX> & vlist = io->obj->vertexlist3;
 						size_t nbv = io->obj->vertexlist.size();
 
 						if(io->obj->grouplist.size() > 10) {
@@ -765,7 +762,7 @@ float CheckAnythingInCylinder(const Cylinder & cyl, Entity * ioo, long flags) {
 										}
 									}
 
-									anything = min(anything, min(sp.origin.y - sp.radius, io->bbox3D.min.y));
+									anything = std::min(anything, std::min(sp.origin.y - sp.radius, io->bbox3D.min.y));
 								}
 							}
 						} else {
@@ -821,7 +818,7 @@ float CheckAnythingInCylinder(const Cylinder & cyl, Entity * ioo, long flags) {
 												ARX_DAMAGES_DealDamages(ioo->index(), io->damager_damages, io->index(), io->damager_type, &ioo->pos);
 										}
 										}
-										anything = min(anything, min(sp.origin.y - sp.radius, io->bbox3D.min.y));
+										anything = std::min(anything, std::min(sp.origin.y - sp.radius, io->bbox3D.min.y));
 									}
 								}
 							}
@@ -1188,7 +1185,7 @@ bool CheckIOInSphere(const Sphere & sphere, EntityHandle target, bool ignoreNoCo
 	   && (io->obj)
 	) {
 		if(closerThan(io->pos, sphere.origin, sr180)) {
-			vector<EERIE_VERTEX> & vlist = io->obj->vertexlist3;
+			std::vector<EERIE_VERTEX> & vlist = io->obj->vertexlist3;
 
 			if(io->obj->grouplist.size()>10) {
 				long count=0;
@@ -1450,7 +1447,7 @@ bool ARX_COLLISION_Move_Cylinder(IO_PHYSICS * ip, Entity * io, float MOVE_CYLIND
 
 	while(distance > 0.f && count--) {
 		// First We compute current increment 
-		float curmovedist = min(distance, MOVE_CYLINDER_STEP);
+		float curmovedist = std::min(distance, MOVE_CYLINDER_STEP);
 		distance -= curmovedist;
 
 		// Store our cylinder desc into a test struct

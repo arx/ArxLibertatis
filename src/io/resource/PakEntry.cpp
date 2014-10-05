@@ -26,10 +26,6 @@
 #include "io/resource/ResourcePath.h"
 #include "platform/Platform.h"
 
-using std::string;
-using std::find_first_of;
-using std::malloc;
-
 PakFile::~PakFile() {
 	delete _alternative;
 }
@@ -64,7 +60,7 @@ PakDirectory * PakDirectory::addDirectory(const res::path & path) {
 		
 		size_t end = path.string().find(res::path::dir_sep, pos);
 		
-		if(end == string::npos) {
+		if(end == std::string::npos) {
 			return &dir->dirs[path.string().substr(pos)];
 		}
 		dir = &dir->dirs[path.string().substr(pos, end - pos)];
@@ -95,8 +91,8 @@ PakDirectory * PakDirectory::getDirectory(const res::path & path) {
 		
 		size_t end = path.string().find(res::path::dir_sep, pos);
 		
-		string name;
-		if(end == string::npos) {
+		std::string name;
+		if(end == std::string::npos) {
 			name = path.string().substr(pos);
 		} else {
 			name = path.string().substr(pos, end - pos);
@@ -108,7 +104,7 @@ PakDirectory * PakDirectory::getDirectory(const res::path & path) {
 		}
 		dir = &entry->second;
 		
-		if(end == string::npos) {
+		if(end == std::string::npos) {
 			return dir;
 		}
 		pos = end + 1;
@@ -133,7 +129,7 @@ PakFile * PakDirectory::getFile(const res::path & path) {
 		
 		size_t end = path.string().find(res::path::dir_sep, pos);
 		
-		if(end == string::npos) {
+		if(end == std::string::npos) {
 			files_iterator file = dir->files.find(path.string().substr(pos));
 			return (file == dir->files.end()) ? NULL : file->second;
 		}
@@ -149,7 +145,7 @@ PakFile * PakDirectory::getFile(const res::path & path) {
 	
 }
 
-void PakDirectory::addFile(const string & name, PakFile * file) {
+void PakDirectory::addFile(const std::string & name, PakFile * file) {
 	
 	std::map<std::string, PakFile *>::iterator old = files.find(name);
 	
@@ -161,7 +157,7 @@ void PakDirectory::addFile(const string & name, PakFile * file) {
 	}
 }
 
-void PakDirectory::removeFile(const string & name) {
+void PakDirectory::removeFile(const std::string & name) {
 	
 	std::map<std::string, PakFile *>::iterator old = files.find(name);
 	
@@ -171,7 +167,7 @@ void PakDirectory::removeFile(const string & name) {
 	}
 }
 
-bool PakDirectory::removeDirectory(const string & name) {
+bool PakDirectory::removeDirectory(const std::string & name) {
 	
 	dirs_iterator old = dirs.find(name);
 	

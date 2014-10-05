@@ -95,8 +95,6 @@ ZeniMax Media Inc., Suite 120, Rockville, Maryland 20850 USA.
 
 #include "util/String.h"
 
-using std::max;
-using std::string;
 
 extern bool bGCroucheToggle;
 
@@ -161,7 +159,7 @@ long DanaeSaveLevel(const fs::path & _fic) {
 
 					 + 1000000
 					 + nbARXpaths * sizeof(DANAE_LS_PATH) + nbARXpaths * sizeof(DANAE_LS_PATHWAYS) * 30;
-	allocsize = max((size_t)dlh.nb_bkgpolys * (sizeof(u32) + 2) + 1000000, allocsize);
+	allocsize = std::max((size_t)dlh.nb_bkgpolys * (sizeof(u32) + 2) + 1000000, allocsize);
 	
 	char * dat = new char[allocsize];
 	if(!dat) {
@@ -485,7 +483,7 @@ Entity * LoadInter_Ex(const res::path & classPath, EntityInstance instance,
 	io->initangle = io->angle = angle;
 	
 	res::path tmp = io->instancePath(); // Get the directory name to check for
-	string id = io->className();
+	std::string id = io->className();
 	if(PakDirectory * dir = resources->getDirectory(tmp)) {
 		if(PakFile * file = dir->getFile(id + ".asl")) {
 			loadScript(io->over_script, file);
@@ -652,7 +650,7 @@ bool DanaeLoadLevel(const res::path & file, bool loadEntities) {
 		
 		if(loadEntities) {
 			
-			string pathstr = boost::to_lower_copy(util::loadString(dli->name));
+			std::string pathstr = boost::to_lower_copy(util::loadString(dli->name));
 			
 			size_t pos = pathstr.find("graph");
 			if(pos != std::string::npos) {

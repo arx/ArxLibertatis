@@ -24,9 +24,6 @@
 
 #include "platform/Platform.h"
 
-using std::string;
-using std::copy;
-
 namespace res {
 
 const char path::dir_or_ext_sep[] = "/.";
@@ -131,12 +128,12 @@ path & path::operator/=(const path & other) {
 	}
 }
 
-string path::basename() const {
+std::string path::basename() const {
 	if(!has_info()) {
 		return empty() ? std::string() : std::string("..");
 	}
 	size_t extpos = pathstr.find_last_of(dir_or_ext_sep);
-	if(extpos == string::npos) {
+	if(extpos == std::string::npos) {
 		return pathstr;
 	} else if(pathstr[extpos] != ext_sep) {
 		return pathstr.substr(extpos + 1);
@@ -144,19 +141,19 @@ string path::basename() const {
 		return std::string();
 	}
 	size_t dirpos = pathstr.find_last_of(dir_sep, extpos - 1);
-	if(dirpos == string::npos) {
+	if(dirpos == std::string::npos) {
 		return pathstr.substr(0, extpos);
 	} else {
 		return pathstr.substr(dirpos + 1, extpos - dirpos - 1);
 	}
 }
 
-string path::ext() const {
+std::string path::ext() const {
 	if(!has_info()) {
 		return std::string();
 	}
 	size_t extpos = pathstr.find_last_of(dir_or_ext_sep);
-	if(extpos == string::npos || pathstr[extpos] != ext_sep) {
+	if(extpos == std::string::npos || pathstr[extpos] != ext_sep) {
 		return std::string();
 	} else {
 		return pathstr.substr(extpos);
@@ -172,7 +169,7 @@ path & path::set_ext(const std::string & ext) {
 		return *this;
 	}
 	size_t extpos = pathstr.find_last_of(dir_or_ext_sep);
-	if(extpos == string::npos || pathstr[extpos] != ext_sep) {
+	if(extpos == std::string::npos || pathstr[extpos] != ext_sep) {
 		return (((ext.empty() || ext[0] != ext_sep) ? (pathstr += ext_sep) : pathstr).append(ext), *this);
 	} else {
 		if(ext.empty() || ext[0] != ext_sep) {
@@ -191,7 +188,7 @@ path & path::remove_ext() {
 		return *this;
 	}
 	size_t extpos = pathstr.find_last_of(dir_or_ext_sep);
-	if(extpos != string::npos && pathstr[extpos] == ext_sep) {
+	if(extpos != std::string::npos && pathstr[extpos] == ext_sep) {
 		pathstr.resize(extpos);
 	}
 	return *this;
@@ -205,7 +202,7 @@ path & path::set_filename(const std::string & filename) {
 		return ((empty() ? pathstr = filename : (pathstr += dir_sep).append(filename)), *this);
 	}
 	size_t dirpos = pathstr.find_last_of(dir_sep);
-	if(dirpos == string::npos) {
+	if(dirpos == std::string::npos) {
 		return (*this = filename);
 	} else {
 		pathstr.resize(dirpos + 1 + filename.size());
@@ -227,7 +224,7 @@ path & path::set_basename(const std::string & basename) {
 	size_t extpos = pathstr.find_last_of(dir_or_ext_sep);
 	
 	// handle paths without an extension.
-	if(extpos == string::npos) {
+	if(extpos == std::string::npos) {
 		return (*this = basename);
 	} else if(pathstr[extpos] != ext_sep) {
 		pathstr.resize(extpos + 1 + basename.size());
@@ -235,9 +232,9 @@ path & path::set_basename(const std::string & basename) {
 		return *this;
 	}
 	
-	size_t dirpos = (extpos == 0) ? string::npos : pathstr.find_last_of(dir_sep, extpos - 1);
+	size_t dirpos = (extpos == 0) ? std::string::npos : pathstr.find_last_of(dir_sep, extpos - 1);
 	
-	if(dirpos == string::npos) { // no parent path
+	if(dirpos == std::string::npos) { // no parent path
 		pathstr = basename + pathstr.substr(extpos);
 	} else {
 		pathstr = pathstr.substr(0, dirpos + 1) + basename + pathstr.substr(extpos);
@@ -257,7 +254,7 @@ path & path::append_basename(const std::string & basename_part) {
 	}
 	
 	size_t extpos = pathstr.find_last_of(dir_or_ext_sep);
-	if(extpos == string::npos || pathstr[extpos] != ext_sep) {
+	if(extpos == std::string::npos || pathstr[extpos] != ext_sep) {
 		return (pathstr += basename_part, *this);
 	}
 	size_t len = pathstr.length();
@@ -288,7 +285,7 @@ bool path::has_ext(const std::string & str) const {
 	}
 	
 	size_t extpos = pathstr.find_last_of(dir_or_ext_sep);
-	if(extpos == string::npos || pathstr[extpos] != ext_sep) {
+	if(extpos == std::string::npos || pathstr[extpos] != ext_sep) {
 		return false;
 	} else if(str.empty()) {
 		return true;
@@ -331,7 +328,7 @@ path path::load(const std::string & str) {
 				copy[ostart++] = '.', copy[ostart++] = '.';
 			} else {
 				size_t last = copy.find_last_of('/', ostart - 1);
-				if(last == string::npos) {
+				if(last == std::string::npos) {
 					if(ostart == 2 && copy[0] == '.' && copy[1] == '.') {
 						copy[ostart++] = '/', copy[ostart++] = '.', copy[ostart++] = '.';
 					} else {

@@ -44,10 +44,8 @@
 #include "graphics/particle/ParticleEffects.h"
 #include "graphics/effects/Trail.h"
 
-using std::string;
 
 extern float framedelay;
-
 
 enum ThrownObjectFlag {
 	ATO_EXIST      = (1<<0),
@@ -243,8 +241,8 @@ float ARX_THROWN_ComputeDamages(long thrownum, EntityHandle source, EntityHandle
 
 	char wmat[64];
 
-	string _amat = "flesh";
-	const string * amat = &_amat;
+	std::string _amat = "flesh";
+	const std::string * amat = &_amat;
 
 	strcpy(wmat, "dagger");
 
@@ -521,7 +519,7 @@ void ARX_THROWN_OBJECT_Manage(unsigned long time_offset)
 					thrownObj->flags &= ~ATO_MOVING;
 					thrownObj->velocity = 0.f;
 					
-					string bkg_material = "earth";
+					std::string bkg_material = "earth";
 
 					if(ep && ep->tex && !ep->tex->m_texName.empty())
 						bkg_material = GetMaterialString(ep->tex->m_texName);

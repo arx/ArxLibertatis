@@ -118,8 +118,6 @@ ZeniMax Media Inc., Suite 120, Rockville, Maryland 20850 USA.
 
 #include "script/ScriptEvent.h"
 
-using std::min;
-using std::vector;
 
 extern Entity * CAMERACONTROLLER;
 
@@ -1482,8 +1480,8 @@ Entity * AddFix(const res::path & classPath, EntityInstance instance, AddInterac
 	
 	ep = CheckInPoly(io->pos);
 	if(ep) {
-		io->pos.y = min(ep->v[0].p.y, ep->v[1].p.y);
-		io->lastpos.y = io->initpos.y = io->pos.y = min(io->pos.y, ep->v[2].p.y);
+		io->pos.y = std::min(ep->v[0].p.y, ep->v[1].p.y);
+		io->lastpos.y = io->initpos.y = io->pos.y = std::min(io->pos.y, ep->v[2].p.y);
 	}
 	
 	if(!io->obj && !(flags & NO_MESH)) {
@@ -1543,8 +1541,8 @@ static Entity * AddCamera(const res::path & classPath, EntityInstance instance) 
 	
 	ep = CheckInPoly(io->pos);
 	if(ep) {
-		io->pos.y = min(ep->v[0].p.y, ep->v[1].p.y);
-		io->lastpos.y = io->initpos.y = io->pos.y = min(io->pos.y, ep->v[2].p.y);
+		io->pos.y = std::min(ep->v[0].p.y, ep->v[1].p.y);
+		io->lastpos.y = io->initpos.y = io->pos.y = std::min(io->pos.y, ep->v[2].p.y);
 	}
 	
 	io->lastpos.y = io->initpos.y = io->pos.y += player.baseHeight();
@@ -1595,8 +1593,8 @@ static Entity * AddMarker(const res::path & classPath, EntityInstance instance) 
 	
 	ep = CheckInPoly(io->pos);
 	if(ep) {
-		io->pos.y = min(ep->v[0].p.y, ep->v[1].p.y);
-		io->lastpos.y = io->initpos.y = io->pos.y = min(io->pos.y, ep->v[2].p.y);
+		io->pos.y = std::min(ep->v[0].p.y, ep->v[1].p.y);
+		io->lastpos.y = io->initpos.y = io->pos.y = std::min(io->pos.y, ep->v[2].p.y);
 	}
 	
 	io->lastpos.y = io->initpos.y = io->pos.y += player.baseHeight();
@@ -1727,8 +1725,8 @@ Entity * AddNPC(const res::path & classPath, EntityInstance instance, AddInterac
 	
 	ep = CheckInPoly(io->pos);
 	if(ep) {
-		io->pos.y = min(ep->v[0].p.y, ep->v[1].p.y);
-		io->lastpos.y = io->initpos.y = io->pos.y = min(io->pos.y, ep->v[2].p.y);
+		io->pos.y = std::min(ep->v[0].p.y, ep->v[1].p.y);
+		io->lastpos.y = io->initpos.y = io->pos.y = std::min(io->pos.y, ep->v[2].p.y);
 	}
 	
 	if(!io->obj && !(flags & NO_MESH)) {
@@ -1830,8 +1828,8 @@ Entity * AddItem(const res::path & classPath_, EntityInstance instance, AddInter
 	ep = CheckInPoly(io->pos);
 
 	if(ep) {
-		io->pos.y = min(ep->v[0].p.y, ep->v[1].p.y);
-		io->lastpos.y = io->initpos.y = io->pos.y = min(io->pos.y, ep->v[2].p.y);
+		io->pos.y = std::min(ep->v[0].p.y, ep->v[1].p.y);
+		io->lastpos.y = io->initpos.y = io->pos.y = std::min(io->pos.y, ep->v[2].p.y);
 	}
 
 	if(io->ioflags & IO_GOLD) {
@@ -2114,7 +2112,7 @@ static bool IsCollidingInter(Entity * io, const Vec3f & pos) {
 
 	if(closerThan(pos, io->pos, 190.f)) {
 		
-		vector<EERIE_VERTEX> & vlist = io->obj->vertexlist3;
+		std::vector<EERIE_VERTEX> & vlist = io->obj->vertexlist3;
 
 		if(io->obj->grouplist.size() > 4) {
 			for(size_t i = 0; i < io->obj->grouplist.size(); i++) {
@@ -2196,7 +2194,7 @@ bool ARX_INTERACTIVE_CheckFULLCollision(PHYSICS_BOX_DATA * pbox, EntityHandle so
 			else
 				step = 6;
 
-			vector<EERIE_VERTEX> & vlist = io->obj->vertexlist3;
+			std::vector<EERIE_VERTEX> & vlist = io->obj->vertexlist3;
 
 			if(io->gameFlags & GFLAG_PLATFORM) {
 				for(long kk = 0; kk < pbox->nb_physvert; kk++) {

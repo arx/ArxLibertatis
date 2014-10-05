@@ -92,7 +92,6 @@ ZeniMax Media Inc., Suite 120, Rockville, Maryland 20850 USA.
 
 #include "util/String.h"
 
-using std::string;
 
 extern bool GLOBAL_MAGIC_MODE;
 float FORCE_TIME_RESTORE = 0;
@@ -139,7 +138,7 @@ static Entity * convertToValidIO(const std::string & idString) {
 	}
 	
 	arx_assert(
-		idString.find_first_not_of("abcdefghijklmnopqrstuvwxyz_0123456789") == string::npos,
+		idString.find_first_not_of("abcdefghijklmnopqrstuvwxyz_0123456789") == std::string::npos,
 		"bad interactive object id: \"%s\"", idString.c_str()
 	);
 	
@@ -153,11 +152,11 @@ static Entity * convertToValidIO(const std::string & idString) {
 	LogDebug("Call to ConvertToValidIO(" << idString << ")");
 	
 	size_t pos = idString.find_last_of('_');
-	if(pos == string::npos || pos == idString.length() - 1) {
+	if(pos == std::string::npos || pos == idString.length() - 1) {
 		return NULL;
 	}
 	pos = idString.find_first_not_of('0', pos + 1);
-	if(pos == string::npos) {
+	if(pos == std::string::npos) {
 		return NULL;
 	}
 	
@@ -281,7 +280,7 @@ void currentSavedGameStoreEntityDeletion(const std::string & idString) {
 	
 }
 
-void currentSavedGameRemoveEntity(const string & idString) {
+void currentSavedGameRemoveEntity(const std::string & idString) {
 	if(g_currentSavedGame) {
 		g_currentSavedGame->remove(idString);
 	}
@@ -289,7 +288,7 @@ void currentSavedGameRemoveEntity(const string & idString) {
 
 extern long JUST_RELOADED;
 
-void ARX_CHANGELEVEL_Change(const string & level, const string & target, long angle) {
+void ARX_CHANGELEVEL_Change(const std::string & level, const std::string & target, long angle) {
 	
 	LogDebug("ARX_CHANGELEVEL_Change " << level << " " << target << " " << angle);
 	
@@ -894,7 +893,7 @@ static long ARX_CHANGELEVEL_Push_IO(const Entity * io, long level) {
 	arx_assert(io->show != SHOW_FLAG_KILLED);
 	
 	// Sets Savefile Name
-	string savefile = io->idString();
+	std::string savefile = io->idString();
 	
 	// Define Type & Affiliated Structure Size
 	long type;
@@ -1585,7 +1584,7 @@ long ARX_CHANGELEVEL_Pop_Level(ARX_CHANGELEVEL_INDEX * asi, long num, bool first
 	
 	char levelId[256];
 	GetLevelNameByNum(num, levelId);
-	string levelFile = string("graph/levels/level") + levelId + "/level" + levelId + ".dlf";
+	std::string levelFile = std::string("graph/levels/level") + levelId + "/level" + levelId + ".dlf";
 	
 	LOAD_N_DONT_ERASE = 1;
 	
@@ -1634,7 +1633,7 @@ long ARX_CHANGELEVEL_Pop_Level(ARX_CHANGELEVEL_INDEX * asi, long num, bool first
 
 static long ARX_CHANGELEVEL_Pop_Player() {
 	
-	const string & loadfile = "player";
+	const std::string & loadfile = "player";
 	
 	size_t size;
 	char * dat = g_currentSavedGame->load(loadfile, size);
@@ -1881,7 +1880,7 @@ static bool loadScriptVariables(SCRIPT_VARIABLES& var, const char * dat, size_t 
 		
 		var[i].name = boost::to_lower_copy(util::loadString(avs->name));
 			
-		if(var[i].name.find_first_not_of("abcdefghijklmnopqrstuvwxyz_0123456789", 1) != string::npos) {
+		if(var[i].name.find_first_not_of("abcdefghijklmnopqrstuvwxyz_0123456789", 1) != std::string::npos) {
 			LogWarning << "Unexpected variable name \"" << var[i].name.substr(1) << '"';
 		}
 		
@@ -2799,7 +2798,7 @@ static bool ARX_CHANGELEVEL_PopLevel(long instance, bool reloadflag) {
 	return true;
 }
 
-bool ARX_CHANGELEVEL_Save(const string & name, const fs::path & savefile) {
+bool ARX_CHANGELEVEL_Save(const std::string & name, const fs::path & savefile) {
 	
 	arx_assert(!savefile.empty() && fs::exists(savefile.parent()));
 	
@@ -2938,7 +2937,7 @@ long ARX_CHANGELEVEL_Load(const fs::path & savefile) {
 	return 1;
 }
 
-long ARX_CHANGELEVEL_GetInfo(const fs::path & savefile, string & name, float & version,
+long ARX_CHANGELEVEL_GetInfo(const fs::path & savefile, std::string & name, float & version,
                              long & level, unsigned long & time) {
 	
 	ARX_CHANGELEVEL_PLAYER_LEVEL_DATA pld;

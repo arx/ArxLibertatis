@@ -21,8 +21,6 @@
 
 #include "io/fs/FilePath.h"
 
-using std::string;
-
 namespace fs {
 
 ifstream::ifstream(const path & p, openmode mode) : std::ifstream(p.string().c_str(), mode) { }
@@ -43,7 +41,7 @@ void fstream::open(const path & p, openmode mode) {
 	std::fstream::open(p.string().c_str(), mode);
 }
 
-std::istream & read(std::istream & ifs, string & buf) {
+std::istream & read(std::istream & ifs, std::string & buf) {
 	while(ifs.good()) {
 		char c = static_cast<char>(ifs.get());
 		if(c == '\0') {

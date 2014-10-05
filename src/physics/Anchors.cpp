@@ -55,10 +55,6 @@ ZeniMax Media Inc., Suite 120, Rockville, Maryland 20850 USA.
 #include "io/log/Logger.h"
 #include "physics/Collisions.h"
 
-using std::min;
-using std::max;
-using std::sprintf;
-
 extern float MAX_ALLOWED_PER_SECOND;
 extern bool DIRECT_PATH;
 

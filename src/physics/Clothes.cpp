@@ -53,8 +53,6 @@ ZeniMax Media Inc., Suite 120, Rockville, Maryland 20850 USA.
 #include "graphics/data/MeshManipulation.h"
 #include "graphics/Math.h"
 
-using std::vector;
-
 #define MOLLESS_USEGRAVITY 1
 #define MOLLESS_USEDAMPING 1
 #define MOLLESS_DEFAULT_DAMPING		0.1f
@@ -86,7 +84,7 @@ void AddSpring(EERIE_3DOBJ * obj, short vert1, short vert2, float constant, floa
 		return;
 	}
 	
-	for(vector<EERIE_SPRINGS>::const_iterator i = obj->cdata->springs.begin(); i < obj->cdata->springs.end(); ++i) {
+	for(std::vector<EERIE_SPRINGS>::const_iterator i = obj->cdata->springs.begin(); i < obj->cdata->springs.end(); ++i) {
 		if((i->startidx == vert1 && i->endidx == vert2) || (i->startidx == vert2 && i->endidx == vert1)) {
 			return;
 		}
