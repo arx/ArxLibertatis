@@ -60,7 +60,6 @@ ZeniMax Media Inc., Suite 120, Rockville, Maryland 20850 USA.
 #include "script/ScriptEvent.h"
 #include "script/ScriptUtils.h"
 
-using std::string;
 
 extern float InventoryDir;
 
@@ -150,7 +149,7 @@ public:
 
 class RuneCommand : public Command {
 	
-	typedef std::map<string, RuneFlag> Runes;
+	typedef std::map<std::string, RuneFlag> Runes;
 	Runes runes;
 	
 public:
@@ -185,7 +184,7 @@ public:
 			add = (flg & flag('r')) ? -1 : ((flg & flag('a')) ? 1 : 0);
 		}
 		
-		string name = context.getWord();
+		std::string name = context.getWord();
 		
 		DebugScript(' ' << options << ' ' << name);
 		
@@ -231,7 +230,7 @@ public:
 	
 	Result execute(Context & context) {
 		
-		string name = loadUnlocalized(context.getWord());
+		std::string name = loadUnlocalized(context.getWord());
 		
 		DebugScript(' ' << name);
 		
@@ -250,7 +249,7 @@ public:
 	
 	Result execute(Context & context) {
 		
-		string command = context.getWord();
+		std::string command = context.getWord();
 		
 		Entity * io = context.getEntity();
 		if(!io->tweakerinfo) {
@@ -392,7 +391,7 @@ public:
 	
 	Result execute(Context & context) {
 		
-		string type = context.getWord();
+		std::string type = context.getWord();
 		
 		Entity * io = context.getEntity();
 		
@@ -502,7 +501,7 @@ public:
 	
 	Result execute(Context & context) {
 		
-		string key = context.getStringVar(context.getWord());
+		std::string key = context.getStringVar(context.getWord());
 		
 		DebugScript(' ' << key);
 		
@@ -521,7 +520,7 @@ public:
 	
 	Result execute(Context & context) {
 		
-		string target = context.getWord();
+		std::string target = context.getWord();
 		
 		DebugScript(' ' << target);
 		
@@ -562,7 +561,7 @@ public:
 		
 		long level = glm::clamp((long)context.getFloat(), 1l, 10l);
 		
-		string spellname = context.getWord();
+		std::string spellname = context.getWord();
 		
 		DebugScript(' ' << options << ' ' << duration << ' ' << level << ' ' << spellname);
 		

@@ -53,8 +53,6 @@ ZeniMax Media Inc., Suite 120, Rockville, Maryland 20850 USA.
 #include "script/ScriptEvent.h"
 #include "script/ScriptUtils.h"
 
-using std::string;
-using std::max;
 
 namespace script {
 
@@ -68,7 +66,7 @@ public:
 	
 	Result execute(Context & context) {
 		
-		string target = context.getWord();
+		std::string target = context.getWord();
 		Entity * t = entities.getById(target, context.getEntity());
 		
 		float val = glm::clamp(context.getFloat(), 0.f, 100.f);
@@ -118,7 +116,7 @@ public:
 	
 	Result execute(Context & context) {
 		
-		string stealvalue = context.getWord();
+		std::string stealvalue = context.getWord();
 		
 		DebugScript(' ' << stealvalue);
 		
@@ -145,7 +143,7 @@ public:
 	
 	Result execute(Context & context) {
 		
-		string lightvalue = context.getWord();
+		std::string lightvalue = context.getWord();
 		
 		DebugScript(' ' << lightvalue);
 		
@@ -192,7 +190,7 @@ public:
 			set = !(flg & flag('r'));
 		}
 		
-		string type = context.getWord();
+		std::string type = context.getWord();
 		
 		DebugScript(' ' << type << ' ' << set);
 		
@@ -224,8 +222,8 @@ public:
 			}
 		}
 		
-		string param2 = context.getWord();
-		string val = context.getWord();
+		std::string param2 = context.getWord();
+		std::string val = context.getWord();
 		
 		EquipmentModifierFlags flag = 0;
 		if(!val.empty() && val[val.length() - 1] == '%') {
@@ -283,7 +281,7 @@ public:
 	
 	Result execute(Context & context) {
 		
-		short count = max((short)context.getFloat(), (short)1);
+		short count = std::max((short)context.getFloat(), (short)1);
 		
 		DebugScript(' ' << count);
 		
@@ -321,7 +319,7 @@ public:
 	
 	Result execute(Context & context) {
 		
-		long price = max((long)context.getFloat(), 0l);
+		long price = std::max((long)context.getFloat(), 0l);
 		
 		DebugScript(' ' << price);
 		

@@ -57,7 +57,6 @@ ZeniMax Media Inc., Suite 120, Rockville, Maryland 20850 USA.
 #include "scene/GameSound.h"
 #include "script/ScriptUtils.h"
 
-using std::string;
 
 extern bool ARX_CONVERSATION;
 extern Vec3f LASTCAMPOS;
@@ -75,7 +74,7 @@ public:
 	
 	Result execute(Context & context) {
 		
-		string nbpeople = context.getWord();
+		std::string nbpeople = context.getWord();
 		long nb_people = 0;
 		if(!nbpeople.empty() && nbpeople[0] == '-') {
 			std::istringstream iss(nbpeople.substr(1));
@@ -102,7 +101,7 @@ public:
 		
 		for(long j = 0; j < nb_people; j++) {
 			
-			string target = context.getWord();
+			std::string target = context.getWord();
 			Entity * t = entities.getById(target, context.getEntity());
 			
 #ifdef ARX_DEBUG
@@ -226,7 +225,7 @@ public:
 			}
 		}
 		
-		string text = context.getStringVar(context.getWord());
+		std::string text = context.getStringVar(context.getWord());
 		
 		DebugScript(' ' << options << " \"" << text << '"');
 		
@@ -289,7 +288,7 @@ class SpeakCommand : public Command {
 	
 	static void parseParams(CinematicSpeech & acs, Context & context, bool player) {
 		
-		string target = context.getWord();
+		std::string target = context.getWord();
 		Entity * t = entities.getById(target, context.getEntity());
 		
 		acs.ionum = (t == NULL) ? EntityHandle::Invalid : t->index();
@@ -335,7 +334,7 @@ public:
 			
 			if(flg & flag('c')) {
 				
-				string command = context.getWord();
+				std::string command = context.getWord();
 				
 				if(command == "keep") {
 					acs.type = ARX_CINE_SPEECH_KEEP;
@@ -380,7 +379,7 @@ public:
 			}
 		}
 		
-		string text = context.getWord();
+		std::string text = context.getWord();
 		
 		if(text == "killall") {
 			
@@ -392,7 +391,7 @@ public:
 			return Success;
 		}
 		
-		string data = loadUnlocalized(context.getStringVar(text));
+		std::string data = loadUnlocalized(context.getStringVar(text));
 		
 		DebugScript(' ' << options << ' ' << data); // TODO debug more
 		

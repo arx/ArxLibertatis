@@ -56,7 +56,6 @@ ZeniMax Media Inc., Suite 120, Rockville, Maryland 20850 USA.
 #include "script/ScriptUtils.h"
 #include "cinematic/CinematicController.h"
 
-using std::string;
 
 extern bool GLOBAL_MAGIC_MODE;
 
@@ -89,11 +88,11 @@ public:
 	
 	Result execute(Context & context) {
 		
-		string target = context.getWord();
+		std::string target = context.getWord();
 		
 		Entity * t = entities.getById(target, context.getEntity());
 		
-		string power = context.getWord();
+		std::string power = context.getWord();
 		
 		float val = 0.f;
 		float radius = 0.f;
@@ -186,15 +185,15 @@ public:
 	
 	Result execute(Context & context) {
 		
-		string sourceio = context.getWord();
+		std::string sourceio = context.getWord();
 		Entity * t = entities.getById(sourceio, context.getEntity());
 		
-		string source = context.getWord(); // source action_point
+		std::string source = context.getWord(); // source action_point
 		
-		string targetio = context.getWord();
+		std::string targetio = context.getWord();
 		Entity * t2 = entities.getById(targetio, context.getEntity());
 		
-		string target = context.getWord();
+		std::string target = context.getWord();
 		
 		DebugScript(' ' << sourceio << ' ' << source << ' ' << targetio << ' ' << target);
 		
@@ -223,7 +222,7 @@ public:
 			}
 		}
 		
-		string name = context.getWord();
+		std::string name = context.getWord();
 		
 		DebugScript(' ' << options << " \"" << name << '"');
 		
@@ -260,7 +259,7 @@ public:
 			rem = test_flag(flg, 'r');
 		}
 		
-		string group = context.getStringVar(context.getWord());
+		std::string group = context.getStringVar(context.getWord());
 		
 		DebugScript(' ' << options << ' ' << group);
 		
@@ -297,8 +296,8 @@ public:
 	
 	Result execute(Context & context) {
 		
-		string options = context.getFlags();
-		string command = context.getWord();
+		std::string options = context.getFlags();
+		std::string command = context.getWord();
 		
 		if(command == "stack") {
 			DebugScript(" stack");
@@ -370,8 +369,8 @@ public:
 	
 	Result execute(Context & context) {
 		
-		string source = context.getWord(); // source IO
-		string target = context.getWord(); // target IO
+		std::string source = context.getWord(); // source IO
+		std::string target = context.getWord(); // target IO
 		
 		DebugScript(' ' << source << ' ' << target);
 		

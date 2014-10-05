@@ -50,8 +50,6 @@ ZeniMax Media Inc., Suite 120, Rockville, Maryland 20850 USA.
 #include "script/ScriptEvent.h"
 #include "script/ScriptUtils.h"
 
-using std::string;
-using std::memcpy;
 
 namespace script {
 
@@ -65,8 +63,8 @@ public:
 	
 	Result execute(Context & context) {
 		
-		string var = context.getWord();
-		string val = context.getWord();
+		std::string var = context.getWord();
+		std::string val = context.getWord();
 		
 		DebugScript(' ' << var << " \"" << val << '"');
 		
@@ -80,7 +78,7 @@ public:
 		switch(var[0]) {
 			
 			case '$': { // global text
-				string v = context.getStringVar(val);
+				std::string v = context.getStringVar(val);
 				SCRIPT_VAR * sv = SETVarValueText(svar, var, v);
 				if(!sv) {
 					ScriptWarning << "unable to set var " << var << " to \"" << v << '"';
@@ -91,7 +89,7 @@ public:
 			}
 			
 			case '\xA3': { // local text
-				string v = context.getStringVar(val);
+				std::string v = context.getStringVar(val);
 				SCRIPT_VAR * sv = SETVarValueText(es.lvar, var, v);
 				if(!sv) {
 					ScriptWarning << "unable to set var " << var << " to \"" << v << '"';
@@ -185,11 +183,11 @@ private:
 	
 public:
 	
-	ArithmeticCommand(const string & name, Operator _op) : Command(name), op(_op) { }
+	ArithmeticCommand(const std::string & name, Operator _op) : Command(name), op(_op) { }
 	
 	Result execute(Context & context) {
 		
-		string var = context.getWord();
+		std::string var = context.getWord();
 		float val = context.getFloat();
 		
 		DebugScript(' ' << var << ' ' << val);
@@ -272,7 +270,7 @@ class UnsetCommand : public Command {
 	}
 	
 	// TODO move to variable context
-	static bool UNSETVar(SCRIPT_VARIABLES& svf, const string & name) {
+	static bool UNSETVar(SCRIPT_VARIABLES& svf, const std::string & name) {
 		
 		SCRIPT_VARIABLES::iterator it;
 		for(it = svf.begin(); it != svf.end(); ++it) {
@@ -295,7 +293,7 @@ public:
 	
 	Result execute(Context & context) {
 		
-		string var = context.getWord();
+		std::string var = context.getWord();
 		
 		DebugScript(' ' << var);
 		
@@ -321,11 +319,11 @@ class IncrementCommand : public Command {
 	
 public:
 	
-	IncrementCommand(const string & name, float _diff) : Command(name), diff(_diff) { }
+	IncrementCommand(const std::string & name, float _diff) : Command(name), diff(_diff) { }
 	
 	Result execute(Context & context) {
 		
-		string var = context.getWord();
+		std::string var = context.getWord();
 		
 		DebugScript(' ' << var);
 		

@@ -57,7 +57,6 @@ ZeniMax Media Inc., Suite 120, Rockville, Maryland 20850 USA.
 #include "scene/Interactive.h"
 #include "script/ScriptUtils.h"
 
-using std::string;
 
 extern Entity * CAMERACONTROLLER;
 
@@ -92,7 +91,7 @@ public:
 	
 	Result execute(Context & context) {
 		
-		string target = context.getWord();
+		std::string target = context.getWord();
 		
 		DebugScript(' ' << target);
 		
@@ -208,7 +207,7 @@ public:
 	
 	Result execute(Context & context) {
 		
-		string inout = context.getWord();
+		std::string inout = context.getWord();
 		float duration = context.getFloat();
 		
 		if(inout == "out") {

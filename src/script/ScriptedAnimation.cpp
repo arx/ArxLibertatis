@@ -54,17 +54,15 @@ ZeniMax Media Inc., Suite 120, Rockville, Maryland 20850 USA.
 #include "scene/Interactive.h"
 #include "script/ScriptUtils.h"
 
-using std::string;
-using std::strcpy;
 
 namespace script {
 
 namespace {
 
-typedef std::map<string, AnimationNumber> Animations;
+typedef std::map<std::string, AnimationNumber> Animations;
 Animations animations;
 
-AnimationNumber getAnimationNumber(const string & name) {
+AnimationNumber getAnimationNumber(const std::string & name) {
 	
 	Animations::const_iterator it = animations.find(name);
 	
@@ -123,7 +121,7 @@ public:
 	
 	Result execute(Context & context) {
 		
-		string anim = context.getWord();
+		std::string anim = context.getWord();
 		
 		DebugScript(' ' << anim);
 		
@@ -220,7 +218,7 @@ public:
 			}
 		}
 		
-		string anim = context.getWord();
+		std::string anim = context.getWord();
 		
 		DebugScript(' ' << options << ' ' << anim);
 		
@@ -261,7 +259,7 @@ public:
 		
 		if(execute) {
 			
-			string timername = "anim_" + ARX_SCRIPT_Timer_GetDefaultName();
+			std::string timername = "anim_" + ARX_SCRIPT_Timer_GetDefaultName();
 			long num2 = ARX_SCRIPT_Timer_GetFree();
 			if(num2 < 0) {
 				ScriptError << "no free timer";
@@ -319,7 +317,7 @@ public:
 			}
 		}
 		
-		string anim = context.getWord();
+		std::string anim = context.getWord();
 		
 		res::path file = res::path::load(context.getWord());
 		
@@ -394,7 +392,7 @@ public:
 	
 	Result execute(Context & context) {
 		
-		string type = context.getWord();
+		std::string type = context.getWord();
 		
 		DebugScript(' ' << type);
 		
@@ -434,7 +432,7 @@ public:
 	
 	Result execute(Context & context) {
 		
-		string zone = context.getWord();
+		std::string zone = context.getWord();
 		
 		DebugScript(' ' << zone);
 		
@@ -466,7 +464,7 @@ public:
 			followdir = test_flag(flg, 'f');
 		}
 		
-		string name = context.getWord();
+		std::string name = context.getWord();
 		
 		DebugScript(' ' << options << ' ' << name);
 		
@@ -513,7 +511,7 @@ public:
 	
 	Result execute(Context & context) {
 		
-		string name = context.getWord();
+		std::string name = context.getWord();
 		
 		DebugScript(' ' << name);
 		

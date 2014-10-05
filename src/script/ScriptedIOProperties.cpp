@@ -53,8 +53,6 @@ ZeniMax Media Inc., Suite 120, Rockville, Maryland 20850 USA.
 #include "scene/Interactive.h"
 #include "script/ScriptUtils.h"
 
-using std::string;
-using std::strcpy;
 
 namespace script {
 
@@ -101,7 +99,7 @@ class GameFlagCommand : public Command {
 	
 public:
 	
-	GameFlagCommand(string name, GameFlag _flag, bool _inv = false)
+	GameFlagCommand(std::string name, GameFlag _flag, bool _inv = false)
 		: Command(name, AnyEntity), flag(_flag), inv(_inv) { }
 	
 	Result execute(Context & context) {
@@ -130,7 +128,7 @@ class IOFlagCommand : public Command {
 	
 public:
 	
-	IOFlagCommand(string name, EntityFlag _flag, bool _inv = false)
+	IOFlagCommand(std::string name, EntityFlag _flag, bool _inv = false)
 		: Command(name, AnyEntity), flag(_flag), inv(_inv) { }
 	
 	Result execute(Context & context) {
@@ -160,7 +158,7 @@ public:
 	
 	Result execute(Context & context) {
 		
-		string trapvalue = context.getWord();
+		std::string trapvalue = context.getWord();
 		
 		DebugScript(' ' << trapvalue);
 		
@@ -183,7 +181,7 @@ public:
 	
 	Result execute(Context & context) {
 		
-		string secretvalue = context.getWord();
+		std::string secretvalue = context.getWord();
 		
 		DebugScript(' ' << secretvalue);
 		
@@ -226,7 +224,7 @@ public:
 	
 	Result execute(Context & context) {
 		
-		string name = context.getWord();
+		std::string name = context.getWord();
 		
 		DebugScript(' ' << name);
 		
@@ -268,7 +266,7 @@ public:
 	
 	Result execute(Context & context) {
 		
-		string interactivity = context.getWord();
+		std::string interactivity = context.getWord();
 		
 		Entity * io = context.getEntity();
 		if(interactivity == "none") {
@@ -344,7 +342,7 @@ class SetCollisionCommand : public Command {
 	
 public:
 	
-	SetCollisionCommand(const string & command, IOCollisionFlags::Enum _flag) : Command(command, AnyEntity), flag(_flag) { }
+	SetCollisionCommand(const std::string & command, IOCollisionFlags::Enum _flag) : Command(command, AnyEntity), flag(_flag) { }
 	
 	Result execute(Context & context) {
 		
@@ -506,7 +504,7 @@ public:
 		
 		Entity * io = context.getEntity();
 		
-		string type = context.getWord();
+		std::string type = context.getWord();
 		
 		if(type == "skin") {
 			

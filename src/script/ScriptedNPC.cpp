@@ -52,7 +52,6 @@ ZeniMax Media Inc., Suite 120, Rockville, Maryland 20850 USA.
 #include "script/ScriptEvent.h"
 #include "script/ScriptUtils.h"
 
-using std::string;
 
 namespace script {
 
@@ -81,7 +80,7 @@ public:
 			}
 		}
 		
-		string command = context.getWord();
+		std::string command = context.getWord();
 		
 		if(options.empty()) {
 			if(command == "stack") {
@@ -179,7 +178,7 @@ public:
 			
 			if(flg & flag('k')) {
 				
-				string spellname = context.getWord();
+				std::string spellname = context.getWord();
 				SpellType spellid = GetSpellId(spellname);
 				
 				DebugScript(' ' << options << ' ' << spellname);
@@ -222,10 +221,10 @@ public:
 			duration = 1000 + level * 2000;
 		}
 		
-		string spellname = context.getWord();
+		std::string spellname = context.getWord();
 		SpellType spellid = GetSpellId(spellname);
 		
-		string target = context.getWord();
+		std::string target = context.getWord();
 		Entity * t = entities.getById(target, context.getEntity());
 		if(!t) {
 			// Some scripts have a bogus (or no) target for spellcast commands.
@@ -258,7 +257,7 @@ public:
 	
 	Result execute(Context & context) {
 		
-		string detectvalue = context.getWord();
+		std::string detectvalue = context.getWord();
 		
 		DebugScript(' ' << detectvalue);
 		
@@ -340,7 +339,7 @@ public:
 	
 	Result execute(Context & context) {
 		
-		string stat = context.getWord();
+		std::string stat = context.getWord();
 		float value = context.getFloat();
 		
 		DebugScript(' ' << stat << ' ' << value);
@@ -385,7 +384,7 @@ public:
 	
 	Result execute(Context & context) {
 		
-		string mode = context.getWord();
+		std::string mode = context.getWord();
 		
 		DebugScript(' ' << mode);
 		
@@ -464,7 +463,7 @@ public:
 			}
 		}
 		
-		string target = context.getWord();
+		std::string target = context.getWord();
 		if(target == "object") {
 			target = context.getWord();
 		}
@@ -510,7 +509,7 @@ public:
 	
 	Result execute(Context & context) {
 		
-		string target = context.getWord();
+		std::string target = context.getWord();
 		
 		DebugScript(' ' << target);
 		
@@ -535,7 +534,7 @@ public:
 	
 	Result execute(Context & context) {
 		
-		string target = context.getWord();
+		std::string target = context.getWord();
 		
 		DebugScript(' ' << target);
 		

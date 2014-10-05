@@ -54,7 +54,6 @@ ZeniMax Media Inc., Suite 120, Rockville, Maryland 20850 USA.
 #include "script/ScriptEvent.h"
 #include "script/ScriptUtils.h"
 
-using std::string;
 
 extern SCRIPT_EVENT AS_EVENT[];
 
@@ -85,11 +84,11 @@ class GotoCommand : public Command {
 	
 public:
 	
-	GotoCommand(string command, bool _sub = false) : Command(command), sub(_sub) { }
+	GotoCommand(std::string command, bool _sub = false) : Command(command), sub(_sub) { }
 	
 	Result execute(Context & context) {
 		
-		string label = context.getWord();
+		std::string label = context.getWord();
 		
 		DebugScript(' ' << label);
 		
@@ -116,7 +115,7 @@ class AbortCommand : public Command {
 	
 public:
 	
-	AbortCommand(string command, Result _result) : Command(command), result(_result) { }
+	AbortCommand(std::string command, Result _result) : Command(command), result(_result) { }
 	
 	Result execute(Context & context) {
 		
@@ -175,11 +174,11 @@ class SetMainEventCommand : public Command {
 	
 public:
 	
-	explicit SetMainEventCommand(const string & command) : Command(command, AnyEntity) { }
+	explicit SetMainEventCommand(const std::string & command) : Command(command, AnyEntity) { }
 	
 	Result execute(Context & context) {
 		
-		string event = context.getWord();
+		std::string event = context.getWord();
 		
 		DebugScript(' ' << event);
 		
@@ -196,11 +195,11 @@ class StartStopTimerCommand : public Command {
 	
 public:
 	
-	StartStopTimerCommand(const string & command, bool _start) : Command(command), start(_start) { }
+	StartStopTimerCommand(const std::string & command, bool _start) : Command(command), start(_start) { }
 	
 	Result execute(Context & context) {
 		
-		string timer = context.getWord();
+		std::string timer = context.getWord();
 		
 		DebugScript(' ' << timer);
 		
@@ -264,14 +263,14 @@ public:
 			sendto = SEND_NPC;
 		}
 		
-		string groupname;
+		std::string groupname;
 		if(group) {
 			groupname = context.getStringVar(context.getWord());
 		}
 		
-		string event = context.getWord();
+		std::string event = context.getWord();
 		
-		string zonename;
+		std::string zonename;
 		if(zone) {
 			zonename = context.getStringVar(context.getWord());
 		}
@@ -281,7 +280,7 @@ public:
 			rad = context.getFloat();
 		}
 		
-		string target;
+		std::string target;
 		if(!group && !zone && !radius) {
 			target = context.getStringVar(context.getWord());
 			
@@ -294,7 +293,7 @@ public:
 			}
 		}
 		
-		string params = context.getWord();
+		std::string params = context.getWord();
 		
 		if(radius) {
 			DebugScript(' ' << event << (params.empty() ? "" : " \"" + params + '"') << " to " << (group ? "group " + groupname : "everyone") << " in radius " << rad);
@@ -412,7 +411,7 @@ public:
 
 class SetEventCommand : public Command {
 	
-	typedef std::map<string, DisabledEvent> Events;
+	typedef std::map<std::string, DisabledEvent> Events;
 	Events events;
 	
 public:
@@ -432,7 +431,7 @@ public:
 	
 	Result execute(Context & context) {
 		
-		string name = context.getWord();
+		std::string name = context.getWord();
 		bool enable = context.getBool();
 		
 		DebugScript(' ' << name << ' ' << enable);
@@ -457,7 +456,7 @@ public:
 class IfCommand : public Command {
 	
 	// TODO(script) move to context?
-	static ValueType getVar(const Context & context, const string & var, string & s, float & f, ValueType def) {
+	static ValueType getVar(const Context & context, const std::string & var, std::string & s, float & f, ValueType def) {
 		
 		char c = (var.empty() ? '\0' : var[0]);
 		
@@ -534,12 +533,12 @@ class IfCommand : public Command {
 	
 	class Operator {
 		
-		string name;
+		std::string name;
 		ValueType type;
 		
 	public:
 		
-		Operator(const string & _name, ValueType _type) : name(_name), type(_type) { }
+		Operator(const std::string & _name, ValueType _type) : name(_name), type(_type) { }
 		
 		virtual ~Operator() { }
 		
@@ -549,19 +548,19 @@ class IfCommand : public Command {
 			return true;
 		}
 		
-		virtual bool text(const Context & context, const string & left, const string & right) {
+		virtual bool text(const Context & context, const std::string & left, const std::string & right) {
 			ARX_UNUSED(left), ARX_UNUSED(right);
 			ScriptWarning << "operator " << name << " is not aplicable to text";
 			return false;
 		}
 		
-		inline string getName() { return "if"; }
-		inline const string & getOperator() { return name; }
+		inline std::string getName() { return "if"; }
+		inline const std::string & getOperator() { return name; }
 		inline ValueType getType() { return type; }
 		
 	};
 	
-	typedef std::map<string, Operator *> Operators;
+	typedef std::map<std::string, Operator *> Operators;
 	Operators operators;
 	
 	void addOperator(Operator * op) {
@@ -583,12 +582,12 @@ class IfCommand : public Command {
 		
 		IsElementOperator() : Operator("iselement", TYPE_TEXT) { }
 		
-		bool text(const Context & context, const string & seek, const string & text) {
+		bool text(const Context & context, const std::string & seek, const std::string & text) {
 			ARX_UNUSED(context);
 			
 			for(size_t pos = 0, next; next = text.find(' ', pos), true ; pos = next + 1) {
 				
-				if(next == string::npos) {
+				if(next == std::string::npos) {
 					return (text.compare(pos, text.length() - pos, seek) == 0);
 				}
 				
@@ -609,9 +608,9 @@ class IfCommand : public Command {
 		
 		IsClassOperator() : Operator("isclass", TYPE_TEXT) { }
 		
-		bool text(const Context & context, const string & left, const string & right) {
+		bool text(const Context & context, const std::string & left, const std::string & right) {
 			ARX_UNUSED(context);
-			return (left.find(right) != string::npos || right.find(left) != string::npos);
+			return (left.find(right) != std::string::npos || right.find(left) != std::string::npos);
 		}
 		
 	};
@@ -622,7 +621,7 @@ class IfCommand : public Command {
 		
 		IsGroupOperator() : Operator("isgroup", TYPE_TEXT) { }
 		
-		bool text(const Context & context, const string & obj, const string & group) {
+		bool text(const Context & context, const std::string & obj, const std::string & group) {
 			
 			Entity * t = entities.getById(obj, context.getEntity());
 			
@@ -637,7 +636,7 @@ class IfCommand : public Command {
 		
 		NotIsGroupOperator() : Operator("!isgroup", TYPE_TEXT) { }
 		
-		bool text(const Context & context, const string & obj, const string & group) {
+		bool text(const Context & context, const std::string & obj, const std::string & group) {
 			
 			Entity * t = entities.getById(obj, context.getEntity());
 			
@@ -652,7 +651,7 @@ class IfCommand : public Command {
 		
 		IsTypeOperator() : Operator("istype", TYPE_TEXT) { }
 		
-		bool text(const Context & context, const string & obj, const string & type) {
+		bool text(const Context & context, const std::string & obj, const std::string & type) {
 			
 			Entity * t = entities.getById(obj, context.getEntity());
 			
@@ -673,8 +672,8 @@ class IfCommand : public Command {
 		
 		IsInOperator() : Operator("isin", TYPE_TEXT) { }
 		
-		bool text(const Context & context, const string & needle, const string & haystack) {
-			return ARX_UNUSED(context), (haystack.find(needle) != string::npos);
+		bool text(const Context & context, const std::string & needle, const std::string & haystack) {
+			return ARX_UNUSED(context), (haystack.find(needle) != std::string::npos);
 		}
 		
 	};
@@ -685,7 +684,7 @@ class IfCommand : public Command {
 		
 		EqualOperator() : Operator("==", TYPE_FLOAT) { }
 		
-		bool text(const Context & context, const string & left, const string & right) {
+		bool text(const Context & context, const std::string & left, const std::string & right) {
 			return ARX_UNUSED(context), (left == right);
 		}
 		
@@ -701,7 +700,7 @@ class IfCommand : public Command {
 		
 		NotEqualOperator() : Operator("!=", TYPE_FLOAT) { }
 		
-		bool text(const Context & context, const string & left, const string & right) {
+		bool text(const Context & context, const std::string & left, const std::string & right) {
 			return ARX_UNUSED(context), (left != right);
 		}
 		
@@ -778,11 +777,11 @@ public:
 	
 	Result execute(Context & context) {
 		
-		string left = context.getWord();
+		std::string left = context.getWord();
 		
-		string op = context.getWord();
+		std::string op = context.getWord();
 		
-		string right = context.getWord();
+		std::string right = context.getWord();
 		
 		Operators::const_iterator it = operators.find(op);
 		if(it == operators.end()) {
@@ -791,7 +790,7 @@ public:
 		}
 		
 		float f1, f2;
-		string s1, s2;
+		std::string s1, s2;
 		ValueType t1 = getVar(context, left, s1, f1, it->second->getType());
 		ValueType t2 = getVar(context, right, s2, f2, t1);
 		
@@ -838,14 +837,14 @@ public:
 
 }
 
-const string getName() {
+const std::string getName() {
 	return "timer";
 }
 
-void timerCommand(const string & timer, Context & context) {
+void timerCommand(const std::string & timer, Context & context) {
 	
 	// Checks if the timer is named by caller or if it needs a default name
-	string timername = timer.empty() ? ARX_SCRIPT_Timer_GetDefaultName() : timer;
+	std::string timername = timer.empty() ? ARX_SCRIPT_Timer_GetDefaultName() : timer;
 	
 	bool mili = false, idle = false;
 	HandleFlags("mi") {
@@ -853,7 +852,7 @@ void timerCommand(const string & timer, Context & context) {
 		idle = test_flag(flg, 'i');
 	}
 	
-	string command = context.getWord();
+	std::string command = context.getWord();
 	
 	Entity * io = context.getEntity();
 	

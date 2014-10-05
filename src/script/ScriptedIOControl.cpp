@@ -59,7 +59,6 @@ ZeniMax Media Inc., Suite 120, Rockville, Maryland 20850 USA.
 #include "scene/Interactive.h"
 #include "script/ScriptUtils.h"
 
-using std::string;
 
 extern Entity * LASTSPAWNED;
 
@@ -232,14 +231,14 @@ public:
 	
 	Result execute(Context & context) {
 		
-		string type = context.getWord();
+		std::string type = context.getWord();
 		
 		if(type == "npc" || type == "item") {
 			
 			res::path file = res::path::load(context.getWord()); // object to spawn.
 			file.remove_ext();
 			
-			string target = context.getWord(); // object ident for position
+			std::string target = context.getWord(); // object ident for position
 			Entity * t = entities.getById(target, context.getEntity());
 			if(!t) {
 				ScriptWarning << "unknown target: npc " << file << ' ' << target;
@@ -332,7 +331,7 @@ public:
 	
 	Result execute(Context & context) {
 		
-		string type = context.getWord();
+		std::string type = context.getWord();
 		
 		Entity * io = context.getEntity();
 		
@@ -376,9 +375,9 @@ public:
 	
 	Result execute(Context & context) {
 		
-		string name = context.getStringVar(context.getWord());
+		std::string name = context.getStringVar(context.getWord());
 		
-		string attach = context.getWord();
+		std::string attach = context.getWord();
 		
 		DebugScript(' ' << name << ' ' << attach);
 		
@@ -403,7 +402,7 @@ public:
 	
 	Result execute(Context & context) {
 		
-		string target = context.getWord();
+		std::string target = context.getWord();
 		
 		DebugScript(' ' << target);
 		
@@ -444,7 +443,7 @@ public:
 	
 	Result execute(Context & context) {
 		
-		string target = context.getWord();
+		std::string target = context.getWord();
 		
 		DebugScript(' ' << target);
 		
@@ -472,7 +471,7 @@ public:
 			megahide = test_flag(flg, 'm');
 		}
 		
-		string target = context.getWord();
+		std::string target = context.getWord();
 		Entity * t = entities.getById(target, context.getEntity());
 		
 		bool hide = context.getBool();
@@ -536,8 +535,8 @@ public:
 			
 			if(flg & flag('l')) {
 				
-				string level = context.getWord();
-				string target = context.getWord();
+				std::string level = context.getWord();
+				std::string target = context.getWord();
 				
 				TELEPORT_TO_LEVEL = level;
 				TELEPORT_TO_POSITION = target;
@@ -559,7 +558,7 @@ public:
 			initpos = test_flag(flg, 'i');
 		}
 		
-		string target;
+		std::string target;
 		if(!initpos) {
 			target = context.getWord();
 		}
@@ -648,7 +647,7 @@ public:
 	
 	Result execute(Context & context) {
 		
-		string target = context.getStringVar(context.getWord());
+		std::string target = context.getStringVar(context.getWord());
 		
 		DebugScript(' ' << target);
 		
@@ -676,7 +675,7 @@ class AbstractDamageCommand : public Command {
 	
 protected:
 	
-	AbstractDamageCommand(const string & name, long ioflags = 0) : Command(name, ioflags) { }
+	AbstractDamageCommand(const std::string & name, long ioflags = 0) : Command(name, ioflags) { }
 	
 	DamageType getDamageType(Context & context) {
 		
@@ -713,7 +712,7 @@ public:
 		
 		DamageType type = getDamageType(context);
 		
-		string target = context.getWord();
+		std::string target = context.getWord();
 		
 		float damage = context.getFloat();
 		

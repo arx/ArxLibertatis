@@ -81,17 +81,12 @@ ZeniMax Media Inc., Suite 120, Rockville, Maryland 20850 USA.
 
 #include "util/String.h"
 
-using std::sprintf;
-using std::min;
-using std::max;
-using std::string;
-using std::vector;
 
 void EERIE_RemoveCedricData(EERIE_3DOBJ * eobj);
 
 void Clear3DScene(EERIE_3DSCENE	* eerie);
 
-long GetGroupOriginByName(const EERIE_3DOBJ * eobj, const string & text) {
+long GetGroupOriginByName(const EERIE_3DOBJ * eobj, const std::string & text) {
 	
 	if(!eobj)
 		return -1;
@@ -105,12 +100,12 @@ long GetGroupOriginByName(const EERIE_3DOBJ * eobj, const string & text) {
 	return -1;
 }
 
-long GetActionPointIdx(const EERIE_3DOBJ * eobj, const string & text) {
+long GetActionPointIdx(const EERIE_3DOBJ * eobj, const std::string & text) {
 	
 	if(!eobj)
 		return -1;
 	
-	for(vector<EERIE_ACTIONLIST>::const_iterator i = eobj->actionlist.begin();
+	for(std::vector<EERIE_ACTIONLIST>::const_iterator i = eobj->actionlist.begin();
 	    i != eobj->actionlist.end(); ++i) {
 		if(i->name == text) {
 			return i->idx;
@@ -126,7 +121,7 @@ long GetActionPointGroup(const EERIE_3DOBJ * eobj, long idx) {
 		return -1;
 	
 	for(long i = eobj->grouplist.size() - 1; i >= 0; i--) {
-		const vector<long> & indices = eobj->grouplist[i].indexes;
+		const std::vector<long> & indices = eobj->grouplist[i].indexes;
 		for(size_t j = 0; j < indices.size(); j++){
 			if(indices[j] == idx) {
 				return i;
@@ -175,7 +170,7 @@ void MakeUserFlag(TextureContainer * tc) {
 	if(!tc)
 		return;
 	
-	const string & tex = tc->m_texName.string();
+	const std::string & tex = tc->m_texName.string();
 	
 	if(boost::contains(tex, "npc_")) {
 		tc->userflags |= POLY_LATE_MIP;
@@ -269,12 +264,12 @@ static void loadObjectData(EERIE_3DOBJ * eerie, const char * adr, size_t * poss,
 		const THEO_VERTEX * ptv = reinterpret_cast<const THEO_VERTEX *>(adr + pos);
 		pos += sizeof(THEO_VERTEX);
 		eerie->vertexlist[i].v = ptv->pos.toVec3();
-		eerie->cub.xmin = min(eerie->cub.xmin, ptv->pos.x);
-		eerie->cub.xmax = max(eerie->cub.xmax, ptv->pos.x);
-		eerie->cub.ymin = min(eerie->cub.ymin, ptv->pos.y);
-		eerie->cub.ymax = max(eerie->cub.ymax, ptv->pos.y);
-		eerie->cub.zmin = min(eerie->cub.zmin, ptv->pos.z);
-		eerie->cub.zmax = max(eerie->cub.zmax, ptv->pos.z);
+		eerie->cub.xmin = std::min(eerie->cub.xmin, ptv->pos.x);
+		eerie->cub.xmax = std::max(eerie->cub.xmax, ptv->pos.x);
+		eerie->cub.ymin = std::min(eerie->cub.ymin, ptv->pos.y);
+		eerie->cub.ymax = std::max(eerie->cub.ymax, ptv->pos.y);
+		eerie->cub.zmin = std::min(eerie->cub.zmin, ptv->pos.z);
+		eerie->cub.zmax = std::max(eerie->cub.zmax, ptv->pos.z);
 	}
 
 	// Lecture des FACES THEO
@@ -456,7 +451,7 @@ static void loadObjectData(EERIE_3DOBJ * eerie, const char * adr, size_t * poss,
 		eerie->grouplist[i].siz = 0.f;
 		
 		for(long o = 0; o < ptg3011->nb_index; o++) {
-			eerie->grouplist[i].siz = max(eerie->grouplist[i].siz,
+			eerie->grouplist[i].siz = std::max(eerie->grouplist[i].siz,
 			                              fdist(eerie->vertexlist[eerie->grouplist[i].origin].v,
 			                                           eerie->vertexlist[eerie->grouplist[i].indexes[o]].v));
 		}
@@ -647,14 +642,14 @@ static EERIE_3DSCENE * ScnToEerie(const char * adr, size_t size, const res::path
 		}
 		loadObjectData(seerie->objs[id], adr, &pos, objVersion);
 		
-		seerie->cub.xmin = min(seerie->cub.xmin, seerie->objs[id]->cub.xmin + seerie->objs[id]->pos.x);
-		seerie->cub.xmax = max(seerie->cub.xmax, seerie->objs[id]->cub.xmax + seerie->objs[id]->pos.x);
-		seerie->cub.ymin = min(seerie->cub.ymin, seerie->objs[id]->cub.ymin + seerie->objs[id]->pos.y);
-		seerie->cub.ymax = max(seerie->cub.ymax, seerie->objs[id]->cub.ymax + seerie->objs[id]->pos.y);
-		seerie->cub.zmin = min(seerie->cub.zmin, seerie->objs[id]->cub.zmin + seerie->objs[id]->pos.z);
-		seerie->cub.zmax = max(seerie->cub.zmax, seerie->objs[id]->cub.zmax + seerie->objs[id]->pos.z);
+		seerie->cub.xmin = std::min(seerie->cub.xmin, seerie->objs[id]->cub.xmin + seerie->objs[id]->pos.x);
+		seerie->cub.xmax = std::max(seerie->cub.xmax, seerie->objs[id]->cub.xmax + seerie->objs[id]->pos.x);
+		seerie->cub.ymin = std::min(seerie->cub.ymin, seerie->objs[id]->cub.ymin + seerie->objs[id]->pos.y);
+		seerie->cub.ymax = std::max(seerie->cub.ymax, seerie->objs[id]->cub.ymax + seerie->objs[id]->pos.y);
+		seerie->cub.zmin = std::min(seerie->cub.zmin, seerie->objs[id]->cub.zmin + seerie->objs[id]->pos.z);
+		seerie->cub.zmax = std::max(seerie->cub.zmax, seerie->objs[id]->cub.zmax + seerie->objs[id]->pos.z);
 		
-		string name = boost::to_lower_copy(util::loadString(ptoh->object_name));
+		std::string name = boost::to_lower_copy(util::loadString(ptoh->object_name));
 		if(name == "map_origin") {
 			seerie->point0 = seerie->objs[id]->point0 + seerie->objs[id]->pos;
 			delete seerie->objs[id];
@@ -815,12 +810,12 @@ static EERIE_MULTI3DSCENE * PAK_MultiSceneToEerie_Impl(const res::path & dirr) {
 	es->cub.zmin = 9999999999.f;
 	
 	for(long i = 0; i < es->nb_scenes; i++) {
-		es->cub.xmax = max(es->cub.xmax, es->scenes[i]->cub.xmax);
-		es->cub.xmin = min(es->cub.xmin, es->scenes[i]->cub.xmin);
-		es->cub.ymax = max(es->cub.ymax, es->scenes[i]->cub.ymax);
-		es->cub.ymin = min(es->cub.ymin, es->scenes[i]->cub.ymin);
-		es->cub.zmax = max(es->cub.zmax, es->scenes[i]->cub.zmax);
-		es->cub.zmin = min(es->cub.zmin, es->scenes[i]->cub.zmin);
+		es->cub.xmax = std::max(es->cub.xmax, es->scenes[i]->cub.xmax);
+		es->cub.xmin = std::min(es->cub.xmin, es->scenes[i]->cub.xmin);
+		es->cub.ymax = std::max(es->cub.ymax, es->scenes[i]->cub.ymax);
+		es->cub.ymin = std::min(es->cub.ymin, es->scenes[i]->cub.ymin);
+		es->cub.zmax = std::max(es->cub.zmax, es->scenes[i]->cub.zmax);
+		es->cub.zmin = std::min(es->cub.zmin, es->scenes[i]->cub.zmin);
 		es->pos = es->scenes[i]->pos;
 		
 		if((es->scenes[i]->point0.x != -999999999999.f) &&
@@ -988,7 +983,7 @@ EERIE_3DOBJ * Eerie_Copy(const EERIE_3DOBJ * obj) {
 	return nouvo;
 }
 
-long EERIE_OBJECT_GetSelection(const EERIE_3DOBJ * obj, const string & selname) {
+long EERIE_OBJECT_GetSelection(const EERIE_3DOBJ * obj, const std::string & selname) {
 	
 	if(!obj)
 		return -1;
@@ -1002,7 +997,7 @@ long EERIE_OBJECT_GetSelection(const EERIE_3DOBJ * obj, const string & selname) 
 	return -1;
 }
 
-long EERIE_OBJECT_GetGroup(const EERIE_3DOBJ * obj, const string & groupname) {
+long EERIE_OBJECT_GetGroup(const EERIE_3DOBJ * obj, const std::string & groupname) {
 	
 	if(!obj)
 		return -1;

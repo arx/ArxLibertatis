@@ -53,7 +53,6 @@ ZeniMax Media Inc., Suite 120, Rockville, Maryland 20850 USA.
 #include "script/ScriptEvent.h"
 #include "script/ScriptUtils.h"
 
-using std::string;
 
 extern float InventoryDir;
 
@@ -81,7 +80,7 @@ public:
 			}
 		}
 		
-		string command = context.getWord();
+		std::string command = context.getWord();
 		
 		if(command == "open") {
 			ARX_INTERFACE_BookOpenClose(1);
@@ -136,7 +135,7 @@ public:
 	Result execute(Context & context) {
 		
 		gui::Note::Type type;
-		string tpname = context.getWord();
+		std::string tpname = context.getWord();
 		if(tpname == "note") {
 			type = gui::Note::SmallNote;
 		} else if(tpname == "notice") {
@@ -148,7 +147,7 @@ public:
 			type = gui::Note::SmallNote;
 		}
 		
-		string text = loadUnlocalized(context.getWord());
+		std::string text = loadUnlocalized(context.getWord());
 		
 		DebugScript(' ' << tpname << ' ' << text);
 		
@@ -171,7 +170,7 @@ public:
 		
 		DebugScript("");
 		
-		string text;
+		std::string text;
 		MakeGlobalText(text);
 		LogInfo << "Global vars:\n" << text;
 		
@@ -190,7 +189,7 @@ public:
 		
 		DebugScript("");
 		
-		string text;
+		std::string text;
 		MakeLocalText(context.getScript(), text);
 		LogInfo << "Local vars:\n" << text;
 		
@@ -209,7 +208,7 @@ public:
 		
 		DebugScript("");
 		
-		string text;
+		std::string text;
 		MakeGlobalText(text);
 		text += "--------------------------\n";
 		MakeLocalText(context.getScript(), text);
@@ -233,7 +232,7 @@ public:
 			smooth = test_flag(flg, 's');
 		}
 		
-		string command = context.getWord();
+		std::string command = context.getWord();
 		
 		DebugScript(' ' << options << ' ' << command);
 		
@@ -259,7 +258,7 @@ public:
 	
 	Result execute(Context & context) {
 		
-		string message = context.getWord();
+		std::string message = context.getWord();
 		
 		DebugScript(' ' << message);
 		
@@ -323,7 +322,7 @@ public:
 		
 		if(remove) {
 			
-			string marker = loadUnlocalized(context.getWord());
+			std::string marker = loadUnlocalized(context.getWord());
 			
 			DebugScript(' ' << options << ' ' << marker);
 			
@@ -335,7 +334,7 @@ public:
 			float y = context.getFloat();
 			long level = (long)context.getFloat();
 			
-			string marker = loadUnlocalized(context.getWord());
+			std::string marker = loadUnlocalized(context.getWord());
 			
 			DebugScript(' ' << options << ' ' << x << ' ' << y << ' ' << level << ' ' << marker);
 			
@@ -356,7 +355,7 @@ public:
 	
 	Result execute(Context & context) {
 		
-		string symbol = context.getWord();
+		std::string symbol = context.getWord();
 		
 		float duration = context.getFloat();
 		

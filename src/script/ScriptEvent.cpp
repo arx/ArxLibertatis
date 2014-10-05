@@ -68,9 +68,6 @@ ZeniMax Media Inc., Suite 120, Rockville, Maryland 20850 USA.
 #include "script/ScriptedPlayer.h"
 #include "script/ScriptedVariable.h"
 
-using std::max;
-using std::min;
-using std::string;
 
 long ScriptEvent::totalCount = 0;
 
@@ -155,7 +152,7 @@ SCRIPT_EVENT AS_EVENT[] = {
 
 void ARX_SCRIPT_ComputeShortcuts(EERIE_SCRIPT& es)
 {
-	long nb = min((long)MAX_SHORTCUT, (long)SM_MAXCMD);
+	long nb = std::min((long)MAX_SHORTCUT, (long)SM_MAXCMD);
 
 	for (long j = 1; j < nb; j++) {
 		es.shortcut[j] = FindScriptPos(&es, AS_EVENT[j].name);
@@ -219,7 +216,7 @@ private:
 	
 public:
 	
-	ObsoleteCommand(const string & command, size_t _nargs = 0) : Command(command), nargs(_nargs) { }
+	ObsoleteCommand(const std::string & command, size_t _nargs = 0) : Command(command), nargs(_nargs) { }
 	
 	Result execute(Context & context) {
 		
@@ -257,7 +254,7 @@ ScriptResult ScriptEvent::send(EERIE_SCRIPT * es, ScriptMessage msg, const std::
                                Entity * io, const std::string & evname, long info) {
 	
 	ScriptResult ret = ACCEPT;
-	string eventname;
+	std::string eventname;
 	long pos;
 	
 	totalCount++;
@@ -369,7 +366,7 @@ ScriptResult ScriptEvent::send(EERIE_SCRIPT * es, ScriptMessage msg, const std::
 	script::Context context(es, pos, io, msg);
 	
 	if(msg != SM_EXECUTELINE) {
-		string word = context.getCommand();
+		std::string word = context.getCommand();
 		if(word != "{") {
 			ScriptEventWarning << "<-- missing bracket after event, got \"" << word << "\"";
 			return ACCEPT;
@@ -380,7 +377,7 @@ ScriptResult ScriptEvent::send(EERIE_SCRIPT * es, ScriptMessage msg, const std::
 	
 	for(;;) {
 		
-		string word = context.getCommand(msg != SM_EXECUTELINE);
+		std::string word = context.getCommand(msg != SM_EXECUTELINE);
 		if(word.empty()) {
 			if(msg == SM_EXECUTELINE && context.pos != es->size) {
 				arx_assert(es->data[context.pos] == '\n');

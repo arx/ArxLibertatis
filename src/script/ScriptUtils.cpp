@@ -24,15 +24,13 @@
 #include "game/Entity.h"
 #include "graphics/data/Mesh.h"
 
-using std::string;
-
 namespace script {
 
 static inline bool isWhitespace(char c) {
 	return (((unsigned char)c) <= 32 || c == '(' || c == ')');
 }
 
-string loadUnlocalized(const std::string & str) {
+std::string loadUnlocalized(const std::string & str) {
 	
 	// if the section name has the qualifying brackets "[]", cut them off
 	if(!str.empty() && str[0] == '[' && str[str.length() - 1] == ']') {
@@ -45,7 +43,7 @@ string loadUnlocalized(const std::string & str) {
 Context::Context(EERIE_SCRIPT * script, size_t pos, Entity * entity, ScriptMessage msg)
 	: script(script), pos(pos), entity(entity), message(msg) { }
 
-string Context::getStringVar(const string & var) const {
+std::string Context::getStringVar(const std::string & var) const {
 	return GetVarValueInterpretedAsText(var, getMaster(), entity);
 }
 
@@ -57,7 +55,7 @@ std::string Context::getCommand(bool skipNewlines) {
 	
 	skipWhitespace(skipNewlines);
 	
-	string word;
+	std::string word;
 	
 	// now take chars until it finds a space or unused char
 	for(; pos != script->size && !isWhitespace(esdat[pos]); pos++) {
@@ -83,20 +81,20 @@ std::string Context::getCommand(bool skipNewlines) {
 	return word;
 }
 
-string Context::getWord() {
+std::string Context::getWord() {
 	
 	skipWhitespace();
 	
 	if(pos >= script->size) {
-		return string();
+		return std::string();
 	}
 	
 	const char * esdat = script->data;
 	
 	bool tilde = false; // number of tildes
 	
-	string word;
-	string var;
+	std::string word;
+	std::string var;
 	
 	if(pos != script->size && esdat[pos] == '"') {
 		
@@ -206,7 +204,7 @@ void Context::skipWhitespace(bool skipNewlines) {
 	}
 }
 
-string Context::getFlags() {
+std::string Context::getFlags() {
 	
 	skipWhitespace();
 	
@@ -214,7 +212,7 @@ string Context::getFlags() {
 		return getWord();
 	}
 	
-	return string();
+	return std::string();
 }
 
 float Context::getFloat() {
@@ -223,7 +221,7 @@ float Context::getFloat() {
 
 bool Context::getBool() {
 	
-	string word = getWord();
+	std::string word = getWord();
 	
 	return (word == "on" || word == "yes");
 }
@@ -254,7 +252,7 @@ size_t Context::skipCommand() {
 	return oldpos;
 }
 
-bool Context::jumpToLabel(const string & target, bool substack) {
+bool Context::jumpToLabel(const std::string & target, bool substack) {
 	
 	if(substack) {
 		stack.push_back(pos);
@@ -282,7 +280,7 @@ bool Context::returnToCaller() {
 
 void Context::skipStatement() {
 	
-	string word = getCommand();
+	std::string word = getCommand();
 	if(pos == script->size) {
 		ScriptParserWarning << "missing statement before end of script";
 		return;
@@ -321,25 +319,25 @@ void Context::skipStatement() {
 
 namespace {
 
-typedef std::set<string> SuppressedCommands;
-typedef std::map<string, SuppressedCommands> SuppressionsForFile;
+typedef std::set<std::string> SuppressedCommands;
+typedef std::map<std::string, SuppressedCommands> SuppressionsForFile;
 typedef std::map<size_t, SuppressionsForFile> SuppressionsForPos;
 
 size_t suppressionCount = 0;
 SuppressionsForPos suppressions;
 SuppressionsForPos blockSuppressions;
 
-void suppress(const string & script, size_t pos, const string & command) {
+void suppress(const std::string & script, size_t pos, const std::string & command) {
 	suppressionCount++;
 	suppressions[pos][script].insert(command);
 }
 
-void suppressBlockEnd(const string & script, size_t pos, const string & command) {
+void suppressBlockEnd(const std::string & script, size_t pos, const std::string & command) {
 	suppressionCount++;
 	blockSuppressions[pos][script].insert(command);
 }
 
-bool contains(const SuppressionsForPos & list, const Context & context, const string & command) {
+bool contains(const SuppressionsForPos & list, const Context & context, const std::string & command) {
 	
 	SuppressionsForPos::const_iterator i0 = list.find(context.getPosition());
 	if(i0 == list.end()) {
@@ -695,7 +693,7 @@ size_t initSuppressions() {
 		
 	public:
 		
-		explicit FakeCommand(const string & name) : Command(name) { }
+		explicit FakeCommand(const std::string & name) : Command(name) { }
 		
 		Result execute(Context & context) {
 			ARX_UNUSED(context);
@@ -715,11 +713,11 @@ size_t initSuppressions() {
 	return suppressionCount;
 }
 
-bool isSuppressed(const Context & context, const string & command) {
+bool isSuppressed(const Context & context, const std::string & command) {
 	return contains(suppressions, context, command);
 }
 
-bool isBlockEndSuprressed(const Context & context, const string & command) {
+bool isBlockEndSuprressed(const Context & context, const std::string & command) {
 	return contains(blockSuppressions, context, command);
 }
 
