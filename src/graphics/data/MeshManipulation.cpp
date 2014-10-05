@@ -72,10 +72,6 @@ ZeniMax Media Inc., Suite 120, Rockville, Maryland 20850 USA.
 
 #include "scene/Object.h"
 
-using std::max;
-using std::string;
-using std::vector;
-
 void EERIE_MESH_TWEAK_Skin(EERIE_3DOBJ * obj, const res::path & s1, const res::path & s2) {
 	
 	LogDebug("Tweak Skin " << s1 << " " << s2);
@@ -223,7 +219,7 @@ static long ObjectAddFace(EERIE_3DOBJ * obj, const EERIE_FACE * face, const EERI
 	return obj->facelist.size() - 1;
 }
 
-static long ObjectAddAction(EERIE_3DOBJ * obj, const string & name, long act,
+static long ObjectAddAction(EERIE_3DOBJ * obj, const std::string & name, long act,
                             long sfx, const EERIE_VERTEX * vert) {
 	
 	long newvert = ObjectAddVertex(obj, vert);
@@ -231,7 +227,7 @@ static long ObjectAddAction(EERIE_3DOBJ * obj, const string & name, long act,
 	if (newvert < 0) return -1;
 	
 	long j = 0;
-	for(vector<EERIE_ACTIONLIST>::iterator i = obj->actionlist.begin();
+	for(std::vector<EERIE_ACTIONLIST>::iterator i = obj->actionlist.begin();
 	    i != obj->actionlist.end(); ++i) {
 		if(i->name == name) {
 			return j;

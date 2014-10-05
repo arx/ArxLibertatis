@@ -60,8 +60,6 @@ ZeniMax Media Inc., Suite 120, Rockville, Maryland 20850 USA.
 
 #include "scene/Light.h"
 
-using std::list;
-
 void ParticleSystem::RecomputeDirection() {
 	Vec3f eVect = m_parameters.m_direction;
 	eVect.y = -eVect.y;
@@ -297,7 +295,7 @@ void ParticleSystem::Update(long _lTime) {
 	
 	iParticleNbAlive = 0;
 	
-	list<Particle *>::iterator i;
+	std::list<Particle *>::iterator i;
 	for(i = listParticle.begin(); i != listParticle.end(); ) {
 		Particle * pP = *i;
 		
@@ -352,7 +350,7 @@ void ParticleSystem::Render() {
 
 	int inumtex = 0;
 
-	list<Particle *>::iterator i;
+	std::list<Particle *>::iterator i;
 
 	for(i = listParticle.begin(); i != listParticle.end(); ++i) {
 		Particle * p = *i;

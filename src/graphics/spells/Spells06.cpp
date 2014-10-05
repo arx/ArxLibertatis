@@ -63,9 +63,6 @@ ZeniMax Media Inc., Suite 120, Rockville, Maryland 20850 USA.
 #include "scene/Object.h"
 #include "scene/Interactive.h"
 
-using std::min;
-using std::max;
-
 extern ParticleManager * pParticleManager;
 
 CCreateField::CCreateField()
@@ -203,11 +200,11 @@ void CCreateField::Render()
 		}
 	}
 
-	ysize = min(1.0f, ulCurrentTime * 0.001f);
+	ysize = std::min(1.0f, ulCurrentTime * 0.001f);
 
 	if(ysize >= 1.0f) {
-		size = min(1.0f, (ulCurrentTime - 1000) * 0.001f);
-		size = max(size, 0.1f);
+		size = std::min(1.0f, (ulCurrentTime - 1000) * 0.001f);
+		size = std::max(size, 0.1f);
 	}
 
 	// ondulation

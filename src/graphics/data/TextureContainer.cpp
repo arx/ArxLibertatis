@@ -65,9 +65,6 @@ ZeniMax Media Inc., Suite 120, Rockville, Maryland 20850 USA.
 
 #include "platform/Platform.h"
 
-using std::string;
-using std::map;
-
 long GLOBAL_EERIETEXTUREFLAG_LOADSCENE_RELEASE = 0;
 
 /*-----------------------------------------------------------------------------*/

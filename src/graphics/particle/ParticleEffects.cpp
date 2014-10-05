@@ -82,8 +82,6 @@ ZeniMax Media Inc., Suite 120, Rockville, Maryland 20850 USA.
 #include "scene/Interactive.h"
 #include "scene/Light.h"
 
-using std::max;
-
 //TODO(lubosz): extern globals :(
 extern Color ulBKGColor;
 

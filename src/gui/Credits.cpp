@@ -59,14 +59,11 @@ ZeniMax Media Inc., Suite 120, Rockville, Maryland 20850 USA.
 
 #include "scene/GameSound.h"
 
-using std::string;
-using std::vector;
-
 // TODO extern globals
 extern bool bFadeInOut;
 extern bool bFade;
 extern int iFadeAction;
-void ARX_MENU_LaunchAmb(const string & _lpszAmb);
+void ARX_MENU_LaunchAmb(const std::string & _lpszAmb);
 
 
 struct CreditsTextInformations {
@@ -76,7 +73,7 @@ struct CreditsTextInformations {
 		fColors = Color::none;
 	}
 	
-	string  sText;
+	std::string  sText;
 	Color fColors;
 	Vec2i sPos;
 };
@@ -91,7 +88,7 @@ struct CreditsInformations {
 	
 	int sizex, sizey; // save the screen size so we know when to re-initialize the credits
 	
-	vector<CreditsTextInformations> aCreditsInformations;
+	std::vector<CreditsTextInformations> aCreditsInformations;
 };
 
 
@@ -122,7 +119,7 @@ static void InitCredits() {
 	
 }
 
-static Color ExtractPhraseColor(string & phrase) {
+static Color ExtractPhraseColor(std::string & phrase) {
 	//Get the good color
 	if(!phrase.empty() && phrase[0] == '~') {
 		phrase[0] = ' ';
@@ -133,7 +130,7 @@ static Color ExtractPhraseColor(string & phrase) {
 	}
 }
 
-static void addCreditsLine(string & phrase, float & drawpos) {
+static void addCreditsLine(std::string & phrase, float & drawpos) {
 	
 	//Create a data containers
 	CreditsTextInformations infomations;
@@ -181,7 +178,7 @@ static bool iswhitespace(char c) {
 	return (c == ' ' || c == '\t' || c == '\r' || c == '\n');
 }
 
-static void strip(string & str) {
+static void strip(std::string & str) {
 	
 	size_t startpos = 0;
 	while(startpos < str.length() && iswhitespace(str[startpos])) {
@@ -206,7 +203,7 @@ static void ExtractAllCreditsTextInformations() {
 	
 	// Retrieve the rows to display
 	std::istringstream iss(ARXmenu.mda->credits);
-	string phrase;
+	std::string phrase;
 
 	//Use to calculate the positions
 	float drawpos = static_cast<float>(g_size.height());

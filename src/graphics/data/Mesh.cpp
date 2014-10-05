@@ -94,12 +94,6 @@ ZeniMax Media Inc., Suite 120, Rockville, Maryland 20850 USA.
 
 #include "util/String.h"
 
-using std::min;
-using std::max;
-using std::copy;
-using std::string;
-using std::vector;
-
 static void EERIE_PORTAL_Release();
 
 static bool RayIn3DPolyNoCull(const Vec3f & orgn, const Vec3f & dest, EERIEPOLY * epp);
@@ -132,7 +126,7 @@ bool RayCollidingPoly(const Vec3f & orgn, const Vec3f & dest, EERIEPOLY * ep, Ve
 	return false;
 }
 
-long MakeTopObjString(Entity * io,  string & dest) {
+long MakeTopObjString(Entity * io, std::string & dest) {
 	
 	if(!io) {
 		return -1;
@@ -1133,10 +1127,10 @@ void EERIEPOLY_Compute_PolyIn()
 		eg->polyin = NULL;
 		eg->nbpolyin = 0;
 		
-		long ii = max(i - 2, 0L);
-		long ij = max(j - 2, 0L);
-		long ai = min(i + 2, ACTIVEBKG->Xsize - 1L);
-		long aj = min(j + 2, ACTIVEBKG->Zsize - 1L);
+		long ii = std::max(i - 2, 0L);
+		long ij = std::max(j - 2, 0L);
+		long ai = std::min(i + 2, ACTIVEBKG->Xsize - 1L);
+		long aj = std::min(j + 2, ACTIVEBKG->Zsize - 1L);
 		
 		EERIE_2D_BBOX bb;
 		bb.min.x = (float)i * ACTIVEBKG->Xdiv - 10;
@@ -1186,7 +1180,7 @@ float GetTileMinY(long i, long j) {
 
 	for (long kk = 0; kk < eg->nbpolyin; kk++) {
 		EERIEPOLY * ep = eg->polyin[kk];
-		minf = min(minf, ep->min.y);
+		minf = std::min(minf, ep->min.y);
 	}
 
 	return minf;
@@ -1198,7 +1192,7 @@ float GetTileMaxY(long i, long j) {
 
 	for(long kk = 0; kk < eg->nbpolyin; kk++) {
 		EERIEPOLY * ep = eg->polyin[kk];
-		maxf = max(maxf, ep->max.y);
+		maxf = std::max(maxf, ep->max.y);
 	}
 
 	return maxf;
@@ -1206,7 +1200,7 @@ float GetTileMaxY(long i, long j) {
 
 #define TYPE_PORTAL	1
 #define TYPE_ROOM	2
-bool GetNameInfo(const string &name, long &type, long &val1, long &val2)
+bool GetNameInfo(const std::string &name, long &type, long &val1, long &val2)
 {
 	if(name[0] == 'r') {
 		if(name[1] == '_') {
@@ -1265,7 +1259,7 @@ void EERIE_PORTAL_Blend_Portals_And_Rooms() {
 		float d = 0.f;
 
 		for(long ii = 0; ii < to; ii++) {
-			d = max(d, glm::distance(ep->center, ep->v[ii].p));
+			d = std::max(d, glm::distance(ep->center, ep->v[ii].p));
 		}
 
 		ep->norm2.x = d;
@@ -1629,7 +1623,7 @@ static bool loadFastScene(const res::path & file, const char * data, const char 
 					float y = ep2->v[h].p.y - ep2->center.y;
 					float z = ep2->v[h].p.z - ep2->center.z;
 					float d = sqrt((x * x) + (y * y) + (z * z));
-					dist = max(dist, d);
+					dist = std::max(dist, d);
 				}
 				ep2->v[0].rhw = dist;
 			}
@@ -2021,8 +2015,8 @@ static void EERIE_PORTAL_Poly_Add(EERIEPOLY * ep, const std::string& name, long 
 
 		for(int ii = 0; ii < nbvert; ii++) {
 			float fDist = glm::distance(ep->center, ep->v[ii].p);
-			fDistMin = min(fDistMin, fDist);
-			fDistMax = max(fDistMax, fDist);
+			fDistMin = std::min(fDistMin, fDist);
+			fDistMax = std::max(fDistMax, fDist);
 		}
 
 		fDistMin = (fDistMax + fDistMin) * .5f;
@@ -2083,20 +2077,20 @@ static int BkgAddPoly(EERIEPOLY * ep, EERIE_3DOBJ * eobj) {
 	}
 	
 	epp->center = center;
-	epp->max.x = max(epp->v[0].p.x, epp->v[1].p.x);
-	epp->max.x = max(epp->max.x, epp->v[2].p.x);
-	epp->min.x = min(epp->v[0].p.x, epp->v[1].p.x);
-	epp->min.x = min(epp->min.x, epp->v[2].p.x);
+	epp->max.x = std::max(epp->v[0].p.x, epp->v[1].p.x);
+	epp->max.x = std::max(epp->max.x, epp->v[2].p.x);
+	epp->min.x = std::min(epp->v[0].p.x, epp->v[1].p.x);
+	epp->min.x = std::min(epp->min.x, epp->v[2].p.x);
 	
-	epp->max.y = max(epp->v[0].p.y, epp->v[1].p.y);
-	epp->max.y = max(epp->max.y, epp->v[2].p.y);
-	epp->min.y = min(epp->v[0].p.y, epp->v[1].p.y);
-	epp->min.y = min(epp->min.y, epp->v[2].p.y);
+	epp->max.y = std::max(epp->v[0].p.y, epp->v[1].p.y);
+	epp->max.y = std::max(epp->max.y, epp->v[2].p.y);
+	epp->min.y = std::min(epp->v[0].p.y, epp->v[1].p.y);
+	epp->min.y = std::min(epp->min.y, epp->v[2].p.y);
 	
-	epp->max.z = max(epp->v[0].p.z, epp->v[1].p.z);
-	epp->max.z = max(epp->max.z, epp->v[2].p.z);
-	epp->min.z = min(epp->v[0].p.z, epp->v[1].p.z);
-	epp->min.z = min(epp->min.z, epp->v[2].p.z);
+	epp->max.z = std::max(epp->v[0].p.z, epp->v[1].p.z);
+	epp->max.z = std::max(epp->max.z, epp->v[2].p.z);
+	epp->min.z = std::min(epp->v[0].p.z, epp->v[1].p.z);
+	epp->min.z = std::min(epp->min.z, epp->v[2].p.z);
 	epp->type = ep->type;
 	epp->type &= ~POLY_QUAD;
 	
@@ -2462,9 +2456,9 @@ static bool FastSceneSave(const fs::path & partial_path) {
 			epo->poly.norm = portal.poly.norm;
 			epo->poly.norm2 = portal.poly.norm2;
 			
-			copy(portal.poly.nrml, portal.poly.nrml + 4, epo->poly.nrml);
-			copy(portal.poly.v, portal.poly.v + 4, epo->poly.v);
-			copy(portal.poly.tv, portal.poly.tv + 4, epo->poly.tv);
+			std::copy(portal.poly.nrml, portal.poly.nrml + 4, epo->poly.nrml);
+			std::copy(portal.poly.v, portal.poly.v + 4, epo->poly.v);
+			std::copy(portal.poly.tv, portal.poly.tv + 4, epo->poly.tv);
 		}
 		
 		for(size_t i = 0; i < portals->rooms.size(); i++) {

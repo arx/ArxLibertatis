@@ -31,10 +31,6 @@
 #include "io/log/Logger.h"
 #include "platform/CrashHandler.h"
 
-using std::string;
-using std::memcpy;
-using std::memset;
-
 namespace {
 
 const unsigned int SIZE_TABLE[Image::Format_Num] = {

@@ -53,8 +53,6 @@ ZeniMax Media Inc., Suite 120, Rockville, Maryland 20850 USA.
 
 #include "graphics/GraphicsTypes.h"
 
-using std::memset;
-
 /*!
  * \brief Adds a neighboring vertex to a vertex
  */
@@ -119,7 +117,7 @@ void CreateNeighbours(EERIE_3DOBJ * obj) {
 	if(obj->ndata == NULL) {
 		obj->ndata = (NEIGHBOURS_DATA *)malloc(sizeof(NEIGHBOURS_DATA) * obj->vertexlist.size());
 	} else {
-		memset(obj->ndata, 0, sizeof(NEIGHBOURS_DATA)*obj->vertexlist.size());
+		std::memset(obj->ndata, 0, sizeof(NEIGHBOURS_DATA)*obj->vertexlist.size());
 	}
 
 	for(size_t i = 0; i < obj->vertexlist.size(); i++) {
