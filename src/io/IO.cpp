@@ -53,8 +53,6 @@ ZeniMax Media Inc., Suite 120, Rockville, Maryland 20850 USA.
 #include "io/fs/Filesystem.h"
 #include "io/fs/FileStream.h"
 
-using std::string;
-
 #if BUILD_EDIT_LOADSAVE
 
 void HERMES_CreateFileCheck(const fs::path & name, char * scheck, size_t size, float id) {
@@ -84,7 +82,7 @@ void HERMES_CreateFileCheck(const fs::path & name, char * scheck, size_t size, f
 	dst[3] = dst[5] = u32(u64(write_time) >> 32);
 	
 	size_t i = 6;
-	string namestr = name.string();
+	std::string namestr = name.string();
 	size_t l = std::min(size - i*4, namestr.length());
 	memcpy(&dst[i], namestr.c_str(), l);
 	i += (l + 3) / 4;

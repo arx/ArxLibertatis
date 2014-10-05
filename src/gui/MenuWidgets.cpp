@@ -90,12 +90,6 @@ ZeniMax Media Inc., Suite 120, Rockville, Maryland 20850 USA.
 
 #include "window/RenderWindow.h"
 
-using std::wistringstream;
-using std::min;
-using std::max;
-using std::string;
-using std::vector;
-
 static int newWidth;
 static int newHeight;
 static bool newFullscreen;
@@ -1236,7 +1230,7 @@ CMenuAllZone::CMenuAllZone() {
 
 	vMenuZone.clear();
 
-	vector<Widget*>::iterator i;
+	std::vector<Widget*>::iterator i;
 
 	for(i = vMenuZone.begin(); i != vMenuZone.end(); ++i) {
 		Widget *zone = *i;
@@ -2509,7 +2503,7 @@ CycleTextWidget::CycleTextWidget(int _iID, Vec2i pos)
 	rZone.left   = pos.x;
 	rZone.top    = pos.y;
 	rZone.right  = pos.x + pLeftButton->rZone.width() + pRightButton->rZone.width();
-	rZone.bottom = pos.y + max(pLeftButton->rZone.height(), pRightButton->rZone.height());
+	rZone.bottom = pos.y + std::max(pLeftButton->rZone.height(), pRightButton->rZone.height());
 
 	pRef = this;
 }
@@ -2535,15 +2529,15 @@ void CycleTextWidget::AddText(TextWidget *_pText) {
 
 	Vec2i textSize = _pText->GetTextSize();
 
-	rZone.right  = max(rZone.right, rZone.left + pLeftButton->rZone.width() + pRightButton->rZone.width() + textSize.x);
-	rZone.bottom = max(rZone.bottom, rZone.top + textSize.y);
+	rZone.right  = std::max(rZone.right, rZone.left + pLeftButton->rZone.width() + pRightButton->rZone.width() + textSize.x);
+	rZone.bottom = std::max(rZone.bottom, rZone.top + textSize.y);
 
 	pLeftButton->SetPos(Vec2i(rZone.left, rZone.top+(textSize.y>>2)));
 	pRightButton->SetPos(Vec2i(rZone.right-pRightButton->rZone.width(), rZone.top+(textSize.y>>2)));
 
 	int dx=rZone.right-rZone.left-pLeftButton->rZone.width()-pRightButton->rZone.width();
 	//on recentre tout
-	vector<TextWidget*>::iterator it;
+	std::vector<TextWidget*>::iterator it;
 
 	for(it = vText.begin(); it < vText.end(); ++it) {
 		TextWidget *pMenuElementText=*it;
@@ -2744,10 +2738,10 @@ SliderWidget::SliderWidget(int _iID, Vec2i pos)
 
 	rZone.left   = pos.x;
 	rZone.top    = pos.y;
-	rZone.right  = pos.x + pLeftButton->rZone.width() + pRightButton->rZone.width() + 10*max(pTex1->m_dwWidth, pTex2->m_dwWidth);
-	rZone.bottom = pos.y + max(pLeftButton->rZone.height(), pRightButton->rZone.height());
+	rZone.right  = pos.x + pLeftButton->rZone.width() + pRightButton->rZone.width() + 10 * std::max(pTex1->m_dwWidth, pTex2->m_dwWidth);
+	rZone.bottom = pos.y + std::max(pLeftButton->rZone.height(), pRightButton->rZone.height());
 	
-	pRightButton->Move(Vec2i(pLeftButton->rZone.width() + 10*max(pTex1->m_dwWidth, pTex2->m_dwWidth), 0));
+	pRightButton->Move(Vec2i(pLeftButton->rZone.width() + 10 * std::max(pTex1->m_dwWidth, pTex2->m_dwWidth), 0));
 
 	pRef = this;
 }
@@ -2840,7 +2834,7 @@ void SliderWidget::Update(int _iTime) {
 	pRightButton->SetPos(rZone.topLeft());
 
 
-	float fWidth = pLeftButton->rZone.width() + RATIO_X(10*max(pTex1->m_dwWidth, pTex2->m_dwWidth)) ;
+	float fWidth = pLeftButton->rZone.width() + RATIO_X(10 * std::max(pTex1->m_dwWidth, pTex2->m_dwWidth)) ;
 	pRightButton->Move(Vec2i(fWidth, 0));
 
 	rZone.right = rZone.left + pLeftButton->rZone.width() + pRightButton->rZone.width() + RATIO_X(10*std::max(pTex1->m_dwWidth, pTex2->m_dwWidth));

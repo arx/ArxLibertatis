@@ -55,10 +55,6 @@ ZeniMax Media Inc., Suite 120, Rockville, Maryland 20850 USA.
 
 #include "platform/Platform.h"
 
-using std::string;
-using std::vector;
-using std::min;
-
 static const u32 SAV_VERSION_OLD = (1<<16) | 0;
 static const u32 SAV_VERSION_RELEASE = (1<<16) | 1;
 static const u32 SAV_VERSION_DEFLATE = (2<<16) | 0;
@@ -310,7 +306,7 @@ bool SaveBlock::loadFileTable() {
 	for(u32 i = 0; i < nFiles; i++) {
 		
 		// Read the file name.
-		string name;
+		std::string name;
 		if(fs::read(handle, name).fail()) {
 			return false;
 		}
@@ -392,9 +388,9 @@ bool SaveBlock::open(bool writable) {
 	return true;
 }
 
-bool SaveBlock::flush(const string & important) {
+bool SaveBlock::flush(const std::string & important) {
 	
-	arx_assert(important.find_first_of(BADSAVCHAR) == string::npos,
+	arx_assert(important.find_first_of(BADSAVCHAR) == std::string::npos,
 	           "bad save filename: \"%s\"", important.c_str());
 	
 	if((usedSize * 2 < totalSize || chunkCount > (files.size() * 4 / 3))) {
@@ -479,13 +475,13 @@ bool SaveBlock::defragment() {
 	return handle.is_open();
 }
 
-bool SaveBlock::save(const string & name, const char * data, size_t size) {
+bool SaveBlock::save(const std::string & name, const char * data, size_t size) {
 	
 	if(!handle) {
 		return false;
 	}
 	
-	arx_assert(name.find_first_of(BADSAVCHAR) == string::npos,
+	arx_assert(name.find_first_of(BADSAVCHAR) == std::string::npos,
 	           "bad save filename: \"%s\"", name.c_str());
 	
 	File * file = &files[name];
@@ -546,13 +542,13 @@ bool SaveBlock::save(const string & name, const char * data, size_t size) {
 	return !handle.fail();
 }
 
-void SaveBlock::remove(const string & name) {
+void SaveBlock::remove(const std::string & name) {
 	files.erase(name);
 }
 
-char * SaveBlock::load(const string & name, size_t & size) {
+char * SaveBlock::load(const std::string & name, size_t & size) {
 	
-	arx_assert(name.find_first_of(BADSAVCHAR) == string::npos,
+	arx_assert(name.find_first_of(BADSAVCHAR) == std::string::npos,
 	           "bad save filename: \"%s\"", name.c_str());
 	
 	Files::const_iterator file = files.find(name);
@@ -560,15 +556,15 @@ char * SaveBlock::load(const string & name, size_t & size) {
 	return (file == files.end()) ? NULL : file->second.loadData(handle, size, name);
 }
 
-bool SaveBlock::hasFile(const string & name) const {
-	arx_assert(name.find_first_of(BADSAVCHAR) == string::npos,
+bool SaveBlock::hasFile(const std::string & name) const {
+	arx_assert(name.find_first_of(BADSAVCHAR) == std::string::npos,
 	           "bad save filename: \"%s\"", name.c_str());
 	return (files.find(name) != files.end());
 }
 
-vector<string> SaveBlock::getFiles() const {
+std::vector<std::string> SaveBlock::getFiles() const {
 	
-	vector<string> result;
+	std::vector<std::string> result;
 	
 	for(Files::const_iterator file = files.begin(); file != files.end(); ++file) {
 		result.push_back(file->first);
@@ -579,7 +575,7 @@ vector<string> SaveBlock::getFiles() const {
 
 char * SaveBlock::load(const fs::path & savefile, const std::string & filename, size_t & size) {
 	
-	arx_assert(filename.find_first_of(BADSAVCHAR) == string::npos,
+	arx_assert(filename.find_first_of(BADSAVCHAR) == std::string::npos,
 	           "bad save filename: \"%s\"", filename.c_str());
 	
 	LogDebug("reading savefile " << savefile);
@@ -619,7 +615,7 @@ char * SaveBlock::load(const fs::path & savefile, const std::string & filename, 
 	for(u32 i = 0; i < nFiles; i++) {
 		
 		// Read the file name.
-		string name;
+		std::string name;
 		if(fs::read(handle, name).fail()) {
 			return NULL;
 		}

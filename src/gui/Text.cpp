@@ -64,8 +64,6 @@ ZeniMax Media Inc., Suite 120, Rockville, Maryland 20850 USA.
 #include "io/resource/ResourcePath.h"
 #include "io/log/Logger.h"
 
-using std::string;
-
 TextManager * pTextManage = NULL;
 TextManager * pTextManageFlyingOver = NULL;
 
@@ -176,7 +174,7 @@ void ARX_UNICODE_FormattingInRect(Font * font, const std::string & text,
 	}
 }
 
-long ARX_UNICODE_ForceFormattingInRect(Font * font, const string & text,
+long ARX_UNICODE_ForceFormattingInRect(Font * font, const std::string & text,
                                        const Rect & rect) {
 	long numChars;
 	ARX_UNICODE_FormattingInRect(font, text, rect, Color::none, 0, &numChars, true);
@@ -266,7 +264,7 @@ long UNICODE_ARXDrawTextCenteredScroll(Font* font, float x, float y, float x2, c
 }
 
 static Font * createFont(const res::path & fontFace,
-                         const string & configSizeKey, unsigned int fontSize,
+                         const std::string & configSizeKey, unsigned int fontSize,
                          float scaleFactor) {
 
 	arx_assert(fontSize > 0);

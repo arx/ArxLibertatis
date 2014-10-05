@@ -79,11 +79,6 @@ ZeniMax Media Inc., Suite 120, Rockville, Maryland 20850 USA.
 
 #include "script/ScriptEvent.h"
 
-using std::min;
-using std::max;
-using std::string;
-using std::transform;
-
 extern TextureContainer *	arx_logo_tc;
 extern bool ARX_CONVERSATION;
 extern bool EXTERNALVIEW;
@@ -122,7 +117,7 @@ void ARX_SPEECH_ClearAll()
 	}
 }
 
-long ARX_SPEECH_Add(const string & text, long duration) {
+long ARX_SPEECH_Add(const std::string & text, long duration) {
 	
 	if(text.empty())
 		return -1;
@@ -239,7 +234,7 @@ void ARX_SPEECH_Check()
 		ARX_SPEECH_Render();
 }
 
-void ARX_SPEECH_Launch_No_Unicode_Seek(const string & text, Entity * io_source) {
+void ARX_SPEECH_Launch_No_Unicode_Seek(const std::string & text, Entity * io_source) {
 	
 	long mood = ANIM_TALK_NEUTRAL;
 	long speechnum = ARX_SPEECH_AddSpeech(io_source, text, mood, ARX_SPEECH_FLAG_NOTEXT);
@@ -416,7 +411,7 @@ long ARX_SPEECH_AddSpeech(Entity * io, const std::string & data, long mood,
 		io->lastspeechflag = 0;
 		aspeech[num].text.clear();
 		aspeech[num].text = _output;
-		aspeech[num].duration = max(aspeech[num].duration, (unsigned long)(strlen(_output.c_str()) + 1) * 100);
+		aspeech[num].duration = std::max(aspeech[num].duration, (unsigned long)(strlen(_output.c_str()) + 1) * 100);
 		
 		sample = data;
 	}

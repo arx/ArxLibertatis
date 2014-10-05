@@ -48,14 +48,11 @@ ZeniMax Media Inc., Suite 120, Rockville, Maryland 20850 USA.
 #include "graphics/font/Font.h"
 #include "io/log/Logger.h"
 
-using std::string;
-using std::vector;
-
 struct TextManager::ManagedText {
 	Font* pFont;
 	Rect rRect;
 	Rect rRectClipp;
-	string lpszUText;
+	std::string lpszUText;
 	float fDeltaY;
 	float fSpeedScrollY;
 	Color lCol;
@@ -70,7 +67,7 @@ TextManager::~TextManager() {
 	Clear();
 }
 
-bool TextManager::AddText(Font* _pFont, const string & _lpszUText, const Rect & _rRect, Color _lCol, long _lTimeOut, long _lTimeScroll, float _fSpeedScroll, int iNbLigneClipp) {
+bool TextManager::AddText(Font* _pFont, const std::string & _lpszUText, const Rect & _rRect, Color _lCol, long _lTimeOut, long _lTimeScroll, float _fSpeedScroll, int iNbLigneClipp) {
 	
 	if(_lpszUText.empty()) {
 		return false;
@@ -126,7 +123,7 @@ void TextManager::Update(float _fDiffFrame) {
 	if(_iDiffFrame == 0)
 		_iDiffFrame = 1;
 	
-	vector<ManagedText *>::iterator itManage;
+	std::vector<ManagedText *>::iterator itManage;
 	for(itManage = entries.begin(); itManage != entries.end();) {
 		
 		ManagedText * pArxText = *itManage;
@@ -156,7 +153,7 @@ void TextManager::Update(float _fDiffFrame) {
 }
 
 void TextManager::Render() {
-	vector<ManagedText *>::const_iterator itManage = entries.begin();
+	std::vector<ManagedText *>::const_iterator itManage = entries.begin();
 	for(; itManage != entries.end(); ++itManage) {
 		
 		ManagedText * pArxText = *itManage;
@@ -184,7 +181,7 @@ void TextManager::Render() {
 
 void TextManager::Clear() {
 	
-	vector<ManagedText *>::iterator itManage;
+	std::vector<ManagedText *>::iterator itManage;
 	for(itManage = entries.begin(); itManage < entries.end(); ++itManage) {
 		delete *itManage;
 	}
