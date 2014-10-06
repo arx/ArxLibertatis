@@ -66,6 +66,8 @@ struct EERIE_CAMERA {
 	float cdepth;
 
 	Anglef size;
+	
+	glm::mat4x4 ProjectionMatrix;
 
 	void setTargetCamera(const Vec3f &target) {
 		setTargetCamera(target.x, target.y, target.z);

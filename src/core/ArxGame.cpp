@@ -186,8 +186,6 @@ extern ParticleManager * pParticleManager;
 extern CircularVertexBuffer<TexturedVertex> * pDynamicVertexBuffer_TLVERTEX; // VB using TLVERTEX format.
 extern CircularVertexBuffer<SMY_VERTEX3> * pDynamicVertexBuffer;
 
-extern glm::mat4x4 ProjectionMatrix;
-
 long STOP_KEYBOARD_INPUT= 0;
 
 long BOOKBUTTON=0;
@@ -2386,7 +2384,7 @@ void ArxGame::update2DFX()
 				Vec3f vector = lv - ACTIVECAM->orgTrans.pos;
 				lv -= vector * (50.f / glm::length(vector));
 
-				float fZFar=ProjectionMatrix[2][2]*(1.f/(ACTIVECAM->cdepth*fZFogEnd))+ProjectionMatrix[3][2];
+				float fZFar=ACTIVECAM->ProjectionMatrix[2][2]*(1.f/(ACTIVECAM->cdepth*fZFogEnd))+ACTIVECAM->ProjectionMatrix[3][2];
 
 				Vec3f hit;
 				EERIEPOLY *tp=NULL;
