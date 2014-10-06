@@ -1284,7 +1284,7 @@ void ARX_PARTICLES_Update(EERIE_CAMERA * cam)  {
 		} else if(part->is2D) {
 			
 			float siz2 = part->siz + part->scale.y * fd;
-			EERIEAddBitmap(mat, in.x, in.y, siz, siz2, in.z, tc, color);
+			EERIEAddBitmap(mat, in, siz, siz2, tc, color);
 			
 		} else {
 			

@@ -190,9 +190,9 @@ void DrawBitmap(const Rectf & rect, float z, TextureContainer * tex, Color color
 	EERIEDRAWPRIM(Renderer::TriangleFan, s.v, 4);
 }
 
-void EERIEAddBitmap(const RenderMaterial & mat, float x, float y, float sx, float sy, float z, TextureContainer * tex, Color color) {
+void EERIEAddBitmap(const RenderMaterial & mat, const Vec3f & p, float sx, float sy, TextureContainer * tex, Color color) {
 	TexturedQuad s;
-	CreateBitmap(s, Rectf(Vec2f(x, y), sx, sy), z, tex, color, false);
+	CreateBitmap(s, Rectf(Vec2f(p.x, p.y), sx, sy), p.z, tex, color, false);
 	RenderBatcher::getInstance().add(mat, s);
 }
 
