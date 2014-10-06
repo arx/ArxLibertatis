@@ -2349,7 +2349,7 @@ void ArxGame::render() {
 
 void ArxGame::update2DFX()
 {
-	TexturedVertex lv,ltvv;
+	TexturedVertex ltvv;
 
 	Entity* pTableIO[256];
 	int nNbInTableIO = 0;
@@ -2369,8 +2369,8 @@ void ArxGame::update2DFX()
 		}
 
 		if(el->extras & EXTRAS_FLARE) {
-			lv.p = el->pos;
-			EE_RTP(lv.p, &ltvv);
+			Vec3f lv = el->pos;
+			EE_RTP(lv, &ltvv);
 			el->temp -= temp_increase;
 
 			if(!(player.Interface & INTER_COMBATMODE) && (player.Interface & INTER_MAP))
@@ -2383,15 +2383,15 @@ void ArxGame::update2DFX()
 				ltvv.p.y < (g_size.height()-(CINEMA_DECAL*g_sizeRatio.y))
 				)
 			{
-				Vec3f vector = lv.p - ACTIVECAM->orgTrans.pos;
-				lv.p -= vector * (50.f / glm::length(vector));
+				Vec3f vector = lv - ACTIVECAM->orgTrans.pos;
+				lv -= vector * (50.f / glm::length(vector));
 
 				float fZFar=ProjectionMatrix[2][2]*(1.f/(ACTIVECAM->cdepth*fZFogEnd))+ProjectionMatrix[3][2];
 
 				Vec3f hit;
 				EERIEPOLY *tp=NULL;
 				Vec2s ees2dlv;
-				Vec3f ee3dlv = lv.p;
+				Vec3f ee3dlv = lv;
 
 				ees2dlv.x = checked_range_cast<short>(ltvv.p.x);
 				ees2dlv.y = checked_range_cast<short>(ltvv.p.y);
