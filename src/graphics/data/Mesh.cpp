@@ -468,29 +468,30 @@ void EE_RTP(const Vec3f & in, TexturedVertex * out) {
 
 static void camEE_RTP(const Vec3f & in, TexturedVertex * out, EERIE_CAMERA * cam) {
 	
-	TexturedVertex tout;
-	out->p = in - cam->orgTrans.pos;
+	const Vec3f temp1 = in - cam->orgTrans.pos;
+	Vec3f temp2;
+	Vec3f temp3;
+	
+	temp2.x = (temp1.x * cam->orgTrans.ycos) + (temp1.z * cam->orgTrans.ysin);
+	temp2.z = (temp1.z * cam->orgTrans.ycos) - (temp1.x * cam->orgTrans.ysin);
+	temp3.z = (temp1.y * cam->orgTrans.xsin) + (temp2.z * cam->orgTrans.xcos);
+	temp3.y = (temp1.y * cam->orgTrans.xcos) - (temp2.z * cam->orgTrans.xsin);
+	temp2.y = (temp3.y * cam->orgTrans.zcos) - (temp2.x * cam->orgTrans.zsin);
+	temp2.x = (temp2.x * cam->orgTrans.zcos) + (temp3.y * cam->orgTrans.zsin);
 
-	tout.p.x = (out->p.x * cam->orgTrans.ycos) + (out->p.z * cam->orgTrans.ysin);
-	tout.p.z = (out->p.z * cam->orgTrans.ycos) - (out->p.x * cam->orgTrans.ysin);
-	out->p.z = (out->p.y * cam->orgTrans.xsin) + (tout.p.z * cam->orgTrans.xcos);
-	out->p.y = (out->p.y * cam->orgTrans.xcos) - (tout.p.z * cam->orgTrans.xsin);
-	tout.p.y = (out->p.y * cam->orgTrans.zcos) - (tout.p.x * cam->orgTrans.zsin);
-	tout.p.x = (tout.p.x * cam->orgTrans.zcos) + (out->p.y * cam->orgTrans.zsin);
-
-	if (out->p.z <= 0.f)
+	if (temp3.z <= 0.f)
 	{
-		out->rhw = 1.f - out->p.z;
+		out->rhw = 1.f - temp3.z;
 	}
 	else
 	{
-		out->rhw = 1.f / out->p.z;
+		out->rhw = 1.f / temp3.z;
 	}
 
-	tout.rhw = (cam->focal * g_sizeRatio.x) * out->rhw;
-	out->p.z = out->p.z * (1.f / (cam->cdepth * 1.2f));
-	out->p.x = cam->orgTrans.mod.x + (tout.p.x * tout.rhw);
-	out->p.y = cam->orgTrans.mod.y + (tout.p.y * tout.rhw) ;
+	const float rhw = (cam->focal * g_sizeRatio.x) * out->rhw;
+	out->p.z = temp3.z * (1.f / (cam->cdepth * 1.2f));
+	out->p.x = cam->orgTrans.mod.x + (temp2.x * rhw);
+	out->p.y = cam->orgTrans.mod.y + (temp2.y * rhw) ;
 }
 
 //*************************************************************************************
