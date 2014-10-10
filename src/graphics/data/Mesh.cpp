@@ -470,12 +470,9 @@ static void camEE_RTP(const Vec3f & in, TexturedVertex * out, EERIE_CAMERA * cam
 	
 	const Vec3f rt = Vec3f(cam->orgTrans.worldToView * Vec4f(in, 1.0f));
 	
-	if (rt.z <= 0.f)
-	{
+	if(rt.z <= 0.f) {
 		out->rhw = 1.f - rt.z;
-	}
-	else
-	{
+	} else {
 		out->rhw = 1.f / rt.z;
 	}
 
