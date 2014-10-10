@@ -466,8 +466,7 @@ void EE_RTP(const Vec3f & in, TexturedVertex * out) {
 	EE_P(&out->p, out);
 }
 
-static void camEE_RTP(const Vec3f & in, TexturedVertex * out, EERIE_CAMERA * cam) {
-	
+Vec3f camEE_RT(const Vec3f & in, EERIE_CAMERA * cam) {
 	const Vec3f temp1 = in - cam->orgTrans.pos;
 	Vec3f temp2;
 	Vec3f temp3;
@@ -478,20 +477,27 @@ static void camEE_RTP(const Vec3f & in, TexturedVertex * out, EERIE_CAMERA * cam
 	temp3.y = (temp1.y * cam->orgTrans.xcos) - (temp2.z * cam->orgTrans.xsin);
 	temp2.y = (temp3.y * cam->orgTrans.zcos) - (temp2.x * cam->orgTrans.zsin);
 	temp2.x = (temp2.x * cam->orgTrans.zcos) + (temp3.y * cam->orgTrans.zsin);
+	
+	return Vec3f(temp2.x, temp2.y, temp3.z);
+}
 
-	if (temp3.z <= 0.f)
+static void camEE_RTP(const Vec3f & in, TexturedVertex * out, EERIE_CAMERA * cam) {
+	
+	const Vec3f rt = camEE_RT(in, cam);
+	
+	if (rt.z <= 0.f)
 	{
-		out->rhw = 1.f - temp3.z;
+		out->rhw = 1.f - rt.z;
 	}
 	else
 	{
-		out->rhw = 1.f / temp3.z;
+		out->rhw = 1.f / rt.z;
 	}
 
 	const float rhw = (cam->focal * g_sizeRatio.x) * out->rhw;
-	out->p.z = temp3.z * (1.f / (cam->cdepth * 1.2f));
-	out->p.x = cam->orgTrans.mod.x + (temp2.x * rhw);
-	out->p.y = cam->orgTrans.mod.y + (temp2.y * rhw) ;
+	out->p.z = rt.z * (1.f / (cam->cdepth * 1.2f));
+	out->p.x = cam->orgTrans.mod.x + (rt.x * rhw);
+	out->p.y = cam->orgTrans.mod.y + (rt.y * rhw) ;
 }
 
 //*************************************************************************************
