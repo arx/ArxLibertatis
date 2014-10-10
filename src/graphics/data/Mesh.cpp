@@ -466,24 +466,9 @@ void EE_RTP(const Vec3f & in, TexturedVertex * out) {
 	EE_P(&out->p, out);
 }
 
-Vec3f camEE_RT(const Vec3f & in, EERIE_CAMERA * cam) {
-	const Vec3f temp1 = in - cam->orgTrans.pos;
-	Vec3f temp2;
-	Vec3f temp3;
-	
-	temp2.x = (temp1.x * cam->orgTrans.ycos) + (temp1.z * cam->orgTrans.ysin);
-	temp2.z = (temp1.z * cam->orgTrans.ycos) - (temp1.x * cam->orgTrans.ysin);
-	temp3.z = (temp1.y * cam->orgTrans.xsin) + (temp2.z * cam->orgTrans.xcos);
-	temp3.y = (temp1.y * cam->orgTrans.xcos) - (temp2.z * cam->orgTrans.xsin);
-	temp2.y = (temp3.y * cam->orgTrans.zcos) - (temp2.x * cam->orgTrans.zsin);
-	temp2.x = (temp2.x * cam->orgTrans.zcos) + (temp3.y * cam->orgTrans.zsin);
-	
-	return Vec3f(temp2.x, temp2.y, temp3.z);
-}
-
 static void camEE_RTP(const Vec3f & in, TexturedVertex * out, EERIE_CAMERA * cam) {
 	
-	const Vec3f rt = camEE_RT(in, cam);
+	const Vec3f rt = Vec3f(cam->orgTrans.worldToView * Vec4f(in, 1.0f));
 	
 	if (rt.z <= 0.f)
 	{
