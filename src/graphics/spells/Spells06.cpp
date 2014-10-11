@@ -215,12 +215,7 @@ void CCreateField::Render()
 	}
 
 	falpha = glm::sin(glm::radians(fglow)) + rnd() * 0.2f;
-
-	if(falpha > 1.0f)
-		falpha = 1.0f;
-
-	if(falpha < 0.0f)
-		falpha = 0.0f;
+	falpha = glm::clamp(falpha, 0.f, 1.f);
 
 	float x = eSrc.x;
 	float y = eSrc.y;
