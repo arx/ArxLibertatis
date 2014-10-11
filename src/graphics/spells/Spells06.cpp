@@ -63,8 +63,6 @@ ZeniMax Media Inc., Suite 120, Rockville, Maryland 20850 USA.
 #include "scene/Object.h"
 #include "scene/Interactive.h"
 
-extern ParticleManager * pParticleManager;
-
 CCreateField::CCreateField()
 	: eSrc(Vec3f_ZERO)
 	, youp(true)
