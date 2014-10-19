@@ -46,18 +46,28 @@ ZeniMax Media Inc., Suite 120, Rockville, Maryland 20850 USA.
 
 #include "graphics/GraphicsUtility.h"
 
+#include "graphics/Math.h"
+
+void rotPoint(Vec3f *in, Vec3f *out, EERIE_TRANSFORM &transform) {
+
+	Vec3f tmp;
+
+	ZRotatePoint(in, out, transform.zcos, transform.zsin);
+	XRotatePoint(out, &tmp, transform.xcos, transform.xsin);
+	YRotatePoint(&tmp, out, transform.ycos, -transform.ysin);
+}
+
 void Util_SetViewMatrix(glm::mat4x4 &mat, EERIE_TRANSFORM &transform) {
 
 	Vec3f vFrom(transform.pos.x, -transform.pos.y, transform.pos.z);
 	Vec3f vTout(0.0f, 0.0f, 1.0f);
 
 	Vec3f vView;
-	vView.y = -(vTout.z * transform.xsin);
-	vView.z = -(vTout.z * transform.xcos);
-	vView.x =  (vView.z * transform.ysin);
-	vView.z = -(vView.z * transform.ycos);
-
-	Vec3f vWorldUp(0.f, 1.f, 0.f);
+	rotPoint(&vTout, &vView, transform);
+	
+	Vec3f up(0.f, 1.f, 0.f);
+	Vec3f vWorldUp;
+	rotPoint(&up, &vWorldUp, transform);
 
 	// Normalize the z basis vector
 	float fLength = glm::length(vView);

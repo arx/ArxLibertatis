@@ -213,18 +213,6 @@ void QuatFromMatrix(glm::quat & quat, const glm::mat4x4 & mat) {
 }
 
 
-inline void ZRotatePoint(Vec3f * in, Vec3f * out, float c, float s) {
-	*out = Vec3f(in->x * c + in->y * s, in->y * c - in->x * s, in->z);
-}
-
-inline void YRotatePoint(Vec3f * in, Vec3f * out, float c, float s) {
-	*out = Vec3f(in->x * c + in->z * s, in->y, in->z * c - in->x * s);
-}
-
-inline void XRotatePoint(Vec3f * in, Vec3f * out, float c, float s) {
-	*out = Vec3f(in->x, in->y * c - in->z * s, in->y * s + in->z * c);
-}
-
 glm::quat toNonNpcRotation(const Anglef & src) {
 	Anglef ang = src;
 	ang.setYaw(360 - ang.getYaw());
