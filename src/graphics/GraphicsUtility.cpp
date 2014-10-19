@@ -57,22 +57,14 @@ void rotPoint(Vec3f *in, Vec3f *out, EERIE_TRANSFORM &transform) {
 	YRotatePoint(&tmp, out, transform.ycos, -transform.ysin);
 }
 
-void Util_SetViewMatrix(glm::mat4x4 &mat, EERIE_TRANSFORM &transform) {
-
-	Vec3f vFrom(transform.pos.x, -transform.pos.y, transform.pos.z);
-	Vec3f vTout(0.0f, 0.0f, 1.0f);
-
-	Vec3f vView;
-	rotPoint(&vTout, &vView, transform);
+glm::mat4 Util_LookAt(Vec3f vFrom, Vec3f vView, Vec3f vWorldUp) {
 	
-	Vec3f up(0.f, 1.f, 0.f);
-	Vec3f vWorldUp;
-	rotPoint(&up, &vWorldUp, transform);
-
+	glm::mat4x4 mat;
+	
 	// Normalize the z basis vector
 	float fLength = glm::length(vView);
 	if (fLength < 1e-6f)
-		return;
+		return glm::mat4(1);
 
 	// Get the dot product, and calculate the projection of the z basis
 	// vector onto the up vector. The projection is the y basis vector.
@@ -92,7 +84,7 @@ void Util_SetViewMatrix(glm::mat4x4 &mat, EERIE_TRANSFORM &transform) {
 			vUp = Vec3f_Z_AXIS - vView * vView.z;
 
 			if(1e-6f > (fLength = glm::length(vUp)))
-				return;
+				return glm::mat4(1);
 		}
 	}
 
@@ -120,4 +112,21 @@ void Util_SetViewMatrix(glm::mat4x4 &mat, EERIE_TRANSFORM &transform) {
 	mat[3][1] = -glm::dot(vFrom, vUp);
 	mat[3][2] = -glm::dot(vFrom, vView);
 	mat[3][3] = 1.0f;
+	
+	return mat;
+}
+
+void Util_SetViewMatrix(glm::mat4x4 &mat, EERIE_TRANSFORM &transform) {
+
+	Vec3f vFrom(transform.pos.x, -transform.pos.y, transform.pos.z);
+	Vec3f vTout(0.0f, 0.0f, 1.0f);
+
+	Vec3f vView;
+	rotPoint(&vTout, &vView, transform);
+	
+	Vec3f up(0.f, 1.f, 0.f);
+	Vec3f vWorldUp;
+	rotPoint(&up, &vWorldUp, transform);
+
+	mat = Util_LookAt(vFrom, vView, vWorldUp);
 }
