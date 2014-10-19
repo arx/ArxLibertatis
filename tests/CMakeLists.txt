@@ -23,10 +23,9 @@ add_executable(arxtest
 	../src/util/String.cpp
 	
 	math/AssertionTraits.h
+	graphics/ColorTest.cpp
 	math/LegacyMath.h
 	math/LegacyMathTest.cpp
-	graphics/GraphicsUtilityTest.cpp
-	graphics/ColorTest.cpp
 	util/StringTest.cpp
 )
 
