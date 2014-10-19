@@ -19,6 +19,8 @@
 
 #include "LegacyMathTest.h"
 
+#include <glm/gtx/euler_angles.hpp>
+
 #include "graphics/Math.h"
 
 #include "AssertionTraits.h"
@@ -45,47 +47,60 @@ static void addTestData(glm::quat quat, Anglef angle, glm::mat3 mat) {
 }
 
 void LegacyMathTest::setUp() {
+	
+	using glm::quat;
+	using glm::mat3;
+	
 	// Data from:
 	// http://www.euclideanspace.com/maths/geometry/rotations/conversions/eulerToQuaternion/steps/index.htm
 	// http://www.euclideanspace.com/maths/algebra/matrix/transforms/examples/index.htm
 	
 	// Identity (no rotation)
-	addTestData(glm::quat(    1.f,    0.0f,    0.0f,    0.0f), Anglef(  0.f,   0.f,   0.f), glm::mat3( 1, 0, 0,  0, 1, 0,  0, 0, 1));
+	addTestData(quat(    1.f,    0.0f,    0.0f,    0.0f), Anglef(  0,  0,  0), mat3( 1, 0, 0,  0, 1, 0,  0, 0, 1));
 	// 90 degrees about y axis
-	addTestData(glm::quat(0.7071f,    0.0f, 0.7071f,    0.0f), Anglef( 90.f,   0.f,   0.f), glm::mat3( 0, 0, 1,  0, 1, 0, -1, 0, 0));
+	addTestData(quat(0.7071f,    0.0f, 0.7071f,    0.0f), Anglef( 90,  0,  0), mat3( 0, 0, 1,  0, 1, 0, -1, 0, 0));
 	// 180 degrees about y axis
-	addTestData(glm::quat(   0.0f,    0.0f,     1.f,    0.0f), Anglef(180.f,   0.f,   0.f), glm::mat3(-1, 0, 0,  0, 1, 0,  0, 0,-1));
+	addTestData(quat(   0.0f,    0.0f,     1.f,    0.0f), Anglef(180,  0,  0), mat3(-1, 0, 0,  0, 1, 0,  0, 0,-1));
 	// 270 degrees about y axis
-	addTestData(glm::quat(0.7071f,    0.0f,-0.7071f,    0.0f), Anglef(-90.f,   0.f,   0.f), glm::mat3( 0, 0,-1,  0, 1, 0,  1, 0, 0));
+	addTestData(quat(0.7071f,    0.0f,-0.7071f,    0.0f), Anglef(-90,  0,  0), mat3( 0, 0,-1,  0, 1, 0,  1, 0, 0));
 	
-	addTestData(glm::quat(0.7071f,    0.0f,    0.0f, 0.7071f), Anglef(  0.f,  90.f,   0.f), glm::mat3( 0,-1, 0,  1, 0, 0,  0, 0, 1));
-	addTestData(glm::quat(   0.5f,    0.5f,    0.5f,    0.5f), Anglef( 90.f,  90.f,   0.f), glm::mat3( 0, 0, 1,  1, 0, 0,  0, 1, 0));
-	addTestData(glm::quat(   0.0f, 0.7071f, 0.7071f,    0.0f), Anglef(180.f,  90.f,   0.f), glm::mat3( 0, 1, 0,  1, 0, 0,  0, 0,-1));
-	addTestData(glm::quat(   0.5f,   -0.5f,   -0.5f,    0.5f), Anglef(-90.f,  90.f,   0.f), glm::mat3( 0, 0,-1,  1, 0, 0,  0,-1, 0));
+	addTestData(quat(0.7071f,    0.0f,    0.0f, 0.7071f), Anglef(  0, 90,  0), mat3( 0,-1, 0,  1, 0, 0,  0, 0, 1));
+	addTestData(quat(   0.5f,    0.5f,    0.5f,    0.5f), Anglef( 90, 90,  0), mat3( 0, 0, 1,  1, 0, 0,  0, 1, 0));
+	addTestData(quat(   0.0f, 0.7071f, 0.7071f,    0.0f), Anglef(180, 90,  0), mat3( 0, 1, 0,  1, 0, 0,  0, 0,-1));
+	addTestData(quat(   0.5f,   -0.5f,   -0.5f,    0.5f), Anglef(-90, 90,  0), mat3( 0, 0,-1,  1, 0, 0,  0,-1, 0));
 	
-	addTestData(glm::quat(0.7071f,    0.0f,    0.0f,-0.7071f), Anglef(  0.f, -90.f,   0.f), glm::mat3( 0, 1, 0, -1, 0, 0,  0, 0, 1));
-	addTestData(glm::quat(   0.5f,   -0.5f,    0.5f,   -0.5f), Anglef( 90.f, -90.f,   0.f), glm::mat3( 0, 0, 1, -1, 0, 0,  0,-1, 0));
-	addTestData(glm::quat(   0.0f,-0.7071f, 0.7071f,    0.0f), Anglef(180.f, -90.f,   0.f), glm::mat3( 0,-1, 0, -1, 0, 0,  0, 0,-1));
-	addTestData(glm::quat(   0.5f,    0.5f,   -0.5f,   -0.5f), Anglef(-90.f, -90.f,   0.f), glm::mat3( 0, 0,-1, -1, 0, 0,  0, 1, 0));
+	addTestData(quat(0.7071f,    0.0f,    0.0f,-0.7071f), Anglef(  0,-90,  0), mat3( 0, 1, 0, -1, 0, 0,  0, 0, 1));
+	addTestData(quat(   0.5f,   -0.5f,    0.5f,   -0.5f), Anglef( 90,-90,  0), mat3( 0, 0, 1, -1, 0, 0,  0,-1, 0));
+	addTestData(quat(   0.0f,-0.7071f, 0.7071f,    0.0f), Anglef(180,-90,  0), mat3( 0,-1, 0, -1, 0, 0,  0, 0,-1));
+	addTestData(quat(   0.5f,    0.5f,   -0.5f,   -0.5f), Anglef(-90,-90,  0), mat3( 0, 0,-1, -1, 0, 0,  0, 1, 0));
 	
-	addTestData(glm::quat(0.7071f, 0.7071f,    0.0f,    0.0f), Anglef(  0.f,   0.f,  90.f), glm::mat3( 1, 0, 0,  0, 0,-1,  0, 1, 0));
-	addTestData(glm::quat(   0.5f,    0.5f,    0.5f,   -0.5f), Anglef( 90.f,   0.f,  90.f), glm::mat3( 0, 1, 0,  0, 0,-1, -1, 0, 0));
-	addTestData(glm::quat(   0.0f,    0.0f, 0.7071f,-0.7071f), Anglef(180.f,   0.f,  90.f), glm::mat3(-1, 0, 0,  0, 0,-1,  0,-1, 0));
-	addTestData(glm::quat(   0.5f,    0.5f,   -0.5f,    0.5f), Anglef(-90.f,   0.f,  90.f), glm::mat3( 0,-1, 0,  0, 0,-1,  1, 0, 0));
+	addTestData(quat(0.7071f, 0.7071f,    0.0f,    0.0f), Anglef(  0,  0, 90), mat3( 1, 0, 0,  0, 0,-1,  0, 1, 0));
+	addTestData(quat(   0.5f,    0.5f,    0.5f,   -0.5f), Anglef( 90,  0, 90), mat3( 0, 1, 0,  0, 0,-1, -1, 0, 0));
+	addTestData(quat(   0.0f,    0.0f, 0.7071f,-0.7071f), Anglef(180,  0, 90), mat3(-1, 0, 0,  0, 0,-1,  0,-1, 0));
+	addTestData(quat(   0.5f,    0.5f,   -0.5f,    0.5f), Anglef(-90,  0, 90), mat3( 0,-1, 0,  0, 0,-1,  1, 0, 0));
 	
-	addTestData(glm::quat(   0.0f,    1.0f,    0.0f,    0.0f), Anglef(  0.f,   0.f, 180.f), glm::mat3( 1, 0, 0,  0,-1, 0,  0, 0,-1));
-	addTestData(glm::quat(   0.0f, 0.7071f,    0.0f,-0.7071f), Anglef( 90.f,   0.f, 180.f), glm::mat3( 0, 0,-1,  0,-1, 0, -1, 0, 0));
-	addTestData(glm::quat(   0.0f,    0.0f,    0.0f,    1.0f), Anglef(180.f,   0.f, 180.f), glm::mat3(-1, 0, 0,  0,-1, 0,  0, 0, 1));
-	addTestData(glm::quat(   0.0f, 0.7071f,    0.0f, 0.7071f), Anglef(-90.f,   0.f, 180.f), glm::mat3( 0, 0, 1,  0,-1, 0,  1, 0, 0));
+	addTestData(quat(   0.0f,    1.0f,    0.0f,    0.0f), Anglef(  0,  0,180), mat3( 1, 0, 0,  0,-1, 0,  0, 0,-1));
+	addTestData(quat(   0.0f, 0.7071f,    0.0f,-0.7071f), Anglef( 90,  0,180), mat3( 0, 0,-1,  0,-1, 0, -1, 0, 0));
+	addTestData(quat(   0.0f,    0.0f,    0.0f,    1.0f), Anglef(180,  0,180), mat3(-1, 0, 0,  0,-1, 0,  0, 0, 1));
+	addTestData(quat(   0.0f, 0.7071f,    0.0f, 0.7071f), Anglef(-90,  0,180), mat3( 0, 0, 1,  0,-1, 0,  1, 0, 0));
 	
-	addTestData(glm::quat(0.7071f,-0.7071f,    0.0f,    0.0f), Anglef(  0.f,   0.f, -90.f), glm::mat3( 1, 0, 0,  0, 0, 1,  0,-1, 0));
-	addTestData(glm::quat(   0.5f,   -0.5f,    0.5f,    0.5f), Anglef( 90.f,   0.f, -90.f), glm::mat3( 0,-1, 0,  0, 0, 1, -1, 0, 0));
-	addTestData(glm::quat(   0.0f,    0.0f, 0.7071f, 0.7071f), Anglef(180.f,   0.f, -90.f), glm::mat3(-1, 0, 0,  0, 0, 1,  0, 1, 0));
-	addTestData(glm::quat(   0.5f,   -0.5f,   -0.5f,   -0.5f), Anglef(-90.f,   0.f, -90.f), glm::mat3( 0, 1, 0,  0, 0, 1,  1, 0, 0));
+	addTestData(quat(0.7071f,-0.7071f,    0.0f,    0.0f), Anglef(  0,  0,-90), mat3( 1, 0, 0,  0, 0, 1,  0,-1, 0));
+	addTestData(quat(   0.5f,   -0.5f,    0.5f,    0.5f), Anglef( 90,  0,-90), mat3( 0,-1, 0,  0, 0, 1, -1, 0, 0));
+	addTestData(quat(   0.0f,    0.0f, 0.7071f, 0.7071f), Anglef(180,  0,-90), mat3(-1, 0, 0,  0, 0, 1,  0, 1, 0));
+	addTestData(quat(   0.5f,   -0.5f,   -0.5f,   -0.5f), Anglef(-90,  0,-90), mat3( 0, 1, 0,  0, 0, 1,  1, 0, 0));
 }
 
 void LegacyMathTest::tearDown() {
 	rotations.clear();
+}
+
+void LegacyMathTest::rotationTestDataTest() {
+	typedef std::vector<TestRotation>::iterator Itr;
+	for(Itr i = rotations.begin(); i != rotations.end(); ++i) {
+		
+		CPPUNIT_ASSERT_EQUAL(i->quat, glm::toQuat(i->mat));
+		CPPUNIT_ASSERT_EQUAL(glm::toMat4(i->quat), glm::mat4(i->mat));
+	}
 }
 
 void LegacyMathTest::quaternionTests() {
