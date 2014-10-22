@@ -112,7 +112,7 @@ glm::mat4 Util_LookAt(Vec3f vFrom, Vec3f vView, Vec3f vWorldUp) {
 	return mat;
 }
 
-void Util_SetViewMatrix(glm::mat4x4 &mat, EERIE_TRANSFORM &transform) {
+glm::mat4 Util_SetViewMatrix(EERIE_TRANSFORM &transform) {
 
 	Vec3f vFrom(transform.pos.x, -transform.pos.y, transform.pos.z);
 	Vec3f vTout(0.0f, 0.0f, 1.0f);
@@ -124,7 +124,7 @@ void Util_SetViewMatrix(glm::mat4x4 &mat, EERIE_TRANSFORM &transform) {
 	Vec3f vWorldUp;
 	rotPoint(&up, &vWorldUp, transform);
 
-	mat = Util_LookAt(vFrom, vView, vWorldUp);
+	return Util_LookAt(vFrom, vView, vWorldUp);
 }
 
 
@@ -170,9 +170,8 @@ void EERIE_CreateMatriceProj(float _fWidth, float _fHeight, EERIE_CAMERA * cam) 
 	cam->ProjectionMatrix[3][2] = (-Q * fNearPlane);
 	cam->ProjectionMatrix[2][3] = 1.f;
 	GRenderer->SetProjectionMatrix(cam->ProjectionMatrix);
-
-	glm::mat4x4 tempViewMatrix;
-	Util_SetViewMatrix(tempViewMatrix, cam->orgTrans);
+	
+	glm::mat4 tempViewMatrix = Util_SetViewMatrix(cam->orgTrans);
 	GRenderer->SetViewMatrix(tempViewMatrix);
 
 	cam->ProjectionMatrix[0][0] *= _fWidth * .5f;
