@@ -17,7 +17,6 @@ add_executable(arxtest
 	
 	../src/graphics/Math.cpp
 	../src/graphics/Color.h
-	../src/graphics/GraphicsUtility.cpp
 	../src/graphics/Renderer.cpp
 	../src/game/Camera.cpp
 	../src/util/String.cpp

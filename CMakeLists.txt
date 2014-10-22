@@ -712,7 +712,6 @@ set(GRAPHICS_SOURCES
 	src/graphics/DrawLine.cpp
 	src/graphics/DrawDebug.cpp
 	src/graphics/GraphicsModes.cpp
-	src/graphics/GraphicsUtility.cpp
 	src/graphics/Math.cpp
 	src/graphics/Renderer.cpp
 	src/graphics/RenderBatcher.cpp

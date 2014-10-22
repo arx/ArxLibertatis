@@ -23,8 +23,6 @@
 #include <cppunit/TestCase.h>
 #include <cppunit/extensions/HelperMacros.h>
 
-#include "graphics/GraphicsUtility.h"
-
 class StringTest : public CppUnit::TestFixture {
 	
 	CPPUNIT_TEST_SUITE(StringTest);	
