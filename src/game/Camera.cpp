@@ -128,22 +128,21 @@ void Util_SetViewMatrix(glm::mat4x4 &mat, EERIE_TRANSFORM &transform) {
 }
 
 
-float EERIE_TransformOldFocalToNewFocal(float _fOldFocal)
-{
-	if(_fOldFocal < 200)
-		return (-.34f * _fOldFocal + 168.5f);
-	else if(_fOldFocal < 300)
-		return (-.25f * _fOldFocal + 150.5f);
-	else if(_fOldFocal < 400)
-		return (-.155f * _fOldFocal + 124.f);
-	else if(_fOldFocal < 500)
-		return (-.11f * _fOldFocal + 106.f);
-	else if(_fOldFocal < 600)
-		return (-.075f * _fOldFocal + 88.5f);
-	else if(_fOldFocal < 700)
-		return (-.055f * _fOldFocal + 76.5f);
-	else if(_fOldFocal < 800)
-		return (-.045f * _fOldFocal + 69.5f);
+float focalToFov(float focal) {
+	if(focal < 200)
+		return (-.34f * focal + 168.5f);
+	else if(focal < 300)
+		return (-.25f * focal + 150.5f);
+	else if(focal < 400)
+		return (-.155f * focal + 124.f);
+	else if(focal < 500)
+		return (-.11f * focal + 106.f);
+	else if(focal < 600)
+		return (-.075f * focal + 88.5f);
+	else if(focal < 700)
+		return (-.055f * focal + 76.5f);
+	else if(focal < 800)
+		return (-.045f * focal + 69.5f);
 	else
 		return 33.5f;
 }
@@ -151,7 +150,7 @@ float EERIE_TransformOldFocalToNewFocal(float _fOldFocal)
 
 void EERIE_CreateMatriceProj(float _fWidth, float _fHeight, EERIE_CAMERA * cam) {
 
-	float _fFOV = EERIE_TransformOldFocalToNewFocal(cam->focal);
+	float _fFOV = focalToFov(cam->focal);
 	float _fZNear = 1.f;
 	float _fZFar = cam->cdepth;
 
