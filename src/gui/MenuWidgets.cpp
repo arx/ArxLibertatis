@@ -1335,13 +1335,11 @@ CheckboxWidget::CheckboxWidget(TextWidget *_pText)
 	
 	Vec2i textSize(0,0);
 
-	if(pText) {
 		textSize = pText->pFont->getTextSize(pText->lpszText); 
 
 		_iTaille = std::max<int>(_iTaille, textSize.y);
 		textSize.x += pText->rZone.left;
 		pText->Move(m_pos + Vec2i(0, (_iTaille - textSize.y) / 2));
-	}
 
 	rZone.left = m_pos.x;
 	rZone.top = m_pos.y;
@@ -1362,10 +1360,7 @@ CheckboxWidget::~CheckboxWidget() {
 void CheckboxWidget::Move(const Vec2i & offset) {
 	
 	Widget::Move(offset);
-	
-	if(pText) {
-		pText->Move(offset);
-	}
+	pText->Move(offset);
 }
 
 bool CheckboxWidget::OnMouseClick() {
@@ -1473,7 +1468,6 @@ void CheckboxWidget::Render() {
 		//carre
 		EERIEDrawBitmap2(Rectf(Vec2f(rZone.right - iTaille, iY), RATIO_X(iTaille), RATIO_Y(iTaille)), 0.f, pTex, color);
 
-	if(pText)
 		pText->Render();
 
 	//DEBUG
@@ -1505,8 +1499,7 @@ void CheckboxWidget::RenderMouseOver() {
 	EERIEDrawBitmap2(Rectf(Vec2f(rZone.right - iTaille, iY), RATIO_X(iTaille), RATIO_Y(iTaille)), 0.f, pTex, Color::white); 
 
 	//tick
-	if (pText)
-		pText->RenderMouseOver();
+	pText->RenderMouseOver();
 
 	//DEBUG
 	GRenderer->SetRenderState(Renderer::AlphaBlending, false);
