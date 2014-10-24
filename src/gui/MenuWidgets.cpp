@@ -1314,16 +1314,13 @@ CheckboxWidget::CheckboxWidget(TextWidget *_pText)
 {
 	arx_assert(_pText);
 	
-	TextureContainer *_pTex1 = TextureContainer::Load("graph/interface/menus/menu_checkbox_off");
-	TextureContainer *_pTex2 = TextureContainer::Load("graph/interface/menus/menu_checkbox_on");
-	arx_assert(_pTex1);
-	arx_assert(_pTex2);
-	arx_assert(_pTex1->size() == _pTex2->size());
+	m_textureOff = TextureContainer::Load("graph/interface/menus/menu_checkbox_off");
+	m_textureOn = TextureContainer::Load("graph/interface/menus/menu_checkbox_on");
+	arx_assert(m_textureOff);
+	arx_assert(m_textureOn);
+	arx_assert(m_textureOff->size() == m_textureOn->size());
 	
-	vTex.push_back(_pTex1);
-	vTex.push_back(_pTex2);
-	
-	int _iTaille = _pTex1->m_dwWidth;
+	int _iTaille = m_textureOff->m_dwWidth;
 	
 	iID = -1;
 	iState    = 0;
@@ -1333,8 +1330,8 @@ CheckboxWidget::CheckboxWidget(TextWidget *_pText)
 	iTaille = _iTaille;
 	pText    = _pText;
 	
-	_iTaille = std::max(_iTaille, (int)RATIO_X(_pTex1->m_dwWidth));
-	_iTaille = std::max(_iTaille, (int)RATIO_Y(_pTex1->m_dwHeight));
+	_iTaille = std::max(_iTaille, (int)RATIO_X(m_textureOff->m_dwWidth));
+	_iTaille = std::max(_iTaille, (int)RATIO_Y(m_textureOff->m_dwHeight));
 	
 	Vec2i textSize(0,0);
 
@@ -1352,7 +1349,7 @@ CheckboxWidget::CheckboxWidget(TextWidget *_pText)
 	rZone.bottom = m_pos.y + std::max<int>(_iTaille, textSize.y);
 	pRef=this;
 	
-	float rZoneR = RATIO_X(200.f) + RATIO_X(_pTex1->m_dwWidth) + (RATIO_X(12*9) - RATIO_X(_pTex1->m_dwWidth))*0.5f;
+	float rZoneR = RATIO_X(200.f) + RATIO_X(m_textureOff->m_dwWidth) + (RATIO_X(12*9) - RATIO_X(m_textureOff->m_dwWidth))*0.5f;
 	rZone.right = rZoneR;
 	
 	Move(m_pos);
@@ -1381,7 +1378,7 @@ bool CheckboxWidget::OnMouseClick() {
 	//NB : It seems that iState cannot be negative (used as tabular index / used as bool) but need further approval
 	arx_assert(iState >= 0);
 
-	if((size_t)iState >= vTex.size()) {
+	if((size_t)iState >= 2) {
 		iState = 0;
 	}
 
@@ -1462,8 +1459,7 @@ void CheckboxWidget::Render() {
 	GRenderer->SetRenderState(Renderer::AlphaBlending, true);
 	GRenderer->SetBlendFunc(Renderer::BlendOne, Renderer::BlendOne);
 
-	if(!vTex.empty()) {
-		TextureContainer *pTex = vTex[iState];
+		TextureContainer *pTex = (iState == 0) ? m_textureOff : m_textureOn;
 		
 		Color color = (bCheck) ? Color::white : Color(63, 63, 63, 255);
 		
@@ -1476,7 +1472,6 @@ void CheckboxWidget::Render() {
 		
 		//carre
 		EERIEDrawBitmap2(Rectf(Vec2f(rZone.right - iTaille, iY), RATIO_X(iTaille), RATIO_Y(iTaille)), 0.f, pTex, color);
-	}
 
 	if(pText)
 		pText->Render();
@@ -1495,7 +1490,7 @@ void CheckboxWidget::RenderMouseOver() {
 	GRenderer->SetRenderState(Renderer::AlphaBlending, true);
 	GRenderer->SetBlendFunc(Renderer::BlendOne, Renderer::BlendOne);
 
-	TextureContainer *pTex = vTex[iState];
+	TextureContainer *pTex = (iState == 0) ? m_textureOff : m_textureOn;;
 
 	if(pTex) GRenderer->SetTexture(0, pTex);
 	else GRenderer->ResetTexture(0);

@@ -453,7 +453,9 @@ public:
 private:
 	Vec2i m_pos;
 	int					iTaille;
-	std::vector<TextureContainer *> vTex;
+	
+	TextureContainer * m_textureOff;
+	TextureContainer * m_textureOn;
 	TextWidget	* pText;
 };
 
