@@ -1334,13 +1334,13 @@ CheckboxWidget::CheckboxWidget(TextWidget *_pText)
 	_iTaille = std::max(_iTaille, (int)RATIO_Y(m_textureOff->m_dwHeight));
 	
 	Vec2i textSize(0,0);
-
-		textSize = pText->pFont->getTextSize(pText->lpszText); 
-
-		_iTaille = std::max<int>(_iTaille, textSize.y);
-		textSize.x += pText->rZone.left;
-		pText->Move(m_pos + Vec2i(0, (_iTaille - textSize.y) / 2));
-
+	
+	textSize = pText->pFont->getTextSize(pText->lpszText);
+	
+	_iTaille = std::max<int>(_iTaille, textSize.y);
+	textSize.x += pText->rZone.left;
+	pText->Move(m_pos + Vec2i(0, (_iTaille - textSize.y) / 2));
+	
 	rZone.left = m_pos.x;
 	rZone.top = m_pos.y;
 	rZone.right = m_pos.x + _iTaille + textSize.x;
@@ -1450,26 +1450,26 @@ void CheckboxWidget::Render() {
 
 	if(bNoMenu)
 		return;
-
+	
 	GRenderer->SetRenderState(Renderer::AlphaBlending, true);
 	GRenderer->SetBlendFunc(Renderer::BlendOne, Renderer::BlendOne);
-
-		TextureContainer *pTex = (iState == 0) ? m_textureOff : m_textureOn;
-		
-		Color color = (bCheck) ? Color::white : Color(63, 63, 63, 255);
-		
-		float iY = 0;
-		{
-			iY = static_cast<float>(rZone.bottom - rZone.top);
-			iY -= iTaille;
-			iY = rZone.top + iY*0.5f;
-		}
-		
-		//carre
-		EERIEDrawBitmap2(Rectf(Vec2f(rZone.right - iTaille, iY), RATIO_X(iTaille), RATIO_Y(iTaille)), 0.f, pTex, color);
-
-		pText->Render();
-
+	
+	TextureContainer *pTex = (iState == 0) ? m_textureOff : m_textureOn;
+	
+	Color color = (bCheck) ? Color::white : Color(63, 63, 63, 255);
+	
+	float iY = 0;
+	{
+		iY = static_cast<float>(rZone.bottom - rZone.top);
+		iY -= iTaille;
+		iY = rZone.top + iY*0.5f;
+	}
+	
+	//carre
+	EERIEDrawBitmap2(Rectf(Vec2f(rZone.right - iTaille, iY), RATIO_X(iTaille), RATIO_Y(iTaille)), 0.f, pTex, color);
+	
+	pText->Render();
+	
 	//DEBUG
 	GRenderer->SetRenderState(Renderer::AlphaBlending, false);
 }
