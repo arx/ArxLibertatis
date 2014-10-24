@@ -1312,6 +1312,8 @@ void CMenuAllZone::DrawZone()
 CheckboxWidget::CheckboxWidget(TextWidget *_pText)
 	:Widget(NOP)
 {
+	arx_assert(_pText);
+	
 	TextureContainer *_pTex1 = TextureContainer::Load("graph/interface/menus/menu_checkbox_off");
 	TextureContainer *_pTex2 = TextureContainer::Load("graph/interface/menus/menu_checkbox_on");
 	arx_assert(_pTex1);
