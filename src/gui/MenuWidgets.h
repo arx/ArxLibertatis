@@ -444,6 +444,8 @@ public:
 	void Move(const Vec2i & offset);
 	bool OnMouseClick();
 	void Update(int time);
+	
+	void renderCommon();
 	void Render();
 	void RenderMouseOver();
 	

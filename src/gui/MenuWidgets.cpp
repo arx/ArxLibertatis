@@ -1446,10 +1446,7 @@ void CheckboxWidget::Update(int /*_iDTime*/)
 {
 }
 
-void CheckboxWidget::Render() {
-
-	if(bNoMenu)
-		return;
+void CheckboxWidget::renderCommon() {
 	
 	GRenderer->SetRenderState(Renderer::AlphaBlending, true);
 	GRenderer->SetBlendFunc(Renderer::BlendOne, Renderer::BlendOne);
@@ -1459,19 +1456,22 @@ void CheckboxWidget::Render() {
 	Color color = (bCheck) ? Color::white : Color(63, 63, 63, 255);
 	
 	float iY = 0;
-	{
-		iY = static_cast<float>(rZone.bottom - rZone.top);
-		iY -= iTaille;
-		iY = rZone.top + iY*0.5f;
-	}
+	iY = static_cast<float>(rZone.bottom - rZone.top);
+	iY -= iTaille;
+	iY = rZone.top + iY*0.5f;
 	
 	//carre
 	EERIEDrawBitmap2(Rectf(Vec2f(rZone.right - iTaille, iY), RATIO_X(iTaille), RATIO_Y(iTaille)), 0.f, pTex, color);
+}
+
+void CheckboxWidget::Render() {
+
+	if(bNoMenu)
+		return;
+	
+	renderCommon();
 	
 	pText->Render();
-	
-	//DEBUG
-	GRenderer->SetRenderState(Renderer::AlphaBlending, false);
 }
 
 void CheckboxWidget::RenderMouseOver() {
@@ -1481,28 +1481,9 @@ void CheckboxWidget::RenderMouseOver() {
 
 	pMenuCursor->SetMouseOver();
 
-	GRenderer->SetRenderState(Renderer::AlphaBlending, true);
-	GRenderer->SetBlendFunc(Renderer::BlendOne, Renderer::BlendOne);
-
-	TextureContainer *pTex = (iState == 0) ? m_textureOff : m_textureOn;;
-
-	if(pTex) GRenderer->SetTexture(0, pTex);
-	else GRenderer->ResetTexture(0);
+	renderCommon();
 	
-	float iY = 0;
-	iY = static_cast<float>(rZone.bottom - rZone.top);
-	iY -= iTaille;
-	iY = rZone.top + iY*0.5f;
-
-	//carre
-
-	EERIEDrawBitmap2(Rectf(Vec2f(rZone.right - iTaille, iY), RATIO_X(iTaille), RATIO_Y(iTaille)), 0.f, pTex, Color::white); 
-
-	//tick
 	pText->RenderMouseOver();
-
-	//DEBUG
-	GRenderer->SetRenderState(Renderer::AlphaBlending, false);
 }
 
 CWindowMenu::CWindowMenu(Vec2i pos, Vec2i size)
