@@ -491,7 +491,7 @@ public:
 	Vec2i m_oldPos;
 	Vec2i m_offset;
 	Vec2i m_size;
-	int						iInterligne;
+	int   m_rowSpacing;
 	MENUSTATE				eMenuState;
 	CMenuAllZone			MenuAllZone;
 	Widget		*	pZoneClick;

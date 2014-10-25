@@ -942,7 +942,7 @@ void MainMenuLeftCreate(MENUSTATE eMenuState)
 	{
 	CWindowMenuConsole * console = new CWindowMenuConsole(offset + Vec2i(0, -40), size, EDIT_QUEST_LOAD);
 	console->lData = -1;
-	console->iInterligne = 5;
+	console->m_rowSpacing = 5;
 	
 	MainMenuCreateEditQuestLoad(console, size);
 	pWindowMenu->AddConsole(console);
@@ -950,7 +950,7 @@ void MainMenuLeftCreate(MENUSTATE eMenuState)
 	
 	{
 	CWindowMenuConsole * console = new CWindowMenuConsole(offset + Vec2i(0, -40), size, EDIT_QUEST_SAVE);
-	console->iInterligne = 5;
+	console->m_rowSpacing = 5;
 	
 	MainMenuCreateEditQuestSave(console);
 	pWindowMenu->AddConsole(console);

@@ -1560,7 +1560,7 @@ MENUSTATE CWindowMenu::Render() {
 }
 
 CWindowMenuConsole::CWindowMenuConsole(Vec2i pos, Vec2i size, MENUSTATE _eMenuState)
-	: iInterligne(10)
+	: m_rowSpacing(10)
 	, pZoneClick(NULL)
 	, bEdit(false)
 	, lData(0)
@@ -1606,7 +1606,7 @@ void CWindowMenuConsole::AddMenuCenter(Widget * element, bool centerX) {
 	for(size_t iJ = 0; iJ < MenuAllZone.GetNbZone(); iJ++) {
 		Widget * pZone = MenuAllZone.GetZoneNum(iJ);
 
-		iDy += iInterligne;
+		iDy += m_rowSpacing;
 		iDy += pZone->rZone.bottom - pZone->rZone.top;
 	}
 
@@ -1624,7 +1624,7 @@ void CWindowMenuConsole::AddMenuCenter(Widget * element, bool centerX) {
 	
 	for(size_t iJ = 0; iJ < MenuAllZone.GetNbZone(); iJ++) {
 		Widget *pZone = MenuAllZone.GetZoneNum(iJ);
-		iDepY += (pZone->rZone.bottom - pZone->rZone.top) + iInterligne;
+		iDepY += (pZone->rZone.bottom - pZone->rZone.top) + m_rowSpacing;
 		
 		pZone->Move(Vec2i(0, dy));
 	}
