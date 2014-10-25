@@ -357,18 +357,12 @@ void MainMenuOptionGroupsCreate(CWindowMenuConsole * console) {
 
 void MainMenuOptionVideoCreate(CWindowMenuConsole * console, Vec2i size)
 {
-	std::string szMenuText;
-	Widget *me;
-	CMenuPanel *pc;
-	TextureContainer *pTex;
-	
 	// Renderer selection
 	{
-		
-		pc = new CMenuPanel();
-		szMenuText = getLocalised("system_menus_options_video_renderer", "Renderer");
+		CMenuPanel * pc = new CMenuPanel;
+		std::string szMenuText = getLocalised("system_menus_options_video_renderer", "Renderer");
 		szMenuText += "  ";
-		me = new TextWidget(-1, hFontMenu, szMenuText, Vec2i(RATIO_X(20), 0), NOP);
+		Widget * me = new TextWidget(-1, hFontMenu, szMenuText, Vec2i(RATIO_X(20), 0), NOP);
 		me->SetCheckOff();
 		pc->AddElement(me);
 		CycleTextWidget * slider = new CycleTextWidget(BUTTON_MENUOPTIONSVIDEO_RENDERER, Vec2i(0, 0));
@@ -386,11 +380,10 @@ void MainMenuOptionVideoCreate(CWindowMenuConsole * console, Vec2i size)
 		slider->Move(Vec2i(checked_range_cast<int>(fRatio), 0));
 		pc->AddElement(slider);
 		console->AddMenuCenter(pc);
-		
 	}
 	
 	{
-	szMenuText = getLocalised("system_menus_options_videos_full_screen");
+	std::string szMenuText = getLocalised("system_menus_options_videos_full_screen");
 	if(szMenuText.empty()) {
 		// TODO once we ship our own amendmends to the loc files a cleaner
 		// fix would be to just define system_menus_options_videos_full_screen
@@ -407,10 +400,11 @@ void MainMenuOptionVideoCreate(CWindowMenuConsole * console, Vec2i size)
 	fullscreenCheckbox = cb;
 	}
 	
-	pc = new CMenuPanel();
-	szMenuText = getLocalised("system_menus_options_video_resolution");
+	{
+	CMenuPanel * pc = new CMenuPanel;
+	std::string szMenuText = getLocalised("system_menus_options_video_resolution");
 	szMenuText += "  ";
-	me = new TextWidget(-1, hFontMenu, szMenuText, Vec2i(RATIO_X(20), 0.f), NOP);
+	Widget * me = new TextWidget(-1, hFontMenu, szMenuText, Vec2i(RATIO_X(20), 0.f), NOP);
 	me->SetCheckOff();
 	pc->AddElement(me);
 	pMenuSliderResol = new CycleTextWidget(BUTTON_MENUOPTIONSVIDEO_RESOLUTION, Vec2i(0, 0));
@@ -457,20 +451,19 @@ void MainMenuOptionVideoCreate(CWindowMenuConsole * console, Vec2i size)
 	float fRatio    = (RATIO_X(size.x-9) - pMenuSliderResol->rZone.width()); 
 
 	pMenuSliderResol->Move(Vec2i(checked_range_cast<int>(fRatio), 0));
-
-
+	
 	pc->AddElement(pMenuSliderResol);
-
 	console->AddMenuCenter(pc);
+	}
 
-	pc = new CMenuPanel();
-	szMenuText = getLocalised("system_menus_options_detail");
+	{
+	CMenuPanel * pc = new CMenuPanel;
+	std::string szMenuText = getLocalised("system_menus_options_detail");
 	szMenuText += " ";
-	me = new TextWidget(-1, hFontMenu, szMenuText, Vec2i(RATIO_X(20), 0), NOP);
+	Widget * me = new TextWidget(-1, hFontMenu, szMenuText, Vec2i(RATIO_X(20), 0), NOP);
 	me->SetCheckOff();
 	pc->AddElement(me);
 	
-	{
 	CycleTextWidget * cb = new CycleTextWidget(BUTTON_MENUOPTIONSVIDEO_OTHERSDETAILS, Vec2i(0, 0));
 	szMenuText = getLocalised("system_menus_options_video_texture_low");
 	cb->AddText(new TextWidget(-1, hFontMenu, szMenuText));
@@ -482,14 +475,14 @@ void MainMenuOptionVideoCreate(CWindowMenuConsole * console, Vec2i size)
 	
 	cb->Move(Vec2i(RATIO_X(size.x-9) - cb->rZone.width(), 0));
 	pc->AddElement(cb);
-	}
-
+	
 	console->AddMenuCenter(pc);
+	}
 	
 	{
-	pc = new CMenuPanel();
-	szMenuText = getLocalised("system_menus_options_video_brouillard");
-	me = new TextWidget(-1, hFontMenu, szMenuText, Vec2i(RATIO_X(20), 0.f), NOP);
+	CMenuPanel * pc = new CMenuPanel;
+	std::string szMenuText = getLocalised("system_menus_options_video_brouillard");
+	Widget * me = new TextWidget(-1, hFontMenu, szMenuText, Vec2i(RATIO_X(20), 0.f), NOP);
 	me->SetCheckOff();
 	pc->AddElement(me);
 	SliderWidget * sld = new SliderWidget(BUTTON_MENUOPTIONSVIDEO_FOG, Vec2i(RATIO_X(200), 0));
@@ -499,7 +492,7 @@ void MainMenuOptionVideoCreate(CWindowMenuConsole * console, Vec2i size)
 	}
 	
 	{
-	szMenuText = getLocalised("system_menus_options_video_crosshair", "Show Crosshair");
+	std::string szMenuText = getLocalised("system_menus_options_video_crosshair", "Show Crosshair");
 	szMenuText += " ";
 	TextWidget * text = new TextWidget(-1, hFontMenu, szMenuText, Vec2i(RATIO_X(20), 0.f), NOP);
 	text->SetCheckOff();
@@ -510,7 +503,7 @@ void MainMenuOptionVideoCreate(CWindowMenuConsole * console, Vec2i size)
 	}
 	
 	{
-	szMenuText = getLocalised("system_menus_options_video_antialiasing", "antialiasing");
+	std::string szMenuText = getLocalised("system_menus_options_video_antialiasing", "antialiasing");
 	szMenuText += " ";
 	TextWidget * text = new TextWidget(-1, hFontMenu, szMenuText, Vec2i(RATIO_X(20), 0), NOP);
 	text->SetCheckOff();
@@ -523,7 +516,7 @@ void MainMenuOptionVideoCreate(CWindowMenuConsole * console, Vec2i size)
 	ARX_SetAntiAliasing();
 	
 	{
-	szMenuText = getLocalised("system_menus_options_video_vsync", "VSync");
+	std::string szMenuText = getLocalised("system_menus_options_video_vsync", "VSync");
 	szMenuText += " ";
 	TextWidget * text = new TextWidget(-1, hFontMenu, szMenuText, Vec2i(RATIO_X(20), 0), NOP);
 	text->SetCheckOff();
@@ -534,26 +527,24 @@ void MainMenuOptionVideoCreate(CWindowMenuConsole * console, Vec2i size)
 	}
 	
 	{
-	pc = new CMenuPanel();
-	szMenuText = getLocalised("system_menus_video_apply");
+	CMenuPanel * pc = new CMenuPanel;
+	std::string szMenuText = getLocalised("system_menus_video_apply");
 	szMenuText += "   ";
 	TextWidget * me = new TextWidget(BUTTON_MENUOPTIONSVIDEO_APPLY, hFontMenu, szMenuText, Vec2i(RATIO_X(240), 0), NOP);
 	me->SetPos(Vec2i(RATIO_X(size.x-10)-me->rZone.width(), RATIO_Y(380) + RATIO_Y(40)));
 	me->SetCheckOff();
 	pc->AddElementNoCenterIn(me);
 	pMenuElementApply = me;
-	}
-	
-	{
-	pTex = TextureContainer::Load("graph/interface/menus/back");
+
+	TextureContainer * pTex = TextureContainer::Load("graph/interface/menus/back");
 	ButtonWidget * cb = new ButtonWidget(RATIO_2(Vec2i(20, 420)), pTex);
 	cb->iID = BUTTON_MENUOPTIONSVIDEO_BACK;
 	cb->eMenuState = OPTIONS;
 	cb->SetShortCut(Keyboard::Key_Escape);
 	pc->AddElementNoCenterIn(cb);
-	}
-
+	
 	console->AddMenu(pc);
+	}
 }
 
 void MainMenuOptionAudioCreate(CWindowMenuConsole * console, Vec2i size)
