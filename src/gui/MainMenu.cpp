@@ -46,14 +46,14 @@ void Menu2_Render_NewQuest(CWindowMenuConsole * console, Vec2i size) {
 	
 	{
 	std::string szMenuText = getLocalised("system_menus_main_editquest_confirm");
-	TextWidget * me = new TextWidget(-1, hFontMenu, szMenuText, Vec2i(0, 0), NOP);
+	TextWidget * me = new TextWidget(-1, hFontMenu, szMenuText);
 	me->SetCheckOff();
 	console->AddMenuCenter(me, true);
 	}
 	
 	{
 	std::string szMenuText = getLocalised("system_menus_main_newquest_confirm");
-	TextWidget * me = new TextWidget(-1, hFontMenu, szMenuText, Vec2i(0, 0), NOP);
+	TextWidget * me = new TextWidget(-1, hFontMenu, szMenuText);
 	me->SetCheckOff();
 	console->AddMenuCenter(me, true);
 	}
@@ -63,7 +63,7 @@ void Menu2_Render_NewQuest(CWindowMenuConsole * console, Vec2i size) {
 	{
 	std::string szMenuText = getLocalised("system_yes");
 	szMenuText += "   "; // TODO This space can probably go
-	TextWidget * me = new TextWidget(BUTTON_MENUNEWQUEST_CONFIRM, hFontMenu, szMenuText, Vec2i(0, 0), NOP);
+	TextWidget * me = new TextWidget(BUTTON_MENUNEWQUEST_CONFIRM, hFontMenu, szMenuText);
 	me->SetPos(Vec2i(RATIO_X(size.x - (me->rZone.width() + 10)), 0));
 	pPanel->AddElementNoCenterIn(me);
 	}
@@ -441,14 +441,14 @@ void MainMenuOptionVideoCreate(CWindowMenuConsole * console, Vec2i size)
 			ss << " (" << aspect.x << ':' << aspect.y << ')';
 		}
 		
-		pMenuSliderResol->AddText(new TextWidget(-1, hFontMenu, ss.str(), Vec2i(0, 0), NOP));
+		pMenuSliderResol->AddText(new TextWidget(-1, hFontMenu, ss.str()));
 		
 		if(mode.resolution == config.video.resolution) {
 			pMenuSliderResol->selectLast();
 		}
 	}
 	
-	pMenuSliderResol->AddText(new TextWidget(-1, hFontMenu, AUTO_RESOLUTION_STRING, Vec2i(0, 0), NOP));
+	pMenuSliderResol->AddText(new TextWidget(-1, hFontMenu, AUTO_RESOLUTION_STRING));
 	
 	if(config.video.resolution == Vec2i_ZERO) {
 		pMenuSliderResol->selectLast();
@@ -473,11 +473,11 @@ void MainMenuOptionVideoCreate(CWindowMenuConsole * console, Vec2i size)
 	{
 	CycleTextWidget * cb = new CycleTextWidget(BUTTON_MENUOPTIONSVIDEO_OTHERSDETAILS, Vec2i(0, 0));
 	szMenuText = getLocalised("system_menus_options_video_texture_low");
-	cb->AddText(new TextWidget(-1, hFontMenu, szMenuText, Vec2i(0, 0), NOP));
+	cb->AddText(new TextWidget(-1, hFontMenu, szMenuText));
 	szMenuText = getLocalised("system_menus_options_video_texture_med");
-	cb->AddText(new TextWidget(-1, hFontMenu, szMenuText, Vec2i(0, 0), NOP));
+	cb->AddText(new TextWidget(-1, hFontMenu, szMenuText));
 	szMenuText = getLocalised("system_menus_options_video_texture_high");
-	cb->AddText(new TextWidget(-1, hFontMenu, szMenuText, Vec2i(0, 0), NOP));
+	cb->AddText(new TextWidget(-1, hFontMenu, szMenuText));
 	cb->setValue(config.video.levelOfDetail);
 	
 	cb->Move(Vec2i(RATIO_X(size.x-9) - cb->rZone.width(), 0));
@@ -805,7 +805,7 @@ void MainMenuOptionControlsCreatePage1(CWindowMenuConsole * console, Vec2i size)
 	
 	{
 	std::string szMenuText = getLocalised( "system_menus_options_input_customize_default" );
-	TextWidget * me = new TextWidget(BUTTON_MENUOPTIONS_CONTROLS_CUST_DEFAULT, hFontMenu, szMenuText, Vec2i(0, 0), NOP);
+	TextWidget * me = new TextWidget(BUTTON_MENUOPTIONS_CONTROLS_CUST_DEFAULT, hFontMenu, szMenuText);
 	me->SetPos(Vec2i((RATIO_X(size.x) - me->rZone.width())*0.5f, RATIO_Y(380)));
 	pc->AddElementNoCenterIn(me);
 	}
@@ -868,7 +868,7 @@ void MainMenuOptionControlsCreatePage2(CWindowMenuConsole * console, Vec2i size)
 	
 	{
 	std::string szMenuText = getLocalised( "system_menus_options_input_customize_default" );
-	TextWidget * me = new TextWidget(BUTTON_MENUOPTIONS_CONTROLS_CUST_DEFAULT, hFontMenu, szMenuText, Vec2i(0, 0), NOP);
+	TextWidget * me = new TextWidget(BUTTON_MENUOPTIONS_CONTROLS_CUST_DEFAULT, hFontMenu, szMenuText);
 	me->SetPos(Vec2i((RATIO_X(size.x) - me->rZone.width())*0.5f, RATIO_Y(380)));
 	pc->AddElementNoCenterIn(me);
 	}
@@ -883,19 +883,19 @@ void Menu2_Render_Quit(CWindowMenuConsole * console, Vec2i size)
 	Widget *me = NULL;
 	
 	szMenuText = getLocalised("system_menus_main_quit");
-	me=new TextWidget(-1, hFontMenu, szMenuText, Vec2i(0, 0), NOP);
+	me=new TextWidget(-1, hFontMenu, szMenuText);
 	me->SetCheckOff();
 	console->AddMenuCenter(me, true);
 	
 	szMenuText = getLocalised("system_menus_main_editquest_confirm");
-	me=new TextWidget(-1, hFontMenu, szMenuText, Vec2i(0, 0), NOP);
+	me=new TextWidget(-1, hFontMenu, szMenuText);
 	me->SetCheckOff();
 	console->AddMenuCenter(me, true);
 	
 	CMenuPanel *pPanel = new CMenuPanel();
 	
 	szMenuText = getLocalised("system_yes");
-	me = new TextWidget(BUTTON_MENUMAIN_QUIT, hFontMenu, szMenuText, Vec2i(0, 0), NOP);
+	me = new TextWidget(BUTTON_MENUMAIN_QUIT, hFontMenu, szMenuText);
 	me->SetPos(Vec2i(RATIO_X(size.x-10)-me->rZone.width(), 0));
 	pPanel->AddElementNoCenterIn(me);
 	

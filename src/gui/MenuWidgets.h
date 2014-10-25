@@ -346,7 +346,7 @@ public:
 	
 public:
 	
-	TextWidget(int id, Font * font, const std::string & text, Vec2i pos, MENUSTATE state);
+	TextWidget(int id, Font * font, const std::string & text, Vec2i pos = Vec2i_ZERO, MENUSTATE state = NOP);
 	virtual ~TextWidget();
 	
 	void setColor(Color color) { lColor = color; }
