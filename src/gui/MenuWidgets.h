@@ -458,9 +458,6 @@ public:
 	int					iOldState;
 	
 private:
-	Vec2i m_pos;
-	int					iTaille;
-	
 	TextureContainer * m_textureOff;
 	TextureContainer * m_textureOn;
 	TextWidget	* pText;

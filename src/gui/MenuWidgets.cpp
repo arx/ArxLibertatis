@@ -1303,9 +1303,12 @@ void CMenuAllZone::DrawZone()
 	}
 }
 
+
 CheckboxWidget::CheckboxWidget(TextWidget *_pText)
 	:Widget(NOP)
 {
+	pRef = this; // TODO remove this
+	
 	arx_assert(_pText);
 	
 	m_textureOff = TextureContainer::Load("graph/interface/menus/menu_checkbox_off");
@@ -1314,37 +1317,13 @@ CheckboxWidget::CheckboxWidget(TextWidget *_pText)
 	arx_assert(m_textureOn);
 	arx_assert(m_textureOff->size() == m_textureOn->size());
 	
-	int _iTaille = m_textureOff->m_dwWidth;
-	
 	iID = -1;
 	iState    = 0;
 	iOldState = -1;
-	m_pos = Vec2i(0, 0);
-
-	iTaille = _iTaille;
 	pText    = _pText;
+	rZone = _pText->rZone;
 	
-	_iTaille = std::max(_iTaille, (int)RATIO_X(m_textureOff->m_dwWidth));
-	_iTaille = std::max(_iTaille, (int)RATIO_Y(m_textureOff->m_dwHeight));
-	
-	Vec2i textSize(0,0);
-	
-	textSize = pText->pFont->getTextSize(pText->lpszText);
-	
-	_iTaille = std::max<int>(_iTaille, textSize.y);
-	textSize.x += pText->rZone.left;
-	pText->Move(m_pos + Vec2i(0, (_iTaille - textSize.y) / 2));
-	
-	rZone.left = m_pos.x;
-	rZone.top = m_pos.y;
-	rZone.right = m_pos.x + _iTaille + textSize.x;
-	rZone.bottom = m_pos.y + std::max<int>(_iTaille, textSize.y);
-	pRef=this;
-	
-	float rZoneR = RATIO_X(200.f) + RATIO_X(m_textureOff->m_dwWidth) + (RATIO_X(12*9) - RATIO_X(m_textureOff->m_dwWidth))*0.5f;
-	rZone.right = rZoneR;
-	
-	Move(m_pos);
+	rZone.right = rZone.left + RATIO_X(245.f);
 }
 
 CheckboxWidget::~CheckboxWidget() {
@@ -1445,17 +1424,16 @@ void CheckboxWidget::renderCommon() {
 	GRenderer->SetRenderState(Renderer::AlphaBlending, true);
 	GRenderer->SetBlendFunc(Renderer::BlendOne, Renderer::BlendOne);
 	
-	TextureContainer *pTex = (iState == 0) ? m_textureOff : m_textureOn;
+	Rectf checkboxRect;
+	checkboxRect.top = rZone.top;
+	checkboxRect.left = rZone.right - rZone.height();
+	checkboxRect.bottom = rZone.bottom;
+	checkboxRect.right = rZone.right;
 	
+	TextureContainer *pTex = (iState == 0) ? m_textureOff : m_textureOn;
 	Color color = (bCheck) ? Color::white : Color(63, 63, 63, 255);
 	
-	float iY = 0;
-	iY = static_cast<float>(rZone.bottom - rZone.top);
-	iY -= iTaille;
-	iY = rZone.top + iY*0.5f;
-	
-	//carre
-	EERIEDrawBitmap2(Rectf(Vec2f(rZone.right - iTaille, iY), RATIO_X(iTaille), RATIO_Y(iTaille)), 0.f, pTex, color);
+	EERIEDrawBitmap2(checkboxRect, 0.f, pTex, color);
 }
 
 void CheckboxWidget::Render() {
@@ -1479,6 +1457,7 @@ void CheckboxWidget::RenderMouseOver() {
 	
 	pText->RenderMouseOver();
 }
+
 
 CWindowMenu::CWindowMenu(Vec2i pos, Vec2i size)
 {
