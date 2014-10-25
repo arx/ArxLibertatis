@@ -1297,16 +1297,10 @@ void CMenuAllZone::DrawZone()
 {
 	if(g_debugInfo != InfoPanelGuiDebug)
 		return;
-	
-	GRenderer->SetBlendFunc(Renderer::BlendOne, Renderer::BlendOne);
-	GRenderer->SetRenderState(Renderer::AlphaBlending, true);
-	GRenderer->ResetTexture(0);
 
 	BOOST_FOREACH(Widget * zone, vMenuZone) {
 		drawLineRectangle(Rectf(zone->rZone), 0.f, Color::red);
 	}
-
-	GRenderer->SetRenderState(Renderer::AlphaBlending, false);
 }
 
 CheckboxWidget::CheckboxWidget(TextWidget *_pText)
