@@ -502,7 +502,7 @@ Widget::Widget(MENUSTATE _ms)
 	, pRef(NULL)
 	, rZone(0, 0, 0, 0)
 	, iID(-1)
-	, lData(0)
+	, m_savegame(0)
 	, enabled(true)
 	, bCheck(true)
 {
@@ -732,7 +732,7 @@ bool TextWidget::OnMouseClick() {
 				CWindowMenuConsole * p = pWindowMenu->vWindowConsoleElement[i];
 				
 				if(p->eMenuState == EDIT_QUEST_LOAD) {						
-					p->lData = lData;
+					p->m_savegame = m_savegame;
 					
 					for(size_t j = 0; j < p->MenuAllZone.vMenuZone.size(); j++) {
 						Widget *cz = p->MenuAllZone.vMenuZone[j];
@@ -756,7 +756,7 @@ bool TextWidget::OnMouseClick() {
 					CWindowMenuConsole *p = pWindowMenu->vWindowConsoleElement[i];
 					
 					if(p->eMenuState == EDIT_QUEST_LOAD) {
-						p->lData = lData;
+						p->m_savegame = m_savegame;
 						
 						for(size_t j = 0; j < p->MenuAllZone.vMenuZone.size(); j++) {
 							Widget *cz = p->MenuAllZone.vMenuZone[j];
@@ -778,11 +778,11 @@ bool TextWidget::OnMouseClick() {
 		
 					if(p->eMenuState == EDIT_QUEST_LOAD) {
 						
-						lData = p->lData;
-						if(lData != -1) {
+						m_savegame = p->m_savegame;
+						if(m_savegame != SavegameHandle::Invalid) {
 							eMenuState = MAIN;
 							GRenderer->Clear(Renderer::DepthBuffer);
-							ARXMenu_LoadQuest(lData);
+							ARXMenu_LoadQuest(m_savegame);
 							bNoMenu=true;
 							if(pTextManage) {
 								pTextManage->Clear();
@@ -812,12 +812,12 @@ bool TextWidget::OnMouseClick() {
 				CWindowMenuConsole *p = pWindowMenu->vWindowConsoleElement[i];
 				
 				if(p->eMenuState == EDIT_QUEST_SAVE_CONFIRM) {
-					p->lData = lData;
+					p->m_savegame = m_savegame;
 					TextWidget * me = (TextWidget *) p->MenuAllZone.vMenuZone[1];
 					
 					if(me) {
 						eMenuState = MAIN;
-						ARXMenu_SaveQuest(me->lpszText, me->lData);
+						ARXMenu_SaveQuest(me->lpszText, me->m_savegame);
 						break;
 					}
 				}
@@ -831,11 +831,11 @@ bool TextWidget::OnMouseClick() {
 				for(size_t i = 0 ; i < pWindowMenu->vWindowConsoleElement.size(); i++) {
 					CWindowMenuConsole *p = pWindowMenu->vWindowConsoleElement[i];
 					if(p->eMenuState == EDIT_QUEST_LOAD) {
-						lData = p->lData;
-						if(lData != -1) {
+						m_savegame = p->m_savegame;
+						if(m_savegame != SavegameHandle::Invalid) {
 							eMenuState = EDIT_QUEST_LOAD;
 							mainMenu->bReInitAll = true;
-							savegames.remove(lData);
+							savegames.remove(m_savegame);
 							break;
 						}
 					}
@@ -854,12 +854,12 @@ bool TextWidget::OnMouseClick() {
 				for(size_t i = 0 ; i < pWindowMenu->vWindowConsoleElement.size(); i++) {
 					CWindowMenuConsole *p = pWindowMenu->vWindowConsoleElement[i];
 					if(p->eMenuState == EDIT_QUEST_SAVE_CONFIRM) {
-						p->lData = lData;
+						p->m_savegame = m_savegame;
 						TextWidget * me = (TextWidget *) p->MenuAllZone.vMenuZone[1];
 						if(me) {
 							eMenuState = EDIT_QUEST_SAVE;
 							mainMenu->bReInitAll = true;
-							savegames.remove(me->lData);
+							savegames.remove(me->m_savegame);
 							break;
 						}
 					}
@@ -986,14 +986,14 @@ bool TextWidget::OnMouseClick() {
 			CWindowMenuConsole *p = pWindowMenu->vWindowConsoleElement[i];
 
 			if(p->eMenuState == eMenuState) {
-				p->lData = lData;
+				p->m_savegame = m_savegame;
 				TextWidget * me = (TextWidget *) p->MenuAllZone.vMenuZone[1];
 
 				if(me) {
-					me->lData = lData;
+					me->m_savegame = m_savegame;
 					
-					if(lData != -1) {
-						me->SetText(savegames[lData].name);
+					if(m_savegame != SavegameHandle::Invalid) {
+						me->SetText(savegames[m_savegame].name);
 						pDeleteButton->lColor = pDeleteButton->lOldColor;
 						pDeleteButton->SetCheckOn();
 					} else {
@@ -1064,12 +1064,12 @@ void TextWidget::RenderMouseOver() {
 		case BUTTON_MENUEDITQUEST_LOAD:
 		case BUTTON_MENUEDITQUEST_SAVEINFO: {
 			
-			if(lData == -1) {
+			if(m_savegame == SavegameHandle::Invalid) {
 				pTextureLoadRender = NULL;
 				break;
 			}
 			
-			const res::path & image = savegames[lData].thumbnail;
+			const res::path & image = savegames[m_savegame].thumbnail;
 			if(!image.empty()) {
 				TextureContainer * t = TextureContainer::LoadUI(image, TextureContainer::NoColorKey);
 				if(t != pTextureLoad) {
@@ -1563,7 +1563,7 @@ CWindowMenuConsole::CWindowMenuConsole(Vec2i pos, Vec2i size, MENUSTATE _eMenuSt
 	: m_rowSpacing(10)
 	, pZoneClick(NULL)
 	, bEdit(false)
-	, lData(0)
+	, m_savegame(0)
 	, bMouseAttack(false)
 	, m_textCursorCurrentTime(0.f)
 {

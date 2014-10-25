@@ -52,6 +52,7 @@ ZeniMax Media Inc., Suite 120, Rockville, Maryland 20850 USA.
 #include "input/InputKey.h"
 #include "math/Vector.h"
 #include "math/Rectangle.h"
+#include "util/HandleType.h"
 
 class TextureContainer;
 class Font;
@@ -227,6 +228,8 @@ enum ELEMPOS
 	CENTERY
 };
 
+ARX_HANDLE_TYPEDEF(long, SavegameHandle, -1);
+
 class Widget {
 	
 public:
@@ -235,7 +238,9 @@ public:
 	Widget *	pRef;
 	Rect	rZone;
 	int			iID;
-	long		lData;
+	
+	SavegameHandle m_savegame;
+	
 	ELEMPOS     ePlace;			//placement de la zone
 	ELEMSTATE   eState;			//etat de l'element en cours
 	MENUSTATE   eMenuState;		//etat de retour de l'element
@@ -498,7 +503,9 @@ public:
 	bool					bEdit;
 	TextureContainer	*	pTexBackground;
 	TextureContainer	*	pTexBackgroundBorder;
-	long					lData;
+	
+	SavegameHandle m_savegame;
+	
 	bool				bMouseAttack;
 	
 	static const int m_textCursorFlashDuration = 300;

@@ -85,7 +85,7 @@ void MainMenuCreateEditQuest(CWindowMenuConsole * console) {
 	{
 	std::string szMenuText = getLocalised("system_menus_main_editquest_load");
 	TextWidget * me = new TextWidget(BUTTON_MENUEDITQUEST_LOAD_INIT, hFontMenu, szMenuText, Vec2i(0, 0), EDIT_QUEST_LOAD);
-	me->lData = -1;
+	me->m_savegame = SavegameHandle::Invalid;
 	console->AddMenuCenter(me, true);
 	}
 
@@ -138,7 +138,7 @@ void MainMenuCreateEditQuestLoad(CWindowMenuConsole * console, Vec2i size) {
 		text << quicksaveName << ' ' << ++quicksaveNum << "   " << save.time;
 		
 		Widget * e = new TextWidget(BUTTON_MENUEDITQUEST_LOAD, hFontControls, text.str(), Vec2i(RATIO_X(20), 0), NOP);
-		e->lData = i;
+		e->m_savegame = SavegameHandle(i);
 		console->AddMenuCenter(e);
 	}
 	
@@ -153,14 +153,14 @@ void MainMenuCreateEditQuestLoad(CWindowMenuConsole * console, Vec2i size) {
 		std::string text = save.name +  "   " + save.time;
 		
 		Widget * e = new TextWidget(BUTTON_MENUEDITQUEST_LOAD, hFontControls, text, Vec2i(RATIO_X(20), 0), NOP);
-		e->lData = i;
+		e->m_savegame = SavegameHandle(i);
 		console->AddMenuCenter(e);
 	}
 	
 	{
 	Widget * confirm = new TextWidget(-1, hFontControls, " ", Vec2i(RATIO_X(20), 0), EDIT_QUEST_SAVE_CONFIRM);
 	confirm->SetCheckOff();
-	confirm->lData = -1;
+	confirm->m_savegame = SavegameHandle::Invalid;
 	console->AddMenuCenter(confirm);
 	}
 	
@@ -228,7 +228,7 @@ void MainMenuCreateEditQuestSave(CWindowMenuConsole * console) {
 		                                        text.str(), Vec2i(RATIO_X(20), 0.f), EDIT_QUEST_SAVE_CONFIRM);
 		e->setColor(Color::grayb(127));
 		e->SetCheckOff();
-		e->lData = i;
+		e->m_savegame = SavegameHandle(i);
 		console->AddMenuCenter(e);
 	}
 	
@@ -244,7 +244,7 @@ void MainMenuCreateEditQuestSave(CWindowMenuConsole * console) {
 		
 		Widget * e = new TextWidget(BUTTON_MENUEDITQUEST_SAVEINFO, hFontControls,
 		                                        text, Vec2i(RATIO_X(20), 0.f), EDIT_QUEST_SAVE_CONFIRM);
-		e->lData = i;
+		e->m_savegame = SavegameHandle(i);
 		console->AddMenuCenter(e);
 	}
 	
@@ -256,13 +256,13 @@ void MainMenuCreateEditQuestSave(CWindowMenuConsole * console) {
 		TextWidget * e = new TextWidget(BUTTON_MENUEDITQUEST_SAVEINFO, hFontControls, text.str(), Vec2i(RATIO_X(20), 0), EDIT_QUEST_SAVE_CONFIRM);
 
 		e->eMenuState = EDIT_QUEST_SAVE_CONFIRM;
-		e->lData = -1;
+		e->m_savegame = SavegameHandle::Invalid;
 		console->AddMenuCenter(e);
 	}
 
 	{
 	TextWidget * me01 = new TextWidget(-1, hFontControls, " ", Vec2i(RATIO_X(20), 0), EDIT_QUEST_SAVE_CONFIRM);
-	me01->lData = -1;
+	me01->m_savegame = SavegameHandle::Invalid;
 	me01->SetCheckOff();
 	console->AddMenuCenter(me01);
 	}
@@ -288,7 +288,7 @@ void MainMenuCreateEditQuestSaveConfirm(CWindowMenuConsole * console, Vec2i size
 	{
 	std::string szMenuText = getLocalised("system_menu_editquest_newsavegame", "---");
 	TextWidget * me = new TextWidget(-1, hFontMenu, szMenuText, Vec2i(RATIO_X(20), 0), NOP);
-	me->lData = -1;
+	me->m_savegame = SavegameHandle::Invalid;
 	me->eState=EDIT;
 	me->ePlace=CENTER;
 	console->AddMenuCenter(me, true);
@@ -941,7 +941,7 @@ void MainMenuLeftCreate(MENUSTATE eMenuState)
 	
 	{
 	CWindowMenuConsole * console = new CWindowMenuConsole(offset + Vec2i(0, -40), size, EDIT_QUEST_LOAD);
-	console->lData = -1;
+	console->m_savegame = SavegameHandle::Invalid;
 	console->m_rowSpacing = 5;
 	
 	MainMenuCreateEditQuestLoad(console, size);
@@ -958,7 +958,7 @@ void MainMenuLeftCreate(MENUSTATE eMenuState)
 	
 	{
 	CWindowMenuConsole * console = new CWindowMenuConsole(offset, size, EDIT_QUEST_SAVE_CONFIRM);
-	console->lData = -1;
+	console->m_savegame = SavegameHandle::Invalid;
 	
 	MainMenuCreateEditQuestSaveConfirm(console, size);
 	pWindowMenu->AddConsole(console);
