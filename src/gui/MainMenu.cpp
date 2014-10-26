@@ -540,17 +540,12 @@ void MainMenuOptionVideoCreate(CWindowMenuConsole * console, Vec2i size)
 
 void MainMenuOptionAudioCreate(CWindowMenuConsole * console, Vec2i size)
 {
-	std::string szMenuText;
-	Widget *me;
-	CMenuPanel *pc;
-	
 	// Audio backend selection
 	{
-		
-		pc = new CMenuPanel();
-		szMenuText = getLocalised("system_menus_options_audio_backend", "Backend");
+		CMenuPanel * pc = new CMenuPanel;
+		std::string szMenuText = getLocalised("system_menus_options_audio_backend", "Backend");
 		szMenuText += "  ";
-		me = new TextWidget(-1, hFontMenu, szMenuText, Vec2i(RATIO_X(20), 0), NOP);
+		Widget * me = new TextWidget(-1, hFontMenu, szMenuText, Vec2i(RATIO_X(20), 0), NOP);
 		me->SetCheckOff();
 		pc->AddElement(me);
 		CycleTextWidget * slider = new CycleTextWidget(BUTTON_MENUOPTIONSAUDIO_BACKEND);
@@ -572,9 +567,9 @@ void MainMenuOptionAudioCreate(CWindowMenuConsole * console, Vec2i size)
 	}
 	
 	{
-	pc = new CMenuPanel();
-	szMenuText = getLocalised("system_menus_options_audio_master_volume");
-	me = new TextWidget(-1, hFontMenu, szMenuText, Vec2i(RATIO_X(20), 0.f), NOP);
+	CMenuPanel * pc = new CMenuPanel;
+	std::string szMenuText = getLocalised("system_menus_options_audio_master_volume");
+	Widget * me = new TextWidget(-1, hFontMenu, szMenuText, Vec2i(RATIO_X(20), 0.f), NOP);
 	me->SetCheckOff();
 	pc->AddElement(me);
 	SliderWidget * sld = new SliderWidget(BUTTON_MENUOPTIONSAUDIO_MASTER, Vec2i(RATIO_X(200), 0));
@@ -584,9 +579,9 @@ void MainMenuOptionAudioCreate(CWindowMenuConsole * console, Vec2i size)
 	}
 	
 	{
-	pc = new CMenuPanel();
-	szMenuText = getLocalised("system_menus_options_audio_effects_volume");
-	me = new TextWidget(-1, hFontMenu, szMenuText, Vec2i(RATIO_X(20), 0.f), OPTIONS_AUDIO);
+	CMenuPanel * pc = new CMenuPanel;
+	std::string szMenuText = getLocalised("system_menus_options_audio_effects_volume");
+	Widget * me = new TextWidget(-1, hFontMenu, szMenuText, Vec2i(RATIO_X(20), 0.f), OPTIONS_AUDIO);
 	me->SetCheckOff();
 	pc->AddElement(me);
 	SliderWidget * sld = new SliderWidget(BUTTON_MENUOPTIONSAUDIO_SFX, Vec2i(RATIO_X(200), 0));
@@ -596,9 +591,9 @@ void MainMenuOptionAudioCreate(CWindowMenuConsole * console, Vec2i size)
 	}
 	
 	{
-	pc = new CMenuPanel();
-	szMenuText = getLocalised("system_menus_options_audio_speech_volume");
-	me = new TextWidget(-1, hFontMenu, szMenuText, Vec2i(RATIO_X(20), 0.f), OPTIONS_AUDIO);
+	CMenuPanel * pc = new CMenuPanel;
+	std::string szMenuText = getLocalised("system_menus_options_audio_speech_volume");
+	Widget * me = new TextWidget(-1, hFontMenu, szMenuText, Vec2i(RATIO_X(20), 0.f), OPTIONS_AUDIO);
 	me->SetCheckOff();
 	pc->AddElement(me);
 	SliderWidget * sld = new SliderWidget(BUTTON_MENUOPTIONSAUDIO_SPEECH, Vec2i(RATIO_X(200), 0));
@@ -608,9 +603,9 @@ void MainMenuOptionAudioCreate(CWindowMenuConsole * console, Vec2i size)
 	}
 	
 	{
-	pc = new CMenuPanel();
-	szMenuText = getLocalised("system_menus_options_audio_ambiance_volume");
-	me = new TextWidget(-1, hFontMenu, szMenuText, Vec2i(RATIO_X(20), 0), OPTIONS_AUDIO);
+	CMenuPanel * pc = new CMenuPanel;
+	std::string szMenuText = getLocalised("system_menus_options_audio_ambiance_volume");
+	Widget * me = new TextWidget(-1, hFontMenu, szMenuText, Vec2i(RATIO_X(20), 0), OPTIONS_AUDIO);
 	me->SetCheckOff();
 	pc->AddElement(me);
 	SliderWidget * sld = new SliderWidget(BUTTON_MENUOPTIONSAUDIO_AMBIANCE, Vec2i(RATIO_X(200), 0));
@@ -620,7 +615,7 @@ void MainMenuOptionAudioCreate(CWindowMenuConsole * console, Vec2i size)
 	}
 	
 	{
-	szMenuText = getLocalised("system_menus_options_audio_eax", "EAX");
+	std::string szMenuText = getLocalised("system_menus_options_audio_eax", "EAX");
 	szMenuText += " ";
 	TextWidget * text = new TextWidget(-1, hFontMenu, szMenuText, Vec2i(RATIO_X(20), 0), OPTIONS_INPUT);
 	CheckboxWidget * cb = new CheckboxWidget(text);
