@@ -849,28 +849,32 @@ void MainMenuOptionControlsCreatePage2(CWindowMenuConsole * console, Vec2i size)
 
 void Menu2_Render_Quit(CWindowMenuConsole * console, Vec2i size)
 {
-	Widget *me = NULL;
-	
-	me=new TextWidget(-1, hFontMenu, getLocalised("system_menus_main_quit"));
+	{
+	Widget * me = new TextWidget(-1, hFontMenu, getLocalised("system_menus_main_quit"));
 	me->SetCheckOff();
 	console->AddMenuCenter(me, true);
+	}
 	
-	me=new TextWidget(-1, hFontMenu, getLocalised("system_menus_main_editquest_confirm"));
+	{
+	Widget * me = new TextWidget(-1, hFontMenu, getLocalised("system_menus_main_editquest_confirm"));
 	me->SetCheckOff();
 	console->AddMenuCenter(me, true);
+	}
 	
-	CMenuPanel *pPanel = new CMenuPanel();
+	{
+	CMenuPanel *pPanel = new CMenuPanel;
 	
-	me = new TextWidget(BUTTON_MENUMAIN_QUIT, hFontMenu, getLocalised("system_yes"));
-	me->SetPos(Vec2i(RATIO_X(size.x-10)-me->rZone.width(), 0));
-	pPanel->AddElementNoCenterIn(me);
+	Widget * yes = new TextWidget(BUTTON_MENUMAIN_QUIT, hFontMenu, getLocalised("system_yes"));
+	yes->SetPos(Vec2i(RATIO_X(size.x-10)-yes->rZone.width(), 0));
+	pPanel->AddElementNoCenterIn(yes);
 	
-	me = new TextWidget(-1, hFontMenu, getLocalised("system_no"), Vec2i(RATIO_X(10), 0), MAIN);
-	me->SetShortCut(Keyboard::Key_Escape);
-	pPanel->AddElementNoCenterIn(me);
+	Widget * no = new TextWidget(-1, hFontMenu, getLocalised("system_no"), Vec2i(RATIO_X(10), 0), MAIN);
+	no->SetShortCut(Keyboard::Key_Escape);
+	pPanel->AddElementNoCenterIn(no);
 	
 	pPanel->Move(Vec2i(0, RATIO_Y(380)));
 	console->AddMenu(pPanel);
+	}
 }
 
 extern CMenuState *mainMenu;
