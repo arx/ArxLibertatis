@@ -634,16 +634,14 @@ void MainMenuOptionAudioCreate(CWindowMenuConsole * console, Vec2i size)
 
 void MainMenuOptionInputCreate(CWindowMenuConsole * console)
 {
-	std::string szMenuText;
-	Widget *me;
-	CMenuPanel *pc;
-	
-	szMenuText = getLocalised("system_menus_options_input_customize_controls");
-	me = new TextWidget(-1, hFontMenu, szMenuText, Vec2i(RATIO_X(20), 0), OPTIONS_INPUT_CUSTOMIZE_KEYS_1);
+	{
+	std::string szMenuText = getLocalised("system_menus_options_input_customize_controls");
+	Widget * me = new TextWidget(-1, hFontMenu, szMenuText, Vec2i(RATIO_X(20), 0), OPTIONS_INPUT_CUSTOMIZE_KEYS_1);
 	console->AddMenuCenter(me);
+	}
 	
 	{
-	szMenuText = getLocalised("system_menus_options_input_invert_mouse");
+	std::string szMenuText = getLocalised("system_menus_options_input_invert_mouse");
 	szMenuText += " ";
 	TextWidget * text = new TextWidget(-1, hFontMenu, szMenuText, Vec2i(RATIO_X(20), 0), OPTIONS_INPUT);
 	CheckboxWidget * cb = new CheckboxWidget(text);
@@ -653,7 +651,7 @@ void MainMenuOptionInputCreate(CWindowMenuConsole * console)
 	}
 	
 	{
-	szMenuText = getLocalised("system_menus_options_auto_ready_weapon");
+	std::string szMenuText = getLocalised("system_menus_options_auto_ready_weapon");
 	szMenuText += " ";
 	TextWidget * text = new TextWidget(-1, hFontMenu, szMenuText, Vec2i(RATIO_X(20), 0), OPTIONS_INPUT);
 	CheckboxWidget * cb = new CheckboxWidget(text);
@@ -663,7 +661,7 @@ void MainMenuOptionInputCreate(CWindowMenuConsole * console)
 	}
 
 	{
-	szMenuText = getLocalised("system_menus_options_input_mouse_look_toggle");
+	std::string szMenuText = getLocalised("system_menus_options_input_mouse_look_toggle");
 	szMenuText += " ";
 	TextWidget * text = new TextWidget(-1, hFontMenu, szMenuText, Vec2i(RATIO_X(20), 0.f), OPTIONS_INPUT);
 	CheckboxWidget * cb = new CheckboxWidget(text);
@@ -673,9 +671,9 @@ void MainMenuOptionInputCreate(CWindowMenuConsole * console)
 	}
 	
 	{
-	pc = new CMenuPanel();
-	szMenuText = getLocalised("system_menus_options_input_mouse_sensitivity");
-	me = new TextWidget(-1, hFontMenu, szMenuText, Vec2i(RATIO_X(20), 0.f), NOP);
+	CMenuPanel *pc = new CMenuPanel;
+	std::string szMenuText = getLocalised("system_menus_options_input_mouse_sensitivity");
+	Widget * me = new TextWidget(-1, hFontMenu, szMenuText, Vec2i(RATIO_X(20), 0.f), NOP);
 	me->SetCheckOff();
 	pc->AddElement(me);
 	SliderWidget * sld = new SliderWidget(BUTTON_MENUOPTIONS_CONTROLS_MOUSESENSITIVITY, Vec2i(RATIO_X(200), 0));
@@ -685,7 +683,7 @@ void MainMenuOptionInputCreate(CWindowMenuConsole * console)
 	}
 	
 	{
-	szMenuText = getLocalised("system_menus_autodescription", "auto_description");
+	std::string szMenuText = getLocalised("system_menus_autodescription", "auto_description");
 	szMenuText += " ";
 	TextWidget * text = new TextWidget(-1, hFontMenu, szMenuText, Vec2i(RATIO_X(20), 0), OPTIONS_INPUT);
 	CheckboxWidget * cb = new CheckboxWidget(text);
@@ -695,9 +693,9 @@ void MainMenuOptionInputCreate(CWindowMenuConsole * console)
 	}
 	
 	{
-	pc = new CMenuPanel();
-	szMenuText = getLocalised("system_menus_options_misc_quicksave_slots", "Quicksave slots");
-	me = new TextWidget(-1, hFontMenu, szMenuText, Vec2i(RATIO_X(20), 0), NOP);
+	CMenuPanel * pc = new CMenuPanel;
+	std::string szMenuText = getLocalised("system_menus_options_misc_quicksave_slots", "Quicksave slots");
+	Widget * me = new TextWidget(-1, hFontMenu, szMenuText, Vec2i(RATIO_X(20), 0), NOP);
 	me->SetCheckOff();
 	pc->AddElement(me);
 	SliderWidget * sld = new SliderWidget(BUTTON_MENUOPTIONS_CONTROLS_QUICKSAVESLOTS, Vec2i(RATIO_X(200), 0));
