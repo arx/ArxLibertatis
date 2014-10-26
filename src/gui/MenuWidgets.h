@@ -366,9 +366,6 @@ public:
 class ButtonWidget: public Widget {
 	
 public:
-	TextureContainer*   pTex;
-	
-public:
 	ButtonWidget(Vec2i pos, const char * texturePath);
 	~ButtonWidget();
 	
@@ -380,6 +377,9 @@ public:
 	void Update(int time);
 	void Render();
 	void RenderMouseOver();
+	
+private:
+	TextureContainer * m_texture;
 };
 
 class CycleTextWidget: public Widget {

@@ -2347,7 +2347,10 @@ Widget * CMenuPanel::IsMouseOver(const Vec2s& mousePos) const {
 ButtonWidget::ButtonWidget(Vec2i pos, const char * texturePath)
 	: Widget(NOP)
 {
-	TextureContainer * texture = TextureContainer::Load(texturePath);
+	pRef = this; //TODO remove this
+	
+	m_texture = TextureContainer::Load(texturePath);
+	arx_assert(m_texture);
 	
 	iID = -1;
 
@@ -2356,16 +2359,10 @@ ButtonWidget::ButtonWidget(Vec2i pos, const char * texturePath)
 	rZone.right  = rZone.left ;
 	rZone.bottom = rZone.top ;
 	
-	pTex=texture;
-	
-	if(pTex) {
-		s32 rZoneR = rZone.left + RATIO_X(pTex->m_dwWidth);
-		s32 rZoneB = rZone.top + RATIO_Y(pTex->m_dwHeight);
-		rZone.right  = std::max(rZone.right,  rZoneR);
-		rZone.bottom = std::max(rZone.bottom, rZoneB);
-	}
-	
-	pRef=this;
+	s32 rZoneR = rZone.left + RATIO_X(m_texture->m_dwWidth);
+	s32 rZoneB = rZone.top + RATIO_Y(m_texture->m_dwHeight);
+	rZone.right  = std::max(rZone.right,  rZoneR);
+	rZone.bottom = std::max(rZone.bottom, rZoneB);
 }
 
 ButtonWidget::~ButtonWidget() {
@@ -2374,13 +2371,9 @@ ButtonWidget::~ButtonWidget() {
 void ButtonWidget::SetPos(Vec2i pos)
 {
 	Widget::SetPos(pos);
-
-	int iWidth = 0;
-	int iHeight = 0;
-	if(pTex) {
-		iWidth = RATIO_X(pTex->m_dwWidth);
-		iHeight = RATIO_Y(pTex->m_dwHeight);
-	}
+	
+	int iWidth = RATIO_X(m_texture->m_dwWidth);
+	int iHeight = RATIO_Y(m_texture->m_dwHeight);
 	
 	rZone.right = pos.x + iWidth;
 	rZone.bottom = pos.y + iHeight;
@@ -2405,13 +2398,9 @@ void ButtonWidget::Render() {
 
 	if(bNoMenu)
 		return;
-
-	//affichage de la texture
-	if(pTex) {
-		Color color = (bCheck) ? Color::white : Color(63, 63, 63, 255);
-		
-		EERIEDrawBitmap2(Rectf(rZone), 0, pTex, color);
-	}
+	
+	Color color = (bCheck) ? Color::white : Color(63, 63, 63, 255);
+	EERIEDrawBitmap2(Rectf(rZone), 0, m_texture, color);
 }
 
 void ButtonWidget::RenderMouseOver() {
