@@ -543,7 +543,6 @@ void MainMenuOptionAudioCreate(CWindowMenuConsole * console, Vec2i size)
 	std::string szMenuText;
 	Widget *me;
 	CMenuPanel *pc;
-	TextureContainer *pTex;
 	
 	// Audio backend selection
 	{
@@ -643,7 +642,6 @@ void MainMenuOptionInputCreate(CWindowMenuConsole * console)
 	std::string szMenuText;
 	Widget *me;
 	CMenuPanel *pc;
-	TextureContainer *pTex;
 	
 	szMenuText = getLocalised("system_menus_options_input_customize_controls");
 	me = new TextWidget(-1, hFontMenu, szMenuText, Vec2i(RATIO_X(20), 0), OPTIONS_INPUT_CUSTOMIZE_KEYS_1);
