@@ -2230,21 +2230,21 @@ void CWindowMenuConsole::ReInitActionKey()
 	}
 }
 
-CMenuPanel::CMenuPanel()
+HorizontalPanelWidget::HorizontalPanelWidget()
 	: Widget(NOP)
 {
 	vElement.clear();
 	pRef = this;
 }
 
-CMenuPanel::~CMenuPanel()
+HorizontalPanelWidget::~HorizontalPanelWidget()
 {
 	BOOST_FOREACH(Widget * e, vElement) {
 		delete e;
 	}
 }
 
-void CMenuPanel::Move(const Vec2i & offset)
+void HorizontalPanelWidget::Move(const Vec2i & offset)
 {
 	rZone.move(offset.x, offset.y);
 	
@@ -2254,7 +2254,7 @@ void CMenuPanel::Move(const Vec2i & offset)
 }
 
 // patch on ajoute à droite en ligne
-void CMenuPanel::AddElement(Widget* _pElem)
+void HorizontalPanelWidget::AddElement(Widget* _pElem)
 {
 	vElement.push_back(_pElem);
 
@@ -2273,7 +2273,7 @@ void CMenuPanel::AddElement(Widget* _pElem)
 }
 
 // patch on ajoute à droite en ligne
-void CMenuPanel::AddElementNoCenterIn(Widget* _pElem)
+void HorizontalPanelWidget::AddElementNoCenterIn(Widget* _pElem)
 {
 	vElement.push_back(_pElem);
 
@@ -2289,7 +2289,7 @@ void CMenuPanel::AddElementNoCenterIn(Widget* _pElem)
 	rZone.bottom = std::max(rZone.bottom, _pElem->rZone.bottom);
 }
 
-Widget* CMenuPanel::OnShortCut()
+Widget* HorizontalPanelWidget::OnShortCut()
 {
 	BOOST_FOREACH(Widget * e, vElement) {
 		if(e->OnShortCut())
@@ -2299,7 +2299,7 @@ Widget* CMenuPanel::OnShortCut()
 	return NULL;
 }
 
-void CMenuPanel::Update(int _iTime)
+void HorizontalPanelWidget::Update(int _iTime)
 {
 	rZone.right = rZone.left;
 	rZone.bottom = rZone.top;
@@ -2311,7 +2311,7 @@ void CMenuPanel::Update(int _iTime)
 	}
 }
 
-void CMenuPanel::Render() {
+void HorizontalPanelWidget::Render() {
 
 	if(bNoMenu)
 		return;
@@ -2321,7 +2321,7 @@ void CMenuPanel::Render() {
 	}
 }
 
-Widget * CMenuPanel::GetZoneWithID(int _iID)
+Widget * HorizontalPanelWidget::GetZoneWithID(int _iID)
 {
 	BOOST_FOREACH(Widget * e, vElement) {
 		if(Widget * pZone = e->GetZoneWithID(_iID))
@@ -2331,7 +2331,7 @@ Widget * CMenuPanel::GetZoneWithID(int _iID)
 	return NULL;
 }
 
-Widget * CMenuPanel::IsMouseOver(const Vec2s& mousePos) const {
+Widget * HorizontalPanelWidget::IsMouseOver(const Vec2s& mousePos) const {
 
 	if(rZone.contains(Vec2i(mousePos))) {
 		BOOST_FOREACH(Widget * e, vElement) {

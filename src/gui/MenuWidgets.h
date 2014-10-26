@@ -312,11 +312,11 @@ public:
 // faire une classe
 // like a container in java
 
-class CMenuPanel : public Widget {
+class HorizontalPanelWidget : public Widget {
 	
 public:
-	CMenuPanel();
-	virtual ~CMenuPanel();
+	HorizontalPanelWidget();
+	virtual ~HorizontalPanelWidget();
 	
 	void Move(const Vec2i & offset);
 	void AddElement(Widget * element);

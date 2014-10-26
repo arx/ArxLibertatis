@@ -58,7 +58,7 @@ void Menu2_Render_NewQuest(CWindowMenuConsole * console, Vec2i size) {
 	console->AddMenuCenter(me, true);
 	}
 	
-	CMenuPanel *pPanel = new CMenuPanel();
+	HorizontalPanelWidget * pPanel = new HorizontalPanelWidget;
 	
 	{
 	std::string szMenuText = getLocalised("system_yes");
@@ -288,7 +288,7 @@ void MainMenuCreateEditQuestSaveConfirm(CWindowMenuConsole * console, Vec2i size
 	console->AddMenuCenter(me, true);
 	}
 	
-	CMenuPanel * pPanel = new CMenuPanel();
+	HorizontalPanelWidget * pPanel = new HorizontalPanelWidget;
 	
 	// Delete button
 	{
@@ -351,7 +351,7 @@ void MainMenuOptionVideoCreate(CWindowMenuConsole * console, Vec2i size)
 {
 	// Renderer selection
 	{
-		CMenuPanel * pc = new CMenuPanel;
+		HorizontalPanelWidget * pc = new HorizontalPanelWidget;
 		std::string szMenuText = getLocalised("system_menus_options_video_renderer", "Renderer");
 		szMenuText += "  ";
 		TextWidget * me = new TextWidget(-1, hFontMenu, szMenuText, Vec2i(RATIO_X(20), 0), NOP);
@@ -393,7 +393,7 @@ void MainMenuOptionVideoCreate(CWindowMenuConsole * console, Vec2i size)
 	}
 	
 	{
-	CMenuPanel * pc = new CMenuPanel;
+	HorizontalPanelWidget * pc = new HorizontalPanelWidget;
 	std::string szMenuText = getLocalised("system_menus_options_video_resolution");
 	szMenuText += "  ";
 	TextWidget * me = new TextWidget(-1, hFontMenu, szMenuText, Vec2i(RATIO_X(20), 0.f), NOP);
@@ -449,7 +449,7 @@ void MainMenuOptionVideoCreate(CWindowMenuConsole * console, Vec2i size)
 	}
 
 	{
-	CMenuPanel * pc = new CMenuPanel;
+	HorizontalPanelWidget * pc = new HorizontalPanelWidget;
 	std::string szMenuText = getLocalised("system_menus_options_detail");
 	szMenuText += " ";
 	TextWidget * me = new TextWidget(-1, hFontMenu, szMenuText, Vec2i(RATIO_X(20), 0), NOP);
@@ -472,7 +472,7 @@ void MainMenuOptionVideoCreate(CWindowMenuConsole * console, Vec2i size)
 	}
 	
 	{
-	CMenuPanel * pc = new CMenuPanel;
+	HorizontalPanelWidget * pc = new HorizontalPanelWidget;
 	std::string szMenuText = getLocalised("system_menus_options_video_brouillard");
 	TextWidget * me = new TextWidget(-1, hFontMenu, szMenuText, Vec2i(RATIO_X(20), 0.f), NOP);
 	me->SetCheckOff();
@@ -519,7 +519,7 @@ void MainMenuOptionVideoCreate(CWindowMenuConsole * console, Vec2i size)
 	}
 	
 	{
-	CMenuPanel * pc = new CMenuPanel;
+	HorizontalPanelWidget * pc = new HorizontalPanelWidget;
 	std::string szMenuText = getLocalised("system_menus_video_apply");
 	szMenuText += "   ";
 	TextWidget * me = new TextWidget(BUTTON_MENUOPTIONSVIDEO_APPLY, hFontMenu, szMenuText, Vec2i(RATIO_X(240), 0), NOP);
@@ -542,7 +542,7 @@ void MainMenuOptionAudioCreate(CWindowMenuConsole * console, Vec2i size)
 {
 	// Audio backend selection
 	{
-		CMenuPanel * pc = new CMenuPanel;
+		HorizontalPanelWidget * pc = new HorizontalPanelWidget;
 		std::string szMenuText = getLocalised("system_menus_options_audio_backend", "Backend");
 		szMenuText += "  ";
 		TextWidget * me = new TextWidget(-1, hFontMenu, szMenuText, Vec2i(RATIO_X(20), 0), NOP);
@@ -567,7 +567,7 @@ void MainMenuOptionAudioCreate(CWindowMenuConsole * console, Vec2i size)
 	}
 	
 	{
-	CMenuPanel * pc = new CMenuPanel;
+	HorizontalPanelWidget * pc = new HorizontalPanelWidget;
 	std::string szMenuText = getLocalised("system_menus_options_audio_master_volume");
 	TextWidget * me = new TextWidget(-1, hFontMenu, szMenuText, Vec2i(RATIO_X(20), 0.f), NOP);
 	me->SetCheckOff();
@@ -579,7 +579,7 @@ void MainMenuOptionAudioCreate(CWindowMenuConsole * console, Vec2i size)
 	}
 	
 	{
-	CMenuPanel * pc = new CMenuPanel;
+	HorizontalPanelWidget * pc = new HorizontalPanelWidget;
 	std::string szMenuText = getLocalised("system_menus_options_audio_effects_volume");
 	TextWidget * me = new TextWidget(-1, hFontMenu, szMenuText, Vec2i(RATIO_X(20), 0.f), OPTIONS_AUDIO);
 	me->SetCheckOff();
@@ -591,7 +591,7 @@ void MainMenuOptionAudioCreate(CWindowMenuConsole * console, Vec2i size)
 	}
 	
 	{
-	CMenuPanel * pc = new CMenuPanel;
+	HorizontalPanelWidget * pc = new HorizontalPanelWidget;
 	std::string szMenuText = getLocalised("system_menus_options_audio_speech_volume");
 	TextWidget * me = new TextWidget(-1, hFontMenu, szMenuText, Vec2i(RATIO_X(20), 0.f), OPTIONS_AUDIO);
 	me->SetCheckOff();
@@ -603,7 +603,7 @@ void MainMenuOptionAudioCreate(CWindowMenuConsole * console, Vec2i size)
 	}
 	
 	{
-	CMenuPanel * pc = new CMenuPanel;
+	HorizontalPanelWidget * pc = new HorizontalPanelWidget;
 	std::string szMenuText = getLocalised("system_menus_options_audio_ambiance_volume");
 	TextWidget * me = new TextWidget(-1, hFontMenu, szMenuText, Vec2i(RATIO_X(20), 0), OPTIONS_AUDIO);
 	me->SetCheckOff();
@@ -671,7 +671,7 @@ void MainMenuOptionInputCreate(CWindowMenuConsole * console)
 	}
 	
 	{
-	CMenuPanel *pc = new CMenuPanel;
+	HorizontalPanelWidget *pc = new HorizontalPanelWidget;
 	std::string szMenuText = getLocalised("system_menus_options_input_mouse_sensitivity");
 	TextWidget * me = new TextWidget(-1, hFontMenu, szMenuText, Vec2i(RATIO_X(20), 0.f), NOP);
 	me->SetCheckOff();
@@ -693,7 +693,7 @@ void MainMenuOptionInputCreate(CWindowMenuConsole * console)
 	}
 	
 	{
-	CMenuPanel * pc = new CMenuPanel;
+	HorizontalPanelWidget * pc = new HorizontalPanelWidget;
 	std::string szMenuText = getLocalised("system_menus_options_misc_quicksave_slots", "Quicksave slots");
 	TextWidget * me = new TextWidget(-1, hFontMenu, szMenuText, Vec2i(RATIO_X(20), 0), NOP);
 	me->SetCheckOff();
@@ -714,7 +714,7 @@ void MainMenuOptionInputCreate(CWindowMenuConsole * console)
 
 
 void CUSTOM_CTRL_FUNC(CWindowMenuConsole * console, long & y, const std::string & a, int c, int d, const char * defaultText = "?", const char * specialSuffix = ""){
-	CMenuPanel * pc = new CMenuPanel();
+	HorizontalPanelWidget * pc = new HorizontalPanelWidget;
 	
 	std::string szMenuText = getLocalised(a, defaultText);
 	szMenuText += specialSuffix;
@@ -763,7 +763,7 @@ void MainMenuOptionControlsCreatePage1(CWindowMenuConsole * console, Vec2i size)
 	CUSTOM_CTRL_FUNC(console, y, "system_menus_options_input_customize_controls_look_up", BUTTON_MENUOPTIONS_CONTROLS_CUST_LOOKUP1, BUTTON_MENUOPTIONS_CONTROLS_CUST_LOOKUP2);
 	CUSTOM_CTRL_FUNC(console, y, "system_menus_options_input_customize_controls_look_down", BUTTON_MENUOPTIONS_CONTROLS_CUST_LOOKDOWN1, BUTTON_MENUOPTIONS_CONTROLS_CUST_LOOKDOWN2);
 	
-	CMenuPanel * pc = new CMenuPanel();
+	HorizontalPanelWidget * pc = new HorizontalPanelWidget;
 	
 	{
 	ButtonWidget * cb = new ButtonWidget(RATIO_2(Vec2i(20, 380)), "graph/interface/menus/back");
@@ -824,7 +824,7 @@ void MainMenuOptionControlsCreatePage2(CWindowMenuConsole * console, Vec2i size)
 
 	CUSTOM_CTRL_FUNC(console, y, "system_menus_options_input_customize_controls_toggle_fullscreen", BUTTON_MENUOPTIONS_CONTROLS_CUST_TOGGLE_FULLSCREEN1, BUTTON_MENUOPTIONS_CONTROLS_CUST_TOGGLE_FULLSCREEN2, "Toggle fullscreen");
 	
-	CMenuPanel * pc = new CMenuPanel();
+	HorizontalPanelWidget * pc = new HorizontalPanelWidget;
 	
 	{
 	ButtonWidget * cb = new ButtonWidget(RATIO_2(Vec2i(20, 380)), "graph/interface/menus/back");
@@ -860,7 +860,7 @@ void Menu2_Render_Quit(CWindowMenuConsole * console, Vec2i size)
 	}
 	
 	{
-	CMenuPanel *pPanel = new CMenuPanel;
+	HorizontalPanelWidget *pPanel = new HorizontalPanelWidget;
 	
 	TextWidget * yes = new TextWidget(BUTTON_MENUMAIN_QUIT, hFontMenu, getLocalised("system_yes"));
 	yes->SetPos(Vec2i(RATIO_X(size.x-10)-yes->rZone.width(), 0));
