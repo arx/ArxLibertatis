@@ -101,8 +101,7 @@ void MainMenuCreateEditQuest(CWindowMenuConsole * console) {
 	}
 	
 	{
-	TextureContainer * pTex = TextureContainer::Load("graph/interface/menus/back");
-	ButtonWidget * cb = new ButtonWidget(RATIO_2(Vec2i(20, 380)), pTex);
+	ButtonWidget * cb = new ButtonWidget(RATIO_2(Vec2i(20, 380)), "graph/interface/menus/back");
 	cb->eMenuState = MAIN;
 	cb->SetShortCut(Keyboard::Key_Escape);
 	console->AddMenu(cb);
@@ -112,8 +111,7 @@ void MainMenuCreateEditQuest(CWindowMenuConsole * console) {
 void MainMenuCreateEditQuestLoad(CWindowMenuConsole * console, Vec2i size) {
 	
 	{
-	TextureContainer * pTex = TextureContainer::Load("graph/interface/icons/menu_main_load");
-	ButtonWidget * cb = new ButtonWidget(Vec2i(0, 0), pTex);
+	ButtonWidget * cb = new ButtonWidget(Vec2i(0, 0), "graph/interface/icons/menu_main_load");
 	cb->SetCheckOff();
 	console->AddMenuCenter(cb, true);
 	}
@@ -192,8 +190,7 @@ void MainMenuCreateEditQuestLoad(CWindowMenuConsole * console, Vec2i size) {
 	
 	// Back button
 	{
-	TextureContainer * pTex = TextureContainer::Load("graph/interface/menus/back");
-	ButtonWidget * cb = new ButtonWidget(RATIO_2(Vec2i(20, 420)), pTex);
+	ButtonWidget * cb = new ButtonWidget(RATIO_2(Vec2i(20, 420)), "graph/interface/menus/back");
 	cb->eMenuState = EDIT_QUEST;
 	cb->SetShortCut(Keyboard::Key_Escape);
 	console->AddMenu(cb);
@@ -204,8 +201,7 @@ void MainMenuCreateEditQuestLoad(CWindowMenuConsole * console, Vec2i size) {
 void MainMenuCreateEditQuestSave(CWindowMenuConsole * console) {
 	
 	{
-	TextureContainer * pTex = TextureContainer::Load("graph/interface/icons/menu_main_save");
-	ButtonWidget * cb = new ButtonWidget(Vec2i(RATIO_X(10), 0), pTex);
+	ButtonWidget * cb = new ButtonWidget(Vec2i(RATIO_X(10), 0), "graph/interface/icons/menu_main_save");
 	cb->SetCheckOff();
 	console->AddMenuCenter(cb, true);
 	}
@@ -268,8 +264,7 @@ void MainMenuCreateEditQuestSave(CWindowMenuConsole * console) {
 	}
 	
 	{
-	TextureContainer * pTex = TextureContainer::Load("graph/interface/menus/back");
-	ButtonWidget * cb = new ButtonWidget(RATIO_2(Vec2i(20, 420)), pTex);
+	ButtonWidget * cb = new ButtonWidget(RATIO_2(Vec2i(20, 420)), "graph/interface/menus/back");
 	cb->eMenuState = EDIT_QUEST;
 	cb->SetShortCut(Keyboard::Key_Escape);
 	console->AddMenu(cb);
@@ -279,8 +274,7 @@ void MainMenuCreateEditQuestSave(CWindowMenuConsole * console) {
 void MainMenuCreateEditQuestSaveConfirm(CWindowMenuConsole * console, Vec2i size) {
 	
 	{
-	TextureContainer * pTex = TextureContainer::Load("graph/interface/icons/menu_main_save");
-	ButtonWidget * cb = new ButtonWidget(Vec2i(0, 0), pTex);
+	ButtonWidget * cb = new ButtonWidget(Vec2i(0, 0), "graph/interface/icons/menu_main_save");
 	cb->SetCheckOff();
 	console->AddMenuCenter(cb, true);
 	}
@@ -316,8 +310,7 @@ void MainMenuCreateEditQuestSaveConfirm(CWindowMenuConsole * console, Vec2i size
 	
 	// Back button
 	{
-	TextureContainer * pTex = TextureContainer::Load("graph/interface/menus/back");
-	ButtonWidget * cb = new ButtonWidget(RATIO_2(Vec2i(20, 380)), pTex);
+	ButtonWidget * cb = new ButtonWidget(RATIO_2(Vec2i(20, 380)), "graph/interface/menus/back");
 	cb->eMenuState = EDIT_QUEST_SAVE;
 	cb->SetShortCut(Keyboard::Key_Escape);
 	pPanel->AddElementNoCenterIn(cb);
@@ -347,8 +340,7 @@ void MainMenuOptionGroupsCreate(CWindowMenuConsole * console) {
 	}
 	
 	{
-	TextureContainer * pTex = TextureContainer::Load("graph/interface/menus/back");
-	ButtonWidget * cb = new ButtonWidget(RATIO_2(Vec2i(20, 380)), pTex);
+	ButtonWidget * cb = new ButtonWidget(RATIO_2(Vec2i(20, 380)), "graph/interface/menus/back");
 	cb->eMenuState = MAIN;
 	cb->SetShortCut(Keyboard::Key_Escape);
 	console->AddMenu(cb);
@@ -535,9 +527,8 @@ void MainMenuOptionVideoCreate(CWindowMenuConsole * console, Vec2i size)
 	me->SetCheckOff();
 	pc->AddElementNoCenterIn(me);
 	pMenuElementApply = me;
-
-	TextureContainer * pTex = TextureContainer::Load("graph/interface/menus/back");
-	ButtonWidget * cb = new ButtonWidget(RATIO_2(Vec2i(20, 420)), pTex);
+	
+	ButtonWidget * cb = new ButtonWidget(RATIO_2(Vec2i(20, 420)), "graph/interface/menus/back");
 	cb->iID = BUTTON_MENUOPTIONSVIDEO_BACK;
 	cb->eMenuState = OPTIONS;
 	cb->SetShortCut(Keyboard::Key_Escape);
@@ -640,8 +631,7 @@ void MainMenuOptionAudioCreate(CWindowMenuConsole * console, Vec2i size)
 	}
 	
 	{
-	pTex = TextureContainer::Load("graph/interface/menus/back");
-	ButtonWidget * cb = new ButtonWidget(RATIO_2(Vec2i(20, 380)), pTex);
+	ButtonWidget * cb = new ButtonWidget(RATIO_2(Vec2i(20, 380)), "graph/interface/menus/back");
 	cb->eMenuState = OPTIONS;
 	cb->SetShortCut(Keyboard::Key_Escape);
 	console->AddMenu(cb);
@@ -724,8 +714,7 @@ void MainMenuOptionInputCreate(CWindowMenuConsole * console)
 	}
 	
 	{
-	pTex = TextureContainer::Load("graph/interface/menus/back");
-	ButtonWidget * cb = new ButtonWidget(RATIO_2(Vec2i(20, 380)), pTex);
+	ButtonWidget * cb = new ButtonWidget(RATIO_2(Vec2i(20, 380)), "graph/interface/menus/back");
 	cb->eMenuState = OPTIONS;
 	cb->SetShortCut(Keyboard::Key_Escape);
 	console->AddMenu(cb);
@@ -786,8 +775,7 @@ void MainMenuOptionControlsCreatePage1(CWindowMenuConsole * console, Vec2i size)
 	CMenuPanel * pc = new CMenuPanel();
 	
 	{
-	TextureContainer * pTex = TextureContainer::Load("graph/interface/menus/back");
-	ButtonWidget * cb = new ButtonWidget(RATIO_2(Vec2i(20, 380)), pTex);
+	ButtonWidget * cb = new ButtonWidget(RATIO_2(Vec2i(20, 380)), "graph/interface/menus/back");
 	cb->iID = BUTTON_MENUOPTIONS_CONTROLS_CUST_BACK;
 	cb->eMenuState = OPTIONS_INPUT;
 	cb->SetShortCut(Keyboard::Key_Escape);
@@ -802,8 +790,7 @@ void MainMenuOptionControlsCreatePage1(CWindowMenuConsole * console, Vec2i size)
 	}
 	
 	{
-	TextureContainer * pTex = TextureContainer::Load("graph/interface/menus/next");
-	ButtonWidget * cb = new ButtonWidget(RATIO_2(Vec2i(280, 380)), pTex);
+	ButtonWidget * cb = new ButtonWidget(RATIO_2(Vec2i(280, 380)), "graph/interface/menus/next");
 	cb->iID = BUTTON_MENUOPTIONS_CONTROLS_CUST_BACK;
 	cb->eMenuState = OPTIONS_INPUT_CUSTOMIZE_KEYS_2;
 	cb->SetShortCut(Keyboard::Key_Escape);
@@ -849,8 +836,7 @@ void MainMenuOptionControlsCreatePage2(CWindowMenuConsole * console, Vec2i size)
 	CMenuPanel * pc = new CMenuPanel();
 	
 	{
-	TextureContainer * pTex = TextureContainer::Load("graph/interface/menus/back");
-	ButtonWidget * cb = new ButtonWidget(RATIO_2(Vec2i(20, 380)), pTex);
+	ButtonWidget * cb = new ButtonWidget(RATIO_2(Vec2i(20, 380)), "graph/interface/menus/back");
 	cb->iID = BUTTON_MENUOPTIONS_CONTROLS_CUST_BACK;
 	cb->eMenuState = OPTIONS_INPUT_CUSTOMIZE_KEYS_1;
 	cb->SetShortCut(Keyboard::Key_Escape);

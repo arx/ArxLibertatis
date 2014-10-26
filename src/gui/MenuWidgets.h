@@ -369,7 +369,7 @@ public:
 	TextureContainer*   pTex;
 	
 public:
-	ButtonWidget(Vec2i pos, TextureContainer * tex = NULL);
+	ButtonWidget(Vec2i pos, const char * texturePath);
 	~ButtonWidget();
 	
 public:

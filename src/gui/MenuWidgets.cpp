@@ -2344,9 +2344,11 @@ Widget * CMenuPanel::IsMouseOver(const Vec2s& mousePos) const {
 	return NULL;
 }
 
-ButtonWidget::ButtonWidget(Vec2i pos, TextureContainer *_pTex)
+ButtonWidget::ButtonWidget(Vec2i pos, const char * texturePath)
 	: Widget(NOP)
 {
+	TextureContainer * texture = TextureContainer::Load(texturePath);
+	
 	iID = -1;
 
 	rZone.left=pos.x;
@@ -2354,7 +2356,7 @@ ButtonWidget::ButtonWidget(Vec2i pos, TextureContainer *_pTex)
 	rZone.right  = rZone.left ;
 	rZone.bottom = rZone.top ;
 	
-	pTex=_pTex;
+	pTex=texture;
 	
 	if(pTex) {
 		s32 rZoneR = rZone.left + RATIO_X(pTex->m_dwWidth);
@@ -2434,10 +2436,9 @@ CycleTextWidget::CycleTextWidget(int _iID, Vec2i pos)
 	: Widget(NOP)
 {
 	iID = _iID;
-	TextureContainer *pTex = TextureContainer::Load("graph/interface/menus/menu_slider_button_left");
-	pLeftButton = new ButtonWidget(pos, pTex);
-	pTex = TextureContainer::Load("graph/interface/menus/menu_slider_button_right");
-	pRightButton = new ButtonWidget(pos, pTex);
+	
+	pLeftButton = new ButtonWidget(pos, "graph/interface/menus/menu_slider_button_left");
+	pRightButton = new ButtonWidget(pos, "graph/interface/menus/menu_slider_button_right");
 
 	vText.clear();
 
@@ -2668,11 +2669,9 @@ SliderWidget::SliderWidget(int _iID, Vec2i pos)
 	: Widget(NOP)
 {
 	iID = _iID;
-
-	TextureContainer *pTexL = TextureContainer::Load("graph/interface/menus/menu_slider_button_left");
-	TextureContainer *pTexR = TextureContainer::Load("graph/interface/menus/menu_slider_button_right");
-	pLeftButton = new ButtonWidget(pos, pTexL);
-	pRightButton = new ButtonWidget(pos, pTexR);
+	
+	pLeftButton = new ButtonWidget(pos, "graph/interface/menus/menu_slider_button_left");
+	pRightButton = new ButtonWidget(pos, "graph/interface/menus/menu_slider_button_right");
 	pTex1 = TextureContainer::Load("graph/interface/menus/menu_slider_on");
 	pTex2 = TextureContainer::Load("graph/interface/menus/menu_slider_off");
 	arx_assert(pTex1);
