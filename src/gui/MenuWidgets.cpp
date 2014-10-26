@@ -1540,9 +1540,9 @@ MENUSTATE CWindowMenu::Render() {
 
 CWindowMenuConsole::CWindowMenuConsole(Vec2i pos, Vec2i size, MENUSTATE _eMenuState)
 	: m_rowSpacing(10)
+	, m_savegame(0)
 	, pZoneClick(NULL)
 	, bEdit(false)
-	, m_savegame(0)
 	, bMouseAttack(false)
 	, m_textCursorCurrentTime(0.f)
 {

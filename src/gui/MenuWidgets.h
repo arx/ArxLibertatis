@@ -487,30 +487,6 @@ public:
 class CWindowMenuConsole {
 	
 public:
-	bool					bFrameOdd;
-	
-	Vec2i m_pos;
-	Vec2i m_oldPos;
-	Vec2i m_offset;
-	Vec2i m_size;
-	int   m_rowSpacing;
-	MENUSTATE				eMenuState;
-	CMenuAllZone			MenuAllZone;
-	Widget		*	pZoneClick;
-	bool					bEdit;
-	TextureContainer	*	pTexBackground;
-	TextureContainer	*	pTexBackgroundBorder;
-	
-	SavegameHandle m_savegame;
-	
-	bool				bMouseAttack;
-	
-	static const int m_textCursorFlashDuration = 300;
-	float m_textCursorCurrentTime;
-	
-private:
-	void UpdateText();
-public:
 	CWindowMenuConsole(Vec2i pos, Vec2i size, MENUSTATE state);
 	
 	void AddMenu(Widget * element);
@@ -521,6 +497,31 @@ public:
 	
 	Widget * GetTouch(bool keyTouched, int keyId, InputKeyId* pInputKeyId = NULL, bool _bValidateTest = false);
 	void ReInitActionKey();
+	
+	Vec2i m_pos;
+	Vec2i m_oldPos;
+	int m_rowSpacing;
+	SavegameHandle m_savegame;
+	MENUSTATE eMenuState;
+	CMenuAllZone MenuAllZone;
+	
+private:
+	void UpdateText();
+	
+	bool					bFrameOdd;
+	
+	Vec2i m_offset;
+	Vec2i m_size;
+	
+	Widget		*	pZoneClick;
+	bool					bEdit;
+	TextureContainer	*	pTexBackground;
+	TextureContainer	*	pTexBackgroundBorder;
+	
+	bool				bMouseAttack;
+	
+	static const int m_textCursorFlashDuration = 300;
+	float m_textCursorCurrentTime;
 };
 
 class CWindowMenu {
