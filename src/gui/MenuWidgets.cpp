@@ -2421,23 +2421,23 @@ void ButtonWidget::RenderMouseOver() {
 	}
 }
 
-CycleTextWidget::CycleTextWidget(int _iID, Vec2i pos)
+CycleTextWidget::CycleTextWidget(int _iID)
 	: Widget(NOP)
 {
 	iID = _iID;
 	
-	pLeftButton = new ButtonWidget(pos, "graph/interface/menus/menu_slider_button_left");
-	pRightButton = new ButtonWidget(pos, "graph/interface/menus/menu_slider_button_right");
+	pLeftButton = new ButtonWidget(Vec2i_ZERO, "graph/interface/menus/menu_slider_button_left");
+	pRightButton = new ButtonWidget(Vec2i_ZERO, "graph/interface/menus/menu_slider_button_right");
 
 	vText.clear();
 
 	iPos = 0;
 	iOldPos = -1;
 
-	rZone.left   = pos.x;
-	rZone.top    = pos.y;
-	rZone.right  = pos.x + pLeftButton->rZone.width() + pRightButton->rZone.width();
-	rZone.bottom = pos.y + std::max(pLeftButton->rZone.height(), pRightButton->rZone.height());
+	rZone.left   = 0;
+	rZone.top    = 0;
+	rZone.right  = pLeftButton->rZone.width() + pRightButton->rZone.width();
+	rZone.bottom = std::max(pLeftButton->rZone.height(), pRightButton->rZone.height());
 
 	pRef = this;
 }
