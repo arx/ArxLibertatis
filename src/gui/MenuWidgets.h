@@ -421,8 +421,8 @@ public:
 	SliderWidget(int id, Vec2i pos);
 	virtual ~SliderWidget();
 	
-	void setValue(int value) { iPos = value; }
-	int getValue() const { return iPos; }
+	void setValue(int value) { m_value = value; }
+	int getValue() const { return m_value; }
 	
 	void Move(const Vec2i & offset);
 	bool OnMouseClick();
@@ -437,7 +437,7 @@ private:
 	ButtonWidget		*	pRightButton;
 	TextureContainer	* pTex1;
 	TextureContainer	* pTex2;
-	int					iPos;
+	int					m_value;
 };
 
 class CheckboxWidget : public Widget {

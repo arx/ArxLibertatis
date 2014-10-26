@@ -2678,7 +2678,7 @@ SliderWidget::SliderWidget(int _iID, Vec2i pos)
 	arx_assert(pTex1);
 	arx_assert(pTex2);
 	
-	iPos = 0;
+	m_value = 0;
 
 	rZone.left   = pos.x;
 	rZone.top    = pos.y;
@@ -2705,16 +2705,16 @@ void SliderWidget::EmptyFunction() {
 
 	//Touche pour la selection
 	if(GInput->isKeyPressedNowPressed(Keyboard::Key_LeftArrow)) {
-		iPos--;
+		m_value--;
 
-		if(iPos <= 0)
-			iPos = 0;
+		if(m_value <= 0)
+			m_value = 0;
 	} else {
 		if(GInput->isKeyPressedNowPressed(Keyboard::Key_RightArrow)) {
-			iPos++;
+			m_value++;
 
-			if(iPos >= 10)
-				iPos = 10;
+			if(m_value >= 10)
+				m_value = 10;
 		}
 	}
 }
@@ -2727,43 +2727,43 @@ bool SliderWidget::OnMouseClick() {
 	
 	if(rZone.contains(cursor)) {
 		if(pLeftButton->rZone.contains(cursor)) {
-			iPos--;
-			if(iPos <= 0)
-				iPos = 0;
+			m_value--;
+			if(m_value <= 0)
+				m_value = 0;
 		}
 		
 		if(pRightButton->rZone.contains(cursor)) {
-			iPos++;
-			if(iPos >= 10)
-				iPos = 10;
+			m_value++;
+			if(m_value >= 10)
+				m_value = 10;
 		}
 	}
 	
 	switch (iID) {
 	// MENUOPTIONS_VIDEO
 	case BUTTON_MENUOPTIONSVIDEO_FOG:
-		ARXMenu_Options_Video_SetFogDistance(iPos);
+		ARXMenu_Options_Video_SetFogDistance(m_value);
 		break;
 	// MENUOPTIONS_AUDIO
 	case BUTTON_MENUOPTIONSAUDIO_MASTER:
-		ARXMenu_Options_Audio_SetMasterVolume(iPos);
+		ARXMenu_Options_Audio_SetMasterVolume(m_value);
 		break;
 	case BUTTON_MENUOPTIONSAUDIO_SFX:
-		ARXMenu_Options_Audio_SetSfxVolume(iPos);
+		ARXMenu_Options_Audio_SetSfxVolume(m_value);
 		break;
 	case BUTTON_MENUOPTIONSAUDIO_SPEECH:
-		ARXMenu_Options_Audio_SetSpeechVolume(iPos);
+		ARXMenu_Options_Audio_SetSpeechVolume(m_value);
 		break;
 	case BUTTON_MENUOPTIONSAUDIO_AMBIANCE:
-		ARXMenu_Options_Audio_SetAmbianceVolume(iPos);
+		ARXMenu_Options_Audio_SetAmbianceVolume(m_value);
 		break;
 	// MENUOPTIONS_CONTROLS
 	case BUTTON_MENUOPTIONS_CONTROLS_MOUSESENSITIVITY:
-		ARXMenu_Options_Control_SetMouseSensitivity(iPos);
+		ARXMenu_Options_Control_SetMouseSensitivity(m_value);
 		break;
 		case BUTTON_MENUOPTIONS_CONTROLS_QUICKSAVESLOTS: {
-			iPos = std::max(iPos, 1);
-			config.misc.quicksaveSlots = iPos;
+			m_value = std::max(m_value, 1);
+			config.misc.quicksaveSlots = m_value;
 			break;
 		}
 	}
@@ -2800,7 +2800,7 @@ void SliderWidget::Render() {
 	GRenderer->SetBlendFunc(Renderer::BlendOne, Renderer::BlendOne);
 	
 	for(int i = 0; i < 10; i++) {
-		TextureContainer * pTex = (i < iPos) ? pTex1 : pTex2;
+		TextureContainer * pTex = (i < m_value) ? pTex1 : pTex2;
 		Rectf rect = Rectf(pos, RATIO_X(pTex->m_dwWidth), RATIO_Y(pTex->m_dwHeight));
 		
 		EERIEDrawBitmap2(rect, 0, pTex, Color::white);
