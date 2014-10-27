@@ -1172,10 +1172,11 @@ void ARX_PARTICLES_Update(EERIE_CAMERA * cam)  {
 				temp = in + vect * part->fparam;
 				
 				EE_RTP(temp, &tv[2]);
-				GRenderer->ResetTexture(0);
-
-				// TODO: This
-				EERIEDRAWPRIM(Renderer::TriangleStrip, tv);
+				
+				RenderMaterial mat;
+				mat.setBlendType(RenderMaterial::Additive);
+				RenderBatcher::getInstance().add(mat, tv);
+				
 				if(!arxtime.is_paused()) {
 					part->oldpos = in;
 				}
