@@ -2986,16 +2986,8 @@ void MenuCursor::DrawLine2D(float _fSize, Color3f color) {
 
 void MenuCursor::DrawCursor() {
 	
-	GRenderer->SetRenderState(Renderer::AlphaBlending, true);
 	DrawLine2D(10.f, Color3f(.725f, .619f, 0.56f));
-
-	if(scursor[m_currentFrame])
-		GRenderer->SetTexture(0, scursor[m_currentFrame]);
-	else 
-		GRenderer->ResetTexture(0);
-
-	GRenderer->SetRenderState(Renderer::AlphaBlending, false);
-
+	
 	GRenderer->SetRenderState(Renderer::DepthTest, false);
 	DrawOneCursor(GInput->getMousePosAbs());
 	GRenderer->SetRenderState(Renderer::DepthTest, true);
