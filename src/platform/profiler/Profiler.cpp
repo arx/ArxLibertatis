@@ -28,9 +28,6 @@
 
 #include <boost/atomic.hpp>
 
-#define BOOST_DATE_TIME_NO_LIB
-#include <boost/date_time.hpp>
-
 #include "io/fs/FilePath.h"
 #include "io/fs/FileStream.h"
 #include "io/log/Logger.h"
@@ -76,7 +73,6 @@ private:
 	bool               m_canWrite;
 	
 	void writeProfileLog();
-	std::string getDateTimeString() const;
 };
 
 
@@ -129,7 +125,7 @@ void Profiler::flush() {
 
 void Profiler::writeProfileLog() {
 	
-	std::string filename = getDateTimeString() + ".perf";
+	std::string filename = util::getDateTimeString() + ".perf";
 	fs::ofstream out(fs::path(filename), std::ios::binary | std::ios::out);
 	
 	// Threads info
@@ -177,28 +173,6 @@ void Profiler::writeProfileLog() {
 	out.close();
 }
 
-std::string Profiler::getDateTimeString() const {
-	
-	boost::posix_time::ptime localTime = boost::posix_time::second_clock::local_time();
-	boost::gregorian::date::ymd_type ymd = localTime.date().year_month_day();
-	boost::posix_time::time_duration hms = localTime.time_of_day();
-	
-	std::stringstream localTimeString;
-	localTimeString << std::setfill('0')
-	                << ymd.year << "."
-	                << std::setw(2)
-	                << ymd.month.as_number() << "."
-	                << std::setw(2)
-	                << ymd.day.as_number() << "-"
-	                << std::setw(2)
-	                << hms.hours() << "."
-	                << std::setw(2)
-	                << hms.minutes() << "."
-	                << std::setw(2)
-	                << hms.seconds();
-	
-	return localTimeString.str();
-}
 
 
 static Profiler g_profiler;

@@ -81,6 +81,8 @@ inline bool safeGet(T & data, CTYPE * & pos, STYPE & size) {
 	return true;
 }
 
+std::string getDateTimeString();
+
 } // namespace util
 
 #endif // ARX_UTIL_STRING_H

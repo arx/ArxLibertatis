@@ -21,6 +21,8 @@
 
 #include <algorithm>
 
+#define BOOST_DATE_TIME_NO_LIB
+#include <boost/date_time.hpp>
 #include <boost/format.hpp>
 #include <boost/algorithm/string.hpp>
 
@@ -75,5 +77,29 @@ std::string unescapeString(const std::string & text) {
 	
 	return result;
 }
+
+std::string getDateTimeString() {
+	
+	boost::posix_time::ptime localTime = boost::posix_time::second_clock::local_time();
+	boost::gregorian::date::ymd_type ymd = localTime.date().year_month_day();
+	boost::posix_time::time_duration hms = localTime.time_of_day();
+	
+	std::stringstream localTimeString;
+	localTimeString << std::setfill('0')
+	                << ymd.year << "."
+	                << std::setw(2)
+	                << ymd.month.as_number() << "."
+	                << std::setw(2)
+	                << ymd.day.as_number() << "-"
+	                << std::setw(2)
+	                << hms.hours() << "."
+	                << std::setw(2)
+	                << hms.minutes() << "."
+	                << std::setw(2)
+	                << hms.seconds();
+	
+	return localTimeString.str();
+}
+
 
 } // namespace util
