@@ -699,12 +699,6 @@ bool TextWidget::OnMouseClick() {
 				}
 			}
 			break;
-		case BUTTON_MENUMAIN_LOADQUEST: {
-			}break;
-		case BUTTON_MENUMAIN_SAVEQUEST: {
-			}break;
-		case BUTTON_MENUMAIN_MULTIPLAYER: {
-			}break;
 		case BUTTON_MENUMAIN_OPTIONS: {
 			}break;
 		case BUTTON_MENUMAIN_CREDITS: {
