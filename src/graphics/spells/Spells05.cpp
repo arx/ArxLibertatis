@@ -1179,7 +1179,7 @@ void CLevitate::Render()
 					d3dvs.y = m_pos.y + (vertex + 1)->y + ((vertex->y - (vertex + 1)->y) * m_coneScale);
 					d3dvs.z = m_pos.z + (vertex + 1)->z + ((vertex->z - (vertex + 1)->z) * m_coneScale);
 					
-					EE_RT(d3dvs, d3dv->p);
+					d3dv->p = EE_RT(d3dvs);
 					col = Random::get(0, 80);
 
 					if(!arxtime.is_paused())
@@ -1194,7 +1194,7 @@ void CLevitate::Render()
 					d3dvs.y = m_pos.y;
 					d3dvs.z = m_pos.z + vertex->z;
 					
-					EE_RT(d3dvs, d3dv->p);
+					d3dv->p = EE_RT(d3dvs);
 					col = Random::get(0, 80);
 
 					if(!arxtime.is_paused())
@@ -1224,7 +1224,7 @@ void CLevitate::Render()
 				while(nb) {
 					Vec3f d3dvs = m_pos + *vertex;
 	
-					EE_RT(d3dvs, d3dv->p);
+					d3dv->p = EE_RT(d3dvs);
 					col = Random::get(0, 80);
 
 					if(!arxtime.is_paused())
@@ -1239,7 +1239,7 @@ void CLevitate::Render()
 					d3dvs.y = m_pos.y;
 					d3dvs.z = m_pos.z + vertex->z;
 
-					EE_RT(d3dvs, d3dv->p);
+					d3dv->p = EE_RT(d3dvs);
 					col = Random::get(0, 80);
 
 					if(!arxtime.is_paused())

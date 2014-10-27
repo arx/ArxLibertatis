@@ -2431,8 +2431,8 @@ void ArxGame::goFor2DFX()
 
 		if(el->extras & EXTRAS_FLARE) {
 			if (el->temp > 0.f) {
-				Vec3f ltvv;
-				EE_RT(el->pos, ltvv);
+				Vec3f ltvv = EE_RT(el->pos);
+				
 				float v=el->temp;
 
 				if(FADEDIR) {

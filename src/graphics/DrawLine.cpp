@@ -103,10 +103,9 @@ void drawLineSphere(const Sphere & sphere, Color color) {
 
 			pos *= sphere.radius;
 			pos += sphere.origin;
-
-			Vec3f temp;
+			
 			TexturedVertex out;
-			EE_RT(pos, temp);
+			Vec3f temp = EE_RT(pos);
 			EE_P(&temp, &out);
 
 			if(skip) {

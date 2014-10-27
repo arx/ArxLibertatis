@@ -438,8 +438,8 @@ bool GetTruePolyY(const EERIEPOLY * ep, const Vec3f & pos, float * ret) {
 //*************************************************************************************
 EERIE_BACKGROUND * ACTIVEBKG = NULL;
 
-void EE_RT(const Vec3f & in, Vec3f & out) {
-	out = Vec3f(ACTIVECAM->orgTrans.worldToView * Vec4f(in, 1.0f));
+Vec3f EE_RT(const Vec3f & in) {
+	return Vec3f(ACTIVECAM->orgTrans.worldToView * Vec4f(in, 1.0f));
 }
 
 // TODO get rid of sw transform
@@ -461,7 +461,7 @@ void EE_P(const Vec3f * in, TexturedVertex * out) {
 }
 
 void EE_RTP(const Vec3f & in, TexturedVertex * out) {
-	EE_RT(in, out->p);
+	out->p = EE_RT(in);
 	EE_P(&out->p, out);
 }
 
@@ -1326,8 +1326,7 @@ void Draw3DObject(EERIE_3DOBJ *eobj, const Anglef & angle, const Vec3f & pos, co
 		
 		eobj->vertexlist3[i].v = (rv.p += pos);
 
-		Vec3f tempWorld;
-		EE_RT(rv.p, tempWorld);
+		Vec3f tempWorld = EE_RT(rv.p);
 		EE_P(&tempWorld, &eobj->vertexlist[i].vert);
 	}
 
