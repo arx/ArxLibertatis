@@ -2818,7 +2818,9 @@ void SliderWidget::RenderMouseOver() {
 	GRenderer->SetRenderState(Renderer::AlphaBlending, false);
 }
 
-MenuCursor::MenuCursor() {
+MenuCursor::MenuCursor()
+	: m_size(Vec2s(64, 64))
+{
 	
 	SetCursorOff();
 	
@@ -2861,9 +2863,7 @@ void MenuCursor::DrawOneCursor(const Vec2s& mousePos) {
 	GRenderer->GetTextureStage(0)->setMagFilter(TextureStage::FilterNearest);
 	GRenderer->GetTextureStage(0)->setWrapMode(TextureStage::WrapClamp);
 
-	EERIEDrawBitmap2(Rectf(Vec2f(mousePos),
-	                 scursor[iNumCursor]->m_dwWidth,
-	                 scursor[iNumCursor]->m_dwHeight),
+	EERIEDrawBitmap2(Rectf(Vec2f(mousePos), m_size.x, m_size.y),
 	                 0.00000001f, scursor[iNumCursor], Color::white);
 
 	GRenderer->GetTextureStage(0)->setMinFilter(TextureStage::FilterLinear);
@@ -2884,12 +2884,7 @@ void MenuCursor::update(float time) {
 	}
 	exited = !inWindow;
 	
-	Vec2s iDiff;
-	if(scursor[eNumTex]) {
-		iDiff = Vec2s(scursor[eNumTex]->m_dwWidth / 2, scursor[eNumTex]->m_dwHeight / 2);
-	} else {
-		iDiff = Vec2s_ZERO;
-	}
+	Vec2s iDiff = m_size / Vec2s(2);
 	
 	iOldCoord[iNbOldCoord] = GInput->getMousePosAbs() + iDiff;
 	

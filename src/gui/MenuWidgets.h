@@ -569,6 +569,7 @@ private:
 	
 	void DrawOneCursor(const Vec2s & mousePos);
 	
+	Vec2s m_size;
 	bool exited; //! Has the mouse exited the window
 	
 	float m_storedTime;
