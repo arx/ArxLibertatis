@@ -124,10 +124,6 @@ long REFUSE_GAME_RETURN = 0;
 
 static long SP_HEAD = 0;
 
-void ARX_MENU_CLICKSOUND() {
-	ARX_SOUND_PlayMenu(SND_MENU_CLICK);
-}
-
 //-----------------------------------------------------------------------------
 // Menu Sounds
 //-----------------------------------------------------------------------------
@@ -291,7 +287,7 @@ void ARX_MENU_Launch(bool allowResume) {
 	ARX_SOUND_MixerSwitch(ARX_SOUND_MixerGame, ARX_SOUND_MixerMenu);
 
 	ARX_SOUND_PlayMenuAmbiance(AMB_MENU);
-	ARX_MENU_CLICKSOUND();
+	ARX_SOUND_PlayMenu(SND_MENU_CLICK);
 
 	ARXmenu.currentmode = AMCM_MAIN;
 	ARX_Menu_Resources_Create();
@@ -331,7 +327,7 @@ void ARX_Menu_Manage() {
 			if(   GInput->isKeyPressedNowUnPressed(Keyboard::Key_Escape)
 			   && !bFadeInOut // XS: Disabling ESC capture while fading in or out.
 			) {
-				ARX_MENU_CLICKSOUND();
+				ARX_SOUND_PlayMenu(SND_MENU_CLICK);
 				ARXmenu.currentmode = AMCM_MAIN;
 			}
 			break;
@@ -350,7 +346,7 @@ void ARX_Menu_Manage() {
 			if(   GInput->isKeyPressedNowUnPressed(Keyboard::Key_Escape)
 			   || GInput->isKeyPressedNowUnPressed(Keyboard::Key_Spacebar)
 			) {
-				ARX_MENU_CLICKSOUND();
+				ARX_SOUND_PlayMenu(SND_MENU_CLICK);
 				bFadeInOut = true;	//fade out
 				bFade = true;			//active le fade
 				iFadeAction = AMCM_MAIN;
@@ -482,7 +478,7 @@ bool ARX_Menu_Render() {
 				{
 					QUICK_MOD++;
 					int iSkin = player.skin;
-					ARX_MENU_CLICKSOUND();
+					ARX_SOUND_PlayMenu(SND_MENU_CLICK);
 
 					if(bQuickGenFirstClick) {
 						ARX_PLAYER_MakeAverageHero();
@@ -518,7 +514,7 @@ bool ARX_Menu_Render() {
 				if(!(EERIEMouseButton & 1) && (LastMouseClick & 1)) {
 					SKIN_MOD++;
 					BOOKZOOM = 1;
-					ARX_MENU_CLICKSOUND();
+					ARX_SOUND_PlayMenu(SND_MENU_CLICK);
 					player.skin++;
 
 					if(player.skin > 3)
@@ -566,7 +562,7 @@ bool ARX_Menu_Render() {
 							SP_HEAD = 0;
 						}
 
-						ARX_MENU_CLICKSOUND();
+						ARX_SOUND_PlayMenu(SND_MENU_CLICK);
 
 						bFadeInOut = true;		//fade out
 						bFade = true;			//active le fade
