@@ -1029,9 +1029,6 @@ void ARX_PARTICLES_Update(EERIE_CAMERA * cam)  {
 	
 	unsigned long tim = (unsigned long)arxtime;
 	
-	GRenderer->SetCulling(Renderer::CullNone);
-	GRenderer->SetFogColor(Color::none);
-	
 	long pcc = ParticleCount;
 	
 	for(size_t i = 0; i < MAX_PARTICLES && pcc > 0; i++) {
@@ -1296,9 +1293,6 @@ void ARX_PARTICLES_Update(EERIE_CAMERA * cam)  {
 		
 		pcc--;
 	}
-	
-	GRenderer->SetFogColor(ulBKGColor);
-	GRenderer->SetRenderState(Renderer::DepthTest, true);
 }
 
 void RestoreAllLightsInitialStatus() {

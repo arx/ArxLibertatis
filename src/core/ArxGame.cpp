@@ -2061,12 +2061,10 @@ void ArxGame::renderLevel() {
 		pParticleManager->Render();
 	}
 	
-	GRenderer->SetBlendFunc(Renderer::BlendOne, Renderer::BlendOne);
-	GRenderer->SetRenderState(Renderer::DepthWrite, false);
-	GRenderer->SetRenderState(Renderer::AlphaBlending, true);
-
 	ARX_PARTICLES_Update(&subj);
 	
+	GRenderer->SetFogColor(ulBKGColor);
+	GRenderer->SetRenderState(Renderer::DepthTest, true);
 	GRenderer->SetBlendFunc(Renderer::BlendOne, Renderer::BlendOne);
 	GRenderer->SetRenderState(Renderer::DepthWrite, false);
 	GRenderer->SetRenderState(Renderer::AlphaBlending, false);
