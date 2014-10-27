@@ -248,16 +248,16 @@ void ManageLava_VertexBuffer(EERIEPOLY * ep, const long to, const unsigned long 
 	}
 }
 
-void EERIERTPPoly2(EERIEPOLY *ep)
+void EERIERTPPoly2(EERIEPOLY & ep)
 {
-	EE_RTP(ep->v[0].p, &ep->tv[0]);
-	EE_RTP(ep->v[1].p, &ep->tv[1]);
-	EE_RTP(ep->v[2].p, &ep->tv[2]);
+	EE_RTP(ep.v[0].p, &ep.tv[0]);
+	EE_RTP(ep.v[1].p, &ep.tv[1]);
+	EE_RTP(ep.v[2].p, &ep.tv[2]);
 
-	if(ep->type & POLY_QUAD)
-		EE_RTP(ep->v[3].p, &ep->tv[3]);
+	if(ep.type & POLY_QUAD)
+		EE_RTP(ep.v[3].p, &ep.tv[3]);
 	else
-		ep->tv[3].p.z=1.f;
+		ep.tv[3].p.z=1.f;
 }
 
 bool IsSphereInFrustrum(const Vec3f & point, const EERIE_FRUSTRUM & frustrum, float radius = 0.f);
@@ -1354,14 +1354,14 @@ void ARX_PORTALS_Frustrum_ComputeRoom(size_t roomIndex, const EERIE_FRUSTRUM & f
 		if(po->useportal)
 			continue;
 		
-		EERIEPOLY *epp = &po->poly;
+		EERIEPOLY & epp = po->poly;
 	
 		//clipp NEAR & FAR
 		unsigned char ucVisibilityNear=0;
 		unsigned char ucVisibilityFar=0;
 
-		for(size_t i=0; i<ARRAY_SIZE(epp->v); i++) {
-			float fDist0 = efpPlaneNear.getDist(epp->v[i].p);
+		for(size_t i=0; i<ARRAY_SIZE(epp.v); i++) {
+			float fDist0 = efpPlaneNear.getDist(epp.v[i].p);
 
 			if(fDist0 < 0.f)
 				ucVisibilityNear++;
@@ -1374,19 +1374,19 @@ void ARX_PORTALS_Frustrum_ComputeRoom(size_t roomIndex, const EERIE_FRUSTRUM & f
 			continue;
 		}
 
-		Vec3f pos = epp->center - ACTIVECAM->orgTrans.pos;
-		float fRes = glm::dot(pos, epp->norm);
+		Vec3f pos = epp.center - ACTIVECAM->orgTrans.pos;
+		float fRes = glm::dot(pos, epp.norm);
 
 		EERIERTPPoly2(epp);
 
-		if(!IsSphereInFrustrum(epp->center, frustrum, epp->v[0].rhw)) {
+		if(!IsSphereInFrustrum(epp.center, frustrum, epp.v[0].rhw)) {
 			continue;
 		}
 
 		bool Cull = !(fRes<0.f);
 		
 		EERIE_FRUSTRUM fd;
-		CreateFrustrum(fd, ACTIVECAM->orgTrans.pos, *epp, Cull);
+		CreateFrustrum(fd, ACTIVECAM->orgTrans.pos, epp, Cull);
 
 		size_t roomToCompute = 0;
 		bool computeRoom = false;
