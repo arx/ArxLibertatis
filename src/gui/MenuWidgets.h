@@ -577,7 +577,7 @@ private:
 	// Cursor
 	long				lFrameDiff;
 	CURSORSTATE			eNumTex;
-	int					iNumCursor;
+	int					m_currentFrame;
 	bool				bMouseOver;
 	
 	// For the ribbon effect

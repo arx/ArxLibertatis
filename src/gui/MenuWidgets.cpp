@@ -2832,7 +2832,7 @@ MenuCursor::MenuCursor()
 	
 	bMouseOver=false;
 	
-	iNumCursor=0;
+	m_currentFrame=0;
 	lFrameDiff=0;
 }
 
@@ -2864,7 +2864,7 @@ void MenuCursor::DrawOneCursor(const Vec2s& mousePos) {
 	GRenderer->GetTextureStage(0)->setWrapMode(TextureStage::WrapClamp);
 
 	EERIEDrawBitmap2(Rectf(Vec2f(mousePos), m_size.x, m_size.y),
-	                 0.00000001f, scursor[iNumCursor], Color::white);
+	                 0.00000001f, scursor[m_currentFrame], Color::white);
 
 	GRenderer->GetTextureStage(0)->setMinFilter(TextureStage::FilterLinear);
 	GRenderer->GetTextureStage(0)->setMagFilter(TextureStage::FilterLinear);
@@ -2989,8 +2989,8 @@ void MenuCursor::DrawCursor() {
 	GRenderer->SetRenderState(Renderer::AlphaBlending, true);
 	DrawLine2D(10.f, Color3f(.725f, .619f, 0.56f));
 
-	if(scursor[iNumCursor])
-		GRenderer->SetTexture(0, scursor[iNumCursor]);
+	if(scursor[m_currentFrame])
+		GRenderer->SetTexture(0, scursor[m_currentFrame]);
 	else 
 		GRenderer->ResetTexture(0);
 
@@ -3004,22 +3004,22 @@ void MenuCursor::DrawCursor() {
 
 	if(lFrameDiff > 70) {
 		if(bMouseOver) {
-			if(iNumCursor < 4) {
-				iNumCursor++;
+			if(m_currentFrame < 4) {
+				m_currentFrame++;
 			} else {
-				if(iNumCursor > 4) {
-					iNumCursor--;
+				if(m_currentFrame > 4) {
+					m_currentFrame--;
 				}
 			}
 
 			SetCursorOff();
 			bMouseOver=false;
 		} else {
-			if(iNumCursor > 0) {
-				iNumCursor++;
+			if(m_currentFrame > 0) {
+				m_currentFrame++;
 
-				if(iNumCursor > 7)
-					iNumCursor=0;
+				if(m_currentFrame > 7)
+					m_currentFrame=0;
 			}
 		}
 
