@@ -43,8 +43,8 @@ struct D                                                        \
     > >                                                         \
 {                                                               \
     T t;                                                        \
-    explicit D(const T t_) : t(t_) {};                          \
-    D(): t() {};                                                \
+    explicit D(const T t_) : t(t_) {}                           \
+    D(): t() {}                                                 \
     D(const D & t_) : t(t_.t){}                                 \
     D & operator=(const D & rhs) { t = rhs.t; return *this;}    \
     operator const T & () const {return t; }                    \
