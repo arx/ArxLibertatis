@@ -382,7 +382,7 @@ private:
 class CycleTextWidget: public Widget {
 	
 public:
-	CycleTextWidget(int);
+	explicit CycleTextWidget(int);
 	virtual ~CycleTextWidget();
 	
 	void setValue(int value) { iPos = value; }
