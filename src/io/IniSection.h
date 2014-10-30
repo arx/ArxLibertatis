@@ -25,6 +25,11 @@
 
 struct IniKey {
 	
+	IniKey(const std::string & _name, const std::string & _value)
+		: name(_name)
+		, value(_value)
+	{}
+	
 	inline const std::string & getName() const { return name; }
 	inline const std::string & getValue() const { return value; }
 	

@@ -23,6 +23,7 @@
 #include <cppunit/extensions/HelperMacros.h>
 
 #include "graphics/ColorTest.h"
+#include "io/IniTest.h"
 #include "math/LegacyMathTest.h"
 
 int main(int argc, char *argv[]) {

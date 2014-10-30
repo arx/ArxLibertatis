@@ -81,12 +81,9 @@ const IniKey * IniSection::getKey(const std::string & name) const {
 
 void IniSection::addKey(const std::string & key, const std::string & value) {
 	
-	keys.resize(keys.size() + 1);
-	
-	keys.back().name = key;
-	keys.back().value = value;
-	
-	boost::to_lower(keys.back().name);
+	IniKey k = IniKey(key, value);
+	boost::to_lower(k.name);
+	keys.push_back(k);
 	
 	LogDebug("found key " << key << "=\"" << value << "\"");
-};
+}
