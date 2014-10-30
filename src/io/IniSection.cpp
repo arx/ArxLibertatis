@@ -23,6 +23,7 @@
 #include <ios>
 
 #include <boost/algorithm/string/case_conv.hpp>
+#include <boost/lexical_cast.hpp>
 
 #include "io/log/Logger.h"
 
@@ -40,14 +41,11 @@ int IniKey::getValue(int defaultValue) const {
 
 float IniKey::getValue(float defaultValue) const {
 	
-	std::istringstream iss(value);
-	
-	float val;
-	if((iss >> val).fail()) {
+	try {
+		return boost::lexical_cast<float>(value);
+	} catch(boost::bad_lexical_cast &) {
 		return defaultValue;
 	}
-	
-	return val;
 }
 
 bool IniKey::getValue(bool defaultValue) const {
