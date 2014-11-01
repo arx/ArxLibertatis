@@ -37,6 +37,7 @@ struct IniKey {
 	
 	float getValue(float defaultValue) const;
 	
+	//! Support either boolean specified as strings (true, false) or 0, 1
 	bool getValue(bool defaultValue) const;
 	
 private:

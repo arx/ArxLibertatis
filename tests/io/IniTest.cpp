@@ -52,8 +52,6 @@ void IniTest::boolTest() {
 	CPPUNIT_ASSERT_EQUAL(false, IniKey("b", "false").getValue(true));
 	CPPUNIT_ASSERT_EQUAL(true,  IniKey("a", "1" ).getValue(false));
 	CPPUNIT_ASSERT_EQUAL(false, IniKey("b", "0").getValue(true));
-	CPPUNIT_ASSERT_EQUAL(true,  IniKey("a", "1.0" ).getValue(false));
-	CPPUNIT_ASSERT_EQUAL(false, IniKey("b", "0.0").getValue(true));
 	
 	// Should not
 	CPPUNIT_ASSERT_EQUAL(false, IniKey("a", "True" ).getValue(false));

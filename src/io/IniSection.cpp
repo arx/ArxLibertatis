@@ -50,20 +50,12 @@ float IniKey::getValue(float defaultValue) const {
 
 bool IniKey::getValue(bool defaultValue) const {
 	
-	std::istringstream iss(value);
-	
-	// Support either boolean specified as strings (true, false) or 0, 1
-	bool val;
-	if((iss >> std::boolalpha >> val).fail()) {
-		iss.clear();
-		int intVal;
-		if((iss >> intVal).fail()) {
-			return defaultValue;
-		}
-		val = (intVal != 0);
-	}
-	
-	return val;
+	if("false" == value || "0" == value)
+		return false;
+	else if("true" == value || "1" == value)
+		return true;
+	else
+		return defaultValue;
 }
 
 const IniKey * IniSection::getKey(const std::string & name) const {
