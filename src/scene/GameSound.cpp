@@ -633,8 +633,8 @@ long ARX_SOUND_PlaySpeech(const res::path & name, const Entity * io)
 	return sample_id;
 }
 
-long ARX_SOUND_PlayCollision(long mat1, long mat2, float volume, float power, const Vec3f & position, Entity * source)
-{
+long ARX_SOUND_PlayCollision(long mat1, long mat2, float volume, float power, const Vec3f & position, Entity * source) {
+	
 	if(!bIsActive)
 		return 0;
 
@@ -650,22 +650,19 @@ long ARX_SOUND_PlayCollision(long mat1, long mat2, float volume, float power, co
 		return 0;
 
 	audio::Channel channel;
-	float presence;
-
 	channel.mixer = ARX_SOUND_MixerGameSample;
-
 	channel.flags = FLAG_VOLUME | FLAG_PITCH | FLAG_POSITION | FLAG_REVERBERATION | FLAG_FALLOFF;
-
+	
 	res::path sample_name;
 	audio::getSampleName(sample_id, sample_name);
-	presence = GetSamplePresenceFactor(sample_name);
+	float presence = GetSamplePresenceFactor(sample_name);
 	channel.falloff.start = ARX_SOUND_DEFAULT_FALLSTART * presence;
 	channel.falloff.end = ARX_SOUND_DEFAULT_FALLEND * presence;
 	
 	if(ACTIVECAM && fartherThan(ACTIVECAM->orgTrans.pos, position, ARX_SOUND_REFUSE_DISTANCE))
 		return -1;
 	
-	//Launch 'ON HEAR' script event
+	// Launch 'ON HEAR' script event
 	ARX_NPC_SpawnAudibleSound(position, source, power, presence);
 	
 	channel.position = position;
@@ -681,17 +678,14 @@ long ARX_SOUND_PlayCollision(long mat1, long mat2, float volume, float power, co
 
 long ARX_SOUND_PlayCollision(const std::string & name1, const std::string & name2, float volume, float power, const Vec3f & position, Entity * source) {
 	
-	if(!bIsActive) {
+	if(!bIsActive)
 		return 0;
-	}
 	
-	if(name1.empty() || name2.empty()) {
+	if(name1.empty() || name2.empty())
 		return 0;
-	}
 	
-	if(name2 == "water") {
+	if(name2 == "water")
 		ARX_PARTICLES_SpawnWaterSplash(position);
-	}
 	
 	CollisionMaps::iterator mi = collisionMaps.find(name1);
 	if(mi == collisionMaps.end()) {
@@ -721,11 +715,10 @@ long ARX_SOUND_PlayCollision(const std::string & name1, const std::string & name
 	// Launch 'ON HEAR' script event
 	ARX_NPC_SpawnAudibleSound(position, source, power, presence);
 	
-	channel.position = position;
-	if(ACTIVECAM && fartherThan(ACTIVECAM->orgTrans.pos, position, ARX_SOUND_REFUSE_DISTANCE)) {
+	if(ACTIVECAM && fartherThan(ACTIVECAM->orgTrans.pos, position, ARX_SOUND_REFUSE_DISTANCE))
 		return -1;
-	}
 	
+	channel.position = position;
 	channel.pitch = 0.975f + 0.5f * rnd();
 	channel.volume = volume;
 	audio::samplePlay(sample_id, channel);
