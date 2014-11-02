@@ -31,7 +31,7 @@ struct SYMBOL_DRAW {
 	Vec3f		lastpos;
 	short			lasttim;
 	short			duration;
-	char			sequence[32];
+	std::string sequence;
 	Vec2s cPosStart;
 };
 

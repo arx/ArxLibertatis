@@ -49,15 +49,13 @@ Vec2s GetSymbVector(char c) {
 	}
 }
 
-void ReCenterSequence(const char *_pcSequence, Vec2s & iMin, Vec2s & iMax) {
+void ReCenterSequence(const std::string & _pcSequence, Vec2s & iMin, Vec2s & iMax) {
 	
 	Vec2s iSize = Vec2s(0, 0);
 	iMin = Vec2s(0, 0);
 	iMax = Vec2s(0, 0);
 	
-	int iLenght=strlen(_pcSequence);
-
-	for(int iI = 0; iI < iLenght; iI++) {
+	for(size_t iI = 0; iI < _pcSequence.length(); iI++) {
 		Vec2s es2dVector = GetSymbVector(_pcSequence[iI]);
 		es2dVector *= symbolVecScale;
 		iSize += es2dVector;
@@ -179,7 +177,7 @@ void ARX_SPELLS_UpdateSymbolDraw() {
 				continue;
 			}
 
-			long nbcomponents=strlen(sd->sequence);
+			long nbcomponents = sd->sequence.length();
 
 			if(nbcomponents <= 0) {
 				delete io->symboldraw;
@@ -307,7 +305,7 @@ void ARX_SPELLS_RequestSymbolDrawCommon(Entity *io, float duration, RuneInfo & i
 	SYMBOL_DRAW *sd = io->symboldraw;
 
 	sd->duration = (short)std::max(1l, long(duration));
-	strcpy(sd->sequence, info.sequence.c_str());
+	sd->sequence = info.sequence;
 
 	sd->starttime = (unsigned long)(arxtime);
 	sd->lasttim = 0;
