@@ -238,7 +238,8 @@ Entity::~Entity() {
 	lightHandleDestroy(halo.dynlight);
 	
 	free(usepath);
-	free(symboldraw);
+	
+	delete symboldraw;
 	symboldraw = NULL;
 	
 	if(ioflags & IO_NPC) {

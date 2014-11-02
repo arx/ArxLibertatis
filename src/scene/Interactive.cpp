@@ -762,7 +762,7 @@ void ARX_INTERACTIVE_ClearIODynData(Entity * io) {
 	lightHandleDestroy(io->dynlight);
 	lightHandleDestroy(io->halo.dynlight);
 	
-	free(io->symboldraw);
+	delete io->symboldraw;
 	io->symboldraw = NULL;
 	
 	io->spellcast_data.castingspell = SPELL_NONE;

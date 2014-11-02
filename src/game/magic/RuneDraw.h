@@ -26,6 +26,15 @@
 
 class Entity;
 
+struct SYMBOL_DRAW {
+	unsigned long	starttime;
+	Vec3f		lastpos;
+	short			lasttim;
+	short			duration;
+	char			sequence[32];
+	Vec2s cPosStart;
+};
+
 void ARX_SPELLS_Init_Rects();
 
 void ARX_SPELLS_UpdateSymbolDraw();

@@ -74,7 +74,6 @@ struct IO_CAMDATA;
 struct IO_FIXDATA;
 struct IO_ITEMDATA;
 struct IO_NPCDATA;
-struct SYMBOL_DRAW;
 struct TWEAK_INFO;
 
 #define MAX_ANIMS 200 // max loadable anims per character

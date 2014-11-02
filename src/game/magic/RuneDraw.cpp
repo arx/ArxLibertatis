@@ -32,14 +32,7 @@ extern EERIE_CAMERA subj;
 
 static const Vec2s symbolVecScale(8*2, 6*2);
 
-struct SYMBOL_DRAW {
-	unsigned long	starttime;
-	Vec3f		lastpos;
-	short			lasttim;
-	short			duration;
-	char			sequence[32];
-	Vec2s cPosStart;
-};
+
 
 Vec2s GetSymbVector(char c) {
 
@@ -181,7 +174,7 @@ void ARX_SPELLS_UpdateSymbolDraw() {
 					io->dynlight = LightHandle::Invalid;
 				}
 
-				free(io->symboldraw);
+				delete io->symboldraw;
 				io->symboldraw = NULL;
 				continue;
 			}
@@ -189,7 +182,7 @@ void ARX_SPELLS_UpdateSymbolDraw() {
 			long nbcomponents=strlen(sd->sequence);
 
 			if(nbcomponents <= 0) {
-				free(io->symboldraw);
+				delete io->symboldraw;
 				io->symboldraw = NULL;
 				continue;
 			}
@@ -294,7 +287,7 @@ void ARX_SPELLS_UpdateSymbolDraw() {
 void ARX_SPELLS_ClearAllSymbolDraw() {
 	BOOST_FOREACH(Entity * e, entities) {
 		if(e && e->symboldraw) {
-			free(e->symboldraw);
+			delete e->symboldraw;
 			e->symboldraw = NULL;
 		}
 	}
@@ -306,14 +299,11 @@ void ARX_SPELLS_ClearAllSymbolDraw() {
 
 
 void ARX_SPELLS_RequestSymbolDrawCommon(Entity *io, float duration, RuneInfo & info) {
-	SYMBOL_DRAW * ptr;
-	ptr = (SYMBOL_DRAW *)realloc(io->symboldraw, sizeof(SYMBOL_DRAW));
-
-	if(!ptr)
-		return;
-
-	io->symboldraw = ptr;
-
+	
+	if(!io->symboldraw)
+		io->symboldraw = new SYMBOL_DRAW;
+	
+	
 	SYMBOL_DRAW *sd = io->symboldraw;
 
 	sd->duration = (short)std::max(1l, long(duration));
