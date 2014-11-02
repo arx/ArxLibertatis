@@ -82,3 +82,37 @@ void StringTest::stringStoreOverflowTest() {
 	CPPUNIT_ASSERT(std::equal(expected, expected + 4, target.data));
 	CPPUNIT_ASSERT(target.checkCanary());
 }
+
+
+void StringTest::stringStoreTerminatedEmptyTest() {
+	OverflowTestStruct target;
+	
+	util::storeStringTerminated(target.data, std::string(""));
+	
+	char expected[] = {0x00, 0x00, 0x00, 0x00};
+	
+	CPPUNIT_ASSERT(std::equal(expected, expected + 4, target.data));
+	CPPUNIT_ASSERT(target.checkCanary());
+}
+
+void StringTest::stringStoreTerminatedFittingTest() {
+	OverflowTestStruct target;
+	
+	util::storeStringTerminated(target.data, std::string("123"));
+	
+	char expected[] = {'1', '2', '3', 0x00};
+	
+	CPPUNIT_ASSERT(std::equal(expected, expected + 4, target.data));
+	CPPUNIT_ASSERT(target.checkCanary());
+}
+
+void StringTest::stringStoreTerminatedOverflowTest() {
+	OverflowTestStruct target;
+	
+	util::storeStringTerminated(target.data, std::string("123456"));
+	
+	char expected[] = {'1', '2', '3', 0x00};
+	
+	CPPUNIT_ASSERT(std::equal(expected, expected + 4, target.data));
+	CPPUNIT_ASSERT(target.checkCanary());
+}

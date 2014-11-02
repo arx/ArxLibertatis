@@ -25,21 +25,31 @@
 
 namespace util {
 
+//! Avoid using this function directly, use the templated versions!
+std::string loadString(const char * data, size_t maxLength);
+
 /*!
  * Load an std::string from a const char * that may not be null-terminated.
  */
-std::string loadString(const char * data, size_t maxLength);
-
 template <size_t N>
 std::string loadString(const char (&data)[N]) {
 	return loadString(data, N);
 }
 
+//! Avoid using this function directly, use the templated versions!
 void storeString(char * dst, size_t maxLength, const std::string & src);
 
+//! Copy an std::string into a char array, the array may not be null terminated
 template <size_t N>
 void storeString(char (&dst)[N], const std::string & src) {
 	storeString(dst, N, src);
+}
+
+//! Copy an std::string into a char array, the array will be null terminated
+template <size_t N>
+void storeStringTerminated(char (&dst)[N], const std::string & src) {
+	storeString(dst, src);
+	dst[N - 1] = 0x00;
 }
 
 /*!
