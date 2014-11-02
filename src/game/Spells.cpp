@@ -646,7 +646,7 @@ static bool MakeSpellName(char * spell, SpellType num) {
 	return true;
 }
 
-void SPELLCAST_Notify(SpellBase & spell) {
+void SPELLCAST_Notify(const SpellBase & spell) {
 	
 	char spellName[128];
 	EntityHandle source = spell.m_caster;
@@ -666,7 +666,7 @@ void SPELLCAST_Notify(SpellBase & spell) {
 	}
 }
 
-void SPELLCAST_NotifyOnlyTarget(SpellBase & spell) {
+void SPELLCAST_NotifyOnlyTarget(const SpellBase & spell) {
 	
 	if(spell.m_target < 0)
 		return;
@@ -686,7 +686,7 @@ void SPELLCAST_NotifyOnlyTarget(SpellBase & spell) {
 	}
 }
 
-void SPELLEND_Notify(SpellBase & spell) {
+void SPELLEND_Notify(const SpellBase & spell) {
 	
 	char spellName[128];
 	EntityHandle source = spell.m_caster;
