@@ -69,13 +69,16 @@ struct CrashInfoBase {
 
 struct CrashInfo : public CrashInfoBase {
 	
-	CrashInfo() { }
+	CrashInfo()
+		: signal(0)
+		, code(0)
+		, backtrace()
+	{}
 	
 	int signal;
 	int code;
 	
 	void * backtrace[100];
-	
 };
 
 #else
