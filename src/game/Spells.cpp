@@ -466,192 +466,80 @@ bool GetSpellPosition(Vec3f * pos, SpellBase * spell)
 	return false;
 }
 
-static bool MakeSpellName(char * spell, SpellType num) {
+static const char * MakeSpellName(SpellType num) {
 	
-	switch (num)
-	{
+	switch(num) {
 		// Level 1
-		case SPELL_MAGIC_SIGHT           :
-			strcpy(spell, "magic_sight");
-			break;
-		case SPELL_MAGIC_MISSILE         :
-			strcpy(spell, "magic_missile");
-			break;
-		case SPELL_IGNIT                 :
-			strcpy(spell, "ignit");
-			break;
-		case SPELL_DOUSE                 :
-			strcpy(spell, "douse");
-			break;
-		case SPELL_ACTIVATE_PORTAL       :
-			strcpy(spell, "activate_portal");
-			break;
-
+		case SPELL_MAGIC_SIGHT           : return "magic_sight";
+		case SPELL_MAGIC_MISSILE         : return "magic_missile";
+		case SPELL_IGNIT                 : return "ignit";
+		case SPELL_DOUSE                 : return "douse";
+		case SPELL_ACTIVATE_PORTAL       : return "activate_portal";
 		// Level 2
-		case SPELL_HEAL                  :
-			strcpy(spell, "heal");
-			break;
-		case SPELL_DETECT_TRAP           :
-			strcpy(spell, "detect_trap");
-			break;
-		case SPELL_ARMOR                 :
-			strcpy(spell, "armor");
-			break;
-		case SPELL_LOWER_ARMOR           :
-			strcpy(spell, "lower_armor");
-			break;
-		case SPELL_HARM                  :
-			strcpy(spell, "harm");
-			break;
-
+		case SPELL_HEAL                  : return "heal";
+		case SPELL_DETECT_TRAP           : return "detect_trap";
+		case SPELL_ARMOR                 : return "armor";
+		case SPELL_LOWER_ARMOR           : return "lower_armor";
+		case SPELL_HARM                  : return "harm";
 		// Level 3
-		case SPELL_SPEED                 :
-			strcpy(spell, "speed");
-			break;
-		case SPELL_DISPELL_ILLUSION      :
-			strcpy(spell, "dispell_illusion");
-			break;
-		case SPELL_FIREBALL              :
-			strcpy(spell, "fireball");
-			break;
-		case SPELL_CREATE_FOOD           :
-			strcpy(spell, "create_food");
-			break;
-		case SPELL_ICE_PROJECTILE        :
-			strcpy(spell, "ice_projectile");
-			break;
-
+		case SPELL_SPEED                 : return "speed";
+		case SPELL_DISPELL_ILLUSION      : return "dispell_illusion";
+		case SPELL_FIREBALL              : return "fireball";
+		case SPELL_CREATE_FOOD           : return "create_food";
+		case SPELL_ICE_PROJECTILE        : return "ice_projectile";
 		// Level 4 
-		case SPELL_BLESS                 :
-			strcpy(spell, "bless");
-			break;
-		case SPELL_DISPELL_FIELD         :
-			strcpy(spell, "dispell_field");
-			break;
-		case SPELL_FIRE_PROTECTION       :
-			strcpy(spell, "fire_protection");
-			break;
-		case SPELL_TELEKINESIS           :
-			strcpy(spell, "telekinesis");
-			break;
-		case SPELL_CURSE                 :
-			strcpy(spell, "curse");
-			break;
-		case SPELL_COLD_PROTECTION       :
-			strcpy(spell, "cold_protection");
-			break;
-
+		case SPELL_BLESS                 : return "bless";
+		case SPELL_DISPELL_FIELD         : return "dispell_field";
+		case SPELL_FIRE_PROTECTION       : return "fire_protection";
+		case SPELL_TELEKINESIS           : return "telekinesis";
+		case SPELL_CURSE                 : return "curse";
+		case SPELL_COLD_PROTECTION       : return "cold_protection";
 		// Level 5 
-		case SPELL_RUNE_OF_GUARDING      :
-			strcpy(spell, "rune_of_guarding");
-			break;
-		case SPELL_LEVITATE              :
-			strcpy(spell, "levitate");
-			break;
-		case SPELL_CURE_POISON           :
-			strcpy(spell, "cure_poison");
-			break;
-		case SPELL_REPEL_UNDEAD          :
-			strcpy(spell, "repel_undead");
-			break;
-		case SPELL_POISON_PROJECTILE     :
-			strcpy(spell, "poison_projectile");
-			break;
-
+		case SPELL_RUNE_OF_GUARDING      : return "rune_of_guarding";
+		case SPELL_LEVITATE              : return "levitate";
+		case SPELL_CURE_POISON           : return "cure_poison";
+		case SPELL_REPEL_UNDEAD          : return "repel_undead";
+		case SPELL_POISON_PROJECTILE     : return "poison_projectile";
 		// Level 6 
-		case SPELL_RISE_DEAD             :
-			strcpy(spell, "raise_dead");
-			break;
-		case SPELL_PARALYSE              :
-			strcpy(spell, "paralyse");
-			break;
-		case SPELL_CREATE_FIELD          :
-			strcpy(spell, "create_field");
-			break;
-		case SPELL_DISARM_TRAP           :
-			strcpy(spell, "disarm_trap");
-			break;
-		case SPELL_SLOW_DOWN             :
-			strcpy(spell, "slowdown");
-			break;
-
+		case SPELL_RISE_DEAD             : return "raise_dead";
+		case SPELL_PARALYSE              : return "paralyse";
+		case SPELL_CREATE_FIELD          : return "create_field";
+		case SPELL_DISARM_TRAP           : return "disarm_trap";
+		case SPELL_SLOW_DOWN             : return "slowdown";
 		// Level 7  
-		case SPELL_FLYING_EYE            :
-			strcpy(spell, "flying_eye");
-			break;
-		case SPELL_FIRE_FIELD            :
-			strcpy(spell, "fire_field");
-			break;
-		case SPELL_ICE_FIELD             :
-			strcpy(spell, "ice_field");
-			break;
-		case SPELL_LIGHTNING_STRIKE      :
-			strcpy(spell, "lightning_strike");
-			break;
-		case SPELL_CONFUSE               :
-			strcpy(spell, "confuse");
-			break;
-
+		case SPELL_FLYING_EYE            : return "flying_eye";
+		case SPELL_FIRE_FIELD            : return "fire_field";
+		case SPELL_ICE_FIELD             : return "ice_field";
+		case SPELL_LIGHTNING_STRIKE      : return "lightning_strike";
+		case SPELL_CONFUSE               : return "confuse";
 		// Level 8
-		case SPELL_INVISIBILITY          :
-			strcpy(spell, "invisibility");
-			break;
-		case SPELL_MANA_DRAIN            :
-			strcpy(spell, "mana_drain");
-			break;
-		case SPELL_EXPLOSION             :
-			strcpy(spell, "explosion");
-			break;
-		case SPELL_ENCHANT_WEAPON        :
-			strcpy(spell, "enchant_weapon");
-			break;
-		case SPELL_LIFE_DRAIN            :
-			strcpy(spell, "life_drain");
-			break;
-
+		case SPELL_INVISIBILITY          : return "invisibility";
+		case SPELL_MANA_DRAIN            : return "mana_drain";
+		case SPELL_EXPLOSION             : return "explosion";
+		case SPELL_ENCHANT_WEAPON        : return "enchant_weapon";
+		case SPELL_LIFE_DRAIN            : return "life_drain";
 		// Level 9
-		case SPELL_SUMMON_CREATURE       :
-			strcpy(spell, "summon_creature");
-			break;
-		case SPELL_FAKE_SUMMON		     :
-			strcpy(spell, "fake_summon");
-			break;
-		case SPELL_NEGATE_MAGIC          :
-			strcpy(spell, "negate_magic");
-			break;
-		case SPELL_INCINERATE            :
-			strcpy(spell, "incinerate");
-			break;
-		case SPELL_MASS_PARALYSE         :
-			strcpy(spell, "mass_paralyse");
-			break;
-
+		case SPELL_SUMMON_CREATURE       : return "summon_creature";
+		case SPELL_FAKE_SUMMON           : return "fake_summon";
+		case SPELL_NEGATE_MAGIC          : return "negate_magic";
+		case SPELL_INCINERATE            : return "incinerate";
+		case SPELL_MASS_PARALYSE         : return "mass_paralyse";
 		// Level 10
-		case SPELL_MASS_LIGHTNING_STRIKE :
-			strcpy(spell, "mass_lightning_strike");
-			break;
-		case SPELL_CONTROL_TARGET        :
-			strcpy(spell, "control");
-			break;
-		case SPELL_FREEZE_TIME           :
-			strcpy(spell, "freeze_time");
-			break;
-		case SPELL_MASS_INCINERATE       :
-			strcpy(spell, "mass_incinerate");
-			break;
+		case SPELL_MASS_LIGHTNING_STRIKE : return "mass_lightning_strike";
+		case SPELL_CONTROL_TARGET        : return "control";
+		case SPELL_FREEZE_TIME           : return "freeze_time";
+		case SPELL_MASS_INCINERATE       : return "mass_incinerate";
 		default :
-			return false;
+			return NULL;
 	}
-
-	return true;
 }
 
 void SPELLCAST_Notify(const SpellBase & spell) {
 	
-	char spellName[128];
 	EntityHandle source = spell.m_caster;
-
-	if(!MakeSpellName(spellName, spell.m_type))
+	
+	const char * spellName = MakeSpellName(spell.m_type);
+	if(!spellName)
 		return;
 	
 	for(size_t i = 0; i < entities.size(); i++) {
@@ -670,11 +558,11 @@ void SPELLCAST_NotifyOnlyTarget(const SpellBase & spell) {
 	
 	if(spell.m_target < 0)
 		return;
-
-	char spellName[128];
+	
 	EntityHandle source = spell.m_caster;
-
-	if(MakeSpellName(spellName, spell.m_type)) {
+	const char * spellName = MakeSpellName(spell.m_type);
+	
+	if(spellName) {
 		if(source != EntityHandle::Invalid)
 			EVENT_SENDER = entities[source];
 		else
@@ -688,14 +576,14 @@ void SPELLCAST_NotifyOnlyTarget(const SpellBase & spell) {
 
 void SPELLEND_Notify(const SpellBase & spell) {
 	
-	char spellName[128];
 	EntityHandle source = spell.m_caster;
+	const char * spellName = MakeSpellName(spell.m_type);
 
 	if(spell.m_type == SPELL_CONFUSE) {
 		EVENT_SENDER = ValidIONum(source) ? entities[source] : NULL;
 		
 		if(ValidIONum(spell.m_target)) {
-			if(MakeSpellName(spellName,spell.m_type)) {
+			if(spellName) {
 				Entity * targ = entities[spell.m_target];
 				char param[128];
 				sprintf(param,"%s %ld", spellName, (long)spell.m_level);
@@ -706,7 +594,7 @@ void SPELLEND_Notify(const SpellBase & spell) {
 	}
 	
 	// we only notify player spells end.
-	if(!MakeSpellName(spellName, spell.m_type)) {
+	if(!spellName) {
 		return;
 	}
 	
