@@ -559,8 +559,8 @@ static void ARX_CHANGELEVEL_Push_Globals() {
 
 				if ((svar[i].name[0] == '$') || (svar[i].name[0] == '\xA3'))
 				{
-					strcpy(avs.name, svar[i].name.c_str());
-
+					util::storeStringTerminated(avs.name, svar[i].name);
+					
 					count = svar[i].text.size();
 					
 					avs.fval = (float)count; 
@@ -581,7 +581,7 @@ static void ARX_CHANGELEVEL_Push_Globals() {
 
 				if ((svar[i].name[0] == '#') || (svar[i].name[0] == '\xA7'))
 				{
-					strcpy(avs.name, svar[i].name.c_str());
+					util::storeStringTerminated(avs.name, svar[i].name);
 					avs.fval = (float)svar[i].ival;
 					avs.type = TYPE_G_LONG;
 					memcpy(dat + pos, &avs, sizeof(ARX_VARIABLE_SAVE));
@@ -595,7 +595,7 @@ static void ARX_CHANGELEVEL_Push_Globals() {
 
 				if ((svar[i].name[0] == '&') || (svar[i].name[0] == '@'))
 				{
-					strcpy(avs.name, svar[i].name.c_str());
+					util::storeStringTerminated(avs.name, svar[i].name);
 					avs.fval = svar[i].fval;
 					avs.type = TYPE_G_FLOAT;
 					memcpy(dat + pos, &avs, sizeof(ARX_VARIABLE_SAVE));
@@ -1175,7 +1175,7 @@ static long ARX_CHANGELEVEL_Push_IO(const Entity * io, long level) {
 
 				if ((io->script.lvar[i].name[0] == '$') || (io->script.lvar[i].name[0] == '\xA3'))
 				{
-					strcpy(avs->name, io->script.lvar[i].name.c_str());
+					util::storeStringTerminated(avs->name, io->script.lvar[i].name);
 					
 					long count = io->script.lvar[i].text.size();
 					
@@ -1200,7 +1200,7 @@ static long ARX_CHANGELEVEL_Push_IO(const Entity * io, long level) {
 
 				if ((io->script.lvar[i].name[0] == '#') || (io->script.lvar[i].name[0] == '\xA7'))
 				{
-					strcpy(avs->name, io->script.lvar[i].name.c_str());
+					util::storeStringTerminated(avs->name, io->script.lvar[i].name);
 					avs->fval = (float)io->script.lvar[i].ival;
 					avs->type = TYPE_L_LONG;
 					pos += sizeof(ARX_CHANGELEVEL_VARIABLE_SAVE);
@@ -1213,7 +1213,7 @@ static long ARX_CHANGELEVEL_Push_IO(const Entity * io, long level) {
 
 				if ((io->script.lvar[i].name[0] == '&') || (io->script.lvar[i].name[0] == '@'))
 				{
-					strcpy(avs->name, io->script.lvar[i].name.c_str());
+					util::storeStringTerminated(avs->name, io->script.lvar[i].name);
 					avs->fval = io->script.lvar[i].fval;
 					avs->type = TYPE_L_FLOAT;
 					pos += sizeof(ARX_CHANGELEVEL_VARIABLE_SAVE);
@@ -1246,7 +1246,7 @@ static long ARX_CHANGELEVEL_Push_IO(const Entity * io, long level) {
 
 				if ((io->script.lvar[i].name[0] == '$') || (io->script.lvar[i].name[0] == '\xA3'))
 				{
-					strcpy(avs->name, io->over_script.lvar[i].name.c_str());
+					util::storeStringTerminated(avs->name, io->over_script.lvar[i].name);
 					
 					long count = io->over_script.lvar[i].text.size();
 
@@ -1271,7 +1271,7 @@ static long ARX_CHANGELEVEL_Push_IO(const Entity * io, long level) {
 
 				if ((io->script.lvar[i].name[0] == '#') || (io->script.lvar[i].name[0] == '\xA7'))
 				{
-					strcpy(avs->name, io->over_script.lvar[i].name.c_str());
+					util::storeStringTerminated(avs->name, io->over_script.lvar[i].name);
 					avs->fval	= (float)io->over_script.lvar[i].ival;
 					avs->type	= TYPE_L_LONG;
 					pos			+= sizeof(ARX_CHANGELEVEL_VARIABLE_SAVE);
@@ -1284,7 +1284,7 @@ static long ARX_CHANGELEVEL_Push_IO(const Entity * io, long level) {
 
 				if ((io->script.lvar[i].name[0] == '&') || (io->script.lvar[i].name[0] == '@'))
 				{
-					strcpy(avs->name, io->over_script.lvar[i].name.c_str());
+					util::storeStringTerminated(avs->name, io->over_script.lvar[i].name);
 					avs->fval	= io->over_script.lvar[i].fval;
 					avs->type	= TYPE_L_FLOAT;
 					pos			+= sizeof(ARX_CHANGELEVEL_VARIABLE_SAVE);

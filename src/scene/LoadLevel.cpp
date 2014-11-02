@@ -172,7 +172,7 @@ long DanaeSaveLevel(const fs::path & _fic) {
 	// Preparing HEADER
 	dlh.version = DLH_CURRENT_VERSION;
 	
-	strcpy(dlh.ident, "DANAE_FILE");
+	util::storeStringTerminated(dlh.ident, "DANAE_FILE");
 	
 	dlh.nb_scn = LastLoadedScene.empty() ? 0 : 1;
 	
@@ -340,7 +340,7 @@ long DanaeSaveLevel(const fs::path & _fic) {
 	llh.version = DLH_CURRENT_VERSION;
 	llh.nb_lights = EERIE_LIGHT_Count();
 	llh.nb_bkgpolys = BKG_CountPolys(*ACTIVEBKG);
-	strcpy(llh.ident, "DANAE_LLH_FILE");
+	util::storeStringTerminated(llh.ident, "DANAE_LLH_FILE");
 	
 	llh.time = std::time(NULL);
 	
