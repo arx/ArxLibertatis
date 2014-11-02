@@ -32,6 +32,8 @@
 #include "platform/Architecture.h"
 #include "platform/Environment.h"
 
+#include "util/String.h"
+
 
 CrashHandlerImpl::CrashHandlerImpl()
 	: m_pCrashInfo(0) {
@@ -184,8 +186,8 @@ bool CrashHandlerImpl::setReportLocation(const fs::path& location) {
 		LogError << "Report location path is too long.";
 		return false;
 	}
-
-	strcpy(m_pCrashInfo->crashReportFolder, location.string().c_str());
+	
+	util::storeStringTerminated(m_pCrashInfo->crashReportFolder, location.string());
 
 	return true;
 }
