@@ -68,8 +68,7 @@ long sp_max = 0;
 
 float sp_max_y[64];
 Color sp_max_col[64];
-char sp_max_ch[64];
-long sp_max_nb;
+std::string sp_max_ch;
 
 void Manage_sp_max() {
 
@@ -78,10 +77,10 @@ void Manage_sp_max() {
 	if(sp_max_start != 0 && v < 20000) {
 		float modi = (20000 - v) * ( 1.0f / 2000 ) * ( 1.0f / 10 );
 		float sizX = 16;
-		float px = (float)g_size.center().x - (float)sp_max_nb * ( 1.0f / 2 ) * sizX;
+		float px = (float)g_size.center().x - (float)sp_max_ch.length() * ( 1.0f / 2 ) * sizX;
 		float py = (float)g_size.center().y;
 
-		for(long i = 0; i < sp_max_nb; i++) {
+		for(size_t i = 0; i < sp_max_ch.length(); i++) {
 			float dx = px + sizX * (float)i;
 			float dy = py + sp_max_y[i];
 			sp_max_y[i] = std::sin(dx + (float)float(arxtime) * ( 1.0f / 100 )) * 30.f * modi;
@@ -151,8 +150,7 @@ void EERIE_OBJECT_SetBHMode()
 		BH_MODE=1;
 		MakeCoolFx(player.pos);
 		MakeSpCol();
-		strcpy(sp_max_ch,"!!!_Super-Deformed_!!!");
-		sp_max_nb=strlen(sp_max_ch);
+		sp_max_ch = "!!!_Super-Deformed_!!!";
 		sp_max_start=arxtime.get_updated();
 			}
 }
@@ -176,8 +174,7 @@ void ApplySPWep() {
 			giveToPlayer(ioo);
 
 			MakeSpCol();
-			strcpy(sp_max_ch,"!!!_Grosbillite_!!!");
-			sp_max_nb=strlen(sp_max_ch);
+			sp_max_ch = "!!!_Grosbillite_!!!";
 			sp_max_start=arxtime.get_updated();
 		}
 	}
@@ -188,8 +185,7 @@ void ApplySPWep() {
 void ApplyCurSOS() {
 	MakeSpCol();
 	g_miniMap.reveal();
-	strcpy(sp_max_ch,"!!!_Temple of Elemental Lavis_!!!");
-	sp_max_nb=strlen(sp_max_ch);
+	sp_max_ch = "!!!_Temple of Elemental Lavis_!!!";
 	sp_max_start=arxtime.get_updated();
 }
 
@@ -210,8 +206,7 @@ void ApplySPBow() {
 		giveToPlayer(ioo);
 
 		MakeSpCol();
-		strcpy(sp_max_ch,"!!!_Bow to Samy & Anne_!!!");
-		sp_max_nb=strlen(sp_max_ch);
+		sp_max_ch = "!!!_Bow to Samy & Anne_!!!";
 		sp_max_start=arxtime.get_updated();
 	}
 }
@@ -247,25 +242,24 @@ void ApplySPArm() {
 		giveToPlayer(ioo);
 
 		MakeSpCol();
-		strcpy(sp_max_ch,"!! Toi aussi cherches les Cheats !!");
+		sp_max_ch = "!! Toi aussi cherches les Cheats !!";
 
 		switch (sp_arm)
 		{
 		case 0:
-			strcpy(sp_max_ch,"------ZoliChapo------");
+			sp_max_ch = "------ZoliChapo------";
 		break;
 		case 1:
-			strcpy(sp_max_ch,"-----TiteBottine-----");
+			sp_max_ch = "-----TiteBottine-----";
 		break;
 		case 2:
-			strcpy(sp_max_ch,"-----Roooo-La-La-----");
+			sp_max_ch = "-----Roooo-La-La-----";
 		break;
 		default:
 			return;
 		break;
 		}
-
-		sp_max_nb=strlen(sp_max_ch);
+		
 		sp_max_start=arxtime.get_updated();
 	}
 
@@ -276,8 +270,7 @@ long SPECIAL_PNUX;
 void ApplyCurPNux() {
 
 	MakeSpCol();
-	strcpy(sp_max_ch,"! PhilNux & Gluonne !");
-	sp_max_nb=strlen(sp_max_ch);
+	sp_max_ch = "! PhilNux & Gluonne !";
 
 	SPECIAL_PNUX = (SPECIAL_PNUX + 1) % 3;
 
@@ -289,8 +282,7 @@ void ApplyCurPNux() {
 
 void ApplyPasswall() {
 	MakeSpCol();
-	strcpy(sp_max_ch,"!!! PassWall !!!");
-	sp_max_nb=strlen(sp_max_ch);
+	sp_max_ch = "!!! PassWall !!!";
 	sp_max_start=arxtime.get_updated();
 
 	if(USE_PLAYERCOLLISIONS)
@@ -302,8 +294,7 @@ void ApplyPasswall() {
 void ApplySPRf() {
 	if(cur_rf == 3) {
 		MakeSpCol();
-		strcpy(sp_max_ch,"!!! RaFMode !!!");
-		sp_max_nb=strlen(sp_max_ch);
+		sp_max_ch = "!!! RaFMode !!!";
 		sp_max_start=arxtime.get_updated();
 	}
 }
@@ -311,8 +302,7 @@ void ApplySPRf() {
 void ApplyCurMr() {
 	if(cur_mr == 3) {
 		MakeSpCol();
-		strcpy(sp_max_ch,"!!! Marianna !!!");
-		sp_max_nb=strlen(sp_max_ch);
+		sp_max_ch = "!!! Marianna !!!";
 		sp_max_start=arxtime.get_updated();
 	}
 }
@@ -324,8 +314,7 @@ void ApplySPuw() {
 	MakeCoolFx(player.pos);
 	if(uw_mode) {
 		MakeSpCol();
-		strcpy(sp_max_ch,"~-__-~~-__.U.W.__-~~-__-~");
-		sp_max_nb=strlen(sp_max_ch);
+		sp_max_ch = "~-__-~~-__.U.W.__-~~-__-~";
 		sp_max_start=arxtime.get_updated();
 	}
 }
@@ -338,8 +327,7 @@ void ApplySPMax() {
 	if (sp_max)
 	{
 		MakeSpCol();
-		strcpy(sp_max_ch,"!!!_FaNt0mAc1e_!!!");
-		sp_max_nb=strlen(sp_max_ch);
+		sp_max_ch = "!!!_FaNt0mAc1e_!!!";
 		sp_max_start=arxtime.get_updated();
 
 			player.skin=4;
