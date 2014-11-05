@@ -191,10 +191,6 @@ public:
 	// Scissor
 	virtual void SetScissor(const Rect & rect) = 0;
 	
-	// Projection
-	virtual void Begin2DProjection(float left, float right, float bottom, float top, float zNear, float zFar) = 0;
-	virtual void End2DProjection() = 0;
-	
 	// Render Target
 	virtual void Clear(BufferFlags bufferFlags, Color clearColor = Color::none, float clearDepth = 1.f, size_t nrects = 0, Rect * rect = 0) = 0;
 	

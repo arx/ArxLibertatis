@@ -599,15 +599,6 @@ void OpenGLRenderer::SetScissor(const Rect & rect) {
 	}
 }
 
-void OpenGLRenderer::Begin2DProjection(float left, float right, float bottom, float top, float zNear, float zFar) {
-	ARX_UNUSED(left), ARX_UNUSED(right), ARX_UNUSED(bottom), ARX_UNUSED(top), ARX_UNUSED(zNear), ARX_UNUSED(zFar);
-	// Do nothing!
-}
-
-void OpenGLRenderer::End2DProjection() {
-	// Do nothing!
-}
-
 void OpenGLRenderer::Clear(BufferFlags bufferFlags, Color clearColor, float clearDepth, size_t nrects, Rect * rect) {
 	
 	GLbitfield buffers = 0;

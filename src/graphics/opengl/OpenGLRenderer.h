@@ -69,10 +69,6 @@ public:
 	
 	void SetScissor(const Rect & rect);
 	
-	// Projection
-	void Begin2DProjection(float left, float right, float bottom, float top, float zNear, float zFar);
-	void End2DProjection();
-	
 	// Render Target
 	void Clear(BufferFlags bufferFlags, Color clearColor = Color::none, float clearDepth = 1.f, size_t nrects = 0, Rect * rect = 0);
 	
