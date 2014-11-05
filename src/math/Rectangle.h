@@ -198,6 +198,10 @@ public:
 		return typename vec2_traits<T>::type(right, top);
 	}
 	
+	bool isValid() const {
+		return left < right && top < bottom;
+	}
+	
 	static const Rectangle_ ZERO;
 	
 };

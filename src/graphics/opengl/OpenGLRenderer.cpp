@@ -588,6 +588,17 @@ Rect OpenGLRenderer::GetViewport() {
 	return viewport;
 }
 
+void OpenGLRenderer::SetScissor(const Rect & rect) {
+	
+	if(rect.isValid()) {
+		glEnable(GL_SCISSOR_TEST);
+		int height = mainApp->getWindow()->getSize().y;
+		glScissor(rect.left, height - rect.bottom, rect.width(), rect.height());
+	} else {
+		glDisable(GL_SCISSOR_TEST);
+	}
+}
+
 void OpenGLRenderer::Begin2DProjection(float left, float right, float bottom, float top, float zNear, float zFar) {
 	ARX_UNUSED(left), ARX_UNUSED(right), ARX_UNUSED(bottom), ARX_UNUSED(top), ARX_UNUSED(zNear), ARX_UNUSED(zFar);
 	// Do nothing!

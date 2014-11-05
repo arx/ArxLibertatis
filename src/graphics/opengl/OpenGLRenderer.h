@@ -67,6 +67,8 @@ public:
 	void SetViewport(const Rect & viewport);
 	Rect GetViewport();
 	
+	void SetScissor(const Rect & rect);
+	
 	// Projection
 	void Begin2DProjection(float left, float right, float bottom, float top, float zNear, float zFar);
 	void End2DProjection();

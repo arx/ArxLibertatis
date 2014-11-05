@@ -188,6 +188,9 @@ public:
 	virtual void SetViewport(const Rect & viewport) = 0;
 	virtual Rect GetViewport() = 0;
 	
+	// Scissor
+	virtual void SetScissor(const Rect & rect) = 0;
+	
 	// Projection
 	virtual void Begin2DProjection(float left, float right, float bottom, float top, float zNear, float zFar) = 0;
 	virtual void End2DProjection() = 0;

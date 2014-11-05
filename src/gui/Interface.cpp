@@ -3820,7 +3820,7 @@ void ARX_INTERFACE_ManageOpenedBook() {
 
 			if(ARXmenu.currentmode != AMCM_OFF) {
 				Rect vp = Rect(Vec2i(s32(139.f * g_sizeRatio.x), 0), s32(139.f * g_sizeRatio.x), s32(310.f * g_sizeRatio.y));
-				GRenderer->SetViewport(vp);
+				GRenderer->SetScissor(vp);
 			}
 		} else {
 			
@@ -3876,7 +3876,7 @@ void ARX_INTERFACE_ManageOpenedBook() {
 			vp.top = rec.top;
 			vp.right = static_cast<int>(rec.right - 21.f * g_sizeRatio.x);
 			vp.bottom = static_cast<int>(rec.bottom - 17.f * g_sizeRatio.y);
-			GRenderer->SetViewport(vp);
+			GRenderer->SetScissor(vp);
 
 			switch (player.skin)
 			{
@@ -3899,7 +3899,7 @@ void ARX_INTERFACE_ManageOpenedBook() {
 			pos.z=75.f;
 			eLight1.pos.z=-90.f;
 		} else {
-			GRenderer->SetViewport(rec);
+			GRenderer->SetScissor(rec);
 
 			ePlayerAngle.setPitch(-20.f);
 			pos.x=20.f;
@@ -3948,9 +3948,9 @@ void ARX_INTERFACE_ManageOpenedBook() {
 		vertexlist.clear();
 
 		player.m_improve = ti;
-
-		GRenderer->SetViewport(Rect(g_size.width(), g_size.height()));
-
+		
+		GRenderer->SetScissor(Rect::ZERO);
+		
 		GRenderer->SetRenderState(Renderer::AlphaBlending, false);
 		GRenderer->SetCulling(Renderer::CullNone);
 		SetActiveCamera(oldcam);
