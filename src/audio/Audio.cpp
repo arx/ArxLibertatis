@@ -92,6 +92,10 @@ aalError init(const std::string & backendName, const std::string & deviceName) {
 			OpenALBackend * _backend = new OpenALBackend();
 			if(!deviceName.empty() && deviceName != "auto") {
 				error = _backend->init(deviceName.c_str());
+				if(error) {
+					LogWarning << "Could not open device \"" << deviceName
+					           << "\", retrying with default device";
+				}
 			}
 			if(error) {
 				error = _backend->init();

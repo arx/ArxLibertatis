@@ -108,7 +108,9 @@ aalError OpenALBackend::init(const char * requestedDeviceName) {
 	device = alcOpenDevice(requestedDeviceName);
 	if(!device) {
 		ALenum error = alcGetError(NULL);
-		LogError << "Error opening device: " << error << " = " << getAlcErrorString(error);
+		if(error != ALC_INVALID_VALUE) {
+			LogError << "Error opening device: " << error << " = " << getAlcErrorString(error);
+		}
 		return AAL_ERROR_SYSTEM;
 	}
 	
