@@ -43,11 +43,6 @@ public:
 	virtual std::vector<std::string> getDevices() = 0;
 	
 	/*!
-	 * Calculate updated positional data if that has not been done already.
-	 */
-	virtual aalError updateDeferred() = 0;
-	
-	/*!
 	 * Create a new source for the given sample and channel properties.
 	 * The source is managed by the backend and should not be deleted directly.
 	 * Use deleteSource to remove sources.

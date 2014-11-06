@@ -221,13 +221,6 @@ std::vector<std::string> OpenALBackend::getDevices() {
 	return result;
 }
 
-aalError OpenALBackend::updateDeferred() {
-	
-	// Nothing to do here.
-	
-	return AAL_OK;
-}
-
 Source * OpenALBackend::createSource(SampleId sampleId, const Channel & channel) {
 	
 	SampleId s_id = getSampleId(sampleId);

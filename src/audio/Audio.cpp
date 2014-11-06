@@ -250,7 +250,7 @@ aalError update() {
 		}
 	}
 	
-	return backend->updateDeferred();
+	return AAL_OK;
 }
 
 // Resource creation
@@ -627,8 +627,6 @@ aalError samplePlay(SampleId & sample_id, const Channel & channel, unsigned play
 			return AAL_ERROR_SYSTEM;
 		}
 	}
-	
-	backend->updateDeferred();
 	
 	if(aalError error = source->play(play_count)) {
 		return error;
