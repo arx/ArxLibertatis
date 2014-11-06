@@ -227,6 +227,8 @@ bool ARX_MATERIAL_GetNameById(long id, char * name);
 bool ARX_SOUND_Init();
 void ARX_SOUND_Release();
 
+void ARX_SOUND_SetReverb(bool enabled);
+
 long ARX_SOUND_IsEnabled();
 
 void ARX_SOUND_SetListener(const Vec3f & position, const Vec3f & front, const Vec3f & up);

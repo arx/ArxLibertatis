@@ -420,12 +420,16 @@ bool ARX_SOUND_Init() {
 	
 	bIsActive = true;
 	
-	if(config.audio.eax) {
-		audio::setReverbEnabled(true);
-		ARX_SOUND_EnvironmentSet("alley.aef");
-	}
+	ARX_SOUND_SetReverb(config.audio.eax);
 	
 	return true;
+}
+
+void ARX_SOUND_SetReverb(bool enabled) {
+	audio::setReverbEnabled(enabled);
+	if(enabled) {
+		ARX_SOUND_EnvironmentSet("alley.aef");
+	}
 }
 
 void ARX_SOUND_Release() {

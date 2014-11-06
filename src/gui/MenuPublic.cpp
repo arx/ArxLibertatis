@@ -190,6 +190,9 @@ bool ARXMenu_Options_Audio_SetEAX(bool _bEnable) {
 	
 	config.audio.eax = _bEnable;
 	
+	ARX_SOUND_SetReverb(config.audio.eax);
+	
+	/*
 	ARX_SOUND_PushAnimSamples();
 	size_t ulSizeAmbiancePlayList;
 	char * pAmbiancePlayList = ARX_SOUND_AmbianceSavePlayList(ulSizeAmbiancePlayList);
@@ -211,6 +214,7 @@ bool ARXMenu_Options_Audio_SetEAX(bool _bEnable) {
 	}
 
 	ARX_SOUND_PopAnimSamples();
+	*/
 
 	return config.audio.eax;
 }
