@@ -207,16 +207,6 @@ struct TrackKey {
 
 namespace audio {
 
-enum aalAmbianceFlag {
-	IS_PLAYING    = 0x00000001,
-	IS_PAUSED     = 0x00000002,
-	IS_LOOPED     = 0x00000004,
-	IS_FADED_UP   = 0x00000008,
-	IS_FADED_DOWN = 0x00000010
-};
-DECLARE_FLAGS(aalAmbianceFlag, aalAmbianceFlags)
-DECLARE_FLAGS_OPERATORS(aalAmbianceFlags)
-
 static const size_t KEY_CONTINUE = (size_t)-1;
 
 struct Ambiance::Track : public Source::Callback {
