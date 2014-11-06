@@ -218,17 +218,11 @@ aalError OpenALSource::init(SourceId _id, OpenALSource * inst, const Channel & _
 	
 	// Create 3D interface if required
 	if(channel.flags & FLAG_ANY_3D_FX) {
-		
-		if(sample->getFormat().channels != 1) {
-			// TODO(broken-assets) this is not supported by OpenAL so we will need to convert the sample
-		}
-		
 		setPosition(channel.position);
 		setVelocity(channel.velocity);
 		setDirection(channel.direction);
 		setCone(channel.cone);
 		setFalloff(channel.falloff);
-		
 	} else {
 		setPan(channel.pan);
 	}
