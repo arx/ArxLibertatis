@@ -1032,9 +1032,7 @@ char * ARX_SOUND_AmbianceSavePlayList(size_t & size) {
 	
 	unsigned long count(0);
 	PlayingAmbiance * play_list = NULL;
-	AmbianceId ambiance_id = AmbianceId::Invalid;
-
-	ambiance_id = audio::getNextAmbiance();
+	AmbianceId ambiance_id = audio::getNextAmbiance();
 
 	while (ambiance_id != INVALID_ID)
 	{
