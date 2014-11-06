@@ -131,8 +131,6 @@ aalError sampleStop(SourceId & sample_id);
 
 // Ambiance
 
-aalError muteAmbianceTrack(AmbianceId ambiance_id, const std::string & track, bool mute);
-
 aalError setAmbianceUserData(AmbianceId ambiance_id, void * data);
 aalError setAmbianceVolume(AmbianceId ambiance_id, float volume);
 

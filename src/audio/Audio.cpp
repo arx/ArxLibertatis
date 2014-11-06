@@ -657,21 +657,6 @@ aalError sampleStop(SourceId & sample_id) {
 	return source->stop();
 }
 
-// Track setup
-
-aalError muteAmbianceTrack(AmbianceId a_id, const std::string & track, bool mute) {
-	
-	AAL_ENTRY
-	
-	if(!_amb.isValid(a_id)) {
-		return AAL_ERROR_HANDLE;
-	}
-	
-	LogDebug("MuteAmbianceTrack " << _amb[a_id]->getName() << " " << track << " " << mute);
-	
-	return _amb[a_id]->muteTrack(track, mute);
-}
-
 // Ambiance setup
 
 aalError setAmbianceUserData(AmbianceId a_id, void * data) {
