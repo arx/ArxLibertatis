@@ -44,7 +44,7 @@ public:
 	OpenALBackend();
 	~OpenALBackend();
 	
-	aalError init(bool enableEax);
+	aalError init();
 	
 	aalError updateDeferred();
 	

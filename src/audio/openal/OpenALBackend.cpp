@@ -76,7 +76,7 @@ OpenALBackend::~OpenALBackend() {
 	}
 }
 
-aalError OpenALBackend::init(bool enableEffects) {
+aalError OpenALBackend::init() {
 	
 	if(device) {
 		return AAL_ERROR_INIT;
@@ -102,19 +102,18 @@ aalError OpenALBackend::init(bool enableEffects) {
 	}
 	alcMakeContextCurrent(context);
 	
+	const char * efx_ver = " without EFX";
 #if ARX_HAVE_OPENAL_EFX
-	hasEFX = enableEffects && alcIsExtensionPresent(device, "ALC_EXT_EFX");
-	if(enableEffects && !hasEFX) {
-		LogWarning << "Cannot enable effects, missing the EFX extension";
-	}
+	hasEFX = alcIsExtensionPresent(device, "ALC_EXT_EFX");
 	if(hasEFX) {
 		alGenEffects = (LPALGENEFFECTS)alGetProcAddress("alGenEffects");
 		alDeleteEffects = (LPALDELETEEFFECTS)alGetProcAddress("alDeleteEffects");
 		alEffectf = (LPALEFFECTF)alGetProcAddress("alEffectf");
-		arx_assert(alGenEffects && alDeleteEffects && alEffectf);
+		hasEFX = alGenEffects != NULL && alDeleteEffects != NULL && alEffectf != NULL;
+		if(hasEFX) {
+			efx_ver = " with EFX";
+		}
 	}
-#else
-	ARX_UNUSED(enableEffects);
 #endif
 	
 	alDistanceModel(AL_INVERSE_DISTANCE_CLAMPED);
@@ -122,16 +121,6 @@ aalError OpenALBackend::init(bool enableEffects) {
 	AL_CHECK_ERROR("initializing")
 	
 	const ALchar * version = alGetString(AL_VERSION);
-	const char * efx_ver;
-#if ARX_HAVE_OPENAL_EFX
-	if(hasEFX) {
-		efx_ver = " with EFX";
-	}
-	else
-#endif
-	{
-		efx_ver = " without EFX";
-	}
 	LogInfo << "Using OpenAL " << version << efx_ver;
 	CrashHandler::setVariable("OpenAL version", version);
 	

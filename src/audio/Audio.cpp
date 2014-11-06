@@ -69,6 +69,7 @@ static Lock * mutex = NULL;
 }
 
 aalError init(const std::string & backendName, bool enableEAX) {
+	ARX_UNUSED(enableEAX);
 	
 	// Clean any initialized data
 	clean();
@@ -90,7 +91,7 @@ aalError init(const std::string & backendName, bool enableEAX) {
 			matched = true;
 			LogDebug("initializing OpenAL backend");
 			OpenALBackend * _backend = new OpenALBackend();
-			error = _backend->init(enableEAX);
+			error = _backend->init();
 			if(!error) {
 				backend = _backend;
 			} else {
@@ -105,7 +106,7 @@ aalError init(const std::string & backendName, bool enableEAX) {
 	}
 	
 	#if !ARX_HAVE_OPENAL
-	ARX_UNUSED(autoBackend), ARX_UNUSED(enableEAX);
+	ARX_UNUSED(autoBackend);
 	#endif
 	
 	if(!backend) {
