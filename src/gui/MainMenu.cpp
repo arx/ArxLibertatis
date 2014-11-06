@@ -631,7 +631,11 @@ void MainMenuOptionAudioCreate(CWindowMenuConsole * console, Vec2i size)
 	TextWidget * text = new TextWidget(-1, hFontMenu, szMenuText, Vec2i(RATIO_X(20), 0), OPTIONS_INPUT);
 	CheckboxWidget * cb = new CheckboxWidget(text);
 	cb->iID = BUTTON_MENUOPTIONSAUDIO_EAX;
-	cb->iState = config.audio.eax ? 1 : 0;
+	if(audio::isReverbSupported()) {
+		cb->iState = config.audio.eax ? 1 : 0;
+	} else {
+		cb->SetCheckOff();
+	}
 	console->AddMenuCenter(cb);
 	}
 	
