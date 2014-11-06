@@ -83,8 +83,6 @@ public:
 	aalError resume();
 	aalError update();
 	
-	aalError muteTrack(const std::string & track, bool mute);
-	
 	struct Track;
 	typedef std::vector<Track> TrackList;
 	

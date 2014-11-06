@@ -665,35 +665,6 @@ aalError Ambiance::setVolume(float volume) {
 	return AAL_OK;
 }
 
-aalError Ambiance::muteTrack(const std::string & name, bool mute) {
-	
-	if(tracks.empty()) {
-		return AAL_OK;
-	}
-	
-	TrackList::iterator track = std::find(tracks.begin(), tracks.end(), name);
-	if(track == tracks.end()) {
-		return AAL_OK;
-	}
-	
-	if(mute) {
-		track->flags |= Track::MUTED;
-		if(isPlaying()) {
-			if(Source * source = backend->getSource(track->s_id)) {
-				source->stop();
-			}
-		}
-	} else {
-		track->flags &= ~Track::MUTED;
-		if(isPlaying()) {
-			track->key_i = track->keys.begin();
-			track->keyPlay();
-		}
-	}
-	
-	return AAL_OK;
-}
-
 aalError Ambiance::play(const Channel & _channel, bool _loop,
                         size_t _fade_interval) {
 	
