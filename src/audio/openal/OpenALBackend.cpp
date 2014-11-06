@@ -123,7 +123,7 @@ aalError OpenALBackend::init(const char * requestedDeviceName) {
 	alcMakeContextCurrent(context);
 	
 	#if ARX_HAVE_OPENAL_EFX
-	hasEFX = alcIsExtensionPresent(device, "ALC_EXT_EFX");
+	hasEFX = (alcIsExtensionPresent(device, "ALC_EXT_EFX") != ALC_FALSE);
 	if(hasEFX) {
 		#define ARX_AL_LOAD_FUNC(Name) \
 			Name = al_function_ptr(alGetProcAddress(ARX_STR(Name))); \
@@ -168,8 +168,8 @@ aalError OpenALBackend::init(const char * requestedDeviceName) {
 	
 	const char * deviceName = alcGetString(device, ALC_DEVICE_SPECIFIER);
 	#ifdef ALC_ENUMERATE_ALL_EXT
-	bool hasDetailedDevices = alcIsExtensionPresent(device, "ALC_ENUMERATE_ALL_EXT");
-	if(hasDetailedDevices && !std::strcmp(deviceName, "OpenAL Soft")) {
+	ALCboolean hasDetailedDevices = alcIsExtensionPresent(device, "ALC_ENUMERATE_ALL_EXT");
+	if(hasDetailedDevices != ALC_FALSE && !std::strcmp(deviceName, "OpenAL Soft")) {
 		/*
 		 * OpenAL Soft hides the extended device name since version 1.14.
 		 * Instead, queries for ALC_ALL_DEVICES_SPECIFIER with a valid device
@@ -203,8 +203,8 @@ std::vector<std::string> OpenALBackend::getDevices() {
 	const char * devices = NULL;
 	
 	#ifdef ALC_ENUMERATE_ALL_EXT
-	bool hasDetailedDevices = alcIsExtensionPresent(device, "ALC_ENUMERATE_ALL_EXT");
-	if(hasDetailedDevices) {
+	ALCboolean hasDetailedDevices = alcIsExtensionPresent(device, "ALC_ENUMERATE_ALL_EXT");
+	if(hasDetailedDevices != ALC_FALSE) {
 		devices = alcGetString(NULL, ALC_ALL_DEVICES_SPECIFIER);
 	}
 	#endif
