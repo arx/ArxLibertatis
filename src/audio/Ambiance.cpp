@@ -225,7 +225,6 @@ struct Ambiance::Track : public Source::Callback {
 		POSITION   = 0x00000001,
 		REVERB     = 0x00000002,
 		MASTER     = 0x00000004,
-		MUTED      = 0x00000008,
 		PAUSED     = 0x00000010,
 		PREFETCHED = 0x00000020
 	};
@@ -465,7 +464,7 @@ void Ambiance::Track::onSampleEnd(Source & source) {
 
 void Ambiance::Track::update(size_t time, size_t diff) {
 	
-	if(!_sample.isValid(Backend::getSampleId(s_id)) || flags & Track::MUTED) {
+	if(!_sample.isValid(Backend::getSampleId(s_id))) {
 		return;
 	}
 	
@@ -560,8 +559,7 @@ aalError Ambiance::Track::load(PakFileHandle * file, u32 version) {
 	}
 	
 	flags = Ambiance::Track::TrackFlags::load(iflags); // TODO save/load flags
-	flags &= ~(Ambiance::Track::MUTED | Ambiance::Track::PAUSED
-	           | Ambiance::Track::PREFETCHED);
+	flags &= ~(Ambiance::Track::PAUSED | Ambiance::Track::PREFETCHED);
 	
 	keys.resize(key_c);
 	
