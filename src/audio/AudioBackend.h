@@ -74,7 +74,6 @@ public:
 	virtual aalError setListenerOrientation(const Vec3f & front, const Vec3f & up) = 0;
 	
 	virtual aalError setListenerEnvironment(const Environment & env) = 0;
-	virtual aalError setRoomRolloffFactor(float factor) = 0;
 	
 	typedef Source * const * source_iterator;
 	virtual source_iterator sourcesBegin() = 0;

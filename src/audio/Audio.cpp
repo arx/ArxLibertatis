@@ -365,17 +365,6 @@ AmbianceId getNextAmbiance(AmbianceId ambiance_id) {
 	return AmbianceId::Invalid;
 }
 
-// Environment setup
-
-aalError setRoomRolloffFactor(float factor) {
-	
-	AAL_ENTRY
-	
-	LogDebug("SetRoomRolloffFactor " << factor);
-	
-	return backend->setRoomRolloffFactor(factor);
-}
-
 // Listener settings
 
 aalError setUnitFactor(float factor) {

@@ -494,7 +494,6 @@ void ARX_SOUND_EnvironmentSet(const res::path & name) {
 		EnvId e_id = audio::getEnvironment(name);
 		if(e_id != INVALID_ID) {
 			audio::setListenerEnvironment(e_id);
-			audio::setRoomRolloffFactor(ARX_SOUND_ROLLOFF_FACTOR);
 		}
 	}
 }

@@ -378,11 +378,6 @@ aalError OpenALBackend::setReverbEnabled(bool enable) {
 	return AAL_OK;
 }
 
-aalError OpenALBackend::setRoomRolloffFactor(float factor) {
-	ARX_UNUSED(factor);
-	return AAL_OK;
-}
-
 aalError OpenALBackend::setListenerEnvironment(const Environment & env) {
 	
 	if(!effectEnabled) {

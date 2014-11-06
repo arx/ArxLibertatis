@@ -61,7 +61,6 @@ public:
 	aalError setListenerOrientation(const Vec3f & front, const Vec3f & up);
 	
 	aalError setListenerEnvironment(const Environment & env);
-	aalError setRoomRolloffFactor(float factor);
 	
 	source_iterator sourcesBegin();
 	source_iterator sourcesEnd();
