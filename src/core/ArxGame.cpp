@@ -350,7 +350,7 @@ bool ArxGame::initConfig() {
 	if(!config.init(configFile)) {
 		
 		fs::path file = fs::paths.find("cfg_default.ini");
-		if(config.init(file)) {
+		if(!config.init(file)) {
 			LogWarning << "Could not read config files cfg.ini and cfg_default.ini,"
 			           << " using defaults.";
 		}
