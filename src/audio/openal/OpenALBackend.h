@@ -50,8 +50,6 @@ public:
 	
 	std::vector<std::string> getDevices();
 	
-	aalError updateDeferred();
-	
 	Source * createSource(SampleId sampleId, const Channel & channel);
 	
 	Source * getSource(SourceId sourceId);
