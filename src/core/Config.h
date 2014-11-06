@@ -122,14 +122,17 @@ public:
 	// section 'window'
 	struct {
 		
-		Vec2i size;
-		
 		std::string framework;
+		
+		Vec2i size;
 		
 	} window;
 	
 	// section 'audio'
 	struct {
+		
+		std::string backend;
+		std::string device;
 		
 		float volume;
 		float sfxVolume;
@@ -137,8 +140,6 @@ public:
 		float ambianceVolume;
 		
 		bool eax;
-		
-		std::string backend;
 	
 	} audio;
 	

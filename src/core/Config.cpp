@@ -49,6 +49,7 @@ const std::string
 	language = std::string(),
 	resolution = "auto",
 	audioBackend = "auto",
+	audioDevice = "auto",
 	windowFramework = "auto",
 	windowSize = BOOST_PP_STRINGIZE(ARX_DEFAULT_WIDTH) "x"
 	             BOOST_PP_STRINGIZE(ARX_DEFAULT_HEIGHT),
@@ -152,17 +153,18 @@ const std::string
 
 // Window options
 const std::string
-	windowSize = "size",
-	windowFramework = "framework";
+	windowFramework = "framework",
+	windowSize = "size";
 
 // Audio options
 const std::string
+	audioBackend = "backend",
+	audioDevice = "device",
 	volume = "master_volume",
 	sfxVolume = "effects_volume",
 	speechVolume = "speech_volume",
 	ambianceVolume = "ambiance_volume",
-	eax = "eax",
-	audioBackend = "backend";
+	eax = "eax";
 
 // Input options
 const std::string
@@ -371,19 +373,20 @@ bool Config::save() {
 	
 	// window
 	writer.beginSection(Section::Window);
+	writer.writeKey(Key::windowFramework, window.framework);
 	std::ostringstream oss;
 	oss << window.size.x << 'x' << window.size.y;
 	writer.writeKey(Key::windowSize, oss.str());
-	writer.writeKey(Key::windowFramework, window.framework);
 	
 	// audio
 	writer.beginSection(Section::Audio);
+	writer.writeKey(Key::audioBackend, audio.backend);
+	writer.writeKey(Key::audioDevice, audio.device);
 	writer.writeKey(Key::volume, audio.volume);
 	writer.writeKey(Key::sfxVolume, audio.sfxVolume);
 	writer.writeKey(Key::speechVolume, audio.speechVolume);
 	writer.writeKey(Key::ambianceVolume, audio.ambianceVolume);
 	writer.writeKey(Key::eax, audio.eax);
-	writer.writeKey(Key::audioBackend, audio.backend);
 	
 	// input
 	writer.beginSection(Section::Input);
@@ -456,17 +459,18 @@ bool Config::init(const fs::path & file) {
 	video.vsync = reader.getKey(Section::Video, Key::vsync, Default::vsync);
 	
 	// Get window settings
+	window.framework = reader.getKey(Section::Window, Key::windowFramework, Default::windowFramework);
 	std::string windowSize = reader.getKey(Section::Window, Key::windowSize, Default::windowSize);
 	window.size = parseResolution(windowSize);
-	window.framework = reader.getKey(Section::Window, Key::windowFramework, Default::windowFramework);
 	
 	// Get audio settings
+	audio.backend = reader.getKey(Section::Audio, Key::audioBackend, Default::audioBackend);
+	audio.device = reader.getKey(Section::Audio, Key::audioDevice, Default::audioDevice);
 	audio.volume = reader.getKey(Section::Audio, Key::volume, Default::volume);
 	audio.sfxVolume = reader.getKey(Section::Audio, Key::sfxVolume, Default::sfxVolume);
 	audio.speechVolume = reader.getKey(Section::Audio, Key::speechVolume, Default::speechVolume);
 	audio.ambianceVolume = reader.getKey(Section::Audio, Key::ambianceVolume, Default::ambianceVolume);
 	audio.eax = reader.getKey(Section::Audio, Key::eax, Default::eax);
-	audio.backend = reader.getKey(Section::Audio, Key::audioBackend, Default::audioBackend);
 	
 	// Get input settings
 	input.invertMouse = reader.getKey(Section::Input, Key::invertMouse, Default::invertMouse);

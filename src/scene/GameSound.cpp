@@ -360,7 +360,7 @@ bool ARX_SOUND_Init() {
 	
 	if (bIsActive) ARX_SOUND_Release();
 	
-	if(audio::init(config.audio.backend)) {
+	if(audio::init(config.audio.backend, config.audio.device)) {
 		audio::clean();
 		return false;
 	}
