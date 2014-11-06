@@ -275,6 +275,15 @@ void assertionFailed(const char * expression, const char * file, unsigned line,
  * \def ARX_DEAD_CODE()
  * \brief Assert that a code branch cannot be reached.
  */
+#ifdef ARX_DEBUG
 #define ARX_DEAD_CODE() arx_assert(false)
+#elif ARX_COMPILER_MSVC
+#define ARX_DEAD_CODE() __assume(0)
+#elif ARX_HAVE_BUILTIN_UNREACHABLE
+#define ARX_DEAD_CODE() __builtin_unreachable()
+#else
+#define ARX_DEAD_CODE() ((void)0)
+#endif
+
 
 #endif // ARX_PLATFORM_PLATFORM_H

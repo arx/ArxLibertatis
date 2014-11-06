@@ -15,6 +15,9 @@
 // Support for __builtin_trap()
 #cmakedefine01 ARX_HAVE_BUILTIN_TRAP
 
+// Support for __builtin_unreachable()
+#cmakedefine01 ARX_HAVE_BUILTIN_UNREACHABLE
+
 // C++11 features
 #cmakedefine01 ARX_HAVE_CXX11_AUTO
 #cmakedefine01 ARX_HAVE_CXX11_VARIADIC_TEMPLATES

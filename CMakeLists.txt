@@ -499,6 +499,10 @@ if(NOT MSVC)
 		"${CMAKE_MODULE_PATH}/check_compiler_builtin_trap.cpp"
 		"__builtin_trap" "compiler feature"
 	)
+	check_compile(ARX_HAVE_BUILTIN_UNREACHABLE
+		"${CMAKE_MODULE_PATH}/check_compiler_builtin_unreachable.cpp"
+		"__builtin_unreachable" "compiler feature"
+	)
 	
 	check_compile(ARX_HAVE_ATTRIBUTE_FORMAT_PRINTF
 		"${CMAKE_MODULE_PATH}/check_compiler_attribute_format_printf.cpp"
