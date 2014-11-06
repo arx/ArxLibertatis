@@ -223,7 +223,6 @@ struct Ambiance::Track : public Source::Callback {
 	
 	enum Flag {
 		POSITION   = 0x00000001,
-		REVERB     = 0x00000002,
 		MASTER     = 0x00000004,
 		PAUSED     = 0x00000010,
 		PREFETCHED = 0x00000020
