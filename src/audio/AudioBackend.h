@@ -62,6 +62,12 @@ public:
 	virtual aalError setReverbEnabled(bool enable) = 0;
 	
 	/*!
+	 * Check if the backend supports reverb.
+	 * \return true if \ref setReverbEnabled will always fail.
+	 */
+	virtual bool isReverbSupported() = 0;
+	
+	/*!
 	 * Set a unit factor to scale all other distance or velocity parameters.
 	 * \param factor The unit factor in meters per unit.
 	 */

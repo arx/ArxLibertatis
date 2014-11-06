@@ -55,6 +55,7 @@ public:
 	Source * getSource(SourceId sourceId);
 	
 	aalError setReverbEnabled(bool enable);
+	bool isReverbSupported();
 	
 	aalError setUnitFactor(float factor);
 	aalError setRolloffFactor(float factor);

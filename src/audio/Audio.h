@@ -79,6 +79,7 @@ aalError setSamplePath(const res::path & path);
 aalError setAmbiancePath(const res::path & path);
 aalError setEnvironmentPath(const res::path & path);
 aalError setReverbEnabled(bool enable);
+bool isReverbSupported();
 aalError update();
 
 // Resource

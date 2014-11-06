@@ -398,6 +398,25 @@ aalError OpenALBackend::setReverbEnabled(bool enable) {
 	return AAL_OK;
 }
 
+bool OpenALBackend::isReverbSupported() {
+	
+	if(!hasEFX) {
+		return false;
+	} else if(effectEnabled) {
+		return true;
+	}
+	
+	// Clear error state
+	(void)alGetError();
+	
+	ALuint dummy;
+	alGenEffects(1, &dummy);
+	alEffecti(dummy, AL_EFFECT_TYPE, AL_EFFECT_REVERB);
+	alDeleteEffects(1, &dummy);
+	
+	return alGetError() == AL_NO_ERROR;
+}
+
 aalError OpenALBackend::setListenerEnvironment(const Environment & env) {
 	
 	if(!effectEnabled) {

@@ -215,6 +215,13 @@ aalError setReverbEnabled(bool enable) {
 	return backend->setReverbEnabled(enable);
 }
 
+bool isReverbSupported() {
+	
+	AAL_ENTRY
+	
+	return backend->isReverbSupported();
+}
+
 aalError update() {
 	
 	AAL_ENTRY
