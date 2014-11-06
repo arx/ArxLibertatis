@@ -198,6 +198,10 @@ public:
 		return typename vec2_traits<T>::type(right, top);
 	}
 	
+	typename vec2_traits<T>::type size() const {
+		return typename vec2_traits<T>::type(right - left, bottom - top);
+	}
+	
 	bool isValid() const {
 		return left < right && top < bottom;
 	}
