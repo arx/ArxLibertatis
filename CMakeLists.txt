@@ -922,6 +922,8 @@ if(USE_OPENAL AND OPENAL_FOUND)
 	if(OPENALEFX_FOUND)
 		include_directories(SYSTEM ${OPENAL_EFX_INCLUDE_DIR})
 		set(ARX_HAVE_OPENAL_EFX 1)
+	else()
+		set(ARX_HAVE_OPENAL_NOEFX 1)
 	endif()
 endif()
 
@@ -1541,7 +1543,8 @@ print_configuration("Renderer"
 	ARX_HAVE_OPENGL "OpenGL"
 )
 print_configuration("Audio backend"
-	ARX_HAVE_OPENAL "OpenAL"
+	ARX_HAVE_OPENAL_NOEFX "OpenAL without EFX"
+	ARX_HAVE_OPENAL_EFX   "OpenAL with EFX"
 )
 print_configuration("Windowing"
 	ARX_HAVE_SDL2 "SDL 2"
