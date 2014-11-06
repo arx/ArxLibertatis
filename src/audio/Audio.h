@@ -61,7 +61,7 @@ namespace audio {
  * If the audio system was already initialized, it is cleaned first, removing all loaded resources.
  * This is not threadsafe: The caller must ensure that no other audio methods are called at the same time.
  */
-aalError init(const std::string & backend);
+aalError init(const std::string & backend, const std::string & device = std::string());
 
 /*!
  * Cleanup the audio system.

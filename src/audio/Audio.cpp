@@ -68,7 +68,7 @@ namespace {
 static Lock * mutex = NULL;
 }
 
-aalError init(const std::string & backendName) {
+aalError init(const std::string & backendName, const std::string & deviceName) {
 	
 	// Clean any initialized data
 	clean();
@@ -90,7 +90,12 @@ aalError init(const std::string & backendName) {
 			matched = true;
 			LogDebug("initializing OpenAL backend");
 			OpenALBackend * _backend = new OpenALBackend();
-			error = _backend->init();
+			if(!deviceName.empty() && deviceName != "auto") {
+				error = _backend->init(deviceName.c_str());
+			}
+			if(error) {
+				error = _backend->init();
+			}
 			if(!error) {
 				backend = _backend;
 			} else {

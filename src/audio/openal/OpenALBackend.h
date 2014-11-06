@@ -44,7 +44,7 @@ public:
 	OpenALBackend();
 	~OpenALBackend();
 	
-	aalError init();
+	aalError init(const char * device = NULL);
 	
 	aalError updateDeferred();
 	

@@ -94,7 +94,7 @@ public:
 } // anonymous namespace
 #endif
 
-aalError OpenALBackend::init() {
+aalError OpenALBackend::init(const char * requestedDeviceName) {
 	
 	if(device) {
 		return AAL_ERROR_INIT;
@@ -105,7 +105,7 @@ aalError OpenALBackend::init() {
 	ARX_UNUSED(error);
 	
 	// Create OpenAL interface
-	device = alcOpenDevice(NULL);
+	device = alcOpenDevice(requestedDeviceName);
 	if(!device) {
 		ALenum error = alcGetError(NULL);
 		LogError << "Error opening device: " << error << " = " << getAlcErrorString(error);
