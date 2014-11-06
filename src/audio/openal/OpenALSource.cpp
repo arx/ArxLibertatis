@@ -22,6 +22,10 @@
 #include <cmath>
 #include <algorithm>
 
+#if ARX_HAVE_OPENAL_EFX
+#include <efx.h>
+#endif
+
 #include "audio/openal/OpenALUtils.h"
 #include "audio/AudioGlobal.h"
 #include "audio/AudioResource.h"
@@ -800,5 +804,13 @@ aalError OpenALSource::setRolloffFactor(float factor) {
 	
 	return AAL_OK;
 }
+
+#if ARX_HAVE_OPENAL_EFX
+void OpenALSource::setEffectSlot(ALuint slot) {
+	if(channel.flags & FLAG_REVERBERATION) {
+		alSource3i(source, AL_AUXILIARY_SEND_FILTER, slot, 0, AL_FILTER_NULL);
+	}
+}
+#endif
 
 } // namespace audio

@@ -20,6 +20,8 @@
 #ifndef ARX_AUDIO_OPENAL_OPENALSOURCE_H
 #define ARX_AUDIO_OPENAL_OPENALSOURCE_H
 
+#include "Configure.h"
+
 #include <stddef.h>
 
 #include <al.h>
@@ -59,6 +61,10 @@ public:
 	aalError updateVolume();
 	
 	aalError setRolloffFactor(float factor);
+	
+	#if ARX_HAVE_OPENAL_EFX
+	void setEffectSlot(ALuint slot);
+	#endif
 	
 protected:
 	

@@ -32,13 +32,13 @@ const char * getAlErrorString(ALenum error);
 
 #define AL_CHECK_ERROR(desc) { ALenum error = alGetError(); \
 	if(error != AL_NO_ERROR) { \
-		ALError << "error " desc ": " << error << " = " << getAlErrorString(error); \
+		ALError << "Error " desc << ": " << error << " = " << getAlErrorString(error); \
 		return AAL_ERROR_SYSTEM; \
 	}}
 
 #define AL_CHECK_ERROR_N(desc, todo) { ALenum error = alGetError(); \
 	if(error != AL_NO_ERROR) { \
-		ALError << "error " desc ": " << error << " = " << getAlErrorString(error); \
+		ALError << "Error " desc << ": " << error << " = " << getAlErrorString(error); \
 		todo \
 	}}
 

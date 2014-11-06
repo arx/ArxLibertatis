@@ -25,7 +25,7 @@
 #include <al.h>
 #include <alc.h>
 #if ARX_HAVE_OPENAL_EFX
-	#include <efx.h>
+#include <efx.h>
 #endif
 
 #include "audio/AudioBackend.h"
@@ -72,19 +72,24 @@ private:
 	ALCdevice * device;
 	ALCcontext * context;
 	
-#if ARX_HAVE_OPENAL_EFX
-	
-	aalError setEffect(ALenum type, float val);
+	#if ARX_HAVE_OPENAL_EFX
 	
 	bool hasEFX;
+	
 	LPALGENEFFECTS alGenEffects;
 	LPALDELETEEFFECTS alDeleteEffects;
+	LPALEFFECTI alEffecti;
 	LPALEFFECTF alEffectf;
+	
+	LPALGENAUXILIARYEFFECTSLOTS alGenAuxiliaryEffectSlots;
+	LPALDELETEAUXILIARYEFFECTSLOTS alDeleteAuxiliaryEffectSlots;
+	LPALAUXILIARYEFFECTSLOTI alAuxiliaryEffectSloti;
 	
 	bool effectEnabled;
 	ALuint effect;
+	ALuint effectSlot;
 	
-#endif
+	#endif
 	
 	ResourceList<OpenALSource> sources;
 	

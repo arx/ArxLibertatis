@@ -21,6 +21,7 @@
 
 #include <stddef.h>
 #include <cstring>
+#include <cmath>
 
 #include <boost/math/special_functions/fpclassify.hpp>
 
@@ -44,14 +45,19 @@ class Sample;
 OpenALBackend::OpenALBackend()
 	: device(NULL)
 	, context(NULL)
-#if ARX_HAVE_OPENAL_EFX
+	#if ARX_HAVE_OPENAL_EFX
 	, hasEFX(false)
 	, alGenEffects(NULL)
 	, alDeleteEffects(NULL)
+	, alEffecti(NULL)
 	, alEffectf(NULL)
+	, alGenAuxiliaryEffectSlots(NULL)
+	, alDeleteAuxiliaryEffectSlots(NULL)
+	, alAuxiliaryEffectSloti(NULL)
 	, effectEnabled(false)
-	, effect(0)
-#endif
+	, effect(AL_EFFECT_NULL)
+	, effectSlot(AL_EFFECTSLOT_NULL)
+	#endif
 	, rolloffFactor(1.f)
 {}
 
@@ -75,6 +81,18 @@ OpenALBackend::~OpenALBackend() {
 		}
 	}
 }
+
+#if ARX_HAVE_OPENAL_EFX
+namespace {
+class al_function_ptr {
+	void * m_func;
+public:
+	al_function_ptr(void * func) : m_func(func) { }
+	template <typename T>
+	operator T() { return (T)m_func; }
+};
+} // anonymous namespace
+#endif
 
 aalError OpenALBackend::init() {
 	
@@ -102,26 +120,40 @@ aalError OpenALBackend::init() {
 	}
 	alcMakeContextCurrent(context);
 	
-	const char * efx_ver = " without EFX";
-#if ARX_HAVE_OPENAL_EFX
+	#if ARX_HAVE_OPENAL_EFX
 	hasEFX = alcIsExtensionPresent(device, "ALC_EXT_EFX");
 	if(hasEFX) {
-		alGenEffects = (LPALGENEFFECTS)alGetProcAddress("alGenEffects");
-		alDeleteEffects = (LPALDELETEEFFECTS)alGetProcAddress("alDeleteEffects");
-		alEffectf = (LPALEFFECTF)alGetProcAddress("alEffectf");
-		hasEFX = alGenEffects != NULL && alDeleteEffects != NULL && alEffectf != NULL;
-		if(hasEFX) {
-			efx_ver = " with EFX";
-		}
+		#define ARX_AL_LOAD_FUNC(Name) \
+			Name = al_function_ptr(alGetProcAddress(ARX_STR(Name))); \
+			hasEFX = hasEFX && Name != NULL
+		ARX_AL_LOAD_FUNC(alGenEffects);
+		ARX_AL_LOAD_FUNC(alDeleteEffects);
+		ARX_AL_LOAD_FUNC(alEffecti);
+		ARX_AL_LOAD_FUNC(alEffectf);
+		ARX_AL_LOAD_FUNC(alGenAuxiliaryEffectSlots);
+		ARX_AL_LOAD_FUNC(alDeleteAuxiliaryEffectSlots);
+		ARX_AL_LOAD_FUNC(alAuxiliaryEffectSloti);
+		#undef ARX_AL_LOAD_FUNC
 	}
-#endif
+	#endif
 	
 	alDistanceModel(AL_INVERSE_DISTANCE_CLAMPED);
 	
 	AL_CHECK_ERROR("initializing")
 	
 	const ALchar * version = alGetString(AL_VERSION);
-	LogInfo << "Using OpenAL " << version << efx_ver;
+	#if ARX_HAVE_OPENAL_EFX
+	if(hasEFX) {
+		ALCint major = 0, minor = 0;
+		alcGetIntegerv(device, ALC_EFX_MAJOR_VERSION, 1, &major);
+		alcGetIntegerv(device, ALC_EFX_MINOR_VERSION, 1, &minor);
+		LogInfo << "Using OpenAL " << version << " with EFX " << major << '.' << minor;
+	}
+	else
+	#endif
+	{
+		LogInfo << "Using OpenAL " << version << " without EFX";
+	}
 	CrashHandler::setVariable("OpenAL version", version);
 	
 	const char * vendor = alGetString(AL_VENDOR);
@@ -202,6 +234,12 @@ Source * OpenALBackend::createSource(SampleId sampleId, const Channel & channel)
 	}
 	
 	source->setRolloffFactor(rolloffFactor);
+	
+	#if ARX_HAVE_OPENAL_EFX
+	if(effectSlot != AL_EFFECTSLOT_NULL) {
+		source->setEffectSlot(effectSlot);
+	}
+	#endif
 	
 	return source;
 }
@@ -302,22 +340,47 @@ aalError OpenALBackend::setUnitFactor(float factor) {
 
 aalError OpenALBackend::setReverbEnabled(bool enable) {
 	
-	ARX_UNUSED(enable);
+	if(effectEnabled == enable) {
+		return AAL_OK;
+	}
 	
-	// TODO implement reverb
+	if(!hasEFX) {
+		LogWarning << "Cannot enable effects, missing the EFX extension";
+		return AAL_ERROR_SYSTEM;
+	}
+	
+	if(enable) {
+		alGenEffects(1, &effect);
+		alEffecti(effect, AL_EFFECT_TYPE, AL_EFFECT_REVERB);
+		alGenAuxiliaryEffectSlots(1, &effectSlot);
+		AL_CHECK_ERROR_N("creating effect",
+			enable = false;
+		);
+	}
+	
+	for(size_t i = 0; i < sources.size(); i++) {
+		if(sources[i]) {
+			sources[i]->setEffectSlot(enable ? effectSlot : AL_EFFECTSLOT_NULL);
+		}
+	}
+	
+	if(!enable) {
+		alDeleteEffects(1, &effect);
+		effect = AL_EFFECT_NULL;
+		alDeleteAuxiliaryEffectSlots(1, &effectSlot);
+		effectSlot = AL_EFFECTSLOT_NULL;
+		AL_CHECK_ERROR("deleting effect");
+	}
+	
+	
+	effectEnabled = enable;
 	
 	return AAL_OK;
 }
 
 aalError OpenALBackend::setRoomRolloffFactor(float factor) {
-	
-	if(!effectEnabled) {
-		return AAL_ERROR_INIT;
-	}
-	
-	float rolloff = glm::clamp(factor, 0.f, 10.f);
-	
-	return setEffect(AL_REVERB_ROOM_ROLLOFF_FACTOR, rolloff);
+	ARX_UNUSED(factor);
+	return AAL_OK;
 }
 
 aalError OpenALBackend::setListenerEnvironment(const Environment & env) {
@@ -326,24 +389,49 @@ aalError OpenALBackend::setListenerEnvironment(const Environment & env) {
 		return AAL_ERROR_INIT;
 	}
 	
-	// TODO implement reverb - not all properties are set, some may be wrong
+	LogDebug("Using environment " << env.name << ":"
+		<< "\nsize = " << env.size
+		<< "\ndiffusion = " << env.diffusion
+		<< "\nabsorption = " << env.absorption
+		<< "\nreflect_volume = " << env.reflect_volume
+		<< "\nreflect_delay = " << env.reflect_delay
+		<< "\nreverb_volume = " << env.reverb_volume
+		<< "\nreverb_delay = " << env.reverb_delay
+		<< "\nreverb_decay = " << env.reverb_decay
+		<< "\nreverb_hf_decay = " << env.reverb_hf_decay
+	);
 	
-	setEffect(AL_REVERB_DIFFUSION, env.diffusion);
-	setEffect(AL_REVERB_AIR_ABSORPTION_GAINHF, env.absorption * -100.f);
-	setEffect(AL_REVERB_LATE_REVERB_GAIN, glm::clamp(env.reverb_volume, 0.f, 1.f));
-	setEffect(AL_REVERB_LATE_REVERB_DELAY, glm::clamp(env.reverb_delay, 0.f, 100.f) * 0.001f);
-	setEffect(AL_REVERB_DECAY_TIME, glm::clamp(env.reverb_decay, 100.f, 20000.f) * 0.001f);
-	setEffect(AL_REVERB_DECAY_HFRATIO, glm::clamp(env.reverb_hf_decay / env.reverb_decay, 0.1f, 2.f));
-	setEffect(AL_REVERB_REFLECTIONS_GAIN, glm::clamp(env.reflect_volume, 0.f, 1.f));
-	setEffect(AL_REVERB_REFLECTIONS_DELAY, glm::clamp(env.reflect_delay, 0.f, 300.f) * 0.001F);
+	#define ARX_AL_REVERB_SET(Property, Value) \
+		float raw ## Property = (Value); \
+		float al ## Property = glm::clamp(raw ## Property, AL_REVERB_MIN_ ## Property, \
+		                                                   AL_REVERB_MAX_ ## Property); \
+		if(al ## Property != raw ## Property) { \
+			LogWarning << "Clamping REVERB_" << ARX_STR(Property) << " from " \
+			           << raw ## Property << " to " << al ## Property; \
+		} \
+		alEffectf(effect, AL_REVERB_ ## Property, al ## Property); \
+		AL_CHECK_ERROR_N("setting REVERB_" << ARX_STR(Property) << " to " << al ## Property,)
 	
-	return AAL_OK;
-}
-
-aalError OpenALBackend::setEffect(ALenum type, float val) {
+	ARX_AL_REVERB_SET(ROOM_ROLLOFF_FACTOR, rolloffFactor);
+	ARX_AL_REVERB_SET(DENSITY, 1.f);
+	ARX_AL_REVERB_SET(GAIN, 1.f);
+	ARX_AL_REVERB_SET(GAINHF, 0.8f);
+	ARX_AL_REVERB_SET(DIFFUSION, env.diffusion);
+	ARX_AL_REVERB_SET(AIR_ABSORPTION_GAINHF, std::pow(10.f, env.absorption * -0.05f));
+	ARX_AL_REVERB_SET(REFLECTIONS_GAIN, env.reflect_volume);
+	ARX_AL_REVERB_SET(REFLECTIONS_DELAY, env.reflect_delay * 0.001f);
+	ARX_AL_REVERB_SET(LATE_REVERB_GAIN, env.reverb_volume);
+	ARX_AL_REVERB_SET(LATE_REVERB_DELAY, env.reverb_delay * 0.001f);
+	ARX_AL_REVERB_SET(DECAY_TIME, env.reverb_decay * 0.001f);
+	ARX_AL_REVERB_SET(DECAY_HFRATIO, env.reverb_hf_decay / env.reverb_decay);
 	
-	alEffectf(effect, type, val);
-	AL_CHECK_ERROR("setting effect var");
+	#undef ARX_AL_REVERB_SET
+	
+	/*
+	 * With OpenAL Soft this call must come *after* setting up all properties on
+	 * the effect object.
+	 */
+	alAuxiliaryEffectSloti(effectSlot, AL_EFFECTSLOT_EFFECT, effect);
 	
 	return AAL_OK;
 }
@@ -351,18 +439,17 @@ aalError OpenALBackend::setEffect(ALenum type, float val) {
 #else // !ARX_HAVE_OPENAL_EFX
 
 aalError OpenALBackend::setReverbEnabled(bool enable) {
-	ARX_UNUSED(enable);
-	return AAL_ERROR_SYSTEM;
+	return enable ? AAL_ERROR_SYSTEM : AAL_OK;
 }
 
 aalError OpenALBackend::setRoomRolloffFactor(float factor) {
 	ARX_UNUSED(factor);
-	return AAL_ERROR_SYSTEM;
+	return AAL_ERROR_INIT;
 }
 
 aalError OpenALBackend::setListenerEnvironment(const Environment & env) {
 	ARX_UNUSED(env);
-	return AAL_ERROR_SYSTEM;
+	return AAL_ERROR_INIT;
 }
 
 #endif // !ARX_HAVE_OPENAL_EFX
