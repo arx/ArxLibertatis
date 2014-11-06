@@ -20,6 +20,8 @@
 #ifndef ARX_AUDIO_AUDIOBACKEND_H
 #define ARX_AUDIO_AUDIOBACKEND_H
 
+#include <vector>
+
 #include "audio/AudioTypes.h"
 
 namespace audio {
@@ -37,6 +39,8 @@ class Backend {
 public:
 	
 	virtual ~Backend() { }
+	
+	virtual std::vector<std::string> getDevices() = 0;
 	
 	/*!
 	 * Calculate updated positional data if that has not been done already.

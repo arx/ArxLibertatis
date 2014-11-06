@@ -196,6 +196,31 @@ aalError OpenALBackend::init(const char * requestedDeviceName) {
 	return AAL_OK;
 }
 
+std::vector<std::string> OpenALBackend::getDevices() {
+	
+	std::vector<std::string> result;
+	
+	const char * devices = NULL;
+	
+	#ifdef ALC_ENUMERATE_ALL_EXT
+	bool hasDetailedDevices = alcIsExtensionPresent(device, "ALC_ENUMERATE_ALL_EXT");
+	if(hasDetailedDevices) {
+		devices = alcGetString(NULL, ALC_ALL_DEVICES_SPECIFIER);
+	}
+	#endif
+	
+	if(!devices) {
+		devices = alcGetString(NULL, ALC_DEVICE_SPECIFIER);
+	}
+	
+	while(devices && *devices) {
+		result.push_back(devices);
+		devices += result.back().length() + 1;
+	}
+	
+	return result;
+}
+
 aalError OpenALBackend::updateDeferred() {
 	
 	// Nothing to do here.

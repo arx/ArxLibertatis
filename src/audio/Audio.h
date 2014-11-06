@@ -46,6 +46,7 @@ ZeniMax Media Inc., Suite 120, Rockville, Maryland 20850 USA.
 
 #include <stddef.h>
 #include <string>
+#include <vector>
 
 #include "audio/AudioTypes.h"
 #include "math/Types.h"
@@ -62,6 +63,11 @@ namespace audio {
  * This is not threadsafe: The caller must ensure that no other audio methods are called at the same time.
  */
 aalError init(const std::string & backend, const std::string & device = std::string());
+
+/*!
+ * Get a list of available devices for the current backend.
+ */
+std::vector<std::string> getDevices();
 
 /*!
  * Cleanup the audio system.

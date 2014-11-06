@@ -165,6 +165,13 @@ aalError clean() {
 	} \
 	Autolock lock(mutex);
 
+std::vector<std::string> getDevices() {
+	
+	AAL_ENTRY_V(std::vector<std::string>())
+	
+	return backend->getDevices();
+}
+
 aalError setStreamLimit(size_t limit) {
 	
 	AAL_ENTRY

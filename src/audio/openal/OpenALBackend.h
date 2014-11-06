@@ -22,6 +22,8 @@
 
 #include "Configure.h"
 
+#include <vector>
+
 #include <al.h>
 #include <alc.h>
 #if ARX_HAVE_OPENAL_EFX
@@ -45,6 +47,8 @@ public:
 	~OpenALBackend();
 	
 	aalError init(const char * device = NULL);
+	
+	std::vector<std::string> getDevices();
 	
 	aalError updateDeferred();
 	
