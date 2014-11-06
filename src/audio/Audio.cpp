@@ -68,8 +68,7 @@ namespace {
 static Lock * mutex = NULL;
 }
 
-aalError init(const std::string & backendName, bool enableEAX) {
-	ARX_UNUSED(enableEAX);
+aalError init(const std::string & backendName) {
 	
 	// Clean any initialized data
 	clean();
