@@ -82,7 +82,7 @@ aalError OpenALBackend::init(bool enableEffects) {
 		return AAL_ERROR_INIT;
 	}
 	
-	// clear error
+	// Clear error
 	ALenum error = alGetError();
 	ARX_UNUSED(error);
 	
@@ -135,11 +135,37 @@ aalError OpenALBackend::init(bool enableEffects) {
 	LogInfo << "Using OpenAL " << version << efx_ver;
 	CrashHandler::setVariable("OpenAL version", version);
 	
-	LogInfo << " ├─ Vendor: " << alGetString(AL_VENDOR);
-	CrashHandler::setVariable("OpenAL vendor", alGetString(AL_VENDOR));
+	const char * vendor = alGetString(AL_VENDOR);
+	LogInfo << " ├─ Vendor: " << vendor;
+	CrashHandler::setVariable("OpenAL vendor", vendor);
 	
-	LogInfo << " └─ Device: " << alGetString(AL_RENDERER);
-	CrashHandler::setVariable("OpenAL device", alGetString(AL_RENDERER));
+	const char * renderer = alGetString(AL_RENDERER);
+	LogInfo << " ├─ Renderer: " << renderer;
+	CrashHandler::setVariable("OpenAL renderer", renderer);
+	
+	const char * deviceName = alcGetString(device, ALC_DEVICE_SPECIFIER);
+	#ifdef ALC_ENUMERATE_ALL_EXT
+	bool hasDetailedDevices = alcIsExtensionPresent(device, "ALC_ENUMERATE_ALL_EXT");
+	if(hasDetailedDevices && !std::strcmp(deviceName, "OpenAL Soft")) {
+		/*
+		 * OpenAL Soft hides the extended device name since version 1.14.
+		 * Instead, queries for ALC_ALL_DEVICES_SPECIFIER with a valid device
+		 * will return the extended name of that device. Both old OpenAL Soft
+		 * and Creative OpenAL return the extended device name in ALC_DEVICE_SPECIFIER
+		 * and always return a list of all devices for ALC_ALL_DEVICES_SPECIFIER
+		 * even if a valid device is given. Since the only specification I can find for
+		 * ALC_ENUMERATE_ALL_EXT [1] doesn't say anything about using a device
+		 * with ALC_ALL_DEVICES_SPECIFIER, only do that if ALC_DEVICE_SPECIFIER is useless.
+		 *  [1] http://icculus.org/alextreg/wiki/ALC_ENUMERATE_ALL_EXT
+		 */
+		deviceName = alcGetString(device, ALC_ALL_DEVICES_SPECIFIER);
+		if(!deviceName || *deviceName == '\0') {
+			deviceName = "(unknown)";
+		}
+	}
+	#endif
+	LogInfo << " └─ Device: " << deviceName;
+	CrashHandler::setVariable("OpenAL device", deviceName);
 	
 	LogDebug("AL extensions: " << alGetString(AL_EXTENSIONS));
 	LogDebug("ALC extensions: " << alcGetString(device, ALC_EXTENSIONS));
