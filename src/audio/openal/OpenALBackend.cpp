@@ -87,7 +87,7 @@ namespace {
 class al_function_ptr {
 	void * m_func;
 public:
-	al_function_ptr(void * func) : m_func(func) { }
+	explicit al_function_ptr(void * func) : m_func(func) { }
 	template <typename T>
 	operator T() { return (T)m_func; }
 };
