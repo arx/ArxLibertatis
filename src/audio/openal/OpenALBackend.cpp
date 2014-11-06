@@ -284,9 +284,9 @@ aalError OpenALBackend::setUnitFactor(float factor) {
 	}
 #endif
 	
-	const float speedOfSoundMetersPerSecond = 343.3f; // Default for OpenAL
+	const float speedOfSoundInMetersPerSecond = 343.3f; // Default for OpenAL
 	
-	float speedOfSoundInUnits = speedOfSoundMetersPerSecond / factor;
+	float speedOfSoundInUnits = speedOfSoundInMetersPerSecond / factor;
 	
 	if(!(boost::math::isfinite)(speedOfSoundInUnits)) {
 		return AAL_ERROR; // OpenAL soft will lock up if given NaN or +-Inf here
