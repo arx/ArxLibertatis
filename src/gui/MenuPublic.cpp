@@ -192,7 +192,20 @@ bool ARXMenu_Options_Audio_SetEAX(bool _bEnable) {
 	
 	ARX_SOUND_SetReverb(config.audio.eax);
 	
+	return config.audio.eax;
+}
+
+
+void ARXMenu_Options_Audio_SetDevice(std::string device) {
+	
+	config.audio.device = device;
+	
 	/*
+	 * TODO This is ugly and doesn't save all currently playing samples - only looping ones,
+	 * and those aren't restored at the same playback position. Ideally the audio subsystem
+	 * should be able to switch backends internally.
+	 */
+	
 	ARX_SOUND_PushAnimSamples();
 	size_t ulSizeAmbiancePlayList;
 	char * pAmbiancePlayList = ARX_SOUND_AmbianceSavePlayList(ulSizeAmbiancePlayList);
@@ -214,9 +227,6 @@ bool ARXMenu_Options_Audio_SetEAX(bool _bEnable) {
 	}
 
 	ARX_SOUND_PopAnimSamples();
-	*/
-
-	return config.audio.eax;
 }
 
 void ARXMenu_Options_Control_SetInvertMouse(bool enable) {

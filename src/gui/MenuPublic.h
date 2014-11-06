@@ -54,6 +54,7 @@ void ARXMenu_Options_Video_SetDetailsQuality(int lod);
 
 // Audio options
 
+void ARXMenu_Options_Audio_SetDevice(std::string device);
 void ARXMenu_Options_Audio_SetMasterVolume(int volume);
 void ARXMenu_Options_Audio_SetSfxVolume(int volume);
 void ARXMenu_Options_Audio_SetSpeechVolume(int volume);

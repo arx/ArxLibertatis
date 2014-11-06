@@ -201,9 +201,9 @@ bool MENU_NoActiveWindow() {
 	return false;
 }
 
-void FontRenderText(Font* _pFont, Vec3f pos, const std::string& _pText, Color _c) {
-	if(pTextManage) {
-		pTextManage->AddText(_pFont, _pText, pos.x, pos.y, _c);
+void FontRenderText(Font* _pFont, const Rect & rzone, const std::string& _pText, Color _c) {
+	if(pTextManage && !rzone.empty()) {
+		pTextManage->AddText(_pFont, _pText, rzone, _c);
 	}
 }
 
@@ -1023,17 +1023,12 @@ void TextWidget::Render() {
 	if(bNoMenu)
 		return;
 
-	Vec3f ePos;
-	ePos.x = (float) rZone.left;
-	ePos.y = (float) rZone.top;
-	ePos.z = 1;
-
 	if(bSelected) {
-		FontRenderText(pFont, ePos, lpszText, lColorHighlight);
+		FontRenderText(pFont, rZone, lpszText, lColorHighlight);
 	} else if(enabled) {
-		FontRenderText(pFont, ePos, lpszText, lColor);
+		FontRenderText(pFont, rZone, lpszText, lColor);
 	} else {
-		FontRenderText(pFont, ePos, lpszText, Color::grayb(127));
+		FontRenderText(pFont, rZone, lpszText, Color::grayb(127));
 	}
 
 }
@@ -1048,9 +1043,7 @@ void TextWidget::RenderMouseOver() {
 	GRenderer->SetRenderState(Renderer::AlphaBlending, true);
 	GRenderer->SetBlendFunc(Renderer::BlendOne, Renderer::BlendOne);
 	
-	Vec3f ePos = Vec3f(Vec2f(rZone.topLeft()), 1.f);
-	
-	FontRenderText(pFont, ePos, lpszText, lColorHighlight);
+	FontRenderText(pFont, rZone, lpszText, lColorHighlight);
 
 	GRenderer->SetRenderState(Renderer::AlphaBlending, false);
 
@@ -1081,10 +1074,6 @@ void TextWidget::RenderMouseOver() {
 			break;
 		}
 	}
-}
-
-Vec2i TextWidget::GetTextSize() const {
-	return pFont->getTextSize(lpszText);
 }
 
 CMenuState::CMenuState()
@@ -1370,9 +1359,9 @@ bool CheckboxWidget::OnMouseClick() {
 		break;
 	}
 	case BUTTON_MENUOPTIONSAUDIO_EAX: {
-			ARXMenu_Options_Audio_SetEAX((iState)?true:false);
-		}
+		ARXMenu_Options_Audio_SetEAX(iState != 0);
 		break;
+	}
 	case BUTTON_MENUOPTIONS_CONTROLS_INVERTMOUSE: {
 			ARXMenu_Options_Control_SetInvertMouse((iState)?true:false);
 		}
@@ -2455,25 +2444,27 @@ void CycleTextWidget::AddText(TextWidget *_pText) {
 	_pText->Move(Vec2i(rZone.left + pLeftButton->rZone.width(), rZone.top + 0));
 	vText.push_back(_pText);
 
-	Vec2i textSize = _pText->GetTextSize();
+	Vec2i textSize = _pText->rZone.size();
 
 	rZone.right  = std::max(rZone.right, rZone.left + pLeftButton->rZone.width() + pRightButton->rZone.width() + textSize.x);
 	rZone.bottom = std::max(rZone.bottom, rZone.top + textSize.y);
 
-	pLeftButton->SetPos(Vec2i(rZone.left, rZone.top+(textSize.y>>2)));
-	pRightButton->SetPos(Vec2i(rZone.right-pRightButton->rZone.width(), rZone.top+(textSize.y>>2)));
+	pLeftButton->SetPos(Vec2i(rZone.left,
+	                          rZone.top + rZone.height() / 2 - pLeftButton->rZone.height() / 2));
+	pRightButton->SetPos(Vec2i(rZone.right - pRightButton->rZone.width(),
+	                           rZone.top + rZone.height() / 2 - pRightButton->rZone.height() / 2));
 
-	int dx=rZone.right-rZone.left-pLeftButton->rZone.width()-pRightButton->rZone.width();
+	int dx=rZone.width()-pLeftButton->rZone.width()-pRightButton->rZone.width();
 	//on recentre tout
 	std::vector<TextWidget*>::iterator it;
 
 	for(it = vText.begin(); it < vText.end(); ++it) {
 		TextWidget *pMenuElementText=*it;
 		
-		textSize = pMenuElementText->GetTextSize();
+		textSize = pMenuElementText->rZone.size();
 
 		int dxx=(dx-textSize.x)>>1;
-		pMenuElementText->SetPos(Vec2i(pLeftButton->rZone.right + dxx, rZone.top));
+		pMenuElementText->SetPos(Vec2i(pLeftButton->rZone.right + dxx, rZone.top + rZone.height() / 2 - textSize.y/2));
 	}
 }
 
@@ -2542,6 +2533,16 @@ bool CycleTextWidget::OnMouseClick() {
 	}
 
 	switch(iID) {
+		
+		case BUTTON_MENUOPTIONSAUDIO_DEVICE: {
+			if(iPos == 0) {
+				ARXMenu_Options_Audio_SetDevice("auto");
+			} else {
+				ARXMenu_Options_Audio_SetDevice(vText.at(iPos)->lpszText);
+			}
+			break;
+		}
+		
 		case BUTTON_MENUOPTIONSVIDEO_RESOLUTION: {
 			std::string pcText = (vText.at(iPos))->lpszText;
 			
@@ -2562,14 +2563,6 @@ bool CycleTextWidget::OnMouseClick() {
 			switch((vText.at(iPos))->eMenuState) {
 				case OPTIONS_VIDEO_RENDERER_OPENGL:    config.window.framework = "SDL"; break;
 				case OPTIONS_VIDEO_RENDERER_AUTOMATIC: config.window.framework = "auto"; break;
-				default: break;
-			}
-			break;
-		}
-		case BUTTON_MENUOPTIONSAUDIO_BACKEND: {
-			switch((vText.at(iPos))->eMenuState) {
-				case OPTIONS_AUDIO_BACKEND_OPENAL:    config.audio.backend = "OpenAL"; break;
-				case OPTIONS_AUDIO_BACKEND_AUTOMATIC: config.audio.backend = "auto"; break;
 				default: break;
 			}
 			break;

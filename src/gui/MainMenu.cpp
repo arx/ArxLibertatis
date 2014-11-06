@@ -21,6 +21,9 @@
 
 #include <iomanip>
 
+#include <boost/foreach.hpp>
+
+#include "audio/Audio.h"
 #include "core/Application.h"
 #include "core/Config.h"
 #include "core/Core.h"
@@ -542,22 +545,30 @@ void MainMenuOptionAudioCreate(CWindowMenuConsole * console, Vec2i size)
 {
 	// Audio backend selection
 	{
+		
 		HorizontalPanelWidget * pc = new HorizontalPanelWidget;
-		std::string szMenuText = getLocalised("system_menus_options_audio_backend", "Backend");
+		std::string szMenuText = getLocalised("system_menus_options_audio_device", "Device");
 		szMenuText += "  ";
 		TextWidget * me = new TextWidget(-1, hFontMenu, szMenuText, Vec2i(RATIO_X(20), 0), NOP);
 		me->SetCheckOff();
 		pc->AddElement(me);
-		CycleTextWidget * slider = new CycleTextWidget(BUTTON_MENUOPTIONSAUDIO_BACKEND);
+		CycleTextWidget * slider = new CycleTextWidget(BUTTON_MENUOPTIONSAUDIO_DEVICE);
 		
-		slider->AddText(new TextWidget(-1, hFontMenu, "Auto-Select", Vec2i(0, 0), OPTIONS_AUDIO_BACKEND_AUTOMATIC));
+		int maxwidth = RATIO_X(size.x - 28) - me->rZone.width() - slider->rZone.width();
+		
+		slider->AddText(new TextWidget(-1, hFontControls, "Default"));
 		slider->selectLast();
-#if ARX_HAVE_OPENAL
-		slider->AddText(new TextWidget(-1, hFontMenu, "OpenAL", Vec2i(0, 0), OPTIONS_AUDIO_BACKEND_OPENAL));
-		if(config.audio.backend == "OpenAL") {
-			slider->selectLast();
+		
+		BOOST_FOREACH(const std::string & device, audio::getDevices()) {
+			TextWidget * text = new TextWidget(-1, hFontControls, device);
+			if(text->rZone.width() > maxwidth) {
+				text->rZone.right = text->rZone.left + maxwidth;
+			}
+			slider->AddText(text);
+			if(config.audio.device == device) {
+				slider->selectLast();
+			}
 		}
-#endif
 		
 		float fRatio    = (RATIO_X(size.x-9) - slider->rZone.width()); 
 		slider->Move(Vec2i(checked_range_cast<int>(fRatio), 0));
