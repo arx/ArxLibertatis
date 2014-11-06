@@ -64,7 +64,7 @@ std::string escapeString(const std::string & text, const char * escapeChars);
 std::string unescapeString(const std::string & text);
 
 template <class CTYPE, class STYPE>
-inline CTYPE * safeGetString(CTYPE * & pos, STYPE & size) {	
+inline CTYPE * safeGetString(CTYPE * & pos, STYPE & size) {
 	
 	CTYPE * begin = pos;
 	
