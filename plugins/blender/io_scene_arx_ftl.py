@@ -109,6 +109,46 @@ EERIE_OLD_VERTEX = namedtuple('EERIE_OLD_VERTEX',
 def EERIE_OLD_VERTEX_unpack(data):
     return EERIE_OLD_VERTEX._make(unpack('<ffffIIffffffff', data))
 
+
+class PolyTypeFlag_bits(ctypes.LittleEndianStructure):
+     _fields_ = [
+        ("POLY_NO_SHADOW",    ctypes.c_uint8, 1),
+        ("POLY_DOUBLESIDED",  ctypes.c_uint8, 1),
+        ("POLY_TRANS",        ctypes.c_uint8, 1),
+        ("POLY_WATER",        ctypes.c_uint8, 1),
+        ("POLY_GLOW",         ctypes.c_uint8, 1),
+        ("POLY_IGNORE",       ctypes.c_uint8, 1),
+        ("POLY_QUAD",         ctypes.c_uint8, 1),
+        ("POLY_TILED",        ctypes.c_uint8, 1), # Unused
+        ("POLY_METAL",        ctypes.c_uint8, 1),
+        ("POLY_HIDE",         ctypes.c_uint8, 1),
+        ("POLY_STONE",        ctypes.c_uint8, 1),
+        ("POLY_WOOD",         ctypes.c_uint8, 1),
+        ("POLY_GRAVEL",       ctypes.c_uint8, 1),
+        ("POLY_EARTH",        ctypes.c_uint8, 1),
+        ("POLY_NOCOL",        ctypes.c_uint8, 1),
+        ("POLY_LAVA",         ctypes.c_uint8, 1),
+        ("POLY_CLIMB",        ctypes.c_uint8, 1),
+        ("POLY_FALL",         ctypes.c_uint8, 1),
+        ("POLY_NOPATH",       ctypes.c_uint8, 1),
+        ("POLY_NODRAW",       ctypes.c_uint8, 1),
+        ("POLY_PRECISE_PATH", ctypes.c_uint8, 1),
+        ("POLY_NO_CLIMB",     ctypes.c_uint8, 1), # Unused
+        ("POLY_ANGULAR",      ctypes.c_uint8, 1), # Unused
+        ("POLY_ANGULAR_IDX0", ctypes.c_uint8, 1), # Unused
+        ("POLY_ANGULAR_IDX1", ctypes.c_uint8, 1), # Unused
+        ("POLY_ANGULAR_IDX2", ctypes.c_uint8, 1), # Unused
+        ("POLY_ANGULAR_IDX3", ctypes.c_uint8, 1), # Unused
+        ("POLY_LATE_MIP",     ctypes.c_uint8, 1),
+    ]
+     
+class PolyTypeFlag(ctypes.Union):
+    _fields_ = [
+        ("b",      PolyTypeFlag_bits),
+        ("asByte", ctypes.c_uint32),
+    ]
+    _anonymous_ = ("b")
+
 EERIE_FACE_FTL = namedtuple('EERIE_FACE_FTL',
         'facetype '
         'rgb0 rgb1 rgb2 '
@@ -171,7 +211,7 @@ def get_faces(bs, numFaces):
         vertIndexes = list((face.vid0, face.vid1, face.vid2))
         uvs = iter([(face.u0, face.v0), (face.u1, face.v1), (face.u2, face.v2)])
         mat = face.texid
-        result.append((vertIndexes, uvs, mat))
+        result.append((vertIndexes, uvs, mat, face.facetype, face.transval))
         bs = bs[116:]
     
     return (result,bs)
@@ -244,11 +284,16 @@ def parse_ftl(ftlBytes):
 
 def build_initial_bmesh(vertData, faceData, correctionMatrix):
     bm = bmesh.new()
+    
+    arxFaceType = bm.faces.layers.int.new('arx_facetype')
+    arxTransVal = bm.faces.layers.float.new('arx_transval')
+    
     uvData = bm.loops.layers.uv.verify()
     for xyz in vertData:
         bm.verts.new(xyz)
         bm.verts.index_update()
-    for (vertIndexes,uvs,mat) in faceData:
+    
+    for (vertIndexes, uvs, mat, faceType, trans) in faceData:
         faceVerts = [bm.verts[v] for v in vertIndexes]
         evDict = {}
         try:
@@ -261,8 +306,13 @@ def build_initial_bmesh(vertData, faceData, correctionMatrix):
                 extraVerts.append(ev)
                 evDict[v] = ev
             f = bm.faces.new(extraVerts)
+        
         if mat >= 0:
             f.material_index = mat
+        
+        f[arxFaceType] = faceType
+        f[arxTransVal] = trans
+            
         bm.faces.index_update()
         for c in f.loops:
             u, v = next(uvs)
@@ -768,6 +818,72 @@ def menu_func_import_ftl(self, context):
 def menu_func_export_ftl(self, context):
     self.layout.operator(
         ExportFTL.bl_idname, text="Arx Fatalis Model (.ftl)")
+
+
+class ArxFacePanel(bpy.types.Panel):
+    bl_label = "Arx Face Properties"
+    bl_space_type = 'VIEW_3D'
+    bl_region_type = "UI"
+    
+    def draw(self, context):
+        ob = bpy.context.object
+        
+        if ob is None:
+            return
+        
+        if ob.type != 'MESH':
+            raise TypeError("Active object is not a Mesh")
+        
+        me = ob.data
+        
+        if me.is_editmode:
+            # Gain direct access to the mesh
+            bm = bmesh.from_edit_mesh(me)
+        else:
+            # Create a bmesh from mesh
+            # (won't affect mesh, unless explicitly written back)
+            bm = bmesh.new()
+            bm.from_mesh(me)
+        
+        # Get active face
+        face = bm.faces.active
+        
+        arxFaceType = bm.faces.layers.int.get('arx_facetype')
+        arxTransVal = bm.faces.layers.float.get('arx_transval')
+        
+        faceType = PolyTypeFlag()
+        faceType.asByte = face[arxFaceType]
+        
+        transval = face[arxTransVal]
+        
+        obj = bpy.context.active_object
+        
+        layout = self.layout
+        
+        layout.label(text="transval: " + str(transval))
+        layout.label(text="POLY_NO_SHADOW: " + str(faceType.POLY_NO_SHADOW))
+        layout.label(text="POLY_DOUBLESIDED: " + str(faceType.POLY_DOUBLESIDED))
+        layout.label(text="POLY_TRANS: " + str(faceType.POLY_TRANS))
+        layout.label(text="POLY_WATER: " + str(faceType.POLY_WATER))
+        layout.label(text="POLY_GLOW: " + str(faceType.POLY_GLOW))
+        layout.label(text="POLY_IGNORE: " + str(faceType.POLY_IGNORE))
+        layout.label(text="POLY_QUAD: " + str(faceType.POLY_QUAD))
+        layout.label(text="POLY_METAL: " + str(faceType.POLY_METAL))
+        layout.label(text="POLY_HIDE: " + str(faceType.POLY_HIDE))
+        layout.label(text="POLY_STONE: " + str(faceType.POLY_STONE))
+        layout.label(text="POLY_WOOD: " + str(faceType.POLY_WOOD))
+        layout.label(text="POLY_GRAVEL: " + str(faceType.POLY_GRAVEL))
+        layout.label(text="POLY_EARTH: " + str(faceType.POLY_EARTH))
+        layout.label(text="POLY_NOCOL: " + str(faceType.POLY_NOCOL))
+        layout.label(text="POLY_LAVA: " + str(faceType.POLY_LAVA))
+        layout.label(text="POLY_CLIMB: " + str(faceType.POLY_CLIMB))
+        layout.label(text="POLY_FALL: " + str(faceType.POLY_FALL))
+        layout.label(text="POLY_NOPATH: " + str(faceType.POLY_NOPATH))
+        layout.label(text="POLY_NODRAW: " + str(faceType.POLY_NODRAW))
+        layout.label(text="POLY_PRECISE_PATH: " + str(faceType.POLY_PRECISE_PATH))
+        layout.label(text="POLY_LATE_MIP: " + str(faceType.POLY_LATE_MIP))
+
+
 
 def register():
     bpy.utils.register_module(__name__)
