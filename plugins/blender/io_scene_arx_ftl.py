@@ -96,6 +96,19 @@ def strip_wires(bm):
 ### Import
 ###
 
+EERIE_OLD_VERTEX = namedtuple('EERIE_OLD_VERTEX',
+    'posX posY posZ '
+    'rhw '
+    'color '
+    'specular '
+    'tu '
+    'tv '
+    'vX vY vZ '
+    'normX normY normZ')
+
+def EERIE_OLD_VERTEX_unpack(data):
+    return EERIE_OLD_VERTEX._make(unpack('<ffffIIffffffff', data))
+
 EERIE_FACE_FTL = namedtuple('EERIE_FACE_FTL',
         'facetype '
         'rgb0 rgb1 rgb2 '
@@ -146,7 +159,8 @@ def get_string(bs):
 def get_verts(bs, numVerts):
     result = []
     for i in range(numVerts):
-        result.append(get_floats(bs[32:44]))
+        vert = EERIE_OLD_VERTEX_unpack(bs[0:56])
+        result.append(list((vert.vX, vert.vY, vert.vZ)))
         bs = bs[56:]
     return (result,bs)
 
