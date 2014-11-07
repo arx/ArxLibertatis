@@ -250,7 +250,32 @@ def assign_groups(bm, groups, evDict):
         gi += 1
     return bm
 
-def make_object(bm, data, evDict, name, correctionMatrix):
+def createMaterial(rootDirectory, textureName):
+    relativePath, fileExtension = os.path.splitext(textureName.replace("\\", "/").lower())
+    foo, fileName = os.path.split(relativePath)
+    
+    extensions = [".png", ".jpg", ".jpeg", ".bmp", ".tga"]
+    for ext in extensions:
+        fullPath = os.path.join(rootDirectory, relativePath) + ext
+        if os.path.exists(fullPath):
+            break
+    
+    print("Using texture %s" % fullPath)
+    
+    tex = bpy.data.textures.new(fileName + "-tex", type = 'IMAGE')
+    tex.image = bpy.data.images.load(fullPath)
+    tex.use_alpha = True
+    
+    # Create shadeless material and MTex
+    mat = bpy.data.materials.new(fileName + "-mat")
+    mat.use_shadeless = True
+    mtex = mat.texture_slots.add()
+    mtex.texture = tex
+    mtex.texture_coords = 'UV'
+    mtex.use_map_color_diffuse = True
+    return mat
+
+def make_object(bm, data, evDict, name, correctionMatrix, assetsRootDirectory):
     groups = data['groups']
     groups.extend([("sel:"+n,i) for (n,i) in data['sels']])
     mesh = bpy.data.meshes.new(name)
@@ -268,11 +293,9 @@ def make_object(bm, data, evDict, name, correctionMatrix):
     bpy.ops.object.mode_set(mode='EDIT') # initialises UVmap correctly
     mesh.uv_textures.new()
     for m in data['mats']:
-        bpy.ops.object.material_slot_add()
-        try:
-            obj.material_slots[-1].material = bpy.data.materials[m]
-        except KeyError:
-            obj.material_slots[-1].material = bpy.data.materials.new(m)
+        mat = createMaterial(assetsRootDirectory, m)
+        obj.data.materials.append(mat)
+    
     for (name,coords) in data['actions']:
         action = bpy.data.objects.new(name, None)
         bpy.context.scene.objects.link(action)
@@ -280,7 +303,7 @@ def make_object(bm, data, evDict, name, correctionMatrix):
         action.location = correctionMatrix * mu.Vector(coords)
     return {'FINISHED'}
 
-def do_import(fileName, correctionMatrix):
+def do_import(fileName, correctionMatrix, assetsRootDirectory):
     f = open(fileName, 'r+b')
     bs = f.read(-1)
     f.close()
@@ -300,7 +323,8 @@ def do_import(fileName, correctionMatrix):
         data,
         evDict,
         name,
-        correctionMatrix)
+        correctionMatrix,
+        assetsRootDirectory)
     return (msg,result)
 
 ###
@@ -653,13 +677,15 @@ class ImportFTL(bpy.types.Operator, ImportHelper):
             soft_min=0.01,
             soft_max=1000.0,
             default=0.1)
+    assetsRootDirectory = StringProperty(name="Assets directory", subtype='DIR_PATH')
+    
     def execute(self, context):
         maybeTurn = float(self.reorient)
         correctionMatrix = \
             mu.Matrix.Rotation(math.radians(180 * maybeTurn), 4, 'Z') *\
             mu.Matrix.Rotation(math.radians(-90 * maybeTurn), 4, 'X') *\
             mu.Matrix.Scale(self.scaleFactor, 4)
-        msg, result = do_import(self.filepath, correctionMatrix)
+        msg, result = do_import(self.filepath, correctionMatrix, self.assetsRootDirectory)
         print(msg)
         if result == {'CANCELLED'}:
             self.report({'ERROR'}, msg)
