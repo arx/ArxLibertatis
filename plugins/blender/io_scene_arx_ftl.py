@@ -96,19 +96,32 @@ def strip_wires(bm):
 ### Import
 ###
 
-EERIE_OLD_VERTEX = namedtuple('EERIE_OLD_VERTEX',
-    'posX posY posZ '
-    'rhw '
-    'color '
-    'specular '
-    'tu '
-    'tv '
-    'vX vY vZ '
-    'normX normY normZ')
+class SavedVec3(LittleEndianStructure):
+    _pack_ = 1
+    _fields_ = [
+        ("x", c_float),
+        ("y", c_float),
+        ("z", c_float)
+    ]
 
-def EERIE_OLD_VERTEX_unpack(data):
-    return EERIE_OLD_VERTEX._make(unpack('<ffffIIffffffff', data))
+class SavedTextureVertex(LittleEndianStructure):
+    _pack_ = 1
+    _fields_ = [
+        ("pos",      SavedVec3),
+        ("rhw",      c_float),
+        ("color",    c_uint32),
+        ("specular", c_uint32),
+        ("tu",       c_float),
+        ("tv",       c_float)
+    ]
 
+class EERIE_OLD_VERTEX(LittleEndianStructure):
+    _pack_ = 1
+    _fields_ = [
+        ("vert", SavedTextureVertex),
+        ("v",    SavedVec3),
+        ("norm", SavedVec3)
+    ]
 
 class PolyTypeFlag_bits(ctypes.LittleEndianStructure):
      _fields_ = [
@@ -145,29 +158,26 @@ class PolyTypeFlag_bits(ctypes.LittleEndianStructure):
 class PolyTypeFlag(ctypes.Union):
     _fields_ = [
         ("b",      PolyTypeFlag_bits),
-        ("asByte", ctypes.c_uint32),
+        ("asUInt", ctypes.c_uint32),
     ]
     _anonymous_ = ("b")
 
-EERIE_FACE_FTL = namedtuple('EERIE_FACE_FTL',
-        'facetype '
-        'rgb0 rgb1 rgb2 '
-        'vid0 vid1 vid2 '
-        'texid '
-        'u0 u1 u2 '
-        'v0 v1 v2 '
-        'ou0 ou1 ou2 '
-        'ov0 ov1 ov2 '
-        'transval '
-        'normX normY normZ '
-        'nrmls0X nrmls0Y nrmls0Z '
-        'nrmls1X nrmls1Y nrmls1Z '
-        'nrmls2X nrmls2Y nrmls2Z '
-        'temp')
-
-def EERIE_FACE_FTL_unpack(data):
-    return EERIE_FACE_FTL._make(unpack('<iIIIHHHhffffffhhhhhhffffffffffffff', data))
-
+class EERIE_FACE_FTL(LittleEndianStructure):
+    _pack_ = 1
+    _fields_ = [
+        ("facetype", PolyTypeFlag),
+        ("rgb",      c_uint32 * 3),
+        ("vid",      c_uint16 * 3),
+        ("texid",    c_int16),
+        ("u",        c_float * 3),
+        ("v",        c_float * 3),
+        ("ou",       c_uint16 * 3),
+        ("ov",       c_uint16 * 3),
+        ("transval", c_float),
+        ("norm",     SavedVec3),
+        ("nrmls",    SavedVec3 * 3),
+        ("temp",     c_float),
+    ]
 
 def get_ints(bs):
     spec = '<' + str(len(bs) // 4) + 'i'
@@ -199,19 +209,19 @@ def get_string(bs):
 def get_verts(bs, numVerts):
     result = []
     for i in range(numVerts):
-        vert = EERIE_OLD_VERTEX_unpack(bs[0:56])
-        result.append(list((vert.vX, vert.vY, vert.vZ)))
+        vert = EERIE_OLD_VERTEX.from_buffer_copy(bs[0:56])
+        result.append(list((vert.v.x, vert.v.y, vert.v.z)))
         bs = bs[56:]
     return (result,bs)
 
 def get_faces(bs, numFaces):
     result = []
     for i in range(numFaces):
-        face = EERIE_FACE_FTL_unpack(bs[0:116])
-        vertIndexes = list((face.vid0, face.vid1, face.vid2))
-        uvs = iter([(face.u0, face.v0), (face.u1, face.v1), (face.u2, face.v2)])
+        face = EERIE_FACE_FTL.from_buffer_copy(bs[0:116])
+        vertIndexes = face.vid
+        uvs = zip(face.u, face.v)
         mat = face.texid
-        result.append((vertIndexes, uvs, mat, face.facetype, face.transval))
+        result.append((vertIndexes, uvs, mat, face.facetype.asUInt, face.transval))
         bs = bs[116:]
     
     return (result,bs)
@@ -852,7 +862,7 @@ class ArxFacePanel(bpy.types.Panel):
         arxTransVal = bm.faces.layers.float.get('arx_transval')
         
         faceType = PolyTypeFlag()
-        faceType.asByte = face[arxFaceType]
+        faceType.asUInt = face[arxFaceType]
         
         transval = face[arxTransVal]
         
