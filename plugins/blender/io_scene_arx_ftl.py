@@ -28,6 +28,7 @@ from bpy_extras.io_utils import (
     ExportHelper,
     ImportHelper,
     path_reference_mode)
+from collections import namedtuple
 
 ### 
 ### Arx Libertatis IO library interface by Eli2
@@ -95,6 +96,26 @@ def strip_wires(bm):
 ### Import
 ###
 
+EERIE_FACE_FTL = namedtuple('EERIE_FACE_FTL',
+        'facetype '
+        'rgb0 rgb1 rgb2 '
+        'vid0 vid1 vid2 '
+        'texid '
+        'u0 u1 u2 '
+        'v0 v1 v2 '
+        'ou0 ou1 ou2 '
+        'ov0 ov1 ov2 '
+        'transval '
+        'normX normY normZ '
+        'nrmls0X nrmls0Y nrmls0Z '
+        'nrmls1X nrmls1Y nrmls1Z '
+        'nrmls2X nrmls2Y nrmls2Z '
+        'temp')
+
+def EERIE_FACE_FTL_unpack(data):
+    return EERIE_FACE_FTL._make(unpack('<iIIIHHHhffffffhhhhhhffffffffffffff', data))
+
+
 def get_ints(bs):
     spec = '<' + str(len(bs) // 4) + 'i'
     return list(unpack(spec, bs))
@@ -132,13 +153,13 @@ def get_verts(bs, numVerts):
 def get_faces(bs, numFaces):
     result = []
     for i in range(numFaces):
-        vertIndexes = get_ushorts(bs[16:22])
-        uvs = zip(
-            get_floats(bs[24:36]),
-            get_floats(bs[36:48]))
-        mat = unpack('<h', bs[22:24])[0]
-        result.append((vertIndexes,uvs,mat))
+        face = EERIE_FACE_FTL_unpack(bs[0:116])
+        vertIndexes = list((face.vid0, face.vid1, face.vid2))
+        uvs = iter([(face.u0, face.v0), (face.u1, face.v1), (face.u2, face.v2)])
+        mat = face.texid
+        result.append((vertIndexes, uvs, mat))
         bs = bs[116:]
+    
     return (result,bs)
 
 def get_mats(bs, numMats):
