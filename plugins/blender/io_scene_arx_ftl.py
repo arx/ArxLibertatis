@@ -179,6 +179,22 @@ class EERIE_FACE_FTL(LittleEndianStructure):
         ("temp",     c_float),
     ]
 
+class Texture_Container_FTL(LittleEndianStructure):
+    _pack_ = 1
+    _fields_ = [
+        ("name", c_char * 256)
+    ]
+
+class EERIE_GROUPLIST_FTL(LittleEndianStructure):
+    _pack_ = 1
+    _fields_ = [
+        ("name",     c_char * 256),
+        ("origin",   c_int32),
+        ("nb_index", c_int32),
+        ("indexes",  c_int32),
+        ("siz",      c_float)
+    ]
+
 def get_ints(bs):
     spec = '<' + str(len(bs) // 4) + 'i'
     return list(unpack(spec, bs))
@@ -229,18 +245,16 @@ def get_faces(bs, numFaces):
 def get_mats(bs, numMats):
     result = []
     for i in range(numMats):
-        result.append(get_string(bs[:256]))
+        texture = Texture_Container_FTL.from_buffer_copy(bs[:256])
+        result.append(texture.name.decode("utf-8"))
         bs = bs[256:]
     return (result,bs)
 
 def get_groups(bs, numGroups):
     temp = []
     for i in range(numGroups):
-        name = get_string(bs[:256])
-        # origin, count, indexes = get_ints(bs[256:268])
-        # sz = unpack('<f', bs[268:272])[0]
-        count = unpack('<i', bs[260:264])[0]
-        temp.append((name,count))
+        group = EERIE_GROUPLIST_FTL.from_buffer_copy(bs[:272])
+        temp.append((group.name.decode("utf-8"), group.nb_index))
         bs = bs[272:]
     result = []
     for (name,count) in temp:
@@ -857,6 +871,9 @@ class ArxFacePanel(bpy.types.Panel):
         
         # Get active face
         face = bm.faces.active
+        
+        if face is None:
+            return
         
         arxFaceType = bm.faces.layers.int.get('arx_facetype')
         arxTransVal = bm.faces.layers.float.get('arx_transval')
