@@ -173,3 +173,12 @@ int ArxIO_ftlGetRawData(char * outData, int size) {
 
 	return 0;
 }
+
+
+void ArxIO_unpack_alloc(const char * in, const size_t inSize, char ** out, size_t * outSize) {
+	*out = blastMemAlloc(in, inSize, *outSize);
+}
+
+void ArxIO_unpack_free(char * buffer) {
+	free(buffer);
+}
