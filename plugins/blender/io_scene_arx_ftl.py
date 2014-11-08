@@ -442,16 +442,20 @@ def do_import(fileName, correctionMatrix, assetsRootDirectory):
     f = open(fileName, 'r+b')
     bs = f.read(-1)
     f.close()
+    
     if bs[:4] != b'FTL\x00':
         try:
             bs = ftlReader.getRawFtl(bytes(fileName, encoding="utf-8"))
         except:
             return ("Cannot understand the file format.",{'CANCELLED'})
+    
     data, name = parse_ftl(bs)
+    
     bm, evDict = build_initial_bmesh(
         data['verts'],
         data['faces'],
         correctionMatrix)
+    
     msg = "File \"" + fileName + "\" loaded successfully."
     result = make_object(
         bm,
