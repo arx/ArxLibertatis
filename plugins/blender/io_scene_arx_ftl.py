@@ -30,6 +30,11 @@ from bpy_extras.io_utils import (
     path_reference_mode)
 from collections import namedtuple
 
+import logging
+
+logging.basicConfig(level=logging.DEBUG)
+
+
 ### 
 ### Arx Libertatis IO library interface by Eli2
 ### 
@@ -195,116 +200,134 @@ class EERIE_GROUPLIST_FTL(LittleEndianStructure):
         ("siz",      c_float)
     ]
 
-def get_ints(bs):
-    spec = '<' + str(len(bs) // 4) + 'i'
-    return list(unpack(spec, bs))
+class EERIE_ACTIONLIST_FTL(LittleEndianStructure):
+    _pack_ = 1
+    _fields_ = [
+        ("name",   c_char * 256),
+        ("idx",    c_int32),
+        ("action", c_int32),
+        ("sfx",    c_int32),
+    ]
 
-def get_uints(bs):
-    spec = '<' + str(len(bs) // 4) + 'I'
-    return list(unpack(spec, bs))
+class EERIE_SELECTIONS_FTL(LittleEndianStructure):
+    _pack_ = 1
+    _fields_ = [
+        ("name",        c_char * 64),
+        ("nb_selected", c_int32),
+        ("selected",    c_int32),
+    ]
 
-def get_ushorts(bs):
-    spec = '<' + str(len(bs) // 2) + 'H'
-    return list(unpack(spec, bs))
 
-def get_floats(bs):
-    spec = '<' + str(len(bs) // 4) + 'f'
-    return list(unpack(spec, bs))
+class ARX_FTL_PRIMARY_HEADER(LittleEndianStructure):
+    _pack_ = 1
+    _fields_ = [
+        ("ident",    c_char * 4),
+        ("version",  c_float),
+        ("checksum", c_char * 512) # In the c code this is currently not part of the header
+    ]
 
-def get_string(bs):
-    s = ""
-    for b in bs:
-        if b == 0:
-            break
-        elif b in range(32,127):
-            s += chr(b)
-        else:
-            s += "?"
-    return s
-
-def get_verts(bs, numVerts):
-    result = []
-    for i in range(numVerts):
-        vert = EERIE_OLD_VERTEX.from_buffer_copy(bs[0:56])
-        result.append(list((vert.v.x, vert.v.y, vert.v.z)))
-        bs = bs[56:]
-    return (result,bs)
-
-def get_faces(bs, numFaces):
-    result = []
-    for i in range(numFaces):
-        face = EERIE_FACE_FTL.from_buffer_copy(bs[0:116])
-        vertIndexes = face.vid
-        uvs = zip(face.u, face.v)
-        mat = face.texid
-        result.append((vertIndexes, uvs, mat, face.facetype.asUInt, face.transval))
-        bs = bs[116:]
+class ARX_FTL_SECONDARY_HEADER(LittleEndianStructure):
+    _pack_ = 1
+    _fields_ = [
+        ("offset_3Ddata",            c_int32),
+        ("offset_cylinder",          c_int32),
+        ("offset_progressive_data",  c_int32),
+        ("offset_clothes_data",      c_int32),
+        ("offset_collision_spheres", c_int32),
+        ("offset_physics_box",       c_int32)
+    ]
     
-    return (result,bs)
+class ARX_FTL_3D_DATA_HEADER(LittleEndianStructure):
+    _pack_ = 1
+    _fields_ = [
+        ("nb_vertex",     c_int32),
+        ("nb_faces",      c_int32),
+        ("nb_maps",       c_int32),
+        ("nb_groups",     c_int32),
+        ("nb_action",     c_int32),
+        ("nb_selections", c_int32),
+        ("origin",        c_int32),
+        ("name",          c_char * 256)
+    ]
 
-def get_mats(bs, numMats):
-    result = []
-    for i in range(numMats):
-        texture = Texture_Container_FTL.from_buffer_copy(bs[:256])
-        result.append(texture.name.decode("utf-8"))
-        bs = bs[256:]
-    return (result,bs)
-
-def get_groups(bs, numGroups):
-    temp = []
-    for i in range(numGroups):
-        group = EERIE_GROUPLIST_FTL.from_buffer_copy(bs[:272])
-        temp.append((group.name.decode("utf-8"), group.nb_index))
-        bs = bs[272:]
-    result = []
-    for (name,count) in temp:
-        result.append((name,get_ints(bs[:count*4])))
-        bs = bs[count*4:]
-    return (result,bs)
-
-def get_actions(bs, numActions, verts):
-    result = []
-    for i in range(numActions):
-        name = get_string(bs[:256])
-        index, action, sfx = get_ints(bs[256:268])
-        result.append((name,verts[index]))
-        bs = bs[268:]
-    return (result,bs)
-
-def get_sels(bs, numSels):
-    temp = []
-    for i in range(numSels):
-        name = get_string(bs[:64])
-        count, indexes = get_ints(bs[64:72])
-        temp.append((name,count))
-        bs = bs[72:]
-    result = []
-    for (name,count) in temp:
-        result.append((name,get_ints(bs[:count*4])))
-        bs = bs[count*4:]
-    return result
 
 def parse_ftl(ftlBytes):
-    version = unpack('<f', ftlBytes[4:8])[0]
-    geomOffset = unpack('<I', ftlBytes[520:524])[0]
-    if geomOffset != -1:
-        geomEnd = None
-        for x in range(524, 544, 4):
-            o = unpack('<I', ftlBytes[x:x+4])[0]
-            if o != -1:
-                geomEnd = o
-                break
-        geomChunk = ftlBytes[geomOffset:geomEnd]
-        nv, nf, nm, ng, na, ns, origin = get_ints(geomChunk[:28])
-        name = get_string(geomChunk[28:284])
-        data = {}
-        data['verts'], rest   = get_verts(geomChunk[284:], nv)
-        data['faces'], rest   = get_faces(rest, nf)
-        data['mats'], rest    = get_mats(rest, nm)
-        data['groups'], rest  = get_groups(rest, ng)
-        data['actions'], rest = get_actions(rest, na, data['verts'])
-        data['sels']          = get_sels(rest, ns)
-        return (data,name)
+    pos = 0
+    
+    primaryHeader = ARX_FTL_PRIMARY_HEADER.from_buffer_copy(ftlBytes, pos)
+    pos += sizeof(ARX_FTL_PRIMARY_HEADER)
+    logging.info("Loading ftl file version: %f" % primaryHeader.version)
+    
+    secondaryHeader = ARX_FTL_SECONDARY_HEADER.from_buffer_copy(ftlBytes, pos)
+    
+    if secondaryHeader.offset_3Ddata == -1:
+        logging.error("Invalid offset to 3d data")
+        return
+    
+    pos = secondaryHeader.offset_3Ddata
+    
+    chunkHeader = ARX_FTL_3D_DATA_HEADER.from_buffer_copy(ftlBytes, pos)
+    pos += sizeof(ARX_FTL_3D_DATA_HEADER)
+    
+    verts = []
+    for i in range(chunkHeader.nb_vertex):
+        vert = EERIE_OLD_VERTEX.from_buffer_copy(ftlBytes, pos)
+        pos += sizeof(EERIE_OLD_VERTEX)
+        verts.append(list((vert.v.x, vert.v.y, vert.v.z)))
+    
+    faces = []
+    for i in range(chunkHeader.nb_faces):
+        face = EERIE_FACE_FTL.from_buffer_copy(ftlBytes, pos)
+        pos += sizeof(EERIE_FACE_FTL)
+        faces.append((face.vid, zip(face.u, face.v), face.texid, face.facetype.asUInt, face.transval))
+    
+    mats = []
+    for i in range(chunkHeader.nb_maps):
+        texture = Texture_Container_FTL.from_buffer_copy(ftlBytes, pos)
+        pos += sizeof(Texture_Container_FTL)
+        mats.append(texture.name.decode("utf-8"))
+    
+    temp = []
+    for i in range(chunkHeader.nb_groups):
+        group = EERIE_GROUPLIST_FTL.from_buffer_copy(ftlBytes, pos)
+        pos += sizeof(EERIE_GROUPLIST_FTL)
+        temp.append((group.name.decode("utf-8"), group.nb_index))
+    
+    groups = []
+    for (name, count) in temp:
+        vertArray = c_int32 * count
+        vertsIndices = vertArray.from_buffer_copy(ftlBytes, pos)
+        pos += sizeof(vertsIndices)
+        groups.append((name, list(vertsIndices)))
+    
+    actions = []
+    for i in range(chunkHeader.nb_action):
+        action = EERIE_ACTIONLIST_FTL.from_buffer_copy(ftlBytes, pos)
+        pos += sizeof(EERIE_ACTIONLIST_FTL)
+        actions.append((action.name.decode("utf-8"), verts[action.idx]))
+    
+    temp = []
+    for i in range(chunkHeader.nb_selections):
+        selection = EERIE_SELECTIONS_FTL.from_buffer_copy(ftlBytes, pos)
+        pos += sizeof(EERIE_SELECTIONS_FTL)
+        temp.append((selection.name.decode("utf-8"), selection.nb_selected))
+    
+    sels = []
+    for (name, count) in temp:
+        vertArray = c_int32 * count
+        vertsIndices = vertArray.from_buffer_copy(ftlBytes, pos)
+        pos += sizeof(vertsIndices)
+        sels.append((name, list(vertsIndices)))
+    
+    data = {}
+    data['verts']   = verts
+    data['faces']   = faces
+    data['mats']    = mats
+    data['groups']  = groups
+    data['actions'] = actions
+    data['sels']    = sels
+    
+    return (data, chunkHeader.name.decode("utf-8"))
 
 def build_initial_bmesh(vertData, faceData, correctionMatrix):
     bm = bmesh.new()
