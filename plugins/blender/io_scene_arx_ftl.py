@@ -32,7 +32,8 @@ from collections import namedtuple
 
 import logging
 
-logging.basicConfig(level=logging.DEBUG)
+logging.basicConfig(level=logging.INFO)
+log = logging.getLogger('Arx Pipeline')
 
 
 ### 
@@ -56,7 +57,7 @@ class ArxIO(object):
         while readMore:
             logBuffer = create_string_buffer(self.messageBufferSize)
             result = self.lib.ArxIO_getLogLine(logBuffer, self.messageBufferSize)
-            print("Lib " + logBuffer.value)
+            log.info("Lib " + logBuffer.value)
             if result == 0:
                 readMore = False;
 
@@ -256,12 +257,12 @@ def parse_ftl(ftlBytes):
     
     primaryHeader = ARX_FTL_PRIMARY_HEADER.from_buffer_copy(ftlBytes, pos)
     pos += sizeof(ARX_FTL_PRIMARY_HEADER)
-    logging.info("Loading ftl file version: %f" % primaryHeader.version)
+    log.debug("Loading ftl file version: %f" % primaryHeader.version)
     
     secondaryHeader = ARX_FTL_SECONDARY_HEADER.from_buffer_copy(ftlBytes, pos)
     
     if secondaryHeader.offset_3Ddata == -1:
-        logging.error("Invalid offset to 3d data")
+        log.error("Invalid offset to 3d data")
         return
     
     pos = secondaryHeader.offset_3Ddata
@@ -285,13 +286,13 @@ def parse_ftl(ftlBytes):
     for i in range(chunkHeader.nb_maps):
         texture = Texture_Container_FTL.from_buffer_copy(ftlBytes, pos)
         pos += sizeof(Texture_Container_FTL)
-        mats.append(texture.name.decode("utf-8"))
+        mats.append(texture.name.decode('iso-8859-1'))
     
     temp = []
     for i in range(chunkHeader.nb_groups):
         group = EERIE_GROUPLIST_FTL.from_buffer_copy(ftlBytes, pos)
         pos += sizeof(EERIE_GROUPLIST_FTL)
-        temp.append((group.name.decode("utf-8"), group.nb_index))
+        temp.append((group.name.decode('iso-8859-1'), group.nb_index))
     
     groups = []
     for (name, count) in temp:
@@ -304,13 +305,13 @@ def parse_ftl(ftlBytes):
     for i in range(chunkHeader.nb_action):
         action = EERIE_ACTIONLIST_FTL.from_buffer_copy(ftlBytes, pos)
         pos += sizeof(EERIE_ACTIONLIST_FTL)
-        actions.append((action.name.decode("utf-8"), verts[action.idx]))
+        actions.append((action.name.decode('iso-8859-1'), verts[action.idx]))
     
     temp = []
     for i in range(chunkHeader.nb_selections):
         selection = EERIE_SELECTIONS_FTL.from_buffer_copy(ftlBytes, pos)
         pos += sizeof(EERIE_SELECTIONS_FTL)
-        temp.append((selection.name.decode("utf-8"), selection.nb_selected))
+        temp.append((selection.name.decode('iso-8859-1'), selection.nb_selected))
     
     sels = []
     for (name, count) in temp:
@@ -327,7 +328,7 @@ def parse_ftl(ftlBytes):
     data['actions'] = actions
     data['sels']    = sels
     
-    return (data, chunkHeader.name.decode("utf-8"))
+    return (data, chunkHeader.name.decode('iso-8859-1'))
 
 def build_initial_bmesh(vertData, faceData, correctionMatrix):
     bm = bmesh.new()
@@ -386,21 +387,23 @@ def createMaterial(rootDirectory, textureName):
     relativePath, fileExtension = os.path.splitext(textureName.replace("\\", "/").lower())
     foo, fileName = os.path.split(relativePath)
     
+    mat = bpy.data.materials.new(fileName + "-mat")
+    mat.use_shadeless = True
+    
     extensions = [".png", ".jpg", ".jpeg", ".bmp", ".tga"]
     for ext in extensions:
         fullPath = os.path.join(rootDirectory, relativePath) + ext
         if os.path.exists(fullPath):
             break
     
-    print("Using texture %s" % fullPath)
+    if not os.path.exists(fullPath):
+        log.warning("Texture not found: %s" % textureName)
+        return mat
     
     tex = bpy.data.textures.new(fileName + "-tex", type = 'IMAGE')
     tex.image = bpy.data.images.load(fullPath)
     tex.use_alpha = True
     
-    # Create shadeless material and MTex
-    mat = bpy.data.materials.new(fileName + "-mat")
-    mat.use_shadeless = True
     mtex = mat.texture_slots.add()
     mtex.texture = tex
     mtex.texture_coords = 'UV'
