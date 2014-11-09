@@ -407,9 +407,11 @@ def createMaterial(rootDirectory, textureName):
         img.name = relativePath
     
     
-    tex = bpy.data.textures.new(fileName + "-tex", type = 'IMAGE')
-    tex.image = img
-    tex.use_alpha = True
+    if relativePath in bpy.data.textures:
+        tex = bpy.data.textures[relativePath]
+    else:
+        tex = bpy.data.textures.new(relativePath, type = 'IMAGE')
+        tex.image = img
     
     mtex = mat.texture_slots.add()
     mtex.texture = tex
