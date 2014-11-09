@@ -400,8 +400,15 @@ def createMaterial(rootDirectory, textureName):
         log.warning("Texture not found: %s" % textureName)
         return mat
     
+    if relativePath in bpy.data.images:
+        img = bpy.data.images[relativePath]
+    else:
+        img = bpy.data.images.load(fullPath)
+        img.name = relativePath
+    
+    
     tex = bpy.data.textures.new(fileName + "-tex", type = 'IMAGE')
-    tex.image = bpy.data.images.load(fullPath)
+    tex.image = img
     tex.use_alpha = True
     
     mtex = mat.texture_slots.add()
