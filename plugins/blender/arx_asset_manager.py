@@ -16,6 +16,30 @@ import bpy
 import math
 import mathutils
 
+def deleteEverything():
+    
+    for mesh in bpy.data.meshes:
+        mesh.user_clear()
+        bpy.data.meshes.remove(mesh)
+    
+    for img in bpy.data.images:
+        img.user_clear()
+        bpy.data.images.remove(img)
+    
+    for tex in bpy.data.textures:
+        tex.user_clear()
+        bpy.data.textures.remove(tex)
+    
+    for item in bpy.data.materials:
+        item.user_clear()
+        bpy.data.materials.remove(item)
+    
+    for obj in bpy.context.scene.objects:
+        bpy.context.scene.objects.unlink(obj)
+    
+    for obj in bpy.data.objects:
+        bpy.data.objects.remove(obj)
+
 class ArxCreateOverviewScene(bpy.types.Operator):
     bl_idname = "arx.create_overview_scene"
     bl_label = "Import all Objects"
@@ -31,10 +55,7 @@ class ArxCreateOverviewScene(bpy.types.Operator):
         
         bpy.context.screen.scene = bpy.data.scenes[self.overviewSceneName]
         
-        # Delete everything
-        scn = bpy.context.scene
-        for obj in scn.objects:
-            scn.objects.unlink(obj)
+        deleteEverything()
         
         assetsRootDirectory = str(bpy.context.scene.ArxAssetPath)
         print(assetsRootDirectory)
@@ -53,24 +74,23 @@ class ArxCreateOverviewScene(bpy.types.Operator):
                         print("Failed to import: %s" % fullPath)
         
         return{'FINISHED'}
+
+def getSortValue(ob):
+    minx = ob.bound_box[0][0] * ob.scale.x
+    maxx = ob.bound_box[4][0] * ob.scale.x
+    miny = ob.bound_box[0][1] * ob.scale.y
+    maxy = ob.bound_box[2][1] * ob.scale.y
+    minz = ob.bound_box[0][2] * ob.scale.z
+    maxz = ob.bound_box[1][2] * ob.scale.z
     
+    absx = abs(minx) + abs(maxx)
+    absy = abs(miny) + abs(maxy)
+    absz = abs(minz) + abs(maxz)
+    return absx + absy + absz
+
 class ArxLayoutOverviewScene(bpy.types.Operator):
     bl_idname = "arx.layout_overview_scene"
     bl_label = "Update Layout"
-    
-    def getSortValue(ob):
-        minx = ob.bound_box[0][0] * ob.scale.x
-        maxx = ob.bound_box[4][0] * ob.scale.x
-        miny = ob.bound_box[0][1] * ob.scale.y
-        maxy = ob.bound_box[2][1] * ob.scale.y
-        minz = ob.bound_box[0][2] * ob.scale.z
-        maxz = ob.bound_box[1][2] * ob.scale.z
-        
-        absx = abs(minx) + abs(maxx)
-        absy = abs(miny) + abs(maxy)
-        absz = abs(minz) + abs(maxz)
-        
-        return absx + absy + absz
     
     def execute(self, context):
         for ob in bpy.context.scene.objects:
