@@ -226,12 +226,14 @@ void EERIEDrawBitmapUVs(float x, float y, float sx, float sy, float z, TextureCo
 	
 	MatchPixTex(x, y);
 	
+	const Rectf rect(Vec2f(x, y), sx, sy);
+	
 	ColorRGBA col = color.toRGBA();
 	TexturedVertex v[4];
-	v[0] = TexturedVertex(Vec3f(x,      y,      z), 1.f, col, uv0);
-	v[1] = TexturedVertex(Vec3f(x + sx, y,      z), 1.f, col, uv1);
-	v[2] = TexturedVertex(Vec3f(x,      y + sy, z), 1.f, col, uv2);
-	v[3] = TexturedVertex(Vec3f(x + sx, y + sy, z), 1.f, col, uv3);
+	v[0] = TexturedVertex(Vec3f(rect.topLeft(),     z), 1.f, col, uv0);
+	v[1] = TexturedVertex(Vec3f(rect.topRight(),    z), 1.f, col, uv1);
+	v[2] = TexturedVertex(Vec3f(rect.bottomLeft(),  z), 1.f, col, uv2);
+	v[3] = TexturedVertex(Vec3f(rect.bottomRight(), z), 1.f, col, uv3);
 	SetTextureDrawPrim(tex, v, Renderer::TriangleStrip);
 }
 
