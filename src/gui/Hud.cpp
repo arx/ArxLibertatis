@@ -1765,13 +1765,13 @@ public:
 		EERIEDrawBitmap(left, 0.01f, m_arrowLeftTex, lcolor);
 		// Right
 		EERIEDrawBitmapUVs(g_size.width() - m_arrowSize.x - fMove, g_size.center().y - (m_arrowSize.y * .5f),
-			m_arrowSize.x, m_arrowSize.y, .01f, m_arrowLeftTex, lcolor, 1.f, 0.f, 0.f, 0.f, 1.f, 1.f, 0.f, 1.f);
+			m_arrowSize.x, m_arrowSize.y, .01f, m_arrowLeftTex, lcolor, Vec2f(1.f, 0.f), Vec2f(0.f, 0.f), Vec2f(1.f, 1.f), Vec2f(0.f, 1.f));
 		// Up
 		EERIEDrawBitmapUVs(g_size.center().x - (m_arrowSize.y * .5f), 0.f + fMove,
-			m_arrowSize.y, m_arrowSize.x, .01f, m_arrowLeftTex, lcolor, 0.f, 1.f, 0.f, 0.f, 1.f, 1.f, 1.f, 0.f);
+			m_arrowSize.y, m_arrowSize.x, .01f, m_arrowLeftTex, lcolor, Vec2f(0.f, 1.f), Vec2f(0.f, 0.f), Vec2f(1.f, 1.f), Vec2f(1.f, 0.f));
 		// Down
 		EERIEDrawBitmapUVs(g_size.center().x - (m_arrowSize.y * .5f), (g_size.height() - m_arrowSize.x) - fMove,
-			m_arrowSize.y, m_arrowSize.x, .01f, m_arrowLeftTex, lcolor, 1.f, 1.f, 1.f, 0.f, 0.f, 1.f, 0.f, 0.f);
+			m_arrowSize.y, m_arrowSize.x, .01f, m_arrowLeftTex, lcolor, Vec2f(1.f, 1.f), Vec2f(1.f, 0.f), Vec2f(0.f, 1.f), Vec2f(0.f, 0.f));
 	}
 };
 ScreenArrows screenArrows;
