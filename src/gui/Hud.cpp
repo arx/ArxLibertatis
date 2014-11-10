@@ -74,6 +74,45 @@ float ARX_CAST_TO_INT_THEN_FLOAT( float _f )
 	return ( ( _f >= 0 ) ? floor( _f ) : ceil( _f ) );
 }
 
+
+enum Anchor {
+	Anchor_TopLeft,
+	Anchor_TopCenter,
+	Anchor_TopRight,
+	Anchor_LeftCenter,
+	Anchor_Center,
+	Anchor_RightCenter,
+	Anchor_BottomLeft,
+	Anchor_BottomCenter,
+	Anchor_BottomRight,
+};
+
+Vec2f getAnchorPos(const Rectf & rect, const Anchor anchor) {
+	switch(anchor) {
+		case Anchor_TopLeft:      return rect.topLeft();
+		case Anchor_TopCenter:    return rect.topCenter();
+		case Anchor_TopRight:     return rect.topRight();
+		case Anchor_LeftCenter:   return Vec2f(rect.left, rect.top + rect.height() / 2);
+		case Anchor_Center:       return rect.center();
+		case Anchor_RightCenter:  return Vec2f(rect.right, rect.top + rect.height() / 2);
+		case Anchor_BottomLeft:   return rect.bottomLeft();
+		case Anchor_BottomCenter: return rect.bottomCenter();
+		case Anchor_BottomRight:  return rect.bottomRight();
+		default: return rect.topLeft();
+	}
+}
+
+Rectf createChild(const Rectf & parent, const Anchor parentAnchor, const Vec2f & size, const Anchor childAnchor) {
+	Vec2f parentPos = getAnchorPos(parent, parentAnchor);
+	
+	Rectf child(size.x, size.y);
+	Vec2f childPos = getAnchorPos(child, childAnchor);
+	child.move(parentPos.x, parentPos.y);
+	child.move(-childPos.x, -childPos.y);
+	return child;
+}
+
+
 /*!
  * \brief the hit strength diamond shown at the bottom of the UI.
  */
@@ -1733,45 +1772,54 @@ void mecanismIconReset() {
 	mecanismIcon.reset();
 }
 
-
 class ScreenArrows {
 private:
+	float m_scale;
+	Vec2f m_horizontalArrowSize;
+	Vec2f m_verticalArrowSize;
+	
+	Rectf m_left;
+	Rectf m_right;
+	Rectf m_top;
+	Rectf m_bottom;
+	
 	TextureContainer * m_arrowLeftTex;
-	Vec2f m_arrowSize;
-
+	
 	float fArrowMove;
-	float fMove;
 public:
+	ScreenArrows()
+		: m_scale(1.f)
+		, m_horizontalArrowSize(8, 16)
+		, m_verticalArrowSize(16, 8)
+	{}
+	
 	void init() {
 		m_arrowLeftTex = TextureContainer::LoadUI("graph/interface/icons/arrow_left");
 		arx_assert(m_arrowLeftTex);
 	}
 	
 	void update() {
-		m_arrowSize = Vec2f(m_arrowLeftTex->size());
-		
 		fArrowMove += .5f * framedelay;
 		if(fArrowMove > 180.f) {
 			fArrowMove=0.f;
 		}
-		fMove = glm::abs(glm::sin(glm::radians(fArrowMove)))*m_arrowSize.x*.5f;
+		
+		float fMove = glm::abs(glm::sin(glm::radians(fArrowMove))) * m_horizontalArrowSize.x * m_scale * .5f;
+		
+		const Rectf parent = createChild(Rectf(g_size), Anchor_Center, Vec2f(g_size.size()) - Vec2f(fMove), Anchor_Center);
+		m_left   = createChild(parent, Anchor_LeftCenter,   m_horizontalArrowSize * m_scale, Anchor_LeftCenter);
+		m_right  = createChild(parent, Anchor_RightCenter,  m_horizontalArrowSize * m_scale, Anchor_RightCenter);
+		m_top    = createChild(parent, Anchor_TopCenter,    m_verticalArrowSize * m_scale,   Anchor_TopCenter);
+		m_bottom = createChild(parent, Anchor_BottomCenter, m_verticalArrowSize * m_scale,   Anchor_BottomCenter);
 	}
 	
 	void draw() {
 		Color lcolor = Color3f::gray(.5f).to<u8>();
-		
-		// Left
-		Rectf left(Vec2f(0 + fMove, g_size.center().y - (m_arrowSize.y * .5f)), m_arrowSize.x, m_arrowSize.y);
-		EERIEDrawBitmap(left, 0.01f, m_arrowLeftTex, lcolor);
-		// Right
-		Rectf right(Vec2f(g_size.width() - m_arrowSize.x - fMove, g_size.center().y - (m_arrowSize.y * .5f)), m_arrowSize.x, m_arrowSize.y);
-		EERIEDrawBitmapUVs(right, .01f, m_arrowLeftTex, lcolor, Vec2f(1.f, 0.f), Vec2f(0.f, 0.f), Vec2f(1.f, 1.f), Vec2f(0.f, 1.f));
-		// Up
-		Rectf top(Vec2f(g_size.center().x - (m_arrowSize.y * .5f), 0.f + fMove), m_arrowSize.y, m_arrowSize.x);
-		EERIEDrawBitmapUVs(top, .01f, m_arrowLeftTex, lcolor, Vec2f(0.f, 1.f), Vec2f(0.f, 0.f), Vec2f(1.f, 1.f), Vec2f(1.f, 0.f));
-		// Down
-		Rectf bottom(Vec2f(g_size.center().x - (m_arrowSize.y * .5f), (g_size.height() - m_arrowSize.x) - fMove), m_arrowSize.y, m_arrowSize.x);
-		EERIEDrawBitmapUVs(bottom, .01f, m_arrowLeftTex, lcolor, Vec2f(1.f, 1.f), Vec2f(1.f, 0.f), Vec2f(0.f, 1.f), Vec2f(0.f, 0.f));
+
+		EERIEDrawBitmap(m_left, 0.01f, m_arrowLeftTex, lcolor);
+		EERIEDrawBitmapUVs(m_right,  .01f, m_arrowLeftTex, lcolor, Vec2f(1.f, 0.f), Vec2f(0.f, 0.f), Vec2f(1.f, 1.f), Vec2f(0.f, 1.f));
+		EERIEDrawBitmapUVs(m_top,    .01f, m_arrowLeftTex, lcolor, Vec2f(0.f, 1.f), Vec2f(0.f, 0.f), Vec2f(1.f, 1.f), Vec2f(1.f, 0.f));
+		EERIEDrawBitmapUVs(m_bottom, .01f, m_arrowLeftTex, lcolor, Vec2f(1.f, 1.f), Vec2f(1.f, 0.f), Vec2f(0.f, 1.f), Vec2f(0.f, 0.f));
 	}
 };
 ScreenArrows screenArrows;
