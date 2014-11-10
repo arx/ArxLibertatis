@@ -65,7 +65,7 @@ void EERIEDrawSprite(const Vec3f & in, float siz, TextureContainer * tex, Color 
 
 void EERIEDrawBitmap2(const Rectf & rect, float z, TextureContainer * tex, Color color);
 void EERIEDrawBitmap_uv(Rectf rect, float z, TextureContainer * tex, Color col, float u0, float v0, float u1, float v1);
-void EERIEDrawBitmapUVs(float x, float y, float sx, float sy, float z, TextureContainer * tex, Color color, Vec2f uv0, Vec2f uv1, Vec2f uv2, Vec2f uv3);
+void EERIEDrawBitmapUVs(Rectf rect, float z, TextureContainer * tex, Color color, Vec2f uv0, Vec2f uv1, Vec2f uv2, Vec2f uv3);
 
 void EERIEAddBitmap(const RenderMaterial& mat, const Vec3f & p, float sx, float sy, TextureContainer * tex, Color color);
 void EERIEAddSprite(const RenderMaterial & mat, const Vec3f & in, float siz, Color color, float Zpos, float rot = 0);
