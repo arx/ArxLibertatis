@@ -1687,12 +1687,21 @@ public:
 };
 HealthGauge healthGauge;
 
-class ManaGauge {
+class ManaGauge : public HudItem {
 private:
+	Vec2f m_size;
+	Rectf m_rect;
+	
 	TextureContainer * m_emptyTex;
 	TextureContainer * m_filledTex;
 	float m_amount;
+	
 public:
+	ManaGauge()
+		: HudItem()
+		, m_size(33.f, 80.f)
+	{}
+	
 	void init() {
 		m_emptyTex = TextureContainer::LoadUI("graph/interface/bars/empty_gauge_blue");
 		m_filledTex = TextureContainer::LoadUI("graph/interface/bars/filled_gauge_blue");
@@ -1703,30 +1712,19 @@ public:
 	void update() {
 		
 		m_amount = player.manaPool.current / player.Full_maxmana;
+		
+		m_rect = createChild(Rectf(g_size), Anchor_BottomRight, m_size * m_scale, Anchor_BottomRight);
+		m_rect.left  += lSLID_VALUE;
+		m_rect.right += lSLID_VALUE;
 	}
 	
 	void draw() {
-		Vec2f size = Vec2f(m_filledTex->size());
 		
-		Vec2f pos = Vec2f(g_size.bottomRight());
-		pos += Vec2f(-33, -81);
-		pos.x += lSLID_VALUE;
-		
-		Rectf rect(Vec2f(pos.x + 1, pos.y), size.x, size.y);
-		EERIEDrawBitmap2DecalY(rect, 0.f, m_filledTex, Color::white, (1.f - m_amount));
-		
-		ARX_INTERFACE_DrawItem(m_emptyTex, pos.x + 1, pos.y);
+		EERIEDrawBitmap2DecalY(m_rect, 0.f, m_filledTex, Color::white, (1.f - m_amount));
+		EERIEDrawBitmap(m_rect, 0.001f, m_emptyTex, Color::white);
 		
 		if(!(player.Interface & INTER_COMBATMODE)) {
-			
-			const Rect blueGaugeMouseTestRect(
-				pos.x,
-				pos.y,
-				pos.x + size.x,
-				pos.y + size.y
-			);
-			
-			if(blueGaugeMouseTestRect.contains(Vec2i(DANAEMouse))) {
+			if(m_rect.contains(Vec2f(DANAEMouse))) {
 				if((EERIEMouseButton & 1) && !(LastMouseClick & 1)) {
 					std::stringstream ss;
 					ss << checked_range_cast<int>(player.manaPool.current);
@@ -2282,6 +2280,7 @@ void UpdateInterface() {
 }
 
 void setHudScale(float scale) {
+	manaGauge.setScale(scale);
 	mecanismIcon.setScale(scale);
 	screenArrows.setScale(scale);
 }
