@@ -1660,9 +1660,9 @@ public:
 		pos.x += static_cast<float>(-lSLID_VALUE);
 		
 		Vec2f size = Vec2f(m_filledTex->size());
-
-		EERIEDrawBitmap2DecalY(pos.x, pos.y, size.x, size.y,
-			0.f, m_filledTex, ulcolor, (1.f - m_amount));
+		
+		Rectf rect(Vec2f(pos.x, pos.y), size.x, size.y);
+		EERIEDrawBitmap2DecalY(rect, 0.f, m_filledTex, ulcolor, (1.f - m_amount));
 		
 		ARX_INTERFACE_DrawItem(m_emptyTex, pos.x, pos.y);
 		
@@ -1712,8 +1712,8 @@ public:
 		pos += Vec2f(-33, -81);
 		pos.x += lSLID_VALUE;
 		
-		EERIEDrawBitmap2DecalY(pos.x + 1, pos.y, size.x, size.y, 0.f,
-			m_filledTex, Color::white, (1.f - m_amount));
+		Rectf rect(Vec2f(pos.x + 1, pos.y), size.x, size.y);
+		EERIEDrawBitmap2DecalY(rect, 0.f, m_filledTex, Color::white, (1.f - m_amount));
 		
 		ARX_INTERFACE_DrawItem(m_emptyTex, pos.x + 1, pos.y);
 		
