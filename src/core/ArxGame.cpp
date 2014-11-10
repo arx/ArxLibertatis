@@ -2295,6 +2295,14 @@ void ArxGame::render() {
 		cinematicRender();
 	} else {
 		updateLevel();
+		
+#ifdef ARX_DEBUG
+		if(g_debugToggles[7])
+			setHudScale(3);
+		else
+			setHudScale(1);
+#endif
+		
 		UpdateInterface();
 		renderLevel();
 

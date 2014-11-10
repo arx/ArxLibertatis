@@ -1627,12 +1627,20 @@ public:
 
 MemorizedSpellIconsGui memorizedSpellIconsGui;
 
-class HealthGauge {
+class HealthGauge : public HudItem {
 private:
+	Vec2f m_size;
+	Rectf m_rect;
+	
+	Color m_color;
 	TextureContainer * m_emptyTex;
 	TextureContainer * m_filledTex;
 	float m_amount;
 public:
+	HealthGauge()
+		: m_size(33.f, 80.f)
+	{}
+	
 	void init() {
 		m_emptyTex = TextureContainer::LoadUI("graph/interface/bars/empty_gauge_red");
 		m_filledTex = TextureContainer::LoadUI("graph/interface/bars/filled_gauge_red");
@@ -1643,39 +1651,27 @@ public:
 	void update() {
 		
 		m_amount = (float)player.lifePool.current/(float)player.Full_maxlife;
-	}
-	
-	void draw() {
-		
-		Color ulcolor = Color::red;
 		
 		if(player.poison > 0.f) {
 			float val = std::min(player.poison, 0.2f) * 255.f * 5.f;
 			long g = val;
-			ulcolor = Color(u8(255 - g), u8(g) , 0);
+			m_color = Color(u8(255 - g), u8(g) , 0);
+		} else {
+			m_color = Color::red;
 		}
 		
-		Vec2f pos = Vec2f(g_size.bottomLeft());
-		pos += Vec2f(0, -78);
-		pos.x += static_cast<float>(-lSLID_VALUE);
+		m_rect = createChild(Rectf(g_size), Anchor_BottomLeft, m_size * m_scale, Anchor_BottomLeft);
+		m_rect.left += -lSLID_VALUE;
+		m_rect.right += -lSLID_VALUE;
+	}
+	
+	void draw() {
 		
-		Vec2f size = Vec2f(m_filledTex->size());
-		
-		Rectf rect(Vec2f(pos.x, pos.y), size.x, size.y);
-		EERIEDrawBitmap2DecalY(rect, 0.f, m_filledTex, ulcolor, (1.f - m_amount));
-		
-		ARX_INTERFACE_DrawItem(m_emptyTex, pos.x, pos.y);
+		EERIEDrawBitmap2DecalY(m_rect, 0.f, m_filledTex, m_color, (1.f - m_amount));
+		EERIEDrawBitmap(m_rect, 0.001f, m_emptyTex, Color::white);
 		
 		if(!(player.Interface & INTER_COMBATMODE)) {
-			
-			const Rect redGaugeMouseTestRect(
-				pos.x,
-				pos.y,
-				pos.x + size.x,
-				pos.y + size.y
-			);
-			
-			if(redGaugeMouseTestRect.contains(Vec2i(DANAEMouse))) {
+			if(m_rect.contains(Vec2f(DANAEMouse))) {
 				if((EERIEMouseButton & 1) && !(LastMouseClick & 1)) {
 					std::stringstream ss;
 					ss << checked_range_cast<int>(player.lifePool.current);
@@ -2267,6 +2263,7 @@ public:
 StealthGauge stealthGauge;
 
 void UpdateInterface() {
+	
 	hitStrengthGauge.update();
 	secondaryInventory.update();
 	inventoryGui.update();
@@ -2280,6 +2277,7 @@ void UpdateInterface() {
 }
 
 void setHudScale(float scale) {
+	healthGauge.setScale(scale);
 	manaGauge.setScale(scale);
 	mecanismIcon.setScale(scale);
 	screenArrows.setScale(scale);

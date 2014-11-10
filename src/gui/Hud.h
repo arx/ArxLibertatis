@@ -23,6 +23,8 @@
 extern bool bIsAiming;
 
 void hudElementsInit();
+
+void setHudScale(float scale);
 void UpdateInterface();
 
 void mecanismIconReset();
