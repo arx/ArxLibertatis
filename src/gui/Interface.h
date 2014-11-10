@@ -328,7 +328,7 @@ bool NeedHalo(Entity * io);
 
 void LoadScreen();
 
-void ARX_INTERFACE_HALO_Render(float _fR, float _fG, float _fB, long _lHaloType, TextureContainer * haloTexture, float POSX, float POSY, float fRatioX = 1, float fRatioY = 1);
+void ARX_INTERFACE_HALO_Render(Color3f color, long _lHaloType, TextureContainer * haloTexture, float POSX, float POSY, float fRatioX = 1, float fRatioY = 1);
 void ARX_INTERFACE_HALO_Draw(Entity * io, TextureContainer * tc, TextureContainer * tc2, float POSX, float POSY, float _fRatioX = 1, float _fRatioY = 1);
 void ReleaseHalo();
 void ResetPlayerInterface();

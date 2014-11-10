@@ -583,7 +583,7 @@ public:
 	
 						if(tc2) {
 							ARX_INTERFACE_HALO_Render(
-								io->halo.color.r, io->halo.color.g, io->halo.color.b,
+								io->halo.color,
 								io->halo.flags,
 								tc2,
 								px,
@@ -745,7 +745,7 @@ class HudIconBase {
 protected:
 	void DrawHalo(float r, float g, float b, TextureContainer* halo, const Vec2f& coords) {
 		if(halo) {
-			ARX_INTERFACE_HALO_Render(r, g, b, HALO_ACTIVE, halo, coords.x, coords.y);
+			ARX_INTERFACE_HALO_Render(Color3f(r, g, b), HALO_ACTIVE, halo, coords.x, coords.y);
 		}
 	}
 	

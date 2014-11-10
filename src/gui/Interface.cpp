@@ -514,7 +514,7 @@ static void DrawBookInterfaceItem(TextureContainer * tc, Vec2f pos, Color color 
 }
 
 //-----------------------------------------------------------------------------
-void ARX_INTERFACE_HALO_Render(float _fR, float _fG, float _fB,
+void ARX_INTERFACE_HALO_Render(Color3f color,
 							   long _lHaloType,
 							   TextureContainer * haloTexture,
 							   float POSX, float POSY, float fRatioX, float fRatioY)
@@ -522,10 +522,10 @@ void ARX_INTERFACE_HALO_Render(float _fR, float _fG, float _fB,
 	float power = 0.9f;
 	power -= std::sin(arxtime.get_frame_time()*0.01f) * 0.3f;
 
-	_fR = glm::clamp(_fR * power, 0.f, 1.f);
-	_fG = glm::clamp(_fG * power, 0.f, 1.f);
-	_fB = glm::clamp(_fB * power, 0.f, 1.f);
-	Color col=Color4f(_fR,_fG,_fB).to<u8>();
+	color.r = glm::clamp(color.r * power, 0.f, 1.f);
+	color.g = glm::clamp(color.g * power, 0.f, 1.f);
+	color.b = glm::clamp(color.b * power, 0.f, 1.f);
+	Color col = Color4f(color).to<u8>();
 
 	if(_lHaloType & HALO_NEGATIVE) {
 		GRenderer->SetBlendFunc(Renderer::BlendZero, Renderer::BlendInvSrcColor);
@@ -571,7 +571,7 @@ void ARX_INTERFACE_HALO_Flush() {
 	
 	for (long i=0;i<INTERFACE_HALO_NB;i++)
 		ARX_INTERFACE_HALO_Render(
-		aiHalo[i].io->halo.color.r, aiHalo[i].io->halo.color.g, aiHalo[i].io->halo.color.b,
+		aiHalo[i].io->halo.color,
 		aiHalo[i].io->halo.flags,
 		aiHalo[i].tc2,aiHalo[i].POSX,aiHalo[i].POSY, aiHalo[i].fRatioX, aiHalo[i].fRatioY);
 
