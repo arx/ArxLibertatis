@@ -113,6 +113,20 @@ Rectf createChild(const Rectf & parent, const Anchor parentAnchor, const Vec2f &
 }
 
 
+class HudItem {
+public:
+	HudItem()
+		: m_scale(1.f)
+	{}
+	
+	void setScale(float scale) {
+		m_scale = scale;
+	}
+
+protected:
+	float m_scale;
+};
+
 /*!
  * \brief the hit strength diamond shown at the bottom of the UI.
  */
@@ -1725,14 +1739,21 @@ public:
 ManaGauge manaGauge;
 
 //The cogwheel icon that shows up when switching from mouseview to interaction mode.
-class MecanismIcon {
+class MecanismIcon : public HudItem {
 private:
+	Vec2f m_iconSize;
 	TextureContainer * m_tex;
 	Color m_color;
 	long m_timeToDraw;
 	long m_nbToDraw;
+	Rectf m_rect;
 	
 public:
+	MecanismIcon()
+		: HudItem()
+		, m_iconSize(32.f, 32.f)
+	{}
+	
 	void init() {
 		m_tex = TextureContainer::LoadUI("graph/interface/cursors/mecanism");
 		arx_assert(m_tex);
@@ -1755,6 +1776,8 @@ public:
 			}
 		}
 		m_timeToDraw += static_cast<long>(framedelay);
+		
+		m_rect = createChild(Rectf(g_size), Anchor_TopLeft, m_iconSize * m_scale, Anchor_TopLeft);
 	}
 	
 	void draw() {
@@ -1762,8 +1785,7 @@ public:
 			return;
 		}
 		
-		Vec2f size = Vec2f(m_tex->size());
-		EERIEDrawBitmap(Rectf(Vec2f(0, 0), size.x, size.y), 0.01f, m_tex, m_color);
+		EERIEDrawBitmap(m_rect, 0.01f, m_tex, m_color);
 	}
 };
 MecanismIcon mecanismIcon;
@@ -1772,9 +1794,8 @@ void mecanismIconReset() {
 	mecanismIcon.reset();
 }
 
-class ScreenArrows {
+class ScreenArrows : public HudItem {
 private:
-	float m_scale;
 	Vec2f m_horizontalArrowSize;
 	Vec2f m_verticalArrowSize;
 	
@@ -1788,7 +1809,7 @@ private:
 	float fArrowMove;
 public:
 	ScreenArrows()
-		: m_scale(1.f)
+		: HudItem()
 		, m_horizontalArrowSize(8, 16)
 		, m_verticalArrowSize(16, 8)
 	{}
@@ -2260,6 +2281,11 @@ void UpdateInterface() {
 	quickSaveIconGui.update();
 }
 
+void setHudScale(float scale) {
+	mecanismIcon.setScale(scale);
+	screenArrows.setScale(scale);
+}
+
 void ArxGame::drawAllInterface() {
 	
 	GRenderer->GetTextureStage(0)->setMinFilter(TextureStage::FilterLinear);
@@ -2347,6 +2373,8 @@ void hudElementsInit() {
 	closeSecondaryInventoryIconGui.init();
 	
 	hitStrengthGauge.init();
+	
+	//setHudScale(2);
 }
 
 
