@@ -232,11 +232,12 @@ void hitStrengthGaugeRequestFlash(float flashIntensity) {
 class SecondaryInventoryGui {
 private:
 	TextureContainer * ingame_inventory;
-	TextureContainer * m_tex;
+	TextureContainer * m_canNotSteal;
 	
 public:
 	void init() {
-		m_tex = TextureContainer::LoadUI("graph/interface/icons/cant_steal_item");
+		m_canNotSteal = TextureContainer::LoadUI("graph/interface/icons/cant_steal_item");
+		arx_assert(m_canNotSteal);
 	}
 	
 	Entity* getSecondaryOrStealInvEntity() {
@@ -310,7 +311,7 @@ public:
 			if(_bSteal) {
 				if(!ARX_PLAYER_CanStealItem(io)) {
 					bItemSteal = true;
-					tc = m_tex;
+					tc = m_canNotSteal;
 					tc2 = NULL;
 				}
 			}
