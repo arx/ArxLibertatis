@@ -520,7 +520,9 @@ public:
 			for(size_t i = 0; i < INVENTORY_X; i++) {
 				Entity *io = inventory[_sNum][i][j].io;
 	
-				if(io && inventory[_sNum][i][j].show) {
+				if(!io || !inventory[_sNum][i][j].show)
+					continue;
+				
 					TextureContainer *tc = io->inv;
 					TextureContainer *tc2 = NULL;
 	
@@ -575,7 +577,6 @@ public:
 						if((io->ioflags & IO_ITEM) && io->_itemdata->count != 1)
 							ARX_INTERFACE_DrawNumber(p, io->_itemdata->count, 3, Color::white);
 					}
-				}
 			}
 		}
 	}
