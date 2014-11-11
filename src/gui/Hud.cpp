@@ -2193,15 +2193,20 @@ class StealthGauge {
 private:
 	TextureContainer * stealth_gauge_tc;
 	
+	bool m_visible;
+	Rectf m_rect;
+	Color m_color;
+	
 public:
 	void init() {
 		stealth_gauge_tc = TextureContainer::LoadUI("graph/interface/icons/stealth_gauge");
 		arx_assert(stealth_gauge_tc);
 	}
-
-	void draw() {
+	
+	void update() {
+		m_visible = false;
 		
-		if(stealth_gauge_tc && !cinematicBorder.isActive()) {
+		if(!cinematicBorder.isActive()) {
 			float v=GetPlayerStealth();
 	
 			if(CURRENT_PLAYER_COLOR < v) {
@@ -2217,15 +2222,22 @@ public:
 					v = 1.f;
 				else
 					v = (t*( 1.0f / 15 ))* 0.9f + 0.1f;
-	
-				GRenderer->SetRenderState(Renderer::AlphaBlending, true);
-				GRenderer->SetBlendFunc(Renderer::BlendOne, Renderer::BlendOne);
 				
-				Rectf rect(pos, stealth_gauge_tc->m_dwWidth, stealth_gauge_tc->m_dwHeight);
-				EERIEDrawBitmap(rect, 0.01f, stealth_gauge_tc, Color3f::gray(v).to<u8>());
-				GRenderer->SetRenderState(Renderer::AlphaBlending, false);
+				m_color = Color3f::gray(v).to<u8>();
+				m_rect = Rectf(pos, stealth_gauge_tc->m_dwWidth, stealth_gauge_tc->m_dwHeight);
+				m_visible = true;
 			}
 		}
+	}
+	
+	void draw() {
+		if(!m_visible)
+			return;
+		
+		GRenderer->SetRenderState(Renderer::AlphaBlending, true);
+		GRenderer->SetBlendFunc(Renderer::BlendOne, Renderer::BlendOne);
+		EERIEDrawBitmap(m_rect, 0.01f, stealth_gauge_tc, m_color);
+		GRenderer->SetRenderState(Renderer::AlphaBlending, false);
 	}
 };
 StealthGauge stealthGauge;
@@ -2242,6 +2254,7 @@ void UpdateInterface() {
 	memorizedSpellIconsGui.update();
 	changeLevelIconGui.update();
 	quickSaveIconGui.update();
+	stealthGauge.update();
 }
 
 void setHudScale(float scale) {
