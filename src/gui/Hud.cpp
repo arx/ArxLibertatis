@@ -2080,6 +2080,8 @@ private:
 	Vec2f m_size;
 	TextureContainer * iconequip[5];
 	
+	Color m_colors[5];
+	
 public:
 	DamagedEquipmentGui()
 		: m_size(64.f, 64.f)
@@ -2105,89 +2107,51 @@ public:
 	
 		if(player.Interface & INTER_INVENTORYALL)
 			return;
-	
-		long needdraw=0;
-	
+		
 		for(long i = 0; i < 5; i++) {
-			if(iconequip[i]) {
-				long eq=-1;
-	
-				switch (i) {
-					case 0:
-						eq = EQUIP_SLOT_WEAPON;
-						break;
-					case 1:
-						eq = EQUIP_SLOT_SHIELD;
-						break;
-					case 2:
-						eq = EQUIP_SLOT_HELMET;
-						break;
-					case 3:
-						eq = EQUIP_SLOT_ARMOR;
-						break;
-					case 4:
-						eq = EQUIP_SLOT_LEGGINGS;
-						break;
-				}
-	
-				if(player.equiped[eq] > 0) {
-					Entity *io = entities[player.equiped[eq]];
-					float ratio = io->durability / io->max_durability;
-	
-					if(ratio <= 0.5f)
-						needdraw |= 1<<i;
-				}
-			}
-		}
-	
-		if(needdraw) {
-			GRenderer->SetRenderState(Renderer::AlphaBlending, true);
-			GRenderer->SetBlendFunc(Renderer::BlendOne, Renderer::BlendOne);
-	
-			GRenderer->SetCulling(Renderer::CullNone);
-			GRenderer->SetRenderState(Renderer::DepthWrite, true);
-			GRenderer->SetRenderState(Renderer::Fog, false);
-	
-			Vec2f pos(InventoryX + 10 + 32 + 100, g_size.height() - 158);
+			m_colors[i] = Color::black;
 			
-			if(pos.x < INTERFACE_RATIO( 10 + 32 ))
-				pos.x = INTERFACE_RATIO( 10 + 32 );
-			
-			Rectf rect = Rectf(pos, m_size.x, m_size.y);
-	
-			for(long i = 0; i < 5; i++) {
-				if((needdraw & (1<<i)) && iconequip[i]) {
-					long eq=-1;
-	
-					switch(i) {
-						case 0:
-							eq = EQUIP_SLOT_WEAPON;
-							break;
-						case 1:
-							eq = EQUIP_SLOT_SHIELD;
-							break;
-						case 2:
-							eq = EQUIP_SLOT_HELMET;
-							break;
-						case 3:
-							eq = EQUIP_SLOT_ARMOR;
-							break;
-						case 4:
-							eq = EQUIP_SLOT_LEGGINGS;
-							break;
-					}
-	
-					if(player.equiped[eq] > 0) {
-						Entity *io = entities[player.equiped[eq]];
-						float ratio = io->durability / io->max_durability;
-						Color col = Color3f(1.f-ratio, ratio, 0).to<u8>();
-						EERIEDrawBitmap2(rect, 0.001f, iconequip[i], col);
-					}
-				}
+			long eq=-1;
+
+			switch (i) {
+				case 0: eq = EQUIP_SLOT_WEAPON; break;
+				case 1: eq = EQUIP_SLOT_SHIELD; break;
+				case 2: eq = EQUIP_SLOT_HELMET; break;
+				case 3: eq = EQUIP_SLOT_ARMOR; break;
+				case 4: eq = EQUIP_SLOT_LEGGINGS; break;
 			}
 			
-			GRenderer->SetRenderState(Renderer::AlphaBlending, false);
+			if(player.equiped[eq] > 0) {
+				Entity *io = entities[player.equiped[eq]];
+				float ratio = io->durability / io->max_durability;
+				
+				if(ratio <= 0.5f)
+					m_colors[i] = Color3f(1.f-ratio, ratio, 0).to<u8>();
+			}
 		}
+		
+		GRenderer->SetRenderState(Renderer::AlphaBlending, true);
+		GRenderer->SetBlendFunc(Renderer::BlendOne, Renderer::BlendOne);
+		
+		GRenderer->SetCulling(Renderer::CullNone);
+		GRenderer->SetRenderState(Renderer::DepthWrite, true);
+		GRenderer->SetRenderState(Renderer::Fog, false);
+		
+		Vec2f pos(InventoryX + 10 + 32 + 100, g_size.height() - 158);
+		
+		if(pos.x < INTERFACE_RATIO( 10 + 32 ))
+			pos.x = INTERFACE_RATIO( 10 + 32 );
+		
+		Rectf rect = Rectf(pos, m_size.x, m_size.y);
+		
+		for(long i = 0; i < 5; i++) {
+			if(m_colors[i] == Color::black)
+				continue;
+			
+			EERIEDrawBitmap2(rect, 0.001f, iconequip[i], m_colors[i]);
+		}
+		
+		GRenderer->SetRenderState(Renderer::AlphaBlending, false);
 	}
 };
 DamagedEquipmentGui damagedEquipmentGui;
