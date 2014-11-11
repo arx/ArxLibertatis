@@ -138,8 +138,7 @@ struct ARX_INTERFACE_HALO_STRUCT
 	Entity  * io;
 	TextureContainer * tc;
 	TextureContainer * tc2;
-	float POSX;
-	float POSY;
+	Vec2f m_pos;
 	float fRatioX;
 	float fRatioY;
 };
@@ -556,8 +555,8 @@ void ARX_INTERFACE_HALO_Draw(Entity * io, TextureContainer * tc, TextureContaine
 	aiHalo[INTERFACE_HALO_NB-1].io=io;
 	aiHalo[INTERFACE_HALO_NB-1].tc=tc;
 	aiHalo[INTERFACE_HALO_NB-1].tc2=tc2;
-	aiHalo[INTERFACE_HALO_NB-1].POSX=POSX;
-	aiHalo[INTERFACE_HALO_NB-1].POSY=POSY;
+	aiHalo[INTERFACE_HALO_NB-1].m_pos.x=POSX;
+	aiHalo[INTERFACE_HALO_NB-1].m_pos.y=POSY;
 	aiHalo[INTERFACE_HALO_NB-1].fRatioX = _fRatioX;
 	aiHalo[INTERFACE_HALO_NB-1].fRatioY = _fRatioY;
 }
@@ -573,7 +572,7 @@ void ARX_INTERFACE_HALO_Flush() {
 		ARX_INTERFACE_HALO_Render(
 		aiHalo[i].io->halo.color,
 		aiHalo[i].io->halo.flags,
-		aiHalo[i].tc2,aiHalo[i].POSX,aiHalo[i].POSY, aiHalo[i].fRatioX, aiHalo[i].fRatioY);
+		aiHalo[i].tc2,aiHalo[i].m_pos.x,aiHalo[i].m_pos.y, aiHalo[i].fRatioX, aiHalo[i].fRatioY);
 
 	INTERFACE_HALO_NB=0;
 }
