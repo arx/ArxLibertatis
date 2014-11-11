@@ -303,8 +303,9 @@ public:
 		for(long j = 0; j < inventory->m_size.y; j++) {
 			for(long i = 0; i < inventory->m_size.x; i++) {
 				Entity *io = inventory->slot[i][j].io;
+				if(!io)
+					continue;
 				
-				if(io) {
 					bool bItemSteal = false;
 					TextureContainer *tc = io->inv;
 					TextureContainer *tc2 = NULL;
@@ -359,7 +360,6 @@ public:
 						if((io->ioflags & IO_ITEM) && io->_itemdata->count != 1)
 							ARX_INTERFACE_DrawNumber(p, io->_itemdata->count, 3, Color::white);
 					}
-				}
 			}
 		}
 	}
