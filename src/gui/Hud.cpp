@@ -328,43 +328,26 @@ public:
 							
 							Color color = (io->poisonous && io->poisonous_count!=0) ? Color::green : Color::white;
 							
-							Rectf rect(
-								p,
-								size.x,
-								size.y
-							);
+							Rectf rect(p, size.x, size.y);
 							EERIEDrawBitmap(rect, 0.001f, tc, color);
 							
-							if (!bItemSteal && (io==FlyingOverIO))
-							{
-								GRenderer->SetBlendFunc(Renderer::BlendOne, Renderer::BlendOne);
-								GRenderer->SetRenderState(Renderer::AlphaBlending, true);
-								
-								Rectf rect(
-									p,
-									size.x,
-									size.y
-								);
-								EERIEDrawBitmap(rect, 0.001f, tc, Color::white);
-								
-								GRenderer->SetRenderState(Renderer::AlphaBlending, false);
-							}
+							Color overlayColor = Color::black;
+							
+							if(!bItemSteal && (io==FlyingOverIO))
+								overlayColor = Color::white;
 							else if(!bItemSteal && (io->ioflags & IO_CAN_COMBINE)) {
+								overlayColor = Color3f::gray(glm::abs(glm::cos(glm::radians(fDecPulse)))).to<u8>();
+							}
+							
+							if(overlayColor != Color::black) {
 								GRenderer->SetBlendFunc(Renderer::BlendOne, Renderer::BlendOne);
 								GRenderer->SetRenderState(Renderer::AlphaBlending, true);
 								
-								float fColorPulse = glm::abs(glm::cos(glm::radians(fDecPulse)));
-								
-								Rectf rect(
-									p,
-									size.x,
-									size.y
-								);
-								EERIEDrawBitmap(rect, 0.001f, tc, Color3f::gray(fColorPulse).to<u8>());
+								EERIEDrawBitmap(rect, 0.001f, tc, overlayColor);
 								
 								GRenderer->SetRenderState(Renderer::AlphaBlending, false);
 							}
-		
+							
 							if(tc2) {
 								ARX_INTERFACE_HALO_Draw(io, tc, tc2, p, INTERFACE_RATIO(1), INTERFACE_RATIO(1));
 							}
