@@ -364,7 +364,7 @@ public:
 							}
 		
 							if(tc2) {
-								ARX_INTERFACE_HALO_Draw(io, tc, tc2, px, py, INTERFACE_RATIO(1), INTERFACE_RATIO(1));
+								ARX_INTERFACE_HALO_Draw(io, tc, tc2, Vec2f(px, py), INTERFACE_RATIO(1), INTERFACE_RATIO(1));
 							}
 		
 							if((io->ioflags & IO_ITEM) && io->_itemdata->count != 1)

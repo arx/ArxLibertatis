@@ -544,7 +544,7 @@ void ARX_INTERFACE_HALO_Render(Color3f color,
 	GRenderer->SetRenderState(Renderer::AlphaBlending, false);
 }
 
-void ARX_INTERFACE_HALO_Draw(Entity * io, TextureContainer * tc, TextureContainer * tc2, float POSX, float POSY, float _fRatioX, float _fRatioY) {
+void ARX_INTERFACE_HALO_Draw(Entity * io, TextureContainer * tc, TextureContainer * tc2, Vec2f pos, float _fRatioX, float _fRatioY) {
 	INTERFACE_HALO_NB++;
 	
 	if(INTERFACE_HALO_NB > INTERFACE_HALO_MAX_NB) {
@@ -555,8 +555,8 @@ void ARX_INTERFACE_HALO_Draw(Entity * io, TextureContainer * tc, TextureContaine
 	aiHalo[INTERFACE_HALO_NB-1].io=io;
 	aiHalo[INTERFACE_HALO_NB-1].tc=tc;
 	aiHalo[INTERFACE_HALO_NB-1].tc2=tc2;
-	aiHalo[INTERFACE_HALO_NB-1].m_pos.x=POSX;
-	aiHalo[INTERFACE_HALO_NB-1].m_pos.y=POSY;
+	aiHalo[INTERFACE_HALO_NB-1].m_pos.x=pos.x;
+	aiHalo[INTERFACE_HALO_NB-1].m_pos.y=pos.y;
 	aiHalo[INTERFACE_HALO_NB-1].fRatioX = _fRatioX;
 	aiHalo[INTERFACE_HALO_NB-1].fRatioY = _fRatioY;
 }
@@ -4025,8 +4025,7 @@ void ARX_INTERFACE_ManageOpenedBook() {
 					if(tc2) {
 						ARX_INTERFACE_HALO_Draw(
 							todraw, tc, tc2,
-							(todraw->bbox2D.min.x + BOOKDEC.x) * g_sizeRatio.x,
-							(todraw->bbox2D.min.y + BOOKDEC.y) * g_sizeRatio.y,
+							(todraw->bbox2D.min + BOOKDEC) * g_sizeRatio,
 							g_sizeRatio.x, g_sizeRatio.y
 						);
 					}
@@ -4059,8 +4058,7 @@ void ARX_INTERFACE_ManageOpenedBook() {
 					if(tc2) {
 						ARX_INTERFACE_HALO_Draw(
 							todraw, tc, tc2, 
-							(todraw->bbox2D.min.x + BOOKDEC.x) * g_sizeRatio.x,
-							(todraw->bbox2D.min.y + BOOKDEC.x) * g_sizeRatio.y,
+							(todraw->bbox2D.min + BOOKDEC) * g_sizeRatio,
 							g_sizeRatio.x, g_sizeRatio.y
 						);
 					}
