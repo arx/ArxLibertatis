@@ -536,11 +536,7 @@ public:
 			
 			Color color = (io->poisonous && io->poisonous_count != 0) ? Color::green : Color::white;
 			
-			Rectf rect(
-				p,
-				tc->m_dwWidth,
-				tc->m_dwHeight
-			);
+			Rectf rect(p, tc->m_dwWidth, tc->m_dwHeight);
 			EERIEDrawBitmap(rect, 0.001f, tc, color);
 			
 			Color overlayColor = Color::black;
@@ -561,11 +557,7 @@ public:
 			}
 			
 			if(tc2) {
-				ARX_INTERFACE_HALO_Render(
-					io->halo.color,
-					io->halo.flags,
-					tc2,
-					p);
+				ARX_INTERFACE_HALO_Render(io->halo.color, io->halo.flags, tc2, p);
 			}
 			
 			if((io->ioflags & IO_ITEM) && io->_itemdata->count != 1)
