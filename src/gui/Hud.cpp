@@ -2078,6 +2078,8 @@ ActiveSpellsGui activeSpellsGui = ActiveSpellsGui();
 class DamagedEquipmentGui {
 private:
 	Vec2f m_size;
+	Rectf m_rect;
+	
 	TextureContainer * iconequip[5];
 	
 	Color m_colors[5];
@@ -2100,8 +2102,7 @@ public:
 		arx_assert(iconequip[4]);
 	}
 	
-	void draw()
-	{
+	void update() {
 		if(cinematicBorder.isActive() || BLOCK_PLAYER_CONTROLS)
 			return;
 	
@@ -2130,6 +2131,16 @@ public:
 			}
 		}
 		
+		Vec2f pos(InventoryX + 10 + 32 + 100, g_size.height() - 158);
+		
+		if(pos.x < INTERFACE_RATIO( 10 + 32 ))
+			pos.x = INTERFACE_RATIO( 10 + 32 );
+		
+		m_rect = Rectf(pos, m_size.x, m_size.y);
+	}
+	
+	void draw() {
+		
 		GRenderer->SetRenderState(Renderer::AlphaBlending, true);
 		GRenderer->SetBlendFunc(Renderer::BlendOne, Renderer::BlendOne);
 		
@@ -2137,18 +2148,11 @@ public:
 		GRenderer->SetRenderState(Renderer::DepthWrite, true);
 		GRenderer->SetRenderState(Renderer::Fog, false);
 		
-		Vec2f pos(InventoryX + 10 + 32 + 100, g_size.height() - 158);
-		
-		if(pos.x < INTERFACE_RATIO( 10 + 32 ))
-			pos.x = INTERFACE_RATIO( 10 + 32 );
-		
-		Rectf rect = Rectf(pos, m_size.x, m_size.y);
-		
 		for(long i = 0; i < 5; i++) {
 			if(m_colors[i] == Color::black)
 				continue;
 			
-			EERIEDrawBitmap2(rect, 0.001f, iconequip[i], m_colors[i]);
+			EERIEDrawBitmap2(m_rect, 0.001f, iconequip[i], m_colors[i]);
 		}
 		
 		GRenderer->SetRenderState(Renderer::AlphaBlending, false);
@@ -2226,6 +2230,7 @@ void UpdateInterface() {
 	memorizedSpellIconsGui.update();
 	changeLevelIconGui.update();
 	quickSaveIconGui.update();
+	damagedEquipmentGui.update();
 	stealthGauge.update();
 }
 
