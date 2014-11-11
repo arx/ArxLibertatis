@@ -318,16 +318,18 @@ public:
 		
 						if(tc && (TSecondaryInventory->slot[i][j].show || bItemSteal)) {
 							UpdateGoldObject(io);
-		
-							float px = INTERFACE_RATIO(InventoryX) + (float)i*INTERFACE_RATIO(32) + INTERFACE_RATIO(2);
-							float py = (float)j*INTERFACE_RATIO(32) + INTERFACE_RATIO(13);
+							
+							Vec2f p = Vec2f(
+								INTERFACE_RATIO(InventoryX) + (float)i*INTERFACE_RATIO(32) + INTERFACE_RATIO(2),
+								(float)j*INTERFACE_RATIO(32) + INTERFACE_RATIO(13)
+							);
 							
 							Vec2f size = Vec2f(tc->size());
 							
 							Color color = (io->poisonous && io->poisonous_count!=0) ? Color::green : Color::white;
 							
 							Rectf rect(
-								Vec2f(px, py),
+								p,
 								size.x,
 								size.y
 							);
@@ -339,7 +341,7 @@ public:
 								GRenderer->SetRenderState(Renderer::AlphaBlending, true);
 								
 								Rectf rect(
-									Vec2f(px, py),
+									p,
 									size.x,
 									size.y
 								);
@@ -354,7 +356,7 @@ public:
 								float fColorPulse = glm::abs(glm::cos(glm::radians(fDecPulse)));
 								
 								Rectf rect(
-									Vec2f(px, py),
+									p,
 									size.x,
 									size.y
 								);
@@ -364,11 +366,11 @@ public:
 							}
 		
 							if(tc2) {
-								ARX_INTERFACE_HALO_Draw(io, tc, tc2, Vec2f(px, py), INTERFACE_RATIO(1), INTERFACE_RATIO(1));
+								ARX_INTERFACE_HALO_Draw(io, tc, tc2, p, INTERFACE_RATIO(1), INTERFACE_RATIO(1));
 							}
 		
 							if((io->ioflags & IO_ITEM) && io->_itemdata->count != 1)
-								ARX_INTERFACE_DrawNumber(Vec2f(px, py), io->_itemdata->count, 3, Color::white);
+								ARX_INTERFACE_DrawNumber(p, io->_itemdata->count, 3, Color::white);
 						}
 					}
 				}
