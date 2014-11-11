@@ -528,13 +528,12 @@ public:
 						tc2 = io->inv->getHalo();
 	
 					if(tc) {
-						float px = pos.x + i*m_slotSize.x + m_slotSpacing.x;
-						float py = pos.y + j*m_slotSize.y + m_slotSpacing.y;
+						const Vec2f p = pos + Vec2f(i, j) * m_slotSize + m_slotSpacing;
 						
 						Color color = (io->poisonous && io->poisonous_count != 0) ? Color::green : Color::white;
 						
 						Rectf rect(
-							Vec2f(px, py),
+							p,
 							tc->m_dwWidth,
 							tc->m_dwHeight
 						);
@@ -545,7 +544,7 @@ public:
 							GRenderer->SetRenderState(Renderer::AlphaBlending, true);
 							
 							Rectf rect(
-								Vec2f(px, py),
+								p,
 								tc->m_dwWidth,
 								tc->m_dwHeight
 							);
@@ -557,7 +556,7 @@ public:
 							GRenderer->SetRenderState(Renderer::AlphaBlending, true);
 							
 							Rectf rect(
-								Vec2f(px, py),
+								p,
 								tc->m_dwWidth,
 								tc->m_dwHeight
 							);
@@ -570,11 +569,11 @@ public:
 								io->halo.color,
 								io->halo.flags,
 								tc2,
-								Vec2f(px, py));
+								p);
 						}
 	
 						if((io->ioflags & IO_ITEM) && io->_itemdata->count != 1)
-							ARX_INTERFACE_DrawNumber(Vec2f(px, py), io->_itemdata->count, 3, Color::white);
+							ARX_INTERFACE_DrawNumber(p, io->_itemdata->count, 3, Color::white);
 					}
 				}
 			}
