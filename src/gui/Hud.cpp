@@ -349,7 +349,7 @@ public:
 				}
 				
 				if(tc2) {
-					ARX_INTERFACE_HALO_Draw(io, tc, tc2, p, INTERFACE_RATIO(1), INTERFACE_RATIO(1));
+					ARX_INTERFACE_HALO_Draw(io, tc, tc2, p);
 				}
 				
 				if((io->ioflags & IO_ITEM) && io->_itemdata->count != 1)
