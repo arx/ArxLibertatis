@@ -2208,6 +2208,7 @@ void ArxGame::drawAllInterface() {
 	if(player.Interface & INTER_COMBATMODE) {
 		hitStrengthGauge.draw();
 	}	
+	
 	secondaryInventory.draw();
 	inventoryGui.draw();
 	
@@ -2278,9 +2279,11 @@ void ArxGame::drawAllInterface() {
 		ARX_INTERFACE_ManageOpenedBook();
 		ARX_INTERFACE_ManageOpenedBook_Finish();
 	}
+	
 	if(CurrSpellSymbol || player.SpellToMemorize.bSpell) {
 		memorizedSpellIconsGui.draw();
 	}
+	
 	if(player.Interface & INTER_LIFE_MANA) {
 		healthGauge.draw();
 		manaGauge.draw();
@@ -2294,6 +2297,7 @@ void ArxGame::drawAllInterface() {
 			GRenderer->SetRenderState(Renderer::AlphaBlending, false);
 		}
 	}
+	
 	GRenderer->GetTextureStage(0)->setMinFilter(TextureStage::FilterLinear);
 	GRenderer->GetTextureStage(0)->setMagFilter(TextureStage::FilterLinear);
 	GRenderer->GetTextureStage(0)->setWrapMode(TextureStage::WrapRepeat);
