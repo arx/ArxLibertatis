@@ -529,7 +529,9 @@ public:
 					if(NeedHalo(io))
 						tc2 = io->inv->getHalo();
 	
-					if(tc) {
+					if(!tc)
+						continue;
+					
 						const Vec2f p = pos + Vec2f(i, j) * m_slotSize + m_slotSpacing;
 						
 						Color color = (io->poisonous && io->poisonous_count != 0) ? Color::green : Color::white;
@@ -576,7 +578,6 @@ public:
 	
 						if((io->ioflags & IO_ITEM) && io->_itemdata->count != 1)
 							ARX_INTERFACE_DrawNumber(p, io->_itemdata->count, 3, Color::white);
-					}
 			}
 		}
 	}
