@@ -275,12 +275,14 @@ public:
 	}
 	
 	void draw() {
-		if(TSecondaryInventory) {
+		const INVENTORY_DATA * inventory = TSecondaryInventory;
+		
+		if(inventory) {
 			bool _bSteal = (bool)((player.Interface & INTER_STEAL) != 0);
 			
-			if(TSecondaryInventory->io && !TSecondaryInventory->io->inventory_skin.empty()) {
+			if(inventory->io && !inventory->io->inventory_skin.empty()) {
 				
-				res::path file = "graph/interface/inventory" / TSecondaryInventory->io->inventory_skin;
+				res::path file = "graph/interface/inventory" / inventory->io->inventory_skin;
 				
 				TextureContainer * tc = TextureContainer::LoadUI(file);
 		
@@ -296,9 +298,9 @@ public:
 		
 			ARX_INTERFACE_DrawItem(ingame_inventory, INTERFACE_RATIO(InventoryX), 0.f);
 		
-			for(long j = 0; j < TSecondaryInventory->m_size.y; j++) {
-				for(long i = 0; i < TSecondaryInventory->m_size.x; i++) {
-					Entity *io = TSecondaryInventory->slot[i][j].io;
+			for(long j = 0; j < inventory->m_size.y; j++) {
+				for(long i = 0; i < inventory->m_size.x; i++) {
+					Entity *io = inventory->slot[i][j].io;
 		
 					if(io) {
 						bool bItemSteal = false;
@@ -316,7 +318,7 @@ public:
 							}
 						}
 		
-						if(tc && (TSecondaryInventory->slot[i][j].show || bItemSteal)) {
+						if(tc && (inventory->slot[i][j].show || bItemSteal)) {
 							UpdateGoldObject(io);
 							
 							Vec2f p = Vec2f(
