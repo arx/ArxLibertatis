@@ -508,77 +508,77 @@ public:
 	void ARX_INTERFACE_DrawInventory(short _sNum, int _iX=0, int _iY=0)
 	{
 		fDecPulse += framedelay * 0.5f;
-	
+		
 		float fCenterX	= g_size.center().x - INTERFACE_RATIO(320) + INTERFACE_RATIO(35) + _iX ;
 		float fSizY		= g_size.height() - INTERFACE_RATIO(101) + INTERFACE_RATIO_LONG(InventoryY) + _iY;
 		
 		const Vec2f pos = Vec2f(ARX_CAST_TO_INT_THEN_FLOAT(fCenterX), ARX_CAST_TO_INT_THEN_FLOAT(fSizY));
-	
+		
 		ARX_INTERFACE_DrawItem(m_heroInventory, pos.x, pos.y - INTERFACE_RATIO(5));
-	
+		
 		for(size_t j = 0; j < INVENTORY_Y; j++) {
-			for(size_t i = 0; i < INVENTORY_X; i++) {
-				Entity *io = inventory[_sNum][i][j].io;
-	
-				if(!io || !inventory[_sNum][i][j].show)
-					continue;
+		for(size_t i = 0; i < INVENTORY_X; i++) {
+			Entity *io = inventory[_sNum][i][j].io;
+			
+			if(!io || !inventory[_sNum][i][j].show)
+				continue;
+			
+			TextureContainer *tc = io->inv;
+			TextureContainer *tc2 = NULL;
+			
+			if(NeedHalo(io))
+				tc2 = io->inv->getHalo();
+			
+			if(!tc)
+				continue;
+			
+			const Vec2f p = pos + Vec2f(i, j) * m_slotSize + m_slotSpacing;
+			
+			Color color = (io->poisonous && io->poisonous_count != 0) ? Color::green : Color::white;
+			
+			Rectf rect(
+				p,
+				tc->m_dwWidth,
+				tc->m_dwHeight
+			);
+			EERIEDrawBitmap(rect, 0.001f, tc, color);
+			
+			if(io == FlyingOverIO) {
+				GRenderer->SetBlendFunc(Renderer::BlendOne, Renderer::BlendOne);
+				GRenderer->SetRenderState(Renderer::AlphaBlending, true);
 				
-					TextureContainer *tc = io->inv;
-					TextureContainer *tc2 = NULL;
-	
-					if(NeedHalo(io))
-						tc2 = io->inv->getHalo();
-	
-					if(!tc)
-						continue;
-					
-						const Vec2f p = pos + Vec2f(i, j) * m_slotSize + m_slotSpacing;
-						
-						Color color = (io->poisonous && io->poisonous_count != 0) ? Color::green : Color::white;
-						
-						Rectf rect(
-							p,
-							tc->m_dwWidth,
-							tc->m_dwHeight
-						);
-						EERIEDrawBitmap(rect, 0.001f, tc, color);
-						
-						if(io == FlyingOverIO) {
-							GRenderer->SetBlendFunc(Renderer::BlendOne, Renderer::BlendOne);
-							GRenderer->SetRenderState(Renderer::AlphaBlending, true);
-							
-							Rectf rect(
-								p,
-								tc->m_dwWidth,
-								tc->m_dwHeight
-							);
-							EERIEDrawBitmap(rect, 0.001f, tc, Color::white);
-							GRenderer->SetRenderState(Renderer::AlphaBlending, false);
-						} else if(io->ioflags & IO_CAN_COMBINE) {
-							float fColorPulse = glm::abs(glm::cos(glm::radians(fDecPulse)));
-							GRenderer->SetBlendFunc(Renderer::BlendOne, Renderer::BlendOne);
-							GRenderer->SetRenderState(Renderer::AlphaBlending, true);
-							
-							Rectf rect(
-								p,
-								tc->m_dwWidth,
-								tc->m_dwHeight
-							);
-							EERIEDrawBitmap(rect, 0.001f, tc, Color3f::gray(fColorPulse).to<u8>());
-							GRenderer->SetRenderState(Renderer::AlphaBlending, false);
-						}
-	
-						if(tc2) {
-							ARX_INTERFACE_HALO_Render(
-								io->halo.color,
-								io->halo.flags,
-								tc2,
-								p);
-						}
-	
-						if((io->ioflags & IO_ITEM) && io->_itemdata->count != 1)
-							ARX_INTERFACE_DrawNumber(p, io->_itemdata->count, 3, Color::white);
+				Rectf rect(
+					p,
+					tc->m_dwWidth,
+					tc->m_dwHeight
+				);
+				EERIEDrawBitmap(rect, 0.001f, tc, Color::white);
+				GRenderer->SetRenderState(Renderer::AlphaBlending, false);
+			} else if(io->ioflags & IO_CAN_COMBINE) {
+				float fColorPulse = glm::abs(glm::cos(glm::radians(fDecPulse)));
+				GRenderer->SetBlendFunc(Renderer::BlendOne, Renderer::BlendOne);
+				GRenderer->SetRenderState(Renderer::AlphaBlending, true);
+				
+				Rectf rect(
+					p,
+					tc->m_dwWidth,
+					tc->m_dwHeight
+				);
+				EERIEDrawBitmap(rect, 0.001f, tc, Color3f::gray(fColorPulse).to<u8>());
+				GRenderer->SetRenderState(Renderer::AlphaBlending, false);
 			}
+			
+			if(tc2) {
+				ARX_INTERFACE_HALO_Render(
+					io->halo.color,
+					io->halo.flags,
+					tc2,
+					p);
+			}
+			
+			if((io->ioflags & IO_ITEM) && io->_itemdata->count != 1)
+				ARX_INTERFACE_DrawNumber(p, io->_itemdata->count, 3, Color::white);
+		}
 		}
 	}
 	
