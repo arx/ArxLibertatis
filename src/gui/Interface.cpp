@@ -139,8 +139,7 @@ struct ARX_INTERFACE_HALO_STRUCT
 	TextureContainer * tc;
 	TextureContainer * tc2;
 	Vec2f m_pos;
-	float fRatioX;
-	float fRatioY;
+	Vec2f ratio;
 };
 //-----------------------------------------------------------------------------
 static const float BOOKMARKS_POS_X = 216.f;
@@ -557,8 +556,8 @@ void ARX_INTERFACE_HALO_Draw(Entity * io, TextureContainer * tc, TextureContaine
 	aiHalo[INTERFACE_HALO_NB-1].tc2=tc2;
 	aiHalo[INTERFACE_HALO_NB-1].m_pos.x=pos.x;
 	aiHalo[INTERFACE_HALO_NB-1].m_pos.y=pos.y;
-	aiHalo[INTERFACE_HALO_NB-1].fRatioX = _fRatioX;
-	aiHalo[INTERFACE_HALO_NB-1].fRatioY = _fRatioY;
+	aiHalo[INTERFACE_HALO_NB-1].ratio.x = _fRatioX;
+	aiHalo[INTERFACE_HALO_NB-1].ratio.y = _fRatioY;
 }
 
 void ReleaseHalo() {
@@ -572,7 +571,7 @@ void ARX_INTERFACE_HALO_Flush() {
 		ARX_INTERFACE_HALO_Render(
 		aiHalo[i].io->halo.color,
 		aiHalo[i].io->halo.flags,
-		aiHalo[i].tc2,aiHalo[i].m_pos.x,aiHalo[i].m_pos.y, aiHalo[i].fRatioX, aiHalo[i].fRatioY);
+		aiHalo[i].tc2,aiHalo[i].m_pos.x,aiHalo[i].m_pos.y, aiHalo[i].ratio.x, aiHalo[i].ratio.y);
 
 	INTERFACE_HALO_NB=0;
 }
