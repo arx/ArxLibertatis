@@ -2077,8 +2077,14 @@ ActiveSpellsGui activeSpellsGui = ActiveSpellsGui();
  */
 class DamagedEquipmentGui {
 private:
+	Vec2f m_size;
 	TextureContainer * iconequip[5];
+	
 public:
+	DamagedEquipmentGui()
+		: m_size(64.f, 64.f)
+	{}
+	
 	void init() {
 		iconequip[0] = TextureContainer::LoadUI("graph/interface/icons/equipment_sword");
 		iconequip[1] = TextureContainer::LoadUI("graph/interface/icons/equipment_shield");
@@ -2146,6 +2152,8 @@ public:
 			
 			if(pos.x < INTERFACE_RATIO( 10 + 32 ))
 				pos.x = INTERFACE_RATIO( 10 + 32 );
+			
+			Rectf rect = Rectf(pos, m_size.x, m_size.y);
 	
 			for(long i = 0; i < 5; i++) {
 				if((needdraw & (1<<i)) && iconequip[i]) {
@@ -2173,7 +2181,7 @@ public:
 						Entity *io = entities[player.equiped[eq]];
 						float ratio = io->durability / io->max_durability;
 						Color col = Color3f(1.f-ratio, ratio, 0).to<u8>();
-						EERIEDrawBitmap2(Rectf(pos, iconequip[i]->m_dwWidth, iconequip[i]->m_dwHeight), 0.001f, iconequip[i], col);
+						EERIEDrawBitmap2(rect, 0.001f, iconequip[i], col);
 					}
 				}
 			}
