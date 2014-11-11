@@ -571,8 +571,7 @@ public:
 								io->halo.color,
 								io->halo.flags,
 								tc2,
-								Vec2f(px, py),
-								INTERFACE_RATIO(1), INTERFACE_RATIO(1));
+								Vec2f(px, py));
 						}
 	
 						if((io->ioflags & IO_ITEM) && io->_itemdata->count != 1)

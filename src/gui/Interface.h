@@ -313,7 +313,7 @@ bool NeedHalo(Entity * io);
 
 void LoadScreen();
 
-void ARX_INTERFACE_HALO_Render(Color3f color, long _lHaloType, TextureContainer * haloTexture, Vec2f pos, float fRatioX = 1, float fRatioY = 1);
+void ARX_INTERFACE_HALO_Render(Color3f color, long _lHaloType, TextureContainer * haloTexture, Vec2f pos, Vec2f ratio = Vec2f(1));
 void ARX_INTERFACE_HALO_Draw(Entity * io, TextureContainer * tc, TextureContainer * tc2, Vec2f pos, float _fRatioX = 1, float _fRatioY = 1);
 void ReleaseHalo();
 void ResetPlayerInterface();
