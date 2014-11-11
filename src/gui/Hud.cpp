@@ -2180,10 +2180,7 @@ void UpdateInterface() {
 	screenArrows.update();
 	healthGauge.update();
 	
-	Rectf manaGaugeParent = Rectf(g_size);
-	manaGaugeParent.left  += lSLID_VALUE;
-	manaGaugeParent.right += lSLID_VALUE;
-	manaGauge.update(manaGaugeParent);
+
 	
 	memorizedSpellIconsGui.update();
 	changeLevelIconGui.update();
@@ -2285,8 +2282,15 @@ void ArxGame::drawAllInterface() {
 	}
 	
 	if(player.Interface & INTER_LIFE_MANA) {
-		healthGauge.draw();
+		
+		Rectf manaGaugeParent = Rectf(g_size);
+		manaGaugeParent.left  += lSLID_VALUE;
+		manaGaugeParent.right += lSLID_VALUE;
+		manaGauge.update(manaGaugeParent);
 		manaGauge.draw();
+		
+		healthGauge.draw();
+		
 		if(bRenderInCursorMode) {
 			GRenderer->SetRenderState(Renderer::AlphaBlending, true);
 			GRenderer->SetBlendFunc(Renderer::BlendOne, Renderer::BlendOne);
@@ -2296,6 +2300,14 @@ void ArxGame::drawAllInterface() {
 			screenArrows.draw();
 			GRenderer->SetRenderState(Renderer::AlphaBlending, false);
 		}
+	}
+	
+	if(!(player.Interface & INTER_COMBATMODE) && (player.Interface & INTER_MINIBACK)) {
+		bookIconGui.update();
+		bookIconGui.draw();
+		
+		backpackIconGui.update();
+		backpackIconGui.draw();
 	}
 	
 	GRenderer->GetTextureStage(0)->setMinFilter(TextureStage::FilterLinear);
