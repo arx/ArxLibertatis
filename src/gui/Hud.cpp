@@ -282,20 +282,14 @@ public:
 		
 		bool _bSteal = (bool)((player.Interface & INTER_STEAL) != 0);
 		
+		arx_assert(BasicInventorySkin);
+		ingame_inventory = BasicInventorySkin;
 		if(inventory->io && !inventory->io->inventory_skin.empty()) {
 			
 			res::path file = "graph/interface/inventory" / inventory->io->inventory_skin;
-			
 			TextureContainer * tc = TextureContainer::LoadUI(file);
-			
-			if(tc) {
+			if(tc)
 				ingame_inventory = tc;
-			} else {
-				ingame_inventory = BasicInventorySkin;
-			}
-			
-		} else if(ingame_inventory != BasicInventorySkin) {
-			ingame_inventory = BasicInventorySkin;
 		}
 		
 		ARX_INTERFACE_DrawItem(ingame_inventory, INTERFACE_RATIO(InventoryX), 0.f);
