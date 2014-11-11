@@ -301,66 +301,66 @@ public:
 		ARX_INTERFACE_DrawItem(ingame_inventory, INTERFACE_RATIO(InventoryX), 0.f);
 		
 		for(long j = 0; j < inventory->m_size.y; j++) {
-			for(long i = 0; i < inventory->m_size.x; i++) {
-				Entity *io = inventory->slot[i][j].io;
-				if(!io)
-					continue;
-				
-					bool bItemSteal = false;
-					TextureContainer *tc = io->inv;
-					TextureContainer *tc2 = NULL;
-					
-					if(NeedHalo(io))
-						tc2 = io->inv->getHalo();
-					
-					if(_bSteal) {
-						if(!ARX_PLAYER_CanStealItem(io)) {
-							bItemSteal = true;
-							tc = m_tex;
-							tc2 = NULL;
-						}
-					}
-					
-					if(tc && (inventory->slot[i][j].show || bItemSteal)) {
-						UpdateGoldObject(io);
-						
-						Vec2f p = Vec2f(
-							INTERFACE_RATIO(InventoryX) + (float)i*INTERFACE_RATIO(32) + INTERFACE_RATIO(2),
-							(float)j*INTERFACE_RATIO(32) + INTERFACE_RATIO(13)
-						);
-						
-						Vec2f size = Vec2f(tc->size());
-						
-						Color color = (io->poisonous && io->poisonous_count!=0) ? Color::green : Color::white;
-						
-						Rectf rect(p, size.x, size.y);
-						EERIEDrawBitmap(rect, 0.001f, tc, color);
-						
-						Color overlayColor = Color::black;
-						
-						if(!bItemSteal && (io==FlyingOverIO))
-							overlayColor = Color::white;
-						else if(!bItemSteal && (io->ioflags & IO_CAN_COMBINE)) {
-							overlayColor = Color3f::gray(glm::abs(glm::cos(glm::radians(fDecPulse)))).to<u8>();
-						}
-						
-						if(overlayColor != Color::black) {
-							GRenderer->SetBlendFunc(Renderer::BlendOne, Renderer::BlendOne);
-							GRenderer->SetRenderState(Renderer::AlphaBlending, true);
-							
-							EERIEDrawBitmap(rect, 0.001f, tc, overlayColor);
-							
-							GRenderer->SetRenderState(Renderer::AlphaBlending, false);
-						}
-						
-						if(tc2) {
-							ARX_INTERFACE_HALO_Draw(io, tc, tc2, p, INTERFACE_RATIO(1), INTERFACE_RATIO(1));
-						}
-						
-						if((io->ioflags & IO_ITEM) && io->_itemdata->count != 1)
-							ARX_INTERFACE_DrawNumber(p, io->_itemdata->count, 3, Color::white);
-					}
+		for(long i = 0; i < inventory->m_size.x; i++) {
+			Entity *io = inventory->slot[i][j].io;
+			if(!io)
+				continue;
+			
+			bool bItemSteal = false;
+			TextureContainer *tc = io->inv;
+			TextureContainer *tc2 = NULL;
+			
+			if(NeedHalo(io))
+				tc2 = io->inv->getHalo();
+			
+			if(_bSteal) {
+				if(!ARX_PLAYER_CanStealItem(io)) {
+					bItemSteal = true;
+					tc = m_tex;
+					tc2 = NULL;
+				}
 			}
+			
+			if(tc && (inventory->slot[i][j].show || bItemSteal)) {
+				UpdateGoldObject(io);
+				
+				Vec2f p = Vec2f(
+					INTERFACE_RATIO(InventoryX) + (float)i*INTERFACE_RATIO(32) + INTERFACE_RATIO(2),
+					(float)j*INTERFACE_RATIO(32) + INTERFACE_RATIO(13)
+				);
+				
+				Vec2f size = Vec2f(tc->size());
+				
+				Color color = (io->poisonous && io->poisonous_count!=0) ? Color::green : Color::white;
+				
+				Rectf rect(p, size.x, size.y);
+				EERIEDrawBitmap(rect, 0.001f, tc, color);
+				
+				Color overlayColor = Color::black;
+				
+				if(!bItemSteal && (io==FlyingOverIO))
+					overlayColor = Color::white;
+				else if(!bItemSteal && (io->ioflags & IO_CAN_COMBINE)) {
+					overlayColor = Color3f::gray(glm::abs(glm::cos(glm::radians(fDecPulse)))).to<u8>();
+				}
+				
+				if(overlayColor != Color::black) {
+					GRenderer->SetBlendFunc(Renderer::BlendOne, Renderer::BlendOne);
+					GRenderer->SetRenderState(Renderer::AlphaBlending, true);
+					
+					EERIEDrawBitmap(rect, 0.001f, tc, overlayColor);
+					
+					GRenderer->SetRenderState(Renderer::AlphaBlending, false);
+				}
+				
+				if(tc2) {
+					ARX_INTERFACE_HALO_Draw(io, tc, tc2, p, INTERFACE_RATIO(1), INTERFACE_RATIO(1));
+				}
+				
+				if((io->ioflags & IO_ITEM) && io->_itemdata->count != 1)
+					ARX_INTERFACE_DrawNumber(p, io->_itemdata->count, 3, Color::white);
+			}
+		}
 		}
 	}
 };
