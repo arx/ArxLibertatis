@@ -511,11 +511,10 @@ public:
 	
 		float fCenterX	= g_size.center().x - INTERFACE_RATIO(320) + INTERFACE_RATIO(35) + _iX ;
 		float fSizY		= g_size.height() - INTERFACE_RATIO(101) + INTERFACE_RATIO_LONG(InventoryY) + _iY;
+		
+		const Vec2f pos = Vec2f(ARX_CAST_TO_INT_THEN_FLOAT(fCenterX), ARX_CAST_TO_INT_THEN_FLOAT(fSizY));
 	
-		float fPosX = ARX_CAST_TO_INT_THEN_FLOAT( fCenterX );
-		float fPosY = ARX_CAST_TO_INT_THEN_FLOAT( fSizY );
-	
-		ARX_INTERFACE_DrawItem(m_heroInventory, fPosX, fPosY - INTERFACE_RATIO(5));
+		ARX_INTERFACE_DrawItem(m_heroInventory, pos.x, pos.y - INTERFACE_RATIO(5));
 	
 		for(size_t j = 0; j < INVENTORY_Y; j++) {
 			for(size_t i = 0; i < INVENTORY_X; i++) {
@@ -529,8 +528,8 @@ public:
 						tc2 = io->inv->getHalo();
 	
 					if(tc) {
-						float px = fPosX + i*m_slotSize.x + m_slotSpacing.x;
-						float py = fPosY + j*m_slotSize.y + m_slotSpacing.y;
+						float px = pos.x + i*m_slotSize.x + m_slotSpacing.x;
+						float py = pos.y + j*m_slotSize.y + m_slotSpacing.y;
 						
 						Color color = (io->poisonous && io->poisonous_count != 0) ? Color::green : Color::white;
 						
