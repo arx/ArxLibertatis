@@ -277,7 +277,9 @@ public:
 	void draw() {
 		const INVENTORY_DATA * inventory = TSecondaryInventory;
 		
-		if(inventory) {
+		if(!inventory)
+			return;
+		
 			bool _bSteal = (bool)((player.Interface & INTER_STEAL) != 0);
 			
 			if(inventory->io && !inventory->io->inventory_skin.empty()) {
@@ -360,7 +362,6 @@ public:
 					}
 				}
 			}
-		}
 	}
 };
 SecondaryInventoryGui secondaryInventory;
