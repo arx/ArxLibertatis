@@ -543,28 +543,20 @@ public:
 			);
 			EERIEDrawBitmap(rect, 0.001f, tc, color);
 			
-			if(io == FlyingOverIO) {
+			Color overlayColor = Color::black;
+			
+			if(io == FlyingOverIO)
+				overlayColor = Color::white;
+			else if(io->ioflags & IO_CAN_COMBINE)
+				overlayColor = Color3f::gray(glm::abs(glm::cos(glm::radians(fDecPulse)))).to<u8>();
+			
+			
+			if(overlayColor != Color::black) {
 				GRenderer->SetBlendFunc(Renderer::BlendOne, Renderer::BlendOne);
 				GRenderer->SetRenderState(Renderer::AlphaBlending, true);
 				
-				Rectf rect(
-					p,
-					tc->m_dwWidth,
-					tc->m_dwHeight
-				);
-				EERIEDrawBitmap(rect, 0.001f, tc, Color::white);
-				GRenderer->SetRenderState(Renderer::AlphaBlending, false);
-			} else if(io->ioflags & IO_CAN_COMBINE) {
-				float fColorPulse = glm::abs(glm::cos(glm::radians(fDecPulse)));
-				GRenderer->SetBlendFunc(Renderer::BlendOne, Renderer::BlendOne);
-				GRenderer->SetRenderState(Renderer::AlphaBlending, true);
+				EERIEDrawBitmap(rect, 0.001f, tc, overlayColor);
 				
-				Rectf rect(
-					p,
-					tc->m_dwWidth,
-					tc->m_dwHeight
-				);
-				EERIEDrawBitmap(rect, 0.001f, tc, Color3f::gray(fColorPulse).to<u8>());
 				GRenderer->SetRenderState(Renderer::AlphaBlending, false);
 			}
 			
