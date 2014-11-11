@@ -515,7 +515,7 @@ static void DrawBookInterfaceItem(TextureContainer * tc, Vec2f pos, Color color 
 void ARX_INTERFACE_HALO_Render(Color3f color,
 							   long _lHaloType,
 							   TextureContainer * haloTexture,
-							   float POSX, float POSY, float fRatioX, float fRatioY)
+							   Vec2f pos, float fRatioX, float fRatioY)
 {
 	float power = 0.9f;
 	power -= std::sin(arxtime.get_frame_time()*0.01f) * 0.3f;
@@ -533,8 +533,8 @@ void ARX_INTERFACE_HALO_Render(Color3f color,
 	
 	GRenderer->SetRenderState(Renderer::AlphaBlending, true);
 	
-	float x = POSX - TextureContainer::HALO_RADIUS * fRatioX;
-	float y = POSY - TextureContainer::HALO_RADIUS * fRatioY;
+	float x = pos.x - TextureContainer::HALO_RADIUS * fRatioX;
+	float y = pos.y - TextureContainer::HALO_RADIUS * fRatioY;
 	float width = haloTexture->m_dwWidth * fRatioX;
 	float height = haloTexture->m_dwHeight * fRatioY;
 	
@@ -571,7 +571,7 @@ void ARX_INTERFACE_HALO_Flush() {
 		ARX_INTERFACE_HALO_Render(
 		aiHalo[i].io->halo.color,
 		aiHalo[i].io->halo.flags,
-		aiHalo[i].tc2,aiHalo[i].m_pos.x,aiHalo[i].m_pos.y, aiHalo[i].ratio.x, aiHalo[i].ratio.y);
+		aiHalo[i].tc2, aiHalo[i].m_pos, aiHalo[i].ratio.x, aiHalo[i].ratio.y);
 
 	INTERFACE_HALO_NB=0;
 }

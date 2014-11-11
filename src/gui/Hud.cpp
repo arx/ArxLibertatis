@@ -571,8 +571,8 @@ public:
 								io->halo.color,
 								io->halo.flags,
 								tc2,
-								px,
-								py, INTERFACE_RATIO(1), INTERFACE_RATIO(1));
+								Vec2f(px, py),
+								INTERFACE_RATIO(1), INTERFACE_RATIO(1));
 						}
 	
 						if((io->ioflags & IO_ITEM) && io->_itemdata->count != 1)
@@ -730,7 +730,7 @@ class HudIconBase {
 protected:
 	void DrawHalo(float r, float g, float b, TextureContainer* halo, const Vec2f& coords) {
 		if(halo) {
-			ARX_INTERFACE_HALO_Render(Color3f(r, g, b), HALO_ACTIVE, halo, coords.x, coords.y);
+			ARX_INTERFACE_HALO_Render(Color3f(r, g, b), HALO_ACTIVE, halo, coords);
 		}
 	}
 	
