@@ -2221,9 +2221,10 @@ void ArxGame::drawAllInterface() {
 		}
 		SpecialCursor=CURSOR_INTERACTION_ON;
 	}
+	
 	damagedEquipmentGui.draw();
-	if(!(player.Interface & INTER_COMBATMODE)) {
-	if(player.Interface & INTER_MINIBACK) {
+	
+	if(!(player.Interface & INTER_COMBATMODE) && (player.Interface & INTER_MINIBACK)) {
 		bookIconGui.update();
 		bookIconGui.draw();
 		
@@ -2260,14 +2261,16 @@ void ArxGame::drawAllInterface() {
 		purseIconGui.drawHalo();
 		bookIconGui.drawHalo();
 	}
-	if(player.torch) {
+	
+	if(!(player.Interface & INTER_COMBATMODE) && player.torch) {
 		currentTorchIconGui.update();
 		currentTorchIconGui.draw();
 	}
-	}
+	
 	if(CHANGE_LEVEL_ICON > -1) {
 		changeLevelIconGui.draw();
 	}
+	
 	quickSaveIconGui.draw();
 	stealthGauge.draw();
 
