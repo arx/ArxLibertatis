@@ -1694,7 +1694,7 @@ static long ARX_CHANGELEVEL_Pop_Player() {
 		Precast.push_back(precastSlot);
 	}
 	
-	player.Interface = asp->Interface;
+	player.Interface = PlayerInterfaceFlags::load(asp->Interface); // TODO save/load flags
 	player.Interface &= ~INTER_MAP;
 	player.falling = (asp->falling != 0);
 	player.gold = asp->gold;

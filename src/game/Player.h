@@ -68,6 +68,22 @@ struct ARX_INTERFACE_MEMORIZE_SPELL {
 	Rune iSpellSymbols[6];
 };
 
+enum PlayerInterfaceFlag
+{
+	INTER_MAP          = 0x00000001,
+	INTER_INVENTORY    = 0x00000002,
+	INTER_INVENTORYALL = 0x00000004,
+	INTER_MINIBOOK     = 0x00000008,
+	INTER_MINIBACK     = 0x00000010,
+	INTER_LIFE_MANA    = 0x00000020,
+	INTER_COMBATMODE   = 0x00000040,
+	INTER_NOTE         = 0x00000080,
+	INTER_STEAL        = 0x00000100,
+	INTER_NO_STRIKE    = 0x00000200
+};
+DECLARE_FLAGS(PlayerInterfaceFlag, PlayerInterfaceFlags)
+DECLARE_FLAGS_OPERATORS(PlayerInterfaceFlags)
+
 enum PlayerMovementFlag {
 	PLAYER_MOVE_WALK_FORWARD  = (1<<0),
 	PLAYER_MOVE_WALK_BACKWARD = (1<<1),
@@ -149,7 +165,7 @@ struct ARXCHARACTER {
 	
 	bool falling;
 	short doingmagic;
-	short Interface;
+	PlayerInterfaceFlags Interface;
 	
 	PlayerMovement Current_Movement;
 	PlayerMovement Last_Movement;

@@ -227,20 +227,6 @@ enum ARX_INTERFACE_BOOK_ITEM
 
 };
 
-enum ARX_INTERFACE_FLAG
-{
-	INTER_MAP        = 0x00000001,
-	INTER_INVENTORY  = 0x00000002,
-	INTER_INVENTORYALL = 0x00000004,
-	INTER_MINIBOOK   = 0x00000008,
-	INTER_MINIBACK   = 0x00000010,
-	INTER_LIFE_MANA  = 0x00000020,
-	INTER_COMBATMODE = 0x00000040,
-	INTER_NOTE       = 0x00000080,
-	INTER_STEAL       = 0x00000100,
-	INTER_NO_STRIKE   = 0x00000200
-};
-
 enum ARX_INTERFACE_CURSOR_MODE
 {
 	CURSOR_UNDEFINED,
@@ -271,7 +257,6 @@ extern long LastMouseClick;
 extern long CurrFightPos;
 extern long lSLID_VALUE;
 extern bool bInventoryClosing;
-extern long lOldInterface;
 extern E_ARX_STATE_MOUSE eMouseState;
 extern bool bBookHalo;
 extern unsigned long ulBookHaloTime;

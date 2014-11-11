@@ -367,6 +367,8 @@ public:
 SecondaryInventoryGui secondaryInventory;
 
 
+extern PlayerInterfaceFlags lOldInterface;
+
 class InventoryGui {
 private:
 	TextureContainer * m_heroInventory;

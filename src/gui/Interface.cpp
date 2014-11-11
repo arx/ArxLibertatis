@@ -256,7 +256,7 @@ bool bRenderInCursorMode = true;
 long lChangeWeapon=0;
 Entity *pIOChangeWeapon=NULL;
 
-long lOldInterface;
+PlayerInterfaceFlags lOldInterface;
 
 namespace gui {
 
@@ -1816,7 +1816,7 @@ void ArxGame::managePlayerControls() {
 		}
 	}
 
-	static long lOldInterfaceTemp=0;
+	static PlayerInterfaceFlags lOldInterfaceTemp=0;
 
 	if(TRUE_PLAYER_MOUSELOOK_ON) {
 		if(bInverseInventory) {
