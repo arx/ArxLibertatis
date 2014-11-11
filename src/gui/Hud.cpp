@@ -1672,13 +1672,11 @@ public:
 		arx_assert(m_filledTex);
 	}
 	
-	void update() {
+	void update(const Rectf & parent) {
+		
+		m_rect = createChild(parent, Anchor_BottomRight, m_size * m_scale, Anchor_BottomRight);
 		
 		m_amount = player.manaPool.current / player.Full_maxmana;
-		
-		m_rect = createChild(Rectf(g_size), Anchor_BottomRight, m_size * m_scale, Anchor_BottomRight);
-		m_rect.left  += lSLID_VALUE;
-		m_rect.right += lSLID_VALUE;
 	}
 	
 	void draw() {
@@ -2224,7 +2222,12 @@ void UpdateInterface() {
 	mecanismIcon.update();
 	screenArrows.update();
 	healthGauge.update();
-	manaGauge.update();
+	
+	Rectf manaGaugeParent = Rectf(g_size);
+	manaGaugeParent.left  += lSLID_VALUE;
+	manaGaugeParent.right += lSLID_VALUE;
+	manaGauge.update(manaGaugeParent);
+	
 	memorizedSpellIconsGui.update();
 	changeLevelIconGui.update();
 	quickSaveIconGui.update();
