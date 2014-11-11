@@ -1383,49 +1383,6 @@ public:
 
 CurrentTorchIconGui currentTorchIconGui;
 
-void DrawIcons() {
-	if(player.Interface & INTER_MINIBACK) {
-		bookIconGui.update();
-		bookIconGui.draw();
-		
-		backpackIconGui.update();
-		backpackIconGui.draw();
-						
-		if(player.Interface & INTER_STEAL) {
-			stealIconGui.update();
-			stealIconGui.draw();			
-		}
-		// Pick All/Close Secondary Inventory
-		if(TSecondaryInventory) {
-			//These have to be calculated on each frame (to make them move).
-			pickAllIconGui.update();
-			closeSecondaryInventoryIconGui.update();
-			
-			Entity *temp = TSecondaryInventory->io;
-			if(temp && !(temp->ioflags & IO_SHOP) && !(temp == ioSteal)) {
-				pickAllIconGui.draw();
-			}
-			closeSecondaryInventoryIconGui.draw();
-		}
-
-		if(player.Skill_Redistribute || player.Attribute_Redistribute) {
-			levelUpIconGui.update();
-			levelUpIconGui.draw();
-		}
-		// Draw/Manage Gold Purse Icon
-		if(player.gold > 0) {
-			purseIconGui.update();
-			purseIconGui.draw();
-		}
-		//A halo is drawn on the character's stats icon (book) when leveling up, for example.
-		purseIconGui.drawHalo();
-		bookIconGui.drawHalo();
-	}
-	if(player.torch) {
-		currentTorchIconGui.update();
-		currentTorchIconGui.draw();
-	}
-}
 
 class ChangeLevelIconGui{
 private:
@@ -2266,7 +2223,47 @@ void ArxGame::drawAllInterface() {
 	}
 	damagedEquipmentGui.draw();
 	if(!(player.Interface & INTER_COMBATMODE)) {
-		DrawIcons();
+	if(player.Interface & INTER_MINIBACK) {
+		bookIconGui.update();
+		bookIconGui.draw();
+		
+		backpackIconGui.update();
+		backpackIconGui.draw();
+						
+		if(player.Interface & INTER_STEAL) {
+			stealIconGui.update();
+			stealIconGui.draw();			
+		}
+		// Pick All/Close Secondary Inventory
+		if(TSecondaryInventory) {
+			//These have to be calculated on each frame (to make them move).
+			pickAllIconGui.update();
+			closeSecondaryInventoryIconGui.update();
+			
+			Entity *temp = TSecondaryInventory->io;
+			if(temp && !(temp->ioflags & IO_SHOP) && !(temp == ioSteal)) {
+				pickAllIconGui.draw();
+			}
+			closeSecondaryInventoryIconGui.draw();
+		}
+
+		if(player.Skill_Redistribute || player.Attribute_Redistribute) {
+			levelUpIconGui.update();
+			levelUpIconGui.draw();
+		}
+		// Draw/Manage Gold Purse Icon
+		if(player.gold > 0) {
+			purseIconGui.update();
+			purseIconGui.draw();
+		}
+		//A halo is drawn on the character's stats icon (book) when leveling up, for example.
+		purseIconGui.drawHalo();
+		bookIconGui.drawHalo();
+	}
+	if(player.torch) {
+		currentTorchIconGui.update();
+		currentTorchIconGui.draw();
+	}
 	}
 	if(CHANGE_LEVEL_ICON > -1) {
 		changeLevelIconGui.draw();
