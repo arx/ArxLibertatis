@@ -125,6 +125,7 @@ public:
 
 protected:
 	float m_scale;
+	Rectf m_rect;
 };
 
 /*!
@@ -1598,7 +1599,6 @@ MemorizedSpellIconsGui memorizedSpellIconsGui;
 class HealthGauge : public HudItem {
 private:
 	Vec2f m_size;
-	Rectf m_rect;
 	
 	Color m_color;
 	TextureContainer * m_emptyTex;
@@ -1654,7 +1654,6 @@ HealthGauge healthGauge;
 class ManaGauge : public HudItem {
 private:
 	Vec2f m_size;
-	Rectf m_rect;
 	
 	TextureContainer * m_emptyTex;
 	TextureContainer * m_filledTex;
@@ -1708,7 +1707,6 @@ private:
 	Color m_color;
 	long m_timeToDraw;
 	long m_nbToDraw;
-	Rectf m_rect;
 	
 public:
 	MecanismIcon()
