@@ -720,12 +720,16 @@ protected:
 	
 	//Used for drawing icons like the book or backpack icon.
 	void DrawIcon(const Vec2f& coords, TextureContainer * tex, E_ARX_STATE_MOUSE hoverMouseState) {
+		arx_assert(tex);
 		
-		ARX_INTERFACE_DrawItem(tex, coords.x, coords.y);
+		EERIEDrawBitmap(Rectf(coords, tex->m_dwWidth, tex->m_dwHeight), 0.001f, tex, Color::white);
+		
 		if (eMouseState == hoverMouseState) {
 			GRenderer->SetBlendFunc(Renderer::BlendOne, Renderer::BlendOne);
 			GRenderer->SetRenderState(Renderer::AlphaBlending, true);
-			ARX_INTERFACE_DrawItem(tex, coords.x, coords.y);
+			
+			EERIEDrawBitmap(Rectf(coords, tex->m_dwWidth, tex->m_dwHeight), 0.001f, tex, Color::white);
+			
 			GRenderer->SetRenderState(Renderer::AlphaBlending, false);
 		}
 	}
