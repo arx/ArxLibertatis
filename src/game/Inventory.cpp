@@ -1898,13 +1898,13 @@ bool IsInPlayerInventory(Entity * io) {
 
 bool IsInSecondaryInventory(Entity * io) {
 	
-	if(SecondaryInventory) {
-		for(long j = 0; j < SecondaryInventory->m_size.y; j++) {
-			for(long i = 0; i < SecondaryInventory->m_size.x; i++) {
-				if(SecondaryInventory->slot[i][j].io == io) {
-					return true;
-				}
-			}
+	if(!SecondaryInventory)
+		return false;
+	
+	for(long y = 0; y < SecondaryInventory->m_size.y; y++)
+	for(long x = 0; x < SecondaryInventory->m_size.x; x++) {
+		if(SecondaryInventory->slot[x][y].io == io) {
+			return true;
 		}
 	}
 	
