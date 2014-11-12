@@ -2438,19 +2438,17 @@ static void ARX_CHANGELEVEL_PopAllIO_FINISH(bool reloadflag, bool firstTime) {
 				
 				inv->m_size = Vec2s(3, 11);
 				if(aids->sizex != 3 || aids->sizey != 11) {
-					for(long m = 0; m < inv->m_size.x; m++) {
-						for(long n = 0; n < inv->m_size.y; n++) {
-							inv->slot[m][n].io = NULL;
-							inv->slot[m][n].show = 0;
-						}
+					for(long x = 0; x < inv->m_size.x; x++)
+					for(long y = 0; y < inv->m_size.y; y++) {
+						inv->slot[x][y].io = NULL;
+						inv->slot[x][y].show = 0;
 					}
 				} else {
-					for(long m = 0; m < inv->m_size.x; m++) {
-						for(long n = 0; n < inv->m_size.y; n++) {
-							inv->slot[m][n].io = ConvertToValidIO(aids->slot_io[m][n]);
-							converted += CONVERT_CREATED;
-							inv->slot[m][n].show = aids->slot_show[m][n];
-						}
+					for(long x = 0; x < inv->m_size.x; x++)
+					for(long y = 0; y < inv->m_size.y; y++) {
+						inv->slot[x][y].io = ConvertToValidIO(aids->slot_io[x][y]);
+						converted += CONVERT_CREATED;
+						inv->slot[x][y].show = aids->slot_show[x][y];
 					}
 				}
 			}
