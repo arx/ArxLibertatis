@@ -1951,86 +1951,86 @@ void ManageCasseDArme(Entity * io) {
 	arx_assert(player.bag >= 0)
 	arx_assert(player.bag < 3)
 	
-			Entity * pObjMin = NULL;
-			Entity * pObjMax = NULL;
-			Entity * pObjFIX = NULL;
-			bool bStop = false;
-			
-			for(size_t bag = 0; bag < size_t(player.bag); bag++) {
-				for(size_t j = 0; j < INVENTORY_Y; j++) {
-					for(size_t i = 0; i < INVENTORY_X; i++) {
-						
-						Entity * bagEntity = inventory[bag][i][j].io;
-						
-						if(bagEntity && bagEntity != io
-						   && (bagEntity->type_flags & (OBJECT_TYPE_DAGGER | OBJECT_TYPE_1H | OBJECT_TYPE_2H | OBJECT_TYPE_BOW))
-						) {
+	Entity * pObjMin = NULL;
+	Entity * pObjMax = NULL;
+	Entity * pObjFIX = NULL;
+	bool bStop = false;
+	
+	for(size_t bag = 0; bag < size_t(player.bag); bag++) {
+		for(size_t j = 0; j < INVENTORY_Y; j++) {
+			for(size_t i = 0; i < INVENTORY_X; i++) {
+				
+				Entity * bagEntity = inventory[bag][i][j].io;
+				
+				if(bagEntity && bagEntity != io
+				   && (bagEntity->type_flags & (OBJECT_TYPE_DAGGER | OBJECT_TYPE_1H | OBJECT_TYPE_2H | OBJECT_TYPE_BOW))
+				) {
 
-							if ((io->ioflags & IO_ITEM) &&
-									(bagEntity->ioflags & IO_ITEM) &&
-									(bagEntity->_itemdata->equipitem)
-							) {
-								if(bagEntity->_itemdata->equipitem->elements[IO_EQUIPITEM_ELEMENT_Damages].value == io->_itemdata->equipitem->elements[IO_EQUIPITEM_ELEMENT_Damages].value) {
-									pIOChangeWeapon = bagEntity;
-									lChangeWeapon = 2;
-									bStop = true;
-								} else {
-									if(bagEntity->_itemdata->equipitem->elements[IO_EQUIPITEM_ELEMENT_Damages].value > io->_itemdata->equipitem->elements[IO_EQUIPITEM_ELEMENT_Damages].value) {
-										if(pObjMin) {
-											if(bagEntity->_itemdata->equipitem->elements[IO_EQUIPITEM_ELEMENT_Damages].value < pObjMin->_itemdata->equipitem->elements[IO_EQUIPITEM_ELEMENT_Damages].value) {
-												pObjMin = bagEntity;
-											}
-										} else {
-											pObjMin = bagEntity;
-										}
-									} else {
-										if(bagEntity->_itemdata->equipitem->elements[IO_EQUIPITEM_ELEMENT_Damages].value < io->_itemdata->equipitem->elements[IO_EQUIPITEM_ELEMENT_Damages].value) {
-											if(pObjMax) {
-												if(bagEntity->_itemdata->equipitem->elements[IO_EQUIPITEM_ELEMENT_Damages].value > pObjMax->_itemdata->equipitem->elements[IO_EQUIPITEM_ELEMENT_Damages].value) {
-													pObjMax = bagEntity;
-												}
-											} else {
-												pObjMax = bagEntity;
-											}
-										}
+					if ((io->ioflags & IO_ITEM) &&
+							(bagEntity->ioflags & IO_ITEM) &&
+							(bagEntity->_itemdata->equipitem)
+					) {
+						if(bagEntity->_itemdata->equipitem->elements[IO_EQUIPITEM_ELEMENT_Damages].value == io->_itemdata->equipitem->elements[IO_EQUIPITEM_ELEMENT_Damages].value) {
+							pIOChangeWeapon = bagEntity;
+							lChangeWeapon = 2;
+							bStop = true;
+						} else {
+							if(bagEntity->_itemdata->equipitem->elements[IO_EQUIPITEM_ELEMENT_Damages].value > io->_itemdata->equipitem->elements[IO_EQUIPITEM_ELEMENT_Damages].value) {
+								if(pObjMin) {
+									if(bagEntity->_itemdata->equipitem->elements[IO_EQUIPITEM_ELEMENT_Damages].value < pObjMin->_itemdata->equipitem->elements[IO_EQUIPITEM_ELEMENT_Damages].value) {
+										pObjMin = bagEntity;
 									}
+								} else {
+									pObjMin = bagEntity;
 								}
 							} else {
-								if(!pObjFIX) {
-									pObjFIX = bagEntity;
+								if(bagEntity->_itemdata->equipitem->elements[IO_EQUIPITEM_ELEMENT_Damages].value < io->_itemdata->equipitem->elements[IO_EQUIPITEM_ELEMENT_Damages].value) {
+									if(pObjMax) {
+										if(bagEntity->_itemdata->equipitem->elements[IO_EQUIPITEM_ELEMENT_Damages].value > pObjMax->_itemdata->equipitem->elements[IO_EQUIPITEM_ELEMENT_Damages].value) {
+											pObjMax = bagEntity;
+										}
+									} else {
+										pObjMax = bagEntity;
+									}
 								}
 							}
 						}
-
-						if(bStop) {
-							break;
+					} else {
+						if(!pObjFIX) {
+							pObjFIX = bagEntity;
 						}
-					}
-
-					if(bStop) {
-						break;
 					}
 				}
 
 				if(bStop) {
 					break;
+				}
+			}
+
+			if(bStop) {
+				break;
+			}
+		}
+
+		if(bStop) {
+			break;
+		} else {
+			if(pObjMax) {
+				pIOChangeWeapon = pObjMax;
+				lChangeWeapon = 2;
+			} else {
+				if(pObjMin) {
+					pIOChangeWeapon = pObjMin;
+					lChangeWeapon = 2;
 				} else {
-					if(pObjMax) {
-						pIOChangeWeapon = pObjMax;
+					if(pObjFIX) {
+						pIOChangeWeapon = pObjFIX;
 						lChangeWeapon = 2;
-					} else {
-						if(pObjMin) {
-							pIOChangeWeapon = pObjMin;
-							lChangeWeapon = 2;
-						} else {
-							if(pObjFIX) {
-								pIOChangeWeapon = pObjFIX;
-								lChangeWeapon = 2;
-							}
-						}
 					}
 				}
 			}
+		}
+	}
 }
 
 void loadScript(EERIE_SCRIPT & script, PakFile * file) {
