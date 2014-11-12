@@ -1968,7 +1968,9 @@ void ARX_INVENTORY_IdentifyIO(Entity * _pIO) {
 
 void ARX_INVENTORY_IdentifyAll() {
 	
-	if(player.bag) {
+	if(!player.bag)
+		return;
+	
 		for(int iNbBag = 0; iNbBag < player.bag; iNbBag++) {
 			for(size_t j = 0; j < INVENTORY_Y; j++) {
 				for(size_t i = 0; i < INVENTORY_X; i++) {
@@ -1982,7 +1984,6 @@ void ARX_INVENTORY_IdentifyAll() {
 				}
 			}
 		}
-	}
 }
 
 //-----------------------------------------------------------------------------
