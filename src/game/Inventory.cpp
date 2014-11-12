@@ -1971,16 +1971,16 @@ void ARX_INVENTORY_IdentifyAll() {
 	if(!player.bag)
 		return;
 	
-		for(int iNbBag = 0; iNbBag < player.bag; iNbBag++)
-			for(size_t j = 0; j < INVENTORY_Y; j++)
-				for(size_t i = 0; i < INVENTORY_X; i++) {
-					Entity * io = inventory[iNbBag][i][j].io;
-					if(io && (io->ioflags & IO_ITEM) && io->_itemdata->equipitem)
-						if(player.m_skillFull.objectKnowledge + player.m_attributeFull.mind
-						   >= io->_itemdata->equipitem->elements[IO_EQUIPITEM_ELEMENT_Identify_Value].value) {
-							SendIOScriptEvent(io, SM_IDENTIFY);
-						}
-				}
+	for(int iNbBag = 0; iNbBag < player.bag; iNbBag++)
+	for(size_t j = 0; j < INVENTORY_Y; j++)
+	for(size_t i = 0; i < INVENTORY_X; i++) {
+		Entity * io = inventory[iNbBag][i][j].io;
+		if(io && (io->ioflags & IO_ITEM) && io->_itemdata->equipitem)
+		if(player.m_skillFull.objectKnowledge + player.m_attributeFull.mind
+		   >= io->_itemdata->equipitem->elements[IO_EQUIPITEM_ELEMENT_Identify_Value].value) {
+			SendIOScriptEvent(io, SM_IDENTIFY);
+		}
+	}
 }
 
 //-----------------------------------------------------------------------------
