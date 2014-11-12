@@ -1593,14 +1593,14 @@ Vec3f GetItemWorldPosition(Entity * io) {
 			if(!ioo || !ioo->inventory)
 				continue;
 			
-				INVENTORY_DATA * id = ioo->inventory;
-				for(long j = 0; j < id->m_size.y; j++) {
-					for(long k = 0; k < id->m_size.x; k++) {
-						if(id->slot[k][j].io == io) {
-							return ioo->pos;
-						}
-					}
+			INVENTORY_DATA * id = ioo->inventory;
+			for(long j = 0; j < id->m_size.y; j++) {
+			for(long k = 0; k < id->m_size.x; k++) {
+				if(id->slot[k][j].io == io) {
+					return ioo->pos;
 				}
+			}
+			}
 		}
 	}
 
