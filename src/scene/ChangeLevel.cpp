@@ -1418,25 +1418,23 @@ static long ARX_CHANGELEVEL_Push_IO(const Entity * io, long level) {
 		ARX_CHANGELEVEL_INVENTORY_DATA_SAVE * aids;
 		aids = (ARX_CHANGELEVEL_INVENTORY_DATA_SAVE *)(dat + pos);
 		memset(aids, 0, sizeof(ARX_CHANGELEVEL_INVENTORY_DATA_SAVE));
-		long m, n;
-
+		
 		INVENTORY_DATA * inv = io->inventory;
 		storeIdString(aids->io, inv->io);
 		aids->sizex = inv->m_size.x;
 		aids->sizey = inv->m_size.y;
-
-		for (m = 0; m < aids->sizex; m++)
-			for (n = 0; n < aids->sizey; n++)
-			{
-				aids->initio[m][n][0] = 0;
-
-				if (inv->slot[m][n].io)
-					storeIdString(aids->slot_io[m][n], inv->slot[m][n].io);
-				else
-					aids->slot_io[m][n][0] = 0;
-				
-				aids->slot_show[m][n] = inv->slot[m][n].show;
-			}
+		
+		for(long x = 0; x < aids->sizex; x++)
+		for(long y = 0; y < aids->sizey; y++) {
+			aids->initio[x][y][0] = 0;
+			
+			if(inv->slot[x][y].io)
+				storeIdString(aids->slot_io[x][y], inv->slot[x][y].io);
+			else
+				aids->slot_io[x][y][0] = 0;
+			
+			aids->slot_show[x][y] = inv->slot[x][y].show;
+		}
 		
 		pos += sizeof(ARX_CHANGELEVEL_INVENTORY_DATA_SAVE);
 	}
