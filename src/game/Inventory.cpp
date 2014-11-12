@@ -968,8 +968,6 @@ bool CanBePutInSecondaryInventory(INVENTORY_DATA * id, Entity * io, long * xx, l
 	if(io->ioflags & IO_MOVABLE)
 		return false;
 	
-	long i, j, k, l;
-	
 	*xx = -1;
 	*yy = -1;
 	
@@ -982,8 +980,8 @@ bool CanBePutInSecondaryInventory(INVENTORY_DATA * id, Entity * io, long * xx, l
 	   && sInventoryY >= 0
 	   && sInventoryY <= id->m_size.y - s.y
 	) {
-		j = sInventoryY;
-		i = sInventoryX;
+		long j = sInventoryY;
+		long i = sInventoryX;
 		// first try to stack
 		
 		Entity * ioo = id->slot[i][j].io;
@@ -1015,8 +1013,8 @@ bool CanBePutInSecondaryInventory(INVENTORY_DATA * id, Entity * io, long * xx, l
 			if(s.x == 0 || s.y == 0)
 				valid = 0;
 			
-			for(k = j; k < j + s.y; k++)
-			for(l = i; l < i + s.x; l++) {
+			for(long k = j; k < j + s.y; k++)
+			for(long l = i; l < i + s.x; l++) {
 				if(id->slot[l][k].io != NULL) {
 					valid = 0;
 					break;
@@ -1024,8 +1022,8 @@ bool CanBePutInSecondaryInventory(INVENTORY_DATA * id, Entity * io, long * xx, l
 			}
 			
 			if(valid) {
-				for(k = j; k < j + s.y; k++)
-				for(l = i; l < i + s.x; l++) {
+				for(long k = j; k < j + s.y; k++)
+				for(long l = i; l < i + s.x; l++) {
 					id->slot[l][k].io = io;
 					id->slot[l][k].show = 0;
 				}
@@ -1039,8 +1037,8 @@ bool CanBePutInSecondaryInventory(INVENTORY_DATA * id, Entity * io, long * xx, l
 		}
 	}
 	
-	for(j = 0; j <= id->m_size.y - s.y; j++)
-	for(i = 0; i <= id->m_size.x - s.x; i++) {
+	for(long j = 0; j <= id->m_size.y - s.y; j++)
+	for(long i = 0; i <= id->m_size.x - s.x; i++) {
 		Entity * ioo = id->slot[i][j].io;
 		
 		if(   ioo
@@ -1062,8 +1060,8 @@ bool CanBePutInSecondaryInventory(INVENTORY_DATA * id, Entity * io, long * xx, l
 		}
 	}
 	
-	for(j = 0; j <= id->m_size.y - s.y; j++)
-	for(i = 0; i <= id->m_size.x - s.x; i++) {
+	for(long j = 0; j <= id->m_size.y - s.y; j++)
+	for(long i = 0; i <= id->m_size.x - s.x; i++) {
 		Entity * ioo = id->slot[i][j].io;
 		
 		if(!ioo) {
@@ -1072,8 +1070,8 @@ bool CanBePutInSecondaryInventory(INVENTORY_DATA * id, Entity * io, long * xx, l
 			if(s.x == 0 || s.y == 0)
 				valid = 0;
 			
-			for(k = j; k < j + s.y; k++)
-			for(l = i; l < i + s.x; l++) {
+			for(long k = j; k < j + s.y; k++)
+			for(long l = i; l < i + s.x; l++) {
 				if (id->slot[l][k].io != NULL) {
 					valid = 0;
 					break;
@@ -1081,8 +1079,8 @@ bool CanBePutInSecondaryInventory(INVENTORY_DATA * id, Entity * io, long * xx, l
 			}
 			
 			if(valid) {
-				for(k = j; k < j + s.y; k++)
-				for(l = i; l < i + s.x; l++) {
+				for(long k = j; k < j + s.y; k++)
+				for(long l = i; l < i + s.x; l++) {
 					id->slot[l][k].io = io;
 					id->slot[l][k].show = 0;
 				}
