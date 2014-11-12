@@ -724,16 +724,16 @@ protected:
 	}
 	
 	//Used for drawing icons like the book or backpack icon.
-	void DrawIcon(const Vec2f& coords, TextureContainer * tex, E_ARX_STATE_MOUSE hoverMouseState) {
+	void DrawIcon(const Rectf & rect, TextureContainer * tex, E_ARX_STATE_MOUSE hoverMouseState) {
 		arx_assert(tex);
 		
-		EERIEDrawBitmap(Rectf(coords, tex->m_dwWidth, tex->m_dwHeight), 0.001f, tex, Color::white);
+		EERIEDrawBitmap(rect, 0.001f, tex, Color::white);
 		
 		if (eMouseState == hoverMouseState) {
 			GRenderer->SetBlendFunc(Renderer::BlendOne, Renderer::BlendOne);
 			GRenderer->SetRenderState(Renderer::AlphaBlending, true);
 			
-			EERIEDrawBitmap(Rectf(coords, tex->m_dwWidth, tex->m_dwHeight), 0.001f, tex, Color::white);
+			EERIEDrawBitmap(rect, 0.001f, tex, Color::white);
 			
 			GRenderer->SetRenderState(Renderer::AlphaBlending, false);
 		}
@@ -828,7 +828,9 @@ public:
 	}
 	
 	void draw() {
-		DrawIcon(m_pos, m_tex, MOUSE_IN_BOOK_ICON);
+		Rectf rect = Rectf(m_pos, m_tex->m_dwWidth, m_tex->m_dwHeight);
+		
+		DrawIcon(rect, m_tex, MOUSE_IN_BOOK_ICON);
 	}
 	
 	void drawHalo() {
@@ -948,7 +950,9 @@ public:
 	}
 	
 	void draw() {
-		DrawIcon(m_pos, m_tex, MOUSE_IN_INVENTORY_ICON);
+		Rectf rect = Rectf(m_pos, m_tex->m_dwWidth, m_tex->m_dwHeight);
+		
+		DrawIcon(rect, m_tex, MOUSE_IN_INVENTORY_ICON);
 	}
 };
 
@@ -1011,7 +1015,9 @@ public:
 	}
 	
 	void draw() {
-		DrawIcon(m_pos, m_tex, MOUSE_IN_STEAL_ICON);
+		Rectf rect = Rectf(m_pos, m_tex->m_dwWidth, m_tex->m_dwHeight);
+		
+		DrawIcon(rect, m_tex, MOUSE_IN_STEAL_ICON);
 	}
 };
 
@@ -1061,7 +1067,9 @@ public:
 	}
 	
 	void draw() {
-		DrawIcon(m_pos, m_tex, MOUSE_IN_INVENTORY_PICKALL_ICON);
+		Rectf rect = Rectf(m_pos, m_tex->m_dwWidth, m_tex->m_dwHeight);
+		
+		DrawIcon(rect, m_tex, MOUSE_IN_INVENTORY_PICKALL_ICON);
 	}
 };
 
@@ -1122,7 +1130,9 @@ public:
 	}
 	
 	void draw() {
-		DrawIcon(m_pos, m_tex, MOUSE_IN_INVENTORY_CLOSE_ICON);
+		Rectf rect = Rectf(m_pos, m_tex->m_dwWidth, m_tex->m_dwHeight);
+		
+		DrawIcon(rect, m_tex, MOUSE_IN_INVENTORY_CLOSE_ICON);
 	}
 	
 };
@@ -1172,7 +1182,9 @@ public:
 	}
 	
 	void draw() {
-		DrawIcon(m_pos, m_tex, MOUSE_IN_REDIST_ICON);
+		Rectf rect = Rectf(m_pos, m_tex->m_dwWidth, m_tex->m_dwHeight);
+		
+		DrawIcon(rect, m_tex, MOUSE_IN_REDIST_ICON);
 	}
 };
 
@@ -1229,7 +1241,9 @@ public:
 	}
 	
 	void draw() {
-		DrawIcon(m_pos, m_tex, MOUSE_IN_GOLD_ICON);
+		Rectf rect = Rectf(m_pos, m_tex->m_dwWidth, m_tex->m_dwHeight);
+		
+		DrawIcon(rect, m_tex, MOUSE_IN_GOLD_ICON);
 		if(eMouseState == MOUSE_IN_GOLD_ICON) {
 			SpecialCursor=CURSOR_INTERACTION_ON;
 			
