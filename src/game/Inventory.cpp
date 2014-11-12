@@ -2046,32 +2046,32 @@ void ARX_INVENTORY_TakeAllFromSecondaryInventory() {
 
 	if(TSecondaryInventory) {
 		for(long j = 0; j < TSecondaryInventory->m_size.y; j++)
-			for(long i = 0; i < TSecondaryInventory->m_size.x; i++) {
-				INVENTORY_SLOT & slot = TSecondaryInventory->slot[i][j];
+		for(long i = 0; i < TSecondaryInventory->m_size.x; i++) {
+			INVENTORY_SLOT & slot = TSecondaryInventory->slot[i][j];
+			
+			if(!slot.io || !slot.show)
+				continue;
 				
-				if(!slot.io || !slot.show)
-					continue;
-					
-					long sx = slot.io->m_inventorySize.x;
-					long sy = slot.io->m_inventorySize.y;
-					Entity * io = slot.io;
-
-					if(!(io->ioflags & IO_GOLD))
-						RemoveFromAllInventories(io);
-
-					if(playerInventory.insert(io)) {
-						bSound = true;
-					} else {
-						sInventory = 2;
-
-						sInventoryX = static_cast<short>(i);
-						sInventoryY = static_cast<short>(j);
-
-						sx = i;
-						sy = j;
-						CanBePutInSecondaryInventory(TSecondaryInventory, io, &sx, &sy);
-					}
+			long sx = slot.io->m_inventorySize.x;
+			long sy = slot.io->m_inventorySize.y;
+			Entity * io = slot.io;
+			
+			if(!(io->ioflags & IO_GOLD))
+				RemoveFromAllInventories(io);
+			
+			if(playerInventory.insert(io)) {
+				bSound = true;
+			} else {
+				sInventory = 2;
+				
+				sInventoryX = static_cast<short>(i);
+				sInventoryY = static_cast<short>(j);
+				
+				sx = i;
+				sy = j;
+				CanBePutInSecondaryInventory(TSecondaryInventory, io, &sx, &sy);
 			}
+		}
 	}
 
 	if(bSound)
