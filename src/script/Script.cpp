@@ -1948,7 +1948,9 @@ void ManageCasseDArme(Entity * io) {
 	if(!(io->type_flags & (OBJECT_TYPE_DAGGER | OBJECT_TYPE_1H | OBJECT_TYPE_2H | OBJECT_TYPE_BOW)))
 		return;
 	
-		if(player.bag) {
+	arx_assert(player.bag >= 0)
+	arx_assert(player.bag < 3)
+	
 			Entity * pObjMin = NULL;
 			Entity * pObjMax = NULL;
 			Entity * pObjFIX = NULL;
@@ -2033,7 +2035,6 @@ void ManageCasseDArme(Entity * io) {
 					}
 				}
 			}
-		}
 }
 
 void loadScript(EERIE_SCRIPT & script, PakFile * file) {
