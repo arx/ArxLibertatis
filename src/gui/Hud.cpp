@@ -527,11 +527,11 @@ public:
 		
 		ARX_INTERFACE_DrawItem(m_heroInventory, pos.x, pos.y - INTERFACE_RATIO(5));
 		
-		for(size_t j = 0; j < INVENTORY_Y; j++) {
-		for(size_t i = 0; i < INVENTORY_X; i++) {
-			Entity *io = inventory[bag][i][j].io;
+		for(size_t y = 0; y < INVENTORY_Y; y++) {
+		for(size_t x = 0; x < INVENTORY_X; x++) {
+			Entity *io = inventory[bag][x][y].io;
 			
-			if(!io || !inventory[bag][i][j].show)
+			if(!io || !inventory[bag][x][y].show)
 				continue;
 			
 			TextureContainer *tc = io->inv;
@@ -543,7 +543,7 @@ public:
 			if(!tc)
 				continue;
 			
-			const Vec2f p = pos + Vec2f(i, j) * m_slotSize + m_slotSpacing;
+			const Vec2f p = pos + Vec2f(x, y) * m_slotSize + m_slotSpacing;
 			
 			Color color = (io->poisonous && io->poisonous_count != 0) ? Color::green : Color::white;
 			

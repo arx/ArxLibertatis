@@ -1968,9 +1968,9 @@ void ARX_INVENTORY_IdentifyAll() {
 	arx_assert(player.bag < 3)
 	
 	for(size_t bag = 0; bag < size_t(player.bag); bag++)
-	for(size_t j = 0; j < INVENTORY_Y; j++)
-	for(size_t i = 0; i < INVENTORY_X; i++) {
-		Entity * io = inventory[bag][i][j].io;
+	for(size_t y = 0; y < INVENTORY_Y; y++)
+	for(size_t x = 0; x < INVENTORY_X; x++) {
+		Entity * io = inventory[bag][x][y].io;
 		if(!io || !(io->ioflags & IO_ITEM) || !io->_itemdata->equipitem)
 			continue;
 		
