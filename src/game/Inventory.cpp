@@ -1099,7 +1099,6 @@ bool PutInInventory() {
 	
 	short tx = 0;
 	short ty = 0;
-	long i, j;
 	
 	Vec2s s = DRAGINTER->m_inventorySize;
 	
@@ -1140,8 +1139,8 @@ bool PutInInventory() {
 		// SHOP
 		if(io->ioflags & IO_SHOP) {
 			// Check shop group
-			for(j = 0; j < SecondaryInventory->m_size.y; j++) {
-				for(i = 0; i < SecondaryInventory->m_size.x; i++) {
+			for(long j = 0; j < SecondaryInventory->m_size.y; j++) {
+				for(long i = 0; i < SecondaryInventory->m_size.x; i++) {
 					Entity * ioo = SecondaryInventory->slot[i][j].io;
 					
 					if(ioo) {
@@ -1174,8 +1173,8 @@ bool PutInInventory() {
 			fcos = cos + cos * ((float)player.m_skillFull.intuition) * 0.005f;
 			cos = checked_range_cast<long>(fcos);
 			
-			for(j = 0; j < s.y; j++) {
-				for(i = 0; i < s.x; i++) {
+			for(long j = 0; j < s.y; j++) {
+				for(long i = 0; i < s.x; i++) {
 					Entity * ioo = SecondaryInventory->slot[tx+i][ty+j].io;
 					
 					if(ioo) {
@@ -1220,8 +1219,8 @@ bool PutInInventory() {
 				return true;
 			}
 
-			for(j = 0; j < s.y; j++) {
-				for(i = 0; i < s.x; i++) {
+			for(long j = 0; j < s.y; j++) {
+				for(long i = 0; i < s.x; i++) {
 					SecondaryInventory->slot[tx+i][ty+j].io = DRAGINTER;
 					SecondaryInventory->slot[tx+i][ty+j].show = 0;
 				}
@@ -1309,8 +1308,8 @@ bool PutInInventory() {
 		return true;
 	}
 
-	for(j = 0; j < s.y; j++)
-		for(i = 0; i < s.x; i++) {
+	for(long j = 0; j < s.y; j++)
+		for(long i = 0; i < s.x; i++) {
 			Entity * ioo = inventory[iBag][tx+i][ty+j].io;
 			
 			if(ioo != NULL) {
@@ -1344,8 +1343,8 @@ bool PutInInventory() {
 			}
 		}
 	
-	for(j = 0; j < s.y; j++) {
-		for(i = 0; i < s.x; i++) {
+	for(long j = 0; j < s.y; j++) {
+		for(long i = 0; i < s.x; i++) {
 			inventory[iBag][tx+i][ty+j].io = DRAGINTER;
 			inventory[iBag][tx+i][ty+j].show = 0;
 		}
