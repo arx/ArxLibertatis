@@ -747,7 +747,6 @@ extern TextureContainer * healing;
 class BookIconGui : public HudIconBase {
 private:
 	TextureContainer * m_tex;
-	Vec2f m_pos;
 	
 	void MakeBookFX(const Vec3f & pos) {
 		
@@ -788,34 +787,28 @@ private:
 		NewSpell = 1;
 	}
 	
+	Vec2f m_size;
+	
 public:
 	void init() {
 		m_tex = TextureContainer::LoadUI("graph/interface/icons/book");
 		arx_assert(m_tex);
+		
+		m_size = Vec2f(32, 32);
 	}
 	
 	void requestFX() {
 		MakeBookFX(Vec3f(Vec2f(g_size.bottomRight()) + Vec2f(-35, -148), 0.00001f));
 	}
 	
-	void update(Rectf parent) {
+	void update(const Rectf & parent) {
 		
-		m_pos = parent.topRight() + Vec2f(-32, -32) + Vec2f(-3, -3);
+		m_rect = createChild(parent, Anchor_TopRight, m_size * m_scale, Anchor_BottomRight);
+		m_rect.move(-3, -3);
 	}
 	
 	void updateInput() {
-		// book
-		{
-		Vec2f pos(g_size.width() - 35 + lSLID_VALUE, g_size.height() - 148);
-
-		const Rect bookMouseTestRect(
-		pos.x,
-		pos.y,
-		pos.x + INTERFACE_RATIO(32),
-		pos.y + INTERFACE_RATIO(32)
-		);
-		
-		if(bookMouseTestRect.contains(Vec2i(DANAEMouse))) {
+		if(m_rect.contains(Vec2f(DANAEMouse))) {
 			eMouseState = MOUSE_IN_BOOK_ICON;
 			SpecialCursor = CURSOR_INTERACTION_ON;
 
@@ -825,13 +818,10 @@ public:
 			}
 			return;
 		}
-		}
 	}
 	
 	void draw() {
-		Rectf rect = Rectf(m_pos, m_tex->m_dwWidth, m_tex->m_dwHeight);
-		
-		DrawIcon(rect, m_tex, MOUSE_IN_BOOK_ICON);
+		DrawIcon(m_rect, m_tex, MOUSE_IN_BOOK_ICON);
 	}
 	
 	void drawHalo() {
@@ -841,7 +831,8 @@ public:
 			if(ulBookHaloTime >= 3000) { // ms
 				bBookHalo = false;
 			}
-			DrawHalo(0.2f, 0.4f, 0.8f, m_tex->getHalo(), m_pos);
+			Vec2f pos = m_rect.topLeft();
+			DrawHalo(0.2f, 0.4f, 0.8f, m_tex->getHalo(), pos);
 		}
 	}
 };
@@ -855,7 +846,6 @@ void bookIconGuiRequestFX() {
 class BackpackIconGui : public HudIconBase {
 private:
 	TextureContainer * m_tex;
-	Vec2f m_pos;
 	
 public:
 	void init() {
@@ -865,24 +855,15 @@ public:
 
 	void update(const Rectf & parent) {
 		
-		m_pos = parent.topRight() + Vec2f(-32, -32) + Vec2f(-3, -3);
-		m_rect = Rectf(m_pos, 33, 32);
+		m_rect = createChild(parent, Anchor_TopRight, Vec2f(32, 32) * m_scale, Anchor_BottomRight);
+		m_rect.move(-3, -3);
 	}
 	
 	void updateInput() {
 		{
-		// inventaire
-		Vec2f pos(g_size.width() - (35) + lSLID_VALUE, g_size.height() - 113);
 		static float flDelay=0;
 		
-		const Rect inventoryMouseTestRect(
-		pos.x,
-		pos.y,
-		pos.x + INTERFACE_RATIO(32),
-		pos.y + INTERFACE_RATIO(32)
-		);
-		
-		if(inventoryMouseTestRect.contains(Vec2i(DANAEMouse)) || flDelay) {
+		if(m_rect.contains(Vec2f(DANAEMouse)) || flDelay) {
 			eMouseState = MOUSE_IN_INVENTORY_ICON;
 			SpecialCursor = CURSOR_INTERACTION_ON;
 
@@ -951,9 +932,7 @@ public:
 	}
 	
 	void draw() {
-		Rectf rect = Rectf(m_pos, m_tex->m_dwWidth, m_tex->m_dwHeight);
-		
-		DrawIcon(rect, m_tex, MOUSE_IN_INVENTORY_ICON);
+		DrawIcon(m_rect, m_tex, MOUSE_IN_INVENTORY_ICON);
 	}
 };
 
