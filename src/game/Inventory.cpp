@@ -923,31 +923,33 @@ bool CanBePutInInventory(Entity * io)
 	for(size_t bag = 0; bag < size_t(player.bag); bag++)
 	for(size_t i = 0; i <= INVENTORY_X - s.x; i++)
 	for(size_t j = 0; j <= INVENTORY_Y - s.y; j++) {
+		INVENTORY_SLOT & slot = inventory[bag][i][j];
+		
+		if(!slot.io)
+			continue;
 				
-				if(inventory[bag][i][j].io == NULL) {
-					bool valid = true;
-					
-					if(s.x == 0 || s.y == 0)
-						valid = false;
-					
-					for(size_t k = j; k < j + s.y; k++)
-					for(size_t l = i; l < i + s.x; l++) {
-						if(inventory[bag][l][k].io != NULL)
-							valid = false;
-					}
-					
-					if(valid) {
-						for(size_t k = j; k < j + s.y; k++)
-						for(size_t l = i; l < i + s.x; l++) {
-							inventory[bag][l][k].io = io;
-							inventory[bag][l][k].show = 0;
-						}
-						
-						inventory[bag][i][j].show = 1;
-						ARX_INVENTORY_Declare_InventoryIn(io);
-						return true;
-					}
-				}
+		bool valid = true;
+		
+		if(s.x == 0 || s.y == 0)
+			valid = false;
+		
+		for(size_t k = j; k < j + s.y; k++)
+		for(size_t l = i; l < i + s.x; l++) {
+			if(inventory[bag][l][k].io != NULL)
+				valid = false;
+		}
+		
+		if(valid) {
+			for(size_t k = j; k < j + s.y; k++)
+			for(size_t l = i; l < i + s.x; l++) {
+				inventory[bag][l][k].io = io;
+				inventory[bag][l][k].show = 0;
+			}
+			
+			slot.show = 1;
+			ARX_INVENTORY_Declare_InventoryIn(io);
+			return true;
+		}
 	}
 	
 	return false;
@@ -1574,9 +1576,11 @@ Vec3f GetItemWorldPosition(Entity * io) {
 		for(size_t bag = 0; bag < size_t(player.bag); bag++)
 		for(size_t j = 0; j < INVENTORY_Y; j++)
 		for(size_t i = 0; i < INVENTORY_X; i++) {
-					if(inventory[bag][i][j].io == io) {
-						return player.pos + Vec3f(0.f, 80.f, 0.f);
-					}
+			const INVENTORY_SLOT & slot = inventory[bag][i][j];
+			
+			if(slot.io == io) {
+				return player.pos + Vec3f(0.f, 80.f, 0.f);
+			}
 		}
 
 		// Is it in any other IO inventory ?
@@ -1629,11 +1633,13 @@ bool GetItemWorldPositionSound(const Entity * io, Vec3f * pos) {
 		for(size_t bag = 0; bag < size_t(player.bag); bag++)
 		for(size_t j = 0; j < INVENTORY_Y; j++)
 		for(size_t i = 0; i < INVENTORY_X; i++) {
-						if(inventory[bag][i][j].io == io) {
-							// in player inventory
-							ARX_PLAYER_FrontPos(pos);
-							return true;
-						}
+			const INVENTORY_SLOT & slot = inventory[bag][i][j];
+			
+			if(slot.io == io) {
+				// in player inventory
+				ARX_PLAYER_FrontPos(pos);
+				return true;
+			}
 		}
 		
 		for(size_t i = 0; i < entities.size(); i++) {
@@ -1848,18 +1854,19 @@ bool TakeFromInventory(const Vec2s & pos) {
 	for(size_t bag = 0; bag < size_t(player.bag); bag++)
 	for(size_t j = 0; j < INVENTORY_Y; j++)
 	for(size_t i = 0; i < INVENTORY_X; i++) {
-					if(inventory[bag][i][j].io == io) {
-						
-						inventory[bag][i][j].io = NULL;
-						inventory[bag][i][j].show = 1;
-						sInventory = 1;
-						
-						float fX = (pos.x - iPosX) / INTERFACE_RATIO(32);
-						float fY = (pos.y - iPosY) / INTERFACE_RATIO(32);
-						
-						sInventoryX = checked_range_cast<short>(fX);
-						sInventoryY = checked_range_cast<short>(fY);
-					}
+		INVENTORY_SLOT & slot = inventory[bag][i][j];
+		
+		if(slot.io == io) {
+			slot.io = NULL;
+			slot.show = 1;
+			sInventory = 1;
+			
+			float fX = (pos.x - iPosX) / INTERFACE_RATIO(32);
+			float fY = (pos.y - iPosY) / INTERFACE_RATIO(32);
+			
+			sInventoryX = checked_range_cast<short>(fX);
+			sInventoryY = checked_range_cast<short>(fY);
+		}
 	}
 	
 	Set_DragInter(io);
@@ -1877,7 +1884,9 @@ bool IsInPlayerInventory(Entity * io) {
 	for(size_t bag = 0; bag < size_t(player.bag); bag++)
 	for(size_t j = 0; j < INVENTORY_Y; j++)
 	for(size_t i = 0; i < INVENTORY_X; i++) {
-		if(inventory[bag][i][j].io == io) {
+		const INVENTORY_SLOT & slot = inventory[bag][i][j];
+		
+		if(slot.io == io) {
 			return true;
 		}
 	}
