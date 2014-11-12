@@ -819,15 +819,13 @@ void ResetPlayerInterface() {
 
 void ReleaseInfosCombine() {
 	
-	Entity * io = NULL;
-
 	arx_assert(player.bag >= 0)
 	arx_assert(player.bag < 3)
 	
 	for(size_t bag = 0; bag < size_t(player.bag); bag++)
 	for(size_t j = 0; j < INVENTORY_Y; j++)
 	for(size_t i = 0; i < INVENTORY_X; i++) {
-		io = inventory[bag][i][j].io;
+		Entity * io = inventory[bag][i][j].io;
 
 		if(io)
 			io->ioflags &= ~IO_CAN_COMBINE;
@@ -836,7 +834,7 @@ void ReleaseInfosCombine() {
 	if(SecondaryInventory) {
 		for(long j=0;j<SecondaryInventory->m_size.y;j++) {
 			for(long i=0;i<SecondaryInventory->m_size.x;i++) {
-				io=SecondaryInventory->slot[i][j].io;
+				Entity * io = SecondaryInventory->slot[i][j].io;
 
 				if(io)
 					io->ioflags &= ~IO_CAN_COMBINE;
@@ -1103,22 +1101,20 @@ void GetInfosCombineWithIO(Entity * _pWithIO)
 //-------------------------------------------------------------------------------
 void GetInfosCombine()
 {
-	Entity * io = NULL;
-
 	arx_assert(player.bag >= 0)
 	arx_assert(player.bag < 3)
 	
 	for(size_t bag = 0; bag < size_t(player.bag); bag++)
 	for(size_t j = 0; j < INVENTORY_Y; j++)
 	for(size_t i = 0; i < INVENTORY_X; i++) {
-		io = inventory[bag][i][j].io;
+		Entity * io = inventory[bag][i][j].io;
 		GetInfosCombineWithIO(io);
 	}
 
 	if(SecondaryInventory) {
 		for(long j = 0; j < SecondaryInventory->m_size.y; j++) {
 			for(long i = 0; i < SecondaryInventory->m_size.x; i++) {
-				io = SecondaryInventory->slot[i][j].io;
+				Entity * io = SecondaryInventory->slot[i][j].io;
 				GetInfosCombineWithIO(io);
 			}
 		}
