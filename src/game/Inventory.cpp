@@ -962,15 +962,15 @@ bool CanBePutInSecondaryInventory(INVENTORY_DATA * id, Entity * io, long * xx, l
 {
 	if(!id || !io)
 		return false;
-
+	
 	if(io->ioflags & IO_MOVABLE)
 		return false;
-
+	
 	long i, j, k, l;
-
+	
 	*xx = -1;
 	*yy = -1;
-
+	
 	const Vec2s s = io->m_inventorySize;
 	
 	// on essaie de le remettre à son ancienne place
@@ -985,7 +985,7 @@ bool CanBePutInSecondaryInventory(INVENTORY_DATA * id, Entity * io, long * xx, l
 		// first try to stack
 		
 		Entity * ioo = id->slot[i][j].io;
-
+		
 		if(   ioo
 		   && ioo->_itemdata->playerstacksize > 1
 		   && IsSameObject(io, ioo)
@@ -998,21 +998,21 @@ bool CanBePutInSecondaryInventory(INVENTORY_DATA * id, Entity * io, long * xx, l
 				ioo->_itemdata->count += io->_itemdata->count;
 				ioo->scale = 1.f;
 			}
-
+			
 			io->destroy();
-
+			
 			sInventory = -1;
 			return true;
 		}
 		
 		ioo = id->slot[i][j].io;
-
+		
 		if(!ioo) {
 			long valid = 1;
-
+			
 			if(s.x == 0 || s.y == 0)
 				valid = 0;
-
+			
 			for(k = j; k < j + s.y; k++)
 			for(l = i; l < i + s.x; l++) {
 				if(id->slot[l][k].io != NULL) {
@@ -1020,14 +1020,14 @@ bool CanBePutInSecondaryInventory(INVENTORY_DATA * id, Entity * io, long * xx, l
 					break;
 				}
 			}
-
+			
 			if(valid) {
 				for(k = j; k < j + s.y; k++)
 				for(l = i; l < i + s.x; l++) {
 					id->slot[l][k].io = io;
 					id->slot[l][k].show = 0;
 				}
-
+				
 				id->slot[i][j].show = 1;
 				*xx = i;
 				*yy = j;
@@ -1036,66 +1036,66 @@ bool CanBePutInSecondaryInventory(INVENTORY_DATA * id, Entity * io, long * xx, l
 			}
 		}
 	}
-
+	
 	for(j = 0; j <= id->m_size.y - s.y; j++)
-		for(i = 0; i <= id->m_size.x - s.x; i++) {
-			Entity * ioo = id->slot[i][j].io;
-
-			if(   ioo
-			   && ioo->_itemdata->playerstacksize > 1
-			   && IsSameObject(io, ioo)
-			   && ioo->_itemdata->count < ioo->_itemdata->playerstacksize
-			   && ioo->durability == io->durability
-			) {
-				if (io->ioflags & IO_GOLD) {
-					ioo->_itemdata->price += io->_itemdata->price;
-				} else {
-					ioo->_itemdata->count += io->_itemdata->count;
-					ioo->scale = 1.f;
+	for(i = 0; i <= id->m_size.x - s.x; i++) {
+		Entity * ioo = id->slot[i][j].io;
+		
+		if(   ioo
+		   && ioo->_itemdata->playerstacksize > 1
+		   && IsSameObject(io, ioo)
+		   && ioo->_itemdata->count < ioo->_itemdata->playerstacksize
+		   && ioo->durability == io->durability
+		) {
+			if (io->ioflags & IO_GOLD) {
+				ioo->_itemdata->price += io->_itemdata->price;
+			} else {
+				ioo->_itemdata->count += io->_itemdata->count;
+				ioo->scale = 1.f;
+			}
+			
+			io->destroy();
+			
+			return true;
+		}
+	}
+	
+	for(j = 0; j <= id->m_size.y - s.y; j++)
+	for(i = 0; i <= id->m_size.x - s.x; i++) {
+		Entity * ioo = id->slot[i][j].io;
+		
+		if(!ioo) {
+			long valid = 1;
+			
+			if(s.x == 0 || s.y == 0)
+				valid = 0;
+			
+			for(k = j; k < j + s.y; k++)
+			for(l = i; l < i + s.x; l++) {
+				if (id->slot[l][k].io != NULL) {
+					valid = 0;
+					break;
 				}
-
-				io->destroy();
-
+			}
+			
+			if(valid) {
+				for(k = j; k < j + s.y; k++)
+				for(l = i; l < i + s.x; l++) {
+					id->slot[l][k].io = io;
+					id->slot[l][k].show = 0;
+				}
+				
+				id->slot[i][j].show = 1;
+				*xx = i;
+				*yy = j;
 				return true;
 			}
 		}
-
-	for(j = 0; j <= id->m_size.y - s.y; j++)
-		for(i = 0; i <= id->m_size.x - s.x; i++) {
-			Entity * ioo = id->slot[i][j].io;
-
-			if(!ioo) {
-				long valid = 1;
-
-				if(s.x == 0 || s.y == 0)
-					valid = 0;
-
-				for(k = j; k < j + s.y; k++)
-					for(l = i; l < i + s.x; l++) {
-						if (id->slot[l][k].io != NULL) {
-							valid = 0;
-							break;
-						}
-					}
-
-				if(valid) {
-					for(k = j; k < j + s.y; k++)
-						for(l = i; l < i + s.x; l++) {
-							id->slot[l][k].io = io;
-							id->slot[l][k].show = 0;
-						}
-
-					id->slot[i][j].show = 1;
-					*xx = i;
-					*yy = j;
-					return true;
-				}
-			}
-		}
-
+	}
+	
 	*xx = -1;
 	*yy = -1;
-
+	
 	return false;
 }
 
