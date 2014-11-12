@@ -141,10 +141,10 @@ static void ARX_INVENTORY_Declare_InventoryIn(Entity * io) {
  */
 void CleanInventory() {
 	
-	for(long bag = 0; bag < 3; bag++)
-	for(size_t j = 0; j < INVENTORY_Y; j++)
-	for(size_t i = 0; i < INVENTORY_X; i++) {
-		INVENTORY_SLOT & slot = inventory[bag][i][j];
+	for(size_t bag = 0; bag < 3; bag++)
+	for(size_t y = 0; y < INVENTORY_Y; y++)
+	for(size_t x = 0; x < INVENTORY_X; x++) {
+		INVENTORY_SLOT & slot = inventory[bag][x][y];
 		
 		slot.io	 = NULL;
 		slot.show = 1;
@@ -892,9 +892,9 @@ bool CanBePutInInventory(Entity * io)
 	arx_assert(player.bag < 3)
 	
 	for(size_t bag = 0; bag < size_t(player.bag); bag++)
-	for(size_t i = 0; i <= INVENTORY_X - s.x; i++)
-	for(size_t j = 0; j <= INVENTORY_Y - s.y; j++) {
-		INVENTORY_SLOT & slot = inventory[bag][i][j];
+	for(size_t x = 0; x <= INVENTORY_X - s.x; x++)
+	for(size_t y = 0; y <= INVENTORY_Y - s.y; y++) {
+		INVENTORY_SLOT & slot = inventory[bag][x][y];
 		
 		if(!slot.io || !IsSameObject(io, slot.io))
 			continue;
@@ -923,9 +923,9 @@ bool CanBePutInInventory(Entity * io)
 	arx_assert(player.bag < 3)
 	
 	for(size_t bag = 0; bag < size_t(player.bag); bag++)
-	for(size_t i = 0; i <= INVENTORY_X - s.x; i++)
-	for(size_t j = 0; j <= INVENTORY_Y - s.y; j++) {
-		INVENTORY_SLOT & slot = inventory[bag][i][j];
+	for(size_t x = 0; x <= INVENTORY_X - s.x; x++)
+	for(size_t y = 0; y <= INVENTORY_Y - s.y; y++) {
+		INVENTORY_SLOT & slot = inventory[bag][x][y];
 		
 		if(!slot.io)
 			continue;
@@ -935,15 +935,15 @@ bool CanBePutInInventory(Entity * io)
 		if(s.x == 0 || s.y == 0)
 			valid = false;
 		
-		for(size_t k = j; k < j + s.y; k++)
-		for(size_t l = i; l < i + s.x; l++) {
+		for(size_t k = y; k < y + s.y; k++)
+		for(size_t l = x; l < x + s.x; l++) {
 			if(inventory[bag][l][k].io != NULL)
 				valid = false;
 		}
 		
 		if(valid) {
-			for(size_t k = j; k < j + s.y; k++)
-			for(size_t l = i; l < i + s.x; l++) {
+			for(size_t k = y; k < y + s.y; k++)
+			for(size_t l = x; l < x + s.x; l++) {
 				inventory[bag][l][k].io = io;
 				inventory[bag][l][k].show = 0;
 			}
@@ -1576,9 +1576,9 @@ Vec3f GetItemWorldPosition(Entity * io) {
 		
 		// Is it in any player inventory ?
 		for(size_t bag = 0; bag < size_t(player.bag); bag++)
-		for(size_t j = 0; j < INVENTORY_Y; j++)
-		for(size_t i = 0; i < INVENTORY_X; i++) {
-			const INVENTORY_SLOT & slot = inventory[bag][i][j];
+		for(size_t y = 0; y < INVENTORY_Y; y++)
+		for(size_t x = 0; x < INVENTORY_X; x++) {
+			const INVENTORY_SLOT & slot = inventory[bag][x][y];
 			
 			if(slot.io == io) {
 				return player.pos + Vec3f(0.f, 80.f, 0.f);
@@ -1633,9 +1633,9 @@ bool GetItemWorldPositionSound(const Entity * io, Vec3f * pos) {
 		arx_assert(player.bag < 3)
 		
 		for(size_t bag = 0; bag < size_t(player.bag); bag++)
-		for(size_t j = 0; j < INVENTORY_Y; j++)
-		for(size_t i = 0; i < INVENTORY_X; i++) {
-			const INVENTORY_SLOT & slot = inventory[bag][i][j];
+		for(size_t y = 0; y < INVENTORY_Y; y++)
+		for(size_t x = 0; x < INVENTORY_X; x++) {
+			const INVENTORY_SLOT & slot = inventory[bag][x][y];
 			
 			if(slot.io == io) {
 				// in player inventory
@@ -1854,9 +1854,9 @@ bool TakeFromInventory(const Vec2s & pos) {
 	arx_assert(player.bag < 3)
 	
 	for(size_t bag = 0; bag < size_t(player.bag); bag++)
-	for(size_t j = 0; j < INVENTORY_Y; j++)
-	for(size_t i = 0; i < INVENTORY_X; i++) {
-		INVENTORY_SLOT & slot = inventory[bag][i][j];
+	for(size_t y = 0; y < INVENTORY_Y; y++)
+	for(size_t x = 0; x < INVENTORY_X; x++) {
+		INVENTORY_SLOT & slot = inventory[bag][x][y];
 		
 		if(slot.io == io) {
 			slot.io = NULL;
@@ -1884,9 +1884,9 @@ bool IsInPlayerInventory(Entity * io) {
 	arx_assert(player.bag < 3)
 	
 	for(size_t bag = 0; bag < size_t(player.bag); bag++)
-	for(size_t j = 0; j < INVENTORY_Y; j++)
-	for(size_t i = 0; i < INVENTORY_X; i++) {
-		const INVENTORY_SLOT & slot = inventory[bag][i][j];
+	for(size_t y = 0; y < INVENTORY_Y; y++)
+	for(size_t x = 0; x < INVENTORY_X; x++) {
+		const INVENTORY_SLOT & slot = inventory[bag][x][y];
 		
 		if(slot.io == io) {
 			return true;
@@ -1918,9 +1918,9 @@ void SendInventoryObjectCommand(const std::string & _lpszText, ScriptMessage _lC
 	arx_assert(player.bag < 3)
 	
 	for(size_t bag = 0; bag < size_t(player.bag); bag++)
-	for(size_t j = 0; j < INVENTORY_Y; j++)
-	for(size_t i = 0; i < INVENTORY_X; i++) {
-		const INVENTORY_SLOT & slot = inventory[bag][i][j];
+	for(size_t y = 0; y < INVENTORY_Y; y++)
+	for(size_t x = 0; x < INVENTORY_X; x++) {
+		const INVENTORY_SLOT & slot = inventory[bag][x][y];
 		
 		if(!slot.io || !slot.io->obj)
 			continue;
@@ -1947,9 +1947,9 @@ Entity * ARX_INVENTORY_GetTorchLowestDurability() {
 	arx_assert(player.bag < 3)
 	
 	for(size_t bag = 0; bag < size_t(player.bag); bag++)
-	for(size_t j = 0; j < INVENTORY_Y; j++)
-	for(size_t i = 0; i < INVENTORY_X; i++) {
-		const INVENTORY_SLOT & slot = inventory[bag][i][j];
+	for(size_t y = 0; y < INVENTORY_Y; y++)
+	for(size_t x = 0; x < INVENTORY_X; x++) {
+		const INVENTORY_SLOT & slot = inventory[bag][x][y];
 		
 		if(!slot.io || slot.io->locname != "description_torch")
 			continue;

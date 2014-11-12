@@ -696,9 +696,9 @@ long Player_Arrow_Count() {
 	arx_assert(player.bag < 3)
 	
 	for(size_t bag = 0; bag < size_t(player.bag); bag++)
-	for(size_t j = 0; j < INVENTORY_Y; j++)
-	for(size_t i = 0; i < INVENTORY_X; i++) {
-		INVENTORY_SLOT & slot = inventory[bag][i][j];
+	for(size_t y = 0; y < INVENTORY_Y; y++)
+	for(size_t x = 0; x < INVENTORY_X; x++) {
+		INVENTORY_SLOT & slot = inventory[bag][x][y];
 		
 		if(slot.io && slot.io->className() == "arrows" && slot.io->durability >= 1.f) {
 			count += checked_range_cast<long>(slot.io->durability);
@@ -713,9 +713,9 @@ Entity * Player_Arrow_Count_Decrease() {
 	Entity * io = NULL;
 	
 	for(size_t bag = 0; bag < size_t(player.bag); bag++)
-	for(size_t j = 0; j < INVENTORY_Y; j++)
-	for(size_t i = 0; i < INVENTORY_X; i++) {
-		INVENTORY_SLOT & slot = inventory[bag][i][j];
+	for(size_t y = 0; y < INVENTORY_Y; y++)
+	for(size_t x = 0; x < INVENTORY_X; x++) {
+		INVENTORY_SLOT & slot = inventory[bag][x][y];
 		
 		if(slot.io && slot.io->className() == "arrows" && slot.io->durability >= 1.f) {
 			if(!io || io->durability > slot.io->durability)
