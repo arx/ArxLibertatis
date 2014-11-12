@@ -1175,33 +1175,23 @@ class PurseIconGui : public HudIconBase {
 private:
 	TextureContainer * m_tex;
 	Vec2f m_pos;
-	
+	Vec2f m_size;
 public:
 	void init() {
 		m_tex = TextureContainer::LoadUI("graph/interface/inventory/gold");
 		arx_assert(m_tex);
+		m_size = Vec2f(32.f, 32.f);
 	}
 	
-	void update() {
-		m_pos = g_size.bottomRight();
-		m_pos += Vec2f(-35, -183);
-		m_pos.x += lSLID_VALUE;
-		m_pos.x += 2;
+	void update(const Rectf & parent) {
+		m_rect = createChild(parent, Anchor_TopRight, m_size * m_scale, Anchor_BottomRight);
+		m_rect.move(-1.f, -3.f);
 	}
 	
 	void updateInput() {
 		// gold
 		if(player.gold > 0) {
-			Vec2f pos(g_size.width() - (35) + lSLID_VALUE, g_size.height() - 183);
-			
-			const Rect mouseTestRect(
-			pos.x,
-			pos.y,
-			pos.x + INTERFACE_RATIO(32),
-			pos.y + INTERFACE_RATIO(32)
-			);
-			
-			if(mouseTestRect.contains(Vec2i(DANAEMouse))) {
+			if(m_rect.contains(Vec2f(DANAEMouse))) {
 				eMouseState = MOUSE_IN_GOLD_ICON;
 				SpecialCursor = CURSOR_INTERACTION_ON;
 
@@ -1221,13 +1211,12 @@ public:
 	}
 	
 	void draw() {
-		Rectf rect = Rectf(m_pos, m_tex->m_dwWidth, m_tex->m_dwHeight);
+		DrawIcon(m_rect, m_tex, MOUSE_IN_GOLD_ICON);
 		
-		DrawIcon(rect, m_tex, MOUSE_IN_GOLD_ICON);
 		if(eMouseState == MOUSE_IN_GOLD_ICON) {
 			SpecialCursor=CURSOR_INTERACTION_ON;
 			
-			Vec2f numberPos = m_pos;
+			Vec2f numberPos = m_rect.topLeft();
 			numberPos += Vec2f(- INTERFACE_RATIO(30), + INTERFACE_RATIO(10 - 25));
 			
 			ARX_INTERFACE_DrawNumber(numberPos, player.gold, 6, Color::white);
@@ -1242,7 +1231,7 @@ public:
 			if(ulGoldHaloTime >= 1000) { // ms
 				bGoldHalo = false;
 			}
-			DrawHalo(0.9f, 0.9f, 0.1f, m_tex->getHalo(), m_pos);
+			DrawHalo(0.9f, 0.9f, 0.1f, m_tex->getHalo(), m_rect.topLeft());
 		}
 	}
 };
@@ -2198,6 +2187,7 @@ void setHudScale(float scale) {
 	manaGauge.setScale(scale);
 	backpackIconGui.setScale(scale);
 	bookIconGui.setScale(scale);
+	purseIconGui.setScale(scale);
 	
 	mecanismIcon.setScale(scale);
 	screenArrows.setScale(scale);
@@ -2252,14 +2242,6 @@ void ArxGame::drawAllInterface() {
 			levelUpIconGui.update();
 			levelUpIconGui.draw();
 		}
-		// Draw/Manage Gold Purse Icon
-		if(player.gold > 0) {
-			purseIconGui.update();
-			purseIconGui.draw();
-		}
-		//A halo is drawn on the character's stats icon (book) when leveling up, for example.
-		purseIconGui.drawHalo();
-		bookIconGui.drawHalo();
 	}
 	
 	if(!(player.Interface & INTER_COMBATMODE) && player.torch) {
@@ -2308,9 +2290,19 @@ void ArxGame::drawAllInterface() {
 		
 		backpackIconGui.update(manaGauge.rect());
 		bookIconGui.update(backpackIconGui.rect());
+		purseIconGui.update(bookIconGui.rect());
 		
 		backpackIconGui.draw();
 		bookIconGui.draw();
+		
+		// Draw/Manage Gold Purse Icon
+		if(player.gold > 0) {
+			purseIconGui.draw();
+		}
+		
+		//A halo is drawn on the character's stats icon (book) when leveling up, for example.
+		purseIconGui.drawHalo();
+		bookIconGui.drawHalo();
 	}
 	
 	GRenderer->GetTextureStage(0)->setMinFilter(TextureStage::FilterLinear);
