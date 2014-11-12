@@ -1742,11 +1742,10 @@ bool TakeFromInventory(const Vec2s & pos) {
 		return false;
 
 	if(SecondaryInventory != NULL) {
-		if(InSecondaryInventoryPos(pos)) {
+		if(InSecondaryInventoryPos(pos) && (io->ioflags & IO_ITEM)) {
 			Entity * ioo = SecondaryInventory->io;
 
 			if(ioo->ioflags & IO_SHOP) {
-					if(io->ioflags & IO_ITEM) {
 						long cos = ARX_INTERACTIVE_GetPrice(io, ioo);
 
 						float fcos	= cos - cos * ((float)player.m_skillFull.intuition) * 0.005f;
@@ -1769,8 +1768,7 @@ bool TakeFromInventory(const Vec2s & pos) {
 							Set_DragInter(ioo);
 							return true;
 						}
-					}
-			} else if((io->ioflags & IO_ITEM) && io->_itemdata->count > 1) {
+			} else if(io->_itemdata->count > 1) {
 				
 				if(!GInput->actionPressed(CONTROLS_CUST_STEALTHMODE)) {
 					Entity * ioo = CloneIOItem(io);
