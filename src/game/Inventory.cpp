@@ -1651,15 +1651,15 @@ bool GetItemWorldPositionSound(const Entity * io, Vec3f * pos) {
 			if(!ioo || !ioo->inventory)
 				continue;
 			
-				INVENTORY_DATA * id = ioo->inventory;
-				for(long j = 0; j < id->m_size.y; j++) {
-					for(long k = 0; k < id->m_size.x; k++) {
-						if(id->slot[k][j].io == io) {
-							*pos = ioo->pos;
-							return true;
-						}
-					}
+			INVENTORY_DATA * id = ioo->inventory;
+			for(long j = 0; j < id->m_size.y; j++) {
+			for(long k = 0; k < id->m_size.x; k++) {
+				if(id->slot[k][j].io == io) {
+					*pos = ioo->pos;
+					return true;
 				}
+			}
+			}
 		}
 	}
 	
