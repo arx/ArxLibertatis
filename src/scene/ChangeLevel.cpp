@@ -368,12 +368,10 @@ static bool ARX_CHANGELEVEL_PushLevel(long num, long newnum) {
 	ARX_SCRIPT_EventStackExecuteAll();
 	
 	// Close secondary inventory before leaving
-	if (SecondaryInventory != NULL)
-	{
+	if(SecondaryInventory) {
 		Entity * io = SecondaryInventory->io;
-
-		if (io != NULL)
-		{
+		
+		if(io != NULL) {
 			InventoryDir = -1;
 			SendIOScriptEvent(io, SM_INVENTORY2_CLOSE);
 			TSecondaryInventory = SecondaryInventory;
