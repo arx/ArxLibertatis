@@ -1122,18 +1122,18 @@ bool PutInInventory() {
 	if(SecondaryInventory && InSecondaryInventoryPos(DANAEMouse)) {
 		Entity * io = SecondaryInventory->io;
 		
-		float fcos = ARX_INTERACTIVE_GetPrice(DRAGINTER, io) / 3.0f; //>>1;
-		long cos = checked_range_cast<long>(fcos);
-		cos *= DRAGINTER->_itemdata->count;
-		fcos = cos + cos * ((float)player.m_skillFull.intuition) * 0.005f;
-		cos = checked_range_cast<long>(fcos);
+		float fprice = ARX_INTERACTIVE_GetPrice(DRAGINTER, io) / 3.0f; //>>1;
+		long price = checked_range_cast<long>(fprice);
+		price *= DRAGINTER->_itemdata->count;
+		fprice = price + price * ((float)player.m_skillFull.intuition) * 0.005f;
+		price = checked_range_cast<long>(fprice);
 		
 		// SHOP
 		if(io->ioflags & IO_SHOP) {
 			if(!io->shop_category.empty() && DRAGINTER->groups.find(io->shop_category) == DRAGINTER->groups.end())
 				return false;
 			
-			if(cos <= 0)
+			if(price <= 0)
 				return false;
 			
 			// Check shop group
@@ -1149,7 +1149,7 @@ bool PutInInventory() {
 				
 				DRAGINTER->destroy();
 				
-				ARX_PLAYER_AddGold(cos);
+				ARX_PLAYER_AddGold(price);
 				ARX_SOUND_PlayInterface(SND_GOLD);
 				ARX_SOUND_PlayInterface(SND_INVSTD);
 				return true;
