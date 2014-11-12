@@ -1363,30 +1363,23 @@ public:
 CurrentTorchIconGui currentTorchIconGui;
 
 
-class ChangeLevelIconGui{
+class ChangeLevelIconGui : public HudItem {
 private:
 	TextureContainer * m_tex;
-	Vec2f m_pos;
-	Rectf m_rect;
+	Vec2f m_size;
+	
 	float m_intensity;
 	
 public:
 	void init() {
 		m_tex = TextureContainer::LoadUI("graph/interface/icons/change_lvl");
 		arx_assert(m_tex);
+		m_size = Vec2f(32.f, 32.f);
 	}
 	
-	void update() {
-		m_pos = g_size.topRight();
-		m_pos.x -= m_tex->m_dwWidth;
+	void update(const Rectf & parent) {
+		m_rect = createChild(parent, Anchor_TopRight, m_size * m_scale, Anchor_TopRight);
 		
-		m_rect = Rectf(
-		m_pos.x,
-		m_pos.y,
-		m_pos.x + INTERFACE_RATIO_DWORD(m_tex->m_dwWidth),
-		m_pos.y + INTERFACE_RATIO_DWORD(m_tex->m_dwHeight)
-		);
-
 		m_intensity = 0.9f - std::sin(arxtime.get_frame_time()*( 1.0f / 50 ))*0.5f+rnd()*( 1.0f / 10 );
 		m_intensity = glm::clamp(m_intensity, 0.f, 1.f);
 	}
@@ -2162,7 +2155,7 @@ void UpdateInterface() {
 
 	
 	memorizedSpellIconsGui.update();
-	changeLevelIconGui.update();
+	changeLevelIconGui.update(Rectf(g_size));
 	quickSaveIconGui.update();
 	damagedEquipmentGui.update();
 	stealthGauge.update();
@@ -2176,6 +2169,8 @@ void setHudScale(float scale) {
 	bookIconGui.setScale(scale);
 	purseIconGui.setScale(scale);
 	levelUpIconGui.setScale(scale);
+	
+	changeLevelIconGui.setScale(scale);
 	
 	mecanismIcon.setScale(scale);
 	screenArrows.setScale(scale);
