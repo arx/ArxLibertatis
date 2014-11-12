@@ -2083,30 +2083,30 @@ void ARX_INVENTORY_ReOrder() {
 	if(!TSecondaryInventory)
 		return;
 	
-		for(long j = 0; j < TSecondaryInventory->m_size.y; j++)
-			for(long i = 0; i < TSecondaryInventory->m_size.x; i++) {
-				if(TSecondaryInventory->slot[i][j].io && TSecondaryInventory->slot[i][j].show) {
-					long sx = TSecondaryInventory->slot[i][j].io->m_inventorySize.x;
-					long sy = TSecondaryInventory->slot[i][j].io->m_inventorySize.y;
-					Entity * io = TSecondaryInventory->slot[i][j].io;
-
-					RemoveFromAllInventories(io);
-					long x, y;
-					sInventory = 2;
-					sInventoryX = 0;
-					sInventoryY = 0;
-
-					if(CanBePutInSecondaryInventory(TSecondaryInventory, io, &x, &y)) {
-					} else{
-						sInventory = 2;
-
-						sInventoryX = static_cast<short>(i);
-						sInventoryY = static_cast<short>(j);
-
-						sx = i;
-						sy = j;
-						CanBePutInSecondaryInventory(TSecondaryInventory, io, &sx, &sy);
-					}
-				}
+	for(long j = 0; j < TSecondaryInventory->m_size.y; j++)
+	for(long i = 0; i < TSecondaryInventory->m_size.x; i++) {
+		if(TSecondaryInventory->slot[i][j].io && TSecondaryInventory->slot[i][j].show) {
+			long sx = TSecondaryInventory->slot[i][j].io->m_inventorySize.x;
+			long sy = TSecondaryInventory->slot[i][j].io->m_inventorySize.y;
+			Entity * io = TSecondaryInventory->slot[i][j].io;
+			
+			RemoveFromAllInventories(io);
+			long x, y;
+			sInventory = 2;
+			sInventoryX = 0;
+			sInventoryY = 0;
+			
+			if(CanBePutInSecondaryInventory(TSecondaryInventory, io, &x, &y)) {
+			} else{
+				sInventory = 2;
+				
+				sInventoryX = static_cast<short>(i);
+				sInventoryY = static_cast<short>(j);
+				
+				sx = i;
+				sy = j;
+				CanBePutInSecondaryInventory(TSecondaryInventory, io, &sx, &sy);
 			}
+		}
+	}
 }
