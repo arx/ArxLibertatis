@@ -306,9 +306,9 @@ public:
 		
 		ARX_INTERFACE_DrawItem(ingame_inventory, INTERFACE_RATIO(InventoryX), 0.f);
 		
-		for(long j = 0; j < inventory->m_size.y; j++) {
-		for(long i = 0; i < inventory->m_size.x; i++) {
-			Entity *io = inventory->slot[i][j].io;
+		for(long y = 0; y < inventory->m_size.y; y++) {
+		for(long x = 0; x < inventory->m_size.x; x++) {
+			Entity *io = inventory->slot[x][y].io;
 			if(!io)
 				continue;
 			
@@ -327,12 +327,12 @@ public:
 				}
 			}
 			
-			if(tc && (inventory->slot[i][j].show || bItemSteal)) {
+			if(tc && (inventory->slot[x][y].show || bItemSteal)) {
 				UpdateGoldObject(io);
 				
 				Vec2f p = Vec2f(
-					INTERFACE_RATIO(InventoryX) + (float)i*INTERFACE_RATIO(32) + INTERFACE_RATIO(2),
-					(float)j*INTERFACE_RATIO(32) + INTERFACE_RATIO(13)
+					INTERFACE_RATIO(InventoryX) + (float)x*INTERFACE_RATIO(32) + INTERFACE_RATIO(2),
+					(float)y*INTERFACE_RATIO(32) + INTERFACE_RATIO(13)
 				);
 				
 				Vec2f size = Vec2f(tc->size());

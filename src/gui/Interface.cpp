@@ -832,13 +832,12 @@ void ReleaseInfosCombine() {
 	}
 
 	if(SecondaryInventory) {
-		for(long j=0;j<SecondaryInventory->m_size.y;j++) {
-			for(long i=0;i<SecondaryInventory->m_size.x;i++) {
-				Entity * io = SecondaryInventory->slot[i][j].io;
+		for(long y = 0; y < SecondaryInventory->m_size.y; y++)
+		for(long x = 0; x < SecondaryInventory->m_size.x; x++) {
+			Entity * io = SecondaryInventory->slot[x][y].io;
 
-				if(io)
-					io->ioflags &= ~IO_CAN_COMBINE;
-			}
+			if(io)
+				io->ioflags &= ~IO_CAN_COMBINE;
 		}
 	}
 }
@@ -1112,11 +1111,10 @@ void GetInfosCombine()
 	}
 
 	if(SecondaryInventory) {
-		for(long j = 0; j < SecondaryInventory->m_size.y; j++) {
-			for(long i = 0; i < SecondaryInventory->m_size.x; i++) {
-				Entity * io = SecondaryInventory->slot[i][j].io;
-				GetInfosCombineWithIO(io);
-			}
+		for(long y = 0; y < SecondaryInventory->m_size.y; y++)
+		for(long x = 0; x < SecondaryInventory->m_size.x; x++) {
+			Entity * io = SecondaryInventory->slot[x][y].io;
+			GetInfosCombineWithIO(io);
 		}
 	}
 }
