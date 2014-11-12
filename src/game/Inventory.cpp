@@ -1937,17 +1937,14 @@ Entity * ARX_INVENTORY_GetTorchLowestDurability() {
 	for(size_t bag = 0; bag < size_t(player.bag); bag++)
 	for(size_t j = 0; j < INVENTORY_Y; j++)
 	for(size_t i = 0; i < INVENTORY_X; i++) {
-					if(inventory[bag][i][j].io) {
-						if(inventory[bag][i][j].io->locname == "description_torch") {
-							if(!io) {
-								io = inventory[bag][i][j].io;
-							} else {
-								if(inventory[bag][i][j].io->durability < io->durability) {
-									io = inventory[bag][i][j].io;
-								}
-							}
-						}
-					}
+		const INVENTORY_SLOT & slot = inventory[bag][i][j];
+		
+		if(!slot.io || slot.io->locname != "description_torch")
+			continue;
+		
+		if(!io || slot.io->durability < io->durability) {
+			io = slot.io;
+		}
 	}
 	
 	return io;
