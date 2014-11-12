@@ -4189,13 +4189,14 @@ void ArxGame::manageEditorControls() {
 				if(SecondaryInventory) {
 					bool bfound = true;
 					
-					for(long j = 0; j < SecondaryInventory->m_size.y && bfound; j++) {
-						for (long i = 0; i < SecondaryInventory->m_size.x && bfound; i++) {
-							if(SecondaryInventory->slot[i][j].io == FlyingOverIO) {
-								sx = i;
-								sy = j;
-								bfound = false;
-							}
+					for(long y = 0; y < SecondaryInventory->m_size.y && bfound; y++)
+					for(long x = 0; x < SecondaryInventory->m_size.x && bfound; x++) {
+						const INVENTORY_SLOT & slot = SecondaryInventory->slot[x][y];
+						
+						if(slot.io == FlyingOverIO) {
+							sx = x;
+							sy = y;
+							bfound = false;
 						}
 					}
 					
