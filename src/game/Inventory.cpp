@@ -1171,44 +1171,44 @@ bool PutInInventory() {
 			cos = checked_range_cast<long>(fcos);
 			
 			for(long j = 0; j < s.y; j++) {
-				for(long i = 0; i < s.x; i++) {
-					Entity * ioo = SecondaryInventory->slot[tx+i][ty+j].io;
+			for(long i = 0; i < s.x; i++) {
+				Entity * ioo = SecondaryInventory->slot[tx+i][ty+j].io;
+				
+				if(!ioo)
+					continue;
+				
+				DRAGINTER->show = SHOW_FLAG_IN_INVENTORY;
+				
+				if(   ioo->_itemdata->playerstacksize > 1
+				   && IsSameObject(DRAGINTER, ioo)
+				   && ioo->_itemdata->count < ioo->_itemdata->playerstacksize
+				) {
+					ioo->_itemdata->count += DRAGINTER->_itemdata->count;
 					
-					if(!ioo)
-						continue;
-					
-						DRAGINTER->show = SHOW_FLAG_IN_INVENTORY;
-						
-						if(   ioo->_itemdata->playerstacksize > 1
-						   && IsSameObject(DRAGINTER, ioo)
-						   && ioo->_itemdata->count < ioo->_itemdata->playerstacksize
-						) {
-							ioo->_itemdata->count += DRAGINTER->_itemdata->count;
-							
-							if(ioo->_itemdata->count > ioo->_itemdata->playerstacksize) {
-								DRAGINTER->_itemdata->count = ioo->_itemdata->count - ioo->_itemdata->playerstacksize;
-								ioo->_itemdata->count = ioo->_itemdata->playerstacksize;
-							} else {
-								DRAGINTER->_itemdata->count = 0;
-							}
-						}
-						
-						if(DRAGINTER->_itemdata->count) {
-							if(CanBePutInSecondaryInventory(SecondaryInventory, DRAGINTER)) {
-								// SHOP
-								if(io->ioflags & IO_SHOP) {
-									ARX_PLAYER_AddGold(cos);
-									ARX_SOUND_PlayInterface(SND_GOLD);
-								}
-							} else {
-								return false;
-							}
-						}
-						
-						ARX_SOUND_PlayInterface(SND_INVSTD);
-						Set_DragInter(NULL);
-						return true;
+					if(ioo->_itemdata->count > ioo->_itemdata->playerstacksize) {
+						DRAGINTER->_itemdata->count = ioo->_itemdata->count - ioo->_itemdata->playerstacksize;
+						ioo->_itemdata->count = ioo->_itemdata->playerstacksize;
+					} else {
+						DRAGINTER->_itemdata->count = 0;
+					}
 				}
+				
+				if(DRAGINTER->_itemdata->count) {
+					if(CanBePutInSecondaryInventory(SecondaryInventory, DRAGINTER)) {
+						// SHOP
+						if(io->ioflags & IO_SHOP) {
+							ARX_PLAYER_AddGold(cos);
+							ARX_SOUND_PlayInterface(SND_GOLD);
+						}
+					} else {
+						return false;
+					}
+				}
+				
+				ARX_SOUND_PlayInterface(SND_INVSTD);
+				Set_DragInter(NULL);
+				return true;
+			}
 			}
 			
 			if(DRAGINTER->ioflags & IO_GOLD) {
