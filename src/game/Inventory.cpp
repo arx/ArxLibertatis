@@ -1900,6 +1900,7 @@ bool IsInSecondaryInventory(Entity * io) {
 	return false;
 }
 
+// TODO don't use texture name to find entity
 void SendInventoryObjectCommand(const std::string & _lpszText, ScriptMessage _lCommand) {
 	
 	arx_assert(player.bag >= 0)
@@ -1908,22 +1909,22 @@ void SendInventoryObjectCommand(const std::string & _lpszText, ScriptMessage _lC
 	for(size_t bag = 0; bag < size_t(player.bag); bag++)
 	for(size_t j = 0; j < INVENTORY_Y; j++)
 	for(size_t i = 0; i < INVENTORY_X; i++) {
-					
-					if(inventory[bag][i][j].io && inventory[bag][i][j].io->obj) {
-						Entity * item = inventory[bag][i][j].io;
-						for(size_t lTex = 0; lTex < item->obj->texturecontainer.size(); lTex++) {
-							if(!item->obj->texturecontainer.empty()) {
-								if(item->obj->texturecontainer[lTex]) {
-									if(item->obj->texturecontainer[lTex]->m_texName == _lpszText) {
-										if(item->gameFlags & GFLAG_INTERACTIVITY) {
-											SendIOScriptEvent(item, _lCommand);
-										}
-										return;
-									}
-								}
-							}
-						}
-					}
+		const INVENTORY_SLOT & slot = inventory[bag][i][j];
+		
+		if(!slot.io || !slot.io->obj)
+			continue;
+		
+		for(size_t lTex = 0; lTex < slot.io->obj->texturecontainer.size(); lTex++) {
+			if(   !slot.io->obj->texturecontainer.empty()
+			   && slot.io->obj->texturecontainer[lTex]
+			   && slot.io->obj->texturecontainer[lTex]->m_texName == _lpszText
+			) {
+				if(slot.io->gameFlags & GFLAG_INTERACTIVITY) {
+					SendIOScriptEvent(slot.io, _lCommand);
+				}
+				return;
+			}
+		}
 	}
 }
 
