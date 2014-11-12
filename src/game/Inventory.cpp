@@ -2049,7 +2049,9 @@ void ARX_INVENTORY_TakeAllFromSecondaryInventory() {
 			for(long i = 0; i < TSecondaryInventory->m_size.x; i++) {
 				INVENTORY_SLOT & slot = TSecondaryInventory->slot[i][j];
 				
-				if(slot.io && slot.show) {
+				if(!slot.io || !slot.show)
+					continue;
+					
 					long sx = slot.io->m_inventorySize.x;
 					long sy = slot.io->m_inventorySize.y;
 					Entity * io = slot.io;
@@ -2069,7 +2071,6 @@ void ARX_INVENTORY_TakeAllFromSecondaryInventory() {
 						sy = j;
 						CanBePutInSecondaryInventory(TSecondaryInventory, io, &sx, &sy);
 					}
-				}
 			}
 	}
 
