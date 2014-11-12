@@ -827,11 +827,13 @@ bool CanBePutInInventory(Entity * io)
 		long j = sInventoryY;
 		long i = sInventoryX;
 		
+		arx_assert(player.bag >= 0)
+		arx_assert(player.bag < 3)
+		
 		// first try to stack -------------------------------------------------
-		if(player.bag) {
-			for(int iNbBag = 0; iNbBag < player.bag; iNbBag++) {
+		for(size_t bag = 0; bag < size_t(player.bag); bag++) {
 				
-				Entity * ioo = inventory[iNbBag][i][j].io;
+				Entity * ioo = inventory[bag][i][j].io;
 				
 				if(ioo && ioo->_itemdata->playerstacksize > 1 && IsSameObject(io, ioo)) {
 					if(ioo->_itemdata->count < ioo->_itemdata->playerstacksize) {
@@ -852,13 +854,13 @@ bool CanBePutInInventory(Entity * io)
 						return true;
 					}
 				}
-			}
 		}
 		
+		arx_assert(player.bag >= 0)
+		arx_assert(player.bag < 3)
 		
-		if(player.bag) {
-			for(int iNbBag = 0; iNbBag < player.bag; iNbBag++) {
-				if(inventory[iNbBag][i][j].io == NULL) {
+		for(size_t bag = 0; bag < size_t(player.bag); bag++) {
+				if(inventory[bag][i][j].io == NULL) {
 					bool valid = true;
 					
 					if(s.x == 0 || s.y == 0)
@@ -866,24 +868,23 @@ bool CanBePutInInventory(Entity * io)
 					
 					for(long k = j; k < j + s.y; k++)
 					for(long l = i; l < i + s.x; l++) {
-						if(inventory[iNbBag][l][k].io != NULL)
+						if(inventory[bag][l][k].io != NULL)
 							valid = false;
 					}
 					
 					if(valid) {
 						for(long k = j; k < j + s.y; k++)
 						for(long l = i; l < i + s.x; l++) {
-							inventory[iNbBag][l][k].io = io;
-							inventory[iNbBag][l][k].show = 0;
+							inventory[bag][l][k].io = io;
+							inventory[bag][l][k].show = 0;
 						}
 						
-						inventory[iNbBag][i][j].show = 1;
+						inventory[bag][i][j].show = 1;
 						ARX_INVENTORY_Declare_InventoryIn(io);
 						sInventory = -1;
 						return true;
 					}
 				}
-			}
 		}
 	}
 	
