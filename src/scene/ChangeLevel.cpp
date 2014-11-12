@@ -684,15 +684,13 @@ static long ARX_CHANGELEVEL_Push_Player(long level) {
 	}
 	
 	//inventaires
-	for(long iNbBag = 0; iNbBag < 3; iNbBag++) {
-		for(size_t m = 0; m < INVENTORY_Y; m++) {
-			for(size_t n = 0; n < INVENTORY_X; n++) {
-				storeIdString(asp->id_inventory[iNbBag][n][m], inventory[iNbBag][n][m].io);
-				asp->inventory_show[iNbBag][n][m] = inventory[iNbBag][n][m].show;
-			}
-		}
+	for(size_t bag = 0; bag < 3; bag++)
+	for(size_t m = 0; m < INVENTORY_Y; m++)
+	for(size_t n = 0; n < INVENTORY_X; n++) {
+		storeIdString(asp->id_inventory[bag][n][m], inventory[bag][n][m].io);
+		asp->inventory_show[bag][n][m] = inventory[bag][n][m].show;
 	}
-    
+	
     g_miniMap.save(asp->minimap, SAVED_MAX_MINIMAPS);
 
 	asp->falling = player.falling;
@@ -1793,13 +1791,12 @@ static long ARX_CHANGELEVEL_Pop_Player() {
 	
 	assert(SAVED_INVENTORY_Y == INVENTORY_Y);
 	assert(SAVED_INVENTORY_X == INVENTORY_X);
-	for(size_t iNbBag = 0; iNbBag < 3; iNbBag++) {
-		for(size_t m = 0; m < SAVED_INVENTORY_Y; m++) {
-			for (size_t n = 0; n < SAVED_INVENTORY_X; n++) {
-				inventory[iNbBag][n][m].io = ConvertToValidIO(asp->id_inventory[iNbBag][n][m]);
-				inventory[iNbBag][n][m].show = asp->inventory_show[iNbBag][n][m];
-			}
-		}
+	
+	for(size_t bag = 0; bag < 3; bag++)
+	for(size_t m = 0; m < SAVED_INVENTORY_Y; m++)
+	for(size_t n = 0; n < SAVED_INVENTORY_X; n++) {
+		inventory[bag][n][m].io = ConvertToValidIO(asp->id_inventory[bag][n][m]);
+		inventory[bag][n][m].show = asp->inventory_show[bag][n][m];
 	}
 	
 	if(size < pos + (asp->nb_PlayerQuest * 80)) {
