@@ -1461,7 +1461,8 @@ void hideQuickSaveIcon() {
 	quickSaveIconGui.hide();
 }
 
-class MemorizedSpellIconsGui : public HudIconBase {
+
+class MemorizedRunesHud : public HudIconBase {
 private:
 	int m_count;
 	Vec2f m_pos;
@@ -1522,8 +1523,8 @@ public:
 	}
 };
 
+MemorizedRunesHud memorizedRunesHud;
 
-MemorizedSpellIconsGui memorizedSpellIconsGui;
 
 class HealthGauge : public HudItem {
 private:
@@ -2148,7 +2149,7 @@ void UpdateInterface() {
 	mecanismIcon.update();
 	screenArrows.update();
 	
-	memorizedSpellIconsGui.update();
+	memorizedRunesHud.update();
 	changeLevelIconGui.update(Rectf(g_size));
 	quickSaveIconGui.update();
 	damagedEquipmentGui.update();
@@ -2234,7 +2235,7 @@ void ArxGame::drawAllInterface() {
 	}
 	
 	if(CurrSpellSymbol || player.SpellToMemorize.bSpell) {
-		memorizedSpellIconsGui.draw();
+		memorizedRunesHud.draw();
 	}
 	
 	healthGauge.update();
