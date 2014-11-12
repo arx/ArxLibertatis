@@ -966,21 +966,19 @@ bool CanBePutInSecondaryInventory(INVENTORY_DATA * id, Entity * io, long * xx, l
 
 	if (io->ioflags & IO_MOVABLE) return false;
 
-	long sx, sy;
 	long i, j, k, l;
 
 	*xx = -1;
 	*yy = -1;
 
-	sx = io->m_inventorySize.x;
-	sy = io->m_inventorySize.y;
-
+	const Vec2s s = io->m_inventorySize;
+	
 	// on essaie de le remettre à son ancienne place
 	if (sInventory == 2 &&
 	        (sInventoryX >= 0) &&
-	        (sInventoryX <= id->m_size.x - sx) &&
+	        (sInventoryX <= id->m_size.x - s.x) &&
 	        (sInventoryY >= 0) &&
-	        (sInventoryY <= id->m_size.y - sy))
+	        (sInventoryY <= id->m_size.y - s.y))
 	{
 		j = sInventoryY;
 		i = sInventoryX;
@@ -1020,10 +1018,10 @@ bool CanBePutInSecondaryInventory(INVENTORY_DATA * id, Entity * io, long * xx, l
 		{
 			long valid = 1;
 
-			if ((sx == 0) || (sy == 0)) valid = 0;
+			if ((s.x == 0) || (s.y == 0)) valid = 0;
 
-			for (k = j; k < j + sy; k++)
-				for (l = i; l < i + sx; l++)
+			for (k = j; k < j + s.y; k++)
+				for (l = i; l < i + s.x; l++)
 				{
 					if (id->slot[l][k].io != NULL)
 					{
@@ -1034,8 +1032,8 @@ bool CanBePutInSecondaryInventory(INVENTORY_DATA * id, Entity * io, long * xx, l
 
 			if (valid)
 			{
-				for (k = j; k < j + sy; k++)
-					for (l = i; l < i + sx; l++)
+				for (k = j; k < j + s.y; k++)
+					for (l = i; l < i + s.x; l++)
 					{
 						id->slot[l][k].io = io;
 						id->slot[l][k].show = 0;
@@ -1050,8 +1048,8 @@ bool CanBePutInSecondaryInventory(INVENTORY_DATA * id, Entity * io, long * xx, l
 		}
 	}
 
-	for (j = 0; j <= id->m_size.y - sy; j++)
-		for (i = 0; i <= id->m_size.x - sx; i++)
+	for (j = 0; j <= id->m_size.y - s.y; j++)
+		for (i = 0; i <= id->m_size.x - s.x; i++)
 		{
 			Entity * ioo = id->slot[i][j].io;
 
@@ -1079,8 +1077,8 @@ bool CanBePutInSecondaryInventory(INVENTORY_DATA * id, Entity * io, long * xx, l
 				}
 		}
 
-	for (j = 0; j <= id->m_size.y - sy; j++)
-		for (i = 0; i <= id->m_size.x - sx; i++)
+	for (j = 0; j <= id->m_size.y - s.y; j++)
+		for (i = 0; i <= id->m_size.x - s.x; i++)
 		{
 			Entity * ioo = id->slot[i][j].io;
 
@@ -1088,10 +1086,10 @@ bool CanBePutInSecondaryInventory(INVENTORY_DATA * id, Entity * io, long * xx, l
 			{
 				long valid = 1;
 
-				if ((sx == 0) || (sy == 0)) valid = 0;
+				if ((s.x == 0) || (s.y == 0)) valid = 0;
 
-				for (k = j; k < j + sy; k++)
-					for (l = i; l < i + sx; l++)
+				for (k = j; k < j + s.y; k++)
+					for (l = i; l < i + s.x; l++)
 					{
 						if (id->slot[l][k].io != NULL)
 						{
@@ -1102,8 +1100,8 @@ bool CanBePutInSecondaryInventory(INVENTORY_DATA * id, Entity * io, long * xx, l
 
 				if (valid)
 				{
-					for (k = j; k < j + sy; k++)
-						for (l = i; l < i + sx; l++)
+					for (k = j; k < j + s.y; k++)
+						for (l = i; l < i + s.x; l++)
 						{
 							id->slot[l][k].io = io;
 							id->slot[l][k].show = 0;
