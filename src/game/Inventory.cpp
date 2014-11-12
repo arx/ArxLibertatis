@@ -960,16 +960,13 @@ bool CanBePutInInventory(Entity * io)
 /*!
  * \brief Tries to put an object in secondary inventory
  */
-bool CanBePutInSecondaryInventory(INVENTORY_DATA * id, Entity * io, long * xx, long * yy)
+bool CanBePutInSecondaryInventory(INVENTORY_DATA * id, Entity * io)
 {
 	if(!id || !io)
 		return false;
 	
 	if(io->ioflags & IO_MOVABLE)
 		return false;
-	
-	*xx = -1;
-	*yy = -1;
 	
 	const Vec2s s = io->m_inventorySize;
 	
@@ -1029,8 +1026,6 @@ bool CanBePutInSecondaryInventory(INVENTORY_DATA * id, Entity * io, long * xx, l
 				}
 				
 				id->slot[x][y].show = 1;
-				*xx = x;
-				*yy = y;
 				sInventory = -1;
 				return true;
 			}
@@ -1086,15 +1081,10 @@ bool CanBePutInSecondaryInventory(INVENTORY_DATA * id, Entity * io, long * xx, l
 				}
 				
 				id->slot[x][y].show = 1;
-				*xx = x;
-				*yy = y;
 				return true;
 			}
 		}
 	}
-	
-	*xx = -1;
-	*yy = -1;
 	
 	return false;
 }
@@ -1192,7 +1182,6 @@ bool PutInInventory() {
 					Entity * ioo = SecondaryInventory->slot[tx+i][ty+j].io;
 					
 					if(ioo) {
-						long xx, yy;
 						DRAGINTER->show = SHOW_FLAG_IN_INVENTORY;
 						
 						if(   ioo->_itemdata->playerstacksize > 1
@@ -1210,7 +1199,7 @@ bool PutInInventory() {
 						}
 						
 						if(DRAGINTER->_itemdata->count) {
-							if(CanBePutInSecondaryInventory(SecondaryInventory, DRAGINTER, &xx, &yy)) {
+							if(CanBePutInSecondaryInventory(SecondaryInventory, DRAGINTER)) {
 								// SHOP
 								if(io->ioflags & IO_SHOP) {
 									ARX_PLAYER_AddGold(cos);
@@ -1715,8 +1704,7 @@ void CheckForInventoryReplaceMe(Entity * io, Entity * old) {
 		for(long j = 0; j < id->m_size.y; j++) {
 		for(long k = 0; k < id->m_size.x; k++) {
 			if(id->slot[k][j].io == old) {
-				long xx, yy;
-				if(CanBePutInSecondaryInventory(id, io, &xx, &yy)) {
+				if(CanBePutInSecondaryInventory(id, io)) {
 					return;
 				}
 				PutInFrontOfPlayer(io); 
@@ -2049,9 +2037,7 @@ void ARX_INVENTORY_TakeAllFromSecondaryInventory() {
 			
 			if(!slot.io || !slot.show)
 				continue;
-				
-			long sx = slot.io->m_inventorySize.x;
-			long sy = slot.io->m_inventorySize.y;
+			
 			Entity * io = slot.io;
 			
 			if(!(io->ioflags & IO_GOLD))
@@ -2065,9 +2051,7 @@ void ARX_INVENTORY_TakeAllFromSecondaryInventory() {
 				sInventoryX = static_cast<short>(i);
 				sInventoryY = static_cast<short>(j);
 				
-				sx = i;
-				sy = j;
-				CanBePutInSecondaryInventory(TSecondaryInventory, io, &sx, &sy);
+				CanBePutInSecondaryInventory(TSecondaryInventory, io);
 			}
 		}
 	}
@@ -2091,26 +2075,21 @@ void ARX_INVENTORY_ReOrder() {
 		if(!slot.io || !slot.show)
 			continue;
 		
-		long sx = slot.io->m_inventorySize.x;
-		long sy = slot.io->m_inventorySize.y;
 		Entity * io = slot.io;
 		
 		RemoveFromAllInventories(io);
-		long x, y;
 		sInventory = 2;
 		sInventoryX = 0;
 		sInventoryY = 0;
 		
-		if(CanBePutInSecondaryInventory(TSecondaryInventory, io, &x, &y)) {
+		if(CanBePutInSecondaryInventory(TSecondaryInventory, io)) {
 		} else{
 			sInventory = 2;
 			
 			sInventoryX = static_cast<short>(i);
 			sInventoryY = static_cast<short>(j);
 			
-			sx = i;
-			sy = j;
-			CanBePutInSecondaryInventory(TSecondaryInventory, io, &sx, &sy);
+			CanBePutInSecondaryInventory(TSecondaryInventory, io);
 		}
 	}
 }

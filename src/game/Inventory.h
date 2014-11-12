@@ -253,7 +253,7 @@ void CheckForInventoryReplaceMe(Entity * io, Entity * old);
 
 bool InSecondaryInventoryPos(const Vec2s & pos);
 bool InPlayerInventoryPos(const Vec2s & pos);
-bool CanBePutInSecondaryInventory(INVENTORY_DATA * id, Entity * io, long * xx, long * yy);
+bool CanBePutInSecondaryInventory(INVENTORY_DATA * id, Entity * io);
 
 void CleanInventory();
 void SendInventoryObjectCommand(const std::string & _lpszText, ScriptMessage _lCommand);

@@ -4220,7 +4220,7 @@ void ArxGame::manageEditorControls() {
 					sInventoryX = checked_range_cast<short>(sx);
 					sInventoryY = checked_range_cast<short>(sy);
 					
-					CanBePutInSecondaryInventory( TSecondaryInventory, FlyingOverIO, &sx, &sy );
+					CanBePutInSecondaryInventory(TSecondaryInventory, FlyingOverIO);
 				}
 				
 				if(!bSecondary)

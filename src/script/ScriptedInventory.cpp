@@ -290,8 +290,7 @@ class InventoryCommand : public Command {
 			t->scriptload = 0;
 			t->show = SHOW_FLAG_IN_INVENTORY;
 			
-			long xx, yy;
-			if(!CanBePutInSecondaryInventory(context.getEntity()->inventory, t, &xx, &yy)) {
+			if(!CanBePutInSecondaryInventory(context.getEntity()->inventory, t)) {
 				PutInFrontOfPlayer(t);
 			}
 			
@@ -359,8 +358,7 @@ class InventoryCommand : public Command {
 				}
 			}
 			
-			long xx, yy;
-			if(!CanBePutInSecondaryInventory(context.getEntity()->inventory, ioo, &xx, &yy)) {
+			if(!CanBePutInSecondaryInventory(context.getEntity()->inventory, ioo)) {
 					PutInFrontOfPlayer(ioo);
 			}
 			
