@@ -2090,33 +2090,30 @@ extern float CURRENT_PLAYER_COLOR;
 /*!
  * \brief Stealth Gauge Drawing
  */
-class StealthGauge {
+class StealthGauge : public HudItem {
 private:
 	TextureContainer * stealth_gauge_tc;
 	
 	bool m_visible;
 	Rectf m_rect;
 	Color m_color;
-	
+	Vec2f m_size;
 public:
 	void init() {
 		stealth_gauge_tc = TextureContainer::LoadUI("graph/interface/icons/stealth_gauge");
 		arx_assert(stealth_gauge_tc);
+		m_size = Vec2f(32.f, 32.f);
 	}
 	
-	void update() {
+	void update(const Rectf & parent) {
+		m_rect = createChild(parent, Anchor_TopRight, m_size * m_scale, Anchor_BottomLeft);
+		
 		m_visible = false;
 		
 		if(!cinematicBorder.isActive()) {
 			float v=GetPlayerStealth();
 	
 			if(CURRENT_PLAYER_COLOR < v) {
-				Vec2f pos = Vec2f(InventoryX, g_size.height());
-				pos += Vec2f(110, -(126 + 32));
-				
-				if(pos.x < INTERFACE_RATIO(10))
-					pos.x = INTERFACE_RATIO(10);
-	
 				float t = v - CURRENT_PLAYER_COLOR;
 	
 				if(t >= 15)
@@ -2125,7 +2122,7 @@ public:
 					v = (t*( 1.0f / 15 ))* 0.9f + 0.1f;
 				
 				m_color = Color3f::gray(v).to<u8>();
-				m_rect = Rectf(pos, stealth_gauge_tc->m_dwWidth, stealth_gauge_tc->m_dwHeight);
+				
 				m_visible = true;
 			}
 		}
@@ -2150,15 +2147,11 @@ void UpdateInterface() {
 	inventoryGui.update();
 	mecanismIcon.update();
 	screenArrows.update();
-	healthGauge.update();
-	
-
 	
 	memorizedSpellIconsGui.update();
 	changeLevelIconGui.update(Rectf(g_size));
 	quickSaveIconGui.update();
 	damagedEquipmentGui.update();
-	stealthGauge.update();
 }
 
 void setHudScale(float scale) {
@@ -2174,6 +2167,7 @@ void setHudScale(float scale) {
 	
 	mecanismIcon.setScale(scale);
 	screenArrows.setScale(scale);
+	stealthGauge.setScale(scale);
 }
 
 void ArxGame::drawAllInterface() {
@@ -2242,6 +2236,17 @@ void ArxGame::drawAllInterface() {
 	if(CurrSpellSymbol || player.SpellToMemorize.bSpell) {
 		memorizedSpellIconsGui.draw();
 	}
+	
+	healthGauge.update();
+	
+	Rectf spacer;
+	spacer.left = std::max(InventoryX + 160, healthGauge.rect().right);
+	spacer.bottom = g_size.height() - INTERFACE_RATIO(101) + INTERFACE_RATIO_LONG(InventoryY);
+	spacer.top = spacer.bottom - 30;
+	spacer.right = spacer.left + 20;
+	
+	stealthGauge.update(spacer);
+	
 	
 	if(player.Interface & INTER_LIFE_MANA) {
 		
