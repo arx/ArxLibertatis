@@ -104,8 +104,7 @@ short sActiveInventory = 0;
 
 // 1 player 2 secondary
 short sInventory = -1;
-short sInventoryX = -1;
-short sInventoryY = -1;
+Vec2s sInventoryPos = Vec2s(-1, -1);
 
 /*!
  * Declares an IO as entering into player Inventory
@@ -819,13 +818,13 @@ bool CanBePutInInventory(Entity * io)
 	
 	// on essaie de le remettre à son ancienne place --------------------------
 	if(   sInventory == 1
-	   && sInventoryX >= 0
-	   && sInventoryX <= short(INVENTORY_X) - s.x
-	   && sInventoryY >= 0
-	   && sInventoryY <= short(INVENTORY_Y) - s.y
+	   && sInventoryPos.x >= 0
+	   && sInventoryPos.x <= short(INVENTORY_X) - s.x
+	   && sInventoryPos.y >= 0
+	   && sInventoryPos.y <= short(INVENTORY_Y) - s.y
 	) {
-		long j = sInventoryY;
-		long i = sInventoryX;
+		long j = sInventoryPos.y;
+		long i = sInventoryPos.x;
 		
 		arx_assert(player.bag >= 0)
 		arx_assert(player.bag < 3)
@@ -972,13 +971,13 @@ bool CanBePutInSecondaryInventory(INVENTORY_DATA * id, Entity * io)
 	
 	// on essaie de le remettre à son ancienne place
 	if(   sInventory == 2
-	   && sInventoryX >= 0
-	   && sInventoryX <= id->m_size.x - s.x
-	   && sInventoryY >= 0
-	   && sInventoryY <= id->m_size.y - s.y
+	   && sInventoryPos.x >= 0
+	   && sInventoryPos.x <= id->m_size.x - s.x
+	   && sInventoryPos.y >= 0
+	   && sInventoryPos.y <= id->m_size.y - s.y
 	) {
-		long y = sInventoryY;
-		long x = sInventoryX;
+		long y = sInventoryPos.y;
+		long x = sInventoryPos.x;
 		// first try to stack
 		
 		Entity * ioo = id->slot[x][y].io;
@@ -1770,8 +1769,8 @@ bool TakeFromInventory(const Vec2s & pos) {
 					float fCalcX = (pos.x + InventoryX - INTERFACE_RATIO(2)) / INTERFACE_RATIO(32);
 					float fCalcY = (pos.y - INTERFACE_RATIO(13)) / INTERFACE_RATIO(32);
 					
-					sInventoryX = checked_range_cast<short>(fCalcX);
-					sInventoryY = checked_range_cast<short>(fCalcY);
+					sInventoryPos.x = checked_range_cast<short>(fCalcX);
+					sInventoryPos.y = checked_range_cast<short>(fCalcY);
 					
 					//ARX_INVENTORY_Object_Out(SecondaryInventory->io, ioo);
 					
@@ -1795,8 +1794,8 @@ bool TakeFromInventory(const Vec2s & pos) {
 			float fCalcX = (pos.x + InventoryX - INTERFACE_RATIO(2)) / INTERFACE_RATIO(32);
 			float fCalcY = (pos.y - INTERFACE_RATIO(13)) / INTERFACE_RATIO(32);
 			
-			sInventoryX = checked_range_cast<short>(fCalcX);
-			sInventoryY = checked_range_cast<short>(fCalcY);
+			sInventoryPos.x = checked_range_cast<short>(fCalcX);
+			sInventoryPos.y = checked_range_cast<short>(fCalcY);
 		}
 	}
 	
@@ -1825,8 +1824,8 @@ bool TakeFromInventory(const Vec2s & pos) {
 					float fX = (pos.x - iPosX) / INTERFACE_RATIO(32);
 					float fY = (pos.y - iPosY) / INTERFACE_RATIO(32);
 					
-					sInventoryX = checked_range_cast<short>(fX);
-					sInventoryY = checked_range_cast<short>(fY);
+					sInventoryPos.x = checked_range_cast<short>(fX);
+					sInventoryPos.y = checked_range_cast<short>(fY);
 					
 					SendInitScriptEvent(ioo);
 					ARX_INVENTORY_IdentifyIO(ioo);
@@ -1852,8 +1851,8 @@ bool TakeFromInventory(const Vec2s & pos) {
 			float fX = (pos.x - iPosX) / INTERFACE_RATIO(32);
 			float fY = (pos.y - iPosY) / INTERFACE_RATIO(32);
 			
-			sInventoryX = checked_range_cast<short>(fX);
-			sInventoryY = checked_range_cast<short>(fY);
+			sInventoryPos.x = checked_range_cast<short>(fX);
+			sInventoryPos.y = checked_range_cast<short>(fY);
 		}
 	}
 	
@@ -2048,8 +2047,8 @@ void ARX_INVENTORY_TakeAllFromSecondaryInventory() {
 			} else {
 				sInventory = 2;
 				
-				sInventoryX = static_cast<short>(i);
-				sInventoryY = static_cast<short>(j);
+				sInventoryPos.x = static_cast<short>(i);
+				sInventoryPos.y = static_cast<short>(j);
 				
 				CanBePutInSecondaryInventory(TSecondaryInventory, io);
 			}
@@ -2079,15 +2078,15 @@ void ARX_INVENTORY_ReOrder() {
 		
 		RemoveFromAllInventories(io);
 		sInventory = 2;
-		sInventoryX = 0;
-		sInventoryY = 0;
+		sInventoryPos.x = 0;
+		sInventoryPos.y = 0;
 		
 		if(CanBePutInSecondaryInventory(TSecondaryInventory, io)) {
 		} else{
 			sInventory = 2;
 			
-			sInventoryX = static_cast<short>(i);
-			sInventoryY = static_cast<short>(j);
+			sInventoryPos.x = static_cast<short>(i);
+			sInventoryPos.y = static_cast<short>(j);
 			
 			CanBePutInSecondaryInventory(TSecondaryInventory, io);
 		}

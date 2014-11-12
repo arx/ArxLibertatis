@@ -4215,10 +4215,12 @@ void ArxGame::manageEditorControls() {
 			
 			if(!playerInventory.insert(FlyingOverIO)) {
 				if(TSecondaryInventory && bSecondary) {
-					extern short sInventory, sInventoryX, sInventoryY;
+					// TODO
+					extern short sInventory;
+					extern Vec2s sInventoryPos;
 					sInventory = 2;
-					sInventoryX = checked_range_cast<short>(sx);
-					sInventoryY = checked_range_cast<short>(sy);
+					sInventoryPos.x = checked_range_cast<short>(sx);
+					sInventoryPos.y = checked_range_cast<short>(sy);
 					
 					CanBePutInSecondaryInventory(TSecondaryInventory, FlyingOverIO);
 				}
