@@ -894,27 +894,29 @@ bool CanBePutInInventory(Entity * io)
 	for(size_t bag = 0; bag < size_t(player.bag); bag++)
 	for(size_t i = 0; i <= INVENTORY_X - s.x; i++)
 	for(size_t j = 0; j <= INVENTORY_Y - s.y; j++) {
-				
-				Entity * ioo = inventory[bag][i][j].io;
-				
-				if(ioo && ioo->_itemdata->playerstacksize > 1 && IsSameObject(io, ioo)) {
-					if(ioo->_itemdata->count < ioo->_itemdata->playerstacksize) {
-						
-						ioo->_itemdata->count += io->_itemdata->count;
-						
-						if(ioo->_itemdata->count > ioo->_itemdata->playerstacksize) {
-							io->_itemdata->count = ioo->_itemdata->count - ioo->_itemdata->playerstacksize;
-							ioo->_itemdata->count = ioo->_itemdata->playerstacksize;
-						} else
-							io->_itemdata->count = 0;
-						
-						if(!io->_itemdata->count) {
-							io->destroy();
-							ARX_INVENTORY_Declare_InventoryIn(ioo);
-							return true;
-						}
-					}
-				}
+		INVENTORY_SLOT & slot = inventory[bag][i][j];
+		
+		if(!slot.io || !IsSameObject(io, slot.io))
+			continue;
+		
+		IO_ITEMDATA * slotItem = slot.io->_itemdata;
+		
+		if(slotItem->playerstacksize > 1 && slotItem->count < slotItem->playerstacksize) {
+			
+			slotItem->count += io->_itemdata->count;
+			
+			if(slotItem->count > slotItem->playerstacksize) {
+				io->_itemdata->count = slotItem->count - slotItem->playerstacksize;
+				slotItem->count = slotItem->playerstacksize;
+			} else
+				io->_itemdata->count = 0;
+			
+			if(!io->_itemdata->count) {
+				io->destroy();
+				ARX_INVENTORY_Declare_InventoryIn(slot.io);
+				return true;
+			}
+		}
 	}
 	
 	arx_assert(player.bag >= 0)
