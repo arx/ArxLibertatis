@@ -1164,11 +1164,11 @@ bool PutInInventory() {
 		
 		if(tx <= SecondaryInventory->m_size.x - s.x && ty <= SecondaryInventory->m_size.y - s.y) {
 			
-			float fcos = ARX_INTERACTIVE_GetPrice(DRAGINTER, io) / 3.0f;
-			long cos = checked_range_cast<long>(fcos);
-			cos *= DRAGINTER->_itemdata->count;
-			fcos = cos + cos * ((float)player.m_skillFull.intuition) * 0.005f;
-			cos = checked_range_cast<long>(fcos);
+			float fprice = ARX_INTERACTIVE_GetPrice(DRAGINTER, io) / 3.0f;
+			long price = checked_range_cast<long>(fprice);
+			price *= DRAGINTER->_itemdata->count;
+			fprice = price + price * ((float)player.m_skillFull.intuition) * 0.005f;
+			price = checked_range_cast<long>(fprice);
 			
 			for(long j = 0; j < s.y; j++) {
 			for(long i = 0; i < s.x; i++) {
@@ -1197,7 +1197,7 @@ bool PutInInventory() {
 					if(CanBePutInSecondaryInventory(SecondaryInventory, DRAGINTER)) {
 						// SHOP
 						if(io->ioflags & IO_SHOP) {
-							ARX_PLAYER_AddGold(cos);
+							ARX_PLAYER_AddGold(price);
 							ARX_SOUND_PlayInterface(SND_GOLD);
 						}
 					} else {
@@ -1226,7 +1226,7 @@ bool PutInInventory() {
 			
 			// SHOP
 			if(io->ioflags & IO_SHOP) {
-				player.gold += cos;
+				player.gold += price;
 				ARX_SOUND_PlayInterface(SND_GOLD);
 			}
 
