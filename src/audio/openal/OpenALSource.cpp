@@ -609,13 +609,10 @@ bool OpenALSource::updateCulling() {
 	
 	arx_assert(status == Playing);
 	
-	if(!(channel.flags & FLAG_POSITION) || !alIsSource(source)) {
+	if(!(channel.flags & FLAG_POSITION) || !(channel.flags & FLAG_FALLOFF)
+	   || !alIsSource(source)) {
 		return false;
 	}
-	
-	ALfloat max;
-	alGetSourcef(source, AL_MAX_DISTANCE, &max);
-	AL_CHECK_ERROR_N("getting source max distance", return tooFar;)
 	
 	Vec3f listener_pos;
 	if(channel.flags & FLAG_RELATIVE) {
@@ -629,7 +626,7 @@ bool OpenALSource::updateCulling() {
 	
 	if(tooFar) {
 		
-		if(d > max) {
+		if(d > channel.falloff.end) {
 			return true;
 		}
 		
@@ -640,7 +637,7 @@ bool OpenALSource::updateCulling() {
 		
 	} else {
 		
-		if(d <= max) {
+		if(d <= channel.falloff.end) {
 			return false;
 		}
 		
