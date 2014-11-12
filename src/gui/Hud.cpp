@@ -1123,26 +1123,21 @@ class LevelUpIconGui : public HudIconBase {
 private:
 	TextureContainer * m_tex;
 	Vec2f m_pos;
+	Vec2f m_size;
 public:
 	void init() {
 		m_tex = TextureContainer::LoadUI("graph/interface/icons/lvl_up");
 		arx_assert(m_tex);
+		m_size = Vec2f(32.f, 32.f);
+	}
+	
+	void update(const Rectf & parent) {
+		m_rect = createChild(parent, Anchor_TopRight, m_size * m_scale, Anchor_BottomRight);
 	}
 	
 	void updateInput() {
-		
-		// redist
 		if((player.Skill_Redistribute) || (player.Attribute_Redistribute)) {
-			Vec2f pos(g_size.width() - 35 + lSLID_VALUE, g_size.height() - INTERFACE_RATIO(218));
-			
-			const Rect mouseTestRect(
-			pos.x,
-			pos.y,
-			pos.x + INTERFACE_RATIO(32),
-			pos.y + INTERFACE_RATIO(32)
-			);
-
-			if(mouseTestRect.contains(Vec2i(DANAEMouse))) {
+			if(m_rect.contains(Vec2f(DANAEMouse))) {
 				eMouseState = MOUSE_IN_REDIST_ICON;
 				SpecialCursor = CURSOR_INTERACTION_ON;
 
@@ -1150,21 +1145,13 @@ public:
 					ARX_INTERFACE_BookOpenClose(1);
 					EERIEMouseButton &=~1;
 				}
-				return;
 			}
 		}
 	}
 	
-	void update() {
-		m_pos = g_size.bottomRight();
-		m_pos += Vec2f(-35, -218);
-		m_pos.x += lSLID_VALUE;
-	}
-	
+
 	void draw() {
-		Rectf rect = Rectf(m_pos, m_tex->m_dwWidth, m_tex->m_dwHeight);
-		
-		DrawIcon(rect, m_tex, MOUSE_IN_REDIST_ICON);
+		DrawIcon(m_rect, m_tex, MOUSE_IN_REDIST_ICON);
 	}
 };
 
@@ -2188,6 +2175,7 @@ void setHudScale(float scale) {
 	backpackIconGui.setScale(scale);
 	bookIconGui.setScale(scale);
 	purseIconGui.setScale(scale);
+	levelUpIconGui.setScale(scale);
 	
 	mecanismIcon.setScale(scale);
 	screenArrows.setScale(scale);
@@ -2236,11 +2224,6 @@ void ArxGame::drawAllInterface() {
 				pickAllIconGui.draw();
 			}
 			closeSecondaryInventoryIconGui.draw();
-		}
-
-		if(player.Skill_Redistribute || player.Attribute_Redistribute) {
-			levelUpIconGui.update();
-			levelUpIconGui.draw();
 		}
 	}
 	
@@ -2291,6 +2274,7 @@ void ArxGame::drawAllInterface() {
 		backpackIconGui.update(manaGauge.rect());
 		bookIconGui.update(backpackIconGui.rect());
 		purseIconGui.update(bookIconGui.rect());
+		levelUpIconGui.update(purseIconGui.rect());
 		
 		backpackIconGui.draw();
 		bookIconGui.draw();
@@ -2298,6 +2282,10 @@ void ArxGame::drawAllInterface() {
 		// Draw/Manage Gold Purse Icon
 		if(player.gold > 0) {
 			purseIconGui.draw();
+		}
+		
+		if(player.Skill_Redistribute || player.Attribute_Redistribute) {
+			levelUpIconGui.draw();
 		}
 		
 		//A halo is drawn on the character's stats icon (book) when leveling up, for example.
