@@ -1128,16 +1128,14 @@ bool PutInInventory() {
 		fcos = cos + cos * ((float)player.m_skillFull.intuition) * 0.005f;
 		cos = checked_range_cast<long>(fcos);
 		
+		// SHOP
 		if(io->ioflags & IO_SHOP) {
 			if(!io->shop_category.empty() && DRAGINTER->groups.find(io->shop_category) == DRAGINTER->groups.end())
 				return false;
 			
 			if(cos <= 0)
 				return false;
-		}
-		
-		// SHOP
-		if(io->ioflags & IO_SHOP) {
+			
 			// Check shop group
 			for(long j = 0; j < SecondaryInventory->m_size.y; j++) {
 			for(long i = 0; i < SecondaryInventory->m_size.x; i++) {
