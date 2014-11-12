@@ -1874,13 +1874,14 @@ bool TakeFromInventory(const Vec2s & pos) {
 
 bool IsInPlayerInventory(Entity * io) {
 	
-	for(long iNbBag = 0; iNbBag < player.bag; iNbBag ++) {
-		for(size_t j = 0; j < INVENTORY_Y; j++) {
-			for(size_t i = 0; i < INVENTORY_X; i++) {
-				if(inventory[iNbBag][i][j].io == io) {
-					return true;
-				}
-			}
+	arx_assert(player.bag >= 0)
+	arx_assert(player.bag < 3)
+	
+	for(size_t bag = 0; bag < size_t(player.bag); bag ++)
+	for(size_t j = 0; j < INVENTORY_Y; j++)
+	for(size_t i = 0; i < INVENTORY_X; i++) {
+		if(inventory[bag][i][j].io == io) {
+			return true;
 		}
 	}
 	
@@ -1904,13 +1905,15 @@ bool IsInSecondaryInventory(Entity * io) {
 
 void SendInventoryObjectCommand(const std::string & _lpszText, ScriptMessage _lCommand) {
 	
-	if(player.bag) {
-		for(int iNbBag = 0; iNbBag < player.bag; iNbBag++) {
-			for(size_t j = 0; j < INVENTORY_Y; j++) {
-				for(size_t i = 0; i < INVENTORY_X; i++) {
+	arx_assert(player.bag >= 0)
+	arx_assert(player.bag < 3)
+	
+	for(size_t bag = 0; bag < size_t(player.bag); bag++)
+	for(size_t j = 0; j < INVENTORY_Y; j++)
+	for(size_t i = 0; i < INVENTORY_X; i++) {
 					
-					if(inventory[iNbBag][i][j].io && inventory[iNbBag][i][j].io->obj) {
-						Entity * item = inventory[iNbBag][i][j].io;
+					if(inventory[bag][i][j].io && inventory[bag][i][j].io->obj) {
+						Entity * item = inventory[bag][i][j].io;
 						for(size_t lTex = 0; lTex < item->obj->texturecontainer.size(); lTex++) {
 							if(!item->obj->texturecontainer.empty()) {
 								if(item->obj->texturecontainer[lTex]) {
@@ -1924,9 +1927,6 @@ void SendInventoryObjectCommand(const std::string & _lpszText, ScriptMessage _lC
 							}
 						}
 					}
-				}
-			}
-		}
 	}
 }
 
@@ -1934,24 +1934,23 @@ Entity * ARX_INVENTORY_GetTorchLowestDurability() {
 	
 	Entity * io = NULL;
 	
-	if(player.bag) {
-		for(int iNbBag = 0; iNbBag < player.bag; iNbBag++) {
-			for(size_t j = 0; j < INVENTORY_Y; j++) {
-				for(size_t i = 0; i < INVENTORY_X; i++) {
-					if(inventory[iNbBag][i][j].io) {
-						if(inventory[iNbBag][i][j].io->locname == "description_torch") {
+	arx_assert(player.bag >= 0)
+	arx_assert(player.bag < 3)
+	
+	for(size_t bag = 0; bag < size_t(player.bag); bag++)
+	for(size_t j = 0; j < INVENTORY_Y; j++)
+	for(size_t i = 0; i < INVENTORY_X; i++) {
+					if(inventory[bag][i][j].io) {
+						if(inventory[bag][i][j].io->locname == "description_torch") {
 							if(!io) {
-								io = inventory[iNbBag][i][j].io;
+								io = inventory[bag][i][j].io;
 							} else {
-								if(inventory[iNbBag][i][j].io->durability < io->durability) {
-									io = inventory[iNbBag][i][j].io;
+								if(inventory[bag][i][j].io->durability < io->durability) {
+									io = inventory[bag][i][j].io;
 								}
 							}
 						}
 					}
-				}
-			}
-		}
 	}
 	
 	return io;
@@ -1968,13 +1967,13 @@ void ARX_INVENTORY_IdentifyIO(Entity * _pIO) {
 
 void ARX_INVENTORY_IdentifyAll() {
 	
-	if(!player.bag)
-		return;
+	arx_assert(player.bag >= 0)
+	arx_assert(player.bag < 3)
 	
-	for(int iNbBag = 0; iNbBag < player.bag; iNbBag++)
+	for(size_t bag = 0; bag < size_t(player.bag); bag++)
 	for(size_t j = 0; j < INVENTORY_Y; j++)
 	for(size_t i = 0; i < INVENTORY_X; i++) {
-		Entity * io = inventory[iNbBag][i][j].io;
+		Entity * io = inventory[bag][i][j].io;
 		if(!io || !(io->ioflags & IO_ITEM) || !io->_itemdata->equipitem)
 			continue;
 		

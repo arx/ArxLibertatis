@@ -516,7 +516,7 @@ public:
 	}
 	
 	//-----------------------------------------------------------------------------
-	void ARX_INTERFACE_DrawInventory(short _sNum, int _iX=0, int _iY=0)
+	void ARX_INTERFACE_DrawInventory(size_t bag, int _iX=0, int _iY=0)
 	{
 		fDecPulse += framedelay * 0.5f;
 		
@@ -529,9 +529,9 @@ public:
 		
 		for(size_t j = 0; j < INVENTORY_Y; j++) {
 		for(size_t i = 0; i < INVENTORY_X; i++) {
-			Entity *io = inventory[_sNum][i][j].io;
+			Entity *io = inventory[bag][i][j].io;
 			
-			if(!io || !inventory[_sNum][i][j].show)
+			if(!io || !inventory[bag][i][j].show)
 				continue;
 			
 			TextureContainer *tc = io->inv;

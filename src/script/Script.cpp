@@ -1956,11 +1956,11 @@ void ManageCasseDArme(Entity * io)
 			Entity * pObjFIX = NULL;
 			bool bStop = false;
 			
-			for (int iNbBag = 0; iNbBag < player.bag; iNbBag++) {
+			for(size_t bag = 0; bag < player.bag; bag++) {
 				for (size_t j = 0; j < INVENTORY_Y; j++) {
 					for (size_t i = 0; i < INVENTORY_X; i++) {
 						
-						Entity * bagEntity = inventory[iNbBag][i][j].io;
+						Entity * bagEntity = inventory[bag][i][j].io;
 						
 						if ((bagEntity) &&
 								(bagEntity != io) &&
