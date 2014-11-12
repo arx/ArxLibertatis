@@ -1954,7 +1954,6 @@ void ManageCasseDArme(Entity * io) {
 	Entity * pObjMin = NULL;
 	Entity * pObjMax = NULL;
 	Entity * pObjFIX = NULL;
-	bool bStop = false;
 	
 	for(size_t bag = 0; bag < size_t(player.bag); bag++) {
 		for(size_t j = 0; j < INVENTORY_Y; j++) {
@@ -1973,7 +1972,7 @@ void ManageCasseDArme(Entity * io) {
 						if(bagEntity->_itemdata->equipitem->elements[IO_EQUIPITEM_ELEMENT_Damages].value == io->_itemdata->equipitem->elements[IO_EQUIPITEM_ELEMENT_Damages].value) {
 							pIOChangeWeapon = bagEntity;
 							lChangeWeapon = 2;
-							bStop = true;
+							return;
 						} else {
 							if(bagEntity->_itemdata->equipitem->elements[IO_EQUIPITEM_ELEMENT_Damages].value > io->_itemdata->equipitem->elements[IO_EQUIPITEM_ELEMENT_Damages].value) {
 								if(pObjMin) {
@@ -2001,20 +2000,9 @@ void ManageCasseDArme(Entity * io) {
 						}
 					}
 				}
-
-				if(bStop) {
-					break;
-				}
-			}
-
-			if(bStop) {
-				break;
 			}
 		}
-
-		if(bStop) {
-			break;
-		} else {
+		
 			if(pObjMax) {
 				pIOChangeWeapon = pObjMax;
 				lChangeWeapon = 2;
@@ -2029,7 +2017,6 @@ void ManageCasseDArme(Entity * io) {
 					}
 				}
 			}
-		}
 	}
 }
 
