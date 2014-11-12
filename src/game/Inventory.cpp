@@ -813,17 +813,14 @@ bool CanBePutInInventory(Entity * io)
 		return true;
 	}
 
-	long sx, sy;
-
-	sx = io->m_inventorySize.x;
-	sy = io->m_inventorySize.y;
-
+	const Vec2s s = io->m_inventorySize;
+	
 	// on essaie de le remettre à son ancienne place --------------------------
 	if (sInventory == 1 &&
 	        (sInventoryX >= 0) &&
-	        ((size_t)sInventoryX <= INVENTORY_X - sx) &&
+	        ((size_t)sInventoryX <= INVENTORY_X - s.x) &&
 	        (sInventoryY >= 0) &&
-	        ((size_t)sInventoryY <= INVENTORY_Y - sy))
+	        ((size_t)sInventoryY <= INVENTORY_Y - s.y))
 	{
 		long j = sInventoryY;
 		long i = sInventoryX;
@@ -872,18 +869,18 @@ bool CanBePutInInventory(Entity * io)
 				{
 					bool valid = true;
 
-					if ((sx == 0) || (sy == 0)) valid = false;
+					if ((s.x == 0) || (s.y == 0)) valid = false;
 
-					for(long k = j; k < j + sy; k++)
-						for(long l = i; l < i + sx; l++)
+					for(long k = j; k < j + s.y; k++)
+						for(long l = i; l < i + s.x; l++)
 						{
 							if (inventory[iNbBag][l][k].io != NULL) valid = false;
 						}
 
 					if (valid)
 					{
-						for(long k = j; k < j + sy; k++)
-							for(long l = i; l < i + sx; l++)
+						for(long k = j; k < j + s.y; k++)
+							for(long l = i; l < i + s.x; l++)
 							{
 								inventory[iNbBag][l][k].io = io;
 								inventory[iNbBag][l][k].show = 0;
@@ -902,8 +899,8 @@ bool CanBePutInInventory(Entity * io)
 
 	if(player.bag) {
 		for (int iNbBag = 0; iNbBag < player.bag; iNbBag++) {
-			for(size_t i = 0; i <= INVENTORY_X - sx; i++) {
-				for(size_t j = 0; j <= INVENTORY_Y - sy; j++) {
+			for(size_t i = 0; i <= INVENTORY_X - s.x; i++) {
+				for(size_t j = 0; j <= INVENTORY_Y - s.y; j++) {
 					
 					Entity * ioo = inventory[iNbBag][i][j].io;
 
@@ -938,25 +935,25 @@ bool CanBePutInInventory(Entity * io)
 	
 	if(player.bag) {
 		for(int iNbBag = 0; iNbBag < player.bag; iNbBag++) {
-			for(size_t i = 0; i <= INVENTORY_X - sx; i++) {
-				for(size_t j = 0; j <= INVENTORY_Y - sy; j++) {
+			for(size_t i = 0; i <= INVENTORY_X - s.x; i++) {
+				for(size_t j = 0; j <= INVENTORY_Y - s.y; j++) {
 					
 					if (inventory[iNbBag][i][j].io == NULL)
 					{
 						bool valid = true;
 
-						if ((sx == 0) || (sy == 0)) valid = false;
+						if ((s.x == 0) || (s.y == 0)) valid = false;
 
-						for (size_t k = j; k < j + sy; k++)
-							for (size_t l = i; l < i + sx; l++)
+						for (size_t k = j; k < j + s.y; k++)
+							for (size_t l = i; l < i + s.x; l++)
 							{
 								if (inventory[iNbBag][l][k].io != NULL) valid = false;
 							}
 
 						if (valid)
 						{
-							for (size_t k = j; k < j + sy; k++)
-								for (size_t l = i; l < i + sx; l++)
+							for (size_t k = j; k < j + s.y; k++)
+								for (size_t l = i; l < i + s.x; l++)
 								{
 									inventory[iNbBag][l][k].io = io;
 									inventory[iNbBag][l][k].show = 0;
