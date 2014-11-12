@@ -804,9 +804,11 @@ bool insertIntoInventory(Entity * item, const InventoryPos & pos) {
  */
 bool CanBePutInInventory(Entity * io)
 {
-	if (io == NULL) return false;
+	if(io == NULL)
+		return false;
 
-	if (io->ioflags & IO_MOVABLE) return false;
+	if(io->ioflags & IO_MOVABLE)
+		return false;
 
 	if(io->ioflags & IO_GOLD) {
 		ARX_PLAYER_AddGold(io);
@@ -816,37 +818,30 @@ bool CanBePutInInventory(Entity * io)
 	const Vec2s s = io->m_inventorySize;
 	
 	// on essaie de le remettre à son ancienne place --------------------------
-	if (sInventory == 1 &&
-	        (sInventoryX >= 0) &&
-	        ((size_t)sInventoryX <= INVENTORY_X - s.x) &&
-	        (sInventoryY >= 0) &&
-	        ((size_t)sInventoryY <= INVENTORY_Y - s.y))
-	{
+	if(   sInventory == 1
+	   && sInventoryX >= 0
+	   && sInventoryX <= short(INVENTORY_X) - s.x
+	   && sInventoryY >= 0
+	   && sInventoryY <= short(INVENTORY_Y) - s.y
+	) {
 		long j = sInventoryY;
 		long i = sInventoryX;
 
 		// first try to stack -------------------------------------------------
-		if (player.bag)
-		{
-			for (int iNbBag = 0; iNbBag < player.bag; iNbBag++)
-			{
+		if(player.bag) {
+			for(int iNbBag = 0; iNbBag < player.bag; iNbBag++) {
 
 				Entity * ioo = inventory[iNbBag][i][j].io;
 
-				if ((ioo)
-				        &&	(ioo->_itemdata->playerstacksize > 1)
-				        &&	(IsSameObject(io, ioo)))
-				{
-					if (ioo->_itemdata->count < ioo->_itemdata->playerstacksize)
-					{
+				if(ioo && ioo->_itemdata->playerstacksize > 1 && IsSameObject(io, ioo)) {
+					if(ioo->_itemdata->count < ioo->_itemdata->playerstacksize) {
 						ioo->_itemdata->count += io->_itemdata->count;
 
-						if (ioo->_itemdata->count > ioo->_itemdata->playerstacksize)
-						{
+						if(ioo->_itemdata->count > ioo->_itemdata->playerstacksize) {
 							io->_itemdata->count = ioo->_itemdata->count - ioo->_itemdata->playerstacksize;
 							ioo->_itemdata->count = ioo->_itemdata->playerstacksize;
-						}
-						else io->_itemdata->count = 0;
+						} else
+							io->_itemdata->count = 0;
 
 						if(!io->_itemdata->count) {
 							io->destroy();
@@ -861,30 +856,26 @@ bool CanBePutInInventory(Entity * io)
 		}
 
 
-		if (player.bag)
-		{
-			for (int iNbBag = 0; iNbBag < player.bag; iNbBag++)
-			{
-				if (inventory[iNbBag][i][j].io == NULL)
-				{
+		if(player.bag) {
+			for(int iNbBag = 0; iNbBag < player.bag; iNbBag++) {
+				if(inventory[iNbBag][i][j].io == NULL) {
 					bool valid = true;
 
-					if ((s.x == 0) || (s.y == 0)) valid = false;
+					if(s.x == 0 || s.y == 0)
+						valid = false;
 
 					for(long k = j; k < j + s.y; k++)
-						for(long l = i; l < i + s.x; l++)
-						{
-							if (inventory[iNbBag][l][k].io != NULL) valid = false;
-						}
+					for(long l = i; l < i + s.x; l++) {
+						if(inventory[iNbBag][l][k].io != NULL)
+							valid = false;
+					}
 
-					if (valid)
-					{
+					if(valid) {
 						for(long k = j; k < j + s.y; k++)
-							for(long l = i; l < i + s.x; l++)
-							{
-								inventory[iNbBag][l][k].io = io;
-								inventory[iNbBag][l][k].show = 0;
-							}
+						for(long l = i; l < i + s.x; l++) {
+							inventory[iNbBag][l][k].io = io;
+							inventory[iNbBag][l][k].show = 0;
+						}
 
 						inventory[iNbBag][i][j].show = 1;
 						ARX_INVENTORY_Declare_InventoryIn(io);
@@ -898,28 +889,22 @@ bool CanBePutInInventory(Entity * io)
 
 
 	if(player.bag) {
-		for (int iNbBag = 0; iNbBag < player.bag; iNbBag++) {
+		for(int iNbBag = 0; iNbBag < player.bag; iNbBag++) {
 			for(size_t i = 0; i <= INVENTORY_X - s.x; i++) {
 				for(size_t j = 0; j <= INVENTORY_Y - s.y; j++) {
 					
 					Entity * ioo = inventory[iNbBag][i][j].io;
 
-					if ((ioo)
-					        &&	(ioo->_itemdata->playerstacksize > 1)
-					        &&	(IsSameObject(io, ioo)))
-					{
-						if (ioo->_itemdata->count < ioo->_itemdata->playerstacksize)
-						{
+					if(ioo && ioo->_itemdata->playerstacksize > 1 && IsSameObject(io, ioo)) {
+						if(ioo->_itemdata->count < ioo->_itemdata->playerstacksize) {
 
 							ioo->_itemdata->count += io->_itemdata->count;
 
-
-							if (ioo->_itemdata->count > ioo->_itemdata->playerstacksize)
-							{
+							if(ioo->_itemdata->count > ioo->_itemdata->playerstacksize) {
 								io->_itemdata->count = ioo->_itemdata->count - ioo->_itemdata->playerstacksize;
 								ioo->_itemdata->count = ioo->_itemdata->playerstacksize;
-							}
-							else io->_itemdata->count = 0;
+							} else
+								io->_itemdata->count = 0;
 
 							if(!io->_itemdata->count) {
 								io->destroy();
@@ -938,26 +923,24 @@ bool CanBePutInInventory(Entity * io)
 			for(size_t i = 0; i <= INVENTORY_X - s.x; i++) {
 				for(size_t j = 0; j <= INVENTORY_Y - s.y; j++) {
 					
-					if (inventory[iNbBag][i][j].io == NULL)
-					{
+					if(inventory[iNbBag][i][j].io == NULL) {
 						bool valid = true;
 
-						if ((s.x == 0) || (s.y == 0)) valid = false;
+						if(s.x == 0 || s.y == 0)
+							valid = false;
 
-						for (size_t k = j; k < j + s.y; k++)
-							for (size_t l = i; l < i + s.x; l++)
-							{
-								if (inventory[iNbBag][l][k].io != NULL) valid = false;
+						for(size_t k = j; k < j + s.y; k++)
+						for(size_t l = i; l < i + s.x; l++) {
+							if(inventory[iNbBag][l][k].io != NULL)
+								valid = false;
+						}
+
+						if(valid) {
+							for(size_t k = j; k < j + s.y; k++)
+							for(size_t l = i; l < i + s.x; l++) {
+								inventory[iNbBag][l][k].io = io;
+								inventory[iNbBag][l][k].show = 0;
 							}
-
-						if (valid)
-						{
-							for (size_t k = j; k < j + s.y; k++)
-								for (size_t l = i; l < i + s.x; l++)
-								{
-									inventory[iNbBag][l][k].io = io;
-									inventory[iNbBag][l][k].show = 0;
-								}
 
 							inventory[iNbBag][i][j].show = 1;
 							ARX_INVENTORY_Declare_InventoryIn(io);
