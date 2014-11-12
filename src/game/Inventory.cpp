@@ -1143,8 +1143,9 @@ bool PutInInventory() {
 				for(long i = 0; i < SecondaryInventory->m_size.x; i++) {
 					Entity * ioo = SecondaryInventory->slot[i][j].io;
 					
-					if(ioo) {
-						if(IsSameObject(DRAGINTER, ioo)) {
+					if(!ioo || !IsSameObject(DRAGINTER, ioo))
+						continue;
+					
 							ioo->_itemdata->count += DRAGINTER->_itemdata->count;
 							ioo->scale = 1.f;
 							
@@ -1154,8 +1155,6 @@ bool PutInInventory() {
 							ARX_SOUND_PlayInterface(SND_GOLD);
 							ARX_SOUND_PlayInterface(SND_INVSTD);
 							return true;
-						}
-					}
 				}
 			}
 		}
