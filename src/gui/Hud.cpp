@@ -133,11 +133,16 @@ protected:
 /*!
  * \brief the hit strength diamond shown at the bottom of the UI.
  */
-class HitStrengthGauge {
+class HitStrengthGauge : public HudItem{
 private:
 	TextureContainer * m_emptyTex;
 	TextureContainer * m_fullTex;
 	TextureContainer * m_hitTex;
+	
+	Vec2f m_size;
+	Vec2f m_hitSize;
+	
+	Rectf m_hitRect;
 	
 	float m_intensity;
 	bool bHitFlash;
@@ -162,6 +167,9 @@ public:
 		arx_assert(m_emptyTex);
 		arx_assert(m_fullTex);
 		arx_assert(m_hitTex);
+		
+		m_size = Vec2f(122.f, 70.f);
+		m_hitSize = Vec2f(172.f, 130.f);
 	}
 	
 	void requestFlash(float flashIntensity) {
@@ -170,7 +178,12 @@ public:
 		m_flashIntensity = flashIntensity;
 	}
 	
-	void update() {
+	void update(const Rectf & parent) {
+		m_rect = createChild(parent, Anchor_BottomCenter, m_size * m_scale, Anchor_BottomCenter);
+		m_rect.move(0.f, -2.f);
+		
+		m_hitRect = createChild(m_rect, Anchor_Center, m_hitSize * m_scale, Anchor_Center);
+		
 		if(AimTime == 0) {
 			m_intensity = 0.2f;
 		} else {
@@ -202,26 +215,21 @@ public:
 	}
 	
 	void draw() {
-		Vec2f pos = Vec2f(g_size.bottomCenter());
-		pos += Vec2f(-320 + 262.f, -72.f);
-		
 		GRenderer->SetBlendFunc(Renderer::BlendOne, Renderer::BlendOne);
-	
 		GRenderer->SetRenderState(Renderer::AlphaBlending, true);
-		ARX_INTERFACE_DrawItem(m_fullTex, pos.x, pos.y, 0.0001f, Color3f::gray(m_intensity).to<u8>());
+		EERIEDrawBitmap(m_rect, 0.0001f, m_fullTex, Color3f::gray(m_intensity).to<u8>());
+		
 		GRenderer->SetRenderState(Renderer::AlphaBlending, false);
-		ARX_INTERFACE_DrawItem(m_emptyTex, pos.x, pos.y, 0.0001f, Color::white);
+		EERIEDrawBitmap(m_rect, 0.0001f, m_emptyTex, Color::white);
 		
 		if(bHitFlash && player.m_skillFull.etheralLink >= 40) {
-			Vec2f flashPos = pos;
-			flashPos += Vec2f(-25, -30);
 			
 			float j = 1.0f - m_flashIntensity;
+			Color col = (j < 0.5f) ? Color3f(j*2.0f, 1, 0).to<u8>() : Color3f(1, m_flashIntensity, 0).to<u8>();
+			
 			GRenderer->SetBlendFunc(Renderer::BlendOne, Renderer::BlendOne);
 			GRenderer->SetRenderState(Renderer::AlphaBlending, true);
-			
-			Color col = (j < 0.5f) ? Color3f(j*2.0f, 1, 0).to<u8>() : Color3f(1, m_flashIntensity, 0).to<u8>();
-			ARX_INTERFACE_DrawItem(m_hitTex, flashPos.x, flashPos.y, 0.0001f, col);
+			EERIEDrawBitmap(m_hitRect, 0.0001f, m_hitTex, col);
 			GRenderer->SetRenderState(Renderer::AlphaBlending, false);
 		}
 	}
@@ -2142,8 +2150,7 @@ public:
 StealthGauge stealthGauge;
 
 void UpdateInterface() {
-	
-	hitStrengthGauge.update();
+	hitStrengthGauge.update(Rectf(g_size));
 	secondaryInventory.update();
 	inventoryGui.update();
 	mecanismIcon.update();
@@ -2156,6 +2163,7 @@ void UpdateInterface() {
 }
 
 void setHudScale(float scale) {
+	hitStrengthGauge.setScale(scale);
 	healthGauge.setScale(scale);
 	
 	manaGauge.setScale(scale);
