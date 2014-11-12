@@ -2079,7 +2079,10 @@ void ARX_INVENTORY_TakeAllFromSecondaryInventory() {
 
 //-----------------------------------------------------------------------------
 void ARX_INVENTORY_ReOrder() {
-	if(TSecondaryInventory) {
+	
+	if(!TSecondaryInventory)
+		return;
+	
 		for(long j = 0; j < TSecondaryInventory->m_size.y; j++)
 			for(long i = 0; i < TSecondaryInventory->m_size.x; i++) {
 				if(TSecondaryInventory->slot[i][j].io && TSecondaryInventory->slot[i][j].show) {
@@ -2106,5 +2109,4 @@ void ARX_INVENTORY_ReOrder() {
 					}
 				}
 			}
-	}
 }
