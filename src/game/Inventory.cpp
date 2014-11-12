@@ -1140,22 +1140,22 @@ bool PutInInventory() {
 		if(io->ioflags & IO_SHOP) {
 			// Check shop group
 			for(long j = 0; j < SecondaryInventory->m_size.y; j++) {
-				for(long i = 0; i < SecondaryInventory->m_size.x; i++) {
-					Entity * ioo = SecondaryInventory->slot[i][j].io;
-					
-					if(!ioo || !IsSameObject(DRAGINTER, ioo))
-						continue;
-					
-							ioo->_itemdata->count += DRAGINTER->_itemdata->count;
-							ioo->scale = 1.f;
-							
-							DRAGINTER->destroy();
-							
-							ARX_PLAYER_AddGold(cos);
-							ARX_SOUND_PlayInterface(SND_GOLD);
-							ARX_SOUND_PlayInterface(SND_INVSTD);
-							return true;
-				}
+			for(long i = 0; i < SecondaryInventory->m_size.x; i++) {
+				Entity * ioo = SecondaryInventory->slot[i][j].io;
+				
+				if(!ioo || !IsSameObject(DRAGINTER, ioo))
+					continue;
+				
+				ioo->_itemdata->count += DRAGINTER->_itemdata->count;
+				ioo->scale = 1.f;
+				
+				DRAGINTER->destroy();
+				
+				ARX_PLAYER_AddGold(cos);
+				ARX_SOUND_PlayInterface(SND_GOLD);
+				ARX_SOUND_PlayInterface(SND_INVSTD);
+				return true;
+			}
 			}
 		}
 		
