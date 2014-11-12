@@ -189,15 +189,15 @@ static Entity * GetInventoryObj(const Vec2s & pos) {
 
 		int iY = checked_range_cast<int>(fBag);
 
-		for(int i = 0; i < player.bag; i++) {
+		for(size_t bag = 0; bag < size_t(player.bag); bag++) {
 			long tx = pos.x - iPos.x;
 			long ty = pos.y - iPos.y - iY;
 
 			tx = checked_range_cast<long>(tx / INTERFACE_RATIO(32));
 			ty = checked_range_cast<long>(ty / INTERFACE_RATIO(32));
 
-			if((tx >= 0) && ((size_t)tx < INVENTORY_X) && (ty >= 0) && ((size_t)ty < INVENTORY_Y)) {
-				Entity *result = inventory[i][tx][ty].io;
+			if(tx >= 0 && (size_t)tx < INVENTORY_X && ty >= 0 && (size_t)ty < INVENTORY_Y) {
+				Entity *result = inventory[bag][tx][ty].io;
 
 				if(result && (result->gameFlags & GFLAG_INTERACTIVITY)) {
 					HERO_OR_SECONDARY = 1;
