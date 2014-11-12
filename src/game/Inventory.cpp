@@ -1799,19 +1799,22 @@ bool TakeFromInventory(const Vec2s & pos) {
 		}
 
 		for(long j = 0; j < SecondaryInventory->m_size.y; j++)
-			for(long i = 0; i < SecondaryInventory->m_size.x; i++) {
-				if(SecondaryInventory->slot[i][j].io == io) {
-					SecondaryInventory->slot[i][j].io = NULL;
-					SecondaryInventory->slot[i][j].show = 1;
-					sInventory = 2;
+		for(long i = 0; i < SecondaryInventory->m_size.x; i++) {
+			INVENTORY_SLOT & slot = SecondaryInventory->slot[i][j];
+			
+			if(slot.io != io)
+				continue;
+			
+			slot.io = NULL;
+			slot.show = 1;
+			sInventory = 2;
 
-					float fCalcX = (pos.x + InventoryX - INTERFACE_RATIO(2)) / INTERFACE_RATIO(32);
-					float fCalcY = (pos.y - INTERFACE_RATIO(13)) / INTERFACE_RATIO(32);
+			float fCalcX = (pos.x + InventoryX - INTERFACE_RATIO(2)) / INTERFACE_RATIO(32);
+			float fCalcY = (pos.y - INTERFACE_RATIO(13)) / INTERFACE_RATIO(32);
 
-					sInventoryX = checked_range_cast<short>(fCalcX);
-					sInventoryY = checked_range_cast<short>(fCalcY);
-				}
-			}
+			sInventoryX = checked_range_cast<short>(fCalcX);
+			sInventoryY = checked_range_cast<short>(fCalcY);
+		}
 	}
 
 
