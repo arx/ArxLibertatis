@@ -1683,8 +1683,9 @@ void RemoveFromAllInventories(const Entity * io) {
 		const EntityHandle handle = EntityHandle(i);
 		Entity * e = entities[handle];
 		
-		if(e != NULL) {
-			if(e->inventory != NULL) {
+		if(!e || !e->inventory)
+			continue;
+		
 				INVENTORY_DATA * id = e->inventory;
 				for(long j = 0; j < id->m_size.y; j++) {
 					for(long k = 0; k < id->m_size.x; k++) {
@@ -1694,8 +1695,6 @@ void RemoveFromAllInventories(const Entity * io) {
 						}
 					}
 				}
-			}
-		}
 	}
 }
 
