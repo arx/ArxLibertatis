@@ -1174,7 +1174,9 @@ bool PutInInventory() {
 				for(long i = 0; i < s.x; i++) {
 					Entity * ioo = SecondaryInventory->slot[tx+i][ty+j].io;
 					
-					if(ioo) {
+					if(!ioo)
+						continue;
+					
 						DRAGINTER->show = SHOW_FLAG_IN_INVENTORY;
 						
 						if(   ioo->_itemdata->playerstacksize > 1
@@ -1206,7 +1208,6 @@ bool PutInInventory() {
 						ARX_SOUND_PlayInterface(SND_INVSTD);
 						Set_DragInter(NULL);
 						return true;
-					}
 				}
 			}
 			
