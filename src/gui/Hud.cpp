@@ -123,6 +123,8 @@ public:
 		m_scale = scale;
 	}
 
+	Rectf rect() { return m_rect; }
+	
 protected:
 	float m_scale;
 	Rectf m_rect;
@@ -715,7 +717,7 @@ void DrawItemPrice() {
 }
 
 
-class HudIconBase {
+class HudIconBase : public HudItem {
 protected:
 	void DrawHalo(float r, float g, float b, TextureContainer* halo, const Vec2f& coords) {
 		if(halo) {
@@ -796,10 +798,9 @@ public:
 		MakeBookFX(Vec3f(Vec2f(g_size.bottomRight()) + Vec2f(-35, -148), 0.00001f));
 	}
 	
-	void update() {
-		m_pos = g_size.bottomRight();
-		m_pos += Vec2f(-35, -148);
-		m_pos.x += lSLID_VALUE;
+	void update(Rectf parent) {
+		
+		m_pos = parent.topRight() + Vec2f(-32, -32) + Vec2f(-3, -3);
 	}
 	
 	void updateInput() {
@@ -862,10 +863,10 @@ public:
 		arx_assert(m_tex);
 	}
 
-	void update() {
-		m_pos = g_size.bottomRight();
-		m_pos += Vec2f(-35, -113);
-		m_pos.x += lSLID_VALUE;
+	void update(const Rectf & parent) {
+		
+		m_pos = parent.topRight() + Vec2f(-32, -32) + Vec2f(-3, -3);
+		m_rect = Rectf(m_pos, 33, 32);
 	}
 	
 	void updateInput() {
@@ -2214,7 +2215,11 @@ void UpdateInterface() {
 
 void setHudScale(float scale) {
 	healthGauge.setScale(scale);
+	
 	manaGauge.setScale(scale);
+	backpackIconGui.setScale(scale);
+	bookIconGui.setScale(scale);
+	
 	mecanismIcon.setScale(scale);
 	screenArrows.setScale(scale);
 }
@@ -2321,11 +2326,12 @@ void ArxGame::drawAllInterface() {
 	}
 	
 	if(!(player.Interface & INTER_COMBATMODE) && (player.Interface & INTER_MINIBACK)) {
-		bookIconGui.update();
-		bookIconGui.draw();
 		
-		backpackIconGui.update();
+		backpackIconGui.update(manaGauge.rect());
+		bookIconGui.update(backpackIconGui.rect());
+		
 		backpackIconGui.draw();
+		bookIconGui.draw();
 	}
 	
 	GRenderer->GetTextureStage(0)->setMinFilter(TextureStage::FilterLinear);
