@@ -2047,10 +2047,12 @@ void ARX_INVENTORY_TakeAllFromSecondaryInventory() {
 	if(TSecondaryInventory) {
 		for(long j = 0; j < TSecondaryInventory->m_size.y; j++)
 			for(long i = 0; i < TSecondaryInventory->m_size.x; i++) {
-				if(TSecondaryInventory->slot[i][j].io && TSecondaryInventory->slot[i][j].show) {
-					long sx = TSecondaryInventory->slot[i][j].io->m_inventorySize.x;
-					long sy = TSecondaryInventory->slot[i][j].io->m_inventorySize.y;
-					Entity * io = TSecondaryInventory->slot[i][j].io;
+				INVENTORY_SLOT & slot = TSecondaryInventory->slot[i][j];
+				
+				if(slot.io && slot.show) {
+					long sx = slot.io->m_inventorySize.x;
+					long sy = slot.io->m_inventorySize.y;
+					Entity * io = slot.io;
 
 					if(!(io->ioflags & IO_GOLD))
 						RemoveFromAllInventories(io);
