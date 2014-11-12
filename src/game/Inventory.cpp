@@ -2090,26 +2090,26 @@ void ARX_INVENTORY_ReOrder() {
 		if(!slot.io || !slot.show)
 			continue;
 		
-			long sx = slot.io->m_inventorySize.x;
-			long sy = slot.io->m_inventorySize.y;
-			Entity * io = slot.io;
-			
-			RemoveFromAllInventories(io);
-			long x, y;
+		long sx = slot.io->m_inventorySize.x;
+		long sy = slot.io->m_inventorySize.y;
+		Entity * io = slot.io;
+		
+		RemoveFromAllInventories(io);
+		long x, y;
+		sInventory = 2;
+		sInventoryX = 0;
+		sInventoryY = 0;
+		
+		if(CanBePutInSecondaryInventory(TSecondaryInventory, io, &x, &y)) {
+		} else{
 			sInventory = 2;
-			sInventoryX = 0;
-			sInventoryY = 0;
 			
-			if(CanBePutInSecondaryInventory(TSecondaryInventory, io, &x, &y)) {
-			} else{
-				sInventory = 2;
-				
-				sInventoryX = static_cast<short>(i);
-				sInventoryY = static_cast<short>(j);
-				
-				sx = i;
-				sy = j;
-				CanBePutInSecondaryInventory(TSecondaryInventory, io, &sx, &sy);
-			}
+			sInventoryX = static_cast<short>(i);
+			sInventoryY = static_cast<short>(j);
+			
+			sx = i;
+			sy = j;
+			CanBePutInSecondaryInventory(TSecondaryInventory, io, &sx, &sy);
+		}
 	}
 }
