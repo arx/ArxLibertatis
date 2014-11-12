@@ -1099,11 +1099,9 @@ bool PutInInventory() {
 	
 	short tx = 0;
 	short ty = 0;
-	long sx, sy;
 	long i, j;
 	
-	sx = DRAGINTER->m_inventorySize.x;
-	sy = DRAGINTER->m_inventorySize.y;
+	Vec2s s = DRAGINTER->m_inventorySize;
 	
 	const Rect backpackMouseTestRect(
 	g_size.width() - 35,
@@ -1168,7 +1166,7 @@ bool PutInInventory() {
 		tx = tx / SHORT_INTERFACE_RATIO(32);
 		ty = ty / SHORT_INTERFACE_RATIO(32);
 		
-		if(tx <= SecondaryInventory->m_size.x - sx && ty <= SecondaryInventory->m_size.y - sy) {
+		if(tx <= SecondaryInventory->m_size.x - s.x && ty <= SecondaryInventory->m_size.y - s.y) {
 			
 			float fcos = ARX_INTERACTIVE_GetPrice(DRAGINTER, io) / 3.0f;
 			long cos = checked_range_cast<long>(fcos);
@@ -1176,8 +1174,8 @@ bool PutInInventory() {
 			fcos = cos + cos * ((float)player.m_skillFull.intuition) * 0.005f;
 			cos = checked_range_cast<long>(fcos);
 			
-			for(j = 0; j < sy; j++) {
-				for(i = 0; i < sx; i++) {
+			for(j = 0; j < s.y; j++) {
+				for(i = 0; i < s.x; i++) {
 					Entity * ioo = SecondaryInventory->slot[tx+i][ty+j].io;
 					
 					if(ioo) {
@@ -1222,8 +1220,8 @@ bool PutInInventory() {
 				return true;
 			}
 
-			for(j = 0; j < sy; j++) {
-				for(i = 0; i < sx; i++) {
+			for(j = 0; j < s.y; j++) {
+				for(i = 0; i < s.x; i++) {
 					SecondaryInventory->slot[tx+i][ty+j].io = DRAGINTER;
 					SecondaryInventory->slot[tx+i][ty+j].show = 0;
 				}
@@ -1266,7 +1264,7 @@ bool PutInInventory() {
 		tx = tx / SHORT_INTERFACE_RATIO(32); 
 		ty = ty / SHORT_INTERFACE_RATIO(32); 
 		
-		if((tx >= 0) && (tx <= 16 - sx) && (ty >= 0) && (ty <= 3 - sy)) {
+		if((tx >= 0) && (tx <= 16 - s.x) && (ty >= 0) && (ty <= 3 - s.y)) {
 			iBag = sActiveInventory;
 		} else {
 			return false;
@@ -1289,7 +1287,7 @@ bool PutInInventory() {
 				tx = tx / SHORT_INTERFACE_RATIO(32); 
 				ty = ty / SHORT_INTERFACE_RATIO(32); 
 				
-				if((tx >= 0) && (tx <= 16 - sx) && (ty >= 0) && (ty <= 3 - sy)) {
+				if((tx >= 0) && (tx <= 16 - s.x) && (ty >= 0) && (ty <= 3 - s.y)) {
 					bOk = true;
 					iBag = i;
 					break;
@@ -1311,8 +1309,8 @@ bool PutInInventory() {
 		return true;
 	}
 
-	for(j = 0; j < sy; j++)
-		for(i = 0; i < sx; i++) {
+	for(j = 0; j < s.y; j++)
+		for(i = 0; i < s.x; i++) {
 			Entity * ioo = inventory[iBag][tx+i][ty+j].io;
 			
 			if(ioo != NULL) {
@@ -1346,8 +1344,8 @@ bool PutInInventory() {
 			}
 		}
 	
-	for(j = 0; j < sy; j++) {
-		for(i = 0; i < sx; i++) {
+	for(j = 0; j < s.y; j++) {
+		for(i = 0; i < s.x; i++) {
 			inventory[iBag][tx+i][ty+j].io = DRAGINTER;
 			inventory[iBag][tx+i][ty+j].show = 0;
 		}
