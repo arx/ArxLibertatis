@@ -1217,10 +1217,10 @@ bool PutInInventory() {
 			}
 
 			for(long j = 0; j < s.y; j++) {
-				for(long i = 0; i < s.x; i++) {
-					SecondaryInventory->slot[tx+i][ty+j].io = DRAGINTER;
-					SecondaryInventory->slot[tx+i][ty+j].show = 0;
-				}
+			for(long i = 0; i < s.x; i++) {
+				SecondaryInventory->slot[tx+i][ty+j].io = DRAGINTER;
+				SecondaryInventory->slot[tx+i][ty+j].show = 0;
+			}
 			}
 			
 			// SHOP
@@ -1306,46 +1306,46 @@ bool PutInInventory() {
 	}
 
 	for(long j = 0; j < s.y; j++)
-		for(long i = 0; i < s.x; i++) {
-			Entity * ioo = inventory[bag][tx+i][ty+j].io;
-			
-			if(!ioo)
-				continue;
-			
-				ARX_INVENTORY_IdentifyIO(ioo);
+	for(long i = 0; i < s.x; i++) {
+		Entity * ioo = inventory[bag][tx+i][ty+j].io;
+		
+		if(!ioo)
+			continue;
+		
+		ARX_INVENTORY_IdentifyIO(ioo);
 
-				if(   ioo->_itemdata->playerstacksize > 1
-				   && IsSameObject(DRAGINTER, ioo)
-				   && ioo->_itemdata->count < ioo->_itemdata->playerstacksize
-				) {
-					ioo->_itemdata->count += DRAGINTER->_itemdata->count;
-					
-					if(ioo->_itemdata->count > ioo->_itemdata->playerstacksize) {
-						DRAGINTER->_itemdata->count = ioo->_itemdata->count - ioo->_itemdata->playerstacksize;
-						ioo->_itemdata->count = ioo->_itemdata->playerstacksize;
-					} else {
-						DRAGINTER->_itemdata->count = 0;
-					}
-					
-					ioo->scale = 1.f;
-					ARX_INVENTORY_Declare_InventoryIn(DRAGINTER);
-					
-					if(!DRAGINTER->_itemdata->count) {
-						DRAGINTER->destroy();
-					}
-					
-					ARX_SOUND_PlayInterface(SND_INVSTD);
-					return true;
-				}
-				
-				return false;
+		if(   ioo->_itemdata->playerstacksize > 1
+		   && IsSameObject(DRAGINTER, ioo)
+		   && ioo->_itemdata->count < ioo->_itemdata->playerstacksize
+		) {
+			ioo->_itemdata->count += DRAGINTER->_itemdata->count;
+			
+			if(ioo->_itemdata->count > ioo->_itemdata->playerstacksize) {
+				DRAGINTER->_itemdata->count = ioo->_itemdata->count - ioo->_itemdata->playerstacksize;
+				ioo->_itemdata->count = ioo->_itemdata->playerstacksize;
+			} else {
+				DRAGINTER->_itemdata->count = 0;
+			}
+			
+			ioo->scale = 1.f;
+			ARX_INVENTORY_Declare_InventoryIn(DRAGINTER);
+			
+			if(!DRAGINTER->_itemdata->count) {
+				DRAGINTER->destroy();
+			}
+			
+			ARX_SOUND_PlayInterface(SND_INVSTD);
+			return true;
 		}
+		
+		return false;
+	}
 	
 	for(long j = 0; j < s.y; j++) {
-		for(long i = 0; i < s.x; i++) {
-			inventory[bag][tx+i][ty+j].io = DRAGINTER;
-			inventory[bag][tx+i][ty+j].show = 0;
-		}
+	for(long i = 0; i < s.x; i++) {
+		inventory[bag][tx+i][ty+j].io = DRAGINTER;
+		inventory[bag][tx+i][ty+j].show = 0;
+	}
 	}
 	
 	inventory[bag][tx][ty].show = 1;
