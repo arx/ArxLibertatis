@@ -1957,18 +1957,14 @@ void ManageCasseDArme(Entity * io) {
 			bool bStop = false;
 			
 			for(size_t bag = 0; bag < size_t(player.bag); bag++) {
-				for (size_t j = 0; j < INVENTORY_Y; j++) {
-					for (size_t i = 0; i < INVENTORY_X; i++) {
+				for(size_t j = 0; j < INVENTORY_Y; j++) {
+					for(size_t i = 0; i < INVENTORY_X; i++) {
 						
 						Entity * bagEntity = inventory[bag][i][j].io;
 						
-						if ((bagEntity) &&
-								(bagEntity != io) &&
-								((bagEntity->type_flags & OBJECT_TYPE_DAGGER) ||
-								 (bagEntity->type_flags & OBJECT_TYPE_1H) ||
-								 (bagEntity->type_flags & OBJECT_TYPE_2H) ||
-								 (bagEntity->type_flags & OBJECT_TYPE_BOW)))
-						{
+						if(bagEntity && bagEntity != io
+						   && (bagEntity->type_flags & (OBJECT_TYPE_DAGGER | OBJECT_TYPE_1H | OBJECT_TYPE_2H | OBJECT_TYPE_BOW))
+						) {
 
 							if ((io->ioflags & IO_ITEM) &&
 									(bagEntity->ioflags & IO_ITEM) &&
@@ -1979,7 +1975,7 @@ void ManageCasseDArme(Entity * io) {
 									lChangeWeapon = 2;
 									bStop = true;
 								} else {
-									if (bagEntity->_itemdata->equipitem->elements[IO_EQUIPITEM_ELEMENT_Damages].value > io->_itemdata->equipitem->elements[IO_EQUIPITEM_ELEMENT_Damages].value) {
+									if(bagEntity->_itemdata->equipitem->elements[IO_EQUIPITEM_ELEMENT_Damages].value > io->_itemdata->equipitem->elements[IO_EQUIPITEM_ELEMENT_Damages].value) {
 										if(pObjMin) {
 											if(bagEntity->_itemdata->equipitem->elements[IO_EQUIPITEM_ELEMENT_Damages].value < pObjMin->_itemdata->equipitem->elements[IO_EQUIPITEM_ELEMENT_Damages].value) {
 												pObjMin = bagEntity;
