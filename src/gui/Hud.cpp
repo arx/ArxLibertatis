@@ -650,10 +650,15 @@ public:
 			int posy = checked_range_cast<int>(fSizY);
 			
 			for(int i = 0; i < player.bag; i++) {
-				ARX_INTERFACE_DrawItem(m_heroInventoryLink, posx + INTERFACE_RATIO(45), static_cast<float>(posy + iOffsetY)) ;
+				Vec2f pos1 = Vec2f(posx + INTERFACE_RATIO(45), static_cast<float>(posy + iOffsetY));
+				Vec2f pos2 = Vec2f(posx + INTERFACE_RATIO_DWORD(m_heroInventory->m_dwWidth)*0.5f + INTERFACE_RATIO(-16), posy+iOffsetY + INTERFACE_RATIO(-5));
+				Vec2f pos3 = Vec2f(posx + INTERFACE_RATIO_DWORD(m_heroInventory->m_dwWidth) + INTERFACE_RATIO(-45-32), posy+iOffsetY + INTERFACE_RATIO(-15));
 				
-				ARX_INTERFACE_DrawItem(m_heroInventoryLink, posx + INTERFACE_RATIO_DWORD(m_heroInventory->m_dwWidth)*0.5f + INTERFACE_RATIO(-16), posy+iOffsetY + INTERFACE_RATIO(-5));
-				ARX_INTERFACE_DrawItem(m_heroInventoryLink, posx + INTERFACE_RATIO_DWORD(m_heroInventory->m_dwWidth) + INTERFACE_RATIO(-45-32), posy+iOffsetY + INTERFACE_RATIO(-15));
+				TextureContainer * tex = m_heroInventoryLink;
+				
+				EERIEDrawBitmap(Rectf(pos1, tex->m_dwWidth, tex->m_dwHeight), 0.001f, tex, Color::white);
+				EERIEDrawBitmap(Rectf(pos2, tex->m_dwWidth, tex->m_dwHeight), 0.001f, tex, Color::white);
+				EERIEDrawBitmap(Rectf(pos3, tex->m_dwWidth, tex->m_dwHeight), 0.001f, tex, Color::white);
 				
 				iOffsetY += checked_range_cast<int>(fOffsetY);
 			}
