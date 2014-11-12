@@ -1060,9 +1060,9 @@ bool CanBePutInSecondaryInventory(INVENTORY_DATA * id, Entity * io, long * xx, l
 		}
 	}
 	
-	for(long j = 0; j <= id->m_size.y - s.y; j++)
-	for(long i = 0; i <= id->m_size.x - s.x; i++) {
-		Entity * ioo = id->slot[i][j].io;
+	for(long y = 0; y <= id->m_size.y - s.y; y++)
+	for(long x = 0; x <= id->m_size.x - s.x; x++) {
+		Entity * ioo = id->slot[x][y].io;
 		
 		if(!ioo) {
 			long valid = 1;
@@ -1070,24 +1070,24 @@ bool CanBePutInSecondaryInventory(INVENTORY_DATA * id, Entity * io, long * xx, l
 			if(s.x == 0 || s.y == 0)
 				valid = 0;
 			
-			for(long k = j; k < j + s.y; k++)
-			for(long l = i; l < i + s.x; l++) {
-				if (id->slot[l][k].io != NULL) {
+			for(long y2 = y; y2 < y + s.y; y2++)
+			for(long x2 = x; x2 < x + s.x; x2++) {
+				if (id->slot[x2][y2].io != NULL) {
 					valid = 0;
 					break;
 				}
 			}
 			
 			if(valid) {
-				for(long k = j; k < j + s.y; k++)
-				for(long l = i; l < i + s.x; l++) {
-					id->slot[l][k].io = io;
-					id->slot[l][k].show = 0;
+				for(long y2 = y; y2 < y + s.y; y2++)
+				for(long x2 = x; x2 < x + s.x; x2++) {
+					id->slot[x2][y2].io = io;
+					id->slot[x2][y2].show = 0;
 				}
 				
-				id->slot[i][j].show = 1;
-				*xx = i;
-				*yy = j;
+				id->slot[x][y].show = 1;
+				*xx = x;
+				*yy = y;
 				return true;
 			}
 		}
