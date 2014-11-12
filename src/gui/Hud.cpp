@@ -2246,12 +2246,7 @@ void ArxGame::drawAllInterface() {
 	damagedEquipmentGui.draw();
 	
 	if(!(player.Interface & INTER_COMBATMODE) && (player.Interface & INTER_MINIBACK)) {
-		bookIconGui.update();
-		bookIconGui.draw();
 		
-		backpackIconGui.update();
-		backpackIconGui.draw();
-						
 		if(player.Interface & INTER_STEAL) {
 			stealIconGui.update();
 			stealIconGui.draw();			
