@@ -1711,20 +1711,20 @@ void CheckForInventoryReplaceMe(Entity * io, Entity * old) {
 		if(!e || !e->inventory)
 			continue;
 		
-				INVENTORY_DATA * id = e->inventory;
-				
-				for(long j = 0; j < id->m_size.y; j++) {
-					for(long k = 0; k < id->m_size.x; k++) {
-						if(id->slot[k][j].io == old) {
-							long xx, yy;
-							if(CanBePutInSecondaryInventory(id, io, &xx, &yy)) {
-								return;
-							}
-							PutInFrontOfPlayer(io); 
-							return;
-						}
-					}
+		INVENTORY_DATA * id = e->inventory;
+		
+		for(long j = 0; j < id->m_size.y; j++) {
+		for(long k = 0; k < id->m_size.x; k++) {
+			if(id->slot[k][j].io == old) {
+				long xx, yy;
+				if(CanBePutInSecondaryInventory(id, io, &xx, &yy)) {
+					return;
 				}
+				PutInFrontOfPlayer(io); 
+				return;
+			}
+		}
+		}
 	}
 }
 
