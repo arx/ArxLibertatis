@@ -1978,8 +1978,9 @@ void ARX_INVENTORY_IdentifyAll() {
 		if(!io || !(io->ioflags & IO_ITEM) || !io->_itemdata->equipitem)
 			continue;
 		
-		if(player.m_skillFull.objectKnowledge + player.m_attributeFull.mind
-		   >= io->_itemdata->equipitem->elements[IO_EQUIPITEM_ELEMENT_Identify_Value].value) {
+		const float identifyValue = io->_itemdata->equipitem->elements[IO_EQUIPITEM_ELEMENT_Identify_Value].value;
+		
+		if(player.m_skillFull.objectKnowledge + player.m_attributeFull.mind >= identifyValue) {
 			SendIOScriptEvent(io, SM_IDENTIFY);
 		}
 	}
