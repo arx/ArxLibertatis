@@ -1246,7 +1246,7 @@ bool PutInInventory() {
 	if(!InPlayerInventoryPos(DANAEMouse))
 		return false;
 	
-	int iBag = 0;
+	int bag = 0;
 	
 	float fCenterX	= g_size.center().x - INTERFACE_RATIO(320) + INTERFACE_RATIO(35);
 	float fSizY		= g_size.height() - INTERFACE_RATIO(101) + INTERFACE_RATIO_LONG(InventoryY);
@@ -1261,7 +1261,7 @@ bool PutInInventory() {
 		ty = ty / SHORT_INTERFACE_RATIO(32); 
 		
 		if((tx >= 0) && (tx <= 16 - s.x) && (ty >= 0) && (ty <= 3 - s.y)) {
-			iBag = sActiveInventory;
+			bag = sActiveInventory;
 		} else {
 			return false;
 		}
@@ -1285,7 +1285,7 @@ bool PutInInventory() {
 				
 				if((tx >= 0) && (tx <= 16 - s.x) && (ty >= 0) && (ty <= 3 - s.y)) {
 					bOk = true;
-					iBag = i;
+					bag = i;
 					break;
 				}
 			}
@@ -1307,7 +1307,7 @@ bool PutInInventory() {
 
 	for(long j = 0; j < s.y; j++)
 		for(long i = 0; i < s.x; i++) {
-			Entity * ioo = inventory[iBag][tx+i][ty+j].io;
+			Entity * ioo = inventory[bag][tx+i][ty+j].io;
 			
 			if(ioo != NULL) {
 				ARX_INVENTORY_IdentifyIO(ioo);
@@ -1342,12 +1342,12 @@ bool PutInInventory() {
 	
 	for(long j = 0; j < s.y; j++) {
 		for(long i = 0; i < s.x; i++) {
-			inventory[iBag][tx+i][ty+j].io = DRAGINTER;
-			inventory[iBag][tx+i][ty+j].show = 0;
+			inventory[bag][tx+i][ty+j].io = DRAGINTER;
+			inventory[bag][tx+i][ty+j].show = 0;
 		}
 	}
 	
-	inventory[iBag][tx][ty].show = 1;
+	inventory[bag][tx][ty].show = 1;
 	
 	ARX_INVENTORY_Declare_InventoryIn(DRAGINTER);
 	ARX_SOUND_PlayInterface(SND_INVSTD);
