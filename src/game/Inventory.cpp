@@ -1686,15 +1686,15 @@ void RemoveFromAllInventories(const Entity * io) {
 		if(!e || !e->inventory)
 			continue;
 		
-				INVENTORY_DATA * id = e->inventory;
-				for(long j = 0; j < id->m_size.y; j++) {
-					for(long k = 0; k < id->m_size.x; k++) {
-						if(id->slot[k][j].io == io) {
-							id->slot[k][j].io = NULL;
-							id->slot[k][j].show = 1;
-						}
-					}
-				}
+		INVENTORY_DATA * id = e->inventory;
+		for(long j = 0; j < id->m_size.y; j++) {
+		for(long k = 0; k < id->m_size.x; k++) {
+			if(id->slot[k][j].io == io) {
+				id->slot[k][j].io = NULL;
+				id->slot[k][j].show = 1;
+			}
+		}
+		}
 	}
 }
 
