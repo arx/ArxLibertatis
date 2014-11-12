@@ -1309,7 +1309,9 @@ bool PutInInventory() {
 		for(long i = 0; i < s.x; i++) {
 			Entity * ioo = inventory[bag][tx+i][ty+j].io;
 			
-			if(ioo != NULL) {
+			if(!ioo)
+				continue;
+			
 				ARX_INVENTORY_IdentifyIO(ioo);
 
 				if(   ioo->_itemdata->playerstacksize > 1
@@ -1337,7 +1339,6 @@ bool PutInInventory() {
 				}
 				
 				return false;
-			}
 		}
 	
 	for(long j = 0; j < s.y; j++) {
