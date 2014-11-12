@@ -141,13 +141,13 @@ static void ARX_INVENTORY_Declare_InventoryIn(Entity * io) {
  */
 void CleanInventory() {
 	
-	for(long iNbBag = 0; iNbBag < 3; iNbBag++) {
-		for(size_t j = 0; j < INVENTORY_Y; j++) {
-			for(size_t i = 0; i < INVENTORY_X; i++) {
-				inventory[iNbBag][i][j].io	 = NULL;
-				inventory[iNbBag][i][j].show = 1;
-			}
-		}
+	for(long bag = 0; bag < 3; bag++)
+	for(size_t j = 0; j < INVENTORY_Y; j++)
+	for(size_t i = 0; i < INVENTORY_X; i++) {
+		INVENTORY_SLOT & slot = inventory[bag][i][j];
+		
+		slot.io	 = NULL;
+		slot.show = 1;
 	}
 	
 	sActiveInventory = 0;
