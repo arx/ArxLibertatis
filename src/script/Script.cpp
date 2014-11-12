@@ -1943,20 +1943,18 @@ Entity * ARX_SCRIPT_Get_IO_Max_Events_Sent() {
 	return result;
 }
 
-void ManageCasseDArme(Entity * io)
-{
-	if((io->type_flags & OBJECT_TYPE_DAGGER) ||
-			(io->type_flags & OBJECT_TYPE_1H) ||
-			(io->type_flags & OBJECT_TYPE_2H) ||
-			(io->type_flags & OBJECT_TYPE_BOW)) {
-		
+void ManageCasseDArme(Entity * io) {
+	
+	if(!(io->type_flags & (OBJECT_TYPE_DAGGER | OBJECT_TYPE_1H | OBJECT_TYPE_2H | OBJECT_TYPE_BOW)))
+		return;
+	
 		if(player.bag) {
 			Entity * pObjMin = NULL;
 			Entity * pObjMax = NULL;
 			Entity * pObjFIX = NULL;
 			bool bStop = false;
 			
-			for(size_t bag = 0; bag < player.bag; bag++) {
+			for(size_t bag = 0; bag < size_t(player.bag); bag++) {
 				for (size_t j = 0; j < INVENTORY_Y; j++) {
 					for (size_t i = 0; i < INVENTORY_X; i++) {
 						
@@ -2036,7 +2034,6 @@ void ManageCasseDArme(Entity * io)
 				}
 			}
 		}
-	}
 }
 
 void loadScript(EERIE_SCRIPT & script, PakFile * file) {
