@@ -382,8 +382,6 @@ private:
 	TextureContainer * m_heroInventoryUp;
 	TextureContainer * m_heroInventoryDown;
 	
-	float fCenterX;
-	float fSizY;
 	Vec2f m_pos;
 	
 	Vec2f m_slotSize;
@@ -404,20 +402,16 @@ public:
 	bool updateInput() {
 		Vec2f anchorPos = getInventoryGuiAnchorPosition();
 		
-		float fCenterX	= anchorPos.x + INTERFACE_RATIO_DWORD(m_heroInventory->m_dwWidth) - INTERFACE_RATIO(32 + 3) ;
-		float fSizY		= anchorPos.y + INTERFACE_RATIO(- 3 + 25) ;
-
-		float posx = ARX_CAST_TO_INT_THEN_FLOAT( fCenterX );
-		float posy = ARX_CAST_TO_INT_THEN_FLOAT( fSizY );
-
+		Vec2f pos = anchorPos + Vec2f(INTERFACE_RATIO_DWORD(m_heroInventory->m_dwWidth) - INTERFACE_RATIO(32 + 3), INTERFACE_RATIO(- 3 + 25));
+		
 		bool bQuitCombine = true;
 		
 		if(sActiveInventory > 0) {
 			const Rect mouseTestRect(
-			posx,
-			posy,
-			posx + INTERFACE_RATIO(32),
-			posy + INTERFACE_RATIO(32)
+			pos.x,
+			pos.y,
+			pos.x + INTERFACE_RATIO(32),
+			pos.y + INTERFACE_RATIO(32)
 			);
 			
 			if(mouseTestRect.contains(Vec2i(DANAEMouse)))
@@ -427,13 +421,13 @@ public:
 		if(sActiveInventory < player.bag-1) {
 			float fRatio = INTERFACE_RATIO(32 + 5);
 
-			posy += checked_range_cast<int>(fRatio);
+			pos.y += checked_range_cast<int>(fRatio);
 			
 			const Rect mouseTestRect(
-			posx,
-			posy,
-			posx + INTERFACE_RATIO(32),
-			posy + INTERFACE_RATIO(32)
+			pos.x,
+			pos.y,
+			pos.x + INTERFACE_RATIO(32),
+			pos.y + INTERFACE_RATIO(32)
 			);
 			
 			if(mouseTestRect.contains(Vec2i(DANAEMouse)))
@@ -513,10 +507,8 @@ public:
 		
 		Vec2f anchorPos = getInventoryGuiAnchorPosition();
 		
-		fCenterX = anchorPos.x + INTERFACE_RATIO_DWORD(m_heroInventory->m_dwWidth) - INTERFACE_RATIO(32 + 3) ;
-		fSizY = anchorPos.y + INTERFACE_RATIO(- 3 + 25) ;
-		m_pos.x = ARX_CAST_TO_INT_THEN_FLOAT( fCenterX );
-		m_pos.y = ARX_CAST_TO_INT_THEN_FLOAT( fSizY );
+		m_pos.x = anchorPos.x + INTERFACE_RATIO_DWORD(m_heroInventory->m_dwWidth) - INTERFACE_RATIO(32 + 3) ;
+		m_pos.y = anchorPos.y + INTERFACE_RATIO(- 3 + 25);
 	}
 	
 	//-----------------------------------------------------------------------------
@@ -526,10 +518,7 @@ public:
 		
 		Vec2f anchorPos = getInventoryGuiAnchorPosition();
 		
-		float fCenterX	= anchorPos.x + _iX ;
-		float fSizY		= anchorPos.y + _iY;
-		
-		const Vec2f pos = Vec2f(ARX_CAST_TO_INT_THEN_FLOAT(fCenterX), ARX_CAST_TO_INT_THEN_FLOAT(fSizY));
+		const Vec2f pos = anchorPos + Vec2f(_iX, _iY);
 		
 		ARX_INTERFACE_DrawItem(m_heroInventory, pos.x, pos.y - INTERFACE_RATIO(5));
 		
