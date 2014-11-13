@@ -826,8 +826,8 @@ bool CanBePutInInventory(Entity * io)
 		long j = sInventoryPos.y;
 		long i = sInventoryPos.x;
 		
-		arx_assert(player.bag >= 0)
-		arx_assert(player.bag < 3)
+		arx_assert(player.bag >= 0);
+		arx_assert(player.bag < 3);
 		
 		// first try to stack -------------------------------------------------
 		for(size_t bag = 0; bag < size_t(player.bag); bag++) {
@@ -855,8 +855,8 @@ bool CanBePutInInventory(Entity * io)
 				}
 		}
 		
-		arx_assert(player.bag >= 0)
-		arx_assert(player.bag < 3)
+		arx_assert(player.bag >= 0);
+		arx_assert(player.bag < 3);
 		
 		for(size_t bag = 0; bag < size_t(player.bag); bag++) {
 				if(inventory[bag][i][j].io == NULL) {
@@ -887,8 +887,8 @@ bool CanBePutInInventory(Entity * io)
 		}
 	}
 	
-	arx_assert(player.bag >= 0)
-	arx_assert(player.bag < 3)
+	arx_assert(player.bag >= 0);
+	arx_assert(player.bag < 3);
 	
 	for(size_t bag = 0; bag < size_t(player.bag); bag++)
 	for(size_t x = 0; x <= INVENTORY_X - s.x; x++)
@@ -918,8 +918,8 @@ bool CanBePutInInventory(Entity * io)
 		}
 	}
 	
-	arx_assert(player.bag >= 0)
-	arx_assert(player.bag < 3)
+	arx_assert(player.bag >= 0);
+	arx_assert(player.bag < 3);
 	
 	for(size_t bag = 0; bag < size_t(player.bag); bag++)
 	for(size_t x = 0; x <= INVENTORY_X - s.x; x++)
@@ -1552,8 +1552,8 @@ Vec3f GetItemWorldPosition(Entity * io) {
 			return player.pos + Vec3f(0.f, 80.f, 0.f);
 		}
 		
-		arx_assert(player.bag >= 0)
-		arx_assert(player.bag < 3)
+		arx_assert(player.bag >= 0);
+		arx_assert(player.bag < 3);
 		
 		// Is it in any player inventory ?
 		for(size_t bag = 0; bag < size_t(player.bag); bag++)
@@ -1611,8 +1611,8 @@ bool GetItemWorldPositionSound(const Entity * io, Vec3f * pos) {
 			return true;
 		}
 		
-		arx_assert(player.bag >= 0)
-		arx_assert(player.bag < 3)
+		arx_assert(player.bag >= 0);
+		arx_assert(player.bag < 3);
 		
 		for(size_t bag = 0; bag < size_t(player.bag); bag++)
 		for(size_t y = 0; y < INVENTORY_Y; y++)
@@ -1830,8 +1830,8 @@ bool TakeFromInventory(const Vec2s & pos) {
 		}
 	}
 	
-	arx_assert(player.bag >= 0)
-	arx_assert(player.bag < 3)
+	arx_assert(player.bag >= 0);
+	arx_assert(player.bag < 3);
 	
 	for(size_t bag = 0; bag < size_t(player.bag); bag++)
 	for(size_t y = 0; y < INVENTORY_Y; y++)
@@ -1860,8 +1860,8 @@ bool TakeFromInventory(const Vec2s & pos) {
 
 bool IsInPlayerInventory(Entity * io) {
 	
-	arx_assert(player.bag >= 0)
-	arx_assert(player.bag < 3)
+	arx_assert(player.bag >= 0);
+	arx_assert(player.bag < 3);
 	
 	for(size_t bag = 0; bag < size_t(player.bag); bag++)
 	for(size_t y = 0; y < INVENTORY_Y; y++)
@@ -1894,8 +1894,8 @@ bool IsInSecondaryInventory(Entity * io) {
 // TODO don't use texture name to find entity
 void SendInventoryObjectCommand(const std::string & _lpszText, ScriptMessage _lCommand) {
 	
-	arx_assert(player.bag >= 0)
-	arx_assert(player.bag < 3)
+	arx_assert(player.bag >= 0);
+	arx_assert(player.bag < 3);
 	
 	for(size_t bag = 0; bag < size_t(player.bag); bag++)
 	for(size_t y = 0; y < INVENTORY_Y; y++)
@@ -1923,8 +1923,8 @@ Entity * ARX_INVENTORY_GetTorchLowestDurability() {
 	
 	Entity * io = NULL;
 	
-	arx_assert(player.bag >= 0)
-	arx_assert(player.bag < 3)
+	arx_assert(player.bag >= 0);
+	arx_assert(player.bag < 3);
 	
 	for(size_t bag = 0; bag < size_t(player.bag); bag++)
 	for(size_t y = 0; y < INVENTORY_Y; y++)
@@ -1953,8 +1953,8 @@ void ARX_INVENTORY_IdentifyIO(Entity * _pIO) {
 
 void ARX_INVENTORY_IdentifyAll() {
 	
-	arx_assert(player.bag >= 0)
-	arx_assert(player.bag < 3)
+	arx_assert(player.bag >= 0);
+	arx_assert(player.bag < 3);
 	
 	for(size_t bag = 0; bag < size_t(player.bag); bag++)
 	for(size_t y = 0; y < INVENTORY_Y; y++)

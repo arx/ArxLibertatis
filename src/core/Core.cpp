@@ -692,8 +692,8 @@ long Player_Arrow_Count() {
 	
 	long count = 0;
 	
-	arx_assert(player.bag >= 0)
-	arx_assert(player.bag < 3)
+	arx_assert(player.bag >= 0);
+	arx_assert(player.bag < 3);
 	
 	for(size_t bag = 0; bag < size_t(player.bag); bag++)
 	for(size_t y = 0; y < INVENTORY_Y; y++)
