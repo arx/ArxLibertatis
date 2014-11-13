@@ -59,6 +59,17 @@ namespace CppUnit {
 	};
 	
 	template <>
+	struct assertion_traits<Vec2s> {
+		static bool equal(const Vec2s & v, const Vec2s & other) {
+			return glm::all(glm::equal(v, other));
+		}
+		
+		static std::string toString(const Vec2s &v) {
+			return glm::to_string(Vec2i(v));
+		}
+	};
+	
+	template <>
 	struct assertion_traits<Vec3f> {
 		static bool equal(const Vec3f & v, const Vec3f & other) {
 			return glm::all(glm::epsilonEqual(v, other, 0.001f));

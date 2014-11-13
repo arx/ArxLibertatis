@@ -89,6 +89,10 @@ extern Entity * ioSteal;
 extern long InventoryY;
 extern short sActiveInventory;
 
+inline Vec2s inventorySizeFromTextureSize(Vec2i size) {
+	return Vec2s(glm::clamp((size + Vec2i(31, 31)) / Vec2i(32, 32), Vec2i(1, 1), Vec2i(3, 3)));
+}
+
 struct InventoryPos {
 	
 	typedef unsigned short index_type;

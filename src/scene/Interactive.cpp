@@ -1044,24 +1044,8 @@ void ARX_INTERACTIVE_TWEAK_Icon(Entity * io, const res::path & s1) {
 		tc = TextureContainer::LoadUI("graph/interface/misc/default[icon]");
 	}
 	
-	// TODO copy-paste inventorySize
 	if(tc) {
-		unsigned long w = tc->m_dwWidth >> 5;
-		unsigned long h = tc->m_dwHeight >> 5; 
-
-		if ((w << 5) != tc->m_dwWidth)
-			io->m_inventorySize.x = (char)(w + 1);
-		else
-			io->m_inventorySize.x = (char)(w);
-
-		if ((h << 5) != tc->m_dwHeight)
-			io->m_inventorySize.y = (char)(h + 1);
-		else
-			io->m_inventorySize.y = (char)(h);
-
-		io->m_inventorySize.x = glm::clamp(io->m_inventorySize.x, short(1), short(3));
-		io->m_inventorySize.y = glm::clamp(io->m_inventorySize.y, short(1), short(3));
-
+		io->m_inventorySize = inventorySizeFromTextureSize(tc->size());
 		io->inv = tc;
 	}
 }
@@ -1492,12 +1476,8 @@ Entity * AddFix(const res::path & classPath, EntityInstance instance, AddInterac
 	
 	TextureContainer * tc = TextureContainer::LoadUI("graph/interface/misc/default[icon]");
 	
-	// TODO copy-paste inventorySize
 	if(tc) {
-		unsigned long w = tc->m_dwWidth >> 5;
-		unsigned long h = tc->m_dwHeight >> 5;
-		io->m_inventorySize.x = char(glm::clamp(((w << 5) != tc->m_dwWidth) ? (w + 1) : w, 1ul, 3ul));
-		io->m_inventorySize.y = char(glm::clamp(((h << 5) != tc->m_dwHeight) ? (h + 1) : h, 1ul, 3ul));
+		io->m_inventorySize = inventorySizeFromTextureSize(tc->size());
 		io->inv = tc;
 	}
 	
@@ -1853,24 +1833,8 @@ Entity * AddItem(const res::path & classPath_, EntityInstance instance, AddInter
 		tc = TextureContainer::LoadUI("graph/interface/misc/default[icon]");
 	}
 	
-	// TODO copy-paste inventorySize
 	if(tc) {
-		unsigned long w = tc->m_dwWidth >> 5;
-		unsigned long h = tc->m_dwHeight >> 5;
-
-		if ((w << 5) != tc->m_dwWidth)
-			io->m_inventorySize.x = (char)(w + 1);
-		else
-			io->m_inventorySize.x = (char)(w);
-
-		if ((h << 5) != tc->m_dwHeight)
-			io->m_inventorySize.y = (char)(h + 1);
-		else
-			io->m_inventorySize.y = (char)(h);
-
-		io->m_inventorySize.x = glm::clamp(io->m_inventorySize.x, short(1), short(3));
-		io->m_inventorySize.y = glm::clamp(io->m_inventorySize.y, short(1), short(3));
-
+		io->m_inventorySize = inventorySizeFromTextureSize(tc->size());
 		io->inv = tc;
 	}
 

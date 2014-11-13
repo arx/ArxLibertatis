@@ -260,3 +260,23 @@ void LegacyMathTest::cameraRotationTest() {
 		CPPUNIT_ASSERT_EQUAL(vecA, vecB);
 	}
 }
+
+// TODO copy-paste
+inline Vec2s inventorySizeFromTextureSize(Vec2i size) {
+	return Vec2s(glm::clamp((size + Vec2i(31, 31)) / Vec2i(32, 32), Vec2i(1, 1), Vec2i(3, 3)));
+}
+
+void LegacyMathTest::inventorySizeTest() {
+	
+	for(short i = 0; i < 100; ++i)
+	for(short j = 0; j < 100; ++j) {
+		Vec2i size(i, j);
+		Vec2s expected = inventorySizeFromTextureSize(size);
+		
+		Vec2s result1 = inventorySizeFromTextureSize_1(i, j);
+		Vec2s result2 = inventorySizeFromTextureSize_2(i, j);
+		
+		CPPUNIT_ASSERT_EQUAL_MESSAGE(glm::to_string(Vec2i(i, j)), expected, result1);
+		CPPUNIT_ASSERT_EQUAL_MESSAGE(glm::to_string(Vec2i(i, j)), expected, result2);
+	}
+}
