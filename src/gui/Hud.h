@@ -20,6 +20,8 @@
 #ifndef ARX_GUI_HUD_H
 #define ARX_GUI_HUD_H
 
+#include "math/Types.h"
+
 extern bool bIsAiming;
 
 void hudElementsInit();
@@ -39,5 +41,7 @@ void manageEditorControlsHUD();
 void manageEditorControlsHUD2();
 
 bool inventoryGuiupdateInputPROXY();
+
+Vec2f getInventoryGuiAnchorPosition();
 
 #endif // ARX_GUI_HUD_H

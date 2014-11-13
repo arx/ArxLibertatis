@@ -61,6 +61,7 @@ ZeniMax Media Inc., Suite 120, Rockville, Maryland 20850 USA.
 #include "game/Item.h"
 #include "game/Player.h"
 
+#include "gui/Hud.h"
 #include "gui/Interface.h"
 
 #include "graphics/GraphicsTypes.h"
@@ -158,10 +159,9 @@ extern Rect g_size;
 
 static Entity * GetInventoryObj(const Vec2s & pos) {
 	
-	float fCenterX	= g_size.center().x - INTERFACE_RATIO(320) + INTERFACE_RATIO(35);
-	float fSizY		= g_size.height() - INTERFACE_RATIO(101) + INTERFACE_RATIO_LONG(InventoryY);
+	Vec2f anchorPos = getInventoryGuiAnchorPosition();
 	
-	Vec2i iPos = Vec2i(fCenterX, fSizY);
+	Vec2i iPos = Vec2i(anchorPos);
 	
 	if(player.Interface & INTER_INVENTORY) {
 		long tx = pos.x - iPos.x; //-4
@@ -1248,8 +1248,10 @@ bool PutInInventory() {
 	
 	int bag = 0;
 	
-	float fCenterX	= g_size.center().x - INTERFACE_RATIO(320) + INTERFACE_RATIO(35);
-	float fSizY		= g_size.height() - INTERFACE_RATIO(101) + INTERFACE_RATIO_LONG(InventoryY);
+	Vec2f anchorPos = getInventoryGuiAnchorPosition();
+	
+	float fCenterX	= anchorPos.x;
+	float fSizY		= anchorPos.y;
 	
 	short iPosX = checked_range_cast<short>(fCenterX);
 	short iPosY = checked_range_cast<short>(fSizY);
@@ -1385,8 +1387,10 @@ bool InSecondaryInventoryPos(const Vec2s & pos) {
  * \brief Returns true if xx,yy is a position in player inventory
  */
 bool InPlayerInventoryPos(const Vec2s & pos) {
-	float fCenterX	= g_size.center().x - INTERFACE_RATIO(320) + INTERFACE_RATIO(35);
-	float fSizY		= g_size.height() - INTERFACE_RATIO(101) + INTERFACE_RATIO_LONG(InventoryY);
+	Vec2f anchorPos = getInventoryGuiAnchorPosition();
+	
+	float fCenterX	= anchorPos.x;
+	float fSizY		= anchorPos.y;
 
 	short iPosX = checked_range_cast<short>(fCenterX);
 	short iPosY = checked_range_cast<short>(fSizY);
@@ -1794,12 +1798,10 @@ bool TakeFromInventory(const Vec2s & pos) {
 		}
 	}
 	
+	Vec2f anchorPos = getInventoryGuiAnchorPosition();
 	
-	float fCenterX	= g_size.center().x - INTERFACE_RATIO(320) + INTERFACE_RATIO(35);
-	float fSizY		= g_size.height() - INTERFACE_RATIO(101) + INTERFACE_RATIO_LONG(InventoryY);
-
-	int iPosX = checked_range_cast<int>(fCenterX);
-	int iPosY = checked_range_cast<int>(fSizY);
+	int iPosX = checked_range_cast<int>(anchorPos.x);
+	int iPosY = checked_range_cast<int>(anchorPos.y);
 	
 	if(InPlayerInventoryPos(pos)) {
 		if(!GInput->actionPressed(CONTROLS_CUST_STEALTHMODE)) {

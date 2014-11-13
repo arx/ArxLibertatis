@@ -402,8 +402,10 @@ public:
 	}
 	
 	bool updateInput() {
-		float fCenterX	= g_size.center().x + INTERFACE_RATIO(-320 + 35) + INTERFACE_RATIO_DWORD(m_heroInventory->m_dwWidth) - INTERFACE_RATIO(32 + 3) ;
-		float fSizY		= g_size.height() - INTERFACE_RATIO(101) + INTERFACE_RATIO_LONG(InventoryY) + INTERFACE_RATIO(- 3 + 25) ;
+		Vec2f anchorPos = getInventoryGuiAnchorPosition();
+		
+		float fCenterX	= anchorPos.x + INTERFACE_RATIO_DWORD(m_heroInventory->m_dwWidth) - INTERFACE_RATIO(32 + 3) ;
+		float fSizY		= anchorPos.y + INTERFACE_RATIO(- 3 + 25) ;
 
 		float posx = ARX_CAST_TO_INT_THEN_FLOAT( fCenterX );
 		float posy = ARX_CAST_TO_INT_THEN_FLOAT( fSizY );
@@ -509,8 +511,10 @@ public:
 		m_slotSize = Vec2f(32, 32);
 		m_slotSpacing = Vec2f(7, 6);
 		
-		fCenterX = g_size.center().x + INTERFACE_RATIO(-320 + 35) + INTERFACE_RATIO_DWORD(m_heroInventory->m_dwWidth) - INTERFACE_RATIO(32 + 3) ;
-		fSizY = g_size.height() - INTERFACE_RATIO(101) + INTERFACE_RATIO_LONG(InventoryY) + INTERFACE_RATIO(- 3 + 25) ;
+		Vec2f anchorPos = getInventoryGuiAnchorPosition();
+		
+		fCenterX = anchorPos.x + INTERFACE_RATIO_DWORD(m_heroInventory->m_dwWidth) - INTERFACE_RATIO(32 + 3) ;
+		fSizY = anchorPos.y + INTERFACE_RATIO(- 3 + 25) ;
 		m_pos.x = ARX_CAST_TO_INT_THEN_FLOAT( fCenterX );
 		m_pos.y = ARX_CAST_TO_INT_THEN_FLOAT( fSizY );
 	}
@@ -520,8 +524,10 @@ public:
 	{
 		fDecPulse += framedelay * 0.5f;
 		
-		float fCenterX	= g_size.center().x - INTERFACE_RATIO(320) + INTERFACE_RATIO(35) + _iX ;
-		float fSizY		= g_size.height() - INTERFACE_RATIO(101) + INTERFACE_RATIO_LONG(InventoryY) + _iY;
+		Vec2f anchorPos = getInventoryGuiAnchorPosition();
+		
+		float fCenterX	= anchorPos.x + _iX ;
+		float fSizY		= anchorPos.y + _iY;
 		
 		const Vec2f pos = Vec2f(ARX_CAST_TO_INT_THEN_FLOAT(fCenterX), ARX_CAST_TO_INT_THEN_FLOAT(fSizY));
 		
@@ -618,7 +624,9 @@ public:
 				if(sActiveInventory < player.bag-1) {
 					float fRatio = INTERFACE_RATIO(32 + 5);
 					
-					ARX_INTERFACE_DrawItem(m_heroInventoryDown, m_pos.x, g_size.height() - INTERFACE_RATIO(101) + INTERFACE_RATIO_LONG(InventoryY) + INTERFACE_RATIO(-3 + 64));
+					Vec2f anchorPos = getInventoryGuiAnchorPosition();
+					
+					ARX_INTERFACE_DrawItem(m_heroInventoryDown, m_pos.x, anchorPos.y + INTERFACE_RATIO(-3 + 64));
 					
 					const Rect inventoryDownMouseTestRect(
 					m_pos.x,
@@ -630,7 +638,7 @@ public:
 					if(inventoryDownMouseTestRect.contains(Vec2i(DANAEMouse))) {
 						GRenderer->SetBlendFunc(Renderer::BlendOne, Renderer::BlendOne);
 						GRenderer->SetRenderState(Renderer::AlphaBlending, true);
-						ARX_INTERFACE_DrawItem(m_heroInventoryDown, m_pos.x, g_size.height() - INTERFACE_RATIO(101) + INTERFACE_RATIO_LONG(InventoryY) + INTERFACE_RATIO(-3 + 64));
+						ARX_INTERFACE_DrawItem(m_heroInventoryDown, m_pos.x, anchorPos.y + INTERFACE_RATIO(-3 + 64));
 						GRenderer->SetRenderState(Renderer::AlphaBlending, false);
 						SpecialCursor=CURSOR_INTERACTION_ON;
 						
@@ -649,15 +657,15 @@ public:
 			}
 		} else if((player.Interface & INTER_INVENTORYALL) || bInventoryClosing) {				
 			
+			Vec2f anchorPos = getInventoryGuiAnchorPosition();
+			
 			//TODO see about these coords, might be calculated once only
 			const float fBag = (player.bag-1) * INTERFACE_RATIO(-121);
-			float fCenterX = g_size.center().x + INTERFACE_RATIO(-320+35);
-			float fSizY = g_size.height() - INTERFACE_RATIO(101) + INTERFACE_RATIO_LONG(InventoryY) + INTERFACE_RATIO(-3.f + 25 - 32);
 			const float fOffsetY = INTERFACE_RATIO(121);
 			
 			int iOffsetY = checked_range_cast<int>(fBag + fOffsetY);
-			int posx = checked_range_cast<int>(fCenterX);
-			int posy = checked_range_cast<int>(fSizY);
+			int posx = checked_range_cast<int>(anchorPos.x);
+			int posy = checked_range_cast<int>(anchorPos.y + INTERFACE_RATIO(-3.f + 25 - 32));
 			
 			for(int i = 0; i < player.bag; i++) {
 				Vec2f pos1 = Vec2f(posx + INTERFACE_RATIO(45), static_cast<float>(posy + iOffsetY));
@@ -2248,9 +2256,11 @@ void ArxGame::drawAllInterface() {
 	
 	healthGauge.update();
 	
+	Vec2f anchorPos = getInventoryGuiAnchorPosition();
+	
 	Rectf spacer;
 	spacer.left = std::max(InventoryX + 160, healthGauge.rect().right);
-	spacer.bottom = g_size.height() - INTERFACE_RATIO(101) + INTERFACE_RATIO_LONG(InventoryY);
+	spacer.bottom = anchorPos.y;
 	spacer.top = spacer.bottom - 30;
 	spacer.right = spacer.left + 20;
 	
@@ -2379,4 +2389,11 @@ void manageEditorControlsHUD2()
 bool inventoryGuiupdateInputPROXY()
 {
 	return inventoryGui.updateInput();
+}
+
+
+Vec2f getInventoryGuiAnchorPosition() {
+	
+	return Vec2f(g_size.center().x - INTERFACE_RATIO(320) + INTERFACE_RATIO(35) ,
+	g_size.height() - INTERFACE_RATIO(101) + INTERFACE_RATIO_LONG(InventoryY));
 }
