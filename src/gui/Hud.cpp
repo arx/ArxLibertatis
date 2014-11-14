@@ -2146,18 +2146,6 @@ public:
 };
 StealthGauge stealthGauge;
 
-void UpdateInterface() {
-	hitStrengthGauge.update(Rectf(g_size));
-	secondaryInventory.update();
-	inventoryGui.update();
-	mecanismIcon.update();
-	screenArrows.update();
-	
-	memorizedRunesHud.update();
-	changeLevelIconGui.update(Rectf(g_size));
-	quickSaveIconGui.update();
-	damagedEquipmentGui.update();
-}
 
 void setHudScale(float scale) {
 	hitStrengthGauge.setScale(scale);
@@ -2177,6 +2165,19 @@ void setHudScale(float scale) {
 }
 
 void ArxGame::drawAllInterface() {
+	
+	
+	hitStrengthGauge.update(Rectf(g_size));
+	secondaryInventory.update();
+	inventoryGui.update();
+	mecanismIcon.update();
+	screenArrows.update();
+	
+	memorizedRunesHud.update();
+	changeLevelIconGui.update(Rectf(g_size));
+	quickSaveIconGui.update();
+	damagedEquipmentGui.update();
+	
 	
 	GRenderer->GetTextureStage(0)->setMinFilter(TextureStage::FilterLinear);
 	GRenderer->GetTextureStage(0)->setMagFilter(TextureStage::FilterNearest);

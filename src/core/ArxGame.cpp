@@ -2303,7 +2303,6 @@ void ArxGame::render() {
 			setHudScale(1);
 #endif
 		
-		UpdateInterface();
 		renderLevel();
 
 #ifdef ARX_DEBUG

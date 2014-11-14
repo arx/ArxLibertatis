@@ -27,7 +27,6 @@ extern bool bIsAiming;
 void hudElementsInit();
 
 void setHudScale(float scale);
-void UpdateInterface();
 
 void mecanismIconReset();
 //! Show the quick save indicator for a short time
