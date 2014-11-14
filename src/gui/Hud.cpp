@@ -2026,7 +2026,7 @@ ActiveSpellsGui activeSpellsGui = ActiveSpellsGui();
 /*!
  * \brief Damaged Equipment Drawing
  */
-class DamagedEquipmentGui {
+class DamagedEquipmentGui : public HudItem {
 private:
 	Vec2f m_size;
 	Rectf m_rect;
@@ -2037,7 +2037,8 @@ private:
 	
 public:
 	DamagedEquipmentGui()
-		: m_size(64.f, 64.f)
+		: HudItem()
+		, m_size(64.f, 64.f)
 	{}
 	
 	void init() {
@@ -2051,6 +2052,10 @@ public:
 		arx_assert(iconequip[2]);
 		arx_assert(iconequip[3]);
 		arx_assert(iconequip[4]);
+	}
+	
+	void updateRect(const Rectf & parent) {
+		m_rect = createChild(parent, Anchor_BottomRight, m_size * m_scale, Anchor_BottomLeft);
 	}
 	
 	void update() {
@@ -2081,13 +2086,6 @@ public:
 					m_colors[i] = Color3f(1.f-ratio, ratio, 0).to<u8>();
 			}
 		}
-		
-		Vec2f pos(InventoryX + 10 + 32 + 100, g_size.height() - 158);
-		
-		if(pos.x < INTERFACE_RATIO( 10 + 32 ))
-			pos.x = INTERFACE_RATIO( 10 + 32 );
-		
-		m_rect = Rectf(pos, m_size.x, m_size.y);
 	}
 	
 	void draw() {
@@ -2121,7 +2119,6 @@ private:
 	TextureContainer * stealth_gauge_tc;
 	
 	bool m_visible;
-	Rectf m_rect;
 	Color m_color;
 	Vec2f m_size;
 public:
@@ -2212,7 +2209,9 @@ void setHudScale(float scale) {
 	
 	mecanismIcon.setScale(scale);
 	screenArrows.setScale(scale);
+	
 	stealthGauge.setScale(scale);
+	damagedEquipmentGui.setScale(scale);
 }
 
 void ArxGame::drawAllInterface() {
@@ -2229,6 +2228,19 @@ void ArxGame::drawAllInterface() {
 	memorizedRunesHud.update(changeLevelIconGui.rect());
 	
 	quickSaveIconGui.update();
+	
+	
+	Vec2f anchorPos = getInventoryGuiAnchorPosition();
+	
+	Rectf spacer;
+	spacer.left = std::max(InventoryX + 160, healthGauge.rect().right);
+	spacer.bottom = anchorPos.y;
+	spacer.top = spacer.bottom - 30;
+	spacer.right = spacer.left + 20;
+	
+	stealthGauge.update(spacer);
+	
+	damagedEquipmentGui.updateRect(stealthGauge.rect());
 	damagedEquipmentGui.update();
 	
 	
@@ -2298,15 +2310,7 @@ void ArxGame::drawAllInterface() {
 	healthGauge.updateRect(Rectf(g_size));
 	healthGauge.update();
 	
-	Vec2f anchorPos = getInventoryGuiAnchorPosition();
-	
-	Rectf spacer;
-	spacer.left = std::max(InventoryX + 160, healthGauge.rect().right);
-	spacer.bottom = anchorPos.y;
-	spacer.top = spacer.bottom - 30;
-	spacer.right = spacer.left + 20;
-	
-	stealthGauge.update(spacer);
+
 	
 	
 	if(player.Interface & INTER_LIFE_MANA) {
