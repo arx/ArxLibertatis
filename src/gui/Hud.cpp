@@ -1551,6 +1551,12 @@ public:
 		arx_assert(m_filledTex);
 	}
 	
+	void updateRect(const Rectf & parent) {
+		m_rect = createChild(parent, Anchor_BottomLeft, m_size * m_scale, Anchor_BottomLeft);
+		m_rect.left += -lSLID_VALUE;
+		m_rect.right += -lSLID_VALUE;
+	}
+	
 	void update() {
 		
 		m_amount = (float)player.lifePool.current/(float)player.Full_maxlife;
@@ -1562,10 +1568,6 @@ public:
 		} else {
 			m_color = Color::red;
 		}
-		
-		m_rect = createChild(Rectf(g_size), Anchor_BottomLeft, m_size * m_scale, Anchor_BottomLeft);
-		m_rect.left += -lSLID_VALUE;
-		m_rect.right += -lSLID_VALUE;
 	}
 	
 	void draw() {
@@ -2274,6 +2276,7 @@ void ArxGame::drawAllInterface() {
 		memorizedRunesHud.draw();
 	}
 	
+	healthGauge.updateRect(Rectf(g_size));
 	healthGauge.update();
 	
 	Vec2f anchorPos = getInventoryGuiAnchorPosition();
