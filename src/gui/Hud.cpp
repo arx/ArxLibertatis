@@ -1811,12 +1811,15 @@ private:
 
 public:
 	
+	bool isVisible() {
+		return !(player.Interface & INTER_INVENTORYALL) && !(player.Interface & INTER_MAP);
+	}
+	
 	void update() {
 		m_icons.clear();
 		
-		if(!(!(player.Interface & INTER_INVENTORYALL) && !(player.Interface & INTER_MAP))) {
+		if(!isVisible())
 			return;
-		}
 		
 		float intensity = 1.f - PULSATE * 0.5f;
 		intensity = glm::clamp(intensity, 0.f, 1.f);
@@ -2243,6 +2246,8 @@ void ArxGame::drawAllInterface() {
 	damagedEquipmentGui.updateRect(stealthGauge.rect());
 	damagedEquipmentGui.update();
 	
+	precastSpellsGui.update();
+	
 	
 	GRenderer->GetTextureStage(0)->setMinFilter(TextureStage::FilterLinear);
 	GRenderer->GetTextureStage(0)->setMagFilter(TextureStage::FilterNearest);
@@ -2362,7 +2367,6 @@ void ArxGame::drawAllInterface() {
 	GRenderer->GetTextureStage(0)->setMagFilter(TextureStage::FilterLinear);
 	GRenderer->GetTextureStage(0)->setWrapMode(TextureStage::WrapRepeat);
 	
-	precastSpellsGui.update();
 	precastSpellsGui.draw();
 	activeSpellsGui.draw();
 }
