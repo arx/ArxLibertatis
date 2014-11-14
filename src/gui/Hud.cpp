@@ -2147,6 +2147,36 @@ public:
 StealthGauge stealthGauge;
 
 
+void hudElementsInit() {
+	changeLevelIconGui.init();
+	activeSpellsGui.init();
+	damagedEquipmentGui.init();
+	mecanismIcon.init();
+	
+	stealthGauge.init();
+	screenArrows.init();
+	
+	healthGauge.init();
+	manaGauge.init();
+	bookIconGui.init();
+	backpackIconGui.init();
+	levelUpIconGui.init();
+	stealIconGui.init();
+	secondaryInventory.init();
+	inventoryGui.init();
+	
+	BasicInventorySkin = TextureContainer::LoadUI("graph/interface/inventory/ingame_inventory");
+	arx_assert(BasicInventorySkin);
+	
+	purseIconGui.init();
+	pickAllIconGui.init();
+	closeSecondaryInventoryIconGui.init();
+	
+	hitStrengthGauge.init();
+	
+	//setHudScale(2);
+}
+
 void setHudScale(float scale) {
 	hitStrengthGauge.setScale(scale);
 	healthGauge.setScale(scale);
@@ -2309,36 +2339,6 @@ void ArxGame::drawAllInterface() {
 	precastSpellsGui.update();
 	precastSpellsGui.draw();
 	activeSpellsGui.draw();
-}
-
-void hudElementsInit() {
-	changeLevelIconGui.init();
-	activeSpellsGui.init();
-	damagedEquipmentGui.init();
-	mecanismIcon.init();
-	
-	stealthGauge.init();
-	screenArrows.init();
-	
-	healthGauge.init();
-	manaGauge.init();
-	bookIconGui.init();
-	backpackIconGui.init();
-	levelUpIconGui.init();
-	stealIconGui.init();
-	secondaryInventory.init();
-	inventoryGui.init();
-	
-	BasicInventorySkin = TextureContainer::LoadUI("graph/interface/inventory/ingame_inventory");
-	arx_assert(BasicInventorySkin);
-	
-	purseIconGui.init();
-	pickAllIconGui.init();
-	closeSecondaryInventoryIconGui.init();
-	
-	hitStrengthGauge.init();
-	
-	//setHudScale(2);
 }
 
 
