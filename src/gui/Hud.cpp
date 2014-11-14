@@ -1758,7 +1758,7 @@ public:
 };
 ScreenArrows screenArrows;
 
-class PrecastSpellsGui {
+class PrecastSpellsGui : public HudItem {
 private:
 	struct PrecastSpellIconSlot {
 		Rectf m_rect;
@@ -1808,11 +1808,27 @@ private:
 		}
 	};
 	std::vector<PrecastSpellIconSlot> m_icons;
-
+	
+	
+	Vec2f m_iconSize;
+	
 public:
+	
+	PrecastSpellsGui()
+		: HudItem()
+	{
+		m_iconSize = Vec2f(48, 48) / Vec2f(2);
+	}
 	
 	bool isVisible() {
 		return !(player.Interface & INTER_INVENTORYALL) && !(player.Interface & INTER_MAP);
+	}
+	
+	void updateRect(const Rectf & parent) {
+		
+		Vec2f size = m_iconSize * Vec2f(Precast.size(), 1);
+		
+		m_rect = createChild(parent, Anchor_BottomRight, size * m_scale, Anchor_BottomLeft);
 	}
 	
 	void update() {
@@ -1823,6 +1839,7 @@ public:
 		
 		float intensity = 1.f - PULSATE * 0.5f;
 		intensity = glm::clamp(intensity, 0.f, 1.f);
+		
 		
 		for(size_t i = 0; i < Precast.size(); i++) {
 			
@@ -1841,25 +1858,16 @@ public:
 	
 			Color color = Color3f(0, val * (1.0f/2), val).to<u8>();
 			
-			Vec2f pos = Vec2f(g_size.bottomLeft());
-			pos += Vec2f(InventoryX, 0.f);
-			pos += Vec2f(110, -(126 + 32));
-			
-			if(pos.x < INTERFACE_RATIO(10)) {
-				pos.x = INTERFACE_RATIO(10);
-			}
-			
-			pos.x += (33 + 33 + 33);
-			pos.x += i * 33;
+			Rectf childRect = createChild(m_rect, Anchor_BottomLeft, m_iconSize * m_scale, Anchor_BottomLeft);
+			childRect.move(i * 33 * m_scale, 0);
 			
 			SpellType typ = precastSlot.typ;
 			
 			TextureContainer * tc = spellicons[typ].tc;
 			arx_assert(tc);
-			Rectf rect(pos, tc->m_dwWidth * 0.5f, tc->m_dwHeight * 0.5f);
 			
 			PrecastSpellIconSlot icon;
-			icon.update(rect, tc, color, PrecastHandle(i));
+			icon.update(childRect, tc, color, PrecastHandle(i));
 			
 			if(!(player.Interface & INTER_COMBATMODE))
 				icon.updateInput();
@@ -2032,7 +2040,6 @@ ActiveSpellsGui activeSpellsGui = ActiveSpellsGui();
 class DamagedEquipmentGui : public HudItem {
 private:
 	Vec2f m_size;
-	Rectf m_rect;
 	
 	TextureContainer * iconequip[5];
 	
@@ -2215,6 +2222,7 @@ void setHudScale(float scale) {
 	
 	stealthGauge.setScale(scale);
 	damagedEquipmentGui.setScale(scale);
+	precastSpellsGui.setScale(scale);
 }
 
 void ArxGame::drawAllInterface() {
@@ -2246,6 +2254,7 @@ void ArxGame::drawAllInterface() {
 	damagedEquipmentGui.updateRect(stealthGauge.rect());
 	damagedEquipmentGui.update();
 	
+	precastSpellsGui.updateRect(damagedEquipmentGui.rect());
 	precastSpellsGui.update();
 	
 	
