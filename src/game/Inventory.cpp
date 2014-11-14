@@ -2043,9 +2043,7 @@ void ARX_INVENTORY_TakeAllFromSecondaryInventory() {
 				bSound = true;
 			} else {
 				sInventory = 2;
-				
-				sInventoryPos.x = static_cast<short>(i);
-				sInventoryPos.y = static_cast<short>(j);
+				sInventoryPos = Vec2s(i, j);
 				
 				CanBePutInSecondaryInventory(TSecondaryInventory, io);
 			}
@@ -2075,15 +2073,13 @@ void ARX_INVENTORY_ReOrder() {
 		
 		RemoveFromAllInventories(io);
 		sInventory = 2;
-		sInventoryPos.x = 0;
-		sInventoryPos.y = 0;
+		sInventoryPos = Vec2s_ZERO;
 		
 		if(CanBePutInSecondaryInventory(TSecondaryInventory, io)) {
 		} else{
 			sInventory = 2;
 			
-			sInventoryPos.x = static_cast<short>(i);
-			sInventoryPos.y = static_cast<short>(j);
+			sInventoryPos = Vec2s(i, j);
 			
 			CanBePutInSecondaryInventory(TSecondaryInventory, io);
 		}

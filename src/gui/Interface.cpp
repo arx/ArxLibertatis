@@ -4179,8 +4179,7 @@ void ArxGame::manageEditorControls() {
 		   && !InPlayerInventoryPos(DANAEMouse)
 		   && !ARX_INTERFACE_MouseInBook()
 		) {
-			long sx = 0;
-			long sy = 0;
+			Vec2s s = Vec2s_ZERO;
 			bool bSecondary = false;
 			
 			if(TSecondaryInventory && IsInSecondaryInventory(FlyingOverIO)) {
@@ -4192,8 +4191,7 @@ void ArxGame::manageEditorControls() {
 						const INVENTORY_SLOT & slot = SecondaryInventory->slot[x][y];
 						
 						if(slot.io == FlyingOverIO) {
-							sx = x;
-							sy = y;
+							s = Vec2s(x, y);
 							bfound = false;
 						}
 					}
@@ -4219,8 +4217,7 @@ void ArxGame::manageEditorControls() {
 					extern short sInventory;
 					extern Vec2s sInventoryPos;
 					sInventory = 2;
-					sInventoryPos.x = checked_range_cast<short>(sx);
-					sInventoryPos.y = checked_range_cast<short>(sy);
+					sInventoryPos = s;
 					
 					CanBePutInSecondaryInventory(TSecondaryInventory, FlyingOverIO);
 				}
