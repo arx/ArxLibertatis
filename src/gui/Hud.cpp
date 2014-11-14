@@ -1385,6 +1385,10 @@ public:
 		m_size = Vec2f(32.f, 32.f);
 	}
 	
+	bool isVisible() {
+		return CHANGE_LEVEL_ICON > -1;
+	}
+	
 	void update(const Rectf & parent) {
 		m_rect = createChild(parent, Anchor_TopRight, m_size * m_scale, Anchor_TopRight);
 		
@@ -1393,6 +1397,10 @@ public:
 	}
 	
 	void draw() {
+		
+		if(!isVisible())
+			return;
+		
 		EERIEDrawBitmap(m_rect, 0.0001f, m_tex, Color3f::gray(m_intensity).to<u8>());
 		
 	    if(m_rect.contains(Vec2f(DANAEMouse))) {
@@ -1472,11 +1480,11 @@ void hideQuickSaveIcon() {
 
 class MemorizedRunesHud : public HudIconBase {
 private:
+	Vec2f m_size;
 	int m_count;
-	Vec2f m_pos;
 	
 public:
-	void update() {
+	void update(const Rectf & parent) {
 		int count = 0;
 		int count2 = 0;
 		for(long j = 0; j < 6; j++) {
@@ -1488,14 +1496,15 @@ public:
 			}
 		}
 		m_count = std::max(count, count2);
-		m_pos.x = g_size.width() - (m_count * INTERFACE_RATIO(32));
-		if(CHANGE_LEVEL_ICON > -1) {
-			m_pos.x -= INTERFACE_RATIO(32);
-		}
-		m_pos.y = 0;
+		
+		m_size = Vec2f(m_count * 32, 32);
+		
+		m_rect = createChild(parent, Anchor_TopLeft, m_size * m_scale, Anchor_TopRight);
 	}
 	
 	void draw() {
+		Vec2f pos = m_rect.topLeft();
+		
 		for(int i = 0; i < 6; i++) {
 			bool bHalo = false;
 			if(SpellSymbol[i] != RUNE_NONE) {
@@ -1510,19 +1519,25 @@ public:
 				}
 			}
 			if(player.SpellToMemorize.iSpellSymbols[i] != RUNE_NONE) {
-				EERIEDrawBitmap2(Rectf(m_pos, 32, 32), 0,
-					gui::necklace.pTexTab[player.SpellToMemorize.iSpellSymbols[i]], Color::white);
+				
+				Vec2f size = Vec2f(32.f, 32.f) * m_scale;
+				Rectf rect = Rectf(pos, size.x, size.y);
+				
+				TextureContainer *tc = gui::necklace.pTexTab[player.SpellToMemorize.iSpellSymbols[i]];
+				
+				EERIEDrawBitmap2(rect, 0, tc, Color::white);
+				
 				if(bHalo) {				
-					TextureContainer *tc = gui::necklace.pTexTab[player.SpellToMemorize.iSpellSymbols[i]];
-					DrawHalo(0.2f, 0.4f, 0.8f, tc->getHalo(), Vec2f(m_pos.x, m_pos.y));
+					ARX_INTERFACE_HALO_Render(Color3f(0.2f, 0.4f, 0.8f), HALO_ACTIVE, tc->getHalo(), pos, Vec2f(m_scale));
 				}
+				
 				if(!(player.rune_flags & (RuneFlag)(1<<player.SpellToMemorize.iSpellSymbols[i]))) {
 					GRenderer->SetBlendFunc(Renderer::BlendInvDstColor, Renderer::BlendOne);
 					GRenderer->SetRenderState(Renderer::AlphaBlending, true);
-					EERIEDrawBitmap2(Rectf(m_pos, 32, 32), 0, cursorMovable, Color3f::gray(.8f).to<u8>());
+					EERIEDrawBitmap2(rect, 0, cursorMovable, Color3f::gray(.8f).to<u8>());
 					GRenderer->SetRenderState(Renderer::AlphaBlending, false);
 				}
-				m_pos.x += INTERFACE_RATIO(32);
+				pos.x += 32 * m_scale;
 			}
 		}
 		if(float(arxtime) - player.SpellToMemorize.lTimeCreation > 30000) {
@@ -2193,6 +2208,7 @@ void setHudScale(float scale) {
 	levelUpIconGui.setScale(scale);
 	
 	changeLevelIconGui.setScale(scale);
+	memorizedRunesHud.setScale(scale);
 	
 	mecanismIcon.setScale(scale);
 	screenArrows.setScale(scale);
@@ -2209,8 +2225,9 @@ void ArxGame::drawAllInterface() {
 	mecanismIcon.update();
 	screenArrows.update();
 	
-	memorizedRunesHud.update();
 	changeLevelIconGui.update(Rectf(g_size));
+	memorizedRunesHud.update(changeLevelIconGui.rect());
+	
 	quickSaveIconGui.update();
 	damagedEquipmentGui.update();
 	
@@ -2264,9 +2281,7 @@ void ArxGame::drawAllInterface() {
 		currentTorchIconGui.draw();
 	}
 	
-	if(CHANGE_LEVEL_ICON > -1) {
-		changeLevelIconGui.draw();
-	}
+	changeLevelIconGui.draw();
 	
 	quickSaveIconGui.draw();
 	stealthGauge.draw();
