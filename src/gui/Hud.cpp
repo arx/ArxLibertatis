@@ -178,11 +178,14 @@ public:
 		m_flashIntensity = flashIntensity;
 	}
 	
-	void update(const Rectf & parent) {
+	void updateRect(const Rectf & parent) {
 		m_rect = createChild(parent, Anchor_BottomCenter, m_size * m_scale, Anchor_BottomCenter);
 		m_rect.move(0.f, -2.f);
 		
 		m_hitRect = createChild(m_rect, Anchor_Center, m_hitSize * m_scale, Anchor_Center);
+	}
+	
+	void update() {
 		
 		if(AimTime == 0) {
 			m_intensity = 0.2f;
@@ -2198,8 +2201,9 @@ void setHudScale(float scale) {
 
 void ArxGame::drawAllInterface() {
 	
+	hitStrengthGauge.updateRect(Rectf(g_size));
+	hitStrengthGauge.update();
 	
-	hitStrengthGauge.update(Rectf(g_size));
 	secondaryInventory.update();
 	inventoryGui.update();
 	mecanismIcon.update();
