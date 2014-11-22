@@ -1345,14 +1345,19 @@ public:
 			return;
 		}
 		
+		createFireParticle(Vec2f(px, py));
+	}
+	
+	void createFireParticle(Vec2f p) {
+		
 		PARTICLE_DEF * pd = createParticle();
 		if(!pd) {
 			return;
 		}
 		
 		pd->special = FIRE_TO_SMOKE;
-		pd->ov = Vec3f(px + INTERFACE_RATIO(12.f - rnd() * 3.f),
-		               py + INTERFACE_RATIO(rnd() * 6.f), 0.0000001f);
+		pd->ov = Vec3f(p.x + INTERFACE_RATIO(12.f - rnd() * 3.f),
+		               p.y + INTERFACE_RATIO(rnd() * 6.f), 0.0000001f);
 		pd->move = Vec3f(INTERFACE_RATIO(1.5f - rnd() * 3.f),
 		                 -INTERFACE_RATIO(5.f + rnd() * 1.f), 0.f);
 		pd->scale = Vec3f(1.8f, 1.8f, 1.f);
