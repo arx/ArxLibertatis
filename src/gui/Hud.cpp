@@ -582,20 +582,17 @@ public:
 				CalculateInventoryCoordinates();
 				
 				if(sActiveInventory > 0) {
-					ARX_INTERFACE_DrawItem(m_heroInventoryUp, m_pos.x, m_pos.y);
+					Rectf rect = Rectf(m_pos, 32.f, 32.f);
 					
-					const Rect inventoryUpMouseTestRect(
-					m_pos.x,
-					m_pos.y,
-					m_pos.x + INTERFACE_RATIO(32),
-					m_pos.y + INTERFACE_RATIO(32)
-					);
+					EERIEDrawBitmap(rect, 0.001f, m_heroInventoryUp, Color::white);
 					
-					if(inventoryUpMouseTestRect.contains(Vec2i(DANAEMouse))) {
+					if(rect.contains(Vec2f(DANAEMouse))) {
 						GRenderer->SetBlendFunc(Renderer::BlendOne, Renderer::BlendOne);
 						GRenderer->SetRenderState(Renderer::AlphaBlending, true);
 						SpecialCursor=CURSOR_INTERACTION_ON;
-						ARX_INTERFACE_DrawItem(m_heroInventoryUp, m_pos.x, m_pos.y);
+						
+						EERIEDrawBitmap(rect, 0.001f, m_heroInventoryUp, Color::white);
+						
 						GRenderer->SetRenderState(Renderer::AlphaBlending, false);
 						SpecialCursor=CURSOR_INTERACTION_ON;
 						
