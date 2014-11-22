@@ -195,11 +195,10 @@ public:
 				j=(float)(BOW_FOCAL)/710.f;
 			} else {
 				float at=float(arxtime)-(float)AimTime;
-				if(at > 0.f)
-					bIsAiming = true;
-				else
-					bIsAiming = false;
-	
+				
+				//TODO global
+				bIsAiming = at > 0.f;
+				
 				at=at*(1.f+(1.f-GLOBAL_SLOWDOWN));
 				float aim = static_cast<float>(player.Full_AimTime);
 				j=at/aim;
