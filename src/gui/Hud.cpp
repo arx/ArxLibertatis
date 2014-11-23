@@ -1994,19 +1994,19 @@ public:
 	}
 	
 	void spellsOnPlayerUpdate(float intensity) {
-			for(size_t i = 0; i < MAX_SPELLS; i++) {
-				SpellBase * spell = spells[SpellHandle(i)];
-				if(!spell)
-					continue;
-				
-				if(std::find(spell->m_targets.begin(), spell->m_targets.end(), PlayerEntityHandle) == spell->m_targets.end()) {
-					continue;
-				}
-				
-				if(spell->m_caster != PlayerEntityHandle && spellicons[spell->m_type].m_hasDuration) {
-					ManageSpellIcon(*spell, intensity, true);
-				}
+		for(size_t i = 0; i < MAX_SPELLS; i++) {
+			SpellBase * spell = spells[SpellHandle(i)];
+			if(!spell)
+				continue;
+			
+			if(std::find(spell->m_targets.begin(), spell->m_targets.end(), PlayerEntityHandle) == spell->m_targets.end()) {
+				continue;
 			}
+			
+			if(spell->m_caster != PlayerEntityHandle && spellicons[spell->m_type].m_hasDuration) {
+				ManageSpellIcon(*spell, intensity, true);
+			}
+		}
 	}
 	
 	void update() {
