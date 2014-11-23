@@ -610,23 +610,16 @@ public:
 				}
 				
 				if(sActiveInventory < player.bag-1) {
-					float fRatio = INTERFACE_RATIO(32 + 5);
+					Rectf rect = Rectf(m_pos + Vec2f(0.f, 32.f + 5.f), 32.f, 32.f);
 					
-					Vec2f anchorPos = getInventoryGuiAnchorPosition();
+					EERIEDrawBitmap(rect, 0.001f, m_heroInventoryDown, Color::white);
 					
-					ARX_INTERFACE_DrawItem(m_heroInventoryDown, m_pos.x, anchorPos.y + INTERFACE_RATIO(-3 + 64));
-					
-					const Rect inventoryDownMouseTestRect(
-					m_pos.x,
-					m_pos.y + fRatio,
-					m_pos.x + INTERFACE_RATIO(32),
-					m_pos.y + fRatio + INTERFACE_RATIO(32)
-					);
-					
-					if(inventoryDownMouseTestRect.contains(Vec2i(DANAEMouse))) {
+					if(rect.contains(Vec2f(DANAEMouse))) {
 						GRenderer->SetBlendFunc(Renderer::BlendOne, Renderer::BlendOne);
 						GRenderer->SetRenderState(Renderer::AlphaBlending, true);
-						ARX_INTERFACE_DrawItem(m_heroInventoryDown, m_pos.x, anchorPos.y + INTERFACE_RATIO(-3 + 64));
+						
+						EERIEDrawBitmap(rect, 0.001f, m_heroInventoryDown, Color::white);
+						
 						GRenderer->SetRenderState(Renderer::AlphaBlending, false);
 						SpecialCursor=CURSOR_INTERACTION_ON;
 						
