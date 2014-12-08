@@ -1478,11 +1478,14 @@ endif()
 install(DIRECTORY data/core/ DESTINATION "${INSTALL_DATADIR}")
 # Also tell arx where to find the not yet installed data
 # This is required to run arx from the build directory without installing
-get_property(arx_location TARGET arx PROPERTY LOCATION)
-get_filename_component(arx_location "${arx_location}" PATH)
 set(arx_core_dir "${CMAKE_SOURCE_DIR}/data/core")
-file(RELATIVE_PATH arx_core_dir "${arx_location}" "${arx_core_dir}")
-file(WRITE "${arx_location}/data" "${arx_core_dir}\n")
+foreach(config IN LISTS CMAKE_CONFIGURATION_TYPES CMAKE_BUILD_TYPE)
+	get_property(arx_location TARGET arx PROPERTY LOCATION_${config})
+	message("config: ${config}: ${arx_location}")
+	get_filename_component(arx_location "${arx_location}" PATH)
+	file(RELATIVE_PATH arx_core_dir_rel "${arx_location}" "${arx_core_dir}")
+	file(WRITE "${arx_location}/data" "${arx_core_dir_rel}\n")
+endforeach()
 
 # Install the data install script
 if(INSTALL_SCRIPTS AND NOT WIN32)
