@@ -841,9 +841,9 @@ bool CanBePutInInventory(Entity * io)
 						if(ioo->_itemdata->count > ioo->_itemdata->playerstacksize) {
 							io->_itemdata->count = ioo->_itemdata->count - ioo->_itemdata->playerstacksize;
 							ioo->_itemdata->count = ioo->_itemdata->playerstacksize;
-						} else
+						} else {
 							io->_itemdata->count = 0;
-						
+						}
 						if(!io->_itemdata->count) {
 							io->destroy();
 						}
