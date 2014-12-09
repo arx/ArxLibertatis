@@ -159,7 +159,7 @@ bool ErrorReport::GetCrashDump(const fs::path & fileName) {
 
 #if ARX_PLATFORM != ARX_PLATFORM_WIN32
 
-void getProcessSatus(QString filename, u64 & rss, u64 & startTicks) {
+static void getProcessSatus(QString filename, u64 & rss, u64 & startTicks) {
 	
 	rss = startTicks = 0;
 	
@@ -185,7 +185,7 @@ void getProcessSatus(QString filename, u64 & rss, u64 & startTicks) {
 	
 }
 
-void getResourceUsage(int pid, quint64 & memoryUsage, double & runningTimeSec) {
+static void getResourceUsage(int pid, quint64 & memoryUsage, double & runningTimeSec) {
 	
 	memoryUsage = 0;
 	runningTimeSec = 0.0;
