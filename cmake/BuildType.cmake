@@ -116,6 +116,7 @@ else(MSVC)
 		add_cxxflag("-Woverloaded-virtual")
 		add_cxxflag("-Wlogical-op")
 		add_cxxflag("-Woverflow")
+		add_cxxflag("-Wheader-guard")
 		
 		# TODO consider adding these
 		# add_cxxflag("-Wconversion") # very noisy
