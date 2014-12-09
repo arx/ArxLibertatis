@@ -44,19 +44,19 @@ using std::cout;
 using std::endl;
 using std::cerr;
 
-std::ostream & operator<<(std::ostream & strm, const SavedVec3 & vec) {
+static std::ostream & operator<<(std::ostream & strm, const SavedVec3 & vec) {
 	return strm << '(' << vec.x << ", " << vec.y << ", " << vec.z << ')';
 }
 
-std::ostream & operator<<(std::ostream & strm, const SavedAnglef & a) {
+static std::ostream & operator<<(std::ostream & strm, const SavedAnglef & a) {
 	return strm << '(' << a.a << ", " << a.b << ", " << a.g << ')';
 }
 
-std::ostream & operator<<(std::ostream & strm, const SavedColor & c) {
+static std::ostream & operator<<(std::ostream & strm, const SavedColor & c) {
 	return strm << '(' << c.r << ", " << c.g << ", " << c.b << ')';
 }
 
-string loadUnlocalized(const std::string & str) {
+static std::string loadUnlocalized(const std::string & str) {
 	
 	// if the section name has the qualifying brackets "[]", cut them off
 	if(!str.empty() && str[0] == '[' && str[str.length() - 1] == ']') {
@@ -357,7 +357,7 @@ const char * equipitemNames[] = {
 	"Special 4"
 };
 
-std::ostream & print_anim_flags(std::ostream & strm, u32 flags) {
+static std::ostream & print_anim_flags(std::ostream & strm, u32 flags) {
 	if(!flags) strm << " (none)";
 	if(flags & EA_LOOP) strm << " loop";
 	if(flags & EA_REVERSE) strm << " reverse";
@@ -370,7 +370,7 @@ std::ostream & print_anim_flags(std::ostream & strm, u32 flags) {
 	return strm;
 }
 
-std::ostream & print_item_type(std::ostream & strm, s32 type) {
+static std::ostream & print_item_type(std::ostream & strm, s32 type) {
 	if(!type) strm << " (none)";
 	if(type & OBJECT_TYPE_WEAPON) strm << " weapon";
 	if(type & OBJECT_TYPE_DAGGER) strm << " dagger";
@@ -387,7 +387,7 @@ std::ostream & print_item_type(std::ostream & strm, s32 type) {
 	return strm;
 }
 
-std::ostream & print_behavior(std::ostream & strm, u32 behavior) {
+static std::ostream & print_behavior(std::ostream & strm, u32 behavior) {
 	if(!behavior) strm << " (none)";
 	if(behavior & BEHAVIOUR_NONE) strm << " none";
 	if(behavior & BEHAVIOUR_FRIENDLY) strm << " friendly";
@@ -407,7 +407,7 @@ std::ostream & print_behavior(std::ostream & strm, u32 behavior) {
 	return strm;
 }
 
-std::ostream & print_tactics(std::ostream & strm, s32 tactics) {
+static std::ostream & print_tactics(std::ostream & strm, s32 tactics) {
 	switch(tactics) {
 		case 0: strm << "none"; break;
 		case 1: strm << "side"; break;
@@ -417,7 +417,7 @@ std::ostream & print_tactics(std::ostream & strm, s32 tactics) {
 	return strm;
 }
 
-std::ostream & print_movemode(std::ostream & strm, s32 movemode) {
+static std::ostream & print_movemode(std::ostream & strm, s32 movemode) {
 	switch(movemode) {
 		case WALKMODE: strm << "walking"; break;
 		case RUNMODE: strm << "running"; break;
@@ -428,7 +428,7 @@ std::ostream & print_movemode(std::ostream & strm, s32 movemode) {
 	return strm;
 }
 
-void print_spell(s32 spell) {
+static void print_spell(s32 spell) {
 	
 	if((size_t)spell < ARRAY_SIZE(spellNames)) {
 		cout << spellNames[spell];
@@ -438,7 +438,8 @@ void print_spell(s32 spell) {
 	
 }
 
-int print_variables(size_t n, const char * dat, size_t & pos, const string & p, VariableType s, VariableType f, VariableType l) {
+static int print_variables(size_t n, const char * dat, size_t & pos, const string & p,
+                           VariableType s, VariableType f, VariableType l) {
 	
 	if(n) {
 		cout << p <<  "Variables:";
@@ -484,7 +485,7 @@ int print_variables(size_t n, const char * dat, size_t & pos, const string & p, 
 	return 0;
 }
 
-void print_animations(const char (&anims)[SAVED_MAX_ANIMS][256]) {
+static void print_animations(const char (&anims)[SAVED_MAX_ANIMS][256]) {
 	
 	cout << endl << "Animations:";
 	bool hasAnims = false;
@@ -510,7 +511,8 @@ void print_animations(const char (&anims)[SAVED_MAX_ANIMS][256]) {
 	cout << endl;
 }
 
-void print_anim_layers(const SavedAnimUse animlayer[SAVED_MAX_ANIM_LAYERS], const string & pf = string()) {
+static void print_anim_layers(const SavedAnimUse animlayer[SAVED_MAX_ANIM_LAYERS],
+                              const std::string & pf = string()) {
 	
 	for(size_t i = 0; i < SAVED_MAX_ANIM_LAYERS; i++) {
 		const SavedAnimUse & layer = animlayer[i];
@@ -554,13 +556,13 @@ void print_anim_layers(const SavedAnimUse animlayer[SAVED_MAX_ANIM_LAYERS], cons
 
 Config config;
 
-void print_level(long level) {
+static void print_level(long level) {
 	boost::io::ios_all_saver coutFlags(cout);
 	cout << level << " (lvl" << std::setw(3) << std::setfill('0') << level << ')';
 	coutFlags.restore();
 }
 
-void print_type(s32 type) {
+static void print_type(s32 type) {
 	switch(type) {
 		case TYPE_NPC: cout << "NPC"; break;
 		case TYPE_ITEM: cout << "Item"; break;
@@ -571,7 +573,7 @@ void print_type(s32 type) {
 	}
 }
 
-void print_spellcast_flags(s32 flags) {
+static void print_spellcast_flags(s32 flags) {
 	if(!flags) cout << " (none)";
 	print_flag(flags, SPELLCAST_FLAG_NODRAW, "nodraw");
 	print_flag(flags, SPELLCAST_FLAG_NOANIM, "noanim");
@@ -584,7 +586,7 @@ void print_spellcast_flags(s32 flags) {
 	print_unknown_flags(flags);
 }
 
-void print_physics(const SavedIOPhysics & physics) {
+static void print_physics(const SavedIOPhysics & physics) {
 	if(physics.cyl.origin.toVec3() != Vec3f_ZERO || physics.cyl.radius || physics.cyl.height) cout << "  Cylinder: origin=" << physics.cyl.origin << " radius=" << physics.cyl.radius << " height=" << physics.cyl.height << endl;
 	if(physics.startpos.toVec3() != Vec3f_ZERO) cout << "  Start position: " << physics.startpos << endl;
 	if(physics.targetpos.toVec3() != Vec3f_ZERO) cout << "  Target position: " << physics.targetpos << endl;
@@ -592,7 +594,7 @@ void print_physics(const SavedIOPhysics & physics) {
 	if(physics.forces.toVec3() != Vec3f_ZERO) cout << "  Forces: " << physics.forces << endl;
 }
 
-void print_ident(SaveBlock & save, const string & ident) {
+static void print_ident(SaveBlock & save, const string & ident) {
 	
 	if(ident.empty()) {
 		cout << "(none)";
@@ -643,7 +645,8 @@ void print_ident(SaveBlock & save, const string & ident) {
 }
 
 template <size_t M, size_t N>
-void print_inventory(SaveBlock & save, const char (&slot_io)[M][N][SIZE_ID], const s32 (&slot_show)[M][N]) {
+static void print_inventory(SaveBlock & save, const char (&slot_io)[M][N][SIZE_ID],
+                            const s32 (&slot_show)[M][N]) {
 	
 	bool hasItems = false;
 	for(size_t m = 0; m < M; m++) {
@@ -665,7 +668,7 @@ void print_inventory(SaveBlock & save, const char (&slot_io)[M][N][SIZE_ID], con
 	
 }
 
-void print_player_movement(s32 movement) {
+static void print_player_movement(s32 movement) {
 	if(!movement) cout << "(none)";
 	print_flag(movement, PLAYER_MOVE_WALK_FORWARD, "forward");
 	print_flag(movement, PLAYER_MOVE_WALK_BACKWARD, "backward");
@@ -680,7 +683,7 @@ void print_player_movement(s32 movement) {
 	print_unknown_flags(movement);
 }
 
-void print_item(SaveBlock & save, const char (&ident)[64],  const string & name) {
+static void print_item(SaveBlock & save, const char (&ident)[64],  const string & name) {
 	
 	string i = boost::to_lower_copy(util::loadString(ident));
 	if(i.empty() || i == "none") {
@@ -690,7 +693,7 @@ void print_item(SaveBlock & save, const char (&ident)[64],  const string & name)
 	cout << "  " << name << ": "; print_ident(save, i); cout << endl;
 }
 
-int view_pld(const char * dat, size_t size) {
+static int view_pld(const char * dat, size_t size) {
 	
 	size_t pos = 0;
 	const ARX_CHANGELEVEL_PLAYER_LEVEL_DATA & pld = *reinterpret_cast<const ARX_CHANGELEVEL_PLAYER_LEVEL_DATA *>(dat + pos);
@@ -717,7 +720,7 @@ int view_pld(const char * dat, size_t size) {
 	return 0;
 }
 
-int view_globals(const char * dat, size_t size) {
+static int view_globals(const char * dat, size_t size) {
 	
 	size_t pos = 0;
 	const ARX_CHANGELEVEL_SAVE_GLOBALS & pld = *reinterpret_cast<const ARX_CHANGELEVEL_SAVE_GLOBALS *>(dat + pos);
@@ -735,7 +738,7 @@ int view_globals(const char * dat, size_t size) {
 	return 0;
 }
 
-string equip_slot_name(size_t i) {
+static std::string equip_slot_name(size_t i) {
 	switch(i) {
 		case 0: return "Left ring";
 		case 1: return "Right ring";
@@ -753,7 +756,7 @@ string equip_slot_name(size_t i) {
 	}
 }
 
-int view_player(SaveBlock & save, const char * dat, size_t size) {
+static int view_player(SaveBlock & save, const char * dat, size_t size) {
 	
 	size_t pos = 0;
 	const ARX_CHANGELEVEL_PLAYER & asp = *reinterpret_cast<const ARX_CHANGELEVEL_PLAYER *>(dat + pos);
@@ -1002,7 +1005,7 @@ struct PlayingAmbiance {
 	s32 type;
 };
 
-int view_level(SaveBlock & save, const char * dat, size_t size) {
+static int view_level(SaveBlock & save, const char * dat, size_t size) {
 	
 	size_t pos = 0;
 	const ARX_CHANGELEVEL_INDEX & asi = *reinterpret_cast<const ARX_CHANGELEVEL_INDEX *>(dat + pos);
@@ -1086,7 +1089,7 @@ int view_level(SaveBlock & save, const char * dat, size_t size) {
 	return 0;
 }
 
-int view_io(SaveBlock & save, const char * dat, size_t size) {
+static int view_io(SaveBlock & save, const char * dat, size_t size) {
 	
 	size_t pos = 0;
 	const ARX_CHANGELEVEL_IO_SAVE & ais = *reinterpret_cast<const ARX_CHANGELEVEL_IO_SAVE *>(dat + pos);
@@ -1807,7 +1810,7 @@ int view_io(SaveBlock & save, const char * dat, size_t size) {
 	return 0;
 }
 
-bool is_level(const string & name) {
+static bool is_level(const string & name) {
 	
 	if(name.length() != 6) {
 		return false;
