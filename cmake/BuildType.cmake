@@ -134,7 +134,7 @@ else(MSVC)
 		if(NOT DEBUG_EXTRA)
 			
 			# icc
-			if(${CMAKE_CXX_COMPILER} MATCHES "(^|/)icp?c$")
+			if(CMAKE_CXX_COMPILER_ID STREQUAL "Intel")
 				# '... was declared but never referenced'
 				# While normally a sensible warning, it also fires when a member isn't used for
 				# *all* instantiations of a template class, making the warning too annoying to
