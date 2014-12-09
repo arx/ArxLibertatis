@@ -167,7 +167,7 @@ ANIM_HANDLE::ANIM_HANDLE() : path() {
 	locks = 0;
 }
 
-void ReleaseAnim(EERIE_ANIM * ea) {
+static void ReleaseAnim(EERIE_ANIM * ea) {
 
 	if(!ea)
 		return;
@@ -221,8 +221,8 @@ static ANIM_HANDLE * EERIE_ANIMMANAGER_GetHandle(const res::path & path) {
 	return NULL;
 }
 
-float GetTimeBetweenKeyFrames(EERIE_ANIM * ea, long f1, long f2)
-{
+static float GetTimeBetweenKeyFrames(EERIE_ANIM * ea, long f1, long f2) {
+	
 	if(!ea || f1 < 0 || f1 > ea->nb_key_frames - 1 || f2 < 0 || f2 > ea->nb_key_frames - 1)
 		return 0;
 
@@ -235,7 +235,7 @@ float GetTimeBetweenKeyFrames(EERIE_ANIM * ea, long f1, long f2)
 	return time;
 }
 
-EERIE_ANIM * TheaToEerie(const char * adr, size_t size, const res::path & file) {
+static EERIE_ANIM * TheaToEerie(const char * adr, size_t size, const res::path & file) {
 
 	(void)size; // TODO use size
 
@@ -741,7 +741,7 @@ void ResetAnim(ANIM_USE * eanim)
 	eanim->flags&=~EA_FORCEPLAY;
 }
 
-void EERIE_ANIMMANAGER_Clear(long i) {
+static void EERIE_ANIMMANAGER_Clear(long i) {
 	
 	for(long k = 0; k < animations[i].alt_nb; k++) {
 		ReleaseAnim(animations[i].anims[k]);
@@ -802,7 +802,7 @@ static long nbelems = 0;
 static char ** elems = NULL;
 static long * numbers = NULL;
 
-void ARX_SOUND_FreeAnimSamples() {
+static void ARX_SOUND_FreeAnimSamples() {
 
 	if(elems) {
 		for(long i = 0; i < nbelems; i++) {
