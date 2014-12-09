@@ -907,9 +907,9 @@ bool CanBePutInInventory(Entity * io)
 			if(slotItem->count > slotItem->playerstacksize) {
 				io->_itemdata->count = slotItem->count - slotItem->playerstacksize;
 				slotItem->count = slotItem->playerstacksize;
-			} else
+			} else {
 				io->_itemdata->count = 0;
-			
+			}
 			if(!io->_itemdata->count) {
 				io->destroy();
 				ARX_INVENTORY_Declare_InventoryIn(slot.io);
