@@ -394,7 +394,7 @@ void SetEditMode(long ed, const bool stop_sound) {
 
 long NO_GMOD_RESET=0;
 
-void FirstFrameProc() {
+static void FirstFrameProc() {
 	
 	if(!pParticleManager)
 		pParticleManager = new ParticleManager();
@@ -681,7 +681,7 @@ void ManageNONCombatModeAnimations() {
 	}
 }
 
-long Player_Arrow_Count() {
+static long Player_Arrow_Count() {
 	
 	long count = 0;
 	
@@ -701,7 +701,7 @@ long Player_Arrow_Count() {
 	return count;
 }
 
-Entity * Player_Arrow_Count_Decrease() {
+static Entity * Player_Arrow_Count_Decrease() {
 	
 	Entity * io = NULL;
 	
@@ -720,8 +720,8 @@ Entity * Player_Arrow_Count_Decrease() {
 }
 float GLOBAL_SLOWDOWN=1.f;
 
-bool StrikeAimtime()
-{
+static bool StrikeAimtime() {
+	
 	ARX_PLAYER_Remove_Invisibility();
 	STRIKE_AIMTIME = float(arxtime) - (float)AimTime;
 	STRIKE_AIMTIME = STRIKE_AIMTIME * (1.f+(1.f-GLOBAL_SLOWDOWN));
@@ -740,7 +740,7 @@ bool StrikeAimtime()
 	return false;
 }
 
-void strikeSpeak(Entity * io) {
+static void strikeSpeak(Entity * io) {
 	
 	if(!StrikeAimtime()) {
 		return;
