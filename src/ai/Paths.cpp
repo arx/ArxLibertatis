@@ -76,7 +76,7 @@ extern float framedelay;
 ARX_PATH ** ARXpaths = NULL;
 long nbARXpaths = 0;
 
-void ARX_PATH_ComputeBB(ARX_PATH * ap) {
+static void ARX_PATH_ComputeBB(ARX_PATH * ap) {
 	
 	ap->bbmin = Vec3f(9999999999.f);
 	ap->bbmax = Vec3f(-9999999999.f);
@@ -139,7 +139,7 @@ long ARX_PATH_IsPosInZone(ARX_PATH * ap, Vec3f pos)
 	return c;
 }
 
-ARX_PATH * ARX_PATH_CheckInZone(Entity * io) {
+static ARX_PATH * ARX_PATH_CheckInZone(Entity * io) {
 	arx_assert(io);
 	
 	if(ARXpaths) {
@@ -156,8 +156,7 @@ ARX_PATH * ARX_PATH_CheckInZone(Entity * io) {
 	return NULL;
 }
 
-ARX_PATH * ARX_PATH_CheckPlayerInZone()
-{
+static ARX_PATH * ARX_PATH_CheckPlayerInZone() {
 	if(ARXpaths) {
 		for(long i = 0; i < nbARXpaths; i++) {
 			if(ARXpaths[i] && ARXpaths[i]->height != 0) {
