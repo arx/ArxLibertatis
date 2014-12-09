@@ -1977,7 +1977,7 @@ void ARX_INVENTORY_IdentifyAll() {
 void ARX_INVENTORY_OpenClose(Entity * _io)
 {
 	// CLOSING
-	if((_io && SecondaryInventory == _io->inventory) || !_io) {
+	if(!_io || SecondaryInventory == _io->inventory) {
 		if(SecondaryInventory && SecondaryInventory->io)
 			SendIOScriptEvent(SecondaryInventory->io, SM_INVENTORY2_CLOSE);
 
