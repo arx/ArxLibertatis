@@ -96,7 +96,8 @@ OpenALSource::OpenALSource(Sample * _sample) :
 	streaming(false), loadCount(0), written(0), stream(NULL),
 	read(0),
 	source(0),
-	refcount(NULL) {
+	refcount(NULL),
+	m_volume(1.f) {
 	for(size_t i = 0; i < NBUFFERS; i++) {
 		buffers[i] = 0;
 	}
@@ -366,19 +367,19 @@ aalError OpenALSource::fillBuffer(size_t i, size_t size) {
 
 aalError OpenALSource::updateVolume() {
 	
-	if(!alIsSource(source) || !(channel.flags & FLAG_VOLUME)) {
+	if(!alIsSource(source)) {
 		return AAL_ERROR_INIT;
 	}
 	
 	const Mixer * mixer = _mixer[channel.mixer];
 	float volume = mixer ? mixer->getFinalVolume() : 1.f;
 	
-	if(volume) {
+	if(volume > 0.f && (channel.flags & FLAG_VOLUME)) {
 		// LogToLinearVolume(LinearToLogVolume(volume) * channel.volume)
 		volume = std::pow(100000.f * volume, channel.volume) / 100000.f;
 	}
 	
-	alSourcef(source, AL_GAIN, volume);
+	alSourcef(source, AL_GAIN, volume * m_volume);
 	AL_CHECK_ERROR("setting source gain")
 	
 	return AAL_OK;
@@ -422,6 +423,8 @@ aalError OpenALSource::setPosition(const Vec3f & position) {
 		return AAL_ERROR_INIT;
 	}
 	
+	arx_assert(isallfinite(position));
+	
 	channel.position = position;
 	
 	if(!isallfinite(position)) {
@@ -439,6 +442,8 @@ aalError OpenALSource::setVelocity(const Vec3f & velocity) {
 	if(!alIsSource(source) || !(channel.flags & FLAG_VELOCITY)) {
 		return AAL_ERROR_INIT;
 	}
+	
+	arx_assert(isallfinite(velocity));
 	
 	channel.velocity = velocity;
 	
@@ -625,31 +630,32 @@ bool OpenALSource::updateCulling() {
 	float d = glm::distance(channel.position, listener_pos);
 	
 	if(tooFar) {
-		
-		if(d > channel.falloff.end) {
-			return true;
-		}
-		
-		LogAL("in range");
-		tooFar = false;
-		sourcePlay();
-		return false;
-		
-	} else {
-		
 		if(d <= channel.falloff.end) {
-			return false;
+			LogAL("in range");
+			tooFar = false;
+			sourcePlay();
 		}
-		
-		LogAL("out of range");
-		tooFar = true;
-		sourcePause();
-		if(loadCount <= 1) {
-			stop();
+	} else {
+		if(d > channel.falloff.end) {
+			LogAL("out of range");
+			tooFar = true;
+			sourcePause();
+			if(loadCount <= 1) {
+				stop();
+			}
 		}
-		return true;
-		
 	}
+	
+	if(!tooFar) {
+		d = (d - channel.falloff.start) / (channel.falloff.end - channel.falloff.start);
+		float v = 1.f - glm::clamp((d - 0.75f) / (1.f - 0.75f), 0.f, 1.f);
+		if(m_volume != v) {
+			m_volume = v;
+			updateVolume();
+		}
+	}
+	
+	return tooFar;
 }
 
 aalError OpenALSource::updateBuffers() {

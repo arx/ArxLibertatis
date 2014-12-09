@@ -118,6 +118,8 @@ private:
 	size_t bufferSizes[NBUFFERS];
 	unsigned int * refcount; // reference count for shared buffers
 	
+	float m_volume;
+	
 };
 
 } // namespace audio
