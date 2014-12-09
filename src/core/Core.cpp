@@ -254,13 +254,6 @@ extern EERIE_CAMERA * ACTIVECAM;
 
 bool g_debugToggles[10];
 
-//-----------------------------------------------------------------------------
-
-void ManageNONCombatModeAnimations();
-
-//-----------------------------------------------------------------------------
-
-
 // Sends ON GAME_READY msg to all IOs
 void SendGameReadyMsg()
 {
