@@ -151,11 +151,6 @@ void EERIEDrawSprite(const Vec3f & in, float siz, TextureContainer * tex, Color 
 	}
 }
 
-//! Match pixel and texel origins.
-void MatchPixTex(float& x, float& y) {
-	x -= .5f, y -= .5f;
-}
-
 void CreateBitmap(TexturedQuad& s, Rectf rect, float z, TextureContainer * tex, Color color, bool isRhw) {
 	
 	rect.move(-.5f, -.5f);
