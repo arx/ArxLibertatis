@@ -61,7 +61,6 @@ extern Vec3f loddpos;
 #if BUILD_EDIT_LOADSAVE
 namespace fs { class path; }
 long DanaeSaveLevel(const fs::path & file);
-void WriteIOInfo(Entity * io, const fs::path & dir);
 #endif
 
 bool DanaeLoadLevel(const res::path & file, bool loadEntities = true);

@@ -428,28 +428,6 @@ long DanaeSaveLevel(const fs::path & _fic) {
 	return 1;
 }
 
-void WriteIOInfo(Entity * io, const fs::path & dir) {
-	
-	if(!fs::is_directory(dir)) {
-		return;
-	}
-	
-	fs::path file = (dir / io->className()).set_ext("log");
-	
-	fs::ofstream ofs(file, fs::fstream::out | fs::fstream::trunc);
-	if(!ofs.is_open()) {
-		return;
-	}
-	
-	ofs << "Object   : " << io->idString() << std::endl;
-	ofs << "_______________________________" << std::endl << std::endl;
-	ofs << "Level    : " << LastLoadedScene << std::endl;
-	ofs << "Position : x " << (io->initpos.x - Mscenepos.x)
-	              << " y " << (io->initpos.y - Mscenepos.y)
-	              << " z " << (io->initpos.z - Mscenepos.z) << " (relative to anchor)" << std::endl;
-	
-}
-
 #endif // BUILD_EDIT_LOADSAVE
 
 
