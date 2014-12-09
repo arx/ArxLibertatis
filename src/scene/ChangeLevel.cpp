@@ -73,6 +73,7 @@ ZeniMax Media Inc., Suite 120, Rockville, Maryland 20850 USA.
 #include "gui/MiniMap.h"
 #include "gui/Interface.h"
 
+#include "graphics/GraphicsModes.h"
 #include "graphics/Math.h"
 
 #include "io/resource/ResourcePath.h"
@@ -424,10 +425,6 @@ bool IsPlayerEquipedWith(Entity * io) {
 	return false;
 }
 
-extern GLOBAL_MODS stacked;
-extern GLOBAL_MODS current;
-extern GLOBAL_MODS desired;
-
 static bool ARX_CHANGELEVEL_Push_Index(long num) {
 	
 	long pos = 0;
@@ -439,7 +436,8 @@ static bool ARX_CHANGELEVEL_Push_Index(long num) {
 	asi.nb_paths      = nbARXpaths;
 	asi.time          = arxtime.get_updated_ul();
 	asi.nb_lights     = 0;
-	asi.gmods_stacked = stacked;
+	asi.gmods_stacked = GLOBAL_MODS();
+	asi.gmods_stacked.zclip = 6400.f;
 	asi.gmods_desired = desired;
 	asi.gmods_current = current;
 	
@@ -1615,7 +1613,6 @@ long ARX_CHANGELEVEL_Pop_Level(ARX_CHANGELEVEL_INDEX * asi, long num, bool first
 	ARX_INTERFACE_Reset();
 	EERIE_ANIMMANAGER_PurgeUnused();
 	
-	stacked = asi->gmods_stacked;
 	desired = asi->gmods_desired;
 	current = asi->gmods_current;
 	NO_GMOD_RESET = 1;

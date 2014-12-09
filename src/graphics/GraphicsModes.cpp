@@ -55,7 +55,6 @@ ZeniMax Media Inc., Suite 120, Rockville, Maryland 20850 USA.
 
 GLOBAL_MODS current;
 GLOBAL_MODS desired;
-GLOBAL_MODS stacked;
 
 // change the clipping Z max & min
 static const float DEFAULT_ZCLIP = 6400.f;
@@ -67,9 +66,7 @@ void ARX_GLOBALMODS_Reset() {
 
 	desired = GLOBAL_MODS();
 	current = GLOBAL_MODS();
-	stacked = GLOBAL_MODS();
 	current.zclip = DEFAULT_ZCLIP;
-	stacked.zclip = DEFAULT_ZCLIP;
 	desired.zclip = DEFAULT_ZCLIP;
 	desired.depthcolor = Color3f::black;
 }
