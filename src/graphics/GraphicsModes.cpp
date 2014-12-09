@@ -91,13 +91,6 @@ float Approach(float current, float desired, float increment)
 	return current;
 }
 
-void ARX_GLOBALMODS_Stack() {
-
-	stacked = desired;
-	desired.depthcolor = Color3f::black;
-	desired.zclip = DEFAULT_ZCLIP;
-}
-
 void ARX_GLOBALMODS_UnStack() {
 
 	desired = stacked;
