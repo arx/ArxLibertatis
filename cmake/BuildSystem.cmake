@@ -371,12 +371,16 @@ endfunction()
 # Build each binary by including all the source files into one big master file.
 function(unity_build)
 	
-	add_custom_target(ub_notice COMMENT "Note: The unity build binaries may take a long time to compile, without any indication of progress. Be patient.")
+	if(CMAKE_GENERATOR MATCHES "(Makefiles|Ninja)")
+		add_custom_target(ub_notice COMMENT "Note: The unity build binaries may take a long time to compile, without any indication of progress. Be patient.")
+	endif()
 	
 	foreach(bin IN LISTS SHARED_BUILD_BINARIES)
 		enable_unity_build(${bin} SHARED_BUILD_${bin}_SOURCES)
 		_shared_build_add_binary(${bin})
-		add_dependencies(${bin} ub_notice)
+		if(TARGET ub_notice)
+			add_dependencies(${bin} ub_notice)
+		endif()
 	endforeach()
 	
 	_shared_build_cleanup()
