@@ -2952,7 +2952,7 @@ void ManageIgnition(Entity * io)
 		while(p > 0.f) {
 			p -= 6.f;
 			
-			if(!io || !io->obj || io->obj->facelist.empty()) {
+			if(!io->obj || io->obj->facelist.empty()) {
 				break;
 			}
 			
