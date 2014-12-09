@@ -94,8 +94,9 @@ extern Color ulBKGColor;
 // TODO: Convert to a RenderBatch & make TextureContainer constructor private
 static TextureContainer TexSpecialColor("specialcolor_list", TextureContainer::NoInsert);
 
-TexturedVertex * PushVertexInTable(TextureContainer *pTex, TextureContainer::TransparencyType type)
-{
+static TexturedVertex * PushVertexInTable(TextureContainer * pTex,
+                                          TextureContainer::TransparencyType type) {
+	
 	if(pTex->count[type] + 3 > pTex->max[type]) {
 		pTex->max[type] += 20 * 3;
 		pTex->list[type] = (TexturedVertex *)realloc(pTex->list[type], pTex->max[type] * sizeof(TexturedVertex));
@@ -400,7 +401,7 @@ void Cedric_ApplyLightingFirstPartRefactor(Entity *io) {
 	}
 }
 
-Vec3f angleToVecForCedricHalo(const Anglef & angle) {
+static Vec3f angleToVecForCedricHalo(const Anglef & angle) {
 	Vec3f cam_vector;
 	cam_vector.x = -std::sin(glm::radians(angle.getPitch())) * std::cos(glm::radians(angle.getYaw()));
 	cam_vector.y =  std::sin(glm::radians(angle.getYaw()));
@@ -409,7 +410,7 @@ Vec3f angleToVecForCedricHalo(const Anglef & angle) {
 	return cam_vector;
 }
 
-void Cedric_PrepareHalo(EERIE_3DOBJ * eobj, Skeleton * obj) {
+static void Cedric_PrepareHalo(EERIE_3DOBJ * eobj, Skeleton * obj) {
 	Vec3f cam_vector = angleToVecForCedricHalo(ACTIVECAM->angle);
 	
 	// Apply light on all vertices
@@ -432,8 +433,10 @@ void Cedric_PrepareHalo(EERIE_3DOBJ * eobj, Skeleton * obj) {
 	}
 }
 
-TexturedVertex * GetNewVertexList(TextureContainer * container, const EERIE_FACE & face, float invisibility, float & fTransp) {
-
+static TexturedVertex * GetNewVertexList(TextureContainer * container,
+                                         const EERIE_FACE & face, float invisibility,
+                                         float & fTransp) {
+	
 	fTransp = 0.f;
 
 	if((face.facetype & POLY_TRANS) || invisibility > 0.f) {
@@ -486,7 +489,7 @@ void drawTriangle(const RenderMaterial & mat, const TexturedVertex * vertices) {
 	RenderBatcher::getInstance().add(mat, projected);
 }
 
-bool Cedric_IO_Visible(const Vec3f & pos) {
+static bool Cedric_IO_Visible(const Vec3f & pos) {
 
 	if(ACTIVEBKG) {
 		//TODO maybe readd this
@@ -531,7 +534,7 @@ static void Cedric_ApplyLighting(EERIE_3DOBJ * eobj, Skeleton * obj, const Color
 	}
 }
 
-void UpdateBbox3d(EERIE_3DOBJ *eobj, EERIE_3D_BBOX & box3D) {
+static void UpdateBbox3d(EERIE_3DOBJ *eobj, EERIE_3D_BBOX & box3D) {
 
 	box3D.reset();
 
@@ -581,7 +584,7 @@ void DrawEERIEInter_ViewProjectTransform(EERIE_3DOBJ *eobj) {
 	}
 }
 
-bool CullFace(const EERIE_3DOBJ * eobj, const EERIE_FACE & face) {
+static bool CullFace(const EERIE_3DOBJ * eobj, const EERIE_FACE & face) {
 
 	if(!(face.facetype & POLY_DOUBLESIDED)) {
 		Vec3f normV10 = eobj->vertexlist3[face.vid[1]].v - eobj->vertexlist3[face.vid[0]].v;
@@ -600,8 +603,10 @@ bool CullFace(const EERIE_3DOBJ * eobj, const EERIE_FACE & face) {
 	return false;
 }
 
-void AddFixedObjectHalo(const EERIE_FACE & face, const TransformInfo & t, const Entity * io, TexturedVertex * tvList, const EERIE_3DOBJ * eobj)
-{
+static void AddFixedObjectHalo(const EERIE_FACE & face, const TransformInfo & t,
+                               const Entity * io, TexturedVertex * tvList,
+                               const EERIE_3DOBJ * eobj) {
+	
 	float mdist=ACTIVECAM->cdepth;
 	float ddist = mdist-fdist(t.pos, ACTIVECAM->orgTrans.pos);
 	ddist = ddist/mdist;
@@ -858,7 +863,8 @@ struct HaloRenderInfo {
 	short selection;
 };
 
-void pushSlotHalo(std::vector<HaloRenderInfo> & halos, EquipmentSlot slot, short selection) {
+static void pushSlotHalo(std::vector<HaloRenderInfo> & halos, EquipmentSlot slot,
+                         short selection) {
 
 	if(player.equiped[slot] != PlayerEntityHandle && ValidIONum(player.equiped[slot])) {
 		Entity * tio = entities[player.equiped[slot]];
@@ -886,8 +892,10 @@ struct HaloInfo {
 //-----------------------------------------------------------------------------
 extern long IN_BOOK_DRAW;
 
-void PrepareAnimatedObjectHalo(HaloInfo & haloInfo, const Vec3f& pos, Skeleton* obj, Entity *use_io, EERIE_3DOBJ* eobj)
-{
+static void PrepareAnimatedObjectHalo(HaloInfo & haloInfo, const Vec3f & pos,
+                                      Skeleton * obj, Entity * use_io,
+                                      EERIE_3DOBJ * eobj) {
+	
 	std::vector<HaloRenderInfo> & halos = haloInfo.halos;
 
 	if(use_io == entities.player()) {
@@ -926,9 +934,10 @@ void PrepareAnimatedObjectHalo(HaloInfo & haloInfo, const Vec3f& pos, Skeleton* 
 	}
 }
 
-void AddAnimatedObjectHalo(HaloInfo & haloInfo, const unsigned short * paf, float invisibility, EERIE_3DOBJ* eobj, Entity* io, TexturedVertex *tvList) {
-
-
+static void AddAnimatedObjectHalo(HaloInfo & haloInfo, const unsigned short * paf,
+                                  float invisibility, EERIE_3DOBJ * eobj, Entity * io,
+                                  TexturedVertex * tvList) {
+	
 	float & ddist = haloInfo.ddist;
 	float & MAX_ZEDE = haloInfo.MAX_ZEDE;
 	std::vector<HaloRenderInfo> & halos = haloInfo.halos;
@@ -1126,8 +1135,9 @@ static void Cedric_RenderObject(EERIE_3DOBJ * eobj, Skeleton * obj, Entity * io,
 	}
 }
 
-void Cedric_AnimateDrawEntityRender(EERIE_3DOBJ *eobj, const Vec3f & pos, Entity *io, float invisibility) {
-
+static void Cedric_AnimateDrawEntityRender(EERIE_3DOBJ * eobj, const Vec3f & pos,
+                                           Entity * io, float invisibility) {
+	
 	Skeleton *obj = eobj->m_skeleton;
 
 	if(!obj)
@@ -1301,7 +1311,7 @@ static void Cedric_AnimateObject(Skeleton * obj, ANIM_USE * animlayer)
 	}
 }
 
-void Cedric_BlendAnimation(Skeleton & rig, AnimationBlendStatus * animBlend) {
+static void Cedric_BlendAnimation(Skeleton & rig, AnimationBlendStatus * animBlend) {
 
 	if(!animBlend->m_active) {
 		return;
@@ -1368,7 +1378,7 @@ static void Cedric_ConcatenateTM(Skeleton & rig, const TransformInfo & t) {
 /*!
  * Transform object vertices
  */
-void Cedric_TransformVerts(EERIE_3DOBJ *eobj, const Vec3f & pos) {
+static void Cedric_TransformVerts(EERIE_3DOBJ * eobj, const Vec3f & pos) {
 
 	Skeleton & rig = *eobj->m_skeleton;
 
@@ -1413,7 +1423,7 @@ void Cedric_TransformVerts(EERIE_3DOBJ *eobj, const Vec3f & pos) {
 	}
 }
 
-void Cedric_ViewProjectTransform(EERIE_3DOBJ *eobj) {
+static void Cedric_ViewProjectTransform(EERIE_3DOBJ * eobj) {
 
 	for(size_t i = 0; i < eobj->vertexlist.size(); i++) {
 		EERIE_VERTEX * outVert = &eobj->vertexlist3[i];
@@ -1423,8 +1433,8 @@ void Cedric_ViewProjectTransform(EERIE_3DOBJ *eobj) {
 	}
 }
 
-void Cedric_UpdateBbox2d(const EERIE_3DOBJ & eobj, EERIE_2D_BBOX & box2D) {
-
+static void Cedric_UpdateBbox2d(const EERIE_3DOBJ & eobj, EERIE_2D_BBOX & box2D) {
+	
 	box2D.reset();
 
 	for(size_t i = 0; i < eobj.vertexlist.size(); i++) {
@@ -1444,8 +1454,11 @@ void Cedric_UpdateBbox2d(const EERIE_3DOBJ & eobj, EERIE_2D_BBOX & box2D) {
 /*!
  * \brief Apply animation and draw object
  */
-void Cedric_AnimateDrawEntity(Skeleton & skeleton, ANIM_USE * animlayer, EERIE_EXTRA_ROTATE * extraRotation, AnimationBlendStatus * animBlend, EERIE_EXTRA_SCALE & extraScale) {
-
+static void Cedric_AnimateDrawEntity(Skeleton & skeleton, ANIM_USE * animlayer,
+                                     EERIE_EXTRA_ROTATE * extraRotation,
+                                     AnimationBlendStatus * animBlend,
+                                     EERIE_EXTRA_SCALE & extraScale) {
+	
 	// Initialize the rig
 	for(size_t i = 0; i != skeleton.bones.size(); i++) {
 		Bone & bone = skeleton.bones[i];
