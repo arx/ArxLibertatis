@@ -96,6 +96,4 @@ protected:
 	
 };
 
-std::ostream & operator<<(std::ostream & os, const DisplayMode & mode);
-
 #endif // ARX_WINDOW_RENDERWINDOW_H

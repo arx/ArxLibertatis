@@ -42,6 +42,8 @@ struct DisplayMode {
 	
 };
 
+std::ostream & operator<<(std::ostream & os, const DisplayMode & mode);
+
 class Window {
 	
 public:
