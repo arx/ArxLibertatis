@@ -69,12 +69,6 @@ static void ARX_INTERFACE_DrawItem(TextureContainer * tc, float x, float y, floa
 	}
 }
 
-float ARX_CAST_TO_INT_THEN_FLOAT( float _f )
-{
-	return ( ( _f >= 0 ) ? floor( _f ) : ceil( _f ) );
-}
-
-
 enum Anchor {
 	Anchor_TopLeft,
 	Anchor_TopCenter,
