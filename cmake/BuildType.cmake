@@ -147,8 +147,17 @@ else(MSVC)
 				add_cxxflag("-wd2279")
 			endif()
 			
-			# -Wuninitialized causes too many false positives
-			add_cxxflag("-Wno-uninitialized")
+			# -Wuninitialized causes too many false positives in older gcc versions
+			if(CMAKE_CXX_COMPILER_ID STREQUAL "GNU")
+				# GCC is 'clever' and silently accepts -Wno-*  - check for the non-negated variant
+				check_compiler_flag(FLAG_FOUND "-Wmaybe-uninitialized")
+				if(FLAG_FOUND)
+					add_cxxflag("-Wno-maybe-uninitialized")
+				endif()
+				if(NOT FLAG_FOUND)
+					add_cxxflag("-Wno-uninitialized")
+				endif()
+			endif()
 			
 			# (clang only) Conflicts with using const variables for configuration.
 			add_cxxflag("-Wno-constant-logical-operand")
