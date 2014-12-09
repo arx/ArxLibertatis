@@ -837,7 +837,7 @@ public:
 
 }
 
-const std::string getName() {
+static const std::string getName() {
 	return "timer";
 }
 
