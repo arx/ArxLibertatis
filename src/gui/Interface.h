@@ -299,19 +299,8 @@ void ARX_INTERFACE_NoteOpen(gui::Note::Type type, const std::string & tex);
 void ARX_INTERFACE_NoteClose();
 void ARX_INTERFACE_NoteClear();
 
-bool ARX_INTERFACE_InitFISHTANK();
-void ARX_INTERFACE_ShowFISHTANK();
-void ARX_INTERFACE_KillFISHTANK();
-
-bool ARX_INTERFACE_InitARKANE();
-void ARX_INTERFACE_ShowARKANE();
-void ARX_INTERFACE_KillARKANE();
-
-void ARX_INTERFACE_EndIntro();
 void ARX_INTERFACE_HALO_Flush();
 bool NeedHalo(Entity * io);
-
-void LoadScreen();
 
 void ARX_INTERFACE_HALO_Render(Color3f color, long _lHaloType, TextureContainer * haloTexture, Vec2f pos, Vec2f ratio = Vec2f(1));
 void ARX_INTERFACE_HALO_Draw(Entity * io, TextureContainer * tc, TextureContainer * tc2, Vec2f pos, Vec2f ratio = Vec2f(1));
