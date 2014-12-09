@@ -217,7 +217,7 @@ aalError setReverbEnabled(bool enable) {
 
 bool isReverbSupported() {
 	
-	AAL_ENTRY
+	AAL_ENTRY_V(false)
 	
 	return backend->isReverbSupported();
 }
