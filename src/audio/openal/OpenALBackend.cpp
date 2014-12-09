@@ -297,6 +297,8 @@ aalError OpenALBackend::setRolloffFactor(float factor) {
 
 aalError OpenALBackend::setListenerPosition(const Vec3f & position) {
 	
+	arx_assert(isallfinite(position));
+	
 	if(!isallfinite(position)) {
 		return AAL_ERROR; // OpenAL soft will lock up if given NaN or +-Inf here
 	}
@@ -308,6 +310,8 @@ aalError OpenALBackend::setListenerPosition(const Vec3f & position) {
 }
 
 aalError OpenALBackend::setListenerOrientation(const Vec3f & front, const Vec3f & up) {
+	
+	arx_assert(isallfinite(front) && isallfinite(up));
 	
 	if(!isallfinite(front) || !isallfinite(up)) {
 		return AAL_ERROR; // OpenAL soft will lock up if given NaN or +-Inf here
