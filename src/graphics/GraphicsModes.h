@@ -74,6 +74,5 @@ extern GLOBAL_MODS desired;
 
 void ARX_GLOBALMODS_Reset();
 void ARX_GLOBALMODS_Apply();
-void ARX_GLOBALMODS_UnStack();
 
 #endif // ARX_GRAPHICS_GRAPHICSMODES_H

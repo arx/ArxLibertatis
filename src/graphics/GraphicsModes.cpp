@@ -91,11 +91,6 @@ float Approach(float current, float desired, float increment)
 	return current;
 }
 
-void ARX_GLOBALMODS_UnStack() {
-
-	desired = stacked;
-}
-
 void ARX_GLOBALMODS_Apply() {
 
 	float baseinc = framedelay;
