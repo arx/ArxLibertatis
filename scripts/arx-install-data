@@ -834,7 +834,7 @@ $message"
 		
 	fi
 	
-	# We don't need colors for the UI, but they may cause problems - get rit of them
+	# We don't need colors for the UI, but they may cause problems - get rid of them
 	disable_color
 	
 	if [ $redirect_log = 1 ] ; then
@@ -946,7 +946,7 @@ zenity_run() {
 # Create the main progress window.
 # Usage: dialog_create
 dialog_create() {
-	pipe_create zenity  --title "$_dialog_title$1" --width 450 --progress
+	pipe_create zenity --title "$_dialog_title$1" --width 450 --progress
 }
 
 # Destroy the main progress window.
