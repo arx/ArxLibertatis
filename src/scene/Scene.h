@@ -59,6 +59,5 @@ bool ARX_SCENE_PORTAL_ClipIO(Entity * io, const Vec3f & position);
 void RoomDrawRelease();
 
 bool VisibleSphere(const Vec3f & pos, float radius);
-void ClearTileLights();
 
 #endif // ARX_SCENE_SCENE_H
