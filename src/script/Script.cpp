@@ -266,7 +266,7 @@ void ARX_SCRIPT_AllowInterScriptExec() {
 	}
 }
 
-void ARX_SCRIPT_ReleaseLabels(EERIE_SCRIPT * es) {
+static void ARX_SCRIPT_ReleaseLabels(EERIE_SCRIPT * es) {
 	
 	if(!es || !es->labels) {
 		return;
@@ -1120,16 +1120,13 @@ void CloneLocalVars(Entity * ioo, Entity * io) {
 	ioo->script.lvar = io->script.lvar;
 }
 
-SCRIPT_VAR * GetFreeVarSlot(SCRIPT_VARIABLES& _svff)
-{
+static SCRIPT_VAR * GetFreeVarSlot(SCRIPT_VARIABLES& _svff) {
 	_svff.resize(_svff.size() + 1);
-
 	SCRIPT_VAR * v = &_svff.back();
-	
 	return v;
 }
 
-SCRIPT_VAR * GetVarAddress(SCRIPT_VARIABLES& svf, const std::string & name) {
+static SCRIPT_VAR * GetVarAddress(SCRIPT_VARIABLES & svf, const std::string & name) {
 	
 	for(SCRIPT_VARIABLES::iterator it = svf.begin(); it != svf.end(); ++it) {
 		if(it->type != TYPE_UNKNOWN) {
@@ -1142,7 +1139,8 @@ SCRIPT_VAR * GetVarAddress(SCRIPT_VARIABLES& svf, const std::string & name) {
 	return NULL;
 }
 
-const SCRIPT_VAR * GetVarAddress(const SCRIPT_VARIABLES& svf, const std::string & name) {
+static const SCRIPT_VAR * GetVarAddress(const SCRIPT_VARIABLES & svf,
+                                        const std::string & name) {
 	
 	for(SCRIPT_VARIABLES::const_iterator it = svf.begin(); it != svf.end(); ++it) {
 		if(it->type != TYPE_UNKNOWN) {
@@ -1784,8 +1782,8 @@ long ARX_SCRIPT_GetSystemIOScript(Entity * io, const std::string & name) {
 	return -1;
 }
 
-long Manage_Specific_RAT_Timer(SCR_TIMER * st)
-{
+static long Manage_Specific_RAT_Timer(SCR_TIMER * st) {
+	
 	Entity * io = st->io;
 	GetTargetPos(io);
 	Vec3f target = io->target - io->pos;
