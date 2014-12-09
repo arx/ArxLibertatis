@@ -100,12 +100,6 @@ extern bool bGCroucheToggle;
 
 #if BUILD_EDIT_LOADSAVE
 
-void LogDirCreation(const fs::path & dir) {
-	if(fs::is_directory(dir)) {
-		LogDebug("LogDirCreation: " << dir);
-	}
-}
-
 long DanaeSaveLevel(const fs::path & _fic) {
 	
 	long nb_inter = GetNumberInterWithOutScriptLoad(); // Without Player

@@ -61,7 +61,6 @@ extern Vec3f loddpos;
 #if BUILD_EDIT_LOADSAVE
 namespace fs { class path; }
 long DanaeSaveLevel(const fs::path & file);
-void LogDirCreation(const fs::path & dir);
 void WriteIOInfo(Entity * io, const fs::path & dir);
 #endif
 
