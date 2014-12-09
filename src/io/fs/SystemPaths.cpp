@@ -424,23 +424,23 @@ void SystemPaths::list(std::ostream & os, const std::string & forceUser,
 
 } // namespace fs
 
-void disableDataDir() {
+static void disableDataDir() {
 	fs::cmdLineInitParams.findData = false;
 }
 
-void addDataDir(const std::string & dataDir) {
+static void addDataDir(const std::string & dataDir) {
 	fs::cmdLineInitParams.dataDirs.push_back(dataDir);
 }
 
-void setUserDir(const std::string & userDir) {
+static void setUserDir(const std::string & userDir) {
 	fs::cmdLineInitParams.forceUser = userDir;
 }
 
-void setConfigDir(const std::string & configDir) {
+static void setConfigDir(const std::string & configDir) {
 	fs::cmdLineInitParams.forceConfig = configDir;
 }
 
-void listSearchDirs() {
+static void listSearchDirs() {
 	fs::cmdLineInitParams.displaySearchDirs = true;
 }
 
