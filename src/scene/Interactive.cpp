@@ -1395,6 +1395,8 @@ static EntityInstance getFreeEntityInstance(const res::path & classPath) {
 	std::string className = classPath.filename();
 	res::path classDir = classPath.parent();
 	
+	std::ostringstream oss;
+	
 	for(EntityInstance instance = 1; ; instance++) {
 		
 		std::string idString = EntityId(className, instance).string();
@@ -2696,7 +2698,6 @@ std::string GetMaterialString(const res::path & texture) {
 	else if(boost::contains(origin, "iron")) return "metal";
 	else if(boost::contains(origin, "glass")) return "metal";
 	else if(boost::contains(origin, "rust")) return "metal";
-	else if(boost::contains(origin, "earth")) return "earth";
 	else if(boost::contains(origin, "ice")) return "ice";
 	else if(boost::contains(origin, "fabric")) return "carpet";
 	else if(boost::contains(origin, "moss")) return "carpet";
