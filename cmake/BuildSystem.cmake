@@ -45,7 +45,7 @@ function(enable_unity_build UB_SUFFIX SOURCE_VARIABLE_NAME)
 	set(currentIdx 1)
 	foreach(source_file IN LISTS files)
 		
-		if("${source_file}" MATCHES ".rc$")
+		if(source_file MATCHES ".rc$")
 			
 			# .rc files need to be compiled separately
 			
@@ -120,7 +120,8 @@ endfunction()
 #  BIN  Name of the binary to change the type of.
 #  DIR  Where to install the binary.
 function(set_binary_installdir BIN DIR)
-	if("${SHARED_BUILD_${BIN}_TYPE}" STREQUAL "SHARED")
+	set(build_type "${SHARED_BUILD_${BIN}_TYPE}")
+	if(build_type STREQUAL "SHARED")
 		set(install LIBRARY DESTINATION "${DIR}" ARCHIVE DESTINATION "${DIR}")
 	else()
 		set(install RUNTIME DESTINATION "${DIR}")
@@ -255,7 +256,8 @@ function(_shared_build_helper LIB LIST BINARIES FIRST)
 		# Remove sources from binaries and link the library instead.
 		foreach(bin IN LISTS BINARIES)
 			
-			if("${SHARED_BUILD_${bin}_TYPE}" STREQUAL "SHARED")
+			set(build_type "${SHARED_BUILD_${bin}_TYPE}")
+			if(build_type STREQUAL "SHARED")
 				set(is_shared_lib 1)
 			endif()
 			
@@ -307,7 +309,8 @@ function(_shared_build_add_binary bin)
 		endforeach()
 	endif()
 	
-	if("${SHARED_BUILD_${bin}_TYPE}" STREQUAL "SHARED")
+	set(build_type "${SHARED_BUILD_${bin}_TYPE}")
+	if(build_type STREQUAL "SHARED")
 		add_library(
 			${bin} ${SHARED_BUILD_${bin}_TYPE}
 			${SHARED_BUILD_${bin}_SOURCES}
