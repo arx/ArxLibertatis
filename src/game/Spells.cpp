@@ -1262,7 +1262,7 @@ bool ARX_SPELLS_Launch(SpellType typ, EntityHandle source, SpellcastFlags flags,
 	
 	spell.Launch();
 	
-	spells.addSpell(&spell);
+	spells.addSpell(sp);
 	
 	// TODO inconsistent use of the SM_SPELLCAST event
 	if(typ == SPELL_CONFUSE || typ == SPELL_ENCHANT_WEAPON) {
