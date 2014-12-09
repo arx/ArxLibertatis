@@ -199,10 +199,10 @@ float ARX_THROWN_ComputeDamages(long thrownum, EntityHandle source, EntityHandle
 		distance_modifier = 2.f;
 	}
 
-	float attack, dmgs, backstab, critical, ac;
+	float attack, dmgs, backstab, ac;
 
 	backstab = 1.f;
-	critical = false;
+	bool critical = false;
 
 	if(source == 0) {
 		attack = Thrown[thrownum].damages;
