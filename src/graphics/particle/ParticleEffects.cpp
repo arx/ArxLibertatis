@@ -757,6 +757,7 @@ void ARX_BOOMS_Add(const Vec3f & poss,long type) {
 			pb.timecreation = long(arxtime);
 			pb.tx = x;
 			pb.tz = z;
+			pb.rgb = Color3f::black;
 			for(int k = 0; k < nbvert; k++) {
 				pb.v[k] = pb.u[k] = temp_uv1[k];
 			}
