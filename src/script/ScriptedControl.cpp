@@ -296,7 +296,7 @@ public:
 	
 	Result execute(Context & context) {
 		
-		std::string options = context.getFlags();
+		(void)context.getFlags();
 		std::string command = context.getWord();
 		
 		if(command == "stack") {
