@@ -35,7 +35,7 @@ using std::transform;
 using std::ostringstream;
 using std::string;
 
-void dump(PakDirectory & dir, const fs::path & dirname = fs::path()) {
+static void dump(PakDirectory & dir, const fs::path & dirname = fs::path()) {
 	
 	fs::create_directories(dirname);
 	
