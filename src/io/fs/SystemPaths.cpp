@@ -325,8 +325,8 @@ path SystemPaths::find(const path & resource) const {
 }
 
 static void listDirectoriesFor(std::ostream & os, const std::string & regKey,
-                               const char * prefix = NULL,
-                               const char * suffix = NULL) {
+                               const char * prefixVar = NULL,
+                               const char * suffixVar = NULL) {
 	
 #if ARX_PLATFORM == ARX_PLATFORM_WIN32
 	if(!regKey.empty()) {
@@ -341,19 +341,19 @@ static void listDirectoriesFor(std::ostream & os, const std::string & regKey,
 	ARX_UNUSED(regKey);
 #endif
 	
-	std::vector<path> prefixes = getSearchPaths(prefix);
-	std::vector<path> suffixes = getSearchPaths(suffix);
-	if(prefix || suffix) {
+	std::vector<path> prefixes = getSearchPaths(prefixVar);
+	std::vector<path> suffixes = getSearchPaths(suffixVar);
+	if(prefixVar || suffixVar) {
 		
 		os << " - ";
-		if(prefix) {
-			os << '"' << prefix << '"';
+		if(prefixVar) {
+			os << '"' << prefixVar << '"';
 		}
-		if(prefix && suffix) {
+		if(prefixVar && suffixVar) {
 			os << " / ";
 		}
-		if(suffix) {
-			os << '"' << suffix << '"';
+		if(suffixVar) {
+			os << '"' << suffixVar << '"';
 		}
 		os << ":\n";
 		
