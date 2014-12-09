@@ -1395,8 +1395,6 @@ static EntityInstance getFreeEntityInstance(const res::path & classPath) {
 	std::string className = classPath.filename();
 	res::path classDir = classPath.parent();
 	
-	std::ostringstream oss;
-	
 	for(EntityInstance instance = 1; ; instance++) {
 		
 		std::string idString = EntityId(className, instance).string();
