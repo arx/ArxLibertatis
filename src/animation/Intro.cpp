@@ -109,7 +109,7 @@ static void DrawCenteredImage(TextureContainer * tc) {
 	EERIEDrawBitmap2(Rectf(pos, size.x, size.y), 0.001f, tc, Color::white);
 }
 
-void ARX_INTERFACE_ShowLogo(TextureContainer * logo) {
+static void ARX_INTERFACE_ShowLogo(TextureContainer * logo) {
 	
 	if(logo == NULL) {
 		return;
