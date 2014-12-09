@@ -46,7 +46,6 @@ ZeniMax Media Inc., Suite 120, Rockville, Maryland 20850 USA.
 #include "core/Core.h"
 #include "core/GameTime.h"
 #include "game/EntityManager.h"
-#include "graphics/GraphicsModes.h"
 #include "physics/Attractors.h"
 #include "physics/Collisions.h"
 #include "io/resource/PakReader.h"
@@ -296,34 +295,9 @@ public:
 	
 	Result execute(Context & context) {
 		
-		(void)context.getFlags();
 		std::string command = context.getWord();
 		
-		if(command == "stack") {
-			DebugScript(" stack");
-			ARX_GLOBALMODS_Stack();
-			
-		} else if(command == "unstack") {
-			DebugScript(" unstack");
-			ARX_GLOBALMODS_UnStack();
-			
-		} else if(command == "rgb") {
-			
-			desired.depthcolor.r = context.getFloat();
-			desired.depthcolor.g = context.getFloat();
-			desired.depthcolor.b = context.getFloat();
-			desired.flags |= GMOD_DCOLOR;
-			
-			DebugScript(" rgb " << desired.depthcolor.r << ' ' << desired.depthcolor.g << ' ' << desired.depthcolor.b);
-			
-		} else if(command == "zclip") {
-				
-			desired.zclip = context.getFloat();
-			desired.flags |= GMOD_ZCLIP;
-			
-			DebugScript(" zclip " << desired.zclip);
-			
-		} else if(command == "ambiance") {
+		if(command == "ambiance") {
 			
 			res::path ambiance = res::path::load(context.getWord());
 			
