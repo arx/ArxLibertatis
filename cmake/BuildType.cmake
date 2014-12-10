@@ -117,12 +117,11 @@ else(MSVC)
 		add_cxxflag("-Wlogical-op")
 		add_cxxflag("-Woverflow")
 		add_cxxflag("-Wheader-guard")
+		add_cxxflag("-Wmissing-declarations")
 		
 		# TODO consider adding these
 		# add_cxxflag("-Wconversion") # very noisy
 		# add_cxxflag("-Wsign-conversion") # very noisy
-		# to catch functions that should be marked as static:
-		# add_cxxflag("-Wmissing-declarations")
 		# to catch extern definitions in .cpp files (with UNITYBUILD):
 		# add_cxxflag("-Wredundant-decls")
 		
