@@ -164,8 +164,6 @@ extern bool WILLRETURNTOFREELOOK;
 
 extern Vec2s DANAEMouse;
 
-bool IsPlayerStriking();
-
 extern bool SHOW_INGAME_MINIMAP;
 
 //-----------------------------------------------------------------------------
