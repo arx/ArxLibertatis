@@ -128,7 +128,7 @@ public:
 	}
 };
 
-void LaunchMagicMissileExplosion(const Vec3f & _ePos, bool mrCheat) {
+static void LaunchMagicMissileExplosion(const Vec3f & _ePos, bool mrCheat) {
 	
 	ParticleParams cp = MagicMissileExplosionParticle();
 	
