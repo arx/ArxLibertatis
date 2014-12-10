@@ -159,9 +159,10 @@ ZeniMax Media Inc., Suite 120, Rockville, Maryland 20850 USA.
 		}                                         \
 	}
 
-int coplanar_tri_tri(const float N[3], const float V0[3], const float V1[3], const float V2[3],
-                     const float U0[3], const float U1[3], const float U2[3])
-{
+static int coplanar_tri_tri(const float N[3], const float V0[3], const float V1[3],
+                            const float V2[3], const float U0[3], const float U1[3],
+                            const float U2[3]) {
+	
 	float A[3];
 	short i0, i1;
 	/* first project onto an axis-aligned plane, that maximizes the area */
@@ -233,8 +234,8 @@ int coplanar_tri_tri(const float N[3], const float V0[3], const float V1[3], con
 // VERIFIED (Cyril 2001/10/19)
 // OPTIMIZED (Cyril 2001/10/19) removed divisions, need some more optims perhaps...
 //***********************************************************************************************
-int tri_tri_intersect(const EERIE_TRI * VV, const EERIE_TRI * UU) 
-{
+static int tri_tri_intersect(const EERIE_TRI * VV, const EERIE_TRI * UU)  {
+	
 	float E1[3], E2[3];
 	float N1[3], N2[3], d1, d2;
 	float du0, du1, du2, dv0, dv1, dv2;
