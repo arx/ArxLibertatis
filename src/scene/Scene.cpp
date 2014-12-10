@@ -186,8 +186,6 @@ EERIE_FRUSTRUM_PLANE efpPlaneNear;
 static std::vector<EERIEPOLY*> vPolyWater;
 static std::vector<EERIEPOLY*> vPolyLava;
 
-void PopAllTriangleListTransparency();
-
 std::vector<PORTAL_ROOM_DRAW> RoomDraw;
 std::vector<long> RoomDrawList;
 
