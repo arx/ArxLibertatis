@@ -45,7 +45,7 @@ CheckboxWidget * fullscreenCheckbox = NULL;
 CycleTextWidget * pMenuSliderResol = NULL;
 TextWidget * pMenuElementApply = NULL;
 
-void Menu2_Render_NewQuest(CWindowMenuConsole * console, Vec2i size) {
+static void Menu2_Render_NewQuest(CWindowMenuConsole * console, Vec2i size) {
 	
 	{
 	std::string szMenuText = getLocalised("system_menus_main_editquest_confirm");
@@ -83,7 +83,7 @@ void Menu2_Render_NewQuest(CWindowMenuConsole * console, Vec2i size) {
 	console->AddMenu(pPanel);
 }
 
-void MainMenuCreateEditQuest(CWindowMenuConsole * console) {
+static void MainMenuCreateEditQuest(CWindowMenuConsole * console) {
 	
 	{
 	std::string szMenuText = getLocalised("system_menus_main_editquest_load");
@@ -111,7 +111,7 @@ void MainMenuCreateEditQuest(CWindowMenuConsole * console) {
 	}
 }
 
-void MainMenuCreateEditQuestLoad(CWindowMenuConsole * console, Vec2i size) {
+static void MainMenuCreateEditQuestLoad(CWindowMenuConsole * console, Vec2i size) {
 	
 	{
 	ButtonWidget * cb = new ButtonWidget(Vec2i(0, 0), "graph/interface/icons/menu_main_load");
@@ -201,7 +201,7 @@ void MainMenuCreateEditQuestLoad(CWindowMenuConsole * console, Vec2i size) {
 	}
 }
 
-void MainMenuCreateEditQuestSave(CWindowMenuConsole * console) {
+static void MainMenuCreateEditQuestSave(CWindowMenuConsole * console) {
 	
 	{
 	ButtonWidget * cb = new ButtonWidget(Vec2i(RATIO_X(10), 0), "graph/interface/icons/menu_main_save");
@@ -274,7 +274,7 @@ void MainMenuCreateEditQuestSave(CWindowMenuConsole * console) {
 	}
 }
 
-void MainMenuCreateEditQuestSaveConfirm(CWindowMenuConsole * console, Vec2i size) {
+static void MainMenuCreateEditQuestSaveConfirm(CWindowMenuConsole * console, Vec2i size) {
 	
 	{
 	ButtonWidget * cb = new ButtonWidget(Vec2i(0, 0), "graph/interface/icons/menu_main_save");
@@ -322,7 +322,7 @@ void MainMenuCreateEditQuestSaveConfirm(CWindowMenuConsole * console, Vec2i size
 	console->AddMenu(pPanel);
 }
 
-void MainMenuOptionGroupsCreate(CWindowMenuConsole * console) {
+static void MainMenuOptionGroupsCreate(CWindowMenuConsole * console) {
 	
 	{
 	std::string szMenuText = getLocalised("system_menus_options_video");
@@ -350,8 +350,8 @@ void MainMenuOptionGroupsCreate(CWindowMenuConsole * console) {
 	}
 }
 
-void MainMenuOptionVideoCreate(CWindowMenuConsole * console, Vec2i size)
-{
+static void MainMenuOptionVideoCreate(CWindowMenuConsole * console, Vec2i size) {
+	
 	// Renderer selection
 	{
 		HorizontalPanelWidget * pc = new HorizontalPanelWidget;
@@ -541,8 +541,8 @@ void MainMenuOptionVideoCreate(CWindowMenuConsole * console, Vec2i size)
 	}
 }
 
-void MainMenuOptionAudioCreate(CWindowMenuConsole * console, Vec2i size)
-{
+static void MainMenuOptionAudioCreate(CWindowMenuConsole * console, Vec2i size) {
+	
 	// Audio backend selection
 	{
 		
@@ -647,8 +647,8 @@ void MainMenuOptionAudioCreate(CWindowMenuConsole * console, Vec2i size)
 	}
 }
 
-void MainMenuOptionInputCreate(CWindowMenuConsole * console)
-{
+static void MainMenuOptionInputCreate(CWindowMenuConsole * console) {
+	
 	{
 	std::string szMenuText = getLocalised("system_menus_options_input_customize_controls");
 	TextWidget * me = new TextWidget(-1, hFontMenu, szMenuText, Vec2i(RATIO_X(20), 0), OPTIONS_INPUT_CUSTOMIZE_KEYS_1);
@@ -728,7 +728,11 @@ void MainMenuOptionInputCreate(CWindowMenuConsole * console)
 }
 
 
-void CUSTOM_CTRL_FUNC(CWindowMenuConsole * console, long & y, const std::string & a, int c, int d, const char * defaultText = "?", const char * specialSuffix = ""){
+static void CUSTOM_CTRL_FUNC(CWindowMenuConsole * console, long & y,
+                             const std::string & a, int c, int d,
+                             const char * defaultText = "?",
+                             const char * specialSuffix = "") {
+	
 	HorizontalPanelWidget * pc = new HorizontalPanelWidget;
 	
 	std::string szMenuText = getLocalised(a, defaultText);
@@ -750,7 +754,7 @@ void CUSTOM_CTRL_FUNC(CWindowMenuConsole * console, long & y, const std::string 
 	y += pc->rZone.height() + RATIO_Y(3.f);
 }
 
-void MainMenuOptionControlsCreatePage1(CWindowMenuConsole * console, Vec2i size) {
+static void MainMenuOptionControlsCreatePage1(CWindowMenuConsole * console, Vec2i size) {
 	
 	long y = static_cast<long>(RATIO_Y(8.f));
 
@@ -807,7 +811,7 @@ void MainMenuOptionControlsCreatePage1(CWindowMenuConsole * console, Vec2i size)
 	console->ReInitActionKey();
 }
 
-void MainMenuOptionControlsCreatePage2(CWindowMenuConsole * console, Vec2i size) {
+static void MainMenuOptionControlsCreatePage2(CWindowMenuConsole * console, Vec2i size) {
 	
 	long y = static_cast<long>(RATIO_Y(8.f));
 	
@@ -860,8 +864,8 @@ void MainMenuOptionControlsCreatePage2(CWindowMenuConsole * console, Vec2i size)
 	console->ReInitActionKey();
 }
 
-void Menu2_Render_Quit(CWindowMenuConsole * console, Vec2i size)
-{
+static void Menu2_Render_Quit(CWindowMenuConsole * console, Vec2i size) {
+	
 	{
 	TextWidget * me = new TextWidget(-1, hFontMenu, getLocalised("system_menus_main_quit"));
 	me->SetCheckOff();
