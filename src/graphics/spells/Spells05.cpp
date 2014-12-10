@@ -341,7 +341,7 @@ void CRuneOfGuarding::Render()
 	}
 }
 
-void LaunchPoisonExplosion(const Vec3f & aePos) {
+static void LaunchPoisonExplosion(const Vec3f & aePos) {
 	
 	// système de partoches pour l'explosion
 	ParticleSystem * pPS = new ParticleSystem();
