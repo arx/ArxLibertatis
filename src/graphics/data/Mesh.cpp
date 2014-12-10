@@ -516,8 +516,8 @@ long GetVertexPos(Entity * io, long id, Vec3f * pos)
 
 long EERIEDrawnPolys = 0;
 
-// Checks if point (x,y) is in a 2D poly defines by ep
-int PointIn2DPoly(EERIEPOLY * ep, float x, float y) {
+//! Check if point (x,y) is in a 2D poly defined by ep
+static int PointIn2DPoly(EERIEPOLY * ep, float x, float y) {
 	
 	int i, j, c = 0;
 
@@ -901,7 +901,7 @@ long BKG_CountIgnoredPolys(const EERIE_BACKGROUND & eb) {
 }
 
 // Releases BKG_INFO from a tile
-void ReleaseBKG_INFO(EERIE_BKG_INFO * eg) {
+static void ReleaseBKG_INFO(EERIE_BKG_INFO * eg) {
 	free(eg->polydata);
 	eg->polydata = NULL;
 	free(eg->polyin);
@@ -913,8 +913,8 @@ void ReleaseBKG_INFO(EERIE_BKG_INFO * eg) {
 //*************************************************************************************
 //*************************************************************************************
 
-void AddAData(ANCHOR_DATA * ad, long linked)
-{
+static void AddAData(ANCHOR_DATA * ad, long linked) {
+	
 	for(long i=0; i < ad->nblinked; i++)
 		if(ad->linked[i] == linked)
 			return;
@@ -938,7 +938,7 @@ void UpdateIORoom(Entity * io)
 	io->requestRoomUpdate = false;
 }
 
-bool GetRoomCenter(long room_num, Vec3f * center) {
+static bool GetRoomCenter(long room_num, Vec3f * center) {
 	
 	if(!portals || (size_t)room_num >= portals->rooms.size() || portals->rooms[room_num].nb_polys <= 0)
 		return false;
@@ -1077,8 +1077,8 @@ int InitBkg(EERIE_BACKGROUND * eb, short sx, short sz, short Xdiv, short Zdiv) {
 //*************************************************************************************
 //*************************************************************************************
 
-void EERIEPOLY_Add_PolyIn(EERIE_BKG_INFO * eg, EERIEPOLY * ep)
-{
+static void EERIEPOLY_Add_PolyIn(EERIE_BKG_INFO * eg, EERIEPOLY * ep) {
+	
 	for(long i = 0; i < eg->nbpolyin; i++)
 		if(eg->polyin[i] == ep)
 			return;
@@ -1089,8 +1089,8 @@ void EERIEPOLY_Add_PolyIn(EERIE_BKG_INFO * eg, EERIEPOLY * ep)
 	eg->nbpolyin++;
 }
 
-bool PointInBBox(Vec3f * point, EERIE_2D_BBOX * bb)
-{
+static bool PointInBBox(Vec3f * point, EERIE_2D_BBOX * bb) {
+	
 	if ((point->x > bb->max.x)
 			||	(point->x < bb->min.x)
 			||	(point->z > bb->max.y)
@@ -1218,7 +1218,7 @@ bool GetNameInfo(const std::string &name, long &type, long &val1, long &val2)
 	return false;
 }
 
-void EERIE_PORTAL_Blend_Portals_And_Rooms() {
+static void EERIE_PORTAL_Blend_Portals_And_Rooms() {
 	
 	if(!portals)
 		return;
@@ -1784,8 +1784,8 @@ static bool loadFastScene(const res::path & file, const char * data, const char 
 	return true;
 }
 
-void EERIEPOLY_FillMissingVertex(EERIEPOLY * po, EERIEPOLY * ep)
-{
+static void EERIEPOLY_FillMissingVertex(EERIEPOLY * po, EERIEPOLY * ep) {
+	
 	long missing = -1;
 
 	for(long i = 0; i < 3; i++) {
@@ -1812,7 +1812,7 @@ void EERIEPOLY_FillMissingVertex(EERIEPOLY * po, EERIEPOLY * ep)
 
 #if BUILD_EDIT_LOADSAVE
 
-void ComputeRoomDistance() {
+static void ComputeRoomDistance() {
 	
 	free(RoomDistance);
 	RoomDistance = NULL;
