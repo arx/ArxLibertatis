@@ -70,6 +70,7 @@ ZeniMax Media Inc., Suite 120, Rockville, Maryland 20850 USA.
 #include "gui/Interface.h"
 
 #include "graphics/Math.h"
+#include "graphics/data/FTL.h"
 #include "graphics/data/TextureContainer.h"
 #include "graphics/effects/Fade.h"
 #include "graphics/effects/Fog.h"
@@ -943,7 +944,6 @@ bool DanaeLoadLevel(const res::path & file, bool loadEntities) {
 	
 }
 
-void MCache_ClearAll();
 long FAST_RELEASE = 0;
 extern Entity * FlyingOverIO;
 extern unsigned long LAST_JUMP_ENDTIME;
