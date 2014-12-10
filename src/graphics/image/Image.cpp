@@ -1003,9 +1003,83 @@ struct DXT5AlphaBlock {
 	unsigned char mRow[6];
 };
 
-void FlipDXT1(unsigned char * data, unsigned int count);
-void FlipDXT3(unsigned char * data, unsigned int count);
-void FlipDXT5(unsigned char * data, unsigned int count);
+static void FlipColorBlock(unsigned char * data) {
+	
+	unsigned char tmp;
+	
+	tmp = data[4];
+	data[4] = data[7];
+	data[7] = tmp;
+	
+	tmp = data[5];
+	data[5] = data[6];
+	data[6] = tmp;
+}
+
+static void FlipSimpleAlphaBlock(u16 * data) {
+	
+	u16 tmp;
+	
+	tmp = data[0];
+	data[0] = data[3];
+	data[3] = tmp;
+	
+	tmp = data[1];
+	data[1] = data[2];
+	data[2] = tmp;
+}
+
+static void ComplexAlphaHelper(unsigned char * Data) {
+	
+	u16 tmp[2];
+
+	// One 4 pixel line is 12 bit, copy each line into
+	// a ushort, swap them and copy back
+	tmp[0] = (Data[0] | (Data[1] << 8)) & 0xfff;
+	tmp[1] = ((Data[1] >> 4) | (Data[2] << 4)) & 0xfff;
+	
+	Data[0] = tmp[1] & 0xff;
+	Data[1] = (tmp[1] >> 8) | (tmp[0] << 4);
+	Data[2] = tmp[0] >> 4;
+}
+
+static void FlipComplexAlphaBlock(unsigned char * Data) {
+	
+	unsigned char tmp[3];
+	Data += 2; // Skip 'palette'
+	
+	// Swap upper two rows with lower two rows
+	memcpy(tmp, Data, 3);
+	memcpy(Data, Data + 3, 3);
+	memcpy(Data + 3, tmp, 3);
+	
+	// Swap 1st with 2nd row, 3rd with 4th
+	ComplexAlphaHelper(Data);
+	ComplexAlphaHelper(Data + 3);
+}
+
+static void FlipDXT1(unsigned char * data, unsigned int count) {
+	for(unsigned int i = 0; i < count; ++i) {
+		FlipColorBlock(data);
+		data += 8; // Advance to next block
+	}
+}
+
+static void FlipDXT3(unsigned char * data, unsigned int count) {
+	for(unsigned int i = 0; i < count; ++i) {
+		FlipSimpleAlphaBlock((u16*)data);
+		FlipColorBlock(data + 8);
+		data += 16; // Advance to next block
+	}
+}
+
+static void FlipDXT5(unsigned char * data, unsigned int count) {
+	for(unsigned int i = 0; i < count; ++i) {
+		FlipComplexAlphaBlock(data);
+		FlipColorBlock(data + 8);
+		data += 16; // Advance to next block
+	}
+}
 
 void Image::FlipY(unsigned char * pData, unsigned int pWidth, unsigned int pHeight, unsigned int pDepth) {
 	
@@ -1090,85 +1164,6 @@ void Image::FlipY(unsigned char * pData, unsigned int pWidth, unsigned int pHeig
 		}
 		
 		free(swapTmp);
-	}
-}
-
-
-void FlipColorBlock(unsigned char * data) {
-	
-	unsigned char tmp;
-	
-	tmp = data[4];
-	data[4] = data[7];
-	data[7] = tmp;
-	
-	tmp = data[5];
-	data[5] = data[6];
-	data[6] = tmp;
-}
-
-void FlipSimpleAlphaBlock(u16 * data) {
-	
-	u16 tmp;
-	
-	tmp = data[0];
-	data[0] = data[3];
-	data[3] = tmp;
-	
-	tmp = data[1];
-	data[1] = data[2];
-	data[2] = tmp;
-}
-
-void ComplexAlphaHelper(unsigned char * Data) {
-	
-	u16 tmp[2];
-
-	// One 4 pixel line is 12 bit, copy each line into
-	// a ushort, swap them and copy back
-	tmp[0] = (Data[0] | (Data[1] << 8)) & 0xfff;
-	tmp[1] = ((Data[1] >> 4) | (Data[2] << 4)) & 0xfff;
-	
-	Data[0] = tmp[1] & 0xff;
-	Data[1] = (tmp[1] >> 8) | (tmp[0] << 4);
-	Data[2] = tmp[0] >> 4;
-}
-
-void FlipComplexAlphaBlock(unsigned char * Data) {
-	
-	unsigned char tmp[3];
-	Data += 2; // Skip 'palette'
-	
-	// Swap upper two rows with lower two rows
-	memcpy(tmp, Data, 3);
-	memcpy(Data, Data + 3, 3);
-	memcpy(Data + 3, tmp, 3);
-	
-	// Swap 1st with 2nd row, 3rd with 4th
-	ComplexAlphaHelper(Data);
-	ComplexAlphaHelper(Data + 3);
-}
-
-void FlipDXT1(unsigned char * data, unsigned int count) {
-	for(unsigned int i = 0; i < count; ++i) {
-		FlipColorBlock(data);
-		data += 8; // Advance to next block
-	}
-}
-
-void FlipDXT3(unsigned char * data, unsigned int count) {
-	for(unsigned int i = 0; i < count; ++i) {
-		FlipSimpleAlphaBlock((u16*)data);
-		FlipColorBlock(data + 8);
-		data += 16; // Advance to next block
-	}
-}
-
-void FlipDXT5(unsigned char * data, unsigned int count) {
-	for(unsigned int i = 0; i < count; ++i) {
-		FlipComplexAlphaBlock(data);
-		FlipColorBlock(data + 8);
-		data += 16; // Advance to next block
 	}
 }
 
