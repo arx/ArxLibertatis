@@ -205,7 +205,7 @@ static unsigned int stbi_zhash(unsigned char *data)
 
 #define stbi_ZHASH   16384
 
-unsigned char * stbi_zlib_compress(unsigned char *data, int data_len, int *out_len, int quality)
+static unsigned char * stbi_zlib_compress(unsigned char *data, int data_len, int *out_len, int quality)
 {
    static unsigned short lengthc[] = { 3,4,5,6,7,8,9,10,11,13,15,17,19,23,27,31,35,43,51,59,67,83,99,115,131,163,195,227,258, 259 };
    static unsigned char  lengtheb[]= { 0,0,0,0,0,0,0, 0, 1, 1, 1, 1, 2, 2, 2, 2, 3, 3, 3, 3, 4, 4, 4,  4,  5,  5,  5,  5,  0 };
@@ -308,7 +308,7 @@ unsigned char * stbi_zlib_compress(unsigned char *data, int data_len, int *out_l
    return (unsigned char *) stbi_sbraw(out);
 }
 
-unsigned int stbi_crc32(unsigned char *buffer, int len)
+static unsigned int stbi_crc32(unsigned char *buffer, int len)
 {
    static unsigned int crc_table[256];
    unsigned int crc = ~0u;
@@ -340,7 +340,7 @@ static unsigned char stbi_paeth(int a, int b, int c)
    return (unsigned char) c;
 }
 
-unsigned char *stbi_write_png_to_mem(const unsigned char *pixels, int stride_bytes, int x, int y, int n, int *out_len)
+static unsigned char *stbi_write_png_to_mem(const unsigned char *pixels, int stride_bytes, int x, int y, int n, int *out_len)
 {
    int ctype[5] = { -1, 0, 4, 2, 6 };
    unsigned char sig[8] = { 137,80,78,71,13,10,26,10 };
