@@ -125,7 +125,8 @@ static EERIEPOLY * ANCHOR_CheckInPoly(const Vec3f & pos) {
 
 extern Vec3f vector2D;
 
-float ANCHOR_IsPolyInCylinder(const EERIEPOLY & ep, const Cylinder & cyl, CollisionFlags flags) {
+static float ANCHOR_IsPolyInCylinder(const EERIEPOLY & ep, const Cylinder & cyl,
+                                     CollisionFlags flags) {
 	
 	if (!(flags & CFLAG_EXTRA_PRECISION))
 	{
