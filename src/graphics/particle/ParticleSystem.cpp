@@ -183,7 +183,7 @@ void ParticleSystem::SetTexture(const char * _pszTex, int _iNbTex, int _iTime) {
 	}
 }
 
-void VectorRotateY(Vec3f & _eIn, Vec3f & _eOut, float _fAngle) {
+static void VectorRotateY(Vec3f & _eIn, Vec3f & _eOut, float _fAngle) {
 	float c = std::cos(_fAngle);
 	float s = std::sin(_fAngle);
 	_eOut.x = (_eIn.x * c) + (_eIn.z * s);
@@ -191,7 +191,7 @@ void VectorRotateY(Vec3f & _eIn, Vec3f & _eOut, float _fAngle) {
 	_eOut.z = (_eIn.z * c) - (_eIn.x * s);
 }
 
-void VectorRotateZ(Vec3f & _eIn, Vec3f & _eOut, float _fAngle) {
+static void VectorRotateZ(Vec3f & _eIn, Vec3f & _eOut, float _fAngle) {
 	float c = std::cos(_fAngle);
 	float s = std::sin(_fAngle);
 	_eOut.x = (_eIn.x * c) + (_eIn.y * s);
