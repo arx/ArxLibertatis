@@ -81,7 +81,7 @@ TextureContainer * GetAnyTexture() {
 	return g_ptcTextureList;
 }
 
-void ResetVertexLists(TextureContainer * tex) {
+static void ResetVertexLists(TextureContainer * tex) {
 	
 	if(!tex) {
 		return;
