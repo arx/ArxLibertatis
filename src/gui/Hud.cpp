@@ -81,7 +81,7 @@ enum Anchor {
 	Anchor_BottomRight,
 };
 
-Vec2f getAnchorPos(const Rectf & rect, const Anchor anchor) {
+static Vec2f getAnchorPos(const Rectf & rect, const Anchor anchor) {
 	switch(anchor) {
 		case Anchor_TopLeft:      return rect.topLeft();
 		case Anchor_TopCenter:    return rect.topCenter();
@@ -96,7 +96,9 @@ Vec2f getAnchorPos(const Rectf & rect, const Anchor anchor) {
 	}
 }
 
-Rectf createChild(const Rectf & parent, const Anchor parentAnchor, const Vec2f & size, const Anchor childAnchor) {
+static Rectf createChild(const Rectf & parent, const Anchor parentAnchor,
+                         const Vec2f & size, const Anchor childAnchor) {
+	
 	Vec2f parentPos = getAnchorPos(parent, parentAnchor);
 	
 	Rectf child(size.x, size.y);
@@ -668,9 +670,8 @@ public:
 
 static InventoryGui inventoryGui;
 
-
-
-void DrawItemPrice() {
+static void DrawItemPrice() {
+	
 	Entity *temp = SecondaryInventory->io;
 	if(temp->ioflags & IO_SHOP) {
 		Vec2f pos = Vec2f(DANAEMouse);
