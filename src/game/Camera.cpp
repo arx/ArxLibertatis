@@ -44,7 +44,7 @@ void EERIE_TRANSFORM::updateFromAngle(const Anglef &angle) {
 MASTER_CAMERA_STRUCT MasterCamera;
 
 
-void rotPoint(Vec3f *in, Vec3f *out, EERIE_TRANSFORM &transform) {
+static void rotPoint(Vec3f *in, Vec3f *out, EERIE_TRANSFORM &transform) {
 
 	Vec3f tmp;
 
@@ -53,7 +53,7 @@ void rotPoint(Vec3f *in, Vec3f *out, EERIE_TRANSFORM &transform) {
 	YRotatePoint(&tmp, out, transform.ycos, -transform.ysin);
 }
 
-glm::mat4 Util_LookAt(Vec3f vFrom, Vec3f vView, Vec3f vWorldUp) {
+static glm::mat4 Util_LookAt(Vec3f vFrom, Vec3f vView, Vec3f vWorldUp) {
 	
 	glm::mat4x4 mat;
 	
@@ -112,7 +112,7 @@ glm::mat4 Util_LookAt(Vec3f vFrom, Vec3f vView, Vec3f vWorldUp) {
 	return mat;
 }
 
-glm::mat4 Util_SetViewMatrix(EERIE_TRANSFORM &transform) {
+static glm::mat4 Util_SetViewMatrix(EERIE_TRANSFORM &transform) {
 
 	Vec3f vFrom(transform.pos.x, -transform.pos.y, transform.pos.z);
 	Vec3f vTout(0.0f, 0.0f, 1.0f);
@@ -127,8 +127,7 @@ glm::mat4 Util_SetViewMatrix(EERIE_TRANSFORM &transform) {
 	return Util_LookAt(vFrom, vView, vWorldUp);
 }
 
-
-float focalToFov(float focal) {
+static float focalToFov(float focal) {
 	if(focal < 200)
 		return (-.34f * focal + 168.5f);
 	else if(focal < 300)
@@ -147,8 +146,7 @@ float focalToFov(float focal) {
 		return 33.5f;
 }
 
-
-void EERIE_CreateMatriceProj(float _fWidth, float _fHeight, EERIE_CAMERA * cam) {
+static void EERIE_CreateMatriceProj(float _fWidth, float _fHeight, EERIE_CAMERA * cam) {
 
 	float _fFOV = focalToFov(cam->focal);
 	float _fZNear = 1.f;
