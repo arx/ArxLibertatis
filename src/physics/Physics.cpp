@@ -135,8 +135,6 @@ static void ComputeForces(PHYSVERT * phys, long nb) {
 	}
 }
 
-bool ARX_INTERACTIVE_CheckFULLCollision(PHYSICS_BOX_DATA * obj, EntityHandle source);
-
 //! Calculate new Positions and Velocities given a deltatime
 //! \param DeltaTime that has passed since last iteration
 static void RK4Integrate(PHYSICS_BOX_DATA * pbox, float DeltaTime) {
