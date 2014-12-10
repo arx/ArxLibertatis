@@ -107,8 +107,6 @@ extern long REFUSE_GAME_RETURN;
 float INTERFACE_RATIO(float a);
 bool bNoMenu=false;
 
-void ARXMenu_Private_Options_Video_SetResolution(bool fullscreen, int _iWidth, int _iHeight);
-
 static MenuCursor * pMenuCursor = NULL;
 
 extern CWindowMenu * pWindowMenu;
