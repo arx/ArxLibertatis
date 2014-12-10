@@ -434,8 +434,8 @@ inline void EE_RotateY(TexturedVertex *in,TexturedVertex *out,float c, float s)
 	out->p.z = (in->p.z*c) - (in->p.x*s);
 }
 
-bool CollidedFromBack(Entity * io,Entity * ioo)
-{
+static bool CollidedFromBack(Entity * io,Entity * ioo) {
+	
 	// io was collided from back ?
 	EERIEPOLY ep;
 	ep.type=0;
