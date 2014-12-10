@@ -50,8 +50,6 @@
 #include "physics/Collisions.h"
 
 extern bool EXTERNALVIEW; // *sigh*
-extern float GetIOHeight(Entity * io);
-extern float GetIORadius(Entity * io);
 
 static TextureContainer * g_lightSourceTexture = NULL;
 static EERIE_3DOBJ * g_fogObject = NULL;

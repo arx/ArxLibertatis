@@ -64,6 +64,7 @@ ZeniMax Media Inc., Suite 120, Rockville, Maryland 20850 USA.
 #include "core/GameTime.h"
 
 #include "game/EntityManager.h"
+#include "game/NPC.h"
 #include "game/Player.h"
 
 #include "gui/LoadLevelScreen.h"
@@ -496,9 +497,6 @@ static void EERIERTPPolyCam(EERIEPOLY * ep, EERIE_CAMERA * cam) {
 
 //*************************************************************************************
 //*************************************************************************************
-
-extern float GetIOHeight(Entity * io);
-extern float GetIORadius(Entity * io);
 
 long GetVertexPos(Entity * io, long id, Vec3f * pos)
 {

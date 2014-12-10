@@ -256,4 +256,7 @@ void ARX_PHYSICS_Apply();
 
 void GetTargetPos(Entity * io, unsigned long smoothing = 0);
 
+float GetIOHeight(Entity * io);
+float GetIORadius(Entity * io);
+
 #endif // ARX_GAME_NPC_H

@@ -1808,8 +1808,8 @@ static void ARX_NPC_Manage_Anims(Entity * io, float TOLERANCE) {
 	
 }
 
-float GetIOHeight(Entity * io)
-{
+float GetIOHeight(Entity * io) {
+	
 	if (io == entities.player())
 	{
 		return io->physics.cyl.height; 
