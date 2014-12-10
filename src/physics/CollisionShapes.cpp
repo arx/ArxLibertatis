@@ -112,7 +112,7 @@ void EERIE_COLLISION_SPHERES_Release(EERIE_3DOBJ * obj) {
 	obj->sdata = NULL;
 }
 
-void AddCollisionSphere(EERIE_3DOBJ * obj, long idx, float radius) {
+static void AddCollisionSphere(EERIE_3DOBJ * obj, long idx, float radius) {
 	
 	if(radius < 1.f) {
 		return;
@@ -135,8 +135,8 @@ void AddCollisionSphere(EERIE_3DOBJ * obj, long idx, float radius) {
 	obj->sdata->spheres.push_back(newSphere);
 }
 
-long GetFirstChildGroup(EERIE_3DOBJ * obj, size_t group) {
-
+static long GetFirstChildGroup(EERIE_3DOBJ * obj, size_t group) {
+	
 	if(obj->grouplist.size() < group + 2)
 		return -1;
 
@@ -150,9 +150,9 @@ long GetFirstChildGroup(EERIE_3DOBJ * obj, size_t group) {
 
 	return -1;
 }
- 
-bool IsExclusiveGroupMember(EERIE_3DOBJ * obj, long idx, long group) {
 
+static bool IsExclusiveGroupMember(EERIE_3DOBJ * obj, long idx, long group) {
+	
 	for(size_t i = group + 1; i < obj->grouplist.size(); i++) {
 		for(size_t j = 0; j < obj->grouplist[i].indexes.size(); j++) {
 			if(idx == obj->grouplist[i].indexes[j]) {
@@ -164,8 +164,9 @@ bool IsExclusiveGroupMember(EERIE_3DOBJ * obj, long idx, long group) {
 	return true;
 }
 
-float GetSphereRadiusForGroup(EERIE_3DOBJ * obj, Vec3f * center, Vec3f * dirvect, long group, float maxi) {
-
+static float GetSphereRadiusForGroup(EERIE_3DOBJ * obj, Vec3f * center, Vec3f * dirvect,
+                                     long group, float maxi) {
+	
 	float curradius = 0.f;
 	float maxf = 0.f;
 	float div = 0.f;
@@ -214,8 +215,8 @@ float GetSphereRadiusForGroup(EERIE_3DOBJ * obj, Vec3f * center, Vec3f * dirvect
 	return curradius;
 }
 
-long AddVertexToVertexList(EERIE_3DOBJ * obj, Vec3f * center, long group) {
-
+static long AddVertexToVertexList(EERIE_3DOBJ * obj, Vec3f * center, long group) {
+	
 	if(obj->vertexlist.empty())
 		return -1;
 
