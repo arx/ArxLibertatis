@@ -166,7 +166,6 @@ extern long NewSpell;
 void MagFX(const Vec3f & pos);
 void RestoreAllLightsInitialStatus();
 void TreatBackgroundActions();
-void TreatBackgroundDynlights();
 
 void Add3DBoom(const Vec3f & position);
 void AddRandomSmoke(Entity * io, long amount = 1);

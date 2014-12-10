@@ -168,4 +168,6 @@ void ApplyTileLights(EERIEPOLY * ep, const Vec2s & pos);
 
 void EERIERemovePrecalcLights();
 
+void TreatBackgroundDynlights();
+
 #endif // ARX_SCENE_LIGHT_H
