@@ -441,14 +441,6 @@ if(BUILD_CRASHREPORTER OR BUILD_PROFILER)
 		set(ARX_HAVE_PROFILER 1)
 	endif()
 	
-	if(ARX_HAVE_CRASHREPORTER)
-		if(HAVE_QT5)
-			set(ARX_HAVE_CRASHREPORTER_QT5 1)
-		elseif(HAVE_QT4)
-			set(ARX_HAVE_CRASHREPORTER_QT4 1)
-		endif()
-	endif()
-	
 endif()
 
 find_package(Doxygen)
@@ -1569,19 +1561,19 @@ print_configuration("Audio backend"
 print_configuration("Windowing"
 	ARX_HAVE_SDL2 "SDL 2"
 	ARX_HAVE_SDL1 "SDL 1.2"
+	HAVE_QT5      "Qt 5"
+	HAVE_QT4      "Qt 4"
 )
-print_configuration("Crash handler"
-	ARX_HAVE_CRASHHANDLER_POSIX   "POSIX"
-	ARX_HAVE_CRASHHANDLER_WINDOWS "Win32"
+print_configuration("Features"
+	ARX_HAVE_CRASHHANDLER_POSIX   "POSIX crash handler"
+	ARX_HAVE_CRASHHANDLER_WINDOWS "Win32 crash handler"
+	BUILD_PROFILER_INSTRUMENT     "profiler instrumentation"
 )
-print_configuration("Crash reporter" FIRST
-	ARX_HAVE_CRASHREPORTER_QT5 "Qt 5"
-	ARX_HAVE_CRASHREPORTER_QT4 "Qt 4"
-	1                          "disabled"
-)
-print_configuration("Tools" FIRST
-	BUILD_TOOLS "enabled"
-	1           "disabled"
+print_configuration("Tools"
+	BUILD_TOOLS            "savetool"
+	BUILD_TOOLS            "unpak"
+	ARX_HAVE_CRASHREPORTER "crash reporter"
+	ARX_HAVE_PROFILER      "profiler"
 )
 message("")
 
