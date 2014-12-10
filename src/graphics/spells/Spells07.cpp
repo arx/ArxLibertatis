@@ -62,9 +62,10 @@ ZeniMax Media Inc., Suite 120, Rockville, Maryland 20850 USA.
 
 #include "physics/Collisions.h"
 
-#include "scene/Object.h"
 #include "scene/Interactive.h"
 #include "scene/Light.h"
+#include "scene/Object.h"
+#include "scene/Scene.h"
 
 struct CLightning::LIGHTNING {
 	Vec3f eStart;
@@ -789,8 +790,6 @@ void CIceField::Update(float timeDelta)
 {
 	ulCurrentTime += timeDelta;
 }
-
-extern bool VisibleSphere(const Vec3f & pos, float radius);
 
 void CIceField::Render()
 {

@@ -59,9 +59,10 @@ ZeniMax Media Inc., Suite 120, Rockville, Maryland 20850 USA.
 #include "graphics/particle/ParticleParams.h"
 #include "graphics/texture/TextureStage.h"
 
+#include "scene/Interactive.h"
 #include "scene/Light.h"
 #include "scene/Object.h"
-#include "scene/Interactive.h"
+#include "scene/Scene.h"
 
 CCreateField::CCreateField()
 	: eSrc(Vec3f_ZERO)
@@ -166,8 +167,6 @@ void CCreateField::Update(float timeDelta)
 {
 	ulCurrentTime += timeDelta;
 }
-
-extern bool VisibleSphere(const Vec3f & pos, float radius);
 
 void CCreateField::Render()
 {
