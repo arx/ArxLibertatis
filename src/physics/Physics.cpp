@@ -67,9 +67,9 @@ extern Material CUR_COLLISION_MATERIAL;
 
 static const float VELOCITY_THRESHOLD = 400.f;
 
-void ARX_ApplySpring(PHYSVERT * phys, long k, long l, float PHYSICS_constant,
-					 float PHYSICS_Damp) {
-
+static void ARX_ApplySpring(PHYSVERT * phys, long k, long l, float PHYSICS_constant,
+                            float PHYSICS_Damp) {
+	
 	Vec3f deltaP, deltaV, springforce;
 	PHYSVERT * pv_k = &phys[k];
 	PHYSVERT * pv_l = &phys[l];
@@ -94,8 +94,8 @@ void ARX_ApplySpring(PHYSVERT * phys, long k, long l, float PHYSICS_constant,
 	pv_l->force -= springforce; // - force on particle 2
 }
 
-void ComputeForces(PHYSVERT * phys, long nb) {
-
+static void ComputeForces(PHYSVERT * phys, long nb) {
+	
 	const Vec3f PHYSICS_Gravity(0.f, 65.f, 0.f);
 	const float PHYSICS_Damping = 0.5f;
 
@@ -139,8 +139,8 @@ bool ARX_INTERACTIVE_CheckFULLCollision(PHYSICS_BOX_DATA * obj, EntityHandle sou
 
 //! Calculate new Positions and Velocities given a deltatime
 //! \param DeltaTime that has passed since last iteration
-void RK4Integrate(PHYSICS_BOX_DATA * pbox, float DeltaTime) {
-
+static void RK4Integrate(PHYSICS_BOX_DATA * pbox, float DeltaTime) {
+	
 	PHYSVERT * source, * target, * accum1, * accum2, * accum3, * accum4;
 	float halfDeltaT, sixthDeltaT;
 	halfDeltaT = DeltaTime * .5f; // some time values i will need
@@ -256,7 +256,7 @@ static bool IsObjectVertexCollidingPoly(PHYSICS_BOX_DATA * pbox, const EERIEPOLY
 	return false;
 }
 
-void polyTypeToCollisionMaterial(const EERIEPOLY & ep) {
+static void polyTypeToCollisionMaterial(const EERIEPOLY & ep) {
 	if (ep.type & POLY_METAL) CUR_COLLISION_MATERIAL = MATERIAL_METAL;
 	else if (ep.type & POLY_WOOD) CUR_COLLISION_MATERIAL = MATERIAL_WOOD;
 	else if (ep.type & POLY_STONE) CUR_COLLISION_MATERIAL = MATERIAL_STONE;
