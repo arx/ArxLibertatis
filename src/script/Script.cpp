@@ -1949,7 +1949,7 @@ void ManageCasseDArme(Entity * io) {
 		return;
 	
 	arx_assert(player.bag >= 0);
-	arx_assert(player.bag < 3);
+	arx_assert(player.bag <= 3);
 	
 	Entity * pObjMin = NULL;
 	Entity * pObjMax = NULL;
