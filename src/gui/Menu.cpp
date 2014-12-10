@@ -259,7 +259,7 @@ void ARX_MENU_Clicked_NEWQUEST() {
 	ARXmenu.currentmode = AMCM_NEWQUEST;
 }
 
-void ARX_MENU_NEW_QUEST_Clicked_QUIT() {
+static void ARX_MENU_NEW_QUEST_Clicked_QUIT() {
 	START_NEW_QUEST = 1;
 	REFUSE_GAME_RETURN = 0;
 	ARX_MENU_Clicked_QUIT();
