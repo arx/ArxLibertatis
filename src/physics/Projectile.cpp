@@ -367,8 +367,6 @@ static void CheckExp(long i) {
 	}
 }
 
-extern void createFireParticles(Vec3f &pos, const int particlesToCreate, const int particleDelayFactor);
-
 void ARX_THROWN_OBJECT_Render() {
 
 	GRenderer->SetRenderState(Renderer::DepthWrite, true);

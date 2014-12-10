@@ -2914,8 +2914,6 @@ void ARX_NPC_SpawnAudibleSound(const Vec3f & pos, Entity * source, const float f
 	}
 }
 
-void createFireParticles(Vec3f &pos,const int particlesToCreate, const int particleDelayFactor);
-
 void ManageIgnition(Entity * io)
 {
 	if(!io)
