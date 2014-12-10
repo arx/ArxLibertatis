@@ -330,7 +330,7 @@ extern long lCursorRedistValue;
 int iHighLight=0;
 float fHighLightAng=0.f;
 
-bool SelectSpellTargetCursorRender() {
+static bool SelectSpellTargetCursorRender() {
 	
 	if(   !SPECIAL_DRAGINTER_RENDER
 	   && LOOKING_FOR_SPELL_TARGET
@@ -432,7 +432,7 @@ CursorAnimatedHand cursorAnimatedHand = CursorAnimatedHand();
 
 
 
-void ARX_INTERFACE_RenderCursorInternal(bool flag) {
+static void ARX_INTERFACE_RenderCursorInternal(bool flag) {
 	
 	if(SelectSpellTargetCursorRender()) {
 		return;
