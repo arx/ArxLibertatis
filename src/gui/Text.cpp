@@ -76,9 +76,10 @@ Font * hFontInGame = NULL;
 Font * hFontInGameNote = NULL;
 Font * hFontDebug = NULL;
 
-void ARX_UNICODE_FormattingInRect(Font * font, const std::string & text,
-                                  const Rect & rect, Color col, long * textHeight = 0,
-                                  long * numChars = 0, bool computeOnly = false) {
+static void ARX_UNICODE_FormattingInRect(Font * font, const std::string & text,
+                                         const Rect & rect, Color col,
+                                         long * textHeight = 0, long * numChars = 0,
+                                         bool computeOnly = false) {
 	
 	std::string::const_iterator itLastLineBreak = text.begin();
 	std::string::const_iterator itLastWordBreak = text.begin();
