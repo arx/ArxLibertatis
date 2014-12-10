@@ -1023,8 +1023,7 @@ long GetXPforLevel(long level)
 /*!
  * \brief Manages Player Level Up event
  */
-void ARX_PLAYER_LEVEL_UP()
-{
+static void ARX_PLAYER_LEVEL_UP() {
 	ARX_SOUND_PlayInterface(SND_PLAYER_LEVEL_UP);
 	player.level++;
 	player.Skill_Redistribute += 15;
@@ -1293,8 +1292,9 @@ void ARX_PLAYER_LoadHeroAnimsAndMesh(){
 }
 
 float Falling_Height = 0;
-void ARX_PLAYER_StartFall()
-{
+
+static void ARX_PLAYER_StartFall() {
+	
 	FALLING_TIME = 1;
 	Falling_Height = 50.f;
 	EERIEPOLY * ep = CheckInPoly(player.pos);
@@ -1953,7 +1953,7 @@ extern float Original_framedelay;
 
 unsigned long LAST_JUMP_ENDTIME = 0;
 
-bool Valid_Jump_Pos() {
+static bool Valid_Jump_Pos() {
 	
 	if(LAST_ON_PLATFORM || player.climbing) {
 		return true;
@@ -2038,8 +2038,8 @@ void ARX_PLAYER_Manage_Movement() {
 	StoredTime = DeltaTime;
 }
 
-void GuiInventoryFaderUpdate()
-{
+static void GuiInventoryFaderUpdate() {
+	
 	if(InventoryDir != 0) {
 		if((player.Interface & INTER_COMBATMODE) || player.doingmagic >= 2 || InventoryDir == -1) {
 			if(InventoryX > -160)
