@@ -22,14 +22,14 @@
 #include "graphics/GraphicsTypes.h"
 #include "graphics/Math.h"
 
-void CopyVertices(EERIEPOLY * ep,long to, long from) {
+static void CopyVertices(EERIEPOLY * ep,long to, long from) {
 	ep->v[to] = ep->v[from];
 	ep->tv[to] = ep->tv[from];
 	ep->nrml[to] = ep->nrml[from];
 }
 
-bool NearlyEqual(float a,float b)
-{
+static bool NearlyEqual(float a,float b) {
+	
 	if (glm::abs(a-b)<0.01f) return true;
 
 	if (glm::abs(b-a)<0.01f) return true;
@@ -37,8 +37,7 @@ bool NearlyEqual(float a,float b)
 	return false;
 }
 
-bool Quadable(EERIEPOLY * ep, EERIEPOLY * ep2, float tolerance)
-{
+static bool Quadable(EERIEPOLY * ep, EERIEPOLY * ep2, float tolerance) {
 
 	long count=0;
 	long common=-1;
@@ -204,8 +203,8 @@ bool TryToQuadify(EERIEPOLY * ep,EERIE_3DOBJ * eobj) {
  * \param norm2
  * \return
  */
-bool LittleAngularDiff(Vec3f * norm, Vec3f * norm2) {
-    return closerThan(*norm, *norm2, 1.41421f);
+static bool LittleAngularDiff(Vec3f * norm, Vec3f * norm2) {
+	return closerThan(*norm, *norm2, 1.41421f);
 }
 
 void ARX_PrepareBackgroundNRMLs() {
