@@ -128,8 +128,8 @@ public:
 	}
 };
 
-void LaunchMagicMissileExplosion(const Vec3f & _ePos, bool mrCheat)
-{
+void LaunchMagicMissileExplosion(const Vec3f & _ePos, bool mrCheat) {
+	
 	ParticleParams cp = MagicMissileExplosionParticle();
 	
 	if(mrCheat) {
@@ -570,21 +570,6 @@ void CMultiMagicMissile::Render()
 			el->intensity		= 0.7f + 2.3f * pMM->lightIntensityFactor;
 			el->pos = pMM->eCurPos;
 			el->time_creation	= (unsigned long)(arxtime);
-		}
-	}
-}
-
-void Split(Vec3f * v, int a, int b, float yo)
-{
-	if(a != b) {
-		int i = (int)((a + b) * 0.5f);
-
-		if(i != a && i != b) {
-			v[i].x = (v[a].x + v[b].x) * 0.5f + yo * frand2(); 
-			v[i].y = (v[a].y + v[b].y) * 0.5f; 
-			v[i].z = (v[a].z + v[b].z) * 0.5f + yo * frand2();
-			Split(v, a, i, yo * 0.7f);
-			Split(v, i, b, yo * 0.7f);
 		}
 	}
 }
