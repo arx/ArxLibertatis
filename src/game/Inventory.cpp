@@ -89,7 +89,6 @@ ZeniMax Media Inc., Suite 120, Rockville, Maryland 20850 USA.
 extern float InventoryX;
 extern float InventoryDir;
 
-void ARX_INTERFACE_Combat_Mode(long i);
 void ARX_INVENTORY_ReOrder();
 void ARX_INVENTORY_IdentifyIO(Entity * _pIO);
 

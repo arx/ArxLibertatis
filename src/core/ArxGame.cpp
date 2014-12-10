@@ -1194,8 +1194,6 @@ void ArxGame::onWindowGotFocus(const Window &) {
 	}
 }
 
-void ARX_INTERFACE_Combat_Mode(long i);
-
 void ArxGame::onWindowLostFocus(const Window &) {
 	// TODO(option-control) add a config option for this
 	ARX_INTERFACE_Combat_Mode(0);

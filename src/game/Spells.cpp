@@ -141,8 +141,6 @@ ZeniMax Media Inc., Suite 120, Rockville, Maryland 20850 USA.
 bool WILLRETURNTOFREELOOK = false;
 bool GLOBAL_MAGIC_MODE = true;
 
-void ARX_INTERFACE_Combat_Mode(long i);
-
 short ARX_FLARES_broken(1);
 
 long snip=0;
