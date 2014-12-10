@@ -63,7 +63,6 @@ ZeniMax Media Inc., Suite 120, Rockville, Maryland 20850 USA.
 extern bool bFadeInOut;
 extern bool bFade;
 extern int iFadeAction;
-void ARX_MENU_LaunchAmb(const std::string & _lpszAmb);
 
 
 struct CreditsTextInformations {

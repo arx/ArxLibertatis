@@ -99,4 +99,6 @@ void ARX_Menu_Resources_Create();
 void ARX_Menu_Resources_Release(bool _bNoSound = true);
 void ARX_MENU_Clicked_CREDITS();
 
+void ARX_MENU_LaunchAmb(const std::string & _lpszAmb);
+
 #endif // ARX_GUI_MENU_H
