@@ -68,14 +68,10 @@ static const char * typeToString(GLenum type) {
 	#define ARX_GLAPIENTRY
 #endif
 
-void ARX_GLAPIENTRY callback(GLenum source,
-                             GLenum type,
-                             GLuint id,
-                             GLenum severity,
-                             GLsizei length,
-                             const GLchar * message,
-                             const void * userParam
-) {
+static void ARX_GLAPIENTRY callback(GLenum source, GLenum type, GLuint id,
+                                    GLenum severity, GLsizei length,
+                                    const GLchar * message, const void * userParam) {
+	
 	ARX_UNUSED(length);
 	ARX_UNUSED(userParam);
 	
@@ -175,14 +171,13 @@ bool isEnabled() {
 	return g_enable;
 }
 
-void enable() {
+static void enable() {
 	g_enable = true;
 }
 
 ARX_PROGRAM_OPTION("debug-gl", NULL, "Enable OpenGL debug output", &enable);
 
-
-const char * getGLErrorString(GLenum error) {
+static const char * getGLErrorString(GLenum error) {
 	
 	switch(error) {
 		case GL_NO_ERROR:          return "GL_NO_ERROR";
