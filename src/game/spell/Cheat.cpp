@@ -43,8 +43,6 @@
 
 extern Rect g_size;
 
-extern void ARX_SPSound();
-
 long cur_mx=0;
 long cur_pnux=0;
 long cur_pom=0;

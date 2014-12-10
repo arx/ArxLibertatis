@@ -405,4 +405,6 @@ void ARX_PLAYER_Invulnerability(long flag);
 
 void ForcePlayerLookAtIO(Entity * io);
 
+void ARX_SPSound();
+
 #endif // ARX_GAME_PLAYER_H
