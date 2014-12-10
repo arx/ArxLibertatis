@@ -67,13 +67,15 @@ void EERIEDRAWPRIM(Renderer::Primitive primitive, const TexturedVertex * vertice
 
 static const float BASICFOCAL = 350.f;
 
-void SetTextureDrawPrim(TextureContainer* tex, TexturedVertex* v, Renderer::Primitive prim) {
+static void SetTextureDrawPrim(TextureContainer * tex, TexturedVertex * v,
+                               Renderer::Primitive prim) {
 	GRenderer->SetTexture(0, tex);
 	EERIEDRAWPRIM(prim, v, 4);
 }
 
-bool EERIECreateSprite(TexturedQuad& sprite, const Vec3f & in, float siz, Color color, float Zpos, float rot = 0) {
-
+static bool EERIECreateSprite(TexturedQuad & sprite, const Vec3f & in, float siz,
+                              Color color, float Zpos, float rot = 0) {
+	
 	TexturedVertex out;
 	EE_RTP(in, &out);
 	out.rhw *= 3000.f;
@@ -151,7 +153,8 @@ void EERIEDrawSprite(const Vec3f & in, float siz, TextureContainer * tex, Color 
 	}
 }
 
-void CreateBitmap(TexturedQuad& s, Rectf rect, float z, TextureContainer * tex, Color color, bool isRhw) {
+static void CreateBitmap(TexturedQuad & s, Rectf rect, float z, TextureContainer * tex,
+                         Color color, bool isRhw) {
 	
 	rect.move(-.5f, -.5f);
 	
@@ -169,7 +172,9 @@ void CreateBitmap(TexturedQuad& s, Rectf rect, float z, TextureContainer * tex, 
 	s.v[3] = TexturedVertex(Vec3f(rect.bottomLeft(), z), val, col, Vec2f(0.f, uv.y));
 }
 
-void DrawBitmap(const Rectf & rect, float z, TextureContainer * tex, Color color, bool isRhw) {
+static void DrawBitmap(const Rectf & rect, float z, TextureContainer * tex,
+                       Color color, bool isRhw) {
+	
 	TexturedQuad s;
 	CreateBitmap(s, rect, z, tex, color, isRhw);
 	
