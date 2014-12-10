@@ -593,7 +593,6 @@ void Menu2_Close();
 
 bool ProcessFadeInOut(bool _bFadeIn, float _fspeed);
 
-void ARX_MENU_Clicked_NEWQUEST();
 void ARX_MENU_Clicked_QUIT();
 
 bool ARX_QuickLoad();
