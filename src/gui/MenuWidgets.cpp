@@ -104,7 +104,6 @@ extern Rect g_size;
 
 extern long REFUSE_GAME_RETURN;
 
-float INTERFACE_RATIO(float a);
 bool bNoMenu=false;
 
 static MenuCursor * pMenuCursor = NULL;
