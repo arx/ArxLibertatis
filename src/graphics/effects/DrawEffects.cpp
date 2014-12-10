@@ -76,8 +76,9 @@ std::vector<TexturedVertex> g_shadowBatch;
 
 extern Color ulBKGColor;
 
-void AddToShadowBatch(TexturedVertex * _pVertex1, TexturedVertex * _pVertex2, TexturedVertex * _pVertex3) {
-
+static void AddToShadowBatch(TexturedVertex * _pVertex1, TexturedVertex * _pVertex2,
+                             TexturedVertex * _pVertex3) {
+	
 	TexturedVertex pPointAdd[3];
 	EE_P(&_pVertex1->p, &pPointAdd[0]);
 	EE_P(&_pVertex2->p, &pPointAdd[1]);
@@ -227,7 +228,7 @@ extern Entity * CAMERACONTROLLER;
 
 // This used to add a bias when the "forceZbias" config option was activated, but it
 // was off by default and we removed it.
-void IncrementPolyWithNormalOutput(EERIEPOLY *_pPoly,TexturedVertex *_pOut) {
+static void IncrementPolyWithNormalOutput(EERIEPOLY * _pPoly, TexturedVertex * _pOut) {
 	
 	_pOut[0].p = _pPoly->v[0].p;
 	_pOut[1].p = _pPoly->v[1].p;
