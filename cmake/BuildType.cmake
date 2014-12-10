@@ -118,12 +118,11 @@ else(MSVC)
 		add_cxxflag("-Woverflow")
 		add_cxxflag("-Wheader-guard")
 		add_cxxflag("-Wmissing-declarations")
+		add_cxxflag("-Wredundant-decls")
 		
 		# TODO consider adding these
 		# add_cxxflag("-Wconversion") # very noisy
 		# add_cxxflag("-Wsign-conversion") # very noisy
-		# to catch extern definitions in .cpp files (with UNITYBUILD):
-		# add_cxxflag("-Wredundant-decls")
 		
 		# clang
 		add_cxxflag("-Wliteral-conversion")
