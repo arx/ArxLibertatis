@@ -338,8 +338,8 @@ float ARX_DAMAGES_DamagePlayer(float dmg, DamageType type, EntityHandle source) 
 	return damagesdone;
 }
 
-void ARX_DAMAGES_HealPlayer(float dmg)
-{
+static void ARX_DAMAGES_HealPlayer(float dmg) {
+	
 	if(player.lifePool.current == 0.f)
 		return;
 
@@ -371,8 +371,8 @@ void ARX_DAMAGES_HealInter(Entity * io, float dmg)
 	}
 }
 
-void ARX_DAMAGES_HealManaPlayer(float dmg)
-{
+static void ARX_DAMAGES_HealManaPlayer(float dmg) {
+	
 	if(player.lifePool.current == 0.f)
 		return;
 
@@ -384,8 +384,8 @@ void ARX_DAMAGES_HealManaPlayer(float dmg)
 	}
 }
 
-void ARX_DAMAGES_HealManaInter(Entity * io, float dmg)
-{
+static void ARX_DAMAGES_HealManaInter(Entity * io, float dmg) {
+	
 	if(!io || !(io->ioflags & IO_NPC))
 		return;
 
@@ -403,8 +403,8 @@ void ARX_DAMAGES_HealManaInter(Entity * io, float dmg)
 	}
 }
 
-float ARX_DAMAGES_DrainMana(Entity * io, float dmg)
-{
+static float ARX_DAMAGES_DrainMana(Entity * io, float dmg) {
+	
 	if(!io || !(io->ioflags & IO_NPC))
 		return 0;
 
@@ -616,8 +616,7 @@ void ARX_DAMAGES_ForceDeath(Entity * io_dead, Entity * io_killer) {
 	EVENT_SENDER = old_sender;
 }
 
-void ARX_DAMAGES_PushIO(Entity * io_target, EntityHandle source, float power)
-{
+static void ARX_DAMAGES_PushIO(Entity * io_target, EntityHandle source, float power) {
 	if(power > 0.f && ValidIONum(source)) {
 		power *= ( 1.0f / 20 );
 		Entity * io = entities[source];
@@ -898,7 +897,7 @@ void ARX_DAMAGES_Reset()
 
 extern TextureContainer * TC_fire2;
 
-void ARX_DAMAGES_AddVisual(DAMAGE_INFO * di, Vec3f * pos, float dmg, Entity * io) {
+static void ARX_DAMAGES_AddVisual(DAMAGE_INFO * di, Vec3f * pos, float dmg, Entity * io) {
 	
 	if(!(di->params.type & DAMAGE_TYPE_FAKEFIRE)) {
 		return;
@@ -950,7 +949,7 @@ void ARX_DAMAGES_AddVisual(DAMAGE_INFO * di, Vec3f * pos, float dmg, Entity * io
 // source = -1 no source but valid pos
 // source = 0  player
 // source > 0  IO
-void ARX_DAMAGES_UpdateDamage(DamageHandle j, float tim) {
+static void ARX_DAMAGES_UpdateDamage(DamageHandle j, float tim) {
 	
 	DAMAGE_INFO & damage = damages[j];
 	
@@ -1171,8 +1170,8 @@ void ARX_DAMAGES_UpdateAll()
 		ARX_DAMAGES_UpdateDamage(DamageHandle(j), arxtime);
 }
 
-bool SphereInIO(Entity * io, const Sphere & sphere)
-{
+static bool SphereInIO(Entity * io, const Sphere & sphere) {
+	
 	if(!io || !io->obj)
 		return false;
 
