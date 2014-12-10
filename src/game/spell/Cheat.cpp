@@ -91,7 +91,7 @@ void Manage_sp_max() {
 	}
 }
 
-void MakeSpCol() {
+static void MakeSpCol() {
 
 	ARX_SPSound();
 
