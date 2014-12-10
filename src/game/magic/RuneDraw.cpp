@@ -34,8 +34,7 @@ static const Vec2s symbolVecScale(8*2, 6*2);
 
 
 
-Vec2s GetSymbVector(char c) {
-
+static Vec2s GetSymbVector(char c) {
 	switch(c) {
 		case '1': return Vec2s(-1,  1);
 		case '2': return Vec2s( 0,  1);
@@ -49,7 +48,7 @@ Vec2s GetSymbVector(char c) {
 	}
 }
 
-void ReCenterSequence(const std::string & _pcSequence, Vec2s & iMin, Vec2s & iMax) {
+static void ReCenterSequence(const std::string & _pcSequence, Vec2s & iMin, Vec2s & iMax) {
 	
 	Vec2s iSize = Vec2s(0, 0);
 	iMin = Vec2s(0, 0);
@@ -291,12 +290,8 @@ void ARX_SPELLS_ClearAllSymbolDraw() {
 	}
 }
 
-
-
-
-
-
-void ARX_SPELLS_RequestSymbolDrawCommon(Entity *io, float duration, RuneInfo & info) {
+static void ARX_SPELLS_RequestSymbolDrawCommon(Entity * io, float duration,
+                                               RuneInfo & info) {
 	
 	if(!io->symboldraw)
 		io->symboldraw = new SYMBOL_DRAW;
