@@ -150,7 +150,7 @@ ItemType ARX_EQUIPMENT_GetObjectTypeFlag(const std::string & temp) {
 }
 
 //! \brief Releases Equiped Id from player
-void ARX_EQUIPMENT_Release(long id) {
+static void ARX_EQUIPMENT_Release(long id) {
 	if(id) {
 		for(long i = 0; i < MAX_EQUIPED; i++) {
 			if(player.equiped[i] == id) {
