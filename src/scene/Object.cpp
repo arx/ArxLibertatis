@@ -1011,8 +1011,8 @@ long EERIE_OBJECT_GetGroup(const EERIE_3DOBJ * obj, const std::string & groupnam
 	return -1;
 }
 
-long GetFather(EERIE_3DOBJ * eobj, long origin, long startgroup)
-{
+static long GetFather(EERIE_3DOBJ * eobj, long origin, long startgroup) {
+	
 	for(long i = startgroup; i >= 0; i--) {
 		for(size_t j = 0; j < eobj->grouplist[i].indexes.size(); j++) {
 			if(eobj->grouplist[i].indexes[j] == origin) {
