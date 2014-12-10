@@ -2049,7 +2049,7 @@ char *stbi_zlib_decode_malloc(char const *buffer, int len, int *outlen)
    return stbi_zlib_decode_malloc_guesssize(buffer, len, 16384, outlen);
 }
 
-char *stbi_zlib_decode_malloc_guesssize_headerflag(const char *buffer, int len, int initial_size, int *outlen, int parse_header)
+static char *stbi_zlib_decode_malloc_guesssize_headerflag(const char *buffer, int len, int initial_size, int *outlen, int parse_header)
 {
    zbuf a;
    char *p = (char *) malloc(initial_size);
