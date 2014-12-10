@@ -113,8 +113,6 @@ extern long	REQUEST_SPEECH_SKIP;
 
 extern TextureContainer * pTextureLoad;
 
-bool MENU_NoActiveWindow();
-
 //-----------------------------------------------------------------------------
 // Exported global variables
 

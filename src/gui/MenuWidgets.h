@@ -599,4 +599,6 @@ bool ARX_QuickLoad();
 void ARX_QuickSave();
 bool ARX_SlotLoad(int slotIndex);
 
+bool MENU_NoActiveWindow();
+
 #endif // ARX_GUI_MENUWIDGETS_H
