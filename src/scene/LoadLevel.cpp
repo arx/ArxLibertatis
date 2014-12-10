@@ -474,7 +474,7 @@ Entity * LoadInter_Ex(const res::path & classPath, EntityInstance instance,
 	return io;
 }
 
-ColorBGRA savedColorConversion(u32 bgra) {
+static ColorBGRA savedColorConversion(u32 bgra) {
 	return ColorBGRA(bgra);
 }
 
