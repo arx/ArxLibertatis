@@ -296,8 +296,6 @@ bool IsCollidingIO(Entity * io,Entity * ioo) {
 	return false;
 }
 
-// TODO include header?
-extern void GetIOCyl(Entity * io, Cylinder & cyl);
 void PushIO_ON_Top(Entity * ioo, float ydec) {
 	
 	if(ydec != 0.f)
@@ -428,8 +426,6 @@ float CylinderPlatformCollide(Cylinder * cyl, Entity * io) {
 }
 
 static long NPC_IN_CYLINDER = 0;
-
-extern void GetIOCyl(Entity * io, Cylinder & cyl);
 
 inline void EE_RotateY(TexturedVertex *in,TexturedVertex *out,float c, float s)
 {

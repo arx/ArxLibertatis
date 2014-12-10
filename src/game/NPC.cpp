@@ -438,8 +438,6 @@ void ARX_NPC_Behaviour_UnStack(Entity * io)
 	}
 }
 
-extern void GetIOCyl(Entity * io, Cylinder & cyl);
-
 /*!
  * \brief Checks for any direct shortcut between NPC and future anchors...
  * \param io

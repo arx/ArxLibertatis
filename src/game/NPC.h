@@ -259,4 +259,6 @@ void GetTargetPos(Entity * io, unsigned long smoothing = 0);
 float GetIOHeight(Entity * io);
 float GetIORadius(Entity * io);
 
+void GetIOCyl(Entity * io, Cylinder & cyl);
+
 #endif // ARX_GAME_NPC_H
