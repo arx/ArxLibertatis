@@ -71,8 +71,8 @@ void ARX_GLOBALMODS_Reset() {
 	desired.depthcolor = Color3f::black;
 }
 
-float Approach(float current, float desired, float increment)
-{
+static float Approach(float current, float desired, float increment) {
+	
 	if(desired > current) {
 		current += increment;
 
