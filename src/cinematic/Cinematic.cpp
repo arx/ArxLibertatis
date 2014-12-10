@@ -82,11 +82,11 @@ extern float	FlashAlpha;
 
 extern Rect g_size;
 
-float ADJUSTX(float a) {
+static float ADJUSTX(float a) {
 	return (((((a)-(WIDTHS>>1))*((float)cinRenderSize.x/(float)WIDTHS))+(WIDTHS>>1)))*(640.f/(float)cinRenderSize.x);
 }
 
-float ADJUSTY(float a) {
+static float ADJUSTY(float a) {
 	return (((((a)-(HEIGHTS>>1))*((float)cinRenderSize.y/(float)HEIGHTS))+(HEIGHTS>>1)))*(480.f/(float)cinRenderSize.y);
 }
 
@@ -273,8 +273,8 @@ void Cinematic::DeleteDeviceObjects() {
 
 static float LightRND;
 
-Color CalculLight(CinematicLight * light, Vec2f pos, Color col)
-{
+static Color CalculLight(CinematicLight * light, Vec2f pos, Color col) {
+	
 	float	ra = (float)sqrt((light->pos.x - pos.x) * (light->pos.x - pos.x) + (light->pos.y - pos.y) * (light->pos.y - pos.y));
 
 	if(ra > light->fallout) {
@@ -300,7 +300,7 @@ Color CalculLight(CinematicLight * light, Vec2f pos, Color col)
 static Vec3f LocalPos;
 static float LocalSin, LocalCos;
 
-void TransformLocalVertex(Vec3f * vbase, TexturedVertex * d3dv) {
+static void TransformLocalVertex(Vec3f * vbase, TexturedVertex * d3dv) {
 	d3dv->p.x = vbase->x * LocalCos + vbase->y * LocalSin + LocalPos.x;
 	d3dv->p.y = vbase->x * -LocalSin + vbase->y * LocalCos + LocalPos.y;
 	d3dv->p.z = vbase->z + LocalPos.z;
