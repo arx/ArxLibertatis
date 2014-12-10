@@ -60,9 +60,8 @@ void ARX_SPELLS_Precast_Add(SpellType typ, long _level, SpellcastFlags flags, lo
 	Precast.push_back(precast);
 }
 
-
-
-long PrecastCheckCanPayMana(PrecastHandle num, float cost) {
+static long PrecastCheckCanPayMana(PrecastHandle num, float cost) {
+	
 	if(num < 0)
 		return 0;
 
