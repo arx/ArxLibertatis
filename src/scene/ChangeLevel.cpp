@@ -186,7 +186,7 @@ static EntityHandle ReadTargetInfo(const char (&str)[N]) {
 	}
 }
 
-long GetIOAnimIdx2(const Entity * io, ANIM_HANDLE * anim) {
+static long GetIOAnimIdx2(const Entity * io, ANIM_HANDLE * anim) {
 	
 	if(!io || !anim) {
 		return -1;
@@ -404,7 +404,7 @@ static bool ARX_CHANGELEVEL_PushLevel(long num, long newnum) {
 	return true;
 }
 
-bool IsPlayerEquipedWith(Entity * io) {
+static bool IsPlayerEquipedWith(Entity * io) {
 	
 	if(!io) {
 		return false;
@@ -1511,7 +1511,7 @@ static long ARX_CHANGELEVEL_Pop_Index(ARX_CHANGELEVEL_INDEX * asi, long num) {
 	return 1;
 }
 
-long ARX_CHANGELEVEL_Pop_Zones_n_Lights(ARX_CHANGELEVEL_INDEX * asi, long num) {
+static long ARX_CHANGELEVEL_Pop_Zones_n_Lights(ARX_CHANGELEVEL_INDEX * asi, long num) {
 	
 	std::stringstream ss;
 	ss << "lvl" << std::setfill('0') << std::setw(3) << num;
@@ -1572,7 +1572,8 @@ long ARX_CHANGELEVEL_Pop_Zones_n_Lights(ARX_CHANGELEVEL_INDEX * asi, long num) {
 	return 1;
 }
 
-long ARX_CHANGELEVEL_Pop_Level(ARX_CHANGELEVEL_INDEX * asi, long num, bool firstTime) {
+static long ARX_CHANGELEVEL_Pop_Level(ARX_CHANGELEVEL_INDEX * asi, long num,
+                                      bool firstTime) {
 	
 	char levelId[256];
 	GetLevelNameByNum(num, levelId);
