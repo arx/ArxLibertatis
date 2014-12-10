@@ -800,8 +800,8 @@ bool insertIntoInventory(Entity * item, const InventoryPos & pos) {
 /*!
  * \brief tries to put an object in player inventory
  */
-bool CanBePutInInventory(Entity * io)
-{
+static bool CanBePutInInventory(Entity * io) {
+	
 	if(io == NULL)
 		return false;
 	
