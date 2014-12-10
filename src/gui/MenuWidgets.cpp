@@ -143,7 +143,7 @@ void ARX_QuickSave() {
 	ARX_SOUND_MixerResume(ARX_SOUND_MixerGame);
 }
 
-bool ARX_LoadGame(const SaveGame & save) {
+static bool ARX_LoadGame(const SaveGame & save) {
 	
 	LoadLevelScreen();
 	progressBarSetTotal(238);
@@ -196,13 +196,14 @@ bool MENU_NoActiveWindow() {
 	return false;
 }
 
-void FontRenderText(Font* _pFont, const Rect & rzone, const std::string& _pText, Color _c) {
+static void FontRenderText(Font * _pFont, const Rect & rzone,
+                           const std::string & _pText, Color _c) {
 	if(pTextManage && !rzone.empty()) {
 		pTextManage->AddText(_pFont, _pText, rzone, _c);
 	}
 }
 
-void Check_Apply() {
+static void Check_Apply() {
 	if(pMenuElementApply) {
 		if(config.video.resolution.x != newWidth
 		   || config.video.resolution.y != newHeight
