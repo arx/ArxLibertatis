@@ -215,7 +215,8 @@ static void ApplyLavaGlowToVertex(Vec3f * odtv,TexturedVertex * dtv, float power
 	dtv->color = Color(lr, lg, lb, 255).toRGBA();
 }
 
-void ManageWater_VertexBuffer(EERIEPOLY * ep, const long to, const unsigned long tim, SMY_VERTEX * _pVertex) {
+static void ManageWater_VertexBuffer(EERIEPOLY * ep, const long to,
+                                     const unsigned long tim, SMY_VERTEX * _pVertex) {
 	
 	for(long k = 0; k < to; k++) {
 		ep->tv[k].uv = ep->v[k].uv;
@@ -230,7 +231,8 @@ void ManageWater_VertexBuffer(EERIEPOLY * ep, const long to, const unsigned long
 	}
 }
 
-void ManageLava_VertexBuffer(EERIEPOLY * ep, const long to, const unsigned long tim, SMY_VERTEX * _pVertex) {
+static void ManageLava_VertexBuffer(EERIEPOLY * ep, const long to,
+                                    const unsigned long tim, SMY_VERTEX * _pVertex) {
 	
 	for(long k = 0; k < to; k++) {
 		ep->tv[k].uv = ep->v[k].uv;
@@ -246,8 +248,8 @@ void ManageLava_VertexBuffer(EERIEPOLY * ep, const long to, const unsigned long 
 	}
 }
 
-void EERIERTPPoly2(EERIEPOLY & ep)
-{
+static void EERIERTPPoly2(EERIEPOLY & ep) {
+	
 	EE_RTP(ep.v[0].p, &ep.tv[0]);
 	EE_RTP(ep.v[1].p, &ep.tv[1]);
 	EE_RTP(ep.v[2].p, &ep.tv[2]);
@@ -259,8 +261,10 @@ void EERIERTPPoly2(EERIEPOLY & ep)
 }
 
 bool IsSphereInFrustrum(const Vec3f & point, const EERIE_FRUSTRUM & frustrum, float radius = 0.f);
-bool FrustrumsClipSphere(const EERIE_FRUSTRUM_DATA & frustrums, const Sphere & sphere)
-{
+
+static bool FrustrumsClipSphere(const EERIE_FRUSTRUM_DATA & frustrums,
+                                const Sphere & sphere) {
+	
 	float dists = efpPlaneNear.getDist(sphere.origin);
 
 	if(dists + sphere.radius > 0) {
@@ -295,7 +299,7 @@ bool VisibleSphere(const Vec3f & pos, float radius) {
 	return true;
 }
 
-bool IsBBoxInFrustrum(const EERIE_3D_BBOX & bbox, const EERIE_FRUSTRUM & frustrum) {
+static bool IsBBoxInFrustrum(const EERIE_3D_BBOX & bbox, const EERIE_FRUSTRUM & frustrum) {
 	
 	Vec3f point = bbox.min;
 	if(IsSphereInFrustrum(point, frustrum)) {
@@ -340,8 +344,9 @@ bool IsBBoxInFrustrum(const EERIE_3D_BBOX & bbox, const EERIE_FRUSTRUM & frustru
 	return	false;
 }
 
-bool FrustrumsClipBBox3D(const EERIE_FRUSTRUM_DATA & frustrums, const EERIE_3D_BBOX & bbox)
-{
+static bool FrustrumsClipBBox3D(const EERIE_FRUSTRUM_DATA & frustrums,
+                                const EERIE_3D_BBOX & bbox) {
+	
 	for(long i = 0; i < frustrums.nb_frustrums; i++)
 	{
 		if(IsBBoxInFrustrum(bbox, frustrums.frustrums[i]))
@@ -418,8 +423,9 @@ bool ARX_SCENE_PORTAL_ClipIO(Entity * io, const Vec3f & position) {
 	return false;
 }
 
-long ARX_PORTALS_GetRoomNumForPosition2(const Vec3f & pos, long flag, float * height)
-{
+static long ARX_PORTALS_GetRoomNumForPosition2(const Vec3f & pos, long flag,
+                                               float * height) {
+	
 	EERIEPOLY * ep; 
 
 	if(flag & 1) {
@@ -516,8 +522,9 @@ long ARX_PORTALS_GetRoomNumForPosition2(const Vec3f & pos, long flag, float * he
 
 	return -1;
 }
-long ARX_PORTALS_GetRoomNumForCamera(float * height)
-{
+
+static long ARX_PORTALS_GetRoomNumForCamera(float * height) {
+	
 	EERIEPOLY * ep; 
 	ep = CheckInPoly(ACTIVECAM->orgTrans.pos);
 
@@ -604,8 +611,8 @@ long ARX_PORTALS_GetRoomNumForPosition(const Vec3f & pos,long flag) {
 	return num;
 }
 
-void ARX_PORTALS_Frustrum_ClearIndexCount(long room_num) {
-
+static void ARX_PORTALS_Frustrum_ClearIndexCount(long room_num) {
+	
 	EERIE_ROOM_DATA & room = portals->rooms[room_num];
 	
 	std::vector<TextureContainer *>::const_iterator itr;
@@ -624,9 +631,8 @@ void ARX_PORTALS_Frustrum_ClearIndexCount(long room_num) {
 	}
 }
 
-			
-void ARX_PORTALS_InitDrawnRooms()
-{
+static void ARX_PORTALS_InitDrawnRooms() {
+	
 	arx_assert(portals);
 
 	for(size_t i = 0; i < portals->portals.size(); i++) {
@@ -675,7 +681,9 @@ bool IsSphereInFrustrum(const Vec3f & point, const EERIE_FRUSTRUM & frustrum, fl
 	return false;
 }
 
-bool FrustrumsClipPoly(const EERIE_FRUSTRUM_DATA & frustrums, const EERIEPOLY & ep){
+static bool FrustrumsClipPoly(const EERIE_FRUSTRUM_DATA & frustrums,
+                              const EERIEPOLY & ep) {
+	
 	for(long i=0; i<frustrums.nb_frustrums; i++) {
 		if(IsSphereInFrustrum(ep.center, frustrums.frustrums[i], ep.v[0].rhw))
 			return false;
@@ -684,16 +692,17 @@ bool FrustrumsClipPoly(const EERIE_FRUSTRUM_DATA & frustrums, const EERIEPOLY & 
 	return true;
 }
 
-void Frustrum_Set(EERIE_FRUSTRUM * fr,long plane,float a,float b,float c,float d)
-{
+static void Frustrum_Set(EERIE_FRUSTRUM * fr, long plane,
+                         float a, float b, float c, float d) {
 	fr->plane[plane].a=a;
 	fr->plane[plane].b=b;
 	fr->plane[plane].c=c;
 	fr->plane[plane].d=d;
 }
 
-void CreatePlane(EERIE_FRUSTRUM & frustrum, long numplane, const Vec3f & orgn, const Vec3f & pt1, const Vec3f & pt2)
-{
+static void CreatePlane(EERIE_FRUSTRUM & frustrum, long numplane, const Vec3f & orgn,
+                        const Vec3f & pt1, const Vec3f & pt2) {
+	
 	EERIE_FRUSTRUM_PLANE & plane = frustrum.plane[numplane];
 	
 	Vec3f A = pt1 - orgn;
@@ -712,7 +721,8 @@ void CreatePlane(EERIE_FRUSTRUM & frustrum, long numplane, const Vec3f & orgn, c
 	plane.d = -(orgn.x * plane.a + orgn.y * plane.b + orgn.z * plane.c);
 }
 
-void CreateFrustrum(EERIE_FRUSTRUM & frustrum, const Vec3f & pos, const EERIEPOLY & ep, bool cull) {
+static void CreateFrustrum(EERIE_FRUSTRUM & frustrum, const Vec3f & pos,
+                           const EERIEPOLY & ep, bool cull) {
 	if(cull) {
 		CreatePlane(frustrum, 0, pos, ep.v[0].p, ep.v[1].p);
 		CreatePlane(frustrum, 1, pos, ep.v[3].p, ep.v[2].p);
@@ -726,10 +736,8 @@ void CreateFrustrum(EERIE_FRUSTRUM & frustrum, const Vec3f & pos, const EERIEPOL
 	}
 }
 
-
-
-void CreateScreenFrustrum(EERIE_FRUSTRUM * frustrum) {
-		
+static void CreateScreenFrustrum(EERIE_FRUSTRUM * frustrum) {
+	
 	glm::mat4x4 matProj;
 	GRenderer->GetProjectionMatrix(matProj);
 	
@@ -789,8 +797,7 @@ void RoomDrawRelease() {
 	RoomDraw.resize(0);
 }
 
-void RoomFrustrumAdd(size_t num, const EERIE_FRUSTRUM & fr)
-{
+static void RoomFrustrumAdd(size_t num, const EERIE_FRUSTRUM & fr) {
 	if(RoomDraw[num].frustrum.nb_frustrums < MAX_FRUSTRUMS - 1) {
 		RoomDraw[num].frustrum.frustrums[RoomDraw[num].frustrum.nb_frustrums] = fr;
 		RoomDraw[num].frustrum.nb_frustrums++;
@@ -816,15 +823,18 @@ static void RenderWaterBatch() {
 	
 }
 
-float FluidTextureDisplacement(bool calcSin, const TexturedVertex& v, float time, float divVar1, float divVar2, 
-                               float divVar3, float divVar4, float addVar1 = 0, float addVar2 = 0, float sign = 1) {
+static float FluidTextureDisplacement(bool calcSin, const TexturedVertex& v, float time,
+                                      float divVar1, float divVar2, float divVar3,
+                                      float divVar4, float addVar1 = 0,
+                                      float addVar2 = 0, float sign = 1) {
 	if(calcSin) {
 		return (v.p.x + addVar1)*(1.f/divVar1) + sign * (glm::sin((v.p.x + addVar2)*(1.f/divVar2) + time * (1.f/divVar3))) * (1.f/divVar4);
 	}
 	return (v.p.z + addVar1)*(1.f/divVar1) + sign * (glm::cos((v.p.z + addVar2)*(1.f/divVar2) + time * (1.f/divVar3))) * (1.f/divVar4);
 }
 
-void CalculateWaterDisplacement(float& fTu, float& fTv, EERIEPOLY* ep, float time, int vertIndex, int step) {
+static void CalculateWaterDisplacement(float & fTu, float & fTv, EERIEPOLY * ep,
+                                       float time, int vertIndex, int step) {
 	switch(step) {
 	case(0):fTu = FluidTextureDisplacement(true, ep->v[vertIndex], time, 1000, 200, 1000, 32); 
 			fTv = FluidTextureDisplacement(false, ep->v[vertIndex], time, 1000, 200, 1000, 32); 
@@ -839,7 +849,8 @@ void CalculateWaterDisplacement(float& fTu, float& fTv, EERIEPOLY* ep, float tim
 	}
 }
 
-void CalculateLavaDisplacement(float& fTu, float& fTv, EERIEPOLY* ep, float time, int vertIndex, int step) {
+static void CalculateLavaDisplacement(float & fTu, float & fTv, EERIEPOLY * ep,
+                                      float time, int vertIndex, int step) {
 	switch(step) {
 	case(0):fTu = FluidTextureDisplacement(true, ep->v[vertIndex], time, 1000, 200, 2000, 20); 
 			fTv = FluidTextureDisplacement(false, ep->v[vertIndex], time, 1000, 200, 2000, 20); 
@@ -934,7 +945,7 @@ static void RenderWater() {
 	
 }
 
-void RenderLavaBatch() {
+static void RenderLavaBatch() {
 	
 	GRenderer->SetBlendFunc(Renderer::BlendDstColor, Renderer::BlendOne);
 	GRenderer->GetTextureStage(0)->setColorOp(TextureStage::OpModulate2X, TextureStage::ArgTexture, TextureStage::ArgDiffuse);
@@ -961,7 +972,7 @@ void RenderLavaBatch() {
 	
 }
 
-void RenderLava() {
+static void RenderLava() {
 
 	if(vPolyLava.empty()) {
 		return;
@@ -1032,7 +1043,7 @@ void RenderLava() {
 	vPolyLava.clear();
 }
 
-void ARX_PORTALS_Frustrum_RenderRoomTCullSoft(long room_num, const EERIE_FRUSTRUM_DATA & frustrums, long tim) {
+static void ARX_PORTALS_Frustrum_RenderRoomTCullSoft(long room_num, const EERIE_FRUSTRUM_DATA & frustrums, long tim) {
 	
 	ARX_PROFILE_FUNC();
 	
@@ -1223,7 +1234,7 @@ void ARX_PORTALS_Frustrum_RenderRoomTCullSoft(long room_num, const EERIE_FRUSTRU
 }
 
 
-void ARX_PORTALS_Frustrum_RenderRoomTCullSoftRender(long room_num) {
+static void ARX_PORTALS_Frustrum_RenderRoomTCullSoftRender(long room_num) {
 
 	EERIE_ROOM_DATA & room = portals->rooms[room_num];
 
@@ -1273,8 +1284,8 @@ static const SMY_ARXMAT::TransparencyType transRenderOrder[] = {
 };
 
 
-void ARX_PORTALS_Frustrum_RenderRoom_TransparencyTSoftCull(long room_num)
-{
+static void ARX_PORTALS_Frustrum_RenderRoom_TransparencyTSoftCull(long room_num) {
+	
 	//render transparency
 	EERIE_ROOM_DATA & room = portals->rooms[room_num];
 	
@@ -1332,8 +1343,9 @@ void ARX_PORTALS_Frustrum_RenderRoom_TransparencyTSoftCull(long room_num)
 	}
 }
 
-void ARX_PORTALS_Frustrum_ComputeRoom(size_t roomIndex, const EERIE_FRUSTRUM & frustrum)
-{
+static void ARX_PORTALS_Frustrum_ComputeRoom(size_t roomIndex,
+                                             const EERIE_FRUSTRUM & frustrum) {
+	
 	if(RoomDraw[roomIndex].count == 0) {
 		RoomDrawList.push_back(roomIndex);
 	}
