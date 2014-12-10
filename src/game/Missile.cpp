@@ -86,7 +86,7 @@ static const size_t MAX_MISSILES = 100;
 static ARX_MISSILE missiles[MAX_MISSILES];
 
 // Gets a Free Projectile Slot
-long ARX_MISSILES_GetFree() {
+static long ARX_MISSILES_GetFree() {
 	
 	for(size_t i = 0; i < MAX_MISSILES; i++) {
 		if(missiles[i].type == MISSILE_NONE) {
@@ -98,8 +98,8 @@ long ARX_MISSILES_GetFree() {
 }
 
 // Kills a missile
-void ARX_MISSILES_Kill(long i)
-{
+static void ARX_MISSILES_Kill(long i) {
+	
 	switch (missiles[i].type)
 	{
 		case MISSILE_FIREBALL :
