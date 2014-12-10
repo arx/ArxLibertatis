@@ -287,8 +287,7 @@ void AddFlare(const Vec2s & pos, float sm, short typ, Entity * io, bool bookDraw
 }
 
 //! Helper for FlareLine
-void AddLFlare(const Vec2s & pos, Entity * io)
-{
+static void AddLFlare(const Vec2s & pos, Entity * io) {
 	AddFlare(pos, 0.45f, 1, io);
 }
 
