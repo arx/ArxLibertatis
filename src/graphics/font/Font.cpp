@@ -251,8 +251,9 @@ Font::glyph_iterator Font::getNextGlyph(text_iterator & it, text_iterator end) {
 	return glyphs.find(chr); // the newly inserted glyph
 }
 
-void addGlyphVertices(std::vector<TexturedVertex>& vertices, const Font::Glyph& glyph, const Vec2f& pos, Color color) {
-
+static void addGlyphVertices(std::vector<TexturedVertex> & vertices,
+                             const Font::Glyph & glyph, const Vec2f & pos, Color color) {
+	
 	float w = glyph.size.x;
 	float h = -glyph.size.y;
 	float uStart = glyph.uv_start.x;
