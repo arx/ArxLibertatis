@@ -65,6 +65,8 @@ ZeniMax Media Inc., Suite 120, Rockville, Maryland 20850 USA.
 
 #include "platform/Platform.h"
 
+#include "scene/Object.h"
+
 long GLOBAL_EERIETEXTUREFLAG_LOADSCENE_RELEASE = 0;
 
 /*-----------------------------------------------------------------------------*/
@@ -234,8 +236,6 @@ bool TextureContainer::LoadFile(const res::path & strPathname) {
 bool TextureContainer::hasColorKey() {
 	return m_pTexture != NULL && m_pTexture->hasColorKey();
 }
-
-extern void MakeUserFlag(TextureContainer * tc);
 
 TextureContainer * TextureContainer::Load(const res::path & name, TCFlags flags) {
 	
