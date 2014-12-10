@@ -101,7 +101,7 @@ static bool IsPointInField(const Vec3f & pos) {
 	return false;
 }
 
-void ARX_THROWN_OBJECT_Kill(long num) {
+static void ARX_THROWN_OBJECT_Kill(long num) {
 	if(num >= 0 && size_t(num) < MAX_THROWN_OBJECTS) {
 		Thrown[num].flags = 0;
 		delete Thrown[num].pRuban;
@@ -115,7 +115,8 @@ void ARX_THROWN_OBJECT_KillAll() {
 	}
 }
 
-long ARX_THROWN_OBJECT_GetFree() {
+static long ARX_THROWN_OBJECT_GetFree() {
+	
 	unsigned long latest_time = (unsigned long)(arxtime);
 	long latest_obj = -1;
 
@@ -179,8 +180,9 @@ void ARX_THROWN_OBJECT_Throw(EntityHandle source, const Vec3f & position, const 
 	}
 }
 
-float ARX_THROWN_ComputeDamages(long thrownum, EntityHandle source, EntityHandle target)
-{
+static float ARX_THROWN_ComputeDamages(long thrownum, EntityHandle source,
+                                       EntityHandle target) {
+	
 	float distance_limit = 1000.f;
 	Entity * io_target = entities[target];
 	Entity * io_source = entities[source];
@@ -288,8 +290,8 @@ float ARX_THROWN_ComputeDamages(long thrownum, EntityHandle source, EntityHandle
 	return 0.f;
 }
 
-EERIEPOLY * CheckArrowPolyCollision(const Vec3f & start, const Vec3f & end) {
-
+static EERIEPOLY * CheckArrowPolyCollision(const Vec3f & start, const Vec3f & end) {
+	
 	EERIE_TRI pol;
 	pol.v[0] = start;
 	pol.v[2] = end - Vec3f(2.f, 15.f, 2.f);
@@ -339,8 +341,8 @@ EERIEPOLY * CheckArrowPolyCollision(const Vec3f & start, const Vec3f & end) {
 	return NULL;
 }
 
-void CheckExp(long i) {
-
+static void CheckExp(long i) {
+	
 	if((Thrown[i].flags & ATO_FIERY) && !(Thrown[i].flags & ATO_UNDERWATER)) {
 
 		ARX_BOOMS_Add(Thrown[i].position);
