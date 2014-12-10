@@ -94,7 +94,7 @@ void ARX_SPEECH_Init() {
 		speech[i].clear();
 }
 
-void ARX_SPEECH_MoveUp() {
+static void ARX_SPEECH_MoveUp() {
 
 	if(speech[0].timecreation != 0)
 		speech[0].text.clear();
@@ -169,7 +169,7 @@ static bool isLastSpeech(size_t index) {
 	return true;
 }
 
-void ARX_SPEECH_Render() {
+static void ARX_SPEECH_Render() {
 	
 	long igrec = 14;
 	
@@ -265,7 +265,7 @@ void ARX_CONVERSATION_Reset()
 	main_conversation.current = -1;
 }
 
-void ARX_CONVERSATION_CheckAcceleratedSpeech() {
+static void ARX_CONVERSATION_CheckAcceleratedSpeech() {
 	
 	if(REQUEST_SPEECH_SKIP) {
 		for(size_t i = 0; i < MAX_ASPEECH; i++) {
@@ -283,7 +283,7 @@ void ARX_SPEECH_FirstInit() {
 	}
 }
 
-long ARX_SPEECH_GetFree() {
+static long ARX_SPEECH_GetFree() {
 	
 	for(size_t i = 0; i < MAX_ASPEECH; i++) {
 		if(!aspeech[i].exist) {
@@ -295,7 +295,7 @@ long ARX_SPEECH_GetFree() {
 	return -1;
 }
 
-void ARX_SPEECH_Release(long i) {
+static void ARX_SPEECH_Release(long i) {
 	
 	if(aspeech[i].exist) {
 		
