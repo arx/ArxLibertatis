@@ -193,7 +193,7 @@ void EERIE_LIGHT_MoveAll(const Vec3f * trans) {
 	}
 }
 
-void ComputeLight2DPos(EERIE_LIGHT * _pL) {
+static void ComputeLight2DPos(EERIE_LIGHT * _pL) {
 	
 	TexturedVertex out;
 	EE_RTP(_pL->pos, &out);
@@ -444,7 +444,7 @@ long MAX_LLIGHTS = 18;
 EERIE_LIGHT * llights[32];
 float values[32];
 
-void llightsInit() {
+static void llightsInit() {
 	for(long i = 0; i < MAX_LLIGHTS; i++) {
 		llights[i] = NULL;
 		values[i] = 999999999.f;
@@ -452,8 +452,8 @@ void llightsInit() {
 }
 
 // Inserts Light in the List of Nearest Lights
-void Insertllight(EERIE_LIGHT * el, const Vec3f & pos, bool forPlayerColor)
-{
+static void Insertllight(EERIE_LIGHT * el, const Vec3f & pos, bool forPlayerColor) {
+	
 	if(!el)
 		return;
 	
