@@ -325,8 +325,7 @@ void updateQuestBook() {
 
 //-----------------------------------------------------------------------------
 
-
-bool MouseInBookRect(const float x, const float y, const float cx, const float cy) {
+static bool MouseInBookRect(const float x, const float y, const float cx, const float cy) {
 	return DANAEMouse.x >= (x + BOOKDEC.x) * g_sizeRatio.x
 		&& DANAEMouse.x <= (cx + BOOKDEC.x) * g_sizeRatio.x
 		&& DANAEMouse.y >= (y + BOOKDEC.y) * g_sizeRatio.y
@@ -591,8 +590,9 @@ bool NeedHalo(Entity * io)
 }
 
 //-----------------------------------------------------------------------------
-void InventoryOpenClose(unsigned long t) // 0 switch 1 forceopen 2 forceclose
-{
+// 0 switch 1 forceopen 2 forceclose
+static void InventoryOpenClose(unsigned long t) {
+	
 	if(t == 1 && (player.Interface & INTER_INVENTORY))
 		return;
 
@@ -815,7 +815,7 @@ void ResetPlayerInterface() {
 	SLID_START=float(arxtime);
 }
 
-void ReleaseInfosCombine() {
+static void ReleaseInfosCombine() {
 	
 	arx_assert(player.bag >= 0);
 	arx_assert(player.bag <= 3);
@@ -841,8 +841,8 @@ void ReleaseInfosCombine() {
 }
 
 //-----------------------------------------------------------------------------
-char* findParam(char* pcToken, const char* param)
-{
+static char * findParam(char * pcToken, const char * param) {
+	
 	char* pStartString = 0;
 
 	if(strstr(pcToken,"^$param1"))
@@ -851,8 +851,8 @@ char* findParam(char* pcToken, const char* param)
 	return pStartString;
 }
 
-void GetInfosCombineWithIO(Entity * _pWithIO)
-{
+static void GetInfosCombineWithIO(Entity * _pWithIO) {
+	
 	if(!COMBINE)
 		return;
 	
@@ -1095,9 +1095,8 @@ void GetInfosCombineWithIO(Entity * _pWithIO)
 	}
 }
 
-//-------------------------------------------------------------------------------
-void GetInfosCombine()
-{
+static void GetInfosCombine() {
+	
 	arx_assert(player.bag >= 0);
 	arx_assert(player.bag <= 3);
 	
@@ -2437,22 +2436,16 @@ void ArxGame::manageKeyMouse() {
 		}
 }
 
-//-----------------------------------------------------------------------------
-
-void ARX_INTERFACE_RELEASESOUND()
-{
+static void ARX_INTERFACE_RELEASESOUND() {
 	ARX_SOUND_PlayInterface(SND_MENU_RELEASE);
 }
 
-//-----------------------------------------------------------------------------
-void ARX_INTERFACE_ERRORSOUND()
-{
+static void ARX_INTERFACE_ERRORSOUND() {
 	ARX_SOUND_PlayInterface(SND_MENU_CLICK);
 }
 
-//-----------------------------------------------------------------------------
-bool CheckAttributeClick(float x, float y, float * val, TextureContainer * tc)
-{
+static bool CheckAttributeClick(float x, float y, float * val, TextureContainer * tc) {
+	
 	bool rval=false;
 	float t = *val;
 
@@ -2492,9 +2485,9 @@ bool CheckAttributeClick(float x, float y, float * val, TextureContainer * tc)
 	return rval;
 }
 
-//-----------------------------------------------------------------------------
-bool CheckSkillClick(float x, float y, float * val, TextureContainer * tc, float * oldval)
-{
+static bool CheckSkillClick(float x, float y, float * val, TextureContainer * tc,
+                            float * oldval) {
+	
 	bool rval=false;
 
 	float t = *val;
