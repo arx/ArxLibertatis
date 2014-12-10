@@ -134,8 +134,8 @@ C_KEY * SearchKey(int f, int * num)
 	return NULL;
 }
  
-void UpDateKeyLight(int frame)
-{
+static void UpDateKeyLight(int frame) {
+	
 	C_KEY *klightprev2, *klightnext2;
 	int num;
 
@@ -349,8 +349,8 @@ C_KEY * GetKey(int f, int * num)
 	return NULL;
 }
 
-float GetAngleInterpolation(float d, float e)
-{
+static float GetAngleInterpolation(float d, float e) {
+	
 	float da = e - d;
 
 	if(glm::abs(da) > 180.f) {
