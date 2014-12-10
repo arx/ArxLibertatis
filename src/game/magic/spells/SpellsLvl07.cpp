@@ -477,8 +477,8 @@ void LightningStrikeSpell::End()
 	ARX_SOUND_PlaySFX(SND_SPELL_LIGHTNING_END, &entities[m_caster]->pos);
 }
 
-void GetChestPos(EntityHandle num, Vec3f * p)
-{
+static void GetChestPos(EntityHandle num, Vec3f * p) {
+	
 	if(num == 0) {
 		p->x = player.pos.x;
 		p->y = player.pos.y + 70.f;
