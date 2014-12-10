@@ -532,7 +532,7 @@ static const char * MakeSpellName(SpellType num) {
 	}
 }
 
-void SPELLCAST_Notify(const SpellBase & spell) {
+static void SPELLCAST_Notify(const SpellBase & spell) {
 	
 	EntityHandle source = spell.m_caster;
 	
@@ -552,7 +552,7 @@ void SPELLCAST_Notify(const SpellBase & spell) {
 	}
 }
 
-void SPELLCAST_NotifyOnlyTarget(const SpellBase & spell) {
+static void SPELLCAST_NotifyOnlyTarget(const SpellBase & spell) {
 	
 	if(spell.m_target < 0)
 		return;
@@ -572,7 +572,7 @@ void SPELLCAST_NotifyOnlyTarget(const SpellBase & spell) {
 	}
 }
 
-void SPELLEND_Notify(const SpellBase & spell) {
+static void SPELLEND_Notify(const SpellBase & spell) {
 	
 	EntityHandle source = spell.m_caster;
 	const char * spellName = MakeSpellName(spell.m_type);
@@ -797,9 +797,8 @@ void ARX_SPELLS_ManageMagic() {
 	}
 }
 
-bool CanPayMana(SpellBase * spell, float cost, bool _bSound = true) {
-
-
+static bool CanPayMana(SpellBase * spell, float cost, bool _bSound = true) {
+	
 	if(spell->m_flags & SPELLCAST_FLAG_NOMANA)
 		return true;
 
@@ -830,7 +829,7 @@ bool CanPayMana(SpellBase * spell, float cost, bool _bSound = true) {
 	return false;
 }
 
-EntityHandle TemporaryGetSpellTarget(const Vec3f * from) {
+static EntityHandle TemporaryGetSpellTarget(const Vec3f * from) {
 	
 	float mindist = std::numeric_limits<float>::max();
 	EntityHandle found = EntityHandle(0);
@@ -976,7 +975,7 @@ float ARX_SPELLS_GetManaCost(SpellType spell, float casterLevel) {
 	}
 }
 
-SpellBase * createSpellInstance(SpellType type) {
+static SpellBase * createSpellInstance(SpellType type) {
 	switch(type) {
 		case SPELL_NONE: return NULL;
 		// LEVEL 1
