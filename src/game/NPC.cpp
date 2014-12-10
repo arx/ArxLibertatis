@@ -229,7 +229,7 @@ void ARX_NPC_Kill_Spell_Launch(Entity * io)
  * \brief Releases Pathfinder info from an NPC
  * \param io
  */
-void ARX_NPC_ReleasePathFindInfo(Entity * io) {
+static void ARX_NPC_ReleasePathFindInfo(Entity * io) {
 	
 	if(!io || !(io->ioflags & IO_NPC))
 		return;
@@ -246,7 +246,7 @@ void ARX_NPC_ReleasePathFindInfo(Entity * io) {
  * \brief Creates an extra rotations structure for a NPC
  * \param io
  */
-void ARX_NPC_CreateExRotateData(Entity * io) {
+static void ARX_NPC_CreateExRotateData(Entity * io) {
 	
 	if(!io || !(io->ioflags & IO_NPC) || io->_npcdata->ex_rotate)
 		return;
@@ -445,8 +445,8 @@ extern void GetIOCyl(Entity * io, Cylinder & cyl);
  * \param io
  * \return
  */
-long ARX_NPC_GetNextAttainableNodeIncrement(Entity * io)
-{
+static long ARX_NPC_GetNextAttainableNodeIncrement(Entity * io) {
+	
 	arx_assert(io);
 	if(!(io->ioflags & IO_NPC) || (io->_npcdata->behavior & BEHAVIOUR_WANDER_AROUND))
 		return 0;
@@ -852,8 +852,8 @@ void ARX_NPC_ChangeMoveMode(Entity * io, MoveMode MOVEMODE) {
  * \brief Diminishes life of a Poisoned NPC
  * \param io
  */
-void ARX_NPC_ManagePoison(Entity * io)
-{
+static void ARX_NPC_ManagePoison(Entity * io) {
+	
 	float cp = io->_npcdata->poisonned;
 	cp *= ( 1.0f / 2 ) * framedelay * ( 1.0f / 1000 ) * ( 1.0f / 2 );
 	float faster = 10.f - io->_npcdata->poisonned;
@@ -1220,7 +1220,7 @@ void StareAtTarget(Entity * io)
 	return;
 }
 
-float GetTRUETargetDist(Entity * io) {
+static float GetTRUETargetDist(Entity * io) {
 	
 	EntityHandle t;
 	if(io->ioflags & IO_NPC) {
@@ -1261,7 +1261,8 @@ extern float STRIKE_AIMTIME;
  * \brief Checks if Player is currently striking.
  * \return
  */
-bool IsPlayerStriking() {
+static bool IsPlayerStriking() {
+	
 	arx_assert(entities.player());
 	Entity * io = entities.player();
 	
@@ -1311,8 +1312,8 @@ bool IsPlayerStriking() {
 	return false;
 }
 
-void ARX_NPC_Manage_NON_Fight(Entity * io)
-{
+static void ARX_NPC_Manage_NON_Fight(Entity * io) {
+	
 	ANIM_USE * ause1 = &io->animlayer[1];
 
 	if((ause1->flags & EA_ANIMEND) && (ause1->cur_anim != NULL)) {
@@ -1324,8 +1325,7 @@ void ARX_NPC_Manage_NON_Fight(Entity * io)
 	}
 }
 
-void Strike_StartTickCount(Entity * io)
-{
+static void Strike_StartTickCount(Entity * io) {
 	io->_npcdata->strike_time = 0;
 }
 
@@ -1333,8 +1333,8 @@ void Strike_StartTickCount(Entity * io)
  * \brief NPC IS in fight mode and close to target...
  * \param io
  */
-void ARX_NPC_Manage_Fight(Entity * io)
-{
+static void ARX_NPC_Manage_Fight(Entity * io) {
+	
 	if(!(io->ioflags & IO_NPC))
 		return;
 
@@ -1467,7 +1467,7 @@ void ARX_NPC_Manage_Fight(Entity * io)
 		}
 }
 
-void ARX_NPC_Manage_Anims_End(Entity * io) {
+static void ARX_NPC_Manage_Anims_End(Entity * io) {
 	
 	ANIM_USE * ause = &io->animlayer[0];
 	if((ause->flags & EA_ANIMEND) && ause->cur_anim) {
@@ -1487,8 +1487,8 @@ void ARX_NPC_Manage_Anims_End(Entity * io) {
 	}
 }
 
-bool TryIOAnimMove(Entity * io, long animnum)
-{
+static bool TryIOAnimMove(Entity * io, long animnum) {
+	
 	if(!io || !io->anims[animnum])
 		return false;
 
@@ -1509,7 +1509,7 @@ bool TryIOAnimMove(Entity * io, long animnum)
 	return false;
 }
 
-void TryAndCheckAnim(Entity * io, long animnum, long layer) {
+static void TryAndCheckAnim(Entity * io, long animnum, long layer) {
 	
 	if(!io) {
 		return;
@@ -1533,7 +1533,7 @@ static const int STRIKE_DISTANCE = 220;
  * \param io
  * \param TOLERANCE
  */
-void ARX_NPC_Manage_Anims(Entity * io, float TOLERANCE) {
+static void ARX_NPC_Manage_Anims(Entity * io, float TOLERANCE) {
 	
 	io->_npcdata->strike_time += (short)framedelay;
 	
@@ -1844,7 +1844,7 @@ void GetIOCyl(Entity * io, Cylinder & cyl) {
  * \param targ
  * \param dst
  */
-void ComputeTolerance(Entity * io, EntityHandle targ, float * dst) {
+static void ComputeTolerance(Entity * io, EntityHandle targ, float * dst) {
 	
 	float TOLERANCE = 30.f;
 	
@@ -2584,8 +2584,8 @@ static void ManageNPCMovement(Entity * io)
 	io->lastpos = io->pos;
 }
 
-float AngularDifference(float a1, float a2)
-{
+static float AngularDifference(float a1, float a2) {
+	
 	a1 = MAKEANGLE(a1);
 	a2 = MAKEANGLE(a2);
 
