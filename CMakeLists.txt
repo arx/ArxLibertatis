@@ -437,6 +437,10 @@ if(BUILD_CRASHREPORTER OR BUILD_PROFILER)
 		endif()
 	endif()
 	
+	if(HAVE_QT AND BUILD_PROFILER)
+		set(ARX_HAVE_PROFILER 1)
+	endif()
+	
 	if(ARX_HAVE_CRASHREPORTER)
 		if(HAVE_QT5)
 			set(ARX_HAVE_CRASHREPORTER_QT5 1)
@@ -444,6 +448,7 @@ if(BUILD_CRASHREPORTER OR BUILD_PROFILER)
 			set(ARX_HAVE_CRASHREPORTER_QT4 1)
 		endif()
 	endif()
+	
 endif()
 
 find_package(Doxygen)
@@ -1256,7 +1261,7 @@ if(ARX_HAVE_CRASHREPORTER)
 	
 endif()
 
-if(BUILD_PROFILER)
+if(ARX_HAVE_PROFILER)
 	
 	set(arxprofiler_Qt_SOURCES
 		tools/profiler/ProfilerMain.cpp
