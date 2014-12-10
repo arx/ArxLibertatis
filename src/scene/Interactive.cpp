@@ -754,7 +754,7 @@ void ARX_INTERACTIVE_APPLY_TWEAK_INFO(Entity * io) {
 	}
 }
 
-void ARX_INTERACTIVE_ClearIODynData(Entity * io) {
+static void ARX_INTERACTIVE_ClearIODynData(Entity * io) {
 	
 	if(!io)
 		return;
@@ -768,8 +768,8 @@ void ARX_INTERACTIVE_ClearIODynData(Entity * io) {
 	io->spellcast_data.castingspell = SPELL_NONE;
 }
 
-void ARX_INTERACTIVE_ClearIODynData_II(Entity * io)
-{
+static void ARX_INTERACTIVE_ClearIODynData_II(Entity * io) {
+	
 	if(!io)
 		return;
 	
@@ -2105,8 +2105,8 @@ void SetYlsideDeath(Entity * io) {
 	io->sfx_time = (unsigned long)(arxtime);
 }
 
-bool ARX_INTERACTIVE_CheckFULLCollision(PHYSICS_BOX_DATA * pbox, EntityHandle source)
-{
+bool ARX_INTERACTIVE_CheckFULLCollision(PHYSICS_BOX_DATA * pbox, EntityHandle source) {
+	
 	bool col = false;
 	EntityHandle avoid = EntityHandle::Invalid;
 	Entity * io_source = NULL;
@@ -2408,7 +2408,8 @@ void UpdateIOInvisibility(Entity * io)
 	}
 }
 
-glm::mat4x4 convertToMatrixForDrawEERIEInter(const PHYSICS_BOX_DATA &box) {
+static glm::mat4x4 convertToMatrixForDrawEERIEInter(const PHYSICS_BOX_DATA & box) {
+	
 	Vec3f tmp = box.vert[14].pos - box.vert[13].pos;
 	Vec3f up  = box.vert[2].pos  - box.vert[1].pos;
 	up += box.vert[3].pos  - box.vert[4].pos;
