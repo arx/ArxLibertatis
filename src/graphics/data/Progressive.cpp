@@ -56,7 +56,7 @@ ZeniMax Media Inc., Suite 120, Rockville, Maryland 20850 USA.
 /*!
  * \brief Adds a neighboring vertex to a vertex
  */
-void AddNeighBoringVertex(EERIE_3DOBJ * obj, long i, long b) {
+static void AddNeighBoringVertex(EERIE_3DOBJ * obj, long i, long b) {
 	
 	if(i == b)
 		return;
@@ -81,8 +81,8 @@ void AddNeighBoringVertex(EERIE_3DOBJ * obj, long i, long b) {
 /*!
  * \brief Adds a neighboring face to a vertex
  */
-void AddNeighBoringFace(EERIE_3DOBJ * obj, long i, long b) {
-
+static void AddNeighBoringFace(EERIE_3DOBJ * obj, long i, long b) {
+	
 	if(obj->ndata[i].Nfaces == NULL) {
 		obj->ndata[i].Nfaces = (short *)malloc(sizeof(short));
 		obj->ndata[i].Nfaces[0] = (short)b;
