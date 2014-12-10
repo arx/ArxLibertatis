@@ -78,7 +78,8 @@ void MOLLESS_Clear(EERIE_3DOBJ * obj, long flag) {
 	}
 }
 
-void AddSpring(EERIE_3DOBJ * obj, short vert1, short vert2, float constant, float damping, long type) {
+static void AddSpring(EERIE_3DOBJ * obj, short vert1, short vert2, float constant,
+                      float damping, long type) {
 	
 	if(vert1 == -1 || vert2 == -1 || vert1 == vert2) {
 		return;
@@ -101,7 +102,7 @@ void AddSpring(EERIE_3DOBJ * obj, short vert1, short vert2, float constant, floa
 	obj->cdata->springs.push_back(newSpring);
 }
 
-short GetIDXVert(EERIE_3DOBJ * obj, short num) {
+static short GetIDXVert(EERIE_3DOBJ * obj, short num) {
 
 	for(short i = 0; i < obj->cdata->nb_cvert; i++) {
 		if(obj->cdata->cvert[i].idx == num)
