@@ -548,8 +548,8 @@ TextureContainer * Boom = NULL;
 TextureContainer * arx_logo_tc = NULL;
 
 
-void LoadSysTextures()
-{
+static void LoadSysTextures() {
+	
 	MagicFlareLoadTextures();
 
 	spellDataInit();
@@ -642,8 +642,7 @@ enum LevelNumber {
 
 LevelNumber LEVEL_TO_LOAD = LEVEL10;
 
-void loadLevel(u32 lvl) {
-	
+static void loadLevel(u32 lvl) {
 	if(lvl < NOLEVEL) {
 		if(GameFlow::getTransition() != GameFlow::LoadingScreen) {
 			LEVEL_TO_LOAD = static_cast<LevelNumber>(lvl);
@@ -654,19 +653,18 @@ void loadLevel(u32 lvl) {
 ARX_PROGRAM_OPTION("loadlevel", "", "Load a specific level", &loadLevel, "LEVELID");
 
 extern long LOADQUEST_SLOT;
-void loadSlot(u32 saveSlot) {
-
+static void loadSlot(u32 saveSlot) {
 	LOADQUEST_SLOT = saveSlot;
 	GameFlow::setTransition(GameFlow::InGame);
 }
 ARX_PROGRAM_OPTION("loadslot", "", "Load a specific savegame slot", &loadSlot, "SAVESLOT");
 
-void skipLogo() {
+static void skipLogo() {
 	loadLevel(LEVEL10);
 }
 ARX_PROGRAM_OPTION("skiplogo", "", "Skip logos at startup", &skipLogo);
 
-bool HandleGameFlowTransitions() {
+static bool HandleGameFlowTransitions() {
 	
 	const int TRANSITION_DURATION = 3600;
 	static unsigned long TRANSITION_START = 0;
@@ -1067,7 +1065,7 @@ bool ArxGame::addPaks() {
 	return true;
 }
 
-void ClearSysTextures() {
+static void ClearSysTextures() {
 	for(size_t i = 0; i < SPELL_TYPES_COUNT; i++) {
 		if(!spellicons[i].name.empty())
 			//free(spellicons[i].name);
@@ -1079,7 +1077,7 @@ void ClearSysTextures() {
 	}
 }
 
-void ReleaseSystemObjects() {
+static void ReleaseSystemObjects() {
 	
 	delete hero, hero = NULL;
 	
