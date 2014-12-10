@@ -34,8 +34,8 @@
 #include "platform/Flags.h"
 #include "scene/GameSound.h"
 
-long IsNearSelection(EERIE_3DOBJ * obj, long vert, long tw) {
-
+static long IsNearSelection(EERIE_3DOBJ * obj, long vert, long tw) {
+	
 	if(!obj || tw < 0 || vert < 0)
 		return -1;
 
@@ -55,7 +55,7 @@ long IsNearSelection(EERIE_3DOBJ * obj, long vert, long tw) {
  * \param ioo
  * \param num
  */
-void ARX_NPC_SpawnMember(Entity * ioo, long num) {
+static void ARX_NPC_SpawnMember(Entity * ioo, long num) {
 	
 	if(!ioo)
 		return;
@@ -318,8 +318,8 @@ static short GetCutFlag(const std::string & str) {
 	return 0;
 }
 
-long GetCutSelection(Entity * io, short flag)
-{
+static long GetCutSelection(Entity * io, short flag) {
+	
 	if(!io || !(io->ioflags & IO_NPC) || flag == 0)
 		return -1;
 
@@ -354,8 +354,8 @@ long GetCutSelection(Entity * io, short flag)
 	return -1;
 }
 
-void ReComputeCutFlags(Entity * io)
-{
+static void ReComputeCutFlags(Entity * io) {
+	
 	if(!io || !(io->ioflags & IO_NPC))
 		return;
 
@@ -366,8 +366,8 @@ void ReComputeCutFlags(Entity * io)
 	}
 }
 
-bool IsAlreadyCut(Entity * io, short fl)
-{
+static bool IsAlreadyCut(Entity * io, short fl) {
+	
 	if(io->_npcdata->cuts & fl)
 		return true;
 
@@ -384,8 +384,9 @@ bool IsAlreadyCut(Entity * io, short fl)
 
 	return false;
 }
-long ARX_NPC_ApplyCuts(Entity * io)
-{
+
+static long ARX_NPC_ApplyCuts(Entity * io) {
+	
 	if(!io || !(io->ioflags & IO_NPC))
 		return 0;
 
