@@ -75,9 +75,10 @@ Getting all the dependencies set up for Windows is more tricky. Pre-build depend
 
 * `BUILD_TOOLS` (default=ON): Build tools
 * `BUILD_CRASHREPORTER` (default=ON): Build the Qt crash reporter gui (default OFF for Mac)
+* `BUILD_PROFILER` (default=ON): Build the Qt profiler gui 
 * `UNITY_BUILD` (default=OFF): Unity build (faster build, better optimizations but no incremental build)
 * `CMAKE_BUILD_TYPE` (default=Release): Set to `Debug` for debug binaries
-* `DEBUG` (default=OFF): Enable debug output and runtime checks.(Enabled automatically if `CMAKE_BUILD_TYPE` is set to `Debug`.)
+* `DEBUG` (default=OFF): Enable debug output and runtime checks. (Enabled automatically if `CMAKE_BUILD_TYPE` is set to `Debug`.)
 * `DEBUG_EXTRA` (default=OFF): Expensive debug options
 
 
@@ -102,7 +103,7 @@ Where arx will look for data files and write config and save files depends on th
 
 The game will try to rename all used files in the user directory (but not the data directory) to lowercase on the first run. System-wide installations with case-sensitive filesystems always need to manually rename the files to lowercase - this is done automatically by the `arx-install-data` script.
 
-To print all directories searched by arx on Linux, run
+To print all directories searched by arx, run
 
     $ arx --list-dirs
 
@@ -125,7 +126,7 @@ By default, user, config and data files will be loaded from and saved to standar
 
 Arx will also try to load data files from the directory containing the game executable.
 
-To use the current working directory for user, config and data files (e.g. for a portable install) run the game on Linux as
+To use the current working directory for user, config and data files (e.g. for a portable install) run the game as
 
     $ arx --no-data-dir --user-dir=. --config-dir=.
 
@@ -135,7 +136,7 @@ Provided the data files are installed at the correct location, you can simply pl
 
     $ arx
 
-Or run the `arx.exe` on Windows.
+Or On Windows, simply double-click the arx.exe file
 See the `arx --help` and `man arx` output for more details.
 
 ## Tools
@@ -167,10 +168,10 @@ More options and required tools (depending on the source file) are documented in
 
 ## Developer information
 
-To build developer documentation (requires [Doxygen](http://www.stack.nl/~dimitri/doxygen/download.html)), run this from the build directory:
+To build developer documentation (requires [Doxygen), run this from the build directory:
 
     $ make doc
 
-To check for coding style problems, run the following: (requires [Python](https://www.python.org/downloads/))
+To check for coding style problems, run the following: (requires [Python])
 
     $ make style
