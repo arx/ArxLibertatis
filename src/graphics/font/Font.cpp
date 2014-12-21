@@ -152,7 +152,7 @@ bool Font::insertGlyph(Char character) {
 		imgGlyph.Create(glyph.size.x, glyph.size.y, Image::Format_A8);
 		
 		FT_Bitmap * srcBitmap = &face->glyph->bitmap;
-		arx_assert(srcBitmap->pitch == srcBitmap->width);
+		arx_assert(unsigned(srcBitmap->pitch) == srcBitmap->width);
 		
 		// Copy pixels
 		unsigned char * src = srcBitmap->buffer;
