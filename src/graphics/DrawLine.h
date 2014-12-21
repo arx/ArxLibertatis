@@ -28,6 +28,9 @@
 void EERIEDrawFill2DRectDegrad(float x0, float y0, float x1, float y1, float z, Color cold, Color cole);
 
 void drawLine2D(float x0, float y0, float x1, float y1, float z, Color col);
+inline void drawLine2D(Vec2f p0, Vec2f p1, float z, Color col) {
+	drawLine2D(p0.x, p0.y, p1.x, p1.y, z, col);
+}
 void drawLine(const Vec3f & orgn, const Vec3f & dest, Color col, float zbias = 0.f);
 void drawLine(const Vec3f & orgn, const Vec3f & dest, Color color1, Color color2, float zbias = 0.f);
 void drawLineRectangle(const Rectf & rect, float z, Color col);
