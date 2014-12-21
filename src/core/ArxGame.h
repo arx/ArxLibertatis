@@ -140,5 +140,7 @@ enum InfoPanels {
 
 extern InfoPanels g_debugInfo;
 
+extern TextureContainer * enviro;
+
 #endif // ARX_CORE_ARXGAME_H
 

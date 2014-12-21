@@ -53,6 +53,7 @@ ZeniMax Media Inc., Suite 120, Rockville, Maryland 20850 USA.
 #include "animation/AnimationRender.h"
 
 #include "core/Application.h"
+#include "core/ArxGame.h"
 #include "core/GameTime.h"
 #include "core/Core.h"
 
@@ -88,7 +89,6 @@ ZeniMax Media Inc., Suite 120, Rockville, Maryland 20850 USA.
 #include "platform/profiler/Profiler.h"
 
 
-extern TextureContainer *enviro;
 extern Color ulBKGColor;
 extern bool EXTERNALVIEW; // *sigh*
 

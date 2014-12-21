@@ -52,8 +52,6 @@ ZeniMax Media Inc., Suite 120, Rockville, Maryland 20850 USA.
 #include "graphics/data/TextureContainer.h"
 #include "graphics/data/Mesh.h"
 
-extern TextureContainer * enviro;
-
 CircularVertexBuffer<TexturedVertex> * pDynamicVertexBuffer_TLVERTEX;
 
 void EERIEDRAWPRIM(Renderer::Primitive primitive, const TexturedVertex * vertices, size_t count, bool nocount) {

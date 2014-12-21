@@ -21,19 +21,14 @@
 
 #include <sstream>
 
-#include "core/Core.h"
+#include "ai/Paths.h"
+
 #include "animation/AnimationRender.h"
 
-#include "graphics/Math.h"
-#include "graphics/Draw.h"
-#include "graphics/DrawLine.h"
-#include "graphics/particle/ParticleEffects.h"
+#include "core/Core.h"
+#include "core/ArxGame.h"
 
-#include "gui/Interface.h"
-#include "gui/Text.h"
-
-#include "scene/Object.h"
-#include "graphics/data/TextureContainer.h"
+#include "font/Font.h"
 
 #include "game/Entity.h"
 #include "game/EntityManager.h"
@@ -41,13 +36,27 @@
 #include "game/NPC.h"
 #include "game/Player.h"
 
-#include "ai/Paths.h"
-#include "font/Font.h"
+#include "graphics/Draw.h"
+#include "graphics/DrawLine.h"
+#include "graphics/Math.h"
+#include "graphics/data/TextureContainer.h"
 #include "graphics/effects/Fog.h"
-#include "scene/Interactive.h"
-#include "scene/Light.h"
+#include "graphics/particle/ParticleEffects.h"
+#include "graphics/texture/Texture.h"
+
+#include "gui/Interface.h"
+#include "gui/Text.h"
+
+#include "input/Input.h"
+
+#include "math/Vector.h"
+
 #include "physics/Anchors.h"
 #include "physics/Collisions.h"
+
+#include "scene/Interactive.h"
+#include "scene/Light.h"
+#include "scene/Object.h"
 
 extern bool EXTERNALVIEW; // *sigh*
 
@@ -80,6 +89,7 @@ enum DebugViewType {
 	DebugView_Fogs,
 	DebugView_CollisionShapes,
 	DebugView_Portals,
+	DebugView_Materials,
 	DebugViewCount
 };
 
@@ -506,6 +516,330 @@ static void drawDebugEntities() {
 	
 }
 
+/*!
+ * Check if \ref p is in the 2D-triangle defined by the x an y components of
+ * \ref a, \ref b and \ref c - and if so, interpolate the z components for
+ * p's position in the triangle.
+ * \return the interpolated z position, or \c -1 if p is not in the triangle.
+ */
+static float pointInTriangle(Vec2f p, Vec3f a, Vec3f b, Vec3f c) {
+	
+	Vec3f d0 = c - a, d1 = b - a;
+	Vec2f v0 = Vec2f(d0.x, d0.y), v1 = Vec2f(d1.x, d1.y);
+	Vec2f v2 = p - Vec2f(a.x, a.y);
+	
+	float dot00 = glm::dot(v0, v0);
+	float dot01 = glm::dot(v0, v1);
+	float dot02 = glm::dot(v0, v2);
+	float dot11 = glm::dot(v1, v1);
+	float dot12 = glm::dot(v1, v2);
+	
+	float scale = 1 / (dot00 * dot11 - dot01 * dot01);
+	float u = (dot11 * dot02 - dot01 * dot12) * scale;
+	float v = (dot00 * dot12 - dot01 * dot02) * scale;
+	
+	if(u >= 0 && v >= 0 && u + v < 1) {
+		return a.z + d0.z * u + d1.z * v;
+	} else {
+		return -1.f;
+	}
+}
+
+static void drawDebugMaterialTexture(Vec2f & textpos, const std::string & type,
+                                     const Texture2D & t, Color color) {
+	
+	const std::string & name = t.getFileName().string();
+	
+	std::ostringstream oss;
+	oss << "(" << t.GetFormat() << ", " << t.getSize().x << "×" << t.getSize().y;
+	if(t.getStoredSize() != t.getSize()) {
+		oss << " [" << t.getStoredSize().x << "×" << t.getStoredSize().y << "]";
+	}
+	if(t.hasMipmaps()) {
+		oss << " + mip";
+	}
+	oss << ")";
+	std::string format = oss.str();
+	
+	float type_s = hFontDebug->getTextSize(type).x + 10;
+	float name_s = hFontDebug->getTextSize(name).x + 10;
+	float format_s = hFontDebug->getTextSize(format).x;
+	
+	Vec2i pos = Vec2i(textpos);
+	pos.x -= (type_s + name_s + format_s) * 0.5f;
+	if(pos.x < g_size.left + 5) {
+		pos.x = g_size.left + 5;
+	} else if(pos.x + type_s + name_s + format_s > g_size.right - 5) {
+		pos.x = g_size.right - 5 - (type_s + name_s + format_s);
+	}
+	
+	hFontDebug->draw(pos + Vec2i_ONE, type, Color::black);
+	hFontDebug->draw(pos, type, color);
+	pos.x += type_s;
+	
+	hFontDebug->draw(pos + Vec2i_ONE, name, Color::black);
+	hFontDebug->draw(pos, name, Color::white);
+	pos.x += name_s;
+	
+	hFontDebug->draw(pos + Vec2i_ONE, format, Color::black);
+	hFontDebug->draw(pos, format, Color::gray(0.7f));
+	
+	textpos.y += hFontDebug->getLineHeight();
+}
+
+static void drawDebugMaterials() {
+	
+	if(!ACTIVEBKG || !ACTIVEBKG->exist) {
+		return;
+	}
+	
+	PolyType skip = POLY_NODRAW | POLY_HIDE;
+	if(GInput->isKeyPressed(Keyboard::Key_LeftShift)) {
+		skip |= POLY_TRANS | POLY_WATER;
+	}
+	
+	Vec2f point(DANAEMouse);
+	
+	Entity * owner = GetFirstInterAtPos(Vec2s(point));
+	TextureContainer * material = NULL;
+	size_t count = 0;
+	Vec2f pp[4];
+	Vec2f puv[4];
+	PolyType flags;
+	
+	float minz = std::numeric_limits<float>::max();
+	
+	for(size_t k = 1; k < entities.size(); k++) {
+		
+		EntityHandle h = EntityHandle(k);
+		if(!entities[h] || !entities[h]->obj) {
+			continue;
+		}
+		Entity * entity = entities[h];
+		
+		if((entity->ioflags & IO_CAMERA) || (entity->ioflags & IO_MARKER))
+			continue;
+		
+		if(!(entity->gameFlags & GFLAG_ISINTREATZONE))
+			continue;
+		if((entity->gameFlags & GFLAG_INVISIBILITY))
+			continue;
+		if((entity->gameFlags & GFLAG_MEGAHIDE))
+			continue;
+		
+		switch(entity->show) {
+			case SHOW_FLAG_DESTROYED:    continue;
+			case SHOW_FLAG_IN_INVENTORY: continue;
+			case SHOW_FLAG_ON_PLAYER:    continue;
+			case SHOW_FLAG_LINKED:       break;
+			case SHOW_FLAG_NOT_DRAWN:    continue;
+			case SHOW_FLAG_HIDDEN:       continue;
+			case SHOW_FLAG_MEGAHIDE:     continue;
+			case SHOW_FLAG_KILLED:       continue;
+			case SHOW_FLAG_IN_SCENE:     break;
+			case SHOW_FLAG_TELEPORTING:  break;
+		}
+		
+		if(!entity->bbox2D.valid()) {
+			continue;
+		}
+		
+		for(size_t j = 0; j < entity->obj->facelist.size(); j++) {
+			const EERIE_FACE & face = entity->obj->facelist[j];
+			
+			if(face.facetype & skip) {
+				continue;
+			}
+			
+			bool valid = true;
+			bool bvalid = false;
+			Vec3f p[3];
+			Vec2f uv[3];
+			for(size_t i = 0; i < 3; i++) {
+				unsigned short v = face.vid[i];
+				valid = valid && v < entity->obj->vertexlist3.size();
+				if(valid) {
+					if(entity->animlayer[0].cur_anim) {
+						p[i] = entity->obj->vertexlist3[v].vert.p;
+						uv[i] = entity->obj->vertexlist3[v].vert.uv;
+					} else {
+						p[i] = entity->obj->vertexlist[v].vert.p;
+						uv[i] = entity->obj->vertexlist[v].vert.uv;
+					}
+					valid = valid && (p[i].z > 0.000001f);
+					bvalid = bvalid || (p[i].x >= g_size.left && p[i].x < g_size.right
+					                 && p[i].y >= g_size.top && p[i].y < g_size.bottom);
+				}
+			}
+			
+			if(!valid || !bvalid) {
+				continue;
+			}
+			
+			float z = pointInTriangle(point, p[0], p[1], p[2]);
+			
+			if(z > 0 && z <= minz) {
+				count = 3;
+				for(size_t i = 0; i < count; i++) {
+					pp[i] = Vec2f(p[i].x, p[i].y);
+					puv[i] = uv[i];
+				}
+				if(face.texid >= 0 && size_t(face.texid) < entity->obj->texturecontainer.size()) {
+					material = entity->obj->texturecontainer[face.texid];
+				} else {
+					material = NULL;
+				}
+				owner = entity;
+				minz = z;
+				flags = face.facetype & ~(POLY_WATER | POLY_LAVA);
+			}
+			
+		}
+	}
+	
+	for(short z = 0; z < ACTIVEBKG->Zsize; z++)
+	for(short x = 0; x < ACTIVEBKG->Xsize; x++) {
+		const EERIE_BKG_INFO & feg = ACTIVEBKG->fastdata[x][z];
+		
+		if(!feg.treat) {
+			continue;
+		}
+		
+		for(long l = 0; l < feg.nbpolyin; l++) {
+			EERIEPOLY * ep = feg.polyin[l];
+			
+			if(!ep) {
+				continue;
+			}
+			
+			if(ep->type & skip) {
+				continue;
+			}
+			
+			bool valid = true;
+			bool bvalid = false;
+			Vec3f p[4];
+			for(size_t i = 0; i < ((ep->type & POLY_QUAD) ? 4 : 3); i++) {
+				TexturedVertex tv;
+				tv.p = EE_RT(ep->v[i].p);
+				valid = valid && (tv.p.z > 0.000001f);
+				EE_P(&tv.p, &tv);
+				bvalid = bvalid || (tv.p.x >= g_size.left && tv.p.x < g_size.right
+				                 && tv.p.y >= g_size.top && tv.p.y < g_size.bottom);
+				p[i] = tv.p;
+			}
+			
+			if(!valid || !bvalid) {
+				continue;
+			}
+			
+			float z = pointInTriangle(point, p[0], p[1], p[2]);
+			if(z <= 0 && (ep->type & POLY_QUAD)) {
+				z = pointInTriangle(point, p[1], p[3], p[2]);
+			}
+			
+			if(z > 0 && z <= minz) {
+				count = ((ep->type & POLY_QUAD) ? 4 : 3);
+				for(size_t i = 0; i < count; i++) {
+					pp[i] = Vec2f(p[i].x, p[i].y);
+					puv[i] = ep->v[i].uv;
+				}
+				material = ep->tex;
+				owner = NULL;
+				minz = z;
+				flags = ep->type;
+			}
+			
+		}
+	}
+	
+	if(count) {
+		
+		GRenderer->SetRenderState(Renderer::DepthTest, false);
+		
+		drawLine2D(pp[0], pp[1], 0.1f, Color::magenta);
+		drawLine2D(pp[2], pp[0], 0.1f, Color::magenta);
+		if(count == 4) {
+			drawLine2D(pp[2], pp[3], 0.1f, Color::magenta);
+			drawLine2D(pp[3], pp[1], 0.1f, Color::magenta);
+		} else {
+			drawLine2D(pp[1], pp[2], 0.1f, Color::magenta);
+		}
+		
+		Vec2f c = Vec2f(0.f);
+		float miny = std::numeric_limits<float>::max();
+		float maxy = std::numeric_limits<float>::min();
+		for(size_t i = 0; i < count; i++) {
+			c += pp[i];
+			miny = std::min(miny, pp[i].y);
+			maxy = std::max(maxy, pp[i].y);
+		}
+		c *= 1.f / count;
+		
+		Vec2f textpos(c.x, miny - 2 * hFontDebug->getLineHeight());
+		
+		std::ostringstream oss;
+		
+		if(owner) {
+			textpos.y -= hFontDebug->getLineHeight();
+		}
+		if(material && material->m_pTexture) {
+			textpos.y -= hFontDebug->getLineHeight();
+		}
+		if((flags & (POLY_WATER | POLY_LAVA)) && enviro && enviro->m_pTexture) {
+			textpos.y -= hFontDebug->getLineHeight();
+		}
+		if(textpos.y < g_size.top + 5) {
+			textpos.y = maxy + 2 * hFontDebug->getLineHeight();
+		}
+		
+		
+		if(owner) {
+			drawTextCentered(hFontDebug, textpos, owner->idString(), Color::cyan);
+			textpos.y += hFontDebug->getLineHeight();
+		}
+		if(material && material->m_pTexture) {
+			drawDebugMaterialTexture(textpos, "Diffuse: ", *material->m_pTexture, Color::green);
+		}
+		if((flags & (POLY_WATER | POLY_LAVA)) && enviro && enviro->m_pTexture) {
+			oss.str(std::string());
+			oss << "Animation: ";
+			oss << ((flags & (POLY_LAVA)) ? "lava" : "water");
+			if(flags & POLY_FALL) {
+				oss << " (flowing)";
+			}
+			drawDebugMaterialTexture(textpos, oss.str(), *enviro->m_pTexture, Color::yellow);
+		}
+		
+		(void)textpos;
+		
+		for(size_t i = 0; i < count; i++) {
+			
+			oss.str(std::string());
+			oss.setf(std::ios_base::fixed, std::ios_base::floatfield);
+			oss.precision(2);
+			oss << '(' << puv[i].x << ',' << puv[i].y << ')';
+			std::string text = oss.str();
+			
+			Vec2f textpos = pp[i];
+			if(pp[i].y < c.y) {
+				textpos.y -= hFontDebug->getLineHeight();
+			}
+			
+			if(pp[i].x < c.x) {
+				Vec2i size = hFontDebug->getTextSize(text);
+				textpos.x -= size.x;
+			}
+			
+			hFontDebug->draw(textpos.x, textpos.y, text, Color::gray(0.7f));
+		}
+		
+		GRenderer->SetRenderState(Renderer::DepthTest, true);
+		
+	}
+	
+}
+
 void drawDebugRender() {
 	
 	if(g_debugView == DebugView_None) {
@@ -549,6 +883,11 @@ void drawDebugRender() {
 		case DebugView_Portals: {
 			ss << "Portals";
 			drawDebugPortals();
+			break;
+		}
+		case DebugView_Materials: {
+			ss << "Materials";
+			drawDebugMaterials();
 			break;
 		}
 		default: return;

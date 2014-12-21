@@ -1186,3 +1186,19 @@ bool Image::save(const fs::path & filename) const {
 	
 	return ret != 0;
 }
+
+std::ostream & operator<<(std::ostream & os, Image::Format format) {
+	switch(format) {
+		case Image::Format_L8: return os << "L";
+		case Image::Format_A8: return os << "A";
+		case Image::Format_L8A8: return os << "LA";
+		case Image::Format_R8G8B8: return os << "RGB";
+		case Image::Format_B8G8R8: return os << "BGR";
+		case Image::Format_R8G8B8A8: return os << "RGBA";
+		case Image::Format_B8G8R8A8: return os << "BGRA";
+		case Image::Format_DXT1: return os << "DXT1";
+		case Image::Format_DXT3: return os << "DXT3";
+		case Image::Format_DXT5: return os << "DXT5";
+		default: return os << "(invalid)";
+	}
+}

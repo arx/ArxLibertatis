@@ -20,6 +20,8 @@
 #ifndef ARX_GRAPHICS_IMAGE_IMAGE_H
 #define ARX_GRAPHICS_IMAGE_IMAGE_H
 
+#include <ostream>
+
 #include "graphics/Color.h"
 
 namespace fs { class path; }
@@ -157,5 +159,7 @@ private:
 	unsigned int mDataSize; //!< Size of image buffer.
 	
 };
+
+std::ostream & operator<<(std::ostream & os, Image::Format format);
 
 #endif // ARX_GRAPHICS_IMAGE_IMAGE_H
