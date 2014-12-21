@@ -880,6 +880,7 @@ static void RenderWater() {
 	
 	GRenderer->SetBlendFunc(Renderer::BlendDstColor, Renderer::BlendOne);
 	GRenderer->SetTexture(0, enviro);
+	GRenderer->SetTexture(1, enviro);
 	GRenderer->SetTexture(2, enviro);
 	
 	unsigned short * indices = dynamicVertices.indices;
@@ -985,6 +986,7 @@ static void RenderLava() {
 	
 	GRenderer->SetBlendFunc(Renderer::BlendDstColor, Renderer::BlendOne);
 	GRenderer->SetTexture(0, enviro);
+	GRenderer->SetTexture(1, enviro);
 	GRenderer->SetTexture(2, enviro);
 	
 	unsigned short * indices = dynamicVertices.indices;
