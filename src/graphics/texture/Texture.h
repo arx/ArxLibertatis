@@ -81,7 +81,7 @@ public:
 	bool Restore();
 	
 	inline Image & GetImage() { return mImage; }
-	inline const res::path & getFileName() { return mFileName; }
+	inline const res::path & getFileName() const { return mFileName; }
 	
 protected:
 	
