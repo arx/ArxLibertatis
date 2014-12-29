@@ -40,6 +40,15 @@ class SavedAnglef(LittleEndianStructure):
         ("g", c_float)
     ]
 
+class ArxQuat(LittleEndianStructure):
+    _pack_ = 1
+    _fields_ = [
+        ("w", c_float),
+        ("x", c_float),
+        ("y", c_float),
+        ("z", c_float)
+    ]
+
 class SavedColor(LittleEndianStructure):
     _pack_ = 1
     _fields_ = [

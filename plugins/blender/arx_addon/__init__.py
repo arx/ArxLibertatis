@@ -44,6 +44,8 @@ if "dataFts" in locals():
     imp.reload(dataFts)
 if "dataLlf" in locals():
     imp.reload(dataLlf)
+if "dataTea" in locals():
+    imp.reload(dataTea)
 
 if "lib" in locals():
     imp.reload(lib)
@@ -436,6 +438,39 @@ class ArxScenesPanel(bpy.types.Panel):
         layout.operator("arx.update_scene_list")
         layout.operator("arx.import_selected_scene")
 
+# ============= Operators
+
+from bpy_extras.io_utils import (
+    ExportHelper,
+    ImportHelper,
+    path_reference_mode
+)
+
+class ImportTea(bpy.types.Operator, ImportHelper):
+    """Load a Tea animation file"""
+    bl_idname = "arx.import_tea"
+    bl_label = "Import Tea animation"
+    bl_options = {'REGISTER', 'UNDO'}
+    
+    filename_ext = ".tea"
+    filter_glob = StringProperty(default="*.tea", options={'HIDDEN'})
+    check_extension = True
+    path_mode = path_reference_mode
+    
+    def execute(self, context):
+        from .dataTea import TeaSerializer
+        
+        serializer = TeaSerializer()
+        data = serializer.read(self.filepath)
+        
+        # TODO implement skeleton loading here
+        
+        return {'FINISHED'}
+        
+def menu_func_import(self, context):
+    self.layout.operator(ImportTea.bl_idname, text="Tea animation (.tea)")
+
+# ============= Registration
 
 def register():
     bpy.utils.register_class(ArxAddonPreferences)
@@ -444,8 +479,11 @@ def register():
     bpy.utils.register_class(ArxScenesImportSelected)
     bpy.utils.register_class(ArxScenesPanel)
     
-    bpy.utils.register_class(ArxFacePanel)
-
+    #bpy.utils.register_class(ArxFacePanel)
+    
+    bpy.utils.register_class(ImportTea)
+    bpy.types.INFO_MT_file_import.append(menu_func_import)
+    
 def unregister():
     bpy.utils.unregister_class(ArxAddonPreferences)
     
@@ -453,7 +491,10 @@ def unregister():
     bpy.utils.unregister_class(ArxScenesImportSelected)
     bpy.utils.unregister_class(ArxScenesPanel)
     
-    bpy.utils.unregister_class(ArxFacePanel)
+    #bpy.utils.unregister_class(ArxFacePanel)
+    
+    bpy.utils.unregister_class(ImportTea)
+    bpy.types.INFO_MT_file_import.remove(menu_func_import)
 
 if __name__ == "__main__":
     register()
