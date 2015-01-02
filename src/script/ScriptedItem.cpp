@@ -362,7 +362,8 @@ public:
 		Entity * entity = context.getEntity();
 		
 		if(entity->ioflags & IO_ITEM) {
-			player.hunger += std::min(entity->_itemdata->food_value * 4.f, 100.f);
+			player.hunger += entity->_itemdata->food_value * 4.f;
+			player.hunger = std::min(player.hunger, 100.f);
 		}
 		
 		ARX_INTERACTIVE_DestroyIOdelayed(entity);
