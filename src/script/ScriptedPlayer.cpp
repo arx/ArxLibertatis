@@ -287,6 +287,7 @@ public:
 	Result execute(Context & context) {
 		
 		player.hunger = context.getFloat();
+		player.hunger = std::min(player.hunger, 100.f);
 		
 		DebugScript(' ' << player.hunger);
 		
