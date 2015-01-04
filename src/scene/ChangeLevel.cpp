@@ -1708,7 +1708,8 @@ static long ARX_CHANGELEVEL_Pop_Player() {
 	
 	player.physics = asp->physics;
 	player.poison = asp->poison;
-	player.hunger = asp->hunger;
+	player.hunger = std::min(asp->hunger, 100.f);
+	
 	player.pos = asp->pos.toVec3();
 	
 	if(asp->sp_flags & SP_ARM1) {
