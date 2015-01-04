@@ -67,7 +67,9 @@ void GLTexture2D::Upload() {
 	
 	GLint internal;
 	GLenum format;
-	if(mFormat == Image::Format_L8) {
+	if(flags & Intensity) {
+		internal = GL_INTENSITY8, format = GL_RED;
+	} else if(mFormat == Image::Format_L8) {
 		internal = GL_LUMINANCE8, format = GL_LUMINANCE;
 	} else if(mFormat == Image::Format_A8) {
 		internal = GL_ALPHA8, format = GL_ALPHA;

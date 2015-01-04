@@ -311,7 +311,7 @@ void ARXDRAW_DrawPolyBoom()
 			float div = 1.f / (float)pb->tolive;
 			float tt = t * div;
 			float tr = std::max(1.f, tt * 2 - 0.5f);
-			ColorRGBA col = (pb->rgb * tt * 0.8f).toRGB();
+			ColorRGBA col = (pb->rgb * tt).toRGB(glm::clamp(tt * 1.5f, 0.f, 1.f) * 255);
 			
 			IncrementPolyWithNormalOutput(pb->ep, ltv);
 			

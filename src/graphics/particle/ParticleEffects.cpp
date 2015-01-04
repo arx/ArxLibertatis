@@ -810,13 +810,15 @@ void ARX_PARTICLES_FirstInit() {
 	// TODO bloodsplat and water_splat cannot use mipmapping because they need a constant color border pixel
 	// this may also apply to other textures
 	
-	bloodsplat[0] = TextureContainer::Load("graph/particles/new_blood", TextureContainer::NoMipmap);
-	bloodsplat[1] = TextureContainer::Load("graph/particles/new_blood_splat1", TextureContainer::NoMipmap);
-	bloodsplat[2] = TextureContainer::Load("graph/particles/new_blood_splat2", TextureContainer::NoMipmap);
-	bloodsplat[3] = TextureContainer::Load("graph/particles/new_blood_splat3", TextureContainer::NoMipmap);
-	bloodsplat[4] = TextureContainer::Load("graph/particles/new_blood_splat4", TextureContainer::NoMipmap);
-	bloodsplat[5] = TextureContainer::Load("graph/particles/new_blood_splat5", TextureContainer::NoMipmap);
-	blood_splat = TextureContainer::LoadUI("graph/particles/new_blood2", TextureContainer::NoMipmap);
+	TextureContainer::TCFlags flags = TextureContainer::NoMipmap;
+	flags |= TextureContainer::NoColorKey | TextureContainer::Intensity;
+	bloodsplat[0] = TextureContainer::Load("graph/particles/new_blood", flags);
+	bloodsplat[1] = TextureContainer::Load("graph/particles/new_blood_splat1", flags);
+	bloodsplat[2] = TextureContainer::Load("graph/particles/new_blood_splat2", flags);
+	bloodsplat[3] = TextureContainer::Load("graph/particles/new_blood_splat3", flags);
+	bloodsplat[4] = TextureContainer::Load("graph/particles/new_blood_splat4", flags);
+	bloodsplat[5] = TextureContainer::Load("graph/particles/new_blood_splat5", flags);
+	blood_splat = TextureContainer::Load("graph/particles/new_blood2", flags);
 	
 	water_splat[0] = TextureContainer::Load("graph/particles/[fx]_water01", TextureContainer::NoMipmap);
 	water_splat[1] = TextureContainer::Load("graph/particles/[fx]_water02", TextureContainer::NoMipmap);
@@ -1256,7 +1258,7 @@ void ARX_PARTICLES_Update(EERIE_CAMERA * cam)  {
 		
 		if(part->special & PARTICLE_SUB2) {
 			mat.setBlendType(RenderMaterial::Subtractive2);
-			color = color * 0.8f;
+			color.a = glm::clamp(r * 1.5f, 0.f, 1.f) * 255;
 		} else if(part->special & NO_TRANS) {
 			mat.setBlendType(RenderMaterial::Opaque);
 		} else if(part->special & SUBSTRACT) {

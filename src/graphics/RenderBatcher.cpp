@@ -59,6 +59,7 @@ void RenderBatcher::render() {
 		if(!it->second.empty()) {
 			it->first.apply();
 			m_VertexBuffer->draw(Renderer::TriangleList, &it->second.front(), it->second.size());
+			GRenderer->GetTextureStage(0)->setAlphaOp(TextureStage::OpSelectArg1);
 		}
 	}
 
@@ -198,14 +199,8 @@ void RenderMaterial::apply() const {
 			break;
 		
 		case Subtractive2:
-			/*
-			 * TODO This is a special blend mode used for blood splatter.
-			 * Originally, the BlendInvSrcColor didn't take the vertex color into account,
-			 * only the texture sample, so this efact isn't exactly the same.
-			 * It still gives a better result than applying all adds and the  all subtracts.
-			 * In the future we may want to implement this correctly in a shader.
-			 */
-			GRenderer->SetBlendFunc(Renderer::BlendInvSrcColor, Renderer::BlendInvSrcColor);
+			GRenderer->GetTextureStage(0)->setAlphaOp(TextureStage::OpModulate);
+			GRenderer->SetBlendFunc(Renderer::BlendInvSrcAlpha, Renderer::BlendInvSrcAlpha);
 			break;
 		
 		default:

@@ -218,6 +218,10 @@ bool TextureContainer::LoadFile(const res::path & strPathname) {
 		flags |= Texture::HasMipmaps;
 	}
 	
+	if(m_dwFlags & Intensity) {
+		flags |= Texture::Intensity;
+	}
+	
 	if(!m_pTexture->Init(tempPath, flags)) {
 		LogError << "Error creating texture " << tempPath;
 		return false;
