@@ -321,7 +321,7 @@ static void drawDebugPathFinding() {
 			continue;
 		}
 		
-		// Draw visited nodes yello and target nodes as red
+		// Draw visited nodes yellow and target nodes as red
 		for(long j = 1; j < pathfind.listnb; j++) {
 			short k0 = pathfind.list[j - 1], k1 = pathfind.list[j];
 			if(k0 >= 0 && k0 < ACTIVEBKG->nbanchors && k1 >= 0 && k1 < ACTIVEBKG->nbanchors) {
