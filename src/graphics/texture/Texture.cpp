@@ -51,14 +51,20 @@ bool Texture2D::Restore() {
 	bool bRestored = false;
 
 	if(!mFileName.empty()) {
+		
 		mImage.LoadFromFile(mFileName);
-
+		
 		if((flags & HasColorKey) && !mImage.HasAlpha()) {
 			mImage.ApplyColorKeyToAlpha();
 			if(!mImage.HasAlpha()) {
 				flags &= ~HasColorKey;
 			}
 		}
+		
+		if(flags & Intensity) {
+			mImage.ToGrayscale();
+		}
+		
 	}
 
 	if(mImage.IsValid()) {

@@ -87,7 +87,8 @@ public:
 		NoMipmap     = (1<<0),
 		NoInsert     = (1<<1),
 		Level        = (1<<2),
-		NoColorKey   = (1<<3)
+		NoColorKey   = (1<<3),
+		Intensity    = (1<<4),
 	};
 	
 	DECLARE_FLAGS(TCFlag, TCFlags)

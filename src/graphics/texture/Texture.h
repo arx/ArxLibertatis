@@ -31,7 +31,8 @@ public:
 	
 	enum TextureFlag {
 		HasMipmaps  = (1<<0),
-		HasColorKey = (1<<1)
+		HasColorKey = (1<<1),
+		Intensity   = (1<<2),
 	};
 	DECLARE_FLAGS(TextureFlag, TextureFlags)
 	
