@@ -2225,7 +2225,6 @@ void ArxGame::drawAllInterface() {
 	screenArrows.update();
 	
 	changeLevelIconGui.update(Rectf(g_size));
-	memorizedRunesHud.update(changeLevelIconGui.rect());
 	
 	quickSaveIconGui.update();
 	
@@ -2306,6 +2305,7 @@ void ArxGame::drawAllInterface() {
 		ARX_INTERFACE_ManageOpenedBook_Finish();
 	}
 	
+	memorizedRunesHud.update(changeLevelIconGui.rect());
 	if(CurrSpellSymbol || player.SpellToMemorize.bSpell) {
 		memorizedRunesHud.draw();
 	}
