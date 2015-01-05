@@ -1427,8 +1427,6 @@ public:
 		GRenderer->SetRenderState(Renderer::AlphaBlending, true);
 		GRenderer->SetBlendFunc(Renderer::BlendSrcColor, Renderer::BlendOne);
 		
-		Vec2f size = Vec2f(tex->size());
-		EERIEDrawBitmap2(Rectf(Vec2f(0, 0), size.x, size.y), 0.f, m_tex, Color::gray(alpha));
 		EERIEDrawBitmap2(m_rect, 0.f, m_tex, Color::gray(alpha));
 		
 		GRenderer->SetRenderState(Renderer::AlphaBlending, false);
