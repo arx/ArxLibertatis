@@ -682,7 +682,6 @@ set(GAME_SOURCES
 	src/game/Inventory.cpp
 	src/game/Item.cpp
 	src/game/Levels.cpp
-	src/game/Map.cpp
 	src/game/Missile.cpp
 	src/game/NPC.cpp
 	src/game/Player.cpp
