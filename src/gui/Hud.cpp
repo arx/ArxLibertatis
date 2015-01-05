@@ -22,6 +22,8 @@
 #include <iomanip>
 #include <sstream>
 
+#include <boost/array.hpp>
+
 #include "core/Application.h"
 #include "core/ArxGame.h"
 #include "core/Config.h"
@@ -2028,11 +2030,18 @@ ActiveSpellsGui activeSpellsGui = ActiveSpellsGui();
  */
 class DamagedEquipmentGui : public HudItem {
 private:
+	/*!
+	 * Stores information for displaying damaged equipment for a particular equipment slot.
+	 */
+	struct DamagedSlotGui {
+		TextureContainer * icon;
+		Color color;
+		EquipmentSlot slot;
+	};
+	
+	typedef boost::array<DamagedSlotGui, 5> EquipmentArray;
+	EquipmentArray m_equipment;
 	Vec2f m_size;
-	
-	TextureContainer * iconequip[5];
-	
-	Color m_colors[5];
 	
 public:
 	DamagedEquipmentGui()
@@ -2041,16 +2050,21 @@ public:
 	{}
 	
 	void init() {
-		iconequip[0] = TextureContainer::LoadUI("graph/interface/icons/equipment_sword");
-		iconequip[1] = TextureContainer::LoadUI("graph/interface/icons/equipment_shield");
-		iconequip[2] = TextureContainer::LoadUI("graph/interface/icons/equipment_helm");
-		iconequip[3] = TextureContainer::LoadUI("graph/interface/icons/equipment_chest");
-		iconequip[4] = TextureContainer::LoadUI("graph/interface/icons/equipment_leggings");
-		arx_assert(iconequip[0]);
-		arx_assert(iconequip[1]);
-		arx_assert(iconequip[2]);
-		arx_assert(iconequip[3]);
-		arx_assert(iconequip[4]);
+		m_equipment[0].icon = TextureContainer::LoadUI("graph/interface/icons/equipment_sword");
+		m_equipment[1].icon = TextureContainer::LoadUI("graph/interface/icons/equipment_shield");
+		m_equipment[2].icon = TextureContainer::LoadUI("graph/interface/icons/equipment_helm");
+		m_equipment[3].icon = TextureContainer::LoadUI("graph/interface/icons/equipment_chest");
+		m_equipment[4].icon = TextureContainer::LoadUI("graph/interface/icons/equipment_leggings");
+		
+		m_equipment[0].slot = EQUIP_SLOT_WEAPON;
+		m_equipment[1].slot = EQUIP_SLOT_SHIELD;
+		m_equipment[2].slot = EQUIP_SLOT_HELMET;
+		m_equipment[3].slot = EQUIP_SLOT_ARMOR;
+		m_equipment[4].slot = EQUIP_SLOT_LEGGINGS;
+		
+		for (EquipmentArray::size_type i = 0; i < m_equipment.size(); ++i) {
+			arx_assert(m_equipment[i].icon);
+		}
 	}
 	
 	void updateRect(const Rectf & parent) {
@@ -2064,25 +2078,19 @@ public:
 		if(player.Interface & INTER_INVENTORYALL)
 			return;
 		
-		for(long i = 0; i < 5; i++) {
-			m_colors[i] = Color::black;
-			
-			long eq=-1;
+		for(EquipmentArray::size_type i = 0; i < m_equipment.size(); ++i) {
+			DamagedSlotGui& item = m_equipment[i];
 
-			switch (i) {
-				case 0: eq = EQUIP_SLOT_WEAPON; break;
-				case 1: eq = EQUIP_SLOT_SHIELD; break;
-				case 2: eq = EQUIP_SLOT_HELMET; break;
-				case 3: eq = EQUIP_SLOT_ARMOR; break;
-				case 4: eq = EQUIP_SLOT_LEGGINGS; break;
-			}
+			item.color = Color::black;
 			
-			if(player.equiped[eq] > 0) {
-				Entity *io = entities[player.equiped[eq]];
+			if(player.equiped[item.slot] > 0) {
+				Entity *io = entities[player.equiped[item.slot]];
+				arx_assert(io->max_durability != 0.f);
 				float ratio = io->durability / io->max_durability;
+				ratio = glm::clamp(ratio, 0.f, 1.0f);
 				
 				if(ratio <= 0.5f)
-					m_colors[i] = Color3f(1.f-ratio, ratio, 0).to<u8>();
+					item.color = Color3f(1.f-ratio, ratio, 0).to<u8>();
 			}
 		}
 	}
@@ -2096,11 +2104,12 @@ public:
 		GRenderer->SetRenderState(Renderer::DepthWrite, true);
 		GRenderer->SetRenderState(Renderer::Fog, false);
 		
-		for(long i = 0; i < 5; i++) {
-			if(m_colors[i] == Color::black)
+		for(EquipmentArray::size_type i = 0; i < m_equipment.size(); ++i) {
+			DamagedSlotGui& item = m_equipment[i];
+			if(item.color == Color::black)
 				continue;
 			
-			EERIEDrawBitmap2(m_rect, 0.001f, iconequip[i], m_colors[i]);
+			EERIEDrawBitmap2(m_rect, 0.001f, item.icon, item.color);
 		}
 		
 		GRenderer->SetRenderState(Renderer::AlphaBlending, false);
