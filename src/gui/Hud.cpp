@@ -1579,8 +1579,8 @@ public:
 	
 	void draw() {
 		
-		EERIEDrawBitmap2DecalY(m_rect, 0.f, m_filledTex, m_color, (1.f - m_amount));
-		EERIEDrawBitmap(m_rect, 0.001f, m_emptyTex, Color::white);
+		EERIEDrawBitmap2DecalY(m_rect, 0.001f, m_filledTex, m_color, (1.f - m_amount));
+		EERIEDrawBitmap(m_rect, 0.f, m_emptyTex, Color::white);
 		
 		if(!(player.Interface & INTER_COMBATMODE)) {
 			if(m_rect.contains(Vec2f(DANAEMouse))) {
@@ -1625,8 +1625,8 @@ public:
 	
 	void draw() {
 		
-		EERIEDrawBitmap2DecalY(m_rect, 0.f, m_filledTex, Color::white, (1.f - m_amount));
-		EERIEDrawBitmap(m_rect, 0.001f, m_emptyTex, Color::white);
+		EERIEDrawBitmap2DecalY(m_rect, 0.001f, m_filledTex, Color::white, (1.f - m_amount));
+		EERIEDrawBitmap(m_rect, 0.0f, m_emptyTex, Color::white);
 		
 		if(!(player.Interface & INTER_COMBATMODE)) {
 			if(m_rect.contains(Vec2f(DANAEMouse))) {
