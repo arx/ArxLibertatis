@@ -1406,7 +1406,7 @@ class QuickSaveIconGui {
 private:
 	//! Time in ms to show the icon
 	u32 QUICK_SAVE_ICON_TIME;
-	//! Remaining time for the quick sive icon
+	//! Remaining time for the quick save icon
 	unsigned g_quickSaveIconTime;
 	
 public:
@@ -1881,7 +1881,7 @@ PrecastSpellsGui precastSpellsGui;
 class ActiveSpellsGui {
 private:
 	TextureContainer * m_texUnknown;
-	long currpos;
+	long m_currpos;
 	
 	struct ActiveSpellIconSlot {
 		Rectf m_rect;
@@ -1926,7 +1926,7 @@ private:
 		float POSX = g_size.width()-INTERFACE_RATIO(35);
 		Color color;
 		float posx = POSX+lSLID_VALUE;
-		float posy = (float)currpos;
+		float posy = static_cast<float>(m_currpos);
 		
 		if(flag) {
 			color = Color3f(intensity, 0, 0).to<u8>();
@@ -1961,13 +1961,13 @@ private:
 			activeSpellIconSlot.draw();
 		}
 		
-		currpos += static_cast<long>(INTERFACE_RATIO(33.f));
+		m_currpos += static_cast<long>(INTERFACE_RATIO(33.f));
 	}
 	
 public:
 	ActiveSpellsGui()
 		: m_texUnknown(NULL)
-		, currpos(0.f)
+		, m_currpos(0.f)
 	{}
 	
 	void init() {
@@ -2005,7 +2005,7 @@ public:
 	}
 	
 	void update() {
-		currpos = static_cast<long>(INTERFACE_RATIO(50.f));
+		m_currpos = static_cast<long>(INTERFACE_RATIO(50.f));
 		
 		float intensity = 1.f - PULSATE * 0.5f;
 		intensity = glm::clamp(intensity, 0.f, 1.f);
@@ -2115,15 +2115,15 @@ extern float CURRENT_PLAYER_COLOR;
  */
 class StealthGauge : public HudItem {
 private:
-	TextureContainer * stealth_gauge_tc;
+	TextureContainer * m_tex;
 	
 	bool m_visible;
 	Color m_color;
 	Vec2f m_size;
 public:
 	void init() {
-		stealth_gauge_tc = TextureContainer::LoadUI("graph/interface/icons/stealth_gauge");
-		arx_assert(stealth_gauge_tc);
+		m_tex = TextureContainer::LoadUI("graph/interface/icons/stealth_gauge");
+		arx_assert(m_tex);
 		m_size = Vec2f(32.f, 32.f);
 	}
 	
@@ -2156,7 +2156,7 @@ public:
 		
 		GRenderer->SetRenderState(Renderer::AlphaBlending, true);
 		GRenderer->SetBlendFunc(Renderer::BlendOne, Renderer::BlendOne);
-		EERIEDrawBitmap(m_rect, 0.01f, stealth_gauge_tc, m_color);
+		EERIEDrawBitmap(m_rect, 0.01f, m_tex, m_color);
 		GRenderer->SetRenderState(Renderer::AlphaBlending, false);
 	}
 };
