@@ -1226,6 +1226,11 @@ private:
 	TextureContainer * m_tex;
 	
 public:
+	void init() {
+		m_tex = TextureContainer::LoadUI("graph/obj3d/interactive/items/provisions/torch/torch[icon]");
+		arx_assert(m_tex);
+	}
+
 	void updateInput() {
 		if(player.torch) {
 			Vec2f pos(InventoryX + 110, g_size.height() - (158 + 32));
@@ -1318,10 +1323,6 @@ public:
 		}
 		m_isActive = true;
 		
-		m_tex = player.torch->inv;
-		arx_assert(m_tex);
-		
-		
 		float px = INTERFACE_RATIO(std::max(InventoryX + 110.f, 10.f));
 		float py = g_size.height() - INTERFACE_RATIO(158.f + 32.f);
 		
@@ -1410,12 +1411,19 @@ private:
 	u32 QUICK_SAVE_ICON_TIME;
 	//! Remaining time for the quick save icon
 	unsigned g_quickSaveIconTime;
+	//! Graphic to display while quick saving
+	TextureContainer * m_tex;
 	
 public:
 	QuickSaveIconGui()
 		: QUICK_SAVE_ICON_TIME(1000)
 		, g_quickSaveIconTime(0)
 	{}
+
+	void init() {
+		m_tex = TextureContainer::LoadUI("graph/interface/icons/menu_main_save");
+		arx_assert(m_tex);
+	}
 	
 	void show() {
 		g_quickSaveIconTime = QUICK_SAVE_ICON_TIME;
@@ -1451,7 +1459,7 @@ public:
 		GRenderer->SetBlendFunc(Renderer::BlendSrcColor, Renderer::BlendOne);
 		
 		Vec2f size = Vec2f(tex->size());
-		EERIEDrawBitmap2(Rectf(Vec2f(0, 0), size.x, size.y), 0.f, tex, Color::gray(alpha));
+		EERIEDrawBitmap2(Rectf(Vec2f(0, 0), size.x, size.y), 0.f, m_tex, Color::gray(alpha));
 		
 		GRenderer->SetRenderState(Renderer::AlphaBlending, false);
 	}
@@ -2177,8 +2185,10 @@ void hudElementsInit() {
 	activeSpellsGui.init();
 	damagedEquipmentGui.init();
 	mecanismIcon.init();
+	quickSaveIconGui.init();
 	
 	stealthGauge.init();
+	currentTorchIconGui.init();
 	screenArrows.init();
 	
 	healthGauge.init();
