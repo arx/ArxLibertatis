@@ -326,10 +326,12 @@ void Cedric_ApplyLightingFirstPartRefactor(Entity *io) {
 				if(elapsed < 3000.f) { // 5 seconds to red
 					float ratio = elapsed * (1.0f / 3000);
 					io->special_color = Color3f(1.f, 1.f - ratio, 1.f - ratio);
+					io->highlightColor += Color3f(std::max(ratio - 0.5f, 0.f), 0.f, 0.f) * 255;
 					AddRandomSmoke(io, 1);
 				} else if(elapsed < 6000.f) { // 5 seconds to White
-					float ratio = (elapsed - 3000.f) * (1.0f / 3000);
-					io->special_color = Color3f(1.f, ratio, ratio);
+					float ratio = elapsed * (1.0f / 3000);
+					io->special_color = Color3f::red;
+					io->highlightColor += Color3f(std::max(ratio - 0.5f, 0.f), 0.f, 0.f) * 255;
 					AddRandomSmoke(io, 2);
 				} else { // SFX finish
 					io->sfx_time = 0;
@@ -1098,6 +1100,17 @@ static void Cedric_RenderObject(EERIE_3DOBJ * eobj, Skeleton * obj, Entity * io,
 	HaloInfo haloInfo;
 	PrepareAnimatedObjectHalo(haloInfo, pos, obj, use_io, eobj);
 
+	bool glow = false;
+	ColorRGBA glowColor;
+	if(io && (io->sfx_flag & SFX_TYPE_YLSIDE_DEATH) && io->show != SHOW_FLAG_TELEPORTING) {
+		float elapsed = float(arxtime) - io->sfx_time;
+		if(elapsed >= 3000.f && elapsed < 6000.f) {
+			float ratio = (elapsed - 3000.f) * (1.0f / 3000);
+			glowColor = Color::gray(ratio).toRGB();
+			glow = true;
+		}
+	}
+	
 	for(size_t i = 0; i < eobj->facelist.size(); i++) {
 		const EERIE_FACE & face = eobj->facelist[i];
 
@@ -1115,6 +1128,7 @@ static void Cedric_RenderObject(EERIE_3DOBJ * eobj, Skeleton * obj, Entity * io,
 			continue;
 
 		float fTransp = 0.f;
+
 		TexturedVertex *tvList = GetNewVertexList(pTex, face, invisibility, fTransp);
 
 		for(size_t n = 0; n < 3; n++) {
@@ -1131,6 +1145,12 @@ static void Cedric_RenderObject(EERIE_3DOBJ * eobj, Skeleton * obj, Entity * io,
 
 		if(haloInfo.need_halo) {
 			AddAnimatedObjectHalo(haloInfo, face.vid, invisibility, eobj, io, tvList);
+		}
+		
+		if(glow) {
+			TexturedVertex * tv2 = PushVertexInTable(&TexSpecialColor, TextureContainer::Opaque);
+			std::copy(tvList, tvList + 3, tv2);
+			tv2[0].color = tv2[1].color = tv2[2].color = glowColor;
 		}
 	}
 }

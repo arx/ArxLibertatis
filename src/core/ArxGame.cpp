@@ -1881,14 +1881,14 @@ void ArxGame::updateLevel() {
 		if(entity->ignition > 0.f || (entity->ioflags & IO_FIERY))
 			ManageIgnition(entity);
 
-		Cedric_ApplyLightingFirstPartRefactor(entity);
-
 		//Highlight entity
 		if(entity == FlyingOverIO && !(entity->ioflags & IO_NPC)) {
 			entity->highlightColor = Color3f::gray(float(iHighLight));
 		} else {
 			entity->highlightColor = Color3f::black;
 		}
+
+		Cedric_ApplyLightingFirstPartRefactor(entity);
 
 		float speedModifier = 0.f;
 
