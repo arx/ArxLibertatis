@@ -84,11 +84,11 @@ public:
 		return Color3(value(bgr >> 16), value(bgr >> 8), value(bgr));
 	}
 	
-	inline ColorRGBA toRGB(u8 _a = Limits::max()) const {
+	inline ColorRGBA toRGB(u8 _a = ColorLimits<u8>::max()) const {
 		return ColorRGBA(byteval(r) | (byteval(g) << 8) | (byteval(b) << 16) | (u32(_a) << 24));
 	}
 	
-	inline ColorBGRA toBGR(u8 _a = Limits::max()) const {
+	inline ColorBGRA toBGR(u8 _a = ColorLimits<u8>::max()) const {
 		return ColorBGRA(byteval(b) | (byteval(g) << 8) | (byteval(r) << 16) | (u32(_a) << 24));
 	}
 	
@@ -205,11 +205,11 @@ public:
 		return C3::toBGR((u8)C3::byteval(a));
 	}
 	
-	inline static Color4 fromRGB(ColorRGB rgb, u8 a = Limits::max()) {
+	inline static Color4 fromRGB(ColorRGB rgb, T a = Limits::max()) {
 		return Color4(C3::fromRGB(rgb), a);
 	}
 	
-	inline static Color4 fromBGR(ColorBGR bgr, u8 a = Limits::max()) {
+	inline static Color4 fromBGR(ColorBGR bgr, T a = Limits::max()) {
 		return Color4(C3::fromBGR(bgr), a);
 	}
 	
@@ -269,8 +269,17 @@ Color3<T> operator+(Color3<T> c0, Color3<T> c1) {
 	return Color3<T>(c0.r + c1.r, c0.g + c1.g, c0.b + c1.b);
 }
 template <typename T>
+Color3<T> operator-(Color3<T> c0, Color3<T> c1) {
+	return Color3<T>(c0.r - c1.r, c0.g - c1.g, c0.b - c1.b);
+}
+template <typename T>
 Color3<T> operator*(Color3<T> c0, Color3<T> c1) {
-	return Color3<T>(c0.r * c1.r, c0.g * c1.g, c0.b * c1.b);
+	T m = ColorLimits<T>::max();
+	return Color3<T>(c0.r * c1.r / m, c0.g * c1.g / m, c0.b * c1.b / m);
+}
+template <typename T>
+Color3<T> operator*(Color3<T> c0, float scale) {
+	return Color3<T>(c0.r * scale, c0.g * scale, c0.b * scale);
 }
 
 template <typename T>
@@ -283,7 +292,8 @@ Color4<T> operator-(Color4<T> c0, Color4<T> c1) {
 }
 template <typename T>
 Color4<T> operator*(Color4<T> c0, Color4<T> c1) {
-	return Color4<T>(c0.r * c1.r, c0.g * c1.g, c0.b * c1.b, c0.a * c1.a);
+	T m = ColorLimits<T>::max();
+	return Color4<T>(c0.r * c1.r / m, c0.g * c1.g / m, c0.b * c1.b / m, c0.a * c1.a / m);
 }
 template <typename T>
 Color4<T> operator*(Color4<T> c0, float scale) {
