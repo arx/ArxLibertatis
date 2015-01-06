@@ -293,6 +293,10 @@ void Entity::cleanReferences() {
 		pIOChangeWeapon = NULL; // TODO we really need a proper weak_ptr
 	}
 	
+	if(ioSteal == this) {
+		ioSteal = NULL;
+	}
+	
 	if(!FAST_RELEASE) {
 		TREATZONE_RemoveIO(this);
 	}
