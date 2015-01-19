@@ -618,8 +618,8 @@ void TextWidget::SetText(const std::string & _pText)
 
 	Vec2i textSize = pFont->getTextSize(_pText);
 
-	rZone.right  = textSize.x + rZone.left;
-	rZone.bottom = textSize.y + rZone.top;
+	rZone.right  = textSize.x + rZone.left + 1;
+	rZone.bottom = textSize.y + rZone.top + 1;
 }
 
 void TextWidget::Update(int _iDTime) {
