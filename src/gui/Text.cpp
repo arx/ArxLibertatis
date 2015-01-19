@@ -64,6 +64,8 @@ ZeniMax Media Inc., Suite 120, Rockville, Maryland 20850 USA.
 #include "io/resource/ResourcePath.h"
 #include "io/log/Logger.h"
 
+#include "util/Unicode.h"
+
 TextManager * pTextManage = NULL;
 TextManager * pTextManageFlyingOver = NULL;
 
@@ -107,7 +109,13 @@ static void ARX_UNICODE_FormattingInRect(Font * font, const std::string & text,
 		return;
 	}
 	
-	for(it = text.begin(); it != text.end(); ++it) {
+	std::string::const_iterator next = it;
+	for(it = text.begin(); it != text.end(); it = next) {
+		
+		next = it + 1;
+		while(next != text.end() && util::UTF8::isContinuationByte(*next)) {
+			++next;
+		}
 		
 		// Line break ?
 		bool isLineBreak = false;
@@ -121,7 +129,7 @@ static void ARX_UNICODE_FormattingInRect(Font * font, const std::string & text,
 			}
 			
 			// Check length of string up to this point
-			Vec2i size = font->getTextSize(itLastLineBreak, it + 1);
+			Vec2i size = font->getTextSize(itLastLineBreak, next);
 			if(size.x > maxLineWidth) { // Too long ?
 				isLineBreak = true;
 				if(itLastWordBreak > itLastLineBreak) {
@@ -139,12 +147,12 @@ static void ARX_UNICODE_FormattingInRect(Font * font, const std::string & text,
 		// If we have to draw a line
 		//  OR
 		// This is the last character of the string
-		if(isLineBreak || it + 1 == text.end()) {
+		if(isLineBreak || next == text.end()) {
 			
 			std::string::const_iterator itTextStart = itLastLineBreak;
 			std::string::const_iterator itTextEnd;
 			
-			itTextEnd = (isLineBreak) ? it : it + 1;
+			itTextEnd = (isLineBreak) ? it : next;
 			
 			// Draw the line
 			if(!computeOnly) {
@@ -152,7 +160,7 @@ static void ARX_UNICODE_FormattingInRect(Font * font, const std::string & text,
 			}
 			
 			if(it != text.end()) {
-				itLastLineBreak = it + 1;
+				itLastLineBreak = next;
 			}
 			
 			penY += font->getLineHeight();
