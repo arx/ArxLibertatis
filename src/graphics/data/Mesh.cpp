@@ -913,18 +913,6 @@ static void ReleaseBKG_INFO(EERIE_BKG_INFO * eg) {
 //*************************************************************************************
 //*************************************************************************************
 
-static void AddAData(ANCHOR_DATA * ad, long linked) {
-	
-	for(long i=0; i < ad->nblinked; i++)
-		if(ad->linked[i] == linked)
-			return;
-
-	ad->linked = (long *)realloc(ad->linked, sizeof(long) * (ad->nblinked + 1));
-
-	ad->linked[ad->nblinked] = linked;
-	ad->nblinked++;
-}
-
 void UpdateIORoom(Entity * io)
 {
 	Vec3f pos = io->pos;
@@ -936,31 +924,6 @@ void UpdateIORoom(Entity * io)
 		io->room = checked_range_cast<short>(roo);
 
 	io->requestRoomUpdate = false;
-}
-
-static bool GetRoomCenter(long room_num, Vec3f * center) {
-	
-	if(!portals || (size_t)room_num >= portals->rooms.size() || portals->rooms[room_num].nb_polys <= 0)
-		return false;
-	
-	EERIE_ROOM_DATA & room = portals->rooms[room_num];
-
-	EERIE_3D_BBOX bbox;
-	bbox.min = Vec3f(99999999.f);
-	bbox.max = Vec3f(-99999999.f);
-
-	for(long lll = 0; lll < room.nb_polys; lll++) {
-		const EERIE_BKG_INFO & feg = ACTIVEBKG->fastdata[room.epdata[lll].p.x][room.epdata[lll].p.y];
-		const EERIEPOLY & ep = feg.polydata[room.epdata[lll].idx];
-		bbox.min = glm::min(bbox.min, ep.center);
-		bbox.max = glm::max(bbox.max, ep.center);
-	}
-	
-	*center = (bbox.max + bbox.min) * .5f;
-	
-	room.center = *center;
-	room.radius = fdist(*center, bbox.max);
-	return true;
 }
 
 ROOM_DIST_DATA * RoomDistance = NULL;
@@ -1784,33 +1747,44 @@ static bool loadFastScene(const res::path & file, const char * data, const char 
 	return true;
 }
 
-static void EERIEPOLY_FillMissingVertex(EERIEPOLY * po, EERIEPOLY * ep) {
+#if BUILD_EDIT_LOADSAVE
+
+static void AddAData(ANCHOR_DATA * ad, long linked) {
 	
-	long missing = -1;
+	for(long i=0; i < ad->nblinked; i++)
+		if(ad->linked[i] == linked)
+			return;
 
-	for(long i = 0; i < 3; i++) {
-		long same = 0;
+	ad->linked = (long *)realloc(ad->linked, sizeof(long) * (ad->nblinked + 1));
 
-		for(long j = 0; j < 3; j++) {
-			if((po->v[j].p.x == ep->v[i].p.x)
-				&& (po->v[j].p.y == ep->v[i].p.y)
-				&& (po->v[j].p.z == ep->v[i].p.z))
-				same = 1;
-		}
-
-		if(!same)
-			missing = i;
-	}
-	
-	if(missing >= 0) {
-		Vec3f temp = po->v[2].p;
-		po->v[2].p = ep->v[missing].p;
-		po->v[3].p = temp;
-		po->type |= POLY_QUAD;
-	}
+	ad->linked[ad->nblinked] = linked;
+	ad->nblinked++;
 }
 
-#if BUILD_EDIT_LOADSAVE
+static bool GetRoomCenter(long room_num, Vec3f * center) {
+	
+	if(!portals || (size_t)room_num >= portals->rooms.size() || portals->rooms[room_num].nb_polys <= 0)
+		return false;
+	
+	EERIE_ROOM_DATA & room = portals->rooms[room_num];
+
+	EERIE_3D_BBOX bbox;
+	bbox.min = Vec3f(99999999.f);
+	bbox.max = Vec3f(-99999999.f);
+
+	for(long lll = 0; lll < room.nb_polys; lll++) {
+		const EERIE_BKG_INFO & feg = ACTIVEBKG->fastdata[room.epdata[lll].p.x][room.epdata[lll].p.y];
+		const EERIEPOLY & ep = feg.polydata[room.epdata[lll].idx];
+		bbox.min = glm::min(bbox.min, ep.center);
+		bbox.max = glm::max(bbox.max, ep.center);
+	}
+	
+	*center = (bbox.max + bbox.min) * .5f;
+	
+	room.center = *center;
+	room.radius = fdist(*center, bbox.max);
+	return true;
+}
 
 static void ComputeRoomDistance() {
 	
@@ -2119,6 +2093,32 @@ static void EERIEAddPolyToBackground(TexturedVertex * vert2, TextureContainer * 
 	ep.tex = tex;
 	ep.transval = transval;
 	BkgAddPoly(&ep, eobj);
+}
+
+static void EERIEPOLY_FillMissingVertex(EERIEPOLY * po, EERIEPOLY * ep) {
+	
+	long missing = -1;
+
+	for(long i = 0; i < 3; i++) {
+		long same = 0;
+
+		for(long j = 0; j < 3; j++) {
+			if((po->v[j].p.x == ep->v[i].p.x)
+				&& (po->v[j].p.y == ep->v[i].p.y)
+				&& (po->v[j].p.z == ep->v[i].p.z))
+				same = 1;
+		}
+
+		if(!same)
+			missing = i;
+	}
+	
+	if(missing >= 0) {
+		Vec3f temp = po->v[2].p;
+		po->v[2].p = ep->v[missing].p;
+		po->v[3].p = temp;
+		po->type |= POLY_QUAD;
+	}
 }
 
 static void SceneAddObjToBackground(EERIE_3DOBJ * eobj) {
