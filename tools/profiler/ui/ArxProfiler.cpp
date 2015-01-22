@@ -326,9 +326,9 @@ void ProfilerView::keyPressEvent(QKeyEvent* event) {
 
 const char * ProfilerView::humanReadableTime(double & duration) {
 	
-	static const qint32 NUM_UNITS = 6;
-	static const char*  UNIT_NAME[NUM_UNITS] = {"us", "ms", "s", "m", "h", "d"};
-	static const qint64 UNIT_NEXT[NUM_UNITS] = {1000, 1000,  60,  60,  24,   1};
+	static const qint32 NUM_UNITS = 5;
+	static const char*  UNIT_NAME[NUM_UNITS + 1] = {"us", "ms", "s", "m", "h", "d"};
+	static const qint64 UNIT_NEXT[NUM_UNITS] =     {1000, 1000,  60,  60,  24     };
 	
 	int i;
 	for(i = 0; i < NUM_UNITS; i++) {
