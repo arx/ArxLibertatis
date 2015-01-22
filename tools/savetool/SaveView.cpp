@@ -1365,7 +1365,6 @@ static int view_io(SaveBlock & save, const char * dat, size_t size) {
 		cout << "Halo color: " << ais.halo.color << endl;
 		cout << "Halo radius: " << ais.halo.radius << endl;
 		cout << "Halo flags:";
-		if(!ais.halo.flags) cout << " (none)";
 		if(ais.halo.flags & HALO_ACTIVE) cout << " active";
 		if(ais.halo.flags & HALO_NEGATIVE) cout << " negative";
 		if(ais.halo.flags & HALO_DYNLIGHT) cout << " dynlight";
@@ -1434,7 +1433,6 @@ static int view_io(SaveBlock & save, const char * dat, size_t size) {
 		
 		if(ass->allowevents) {
 			cout << "  Disabled events:";
-			if(!ass->allowevents) cout << " (none)";
 			if(ass->allowevents & DISABLE_HIT) cout << " hit";
 			if(ass->allowevents & DISABLE_CHAT) cout << " chat";
 			if(ass->allowevents & DISABLE_INVENTORY2_OPEN) cout << " inventory2_open";
