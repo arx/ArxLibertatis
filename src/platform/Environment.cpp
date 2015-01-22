@@ -181,7 +181,7 @@ void initializeEnvironment(const char * argv0) {
 
 #elif ARX_PLATFORM == ARX_PLATFORM_WIN32
 
-std::string ws2s(const std::basic_string<WCHAR> & s) {
+static std::string ws2s(const std::basic_string<WCHAR> & s) {
 	size_t slength = (int)s.length() + 1;
 	size_t len = WideCharToMultiByte(CP_ACP, 0, s.c_str(), slength, 0, 0, 0, 0); 
 	std::string r(len, '\0');
