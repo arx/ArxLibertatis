@@ -1201,7 +1201,12 @@ if(ARX_HAVE_CRASHREPORTER)
 		
 		qt4_wrap_ui(arxcrashreporter_Qt_SOURCES ${arxcrashreporter_UIs})
 		qt4_wrap_cpp(arxcrashreporter_Qt_SOURCES ${arxcrashreporter_MOC_HEADERS})
-		qt4_add_resources(arxcrashreporter_Qt_SOURCES ${arxcrashreporter_RESOURCES})
+		qt4_add_resources(arxcrashreporter_Qt_RC_SOURCES ${arxcrashreporter_RESOURCES})
+		set_property(
+			SOURCE ${arxcrashreporter_Qt_RC_SOURCES}
+			APPEND PROPERTY COMPILE_FLAGS " -Wno-missing-declarations"
+		)
+		list(APPEND arxcrashreporter_Qt_SOURCES ${arxcrashreporter_Qt_RC_SOURCES})
 		
 		set(arxcrashreporter_qt_LIBRARIES
 			${QT_QTCORE_LIBRARY_RELEASE}
