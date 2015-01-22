@@ -719,7 +719,7 @@ static void drawDebugMaterials() {
 			bool valid = true;
 			bool bvalid = false;
 			Vec3f p[4];
-			for(size_t i = 0; i < ((ep->type & POLY_QUAD) ? 4 : 3); i++) {
+			for(size_t i = 0; i < ((ep->type & POLY_QUAD) ? 4u : 3u); i++) {
 				TexturedVertex tv;
 				tv.p = EE_RT(ep->v[i].p);
 				valid = valid && (tv.p.z > 0.000001f);
