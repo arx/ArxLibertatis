@@ -56,10 +56,16 @@ typedef Rectangle_<float> Rectf;
 	};
 #endif
 
-
+//in GLM version 0.9.6 the template vector and matrix types is exposed in 'glm' namespace
+#if GLM_VERSION >= 96
+template <class T> struct vec2_traits : public vec_traits_base<T, glm::tvec2, 2>{};
+template <class T> struct vec3_traits : public vec_traits_base<T, glm::tvec3, 3>{};
+template <class T> struct vec4_traits : public vec_traits_base<T, glm::tvec4, 4>{};
+#else
 template <class T> struct vec2_traits : public vec_traits_base<T, glm::detail::tvec2, 2>{};
 template <class T> struct vec3_traits : public vec_traits_base<T, glm::detail::tvec3, 3>{};
 template <class T> struct vec4_traits : public vec_traits_base<T, glm::detail::tvec4, 4>{};
+#endif
 
 template <class T, int N> struct vec_traits {};
 template <class T> struct vec_traits<T, 2> : public vec2_traits<T>{};
