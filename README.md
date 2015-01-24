@@ -17,7 +17,7 @@ Website: [http://arx-libertatis.org/](http://arx-libertatis.org/)
 
 Bug Tracker: [https://bugs.arx-libertatis.org/](https://bugs.arx-libertatis.org/)
 
-IRC: \#arxfatalis on irc.freenode.net
+IRC: [#arxfatalis on irc.freenode.net](http://webchat.freenode.net/?channels=arxfatalis/)
 
 Wiki: [http://wiki.arx-libertatis.org/](http://wiki.arx-libertatis.org/)
 
@@ -75,12 +75,12 @@ Getting all the dependencies set up for Windows is more tricky. Pre-build depend
 
 * `BUILD_TOOLS` (default=ON): Build tools
 * `BUILD_CRASHREPORTER` (default=ON): Build the Qt crash reporter gui (default OFF for Mac)
+* `BUILD_PROFILER` (default=ON): Build the Qt profiler gui 
 * `UNITY_BUILD` (default=OFF): Unity build (faster build, better optimizations but no incremental build)
 * `CMAKE_BUILD_TYPE` (default=Release): Set to `Debug` for debug binaries
-* `DEBUG` (default=OFF^1): Enable debug output and runtime checks
+* `DEBUG` (default=OFF): Enable debug output and runtime checks. (Enabled automatically if `CMAKE_BUILD_TYPE` is set to `Debug`.)
 * `DEBUG_EXTRA` (default=OFF): Expensive debug options
 
-1. Enabled automatically if `CMAKE_BUILD_TYPE` is set to `Debug`.
 
 Install options:
 
@@ -94,7 +94,8 @@ Advanced options not listed here are documented in **OPTIONS.md**.
 
 ## Data file, config and savegame locations
 
-You will need to [get either the full game or demo data of Arx Fatalis](http://wiki.arx-libertatis.org/Getting_the_game_data). To install the data files run
+You will need to [get either the full game or demo data of Arx Fatalis](http://wiki.arx-libertatis.org/Getting_the_game_data). 
+To install the data files on Linux, run
 
     $ arx-install-data
 
@@ -131,10 +132,11 @@ To use the current working directory for user, config and data files (e.g. for a
 
 ## Run
 
-Provided the data files are installed at the correct location, you can simply play the game using the installed shortcut or by running
+Provided the data files are installed at the correct location, you can simply play the game on Linux using the installed shortcut or by running
 
     $ arx
 
+Or On Windows, simply double-click the arx.exe file
 See the `arx --help` and `man arx` output for more details.
 
 ## Tools
@@ -166,10 +168,10 @@ More options and required tools (depending on the source file) are documented in
 
 ## Developer information
 
-To build developer documentation (doxygen), run this from the build directory:
+To build developer documentation (requires [Doxygen), run this from the build directory:
 
     $ make doc
 
-To check for coding style problems, run the following: (requires python)
+To check for coding style problems, run the following: (requires [Python])
 
     $ make style
