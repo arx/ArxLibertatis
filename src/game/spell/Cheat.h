@@ -50,6 +50,7 @@ void handleCheatRuneDetection(CheatRune rune);
 extern long BH_MODE;
 extern long passwall;
 extern long cur_mx;
+extern long cur_pnux;
 extern long cur_pom;
 extern long cur_rf;
 extern long cur_mr;

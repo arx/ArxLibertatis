@@ -44,6 +44,7 @@ private:
 	GLint uniform_fbo_texture;
 	
 	GLint m_uniform_gamma;
+	GLint m_uniform_pnuxEffect;
 	
 	GLuint m_vertices;
 };

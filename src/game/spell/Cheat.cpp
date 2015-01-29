@@ -45,7 +45,7 @@
 
 long passwall = 0;
 long cur_mx = 0;
-static long cur_pnux = 0;
+long cur_pnux = 0;
 long cur_pom = 0;
 long cur_rf = 0;
 long cur_mr = 0;

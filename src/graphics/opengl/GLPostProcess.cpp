@@ -47,6 +47,9 @@ GLPostProcess::GLPostProcess(const Vec2s & size)
 	if(m_uniform_gamma == -1)
 		LogWarning << "Could not bind uniform: " << "gamma";
 	
+	m_uniform_pnuxEffect = m_program->getUniform("pnuxEffect");
+	if(m_uniform_pnuxEffect == -1)
+		LogWarning << "Could not bind uniform: " << "pnuxEffect";
 	
 	GLfloat fbo_vertices[] = {
 		-1, -1,
@@ -107,6 +110,11 @@ void GLPostProcess::render(Rect viewport) {
 		float gammaMin = 2.f;
 		float gamma = ((gammaMax - gammaMin) / 11.f) * (config.video.gamma + 1.f) + gammaMin;
 		glUniform1f(m_uniform_gamma, gamma);
+	}
+	
+	{
+		extern long cur_pnux;
+		glUniform1i(m_uniform_pnuxEffect, cur_pnux);
 	}
 	
 	glEnableVertexAttribArray(attribute_v_coord_postproc);

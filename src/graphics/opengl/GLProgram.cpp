@@ -87,7 +87,7 @@ GLProgram::GLProgram() {
 	}
 	
 	loadShader(program, "shaders/nop.postprocess.vert.glsl");
-	loadShader(program, "shaders/gamma.postprocess.frag.glsl");
+	loadShader(program, "shaders/pnux.postprocess.frag.glsl");
 	
 	glLinkProgram(program);
 	
