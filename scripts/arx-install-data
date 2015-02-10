@@ -716,7 +716,7 @@ while [ $# -gt 0 ] ; do
 		-p|--patch)       shift ; patchfile="$1"                  ; patch=1 ;;
 		--patch-jp=*)             patchfile_jp="${1#--patch-jp=}" ; patch=1 ;;
 		--patch-jp)       shift ; patchfile_jp="$1"               ; patch=1 ;;
-		-v|--verify)                                              install=0 ;;
+		-v|--verify)                                      install=0 patch=0 ;;
 		-n|--no-patch)    [ -z "$patchfile" ] && [ -z "$patchfile_jp" ] && patch=0
 		                  probe_patch=0   ;;
 		-b|--batch)       batch=1         ;;
