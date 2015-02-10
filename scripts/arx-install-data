@@ -874,7 +874,7 @@ pipe_create() {
 	pipe_file="$(mktemp -u "$tempdir/arx-install-data.pipe.XXXXX")"
 	if mkfifo -m 600 "$pipe_file" 2> /dev/null ; then
 		# Fast communication via a FIFO
-		cat "$pipe_file" | "$@" &
+		"$@" < "$pipe_file" &
 		pipe_pid="$!"
 	else
 		# Fallback via regular file, may use polling
