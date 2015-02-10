@@ -192,9 +192,9 @@ abspath() {
 # Too bad we can't just use readlink -f
 if have realpath ; then
 	canonicalize() { realpath "$1" ; }
-else if have grealpath ; then
+elif have grealpath ; then
 	canonicalize() { grealpath "$1" ; }
-else if have greadlink ; then
+elif have greadlink ; then
 	canonicalize() { greadlink -f "$1" ; }
 else
 	canonicalize() {
@@ -209,7 +209,7 @@ else
 		echo "$(pwd -P)/$_canonicalize_file"
 		cd "$_canonicalize_old_pwd"
 	}
-fi ; fi ; fi
+fi
 
 cleanup_functions='' # List of functions to be run on exit
 
@@ -730,8 +730,8 @@ while [ $# -gt 0 ] ; do
 		-*)               print_help "Uknown option: $1" ;;
 		*)
 			if [ -z "${sourcefile-}" ] && [ $install = 1 ] ; then sourcefile="$1"
-			else if [ -z "${datadir-}"    ] ; then datadir="$1"
-			else print_help "Too many options: $1" ; fi ;fi
+			elif [ -z "${datadir-}"    ] ; then datadir="$1"
+			else print_help "Too many options: $1" ; fi
 	esac
 	[ -z "${1-}" ] && print_help "Expected more options"
 	shift;
@@ -852,11 +852,11 @@ $message"
 		print "Use the --cli option for an interactive command-line interface."
 	fi
 	
-else if [ ! "$_arx_install_data_force_cli" = 1 ] ; then
+elif [ ! "$_arx_install_data_force_cli" = 1 ] ; then
 	
 	print "Enabling CLI mode, use the --gui option for a graphical interface."
 	
-fi ; fi
+fi
 
 #----------------------------------------------------------------------------------------#
 # Functions for controlling an asynchronous process via stdin
@@ -2083,13 +2083,13 @@ probe_data_dirs() {
 						probe_data_dir $_probe_data_dirs_existing "$_probe_data_dirs_line" \
 							"portable" && return $true
 					done
-				else if [ -d "$_probe_data_dirs_path/data" ] ; then
+				elif [ -d "$_probe_data_dirs_path/data" ] ; then
 					probe_data_dir $_probe_data_dirs_existing "$_probe_data_dirs_path/data" \
 						"portable" && return $true
 				else
 					probe_data_dir $_probe_data_dirs_existing "$_probe_data_dirs_path" "portable" \
 						&& return $true
-				fi ; fi
+				fi
 			done
 		fi
 		
@@ -2302,10 +2302,10 @@ extract_iso() {
 			eval "for _extract_iso_f in $_extrac_cdrom_f ; do mv -f \"\$_extract_iso_f\" \"\$(print \"\$_extract_iso_f\" | sed 's:;1$::')\" ; done"
 		fi
 		
-	else if have 7z ; then
+	elif have 7z ; then
 		7z x -tiso "$1"
 		ret="$?"
-	fi ; fi
+	fi
 	
 	# For some iso files bsdtar just does nothing - at least let the user know
 	if [ ! -d "$PWD/bin" ] || ! icontains "$PWD/bin" 'arx.ttf' ; then
@@ -2662,7 +2662,7 @@ extract_source() {
 	
 	if [ -d "$sourcefile" ] ; then
 		extract_source_dir "$sourcefile"
-	else if [ -f "$sourcefile" ] ; then
+	elif [ -f "$sourcefile" ] ; then
 		case "$sourcefile" in
 			*.zip) extract_source_zip "$sourcefile" ;;
 			*.exe) extract_source_exe "$sourcefile" ;;
@@ -2677,7 +2677,7 @@ extract_source() {
 		esac
 	else
 		extract_source_cdrom "$sourcefile"
-	fi ; fi
+	fi
 	
 	print
 }
@@ -3036,11 +3036,11 @@ fi
 probe_data_dirs
 if [ $install = 1 ] ; then
 	verb='install to' ; access=--writable
-else if [ $patch = 1 ] ; then
+elif [ $patch = 1 ] ; then
 	verb='patch'      ; access=--existing
 else
 	verb='verify'     ; access=--existing
-fi ; fi
+fi
 user_select_entry $access --dir datadirs datadir \
 	"data directory to $verb" "$cyan" "$dim_cyan" "$verb"
 [ -z "$datadir" ] && die "Missing data dir."
