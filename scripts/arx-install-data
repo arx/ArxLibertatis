@@ -2072,7 +2072,7 @@ probe_data_dirs() {
 			eval "set -- $(to_list "$data_path")"
 			for _probe_data_dirs_path ; do
 				if [ -f "$_probe_data_dirs_path/data" ] ; then
-					eval "set -- $(cat "$_probe_data_dirs_path/data" | lines_to_list)"
+					eval "set -- $(lines_to_list < "$_probe_data_dirs_path/data")"
 					for _probe_data_dirs_line ; do
 						case "$_probe_data_dirs_line" in
 							/*) ;; *) _probe_data_dirs_line="$(
