@@ -1770,8 +1770,7 @@ steam_get_appinfo() {
 	_steam_appid="$2"
 	
 	_steam_appinfo="$(
-		cat "$_steam_config" \
-		| steam_get_section 'Software' \
+		  steam_get_section 'Software' < "$_steam_config" \
 		| steam_get_section 'Valve' \
 		| steam_get_section 'Steam' \
 		| steam_get_section 'apps' \
@@ -1780,12 +1779,12 @@ steam_get_appinfo() {
 	
 	# Fallback if the tree structure changed
 	[ -z "$_steam_appinfo" ] && _steam_appinfo="$(
-		cat "$_steam_config" | steam_get_section "$_steam_appid"
+		steam_get_section "$_steam_appid" < "$_steam_config"
 	)"
 	
 	# Fallback if the indentation changed
 	[ -z "$_steam_appinfo" ] && _steam_appinfo="$(
-		cat "$_steam_config" | steam_get_section_tail "$_steam_appid"
+		steam_get_section_tail "$_steam_appid" < "$_steam_config"
 	)"
 	
 	print "$_steam_appinfo"
@@ -1829,8 +1828,8 @@ probe_steam_root() {
 		
 		# Strategy 2: Look for known install directory in steam libraries
 		_steam_libraries="$(
-			cat "$_steam_config" \
-			| sed -n '/BaseInstallFolder/s/^[^\"]*\"[^\"]*\"[^\"]*\"\([^\"]*\)\".*/\1/p' \
+			sed -n '/BaseInstallFolder/s/^[^\"]*\"[^\"]*\"[^\"]*\"\([^\"]*\)\".*/\1/p' \
+			< "$_steam_config" \
 			| sed 's:[^a-zA-Z0-9/_.\n]:\\&:g'
 		)"
 		_steam_library_call='probe_steam_library "$_steam_library" && return $true'
