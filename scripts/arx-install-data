@@ -946,7 +946,7 @@ zenity_run() {
 # Create the main progress window.
 # Usage: dialog_create
 dialog_create() {
-	pipe_create zenity --title "$_dialog_title$1" --width 450 --progress
+	pipe_create zenity --title "$_dialog_title" --width 450 --progress
 }
 
 # Destroy the main progress window.
@@ -1204,7 +1204,7 @@ Xdialog_run() {
 # Usage: dialog_create
 dialog_create() {
 	_Xdialog_width='WWWWWWWWWWWWWWWWWWWWWWWWWWWWWWWWWWWWWWWW'
-	pipe_create Xdialog --left --title "$_dialog_title$1" --gauge "$_Xdialog_width" 0 0
+	pipe_create Xdialog --left --title "$_dialog_title" --gauge "$_Xdialog_width" 0 0
 }
 
 # Destroy the main progress window.
