@@ -317,7 +317,7 @@ list_append() {
 	eval "[ -z \"\$$1__list_count\" ] && $1__list_count=0"
 	eval "_list_count=\$$1__list_count"
 	eval "$1__list_comment_$_list_count=\"\$3\""
-	eval "$1__list_count=\$((\$$1__list_count + 1))"
+	eval "$1__list_count=\$(($1__list_count + 1))"
 }
 
 # Append one list to another, preserving comments.
@@ -329,7 +329,7 @@ list_merge() {
 		_list_merge_i=0
 		for _list_merge_entry in $_list_append ; do
 			list_append $1 \"\$_list_merge_entry\" \"\$(list_comment $2 \$_list_merge_i)\"
-			_list_merge_i=\$((\$_list_merge_i + 1))
+			_list_merge_i=\$((_list_merge_i + 1))
 		done
 	"
 }
@@ -510,7 +510,7 @@ print_help_or() {
 			[ -z \"\$_print_help_or_color\" ] || puts \"\$reset\"
 			_print_help_or_comment=\"\$(list_comment \$_print_help_or_var \$_print_help_or_i)\"
 			[ -z \"\$_print_help_or_comment\" ] || printf ' (%s)' \"\$_print_help_or_comment\"
-			_print_help_or_i=\$((\$_print_help_or_i + 1))
+			_print_help_or_i=\$((_print_help_or_i + 1))
 		done
 	"
 }
@@ -527,14 +527,14 @@ print_help_list() {
 		_print_help_list_i=0
 		for _print_help_list_entry in $_print_help_list_list ; do
 			case \"\$_print_help_list_prefix\" in
-				*%*) printf \"\$_print_help_list_prefix\" \$((\$_print_help_list_i + 1)) ;;
+				*%*) printf \"\$_print_help_list_prefix\" \$((_print_help_list_i + 1)) ;;
 				*)   puts \"\$_print_help_list_prefix\"
 			esac
 			printf \"%s\${reset}\" \"\$_print_help_list_entry\"
 			_print_help_list_comment=\"\$(list_comment \$_print_help_list_var \$_print_help_list_i)\"
 			[ -z \"\$_print_help_list_comment\" ] || printf ' (%s)' \"\$_print_help_list_comment\"
 			printf '\n'
-			_print_help_list_i=\$((\$_print_help_list_i + 1))
+			_print_help_list_i=\$((_print_help_list_i + 1))
 		done
 	"
 }
@@ -688,7 +688,7 @@ or, if none exists, the first directory that can be created:
 		eval "set -- $(to_list "$data_dir_suffixes")"
 		for suffix ; do
 			printf "   2.%d. ${dim_cyan}%s${reset}\\n" $i "$prefix/$suffix"
-			i=$(($i + 1))
+			i=$((i + 1))
 		done
 	done
 print "3. \"\${XDG_DATA_HOME:-\"\$HOME/.local/share\"}\" / \"$user_dir_suffixes\""
@@ -696,7 +696,7 @@ print "3. \"\${XDG_DATA_HOME:-\"\$HOME/.local/share\"}\" / \"$user_dir_suffixes\
 	eval "set -- $(to_list "$user_dir_suffixes")"
 	for suffix ; do
 		printf "   3.%d. ${dim_cyan}%s${reset}\\n" $i "$data_home/$suffix"
-			i=$(($i + 1))
+			i=$((i + 1))
 	done
 	print
 	exit $true
@@ -1570,7 +1570,7 @@ user_select_entry() {
 			
 			# Use 'command (file)' if comment available or 'file' otherwise
 			_user_select_entry_comment="$(
-				list_comment "$_user_select_entry_lname" "$(($_user_select_entry_i - 1))"
+				list_comment "$_user_select_entry_lname" "$((_user_select_entry_i - 1))"
 			)"
 			if [ -z "$_user_select_entry_comment" ] ; then
 				_user_select_entry_label="$_user_select_entry_color2$_user_select_entry$reset"
@@ -1586,7 +1586,7 @@ user_select_entry() {
 			# Remeber the file for the tag
 			eval "_user_select_entry_$_user_select_entry_i=\"\$_user_select_entry\""
 			
-			_user_select_entry_i=$(($_user_select_entry_i + 1))
+			_user_select_entry_i=$((_user_select_entry_i + 1))
 		done
 		
 		# Add entries for custom files/diectories
@@ -1598,12 +1598,12 @@ user_select_entry() {
 			if [ $_user_select_entry_t = --any ] || [ $_user_select_entry_t = --file ] ; then
 				list_append _user_select_entry_tlist $_user_select_entry_ii
 				list_append _user_select_entry_tlist "Select file to $_user_select_entry_verb..."
-				_user_select_entry_ii=$(($_user_select_entry_ii + 1))
+				_user_select_entry_ii=$((_user_select_entry_ii + 1))
 			fi
 			if [ $_user_select_entry_t = --any ] || [ $_user_select_entry_t = --dir ] ; then
 				list_append _user_select_entry_tlist $_user_select_entry_ii
 				list_append _user_select_entry_tlist "Select directory to $_user_select_entry_verb..."
-				_user_select_entry_ii=$(($_user_select_entry_ii + 1))
+				_user_select_entry_ii=$((_user_select_entry_ii + 1))
 			fi
 		fi
 		
@@ -2440,7 +2440,7 @@ extract_cab_files() {
 		while true ; do
 			_extract_cab_files_cabdir="$sourcedir/cab.$_extract_cab_files_i"
 			if [ -e "$_extract_cab_files_cabdir" ] ; then
-				_extract_cab_files_i=$(($_extract_cab_files_i + 1))
+				_extract_cab_files_i=$((_extract_cab_files_i + 1))
 				continue
 			fi
 			create_dir "$_extract_cab_files_cabdir" "cab #$i work"
@@ -2453,7 +2453,7 @@ extract_cab_files() {
 			*)     extract "$_extract_cab_files_cabfile" ms_cab installshield ;;
 		esac
 		
-		_extract_cab_files_i=$(($_extract_cab_files_i + 1))
+		_extract_cab_files_i=$((_extract_cab_files_i + 1))
 	done
 	
 }
@@ -3114,7 +3114,7 @@ print " - speech.pak"
 f() {
 	
 	# Update progress bar
-	progress=$(($progress + $increment))
+	progress=$((progress + increment))
 	status $progress
 	
 	# Verify & copy file
