@@ -1975,8 +1975,8 @@ probe_cd() {
 probe_cdrom() {
 	
 	_probe_cdrom_mountpoints="$(
-		cat /proc/mounts 2> /dev/null | lines_to_list # Linux - use /proc/mounts
-		mount -p 2> /dev/null | lines_to_list         # Hope that mount has a -p option
+		[ -f /proc/mounts ] && lines_to_list < /proc/mounts # Linux - use /proc/mounts
+		mount -p 2> /dev/null | lines_to_list               # Hope that mount has a -p option
 	)"
 	
 	eval "set -- $_probe_cdrom_mountpoints"
