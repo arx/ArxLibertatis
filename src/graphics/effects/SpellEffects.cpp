@@ -134,8 +134,8 @@ void Draw3DLineTexNew(const RenderMaterial & mat, Vec3f startPos, Vec3f endPos, 
 	}
 }
 
-
-void Split(Vec3f * v, int a, int b, Vec3f f, float fMulX, float fMulY, float fMulZ)
+// TODO fMul is unused, find out if it ever was
+void Split(Vec3f * v, int a, int b, Vec3f f, Vec3f fMul)
 {
 	if (a != b)
 	{
@@ -146,8 +146,8 @@ void Split(Vec3f * v, int a, int b, Vec3f f, float fMulX, float fMulY, float fMu
 			v[i].x = (v[a].x + v[b].x) * 0.5f + f.x * frand2();
 			v[i].y = (v[a].y + v[b].y) * 0.5f + f.y * frand2();
 			v[i].z = (v[a].z + v[b].z) * 0.5f + f.z * frand2();
-			Split(v, a, i, f, fMulX, fMulY, fMulZ);
-			Split(v, i, b, f, fMulX, fMulY, fMulZ);
+			Split(v, a, i, f, fMul);
+			Split(v, i, b, f, fMul);
 		}
 	}
 }

@@ -209,7 +209,7 @@ void CIceProjectile::Create(Vec3f aeSrc, float afBeta, float fLevel, EntityHandl
 	tv1a[0] = s + Vec3f(0.f, 100.f, 0.f);
 	tv1a[end] = e + Vec3f(0.f, 100.f, 0.f);
 
-	Split(tv1a, 0, end, Vec3f(80, 0, 80), 0.5f, 1, 0.5f);
+	Split(tv1a, 0, end, Vec3f(80, 0, 80), Vec3f(0.5f, 1, 0.5f));
 
 	for(int i = 0; i < iNumber; i++) {
 		Icicle & icicle = m_icicles[i];
