@@ -2746,8 +2746,7 @@ void ARX_INTERFACE_ManageOpenedBook_Finish()
 			ARX_PLAYER_ComputePlayerFullStats();
 			
 			Vec2f tmpPos = Vec2f_ZERO;
-			float fPosX = 0;
-			float fPosY = 0;
+			Vec2f fPos = Vec2f_ZERO;
 			bool	bFlyingOver = false;
 
 			for(size_t i=0; i < SPELL_TYPES_COUNT; i++) {
@@ -2765,11 +2764,11 @@ void ARX_INTERFACE_ManageOpenedBook_Finish()
 					}
 
 					if(bOk) {
-						fPosX = 170.f + tmpPos.x * 85.f;
-						fPosY = 135.f + tmpPos.y * 70.f;
+						fPos.x = 170.f + tmpPos.x * 85.f;
+						fPos.y = 135.f + tmpPos.y * 70.f;
 						long flyingover = 0;
 
-						if(MouseInBookRect(fPosX, fPosY, fPosX + 48, fPosY + 48)) {
+						if(MouseInBookRect(fPos.x, fPos.y, fPos.x + 48, fPos.y + 48)) {
 							bFlyingOver = true;
 							flyingover = 1;
 
@@ -2833,7 +2832,7 @@ void ARX_INTERFACE_ManageOpenedBook_Finish()
 							}
 							
 							GRenderer->GetTextureStage(0)->setMagFilter(TextureStage::FilterLinear);
-							DrawBookInterfaceItem(spellicons[i].tc, Vec2f(fPosX, fPosY), color);
+							DrawBookInterfaceItem(spellicons[i].tc, fPos, color);
 							GRenderer->GetTextureStage(0)->setMagFilter(TextureStage::FilterNearest);
 
 							GRenderer->SetRenderState(Renderer::AlphaBlending, false);
