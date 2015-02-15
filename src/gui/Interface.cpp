@@ -2531,10 +2531,6 @@ static bool CheckSkillClick(float x, float y, float * val, TextureContainer * tc
 
 void ARX_INTERFACE_ManageOpenedBook_Finish()
 {
-	GRenderer->SetRenderState(Renderer::DepthWrite, true);
-
-	if((player.Interface & INTER_MAP) && !(player.Interface & INTER_COMBATMODE)) {
-		if(Book_Mode == BOOKMODE_SPELLS) {
 
 			Vec3f pos = Vec3f(0.f, 0.f, 2100.f);
 			Anglef angle = Anglef::ZERO;
@@ -2857,8 +2853,6 @@ void ARX_INTERFACE_ManageOpenedBook_Finish()
 			
 			SetActiveCamera(oldcam);
 			PrepareCamera(oldcam, g_size);
-		}
-	}
 }
 
 void ARX_INTERFACE_ManageOpenedBook() {

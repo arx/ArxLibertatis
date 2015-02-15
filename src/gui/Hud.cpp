@@ -2303,7 +2303,14 @@ void ArxGame::drawAllInterface() {
 
 	if((player.Interface & INTER_MAP) && !(player.Interface & INTER_COMBATMODE)) {
 		ARX_INTERFACE_ManageOpenedBook();
-		ARX_INTERFACE_ManageOpenedBook_Finish();
+		
+		GRenderer->SetRenderState(Renderer::DepthWrite, true);
+		
+		if((player.Interface & INTER_MAP) && !(player.Interface & INTER_COMBATMODE)) {
+			if(Book_Mode == BOOKMODE_SPELLS) {
+				ARX_INTERFACE_ManageOpenedBook_Finish();
+			}
+		}
 	}
 	
 	if(CurrSpellSymbol || player.SpellToMemorize.bSpell) {
