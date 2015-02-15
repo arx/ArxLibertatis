@@ -1388,12 +1388,9 @@ bool InSecondaryInventoryPos(const Vec2s & pos) {
 bool InPlayerInventoryPos(const Vec2s & pos) {
 	Vec2f anchorPos = getInventoryGuiAnchorPosition();
 	
-	float fCenterX	= anchorPos.x;
-	float fSizY		= anchorPos.y;
-
-	short iPosX = checked_range_cast<short>(fCenterX);
-	short iPosY = checked_range_cast<short>(fSizY);
-
+	short iPosX = checked_range_cast<short>(anchorPos.x);
+	short iPosY = checked_range_cast<short>(anchorPos.y);
+	
 	short tx, ty;
 
 	if(player.Interface & INTER_INVENTORY) {
