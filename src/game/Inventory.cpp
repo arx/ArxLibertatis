@@ -1389,12 +1389,10 @@ bool InPlayerInventoryPos(const Vec2s & pos) {
 	Vec2f anchorPos = getInventoryGuiAnchorPosition();
 	
 	Vec2s iPos = Vec2s(anchorPos);
-	
-	short tx, ty;
 
 	if(player.Interface & INTER_INVENTORY) {
-		tx = pos.x - iPos.x;
-		ty = pos.y - iPos.y;//-2;
+		short tx = pos.x - iPos.x;
+		short ty = pos.y - iPos.y;//-2;
 
 		if(tx >= 0 && ty >= 0) {
 			tx = tx / SHORT_INTERFACE_RATIO(32);
@@ -1423,8 +1421,8 @@ bool InPlayerInventoryPos(const Vec2s & pos) {
 		}
 
 		for(int i = 0; i < player.bag; i++) {
-			tx = pos.x - iPos.x;
-			ty = pos.y - iPos.y - iY;
+			short tx = pos.x - iPos.x;
+			short ty = pos.y - iPos.y - iY;
 
 			if(tx >= 0 && ty >= 0) {
 				tx = tx / SHORT_INTERFACE_RATIO(32);
