@@ -1391,17 +1391,16 @@ bool InPlayerInventoryPos(const Vec2s & pos) {
 	Vec2s iPos = Vec2s(anchorPos);
 
 	if(player.Interface & INTER_INVENTORY) {
-		short tx = pos.x - iPos.x;
-		short ty = pos.y - iPos.y;//-2;
+		Vec2s t = pos - iPos;
+		
+		if(t.x >= 0 && t.y >= 0) {
+			t.x = t.x / SHORT_INTERFACE_RATIO(32);
+			t.y = t.y / SHORT_INTERFACE_RATIO(32);
 
-		if(tx >= 0 && ty >= 0) {
-			tx = tx / SHORT_INTERFACE_RATIO(32);
-			ty = ty / SHORT_INTERFACE_RATIO(32);
-
-			if(   tx >= 0
-			   && (size_t)tx <= INVENTORY_X
-			   && ty >= 0
-			   && (size_t)ty < INVENTORY_Y
+			if(   t.x >= 0
+			   && (size_t)t.x <= INVENTORY_X
+			   && t.y >= 0
+			   && (size_t)t.y < INVENTORY_Y
 			)
 				return true;
 			else
