@@ -2744,9 +2744,8 @@ void ARX_INTERFACE_ManageOpenedBook_Finish()
 
 			// Now Draws Spells for this level...
 			ARX_PLAYER_ComputePlayerFullStats();
-
-			float posx=0;
-			float posy=0;
+			
+			Vec2f tmpPos = Vec2f_ZERO;
 			float fPosX = 0;
 			float fPosY = 0;
 			bool	bFlyingOver = false;
@@ -2766,8 +2765,8 @@ void ARX_INTERFACE_ManageOpenedBook_Finish()
 					}
 
 					if(bOk) {
-						fPosX = 170.f + posx * 85.f;
-						fPosY = 135.f + posy * 70.f;
+						fPosX = 170.f + tmpPos.x * 85.f;
+						fPosY = 135.f + tmpPos.y * 70.f;
 						long flyingover = 0;
 
 						if(MouseInBookRect(fPosX, fPosY, fPosX + 48, fPosY + 48)) {
@@ -2840,11 +2839,11 @@ void ARX_INTERFACE_ManageOpenedBook_Finish()
 							GRenderer->SetRenderState(Renderer::AlphaBlending, false);
 						}
 
-						posx ++;
+						tmpPos.x ++;
 
-						if(posx >= 2) {
-							posx = 0;
-							posy ++;
+						if(tmpPos.x >= 2) {
+							tmpPos.x = 0;
+							tmpPos.y ++;
 						}
 					}
 				}
