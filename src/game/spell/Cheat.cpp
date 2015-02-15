@@ -75,12 +75,13 @@ void Manage_sp_max() {
 	if(sp_max_start != 0 && v < 20000) {
 		float modi = (20000 - v) * ( 1.0f / 2000 ) * ( 1.0f / 10 );
 		float sizX = 16;
-		float px = (float)g_size.center().x - (float)sp_max_ch.length() * ( 1.0f / 2 ) * sizX;
-		float py = (float)g_size.center().y;
-
+		
+		Vec2f p = Vec2f(g_size.center());
+		p.x -= (float)sp_max_ch.length() * ( 1.0f / 2 ) * sizX;
+		
 		for(size_t i = 0; i < sp_max_ch.length(); i++) {
-			float dx = px + sizX * (float)i;
-			float dy = py + sp_max_y[i];
+			float dx = p.x + sizX * (float)i;
+			float dy = p.y + sp_max_y[i];
 			sp_max_y[i] = std::sin(dx + (float)float(arxtime) * ( 1.0f / 100 )) * 30.f * modi;
 			std::string tex(1, sp_max_ch[i]);
 
