@@ -1799,8 +1799,7 @@ bool TakeFromInventory(const Vec2s & pos) {
 	
 	Vec2f anchorPos = getInventoryGuiAnchorPosition();
 	
-	int iPosX = checked_range_cast<int>(anchorPos.x);
-	int iPosY = checked_range_cast<int>(anchorPos.y);
+	Vec2i iPos = Vec2i(anchorPos);
 	
 	if(InPlayerInventoryPos(pos)) {
 		if(!GInput->actionPressed(CONTROLS_CUST_STEALTHMODE)) {
@@ -1817,8 +1816,8 @@ bool TakeFromInventory(const Vec2s & pos) {
 					RemoveFromAllInventories(ioo);
 					sInventory = 1;
 					
-					float fX = (pos.x - iPosX) / INTERFACE_RATIO(32);
-					float fY = (pos.y - iPosY) / INTERFACE_RATIO(32);
+					float fX = (pos.x - iPos.x) / INTERFACE_RATIO(32);
+					float fY = (pos.y - iPos.y) / INTERFACE_RATIO(32);
 					
 					sInventoryPos.x = checked_range_cast<short>(fX);
 					sInventoryPos.y = checked_range_cast<short>(fY);
@@ -1844,8 +1843,8 @@ bool TakeFromInventory(const Vec2s & pos) {
 			slot.show = 1;
 			sInventory = 1;
 			
-			float fX = (pos.x - iPosX) / INTERFACE_RATIO(32);
-			float fY = (pos.y - iPosY) / INTERFACE_RATIO(32);
+			float fX = (pos.x - iPos.x) / INTERFACE_RATIO(32);
+			float fY = (pos.y - iPos.y) / INTERFACE_RATIO(32);
 			
 			sInventoryPos.x = checked_range_cast<short>(fX);
 			sInventoryPos.y = checked_range_cast<short>(fY);
