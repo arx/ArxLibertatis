@@ -433,7 +433,7 @@ void CPoisonProjectile::Create(Vec3f _eSrc, float _fBeta)
 	pathways[0] = eSrc;
 	pathways[9] = dest;
 	
-	Split(pathways, 0, 9, 10 * fBetaRadCos, 10, 10, 10, 10 * fBetaRadSin, 10);
+	Split(pathways, 0, 9, Vec3f(10 * fBetaRadCos, 10, 10 * fBetaRadSin), 10, 10, 10);
 	
 	fTrail = -1;
 
