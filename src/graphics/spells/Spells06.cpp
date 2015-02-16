@@ -213,45 +213,43 @@ void CCreateField::Render()
 
 	falpha = glm::sin(glm::radians(fglow)) + rnd() * 0.2f;
 	falpha = glm::clamp(falpha, 0.f, 1.f);
-
-	float x = eSrc.x;
-	float y = eSrc.y;
-	float z = eSrc.z;
+	
+	Vec3f pos = eSrc;
 	float smul = 100 * size;
 
 	// bottom points
-	b[0].x = x - smul;
-	b[0].y = y;
-	b[0].z = z - smul;
+	b[0].x = pos.x - smul;
+	b[0].y = pos.y;
+	b[0].z = pos.z - smul;
 
-	b[1].x = x + smul;
-	b[1].y = y;
-	b[1].z = z - smul;
+	b[1].x = pos.x + smul;
+	b[1].y = pos.y;
+	b[1].z = pos.z - smul;
 
-	b[2].x = x + smul;
-	b[2].y = y;
-	b[2].z = z + smul;
+	b[2].x = pos.x + smul;
+	b[2].y = pos.y;
+	b[2].z = pos.z + smul;
 
-	b[3].x = x - smul;
-	b[3].y = y;
-	b[3].z = z + smul;
+	b[3].x = pos.x - smul;
+	b[3].y = pos.y;
+	b[3].z = pos.z + smul;
 
 	// top points
-	t[0].x = x - smul;
-	t[0].y = y - 250 * ysize;
-	t[0].z = z - smul;
+	t[0].x = pos.x - smul;
+	t[0].y = pos.y - 250 * ysize;
+	t[0].z = pos.z - smul;
 
-	t[1].x = x + smul;
-	t[1].y = y - 250 * ysize;
-	t[1].z = z - smul;
+	t[1].x = pos.x + smul;
+	t[1].y = pos.y - 250 * ysize;
+	t[1].z = pos.z - smul;
 
-	t[2].x = x + smul;
-	t[2].y = y - 250 * ysize;
-	t[2].z = z + smul;
+	t[2].x = pos.x + smul;
+	t[2].y = pos.y - 250 * ysize;
+	t[2].z = pos.z + smul;
 
-	t[3].x = x - smul;
-	t[3].y = y - 250 * ysize;
-	t[3].z = z + smul;
+	t[3].x = pos.x - smul;
+	t[3].y = pos.y - 250 * ysize;
+	t[3].z = pos.z + smul;
 
 	fwrap -= 5.0f; // TODO ignores the frame delay
 	while(fwrap < 0) {
