@@ -2552,8 +2552,7 @@ void ARX_INTERFACE_ManageOpenedBook_Finish()
 	PDL[0] = light;
 	TOTPDL=1;
 	
-	long xpos=0;
-	long ypos=0;
+	Vec2i tmpPos = Vec2i_ZERO;
 	
 	for(size_t i = 0; i < RUNE_COUNT; i++) {
 		if(!gui::necklace.runes[i])
@@ -2561,8 +2560,8 @@ void ARX_INTERFACE_ManageOpenedBook_Finish()
 		
 		EERIE_3DOBJ * rune = gui::necklace.runes[i];
 		
-		bookcam.center.x = (382 + xpos * 45 + BOOKDEC.x) * g_sizeRatio.x;
-		bookcam.center.y = (100 + ypos * 64 + BOOKDEC.y) * g_sizeRatio.y;
+		bookcam.center.x = (382 + tmpPos.x * 45 + BOOKDEC.x) * g_sizeRatio.x;
+		bookcam.center.y = (100 + tmpPos.y * 64 + BOOKDEC.y) * g_sizeRatio.y;
 		
 		SetActiveCamera(&bookcam);
 		PrepareCamera(&bookcam, g_size);
@@ -2599,11 +2598,11 @@ void ARX_INTERFACE_ManageOpenedBook_Finish()
 			
 			PopAllTriangleList();
 			
-			xpos++;
+			tmpPos.x++;
 			
-			if(xpos > 4) {
-				xpos = 0;
-				ypos++;
+			if(tmpPos.x > 4) {
+				tmpPos.x = 0;
+				tmpPos.y++;
 			}
 			
 			const Rect runeMouseTestRect(
