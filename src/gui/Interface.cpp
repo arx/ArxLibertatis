@@ -2552,7 +2552,6 @@ void ARX_INTERFACE_ManageOpenedBook_Finish()
 	PDL[0] = light;
 	TOTPDL=1;
 	
-	long found2=0;
 	float n;
 	long xpos=0;
 	long ypos=0;
@@ -2612,7 +2611,7 @@ void ARX_INTERFACE_ManageOpenedBook_Finish()
 				);
 				
 				// Checks for Mouse floating over a rune...
-				if(!found2 && runeMouseTestRect.contains(Vec2i(DANAEMouse))) {
+				if(runeMouseTestRect.contains(Vec2i(DANAEMouse))) {
 					long r=0;
 					
 					for(size_t j = 0; j < gui::necklace.runes[i]->facelist.size(); j++) {
@@ -2735,8 +2734,7 @@ void ARX_INTERFACE_ManageOpenedBook_Finish()
 	
 	GRenderer->SetCulling(Renderer::CullCCW);
 	
-	if(!found2)
-		LastRune=-1;
+	LastRune=-1;
 	
 	// Now Draws Spells for this level...
 	ARX_PLAYER_ComputePlayerFullStats();
