@@ -2552,7 +2552,6 @@ void ARX_INTERFACE_ManageOpenedBook_Finish()
 	PDL[0] = light;
 	TOTPDL=1;
 	
-	float n;
 	long xpos=0;
 	long ypos=0;
 	
@@ -2615,7 +2614,7 @@ void ARX_INTERFACE_ManageOpenedBook_Finish()
 					long r=0;
 					
 					for(size_t j = 0; j < gui::necklace.runes[i]->facelist.size(); j++) {
-						n=PtIn2DPolyProj(gui::necklace.runes[i], &gui::necklace.runes[i]->facelist[j], (float)DANAEMouse.x, (float)DANAEMouse.y);
+						float n = PtIn2DPolyProj(gui::necklace.runes[i], &gui::necklace.runes[i]->facelist[j], (float)DANAEMouse.x, (float)DANAEMouse.y);
 						
 						if(n!=0.f) {
 							r=1;
