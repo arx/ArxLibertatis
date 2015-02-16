@@ -325,16 +325,16 @@ void updateQuestBook() {
 
 //-----------------------------------------------------------------------------
 
-static bool MouseInBookRect(const float x, const float y, const float cx, const float cy) {
-	return DANAEMouse.x >= (x + BOOKDEC.x) * g_sizeRatio.x
-		&& DANAEMouse.x <= (cx + BOOKDEC.x) * g_sizeRatio.x
-		&& DANAEMouse.y >= (y + BOOKDEC.y) * g_sizeRatio.y
-		&& DANAEMouse.y <= (cy + BOOKDEC.y) * g_sizeRatio.y;
+static bool MouseInBookRect(const Vec2f pos, const Vec2f cpos) {
+	return DANAEMouse.x >= (pos.x + BOOKDEC.x) * g_sizeRatio.x
+		&& DANAEMouse.x <= (cpos.x + BOOKDEC.x) * g_sizeRatio.x
+		&& DANAEMouse.y >= (pos.y + BOOKDEC.y) * g_sizeRatio.y
+		&& DANAEMouse.y <= (cpos.y + BOOKDEC.y) * g_sizeRatio.y;
 }
 
 bool ARX_INTERFACE_MouseInBook() {
 	if((player.Interface & INTER_MAP) && !(player.Interface & INTER_COMBATMODE)) {
-		return MouseInBookRect(99, 65, 599, 372);
+		return MouseInBookRect(Vec2f(99, 65), Vec2f(599, 372));
 	} else {
 		return false;
 	}
@@ -2449,7 +2449,7 @@ static bool CheckAttributeClick(float x, float y, float * val, TextureContainer 
 	bool rval=false;
 	float t = *val;
 
-	if(MouseInBookRect(x, y, x + 32, y + 32)) {
+	if(MouseInBookRect(Vec2f(x, y), Vec2f(x + 32, y + 32))) {
 		rval = true;
 
 		if(((BOOKBUTTON & 1) || (BOOKBUTTON & 2)) && tc)
@@ -2493,7 +2493,7 @@ static bool CheckSkillClick(float x, float y, float * val, TextureContainer * tc
 	float t = *val;
 	float ot = *oldval;
 
-	if(MouseInBookRect( x, y, x + 32, y + 32)) {
+	if(MouseInBookRect(Vec2f(x, y), Vec2f(x + 32, y + 32))) {
 		rval=true;
 
 		if(((BOOKBUTTON & 1) || (BOOKBUTTON & 2)) && tc)
@@ -2769,7 +2769,7 @@ void ARX_INTERFACE_ManageOpenedBook_SpellsDraw() {
 				Vec2f fPos = Vec2f(170.f, 135.f) + tmpPos * Vec2f(85.f, 70.f);
 				long flyingover = 0;
 				
-				if(MouseInBookRect(fPos.x, fPos.y, fPos.x + 48, fPos.y + 48)) {
+				if(MouseInBookRect(fPos, Vec2f(fPos.x + 48, fPos.y + 48))) {
 					bFlyingOver = true;
 					flyingover = 1;
 					
@@ -2913,7 +2913,7 @@ void ARX_INTERFACE_ManageOpenedBook() {
 			DrawBookInterfaceItem(tcBookmarkChar, pos);
 
 			// Check for cursor on charcter sheet bookmark
-			if(MouseInBookRect(pos.x, pos.y, pos.x + tcBookmarkChar->m_dwWidth, pos.y + tcBookmarkChar->m_dwHeight)) {
+			if(MouseInBookRect(pos, Vec2f(pos.x + tcBookmarkChar->m_dwWidth, pos.y + tcBookmarkChar->m_dwHeight))) {
 				// Draw highlighted Character sheet icon
 				GRenderer->SetBlendFunc(Renderer::BlendOne, Renderer::BlendOne);
 				GRenderer->SetRenderState(Renderer::AlphaBlending, true);
@@ -2945,7 +2945,7 @@ void ARX_INTERFACE_ManageOpenedBook() {
 					}
 				}
 				
-				if(MouseInBookRect(pos.x, pos.y, pos.x + ITC.bookmark_magic->m_dwWidth, pos.y + ITC.bookmark_magic->m_dwHeight)) {
+				if(MouseInBookRect(pos, Vec2f(pos.x + ITC.bookmark_magic->m_dwWidth, pos.y + ITC.bookmark_magic->m_dwHeight))) {
 					// Draw highlighted Magic sheet icon
 					GRenderer->SetBlendFunc(Renderer::BlendOne, Renderer::BlendOne);
 					GRenderer->SetRenderState(Renderer::AlphaBlending, true);
@@ -2970,7 +2970,7 @@ void ARX_INTERFACE_ManageOpenedBook() {
 			
 			DrawBookInterfaceItem(ITC.bookmark_map, pos);
 
-			if(MouseInBookRect(pos.x, pos.y, pos.x + ITC.bookmark_map->m_dwWidth, pos.y + ITC.bookmark_map->m_dwHeight)) {
+			if(MouseInBookRect(pos, Vec2f(pos.x + ITC.bookmark_map->m_dwWidth, pos.y + ITC.bookmark_map->m_dwHeight))) {
 				GRenderer->SetBlendFunc(Renderer::BlendOne, Renderer::BlendOne);
 				GRenderer->SetRenderState(Renderer::AlphaBlending, true);
 				DrawBookInterfaceItem(ITC.bookmark_map, pos, Color::grayb(0x55));
@@ -2993,7 +2993,7 @@ void ARX_INTERFACE_ManageOpenedBook() {
 			
 			DrawBookInterfaceItem(ITC.bookmark_quest, pos);
 
-			if(MouseInBookRect(pos.x, pos.y, pos.x + ITC.bookmark_quest->m_dwWidth, pos.y + ITC.bookmark_quest->m_dwHeight)) {
+			if(MouseInBookRect(pos, Vec2f(pos.x + ITC.bookmark_quest->m_dwWidth, pos.y + ITC.bookmark_quest->m_dwHeight))) {
 				GRenderer->SetBlendFunc(Renderer::BlendOne, Renderer::BlendOne);
 				GRenderer->SetRenderState(Renderer::AlphaBlending, true);
 				DrawBookInterfaceItem(ITC.bookmark_quest, pos, Color::grayb(0x55));
@@ -3049,7 +3049,7 @@ void ARX_INTERFACE_ManageOpenedBook() {
 					
 					DrawBookInterfaceItem(ITC.accessible_1, pos);
 
-					if(MouseInBookRect(pos.x, pos.y, pos.x + 32, pos.y + 32)) {
+					if(MouseInBookRect(pos, Vec2f(pos.x + 32, pos.y + 32))) {
 						GRenderer->SetBlendFunc(Renderer::BlendOne, Renderer::BlendOne);
 						GRenderer->SetRenderState(Renderer::AlphaBlending, true);
 						DrawBookInterfaceItem(ITC.accessible_1, pos, Color::grayb(0x55));
@@ -3070,7 +3070,7 @@ void ARX_INTERFACE_ManageOpenedBook() {
 					
 					DrawBookInterfaceItem(ITC.accessible_2, pos);
 
-					if(MouseInBookRect(pos.x, pos.y, pos.x + 32, pos.y + 32)) {
+					if(MouseInBookRect(pos, Vec2f(pos.x + 32, pos.y + 32))) {
 						GRenderer->SetBlendFunc(Renderer::BlendOne, Renderer::BlendOne);
 						GRenderer->SetRenderState(Renderer::AlphaBlending, true);
 						DrawBookInterfaceItem(ITC.accessible_2, pos, Color::grayb(0x55));
@@ -3091,7 +3091,7 @@ void ARX_INTERFACE_ManageOpenedBook() {
 					
 					DrawBookInterfaceItem(ITC.accessible_3, pos);
 
-					if(MouseInBookRect(pos.x, pos.y, pos.x + 32, pos.y + 32)) {
+					if(MouseInBookRect(pos, Vec2f(pos.x + 32, pos.y + 32))) {
 						GRenderer->SetBlendFunc(Renderer::BlendOne, Renderer::BlendOne);
 						GRenderer->SetRenderState(Renderer::AlphaBlending, true);
 						DrawBookInterfaceItem(ITC.accessible_3, pos, Color::grayb(0x55));
@@ -3112,7 +3112,7 @@ void ARX_INTERFACE_ManageOpenedBook() {
 					
 					DrawBookInterfaceItem(ITC.accessible_4, pos);
 
-					if(MouseInBookRect(pos.x, pos.y, pos.x + 32, pos.y + 32)) {
+					if(MouseInBookRect(pos, Vec2f(pos.x + 32, pos.y + 32))) {
 						GRenderer->SetBlendFunc(Renderer::BlendOne, Renderer::BlendOne);
 						GRenderer->SetRenderState(Renderer::AlphaBlending, true);
 						DrawBookInterfaceItem(ITC.accessible_4, pos, Color::grayb(0x55));
@@ -3133,7 +3133,7 @@ void ARX_INTERFACE_ManageOpenedBook() {
 					
 					DrawBookInterfaceItem(ITC.accessible_5, pos);
 
-					if(MouseInBookRect(pos.x, pos.y, pos.x + 32, pos.y + 32)) {
+					if(MouseInBookRect(pos, Vec2f(pos.x + 32, pos.y + 32))) {
 						GRenderer->SetBlendFunc(Renderer::BlendOne, Renderer::BlendOne);
 						GRenderer->SetRenderState(Renderer::AlphaBlending, true);
 						DrawBookInterfaceItem(ITC.accessible_5, pos, Color::grayb(0x55));
@@ -3154,7 +3154,7 @@ void ARX_INTERFACE_ManageOpenedBook() {
 					
 					DrawBookInterfaceItem(ITC.accessible_6, pos);
 
-					if(MouseInBookRect(pos.x, pos.y, pos.x + 32, pos.y + 32)) {
+					if(MouseInBookRect(pos, Vec2f(pos.x + 32, pos.y + 32))) {
 						GRenderer->SetBlendFunc(Renderer::BlendOne, Renderer::BlendOne);
 						GRenderer->SetRenderState(Renderer::AlphaBlending, true);
 						DrawBookInterfaceItem(ITC.accessible_6, pos, Color::grayb(0x55));
@@ -3175,7 +3175,7 @@ void ARX_INTERFACE_ManageOpenedBook() {
 					
 					DrawBookInterfaceItem(ITC.accessible_7, pos);
 
-					if(MouseInBookRect(pos.x, pos.y, pos.x + 32, pos.y + 32)) {
+					if(MouseInBookRect(pos, Vec2f(pos.x + 32, pos.y + 32))) {
 						GRenderer->SetBlendFunc(Renderer::BlendOne, Renderer::BlendOne);
 						GRenderer->SetRenderState(Renderer::AlphaBlending, true);
 						DrawBookInterfaceItem(ITC.accessible_7, pos, Color::grayb(0x55));
@@ -3196,7 +3196,7 @@ void ARX_INTERFACE_ManageOpenedBook() {
 					
 					DrawBookInterfaceItem(ITC.accessible_8, pos);
 
-					if(MouseInBookRect(pos.x, pos.y, pos.x + 32, pos.y + 32)) {
+					if(MouseInBookRect(pos, Vec2f(pos.x + 32, pos.y + 32))) {
 						GRenderer->SetBlendFunc(Renderer::BlendOne, Renderer::BlendOne);
 						GRenderer->SetRenderState(Renderer::AlphaBlending, true);
 						DrawBookInterfaceItem(ITC.accessible_8, pos, Color::grayb(0x55));
@@ -3217,7 +3217,7 @@ void ARX_INTERFACE_ManageOpenedBook() {
 					
 					DrawBookInterfaceItem(ITC.accessible_9, pos);
 
-					if(MouseInBookRect(pos.x, pos.y, pos.x + 32, pos.y + 32)) {
+					if(MouseInBookRect(pos, Vec2f(pos.x + 32, pos.y + 32))) {
 						GRenderer->SetBlendFunc(Renderer::BlendOne, Renderer::BlendOne);
 						GRenderer->SetRenderState(Renderer::AlphaBlending, true);
 						DrawBookInterfaceItem(ITC.accessible_9, pos, Color::grayb(0x55));
@@ -3238,7 +3238,7 @@ void ARX_INTERFACE_ManageOpenedBook() {
 					
 					DrawBookInterfaceItem(ITC.accessible_10, pos);
 
-					if(MouseInBookRect(pos.x, pos.y, pos.x + 32, pos.y + 32)) {
+					if(MouseInBookRect(pos, Vec2f(pos.x + 32, pos.y + 32))) {
 						GRenderer->SetBlendFunc(Renderer::BlendOne, Renderer::BlendOne);
 						GRenderer->SetRenderState(Renderer::AlphaBlending, true);
 						DrawBookInterfaceItem(ITC.accessible_10, pos, Color::grayb(0x55));
@@ -3284,20 +3284,20 @@ void ARX_INTERFACE_ManageOpenedBook() {
 		tex = ss2.str();
 		DrawBookTextCenter(hFontInBook, Vec2f(510, 74), tex, color);
 
-		if (MouseInBookRect(463, 74, 550, 94))
+		if (MouseInBookRect(Vec2f(463, 74), Vec2f(550, 94)))
 			FLYING_OVER = WND_XP;
 
-		if (MouseInBookRect(97+41,64+62, 97+41+32, 64+62+32))
+		if (MouseInBookRect(Vec2f(97+41,64+62), Vec2f(97+41+32, 64+62+32)))
 			FLYING_OVER = WND_AC;
-		else if (MouseInBookRect(97+41,64+120, 97+41+32, 64+120+32))
+		else if (MouseInBookRect(Vec2f(97+41,64+120), Vec2f(97+41+32, 64+120+32)))
 			FLYING_OVER = WND_RESIST_MAGIC;
-		else if (MouseInBookRect(97+41,64+178, 97+41+32, 64+178+32))
+		else if (MouseInBookRect(Vec2f(97+41,64+178), Vec2f(97+41+32, 64+178+32)))
 			FLYING_OVER = WND_RESIST_POISON;
-		else if (MouseInBookRect(97+211,64+62, 97+211+32, 64+62+32))
+		else if (MouseInBookRect(Vec2f(97+211,64+62), Vec2f(97+211+32, 64+62+32)))
 			FLYING_OVER = WND_HP;
-		else if (MouseInBookRect(97+211,64+120, 97+211+32, 64+120+32))
+		else if (MouseInBookRect(Vec2f(97+211,64+120), Vec2f(97+211+32, 64+120+32)))
 			FLYING_OVER = WND_MANA;
-		else if (MouseInBookRect(97+211,64+178, 97+211+32, 64+178+32))
+		else if (MouseInBookRect(Vec2f(97+211,64+178), Vec2f(97+211+32, 64+178+32)))
 			FLYING_OVER = WND_DAMAGE;
 
 		if(!((player.Attribute_Redistribute == 0) && (ARXmenu.currentmode != AMCM_NEWQUEST))) {
@@ -3390,33 +3390,33 @@ void ARX_INTERFACE_ManageOpenedBook() {
 			}
 		} else {
 			//------------------------------------PRIMARY
-			if (MouseInBookRect(379,95, 379+32, 95+32))
+			if (MouseInBookRect(Vec2f(379,95), Vec2f(379+32, 95+32)))
 				FLYING_OVER=BOOK_STRENGTH;
-			else if (MouseInBookRect(428,95, 428+32, 95+32))
+			else if (MouseInBookRect(Vec2f(428,95), Vec2f(428+32, 95+32)))
 				FLYING_OVER=BOOK_MIND;
-			else if (MouseInBookRect(477,95, 477+32, 95+32))
+			else if (MouseInBookRect(Vec2f(477,95), Vec2f(477+32, 95+32)))
 				FLYING_OVER=BOOK_DEXTERITY;
-			else if (MouseInBookRect(526,95, 526+32, 95+32))
+			else if (MouseInBookRect(Vec2f(526,95), Vec2f(526+32, 95+32)))
 				FLYING_OVER=BOOK_CONSTITUTION;
 
 			//------------------------------------SECONDARY
-			if (MouseInBookRect(389,177, 389+32, 177+32))
+			if (MouseInBookRect(Vec2f(389,177), Vec2f(389+32, 177+32)))
 				FLYING_OVER=BOOK_STEALTH;
-			else if (MouseInBookRect(453,177, 453+32, 177+32))
+			else if (MouseInBookRect(Vec2f(453,177), Vec2f(453+32, 177+32)))
 				FLYING_OVER=BOOK_MECANISM;
-			else if (MouseInBookRect(516,177, 516+32, 177+32))
+			else if (MouseInBookRect(Vec2f(516,177), Vec2f(516+32, 177+32)))
 				FLYING_OVER=BOOK_INTUITION;
-			else if (MouseInBookRect(389,230, 389+32, 230+32))
+			else if (MouseInBookRect(Vec2f(389,230), Vec2f(389+32, 230+32)))
 				FLYING_OVER=BOOK_ETHERAL_LINK;
-			else if (MouseInBookRect(453,230, 453+32, 230+32))
+			else if (MouseInBookRect(Vec2f(453,230), Vec2f(453+32, 230+32)))
 				FLYING_OVER=BOOK_OBJECT_KNOWLEDGE;
-			else if (MouseInBookRect(516,230, 516+32, 230+32))
+			else if (MouseInBookRect(Vec2f(516,230), Vec2f(516+32, 230+32)))
 				FLYING_OVER=BOOK_CASTING;
-			else if (MouseInBookRect(389,284, 389+32, 284+32))
+			else if (MouseInBookRect(Vec2f(389,284), Vec2f(389+32, 284+32)))
 				FLYING_OVER=BOOK_CLOSE_COMBAT;
-			else if (MouseInBookRect(453,284, 453+32, 284+32))
+			else if (MouseInBookRect(Vec2f(453,284), Vec2f(453+32, 284+32)))
 				FLYING_OVER=BOOK_PROJECTILE;
-			else if (MouseInBookRect(516,284, 516+32, 284+32))
+			else if (MouseInBookRect(Vec2f(516,284), Vec2f(516+32, 284+32)))
 				FLYING_OVER=BOOK_DEFENSE;
 		}
 
