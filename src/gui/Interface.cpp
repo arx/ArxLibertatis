@@ -2559,177 +2559,177 @@ void ARX_INTERFACE_ManageOpenedBook_Finish()
 		if(!gui::necklace.runes[i])
 			continue;
 		
-			bookcam.center.x = (382 + xpos * 45 + BOOKDEC.x) * g_sizeRatio.x;
-			bookcam.center.y = (100 + ypos * 64 + BOOKDEC.y) * g_sizeRatio.y;
+		bookcam.center.x = (382 + xpos * 45 + BOOKDEC.x) * g_sizeRatio.x;
+		bookcam.center.y = (100 + ypos * 64 + BOOKDEC.y) * g_sizeRatio.y;
+		
+		SetActiveCamera(&bookcam);
+		PrepareCamera(&bookcam, g_size);
+		
+		// First draw the lace
+		angle.setPitch(0.f);
+		
+		if(player.rune_flags & (RuneFlag)(1<<i)) {
 			
-			SetActiveCamera(&bookcam);
-			PrepareCamera(&bookcam, g_size);
+			TransformInfo t1(pos, glm::toQuat(toRotationMatrix(angle)));
+			DrawEERIEInter(gui::necklace.lacet, t1, NULL);
 			
-			// First draw the lace
-			angle.setPitch(0.f);
-			
-			if(player.rune_flags & (RuneFlag)(1<<i)) {
+			if(gui::necklace.runes[i]->angle.getPitch() != 0.f) {
+				if(gui::necklace.runes[i]->angle.getPitch() > 300.f)
+					gui::necklace.runes[i]->angle.setPitch(300.f);
 				
-				TransformInfo t1(pos, glm::toQuat(toRotationMatrix(angle)));
-				DrawEERIEInter(gui::necklace.lacet, t1, NULL);
+				angle.setPitch(std::sin(arxtime.get_updated() * (1.0f / 200)) * gui::necklace.runes[i]->angle.getPitch() * (1.0f / 40));
+			}
+			
+			gui::necklace.runes[i]->angle.setPitch(gui::necklace.runes[i]->angle.getPitch() - framedelay * 0.2f);
+			
+			if(gui::necklace.runes[i]->angle.getPitch() < 0.f)
+				gui::necklace.runes[i]->angle.setPitch(0.f);
+			
+			GRenderer->SetRenderState(Renderer::DepthWrite, true);
+			GRenderer->SetRenderState(Renderer::AlphaBlending, false);
+			
+			// Now draw the rune
+			TransformInfo t2(pos, glm::toQuat(toRotationMatrix(angle)));
+			DrawEERIEInter(gui::necklace.runes[i], t2, NULL);
+			
+			EERIE_2D_BBOX runeBox;
+			UpdateBbox2d(*gui::necklace.runes[i], runeBox);
+			
+			PopAllTriangleList();
+			
+			xpos++;
+			
+			if(xpos > 4) {
+				xpos = 0;
+				ypos++;
+			}
+			
+			const Rect runeMouseTestRect(
+			runeBox.min.x,
+			runeBox.min.y,
+			runeBox.max.x,
+			runeBox.max.y
+			);
+			
+			// Checks for Mouse floating over a rune...
+			if(runeMouseTestRect.contains(Vec2i(DANAEMouse))) {
+				long r=0;
 				
-				if(gui::necklace.runes[i]->angle.getPitch() != 0.f) {
-					if(gui::necklace.runes[i]->angle.getPitch() > 300.f)
-						gui::necklace.runes[i]->angle.setPitch(300.f);
+				for(size_t j = 0; j < gui::necklace.runes[i]->facelist.size(); j++) {
+					float n = PtIn2DPolyProj(gui::necklace.runes[i], &gui::necklace.runes[i]->facelist[j], (float)DANAEMouse.x, (float)DANAEMouse.y);
 					
-					angle.setPitch(std::sin(arxtime.get_updated() * (1.0f / 200)) * gui::necklace.runes[i]->angle.getPitch() * (1.0f / 40));
-				}
-				
-				gui::necklace.runes[i]->angle.setPitch(gui::necklace.runes[i]->angle.getPitch() - framedelay * 0.2f);
-				
-				if(gui::necklace.runes[i]->angle.getPitch() < 0.f)
-					gui::necklace.runes[i]->angle.setPitch(0.f);
-				
-				GRenderer->SetRenderState(Renderer::DepthWrite, true);
-				GRenderer->SetRenderState(Renderer::AlphaBlending, false);
-				
-				// Now draw the rune
-				TransformInfo t2(pos, glm::toQuat(toRotationMatrix(angle)));
-				DrawEERIEInter(gui::necklace.runes[i], t2, NULL);
-				
-				EERIE_2D_BBOX runeBox;
-				UpdateBbox2d(*gui::necklace.runes[i], runeBox);
-				
-				PopAllTriangleList();
-				
-				xpos++;
-				
-				if(xpos > 4) {
-					xpos = 0;
-					ypos++;
-				}
-				
-				const Rect runeMouseTestRect(
-				runeBox.min.x,
-				runeBox.min.y,
-				runeBox.max.x,
-				runeBox.max.y
-				);
-				
-				// Checks for Mouse floating over a rune...
-				if(runeMouseTestRect.contains(Vec2i(DANAEMouse))) {
-					long r=0;
-					
-					for(size_t j = 0; j < gui::necklace.runes[i]->facelist.size(); j++) {
-						float n = PtIn2DPolyProj(gui::necklace.runes[i], &gui::necklace.runes[i]->facelist[j], (float)DANAEMouse.x, (float)DANAEMouse.y);
-						
-						if(n!=0.f) {
-							r=1;
-							break;
-						}
+					if(n!=0.f) {
+						r=1;
+						break;
 					}
+				}
+				
+				if(r) {
+					GRenderer->SetRenderState(Renderer::AlphaBlending, true);
+					GRenderer->SetBlendFunc(Renderer::BlendOne, Renderer::BlendOne);
 					
-					if(r) {
-						GRenderer->SetRenderState(Renderer::AlphaBlending, true);
-						GRenderer->SetBlendFunc(Renderer::BlendOne, Renderer::BlendOne);
-						
-						TransformInfo t(pos, glm::toQuat(toRotationMatrix(angle)));
-						DrawEERIEInter(gui::necklace.runes[i], t, NULL);
-						
-						gui::necklace.runes[i]->angle.setPitch(gui::necklace.runes[i]->angle.getPitch() + framedelay*2.f);
-						
-						PopAllTriangleList();
-						
-						GRenderer->SetRenderState(Renderer::AlphaBlending, false);
-						
-						SpecialCursor=CURSOR_INTERACTION_ON;
-						
-						if((EERIEMouseButton & 1) && !(LastMouseClick & 1))
-							if((size_t)LastRune != i) {
-								switch(i)
-								{
-								case RUNE_AAM:
-									ARX_SPELLS_RequestSymbolDraw(entities.player(), "aam", ARX_SOUND_GetDuration(SND_SYMB_AAM));
-									ARX_SOUND_PlayInterface(SND_SYMB_AAM);
-									break;
-								case RUNE_CETRIUS:
-									ARX_SPELLS_RequestSymbolDraw(entities.player(), "cetrius", ARX_SOUND_GetDuration(SND_SYMB_CETRIUS));
-									ARX_SOUND_PlayInterface(SND_SYMB_CETRIUS);
-									break;
-								case RUNE_COMUNICATUM:
-									ARX_SPELLS_RequestSymbolDraw(entities.player(), "comunicatum", ARX_SOUND_GetDuration(SND_SYMB_COMUNICATUM));
-									ARX_SOUND_PlayInterface(SND_SYMB_COMUNICATUM);
-									break;
-								case RUNE_COSUM:
-									ARX_SPELLS_RequestSymbolDraw(entities.player(), "cosum", ARX_SOUND_GetDuration(SND_SYMB_COSUM));
-									ARX_SOUND_PlayInterface(SND_SYMB_COSUM);
-									break;
-								case RUNE_FOLGORA:
-									ARX_SPELLS_RequestSymbolDraw(entities.player(), "folgora", ARX_SOUND_GetDuration(SND_SYMB_FOLGORA));
-									ARX_SOUND_PlayInterface(SND_SYMB_FOLGORA);
-									break;
-								case RUNE_FRIDD:
-									ARX_SPELLS_RequestSymbolDraw(entities.player(), "fridd", ARX_SOUND_GetDuration(SND_SYMB_FRIDD));
-									ARX_SOUND_PlayInterface(SND_SYMB_FRIDD);
-									break;
-								case RUNE_KAOM:
-									ARX_SPELLS_RequestSymbolDraw(entities.player(), "kaom", ARX_SOUND_GetDuration(SND_SYMB_KAOM));
-									ARX_SOUND_PlayInterface(SND_SYMB_KAOM);
-									break;
-								case RUNE_MEGA:
-									ARX_SPELLS_RequestSymbolDraw(entities.player(), "mega", ARX_SOUND_GetDuration(SND_SYMB_MEGA));
-									ARX_SOUND_PlayInterface(SND_SYMB_MEGA);
-									break;
-								case RUNE_MORTE:
-									ARX_SPELLS_RequestSymbolDraw(entities.player(), "morte", ARX_SOUND_GetDuration(SND_SYMB_MORTE));
-									ARX_SOUND_PlayInterface(SND_SYMB_MORTE);
-									break;
-								case RUNE_MOVIS:
-									ARX_SPELLS_RequestSymbolDraw(entities.player(), "movis", ARX_SOUND_GetDuration(SND_SYMB_MOVIS));
-									ARX_SOUND_PlayInterface(SND_SYMB_MOVIS);
-									break;
-								case RUNE_NHI:
-									ARX_SPELLS_RequestSymbolDraw(entities.player(), "nhi", ARX_SOUND_GetDuration(SND_SYMB_NHI));
-									ARX_SOUND_PlayInterface(SND_SYMB_NHI);
-									break;
-								case RUNE_RHAA:
-									ARX_SPELLS_RequestSymbolDraw(entities.player(), "rhaa", ARX_SOUND_GetDuration(SND_SYMB_RHAA));
-									ARX_SOUND_PlayInterface(SND_SYMB_RHAA);
-									break;
-								case RUNE_SPACIUM:
-									ARX_SPELLS_RequestSymbolDraw(entities.player(), "spacium", ARX_SOUND_GetDuration(SND_SYMB_SPACIUM));
-									ARX_SOUND_PlayInterface(SND_SYMB_SPACIUM);
-									break;
-								case RUNE_STREGUM:
-									ARX_SPELLS_RequestSymbolDraw(entities.player(), "stregum", ARX_SOUND_GetDuration(SND_SYMB_STREGUM));
-									ARX_SOUND_PlayInterface(SND_SYMB_STREGUM);
-									break;
-								case RUNE_TAAR:
-									ARX_SPELLS_RequestSymbolDraw(entities.player(), "taar", ARX_SOUND_GetDuration(SND_SYMB_TAAR));
-									ARX_SOUND_PlayInterface(SND_SYMB_TAAR);
-									break;
-								case RUNE_TEMPUS:
-									ARX_SPELLS_RequestSymbolDraw(entities.player(), "tempus", ARX_SOUND_GetDuration(SND_SYMB_TEMPUS));
-									ARX_SOUND_PlayInterface(SND_SYMB_TEMPUS);
-									break;
-								case RUNE_TERA:
-									ARX_SPELLS_RequestSymbolDraw(entities.player(), "tera", ARX_SOUND_GetDuration(SND_SYMB_TERA));
-									ARX_SOUND_PlayInterface(SND_SYMB_TERA);
-									break;
-								case RUNE_VISTA:
-									ARX_SPELLS_RequestSymbolDraw(entities.player(), "vista", ARX_SOUND_GetDuration(SND_SYMB_VISTA));
-									ARX_SOUND_PlayInterface(SND_SYMB_VISTA);
-									break;
-								case RUNE_VITAE:
-									ARX_SPELLS_RequestSymbolDraw(entities.player(), "vitae", ARX_SOUND_GetDuration(SND_SYMB_VITAE));
-									ARX_SOUND_PlayInterface(SND_SYMB_VITAE);
-									break;
-								case RUNE_YOK:
-									ARX_SPELLS_RequestSymbolDraw(entities.player(), "yok", ARX_SOUND_GetDuration(SND_SYMB_YOK));
-									ARX_SOUND_PlayInterface(SND_SYMB_YOK);
-									break;
-								}
+					TransformInfo t(pos, glm::toQuat(toRotationMatrix(angle)));
+					DrawEERIEInter(gui::necklace.runes[i], t, NULL);
+					
+					gui::necklace.runes[i]->angle.setPitch(gui::necklace.runes[i]->angle.getPitch() + framedelay*2.f);
+					
+					PopAllTriangleList();
+					
+					GRenderer->SetRenderState(Renderer::AlphaBlending, false);
+					
+					SpecialCursor=CURSOR_INTERACTION_ON;
+					
+					if((EERIEMouseButton & 1) && !(LastMouseClick & 1))
+						if((size_t)LastRune != i) {
+							switch(i)
+							{
+							case RUNE_AAM:
+								ARX_SPELLS_RequestSymbolDraw(entities.player(), "aam", ARX_SOUND_GetDuration(SND_SYMB_AAM));
+								ARX_SOUND_PlayInterface(SND_SYMB_AAM);
+								break;
+							case RUNE_CETRIUS:
+								ARX_SPELLS_RequestSymbolDraw(entities.player(), "cetrius", ARX_SOUND_GetDuration(SND_SYMB_CETRIUS));
+								ARX_SOUND_PlayInterface(SND_SYMB_CETRIUS);
+								break;
+							case RUNE_COMUNICATUM:
+								ARX_SPELLS_RequestSymbolDraw(entities.player(), "comunicatum", ARX_SOUND_GetDuration(SND_SYMB_COMUNICATUM));
+								ARX_SOUND_PlayInterface(SND_SYMB_COMUNICATUM);
+								break;
+							case RUNE_COSUM:
+								ARX_SPELLS_RequestSymbolDraw(entities.player(), "cosum", ARX_SOUND_GetDuration(SND_SYMB_COSUM));
+								ARX_SOUND_PlayInterface(SND_SYMB_COSUM);
+								break;
+							case RUNE_FOLGORA:
+								ARX_SPELLS_RequestSymbolDraw(entities.player(), "folgora", ARX_SOUND_GetDuration(SND_SYMB_FOLGORA));
+								ARX_SOUND_PlayInterface(SND_SYMB_FOLGORA);
+								break;
+							case RUNE_FRIDD:
+								ARX_SPELLS_RequestSymbolDraw(entities.player(), "fridd", ARX_SOUND_GetDuration(SND_SYMB_FRIDD));
+								ARX_SOUND_PlayInterface(SND_SYMB_FRIDD);
+								break;
+							case RUNE_KAOM:
+								ARX_SPELLS_RequestSymbolDraw(entities.player(), "kaom", ARX_SOUND_GetDuration(SND_SYMB_KAOM));
+								ARX_SOUND_PlayInterface(SND_SYMB_KAOM);
+								break;
+							case RUNE_MEGA:
+								ARX_SPELLS_RequestSymbolDraw(entities.player(), "mega", ARX_SOUND_GetDuration(SND_SYMB_MEGA));
+								ARX_SOUND_PlayInterface(SND_SYMB_MEGA);
+								break;
+							case RUNE_MORTE:
+								ARX_SPELLS_RequestSymbolDraw(entities.player(), "morte", ARX_SOUND_GetDuration(SND_SYMB_MORTE));
+								ARX_SOUND_PlayInterface(SND_SYMB_MORTE);
+								break;
+							case RUNE_MOVIS:
+								ARX_SPELLS_RequestSymbolDraw(entities.player(), "movis", ARX_SOUND_GetDuration(SND_SYMB_MOVIS));
+								ARX_SOUND_PlayInterface(SND_SYMB_MOVIS);
+								break;
+							case RUNE_NHI:
+								ARX_SPELLS_RequestSymbolDraw(entities.player(), "nhi", ARX_SOUND_GetDuration(SND_SYMB_NHI));
+								ARX_SOUND_PlayInterface(SND_SYMB_NHI);
+								break;
+							case RUNE_RHAA:
+								ARX_SPELLS_RequestSymbolDraw(entities.player(), "rhaa", ARX_SOUND_GetDuration(SND_SYMB_RHAA));
+								ARX_SOUND_PlayInterface(SND_SYMB_RHAA);
+								break;
+							case RUNE_SPACIUM:
+								ARX_SPELLS_RequestSymbolDraw(entities.player(), "spacium", ARX_SOUND_GetDuration(SND_SYMB_SPACIUM));
+								ARX_SOUND_PlayInterface(SND_SYMB_SPACIUM);
+								break;
+							case RUNE_STREGUM:
+								ARX_SPELLS_RequestSymbolDraw(entities.player(), "stregum", ARX_SOUND_GetDuration(SND_SYMB_STREGUM));
+								ARX_SOUND_PlayInterface(SND_SYMB_STREGUM);
+								break;
+							case RUNE_TAAR:
+								ARX_SPELLS_RequestSymbolDraw(entities.player(), "taar", ARX_SOUND_GetDuration(SND_SYMB_TAAR));
+								ARX_SOUND_PlayInterface(SND_SYMB_TAAR);
+								break;
+							case RUNE_TEMPUS:
+								ARX_SPELLS_RequestSymbolDraw(entities.player(), "tempus", ARX_SOUND_GetDuration(SND_SYMB_TEMPUS));
+								ARX_SOUND_PlayInterface(SND_SYMB_TEMPUS);
+								break;
+							case RUNE_TERA:
+								ARX_SPELLS_RequestSymbolDraw(entities.player(), "tera", ARX_SOUND_GetDuration(SND_SYMB_TERA));
+								ARX_SOUND_PlayInterface(SND_SYMB_TERA);
+								break;
+							case RUNE_VISTA:
+								ARX_SPELLS_RequestSymbolDraw(entities.player(), "vista", ARX_SOUND_GetDuration(SND_SYMB_VISTA));
+								ARX_SOUND_PlayInterface(SND_SYMB_VISTA);
+								break;
+							case RUNE_VITAE:
+								ARX_SPELLS_RequestSymbolDraw(entities.player(), "vitae", ARX_SOUND_GetDuration(SND_SYMB_VITAE));
+								ARX_SOUND_PlayInterface(SND_SYMB_VITAE);
+								break;
+							case RUNE_YOK:
+								ARX_SPELLS_RequestSymbolDraw(entities.player(), "yok", ARX_SOUND_GetDuration(SND_SYMB_YOK));
+								ARX_SOUND_PlayInterface(SND_SYMB_YOK);
+								break;
 							}
-							
-							LastRune=i;
-					}
+						}
+						
+						LastRune=i;
 				}
 			}
+		}
 	}
 	
 	GRenderer->SetCulling(Renderer::CullCCW);
