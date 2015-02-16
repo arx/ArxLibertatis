@@ -2559,6 +2559,8 @@ void ARX_INTERFACE_ManageOpenedBook_Finish()
 		if(!gui::necklace.runes[i])
 			continue;
 		
+		EERIE_3DOBJ * rune = gui::necklace.runes[i];
+		
 		bookcam.center.x = (382 + xpos * 45 + BOOKDEC.x) * g_sizeRatio.x;
 		bookcam.center.y = (100 + ypos * 64 + BOOKDEC.y) * g_sizeRatio.y;
 		
@@ -2573,27 +2575,27 @@ void ARX_INTERFACE_ManageOpenedBook_Finish()
 			TransformInfo t1(pos, glm::toQuat(toRotationMatrix(angle)));
 			DrawEERIEInter(gui::necklace.lacet, t1, NULL);
 			
-			if(gui::necklace.runes[i]->angle.getPitch() != 0.f) {
-				if(gui::necklace.runes[i]->angle.getPitch() > 300.f)
-					gui::necklace.runes[i]->angle.setPitch(300.f);
+			if(rune->angle.getPitch() != 0.f) {
+				if(rune->angle.getPitch() > 300.f)
+					rune->angle.setPitch(300.f);
 				
-				angle.setPitch(std::sin(arxtime.get_updated() * (1.0f / 200)) * gui::necklace.runes[i]->angle.getPitch() * (1.0f / 40));
+				angle.setPitch(std::sin(arxtime.get_updated() * (1.0f / 200)) * rune->angle.getPitch() * (1.0f / 40));
 			}
 			
-			gui::necklace.runes[i]->angle.setPitch(gui::necklace.runes[i]->angle.getPitch() - framedelay * 0.2f);
+			rune->angle.setPitch(rune->angle.getPitch() - framedelay * 0.2f);
 			
-			if(gui::necklace.runes[i]->angle.getPitch() < 0.f)
-				gui::necklace.runes[i]->angle.setPitch(0.f);
+			if(rune->angle.getPitch() < 0.f)
+				rune->angle.setPitch(0.f);
 			
 			GRenderer->SetRenderState(Renderer::DepthWrite, true);
 			GRenderer->SetRenderState(Renderer::AlphaBlending, false);
 			
 			// Now draw the rune
 			TransformInfo t2(pos, glm::toQuat(toRotationMatrix(angle)));
-			DrawEERIEInter(gui::necklace.runes[i], t2, NULL);
+			DrawEERIEInter(rune, t2, NULL);
 			
 			EERIE_2D_BBOX runeBox;
-			UpdateBbox2d(*gui::necklace.runes[i], runeBox);
+			UpdateBbox2d(*rune, runeBox);
 			
 			PopAllTriangleList();
 			
@@ -2615,8 +2617,8 @@ void ARX_INTERFACE_ManageOpenedBook_Finish()
 			if(runeMouseTestRect.contains(Vec2i(DANAEMouse))) {
 				long r=0;
 				
-				for(size_t j = 0; j < gui::necklace.runes[i]->facelist.size(); j++) {
-					float n = PtIn2DPolyProj(gui::necklace.runes[i], &gui::necklace.runes[i]->facelist[j], (float)DANAEMouse.x, (float)DANAEMouse.y);
+				for(size_t j = 0; j < rune->facelist.size(); j++) {
+					float n = PtIn2DPolyProj(rune, &rune->facelist[j], (float)DANAEMouse.x, (float)DANAEMouse.y);
 					
 					if(n!=0.f) {
 						r=1;
@@ -2629,9 +2631,9 @@ void ARX_INTERFACE_ManageOpenedBook_Finish()
 					GRenderer->SetBlendFunc(Renderer::BlendOne, Renderer::BlendOne);
 					
 					TransformInfo t(pos, glm::toQuat(toRotationMatrix(angle)));
-					DrawEERIEInter(gui::necklace.runes[i], t, NULL);
+					DrawEERIEInter(rune, t, NULL);
 					
-					gui::necklace.runes[i]->angle.setPitch(gui::necklace.runes[i]->angle.getPitch() + framedelay*2.f);
+					rune->angle.setPitch(rune->angle.getPitch() + framedelay*2.f);
 					
 					PopAllTriangleList();
 					
