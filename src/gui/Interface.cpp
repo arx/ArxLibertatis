@@ -2444,16 +2444,16 @@ static void ARX_INTERFACE_ERRORSOUND() {
 	ARX_SOUND_PlayInterface(SND_MENU_CLICK);
 }
 
-static bool CheckAttributeClick(float x, float y, float * val, TextureContainer * tc) {
+static bool CheckAttributeClick(Vec2f pos, float * val, TextureContainer * tc) {
 	
 	bool rval=false;
 	float t = *val;
 
-	if(MouseInBookRect(Vec2f(x, y), Vec2f(32, 32))) {
+	if(MouseInBookRect(pos, Vec2f(32, 32))) {
 		rval = true;
 
 		if(((BOOKBUTTON & 1) || (BOOKBUTTON & 2)) && tc)
-			DrawBookInterfaceItem(tc, Vec2f(x, y));
+			DrawBookInterfaceItem(tc, pos);
 
 		if(!(BOOKBUTTON & 1) && (LASTBOOKBUTTON & 1)) {
 			if(player.Attribute_Redistribute > 0) {
@@ -3302,25 +3302,25 @@ void ARX_INTERFACE_ManageOpenedBook() {
 
 		if(!((player.Attribute_Redistribute == 0) && (ARXmenu.currentmode != AMCM_NEWQUEST))) {
 			// Main Player Attributes
-			if(CheckAttributeClick(379, 95, &player.m_attribute.strength, ITC.ic_strength)) {
+			if(CheckAttributeClick(Vec2f(379, 95), &player.m_attribute.strength, ITC.ic_strength)) {
 				FLYING_OVER = BOOK_STRENGTH;
 				SpecialCursor = CURSOR_REDIST;
 				lCursorRedistValue = player.Attribute_Redistribute;
 			}
 
-			if(CheckAttributeClick(428, 95, &player.m_attribute.mind, ITC.ic_mind)) {
+			if(CheckAttributeClick(Vec2f(428, 95), &player.m_attribute.mind, ITC.ic_mind)) {
 				FLYING_OVER = BOOK_MIND;
 				SpecialCursor = CURSOR_REDIST;
 				lCursorRedistValue = player.Attribute_Redistribute;
 			}
 
-			if(CheckAttributeClick(477, 95, &player.m_attribute.dexterity, ITC.ic_dexterity)) {
+			if(CheckAttributeClick(Vec2f(477, 95), &player.m_attribute.dexterity, ITC.ic_dexterity)) {
 				FLYING_OVER = BOOK_DEXTERITY;
 				SpecialCursor = CURSOR_REDIST;
 				lCursorRedistValue = player.Attribute_Redistribute;
 			}
 
-			if(CheckAttributeClick(526, 95, &player.m_attribute.constitution, ITC.ic_constitution)) {
+			if(CheckAttributeClick(Vec2f(526, 95), &player.m_attribute.constitution, ITC.ic_constitution)) {
 				FLYING_OVER = BOOK_CONSTITUTION;
 				SpecialCursor = CURSOR_REDIST;
 				lCursorRedistValue = player.Attribute_Redistribute;
