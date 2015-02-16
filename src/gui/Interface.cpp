@@ -2556,7 +2556,9 @@ void ARX_INTERFACE_ManageOpenedBook_Finish()
 	long ypos=0;
 	
 	for(size_t i = 0; i < RUNE_COUNT; i++) {
-		if(gui::necklace.runes[i]) {
+		if(!gui::necklace.runes[i])
+			continue;
+		
 			bookcam.center.x = (382 + xpos * 45 + BOOKDEC.x) * g_sizeRatio.x;
 			bookcam.center.y = (100 + ypos * 64 + BOOKDEC.y) * g_sizeRatio.y;
 			
@@ -2728,7 +2730,6 @@ void ARX_INTERFACE_ManageOpenedBook_Finish()
 					}
 				}
 			}
-		}
 	}
 	
 	GRenderer->SetCulling(Renderer::CullCCW);
