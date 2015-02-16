@@ -2735,6 +2735,14 @@ void ARX_INTERFACE_ManageOpenedBook_Finish()
 	
 	LastRune=-1;
 	
+	*light = tl;
+	
+	SetActiveCamera(oldcam);
+	PrepareCamera(oldcam, g_size);
+}
+
+void ARX_INTERFACE_ManageOpenedBook_SpellsDraw() {
+	
 	// Now Draws Spells for this level...
 	ARX_PLAYER_ComputePlayerFullStats();
 	
@@ -2793,6 +2801,7 @@ void ARX_INTERFACE_ManageOpenedBook_Finish()
 					GRenderer->GetTextureStage(0)->setMagFilter(TextureStage::FilterLinear);
 					for(int j = 0; j < 6; ++j) {
 						if(spellicons[i].symbols[j] != RUNE_NONE) {
+							Vec2f pos;
 							pos.x = 240 - (count * 32) * 0.5f + j * 32;
 							pos.y = 306;
 							DrawBookInterfaceItem(gui::necklace.pTexTab[spellicons[i].symbols[j]], Vec2f(pos));
@@ -2843,11 +2852,6 @@ void ARX_INTERFACE_ManageOpenedBook_Finish()
 		OLD_FLYING_OVER = -1;
 		FLYING_OVER = -1;
 	}
-	
-	*light = tl;
-	
-	SetActiveCamera(oldcam);
-	PrepareCamera(oldcam, g_size);
 }
 
 void ARX_INTERFACE_ManageOpenedBook() {
