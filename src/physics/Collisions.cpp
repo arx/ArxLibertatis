@@ -1023,6 +1023,7 @@ bool CheckAnythingInSphere(const Sphere & sphere, EntityHandle source, CASFlags 
 		*num = EntityHandle::Invalid;
 	
 	if(!(flags & CAS_NO_BACKGROUND_COL)) {
+		ARX_PROFILE("Background Collision");
 		
 		// TODO copy-paste background tiles
 		short tilex = sphere.origin.x * ACTIVEBKG->Xmul;
