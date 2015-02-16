@@ -2739,7 +2739,6 @@ void ARX_INTERFACE_ManageOpenedBook_Finish()
 	ARX_PLAYER_ComputePlayerFullStats();
 	
 	Vec2f tmpPos = Vec2f_ZERO;
-	Vec2f fPos = Vec2f_ZERO;
 	bool	bFlyingOver = false;
 	
 	for(size_t i=0; i < SPELL_TYPES_COUNT; i++) {
@@ -2757,8 +2756,7 @@ void ARX_INTERFACE_ManageOpenedBook_Finish()
 			}
 			
 			if(bOk) {
-				fPos.x = 170.f + tmpPos.x * 85.f;
-				fPos.y = 135.f + tmpPos.y * 70.f;
+				Vec2f fPos = Vec2f(170.f, 135.f) + tmpPos * Vec2f(85.f, 70.f);
 				long flyingover = 0;
 				
 				if(MouseInBookRect(fPos.x, fPos.y, fPos.x + 48, fPos.y + 48)) {
