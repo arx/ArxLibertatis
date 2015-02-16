@@ -99,11 +99,9 @@ void CBless::Update(float timeDelta)
 void CBless::Render()
 {
 	int i = 0;
-
-	float x = eSrc.x;
-	float y = eSrc.y - 5;
-	float z = eSrc.z;
-
+	
+	Vec3f pos = eSrc + Vec3f(0, -5, 0);
+	
 	if(ulCurrentTime >= ulDuration)
 		return;
 
@@ -132,18 +130,18 @@ void CBless::Render()
 	q.v[2].uv = Vec2f_ONE;
 	q.v[3].uv = Vec2f_Y_AXIS;
 	
-	q.v[0].p.x = x + fBetaRadCos - fBetaRadSin;
-	q.v[0].p.y = y;
-	q.v[0].p.z = z + fBetaRadSin + fBetaRadCos;
-	q.v[1].p.x = x - fBetaRadCos - fBetaRadSin;
-	q.v[1].p.y = y;
-	q.v[1].p.z = z - fBetaRadSin + fBetaRadCos;
-	q.v[2].p.x = x - fBetaRadCos + fBetaRadSin;
-	q.v[2].p.y = y;
-	q.v[2].p.z = z - fBetaRadSin - fBetaRadCos;
-	q.v[3].p.x = x + fBetaRadCos + fBetaRadSin;
-	q.v[3].p.y = y;
-	q.v[3].p.z = z + fBetaRadSin - fBetaRadCos;
+	q.v[0].p.x = pos.x + fBetaRadCos - fBetaRadSin;
+	q.v[0].p.y = pos.y;
+	q.v[0].p.z = pos.z + fBetaRadSin + fBetaRadCos;
+	q.v[1].p.x = pos.x - fBetaRadCos - fBetaRadSin;
+	q.v[1].p.y = pos.y;
+	q.v[1].p.z = pos.z - fBetaRadSin + fBetaRadCos;
+	q.v[2].p.x = pos.x - fBetaRadCos + fBetaRadSin;
+	q.v[2].p.y = pos.y;
+	q.v[2].p.z = pos.z - fBetaRadSin - fBetaRadCos;
+	q.v[3].p.x = pos.x + fBetaRadCos + fBetaRadSin;
+	q.v[3].p.y = pos.y;
+	q.v[3].p.z = pos.z + fBetaRadSin - fBetaRadCos;
 	
 	drawQuadRTP(mat, q);
 	}
