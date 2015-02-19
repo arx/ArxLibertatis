@@ -372,7 +372,7 @@ void DrawGrille(CinematicGrid * grille, Color col, int fx, CinematicLight * ligh
 		}
 		
 		GRenderer->drawIndexed(Renderer::TriangleList, AllTLVertex, grille->m_nbvertexs,
-		                       &grille->m_inds->i1 + mat->startind, mat->nbind);
+		                       &grille->m_inds.data()->i1 + mat->startind, mat->nbind);
 	}
 }
 /*---------------------------------------------------------------*/

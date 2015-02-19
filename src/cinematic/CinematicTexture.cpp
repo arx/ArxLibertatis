@@ -169,13 +169,10 @@ bool CinematicGrid::AllocGrille(Vec2i nb, Vec2f t, Vec2f d, int scale) {
 	d /= (float)scale;
 
 	m_nbuvs = 0;
-	m_nbinds = 0;
 	m_nbuvsmalloc = m_nbvertexs = (nb.x + 1) * (nb.y + 1);
 	m_nbfaces = (nb.x * nb.y) << 1;
-	m_nbindsmalloc = m_nbfaces;
 	m_vertexs = (Vec3f *)malloc(m_nbvertexs * sizeof(Vec3f));
 	m_uvs = (C_UV *)malloc(m_nbvertexs * sizeof(C_UV));
-	m_inds = (C_IND *)malloc(m_nbindsmalloc * sizeof(C_IND));
 
 	//vertexs
 	m_count = nb;
@@ -238,8 +235,7 @@ void CinematicGrid::FreeGrille() {
 	m_vertexs = NULL;
 	free(m_uvs);
 	m_uvs = NULL;
-	free(m_inds);
-	m_inds = NULL;
+	m_inds.clear();
 	
 	BOOST_FOREACH(C_INDEXED & mat, m_mats) {
 		delete mat.tex;
@@ -367,13 +363,11 @@ int CinematicGrid::AddMaterial(Texture2D * tex) {
 
 void CinematicGrid::AddPoly(int matIdx, int i0, int i1, int i2) {
 	
-	if(m_nbinds == m_nbindsmalloc) {
-		m_nbindsmalloc += 100;
-		m_inds = (C_IND *)realloc((void *)m_inds, m_nbindsmalloc * sizeof(C_IND));
-	}
-
-	m_inds[m_nbinds].i1 = checked_range_cast<unsigned short>(i0);
-	m_inds[m_nbinds].i2 = checked_range_cast<unsigned short>(i1);
-	m_inds[m_nbinds++].i3 = checked_range_cast<unsigned short>(i2);
+	C_IND ind;
+	ind.i1 = checked_range_cast<unsigned short>(i0);
+	ind.i2 = checked_range_cast<unsigned short>(i1);
+	ind.i3 = checked_range_cast<unsigned short>(i2);
+	m_inds.push_back(ind);
+	
 	m_mats[matIdx].nbind += 3;
 }

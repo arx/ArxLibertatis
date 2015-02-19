@@ -77,13 +77,11 @@ struct C_UV {
 struct CinematicGrid {
 	int m_nbvertexs;
 	int m_nbfaces;
-	int m_nbinds;
-	int m_nbindsmalloc;
 	int m_nbuvs;
 	int m_nbuvsmalloc;
 	Vec3f * m_vertexs;
 	C_UV * m_uvs;
-	C_IND * m_inds;
+	std::vector<C_IND> m_inds;
 	std::vector<C_INDEXED> m_mats;
 	Vec2i m_count;
 	int m_scale;
