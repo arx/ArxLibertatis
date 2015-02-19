@@ -50,9 +50,10 @@ enum Rune {
 	RUNE_RHAA,        // Lower
 	RUNE_FRIDD,       // Ice
 	RUNE_AKBAA,       // Akbaa
+	
+	RUNE_COUNT,
 	RUNE_NONE = 255
 };
-const size_t RUNE_COUNT = 21;
 
 struct RuneInfo {
 

@@ -73,7 +73,7 @@ void NecklaceInit() {
 	necklace.pTexTab[RUNE_VITAE]       = TextureContainer::LoadUI("graph/obj3d/interactive/items/magic/rune_aam/rune_vitae[icon]");
 	necklace.pTexTab[RUNE_YOK]         = TextureContainer::LoadUI("graph/obj3d/interactive/items/magic/rune_aam/rune_yok[icon]");
 	
-	for(size_t i = 0; i < RUNE_COUNT-1; i++) { // TODO why -1?
+	for(size_t i = 0; i < RUNE_COUNT; i++) {
 		if(necklace.pTexTab[i]) {
 			necklace.pTexTab[i]->getHalo();
 		}
@@ -84,7 +84,7 @@ void ReleaseNecklace() {
 	
 	delete necklace.lacet, necklace.lacet = NULL;
 	
-	for(long i = 0; i < 20; i++) {
+	for(long i = 0; i < RUNE_COUNT; i++) {
 		delete necklace.runes[i], necklace.runes[i] = NULL;
 		necklace.pTexTab[i] = NULL;
 	}
