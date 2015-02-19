@@ -309,7 +309,7 @@ static void TransformLocalVertex(Vec3f * vbase, TexturedVertex * d3dv) {
 void DrawGrille(CinematicGrid * grille, Color col, int fx, CinematicLight * light, Vec3f * posgrille, float angzgrille)
 {
 	int nb = grille->m_nbvertexs;
-	Vec3f * v = grille->m_vertexs;
+	Vec3f * v = grille->m_vertexs.data();
 	TexturedVertex * d3dv = AllTLVertex;
 
 	LocalPos = *posgrille;

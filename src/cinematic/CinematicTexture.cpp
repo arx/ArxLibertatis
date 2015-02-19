@@ -169,14 +169,13 @@ bool CinematicGrid::AllocGrille(Vec2i nb, Vec2f t, Vec2f d, int scale) {
 	d /= (float)scale;
 	
 	m_nbvertexs = (nb.x + 1) * (nb.y + 1);
-	m_vertexs = (Vec3f *)malloc(m_nbvertexs * sizeof(Vec3f));
+	m_vertexs.reserve(m_nbvertexs);
 	
 	//vertexs
 	m_count = nb;
 	t *= .5f;
 	Vec2f dep = -t;
-	 
-	Vec3f * v = m_vertexs;
+	
 	float olddyy = oldd.y;
 
 	while(oldnb.y--) {
@@ -197,9 +196,8 @@ bool CinematicGrid::AllocGrille(Vec2i nb, Vec2f t, Vec2f d, int scale) {
 				if (!oldnbxx) nb.x = 1;
 
 				while(nb.x--) {
-					*v = Vec3f(depxx, dep.y, 0.f);
+					m_vertexs.push_back(Vec3f(depxx, dep.y, 0.f));
 					depxx += dxx;
-					v++;
 				}
 
 				olddxx += oldd.x;
@@ -228,8 +226,7 @@ bool CinematicGrid::AllocGrille(Vec2i nb, Vec2f t, Vec2f d, int scale) {
 
 void CinematicGrid::FreeGrille() {
 	
-	free(m_vertexs);
-	m_vertexs = NULL;
+	m_vertexs.clear();
 	m_uvs.clear();
 	m_inds.clear();
 	
