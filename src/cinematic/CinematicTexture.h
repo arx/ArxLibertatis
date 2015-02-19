@@ -76,8 +76,6 @@ struct C_UV {
 
 struct CinematicGrid {
 	int m_nbvertexs;
-	int m_nbfaces;
-	int m_nbuvs;
 	Vec3f * m_vertexs;
 	std::vector<C_UV> m_uvs;
 	std::vector<C_IND> m_inds;

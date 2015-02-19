@@ -167,10 +167,8 @@ bool CinematicGrid::AllocGrille(Vec2i nb, Vec2f t, Vec2f d, int scale) {
 	nb *= scale;
 	Vec2f oldd = d;
 	d /= (float)scale;
-
-	m_nbuvs = 0;
+	
 	m_nbvertexs = (nb.x + 1) * (nb.y + 1);
-	m_nbfaces = (nb.x * nb.y) << 1;
 	m_vertexs = (Vec3f *)malloc(m_nbvertexs * sizeof(Vec3f));
 	
 	//vertexs
