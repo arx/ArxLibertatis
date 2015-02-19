@@ -354,7 +354,7 @@ void DrawGrille(CinematicGrid * grille, Color col, int fx, CinematicLight * ligh
 		}
 	}
 
-	C_UV* uvs = grille->m_uvs;
+	C_UV* uvs = grille->m_uvs.data();
 
 	for(std::vector<C_INDEXED>::iterator it = grille->m_mats.begin(); it != grille->m_mats.end(); ++it)
 	{

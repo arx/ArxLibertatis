@@ -169,11 +169,10 @@ bool CinematicGrid::AllocGrille(Vec2i nb, Vec2f t, Vec2f d, int scale) {
 	d /= (float)scale;
 
 	m_nbuvs = 0;
-	m_nbuvsmalloc = m_nbvertexs = (nb.x + 1) * (nb.y + 1);
+	m_nbvertexs = (nb.x + 1) * (nb.y + 1);
 	m_nbfaces = (nb.x * nb.y) << 1;
 	m_vertexs = (Vec3f *)malloc(m_nbvertexs * sizeof(Vec3f));
-	m_uvs = (C_UV *)malloc(m_nbvertexs * sizeof(C_UV));
-
+	
 	//vertexs
 	m_count = nb;
 	t *= .5f;
@@ -233,8 +232,7 @@ void CinematicGrid::FreeGrille() {
 	
 	free(m_vertexs);
 	m_vertexs = NULL;
-	free(m_uvs);
-	m_uvs = NULL;
+	m_uvs.clear();
 	m_inds.clear();
 	
 	BOOST_FOREACH(C_INDEXED & mat, m_mats) {
@@ -249,12 +247,7 @@ void CinematicGrid::AddQuadUVs(Vec2i depc, Vec2i tc, Vec2i bitmappos, Vec2i bitm
 	m_mats[matIdx].bitmapdep = bitmappos;
 	m_mats[matIdx].bitmap = bitmapw;
 	m_mats[matIdx].nbvertexs = (tc.x + 1) * (tc.y + 1);
-
-	if((m_nbuvs + (4 *(tc.x * tc.y))) > m_nbuvsmalloc) {
-		m_nbuvsmalloc += 4 * (tc.x * tc.y);
-		m_uvs = (C_UV *)realloc((void *)m_uvs, m_nbuvsmalloc * sizeof(C_UV));
-	}
-
+	
 	float v = 0.f;
 	float du = 0.999999f / (float)tc.x;
 	float dv = 0.999999f / (float)tc.y;
@@ -273,9 +266,11 @@ void CinematicGrid::AddQuadUVs(Vec2i depc, Vec2i tc, Vec2i bitmappos, Vec2i bitm
 			GetIndNumCube(depcxx, depcyy, &i0, &i1, &i2, &i3);
 
 			//uvs
-			m_uvs[m_nbuvs].indvertex = i0;
-			m_uvs[m_nbuvs].uv.x = u;
-			m_uvs[m_nbuvs++].uv.y = v;
+			C_UV cuv;
+			cuv.indvertex = i0;
+			cuv.uv.x = u;
+			cuv.uv.y = v;
+			m_uvs.push_back(cuv);
 			depcxx++;
 			u += du;
 		}
@@ -306,7 +301,7 @@ void CinematicGrid::AddQuadUVs(Vec2i depc, Vec2i tc, Vec2i bitmappos, Vec2i bitm
 
 void CinematicGrid::ReajustUV() {
 	
-	C_UV* uvs = m_uvs;
+	C_UV* uvs = m_uvs.data();
 
 	for(std::vector<C_INDEXED>::iterator mat = m_mats.begin(); mat != m_mats.end(); ++mat)
 	{
