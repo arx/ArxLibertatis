@@ -3581,261 +3581,261 @@ void ARX_INTERFACE_ManageOpenedBook() {
 
 void RenderBookPlayerCharacter() {
 		
-		GRenderer->SetRenderState(Renderer::DepthWrite, true);
-
-		Rect rec;
-		if (BOOKZOOM) {
-			
-			rec = Rect(s32((120.f + BOOKDEC.x) * g_sizeRatio.x), s32((69.f + BOOKDEC.y) * g_sizeRatio.y),
-			           s32((330.f + BOOKDEC.x) * g_sizeRatio.x), s32((300.f + BOOKDEC.y) * g_sizeRatio.y));
-			GRenderer->Clear(Renderer::DepthBuffer, Color::none, 1.f, 1, &rec);
-
-			if(ARXmenu.currentmode != AMCM_OFF) {
-				Rect vp = Rect(Vec2i(s32(139.f * g_sizeRatio.x), 0), s32(139.f * g_sizeRatio.x), s32(310.f * g_sizeRatio.y));
-				GRenderer->SetScissor(vp);
-			}
-		} else {
-			
-			rec = Rect(s32((118.f + BOOKDEC.x) * g_sizeRatio.x), s32((69.f + BOOKDEC.y) * g_sizeRatio.y),
-			          s32((350.f + BOOKDEC.x) * g_sizeRatio.x), s32((338.f + BOOKDEC.y) * g_sizeRatio.y));
-			GRenderer->Clear(Renderer::DepthBuffer, Color::none, 1.f, 1, &rec);
-
-			rec.right -= 50;
-		}
-
-		if(ARXmenu.currentmode == AMCM_OFF)
-			BOOKZOOM = 0;
-
-		Vec3f pos;
-		EERIE_LIGHT eLight1;
-		EERIE_LIGHT eLight2;
+	GRenderer->SetRenderState(Renderer::DepthWrite, true);
+	
+	Rect rec;
+	if (BOOKZOOM) {
 		
-		eLight1.pos = Vec3f(50.f, 50.f, 200.f);
-		eLight1.exist = 1;
-		eLight1.rgb = Color3f(0.15f, 0.06f, 0.003f);
-		eLight1.intensity = 8.8f;
-		eLight1.fallstart = 2020;
-		eLight1.fallend = eLight1.fallstart + 60;
-		RecalcLight(&eLight1);
+		rec = Rect(s32((120.f + BOOKDEC.x) * g_sizeRatio.x), s32((69.f + BOOKDEC.y) * g_sizeRatio.y),
+				   s32((330.f + BOOKDEC.x) * g_sizeRatio.x), s32((300.f + BOOKDEC.y) * g_sizeRatio.y));
+		GRenderer->Clear(Renderer::DepthBuffer, Color::none, 1.f, 1, &rec);
 		
-		eLight2.exist = 1;
-		eLight2.pos = Vec3f(-50.f, -50.f, -200.f);
-		eLight2.rgb = Color3f::gray(0.6f);
-		eLight2.intensity = 3.8f;
-		eLight2.fallstart = 0;
-		eLight2.fallend = eLight2.fallstart + 3460.f;
-		RecalcLight(&eLight2);
-		
-		EERIE_LIGHT * SavePDL[2];
-		SavePDL[0] = PDL[0];
-		SavePDL[1] = PDL[1];
-		int iSavePDL = TOTPDL;
-
-		PDL[0] = &eLight1;
-		PDL[1] = &eLight2;
-		TOTPDL = 2;
-
-		EERIE_CAMERA * oldcam = ACTIVECAM;
-		bookcam.center = rec.center();
-		SetActiveCamera(&bookcam);
-		PrepareCamera(&bookcam, g_size);
-
-		Anglef ePlayerAngle = Anglef::ZERO;
-
-		if(BOOKZOOM) {
-			Rect vp;
-			vp.left = static_cast<int>(rec.left + 52.f * g_sizeRatio.x);
-			vp.top = rec.top;
-			vp.right = static_cast<int>(rec.right - 21.f * g_sizeRatio.x);
-			vp.bottom = static_cast<int>(rec.bottom - 17.f * g_sizeRatio.y);
+		if(ARXmenu.currentmode != AMCM_OFF) {
+			Rect vp = Rect(Vec2i(s32(139.f * g_sizeRatio.x), 0), s32(139.f * g_sizeRatio.x), s32(310.f * g_sizeRatio.y));
 			GRenderer->SetScissor(vp);
-
-			switch(player.skin) {
-				case 0:
-					ePlayerAngle.setPitch(-25.f);
-					break;
-				case 1:
-					ePlayerAngle.setPitch(-10.f);
-					break;
-				case 2:
-					ePlayerAngle.setPitch(20.f);
-					break;
-				case 3:
-					ePlayerAngle.setPitch(35.f);
-					break;
-			}
-
-			pos = Vec3f(8, 162, 75);
-			eLight1.pos.z = -90.f;
-		} else {
-			GRenderer->SetScissor(rec);
-
-			ePlayerAngle.setPitch(-20.f);
-			pos = Vec3f(20.f, 96.f, 260.f);
-			
-			ARX_EQUIPMENT_AttachPlayerWeaponToHand();
 		}
-
-		bool ti = player.m_improve;
-		player.m_improve = false;
-
-
-		float invisibility = entities.player()->invisibility;
-
-		if(invisibility > 0.5f)
-			invisibility = 0.5f;
-
-		IN_BOOK_DRAW = 1;
-		std::vector<EERIE_VERTEX> vertexlist = entities.player()->obj->vertexlist3;
-
-		arx_assert(player.bookAnimation[0].cur_anim);
-
-		EERIEDrawAnimQuat(entities.player()->obj, player.bookAnimation, ePlayerAngle, pos,
-						  checked_range_cast<unsigned long>(Original_framedelay), NULL, true, invisibility);
-
-		IN_BOOK_DRAW = 0;
+	} else {
 		
-		if(ARXmenu.currentmode == AMCM_NEWQUEST) {
-			GRenderer->SetRenderState(Renderer::DepthTest, true);
-			GRenderer->GetTextureStage(0)->setMipFilter(TextureStage::FilterNone);
-			GRenderer->SetRenderState(Renderer::AlphaBlending, false);
-			PopAllTriangleList();
-			GRenderer->SetRenderState(Renderer::AlphaBlending, true);
-			PopAllTriangleListTransparency();
-			GRenderer->SetRenderState(Renderer::AlphaBlending, false);
-			GRenderer->GetTextureStage(0)->setMipFilter(TextureStage::FilterLinear);
-			GRenderer->SetRenderState(Renderer::DepthTest, false);
+		rec = Rect(s32((118.f + BOOKDEC.x) * g_sizeRatio.x), s32((69.f + BOOKDEC.y) * g_sizeRatio.y),
+				  s32((350.f + BOOKDEC.x) * g_sizeRatio.x), s32((338.f + BOOKDEC.y) * g_sizeRatio.y));
+		GRenderer->Clear(Renderer::DepthBuffer, Color::none, 1.f, 1, &rec);
+
+		rec.right -= 50;
+	}
+	
+	if(ARXmenu.currentmode == AMCM_OFF)
+		BOOKZOOM = 0;
+	
+	Vec3f pos;
+	EERIE_LIGHT eLight1;
+	EERIE_LIGHT eLight2;
+	
+	eLight1.pos = Vec3f(50.f, 50.f, 200.f);
+	eLight1.exist = 1;
+	eLight1.rgb = Color3f(0.15f, 0.06f, 0.003f);
+	eLight1.intensity = 8.8f;
+	eLight1.fallstart = 2020;
+	eLight1.fallend = eLight1.fallstart + 60;
+	RecalcLight(&eLight1);
+	
+	eLight2.exist = 1;
+	eLight2.pos = Vec3f(-50.f, -50.f, -200.f);
+	eLight2.rgb = Color3f::gray(0.6f);
+	eLight2.intensity = 3.8f;
+	eLight2.fallstart = 0;
+	eLight2.fallend = eLight2.fallstart + 3460.f;
+	RecalcLight(&eLight2);
+	
+	EERIE_LIGHT * SavePDL[2];
+	SavePDL[0] = PDL[0];
+	SavePDL[1] = PDL[1];
+	int iSavePDL = TOTPDL;
+	
+	PDL[0] = &eLight1;
+	PDL[1] = &eLight2;
+	TOTPDL = 2;
+	
+	EERIE_CAMERA * oldcam = ACTIVECAM;
+	bookcam.center = rec.center();
+	SetActiveCamera(&bookcam);
+	PrepareCamera(&bookcam, g_size);
+	
+	Anglef ePlayerAngle = Anglef::ZERO;
+	
+	if(BOOKZOOM) {
+		Rect vp;
+		vp.left = static_cast<int>(rec.left + 52.f * g_sizeRatio.x);
+		vp.top = rec.top;
+		vp.right = static_cast<int>(rec.right - 21.f * g_sizeRatio.x);
+		vp.bottom = static_cast<int>(rec.bottom - 17.f * g_sizeRatio.y);
+		GRenderer->SetScissor(vp);
+		
+		switch(player.skin) {
+			case 0:
+				ePlayerAngle.setPitch(-25.f);
+				break;
+			case 1:
+				ePlayerAngle.setPitch(-10.f);
+				break;
+			case 2:
+				ePlayerAngle.setPitch(20.f);
+				break;
+			case 3:
+				ePlayerAngle.setPitch(35.f);
+				break;
 		}
-
-		PDL[0] = SavePDL[0];
-		PDL[1] = SavePDL[1];
-		TOTPDL = iSavePDL;
-
-		entities.player()->obj->vertexlist3 = vertexlist;
-		vertexlist.clear();
-
-		player.m_improve = ti;
 		
-		GRenderer->SetScissor(Rect::ZERO);
+		pos = Vec3f(8, 162, 75);
+		eLight1.pos.z = -90.f;
+	} else {
+		GRenderer->SetScissor(rec);
 		
+		ePlayerAngle.setPitch(-20.f);
+		pos = Vec3f(20.f, 96.f, 260.f);
+		
+		ARX_EQUIPMENT_AttachPlayerWeaponToHand();
+	}
+	
+	bool ti = player.m_improve;
+	player.m_improve = false;
+	
+	
+	float invisibility = entities.player()->invisibility;
+	
+	if(invisibility > 0.5f)
+		invisibility = 0.5f;
+	
+	IN_BOOK_DRAW = 1;
+	std::vector<EERIE_VERTEX> vertexlist = entities.player()->obj->vertexlist3;
+	
+	arx_assert(player.bookAnimation[0].cur_anim);
+	
+	EERIEDrawAnimQuat(entities.player()->obj, player.bookAnimation, ePlayerAngle, pos,
+					  checked_range_cast<unsigned long>(Original_framedelay), NULL, true, invisibility);
+	
+	IN_BOOK_DRAW = 0;
+	
+	if(ARXmenu.currentmode == AMCM_NEWQUEST) {
+		GRenderer->SetRenderState(Renderer::DepthTest, true);
+		GRenderer->GetTextureStage(0)->setMipFilter(TextureStage::FilterNone);
 		GRenderer->SetRenderState(Renderer::AlphaBlending, false);
-		GRenderer->SetCulling(Renderer::CullNone);
-		SetActiveCamera(oldcam);
-		PrepareCamera(oldcam, g_size);
-
-			player.bookAnimation[0].cur_anim = herowaitbook;
-
-			if(player.equiped[EQUIP_SLOT_WEAPON] && ValidIONum(player.equiped[EQUIP_SLOT_WEAPON])) {
-				if(entities[player.equiped[EQUIP_SLOT_WEAPON]]->type_flags & OBJECT_TYPE_2H) {
-					player.bookAnimation[0].cur_anim = herowait_2h;
-				}
+		PopAllTriangleList();
+		GRenderer->SetRenderState(Renderer::AlphaBlending, true);
+		PopAllTriangleListTransparency();
+		GRenderer->SetRenderState(Renderer::AlphaBlending, false);
+		GRenderer->GetTextureStage(0)->setMipFilter(TextureStage::FilterLinear);
+		GRenderer->SetRenderState(Renderer::DepthTest, false);
+	}
+	
+	PDL[0] = SavePDL[0];
+	PDL[1] = SavePDL[1];
+	TOTPDL = iSavePDL;
+	
+	entities.player()->obj->vertexlist3 = vertexlist;
+	vertexlist.clear();
+	
+	player.m_improve = ti;
+	
+	GRenderer->SetScissor(Rect::ZERO);
+	
+	GRenderer->SetRenderState(Renderer::AlphaBlending, false);
+	GRenderer->SetCulling(Renderer::CullNone);
+	SetActiveCamera(oldcam);
+	PrepareCamera(oldcam, g_size);
+	
+	player.bookAnimation[0].cur_anim = herowaitbook;
+	
+	if(player.equiped[EQUIP_SLOT_WEAPON] && ValidIONum(player.equiped[EQUIP_SLOT_WEAPON])) {
+		if(entities[player.equiped[EQUIP_SLOT_WEAPON]]->type_flags & OBJECT_TYPE_2H) {
+			player.bookAnimation[0].cur_anim = herowait_2h;
+		}
+	}
+	
+	GRenderer->SetCulling(Renderer::CullNone);
+	
+	if(player.equiped[EQUIP_SLOT_ARMOR] && ValidIONum(player.equiped[EQUIP_SLOT_ARMOR])) {
+		Entity *tod = entities[player.equiped[EQUIP_SLOT_ARMOR]];
+		if(tod) {
+			tod->bbox2D.min = Vec2f(195.f, 116.f);
+			tod->bbox2D.max = Vec2f(284.f, 182.f);
+			
+			tod->bbox2D.min = (tod->bbox2D.min + BOOKDEC) * g_sizeRatio;
+			tod->bbox2D.max = (tod->bbox2D.max + BOOKDEC) * g_sizeRatio;
+			
+			tod->ioflags |= IO_ICONIC;
+		}
+	}
+	
+	if(player.equiped[EQUIP_SLOT_LEGGINGS] && ValidIONum(player.equiped[EQUIP_SLOT_LEGGINGS])) {
+		Entity *tod = entities[player.equiped[EQUIP_SLOT_LEGGINGS]];
+		if(tod) {
+			tod->bbox2D.min = Vec2f(218.f, 183.f);
+			tod->bbox2D.max = Vec2f(277.f, 322.f);
+			
+			tod->bbox2D.min = (tod->bbox2D.min + BOOKDEC) * g_sizeRatio;
+			tod->bbox2D.max = (tod->bbox2D.max + BOOKDEC) * g_sizeRatio;
+			
+			tod->ioflags |= IO_ICONIC;
+		}
+	}
+	
+	if(player.equiped[EQUIP_SLOT_HELMET] && ValidIONum(player.equiped[EQUIP_SLOT_HELMET])) {
+		Entity *tod = entities[player.equiped[EQUIP_SLOT_HELMET]];
+		if(tod) {
+			tod->bbox2D.min = Vec2f(218.f, 75.f);
+			tod->bbox2D.max = Vec2f(260.f, 115.f);
+			
+			tod->bbox2D.min = (tod->bbox2D.min + BOOKDEC) * g_sizeRatio;
+			tod->bbox2D.max = (tod->bbox2D.max + BOOKDEC) * g_sizeRatio;
+			
+			tod->ioflags |= IO_ICONIC;
+		}
+	}
+	
+	TextureContainer * tc;
+	TextureContainer * tc2=NULL;
+	GRenderer->SetCulling(Renderer::CullNone);
+	
+	if(player.equiped[EQUIP_SLOT_RING_LEFT] && ValidIONum(player.equiped[EQUIP_SLOT_RING_LEFT])) {
+		Entity *todraw = entities[player.equiped[EQUIP_SLOT_RING_LEFT]];
+		
+		tc = todraw->inv;
+		
+		if(NeedHalo(todraw))
+			tc2 = todraw->inv->getHalo();
+		
+		if(tc) {
+			todraw->bbox2D.min = Vec2f(146.f, 312.f);
+			
+			Color color = (todraw->poisonous && todraw->poisonous_count != 0) ? Color::green : Color::white;
+			DrawBookInterfaceItem(tc, todraw->bbox2D.min, color, 0);
+			
+			if(tc2) {
+				ARX_INTERFACE_HALO_Draw(todraw, tc, tc2, (todraw->bbox2D.min + BOOKDEC) * g_sizeRatio, g_sizeRatio);
 			}
-
-			GRenderer->SetCulling(Renderer::CullNone);
-
-			if(player.equiped[EQUIP_SLOT_ARMOR] && ValidIONum(player.equiped[EQUIP_SLOT_ARMOR])) {
-				Entity *tod = entities[player.equiped[EQUIP_SLOT_ARMOR]];
-				if(tod) {
-					tod->bbox2D.min = Vec2f(195.f, 116.f);
-					tod->bbox2D.max = Vec2f(284.f, 182.f);
-
-					tod->bbox2D.min = (tod->bbox2D.min + BOOKDEC) * g_sizeRatio;
-					tod->bbox2D.max = (tod->bbox2D.max + BOOKDEC) * g_sizeRatio;
-
-					tod->ioflags |= IO_ICONIC;
-				}
+			
+			todraw->bbox2D.max = todraw->bbox2D.min + Vec2f(tc->size());
+			
+			todraw->bbox2D.min = (todraw->bbox2D.min + BOOKDEC) * g_sizeRatio;
+			todraw->bbox2D.max = (todraw->bbox2D.max + BOOKDEC) * g_sizeRatio;
+			
+			todraw->ioflags |= IO_ICONIC;
+		}
+	}
+	
+	tc2=NULL;
+	
+	if(player.equiped[EQUIP_SLOT_RING_RIGHT] && ValidIONum(player.equiped[EQUIP_SLOT_RING_RIGHT])) {
+		Entity *todraw = entities[player.equiped[EQUIP_SLOT_RING_RIGHT]];
+		
+		tc = todraw->inv;
+		
+		if(NeedHalo(todraw))
+			tc2 = todraw->inv->getHalo();
+		
+		if(tc) {
+			todraw->bbox2D.min = Vec2f(296.f, 312.f);
+			
+			Color color = (todraw->poisonous && todraw->poisonous_count != 0) ? Color::green : Color::white;
+			DrawBookInterfaceItem(tc, todraw->bbox2D.min, color, 0);
+			
+			if(tc2) {
+				ARX_INTERFACE_HALO_Draw(todraw, tc, tc2, (todraw->bbox2D.min + BOOKDEC) * g_sizeRatio, g_sizeRatio);
 			}
-
-			if(player.equiped[EQUIP_SLOT_LEGGINGS] && ValidIONum(player.equiped[EQUIP_SLOT_LEGGINGS])) {
-				Entity *tod = entities[player.equiped[EQUIP_SLOT_LEGGINGS]];
-				if(tod) {
-					tod->bbox2D.min = Vec2f(218.f, 183.f);
-					tod->bbox2D.max = Vec2f(277.f, 322.f);
-
-					tod->bbox2D.min = (tod->bbox2D.min + BOOKDEC) * g_sizeRatio;
-					tod->bbox2D.max = (tod->bbox2D.max + BOOKDEC) * g_sizeRatio;
-
-					tod->ioflags |= IO_ICONIC;
-				}
-			}
-
-			if(player.equiped[EQUIP_SLOT_HELMET] && ValidIONum(player.equiped[EQUIP_SLOT_HELMET])) {
-				Entity *tod = entities[player.equiped[EQUIP_SLOT_HELMET]];
-				if(tod) {
-					tod->bbox2D.min = Vec2f(218.f, 75.f);
-					tod->bbox2D.max = Vec2f(260.f, 115.f);
-
-					tod->bbox2D.min = (tod->bbox2D.min + BOOKDEC) * g_sizeRatio;
-					tod->bbox2D.max = (tod->bbox2D.max + BOOKDEC) * g_sizeRatio;
-
-					tod->ioflags |= IO_ICONIC;
-				}
-			}
-
-			TextureContainer * tc;
-			TextureContainer * tc2=NULL;
-			GRenderer->SetCulling(Renderer::CullNone);
-
-			if(player.equiped[EQUIP_SLOT_RING_LEFT] && ValidIONum(player.equiped[EQUIP_SLOT_RING_LEFT])) {
-				Entity *todraw = entities[player.equiped[EQUIP_SLOT_RING_LEFT]];
-
-				tc = todraw->inv;
-
-				if(NeedHalo(todraw))
-					tc2 = todraw->inv->getHalo();
-
-				if(tc) {
-					todraw->bbox2D.min = Vec2f(146.f, 312.f);
-
-					Color color = (todraw->poisonous && todraw->poisonous_count != 0) ? Color::green : Color::white;
-					DrawBookInterfaceItem(tc, todraw->bbox2D.min, color, 0);
-
-					if(tc2) {
-						ARX_INTERFACE_HALO_Draw(todraw, tc, tc2, (todraw->bbox2D.min + BOOKDEC) * g_sizeRatio, g_sizeRatio);
-					}
-					
-					todraw->bbox2D.max = todraw->bbox2D.min + Vec2f(tc->size());
-					
-					todraw->bbox2D.min = (todraw->bbox2D.min + BOOKDEC) * g_sizeRatio;
-					todraw->bbox2D.max = (todraw->bbox2D.max + BOOKDEC) * g_sizeRatio;
-
-					todraw->ioflags |= IO_ICONIC;
-				}
-			}
-
-			tc2=NULL;
-
-			if(player.equiped[EQUIP_SLOT_RING_RIGHT] && ValidIONum(player.equiped[EQUIP_SLOT_RING_RIGHT])) {
-				Entity *todraw = entities[player.equiped[EQUIP_SLOT_RING_RIGHT]];
-
-				tc = todraw->inv;
-
-				if(NeedHalo(todraw))
-					tc2 = todraw->inv->getHalo();
-
-				if(tc) {
-					todraw->bbox2D.min = Vec2f(296.f, 312.f);
-
-					Color color = (todraw->poisonous && todraw->poisonous_count != 0) ? Color::green : Color::white;
-					DrawBookInterfaceItem(tc, todraw->bbox2D.min, color, 0);
-
-					if(tc2) {
-						ARX_INTERFACE_HALO_Draw(todraw, tc, tc2, (todraw->bbox2D.min + BOOKDEC) * g_sizeRatio, g_sizeRatio);
-					}
-					
-					todraw->bbox2D.max = todraw->bbox2D.min + Vec2f(tc->size());
-					
-					todraw->bbox2D.min = (todraw->bbox2D.min + BOOKDEC) * g_sizeRatio;
-					todraw->bbox2D.max = (todraw->bbox2D.max + BOOKDEC) * g_sizeRatio;
-
-					todraw->ioflags |= IO_ICONIC;
-				}
-			}
-
-			if(!BOOKZOOM)
-				ARX_EQUIPMENT_AttachPlayerWeaponToBack();
-
-			Halo_Render();
+			
+			todraw->bbox2D.max = todraw->bbox2D.min + Vec2f(tc->size());
+			
+			todraw->bbox2D.min = (todraw->bbox2D.min + BOOKDEC) * g_sizeRatio;
+			todraw->bbox2D.max = (todraw->bbox2D.max + BOOKDEC) * g_sizeRatio;
+			
+			todraw->ioflags |= IO_ICONIC;
+		}
+	}
+	
+	if(!BOOKZOOM)
+		ARX_EQUIPMENT_AttachPlayerWeaponToBack();
+	
+	Halo_Render();
 }
 
 
