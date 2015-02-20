@@ -17,7 +17,7 @@
  * along with Arx Libertatis.  If not, see <http://www.gnu.org/licenses/>.
  */
 
-#include "gui/Necklace.h"
+#include "gui/book/Necklace.h"
 
 #include "animation/AnimationRender.h"
 #include "core/Application.h"

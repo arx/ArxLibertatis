@@ -55,7 +55,7 @@ ZeniMax Media Inc., Suite 120, Rockville, Maryland 20850 USA.
 #include "game/GameTypes.h"
 #include "math/Types.h"
 #include "platform/Flags.h"
-#include "gui/Necklace.h"
+#include "gui/book/Necklace.h"
 
 struct EERIE_3DOBJ;
 class TextureContainer;
