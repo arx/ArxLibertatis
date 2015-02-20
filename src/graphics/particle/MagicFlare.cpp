@@ -303,10 +303,9 @@ void FlareLine(const Vec2s & pos0, const Vec2s & pos1, Entity * io)
 	Vec2f tmpPos0 = Vec2f(pos0);
 	Vec2f tmpPos1 = Vec2f(pos1);
 	
-	float dx = (tmpPos1.x - tmpPos0.x);
-	float adx = glm::abs(dx);
-	float dy = (tmpPos1.y - tmpPos0.y);
-	float ady = glm::abs(dy);
+	Vec2f d = tmpPos1 - tmpPos0;
+	float adx = glm::abs(d.x);
+	float ady = glm::abs(d.y);
 
 	if(adx > ady) {
 		if(tmpPos0.x > tmpPos1.x) {
@@ -318,7 +317,7 @@ void FlareLine(const Vec2s & pos0, const Vec2s & pos1, Entity * io)
 		}
 
 		if(tmpPos0.x < tmpPos1.x) {
-			m = dy / dx;
+			m = d.y / d.x;
 			i = tmpPos0.x;
 
 			while(i < tmpPos1.x) {
@@ -329,7 +328,7 @@ void FlareLine(const Vec2s & pos0, const Vec2s & pos1, Entity * io)
 				AddLFlare(Vec2s(i, tmpPos0.y), io);
 			}
 		} else {
-			m = dy / dx;
+			m = d.y / d.x;
 			i = tmpPos1.x;
 
 			while(i < tmpPos0.x) {
@@ -350,7 +349,7 @@ void FlareLine(const Vec2s & pos0, const Vec2s & pos1, Entity * io)
 		}
 
 		if(tmpPos0.y < tmpPos1.y) {
-			m = dx / dy;
+			m = d.x / d.y;
 			i = tmpPos0.y;
 
 			while(i < tmpPos1.y) {
@@ -361,7 +360,7 @@ void FlareLine(const Vec2s & pos0, const Vec2s & pos1, Entity * io)
 				AddLFlare(Vec2s(tmpPos0.x, i), io);
 			}
 		} else {
-			m = dx / dy;
+			m = d.x / d.y;
 			i = tmpPos1.y;
 
 			while(i < tmpPos0.y) {
