@@ -304,10 +304,9 @@ void FlareLine(const Vec2s & pos0, const Vec2s & pos1, Entity * io)
 	Vec2f tmpPos1 = Vec2f(pos1);
 	
 	Vec2f d = tmpPos1 - tmpPos0;
-	float adx = glm::abs(d.x);
-	float ady = glm::abs(d.y);
-
-	if(adx > ady) {
+	Vec2f ad = glm::abs(d);
+	
+	if(ad.x > ad.y) {
 		if(tmpPos0.x > tmpPos1.x) {
 			z = tmpPos1.x;
 			tmpPos1.x = tmpPos0.x;
