@@ -3659,18 +3659,14 @@ void ARX_INTERFACE_ManageOpenedBook() {
 					break;
 			}
 
-			pos.x=8;
-			pos.y=162.f;
-			pos.z=75.f;
+			pos = Vec3f(8, 162, 75);
 			eLight1.pos.z=-90.f;
 		} else {
 			GRenderer->SetScissor(rec);
 
 			ePlayerAngle.setPitch(-20.f);
-			pos.x=20.f;
-			pos.y=96.f;
-			pos.z=260.f;
-
+			pos = Vec3f(20.f, 96.f, 260.f);
+			
 			ARX_EQUIPMENT_AttachPlayerWeaponToHand();
 		}
 
