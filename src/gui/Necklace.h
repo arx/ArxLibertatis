@@ -36,6 +36,8 @@ extern ARX_NECKLACE necklace;
 void NecklaceInit();
 void ReleaseNecklace();
 
+void ARX_INTERFACE_ManageOpenedBook_Finish();
+
 }
 
 #endif // ARX_GUI_NECKLACE_H

@@ -19,7 +19,18 @@
 
 #include "gui/Necklace.h"
 
+#include "animation/AnimationRender.h"
+#include "core/Application.h"
+#include "core/Core.h"
+#include "core/GameTime.h"
+#include "game/Camera.h"
+#include "game/EntityManager.h"
+#include "game/Player.h"
+#include "gui/Interface.h"
 #include "graphics/data/TextureContainer.h"
+#include "graphics/Renderer.h"
+#include "scene/GameSound.h"
+#include "scene/Light.h"
 #include "scene/Object.h"
 
 namespace gui {
@@ -90,5 +101,220 @@ void ReleaseNecklace() {
 	}
 }
 
+long LastRune = -1;
+
+void ARX_INTERFACE_ManageOpenedBook_Finish()
+{
+
+	Vec3f pos = Vec3f(0.f, 0.f, 2100.f);
+	Anglef angle = Anglef::ZERO;
+	
+	EERIE_LIGHT * light = lightHandleGet(torchLightHandle);
+	
+	EERIE_LIGHT tl = *light;
+	
+	light->pos = Vec3f(500.f, -1960.f, 1590.f);
+	light->exist = 1;
+	light->rgb = Color3f(0.6f, 0.7f, 0.9f);
+	light->intensity  = 1.8f;
+	light->fallstart=4520.f;
+	light->fallend = light->fallstart + 600.f;
+	RecalcLight(light);
+	
+	EERIE_CAMERA * oldcam = ACTIVECAM;
+	
+	PDL[0] = light;
+	TOTPDL=1;
+	
+	Vec2i tmpPos = Vec2i_ZERO;
+	
+	for(size_t i = 0; i < RUNE_COUNT; i++) {
+		if(!gui::necklace.runes[i])
+			continue;
+		
+		EERIE_3DOBJ * rune = gui::necklace.runes[i];
+		
+		bookcam.center.x = (382 + tmpPos.x * 45 + BOOKDEC.x) * g_sizeRatio.x;
+		bookcam.center.y = (100 + tmpPos.y * 64 + BOOKDEC.y) * g_sizeRatio.y;
+		
+		SetActiveCamera(&bookcam);
+		PrepareCamera(&bookcam, g_size);
+		
+		// First draw the lace
+		angle.setPitch(0.f);
+		
+		if(player.rune_flags & (RuneFlag)(1<<i)) {
+			
+			TransformInfo t1(pos, glm::toQuat(toRotationMatrix(angle)));
+			DrawEERIEInter(gui::necklace.lacet, t1, NULL);
+			
+			if(rune->angle.getPitch() != 0.f) {
+				if(rune->angle.getPitch() > 300.f)
+					rune->angle.setPitch(300.f);
+				
+				angle.setPitch(std::sin(arxtime.get_updated() * (1.0f / 200)) * rune->angle.getPitch() * (1.0f / 40));
+			}
+			
+			rune->angle.setPitch(rune->angle.getPitch() - framedelay * 0.2f);
+			
+			if(rune->angle.getPitch() < 0.f)
+				rune->angle.setPitch(0.f);
+			
+			GRenderer->SetRenderState(Renderer::DepthWrite, true);
+			GRenderer->SetRenderState(Renderer::AlphaBlending, false);
+			
+			// Now draw the rune
+			TransformInfo t2(pos, glm::toQuat(toRotationMatrix(angle)));
+			DrawEERIEInter(rune, t2, NULL);
+			
+			EERIE_2D_BBOX runeBox;
+			UpdateBbox2d(*rune, runeBox);
+			
+			PopAllTriangleList();
+			
+			tmpPos.x++;
+			
+			if(tmpPos.x > 4) {
+				tmpPos.x = 0;
+				tmpPos.y++;
+			}
+			
+			const Rect runeMouseTestRect(
+			runeBox.min.x,
+			runeBox.min.y,
+			runeBox.max.x,
+			runeBox.max.y
+			);
+			
+			// Checks for Mouse floating over a rune...
+			if(runeMouseTestRect.contains(Vec2i(DANAEMouse))) {
+				long r=0;
+				
+				for(size_t j = 0; j < rune->facelist.size(); j++) {
+					float n = PtIn2DPolyProj(rune, &rune->facelist[j], (float)DANAEMouse.x, (float)DANAEMouse.y);
+					
+					if(n!=0.f) {
+						r=1;
+						break;
+					}
+				}
+				
+				if(r) {
+					GRenderer->SetRenderState(Renderer::AlphaBlending, true);
+					GRenderer->SetBlendFunc(Renderer::BlendOne, Renderer::BlendOne);
+					
+					TransformInfo t(pos, glm::toQuat(toRotationMatrix(angle)));
+					DrawEERIEInter(rune, t, NULL);
+					
+					rune->angle.setPitch(rune->angle.getPitch() + framedelay*2.f);
+					
+					PopAllTriangleList();
+					
+					GRenderer->SetRenderState(Renderer::AlphaBlending, false);
+					
+					SpecialCursor=CURSOR_INTERACTION_ON;
+					
+					if((EERIEMouseButton & 1) && !(LastMouseClick & 1))
+						if((size_t)LastRune != i) {
+							switch(i)
+							{
+							case RUNE_AAM:
+								ARX_SPELLS_RequestSymbolDraw(entities.player(), "aam", ARX_SOUND_GetDuration(SND_SYMB_AAM));
+								ARX_SOUND_PlayInterface(SND_SYMB_AAM);
+								break;
+							case RUNE_CETRIUS:
+								ARX_SPELLS_RequestSymbolDraw(entities.player(), "cetrius", ARX_SOUND_GetDuration(SND_SYMB_CETRIUS));
+								ARX_SOUND_PlayInterface(SND_SYMB_CETRIUS);
+								break;
+							case RUNE_COMUNICATUM:
+								ARX_SPELLS_RequestSymbolDraw(entities.player(), "comunicatum", ARX_SOUND_GetDuration(SND_SYMB_COMUNICATUM));
+								ARX_SOUND_PlayInterface(SND_SYMB_COMUNICATUM);
+								break;
+							case RUNE_COSUM:
+								ARX_SPELLS_RequestSymbolDraw(entities.player(), "cosum", ARX_SOUND_GetDuration(SND_SYMB_COSUM));
+								ARX_SOUND_PlayInterface(SND_SYMB_COSUM);
+								break;
+							case RUNE_FOLGORA:
+								ARX_SPELLS_RequestSymbolDraw(entities.player(), "folgora", ARX_SOUND_GetDuration(SND_SYMB_FOLGORA));
+								ARX_SOUND_PlayInterface(SND_SYMB_FOLGORA);
+								break;
+							case RUNE_FRIDD:
+								ARX_SPELLS_RequestSymbolDraw(entities.player(), "fridd", ARX_SOUND_GetDuration(SND_SYMB_FRIDD));
+								ARX_SOUND_PlayInterface(SND_SYMB_FRIDD);
+								break;
+							case RUNE_KAOM:
+								ARX_SPELLS_RequestSymbolDraw(entities.player(), "kaom", ARX_SOUND_GetDuration(SND_SYMB_KAOM));
+								ARX_SOUND_PlayInterface(SND_SYMB_KAOM);
+								break;
+							case RUNE_MEGA:
+								ARX_SPELLS_RequestSymbolDraw(entities.player(), "mega", ARX_SOUND_GetDuration(SND_SYMB_MEGA));
+								ARX_SOUND_PlayInterface(SND_SYMB_MEGA);
+								break;
+							case RUNE_MORTE:
+								ARX_SPELLS_RequestSymbolDraw(entities.player(), "morte", ARX_SOUND_GetDuration(SND_SYMB_MORTE));
+								ARX_SOUND_PlayInterface(SND_SYMB_MORTE);
+								break;
+							case RUNE_MOVIS:
+								ARX_SPELLS_RequestSymbolDraw(entities.player(), "movis", ARX_SOUND_GetDuration(SND_SYMB_MOVIS));
+								ARX_SOUND_PlayInterface(SND_SYMB_MOVIS);
+								break;
+							case RUNE_NHI:
+								ARX_SPELLS_RequestSymbolDraw(entities.player(), "nhi", ARX_SOUND_GetDuration(SND_SYMB_NHI));
+								ARX_SOUND_PlayInterface(SND_SYMB_NHI);
+								break;
+							case RUNE_RHAA:
+								ARX_SPELLS_RequestSymbolDraw(entities.player(), "rhaa", ARX_SOUND_GetDuration(SND_SYMB_RHAA));
+								ARX_SOUND_PlayInterface(SND_SYMB_RHAA);
+								break;
+							case RUNE_SPACIUM:
+								ARX_SPELLS_RequestSymbolDraw(entities.player(), "spacium", ARX_SOUND_GetDuration(SND_SYMB_SPACIUM));
+								ARX_SOUND_PlayInterface(SND_SYMB_SPACIUM);
+								break;
+							case RUNE_STREGUM:
+								ARX_SPELLS_RequestSymbolDraw(entities.player(), "stregum", ARX_SOUND_GetDuration(SND_SYMB_STREGUM));
+								ARX_SOUND_PlayInterface(SND_SYMB_STREGUM);
+								break;
+							case RUNE_TAAR:
+								ARX_SPELLS_RequestSymbolDraw(entities.player(), "taar", ARX_SOUND_GetDuration(SND_SYMB_TAAR));
+								ARX_SOUND_PlayInterface(SND_SYMB_TAAR);
+								break;
+							case RUNE_TEMPUS:
+								ARX_SPELLS_RequestSymbolDraw(entities.player(), "tempus", ARX_SOUND_GetDuration(SND_SYMB_TEMPUS));
+								ARX_SOUND_PlayInterface(SND_SYMB_TEMPUS);
+								break;
+							case RUNE_TERA:
+								ARX_SPELLS_RequestSymbolDraw(entities.player(), "tera", ARX_SOUND_GetDuration(SND_SYMB_TERA));
+								ARX_SOUND_PlayInterface(SND_SYMB_TERA);
+								break;
+							case RUNE_VISTA:
+								ARX_SPELLS_RequestSymbolDraw(entities.player(), "vista", ARX_SOUND_GetDuration(SND_SYMB_VISTA));
+								ARX_SOUND_PlayInterface(SND_SYMB_VISTA);
+								break;
+							case RUNE_VITAE:
+								ARX_SPELLS_RequestSymbolDraw(entities.player(), "vitae", ARX_SOUND_GetDuration(SND_SYMB_VITAE));
+								ARX_SOUND_PlayInterface(SND_SYMB_VITAE);
+								break;
+							case RUNE_YOK:
+								ARX_SPELLS_RequestSymbolDraw(entities.player(), "yok", ARX_SOUND_GetDuration(SND_SYMB_YOK));
+								ARX_SOUND_PlayInterface(SND_SYMB_YOK);
+								break;
+							}
+						}
+						
+						LastRune=i;
+				}
+			}
+		}
+	}
+	
+	GRenderer->SetCulling(Renderer::CullCCW);
+	
+	LastRune=-1;
+	
+	*light = tl;
+	
+	SetActiveCamera(oldcam);
+	PrepareCamera(oldcam, g_size);
+}
 
 }

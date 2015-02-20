@@ -2308,7 +2308,7 @@ void ArxGame::drawAllInterface() {
 		
 		if((player.Interface & INTER_MAP) && !(player.Interface & INTER_COMBATMODE)) {
 			if(Book_Mode == BOOKMODE_SPELLS) {
-				ARX_INTERFACE_ManageOpenedBook_Finish();
+				gui::ARX_INTERFACE_ManageOpenedBook_Finish();
 				ARX_INTERFACE_ManageOpenedBook_SpellsDraw();
 			}
 		}

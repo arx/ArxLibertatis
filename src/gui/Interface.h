@@ -292,7 +292,6 @@ void playerInterfaceFaderRequestFade(FadeDirection showhide, long smooth);
 void ARX_INTERFACE_Reset();
 
 void ARX_INTERFACE_ManageOpenedBook();
-void ARX_INTERFACE_ManageOpenedBook_Finish();
 void ARX_INTERFACE_ManageOpenedBook_SpellsDraw();
 void ARX_INTERFACE_NoteManage();
 void ARX_INTERFACE_BookOpenClose(unsigned long t);
