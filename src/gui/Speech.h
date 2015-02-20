@@ -78,9 +78,9 @@ struct CinematicSpeech {
 	Anglef endangle;
 	float startpos;
 	float endpos;
-	float f0;
-	float f1;
-	float f2;
+	float m_startdist;
+	float m_enddist;
+	float m_heightModifier;
 	EntityHandle ionum;
 	Vec3f pos1;
 	Vec3f pos2;
@@ -91,9 +91,9 @@ struct CinematicSpeech {
 		, endangle(Anglef::ZERO)
 		, startpos(0.f)
 		, endpos(0.f)
-		, f0(0.f)
-		, f1(0.f)
-		, f2(0.f)
+		, m_startdist(0.f)
+		, m_enddist(0.f)
+		, m_heightModifier(0.f)
 		, ionum(0)
 		, pos1(Vec3f_ZERO)
 		, pos2(Vec3f_ZERO)
@@ -105,8 +105,8 @@ struct CinematicSpeech {
 		endangle = Anglef::ZERO;
 		startpos = 0;
 		endpos = 0;
-		f0 = 0;
-		f1 = 0;
+		m_startdist = 0;
+		m_enddist = 0;
 		ionum = EntityHandle(0);
 		pos1 = Vec3f_ZERO;
 		pos2 = Vec3f_ZERO;

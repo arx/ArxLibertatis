@@ -369,9 +369,9 @@ public:
 				} else if(command == "side" || command == "side_l" || command == "side_r") {
 					acs.type = (command == "side_l") ? ARX_CINE_SPEECH_SIDE_LEFT : ARX_CINE_SPEECH_SIDE;
 					parseParams(acs, context, player);
-					acs.f0 = context.getFloat(); // startdist
-					acs.f1 = context.getFloat(); // enddist
-					acs.f2 = context.getFloat(); // height modifier
+					acs.m_startdist = context.getFloat(); // startdist
+					acs.m_enddist = context.getFloat(); // enddist
+					acs.m_heightModifier = context.getFloat(); // height modifier
 				} else {
 					ScriptWarning << "unexpected command: " << options << ' ' << command;
 				}
