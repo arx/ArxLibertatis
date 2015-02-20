@@ -2543,7 +2543,7 @@ void ARX_INTERFACE_ManageOpenedBook_SpellsDraw() {
 			long j = 0;
 			
 			while(j < 4 && (spellicons[i].symbols[j] != RUNE_NONE)) {
-				if(!(player.rune_flags & (RuneFlag)(1<<spellicons[i].symbols[j]))) {
+				if(!player.hasRune(spellicons[i].symbols[j])) {
 					bOk = false;
 				}
 				
@@ -2815,7 +2815,7 @@ void ARX_INTERFACE_ManageOpenedBook() {
 					bool bOk = true;
 
 					for(long j = 0; j < 4 && spellicons[i].symbols[j] != RUNE_NONE; ++j) {
-						if(!(player.rune_flags & (RuneFlag)(1<<spellicons[i].symbols[j])))
+						if(!player.hasRune(spellicons[i].symbols[j]))
 							bOk = false;
 					}
 

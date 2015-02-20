@@ -1520,7 +1520,7 @@ public:
 					ARX_INTERFACE_HALO_Render(Color3f(0.2f, 0.4f, 0.8f), HALO_ACTIVE, tc->getHalo(), pos, Vec2f(m_scale));
 				}
 				
-				if(!(player.rune_flags & (RuneFlag)(1<<player.SpellToMemorize.iSpellSymbols[i]))) {
+				if(!player.hasRune(player.SpellToMemorize.iSpellSymbols[i])) {
 					GRenderer->SetBlendFunc(Renderer::BlendInvDstColor, Renderer::BlendOne);
 					GRenderer->SetRenderState(Renderer::AlphaBlending, true);
 					EERIEDrawBitmap2(rect, 0, cursorMovable, Color3f::gray(.8f).to<u8>());

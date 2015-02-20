@@ -151,7 +151,7 @@ void ARX_INTERFACE_ManageOpenedBook_Finish()
 		// First draw the lace
 		angle.setPitch(0.f);
 		
-		if(player.rune_flags & (RuneFlag)(1<<i)) {
+		if(player.hasRune((Rune)i)) {
 			
 			TransformInfo t1(pos, glm::toQuat(toRotationMatrix(angle)));
 			DrawEERIEInter(gui::necklace.lacet, t1, NULL);
