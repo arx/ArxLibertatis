@@ -105,84 +105,84 @@ void ReleaseNecklace() {
 static void PlayerBookDrawRune(Rune rune) {
 	switch(rune) {
 	case RUNE_AAM:
-		ARX_SPELLS_RequestSymbolDraw2(entities.player(), rune, ARX_SOUND_GetDuration(SND_SYMB_AAM));
-		ARX_SOUND_PlayInterface(SND_SYMB_AAM);
+		ARX_SPELLS_RequestSymbolDraw2(entities.player(), rune, ARX_SOUND_GetDuration(SND_SYMB[RUNE_AAM]));
+		ARX_SOUND_PlayInterface(SND_SYMB[RUNE_AAM]);
 		break;
 	case RUNE_CETRIUS:
-		ARX_SPELLS_RequestSymbolDraw2(entities.player(), rune, ARX_SOUND_GetDuration(SND_SYMB_CETRIUS));
-		ARX_SOUND_PlayInterface(SND_SYMB_CETRIUS);
+		ARX_SPELLS_RequestSymbolDraw2(entities.player(), rune, ARX_SOUND_GetDuration(SND_SYMB[RUNE_CETRIUS]));
+		ARX_SOUND_PlayInterface(SND_SYMB[RUNE_CETRIUS]);
 		break;
 	case RUNE_COMUNICATUM:
-		ARX_SPELLS_RequestSymbolDraw2(entities.player(), rune, ARX_SOUND_GetDuration(SND_SYMB_COMUNICATUM));
-		ARX_SOUND_PlayInterface(SND_SYMB_COMUNICATUM);
+		ARX_SPELLS_RequestSymbolDraw2(entities.player(), rune, ARX_SOUND_GetDuration(SND_SYMB[RUNE_COMUNICATUM]));
+		ARX_SOUND_PlayInterface(SND_SYMB[RUNE_COMUNICATUM]);
 		break;
 	case RUNE_COSUM:
-		ARX_SPELLS_RequestSymbolDraw2(entities.player(), rune, ARX_SOUND_GetDuration(SND_SYMB_COSUM));
-		ARX_SOUND_PlayInterface(SND_SYMB_COSUM);
+		ARX_SPELLS_RequestSymbolDraw2(entities.player(), rune, ARX_SOUND_GetDuration(SND_SYMB[RUNE_COSUM]));
+		ARX_SOUND_PlayInterface(SND_SYMB[RUNE_COSUM]);
 		break;
 	case RUNE_FOLGORA:
-		ARX_SPELLS_RequestSymbolDraw2(entities.player(), rune, ARX_SOUND_GetDuration(SND_SYMB_FOLGORA));
-		ARX_SOUND_PlayInterface(SND_SYMB_FOLGORA);
+		ARX_SPELLS_RequestSymbolDraw2(entities.player(), rune, ARX_SOUND_GetDuration(SND_SYMB[RUNE_FOLGORA]));
+		ARX_SOUND_PlayInterface(SND_SYMB[RUNE_FOLGORA]);
 		break;
 	case RUNE_FRIDD:
-		ARX_SPELLS_RequestSymbolDraw2(entities.player(), rune, ARX_SOUND_GetDuration(SND_SYMB_FRIDD));
-		ARX_SOUND_PlayInterface(SND_SYMB_FRIDD);
+		ARX_SPELLS_RequestSymbolDraw2(entities.player(), rune, ARX_SOUND_GetDuration(SND_SYMB[RUNE_FRIDD]));
+		ARX_SOUND_PlayInterface(SND_SYMB[RUNE_FRIDD]);
 		break;
 	case RUNE_KAOM:
-		ARX_SPELLS_RequestSymbolDraw2(entities.player(), rune, ARX_SOUND_GetDuration(SND_SYMB_KAOM));
-		ARX_SOUND_PlayInterface(SND_SYMB_KAOM);
+		ARX_SPELLS_RequestSymbolDraw2(entities.player(), rune, ARX_SOUND_GetDuration(SND_SYMB[RUNE_KAOM]));
+		ARX_SOUND_PlayInterface(SND_SYMB[RUNE_KAOM]);
 		break;
 	case RUNE_MEGA:
-		ARX_SPELLS_RequestSymbolDraw2(entities.player(), rune, ARX_SOUND_GetDuration(SND_SYMB_MEGA));
-		ARX_SOUND_PlayInterface(SND_SYMB_MEGA);
+		ARX_SPELLS_RequestSymbolDraw2(entities.player(), rune, ARX_SOUND_GetDuration(SND_SYMB[RUNE_MEGA]));
+		ARX_SOUND_PlayInterface(SND_SYMB[RUNE_MEGA]);
 		break;
 	case RUNE_MORTE:
-		ARX_SPELLS_RequestSymbolDraw2(entities.player(), rune, ARX_SOUND_GetDuration(SND_SYMB_MORTE));
-		ARX_SOUND_PlayInterface(SND_SYMB_MORTE);
+		ARX_SPELLS_RequestSymbolDraw2(entities.player(), rune, ARX_SOUND_GetDuration(SND_SYMB[RUNE_MORTE]));
+		ARX_SOUND_PlayInterface(SND_SYMB[RUNE_MORTE]);
 		break;
 	case RUNE_MOVIS:
-		ARX_SPELLS_RequestSymbolDraw2(entities.player(), rune, ARX_SOUND_GetDuration(SND_SYMB_MOVIS));
-		ARX_SOUND_PlayInterface(SND_SYMB_MOVIS);
+		ARX_SPELLS_RequestSymbolDraw2(entities.player(), rune, ARX_SOUND_GetDuration(SND_SYMB[RUNE_MOVIS]));
+		ARX_SOUND_PlayInterface(SND_SYMB[RUNE_MOVIS]);
 		break;
 	case RUNE_NHI:
-		ARX_SPELLS_RequestSymbolDraw2(entities.player(), rune, ARX_SOUND_GetDuration(SND_SYMB_NHI));
-		ARX_SOUND_PlayInterface(SND_SYMB_NHI);
+		ARX_SPELLS_RequestSymbolDraw2(entities.player(), rune, ARX_SOUND_GetDuration(SND_SYMB[RUNE_NHI]));
+		ARX_SOUND_PlayInterface(SND_SYMB[RUNE_NHI]);
 		break;
 	case RUNE_RHAA:
-		ARX_SPELLS_RequestSymbolDraw2(entities.player(), rune, ARX_SOUND_GetDuration(SND_SYMB_RHAA));
-		ARX_SOUND_PlayInterface(SND_SYMB_RHAA);
+		ARX_SPELLS_RequestSymbolDraw2(entities.player(), rune, ARX_SOUND_GetDuration(SND_SYMB[RUNE_RHAA]));
+		ARX_SOUND_PlayInterface(SND_SYMB[RUNE_RHAA]);
 		break;
 	case RUNE_SPACIUM:
-		ARX_SPELLS_RequestSymbolDraw2(entities.player(), rune, ARX_SOUND_GetDuration(SND_SYMB_SPACIUM));
-		ARX_SOUND_PlayInterface(SND_SYMB_SPACIUM);
+		ARX_SPELLS_RequestSymbolDraw2(entities.player(), rune, ARX_SOUND_GetDuration(SND_SYMB[RUNE_SPACIUM]));
+		ARX_SOUND_PlayInterface(SND_SYMB[RUNE_SPACIUM]);
 		break;
 	case RUNE_STREGUM:
-		ARX_SPELLS_RequestSymbolDraw2(entities.player(), rune, ARX_SOUND_GetDuration(SND_SYMB_STREGUM));
-		ARX_SOUND_PlayInterface(SND_SYMB_STREGUM);
+		ARX_SPELLS_RequestSymbolDraw2(entities.player(), rune, ARX_SOUND_GetDuration(SND_SYMB[RUNE_STREGUM]));
+		ARX_SOUND_PlayInterface(SND_SYMB[RUNE_STREGUM]);
 		break;
 	case RUNE_TAAR:
-		ARX_SPELLS_RequestSymbolDraw2(entities.player(), rune, ARX_SOUND_GetDuration(SND_SYMB_TAAR));
-		ARX_SOUND_PlayInterface(SND_SYMB_TAAR);
+		ARX_SPELLS_RequestSymbolDraw2(entities.player(), rune, ARX_SOUND_GetDuration(SND_SYMB[RUNE_TAAR]));
+		ARX_SOUND_PlayInterface(SND_SYMB[RUNE_TAAR]);
 		break;
 	case RUNE_TEMPUS:
-		ARX_SPELLS_RequestSymbolDraw2(entities.player(), rune, ARX_SOUND_GetDuration(SND_SYMB_TEMPUS));
-		ARX_SOUND_PlayInterface(SND_SYMB_TEMPUS);
+		ARX_SPELLS_RequestSymbolDraw2(entities.player(), rune, ARX_SOUND_GetDuration(SND_SYMB[RUNE_TEMPUS]));
+		ARX_SOUND_PlayInterface(SND_SYMB[RUNE_TEMPUS]);
 		break;
 	case RUNE_TERA:
-		ARX_SPELLS_RequestSymbolDraw2(entities.player(), rune, ARX_SOUND_GetDuration(SND_SYMB_TERA));
-		ARX_SOUND_PlayInterface(SND_SYMB_TERA);
+		ARX_SPELLS_RequestSymbolDraw2(entities.player(), rune, ARX_SOUND_GetDuration(SND_SYMB[RUNE_TERA]));
+		ARX_SOUND_PlayInterface(SND_SYMB[RUNE_TERA]);
 		break;
 	case RUNE_VISTA:
-		ARX_SPELLS_RequestSymbolDraw2(entities.player(), rune, ARX_SOUND_GetDuration(SND_SYMB_VISTA));
-		ARX_SOUND_PlayInterface(SND_SYMB_VISTA);
+		ARX_SPELLS_RequestSymbolDraw2(entities.player(), rune, ARX_SOUND_GetDuration(SND_SYMB[RUNE_VISTA]));
+		ARX_SOUND_PlayInterface(SND_SYMB[RUNE_VISTA]);
 		break;
 	case RUNE_VITAE:
-		ARX_SPELLS_RequestSymbolDraw2(entities.player(), rune, ARX_SOUND_GetDuration(SND_SYMB_VITAE));
-		ARX_SOUND_PlayInterface(SND_SYMB_VITAE);
+		ARX_SPELLS_RequestSymbolDraw2(entities.player(), rune, ARX_SOUND_GetDuration(SND_SYMB[RUNE_VITAE]));
+		ARX_SOUND_PlayInterface(SND_SYMB[RUNE_VITAE]);
 		break;
 	case RUNE_YOK:
-		ARX_SPELLS_RequestSymbolDraw2(entities.player(), rune, ARX_SOUND_GetDuration(SND_SYMB_YOK));
-		ARX_SOUND_PlayInterface(SND_SYMB_YOK);
+		ARX_SPELLS_RequestSymbolDraw2(entities.player(), rune, ARX_SOUND_GetDuration(SND_SYMB[RUNE_YOK]));
+		ARX_SOUND_PlayInterface(SND_SYMB[RUNE_YOK]);
 		break;
 	}
 }

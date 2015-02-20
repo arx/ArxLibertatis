@@ -48,6 +48,7 @@ ZeniMax Media Inc., Suite 120, Rockville, Maryland 20850 USA.
 #include <string>
 
 #include "audio/AudioTypes.h"
+#include "game/magic/Rune.h"
 #include "math/Types.h"
 
 class Entity;
@@ -109,26 +110,7 @@ extern audio::SampleId SND_MAGIC_DRAW;
 extern audio::SampleId SND_MAGIC_FIZZLE;
 
 // Magic symbols samples
-extern audio::SampleId SND_SYMB_AAM;
-extern audio::SampleId SND_SYMB_CETRIUS;
-extern audio::SampleId SND_SYMB_COSUM;
-extern audio::SampleId SND_SYMB_COMUNICATUM;
-extern audio::SampleId SND_SYMB_FOLGORA;
-extern audio::SampleId SND_SYMB_FRIDD;
-extern audio::SampleId SND_SYMB_KAOM;
-extern audio::SampleId SND_SYMB_MEGA;
-extern audio::SampleId SND_SYMB_MORTE;
-extern audio::SampleId SND_SYMB_MOVIS;
-extern audio::SampleId SND_SYMB_NHI;
-extern audio::SampleId SND_SYMB_RHAA;
-extern audio::SampleId SND_SYMB_SPACIUM;
-extern audio::SampleId SND_SYMB_STREGUM;
-extern audio::SampleId SND_SYMB_TAAR;
-extern audio::SampleId SND_SYMB_TEMPUS;
-extern audio::SampleId SND_SYMB_TERA;
-extern audio::SampleId SND_SYMB_VISTA;
-extern audio::SampleId SND_SYMB_VITAE;
-extern audio::SampleId SND_SYMB_YOK;
+extern audio::SampleId SND_SYMB[RUNE_COUNT];
 
 // Spells samples
 extern audio::SampleId SND_SPELL_ACTIVATE_PORTAL;

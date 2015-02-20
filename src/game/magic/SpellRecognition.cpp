@@ -375,7 +375,7 @@ void ARX_SPELLS_AnalyseSYMBOL() {
 					CurrSpellSymbol = MAX_SPELL_SYMBOLS - 1;
 				}
 
-				ARX_SOUND_PlaySFX(SND_SYMB_COSUM);
+				ARX_SOUND_PlaySFX(SND_SYMB[RUNE_COSUM]);
 			break;
 
 		// COMUNICATUM
@@ -390,7 +390,7 @@ void ARX_SPELLS_AnalyseSYMBOL() {
 					CurrSpellSymbol = MAX_SPELL_SYMBOLS - 1;
 				}
 
-				ARX_SOUND_PlaySFX(SND_SYMB_COMUNICATUM);
+				ARX_SOUND_PlaySFX(SND_SYMB[RUNE_COMUNICATUM]);
 			break;
 
 		// FOLGORA
@@ -407,7 +407,7 @@ void ARX_SPELLS_AnalyseSYMBOL() {
 					CurrSpellSymbol = MAX_SPELL_SYMBOLS - 1;
 				}
 
-				ARX_SOUND_PlaySFX(SND_SYMB_FOLGORA);
+				ARX_SOUND_PlaySFX(SND_SYMB[RUNE_FOLGORA]);
 			break;
 
 		// SPACIUM
@@ -421,7 +421,7 @@ void ARX_SPELLS_AnalyseSYMBOL() {
 					CurrSpellSymbol = MAX_SPELL_SYMBOLS - 1;
 				}
 
-				ARX_SOUND_PlaySFX(SND_SYMB_SPACIUM);
+				ARX_SOUND_PlaySFX(SND_SYMB[RUNE_SPACIUM]);
 			break;
 
 		// TERA
@@ -436,7 +436,7 @@ void ARX_SPELLS_AnalyseSYMBOL() {
 					CurrSpellSymbol = MAX_SPELL_SYMBOLS - 1;
 				}
 
-				ARX_SOUND_PlaySFX(SND_SYMB_TERA);
+				ARX_SOUND_PlaySFX(SND_SYMB[RUNE_TERA]);
 			break;
 
 		// CETRIUS
@@ -453,7 +453,7 @@ void ARX_SPELLS_AnalyseSYMBOL() {
 					CurrSpellSymbol = MAX_SPELL_SYMBOLS - 1;
 				}
 
-				ARX_SOUND_PlaySFX(SND_SYMB_CETRIUS);
+				ARX_SOUND_PlaySFX(SND_SYMB[RUNE_CETRIUS]);
 			break;
 
 		// RHAA
@@ -465,7 +465,7 @@ void ARX_SPELLS_AnalyseSYMBOL() {
 					CurrSpellSymbol = MAX_SPELL_SYMBOLS - 1;
 				}
 
-				ARX_SOUND_PlaySFX(SND_SYMB_RHAA);
+				ARX_SOUND_PlaySFX(SND_SYMB[RUNE_RHAA]);
 			break;
 
 		// FRIDD
@@ -480,7 +480,7 @@ void ARX_SPELLS_AnalyseSYMBOL() {
 					CurrSpellSymbol = MAX_SPELL_SYMBOLS - 1;
 				}
 
-				ARX_SOUND_PlaySFX(SND_SYMB_FRIDD);
+				ARX_SOUND_PlaySFX(SND_SYMB[RUNE_FRIDD]);
 			break;
 
 		// KAOM
@@ -506,7 +506,7 @@ void ARX_SPELLS_AnalyseSYMBOL() {
 					CurrSpellSymbol = MAX_SPELL_SYMBOLS - 1;
 				}
 
-				ARX_SOUND_PlaySFX(SND_SYMB_KAOM);
+				ARX_SOUND_PlaySFX(SND_SYMB[RUNE_KAOM]);
 			break;
 
 		// STREGUM
@@ -521,7 +521,7 @@ void ARX_SPELLS_AnalyseSYMBOL() {
 				if(CurrSpellSymbol >= MAX_SPELL_SYMBOLS)
 					CurrSpellSymbol = MAX_SPELL_SYMBOLS - 1;
 
-				ARX_SOUND_PlaySFX(SND_SYMB_STREGUM);
+				ARX_SOUND_PlaySFX(SND_SYMB[RUNE_STREGUM]);
 			break;
 
 		// MORTE
@@ -533,7 +533,7 @@ void ARX_SPELLS_AnalyseSYMBOL() {
 				if(CurrSpellSymbol >= MAX_SPELL_SYMBOLS)
 					CurrSpellSymbol = MAX_SPELL_SYMBOLS - 1;
 
-				ARX_SOUND_PlaySFX(SND_SYMB_MORTE);
+				ARX_SOUND_PlaySFX(SND_SYMB[RUNE_MORTE]);
 			break;
 
 		// TEMPUS
@@ -545,7 +545,7 @@ void ARX_SPELLS_AnalyseSYMBOL() {
 				if(CurrSpellSymbol >= MAX_SPELL_SYMBOLS)
 					CurrSpellSymbol = MAX_SPELL_SYMBOLS - 1;
 
-				ARX_SOUND_PlaySFX(SND_SYMB_TEMPUS);
+				ARX_SOUND_PlaySFX(SND_SYMB[RUNE_TEMPUS]);
 			break;
 
 		// MOVIS
@@ -565,7 +565,7 @@ void ARX_SPELLS_AnalyseSYMBOL() {
 				if(CurrSpellSymbol >= MAX_SPELL_SYMBOLS)
 					CurrSpellSymbol = MAX_SPELL_SYMBOLS - 1;
 
-				ARX_SOUND_PlaySFX(SND_SYMB_MOVIS);
+				ARX_SOUND_PlaySFX(SND_SYMB[RUNE_MOVIS]);
 			break;
 
 		// NHI
@@ -576,7 +576,7 @@ void ARX_SPELLS_AnalyseSYMBOL() {
 				if(CurrSpellSymbol >= MAX_SPELL_SYMBOLS)
 					CurrSpellSymbol = MAX_SPELL_SYMBOLS - 1;
 
-				ARX_SOUND_PlaySFX(SND_SYMB_NHI);
+				ARX_SOUND_PlaySFX(SND_SYMB[RUNE_NHI]);
 			break;
 
 		// AAM
@@ -587,7 +587,7 @@ void ARX_SPELLS_AnalyseSYMBOL() {
 				if(CurrSpellSymbol >= MAX_SPELL_SYMBOLS)
 					CurrSpellSymbol = MAX_SPELL_SYMBOLS - 1;
 
-				ARX_SOUND_PlaySFX(SND_SYMB_AAM);
+				ARX_SOUND_PlaySFX(SND_SYMB[RUNE_AAM]);
 			break;
 																		
 		// YOK
@@ -604,7 +604,7 @@ void ARX_SPELLS_AnalyseSYMBOL() {
 				if(CurrSpellSymbol >= MAX_SPELL_SYMBOLS)
 					CurrSpellSymbol = MAX_SPELL_SYMBOLS - 1;
 
-				ARX_SOUND_PlaySFX(SND_SYMB_YOK);
+				ARX_SOUND_PlaySFX(SND_SYMB[RUNE_YOK]);
 			break;
 
 		// TAAR
@@ -616,7 +616,7 @@ void ARX_SPELLS_AnalyseSYMBOL() {
 				if(CurrSpellSymbol >= MAX_SPELL_SYMBOLS)
 					CurrSpellSymbol = MAX_SPELL_SYMBOLS - 1;
 
-				ARX_SOUND_PlaySFX(SND_SYMB_TAAR);
+				ARX_SOUND_PlaySFX(SND_SYMB[RUNE_TAAR]);
 			break;
 
 		// MEGA
@@ -632,7 +632,7 @@ void ARX_SPELLS_AnalyseSYMBOL() {
 				if(CurrSpellSymbol >= MAX_SPELL_SYMBOLS)
 					CurrSpellSymbol = MAX_SPELL_SYMBOLS - 1;
 
-				ARX_SOUND_PlaySFX(SND_SYMB_MEGA);
+				ARX_SOUND_PlaySFX(SND_SYMB[RUNE_MEGA]);
 			break;
 
 		// VISTA
@@ -650,7 +650,7 @@ void ARX_SPELLS_AnalyseSYMBOL() {
 				if(CurrSpellSymbol >= MAX_SPELL_SYMBOLS)
 					CurrSpellSymbol = MAX_SPELL_SYMBOLS - 1;
 
-				ARX_SOUND_PlaySFX(SND_SYMB_VISTA);
+				ARX_SOUND_PlaySFX(SND_SYMB[RUNE_VISTA]);
 			break;
 
 		// VITAE
@@ -661,7 +661,7 @@ void ARX_SPELLS_AnalyseSYMBOL() {
 			if(CurrSpellSymbol >= MAX_SPELL_SYMBOLS)
 				CurrSpellSymbol = MAX_SPELL_SYMBOLS - 1;
 
-			ARX_SOUND_PlaySFX(SND_SYMB_VITAE);
+			ARX_SOUND_PlaySFX(SND_SYMB[RUNE_VITAE]);
 			break;
 
 //--------------------------------------------------------------------------------------------------------------------
