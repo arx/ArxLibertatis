@@ -299,79 +299,77 @@ void FlareLine(const Vec2s & pos0, const Vec2s & pos1, Entity * io)
 	float m;
 	long i;
 	long z;
-
-	float x0 = pos0.x;
-	float x1 = pos1.x;
-	float y0 = pos0.y;
-	float y1 = pos1.y;
-
-	float dx = (x1 - x0);
+	
+	Vec2f tmpPos0 = Vec2f(pos0);
+	Vec2f tmpPos1 = Vec2f(pos1);
+	
+	float dx = (tmpPos1.x - tmpPos0.x);
 	float adx = glm::abs(dx);
-	float dy = (y1 - y0);
+	float dy = (tmpPos1.y - tmpPos0.y);
 	float ady = glm::abs(dy);
 
 	if(adx > ady) {
-		if(x0 > x1) {
-			z = x1;
-			x1 = x0;
-			x0 = z;
-			z = y1;
-			y0 = z;
+		if(tmpPos0.x > tmpPos1.x) {
+			z = tmpPos1.x;
+			tmpPos1.x = tmpPos0.x;
+			tmpPos0.x = z;
+			z = tmpPos1.y;
+			tmpPos0.y = z;
 		}
 
-		if(x0 < x1) {
+		if(tmpPos0.x < tmpPos1.x) {
 			m = dy / dx;
-			i = x0;
+			i = tmpPos0.x;
 
-			while(i < x1) {
+			while(i < tmpPos1.x) {
 				z = rnd() * FLARELINERND;
 				z += FLARELINESTEP;
 				i += z;
-				y0 += m * z;
-				AddLFlare(Vec2s(i, y0), io);
+				tmpPos0.y += m * z;
+				AddLFlare(Vec2s(i, tmpPos0.y), io);
 			}
 		} else {
 			m = dy / dx;
-			i = x1;
+			i = tmpPos1.x;
 
-			while(i < x0) {
+			while(i < tmpPos0.x) {
 				z = rnd() * FLARELINERND;
 				z += FLARELINESTEP;
 				i += z;
-				y0 += m * z;
-				AddLFlare(Vec2s(i, y0), io);
+				tmpPos0.y += m * z;
+				AddLFlare(Vec2s(i, tmpPos0.y), io);
 			}
 		}
 	} else {
-		if(y0 > y1) {
-			z = x1;
-			x0 = z;
-			z = y1;
-			y1 = y0;
-			y0 = z;
+		if(tmpPos0.y > tmpPos1.y) {
+			z = tmpPos1.x;
+			tmpPos0.x = z;
+			z = tmpPos1.y;
+			tmpPos1.y = tmpPos0.y;
+			tmpPos0.y = z;
 		}
 
-		if(y0 < y1) {
+		if(tmpPos0.y < tmpPos1.y) {
 			m = dx / dy;
-			i = y0;
+			i = tmpPos0.y;
 
-			while(i < y1) {
+			while(i < tmpPos1.y) {
 				z = rnd() * FLARELINERND;
 				z += FLARELINESTEP;
 				i += z;
-				x0 += m * z;
-				AddLFlare(Vec2s(x0, i), io);
+				tmpPos0.x += m * z;
+				AddLFlare(Vec2s(tmpPos0.x, i), io);
 			}
 		} else {
 			m = dx / dy;
-			i = y1;
+			i = tmpPos1.y;
 
-			while(i < y0) {
+			while(i < tmpPos0.y) {
 				z = rnd() * FLARELINERND;
 				z += FLARELINESTEP;
 				i += z;
-				x0 += m * z;
-				AddLFlare(Vec2s(x0, i), io);
+				tmpPos0.x += m * z;
+				AddLFlare(Vec2s(tmpPos0.x, i), io);
 			}
 		}
 	}
