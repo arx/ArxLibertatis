@@ -2641,6 +2641,8 @@ void ARX_INTERFACE_ManageOpenedBook_SpellsDraw() {
 	}
 }
 
+void RenderBookPlayerCharacter();
+
 void ARX_INTERFACE_ManageOpenedBook() {
 	arx_assert(entities.player());
 	
@@ -3573,6 +3575,11 @@ void ARX_INTERFACE_ManageOpenedBook() {
 	}
 
 	if((Book_Mode == BOOKMODE_STATS) && entities.player()->obj) {
+		RenderBookPlayerCharacter();
+	}
+}
+
+void RenderBookPlayerCharacter() {
 		
 		GRenderer->SetRenderState(Renderer::DepthWrite, true);
 
@@ -3829,7 +3836,6 @@ void ARX_INTERFACE_ManageOpenedBook() {
 				ARX_EQUIPMENT_AttachPlayerWeaponToBack();
 
 			Halo_Render();
-	}
 }
 
 
