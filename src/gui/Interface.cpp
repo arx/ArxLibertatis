@@ -2554,7 +2554,9 @@ void ARX_INTERFACE_ManageOpenedBook_SpellsDraw() {
 				j++;
 			}
 			
-			if(bOk) {
+		if(!bOk)
+			continue;
+			
 				Vec2f fPos = Vec2f(170.f, 135.f) + tmpPos * Vec2f(85.f, 70.f);
 				long flyingover = 0;
 				
@@ -2635,7 +2637,6 @@ void ARX_INTERFACE_ManageOpenedBook_SpellsDraw() {
 					tmpPos.x = 0;
 					tmpPos.y ++;
 				}
-			}
 	}
 	
 	if(!bFlyingOver) {
