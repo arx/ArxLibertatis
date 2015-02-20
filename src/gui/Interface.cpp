@@ -3596,8 +3596,8 @@ void ARX_INTERFACE_ManageOpenedBook() {
 			rec.right -= 50;
 		}
 
-		if (ARXmenu.currentmode==AMCM_OFF)
-			BOOKZOOM=0;
+		if(ARXmenu.currentmode == AMCM_OFF)
+			BOOKZOOM = 0;
 
 		Vec3f pos;
 		EERIE_LIGHT eLight1;
@@ -3614,15 +3614,15 @@ void ARX_INTERFACE_ManageOpenedBook() {
 		eLight2.exist = 1;
 		eLight2.pos = Vec3f(-50.f, -50.f, -200.f);
 		eLight2.rgb = Color3f::gray(0.6f);
-		eLight2.intensity=3.8f;
+		eLight2.intensity = 3.8f;
 		eLight2.fallstart = 0;
 		eLight2.fallend = eLight2.fallstart + 3460.f;
 		RecalcLight(&eLight2);
 		
 		EERIE_LIGHT * SavePDL[2];
-		SavePDL[0]=PDL[0];
-		SavePDL[1]=PDL[1];
-		int			iSavePDL=TOTPDL;
+		SavePDL[0] = PDL[0];
+		SavePDL[1] = PDL[1];
+		int iSavePDL = TOTPDL;
 
 		PDL[0] = &eLight1;
 		PDL[1] = &eLight2;
@@ -3643,8 +3643,7 @@ void ARX_INTERFACE_ManageOpenedBook() {
 			vp.bottom = static_cast<int>(rec.bottom - 17.f * g_sizeRatio.y);
 			GRenderer->SetScissor(vp);
 
-			switch (player.skin)
-			{
+			switch(player.skin) {
 				case 0:
 					ePlayerAngle.setPitch(-25.f);
 					break;
@@ -3660,7 +3659,7 @@ void ARX_INTERFACE_ManageOpenedBook() {
 			}
 
 			pos = Vec3f(8, 162, 75);
-			eLight1.pos.z=-90.f;
+			eLight1.pos.z = -90.f;
 		} else {
 			GRenderer->SetScissor(rec);
 
@@ -3679,7 +3678,7 @@ void ARX_INTERFACE_ManageOpenedBook() {
 		if(invisibility > 0.5f)
 			invisibility = 0.5f;
 
-		IN_BOOK_DRAW=1;
+		IN_BOOK_DRAW = 1;
 		std::vector<EERIE_VERTEX> vertexlist = entities.player()->obj->vertexlist3;
 
 		arx_assert(player.bookAnimation[0].cur_anim);
@@ -3687,7 +3686,7 @@ void ARX_INTERFACE_ManageOpenedBook() {
 		EERIEDrawAnimQuat(entities.player()->obj, player.bookAnimation, ePlayerAngle, pos,
 						  checked_range_cast<unsigned long>(Original_framedelay), NULL, true, invisibility);
 
-		IN_BOOK_DRAW=0;
+		IN_BOOK_DRAW = 0;
 		
 		if(ARXmenu.currentmode == AMCM_NEWQUEST) {
 			GRenderer->SetRenderState(Renderer::DepthTest, true);
@@ -3701,9 +3700,9 @@ void ARX_INTERFACE_ManageOpenedBook() {
 			GRenderer->SetRenderState(Renderer::DepthTest, false);
 		}
 
-		PDL[0]=SavePDL[0];
-		PDL[1]=SavePDL[1];
-		TOTPDL=iSavePDL;
+		PDL[0] = SavePDL[0];
+		PDL[1] = SavePDL[1];
+		TOTPDL = iSavePDL;
 
 		entities.player()->obj->vertexlist3 = vertexlist;
 		vertexlist.clear();
