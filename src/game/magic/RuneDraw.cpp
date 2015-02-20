@@ -188,8 +188,7 @@ void ARX_SPELLS_UpdateSymbolDraw() {
 
 			if(ti <= 0)
 				ti = 1;
-
-			Vec2s pos1, old_pos;
+			
 			long newtime=tim;
 			long oldtime=sd->lasttim;
 
@@ -200,14 +199,16 @@ void ARX_SPELLS_UpdateSymbolDraw() {
 				newtime=sd->duration;
 
 			sd->lasttim=(short)tim;
-
-			pos1.x = (short)subj.center.x - symbolVecScale.x * 2 + sd->cPosStart.x * symbolVecScale.x;
-			pos1.y = (short)subj.center.y - symbolVecScale.y * 2 + sd->cPosStart.y * symbolVecScale.y;
-
+			
 			float div_ti=1.f/ti;
 
 			if(io != entities.player()) {
-				old_pos = pos1;
+				
+				Vec2s pos1;
+				pos1.x = (short)subj.center.x - symbolVecScale.x * 2 + sd->cPosStart.x * symbolVecScale.x;
+				pos1.y = (short)subj.center.y - symbolVecScale.y * 2 + sd->cPosStart.y * symbolVecScale.y;
+				
+				Vec2s old_pos = pos1;
 
 				for(long j = 0; j < nbcomponents; j++) {
 					Vec2s vect = GetSymbVector(sd->sequence[j]);
@@ -246,7 +247,7 @@ void ARX_SPELLS_UpdateSymbolDraw() {
 				
 				ReCenterSequence(sd->sequence, iMin, iMax);
 				Vec2s iSize = iMax - iMin;
-				pos1 = Vec2s(97, 64);
+				Vec2s pos1 = Vec2s(97, 64);
 				
 				Vec2s lPos;
 				lPos.x = (((513>>1)-lMaxSymbolDrawSize.x)>>1);
