@@ -2539,7 +2539,9 @@ void ARX_INTERFACE_ManageOpenedBook_SpellsDraw() {
 	for(size_t i=0; i < SPELL_TYPES_COUNT; i++) {
 		const SPELL_ICON & spellInfo = spellicons[i];
 		
-		if(spellInfo.level==Book_SpellPage && !spellInfo.bSecret) {
+		if(spellInfo.level != Book_SpellPage || spellInfo.bSecret)
+			continue;
+		
 			// check if player can cast it
 			bool bOk = true;
 			long j = 0;
@@ -2634,7 +2636,6 @@ void ARX_INTERFACE_ManageOpenedBook_SpellsDraw() {
 					tmpPos.y ++;
 				}
 			}
-		}
 	}
 	
 	if(!bFlyingOver) {
