@@ -2537,13 +2537,15 @@ void ARX_INTERFACE_ManageOpenedBook_SpellsDraw() {
 	bool	bFlyingOver = false;
 	
 	for(size_t i=0; i < SPELL_TYPES_COUNT; i++) {
-		if(spellicons[i].level==Book_SpellPage && !spellicons[i].bSecret) {
+		const SPELL_ICON & spellInfo = spellicons[i];
+		
+		if(spellInfo.level==Book_SpellPage && !spellInfo.bSecret) {
 			// check if player can cast it
 			bool bOk = true;
 			long j = 0;
 			
-			while(j < 4 && (spellicons[i].symbols[j] != RUNE_NONE)) {
-				if(!player.hasRune(spellicons[i].symbols[j])) {
+			while(j < 4 && (spellInfo.symbols[j] != RUNE_NONE)) {
+				if(!player.hasRune(spellInfo.symbols[j])) {
 					bOk = false;
 				}
 				
@@ -2559,7 +2561,7 @@ void ARX_INTERFACE_ManageOpenedBook_SpellsDraw() {
 					flyingover = 1;
 					
 					SpecialCursor=CURSOR_INTERACTION_ON;
-					DrawBookTextCenter(hFontInBook, Vec2f(208, 90), spellicons[i].name, Color::none);
+					DrawBookTextCenter(hFontInBook, Vec2f(208, 90), spellInfo.name, Color::none);
 					
 					for(size_t si = 0; si < MAX_SPEECH; si++) {
 						if(speech[si].timecreation > 0)
@@ -2572,7 +2574,7 @@ void ARX_INTERFACE_ManageOpenedBook_SpellsDraw() {
 						static_cast<float>(g_size.center().x),
 						12,
 						(g_size.center().x)*0.82f,
-						spellicons[i].description,
+						spellInfo.description,
 						Color(232,204,143),
 						1000,
 						0.01f,
@@ -2582,22 +2584,22 @@ void ARX_INTERFACE_ManageOpenedBook_SpellsDraw() {
 					long count = 0;
 					
 					for(long j = 0; j < 6; ++j)
-						if(spellicons[i].symbols[j] != RUNE_NONE)
+						if(spellInfo.symbols[j] != RUNE_NONE)
 							++count;
 					
 					GRenderer->GetTextureStage(0)->setMagFilter(TextureStage::FilterLinear);
 					for(int j = 0; j < 6; ++j) {
-						if(spellicons[i].symbols[j] != RUNE_NONE) {
+						if(spellInfo.symbols[j] != RUNE_NONE) {
 							Vec2f pos;
 							pos.x = 240 - (count * 32) * 0.5f + j * 32;
 							pos.y = 306;
-							DrawBookInterfaceItem(gui::necklace.pTexTab[spellicons[i].symbols[j]], Vec2f(pos));
+							DrawBookInterfaceItem(gui::necklace.pTexTab[spellInfo.symbols[j]], Vec2f(pos));
 						}
 					}
 					GRenderer->GetTextureStage(0)->setMagFilter(TextureStage::FilterNearest);
 				}
 				
-				if(spellicons[i].tc) {
+				if(spellInfo.tc) {
 					GRenderer->SetRenderState(Renderer::AlphaBlending, true);
 					GRenderer->SetBlendFunc(Renderer::BlendZero, Renderer::BlendInvSrcColor);
 					
@@ -2609,7 +2611,7 @@ void ARX_INTERFACE_ManageOpenedBook_SpellsDraw() {
 							player.SpellToMemorize.bSpell = true;
 							
 							for(long j = 0; j < 6; j++) {
-								player.SpellToMemorize.iSpellSymbols[j] = spellicons[i].symbols[j];
+								player.SpellToMemorize.iSpellSymbols[j] = spellInfo.symbols[j];
 							}
 							
 							player.SpellToMemorize.lTimeCreation = (unsigned long)(arxtime);
@@ -2619,7 +2621,7 @@ void ARX_INTERFACE_ManageOpenedBook_SpellsDraw() {
 					}
 					
 					GRenderer->GetTextureStage(0)->setMagFilter(TextureStage::FilterLinear);
-					DrawBookInterfaceItem(spellicons[i].tc, fPos, color);
+					DrawBookInterfaceItem(spellInfo.tc, fPos, color);
 					GRenderer->GetTextureStage(0)->setMagFilter(TextureStage::FilterNearest);
 					
 					GRenderer->SetRenderState(Renderer::AlphaBlending, false);
