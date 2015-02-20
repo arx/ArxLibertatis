@@ -778,6 +778,7 @@ set(GUI_SOURCES
 	src/gui/Speech.cpp
 	src/gui/Text.cpp
 	src/gui/TextManager.cpp
+	src/gui/book/Book.cpp
 )
 
 set(INPUT_SOURCES src/input/Input.cpp)

@@ -200,7 +200,7 @@ bool				LAST_PLAYER_MOUSELOOK_ON = false;
 static bool MEMO_PLAYER_MOUSELOOK_ON = false;
 
 bool				COMBINEGOLD = false;
-ARX_INTERFACE_BOOK_MODE Book_Mode = BOOKMODE_STATS;
+
 long				Book_MapPage=1;
 long				Book_SpellPage=1;
 

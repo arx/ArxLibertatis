@@ -237,20 +237,11 @@ enum ARX_INTERFACE_CURSOR_MODE
 	CURSOR_COMBINEOFF
 };
 
-enum ARX_INTERFACE_BOOK_MODE
-{
-	BOOKMODE_STATS = 0,
-	BOOKMODE_SPELLS,
-	BOOKMODE_MINIMAP,
-	BOOKMODE_QUESTS
-};
-
 //-----------------------------------------------------------------------------
 extern INTERFACE_TC ITC;
 extern Vec2s MemoMouse;
 extern bool bookclick;
 
-extern ARX_INTERFACE_BOOK_MODE Book_Mode;
 extern long SpecialCursor;
 
 extern long LastMouseClick;

@@ -45,6 +45,7 @@
 #include "gui/Cursor.h"
 #include "gui/Interface.h"
 #include "gui/Speech.h"
+#include "gui/book/Book.h"
 
 #include "input/Input.h"
 
