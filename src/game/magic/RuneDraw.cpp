@@ -94,7 +94,7 @@ void ARX_SPELLS_UpdateSymbolDraw() {
 
 		if(io->spellcast_data.castingspell != SPELL_NONE) {
 			if(!io->symboldraw) {
-				long tst = 0;
+				bool tst = false;
 
 				if(!(io->spellcast_data.spell_flags & SPELLCAST_FLAG_NOANIM) && (io->ioflags & IO_NPC)) {
 					ANIM_USE * ause1 = &io->animlayer[1];
@@ -103,14 +103,14 @@ void ARX_SPELLS_UpdateSymbolDraw() {
 						// TODO why no AcquireLastAnim() like everywhere else?
 						FinishAnim(io, ause1->cur_anim);
 						ANIM_Set(ause1, io->anims[ANIM_CAST_CYCLE]);
-						tst = 1;
+						tst = true;
 					} else if(ause1->cur_anim == io->anims[ANIM_CAST_CYCLE]) {
-						tst = 1;
+						tst = true;
 					} else if(ause1->cur_anim != io->anims[ANIM_CAST_START]) {
 						io->spellcast_data.castingspell = SPELL_NONE;
 					}
 				} else {
-					tst = 1;
+					tst = true;
 				}
 
 				if(io->spellcast_data.symb[0] != RUNE_NONE && tst) {
