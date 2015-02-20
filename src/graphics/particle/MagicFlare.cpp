@@ -296,10 +296,6 @@ static const int FLARELINERND = 6;
 
 void FlareLine(const Vec2s & pos0, const Vec2s & pos1, Entity * io)
 {
-	float m;
-	long i;
-	long z;
-	
 	Vec2f tmpPos0 = Vec2f(pos0);
 	Vec2f tmpPos1 = Vec2f(pos1);
 	
@@ -308,7 +304,7 @@ void FlareLine(const Vec2s & pos0, const Vec2s & pos1, Entity * io)
 	
 	if(ad.x > ad.y) {
 		if(tmpPos0.x > tmpPos1.x) {
-			z = tmpPos1.x;
+			long z = tmpPos1.x;
 			tmpPos1.x = tmpPos0.x;
 			tmpPos0.x = z;
 			z = tmpPos1.y;
@@ -316,22 +312,22 @@ void FlareLine(const Vec2s & pos0, const Vec2s & pos1, Entity * io)
 		}
 
 		if(tmpPos0.x < tmpPos1.x) {
-			m = d.y / d.x;
-			i = tmpPos0.x;
+			float m = d.y / d.x;
+			long i = tmpPos0.x;
 
 			while(i < tmpPos1.x) {
-				z = rnd() * FLARELINERND;
+				long z = rnd() * FLARELINERND;
 				z += FLARELINESTEP;
 				i += z;
 				tmpPos0.y += m * z;
 				AddLFlare(Vec2s(i, tmpPos0.y), io);
 			}
 		} else {
-			m = d.y / d.x;
-			i = tmpPos1.x;
+			float m = d.y / d.x;
+			long i = tmpPos1.x;
 
 			while(i < tmpPos0.x) {
-				z = rnd() * FLARELINERND;
+				long z = rnd() * FLARELINERND;
 				z += FLARELINESTEP;
 				i += z;
 				tmpPos0.y += m * z;
@@ -340,7 +336,7 @@ void FlareLine(const Vec2s & pos0, const Vec2s & pos1, Entity * io)
 		}
 	} else {
 		if(tmpPos0.y > tmpPos1.y) {
-			z = tmpPos1.x;
+			long z = tmpPos1.x;
 			tmpPos0.x = z;
 			z = tmpPos1.y;
 			tmpPos1.y = tmpPos0.y;
@@ -348,22 +344,22 @@ void FlareLine(const Vec2s & pos0, const Vec2s & pos1, Entity * io)
 		}
 
 		if(tmpPos0.y < tmpPos1.y) {
-			m = d.x / d.y;
-			i = tmpPos0.y;
+			float m = d.x / d.y;
+			long i = tmpPos0.y;
 
 			while(i < tmpPos1.y) {
-				z = rnd() * FLARELINERND;
+				long z = rnd() * FLARELINERND;
 				z += FLARELINESTEP;
 				i += z;
 				tmpPos0.x += m * z;
 				AddLFlare(Vec2s(tmpPos0.x, i), io);
 			}
 		} else {
-			m = d.x / d.y;
-			i = tmpPos1.y;
+			float m = d.x / d.y;
+			long i = tmpPos1.y;
 
 			while(i < tmpPos0.y) {
-				z = rnd() * FLARELINERND;
+				long z = rnd() * FLARELINERND;
 				z += FLARELINESTEP;
 				i += z;
 				tmpPos0.x += m * z;
