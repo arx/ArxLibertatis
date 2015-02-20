@@ -2542,101 +2542,101 @@ void ARX_INTERFACE_ManageOpenedBook_SpellsDraw() {
 		if(spellInfo.level != Book_SpellPage || spellInfo.bSecret)
 			continue;
 		
-			// check if player can cast it
-			bool bOk = true;
-			long j = 0;
-			
-			while(j < 4 && (spellInfo.symbols[j] != RUNE_NONE)) {
-				if(!player.hasRune(spellInfo.symbols[j])) {
-					bOk = false;
-				}
-				
-				j++;
+		// check if player can cast it
+		bool bOk = true;
+		long j = 0;
+		
+		while(j < 4 && (spellInfo.symbols[j] != RUNE_NONE)) {
+			if(!player.hasRune(spellInfo.symbols[j])) {
+				bOk = false;
 			}
 			
+			j++;
+		}
+		
 		if(!bOk)
 			continue;
 			
-				Vec2f fPos = Vec2f(170.f, 135.f) + tmpPos * Vec2f(85.f, 70.f);
-				long flyingover = 0;
+		Vec2f fPos = Vec2f(170.f, 135.f) + tmpPos * Vec2f(85.f, 70.f);
+		long flyingover = 0;
+		
+		if(MouseInBookRect(fPos, Vec2f(48, 48))) {
+			bFlyingOver = true;
+			flyingover = 1;
+			
+			SpecialCursor=CURSOR_INTERACTION_ON;
+			DrawBookTextCenter(hFontInBook, Vec2f(208, 90), spellInfo.name, Color::none);
+			
+			for(size_t si = 0; si < MAX_SPEECH; si++) {
+				if(speech[si].timecreation > 0)
+					FLYING_OVER=0;
+			}
+			
+			OLD_FLYING_OVER = FLYING_OVER;
+			pTextManage->Clear();
+			UNICODE_ARXDrawTextCenteredScroll(hFontInGame,
+				static_cast<float>(g_size.center().x),
+				12,
+				(g_size.center().x)*0.82f,
+				spellInfo.description,
+				Color(232,204,143),
+				1000,
+				0.01f,
+				2,
+				0);
+			
+			long count = 0;
+			
+			for(long j = 0; j < 6; ++j)
+				if(spellInfo.symbols[j] != RUNE_NONE)
+					++count;
+			
+			GRenderer->GetTextureStage(0)->setMagFilter(TextureStage::FilterLinear);
+			for(int j = 0; j < 6; ++j) {
+				if(spellInfo.symbols[j] != RUNE_NONE) {
+					Vec2f pos;
+					pos.x = 240 - (count * 32) * 0.5f + j * 32;
+					pos.y = 306;
+					DrawBookInterfaceItem(gui::necklace.pTexTab[spellInfo.symbols[j]], Vec2f(pos));
+				}
+			}
+			GRenderer->GetTextureStage(0)->setMagFilter(TextureStage::FilterNearest);
+		}
+		
+		if(spellInfo.tc) {
+			GRenderer->SetRenderState(Renderer::AlphaBlending, true);
+			GRenderer->SetBlendFunc(Renderer::BlendZero, Renderer::BlendInvSrcColor);
+			
+			Color color;
+			if(flyingover) {
+				color = Color::white;
 				
-				if(MouseInBookRect(fPos, Vec2f(48, 48))) {
-					bFlyingOver = true;
-					flyingover = 1;
+				if((EERIEMouseButton & 1)  && !(LastMouseClick & 1)) {
+					player.SpellToMemorize.bSpell = true;
 					
-					SpecialCursor=CURSOR_INTERACTION_ON;
-					DrawBookTextCenter(hFontInBook, Vec2f(208, 90), spellInfo.name, Color::none);
-					
-					for(size_t si = 0; si < MAX_SPEECH; si++) {
-						if(speech[si].timecreation > 0)
-							FLYING_OVER=0;
+					for(long j = 0; j < 6; j++) {
+						player.SpellToMemorize.iSpellSymbols[j] = spellInfo.symbols[j];
 					}
 					
-					OLD_FLYING_OVER = FLYING_OVER;
-					pTextManage->Clear();
-					UNICODE_ARXDrawTextCenteredScroll(hFontInGame,
-						static_cast<float>(g_size.center().x),
-						12,
-						(g_size.center().x)*0.82f,
-						spellInfo.description,
-						Color(232,204,143),
-						1000,
-						0.01f,
-						2,
-						0);
-					
-					long count = 0;
-					
-					for(long j = 0; j < 6; ++j)
-						if(spellInfo.symbols[j] != RUNE_NONE)
-							++count;
-					
-					GRenderer->GetTextureStage(0)->setMagFilter(TextureStage::FilterLinear);
-					for(int j = 0; j < 6; ++j) {
-						if(spellInfo.symbols[j] != RUNE_NONE) {
-							Vec2f pos;
-							pos.x = 240 - (count * 32) * 0.5f + j * 32;
-							pos.y = 306;
-							DrawBookInterfaceItem(gui::necklace.pTexTab[spellInfo.symbols[j]], Vec2f(pos));
-						}
-					}
-					GRenderer->GetTextureStage(0)->setMagFilter(TextureStage::FilterNearest);
+					player.SpellToMemorize.lTimeCreation = (unsigned long)(arxtime);
 				}
-				
-				if(spellInfo.tc) {
-					GRenderer->SetRenderState(Renderer::AlphaBlending, true);
-					GRenderer->SetBlendFunc(Renderer::BlendZero, Renderer::BlendInvSrcColor);
-					
-					Color color;
-					if(flyingover) {
-						color = Color::white;
-						
-						if((EERIEMouseButton & 1)  && !(LastMouseClick & 1)) {
-							player.SpellToMemorize.bSpell = true;
-							
-							for(long j = 0; j < 6; j++) {
-								player.SpellToMemorize.iSpellSymbols[j] = spellInfo.symbols[j];
-							}
-							
-							player.SpellToMemorize.lTimeCreation = (unsigned long)(arxtime);
-						}
-					} else {
-						color = Color(168, 208, 223, 255);
-					}
-					
-					GRenderer->GetTextureStage(0)->setMagFilter(TextureStage::FilterLinear);
-					DrawBookInterfaceItem(spellInfo.tc, fPos, color);
-					GRenderer->GetTextureStage(0)->setMagFilter(TextureStage::FilterNearest);
-					
-					GRenderer->SetRenderState(Renderer::AlphaBlending, false);
-				}
-				
-				tmpPos.x ++;
-				
-				if(tmpPos.x >= 2) {
-					tmpPos.x = 0;
-					tmpPos.y ++;
-				}
+			} else {
+				color = Color(168, 208, 223, 255);
+			}
+			
+			GRenderer->GetTextureStage(0)->setMagFilter(TextureStage::FilterLinear);
+			DrawBookInterfaceItem(spellInfo.tc, fPos, color);
+			GRenderer->GetTextureStage(0)->setMagFilter(TextureStage::FilterNearest);
+			
+			GRenderer->SetRenderState(Renderer::AlphaBlending, false);
+		}
+		
+		tmpPos.x ++;
+		
+		if(tmpPos.x >= 2) {
+			tmpPos.x = 0;
+			tmpPos.y ++;
+		}
 	}
 	
 	if(!bFlyingOver) {
