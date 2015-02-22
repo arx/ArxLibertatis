@@ -645,14 +645,14 @@ void PrepareIOTreatZone(long flag) {
 			if(io->ioflags & (IO_CAMERA | IO_ITEM | IO_MARKER))
 				continue;
 
-			long toadd = 0;
+			bool toadd = false;
 
 			for(long ii = 1; ii < M_TREAT; ii++) {
 				Entity * ioo = treatio[ii].io;
 
 				if(ioo) {
 					if(closerThan(io->pos, ioo->pos, 300.f)) {
-						toadd = 1;
+						toadd = true;
 						break;
 					}
 				}
