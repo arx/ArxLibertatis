@@ -436,8 +436,7 @@ void TREATZONE_RemoveIO(Entity * io)
 	}
 }
 
-// flag & 1 IO_JUST_COLLIDE
-void TREATZONE_AddIO(Entity * io, long flag)
+void TREATZONE_AddIO(Entity * io, bool justCollide)
 {
 	if(TREATZONE_MAX == TREATZONE_CUR) {
 		TREATZONE_MAX++;
@@ -452,7 +451,7 @@ void TREATZONE_AddIO(Entity * io, long flag)
 	treatio[TREATZONE_CUR].io = io;
 	treatio[TREATZONE_CUR].ioflags = io->ioflags;
 
-	if(flag & 1)
+	if(justCollide)
 		treatio[TREATZONE_CUR].ioflags |= IO_JUST_COLLIDE;
 
 	treatio[TREATZONE_CUR].show = io->show;
@@ -660,7 +659,7 @@ void PrepareIOTreatZone(long flag) {
 			}
 
 			if(toadd) {
-				TREATZONE_AddIO(io, 1);
+				TREATZONE_AddIO(io, true);
 			}
 		}
 	}
