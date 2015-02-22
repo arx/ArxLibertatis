@@ -57,6 +57,7 @@ ZeniMax Media Inc., Suite 120, Rockville, Maryland 20850 USA.
 #include <vector>
 
 #include <boost/algorithm/string/predicate.hpp>
+#include <boost/foreach.hpp>
 
 #include "animation/Animation.h"
 #include "animation/AnimationRender.h"
@@ -168,7 +169,8 @@ extern bool SHOW_INGAME_MINIMAP;
 
 //-----------------------------------------------------------------------------
 
-ARX_INTERFACE_HALO_STRUCT * aiHalo=NULL;
+std::vector<ARX_INTERFACE_HALO_STRUCT> deferredUiHalos;
+
 E_ARX_STATE_MOUSE	eMouseState;
 bool bookclick;
 Vec2s MemoMouse;
@@ -213,8 +215,6 @@ long				SpecialCursor=0;
 long				FLYING_OVER		= 0;
 long				OLD_FLYING_OVER	= 0;
 long				BOOKZOOM=0;
-static long INTERFACE_HALO_NB = 0;
-static long INTERFACE_HALO_MAX_NB = 0;
 long				LastMouseClick=0;
 
 //used to redist points - attributes and skill
@@ -540,36 +540,32 @@ void ARX_INTERFACE_HALO_Render(Color3f color,
 }
 
 void ARX_INTERFACE_HALO_Draw(Entity * io, TextureContainer * tc, TextureContainer * tc2, Vec2f pos, Vec2f ratio) {
-	INTERFACE_HALO_NB++;
 	
-	if(INTERFACE_HALO_NB > INTERFACE_HALO_MAX_NB) {
-		INTERFACE_HALO_MAX_NB = INTERFACE_HALO_NB;
-		aiHalo = (ARX_INTERFACE_HALO_STRUCT *)realloc(aiHalo,sizeof(ARX_INTERFACE_HALO_STRUCT)*INTERFACE_HALO_NB);
-	}
+	ARX_INTERFACE_HALO_STRUCT halo;
+	halo.io = io;
+	halo.tc = tc;
+	halo.tc2 = tc2;
+	halo.m_pos = pos;
+	halo.ratio = ratio;
 	
-	aiHalo[INTERFACE_HALO_NB-1].io=io;
-	aiHalo[INTERFACE_HALO_NB-1].tc=tc;
-	aiHalo[INTERFACE_HALO_NB-1].tc2=tc2;
-	aiHalo[INTERFACE_HALO_NB-1].m_pos.x=pos.x;
-	aiHalo[INTERFACE_HALO_NB-1].m_pos.y=pos.y;
-	aiHalo[INTERFACE_HALO_NB-1].ratio.x = ratio.x;
-	aiHalo[INTERFACE_HALO_NB-1].ratio.y = ratio.y;
+	deferredUiHalos.push_back(halo);
 }
 
 void ReleaseHalo() {
-	free(aiHalo);
-	aiHalo=NULL;
+	
+	deferredUiHalos.clear();
 }
 
 void ARX_INTERFACE_HALO_Flush() {
 	
-	for (long i=0;i<INTERFACE_HALO_NB;i++)
+	BOOST_FOREACH(ARX_INTERFACE_HALO_STRUCT & halo, deferredUiHalos) {
 		ARX_INTERFACE_HALO_Render(
-		aiHalo[i].io->halo.color,
-		aiHalo[i].io->halo.flags,
-		aiHalo[i].tc2, aiHalo[i].m_pos, aiHalo[i].ratio);
-
-	INTERFACE_HALO_NB=0;
+		halo.io->halo.color,
+		halo.io->halo.flags,
+		halo.tc2, halo.m_pos, halo.ratio);
+	}
+	
+	deferredUiHalos.clear();
 }
 
 //-----------------------------------------------------------------------------
