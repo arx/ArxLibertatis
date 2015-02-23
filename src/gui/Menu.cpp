@@ -467,7 +467,7 @@ bool ARX_Menu_Render() {
 				SpecialCursor = CURSOR_INTERACTION_ON;
 				FLYING_OVER = BUTTON_QUICK_GENERATION;
 
-				if (EERIEMouseButton & 1) ;
+				if(eeMousePressed1());
 				else if (eeMouseUp1())
 				{
 					QUICK_MOD++;

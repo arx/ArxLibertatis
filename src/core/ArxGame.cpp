@@ -1989,7 +1989,7 @@ void ArxGame::updateLevel() {
 
 	// Checks Magic Flares Drawing
 	if(!PLAYER_PARALYSED) {
-		if(EERIEMouseButton & 1) {
+		if(eeMousePressed1()) {
 			if(!ARX_FLARES_Block) {
 				ARX_SPELLS_AddPoint(DANAEMouse);
 			} else {

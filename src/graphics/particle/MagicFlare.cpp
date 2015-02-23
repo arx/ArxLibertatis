@@ -224,7 +224,7 @@ void AddFlare(const Vec2s & pos, float sm, short typ, Entity * io, bool bookDraw
 	}
 
 	if(typ == -1) {
-		float zz = (EERIEMouseButton & 1) ? 0.29f : ((sm > 0.5f) ? rnd() : 1.f);
+		float zz = eeMousePressed1() ? 0.29f : ((sm > 0.5f) ? rnd() : 1.f);
 		if(zz < 0.2f) {
 			fl->type = 2;
 			fl->size = rnd() * 42.f + 42.f;

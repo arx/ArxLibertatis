@@ -1765,7 +1765,7 @@ void ArxGame::managePlayerControls() {
 		ARX_INTERFACE_BookOpenClose(0);
 
 	// Check For Combat Mode ON/OFF
-	if(   (EERIEMouseButton & 1)
+	if(   eeMousePressed1()
 	   && !(player.Interface & INTER_COMBATMODE)
 	   && !g_cursorOverBook
 	   && !SpecialCursor
@@ -3871,7 +3871,7 @@ void ArxGame::manageEditorControls() {
 	playerInterfaceFader.update();
 	cinematicBorder.update();
 	
-	if(EERIEMouseButton & 1) {
+	if(eeMousePressed1()) {
 		static Vec2s dragThreshold = Vec2s_ZERO;
 		
 		if(!(LastMouseClick & 1)) {

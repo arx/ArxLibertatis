@@ -782,7 +782,7 @@ void ManageCombatModeAnimations() {
 
 			if(useanim->cur_anim == alist[ANIM_BARE_WAIT]) {
 				AimTime = 0;
-				if(EERIEMouseButton & 1) {
+				if(eeMousePressed1()) {
 					changeAnimation(io, 1, alist[ANIM_BARE_STRIKE_LEFT_START + CurrFightPos * 3]);
 					io->isHit = false;
 				}
@@ -793,7 +793,7 @@ void ManageCombatModeAnimations() {
 				if(useanim->cur_anim == alist[ANIM_BARE_STRIKE_LEFT_START+j*3] && (useanim->flags & EA_ANIMEND)) {
 					changeAnimation(io, 1, alist[ANIM_BARE_STRIKE_LEFT_CYCLE + j * 3], EA_LOOP);
 					AimTime = (unsigned long)(arxtime);
-				} else if(useanim->cur_anim == alist[ANIM_BARE_STRIKE_LEFT_CYCLE+j*3] && !(EERIEMouseButton & 1)) {
+				} else if(useanim->cur_anim == alist[ANIM_BARE_STRIKE_LEFT_CYCLE+j*3] && !eeMousePressed1()) {
 					changeAnimation(io, 1, alist[ANIM_BARE_STRIKE_LEFT + j * 3]);
 					strikeSpeak(io);
 					SendIOScriptEvent(io, SM_STRIKE, "bare");
@@ -849,7 +849,7 @@ void ManageCombatModeAnimations() {
 			// Waiting and receiving Strike Impulse
 			if(useanim->cur_anim == alist[ANIM_DAGGER_WAIT]) {
 				AimTime = 0;
-				if(EERIEMouseButton & 1) {
+				if(eeMousePressed1()) {
 					changeAnimation(io, 1, alist[ANIM_DAGGER_STRIKE_LEFT_START + CurrFightPos * 3]);
 					io->isHit = false;
 				}
@@ -860,7 +860,7 @@ void ManageCombatModeAnimations() {
 				if(useanim->cur_anim == alist[ANIM_DAGGER_STRIKE_LEFT_START+j*3] && (useanim->flags & EA_ANIMEND)) {
 					changeAnimation(io, 1, alist[ANIM_DAGGER_STRIKE_LEFT_CYCLE + j * 3], EA_LOOP);
 					AimTime = (unsigned long)(arxtime);
-				} else if(useanim->cur_anim == alist[ANIM_DAGGER_STRIKE_LEFT_CYCLE+j*3] && !(EERIEMouseButton & 1)) {
+				} else if(useanim->cur_anim == alist[ANIM_DAGGER_STRIKE_LEFT_CYCLE+j*3] && !eeMousePressed1()) {
 					changeAnimation(io, 1, alist[ANIM_DAGGER_STRIKE_LEFT + j * 3]);
 					strikeSpeak(io);
 					SendIOScriptEvent(io, SM_STRIKE, "dagger");
@@ -900,7 +900,7 @@ void ManageCombatModeAnimations() {
 			// Waiting and Received Strike Impulse
 			if(useanim->cur_anim == alist[ANIM_1H_WAIT]) {
 				AimTime = 0;
-				if(EERIEMouseButton & 1) {
+				if(eeMousePressed1()) {
 					changeAnimation(io, 1, alist[ANIM_1H_STRIKE_LEFT_START + CurrFightPos * 3]);
 					io->isHit = false;
 				}
@@ -911,7 +911,7 @@ void ManageCombatModeAnimations() {
 				if(useanim->cur_anim == alist[ANIM_1H_STRIKE_LEFT_START+j*3] && (useanim->flags & EA_ANIMEND)) {
 					changeAnimation(io, 1, alist[ANIM_1H_STRIKE_LEFT_CYCLE + j * 3], EA_LOOP);
 					AimTime = (unsigned long)(arxtime);
-				} else if(useanim->cur_anim == alist[ANIM_1H_STRIKE_LEFT_CYCLE+j*3] && !(EERIEMouseButton & 1)) {
+				} else if(useanim->cur_anim == alist[ANIM_1H_STRIKE_LEFT_CYCLE+j*3] && !eeMousePressed1()) {
 					changeAnimation(io, 1, alist[ANIM_1H_STRIKE_LEFT + j * 3]);
 					strikeSpeak(io);
 					SendIOScriptEvent(io, SM_STRIKE, "1h");
@@ -950,7 +950,7 @@ void ManageCombatModeAnimations() {
 			// Waiting and Receiving Strike Impulse
 			if(useanim->cur_anim == alist[ANIM_2H_WAIT]) {
 				AimTime = 0;
-				if(EERIEMouseButton & 1) {
+				if(eeMousePressed1()) {
 					changeAnimation(io, 1, alist[ANIM_2H_STRIKE_LEFT_START + CurrFightPos * 3]);
 					io->isHit = false;
 				}
@@ -961,7 +961,7 @@ void ManageCombatModeAnimations() {
 				if(useanim->cur_anim == alist[ANIM_2H_STRIKE_LEFT_START+j*3] && (useanim->flags & EA_ANIMEND)) {
 					changeAnimation(io, 1, alist[ANIM_2H_STRIKE_LEFT_CYCLE + j * 3], EA_LOOP);
 					AimTime = (unsigned long)(arxtime);
-				} else if(useanim->cur_anim == alist[ANIM_2H_STRIKE_LEFT_CYCLE+j*3] && !(EERIEMouseButton & 1)) {
+				} else if(useanim->cur_anim == alist[ANIM_2H_STRIKE_LEFT_CYCLE+j*3] && !eeMousePressed1()) {
 					changeAnimation(io, 1, alist[ANIM_2H_STRIKE_LEFT + j * 3]);
 					strikeSpeak(io);
 					SendIOScriptEvent(io, SM_STRIKE, "2h");
@@ -1010,7 +1010,7 @@ void ManageCombatModeAnimations() {
 			if(useanim->cur_anim == alist[ANIM_MISSILE_WAIT]) {
 				AimTime = (unsigned long)(arxtime);
 
-				if((EERIEMouseButton & 1) && Player_Arrow_Count() > 0) {
+				if(eeMousePressed1() && Player_Arrow_Count() > 0) {
 					changeAnimation(io, 1, alist[ANIM_MISSILE_STRIKE_PART_1]);
 					io->isHit = false;
 				}
@@ -1026,7 +1026,7 @@ void ManageCombatModeAnimations() {
 			if(useanim->cur_anim == alist[ANIM_MISSILE_STRIKE_PART_2] && (useanim->flags & EA_ANIMEND)) {
 				changeAnimation(io, 1, alist[ANIM_MISSILE_STRIKE_CYCLE], EA_LOOP);
 				AimTime = (unsigned long)(arxtime);
-			} else if(useanim->cur_anim == alist[ANIM_MISSILE_STRIKE_CYCLE] && !(EERIEMouseButton & 1)) {
+			} else if(useanim->cur_anim == alist[ANIM_MISSILE_STRIKE_CYCLE] && !eeMousePressed1()) {
 				EERIE_LINKEDOBJ_UnLinkObjectFromObject(io->obj, arrowobj);
 				changeAnimation(io, 1, alist[ANIM_MISSILE_STRIKE]);
 				SendIOScriptEvent(io, SM_STRIKE, "bow");
