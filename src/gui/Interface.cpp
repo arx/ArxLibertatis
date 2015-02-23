@@ -274,7 +274,7 @@ bool manageNoteActions(Note & note) {
 		}
 		
 	} else if(note.area().contains(Vec2f(DANAEMouse))) {
-		if(((EERIEMouseButton & 1) && !(LastMouseClick & 1) && TRUE_PLAYER_MOUSELOOK_ON)
+		if((eeMouseDown1() && TRUE_PLAYER_MOUSELOOK_ON)
 		   || ((EERIEMouseButton & 2) && !(LastMouseClick & 2))) {
 			EERIEMouseButton &= ~2;
 			return true;
@@ -2601,7 +2601,7 @@ void ARX_INTERFACE_ManageOpenedBook_SpellsDraw() {
 			if(flyingover) {
 				color = Color::white;
 				
-				if((EERIEMouseButton & 1)  && !(LastMouseClick & 1)) {
+				if(eeMouseDown1()) {
 					player.SpellToMemorize.bSpell = true;
 					
 					for(long j = 0; j < 6; j++) {
@@ -4064,7 +4064,7 @@ void ArxGame::manageEditorControls() {
 			}
 		}
 		
-		if((EERIEMouseButton & 1) && !(LastMouseClick & 1) && (COMBINE || COMBINEGOLD)) {
+		if(eeMouseDown1() && (COMBINE || COMBINEGOLD)) {
 			ReleaseInfosCombine();
 			
 			Entity * io;

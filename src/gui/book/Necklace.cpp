@@ -222,7 +222,7 @@ void ARX_INTERFACE_ManageOpenedBook_Finish()
 					
 					SpecialCursor=CURSOR_INTERACTION_ON;
 					
-					if((EERIEMouseButton & 1) && !(LastMouseClick & 1))
+					if(eeMouseDown1())
 						if((size_t)LastRune != i) {
 							PlayerBookDrawRune((Rune)i);
 						}

@@ -593,7 +593,7 @@ public:
 						GRenderer->SetRenderState(Renderer::AlphaBlending, false);
 						SpecialCursor=CURSOR_INTERACTION_ON;
 						
-						if (((EERIEMouseButton & 1)  && !(LastMouseClick & 1))
+						if ((eeMouseDown1())
 							|| (eeMouseUp1() && DRAGINTER))
 						{
 							if(sActiveInventory > 0) {
@@ -620,7 +620,7 @@ public:
 						GRenderer->SetRenderState(Renderer::AlphaBlending, false);
 						SpecialCursor=CURSOR_INTERACTION_ON;
 						
-						if (((EERIEMouseButton & 1)  && !(LastMouseClick & 1))
+						if ((eeMouseDown1())
 							|| (eeMouseUp1() && DRAGINTER))
 						{
 							if(sActiveInventory < player.bag-1) {
@@ -805,7 +805,7 @@ public:
 			eMouseState = MOUSE_IN_BOOK_ICON;
 			SpecialCursor = CURSOR_INTERACTION_ON;
 
-			if((EERIEMouseButton & 1) && !(LastMouseClick & 1)) {
+			if(eeMouseDown1()) {
 				ARX_INTERFACE_BookOpenClose(0);
 				EERIEMouseButton &=~1;
 			}
@@ -867,7 +867,7 @@ public:
 
 				flDelay=0;
 				EERIEMouseButton&=~4;
-			} else if(((EERIEMouseButton & 1) && !(LastMouseClick & 1)) || flDelay) {
+			} else if((eeMouseDown1()) || flDelay) {
 				if(!flDelay) {
 					flDelay=arxtime.get_updated();
 					return;
@@ -964,7 +964,7 @@ public:
 				eMouseState=MOUSE_IN_STEAL_ICON;
 				SpecialCursor=CURSOR_INTERACTION_ON;
 
-				if((EERIEMouseButton & 1) && !(LastMouseClick & 1)) {
+				if(eeMouseDown1()) {
 					ARX_INVENTORY_OpenClose(ioSteal);
 
 					if(player.Interface&(INTER_INVENTORY | INTER_INVENTORYALL)) {
@@ -1025,7 +1025,7 @@ public:
 			eMouseState = MOUSE_IN_INVENTORY_PICKALL_ICON;
 			SpecialCursor=CURSOR_INTERACTION_ON;
 
-			if((EERIEMouseButton & 1) && !(LastMouseClick & 1)) {
+			if(eeMouseDown1()) {
 				if(TSecondaryInventory) {
 					// play un son que si un item est pris
 					ARX_INVENTORY_TakeAllFromSecondaryInventory();
@@ -1078,7 +1078,7 @@ public:
 			eMouseState = MOUSE_IN_INVENTORY_CLOSE_ICON;
 			SpecialCursor=CURSOR_INTERACTION_ON;
 
-			if((EERIEMouseButton & 1) && !(LastMouseClick & 1)) {
+			if(eeMouseDown1()) {
 				Entity * io = NULL;
 
 				if(SecondaryInventory)
@@ -1134,7 +1134,7 @@ public:
 				eMouseState = MOUSE_IN_REDIST_ICON;
 				SpecialCursor = CURSOR_INTERACTION_ON;
 
-				if((EERIEMouseButton & 1) && !(LastMouseClick & 1)) {
+				if(eeMouseDown1()) {
 					ARX_INTERFACE_BookOpenClose(1);
 					EERIEMouseButton &=~1;
 				}
@@ -1585,7 +1585,7 @@ public:
 		
 		if(!(player.Interface & INTER_COMBATMODE)) {
 			if(m_rect.contains(Vec2f(DANAEMouse))) {
-				if((EERIEMouseButton & 1) && !(LastMouseClick & 1)) {
+				if(eeMouseDown1()) {
 					std::stringstream ss;
 					ss << checked_range_cast<int>(player.lifePool.current);
 					ARX_SPEECH_Add(ss.str());
@@ -1631,7 +1631,7 @@ public:
 		
 		if(!(player.Interface & INTER_COMBATMODE)) {
 			if(m_rect.contains(Vec2f(DANAEMouse))) {
-				if((EERIEMouseButton & 1) && !(LastMouseClick & 1)) {
+				if(eeMouseDown1()) {
 					std::stringstream ss;
 					ss << checked_range_cast<int>(player.manaPool.current);
 					ARX_SPEECH_Add(ss.str());
