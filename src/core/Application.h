@@ -68,6 +68,10 @@ inline bool eeMouseDown2() {
 	return (EERIEMouseButton & 2) && !(LastMouseClick & 2);
 }
 
+inline bool eeMouseUp2() {
+	return !(EERIEMouseButton & 2) && (LastMouseClick & 2);
+}
+
 class Application {
 	
 public:

@@ -1299,7 +1299,7 @@ public:
 						COMBINE = player.torch;
 					}
 
-					if(!(EERIEMouseButton & 2) && (LastMouseClick & 2)) {
+					if(eeMouseUp2()) {
 						ARX_PLAYER_ClickedOnTorch(player.torch);
 						EERIEMouseButton &= ~2;
 						TRUE_PLAYER_MOUSELOOK_ON = false;

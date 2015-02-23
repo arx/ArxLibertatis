@@ -2056,8 +2056,7 @@ void ArxGame::manageKeyMouse() {
 		   && !g_cursorOverBook
 		   && eMouseState != MOUSE_IN_NOTE
 		) {
-			if(!(EERIEMouseButton & 2)
-			   && (LastMouseClick & 2)
+			if(   eeMouseUp2()
 			   && STARTED_ACTION_ON_IO == pIO
 			) {
 				if(pIO->ioflags & IO_ITEM) {
