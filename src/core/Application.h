@@ -56,6 +56,10 @@ extern long EERIEMouseButton;
 extern long LastMouseClick;
 extern bool EERIEMouseGrab;
 
+inline bool eeMouseUp1() {
+	return !(EERIEMouseButton & 1) && (LastMouseClick & 1);
+}
+
 class Application {
 	
 public:

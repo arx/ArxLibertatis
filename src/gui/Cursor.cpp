@@ -348,7 +348,7 @@ static bool SelectSpellTargetCursorRender() {
 		){
 			surf = cursorTargetOn;
 			
-			if(!(EERIEMouseButton & 1) && (LastMouseClick & 1)) {
+			if(eeMouseUp1()) {
 				ARX_SPELLS_LaunchSpellTarget(FlyingOverIO);
 			}
 		} else {

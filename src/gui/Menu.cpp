@@ -468,7 +468,7 @@ bool ARX_Menu_Render() {
 				FLYING_OVER = BUTTON_QUICK_GENERATION;
 
 				if (EERIEMouseButton & 1) ;
-				else if ((!(EERIEMouseButton & 1)) && (LastMouseClick & 1))
+				else if (eeMouseUp1())
 				{
 					QUICK_MOD++;
 					int iSkin = player.skin;
@@ -505,7 +505,7 @@ bool ARX_Menu_Render() {
 				SpecialCursor = CURSOR_INTERACTION_ON;
 				FLYING_OVER = BUTTON_SKIN;
 
-				if(!(EERIEMouseButton & 1) && (LastMouseClick & 1)) {
+				if(eeMouseUp1()) {
 					SKIN_MOD++;
 					BOOKZOOM = 1;
 					ARX_SOUND_PlayMenu(SND_MENU_CLICK);
@@ -540,7 +540,7 @@ bool ARX_Menu_Render() {
 
 				FLYING_OVER = BUTTON_DONE;
 
-				if(DONE && !(EERIEMouseButton & 1) && (LastMouseClick & 1)) {
+				if(DONE && eeMouseUp1()) {
 					if(SKIN_MOD == 8 && QUICK_MOD == 10) {
 						SKIN_MOD = -2;
 					} else if(SKIN_MOD == -1) {

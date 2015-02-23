@@ -260,7 +260,7 @@ bool manageNoteActions(Note & note) {
 	
 	if(note.prevPageButton().contains(Vec2f(DANAEMouse))) {
 		SpecialCursor = CURSOR_INTERACTION_ON;
-		if(!(EERIEMouseButton & 1) && (LastMouseClick & 1)) {
+		if(eeMouseUp1()) {
 			ARX_SOUND_PlayInterface(SND_BOOK_PAGE_TURN, 0.9f + 0.2f * rnd());
 			arx_assert(note.page() >= 2);
 			note.setPage(note.page() - 2);
@@ -268,7 +268,7 @@ bool manageNoteActions(Note & note) {
 		
 	} else if(note.nextPageButton().contains(Vec2f(DANAEMouse))) {
 		SpecialCursor = CURSOR_INTERACTION_ON;
-		if(!(EERIEMouseButton & 1) && (LastMouseClick & 1)) {
+		if(eeMouseUp1()) {
 			ARX_SOUND_PlayInterface(SND_BOOK_PAGE_TURN, 0.9f + 0.2f * rnd());
 			note.setPage(note.page() + 2);
 		}
@@ -2351,7 +2351,7 @@ void ArxGame::manageKeyMouse() {
 
 	if((!BLOCK_PLAYER_CONTROLS) && !(player.Interface & INTER_COMBATMODE)) {
 		if(!DRAGINTER) {
-			if(config.input.autoDescription || ((LastMouseClick & 1) && !(EERIEMouseButton & 1) && !(EERIEMouseButton & 4) && !(LastMouseClick & 4)))
+			if(config.input.autoDescription || (eeMouseUp1() && !(EERIEMouseButton & 4) && !(LastMouseClick & 4)))
 			{
 				Entity * temp;
 				temp = FlyingOverIO;
@@ -3923,8 +3923,7 @@ void ArxGame::manageEditorControls() {
 	manageEditorControlsHUD2();
 	
 	// Single Click On Object
-	if(   (LastMouseClick & 1)
-	   && !(EERIEMouseButton & 1)
+	if(   eeMouseUp1()
 	   && FlyingOverIO
 	   && !DRAGINTER
 	) {
@@ -4001,7 +4000,7 @@ void ArxGame::manageEditorControls() {
 	
 	if(!(player.Interface & INTER_COMBATMODE)) {
 		// Dropping an Interactive Object that has been dragged
-		if(!(EERIEMouseButton & 1) && (LastMouseClick & 1) && DRAGINTER) {
+		if(eeMouseUp1() && DRAGINTER) {
 			//if (ARX_EQUIPMENT_PutOnPlayer(DRAGINTER))
 			if(InInventoryPos(DANAEMouse)) {// Attempts to put it in inventory
 				PutInInventory();
@@ -4234,7 +4233,7 @@ void ArxGame::manageEditorControls() {
 		}
 	
 		// Debug Selection
-		if((LastMouseClick & 1) && !(EERIEMouseButton & 1)) {
+		if(eeMouseUp1()) {
 			Entity * io = GetFirstInterAtPos(DANAEMouse);
 
 			if(io) {

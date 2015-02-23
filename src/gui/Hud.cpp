@@ -594,7 +594,7 @@ public:
 						SpecialCursor=CURSOR_INTERACTION_ON;
 						
 						if (((EERIEMouseButton & 1)  && !(LastMouseClick & 1))
-							|| ((!(EERIEMouseButton & 1)) && (LastMouseClick & 1) && DRAGINTER))
+							|| (eeMouseUp1() && DRAGINTER))
 						{
 							if(sActiveInventory > 0) {
 								ARX_SOUND_PlayInterface(SND_BACKPACK, 0.9F + 0.2F * rnd());
@@ -621,7 +621,7 @@ public:
 						SpecialCursor=CURSOR_INTERACTION_ON;
 						
 						if (((EERIEMouseButton & 1)  && !(LastMouseClick & 1))
-							|| ((!(EERIEMouseButton & 1)) && (LastMouseClick & 1) && DRAGINTER))
+							|| (eeMouseUp1() && DRAGINTER))
 						{
 							if(sActiveInventory < player.bag-1) {
 								ARX_SOUND_PlayInterface(SND_BACKPACK, 0.9F + 0.2F * rnd());
@@ -1243,7 +1243,7 @@ public:
 				eMouseState=MOUSE_IN_TORCH_ICON;
 				SpecialCursor=CURSOR_INTERACTION_ON;
 
-				if((LastMouseClick & 1) && !(EERIEMouseButton & 1)) {
+				if(eeMouseUp1()) {
 					Entity * temp = player.torch;
 
 					if(temp && !temp->locname.empty()) {
@@ -1395,7 +1395,7 @@ public:
 		
 	    if(m_rect.contains(Vec2f(DANAEMouse))) {
 			SpecialCursor=CURSOR_INTERACTION_ON;
-			if(!(EERIEMouseButton & 1) && (LastMouseClick & 1)) {
+			if(eeMouseUp1()) {
 				CHANGE_LEVEL_ICON = 200;
 			}
 		}
@@ -1767,7 +1767,7 @@ private:
 			if(m_rect.contains(Vec2f(DANAEMouse))) {
 				SpecialCursor = CURSOR_INTERACTION_ON;
 				
-				if((LastMouseClick & 1) && !(EERIEMouseButton & 1)) {
+				if(eeMouseUp1()) {
 					if(Precast[m_precastIndex].typ >= 0)
 						WILLADDSPEECH = spellicons[Precast[m_precastIndex].typ].name;
 					
@@ -1900,7 +1900,7 @@ private:
 			if(m_rect.contains(Vec2f(DANAEMouse))) {
 				SpecialCursor = CURSOR_INTERACTION_ON;
 				
-				if((LastMouseClick & 1) && !(EERIEMouseButton & 1)) {
+				if(eeMouseUp1()) {
 					if(spells[spellIndex]->m_type >= 0)
 						WILLADDSPEECH = spellicons[spells[spellIndex]->m_type].name;
 					
