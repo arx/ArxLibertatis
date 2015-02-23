@@ -53,6 +53,7 @@ class RenderWindow;
 extern float FPS;
 
 extern long EERIEMouseButton;
+extern long LastMouseClick;
 extern bool EERIEMouseGrab;
 
 class Application {

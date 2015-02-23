@@ -215,7 +215,6 @@ long				SpecialCursor=0;
 long				FLYING_OVER		= 0;
 long				OLD_FLYING_OVER	= 0;
 long				BOOKZOOM=0;
-long				LastMouseClick=0;
 
 //used to redist points - attributes and skill
 long lCursorRedistValue = 0;

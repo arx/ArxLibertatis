@@ -244,7 +244,6 @@ extern bool bookclick;
 
 extern long SpecialCursor;
 
-extern long LastMouseClick;
 extern long CurrFightPos;
 extern long lSLID_VALUE;
 extern bool bInventoryClosing;
