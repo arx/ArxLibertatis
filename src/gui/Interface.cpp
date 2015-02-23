@@ -2682,10 +2682,6 @@ void ARX_INTERFACE_ManageOpenedBook() {
 	static const Vec2f BOOKMARKS_POS = Vec2f(216.f, 60.f);
 	
 	if(ARXmenu.currentmode != AMCM_NEWQUEST) {
-		bool bOnglet[11];
-		long max_onglet = 0;
-		long Book_Page = 1;
-
 		// Checks Clicks in bookmarks
 		
 		// Character Sheet
@@ -2794,16 +2790,20 @@ void ARX_INTERFACE_ManageOpenedBook() {
 			}
 		}
 		
+		
+		long max_onglet = 0;
 		if(Book_Mode == BOOKMODE_MINIMAP)
 			max_onglet=8;
 		else
 			max_onglet=10;
-
+		
+		long Book_Page = 1;
 		if(Book_Mode == BOOKMODE_SPELLS)
 			Book_Page = Book_SpellPage;
 		else
 			Book_Page = Book_MapPage;
-
+	
+		bool bOnglet[11];
 		std::fill_n(bOnglet, 11, false);
 
 		// calcul de la page de spells
