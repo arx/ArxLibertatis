@@ -275,7 +275,7 @@ bool manageNoteActions(Note & note) {
 		
 	} else if(note.area().contains(Vec2f(DANAEMouse))) {
 		if((eeMouseDown1() && TRUE_PLAYER_MOUSELOOK_ON)
-		   || ((EERIEMouseButton & 2) && !(LastMouseClick & 2))) {
+		   || (eeMouseDown2())) {
 			EERIEMouseButton &= ~2;
 			return true;
 		}
@@ -2120,7 +2120,7 @@ void ArxGame::manageKeyMouse() {
 					}
 				}
 			} else { //!TRUE_PLAYER_MOUSELOOK_ON
-				if((EERIEMouseButton & 2) && !(LastMouseClick & 2)) {
+				if(eeMouseDown2()) {
 					STARTED_ACTION_ON_IO = FlyingOverIO;
 				}
 			}

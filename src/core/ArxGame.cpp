@@ -2244,7 +2244,7 @@ void ArxGame::render() {
 			BOOKBUTTON = EERIEMouseButton;
 			
 			if((eeMouseDown1())
-			   || ((EERIEMouseButton & 2) && !(LastMouseClick & 2))
+			   || (eeMouseDown2())
 			) {
 				bookclick = true;
 			}

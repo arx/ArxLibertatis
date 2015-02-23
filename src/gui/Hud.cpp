@@ -888,7 +888,7 @@ public:
 				}
 
 				EERIEMouseButton &=~1;
-			} else if((EERIEMouseButton & 2) && !(LastMouseClick & 2)) {
+			} else if(eeMouseDown2()) {
 				ARX_INTERFACE_BookOpenClose(2);
 				ARX_INVENTORY_OpenClose(NULL);
 
