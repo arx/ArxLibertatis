@@ -416,15 +416,10 @@ bool ARX_Menu_Render() {
 
 			if(player.Skill_Redistribute == 0 && player.Attribute_Redistribute == 0)
 				DONE = 1;
-
-			float ox, oy;
-			ox = g_sizeRatio.x;
-			oy = g_sizeRatio.y;
+			
 			LASTBOOKBUTTON = BOOKBUTTON;
 			BOOKBUTTON = EERIEMouseButton;
-			g_sizeRatio.x = ox;
-			g_sizeRatio.y = oy;
-
+			
 			if(!ARXmenu.mda->flyover[FLYING_OVER].empty() ) //=ARXmenu.mda->flyover[FLYING_OVER];
 			{
 				if(FLYING_OVER != OLD_FLYING_OVER) {
