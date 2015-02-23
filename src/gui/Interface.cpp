@@ -2679,8 +2679,7 @@ void ARX_INTERFACE_ManageOpenedBook() {
 		BOOKDEC.y = x - 64 + 19;
 	}
 	
-	static const float BOOKMARKS_POS_X = 216.f;
-	static const float BOOKMARKS_POS_Y = 60.f;
+	static const Vec2f BOOKMARKS_POS = Vec2f(216.f, 60.f);
 	
 	if(ARXmenu.currentmode != AMCM_NEWQUEST) {
 		bool bOnglet[11];
@@ -2691,7 +2690,7 @@ void ARX_INTERFACE_ManageOpenedBook() {
 		
 		// Character Sheet
 		if(Book_Mode != BOOKMODE_STATS) {
-			Vec2f pos = Vec2f(BOOKMARKS_POS_X, BOOKMARKS_POS_Y);
+			Vec2f pos = BOOKMARKS_POS;
 			
 			TextureContainer* tcBookmarkChar = ITC.bookmark_char;
 			DrawBookInterfaceItem(tcBookmarkChar, pos);
@@ -2718,7 +2717,7 @@ void ARX_INTERFACE_ManageOpenedBook() {
 
 		if(Book_Mode != BOOKMODE_SPELLS) {
 			if(player.rune_flags) {
-				Vec2f pos = Vec2f(BOOKMARKS_POS_X + 32, BOOKMARKS_POS_Y);
+				Vec2f pos = BOOKMARKS_POS + Vec2f(32, 0);
 				
 				DrawBookInterfaceItem(ITC.bookmark_magic, pos);
 
@@ -2750,7 +2749,7 @@ void ARX_INTERFACE_ManageOpenedBook() {
 		}
 
 		if(Book_Mode != BOOKMODE_MINIMAP) {
-			Vec2f pos = Vec2f(BOOKMARKS_POS_X + 64, BOOKMARKS_POS_Y);
+			Vec2f pos = BOOKMARKS_POS + Vec2f(64, 0);
 			
 			DrawBookInterfaceItem(ITC.bookmark_map, pos);
 
@@ -2773,7 +2772,7 @@ void ARX_INTERFACE_ManageOpenedBook() {
 		}
 
 		if(Book_Mode != BOOKMODE_QUESTS) {
-			Vec2f pos = Vec2f(BOOKMARKS_POS_X + 96, BOOKMARKS_POS_Y);
+			Vec2f pos = BOOKMARKS_POS + Vec2f(96, 0);
 			
 			DrawBookInterfaceItem(ITC.bookmark_quest, pos);
 
