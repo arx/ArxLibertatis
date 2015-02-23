@@ -142,12 +142,7 @@ struct ARX_INTERFACE_HALO_STRUCT
 	Vec2f m_pos;
 	Vec2f ratio;
 };
-//-----------------------------------------------------------------------------
-static const float BOOKMARKS_POS_X = 216.f;
-static const float BOOKMARKS_POS_Y = 60.f;
 
-//-----------------------------------------------------------------------------
-//-----------------------------------------------------------------------------
 extern TextureContainer * inventory_font;
 extern Notification speech[];
 
@@ -2683,6 +2678,9 @@ void ARX_INTERFACE_ManageOpenedBook() {
 		// TODO copy paste error ?
 		BOOKDEC.y = x - 64 + 19;
 	}
+	
+	static const float BOOKMARKS_POS_X = 216.f;
+	static const float BOOKMARKS_POS_Y = 60.f;
 	
 	if(ARXmenu.currentmode != AMCM_NEWQUEST) {
 		bool bOnglet[11];
