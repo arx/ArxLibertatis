@@ -250,7 +250,7 @@ public:
 		
 		DebugScript(' ' << intensity << ' ' << duration << ' ' << period);
 		
-		AddQuakeFX(intensity, duration, period, 1);
+		AddQuakeFX(intensity, duration, period, true);
 		
 		return Success;
 	}

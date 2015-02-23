@@ -245,7 +245,7 @@ float ARX_DAMAGES_DamagePlayer(float dmg, DamageType type, EntityHandle source) 
 		SendIOScriptEvent( entities.player(), SM_OUCH, tex );
 		EVENT_SENDER = oes;
 		float power = entities.player()->dmg_sum / player.lifePool.max * 220.f;
-		AddQuakeFX(power * 3.5f, 500 + power * 3, rnd() * 100.f + power + 200, 0);
+		AddQuakeFX(power * 3.5f, 500 + power * 3, rnd() * 100.f + power + 200, false);
 		entities.player()->dmg_sum = 0.f;
 	}
 

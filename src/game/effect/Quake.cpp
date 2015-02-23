@@ -27,12 +27,12 @@ struct QUAKE_FX_STRUCT {
 	float frequency;
 	unsigned long start;
 	unsigned long duration;
-	long	flags;
+	bool sound;
 };
 
 QUAKE_FX_STRUCT QuakeFx;
 
-void AddQuakeFX(float intensity,float duration,float period,long flags) {
+void AddQuakeFX(float intensity, float duration, float period, bool sound) {
 
 	if(QuakeFx.intensity > 0.f) {
 		QuakeFx.intensity += intensity;
@@ -40,9 +40,9 @@ void AddQuakeFX(float intensity,float duration,float period,long flags) {
 		QuakeFx.duration += (unsigned long)duration;
 		QuakeFx.frequency += period;
 		QuakeFx.frequency *= .5f;
-		QuakeFx.flags |= flags;
+		QuakeFx.sound = QuakeFx.sound || sound;
 
-		if(flags & 1)
+		if(sound)
 			ARX_SOUND_PlaySFX(SND_QUAKE, NULL, 1.0F - 0.5F * QuakeFx.intensity);
 	} else {
 		QuakeFx.intensity = intensity;
@@ -51,13 +51,13 @@ void AddQuakeFX(float intensity,float duration,float period,long flags) {
 
 		QuakeFx.duration = (unsigned long)duration;
 		QuakeFx.frequency = period;
-		QuakeFx.flags = flags;
+		QuakeFx.sound = sound;
 
-		if(flags & 1)
+		if(sound)
 			ARX_SOUND_PlaySFX(SND_QUAKE, NULL, 1.0F - 0.5F * QuakeFx.intensity);
 	}
 
-	if(!(flags & 1)) {
+	if(!sound) {
 		if(QuakeFx.duration > 1500)
 			QuakeFx.duration = 1500;
 
@@ -83,7 +83,7 @@ void ManageQuakeFX(EERIE_CAMERA * cam) {
 		float itmod=1.f-(tim/QuakeFx.duration);
 		float periodicity=std::sin((float)arxtime.get_frame_time()*QuakeFx.frequency*( 1.0f / 100 ));
 
-		if(periodicity > 0.5f && (QuakeFx.flags & 1))
+		if(periodicity > 0.5f && QuakeFx.sound)
 			ARX_SOUND_PlaySFX(SND_QUAKE, NULL, 1.0F - 0.5F * QuakeFx.intensity);
 
 		float truepower = periodicity * QuakeFx.intensity * itmod * 0.01f;

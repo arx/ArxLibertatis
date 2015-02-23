@@ -22,7 +22,7 @@
 
 #include "game/Camera.h"
 
-void AddQuakeFX(float intensity, float duration, float period, long flags);
+void AddQuakeFX(float intensity, float duration, float period, bool flags);
 void RemoveQuakeFX();
 
 void ManageQuakeFX(EERIE_CAMERA *cam);
