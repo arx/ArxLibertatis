@@ -64,11 +64,6 @@ bool bInventorySwitch = false;
 bool bGoldHalo = false;
 unsigned long ulGoldHaloTime = 0;
 
-static void ARX_INTERFACE_DrawItem(TextureContainer * tc, float x, float y, float z = 0.001f, Color col = Color::white) {
-	if(tc) {
-		EERIEDrawBitmap(Rectf(Vec2f(x, y), tc->m_dwWidth, tc->m_dwHeight), z, tc, col);
-	}
-}
 
 enum Anchor {
 	Anchor_TopLeft,
@@ -303,7 +298,8 @@ public:
 				ingame_inventory = tc;
 		}
 		
-		ARX_INTERFACE_DrawItem(ingame_inventory, INTERFACE_RATIO(InventoryX), 0.f);
+		Rectf rect = Rectf(Vec2f(INTERFACE_RATIO(InventoryX), 0.f), ingame_inventory->m_dwWidth, ingame_inventory->m_dwHeight);
+		EERIEDrawBitmap(rect, 0.001f, ingame_inventory, Color::white);
 		
 		for(long y = 0; y < inventory->m_size.y; y++) {
 		for(long x = 0; x < inventory->m_size.x; x++) {
@@ -519,7 +515,8 @@ public:
 		
 		const Vec2f pos = anchorPos + Vec2f(_iX, _iY);
 		
-		ARX_INTERFACE_DrawItem(m_heroInventory, pos.x, pos.y - INTERFACE_RATIO(5));
+		Rectf rect = Rectf(pos + Vec2f(0.f, -INTERFACE_RATIO(5)), m_heroInventory->m_dwWidth, m_heroInventory->m_dwHeight);
+		EERIEDrawBitmap(rect, 0.001f, m_heroInventory, Color::white);
 		
 		for(size_t y = 0; y < INVENTORY_Y; y++) {
 		for(size_t x = 0; x < INVENTORY_X; x++) {
