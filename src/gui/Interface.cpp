@@ -188,8 +188,6 @@ static bool MEMO_PLAYER_MOUSELOOK_ON = false;
 
 bool				COMBINEGOLD = false;
 
-long				SMOOTHSLID=0;
-
 bool				DRAGGING = false;
 bool				PLAYER_INTERFACE_HIDE_COUNT = true;
 bool				MAGICMODE = false;
@@ -1583,6 +1581,9 @@ void ArxGame::managePlayerControls() {
 }
 
 class PlayerInterfaceFader {
+private:
+	long SMOOTHSLID = 0;
+	
 public:
 	void reset() {
 		SMOOTHSLID=0;
