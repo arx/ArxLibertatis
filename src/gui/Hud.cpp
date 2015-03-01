@@ -1068,7 +1068,6 @@ static StealIconGui stealIconGui;
 class PickAllIconGui : public HudIconBase {
 private:
 	Vec2f m_size;
-	Rectf m_rect;
 	
 public:
 	void init() {
@@ -1117,7 +1116,6 @@ static PickAllIconGui pickAllIconGui;
 class CloseSecondaryInventoryIconGui : public HudIconBase {
 private:
 	Vec2f m_size;
-	Rectf m_rect;
 	
 public:
 	void init() {
