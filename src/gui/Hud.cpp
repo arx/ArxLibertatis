@@ -761,13 +761,10 @@ class HudIconBase : public HudItem {
 protected:
 	TextureContainer * m_tex;
 	bool m_isSelected;
+	
+	bool m_haloActive;
 	Color3f m_haloColor;
 	
-	void DrawHalo(TextureContainer* halo, const Vec2f& coords) {
-		if(halo) {
-			ARX_INTERFACE_HALO_Render(m_haloColor, HALO_ACTIVE, halo, coords);
-		}
-	}
 	
 	//Used for drawing icons like the book or backpack icon.
 	void DrawIcon(const Rectf & rect, TextureContainer * tex) {
@@ -782,6 +779,10 @@ protected:
 			EERIEDrawBitmap(rect, 0.001f, tex, Color::white);
 			
 			GRenderer->SetRenderState(Renderer::AlphaBlending, false);
+		}
+		
+		if(m_haloActive && m_tex->getHalo()) {
+			ARX_INTERFACE_HALO_Render(m_haloColor, HALO_ACTIVE, m_tex->getHalo(), m_rect.topLeft());
 		}
 	}
 };
@@ -832,7 +833,6 @@ private:
 	
 	Vec2f m_size;
 	
-	bool bBookHalo;
 	unsigned long ulBookHaloTime;
 	
 public:
@@ -844,12 +844,12 @@ public:
 		
 		m_haloColor = Color3f(0.2f, 0.4f, 0.8f);
 		
-		bBookHalo = false;
+		m_haloActive = false;
 		ulBookHaloTime = 0;
 	}
 	
 	void requestHalo() {
-		bBookHalo = true;
+		m_haloActive = true;
 		ulBookHaloTime = 0;
 	}
 	
@@ -860,6 +860,14 @@ public:
 	void update(const Rectf & parent) {
 		
 		m_rect = createChild(parent, Anchor_TopRight, m_size * m_scale, Anchor_BottomRight);
+		
+		if(m_haloActive) {
+			float fCalc = ulBookHaloTime + Original_framedelay;
+			ulBookHaloTime = checked_range_cast<unsigned long>(fCalc);
+			if(ulBookHaloTime >= 3000) { // ms
+				m_haloActive = false;
+			}
+		}
 	}
 	
 	void updateInput() {
@@ -878,18 +886,6 @@ public:
 	void draw() {
 		m_isSelected = eMouseState == MOUSE_IN_BOOK_ICON;
 		DrawIcon(m_rect, m_tex);
-	}
-	
-	void drawHalo() {
-		if(bBookHalo) {
-			float fCalc = ulBookHaloTime + Original_framedelay;
-			ulBookHaloTime = checked_range_cast<unsigned long>(fCalc);
-			if(ulBookHaloTime >= 3000) { // ms
-				bBookHalo = false;
-			}
-			Vec2f pos = m_rect.topLeft();
-			DrawHalo(m_tex->getHalo(), pos);
-		}
 	}
 };
 
@@ -1210,7 +1206,6 @@ private:
 	Vec2f m_pos;
 	Vec2f m_size;
 	
-	bool bGoldHalo;
 	long ulGoldHaloTime;
 	
 public:
@@ -1221,17 +1216,26 @@ public:
 		
 		m_haloColor = Color3f(0.9f, 0.9f, 0.1f);
 		
-		bGoldHalo = false;
+		m_haloActive = false;
 		ulGoldHaloTime = 0;
 	}
 	
 	void requestHalo() {
-		bGoldHalo = true;
+		m_haloActive = true;
 		ulGoldHaloTime = 0;
 	}
 	
 	void update(const Rectf & parent) {
 		m_rect = createChild(parent, Anchor_TopRight, m_size * m_scale, Anchor_BottomRight);
+		
+		//A halo is drawn on the character's stats icon (book) when leveling up, for example.
+		if(m_haloActive) {
+			float fCalc = ulGoldHaloTime + Original_framedelay;
+			ulGoldHaloTime = checked_range_cast<unsigned long>(fCalc);
+			if(ulGoldHaloTime >= 1000) { // ms
+				m_haloActive = false;
+			}
+		}
 	}
 	
 	void updateInput() {
@@ -1268,18 +1272,6 @@ public:
 			numberPos += Vec2f(- INTERFACE_RATIO(30), + INTERFACE_RATIO(10 - 25));
 			
 			ARX_INTERFACE_DrawNumber(numberPos, player.gold, 6, Color::white);
-		}
-	}
-	
-	void drawHalo() {
-		//A halo is drawn on the character's stats icon (book) when leveling up, for example.
-		if(bGoldHalo) {
-			float fCalc = ulGoldHaloTime + Original_framedelay;
-			ulGoldHaloTime = checked_range_cast<unsigned long>(fCalc);
-			if(ulGoldHaloTime >= 1000) { // ms
-				bGoldHalo = false;
-			}
-			DrawHalo(m_tex->getHalo(), m_rect.topLeft());
 		}
 	}
 };
@@ -2452,10 +2444,6 @@ void ArxGame::drawAllInterface() {
 		if(player.Skill_Redistribute || player.Attribute_Redistribute) {
 			levelUpIconGui.draw();
 		}
-		
-		//A halo is drawn on the character's stats icon (book) when leveling up, for example.
-		purseIconGui.drawHalo();
-		bookIconGui.drawHalo();
 	}
 	
 	GRenderer->GetTextureStage(0)->setMinFilter(TextureStage::FilterLinear);
