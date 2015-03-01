@@ -20,6 +20,8 @@
 #ifndef ARX_GUI_BOOK_BOOK_H
 #define ARX_GUI_BOOK_BOOK_H
 
+#include "gui/Note.h"
+
 enum ARX_INTERFACE_BOOK_MODE
 {
 	BOOKMODE_STATS = 0,
@@ -42,5 +44,10 @@ void ARX_INTERFACE_BookToggle();
 ARX_INTERFACE_BOOK_MODE nextBookPage();
 ARX_INTERFACE_BOOK_MODE prevBookPage();
 void openBookPage(ARX_INTERFACE_BOOK_MODE newPage, bool toggle = false);
+
+namespace gui {
+bool manageNoteActions(Note & note);
+void updateQuestBook();
+} // namespace gui
 
 #endif // ARX_GUI_BOOK_BOOK_H

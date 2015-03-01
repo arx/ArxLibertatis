@@ -302,10 +302,6 @@ void ARX_INTERFACE_DrawNumber(const Vec2f & pos, const long num, const int _iNb,
 
 void KillInterfaceTextureContainers();
 
-namespace gui {
-void updateQuestBook();
-} // namespace gui
-
 extern bool g_cursorOverBook;
 
 #endif // ARX_GUI_INTERFACE_H

@@ -186,6 +186,8 @@ const size_t MAX_ASPEECH = 100;
 extern ARX_SPEECH aspeech[MAX_ASPEECH];
 extern ARX_CONVERSATION_STRUCT main_conversation;
 
+extern Notification speech[MAX_SPEECH];
+
 void ARX_CONVERSATION_FirstInit();
 void ARX_CONVERSATION_Reset();
 
