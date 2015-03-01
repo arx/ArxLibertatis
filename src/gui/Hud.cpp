@@ -1631,8 +1631,6 @@ public:
 	
 	void updateRect(const Rectf & parent) {
 		m_rect = createChild(parent, Anchor_BottomLeft, m_size * m_scale, Anchor_BottomLeft);
-		m_rect.left += -lSLID_VALUE;
-		m_rect.right += -lSLID_VALUE;
 	}
 	
 	void update() {
@@ -2287,6 +2285,11 @@ void setHudScale(float scale) {
 
 void ArxGame::drawAllInterface() {
 	
+	Rectf hudSlider = Rectf(g_size);
+	hudSlider.left  -= lSLID_VALUE;
+	hudSlider.right += lSLID_VALUE;
+	
+	
 	hitStrengthGauge.updateRect(Rectf(g_size));
 	hitStrengthGauge.update();
 	
@@ -2389,18 +2392,12 @@ void ArxGame::drawAllInterface() {
 		memorizedRunesHud.draw();
 	}
 	
-	healthGauge.updateRect(Rectf(g_size));
+	healthGauge.updateRect(hudSlider);
 	healthGauge.update();
-	
-
 	
 	
 	if(player.Interface & INTER_LIFE_MANA) {
-		
-		Rectf manaGaugeParent = Rectf(g_size);
-		manaGaugeParent.left  += lSLID_VALUE;
-		manaGaugeParent.right += lSLID_VALUE;
-		manaGauge.update(manaGaugeParent);
+		manaGauge.update(hudSlider);
 		manaGauge.draw();
 		
 		healthGauge.draw();
