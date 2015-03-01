@@ -759,6 +759,7 @@ static void DrawItemPrice() {
 
 class HudIconBase : public HudItem {
 protected:
+	TextureContainer * m_tex;
 	bool m_isSelected;
 	Color3f m_haloColor;
 	
@@ -789,7 +790,6 @@ extern TextureContainer * healing;
 
 class BookIconGui : public HudIconBase {
 private:
-	TextureContainer * m_tex;
 	
 	void MakeBookFX(const Vec3f & pos) {
 		
@@ -907,7 +907,6 @@ void bookIconGuiRequestFX() {
 
 class BackpackIconGui : public HudIconBase {
 private:
-	TextureContainer * m_tex;
 	
 public:
 	void init() {
@@ -1003,8 +1002,8 @@ static BackpackIconGui backpackIconGui;
 
 class StealIconGui : public HudIconBase {
 private:
-	TextureContainer * m_tex;
 	Vec2f m_pos;
+	
 public:
 	void init() {
 		m_tex = TextureContainer::LoadUI("graph/interface/icons/steal");
@@ -1068,7 +1067,6 @@ static StealIconGui stealIconGui;
 
 class PickAllIconGui : public HudIconBase {
 private:
-	TextureContainer * m_tex;
 	Vec2f m_size;
 	Rectf m_rect;
 	
@@ -1118,7 +1116,6 @@ static PickAllIconGui pickAllIconGui;
 
 class CloseSecondaryInventoryIconGui : public HudIconBase {
 private:
-	TextureContainer * m_tex;
 	Vec2f m_size;
 	Rectf m_rect;
 	
@@ -1179,9 +1176,9 @@ static CloseSecondaryInventoryIconGui closeSecondaryInventoryIconGui;
 
 class LevelUpIconGui : public HudIconBase {
 private:
-	TextureContainer * m_tex;
 	Vec2f m_pos;
 	Vec2f m_size;
+	
 public:
 	void init() {
 		m_tex = TextureContainer::LoadUI("graph/interface/icons/lvl_up");
@@ -1219,7 +1216,6 @@ LevelUpIconGui levelUpIconGui;
 
 class PurseIconGui : public HudIconBase {
 private:
-	TextureContainer * m_tex;
 	Vec2f m_pos;
 	Vec2f m_size;
 	
