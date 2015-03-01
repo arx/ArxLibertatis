@@ -1101,30 +1101,28 @@ static PickAllIconGui pickAllIconGui;
 class CloseSecondaryInventoryIconGui : public HudIconBase {
 private:
 	TextureContainer * m_tex;
-	Vec2f m_pos;
+	Vec2f m_size;
+	Rectf m_rect;
+	
 public:
 	void init() {
 		m_tex = TextureContainer::LoadUI("graph/interface/inventory/inv_close");
 		arx_assert(m_tex);
+		
+		m_size = Vec2f(16, 16);
 	}
 	
 	void update() {
-		m_pos.x = INTERFACE_RATIO(InventoryX) + INTERFACE_RATIO_DWORD(BasicInventorySkin->m_dwWidth);
-		m_pos.y = INTERFACE_RATIO_DWORD(BasicInventorySkin->m_dwHeight);
-		m_pos += Vec2f(-32, -16);
+		Rectf parent = Rectf(Vec2f(InventoryX, 0), BasicInventorySkin->m_dwWidth, BasicInventorySkin->m_dwHeight);
+		
+		Rectf spacer = createChild(parent, Anchor_BottomRight, Vec2f(16, 16), Anchor_BottomRight);
+		
+		m_rect = createChild(spacer, Anchor_BottomLeft, m_size, Anchor_BottomRight);
 	}
 	
 	void updateInput() {
-		Vec2f pos(InventoryX + BasicInventorySkin->m_dwWidth - 32, BasicInventorySkin->m_dwHeight - 16);
-
-		const Rect mouseTestRect(
-		pos.x,
-		pos.y,
-		pos.x + INTERFACE_RATIO(16),
-		pos.y + INTERFACE_RATIO(16)
-		);
 		
-		if(mouseTestRect.contains(Vec2i(DANAEMouse))) {
+		if(m_rect.contains(Vec2f(DANAEMouse))) {
 			eMouseState = MOUSE_IN_INVENTORY_CLOSE_ICON;
 			SpecialCursor=CURSOR_INTERACTION_ON;
 
@@ -1153,9 +1151,7 @@ public:
 	}
 	
 	void draw() {
-		Rectf rect = Rectf(m_pos, m_tex->m_dwWidth, m_tex->m_dwHeight);
-		
-		DrawIcon(rect, m_tex, MOUSE_IN_INVENTORY_CLOSE_ICON);
+		DrawIcon(m_rect, m_tex, MOUSE_IN_INVENTORY_CLOSE_ICON);
 	}
 	
 };
