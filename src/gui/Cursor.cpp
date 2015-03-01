@@ -605,7 +605,7 @@ static void ARX_INTERFACE_RenderCursorInternal(bool flag) {
 			) {
 				if(!MAGICMODE) {
 					if(player.Interface & INTER_MAP) {
-						ARX_INTERFACE_BookOpenClose(2); // Forced Closing
+						ARX_INTERFACE_BookClose(); // Forced Closing
 					}
 					MAGICMODE = true;
 				}

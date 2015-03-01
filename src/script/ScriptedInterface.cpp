@@ -82,9 +82,9 @@ public:
 		std::string command = context.getWord();
 		
 		if(command == "open") {
-			ARX_INTERFACE_BookOpenClose(1);
+			ARX_INTERFACE_BookOpen();
 		} else if(command == "close") {
-			ARX_INTERFACE_BookOpenClose(2);
+			ARX_INTERFACE_BookClose();
 		} else if(command == "change") {
 			// Nothing to do, mode already changed by flags.
 		} else {

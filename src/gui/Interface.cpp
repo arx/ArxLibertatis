@@ -624,7 +624,7 @@ void ARX_INTERFACE_NoteOpen(gui::Note::Type type, const std::string & text) {
 		ARX_INTERFACE_NoteClose();
 	}
 	
-	ARX_INTERFACE_BookOpenClose(2);
+	ARX_INTERFACE_BookClose();
 	
 	openNote.setData(type, getLocalised(text));
 	openNote.setPage(0);
@@ -701,15 +701,22 @@ static void onBookClosePage() {
 	
 }
 
-void ARX_INTERFACE_BookOpenClose(unsigned long t) // 0 switch 1 forceopen 2 forceclose
-{
-	if(t == 1 && (player.Interface & INTER_MAP))
+void ARX_INTERFACE_BookOpen() {
+	if((player.Interface & INTER_MAP))
 		return;
+	
+	ARX_INTERFACE_BookToggle();
+}
 
-	if(t == 2 && !(player.Interface & INTER_MAP))
+void ARX_INTERFACE_BookClose() {
+	if(!(player.Interface & INTER_MAP))
 		return;
+	
+	ARX_INTERFACE_BookToggle();
+}
 
-
+void ARX_INTERFACE_BookToggle() {
+	
 	if(player.Interface & INTER_MAP) {
 		ARX_SOUND_PlayInterface(SND_BOOK_CLOSE, 0.9F + 0.2F * rnd());
 		SendIOScriptEvent(entities.player(),SM_BOOK_CLOSE);
@@ -1136,7 +1143,7 @@ void ARX_INTERFACE_Combat_Mode(long i) {
 	} else if(   !entities.player()->animlayer[1].cur_anim
 	           || entities.player()->animlayer[1].cur_anim == entities.player()->anims[ANIM_WAIT]
 	) {
-		ARX_INTERFACE_BookOpenClose(2);
+		ARX_INTERFACE_BookClose();
 
 		player.Interface|=INTER_COMBATMODE;
 
@@ -1169,7 +1176,7 @@ static void openBookPage(ARX_INTERFACE_BOOK_MODE newPage, bool toggle = false) {
 		
 		if(toggle) {
 			// Close the book
-			ARX_INTERFACE_BookOpenClose(2);
+			ARX_INTERFACE_BookClose();
 		}
 		
 		return; // nothing to do
@@ -1188,7 +1195,7 @@ static void openBookPage(ARX_INTERFACE_BOOK_MODE newPage, bool toggle = false) {
 		
 	} else {
 		// Otherwise open the book
-		ARX_INTERFACE_BookOpenClose(0);
+		ARX_INTERFACE_BookToggle();
 	}
 	
 	Book_Mode = newPage;
@@ -1762,7 +1769,7 @@ void ArxGame::managePlayerControls() {
 
 	// Checks BOOK Key Status.
 	if(GInput->actionNowPressed(CONTROLS_CUST_BOOK))
-		ARX_INTERFACE_BookOpenClose(0);
+		ARX_INTERFACE_BookToggle();
 
 	// Check For Combat Mode ON/OFF
 	if(   eeMousePressed1()
@@ -1884,7 +1891,7 @@ public:
 	void requestFade(FadeDirection showhide, long smooth) {
 		if(showhide == FadeDirection_Out) {
 			InventoryOpenClose(2);
-			ARX_INTERFACE_BookOpenClose(2);
+			ARX_INTERFACE_BookClose();
 			ARX_INTERFACE_NoteClose();
 		}
 		

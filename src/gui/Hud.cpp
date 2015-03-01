@@ -855,7 +855,7 @@ public:
 			SpecialCursor = CURSOR_INTERACTION_ON;
 
 			if(eeMouseDown1()) {
-				ARX_INTERFACE_BookOpenClose(0);
+				ARX_INTERFACE_BookToggle();
 				EERIEMouseButton &=~1;
 			}
 			return;
@@ -937,7 +937,7 @@ public:
 
 				EERIEMouseButton &=~1;
 			} else if(eeMouseDown2()) {
-				ARX_INTERFACE_BookOpenClose(2);
+				ARX_INTERFACE_BookClose();
 				ARX_INVENTORY_OpenClose(NULL);
 
 				if(player.Interface & INTER_INVENTORYALL) {
@@ -1176,7 +1176,7 @@ public:
 				SpecialCursor = CURSOR_INTERACTION_ON;
 
 				if(eeMouseDown1()) {
-					ARX_INTERFACE_BookOpenClose(1);
+					ARX_INTERFACE_BookOpen();
 					EERIEMouseButton &=~1;
 				}
 			}
