@@ -1116,7 +1116,7 @@ public:
 
 				if(SecondaryInventory)
 					io = SecondaryInventory->io;
-				else if (player.Interface & INTER_STEAL)
+				else if(player.Interface & INTER_STEAL)
 					io = ioSteal;
 
 				if(io) {

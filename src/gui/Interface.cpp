@@ -1824,17 +1824,16 @@ void ArxGame::managePlayerControls() {
 				if(player.Interface &INTER_INVENTORY) {
 					Entity * io = NULL;
 
-					if(SecondaryInventory) {
+					if(SecondaryInventory)
 						io = SecondaryInventory->io;
-					} else if (player.Interface & INTER_STEAL) {
+					else if(player.Interface & INTER_STEAL)
 						io = ioSteal;
-					}
 
 					if(io) {
-						InventoryDir=-1;
-						SendIOScriptEvent(io,SM_INVENTORY2_CLOSE);
-						TSecondaryInventory=SecondaryInventory;
-						SecondaryInventory=NULL;
+						InventoryDir = -1;
+						SendIOScriptEvent(io, SM_INVENTORY2_CLOSE);
+						TSecondaryInventory = SecondaryInventory;
+						SecondaryInventory = NULL;
 					}
 				}
 
@@ -1853,18 +1852,17 @@ void ArxGame::managePlayerControls() {
 
 				if(player.Interface &INTER_INVENTORY) {
 					Entity * io = NULL;
-
-					if (SecondaryInventory) {
+					
+					if(SecondaryInventory)
 						io = SecondaryInventory->io;
-					} else if (player.Interface & INTER_STEAL) {
+					else if(player.Interface & INTER_STEAL)
 						io = ioSteal;
-					}
-
-					if(io){
-						InventoryDir=-1;
-						SendIOScriptEvent(io,SM_INVENTORY2_CLOSE);
-						TSecondaryInventory=SecondaryInventory;
-						SecondaryInventory=NULL;
+					
+					if(io) {
+						InventoryDir = -1;
+						SendIOScriptEvent(io, SM_INVENTORY2_CLOSE);
+						TSecondaryInventory = SecondaryInventory;
+						SecondaryInventory = NULL;
 					}
 				}
 
@@ -3854,12 +3852,12 @@ void ArxGame::manageEditorControls() {
 	// on ferme
 	if((player.Interface & INTER_COMBATMODE) || player.doingmagic >= 2) {
 		Entity * io = NULL;
-
+		
 		if(SecondaryInventory)
 			io = SecondaryInventory->io;
-		else if (player.Interface & INTER_STEAL)
+		else if(player.Interface & INTER_STEAL)
 			io = ioSteal;
-
+		
 		if(io) {
 			InventoryDir = -1;
 			SendIOScriptEvent(io, SM_INVENTORY2_CLOSE);
