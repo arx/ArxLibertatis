@@ -382,8 +382,7 @@ void ARX_Player_Rune_Add(RuneFlag _ulRune)
 	
 	if(iNbSpellsAfter > iNbSpells) {
 		bookIconGuiRequestFX();
-		bBookHalo = true;
-		ulBookHaloTime = 0;
+		bookIconGuiRequestHalo();
 	}
 }
 
@@ -405,8 +404,9 @@ void ARX_PLAYER_Quest_Add(const std::string & quest, bool _bLoad) {
 	
 	PlayerQuest.push_back(STRUCT_QUEST());
 	PlayerQuest.back().ident = quest;
-	bBookHalo = !_bLoad;
-	ulBookHaloTime = 0;
+	
+	if(!_bLoad)
+		bookIconGuiRequestHalo();
 	
 	gui::updateQuestBook();
 }

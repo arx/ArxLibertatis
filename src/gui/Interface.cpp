@@ -173,11 +173,7 @@ INTERFACE_TC ITC = INTERFACE_TC();
 
 gui::Note openNote;
 
-bool				bBookHalo = false;
-
 bool				bInventoryClosing = false;
-
-unsigned long		ulBookHaloTime = 0;
 
 float				InventoryDir=0; // 0 stable, 1 to right, -1 to left
 

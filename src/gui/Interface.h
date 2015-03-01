@@ -249,8 +249,6 @@ extern long CurrFightPos;
 extern long lSLID_VALUE;
 extern bool bInventoryClosing;
 extern E_ARX_STATE_MOUSE eMouseState;
-extern bool bBookHalo;
-extern unsigned long ulBookHaloTime;
 extern bool bInverseInventory;
 extern bool lOldTruePlayerMouseLook;
 extern bool TRUE_PLAYER_MOUSELOOK_ON;

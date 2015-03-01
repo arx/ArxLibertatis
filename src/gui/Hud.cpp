@@ -829,12 +829,23 @@ private:
 	
 	Vec2f m_size;
 	
+	bool bBookHalo;
+	unsigned long ulBookHaloTime;
+	
 public:
 	void init() {
 		m_tex = TextureContainer::LoadUI("graph/interface/icons/book");
 		arx_assert(m_tex);
 		
 		m_size = Vec2f(32, 32);
+		
+		bBookHalo = false;
+		ulBookHaloTime = 0;
+	}
+	
+	void requestHalo() {
+		bBookHalo = true;
+		ulBookHaloTime = 0;
 	}
 	
 	void requestFX() {
@@ -878,9 +889,15 @@ public:
 
 static BookIconGui bookIconGui;
 
+void bookIconGuiRequestHalo() {
+	bookIconGui.requestHalo();
+}
+
 void bookIconGuiRequestFX() {
 	bookIconGui.requestFX();
 }
+
+
 
 class BackpackIconGui : public HudIconBase {
 private:

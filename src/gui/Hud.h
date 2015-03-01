@@ -43,6 +43,7 @@ void mecanismIconReset();
 void showQuickSaveIcon();
 void hitStrengthGaugeRequestFlash(float flashIntensity);
 void bookIconGuiRequestFX();
+void bookIconGuiRequestHalo();
 //! Hide the quick save indicator
 void hideQuickSaveIcon();
 

@@ -237,8 +237,6 @@ void ARX_INTERFACE_BookToggle() {
 	}
 
 	BOOKZOOM = 0;
-	bBookHalo = false;
-	ulBookHaloTime = 0;
 	pTextManage->Clear();
 
 	TRUE_PLAYER_MOUSELOOK_ON = false;
