@@ -847,7 +847,6 @@ public:
 	void update(const Rectf & parent) {
 		
 		m_rect = createChild(parent, Anchor_TopRight, m_size * m_scale, Anchor_BottomRight);
-		m_rect.move(-3, -3);
 	}
 	
 	void updateInput() {
@@ -899,7 +898,6 @@ public:
 	void update(const Rectf & parent) {
 		
 		m_rect = createChild(parent, Anchor_TopRight, Vec2f(32, 32) * m_scale, Anchor_BottomRight);
-		m_rect.move(-3, -3);
 	}
 	
 	void updateInput() {
@@ -1208,7 +1206,6 @@ public:
 	
 	void update(const Rectf & parent) {
 		m_rect = createChild(parent, Anchor_TopRight, m_size * m_scale, Anchor_BottomRight);
-		m_rect.move(-1.f, -3.f);
 	}
 	
 	void updateInput() {
@@ -2391,10 +2388,25 @@ void ArxGame::drawAllInterface() {
 	
 	if(!(player.Interface & INTER_COMBATMODE) && (player.Interface & INTER_MINIBACK)) {
 		
-		backpackIconGui.update(manaGauge.rect());
-		bookIconGui.update(backpackIconGui.rect());
-		purseIconGui.update(bookIconGui.rect());
-		levelUpIconGui.update(purseIconGui.rect());
+		{
+		Rectf spacer = createChild(manaGauge.rect(), Anchor_TopRight, Vec2f(0, 3), Anchor_BottomRight);
+		backpackIconGui.update(spacer);
+		}
+		
+		{
+		Rectf spacer = createChild(backpackIconGui.rect(), Anchor_TopRight, Vec2f(0, 3), Anchor_BottomRight);
+		bookIconGui.update(spacer);
+		}
+		
+		{
+		Rectf spacer = createChild(bookIconGui.rect(), Anchor_TopRight, Vec2f(0, 3), Anchor_BottomRight);
+		purseIconGui.update(spacer);
+		}
+		
+		{
+		Rectf spacer = createChild(purseIconGui.rect(), Anchor_TopRight, Vec2f(0, 3), Anchor_BottomRight);
+		levelUpIconGui.update(spacer);
+		}
 		
 		backpackIconGui.draw();
 		bookIconGui.draw();
