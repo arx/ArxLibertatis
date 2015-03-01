@@ -871,8 +871,9 @@ public:
 	}
 	
 	void updateInput() {
-		if(m_rect.contains(Vec2f(DANAEMouse))) {
-			eMouseState = MOUSE_IN_BOOK_ICON;
+		m_isSelected = m_rect.contains(Vec2f(DANAEMouse));
+		
+		if(m_isSelected) {
 			SpecialCursor = CURSOR_INTERACTION_ON;
 
 			if(eeMouseDown1()) {
@@ -884,7 +885,6 @@ public:
 	}
 	
 	void draw() {
-		m_isSelected = eMouseState == MOUSE_IN_BOOK_ICON;
 		DrawIcon(m_rect, m_tex);
 	}
 };
@@ -1076,8 +1076,9 @@ public:
 	
 	void updateInput() {
 		
-		if(m_rect.contains(Vec2f(DANAEMouse))) {
-			eMouseState = MOUSE_IN_INVENTORY_PICKALL_ICON;
+		m_isSelected = m_rect.contains(Vec2f(DANAEMouse));
+		
+		if(m_isSelected) {
 			SpecialCursor=CURSOR_INTERACTION_ON;
 
 			if(eeMouseDown1()) {
@@ -1095,7 +1096,6 @@ public:
 	}
 	
 	void draw() {
-		m_isSelected = eMouseState == MOUSE_IN_INVENTORY_PICKALL_ICON;
 		DrawIcon(m_rect, m_tex);
 	}
 };
@@ -1124,8 +1124,9 @@ public:
 	
 	void updateInput() {
 		
-		if(m_rect.contains(Vec2f(DANAEMouse))) {
-			eMouseState = MOUSE_IN_INVENTORY_CLOSE_ICON;
+		m_isSelected = m_rect.contains(Vec2f(DANAEMouse));
+		
+		if(m_isSelected) {
 			SpecialCursor=CURSOR_INTERACTION_ON;
 
 			if(eeMouseDown1()) {
@@ -1153,7 +1154,6 @@ public:
 	}
 	
 	void draw() {
-		m_isSelected = eMouseState == MOUSE_IN_INVENTORY_CLOSE_ICON;
 		DrawIcon(m_rect, m_tex);
 	}
 	
@@ -1178,9 +1178,13 @@ public:
 	}
 	
 	void updateInput() {
+		m_isSelected = false;
+		
 		if((player.Skill_Redistribute) || (player.Attribute_Redistribute)) {
-			if(m_rect.contains(Vec2f(DANAEMouse))) {
-				eMouseState = MOUSE_IN_REDIST_ICON;
+			
+			m_isSelected = m_rect.contains(Vec2f(DANAEMouse));
+			
+			if(m_isSelected) {
 				SpecialCursor = CURSOR_INTERACTION_ON;
 
 				if(eeMouseDown1()) {
@@ -1193,7 +1197,6 @@ public:
 	
 
 	void draw() {
-		m_isSelected = eMouseState == MOUSE_IN_REDIST_ICON;
 		DrawIcon(m_rect, m_tex);
 	}
 };
@@ -1239,10 +1242,12 @@ public:
 	}
 	
 	void updateInput() {
+		m_isSelected = false;
 		// gold
 		if(player.gold > 0) {
-			if(m_rect.contains(Vec2f(DANAEMouse))) {
-				eMouseState = MOUSE_IN_GOLD_ICON;
+			m_isSelected = m_rect.contains(Vec2f(DANAEMouse));
+			
+			if(m_isSelected) {
 				SpecialCursor = CURSOR_INTERACTION_ON;
 
 				if(   player.gold > 0
@@ -1261,13 +1266,9 @@ public:
 	}
 	
 	void draw() {
-		m_isSelected = eMouseState == MOUSE_IN_GOLD_ICON;
-		
 		DrawIcon(m_rect, m_tex);
 		
-		if(eMouseState == MOUSE_IN_GOLD_ICON) {
-			SpecialCursor=CURSOR_INTERACTION_ON;
-			
+		if(m_isSelected) {
 			Vec2f numberPos = m_rect.topLeft();
 			numberPos += Vec2f(- INTERFACE_RATIO(30), + INTERFACE_RATIO(10 - 25));
 			
