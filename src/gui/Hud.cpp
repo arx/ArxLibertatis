@@ -1165,6 +1165,7 @@ class LevelUpIconGui : public HudIconBase {
 private:
 	Vec2f m_pos;
 	Vec2f m_size;
+	bool m_visible;
 	
 public:
 	void init() {
@@ -1175,28 +1176,31 @@ public:
 	
 	void update(const Rectf & parent) {
 		m_rect = createChild(parent, Anchor_TopRight, m_size * m_scale, Anchor_BottomRight);
+		
+		m_visible = (player.Skill_Redistribute) || (player.Attribute_Redistribute);
 	}
 	
 	void updateInput() {
-		m_isSelected = false;
+		if(!m_visible)
+			return;
 		
-		if((player.Skill_Redistribute) || (player.Attribute_Redistribute)) {
+		m_isSelected = m_rect.contains(Vec2f(DANAEMouse));
+		
+		if(m_isSelected) {
+			SpecialCursor = CURSOR_INTERACTION_ON;
 			
-			m_isSelected = m_rect.contains(Vec2f(DANAEMouse));
-			
-			if(m_isSelected) {
-				SpecialCursor = CURSOR_INTERACTION_ON;
-
-				if(eeMouseDown1()) {
-					ARX_INTERFACE_BookOpen();
-					EERIEMouseButton &=~1;
-				}
+			if(eeMouseDown1()) {
+				ARX_INTERFACE_BookOpen();
+				EERIEMouseButton &=~1;
 			}
 		}
 	}
 	
 
 	void draw() {
+		if(!m_visible)
+			return;
+		
 		DrawIcon(m_rect, m_tex);
 	}
 };
@@ -2442,9 +2446,7 @@ void ArxGame::drawAllInterface() {
 			purseIconGui.draw();
 		}
 		
-		if(player.Skill_Redistribute || player.Attribute_Redistribute) {
-			levelUpIconGui.draw();
-		}
+		levelUpIconGui.draw();
 	}
 	
 	GRenderer->GetTextureStage(0)->setMinFilter(TextureStage::FilterLinear);
