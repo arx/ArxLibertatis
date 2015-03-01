@@ -165,7 +165,6 @@ Image savegame_thumbnail;
 
 extern TextManager	*pTextManage;
 extern float FORCE_TIME_RESTORE;
-extern float	InventoryX;
 
 extern long		DONT_WANT_PLAYER_INZONE;
 extern long		TOTPDL;

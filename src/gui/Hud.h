@@ -24,6 +24,12 @@
 
 extern bool bIsAiming;
 
+namespace gui {
+
+void InventoryFaderUpdate();
+
+}
+
 void hudElementsInit();
 
 void setHudScale(float scale);

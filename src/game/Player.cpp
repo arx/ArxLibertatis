@@ -143,8 +143,6 @@ static const float TARGET_DT = 1000.f / 30.f;
 
 extern Vec3f PUSH_PLAYER_FORCE;
 extern bool bGoldHalo;
-extern float InventoryX;
-extern float InventoryDir;
 extern long COLLIDED_CLIMB_POLY;
 extern long HERO_SHOW_1ST;
 extern unsigned long ulGoldHaloTime;
@@ -2038,37 +2036,6 @@ void ARX_PLAYER_Manage_Movement() {
 	StoredTime = DeltaTime;
 }
 
-static void GuiInventoryFaderUpdate() {
-	
-	if(InventoryDir != 0) {
-		if((player.Interface & INTER_COMBATMODE) || player.doingmagic >= 2 || InventoryDir == -1) {
-			if(InventoryX > -160)
-				InventoryX -= INTERFACE_RATIO(framedelay * ( 1.0f / 3 ));
-		} else {
-			if(InventoryX < 0)
-				InventoryX += InventoryDir * INTERFACE_RATIO(framedelay * ( 1.0f / 3 ));
-		}
-
-		if(InventoryX <= -160) {
-			InventoryX = -160;
-			InventoryDir = 0;
-
-			if(player.Interface & INTER_STEAL || ioSteal) {
-				SendIOScriptEvent(ioSteal, SM_STEAL, "off");
-				player.Interface &= ~INTER_STEAL;
-				ioSteal = NULL;
-			}
-
-			SecondaryInventory = NULL;
-			TSecondaryInventory = NULL;
-			InventoryDir = 0;
-		} else if(InventoryX >= 0) {
-			InventoryX = 0;
-			InventoryDir = 0;
-		}
-	}	
-}
-
 void PlayerMovementIterate(float DeltaTime) {
 	
 	// A jump is requested so let's go !
@@ -2542,7 +2509,7 @@ lasuite:
 		CURRENT_PLAYER_COLOR = std::max(CURRENT_PLAYER_COLOR, grnd_color);
 	}
 	
-	GuiInventoryFaderUpdate();
+	gui::InventoryFaderUpdate();
 }
 
 /*!
