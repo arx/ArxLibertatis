@@ -760,10 +760,11 @@ static void DrawItemPrice() {
 class HudIconBase : public HudItem {
 protected:
 	bool m_isSelected;
+	Color3f m_haloColor;
 	
-	void DrawHalo(float r, float g, float b, TextureContainer* halo, const Vec2f& coords) {
+	void DrawHalo(TextureContainer* halo, const Vec2f& coords) {
 		if(halo) {
-			ARX_INTERFACE_HALO_Render(Color3f(r, g, b), HALO_ACTIVE, halo, coords);
+			ARX_INTERFACE_HALO_Render(m_haloColor, HALO_ACTIVE, halo, coords);
 		}
 	}
 	
@@ -841,6 +842,8 @@ public:
 		
 		m_size = Vec2f(32, 32);
 		
+		m_haloColor = Color3f(0.2f, 0.4f, 0.8f);
+		
 		bBookHalo = false;
 		ulBookHaloTime = 0;
 	}
@@ -885,7 +888,7 @@ public:
 				bBookHalo = false;
 			}
 			Vec2f pos = m_rect.topLeft();
-			DrawHalo(0.2f, 0.4f, 0.8f, m_tex->getHalo(), pos);
+			DrawHalo(m_tex->getHalo(), pos);
 		}
 	}
 };
@@ -1229,6 +1232,8 @@ public:
 		arx_assert(m_tex);
 		m_size = Vec2f(32.f, 32.f);
 		
+		m_haloColor = Color3f(0.9f, 0.9f, 0.1f);
+		
 		bGoldHalo = false;
 		ulGoldHaloTime = 0;
 	}
@@ -1287,7 +1292,7 @@ public:
 			if(ulGoldHaloTime >= 1000) { // ms
 				bGoldHalo = false;
 			}
-			DrawHalo(0.9f, 0.9f, 0.1f, m_tex->getHalo(), m_rect.topLeft());
+			DrawHalo(m_tex->getHalo(), m_rect.topLeft());
 		}
 	}
 };
