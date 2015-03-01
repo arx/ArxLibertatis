@@ -1822,19 +1822,7 @@ void ArxGame::managePlayerControls() {
 				InventoryOpenClose(2);
 
 				if(player.Interface &INTER_INVENTORY) {
-					Entity * io = NULL;
-
-					if(SecondaryInventory)
-						io = SecondaryInventory->io;
-					else if(player.Interface & INTER_STEAL)
-						io = ioSteal;
-
-					if(io) {
-						InventoryDir = -1;
-						SendIOScriptEvent(io, SM_INVENTORY2_CLOSE);
-						TSecondaryInventory = SecondaryInventory;
-						SecondaryInventory = NULL;
-					}
+					gui::CloseSecondaryInventory();
 				}
 
 				if(config.input.mouseLookToggle) {
@@ -1851,19 +1839,7 @@ void ArxGame::managePlayerControls() {
 				InventoryOpenClose(2);
 
 				if(player.Interface &INTER_INVENTORY) {
-					Entity * io = NULL;
-					
-					if(SecondaryInventory)
-						io = SecondaryInventory->io;
-					else if(player.Interface & INTER_STEAL)
-						io = ioSteal;
-					
-					if(io) {
-						InventoryDir = -1;
-						SendIOScriptEvent(io, SM_INVENTORY2_CLOSE);
-						TSecondaryInventory = SecondaryInventory;
-						SecondaryInventory = NULL;
-					}
+					gui::CloseSecondaryInventory();
 				}
 
 				if(config.input.mouseLookToggle) {
@@ -3851,19 +3827,7 @@ void ArxGame::manageEditorControls() {
 	
 	// on ferme
 	if((player.Interface & INTER_COMBATMODE) || player.doingmagic >= 2) {
-		Entity * io = NULL;
-		
-		if(SecondaryInventory)
-			io = SecondaryInventory->io;
-		else if(player.Interface & INTER_STEAL)
-			io = ioSteal;
-		
-		if(io) {
-			InventoryDir = -1;
-			SendIOScriptEvent(io, SM_INVENTORY2_CLOSE);
-			TSecondaryInventory = SecondaryInventory;
-			SecondaryInventory = NULL;
-		}
+		gui::CloseSecondaryInventory();
 	}
 	
 	playerInterfaceFader.update();

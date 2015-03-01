@@ -47,15 +47,13 @@ ZeniMax Media Inc., Suite 120, Rockville, Maryland 20850 USA.
 #include "game/Inventory.h"
 #include "game/Entity.h"
 #include "game/Player.h"
+#include "gui/Hud.h"
 #include "gui/Interface.h"
 #include "gui/Menu.h"
 #include "gui/MiniMap.h"
 #include "scene/GameSound.h"
 #include "script/ScriptEvent.h"
 #include "script/ScriptUtils.h"
-
-
-extern float InventoryDir;
 
 namespace script {
 
@@ -114,19 +112,7 @@ public:
 			return Success;
 		}
 		
-		Entity * io = NULL;
-		
-		if(SecondaryInventory)
-			io = SecondaryInventory->io;
-		else if(player.Interface & INTER_STEAL)
-			io = ioSteal;
-		
-		if(io) {
-			InventoryDir = -1;
-			SendIOScriptEvent(io, SM_INVENTORY2_CLOSE);
-			TSecondaryInventory = SecondaryInventory;
-			SecondaryInventory = NULL;
-		}
+		gui::CloseSecondaryInventory();
 		
 		return Success;
 	}
