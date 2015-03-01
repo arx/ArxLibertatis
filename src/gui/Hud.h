@@ -36,6 +36,8 @@ void hudElementsInit();
 
 void setHudScale(float scale);
 
+void purseIconGuiRequestHalo();
+
 void mecanismIconReset();
 //! Show the quick save indicator for a short time
 void showQuickSaveIcon();

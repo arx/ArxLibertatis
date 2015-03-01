@@ -142,10 +142,8 @@ static const float STEP_DISTANCE = 120.f;
 static const float TARGET_DT = 1000.f / 30.f;
 
 extern Vec3f PUSH_PLAYER_FORCE;
-extern bool bGoldHalo;
 extern long COLLIDED_CLIMB_POLY;
 extern long HERO_SHOW_1ST;
-extern unsigned long ulGoldHaloTime;
 
 static const float ARX_PLAYER_SKILL_STEALTH_MAX = 100.f;
 
@@ -2576,8 +2574,7 @@ void ARX_PLAYER_PutPlayerInNormalStance() {
  */
 void ARX_PLAYER_AddGold(long _lValue) {
 	player.gold += _lValue;
-	bGoldHalo = true;
-	ulGoldHaloTime = 0;
+	purseIconGuiRequestHalo();
 }
 
 void ARX_PLAYER_AddGold(Entity * gold) {

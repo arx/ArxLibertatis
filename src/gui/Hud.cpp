@@ -61,9 +61,6 @@ TextureContainer * BasicInventorySkin=NULL;
 float InventoryX = -60.f;
 static float fDecPulse;
 bool bInventorySwitch = false;
-bool bGoldHalo = false;
-unsigned long ulGoldHaloTime = 0;
-
 
 enum Anchor {
 	Anchor_TopLeft,
@@ -1197,11 +1194,23 @@ private:
 	TextureContainer * m_tex;
 	Vec2f m_pos;
 	Vec2f m_size;
+	
+	bool bGoldHalo;
+	long ulGoldHaloTime;
+	
 public:
 	void init() {
 		m_tex = TextureContainer::LoadUI("graph/interface/inventory/gold");
 		arx_assert(m_tex);
 		m_size = Vec2f(32.f, 32.f);
+		
+		bGoldHalo = false;
+		ulGoldHaloTime = 0;
+	}
+	
+	void requestHalo() {
+		bGoldHalo = true;
+		ulGoldHaloTime = 0;
 	}
 	
 	void update(const Rectf & parent) {
@@ -1257,6 +1266,11 @@ public:
 };
 
 static PurseIconGui purseIconGui;
+
+void purseIconGuiRequestHalo() {
+	purseIconGui.requestHalo();
+}
+
 
 class CurrentTorchIconGui {
 private:
