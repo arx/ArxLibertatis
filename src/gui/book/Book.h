@@ -30,4 +30,17 @@ enum ARX_INTERFACE_BOOK_MODE
 
 extern ARX_INTERFACE_BOOK_MODE Book_Mode;
 
+extern long Book_MapPage;
+extern long Book_SpellPage;
+
+extern long BOOKZOOM;
+
+void ARX_INTERFACE_BookOpen();
+void ARX_INTERFACE_BookClose();
+void ARX_INTERFACE_BookToggle();
+
+ARX_INTERFACE_BOOK_MODE nextBookPage();
+ARX_INTERFACE_BOOK_MODE prevBookPage();
+void openBookPage(ARX_INTERFACE_BOOK_MODE newPage, bool toggle = false);
+
 #endif // ARX_GUI_BOOK_BOOK_H

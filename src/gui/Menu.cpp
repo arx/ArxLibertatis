@@ -99,7 +99,6 @@ extern long LASTBOOKBUTTON;
 extern long BOOKBUTTON;
 extern long OLD_FLYING_OVER;
 extern long FLYING_OVER;
-extern long BOOKZOOM;
 extern bool bFadeInOut;
 extern bool bFade;
 extern int iFadeAction;
