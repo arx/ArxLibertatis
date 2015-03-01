@@ -260,12 +260,12 @@ void assertionFailed(const char * expression, const char * file, unsigned line,
  * Does nothing in release builds.
  */
 #ifdef ARX_DEBUG
-	#define arx_assert(Expression, ...) { \
+	#define arx_assert(Expression, ...)  do { \
 			if(!(Expression)) { \
 				assertionFailed(#Expression, (ARX_FILE), __LINE__, ##__VA_ARGS__); \
 				ARX_DEBUG_BREAK(); \
 			} \
-		}
+		} while(0)
 #else // ARX_DEBUG
 	#define arx_assert(Expression, ...) \
 		ARX_DISCARD(Expression, ##__VA_ARGS__)
