@@ -1002,33 +1002,28 @@ static BackpackIconGui backpackIconGui;
 
 class StealIconGui : public HudIconBase {
 private:
+	Vec2f m_size;
 	Vec2f m_pos;
 	
 public:
 	void init() {
 		m_tex = TextureContainer::LoadUI("graph/interface/icons/steal");
 		arx_assert(m_tex);
+		
+		m_size = Vec2f(32, 32);
 	}
 	
 	void update() {
-		m_pos.x = static_cast<float>(-lSLID_VALUE);
-		m_pos.y = g_size.height() - INTERFACE_RATIO(78.f + 32);
+		Vec2f pos(static_cast<float>(-lSLID_VALUE), g_size.height() - (78 + 32));
+		
+		m_rect = Rectf(pos, m_size.x, m_size.y);
 	}
 	
 	void updateInput() {
 		
 		// steal
 		if(player.Interface & INTER_STEAL) {
-			Vec2f pos(static_cast<float>(-lSLID_VALUE), g_size.height() - (78 + 32));
-			
-			const Rect mouseTestRect(
-			pos.x,
-			pos.y,
-			pos.x + INTERFACE_RATIO(32),
-			pos.y + INTERFACE_RATIO(32)
-			);
-			
-			if(mouseTestRect.contains(Vec2i(DANAEMouse))) {
+			if(m_rect.contains(Vec2f(DANAEMouse))) {
 				eMouseState=MOUSE_IN_STEAL_ICON;
 				SpecialCursor=CURSOR_INTERACTION_ON;
 
@@ -1056,10 +1051,8 @@ public:
 	}
 	
 	void draw() {
-		Rectf rect = Rectf(m_pos, m_tex->m_dwWidth, m_tex->m_dwHeight);
-		
 		m_isSelected = eMouseState == MOUSE_IN_STEAL_ICON;
-		DrawIcon(rect, m_tex);
+		DrawIcon(m_rect, m_tex);
 	}
 };
 
