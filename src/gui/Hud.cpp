@@ -1053,7 +1053,7 @@ private:
 public:
 	void init() {
 		m_tex = TextureContainer::LoadUI("graph/interface/inventory/inv_pick");
-		arx_assert(m_tex)
+		arx_assert(m_tex);
 		
 		m_size = Vec2f(16, 16);
 	}
