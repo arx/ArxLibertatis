@@ -205,7 +205,7 @@ res::path LastLoadedScene;
 
 float BASE_FOCAL=350.f;
 float STRIKE_AIMTIME=0.f;
-float SLID_VALUE=0.f;
+
 float framedelay=0.f;
 
 long LOAD_N_DONT_ERASE=0;
@@ -453,7 +453,7 @@ static void FirstFrameProc() {
 		if(!DONT_ERASE_PLAYER)
 			ARX_PLAYER_InitPlayer();
 
-		SLID_VALUE=0.f;
+		playerInterfaceFaderResetSlid();
 
 		player.lifePool.current = player.lifePool.max;
 		player.manaPool.current = player.manaPool.max;

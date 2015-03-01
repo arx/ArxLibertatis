@@ -273,6 +273,7 @@ enum FadeDirection {
 };
 
 void playerInterfaceFaderRequestFade(FadeDirection showhide, long smooth);
+void playerInterfaceFaderResetSlid();
 void ARX_INTERFACE_Reset();
 
 void ARX_INTERFACE_ManageOpenedBook();

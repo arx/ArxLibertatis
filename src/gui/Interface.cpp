@@ -582,7 +582,7 @@ void ARX_INTERFACE_NoteManage() {
 
 void ResetPlayerInterface() {
 	player.Interface |= INTER_LIFE_MANA;
-	SLID_VALUE = 0;
+	playerInterfaceFaderResetSlid();
 	lSLID_VALUE = 0;
 	SLID_START=float(arxtime);
 }
@@ -1583,11 +1583,16 @@ void ArxGame::managePlayerControls() {
 class PlayerInterfaceFader {
 private:
 	long SMOOTHSLID = 0;
+	float SLID_VALUE = 0.f;
 	
 public:
 	void reset() {
 		SMOOTHSLID=0;
 		PLAYER_INTERFACE_HIDE_COUNT = true;
+	}
+	
+	void resetSlid() {
+		SLID_VALUE = 0.f;
 	}
 	
 	void requestFade(FadeDirection showhide, long smooth) {
@@ -1679,12 +1684,15 @@ void playerInterfaceFaderRequestFade(FadeDirection showhide, long smooth) {
 	playerInterfaceFader.requestFade(showhide, smooth);
 }
 
+void playerInterfaceFaderResetSlid() {
+	playerInterfaceFader.resetSlid();
+}
 
 void ARX_INTERFACE_Reset()
 {
 	playerInterfaceFader.reset();
+	playerInterfaceFader.resetSlid();
 	BLOCK_PLAYER_CONTROLS = false;
-	SLID_VALUE=0;
 	cinematicBorder.reset2();
 	cinematicBorder.reset();
 	CINEMA_DECAL=0;
