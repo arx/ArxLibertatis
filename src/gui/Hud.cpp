@@ -759,6 +759,8 @@ static void DrawItemPrice() {
 
 class HudIconBase : public HudItem {
 protected:
+	bool m_isSelected;
+	
 	void DrawHalo(float r, float g, float b, TextureContainer* halo, const Vec2f& coords) {
 		if(halo) {
 			ARX_INTERFACE_HALO_Render(Color3f(r, g, b), HALO_ACTIVE, halo, coords);
@@ -766,12 +768,12 @@ protected:
 	}
 	
 	//Used for drawing icons like the book or backpack icon.
-	void DrawIcon(const Rectf & rect, TextureContainer * tex, E_ARX_STATE_MOUSE hoverMouseState) {
+	void DrawIcon(const Rectf & rect, TextureContainer * tex) {
 		arx_assert(tex);
 		
 		EERIEDrawBitmap(rect, 0.001f, tex, Color::white);
 		
-		if (eMouseState == hoverMouseState) {
+		if(m_isSelected) {
 			GRenderer->SetBlendFunc(Renderer::BlendOne, Renderer::BlendOne);
 			GRenderer->SetRenderState(Renderer::AlphaBlending, true);
 			
@@ -871,7 +873,8 @@ public:
 	}
 	
 	void draw() {
-		DrawIcon(m_rect, m_tex, MOUSE_IN_BOOK_ICON);
+		m_isSelected = eMouseState == MOUSE_IN_BOOK_ICON;
+		DrawIcon(m_rect, m_tex);
 	}
 	
 	void drawHalo() {
@@ -987,7 +990,8 @@ public:
 	}
 	
 	void draw() {
-		DrawIcon(m_rect, m_tex, MOUSE_IN_INVENTORY_ICON);
+		m_isSelected = eMouseState == MOUSE_IN_INVENTORY_ICON;
+		DrawIcon(m_rect, m_tex);
 	}
 };
 
@@ -1052,7 +1056,8 @@ public:
 	void draw() {
 		Rectf rect = Rectf(m_pos, m_tex->m_dwWidth, m_tex->m_dwHeight);
 		
-		DrawIcon(rect, m_tex, MOUSE_IN_STEAL_ICON);
+		m_isSelected = eMouseState == MOUSE_IN_STEAL_ICON;
+		DrawIcon(rect, m_tex);
 	}
 };
 
@@ -1101,7 +1106,8 @@ public:
 	}
 	
 	void draw() {
-		DrawIcon(m_rect, m_tex, MOUSE_IN_INVENTORY_PICKALL_ICON);
+		m_isSelected = eMouseState == MOUSE_IN_INVENTORY_PICKALL_ICON;
+		DrawIcon(m_rect, m_tex);
 	}
 };
 
@@ -1160,7 +1166,8 @@ public:
 	}
 	
 	void draw() {
-		DrawIcon(m_rect, m_tex, MOUSE_IN_INVENTORY_CLOSE_ICON);
+		m_isSelected = eMouseState == MOUSE_IN_INVENTORY_CLOSE_ICON;
+		DrawIcon(m_rect, m_tex);
 	}
 	
 };
@@ -1199,7 +1206,8 @@ public:
 	
 
 	void draw() {
-		DrawIcon(m_rect, m_tex, MOUSE_IN_REDIST_ICON);
+		m_isSelected = eMouseState == MOUSE_IN_REDIST_ICON;
+		DrawIcon(m_rect, m_tex);
 	}
 };
 
@@ -1257,7 +1265,9 @@ public:
 	}
 	
 	void draw() {
-		DrawIcon(m_rect, m_tex, MOUSE_IN_GOLD_ICON);
+		m_isSelected = eMouseState == MOUSE_IN_GOLD_ICON;
+		
+		DrawIcon(m_rect, m_tex);
 		
 		if(eMouseState == MOUSE_IN_GOLD_ICON) {
 			SpecialCursor=CURSOR_INTERACTION_ON;
