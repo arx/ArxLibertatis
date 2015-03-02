@@ -1582,10 +1582,15 @@ void ArxGame::managePlayerControls() {
 
 class PlayerInterfaceFader {
 private:
-	long SMOOTHSLID = 0;
-	float SLID_VALUE = 0.f;
+	long SMOOTHSLID;
+	float SLID_VALUE;
 	
 public:
+	PlayerInterfaceFader()
+		: SMOOTHSLID(0)
+		, SLID_VALUE(0.f)
+	{}
+	
 	void reset() {
 		SMOOTHSLID=0;
 		PLAYER_INTERFACE_HIDE_COUNT = true;
