@@ -765,18 +765,18 @@ protected:
 	bool m_haloActive;
 	Color3f m_haloColor;
 	
-	
+public:
 	//Used for drawing icons like the book or backpack icon.
-	void DrawIcon(const Rectf & rect, TextureContainer * tex) {
-		arx_assert(tex);
+	void draw() {
+		arx_assert(m_tex);
 		
-		EERIEDrawBitmap(rect, 0.001f, tex, Color::white);
+		EERIEDrawBitmap(m_rect, 0.001f, m_tex, Color::white);
 		
 		if(m_isSelected) {
 			GRenderer->SetBlendFunc(Renderer::BlendOne, Renderer::BlendOne);
 			GRenderer->SetRenderState(Renderer::AlphaBlending, true);
 			
-			EERIEDrawBitmap(rect, 0.001f, tex, Color::white);
+			EERIEDrawBitmap(m_rect, 0.001f, m_tex, Color::white);
 			
 			GRenderer->SetRenderState(Renderer::AlphaBlending, false);
 		}
@@ -883,10 +883,6 @@ public:
 			return;
 		}
 	}
-	
-	void draw() {
-		DrawIcon(m_rect, m_tex);
-	}
 };
 
 static BookIconGui bookIconGui;
@@ -989,7 +985,7 @@ public:
 	
 	void draw() {
 		m_isSelected = eMouseState == MOUSE_IN_INVENTORY_ICON;
-		DrawIcon(m_rect, m_tex);
+		HudIconBase::draw();
 	}
 };
 
@@ -1048,7 +1044,7 @@ public:
 	
 	void draw() {
 		m_isSelected = eMouseState == MOUSE_IN_STEAL_ICON;
-		DrawIcon(m_rect, m_tex);
+		HudIconBase::draw();
 	}
 };
 
@@ -1093,10 +1089,6 @@ public:
 			if(DRAGINTER == NULL)
 				return;
 		}
-	}
-	
-	void draw() {
-		DrawIcon(m_rect, m_tex);
 	}
 };
 
@@ -1152,11 +1144,6 @@ public:
 				return;
 		}
 	}
-	
-	void draw() {
-		DrawIcon(m_rect, m_tex);
-	}
-	
 };
 
 static CloseSecondaryInventoryIconGui closeSecondaryInventoryIconGui;
@@ -1201,7 +1188,7 @@ public:
 		if(!m_visible)
 			return;
 		
-		DrawIcon(m_rect, m_tex);
+		HudIconBase::draw();
 	}
 };
 
@@ -1270,7 +1257,7 @@ public:
 	}
 	
 	void draw() {
-		DrawIcon(m_rect, m_tex);
+		HudIconBase::draw();
 		
 		if(m_isSelected) {
 			Vec2f numberPos = m_rect.topLeft();
