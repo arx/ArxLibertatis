@@ -1435,6 +1435,7 @@ void ArxGame::managePlayerControls() {
 			} else {
 				if(GInput->actionNowPressed(CONTROLS_CUST_FREELOOK)) {
 					if(!TRUE_PLAYER_MOUSELOOK_ON) {
+						ARX_INTERFACE_BookClose();
 						TRUE_PLAYER_MOUSELOOK_ON = true;
 						SLID_START=float(arxtime);
 					} else {
