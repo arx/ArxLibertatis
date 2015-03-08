@@ -70,6 +70,12 @@ struct UTF8 {
 	}
 	
 	/*!
+	 * Advance to the next character.
+	 */
+	template <typename In>
+	static In next(In it, In end);
+	
+	/*!
 	* Decode the first character from an UTF-8 string
 	* \tparam In          An InputIterator type for the input string
 	* \param  it          Start of the input string - will be advanced by the bytes read
@@ -243,6 +249,15 @@ std::string encode(Unicode character) {
 
 //---------------------------------------------------------------------------------------
 // Implementation
+
+template <typename In>
+In UTF8::next(In it, In end) {
+	++it;
+	while(it != end && isContinuationByte(*it)) {
+		++it;
+	}
+	return it;
+}
 
 template <typename In>
 Unicode UTF8::read(In & it, In end, Unicode replacement) {
