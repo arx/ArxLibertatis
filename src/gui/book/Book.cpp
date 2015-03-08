@@ -697,6 +697,116 @@ void updateQuestBook() {
 //-----------------------------------------------------------------------------
 
 
+static void ARX_INTERFACE_ManageOpenedBook_TopTabs() {
+	
+	static const Vec2f BOOKMARKS_POS = Vec2f(216.f, 60.f);
+	
+	if(Book_Mode != BOOKMODE_STATS) {
+		Vec2f pos = BOOKMARKS_POS;
+		
+		TextureContainer* tcBookmarkChar = ITC.bookmark_char;
+		DrawBookInterfaceItem(tcBookmarkChar, pos);
+		
+		// Check for cursor on charcter sheet bookmark
+		if(MouseInBookRect(pos, Vec2f(tcBookmarkChar->m_dwWidth, tcBookmarkChar->m_dwHeight))) {
+			// Draw highlighted Character sheet icon
+			GRenderer->SetBlendFunc(Renderer::BlendOne, Renderer::BlendOne);
+			GRenderer->SetRenderState(Renderer::AlphaBlending, true);
+			DrawBookInterfaceItem(tcBookmarkChar, pos, Color::grayb(0x55));
+			GRenderer->SetRenderState(Renderer::AlphaBlending, false);
+			
+			// Set cursor to interacting
+			SpecialCursor=CURSOR_INTERACTION_ON;
+			
+			// Check for click
+			if(bookclick) {
+				ARX_SOUND_PlayInterface(SND_BOOK_PAGE_TURN, 0.9F + 0.2F * rnd());
+				openBookPage(BOOKMODE_STATS);
+				pTextManage->Clear();
+			}
+		}
+	}
+	
+	if(Book_Mode != BOOKMODE_SPELLS) {
+		if(player.rune_flags) {
+			Vec2f pos = BOOKMARKS_POS + Vec2f(32, 0);
+			
+			DrawBookInterfaceItem(ITC.bookmark_magic, pos);
+
+			if(NewSpell == 1) {
+				NewSpell = 2;
+				for(long nk = 0; nk < 2; nk++) {
+					MagFX(Vec3f(BOOKDEC.x + 220.f, BOOKDEC.y + 49.f, 0.000001f));
+				}
+			}
+			
+			if(MouseInBookRect(pos, Vec2f(ITC.bookmark_magic->m_dwWidth, ITC.bookmark_magic->m_dwHeight))) {
+				// Draw highlighted Magic sheet icon
+				GRenderer->SetBlendFunc(Renderer::BlendOne, Renderer::BlendOne);
+				GRenderer->SetRenderState(Renderer::AlphaBlending, true);
+				DrawBookInterfaceItem(ITC.bookmark_magic, pos, Color::grayb(0x55));
+				GRenderer->SetRenderState(Renderer::AlphaBlending, false);
+				
+				// Set cursor to interacting
+				SpecialCursor=CURSOR_INTERACTION_ON;
+				
+				// Check for click
+				if(bookclick) {
+					ARX_SOUND_PlayInterface(SND_BOOK_PAGE_TURN, 0.9F + 0.2F * rnd());
+					openBookPage(BOOKMODE_SPELLS);
+					pTextManage->Clear();
+				}
+			}
+		}
+	}
+	
+	if(Book_Mode != BOOKMODE_MINIMAP) {
+		Vec2f pos = BOOKMARKS_POS + Vec2f(64, 0);
+		
+		DrawBookInterfaceItem(ITC.bookmark_map, pos);
+		
+		if(MouseInBookRect(pos, Vec2f(ITC.bookmark_map->m_dwWidth, ITC.bookmark_map->m_dwHeight))) {
+			GRenderer->SetBlendFunc(Renderer::BlendOne, Renderer::BlendOne);
+			GRenderer->SetRenderState(Renderer::AlphaBlending, true);
+			DrawBookInterfaceItem(ITC.bookmark_map, pos, Color::grayb(0x55));
+			GRenderer->SetRenderState(Renderer::AlphaBlending, false);
+			
+			// Set cursor to interacting
+			SpecialCursor=CURSOR_INTERACTION_ON;
+			
+			// Check for click
+			if(bookclick) {
+				ARX_SOUND_PlayInterface(SND_BOOK_PAGE_TURN, 0.9F + 0.2F * rnd());
+				openBookPage(BOOKMODE_MINIMAP);
+				pTextManage->Clear();
+			}
+		}
+	}
+	
+	if(Book_Mode != BOOKMODE_QUESTS) {
+		Vec2f pos = BOOKMARKS_POS + Vec2f(96, 0);
+		
+		DrawBookInterfaceItem(ITC.bookmark_quest, pos);
+		
+		if(MouseInBookRect(pos, Vec2f(ITC.bookmark_quest->m_dwWidth, ITC.bookmark_quest->m_dwHeight))) {
+			GRenderer->SetBlendFunc(Renderer::BlendOne, Renderer::BlendOne);
+			GRenderer->SetRenderState(Renderer::AlphaBlending, true);
+			DrawBookInterfaceItem(ITC.bookmark_quest, pos, Color::grayb(0x55));
+			GRenderer->SetRenderState(Renderer::AlphaBlending, false);
+			
+			// Set cursor to interacting
+			SpecialCursor=CURSOR_INTERACTION_ON;
+			
+			// Check for click
+			if(bookclick) {
+				ARX_SOUND_PlayInterface(SND_BOOK_PAGE_TURN, 0.9F + 0.2F * rnd());
+				openBookPage(BOOKMODE_QUESTS);
+				pTextManage->Clear();
+			}
+		}
+	}
+}
+
 void ARX_INTERFACE_ManageOpenedBook() {
 	arx_assert(entities.player());
 	
@@ -739,116 +849,11 @@ void ARX_INTERFACE_ManageOpenedBook() {
 		BOOKDEC.y = x - 64 + 19;
 	}
 	
-	static const Vec2f BOOKMARKS_POS = Vec2f(216.f, 60.f);
-	
 	if(ARXmenu.currentmode != AMCM_NEWQUEST) {
 		// Checks Clicks in bookmarks
 		
 		// Character Sheet
-		if(Book_Mode != BOOKMODE_STATS) {
-			Vec2f pos = BOOKMARKS_POS;
-			
-			TextureContainer* tcBookmarkChar = ITC.bookmark_char;
-			DrawBookInterfaceItem(tcBookmarkChar, pos);
-
-			// Check for cursor on charcter sheet bookmark
-			if(MouseInBookRect(pos, Vec2f(tcBookmarkChar->m_dwWidth, tcBookmarkChar->m_dwHeight))) {
-				// Draw highlighted Character sheet icon
-				GRenderer->SetBlendFunc(Renderer::BlendOne, Renderer::BlendOne);
-				GRenderer->SetRenderState(Renderer::AlphaBlending, true);
-				DrawBookInterfaceItem(tcBookmarkChar, pos, Color::grayb(0x55));
-				GRenderer->SetRenderState(Renderer::AlphaBlending, false);
-
-				// Set cursor to interacting
-				SpecialCursor=CURSOR_INTERACTION_ON;
-
-				// Check for click
-				if(bookclick) {
-					ARX_SOUND_PlayInterface(SND_BOOK_PAGE_TURN, 0.9F + 0.2F * rnd());
-					openBookPage(BOOKMODE_STATS);
-					pTextManage->Clear();
-				}
-			}
-		}
-
-		if(Book_Mode != BOOKMODE_SPELLS) {
-			if(player.rune_flags) {
-				Vec2f pos = BOOKMARKS_POS + Vec2f(32, 0);
-				
-				DrawBookInterfaceItem(ITC.bookmark_magic, pos);
-
-				if(NewSpell == 1) {
-					NewSpell = 2;
-					for(long nk = 0; nk < 2; nk++) {
-						MagFX(Vec3f(BOOKDEC.x + 220.f, BOOKDEC.y + 49.f, 0.000001f));
-					}
-				}
-				
-				if(MouseInBookRect(pos, Vec2f(ITC.bookmark_magic->m_dwWidth, ITC.bookmark_magic->m_dwHeight))) {
-					// Draw highlighted Magic sheet icon
-					GRenderer->SetBlendFunc(Renderer::BlendOne, Renderer::BlendOne);
-					GRenderer->SetRenderState(Renderer::AlphaBlending, true);
-					DrawBookInterfaceItem(ITC.bookmark_magic, pos, Color::grayb(0x55));
-					GRenderer->SetRenderState(Renderer::AlphaBlending, false);
-
-					// Set cursor to interacting
-					SpecialCursor=CURSOR_INTERACTION_ON;
-
-					// Check for click
-					if(bookclick) {
-						ARX_SOUND_PlayInterface(SND_BOOK_PAGE_TURN, 0.9F + 0.2F * rnd());
-						openBookPage(BOOKMODE_SPELLS);
-						pTextManage->Clear();
-					}
-				}
-			}
-		}
-
-		if(Book_Mode != BOOKMODE_MINIMAP) {
-			Vec2f pos = BOOKMARKS_POS + Vec2f(64, 0);
-			
-			DrawBookInterfaceItem(ITC.bookmark_map, pos);
-
-			if(MouseInBookRect(pos, Vec2f(ITC.bookmark_map->m_dwWidth, ITC.bookmark_map->m_dwHeight))) {
-				GRenderer->SetBlendFunc(Renderer::BlendOne, Renderer::BlendOne);
-				GRenderer->SetRenderState(Renderer::AlphaBlending, true);
-				DrawBookInterfaceItem(ITC.bookmark_map, pos, Color::grayb(0x55));
-				GRenderer->SetRenderState(Renderer::AlphaBlending, false);
-
-				// Set cursor to interacting
-				SpecialCursor=CURSOR_INTERACTION_ON;
-
-				// Check for click
-				if(bookclick) {
-					ARX_SOUND_PlayInterface(SND_BOOK_PAGE_TURN, 0.9F + 0.2F * rnd());
-					openBookPage(BOOKMODE_MINIMAP);
-					pTextManage->Clear();
-				}
-			}
-		}
-
-		if(Book_Mode != BOOKMODE_QUESTS) {
-			Vec2f pos = BOOKMARKS_POS + Vec2f(96, 0);
-			
-			DrawBookInterfaceItem(ITC.bookmark_quest, pos);
-
-			if(MouseInBookRect(pos, Vec2f(ITC.bookmark_quest->m_dwWidth, ITC.bookmark_quest->m_dwHeight))) {
-				GRenderer->SetBlendFunc(Renderer::BlendOne, Renderer::BlendOne);
-				GRenderer->SetRenderState(Renderer::AlphaBlending, true);
-				DrawBookInterfaceItem(ITC.bookmark_quest, pos, Color::grayb(0x55));
-				GRenderer->SetRenderState(Renderer::AlphaBlending, false);
-
-				// Set cursor to interacting
-				SpecialCursor=CURSOR_INTERACTION_ON;
-
-				// Check for click
-				if(bookclick) {
-					ARX_SOUND_PlayInterface(SND_BOOK_PAGE_TURN, 0.9F + 0.2F * rnd());
-					openBookPage(BOOKMODE_QUESTS);
-					pTextManage->Clear();
-				}
-			}
-		}
+		ARX_INTERFACE_ManageOpenedBook_TopTabs();
 		
 		
 		long max_onglet = 0;
