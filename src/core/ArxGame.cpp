@@ -1979,9 +1979,8 @@ void ArxGame::updateLevel() {
 
 	ARX_SCENE_Update();
 
-	if(pParticleManager) {
-		pParticleManager->Update(static_cast<long>(framedelay));
-	}
+	arx_assert(pParticleManager);
+	pParticleManager->Update(static_cast<long>(framedelay));
 
 	ARX_FOGS_Render();
 
@@ -2053,10 +2052,8 @@ void ArxGame::renderLevel() {
 	drawDebugRender();
 
 	// Begin Particles
-		
-	if(pParticleManager) {
-		pParticleManager->Render();
-	}
+	arx_assert(pParticleManager);
+	pParticleManager->Render();
 	
 	ARX_PARTICLES_Update(&subj);
 	
