@@ -1579,6 +1579,19 @@ static void ARX_INTERFACE_ManageOpenedBook_Stats()
 	RenderBookPlayerCharacter();	
 }
 
+static void ARX_INTERFACE_ManageOpenedBook_Map()
+{
+	long SHOWLEVEL = Book_MapPage - 1;
+
+	if(SHOWLEVEL >= 0 && SHOWLEVEL < 32)
+		g_miniMap.showBookEntireMap(SHOWLEVEL);
+
+	SHOWLEVEL = ARX_LEVELS_GetRealNum(CURRENTLEVEL);
+
+	if(SHOWLEVEL >= 0 && SHOWLEVEL < 32)
+		g_miniMap.showBookMiniMap(SHOWLEVEL);
+}
+
 void ARX_INTERFACE_ManageOpenedBook() {
 	arx_assert(entities.player());
 	
@@ -1634,15 +1647,7 @@ void ARX_INTERFACE_ManageOpenedBook() {
 	if(Book_Mode == BOOKMODE_STATS) {
 		ARX_INTERFACE_ManageOpenedBook_Stats();
 	} else if (Book_Mode == BOOKMODE_MINIMAP) {
-		long SHOWLEVEL = Book_MapPage - 1;
-
-		if(SHOWLEVEL >= 0 && SHOWLEVEL < 32)
-			g_miniMap.showBookEntireMap(SHOWLEVEL);
-
-		SHOWLEVEL = ARX_LEVELS_GetRealNum(CURRENTLEVEL);
-
-		if(SHOWLEVEL >= 0 && SHOWLEVEL < 32)
-			g_miniMap.showBookMiniMap(SHOWLEVEL);
+		ARX_INTERFACE_ManageOpenedBook_Map();
 	}
 }
 
