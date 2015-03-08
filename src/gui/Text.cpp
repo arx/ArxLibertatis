@@ -159,9 +159,7 @@ static void ARX_UNICODE_FormattingInRect(Font * font, const std::string & text,
 				font->draw(rect.left, penY, itTextStart, itTextEnd, col);
 			}
 			
-			if(it != text.end()) {
-				itLastLineBreak = next;
-			}
+			itLastLineBreak = next;
 			
 			penY += font->getLineHeight();
 			
