@@ -1092,6 +1092,13 @@ void ARX_INTERFACE_ManageOpenedBook() {
 				break;
 			}
 		}
+		
+		ARX_INTERFACE_ManageOpenedBook_TopTabs();
+		
+		ARX_INTERFACE_ManageOpenedBook_LeftTabs();
+		
+		bookclick = false;
+		
 	} else {
 		arx_assert(ITC.playerbook);
 		float x = (640 - ITC.playerbook->m_dwWidth) / 2.f;
@@ -1102,17 +1109,6 @@ void ARX_INTERFACE_ManageOpenedBook() {
 		BOOKDEC.x = x - 97;
 		// TODO copy paste error ?
 		BOOKDEC.y = x - 64 + 19;
-	}
-	
-	if(ARXmenu.currentmode != AMCM_NEWQUEST) {
-		// Checks Clicks in bookmarks
-		
-		// Character Sheet
-		ARX_INTERFACE_ManageOpenedBook_TopTabs();
-		
-		ARX_INTERFACE_ManageOpenedBook_LeftTabs();
-
-		bookclick = false;
 	}
 	
 	GRenderer->GetTextureStage(0)->setMinFilter(TextureStage::FilterNearest);
