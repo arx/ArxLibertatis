@@ -431,13 +431,10 @@ bool Menu2_Render() {
 
 	GRenderer->SetRenderState(Renderer::Fog, false);
 	GRenderer->SetRenderState(Renderer::DepthWrite, false);
-	GRenderer->SetRenderState(Renderer::DepthTest, false);
 	GRenderer->SetCulling(Renderer::CullNone);
 	pMenuCursor->DrawCursor();
 
 	if(pTextureLoadRender) {
-		GRenderer->SetRenderState(Renderer::DepthTest, false);
-		
 		Vec2f size = Vec2f(pTextureLoad->size());
 		
 		Vec2f offset = Vec2f(0, 0);
@@ -2062,7 +2059,6 @@ void CWindowMenuConsole::Render() {
 	// Console display
 	GRenderer->SetRenderState(Renderer::AlphaBlending, true);
 	GRenderer->SetBlendFunc(Renderer::BlendZero, Renderer::BlendInvSrcColor);
-	GRenderer->SetRenderState(Renderer::DepthTest, false);
 
 	EERIEDrawBitmap2(Rectf(Vec2f(m_pos.x, m_pos.y),
 	                 RATIO_X(pTexBackground->m_dwWidth), RATIO_Y(pTexBackground->m_dwHeight)),
@@ -2976,9 +2972,7 @@ void MenuCursor::DrawCursor() {
 	
 	DrawLine2D(10.f, Color3f(.725f, .619f, 0.56f));
 	
-	GRenderer->SetRenderState(Renderer::DepthTest, false);
 	DrawOneCursor(GInput->getMousePosAbs());
-	GRenderer->SetRenderState(Renderer::DepthTest, true);
 
 	lFrameDiff += ARXDiffTimeMenu;
 
