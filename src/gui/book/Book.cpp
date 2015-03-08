@@ -1066,6 +1066,519 @@ static void ARX_INTERFACE_ManageOpenedBook_LeftTabs() {
 	}	
 }
 
+static void ARX_INTERFACE_ManageOpenedBook_Stats()
+{
+	FLYING_OVER = 0;
+	std::string tex;
+	Color color(0, 0, 0);
+
+	ARX_PLAYER_ComputePlayerFullStats();
+
+	std::stringstream ss;
+	ss << ITC.Level << " " << std::setw(3) << (int)player.level;
+	tex = ss.str();
+	DrawBookTextCenter(hFontInBook, Vec2f(398, 74), tex, color);
+
+	std::stringstream ss2;
+	ss2 << ITC.Xp << " " << std::setw(8) << player.xp;
+	tex = ss2.str();
+	DrawBookTextCenter(hFontInBook, Vec2f(510, 74), tex, color);
+
+	if (MouseInBookRect(Vec2f(463, 74), Vec2f(87, 20)))
+		FLYING_OVER = WND_XP;
+
+	if (MouseInBookRect(Vec2f(97+41,64+62), Vec2f(32, 32)))
+		FLYING_OVER = WND_AC;
+	else if (MouseInBookRect(Vec2f(97+41,64+120), Vec2f(32, 32)))
+		FLYING_OVER = WND_RESIST_MAGIC;
+	else if (MouseInBookRect(Vec2f(97+41,64+178), Vec2f(32, 32)))
+		FLYING_OVER = WND_RESIST_POISON;
+	else if (MouseInBookRect(Vec2f(97+211,64+62), Vec2f(32, 32)))
+		FLYING_OVER = WND_HP;
+	else if (MouseInBookRect(Vec2f(97+211,64+120), Vec2f(32, 32)))
+		FLYING_OVER = WND_MANA;
+	else if (MouseInBookRect(Vec2f(97+211,64+178), Vec2f(32, 32)))
+		FLYING_OVER = WND_DAMAGE;
+
+	if(!((player.Attribute_Redistribute == 0) && (ARXmenu.currentmode != AMCM_NEWQUEST))) {
+		// Main Player Attributes
+		if(CheckAttributeClick(Vec2f(379, 95), &player.m_attribute.strength, ITC.ic_strength)) {
+			FLYING_OVER = BOOK_STRENGTH;
+			SpecialCursor = CURSOR_REDIST;
+			lCursorRedistValue = player.Attribute_Redistribute;
+		}
+
+		if(CheckAttributeClick(Vec2f(428, 95), &player.m_attribute.mind, ITC.ic_mind)) {
+			FLYING_OVER = BOOK_MIND;
+			SpecialCursor = CURSOR_REDIST;
+			lCursorRedistValue = player.Attribute_Redistribute;
+		}
+
+		if(CheckAttributeClick(Vec2f(477, 95), &player.m_attribute.dexterity, ITC.ic_dexterity)) {
+			FLYING_OVER = BOOK_DEXTERITY;
+			SpecialCursor = CURSOR_REDIST;
+			lCursorRedistValue = player.Attribute_Redistribute;
+		}
+
+		if(CheckAttributeClick(Vec2f(526, 95), &player.m_attribute.constitution, ITC.ic_constitution)) {
+			FLYING_OVER = BOOK_CONSTITUTION;
+			SpecialCursor = CURSOR_REDIST;
+			lCursorRedistValue = player.Attribute_Redistribute;
+		}
+	}
+
+	if(!((player.Skill_Redistribute == 0) && (ARXmenu.currentmode != AMCM_NEWQUEST))) {
+		if (CheckSkillClick(Vec2f(389, 177), &player.m_skill.stealth, ITC.ic_stealth, &player.m_skillOld.stealth)) {
+			FLYING_OVER = BOOK_STEALTH;
+			SpecialCursor = CURSOR_REDIST;
+			lCursorRedistValue = player.Skill_Redistribute;
+		}
+
+		if(CheckSkillClick(Vec2f(453, 177), &player.m_skill.mecanism, ITC.ic_mecanism, &player.m_skillOld.mecanism)) {
+			FLYING_OVER = BOOK_MECANISM;
+			SpecialCursor = CURSOR_REDIST;
+			lCursorRedistValue = player.Skill_Redistribute;
+		}
+
+		if(CheckSkillClick(Vec2f(516, 177), &player.m_skill.intuition, ITC.ic_intuition, &player.m_skillOld.intuition)) {
+			FLYING_OVER = BOOK_INTUITION;
+			SpecialCursor = CURSOR_REDIST;
+			lCursorRedistValue = player.Skill_Redistribute;
+		}
+
+		if(CheckSkillClick(Vec2f(389, 230), &player.m_skill.etheralLink, ITC.ic_etheral_link, &player.m_skillOld.etheralLink)) {
+			FLYING_OVER = BOOK_ETHERAL_LINK;
+			SpecialCursor = CURSOR_REDIST;
+			lCursorRedistValue = player.Skill_Redistribute;
+		}
+
+		if(CheckSkillClick(Vec2f(453, 230), &player.m_skill.objectKnowledge, ITC.ic_object_knowledge, &player.m_skillOld.objectKnowledge)) {
+			FLYING_OVER = BOOK_OBJECT_KNOWLEDGE;
+			SpecialCursor = CURSOR_REDIST;
+			lCursorRedistValue = player.Skill_Redistribute;
+
+			if((BOOKBUTTON & 1) && !(LASTBOOKBUTTON & 1)) {
+				ARX_INVENTORY_IdentifyAll();
+				ARX_EQUIPMENT_IdentifyAll();
+			}
+
+			ARX_PLAYER_ComputePlayerFullStats();
+		}
+
+		if(CheckSkillClick(Vec2f(516, 230), &player.m_skill.casting, ITC.ic_casting, &player.m_skillOld.casting)) {
+			FLYING_OVER = BOOK_CASTING;
+			SpecialCursor = CURSOR_REDIST;
+			lCursorRedistValue = player.Skill_Redistribute;
+		}
+
+		if(CheckSkillClick(Vec2f(389, 284), &player.m_skill.closeCombat, ITC.ic_close_combat, &player.m_skillOld.closeCombat)) {
+			FLYING_OVER = BOOK_CLOSE_COMBAT;
+			SpecialCursor = CURSOR_REDIST;
+			lCursorRedistValue = player.Skill_Redistribute;
+		}
+
+		if(CheckSkillClick(Vec2f(453, 284), &player.m_skill.projectile, ITC.ic_projectile, &player.m_skillOld.projectile)) {
+			FLYING_OVER = BOOK_PROJECTILE;
+			SpecialCursor = CURSOR_REDIST;
+			lCursorRedistValue = player.Skill_Redistribute;
+		}
+
+		if(CheckSkillClick(Vec2f(516, 284), &player.m_skill.defense, ITC.ic_defense, &player.m_skillOld.defense)) {
+			FLYING_OVER = BOOK_DEFENSE;
+			SpecialCursor = CURSOR_REDIST;
+			lCursorRedistValue = player.Skill_Redistribute;
+		}
+	} else {
+		//------------------------------------PRIMARY
+		if (MouseInBookRect(Vec2f(379,95), Vec2f(32, 32)))
+			FLYING_OVER=BOOK_STRENGTH;
+		else if (MouseInBookRect(Vec2f(428,95), Vec2f(32, 32)))
+			FLYING_OVER=BOOK_MIND;
+		else if (MouseInBookRect(Vec2f(477,95), Vec2f(32, 32)))
+			FLYING_OVER=BOOK_DEXTERITY;
+		else if (MouseInBookRect(Vec2f(526,95), Vec2f(32, 32)))
+			FLYING_OVER=BOOK_CONSTITUTION;
+
+		//------------------------------------SECONDARY
+		if (MouseInBookRect(Vec2f(389,177), Vec2f(32, 32)))
+			FLYING_OVER=BOOK_STEALTH;
+		else if (MouseInBookRect(Vec2f(453,177), Vec2f(32, 32)))
+			FLYING_OVER=BOOK_MECANISM;
+		else if (MouseInBookRect(Vec2f(516,177), Vec2f(32, 32)))
+			FLYING_OVER=BOOK_INTUITION;
+		else if (MouseInBookRect(Vec2f(389,230), Vec2f(32, 32)))
+			FLYING_OVER=BOOK_ETHERAL_LINK;
+		else if (MouseInBookRect(Vec2f(453,230), Vec2f(32, 32)))
+			FLYING_OVER=BOOK_OBJECT_KNOWLEDGE;
+		else if (MouseInBookRect(Vec2f(516,230), Vec2f(32, 32)))
+			FLYING_OVER=BOOK_CASTING;
+		else if (MouseInBookRect(Vec2f(389,284), Vec2f(32, 32)))
+			FLYING_OVER=BOOK_CLOSE_COMBAT;
+		else if (MouseInBookRect(Vec2f(453,284), Vec2f(32, 32)))
+			FLYING_OVER=BOOK_PROJECTILE;
+		else if (MouseInBookRect(Vec2f(516,284), Vec2f(32, 32)))
+			FLYING_OVER=BOOK_DEFENSE;
+	}
+
+	//------------------------------ SEB 04/12/2001
+	if(ARXmenu.mda && !ARXmenu.mda->flyover[FLYING_OVER].empty()) {
+		
+		float fRandom = rnd() * 2;
+
+		int t = checked_range_cast<int>(fRandom);
+
+		pTextManage->Clear();
+		OLD_FLYING_OVER=FLYING_OVER;
+
+		std::string toDisplay;
+
+		// Nuky Note: the text used never scrolls, centered function with wordwrap would be enough
+		if(FLYING_OVER == WND_XP) {
+			std::stringstream ss;
+			ss << ARXmenu.mda->flyover[WND_XP] << " " << std::setw(8) << GetXPforLevel(player.level+1)-player.xp;
+
+			toDisplay = ss.str();
+		} else {
+			toDisplay = ARXmenu.mda->flyover[FLYING_OVER];
+		}
+
+		UNICODE_ARXDrawTextCenteredScroll(hFontInGame,
+			(g_size.width()*0.5f),
+			4,
+			(g_size.center().x)*0.82f,
+			toDisplay,
+			Color(232+t,204+t,143+t),
+			1000,
+			0.01f,
+			3,
+			0);
+	} else {
+		OLD_FLYING_OVER=-1;
+	}
+
+	//------------------------------
+	
+	std::stringstream ss3;
+	ss3 << std::setw(3) << std::setprecision(0) << std::fixed << player.m_attributeFull.strength;
+	tex = ss3.str();
+	
+	if(player.m_attributeMod.strength < 0.f)
+		color = Color::red;
+	else if(player.m_attributeMod.strength > 0.f)
+		color = Color::blue;
+	else
+		color = Color::black;
+	
+	if(ARXmenu.currentmode == AMCM_NEWQUEST) {
+		if(player.m_attributeFull.strength == 6)
+			color = Color::red;
+	}
+	
+	DrawBookTextCenter(hFontInBook, Vec2f(391, 129), tex, color);
+	
+	ss3.str(""); // clear the stream
+	ss3 << player.m_attributeFull.mind;
+	tex = ss3.str();
+	
+	if(player.m_attributeMod.mind < 0.f)
+		color = Color::red;
+	else if(player.m_attributeMod.mind > 0.f)
+		color = Color::blue;
+	else
+		color = Color::black;
+	
+	if(ARXmenu.currentmode == AMCM_NEWQUEST) {
+		if(player.m_attributeFull.mind == 6)
+			color = Color::red;
+	}
+	
+	DrawBookTextCenter(hFontInBook, Vec2f(440, 129), tex, color);
+	
+	ss3.str("");
+	ss3 << player.m_attributeFull.dexterity;
+	tex = ss3.str();
+
+	if(player.m_attributeMod.dexterity < 0.f)
+		color = Color::red;
+	else if(player.m_attributeMod.dexterity > 0.f)
+		color = Color::blue;
+	else
+		color = Color::black;
+	
+	if(ARXmenu.currentmode == AMCM_NEWQUEST) {
+		if(player.m_attributeFull.dexterity == 6)
+			color = Color::red;
+	}
+	
+	DrawBookTextCenter(hFontInBook, Vec2f(490, 129), tex, color);
+	ss3.str("");
+	ss3 << player.m_attributeFull.constitution;
+	tex = ss3.str();
+	
+	if(player.m_attributeMod.constitution < 0.f)
+		color = Color::red;
+	else if(player.m_attributeMod.constitution > 0.f)
+		color = Color::blue;
+	else
+		color = Color::black;
+	
+	if(ARXmenu.currentmode == AMCM_NEWQUEST) {
+		if(player.m_attributeFull.constitution == 6)
+			color = Color::red;
+	}
+	
+	DrawBookTextCenter(hFontInBook, Vec2f(538, 129), tex, color);
+	
+	// Player Skills
+	ss3.str("");
+	ss3 << player.m_skillFull.stealth;
+	tex = ss3.str();
+	
+	if (player.m_skillMod.stealth < 0.f)
+		color = Color::red;
+	else if (player.m_skillMod.stealth > 0.f)
+		color = Color::blue;
+	else
+		color = Color::black;
+	
+	if(ARXmenu.currentmode == AMCM_NEWQUEST) {
+		if(player.m_skill.stealth == 0)
+			color = Color::red;
+	}
+	
+	DrawBookTextCenter(hFontInBook, Vec2f(405, 210), tex, color);
+	
+	ss3.str("");
+	ss3 << player.m_skillFull.mecanism;
+	tex = ss3.str();
+	
+	if (player.m_skillMod.mecanism < 0.f)
+		color = Color::red;
+	else if (player.m_skillMod.mecanism > 0.f)
+		color = Color::blue;
+	else
+		color = Color::black;
+	
+	if(ARXmenu.currentmode == AMCM_NEWQUEST) {
+		if(player.m_skill.mecanism == 0)
+			color = Color::red;
+	}
+	
+	DrawBookTextCenter(hFontInBook, Vec2f(469, 210), tex, color);
+	
+	ss3.str("");
+	ss3 << player.m_skillFull.intuition;
+	tex = ss3.str();
+	
+	if (player.m_skillMod.intuition < 0.f)
+		color = Color::red;
+	else if (player.m_skillMod.intuition > 0.f)
+		color = Color::blue;
+	else
+		color = Color::black;
+	
+	if(ARXmenu.currentmode == AMCM_NEWQUEST) {
+		if(player.m_skill.intuition == 0)
+			color = Color::red;
+	}
+
+	DrawBookTextCenter(hFontInBook, Vec2f(533, 210), tex, color);
+	
+	ss3.str("");
+	ss3 << player.m_skillFull.etheralLink;
+	tex = ss3.str();
+
+	if(player.m_skillMod.etheralLink < 0.f)
+		color = Color::red;
+	else if(player.m_skillMod.etheralLink > 0.f)
+		color = Color::blue;
+	else
+		color = Color::black;
+	
+	if(ARXmenu.currentmode == AMCM_NEWQUEST) {
+		if(player.m_skill.etheralLink == 0)
+			color = Color::red;
+	}
+
+	DrawBookTextCenter(hFontInBook, Vec2f(405, 265), tex, color);
+	
+	ss3.str("");
+	ss3 << player.m_skillFull.objectKnowledge;
+	tex = ss3.str();
+
+	if(player.m_skillMod.objectKnowledge < 0.f)
+		color = Color::red;
+	else if(player.m_skillMod.objectKnowledge > 0.f)
+		color = Color::blue;
+	else
+		color = Color::black;
+	
+	if(ARXmenu.currentmode == AMCM_NEWQUEST) {
+		if(player.m_skill.objectKnowledge == 0)
+			color = Color::red;
+	}
+	
+	DrawBookTextCenter(hFontInBook, Vec2f(469, 265), tex, color);
+	
+	ss3.str("");
+	ss3 << player.m_skillFull.casting;
+	tex = ss3.str();
+	
+	if (player.m_skillMod.casting < 0.f)
+		color = Color::red;
+	else if (player.m_skillMod.casting > 0.f)
+		color = Color::blue;
+	else
+		color = Color::black;
+	
+	if(ARXmenu.currentmode == AMCM_NEWQUEST) {
+		if(player.m_skill.casting == 0)
+			color = Color::red;
+	}
+
+	DrawBookTextCenter(hFontInBook, Vec2f(533, 265), tex, color);
+	
+	ss3.str("");
+	ss3 << player.m_skillFull.closeCombat;
+	tex = ss3.str();
+
+	if (player.m_skillMod.closeCombat < 0.f)
+		color = Color::red;
+	else if (player.m_skillMod.closeCombat > 0.f)
+		color = Color::blue;
+	else
+		color = Color::black;
+	
+	if(ARXmenu.currentmode == AMCM_NEWQUEST) {
+		if(player.m_skill.closeCombat == 0)
+			color = Color::red;
+	}
+
+	DrawBookTextCenter(hFontInBook, Vec2f(405, 319), tex, color);
+
+	
+	ss3.str("");
+	ss3 << player.m_skillFull.projectile;
+	tex = ss3.str();
+
+	if(player.m_skillMod.projectile < 0.f)
+		color = Color::red;
+	else if(player.m_skillMod.projectile > 0.f)
+		color = Color::blue;
+	else
+		color = Color::black;
+	
+	if(ARXmenu.currentmode == AMCM_NEWQUEST) {
+		if(player.m_skill.projectile == 0)
+			color = Color::red;
+	}
+
+	DrawBookTextCenter(hFontInBook, Vec2f(469, 319), tex, color);
+	
+	ss3.str("");
+	ss3 << player.m_skillFull.defense;
+	tex = ss3.str();
+
+	if (player.m_skillMod.defense < 0.f)
+		color = Color::red;
+	else if (player.m_skillMod.defense > 0.f)
+		color = Color::blue;
+	else
+		color = Color::black;
+	
+	if(ARXmenu.currentmode == AMCM_NEWQUEST) {
+		if(player.m_skill.defense == 0)
+			color = Color::red;
+	}
+	
+	DrawBookTextCenter(hFontInBook, Vec2f(533, 319), tex, color);
+	
+	// Secondary Attributes
+	std::stringstream ss4;
+	ss4.str("");
+	ss4 << F2L_RoundUp(player.Full_maxlife);
+	tex = ss4.str();
+	
+	if(player.Full_maxlife < player.lifePool.max) {
+		color = Color::red;
+	} else if(player.Full_maxlife > player.lifePool.max) {
+		color = Color::blue;
+	} else {
+		color = Color::black;
+	}
+	
+	DrawBookTextCenter(hFontInBook, Vec2f(324, 158), tex, color);
+	
+	ss4.str("");
+	ss4 << F2L_RoundUp(player.Full_maxmana);
+	tex = ss4.str();
+
+	if(player.Full_maxmana < player.manaPool.max) {
+		color = Color::red;
+	} else if(player.Full_maxmana > player.manaPool.max) {
+		color = Color::blue;
+	} else {
+		color = Color::black;
+	}
+	
+	DrawBookTextCenter(hFontInBook, Vec2f(324, 218), tex, color);
+	
+	ss4.str("");
+	ss4 << F2L_RoundUp(player.m_miscFull.damages);
+	tex = ss4.str();
+	
+	if (player.m_miscMod.damages < 0.f)
+		color = Color::red;
+	else if (player.m_miscMod.damages > 0.f)
+		color = Color::blue;
+	else
+		color = Color::black;
+	
+	DrawBookTextCenter(hFontInBook, Vec2f(324, 278), tex, color);
+	
+	float ac = player.m_miscFull.armorClass;
+	ss4.str("");
+	ss4 << F2L_RoundUp(ac);
+	tex = ss4.str();
+	
+	if (player.m_miscMod.armorClass < 0.f)
+		color = Color::red;
+	else if (player.m_miscMod.armorClass > 0.f)
+		color = Color::blue;
+	else
+		color = Color::black;
+	
+	DrawBookTextCenter(hFontInBook, Vec2f(153, 158), tex, color);
+	
+	ss4.str("");
+	ss4 << std::setw(3) << std::setprecision(0) << F2L_RoundUp( player.m_miscFull.resistMagic );
+	tex = ss4.str();
+	
+	if (player.m_miscMod.resistMagic < 0.f)
+		color = Color::red;
+	else if (player.m_miscMod.resistMagic > 0.f)
+		color = Color::blue;
+	else
+		color = Color::black;
+	
+	DrawBookTextCenter(hFontInBook, Vec2f(153, 218), tex, color);
+	
+	ss4.str("");
+	ss4 << F2L_RoundUp( player.m_miscFull.resistPoison );
+	tex = ss4.str();
+
+	if (player.m_miscMod.resistPoison<0.f)
+		color = Color::red;
+	else if (player.m_miscMod.resistPoison>0.f)
+		color = Color::blue;
+	else
+		color = Color::black;
+	
+	DrawBookTextCenter(hFontInBook, Vec2f(153, 278), tex, color);
+	
+	RenderBookPlayerCharacter();	
+}
+
 void ARX_INTERFACE_ManageOpenedBook() {
 	arx_assert(entities.player());
 	
@@ -1118,518 +1631,8 @@ void ARX_INTERFACE_ManageOpenedBook() {
 	GRenderer->GetTextureStage(0)->setMinFilter(TextureStage::FilterNearest);
 	GRenderer->GetTextureStage(0)->setMagFilter(TextureStage::FilterNearest);
 
-	if (Book_Mode == BOOKMODE_STATS)
-	{
-		FLYING_OVER = 0;
-		std::string tex;
-		Color color(0, 0, 0);
-
-		ARX_PLAYER_ComputePlayerFullStats();
-
-		std::stringstream ss;
-		ss << ITC.Level << " " << std::setw(3) << (int)player.level;
-		tex = ss.str();
-		DrawBookTextCenter(hFontInBook, Vec2f(398, 74), tex, color);
-
-		std::stringstream ss2;
-		ss2 << ITC.Xp << " " << std::setw(8) << player.xp;
-		tex = ss2.str();
-		DrawBookTextCenter(hFontInBook, Vec2f(510, 74), tex, color);
-
-		if (MouseInBookRect(Vec2f(463, 74), Vec2f(87, 20)))
-			FLYING_OVER = WND_XP;
-
-		if (MouseInBookRect(Vec2f(97+41,64+62), Vec2f(32, 32)))
-			FLYING_OVER = WND_AC;
-		else if (MouseInBookRect(Vec2f(97+41,64+120), Vec2f(32, 32)))
-			FLYING_OVER = WND_RESIST_MAGIC;
-		else if (MouseInBookRect(Vec2f(97+41,64+178), Vec2f(32, 32)))
-			FLYING_OVER = WND_RESIST_POISON;
-		else if (MouseInBookRect(Vec2f(97+211,64+62), Vec2f(32, 32)))
-			FLYING_OVER = WND_HP;
-		else if (MouseInBookRect(Vec2f(97+211,64+120), Vec2f(32, 32)))
-			FLYING_OVER = WND_MANA;
-		else if (MouseInBookRect(Vec2f(97+211,64+178), Vec2f(32, 32)))
-			FLYING_OVER = WND_DAMAGE;
-
-		if(!((player.Attribute_Redistribute == 0) && (ARXmenu.currentmode != AMCM_NEWQUEST))) {
-			// Main Player Attributes
-			if(CheckAttributeClick(Vec2f(379, 95), &player.m_attribute.strength, ITC.ic_strength)) {
-				FLYING_OVER = BOOK_STRENGTH;
-				SpecialCursor = CURSOR_REDIST;
-				lCursorRedistValue = player.Attribute_Redistribute;
-			}
-
-			if(CheckAttributeClick(Vec2f(428, 95), &player.m_attribute.mind, ITC.ic_mind)) {
-				FLYING_OVER = BOOK_MIND;
-				SpecialCursor = CURSOR_REDIST;
-				lCursorRedistValue = player.Attribute_Redistribute;
-			}
-
-			if(CheckAttributeClick(Vec2f(477, 95), &player.m_attribute.dexterity, ITC.ic_dexterity)) {
-				FLYING_OVER = BOOK_DEXTERITY;
-				SpecialCursor = CURSOR_REDIST;
-				lCursorRedistValue = player.Attribute_Redistribute;
-			}
-
-			if(CheckAttributeClick(Vec2f(526, 95), &player.m_attribute.constitution, ITC.ic_constitution)) {
-				FLYING_OVER = BOOK_CONSTITUTION;
-				SpecialCursor = CURSOR_REDIST;
-				lCursorRedistValue = player.Attribute_Redistribute;
-			}
-		}
-
-		if(!((player.Skill_Redistribute == 0) && (ARXmenu.currentmode != AMCM_NEWQUEST))) {
-			if (CheckSkillClick(Vec2f(389, 177), &player.m_skill.stealth, ITC.ic_stealth, &player.m_skillOld.stealth)) {
-				FLYING_OVER = BOOK_STEALTH;
-				SpecialCursor = CURSOR_REDIST;
-				lCursorRedistValue = player.Skill_Redistribute;
-			}
-
-			if(CheckSkillClick(Vec2f(453, 177), &player.m_skill.mecanism, ITC.ic_mecanism, &player.m_skillOld.mecanism)) {
-				FLYING_OVER = BOOK_MECANISM;
-				SpecialCursor = CURSOR_REDIST;
-				lCursorRedistValue = player.Skill_Redistribute;
-			}
-
-			if(CheckSkillClick(Vec2f(516, 177), &player.m_skill.intuition, ITC.ic_intuition, &player.m_skillOld.intuition)) {
-				FLYING_OVER = BOOK_INTUITION;
-				SpecialCursor = CURSOR_REDIST;
-				lCursorRedistValue = player.Skill_Redistribute;
-			}
-
-			if(CheckSkillClick(Vec2f(389, 230), &player.m_skill.etheralLink, ITC.ic_etheral_link, &player.m_skillOld.etheralLink)) {
-				FLYING_OVER = BOOK_ETHERAL_LINK;
-				SpecialCursor = CURSOR_REDIST;
-				lCursorRedistValue = player.Skill_Redistribute;
-			}
-
-			if(CheckSkillClick(Vec2f(453, 230), &player.m_skill.objectKnowledge, ITC.ic_object_knowledge, &player.m_skillOld.objectKnowledge)) {
-				FLYING_OVER = BOOK_OBJECT_KNOWLEDGE;
-				SpecialCursor = CURSOR_REDIST;
-				lCursorRedistValue = player.Skill_Redistribute;
-
-				if((BOOKBUTTON & 1) && !(LASTBOOKBUTTON & 1)) {
-					ARX_INVENTORY_IdentifyAll();
-					ARX_EQUIPMENT_IdentifyAll();
-				}
-
-				ARX_PLAYER_ComputePlayerFullStats();
-			}
-
-			if(CheckSkillClick(Vec2f(516, 230), &player.m_skill.casting, ITC.ic_casting, &player.m_skillOld.casting)) {
-				FLYING_OVER = BOOK_CASTING;
-				SpecialCursor = CURSOR_REDIST;
-				lCursorRedistValue = player.Skill_Redistribute;
-			}
-
-			if(CheckSkillClick(Vec2f(389, 284), &player.m_skill.closeCombat, ITC.ic_close_combat, &player.m_skillOld.closeCombat)) {
-				FLYING_OVER = BOOK_CLOSE_COMBAT;
-				SpecialCursor = CURSOR_REDIST;
-				lCursorRedistValue = player.Skill_Redistribute;
-			}
-
-			if(CheckSkillClick(Vec2f(453, 284), &player.m_skill.projectile, ITC.ic_projectile, &player.m_skillOld.projectile)) {
-				FLYING_OVER = BOOK_PROJECTILE;
-				SpecialCursor = CURSOR_REDIST;
-				lCursorRedistValue = player.Skill_Redistribute;
-			}
-
-			if(CheckSkillClick(Vec2f(516, 284), &player.m_skill.defense, ITC.ic_defense, &player.m_skillOld.defense)) {
-				FLYING_OVER = BOOK_DEFENSE;
-				SpecialCursor = CURSOR_REDIST;
-				lCursorRedistValue = player.Skill_Redistribute;
-			}
-		} else {
-			//------------------------------------PRIMARY
-			if (MouseInBookRect(Vec2f(379,95), Vec2f(32, 32)))
-				FLYING_OVER=BOOK_STRENGTH;
-			else if (MouseInBookRect(Vec2f(428,95), Vec2f(32, 32)))
-				FLYING_OVER=BOOK_MIND;
-			else if (MouseInBookRect(Vec2f(477,95), Vec2f(32, 32)))
-				FLYING_OVER=BOOK_DEXTERITY;
-			else if (MouseInBookRect(Vec2f(526,95), Vec2f(32, 32)))
-				FLYING_OVER=BOOK_CONSTITUTION;
-
-			//------------------------------------SECONDARY
-			if (MouseInBookRect(Vec2f(389,177), Vec2f(32, 32)))
-				FLYING_OVER=BOOK_STEALTH;
-			else if (MouseInBookRect(Vec2f(453,177), Vec2f(32, 32)))
-				FLYING_OVER=BOOK_MECANISM;
-			else if (MouseInBookRect(Vec2f(516,177), Vec2f(32, 32)))
-				FLYING_OVER=BOOK_INTUITION;
-			else if (MouseInBookRect(Vec2f(389,230), Vec2f(32, 32)))
-				FLYING_OVER=BOOK_ETHERAL_LINK;
-			else if (MouseInBookRect(Vec2f(453,230), Vec2f(32, 32)))
-				FLYING_OVER=BOOK_OBJECT_KNOWLEDGE;
-			else if (MouseInBookRect(Vec2f(516,230), Vec2f(32, 32)))
-				FLYING_OVER=BOOK_CASTING;
-			else if (MouseInBookRect(Vec2f(389,284), Vec2f(32, 32)))
-				FLYING_OVER=BOOK_CLOSE_COMBAT;
-			else if (MouseInBookRect(Vec2f(453,284), Vec2f(32, 32)))
-				FLYING_OVER=BOOK_PROJECTILE;
-			else if (MouseInBookRect(Vec2f(516,284), Vec2f(32, 32)))
-				FLYING_OVER=BOOK_DEFENSE;
-		}
-
-		//------------------------------ SEB 04/12/2001
-		if(ARXmenu.mda && !ARXmenu.mda->flyover[FLYING_OVER].empty()) {
-			
-			float fRandom = rnd() * 2;
-
-			int t = checked_range_cast<int>(fRandom);
-
-			pTextManage->Clear();
-			OLD_FLYING_OVER=FLYING_OVER;
-
-			std::string toDisplay;
-
-			// Nuky Note: the text used never scrolls, centered function with wordwrap would be enough
-			if(FLYING_OVER == WND_XP) {
-				std::stringstream ss;
-				ss << ARXmenu.mda->flyover[WND_XP] << " " << std::setw(8) << GetXPforLevel(player.level+1)-player.xp;
-
-				toDisplay = ss.str();
-			} else {
-				toDisplay = ARXmenu.mda->flyover[FLYING_OVER];
-			}
-
-			UNICODE_ARXDrawTextCenteredScroll(hFontInGame,
-				(g_size.width()*0.5f),
-				4,
-				(g_size.center().x)*0.82f,
-				toDisplay,
-				Color(232+t,204+t,143+t),
-				1000,
-				0.01f,
-				3,
-				0);
-		} else {
-			OLD_FLYING_OVER=-1;
-		}
-
-		//------------------------------
-		
-		std::stringstream ss3;
-		ss3 << std::setw(3) << std::setprecision(0) << std::fixed << player.m_attributeFull.strength;
-		tex = ss3.str();
-		
-		if(player.m_attributeMod.strength < 0.f)
-			color = Color::red;
-		else if(player.m_attributeMod.strength > 0.f)
-			color = Color::blue;
-		else
-			color = Color::black;
-		
-		if(ARXmenu.currentmode == AMCM_NEWQUEST) {
-			if(player.m_attributeFull.strength == 6)
-				color = Color::red;
-		}
-		
-		DrawBookTextCenter(hFontInBook, Vec2f(391, 129), tex, color);
-		
-		ss3.str(""); // clear the stream
-		ss3 << player.m_attributeFull.mind;
-		tex = ss3.str();
-		
-		if(player.m_attributeMod.mind < 0.f)
-			color = Color::red;
-		else if(player.m_attributeMod.mind > 0.f)
-			color = Color::blue;
-		else
-			color = Color::black;
-		
-		if(ARXmenu.currentmode == AMCM_NEWQUEST) {
-			if(player.m_attributeFull.mind == 6)
-				color = Color::red;
-		}
-		
-		DrawBookTextCenter(hFontInBook, Vec2f(440, 129), tex, color);
-		
-		ss3.str("");
-		ss3 << player.m_attributeFull.dexterity;
-		tex = ss3.str();
-
-		if(player.m_attributeMod.dexterity < 0.f)
-			color = Color::red;
-		else if(player.m_attributeMod.dexterity > 0.f)
-			color = Color::blue;
-		else
-			color = Color::black;
-		
-		if(ARXmenu.currentmode == AMCM_NEWQUEST) {
-			if(player.m_attributeFull.dexterity == 6)
-				color = Color::red;
-		}
-		
-		DrawBookTextCenter(hFontInBook, Vec2f(490, 129), tex, color);
-		ss3.str("");
-		ss3 << player.m_attributeFull.constitution;
-		tex = ss3.str();
-		
-		if(player.m_attributeMod.constitution < 0.f)
-			color = Color::red;
-		else if(player.m_attributeMod.constitution > 0.f)
-			color = Color::blue;
-		else
-			color = Color::black;
-		
-		if(ARXmenu.currentmode == AMCM_NEWQUEST) {
-			if(player.m_attributeFull.constitution == 6)
-				color = Color::red;
-		}
-		
-		DrawBookTextCenter(hFontInBook, Vec2f(538, 129), tex, color);
-		
-		// Player Skills
-		ss3.str("");
-		ss3 << player.m_skillFull.stealth;
-		tex = ss3.str();
-		
-		if (player.m_skillMod.stealth < 0.f)
-			color = Color::red;
-		else if (player.m_skillMod.stealth > 0.f)
-			color = Color::blue;
-		else
-			color = Color::black;
-		
-		if(ARXmenu.currentmode == AMCM_NEWQUEST) {
-			if(player.m_skill.stealth == 0)
-				color = Color::red;
-		}
-		
-		DrawBookTextCenter(hFontInBook, Vec2f(405, 210), tex, color);
-		
-		ss3.str("");
-		ss3 << player.m_skillFull.mecanism;
-		tex = ss3.str();
-		
-		if (player.m_skillMod.mecanism < 0.f)
-			color = Color::red;
-		else if (player.m_skillMod.mecanism > 0.f)
-			color = Color::blue;
-		else
-			color = Color::black;
-		
-		if(ARXmenu.currentmode == AMCM_NEWQUEST) {
-			if(player.m_skill.mecanism == 0)
-				color = Color::red;
-		}
-		
-		DrawBookTextCenter(hFontInBook, Vec2f(469, 210), tex, color);
-		
-		ss3.str("");
-		ss3 << player.m_skillFull.intuition;
-		tex = ss3.str();
-		
-		if (player.m_skillMod.intuition < 0.f)
-			color = Color::red;
-		else if (player.m_skillMod.intuition > 0.f)
-			color = Color::blue;
-		else
-			color = Color::black;
-		
-		if(ARXmenu.currentmode == AMCM_NEWQUEST) {
-			if(player.m_skill.intuition == 0)
-				color = Color::red;
-		}
-
-		DrawBookTextCenter(hFontInBook, Vec2f(533, 210), tex, color);
-		
-		ss3.str("");
-		ss3 << player.m_skillFull.etheralLink;
-		tex = ss3.str();
-
-		if(player.m_skillMod.etheralLink < 0.f)
-			color = Color::red;
-		else if(player.m_skillMod.etheralLink > 0.f)
-			color = Color::blue;
-		else
-			color = Color::black;
-		
-		if(ARXmenu.currentmode == AMCM_NEWQUEST) {
-			if(player.m_skill.etheralLink == 0)
-				color = Color::red;
-		}
-
-		DrawBookTextCenter(hFontInBook, Vec2f(405, 265), tex, color);
-		
-		ss3.str("");
-		ss3 << player.m_skillFull.objectKnowledge;
-		tex = ss3.str();
-
-		if(player.m_skillMod.objectKnowledge < 0.f)
-			color = Color::red;
-		else if(player.m_skillMod.objectKnowledge > 0.f)
-			color = Color::blue;
-		else
-			color = Color::black;
-		
-		if(ARXmenu.currentmode == AMCM_NEWQUEST) {
-			if(player.m_skill.objectKnowledge == 0)
-				color = Color::red;
-		}
-		
-		DrawBookTextCenter(hFontInBook, Vec2f(469, 265), tex, color);
-		
-		ss3.str("");
-		ss3 << player.m_skillFull.casting;
-		tex = ss3.str();
-		
-		if (player.m_skillMod.casting < 0.f)
-			color = Color::red;
-		else if (player.m_skillMod.casting > 0.f)
-			color = Color::blue;
-		else
-			color = Color::black;
-		
-		if(ARXmenu.currentmode == AMCM_NEWQUEST) {
-			if(player.m_skill.casting == 0)
-				color = Color::red;
-		}
-
-		DrawBookTextCenter(hFontInBook, Vec2f(533, 265), tex, color);
-		
-		ss3.str("");
-		ss3 << player.m_skillFull.closeCombat;
-		tex = ss3.str();
-
-		if (player.m_skillMod.closeCombat < 0.f)
-			color = Color::red;
-		else if (player.m_skillMod.closeCombat > 0.f)
-			color = Color::blue;
-		else
-			color = Color::black;
-		
-		if(ARXmenu.currentmode == AMCM_NEWQUEST) {
-			if(player.m_skill.closeCombat == 0)
-				color = Color::red;
-		}
-
-		DrawBookTextCenter(hFontInBook, Vec2f(405, 319), tex, color);
-
-		
-		ss3.str("");
-		ss3 << player.m_skillFull.projectile;
-		tex = ss3.str();
-
-		if(player.m_skillMod.projectile < 0.f)
-			color = Color::red;
-		else if(player.m_skillMod.projectile > 0.f)
-			color = Color::blue;
-		else
-			color = Color::black;
-		
-		if(ARXmenu.currentmode == AMCM_NEWQUEST) {
-			if(player.m_skill.projectile == 0)
-				color = Color::red;
-		}
-
-		DrawBookTextCenter(hFontInBook, Vec2f(469, 319), tex, color);
-		
-		ss3.str("");
-		ss3 << player.m_skillFull.defense;
-		tex = ss3.str();
-
-		if (player.m_skillMod.defense < 0.f)
-			color = Color::red;
-		else if (player.m_skillMod.defense > 0.f)
-			color = Color::blue;
-		else
-			color = Color::black;
-		
-		if(ARXmenu.currentmode == AMCM_NEWQUEST) {
-			if(player.m_skill.defense == 0)
-				color = Color::red;
-		}
-		
-		DrawBookTextCenter(hFontInBook, Vec2f(533, 319), tex, color);
-		
-		// Secondary Attributes
-		std::stringstream ss4;
-		ss4.str("");
-		ss4 << F2L_RoundUp(player.Full_maxlife);
-		tex = ss4.str();
-		
-		if(player.Full_maxlife < player.lifePool.max) {
-			color = Color::red;
-		} else if(player.Full_maxlife > player.lifePool.max) {
-			color = Color::blue;
-		} else {
-			color = Color::black;
-		}
-		
-		DrawBookTextCenter(hFontInBook, Vec2f(324, 158), tex, color);
-		
-		ss4.str("");
-		ss4 << F2L_RoundUp(player.Full_maxmana);
-		tex = ss4.str();
-
-		if(player.Full_maxmana < player.manaPool.max) {
-			color = Color::red;
-		} else if(player.Full_maxmana > player.manaPool.max) {
-			color = Color::blue;
-		} else {
-			color = Color::black;
-		}
-		
-		DrawBookTextCenter(hFontInBook, Vec2f(324, 218), tex, color);
-		
-		ss4.str("");
-		ss4 << F2L_RoundUp(player.m_miscFull.damages);
-		tex = ss4.str();
-		
-		if (player.m_miscMod.damages < 0.f)
-			color = Color::red;
-		else if (player.m_miscMod.damages > 0.f)
-			color = Color::blue;
-		else
-			color = Color::black;
-		
-		DrawBookTextCenter(hFontInBook, Vec2f(324, 278), tex, color);
-		
-		float ac = player.m_miscFull.armorClass;
-		ss4.str("");
-		ss4 << F2L_RoundUp(ac);
-		tex = ss4.str();
-		
-		if (player.m_miscMod.armorClass < 0.f)
-			color = Color::red;
-		else if (player.m_miscMod.armorClass > 0.f)
-			color = Color::blue;
-		else
-			color = Color::black;
-		
-		DrawBookTextCenter(hFontInBook, Vec2f(153, 158), tex, color);
-		
-		ss4.str("");
-		ss4 << std::setw(3) << std::setprecision(0) << F2L_RoundUp( player.m_miscFull.resistMagic );
-		tex = ss4.str();
-		
-		if (player.m_miscMod.resistMagic < 0.f)
-			color = Color::red;
-		else if (player.m_miscMod.resistMagic > 0.f)
-			color = Color::blue;
-		else
-			color = Color::black;
-		
-		DrawBookTextCenter(hFontInBook, Vec2f(153, 218), tex, color);
-		
-		ss4.str("");
-		ss4 << F2L_RoundUp( player.m_miscFull.resistPoison );
-		tex = ss4.str();
-
-		if (player.m_miscMod.resistPoison<0.f)
-			color = Color::red;
-		else if (player.m_miscMod.resistPoison>0.f)
-			color = Color::blue;
-		else
-			color = Color::black;
-		
-		DrawBookTextCenter(hFontInBook, Vec2f(153, 278), tex, color);
-		
-		RenderBookPlayerCharacter();
-		
+	if(Book_Mode == BOOKMODE_STATS) {
+		ARX_INTERFACE_ManageOpenedBook_Stats();
 	} else if (Book_Mode == BOOKMODE_MINIMAP) {
 		long SHOWLEVEL = Book_MapPage - 1;
 
