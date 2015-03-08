@@ -138,6 +138,8 @@ static void ARX_UNICODE_FormattingInRect(Font * font, const std::string & text,
 					break;
 				} else {
 					// The current word is too long to fit on a line, force a line break
+					// Don't skip a character after the forced line break.
+					next = it;
 				}
 			}
 		}
