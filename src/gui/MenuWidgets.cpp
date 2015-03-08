@@ -2068,7 +2068,6 @@ void CWindowMenuConsole::Render() {
 	                 RATIO_X(pTexBackground->m_dwWidth), RATIO_Y(pTexBackground->m_dwHeight)),
 	                 0, pTexBackground, Color::white);
 
-	GRenderer->SetRenderState(Renderer::DepthTest, true);
 	GRenderer->SetBlendFunc(Renderer::BlendOne, Renderer::BlendOne);
 	GRenderer->SetRenderState(Renderer::AlphaBlending, false);
 	
