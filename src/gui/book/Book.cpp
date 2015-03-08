@@ -274,7 +274,11 @@ static void DrawBookInterfaceItem(TextureContainer * tc, Vec2f pos, Color color 
 }
 
 static void RenderBookPlayerCharacter() {
-		
+	
+	// TODO use assert ?
+	if(!entities.player()->obj)
+		return;
+	
 	GRenderer->SetRenderState(Renderer::DepthWrite, true);
 	
 	Rect rec;
@@ -1623,6 +1627,9 @@ void ARX_INTERFACE_ManageOpenedBook() {
 			color = Color::black;
 		
 		DrawBookTextCenter(hFontInBook, Vec2f(153, 278), tex, color);
+		
+		RenderBookPlayerCharacter();
+		
 	} else if (Book_Mode == BOOKMODE_MINIMAP) {
 		long SHOWLEVEL = Book_MapPage - 1;
 
@@ -1633,10 +1640,6 @@ void ARX_INTERFACE_ManageOpenedBook() {
 
 		if(SHOWLEVEL >= 0 && SHOWLEVEL < 32)
 			g_miniMap.showBookMiniMap(SHOWLEVEL);
-	}
-
-	if((Book_Mode == BOOKMODE_STATS) && entities.player()->obj) {
-		RenderBookPlayerCharacter();
 	}
 }
 
