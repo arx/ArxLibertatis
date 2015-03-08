@@ -573,7 +573,7 @@ private:
 	float m_storedTime;
 	
 	// Cursor
-	long				lFrameDiff;
+	float				lFrameDiff;
 	CURSORSTATE			eNumTex;
 	int					m_currentFrame;
 	bool				bMouseOver;

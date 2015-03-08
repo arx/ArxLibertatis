@@ -2822,7 +2822,7 @@ MenuCursor::MenuCursor()
 	bMouseOver=false;
 	
 	m_currentFrame=0;
-	lFrameDiff=0;
+	lFrameDiff = 0.f;
 }
 
 MenuCursor::~MenuCursor()
@@ -2981,9 +2981,9 @@ void MenuCursor::DrawCursor() {
 	DrawOneCursor(GInput->getMousePosAbs());
 	GRenderer->SetRenderState(Renderer::DepthTest, true);
 
-	lFrameDiff += checked_range_cast<long>(ARXDiffTimeMenu);
+	lFrameDiff += ARXDiffTimeMenu;
 
-	if(lFrameDiff > 70) {
+	if(lFrameDiff > 70.f) {
 		if(bMouseOver) {
 			if(m_currentFrame < 4) {
 				m_currentFrame++;
@@ -3004,7 +3004,7 @@ void MenuCursor::DrawCursor() {
 			}
 		}
 
-		lFrameDiff=0;
+		lFrameDiff = 0.f;
 	}
 
 	GRenderer->SetRenderState(Renderer::AlphaBlending, false);
