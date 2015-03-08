@@ -807,6 +807,261 @@ static void ARX_INTERFACE_ManageOpenedBook_TopTabs() {
 	}
 }
 
+static void ARX_INTERFACE_ManageOpenedBook_LeftTabs() {
+	
+	long max_onglet = 0;
+	if(Book_Mode == BOOKMODE_MINIMAP)
+		max_onglet=8;
+	else
+		max_onglet=10;
+	
+	long Book_Page = 1;
+	if(Book_Mode == BOOKMODE_SPELLS)
+		Book_Page = Book_SpellPage;
+	else
+		Book_Page = Book_MapPage;
+
+	bool bOnglet[11];
+	std::fill_n(bOnglet, 11, false);
+
+	// calcul de la page de spells
+	if(Book_Mode == BOOKMODE_SPELLS) {
+		for(size_t i = 0; i < SPELL_TYPES_COUNT; ++i) {
+			if(spellicons[i].bSecret == false) {
+				bool bOk = true;
+
+				for(long j = 0; j < 4 && spellicons[i].symbols[j] != RUNE_NONE; ++j) {
+					if(!player.hasRune(spellicons[i].symbols[j]))
+						bOk = false;
+				}
+
+				if(bOk)
+					bOnglet[spellicons[i].level] = true;
+			}
+		}
+	} else {
+		memset(bOnglet, true, (max_onglet + 1) * sizeof(*bOnglet));
+	}
+	
+	if(Book_Mode == BOOKMODE_SPELLS || Book_Mode == BOOKMODE_MINIMAP) {
+		if(bOnglet[1]) {
+			if(Book_Page!=1) {
+				Vec2f pos = Vec2f(100.f, 82.f);
+				
+				DrawBookInterfaceItem(ITC.accessible_1, pos);
+
+				if(MouseInBookRect(pos, Vec2f(32, 32))) {
+					GRenderer->SetBlendFunc(Renderer::BlendOne, Renderer::BlendOne);
+					GRenderer->SetRenderState(Renderer::AlphaBlending, true);
+					DrawBookInterfaceItem(ITC.accessible_1, pos, Color::grayb(0x55));
+					GRenderer->SetRenderState(Renderer::AlphaBlending, false);
+					SpecialCursor=CURSOR_INTERACTION_ON;
+					if(bookclick) {
+						Book_Page=1;
+						ARX_SOUND_PlayInterface(SND_BOOK_PAGE_TURN, 0.9F + 0.2F * rnd());
+					}
+				}
+			}
+			else DrawBookInterfaceItem(ITC.current_1, Vec2f(102.f, 82.f));
+		}
+
+		if(bOnglet[2]) {
+			if(Book_Page!=2) {
+				Vec2f pos = Vec2f(98.f, 112.f);
+				
+				DrawBookInterfaceItem(ITC.accessible_2, pos);
+
+				if(MouseInBookRect(pos, Vec2f(32, 32))) {
+					GRenderer->SetBlendFunc(Renderer::BlendOne, Renderer::BlendOne);
+					GRenderer->SetRenderState(Renderer::AlphaBlending, true);
+					DrawBookInterfaceItem(ITC.accessible_2, pos, Color::grayb(0x55));
+					GRenderer->SetRenderState(Renderer::AlphaBlending, false);
+					SpecialCursor=CURSOR_INTERACTION_ON;
+					if(bookclick) {
+						Book_Page=2;
+						ARX_SOUND_PlayInterface(SND_BOOK_PAGE_TURN, 0.9F + 0.2F * rnd());
+					}
+				}
+			}
+			else DrawBookInterfaceItem(ITC.current_2, Vec2f(100.f, 114.f));
+		}
+
+		if(bOnglet[3]) {
+			if(Book_Page!=3) {
+				Vec2f pos = Vec2f(97.f, 143.f);
+				
+				DrawBookInterfaceItem(ITC.accessible_3, pos);
+
+				if(MouseInBookRect(pos, Vec2f(32, 32))) {
+					GRenderer->SetBlendFunc(Renderer::BlendOne, Renderer::BlendOne);
+					GRenderer->SetRenderState(Renderer::AlphaBlending, true);
+					DrawBookInterfaceItem(ITC.accessible_3, pos, Color::grayb(0x55));
+					GRenderer->SetRenderState(Renderer::AlphaBlending, false);
+					SpecialCursor=CURSOR_INTERACTION_ON;
+					if(bookclick) {
+						Book_Page=3;
+						ARX_SOUND_PlayInterface(SND_BOOK_PAGE_TURN, 0.9F + 0.2F * rnd());
+					}
+				}
+			}
+			else DrawBookInterfaceItem(ITC.current_3, Vec2f(101.f, 141.f));
+		}
+
+		if(bOnglet[4]) {
+			if(Book_Page!=4) {
+				Vec2f pos = Vec2f(95.f, 170.f);
+				
+				DrawBookInterfaceItem(ITC.accessible_4, pos);
+
+				if(MouseInBookRect(pos, Vec2f(32, 32))) {
+					GRenderer->SetBlendFunc(Renderer::BlendOne, Renderer::BlendOne);
+					GRenderer->SetRenderState(Renderer::AlphaBlending, true);
+					DrawBookInterfaceItem(ITC.accessible_4, pos, Color::grayb(0x55));
+					GRenderer->SetRenderState(Renderer::AlphaBlending, false);
+					SpecialCursor=CURSOR_INTERACTION_ON;
+					if(bookclick) {
+						Book_Page=4;
+						ARX_SOUND_PlayInterface(SND_BOOK_PAGE_TURN, 0.9F + 0.2F * rnd());
+					}
+				}
+			}
+			else DrawBookInterfaceItem(ITC.current_4, Vec2f(100.f, 170.f));
+		}
+
+		if(bOnglet[5]) {
+			if(Book_Page!=5) {
+				Vec2f pos = Vec2f(95.f, 200.f);
+				
+				DrawBookInterfaceItem(ITC.accessible_5, pos);
+
+				if(MouseInBookRect(pos, Vec2f(32, 32))) {
+					GRenderer->SetBlendFunc(Renderer::BlendOne, Renderer::BlendOne);
+					GRenderer->SetRenderState(Renderer::AlphaBlending, true);
+					DrawBookInterfaceItem(ITC.accessible_5, pos, Color::grayb(0x55));
+					GRenderer->SetRenderState(Renderer::AlphaBlending, false);
+					SpecialCursor=CURSOR_INTERACTION_ON;
+					if(bookclick) {
+						Book_Page=5;
+						ARX_SOUND_PlayInterface(SND_BOOK_PAGE_TURN, 0.9F + 0.2F * rnd());
+					}
+				}
+			}
+			else DrawBookInterfaceItem(ITC.current_5, Vec2f(97.f, 199.f));
+		}
+
+		if(bOnglet[6]) {
+			if(Book_Page!=6) {
+				Vec2f pos = Vec2f(94.f, 229.f);
+				
+				DrawBookInterfaceItem(ITC.accessible_6, pos);
+
+				if(MouseInBookRect(pos, Vec2f(32, 32))) {
+					GRenderer->SetBlendFunc(Renderer::BlendOne, Renderer::BlendOne);
+					GRenderer->SetRenderState(Renderer::AlphaBlending, true);
+					DrawBookInterfaceItem(ITC.accessible_6, pos, Color::grayb(0x55));
+					GRenderer->SetRenderState(Renderer::AlphaBlending, false);
+					SpecialCursor=CURSOR_INTERACTION_ON;
+					if(bookclick) {
+						Book_Page=6;
+						ARX_SOUND_PlayInterface(SND_BOOK_PAGE_TURN, 0.9F + 0.2F * rnd());
+					}
+				}
+			}
+			else DrawBookInterfaceItem(ITC.current_6, Vec2f(103.f, 226.f));
+		}
+
+		if(bOnglet[7]) {
+			if(Book_Page!=7) {
+				Vec2f pos = Vec2f(94.f, 259.f);
+				
+				DrawBookInterfaceItem(ITC.accessible_7, pos);
+
+				if(MouseInBookRect(pos, Vec2f(32, 32))) {
+					GRenderer->SetBlendFunc(Renderer::BlendOne, Renderer::BlendOne);
+					GRenderer->SetRenderState(Renderer::AlphaBlending, true);
+					DrawBookInterfaceItem(ITC.accessible_7, pos, Color::grayb(0x55));
+					GRenderer->SetRenderState(Renderer::AlphaBlending, false);
+					SpecialCursor=CURSOR_INTERACTION_ON;
+					if(bookclick) {
+						Book_Page=7;
+						ARX_SOUND_PlayInterface(SND_BOOK_PAGE_TURN, 0.9F + 0.2F * rnd());
+					}
+				}
+			}
+			else DrawBookInterfaceItem(ITC.current_7, Vec2f(101.f, 255.f));
+		}
+
+		if(bOnglet[8]) {
+			if(Book_Page!=8) {
+				Vec2f pos = Vec2f(92.f, 282.f);
+				
+				DrawBookInterfaceItem(ITC.accessible_8, pos);
+
+				if(MouseInBookRect(pos, Vec2f(32, 32))) {
+					GRenderer->SetBlendFunc(Renderer::BlendOne, Renderer::BlendOne);
+					GRenderer->SetRenderState(Renderer::AlphaBlending, true);
+					DrawBookInterfaceItem(ITC.accessible_8, pos, Color::grayb(0x55));
+					GRenderer->SetRenderState(Renderer::AlphaBlending, false);
+					SpecialCursor=CURSOR_INTERACTION_ON;
+					if(bookclick) {
+						Book_Page=8;
+						ARX_SOUND_PlayInterface(SND_BOOK_PAGE_TURN, 0.9F + 0.2F * rnd());
+					}
+				}
+			}
+			else DrawBookInterfaceItem(ITC.current_8, Vec2f(99.f, 283.f));
+		}
+
+		if(bOnglet[9]) {
+			if(Book_Page!=9) {
+				Vec2f pos = Vec2f(90.f, 308.f);
+				
+				DrawBookInterfaceItem(ITC.accessible_9, pos);
+
+				if(MouseInBookRect(pos, Vec2f(32, 32))) {
+					GRenderer->SetBlendFunc(Renderer::BlendOne, Renderer::BlendOne);
+					GRenderer->SetRenderState(Renderer::AlphaBlending, true);
+					DrawBookInterfaceItem(ITC.accessible_9, pos, Color::grayb(0x55));
+					GRenderer->SetRenderState(Renderer::AlphaBlending, false);
+					SpecialCursor=CURSOR_INTERACTION_ON;
+					if(bookclick) {
+						Book_Page=9;
+						ARX_SOUND_PlayInterface(SND_BOOK_PAGE_TURN, 0.9F + 0.2F * rnd());
+					}
+				}
+			}
+			else DrawBookInterfaceItem(ITC.current_9, Vec2f(99.f, 307.f));
+		}
+
+		if (bOnglet[10]) {
+			if (Book_Page!=10) {
+				Vec2f pos = Vec2f(97.f, 331.f);
+				
+				DrawBookInterfaceItem(ITC.accessible_10, pos);
+
+				if(MouseInBookRect(pos, Vec2f(32, 32))) {
+					GRenderer->SetBlendFunc(Renderer::BlendOne, Renderer::BlendOne);
+					GRenderer->SetRenderState(Renderer::AlphaBlending, true);
+					DrawBookInterfaceItem(ITC.accessible_10, pos, Color::grayb(0x55));
+					GRenderer->SetRenderState(Renderer::AlphaBlending, false);
+					SpecialCursor=CURSOR_INTERACTION_ON;
+					if(bookclick) {
+						Book_Page=10;
+						ARX_SOUND_PlayInterface(SND_BOOK_PAGE_TURN, 0.9F + 0.2F * rnd());
+					}
+				}
+			}
+			else DrawBookInterfaceItem(ITC.current_10, Vec2f(104.f, 331.f));
+		}
+		
+		if(Book_Mode == BOOKMODE_SPELLS) {
+			Book_SpellPage = Book_Page;
+		} else if(Book_Mode == BOOKMODE_MINIMAP) {
+			Book_MapPage = Book_Page;
+		}
+	}	
+}
+
 void ARX_INTERFACE_ManageOpenedBook() {
 	arx_assert(entities.player());
 	
@@ -855,258 +1110,7 @@ void ARX_INTERFACE_ManageOpenedBook() {
 		// Character Sheet
 		ARX_INTERFACE_ManageOpenedBook_TopTabs();
 		
-		
-		long max_onglet = 0;
-		if(Book_Mode == BOOKMODE_MINIMAP)
-			max_onglet=8;
-		else
-			max_onglet=10;
-		
-		long Book_Page = 1;
-		if(Book_Mode == BOOKMODE_SPELLS)
-			Book_Page = Book_SpellPage;
-		else
-			Book_Page = Book_MapPage;
-	
-		bool bOnglet[11];
-		std::fill_n(bOnglet, 11, false);
-
-		// calcul de la page de spells
-		if(Book_Mode == BOOKMODE_SPELLS) {
-			for(size_t i = 0; i < SPELL_TYPES_COUNT; ++i) {
-				if(spellicons[i].bSecret == false) {
-					bool bOk = true;
-
-					for(long j = 0; j < 4 && spellicons[i].symbols[j] != RUNE_NONE; ++j) {
-						if(!player.hasRune(spellicons[i].symbols[j]))
-							bOk = false;
-					}
-
-					if(bOk)
-						bOnglet[spellicons[i].level] = true;
-				}
-			}
-		} else {
-			memset(bOnglet, true, (max_onglet + 1) * sizeof(*bOnglet));
-		}
-		
-		if(Book_Mode == BOOKMODE_SPELLS || Book_Mode == BOOKMODE_MINIMAP) {
-			if(bOnglet[1]) {
-				if(Book_Page!=1) {
-					Vec2f pos = Vec2f(100.f, 82.f);
-					
-					DrawBookInterfaceItem(ITC.accessible_1, pos);
-
-					if(MouseInBookRect(pos, Vec2f(32, 32))) {
-						GRenderer->SetBlendFunc(Renderer::BlendOne, Renderer::BlendOne);
-						GRenderer->SetRenderState(Renderer::AlphaBlending, true);
-						DrawBookInterfaceItem(ITC.accessible_1, pos, Color::grayb(0x55));
-						GRenderer->SetRenderState(Renderer::AlphaBlending, false);
-						SpecialCursor=CURSOR_INTERACTION_ON;
-						if(bookclick) {
-							Book_Page=1;
-							ARX_SOUND_PlayInterface(SND_BOOK_PAGE_TURN, 0.9F + 0.2F * rnd());
-						}
-					}
-				}
-				else DrawBookInterfaceItem(ITC.current_1, Vec2f(102.f, 82.f));
-			}
-
-			if(bOnglet[2]) {
-				if(Book_Page!=2) {
-					Vec2f pos = Vec2f(98.f, 112.f);
-					
-					DrawBookInterfaceItem(ITC.accessible_2, pos);
-
-					if(MouseInBookRect(pos, Vec2f(32, 32))) {
-						GRenderer->SetBlendFunc(Renderer::BlendOne, Renderer::BlendOne);
-						GRenderer->SetRenderState(Renderer::AlphaBlending, true);
-						DrawBookInterfaceItem(ITC.accessible_2, pos, Color::grayb(0x55));
-						GRenderer->SetRenderState(Renderer::AlphaBlending, false);
-						SpecialCursor=CURSOR_INTERACTION_ON;
-						if(bookclick) {
-							Book_Page=2;
-							ARX_SOUND_PlayInterface(SND_BOOK_PAGE_TURN, 0.9F + 0.2F * rnd());
-						}
-					}
-				}
-				else DrawBookInterfaceItem(ITC.current_2, Vec2f(100.f, 114.f));
-			}
-
-			if(bOnglet[3]) {
-				if(Book_Page!=3) {
-					Vec2f pos = Vec2f(97.f, 143.f);
-					
-					DrawBookInterfaceItem(ITC.accessible_3, pos);
-
-					if(MouseInBookRect(pos, Vec2f(32, 32))) {
-						GRenderer->SetBlendFunc(Renderer::BlendOne, Renderer::BlendOne);
-						GRenderer->SetRenderState(Renderer::AlphaBlending, true);
-						DrawBookInterfaceItem(ITC.accessible_3, pos, Color::grayb(0x55));
-						GRenderer->SetRenderState(Renderer::AlphaBlending, false);
-						SpecialCursor=CURSOR_INTERACTION_ON;
-						if(bookclick) {
-							Book_Page=3;
-							ARX_SOUND_PlayInterface(SND_BOOK_PAGE_TURN, 0.9F + 0.2F * rnd());
-						}
-					}
-				}
-				else DrawBookInterfaceItem(ITC.current_3, Vec2f(101.f, 141.f));
-			}
-
-			if(bOnglet[4]) {
-				if(Book_Page!=4) {
-					Vec2f pos = Vec2f(95.f, 170.f);
-					
-					DrawBookInterfaceItem(ITC.accessible_4, pos);
-
-					if(MouseInBookRect(pos, Vec2f(32, 32))) {
-						GRenderer->SetBlendFunc(Renderer::BlendOne, Renderer::BlendOne);
-						GRenderer->SetRenderState(Renderer::AlphaBlending, true);
-						DrawBookInterfaceItem(ITC.accessible_4, pos, Color::grayb(0x55));
-						GRenderer->SetRenderState(Renderer::AlphaBlending, false);
-						SpecialCursor=CURSOR_INTERACTION_ON;
-						if(bookclick) {
-							Book_Page=4;
-							ARX_SOUND_PlayInterface(SND_BOOK_PAGE_TURN, 0.9F + 0.2F * rnd());
-						}
-					}
-				}
-				else DrawBookInterfaceItem(ITC.current_4, Vec2f(100.f, 170.f));
-			}
-
-			if(bOnglet[5]) {
-				if(Book_Page!=5) {
-					Vec2f pos = Vec2f(95.f, 200.f);
-					
-					DrawBookInterfaceItem(ITC.accessible_5, pos);
-
-					if(MouseInBookRect(pos, Vec2f(32, 32))) {
-						GRenderer->SetBlendFunc(Renderer::BlendOne, Renderer::BlendOne);
-						GRenderer->SetRenderState(Renderer::AlphaBlending, true);
-						DrawBookInterfaceItem(ITC.accessible_5, pos, Color::grayb(0x55));
-						GRenderer->SetRenderState(Renderer::AlphaBlending, false);
-						SpecialCursor=CURSOR_INTERACTION_ON;
-						if(bookclick) {
-							Book_Page=5;
-							ARX_SOUND_PlayInterface(SND_BOOK_PAGE_TURN, 0.9F + 0.2F * rnd());
-						}
-					}
-				}
-				else DrawBookInterfaceItem(ITC.current_5, Vec2f(97.f, 199.f));
-			}
-
-			if(bOnglet[6]) {
-				if(Book_Page!=6) {
-					Vec2f pos = Vec2f(94.f, 229.f);
-					
-					DrawBookInterfaceItem(ITC.accessible_6, pos);
-
-					if(MouseInBookRect(pos, Vec2f(32, 32))) {
-						GRenderer->SetBlendFunc(Renderer::BlendOne, Renderer::BlendOne);
-						GRenderer->SetRenderState(Renderer::AlphaBlending, true);
-						DrawBookInterfaceItem(ITC.accessible_6, pos, Color::grayb(0x55));
-						GRenderer->SetRenderState(Renderer::AlphaBlending, false);
-						SpecialCursor=CURSOR_INTERACTION_ON;
-						if(bookclick) {
-							Book_Page=6;
-							ARX_SOUND_PlayInterface(SND_BOOK_PAGE_TURN, 0.9F + 0.2F * rnd());
-						}
-					}
-				}
-				else DrawBookInterfaceItem(ITC.current_6, Vec2f(103.f, 226.f));
-			}
-
-			if(bOnglet[7]) {
-				if(Book_Page!=7) {
-					Vec2f pos = Vec2f(94.f, 259.f);
-					
-					DrawBookInterfaceItem(ITC.accessible_7, pos);
-
-					if(MouseInBookRect(pos, Vec2f(32, 32))) {
-						GRenderer->SetBlendFunc(Renderer::BlendOne, Renderer::BlendOne);
-						GRenderer->SetRenderState(Renderer::AlphaBlending, true);
-						DrawBookInterfaceItem(ITC.accessible_7, pos, Color::grayb(0x55));
-						GRenderer->SetRenderState(Renderer::AlphaBlending, false);
-						SpecialCursor=CURSOR_INTERACTION_ON;
-						if(bookclick) {
-							Book_Page=7;
-							ARX_SOUND_PlayInterface(SND_BOOK_PAGE_TURN, 0.9F + 0.2F * rnd());
-						}
-					}
-				}
-				else DrawBookInterfaceItem(ITC.current_7, Vec2f(101.f, 255.f));
-			}
-
-			if(bOnglet[8]) {
-				if(Book_Page!=8) {
-					Vec2f pos = Vec2f(92.f, 282.f);
-					
-					DrawBookInterfaceItem(ITC.accessible_8, pos);
-
-					if(MouseInBookRect(pos, Vec2f(32, 32))) {
-						GRenderer->SetBlendFunc(Renderer::BlendOne, Renderer::BlendOne);
-						GRenderer->SetRenderState(Renderer::AlphaBlending, true);
-						DrawBookInterfaceItem(ITC.accessible_8, pos, Color::grayb(0x55));
-						GRenderer->SetRenderState(Renderer::AlphaBlending, false);
-						SpecialCursor=CURSOR_INTERACTION_ON;
-						if(bookclick) {
-							Book_Page=8;
-							ARX_SOUND_PlayInterface(SND_BOOK_PAGE_TURN, 0.9F + 0.2F * rnd());
-						}
-					}
-				}
-				else DrawBookInterfaceItem(ITC.current_8, Vec2f(99.f, 283.f));
-			}
-
-			if(bOnglet[9]) {
-				if(Book_Page!=9) {
-					Vec2f pos = Vec2f(90.f, 308.f);
-					
-					DrawBookInterfaceItem(ITC.accessible_9, pos);
-
-					if(MouseInBookRect(pos, Vec2f(32, 32))) {
-						GRenderer->SetBlendFunc(Renderer::BlendOne, Renderer::BlendOne);
-						GRenderer->SetRenderState(Renderer::AlphaBlending, true);
-						DrawBookInterfaceItem(ITC.accessible_9, pos, Color::grayb(0x55));
-						GRenderer->SetRenderState(Renderer::AlphaBlending, false);
-						SpecialCursor=CURSOR_INTERACTION_ON;
-						if(bookclick) {
-							Book_Page=9;
-							ARX_SOUND_PlayInterface(SND_BOOK_PAGE_TURN, 0.9F + 0.2F * rnd());
-						}
-					}
-				}
-				else DrawBookInterfaceItem(ITC.current_9, Vec2f(99.f, 307.f));
-			}
-
-			if (bOnglet[10]) {
-				if (Book_Page!=10) {
-					Vec2f pos = Vec2f(97.f, 331.f);
-					
-					DrawBookInterfaceItem(ITC.accessible_10, pos);
-
-					if(MouseInBookRect(pos, Vec2f(32, 32))) {
-						GRenderer->SetBlendFunc(Renderer::BlendOne, Renderer::BlendOne);
-						GRenderer->SetRenderState(Renderer::AlphaBlending, true);
-						DrawBookInterfaceItem(ITC.accessible_10, pos, Color::grayb(0x55));
-						GRenderer->SetRenderState(Renderer::AlphaBlending, false);
-						SpecialCursor=CURSOR_INTERACTION_ON;
-						if(bookclick) {
-							Book_Page=10;
-							ARX_SOUND_PlayInterface(SND_BOOK_PAGE_TURN, 0.9F + 0.2F * rnd());
-						}
-					}
-				}
-				else DrawBookInterfaceItem(ITC.current_10, Vec2f(104.f, 331.f));
-			}
-			
-			if(Book_Mode == BOOKMODE_SPELLS) {
-				Book_SpellPage = Book_Page;
-			} else if(Book_Mode == BOOKMODE_MINIMAP) {
-				Book_MapPage = Book_Page;
-			}
-		}
+		ARX_INTERFACE_ManageOpenedBook_LeftTabs();
 
 		bookclick = false;
 	}
