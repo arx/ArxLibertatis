@@ -94,16 +94,6 @@ public:
 		, bookmark_map(NULL)
 		, bookmark_quest(NULL)
 		
-		, accessible_1(NULL)
-		, accessible_2(NULL)
-		, accessible_3(NULL)
-		, accessible_4(NULL)
-		, accessible_5(NULL)
-		, accessible_6(NULL)
-		, accessible_7(NULL)
-		, accessible_8(NULL)
-		, accessible_9(NULL)
-		, accessible_10(NULL)
 		, current_1(NULL)
 		, current_2(NULL)
 		, current_3(NULL)
@@ -114,7 +104,9 @@ public:
 		, current_8(NULL)
 		, current_9(NULL)
 		, current_10(NULL)
-	{}
+	{
+		std::fill_n(accessibleTab, ARRAY_SIZE(accessibleTab), (TextureContainer *)NULL);
+	}
 	
 	void Reset();
 	
@@ -143,16 +135,7 @@ public:
 	TextureContainer * bookmark_map;
 	TextureContainer * bookmark_quest;
 	
-	TextureContainer * accessible_1;
-	TextureContainer * accessible_2;
-	TextureContainer * accessible_3;
-	TextureContainer * accessible_4;
-	TextureContainer * accessible_5;
-	TextureContainer * accessible_6;
-	TextureContainer * accessible_7;
-	TextureContainer * accessible_8;
-	TextureContainer * accessible_9;
-	TextureContainer * accessible_10;
+	TextureContainer * accessibleTab[11];
 	TextureContainer * current_1;
 	TextureContainer * current_2;
 	TextureContainer * current_3;

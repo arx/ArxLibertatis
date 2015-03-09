@@ -817,12 +817,12 @@ static void ARX_INTERFACE_ManageOpenedBook_LeftTabs(bool tabVisibility[11], long
 			if(activeTab!=1) {
 				Vec2f pos = Vec2f(100.f, 82.f);
 				
-				DrawBookInterfaceItem(ITC.accessible_1, pos);
+				DrawBookInterfaceItem(ITC.accessibleTab[1], pos);
 
 				if(MouseInBookRect(pos, Vec2f(32, 32))) {
 					GRenderer->SetBlendFunc(Renderer::BlendOne, Renderer::BlendOne);
 					GRenderer->SetRenderState(Renderer::AlphaBlending, true);
-					DrawBookInterfaceItem(ITC.accessible_1, pos, Color::grayb(0x55));
+					DrawBookInterfaceItem(ITC.accessibleTab[1], pos, Color::grayb(0x55));
 					GRenderer->SetRenderState(Renderer::AlphaBlending, false);
 					SpecialCursor=CURSOR_INTERACTION_ON;
 					if(bookclick) {
@@ -838,12 +838,12 @@ static void ARX_INTERFACE_ManageOpenedBook_LeftTabs(bool tabVisibility[11], long
 			if(activeTab!=2) {
 				Vec2f pos = Vec2f(98.f, 112.f);
 				
-				DrawBookInterfaceItem(ITC.accessible_2, pos);
+				DrawBookInterfaceItem(ITC.accessibleTab[2], pos);
 
 				if(MouseInBookRect(pos, Vec2f(32, 32))) {
 					GRenderer->SetBlendFunc(Renderer::BlendOne, Renderer::BlendOne);
 					GRenderer->SetRenderState(Renderer::AlphaBlending, true);
-					DrawBookInterfaceItem(ITC.accessible_2, pos, Color::grayb(0x55));
+					DrawBookInterfaceItem(ITC.accessibleTab[2], pos, Color::grayb(0x55));
 					GRenderer->SetRenderState(Renderer::AlphaBlending, false);
 					SpecialCursor=CURSOR_INTERACTION_ON;
 					if(bookclick) {
@@ -859,12 +859,12 @@ static void ARX_INTERFACE_ManageOpenedBook_LeftTabs(bool tabVisibility[11], long
 			if(activeTab!=3) {
 				Vec2f pos = Vec2f(97.f, 143.f);
 				
-				DrawBookInterfaceItem(ITC.accessible_3, pos);
+				DrawBookInterfaceItem(ITC.accessibleTab[3], pos);
 
 				if(MouseInBookRect(pos, Vec2f(32, 32))) {
 					GRenderer->SetBlendFunc(Renderer::BlendOne, Renderer::BlendOne);
 					GRenderer->SetRenderState(Renderer::AlphaBlending, true);
-					DrawBookInterfaceItem(ITC.accessible_3, pos, Color::grayb(0x55));
+					DrawBookInterfaceItem(ITC.accessibleTab[3], pos, Color::grayb(0x55));
 					GRenderer->SetRenderState(Renderer::AlphaBlending, false);
 					SpecialCursor=CURSOR_INTERACTION_ON;
 					if(bookclick) {
@@ -880,12 +880,12 @@ static void ARX_INTERFACE_ManageOpenedBook_LeftTabs(bool tabVisibility[11], long
 			if(activeTab!=4) {
 				Vec2f pos = Vec2f(95.f, 170.f);
 				
-				DrawBookInterfaceItem(ITC.accessible_4, pos);
+				DrawBookInterfaceItem(ITC.accessibleTab[4], pos);
 
 				if(MouseInBookRect(pos, Vec2f(32, 32))) {
 					GRenderer->SetBlendFunc(Renderer::BlendOne, Renderer::BlendOne);
 					GRenderer->SetRenderState(Renderer::AlphaBlending, true);
-					DrawBookInterfaceItem(ITC.accessible_4, pos, Color::grayb(0x55));
+					DrawBookInterfaceItem(ITC.accessibleTab[4], pos, Color::grayb(0x55));
 					GRenderer->SetRenderState(Renderer::AlphaBlending, false);
 					SpecialCursor=CURSOR_INTERACTION_ON;
 					if(bookclick) {
@@ -901,12 +901,12 @@ static void ARX_INTERFACE_ManageOpenedBook_LeftTabs(bool tabVisibility[11], long
 			if(activeTab!=5) {
 				Vec2f pos = Vec2f(95.f, 200.f);
 				
-				DrawBookInterfaceItem(ITC.accessible_5, pos);
+				DrawBookInterfaceItem(ITC.accessibleTab[5], pos);
 
 				if(MouseInBookRect(pos, Vec2f(32, 32))) {
 					GRenderer->SetBlendFunc(Renderer::BlendOne, Renderer::BlendOne);
 					GRenderer->SetRenderState(Renderer::AlphaBlending, true);
-					DrawBookInterfaceItem(ITC.accessible_5, pos, Color::grayb(0x55));
+					DrawBookInterfaceItem(ITC.accessibleTab[5], pos, Color::grayb(0x55));
 					GRenderer->SetRenderState(Renderer::AlphaBlending, false);
 					SpecialCursor=CURSOR_INTERACTION_ON;
 					if(bookclick) {
@@ -922,12 +922,12 @@ static void ARX_INTERFACE_ManageOpenedBook_LeftTabs(bool tabVisibility[11], long
 			if(activeTab!=6) {
 				Vec2f pos = Vec2f(94.f, 229.f);
 				
-				DrawBookInterfaceItem(ITC.accessible_6, pos);
+				DrawBookInterfaceItem(ITC.accessibleTab[6], pos);
 
 				if(MouseInBookRect(pos, Vec2f(32, 32))) {
 					GRenderer->SetBlendFunc(Renderer::BlendOne, Renderer::BlendOne);
 					GRenderer->SetRenderState(Renderer::AlphaBlending, true);
-					DrawBookInterfaceItem(ITC.accessible_6, pos, Color::grayb(0x55));
+					DrawBookInterfaceItem(ITC.accessibleTab[6], pos, Color::grayb(0x55));
 					GRenderer->SetRenderState(Renderer::AlphaBlending, false);
 					SpecialCursor=CURSOR_INTERACTION_ON;
 					if(bookclick) {
@@ -943,12 +943,12 @@ static void ARX_INTERFACE_ManageOpenedBook_LeftTabs(bool tabVisibility[11], long
 			if(activeTab!=7) {
 				Vec2f pos = Vec2f(94.f, 259.f);
 				
-				DrawBookInterfaceItem(ITC.accessible_7, pos);
+				DrawBookInterfaceItem(ITC.accessibleTab[7], pos);
 
 				if(MouseInBookRect(pos, Vec2f(32, 32))) {
 					GRenderer->SetBlendFunc(Renderer::BlendOne, Renderer::BlendOne);
 					GRenderer->SetRenderState(Renderer::AlphaBlending, true);
-					DrawBookInterfaceItem(ITC.accessible_7, pos, Color::grayb(0x55));
+					DrawBookInterfaceItem(ITC.accessibleTab[7], pos, Color::grayb(0x55));
 					GRenderer->SetRenderState(Renderer::AlphaBlending, false);
 					SpecialCursor=CURSOR_INTERACTION_ON;
 					if(bookclick) {
@@ -964,12 +964,12 @@ static void ARX_INTERFACE_ManageOpenedBook_LeftTabs(bool tabVisibility[11], long
 			if(activeTab!=8) {
 				Vec2f pos = Vec2f(92.f, 282.f);
 				
-				DrawBookInterfaceItem(ITC.accessible_8, pos);
+				DrawBookInterfaceItem(ITC.accessibleTab[8], pos);
 
 				if(MouseInBookRect(pos, Vec2f(32, 32))) {
 					GRenderer->SetBlendFunc(Renderer::BlendOne, Renderer::BlendOne);
 					GRenderer->SetRenderState(Renderer::AlphaBlending, true);
-					DrawBookInterfaceItem(ITC.accessible_8, pos, Color::grayb(0x55));
+					DrawBookInterfaceItem(ITC.accessibleTab[8], pos, Color::grayb(0x55));
 					GRenderer->SetRenderState(Renderer::AlphaBlending, false);
 					SpecialCursor=CURSOR_INTERACTION_ON;
 					if(bookclick) {
@@ -985,12 +985,12 @@ static void ARX_INTERFACE_ManageOpenedBook_LeftTabs(bool tabVisibility[11], long
 			if(activeTab!=9) {
 				Vec2f pos = Vec2f(90.f, 308.f);
 				
-				DrawBookInterfaceItem(ITC.accessible_9, pos);
+				DrawBookInterfaceItem(ITC.accessibleTab[9], pos);
 
 				if(MouseInBookRect(pos, Vec2f(32, 32))) {
 					GRenderer->SetBlendFunc(Renderer::BlendOne, Renderer::BlendOne);
 					GRenderer->SetRenderState(Renderer::AlphaBlending, true);
-					DrawBookInterfaceItem(ITC.accessible_9, pos, Color::grayb(0x55));
+					DrawBookInterfaceItem(ITC.accessibleTab[9], pos, Color::grayb(0x55));
 					GRenderer->SetRenderState(Renderer::AlphaBlending, false);
 					SpecialCursor=CURSOR_INTERACTION_ON;
 					if(bookclick) {
@@ -1006,12 +1006,12 @@ static void ARX_INTERFACE_ManageOpenedBook_LeftTabs(bool tabVisibility[11], long
 			if (activeTab!=10) {
 				Vec2f pos = Vec2f(97.f, 331.f);
 				
-				DrawBookInterfaceItem(ITC.accessible_10, pos);
+				DrawBookInterfaceItem(ITC.accessibleTab[10], pos);
 
 				if(MouseInBookRect(pos, Vec2f(32, 32))) {
 					GRenderer->SetBlendFunc(Renderer::BlendOne, Renderer::BlendOne);
 					GRenderer->SetRenderState(Renderer::AlphaBlending, true);
-					DrawBookInterfaceItem(ITC.accessible_10, pos, Color::grayb(0x55));
+					DrawBookInterfaceItem(ITC.accessibleTab[10], pos, Color::grayb(0x55));
 					GRenderer->SetRenderState(Renderer::AlphaBlending, false);
 					SpecialCursor=CURSOR_INTERACTION_ON;
 					if(bookclick) {
