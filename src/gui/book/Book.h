@@ -32,9 +32,6 @@ enum ARX_INTERFACE_BOOK_MODE
 
 extern ARX_INTERFACE_BOOK_MODE Book_Mode;
 
-extern long Book_MapPage;
-extern long Book_SpellPage;
-
 extern long BOOKZOOM;
 
 void ARX_INTERFACE_BookOpen();
