@@ -811,41 +811,7 @@ static void ARX_INTERFACE_ManageOpenedBook_TopTabs() {
 	}
 }
 
-static void ARX_INTERFACE_ManageOpenedBook_LeftTabs() {
-	
-	long max_onglet = 0;
-	if(Book_Mode == BOOKMODE_MINIMAP)
-		max_onglet=8;
-	else
-		max_onglet=10;
-	
-	long Book_Page = 1;
-	if(Book_Mode == BOOKMODE_SPELLS)
-		Book_Page = Book_SpellPage;
-	else
-		Book_Page = Book_MapPage;
-
-	bool bOnglet[11];
-	std::fill_n(bOnglet, 11, false);
-
-	// calcul de la page de spells
-	if(Book_Mode == BOOKMODE_SPELLS) {
-		for(size_t i = 0; i < SPELL_TYPES_COUNT; ++i) {
-			if(spellicons[i].bSecret == false) {
-				bool bOk = true;
-
-				for(long j = 0; j < 4 && spellicons[i].symbols[j] != RUNE_NONE; ++j) {
-					if(!player.hasRune(spellicons[i].symbols[j]))
-						bOk = false;
-				}
-
-				if(bOk)
-					bOnglet[spellicons[i].level] = true;
-			}
-		}
-	} else {
-		memset(bOnglet, true, (max_onglet + 1) * sizeof(*bOnglet));
-	}
+static void ARX_INTERFACE_ManageOpenedBook_LeftTabs(bool bOnglet[11], long & Book_Page) {
 	
 		if(bOnglet[1]) {
 			if(Book_Page!=1) {
@@ -1056,12 +1022,37 @@ static void ARX_INTERFACE_ManageOpenedBook_LeftTabs() {
 			}
 			else DrawBookInterfaceItem(ITC.current_10, Vec2f(104.f, 331.f));
 		}
-		
-		if(Book_Mode == BOOKMODE_SPELLS) {
-			Book_SpellPage = Book_Page;
-		} else if(Book_Mode == BOOKMODE_MINIMAP) {
-			Book_MapPage = Book_Page;
+}
+
+static void ARX_INTERFACE_ManageOpenedBook_LeftTabs_Spells() {
+	
+	bool bOnglet[11] = {false};
+
+	for(size_t i = 0; i < SPELL_TYPES_COUNT; ++i) {
+		if(spellicons[i].bSecret == false) {
+			bool bOk = true;
+
+			for(long j = 0; j < 4 && spellicons[i].symbols[j] != RUNE_NONE; ++j) {
+				if(!player.hasRune(spellicons[i].symbols[j]))
+					bOk = false;
+			}
+
+			if(bOk)
+				bOnglet[spellicons[i].level] = true;
 		}
+	}
+	
+	ARX_INTERFACE_ManageOpenedBook_LeftTabs(bOnglet, Book_SpellPage);
+}
+
+static void ARX_INTERFACE_ManageOpenedBook_LeftTabs_Map() {
+	
+	bool bOnglet[11] = {false};
+	
+	long max_onglet = 8;
+	memset(bOnglet, true, (max_onglet + 1) * sizeof(*bOnglet));
+	
+	ARX_INTERFACE_ManageOpenedBook_LeftTabs(bOnglet, Book_MapPage);
 }
 
 static void ARX_INTERFACE_ManageOpenedBook_Stats()
@@ -1609,12 +1600,12 @@ void ARX_INTERFACE_ManageOpenedBook() {
 			}
 			case BOOKMODE_SPELLS: {
 				DrawBookInterfaceItem(ITC.ptexspellbook, Vec2f(97, 64), Color::white, 0.9999f);
-				ARX_INTERFACE_ManageOpenedBook_LeftTabs();
+				ARX_INTERFACE_ManageOpenedBook_LeftTabs_Spells();
 				break;
 			}
 			case BOOKMODE_MINIMAP: {
 				DrawBookInterfaceItem(ITC.questbook, Vec2f(97, 64), Color::white, 0.9999f);
-				ARX_INTERFACE_ManageOpenedBook_LeftTabs();
+				ARX_INTERFACE_ManageOpenedBook_LeftTabs_Map();
 				break;
 			}
 			case BOOKMODE_QUESTS: {
