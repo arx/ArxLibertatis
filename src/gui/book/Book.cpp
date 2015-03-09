@@ -806,9 +806,9 @@ static void ARX_INTERFACE_ManageOpenedBook_TopTabs() {
 	}
 }
 
-static void ARX_INTERFACE_ManageOpenedBook_LeftTabs(bool tabVisibility[11], long & activeTab) {
+static void ARX_INTERFACE_ManageOpenedBook_LeftTabs(bool tabVisibility[10], long & activeTab) {
 	
-		if(tabVisibility[1]) {
+		if(tabVisibility[0]) {
 			if(activeTab!=0) {
 				Vec2f pos = Vec2f(100.f, 82.f);
 				
@@ -829,7 +829,7 @@ static void ARX_INTERFACE_ManageOpenedBook_LeftTabs(bool tabVisibility[11], long
 			else DrawBookInterfaceItem(ITC.currentTab[1], Vec2f(102.f, 82.f));
 		}
 
-		if(tabVisibility[2]) {
+		if(tabVisibility[1]) {
 			if(activeTab!=1) {
 				Vec2f pos = Vec2f(98.f, 112.f);
 				
@@ -850,7 +850,7 @@ static void ARX_INTERFACE_ManageOpenedBook_LeftTabs(bool tabVisibility[11], long
 			else DrawBookInterfaceItem(ITC.currentTab[2], Vec2f(100.f, 114.f));
 		}
 
-		if(tabVisibility[3]) {
+		if(tabVisibility[2]) {
 			if(activeTab!=2) {
 				Vec2f pos = Vec2f(97.f, 143.f);
 				
@@ -871,7 +871,7 @@ static void ARX_INTERFACE_ManageOpenedBook_LeftTabs(bool tabVisibility[11], long
 			else DrawBookInterfaceItem(ITC.currentTab[3], Vec2f(101.f, 141.f));
 		}
 
-		if(tabVisibility[4]) {
+		if(tabVisibility[3]) {
 			if(activeTab!=3) {
 				Vec2f pos = Vec2f(95.f, 170.f);
 				
@@ -892,7 +892,7 @@ static void ARX_INTERFACE_ManageOpenedBook_LeftTabs(bool tabVisibility[11], long
 			else DrawBookInterfaceItem(ITC.currentTab[4], Vec2f(100.f, 170.f));
 		}
 
-		if(tabVisibility[5]) {
+		if(tabVisibility[4]) {
 			if(activeTab!=4) {
 				Vec2f pos = Vec2f(95.f, 200.f);
 				
@@ -913,7 +913,7 @@ static void ARX_INTERFACE_ManageOpenedBook_LeftTabs(bool tabVisibility[11], long
 			else DrawBookInterfaceItem(ITC.currentTab[5], Vec2f(97.f, 199.f));
 		}
 
-		if(tabVisibility[6]) {
+		if(tabVisibility[5]) {
 			if(activeTab!=5) {
 				Vec2f pos = Vec2f(94.f, 229.f);
 				
@@ -934,7 +934,7 @@ static void ARX_INTERFACE_ManageOpenedBook_LeftTabs(bool tabVisibility[11], long
 			else DrawBookInterfaceItem(ITC.currentTab[6], Vec2f(103.f, 226.f));
 		}
 
-		if(tabVisibility[7]) {
+		if(tabVisibility[6]) {
 			if(activeTab!=6) {
 				Vec2f pos = Vec2f(94.f, 259.f);
 				
@@ -955,7 +955,7 @@ static void ARX_INTERFACE_ManageOpenedBook_LeftTabs(bool tabVisibility[11], long
 			else DrawBookInterfaceItem(ITC.currentTab[7], Vec2f(101.f, 255.f));
 		}
 
-		if(tabVisibility[8]) {
+		if(tabVisibility[7]) {
 			if(activeTab!=7) {
 				Vec2f pos = Vec2f(92.f, 282.f);
 				
@@ -976,7 +976,7 @@ static void ARX_INTERFACE_ManageOpenedBook_LeftTabs(bool tabVisibility[11], long
 			else DrawBookInterfaceItem(ITC.currentTab[8], Vec2f(99.f, 283.f));
 		}
 
-		if(tabVisibility[9]) {
+		if(tabVisibility[8]) {
 			if(activeTab!=8) {
 				Vec2f pos = Vec2f(90.f, 308.f);
 				
@@ -997,7 +997,7 @@ static void ARX_INTERFACE_ManageOpenedBook_LeftTabs(bool tabVisibility[11], long
 			else DrawBookInterfaceItem(ITC.currentTab[9], Vec2f(99.f, 307.f));
 		}
 
-		if (tabVisibility[10]) {
+		if(tabVisibility[9]) {
 			if (activeTab!=9) {
 				Vec2f pos = Vec2f(97.f, 331.f);
 				
@@ -1021,7 +1021,7 @@ static void ARX_INTERFACE_ManageOpenedBook_LeftTabs(bool tabVisibility[11], long
 
 static void ARX_INTERFACE_ManageOpenedBook_LeftTabs_Spells() {
 	
-	bool tabVisibility[11] = {false};
+	bool tabVisibility[10] = {false};
 
 	for(size_t i = 0; i < SPELL_TYPES_COUNT; ++i) {
 		if(spellicons[i].bSecret == false) {
@@ -1033,7 +1033,7 @@ static void ARX_INTERFACE_ManageOpenedBook_LeftTabs_Spells() {
 			}
 
 			if(bOk)
-				tabVisibility[spellicons[i].level] = true;
+				tabVisibility[spellicons[i].level - 1] = true;
 		}
 	}
 	
@@ -1042,9 +1042,9 @@ static void ARX_INTERFACE_ManageOpenedBook_LeftTabs_Spells() {
 
 static void ARX_INTERFACE_ManageOpenedBook_LeftTabs_Map() {
 	
-	bool tabVisibility[11] = {false};
+	bool tabVisibility[10] = {false};
 	
-	long max_onglet = 8;
+	long max_onglet = 7;
 	memset(tabVisibility, true, (max_onglet + 1) * sizeof(*tabVisibility));
 	
 	ARX_INTERFACE_ManageOpenedBook_LeftTabs(tabVisibility, Book_MapPage);
