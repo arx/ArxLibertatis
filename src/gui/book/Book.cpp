@@ -46,8 +46,8 @@
 
 ARX_INTERFACE_BOOK_MODE Book_Mode = BOOKMODE_STATS;
 
-long Book_MapPage = 1;
-long Book_SpellPage = 1;
+long Book_MapPage = 0;
+long Book_SpellPage = 0;
 
 long BOOKZOOM = 0;
 long IN_BOOK_DRAW = 0;
@@ -183,14 +183,9 @@ void ARX_INTERFACE_BookToggle() {
 		SendIOScriptEvent(entities.player(),SM_BOOK_OPEN);
 		ARX_INTERFACE_NoteClose();
 		player.Interface |= INTER_MAP;
-		Book_MapPage=ARX_LEVELS_GetRealNum(CURRENTLEVEL)+1;
-
-		if(Book_MapPage > 8)
-			Book_MapPage = 8;
-
-		if(Book_MapPage < 1)
-			Book_MapPage = 1;
-
+		Book_MapPage = ARX_LEVELS_GetRealNum(CURRENTLEVEL);
+		Book_MapPage = glm::clamp(Book_MapPage, 0l, 7l);
+		
 		if(!ARXmenu.mda) {
 //			ARXmenu.mda = (MENU_DYNAMIC_DATA *)malloc(sizeof(MENU_DYNAMIC_DATA));
 //			memset(ARXmenu.mda,0,sizeof(MENU_DYNAMIC_DATA));
@@ -814,7 +809,7 @@ static void ARX_INTERFACE_ManageOpenedBook_TopTabs() {
 static void ARX_INTERFACE_ManageOpenedBook_LeftTabs(bool tabVisibility[11], long & activeTab) {
 	
 		if(tabVisibility[1]) {
-			if(activeTab!=1) {
+			if(activeTab!=0) {
 				Vec2f pos = Vec2f(100.f, 82.f);
 				
 				DrawBookInterfaceItem(ITC.accessibleTab[1], pos);
@@ -826,7 +821,7 @@ static void ARX_INTERFACE_ManageOpenedBook_LeftTabs(bool tabVisibility[11], long
 					GRenderer->SetRenderState(Renderer::AlphaBlending, false);
 					SpecialCursor=CURSOR_INTERACTION_ON;
 					if(bookclick) {
-						activeTab=1;
+						activeTab=0;
 						ARX_SOUND_PlayInterface(SND_BOOK_PAGE_TURN, 0.9F + 0.2F * rnd());
 					}
 				}
@@ -835,7 +830,7 @@ static void ARX_INTERFACE_ManageOpenedBook_LeftTabs(bool tabVisibility[11], long
 		}
 
 		if(tabVisibility[2]) {
-			if(activeTab!=2) {
+			if(activeTab!=1) {
 				Vec2f pos = Vec2f(98.f, 112.f);
 				
 				DrawBookInterfaceItem(ITC.accessibleTab[2], pos);
@@ -847,7 +842,7 @@ static void ARX_INTERFACE_ManageOpenedBook_LeftTabs(bool tabVisibility[11], long
 					GRenderer->SetRenderState(Renderer::AlphaBlending, false);
 					SpecialCursor=CURSOR_INTERACTION_ON;
 					if(bookclick) {
-						activeTab=2;
+						activeTab=1;
 						ARX_SOUND_PlayInterface(SND_BOOK_PAGE_TURN, 0.9F + 0.2F * rnd());
 					}
 				}
@@ -856,7 +851,7 @@ static void ARX_INTERFACE_ManageOpenedBook_LeftTabs(bool tabVisibility[11], long
 		}
 
 		if(tabVisibility[3]) {
-			if(activeTab!=3) {
+			if(activeTab!=2) {
 				Vec2f pos = Vec2f(97.f, 143.f);
 				
 				DrawBookInterfaceItem(ITC.accessibleTab[3], pos);
@@ -868,7 +863,7 @@ static void ARX_INTERFACE_ManageOpenedBook_LeftTabs(bool tabVisibility[11], long
 					GRenderer->SetRenderState(Renderer::AlphaBlending, false);
 					SpecialCursor=CURSOR_INTERACTION_ON;
 					if(bookclick) {
-						activeTab=3;
+						activeTab=2;
 						ARX_SOUND_PlayInterface(SND_BOOK_PAGE_TURN, 0.9F + 0.2F * rnd());
 					}
 				}
@@ -877,7 +872,7 @@ static void ARX_INTERFACE_ManageOpenedBook_LeftTabs(bool tabVisibility[11], long
 		}
 
 		if(tabVisibility[4]) {
-			if(activeTab!=4) {
+			if(activeTab!=3) {
 				Vec2f pos = Vec2f(95.f, 170.f);
 				
 				DrawBookInterfaceItem(ITC.accessibleTab[4], pos);
@@ -889,7 +884,7 @@ static void ARX_INTERFACE_ManageOpenedBook_LeftTabs(bool tabVisibility[11], long
 					GRenderer->SetRenderState(Renderer::AlphaBlending, false);
 					SpecialCursor=CURSOR_INTERACTION_ON;
 					if(bookclick) {
-						activeTab=4;
+						activeTab=3;
 						ARX_SOUND_PlayInterface(SND_BOOK_PAGE_TURN, 0.9F + 0.2F * rnd());
 					}
 				}
@@ -898,7 +893,7 @@ static void ARX_INTERFACE_ManageOpenedBook_LeftTabs(bool tabVisibility[11], long
 		}
 
 		if(tabVisibility[5]) {
-			if(activeTab!=5) {
+			if(activeTab!=4) {
 				Vec2f pos = Vec2f(95.f, 200.f);
 				
 				DrawBookInterfaceItem(ITC.accessibleTab[5], pos);
@@ -910,7 +905,7 @@ static void ARX_INTERFACE_ManageOpenedBook_LeftTabs(bool tabVisibility[11], long
 					GRenderer->SetRenderState(Renderer::AlphaBlending, false);
 					SpecialCursor=CURSOR_INTERACTION_ON;
 					if(bookclick) {
-						activeTab=5;
+						activeTab=4;
 						ARX_SOUND_PlayInterface(SND_BOOK_PAGE_TURN, 0.9F + 0.2F * rnd());
 					}
 				}
@@ -919,7 +914,7 @@ static void ARX_INTERFACE_ManageOpenedBook_LeftTabs(bool tabVisibility[11], long
 		}
 
 		if(tabVisibility[6]) {
-			if(activeTab!=6) {
+			if(activeTab!=5) {
 				Vec2f pos = Vec2f(94.f, 229.f);
 				
 				DrawBookInterfaceItem(ITC.accessibleTab[6], pos);
@@ -931,7 +926,7 @@ static void ARX_INTERFACE_ManageOpenedBook_LeftTabs(bool tabVisibility[11], long
 					GRenderer->SetRenderState(Renderer::AlphaBlending, false);
 					SpecialCursor=CURSOR_INTERACTION_ON;
 					if(bookclick) {
-						activeTab=6;
+						activeTab=5;
 						ARX_SOUND_PlayInterface(SND_BOOK_PAGE_TURN, 0.9F + 0.2F * rnd());
 					}
 				}
@@ -940,7 +935,7 @@ static void ARX_INTERFACE_ManageOpenedBook_LeftTabs(bool tabVisibility[11], long
 		}
 
 		if(tabVisibility[7]) {
-			if(activeTab!=7) {
+			if(activeTab!=6) {
 				Vec2f pos = Vec2f(94.f, 259.f);
 				
 				DrawBookInterfaceItem(ITC.accessibleTab[7], pos);
@@ -952,7 +947,7 @@ static void ARX_INTERFACE_ManageOpenedBook_LeftTabs(bool tabVisibility[11], long
 					GRenderer->SetRenderState(Renderer::AlphaBlending, false);
 					SpecialCursor=CURSOR_INTERACTION_ON;
 					if(bookclick) {
-						activeTab=7;
+						activeTab=6;
 						ARX_SOUND_PlayInterface(SND_BOOK_PAGE_TURN, 0.9F + 0.2F * rnd());
 					}
 				}
@@ -961,7 +956,7 @@ static void ARX_INTERFACE_ManageOpenedBook_LeftTabs(bool tabVisibility[11], long
 		}
 
 		if(tabVisibility[8]) {
-			if(activeTab!=8) {
+			if(activeTab!=7) {
 				Vec2f pos = Vec2f(92.f, 282.f);
 				
 				DrawBookInterfaceItem(ITC.accessibleTab[8], pos);
@@ -973,7 +968,7 @@ static void ARX_INTERFACE_ManageOpenedBook_LeftTabs(bool tabVisibility[11], long
 					GRenderer->SetRenderState(Renderer::AlphaBlending, false);
 					SpecialCursor=CURSOR_INTERACTION_ON;
 					if(bookclick) {
-						activeTab=8;
+						activeTab=7;
 						ARX_SOUND_PlayInterface(SND_BOOK_PAGE_TURN, 0.9F + 0.2F * rnd());
 					}
 				}
@@ -982,7 +977,7 @@ static void ARX_INTERFACE_ManageOpenedBook_LeftTabs(bool tabVisibility[11], long
 		}
 
 		if(tabVisibility[9]) {
-			if(activeTab!=9) {
+			if(activeTab!=8) {
 				Vec2f pos = Vec2f(90.f, 308.f);
 				
 				DrawBookInterfaceItem(ITC.accessibleTab[9], pos);
@@ -994,7 +989,7 @@ static void ARX_INTERFACE_ManageOpenedBook_LeftTabs(bool tabVisibility[11], long
 					GRenderer->SetRenderState(Renderer::AlphaBlending, false);
 					SpecialCursor=CURSOR_INTERACTION_ON;
 					if(bookclick) {
-						activeTab=9;
+						activeTab=8;
 						ARX_SOUND_PlayInterface(SND_BOOK_PAGE_TURN, 0.9F + 0.2F * rnd());
 					}
 				}
@@ -1003,7 +998,7 @@ static void ARX_INTERFACE_ManageOpenedBook_LeftTabs(bool tabVisibility[11], long
 		}
 
 		if (tabVisibility[10]) {
-			if (activeTab!=10) {
+			if (activeTab!=9) {
 				Vec2f pos = Vec2f(97.f, 331.f);
 				
 				DrawBookInterfaceItem(ITC.accessibleTab[10], pos);
@@ -1015,7 +1010,7 @@ static void ARX_INTERFACE_ManageOpenedBook_LeftTabs(bool tabVisibility[11], long
 					GRenderer->SetRenderState(Renderer::AlphaBlending, false);
 					SpecialCursor=CURSOR_INTERACTION_ON;
 					if(bookclick) {
-						activeTab=10;
+						activeTab=9;
 						ARX_SOUND_PlayInterface(SND_BOOK_PAGE_TURN, 0.9F + 0.2F * rnd());
 					}
 				}
@@ -1570,7 +1565,7 @@ static void ARX_INTERFACE_ManageOpenedBook_Stats()
 
 static void ARX_INTERFACE_ManageOpenedBook_Map()
 {
-	long SHOWLEVEL = Book_MapPage - 1;
+	long SHOWLEVEL = Book_MapPage;
 
 	if(SHOWLEVEL >= 0 && SHOWLEVEL < 32)
 		g_miniMap.showBookEntireMap(SHOWLEVEL);
@@ -1655,7 +1650,7 @@ void ARX_INTERFACE_ManageOpenedBook_SpellsDraw() {
 	for(size_t i=0; i < SPELL_TYPES_COUNT; i++) {
 		const SPELL_ICON & spellInfo = spellicons[i];
 		
-		if(spellInfo.level != Book_SpellPage || spellInfo.bSecret)
+		if(spellInfo.level != (Book_SpellPage + 1) || spellInfo.bSecret)
 			continue;
 		
 		// check if player can cast it
