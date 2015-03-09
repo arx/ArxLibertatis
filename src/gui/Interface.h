@@ -93,19 +93,9 @@ public:
 		, bookmark_magic(NULL)
 		, bookmark_map(NULL)
 		, bookmark_quest(NULL)
-		
-		, current_1(NULL)
-		, current_2(NULL)
-		, current_3(NULL)
-		, current_4(NULL)
-		, current_5(NULL)
-		, current_6(NULL)
-		, current_7(NULL)
-		, current_8(NULL)
-		, current_9(NULL)
-		, current_10(NULL)
 	{
 		std::fill_n(accessibleTab, ARRAY_SIZE(accessibleTab), (TextureContainer *)NULL);
+		std::fill_n(currentTab, ARRAY_SIZE(currentTab), (TextureContainer *)NULL);
 	}
 	
 	void Reset();
@@ -136,16 +126,7 @@ public:
 	TextureContainer * bookmark_quest;
 	
 	TextureContainer * accessibleTab[11];
-	TextureContainer * current_1;
-	TextureContainer * current_2;
-	TextureContainer * current_3;
-	TextureContainer * current_4;
-	TextureContainer * current_5;
-	TextureContainer * current_6;
-	TextureContainer * current_7;
-	TextureContainer * current_8;
-	TextureContainer * current_9;
-	TextureContainer * current_10;
+	TextureContainer * currentTab[11];
 	
 	std::string        Level;
 	std::string        Xp;
