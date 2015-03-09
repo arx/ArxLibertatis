@@ -314,26 +314,26 @@ void INTERFACE_TC::init() {
 	bookmark_map     = TextureContainer::LoadUI("graph/interface/book/bookmark_map");
 	bookmark_quest   = TextureContainer::LoadUI("graph/interface/book/bookmark_quest");
 	
-	accessibleTab[1]   = TextureContainer::LoadUI("graph/interface/book/accessible/accessible_1");
-	accessibleTab[2]   = TextureContainer::LoadUI("graph/interface/book/accessible/accessible_2");
-	accessibleTab[3]   = TextureContainer::LoadUI("graph/interface/book/accessible/accessible_3");
-	accessibleTab[4]   = TextureContainer::LoadUI("graph/interface/book/accessible/accessible_4");
-	accessibleTab[5]   = TextureContainer::LoadUI("graph/interface/book/accessible/accessible_5");
-	accessibleTab[6]   = TextureContainer::LoadUI("graph/interface/book/accessible/accessible_6");
-	accessibleTab[7]   = TextureContainer::LoadUI("graph/interface/book/accessible/accessible_7");
-	accessibleTab[8]   = TextureContainer::LoadUI("graph/interface/book/accessible/accessible_8");
-	accessibleTab[9]   = TextureContainer::LoadUI("graph/interface/book/accessible/accessible_9");
-	accessibleTab[10]  = TextureContainer::LoadUI("graph/interface/book/accessible/accessible_10");
-	currentTab[1]   = TextureContainer::LoadUI("graph/interface/book/current_page/current_1");
-	currentTab[2]   = TextureContainer::LoadUI("graph/interface/book/current_page/current_2");
-	currentTab[3]   = TextureContainer::LoadUI("graph/interface/book/current_page/current_3");
-	currentTab[4]   = TextureContainer::LoadUI("graph/interface/book/current_page/current_4");
-	currentTab[5]   = TextureContainer::LoadUI("graph/interface/book/current_page/current_5");
-	currentTab[6]   = TextureContainer::LoadUI("graph/interface/book/current_page/current_6");
-	currentTab[7]   = TextureContainer::LoadUI("graph/interface/book/current_page/current_7");
-	currentTab[8]   = TextureContainer::LoadUI("graph/interface/book/current_page/current_8");
-	currentTab[9]   = TextureContainer::LoadUI("graph/interface/book/current_page/current_9");
-	currentTab[10]  = TextureContainer::LoadUI("graph/interface/book/current_page/current_10");
+	accessibleTab[0]   = TextureContainer::LoadUI("graph/interface/book/accessible/accessible_1");
+	accessibleTab[1]   = TextureContainer::LoadUI("graph/interface/book/accessible/accessible_2");
+	accessibleTab[2]   = TextureContainer::LoadUI("graph/interface/book/accessible/accessible_3");
+	accessibleTab[3]   = TextureContainer::LoadUI("graph/interface/book/accessible/accessible_4");
+	accessibleTab[4]   = TextureContainer::LoadUI("graph/interface/book/accessible/accessible_5");
+	accessibleTab[5]   = TextureContainer::LoadUI("graph/interface/book/accessible/accessible_6");
+	accessibleTab[6]   = TextureContainer::LoadUI("graph/interface/book/accessible/accessible_7");
+	accessibleTab[7]   = TextureContainer::LoadUI("graph/interface/book/accessible/accessible_8");
+	accessibleTab[8]   = TextureContainer::LoadUI("graph/interface/book/accessible/accessible_9");
+	accessibleTab[9]   = TextureContainer::LoadUI("graph/interface/book/accessible/accessible_10");
+	currentTab[0]   = TextureContainer::LoadUI("graph/interface/book/current_page/current_1");
+	currentTab[1]   = TextureContainer::LoadUI("graph/interface/book/current_page/current_2");
+	currentTab[2]   = TextureContainer::LoadUI("graph/interface/book/current_page/current_3");
+	currentTab[3]   = TextureContainer::LoadUI("graph/interface/book/current_page/current_4");
+	currentTab[4]   = TextureContainer::LoadUI("graph/interface/book/current_page/current_5");
+	currentTab[5]   = TextureContainer::LoadUI("graph/interface/book/current_page/current_6");
+	currentTab[6]   = TextureContainer::LoadUI("graph/interface/book/current_page/current_7");
+	currentTab[7]   = TextureContainer::LoadUI("graph/interface/book/current_page/current_8");
+	currentTab[8]   = TextureContainer::LoadUI("graph/interface/book/current_page/current_9");
+	currentTab[9]   = TextureContainer::LoadUI("graph/interface/book/current_page/current_10");
 	
 	
 	arx_assert(playerbook);
@@ -359,6 +359,7 @@ void INTERFACE_TC::init() {
 	arx_assert(bookmark_quest);
 	
 	arx_assert(accessibleTab[1]);
+	arx_assert(accessibleTab[1]);
 	arx_assert(accessibleTab[2]);
 	arx_assert(accessibleTab[3]);
 	arx_assert(accessibleTab[4]);
@@ -367,7 +368,7 @@ void INTERFACE_TC::init() {
 	arx_assert(accessibleTab[7]);
 	arx_assert(accessibleTab[8]);
 	arx_assert(accessibleTab[9]);
-	arx_assert(accessibleTab[10]);
+	arx_assert(currentTab[0]);
 	arx_assert(currentTab[1]);
 	arx_assert(currentTab[2]);
 	arx_assert(currentTab[3]);
@@ -377,7 +378,6 @@ void INTERFACE_TC::init() {
 	arx_assert(currentTab[7]);
 	arx_assert(currentTab[8]);
 	arx_assert(currentTab[9]);
-	arx_assert(currentTab[10]);
 	
 	ITC.Level = getLocalised("system_charsheet_player_lvl");
 	ITC.Xp = getLocalised("system_charsheet_player_xp");

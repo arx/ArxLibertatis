@@ -125,8 +125,8 @@ public:
 	TextureContainer * bookmark_map;
 	TextureContainer * bookmark_quest;
 	
-	TextureContainer * accessibleTab[11];
-	TextureContainer * currentTab[11];
+	TextureContainer * accessibleTab[10];
+	TextureContainer * currentTab[10];
 	
 	std::string        Level;
 	std::string        Xp;

@@ -812,6 +812,27 @@ static void ARX_INTERFACE_ManageOpenedBook_LeftTabs(bool tabVisibility[10], long
 			if(activeTab!=0) {
 				Vec2f pos = Vec2f(100.f, 82.f);
 				
+				DrawBookInterfaceItem(ITC.accessibleTab[0], pos);
+
+				if(MouseInBookRect(pos, Vec2f(32, 32))) {
+					GRenderer->SetBlendFunc(Renderer::BlendOne, Renderer::BlendOne);
+					GRenderer->SetRenderState(Renderer::AlphaBlending, true);
+					DrawBookInterfaceItem(ITC.accessibleTab[0], pos, Color::grayb(0x55));
+					GRenderer->SetRenderState(Renderer::AlphaBlending, false);
+					SpecialCursor=CURSOR_INTERACTION_ON;
+					if(bookclick) {
+						activeTab=0;
+						ARX_SOUND_PlayInterface(SND_BOOK_PAGE_TURN, 0.9F + 0.2F * rnd());
+					}
+				}
+			}
+			else DrawBookInterfaceItem(ITC.currentTab[0], Vec2f(102.f, 82.f));
+		}
+
+		if(tabVisibility[1]) {
+			if(activeTab!=1) {
+				Vec2f pos = Vec2f(98.f, 112.f);
+				
 				DrawBookInterfaceItem(ITC.accessibleTab[1], pos);
 
 				if(MouseInBookRect(pos, Vec2f(32, 32))) {
@@ -821,17 +842,17 @@ static void ARX_INTERFACE_ManageOpenedBook_LeftTabs(bool tabVisibility[10], long
 					GRenderer->SetRenderState(Renderer::AlphaBlending, false);
 					SpecialCursor=CURSOR_INTERACTION_ON;
 					if(bookclick) {
-						activeTab=0;
+						activeTab=1;
 						ARX_SOUND_PlayInterface(SND_BOOK_PAGE_TURN, 0.9F + 0.2F * rnd());
 					}
 				}
 			}
-			else DrawBookInterfaceItem(ITC.currentTab[1], Vec2f(102.f, 82.f));
+			else DrawBookInterfaceItem(ITC.currentTab[1], Vec2f(100.f, 114.f));
 		}
 
-		if(tabVisibility[1]) {
-			if(activeTab!=1) {
-				Vec2f pos = Vec2f(98.f, 112.f);
+		if(tabVisibility[2]) {
+			if(activeTab!=2) {
+				Vec2f pos = Vec2f(97.f, 143.f);
 				
 				DrawBookInterfaceItem(ITC.accessibleTab[2], pos);
 
@@ -842,17 +863,17 @@ static void ARX_INTERFACE_ManageOpenedBook_LeftTabs(bool tabVisibility[10], long
 					GRenderer->SetRenderState(Renderer::AlphaBlending, false);
 					SpecialCursor=CURSOR_INTERACTION_ON;
 					if(bookclick) {
-						activeTab=1;
+						activeTab=2;
 						ARX_SOUND_PlayInterface(SND_BOOK_PAGE_TURN, 0.9F + 0.2F * rnd());
 					}
 				}
 			}
-			else DrawBookInterfaceItem(ITC.currentTab[2], Vec2f(100.f, 114.f));
+			else DrawBookInterfaceItem(ITC.currentTab[2], Vec2f(101.f, 141.f));
 		}
 
-		if(tabVisibility[2]) {
-			if(activeTab!=2) {
-				Vec2f pos = Vec2f(97.f, 143.f);
+		if(tabVisibility[3]) {
+			if(activeTab!=3) {
+				Vec2f pos = Vec2f(95.f, 170.f);
 				
 				DrawBookInterfaceItem(ITC.accessibleTab[3], pos);
 
@@ -863,17 +884,17 @@ static void ARX_INTERFACE_ManageOpenedBook_LeftTabs(bool tabVisibility[10], long
 					GRenderer->SetRenderState(Renderer::AlphaBlending, false);
 					SpecialCursor=CURSOR_INTERACTION_ON;
 					if(bookclick) {
-						activeTab=2;
+						activeTab=3;
 						ARX_SOUND_PlayInterface(SND_BOOK_PAGE_TURN, 0.9F + 0.2F * rnd());
 					}
 				}
 			}
-			else DrawBookInterfaceItem(ITC.currentTab[3], Vec2f(101.f, 141.f));
+			else DrawBookInterfaceItem(ITC.currentTab[3], Vec2f(100.f, 170.f));
 		}
 
-		if(tabVisibility[3]) {
-			if(activeTab!=3) {
-				Vec2f pos = Vec2f(95.f, 170.f);
+		if(tabVisibility[4]) {
+			if(activeTab!=4) {
+				Vec2f pos = Vec2f(95.f, 200.f);
 				
 				DrawBookInterfaceItem(ITC.accessibleTab[4], pos);
 
@@ -884,17 +905,17 @@ static void ARX_INTERFACE_ManageOpenedBook_LeftTabs(bool tabVisibility[10], long
 					GRenderer->SetRenderState(Renderer::AlphaBlending, false);
 					SpecialCursor=CURSOR_INTERACTION_ON;
 					if(bookclick) {
-						activeTab=3;
+						activeTab=4;
 						ARX_SOUND_PlayInterface(SND_BOOK_PAGE_TURN, 0.9F + 0.2F * rnd());
 					}
 				}
 			}
-			else DrawBookInterfaceItem(ITC.currentTab[4], Vec2f(100.f, 170.f));
+			else DrawBookInterfaceItem(ITC.currentTab[4], Vec2f(97.f, 199.f));
 		}
 
-		if(tabVisibility[4]) {
-			if(activeTab!=4) {
-				Vec2f pos = Vec2f(95.f, 200.f);
+		if(tabVisibility[5]) {
+			if(activeTab!=5) {
+				Vec2f pos = Vec2f(94.f, 229.f);
 				
 				DrawBookInterfaceItem(ITC.accessibleTab[5], pos);
 
@@ -905,17 +926,17 @@ static void ARX_INTERFACE_ManageOpenedBook_LeftTabs(bool tabVisibility[10], long
 					GRenderer->SetRenderState(Renderer::AlphaBlending, false);
 					SpecialCursor=CURSOR_INTERACTION_ON;
 					if(bookclick) {
-						activeTab=4;
+						activeTab=5;
 						ARX_SOUND_PlayInterface(SND_BOOK_PAGE_TURN, 0.9F + 0.2F * rnd());
 					}
 				}
 			}
-			else DrawBookInterfaceItem(ITC.currentTab[5], Vec2f(97.f, 199.f));
+			else DrawBookInterfaceItem(ITC.currentTab[5], Vec2f(103.f, 226.f));
 		}
 
-		if(tabVisibility[5]) {
-			if(activeTab!=5) {
-				Vec2f pos = Vec2f(94.f, 229.f);
+		if(tabVisibility[6]) {
+			if(activeTab!=6) {
+				Vec2f pos = Vec2f(94.f, 259.f);
 				
 				DrawBookInterfaceItem(ITC.accessibleTab[6], pos);
 
@@ -926,17 +947,17 @@ static void ARX_INTERFACE_ManageOpenedBook_LeftTabs(bool tabVisibility[10], long
 					GRenderer->SetRenderState(Renderer::AlphaBlending, false);
 					SpecialCursor=CURSOR_INTERACTION_ON;
 					if(bookclick) {
-						activeTab=5;
+						activeTab=6;
 						ARX_SOUND_PlayInterface(SND_BOOK_PAGE_TURN, 0.9F + 0.2F * rnd());
 					}
 				}
 			}
-			else DrawBookInterfaceItem(ITC.currentTab[6], Vec2f(103.f, 226.f));
+			else DrawBookInterfaceItem(ITC.currentTab[6], Vec2f(101.f, 255.f));
 		}
 
-		if(tabVisibility[6]) {
-			if(activeTab!=6) {
-				Vec2f pos = Vec2f(94.f, 259.f);
+		if(tabVisibility[7]) {
+			if(activeTab!=7) {
+				Vec2f pos = Vec2f(92.f, 282.f);
 				
 				DrawBookInterfaceItem(ITC.accessibleTab[7], pos);
 
@@ -947,17 +968,17 @@ static void ARX_INTERFACE_ManageOpenedBook_LeftTabs(bool tabVisibility[10], long
 					GRenderer->SetRenderState(Renderer::AlphaBlending, false);
 					SpecialCursor=CURSOR_INTERACTION_ON;
 					if(bookclick) {
-						activeTab=6;
+						activeTab=7;
 						ARX_SOUND_PlayInterface(SND_BOOK_PAGE_TURN, 0.9F + 0.2F * rnd());
 					}
 				}
 			}
-			else DrawBookInterfaceItem(ITC.currentTab[7], Vec2f(101.f, 255.f));
+			else DrawBookInterfaceItem(ITC.currentTab[7], Vec2f(99.f, 283.f));
 		}
 
-		if(tabVisibility[7]) {
-			if(activeTab!=7) {
-				Vec2f pos = Vec2f(92.f, 282.f);
+		if(tabVisibility[8]) {
+			if(activeTab!=8) {
+				Vec2f pos = Vec2f(90.f, 308.f);
 				
 				DrawBookInterfaceItem(ITC.accessibleTab[8], pos);
 
@@ -968,17 +989,17 @@ static void ARX_INTERFACE_ManageOpenedBook_LeftTabs(bool tabVisibility[10], long
 					GRenderer->SetRenderState(Renderer::AlphaBlending, false);
 					SpecialCursor=CURSOR_INTERACTION_ON;
 					if(bookclick) {
-						activeTab=7;
+						activeTab=8;
 						ARX_SOUND_PlayInterface(SND_BOOK_PAGE_TURN, 0.9F + 0.2F * rnd());
 					}
 				}
 			}
-			else DrawBookInterfaceItem(ITC.currentTab[8], Vec2f(99.f, 283.f));
+			else DrawBookInterfaceItem(ITC.currentTab[8], Vec2f(99.f, 307.f));
 		}
 
-		if(tabVisibility[8]) {
-			if(activeTab!=8) {
-				Vec2f pos = Vec2f(90.f, 308.f);
+		if(tabVisibility[9]) {
+			if (activeTab!=9) {
+				Vec2f pos = Vec2f(97.f, 331.f);
 				
 				DrawBookInterfaceItem(ITC.accessibleTab[9], pos);
 
@@ -989,33 +1010,12 @@ static void ARX_INTERFACE_ManageOpenedBook_LeftTabs(bool tabVisibility[10], long
 					GRenderer->SetRenderState(Renderer::AlphaBlending, false);
 					SpecialCursor=CURSOR_INTERACTION_ON;
 					if(bookclick) {
-						activeTab=8;
-						ARX_SOUND_PlayInterface(SND_BOOK_PAGE_TURN, 0.9F + 0.2F * rnd());
-					}
-				}
-			}
-			else DrawBookInterfaceItem(ITC.currentTab[9], Vec2f(99.f, 307.f));
-		}
-
-		if(tabVisibility[9]) {
-			if (activeTab!=9) {
-				Vec2f pos = Vec2f(97.f, 331.f);
-				
-				DrawBookInterfaceItem(ITC.accessibleTab[10], pos);
-
-				if(MouseInBookRect(pos, Vec2f(32, 32))) {
-					GRenderer->SetBlendFunc(Renderer::BlendOne, Renderer::BlendOne);
-					GRenderer->SetRenderState(Renderer::AlphaBlending, true);
-					DrawBookInterfaceItem(ITC.accessibleTab[10], pos, Color::grayb(0x55));
-					GRenderer->SetRenderState(Renderer::AlphaBlending, false);
-					SpecialCursor=CURSOR_INTERACTION_ON;
-					if(bookclick) {
 						activeTab=9;
 						ARX_SOUND_PlayInterface(SND_BOOK_PAGE_TURN, 0.9F + 0.2F * rnd());
 					}
 				}
 			}
-			else DrawBookInterfaceItem(ITC.currentTab[10], Vec2f(104.f, 331.f));
+			else DrawBookInterfaceItem(ITC.currentTab[9], Vec2f(104.f, 331.f));
 		}
 }
 
