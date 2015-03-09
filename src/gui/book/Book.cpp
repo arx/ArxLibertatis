@@ -847,7 +847,6 @@ static void ARX_INTERFACE_ManageOpenedBook_LeftTabs() {
 		memset(bOnglet, true, (max_onglet + 1) * sizeof(*bOnglet));
 	}
 	
-	if(Book_Mode == BOOKMODE_SPELLS || Book_Mode == BOOKMODE_MINIMAP) {
 		if(bOnglet[1]) {
 			if(Book_Page!=1) {
 				Vec2f pos = Vec2f(100.f, 82.f);
@@ -1063,7 +1062,6 @@ static void ARX_INTERFACE_ManageOpenedBook_LeftTabs() {
 		} else if(Book_Mode == BOOKMODE_MINIMAP) {
 			Book_MapPage = Book_Page;
 		}
-	}	
 }
 
 static void ARX_INTERFACE_ManageOpenedBook_Stats()
@@ -1611,10 +1609,12 @@ void ARX_INTERFACE_ManageOpenedBook() {
 			}
 			case BOOKMODE_SPELLS: {
 				DrawBookInterfaceItem(ITC.ptexspellbook, Vec2f(97, 64), Color::white, 0.9999f);
+				ARX_INTERFACE_ManageOpenedBook_LeftTabs();
 				break;
 			}
 			case BOOKMODE_MINIMAP: {
 				DrawBookInterfaceItem(ITC.questbook, Vec2f(97, 64), Color::white, 0.9999f);
+				ARX_INTERFACE_ManageOpenedBook_LeftTabs();
 				break;
 			}
 			case BOOKMODE_QUESTS: {
@@ -1624,8 +1624,6 @@ void ARX_INTERFACE_ManageOpenedBook() {
 		}
 		
 		ARX_INTERFACE_ManageOpenedBook_TopTabs();
-		
-		ARX_INTERFACE_ManageOpenedBook_LeftTabs();
 		
 		bookclick = false;
 		
