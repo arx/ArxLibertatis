@@ -274,30 +274,23 @@ void Credits::render() {
 
 
 
-	if ( (iSize <= CreditsData.iFirstLine) && ( iFadeAction != AMCM_MAIN ) )
-	{
+	if(iSize <= CreditsData.iFirstLine && iFadeAction != AMCM_MAIN) {
 		ARXmenu.mda->creditspos = 0;
 		ARXmenu.mda->creditstart = 0 ;
 		CreditsData.iFirstLine = 0 ;
-
+		
 		bFadeInOut = true;
 		bFade = true;
-		iFadeAction=AMCM_MAIN;
-
+		iFadeAction = AMCM_MAIN;
+		
 		ARX_MENU_LaunchAmb(AMB_MENU);
 	}
 
-	if(ProcessFadeInOut(bFadeInOut,0.1f))
-	{
-		switch(iFadeAction)
-		{
-		case AMCM_MAIN:
-			ARXmenu.currentmode=AMCM_MAIN;
-			iFadeAction=-1;
-			bFadeInOut=false;
-			bFade=true;
-			break;
-		}
+	if(ProcessFadeInOut(bFadeInOut,0.1f) && iFadeAction == AMCM_MAIN) {
+		ARXmenu.currentmode = AMCM_MAIN;
+		iFadeAction = -1;
+		bFadeInOut = false;
+		bFade = true;
 	}
 	
 	GRenderer->SetRenderState(Renderer::DepthWrite, true);
