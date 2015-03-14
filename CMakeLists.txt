@@ -464,9 +464,7 @@ if(NOT MSVC)
 	
 	if(USE_STATIC_LIBS)
 		add_ldflag("-static-libstdc++")
-		if(WIN32)
-			add_ldflag("-static-libgcc")
-		endif()
+		add_ldflag("-static-libgcc")
 	endif()
 	
 	if(USE_CXX11)
