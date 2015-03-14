@@ -1348,6 +1348,8 @@ static void ARX_PORTALS_Frustrum_RenderRoom_TransparencyTSoftCull(long room_num)
 static void ARX_PORTALS_Frustrum_ComputeRoom(size_t roomIndex,
                                              const EERIE_FRUSTRUM & frustrum) {
 	
+	arx_assert(roomIndex < portals->rooms.size());
+	
 	if(RoomDraw[roomIndex].count == 0) {
 		RoomDrawList.push_back(roomIndex);
 	}
@@ -1468,6 +1470,8 @@ void ARX_SCENE_Update() {
 		for(size_t i = 0; i < RoomDrawList.size(); i++) {
 			ARX_PORTALS_Frustrum_RenderRoomTCullSoft(RoomDrawList[i], RoomDraw[RoomDrawList[i]].frustrum, tim);
 		}
+	} else {
+		RoomDrawRelease();
 	}
 
 	ARX_THROWN_OBJECT_Manage(checked_range_cast<unsigned long>(framedelay));
