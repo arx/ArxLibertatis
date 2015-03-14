@@ -520,7 +520,7 @@ void InitTileLights()
 	for (long j=0;j<MAX_BKGZ;j++)
 	for (long i=0;i<MAX_BKGZ;i++)
 	{
-		tilelights[i][j].el.resize(0);
+		tilelights[i][j].el.clear();
 	}
 }
 
@@ -549,7 +549,7 @@ void ComputeTileLights(short x,short z)
 void ClearTileLights() {
 	for(long j = 0; j < MAX_BKGZ; j++) {
 		for(long i = 0; i < MAX_BKGZ; i++) {
-			tilelights[i][j].el.resize(0);
+			tilelights[i][j].el.clear();
 		}
 	}
 }
