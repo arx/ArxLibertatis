@@ -793,8 +793,8 @@ static void CreateScreenFrustrum(EERIE_FRUSTRUM * frustrum) {
 }
 
 void RoomDrawRelease() {
-	RoomDrawList.resize(0);
-	RoomDraw.resize(0);
+	RoomDrawList.clear();
+	RoomDraw.clear();
 }
 
 static void RoomFrustrumAdd(size_t num, const EERIE_FRUSTRUM & fr) {
