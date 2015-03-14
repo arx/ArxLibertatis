@@ -533,7 +533,7 @@ Vec2f MiniMap::computePlayerPos(float zoom, int showLevel) {
 
 void MiniMap::drawBackground(int showLevel, Rect boundaries, float startX, float startY, float zoom, float fadeBorder, float decalX, float decalY, bool invColor, float alpha) {
 	
-	m_mapVertices.resize(0);
+	m_mapVertices.clear();
 
 	float caseX = zoom / ((float)MINIMAP_MAX_X);
 	float caseY = zoom / ((float)MINIMAP_MAX_Z);
