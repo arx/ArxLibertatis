@@ -592,6 +592,8 @@ bool ApplySpeechPos(EERIE_CAMERA * conversationcamera, long is) {
 	}
 	
 	conversationcamera->d_pos = aspeech[is].io->pos + player.baseOffset();
+	
+	// XXX Missing conversion to radians ?
 	float t = (aspeech[is].io->angle.getPitch());
 	conversationcamera->orgTrans.pos = conversationcamera->d_pos;
 	conversationcamera->orgTrans.pos += Vec3f(std::sin(t) * 100.f, 0.f, -std::cos(t) * 100.f);
