@@ -240,9 +240,9 @@ void ARX_KEYRING_Combine(Entity * io) {
  */
 void ARX_PLAYER_FrontPos(Vec3f * pos)
 {
-	pos->x = player.pos.x - std::sin(glm::radians(MAKEANGLE(player.angle.getPitch()))) * 100.f;
-	pos->y = player.pos.y + 100.f; //-100.f;
-	pos->z = player.pos.z + std::cos(glm::radians(MAKEANGLE(player.angle.getPitch()))) * 100.f;
+	*pos = player.pos;
+	*pos += angleToVectorXZ(player.angle.getPitch()) * 100.f;
+	*pos += Vec3f(0.f, 100.f, 0.f); // XXX use -100 here ?
 }
 
 /*!
@@ -1968,7 +1968,8 @@ static bool Valid_Jump_Pos() {
 	long hum = 0;
 	for(float vv = 0; vv < 360.f; vv += 20.f) {
 		tmpp.origin = player.basePosition();
-		tmpp.origin += Vec3f(-std::sin(glm::radians(vv)) * 20.f, 0.f, std::cos(glm::radians(vv)) * 20.f);
+		tmpp.origin += angleToVectorXZ(vv) * 20.f;
+		
 		tmpp.radius = player.physics.cyl.radius;
 		float anything = CheckAnythingInCylinder(tmpp, entities.player(), CFLAG_JUST_TEST);
 		if(anything > 10) {
