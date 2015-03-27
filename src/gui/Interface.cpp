@@ -1032,17 +1032,13 @@ void ArxGame::managePlayerControls() {
 
 			// Checks WALK_FORWARD Key Status.
 			if(GInput->actionPressed(CONTROLS_CUST_WALKFORWARD)) {
-				float tr = glm::radians(eyeball.angle.getPitch());
-				eyeball.pos.x += -std::sin(tr) * 20.f * FD * 0.033f;
-				eyeball.pos.z += +std::cos(tr) * 20.f * FD * 0.033f;
+				eyeball.pos += angleToVectorXZ(eyeball.angle.getPitch()) * 20.f * FD * 0.033f;
 				NOMOREMOVES=1;
 			}
 
 			// Checks WALK_BACKWARD Key Status.
 			if(GInput->actionPressed(CONTROLS_CUST_WALKBACKWARD)) {
-				float tr = glm::radians(eyeball.angle.getPitch());
-				eyeball.pos.x +=  std::sin(tr) * 20.f * FD * 0.033f;
-				eyeball.pos.z += -std::cos(tr) * 20.f * FD * 0.033f;
+				eyeball.pos += angleToVectorXZ_180offset(eyeball.angle.getPitch()) * 20.f * FD * 0.033f;
 				NOMOREMOVES=1;
 			}
 
@@ -1051,9 +1047,7 @@ void ArxGame::managePlayerControls() {
 				(GInput->actionPressed(CONTROLS_CUST_STRAFE)&&GInput->actionPressed(CONTROLS_CUST_TURNLEFT)))
 				&& !NOMOREMOVES)
 			{
-				float tr = glm::radians(MAKEANGLE(eyeball.angle.getPitch()+90.f));
-				eyeball.pos.x += -std::sin(tr) * 10.f * FD * 0.033f;
-				eyeball.pos.z += +std::cos(tr) * 10.f * FD * 0.033f;
+				eyeball.pos += angleToVectorXZ(eyeball.angle.getPitch() + 90.f) * 10.f * FD * 0.033f;
 				NOMOREMOVES=1;			
 			}
 
@@ -1062,10 +1056,8 @@ void ArxGame::managePlayerControls() {
 				(GInput->actionPressed(CONTROLS_CUST_STRAFE)&&GInput->actionPressed(CONTROLS_CUST_TURNRIGHT)))
 				&& !NOMOREMOVES)
 			{
-				float tr = glm::radians(MAKEANGLE(eyeball.angle.getPitch()-90.f));
-				eyeball.pos.x += -std::sin(tr) * 10.f * FD * 0.033f;
+				eyeball.pos += angleToVectorXZ(eyeball.angle.getPitch() - 90.f) * 10.f * FD * 0.033f;
 				//eyeball.pos.y+=FD*0.33f;
-				eyeball.pos.z +=  std::cos(tr) * 10.f * FD * 0.033f;
 				NOMOREMOVES=1;
 			}
 
@@ -1122,15 +1114,13 @@ void ArxGame::managePlayerControls() {
 			if(left || right) {
 				multi = 0.8f;
 			}
-
-			float t = glm::radians(player.angle.getPitch());
+			
 			multi = 5.f * FD * MoveDiv * multi;
-			tm.x += std::sin(t) * multi;
-			tm.z -= std::cos(t) * multi;
+			tm += angleToVectorXZ_180offset(player.angle.getPitch()) * multi;
 
 			if(!USE_PLAYERCOLLISIONS) {
-				t = glm::radians(player.angle.getYaw());
-				tm.y-=std::sin(t)*multi;
+				float t = glm::radians(player.angle.getYaw());
+				tm.y -= std::sin(t) * multi;
 			}
 
 			player.Current_Movement|=PLAYER_MOVE_WALK_BACKWARD;
@@ -1149,15 +1139,13 @@ void ArxGame::managePlayerControls() {
 			if(left || right) {
 				multi=0.8f;
 			}
-
-			float t = glm::radians(player.angle.getPitch());
+			
 			multi = 10.f * FD * MoveDiv * multi;
-			tm.x -= std::sin(t) * multi;
-			tm.z += std::cos(t) * multi;
+			tm += angleToVectorXZ(player.angle.getPitch()) * multi;
 
 			if(!USE_PLAYERCOLLISIONS) {
-				t = glm::radians(player.angle.getYaw());
-				tm.y+=std::sin(t)*multi;
+				float t = glm::radians(player.angle.getYaw());
+				tm.y += std::sin(t) * multi;
 			}
 
 			player.Current_Movement|=PLAYER_MOVE_WALK_FORWARD;
@@ -1171,11 +1159,9 @@ void ArxGame::managePlayerControls() {
 		// Checks STRAFE_LEFT Key Status.
 		if(left && !NOMOREMOVES) {
 			CurrFightPos=0;
-			float t = glm::radians(MAKEANGLE(player.angle.getPitch()+90.f));
 			float multi = 6.f * FD * MoveDiv;
-			tm.x -= std::sin(t) * multi;
-			tm.z += std::cos(t) * multi;
-
+			tm += angleToVectorXZ(player.angle.getPitch() + 90.f) * multi;
+			
 			player.Current_Movement|=PLAYER_MOVE_STRAFE_LEFT;
 
 			if (GInput->actionNowPressed(CONTROLS_CUST_STRAFELEFT) )
@@ -1187,11 +1173,9 @@ void ArxGame::managePlayerControls() {
 		// Checks STRAFE_RIGHT Key Status.
 		if(right && !NOMOREMOVES) {
 			CurrFightPos=1;
-			float t = glm::radians(MAKEANGLE(player.angle.getPitch()-90.f));
 			float multi = 6.f * FD * MoveDiv;
-			tm.x -= std::sin(t) * multi;
-			tm.z += std::cos(t) * multi;
-
+			tm += angleToVectorXZ(player.angle.getPitch() - 90.f) * multi;
+			
 			player.Current_Movement|=PLAYER_MOVE_STRAFE_RIGHT;
 
 			if(GInput->actionNowPressed(CONTROLS_CUST_STRAFERIGHT))
@@ -2311,10 +2295,11 @@ void ArxGame::manageEditorControls() {
 						
 						float y_ratio=(float)((float)DANAEMouse.y-(float)g_size.center().y)/(float)g_size.height()*2;
 						float x_ratio=-(float)((float)DANAEMouse.x-(float)g_size.center().x)/(float)g_size.center().x;
-						Vec3f viewvector;
-						viewvector.x = -std::sin(glm::radians(player.angle.getPitch()+(x_ratio*30.f))) * std::cos(glm::radians(player.angle.getYaw()));
-						viewvector.y =  std::sin(glm::radians(player.angle.getYaw())) + y_ratio;
-						viewvector.z =  std::cos(glm::radians(player.angle.getPitch()+(x_ratio*30.f))) * std::cos(glm::radians(player.angle.getYaw()));
+						
+						Vec3f viewvector = angleToVectorXZ(player.angle.getPitch() + (x_ratio * 30.f));
+						viewvector.x *= std::cos(glm::radians(player.angle.getYaw()));
+						viewvector.y = std::sin(glm::radians(player.angle.getYaw())) + y_ratio;
+						viewvector.z *= std::cos(glm::radians(player.angle.getYaw()));
 						
 						io->soundtime=0;
 						io->soundcount=0;
