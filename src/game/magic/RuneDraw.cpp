@@ -142,10 +142,11 @@ void ARX_SPELLS_UpdateSymbolDraw() {
 			if(lightHandleIsValid(io->dynlight)) {
 				EERIE_LIGHT * light = lightHandleGet(io->dynlight);
 				
+				light->pos = io->pos;
+				light->pos += angleToVectorXZ(io->angle.getPitch() - 45.f) * 60.f;
+				light->pos += Vec3f(0.f, -120.f, 0.f);
+				
 				float rr = rnd();
-				light->pos.x = io->pos.x - std::sin(glm::radians(MAKEANGLE(io->angle.getPitch() - 45.f)))*60.f;
-				light->pos.y = io->pos.y - 120.f;
-				light->pos.z = io->pos.z + std::cos(glm::radians(MAKEANGLE(io->angle.getPitch() - 45.f)))*60.f;
 				light->fallstart=140.f+(float)io->flarecount*0.333333f+rr*5.f;
 				light->fallend=220.f+(float)io->flarecount*0.5f+rr*5.f;
 				light->intensity=1.6f;
@@ -305,10 +306,14 @@ static void ARX_SPELLS_RequestSymbolDrawCommon(Entity * io, float duration,
 
 	sd->starttime = (unsigned long)(arxtime);
 	sd->lasttim = 0;
-	sd->lastpos.x = io->pos.x - std::sin(glm::radians(MAKEANGLE(io->angle.getPitch() - 45.0F + info.startOffset.x*2))) * 60.0F;
-	sd->lastpos.y = io->pos.y - 120.0F - info.startOffset.y*5;
-	sd->lastpos.z = io->pos.z + std::cos(glm::radians(MAKEANGLE(io->angle.getPitch() - 45.0F + info.startOffset.x * 2))) * 60.0F;
-
+	
+	float tmpAngle = io->angle.getPitch() - 45.0F + info.startOffset.x * 2;
+	
+	sd->lastpos = io->pos;
+	sd->lastpos += angleToVectorXZ(tmpAngle) * 60.f;
+	sd->lastpos += Vec3f(0.f, -120.0f, 0.f);
+	sd->lastpos += Vec3f(0.f, -info.startOffset.y * 5, 0.f);
+	
 	sd->cPosStart = info.startOffset;
 
 	io->gameFlags &= ~GFLAG_INVISIBILITY;

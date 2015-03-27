@@ -60,14 +60,14 @@ Vec3f SpellBase::getTargetPos(EntityHandle source, EntityHandle target)
 		// no target... targeted by sight
 		if(source == PlayerEntityHandle) {
 			// no target... player spell targeted by sight
-			targetPos.x = player.pos.x - std::sin(glm::radians(player.angle.getPitch()))*60.f;
-			targetPos.y = player.pos.y + std::sin(glm::radians(player.angle.getYaw()))*60.f;
-			targetPos.z = player.pos.z + std::cos(glm::radians(player.angle.getPitch()))*60.f;
+			targetPos = player.pos;
+			targetPos += angleToVectorXZ(player.angle.getPitch()) * 60.f;
+			targetPos.y += std::sin(glm::radians(player.angle.getYaw())) * 60.f;
 		} else {
 			// TODO entities[target] with target < 0 ??? - uh oh!
-			targetPos.x = entities[target]->pos.x - std::sin(glm::radians(entities[target]->angle.getPitch()))*60.f;
-			targetPos.y = entities[target]->pos.y - 120.f;
-			targetPos.z = entities[target]->pos.z + std::cos(glm::radians(entities[target]->angle.getPitch()))*60.f;
+			targetPos = entities[target]->pos;
+			targetPos += angleToVectorXZ(entities[target]->angle.getPitch()) * 60.f;
+			targetPos += Vec3f(0.f, -120.f, 0.f);
 		}
 	} else if(target == PlayerEntityHandle) {
 		// player target
