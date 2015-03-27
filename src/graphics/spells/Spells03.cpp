@@ -94,13 +94,14 @@ void CFireBall::Create(Vec3f aeSrc, float afBeta, float afAlpha)
 {
 	SetDuration(ulDuration);
 	
-	eSrc.x = aeSrc.x - std::sin(glm::radians(afBeta)) * 60;
-	eSrc.y = aeSrc.y;
-	eSrc.z = aeSrc.z + std::cos(glm::radians(afBeta)) * 60;
-
-	eMove.x = - std::sin(glm::radians(afBeta)) * 80 * glm::cos(glm::radians(MAKEANGLE(afAlpha)));
-	eMove.y = glm::sin(glm::radians(MAKEANGLE(afAlpha))) * 80;
-	eMove.z = + std::cos(glm::radians(afBeta)) * 80 * glm::cos(glm::radians(MAKEANGLE(afAlpha)));
+	eSrc = aeSrc;
+	eSrc += angleToVectorXZ(afBeta) * 60.f;
+	
+	eMove = angleToVectorXZ(afBeta) * 80.f;
+	
+	eMove.x *= glm::cos(glm::radians(MAKEANGLE(afAlpha)));
+	eMove.y = glm::sin(glm::radians(MAKEANGLE(afAlpha))) * 80.f;
+	eMove.z *= glm::cos(glm::radians(MAKEANGLE(afAlpha)));
 	
 	// Light
 	lLightId = LightHandle::Invalid;
