@@ -37,6 +37,7 @@ class LegacyMathTest : public CppUnit::TestFixture {
 	CPPUNIT_TEST(angleConversionTest);
 	CPPUNIT_TEST(cameraRotationTest);
 	CPPUNIT_TEST(inventorySizeTest);
+	CPPUNIT_TEST(angleToVectorXZ_Test);
 	CPPUNIT_TEST_SUITE_END();
 	
 public:
@@ -59,6 +60,8 @@ public:
 	void cameraRotationTest();
 	
 	void inventorySizeTest();
+	
+	void angleToVectorXZ_Test();
 };
 
 #endif // ARX_TESTS_GRAPHICS_LEGACYMATHTEST_H

@@ -672,6 +672,16 @@ Vec3f VRotateZ(const Vec3f in, const float angle) {
 	return Vec3f((in.x * c) + (in.y * s), (in.y * c) - (in.x * s), in.z);
 }
 
+Vec3f angleToVectorXZ(float angleDegrees) {
+	float t = glm::radians(angleDegrees);
+	return Vec3f(-std::sin(t), 0.f, std::cos(t));
+}
+
+Vec3f angleToVectorXZ_180offset(float angleDegrees) {
+	float t = glm::radians(angleDegrees);
+	return Vec3f(std::sin(t), 0.f, -std::cos(t));
+}
+
 //A x B = <Ay*Bz - Az*By, Az*Bx - Ax*Bz, Ax*By - Ay*Bx>
 void CalcFaceNormal(EERIEPOLY * ep, const TexturedVertex * v) {
 	

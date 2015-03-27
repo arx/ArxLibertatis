@@ -196,6 +196,13 @@ Vec3f VRotateX(const Vec3f in, const float angle);
 Vec3f VRotateY(const Vec3f in, const float angle);
 Vec3f VRotateZ(const Vec3f in, const float angle);
 
+// Rotates counterclockwise zero at (0, 0, 1);
+Vec3f angleToVectorXZ(float angleDegrees);
+
+// Rotates counterclockwise zero at (0, 0, -1);
+Vec3f angleToVectorXZ_180offset(float angleDegrees);
+
+
 void CalcFaceNormal(EERIEPOLY * ep, const TexturedVertex * v);
 void CalcObjFaceNormal(const Vec3f * v0, const Vec3f * v1, const Vec3f * v2, EERIE_FACE * ef);
 bool Triangles_Intersect(const EERIE_TRI * v, const EERIE_TRI * u);
