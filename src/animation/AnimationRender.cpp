@@ -404,10 +404,10 @@ void Cedric_ApplyLightingFirstPartRefactor(Entity *io) {
 }
 
 static Vec3f angleToVecForCedricHalo(const Anglef & angle) {
-	Vec3f cam_vector;
-	cam_vector.x = -std::sin(glm::radians(angle.getPitch())) * std::cos(glm::radians(angle.getYaw()));
-	cam_vector.y =  std::sin(glm::radians(angle.getYaw()));
-	cam_vector.z =  std::cos(glm::radians(angle.getPitch())) * std::cos(glm::radians(angle.getYaw()));
+	Vec3f cam_vector = angleToVectorXZ(angle.getPitch());
+	cam_vector.x *= std::cos(glm::radians(angle.getYaw()));
+	cam_vector.y = std::sin(glm::radians(angle.getYaw()));
+	cam_vector.z *= std::cos(glm::radians(angle.getYaw()));
 	
 	return cam_vector;
 }

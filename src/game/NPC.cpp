@@ -538,10 +538,11 @@ static long AnchorData_GetNearest_2(float beta, Vec3f * pos, Cylinder * cyl) {
 	Vec3f vect(-std::sin(d), 0, std::cos(d));
 	vect = glm::normalize(vect);
 
-	Vec3f posi;
-	posi.x = pos->x + vect.x * 50.f;
-	posi.y = pos->y;
-	posi.z = pos->z + vect.x * 50.f;
+	Vec3f posi = *pos;
+	posi.x += vect.x * 50.f;
+	// XXX should this really be vect.x ? copy-paste error ?
+	posi.z += vect.x * 50.f;
+	
 	return AnchorData_GetNearest(&posi, cyl);
 }
 

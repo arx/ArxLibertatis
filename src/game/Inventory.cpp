@@ -245,11 +245,11 @@ void PutInFrontOfPlayer(Entity * io)
 {
 	if(!io)
 		return;
-
-	float t = glm::radians(player.angle.getPitch());
-	io->pos.x = player.pos.x - std::sin(t) * 80.f;
-	io->pos.y = player.pos.y + 20.f; 
-	io->pos.z = player.pos.z + std::cos(t) * 80.f;
+	
+	io->pos = player.pos;
+	io->pos += angleToVectorXZ(player.angle.getPitch()) * 80.f;
+	io->pos += Vec3f(0.f, 20.f, 0.f);
+	
 	io->velocity.y = 0.3f;
 	io->velocity.x = 0; 
 	io->velocity.z = 0; 
