@@ -41,15 +41,14 @@ void RiseDeadSpell::GetTargetAndBeta(Vec3f & target, float & beta)
 	
 	if(m_caster == PlayerEntityHandle) {
 		target = player.basePosition();
-		beta = MAKEANGLE(player.angle.getPitch());
+		beta = player.angle.getPitch();
 	} else {
 		target = entities[m_caster]->pos;
-		beta = MAKEANGLE(entities[m_caster]->angle.getPitch());
+		beta = entities[m_caster]->angle.getPitch();
 		displace = (entities[m_caster]->ioflags & IO_NPC) == IO_NPC;
 	}
 	if(displace) {
-		target.x -= std::sin(glm::radians(beta)) * 300.f;
-		target.z += std::cos(glm::radians(beta)) * 300.f;
+		target += angleToVectorXZ(beta) * 300.f;
 	}
 }
 
@@ -305,8 +304,7 @@ void CreateFieldSpell::Launch()
 		}
 	}
 	if(displace) {
-		target.x -= std::sin(glm::radians(MAKEANGLE(beta))) * 250.f;
-		target.z += std::cos(glm::radians(MAKEANGLE(beta))) * 250.f;
+		target += angleToVectorXZ(beta) * 250.f;
 	}
 	
 	ARX_SOUND_PlaySFX(SND_SPELL_CREATE_FIELD, &target);

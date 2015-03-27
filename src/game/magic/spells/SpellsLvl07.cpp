@@ -82,10 +82,11 @@ void FlyingEyeSpell::Launch()
 	m_hasDuration = true;
 	m_fManaCostPerSecond = 3.2f;
 	eyeball.exist = 1;
-	float angleb = MAKEANGLE(player.angle.getPitch());
-	eyeball.pos.x = player.pos.x - std::sin(glm::radians(angleb)) * 200.f;
-	eyeball.pos.y = player.pos.y + 50.f;
-	eyeball.pos.z = player.pos.z + std::cos(glm::radians(angleb)) * 200.f;
+	
+	eyeball.pos = player.pos;
+	eyeball.pos += angleToVectorXZ(player.angle.getPitch()) * 200.f;
+	eyeball.pos += Vec3f(0.f, 50.f, 0.f);
+	
 	eyeball.angle = player.angle;
 	
 	for(long n = 0; n < 12; n++) {
@@ -253,8 +254,7 @@ void FireFieldSpell::Launch()
 		}
 	}
 	if(displace) {
-		target.x -= std::sin(glm::radians(MAKEANGLE(beta))) * 250.f;
-		target.z += std::cos(glm::radians(MAKEANGLE(beta))) * 250.f;
+		target += angleToVectorXZ(beta) * 250.f;
 	}
 	
 	DamageParameters damage;
@@ -387,8 +387,7 @@ void IceFieldSpell::Launch()
 		}
 	}
 	if(displace) {
-		target.x -= std::sin(glm::radians(MAKEANGLE(beta))) * 250.f;
-		target.z += std::cos(glm::radians(MAKEANGLE(beta))) * 250.f;
+		target += angleToVectorXZ(beta) * 250.f;
 	}
 	
 	DamageParameters damage;
