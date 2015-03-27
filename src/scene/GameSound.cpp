@@ -558,13 +558,13 @@ long ARX_SOUND_PlayMenu(SourceId & sample_id, float pitch, SoundLoopMode loop) {
 
 static void ARX_SOUND_IOFrontPos(const Entity * io, Vec3f & pos) {
 	if(io) {
-		pos.x = io->pos.x - std::sin(glm::radians(MAKEANGLE(io->angle.getPitch()))) * 100.0F;
-		pos.y = io->pos.y - 100.0F;
-		pos.z = io->pos.z + std::cos(glm::radians(MAKEANGLE(io->angle.getPitch()))) * 100.0F;
+		pos = io->pos;
+		pos += angleToVectorXZ(io->angle.getPitch()) * 100.f;
+		pos += Vec3f(0.f, -100.f, 0.f);
 	} else if(ACTIVECAM) {
-		pos.x = ACTIVECAM->orgTrans.pos.x - std::sin(glm::radians(MAKEANGLE(ACTIVECAM->angle.getPitch()))) * 100.0F;
-		pos.y = ACTIVECAM->orgTrans.pos.y - 100.0F;
-		pos.z = ACTIVECAM->orgTrans.pos.z + std::cos(glm::radians(MAKEANGLE(ACTIVECAM->angle.getPitch()))) * 100.0F;
+		pos = ACTIVECAM->orgTrans.pos;
+		pos += angleToVectorXZ(ACTIVECAM->angle.getPitch()) * 100.f;
+		pos += Vec3f(0.f, -100.f, 0.f);
 	} else {
 		pos = Vec3f_ZERO;
 	}

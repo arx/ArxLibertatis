@@ -396,10 +396,11 @@ void IO_UnlinkAllLinkedObjects(Entity * io) {
 		linked->no_collide = io->index();
 		
 		Vec3f pos = io->obj->vertexlist3[io->obj->linked[k].lidx].v;
-		Vec3f vector;
-		vector.x = -std::sin(glm::radians(linked->angle.getPitch())) * 0.5f;
-		vector.y =  std::sin(glm::radians(linked->angle.getYaw()));
-		vector.z =  std::cos(glm::radians(linked->angle.getPitch())) * 0.5f;
+		
+		Vec3f vector = angleToVectorXZ(linked->angle.getPitch()) * 0.5f;
+		
+		vector.y = std::sin(glm::radians(linked->angle.getYaw()));
+		
 		EERIE_PHYSICS_BOX_Launch(linked->obj, pos, linked->angle, vector);
 		
 	}
@@ -1125,10 +1126,10 @@ bool ARX_INTERACTIVE_ConvertToValidPosForIO(Entity * io, Vec3f * target) {
 	float count = 0;
 	
 	while(count < 600) {
-		float modx = -std::sin(count) * count * (1.f / 3);
-		float modz =  std::cos(count) * count * (1.f / 3);
-		phys.origin.x = target->x + modx;
-		phys.origin.z = target->z + modz;
+		Vec3f mod = angleToVectorXZ(count) * count * (1.f / 3);
+		
+		phys.origin.x = target->x + mod.x;
+		phys.origin.z = target->z + mod.z;
 		float anything = CheckAnythingInCylinder(phys, io, CFLAG_JUST_TEST);
 
 		if(glm::abs(anything) < 150.f) {
@@ -1449,9 +1450,10 @@ Entity * AddFix(const res::path & classPath, EntityInstance instance, AddInterac
 	}
 	
 	io->spellcast_data.castingspell = SPELL_NONE;
+	
 	io->pos = player.pos;
-	io->pos.x -= std::sin(glm::radians(player.angle.getPitch())) * 140.f;
-	io->pos.z += std::cos(glm::radians(player.angle.getPitch())) * 140.f;
+	io->pos += angleToVectorXZ(player.angle.getPitch()) * 140.f;
+	
 	io->lastpos = io->initpos = io->pos;
 	io->lastpos.x = io->initpos.x = glm::abs(io->initpos.x / 20) * 20.f;
 	io->lastpos.z = io->initpos.z = glm::abs(io->initpos.z / 20) * 20.f;
@@ -1506,8 +1508,8 @@ static Entity * AddCamera(const res::path & classPath, EntityInstance instance) 
 	GetIOScript(io, script);
 	
 	io->pos = player.pos;
-	io->pos.x -= std::sin(glm::radians(player.angle.getPitch())) * 140.f;
-	io->pos.z += std::cos(glm::radians(player.angle.getPitch())) * 140.f;
+	io->pos += angleToVectorXZ(player.angle.getPitch()) * 140.f;
+	
 	io->lastpos = io->initpos = io->pos;
 	io->lastpos.x = io->initpos.x = glm::abs(io->initpos.x / 20) * 20.f;
 	io->lastpos.z = io->initpos.z = glm::abs(io->initpos.z / 20) * 20.f;
@@ -1558,8 +1560,8 @@ static Entity * AddMarker(const res::path & classPath, EntityInstance instance) 
 	GetIOScript(io, script);
 	
 	io->pos = player.pos;
-	io->pos.x -= std::sin(glm::radians(player.angle.getPitch())) * 140.f;
-	io->pos.z += std::cos(glm::radians(player.angle.getPitch())) * 140.f;
+	io->pos += angleToVectorXZ(player.angle.getPitch()) * 140.f;
+	
 	io->lastpos = io->initpos = io->pos;
 	io->lastpos.x = io->initpos.x = glm::abs(io->initpos.x / 20) * 20.f;
 	io->lastpos.z = io->initpos.z = glm::abs(io->initpos.z / 20) * 20.f;
@@ -1691,8 +1693,8 @@ Entity * AddNPC(const res::path & classPath, EntityInstance instance, AddInterac
 	}
 	
 	io->pos = player.pos;
-	io->pos.x -= std::sin(glm::radians(player.angle.getPitch())) * 140.f;
-	io->pos.z += std::cos(glm::radians(player.angle.getPitch())) * 140.f;
+	io->pos += angleToVectorXZ(player.angle.getPitch()) * 140.f;
+	
 	io->lastpos = io->initpos = io->pos;
 	io->lastpos.x = io->initpos.x = glm::abs(io->initpos.x / 20) * 20.f;
 	io->lastpos.z = io->initpos.z = glm::abs(io->initpos.z / 20) * 20.f;
@@ -1788,9 +1790,7 @@ Entity * AddItem(const res::path & classPath_, EntityInstance instance, AddInter
 	io->spellcast_data.castingspell = SPELL_NONE;
 	
 	io->pos = player.pos;
-	
-	io->pos.x = io->pos.x - std::sin(glm::radians(player.angle.getPitch())) * 140.f;
-	io->pos.z = io->pos.z + std::cos(glm::radians(player.angle.getPitch())) * 140.f;
+	io->pos += angleToVectorXZ(player.angle.getPitch()) * 140.f;
 	
 	io->lastpos.x = io->initpos.x = (float)((long)(io->pos.x / 20)) * 20.f;
 	io->lastpos.z = io->initpos.z = (float)((long)(io->pos.z / 20)) * 20.f;
@@ -2381,10 +2381,9 @@ void UpdateCameras() {
 				io->angle.setRoll(0.f);
 			} else {
 				// no target...
-				float tr = glm::radians(MAKEANGLE(io->angle.getPitch() + 90));
-				io->target.x = io->pos.x - std::sin(tr) * 20.f;
-				io->target.y = io->pos.y;
-				io->target.z = io->pos.z + std::cos(tr) * 20.f;
+				io->target = io->pos;
+				io->target += angleToVectorXZ(io->angle.getPitch() + 90) * 20.f;
+				
 				io->_camdata->cam.setTargetCamera(io->target);
 				io->_camdata->cam.lasttarget = io->target;
 			}

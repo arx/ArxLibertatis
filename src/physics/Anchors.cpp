@@ -560,10 +560,10 @@ bool CylinderAboveInvalidZone(const Cylinder & cyl) {
 			if(rad == 0)
 				ang = 360;
 
-			Vec3f pos;
-			pos.x = cyl.origin.x - std::sin(glm::radians(ang)) * rad;
-			pos.y = cyl.origin.y - 20.f;
-			pos.z = cyl.origin.z + std::cos(glm::radians(ang)) * rad;
+			Vec3f pos = cyl.origin;
+			pos += angleToVectorXZ(ang) * rad;
+			pos += Vec3f(0.f, -20.f, 0.f);
+			
 			EERIEPOLY * ep = ANCHOR_CheckInPoly(pos);
 
 			if(!ep)
@@ -705,14 +705,13 @@ static bool AddAnchor_Original_Method(EERIE_BACKGROUND * eb, EERIE_BKG_INFO * eg
 	for (long rad = 0; rad < 20; rad += 10) 
 		for (long ang = 0; ang < 360; ang += 45) // 45
 		{
-			float t = glm::radians((float)ang);
 			// We set our current position depending on given position, radius & angle.
 			currcyl.radius = 40; 
-			currcyl.height = -165; 
-			currcyl.origin.x = pos->x - std::sin(t) * (float)rad;
-			currcyl.origin.y = pos->y;
-			currcyl.origin.z = pos->z + std::cos(t) * (float)rad;
-
+			currcyl.height = -165;
+			
+			currcyl.origin = *pos;
+			currcyl.origin += angleToVectorXZ(ang) * float(rad);
+			
 			stop_radius = 0;
 			found = 0;
 			long climb = 0;
