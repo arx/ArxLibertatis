@@ -140,11 +140,7 @@ bool Manage3DCursor(bool simulate) {
 		bbox.add(io->obj->vertexlist[i].v);
 	}
 	
-	Vec3f mvectx;
-	mvectx.x = -std::sin(glm::radians(player.angle.getPitch() - 90.f));
-	mvectx.y = 0;
-	mvectx.z = +std::cos(glm::radians(player.angle.getPitch() - 90.f));
-	mvectx = glm::normalize(mvectx);
+	Vec3f mvectx = angleToVectorXZ(player.angle.getPitch() - 90.f);
 	
 	Vec2f mod = Vec2f(Vec2i(DANAEMouse) - g_size.center()) / Vec2f(g_size.center()) * Vec2f(160.f, 220.f);
 	mvectx *= mod.x;
