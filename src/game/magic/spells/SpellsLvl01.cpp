@@ -114,31 +114,39 @@ void MagicMissileSpell::Launch()
 	if(m_caster == PlayerEntityHandle) {
 		afBeta = player.angle.getPitch();
 		afAlpha = player.angle.getYaw();
-		Vec3f vector;
-		vector.x = -std::sin(glm::radians(afBeta)) * std::cos(glm::radians(afAlpha)) * 60.f;
-		vector.y = std::sin(glm::radians(afAlpha)) * 60.f;
-		vector.z = std::cos(glm::radians(afBeta)) * std::cos(glm::radians(afAlpha)) * 60.f;
+
+		Vec3f vector = angleToVectorXZ(afBeta);
+		vector.x *= std::cos(glm::radians(afAlpha));
+		vector.y = std::sin(glm::radians(afAlpha));
+		vector.z *= std::cos(glm::radians(afAlpha));
+		vector *= 60.f;
 		
 		if(m_hand_group != -1) {
-			aePos = m_hand_pos + vector;
+			aePos = m_hand_pos;
 		} else {
-			aePos.x = player.pos.x - std::sin(glm::radians(afBeta)) + vector.x;
-			aePos.y = player.pos.y + vector.y; //;
-			aePos.z = player.pos.z + std::cos(glm::radians(afBeta)) + vector.z;
+			aePos = player.pos;
+			aePos += angleToVectorXZ(afBeta);
 		}
+		
+		aePos += vector;
+		
 	} else {
 		afAlpha = 0;
 		afBeta = entities[m_caster]->angle.getPitch();
-		Vec3f vector;
-		vector.x = -std::sin(glm::radians(afBeta)) * std::cos(glm::radians(afAlpha)) * 60;
-		vector.y =  std::sin(glm::radians(afAlpha)) * 60;
-		vector.z =  std::cos(glm::radians(afBeta)) * std::cos(glm::radians(afAlpha)) * 60;
+		
+		Vec3f vector = angleToVectorXZ(afBeta);
+		vector.x *= std::cos(glm::radians(afAlpha));
+		vector.y = std::sin(glm::radians(afAlpha));
+		vector.z *= std::cos(glm::radians(afAlpha));
+		vector *= 60.f;
 		
 		if(m_hand_group != -1) {
-			aePos = m_hand_pos + vector;
+			aePos = m_hand_pos;
 		} else {
-			aePos = entities[m_caster]->pos + vector;
+			aePos = entities[m_caster]->pos;
 		}
+		
+		aePos += vector;
 		
 		Entity * io = entities[m_caster];
 		
