@@ -672,9 +672,11 @@ Vec3f angleToVectorXZ_180offset(float angleDegrees) {
 
 Vec3f angleToVector(const Anglef & angle) {
 	Vec3f cam_vector = angleToVectorXZ(angle.getPitch());
-	cam_vector.x *= std::cos(glm::radians(angle.getYaw()));
-	cam_vector.y = std::sin(glm::radians(angle.getYaw()));
-	cam_vector.z *= std::cos(glm::radians(angle.getYaw()));
+	
+	float yaw = glm::radians(angle.getYaw());
+	cam_vector.x *= std::cos(yaw);
+	cam_vector.y = std::sin(yaw);
+	cam_vector.z *= std::cos(yaw);
 	
 	return cam_vector;
 }
