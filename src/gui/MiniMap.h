@@ -195,7 +195,7 @@ private:
 	Vec2f computePlayerPos(float zoom, int showLevel);
 	void drawBackground(int showLevel, Rect boundaries, float startX, float startY, float zoom, float fadeBorder = 0.f, float decalX = 0.f, float decalY = 0.f, bool invColor = false, float alpha = 1.f);
 	void drawPlayer(float playerSize, Vec2f playerPos, bool alphaBlending = false);
-	void drawDetectedEntities(int showLevel, float startX, float startY, float zoom);
+	void drawDetectedEntities(int showLevel, Vec2f start, float zoom);
 	
     std::vector<TexturedVertex> m_mapVertices;
 };

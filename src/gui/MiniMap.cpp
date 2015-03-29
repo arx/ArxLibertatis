@@ -319,7 +319,7 @@ void MiniMap::showPlayerMiniMap(int showLevel) {
 		// Draw the player (red arrow)
 		if(showLevel == ARX_LEVELS_GetRealNum(m_currentLevel)) {
 			drawPlayer(playerSize, Vec2f(playerPos.x + decal.x, playerPos.y + decal.y), true);
-			drawDetectedEntities(showLevel, start.x + decal.x, start.y + decal.y, miniMapZoom);
+			drawDetectedEntities(showLevel, start + decal, miniMapZoom);
 		}
 		
 	}
@@ -356,7 +356,7 @@ void MiniMap::showBookMiniMap(int showLevel) {
 		
 		if(showLevel == ARX_LEVELS_GetRealNum(m_currentLevel)) {
 			drawPlayer(6.f, playerPos);
-			drawDetectedEntities(showLevel, startX, startY, zoom);
+			drawDetectedEntities(showLevel, Vec2f(startX, startY), zoom);
 		}
 		
 	}
@@ -392,7 +392,7 @@ void MiniMap::showBookEntireMap(int showLevel) {
 	
 	if(showLevel == ARX_LEVELS_GetRealNum(m_currentLevel)) {
 		drawPlayer(3.f, playerPos);
-		drawDetectedEntities(showLevel, start.x, start.y, zoom);
+		drawDetectedEntities(showLevel, start, zoom);
 	}
 	
 	TexturedVertex verts[4];
@@ -729,7 +729,7 @@ void MiniMap::drawPlayer(float playerSize, Vec2f playerPos, bool alphaBlending) 
 	GRenderer->SetRenderState(Renderer::AlphaBlending, false);
 }
 
-void MiniMap::drawDetectedEntities(int showLevel, float startX, float startY, float zoom) {
+void MiniMap::drawDetectedEntities(int showLevel, Vec2f start, float zoom) {
 	
 	float caseX = zoom / ((float)MINIMAP_MAX_X);
 	float caseY = zoom / ((float)MINIMAP_MAX_Z);
@@ -773,9 +773,9 @@ void MiniMap::drawDetectedEntities(int showLevel, float startX, float startY, fl
 			continue; // the player doesn't have enough skill to detect this NPC
 		}
 		
-		float fpx = startX + ((npc->pos.x - 100 + ofx - ofx2) * ( 1.0f / 100 ) * caseX
+		float fpx = start.x + ((npc->pos.x - 100 + ofx - ofx2) * ( 1.0f / 100 ) * caseX
 		+ m_miniOffsetX[m_currentLevel] * ratio * m_modX) / m_modX; 
-		float fpy = startY + ((m_mapMaxY[showLevel] - ofy - ofy2) * ( 1.0f / 100 ) * caseY
+		float fpy = start.y + ((m_mapMaxY[showLevel] - ofy - ofy2) * ( 1.0f / 100 ) * caseY
 		- (npc->pos.z + 200 + ofy - ofy2) * ( 1.0f / 100 ) * caseY + m_miniOffsetY[m_currentLevel] * ratio * m_modZ) / m_modZ;
 		
 		float d = fdist(Vec2f(m_player->pos.x, m_player->pos.z), Vec2f(npc->pos.x, npc->pos.z));
