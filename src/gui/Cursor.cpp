@@ -147,14 +147,19 @@ bool Manage3DCursor(bool simulate) {
 	Vec3f mvecty(0, mod.y, 0);
 
 	Vec3f orgn = player.pos;
-	orgn.x += -std::sin(glm::radians(player.angle.getPitch())) * std::cos(glm::radians(player.angle.getYaw()))*50.f + mvectx.x;
-	orgn.y += +std::sin(glm::radians(player.angle.getYaw()))*50.f + mvectx.y + mvecty.y;
-	orgn.z += +std::cos(glm::radians(player.angle.getPitch())) * std::cos(glm::radians(player.angle.getYaw()))*50.f + mvectx.z;
+	orgn.x += -std::sin(glm::radians(player.angle.getPitch())) * std::cos(glm::radians(player.angle.getYaw()))*50.f;
+	orgn.y += +std::sin(glm::radians(player.angle.getYaw()))*50.f;
+	orgn.z += +std::cos(glm::radians(player.angle.getPitch())) * std::cos(glm::radians(player.angle.getYaw()))*50.f;
+	orgn += mvectx;
+	orgn.y += mvecty.y;
 
 	Vec3f dest = player.pos;
-	dest.x += -std::sin(glm::radians(player.angle.getPitch())) * std::cos(glm::radians(player.angle.getYaw()))*10000.f + mvectx.x;
-	dest.y += +std::sin(glm::radians(player.angle.getYaw()))*10000.f + mvectx.y + mvecty.y * 5.f;
-	dest.z += +std::cos(glm::radians(player.angle.getPitch())) * std::cos(glm::radians(player.angle.getYaw()))*10000.f + mvectx.z;
+	dest.x += -std::sin(glm::radians(player.angle.getPitch())) * std::cos(glm::radians(player.angle.getYaw()))*10000.f;
+	dest.y += +std::sin(glm::radians(player.angle.getYaw()))*10000.f;
+	dest.z += +std::cos(glm::radians(player.angle.getPitch())) * std::cos(glm::radians(player.angle.getYaw()))*10000.f;
+	dest += mvectx;
+	dest.y += mvecty.y * 5.f;
+	
 	Vec3f pos = orgn;
 
 	Vec3f movev = glm::normalize(dest - orgn);
