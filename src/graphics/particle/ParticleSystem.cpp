@@ -209,17 +209,17 @@ void ParticleSystem::SetParticleParams(Particle * pP) {
 		pP->p3Pos.x = std::sin(randd);
 		pP->p3Pos.y = rnd();
 		pP->p3Pos.z = std::cos(randd);
-		pP->p3Pos *= m_parameters.m_pos;
 	} else if((m_parameters.m_spawnFlags & PARTICLE_CIRCULAR) == PARTICLE_CIRCULAR) {
 		float randd = rnd() * 360.f;
 		pP->p3Pos.x = std::sin(randd) * rnd();
 		pP->p3Pos.y = rnd();
 		pP->p3Pos.z = std::cos(randd) * rnd();
-		pP->p3Pos *= m_parameters.m_pos;
 	} else {
-		pP->p3Pos = m_parameters.m_pos * randomVec(-1.f, 1.f);
+		pP->p3Pos = randomVec(-1.f, 1.f);
 	}
-
+	
+	pP->p3Pos *= m_parameters.m_pos;
+	
 	float fTTL = m_parameters.m_life + rnd() * m_parameters.m_lifeRandom;
 	pP->m_timeToLive = checked_range_cast<long>(fTTL);
 	pP->fOneOnTTL = 1.0f / (float)pP->m_timeToLive;
