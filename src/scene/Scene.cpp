@@ -547,8 +547,11 @@ static long ARX_PORTALS_GetRoomNumForCamera(float * height) {
 	float dist=0.f;
 
 	while(dist<=20.f) {
-		float vvv = glm::radians(ACTIVECAM->angle.getPitch());
-		ep=CheckInPoly(ACTIVECAM->orgTrans.pos + Vec3f(std::sin(vvv) * dist, 0.f, -std::cos(vvv) * dist));
+		
+		Vec3f tmpPos = ACTIVECAM->orgTrans.pos;
+		tmpPos += angleToVectorXZ_180offset(ACTIVECAM->angle.getPitch()) * dist;
+		
+		ep = CheckInPoly(tmpPos);
 
 		if(ep && ep->room > -1) {
 			if(height)
