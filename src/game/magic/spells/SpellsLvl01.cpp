@@ -114,12 +114,8 @@ void MagicMissileSpell::Launch()
 	if(m_caster == PlayerEntityHandle) {
 		afBeta = player.angle.getPitch();
 		afAlpha = player.angle.getYaw();
-
-		Vec3f vector = angleToVectorXZ(afBeta);
-		vector.x *= std::cos(glm::radians(afAlpha));
-		vector.y = std::sin(glm::radians(afAlpha));
-		vector.z *= std::cos(glm::radians(afAlpha));
-		vector *= 60.f;
+		
+		Vec3f vector = angleToVecForCedricHalo(Anglef(afAlpha, afBeta, 0.f)) * 60.f;
 		
 		if(m_hand_group != -1) {
 			aePos = m_hand_pos;
@@ -134,11 +130,7 @@ void MagicMissileSpell::Launch()
 		afAlpha = 0;
 		afBeta = entities[m_caster]->angle.getPitch();
 		
-		Vec3f vector = angleToVectorXZ(afBeta);
-		vector.x *= std::cos(glm::radians(afAlpha));
-		vector.y = std::sin(glm::radians(afAlpha));
-		vector.z *= std::cos(glm::radians(afAlpha));
-		vector *= 60.f;
+		Vec3f vector = angleToVecForCedricHalo(Anglef(afAlpha, afBeta, 0.f)) * 60.f;
 		
 		if(m_hand_group != -1) {
 			aePos = m_hand_pos;
