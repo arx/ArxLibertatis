@@ -320,7 +320,7 @@ void MiniMap::showPlayerMiniMap(int showLevel) {
 		
 		// Draw the player (red arrow)
 		if(showLevel == ARX_LEVELS_GetRealNum(m_currentLevel)) {
-			drawPlayer(playerSize, playerPos.x + decalX, playerPos.y + decalY, true);
+			drawPlayer(playerSize, Vec2f(playerPos.x + decalX, playerPos.y + decalY), true);
 			drawDetectedEntities(showLevel, startX + decalX, startY + decalY, miniMapZoom);
 		}
 		
@@ -357,7 +357,7 @@ void MiniMap::showBookMiniMap(int showLevel) {
 		GRenderer->GetTextureStage(0)->setWrapMode(TextureStage::WrapRepeat);
 		
 		if(showLevel == ARX_LEVELS_GetRealNum(m_currentLevel)) {
-			drawPlayer(6.f, playerPos.x, playerPos.y);
+			drawPlayer(6.f, playerPos);
 			drawDetectedEntities(showLevel, startX, startY, zoom);
 		}
 		
@@ -393,7 +393,7 @@ void MiniMap::showBookEntireMap(int showLevel) {
 	GRenderer->GetTextureStage(0)->setWrapMode(TextureStage::WrapRepeat);
 	
 	if(showLevel == ARX_LEVELS_GetRealNum(m_currentLevel)) {
-		drawPlayer(3.f, playerPos.x, playerPos.y);
+		drawPlayer(3.f, playerPos);
 		drawDetectedEntities(showLevel, start.x, start.y, zoom);
 	}
 	
@@ -692,7 +692,7 @@ void MiniMap::drawBackground(int showLevel, Rect boundaries, float startX, float
 	GRenderer->SetRenderState(Renderer::AlphaBlending, false);
 }
 
-void MiniMap::drawPlayer(float playerSize, float playerX, float playerY, bool alphaBlending) {
+void MiniMap::drawPlayer(float playerSize, Vec2f playerPos, bool alphaBlending) {
 	
 	TexturedVertex verts[4];
 	
@@ -713,12 +713,12 @@ void MiniMap::drawPlayer(float playerSize, float playerX, float playerY, bool al
 	float ca = std::cos(angle);
 	float sa = std::sin(angle);
 	
-	verts[0].p.x = (playerX + rx2 * ca + ry2 * sa) * g_sizeRatio.x;
-	verts[0].p.y = (playerY + ry2 * ca - rx2 * sa) * g_sizeRatio.y;
-	verts[1].p.x = (playerX + rx * ca + ry * sa) * g_sizeRatio.x;
-	verts[1].p.y = (playerY + ry * ca - rx * sa) * g_sizeRatio.y;
-	verts[2].p.x = (playerX + rx3 * ca + ry3 * sa) * g_sizeRatio.x;
-	verts[2].p.y = (playerY + ry3 * ca - rx3 * sa) * g_sizeRatio.y;
+	verts[0].p.x = (playerPos.x + rx2 * ca + ry2 * sa) * g_sizeRatio.x;
+	verts[0].p.y = (playerPos.y + ry2 * ca - rx2 * sa) * g_sizeRatio.y;
+	verts[1].p.x = (playerPos.x + rx * ca + ry * sa) * g_sizeRatio.x;
+	verts[1].p.y = (playerPos.y + ry * ca - rx * sa) * g_sizeRatio.y;
+	verts[2].p.x = (playerPos.x + rx3 * ca + ry3 * sa) * g_sizeRatio.x;
+	verts[2].p.y = (playerPos.y + ry3 * ca - rx3 * sa) * g_sizeRatio.y;
 	
 	GRenderer->ResetTexture(0);
 	GRenderer->SetRenderState(Renderer::AlphaBlending, alphaBlending);
