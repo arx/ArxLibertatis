@@ -206,14 +206,16 @@ void ParticleSystem::SetParticleParams(Particle * pP) {
 	if((m_parameters.m_spawnFlags & PARTICLE_CIRCULAR) == PARTICLE_CIRCULAR
 	   && (m_parameters.m_spawnFlags & PARTICLE_BORDER) == PARTICLE_BORDER) {
 		float randd = rnd() * 360.f;
-		pP->p3Pos.x = std::sin(randd) * m_parameters.m_pos.x;
-		pP->p3Pos.y = rnd() * m_parameters.m_pos.y;
-		pP->p3Pos.z = std::cos(randd) * m_parameters.m_pos.z;
+		pP->p3Pos.x = std::sin(randd);
+		pP->p3Pos.y = rnd();
+		pP->p3Pos.z = std::cos(randd);
+		pP->p3Pos *= m_parameters.m_pos;
 	} else if((m_parameters.m_spawnFlags & PARTICLE_CIRCULAR) == PARTICLE_CIRCULAR) {
 		float randd = rnd() * 360.f;
-		pP->p3Pos.x = std::sin(randd) * rnd() * m_parameters.m_pos.x;
-		pP->p3Pos.y = rnd() * m_parameters.m_pos.y;
-		pP->p3Pos.z = std::cos(randd) * rnd() * m_parameters.m_pos.z;
+		pP->p3Pos.x = std::sin(randd) * rnd();
+		pP->p3Pos.y = rnd();
+		pP->p3Pos.z = std::cos(randd) * rnd();
+		pP->p3Pos *= m_parameters.m_pos;
 	} else {
 		pP->p3Pos = m_parameters.m_pos * randomVec(-1.f, 1.f);
 	}
