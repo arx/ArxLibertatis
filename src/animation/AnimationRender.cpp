@@ -403,15 +403,6 @@ void Cedric_ApplyLightingFirstPartRefactor(Entity *io) {
 	}
 }
 
-static Vec3f angleToVecForCedricHalo(const Anglef & angle) {
-	Vec3f cam_vector = angleToVectorXZ(angle.getPitch());
-	cam_vector.x *= std::cos(glm::radians(angle.getYaw()));
-	cam_vector.y = std::sin(glm::radians(angle.getYaw()));
-	cam_vector.z *= std::cos(glm::radians(angle.getYaw()));
-	
-	return cam_vector;
-}
-
 static void Cedric_PrepareHalo(EERIE_3DOBJ * eobj, Skeleton * obj) {
 	Vec3f cam_vector = angleToVecForCedricHalo(ACTIVECAM->angle);
 	
