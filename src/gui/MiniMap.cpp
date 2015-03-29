@@ -288,8 +288,7 @@ void MiniMap::showPlayerMiniMap(int showLevel) {
 	const Rect miniMapRect(390, 135, 590, 295); // minimap rect on a 640*480 screen
 	const float playerSize = 4.f; // red arrow size
 	
-	const float decalY = -150;
-	const float decalX = +40;
+	static const Vec2f decal = Vec2f(40.f, -150.f);
 	
 	// First Load Minimap TC & DATA if needed
 	if(m_levels[showLevel].m_texContainer == NULL) {
@@ -314,14 +313,14 @@ void MiniMap::showPlayerMiniMap(int showLevel) {
 		}
 		
 		// Draw the background
-		drawBackground(showLevel, Rect(390, 135, 590, 295), startX, startY, miniMapZoom, 20.f, decalX, decalY, true, 0.5f);
+		drawBackground(showLevel, Rect(390, 135, 590, 295), startX, startY, miniMapZoom, 20.f, decal.x, decal.y, true, 0.5f);
 		
 		GRenderer->GetTextureStage(0)->setWrapMode(TextureStage::WrapRepeat);
 		
 		// Draw the player (red arrow)
 		if(showLevel == ARX_LEVELS_GetRealNum(m_currentLevel)) {
-			drawPlayer(playerSize, Vec2f(playerPos.x + decalX, playerPos.y + decalY), true);
-			drawDetectedEntities(showLevel, startX + decalX, startY + decalY, miniMapZoom);
+			drawPlayer(playerSize, Vec2f(playerPos.x + decal.x, playerPos.y + decal.y), true);
+			drawDetectedEntities(showLevel, startX + decal.x, startY + decal.y, miniMapZoom);
 		}
 		
 	}
