@@ -1556,13 +1556,10 @@ void ArxGame::speechControlledCinematic() {
 					float _dist = glm::distance(from, to);
 					Vec3f tfrom = from + vect * acs->startpos * (1.0f / 100) * _dist;
 					Vec3f tto = from + vect * acs->endpos * (1.0f / 100) * _dist;
-					Vec3f targetpos;
-					targetpos.x=tfrom.x*itime+tto.x*rtime;
-					targetpos.y=tfrom.y*itime+tto.y*rtime+acs->m_heightModifier;
-					targetpos.z=tfrom.z*itime+tto.z*rtime;
-					conversationcamera.orgTrans.pos.x=targetpos.x+vect2.x;
-					conversationcamera.orgTrans.pos.y=targetpos.y+vect2.y+acs->m_heightModifier;
-					conversationcamera.orgTrans.pos.z=targetpos.z+vect2.z;
+					
+					Vec3f targetpos = tfrom * itime + tto * rtime + Vec3f(0.f, acs->m_heightModifier, 0.f);
+
+					conversationcamera.orgTrans.pos = targetpos + vect2 + Vec3f(0.f, acs->m_heightModifier, 0.f);
 					conversationcamera.setTargetCamera(targetpos);
 					subj.orgTrans.pos = conversationcamera.orgTrans.pos;
 					subj.angle.setYaw(MAKEANGLE(-conversationcamera.angle.getYaw()));
