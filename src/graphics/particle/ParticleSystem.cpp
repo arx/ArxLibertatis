@@ -203,17 +203,16 @@ void ParticleSystem::SetParticleParams(Particle * pP) {
 
 	pP->p3Pos = Vec3f_ZERO;
 	
-	if((m_parameters.m_spawnFlags & PARTICLE_CIRCULAR) == PARTICLE_CIRCULAR
-	   && (m_parameters.m_spawnFlags & PARTICLE_BORDER) == PARTICLE_BORDER) {
+	if((m_parameters.m_spawnFlags & PARTICLE_CIRCULAR) == PARTICLE_CIRCULAR) {
+		
 		float randd = rnd() * 360.f;
 		pP->p3Pos.x = std::sin(randd);
 		pP->p3Pos.y = rnd();
 		pP->p3Pos.z = std::cos(randd);
-	} else if((m_parameters.m_spawnFlags & PARTICLE_CIRCULAR) == PARTICLE_CIRCULAR) {
-		float randd = rnd() * 360.f;
-		pP->p3Pos.x = std::sin(randd) * rnd();
-		pP->p3Pos.y = rnd();
-		pP->p3Pos.z = std::cos(randd) * rnd();
+		
+		if(!(m_parameters.m_spawnFlags & PARTICLE_BORDER) == PARTICLE_BORDER) {
+			pP->p3Pos *= Vec3f(rnd(), 1.f, rnd());
+		}
 	} else {
 		pP->p3Pos = randomVec(-1.f, 1.f);
 	}
