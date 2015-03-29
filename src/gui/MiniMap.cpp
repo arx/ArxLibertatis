@@ -337,26 +337,25 @@ void MiniMap::showBookMiniMap(int showLevel) {
 		GRenderer->SetRenderState(Renderer::DepthTest, false);
 		
 		float zoom = 900.f;
-		float startX = 0.f;
-		float startY = 0.f;
 		
+		Vec2f start = Vec2f_ZERO;
 		Vec2f playerPos(0.f, 0.f);
 		
 		if(showLevel == ARX_LEVELS_GetRealNum(m_currentLevel)) {
 			playerPos = computePlayerPos(zoom, showLevel);
-			startX = 490.f - playerPos.x;
-			startY = 220.f - playerPos.y;
-			playerPos.x += startX;
-			playerPos.y += startY;
+			start.x = 490.f - playerPos.x;
+			start.y = 220.f - playerPos.y;
+			playerPos.x += start.x;
+			playerPos.y += start.y;
 		}
 		
-		drawBackground(showLevel, Rect(360, 85, 555, 355), startX, startY, zoom, 20.f);
+		drawBackground(showLevel, Rect(360, 85, 555, 355), start.x, start.y, zoom, 20.f);
 		
 		GRenderer->GetTextureStage(0)->setWrapMode(TextureStage::WrapRepeat);
 		
 		if(showLevel == ARX_LEVELS_GetRealNum(m_currentLevel)) {
 			drawPlayer(6.f, playerPos);
-			drawDetectedEntities(showLevel, Vec2f(startX, startY), zoom);
+			drawDetectedEntities(showLevel, start, zoom);
 		}
 		
 	}
