@@ -343,10 +343,8 @@ void MiniMap::showBookMiniMap(int showLevel) {
 		
 		if(showLevel == ARX_LEVELS_GetRealNum(m_currentLevel)) {
 			playerPos = computePlayerPos(zoom, showLevel);
-			start.x = 490.f - playerPos.x;
-			start.y = 220.f - playerPos.y;
-			playerPos.x += start.x;
-			playerPos.y += start.y;
+			start = Vec2f(490.f, 220.f) - playerPos;
+			playerPos += start;
 		}
 		
 		drawBackground(showLevel, Rect(360, 85, 555, 355), start.x, start.y, zoom, 20.f);
