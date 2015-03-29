@@ -199,12 +199,14 @@ void FX_DreamPrecalc(CinematicBitmap * bi, float amp, float fps) {
 	float a = DreamAng;
 	float a2 = DreamAng2;
 	
-	float s1 = bi->m_count.x * std::cos(glm::radians(0.f));
-	float s2 = bi->m_count.y * std::cos(glm::radians(0.f));
+	Vec2f s;
+	s.x = bi->m_count.x * std::cos(glm::radians(0.f));
+	s.y = bi->m_count.y * std::cos(glm::radians(0.f));
+	
 	int nx = (bi->m_count.x + 1) << 1;
 	int ny = (bi->m_count.y + 1) << 1;
-	float nnx = ((float)nx) + s1;
-	float nny = ((float)ny) + s2;
+	float nnx = ((float)nx) + s.x;
+	float nny = ((float)ny) + s.y;
 	
 	float ox, oy;
 	
@@ -221,13 +223,13 @@ void FX_DreamPrecalc(CinematicBitmap * bi, float amp, float fps) {
 	while(ny) {
 		nx = ((bi->m_count.x * bi->grid.m_scale) + 1);
 		while(nx) {
-			s1 = bi->m_count.x * std::cos(glm::radians(a));
-			s2 = bi->m_count.y * std::cos(glm::radians(a2));
+			s.x = bi->m_count.x * std::cos(glm::radians(a));
+			s.y = bi->m_count.y * std::cos(glm::radians(a2));
 			a -= 15.f;
 			a2 += 8.f;
 			
-			nnx = ((float)nx) + s1;
-			nny = ((float)ny) + s2;
+			nnx = ((float)nx) + s.x;
+			nny = ((float)ny) + s.y;
 			
 			*t++ = (float)(-ox + amp * ((2 * (std::sin(nnx / 20) + std::sin(nnx * nny / 2000)
 			                                  + std::sin((nnx + nny) / 100) + std::sin((nny - nnx) / 70) + std::sin((nnx + 4 * nny) / 70)
