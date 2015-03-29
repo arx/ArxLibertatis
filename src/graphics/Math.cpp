@@ -622,10 +622,8 @@ glm::quat angleToQuatForExtraRotation(const Anglef & angle) {
 
 std::pair<Vec3f, Vec3f> angleToFrontUpVecForSound(const Anglef & angle) {
 	
-	float t = glm::radians(MAKEANGLE(angle.getPitch()));
-	Vec3f front(-std::sin(t), 0.f, std::cos(t));
-	front = glm::normalize(front);
-
+	Vec3f front = angleToVectorXZ(angle.getPitch());
+	
 	//TODO Hardcoded up vector
 	Vec3f up(0.f, 1.f, 0.f);
 	
