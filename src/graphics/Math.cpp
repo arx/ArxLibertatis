@@ -682,7 +682,7 @@ Vec3f angleToVectorXZ_180offset(float angleDegrees) {
 	return Vec3f(std::sin(t), 0.f, -std::cos(t));
 }
 
-Vec3f angleToVecForCedricHalo(const Anglef & angle) {
+Vec3f angleToVector(const Anglef & angle) {
 	Vec3f cam_vector = angleToVectorXZ(angle.getPitch());
 	cam_vector.x *= std::cos(glm::radians(angle.getYaw()));
 	cam_vector.y = std::sin(glm::radians(angle.getYaw()));

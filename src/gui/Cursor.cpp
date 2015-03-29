@@ -147,12 +147,12 @@ bool Manage3DCursor(bool simulate) {
 	Vec3f mvecty(0, mod.y, 0);
 
 	Vec3f orgn = player.pos;
-	orgn += angleToVecForCedricHalo(player.angle) * 50.f;
+	orgn += angleToVector(player.angle) * 50.f;
 	orgn += mvectx;
 	orgn.y += mvecty.y;
 
 	Vec3f dest = player.pos;
-	dest += angleToVecForCedricHalo(player.angle) * 10000.f;
+	dest += angleToVector(player.angle) * 10000.f;
 	dest += mvectx;
 	dest.y += mvecty.y * 5.f;
 	

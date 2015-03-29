@@ -404,7 +404,7 @@ void Cedric_ApplyLightingFirstPartRefactor(Entity *io) {
 }
 
 static void Cedric_PrepareHalo(EERIE_3DOBJ * eobj, Skeleton * obj) {
-	Vec3f cam_vector = angleToVecForCedricHalo(ACTIVECAM->angle);
+	Vec3f cam_vector = angleToVector(ACTIVECAM->angle);
 	
 	// Apply light on all vertices
 	for(size_t i = 0; i != obj->bones.size(); i++) {
