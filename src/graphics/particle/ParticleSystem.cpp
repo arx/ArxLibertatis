@@ -183,22 +183,6 @@ void ParticleSystem::SetTexture(const char * _pszTex, int _iNbTex, int _iTime) {
 	}
 }
 
-static void VectorRotateY(Vec3f & _eIn, Vec3f & _eOut, float _fAngle) {
-	float c = std::cos(_fAngle);
-	float s = std::sin(_fAngle);
-	_eOut.x = (_eIn.x * c) + (_eIn.z * s);
-	_eOut.y =  _eIn.y;
-	_eOut.z = (_eIn.z * c) - (_eIn.x * s);
-}
-
-static void VectorRotateZ(Vec3f & _eIn, Vec3f & _eOut, float _fAngle) {
-	float c = std::cos(_fAngle);
-	float s = std::sin(_fAngle);
-	_eOut.x = (_eIn.x * c) + (_eIn.y * s);
-	_eOut.y = (_eIn.y * c) - (_eIn.x * s);
-	_eOut.z =  _eIn.z;
-}
-
 void ParticleSystem::SetParticleParams(Particle * pP) {
 
 	pP->p3Pos = Vec3f_ZERO;
@@ -231,8 +215,8 @@ void ParticleSystem::SetParticleParams(Particle * pP) {
 	
 	vv1 = -Vec3f_Y_AXIS;
 	
-	VectorRotateZ(vv1, vvz, fAngleX); 
-	VectorRotateY(vvz, vv1, glm::radians(rnd() * 360.0f));
+	vvz = VRotateZ(vv1, glm::degrees(fAngleX));
+	vv1 = VRotateY(vvz, rnd() * 360.0f);
 	
 	vvz = Vec3f(eMat * Vec4f(vv1, 1.f));
 

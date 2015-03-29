@@ -245,8 +245,21 @@ Vec3f camEE_RT(const Vec3f & in, const EERIE_TRANSFORM & trans) {
 	return Vec3f(temp2.x, temp2.y, temp3.z);
 }
 
+void VectorRotateY(Vec3f & _eIn, Vec3f & _eOut, float _fAngle) {
+	float c = std::cos(_fAngle);
+	float s = std::sin(_fAngle);
+	_eOut.x = (_eIn.x * c) + (_eIn.z * s);
+	_eOut.y =  _eIn.y;
+	_eOut.z = (_eIn.z * c) - (_eIn.x * s);
+}
 
-
+void VectorRotateZ(Vec3f & _eIn, Vec3f & _eOut, float _fAngle) {
+	float c = std::cos(_fAngle);
+	float s = std::sin(_fAngle);
+	_eOut.x = (_eIn.x * c) + (_eIn.y * s);
+	_eOut.y = (_eIn.y * c) - (_eIn.x * s);
+	_eOut.z =  _eIn.z;
+}
 
 
 Vec2s inventorySizeFromTextureSize_1(u32 m_dwWidth, u32 m_dwHeight) {

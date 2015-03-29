@@ -293,3 +293,32 @@ void LegacyMathTest::angleToVectorXZ_Test() {
 		CPPUNIT_ASSERT_EQUAL(expected, result2);
 	}
 }
+
+void LegacyMathTest::vectorRotateTest() {
+	
+	for(float angle = 0; angle < 720; angle += 10) {
+		
+		Vec3f foo = Vec3f(0.f, 0.f, 1.f);
+		
+		Vec3f result;
+		VectorRotateY(foo, result, glm::radians(angle));
+		
+		Vec3f result2 = VRotateY(foo, angle);
+		
+		CPPUNIT_ASSERT_EQUAL(result, result2);
+	}
+	
+	for(float angle = 0; angle < 720; angle += 10) {
+		
+		Vec3f foo = Vec3f(1.f, 0.f, 0.f);
+		
+		Vec3f result;
+		VectorRotateZ(foo, result, glm::radians(angle));
+		
+		Vec3f result2 = VRotateZ(foo, angle);
+		
+		//std::cout << angle << "; " << glm::to_string(result) << glm::to_string(result2) << "\n";
+		
+		CPPUNIT_ASSERT_EQUAL(result, result2);
+	}
+}
