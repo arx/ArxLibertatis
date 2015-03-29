@@ -305,10 +305,8 @@ void MiniMap::showPlayerMiniMap(int showLevel) {
 		
 		if(showLevel == ARX_LEVELS_GetRealNum(m_currentLevel)) {
 			playerPos = computePlayerPos(miniMapZoom, showLevel);
-			start.x = 490.f - playerPos.x;
-			start.y = 220.f - playerPos.y;
-			playerPos.x += start.x;
-			playerPos.y += start.y;
+			start = Vec2f(490.f, 220.f) - playerPos;
+			playerPos += start;
 		}
 		
 		// Draw the background
@@ -318,7 +316,7 @@ void MiniMap::showPlayerMiniMap(int showLevel) {
 		
 		// Draw the player (red arrow)
 		if(showLevel == ARX_LEVELS_GetRealNum(m_currentLevel)) {
-			drawPlayer(playerSize, Vec2f(playerPos.x + decal.x, playerPos.y + decal.y), true);
+			drawPlayer(playerSize, playerPos + decal, true);
 			drawDetectedEntities(showLevel, start + decal, miniMapZoom);
 		}
 		
