@@ -336,7 +336,7 @@ Entity * FlyingOverObject(const Vec2s & pos)
 
 static void PlayerLaunchArrow_Test(float aimratio, float poisonous, const Vec3f & pos, const Anglef & angle) {
 	
-	Vec3f vect = angleToVecForArrow(angle);
+	Vec3f vect = angleToVector(angle);
 	Vec3f position = pos;
 	float velocity = aimratio + 0.3f;
 

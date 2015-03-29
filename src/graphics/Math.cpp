@@ -611,18 +611,6 @@ glm::quat angleToQuatForArrow(const Anglef & angle) {
 	return glm::toQuat(tmat);
 }
 
-Vec3f angleToVecForArrow(const Anglef & angle) {
-	float anglea = glm::radians(angle.getYaw());
-	float angleb = glm::radians(angle.getPitch());
-	
-	Vec3f vect;
-	vect.x=-std::sin(angleb)*std::cos(anglea);
-	vect.y= std::sin(anglea);
-	vect.z= std::cos(angleb)*std::cos(anglea);
-	
-	return vect;
-}
-
 glm::quat angleToQuatForExtraRotation(const Anglef & angle) {
 	Anglef vt1;
 	vt1.setYaw(angle.getRoll());

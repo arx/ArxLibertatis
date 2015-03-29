@@ -172,7 +172,6 @@ glm::quat QuatFromAngles(const Anglef & angle);
 glm::mat4 toRotationMatrix(const Anglef & angle);
 
 glm::quat angleToQuatForArrow(const Anglef & angle);
-Vec3f angleToVecForArrow(const Anglef & angle);
 
 glm::quat angleToQuatForExtraRotation(const Anglef & angle);
 
