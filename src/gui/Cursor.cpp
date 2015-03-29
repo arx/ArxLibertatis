@@ -203,9 +203,7 @@ bool Manage3DCursor(bool simulate) {
 
 
 	while(iterating > 0) {
-		cyl2.origin.x = pos.x + movev.x * inc;
-		cyl2.origin.y = pos.y + movev.y * inc + bbox.max.y;
-		cyl2.origin.z = pos.z + movev.z * inc;
+		cyl2.origin = pos + movev * inc + Vec3f(0.f, bbox.max.y, 0.f);
 
 		float anything = CheckAnythingInCylinder(cyl2, io, CFLAG_JUST_TEST | CFLAG_COLLIDE_NOCOL | CFLAG_NO_NPC_COLLIDE);
 
