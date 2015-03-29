@@ -299,28 +299,27 @@ void MiniMap::showPlayerMiniMap(int showLevel) {
 		
 		GRenderer->SetRenderState(Renderer::DepthTest, false);
 		
-		float startX = 0.f;
-		float startY = 0.f;
+		Vec2f start = Vec2f_ZERO;
 		
 		Vec2f playerPos(0.f, 0.f);
 		
 		if(showLevel == ARX_LEVELS_GetRealNum(m_currentLevel)) {
 			playerPos = computePlayerPos(miniMapZoom, showLevel);
-			startX = 490.f - playerPos.x;
-			startY = 220.f - playerPos.y;
-			playerPos.x += startX;
-			playerPos.y += startY;
+			start.x = 490.f - playerPos.x;
+			start.y = 220.f - playerPos.y;
+			playerPos.x += start.x;
+			playerPos.y += start.y;
 		}
 		
 		// Draw the background
-		drawBackground(showLevel, Rect(390, 135, 590, 295), startX, startY, miniMapZoom, 20.f, decal.x, decal.y, true, 0.5f);
+		drawBackground(showLevel, Rect(390, 135, 590, 295), start.x, start.y, miniMapZoom, 20.f, decal.x, decal.y, true, 0.5f);
 		
 		GRenderer->GetTextureStage(0)->setWrapMode(TextureStage::WrapRepeat);
 		
 		// Draw the player (red arrow)
 		if(showLevel == ARX_LEVELS_GetRealNum(m_currentLevel)) {
 			drawPlayer(playerSize, Vec2f(playerPos.x + decal.x, playerPos.y + decal.y), true);
-			drawDetectedEntities(showLevel, startX + decal.x, startY + decal.y, miniMapZoom);
+			drawDetectedEntities(showLevel, start.x + decal.x, start.y + decal.y, miniMapZoom);
 		}
 		
 	}
