@@ -243,11 +243,7 @@ void FireballSpell::Update(float timeDelta)
 			}
 		}
 		
-		effect->eMove = angleToVectorXZ(afBeta) * 100.f;
-		
-		effect->eMove.x *= glm::cos(glm::radians(MAKEANGLE(afAlpha)));
-		effect->eMove.y = glm::sin(glm::radians(MAKEANGLE(afAlpha))) * 100.f;
-		effect->eMove.z *= glm::cos(glm::radians(MAKEANGLE(afAlpha)));
+		effect->eMove = angleToVector(Anglef(afAlpha, afBeta, 0.f)) * 100.f;
 	}
 	
 	effect->eCurPos += effect->eMove * (timeDelta * 0.0045f);
