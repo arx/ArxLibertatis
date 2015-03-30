@@ -97,11 +97,7 @@ void CFireBall::Create(Vec3f aeSrc, float afBeta, float afAlpha)
 	eSrc = aeSrc;
 	eSrc += angleToVectorXZ(afBeta) * 60.f;
 	
-	eMove = angleToVectorXZ(afBeta) * 80.f;
-	
-	eMove.x *= glm::cos(glm::radians(MAKEANGLE(afAlpha)));
-	eMove.y = glm::sin(glm::radians(MAKEANGLE(afAlpha))) * 80.f;
-	eMove.z *= glm::cos(glm::radians(MAKEANGLE(afAlpha)));
+	eMove = angleToVector(Anglef(afAlpha, afBeta, 0.f)) * 80.f;
 	
 	// Light
 	lLightId = LightHandle::Invalid;
