@@ -2296,10 +2296,8 @@ void ArxGame::manageEditorControls() {
 						float y_ratio=(float)((float)DANAEMouse.y-(float)g_size.center().y)/(float)g_size.height()*2;
 						float x_ratio=-(float)((float)DANAEMouse.x-(float)g_size.center().x)/(float)g_size.center().x;
 						
-						Vec3f viewvector = angleToVectorXZ(player.angle.getPitch() + (x_ratio * 30.f));
-						viewvector.x *= std::cos(glm::radians(player.angle.getYaw()));
-						viewvector.y = std::sin(glm::radians(player.angle.getYaw())) + y_ratio;
-						viewvector.z *= std::cos(glm::radians(player.angle.getYaw()));
+						Vec3f viewvector = angleToVector(player.angle + Anglef(0.f, x_ratio * 30.f, 0.f));
+						viewvector.y += y_ratio;
 						
 						io->soundtime=0;
 						io->soundcount=0;
