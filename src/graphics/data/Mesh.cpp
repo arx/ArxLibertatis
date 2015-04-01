@@ -751,7 +751,7 @@ int EERIELaunchRay3(const Vec3f & orgn, const Vec3f & dest,  Vec3f * hit, EERIEP
 // Computes the visibility from a point to another... (sort of...)
 bool Visible(const Vec3f & orgn, const Vec3f & dest, EERIEPOLY * epp, Vec3f * hit)
 {
-	float ix,iy,iz;
+	Vec3f i;
 	long px,pz;
 
 	float pas = 35.f;
@@ -777,46 +777,46 @@ bool Visible(const Vec3f & orgn, const Vec3f & dest, EERIEPOLY * epp, Vec3f * hi
 	
 	if(ad.x >= ad.y && ad.x >= ad.z) {
 		if(ad.x != d.x)
-			ix = -pas;
+			i.x = -pas;
 		else
-			ix = pas;
+			i.x = pas;
 
 		iter = ad.x / pas;
 		t = 1.f / (iter);
-		iy = d.y * t;
-		iz = d.z * t;
+		i.y = d.y * t;
+		i.z = d.z * t;
 	} else if(ad.y >= ad.x && ad.y >= ad.z) {
 		if(ad.y != d.y)
-			iy = -pas;
+			i.y = -pas;
 		else
-			iy = pas;
+			i.y = pas;
 
 		iter = ad.y / pas;
 		t = 1.f / (iter);
-		ix = d.x * t;
-		iz = d.z * t;
+		i.x = d.x * t;
+		i.z = d.z * t;
 	} else {
 		if(ad.z != d.z)
-			iz = -pas;
+			i.z = -pas;
 		else
-			iz = pas;
+			i.z = pas;
 
 		iter = ad.z / pas;
 		t = 1.f / (iter);
-		ix = d.x * t;
-		iy = d.y * t;
+		i.x = d.x * t;
+		i.y = d.y * t;
 	}
 
 	float dd;
-	tmpPos.x -= ix;
-	tmpPos.y -= iy;
-	tmpPos.z -= iz;
+	tmpPos.x -= i.x;
+	tmpPos.y -= i.y;
+	tmpPos.z -= i.z;
 
 	while(iter > 0.f) {
 		iter -= 1.f;
-		tmpPos.x += ix;
-		tmpPos.y += iy;
-		tmpPos.z += iz;
+		tmpPos.x += i.x;
+		tmpPos.y += i.y;
+		tmpPos.z += i.z;
 
 		px = (long)(tmpPos.x * ACTIVEBKG->Xmul);
 		pz = (long)(tmpPos.z * ACTIVEBKG->Zmul);
