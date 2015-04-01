@@ -88,9 +88,7 @@ private:
 	float	fLengthMin;
 	float	fLengthMax;
 	Vec3f fAngleMin;
-	float	fAngleXMax;
-	float	fAngleYMax;
-	float	fAngleZMax;
+	Vec3f fAngleMax;
 	Vec3f eSrc;
 	Vec3f eDest;
 	TextureContainer * tex_light;
