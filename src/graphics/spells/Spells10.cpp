@@ -85,13 +85,12 @@ CMassLightning::~CMassLightning() {
 void CMassLightning::Create(Vec3f aePos) {
 	
 	long lMax = 0;
-	Vec3f eTarget;
 	float ft = 360.0f / (float)number;
 
 	for(int i = 0; i < number; i++) {
 		CLightning * lightning = pTab[i];
 		
-		eTarget = aePos;
+		Vec3f eTarget = aePos;
 		eTarget += angleToVectorXZ(i * ft) * 500.0f;
 		
 		lightning->Create(aePos, eTarget);
