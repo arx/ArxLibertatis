@@ -74,11 +74,9 @@ struct CLightning::LIGHTNING {
 	int anbrec;
 	bool abFollow;
 	int aParent;
-	float fAngleXMin;
+	Vec3f fAngleMin;
 	float fAngleXMax;
-	float fAngleYMin;
 	float fAngleYMax;
-	float fAngleZMin;
 	float fAngleZMax;
 };
 
@@ -131,9 +129,9 @@ void CLightning::BuildS(LIGHTNING * pLInfo)
 		}
 
 		Vec3f fAngle;
-		fAngle.x = frand2() * (pLInfo->fAngleXMax - pLInfo->fAngleXMin) + pLInfo->fAngleXMin;
-		fAngle.y = frand2() * (pLInfo->fAngleYMax - pLInfo->fAngleYMin) + pLInfo->fAngleYMin;
-		fAngle.z = frand2() * (pLInfo->fAngleZMax - pLInfo->fAngleZMin) + pLInfo->fAngleZMin;
+		fAngle.x = frand2() * (pLInfo->fAngleXMax - pLInfo->fAngleMin.x) + pLInfo->fAngleMin.x;
+		fAngle.y = frand2() * (pLInfo->fAngleYMax - pLInfo->fAngleMin.y) + pLInfo->fAngleMin.y;
+		fAngle.z = frand2() * (pLInfo->fAngleZMax - pLInfo->fAngleMin.z) + pLInfo->fAngleMin.z;
 
 		Vec3f av;
 		av.x = glm::cos(glm::acos(avect.x) - glm::radians(fAngle.x));
@@ -167,11 +165,11 @@ void CLightning::BuildS(LIGHTNING * pLInfo)
 				pLInfo->anb =  anb - (int)(10 * (1 - m));
 				pLInfo->anbrec = anbrec + (int)(2 * m);
 				pLInfo->aParent = moi;
-				pLInfo->fAngleXMin = fAngleXMin;
+				pLInfo->fAngleMin.x = fAngleXMin;
 				pLInfo->fAngleXMax = fAngleXMax;
-				pLInfo->fAngleYMin = fAngleYMin;
+				pLInfo->fAngleMin.y = fAngleYMin;
 				pLInfo->fAngleYMax = fAngleYMax;
-				pLInfo->fAngleZMin = fAngleZMin;
+				pLInfo->fAngleMin.z = fAngleZMin;
 				pLInfo->fAngleZMax = fAngleZMax;
 				BuildS(pLInfo);
 
@@ -181,11 +179,11 @@ void CLightning::BuildS(LIGHTNING * pLInfo)
 				pLInfo->anb = anb - (int)(10 * m);
 				pLInfo->anbrec = anbrec + (int)(2 * m);
 				pLInfo->aParent = moi;
-				pLInfo->fAngleXMin = fAngleXMin;
+				pLInfo->fAngleMin.x = fAngleXMin;
 				pLInfo->fAngleXMax = fAngleXMax;
-				pLInfo->fAngleYMin = fAngleYMin;
+				pLInfo->fAngleMin.y = fAngleYMin;
 				pLInfo->fAngleYMax = fAngleYMax;
-				pLInfo->fAngleZMin = fAngleZMin;
+				pLInfo->fAngleMin.z = fAngleZMin;
 				pLInfo->fAngleZMax = fAngleZMax;
 				BuildS(pLInfo);
 			} else {
@@ -195,11 +193,11 @@ void CLightning::BuildS(LIGHTNING * pLInfo)
 				pLInfo->anb = anb - (int)(10 * (1 - m));
 				pLInfo->anbrec = anbrec + (int)(2 * m);
 				pLInfo->aParent = moi;
-				pLInfo->fAngleXMin = fAngleXMin;
+				pLInfo->fAngleMin.x = fAngleXMin;
 				pLInfo->fAngleXMax = fAngleXMax;
-				pLInfo->fAngleYMin = fAngleYMin;
+				pLInfo->fAngleMin.y = fAngleYMin;
 				pLInfo->fAngleYMax = fAngleYMax;
-				pLInfo->fAngleZMin = fAngleZMin;
+				pLInfo->fAngleMin.z = fAngleZMin;
 				pLInfo->fAngleZMax = fAngleZMax;
 				BuildS(pLInfo);
 
@@ -209,11 +207,11 @@ void CLightning::BuildS(LIGHTNING * pLInfo)
 				pLInfo->anb = anb - (int)(10 * m);
 				pLInfo->anbrec = anbrec + (int)(2 * m);
 				pLInfo->aParent = moi;
-				pLInfo->fAngleXMin = fAngleXMin;
+				pLInfo->fAngleMin.x = fAngleXMin;
 				pLInfo->fAngleXMax = fAngleXMax;
-				pLInfo->fAngleYMin = fAngleYMin;
+				pLInfo->fAngleMin.y = fAngleYMin;
 				pLInfo->fAngleYMax = fAngleYMax;
-				pLInfo->fAngleZMin = fAngleZMin;
+				pLInfo->fAngleMin.z = fAngleZMin;
 				pLInfo->fAngleZMax = fAngleZMax;
 				BuildS(pLInfo);
 			}
@@ -227,11 +225,11 @@ void CLightning::BuildS(LIGHTNING * pLInfo)
 			pLInfo->anb = anb - 1;
 			pLInfo->anbrec = anbrec;
 			pLInfo->aParent = moi;
-			pLInfo->fAngleXMin = fAngleXMin;
+			pLInfo->fAngleMin.x = fAngleXMin;
 			pLInfo->fAngleXMax = fAngleXMax;
-			pLInfo->fAngleYMin = fAngleYMin;
+			pLInfo->fAngleMin.y = fAngleYMin;
 			pLInfo->fAngleYMax = fAngleYMax;
-			pLInfo->fAngleZMin = fAngleZMin;
+			pLInfo->fAngleMin.z = fAngleZMin;
 			pLInfo->fAngleZMax = fAngleZMax;
 			BuildS(pLInfo);
 		}
@@ -285,11 +283,11 @@ void CLightning::ReCreate(float rootSize)
 		LInfo.anbrec = 0;
 		LInfo.abFollow = true;
 		LInfo.aParent = 0;
-		LInfo.fAngleXMin = fAngleXMin;
+		LInfo.fAngleMin.x = fAngleXMin;
 		LInfo.fAngleXMax = fAngleXMax;
-		LInfo.fAngleYMin = fAngleYMin;
+		LInfo.fAngleMin.y = fAngleYMin;
 		LInfo.fAngleYMax = fAngleYMax;
-		LInfo.fAngleZMin = fAngleZMin;
+		LInfo.fAngleMin.z = fAngleZMin;
 		LInfo.fAngleZMax = fAngleZMax;
 
 		cnodetab[0].pos = eSrc;
