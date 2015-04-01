@@ -130,14 +130,15 @@ void CLightning::BuildS(LIGHTNING * pLInfo)
 			avect = glm::normalize(eDest - pLInfo->eStart);
 		}
 
-		float fAngleX = frand2() * (pLInfo->fAngleXMax - pLInfo->fAngleXMin) + pLInfo->fAngleXMin;
-		float fAngleY = frand2() * (pLInfo->fAngleYMax - pLInfo->fAngleYMin) + pLInfo->fAngleYMin;
-		float fAngleZ = frand2() * (pLInfo->fAngleZMax - pLInfo->fAngleZMin) + pLInfo->fAngleZMin;
+		Vec3f fAngle;
+		fAngle.x = frand2() * (pLInfo->fAngleXMax - pLInfo->fAngleXMin) + pLInfo->fAngleXMin;
+		fAngle.y = frand2() * (pLInfo->fAngleYMax - pLInfo->fAngleYMin) + pLInfo->fAngleYMin;
+		fAngle.z = frand2() * (pLInfo->fAngleZMax - pLInfo->fAngleZMin) + pLInfo->fAngleZMin;
 
 		Vec3f av;
-		av.x = glm::cos(glm::acos(avect.x) - glm::radians(fAngleX));
-		av.y = glm::sin(glm::asin(avect.y) - glm::radians(fAngleY));
-		av.z = glm::tan(glm::atan(avect.z) - glm::radians(fAngleZ));
+		av.x = glm::cos(glm::acos(avect.x) - glm::radians(fAngle.x));
+		av.y = glm::sin(glm::asin(avect.y) - glm::radians(fAngle.y));
+		av.z = glm::tan(glm::atan(avect.z) - glm::radians(fAngle.z));
 		av = glm::normalize(av);
 		avect = av;
 
