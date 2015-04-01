@@ -1794,10 +1794,9 @@ static long Manage_Specific_RAT_Timer(SCR_TIMER * st) {
 	if (ARX_INTERACTIVE_ConvertToValidPosForIO(io, &target))
 	{
 		ARX_INTERACTIVE_Teleport(io, target);
-		Vec3f pos;
-		pos.x = io->pos.x;
-		pos.y = io->pos.y + io->physics.cyl.height * ( 1.0f / 2 );
-		pos.z = io->pos.z;
+		Vec3f pos = io->pos;
+		pos.y += io->physics.cyl.height * ( 1.0f / 2 );
+		
 		ARX_PARTICLES_Add_Smoke(&pos, 3, 20);
 		AddRandomSmoke(io, 20);
 		MakeCoolFx(io->pos);
