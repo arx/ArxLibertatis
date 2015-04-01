@@ -770,45 +770,43 @@ bool Visible(const Vec3f & orgn, const Vec3f & dest, EERIEPOLY * epp, Vec3f * hi
 		pas = distance * .5f;
 
 	// ray incs
-	float dx = (dest.x - orgn.x);
-	float dy = (dest.y - orgn.y);
-	float dz = (dest.z - orgn.z);
-
+	Vec3f d = dest - orgn;
+	
 	// absolute ray incs
-	float adx = glm::abs(dx);
-	float ady = glm::abs(dy);
-	float adz = glm::abs(dz);
+	float adx = glm::abs(d.x);
+	float ady = glm::abs(d.y);
+	float adz = glm::abs(d.z);
 
 	if(adx >= ady && adx >= adz) {
-		if(adx != dx)
+		if(adx != d.x)
 			ix = -pas;
 		else
 			ix = pas;
 
 		iter = adx / pas;
 		t = 1.f / (iter);
-		iy = dy * t;
-		iz = dz * t;
+		iy = d.y * t;
+		iz = d.z * t;
 	} else if(ady >= adx && ady >= adz) {
-		if(ady != dy)
+		if(ady != d.y)
 			iy = -pas;
 		else
 			iy = pas;
 
 		iter = ady / pas;
 		t = 1.f / (iter);
-		ix = dx * t;
-		iz = dz * t;
+		ix = d.x * t;
+		iz = d.z * t;
 	} else {
-		if(adz != dz)
+		if(adz != d.z)
 			iz = -pas;
 		else
 			iz = pas;
 
 		iter = adz / pas;
 		t = 1.f / (iter);
-		ix = dx * t;
-		iy = dy * t;
+		ix = d.x * t;
+		iy = d.y * t;
 	}
 
 	float dd;
