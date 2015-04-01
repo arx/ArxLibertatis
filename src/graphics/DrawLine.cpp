@@ -134,21 +134,19 @@ void drawLineCylinder(const Cylinder & cyl, Color col) {
 	const int STEPCYL = 16;
 	
 	for(long i = 0; i < 360 - STEPCYL; i += STEPCYL) {
-
-		float es = glm::sin(glm::radians(MAKEANGLE((float)i))) * cyl.radius;
-		float ec = glm::cos(glm::radians(MAKEANGLE((float)i))) * cyl.radius;
-		float es2 = glm::sin(glm::radians(MAKEANGLE((float)(i + STEPCYL)))) * cyl.radius;
-		float ec2 = glm::cos(glm::radians(MAKEANGLE((float)(i + STEPCYL)))) * cyl.radius;
-
+		
+		Vec3f current = angleToVectorXZ(i) * cyl.radius;
+		Vec3f next = angleToVectorXZ(i + STEPCYL) * cyl.radius;
+		
+		Vec3f from = cyl.origin + current;
+		Vec3f to = cyl.origin + next;
+		
 		// Draw low pos
-		drawLine(cyl.origin + Vec3f(es, 0.f, ec), cyl.origin + Vec3f(es2, 0.f, ec2),  col);
+		drawLine(from, to, col);
 		// Draw vertical
-		Vec3f from = cyl.origin + Vec3f(es, 0.f, ec);
-		drawLine(from, from + Vec3f(0.f, cyl.height, 0.f),  col);
+		drawLine(from, from + Vec3f(0.f, cyl.height, 0.f), col);
 		// Draw high pos
-		Vec3f from2 = cyl.origin + Vec3f(es, cyl.height, ec);
-		Vec3f to = cyl.origin + Vec3f(es2, cyl.height, ec2);
-		drawLine(from2, to,  col);
+		drawLine(from + Vec3f(0.f, cyl.height, 0.f), to + Vec3f(0.f, cyl.height, 0.f), col);
 	}
 }
 
