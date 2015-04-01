@@ -87,11 +87,9 @@ private:
 	float	fSize;
 	float	fLengthMin;
 	float	fLengthMax;
-	float	fAngleXMin;
+	Vec3f fAngleMin;
 	float	fAngleXMax;
-	float	fAngleYMin;
 	float	fAngleYMax;
-	float	fAngleZMin;
 	float	fAngleZMax;
 	Vec3f eSrc;
 	Vec3f eDest;
