@@ -114,13 +114,6 @@ struct CinematicSpeech {
 	
 };
 
-const size_t MAX_ACTORS = 10;
-struct ARX_CONVERSATION_STRUCT {
-	long actors_nb;
-	EntityHandle actors[MAX_ACTORS];
-	long current;
-};
-
 struct Notification {
 	
 	unsigned long timecreation;
@@ -184,12 +177,8 @@ struct ARX_SPEECH {
 
 const size_t MAX_ASPEECH = 100;
 extern ARX_SPEECH aspeech[MAX_ASPEECH];
-extern ARX_CONVERSATION_STRUCT main_conversation;
 
 extern Notification speech[MAX_SPEECH];
-
-void ARX_CONVERSATION_FirstInit();
-void ARX_CONVERSATION_Reset();
 
 void ARX_SPEECH_FirstInit();
 void ARX_SPEECH_Reset();
@@ -212,6 +201,5 @@ long ARX_SPEECH_AddSpeech(Entity * io, const std::string & data, long mood, Spee
 void ARX_SPEECH_ReleaseIOSpeech(Entity * io);
 void ARX_SPEECH_ClearIOSpeech(Entity * io);
 void ARX_SPEECH_Launch_No_Unicode_Seek(const std::string & string, Entity * io_source);
-bool ApplySpeechPos(EERIE_CAMERA * conversationcamera, long is);
 
 #endif // ARX_GUI_SPEECH_H

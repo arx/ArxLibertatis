@@ -80,7 +80,7 @@ ZeniMax Media Inc., Suite 120, Rockville, Maryland 20850 USA.
 #include "script/ScriptEvent.h"
 
 extern TextureContainer *	arx_logo_tc;
-extern bool ARX_CONVERSATION;
+
 extern bool EXTERNALVIEW;
 extern long REQUEST_SPEECH_SKIP;
 
@@ -251,20 +251,6 @@ void ARX_SPEECH_Launch_No_Unicode_Seek(const std::string & text, Entity * io_sou
 	}
 }
 
-ARX_CONVERSATION_STRUCT main_conversation;
-
-void ARX_CONVERSATION_FirstInit()
-{
-	main_conversation.actors_nb = 0;
-	main_conversation.current = -1;
-}
-
-void ARX_CONVERSATION_Reset()
-{
-	main_conversation.actors_nb = 0;
-	main_conversation.current = -1;
-}
-
 static void ARX_CONVERSATION_CheckAcceleratedSpeech() {
 	
 	if(REQUEST_SPEECH_SKIP) {
@@ -432,12 +418,7 @@ long ARX_SPEECH_AddSpeech(Entity * io, const std::string & data, long mood,
 	}
 
 	if (aspeech[num].duration < 500) aspeech[num].duration = 2000;
-
-	if (ARX_CONVERSATION && io)
-		for (long j = 0; j < main_conversation.actors_nb; j++)
-			if (main_conversation.actors[j] >= PlayerEntityHandle && io == entities[main_conversation.actors[j]])
-				main_conversation.current = num;
-
+	
 	return num;
 }
 
@@ -496,21 +477,7 @@ void ARX_SPEECH_Update() {
 
 		if(speech->text.empty())
 			continue;
-
-		if(ARX_CONVERSATION && speech->io) {
-			long ok = 0;
-
-			for(long j = 0; j < main_conversation.actors_nb; j++) {
-				if(main_conversation.actors[j] >= PlayerEntityHandle)
-					if(speech->io == entities[main_conversation.actors[j]]) {
-						ok = 1;
-					}
-			}
-
-			if(!ok)
-				continue;
-		}
-
+		
 		if(!cinematicBorder.isActive())
 			continue;
 
@@ -583,19 +550,4 @@ void ARX_SPEECH_Update() {
 			speech->fPixelScroll	+= fDTime;
 		}
 	}
-}
-
-bool ApplySpeechPos(EERIE_CAMERA * conversationcamera, long is) {
-	
-	if(is < 0 || !aspeech[is].io) {
-		return false;
-	}
-	
-	conversationcamera->d_pos = aspeech[is].io->pos + player.baseOffset();
-	
-	// XXX Missing conversion to radians ?
-	float t = (aspeech[is].io->angle.getPitch());
-	conversationcamera->orgTrans.pos = conversationcamera->d_pos;
-	conversationcamera->orgTrans.pos += Vec3f(std::sin(t) * 100.f, 0.f, -std::cos(t) * 100.f);
-	return true;
 }

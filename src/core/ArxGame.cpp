@@ -192,10 +192,6 @@ long STOP_KEYBOARD_INPUT= 0;
 long BOOKBUTTON=0;
 long LASTBOOKBUTTON=0;
 bool EXTERNALVIEW = false;
-bool ARX_CONVERSATION = false;
-long ARX_CONVERSATION_MODE=-1;
-long ARX_CONVERSATION_LASTIS=-1;
-static bool LAST_CONVERSATION = 0;
 bool SHOW_INGAME_MINIMAP = true;
 
 bool ARX_FLARES_Block = true;
@@ -821,7 +817,6 @@ bool ArxGame::initGame()
 	CleanInventory();
 	
 	ARX_SPEECH_FirstInit();
-	ARX_CONVERSATION_FirstInit();
 	ARX_SPEECH_Init();
 	ARX_SPEECH_ClearAll();
 	RemoveQuakeFX();
@@ -1391,99 +1386,6 @@ void ArxGame::updateFirstPersonCamera() {
 	}
 }
 
-void ArxGame::updateConversationCamera() {
-
-	if(ARX_CONVERSATION && main_conversation.actors_nb) {
-		// Decides who speaks !!
-		if(main_conversation.current < 0)
-			for(long j=0; j < main_conversation.actors_nb; j++) {
-				if(main_conversation.actors[j] >= PlayerEntityHandle) {
-					for(size_t k = 0 ; k < MAX_ASPEECH; k++) {
-							if(aspeech[k].exist && aspeech[k].io == entities[main_conversation.actors[j]]) {
-								main_conversation.current = k;
-								j = main_conversation.actors_nb + 1;
-								k = MAX_ASPEECH+1;
-							}
-					}
-				}
-			}
-
-		long is = main_conversation.current;
-
-		if(ARX_CONVERSATION_LASTIS != is)
-			ARX_CONVERSATION_MODE = -1;
-
-		ARX_CONVERSATION_LASTIS = is;
-
-		if(ARX_CONVERSATION_MODE == -1) {
-			ARX_CONVERSATION_MODE = 0;
-			if(rnd() > 0.5f) {
-				conversationcamera.size = Anglef(MAKEANGLE(170.f + rnd() * 20.f), 0.f, 0.f);
-				conversationcamera.d_angle = Anglef(0.f, 0.f, 0.08f);
-			} else {
-				conversationcamera.size = Anglef(rnd() * 50.f, 0.f, rnd() * 50.f);
-				conversationcamera.d_angle = Anglef::ZERO;
-				if(rnd() > 0.4f) {
-					conversationcamera.d_angle.setYaw((1.f - rnd() * 2.f) * (1.f / 30));
-				}
-				if(rnd() > 0.4f) {
-					conversationcamera.d_angle.setPitch((1.f - rnd() * 1.2f) * 0.2f);
-				}
-				if(rnd() > 0.4f) {
-					conversationcamera.d_angle.setRoll((1.f - rnd() * 2.f) * 0.025f);
-				}
-			}
-		} else {
-			conversationcamera.size += conversationcamera.d_angle * framedelay;
-		}
-
-		Vec3f sourcepos,targetpos;
-
-		if(ApplySpeechPos(&conversationcamera, is)) {
-			targetpos = conversationcamera.d_pos;
-			sourcepos = conversationcamera.orgTrans.pos;
-		} else {
-			targetpos = player.pos;
-			
-			sourcepos = targetpos;
-			sourcepos += angleToVectorXZ_180offset(player.angle.getPitch()) * 100.f;
-		}
-		
-		Vec3f vect = targetpos - sourcepos;
-		vect = glm::normalize(vect);
-
-		float dist = 250.f - conversationcamera.size.getRoll();
-		if(dist < 0.f)
-			dist = 90.f - dist * (1.f/20);
-		else if(dist < 90.f)
-			dist = 90.f;
-
-		Vec3f vec2 = VRotateY(vect, conversationcamera.size.getYaw());
-
-		sourcepos = targetpos - vec2 * dist;
-
-		if(conversationcamera.size.getPitch() != 0.f)
-			sourcepos.y += 120.f - conversationcamera.size.getPitch() * (1.f/10);
-
-		conversationcamera.orgTrans.pos = sourcepos;
-		conversationcamera.setTargetCamera(targetpos);
-		subj.orgTrans.pos = conversationcamera.orgTrans.pos;
-		subj.angle.setYaw(MAKEANGLE(-conversationcamera.angle.getYaw()));
-		subj.angle.setPitch(MAKEANGLE(conversationcamera.angle.getPitch() - 180.f));
-		subj.angle.setRoll(0.f);
-		EXTERNALVIEW = true;
-	} else {
-		ARX_CONVERSATION_MODE = -1;
-		ARX_CONVERSATION_LASTIS = -1;
-
-		if(LAST_CONVERSATION) {
-			changeAnimation(entities.player(), 1, entities.player()->anims[ANIM_WAIT], EA_LOOP);
-		}
-	}
-
-	LAST_CONVERSATION = ARX_CONVERSATION;
-}
-
 void ArxGame::speechControlledCinematic() {
 
 	/////////////////////////////////////////////
@@ -1934,8 +1836,7 @@ void ArxGame::updateLevel() {
 	}
 
 	updateFirstPersonCamera();
-	updateConversationCamera();
-
+	
 	ARX_SCRIPT_Timer_Check();
 
 	speechControlledCinematic();

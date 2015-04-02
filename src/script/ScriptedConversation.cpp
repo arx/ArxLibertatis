@@ -58,7 +58,6 @@ ZeniMax Media Inc., Suite 120, Rockville, Maryland 20850 USA.
 #include "script/ScriptUtils.h"
 
 
-extern bool ARX_CONVERSATION;
 extern Vec3f LASTCAMPOS;
 extern Anglef LASTCAMANGLE;
 
@@ -74,46 +73,10 @@ public:
 	
 	Result execute(Context & context) {
 		
-		std::string nbpeople = context.getWord();
-		long nb_people = 0;
-		if(!nbpeople.empty() && nbpeople[0] == '-') {
-			std::istringstream iss(nbpeople.substr(1));
-			iss >> nb_people;
-			if(iss.bad()) {
-				nb_people = 0;
-			}
+		std::string param = context.getWord();
+		if(param != "off") {
+			LogWarning << "Invalid used of stubbed conversation command";
 		}
-		
-		bool enabled = context.getBool();
-		ARX_CONVERSATION = enabled;
-		
-		if(!nb_people || !enabled) {
-			DebugScript(' ' << nbpeople << ' ' << enabled);
-			return Success;
-		}
-		
-		main_conversation.actors_nb = nb_people;
-		
-#ifdef ARX_DEBUG
-		std::ostringstream oss;
-		oss << ' ' << nbpeople << ' ' << enabled;
-#endif
-		
-		for(long j = 0; j < nb_people; j++) {
-			
-			std::string target = context.getWord();
-			Entity * t = entities.getById(target, context.getEntity());
-			
-#ifdef ARX_DEBUG
-			oss << ' ' << target;
-#endif
-			
-			main_conversation.actors[j] = (t == NULL) ? EntityHandle::Invalid : t->index();
-		}
-		
-#ifdef ARX_DEBUG
-		DebugScript(oss.rdbuf());
-#endif
 		
 		return Success;
 	}

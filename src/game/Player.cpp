@@ -125,7 +125,6 @@ ZeniMax Media Inc., Suite 120, Rockville, Maryland 20850 USA.
 
 #include "script/Script.h"
 
-extern bool		ARX_CONVERSATION;
 extern long		HERO_SHOW_1ST;
 extern long		REQUEST_SPEECH_SKIP;
 extern long		DONT_ERASE_PLAYER;
@@ -2736,11 +2735,7 @@ void ARX_GAME_Reset(long type) {
 	ARX_SCRIPT_Timer_ClearAll();
 	ARX_SCRIPT_EventStackClear();
 	ARX_SCRIPT_ResetAll(false);
-
-	// Conversations
-	ARX_CONVERSATION_Reset();
-	ARX_CONVERSATION = false;
-
+	
 	// Speech Things
 	REQUEST_SPEECH_SKIP = 0;
 	ARX_SPEECH_ClearAll();
