@@ -130,7 +130,6 @@ extern long		REQUEST_SPEECH_SKIP;
 extern long		DONT_ERASE_PLAYER;
 extern bool		GLOBAL_MAGIC_MODE;
 
-extern Entity * CAMERACONTROLLER;
 extern ParticleManager * pParticleManager;
 
 extern unsigned long LAST_JUMP_ENDTIME;
@@ -2846,8 +2845,6 @@ void ARX_GAME_Reset(long type) {
 	TSecondaryInventory = NULL;
 	MasterCamera.exist = 0;
 	CHANGE_LEVEL_ICON = -1;
-	
-	CAMERACONTROLLER = NULL;
 	
 	// Kill Script Loaded IO
 	CleanScriptLoadedIO();

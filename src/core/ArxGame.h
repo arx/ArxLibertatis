@@ -98,7 +98,6 @@ private:
 	void updateFirstPersonCamera();
 	void speechControlledCinematic();
 	void handlePlayerDeath();
-	void handleCameraController();
 	void updateActiveCamera();
 
 	bool isInMenu() const;

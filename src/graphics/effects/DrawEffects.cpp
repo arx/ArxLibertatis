@@ -223,9 +223,6 @@ void ARXDRAW_DrawInterShadows()
 	}
 }
 
-extern Entity * CAMERACONTROLLER;
-
-
 // This used to add a bias when the "forceZbias" config option was activated, but it
 // was off by default and we removed it.
 static void IncrementPolyWithNormalOutput(EERIEPOLY * _pPoly, TexturedVertex * _pOut) {

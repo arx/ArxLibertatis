@@ -198,8 +198,6 @@ bool ARX_FLARES_Block = true;
 
 Vec3f LASTCAMPOS;
 Anglef LASTCAMANGLE;
-Entity * CAMERACONTROLLER=NULL;
-Entity *lastCAMERACONTROLLER=NULL;
 
 // ArxGame constructor. Sets attributes for the app.
 ArxGame::ArxGame()
@@ -1564,40 +1562,6 @@ void ArxGame::handlePlayerDeath() {
 	}
 }
 
-void ArxGame::handleCameraController() {
-
-	static float currentbeta = 0.f;
-
-	if(CAMERACONTROLLER) {
-		if(lastCAMERACONTROLLER != CAMERACONTROLLER)
-			currentbeta = CAMERACONTROLLER->angle.getPitch();
-
-		Vec3f targetpos = CAMERACONTROLLER->pos + player.baseOffset();
-
-		float delta_angle = AngleDifference(currentbeta, CAMERACONTROLLER->angle.getPitch());
-		float delta_angle_t = delta_angle * framedelay * ( 1.0f / 1000 );
-
-		if(glm::abs(delta_angle_t) > glm::abs(delta_angle))
-			delta_angle_t = delta_angle;
-
-		currentbeta += delta_angle_t;
-		
-		conversationcamera.orgTrans.pos = targetpos;
-		conversationcamera.orgTrans.pos += angleToVectorXZ_180offset(currentbeta) * 160.f;
-		conversationcamera.orgTrans.pos += Vec3f(0.f, 40.f, 0.f);
-		
-		conversationcamera.setTargetCamera(targetpos);
-		
-		subj.orgTrans.pos = conversationcamera.orgTrans.pos;
-		subj.angle.setYaw(MAKEANGLE(-conversationcamera.angle.getYaw()));
-		subj.angle.setPitch(MAKEANGLE(conversationcamera.angle.getPitch()-180.f));
-		subj.angle.setRoll(0.f);
-		EXTERNALVIEW = true;
-	}
-
-	lastCAMERACONTROLLER=CAMERACONTROLLER;
-}
-
 void ArxGame::updateActiveCamera() {
 
 	EERIE_CAMERA * cam = NULL;
@@ -1730,10 +1694,6 @@ void ArxGame::updateInput() {
 	if(GInput->isKeyPressedNowPressed(Keyboard::Key_ScrollLock)) {
 		drawDebugCycleViews();
 	}
-
-	if(GInput->isKeyPressedNowPressed(Keyboard::Key_Spacebar)) {
-		CAMERACONTROLLER = NULL;
-	}
 }
 
 bool ArxGame::isInMenu() const {
@@ -1842,8 +1802,7 @@ void ArxGame::updateLevel() {
 	speechControlledCinematic();
 
 	handlePlayerDeath();
-
-	handleCameraController();
+	
 	UpdateCameras();
 
 	ARX_PLAYER_FrameCheck(Original_framedelay);

@@ -120,8 +120,6 @@ ZeniMax Media Inc., Suite 120, Rockville, Maryland 20850 USA.
 #include "script/ScriptEvent.h"
 
 
-extern Entity * CAMERACONTROLLER;
-
 long HERO_SHOW_1ST = 1;
 
 static bool IsCollidingInter(Entity * io, const Vec3f & pos);
@@ -581,9 +579,6 @@ void PrepareIOTreatZone(long flag) {
 			}
 
 			if(!treat) {
-				if(io == CAMERACONTROLLER)
-					treat = 1;
-
 				if(io == DRAGINTER)
 					treat = 1;
 			}

@@ -92,8 +92,6 @@ using audio::FLAG_RELATIVE;
 using audio::FLAG_AUTOFREE;
 
 extern bool EXTERNALVIEW;
-extern Entity * CAMERACONTROLLER;
-
 
 enum PlayingAmbianceType {
 	PLAYING_AMBIANCE_MENU,
@@ -593,7 +591,7 @@ long ARX_SOUND_PlaySpeech(const res::path & name, const Entity * io)
 	channel.falloff.end = ARX_SOUND_DEFAULT_FALLEND;
 
 	if(io) {
-		if((io == entities.player() && !EXTERNALVIEW) || ((io->ioflags & IO_CAMERA) && io == CAMERACONTROLLER))
+		if((io == entities.player() && !EXTERNALVIEW))
 			ARX_SOUND_IOFrontPos(io, channel.position);
 		else
 			channel.position = io->pos;
@@ -859,7 +857,7 @@ void ARX_SOUND_RefreshSpeechPosition(SourceId & sample_id, const Entity * io) {
 	}
 	
 	Vec3f position;
-	if((io == entities.player() && !EXTERNALVIEW) || ((io->ioflags & IO_CAMERA) && io == CAMERACONTROLLER)) {
+	if((io == entities.player() && !EXTERNALVIEW)) {
 		ARX_SOUND_IOFrontPos(io, position);
 	} else {
 		position = io->pos;
