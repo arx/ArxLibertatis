@@ -69,6 +69,7 @@ static int main_extract(SaveBlock & save, int argc, char ** argv) {
 		fs::ofstream h(*file, std::ios_base::out | std::ios_base::binary);
 		if(!h.is_open()) {
 			cerr << "error opening " << *file << " for writing" << endl;
+			free(data);
 			continue;
 		}
 		
