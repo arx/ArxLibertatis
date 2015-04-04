@@ -44,8 +44,12 @@ public:
 	/*!
 	 * Constructor.
 	 */
-	Angle() {}
-
+	Angle()
+		: m_yaw(0)
+		, m_pitch(0)
+		, m_roll(0)
+	{}
+	
 	/*!
 	 * Constructor accepting initial values.
 	 */
