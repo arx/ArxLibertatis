@@ -161,7 +161,7 @@ bool CrashHandlerImpl::setNamedVariable(const std::string& name, const std::stri
 	// Check if our array already contains this variable.
 	for(int i = 0; i < m_pCrashInfo->nbVariables; i++) {
 		if(strcmp(m_pCrashInfo->variables[i].name, name.c_str()) == 0) {
-			strcpy(m_pCrashInfo->variables[i].value, value.c_str());
+			util::storeStringTerminated(m_pCrashInfo->variables[i].value, value);
 			return true;
 		}
 	}
@@ -172,8 +172,8 @@ bool CrashHandlerImpl::setNamedVariable(const std::string& name, const std::stri
 		return false;
 	}
 
-	strcpy(m_pCrashInfo->variables[m_pCrashInfo->nbVariables].name, name.c_str());
-	strcpy(m_pCrashInfo->variables[m_pCrashInfo->nbVariables].value, value.c_str());
+	util::storeStringTerminated(m_pCrashInfo->variables[m_pCrashInfo->nbVariables].name, name);
+	util::storeStringTerminated(m_pCrashInfo->variables[m_pCrashInfo->nbVariables].value, value);
 	m_pCrashInfo->nbVariables++;
 
 	return true;
