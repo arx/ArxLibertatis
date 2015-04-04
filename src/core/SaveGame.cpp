@@ -224,7 +224,11 @@ bool SaveGameList::save(const std::string & name, iterator overwrite, const Imag
 			oss << "save" << std::setfill('0') << std::setw(4) << index++;
 			savefile = fs::paths.user / SAVEGAME_DIR / oss.str();
 		} while(fs::exists(savefile));
-		fs::create_directories(savefile);
+		
+		if(!fs::create_directories(savefile)) {
+			LogWarning << "Failed to create save directory";
+		}
+		
 		savefile /= SAVEGAME_NAME;
 	}
 	
