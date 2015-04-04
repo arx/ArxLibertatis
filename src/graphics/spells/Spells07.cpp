@@ -114,7 +114,7 @@ void CLightning::BuildS(LIGHTNING * pLInfo)
 	Vec3f astart = pLInfo->eStart;
 	Vec3f avect = pLInfo->eVect;
 
-	if(pLInfo->anb > 0 && nbtotal < 2000) {
+	if(pLInfo->anb > 0 && nbtotal < (MAX_NODES - 1)) {
 		nbtotal++;
 		int moi = nbtotal;
 
@@ -299,8 +299,6 @@ void CLightning::Render()
 		ReCreate(8);
 	}
 	
-	long i;
-
 	Vec3f ePos;
 	
 	float fBeta = 0.f;
@@ -327,7 +325,7 @@ void CLightning::Render()
 	
 	float fbeta = fBeta + rnd() * 2 * fMySize;
 
-	for(i = 0; i < nbtotal && i <= fTotoro; i++) {
+	for(size_t i = 0; i < nbtotal && i <= fTotoro; i++) {
 		Vec3f astart = cnodetab[cnodetab[i].parent].pos + cnodetab[cnodetab[i].parent].f;
 		float temp = 1.5f * fMySize;
 		Vec3f z_z = cnodetab[cnodetab[i].parent].f + randomVec(-temp, temp);
