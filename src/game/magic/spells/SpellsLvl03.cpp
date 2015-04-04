@@ -214,7 +214,7 @@ void FireballSpell::Update(float timeDelta)
 			afAlpha = player.angle.getYaw();
 			long idx = GetGroupOriginByName(entities[m_caster]->obj, "chest");
 
-			if(idx) {
+			if(idx >= 0) {
 				effect->eCurPos = entities[m_caster]->obj->vertexlist3[idx].v;
 			} else {
 				effect->eCurPos = player.pos;
