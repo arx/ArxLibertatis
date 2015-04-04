@@ -138,8 +138,8 @@ bool CrashHandlerImpl::addAttachedFile(const fs::path& file) {
 			return false;
 		}
 	}
-
-	strcpy(m_pCrashInfo->attachedFiles[m_pCrashInfo->nbFilesAttached], file.string().c_str());
+	
+	util::storeStringTerminated(m_pCrashInfo->attachedFiles[m_pCrashInfo->nbFilesAttached], file.string());
 	m_pCrashInfo->nbFilesAttached++;
 
 	return true;
