@@ -218,10 +218,10 @@ void RiseDeadSpell::Update(float timeDelta)
 				
 				SendIOScriptEvent(io,SM_SUMMONED);
 					
-				Vec3f pos;
-				pos.x=effect->eSrc.x+rnd()*100.f-50.f;
-				pos.y=effect->eSrc.y+100+rnd()*100.f-50.f;
-				pos.z=effect->eSrc.z+rnd()*100.f-50.f;
+				Vec3f pos = effect->eSrc;
+				pos += Vec3f(rnd(), rnd(), rnd()) * 100.f;
+				pos += Vec3f(-50.f, 50.f, -50.f);
+				
 				MakeCoolFx(pos);
 			}
 			
