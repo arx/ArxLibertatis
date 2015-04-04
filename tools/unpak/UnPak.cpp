@@ -37,7 +37,9 @@ using std::string;
 
 static void dump(PakDirectory & dir, const fs::path & dirname = fs::path()) {
 	
-	fs::create_directories(dirname);
+	if(!fs::create_directories(dirname)) {
+		LogWarning << "Failed to create target directory";
+	}
 	
 	for(PakDirectory::files_iterator i = dir.files_begin(); i != dir.files_end(); ++i) {
 		
