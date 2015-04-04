@@ -615,7 +615,9 @@ aalError Ambiance::load() {
 	
 	// Read track count and initialize track structures
 	u32 nbtracks;
-	file->read(&nbtracks, 4);
+	if(!file->read(&nbtracks, 4)) {
+		return AAL_ERROR_FILEIO;
+	}
 	tracks.resize(nbtracks, Track(this));
 	
 	Ambiance::TrackList::iterator track = tracks.begin();
