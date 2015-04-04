@@ -373,10 +373,7 @@ bool ARX_SCENE_PORTAL_ClipIO(Entity * io, const Vec3f & position) {
 		return false;
 
 	if(portals) {
-		Vec3f posi;
-		posi.x=position.x;
-		posi.y=position.y-60; //20
-		posi.z=position.z;
+		Vec3f posi = position + Vec3f(0, -60, 0); // -20 ?
 		long room_num;
 
 		if(io) {
