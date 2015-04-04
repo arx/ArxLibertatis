@@ -1349,8 +1349,8 @@ public:
 					ARX_SOUND_Stop(SND_TORCH_LOOP);
 					player.torch=NULL;
 					lightHandleGet(torchLightHandle)->exist = 0;
+					io->ignition=1;
 					Set_DragInter(io);
-					DRAGINTER->ignition=1;
 				} else {
 					if((EERIEMouseButton & 4) && !COMBINE) {
 						COMBINE = player.torch;
