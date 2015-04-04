@@ -258,12 +258,11 @@ void SummonCreatureSpell::Update(float timeDelta)
 
 					SendIOScriptEvent(io,SM_SUMMONED);
 					
-					Vec3f pos;
-					
 					for(long j = 0; j < 3; j++) {
-						pos.x=pSummon->eSrc.x+rnd()*100.f-50.f;
-						pos.y=pSummon->eSrc.y+100+rnd()*100.f-50.f;
-						pos.z=pSummon->eSrc.z+rnd()*100.f-50.f;
+						Vec3f pos = pSummon->eSrc;
+						pos += Vec3f(rnd(), rnd(), rnd()) * 100.f;
+						pos += Vec3f(-50.f, 50.f, -50.f);
+						
 						MakeCoolFx(pos);
 					}
 
