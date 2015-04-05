@@ -766,6 +766,14 @@ protected:
 	Color3f m_haloColor;
 	
 public:
+	HudIconBase()
+		: HudItem()
+		, m_tex(NULL)
+		, m_isSelected(false)
+		, m_haloActive(false)
+		, m_haloColor(Color3f::white)
+	{}
+	
 	//Used for drawing icons like the book or backpack icon.
 	void draw() {
 		arx_assert(m_tex);
@@ -836,6 +844,12 @@ private:
 	unsigned long ulBookHaloTime;
 	
 public:
+	BookIconGui()
+		: HudIconBase()
+		, m_size(Vec2f(32, 32))
+		, ulBookHaloTime(0)
+	{}
+	
 	void init() {
 		m_tex = TextureContainer::LoadUI("graph/interface/icons/book");
 		arx_assert(m_tex);
@@ -1155,6 +1169,13 @@ private:
 	bool m_visible;
 	
 public:
+	LevelUpIconGui()
+		: HudIconBase()
+		, m_pos(0.f, 0.f)
+		, m_size(32.f, 32.f)
+		, m_visible(false)
+	{}
+	
 	void init() {
 		m_tex = TextureContainer::LoadUI("graph/interface/icons/lvl_up");
 		arx_assert(m_tex);
@@ -1203,6 +1224,13 @@ private:
 	long ulGoldHaloTime;
 	
 public:
+	PurseIconGui()
+		: HudIconBase()
+		, m_pos()
+		, m_size()
+		, ulGoldHaloTime(0)
+	{}
+	
 	void init() {
 		m_tex = TextureContainer::LoadUI("graph/interface/inventory/gold");
 		arx_assert(m_tex);
@@ -1531,6 +1559,12 @@ private:
 	int m_count;
 	
 public:
+	MemorizedRunesHud()
+		: HudIconBase()
+		, m_size()
+		, m_count(0)
+	{}
+	
 	void update(const Rectf & parent) {
 		int count = 0;
 		int count2 = 0;
