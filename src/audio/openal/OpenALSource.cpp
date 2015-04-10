@@ -341,6 +341,7 @@ aalError OpenALSource::fillBuffer(size_t i, size_t size) {
 	const PCMFormat & f = sample->getFormat();
 	if((f.channels != 1 && f.channels != 2) || (f.quality != 8 && f.quality != 16)) {
 		LogError << "Unsupported audio format: quality=" << f.quality << " channels=" << f.channels;
+		delete[] data;
 		return AAL_ERROR_SYSTEM;
 	}
 	
