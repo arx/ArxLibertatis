@@ -60,7 +60,7 @@ aalError OpenALSource::sourcePlay() {
 	AL_CHECK_ERROR("getting source state")
 	
 	if(val == AL_STOPPED) {
-			return updateBuffers();
+		return updateBuffers();
 	} else if(val == AL_INITIAL || val == AL_PAUSED) {
 		alSourcePlay(source);
 		AL_CHECK_ERROR("playing source")
