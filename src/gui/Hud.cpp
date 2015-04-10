@@ -385,6 +385,7 @@ public:
 				Color color = (io->poisonous && io->poisonous_count!=0) ? Color::green : Color::white;
 				
 				Rectf rect(p, size.x, size.y);
+				// TODO use alpha blending so this will be anti-aliased even w/o alpha to coverage
 				EERIEDrawBitmap(rect, 0.001f, tc, color);
 				
 				Color overlayColor = Color::black;
@@ -396,7 +397,7 @@ public:
 				}
 				
 				if(overlayColor != Color::black) {
-					GRenderer->SetBlendFunc(Renderer::BlendOne, Renderer::BlendOne);
+					GRenderer->SetBlendFunc(Renderer::BlendSrcAlpha, Renderer::BlendOne);
 					GRenderer->SetRenderState(Renderer::AlphaBlending, true);
 					
 					EERIEDrawBitmap(rect, 0.001f, tc, overlayColor);
@@ -589,6 +590,7 @@ public:
 			Color color = (io->poisonous && io->poisonous_count != 0) ? Color::green : Color::white;
 			
 			Rectf rect(p, tc->m_dwWidth, tc->m_dwHeight);
+			// TODO use alpha blending so this will be anti-aliased even w/o alpha to coverage
 			EERIEDrawBitmap(rect, 0.001f, tc, color);
 			
 			Color overlayColor = Color::black;
@@ -600,7 +602,7 @@ public:
 			
 			
 			if(overlayColor != Color::black) {
-				GRenderer->SetBlendFunc(Renderer::BlendOne, Renderer::BlendOne);
+				GRenderer->SetBlendFunc(Renderer::BlendSrcAlpha, Renderer::BlendOne);
 				GRenderer->SetRenderState(Renderer::AlphaBlending, true);
 				
 				EERIEDrawBitmap(rect, 0.001f, tc, overlayColor);
