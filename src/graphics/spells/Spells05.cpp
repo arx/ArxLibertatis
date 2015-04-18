@@ -1011,15 +1011,19 @@ void CLevitate::AddStone(const Vec3f & pos) {
 	while(nb--) {
 		if(!tstone[nb].actif) {
 			nbstone++;
-			tstone[nb].actif = 1;
-			tstone[nb].numstone = rand() & 1;
-			tstone[nb].pos = pos;
-			tstone[nb].yvel = rnd() * -5.f;
-			tstone[nb].ang = Anglef(rnd() * 360.f, rnd() * 360.f, rnd() * 360.f);
-			tstone[nb].angvel = Anglef(5.f * rnd(), 6.f * rnd(), 3.f * rnd());
-			tstone[nb].scale = Vec3f(0.2f + rnd() * 0.3f);
-			tstone[nb].time = Random::get(2000, 2500);
-			tstone[nb].currtime = 0;
+			
+			T_STONE stone;
+			stone.actif = 1;
+			stone.numstone = rand() & 1;
+			stone.pos = pos;
+			stone.yvel = rnd() * -5.f;
+			stone.ang = Anglef(rnd() * 360.f, rnd() * 360.f, rnd() * 360.f);
+			stone.angvel = Anglef(5.f * rnd(), 6.f * rnd(), 3.f * rnd());
+			stone.scale = Vec3f(0.2f + rnd() * 0.3f);
+			stone.time = Random::get(2000, 2500);
+			stone.currtime = 0;
+			
+			tstone[nb] = stone;
 			break;
 		}
 	}
