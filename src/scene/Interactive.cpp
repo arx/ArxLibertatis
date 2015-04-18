@@ -386,7 +386,7 @@ void IO_UnlinkAllLinkedObjects(Entity * io) {
 			continue;
 		}
 		
-		linked->angle = Anglef(rnd() * 40.f + 340.f, rnd() * 360.f, 0.f);
+		linked->angle = Anglef(rnd(), rnd(), 0.f) * Anglef(40.f, 360.f, 0.f) + Anglef(340.f, 0.f, 0.f);
 		linked->soundtime = 0;
 		linked->soundcount = 0;
 		linked->gameFlags |= GFLAG_NO_PHYS_IO_COL;

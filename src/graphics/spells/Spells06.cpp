@@ -583,8 +583,8 @@ void CRiseDead::AddStone(Vec3f * pos) {
 			tstone[nb].numstone = rand() & 1;
 			tstone[nb].pos = *pos;
 			tstone[nb].yvel = rnd() * -5.f;
-			tstone[nb].ang = Anglef(rnd() * 360.f, rnd() * 360.f, rnd() * 360.f);
-			tstone[nb].angvel = Anglef(5.f * rnd(), 6.f * rnd(), 3.f * rnd());
+			tstone[nb].ang = Anglef(rnd(), rnd(), rnd()) * Anglef(360.f, 360.f, 360.f);
+			tstone[nb].angvel = Anglef(rnd(), rnd(), rnd()) * Anglef(5.f, 6.f, 3.f);
 			tstone[nb].scale = Vec3f(0.2f + rnd() * 0.3f);
 			tstone[nb].time = Random::get(2000, 2500);
 			tstone[nb].currtime = 0;

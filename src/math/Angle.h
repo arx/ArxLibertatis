@@ -152,7 +152,10 @@ public:
 		return Angle(m_yaw - other.m_yaw, m_pitch - other.m_pitch, m_roll - other.m_roll);
 	}
 	
-
+	Angle operator*(const Angle & other) const {
+		return Angle(m_yaw * other.m_yaw, m_pitch * other.m_pitch, m_roll * other.m_roll);
+	}
+	
 	Angle operator*(T scale) const {
 		return Angle(m_yaw * scale, m_pitch * scale, m_roll * scale);
 	}
