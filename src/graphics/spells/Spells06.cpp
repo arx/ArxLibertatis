@@ -602,20 +602,22 @@ void CRiseDead::DrawStone()
 	mat.setBlendType(RenderMaterial::Screen);
 	
 	while(nb--) {
-		if(this->tstone[nb].actif) {
-			float a = (float)this->tstone[nb].currtime / (float)this->tstone[nb].time;
+		T_STONE & s = tstone[nb];
+		
+		if(s.actif) {
+			float a = (float)s.currtime / (float)s.time;
 
 			if(a > 1.f) {
 				a = 1.f;
-				this->tstone[nb].actif = 0;
+				s.actif = 0;
 			}
 
 			Color4f col = Color4f(Color3f::white, 1.f - a);
-			Draw3DObject(stone[tstone[nb].numstone], tstone[nb].ang, tstone[nb].pos, tstone[nb].scale, col, mat);
+			Draw3DObject(stone[s.numstone], s.ang, s.pos, s.scale, col, mat);
 			
 			PARTICLE_DEF * pd = createParticle();
 			if(pd) {
-				pd->ov = tstone[nb].pos;
+				pd->ov = s.pos;
 				pd->move = Vec3f(0.f, 3.f * rnd(), 0.f);
 				pd->siz = 3.f + 3.f * rnd();
 				pd->tolive = 1000;
@@ -627,13 +629,13 @@ void CRiseDead::DrawStone()
 			
 			//update mvt
 			if(!arxtime.is_paused()) {
-				a = (((float)this->currframetime) * 100.f) / (float)this->tstone[nb].time;
-				tstone[nb].pos.y += tstone[nb].yvel * a;
-				tstone[nb].ang += tstone[nb].angvel * a;
+				a = (((float)this->currframetime) * 100.f) / (float)s.time;
+				s.pos.y += s.yvel * a;
+				s.ang += s.angvel * a;
 
-				this->tstone[nb].yvel *= 1.f - (1.f / 100.f);
+				s.yvel *= 1.f - (1.f / 100.f);
 
-				this->tstone[nb].currtime += this->currframetime;
+				s.currtime += this->currframetime;
 			}
 		}
 	}
