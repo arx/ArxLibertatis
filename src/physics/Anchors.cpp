@@ -243,10 +243,10 @@ static float ANCHOR_CheckAnythingInCylinder(const Cylinder & cyl, CollisionFlags
 	
 	for(short z = pz - rad; z <= pz + rad; z++)
 	for(short x = px - rad; x <= px + rad; x++) {
-		const EERIE_BKG_INFO feg = ACTIVEBKG->fastdata[x][z];
+		const EERIE_BKG_INFO & feg = ACTIVEBKG->fastdata[x][z];
 		
 		for(long k = 0; k < feg.nbpoly; k++) {
-			const EERIEPOLY ep = feg.polydata[k];
+			const EERIEPOLY & ep = feg.polydata[k];
 			
 			if(ep.type & (POLY_WATER | POLY_TRANS | POLY_NOCOL))
 				continue;
