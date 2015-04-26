@@ -84,7 +84,7 @@ public:
 	void SetDepthBias(int depthBias);
 	void SetFillMode(FillMode mode);
 	
-	inline float GetMaxAnisotropy() const { return maximumAnisotropy; }
+	inline float GetMaxAnisotropy() const { return m_maximumAnisotropy; }
 	
 	VertexBuffer<TexturedVertex> * createVertexBufferTL(size_t capacity, BufferUsage usage);
 	VertexBuffer<SMY_VERTEX> * createVertexBuffer(size_t capacity, BufferUsage usage);
@@ -138,7 +138,7 @@ private:
 	
 	GLuint shader;
 	
-	float maximumAnisotropy;
+	float m_maximumAnisotropy;
 	
 	typedef boost::intrusive::list<GLTexture2D, boost::intrusive::constant_time_size<false> > TextureList;
 	TextureList textures;

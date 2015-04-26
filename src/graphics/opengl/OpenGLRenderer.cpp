@@ -50,7 +50,7 @@ OpenGLRenderer::OpenGLRenderer()
 	, useVBOs(false)
 	, maxTextureStage(0)
 	, shader(0)
-	, maximumAnisotropy(1.f)
+	, m_maximumAnisotropy(1.f)
 	, m_hasMSAA(false)
 	, m_hasColorKey(false)
 	, m_hasBlend(false)
@@ -255,7 +255,7 @@ void OpenGLRenderer::reinit() {
 	if(GLEW_EXT_texture_filter_anisotropic) {
 		GLfloat limit;
 		glGetFloatv(GL_MAX_TEXTURE_MAX_ANISOTROPY_EXT, &limit);
-		maximumAnisotropy = std::min(float(config.video.maxAnisotropicFiltering), limit);
+		m_maximumAnisotropy = std::min(float(config.video.maxAnisotropicFiltering), limit);
 	}
 	
 	onRendererInit();
@@ -285,7 +285,7 @@ void OpenGLRenderer::shutdown() {
 	}
 	m_TextureStages.clear();
 	
-	maximumAnisotropy = 1.f;
+	m_maximumAnisotropy = 1.f;
 	
 }
 
