@@ -152,7 +152,6 @@ bool SDL2Window::initialize() {
 	SDL_GL_SetAttribute(SDL_GL_ACCELERATED_VISUAL, 1);
 	// TODO EGL and core profile are not supported yet
 	SDL_GL_SetAttribute(SDL_GL_CONTEXT_PROFILE_MASK, SDL_GL_CONTEXT_PROFILE_COMPATIBILITY);
-	SDL_GL_SetAttribute(SDL_GL_CONTEXT_EGL, 0);
 	
 	if(gldebug::isEnabled()) {
 		SDL_GL_SetAttribute(SDL_GL_CONTEXT_FLAGS, SDL_GL_CONTEXT_DEBUG_FLAG);
