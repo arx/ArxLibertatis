@@ -19,7 +19,7 @@
 
 #include "graphics/image/Image.h"
 
-inline static bool sample(const u8 * src, int w, int h, int x, int y, u8 * dst, Color key) {
+inline static bool sampleColorKey(const u8 * src, int w, int h, int x, int y, u8 * dst, Color key) {
 	if(x >= 0 && x < w && y >= 0 && y < h) {
 		const u8 * s = src + (y * w + x) * 3;
 		if(s[0] != key.r || s[1] != key.g || s[2] != key.b) {
@@ -83,14 +83,14 @@ void Image::ApplyColorKeyToAlpha(Color key) {
 			} else {
 				// For transparent pixels, use the color of an opaque bordering pixel,
 				// so that linear filtering won't produce black borders.
-				if(   !sample(mData, mWidth, mHeight, int(x)    , int(y) - 1, dst, key)
-				   && !sample(mData, mWidth, mHeight, int(x) + 1, int(y)    , dst, key)
-				   && !sample(mData, mWidth, mHeight, int(x)    , int(y) + 1, dst, key)
-				   && !sample(mData, mWidth, mHeight, int(x) - 1, int(y)    , dst, key)
-				   && !sample(mData, mWidth, mHeight, int(x) - 1, int(y) - 1, dst, key)
-				   && !sample(mData, mWidth, mHeight, int(x) + 1, int(y) - 1, dst, key)
-				   && !sample(mData, mWidth, mHeight, int(x) + 1, int(y) + 1, dst, key)
-				   && !sample(mData, mWidth, mHeight, int(x) - 1, int(y) + 1, dst, key)) {
+				if(   !sampleColorKey(mData, mWidth, mHeight, int(x)    , int(y) - 1, dst, key)
+				   && !sampleColorKey(mData, mWidth, mHeight, int(x) + 1, int(y)    , dst, key)
+				   && !sampleColorKey(mData, mWidth, mHeight, int(x)    , int(y) + 1, dst, key)
+				   && !sampleColorKey(mData, mWidth, mHeight, int(x) - 1, int(y)    , dst, key)
+				   && !sampleColorKey(mData, mWidth, mHeight, int(x) - 1, int(y) - 1, dst, key)
+				   && !sampleColorKey(mData, mWidth, mHeight, int(x) + 1, int(y) - 1, dst, key)
+				   && !sampleColorKey(mData, mWidth, mHeight, int(x) + 1, int(y) + 1, dst, key)
+				   && !sampleColorKey(mData, mWidth, mHeight, int(x) - 1, int(y) + 1, dst, key)) {
 					dst[0] = dst[1] = dst[2] = 0;
 				}
 			}
