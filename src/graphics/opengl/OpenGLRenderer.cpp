@@ -22,6 +22,7 @@
 #include <glm/gtc/type_ptr.hpp>
 
 #include "core/Application.h"
+#include "core/Config.h"
 #include "graphics/opengl/GLDebug.h"
 #include "graphics/opengl/GLNoVertexBuffer.h"
 #include "graphics/opengl/GLTexture2D.h"
@@ -469,11 +470,11 @@ void OpenGLRenderer::SetRenderState(RenderState renderState, bool enable) {
 			 *      always used as part of the blending factor.
 			 */
 			bool colorkey = m_hasColorKey;
-			if(colorkey && m_hasMSAA) {
+			if(colorkey && m_hasMSAA && config.video.colorkeyAlphaToCoverage) {
 				SetRenderState(ColorKey, false);
 			}
 			m_hasBlend = enable;
-			if(colorkey && m_hasMSAA) {
+			if(colorkey && m_hasMSAA && config.video.colorkeyAlphaToCoverage) {
 				SetRenderState(ColorKey, true);
 			}
 			setGLState(GL_BLEND, enable);
@@ -485,7 +486,7 @@ void OpenGLRenderer::SetRenderState(RenderState renderState, bool enable) {
 				return;
 			}
 			m_hasColorKey = enable;
-			if(m_hasMSAA && !m_hasBlend) {
+			if(m_hasMSAA && config.video.colorkeyAlphaToCoverage && !m_hasBlend) {
 				// TODO(option-video) add a config option for this
 				setGLState(GL_SAMPLE_ALPHA_TO_COVERAGE, enable);
 			} else {

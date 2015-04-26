@@ -71,6 +71,7 @@ const bool
 	showCrosshair = true,
 	antialiasing = true,
 	vsync = true,
+	colorkeyAlphaToCoverage = true,
 	eax = false,
 	invertMouse = false,
 	autoReadyWeapon = false,
@@ -149,7 +150,8 @@ const std::string
 	fogDistance = "fog",
 	showCrosshair = "show_crosshair",
 	antialiasing = "antialiasing",
-	vsync = "vsync";
+	vsync = "vsync",
+	colorkeyAlphaToCoverage = "colorkey_alpha_to_coverage";
 
 // Window options
 const std::string
@@ -370,6 +372,7 @@ bool Config::save() {
 	writer.writeKey(Key::showCrosshair, video.showCrosshair);
 	writer.writeKey(Key::antialiasing, video.antialiasing);
 	writer.writeKey(Key::vsync, video.vsync);
+	writer.writeKey(Key::colorkeyAlphaToCoverage, video.colorkeyAlphaToCoverage);
 	
 	// window
 	writer.beginSection(Section::Window);
@@ -457,6 +460,7 @@ bool Config::init(const fs::path & file) {
 	video.showCrosshair = reader.getKey(Section::Video, Key::showCrosshair, Default::showCrosshair);
 	video.antialiasing = reader.getKey(Section::Video, Key::antialiasing, Default::antialiasing);
 	video.vsync = reader.getKey(Section::Video, Key::vsync, Default::vsync);
+	video.colorkeyAlphaToCoverage = reader.getKey(Section::Video, Key::colorkeyAlphaToCoverage, Default::colorkeyAlphaToCoverage);
 	
 	// Get window settings
 	window.framework = reader.getKey(Section::Window, Key::windowFramework, Default::windowFramework);
