@@ -50,7 +50,7 @@ OpenGLRenderer::OpenGLRenderer()
 	, useVBOs(false)
 	, maxTextureStage(0)
 	, shader(0)
-	, m_maximumAnisotropy(1.f)
+	, m_maximumAnisotropy(0.f)
 	, m_hasMSAA(false)
 	, m_hasColorKey(false)
 	, m_hasBlend(false)
@@ -285,7 +285,7 @@ void OpenGLRenderer::shutdown() {
 	}
 	m_TextureStages.clear();
 	
-	m_maximumAnisotropy = 1.f;
+	m_maximumAnisotropy = 0.f;
 	
 }
 
