@@ -19,6 +19,8 @@
 
 #include "graphics/texture/Texture.h"
 
+#include "core/Config.h"
+
 bool Texture2D::Init(const res::path & strFileName, TextureFlags newFlags) {
 	
 	mFileName = strFileName;
@@ -55,7 +57,7 @@ bool Texture2D::Restore() {
 		mImage.LoadFromFile(mFileName);
 		
 		if((flags & HasColorKey) && !mImage.HasAlpha()) {
-			mImage.ApplyColorKeyToAlpha();
+			mImage.ApplyColorKeyToAlpha(Color::black, config.video.colorkeyAntialiasing);
 			if(!mImage.HasAlpha()) {
 				flags &= ~HasColorKey;
 			}

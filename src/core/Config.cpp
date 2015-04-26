@@ -73,6 +73,7 @@ const bool
 	antialiasing = true,
 	vsync = true,
 	colorkeyAlphaToCoverage = true,
+	colorkeyAntialiasing = true,
 	eax = false,
 	invertMouse = false,
 	autoReadyWeapon = false,
@@ -153,7 +154,8 @@ const std::string
 	antialiasing = "antialiasing",
 	vsync = "vsync",
 	maxAnisotropicFiltering = "max_anisotropic_filtering",
-	colorkeyAlphaToCoverage = "colorkey_alpha_to_coverage";
+	colorkeyAlphaToCoverage = "colorkey_alpha_to_coverage",
+	colorkeyAntialiasing = "colorkey_antialiasing";
 
 // Window options
 const std::string
@@ -376,6 +378,7 @@ bool Config::save() {
 	writer.writeKey(Key::vsync, video.vsync);
 	writer.writeKey(Key::maxAnisotropicFiltering, video.maxAnisotropicFiltering);
 	writer.writeKey(Key::colorkeyAlphaToCoverage, video.colorkeyAlphaToCoverage);
+	writer.writeKey(Key::colorkeyAntialiasing, video.colorkeyAntialiasing);
 	
 	// window
 	writer.beginSection(Section::Window);
@@ -466,6 +469,7 @@ bool Config::init(const fs::path & file) {
 	video.maxAnisotropicFiltering = reader.getKey(Section::Video, Key::maxAnisotropicFiltering, Default::maxAnisotropicFiltering);
 	video.maxAnisotropicFiltering = std::max(0, video.maxAnisotropicFiltering);
 	video.colorkeyAlphaToCoverage = reader.getKey(Section::Video, Key::colorkeyAlphaToCoverage, Default::colorkeyAlphaToCoverage);
+	video.colorkeyAntialiasing = reader.getKey(Section::Video, Key::colorkeyAntialiasing, Default::colorkeyAntialiasing);
 	
 	// Get window settings
 	window.framework = reader.getKey(Section::Window, Key::windowFramework, Default::windowFramework);

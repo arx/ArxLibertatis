@@ -118,6 +118,7 @@ public:
 		bool vsync;
 		int maxAnisotropicFiltering;
 		bool colorkeyAlphaToCoverage;
+		bool colorkeyAntialiasing;
 		
 	} video;
 	
