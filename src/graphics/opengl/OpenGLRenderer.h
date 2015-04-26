@@ -84,7 +84,7 @@ public:
 	void SetDepthBias(int depthBias);
 	void SetFillMode(FillMode mode);
 	
-	inline float GetMaxAnisotropy() const { return m_maximumAnisotropy; }
+	inline float getMaxAnisotropy() const { return m_maximumAnisotropy; }
 	
 	VertexBuffer<TexturedVertex> * createVertexBufferTL(size_t capacity, BufferUsage usage);
 	VertexBuffer<SMY_VERTEX> * createVertexBuffer(size_t capacity, BufferUsage usage);

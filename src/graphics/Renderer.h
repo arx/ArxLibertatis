@@ -216,7 +216,7 @@ public:
 	void SetTexture(unsigned int textureStage, Texture * pTexture);
 	void SetTexture(unsigned int textureStage, TextureContainer * pTextureContainer);
 	
-	virtual float GetMaxAnisotropy() const = 0;
+	virtual float getMaxAnisotropy() const = 0;
 	
 	virtual VertexBuffer<TexturedVertex> * createVertexBufferTL(size_t capacity, BufferUsage usage) = 0;
 	virtual VertexBuffer<SMY_VERTEX> * createVertexBuffer(size_t capacity, BufferUsage usage) = 0;

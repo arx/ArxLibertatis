@@ -111,8 +111,8 @@ void GLTexture2D::Upload() {
 		             GL_UNSIGNED_BYTE, mImage.GetData());
 	}
 	
-	if(renderer->GetMaxAnisotropy() != 1.f) {
-		glTexParameterf(GL_TEXTURE_2D, GL_TEXTURE_MAX_ANISOTROPY_EXT, renderer->GetMaxAnisotropy());
+	if(renderer->getMaxAnisotropy() != 1.f) {
+		glTexParameterf(GL_TEXTURE_2D, GL_TEXTURE_MAX_ANISOTROPY_EXT, renderer->getMaxAnisotropy());
 	}
 }
 
