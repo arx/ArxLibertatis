@@ -729,6 +729,7 @@ set(GRAPHICS_SOURCES
 	src/graphics/font/Font.cpp
 	src/graphics/font/FontCache.cpp
 	src/graphics/image/Image.cpp
+	src/graphics/image/ImageColorKey.cpp
 	src/graphics/image/stb_image.cpp
 	src/graphics/image/stb_image_write.cpp
 	src/graphics/particle/Particle.cpp
