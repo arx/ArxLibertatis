@@ -116,6 +116,7 @@ public:
 		bool showCrosshair;
 		bool antialiasing;
 		bool vsync;
+		int maxAnisotropicFiltering;
 		bool colorkeyAlphaToCoverage;
 		
 	} video;

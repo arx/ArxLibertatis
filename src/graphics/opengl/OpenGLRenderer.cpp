@@ -253,7 +253,9 @@ void OpenGLRenderer::reinit() {
 	}
 	
 	if(GLEW_EXT_texture_filter_anisotropic) {
-		glGetFloatv(GL_MAX_TEXTURE_MAX_ANISOTROPY_EXT, &maximumAnisotropy);
+		GLfloat limit;
+		glGetFloatv(GL_MAX_TEXTURE_MAX_ANISOTROPY_EXT, &limit);
+		maximumAnisotropy = std::min(float(config.video.maxAnisotropicFiltering), limit);
 	}
 	
 	onRendererInit();
