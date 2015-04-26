@@ -160,6 +160,16 @@ bool SDL1Window::initialize() {
 	SDL_GL_SetAttribute(SDL_GL_DOUBLEBUFFER, 1);
 	SDL_GL_SetAttribute(SDL_GL_DEPTH_SIZE, 24);
 	
+	
+#if ARX_PLATFORM == ARX_PLATFORM_WIN32
+	// Used on Windows to prevent software opengl fallback.
+	// The linux situation:
+	// Causes SDL to require visuals without caveats.
+	// On linux some drivers only supply multisample capable GLX Visuals
+	// with a GLX_NON_CONFORMANT_VISUAL_EXT caveat.
+	// see: https://www.opengl.org/registry/specs/EXT/visual_rating.txt
+	
+	
 	// We need an accelerated OpenGL context or we'll likely fail later
 	// However, this attribute may have the opposite effect with SDL < 1.2.15 with some
 	// drivers - only enable it for new enough SDL versions.
@@ -167,6 +177,7 @@ bool SDL1Window::initialize() {
 	if(SDL_VERSIONNUM(ver->major, ver->minor, ver->patch) >= SDL_VERSIONNUM(1, 2, 15)) {
 		SDL_GL_SetAttribute(SDL_GL_ACCELERATED_VISUAL, 1);
 	}
+#endif
 	
 	SDL_GL_SetAttribute(SDL_GL_SWAP_CONTROL, m_vsync);
 	
