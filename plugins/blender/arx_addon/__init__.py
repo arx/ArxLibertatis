@@ -19,7 +19,7 @@ bl_info = {
     "name": "Arx Libertatis Addon",
     "author": "Arx Libertatis Team",
     "version": (0, 0, 1),
-    "blender": (2, 72, 0),
+    "blender": (2, 74, 0),
     "location": "",
     "description": "Addon for managing Arx Libertatis assets",
     "warning": "",
@@ -113,7 +113,9 @@ class ArxObjectManager(object):
         
         bm.verts.index_update()
         
+        
         for (vertIndexes, uvs, mat, faceType, trans) in faceData:
+            bm.verts.ensure_lookup_table()
             faceVerts = [bm.verts[v] for v in vertIndexes]
             evDict = {}
             try:
@@ -139,6 +141,8 @@ class ArxObjectManager(object):
                 c[uvData].uv = u, 1.0 - v
         
         bm.edges.index_update()
+        bm.edges.ensure_lookup_table()
+        
         bm.transform(correctionMatrix)
         return (bm,evDict)
 
