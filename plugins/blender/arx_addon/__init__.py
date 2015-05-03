@@ -205,6 +205,16 @@ class ArxObjectManager(object):
         msg = "File \"" + ftlFileName + "\" loaded successfully."
         obj = self.make_object(bm, ftlData, evDict, entityName, self.dataPath)
         return obj
+    
+    def loadFile(self, ftlFileName):
+        print("Name: %s" % ftlFileName)
+        ftlData = self.ftlSerializer.readFile(ftlFileName)
+        bm, evDict = self.build_initial_bmesh(ftlData['verts'], ftlData['faces'])
+        
+        head, tail = os.path.split(ftlFileName)
+        entityName = tail
+        obj = self.make_object(bm, ftlData, evDict, entityName, self.dataPath)
+        return obj
 
 
 class ArxSceneManager(object):
@@ -450,6 +460,24 @@ from bpy_extras.io_utils import (
     path_reference_mode
 )
 
+class ImportFTL(bpy.types.Operator, ImportHelper):
+    '''Load an Arx Fatalis Model File'''
+    bl_idname = "arx.import_ftl"
+    bl_label = 'Import FTL model'
+    bl_options = {'PRESET'}
+    
+    filename_ext = ".ftl"
+    filter_glob = StringProperty(default="*.ftl", options={'HIDDEN'})
+    check_extension = True
+    path_mode = path_reference_mode
+    
+    def execute(self, context):
+        getAddon(context).objectManager.loadFile(self.filepath)
+        return {'FINISHED'}
+
+def menu_func_import_ftl(self, context):
+    self.layout.operator(ImportFTL.bl_idname, text="Arx Fatalis Model (.ftl)")
+
 class ImportTea(bpy.types.Operator, ImportHelper):
     """Load a Tea animation file"""
     bl_idname = "arx.import_tea"
@@ -471,7 +499,7 @@ class ImportTea(bpy.types.Operator, ImportHelper):
         
         return {'FINISHED'}
         
-def menu_func_import(self, context):
+def menu_func_import_tea(self, context):
     self.layout.operator(ImportTea.bl_idname, text="Tea animation (.tea)")
 
 # ============= Registration
@@ -485,8 +513,10 @@ def register():
     
     #bpy.utils.register_class(ArxFacePanel)
     
+    bpy.utils.register_class(ImportFTL)
     bpy.utils.register_class(ImportTea)
-    bpy.types.INFO_MT_file_import.append(menu_func_import)
+    bpy.types.INFO_MT_file_import.append(menu_func_import_ftl)
+    bpy.types.INFO_MT_file_import.append(menu_func_import_tea)
     
 def unregister():
     bpy.utils.unregister_class(ArxAddonPreferences)
@@ -497,8 +527,10 @@ def unregister():
     
     #bpy.utils.unregister_class(ArxFacePanel)
     
+    bpy.utils.unregister_class(ImportFTL)
     bpy.utils.unregister_class(ImportTea)
-    bpy.types.INFO_MT_file_import.remove(menu_func_import)
+    bpy.types.INFO_MT_file_import.remove(menu_func_import_ftl)
+    bpy.types.INFO_MT_file_import.remove(menu_func_import_tea)
 
 if __name__ == "__main__":
     register()
