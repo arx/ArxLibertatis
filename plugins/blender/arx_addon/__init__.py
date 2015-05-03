@@ -511,7 +511,7 @@ def register():
     bpy.utils.register_class(ArxScenesImportSelected)
     bpy.utils.register_class(ArxScenesPanel)
     
-    #bpy.utils.register_class(ArxFacePanel)
+    bpy.utils.register_class(ArxFacePanel)
     
     bpy.utils.register_class(ImportFTL)
     bpy.utils.register_class(ImportTea)
@@ -525,7 +525,7 @@ def unregister():
     bpy.utils.unregister_class(ArxScenesImportSelected)
     bpy.utils.unregister_class(ArxScenesPanel)
     
-    #bpy.utils.unregister_class(ArxFacePanel)
+    bpy.utils.unregister_class(ArxFacePanel)
     
     bpy.utils.unregister_class(ImportFTL)
     bpy.utils.unregister_class(ImportTea)
