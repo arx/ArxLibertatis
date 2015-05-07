@@ -116,7 +116,6 @@ else(MSVC)
 		add_cxxflag("-Woverloaded-virtual")
 		add_cxxflag("-Wlogical-op")
 		add_cxxflag("-Woverflow")
-		add_cxxflag("-Wheader-guard")
 		add_cxxflag("-Wmissing-declarations")
 		add_cxxflag("-Wredundant-decls")
 		
@@ -128,6 +127,8 @@ else(MSVC)
 		add_cxxflag("-Wliteral-conversion")
 		add_cxxflag("-Wshift-overflow")
 		add_cxxflag("-Wbool-conversions")
+		add_cxxflag("-Wheader-guard")
+		add_cxxflag("-Wpessimizing-move")
 		
 		if(NOT DEBUG_EXTRA)
 			
