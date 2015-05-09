@@ -533,7 +533,6 @@ static void ARX_CHANGELEVEL_Push_Globals() {
 	
 	char * dat = new char[allocsize];
 	
-	memcpy(dat, &acsg, sizeof(ARX_CHANGELEVEL_SAVE_GLOBALS));
 	pos += sizeof(ARX_CHANGELEVEL_SAVE_GLOBALS);
 	long count;
 	ARX_CHANGELEVEL_VARIABLE_SAVE avs;
@@ -597,6 +596,8 @@ static void ARX_CHANGELEVEL_Push_Globals() {
 				break;
 		}
 	}
+	
+	memcpy(dat, &acsg, sizeof(ARX_CHANGELEVEL_SAVE_GLOBALS));
 	
 	g_currentSavedGame->save("globals", dat, pos);
 	
