@@ -17,8 +17,8 @@
  * along with Arx Libertatis.  If not, see <http://www.gnu.org/licenses/>.
  */
 
-#ifndef ARX_GUI_NECKLACE_H
-#define ARX_GUI_NECKLACE_H
+#ifndef ARX_GUI_BOOK_NECKLACE_H
+#define ARX_GUI_BOOK_NECKLACE_H
 
 #include "game/magic/Rune.h"
 #include "graphics/GraphicsTypes.h"
@@ -40,4 +40,4 @@ void ARX_INTERFACE_ManageOpenedBook_Finish();
 
 }
 
-#endif // ARX_GUI_NECKLACE_H
+#endif // ARX_GUI_BOOK_NECKLACE_H
