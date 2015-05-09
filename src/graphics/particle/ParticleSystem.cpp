@@ -194,7 +194,7 @@ void ParticleSystem::SetParticleParams(Particle * pP) {
 		pP->p3Pos.y = rnd();
 		pP->p3Pos.z = std::cos(randd);
 		
-		if(!(m_parameters.m_spawnFlags & PARTICLE_BORDER) == PARTICLE_BORDER) {
+		if((m_parameters.m_spawnFlags & PARTICLE_BORDER) != PARTICLE_BORDER) {
 			pP->p3Pos *= Vec3f(rnd(), 1.f, rnd());
 		}
 	} else {
