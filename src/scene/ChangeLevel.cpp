@@ -528,7 +528,7 @@ static void ARX_CHANGELEVEL_Push_Globals() {
 	acsg.nb_globals = svar.size();
 	acsg.version = ARX_GAMESAVE_VERSION;
 	
-	long allocsize = sizeof(ARX_VARIABLE_SAVE) * acsg.nb_globals
+	long allocsize = sizeof(ARX_CHANGELEVEL_VARIABLE_SAVE) * acsg.nb_globals
 	                 + sizeof(ARX_CHANGELEVEL_SAVE_GLOBALS) + 1000 + 48000;
 	
 	char * dat = new char[allocsize];
@@ -536,7 +536,7 @@ static void ARX_CHANGELEVEL_Push_Globals() {
 	memcpy(dat, &acsg, sizeof(ARX_CHANGELEVEL_SAVE_GLOBALS));
 	pos += sizeof(ARX_CHANGELEVEL_SAVE_GLOBALS);
 	long count;
-	ARX_VARIABLE_SAVE avs;
+	ARX_CHANGELEVEL_VARIABLE_SAVE avs;
 
 	for (size_t i = 0; i < svar.size(); i++)
 	{
@@ -552,8 +552,8 @@ static void ARX_CHANGELEVEL_Push_Globals() {
 					
 					avs.fval = (float)count; 
 					avs.type = TYPE_G_TEXT;
-					memcpy(dat + pos, &avs, sizeof(ARX_VARIABLE_SAVE));
-					pos += sizeof(ARX_VARIABLE_SAVE);
+					memcpy(dat + pos, &avs, sizeof(ARX_CHANGELEVEL_VARIABLE_SAVE));
+					pos += sizeof(ARX_CHANGELEVEL_VARIABLE_SAVE);
 
 					if (count > 0)
 						memcpy(dat + pos, svar[i].text.c_str(), count + 1); 
@@ -571,8 +571,8 @@ static void ARX_CHANGELEVEL_Push_Globals() {
 					util::storeStringTerminated(avs.name, svar[i].name);
 					avs.fval = (float)svar[i].ival;
 					avs.type = TYPE_G_LONG;
-					memcpy(dat + pos, &avs, sizeof(ARX_VARIABLE_SAVE));
-					pos += sizeof(ARX_VARIABLE_SAVE);
+					memcpy(dat + pos, &avs, sizeof(ARX_CHANGELEVEL_VARIABLE_SAVE));
+					pos += sizeof(ARX_CHANGELEVEL_VARIABLE_SAVE);
 				}
 				else
 					acsg.nb_globals--;
@@ -585,8 +585,8 @@ static void ARX_CHANGELEVEL_Push_Globals() {
 					util::storeStringTerminated(avs.name, svar[i].name);
 					avs.fval = svar[i].fval;
 					avs.type = TYPE_G_FLOAT;
-					memcpy(dat + pos, &avs, sizeof(ARX_VARIABLE_SAVE));
-					pos += sizeof(ARX_VARIABLE_SAVE);
+					memcpy(dat + pos, &avs, sizeof(ARX_CHANGELEVEL_VARIABLE_SAVE));
+					pos += sizeof(ARX_CHANGELEVEL_VARIABLE_SAVE);
 				}
 				else
 					acsg.nb_globals--;

@@ -98,18 +98,6 @@ const size_t MAX_LINKED_SAVE = 16;
 const size_t SIZE_ID = 64;
 const size_t SAVED_MAX_STACKED_BEHAVIOR = 5;
 
-struct ARX_VARIABLE_SAVE {
-	s32 type;
-	f32 fval;
-	char name[SIZE_ID];
-};
-
-struct ARX_SCRIPT_SAVE {
-	s32 nblvar;
-	u32 lastcall;
-	s32 allowevents;
-};
-
 struct SavedGlobalMods {
 	
 	s32 flags;
