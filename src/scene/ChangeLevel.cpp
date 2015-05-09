@@ -2869,6 +2869,8 @@ static bool ARX_CHANGELEVEL_Get_Player_LevelData(ARX_CHANGELEVEL_PLAYER_LEVEL_DA
 long ARX_CHANGELEVEL_Load(const fs::path & savefile) {
 	arx_assert(entities.player());
 	
+	LogInfo << "Loading " << savefile;
+	
 	LogDebug("begin ARX_CHANGELEVEL_Load " << savefile);
 	
 	progressBarSetTotal(238);
