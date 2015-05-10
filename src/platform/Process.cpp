@@ -46,7 +46,15 @@
 
 #if ARX_HAVE_POSIX_SPAWNP
 #include <spawn.h>
+#if defined(__FreeBSD__) && defined(__GNUC__) && __GNUC__ >= 4
+/*
+ * When combining -flto and -fvisibility=hidden we and up with a hidden
+ * 'environ' symbol in crt1.o on FreeBSD 9, which causes the link to fail.
+ */
+extern char ** environ __attribute__((visibility("default")));
+#else
 extern char ** environ;
+#endif
 #endif
 
 #if ARX_HAVE_WAITPID
