@@ -393,13 +393,11 @@ void DouseSpell::Launch()
 			}
 			
 			case SPELL_FIRE_FIELD: {
-				Vec3f pos;
-				if(GetSpellPosition(&pos, spell)) {
-					if(closerThan(target, pos, fPerimeter + 200)) {
-						spell->m_level -= m_level;
-						if(spell->m_level < 1) {
-							spells.endSpell(spell);
-						}
+				Vec3f pos = spell->getPosition();
+				if(closerThan(target, pos, fPerimeter + 200)) {
+					spell->m_level -= m_level;
+					if(spell->m_level < 1) {
+						spells.endSpell(spell);
 					}
 				}
 				break;

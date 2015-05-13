@@ -41,6 +41,8 @@ public:
 	void Launch();
 	void End();
 	void Update(float timeDelta);
+	
+	Vec3f getPosition();
 };
 
 class LowerArmorSpell : public SpellBase {
@@ -50,6 +52,8 @@ public:
 	void Launch();
 	void End();
 	void Update(float timeDelta);
+	
+	Vec3f getPosition();
 	
 private:
 	long m_longinfo_lower_armor;

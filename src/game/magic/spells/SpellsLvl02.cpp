@@ -29,6 +29,7 @@
 #include "graphics/spells/Spells02.h"
 #include "graphics/RenderBatcher.h"
 #include "graphics/Renderer.h"
+#include "io/log/Logger.h"
 #include "scene/GameSound.h"
 #include "scene/Interactive.h"
 
@@ -227,6 +228,10 @@ void ArmorSpell::Update(float timeDelta)
 	ARX_SOUND_RefreshPosition(m_snd_loop, entities[m_target]->pos);
 }
 
+Vec3f ArmorSpell::getPosition() {
+	return getTargetPosition();
+}
+
 LowerArmorSpell::LowerArmorSpell()
 	: m_longinfo_lower_armor(-1) //TODO is this correct ?
 {
@@ -306,6 +311,10 @@ void LowerArmorSpell::Update(float timeDelta)
 	}
 	
 	ARX_SOUND_RefreshPosition(m_snd_loop, entities[m_target]->pos);
+}
+
+Vec3f LowerArmorSpell::getPosition() {
+	return getTargetPosition();
 }
 
 HarmSpell::HarmSpell()

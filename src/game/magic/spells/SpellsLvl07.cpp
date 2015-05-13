@@ -217,6 +217,10 @@ void FlyingEyeSpell::Update(float timeDelta)
 	}
 }
 
+Vec3f FlyingEyeSpell::getPosition() {
+	return eyeball.pos;
+}
+
 FireFieldSpell::FireFieldSpell()
 	: m_light(LightHandle::Invalid)
 	, m_damage(DamageHandle::Invalid)
@@ -350,6 +354,18 @@ void FireFieldSpell::Update(float timeDelta)
 	}
 }
 
+Vec3f FireFieldSpell::getPosition() {
+	CSpellFx *pCSpellFX = m_pSpellFx;
+
+	if(pCSpellFX) {
+		CFireField *pFireField = (CFireField *) pCSpellFX;
+			
+		return pFireField->pos;
+	} else {
+		return Vec3f_ZERO;
+	}
+}
+
 IceFieldSpell::IceFieldSpell()
 	: m_light(LightHandle::Invalid)
 	, m_damage(DamageHandle::Invalid)
@@ -448,6 +464,19 @@ void IceFieldSpell::Update(float timeDelta)
 		}
 
 		pCSpellFX->Render();
+	}
+}
+
+Vec3f IceFieldSpell::getPosition()
+{
+	CSpellFx *pCSpellFX = m_pSpellFx;
+
+	if(pCSpellFX) {
+		CIceField *pIceField = (CIceField *) pCSpellFX;
+			
+		return pIceField->eSrc;
+	} else {
+		return Vec3f_ZERO;
 	}
 }
 
@@ -593,4 +622,8 @@ void ConfuseSpell::Update(float timeDelta)
 		effect->Update(timeDelta);
 		effect->Render();
 	}
+}
+
+Vec3f ConfuseSpell::getPosition() {
+	return getTargetPosition();
 }

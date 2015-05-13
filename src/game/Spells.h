@@ -104,9 +104,6 @@ extern SpellManager spells;
 
 extern unsigned char ucFlick;
 
-
-bool GetSpellPosition(Vec3f * pos, SpellBase * spell);
-
 SpellType GetSpellId(const std::string & spell);
 void TryToCastSpell(Entity * io, SpellType spellid, long level, EntityHandle target, SpellcastFlags flags, long duration);
 

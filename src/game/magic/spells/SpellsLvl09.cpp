@@ -408,8 +408,7 @@ void NegateMagicSpell::LaunchAntiMagicField() {
 		if(m_level < spell->m_level)
 			continue;
 		
-		Vec3f pos;
-		GetSpellPosition(&pos, spell);
+		Vec3f pos = spell->getPosition();
 		if(closerThan(pos, entities[m_target]->pos, 600.f)) {
 			if(spell->m_type != SPELL_CREATE_FIELD) {
 				spells.endSpell(spell);
@@ -463,6 +462,11 @@ void IncinerateSpell::Update(float timeDelta)
 		ARX_SOUND_RefreshPosition(m_snd_loop, entities[m_target]->pos);
 	}	
 }
+
+Vec3f IncinerateSpell::getPosition() {
+	return getTargetPosition();
+}
+
 
 void MassParalyseSpell::Launch()
 {

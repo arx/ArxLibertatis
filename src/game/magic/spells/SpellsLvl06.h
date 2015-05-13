@@ -42,6 +42,8 @@ class ParalyseSpell : public SpellBase {
 public:
 	void Launch();
 	void End();
+	
+	Vec3f getPosition();
 };
 
 class CreateFieldSpell : public SpellBase {
@@ -51,6 +53,8 @@ public:
 	void Launch();
 	void End();
 	void Update(float timeDelta);
+	
+	Vec3f getPosition();
 	
 	// TODO this is directly used in physics and projectile
 	EntityHandle m_entity;
@@ -67,6 +71,8 @@ public:
 	void Launch();
 	void End();
 	void Update(float timeDelta);
+	
+	Vec3f getPosition();
 };
 
 #endif // ARX_GAME_MAGIC_SPELLS_SPELLSLVL06_H

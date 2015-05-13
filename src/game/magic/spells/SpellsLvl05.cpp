@@ -73,6 +73,19 @@ void RuneOfGuardingSpell::Update(float timeDelta)
 	}
 }
 
+Vec3f RuneOfGuardingSpell::getPosition() {
+	
+	CSpellFx *pCSpellFX = m_pSpellFx;
+
+	if(pCSpellFX) {
+		CRuneOfGuarding *pCRG = (CRuneOfGuarding *) pCSpellFX;
+			
+		return pCRG->eSrc;
+	} else {
+		return Vec3f_ZERO;
+	}
+}
+
 void LevitateSpell::Launch()
 {
 	spells.endByCaster(m_caster, SPELL_LEVITATE);

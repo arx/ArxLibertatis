@@ -269,6 +269,10 @@ void ParalyseSpell::End()
 	ARX_SOUND_PlaySFX(SND_SPELL_PARALYSE_END);
 }
 
+Vec3f ParalyseSpell::getPosition() {
+	return getTargetPosition();
+}
+
 CreateFieldSpell::CreateFieldSpell()
 	: m_entity(EntityHandle::Invalid)
 {
@@ -384,6 +388,18 @@ void CreateFieldSpell::Update(float timeDelta)
 	}
 }
 
+Vec3f CreateFieldSpell::getPosition() {
+	CSpellFx *pCSpellFX = m_pSpellFx;
+
+	if(pCSpellFX) {
+		CCreateField *pCreateField = (CCreateField *) pCSpellFX;
+			
+		return pCreateField->eSrc;
+	} else {
+		return Vec3f_ZERO;
+	}
+}
+
 void DisarmTrapSpell::Launch()
 {
 	ARX_SOUND_PlaySFX(SND_SPELL_DISARM_TRAP);
@@ -464,4 +480,9 @@ void SlowDownSpell::Update(float timeDelta)
 		pCSpellFX->Update(timeDelta);
 		pCSpellFX->Render();
 	}
+}
+
+Vec3f SlowDownSpell::getPosition() {
+	
+	return getTargetPosition();
 }

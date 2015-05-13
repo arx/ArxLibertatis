@@ -27,6 +27,8 @@ public:
 	void Launch();
 	void End();
 	void Update(float timeDelta);
+	
+	Vec3f getPosition();
 };
 
 class DispellIllusionSpell : public SpellBase {

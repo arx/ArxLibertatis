@@ -26,6 +26,8 @@ class RuneOfGuardingSpell : public SpellBase {
 public:
 	void Launch();
 	void Update(float timeDelta);
+	
+	Vec3f getPosition();
 };
 
 class LevitateSpell : public SpellBase {

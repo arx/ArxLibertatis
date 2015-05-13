@@ -79,6 +79,11 @@ void InvisibilitySpell::Update(float timeDelta)
 	}	
 }
 
+Vec3f InvisibilitySpell::getPosition() {
+	return getTargetPosition();
+}
+
+
 ManaDrainSpell::ManaDrainSpell()
 	: m_light(LightHandle::Invalid)
 	, m_damage(DamageHandle::Invalid)
@@ -235,6 +240,11 @@ void ManaDrainSpell::Update(float timeDelta)
 	
 	ARX_SOUND_RefreshPosition(m_snd_loop, cabalpos);
 }
+
+Vec3f ManaDrainSpell::getPosition() {
+	return getTargetPosition();
+}
+
 
 ExplosionSpell::ExplosionSpell()
 	: m_light(LightHandle::Invalid)
@@ -513,4 +523,8 @@ void LifeDrainSpell::Update(float timeDelta)
 	cabalangle.setPitch(-cabalangle.getPitch());
 	
 	ARX_SOUND_RefreshPosition(m_snd_loop, cabalpos);
+}
+
+Vec3f LifeDrainSpell::getPosition() {
+	return getTargetPosition();
 }

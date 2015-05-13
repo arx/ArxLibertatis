@@ -28,6 +28,8 @@ public:
 	void Launch();
 	void End();
 	void Update(float timeDelta);
+	
+	Vec3f getPosition();
 };
 
 class DispellFieldSpell : public SpellBase {
@@ -40,6 +42,8 @@ public:
 	void Launch();
 	void End();
 	void Update(float timeDelta);
+	
+	Vec3f getPosition();
 };
 
 class ColdProtectionSpell : public SpellBase {
@@ -47,6 +51,8 @@ public:
 	void Launch();
 	void End();
 	void Update(float timeDelta);
+	
+	Vec3f getPosition();
 };
 
 class TelekinesisSpell : public SpellBase {
@@ -61,6 +67,8 @@ public:
 	void Launch();
 	void End();
 	void Update(float timeDelta);
+	
+	Vec3f getPosition();
 };
 
 #endif // ARX_GAME_MAGIC_SPELLS_SPELLSLVL04_H

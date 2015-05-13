@@ -84,6 +84,10 @@ void SpeedSpell::Update(float timeDelta)
 	}
 }
 
+Vec3f SpeedSpell::getPosition() {
+	return getTargetPosition();
+}
+
 void DispellIllusionSpell::Launch()
 {
 	ARX_SOUND_PlaySFX(SND_SPELL_DISPELL_ILLUSION);

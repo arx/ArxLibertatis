@@ -95,6 +95,10 @@ void BlessSpell::Update(float timeDelta)
 	}
 }
 
+Vec3f BlessSpell::getPosition() {
+	return getTargetPosition();
+}
+
 void DispellFieldSpell::Launch()
 {
 	m_duration = 10;
@@ -225,6 +229,10 @@ void FireProtectionSpell::Update(float timeDelta)
 	ARX_SOUND_RefreshPosition(m_snd_loop, entities[m_target]->pos);
 }
 
+Vec3f FireProtectionSpell::getPosition() {
+	return getTargetPosition();
+}
+
 void ColdProtectionSpell::Launch()
 {
 	spells.endByTarget(m_target, SPELL_COLD_PROTECTION);
@@ -289,6 +297,10 @@ void ColdProtectionSpell::Update(float timeDelta)
 	}
 	
 	ARX_SOUND_RefreshPosition(m_snd_loop, entities[m_target]->pos);
+}
+
+Vec3f ColdProtectionSpell::getPosition() {
+	return getTargetPosition();
 }
 
 bool TelekinesisSpell::CanLaunch()
@@ -369,4 +381,8 @@ void CurseSpell::Update(float timeDelta)
 		curse->eTarget = target;
 		curse->Render();
 	}
+}
+
+Vec3f CurseSpell::getPosition() {
+	return getTargetPosition();
 }
