@@ -1199,17 +1199,8 @@ bool ARX_SPELLS_Launch(SpellType typ, EntityHandle source, SpellcastFlags flags,
 	
 	if(target == EntityHandle::Invalid)
 		spell.m_target = TemporaryGetSpellTarget(&entities[spell.m_caster]->pos);
-
-	// Create hand position if a hand is defined
-	if(spell.m_caster == PlayerEntityHandle) {
-		spell.m_hand_group = entities[spell.m_caster]->obj->fastaccess.primary_attach;
-	} else {
-		spell.m_hand_group = entities[spell.m_caster]->obj->fastaccess.left_attach;
-	}
-
-	if(spell.m_hand_group != -1) {
-		spell.m_hand_pos = entities[spell.m_caster]->obj->vertexlist3[spell.m_hand_group].v;
-	}
+	
+	spell.updateCasterHand();
 	
 	float spellLevel;
 	Vec3f casterPos;

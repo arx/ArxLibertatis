@@ -53,6 +53,20 @@ void SpellBase::BaseEnd() {
 	m_pSpellFx = NULL;
 }
 
+void SpellBase::updateCasterHand() {
+	
+	// Create hand position if a hand is defined
+	if(m_caster == PlayerEntityHandle) {
+		m_hand_group = entities[m_caster]->obj->fastaccess.primary_attach;
+	} else {
+		m_hand_group = entities[m_caster]->obj->fastaccess.left_attach;
+	}
+	
+	if(m_hand_group != -1) {
+		m_hand_pos = entities[m_caster]->obj->vertexlist3[m_hand_group].v;
+	}
+}
+
 Vec3f SpellBase::getTargetPos(EntityHandle source, EntityHandle target)
 {
 	Vec3f targetPos;

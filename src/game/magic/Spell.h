@@ -142,6 +142,8 @@ public:
 		ARX_UNUSED(timeDelta);
 	}
 	
+	void updateCasterHand();
+	
 	SpellHandle m_thisHandle;
 	
 	EntityHandle m_caster; //!< Number of the source interactive obj (0==player)
