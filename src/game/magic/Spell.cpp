@@ -67,6 +67,15 @@ void SpellBase::updateCasterHand() {
 	}
 }
 
+void SpellBase::updateCasterPosition() {
+	
+	if(m_caster == PlayerEntityHandle) {
+		m_caster_pos = player.pos;
+	} else {
+		m_caster_pos = entities[m_caster]->pos;
+	}
+}
+
 Vec3f SpellBase::getTargetPos(EntityHandle source, EntityHandle target)
 {
 	Vec3f targetPos;

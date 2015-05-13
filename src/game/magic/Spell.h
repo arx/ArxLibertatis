@@ -143,6 +143,7 @@ public:
 	}
 	
 	void updateCasterHand();
+	void updateCasterPosition();
 	
 	SpellHandle m_thisHandle;
 	

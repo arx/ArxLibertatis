@@ -1201,18 +1201,16 @@ bool ARX_SPELLS_Launch(SpellType typ, EntityHandle source, SpellcastFlags flags,
 		spell.m_target = TemporaryGetSpellTarget(&entities[spell.m_caster]->pos);
 	
 	spell.updateCasterHand();
+	spell.updateCasterPosition();
 	
 	float spellLevel;
-	Vec3f casterPos;
 	
 	if(source == PlayerEntityHandle) {
 		// Player source
 		spellLevel = Player_Magic_Level; // Level of caster
-		casterPos = player.pos;
 	} else {
 		// IO source
 		spellLevel = (float)glm::clamp(level, 1l, 10l);
-		casterPos = entities[source]->pos;
 	}
 
 	if(flags & SPELLCAST_FLAG_LAUNCHPRECAST) {
@@ -1224,7 +1222,6 @@ bool ARX_SPELLS_Launch(SpellType typ, EntityHandle source, SpellcastFlags flags,
 	}
 	
 	spell.m_level = spellLevel;
-	spell.m_caster_pos = casterPos;
 	spell.m_flags = flags;
 	spell.m_pSpellFx = NULL;
 	spell.m_type = typ;
