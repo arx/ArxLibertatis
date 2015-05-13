@@ -26,6 +26,7 @@
 #include "graphics/Vertex.h"
 #include "graphics/Math.h"
 #include "graphics/opengl/OpenGLRenderer.h"
+#include "graphics/opengl/OpenGLUtil.h"
 
 #include "io/log/Logger.h"
 
@@ -154,7 +155,7 @@ public:
 		
 		setVertexArray<Vertex>(NULL, this);
 		
-		if(GLEW_ARB_draw_elements_base_vertex) {
+		if(m_renderer->hasGL_ARB_draw_elements_base_vertex()) {
 			glDrawRangeElementsBaseVertex(arxToGlPrimitiveType[primitive], 0, count - 1,
 			                              nbindices, GL_UNSIGNED_SHORT, indices, offset);
 		} else if(offset + count - 1 <= std::numeric_limits<GLushort>::max()) {
@@ -272,7 +273,7 @@ protected:
 		arx_assert(!m_initialized || m_usage != Renderer::Static);
 		arx_assert(data || m_usage != Renderer::Static);
 		#ifdef GL_ARB_buffer_storage
-		if(m_usage == Renderer::Static && GLEW_ARB_buffer_storage) {
+		if(m_usage == Renderer::Static && m_renderer->hasGL_ARB_buffer_storage()) {
 			glBufferStorage(GL_ARRAY_BUFFER, capacity() * sizeof(Vertex), data, 0);
 		}
 		else
@@ -284,6 +285,7 @@ protected:
 		m_initialized = true;
 	}
 	
+	using Base::m_renderer;
 	using Base::m_buffer;
 	using Base::m_usage;
 	bool m_initialized;

@@ -55,6 +55,7 @@ Arx Libertatis adjust the compiler flags to provide an optimal configuration for
 ### Static linking
 
 * `USE_STATIC_LIBS` (default: `ON` on Windows, `OFF` elsewhere): Turns on static linking for all libraries, including `-static-libgcc` and `-static-libstdc++`. You can also use the individual options below:
+* `epoxy_USE_STATIC_LIBS` (default: `ON` iff `USE_STATIC_LIBS` is enabled): Statically link libepoxy.
 * `GLEW_USE_STATIC_LIBS` (default: `ON` iff `USE_STATIC_LIBS` is enabled): Statically link GLEW.
 * `Boost_USE_STATIC_LIBS` (default: `ON` iff `USE_STATIC_LIBS` is enabled): Statically link Boost. See also `FindBoost.cmake` in your CMake installation.
 * `Freetype_USE_STATIC_LIBS` (default: `ON` iff `USE_STATIC_LIBS` is enabled): Statically link FreeType.
@@ -90,6 +91,7 @@ By default, optional components will be automatically disabled if their dependen
 * `STRICT_USE` (default: OFF): Abort the configure step if one of the dependencies enabled with a `USE_*` configuration variable could not be found or if one of the components enabled with a `BUILD_*`configuration variable has missing dependencies. As most dependencies are enabled by default, you may need to explicitly disable some of them. Windows-specific dependencies are still automatically disabled on non-Windows systems.
 * `USE_OPENGL` (default: ON): Build the OpenGL renderer backend^1
 * `USE_OPENAL` (default: ON): Build the OpenAL audio backend^2
+* `WITH_OPENGL` (default: *not set*): Select the OpenGL wrangler to use: `epoxy` or `glew`. If not set, we will try to use either, preferring SDL `epoxy`. ^3
 * `WITH_SDL` (default: *not set*): Select the SDL version to use: 1 or 2. If not set, we will try to use either version, preferring SDL 2. ^3
 * `WITH_QT` (default: *not set*): Select the Qt version to use: 4 or 5. If not set, we will try to use either version, preferring Qt 5. Ignored if `BUILD_CRASHREPORTER` is disabled. ^3
 * `USE_WINHTTP` (default: ON): Use the native WinHTTP API instead of CURL on Windows.

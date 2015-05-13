@@ -22,6 +22,7 @@
 #include "graphics/Math.h"
 #include "graphics/opengl/GLTextureStage.h"
 #include "graphics/opengl/OpenGLRenderer.h"
+#include "graphics/opengl/OpenGLUtil.h"
 #include "io/fs/FilePath.h" // TODO remove
 
 

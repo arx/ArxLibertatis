@@ -20,10 +20,10 @@
 #ifndef ARX_GRAPHICS_OPENGL_GLTEXTURESTAGE_H
 #define ARX_GRAPHICS_OPENGL_GLTEXTURESTAGE_H
 
-#include "graphics/texture/TextureStage.h"
-
 #include <map>
-#include <GL/glew.h>
+
+#include "graphics/opengl/OpenGLUtil.h"
+#include "graphics/texture/TextureStage.h"
 
 class OpenGLRenderer;
 class GLTexture2D;

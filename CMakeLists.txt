@@ -80,6 +80,7 @@ option(USE_NATIVE_FS "Use the native filesystem backend directly instead of boos
 # Alternative dependencies
 set(WITH_SDL CACHE STRING "The SDL version to use: 1 or 2 or empty (use any)")
 set(WITH_QT CACHE STRING "The Qt version to use: 4 or 5 or empty (use any)")
+set(WITH_OPENGL CACHE STRING "The OpenGL wrangler to use: epoxy or glew or empty (use any)")
 
 # Build types
 set(default_UNITY_BUILD ON)
@@ -111,6 +112,7 @@ if(WIN32)
 	set(default_USE_STATIC_LIBS ON)
 endif()
 option(USE_STATIC_LIBS          "Statically link libraries" ${default_USE_STATIC_LIBS})
+suboption(Epoxy_USE_STATIC_LIBS    "Statically link libepoxy" BOOL ${USE_STATIC_LIBS})
 suboption(GLEW_USE_STATIC_LIBS     "Statically link GLEW"     BOOL ${USE_STATIC_LIBS})
 suboption(Boost_USE_STATIC_LIBS    "Statically link Boost"    BOOL ${USE_STATIC_LIBS})
 # Should be called FreeType_*, but keep it consistent with the FindFreetype.cmake module.
@@ -283,6 +285,7 @@ if((NOT LAST_CMAKE_CXX_FLAGS STREQUAL CMAKE_CXX_FLAGS)
 	force_recheck_library(Threads)
 	force_recheck_library(OpenAL)
 	force_recheck_library(OpenGL)
+	force_recheck_library(Epoxy)
 	force_recheck_library(GLEW)
 	force_recheck_library(Boost)
 	force_recheck_library(QtCore)
@@ -397,12 +400,33 @@ list(APPEND ARX_LIBRARIES ${FREETYPE_LIBRARIES})
 
 # OpenGL
 if(USE_OPENGL)
-	find_package(OpenGL ${OPTIONAL_DEPENDENCY})
-	find_package(GLEW 1.5.2 ${OPTIONAL_DEPENDENCY})
-	add_definitions(-DGLEW_NO_GLU)
-	if(NOT MSVC AND OPENGL_FOUND AND GLEW_FOUND)
-		check_link_library(OpenGL OPENGL_gl_LIBRARY)
-		check_link_library(GLEW GLEW_LIBRARIES)
+	if(NOT ARX_HAVE_OPENGL AND (WITH_OPENGL STREQUAL "" OR WITH_OPENGL STREQUAL "epoxy"))
+	if(NOT WITH_OPENGL)
+		set(EPOXY_OPTIONAL_DEPENDENCY)
+	else()
+		set(EPOXY_OPTIONAL_DEPENDENCY ${OPTIONAL_DEPENDENCY})
+	endif()
+		find_package(Epoxy ${EPOXY_OPTIONAL_DEPENDENCY})
+		if(EPOXY_FOUND)
+			if(NOT MSVC)
+				check_link_library(Epoxy Epoxy_LIBRARIES)
+			endif()
+			set(ARX_HAVE_EPOXY 1)
+			set(ARX_HAVE_OPENGL 1)
+		endif()
+	endif()
+	if(NOT ARX_HAVE_OPENGL AND (WITH_OPENGL STREQUAL "" OR WITH_OPENGL STREQUAL "glew"))
+		find_package(OpenGL ${OPTIONAL_DEPENDENCY})
+		find_package(GLEW 1.5.2 ${OPTIONAL_DEPENDENCY})
+		list(APPEND GLEW_DEFINITIONS -DGLEW_NO_GLU)
+		if(OPENGL_FOUND AND GLEW_FOUND)
+			if(NOT MSVC)
+				check_link_library(OpenGL OPENGL_gl_LIBRARY)
+				check_link_library(GLEW GLEW_LIBRARIES)
+			endif()
+			set(ARX_HAVE_GLEW 1)
+			set(ARX_HAVE_OPENGL 1)
+		endif()
 	endif()
 endif()
 
@@ -1143,12 +1167,16 @@ if(USE_OPENAL AND OPENAL_FOUND)
 endif()
 
 # Graphics
-if(USE_OPENGL AND OPENGL_FOUND AND GLEW_FOUND)
+if(USE_OPENGL AND (EPOXY_FOUND OR (OPENGL_FOUND AND GLEW_FOUND)))
 	list(APPEND GRAPHICS_SOURCES ${GRAPHICS_OPENGL_SOURCES})
-	list(APPEND ARX_LIBRARIES ${GLEW_LIBRARIES} ${OPENGL_gl_LIBRARY})
-	include_directories(SYSTEM ${OPENGL_INCLUDE_DIR} ${GLEW_INCLUDE_DIR})
-	add_definitions(${GLEW_DEFINITIONS})
-	set(ARX_HAVE_OPENGL 1)
+	if(EPOXY_FOUND)
+		list(APPEND ARX_LIBRARIES ${Epoxy_LIBRARIES})
+		include_directories(SYSTEM ${Epoxy_INCLUDE_DIR})
+	else()
+		list(APPEND ARX_LIBRARIES ${GLEW_LIBRARIES} ${OPENGL_gl_LIBRARY})
+		include_directories(SYSTEM ${OPENGL_INCLUDE_DIR} ${GLEW_INCLUDE_DIR})
+		add_definitions(${GLEW_DEFINITIONS})
+	endif()
 else()
 	# SDL backends require OpenGL
 	unset(ARX_HAVE_SDL)
@@ -1169,7 +1197,7 @@ if(ARX_HAVE_SDL)
 		list(APPEND ARX_LIBRARIES ${SDL_LIBRARY})
 		include_directories(SYSTEM ${SDL_INCLUDE_DIR})
 	endif()
-	add_definitions(-DNO_SDL_GLEXT) # we use GLEW for that
+	add_definitions(-DNO_SDL_GLEXT) # we use libepoxy/GLEW for that
 endif()
 
 # Logging
@@ -1761,7 +1789,8 @@ print_configuration("Filesystem backend" FIRST
 	1                         "Boost"
 )
 print_configuration("Renderer"
-	ARX_HAVE_OPENGL "OpenGL"
+	ARX_HAVE_EPOXY "OpenGL (libepoxy)"
+	ARX_HAVE_GLEW  "OpenGL (GLEW)"
 )
 print_configuration("Audio features"
 	ARX_HAVE_OPENAL_EFX  "EFX"
@@ -1793,7 +1822,7 @@ if(NOT (ARX_HAVE_PTHREADS OR WIN32))
 	message(SEND_ERROR "No supported thread libraries found.")
 endif()
 if(NOT (ARX_HAVE_OPENGL))
-	message(SEND_ERROR "No renderer available - need OpenGL and GLEW")
+	message(SEND_ERROR "No renderer available - need libepoxy or OpenGL and GLEW")
 endif()
 if(NOT (ARX_HAVE_OPENAL))
 	message(WARNING "No audio backend enabled - need OpenAL")

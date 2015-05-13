@@ -23,6 +23,7 @@
 #include "graphics/VertexBuffer.h"
 #include "graphics/Vertex.h"
 #include "graphics/opengl/OpenGLRenderer.h"
+#include "graphics/opengl/OpenGLUtil.h"
 
 template <class Vertex>
 static void renderVertex(const Vertex & vertex);

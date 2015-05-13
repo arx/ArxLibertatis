@@ -24,6 +24,13 @@
 
 #include <glm/gtc/type_ptr.hpp>
 
+#include "platform/Platform.h"
+#include "Configure.h"
+
+#if ARX_HAVE_EPOXY && ARX_PLATFORM == ARX_PLATFORM_WIN32
+#include <epoxy/wgl.h>
+#endif
+
 #include "core/Application.h"
 #include "core/Config.h"
 #include "gui/Credits.h"
@@ -60,6 +67,9 @@ OpenGLRenderer::OpenGLRenderer()
 	, m_MSAALevel(0)
 	, m_hasMSAA(false)
 	, m_hasTextureNPOT(false)
+	, m_hasGL_ARB_map_buffer_range(false)
+	, m_hasGL_ARB_draw_elements_base_vertex(false)
+	, m_hasGL_ARB_buffer_storage(false)
 { }
 
 OpenGLRenderer::~OpenGLRenderer() {
@@ -137,6 +147,14 @@ static GLuint loadVertexShader(const char * source) {
 
 void OpenGLRenderer::initialize() {
 	
+	#if ARX_HAVE_EPOXY
+	
+	#if ARX_PLATFORM == ARX_PLATFORM_WIN32
+	epoxy_handle_external_wglMakeCurrent();
+	#endif
+	
+	#elif ARX_HAVE_GLEW
+	
 	if(glewInit() != GLEW_OK) {
 		LogError << "GLEW init failed";
 		return;
@@ -145,6 +163,8 @@ void OpenGLRenderer::initialize() {
 	const GLubyte * glewVersion = glewGetString(GLEW_VERSION);
 	LogInfo << "Using GLEW " << glewVersion;
 	CrashHandler::setVariable("GLEW version", glewVersion);
+	
+	#endif
 	
 	const GLubyte * glVersion = glGetString(GL_VERSION);
 	LogInfo << "Using OpenGL " << glVersion;
@@ -161,7 +181,7 @@ void OpenGLRenderer::initialize() {
 	u64 totalVRAM = 0, freeVRAM = 0;
 	{
 		#ifdef GL_NVX_gpu_memory_info
-		if(GLEW_NVX_gpu_memory_info) {
+		if(ARX_HAVE_GL_EXT(NVX_gpu_memory_info)) {
 			// Implemented by the NVIDIA blob and radeon drivers in newer Mesa
 			GLint tmp = 0;
 			glGetIntegerv(GL_GPU_MEMORY_INFO_DEDICATED_VIDMEM_NVX, &tmp);
@@ -174,7 +194,7 @@ void OpenGLRenderer::initialize() {
 		else
 		#endif
 		#ifdef GL_ATI_meminfo
-		if(GLEW_ATI_meminfo) {
+		if(ARX_HAVE_GL_EXT(ATI_meminfo)) {
 			// Implemented by the AMD blob and radeon drivers in newer Mesa
 			GLint info[4];
 			glGetIntegerv(GL_VBO_FREE_MEMORY_ATI, info);
@@ -210,7 +230,11 @@ void OpenGLRenderer::initialize() {
 	
 	{
 		std::ostringstream oss;
+		#if ARX_HAVE_EPOXY
+		oss << "libepoxy\n";
+		#elif ARX_HAVE_GLEW
 		oss << "GLEW " << glewVersion << '\n';
+		#endif
 		const char * start = reinterpret_cast<const char *>(glVersion);
 		while(*start == ' ') {
 			start++;
@@ -263,10 +287,11 @@ void OpenGLRenderer::reinit() {
 	
 	arx_assert(!isInitialized());
 	
-	m_hasTextureNPOT = GLEW_ARB_texture_non_power_of_two || GLEW_VERSION_2_0;
+	m_hasTextureNPOT = ARX_HAVE_GL_VER(2, 0) \
+		|| ARX_HAVE_GL_EXT(ARB_texture_non_power_of_two);
 	if(!m_hasTextureNPOT) {
 		LogWarning << "Missing OpenGL extension ARB_texture_non_power_of_two.";
-	} else if(!GLEW_VERSION_3_0) {
+	} else if(!ARX_HAVE_GL_VER(3, 0)) {
 		GLint max = 0;
 		glGetIntegerv(GL_MAX_TEXTURE_SIZE, &max);
 		if(max < 8192) {
@@ -276,16 +301,20 @@ void OpenGLRenderer::reinit() {
 	}
 	
 	useVertexArrays = true;
-	
-	if(!GLEW_ARB_draw_elements_base_vertex) {
-		LogWarning << "Missing OpenGL extension ARB_draw_elements_base_vertex!";
-	}
-	
 	useVBOs = useVertexArrays;
-	if(useVBOs && !GLEW_ARB_map_buffer_range) {
-		LogWarning << "Missing OpenGL extension ARB_map_buffer_range, VBO performance will suffer.";
+	
+	m_hasGL_ARB_draw_elements_base_vertex = ARX_HAVE_GL_EXT(ARB_draw_elements_base_vertex);
+	if(useVBOs && !m_hasGL_ARB_draw_elements_base_vertex) {
+		LogWarning << "Missing OpenGL extension ARB_draw_elements_base_vertex.";
 	}
-
+	
+	m_hasGL_ARB_map_buffer_range = ARX_HAVE_GL_EXT(ARB_map_buffer_range);
+	if(useVBOs && !m_hasGL_ARB_map_buffer_range) {
+		LogWarning << "Missing OpenGL extension ARB_map_buffer_range.";
+	}
+	
+	m_hasGL_ARB_buffer_storage = ARX_HAVE_GL_EXT(ARB_buffer_storage);
+	
 	// Synchronize GL state cache
 	
 	m_MSAALevel = 0;
@@ -342,9 +371,9 @@ void OpenGLRenderer::reinit() {
 	switchVertexArray(GL_NoArray, 0, 0);
 	
 	if(useVertexArrays && useVBOs) {
-		if(!GLEW_ARB_shader_objects) {
+		if(!ARX_HAVE_GL_EXT(ARB_shader_objects)) {
 			LogWarning << "Missing OpenGL extension ARB_shader_objects.";
-		} else if(!GLEW_ARB_vertex_program) {
+		} else if(!ARX_HAVE_GL_EXT(ARB_vertex_program)) {
 			LogWarning << "Missing OpenGL extension ARB_vertex_program.";
 		} else {
 			shader = loadVertexShader(vertexShaderSource);
@@ -354,7 +383,7 @@ void OpenGLRenderer::reinit() {
 		}
 	}
 	
-	if(GLEW_EXT_texture_filter_anisotropic) {
+	if(ARX_HAVE_GL_EXT(EXT_texture_filter_anisotropic)) {
 		GLfloat limit;
 		glGetFloatv(GL_MAX_TEXTURE_MAX_ANISOTROPY_EXT, &limit);
 		m_maximumSupportedAnisotropy = limit;
@@ -651,11 +680,11 @@ static VertexBuffer<Vertex> * createVertexBufferImpl(OpenGLRenderer * renderer,
 	
 	bool matched = false;
 	
-	if(GLEW_ARB_map_buffer_range) {
+	if(renderer->hasGL_ARB_map_buffer_range()) {
 		
 		#ifdef GL_ARB_buffer_storage
 		
-		if(GLEW_ARB_buffer_storage) {
+		if(renderer->hasGL_ARB_buffer_storage()) {
 			
 			if(setting.empty() || setting == "persistent-orphan") {
 				if(usage != Renderer::Static) {
