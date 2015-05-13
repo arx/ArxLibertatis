@@ -21,12 +21,9 @@
 
 #include <cstring>
 
-#include <GL/glew.h>
-
+#include "graphics/opengl/OpenGLUtil.h"
 #include "io/log/Logger.h"
-
 #include "platform/ProgramOptions.h"
-
 #include "util/cmdline/Optional.h"
 
 #include "Configure.h"
@@ -62,7 +59,7 @@ static const char * typeToString(GLenum type) {
 }
 
 // GLEW versions before 1.11.0 undefine GLAPIENTRY after using it - fix that
-#if defined(GLEW_VERSION_4_5)
+#if !ARX_HAVE_GLEW || defined(GLEW_VERSION_4_5)
 	#define ARX_GLAPIENTRY GLAPIENTRY // GLEW 1.11.0 or newer
 #elif ARX_PLATFORM == ARX_PLATFORM_WIN32
 	#define ARX_GLAPIENTRY __stdcall
@@ -108,7 +105,7 @@ void initialize() {
 		return;
 	}
 	
-	if(!GLEW_ARB_debug_output) {
+	if(!ARX_HAVE_GL_EXT(ARB_debug_output)) {
 		LogWarning << "OpenGL debug output disabled";
 		return;
 	}
@@ -116,7 +113,7 @@ void initialize() {
 	glEnable(GL_DEBUG_OUTPUT_SYNCHRONOUS_ARB);
 	
 	// GLEW versions before 1.11.0 define GLDEBUGPROCARB with a non-const user pointer
-	#if defined(GLEW_VERSION_4_5)
+	#if !ARX_HAVE_GLEW || defined(GLEW_VERSION_4_5)
 	glDebugMessageCallbackARB(gldebug::callback, NULL);
 	#else
 	glDebugMessageCallbackARB((GLDEBUGPROCARB)gldebug::callback, NULL);

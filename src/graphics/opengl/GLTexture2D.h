@@ -21,8 +21,8 @@
 #define ARX_GRAPHICS_OPENGL_GLTEXTURE2D_H
 
 #include <boost/intrusive/list_hook.hpp>
-#include <GL/glew.h>
 
+#include "graphics/opengl/OpenGLUtil.h"
 #include "graphics/texture/Texture.h"
 #include "graphics/texture/TextureStage.h"
 

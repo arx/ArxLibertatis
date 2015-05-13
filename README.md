@@ -41,7 +41,7 @@ There is currently a single rendering backend for OpenGL:
 
 * **[SDL](http://www.libsdl.org/)** **1.2.10**+ *or* **2.0.0**+
 * **OpenGL 1.5**+ (OpenGL 2.1 or newer is recommended)
-* **[GLEW](http://glew.sourceforge.net/) 1.5.2**+
+* **[libepoxy](https://github.com/anholt/libepoxy) 1.2**+ (recommended) *or* **[GLEW](http://glew.sourceforge.net/) 1.5.2**+
 
 ### Crash Reporter
 

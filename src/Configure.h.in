@@ -53,6 +53,10 @@
 #cmakedefine01 ARX_HAVE_FSTATAT
 #cmakedefine01 ARX_HAVE_CHDIR
 
+// Video backend
+#cmakedefine01 ARX_HAVE_EPOXY
+#cmakedefine01 ARX_HAVE_GLEW
+
 // Audio backend
 #cmakedefine01 ARX_HAVE_OPENAL
 #cmakedefine01 ARX_HAVE_OPENAL_EFX

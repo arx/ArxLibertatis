@@ -24,6 +24,7 @@
 
 #include "graphics/Renderer.h"
 #include "graphics/opengl/GLTexture2D.h"
+#include "graphics/opengl/OpenGLUtil.h"
 #include "math/Rectangle.h"
 
 class GLTextureStage;
@@ -95,6 +96,10 @@ public:
 	template <class Vertex>
 	void beforeDraw() { flushState(); selectTrasform<Vertex>(); }
 	
+	bool hasGL_ARB_map_buffer_range() const { return m_hasGL_ARB_map_buffer_range; }
+	bool hasGL_ARB_draw_elements_base_vertex() const { return m_hasGL_ARB_draw_elements_base_vertex; }
+	bool hasGL_ARB_buffer_storage() const { return m_hasGL_ARB_buffer_storage; }
+	
 private:
 	
 	void shutdown();
@@ -131,6 +136,10 @@ private:
 	int m_MSAALevel;
 	bool m_hasMSAA;
 	bool m_hasTextureNPOT;
+	
+	bool m_hasGL_ARB_map_buffer_range;
+	bool m_hasGL_ARB_draw_elements_base_vertex;
+	bool m_hasGL_ARB_buffer_storage;
 	
 };
 
