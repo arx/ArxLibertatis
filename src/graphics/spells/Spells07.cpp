@@ -804,10 +804,9 @@ void CIceField::Render()
 		stitescale.y = tSize[i].y;
 		stitescale.x = tSize[i].z;
 
-		if(tType[i] == 0)
-			Draw3DObject(smotte, stiteangle, stitepos, stitescale, stitecolor, mat);
-		else
-			Draw3DObject(stite, stiteangle, stitepos, stitescale, stitecolor, mat);
+		EERIE_3DOBJ * obj = (tType[i] == 0) ? smotte : stite;
+		
+		Draw3DObject(obj, stiteangle, stitepos, stitescale, stitecolor, mat);
 	}
 	
 	for(i = 0; i < iMax * 0.5f; i++) {
