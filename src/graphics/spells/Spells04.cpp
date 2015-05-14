@@ -214,11 +214,7 @@ void CCurse::Render() {
 	mat.setDepthTest(true);
 	mat.setBlendType(RenderMaterial::Opaque);
 	
-		Anglef stiteangle = Anglef(0, fRot, 0);
-		Vec3f stitepos = eTarget;
-		Vec3f stitescale = Vec3f_ONE;
-		Color3f stitecolor = Color3f::white;
-		Draw3DObject(svoodoo, stiteangle, stitepos, stitescale, stitecolor, mat);
+	Draw3DObject(svoodoo, Anglef(0, fRot, 0), eTarget, Vec3f_ONE, Color3f::white, mat);
 	
 	for(int i = 0; i < 4; i++) {
 		
