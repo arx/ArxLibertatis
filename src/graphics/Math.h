@@ -175,7 +175,7 @@ glm::quat angleToQuatForArrow(const Anglef & angle);
 
 glm::quat angleToQuatForExtraRotation(const Anglef & angle);
 
-std::pair<Vec3f, Vec3f> angleToFrontUpVecForSound(const Anglef & angle);
+std::pair<Vec3f, Vec3f> angleToFrontUpVec(const Anglef & angle);
 
 // VECTORS Functions
 

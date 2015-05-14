@@ -1813,7 +1813,7 @@ void ArxGame::updateLevel() {
 
 	// Set Listener Position
 	{
-		std::pair<Vec3f, Vec3f> frontUp = angleToFrontUpVecForSound(ACTIVECAM->angle);
+		std::pair<Vec3f, Vec3f> frontUp = angleToFrontUpVec(ACTIVECAM->angle);
 		
 		ARX_SOUND_SetListener(ACTIVECAM->orgTrans.pos, frontUp.first, frontUp.second);
 	}

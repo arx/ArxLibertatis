@@ -620,7 +620,7 @@ glm::quat angleToQuatForExtraRotation(const Anglef & angle) {
 	return QuatFromAngles(vt1);
 }
 
-std::pair<Vec3f, Vec3f> angleToFrontUpVecForSound(const Anglef & angle) {
+std::pair<Vec3f, Vec3f> angleToFrontUpVec(const Anglef & angle) {
 	
 	Vec3f front = angleToVector(angle);
 	Vec3f up = angleToVector(angle + Anglef(90.f, 0, 0));

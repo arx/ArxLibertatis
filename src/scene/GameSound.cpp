@@ -803,7 +803,7 @@ long ARX_SOUND_PlayCinematic(const res::path & name, bool isSpeech) {
 	channel.falloff.end = ARX_SOUND_DEFAULT_FALLEND;
 	
 	if (ACTIVECAM) {
-		std::pair<Vec3f, Vec3f> frontUp = angleToFrontUpVecForSound(ACTIVECAM->angle);
+		std::pair<Vec3f, Vec3f> frontUp = angleToFrontUpVec(ACTIVECAM->angle);
 		
 		ARX_SOUND_SetListener(ACTIVECAM->orgTrans.pos, frontUp.first, frontUp.second);
 	}
