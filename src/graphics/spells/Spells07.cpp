@@ -514,11 +514,8 @@ void CConfuse::Render() {
 	mat.setBlendType(RenderMaterial::Additive);
 	mat.setTexture(tex_trail);
 	
-	Vec3f stitepos = eCurPos;
 	Anglef stiteangle = Anglef(0.f, -glm::degrees(arxtime.get_updated() * ( 1.0f / 500 )), 0.f);
-	Color3f stitecolor = Color3f::white;
-	Vec3f stitescale = Vec3f_ONE;
-	Draw3DObject(spapi, stiteangle, stitepos, stitescale, stitecolor, mat);
+	Draw3DObject(spapi, stiteangle, eCurPos, Vec3f_ONE, Color3f::white, mat);
 	
 	for(i = 0; i < 6; i++) {
 		
@@ -529,7 +526,7 @@ void CConfuse::Render() {
 		
 		float ang = rnd() * 360.f;
 		float rad = rnd() * 15.f;
-		pd->ov = stitepos;
+		pd->ov = eCurPos;
 		pd->ov += angleToVectorXZ(ang) * rad;
 		
 		pd->move = Vec3f(0.f, rnd() * 3.f + 1.f, 0.f);
@@ -561,7 +558,7 @@ void CConfuse::Render() {
 		light->rgb.r = 0.3f + rnd() * ( 1.0f / 5 );
 		light->rgb.g = 0.3f;
 		light->rgb.b = 0.5f + rnd() * ( 1.0f / 5 );
-		light->pos = stitepos;
+		light->pos = eCurPos;
 		light->duration = 200;
 		light->extras = 0;
 	}
