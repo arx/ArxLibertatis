@@ -622,10 +622,13 @@ glm::quat angleToQuatForExtraRotation(const Anglef & angle) {
 
 std::pair<Vec3f, Vec3f> angleToFrontUpVecForSound(const Anglef & angle) {
 	
-	Vec3f front = angleToVectorXZ(angle.getPitch());
+	Vec3f front = angleToVector(angle);
+	Vec3f up = angleToVector(angle + Anglef(90.f, 0, 0));
 	
-	//TODO Hardcoded up vector
-	Vec3f up(0.f, 1.f, 0.f);
+	arx_assert(glm::abs(glm::dot(front, up)) < 5.f * glm::epsilon<float>(),
+	           "front=(%f,%f,%f) and up=(%f,%f,%f) should be orthogonal; dot=%1f*epsilon",
+	           front.x, front.y, front.z, up.x, up.y, up.z,
+	           glm::dot(front, up) / glm::epsilon<float>());
 	
 	return std::make_pair(front, up);
 }
