@@ -555,7 +555,9 @@ long ARX_SOUND_PlayMenu(SourceId & sample_id, float pitch, SoundLoopMode loop) {
 }
 
 static void ARX_SOUND_IOFrontPos(const Entity * io, Vec3f & pos) {
-	if(io) {
+	if(io == entities.player()) {
+		ARX_PLAYER_FrontPos(&pos);
+	} else if(io) {
 		pos = io->pos;
 		pos += angleToVectorXZ(io->angle.getPitch()) * 100.f;
 		pos += Vec3f(0.f, -100.f, 0.f);
