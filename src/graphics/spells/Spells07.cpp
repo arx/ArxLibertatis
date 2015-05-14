@@ -539,15 +539,14 @@ void CConfuse::Render() {
 		pd->special = PARTICLE_GOLDRAIN | FADE_IN_AND_OUT | ROTATING | MODULATE_ROTATION
 		              | DISSIPATING;
 		pd->fparam = 0.0000001f;
-		float t1 = rnd() * 0.4f + 0.4f;
-		float t2 = rnd() * 0.6f + 0.2f;
-		float t3 = rnd() * 0.4f + 0.4f;
-		while(glm::abs(t1 - t2) > 0.3f && glm::abs(t2 - t3) > 0.3f) {
-			t1 = rnd() * 0.4f + 0.4f;
-			t2 = rnd() * 0.6f + 0.2f;
-			t3 = rnd() * 0.4f + 0.4f;
+		
+		Color3f baseColor = Color3f(0.4f, 0.2f, 0.4f);
+		Color3f randomFactor = Color3f(0.4f, 0.6f, 0.4f);
+		Color3f c = baseColor + Color3f(rnd(), rnd(), rnd()) * randomFactor;
+		while(glm::abs(c.r - c.g) > 0.3f && glm::abs(c.g - c.b) > 0.3f) {
+			c = baseColor + Color3f(rnd(), rnd(), rnd()) * randomFactor;
 		}
-		pd->rgb = Color3f(t1 * 0.8f, t2 * 0.8f, t3 * 0.8f);
+		pd->rgb = c * Color3f(0.8f, 0.8f, 0.8f);
 	}
 	
 	if(!lightHandleIsValid(lLightId))
