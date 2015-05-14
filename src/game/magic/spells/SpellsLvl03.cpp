@@ -303,6 +303,17 @@ void FireballSpell::Update(float timeDelta)
 	ARX_SOUND_RefreshPosition(m_snd_loop, effect->eCurPos);
 }
 
+Vec3f FireballSpell::getPosition() {
+	
+	if(m_pSpellFx) {
+		CFireBall * pCF = (CFireBall *)m_pSpellFx;
+		return pCF->eCurPos;
+	} else {
+		return Vec3f_ZERO;
+	}
+}
+
+
 void CreateFoodSpell::Launch()
 {
 	ARX_SOUND_PlaySFX(SND_SPELL_CREATE_FOOD, &m_caster_pos);
