@@ -1021,7 +1021,6 @@ void RestoreInitialIOStatusOfIO(Entity * io)
 		else io->collision = 0;
 
 		if(io->ioflags & IO_FIX) {
-			memset(io->_fixdata, 0, sizeof(IO_FIXDATA));
 			io->_fixdata->trapvalue = -1;
 		}
 	}
@@ -1433,8 +1432,7 @@ Entity * AddFix(const res::path & classPath, EntityInstance instance, AddInterac
 	
 	Entity * io = new Entity(classPath, instance);
 	
-	io->_fixdata = (IO_FIXDATA *)malloc(sizeof(IO_FIXDATA));
-	memset(io->_fixdata, 0, sizeof(IO_FIXDATA));
+	io->_fixdata = new IO_FIXDATA;
 	io->ioflags = IO_FIX;
 	io->_fixdata->trapvalue = -1;
 	

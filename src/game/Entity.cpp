@@ -250,7 +250,7 @@ Entity::~Entity() {
 		free(_itemdata);
 		
 	} else if(ioflags & IO_FIX) {
-		free(_fixdata);
+		delete _fixdata;
 		
 	} else if(ioflags & IO_CAMERA && _camdata) {
 		if(ACTIVECAM == &_camdata->cam) {
