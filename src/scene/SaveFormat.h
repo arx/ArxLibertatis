@@ -552,7 +552,7 @@ struct SavedHalo {
 	SavedColor color;
 	f32 radius;
 	u32 flags;
-	s32 dynlight;
+	s32 dynlight; // unused
 	SavedVec3 offset;
 	
 	inline operator IO_HALO() const {
@@ -560,7 +560,6 @@ struct SavedHalo {
 		a.color = color;
 		a.radius = radius;
 		a.flags = HaloFlags::load(flags); // TODO save/load flags
-		a.dynlight = LightHandle(dynlight);
 		a.offset = offset.toVec3();
 		return a;
 	}
@@ -569,7 +568,6 @@ struct SavedHalo {
 		color = b.color;
 		radius = b.radius;
 		flags = b.flags;
-		dynlight = b.dynlight;
 		offset = b.offset;
 		return *this;
 	}

@@ -143,9 +143,7 @@ Entity::Entity(const res::path & classPath, EntityInstance instance)
 	halo_native.color = Color3f(0.2f, 0.5f, 1.f);
 	halo_native.radius = 45.f;
 	halo_native.flags = 0;
-	halo_native.dynlight = LightHandle::Invalid;
 	ARX_HALO_SetToNative(this);
-	halo.dynlight = LightHandle::Invalid;
 	
 	stat_count = 0;
 	stat_sent = 0;
@@ -235,7 +233,6 @@ Entity::~Entity() {
 	}
 	
 	lightHandleDestroy(dynlight);
-	lightHandleDestroy(halo.dynlight);
 	
 	free(usepath);
 	

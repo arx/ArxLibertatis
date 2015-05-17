@@ -124,7 +124,6 @@ struct IO_HALO {
 	Color3f color;
 	float radius;
 	HaloFlags flags;
-	LightHandle dynlight;
 	Vec3f offset;
 };
 

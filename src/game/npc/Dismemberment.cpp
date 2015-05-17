@@ -259,7 +259,6 @@ static void ARX_NPC_SpawnMember(Entity * ioo, long num) {
 	
 	io->gameFlags = ioo->gameFlags;
 	io->halo = ioo->halo;
-	ioo->halo.dynlight = LightHandle::Invalid;
 	
 	io->angle.setYaw(rnd() * 40.f + 340.f);
 	io->angle.setPitch(rnd() * 360.f);

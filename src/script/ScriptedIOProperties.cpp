@@ -469,8 +469,6 @@ public:
 				io->halo_native.flags |= HALO_DYNLIGHT;
 			} else {
 				io->halo_native.flags &= ~HALO_DYNLIGHT;
-				
-				lightHandleDestroy(io->halo_native.dynlight);
 			}
 			
 			if(flg & flag('c')) {

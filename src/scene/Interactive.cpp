@@ -756,7 +756,6 @@ static void ARX_INTERACTIVE_ClearIODynData(Entity * io) {
 		return;
 	
 	lightHandleDestroy(io->dynlight);
-	lightHandleDestroy(io->halo.dynlight);
 	
 	delete io->symboldraw;
 	io->symboldraw = NULL;
@@ -886,7 +885,6 @@ void RestoreInitialIOStatusOfIO(Entity * io)
 		io->halo_native.flags = 0;
 
 		ARX_HALO_SetToNative(io);
-		io->halo.dynlight = LightHandle::Invalid;
 
 		io->forcedmove = Vec3f_ZERO;
 		io->ioflags &= ~IO_NO_COLLISIONS;

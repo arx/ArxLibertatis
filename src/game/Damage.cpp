@@ -527,7 +527,6 @@ void ARX_DAMAGES_ForceDeath(Entity * io_dead, Entity * io_killer) {
 		MasterCamera.exist = 0;
 
 	lightHandleDestroy(io_dead->dynlight);
-	lightHandleDestroy(io_dead->halo.dynlight);
 	
 	//Kill all speeches
 
