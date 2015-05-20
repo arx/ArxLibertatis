@@ -107,7 +107,6 @@ extern EERIE_CAMERA * ACTIVECAM;
 //	Entity Struct End
 
 bool Visible(const Vec3f & orgn, const Vec3f & dest, EERIEPOLY * epp, Vec3f * hit);
-void FaceTarget(Entity * io);
 
 EERIE_BKG_INFO * getFastBackgroundData(float x, float z);
 
