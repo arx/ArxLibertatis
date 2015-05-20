@@ -2658,10 +2658,8 @@ Entity * ARX_NPC_GetFirstNPCInSight(Entity * ioo)
 		long grp = ioo->obj->fastaccess.head_group_origin;
 
 		if(grp < 0) {
-			orgn.x = ioo->pos.x;
-			orgn.y = ioo->pos.y - 90.f;
-			orgn.z = ioo->pos.z;
-
+			orgn = ioo->pos + Vec3f(0.f, -90.f, 0.f);
+			
 			if(ioo == entities.player())
 				orgn.y = player.pos.y + 90.f;
 		}
@@ -2671,10 +2669,8 @@ Entity * ARX_NPC_GetFirstNPCInSight(Entity * ioo)
 		grp = io->obj->fastaccess.head_group_origin;
 
 		if(grp < 0) {
-			dest.x = io->pos.x;
-			dest.y = io->pos.y - 90.f;
-			dest.z = io->pos.z;
-
+			dest = io->pos + Vec3f(0.f, -90.f, 0.f);
+			
 			if(io == entities.player())
 				dest.y = player.pos.y + 90.f;
 		}
