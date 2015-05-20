@@ -1782,7 +1782,7 @@ long ARX_SCRIPT_GetSystemIOScript(Entity * io, const std::string & name) {
 	return -1;
 }
 
-static long Manage_Specific_RAT_Timer(SCR_TIMER * st) {
+static bool Manage_Specific_RAT_Timer(SCR_TIMER * st) {
 	
 	Entity * io = st->io;
 	GetTargetPos(io);
@@ -1819,10 +1819,10 @@ static long Manage_Specific_RAT_Timer(SCR_TIMER * st) {
 
 		if (st->msecs < 100) st->msecs = 100;
 
-		return 1;
+		return true;
 	}
 
-	return 0;
+	return false;
 }
 
 void ARX_SCRIPT_Timer_Check() {
