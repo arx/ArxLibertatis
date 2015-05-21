@@ -74,7 +74,6 @@ CSummonCreature::CSummonCreature()
 	, bIntro(true)
 	, sizeF(0.f)
 	, fSizeIntro(0.f)
-	, fRand(rand())
 	, fTexWrap(0.f)
 	, fColorBorder(Color3f::white)
 	, fColorRays2(Color3f::black)
@@ -167,7 +166,6 @@ void CSummonCreature::Create(Vec3f aeSrc, float afBeta)
 	sizeF = 0;
 	fSizeIntro = 0.0f;
 	fTexWrap = 0;
-	fRand = (float) rand();
 	end = 40 - 1;
 	bIntro = true;
 

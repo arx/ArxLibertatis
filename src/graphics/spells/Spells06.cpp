@@ -390,7 +390,6 @@ CRiseDead::CRiseDead()
 	, bIntro(true)
 	, sizeF(0)
 	, fSizeIntro(0.f)
-	, fRand(0.f)
 	, fTexWrap(0)
 	, ulDurationIntro(1000)
 	, ulDurationRender(1000)
@@ -517,7 +516,6 @@ void CRiseDead::Create(Vec3f aeSrc, float afBeta)
 	sizeF = 0;
 	fSizeIntro = 0.0f;
 	fTexWrap = 0;
-	fRand = (float) rand();
 	end = 40 - 1;
 	bIntro = true;
 
@@ -582,7 +580,7 @@ void CRiseDead::AddStone(Vec3f * pos) {
 		if(!s.actif) {
 			nbstone++;
 			s.actif = 1;
-			s.numstone = rand() & 1;
+			s.numstone = Random::get(0, 1);
 			s.pos = *pos;
 			s.yvel = rnd() * -5.f;
 			s.ang = Anglef(rnd(), rnd(), rnd()) * Anglef(360.f, 360.f, 360.f);

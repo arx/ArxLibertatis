@@ -94,7 +94,6 @@ private:
 
 	float	sizeF;
 	float	fSizeIntro;
-	float	fRand;
 	float	fTexWrap;
 	Color3f fColorBorder;
 	Color3f fColorRays2;

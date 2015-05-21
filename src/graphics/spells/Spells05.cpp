@@ -1014,7 +1014,7 @@ void CLevitate::AddStone(const Vec3f & pos) {
 			
 			T_STONE stone;
 			stone.actif = 1;
-			stone.numstone = rand() & 1;
+			stone.numstone = Random::get(0, 1);
 			stone.pos = pos;
 			stone.yvel = rnd() * -5.f;
 			stone.ang = Anglef(rnd(), rnd(), rnd()) * Anglef(360.f, 360.f, 360.f);
