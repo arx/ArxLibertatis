@@ -205,9 +205,7 @@ void ARX_SPELLS_UpdateSymbolDraw() {
 
 			if(io != entities.player()) {
 				
-				Vec2s pos1;
-				pos1.x = (short)subj.center.x - symbolVecScale.x * 2 + sd->cPosStart.x * symbolVecScale.x;
-				pos1.y = (short)subj.center.y - symbolVecScale.y * 2 + sd->cPosStart.y * symbolVecScale.y;
+				Vec2s pos1 = Vec2s(subj.center) - symbolVecScale * short(2) + sd->cPosStart * symbolVecScale;
 				
 				Vec2s old_pos = pos1;
 
