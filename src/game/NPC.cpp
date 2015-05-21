@@ -3069,12 +3069,8 @@ void ManageIgnition_2(Entity * io) {
 			light->fallend   = std::max(io->ignition * 25.f, 240.f);
 			float v = std::max((io->ignition * ( 1.0f / 10 )), 0.5f);
 			v = std::min(v, 1.f);
-			light->rgb.r = (1.f - rnd() * 0.2f) * v;
-			light->rgb.g = (0.8f - rnd() * 0.2f) * v;
-			light->rgb.b = (0.6f - rnd() * 0.2f) * v;
-			light->pos.x = position.x;
-			light->pos.y = position.y - 30.f;
-			light->pos.z = position.z;
+			light->rgb = (Color3f(1.f, 0.8f, 0.6f) - Color3f(rnd(), rnd(), rnd()) * Color3f(0.2f, 0.2f, 0.2f)) * v;
+			light->pos = position + Vec3f(0.f, -30.f, 0.f);
 			light->ex_flaresize = 40.f; //16.f;
 			light->extras |= EXTRAS_FLARE;
 		}
