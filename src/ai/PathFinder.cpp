@@ -59,8 +59,6 @@ ZeniMax Media Inc., Suite 120, Rockville, Maryland 20850 USA.
 
 static const float MIN_RADIUS = 110.0f;
 
-#define frnd() (1.0f - 2 * rnd())
-
 const float PathFinder::HEURISTIC_MIN = 0.0f;
 const float PathFinder::HEURISTIC_MAX = 0.5f;
 
