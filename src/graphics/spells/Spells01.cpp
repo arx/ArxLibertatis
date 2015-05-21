@@ -151,13 +151,9 @@ static void LaunchMagicMissileExplosion(const Vec3f & _ePos, bool mrCheat) {
 		light->fallend   = 420.f;
 
 		if(mrCheat) {
-			light->rgb.r = 1.f;
-			light->rgb.g = 0.3f;
-			light->rgb.b = .8f;
+			light->rgb = Color3f(1.f, 0.3f, .8f);
 		} else {
-			light->rgb.r = 0.f;
-			light->rgb.g = 0.f;
-			light->rgb.b = .8f;
+			light->rgb = Color3f(0.f, 0.f, .8f);
 		}
 
 		light->pos = _ePos;
