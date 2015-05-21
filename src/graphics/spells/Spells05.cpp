@@ -262,9 +262,7 @@ void CRuneOfGuarding::Create(Vec3f _eSrc) {
 		light->intensity = 0.7f + 2.3f;
 		light->fallend = 500.f;
 		light->fallstart = 400.f;
-		light->rgb.r = 1.0f;
-		light->rgb.g = 0.2f;
-		light->rgb.b = 0.2f;
+		light->rgb = Color3f(1.0f, 0.2f, 0.2f);
 		light->pos = eSrc - Vec3f(0.f, 50.f, 0.f);
 		light->time_creation = (unsigned long)(arxtime);
 		light->duration = 200;
@@ -283,9 +281,7 @@ void CRuneOfGuarding::Update(float timeDelta) {
 		light->intensity = 0.7f + 2.3f * fa;
 		light->fallend = 350.f;
 		light->fallstart = 150.f;
-		light->rgb.r = 1.0f;
-		light->rgb.g = 0.2f;
-		light->rgb.b = 0.2f;
+		light->rgb = Color3f(1.0f, 0.2f, 0.2f);
 		light->time_creation = (unsigned long)(arxtime);
 		light->duration = 200;
 	}

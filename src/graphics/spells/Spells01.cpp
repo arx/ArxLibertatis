@@ -479,13 +479,9 @@ void CMultiMagicMissile::Create(Vec3f aePos, float afAlpha, float afBeta)
 			el->fallstart	= 80.f;
 			
 			if(m_mrCheat) {
-				el->rgb.r = 1;
-				el->rgb.g = 0.3f;
-				el->rgb.b = 0.8f;
+				el->rgb = Color3f(1.f, 0.3f, 0.8f);
 			} else {
-				el->rgb.r = 0;
-				el->rgb.g = 0;
-				el->rgb.b = 1;
+				el->rgb = Color3f(0.f, 0.f, 1.f);
 			}
 			
 			el->pos	 = pMM->eSrc;
