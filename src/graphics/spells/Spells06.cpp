@@ -275,12 +275,8 @@ void CCreateField::Render()
 		light->intensity = 0.7f + 2.3f * falpha;
 		light->fallend = 500.f;
 		light->fallstart = 400.f;
-		light->rgb.r = 0.8f;
-		light->rgb.g = 0.0f;
-		light->rgb.b = 1.0f;
-		light->pos.x = eSrc.x;
-		light->pos.y = eSrc.y - 150;
-		light->pos.z = eSrc.z;
+		light->rgb = Color3f(0.8f, 0.0f, 1.0f);
+		light->pos = eSrc + Vec3f(0.f, -150.f, 0.f);
 		light->duration = 800;
 	}
 
