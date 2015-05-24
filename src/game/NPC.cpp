@@ -1490,10 +1490,9 @@ static bool TryIOAnimMove(Entity * io, long animnum) {
 	
 	if(!io || !io->anims[animnum])
 		return false;
-
-	Vec3f trans, trans2;
-	GetAnimTotalTranslate(io->anims[animnum], 0, &trans);
-	trans2 = VRotateY(trans, MAKEANGLE(180.f - io->angle.getPitch()));
+	
+	Vec3f trans = GetAnimTotalTranslate(io->anims[animnum], 0);
+	Vec3f trans2 = VRotateY(trans, MAKEANGLE(180.f - io->angle.getPitch()));
 	
 	IO_PHYSICS phys = io->physics;
 	GetIOCyl(io, phys.cyl);

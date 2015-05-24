@@ -184,7 +184,7 @@ void stopAnimation(Entity * entity, size_t layer = 0);
 short ANIM_GetAltIdx(ANIM_HANDLE * ah,long old);
 void ANIM_Set(ANIM_USE * au,ANIM_HANDLE * anim);
 
-void GetAnimTotalTranslate( ANIM_HANDLE * eanim,long alt_idx,Vec3f * pos);
+Vec3f GetAnimTotalTranslate(ANIM_HANDLE * eanim, long alt_idx);
 
 void EERIE_ANIMMANAGER_ClearAll();
 void EERIE_ANIMMANAGER_PurgeUnused();

@@ -2232,9 +2232,8 @@ void PlayerMovementIterate(float DeltaTime) {
 				} else if(levitate && !player.climbing) {
 					scale = 0.875f / 1000;
 				} else {
-					Vec3f mv;
 					short idx = entities.player()->animlayer[0].altidx_cur;
-					GetAnimTotalTranslate(entities.player()->animlayer[0].cur_anim, idx, &mv);
+					Vec3f mv = GetAnimTotalTranslate(entities.player()->animlayer[0].cur_anim, idx);
 					float time = entities.player()->animlayer[0].cur_anim->anims[idx]->anim_time;
 					scale = glm::length(mv) / time * 0.0125f;
 				}
