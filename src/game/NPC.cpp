@@ -532,13 +532,13 @@ static long AnchorData_GetNearest(const Vec3f & pos, Cylinder * cyl, long except
 	return returnvalue;
 }
 
-static long AnchorData_GetNearest_2(float beta, Vec3f * pos, Cylinder * cyl) {
+static long AnchorData_GetNearest_2(float beta, const Vec3f & pos, Cylinder * cyl) {
 	
 	float d = glm::radians(beta);
 	Vec3f vect(-std::sin(d), 0, std::cos(d));
 	vect = glm::normalize(vect);
 
-	Vec3f posi = *pos;
+	Vec3f posi = pos;
 	posi.x += vect.x * 50.f;
 	// XXX should this really be vect.x ? copy-paste error ?
 	posi.z += vect.x * 50.f;
@@ -663,7 +663,7 @@ wander:
 		        ||	(io->_npcdata->behavior & BEHAVIOUR_FLEE))
 			from = AnchorData_GetNearest(pos1, &io->physics.cyl);
 		else
-			from = AnchorData_GetNearest_2(io->angle.getPitch(), &pos1, &io->physics.cyl);
+			from = AnchorData_GetNearest_2(io->angle.getPitch(), pos1, &io->physics.cyl);
 	}
 	else from = MUST_SELECT_Start_Anchor;
 
