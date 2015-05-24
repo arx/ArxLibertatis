@@ -450,7 +450,7 @@ void ARX_PARTICLES_Spawn_Blood2(const Vec3f & pos, float dmgs, Color col, Entity
 	}
 }
 
-void ARX_PARTICLES_Spawn_Blood(Vec3f * pos, float dmgs, EntityHandle source) {
+void ARX_PARTICLES_Spawn_Blood(const Vec3f & pos, float dmgs, EntityHandle source) {
 	
 	if(source < 0) {
 		return;
@@ -461,7 +461,7 @@ void ARX_PARTICLES_Spawn_Blood(Vec3f * pos, float dmgs, EntityHandle source) {
 	long count = entities[source]->obj->grouplist.size();
 	for(long i = 0; i < count; i += 2) {
 		long vertex = entities[source]->obj->grouplist[i].origin;
-		float dist = glm::distance2(*pos, entities[source]->obj->vertexlist3[vertex].v);
+		float dist = glm::distance2(pos, entities[source]->obj->vertexlist3[vertex].v);
 		if(dist < nearest_dist) {
 			nearest_dist = dist;
 			nearest = i;

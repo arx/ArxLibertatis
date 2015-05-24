@@ -182,7 +182,7 @@ long getParticleCount();
 void ARX_PARTICLES_FirstInit();
 void ARX_PARTICLES_ClearAll();
 void ARX_PARTICLES_Update(EERIE_CAMERA * cam);
-void ARX_PARTICLES_Spawn_Blood(Vec3f * pos, float dmgs, EntityHandle source);
+void ARX_PARTICLES_Spawn_Blood(const Vec3f & pos, float dmgs, EntityHandle source);
 void ARX_PARTICLES_Spawn_Blood2(const Vec3f & pos, float dmgs, Color col, Entity * io);
 void ARX_PARTICLES_Spawn_Lava_Burn(Vec3f * pos, Entity * io = NULL);
 void ARX_PARTICLES_Add_Smoke(Vec3f * pos, long flags, long amount, Color3f * rgb = NULL); // flag 1 = randomize pos

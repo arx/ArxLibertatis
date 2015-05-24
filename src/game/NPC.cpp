@@ -967,7 +967,7 @@ void ARX_PHYSICS_Apply() {
 				std::vector<EERIE_VERTEX>::iterator it = Random::getIterator(io->obj->vertexlist);
 				
 				ARX_PARTICLES_Spawn_Splat(it->v, 20.f, Color::red);
-				ARX_PARTICLES_Spawn_Blood(&it->v, 20.f, io->index());
+				ARX_PARTICLES_Spawn_Blood(it->v, 20.f, io->index());
 			}
 
 			io->destroyOne();
