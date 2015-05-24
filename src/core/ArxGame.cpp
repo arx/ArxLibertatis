@@ -1400,7 +1400,8 @@ void ArxGame::speechControlledCinematic() {
 
 	if(valid >= 0) {
 		const CinematicSpeech & acs = aspeech[valid].cine;
-		Entity * io=aspeech[valid].io;
+		const Entity * io = aspeech[valid].io;
+		
 		float rtime=(float)(arxtime.get_updated()-aspeech[valid].time_creation)/(float)aspeech[valid].duration;
 
 		rtime = glm::clamp(rtime, 0.f, 1.f);
