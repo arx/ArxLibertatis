@@ -595,7 +595,7 @@ float CheckAnythingInCylinder(const Cylinder & cyl, Entity * ioo, long flags) {
 								anything = -99999.f;
 						} else {
 						for(size_t ii = 0; ii < io->obj->vertexlist3.size(); ii++) {
-							long res = PointInUnderCylinder(cyl, &io->obj->vertexlist3[ii].v);
+							long res = PointInUnderCylinder(cyl, io->obj->vertexlist3[ii].v);
 
 							if(res > 0) {
 								if(res == 2)
@@ -621,7 +621,7 @@ float CheckAnythingInCylinder(const Cylinder & cyl, Entity * ioo, long flags) {
 							c.z *= ( 1.0f / 3 );
 							c.y = io->bbox3D.min.y;
 
-							long res = PointInUnderCylinder(cyl, &c);
+							long res = PointInUnderCylinder(cyl, c);
 
 							if(res > 0) {
 								if(res == 2)

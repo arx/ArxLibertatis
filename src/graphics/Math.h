@@ -246,16 +246,16 @@ inline bool PointInCylinder(const Cylinder & cyl, const Vec3f & pt) {
 	return false;
 }
 
-inline long PointInUnderCylinder(const Cylinder & cyl, const Vec3f * pt) {
+inline long PointInUnderCylinder(const Cylinder & cyl, const Vec3f & pt) {
 	
 	float pos1 = cyl.origin.y + cyl.height;
 	
-	if(pt->y < std::min(cyl.origin.y, pos1)) {
+	if(pt.y < std::min(cyl.origin.y, pos1)) {
 		return 0;
 	}
 	
-	if(!fartherThan(Vec2f(cyl.origin.x, cyl.origin.z), Vec2f(pt->x, pt->z), cyl.radius)) {
-		return (pt->y > std::max(cyl.origin.y, pos1)) ? 1 : 2;
+	if(!fartherThan(Vec2f(cyl.origin.x, cyl.origin.z), Vec2f(pt.x, pt.z), cyl.radius)) {
+		return (pt.y > std::max(cyl.origin.y, pos1)) ? 1 : 2;
 	}
 	
 	return 0;
