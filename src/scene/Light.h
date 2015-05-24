@@ -142,7 +142,7 @@ long EERIE_LIGHT_Count();
 void EERIE_LIGHT_GlobalAdd(const EERIE_LIGHT * el);
 void EERIE_LIGHT_MoveAll(const Vec3f * trans);
 long EERIE_LIGHT_Create();
-void PrecalcIOLighting(const Vec3f * pos, float radius);
+void PrecalcIOLighting(const Vec3f & pos, float radius);
 
 const LightHandle torchLightHandle = (LightHandle)0;
 

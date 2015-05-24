@@ -1830,7 +1830,7 @@ void ArxGame::updateLevel() {
 	PrepareIOTreatZone();
 	ARX_PHYSICS_Apply();
 
-	PrecalcIOLighting(&ACTIVECAM->orgTrans.pos, ACTIVECAM->cdepth * 0.6f);
+	PrecalcIOLighting(ACTIVECAM->orgTrans.pos, ACTIVECAM->cdepth * 0.6f);
 
 	ACTIVECAM->fadecolor = current.depthcolor;
 

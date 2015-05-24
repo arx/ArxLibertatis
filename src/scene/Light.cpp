@@ -360,7 +360,7 @@ void PrecalcDynamicLighting(long x0, long z0, long x1, long z1) {
 	}
 }
 
-void PrecalcIOLighting(const Vec3f * pos, float radius) {
+void PrecalcIOLighting(const Vec3f & pos, float radius) {
 
 	TOTIOPDL = 0;
 
@@ -371,10 +371,10 @@ void PrecalcIOLighting(const Vec3f * pos, float radius) {
 		   && el->exist
 		   && el->m_ignitionStatus
 		   && !(el->extras & EXTRAS_SEMIDYNAMIC)
-		   && (el->pos.x >= pos->x - radius)
-		   && (el->pos.x <= pos->x + radius)
-		   && (el->pos.z >= pos->z - radius)
-		   && (el->pos.z <= pos->z + radius)
+		   && (el->pos.x >= pos.x - radius)
+		   && (el->pos.x <= pos.x + radius)
+		   && (el->pos.z >= pos.z - radius)
+		   && (el->pos.z <= pos.z + radius)
 		) {
 				RecalcLight(el);
 				IO_PDL[TOTIOPDL] = el;
