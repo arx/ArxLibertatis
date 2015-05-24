@@ -100,15 +100,15 @@ void ARX_FOGS_Render() {
 	float flDiv = static_cast<float>(1 << iDiv);
 	
 	for(size_t i = 0; i < MAX_FOG; i++) {
-		FOG_DEF *fog = &fogs[i];
+		const FOG_DEF & fog = fogs[i];
 		
-		if(!fog->exist)
+		if(!fog.exist)
 			continue;
 		
 		long count = std::max(1l, checked_range_cast<long>(framedelay / flDiv));
 		while(count--) {
 			
-			if(rnd() * 2000.f >= fog->frequency) {
+			if(rnd() * 2000.f >= fog.frequency) {
 				continue;
 			}
 			
@@ -118,20 +118,20 @@ void ARX_FOGS_Render() {
 			}
 			
 			pd->special = FADE_IN_AND_OUT | ROTATING | MODULATE_ROTATION | DISSIPATING;
-			if(fog->special & FOG_DIRECTIONAL) {
-				pd->ov = fog->pos;
-				pd->move = fog->move * (fog->speed * 0.1f);
+			if(fog.special & FOG_DIRECTIONAL) {
+				pd->ov = fog.pos;
+				pd->move = fog.move * (fog.speed * 0.1f);
 			} else {
-				pd->ov = fog->pos + randomVec(-100.f, 100.f);
-				pd->move = Vec3f(fog->speed) - randomVec(0.f, 2.f);
-				pd->move *= Vec3f(fog->speed * 0.2f,  1.f / 15, fog->speed * 0.2f);
+				pd->ov = fog.pos + randomVec(-100.f, 100.f);
+				pd->move = Vec3f(fog.speed) - randomVec(0.f, 2.f);
+				pd->move *= Vec3f(fog.speed * 0.2f,  1.f / 15, fog.speed * 0.2f);
 			}
-			pd->scale = Vec3f(fog->scale);
-			pd->tolive = fog->tolive + Random::get(0, fog->tolive);
+			pd->scale = Vec3f(fog.scale);
+			pd->tolive = fog.tolive + Random::get(0, fog.tolive);
 			pd->tc = TC_smoke;
-			pd->siz = (fog->size + rnd() * fog->size * 2.f) * (1.0f / 3);
-			pd->rgb = fog->rgb;
-			pd->fparam = fog->rotatespeed;
+			pd->siz = (fog.size + rnd() * fog.size * 2.f) * (1.0f / 3);
+			pd->rgb = fog.rgb;
+			pd->fparam = fog.rotatespeed;
 		}
 	}
 }
