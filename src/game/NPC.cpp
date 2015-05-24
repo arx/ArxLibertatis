@@ -507,7 +507,7 @@ static long ARX_NPC_GetNextAttainableNodeIncrement(Entity * io) {
 /*!
  * \brief Checks for nearest VALID anchor for a cylinder from a position
  */
-static long AnchorData_GetNearest(const Vec3f & pos, Cylinder * cyl, long except = -1) {
+static long AnchorData_GetNearest(const Vec3f & pos, const Cylinder & cyl, long except = -1) {
 	long returnvalue = -1;
 	float distmax = std::numeric_limits<float>::max();
 	EERIE_BACKGROUND * eb = ACTIVEBKG;
@@ -519,8 +519,8 @@ static long AnchorData_GetNearest(const Vec3f & pos, Cylinder * cyl, long except
 		if(eb->anchors[i].nblinked) {
 			float d = glm::distance2(eb->anchors[i].pos, pos);
 
-			if ((d < distmax) && (eb->anchors[i].height <= cyl->height)
-			        && (eb->anchors[i].radius >= cyl->radius)
+			if ((d < distmax) && (eb->anchors[i].height <= cyl.height)
+			        && (eb->anchors[i].radius >= cyl.radius)
 			        && (!(eb->anchors[i].flags & ANCHOR_FLAG_BLOCKED)))
 			{
 				returnvalue = i;
@@ -532,7 +532,7 @@ static long AnchorData_GetNearest(const Vec3f & pos, Cylinder * cyl, long except
 	return returnvalue;
 }
 
-static long AnchorData_GetNearest_2(float beta, const Vec3f & pos, Cylinder * cyl) {
+static long AnchorData_GetNearest_2(float beta, const Vec3f & pos, const Cylinder & cyl) {
 	
 	float d = glm::radians(beta);
 	Vec3f vect(-std::sin(d), 0, std::cos(d));
@@ -661,20 +661,20 @@ wander:
 	{
 		if ((io->_npcdata->behavior & BEHAVIOUR_WANDER_AROUND)
 		        ||	(io->_npcdata->behavior & BEHAVIOUR_FLEE))
-			from = AnchorData_GetNearest(pos1, &io->physics.cyl);
+			from = AnchorData_GetNearest(pos1, io->physics.cyl);
 		else
-			from = AnchorData_GetNearest_2(io->angle.getPitch(), pos1, &io->physics.cyl);
+			from = AnchorData_GetNearest_2(io->angle.getPitch(), pos1, io->physics.cyl);
 	}
 	else from = MUST_SELECT_Start_Anchor;
 
 	long to;
 
 	if (io->_npcdata->behavior & BEHAVIOUR_FLEE)
-		to = AnchorData_GetNearest(pos2, &io->physics.cyl, from);
+		to = AnchorData_GetNearest(pos2, io->physics.cyl, from);
 	else if (io->_npcdata->behavior & BEHAVIOUR_WANDER_AROUND)
 		to = from;
 	else
-		to = AnchorData_GetNearest(pos2, &io->physics.cyl);
+		to = AnchorData_GetNearest(pos2, io->physics.cyl);
 
 	if(from != -1 && to != -1) {
 		if(from == to && !(io->_npcdata->behavior & BEHAVIOUR_WANDER_AROUND))
@@ -2390,7 +2390,7 @@ static void ManageNPCMovement(Entity * io)
 	) {
 		if(ValidIONum(io->_npcdata->pathfind.truetarget)) {
 			Vec3f p = entities[io->_npcdata->pathfind.truetarget]->pos;
-			long t = AnchorData_GetNearest(p, &io->physics.cyl); 
+			long t = AnchorData_GetNearest(p, io->physics.cyl);
 
 			if(t != -1 && t != io->_npcdata->pathfind.list[io->_npcdata->pathfind.listnb - 1]) {
 				float d = glm::distance(ACTIVEBKG->anchors[t].pos, ACTIVEBKG->anchors[io->_npcdata->pathfind.list[io->_npcdata->pathfind.listnb-1]].pos);
