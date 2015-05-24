@@ -401,7 +401,7 @@ bool IsAnyNPCInPlatform(Entity * pfrm) {
 			Cylinder cyl;
 			GetIOCyl(io, cyl);
 
-			if(CylinderPlatformCollide(&cyl, pfrm) != 0.f)
+			if(CylinderPlatformCollide(cyl, pfrm) != 0.f)
 				return true;
 		}
 	}
@@ -409,16 +409,16 @@ bool IsAnyNPCInPlatform(Entity * pfrm) {
 	return false;
 }
 
-float CylinderPlatformCollide(Cylinder * cyl, Entity * io) {
+float CylinderPlatformCollide(const Cylinder & cyl, Entity * io) {
  
 	float miny = io->bbox3D.min.y;
 	float maxy = io->bbox3D.max.y;
 	
-	if(maxy <= cyl->origin.y + cyl->height || miny >= cyl->origin.y) {
+	if(maxy <= cyl.origin.y + cyl.height || miny >= cyl.origin.y) {
 		return 0.f;
 	}
 	
-	if(In3DBBoxTolerance(cyl->origin, io->bbox3D, cyl->radius)) {
+	if(In3DBBoxTolerance(cyl.origin, io->bbox3D, cyl.radius)) {
 		return 1.f;
 	}
 	

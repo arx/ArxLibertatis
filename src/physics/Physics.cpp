@@ -213,7 +213,7 @@ static bool IsObjectInField(PHYSICS_BOX_DATA * pbox) {
 				for(long k = 0; k < pbox->nb_physvert; k++) {
 					PHYSVERT * pv = &pbox->vert[k];
 					cyl.origin = pv->pos + Vec3f(0.f, 17.5f, 0.f);
-					if(CylinderPlatformCollide(&cyl, pfrm) != 0.f) {
+					if(CylinderPlatformCollide(cyl, pfrm) != 0.f) {
 						return true;
 					}
 				}

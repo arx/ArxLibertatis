@@ -117,7 +117,7 @@ bool IO_Visible(const Vec3f & orgn, const Vec3f & dest, EERIEPOLY * epp, Vec3f *
 
 void ANCHOR_BLOCK_By_IO(Entity * io, long status);
 void ANCHOR_BLOCK_Clear();
-float CylinderPlatformCollide(Cylinder * cyl, Entity * io);
+float CylinderPlatformCollide(const Cylinder & cyl, Entity * io);
 bool IsAnyNPCInPlatform(Entity * pfrm);
 void PushIO_ON_Top(Entity * ioo, float ydec);
 
