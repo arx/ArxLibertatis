@@ -692,7 +692,7 @@ void CMultiPoisonProjectile::Render()
 			light->duration	= 200;
 		}
 
-		AddPoisonFog(&projectile->eCurPos, m_level + 7);
+		AddPoisonFog(projectile->eCurPos, m_level + 7);
 
 		if(m_timcreation + 1600 < (unsigned long)(arxtime)) {
 			
@@ -712,7 +712,7 @@ void CMultiPoisonProjectile::Render()
 	}
 }
 
-void CMultiPoisonProjectile::AddPoisonFog(Vec3f * pos, float power) {
+void CMultiPoisonProjectile::AddPoisonFog(const Vec3f & pos, float power) {
 	
 	int iDiv = 4 - config.video.levelOfDetail;
 	
@@ -735,7 +735,7 @@ void CMultiPoisonProjectile::AddPoisonFog(Vec3f * pos, float power) {
 		float speed = 1.f;
 		float fval = speed * 0.2f;
 		pd->special = FADE_IN_AND_OUT | ROTATING | MODULATE_ROTATION | DISSIPATING;
-		pd->ov = *pos + randomVec(-100.f, 100.f);
+		pd->ov = pos + randomVec(-100.f, 100.f);
 		pd->scale = Vec3f(8.f, 8.f, 10.f);
 		pd->move = Vec3f((speed - rnd()) * fval, (speed - speed * rnd()) * (1.f / 15),
 		                 (speed - rnd()) * fval);

@@ -197,7 +197,7 @@ public:
 	
 private:
 	std::vector<CPoisonProjectile *> m_projectiles;
-	void AddPoisonFog(Vec3f * pos, float power);
+	void AddPoisonFog(const Vec3f & pos, float power);
 };
 
 // Done By : did
