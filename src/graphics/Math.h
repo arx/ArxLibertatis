@@ -227,19 +227,19 @@ inline float fdist(const Vec2f & from, const Vec2f & to) {
 	return ffsqrt(glm::distance2(from, to));
 }
 
-inline bool PointInCylinder(const Cylinder & cyl, const Vec3f * pt) {
+inline bool PointInCylinder(const Cylinder & cyl, const Vec3f & pt) {
 	
 	float pos1 = cyl.origin.y + cyl.height;
 	
-	if(pt->y < std::min(cyl.origin.y, pos1)) {
+	if(pt.y < std::min(cyl.origin.y, pos1)) {
 		return false;
 	}
 	
-	if(pt->y > std::max(cyl.origin.y, pos1)) {
+	if(pt.y > std::max(cyl.origin.y, pos1)) {
 		return false;
 	}
 	
-	if(!fartherThan(Vec2f(cyl.origin.x, cyl.origin.z), Vec2f(pt->x, pt->z), cyl.radius)) {
+	if(!fartherThan(Vec2f(cyl.origin.x, cyl.origin.z), Vec2f(pt.x, pt.z), cyl.radius)) {
 		return true;
 	}
 	

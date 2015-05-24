@@ -2130,7 +2130,7 @@ bool ARX_INTERACTIVE_CheckFULLCollision(PHYSICS_BOX_DATA * pbox, EntityHandle so
 
 		if((io->ioflags & IO_NPC) && io->_npcdata->lifePool.current > 0.f) {
 			for(long kk = 0; kk < pbox->nb_physvert; kk++)
-				if(PointInCylinder(io->physics.cyl, &pbox->vert[kk].pos))
+				if(PointInCylinder(io->physics.cyl, pbox->vert[kk].pos))
 					return true;
 		} else if(io->ioflags & IO_FIX) {
 			long step;

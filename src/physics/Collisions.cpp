@@ -112,7 +112,7 @@ inline float IsPolyInCylinder(EERIEPOLY * ep, const Cylinder & cyl, long flag) {
 	
 	float anything = 999999.f;
 
-	if(PointInCylinder(cyl, &ep->center)) {
+	if(PointInCylinder(cyl, ep->center)) {
 		POLYIN = 1;
 		
 		if(ep->norm.y < 0.5f)
@@ -135,7 +135,7 @@ inline float IsPolyInCylinder(EERIEPOLY * ep, const Cylinder & cyl, long flag) {
 			for(long o = 0; o < 5; o++) {
 				float p = (float)o * (1.f/5);
 				center = ep->v[n].p * p + ep->center * (1.f - p);
-				if(PointInCylinder(cyl, &center)) {
+				if(PointInCylinder(cyl, center)) {
 					anything = std::min(anything, center.y);
 					POLYIN = 1;
 
@@ -147,7 +147,7 @@ inline float IsPolyInCylinder(EERIEPOLY * ep, const Cylinder & cyl, long flag) {
 
 		if(ep->area > 2000.f || (flags & CFLAG_EXTRA_PRECISION)) {
 			center = (ep->v[n].p + ep->v[r].p) * 0.5f;
-			if(PointInCylinder(cyl, &center)) {
+			if(PointInCylinder(cyl, center)) {
 				anything = std::min(anything, center.y);
 				POLYIN = 1;
 
@@ -157,7 +157,7 @@ inline float IsPolyInCylinder(EERIEPOLY * ep, const Cylinder & cyl, long flag) {
 
 			if(ep->area > 4000.f || (flags & CFLAG_EXTRA_PRECISION)) {
 				center = (ep->v[n].p + ep->center) * 0.5f;
-				if(PointInCylinder(cyl, &center)) {
+				if(PointInCylinder(cyl, center)) {
 					anything = std::min(anything, center.y);
 					POLYIN = 1;
 
@@ -168,7 +168,7 @@ inline float IsPolyInCylinder(EERIEPOLY * ep, const Cylinder & cyl, long flag) {
 
 			if(ep->area > 6000.f || (flags & CFLAG_EXTRA_PRECISION)) {
 				center = (center + ep->v[n].p) * 0.5f;
-				if(PointInCylinder(cyl, &center)) {
+				if(PointInCylinder(cyl, center)) {
 					anything = std::min(anything, center.y);
 					POLYIN = 1;
 
@@ -178,7 +178,7 @@ inline float IsPolyInCylinder(EERIEPOLY * ep, const Cylinder & cyl, long flag) {
 			}
 		}
 
-		if(PointInCylinder(cyl, &ep->v[n].p)) {
+		if(PointInCylinder(cyl, ep->v[n].p)) {
 			
 			anything = std::min(anything, ep->v[n].p.y);
 			POLYIN = 1;
@@ -283,7 +283,7 @@ bool IsCollidingIO(Entity * io,Entity * ioo) {
 			ioo->physics.cyl.radius += 25.f;
 
 			for(size_t j = 0; j < io->obj->vertexlist3.size(); j++) {
-				if(PointInCylinder(ioo->physics.cyl, &io->obj->vertexlist3[j].v)) {
+				if(PointInCylinder(ioo->physics.cyl, io->obj->vertexlist3[j].v)) {
 					ioo->physics.cyl.radius = old;
 					return true;
 				}
