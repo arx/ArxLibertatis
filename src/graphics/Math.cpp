@@ -694,14 +694,12 @@ Vec3f CalcFaceNormal(const TexturedVertex * v) {
 	return glm::normalize(Vec3f(A.y * B.z - A.z * B.y, A.z * B.x - A.x * B.z, A.x * B.y - A.y * B.x));
 }
 
-void CalcObjFaceNormal(const Vec3f & v0, const Vec3f & v1, const Vec3f & v2,
-                       EERIE_FACE * ef) {
+Vec3f CalcObjFaceNormal(const Vec3f & v0, const Vec3f & v1, const Vec3f & v2) {
 	
 	Vec3f A = v1 - v0;
 	Vec3f B = v2 - v0;
 	
-	ef->norm = Vec3f(A.y * B.z - A.z * B.y, A.z * B.x - A.x * B.z, A.x * B.y - A.y * B.x);
-	ef->norm = glm::normalize(ef->norm);
+	return glm::normalize(Vec3f(A.y * B.z - A.z * B.y, A.z * B.x - A.x * B.z, A.x * B.y - A.y * B.x));
 }
 
 void MatrixSetByVectors(glm::mat4x4 & m, const Vec3f & d, const Vec3f & u)
