@@ -205,7 +205,7 @@ Vec3f angleToVector(const Anglef & angle);
 
 void CalcFaceNormal(EERIEPOLY * ep, const TexturedVertex * v);
 void CalcObjFaceNormal(const Vec3f * v0, const Vec3f * v1, const Vec3f * v2, EERIE_FACE * ef);
-bool Triangles_Intersect(const EERIE_TRI * v, const EERIE_TRI * u);
+bool Triangles_Intersect(const EERIE_TRI & v, const EERIE_TRI & u);
 
 inline float square(float x) {
 	return x * x;

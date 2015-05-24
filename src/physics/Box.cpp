@@ -125,7 +125,7 @@ bool IsObjectVertexCollidingTriangle(PHYSICS_BOX_DATA * pbox, Vec3f * verts)
 	t1.v[1] = vert[2].pos;
 	t1.v[2] = vert[3].pos;
 	
-	if(Triangles_Intersect(&t1, &t2)) {
+	if(Triangles_Intersect(t1, t2)) {
 		return true;
 	}
 	
@@ -134,7 +134,7 @@ bool IsObjectVertexCollidingTriangle(PHYSICS_BOX_DATA * pbox, Vec3f * verts)
 	t1.v[1] = vert[9].pos;
 	t1.v[2] = vert[11].pos;
 	
-	if(Triangles_Intersect(&t1, &t2)) {
+	if(Triangles_Intersect(t1, t2)) {
 		return true;
 	}
 	
@@ -143,7 +143,7 @@ bool IsObjectVertexCollidingTriangle(PHYSICS_BOX_DATA * pbox, Vec3f * verts)
 	t1.v[1] = vert[4].pos;
 	t1.v[2] = vert[5].pos;
 	
-	if(Triangles_Intersect(&t1, &t2)) {
+	if(Triangles_Intersect(t1, t2)) {
 		return true;
 	}
 	
@@ -152,7 +152,7 @@ bool IsObjectVertexCollidingTriangle(PHYSICS_BOX_DATA * pbox, Vec3f * verts)
 	t1.v[1] = vert[8].pos;
 	t1.v[2] = vert[9].pos;
 	
-	if(Triangles_Intersect(&t1, &t2)) {
+	if(Triangles_Intersect(t1, t2)) {
 		return true;
 	}
 	
@@ -161,7 +161,7 @@ bool IsObjectVertexCollidingTriangle(PHYSICS_BOX_DATA * pbox, Vec3f * verts)
 	t1.v[1] = vert[2].pos;
 	t1.v[2] = vert[7].pos;
 	
-	if(Triangles_Intersect(&t1, &t2)) {
+	if(Triangles_Intersect(t1, t2)) {
 		return true;
 	}
 	
@@ -170,7 +170,7 @@ bool IsObjectVertexCollidingTriangle(PHYSICS_BOX_DATA * pbox, Vec3f * verts)
 	t1.v[1] = vert[6].pos;
 	t1.v[2] = vert[11].pos;
 	
-	if(Triangles_Intersect(&t1, &t2)) {
+	if(Triangles_Intersect(t1, t2)) {
 		return true;
 	}
 
@@ -179,7 +179,7 @@ bool IsObjectVertexCollidingTriangle(PHYSICS_BOX_DATA * pbox, Vec3f * verts)
 	t1.v[1] = vert[2].pos;
 	t1.v[2] = vert[1].pos;
 
-	if(Triangles_Intersect(&t1, &t2)) {
+	if(Triangles_Intersect(t1, t2)) {
 		return true;
 	}
 
@@ -188,7 +188,7 @@ bool IsObjectVertexCollidingTriangle(PHYSICS_BOX_DATA * pbox, Vec3f * verts)
 	t1.v[1] = vert[6].pos;
 	t1.v[2] = vert[5].pos;
 
-	if(Triangles_Intersect(&t1, &t2)) {
+	if(Triangles_Intersect(t1, t2)) {
 		return true;
 	}
 
@@ -197,7 +197,7 @@ bool IsObjectVertexCollidingTriangle(PHYSICS_BOX_DATA * pbox, Vec3f * verts)
 	t1.v[1] = vert[3].pos;
 	t1.v[2] = vert[7].pos;
 
-	if(Triangles_Intersect(&t1, &t2)) {
+	if(Triangles_Intersect(t1, t2)) {
 		return true;
 	}
 
@@ -206,7 +206,7 @@ bool IsObjectVertexCollidingTriangle(PHYSICS_BOX_DATA * pbox, Vec3f * verts)
 	t1.v[1] = vert[7].pos;
 	t1.v[2] = vert[11].pos;
 
-	if(Triangles_Intersect(&t1, &t2)) {
+	if(Triangles_Intersect(t1, t2)) {
 		return true;
 	}
 

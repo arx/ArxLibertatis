@@ -234,7 +234,7 @@ static int coplanar_tri_tri(const float N[3], const float V0[3], const float V1[
 // VERIFIED (Cyril 2001/10/19)
 // OPTIMIZED (Cyril 2001/10/19) removed divisions, need some more optims perhaps...
 //***********************************************************************************************
-static int tri_tri_intersect(const EERIE_TRI * VV, const EERIE_TRI * UU)  {
+static int tri_tri_intersect(const EERIE_TRI & VV, const EERIE_TRI & UU)  {
 	
 	float E1[3], E2[3];
 	float N1[3], N2[3], d1, d2;
@@ -258,13 +258,13 @@ static int tri_tri_intersect(const EERIE_TRI * VV, const EERIE_TRI * UU)  {
 	const float * U1;
 	const float * U2;
 
-	V0 = glm::value_ptr(VV->v[0]);
-	V1 = glm::value_ptr(VV->v[1]);
-	V2 = glm::value_ptr(VV->v[2]);
+	V0 = glm::value_ptr(VV.v[0]);
+	V1 = glm::value_ptr(VV.v[1]);
+	V2 = glm::value_ptr(VV.v[2]);
 
-	U0 = glm::value_ptr(UU->v[0]);
-	U1 = glm::value_ptr(UU->v[1]);
-	U2 = glm::value_ptr(UU->v[2]);
+	U0 = glm::value_ptr(UU.v[0]);
+	U1 = glm::value_ptr(UU.v[1]);
+	U2 = glm::value_ptr(UU.v[2]);
 
 	/* compute plane equation of triangle(V0,V1,V2) */
 	SUB(E1, V1, V0);
@@ -356,31 +356,31 @@ static int tri_tri_intersect(const EERIE_TRI * VV, const EERIE_TRI * UU)  {
 #undef SUB
 
 // Computes Bounding Box for a triangle
-static inline EERIE_3D_BBOX Triangle_ComputeBoundingBox(const EERIE_TRI * v) {
+static inline EERIE_3D_BBOX Triangle_ComputeBoundingBox(const EERIE_TRI & v) {
 	EERIE_3D_BBOX bb;
 	
-	bb.min.x = std::min(v->v[0].x, v->v[1].x);
-	bb.min.x = std::min(bb.min.x, v->v[2].x);
+	bb.min.x = std::min(v.v[0].x, v.v[1].x);
+	bb.min.x = std::min(bb.min.x, v.v[2].x);
 
-	bb.max.x = std::max(v->v[0].x, v->v[1].x);
-	bb.max.x = std::max(bb.max.x, v->v[2].x);
+	bb.max.x = std::max(v.v[0].x, v.v[1].x);
+	bb.max.x = std::max(bb.max.x, v.v[2].x);
 
-	bb.min.y = std::min(v->v[0].y, v->v[1].y);
-	bb.min.y = std::min(bb.min.y, v->v[2].y);
+	bb.min.y = std::min(v.v[0].y, v.v[1].y);
+	bb.min.y = std::min(bb.min.y, v.v[2].y);
 
-	bb.max.y = std::max(v->v[0].y, v->v[1].y);
-	bb.max.y = std::max(bb.max.y, v->v[2].y);
+	bb.max.y = std::max(v.v[0].y, v.v[1].y);
+	bb.max.y = std::max(bb.max.y, v.v[2].y);
 
-	bb.min.z = std::min(v->v[0].z, v->v[1].z);
-	bb.min.z = std::min(bb.min.z, v->v[2].z);
+	bb.min.z = std::min(v.v[0].z, v.v[1].z);
+	bb.min.z = std::min(bb.min.z, v.v[2].z);
 
-	bb.max.z = std::max(v->v[0].z, v->v[1].z);
-	bb.max.z = std::max(bb.max.z, v->v[2].z);
+	bb.max.z = std::max(v.v[0].z, v.v[1].z);
+	bb.max.z = std::max(bb.max.z, v.v[2].z);
 	
 	return bb;
 }
 
-bool Triangles_Intersect(const EERIE_TRI * v, const EERIE_TRI * u)
+bool Triangles_Intersect(const EERIE_TRI & v, const EERIE_TRI & u)
 {
 	EERIE_3D_BBOX bb1 = Triangle_ComputeBoundingBox(v);
 	EERIE_3D_BBOX bb2 = Triangle_ComputeBoundingBox(u);

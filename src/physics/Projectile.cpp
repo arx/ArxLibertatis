@@ -322,7 +322,7 @@ static EERIEPOLY * CheckArrowPolyCollision(const Vec3f & start, const Vec3f & en
 			pol2.v[1] = ep->v[1].p;
 			pol2.v[2] = ep->v[2].p;
 
-			if(Triangles_Intersect(&pol2, &pol)) {
+			if(Triangles_Intersect(pol2, pol)) {
 				return ep;
 			}
 
@@ -330,7 +330,7 @@ static EERIEPOLY * CheckArrowPolyCollision(const Vec3f & start, const Vec3f & en
 				pol2.v[0] = ep->v[1].p;
 				pol2.v[1] = ep->v[3].p;
 				pol2.v[2] = ep->v[2].p;
-				if(Triangles_Intersect(&pol2, &pol)) {
+				if(Triangles_Intersect(pol2, pol)) {
 					return ep;
 				}
 			}
