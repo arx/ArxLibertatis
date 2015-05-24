@@ -184,20 +184,20 @@ EERIEPOLY * CheckInPoly(const Vec3f & poss, float * needY)
 {
 	long px = poss.x * ACTIVEBKG->Xmul;
 	long pz = poss.z * ACTIVEBKG->Zmul;
-
+	
 	if(pz <= 0 || pz >= ACTIVEBKG->Zsize - 1 || px <= 0 || px >= ACTIVEBKG->Xsize - 1)
 		return NULL;
-
+	
 	float rx = poss.x - ((float)px * ACTIVEBKG->Xdiv);
 	float rz = poss.z - ((float)pz * ACTIVEBKG->Zdiv);
-
-
+	
+	
 	short pzi, pza, pxi, pxa;
-
+	
 	(void)checked_range_cast<short>(pz - 1);
 	(void)checked_range_cast<short>(pz + 1);
 	short sPz = static_cast<short>(pz);
-
+	
 	if (rz < -40.f) {
 		pzi = sPz - 1;
 		pza = sPz - 1;
@@ -211,11 +211,11 @@ EERIEPOLY * CheckInPoly(const Vec3f & poss, float * needY)
 		pzi = sPz;
 		pza = sPz;
 	}
-
+	
 	(void)checked_range_cast<short>(px + 1);
 	(void)checked_range_cast<short>(px - 1);
 	short sPx = static_cast<short>(px);
-
+	
 	if(rx < -40.f) {
 		pxi = sPx - 1;
 		pxa = sPx - 1;
@@ -229,38 +229,38 @@ EERIEPOLY * CheckInPoly(const Vec3f & poss, float * needY)
 		pxi = sPx;
 		pxa = sPx;
 	}
-
+	
 	EERIEPOLY * found = NULL;
 	float foundY = 0.f;
-
+	
 	for(short z = pzi; z <= pza; z++)
 	for(short x = pxi; x <= pxa; x++) {
-			const EERIE_BKG_INFO & feg = ACTIVEBKG->fastdata[x][z];
-
-			for(short k = 0; k < feg.nbpolyin; k++) {
-				EERIEPOLY * ep = feg.polyin[k];
-
-				if(poss.x >= ep->min.x
-				&& poss.x <= ep->max.x
-				&& poss.z >= ep->min.z
-				&& poss.z <= ep->max.z
-				&& !(ep->type & (POLY_WATER | POLY_TRANS | POLY_NOCOL))
-				&& ep->max.y >= poss.y
-				&& ep != found
-				&& PointIn2DPolyXZ(ep, poss.x, poss.z)
-				&& GetTruePolyY(ep, poss, &rz)
-				&& rz >= poss.y
-				&& (!found || (found && rz <= foundY))
-				) {
-					found = ep;
-					foundY = rz;
-				}
+		const EERIE_BKG_INFO & feg = ACTIVEBKG->fastdata[x][z];
+		
+		for(short k = 0; k < feg.nbpolyin; k++) {
+			EERIEPOLY * ep = feg.polyin[k];
+			
+			if(poss.x >= ep->min.x
+			&& poss.x <= ep->max.x
+			&& poss.z >= ep->min.z
+			&& poss.z <= ep->max.z
+			&& !(ep->type & (POLY_WATER | POLY_TRANS | POLY_NOCOL))
+			&& ep->max.y >= poss.y
+			&& ep != found
+			&& PointIn2DPolyXZ(ep, poss.x, poss.z)
+			&& GetTruePolyY(ep, poss, &rz)
+			&& rz >= poss.y
+			&& (!found || (found && rz <= foundY))
+			) {
+				found = ep;
+				foundY = rz;
 			}
+		}
 	}
-
+	
 	if(needY)
 		*needY = foundY;
-
+	
 	return found;
 }
 
