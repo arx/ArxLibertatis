@@ -546,16 +546,12 @@ void LightningStrikeSpell::Update(float timeDelta)
 			falpha = -player.angle.getYaw();
 			fBeta = player.angle.getPitch();
 		} else {
-			// IO source
 			fBeta = caster->angle.getPitch();
-			if(ValidIONum(caster->targetinfo)
-			   && caster->targetinfo != m_caster) {
+			if(ValidIONum(caster->targetinfo) && caster->targetinfo != m_caster) {
 				const Vec3f & p1 = m_caster_pos;
 				Vec3f p2 = GetChestPos(caster->targetinfo);
 				falpha = MAKEANGLE(glm::degrees(getAngle(p1.y, p1.z, p2.y, p2.z + glm::distance(Vec2f(p2.x, p2.z), Vec2f(p1.x, p1.z))))); //alpha entre orgn et dest;
-			}
-			else if (ValidIONum(m_target))
-			{
+			} else if(ValidIONum(m_target)) {
 				const Vec3f & p1 = m_caster_pos;
 				Vec3f p2 = GetChestPos(m_target);
 				falpha = MAKEANGLE(glm::degrees(getAngle(p1.y, p1.z, p2.y, p2.z + glm::distance(Vec2f(p2.x, p2.z), Vec2f(p1.x, p1.z))))); //alpha entre orgn et dest;
