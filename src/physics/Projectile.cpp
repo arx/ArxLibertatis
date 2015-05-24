@@ -346,7 +346,7 @@ static void CheckExp(long i) {
 	if((Thrown[i].flags & ATO_FIERY) && !(Thrown[i].flags & ATO_UNDERWATER)) {
 
 		ARX_BOOMS_Add(Thrown[i].position);
-		LaunchFireballBoom(&Thrown[i].position, 10);
+		LaunchFireballBoom(Thrown[i].position, 10);
 		DoSphericDamage(Thrown[i].position, 4.f * 2, 50.f,
 						DAMAGE_AREA, DAMAGE_TYPE_FIRE | DAMAGE_TYPE_MAGICAL, PlayerEntityHandle);
 		ARX_SOUND_PlaySFX(SND_SPELL_FIRE_HIT, &Thrown[i].position);

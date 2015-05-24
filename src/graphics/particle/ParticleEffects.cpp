@@ -985,7 +985,7 @@ void SpawnFireballTail(const Vec3f & poss, const Vec3f & vecto, float level, lon
 	}
 }
 
-void LaunchFireballBoom(Vec3f * poss, float level, Vec3f * direction, Color3f * rgb) {
+void LaunchFireballBoom(const Vec3f & poss, float level, Vec3f * direction, Color3f * rgb) {
 	
 	level *= 1.6f;
 	
@@ -999,7 +999,7 @@ void LaunchFireballBoom(Vec3f * poss, float level, Vec3f * direction, Color3f * 
 	}
 	
 	pd->special = FIRE_TO_SMOKE | FADE_IN_AND_OUT | PARTICLE_ANIMATED;
-	pd->ov = *poss;
+	pd->ov = poss;
 	pd->move = (direction) ? *direction : Vec3f(0.f, -rnd() * 5.f, 0.f);
 	pd->tolive = Random::get(1600, 2200);
 	pd->tc = explo[0];

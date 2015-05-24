@@ -195,7 +195,7 @@ void ARX_BOOMS_Add(const Vec3f & pos, long type = 0);
 
 
 
-void LaunchFireballBoom(Vec3f * poss, float level, Vec3f * direction = NULL, Color3f * rgb = NULL);
+void LaunchFireballBoom(const Vec3f & poss, float level, Vec3f * direction = NULL, Color3f * rgb = NULL);
 void SpawnFireballTail(const Vec3f &, const Vec3f &, float, long);
 
 #endif // ARX_GRAPHICS_PARTICLE_PARTICLEEFFECTS_H

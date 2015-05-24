@@ -303,7 +303,7 @@ void ExplosionSpell::Launch()
 			Color3f rgb(0.1f + rnd() * (1.f/3), 0.1f + rnd() * (1.f/3),
 			            0.8f + rnd() * (1.f/5));
 			Vec3f posi = target + Vec3f(0.f, j * 2, 0.f);
-			LaunchFireballBoom(&posi, 16, &dir, &rgb);
+			LaunchFireballBoom(posi, 16, &dir, &rgb);
 		}
 	}
 	
@@ -337,7 +337,7 @@ void ExplosionSpell::Update(float timeDelta)
 			pos.y=light->pos.y-std::sin(r2)*260;
 			pos.z=light->pos.z+std::cos(rr)*260;
 			Color3f rgb(0.1f + rnd()*(1.f/3), 0.1f + rnd()*(1.0f/3), 0.8f + rnd()*(1.0f/5));
-			LaunchFireballBoom(&pos, static_cast<float>(lvl), NULL, &rgb);
+			LaunchFireballBoom(pos, static_cast<float>(lvl), NULL, &rgb);
 		} else if(choice > .6f) {
 			rr=glm::radians(rnd()*360.f);
 			r2=glm::radians(rnd()*360.f);

@@ -288,7 +288,7 @@ void FireballSpell::Update(float timeDelta)
 	if(!effect->bExplo)
 	if(CheckAnythingInSphere(sphere, m_caster, CAS_NO_SAME_GROUP)) {
 		ARX_BOOMS_Add(effect->eCurPos);
-		LaunchFireballBoom(&effect->eCurPos,(float)m_level);
+		LaunchFireballBoom(effect->eCurPos, (float)m_level);
 		
 		effect->eMove *= 0.5f;
 		effect->SetTTL(1500);
