@@ -361,6 +361,10 @@ static void drawDebugPathFinding() {
 
 static void drawDebugFogs() {
 	
+	RenderMaterial mat;
+	mat.setBlendType(RenderMaterial::Opaque);
+	mat.setDepthTest(true);
+	
 	for(size_t i = 0; i < MAX_FOG; i++) {
 		const FOG_DEF & fog = fogs[i];
 		
@@ -368,25 +372,14 @@ static void drawDebugFogs() {
 			continue;
 		}
 		
-			Anglef angle(0.f, 0.f, 0.f);
-			Vec3f scale(1.f);
-			RenderMaterial mat;
-			mat.setBlendType(RenderMaterial::Opaque);
-			mat.setDepthTest(true);
-			
-			Draw3DObject(g_fogObject, angle, fog.pos, scale, Color3f::white, mat);
+		Draw3DObject(g_fogObject, Anglef(0.f, 0.f, 0.f), fog.pos, Vec3f(1.f), Color3f::white, mat);
 		
 		if(fog.special & FOG_DIRECTIONAL) {
 			drawLine(fog.pos, fog.pos + fog.move * 50.f, Color::white);
 		}
 		
-		Sphere fogsize;
-		fogsize.origin = fog.pos;
-		fogsize.radius = fog.size;
-		drawLineSphere(fogsize, Color(Color3<u8>::blue, 200));
-		
+		drawLineSphere(Sphere(fog.pos, fog.size), Color(Color3<u8>::blue, 200));
 	}
-	
 }
 
 //! Debug function to show the physical box of an object
