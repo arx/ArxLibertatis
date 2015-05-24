@@ -145,8 +145,7 @@ void DetectTrapSpell::End()
 void DetectTrapSpell::Update(float timeDelta)
 {
 	if(m_caster == PlayerEntityHandle) {
-		Vec3f pos;
-		ARX_PLAYER_FrontPos(&pos);
+		Vec3f pos = ARX_PLAYER_FrontPos();
 		ARX_SOUND_RefreshPosition(m_snd_loop, pos);
 	}
 

@@ -75,8 +75,7 @@ void MagicSightSpell::Update(float timeDelta)
 	ARX_UNUSED(timeDelta);
 	
 	if(m_caster == PlayerEntityHandle) {
-		Vec3f pos;
-		ARX_PLAYER_FrontPos(&pos);
+		Vec3f pos = ARX_PLAYER_FrontPos();
 		ARX_SOUND_RefreshPosition(m_snd_loop, pos);
 		
 		if(subj.focal > IMPROVED_FOCAL)

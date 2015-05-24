@@ -233,14 +233,13 @@ void ARX_KEYRING_Combine(Entity * io) {
 }
 
 /*!
- * \brief Fills "pos" with player "front pos" for sound purpose
- * \param pos
+ * \return player "front pos" for sound purpose
  */
-void ARX_PLAYER_FrontPos(Vec3f * pos)
-{
-	*pos = player.pos;
-	*pos += angleToVectorXZ(player.angle.getPitch()) * 100.f;
-	*pos += Vec3f(0.f, 100.f, 0.f); // XXX use -100 here ?
+Vec3f ARX_PLAYER_FrontPos() {
+	Vec3f pos = player.pos;
+	pos += angleToVectorXZ(player.angle.getPitch()) * 100.f;
+	pos += Vec3f(0.f, 100.f, 0.f); // XXX use -100 here ?
+	return pos;
 }
 
 /*!

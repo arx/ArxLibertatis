@@ -1595,7 +1595,7 @@ bool GetItemWorldPositionSound(const Entity * io, Vec3f * pos) {
 	}
 	
 	if(DRAGINTER == io) {
-		ARX_PLAYER_FrontPos(pos);
+		*pos = ARX_PLAYER_FrontPos();
 		return true;
 	}
 	
@@ -1603,7 +1603,7 @@ bool GetItemWorldPositionSound(const Entity * io, Vec3f * pos) {
 		
 		if(IsEquipedByPlayer(io)) {
 			// in player inventory
-			ARX_PLAYER_FrontPos(pos);
+			*pos = ARX_PLAYER_FrontPos();
 			return true;
 		}
 		
@@ -1617,7 +1617,7 @@ bool GetItemWorldPositionSound(const Entity * io, Vec3f * pos) {
 			
 			if(slot.io == io) {
 				// in player inventory
-				ARX_PLAYER_FrontPos(pos);
+				*pos = ARX_PLAYER_FrontPos();
 				return true;
 			}
 		}
