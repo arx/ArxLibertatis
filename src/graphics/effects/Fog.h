@@ -48,8 +48,32 @@ ZeniMax Media Inc., Suite 120, Rockville, Maryland 20850 USA.
 #define ARX_GRAPHICS_EFFECTS_FOG_H
 
 #include "math/Types.h"
+#include "math/Angle.h"
+#include "graphics/Color.h"
 
 struct EERIE_3DOBJ;
+
+struct FOG_DEF
+{
+	bool		exist;
+	Vec3f	pos;
+	Color3f	rgb;
+	float		size;
+	long		special;
+	float		scale;
+	Vec3f	move;
+	Anglef	angle;
+	float		speed;
+	float		rotatespeed;
+	long		tolive;
+	long		blend;
+	float		frequency;
+};
+
+#define FOG_DIRECTIONAL 1
+
+static const size_t MAX_FOG = 100;
+extern FOG_DEF fogs[MAX_FOG];
 
 void ARX_FOGS_Render();
 long ARX_FOGS_Count();

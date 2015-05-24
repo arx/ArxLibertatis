@@ -129,26 +129,7 @@ struct PARTICLE_DEF {
 };
 
 //-----------------------------------------------------------------------------
-struct FOG_DEF
-{
-	bool		exist;
-	Vec3f	pos;
-	Color3f	rgb;
-	float		size;
-	long		special;
-	float		scale;
-	Vec3f	move;
-	Anglef	angle;
-	float		speed;
-	float		rotatespeed;
-	long		tolive;
-	long		blend;
-	float		frequency;
-};
 
-#define FOG_DIRECTIONAL 1
-
-static const size_t MAX_FOG = 100;
 static const int MAX_POLYBOOM = 4000;
 static const float FLARE_MUL = 2.f;
 
@@ -158,7 +139,6 @@ static const float BOOM_RADIUS2 = 250.f;
 extern short OPIPOrgb;
 extern short PIPOrgb;
 extern std::vector<POLYBOOM> polyboom;
-extern FOG_DEF fogs[MAX_FOG];
 extern TextureContainer * fire2;
 extern long NewSpell;
 
