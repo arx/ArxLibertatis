@@ -1046,13 +1046,13 @@ static void EERIEPOLY_Add_PolyIn(EERIE_BKG_INFO * eg, EERIEPOLY * ep) {
 	eg->nbpolyin++;
 }
 
-static bool PointInBBox(Vec3f * point, EERIE_2D_BBOX * bb) {
+static bool PointInBBox(const Vec3f & point, const EERIE_2D_BBOX & bb) {
 	
-	if ((point->x > bb->max.x)
-			||	(point->x < bb->min.x)
-			||	(point->z > bb->max.y)
-			||	(point->z < bb->min.y)
-	   )
+	if(   point.x > bb.max.x
+	   || point.x < bb.min.x
+	   || point.z > bb.max.y
+	   || point.z < bb.min.y
+	)
 		return false;
 
 	return true;
@@ -1094,16 +1094,16 @@ void EERIEPOLY_Compute_PolyIn()
 				
 				long nbvert = (ep2->type & POLY_QUAD) ? 4 : 3;
 				
-				if(PointInBBox(&ep2->center, &bb)) {
+				if(PointInBBox(ep2->center, bb)) {
 					EERIEPOLY_Add_PolyIn(eg, ep2);
 				} else {
 					for(long k = 0; k < nbvert; k++) {
-						if(PointInBBox(&ep2->v[k].p, &bb)) {
+						if(PointInBBox(ep2->v[k].p, bb)) {
 							EERIEPOLY_Add_PolyIn(eg, ep2);
 							break;
 						} else {
 							Vec3f pt = (ep2->v[k].p + ep2->center) * .5f;
-							if(PointInBBox(&pt, &bb)) {
+							if(PointInBBox(pt, bb)) {
 								EERIEPOLY_Add_PolyIn(eg, ep2);
 								break;
 							}
