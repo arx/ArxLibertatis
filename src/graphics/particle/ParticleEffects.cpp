@@ -111,9 +111,7 @@ long getParticleCount() {
 	return ParticleCount;
 }
 
-void ARX_PARTICLES_Spawn_Lava_Burn(Vec3f * poss, Entity * io) {
-	
-	Vec3f pos = *poss;
+void ARX_PARTICLES_Spawn_Lava_Burn(Vec3f pos, Entity * io) {
 	
 	if(io && io->obj && !io->obj->facelist.empty()) {
 		size_t num = 0;

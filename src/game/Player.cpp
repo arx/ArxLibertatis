@@ -2286,7 +2286,7 @@ void PlayerMovementIterate(float DeltaTime) {
 					ARX_DAMAGES_DamagePlayerEquipment(damages);
 
 					Vec3f pos = player.basePosition();
-					ARX_PARTICLES_Spawn_Lava_Burn(&pos, entities.player());
+					ARX_PARTICLES_Spawn_Lava_Burn(pos, entities.player());
 				}
 			}
 		}

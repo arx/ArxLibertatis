@@ -980,7 +980,7 @@ void ARX_PHYSICS_Apply() {
 		   && (ep->type & POLY_LAVA)
 		   && glm::abs(ep->center.y - io->pos.y) < 40
 		) {
-			ARX_PARTICLES_Spawn_Lava_Burn(&io->pos, io);
+			ARX_PARTICLES_Spawn_Lava_Burn(io->pos, io);
 
 			if(io->ioflags & IO_NPC) {
 				const float LAVA_DAMAGE = 10.f;
