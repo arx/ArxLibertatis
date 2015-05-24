@@ -164,7 +164,7 @@ static bool IsExclusiveGroupMember(EERIE_3DOBJ * obj, long idx, long group) {
 	return true;
 }
 
-static float GetSphereRadiusForGroup(EERIE_3DOBJ * obj, Vec3f * center, Vec3f * dirvect,
+static float GetSphereRadiusForGroup(EERIE_3DOBJ * obj, const Vec3f & center, const Vec3f & dirvect,
                                      long group, float maxi) {
 	
 	float curradius = 0.f;
@@ -187,7 +187,7 @@ static float GetSphereRadiusForGroup(EERIE_3DOBJ * obj, Vec3f * center, Vec3f * 
 			continue;
 
 		Vec3f target = obj->vertexlist[obj->grouplist[group].indexes[i]].v;
-		float distance = fdist(*center, target);
+		float distance = fdist(center, target);
 
 		if(distance < 2.f)
 			continue;
@@ -195,8 +195,8 @@ static float GetSphereRadiusForGroup(EERIE_3DOBJ * obj, Vec3f * center, Vec3f * 
 		if(distance < maxf)
 			continue;
 
-		Vec3f targvect = (target - *center) * 1.f / distance;
-		float val = glm::dot(*dirvect, targvect);
+		Vec3f targvect = (target - center) * 1.f / distance;
+		float val = glm::dot(dirvect, targvect);
 
 		if(glm::abs(val) < 1.2f) {
 			if(distance > maxi)
@@ -294,7 +294,7 @@ void EERIE_COLLISION_SPHERES_Create(EERIE_3DOBJ * obj) {
 	
 			while(dista >= 0.f) { // Iterate along the whole distance
 				// Compute required radius for this group and that pos
-				float val = GetSphereRadiusForGroup(obj, &center, &dest, k, tot * 1.4f);
+				float val = GetSphereRadiusForGroup(obj, center, dest, k, tot * 1.4f);
 
 				if(val > 0.2f) {
 					long idx = AddVertexToVertexList(obj, &center, k);
