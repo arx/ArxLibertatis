@@ -133,7 +133,5 @@ void ARX_FOGS_Render() {
 			pd->rgb = fog->rgb;
 			pd->fparam = fog->rotatespeed;
 		}
-		
-		fog->lastupdate = (unsigned long)(arxtime);
 	}
 }

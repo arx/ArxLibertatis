@@ -144,7 +144,6 @@ struct FOG_DEF
 	long		tolive;
 	long		blend;
 	float		frequency;
-	unsigned long lastupdate;
 };
 
 #define FOG_DIRECTIONAL 1
