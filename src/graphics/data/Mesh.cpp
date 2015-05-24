@@ -1181,8 +1181,10 @@ static void EERIE_PORTAL_Blend_Portals_And_Rooms() {
 		return;
 
 	for(size_t num = 0; num < portals->portals.size(); num++) {
-		CalcFaceNormal(&portals->portals[num].poly, portals->portals[num].poly.v);
-		EERIEPOLY * ep = &portals->portals[num].poly;
+		EERIE_PORTALS & portal = portals->portals[num];
+		
+		CalcFaceNormal(&portal.poly, portal.poly.v);
+		EERIEPOLY * ep = &portal.poly;
 		ep->center = ep->v[0].p;
 
 		long to = (ep->type & POLY_QUAD) ? 4 : 3;
@@ -1206,7 +1208,7 @@ static void EERIE_PORTAL_Blend_Portals_And_Rooms() {
 		ep->norm2.x = d;
 
 		for(size_t nroom = 0; nroom < portals->rooms.size(); nroom++) {
-			if(nroom == portals->portals[num].room_1 || nroom == portals->portals[num].room_2)
+			if(nroom == portal.room_1 || nroom == portal.room_2)
 			{
 				portals->rooms[nroom].portals = (long *)realloc(portals->rooms[nroom].portals, sizeof(long) * (portals->rooms[nroom].nb_portals + 1));
 				portals->rooms[nroom].portals[portals->rooms[nroom].nb_portals] = num;
