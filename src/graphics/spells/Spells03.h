@@ -139,7 +139,4 @@ private:
 	ParticleSystem * pPS;
 };
 
-void LaunchFireballExplosion(Vec3f *, float);
-void LaunchFireballExplosion2(Vec3f *, float);
-
 #endif // ARX_GRAPHICS_SPELLS_SPELLS03_H
