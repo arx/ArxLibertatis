@@ -507,7 +507,7 @@ static long ARX_NPC_GetNextAttainableNodeIncrement(Entity * io) {
 /*!
  * \brief Checks for nearest VALID anchor for a cylinder from a position
  */
-static long AnchorData_GetNearest(Vec3f * pos, Cylinder * cyl, long except = -1) {
+static long AnchorData_GetNearest(const Vec3f & pos, Cylinder * cyl, long except = -1) {
 	long returnvalue = -1;
 	float distmax = std::numeric_limits<float>::max();
 	EERIE_BACKGROUND * eb = ACTIVEBKG;
@@ -517,7 +517,7 @@ static long AnchorData_GetNearest(Vec3f * pos, Cylinder * cyl, long except = -1)
 			continue;
 
 		if(eb->anchors[i].nblinked) {
-			float d = glm::distance2(eb->anchors[i].pos, *pos);
+			float d = glm::distance2(eb->anchors[i].pos, pos);
 
 			if ((d < distmax) && (eb->anchors[i].height <= cyl->height)
 			        && (eb->anchors[i].radius >= cyl->radius)
@@ -543,7 +543,7 @@ static long AnchorData_GetNearest_2(float beta, Vec3f * pos, Cylinder * cyl) {
 	// XXX should this really be vect.x ? copy-paste error ?
 	posi.z += vect.x * 50.f;
 	
-	return AnchorData_GetNearest(&posi, cyl);
+	return AnchorData_GetNearest(posi, cyl);
 }
 
 bool ARX_NPC_LaunchPathfind(Entity * io, EntityHandle target)
@@ -661,7 +661,7 @@ wander:
 	{
 		if ((io->_npcdata->behavior & BEHAVIOUR_WANDER_AROUND)
 		        ||	(io->_npcdata->behavior & BEHAVIOUR_FLEE))
-			from = AnchorData_GetNearest(&pos1, &io->physics.cyl);
+			from = AnchorData_GetNearest(pos1, &io->physics.cyl);
 		else
 			from = AnchorData_GetNearest_2(io->angle.getPitch(), &pos1, &io->physics.cyl);
 	}
@@ -670,11 +670,11 @@ wander:
 	long to;
 
 	if (io->_npcdata->behavior & BEHAVIOUR_FLEE)
-		to = AnchorData_GetNearest(&pos2, &io->physics.cyl, from);
+		to = AnchorData_GetNearest(pos2, &io->physics.cyl, from);
 	else if (io->_npcdata->behavior & BEHAVIOUR_WANDER_AROUND)
 		to = from;
 	else
-		to = AnchorData_GetNearest(&pos2, &io->physics.cyl);
+		to = AnchorData_GetNearest(pos2, &io->physics.cyl);
 
 	if(from != -1 && to != -1) {
 		if(from == to && !(io->_npcdata->behavior & BEHAVIOUR_WANDER_AROUND))
@@ -2389,7 +2389,7 @@ static void ManageNPCMovement(Entity * io)
 	   && !(io->_npcdata->behavior & BEHAVIOUR_FLEE)
 	) {
 		if(ValidIONum(io->_npcdata->pathfind.truetarget)) {
-			Vec3f * p = &entities[io->_npcdata->pathfind.truetarget]->pos;
+			Vec3f p = entities[io->_npcdata->pathfind.truetarget]->pos;
 			long t = AnchorData_GetNearest(p, &io->physics.cyl); 
 
 			if(t != -1 && t != io->_npcdata->pathfind.list[io->_npcdata->pathfind.listnb - 1]) {
