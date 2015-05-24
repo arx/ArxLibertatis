@@ -54,7 +54,7 @@ enum ARX_SPELLS_MISSILE_TYPE {
 	MISSILE_FIREBALL = 1
 };
 
-void ARX_MISSILES_Spawn(Entity * io, ARX_SPELLS_MISSILE_TYPE type, const Vec3f * startpos, const Vec3f * targetpos);
+void ARX_MISSILES_Spawn(Entity * io, ARX_SPELLS_MISSILE_TYPE type, const Vec3f & startpos, const Vec3f & targetpos);
 void ARX_MISSILES_Update();
 void ARX_MISSILES_ClearAll();
 
