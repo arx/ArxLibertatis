@@ -356,31 +356,34 @@ static int tri_tri_intersect(const EERIE_TRI * VV, const EERIE_TRI * UU)  {
 #undef SUB
 
 // Computes Bounding Box for a triangle
-static inline void Triangle_ComputeBoundingBox(EERIE_3D_BBOX * bb, const EERIE_TRI * v) {
-	bb->min.x = std::min(v->v[0].x, v->v[1].x);
-	bb->min.x = std::min(bb->min.x, v->v[2].x);
+static inline EERIE_3D_BBOX Triangle_ComputeBoundingBox(const EERIE_TRI * v) {
+	EERIE_3D_BBOX bb;
+	
+	bb.min.x = std::min(v->v[0].x, v->v[1].x);
+	bb.min.x = std::min(bb.min.x, v->v[2].x);
 
-	bb->max.x = std::max(v->v[0].x, v->v[1].x);
-	bb->max.x = std::max(bb->max.x, v->v[2].x);
+	bb.max.x = std::max(v->v[0].x, v->v[1].x);
+	bb.max.x = std::max(bb.max.x, v->v[2].x);
 
-	bb->min.y = std::min(v->v[0].y, v->v[1].y);
-	bb->min.y = std::min(bb->min.y, v->v[2].y);
+	bb.min.y = std::min(v->v[0].y, v->v[1].y);
+	bb.min.y = std::min(bb.min.y, v->v[2].y);
 
-	bb->max.y = std::max(v->v[0].y, v->v[1].y);
-	bb->max.y = std::max(bb->max.y, v->v[2].y);
+	bb.max.y = std::max(v->v[0].y, v->v[1].y);
+	bb.max.y = std::max(bb.max.y, v->v[2].y);
 
-	bb->min.z = std::min(v->v[0].z, v->v[1].z);
-	bb->min.z = std::min(bb->min.z, v->v[2].z);
+	bb.min.z = std::min(v->v[0].z, v->v[1].z);
+	bb.min.z = std::min(bb.min.z, v->v[2].z);
 
-	bb->max.z = std::max(v->v[0].z, v->v[1].z);
-	bb->max.z = std::max(bb->max.z, v->v[2].z);
+	bb.max.z = std::max(v->v[0].z, v->v[1].z);
+	bb.max.z = std::max(bb.max.z, v->v[2].z);
+	
+	return bb;
 }
 
 bool Triangles_Intersect(const EERIE_TRI * v, const EERIE_TRI * u)
 {
-	EERIE_3D_BBOX bb1, bb2;
-	Triangle_ComputeBoundingBox(&bb1, v);
-	Triangle_ComputeBoundingBox(&bb2, u);
+	EERIE_3D_BBOX bb1 = Triangle_ComputeBoundingBox(v);
+	EERIE_3D_BBOX bb2 = Triangle_ComputeBoundingBox(u);
 
 	if (bb1.max.y < bb2.min.y) return false;
 
