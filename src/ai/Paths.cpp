@@ -126,11 +126,11 @@ long ARX_PATH_IsPosInZone(ARX_PATH * ap, Vec3f pos)
 	ARX_PATHWAY * app = ap->pathways;
 
 	for(i = 0, j = ap->nb_pathways - 1; i < ap->nb_pathways; j = i++) {
-		Vec3f * pi = &app[i].rpos;
-		Vec3f * pj = &app[j].rpos;
+		const Vec3f & pi = app[i].rpos;
+		const Vec3f & pj = app[j].rpos;
 
-		if(((pi->z <= pos.z && pos.z < pj->z) || (pj->z <= pos.z && pos.z < pi->z))
-		   && (pos.x < (pj->x - pi->x) *(pos.z - pi->z) / (pj->z - pi->z) + pi->x)
+		if(((pi.z <= pos.z && pos.z < pj.z) || (pj.z <= pos.z && pos.z < pi.z))
+		   && (pos.x < (pj.x - pi.x) *(pos.z - pi.z) / (pj.z - pi.z) + pi.x)
 		) {
 			c = !c;
 		}
