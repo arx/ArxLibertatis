@@ -498,19 +498,14 @@ static void EERIERTPPolyCam(EERIEPOLY * ep, EERIE_CAMERA * cam) {
 //*************************************************************************************
 //*************************************************************************************
 
-long GetVertexPos(Entity * io, long id, Vec3f * pos)
-{
-	if (!io) return 0;
+Vec3f GetVertexPos(Entity * io, long id) {
+	
+	arx_assert(io);
 
-	if (id != -1)
-	{
-		*pos = io->obj->vertexlist3[id].v;
-		return 1;
-	}
-	else
-	{
-		*pos = io->pos + Vec3f(0.f, GetIOHeight(io), 0.f);
-		return 2;
+	if(id != -1) {
+		return io->obj->vertexlist3[id].v;
+	} else {
+		return io->pos + Vec3f(0.f, GetIOHeight(io), 0.f);
 	}
 }
 

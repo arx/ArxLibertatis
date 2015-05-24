@@ -259,7 +259,7 @@ void GetTargetPos(Entity * io, unsigned long smoothing = 0);
 float GetIOHeight(Entity * io);
 float GetIORadius(Entity * io);
 
-void GetIOCyl(Entity * io, Cylinder & cyl);
+Cylinder GetIOCyl(Entity * io);
 
 void createFireParticles(Vec3f &pos,const int particlesToCreate, const int particleDelayFactor);
 

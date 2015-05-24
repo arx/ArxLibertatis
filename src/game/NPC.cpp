@@ -489,7 +489,7 @@ static long ARX_NPC_GetNextAttainableNodeIncrement(Entity * io) {
 
 		io->physics.targetpos.y += 60.f; // FAKE Gravity !
 		IO_PHYSICS phys = io->physics;
-		GetIOCyl(io, phys.cyl);
+		phys.cyl = GetIOCyl(io);
 
 		// Now we try the physical move for real
 		if(io->physics.startpos == io->physics.targetpos
@@ -635,7 +635,7 @@ bool ARX_NPC_LaunchPathfind(Entity * io, EntityHandle target)
 		io->physics.startpos = pos1;
 		io->physics.targetpos = pos2;
 		IO_PHYSICS phys = io->physics;
-		GetIOCyl(io, phys.cyl);
+		phys.cyl = GetIOCyl(io);
 
 		// Now we try the physical move for real
 		if(io->physics.startpos == io->physics.targetpos
@@ -1495,7 +1495,7 @@ static bool TryIOAnimMove(Entity * io, long animnum) {
 	Vec3f trans2 = VRotateY(trans, MAKEANGLE(180.f - io->angle.getPitch()));
 	
 	IO_PHYSICS phys = io->physics;
-	GetIOCyl(io, phys.cyl);
+	phys.cyl = GetIOCyl(io);
 
 	phys.startpos = io->pos;
 	phys.targetpos = io->pos + trans2;
@@ -1830,10 +1830,12 @@ float GetIORadius(Entity * io) {
 	return glm::clamp(io->original_radius * io->scale, 25.f, 60.f);
 }
 
-void GetIOCyl(Entity * io, Cylinder & cyl) {
+Cylinder GetIOCyl(Entity * io) {
+	Cylinder cyl;
 	cyl.height = GetIOHeight(io);
 	cyl.radius = GetIORadius(io);
 	cyl.origin = io->pos;
+	return cyl;
 }
 
 /*!
@@ -2306,7 +2308,7 @@ static void ManageNPCMovement(Entity * io)
 	io->physics.targetpos.z = io->pos.z + io->move.z + ForcedMove.z;
 	// IO_PHYSICS phys;	// XS : Moved to func beginning
 	phys = io->physics;
-	GetIOCyl(io, phys.cyl);
+	phys.cyl = GetIOCyl(io);
 
 	CollisionFlags levitate = 0;
 
@@ -2326,7 +2328,7 @@ static void ManageNPCMovement(Entity * io)
 	}
 
 	phys = io->physics;
-	GetIOCyl(io, phys.cyl);
+	phys.cyl = GetIOCyl(io);
 	
 	io->forcedmove -= ForcedMove;
 		
@@ -2663,7 +2665,7 @@ Entity * ARX_NPC_GetFirstNPCInSight(Entity * ioo)
 				orgn.y = player.pos.y + 90.f;
 		}
 		else
-			GetVertexPos(ioo, ioo->obj->fastaccess.head_group_origin, &orgn);
+			orgn = GetVertexPos(ioo, ioo->obj->fastaccess.head_group_origin);
 
 		grp = io->obj->fastaccess.head_group_origin;
 
@@ -2674,7 +2676,7 @@ Entity * ARX_NPC_GetFirstNPCInSight(Entity * ioo)
 				dest.y = player.pos.y + 90.f;
 		}
 		else
-			GetVertexPos(io, io->obj->fastaccess.head_group_origin, &dest);
+			dest = GetVertexPos(io, io->obj->fastaccess.head_group_origin);
 
 
 		float aa = getAngle(orgn.x, orgn.z, dest.x, dest.z);

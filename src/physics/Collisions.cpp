@@ -369,8 +369,7 @@ void PushIO_ON_Top(Entity * ioo, float ydec) {
 								if(ydec <= 0) {
 									io->pos.y += ydec;
 								} else {
-									Cylinder cyl;
-									GetIOCyl(io, cyl);
+									Cylinder cyl = GetIOCyl(io);
 									cyl.origin.y += ydec;
 									if(CheckAnythingInCylinder(cyl, io ,0) >= 0) {
 										io->pos.y += ydec;
@@ -398,8 +397,7 @@ bool IsAnyNPCInPlatform(Entity * pfrm) {
 		   && !(io->ioflags & IO_NO_COLLISIONS)
 		   && io->show == SHOW_FLAG_IN_SCENE
 		) {
-			Cylinder cyl;
-			GetIOCyl(io, cyl);
+			Cylinder cyl = GetIOCyl(io);
 
 			if(CylinderPlatformCollide(cyl, pfrm) != 0.f)
 				return true;
@@ -582,7 +580,7 @@ float CheckAnythingInCylinder(const Cylinder & cyl, Entity * ioo, long flags) {
 	
 			{
 				Cylinder & io_cyl = io->physics.cyl;
-				GetIOCyl(io, io_cyl);
+				io_cyl = GetIOCyl(io);
 				float dealt = 0;
 
 				if (	(io->gameFlags & GFLAG_PLATFORM)
