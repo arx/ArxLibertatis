@@ -235,10 +235,10 @@ EERIEPOLY * CheckInPoly(const Vec3f & poss, float * needY)
 
 	for(short z = pzi; z <= pza; z++)
 	for(short x = pxi; x <= pxa; x++) {
-			EERIE_BKG_INFO * feg = &ACTIVEBKG->fastdata[x][z];
+			const EERIE_BKG_INFO & feg = ACTIVEBKG->fastdata[x][z];
 
-			for(short k = 0; k < feg->nbpolyin; k++) {
-				EERIEPOLY * ep = feg->polyin[k];
+			for(short k = 0; k < feg.nbpolyin; k++) {
+				EERIEPOLY * ep = feg.polyin[k];
 
 				if(poss.x >= ep->min.x
 				&& poss.x <= ep->max.x
