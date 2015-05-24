@@ -185,10 +185,10 @@ void EERIE_LIGHT_GlobalAdd(const EERIE_LIGHT * el)
 	}
 }
 
-void EERIE_LIGHT_MoveAll(const Vec3f * trans) {
+void EERIE_LIGHT_MoveAll(const Vec3f & trans) {
 	for(size_t i = 0; i < MAX_LIGHTS; i++) {
 		if(GLight[i]) {
-			GLight[i]->pos += *trans;
+			GLight[i]->pos += trans;
 		}
 	}
 }

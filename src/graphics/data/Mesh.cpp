@@ -2528,7 +2528,7 @@ void SceneAddMultiScnToBackground(EERIE_MULTI3DSCENE * ms) {
 			}
 		}
 		
-		EERIE_LIGHT_MoveAll(&ms->pos);
+		EERIE_LIGHT_MoveAll(ms->pos);
 		ARX_PrepareBackgroundNRMLs();
 		EERIEPOLY_Compute_PolyIn();
 		EERIE_PORTAL_Blend_Portals_And_Rooms();
