@@ -1163,14 +1163,14 @@ void ARX_INTERACTIVE_TeleportBehindTarget(Entity * io)
 			scr_timer[num].times = 1;
 			entities[t]->show = SHOW_FLAG_TELEPORTING;
 			AddRandomSmoke(io, 10);
-			ARX_PARTICLES_Add_Smoke(&io->pos, 3, 20);
+			ARX_PARTICLES_Add_Smoke(io->pos, 3, 20);
 			Vec3f pos;
 			pos.x = entities[t]->pos.x;
 			pos.y = entities[t]->pos.y + entities[t]->physics.cyl.height * ( 1.0f / 2 );
 			pos.z = entities[t]->pos.z;
 			io->requestRoomUpdate = true;
 			io->room = -1;
-			ARX_PARTICLES_Add_Smoke(&pos, 3, 20);
+			ARX_PARTICLES_Add_Smoke(pos, 3, 20);
 			MakeCoolFx(io->pos);
 			io->gameFlags |= GFLAG_INVISIBILITY;
 		}

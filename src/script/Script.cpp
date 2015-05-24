@@ -1796,7 +1796,7 @@ static bool Manage_Specific_RAT_Timer(SCR_TIMER * st) {
 		Vec3f pos = io->pos;
 		pos.y += io->physics.cyl.height * ( 1.0f / 2 );
 		
-		ARX_PARTICLES_Add_Smoke(&pos, 3, 20);
+		ARX_PARTICLES_Add_Smoke(pos, 3, 20);
 		AddRandomSmoke(io, 20);
 		MakeCoolFx(io->pos);
 		io->show = SHOW_FLAG_IN_SCENE;

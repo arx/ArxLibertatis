@@ -545,7 +545,7 @@ void MakePlayerAppearsFX(Entity * io) {
 	MakeCoolFx(io->pos);
 	MakeCoolFx(io->pos);
 	AddRandomSmoke(io, 30);
-	ARX_PARTICLES_Add_Smoke(&io->pos, 1 | 2, 20); // flag 1 = randomize pos
+	ARX_PARTICLES_Add_Smoke(io->pos, 1 | 2, 20); // flag 1 = randomize pos
 }
 
 void AddRandomSmoke(Entity * io, long amount) {
@@ -578,7 +578,7 @@ void AddRandomSmoke(Entity * io, long amount) {
 }
 
 // flag 1 = randomize pos
-void ARX_PARTICLES_Add_Smoke(Vec3f * pos, long flags, long amount, Color3f * rgb) {
+void ARX_PARTICLES_Add_Smoke(const Vec3f & pos, long flags, long amount, Color3f * rgb) {
 	
 	Vec3f mod = (flags & 1) ? randomVec(-50.f, 50.f) : Vec3f_ZERO;
 	
@@ -589,7 +589,7 @@ void ARX_PARTICLES_Add_Smoke(Vec3f * pos, long flags, long amount, Color3f * rgb
 			return;
 		}
 		
-		pd->ov = *pos + mod;
+		pd->ov = pos + mod;
 		if(flags & 2) {
 			pd->siz = rnd() * 20.f + 15.f;
 			pd->scale = randomVec(40.f, 55.f);

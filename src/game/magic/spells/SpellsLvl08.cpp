@@ -351,7 +351,7 @@ void ExplosionSpell::Update(float timeDelta)
 			pos.x=light->pos.x-std::sin(rr)*160;
 			pos.y=light->pos.y-std::sin(r2)*160;
 			pos.z=light->pos.z+std::cos(rr)*160;
-			ARX_PARTICLES_Add_Smoke(&pos, 2, 20); // flag 1 = randomize pos
+			ARX_PARTICLES_Add_Smoke(pos, 2, 20); // flag 1 = randomize pos
 		}
 	}	
 }
