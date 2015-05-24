@@ -680,7 +680,7 @@ static bool CanPayMana(SpellBase * spell, float cost, bool _bSound = true) {
 	return false;
 }
 
-static EntityHandle TemporaryGetSpellTarget(const Vec3f * from) {
+static EntityHandle TemporaryGetSpellTarget(const Vec3f & from) {
 	
 	float mindist = std::numeric_limits<float>::max();
 	EntityHandle found = EntityHandle(0);
@@ -689,7 +689,7 @@ static EntityHandle TemporaryGetSpellTarget(const Vec3f * from) {
 		Entity * e = entities[handle];
 		
 		if(e && e->ioflags & IO_NPC) {
-			float dist = glm::distance2(*from, e->pos);
+			float dist = glm::distance2(from, e->pos);
 			if(dist < mindist) {
 				found = EntityHandle(i);
 				mindist = dist;
@@ -1049,7 +1049,7 @@ bool ARX_SPELLS_Launch(SpellType typ, EntityHandle source, SpellcastFlags flags,
 	spell.m_target = target;
 	
 	if(target == EntityHandle::Invalid)
-		spell.m_target = TemporaryGetSpellTarget(&entities[spell.m_caster]->pos);
+		spell.m_target = TemporaryGetSpellTarget(entities[spell.m_caster]->pos);
 	
 	spell.updateCasterHand();
 	spell.updateCasterPosition();
