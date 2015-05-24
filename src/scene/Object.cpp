@@ -1254,9 +1254,9 @@ static EERIE_3DOBJ * TheoToEerie(const char * adr, long size, const res::path & 
 
 	for(size_t i = 0; i < eerie->facelist.size(); i++) {
 		CalcObjFaceNormal(
-		    &eerie->vertexlist[eerie->facelist[i].vid[0]].v,
-		    &eerie->vertexlist[eerie->facelist[i].vid[1]].v,
-		    &eerie->vertexlist[eerie->facelist[i].vid[2]].v,
+		    eerie->vertexlist[eerie->facelist[i].vid[0]].v,
+		    eerie->vertexlist[eerie->facelist[i].vid[1]].v,
+		    eerie->vertexlist[eerie->facelist[i].vid[2]].v,
 		    &eerie->facelist[i]
 		);
 		float area = eerie->facelist[i].temp;

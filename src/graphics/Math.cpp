@@ -695,11 +695,11 @@ void CalcFaceNormal(EERIEPOLY * ep, const TexturedVertex * v) {
 	ep->norm = glm::normalize(ep->norm);
 }
 
-void CalcObjFaceNormal(const Vec3f * v0, const Vec3f * v1, const Vec3f * v2,
+void CalcObjFaceNormal(const Vec3f & v0, const Vec3f & v1, const Vec3f & v2,
                        EERIE_FACE * ef) {
 	
-	Vec3f A = *v1 - *v0;
-	Vec3f B = *v2 - *v0;
+	Vec3f A = v1 - v0;
+	Vec3f B = v2 - v0;
 	
 	ef->norm = Vec3f(A.y * B.z - A.z * B.y, A.z * B.x - A.x * B.z, A.x * B.y - A.y * B.x);
 	ef->norm = glm::normalize(ef->norm);
