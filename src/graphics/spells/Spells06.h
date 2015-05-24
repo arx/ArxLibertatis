@@ -171,7 +171,7 @@ private:
 	int nbstone;
 	T_STONE tstone[256];
 	
-	void AddStone(Vec3f * pos);
+	void AddStone(const Vec3f & pos);
 	void DrawStone();
 };
 

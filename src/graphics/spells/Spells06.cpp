@@ -563,7 +563,7 @@ unsigned long CRiseDead::GetDuration()
 	return (ulDurationIntro + ulDurationRender + ulDurationOuttro);
 }
 
-void CRiseDead::AddStone(Vec3f * pos) {
+void CRiseDead::AddStone(const Vec3f & pos) {
 	
 	if(arxtime.is_paused() || nbstone > 255) {
 		return;
@@ -577,7 +577,7 @@ void CRiseDead::AddStone(Vec3f * pos) {
 			nbstone++;
 			s.actif = 1;
 			s.numstone = Random::get(0, 1);
-			s.pos = *pos;
+			s.pos = pos;
 			s.yvel = rnd() * -5.f;
 			s.ang = Anglef(rnd(), rnd(), rnd()) * Anglef(360.f, 360.f, 360.f);
 			s.angvel = Anglef(rnd(), rnd(), rnd()) * Anglef(5.f, 6.f, 3.f);
@@ -940,7 +940,7 @@ void CRiseDead::Render()
 		pos.x = this->eSrc.x + r;
 		pos.y = this->eSrc.y;
 		pos.z = this->eSrc.z + r;
-		this->AddStone(&pos);
+		this->AddStone(pos);
 	}
 	
 	RenderFissure();
