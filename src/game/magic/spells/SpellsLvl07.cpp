@@ -505,25 +505,23 @@ void LightningStrikeSpell::End()
 	ARX_SOUND_PlaySFX(SND_SPELL_LIGHTNING_END, &entities[m_caster]->pos);
 }
 
-static void GetChestPos(EntityHandle num, Vec3f * p) {
+static Vec3f GetChestPos(EntityHandle num) {
 	
 	if(num == 0) {
-		p->x = player.pos.x;
-		p->y = player.pos.y + 70.f;
-		p->z = player.pos.z;
-		return;
+		return player.pos + Vec3f(0.f, 70.f, 0.f);
 	}
 
 	if(ValidIONum(num)) {
 		long idx = GetGroupOriginByName(entities[num]->obj, "chest");
 
 		if(idx >= 0) {
-			*p = entities[num]->obj->vertexlist3[idx].v;
+			return entities[num]->obj->vertexlist3[idx].v;
 		} else {
-			p->x = entities[num]->pos.x;
-			p->y = entities[num]->pos.y - 120.f;
-			p->z = entities[num]->pos.z;
+			return entities[num]->pos + Vec3f(0.f, -120.f, 0.f);
 		}
+	} else {
+		// should not happen
+		return Vec3f_ZERO;
 	}
 }
 
@@ -553,15 +551,13 @@ void LightningStrikeSpell::Update(float timeDelta)
 			if(ValidIONum(caster->targetinfo)
 			   && caster->targetinfo != m_caster) {
 				Vec3f * p1 = &m_caster_pos;
-				Vec3f p2;
-				GetChestPos(caster->targetinfo, &p2); 
+				Vec3f p2 = GetChestPos(caster->targetinfo);
 				falpha = MAKEANGLE(glm::degrees(getAngle(p1->y, p1->z, p2.y, p2.z + glm::distance(Vec2f(p2.x, p2.z), Vec2f(p1->x, p1->z))))); //alpha entre orgn et dest;
 			}
 			else if (ValidIONum(m_target))
 			{
 				Vec3f * p1 = &m_caster_pos;
-				Vec3f p2;
-				GetChestPos(m_target, &p2); //
+				Vec3f p2 = GetChestPos(m_target);
 				falpha = MAKEANGLE(glm::degrees(getAngle(p1->y, p1->z, p2.y, p2.z + glm::distance(Vec2f(p2.x, p2.z), Vec2f(p1->x, p1->z))))); //alpha entre orgn et dest;
 			}
 		}
