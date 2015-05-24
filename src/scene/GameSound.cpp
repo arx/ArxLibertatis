@@ -734,7 +734,7 @@ long ARX_SOUND_PlayScript(const res::path & name, const Entity * io, float pitch
 	channel.falloff.end = ARX_SOUND_DEFAULT_FALLEND;
 	
 	if(io) {
-		GetItemWorldPositionSound(io, &channel.position);
+		channel.position = GetItemWorldPositionSound(io);
 		if(loop != ARX_SOUND_PLAY_LOOPED) {
 			if (ACTIVECAM && fartherThan(ACTIVECAM->orgTrans.pos, channel.position, ARX_SOUND_REFUSE_DISTANCE)) {
 				// TODO the sample will never be freed!

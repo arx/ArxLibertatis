@@ -1588,23 +1588,19 @@ Vec3f GetItemWorldPosition(Entity * io) {
 /*!
  * \brief Gets real world position for an IO to spawn a sound
  */
-bool GetItemWorldPositionSound(const Entity * io, Vec3f * pos) {
+Vec3f GetItemWorldPositionSound(const Entity * io) {
 	
-	if(!io) {
-		return false;
-	}
+	arx_assert(io);
 	
 	if(DRAGINTER == io) {
-		*pos = ARX_PLAYER_FrontPos();
-		return true;
+		return ARX_PLAYER_FrontPos();
 	}
 	
 	if(io->show != SHOW_FLAG_IN_SCENE) {
 		
 		if(IsEquipedByPlayer(io)) {
 			// in player inventory
-			*pos = ARX_PLAYER_FrontPos();
-			return true;
+			return ARX_PLAYER_FrontPos();
 		}
 		
 		arx_assert(player.bag >= 0);
@@ -1617,8 +1613,7 @@ bool GetItemWorldPositionSound(const Entity * io, Vec3f * pos) {
 			
 			if(slot.io == io) {
 				// in player inventory
-				*pos = ARX_PLAYER_FrontPos();
-				return true;
+				return ARX_PLAYER_FrontPos();
 			}
 		}
 		
@@ -1633,16 +1628,14 @@ bool GetItemWorldPositionSound(const Entity * io, Vec3f * pos) {
 			for(long j = 0; j < id->m_size.y; j++) {
 			for(long k = 0; k < id->m_size.x; k++) {
 				if(id->slot[k][j].io == io) {
-					*pos = ioo->pos;
-					return true;
+					return ioo->pos;
 				}
 			}
 			}
 		}
 	}
 	
-	*pos = io->pos;
-	return true;
+	return io->pos;
 }
 
 /*!

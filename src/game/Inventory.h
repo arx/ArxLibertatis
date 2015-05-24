@@ -250,7 +250,7 @@ bool putInInventory(Entity * item, const InventoryPos & pos);
 void PutInFrontOfPlayer(Entity * io);
 
 Vec3f GetItemWorldPosition(Entity * io);
-bool GetItemWorldPositionSound(const Entity * io, Vec3f * pos);
+Vec3f GetItemWorldPositionSound(const Entity * io);
 
 Entity * GetInventoryObj_INVENTORYUSE(const Vec2s & pos);
 void CheckForInventoryReplaceMe(Entity * io, Entity * old);
