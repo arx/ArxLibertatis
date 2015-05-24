@@ -943,7 +943,7 @@ void ARX_PARTICLES_SpawnWaterSplash(const Vec3f & _ePos) {
 	}
 }
 
-void SpawnFireballTail(Vec3f * poss, Vec3f * vecto, float level, long flags) {
+void SpawnFireballTail(const Vec3f & poss, const Vec3f & vecto, float level, long flags) {
 	
 	if(!explo[0]) {
 		return;
@@ -978,9 +978,9 @@ void SpawnFireballTail(Vec3f * poss, Vec3f * vecto, float level, long flags) {
 		
 		if(nn == 1) {
 			pd->delay = Random::get(150, 250);
-			pd->ov = *poss + *vecto * Vec3f(pd->delay);
+			pd->ov = poss + vecto * Vec3f(pd->delay);
 		} else {
-			pd->ov = *poss;
+			pd->ov = poss;
 		}
 	}
 }

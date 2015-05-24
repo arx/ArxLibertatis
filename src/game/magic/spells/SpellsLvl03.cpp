@@ -273,7 +273,7 @@ void FireballSpell::Update(float timeDelta)
 	sphere.radius=std::max(m_level*2.f,12.f);
 	
 		if(effect->ulCurrentTime > effect->m_createBallDuration) {
-			SpawnFireballTail(&effect->eCurPos,&effect->eMove,(float)m_level,0);
+			SpawnFireballTail(effect->eCurPos, effect->eMove, (float)m_level, 0);
 		} else {
 			if(rnd()<0.9f) {
 				Vec3f move = Vec3f_ZERO;
@@ -281,7 +281,7 @@ void FireballSpell::Update(float timeDelta)
 				
 				dd = glm::clamp(dd, 1.f, m_level);
 				
-				SpawnFireballTail(&effect->eCurPos,&move,(float)dd,1);
+				SpawnFireballTail(effect->eCurPos, move, (float)dd, 1);
 			}
 		}
 	
