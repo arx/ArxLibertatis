@@ -61,7 +61,7 @@ static bool Quadable(EERIEPOLY * ep, EERIEPOLY * ep2, float tolerance) {
 	if((ep->type & POLY_TRANS) && ep->transval != ep2->transval)
 		return false;
 
-	CalcFaceNormal(ep,ep->v);
+	ep->norm = CalcFaceNormal(ep->v);
 
 	if(glm::abs(glm::dot(ep->norm, ep2->norm)) < 1.f - tolerance)
 		return false;

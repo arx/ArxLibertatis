@@ -1182,9 +1182,10 @@ static void EERIE_PORTAL_Blend_Portals_And_Rooms() {
 
 	for(size_t num = 0; num < portals->portals.size(); num++) {
 		EERIE_PORTALS & portal = portals->portals[num];
-		
-		CalcFaceNormal(&portal.poly, portal.poly.v);
 		EERIEPOLY * ep = &portal.poly;
+		
+		portal.poly.norm = CalcFaceNormal(portal.poly.v);
+		
 		ep->center = ep->v[0].p;
 
 		long to = (ep->type & POLY_QUAD) ? 4 : 3;
@@ -2047,7 +2048,8 @@ static int BkgAddPoly(EERIEPOLY * ep, EERIE_3DOBJ * eobj) {
 	epp->type = ep->type;
 	epp->type &= ~POLY_QUAD;
 	
-	CalcFaceNormal(epp, epp->v);
+	epp->norm = CalcFaceNormal(epp->v);
+	
 	epp->area = fdist((epp->v[0].p + epp->v[1].p) * .5f, epp->v[2].p)
 	            * fdist(epp->v[0].p, epp->v[1].p) * .5f;
 	

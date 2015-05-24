@@ -686,13 +686,12 @@ Vec3f angleToVector(const Anglef & angle) {
 }
 
 //A x B = <Ay*Bz - Az*By, Az*Bx - Ax*Bz, Ax*By - Ay*Bx>
-void CalcFaceNormal(EERIEPOLY * ep, const TexturedVertex * v) {
+Vec3f CalcFaceNormal(const TexturedVertex * v) {
 	
 	Vec3f A = v[1].p - v[0].p;
 	Vec3f B = v[2].p - v[0].p;
 	
-	ep->norm = Vec3f(A.y * B.z - A.z * B.y, A.z * B.x - A.x * B.z, A.x * B.y - A.y * B.x);
-	ep->norm = glm::normalize(ep->norm);
+	return glm::normalize(Vec3f(A.y * B.z - A.z * B.y, A.z * B.x - A.x * B.z, A.x * B.y - A.y * B.x));
 }
 
 void CalcObjFaceNormal(const Vec3f & v0, const Vec3f & v1, const Vec3f & v2,
