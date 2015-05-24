@@ -142,13 +142,13 @@ void MagicMissileSpell::Launch()
 		Entity * io = entities[m_caster];
 		
 		if(ValidIONum(io->targetinfo)) {
-			Vec3f * p1 = &m_caster_pos;
-			Vec3f * p2 = &entities[io->targetinfo]->pos;
-			afAlpha = -(glm::degrees(getAngle(p1->y, p1->z, p2->y, p2->z + glm::distance(Vec2f(p2->x, p2->z), Vec2f(p1->x, p1->z))))); //alpha entre orgn et dest;
+			const Vec3f & p1 = m_caster_pos;
+			const Vec3f & p2 = entities[io->targetinfo]->pos;
+			afAlpha = -(glm::degrees(getAngle(p1.y, p1.z, p2.y, p2.z + glm::distance(Vec2f(p2.x, p2.z), Vec2f(p1.x, p1.z))))); //alpha entre orgn et dest;
 		} else if (ValidIONum(m_target)) {
-			Vec3f * p1 = &m_caster_pos;
-			Vec3f * p2 = &entities[m_target]->pos;
-			afAlpha = -(glm::degrees(getAngle(p1->y, p1->z, p2->y, p2->z + glm::distance(Vec2f(p2->x, p2->z), Vec2f(p1->x, p1->z))))); //alpha entre orgn et dest;
+			const Vec3f & p1 = m_caster_pos;
+			const Vec3f & p2 = entities[m_target]->pos;
+			afAlpha = -(glm::degrees(getAngle(p1.y, p1.z, p2.y, p2.z + glm::distance(Vec2f(p2.x, p2.z), Vec2f(p1.x, p1.z))))); //alpha entre orgn et dest;
 		}
 	}
 	
