@@ -362,7 +362,7 @@ void EnchantWeaponSpell::End() {
 }
 
 void EnchantWeaponSpell::Update(float timeDelta) {
-
+	ARX_UNUSED(timeDelta);
 }
 
 
