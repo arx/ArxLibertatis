@@ -22,6 +22,8 @@
 
 #include "game/magic/Spell.h"
 
+#include "graphics/particle/ParticleSystem.h"
+
 class FlyingEyeSpell : public SpellBase {
 public:
 	FlyingEyeSpell();
@@ -48,8 +50,12 @@ public:
 	Vec3f getPosition();
 	
 private:
+	Vec3f m_pos;
 	LightHandle m_light;
 	DamageHandle m_damage;
+	
+	ParticleSystem pPSStream;
+	ParticleSystem pPSStream1;
 };
 
 class IceFieldSpell : public SpellBase {

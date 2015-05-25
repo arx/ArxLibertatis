@@ -26,6 +26,7 @@
 #include "game/EntityManager.h"
 #include "game/Player.h"
 #include "game/Spells.h"
+#include "game/magic/spells/SpellsLvl07.h"
 #include "gui/Speech.h"
 #include "graphics/spells/Spells04.h"
 #include "graphics/spells/Spells06.h"
@@ -108,7 +109,7 @@ void DispellFieldSpell::Launch()
 	for(size_t n = 0; n < MAX_SPELLS; n++) {
 		SpellBase * spell = spells[SpellHandle(n)];
 		
-		if(!spell || !spell->m_pSpellFx) {
+		if(!spell) {
 			continue;
 		}
 		
@@ -118,6 +119,7 @@ void DispellFieldSpell::Launch()
 		switch(spell->m_type) {
 			
 			case SPELL_CREATE_FIELD: {
+				if(spell->m_pSpellFx)
 				if(m_caster != PlayerEntityHandle || spell->m_caster == PlayerEntityHandle) {
 					pos = static_cast<CCreateField *>(spell->m_pSpellFx)->eSrc;
 					cancel = true;
@@ -126,14 +128,16 @@ void DispellFieldSpell::Launch()
 			}
 			
 			case SPELL_FIRE_FIELD: {
-				pos = static_cast<CFireField *>(spell->m_pSpellFx)->pos;
+				pos = static_cast<FireFieldSpell *>(spell)->getPosition();
 				cancel = true;
 				break;
 			}
 			
 			case SPELL_ICE_FIELD: {
+				if(spell->m_pSpellFx) {
 				pos = static_cast<CIceField *>(spell->m_pSpellFx)->eSrc;
 				cancel = true;
+				}
 				break;
 			}
 			

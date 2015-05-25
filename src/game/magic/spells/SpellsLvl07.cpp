@@ -227,8 +227,10 @@ FireFieldSpell::FireFieldSpell()
 {
 }
 
-void FireFieldSpell::Launch()
-{
+void FireFieldSpell::Launch() {
+	
+	m_pSpellFx = NULL;
+	
 	spells.endByCaster(m_caster, SPELL_FIRE_FIELD);
 	
 	ARX_SOUND_PlaySFX(SND_SPELL_FIRE_FIELD_START);
@@ -237,8 +239,6 @@ void FireFieldSpell::Launch()
 	m_hasDuration = true;
 	m_fManaCostPerSecond = 2.8f;
 	m_light = LightHandle::Invalid;
-	
-	CFireField * effect = new CFireField();
 	
 	Vec3f target;
 	float beta = 0.f;
@@ -261,6 +261,8 @@ void FireFieldSpell::Launch()
 		target += angleToVectorXZ(beta) * 250.f;
 	}
 	
+	m_pos = target + Vec3f(0, -10, 0);
+	
 	DamageParameters damage;
 	damage.radius = 150.f;
 	damage.damages = 10.f;
@@ -272,13 +274,85 @@ void FireFieldSpell::Launch()
 	damage.pos = target;
 	m_damage = DamageCreate(damage);
 	
-	effect->Create(200.f, target + Vec3f(0, -10, 0), m_duration);
-	m_pSpellFx = effect;
-	m_duration = effect->GetDuration();
-	
 	m_snd_loop = ARX_SOUND_PlaySFX(SND_SPELL_FIRE_FIELD_LOOP,
 	                                       &target, 1.f,
 	                                       ARX_SOUND_PLAY_LOOPED);
+	
+	{
+	ParticleParams cp = ParticleParams();
+	cp.m_nbMax = 100;
+	cp.m_life = 2000;
+	cp.m_lifeRandom = 1000;
+	cp.m_pos = Vec3f(80, 10, 80);
+	cp.m_direction = Vec3f(0, 2, 0) * 0.1f;
+	cp.m_angle = 0;
+	cp.m_speed = 0;
+	cp.m_speedRandom = 0;
+	cp.m_gravity = Vec3f_ZERO;
+	cp.m_flash = 0;
+	cp.m_rotation = 0;
+	cp.m_rotationRandomDirection = false;
+	cp.m_rotationRandomStart = false;
+
+	cp.m_startSegment.m_size = 10;
+	cp.m_startSegment.m_sizeRandom = 3;
+	cp.m_startSegment.m_color = Color(25, 25, 25, 50).to<float>();
+	cp.m_startSegment.m_colorRandom = Color(51, 51, 51, 101).to<float>();
+
+	cp.m_endSegment.m_size = 10;
+	cp.m_endSegment.m_sizeRandom = 3;
+	cp.m_endSegment.m_color = Color(25, 25, 25, 50).to<float>();
+	cp.m_endSegment.m_colorRandom = Color(0, 0, 0, 100).to<float>();
+	cp.m_texture.m_texLoop = true;
+
+	cp.m_blendMode = RenderMaterial::AlphaAdditive;
+	cp.m_freq = 150.0f;
+	cp.m_texture.set("graph/particles/firebase", 4, 100);
+	cp.m_spawnFlags = 0;
+	
+	pPSStream.SetParams(cp);
+	}
+	pPSStream.SetPos(m_pos);
+	pPSStream.Update(0);
+
+	//-------------------------------------------------------------------------
+
+	{
+	ParticleParams cp = ParticleParams();
+	cp.m_nbMax = 50;
+	cp.m_life = 1000;
+	cp.m_lifeRandom = 500;
+	cp.m_pos = Vec3f(100, 10, 100);
+	cp.m_direction = Vec3f(0, -2, 0) * 0.1f;
+	cp.m_angle = glm::radians(10.f);
+	cp.m_speed = 0;
+	cp.m_speedRandom = 0;
+	cp.m_gravity = Vec3f_ZERO;
+	cp.m_flash = 0;
+	cp.m_rotation = 0;
+	cp.m_rotationRandomDirection = false;
+	cp.m_rotationRandomStart = false;
+
+	cp.m_startSegment.m_size = 10;
+	cp.m_startSegment.m_sizeRandom = 10;
+	cp.m_startSegment.m_color = Color(40, 40, 40, 50).to<float>();
+	cp.m_startSegment.m_colorRandom = Color(51, 51, 51, 100).to<float>();
+
+	cp.m_endSegment.m_size = 10;
+	cp.m_endSegment.m_sizeRandom = 10;
+	cp.m_endSegment.m_color = Color(0, 0, 0, 50).to<float>();
+	cp.m_endSegment.m_colorRandom = Color(0, 0, 0, 100).to<float>();
+	cp.m_texture.m_texLoop = false;
+
+	cp.m_blendMode = RenderMaterial::Additive;
+	cp.m_freq = 150.0f;
+	cp.m_texture.set("graph/particles/fire", 0, 500);
+	cp.m_spawnFlags = 0;
+	
+	pPSStream1.SetParams(cp);
+	}
+	pPSStream1.SetPos(m_pos + Vec3f(0, 10, 0));
+	pPSStream1.Update(0);
 }
 
 void FireFieldSpell::End()
@@ -289,23 +363,21 @@ void FireFieldSpell::End()
 	ARX_SOUND_PlaySFX(SND_SPELL_FIRE_FIELD_END);
 }
 
-void FireFieldSpell::Update(float timeDelta)
-{
-	CSpellFx *pCSpellFX = m_pSpellFx;
+void FireFieldSpell::Update(float timeDelta) {
 	
-	if(pCSpellFX) {
-		CFireField *pf = (CFireField *) pCSpellFX;
-		pCSpellFX->Update(timeDelta);
-		
+	pPSStream.Update(timeDelta);
+	pPSStream1.Update(timeDelta);
+	
+	
 		if(!lightHandleIsValid(m_light))
 			m_light = GetFreeDynLight();
 
 		if(lightHandleIsValid(m_light)) {
 			EERIE_LIGHT * el = lightHandleGet(m_light);
 			
-			el->pos.x = pf->pos.x;
-			el->pos.y = pf->pos.y-120.f;
-			el->pos.z = pf->pos.z;
+			el->pos.x = m_pos.x;
+			el->pos.y = m_pos.y-120.f;
+			el->pos.z = m_pos.z;
 			el->intensity = 4.6f;
 			el->fallstart = 150.f+rnd()*30.f;
 			el->fallend   = 290.f+rnd()*30.f;
@@ -316,9 +388,11 @@ void FireFieldSpell::Update(float timeDelta)
 			el->extras=0;
 		}
 		
-		if(VisibleSphere(pf->pos - Vec3f(0.f, 120.f, 0.f), 350.f)) {
+		if(VisibleSphere(m_pos - Vec3f(0.f, 120.f, 0.f), 350.f)) {
 			
-			pCSpellFX->Render();
+			pPSStream.Render();
+			pPSStream1.Render();
+			
 			float fDiff = timeDelta / 8.f;
 			int nTime = checked_range_cast<int>(fDiff);
 			
@@ -332,7 +406,7 @@ void FireFieldSpell::Update(float timeDelta)
 				float t = rnd() * (PI * 2.f) - PI;
 				float ts = std::sin(t);
 				float tc = std::cos(t);
-				pd->ov = pf->pos + Vec3f(120.f * ts, 15.f * ts, 120.f * tc) * randomVec();
+				pd->ov = m_pos + Vec3f(120.f * ts, 15.f * ts, 120.f * tc) * randomVec();
 				pd->move = Vec3f(2.f - 4.f * rnd(), 1.f - 8.f * rnd(), 2.f - 4.f * rnd());
 				pd->siz = 7.f;
 				pd->tolive = Random::get(500, 1500);
@@ -351,20 +425,14 @@ void FireFieldSpell::Update(float timeDelta)
 			}
 			
 		}
-	}
 }
 
 Vec3f FireFieldSpell::getPosition() {
-	CSpellFx *pCSpellFX = m_pSpellFx;
-
-	if(pCSpellFX) {
-		CFireField *pFireField = (CFireField *) pCSpellFX;
-			
-		return pFireField->pos;
-	} else {
-		return Vec3f_ZERO;
-	}
+	
+	return m_pos;
 }
+
+
 
 IceFieldSpell::IceFieldSpell()
 	: m_light(LightHandle::Invalid)

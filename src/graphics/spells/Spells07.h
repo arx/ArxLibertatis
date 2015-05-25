@@ -130,23 +130,6 @@ private:
 	Vec3f eCurPos;
 };
 
-class CFireField : public CSpellFx {
-	
-public:
-	CFireField();
-	~CFireField();
-
-	void Create(float largeur, const Vec3f & pos, int duration);
-	void Update(float timeDelta);
-	void Render();
-	
-	Vec3f pos;
-	
-private:
-	ParticleSystem pPSStream;
-	ParticleSystem pPSStream1;
-};
-
 // Done By : did
 class CIceField : public CSpellFx {
 	
