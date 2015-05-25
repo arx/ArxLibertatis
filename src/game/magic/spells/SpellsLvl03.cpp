@@ -191,13 +191,7 @@ void FireballSpell::End()
 {
 	ARX_SOUND_Stop(m_snd_loop);
 	
-	if(lightHandleIsValid(m_light)) {
-		EERIE_LIGHT * light = lightHandleGet(m_light);
-		
-		light->duration = 500;
-		light->time_creation = (unsigned long)(arxtime);
-	}
-	m_light = LightHandle::Invalid;
+	endLightDelayed(m_light, 500);
 }
 
 void FireballSpell::Update(float timeDelta)

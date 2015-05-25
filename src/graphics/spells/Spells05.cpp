@@ -621,15 +621,8 @@ CMultiPoisonProjectile::~CMultiPoisonProjectile()
 	for(size_t i = 0; i < m_projectiles.size(); i++) {
 		CPoisonProjectile * projectile = m_projectiles[i];
 		
-		if(lightHandleIsValid(projectile->lLightId)) {
-			EERIE_LIGHT * light = lightHandleGet(projectile->lLightId);
-			
-			light->duration = 2000;
-			light->time_creation = (unsigned long)(arxtime);
-			
-			projectile->lLightId = LightHandle::Invalid;
-		}
-
+		endLightDelayed(projectile->lLightId, 2000);
+		
 		delete projectile;
 	}
 }

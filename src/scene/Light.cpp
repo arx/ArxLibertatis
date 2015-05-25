@@ -403,6 +403,17 @@ void lightHandleDestroy(LightHandle & handle) {
 	handle = LightHandle::Invalid;
 }
 
+void endLightDelayed(LightHandle & handle, long delay) {
+	
+	if(lightHandleIsValid(handle)) {
+		EERIE_LIGHT * light = lightHandleGet(handle);
+		
+		light->duration = delay;
+		light->time_creation = (unsigned long)(arxtime);
+	}
+}
+
+
 LightHandle GetFreeDynLight() {
 
 	for(size_t i = 1; i < MAX_DYNLIGHTS; i++) {

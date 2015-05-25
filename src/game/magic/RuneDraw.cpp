@@ -164,14 +164,9 @@ void ARX_SPELLS_UpdateSymbolDraw() {
 			long tim = curtime - sd->starttime;
 
 			if(tim > sd->duration) {
-				if(lightHandleIsValid(io->dynlight)) {
-					EERIE_LIGHT * light = lightHandleGet(io->dynlight);
-					
-					light->time_creation = (unsigned long)(arxtime);
-					light->duration = 600;
-					io->dynlight = LightHandle::Invalid;
-				}
-
+				endLightDelayed(io->dynlight, 600);
+				io->dynlight = LightHandle::Invalid;
+				
 				delete io->symboldraw;
 				io->symboldraw = NULL;
 				continue;

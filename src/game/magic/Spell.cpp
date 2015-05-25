@@ -43,11 +43,8 @@ SpellBase::SpellBase()
 void SpellBase::BaseEnd() {
 	
 	// All Levels - Kill Light
-	if(m_pSpellFx && lightHandleIsValid(m_pSpellFx->lLightId)) {
-		EERIE_LIGHT * light = lightHandleGet(m_pSpellFx->lLightId);
-		
-		light->duration = 500; 
-		light->time_creation = (unsigned long)(arxtime);
+	if(m_pSpellFx) {
+		endLightDelayed(m_pSpellFx->lLightId, 500);
 	}
 	
 	delete m_pSpellFx;
