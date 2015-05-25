@@ -384,11 +384,6 @@ void NegateMagicSpell::Launch()
 
 void NegateMagicSpell::End() {
 	
-	// All Levels - Kill Light
-	if(m_pSpellFx) {
-		endLightDelayed(m_pSpellFx->lLightId, 500);
-	}
-	
 	delete m_pSpellFx;
 	m_pSpellFx = NULL;
 }

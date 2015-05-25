@@ -62,6 +62,7 @@ public:
 	
 	Vec3f eSrc;
 	
+	LightHandle lLightId;
 private:
 	
 	Vec3f eTarget;
@@ -162,6 +163,7 @@ public:
 	Vec3f eCurPos;
 	float lightIntensityFactor;
 	
+	LightHandle lLightId;
 private:
 	float	fBetaRadCos;
 	float	fBetaRadSin;
@@ -195,6 +197,7 @@ public:
 	float m_level;
 	unsigned long m_timcreation;
 	
+	LightHandle lLightId;
 private:
 	std::vector<CPoisonProjectile *> m_projectiles;
 	void AddPoisonFog(const Vec3f & pos, float power);
@@ -214,6 +217,7 @@ public:
 	void Update(float timeDelta);
 	void Render();
 	
+	LightHandle lLightId;
 private:
 	Vec3f eSrc;
 	float m_yaw;

@@ -50,8 +50,7 @@ ZeniMax Media Inc., Suite 120, Rockville, Maryland 20850 USA.
 #include "graphics/RenderBatcher.h"
 
 
-CSpellFx::CSpellFx() :
-	lLightId(-1)
+CSpellFx::CSpellFx()
 {
 	SetDuration(1000);
 }

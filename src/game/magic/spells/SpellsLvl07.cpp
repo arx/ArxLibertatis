@@ -503,11 +503,6 @@ void IceFieldSpell::End()
 	ARX_SOUND_Stop(m_snd_loop); 
 	ARX_SOUND_PlaySFX(SND_SPELL_ICE_FIELD_END);
 	
-	// All Levels - Kill Light
-	if(m_pSpellFx) {
-		endLightDelayed(m_pSpellFx->lLightId, 500);
-	}
-	
 	delete m_pSpellFx;
 	m_pSpellFx = NULL;
 }
@@ -584,11 +579,6 @@ void LightningStrikeSpell::End()
 	
 	ARX_SOUND_Stop(m_snd_loop);
 	ARX_SOUND_PlaySFX(SND_SPELL_LIGHTNING_END, &entities[m_caster]->pos);
-	
-	// All Levels - Kill Light
-	if(m_pSpellFx) {
-		endLightDelayed(m_pSpellFx->lLightId, 500);
-	}
 	
 	delete m_pSpellFx;
 	m_pSpellFx = NULL;

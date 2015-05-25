@@ -63,7 +63,6 @@ class CSpellFx
 	public:
 		unsigned long ulDuration;
 		unsigned long ulCurrentTime;
-		LightHandle lLightId;
 
 	public:
 		CSpellFx();

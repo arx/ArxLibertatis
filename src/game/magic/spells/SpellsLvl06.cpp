@@ -490,11 +490,6 @@ void SlowDownSpell::End()
 	ARX_SOUND_PlaySFX(SND_SPELL_SLOW_DOWN_END);
 	m_targets.clear();
 	
-	// All Levels - Kill Light
-	if(m_pSpellFx) {
-		endLightDelayed(m_pSpellFx->lLightId, 500);
-	}
-	
 	delete m_pSpellFx;
 	m_pSpellFx = NULL;
 }

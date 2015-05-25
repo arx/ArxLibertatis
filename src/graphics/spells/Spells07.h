@@ -123,6 +123,7 @@ public:
 	void Update(float timeDelta);
 	void Render();
 	
+	LightHandle lLightId;
 private:
 	TextureContainer * tex_p1;
 	TextureContainer * tex_trail;

@@ -76,11 +76,6 @@ void SpeedSpell::End()
 	
 	ARX_SOUND_PlaySFX(SND_SPELL_SPEED_END, &entities[m_target]->pos);
 	
-	// All Levels - Kill Light
-	if(m_pSpellFx) {
-		endLightDelayed(m_pSpellFx->lLightId, 500);
-	}
-	
 	delete m_pSpellFx;
 	m_pSpellFx = NULL;
 }
@@ -203,11 +198,6 @@ void FireballSpell::End()
 	ARX_SOUND_Stop(m_snd_loop);
 	
 	endLightDelayed(m_light, 500);
-	
-	// All Levels - Kill Light
-	if(m_pSpellFx) {
-		endLightDelayed(m_pSpellFx->lLightId, 500);
-	}
 	
 	delete m_pSpellFx;
 	m_pSpellFx = NULL;
@@ -350,11 +340,6 @@ void CreateFoodSpell::Launch()
 
 void CreateFoodSpell::End() {
 	
-	// All Levels - Kill Light
-	if(m_pSpellFx) {
-		endLightDelayed(m_pSpellFx->lLightId, 500);
-	}
-	
 	delete m_pSpellFx;
 	m_pSpellFx = NULL;
 }
@@ -397,11 +382,6 @@ void IceProjectileSpell::Launch()
 }
 
 void IceProjectileSpell::End() {
-	
-	// All Levels - Kill Light
-	if(m_pSpellFx) {
-		endLightDelayed(m_pSpellFx->lLightId, 500);
-	}
 	
 	delete m_pSpellFx;
 	m_pSpellFx = NULL;

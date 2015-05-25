@@ -58,6 +58,7 @@ public:
 	
 	Vec3f eSrc;
 	
+	LightHandle lLightId;
 private:
 	TextureContainer * tex_jelly;
 	bool youp;
@@ -116,6 +117,7 @@ public:
 	
 	Vec3f eSrc;
 	
+	LightHandle lLightId;
 private:
 	float	fBetaRadCos;
 	float	fBetaRadSin;

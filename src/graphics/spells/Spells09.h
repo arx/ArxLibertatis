@@ -69,6 +69,7 @@ public:
 	void Update(float timeDelta);
 	void Render();
 	
+	LightHandle lLightId;
 private:
 	float	fBetaRadCos;
 	float	fBetaRadSin;
