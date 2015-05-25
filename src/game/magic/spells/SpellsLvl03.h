@@ -24,11 +24,16 @@
 
 class SpeedSpell : public SpellBase {
 public:
+	~SpeedSpell();
+	
 	void Launch();
 	void End();
 	void Update(float timeDelta);
 	
 	Vec3f getPosition();
+	
+private:
+	CSpellFx * m_pSpellFx;
 };
 
 class DispellIllusionSpell : public SpellBase {
@@ -40,6 +45,7 @@ public:
 class FireballSpell : public SpellBase {
 public:
 	FireballSpell();
+	~FireballSpell();
 	
 	void Launch();
 	void End();
@@ -48,19 +54,32 @@ public:
 	Vec3f getPosition();
 	
 private:
+	CSpellFx * m_pSpellFx;
 	LightHandle m_light;
 };
 
 class CreateFoodSpell : public SpellBase {
 public:
+	~CreateFoodSpell();
+	
 	void Launch();
+	void End();
 	void Update(float timeDelta);
+	
+private:
+	CSpellFx * m_pSpellFx;
 };
 
 class IceProjectileSpell : public SpellBase {
 public:
+	~IceProjectileSpell();
+	
 	void Launch();
+	void End();
 	void Update(float timeDelta);
+	
+private:
+	CSpellFx * m_pSpellFx;
 };
 
 #endif // ARX_GAME_MAGIC_SPELLS_SPELLSLVL03_H

@@ -351,20 +351,20 @@ void ExplosionSpell::Update(float timeDelta)
 	}	
 }
 
+
 void EnchantWeaponSpell::Launch()
 {
 	m_duration = 20;
 }
 
-void EnchantWeaponSpell::Update(float timeDelta)
-{
-	CSpellFx *pCSpellFX = m_pSpellFx;
-	
-	if(pCSpellFX) {
-		pCSpellFX->Update(timeDelta);
-		pCSpellFX->Render();
-	}	
+void EnchantWeaponSpell::End() {
+
 }
+
+void EnchantWeaponSpell::Update(float timeDelta) {
+
+}
+
 
 LifeDrainSpell::LifeDrainSpell()
 	: m_light(LightHandle::Invalid)

@@ -168,7 +168,6 @@ void SpellManager::clearAll() {
 		SpellBase * spell = m_spells[i];
 		
 		if(spell) {
-			delete spell->m_pSpellFx;
 			delete spell;
 		}
 		
@@ -1074,7 +1073,6 @@ bool ARX_SPELLS_Launch(SpellType typ, EntityHandle source, SpellcastFlags flags,
 	
 	spell.m_level = spellLevel;
 	spell.m_flags = flags;
-	spell.m_pSpellFx = NULL;
 	spell.m_type = typ;
 	spell.m_timcreation = (unsigned long)(arxtime);
 	spell.m_fManaCostPerSecond = 0.f;
@@ -1143,7 +1141,6 @@ void ARX_SPELLS_Update() {
 			SPELLEND_Notify(*spell);
 			
 			spell->End();
-			spell->BaseEnd();
 			spells.freeSlot(spell);
 			continue;
 		}

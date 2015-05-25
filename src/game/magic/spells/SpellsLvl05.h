@@ -24,36 +24,63 @@
 
 class RuneOfGuardingSpell : public SpellBase {
 public:
+	~RuneOfGuardingSpell();
+	
 	void Launch();
+	void End();
 	void Update(float timeDelta);
 	
 	Vec3f getPosition();
+	
+private:
+	CSpellFx * m_pSpellFx;
 };
 
 class LevitateSpell : public SpellBase {
 public:
+	~LevitateSpell();
+	
 	void Launch();
 	void End();
 	void Update(float timeDelta);
+	
+private:
+	CSpellFx * m_pSpellFx;
 };
 
 class CurePoisonSpell : public SpellBase {
 public:
+	~CurePoisonSpell();
+	
 	void Launch();
+	void End();
 	void Update(float timeDelta);
+	
+private:
+	CSpellFx * m_pSpellFx;
 };
 
 class RepelUndeadSpell : public SpellBase {
 public:
+	~RepelUndeadSpell();
+	
 	void Launch();
 	void End();
 	void Update(float timeDelta);
+	
+private:
+	CSpellFx * m_pSpellFx;
 };
 
 class PoisonProjectileSpell : public SpellBase {
 public:
+	~PoisonProjectileSpell();
+	
 	void Launch();
 	void Update(float timeDelta);
+	
+private:
+	CSpellFx * m_pSpellFx;
 };
 
 #endif // ARX_GAME_MAGIC_SPELLS_SPELLSLVL05_H

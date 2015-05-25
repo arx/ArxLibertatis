@@ -24,12 +24,17 @@
 
 class BlessSpell : public SpellBase {
 public:
+	~BlessSpell();
+	
 	bool CanLaunch();
 	void Launch();
 	void End();
 	void Update(float timeDelta);
 	
 	Vec3f getPosition();
+	
+private:
+	CSpellFx * m_pSpellFx;
 };
 
 class DispellFieldSpell : public SpellBase {
@@ -64,11 +69,16 @@ public:
 
 class CurseSpell : public SpellBase {
 public:
+	~CurseSpell();
+	
 	void Launch();
 	void End();
 	void Update(float timeDelta);
 	
 	Vec3f getPosition();
+	
+private:
+	CSpellFx * m_pSpellFx;
 };
 
 #endif // ARX_GAME_MAGIC_SPELLS_SPELLSLVL04_H

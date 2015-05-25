@@ -229,8 +229,6 @@ FireFieldSpell::FireFieldSpell()
 
 void FireFieldSpell::Launch() {
 	
-	m_pSpellFx = NULL;
-	
 	spells.endByCaster(m_caster, SPELL_FIRE_FIELD);
 	
 	ARX_SOUND_PlaySFX(SND_SPELL_FIRE_FIELD_START);
@@ -440,6 +438,11 @@ IceFieldSpell::IceFieldSpell()
 {
 }
 
+IceFieldSpell::~IceFieldSpell() {
+	
+	delete m_pSpellFx;
+}
+
 void IceFieldSpell::Launch()
 {
 	spells.endByCaster(m_caster, SPELL_ICE_FIELD);
@@ -501,6 +504,14 @@ void IceFieldSpell::End()
 	
 	ARX_SOUND_Stop(m_snd_loop); 
 	ARX_SOUND_PlaySFX(SND_SPELL_ICE_FIELD_END);
+	
+	// All Levels - Kill Light
+	if(m_pSpellFx) {
+		endLightDelayed(m_pSpellFx->lLightId, 500);
+	}
+	
+	delete m_pSpellFx;
+	m_pSpellFx = NULL;
 }
 
 void IceFieldSpell::Update(float timeDelta)
@@ -548,6 +559,11 @@ Vec3f IceFieldSpell::getPosition()
 	}
 }
 
+LightningStrikeSpell::~LightningStrikeSpell() {
+	
+	delete m_pSpellFx;
+}
+
 void LightningStrikeSpell::Launch()
 {
 	CLightning * effect = new CLightning();
@@ -571,6 +587,14 @@ void LightningStrikeSpell::End()
 	
 	ARX_SOUND_Stop(m_snd_loop);
 	ARX_SOUND_PlaySFX(SND_SPELL_LIGHTNING_END, &entities[m_caster]->pos);
+	
+	// All Levels - Kill Light
+	if(m_pSpellFx) {
+		endLightDelayed(m_pSpellFx->lLightId, 500);
+	}
+	
+	delete m_pSpellFx;
+	m_pSpellFx = NULL;
 }
 
 static Vec3f GetChestPos(EntityHandle num) {
@@ -640,6 +664,11 @@ void LightningStrikeSpell::Update(float timeDelta)
 	ARX_SOUND_RefreshPosition(m_snd_loop, entities[m_caster]->pos);
 }
 
+ConfuseSpell::~ConfuseSpell() {
+	
+	delete m_pSpellFx;
+}
+
 void ConfuseSpell::Launch()
 {
 	ARX_SOUND_PlaySFX(SND_SPELL_CONFUSE, &entities[m_target]->pos);
@@ -660,6 +689,14 @@ void ConfuseSpell::Launch()
 void ConfuseSpell::End()
 {
 	m_targets.clear();
+	
+	// All Levels - Kill Light
+	if(m_pSpellFx) {
+		endLightDelayed(m_pSpellFx->lLightId, 500);
+	}
+	
+	delete m_pSpellFx;
+	m_pSpellFx = NULL;
 }
 
 void ConfuseSpell::Update(float timeDelta)

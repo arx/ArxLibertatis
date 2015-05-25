@@ -50,6 +50,11 @@ MassLightningStrikeSpell::MassLightningStrikeSpell()
 {
 }
 
+MassLightningStrikeSpell::~MassLightningStrikeSpell() {
+	
+	delete m_pSpellFx;
+}
+
 void MassLightningStrikeSpell::Launch()
 {
 	spells.endByType(SPELL_MASS_LIGHTNING_STRIKE);
@@ -106,6 +111,9 @@ void MassLightningStrikeSpell::End()
 	
 	ARX_SOUND_Stop(m_snd_loop);
 	ARX_SOUND_PlaySFX(SND_SPELL_LIGHTNING_END);
+	
+	delete m_pSpellFx;
+	m_pSpellFx = NULL;
 }
 
 void MassLightningStrikeSpell::Update(float timeDelta)
@@ -147,6 +155,11 @@ void MassLightningStrikeSpell::Update(float timeDelta)
 		
 		light->intensity = 1.3f + rnd() * 1.f;
 	}	
+}
+
+ControlTargetSpell::~ControlTargetSpell() {
+	
+	delete m_pSpellFx;
 }
 
 bool ControlTargetSpell::CanLaunch()
@@ -218,6 +231,16 @@ void ControlTargetSpell::Launch()
 	effect->Create(player.pos, MAKEANGLE(player.angle.getPitch()));
 	effect->SetDuration(m_duration);
 	m_pSpellFx = effect;
+}
+
+void ControlTargetSpell::End() {
+	
+	if(m_pSpellFx) {
+		endLightDelayed(m_pSpellFx->lLightId, 500);
+	}
+	
+	delete m_pSpellFx;
+	m_pSpellFx = NULL;
 }
 
 void ControlTargetSpell::Update(float timeDelta)

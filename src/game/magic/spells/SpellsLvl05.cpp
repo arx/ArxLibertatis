@@ -33,6 +33,10 @@
 #include "scene/GameSound.h"
 #include "scene/Interactive.h"
 
+RuneOfGuardingSpell::~RuneOfGuardingSpell() {
+	delete m_pSpellFx;
+}
+
 void RuneOfGuardingSpell::Launch()
 {
 	spells.endByCaster(m_caster, SPELL_RUNE_OF_GUARDING);
@@ -46,6 +50,17 @@ void RuneOfGuardingSpell::Launch()
 	effect->SetDuration(m_duration);
 	m_pSpellFx = effect;
 	m_duration = effect->GetDuration();
+}
+
+void RuneOfGuardingSpell::End() {
+	
+	// All Levels - Kill Light
+	if(m_pSpellFx) {
+		endLightDelayed(m_pSpellFx->lLightId, 500);
+	}
+	
+	delete m_pSpellFx;
+	m_pSpellFx = NULL;
 }
 
 void RuneOfGuardingSpell::Update(float timeDelta)
@@ -84,6 +99,11 @@ Vec3f RuneOfGuardingSpell::getPosition() {
 	} else {
 		return Vec3f_ZERO;
 	}
+}
+
+LevitateSpell::~LevitateSpell() {
+	
+	delete m_pSpellFx;
 }
 
 void LevitateSpell::Launch()
@@ -130,6 +150,14 @@ void LevitateSpell::End()
 	
 	if(m_target == PlayerEntityHandle)
 		player.levitate = false;
+	
+	// All Levels - Kill Light
+	if(m_pSpellFx) {
+		endLightDelayed(m_pSpellFx->lLightId, 500);
+	}
+	
+	delete m_pSpellFx;
+	m_pSpellFx = NULL;
 }
 
 void LevitateSpell::Update(float timeDelta)
@@ -153,6 +181,11 @@ void LevitateSpell::Update(float timeDelta)
 		pCSpellFX->Render();
 	}
 	ARX_SOUND_RefreshPosition(m_snd_loop, entities[m_target]->pos);
+}
+
+CurePoisonSpell::~CurePoisonSpell() {
+	
+	delete m_pSpellFx;
 }
 
 void CurePoisonSpell::Launch()
@@ -182,6 +215,17 @@ void CurePoisonSpell::Launch()
 	m_duration = effect->GetDuration();
 }
 
+void CurePoisonSpell::End() {
+	
+	// All Levels - Kill Light
+	if(m_pSpellFx) {
+		endLightDelayed(m_pSpellFx->lLightId, 500);
+	}
+	
+	delete m_pSpellFx;
+	m_pSpellFx = NULL;
+}
+
 void CurePoisonSpell::Update(float timeDelta)
 {
 	CCurePoison * effect = static_cast<CCurePoison *>(m_pSpellFx);
@@ -196,6 +240,11 @@ void CurePoisonSpell::Update(float timeDelta)
 		effect->Update(timeDelta);
 		effect->Render();
 	}
+}
+
+RepelUndeadSpell::~RepelUndeadSpell() {
+	
+	delete m_pSpellFx;
 }
 
 void RepelUndeadSpell::Launch()
@@ -226,6 +275,14 @@ void RepelUndeadSpell::Launch()
 
 void RepelUndeadSpell::End() {
 	ARX_SOUND_Stop(m_snd_loop);
+	
+	// All Levels - Kill Light
+	if(m_pSpellFx) {
+		endLightDelayed(m_pSpellFx->lLightId, 500);
+	}
+	
+	delete m_pSpellFx;
+	m_pSpellFx = NULL;
 }
 
 void RepelUndeadSpell::Update(float timeDelta)
@@ -250,6 +307,11 @@ void RepelUndeadSpell::Update(float timeDelta)
 		if (m_target == PlayerEntityHandle)
 			ARX_SOUND_RefreshPosition(m_snd_loop, entities[m_target]->pos);
 	}
+}
+
+PoisonProjectileSpell::~PoisonProjectileSpell() {
+	
+	delete m_pSpellFx;
 }
 
 void PoisonProjectileSpell::Launch()

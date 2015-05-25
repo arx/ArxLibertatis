@@ -34,6 +34,11 @@
 #include "scene/Interactive.h"
 
 
+HealSpell::~HealSpell() {
+	
+	delete m_pSpellFx;
+}
+
 bool HealSpell::CanLaunch() {
 	
 	return !spells.ExistAnyInstanceForThisCaster(m_type, m_caster);
@@ -62,6 +67,17 @@ void HealSpell::Launch()
 	
 	m_pSpellFx = effect;
 	m_duration = effect->GetDuration();
+}
+
+void HealSpell::End() {
+	
+	// All Levels - Kill Light
+	if(m_pSpellFx) {
+		endLightDelayed(m_pSpellFx->lLightId, 500);
+	}
+	
+	delete m_pSpellFx;
+	m_pSpellFx = NULL;
 }
 
 void HealSpell::Update(float timeDelta)
@@ -142,20 +158,15 @@ void DetectTrapSpell::End()
 	m_targets.clear();
 }
 
-void DetectTrapSpell::Update(float timeDelta)
-{
+void DetectTrapSpell::Update(float timeDelta) {
+	ARX_UNUSED(timeDelta);
+	
 	if(m_caster == PlayerEntityHandle) {
 		Vec3f pos = ARX_PLAYER_FrontPos();
 		ARX_SOUND_RefreshPosition(m_snd_loop, pos);
 	}
-
-	CSpellFx *pCSpellFX = m_pSpellFx;
-
-	if(pCSpellFX) {
-		pCSpellFX->Update(timeDelta);
-		pCSpellFX->Render();
-	}	
 }
+
 
 void ArmorSpell::Launch()
 {

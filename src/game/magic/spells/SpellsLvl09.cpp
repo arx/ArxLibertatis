@@ -64,6 +64,11 @@ SummonCreatureSpell::SummonCreatureSpell()
 	
 }
 
+SummonCreatureSpell::~SummonCreatureSpell() {
+	
+	delete m_pSpellFx;
+}
+
 bool SummonCreatureSpell::CanLaunch()
 {
 	Vec3f target;
@@ -151,6 +156,9 @@ void SummonCreatureSpell::End()
 	
 	// TODO is this correct ?
 	m_longinfo2_entity = PlayerEntityHandle;
+	
+	delete m_pSpellFx;
+	m_pSpellFx = NULL;
 }
 
 void SummonCreatureSpell::Update(float timeDelta)
@@ -279,6 +287,11 @@ void SummonCreatureSpell::Update(float timeDelta)
 	}	
 }
 
+FakeSummonSpell::~FakeSummonSpell() {
+	
+	delete m_pSpellFx;
+}
+
 bool FakeSummonSpell::CanLaunch()
 {
 	if(m_caster <= PlayerEntityHandle || !ValidIONum(m_target)) {
@@ -328,7 +341,8 @@ void FakeSummonSpell::End()
 	
 	lightHandleDestroy(m_pSpellFx->lLightId);
 	
-	lightHandleDestroy(m_pSpellFx->lLightId);
+	delete m_pSpellFx;
+	m_pSpellFx = NULL;
 }
 
 void FakeSummonSpell::Update(float timeDelta)
@@ -348,6 +362,11 @@ void FakeSummonSpell::Update(float timeDelta)
 		pCSpellFX->Update(timeDelta);
 		pCSpellFX->Render();
 	}	
+}
+
+NegateMagicSpell::~NegateMagicSpell() {
+	
+	delete m_pSpellFx;
 }
 
 void NegateMagicSpell::Launch()
@@ -371,6 +390,17 @@ void NegateMagicSpell::Launch()
 	m_duration = effect->GetDuration();
 	
 	LaunchAntiMagicField();
+}
+
+void NegateMagicSpell::End() {
+	
+	// All Levels - Kill Light
+	if(m_pSpellFx) {
+		endLightDelayed(m_pSpellFx->lLightId, 500);
+	}
+	
+	delete m_pSpellFx;
+	m_pSpellFx = NULL;
 }
 
 void NegateMagicSpell::Update(float timeDelta)

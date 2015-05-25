@@ -27,6 +27,8 @@
 #include "game/NPC.h"
 #include "game/Player.h"
 #include "game/Spells.h"
+#include "game/magic/spells/SpellsLvl05.h"
+#include "game/magic/spells/SpellsLvl06.h"
 #include "graphics/particle/ParticleEffects.h"
 
 #include "graphics/spells/Spells05.h"
@@ -56,6 +58,10 @@ RiseDeadSpell::RiseDeadSpell()
 	: m_entity(EntityHandle::Invalid)
 {
 	
+}
+
+RiseDeadSpell::~RiseDeadSpell() {
+	delete m_pSpellFx;
 }
 
 bool RiseDeadSpell::CanLaunch()
@@ -148,6 +154,14 @@ void RiseDeadSpell::End()
 			entity->destroyOne();
 		}
 	}
+	
+	// All Levels - Kill Light
+	if(m_pSpellFx) {
+		endLightDelayed(m_pSpellFx->lLightId, 500);
+	}
+	
+	delete m_pSpellFx;
+	m_pSpellFx = NULL;
 }
 
 void RiseDeadSpell::Update(float timeDelta)
@@ -278,6 +292,11 @@ CreateFieldSpell::CreateFieldSpell()
 {
 }
 
+CreateFieldSpell::~CreateFieldSpell() {
+	
+	delete m_pSpellFx;
+}
+
 void CreateFieldSpell::Launch()
 {
 	unsigned long start = (unsigned long)(arxtime);
@@ -353,17 +372,18 @@ void CreateFieldSpell::Launch()
 	}
 }
 
-void CreateFieldSpell::End()
-{
-	CCreateField *pCreateField = (CCreateField *) m_pSpellFx;
-
-	if(pCreateField && lightHandleIsValid(pCreateField->lLightId)) {
-		lightHandleGet(pCreateField->lLightId)->duration = 800;
+void CreateFieldSpell::End() {
+	
+	if(m_pSpellFx) {
+		endLightDelayed(m_pSpellFx->lLightId, 800);
 	}
-
+	
 	if(ValidIONum(m_entity)) {
 		delete entities[m_entity];
 	}
+	
+	delete m_pSpellFx;
+	m_pSpellFx = NULL;
 }
 
 void CreateFieldSpell::Update(float timeDelta)
@@ -417,18 +437,21 @@ void DisarmTrapSpell::Launch()
 			continue;
 		}
 		
-		if(!spell->m_pSpellFx) {
-			continue;
-		}
+		Vec3f pos = static_cast<RuneOfGuardingSpell *>(spell)->getPosition();
 		
-		CSpellFx * effect = spell->m_pSpellFx;
-		if(sphere.contains(static_cast<CRuneOfGuarding *>(effect)->eSrc)) {
+		if(sphere.contains(pos)) {
 			spell->m_level -= m_level;
 			if(spell->m_level <= 0) {
 				spells.endSpell(spell);
 			}
 		}
 	}
+}
+
+
+SlowDownSpell::~SlowDownSpell() {
+	
+	delete m_pSpellFx;
 }
 
 bool SlowDownSpell::CanLaunch()
@@ -470,6 +493,14 @@ void SlowDownSpell::End()
 {
 	ARX_SOUND_PlaySFX(SND_SPELL_SLOW_DOWN_END);
 	m_targets.clear();
+	
+	// All Levels - Kill Light
+	if(m_pSpellFx) {
+		endLightDelayed(m_pSpellFx->lLightId, 500);
+	}
+	
+	delete m_pSpellFx;
+	m_pSpellFx = NULL;
 }
 
 void SlowDownSpell::Update(float timeDelta)

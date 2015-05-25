@@ -24,9 +24,15 @@
 
 class HealSpell : public SpellBase {
 public:
+	~HealSpell();
+	
 	bool CanLaunch();
 	void Launch();
+	void End();
 	void Update(float framedelay);
+	
+private:
+	CSpellFx * m_pSpellFx;
 };
 
 class DetectTrapSpell : public SpellBase {

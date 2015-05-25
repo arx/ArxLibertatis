@@ -26,6 +26,8 @@
 #include "game/EntityManager.h"
 #include "game/Player.h"
 #include "game/Spells.h"
+#include "game/magic/spells/SpellsLvl04.h"
+#include "game/magic/spells/SpellsLvl06.h"
 #include "game/magic/spells/SpellsLvl07.h"
 #include "gui/Speech.h"
 #include "graphics/spells/Spells04.h"
@@ -34,6 +36,12 @@
 
 #include "scene/GameSound.h"
 #include "scene/Interactive.h"
+
+
+BlessSpell::~BlessSpell() {
+	
+	delete m_pSpellFx;
+}
 
 bool BlessSpell::CanLaunch()
 {
@@ -68,6 +76,14 @@ void BlessSpell::Launch()
 void BlessSpell::End()
 {
 	m_targets.clear();
+	
+	// All Levels - Kill Light
+	if(m_pSpellFx) {
+		endLightDelayed(m_pSpellFx->lLightId, 500);
+	}
+	
+	delete m_pSpellFx;
+	m_pSpellFx = NULL;
 }
 
 void BlessSpell::Update(float timeDelta)
@@ -119,9 +135,8 @@ void DispellFieldSpell::Launch()
 		switch(spell->m_type) {
 			
 			case SPELL_CREATE_FIELD: {
-				if(spell->m_pSpellFx)
 				if(m_caster != PlayerEntityHandle || spell->m_caster == PlayerEntityHandle) {
-					pos = static_cast<CCreateField *>(spell->m_pSpellFx)->eSrc;
+					pos = static_cast<CreateFieldSpell *>(spell)->getPosition();
 					cancel = true;
 				}
 				break;
@@ -134,10 +149,8 @@ void DispellFieldSpell::Launch()
 			}
 			
 			case SPELL_ICE_FIELD: {
-				if(spell->m_pSpellFx) {
-				pos = static_cast<CIceField *>(spell->m_pSpellFx)->eSrc;
+				pos = static_cast<IceFieldSpell *>(spell)->getPosition();
 				cancel = true;
-				}
 				break;
 			}
 			
@@ -166,6 +179,7 @@ void DispellFieldSpell::Launch()
 		ARX_SOUND_PlaySFX(SND_MAGIC_FIZZLE, &m_caster_pos);
 	}
 }
+
 
 void FireProtectionSpell::Launch()
 {
@@ -329,6 +343,12 @@ void TelekinesisSpell::End()
 	ARX_SOUND_PlaySFX(SND_SPELL_TELEKINESIS_END, &entities[m_caster]->pos);
 }
 
+
+CurseSpell::~CurseSpell() {
+	
+	delete m_pSpellFx;
+}
+
 void CurseSpell::Launch()
 {
 	spells.endByCaster(m_target, SPELL_CURSE);
@@ -359,6 +379,14 @@ void CurseSpell::Launch()
 void CurseSpell::End()
 {
 	m_targets.clear();
+	
+	// All Levels - Kill Light
+	if(m_pSpellFx) {
+		endLightDelayed(m_pSpellFx->lLightId, 500);
+	}
+	
+	delete m_pSpellFx;
+	m_pSpellFx = NULL;
 }
 
 void CurseSpell::Update(float timeDelta)

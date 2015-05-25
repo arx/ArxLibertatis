@@ -61,6 +61,7 @@ private:
 class IceFieldSpell : public SpellBase {
 public:
 	IceFieldSpell();
+	~IceFieldSpell();
 	
 	void Launch();
 	void End();
@@ -69,24 +70,35 @@ public:
 	Vec3f getPosition();
 	
 private:
+	CSpellFx * m_pSpellFx;
 	LightHandle m_light;
 	DamageHandle m_damage;
 };
 
 class LightningStrikeSpell : public SpellBase {
 public:
+	~LightningStrikeSpell();
+	
 	void Launch();
 	void End();
 	void Update(float timeDelta);
+	
+private:
+	CSpellFx * m_pSpellFx;
 };
 
 class ConfuseSpell : public SpellBase {
 public:
+	~ConfuseSpell();
+	
 	void Launch();
 	void End();
 	void Update(float timeDelta);
 	
 	Vec3f getPosition();
+	
+private:
+	CSpellFx * m_pSpellFx;
 };
 
 #endif // ARX_GAME_MAGIC_SPELLS_SPELLSLVL07_H

@@ -129,8 +129,6 @@ public:
 	SpellBase();
 	virtual ~SpellBase() {}
 	
-	void BaseEnd();
-	
 	virtual bool CanLaunch() {
 		return true;
 	}
@@ -170,7 +168,6 @@ public:
 	
 	SpellcastFlags m_flags;
 	audio::SourceId m_snd_loop;
-	CSpellFx * m_pSpellFx;
 	
 	long m_launchDuration;
 

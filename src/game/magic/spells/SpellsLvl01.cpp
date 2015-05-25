@@ -28,6 +28,7 @@
 #include "game/Player.h"
 #include "game/Spells.h"
 #include "game/spell/Cheat.h"
+#include "game/magic/spells/SpellsLvl03.h"
 
 #include "graphics/spells/Spells01.h"
 #include "graphics/spells/Spells03.h"
@@ -81,6 +82,12 @@ void MagicSightSpell::Update(float timeDelta)
 		if(subj.focal > IMPROVED_FOCAL)
 			subj.focal -= DEC_FOCAL;
 	}	
+}
+
+
+MagicMissileSpell::~MagicMissileSpell() {
+	
+	delete m_pSpellFx;
 }
 
 void MagicMissileSpell::Launch()
@@ -159,8 +166,15 @@ void MagicMissileSpell::Launch()
 	m_duration = effect->GetDuration();
 }
 
-void MagicMissileSpell::End()
-{
+void MagicMissileSpell::End() {
+	
+	// All Levels - Kill Light
+	if(m_pSpellFx) {
+		endLightDelayed(m_pSpellFx->lLightId, 500);
+	}
+	
+	delete m_pSpellFx;
+	m_pSpellFx = NULL;
 }
 
 void MagicMissileSpell::Update(float timeDelta)
@@ -268,14 +282,11 @@ void IgnitSpell::Launch()
 			continue;
 		}
 		if(spell->m_type == SPELL_FIREBALL) {
-			CSpellFx * pCSpellFX = spell->m_pSpellFx;
-			if(pCSpellFX) {
-				CFireBall * pCF = (CFireBall *)pCSpellFX;
-				float radius = std::max(m_level * 2.f, 12.f);
-				if(closerThan(m_srcPos, pCF->eCurPos,
-				              fPerimeter + radius)) {
-					spell->m_level += 1;
-				}
+			Vec3f pos = static_cast<FireballSpell *>(spell)->getPosition();
+			
+			float radius = std::max(m_level * 2.f, 12.f);
+			if(closerThan(m_srcPos, pos, fPerimeter + radius)) {
+				spell->m_level += 1;
 			}
 		}
 	}

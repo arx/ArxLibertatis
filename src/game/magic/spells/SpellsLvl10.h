@@ -25,12 +25,14 @@
 class MassLightningStrikeSpell : public SpellBase {
 public:
 	MassLightningStrikeSpell();
+	~MassLightningStrikeSpell();
 	
 	void Launch();
 	void End();
 	void Update(float timeDelta);
 	
 private:
+	CSpellFx * m_pSpellFx;
 	Vec3f m_targetPos;
 	bool m_soundEffectPlayed;
 	LightHandle m_light;
@@ -38,9 +40,15 @@ private:
 
 class ControlTargetSpell : public SpellBase {
 public:
+	~ControlTargetSpell();
+	
 	bool CanLaunch();
 	void Launch();
+	void End();
 	void Update(float timeDelta);
+	
+private:
+	CSpellFx * m_pSpellFx;
 };
 
 class FreezeTimeSpell : public SpellBase {

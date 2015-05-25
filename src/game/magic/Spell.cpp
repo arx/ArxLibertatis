@@ -33,22 +33,10 @@ SpellBase::SpellBase()
 	, m_duration(0)
 	, m_fManaCostPerSecond(0.f)
 	, m_snd_loop(audio::INVALID_ID)
-	, m_pSpellFx(NULL)
 	, m_launchDuration(-1)
 {
 	
 	m_targets.clear();
-}
-
-void SpellBase::BaseEnd() {
-	
-	// All Levels - Kill Light
-	if(m_pSpellFx) {
-		endLightDelayed(m_pSpellFx->lLightId, 500);
-	}
-	
-	delete m_pSpellFx;
-	m_pSpellFx = NULL;
 }
 
 Vec3f SpellBase::getPosition() {

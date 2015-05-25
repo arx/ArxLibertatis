@@ -32,9 +32,14 @@ public:
 
 class MagicMissileSpell : public SpellBase {
 public:
+	~MagicMissileSpell();
+	
 	void Launch();
 	void End();
 	void Update(float timeDelta);
+	
+private:
+	CSpellFx * m_pSpellFx;
 };
 
 class IgnitSpell : public SpellBase {

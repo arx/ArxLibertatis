@@ -25,6 +25,7 @@
 class RiseDeadSpell : public SpellBase {
 public:
 	RiseDeadSpell();
+	~RiseDeadSpell();
 	
 	bool CanLaunch();
 	void Launch();
@@ -34,6 +35,7 @@ public:
 private:
 	void GetTargetAndBeta(Vec3f & target, float & beta);
 	
+	CSpellFx * m_pSpellFx;
 	Vec3f m_targetPos;
 	EntityHandle m_entity;
 };
@@ -49,6 +51,7 @@ public:
 class CreateFieldSpell : public SpellBase {
 public:
 	CreateFieldSpell();
+	~CreateFieldSpell();
 	
 	void Launch();
 	void End();
@@ -58,6 +61,9 @@ public:
 	
 	// TODO this is directly used in physics and projectile
 	EntityHandle m_entity;
+	
+private:
+	CSpellFx * m_pSpellFx;
 };
 
 class DisarmTrapSpell : public SpellBase {
@@ -67,12 +73,17 @@ public:
 
 class SlowDownSpell : public SpellBase {
 public:
+	~SlowDownSpell();
+	
 	bool CanLaunch();
 	void Launch();
 	void End();
 	void Update(float timeDelta);
 	
 	Vec3f getPosition();
+	
+private:
+	CSpellFx * m_pSpellFx;
 };
 
 #endif // ARX_GAME_MAGIC_SPELLS_SPELLSLVL06_H

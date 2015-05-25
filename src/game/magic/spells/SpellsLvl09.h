@@ -25,6 +25,7 @@
 class SummonCreatureSpell : public SpellBase {
 public:
 	SummonCreatureSpell();
+	~SummonCreatureSpell();
 	
 	bool CanLaunch();
 	void Launch();
@@ -34,6 +35,7 @@ public:
 private:
 	void GetTargetAndBeta(Vec3f & target, float & beta);
 	
+	CSpellFx * m_pSpellFx;
 	Vec3f m_targetPos;
 	bool m_megaCheat;
 	long m_longinfo_summon_creature;
@@ -42,21 +44,28 @@ private:
 
 class FakeSummonSpell : public SpellBase {
 public:
+	~FakeSummonSpell();
+	
 	bool CanLaunch();
 	void Launch();
 	void End();
 	void Update(float timeDelta);
 	
 private:
+	CSpellFx * m_pSpellFx;
 	Vec3f m_targetPos;
 };
 
 class NegateMagicSpell : public SpellBase {
 public:
+	~NegateMagicSpell();
+	
 	void Launch();
+	void End();
 	void Update(float timeDelta);
 	
 private:
+	CSpellFx * m_pSpellFx;
 	void LaunchAntiMagicField();
 };
 

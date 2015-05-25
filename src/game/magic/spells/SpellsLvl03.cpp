@@ -33,6 +33,12 @@
 #include "scene/Interactive.h"
 #include "scene/Object.h"
 
+
+SpeedSpell::~SpeedSpell() {
+	
+	delete m_pSpellFx;
+}
+
 void SpeedSpell::Launch()
 {
 	m_hasDuration = true;
@@ -71,6 +77,14 @@ void SpeedSpell::End()
 		ARX_SOUND_Stop(m_snd_loop);
 	
 	ARX_SOUND_PlaySFX(SND_SPELL_SPEED_END, &entities[m_target]->pos);
+	
+	// All Levels - Kill Light
+	if(m_pSpellFx) {
+		endLightDelayed(m_pSpellFx->lLightId, 500);
+	}
+	
+	delete m_pSpellFx;
+	m_pSpellFx = NULL;
 }
 
 void SpeedSpell::Update(float timeDelta)
@@ -116,17 +130,20 @@ void DispellIllusionSpell::Launch()
 	}
 }
 
-void DispellIllusionSpell::Update(float timeDelta)
-{
-	if(m_pSpellFx) {
-		m_pSpellFx->Update(timeDelta);
-		m_pSpellFx->Render();
-	}
+
+void DispellIllusionSpell::Update(float timeDelta) {
+	ARX_UNUSED(timeDelta);
 }
+
 
 FireballSpell::FireballSpell()
 	: m_light(LightHandle::Invalid)
 {
+}
+
+FireballSpell::~FireballSpell() {
+	
+	delete m_pSpellFx;
 }
 
 void FireballSpell::Launch()
@@ -192,6 +209,14 @@ void FireballSpell::End()
 	ARX_SOUND_Stop(m_snd_loop);
 	
 	endLightDelayed(m_light, 500);
+	
+	// All Levels - Kill Light
+	if(m_pSpellFx) {
+		endLightDelayed(m_pSpellFx->lLightId, 500);
+	}
+	
+	delete m_pSpellFx;
+	m_pSpellFx = NULL;
 }
 
 void FireballSpell::Update(float timeDelta)
@@ -308,6 +333,11 @@ Vec3f FireballSpell::getPosition() {
 }
 
 
+CreateFoodSpell::~CreateFoodSpell() {
+	
+	delete m_pSpellFx;
+}
+
 void CreateFoodSpell::Launch()
 {
 	ARX_SOUND_PlaySFX(SND_SPELL_CREATE_FOOD, &m_caster_pos);
@@ -325,12 +355,29 @@ void CreateFoodSpell::Launch()
 	m_duration = effect->GetDuration();
 }
 
+void CreateFoodSpell::End() {
+	
+	// All Levels - Kill Light
+	if(m_pSpellFx) {
+		endLightDelayed(m_pSpellFx->lLightId, 500);
+	}
+	
+	delete m_pSpellFx;
+	m_pSpellFx = NULL;
+}
+
 void CreateFoodSpell::Update(float timeDelta)
 {
 	if(m_pSpellFx) {
 		m_pSpellFx->Update(timeDelta);
 		m_pSpellFx->Render();
 	}	
+}
+
+
+IceProjectileSpell::~IceProjectileSpell() {
+	
+	delete m_pSpellFx;
 }
 
 void IceProjectileSpell::Launch()
@@ -357,6 +404,17 @@ void IceProjectileSpell::Launch()
 	effect->SetDuration(m_duration);
 	m_pSpellFx = effect;
 	m_duration = effect->GetDuration();
+}
+
+void IceProjectileSpell::End() {
+	
+	// All Levels - Kill Light
+	if(m_pSpellFx) {
+		endLightDelayed(m_pSpellFx->lLightId, 500);
+	}
+	
+	delete m_pSpellFx;
+	m_pSpellFx = NULL;
 }
 
 void IceProjectileSpell::Update(float timeDelta)
