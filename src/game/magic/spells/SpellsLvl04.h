@@ -22,6 +22,8 @@
 
 #include "game/magic/Spell.h"
 
+#include "graphics/spells/Spells04.h"
+
 class BlessSpell : public SpellBase {
 public:
 	~BlessSpell();
@@ -34,7 +36,7 @@ public:
 	Vec3f getPosition();
 	
 private:
-	CSpellFx * m_pSpellFx;
+	CBless * m_pSpellFx;
 };
 
 class DispellFieldSpell : public SpellBase {
@@ -78,7 +80,7 @@ public:
 	Vec3f getPosition();
 	
 private:
-	CSpellFx * m_pSpellFx;
+	CCurse * m_pSpellFx;
 };
 
 #endif // ARX_GAME_MAGIC_SPELLS_SPELLSLVL04_H

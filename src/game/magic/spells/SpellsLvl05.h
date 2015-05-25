@@ -22,6 +22,8 @@
 
 #include "game/magic/Spell.h"
 
+#include "graphics/spells/Spells05.h"
+
 class RuneOfGuardingSpell : public SpellBase {
 public:
 	~RuneOfGuardingSpell();
@@ -33,7 +35,7 @@ public:
 	Vec3f getPosition();
 	
 private:
-	CSpellFx * m_pSpellFx;
+	CRuneOfGuarding * m_pSpellFx;
 };
 
 class LevitateSpell : public SpellBase {
@@ -45,7 +47,7 @@ public:
 	void Update(float timeDelta);
 	
 private:
-	CSpellFx * m_pSpellFx;
+	CLevitate * m_pSpellFx;
 };
 
 class CurePoisonSpell : public SpellBase {
@@ -57,7 +59,7 @@ public:
 	void Update(float timeDelta);
 	
 private:
-	CSpellFx * m_pSpellFx;
+	CCurePoison * m_pSpellFx;
 };
 
 class RepelUndeadSpell : public SpellBase {
@@ -69,7 +71,7 @@ public:
 	void Update(float timeDelta);
 	
 private:
-	CSpellFx * m_pSpellFx;
+	CRepelUndead * m_pSpellFx;
 };
 
 class PoisonProjectileSpell : public SpellBase {
@@ -80,7 +82,7 @@ public:
 	void Update(float timeDelta);
 	
 private:
-	CSpellFx * m_pSpellFx;
+	CMultiPoisonProjectile * m_pSpellFx;
 };
 
 #endif // ARX_GAME_MAGIC_SPELLS_SPELLSLVL05_H

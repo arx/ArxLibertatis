@@ -77,11 +77,10 @@ void MassLightningStrikeSpell::Launch()
 	m_targetPos = target;
 	
 	long count = std::max(long(m_level), 1l);
-	CMassLightning * effect = new CMassLightning(count);
-	effect->SetDuration(long(500 * m_level));
-	effect->Create(target);
-	m_pSpellFx = effect;
-	m_duration = effect->GetDuration();
+	m_pSpellFx = new CMassLightning(count);
+	m_pSpellFx->SetDuration(long(500 * m_level));
+	m_pSpellFx->Create(target);
+	m_duration = m_pSpellFx->GetDuration();
 	
 	m_light = GetFreeDynLight();
 	if(lightHandleIsValid(m_light)) {
@@ -116,16 +115,14 @@ void MassLightningStrikeSpell::End()
 	m_pSpellFx = NULL;
 }
 
-void MassLightningStrikeSpell::Update(float timeDelta)
-{
-	CMassLightning * effect = static_cast<CMassLightning *>(m_pSpellFx);
-
-	if(effect) {
-		effect->m_caster = m_caster;
-		effect->m_level = m_level;
+void MassLightningStrikeSpell::Update(float timeDelta) {
+	
+	if(m_pSpellFx) {
+		m_pSpellFx->m_caster = m_caster;
+		m_pSpellFx->m_level = m_level;
 		
-		effect->Update(timeDelta);
-		effect->Render();
+		m_pSpellFx->Update(timeDelta);
+		m_pSpellFx->Render();
 	}
 
 	Vec3f position;
@@ -227,10 +224,9 @@ void ControlTargetSpell::Launch()
 	
 	m_duration = 1000;
 	
-	CControlTarget * effect = new CControlTarget();
-	effect->Create(player.pos, MAKEANGLE(player.angle.getPitch()));
-	effect->SetDuration(m_duration);
-	m_pSpellFx = effect;
+	m_pSpellFx = new CControlTarget();
+	m_pSpellFx->Create(player.pos, MAKEANGLE(player.angle.getPitch()));
+	m_pSpellFx->SetDuration(m_duration);
 }
 
 void ControlTargetSpell::End() {
@@ -245,11 +241,9 @@ void ControlTargetSpell::End() {
 
 void ControlTargetSpell::Update(float timeDelta)
 {
-	CSpellFx *pCSpellFX = m_pSpellFx;
-	
-	if(pCSpellFX) {
-		pCSpellFX->Update(timeDelta);
-		pCSpellFX->Render();
+	if(m_pSpellFx) {
+		m_pSpellFx->Update(timeDelta);
+		m_pSpellFx->Render();
 	}	
 }
 

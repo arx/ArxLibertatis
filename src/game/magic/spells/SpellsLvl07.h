@@ -23,6 +23,7 @@
 #include "game/magic/Spell.h"
 
 #include "graphics/particle/ParticleSystem.h"
+#include "graphics/spells/Spells07.h"
 
 class FlyingEyeSpell : public SpellBase {
 public:
@@ -70,7 +71,7 @@ public:
 	Vec3f getPosition();
 	
 private:
-	CSpellFx * m_pSpellFx;
+	CIceField * m_pSpellFx;
 	LightHandle m_light;
 	DamageHandle m_damage;
 };
@@ -84,7 +85,7 @@ public:
 	void Update(float timeDelta);
 	
 private:
-	CSpellFx * m_pSpellFx;
+	CLightning * m_pSpellFx;
 };
 
 class ConfuseSpell : public SpellBase {
@@ -98,7 +99,7 @@ public:
 	Vec3f getPosition();
 	
 private:
-	CSpellFx * m_pSpellFx;
+	CConfuse * m_pSpellFx;
 };
 
 #endif // ARX_GAME_MAGIC_SPELLS_SPELLSLVL07_H

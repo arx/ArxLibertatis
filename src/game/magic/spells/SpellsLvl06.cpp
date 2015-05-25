@@ -98,18 +98,18 @@ void RiseDeadSpell::Launch()
 	m_fManaCostPerSecond = 1.2f;
 	m_entity = EntityHandle::Invalid;
 	
-	CRiseDead * effect = new CRiseDead();
-	effect->Create(target, beta);
-	effect->SetDuration(2000, 500, 1800);
-	effect->SetColorBorder(0.5, 0.5, 0.5);
-	effect->SetColorRays1(0.5, 0.5, 0.5);
-	effect->SetColorRays2(1, 0, 0);
+	m_pSpellFx = new CRiseDead();
+	m_pSpellFx->Create(target, beta);
+	m_pSpellFx->SetDuration(2000, 500, 1800);
+	m_pSpellFx->SetColorBorder(0.5, 0.5, 0.5);
+	m_pSpellFx->SetColorRays1(0.5, 0.5, 0.5);
+	m_pSpellFx->SetColorRays2(1, 0, 0);
 	
-	if(!lightHandleIsValid(effect->lLightId)) {
-		effect->lLightId = GetFreeDynLight();
+	if(!lightHandleIsValid(m_pSpellFx->lLightId)) {
+		m_pSpellFx->lLightId = GetFreeDynLight();
 	}
-	if(lightHandleIsValid(effect->lLightId)) {
-		EERIE_LIGHT * light = lightHandleGet(effect->lLightId);
+	if(lightHandleIsValid(m_pSpellFx->lLightId)) {
+		EERIE_LIGHT * light = lightHandleGet(m_pSpellFx->lLightId);
 		
 		light->intensity = 1.3f;
 		light->fallend = 450.f;
@@ -120,8 +120,7 @@ void RiseDeadSpell::Launch()
 		light->time_creation = (unsigned long)(arxtime);
 	}
 	
-	m_pSpellFx = effect;
-	m_duration = effect->GetDuration();
+	m_duration = m_pSpellFx->GetDuration();
 }
 
 void RiseDeadSpell::End()
@@ -332,8 +331,7 @@ void CreateFieldSpell::Launch()
 	
 	ARX_SOUND_PlaySFX(SND_SPELL_CREATE_FIELD, &target);
 	
-	CCreateField * effect  = new CCreateField();
-	m_pSpellFx = effect;
+	m_pSpellFx = new CCreateField();
 	
 	res::path cls = "graph/obj3d/interactive/fix_inter/blue_cube/blue_cube";
 	Entity * io = AddFix(cls, -1, IO_IMMEDIATELOAD);
@@ -347,24 +345,24 @@ void CreateFieldSpell::Launch()
 		io->initpos = io->pos = target;
 		SendInitScriptEvent(io);
 		
-		effect->Create(target);
-		effect->SetDuration(m_duration);
-		effect->lLightId = GetFreeDynLight();
+		m_pSpellFx->Create(target);
+		m_pSpellFx->SetDuration(m_duration);
+		m_pSpellFx->lLightId = GetFreeDynLight();
 		
-		if(lightHandleIsValid(effect->lLightId)) {
-			EERIE_LIGHT * light = lightHandleGet(effect->lLightId);
+		if(lightHandleIsValid(m_pSpellFx->lLightId)) {
+			EERIE_LIGHT * light = lightHandleGet(m_pSpellFx->lLightId);
 			
 			light->intensity = 0.7f + 2.3f;
 			light->fallend = 500.f;
 			light->fallstart = 400.f;
 			light->rgb = Color3f(0.8f, 0.0f, 1.0f);
-			light->pos = effect->eSrc - Vec3f(0.f, 150.f, 0.f);
+			light->pos = m_pSpellFx->eSrc - Vec3f(0.f, 150.f, 0.f);
 		}
 		
-		m_duration = effect->GetDuration();
+		m_duration = m_pSpellFx->GetDuration();
 		
 		if(m_flags & SPELLCAST_FLAG_RESTORE) {
-			effect->Update(4000);
+			m_pSpellFx->Update(4000);
 		}
 		
 	} else {
@@ -474,17 +472,15 @@ void SlowDownSpell::Launch()
 	if(m_launchDuration > -1) {
 		m_duration = m_launchDuration;
 	}
-	m_pSpellFx = NULL;
 	m_hasDuration = true;
 	m_fManaCostPerSecond = 1.2f;
 	
 	Vec3f targetPos = getTargetPos(m_caster, m_target);
 	
-	CSlowDown * effect = new CSlowDown();
-	effect->Create(targetPos);
-	effect->SetDuration(m_duration);
-	m_pSpellFx = effect;
-	m_duration = effect->GetDuration();
+	m_pSpellFx = new CSlowDown();
+	m_pSpellFx->Create(targetPos);
+	m_pSpellFx->SetDuration(m_duration);
+	m_duration = m_pSpellFx->GetDuration();
 	
 	m_targets.push_back(m_target);
 }

@@ -45,11 +45,10 @@ void RuneOfGuardingSpell::Launch()
 	
 	m_duration = (m_launchDuration > -1) ? m_launchDuration : 99999999;
 	
-	CRuneOfGuarding * effect = new CRuneOfGuarding();
-	effect->Create(entities[m_caster]->pos);
-	effect->SetDuration(m_duration);
-	m_pSpellFx = effect;
-	m_duration = effect->GetDuration();
+	m_pSpellFx = new CRuneOfGuarding();
+	m_pSpellFx->Create(entities[m_caster]->pos);
+	m_pSpellFx->SetDuration(m_duration);
+	m_duration = m_pSpellFx->GetDuration();
 }
 
 void RuneOfGuardingSpell::End() {
@@ -120,8 +119,6 @@ void LevitateSpell::Launch()
 	m_hasDuration = true;
 	m_fManaCostPerSecond = 1.f;
 	
-	CLevitate * effect = new CLevitate();
-	
 	Vec3f target;
 	if(m_target == PlayerEntityHandle) {
 		target = player.pos + Vec3f(0.f, 150.f, 0.f);
@@ -131,9 +128,9 @@ void LevitateSpell::Launch()
 		target = entities[m_target]->pos;
 	}
 	
-	effect->Create(16, 50.f, 100.f, 80.f, &target, m_duration);
-	m_pSpellFx = effect;
-	m_duration = effect->GetDuration();
+	m_pSpellFx = new CLevitate();
+	m_pSpellFx->Create(16, 50.f, 100.f, 80.f, &target, m_duration);
+	m_duration = m_pSpellFx->GetDuration();
 	
 	m_snd_loop = ARX_SOUND_PlaySFX(SND_SPELL_LEVITATE_LOOP,
 	                                       &entities[m_target]->pos, 0.7f,
@@ -208,11 +205,10 @@ void CurePoisonSpell::Launch()
 	
 	m_duration = 3500;
 	
-	CCurePoison * effect = new CCurePoison();
-	effect->Create();
-	effect->SetDuration(m_duration);
-	m_pSpellFx = effect;
-	m_duration = effect->GetDuration();
+	m_pSpellFx = new CCurePoison();
+	m_pSpellFx->Create();
+	m_pSpellFx->SetDuration(m_duration);
+	m_duration = m_pSpellFx->GetDuration();
 }
 
 void CurePoisonSpell::End() {
@@ -266,11 +262,10 @@ void RepelUndeadSpell::Launch()
 	m_hasDuration = true;
 	m_fManaCostPerSecond = 1.f;
 	
-	CRepelUndead * effect = new CRepelUndead();
-	effect->Create(player.pos);
-	effect->SetDuration(m_duration);
-	m_pSpellFx = effect;
-	m_duration = effect->GetDuration();
+	m_pSpellFx = new CRepelUndead();
+	m_pSpellFx->Create(player.pos);
+	m_pSpellFx->SetDuration(m_duration);
+	m_duration = m_pSpellFx->GetDuration();
 }
 
 void RepelUndeadSpell::End() {
@@ -321,10 +316,6 @@ void PoisonProjectileSpell::Launch()
 	
 	m_duration = 900000000; // TODO probably never read
 	
-	long level = std::max(long(m_level), 1l);
-	CMultiPoisonProjectile * effect = new CMultiPoisonProjectile(level);
-	effect->SetDuration(8000ul);
-	
 	Vec3f srcPos = Vec3f_ZERO;
 	float afBeta = 0.f;
 	
@@ -357,10 +348,11 @@ void PoisonProjectileSpell::Launch()
 	
 	srcPos += angleToVectorXZ(afBeta) * 90.f;
 	
-	effect->Create(srcPos, afBeta);
-	
-	m_pSpellFx = effect;
-	m_duration = effect->GetDuration();
+	long level = std::max(long(m_level), 1l);
+	m_pSpellFx = new CMultiPoisonProjectile(level);
+	m_pSpellFx->SetDuration(8000ul);
+	m_pSpellFx->Create(srcPos, afBeta);
+	m_duration = m_pSpellFx->GetDuration();
 }
 
 void PoisonProjectileSpell::Update(float timeDelta)

@@ -61,10 +61,8 @@ void SpeedSpell::Launch()
 		m_duration = m_launchDuration;
 	}
 	
-	CSpeed * effect = new CSpeed();
-	effect->Create(m_target);
-	
-	m_pSpellFx = effect;
+	m_pSpellFx = new CSpeed();
+	m_pSpellFx->Create(m_target);
 	
 	m_targets.push_back(m_target);
 }
@@ -150,8 +148,6 @@ void FireballSpell::Launch()
 {
 	m_duration = 20000; // TODO probably never read
 	
-	CFireBall * effect = new CFireBall();
-	
 	if(m_caster != PlayerEntityHandle) {
 		m_hand_group = -1;
 	}
@@ -169,8 +165,6 @@ void FireballSpell::Launch()
 			}
 		}
 	}
-	
-	effect->SetDuration(6000ul);
 	
 	float anglea = 0, angleb;
 	if(m_caster == PlayerEntityHandle) {
@@ -193,10 +187,10 @@ void FireballSpell::Launch()
 		angleb = entities[m_caster]->angle.getPitch();
 	}
 	
-	effect->Create(target, MAKEANGLE(angleb), anglea);
-	
-	m_pSpellFx = effect;
-	m_duration = effect->GetDuration();
+	m_pSpellFx = new CFireBall();
+	m_pSpellFx->SetDuration(6000ul);
+	m_pSpellFx->Create(target, MAKEANGLE(angleb), anglea);
+	m_duration = m_pSpellFx->GetDuration();
 	
 	ARX_SOUND_PlaySFX(SND_SPELL_FIRE_LAUNCH, &m_caster_pos);
 	m_snd_loop = ARX_SOUND_PlaySFX(SND_SPELL_FIRE_WIND,
@@ -348,11 +342,10 @@ void CreateFoodSpell::Launch()
 		player.hunger = 100;
 	}
 	
-	CCreateFood * effect = new CCreateFood();
-	effect->Create();
-	effect->SetDuration(m_duration);
-	m_pSpellFx = effect;
-	m_duration = effect->GetDuration();
+	m_pSpellFx = new CCreateFood();
+	m_pSpellFx->Create();
+	m_pSpellFx->SetDuration(m_duration);
+	m_duration = m_pSpellFx->GetDuration();
 }
 
 void CreateFoodSpell::End() {
@@ -386,8 +379,6 @@ void IceProjectileSpell::Launch()
 	
 	m_duration = 4200;
 	
-	CIceProjectile * effect = new CIceProjectile();
-	
 	Vec3f target;
 	float angleb;
 	if(m_caster == PlayerEntityHandle) {
@@ -399,11 +390,10 @@ void IceProjectileSpell::Launch()
 	}
 	target += angleToVectorXZ(angleb) * 150.0f;
 	
-	effect->Create(target, angleb, m_level, m_caster);
-	
-	effect->SetDuration(m_duration);
-	m_pSpellFx = effect;
-	m_duration = effect->GetDuration();
+	m_pSpellFx = new CIceProjectile();
+	m_pSpellFx->Create(target, angleb, m_level, m_caster);
+	m_pSpellFx->SetDuration(m_duration);
+	m_duration = m_pSpellFx->GetDuration();
 }
 
 void IceProjectileSpell::End() {

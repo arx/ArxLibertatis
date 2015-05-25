@@ -22,6 +22,8 @@
 
 #include "game/magic/Spell.h"
 
+#include "graphics/spells/Spells02.h"
+
 class HealSpell : public SpellBase {
 public:
 	~HealSpell();
@@ -32,7 +34,7 @@ public:
 	void Update(float framedelay);
 	
 private:
-	CSpellFx * m_pSpellFx;
+	CHeal * m_pSpellFx;
 };
 
 class DetectTrapSpell : public SpellBase {

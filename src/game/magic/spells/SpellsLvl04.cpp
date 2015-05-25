@@ -63,12 +63,12 @@ void BlessSpell::Launch()
 	m_hasDuration = true;
 	m_fManaCostPerSecond = 0.3333f * m_level;
 	
-	CBless * effect = new CBless();
 	Vec3f target = entities[m_caster]->pos;
-	effect->Create(target);
-	effect->SetDuration(20000);
-	m_pSpellFx = effect;
-	m_duration = effect->GetDuration();
+	
+	m_pSpellFx = new CBless();
+	m_pSpellFx->Create(target);
+	m_pSpellFx->SetDuration(20000);
+	m_duration = m_pSpellFx->GetDuration();
 	
 	m_targets.push_back(m_target);
 }
@@ -359,8 +359,6 @@ void CurseSpell::Launch()
 	m_hasDuration = true;
 	m_fManaCostPerSecond = 0.5f * m_level;
 	
-	CCurse * effect = new CCurse();
-	
 	Vec3f target = getTargetPos(m_caster, m_target);
 	if(m_target == PlayerEntityHandle) {
 		target.y -= 200.f;
@@ -368,10 +366,10 @@ void CurseSpell::Launch()
 		target.y += entities[m_target]->physics.cyl.height - 50.f;
 	}
 	
-	effect->Create(target);
-	effect->SetDuration(m_duration);
-	m_pSpellFx = effect;
-	m_duration = effect->GetDuration();
+	m_pSpellFx = new CCurse();
+	m_pSpellFx->Create(target);
+	m_pSpellFx->SetDuration(m_duration);
+	m_duration = m_pSpellFx->GetDuration();
 	
 	m_targets.push_back(m_target);
 }

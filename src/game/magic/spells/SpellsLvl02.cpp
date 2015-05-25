@@ -54,19 +54,18 @@ void HealSpell::Launch()
 	m_fManaCostPerSecond = 0.4f * m_level;
 	m_duration = (m_launchDuration > -1) ? m_launchDuration : 3500;
 	
-	CHeal * effect = new CHeal();
-	
+	Vec3f pos;
 	if(m_caster == PlayerEntityHandle) {
-		effect->setPos(player.pos);
+		pos = player.pos;
 	} else {
-		effect->setPos(entities[m_caster]->pos);
+		pos = entities[m_caster]->pos;
 	}
 	
-	effect->Create();
-	effect->SetDuration(m_duration);
-	
-	m_pSpellFx = effect;
-	m_duration = effect->GetDuration();
+	m_pSpellFx = new CHeal();
+	m_pSpellFx->setPos(pos);
+	m_pSpellFx->Create();
+	m_pSpellFx->SetDuration(m_duration);
+	m_duration = m_pSpellFx->GetDuration();
 }
 
 void HealSpell::End() {

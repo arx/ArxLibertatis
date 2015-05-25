@@ -22,6 +22,8 @@
 
 #include "game/magic/Spell.h"
 
+#include "graphics/spells/Spells09.h"
+
 class SummonCreatureSpell : public SpellBase {
 public:
 	SummonCreatureSpell();
@@ -35,7 +37,7 @@ public:
 private:
 	void GetTargetAndBeta(Vec3f & target, float & beta);
 	
-	CSpellFx * m_pSpellFx;
+	CSummonCreature * m_pSpellFx;
 	Vec3f m_targetPos;
 	bool m_megaCheat;
 	long m_longinfo_summon_creature;
@@ -52,7 +54,7 @@ public:
 	void Update(float timeDelta);
 	
 private:
-	CSpellFx * m_pSpellFx;
+	CSummonCreature * m_pSpellFx;
 	Vec3f m_targetPos;
 };
 
@@ -65,7 +67,7 @@ public:
 	void Update(float timeDelta);
 	
 private:
-	CSpellFx * m_pSpellFx;
+	CNegateMagic * m_pSpellFx;
 	void LaunchAntiMagicField();
 };
 

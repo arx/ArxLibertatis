@@ -22,6 +22,8 @@
 
 #include "game/magic/Spell.h"
 
+#include "graphics/spells/Spells01.h"
+
 class MagicSightSpell : public SpellBase {
 public:
 	bool CanLaunch();
@@ -39,7 +41,7 @@ public:
 	void Update(float timeDelta);
 	
 private:
-	CSpellFx * m_pSpellFx;
+	CMultiMagicMissile * m_pSpellFx;
 };
 
 class IgnitSpell : public SpellBase {

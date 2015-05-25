@@ -98,25 +98,24 @@ void SummonCreatureSpell::Launch()
 	m_megaCheat = (m_caster == PlayerEntityHandle && cur_mega == 10);
 	m_targetPos = target;
 	ARX_SOUND_PlaySFX(SND_SPELL_SUMMON_CREATURE, &m_targetPos);
-	CSummonCreature * effect = new CSummonCreature();
-	effect->Create(target, MAKEANGLE(player.angle.getPitch()));
-	effect->SetDuration(2000, 500, 1500);
-	effect->SetColorBorder(Color3f::red);
-	effect->SetColorRays1(Color3f::red);
-	effect->SetColorRays2(Color3f::yellow * .5f);
 	
-	effect->lLightId = GetFreeDynLight();
-	if(lightHandleIsValid(effect->lLightId)) {
-		EERIE_LIGHT * light = lightHandleGet(effect->lLightId);
+	m_pSpellFx = new CSummonCreature();
+	m_pSpellFx->Create(target, MAKEANGLE(player.angle.getPitch()));
+	m_pSpellFx->SetDuration(2000, 500, 1500);
+	m_pSpellFx->SetColorBorder(Color3f::red);
+	m_pSpellFx->SetColorRays1(Color3f::red);
+	m_pSpellFx->SetColorRays2(Color3f::yellow * .5f);
+	
+	m_pSpellFx->lLightId = GetFreeDynLight();
+	if(lightHandleIsValid(m_pSpellFx->lLightId)) {
+		EERIE_LIGHT * light = lightHandleGet(m_pSpellFx->lLightId);
 		
 		light->intensity = 0.3f;
 		light->fallend = 500.f;
 		light->fallstart = 400.f;
 		light->rgb = Color3f::red;
-		light->pos = effect->eSrc;
+		light->pos = m_pSpellFx->eSrc;
 	}
-	
-	m_pSpellFx = effect;
 }
 
 void SummonCreatureSpell::End()
@@ -166,18 +165,15 @@ void SummonCreatureSpell::Update(float timeDelta)
 	if(!arxtime.is_paused()) {
 		if(float(arxtime) - (float)m_timcreation <= 4000) {
 			if(rnd() > 0.7f) {
-				CSummonCreature * pSummon = (CSummonCreature *)m_pSpellFx;
-				if(pSummon) {
-					Vec3f pos = pSummon->eSrc;
+				if(m_pSpellFx) {
+					Vec3f pos = m_pSpellFx->eSrc;
 					MakeCoolFx(pos);
 				}
 			}
-
-			CSpellFx *pCSpellFX = m_pSpellFx;
-
-			if(pCSpellFX) {
-				pCSpellFX->Update(timeDelta);
-				pCSpellFX->Render();
+			
+			if(m_pSpellFx) {
+				m_pSpellFx->Update(timeDelta);
+				m_pSpellFx->Render();
 			}	
 
 			m_longinfo_summon_creature = 1;
@@ -188,10 +184,8 @@ void SummonCreatureSpell::Update(float timeDelta)
 
 			m_longinfo_summon_creature = 0;
 			ARX_SOUND_PlaySFX(SND_SPELL_ELECTRIC, &m_targetPos);
-			CSummonCreature *pSummon;
-			pSummon= (CSummonCreature *)m_pSpellFx;
-
-			if(pSummon) {
+			
+			if(m_pSpellFx) {
 				Cylinder phys;
 				phys.height = -200;
 				phys.radius = 50;
@@ -267,7 +261,7 @@ void SummonCreatureSpell::Update(float timeDelta)
 					SendIOScriptEvent(io,SM_SUMMONED);
 					
 					for(long j = 0; j < 3; j++) {
-						Vec3f pos = pSummon->eSrc;
+						Vec3f pos = m_pSpellFx->eSrc;
 						pos += Vec3f(rnd(), rnd(), rnd()) * 100.f;
 						pos += Vec3f(-50.f, 50.f, -50.f);
 						
@@ -313,26 +307,25 @@ void FakeSummonSpell::Launch()
 	}
 	m_targetPos = target;
 	ARX_SOUND_PlaySFX(SND_SPELL_SUMMON_CREATURE, &m_targetPos);
-	CSummonCreature * effect = new CSummonCreature();
-	effect->Create(target, MAKEANGLE(player.angle.getPitch()));
-	effect->SetDuration(2000, 500, 1500);
-	effect->SetColorBorder(Color3f::red);
-	effect->SetColorRays1(Color3f::red);
-	effect->SetColorRays2(Color3f::yellow * .5f);
 	
-	effect->lLightId = GetFreeDynLight();
+	m_pSpellFx = new CSummonCreature();
+	m_pSpellFx->Create(target, MAKEANGLE(player.angle.getPitch()));
+	m_pSpellFx->SetDuration(2000, 500, 1500);
+	m_pSpellFx->SetColorBorder(Color3f::red);
+	m_pSpellFx->SetColorRays1(Color3f::red);
+	m_pSpellFx->SetColorRays2(Color3f::yellow * .5f);
 	
-	if(lightHandleIsValid(effect->lLightId)) {
-		EERIE_LIGHT * light = lightHandleGet(effect->lLightId);
+	m_pSpellFx->lLightId = GetFreeDynLight();
+	
+	if(lightHandleIsValid(m_pSpellFx->lLightId)) {
+		EERIE_LIGHT * light = lightHandleGet(m_pSpellFx->lLightId);
 		
 		light->intensity = 0.3f;
 		light->fallend = 500.f;
 		light->fallstart = 400.f;
 		light->rgb = Color3f::red;
-		light->pos = effect->eSrc;
+		light->pos = m_pSpellFx->eSrc;
 	}
-	
-	m_pSpellFx = effect;
 }
 
 void FakeSummonSpell::End()
@@ -349,18 +342,16 @@ void FakeSummonSpell::Update(float timeDelta)
 {
 	if(!arxtime.is_paused()) {
 		if(rnd() > 0.7f) {
-			CSummonCreature * pSummon = (CSummonCreature *)m_pSpellFx;
-			if(pSummon) {
-				Vec3f pos = pSummon->eSrc;
+			if(m_pSpellFx) {
+				Vec3f pos = m_pSpellFx->eSrc;
 				MakeCoolFx(pos);
 			}
 		}
 	}
-	CSpellFx *pCSpellFX = m_pSpellFx;
 	
-	if(pCSpellFX) {
-		pCSpellFX->Update(timeDelta);
-		pCSpellFX->Render();
+	if(m_pSpellFx) {
+		m_pSpellFx->Update(timeDelta);
+		m_pSpellFx->Render();
 	}	
 }
 
@@ -383,11 +374,10 @@ void NegateMagicSpell::Launch()
 	
 	Vec3f targetPos = getTargetPos(m_caster, m_target);
 	
-	CNegateMagic * effect = new CNegateMagic();
-	effect->Create(targetPos);
-	effect->SetDuration(m_duration);
-	m_pSpellFx = effect;
-	m_duration = effect->GetDuration();
+	m_pSpellFx = new CNegateMagic();
+	m_pSpellFx->Create(targetPos);
+	m_pSpellFx->SetDuration(m_duration);
+	m_duration = m_pSpellFx->GetDuration();
 	
 	LaunchAntiMagicField();
 }
@@ -406,18 +396,16 @@ void NegateMagicSpell::End() {
 void NegateMagicSpell::Update(float timeDelta)
 {
 	LaunchAntiMagicField();
-
-	CNegateMagic * effect = static_cast<CNegateMagic *>(m_pSpellFx);
-
-	if(effect) {
+	
+	if(m_pSpellFx) {
 		if(m_target == PlayerEntityHandle) {
-			effect->SetPos(player.basePosition());
+			m_pSpellFx->SetPos(player.basePosition());
 		} else {
-			effect->SetPos(entities[m_target]->pos);
+			m_pSpellFx->SetPos(entities[m_target]->pos);
 		}
 		
-		effect->Update(timeDelta);
-		effect->Render();
+		m_pSpellFx->Update(timeDelta);
+		m_pSpellFx->Render();
 	}	
 }
 

@@ -454,8 +454,6 @@ void IceFieldSpell::Launch()
 	m_fManaCostPerSecond = 2.8f;
 	m_light = LightHandle::Invalid;
 	
-	CIceField * effect = new CIceField();
-	
 	Vec3f target;
 	float beta = 0.f;
 	bool displace = false;
@@ -488,10 +486,10 @@ void IceFieldSpell::Launch()
 	damage.pos = target;
 	m_damage = DamageCreate(damage);
 	
-	effect->Create(target);
-	effect->SetDuration(m_duration);
-	m_pSpellFx = effect;
-	m_duration = effect->GetDuration();
+	m_pSpellFx = new CIceField();
+	m_pSpellFx->Create(target);
+	m_pSpellFx->SetDuration(m_duration);
+	m_duration = m_pSpellFx->GetDuration();
 	
 	m_snd_loop = ARX_SOUND_PlaySFX( SND_SPELL_ICE_FIELD_LOOP, 
 	                                       &target, 1.f, 
@@ -566,13 +564,12 @@ LightningStrikeSpell::~LightningStrikeSpell() {
 
 void LightningStrikeSpell::Launch()
 {
-	CLightning * effect = new CLightning();
+	m_pSpellFx = new CLightning();
 	Vec3f target(0.f, 0.f, -500.f);
-	effect->Create(Vec3f_ZERO, target);
-	effect->SetDuration(long(500 * m_level));
-	effect->m_isMassLightning = false;
-	m_pSpellFx = effect;
-	m_duration = effect->GetDuration();
+	m_pSpellFx->Create(Vec3f_ZERO, target);
+	m_pSpellFx->SetDuration(long(500 * m_level));
+	m_pSpellFx->m_isMassLightning = false;
+	m_duration = m_pSpellFx->GetDuration();
 	
 	ARX_SOUND_PlaySFX(SND_SPELL_LIGHTNING_START, &m_caster_pos);
 	
@@ -677,11 +674,10 @@ void ConfuseSpell::Launch()
 	m_fManaCostPerSecond = 1.5f;
 	m_duration = (m_launchDuration > -1) ? m_launchDuration : 5000;
 	
-	CConfuse * effect = new CConfuse();
-	effect->Create();
-	effect->SetDuration(m_duration);
-	m_pSpellFx = effect;
-	m_duration = effect->GetDuration();
+	m_pSpellFx = new CConfuse();
+	m_pSpellFx->Create();
+	m_pSpellFx->SetDuration(m_duration);
+	m_duration = m_pSpellFx->GetDuration();
 	
 	m_targets.push_back(m_target);
 }
@@ -699,11 +695,9 @@ void ConfuseSpell::End()
 	m_pSpellFx = NULL;
 }
 
-void ConfuseSpell::Update(float timeDelta)
-{
-	CConfuse * effect = static_cast<CConfuse *>(m_pSpellFx);
+void ConfuseSpell::Update(float timeDelta) {
 	
-	if(effect) {
+	if(m_pSpellFx) {
 		Vec3f pos = entities[m_target]->pos;
 		if(m_target != PlayerEntityHandle) {
 			pos.y += entities[m_target]->physics.cyl.height - 30.f;
@@ -715,9 +709,9 @@ void ConfuseSpell::Update(float timeDelta)
 			pos.y -= 50.f;
 		}
 		
-		effect->SetPos(pos);
-		effect->Update(timeDelta);
-		effect->Render();
+		m_pSpellFx->SetPos(pos);
+		m_pSpellFx->Update(timeDelta);
+		m_pSpellFx->Render();
 	}
 }
 

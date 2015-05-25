@@ -101,12 +101,6 @@ void MagicMissileSpell::Launch()
 		number = glm::clamp(long(m_level + 1) / 2, 1l, 5l);
 	}
 	
-	bool mrCheat = (m_caster == PlayerEntityHandle && cur_mr == 3);
-	
-	CMultiMagicMissile * effect = new CMultiMagicMissile(number, mrCheat);
-	effect->SetDuration(6000ul);
-	
-	{
 	m_hand_group = GetActionPointIdx(entities[m_caster]->obj, "primary_attach");
 	
 	if(m_hand_group != -1) {
@@ -159,11 +153,12 @@ void MagicMissileSpell::Launch()
 		}
 	}
 	
-	effect->Create(aePos, afAlpha, afBeta);
-	}
+	bool mrCheat = (m_caster == PlayerEntityHandle && cur_mr == 3);
 	
-	m_pSpellFx = effect;
-	m_duration = effect->GetDuration();
+	m_pSpellFx = new CMultiMagicMissile(number, mrCheat);
+	m_pSpellFx->SetDuration(6000ul);
+	m_pSpellFx->Create(aePos, afAlpha, afBeta);
+	m_duration = m_pSpellFx->GetDuration();
 }
 
 void MagicMissileSpell::End() {

@@ -22,6 +22,8 @@
 
 #include "game/magic/Spell.h"
 
+#include "graphics/spells/Spells10.h"
+
 class MassLightningStrikeSpell : public SpellBase {
 public:
 	MassLightningStrikeSpell();
@@ -32,7 +34,7 @@ public:
 	void Update(float timeDelta);
 	
 private:
-	CSpellFx * m_pSpellFx;
+	CMassLightning * m_pSpellFx;
 	Vec3f m_targetPos;
 	bool m_soundEffectPlayed;
 	LightHandle m_light;
@@ -48,7 +50,7 @@ public:
 	void Update(float timeDelta);
 	
 private:
-	CSpellFx * m_pSpellFx;
+	CControlTarget * m_pSpellFx;
 };
 
 class FreezeTimeSpell : public SpellBase {

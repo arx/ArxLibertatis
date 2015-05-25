@@ -22,6 +22,8 @@
 
 #include "game/magic/Spell.h"
 
+#include "graphics/spells/Spells06.h"
+
 class RiseDeadSpell : public SpellBase {
 public:
 	RiseDeadSpell();
@@ -35,7 +37,7 @@ public:
 private:
 	void GetTargetAndBeta(Vec3f & target, float & beta);
 	
-	CSpellFx * m_pSpellFx;
+	CRiseDead * m_pSpellFx;
 	Vec3f m_targetPos;
 	EntityHandle m_entity;
 };
@@ -63,7 +65,7 @@ public:
 	EntityHandle m_entity;
 	
 private:
-	CSpellFx * m_pSpellFx;
+	CCreateField * m_pSpellFx;
 };
 
 class DisarmTrapSpell : public SpellBase {
@@ -83,7 +85,7 @@ public:
 	Vec3f getPosition();
 	
 private:
-	CSpellFx * m_pSpellFx;
+	CSlowDown * m_pSpellFx;
 };
 
 #endif // ARX_GAME_MAGIC_SPELLS_SPELLSLVL06_H

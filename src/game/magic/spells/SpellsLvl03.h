@@ -22,6 +22,8 @@
 
 #include "game/magic/Spell.h"
 
+#include "graphics/spells/Spells03.h"
+
 class SpeedSpell : public SpellBase {
 public:
 	~SpeedSpell();
@@ -33,7 +35,7 @@ public:
 	Vec3f getPosition();
 	
 private:
-	CSpellFx * m_pSpellFx;
+	CSpeed * m_pSpellFx;
 };
 
 class DispellIllusionSpell : public SpellBase {
@@ -54,7 +56,7 @@ public:
 	Vec3f getPosition();
 	
 private:
-	CSpellFx * m_pSpellFx;
+	CFireBall * m_pSpellFx;
 	LightHandle m_light;
 };
 
@@ -67,7 +69,7 @@ public:
 	void Update(float timeDelta);
 	
 private:
-	CSpellFx * m_pSpellFx;
+	CCreateFood * m_pSpellFx;
 };
 
 class IceProjectileSpell : public SpellBase {
@@ -79,7 +81,7 @@ public:
 	void Update(float timeDelta);
 	
 private:
-	CSpellFx * m_pSpellFx;
+	CIceProjectile * m_pSpellFx;
 };
 
 #endif // ARX_GAME_MAGIC_SPELLS_SPELLSLVL03_H
