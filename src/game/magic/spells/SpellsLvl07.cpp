@@ -507,24 +507,20 @@ void IceFieldSpell::End()
 	m_pSpellFx = NULL;
 }
 
-void IceFieldSpell::Update(float timeDelta)
-{
-	CSpellFx *pCSpellFX = m_pSpellFx;
+void IceFieldSpell::Update(float timeDelta) {
 	
-	if(pCSpellFX) {
-		pCSpellFX->Update(timeDelta);
+	if(m_pSpellFx) {
+		m_pSpellFx->Update(timeDelta);
 		
-		CIceField *pf = (CIceField *) pCSpellFX;
-
 		if(!lightHandleIsValid(m_light))
 			m_light = GetFreeDynLight();
 
 		if(lightHandleIsValid(m_light)) {
 			EERIE_LIGHT * el = lightHandleGet(m_light);
 			
-			el->pos.x = pf->eSrc.x;
-			el->pos.y = pf->eSrc.y-120.f;
-			el->pos.z = pf->eSrc.z;
+			el->pos.x = m_pSpellFx->eSrc.x;
+			el->pos.y = m_pSpellFx->eSrc.y-120.f;
+			el->pos.z = m_pSpellFx->eSrc.z;
 			el->intensity = 4.6f;
 			el->fallstart = 150.f+rnd()*30.f;
 			el->fallend   = 290.f+rnd()*30.f;
@@ -535,18 +531,13 @@ void IceFieldSpell::Update(float timeDelta)
 			el->extras=0;
 		}
 
-		pCSpellFX->Render();
+		m_pSpellFx->Render();
 	}
 }
 
-Vec3f IceFieldSpell::getPosition()
-{
-	CSpellFx *pCSpellFX = m_pSpellFx;
-
-	if(pCSpellFX) {
-		CIceField *pIceField = (CIceField *) pCSpellFX;
-			
-		return pIceField->eSrc;
+Vec3f IceFieldSpell::getPosition() {
+	if(m_pSpellFx) {
+		return m_pSpellFx->eSrc;
 	} else {
 		return Vec3f_ZERO;
 	}
@@ -604,11 +595,9 @@ static Vec3f GetChestPos(EntityHandle num) {
 	}
 }
 
-void LightningStrikeSpell::Update(float timeDelta)
-{
-	CLightning * effect = static_cast<CLightning *>(m_pSpellFx);
-
-	if(effect) {
+void LightningStrikeSpell::Update(float timeDelta) {
+	
+	if(m_pSpellFx) {
 		
 		float fBeta = 0.f;
 		float falpha = 0.f;
@@ -637,15 +626,15 @@ void LightningStrikeSpell::Update(float timeDelta)
 			}
 		}
 		
-		effect->m_pos = m_caster_pos;
-		effect->m_beta = fBeta;
-		effect->m_alpha = falpha;
+		m_pSpellFx->m_pos = m_caster_pos;
+		m_pSpellFx->m_beta = fBeta;
+		m_pSpellFx->m_alpha = falpha;
 		
-		effect->m_caster = m_caster;
-		effect->m_level = m_level;
+		m_pSpellFx->m_caster = m_caster;
+		m_pSpellFx->m_level = m_level;
 		
-		effect->Update(timeDelta);
-		effect->Render();
+		m_pSpellFx->Update(timeDelta);
+		m_pSpellFx->Render();
 	}
 	
 	ARX_SOUND_RefreshPosition(m_snd_loop, entities[m_caster]->pos);

@@ -203,15 +203,14 @@ void FireballSpell::End()
 	m_pSpellFx = NULL;
 }
 
-void FireballSpell::Update(float timeDelta)
-{
-	CFireBall *effect = static_cast<CFireBall *>(m_pSpellFx);
-	if(!effect)
+void FireballSpell::Update(float timeDelta) {
+	
+	if(!m_pSpellFx)
 		return;
 	
-	effect->Update(timeDelta);
+	m_pSpellFx->Update(timeDelta);
 	
-	if(effect->ulCurrentTime <= effect->m_createBallDuration) {
+	if(m_pSpellFx->ulCurrentTime <= m_pSpellFx->m_createBallDuration) {
 		
 		float afAlpha = 0.f;
 		float afBeta = 0.f;
@@ -222,38 +221,38 @@ void FireballSpell::Update(float timeDelta)
 			long idx = GetGroupOriginByName(entities[m_caster]->obj, "chest");
 
 			if(idx >= 0) {
-				effect->eCurPos = entities[m_caster]->obj->vertexlist3[idx].v;
+				m_pSpellFx->eCurPos = entities[m_caster]->obj->vertexlist3[idx].v;
 			} else {
-				effect->eCurPos = player.pos;
+				m_pSpellFx->eCurPos = player.pos;
 			}
 			
-			effect->eCurPos += angleToVectorXZ(afBeta) * 60.f;
+			m_pSpellFx->eCurPos += angleToVectorXZ(afBeta) * 60.f;
 		} else {
 			afBeta = entities[m_caster]->angle.getPitch();
 			
-			effect->eCurPos = entities[m_caster]->pos;
-			effect->eCurPos += angleToVectorXZ(afBeta) * 60.f;
+			m_pSpellFx->eCurPos = entities[m_caster]->pos;
+			m_pSpellFx->eCurPos += angleToVectorXZ(afBeta) * 60.f;
 			
 			if(ValidIONum(m_caster) && (entities[m_caster]->ioflags & IO_NPC)) {
 				
-				effect->eCurPos += angleToVectorXZ(entities[m_caster]->angle.getPitch()) * 30.f;
-				effect->eCurPos += Vec3f(0.f, -80.f, 0.f);
+				m_pSpellFx->eCurPos += angleToVectorXZ(entities[m_caster]->angle.getPitch()) * 30.f;
+				m_pSpellFx->eCurPos += Vec3f(0.f, -80.f, 0.f);
 			}
 			
 			Entity * io = entities[m_caster];
 
 			if(ValidIONum(io->targetinfo)) {
-				Vec3f * p1 = &effect->eCurPos;
+				Vec3f * p1 = &m_pSpellFx->eCurPos;
 				Vec3f p2 = entities[io->targetinfo]->pos;
 				p2.y -= 60.f;
 				afAlpha = 360.f - (glm::degrees(getAngle(p1->y, p1->z, p2.y, p2.z + glm::distance(Vec2f(p2.x, p2.z), Vec2f(p1->x, p1->z))))); //alpha entre orgn et dest;
 			}
 		}
 		
-		effect->eMove = angleToVector(Anglef(afAlpha, afBeta, 0.f)) * 100.f;
+		m_pSpellFx->eMove = angleToVector(Anglef(afAlpha, afBeta, 0.f)) * 100.f;
 	}
 	
-	effect->eCurPos += effect->eMove * (timeDelta * 0.0045f);
+	m_pSpellFx->eCurPos += m_pSpellFx->eMove * (timeDelta * 0.0045f);
 	
 	
 	if(!lightHandleIsValid(m_light))
@@ -262,7 +261,7 @@ void FireballSpell::Update(float timeDelta)
 	if(lightHandleIsValid(m_light)) {
 		EERIE_LIGHT * light = lightHandleGet(m_light);
 		
-		light->pos = effect->eCurPos;
+		light->pos = m_pSpellFx->eCurPos;
 		light->intensity = 2.2f;
 		light->fallend = 500.f;
 		light->fallstart = 400.f;
@@ -272,45 +271,44 @@ void FireballSpell::Update(float timeDelta)
 	}
 	
 	Sphere sphere;
-	sphere.origin = effect->eCurPos;
+	sphere.origin = m_pSpellFx->eCurPos;
 	sphere.radius=std::max(m_level*2.f,12.f);
 	
-		if(effect->ulCurrentTime > effect->m_createBallDuration) {
-			SpawnFireballTail(effect->eCurPos, effect->eMove, (float)m_level, 0);
+		if(m_pSpellFx->ulCurrentTime > m_pSpellFx->m_createBallDuration) {
+			SpawnFireballTail(m_pSpellFx->eCurPos, m_pSpellFx->eMove, (float)m_level, 0);
 		} else {
 			if(rnd()<0.9f) {
 				Vec3f move = Vec3f_ZERO;
-				float dd=(float)effect->ulCurrentTime / (float)effect->m_createBallDuration*10;
+				float dd=(float)m_pSpellFx->ulCurrentTime / (float)m_pSpellFx->m_createBallDuration*10;
 				
 				dd = glm::clamp(dd, 1.f, m_level);
 				
-				SpawnFireballTail(effect->eCurPos, move, (float)dd, 1);
+				SpawnFireballTail(m_pSpellFx->eCurPos, move, (float)dd, 1);
 			}
 		}
 	
-	if(!effect->bExplo)
+	if(!m_pSpellFx->bExplo)
 	if(CheckAnythingInSphere(sphere, m_caster, CAS_NO_SAME_GROUP)) {
-		ARX_BOOMS_Add(effect->eCurPos);
-		LaunchFireballBoom(effect->eCurPos, (float)m_level);
+		ARX_BOOMS_Add(m_pSpellFx->eCurPos);
+		LaunchFireballBoom(m_pSpellFx->eCurPos, (float)m_level);
 		
-		effect->eMove *= 0.5f;
-		effect->SetTTL(1500);
-		effect->bExplo = true;
+		m_pSpellFx->eMove *= 0.5f;
+		m_pSpellFx->SetTTL(1500);
+		m_pSpellFx->bExplo = true;
 		
-		DoSphericDamage(effect->eCurPos, 3.f * m_level, 30.f * m_level, DAMAGE_AREA, DAMAGE_TYPE_FIRE | DAMAGE_TYPE_MAGICAL, m_caster);
+		DoSphericDamage(m_pSpellFx->eCurPos, 3.f * m_level, 30.f * m_level, DAMAGE_AREA, DAMAGE_TYPE_FIRE | DAMAGE_TYPE_MAGICAL, m_caster);
 		m_duration=0;
 		ARX_SOUND_PlaySFX(SND_SPELL_FIRE_HIT, &sphere.origin);
 		ARX_NPC_SpawnAudibleSound(sphere.origin, entities[m_caster]);
 	}
 	
-	ARX_SOUND_RefreshPosition(m_snd_loop, effect->eCurPos);
+	ARX_SOUND_RefreshPosition(m_snd_loop, m_pSpellFx->eCurPos);
 }
 
 Vec3f FireballSpell::getPosition() {
 	
 	if(m_pSpellFx) {
-		CFireBall * pCF = (CFireBall *)m_pSpellFx;
-		return pCF->eCurPos;
+		return m_pSpellFx->eCurPos;
 	} else {
 		return Vec3f_ZERO;
 	}

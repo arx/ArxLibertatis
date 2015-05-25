@@ -84,23 +84,19 @@ void BlessSpell::End()
 void BlessSpell::Update(float timeDelta)
 {
 	if(m_pSpellFx) {
-		CBless * pBless=(CBless *)m_pSpellFx;
-
-		if(pBless) {
-			Anglef angle = Anglef::ZERO;
+		Anglef angle = Anglef::ZERO;
+		
+		if(ValidIONum(m_target)) {
+			m_pSpellFx->eSrc = entities[m_target]->pos;
 			
-			if(ValidIONum(m_target)) {
-				pBless->eSrc = entities[m_target]->pos;
-				
-				if(m_target == PlayerEntityHandle)
-					angle.setPitch(player.angle.getPitch());
-				else 
-					angle.setPitch(entities[m_target]->angle.getPitch());
-			}
-			
-			pBless->Set_Angle(angle);
-			pBless->m_scale = (m_level + 10) * 6.f;
+			if(m_target == PlayerEntityHandle)
+				angle.setPitch(player.angle.getPitch());
+			else 
+				angle.setPitch(entities[m_target]->angle.getPitch());
 		}
+		
+		m_pSpellFx->Set_Angle(angle);
+		m_pSpellFx->m_scale = (m_level + 10) * 6.f;
 
 		m_pSpellFx->Update(timeDelta);
 		m_pSpellFx->Render();
@@ -377,10 +373,9 @@ void CurseSpell::End()
 	m_pSpellFx = NULL;
 }
 
-void CurseSpell::Update(float timeDelta)
-{
+void CurseSpell::Update(float timeDelta) {
+	
 	if(m_pSpellFx) {
-		CCurse * curse=(CCurse *)m_pSpellFx;
 		Vec3f target = Vec3f_ZERO;
 			
 		if(m_target >= PlayerEntityHandle && entities[m_target]) {
@@ -392,10 +387,10 @@ void CurseSpell::Update(float timeDelta)
 				target.y += entities[m_target]->physics.cyl.height - 30.f;
 		}
 		
-		curse->Update(timeDelta);
+		m_pSpellFx->Update(timeDelta);
 		
-		curse->eTarget = target;
-		curse->Render();
+		m_pSpellFx->eTarget = target;
+		m_pSpellFx->Render();
 	}
 }
 

@@ -74,10 +74,9 @@ void HealSpell::End() {
 	m_pSpellFx = NULL;
 }
 
-void HealSpell::Update(float timeDelta)
-{
-	CHeal * effect = static_cast<CHeal *>(m_pSpellFx);
-	if(!effect)
+void HealSpell::Update(float timeDelta) {
+	
+	if(!m_pSpellFx)
 		return;
 
 	Vec3f pos;
@@ -86,10 +85,10 @@ void HealSpell::Update(float timeDelta)
 	} else if(ValidIONum(m_target)) {
 		pos = entities[m_target]->pos;
 	}
-	effect->setPos(pos);
+	m_pSpellFx->setPos(pos);
 	
-	effect->Update(timeDelta);
-	effect->Render();
+	m_pSpellFx->Update(timeDelta);
+	m_pSpellFx->Render();
 	
 	for(size_t ii = 0; ii < entities.size(); ii++) {
 		const EntityHandle handle = EntityHandle(ii);

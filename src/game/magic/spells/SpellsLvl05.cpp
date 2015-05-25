@@ -162,9 +162,8 @@ void LevitateSpell::End()
 	m_pSpellFx = NULL;
 }
 
-void LevitateSpell::Update(float timeDelta)
-{
-	CLevitate *pLevitate=(CLevitate *)m_pSpellFx;
+void LevitateSpell::Update(float timeDelta) {
+	
 	Vec3f target;
 
 	if(m_target == PlayerEntityHandle) {
@@ -174,14 +173,13 @@ void LevitateSpell::Update(float timeDelta)
 		target = entities[m_caster]->pos;
 	}
 
-	pLevitate->ChangePos(&target);
-		
-	CSpellFx *pCSpellFX = m_pSpellFx;
-
-	if(pCSpellFX) {
-		pCSpellFX->Update(timeDelta);
-		pCSpellFX->Render();
+	m_pSpellFx->ChangePos(&target);
+	
+	if(m_pSpellFx) {
+		m_pSpellFx->Update(timeDelta);
+		m_pSpellFx->Render();
 	}
+	
 	ARX_SOUND_RefreshPosition(m_snd_loop, entities[m_target]->pos);
 }
 
@@ -222,19 +220,17 @@ void CurePoisonSpell::End() {
 	m_pSpellFx = NULL;
 }
 
-void CurePoisonSpell::Update(float timeDelta)
-{
-	CCurePoison * effect = static_cast<CCurePoison *>(m_pSpellFx);
+void CurePoisonSpell::Update(float timeDelta) {
 	
-	if(effect) {
+	if(m_pSpellFx) {
 		Vec3f pos = entities[m_target]->pos;
 		
 		if(m_target == PlayerEntityHandle)
 			pos.y += 200;
 		
-		effect->SetPosition(pos);
-		effect->Update(timeDelta);
-		effect->Render();
+		m_pSpellFx->SetPosition(pos);
+		m_pSpellFx->Update(timeDelta);
+		m_pSpellFx->Render();
 	}
 }
 
@@ -280,11 +276,9 @@ void RepelUndeadSpell::End() {
 	m_pSpellFx = NULL;
 }
 
-void RepelUndeadSpell::Update(float timeDelta)
-{
-	CRepelUndead * effect = static_cast<CRepelUndead *>(m_pSpellFx);
+void RepelUndeadSpell::Update(float timeDelta) {
 	
-	if(effect) {
+	if(m_pSpellFx) {
 		Vec3f pos = entities[m_target]->pos;
 		
 		float rot;
@@ -294,10 +288,10 @@ void RepelUndeadSpell::Update(float timeDelta)
 			rot = entities[m_target]->angle.getPitch();
 		}
 		
-		effect->SetPos(pos);
-		effect->SetRotation(rot);
-		effect->Update(timeDelta);
-		effect->Render();
+		m_pSpellFx->SetPos(pos);
+		m_pSpellFx->SetRotation(rot);
+		m_pSpellFx->Update(timeDelta);
+		m_pSpellFx->Render();
 
 		if (m_target == PlayerEntityHandle)
 			ARX_SOUND_RefreshPosition(m_snd_loop, entities[m_target]->pos);
@@ -355,16 +349,14 @@ void PoisonProjectileSpell::Launch()
 	m_duration = m_pSpellFx->GetDuration();
 }
 
-void PoisonProjectileSpell::Update(float timeDelta)
-{
-	CMultiPoisonProjectile * effect = static_cast<CMultiPoisonProjectile *>(m_pSpellFx);
+void PoisonProjectileSpell::Update(float timeDelta) {
 	
-	if(effect) {
-		effect->m_caster = m_caster;
-		effect->m_level = m_level;
-		effect->m_timcreation = m_timcreation;
+	if(m_pSpellFx) {
+		m_pSpellFx->m_caster = m_caster;
+		m_pSpellFx->m_level = m_level;
+		m_pSpellFx->m_timcreation = m_timcreation;
 		
-		effect->Update(timeDelta);
-		effect->Render();
+		m_pSpellFx->Update(timeDelta);
+		m_pSpellFx->Render();
 	}
 }

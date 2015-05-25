@@ -163,24 +163,23 @@ void RiseDeadSpell::End()
 	m_pSpellFx = NULL;
 }
 
-void RiseDeadSpell::Update(float timeDelta)
-{
-	CRiseDead * effect = static_cast<CRiseDead *>(m_pSpellFx);
-	if(!effect)
+void RiseDeadSpell::Update(float timeDelta) {
+	
+	if(!m_pSpellFx)
 		return;
 	
 	if(m_entity == -2) {
-		effect->lLightId = LightHandle::Invalid;
+		m_pSpellFx->lLightId = LightHandle::Invalid;
 		return;
 	}
 	
 	m_duration+=200;
 	
-	effect->Update(timeDelta);
-	effect->Render();
+	m_pSpellFx->Update(timeDelta);
+	m_pSpellFx->Render();
 	
-	if(lightHandleIsValid(effect->lLightId)) {
-		EERIE_LIGHT * light = lightHandleGet(effect->lLightId);
+	if(lightHandleIsValid(m_pSpellFx->lLightId)) {
+		EERIE_LIGHT * light = lightHandleGet(m_pSpellFx->lLightId);
 		
 		light->intensity = 0.7f + 2.3f;
 		light->fallend = 500.f;
@@ -192,7 +191,7 @@ void RiseDeadSpell::Update(float timeDelta)
 		light->time_creation = (unsigned long)(arxtime);
 	}
 	
-	unsigned long tim = effect->ulCurrentTime;
+	unsigned long tim = m_pSpellFx->ulCurrentTime;
 	
 	if(tim > 3000 && m_entity == EntityHandle::Invalid) {
 		ARX_SOUND_PlaySFX(SND_SPELL_ELECTRIC, &m_targetPos);
@@ -231,14 +230,14 @@ void RiseDeadSpell::Update(float timeDelta)
 				
 				SendIOScriptEvent(io,SM_SUMMONED);
 					
-				Vec3f pos = effect->eSrc;
+				Vec3f pos = m_pSpellFx->eSrc;
 				pos += Vec3f(rnd(), rnd(), rnd()) * 100.f;
 				pos += Vec3f(-50.f, 50.f, -50.f);
 				
 				MakeCoolFx(pos);
 			}
 			
-			effect->lLightId = LightHandle::Invalid;
+			m_pSpellFx->lLightId = LightHandle::Invalid;
 		} else {
 			ARX_SOUND_PlaySFX(SND_MAGIC_FIZZLE);
 			m_entity = EntityHandle(-2); // FIXME inband signaling
@@ -246,7 +245,7 @@ void RiseDeadSpell::Update(float timeDelta)
 		}
 	} else if(!arxtime.is_paused() && tim < 4000) {
 	  if(rnd() > 0.95f) {
-			MakeCoolFx(effect->eSrc);
+			MakeCoolFx(m_pSpellFx->eSrc);
 		}
 	}
 }
@@ -384,35 +383,29 @@ void CreateFieldSpell::End() {
 	m_pSpellFx = NULL;
 }
 
-void CreateFieldSpell::Update(float timeDelta)
-{
-	CSpellFx *pCSpellFX = m_pSpellFx;
+void CreateFieldSpell::Update(float timeDelta) {
 	
-	if(pCSpellFX) {
+	if(m_pSpellFx) {
 		if(ValidIONum(m_entity)) {
 			Entity * io = entities[m_entity];
 			
-			CCreateField * ccf=(CCreateField *)pCSpellFX;
-			io->pos = ccf->eSrc;
+			io->pos = m_pSpellFx->eSrc;
 
 			if (IsAnyNPCInPlatform(io))
 			{
 				m_duration=0;
 			}
 		
-			pCSpellFX->Update(timeDelta);			
-			pCSpellFX->Render();
+			m_pSpellFx->Update(timeDelta);			
+			m_pSpellFx->Render();
 		}
 	}
 }
 
 Vec3f CreateFieldSpell::getPosition() {
-	CSpellFx *pCSpellFX = m_pSpellFx;
-
-	if(pCSpellFX) {
-		CCreateField *pCreateField = (CCreateField *) pCSpellFX;
-			
-		return pCreateField->eSrc;
+	
+	if(m_pSpellFx) {
+		return m_pSpellFx->eSrc;
 	} else {
 		return Vec3f_ZERO;
 	}
@@ -494,13 +487,11 @@ void SlowDownSpell::End()
 	m_pSpellFx = NULL;
 }
 
-void SlowDownSpell::Update(float timeDelta)
-{
-	CSpellFx *pCSpellFX = m_pSpellFx;
-
-	if(pCSpellFX) {
-		pCSpellFX->Update(timeDelta);
-		pCSpellFX->Render();
+void SlowDownSpell::Update(float timeDelta) {
+	
+	if(m_pSpellFx) {
+		m_pSpellFx->Update(timeDelta);
+		m_pSpellFx->Render();
 	}
 }
 
