@@ -92,38 +92,23 @@ void RuneOfGuardingSpell::Update(float timeDelta) {
 	if(m_pSpellFx) {
 		m_pSpellFx->Update(timeDelta);
 		m_pSpellFx->Render();
-		CRuneOfGuarding * pCRG=(CRuneOfGuarding *)m_pSpellFx;
-
-		if (pCRG)
-		{
-			Sphere sphere;
-			sphere.origin = pCRG->eSrc;
-			sphere.radius=std::max(m_level*15.f,50.f);
-
-			if (CheckAnythingInSphere(sphere,m_caster,CAS_NO_SAME_GROUP | CAS_NO_BACKGROUND_COL | CAS_NO_ITEM_COL| CAS_NO_FIX_COL | CAS_NO_DEAD_COL))
-			{
-				ARX_BOOMS_Add(pCRG->eSrc);
-				LaunchFireballBoom(pCRG->eSrc, (float)m_level);
-				DoSphericDamage(pCRG->eSrc, 4.f * m_level, 30.f * m_level, DAMAGE_AREA, DAMAGE_TYPE_FIRE | DAMAGE_TYPE_MAGICAL, m_caster);
-				m_duration=0;
-				ARX_SOUND_PlaySFX(SND_SPELL_RUNE_OF_GUARDING_END, &sphere.origin);
-			}
-		}
+	}
+	
+	Sphere sphere = Sphere(m_pos, std::max(m_level * 15.f, 50.f));
+	if(CheckAnythingInSphere(sphere, m_caster, CAS_NO_SAME_GROUP | CAS_NO_BACKGROUND_COL | CAS_NO_ITEM_COL| CAS_NO_FIX_COL | CAS_NO_DEAD_COL)) {
+		ARX_BOOMS_Add(m_pos);
+		LaunchFireballBoom(m_pos, (float)m_level);
+		DoSphericDamage(m_pos, 4.f * m_level, 30.f * m_level, DAMAGE_AREA, DAMAGE_TYPE_FIRE | DAMAGE_TYPE_MAGICAL, m_caster);
+		ARX_SOUND_PlaySFX(SND_SPELL_RUNE_OF_GUARDING_END, &m_pos);
+		m_duration = 0;
 	}
 }
 
 Vec3f RuneOfGuardingSpell::getPosition() {
 	
-	CSpellFx *pCSpellFX = m_pSpellFx;
-
-	if(pCSpellFX) {
-		CRuneOfGuarding *pCRG = (CRuneOfGuarding *) pCSpellFX;
-			
-		return pCRG->eSrc;
-	} else {
-		return Vec3f_ZERO;
-	}
+	return m_pos;
 }
+
 
 LevitateSpell::~LevitateSpell() {
 	
