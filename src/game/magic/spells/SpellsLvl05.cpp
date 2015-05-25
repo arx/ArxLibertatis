@@ -45,25 +45,50 @@ void RuneOfGuardingSpell::Launch()
 	
 	m_duration = (m_launchDuration > -1) ? m_launchDuration : 99999999;
 	
+	m_pos = entities[m_caster]->pos;
+	
 	m_pSpellFx = new CRuneOfGuarding();
-	m_pSpellFx->Create(entities[m_caster]->pos);
+	m_pSpellFx->Create(m_pos);
 	m_pSpellFx->SetDuration(m_duration);
 	m_duration = m_pSpellFx->GetDuration();
+	
+	
+	m_light = GetFreeDynLight();
+	if(lightHandleIsValid(m_light)) {
+		EERIE_LIGHT * light = lightHandleGet(m_light);
+		
+		light->intensity = 0.7f + 2.3f;
+		light->fallend = 500.f;
+		light->fallstart = 400.f;
+		light->rgb = Color3f(1.0f, 0.2f, 0.2f);
+		light->pos = m_pos - Vec3f(0.f, 50.f, 0.f);
+		light->time_creation = (unsigned long)(arxtime);
+		light->duration = 200;
+	}
 }
 
 void RuneOfGuardingSpell::End() {
 	
-	// All Levels - Kill Light
-	if(m_pSpellFx) {
-		endLightDelayed(m_pSpellFx->lLightId, 500);
-	}
+	endLightDelayed(m_light, 500);
 	
 	delete m_pSpellFx;
 	m_pSpellFx = NULL;
 }
 
-void RuneOfGuardingSpell::Update(float timeDelta)
-{
+void RuneOfGuardingSpell::Update(float timeDelta) {
+	
+	if(lightHandleIsValid(m_light)) {
+		EERIE_LIGHT * light = lightHandleGet(m_light);
+		
+		float fa = 1.0f - rnd() * 0.15f;
+		light->intensity = 0.7f + 2.3f * fa;
+		light->fallend = 350.f;
+		light->fallstart = 150.f;
+		light->rgb = Color3f(1.0f, 0.2f, 0.2f);
+		light->time_creation = (unsigned long)(arxtime);
+		light->duration = 200;
+	}
+	
 	if(m_pSpellFx) {
 		m_pSpellFx->Update(timeDelta);
 		m_pSpellFx->Render();

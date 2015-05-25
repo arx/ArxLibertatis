@@ -254,37 +254,11 @@ void CRuneOfGuarding::Create(Vec3f _eSrc) {
 	SetDuration(ulDuration);
 	eSrc = _eSrc;
 	eTarget = eSrc;
-	
-	lLightId = GetFreeDynLight();
-	if(lightHandleIsValid(lLightId)) {
-		EERIE_LIGHT * light = lightHandleGet(lLightId);
-		
-		light->intensity = 0.7f + 2.3f;
-		light->fallend = 500.f;
-		light->fallstart = 400.f;
-		light->rgb = Color3f(1.0f, 0.2f, 0.2f);
-		light->pos = eSrc - Vec3f(0.f, 50.f, 0.f);
-		light->time_creation = (unsigned long)(arxtime);
-		light->duration = 200;
-	}
 }
 
 void CRuneOfGuarding::Update(float timeDelta) {
 	
 	ulCurrentTime += timeDelta;
-	
-	float fa = 1.0f - rnd() * 0.15f;
-	
-	if(lightHandleIsValid(lLightId)) {
-		EERIE_LIGHT * light = lightHandleGet(lLightId);
-		
-		light->intensity = 0.7f + 2.3f * fa;
-		light->fallend = 350.f;
-		light->fallstart = 150.f;
-		light->rgb = Color3f(1.0f, 0.2f, 0.2f);
-		light->time_creation = (unsigned long)(arxtime);
-		light->duration = 200;
-	}
 }
 
 void CRuneOfGuarding::Render()

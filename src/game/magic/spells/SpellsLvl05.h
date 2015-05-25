@@ -35,6 +35,8 @@ public:
 	Vec3f getPosition();
 	
 private:
+	Vec3f m_pos;
+	LightHandle m_light;
 	CRuneOfGuarding * m_pSpellFx;
 };
 

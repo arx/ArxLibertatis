@@ -62,7 +62,6 @@ public:
 	
 	Vec3f eSrc;
 	
-	LightHandle lLightId;
 private:
 	
 	Vec3f eTarget;
