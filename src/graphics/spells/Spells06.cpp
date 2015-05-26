@@ -341,8 +341,6 @@ CRiseDead::CRiseDead()
 	SetDuration(1000);
 	ulCurrentTime = ulDurationIntro + ulDurationRender + ulDurationOuttro + 1;
 	
-	fOneOniSize = 1.0f / ((float) iSize);
-	
 	m_colorBorder = Color3f(1.f, 1.f, 1.f);
 	m_colorRays1 = Color3f(1.f, 1.f, 1.f);
 	m_colorRays2 = Color3f(0.f, 0.f, 0.f);

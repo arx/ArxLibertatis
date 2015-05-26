@@ -138,7 +138,6 @@ private:
 	int		end;
 	int		iSize;
 	bool	bIntro;
-	float	fOneOniSize;
 	float	fOneOnDurationIntro;
 	float	fOneOnDurationRender;
 	float	fOneOnDurationOuttro;
