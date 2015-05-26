@@ -99,9 +99,6 @@ CLightning::CLightning()
 	SetDuration(2000);
 	ulCurrentTime = ulDuration + 1;
 	
-	SetColor1(1.0f, 1.0f, 1.0f);
-	SetColor2(0.0f, 0.0f, 0.2f);
-	
 	tex_light = NULL;
 }
 
@@ -222,19 +219,6 @@ void CLightning::SetPosSrc(Vec3f aeSrc) {
 void CLightning::SetPosDest(Vec3f aeDest) {
 	eDest = aeDest;
 }
-
-void CLightning::SetColor1(float afR, float afG, float afB) {
-	fColor1[0] = afR;
-	fColor1[1] = afG;
-	fColor1[2] = afB;
-}
-
-void CLightning::SetColor2(float afR, float afG, float afB) {
-	fColor2[0] = afR;
-	fColor2[1] = afG;
-	fColor2[2] = afB;
-}
-
 
 float fTotoro = 0;
 float fMySize = 2;

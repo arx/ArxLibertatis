@@ -97,8 +97,6 @@ void CMassLightning::Create(Vec3f aePos) {
 		long lTime = ulDuration + Random::get(0, 5000);
 		lightning->SetDuration(lTime);
 		lMax = std::max(lMax, lTime);
-		lightning->SetColor1(1.f, 0.75f, 0.75f); // middle
-		lightning->SetColor2(0.3f, 0.f, 0.f); // extremities
 	}
 
 	SetDuration(lMax + 1000);

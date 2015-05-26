@@ -61,10 +61,7 @@ public:
 	void SetColor(long, long);
 	void SetPosSrc(Vec3f);
 	void SetPosDest(Vec3f);
-
-	void SetColor1(float, float, float);
-	void SetColor2(float, float, float);
-
+	
 	void Create(Vec3f, Vec3f);
 	void Update(float timeDelta);
 	void Render();
@@ -81,8 +78,6 @@ public:
 private:
 	size_t nbtotal;
 	long	lNbSegments;
-	float	fColor1[3];
-	float	fColor2[3];
 	float	invNbSegments;
 	float	fSize;
 	float	fLengthMin;
