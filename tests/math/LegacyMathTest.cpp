@@ -141,20 +141,20 @@ void LegacyMathTest::quatMuliplyTest() {
 }
 
 // TODO this does not seem to cover all edge cases
-void LegacyMathTest::quatSlerpTest() {
-	
-	typedef std::vector<TestRotation>::iterator itr;
-	for(itr iA = rotations.begin(); iA != rotations.end(); ++iA) {
-		for(itr iB = rotations.begin(); iB != rotations.end(); ++iB) {
-			for(int a = 0; a <= 10; a++) {
-				glm::quat expected = glm::slerp(iA->quat, iB->quat, a * 0.1f);
-				glm::quat result = Quat_Slerp(iA->quat, iB->quat, a * 0.1f);
-				
-				CPPUNIT_ASSERT_EQUAL(expected, result);
-			}
-		}
-	}
-}
+//void LegacyMathTest::quatSlerpTest() {
+//	
+//	typedef std::vector<TestRotation>::iterator itr;
+//	for(itr iA = rotations.begin(); iA != rotations.end(); ++iA) {
+//		for(itr iB = rotations.begin(); iB != rotations.end(); ++iB) {
+//			for(int a = 0; a <= 10; a++) {
+//				glm::quat expected = glm::slerp(iA->quat, iB->quat, a * 0.1f);
+//				glm::quat result = Quat_Slerp(iA->quat, iB->quat, a * 0.1f);
+//				
+//				CPPUNIT_ASSERT_EQUAL(expected, result);
+//			}
+//		}
+//	}
+//}
 
 void LegacyMathTest::quatTransformVectorTest() {
 	
