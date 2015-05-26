@@ -348,10 +348,7 @@ CRiseDead::CRiseDead()
 	fColorBorder[2] = 1;
 	
 	m_colorRays1 = Color3f(1.f, 1.f, 1.f);
-	
-	fColorRays2[0] = 0;
-	fColorRays2[1] = 0;
-	fColorRays2[2] = 0;
+	m_colorRays2 = Color3f(0.f, 0.f, 0.f);
 	
 	stone[0] = NULL;
 	stone[1] = NULL;
@@ -420,11 +417,9 @@ void CRiseDead::SetColorRays1(Color3f color)
 	m_colorRays1 = color;
 }
 
-void CRiseDead::SetColorRays2(float afRed, float afGreen, float afBlue)
+void CRiseDead::SetColorRays2(Color3f color)
 {
-	fColorRays2[0] = afRed;
-	fColorRays2[1] = afGreen;
-	fColorRays2[2] = afBlue;
+	m_colorRays2 = color;
 }
 
 void CRiseDead::Create(Vec3f aeSrc, float afBeta)
@@ -695,7 +690,7 @@ void CRiseDead::RenderFissure()
 
 	EE_RTP(vt[1], &vr[0]);
 	vr[0].color = vr[1].color = m_colorRays1.toRGB();
-	vr[2].color = vr[3].color = Color3f(fColorRays2[0], fColorRays2[1], fColorRays2[2]).toRGB();
+	vr[2].color = vr[3].color = m_colorRays2.toRGB();
 
 	vr[0].uv.x = fTexWrap;
 	vr[0].uv.y = 1;
@@ -779,8 +774,8 @@ void CRiseDead::RenderFissure()
 
 			vr[0].color = (m_colorRays1 * tfRaysa[i]).toRGB();
 			vr[1].color = (m_colorRays1* tfRaysa[i + 1]).toRGB();
-			vr[2].color = (Color3f(fColorRays2[0], fColorRays2[1], fColorRays2[2]) * tfRaysa[i]).toRGB();
-			vr[3].color = (Color3f(fColorRays2[0], fColorRays2[1], fColorRays2[2]) * tfRaysa[i + 1]).toRGB();
+			vr[2].color = (m_colorRays2 * tfRaysa[i]).toRGB();
+			vr[3].color = (m_colorRays2 * tfRaysa[i + 1]).toRGB();
 			
 			vr[0].p = EE_RT(vt[0]);
 			vr[1].p = EE_RT(vt[1]);
@@ -802,8 +797,8 @@ void CRiseDead::RenderFissure()
 
 			vr[0].color = (m_colorRays1 * tfRaysb[i]).toRGB();
 			vr[1].color = (m_colorRays1 * tfRaysb[i + 1]).toRGB();
-			vr[2].color = (Color3f(fColorRays2[0], fColorRays2[1], fColorRays2[2]) * tfRaysb[i]).toRGB();
-			vr[3].color = (Color3f(fColorRays2[0], fColorRays2[1], fColorRays2[2]) * tfRaysb[i + 1]).toRGB();
+			vr[2].color = (m_colorRays2 * tfRaysb[i]).toRGB();
+			vr[3].color = (m_colorRays2 * tfRaysb[i + 1]).toRGB();
 
 			vr[0].p = EE_RT(vt[0]);
 			vr[1].p = EE_RT(vt[1]);

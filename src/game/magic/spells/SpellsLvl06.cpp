@@ -103,7 +103,7 @@ void RiseDeadSpell::Launch()
 	m_pSpellFx->SetDuration(2000, 500, 1800);
 	m_pSpellFx->SetColorBorder(0.5, 0.5, 0.5);
 	m_pSpellFx->SetColorRays1(Color3f(0.5, 0.5, 0.5));
-	m_pSpellFx->SetColorRays2(1, 0, 0);
+	m_pSpellFx->SetColorRays2(Color3f(1.f, 0.f, 0.f));
 	
 	if(!lightHandleIsValid(m_pSpellFx->lLightId)) {
 		m_pSpellFx->lLightId = GetFreeDynLight();

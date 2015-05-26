@@ -108,7 +108,7 @@ public:
 	
 	void SetColorBorder(float, float, float);
 	void SetColorRays1(Color3f color);
-	void SetColorRays2(float, float, float);
+	void SetColorRays2(Color3f color);
 	unsigned long GetDuration();
 	
 	void Create(Vec3f, float afBeta = 0);
@@ -131,6 +131,7 @@ private:
 	void RenderFissure();
 	
 	Color3f m_colorRays1;
+	Color3f m_colorRays2;
 	
 	TextureContainer * tex_light;
 	int		end;
@@ -144,7 +145,6 @@ private:
 	float	fSizeIntro;
 	float	fTexWrap;
 	float	fColorBorder[3];
-	float	fColorRays2[3];
 	float	tfRaysa[40];
 	float	tfRaysb[40];
 	unsigned long ulDurationIntro;
