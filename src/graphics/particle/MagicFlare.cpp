@@ -56,7 +56,7 @@ struct FLARES {
 	bool bDrawBitmap;
 };
 
-static const size_t MAX_FLARES = 300;
+static const size_t MAX_FLARES = 500;
 FLARES magicFlares[MAX_FLARES];
 
 struct FLARETC
