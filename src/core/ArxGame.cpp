@@ -2015,7 +2015,6 @@ void ArxGame::renderLevel() {
 
 	// Speech Management
 	ARX_SPEECH_Check();
-	ARX_SPEECH_Update();
 
 	GRenderer->GetTextureStage(0)->setWrapMode(TextureStage::WrapRepeat);
 
@@ -2061,6 +2060,11 @@ void ArxGame::renderLevel() {
 
 	if(FADEDIR)
 		ManageFade();
+	
+	GRenderer->SetScissor(Rect::ZERO);
+	
+	ARX_SPEECH_Update();
+	
 }
 
 void ArxGame::update() {	
