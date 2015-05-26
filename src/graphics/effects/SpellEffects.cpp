@@ -87,19 +87,11 @@ void Draw3DLineTexNew(const RenderMaterial & mat, Vec3f startPos, Vec3f endPos, 
 	q1.v[2].uv = Vec2f_ONE;
 	q1.v[3].uv = Vec2f_Y_AXIS;
 	
-	q1.v[0].p.x = startPos.x;
-	q1.v[0].p.y = startPos.y + zzs;
-	q1.v[0].p.z = startPos.z;
-	q1.v[1].p.x = startPos.x;
-	q1.v[1].p.y = startPos.y - zzs;
-	q1.v[1].p.z = startPos.z;
-	q1.v[2].p.x = endPos.x;
-	q1.v[2].p.y = endPos.y - zze;
-	q1.v[2].p.z = endPos.z;
-	q1.v[3].p.x = endPos.x;
-	q1.v[3].p.y = endPos.y + zze;
-	q1.v[3].p.z = endPos.z;
-
+	q1.v[0].p = startPos + Vec3f(0.f, zzs, 0.f);
+	q1.v[1].p = startPos + Vec3f(0.f,-zzs, 0.f);
+	q1.v[2].p = endPos + Vec3f(0.f,-zze, 0.f);
+	q1.v[3].p = endPos + Vec3f(0.f, zze, 0.f);
+	
 	drawQuadRTP(mat, q1);
 	}
 	
@@ -117,18 +109,10 @@ void Draw3DLineTexNew(const RenderMaterial & mat, Vec3f startPos, Vec3f endPos, 
 	q2.v[2].uv = Vec2f_ONE;
 	q2.v[3].uv = Vec2f_Y_AXIS;
 	
-	q2.v[0].p.x = startPos.x + xxs;
-	q2.v[0].p.y = startPos.y;
-	q2.v[0].p.z = startPos.z + zzs;
-	q2.v[1].p.x = startPos.x - xxs;
-	q2.v[1].p.y = startPos.y;
-	q2.v[1].p.z = startPos.z - zzs;
-	q2.v[2].p.x = endPos.x - xxe;
-	q2.v[2].p.y = endPos.y;
-	q2.v[2].p.z = endPos.z - zze;
-	q2.v[3].p.x = endPos.x + xxe;
-	q2.v[3].p.y = endPos.y;
-	q2.v[3].p.z = endPos.z + zze;
+	q2.v[0].p = startPos + Vec3f(xxs, 0.f, zzs);
+	q2.v[1].p = startPos + Vec3f(-xxs, 0.f, -zzs);
+	q2.v[2].p = endPos + Vec3f(-xxe, 0.f, -zze);
+	q2.v[3].p = endPos + Vec3f(xxe, 0.f, zze);
 	
 	drawQuadRTP(mat, q2);
 	}
