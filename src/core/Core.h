@@ -66,7 +66,6 @@ extern TextureContainer * GoldCoinsTC[MAX_GOLD_COINS_VISUALS];
 
 extern TextureContainer * TC_smoke;
 
-extern EERIE_3DOBJ * cabal;
 extern EERIE_3DOBJ * cameraobj;
 extern EERIE_3DOBJ * markerobj;
 extern Vec3f lastteleport;

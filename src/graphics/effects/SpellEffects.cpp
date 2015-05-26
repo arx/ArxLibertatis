@@ -167,7 +167,7 @@ void Split(TexturedVertex * v, int a, int b, float yo, float fMul)
 	}
 }
 
-
+EERIE_3DOBJ * cabal = NULL;
 EERIE_3DOBJ * ssol = NULL;
 EERIE_3DOBJ * slight = NULL;
 EERIE_3DOBJ * srune = NULL;
@@ -180,6 +180,8 @@ EERIE_3DOBJ * stone0 = NULL;
 EERIE_3DOBJ * stone1 = NULL;
 
 void LoadSpellModels() {
+	// TODO Load dynamically
+	cabal = LoadTheObj("editor/obj3d/cabal.teo", "cabal_teo maps");
 	ssol = LoadTheObj("graph/obj3d/interactive/fix_inter/fx_rune_guard/fx_rune_guard.teo");
 	slight = LoadTheObj("graph/obj3d/interactive/fix_inter/fx_rune_guard/fx_rune_guard02.teo");
 	srune = LoadTheObj("graph/obj3d/interactive/fix_inter/fx_rune_guard/fx_rune_guard03.teo");
@@ -193,6 +195,7 @@ void LoadSpellModels() {
 }
 
 void ReleaseSpellModels() {
+	delete cabal, cabal = NULL;
 	delete ssol, ssol = NULL;
 	delete slight, slight = NULL;
 	delete srune, srune = NULL;

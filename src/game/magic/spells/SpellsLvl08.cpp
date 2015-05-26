@@ -142,8 +142,6 @@ void ManaDrainSpell::End()
 	ARX_SOUND_Stop(m_snd_loop);
 }
 
-extern EERIE_3DOBJ * cabal;
-
 // TODO copy-paste cabal
 void ManaDrainSpell::Update(float timeDelta)
 {
