@@ -120,6 +120,8 @@ public:
 		bool colorkeyAlphaToCoverage;
 		bool colorkeyAntialiasing;
 		
+		bool limitSpeechWidth;
+		
 	} video;
 	
 	// section 'window'
