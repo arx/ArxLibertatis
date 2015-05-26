@@ -130,14 +130,6 @@ CControlTarget::CControlTarget()
 	ulCurrentTime = ulDuration + 1;
 	
 	tex_mm = TextureContainer::Load("graph/obj3d/textures/(fx)_ctrl_target");
-	
-	fColor[0] = 1;
-	fColor[1] = 1;
-	fColor[2] = 0;
-	
-	fColor1[0] = 0.8f;
-	fColor1[1] = 0.6f;
-	fColor1[2] = 0.2f;
 }
 
 void CControlTarget::Create(Vec3f aeSrc, float afBeta) {
