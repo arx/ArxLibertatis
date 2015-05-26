@@ -112,23 +112,7 @@ void CFireBall::Render() {
 
 }
 
-CIceProjectile::~CIceProjectile()
-{
-	stite_count--;
-
-	if(stite && (stite_count <= 0)) {
-		stite_count = 0;
-		delete stite;
-		stite = NULL;
-	}
-
-	smotte_count--;
-
-	if(smotte && (smotte_count <= 0)) {
-		smotte_count = 0;
-		delete smotte;
-		smotte = NULL;
-	}
+CIceProjectile::~CIceProjectile() {
 }
 
 CIceProjectile::CIceProjectile()
@@ -141,17 +125,7 @@ CIceProjectile::CIceProjectile()
 
 	tex_p1 = TextureContainer::Load("graph/obj3d/textures/(fx)_tsu_blueting");
 	tex_p2 = TextureContainer::Load("graph/obj3d/textures/(fx)_tsu_bluepouf");
-
-	if (!stite)
-		stite = LoadTheObj("graph/obj3d/interactive/fix_inter/stalagmite/stalagmite.teo");
-
-	stite_count++;
-
-	if (!smotte)
-		smotte = LoadTheObj("graph/obj3d/interactive/fix_inter/stalagmite/motte.teo");
-
-	smotte_count++;
-
+	
 	iMax = MAX_ICE;
 	fStep = 20;
 }

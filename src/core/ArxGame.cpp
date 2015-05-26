@@ -935,6 +935,7 @@ bool ArxGame::initGame()
 	drawDebugInitialize();
 
 	FlyingEye_Init();
+	LoadSpellModels();
 	
 	cabal = LoadTheObj("editor/obj3d/cabal.teo", "cabal_teo maps");
 	
@@ -1081,6 +1082,7 @@ static void ReleaseSystemObjects() {
 	}
 	
 	FlyingEye_Release();
+	ReleaseSpellModels();
 
 	delete cabal, cabal = NULL;
 	delete cameraobj, cameraobj = NULL;

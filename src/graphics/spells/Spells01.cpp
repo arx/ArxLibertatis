@@ -186,22 +186,9 @@ CMagicMissile::CMagicMissile(bool mrCheat)
 	ulCurrentTime = ulDuration + 1;
 
 	tex_mm = TextureContainer::Load("graph/obj3d/textures/(fx)_bandelette_blue");
-
-	if(!smissile)
-		smissile = LoadTheObj("graph/obj3d/interactive/fix_inter/fx_magic_missile/fx_magic_missile.teo");
-
-	smissile_count++;
 }
 
-CMagicMissile::~CMagicMissile()
-{
-	smissile_count--;
-
-	if(smissile && smissile_count <= 0) {
-		smissile_count = 0;
-		delete smissile;
-		smissile = NULL;
-	}
+CMagicMissile::~CMagicMissile() {
 
 	lLightId = LightHandle::Invalid;
 

@@ -448,15 +448,7 @@ void CLightning::Render()
 	}
 }
 
-CConfuse::~CConfuse()
-{
-	spapi_count--;
-
-	if(spapi && spapi_count <= 0) {
-		spapi_count = 0;
-		delete spapi;
-		spapi = NULL;
-	}
+CConfuse::~CConfuse() {
 }
 
 CConfuse::CConfuse() {
@@ -466,11 +458,6 @@ CConfuse::CConfuse() {
 	
 	tex_p1 = TextureContainer::Load("graph/obj3d/textures/(fx)_tsu_blueting");
 	tex_trail = TextureContainer::Load("graph/obj3d/textures/(fx)_bandelette_blue");
-	
-	if(!spapi) {
-		spapi = LoadTheObj("graph/obj3d/interactive/fix_inter/fx_papivolle/fx_papivolle.teo");
-	}
-	spapi_count++;
 	
 	const char tex[] = "graph/obj3d/interactive/fix_inter/fx_papivolle/fx_papivolle.tea";
 	ANIM_HANDLE * anim_papii = EERIE_ANIMMANAGER_Load(tex);
@@ -565,23 +552,7 @@ void CConfuse::Render() {
 }
 
 
-CIceField::~CIceField()
-{
-	smotte_count--;
-
-	if(smotte && smotte_count <= 0) {
-		smotte_count = 0;
-		delete smotte;
-		smotte = NULL;
-	}
-
-	stite_count--;
-
-	if(stite && stite_count <= 0) {
-		stite_count = 0;
-		delete stite;
-		stite = NULL;
-	}
+CIceField::~CIceField() {
 }
 
 CIceField::CIceField()
@@ -595,16 +566,6 @@ CIceField::CIceField()
 	
 	tex_p1 = TextureContainer::Load("graph/obj3d/textures/(fx)_tsu_blueting");
 	tex_p2 = TextureContainer::Load("graph/obj3d/textures/(fx)_tsu_bluepouf");
-	
-	if(!stite) {
-		stite = LoadTheObj("graph/obj3d/interactive/fix_inter/stalagmite/motte.teo");
-	}
-	stite_count++;
-	
-	if(!smotte) {
-		smotte = LoadTheObj("graph/obj3d/interactive/fix_inter/stalagmite/motte.teo");
-	}
-	smotte_count++;
 }
 
 void CIceField::Create(Vec3f aeSrc) {

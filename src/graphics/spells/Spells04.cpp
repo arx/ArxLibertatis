@@ -165,12 +165,6 @@ void CBless::Render()
 }
 
 CCurse::~CCurse() {
-	svoodoo_count--;
-	if(svoodoo && (svoodoo_count <= 0)) {
-		svoodoo_count = 0;
-		delete svoodoo;
-		svoodoo = NULL;
-	}
 }
 
 CCurse::CCurse()
@@ -183,12 +177,6 @@ CCurse::CCurse()
 	ulCurrentTime = ulDuration + 1;
 	
 	tex_p1 = TextureContainer::Load("graph/obj3d/textures/(fx)_tsu_blueting");
-	
-	if(!svoodoo) {
-		svoodoo = LoadTheObj("graph/obj3d/interactive/fix_inter/fx_voodoodoll/fx_voodoodoll.teo");
-	}
-	
-	svoodoo_count++;
 }
 
 void CCurse::Create(Vec3f aeSrc) {

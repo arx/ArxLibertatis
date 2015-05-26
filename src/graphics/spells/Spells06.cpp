@@ -292,49 +292,9 @@ CSlowDown::CSlowDown() {
 	ulCurrentTime = ulDuration + 1;
 	
 	tex_p2 = TextureContainer::Load("graph/obj3d/textures/(fx)_tsu_blueting");
-	
-	if(!ssol) { // Pentacle
-		ssol = LoadTheObj("graph/obj3d/interactive/fix_inter/fx_rune_guard/fx_rune_guard.teo");
-	}
-	ssol_count++;
-	
-	if(!slight) { // Twirl
-		slight = LoadTheObj("graph/obj3d/interactive/fix_inter/fx_rune_guard/fx_rune_guard02.teo");
-	}
-	slight_count++; //runes
-	
-	if(!srune) {
-		srune  = LoadTheObj("graph/obj3d/interactive/fix_inter/fx_rune_guard/fx_rune_guard03.teo");
-	}
-	srune_count++;
-	
 }
 
-CSlowDown::~CSlowDown()
-{
-	ssol_count--;
-
-	if(ssol && ssol_count <= 0) {
-		ssol_count = 0;
-		delete ssol;
-		ssol = NULL;
-	}
-
-	slight_count--;
-
-	if(slight && slight_count <= 0) {
-		slight_count = 0;
-		delete slight;
-		slight = NULL;
-	}
-
-	srune_count--;
-
-	if(srune && srune_count <= 0) {
-		srune_count = 0;
-		delete srune;
-		srune = NULL;
-	}
+CSlowDown::~CSlowDown() {
 }
 
 void CSlowDown::Create(Vec3f aeSrc) {
@@ -357,23 +317,7 @@ void CSlowDown::Render() {
 //-----------------------------------------------------------------------------
 // RISE DEAD
 //-----------------------------------------------------------------------------
-CRiseDead::~CRiseDead()
-{
-	stone0_count--;
-
-	if(stone0 && stone0_count <= 0) {
-		stone0_count = 0;
-		delete stone0;
-		stone0 = NULL;
-	}
-
-	stone1_count--;
-
-	if(stone1 && stone1_count <= 0) {
-		stone1_count = 0;
-		delete stone1;
-		stone1 = NULL;
-	}
+CRiseDead::~CRiseDead() {
 }
 
 CRiseDead::CRiseDead()
@@ -414,19 +358,7 @@ CRiseDead::CRiseDead()
 	stone[0] = NULL;
 	stone[1] = NULL;
 	
-	if(!stone0) {
-		stone0 = loadObject("graph/obj3d/interactive/fix_inter/fx_raise_dead/stone01.teo");
-	}
-	stone0_count++;
-	
-	if(!stone1) {
-		stone1 = loadObject("graph/obj3d/interactive/fix_inter/fx_raise_dead/stone02.teo");
-	}
-	stone1_count++;
-	
 	tex_light = TextureContainer::Load("graph/obj3d/textures/(fx)_tsu4");
-	
-
 }
 
 void CRiseDead::SetDuration(const unsigned long alDuration)

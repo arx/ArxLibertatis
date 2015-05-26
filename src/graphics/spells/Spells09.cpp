@@ -452,15 +452,7 @@ void CSummonCreature::Render()
 	//return (fSizeIntro / end);
 }
 
-CNegateMagic::~CNegateMagic()
-{
-	ssol_count--;
-
-	if(ssol && ssol_count <= 0) {
-		ssol_count = 0;
-		delete ssol;
-		ssol = NULL;
-	}
+CNegateMagic::~CNegateMagic() {
 }
 
 CNegateMagic::CNegateMagic() {
@@ -472,12 +464,6 @@ CNegateMagic::CNegateMagic() {
 	
 	tex_p2 = TextureContainer::Load("graph/obj3d/textures/(fx)_tsu_bluepouf");
 	tex_sol = TextureContainer::Load("graph/obj3d/textures/(fx)_negate_magic");
-	
-	if(!ssol) {
-		ssol = LoadTheObj("graph/obj3d/interactive/fix_inter/fx_rune_guard/fx_rune_guard.teo");
-	}
-	ssol_count++;
-	
 }
 
 void CNegateMagic::Create(Vec3f aeSrc) {

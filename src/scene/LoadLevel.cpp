@@ -981,8 +981,6 @@ void DanaeClearLevel(long flag)
 	
 	entities.clear();
 	
-	DANAE_ReleaseAllDatasDynamic();
-	
 	TextureContainer::DeleteAll(TextureContainer::Level);
 	g_miniMap.clearMarkerTexCont();
 	

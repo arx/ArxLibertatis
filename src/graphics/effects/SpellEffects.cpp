@@ -48,6 +48,7 @@ ZeniMax Media Inc., Suite 120, Rockville, Maryland 20850 USA.
 #include "game/Player.h"
 #include "graphics/Math.h"
 #include "graphics/RenderBatcher.h"
+#include "scene/Object.h"
 
 
 CSpellFx::CSpellFx()
@@ -168,37 +169,40 @@ void Split(TexturedVertex * v, int a, int b, float yo, float fMul)
 
 
 EERIE_3DOBJ * ssol = NULL;
-long ssol_count = 0;
 EERIE_3DOBJ * slight = NULL;
-long slight_count = 0;
 EERIE_3DOBJ * srune = NULL;
-long srune_count = 0;
 EERIE_3DOBJ * smotte = NULL;
-long smotte_count = 0;
 EERIE_3DOBJ * stite = NULL;
-long stite_count = 0;
 EERIE_3DOBJ * smissile = NULL;
-long smissile_count = 0;
 EERIE_3DOBJ * spapi = NULL;
-long spapi_count = 0;
 EERIE_3DOBJ * svoodoo = NULL;
-long svoodoo_count = 0;
-EERIE_3DOBJ * stone1 = NULL;
-long stone1_count = 0;
 EERIE_3DOBJ * stone0 = NULL;
-long stone0_count = 0;
+EERIE_3DOBJ * stone1 = NULL;
 
-void DANAE_ReleaseAllDatasDynamic() {
-	delete ssol, ssol = NULL, ssol_count = 0;
-	delete slight, slight = NULL, slight_count = 0;
-	delete srune, srune = NULL, srune_count = 0;
-	delete smotte, smotte = NULL, smotte_count = 0;
-	delete stite, stite = NULL, stite_count = 0;
-	delete smissile, smissile = NULL, smissile_count = 0;
-	delete spapi, spapi = NULL, spapi_count = 0;
-	delete svoodoo, svoodoo = NULL, svoodoo_count = 0;
-	delete stone0, stone0 = NULL, stone0_count = 0;
-	delete stone1, stone1 = NULL, stone1_count = 0;
+void LoadSpellModels() {
+	ssol = LoadTheObj("graph/obj3d/interactive/fix_inter/fx_rune_guard/fx_rune_guard.teo");
+	slight = LoadTheObj("graph/obj3d/interactive/fix_inter/fx_rune_guard/fx_rune_guard02.teo");
+	srune = LoadTheObj("graph/obj3d/interactive/fix_inter/fx_rune_guard/fx_rune_guard03.teo");
+	smotte = LoadTheObj("graph/obj3d/interactive/fix_inter/stalagmite/motte.teo");
+	stite = LoadTheObj("graph/obj3d/interactive/fix_inter/stalagmite/stalagmite.teo");
+	smissile = LoadTheObj("graph/obj3d/interactive/fix_inter/fx_magic_missile/fx_magic_missile.teo");
+	spapi = LoadTheObj("graph/obj3d/interactive/fix_inter/fx_papivolle/fx_papivolle.teo");
+	svoodoo = LoadTheObj("graph/obj3d/interactive/fix_inter/fx_voodoodoll/fx_voodoodoll.teo");
+	stone0 = loadObject("graph/obj3d/interactive/fix_inter/fx_raise_dead/stone01.teo");
+	stone1 = loadObject("graph/obj3d/interactive/fix_inter/fx_raise_dead/stone02.teo");
+}
+
+void ReleaseSpellModels() {
+	delete ssol, ssol = NULL;
+	delete slight, slight = NULL;
+	delete srune, srune = NULL;
+	delete smotte, smotte = NULL;
+	delete stite, stite = NULL;
+	delete smissile, smissile = NULL;
+	delete spapi, spapi = NULL;
+	delete svoodoo, svoodoo = NULL;
+	delete stone0, stone0 = NULL;
+	delete stone1, stone1 = NULL;
 }
 
 
@@ -206,3 +210,6 @@ void DANAE_ReleaseAllDatasDynamic() {
 Vec3f randomOffsetXZ(float range) {
 	return Vec3f(frand2() * range, 0.f, frand2() * range);
 }
+
+
+

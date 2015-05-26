@@ -205,48 +205,9 @@ CRuneOfGuarding::CRuneOfGuarding() {
 	ulCurrentTime = ulDuration + 1;
 	
 	tex_p2 = TextureContainer::Load("graph/obj3d/textures/(fx)_tsu_blueting");
-	
-	if(!ssol) {
-		ssol = LoadTheObj("graph/obj3d/interactive/fix_inter/fx_rune_guard/fx_rune_guard.teo");
-	}
-	ssol_count++;
-
-	if(!slight) {
-		slight = LoadTheObj("graph/obj3d/interactive/fix_inter/fx_rune_guard/fx_rune_guard02.teo");
-	}
-	slight_count++;
-	
-	if(!srune) {
-		srune = LoadTheObj("graph/obj3d/interactive/fix_inter/fx_rune_guard/fx_rune_guard03.teo");
-	}
-	srune_count++;
 }
 
-CRuneOfGuarding::~CRuneOfGuarding()
-{
-	ssol_count--;
-
-	if(ssol && ssol_count <= 0) {
-		ssol_count = 0;
-		delete ssol;
-		ssol = NULL;
-	}
-
-	slight_count--;
-
-	if(slight && slight_count <= 0) {
-		slight_count = 0;
-		delete slight;
-		slight = NULL;
-	}
-
-	srune_count--;
-
-	if(srune && srune_count <= 0) {
-		srune_count = 0;
-		delete srune;
-		srune = NULL;
-	}
+CRuneOfGuarding::~CRuneOfGuarding() {
 }
 
 void CRuneOfGuarding::Create(Vec3f _eSrc) {
@@ -721,48 +682,9 @@ CRepelUndead::CRepelUndead()
 	ulCurrentTime = ulDuration + 1;
 	
 	tex_p2 = TextureContainer::Load("graph/obj3d/textures/(fx)_tsu_blueting");
-	
-	if(!ssol) { // Pentacle
-		ssol = LoadTheObj("graph/obj3d/interactive/fix_inter/fx_rune_guard/fx_rune_guard.teo");
-	}
-	ssol_count++;
-	
-	if(!slight) { // Twirl
-		slight = LoadTheObj("graph/obj3d/interactive/fix_inter/fx_rune_guard/fx_rune_guard02.teo");
-	}
-	slight_count++; //runes
-	
-	if(!srune) {
-		srune = LoadTheObj("graph/obj3d/interactive/fix_inter/fx_rune_guard/fx_rune_guard03.teo");
-	}
-	srune_count++;
 }
 
 CRepelUndead::~CRepelUndead() {
-	
-	ssol_count--;
-
-	if(ssol && ssol_count <= 0) {
-		ssol_count = 0;
-		delete ssol;
-		ssol = NULL;
-	}
-
-	slight_count--;
-
-	if(slight && slight_count <= 0) {
-		slight_count = 0;
-		delete slight;
-		slight = NULL;
-	}
-
-	srune_count--;
-
-	if(srune && srune_count <= 0) {
-		srune_count = 0;
-		delete srune;
-		srune = NULL;
-	}
 }
 
 void CRepelUndead::Create(Vec3f aeSrc) {
@@ -868,37 +790,9 @@ CLevitate::CLevitate()
 		this->cone[nb].coneind = NULL;
 		this->cone[nb].conevertex = NULL;
 	}
-
-	if(!stone0) {
-		stone0 = loadObject("graph/obj3d/interactive/fix_inter/fx_raise_dead/stone01.teo");
-	}
-
-	stone0_count++;
-
-	if(!stone1) {
-		stone1 = loadObject("graph/obj3d/interactive/fix_inter/fx_raise_dead/stone02.teo");
-	}
-
-	stone1_count++;
 }
 
-CLevitate::~CLevitate()
-{
-	stone0_count--;
-
-	if(stone0 && stone0_count <= 0) {
-		stone0_count = 0;
-		delete stone0;
-		stone0 = NULL;
-	}
-
-	stone1_count--;
-
-	if(stone1 && stone1_count <= 0) {
-		stone1_count = 0;
-		delete stone1;
-		stone1 = NULL;
-	}
+CLevitate::~CLevitate() {
 }
 
 void CLevitate::CreateConeStrip(float rbase, float rhaut, float hauteur, int def, int numcone) {

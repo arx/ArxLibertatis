@@ -85,26 +85,17 @@ void Split(Vec3f * v, int a, int b, Vec3f f, Vec3f fMul);
 void Split(TexturedVertex * v, int a, int b, float yo, float fMul = 0.5f);
 
 extern EERIE_3DOBJ * ssol;
-extern long ssol_count;
 extern EERIE_3DOBJ * slight;
-extern long slight_count;
 extern EERIE_3DOBJ * srune;
-extern long srune_count;
 extern EERIE_3DOBJ * smotte;
-extern long smotte_count;
 extern EERIE_3DOBJ * stite;
-extern long stite_count;
 extern EERIE_3DOBJ * smissile;
-extern long smissile_count;
 extern EERIE_3DOBJ * spapi;
-extern long spapi_count;
 extern EERIE_3DOBJ * svoodoo;
-extern long svoodoo_count;
 extern EERIE_3DOBJ * stone0;
-extern long stone0_count;
 extern EERIE_3DOBJ * stone1;
-extern long stone1_count;
 
-void DANAE_ReleaseAllDatasDynamic();
+void LoadSpellModels();
+void ReleaseSpellModels();
 
 #endif // ARX_GRAPHICS_EFFECTS_SPELLEFFECTS_H

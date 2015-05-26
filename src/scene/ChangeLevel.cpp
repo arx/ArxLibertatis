@@ -2609,8 +2609,6 @@ static void ARX_CHANGELEVEL_PopLevel_Abort() {
 
 static bool ARX_CHANGELEVEL_PopLevel(long instance, bool reloadflag) {
 	
-	DANAE_ReleaseAllDatasDynamic();
-	
 	LogDebug("Before ARX_CHANGELEVEL_PopLevel Alloc'n'Free");
 	
 	if(Gaids) {
