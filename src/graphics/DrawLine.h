@@ -25,7 +25,7 @@
 
 #include "graphics/Draw.h"
 
-void EERIEDrawFill2DRectDegrad(float x0, float y0, float x1, float y1, float z, Color cold, Color cole);
+void EERIEDrawFill2DRectDegrad(Vec2f a, Vec2f b, float z, Color cold, Color cole);
 
 void drawLine2D(float x0, float y0, float x1, float y1, float z, Color col);
 inline void drawLine2D(Vec2f p0, Vec2f p1, float z, Color col) {

@@ -509,11 +509,12 @@ void ARX_SPEECH_Update() {
 		GRenderer->SetRenderState(Renderer::AlphaBlending, true);
 		GRenderer->SetRenderState(Renderer::DepthTest, false);
 
-		EERIEDrawFill2DRectDegrad(0.f, fZoneClippY - 1.f,  static_cast<float>(g_size.width()),
-								  fZoneClippY + (sSize.y * 3 / 4), 0.f, Color::white, Color::black);
-		EERIEDrawFill2DRectDegrad(0.f, fZoneClippY + fZoneClippHeight - (sSize.y * 3 / 4),
-								  static_cast<float>(g_size.width()), fZoneClippY + fZoneClippHeight,
-								  0.f, Color::black, Color::white);
+		EERIEDrawFill2DRectDegrad(Vec2f(0.f, fZoneClippY - 1.f),
+		                          Vec2f(static_cast<float>(g_size.width()), fZoneClippY + (sSize.y * 3 / 4)),
+		                          0.f, Color::white, Color::black);
+		EERIEDrawFill2DRectDegrad(Vec2f(0.f, fZoneClippY + fZoneClippHeight - (sSize.y * 3 / 4)),
+		                          Vec2f(static_cast<float>(g_size.width()), fZoneClippY + fZoneClippHeight),
+		                          0.f, Color::black, Color::white);
 
 		GRenderer->SetBlendFunc(Renderer::BlendOne, Renderer::BlendZero);
 		GRenderer->SetRenderState(Renderer::DepthTest, true);
