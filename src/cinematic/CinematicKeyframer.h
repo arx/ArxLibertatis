@@ -85,7 +85,7 @@ bool DeleteTrack();
 bool AllocTrack(int sf, int ef, float fps);
 bool AddKey(const C_KEY & key);
 bool AddKeyLoad(const C_KEY & key);
-bool GereTrack(Cinematic * c, float fpscurr);
+bool GereTrack(Cinematic * c, float fpscurr, bool resized);
 
 void PlayTrack(Cinematic * c);
 int GetStartFrame();

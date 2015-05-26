@@ -300,8 +300,10 @@ static void TransformLocalVertex(Vec3f * vbase, TexturedVertex * d3dv) {
 	d3dv->p.z = vbase->z + LocalPos.z;
 }
 
-void DrawGrille(CinematicGrid * grille, Color col, int fx, CinematicLight * light, Vec3f * posgrille, float angzgrille)
-{
+void DrawGrille(CinematicBitmap * bitmap, Color col, int fx, CinematicLight * light,
+                Vec3f * posgrille, float angzgrille, const CinematicFadeOut & fade) {
+	
+	CinematicGrid * grille = &bitmap->grid;
 	int nb = grille->m_nbvertexs;
 	Vec3f * v = grille->m_vertexs.data();
 	TexturedVertex * d3dv = AllTLVertex;
@@ -343,9 +345,20 @@ void DrawGrille(CinematicGrid * grille, Color col, int fx, CinematicLight * ligh
 			d3dv++;
 		}
 	}
-
-	C_UV* uvs = grille->m_uvs.data();
-
+	
+	CinematicFadeOut fo;
+	bool fadeEdges = (config.video.cinematicWidescreenMode == CinematicFadeEdges)
+		&& (fade.left != 0.f || fade.right != 0.f || fade.top != 0.f || fade.bottom != 0.f);
+	if(fadeEdges) {
+		fo = fade;
+		float fade_witdh = 128.f;
+		fo.left   *= fade_witdh;
+		fo.right  *= fade_witdh;
+		fo.top    *= fade_witdh;
+		fo.bottom *= fade_witdh;
+	}
+	
+	C_UV * uvs = grille->m_uvs.data();
 	for(std::vector<C_INDEXED>::iterator it = grille->m_mats.begin(); it != grille->m_mats.end(); ++it)
 	{
 		C_INDEXED* mat = &(*it);
@@ -358,26 +371,60 @@ void DrawGrille(CinematicGrid * grille, Color col, int fx, CinematicLight * ligh
 		int	nb2 = mat->nbvertexs;
 		while(nb2--) {
 			AllTLVertex[uvs->indvertex].uv = uvs->uv;
+			
+			if(fadeEdges) {
+				
+				// Reconstruct position in the bitmap
+				Vec2f pos = Vec2f(mat->bitmapdep) + uvs->uv * Vec2f(mat->tex->getStoredSize());
+				
+				// Roughen up the lines
+				float fx = 0.75 + std::sin(pos.x) * 0.25;
+				float fy = 0.75 + std::sin(pos.y) * 0.25;
+				
+				float interp = 1.f;
+				if(pos.x < fo.left * fy) {
+					interp *= glm::clamp(pos.x / (fo.left * fy), 0.f, 1.f);
+				}
+				if(float(bitmap->m_size.x) - pos.x < fo.right * fy) {
+					interp *= glm::clamp((float(bitmap->m_size.x) - pos.x) / (fo.right * fy), 0.f, 1.f);
+				}
+				if(pos.y < fo.top * fx) {
+					interp *= glm::clamp(pos.y / (fo.top * fx), 0.f, 1.f);
+				}
+				if(float(bitmap->m_size.y) - pos.y < fo.bottom * fx) {
+					interp *= glm::clamp((float(bitmap->m_size.y) - pos.y) / (fo.bottom * fx), 0.f, 1.f);
+				}
+				
+				if(interp != 1.f) {
+					u8 iinterp = interp * (Color::Limits::max() / ColorLimits<float>::max());
+					Color color = Color::fromRGBA(AllTLVertex[uvs->indvertex].color);
+					color.a = std::min(color.a, iinterp);
+					AllTLVertex[uvs->indvertex].color = color.toRGBA();
+				}
+				
+			}
+			
 			uvs++;
 		}
 		
 		GRenderer->drawIndexed(Renderer::TriangleList, AllTLVertex, grille->m_nbvertexs,
 		                       &grille->m_inds.data()->i1 + mat->startind, mat->nbind);
 	}
+	
 }
 /*---------------------------------------------------------------*/
 void Cinematic::Render(float FDIFF) {
 	
 	CinematicBitmap * tb;
-
-	cinRenderSize.x = g_size.width();
-	cinRenderSize.y = g_size.height();
-
+	
+	bool resized = (cinRenderSize != g_size.size());
+	cinRenderSize = g_size.size();
+	
 	if(projectload) {
 		GRenderer->Clear(Renderer::ColorBuffer);
-
-		GereTrack(this, FDIFF);
-
+		
+		GereTrack(this, FDIFF, resized);
+		
 		//sound
 		if(changekey && idsound >= 0)
 			PlaySoundKeyFramer(idsound);
@@ -390,7 +437,7 @@ void Cinematic::Render(float FDIFF) {
 
 		GRenderer->GetTextureStage(1)->disableAlpha();
 		
-		if(config.video.cinematicWidescreenMode == 0) {
+		if(config.video.cinematicWidescreenMode == CinematicLetterbox) {
 			float w = 640 * g_sizeRatio.y;
 			GRenderer->SetScissor(Rect(Vec2i((g_size.width() - w) / 2, 0), w, g_size.height()));
 		}
@@ -463,7 +510,7 @@ void Cinematic::Render(float FDIFF) {
 		}
 
 		if(tb->grid.m_nbvertexs)
-			DrawGrille(&tb->grid, col, fx, l, &posgrille, angzgrille);
+			DrawGrille(tb, col, fx, l, &posgrille, angzgrille, fadegrille);
 
 		//PASS #2
 		if(force & 1) {
@@ -502,7 +549,7 @@ void Cinematic::Render(float FDIFF) {
 			}
 
 			if(tb->grid.m_nbvertexs)
-				DrawGrille(&tb->grid, col, fx, l, &posgrillesuiv, angzgrillesuiv);
+				DrawGrille(tb, col, fx, l, &posgrillesuiv, angzgrillesuiv, fadegrillesuiv);
 		}
 
 		//effets qui continuent avec le temps
@@ -543,7 +590,7 @@ void Cinematic::Render(float FDIFF) {
 		
 		CalcFPS();
 		
-		if(config.video.cinematicWidescreenMode == 0) {
+		if(config.video.cinematicWidescreenMode == CinematicLetterbox) {
 			GRenderer->SetScissor(Rect::ZERO);
 		}
 		

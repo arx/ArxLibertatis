@@ -87,6 +87,12 @@ enum ControlAction {
 	NUM_ACTION_KEY
 };
 
+enum CinematicWidescreenMode {
+	CinematicLetterbox = 0,
+	CinematicWidescreen = 1,
+	CinematicFadeEdges = 2
+};
+
 struct ActionKey {
 	
 	ActionKey(InputKeyId key_0 = -1, InputKeyId key_1 = -1) {
@@ -121,7 +127,7 @@ public:
 		bool colorkeyAntialiasing;
 		
 		bool limitSpeechWidth;
-		int cinematicWidescreenMode;
+		CinematicWidescreenMode cinematicWidescreenMode;
 		
 	} video;
 	

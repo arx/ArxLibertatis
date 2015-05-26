@@ -81,6 +81,14 @@ public:
 	{}
 };
 
+struct CinematicFadeOut {
+	float top;
+	float bottom;
+	float left;
+	float right;
+	CinematicFadeOut(float v = 0.f) : top(v), bottom(v), left(v), right(v) { }
+};
+
 class Cinematic {
 	
 public:
@@ -109,11 +117,16 @@ public:
 	math::RandomFlicker flickerd;
 	Vec3f posgrille;
 	float angzgrille;
+	CinematicFadeOut fadegrille;
 	Vec3f posgrillesuiv;
 	float angzgrillesuiv;
+	CinematicFadeOut fadegrillesuiv;
 	float speedtrack;
 	float flTime;
 	std::vector<CinematicBitmap*>	m_bitmaps;
+	
+	CinematicFadeOut fadeprev;
+	CinematicFadeOut fadenext;
 	
 	Cinematic(int, int);
 	~Cinematic();
@@ -130,6 +143,7 @@ private:
 	EERIE_CAMERA	m_camera;
 };
 
-void DrawGrille(CinematicGrid * grille, Color col, int fx, CinematicLight * light, Vec3f * posgrillesuiv, float angzgrillesuiv);
+void DrawGrille(CinematicBitmap * bitmap, Color col, int fx, CinematicLight * light,
+                Vec3f * posgrillesuiv, float angzgrillesuiv, const CinematicFadeOut & fade);
 
 #endif // ARX_CINEMATIC_CINEMATIC_H
