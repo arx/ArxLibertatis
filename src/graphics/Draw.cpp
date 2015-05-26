@@ -85,13 +85,12 @@ static bool EERIECreateSprite(TexturedQuad & sprite, const Vec3f & in, float siz
 	   && out.p.y > -500.f
 	   && out.p.y < 1800.f
 	) {
-		float use_focal=BASICFOCAL*g_sizeRatio.x;
 		float t;
 
 		if(siz < 0) {
-			t = -siz;
+			t = -siz * g_sizeRatio.y;
 		} else {
-			t = siz * ((out.rhw-1.f)*use_focal*0.001f);
+			t = siz * (out.rhw - 1.f) * BASICFOCAL * g_sizeRatio.y * 0.001f;
 
 			if(t <= 0.f)
 				t = 0.00000001f;
