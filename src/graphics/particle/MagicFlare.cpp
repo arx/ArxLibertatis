@@ -318,6 +318,9 @@ void FlareLine(const Vec2s & pos0, const Vec2s & pos1, Entity * io)
 			while(i < tmpPos1.x) {
 				long z = rnd() * FLARELINERND;
 				z += FLARELINESTEP;
+				if(!io) {
+					z *= g_sizeRatio.y;
+				}
 				i += z;
 				tmpPos0.y += m * z;
 				AddLFlare(Vec2s(i, tmpPos0.y), io);
@@ -329,6 +332,9 @@ void FlareLine(const Vec2s & pos0, const Vec2s & pos1, Entity * io)
 			while(i < tmpPos0.x) {
 				long z = rnd() * FLARELINERND;
 				z += FLARELINESTEP;
+				if(!io) {
+					z *= g_sizeRatio.y;
+				}
 				i += z;
 				tmpPos0.y += m * z;
 				AddLFlare(Vec2s(i, tmpPos0.y), io);
@@ -350,6 +356,9 @@ void FlareLine(const Vec2s & pos0, const Vec2s & pos1, Entity * io)
 			while(i < tmpPos1.y) {
 				long z = rnd() * FLARELINERND;
 				z += FLARELINESTEP;
+				if(!io) {
+					z *= g_sizeRatio.y;
+				}
 				i += z;
 				tmpPos0.x += m * z;
 				AddLFlare(Vec2s(tmpPos0.x, i), io);
@@ -361,6 +370,9 @@ void FlareLine(const Vec2s & pos0, const Vec2s & pos1, Entity * io)
 			while(i < tmpPos0.y) {
 				long z = rnd() * FLARELINERND;
 				z += FLARELINESTEP;
+				if(!io) {
+					z *= g_sizeRatio.y;
+				}
 				i += z;
 				tmpPos0.x += m * z;
 				AddLFlare(Vec2s(tmpPos0.x, i), io);
@@ -464,7 +476,7 @@ void ARX_MAGICAL_FLARES_Update() {
 			mat.setDepthTest(flare.io != NULL);
 			
 			if(flare.bDrawBitmap) {
-				s *= 2.f;
+				s *= 2.f * minSizeRatio();
 				EERIEAddBitmap(mat, flare.v.p, s, s, surf, Color::fromRGBA(flare.tv.color));
 			} else {
 				EERIEAddSprite(mat, flare.v.p, s * 0.025f + 1.f,

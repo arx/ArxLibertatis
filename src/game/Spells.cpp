@@ -144,7 +144,8 @@ bool GLOBAL_MAGIC_MODE = true;
 short ARX_FLARES_broken(1);
 
 long snip=0;
-static Vec2s Lm;
+static Vec2s g_LastFlarePosition;
+static unsigned long g_LastFlareTime;
 
 unsigned char ucFlick=0;
 
@@ -540,22 +541,31 @@ void ARX_SPELLS_ManageMagic() {
 					pos = MemoMouse;
 				}
 				
-				Vec2s pos2 = Lm;
+				unsigned long time = (unsigned long)(arxtime);
 				
-				if(!ARX_FLARES_broken)
-					FlareLine(pos2, pos);
-
-				if(rnd() > 0.6)
-					AddFlare(pos, 1.f, -1);
-				else
-					AddFlare(pos, 1.f, 3);
+				const unsigned long interval = 1000 / 60;
+				
+				if(ARX_FLARES_broken) {
+					g_LastFlarePosition = pos;
+					g_LastFlareTime = time - interval;
+				}
+				
+				if(time - g_LastFlareTime >= interval) {
+					
+					if(glm::distance(Vec2f(pos), Vec2f(g_LastFlarePosition)) > 14 * g_sizeRatio.y) {
+						FlareLine(g_LastFlarePosition, pos);
+						g_LastFlarePosition = pos;
+					}
+					
+					if(rnd() > 0.6)
+						AddFlare(pos, 1.f, -1);
+					else
+						AddFlare(pos, 1.f, 3);
+					
+					g_LastFlareTime = time - std::min(time - g_LastFlareTime - interval, interval);
+				}
 				
 				OPIPOrgb = PIPOrgb;
-				
-				Lm = DANAEMouse;
-				if(TRUE_PLAYER_MOUSELOOK_ON) {
-					Lm = MemoMouse;
-				}
 				
 				ARX_FLARES_broken=0;
 				
