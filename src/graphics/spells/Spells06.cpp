@@ -347,9 +347,7 @@ CRiseDead::CRiseDead()
 	fColorBorder[1] = 1;
 	fColorBorder[2] = 1;
 	
-	fColorRays1[0] = 1;
-	fColorRays1[1] = 1;
-	fColorRays1[2] = 1;
+	m_colorRays1 = Color3f(1.f, 1.f, 1.f);
 	
 	fColorRays2[0] = 0;
 	fColorRays2[1] = 0;
@@ -417,11 +415,9 @@ void CRiseDead::SetColorBorder(float afRed, float afGreen, float afBlue)
 	fColorBorder[2] = afBlue;
 }
 
-void CRiseDead::SetColorRays1(float afRed, float afGreen, float afBlue)
+void CRiseDead::SetColorRays1(Color3f color)
 {
-	fColorRays1[0] = afRed;
-	fColorRays1[1] = afGreen;
-	fColorRays1[2] = afBlue;
+	m_colorRays1 = color;
 }
 
 void CRiseDead::SetColorRays2(float afRed, float afGreen, float afBlue)
@@ -698,7 +694,7 @@ void CRiseDead::RenderFissure()
 	target.z = eSrc.z ;
 
 	EE_RTP(vt[1], &vr[0]);
-	vr[0].color = vr[1].color = Color3f(fColorRays1[0], fColorRays1[1], fColorRays1[2]).toRGB();
+	vr[0].color = vr[1].color = m_colorRays1.toRGB();
 	vr[2].color = vr[3].color = Color3f(fColorRays2[0], fColorRays2[1], fColorRays2[2]).toRGB();
 
 	vr[0].uv.x = fTexWrap;
@@ -781,8 +777,8 @@ void CRiseDead::RenderFissure()
 			vt[3].y = va[i+1].y + (va[i+1].y - target.y) * 2;
 			vt[3].z = va[i+1].z ;
 
-			vr[0].color = (Color3f(fColorRays1[0], fColorRays1[1], fColorRays1[2]) * tfRaysa[i]).toRGB();
-			vr[1].color = (Color3f(fColorRays1[0], fColorRays1[1], fColorRays1[2]) * tfRaysa[i + 1]).toRGB();
+			vr[0].color = (m_colorRays1 * tfRaysa[i]).toRGB();
+			vr[1].color = (m_colorRays1* tfRaysa[i + 1]).toRGB();
 			vr[2].color = (Color3f(fColorRays2[0], fColorRays2[1], fColorRays2[2]) * tfRaysa[i]).toRGB();
 			vr[3].color = (Color3f(fColorRays2[0], fColorRays2[1], fColorRays2[2]) * tfRaysa[i + 1]).toRGB();
 			
@@ -804,8 +800,8 @@ void CRiseDead::RenderFissure()
 			vt[3].y = vb[i].y + (vb[i].y - target.y) * 2;
 			vt[3].z = vb[i].z ;
 
-			vr[0].color = (Color3f(fColorRays1[0], fColorRays1[1], fColorRays1[2]) * tfRaysb[i]).toRGB();
-			vr[1].color = (Color3f(fColorRays1[0], fColorRays1[1], fColorRays1[2]) * tfRaysb[i + 1]).toRGB();
+			vr[0].color = (m_colorRays1 * tfRaysb[i]).toRGB();
+			vr[1].color = (m_colorRays1 * tfRaysb[i + 1]).toRGB();
 			vr[2].color = (Color3f(fColorRays2[0], fColorRays2[1], fColorRays2[2]) * tfRaysb[i]).toRGB();
 			vr[3].color = (Color3f(fColorRays2[0], fColorRays2[1], fColorRays2[2]) * tfRaysb[i + 1]).toRGB();
 

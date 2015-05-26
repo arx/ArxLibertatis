@@ -107,7 +107,7 @@ public:
 	void SetPos(Vec3f);
 	
 	void SetColorBorder(float, float, float);
-	void SetColorRays1(float, float, float);
+	void SetColorRays1(Color3f color);
 	void SetColorRays2(float, float, float);
 	unsigned long GetDuration();
 	
@@ -130,7 +130,8 @@ private:
 	void Split(Vec3f * v, int a, int b, float yo);
 	void RenderFissure();
 	
-	float	fColorRays1[3];
+	Color3f m_colorRays1;
+	
 	TextureContainer * tex_light;
 	int		end;
 	int		iSize;
