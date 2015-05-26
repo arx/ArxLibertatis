@@ -50,14 +50,15 @@ ZeniMax Media Inc., Suite 120, Rockville, Maryland 20850 USA.
 
 #include "core/Application.h"
 
+#include "cinematic/CinematicFormat.h"
+#include "cinematic/CinematicTexture.h"
+#include "cinematic/CinematicEffects.h"
+#include "core/Core.h"
 #include "graphics/Color.h"
 #include "graphics/Math.h"
 #include "graphics/Renderer.h"
 #include "graphics/Vertex.h"
 #include "graphics/data/Mesh.h"
-#include "cinematic/CinematicFormat.h"
-#include "cinematic/CinematicTexture.h"
-#include "cinematic/CinematicEffects.h"
 #include "graphics/texture/TextureStage.h"
 #include "graphics/texture/Texture.h"
 
@@ -80,7 +81,6 @@ static Color OldColorFlashBlanc;
 
 extern float	FlashAlpha;
 
-extern Rect g_size;
 
 static float ADJUSTX(float a) {
 	return (((((a)-(WIDTHS>>1))*((float)cinRenderSize.x/(float)WIDTHS))+(WIDTHS>>1)))*(640.f/(float)cinRenderSize.x);
@@ -327,13 +327,13 @@ void DrawGrille(CinematicGrid * grille, Color col, int fx, CinematicLight * ligh
 			t.z = v->z;
 			TransformLocalVertex(&t, &vtemp);
 			EE_RTP(vtemp.p, d3dv);
+			d3dv->p.x = ADJUSTX(d3dv->p.x);
+			d3dv->p.y = ADJUSTY(d3dv->p.y);
 			if(light) {
 				d3dv->color = CalculLight(light, Vec2f(d3dv->p.x, d3dv->p.y), col).toRGBA();
 			} else {
 				d3dv->color = col.toRGBA();
 			}
-			d3dv->p.x = ADJUSTX(d3dv->p.x);
-			d3dv->p.y = ADJUSTY(d3dv->p.y);
 			v++;
 			d3dv++;
 		}
@@ -342,13 +342,13 @@ void DrawGrille(CinematicGrid * grille, Color col, int fx, CinematicLight * ligh
 			TexturedVertex vtemp;
 			TransformLocalVertex(v, &vtemp);
 			EE_RTP(vtemp.p, d3dv);
+			d3dv->p.x = ADJUSTX(d3dv->p.x);
+			d3dv->p.y = ADJUSTY(d3dv->p.y);
 			if(light) {
 				d3dv->color = CalculLight(light, Vec2f(d3dv->p.x, d3dv->p.y), col).toRGBA();
 			} else {
 				d3dv->color = col.toRGBA();
 			}
-			d3dv->p.x = ADJUSTX(d3dv->p.x);
-			d3dv->p.y = ADJUSTY(d3dv->p.y);
 			v++;
 			d3dv++;
 		}
@@ -454,8 +454,10 @@ void Cinematic::Render(float FDIFF) {
 
 		if(this->light.intensity >= 0.f && this->lightd.intensity >= 0.f) {
 			lightt = this->light;
-			lightt.pos.x += (float)(cinRenderSize.x >> 1);
-			lightt.pos.y += (float)(cinRenderSize.y >> 1);
+			
+			lightt.pos = lightt.pos * g_sizeRatio.y + Vec3f(g_size.center(), 0.f);
+			lightt.fallin *= g_sizeRatio.y;
+			lightt.fallout *= g_sizeRatio.y;
 
 			static const float SPEEDINTENSITYRND = 10.f;
 			float flIntensityRNDToReach = lightt.intensiternd * rnd();
@@ -498,8 +500,11 @@ void Cinematic::Render(float FDIFF) {
 
 			if(this->light.intensity >= 0.f && this->lightd.intensity >= 0.f) {
 				lightt = this->lightd;
-				lightt.pos.x += (float)(cinRenderSize.x >> 1);
-				lightt.pos.y += (float)(cinRenderSize.y >> 1);
+				
+				lightt.pos = lightt.pos * g_sizeRatio.y + Vec3f(g_size.center(), 0.f);
+				lightt.fallin *= g_sizeRatio.y;
+				lightt.fallout *= g_sizeRatio.y;
+				
 				LightRND = lightt.intensity + (lightt.intensiternd * rnd());
 
 				if(LightRND > 1.f)
