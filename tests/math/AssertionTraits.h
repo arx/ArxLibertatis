@@ -26,8 +26,8 @@
 
 #include <glm/glm.hpp>
 #include <glm/gtc/matrix_access.hpp>
-#include <glm/gtx/epsilon.hpp>
 #include <glm/gtx/string_cast.hpp>
+#include <glm/ext.hpp>
 
 #include "graphics/Math.h"
 

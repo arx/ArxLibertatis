@@ -46,6 +46,7 @@ ZeniMax Media Inc., Suite 120, Rockville, Maryland 20850 USA.
 #include <cmath>
 #include <cstdlib>
 #include <cstring>
+#include <limits>
 
 #include "cinematic/Cinematic.h"
 #include "cinematic/CinematicTexture.h"
@@ -419,7 +420,8 @@ static void updateFadeOut(Cinematic * c, CinematicTrack * track, int num, float 
 		return;
 	}
 	
-	if(float(g_size.width()) / g_size.height() <= 4.f / 3.f + 10 * glm::epsilon<float>()) {
+	if(float(g_size.width()) / g_size.height()
+	   <= 4.f / 3.f + 10 * std::numeric_limits<float>::epsilon()) {
 		// No need to fade anything for narrow screens.
 		c->fadegrille = c->fadeprev = c->fadenext = CinematicFadeOut(0.f);
 		c->fadegrillesuiv = CinematicFadeOut(0.f);

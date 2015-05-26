@@ -47,6 +47,7 @@ ZeniMax Media Inc., Suite 120, Rockville, Maryland 20850 USA.
 #include "graphics/Math.h"
 
 #include <algorithm>
+#include <limits>
 
 #include <glm/gtc/type_ptr.hpp>
 #include <glm/gtx/euler_angles.hpp>
@@ -628,10 +629,10 @@ std::pair<Vec3f, Vec3f> angleToFrontUpVec(const Anglef & angle) {
 	Vec3f front = angleToVector(angle);
 	Vec3f up = angleToVector(angle + Anglef(90.f, 0, 0));
 	
-	arx_assert(glm::abs(glm::dot(front, up)) < 5.f * glm::epsilon<float>(),
+	arx_assert(glm::abs(glm::dot(front, up)) < 5.f * std::numeric_limits<float>::epsilon(),
 	           "front=(%f,%f,%f) and up=(%f,%f,%f) should be orthogonal; dot=%1f*epsilon",
 	           front.x, front.y, front.z, up.x, up.y, up.z,
-	           glm::dot(front, up) / glm::epsilon<float>());
+	           glm::dot(front, up) / std::numeric_limits<float>::epsilon());
 	
 	return std::make_pair(front, up);
 }
