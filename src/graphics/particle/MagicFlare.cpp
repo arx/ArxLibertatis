@@ -189,8 +189,8 @@ void AddFlare(const Vec2s & pos, float sm, short typ, Entity * io, bool bookDraw
 			fl->v.p += angleToVectorXZ(io->angle.getPitch() + vx) * 100.f;
 			fl->v.p.y += std::sin(glm::radians(MAKEANGLE(io->angle.getYaw() + vy))) * 100.f - 150.f;
 		} else {
-			fl->v.p.x = float(pos.x - (g_size.width() / 2)) * 150.f / float(g_size.width());
-			fl->v.p.y = float(pos.y - (g_size.height() / 2)) * 150.f / float(g_size.width());
+			fl->v.p.x = 1.0f  * float(pos.x - (g_size.width()  / 2)) * 156.f / (640.f * g_sizeRatio.y);
+			fl->v.p.y = 0.75f * float(pos.y - (g_size.height() / 2)) * 156.f / (480.f * g_sizeRatio.y);
 			fl->v.p.z = 75.f;
 			ka = *oldcam;
 			SetActiveCamera(&ka);
