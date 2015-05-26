@@ -81,13 +81,18 @@ static Color OldColorFlashBlanc;
 
 extern float	FlashAlpha;
 
-
 static float ADJUSTX(float a) {
-	return (((((a)-(WIDTHS>>1))*((float)cinRenderSize.x/(float)WIDTHS))+(WIDTHS>>1)))*(640.f/(float)cinRenderSize.x);
+	return
+		(a - float(g_size.width()) / 2) * (640.f / WIDTHS)
+		+ float(g_size.width()) / 2
+	;
 }
 
 static float ADJUSTY(float a) {
-	return (((((a)-(HEIGHTS>>1))*((float)cinRenderSize.y/(float)HEIGHTS))+(HEIGHTS>>1)))*(480.f/(float)cinRenderSize.y);
+	return
+		(a - float(g_size.height()) / 2) * (480.f / HEIGHTS)
+		+ float(g_size.height()) / 2
+	;
 }
 
 Cinematic::Cinematic(int _w, int _h)
