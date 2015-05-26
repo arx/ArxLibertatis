@@ -48,6 +48,7 @@ ZeniMax Media Inc., Suite 120, Rockville, Maryland 20850 USA.
 #include <vector>
 
 #include "graphics/Color.h"
+#include "math/RandomFlicker.h"
 #include "math/Vector.h"
 #include "game/Camera.h"
 
@@ -103,14 +104,15 @@ public:
 	float speed;
 	int idsound;
 	CinematicLight light;
+	math::RandomFlicker flicker;
 	CinematicLight lightd;
+	math::RandomFlicker flickerd;
 	Vec3f posgrille;
 	float angzgrille;
 	Vec3f posgrillesuiv;
 	float angzgrillesuiv;
 	float speedtrack;
 	float flTime;
-	float m_flIntensityRND;
 	std::vector<CinematicBitmap*>	m_bitmaps;
 	
 	Cinematic(int, int);

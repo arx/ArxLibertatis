@@ -123,7 +123,6 @@ Cinematic::Cinematic(int _w, int _h)
 	, angzgrillesuiv()
 	, speedtrack()
 	, flTime()
-	, m_flIntensityRND(0.f)
 {
 	cinRenderSize.x = _w;
 	cinRenderSize.y = _h;
@@ -161,7 +160,8 @@ void Cinematic::OneTimeSceneReInit() {
 	
 	FlashBlancEnCours = false;
 	
-	m_flIntensityRND = 0.f;
+	flicker.reset();
+	flickerd.reset();
 	
 }
 
@@ -457,22 +457,17 @@ void Cinematic::Render(float FDIFF) {
 
 		CinematicLight lightt, *l = NULL;
 
+		static const float SPEEDINTENSITYRND = 60.f / 1000.f;
+
 		if(this->light.intensity >= 0.f && this->lightd.intensity >= 0.f) {
 			lightt = this->light;
 			
 			lightt.pos = lightt.pos * g_sizeRatio.y + Vec3f(g_size.center(), 0.f);
 			lightt.fallin *= g_sizeRatio.y;
 			lightt.fallout *= g_sizeRatio.y;
-
-			static const float SPEEDINTENSITYRND = 10.f;
-			float flIntensityRNDToReach = lightt.intensiternd * rnd();
-			m_flIntensityRND += (flIntensityRNDToReach - m_flIntensityRND) * FDIFF * SPEEDINTENSITYRND;
-			m_flIntensityRND = m_flIntensityRND < 0.f ? 0.f : m_flIntensityRND > 1.f ? 1.f : m_flIntensityRND;
-
-			LightRND = lightt.intensity + (lightt.intensiternd * rnd());
-
-			if(LightRND > 1.f)
-				LightRND = 1.f;
+			
+			flicker.update(FDIFF * SPEEDINTENSITYRND);
+			LightRND =  std::min(lightt.intensity + lightt.intensiternd * flicker.get(), 1.f);
 
 			l = &lightt;
 		}
@@ -510,10 +505,8 @@ void Cinematic::Render(float FDIFF) {
 				lightt.fallin *= g_sizeRatio.y;
 				lightt.fallout *= g_sizeRatio.y;
 				
-				LightRND = lightt.intensity + (lightt.intensiternd * rnd());
-
-				if(LightRND > 1.f)
-					LightRND = 1.f;
+				flickerd.update(FDIFF * SPEEDINTENSITYRND);
+				LightRND =  std::min(lightt.intensity + lightt.intensiternd * flickerd.get(), 1.f);
 
 				l = &lightt;
 			}
