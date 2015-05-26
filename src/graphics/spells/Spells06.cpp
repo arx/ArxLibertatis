@@ -343,10 +343,7 @@ CRiseDead::CRiseDead()
 	
 	fOneOniSize = 1.0f / ((float) iSize);
 	
-	fColorBorder[0] = 1;
-	fColorBorder[1] = 1;
-	fColorBorder[2] = 1;
-	
+	m_colorBorder = Color3f(1.f, 1.f, 1.f);
 	m_colorRays1 = Color3f(1.f, 1.f, 1.f);
 	m_colorRays2 = Color3f(0.f, 0.f, 0.f);
 	
@@ -405,11 +402,9 @@ void CRiseDead::SetDuration(unsigned long alDurationIntro, unsigned long alDurat
 	ulCurrentTime = 0;
 }
 
-void CRiseDead::SetColorBorder(float afRed, float afGreen, float afBlue)
+void CRiseDead::SetColorBorder(Color3f color)
 {
-	fColorBorder[0] = afRed;
-	fColorBorder[1] = afGreen;
-	fColorBorder[2] = afBlue;
+	m_colorBorder = color;
 }
 
 void CRiseDead::SetColorRays1(Color3f color)
@@ -652,7 +647,7 @@ void CRiseDead::RenderFissure()
 	// rendu de la bordure
 	mat.setBlendType(RenderMaterial::Additive);
 	vr[0].color = vr[1].color = Color::black.toRGB();
-	vr[2].color = vr[3].color = Color3f(fColorBorder[0], fColorBorder[1], fColorBorder[2]).toRGB();
+	vr[2].color = vr[3].color = m_colorBorder.toRGB();
 
 	for(i = 0; i < std::min(end, (int)fSizeIntro); i++) {
 		vt[2] = va[i] - (va[i] - eSrc) * 0.2f;
