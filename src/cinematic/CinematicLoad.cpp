@@ -332,6 +332,14 @@ bool parseCinematic(Cinematic * c, const char * data, size_t size) {
 			
 		}
 		
+		// The final vertex positions were manually scaled to fit the whole screen
+		// when rendering cinematics. This applies the same scaling by moving
+		// the camera closer. We can do this because all bitmaps are at z == 0.
+		{
+			arx_assert(k.posgrille.z == 0.f);
+			k.pos.z *= 0.8f; // 0.8 == 512/640 == 384/480
+		}
+		
 		AddKeyLoad(k);
 		
 		LogDebug(" - " << i << ": frame " << k.frame << " image: " << k.numbitmap);

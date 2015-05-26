@@ -81,20 +81,6 @@ static Color OldColorFlashBlanc;
 
 extern float	FlashAlpha;
 
-static float ADJUSTX(float a) {
-	return
-		(a - float(g_size.width()) / 2) * (640.f / WIDTHS)
-		+ float(g_size.width()) / 2
-	;
-}
-
-static float ADJUSTY(float a) {
-	return
-		(a - float(g_size.height()) / 2) * (480.f / HEIGHTS)
-		+ float(g_size.height()) / 2
-	;
-}
-
 Cinematic::Cinematic(int _w, int _h)
 	: pos()
 	, angz()
@@ -332,8 +318,6 @@ void DrawGrille(CinematicGrid * grille, Color col, int fx, CinematicLight * ligh
 			t.z = v->z;
 			TransformLocalVertex(&t, &vtemp);
 			EE_RTP(vtemp.p, d3dv);
-			d3dv->p.x = ADJUSTX(d3dv->p.x);
-			d3dv->p.y = ADJUSTY(d3dv->p.y);
 			if(light) {
 				d3dv->color = CalculLight(light, Vec2f(d3dv->p.x, d3dv->p.y), col).toRGBA();
 			} else {
@@ -347,8 +331,6 @@ void DrawGrille(CinematicGrid * grille, Color col, int fx, CinematicLight * ligh
 			TexturedVertex vtemp;
 			TransformLocalVertex(v, &vtemp);
 			EE_RTP(vtemp.p, d3dv);
-			d3dv->p.x = ADJUSTX(d3dv->p.x);
-			d3dv->p.y = ADJUSTY(d3dv->p.y);
 			if(light) {
 				d3dv->color = CalculLight(light, Vec2f(d3dv->p.x, d3dv->p.y), col).toRGBA();
 			} else {
