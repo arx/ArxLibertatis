@@ -53,6 +53,7 @@ ZeniMax Media Inc., Suite 120, Rockville, Maryland 20850 USA.
 #include "cinematic/CinematicFormat.h"
 #include "cinematic/CinematicTexture.h"
 #include "cinematic/CinematicEffects.h"
+#include "core/ArxGame.h"
 #include "core/Config.h"
 #include "core/Core.h"
 #include "graphics/Color.h"
@@ -62,6 +63,7 @@ ZeniMax Media Inc., Suite 120, Rockville, Maryland 20850 USA.
 #include "graphics/data/Mesh.h"
 #include "graphics/texture/TextureStage.h"
 #include "graphics/texture/Texture.h"
+#include "graphics/DrawLine.h"
 
 #include "math/Angle.h"
 
@@ -544,5 +546,16 @@ void Cinematic::Render(float FDIFF) {
 		if(config.video.cinematicWidescreenMode == 0) {
 			GRenderer->SetScissor(Rect::ZERO);
 		}
+		
+		if(g_debugInfo == InfoPanelGuiDebug) {
+			GRenderer->SetFillMode(Renderer::FillWireframe);
+			float x = 640.f / 2 * g_sizeRatio.y;
+			float c = g_size.center().x;
+			drawLine2D(c - x, 0.f, c - x, g_size.height(), 1.f, Color::red);
+			drawLine2D(c + x, 0.f, c + x, g_size.height(), 1.f, Color::red);
+			GRenderer->SetFillMode(Renderer::FillSolid);
+		}
+		
 	}
+	
 }
