@@ -303,81 +303,45 @@ void FlareLine(const Vec2s & pos0, const Vec2s & pos1, Entity * io)
 	Vec2f ad = glm::abs(d);
 	
 	if(ad.x > ad.y) {
+		
 		if(tmpPos0.x > tmpPos1.x) {
-			long z = tmpPos1.x;
-			tmpPos1.x = tmpPos0.x;
-			tmpPos0.x = z;
-			z = tmpPos1.y;
-			tmpPos0.y = z;
+			std::swap(tmpPos0, tmpPos1);
 		}
-
-		if(tmpPos0.x < tmpPos1.x) {
-			float m = d.y / d.x;
-			long i = tmpPos0.x;
-
-			while(i < tmpPos1.x) {
-				long z = rnd() * FLARELINERND;
-				z += FLARELINESTEP;
-				if(!io) {
-					z *= g_sizeRatio.y;
-				}
-				i += z;
-				tmpPos0.y += m * z;
-				AddLFlare(Vec2s(i, tmpPos0.y), io);
+		
+		float m = d.y / d.x;
+		long i = tmpPos0.x;
+		
+		while(i < tmpPos1.x) {
+			long z = rnd() * FLARELINERND;
+			z += FLARELINESTEP;
+			if(!io) {
+				z *= g_sizeRatio.y;
 			}
-		} else {
-			float m = d.y / d.x;
-			long i = tmpPos1.x;
-
-			while(i < tmpPos0.x) {
-				long z = rnd() * FLARELINERND;
-				z += FLARELINESTEP;
-				if(!io) {
-					z *= g_sizeRatio.y;
-				}
-				i += z;
-				tmpPos0.y += m * z;
-				AddLFlare(Vec2s(i, tmpPos0.y), io);
-			}
+			i += z;
+			tmpPos0.y += m * z;
+			AddLFlare(Vec2s(i, tmpPos0.y), io);
 		}
+		
 	} else {
+		
 		if(tmpPos0.y > tmpPos1.y) {
-			long z = tmpPos1.x;
-			tmpPos0.x = z;
-			z = tmpPos1.y;
-			tmpPos1.y = tmpPos0.y;
-			tmpPos0.y = z;
+			std::swap(tmpPos0, tmpPos1);
 		}
-
-		if(tmpPos0.y < tmpPos1.y) {
-			float m = d.x / d.y;
-			long i = tmpPos0.y;
-
-			while(i < tmpPos1.y) {
-				long z = rnd() * FLARELINERND;
-				z += FLARELINESTEP;
-				if(!io) {
-					z *= g_sizeRatio.y;
-				}
-				i += z;
-				tmpPos0.x += m * z;
-				AddLFlare(Vec2s(tmpPos0.x, i), io);
+		
+		float m = d.x / d.y;
+		long i = tmpPos0.y;
+		
+		while(i < tmpPos1.y) {
+			long z = rnd() * FLARELINERND;
+			z += FLARELINESTEP;
+			if(!io) {
+				z *= g_sizeRatio.y;
 			}
-		} else {
-			float m = d.x / d.y;
-			long i = tmpPos1.y;
-
-			while(i < tmpPos0.y) {
-				long z = rnd() * FLARELINERND;
-				z += FLARELINESTEP;
-				if(!io) {
-					z *= g_sizeRatio.y;
-				}
-				i += z;
-				tmpPos0.x += m * z;
-				AddLFlare(Vec2s(tmpPos0.x, i), io);
-			}
+			i += z;
+			tmpPos0.x += m * z;
+			AddLFlare(Vec2s(tmpPos0.x, i), io);
 		}
+		
 	}
 }
 
