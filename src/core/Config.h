@@ -121,6 +121,7 @@ public:
 		bool colorkeyAntialiasing;
 		
 		bool limitSpeechWidth;
+		int cinematicWidescreenMode;
 		
 	} video;
 	

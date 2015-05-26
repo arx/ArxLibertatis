@@ -59,6 +59,7 @@ const int
 	levelOfDetail = 2,
 	fogDistance = 10,
 	maxAnisotropicFiltering = 9001,
+	cinematicWidescreenMode = 1,
 	volume = 10,
 	sfxVolume = 10,
 	speechVolume = 10,
@@ -157,7 +158,8 @@ const std::string
 	maxAnisotropicFiltering = "max_anisotropic_filtering",
 	colorkeyAlphaToCoverage = "colorkey_alpha_to_coverage",
 	colorkeyAntialiasing = "colorkey_antialiasing",
-	limitSpeechWidth = "limit_speech_width";
+	limitSpeechWidth = "limit_speech_width",
+	cinematicWidescreenMode = "cinematic_widescreen_mode";
 
 // Window options
 const std::string
@@ -382,6 +384,7 @@ bool Config::save() {
 	writer.writeKey(Key::colorkeyAlphaToCoverage, video.colorkeyAlphaToCoverage);
 	writer.writeKey(Key::colorkeyAntialiasing, video.colorkeyAntialiasing);
 	writer.writeKey(Key::limitSpeechWidth, video.limitSpeechWidth);
+	writer.writeKey(Key::cinematicWidescreenMode, video.cinematicWidescreenMode);
 	
 	// window
 	writer.beginSection(Section::Window);
@@ -474,6 +477,8 @@ bool Config::init(const fs::path & file) {
 	video.colorkeyAlphaToCoverage = reader.getKey(Section::Video, Key::colorkeyAlphaToCoverage, Default::colorkeyAlphaToCoverage);
 	video.colorkeyAntialiasing = reader.getKey(Section::Video, Key::colorkeyAntialiasing, Default::colorkeyAntialiasing);
 	video.limitSpeechWidth = reader.getKey(Section::Video, Key::limitSpeechWidth, Default::limitSpeechWidth);
+	video.cinematicWidescreenMode = reader.getKey(Section::Video, Key::cinematicWidescreenMode, Default::cinematicWidescreenMode);
+	video.cinematicWidescreenMode = glm::clamp(video.cinematicWidescreenMode, 0, 1);
 	
 	// Get window settings
 	window.framework = reader.getKey(Section::Window, Key::windowFramework, Default::windowFramework);

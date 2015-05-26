@@ -53,6 +53,7 @@ ZeniMax Media Inc., Suite 120, Rockville, Maryland 20850 USA.
 #include "cinematic/CinematicFormat.h"
 #include "cinematic/CinematicTexture.h"
 #include "cinematic/CinematicEffects.h"
+#include "core/Config.h"
 #include "core/Core.h"
 #include "graphics/Color.h"
 #include "graphics/Math.h"
@@ -387,6 +388,11 @@ void Cinematic::Render(float FDIFF) {
 
 		GRenderer->GetTextureStage(1)->disableAlpha();
 		
+		if(config.video.cinematicWidescreenMode == 0) {
+			float w = 640 * g_sizeRatio.y;
+			GRenderer->SetScissor(Rect(Vec2i((g_size.width() - w) / 2, 0), w, g_size.height()));
+		}
+		
 		//image key
 		tb = m_bitmaps[numbitmap];
 
@@ -534,5 +540,9 @@ void Cinematic::Render(float FDIFF) {
 		}
 		
 		CalcFPS();
+		
+		if(config.video.cinematicWidescreenMode == 0) {
+			GRenderer->SetScissor(Rect::ZERO);
+		}
 	}
 }
