@@ -20,7 +20,7 @@
 #ifndef ARX_MATH_RANDOMFLICKER_H
 #define ARX_MATH_RANDOMFLICKER_H
 
-#include <glm/common.hpp>
+#include <glm/glm.hpp>
 
 #include "math/Random.h"
 
