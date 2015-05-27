@@ -177,9 +177,6 @@ static void ARX_SPEECH_Render() {
 	Vec2i sSize = hFontInBook->getTextSize("p");
 	sSize.y *= 3;
 	
-	GRenderer->SetBlendFunc(Renderer::BlendOne, Renderer::BlendOne);
-	GRenderer->SetRenderState(Renderer::AlphaBlending, true);
-	
 	int iEnd = igrec + sSize.y;
 	
 	for(size_t i = 0; i < MAX_SPEECH; i++) {
@@ -193,6 +190,9 @@ static void ARX_SPEECH_Render() {
 			16 * minSizeRatio(),
 			16 * minSizeRatio()
 		);
+		
+		GRenderer->SetRenderState(Renderer::AlphaBlending, true);
+		GRenderer->SetBlendFunc(Renderer::BlendSrcAlpha, Renderer::BlendInvSrcAlpha);
 		
 		EERIEDrawBitmap(rect, .00001f, arx_logo_tc, Color::white);
 		
