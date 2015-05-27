@@ -189,9 +189,9 @@ static void ARX_SPEECH_Render() {
 		}
 		
 		Rectf rect(
-			Vec2f(120 * g_sizeRatio.x - 16 * g_sizeRatio.x, igrec),
-			16 * g_sizeRatio.x,
-			16 * g_sizeRatio.x
+			Vec2f(120 * g_sizeRatio.x - 16 * minSizeRatio(), igrec),
+			16 * minSizeRatio(),
+			16 * minSizeRatio()
 		);
 		
 		EERIEDrawBitmap(rect, .00001f, arx_logo_tc, Color::white);
