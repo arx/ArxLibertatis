@@ -22,19 +22,19 @@
 
 #include "game/magic/Spell.h"
 
-#include "graphics/spells/Spells02.h"
+#include "graphics/particle/ParticleSystem.h"
 
 class HealSpell : public SpellBase {
 public:
-	~HealSpell();
-	
 	bool CanLaunch();
 	void Launch();
 	void End();
 	void Update(float framedelay);
 	
 private:
-	CHeal * m_pSpellFx;
+	Vec3f m_pos;
+	ParticleSystem m_particles;
+	long m_currentTime;
 };
 
 class DetectTrapSpell : public SpellBase {

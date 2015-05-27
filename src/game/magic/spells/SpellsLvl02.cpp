@@ -26,18 +26,14 @@
 #include "game/NPC.h"
 #include "game/Player.h"
 #include "game/Spells.h"
-#include "graphics/spells/Spells02.h"
 #include "graphics/RenderBatcher.h"
 #include "graphics/Renderer.h"
+#include "graphics/particle/Particle.h"
+#include "graphics/particle/ParticleParams.h"
 #include "io/log/Logger.h"
 #include "scene/GameSound.h"
 #include "scene/Interactive.h"
 
-
-HealSpell::~HealSpell() {
-	
-	delete m_pSpellFx;
-}
 
 bool HealSpell::CanLaunch() {
 	
@@ -53,42 +49,115 @@ void HealSpell::Launch()
 	m_hasDuration = true;
 	m_fManaCostPerSecond = 0.4f * m_level;
 	m_duration = (m_launchDuration > -1) ? m_launchDuration : 3500;
+	m_currentTime = 0;
 	
-	Vec3f pos;
 	if(m_caster == PlayerEntityHandle) {
-		pos = player.pos;
+		m_pos = player.pos;
 	} else {
-		pos = entities[m_caster]->pos;
+		m_pos = entities[m_caster]->pos;
 	}
 	
-	m_pSpellFx = new CHeal();
-	m_pSpellFx->setPos(pos);
-	m_pSpellFx->Create();
-	m_pSpellFx->SetDuration(m_duration);
-	m_duration = m_pSpellFx->GetDuration();
+	m_particles.SetPos(m_pos);
+	
+	{
+	ParticleParams cp;
+	cp.m_nbMax = 350;
+	cp.m_life = 800;
+	cp.m_lifeRandom = 2000;
+	cp.m_pos = Vec3f(100, 200, 100);
+	cp.m_direction = Vec3f(0, -10, 0) * 0.1f;
+	cp.m_angle = glm::radians(5.f);
+	cp.m_speed = 120;
+	cp.m_speedRandom = 84;
+	cp.m_gravity = Vec3f(0, -10, 0);
+	cp.m_flash = 0;
+	cp.m_rotation = 1.0f / (101 - 80);
+
+	cp.m_startSegment.m_size = 8;
+	cp.m_startSegment.m_sizeRandom = 8;
+	cp.m_startSegment.m_color = Color(205, 205, 255, 245).to<float>();
+	cp.m_startSegment.m_colorRandom = Color(50, 50, 0, 10).to<float>();
+
+	cp.m_endSegment.m_size = 6;
+	cp.m_endSegment.m_sizeRandom = 4;
+	cp.m_endSegment.m_color = Color(20, 20, 30, 0).to<float>();
+	cp.m_endSegment.m_colorRandom = Color(0, 0, 40, 0).to<float>();
+	
+	cp.m_blendMode = RenderMaterial::Additive;
+	cp.m_texture.set("graph/particles/heal_0005", 0, 100);
+	cp.m_spawnFlags = PARTICLE_CIRCULAR | PARTICLE_BORDER;
+	m_particles.SetParams(cp);
+	}
+	
+	m_particles.m_lightHandle = GetFreeDynLight();
+	if(lightHandleIsValid(m_particles.m_lightHandle)) {
+		EERIE_LIGHT * light = lightHandleGet(m_particles.m_lightHandle);
+		
+		light->intensity = 2.3f;
+		light->fallstart = 200.f;
+		light->fallend   = 350.f;
+		light->rgb = Color3f(0.4f, 0.4f, 1.0f);
+		light->pos = m_pos + Vec3f(0.f, -50.f, 0.f);
+		light->duration = 200;
+		light->extras = 0;
+	}
 }
 
 void HealSpell::End() {
 	
-	delete m_pSpellFx;
-	m_pSpellFx = NULL;
 }
 
 void HealSpell::Update(float timeDelta) {
 	
-	if(!m_pSpellFx)
-		return;
-
-	Vec3f pos;
-	if(m_caster == PlayerEntityHandle) {
-		pos = player.pos;
-	} else if(ValidIONum(m_target)) {
-		pos = entities[m_target]->pos;
-	}
-	m_pSpellFx->setPos(pos);
+	m_currentTime += timeDelta;
 	
-	m_pSpellFx->Update(timeDelta);
-	m_pSpellFx->Render();
+	if(m_caster == PlayerEntityHandle) {
+		m_pos = player.pos;
+	} else if(ValidIONum(m_target)) {
+		m_pos = entities[m_target]->pos;
+	}
+	
+	if(!lightHandleIsValid(m_particles.m_lightHandle))
+		m_particles.m_lightHandle = GetFreeDynLight();
+	
+	if(lightHandleIsValid(m_particles.m_lightHandle)) {
+		EERIE_LIGHT * light = lightHandleGet(m_particles.m_lightHandle);
+		
+		light->intensity = 2.3f;
+		light->fallstart = 200.f;
+		light->fallend   = 350.f;
+		light->rgb = Color3f(0.4f, 0.4f, 1.0f);
+		light->pos = m_pos + Vec3f(0.f, -50.f, 0.f);
+		light->duration = 200;
+		light->extras = 0;
+	}
+
+	unsigned long ulCalc = m_duration - m_currentTime;
+	arx_assert(ulCalc <= LONG_MAX);
+	long ff = static_cast<long>(ulCalc);
+
+	if(ff < 1500) {
+		m_particles.m_parameters.m_spawnFlags = PARTICLE_CIRCULAR;
+		m_particles.m_parameters.m_gravity = Vec3f_ZERO;
+
+		std::list<Particle *>::iterator i;
+
+		for(i = m_particles.listParticle.begin(); i != m_particles.listParticle.end(); ++i) {
+			Particle * pP = *i;
+
+			if(pP->isAlive()) {
+				pP->fColorEnd.a = 0;
+
+				if(pP->m_age + ff < pP->m_timeToLive) {
+					pP->m_age = pP->m_timeToLive - ff;
+				}
+			}
+		}
+	}
+
+	m_particles.SetPos(m_pos);
+	m_particles.Update(timeDelta);
+	m_particles.Render();
 	
 	for(size_t ii = 0; ii < entities.size(); ii++) {
 		const EntityHandle handle = EntityHandle(ii);
@@ -106,7 +175,7 @@ void HealSpell::Update(float timeDelta) {
 			if(long(ii) == m_caster)
 				dist=0;
 			else
-				dist=fdist(pos, e->pos);
+				dist=fdist(m_pos, e->pos);
 
 			if(dist<300.f) {
 				float gain=((rnd()*1.6f+0.8f)*m_level)*(300.f-dist)*( 1.0f / 300 )*timeDelta*( 1.0f / 1000 );

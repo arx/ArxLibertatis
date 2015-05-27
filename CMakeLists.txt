@@ -739,7 +739,6 @@ set(GRAPHICS_SOURCES
 	src/graphics/particle/ParticleSystem.cpp
 	src/graphics/particle/MagicFlare.cpp
 	src/graphics/spells/Spells01.cpp
-	src/graphics/spells/Spells02.cpp
 	src/graphics/spells/Spells03.cpp
 	src/graphics/spells/Spells04.cpp
 	src/graphics/spells/Spells05.cpp
