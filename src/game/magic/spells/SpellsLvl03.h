@@ -22,6 +22,7 @@
 
 #include "game/magic/Spell.h"
 
+#include "graphics/effects/Trail.h"
 #include "graphics/particle/ParticleSystem.h"
 #include "graphics/spells/Spells03.h"
 
@@ -36,7 +37,12 @@ public:
 	Vec3f getPosition();
 	
 private:
-	CSpeed * m_pSpellFx;
+	struct SpeedTrail {
+		short vertexIndex;
+		Trail * trail;
+	};
+	
+	std::vector<SpeedTrail> m_trails;
 };
 
 class DispellIllusionSpell : public SpellBase {

@@ -74,26 +74,6 @@ private:
 
 };
 
-class CSpeed: public CSpellFx {
-	
-public:
-	~CSpeed();
-	
-	void Create(EntityHandle numinteractive);
-	void Update(float timeDelta);
-	void Render();
-	
-private:
-	EntityHandle num;
-	
-	struct SpeedTrail {
-		short vertexIndex;
-		Trail * trail;
-	};
-	
-	std::vector<SpeedTrail> m_trails;
-};
-
 #define MAX_ICE 150
 // Done By : did
 class CIceProjectile : public CSpellFx {

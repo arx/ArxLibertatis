@@ -38,7 +38,10 @@
 
 SpeedSpell::~SpeedSpell() {
 	
-	delete m_pSpellFx;
+	for(size_t i = 0; i < m_trails.size(); i++) {
+		delete m_trails[i].trail;
+	}
+	m_trails.clear();
 }
 
 void SpeedSpell::Launch()
@@ -63,14 +66,33 @@ void SpeedSpell::Launch()
 		m_duration = m_launchDuration;
 	}
 	
-	m_pSpellFx = new CSpeed();
-	m_pSpellFx->Create(m_target);
+	std::vector<VertexGroup> & grouplist = entities[m_target]->obj->grouplist;
+	
+	bool skip = true;
+	std::vector<VertexGroup>::const_iterator itr;
+	for(itr = grouplist.begin(); itr != grouplist.end(); ++itr) {
+		skip = !skip;
+		
+		if(skip) {
+			continue;
+		}
+		
+		float col = 0.05f + (rnd() * 0.05f);
+		float size = 1.f + (0.5f * rnd());
+		int taille = Random::get(130, 260);
+		
+		SpeedTrail trail;
+		trail.vertexIndex = itr->origin;
+		trail.trail = new Trail(taille, Color4f::gray(col), Color4f::black, size, 0.f);
+		
+		m_trails.push_back(trail);
+	}
 	
 	m_targets.push_back(m_target);
 }
 
-void SpeedSpell::End()
-{
+void SpeedSpell::End() {
+	
 	m_targets.clear();
 	
 	if(m_caster == PlayerEntityHandle)
@@ -78,24 +100,33 @@ void SpeedSpell::End()
 	
 	ARX_SOUND_PlaySFX(SND_SPELL_SPEED_END, &entities[m_target]->pos);
 	
-	delete m_pSpellFx;
-	m_pSpellFx = NULL;
+	for(size_t i = 0; i < m_trails.size(); i++) {
+		delete m_trails[i].trail;
+	}
+	m_trails.clear();
 }
 
-void SpeedSpell::Update(float timeDelta)
-{
-	if(m_pSpellFx) {
-		if(m_caster == PlayerEntityHandle)
-			ARX_SOUND_RefreshPosition(m_snd_loop, entities[m_target]->pos);
+void SpeedSpell::Update(float timeDelta) {
+	
+	if(m_caster == PlayerEntityHandle)
+		ARX_SOUND_RefreshPosition(m_snd_loop, entities[m_target]->pos);
+	
+	for(size_t i = 0; i < m_trails.size(); i++) {
+		Vec3f pos = entities[m_target]->obj->vertexlist3[m_trails[i].vertexIndex].v;
 		
-		m_pSpellFx->Update(timeDelta);
-		m_pSpellFx->Render();
+		m_trails[i].trail->SetNextPosition(pos);
+		m_trails[i].trail->Update(timeDelta);
+	}
+	
+	for(size_t i = 0; i < m_trails.size(); i++) {
+		m_trails[i].trail->Render();
 	}
 }
 
 Vec3f SpeedSpell::getPosition() {
 	return getTargetPosition();
 }
+
 
 void DispellIllusionSpell::Launch()
 {
