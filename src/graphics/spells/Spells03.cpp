@@ -92,12 +92,10 @@ void CIceProjectile::Create(Vec3f aeSrc, float afBeta, float fLevel, EntityHandl
 	float fBetaRadCos = glm::cos(fBetaRad);
 	float fBetaRadSin = glm::sin(fBetaRad);
 	
-	Vec3f s, e, h;
-
-	s.x					= aeSrc.x;
-	s.y					= aeSrc.y - 100;
-	s.z					= aeSrc.z;
-
+	Vec3f e, h;
+	
+	Vec3f s = aeSrc + Vec3f(0.f, -100.f, 0.f);
+	
 	float fspelldist	= static_cast<float>(iMax * 15);
 
 	fspelldist = std::min(fspelldist, 200.0f);
