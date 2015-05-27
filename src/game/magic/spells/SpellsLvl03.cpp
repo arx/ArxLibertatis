@@ -26,7 +26,9 @@
 #include "game/NPC.h"
 #include "game/Player.h"
 #include "game/Spells.h"
+#include "graphics/particle/Particle.h"
 #include "graphics/particle/ParticleEffects.h"
+#include "graphics/particle/ParticleParams.h"
 #include "graphics/spells/Spells03.h"
 #include "physics/Collisions.h"
 #include "scene/GameSound.h"
@@ -315,39 +317,90 @@ Vec3f FireballSpell::getPosition() {
 }
 
 
-CreateFoodSpell::~CreateFoodSpell() {
-	
-	delete m_pSpellFx;
-}
-
 void CreateFoodSpell::Launch()
 {
 	ARX_SOUND_PlaySFX(SND_SPELL_CREATE_FOOD, &m_caster_pos);
 	
 	m_duration = (m_launchDuration > -1) ? m_launchDuration : 3500;
+	m_currentTime = 0;
 	
 	if(m_caster == PlayerEntityHandle || m_target == PlayerEntityHandle) {
 		player.hunger = 100;
 	}
 	
-	m_pSpellFx = new CCreateFood();
-	m_pSpellFx->Create();
-	m_pSpellFx->SetDuration(m_duration);
-	m_duration = m_pSpellFx->GetDuration();
+	m_pos = player.pos;
+	
+	m_particles.SetPos(m_pos);
+	
+	{
+	ParticleParams cp;
+	cp.m_nbMax = 350;
+	cp.m_life = 800;
+	cp.m_lifeRandom = 2000;
+	cp.m_pos = Vec3f(100, 200, 100);
+	cp.m_direction = Vec3f(0, -10, 0) * 0.1f;
+	cp.m_angle = glm::radians(5.f);
+	cp.m_speed = 120;
+	cp.m_speedRandom = 84;
+	cp.m_gravity = Vec3f(0, -10, 0);
+	cp.m_flash = 0;
+	cp.m_rotation = 1.0f / (101 - 80);
+
+	cp.m_startSegment.m_size = 8;
+	cp.m_startSegment.m_sizeRandom = 8;
+	cp.m_startSegment.m_color = Color(105, 105, 20, 145).to<float>();
+	cp.m_startSegment.m_colorRandom = Color(50, 50, 0, 10).to<float>();
+
+	cp.m_endSegment.m_size = 6;
+	cp.m_endSegment.m_sizeRandom = 4;
+	cp.m_endSegment.m_color = Color(20, 20, 5, 0).to<float>();
+	cp.m_endSegment.m_colorRandom = Color(40, 40, 0, 0).to<float>();
+
+	cp.m_blendMode = RenderMaterial::Additive;
+	cp.m_texture.set("graph/particles/create_food", 0, 100); //5
+	cp.m_spawnFlags = PARTICLE_CIRCULAR | PARTICLE_BORDER;
+	
+	m_particles.SetParams(cp);
+	}
 }
 
 void CreateFoodSpell::End() {
 	
-	delete m_pSpellFx;
-	m_pSpellFx = NULL;
 }
 
-void CreateFoodSpell::Update(float timeDelta)
-{
-	if(m_pSpellFx) {
-		m_pSpellFx->Update(timeDelta);
-		m_pSpellFx->Render();
-	}	
+void CreateFoodSpell::Update(float timeDelta) {
+	
+	m_currentTime += timeDelta;
+	
+	m_pos = entities.player()->pos;
+	
+	unsigned long ulCalc = m_duration - m_currentTime;
+	arx_assert(ulCalc <= LONG_MAX);
+	long ff =  static_cast<long>(ulCalc);
+	
+	if(ff < 1500) {
+		m_particles.m_parameters.m_spawnFlags = PARTICLE_CIRCULAR;
+		m_particles.m_parameters.m_gravity = Vec3f_ZERO;
+		
+		std::list<Particle *>::iterator i;
+		
+		for(i = m_particles.listParticle.begin(); i != m_particles.listParticle.end(); ++i) {
+			Particle * pP = *i;
+			
+			if(pP->isAlive()) {
+				pP->fColorEnd.a = 0;
+					
+				if(pP->m_age + ff < pP->m_timeToLive) {
+					pP->m_age = pP->m_timeToLive - ff;
+				}
+			}
+		}
+	}
+
+	m_particles.SetPos(m_pos);
+	m_particles.Update(timeDelta);
+	
+	m_particles.Render();
 }
 
 

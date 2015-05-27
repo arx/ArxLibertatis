@@ -123,20 +123,4 @@ private:
 	Icicle m_icicles[MAX_ICE];
 };
 
-// Done By : did
-class CCreateFood : public CSpellFx {
-	
-public:
-	CCreateFood();
-	~CCreateFood();
-	
-	void Create();
-	void Update(float timeDelta);
-	void Render();
-	
-private:
-	Vec3f eSrc;
-	ParticleSystem * pPS;
-};
-
 #endif // ARX_GRAPHICS_SPELLS_SPELLS03_H

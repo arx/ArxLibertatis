@@ -22,6 +22,7 @@
 
 #include "game/magic/Spell.h"
 
+#include "graphics/particle/ParticleSystem.h"
 #include "graphics/spells/Spells03.h"
 
 class SpeedSpell : public SpellBase {
@@ -62,14 +63,14 @@ private:
 
 class CreateFoodSpell : public SpellBase {
 public:
-	~CreateFoodSpell();
-	
 	void Launch();
 	void End();
 	void Update(float timeDelta);
 	
 private:
-	CCreateFood * m_pSpellFx;
+	Vec3f m_pos;
+	ParticleSystem m_particles;
+	long m_currentTime;
 };
 
 class IceProjectileSpell : public SpellBase {
