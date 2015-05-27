@@ -226,10 +226,9 @@ void CIceProjectile::Render()
 		if(stitecolor.b > 1)
 			stitecolor.b = 1;
 
-		if(icicle.type == 0)
-			Draw3DObject(smotte, stiteangle, icicle.pos, icicle.size, stitecolor, mat);
-		else
-			Draw3DObject(stite, stiteangle, icicle.pos, icicle.size, stitecolor, mat);
+		EERIE_3DOBJ * eobj = (icicle.type == 0) ? smotte : stite;
+		
+		Draw3DObject(eobj, stiteangle, icicle.pos, icicle.size, stitecolor, mat);
 	}
 	
 	for(int i = 0; i < std::min(iNumber, iMax + 1); i++) {
