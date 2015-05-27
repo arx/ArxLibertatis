@@ -49,30 +49,6 @@ ZeniMax Media Inc., Suite 120, Rockville, Maryland 20850 USA.
 #include "graphics/particle/ParticleSystem.h"
 #include "graphics/particle/ParticleParams.h"
 
-// Done By : Didier Pedreno
-class CFireBall : public CSpellFx {
-	
-public:
-	CFireBall();
-	~CFireBall();
-	
-	void SetTTL(unsigned long);
-	
-	void Create(Vec3f, float afBeta, float afAlpha);
-	void Kill();
-	
-	void Update(float timeDelta);
-	void Render();
-	
-	Vec3f eSrc;
-	Vec3f eCurPos;
-	Vec3f eMove;
-	bool bExplo;
-	
-	unsigned long m_createBallDuration;
-private:
-
-};
 
 #define MAX_ICE 150
 // Done By : did

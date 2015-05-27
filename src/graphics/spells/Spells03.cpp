@@ -63,54 +63,6 @@ ZeniMax Media Inc., Suite 120, Rockville, Maryland 20850 USA.
 #include "scene/Object.h"
 #include "scene/Interactive.h"
 
-CFireBall::CFireBall()
-	: CSpellFx()
-	, m_createBallDuration(2000)
-{
-	
-	eSrc = Vec3f_ZERO;
-	
-	SetDuration(2000);
-	ulCurrentTime = ulDuration + 1;
-	
-	bExplo = false;
-}
-
-CFireBall::~CFireBall()
-{
-}
-
-void CFireBall::SetTTL(unsigned long aulTTL)
-{
-	unsigned long t = ulCurrentTime;
-	ulDuration = std::min(ulCurrentTime + aulTTL, ulDuration);
-	SetDuration(ulDuration);
-	ulCurrentTime = t;
-}
-
-void CFireBall::Create(Vec3f aeSrc, float afBeta, float afAlpha)
-{
-	SetDuration(ulDuration);
-	
-	eSrc = aeSrc;
-	eSrc += angleToVectorXZ(afBeta) * 60.f;
-	
-	eMove = angleToVector(Anglef(afAlpha, afBeta, 0.f)) * 80.f;
-	
-	// Light
-	eCurPos = eSrc;
-}
-
-void CFireBall::Update(float timeDelta)
-{
-	ulCurrentTime += timeDelta;
-
-
-}
-
-void CFireBall::Render() {
-
-}
 
 CIceProjectile::~CIceProjectile() {
 }

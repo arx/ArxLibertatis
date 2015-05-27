@@ -63,8 +63,15 @@ public:
 	Vec3f getPosition();
 	
 private:
-	CFireBall * m_pSpellFx;
 	LightHandle m_light;
+	
+	long ulCurrentTime;
+
+	Vec3f eCurPos;
+	Vec3f eMove;
+	bool bExplo;
+	
+	long m_createBallDuration;
 };
 
 class CreateFoodSpell : public SpellBase {
