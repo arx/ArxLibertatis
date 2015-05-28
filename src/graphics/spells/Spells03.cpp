@@ -88,31 +88,20 @@ void CIceProjectile::Create(Vec3f aeSrc, float afBeta, float fLevel, EntityHandl
 	
 	SetDuration(ulDuration);
 	
-	float fBetaRad = glm::radians(afBeta);
-	float fBetaRadCos = glm::cos(fBetaRad);
-	float fBetaRadSin = glm::sin(fBetaRad);
-	
-	Vec3f e, h;
-	
-	Vec3f s = aeSrc + Vec3f(0.f, -100.f, 0.f);
-	
 	float fspelldist	= static_cast<float>(iMax * 15);
 
 	fspelldist = std::min(fspelldist, 200.0f);
 	fspelldist = std::max(fspelldist, 450.0f);
-	e.x = aeSrc.x - fBetaRadSin * fspelldist;
-	e.y = aeSrc.y - 100;
-	e.z = aeSrc.z + fBetaRadCos * fspelldist;
-
-	float fd;
-
+	
+	Vec3f s = aeSrc + Vec3f(0.f, -100.f, 0.f);
+	Vec3f e = s + angleToVectorXZ(afBeta) * fspelldist;
+	
+	Vec3f h;
 	if(!Visible(s, e, NULL, &h)) {
-		e.x = h.x + fBetaRadSin * 20;
-		e.y = h.y;
-		e.z = h.z - fBetaRadCos * 20;
+		e = h + angleToVectorXZ(afBeta) * 20.f;
 	}
 
-	fd = fdist(s, e);
+	float fd = fdist(s, e);
 
 	float fCalc = ulDuration * (fd / fspelldist);
 	SetDuration(checked_range_cast<unsigned long>(fCalc));
