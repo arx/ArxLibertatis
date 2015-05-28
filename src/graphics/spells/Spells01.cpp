@@ -358,8 +358,8 @@ void CMagicMissile::Render()
 	float bubu = getAngle(av.x, av.z, 0, 0);
 	float bubu1 = getAngle(av.x, av.y, 0, 0);
 	
-	Vec3f stitepos = lastpos;
-
+	eCurPos = lastpos;
+	
 	Anglef stiteangle;
 	stiteangle.setPitch(-glm::degrees(bubu));
 	stiteangle.setYaw(0);
@@ -374,22 +374,9 @@ void CMagicMissile::Render()
 	if(stiteangle.getRoll() < 0)
 		stiteangle.setRoll(stiteangle.getRoll() + 360.0f);
 
-	Color3f stitecolor;
-	if(m_mrCheat) {
-		stitecolor.r = 1.f;
-		stitecolor.g = 0.f;
-		stitecolor.b = 0.2f;
-	} else {
-		stitecolor.r = 0.3f;
-		stitecolor.g = 0.3f;
-		stitecolor.b = 0.5f;
-	}
-
-	Vec3f stitescale = Vec3f_ONE;
-
-	Draw3DObject(smissile, stiteangle, stitepos, stitescale, stitecolor, mat);
-
-	eCurPos = lastpos;
+	Color3f stitecolor = m_mrCheat ? Color3f(1.f, 0.f, 0.2f) : Color3f(0.3f, 0.3f, 0.5f);
+	
+	Draw3DObject(smissile, stiteangle, eCurPos, Vec3f_ONE, stitecolor, mat);
 }
 
 //-----------------------------------------------------------------------------
