@@ -33,9 +33,6 @@
 #include "scene/GameSound.h"
 #include "scene/Interactive.h"
 
-RuneOfGuardingSpell::~RuneOfGuardingSpell() {
-	delete m_pSpellFx;
-}
 
 void RuneOfGuardingSpell::Launch()
 {
@@ -47,11 +44,7 @@ void RuneOfGuardingSpell::Launch()
 	
 	m_pos = entities[m_caster]->pos;
 	
-	m_pSpellFx = new CRuneOfGuarding();
-	m_pSpellFx->Create(m_pos);
-	m_pSpellFx->SetDuration(m_duration);
-	m_duration = m_pSpellFx->GetDuration();
-	
+	tex_p2 = TextureContainer::Load("graph/obj3d/textures/(fx)_tsu_blueting");
 	
 	m_light = GetFreeDynLight();
 	if(lightHandleIsValid(m_light)) {
@@ -70,12 +63,11 @@ void RuneOfGuardingSpell::Launch()
 void RuneOfGuardingSpell::End() {
 	
 	endLightDelayed(m_light, 500);
-	
-	delete m_pSpellFx;
-	m_pSpellFx = NULL;
 }
 
 void RuneOfGuardingSpell::Update(float timeDelta) {
+	
+	ulCurrentTime += timeDelta;
 	
 	if(lightHandleIsValid(m_light)) {
 		EERIE_LIGHT * light = lightHandleGet(m_light);
@@ -89,10 +81,54 @@ void RuneOfGuardingSpell::Update(float timeDelta) {
 		light->duration = 200;
 	}
 	
-	if(m_pSpellFx) {
-		m_pSpellFx->Update(timeDelta);
-		m_pSpellFx->Render();
+	Vec3f pos = m_pos + Vec3f(0.f, -20.f, 0.f);
+	
+	RenderMaterial mat;
+	mat.setDepthTest(true);
+	mat.setBlendType(RenderMaterial::Additive);
+	
+	Anglef stiteangle;
+	Color3f stitecolor;
+	
+	float stiteangleb = float(ulCurrentTime) * 0.01f;
+	stiteangle.setYaw(0);
+	stiteangle.setRoll(0);
+	
+	stiteangle.setPitch(stiteangleb * 0.1f);
+	stitecolor = Color3f(0.4f, 0.4f, 0.6f);
+	float scale = std::sin(ulCurrentTime * 0.015f);
+	Vec3f stitescale = Vec3f(1.f, -0.1f, 1.f);
+	
+	Draw3DObject(slight, stiteangle, pos, stitescale, stitecolor, mat);
+	
+	stiteangle.setPitch(stiteangleb);
+	stitecolor = Color3f(0.6f, 0.f, 0.f);
+	stitescale = Vec3f(2.f) * (1.f + 0.01f * scale);
+	
+	Draw3DObject(ssol, stiteangle, pos, stitescale, stitecolor, mat);
+	
+	stitecolor = Color3f(0.6f, 0.3f, 0.45f);
+	stitescale = Vec3f(1.8f) * (1.f + 0.02f * scale);
+	
+	Draw3DObject(srune, stiteangle, pos, stitescale, stitecolor, mat);
+	
+	for(int n = 0; n < 4; n++) {
+		
+		PARTICLE_DEF * pd = createParticle();
+		if(!pd) {
+			break;
+		}
+		
+		pd->ov = pos + (Vec3f(40.f, 0.f, 40.f) * Vec3f(frand2(), 0.f, frand2()));
+		pd->move = Vec3f(0.8f, -4.f, 0.8f) * Vec3f(frand2(), rnd(), frand2());
+		pd->scale = Vec3f(-0.1f);
+		pd->tolive = Random::get(2600, 3200);
+		pd->tc = tex_p2;
+		pd->siz = 0.3f;
+		pd->rgb = Color3f(.4f, .4f, .6f);
 	}
+	
+	
 	
 	Sphere sphere = Sphere(m_pos, std::max(m_level * 15.f, 50.f));
 	if(CheckAnythingInSphere(sphere, m_caster, CAS_NO_SAME_GROUP | CAS_NO_BACKGROUND_COL | CAS_NO_ITEM_COL| CAS_NO_FIX_COL | CAS_NO_DEAD_COL)) {

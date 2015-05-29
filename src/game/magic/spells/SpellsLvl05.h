@@ -26,8 +26,6 @@
 
 class RuneOfGuardingSpell : public SpellBase {
 public:
-	~RuneOfGuardingSpell();
-	
 	void Launch();
 	void End();
 	void Update(float timeDelta);
@@ -37,7 +35,9 @@ public:
 private:
 	Vec3f m_pos;
 	LightHandle m_light;
-	CRuneOfGuarding * m_pSpellFx;
+	
+	TextureContainer * tex_p2;
+	unsigned long ulCurrentTime;
 };
 
 class LevitateSpell : public SpellBase {

@@ -47,26 +47,6 @@ ZeniMax Media Inc., Suite 120, Rockville, Maryland 20850 USA.
 #include "graphics/effects/SpellEffects.h"
 #include "graphics/particle/ParticleSystem.h"
 
-// Done By : did
-class CRuneOfGuarding : public CSpellFx {
-	
-public:
-	CRuneOfGuarding();
-	~CRuneOfGuarding();
-	
-	void SetPos(Vec3f);
-	
-	void Create(Vec3f);
-	void Update(float timeDelta);
-	void Render();
-	
-	Vec3f eSrc;
-	
-private:
-	
-	Vec3f eTarget;
-	TextureContainer * tex_p2;
-};
 
 // Done By : Sébastien Scieux
 class CLevitate : public CSpellFx {
