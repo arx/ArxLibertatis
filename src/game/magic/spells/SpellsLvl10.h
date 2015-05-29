@@ -39,7 +39,6 @@ private:
 	bool m_soundEffectPlayed;
 	LightHandle m_light;
 	
-	long number;
 	std::vector<CLightning *> pTab;
 };
 
