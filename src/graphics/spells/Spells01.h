@@ -80,22 +80,4 @@ private:
 	bool m_mrCheat;
 };
 
-class CMultiMagicMissile : public CSpellFx {
-	
-public:
-	explicit CMultiMagicMissile(size_t nb, bool mrCheat);
-	~CMultiMagicMissile();
-	
-	void CheckCollision(float level, EntityHandle caster);
-	bool CheckAllDestroyed();
-	
-	void Create(Vec3f aePos, float afAlpha, float afBeta);
-	void Update(float timeDelta);
-	void Render();
-	
-private:
-	bool m_mrCheat;
-	std::vector<CMagicMissile *> pTab;
-};
-
 #endif // ARX_GRAPHICS_SPELLS_SPELLS01_H

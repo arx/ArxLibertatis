@@ -41,7 +41,8 @@ public:
 	void Update(float timeDelta);
 	
 private:
-	CMultiMagicMissile * m_pSpellFx;
+	bool m_mrCheat;
+	std::vector<CMagicMissile *> pTab;
 };
 
 class IgnitSpell : public SpellBase {

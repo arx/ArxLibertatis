@@ -28,10 +28,12 @@
 #include "game/Player.h"
 #include "game/Spells.h"
 #include "game/spell/Cheat.h"
+#include "game/NPC.h"
 #include "game/magic/spells/SpellsLvl03.h"
-
+#include "graphics/particle/ParticleEffects.h"
+#include "graphics/particle/ParticleManager.h"
 #include "graphics/spells/Spells01.h"
-
+#include "physics/Collisions.h"
 #include "scene/GameSound.h"
 #include "scene/Interactive.h"
 #include "scene/Object.h"
@@ -84,14 +86,114 @@ void MagicSightSpell::Update(float timeDelta)
 }
 
 
-MagicMissileSpell::~MagicMissileSpell() {
+
+class MagicMissileExplosionParticle : public ParticleParams {
+public:
+	MagicMissileExplosionParticle() {
+		load();
+	}
 	
-	delete m_pSpellFx;
+	void load() {
+		m_nbMax = 100;
+		m_life = 1500;
+		m_lifeRandom = 0;
+		m_pos = Vec3f(10.f);
+		m_direction = Vec3f(0.f, -10.f, 0.f) * 0.1f;
+		m_angle = glm::radians(360.f);
+		m_speed = 130;
+		m_speedRandom = 100;
+		m_gravity = Vec3f(0.f, 10.f, 0.f);
+		m_flash = 0;
+		m_rotation = 1.0f / (101 - 16);
+	
+		m_startSegment.m_size = 5;
+		m_startSegment.m_sizeRandom = 10;
+		m_startSegment.m_color = Color(110, 110, 110, 110).to<float>();
+		m_startSegment.m_colorRandom = Color(100, 100, 100, 100).to<float>();
+		m_endSegment.m_size = 0;
+		m_endSegment.m_sizeRandom = 2;
+		m_endSegment.m_color = Color(0, 0, 120, 10).to<float>();
+		m_endSegment.m_colorRandom = Color(50, 50, 50, 50).to<float>();
+		
+		m_texture.set("graph/particles/magicexplosion", 0, 500);
+		
+		m_blendMode = RenderMaterial::Additive;
+		m_spawnFlags = 0;
+		m_looping = false;
+	}
+};
+
+class MagicMissileExplosionMrCheatParticle : public MagicMissileExplosionParticle {
+public:
+	MagicMissileExplosionMrCheatParticle() {
+		load();
+	}
+	
+	void load() {
+		MagicMissileExplosionParticle::load();
+		
+		m_speed = 13;
+		m_speedRandom = 10;
+		m_startSegment.m_size = 20;
+		m_startSegment.m_color = Color(0, 0, 0, 0).to<float>();
+		m_startSegment.m_colorRandom = Color(0, 0, 0, 0).to<float>();
+		m_endSegment.m_color = Color(255, 40, 120, 10).to<float>();
+		m_texture.set("graph/particles/(fx)_mr", 0, 500);
+	}
+};
+
+extern ParticleManager * pParticleManager;
+
+static void LaunchMagicMissileExplosion(const Vec3f & _ePos, bool mrCheat) {
+	
+	ParticleParams cp = MagicMissileExplosionParticle();
+	
+	if(mrCheat) {
+		cp = MagicMissileExplosionMrCheatParticle();
+	}
+	
+	ParticleSystem * pPS = new ParticleSystem();
+	pPS->SetParams(cp);
+	pPS->SetPos(_ePos);
+	pPS->Update(0);
+
+	LightHandle id = GetFreeDynLight();
+
+	if(lightHandleIsValid(id)) {
+		EERIE_LIGHT * light = lightHandleGet(id);
+		
+		light->intensity = 2.3f;
+		light->fallstart = 250.f;
+		light->fallend   = 420.f;
+
+		if(mrCheat) {
+			light->rgb = Color3f(1.f, 0.3f, .8f);
+		} else {
+			light->rgb = Color3f(0.f, 0.f, .8f);
+		}
+
+		light->pos = _ePos;
+		light->duration = 1500;
+	}
+
+	arx_assert(pParticleManager);
+	pParticleManager->AddSystem(pPS);
+
+	ARX_SOUND_PlaySFX(SND_SPELL_MM_HIT, &_ePos);
 }
 
-void MagicMissileSpell::Launch()
-{
-	m_duration = 20000; // TODO probably never read
+
+MagicMissileSpell::~MagicMissileSpell() {
+	
+	for(size_t i = 0; i < pTab.size(); i++) {
+		delete pTab[i];
+	}
+	pTab.clear();
+}
+
+void MagicMissileSpell::Launch() {
+	
+	m_duration = 6000ul;
 	
 	long number;
 	if(sp_max || cur_rf == 3) {
@@ -152,37 +254,145 @@ void MagicMissileSpell::Launch()
 		}
 	}
 	
-	bool mrCheat = (m_caster == PlayerEntityHandle && cur_mr == 3);
+	m_mrCheat = (m_caster == PlayerEntityHandle && cur_mr == 3);
 	
-	m_pSpellFx = new CMultiMagicMissile(number, mrCheat);
-	m_pSpellFx->SetDuration(6000ul);
-	m_pSpellFx->Create(aePos, afAlpha, afBeta);
-	m_duration = m_pSpellFx->GetDuration();
+	pTab.reserve(number);
+	for(size_t i = 0; i < size_t(number); i++) {
+		CMagicMissile * missile = new CMagicMissile(m_mrCheat);
+		
+		pTab.push_back(missile);
+	}
+	
+	long lMax = 0;
+	
+	for(size_t i = 0; i < pTab.size(); i++) {
+		Anglef angles(afAlpha, afBeta, 0.f);
+		
+		if(i > 0) {
+			angles.setYaw(angles.getYaw() + frand2() * 4.0f);
+			angles.setPitch(angles.getPitch() + frand2() * 6.0f);
+		}
+		
+		pTab[i]->Create(aePos, angles);  
+		
+		float fTime = m_duration + frand2() * 1000.0f;
+		long lTime = checked_range_cast<long>(fTime);
+		
+		lTime		= std::max(1000L, lTime);
+		lMax		= std::max(lMax, lTime);
+		
+		CMagicMissile * pMM = (CMagicMissile *)pTab[i];
+		
+		pMM->SetDuration(lTime);
+		
+		if(m_mrCheat) {
+			pMM->SetColor(Color3f(0.9f, 0.2f, 0.5f));
+		} else {
+			pMM->SetColor(Color3f(0.9f + rnd() * 0.1f, 0.9f + rnd() * 0.1f, 0.7f + rnd() * 0.3f));
+		}
+		
+		pTab[i]->lLightId = GetFreeDynLight();
+		
+		if(lightHandleIsValid(pTab[i]->lLightId)) {
+			EERIE_LIGHT * el = lightHandleGet(pTab[i]->lLightId);
+			
+			el->intensity	= 0.7f + 2.3f;
+			el->fallend		= 190.f;
+			el->fallstart	= 80.f;
+			
+			if(m_mrCheat) {
+				el->rgb = Color3f(1.f, 0.3f, 0.8f);
+			} else {
+				el->rgb = Color3f(0.f, 0.f, 1.f);
+			}
+			
+			el->pos	 = pMM->eSrc;
+			el->duration = 300;
+		}
+	}
+	
+	m_duration = lMax + 1000;
 }
 
 void MagicMissileSpell::End() {
 	
-	delete m_pSpellFx;
-	m_pSpellFx = NULL;
+	for(size_t i = 0; i < pTab.size(); i++) {
+		delete pTab[i];
+	}
+	pTab.clear();
 }
 
-void MagicMissileSpell::Update(float timeDelta)
-{
-	CSpellFx *pCSpellFX = m_pSpellFx;
-
-	if(pCSpellFX) {
-		CMultiMagicMissile *pMMM = (CMultiMagicMissile *) pCSpellFX;
-		pMMM->CheckCollision(m_level, m_caster);
-
-		// Update
-		pCSpellFX->Update(timeDelta);
-
-		if(pMMM->CheckAllDestroyed())
+void MagicMissileSpell::Update(float timeDelta) {
+	
+	
+	for(size_t i = 0; i < pTab.size(); i++) {
+		CMagicMissile * missile = (CMagicMissile *) pTab[i];
+		
+		if(missile->bExplo)
+			continue;
+			
+		Sphere sphere;
+		sphere.origin = missile->eCurPos;
+		sphere.radius	= 10.f;
+		
+		if(CheckAnythingInSphere(sphere, m_caster, CAS_NO_SAME_GROUP))
+		{
+			LaunchMagicMissileExplosion(missile->eCurPos, m_mrCheat);
+			ARX_NPC_SpawnAudibleSound(missile->eCurPos, entities[m_caster]);
+			
+			missile->SetTTL(1000);
+			missile->bExplo = true;
+			missile->bMove  = false;
+			
+			missile->lLightId = LightHandle::Invalid;
+			
+			DamageParameters damage;
+			damage.pos = missile->eCurPos;
+			damage.radius = 80.f;
+			damage.damages = (4 + m_level * ( 1.0f / 5 )) * .8f;
+			damage.area	= DAMAGE_FULL;
+			damage.duration = -1;
+			damage.source = m_caster;
+			damage.flags = DAMAGE_FLAG_DONT_HURT_SOURCE;
+			damage.type = DAMAGE_TYPE_MAGICAL;
+			DamageCreate(damage);
+			
+			Color3f rgb(.3f, .3f, .45f);
+			ARX_PARTICLES_Add_Smoke(missile->eCurPos, 0, 6, &rgb);
+		}
+	}
+	
+	for(size_t i = 0 ; i < pTab.size() ; i++) {
+		pTab[i]->Update(timeDelta);
+	}
+	
+	{ // CheckAllDestroyed
+		long nbmissiles	= 0;
+		
+		for(size_t i = 0; i < pTab.size(); i++) {
+			CMagicMissile *pMM = pTab[i];
+			if(pMM->bMove)
+				nbmissiles++;
+		}
+		
+		if(nbmissiles == 0)
 			m_duration = 0;
-
-		pCSpellFX->Render();
+	}
+	
+	for(size_t i = 0; i < pTab.size(); i++) {
+		pTab[i]->Render();
+		
+		CMagicMissile * pMM = (CMagicMissile *) pTab[i];
+		
+		if(lightHandleIsValid(pMM->lLightId)) {
+			EERIE_LIGHT * el	= lightHandleGet(pMM->lLightId);
+			el->intensity		= 0.7f + 2.3f * pMM->lightIntensityFactor;
+			el->pos = pMM->eCurPos;
+			el->time_creation	= (unsigned long)(arxtime);
+		}
 	}
 }
+
 
 IgnitSpell::IgnitSpell()
 	: m_srcPos(Vec3f_ZERO)
