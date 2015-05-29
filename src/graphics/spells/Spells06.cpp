@@ -283,37 +283,6 @@ void CCreateField::Render()
 	//return falpha;
 }
 
-CSlowDown::CSlowDown() {
-	
-	eSrc = Vec3f_ZERO;
-	eTarget = Vec3f_ZERO;
-	
-	SetDuration(1000);
-	ulCurrentTime = ulDuration + 1;
-	
-	tex_p2 = TextureContainer::Load("graph/obj3d/textures/(fx)_tsu_blueting");
-}
-
-CSlowDown::~CSlowDown() {
-}
-
-void CSlowDown::Create(Vec3f aeSrc) {
-	
-	SetDuration(ulDuration);
-	eSrc = aeSrc;
-	eTarget = eSrc;
-}
-
-void CSlowDown::Update(float timeDelta) {
-	ulCurrentTime += timeDelta;
-}
-
-void CSlowDown::Render() {
-	
-	if(ulCurrentTime >= ulDuration)
-		return;
-}
-
 //-----------------------------------------------------------------------------
 // RISE DEAD
 //-----------------------------------------------------------------------------

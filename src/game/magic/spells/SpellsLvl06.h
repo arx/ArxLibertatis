@@ -75,17 +75,12 @@ public:
 
 class SlowDownSpell : public SpellBase {
 public:
-	~SlowDownSpell();
-	
 	bool CanLaunch();
 	void Launch();
 	void End();
 	void Update(float timeDelta);
 	
 	Vec3f getPosition();
-	
-private:
-	CSlowDown * m_pSpellFx;
 };
 
 #endif // ARX_GAME_MAGIC_SPELLS_SPELLSLVL06_H

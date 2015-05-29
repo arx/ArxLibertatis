@@ -440,13 +440,8 @@ void DisarmTrapSpell::Launch()
 }
 
 
-SlowDownSpell::~SlowDownSpell() {
+bool SlowDownSpell::CanLaunch() {
 	
-	delete m_pSpellFx;
-}
-
-bool SlowDownSpell::CanLaunch()
-{
 	// TODO this seems to be the only spell that ends itself when cast twice
 	SpellBase * spell = spells.getSpellOnTarget(m_target, SPELL_SLOW_DOWN);
 	if(spell) {
@@ -468,31 +463,18 @@ void SlowDownSpell::Launch()
 	m_hasDuration = true;
 	m_fManaCostPerSecond = 1.2f;
 	
-	Vec3f targetPos = getTargetPos(m_caster, m_target);
-	
-	m_pSpellFx = new CSlowDown();
-	m_pSpellFx->Create(targetPos);
-	m_pSpellFx->SetDuration(m_duration);
-	m_duration = m_pSpellFx->GetDuration();
-	
 	m_targets.push_back(m_target);
 }
 
-void SlowDownSpell::End()
-{
+void SlowDownSpell::End() {
+	
 	ARX_SOUND_PlaySFX(SND_SPELL_SLOW_DOWN_END);
 	m_targets.clear();
-	
-	delete m_pSpellFx;
-	m_pSpellFx = NULL;
 }
 
 void SlowDownSpell::Update(float timeDelta) {
 	
-	if(m_pSpellFx) {
-		m_pSpellFx->Update(timeDelta);
-		m_pSpellFx->Render();
-	}
+	ARX_UNUSED(timeDelta);
 }
 
 Vec3f SlowDownSpell::getPosition() {

@@ -76,24 +76,6 @@ private:
 	void RenderSubDivFace(Vec3f * b, Vec3f * t, int b1, int b2, int t1, int t2, RenderMaterial & mat);
 };
 
-class CSlowDown : public CSpellFx {
-	
-public:
-	CSlowDown();
-	~CSlowDown();
-	
-	void SetPos(Vec3f);
-	
-	void Create(Vec3f);
-	void Update(float timeDelta);
-	void Render();
-	
-private:
-	Vec3f eSrc;
-	Vec3f eTarget;
-	TextureContainer * tex_p2;
-};
-
 // Done By : Didier Pedreno
 class CRiseDead : public CSpellFx {
 	
