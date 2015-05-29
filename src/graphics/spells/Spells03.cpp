@@ -194,25 +194,14 @@ void CIceProjectile::Render()
 		icicle.size = glm::clamp(icicle.size, Vec3f(0.f), icicle.sizeMax);
 		
 		Anglef stiteangle;
-		Color3f stitecolor;
-
 		stiteangle.setPitch(glm::cos(glm::radians(icicle.pos.x)) * 360);
 		stiteangle.setYaw(0);
 		stiteangle.setRoll(0);
 		
 		float tt = icicle.sizeMax.y * fColor;
-		stitecolor.g = stitecolor.r = tt * 0.7f;
-		stitecolor.b = tt * 0.9f;
-
-		if(stitecolor.r > 1)
-			stitecolor.r = 1;
-
-		if(stitecolor.g > 1)
-			stitecolor.g = 1;
-
-		if(stitecolor.b > 1)
-			stitecolor.b = 1;
-
+		Color3f stitecolor = Color3f(0.7f, 0.7f, 0.9f) * tt;
+		stitecolor = componentwise_min(stitecolor, Color3f(1.f, 1.f, 1.f));
+		
 		EERIE_3DOBJ * eobj = (icicle.type == 0) ? smotte : stite;
 		
 		Draw3DObject(eobj, stiteangle, icicle.pos, icicle.size, stitecolor, mat);
