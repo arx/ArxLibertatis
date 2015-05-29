@@ -54,14 +54,14 @@ private:
 
 class CurePoisonSpell : public SpellBase {
 public:
-	~CurePoisonSpell();
-	
 	void Launch();
 	void End();
 	void Update(float timeDelta);
 	
 private:
-	CCurePoison * m_pSpellFx;
+	Vec3f m_pos;
+	ParticleSystem pPS;
+	unsigned long ulCurrentTime;
 };
 
 class RepelUndeadSpell : public SpellBase {

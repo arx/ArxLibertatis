@@ -111,24 +111,6 @@ private:
 };
 
 // Done By : Didier Pédreno
-class CCurePoison : public CSpellFx {
-	
-public:
-	CCurePoison();
-	~CCurePoison();
-	
-	void Create();
-	void SetPosition(const Vec3f & pos);
-	
-	void Update(float timeDelta);
-	void Render();
-	
-private:
-	Vec3f eSrc;
-	ParticleSystem * pPS;
-};
-
-// Done By : Didier Pédreno
 class CPoisonProjectile : public CSpellFx {
 	
 public:
