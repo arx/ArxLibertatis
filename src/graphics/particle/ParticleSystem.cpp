@@ -58,7 +58,6 @@ ZeniMax Media Inc., Suite 120, Rockville, Maryland 20850 USA.
 #include "graphics/particle/ParticleParams.h"
 #include "graphics/particle/Particle.h"
 
-#include "scene/Light.h"
 
 void ParticleSystem::RecomputeDirection() {
 	Vec3f eVect = m_parameters.m_direction;
@@ -72,8 +71,6 @@ ParticleSystem::ParticleSystem() {
 	for(i = 0; i < 20; i++) {
 		tex_tab[i] = NULL;
 	}
-	
-	m_lightHandle = LightHandle::Invalid;
 	
 	m_parameters.m_nbMax = 50;
 	
@@ -128,19 +125,6 @@ ParticleSystem::~ParticleSystem() {
 void ParticleSystem::SetPos(const Vec3f & pos) {
 	
 	m_nextPosition = pos;
-	if(lightHandleIsValid(m_lightHandle)) {
-		EERIE_LIGHT * light = lightHandleGet(m_lightHandle);
-		
-		light->pos = m_nextPosition;
-	}
-}
-
-void ParticleSystem::SetColor(float _fR, float _fG, float _fB) {
-	if(lightHandleIsValid(m_lightHandle)) {
-		EERIE_LIGHT * light = lightHandleGet(m_lightHandle);
-		
-		light->rgb = Color3f(_fR, _fG, _fB);
-	}
 }
 
 void ParticleSystem::SetParams(const ParticleParams & _pp) {
@@ -150,11 +134,6 @@ void ParticleSystem::SetParams(const ParticleParams & _pp) {
 	m_parameters.m_direction = glm::normalize(m_parameters.m_direction);
 	Vec3f eVect(m_parameters.m_direction.x, -m_parameters.m_direction.y, m_parameters.m_direction.z);
 	GenerateMatrixUsingVector(eMat, eVect, 0);
-
-	float r = (m_parameters.m_startSegment.m_color.r  + m_parameters.m_endSegment.m_color.r ) * 0.5f;
-	float g = (m_parameters.m_startSegment.m_color.g  + m_parameters.m_endSegment.m_color.g ) * 0.5f;
-	float b = (m_parameters.m_startSegment.m_color.b  + m_parameters.m_endSegment.m_color.b ) * 0.5f;
-	SetColor(r, g, b);
 	
 	{
 		ParticleParams::TextureInfo & texInfo = m_parameters.m_texture;

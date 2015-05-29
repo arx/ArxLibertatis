@@ -33,6 +33,7 @@ public:
 	
 private:
 	Vec3f m_pos;
+	LightHandle m_light;
 	ParticleSystem m_particles;
 	long m_currentTime;
 };

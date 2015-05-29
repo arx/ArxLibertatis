@@ -270,10 +270,10 @@ void CurePoisonSpell::Launch()
 	pPS.SetParams(cp);
 	}
 	
-	pPS.m_lightHandle = GetFreeDynLight();
+	m_light = GetFreeDynLight();
 
-	if(lightHandleIsValid(pPS.m_lightHandle)) {
-		EERIE_LIGHT * light = lightHandleGet(pPS.m_lightHandle);
+	if(lightHandleIsValid(m_light)) {
+		EERIE_LIGHT * light = lightHandleGet(m_light);
 		
 		light->intensity = 1.5f;
 		light->fallstart = 200.f;
@@ -325,11 +325,11 @@ void CurePoisonSpell::Update(float timeDelta) {
 	pPS.SetPos(m_pos);
 	pPS.Update(timeDelta);
 
-	if(!lightHandleIsValid(pPS.m_lightHandle))
-		pPS.m_lightHandle = GetFreeDynLight();
+	if(!lightHandleIsValid(m_light))
+		m_light = GetFreeDynLight();
 
-	if(lightHandleIsValid(pPS.m_lightHandle)) {
-		EERIE_LIGHT * light = lightHandleGet(pPS.m_lightHandle);
+	if(lightHandleIsValid(m_light)) {
+		EERIE_LIGHT * light = lightHandleGet(m_light);
 		
 		light->intensity = 2.3f;
 		light->fallstart = 200.f;

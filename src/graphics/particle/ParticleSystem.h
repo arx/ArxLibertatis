@@ -54,7 +54,6 @@ ZeniMax Media Inc., Suite 120, Rockville, Maryland 20850 USA.
 #include "math/Vector.h"
 #include "math/Quantizer.h"
 #include "platform/Flags.h"
-#include "scene/Light.h"
  
 class Particle;
 class ParticleParams;
@@ -69,8 +68,6 @@ public:
 	
 	// these are used for the particles it creates
 	ParticleParams m_parameters;
-	
-	LightHandle m_lightHandle;
 	
 	ParticleSystem();
 	~ParticleSystem();
@@ -103,7 +100,6 @@ private:
 	void SetParticleParams(Particle * particle);
 	
 	void SetTexture(const char *, int, int);
-	void SetColor(float, float, float);
 };
 
 #endif // ARX_GRAPHICS_PARTICLE_PARTICLESYSTEM_H

@@ -89,9 +89,9 @@ void HealSpell::Launch()
 	m_particles.SetParams(cp);
 	}
 	
-	m_particles.m_lightHandle = GetFreeDynLight();
-	if(lightHandleIsValid(m_particles.m_lightHandle)) {
-		EERIE_LIGHT * light = lightHandleGet(m_particles.m_lightHandle);
+	m_light = GetFreeDynLight();
+	if(lightHandleIsValid(m_light)) {
+		EERIE_LIGHT * light = lightHandleGet(m_light);
 		
 		light->intensity = 2.3f;
 		light->fallstart = 200.f;
@@ -117,11 +117,11 @@ void HealSpell::Update(float timeDelta) {
 		m_pos = entities[m_target]->pos;
 	}
 	
-	if(!lightHandleIsValid(m_particles.m_lightHandle))
-		m_particles.m_lightHandle = GetFreeDynLight();
+	if(!lightHandleIsValid(m_light))
+		m_light = GetFreeDynLight();
 	
-	if(lightHandleIsValid(m_particles.m_lightHandle)) {
-		EERIE_LIGHT * light = lightHandleGet(m_particles.m_lightHandle);
+	if(lightHandleIsValid(m_light)) {
+		EERIE_LIGHT * light = lightHandleGet(m_light);
 		
 		light->intensity = 2.3f;
 		light->fallstart = 200.f;
