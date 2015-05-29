@@ -195,13 +195,6 @@ void MagicMissileSpell::Launch() {
 	
 	m_duration = 6000ul;
 	
-	long number;
-	if(sp_max || cur_rf == 3) {
-		number = long(m_level);
-	} else {
-		number = glm::clamp(long(m_level + 1) / 2, 1l, 5l);
-	}
-	
 	m_hand_group = GetActionPointIdx(entities[m_caster]->obj, "primary_attach");
 	
 	if(m_hand_group != -1) {
@@ -256,16 +249,21 @@ void MagicMissileSpell::Launch() {
 	
 	m_mrCheat = (m_caster == PlayerEntityHandle && cur_mr == 3);
 	
-	pTab.reserve(number);
-	for(size_t i = 0; i < size_t(number); i++) {
-		CMagicMissile * missile = new CMagicMissile(m_mrCheat);
-		
-		pTab.push_back(missile);
-	}
-	
 	long lMax = 0;
 	
-	for(size_t i = 0; i < pTab.size(); i++) {
+	long number;
+	if(sp_max || cur_rf == 3) {
+		number = long(m_level);
+	} else {
+		number = glm::clamp(long(m_level + 1) / 2, 1l, 5l);
+	}
+	
+	pTab.reserve(number);
+	
+	for(size_t i = 0; i < size_t(number); i++) {
+		CMagicMissile * missile = new CMagicMissile(m_mrCheat);
+		pTab.push_back(missile);
+		
 		Anglef angles(afAlpha, afBeta, 0.f);
 		
 		if(i > 0) {
@@ -273,7 +271,7 @@ void MagicMissileSpell::Launch() {
 			angles.setPitch(angles.getPitch() + frand2() * 6.0f);
 		}
 		
-		pTab[i]->Create(aePos, angles);  
+		missile->Create(aePos, angles);
 		
 		float fTime = m_duration + frand2() * 1000.0f;
 		long lTime = checked_range_cast<long>(fTime);
@@ -281,20 +279,18 @@ void MagicMissileSpell::Launch() {
 		lTime		= std::max(1000L, lTime);
 		lMax		= std::max(lMax, lTime);
 		
-		CMagicMissile * pMM = (CMagicMissile *)pTab[i];
-		
-		pMM->SetDuration(lTime);
+		missile->SetDuration(lTime);
 		
 		if(m_mrCheat) {
-			pMM->SetColor(Color3f(0.9f, 0.2f, 0.5f));
+			missile->SetColor(Color3f(0.9f, 0.2f, 0.5f));
 		} else {
-			pMM->SetColor(Color3f(0.9f + rnd() * 0.1f, 0.9f + rnd() * 0.1f, 0.7f + rnd() * 0.3f));
+			missile->SetColor(Color3f(0.9f + rnd() * 0.1f, 0.9f + rnd() * 0.1f, 0.7f + rnd() * 0.3f));
 		}
 		
-		pTab[i]->lLightId = GetFreeDynLight();
+		missile->lLightId = GetFreeDynLight();
 		
-		if(lightHandleIsValid(pTab[i]->lLightId)) {
-			EERIE_LIGHT * el = lightHandleGet(pTab[i]->lLightId);
+		if(lightHandleIsValid(missile->lLightId)) {
+			EERIE_LIGHT * el = lightHandleGet(missile->lLightId);
 			
 			el->intensity	= 0.7f + 2.3f;
 			el->fallend		= 190.f;
@@ -306,7 +302,7 @@ void MagicMissileSpell::Launch() {
 				el->rgb = Color3f(0.f, 0.f, 1.f);
 			}
 			
-			el->pos	 = pMM->eSrc;
+			el->pos	 = missile->eSrc;
 			el->duration = 300;
 		}
 	}
