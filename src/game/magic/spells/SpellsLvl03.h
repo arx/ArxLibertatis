@@ -24,7 +24,7 @@
 
 #include "graphics/effects/Trail.h"
 #include "graphics/particle/ParticleSystem.h"
-#include "graphics/spells/Spells03.h"
+
 
 class SpeedSpell : public SpellBase {
 public:
@@ -86,16 +86,29 @@ private:
 	long m_currentTime;
 };
 
+
 class IceProjectileSpell : public SpellBase {
 public:
-	~IceProjectileSpell();
-	
 	void Launch();
 	void End();
 	void Update(float timeDelta);
 	
 private:
-	CIceProjectile * m_pSpellFx;
+	unsigned long ulCurrentTime;
+	int iNumber;
+	int iMax;
+	float fColor;
+	TextureContainer * tex_p1;
+	TextureContainer * tex_p2;
+	
+	struct Icicle {
+		int type;
+		Vec3f pos;
+		Vec3f size;
+		Vec3f sizeMax;
+	};
+	static const int MAX_ICE = 150;
+	Icicle m_icicles[MAX_ICE];
 };
 
 #endif // ARX_GAME_MAGIC_SPELLS_SPELLSLVL03_H

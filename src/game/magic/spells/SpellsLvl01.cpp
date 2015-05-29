@@ -31,7 +31,6 @@
 #include "game/magic/spells/SpellsLvl03.h"
 
 #include "graphics/spells/Spells01.h"
-#include "graphics/spells/Spells03.h"
 
 #include "scene/GameSound.h"
 #include "scene/Interactive.h"
