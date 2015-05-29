@@ -71,8 +71,6 @@ public:
 
 class CurseSpell : public SpellBase {
 public:
-	~CurseSpell();
-	
 	void Launch();
 	void End();
 	void Update(float timeDelta);
@@ -80,7 +78,9 @@ public:
 	Vec3f getPosition();
 	
 private:
-	CCurse * m_pSpellFx;
+	Vec3f m_pos;
+	TextureContainer * tex_p1;
+	float fRot;
 };
 
 #endif // ARX_GAME_MAGIC_SPELLS_SPELLSLVL04_H

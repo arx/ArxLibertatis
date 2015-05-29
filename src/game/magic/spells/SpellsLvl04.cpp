@@ -30,6 +30,7 @@
 #include "game/magic/spells/SpellsLvl06.h"
 #include "game/magic/spells/SpellsLvl07.h"
 #include "gui/Speech.h"
+#include "graphics/particle/ParticleEffects.h"
 #include "graphics/spells/Spells04.h"
 #include "graphics/spells/Spells06.h"
 #include "graphics/spells/Spells07.h"
@@ -335,11 +336,6 @@ void TelekinesisSpell::End()
 }
 
 
-CurseSpell::~CurseSpell() {
-	
-	delete m_pSpellFx;
-}
-
 void CurseSpell::Launch()
 {
 	spells.endByCaster(m_target, SPELL_CURSE);
@@ -357,40 +353,54 @@ void CurseSpell::Launch()
 		target.y += entities[m_target]->physics.cyl.height - 50.f;
 	}
 	
-	m_pSpellFx = new CCurse();
-	m_pSpellFx->Create(target);
-	m_pSpellFx->SetDuration(m_duration);
-	m_duration = m_pSpellFx->GetDuration();
+	m_pos = target;
+	fRot = 0.f;
+	tex_p1 = TextureContainer::Load("graph/obj3d/textures/(fx)_tsu_blueting");
 	
 	m_targets.push_back(m_target);
 }
 
-void CurseSpell::End()
-{
-	m_targets.clear();
+void CurseSpell::End() {
 	
-	delete m_pSpellFx;
-	m_pSpellFx = NULL;
+	m_targets.clear();
 }
 
 void CurseSpell::Update(float timeDelta) {
 	
-	if(m_pSpellFx) {
-		Vec3f target = Vec3f_ZERO;
-			
-		if(m_target >= PlayerEntityHandle && entities[m_target]) {
-			target = entities[m_target]->pos;
+	fRot += timeDelta * 0.25f;
+	
+	Vec3f target = Vec3f_ZERO;
+	if(m_target >= PlayerEntityHandle && entities[m_target]) {
+		target = entities[m_target]->pos;
 
-			if(m_target == PlayerEntityHandle)
-				target.y -= 200.f;
-			else
-				target.y += entities[m_target]->physics.cyl.height - 30.f;
+		if(m_target == PlayerEntityHandle)
+			target.y -= 200.f;
+		else
+			target.y += entities[m_target]->physics.cyl.height - 30.f;
+	}
+	m_pos = target;
+	
+	RenderMaterial mat;
+	mat.setCulling(Renderer::CullCW);
+	mat.setDepthTest(true);
+	mat.setBlendType(RenderMaterial::Opaque);
+	
+	Draw3DObject(svoodoo, Anglef(0, fRot, 0), m_pos, Vec3f_ONE, Color3f::white, mat);
+	
+	for(int i = 0; i < 4; i++) {
+		
+		PARTICLE_DEF * pd = createParticle();
+		if(!pd) {
+			break;
 		}
 		
-		m_pSpellFx->Update(timeDelta);
-		
-		m_pSpellFx->eTarget = target;
-		m_pSpellFx->Render();
+		pd->ov = m_pos;
+		pd->move = Vec3f(2.f * frand2(), rnd() * -10.f - 10.f, 2.f * frand2());
+		pd->siz = 0.015f;
+		pd->tolive = Random::get(1000, 1600);
+		pd->tc = tex_p1;
+		pd->special = ROTATING | MODULATE_ROTATION | DISSIPATING | SUBSTRACT | GRAVITY;
+		pd->fparam = 0.0000001f;
 	}
 }
 

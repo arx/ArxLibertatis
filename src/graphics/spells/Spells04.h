@@ -71,24 +71,4 @@ private:
 	float fRotPerMSec;
 };
 
-class CCurse : public CSpellFx {
-	
-public:
-	CCurse();
-	~CCurse();
-	
-	void Create(Vec3f);
-	void Update(float timeDelta);
-	void Render();
-	
-	Vec3f eTarget;
-	
-private:
-	Vec3f eSrc;
-	
-	TextureContainer * tex_p1;
-	float fRot;
-	float fRotPerMSec;
-};
-
 #endif // ARX_GRAPHICS_SPELLS_SPELLS04_H
