@@ -22,12 +22,8 @@
 
 #include "game/magic/Spell.h"
 
-#include "graphics/spells/Spells04.h"
-
 class BlessSpell : public SpellBase {
 public:
-	~BlessSpell();
-	
 	bool CanLaunch();
 	void Launch();
 	void End();
@@ -36,7 +32,13 @@ public:
 	Vec3f getPosition();
 	
 private:
-	CBless * m_pSpellFx;
+	Vec3f m_pos;
+	float m_yaw;
+	float m_scale;
+	
+	TextureContainer * tex_p1;
+	TextureContainer * tex_sol;
+	float fRot;
 };
 
 class DispellFieldSpell : public SpellBase {

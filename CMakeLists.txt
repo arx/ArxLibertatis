@@ -740,7 +740,6 @@ set(GRAPHICS_SOURCES
 	src/graphics/particle/MagicFlare.cpp
 	src/graphics/spells/Spells01.cpp
 	src/graphics/spells/Spells03.cpp
-	src/graphics/spells/Spells04.cpp
 	src/graphics/spells/Spells05.cpp
 	src/graphics/spells/Spells06.cpp
 	src/graphics/spells/Spells07.cpp

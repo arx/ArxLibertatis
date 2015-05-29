@@ -110,7 +110,6 @@ ZeniMax Media Inc., Suite 120, Rockville, Maryland 20850 USA.
 #include "graphics/particle/MagicFlare.h"
 #include "graphics/spells/Spells01.h"
 #include "graphics/spells/Spells03.h"
-#include "graphics/spells/Spells04.h"
 #include "graphics/spells/Spells05.h"
 #include "graphics/spells/Spells06.h"
 #include "graphics/spells/Spells07.h"

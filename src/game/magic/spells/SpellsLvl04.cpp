@@ -19,6 +19,7 @@
 
 #include "game/magic/spells/SpellsLvl04.h"
 
+#include "animation/AnimationRender.h"
 #include "core/Application.h"
 #include "core/GameTime.h"
 #include "game/Damage.h"
@@ -31,18 +32,12 @@
 #include "game/magic/spells/SpellsLvl07.h"
 #include "gui/Speech.h"
 #include "graphics/particle/ParticleEffects.h"
-#include "graphics/spells/Spells04.h"
 #include "graphics/spells/Spells06.h"
 #include "graphics/spells/Spells07.h"
 
 #include "scene/GameSound.h"
 #include "scene/Interactive.h"
 
-
-BlessSpell::~BlessSpell() {
-	
-	delete m_pSpellFx;
-}
 
 bool BlessSpell::CanLaunch()
 {
@@ -59,48 +54,104 @@ void BlessSpell::Launch()
 	
 	ARX_SOUND_PlaySFX(SND_SPELL_BLESS);
 	
-	// TODO this tolive value is probably never read
-	m_duration = (m_launchDuration > -1) ? m_launchDuration : 2000000;
+	// TODO m_launchDuration is not used
+	// m_duration = (m_launchDuration > -1) ? m_launchDuration : 2000000;
+	m_duration = 20000;
 	m_hasDuration = true;
 	m_fManaCostPerSecond = 0.3333f * m_level;
 	
-	Vec3f target = entities[m_caster]->pos;
+	m_pos = entities[m_caster]->pos;
 	
-	m_pSpellFx = new CBless();
-	m_pSpellFx->Create(target);
-	m_pSpellFx->SetDuration(20000);
-	m_duration = m_pSpellFx->GetDuration();
+	m_yaw = 0.f;
+	m_scale = 0.f;
+	fRot = 0.f;
+	
+	tex_p1 = TextureContainer::Load("graph/obj3d/textures/(fx)_tsu_blueting");
+	tex_sol = TextureContainer::Load("graph/particles/(fx)_pentagram_bless");
 	
 	m_targets.push_back(m_target);
 }
 
-void BlessSpell::End()
-{
-	m_targets.clear();
+void BlessSpell::End() {
 	
-	delete m_pSpellFx;
-	m_pSpellFx = NULL;
+	m_targets.clear();
 }
 
-void BlessSpell::Update(float timeDelta)
-{
-	if(m_pSpellFx) {
-		Anglef angle = Anglef::ZERO;
+void BlessSpell::Update(float timeDelta) {
+	
+	fRot += timeDelta * 0.25f;
+	
+	if(ValidIONum(m_target)) {
+		m_pos = entities[m_target]->pos;
 		
-		if(ValidIONum(m_target)) {
-			m_pSpellFx->eSrc = entities[m_target]->pos;
-			
-			if(m_target == PlayerEntityHandle)
-				angle.setPitch(player.angle.getPitch());
-			else 
-				angle.setPitch(entities[m_target]->angle.getPitch());
+		if(m_target == PlayerEntityHandle)
+			m_yaw = player.angle.getPitch();
+		else 
+			m_yaw = entities[m_target]->angle.getPitch();
+	}
+	
+	m_scale = (m_level + 10) * 6.f;
+	
+	int i = 0;
+	
+	Vec3f pos = m_pos + Vec3f(0, -5, 0);
+	
+	RenderMaterial mat;
+	mat.setCulling(Renderer::CullNone);
+	mat.setBlendType(RenderMaterial::Additive);
+	mat.setDepthTest(true);
+	mat.setLayer(RenderMaterial::Decal);
+	mat.setTexture(tex_sol);
+	
+	float fBetaRadCos = glm::cos(glm::radians(MAKEANGLE(m_yaw))) * m_scale;
+	float fBetaRadSin = glm::sin(glm::radians(MAKEANGLE(m_yaw))) * m_scale;
+
+	ColorRGBA color = Color::white.toRGB();
+	
+	{
+	TexturedQuad q;
+	
+	q.v[0].color = color;
+	q.v[1].color = color;
+	q.v[2].color = color;
+	q.v[3].color = color;
+	
+	q.v[0].uv = Vec2f_ZERO;
+	q.v[1].uv = Vec2f_X_AXIS;
+	q.v[2].uv = Vec2f_ONE;
+	q.v[3].uv = Vec2f_Y_AXIS;
+	
+	q.v[0].p.x = pos.x + fBetaRadCos - fBetaRadSin;
+	q.v[0].p.y = pos.y;
+	q.v[0].p.z = pos.z + fBetaRadSin + fBetaRadCos;
+	q.v[1].p.x = pos.x - fBetaRadCos - fBetaRadSin;
+	q.v[1].p.y = pos.y;
+	q.v[1].p.z = pos.z - fBetaRadSin + fBetaRadCos;
+	q.v[2].p.x = pos.x - fBetaRadCos + fBetaRadSin;
+	q.v[2].p.y = pos.y;
+	q.v[2].p.z = pos.z - fBetaRadSin - fBetaRadCos;
+	q.v[3].p.x = pos.x + fBetaRadCos + fBetaRadSin;
+	q.v[3].p.y = pos.y;
+	q.v[3].p.z = pos.z + fBetaRadSin - fBetaRadCos;
+	
+	drawQuadRTP(mat, q);
+	}
+	
+	for(i = 0; i < 12; i++) {
+		
+		PARTICLE_DEF * pd = createParticle();
+		if(!pd) {
+			break;
 		}
 		
-		m_pSpellFx->Set_Angle(angle);
-		m_pSpellFx->m_scale = (m_level + 10) * 6.f;
-
-		m_pSpellFx->Update(timeDelta);
-		m_pSpellFx->Render();
+		pd->ov = m_pos - Vec3f(0.f, 20.f, 0.f);
+		pd->move = Vec3f(3.f * frand2(), rnd() * 0.5f, 3.f * frand2());
+		pd->siz = 0.005f;
+		pd->tolive = Random::get(1000, 2000);
+		pd->tc = tex_p1;
+		pd->special = FADE_IN_AND_OUT | ROTATING | MODULATE_ROTATION | DISSIPATING;
+		pd->fparam = 0.0000001f;
+		pd->rgb = Color3f(0.7f, 0.6f, 0.2f);
 	}
 }
 
