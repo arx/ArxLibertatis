@@ -105,27 +105,6 @@ private:
 	void ReCreate(float rootSize);
 };
 
-// Done By : Didier Pedreno
-class CConfuse : public CSpellFx {
-	
-public:
-	CConfuse();
-	~CConfuse();
-	
-	void Create();
-	void SetPos(const Vec3f & pos);
-	
-	void Update(float timeDelta);
-	void Render();
-	
-	LightHandle lLightId;
-private:
-	TextureContainer * tex_p1;
-	TextureContainer * tex_trail;
-	ANIM_USE au;
-	Vec3f eCurPos;
-};
-
 // Done By : did
 class CIceField : public CSpellFx {
 	

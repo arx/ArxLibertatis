@@ -640,57 +640,112 @@ void LightningStrikeSpell::Update(float timeDelta) {
 	ARX_SOUND_RefreshPosition(m_snd_loop, entities[m_caster]->pos);
 }
 
-ConfuseSpell::~ConfuseSpell() {
-	
-	delete m_pSpellFx;
-}
 
-void ConfuseSpell::Launch()
-{
+void ConfuseSpell::Launch() {
+	
 	ARX_SOUND_PlaySFX(SND_SPELL_CONFUSE, &entities[m_target]->pos);
 	
 	m_hasDuration = true;
 	m_fManaCostPerSecond = 1.5f;
 	m_duration = (m_launchDuration > -1) ? m_launchDuration : 5000;
 	
-	m_pSpellFx = new CConfuse();
-	m_pSpellFx->Create();
-	m_pSpellFx->SetDuration(m_duration);
-	m_duration = m_pSpellFx->GetDuration();
+	
+	tex_p1 = TextureContainer::Load("graph/obj3d/textures/(fx)_tsu_blueting");
+	tex_trail = TextureContainer::Load("graph/obj3d/textures/(fx)_bandelette_blue");
+	
+	const char tex[] = "graph/obj3d/interactive/fix_inter/fx_papivolle/fx_papivolle.tea";
+	ANIM_HANDLE * anim_papii = EERIE_ANIMMANAGER_Load(tex);
+	
+	ANIM_Set(&au, anim_papii);
+	au.next_anim = NULL;
+	au.cur_anim = anim_papii;
+	au.ctime = 0;
+	au.flags = EA_LOOP;
+	au.nextflags = 0;
+	au.lastframe = 0;
+	au.pour = 0;
+	au.fr = 0;
+	au.altidx_cur = 0;
+	au.altidx_next = 0;
 	
 	m_targets.push_back(m_target);
 }
 
-void ConfuseSpell::End()
-{
+void ConfuseSpell::End() {
+	
 	m_targets.clear();
-	
-	// All Levels - Kill Light
-	if(m_pSpellFx) {
-		endLightDelayed(m_pSpellFx->lLightId, 500);
-	}
-	
-	delete m_pSpellFx;
-	m_pSpellFx = NULL;
+	endLightDelayed(m_light, 500);
 }
 
 void ConfuseSpell::Update(float timeDelta) {
 	
-	if(m_pSpellFx) {
-		Vec3f pos = entities[m_target]->pos;
-		if(m_target != PlayerEntityHandle) {
-			pos.y += entities[m_target]->physics.cyl.height - 30.f;
+	ARX_UNUSED(timeDelta);
+	
+	Vec3f pos = entities[m_target]->pos;
+	if(m_target != PlayerEntityHandle) {
+		pos.y += entities[m_target]->physics.cyl.height - 30.f;
+	}
+	
+	long idx = entities[m_target]->obj->fastaccess.head_group_origin;
+	if(idx >= 0) {
+		pos = entities[m_target]->obj->vertexlist3[idx].v;
+		pos.y -= 50.f;
+	}
+	
+	eCurPos = pos;
+	
+	RenderMaterial mat;
+	mat.setDepthTest(false);
+	mat.setBlendType(RenderMaterial::Additive);
+	mat.setTexture(tex_trail);
+	
+	Anglef stiteangle = Anglef(0.f, -glm::degrees(arxtime.get_updated() * ( 1.0f / 500 )), 0.f);
+	Draw3DObject(spapi, stiteangle, eCurPos, Vec3f_ONE, Color3f::white, mat);
+	
+	for(int i = 0; i < 6; i++) {
+		
+		PARTICLE_DEF * pd = createParticle();
+		if(!pd) {
+			break;
 		}
 		
-		long idx = entities[m_target]->obj->fastaccess.head_group_origin;
-		if(idx >= 0) {
-			pos = entities[m_target]->obj->vertexlist3[idx].v;
-			pos.y -= 50.f;
-		}
+		float ang = rnd() * 360.f;
+		float rad = rnd() * 15.f;
+		pd->ov = eCurPos;
+		pd->ov += angleToVectorXZ(ang) * rad;
 		
-		m_pSpellFx->SetPos(pos);
-		m_pSpellFx->Update(timeDelta);
-		m_pSpellFx->Render();
+		pd->move = Vec3f(0.f, rnd() * 3.f + 1.f, 0.f);
+		pd->siz = 0.25f;
+		pd->tolive = Random::get(2300, 3300);
+		pd->tc = tex_p1;
+		pd->special = PARTICLE_GOLDRAIN | FADE_IN_AND_OUT | ROTATING | MODULATE_ROTATION
+					  | DISSIPATING;
+		pd->fparam = 0.0000001f;
+		
+		Color3f baseColor = Color3f(0.4f, 0.2f, 0.4f);
+		Color3f randomFactor = Color3f(0.4f, 0.6f, 0.4f);
+		Color3f c = baseColor + Color3f(rnd(), rnd(), rnd()) * randomFactor;
+		while(glm::abs(c.r - c.g) > 0.3f && glm::abs(c.g - c.b) > 0.3f) {
+			c = baseColor + Color3f(rnd(), rnd(), rnd()) * randomFactor;
+		}
+		pd->rgb = c * Color3f(0.8f, 0.8f, 0.8f);
+	}
+	
+	if(!lightHandleIsValid(m_light))
+		m_light = GetFreeDynLight();
+
+	if(lightHandleIsValid(m_light)) {
+		EERIE_LIGHT * light = lightHandleGet(m_light);
+		
+		light->intensity = 1.3f;
+		light->fallstart = 180.f;
+		light->fallend   = 420.f;
+		light->rgb.r = 0.3f + rnd() * ( 1.0f / 5 );
+		light->rgb.g = 0.3f;
+		light->rgb.b = 0.5f + rnd() * ( 1.0f / 5 );
+		light->pos = eCurPos;
+		light->duration = 200;
+		light->extras = 0;
 	}
 }
 

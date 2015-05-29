@@ -90,8 +90,6 @@ private:
 
 class ConfuseSpell : public SpellBase {
 public:
-	~ConfuseSpell();
-	
 	void Launch();
 	void End();
 	void Update(float timeDelta);
@@ -99,7 +97,11 @@ public:
 	Vec3f getPosition();
 	
 private:
-	CConfuse * m_pSpellFx;
+	LightHandle m_light;
+	TextureContainer * tex_p1;
+	TextureContainer * tex_trail;
+	ANIM_USE au;
+	Vec3f eCurPos;
 };
 
 #endif // ARX_GAME_MAGIC_SPELLS_SPELLSLVL07_H
