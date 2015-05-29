@@ -79,7 +79,6 @@ CIceProjectile::CIceProjectile()
 	tex_p2 = TextureContainer::Load("graph/obj3d/textures/(fx)_tsu_bluepouf");
 	
 	iMax = MAX_ICE;
-	fStep = 20;
 }
 
 void CIceProjectile::Create(Vec3f aeSrc, float afBeta, float fLevel, EntityHandle caster)
