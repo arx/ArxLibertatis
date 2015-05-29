@@ -345,11 +345,6 @@ void CurePoisonSpell::Update(float timeDelta) {
 }
 
 
-RepelUndeadSpell::~RepelUndeadSpell() {
-	
-	delete m_pSpellFx;
-}
-
 void RepelUndeadSpell::Launch()
 {
 	spells.endByCaster(m_caster, SPELL_REPEL_UNDEAD);
@@ -369,44 +364,87 @@ void RepelUndeadSpell::Launch()
 	m_hasDuration = true;
 	m_fManaCostPerSecond = 1.f;
 	
-	m_pSpellFx = new CRepelUndead();
-	m_pSpellFx->Create(player.pos);
-	m_pSpellFx->SetDuration(m_duration);
-	m_duration = m_pSpellFx->GetDuration();
+	m_pos = player.pos;
+	m_yaw = 0.f;
+	tex_p2 = TextureContainer::Load("graph/obj3d/textures/(fx)_tsu_blueting");
 }
 
 void RepelUndeadSpell::End() {
 	ARX_SOUND_Stop(m_snd_loop);
 	
-	// All Levels - Kill Light
-	if(m_pSpellFx) {
-		endLightDelayed(m_pSpellFx->lLightId, 500);
-	}
-	
-	delete m_pSpellFx;
-	m_pSpellFx = NULL;
+	endLightDelayed(m_light, 500);
 }
 
 void RepelUndeadSpell::Update(float timeDelta) {
 	
-	if(m_pSpellFx) {
-		Vec3f pos = entities[m_target]->pos;
+	ARX_UNUSED(timeDelta);
+	
+	Vec3f pos = entities[m_target]->pos;
+	
+	float rot;
+	if(m_target == PlayerEntityHandle) {
+		rot = player.angle.getPitch();
+	} else {
+		rot = entities[m_target]->angle.getPitch();
+	}
+	
+	m_pos = pos;
+	m_yaw = rot;
+	
+	RenderMaterial mat;
+	mat.setDepthTest(true);
+	mat.setBlendType(RenderMaterial::Additive);
+	
+	Anglef  eObjAngle;
+
+	eObjAngle.setPitch(m_yaw);
+	eObjAngle.setYaw(0);
+	eObjAngle.setRoll(0);
+
+	float vv = 1.f + (std::sin(arxtime.get_updated() * ( 1.0f / 1000 ))); 
+	vv *= ( 1.0f / 2 );
+	vv += 1.1f;
+	
+	Draw3DObject(ssol, eObjAngle, m_pos + Vec3f(0.f, -5.f, 0.f), Vec3f(vv), Color3f(0.6f, 0.6f, 0.8f), mat);
+	
+	vv *= 100.f;
+	
+	for(int n = 0; n < 4; n++) {
 		
-		float rot;
-		if(m_target == PlayerEntityHandle) {
-			rot = player.angle.getPitch();
-		} else {
-			rot = entities[m_target]->angle.getPitch();
+		PARTICLE_DEF * pd = createParticle();
+		if(!pd) {
+			break;
 		}
 		
-		m_pSpellFx->SetPos(pos);
-		m_pSpellFx->SetRotation(rot);
-		m_pSpellFx->Update(timeDelta);
-		m_pSpellFx->Render();
-
-		if (m_target == PlayerEntityHandle)
-			ARX_SOUND_RefreshPosition(m_snd_loop, entities[m_target]->pos);
+		float dx = -std::sin(frand2() * 360.f) * vv;
+		float dz =  std::cos(frand2() * 360.f) * vv;
+		pd->ov = m_pos + Vec3f(dx, 0.f, dz);
+		pd->move = Vec3f(0.8f * frand2(), -4.f * rnd(), 0.8f * frand2());
+		pd->scale = Vec3f(-0.1f);
+		pd->tolive = Random::get(2600, 3200);
+		pd->tc = tex_p2;
+		pd->siz = 0.3f;
+		pd->rgb = Color3f(.4f, .4f, .6f);
 	}
+	
+	if(!lightHandleIsValid(m_light)) {
+		m_light = GetFreeDynLight();
+	}
+	
+	if(lightHandleIsValid(m_light)) {
+		EERIE_LIGHT * light = lightHandleGet(m_light);
+		
+		light->intensity = 2.3f;
+		light->fallend = 350.f;
+		light->fallstart = 150.f;
+		light->rgb = Color3f(0.8f, 0.8f, 1.f);
+		light->pos = m_pos + Vec3f(0.f, -50.f, 0.f);
+		light->duration = 200;
+		light->time_creation = (unsigned long)(arxtime);
+	}
+	
+	if (m_target == PlayerEntityHandle)
+		ARX_SOUND_RefreshPosition(m_snd_loop, entities[m_target]->pos);
 }
 
 PoisonProjectileSpell::~PoisonProjectileSpell() {

@@ -164,25 +164,4 @@ private:
 	void AddPoisonFog(const Vec3f & pos, float power);
 };
 
-// Done By : did
-class CRepelUndead : public CSpellFx {
-	
-public:
-	CRepelUndead();
-	~CRepelUndead();
-	
-	void Create(Vec3f);
-	void SetPos(const Vec3f & pos);
-	void SetRotation(float rotation);
-	
-	void Update(float timeDelta);
-	void Render();
-	
-	LightHandle lLightId;
-private:
-	Vec3f eSrc;
-	float m_yaw;
-	TextureContainer * tex_p2;
-};
-
 #endif // ARX_GRAPHICS_SPELLS_SPELLS05_H

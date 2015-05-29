@@ -66,14 +66,15 @@ private:
 
 class RepelUndeadSpell : public SpellBase {
 public:
-	~RepelUndeadSpell();
-	
 	void Launch();
 	void End();
 	void Update(float timeDelta);
 	
 private:
-	CRepelUndead * m_pSpellFx;
+	LightHandle m_light;
+	Vec3f m_pos;
+	float m_yaw;
+	TextureContainer * tex_p2;
 };
 
 class PoisonProjectileSpell : public SpellBase {
