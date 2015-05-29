@@ -322,17 +322,15 @@ void MagicMissileSpell::Update(float timeDelta) {
 	
 	
 	for(size_t i = 0; i < pTab.size(); i++) {
-		CMagicMissile * missile = (CMagicMissile *) pTab[i];
+		CMagicMissile * missile = pTab[i];
 		
 		if(missile->bExplo)
 			continue;
 			
-		Sphere sphere;
-		sphere.origin = missile->eCurPos;
-		sphere.radius	= 10.f;
+		Sphere sphere = Sphere(missile->eCurPos, 10.f);
 		
-		if(CheckAnythingInSphere(sphere, m_caster, CAS_NO_SAME_GROUP))
-		{
+		if(CheckAnythingInSphere(sphere, m_caster, CAS_NO_SAME_GROUP)) {
+			
 			LaunchMagicMissileExplosion(missile->eCurPos, m_mrCheat);
 			ARX_NPC_SpawnAudibleSound(missile->eCurPos, entities[m_caster]);
 			
