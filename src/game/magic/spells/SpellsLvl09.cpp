@@ -355,10 +355,6 @@ void FakeSummonSpell::Update(float timeDelta)
 	}	
 }
 
-NegateMagicSpell::~NegateMagicSpell() {
-	
-	delete m_pSpellFx;
-}
 
 void NegateMagicSpell::Launch()
 {
@@ -372,36 +368,68 @@ void NegateMagicSpell::Launch()
 	m_fManaCostPerSecond = 2.f;
 	m_duration = (m_launchDuration > -1) ? m_launchDuration : 1000000;
 	
-	Vec3f targetPos = getTargetPos(m_caster, m_target);
+	m_pos = getTargetPos(m_caster, m_target);
 	
-	m_pSpellFx = new CNegateMagic();
-	m_pSpellFx->Create(targetPos);
-	m_pSpellFx->SetDuration(m_duration);
-	m_duration = m_pSpellFx->GetDuration();
+	tex_p2 = TextureContainer::Load("graph/obj3d/textures/(fx)_tsu_bluepouf");
+	tex_sol = TextureContainer::Load("graph/obj3d/textures/(fx)_negate_magic");
 	
 	LaunchAntiMagicField();
 }
 
 void NegateMagicSpell::End() {
 	
-	delete m_pSpellFx;
-	m_pSpellFx = NULL;
 }
 
 void NegateMagicSpell::Update(float timeDelta)
 {
 	LaunchAntiMagicField();
 	
-	if(m_pSpellFx) {
-		if(m_target == PlayerEntityHandle) {
-			m_pSpellFx->SetPos(player.basePosition());
-		} else {
-			m_pSpellFx->SetPos(entities[m_target]->pos);
+	if(m_target == PlayerEntityHandle) {
+		m_pos = player.basePosition();
+	} else {
+		m_pos = entities[m_target]->pos;
+	}
+	
+	ulCurrentTime += timeDelta;
+	
+	
+	Vec3f stitepos = m_pos - Vec3f(0.f, 10.f, 0.f);
+	
+	RenderMaterial mat;
+	mat.setLayer(RenderMaterial::Decal);
+	mat.setDepthTest(true);
+	mat.setTexture(tex_sol);
+	mat.setBlendType(RenderMaterial::Additive);
+	
+	for(int i = 0; i < 360; i++) {
+		float t = rnd();
+		if(t < 0.04f) {
+			
+			PARTICLE_DEF * pd = createParticle();
+			if(!pd) {
+				break;
+			}
+			
+			pd->ov = stitepos + Vec3f(frand2() * 150.f, 0.f, frand2() * 150.f);
+			pd->move = Vec3f(0.f, -3.0f * rnd(), 0.f);
+			pd->siz = 0.3f;
+			pd->tolive = Random::get(2000, 4000);
+			pd->tc = tex_p2;
+			pd->special = FADE_IN_AND_OUT | ROTATING | MODULATE_ROTATION | DISSIPATING
+			              | SUBSTRACT;
+			pd->fparam = 0.0000001f;
 		}
-		
-		m_pSpellFx->Update(timeDelta);
-		m_pSpellFx->Render();
-	}	
+	}
+	
+	Anglef stiteangle(0.f, -(float) ulCurrentTime * 0.02f, 0.f);
+	Color3f stitecolor = Color3f::gray(.4f);
+	float scalediff = std::sin(ulCurrentTime * 0.004f);
+	Vec3f stitescale = Vec3f(3.f + 0.5f * scalediff);
+	Draw3DObject(ssol, stiteangle, stitepos, stitescale, stitecolor, mat);
+	
+	stitecolor = Color3f(.5f, 0.f, .5f);
+	stitescale = Vec3f(3.1f + 0.2f * scalediff);
+	Draw3DObject(ssol, stiteangle, stitepos, stitescale, stitecolor, mat);
 }
 
 void NegateMagicSpell::LaunchAntiMagicField() {

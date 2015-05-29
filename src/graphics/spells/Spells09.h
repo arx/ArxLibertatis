@@ -109,23 +109,4 @@ private:
 	Vec3f v1b[40];
 };
 
-// Done By : Didier Pedreno
-class CNegateMagic: public CSpellFx {
-	
-public:
-	CNegateMagic();
-	~CNegateMagic();
-	
-	void Create(Vec3f);
-	void Update(float timeDelta);
-	void Render();
-	
-	void SetPos(Vec3f pos);
-	
-private:
-	Vec3f eSrc;
-	TextureContainer * tex_p2;
-	TextureContainer * tex_sol;
-};
-
 #endif // ARX_GRAPHICS_SPELLS_SPELLS09_H

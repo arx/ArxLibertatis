@@ -60,14 +60,16 @@ private:
 
 class NegateMagicSpell : public SpellBase {
 public:
-	~NegateMagicSpell();
-	
 	void Launch();
 	void End();
 	void Update(float timeDelta);
 	
 private:
-	CNegateMagic * m_pSpellFx;
+	Vec3f m_pos;
+	TextureContainer * tex_p2;
+	TextureContainer * tex_sol;
+	unsigned long ulCurrentTime;
+	
 	void LaunchAntiMagicField();
 };
 
