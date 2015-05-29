@@ -431,18 +431,6 @@ Vec3f FireFieldSpell::getPosition() {
 }
 
 
-
-IceFieldSpell::IceFieldSpell()
-	: m_light(LightHandle::Invalid)
-	, m_damage(DamageHandle::Invalid)
-{
-}
-
-IceFieldSpell::~IceFieldSpell() {
-	
-	delete m_pSpellFx;
-}
-
 void IceFieldSpell::Launch()
 {
 	spells.endByCaster(m_caster, SPELL_ICE_FIELD);
@@ -475,6 +463,8 @@ void IceFieldSpell::Launch()
 		target += angleToVectorXZ(beta) * 250.f;
 	}
 	
+	m_pos = target;
+	
 	DamageParameters damage;
 	damage.radius = 150.f;
 	damage.damages = 10.f;
@@ -486,62 +476,160 @@ void IceFieldSpell::Launch()
 	damage.pos = target;
 	m_damage = DamageCreate(damage);
 	
-	m_pSpellFx = new CIceField();
-	m_pSpellFx->Create(target);
-	m_pSpellFx->SetDuration(m_duration);
-	m_duration = m_pSpellFx->GetDuration();
+	iMax = 50;
+	tex_p1 = TextureContainer::Load("graph/obj3d/textures/(fx)_tsu_blueting");
+	tex_p2 = TextureContainer::Load("graph/obj3d/textures/(fx)_tsu_bluepouf");
 	
-	m_snd_loop = ARX_SOUND_PlaySFX( SND_SPELL_ICE_FIELD_LOOP, 
-	                                       &target, 1.f, 
-	                                       ARX_SOUND_PLAY_LOOPED );
+	for(int i = 0; i < iMax; i++) {
+		float t = rnd();
+
+		if (t < 0.5f)
+			tType[i] = 0;
+		else
+			tType[i] = 1;
+		
+		tSize[i] = Vec3f_ZERO;
+		tSizeMax[i].x = rnd();
+		tSizeMax[i].y = rnd() + 0.2f;
+		tSizeMax[i].z = rnd();
+		
+		Vec3f minPos;
+		if(tType[i] == 0) {
+			minPos = Vec3f(1.2f, 1, 1.2f);
+		} else {
+			minPos = Vec3f(0.4f, 0.3f, 0.4f);
+		}
+		
+		tSizeMax[i] = glm::max(tSizeMax[i], minPos);
+		
+		if(tType[i] == 0) {
+			tPos[i].x = m_pos.x + frand2() * 80;
+			tPos[i].y = m_pos.y;
+			tPos[i].z = m_pos.z + frand2() * 80;
+		} else {
+			tPos[i].x = m_pos.x + frand2() * 120;
+			tPos[i].y = m_pos.y;
+			tPos[i].z = m_pos.z + frand2() * 120;
+		}
+	}
+	
+	m_snd_loop = ARX_SOUND_PlaySFX(SND_SPELL_ICE_FIELD_LOOP, &target, 1.f, ARX_SOUND_PLAY_LOOPED);
 }
 
-void IceFieldSpell::End()
-{
+void IceFieldSpell::End() {
+	
 	DamageRequestEnd(m_damage);
 	
 	ARX_SOUND_Stop(m_snd_loop); 
 	ARX_SOUND_PlaySFX(SND_SPELL_ICE_FIELD_END);
-	
-	delete m_pSpellFx;
-	m_pSpellFx = NULL;
 }
 
 void IceFieldSpell::Update(float timeDelta) {
 	
-	if(m_pSpellFx) {
-		m_pSpellFx->Update(timeDelta);
+	ARX_UNUSED(timeDelta);
+	
+	if(!lightHandleIsValid(m_light))
+		m_light = GetFreeDynLight();
+
+	if(lightHandleIsValid(m_light)) {
+		EERIE_LIGHT * el = lightHandleGet(m_light);
 		
-		if(!lightHandleIsValid(m_light))
-			m_light = GetFreeDynLight();
+		el->pos.x = m_pos.x;
+		el->pos.y = m_pos.y-120.f;
+		el->pos.z = m_pos.z;
+		el->intensity = 4.6f;
+		el->fallstart = 150.f+rnd()*30.f;
+		el->fallend   = 290.f+rnd()*30.f;
+		el->rgb.r = 0.76f;
+		el->rgb.g = 0.76f;
+		el->rgb.b = 1.0f-rnd()*( 1.0f / 10 );
+		el->duration = 600;
+		el->extras=0;
+	}
 
-		if(lightHandleIsValid(m_light)) {
-			EERIE_LIGHT * el = lightHandleGet(m_light);
+	if(!VisibleSphere(m_pos - Vec3f(0.f, 120.f, 0.f), 350.f))
+		return;
+	
+	RenderMaterial mat;
+	mat.setDepthTest(true);
+	mat.setBlendType(RenderMaterial::Additive);
+	
+	for(int i = 0; i < iMax; i++) {
+		
+		tSize[i] += Vec3f(0.1f);
+		tSize[i] = glm::min(tSize[i], tSizeMax[i]);
+		
+		Anglef stiteangle = Anglef::ZERO;
+		Vec3f stitepos;
+		Vec3f stitescale;
+		Color3f stitecolor;
+
+		stiteangle.setPitch(glm::cos(glm::radians(tPos[i].x)) * 360);
+		stitepos.x = tPos[i].x;
+		stitepos.y = m_pos.y;
+		stitepos.z = tPos[i].z;
+		
+		stitecolor.r = tSizeMax[i].y * 0.7f;
+		stitecolor.g = tSizeMax[i].y * 0.7f;
+		stitecolor.b = tSizeMax[i].y * 0.9f;
+
+		if(stitecolor.r > 1)
+			stitecolor.r = 1;
+
+		if(stitecolor.g > 1)
+			stitecolor.g = 1;
+
+		if(stitecolor.b > 1)
+			stitecolor.b = 1;
+
+		stitescale.z = tSize[i].x;
+		stitescale.y = tSize[i].y;
+		stitescale.x = tSize[i].z;
+
+		EERIE_3DOBJ * obj = (tType[i] == 0) ? smotte : stite;
+		
+		Draw3DObject(obj, stiteangle, stitepos, stitescale, stitecolor, mat);
+	}
+	
+	for(int i = 0; i < iMax * 0.5f; i++) {
+		
+		float t = rnd();
+		if(t < 0.01f) {
 			
-			el->pos.x = m_pSpellFx->eSrc.x;
-			el->pos.y = m_pSpellFx->eSrc.y-120.f;
-			el->pos.z = m_pSpellFx->eSrc.z;
-			el->intensity = 4.6f;
-			el->fallstart = 150.f+rnd()*30.f;
-			el->fallend   = 290.f+rnd()*30.f;
-			el->rgb.r = 0.76f;
-			el->rgb.g = 0.76f;
-			el->rgb.b = 1.0f-rnd()*( 1.0f / 10 );
-			el->duration = 600;
-			el->extras=0;
+			PARTICLE_DEF * pd = createParticle();
+			if(pd) {
+				pd->ov = tPos[i] + randomVec(-5.f, 5.f);
+				pd->move = randomVec(-2.f, 2.f);
+				pd->siz = 20.f;
+				pd->tolive = Random::get(2000, 6000);
+				pd->tc = tex_p2;
+				pd->special = FADE_IN_AND_OUT | ROTATING | MODULATE_ROTATION | DISSIPATING;
+				pd->fparam = 0.0000001f;
+				pd->rgb = Color3f(0.7f, 0.7f, 1.f);
+			}
+			
+		} else if (t > 0.095f) {
+			
+			PARTICLE_DEF * pd = createParticle();
+			if(pd) {
+				pd->ov = tPos[i] + randomVec(-5.f, 5.f) + Vec3f(0.f, 50.f, 0.f);
+				pd->move = Vec3f(0.f, 2.f - 4.f * rnd(), 0.f);
+				pd->siz = 0.5f;
+				pd->tolive = Random::get(2000, 6000);
+				pd->tc = tex_p1;
+				pd->special = FADE_IN_AND_OUT | ROTATING | MODULATE_ROTATION | DISSIPATING;
+				pd->fparam = 0.0000001f;
+				pd->rgb = Color3f(0.7f, 0.7f, 1.f);
+			}
+			
 		}
-
-		m_pSpellFx->Render();
 	}
 }
 
 Vec3f IceFieldSpell::getPosition() {
-	if(m_pSpellFx) {
-		return m_pSpellFx->eSrc;
-	} else {
-		return Vec3f_ZERO;
-	}
+	return m_pos;
 }
+
 
 LightningStrikeSpell::~LightningStrikeSpell() {
 	

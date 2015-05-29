@@ -61,9 +61,6 @@ private:
 
 class IceFieldSpell : public SpellBase {
 public:
-	IceFieldSpell();
-	~IceFieldSpell();
-	
 	void Launch();
 	void End();
 	void Update(float timeDelta);
@@ -71,9 +68,18 @@ public:
 	Vec3f getPosition();
 	
 private:
-	CIceField * m_pSpellFx;
 	LightHandle m_light;
 	DamageHandle m_damage;
+	
+	Vec3f m_pos;
+	TextureContainer * tex_p1;
+	TextureContainer * tex_p2;
+	
+	int iMax;
+	int tType[50];
+	Vec3f tPos[50];
+	Vec3f tSize[50];
+	Vec3f tSizeMax[50];
 };
 
 class LightningStrikeSpell : public SpellBase {

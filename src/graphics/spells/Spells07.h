@@ -105,29 +105,4 @@ private:
 	void ReCreate(float rootSize);
 };
 
-// Done By : did
-class CIceField : public CSpellFx {
-	
-public:
-	CIceField();
-	~CIceField();
-	
-	void Create(Vec3f);
-	void Update(float timeDelta);
-	void Render();
-	
-	Vec3f eSrc;
-	
-private:
-	Vec3f eTarget;
-	TextureContainer * tex_p1;
-	TextureContainer * tex_p2;
-	
-	int iMax;
-	int tType[50];
-	Vec3f tPos[50];
-	Vec3f tSize[50];
-	Vec3f tSizeMax[50];
-};
-
 #endif // ARX_GRAPHICS_SPELLS_SPELLS07_H
