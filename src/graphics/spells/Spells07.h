@@ -72,22 +72,22 @@ public:
 	EntityHandle m_caster;
 	float m_level;
 	
-	float	fDamage;
+	float	m_fDamage;
 	bool m_isMassLightning;
 	
 private:
-	size_t nbtotal;
-	long	lNbSegments;
-	float	invNbSegments;
-	float	fSize;
-	float	fLengthMin;
-	float	fLengthMax;
-	Vec3f fAngleMin;
-	Vec3f fAngleMax;
-	Vec3f eSrc;
-	Vec3f eDest;
-	TextureContainer * tex_light;
-	int iTTL;
+	size_t m_nbtotal;
+	long m_lNbSegments;
+	float m_invNbSegments;
+	float m_fSize;
+	float m_fLengthMin;
+	float m_fLengthMax;
+	Vec3f m_fAngleMin;
+	Vec3f m_fAngleMax;
+	Vec3f m_eSrc;
+	Vec3f m_eDest;
+	TextureContainer * m_tex_light;
+	int m_iTTL;
 	
 	struct CLightningNode {
 		Vec3f pos;
@@ -98,7 +98,7 @@ private:
 	
 	static const size_t MAX_NODES = 2000;
 	
-	CLightningNode	cnodetab[MAX_NODES];
+	CLightningNode	m_cnodetab[MAX_NODES];
 	
 	struct LIGHTNING;
 	void BuildS(LIGHTNING * lightingInfo);

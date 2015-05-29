@@ -84,7 +84,7 @@ void MassLightningStrikeSpell::Launch()
 	for(int i = 0; i < number; i++) {
 		CLightning * lightning = new CLightning();
 		lightning->m_isMassLightning = true;
-		lightning->fDamage = 2;
+		lightning->m_fDamage = 2;
 		
 		pTab.push_back(lightning);
 	}
