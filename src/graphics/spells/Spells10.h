@@ -48,28 +48,6 @@ ZeniMax Media Inc., Suite 120, Rockville, Maryland 20850 USA.
 #include "graphics/data/Mesh.h"
 #include "graphics/effects/SpellEffects.h"
 
-class CLightning;
-
-// Done By : Didier Pedreno
-class CMassLightning : public CSpellFx {
-	
-public:
-	explicit CMassLightning(long nb);
-	~CMassLightning();
-
-	void Create(Vec3f);
-	
-	void Update(float timeDelta);
-	void Render();
-	
-	EntityHandle m_caster;
-	float m_level;
-	
-private:
-	long number;
-	std::vector<CLightning *> pTab;
-};
-
 // Done By : did
 class CControlTarget : public CSpellFx {
 	

@@ -52,7 +52,10 @@ MassLightningStrikeSpell::MassLightningStrikeSpell()
 
 MassLightningStrikeSpell::~MassLightningStrikeSpell() {
 	
-	delete m_pSpellFx;
+	for(std::vector<CLightning *>::iterator it = pTab.begin(); it != pTab.end(); ++it) {
+		delete *it;
+	}
+	pTab.clear();
 }
 
 void MassLightningStrikeSpell::Launch()
@@ -76,11 +79,36 @@ void MassLightningStrikeSpell::Launch()
 	
 	m_targetPos = target;
 	
+	//SetDuration(2000);
 	long count = std::max(long(m_level), 1l);
-	m_pSpellFx = new CMassLightning(count);
-	m_pSpellFx->SetDuration(long(500 * m_level));
-	m_pSpellFx->Create(target);
-	m_duration = m_pSpellFx->GetDuration();
+	number = std::min(10L, count);
+
+	for(int i = 0; i < number; i++) {
+		CLightning * lightning = new CLightning();
+		lightning->m_isMassLightning = true;
+		lightning->fDamage = 2;
+		
+		pTab.push_back(lightning);
+	}
+	
+	m_duration = long(500 * m_level);
+	
+	long lMax = 0;
+	float ft = 360.0f / (float)number;
+
+	for(int i = 0; i < number; i++) {
+		CLightning * lightning = pTab[i];
+		
+		Vec3f eTarget = target;
+		eTarget += angleToVectorXZ(i * ft) * 500.0f;
+		
+		lightning->Create(target, eTarget);
+		long lTime = m_duration + Random::get(0, 5000);
+		lightning->SetDuration(lTime);
+		lMax = std::max(lMax, lTime);
+	}
+	
+	m_duration = lMax + 1000;
 	
 	m_light = GetFreeDynLight();
 	if(lightHandleIsValid(m_light)) {
@@ -104,27 +132,34 @@ void MassLightningStrikeSpell::Launch()
 	GRenderer->SetRenderState(Renderer::AlphaBlending, false);
 }
 
-void MassLightningStrikeSpell::End()
-{
+void MassLightningStrikeSpell::End() {
+	
 	endLightDelayed(m_light, 200);
 	
 	ARX_SOUND_Stop(m_snd_loop);
 	ARX_SOUND_PlaySFX(SND_SPELL_LIGHTNING_END);
 	
-	delete m_pSpellFx;
-	m_pSpellFx = NULL;
+	for(std::vector<CLightning *>::iterator it = pTab.begin(); it != pTab.end(); ++it) {
+		delete *it;
+	}
+	pTab.clear();
 }
 
 void MassLightningStrikeSpell::Update(float timeDelta) {
 	
-	if(m_pSpellFx) {
-		m_pSpellFx->m_caster = m_caster;
-		m_pSpellFx->m_level = m_level;
+	for(int i = 0; i < number; i++) {
+		CLightning * lightning = pTab[i];
 		
-		m_pSpellFx->Update(timeDelta);
-		m_pSpellFx->Render();
+		lightning->m_caster = m_caster;
+		lightning->m_level = m_level;
+		
+		lightning->Update(timeDelta);
 	}
-
+	
+	for(int i = 0; i < number; i++) {
+		pTab[i]->Render();
+	}
+	
 	Vec3f position;
 
 	position = m_targetPos + randomVec(-250.f, 250.f);

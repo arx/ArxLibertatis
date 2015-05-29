@@ -22,6 +22,7 @@
 
 #include "game/magic/Spell.h"
 
+#include "graphics/spells/Spells07.h"
 #include "graphics/spells/Spells10.h"
 
 class MassLightningStrikeSpell : public SpellBase {
@@ -34,10 +35,12 @@ public:
 	void Update(float timeDelta);
 	
 private:
-	CMassLightning * m_pSpellFx;
 	Vec3f m_targetPos;
 	bool m_soundEffectPlayed;
 	LightHandle m_light;
+	
+	long number;
+	std::vector<CLightning *> pTab;
 };
 
 class ControlTargetSpell : public SpellBase {

@@ -58,68 +58,6 @@ ZeniMax Media Inc., Suite 120, Rockville, Maryland 20850 USA.
 
 #include "scene/Interactive.h"
 
-CMassLightning::CMassLightning(long nbmissiles)
-	: m_caster(EntityHandle::Invalid)
-	, m_level(1.f)
-{
-	SetDuration(2000);
-	number = std::min(10L, nbmissiles);
-
-	for(int i = 0; i < number; i++) {
-		CLightning * lightning = new CLightning();
-		lightning->m_isMassLightning = true;
-		lightning->fDamage = 2;
-		
-		pTab.push_back(lightning);
-	}
-}
-
-CMassLightning::~CMassLightning() {
-	for(std::vector<CLightning *>::iterator it = pTab.begin(); it != pTab.end(); ++it) {
-		delete *it;
-	}
-
-	pTab.clear();
-}
-
-void CMassLightning::Create(Vec3f aePos) {
-	
-	long lMax = 0;
-	float ft = 360.0f / (float)number;
-
-	for(int i = 0; i < number; i++) {
-		CLightning * lightning = pTab[i];
-		
-		Vec3f eTarget = aePos;
-		eTarget += angleToVectorXZ(i * ft) * 500.0f;
-		
-		lightning->Create(aePos, eTarget);
-		long lTime = ulDuration + Random::get(0, 5000);
-		lightning->SetDuration(lTime);
-		lMax = std::max(lMax, lTime);
-	}
-
-	SetDuration(lMax + 1000);
-}
-
-void CMassLightning::Update(float timeDelta)
-{
-	for(int i = 0; i < number; i++) {
-		CLightning * lightning = pTab[i];
-		
-		lightning->m_caster = m_caster;
-		lightning->m_level = m_level;
-		
-		lightning->Update(timeDelta);
-	}
-}
-
-void CMassLightning::Render()
-{
-	for(int i = 0; i < number; i++) {
-		pTab[i]->Render();
-	}
-}
 
 CControlTarget::CControlTarget()
 	: eSrc(Vec3f_ZERO)
