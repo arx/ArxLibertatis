@@ -288,11 +288,11 @@ void ExplosionSpell::Launch()
 	for(long i_angle = 0 ; i_angle < 360 ; i_angle += 12) {
 		for(long j = -100 ; j < 100 ; j += 50) {
 			Vec3f dir = angleToVectorXZ(i_angle) * 60.f;
-
-			Color3f rgb(0.1f + rnd() * (1.f/3), 0.1f + rnd() * (1.f/3),
-			            0.8f + rnd() * (1.f/5));
+			
+			Color3f color = Color3f(0.1f, 0.1f, 0.8f) + Color3f(rnd(), rnd(), rnd()) * Color3f(1.f/3, 1.f/3, 1.f/5);
+			
 			Vec3f posi = target + Vec3f(0.f, j * 2, 0.f);
-			LaunchFireballBoom(posi, 16, &dir, &rgb);
+			LaunchFireballBoom(posi, 16, &dir, &color);
 		}
 	}
 	
