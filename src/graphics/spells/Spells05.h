@@ -143,25 +143,4 @@ private:
 	ParticleSystem pPSStream;
 };
 
-class CMultiPoisonProjectile : public CSpellFx {
-	
-public:
-	explicit CMultiPoisonProjectile(long nb);
-	~CMultiPoisonProjectile();
-	
-	void Create(Vec3f srcPos, float afBeta);
-	void Kill();
-	void Update(float timeDelta);
-	void Render();
-	
-	EntityHandle m_caster;
-	float m_level;
-	unsigned long m_timcreation;
-	
-	LightHandle lLightId;
-private:
-	std::vector<CPoisonProjectile *> m_projectiles;
-	void AddPoisonFog(const Vec3f & pos, float power);
-};
-
 #endif // ARX_GRAPHICS_SPELLS_SPELLS05_H

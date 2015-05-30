@@ -20,6 +20,8 @@
 #include "game/magic/spells/SpellsLvl05.h"
 
 #include "core/Application.h"
+#include "core/Config.h"
+#include "core/Core.h"
 #include "core/GameTime.h"
 #include "game/Damage.h"
 #include "game/Entity.h"
@@ -447,17 +449,23 @@ void RepelUndeadSpell::Update(float timeDelta) {
 		ARX_SOUND_RefreshPosition(m_snd_loop, entities[m_target]->pos);
 }
 
+
 PoisonProjectileSpell::~PoisonProjectileSpell() {
 	
-	delete m_pSpellFx;
+	for(size_t i = 0; i < m_projectiles.size(); i++) {
+		CPoisonProjectile * projectile = m_projectiles[i];
+		
+		endLightDelayed(projectile->lLightId, 2000);
+		
+		delete projectile;
+	}
+	m_projectiles.clear();
 }
 
 void PoisonProjectileSpell::Launch()
 {
 	ARX_SOUND_PlaySFX(SND_SPELL_POISON_PROJECTILE_LAUNCH,
 	                  &m_caster_pos);
-	
-	m_duration = 900000000; // TODO probably never read
 	
 	Vec3f srcPos = Vec3f_ZERO;
 	float afBeta = 0.f;
@@ -492,20 +500,132 @@ void PoisonProjectileSpell::Launch()
 	srcPos += angleToVectorXZ(afBeta) * 90.f;
 	
 	long level = std::max(long(m_level), 1l);
-	m_pSpellFx = new CMultiPoisonProjectile(level);
-	m_pSpellFx->SetDuration(8000ul);
-	m_pSpellFx->Create(srcPos, afBeta);
-	m_duration = m_pSpellFx->GetDuration();
+	size_t uiNumber = std::min(5L, level);
+	
+	for(size_t i = 0; i < uiNumber; i++) {
+		CPoisonProjectile * projectile = new CPoisonProjectile();
+		
+		m_projectiles.push_back(projectile);
+	}
+	
+	m_duration = 8000ul;
+	
+	long lMax = 0;
+
+	for(size_t i = 0; i < m_projectiles.size(); i++) {
+		CPoisonProjectile * projectile = m_projectiles[i];
+		
+		projectile->Create(srcPos, afBeta + frand2() * 10.0f);
+		long lTime = m_duration + Random::get(0, 5000);
+		projectile->SetDuration(lTime);
+		lMax = std::max(lMax, lTime);
+
+		projectile->lLightId = GetFreeDynLight();
+
+		if(lightHandleIsValid(projectile->lLightId)) {
+			EERIE_LIGHT * light = lightHandleGet(projectile->lLightId);
+			
+			light->intensity		= 2.3f;
+			light->fallend		= 250.f;
+			light->fallstart		= 150.f;
+			light->rgb = Color3f::green;
+			light->pos = projectile->eSrc;
+			light->time_creation	= (unsigned long)(arxtime);
+			light->duration		= 200;
+		}
+	}
+	
+	m_duration = lMax + 1000;
+}
+
+void PoisonProjectileSpell::End() {
+	
+	for(size_t i = 0; i < m_projectiles.size(); i++) {
+		CPoisonProjectile * projectile = m_projectiles[i];
+		
+		endLightDelayed(projectile->lLightId, 2000);
+		
+		delete projectile;
+	}
+	m_projectiles.clear();
 }
 
 void PoisonProjectileSpell::Update(float timeDelta) {
 	
-	if(m_pSpellFx) {
-		m_pSpellFx->m_caster = m_caster;
-		m_pSpellFx->m_level = m_level;
-		m_pSpellFx->m_timcreation = m_timcreation;
+	for(size_t i = 0; i < m_projectiles.size(); i++) {
+		CPoisonProjectile * projectile = m_projectiles[i];
 		
-		m_pSpellFx->Update(timeDelta);
-		m_pSpellFx->Render();
+		projectile->Update(timeDelta);
+	}
+	
+	for(size_t i = 0; i < m_projectiles.size(); i++) {
+		CPoisonProjectile * projectile = m_projectiles[i];
+		
+		projectile->Render();
+		
+		if(lightHandleIsValid(projectile->lLightId)) {
+			EERIE_LIGHT * light = lightHandleGet(projectile->lLightId);
+			
+			light->intensity	= 2.3f * projectile->lightIntensityFactor;
+			light->fallend	= 250.f;
+			light->fallstart	= 150.f;
+			light->rgb = Color3f::green;
+			light->pos = projectile->eCurPos;
+			light->time_creation = (unsigned long)(arxtime);
+			light->duration	= 200;
+		}
+
+		AddPoisonFog(projectile->eCurPos, m_level + 7);
+
+		if(m_timcreation + 1600 < (unsigned long)(arxtime)) {
+			
+			DamageParameters damage;
+			damage.pos = projectile->eCurPos;
+			damage.radius = 120.f;
+			float v = m_level;
+			v = 4.f + v * ( 1.0f / 10 ) * 6.f ;
+			damage.damages = v * ( 1.0f / 1000 ) * framedelay;
+			damage.area = DAMAGE_FULL;
+			damage.duration = static_cast<long>(framedelay);
+			damage.source = m_caster;
+			damage.flags = 0;
+			damage.type = DAMAGE_TYPE_MAGICAL | DAMAGE_TYPE_POISON;
+			DamageCreate(damage);
+		}
+	}
+}
+
+void PoisonProjectileSpell::AddPoisonFog(const Vec3f & pos, float power) {
+	
+	int iDiv = 4 - config.video.levelOfDetail;
+	
+	float flDiv = static_cast<float>(1 << iDiv);
+	
+	arxtime.update();
+	
+	long count = std::max(1l, checked_range_cast<long>(framedelay / flDiv));
+	while(count--) {
+		
+		if(rnd() * 2000.f >= power) {
+			continue;
+		}
+		
+		PARTICLE_DEF * pd = createParticle();
+		if(!pd) {
+			return;
+		}
+		
+		float speed = 1.f;
+		float fval = speed * 0.2f;
+		pd->special = FADE_IN_AND_OUT | ROTATING | MODULATE_ROTATION | DISSIPATING;
+		pd->ov = pos + randomVec(-100.f, 100.f);
+		pd->scale = Vec3f(8.f, 8.f, 10.f);
+		pd->move = Vec3f((speed - rnd()) * fval, (speed - speed * rnd()) * (1.f / 15),
+		                 (speed - rnd()) * fval);
+		pd->tolive = Random::get(4500, 9000);
+		pd->tc = TC_smoke;
+		pd->siz = (80.f + rnd() * 160.f) * (1.f / 3);
+		pd->rgb = Color3f(rnd() * (1.f / 3), 1.f, rnd() * 0.1f);
+		pd->fparam = 0.001f;
 	}
 }

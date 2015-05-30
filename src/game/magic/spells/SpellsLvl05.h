@@ -83,10 +83,14 @@ public:
 	~PoisonProjectileSpell();
 	
 	void Launch();
+	void End();
 	void Update(float timeDelta);
 	
 private:
-	CMultiPoisonProjectile * m_pSpellFx;
+	LightHandle lLightId;
+	std::vector<CPoisonProjectile *> m_projectiles;
+	
+	void AddPoisonFog(const Vec3f & pos, float power);
 };
 
 #endif // ARX_GAME_MAGIC_SPELLS_SPELLSLVL05_H
