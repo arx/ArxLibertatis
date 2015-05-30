@@ -230,7 +230,7 @@ void RiseDeadSpell::Update(float timeDelta) {
 				
 				SendIOScriptEvent(io,SM_SUMMONED);
 					
-				Vec3f pos = m_pSpellFx->eSrc;
+				Vec3f pos = m_pSpellFx->m_eSrc;
 				pos += Vec3f(rnd(), rnd(), rnd()) * 100.f;
 				pos += Vec3f(-50.f, 50.f, -50.f);
 				
@@ -245,7 +245,7 @@ void RiseDeadSpell::Update(float timeDelta) {
 		}
 	} else if(!arxtime.is_paused() && tim < 4000) {
 	  if(rnd() > 0.95f) {
-			MakeCoolFx(m_pSpellFx->eSrc);
+			MakeCoolFx(m_pSpellFx->m_eSrc);
 		}
 	}
 }

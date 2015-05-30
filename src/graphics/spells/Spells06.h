@@ -97,7 +97,7 @@ public:
 	void Update(float timeDelta);
 	void Render();
 	
-	Vec3f eSrc;
+	Vec3f m_eSrc;
 	
 	LightHandle lLightId;
 private:
@@ -136,7 +136,7 @@ private:
 	Vec3f v1a[40];
 	Vec3f v1b[40];
 	
-	EERIE_3DOBJ	*	stone[2];
+	EERIE_3DOBJ	*	m_stone[2];
 	
 	struct T_STONE {
 		short actif;
@@ -150,10 +150,10 @@ private:
 		int currtime;
 	};
 	
-	int currframetime;
-	int timestone;
-	int nbstone;
-	T_STONE tstone[256];
+	int m_currframetime;
+	int m_timestone;
+	int m_nbstone;
+	T_STONE m_tstone[256];
 	
 	void AddStone(const Vec3f & pos);
 	void DrawStone();

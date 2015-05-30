@@ -290,7 +290,7 @@ CRiseDead::~CRiseDead() {
 }
 
 CRiseDead::CRiseDead()
-	: eSrc(Vec3f_ZERO)
+	: m_eSrc(Vec3f_ZERO)
 	, fBetaRadCos(0.f)
 	, fBetaRadSin(0.f)
 	, tex_light(NULL)
@@ -303,9 +303,9 @@ CRiseDead::CRiseDead()
 	, ulDurationIntro(1000)
 	, ulDurationRender(1000)
 	, ulDurationOuttro(1000)
-	, currframetime(0)
-	, timestone(0)
-	, nbstone(0)
+	, m_currframetime(0)
+	, m_timestone(0)
+	, m_nbstone(0)
 {
 	SetDuration(1000);
 	ulCurrentTime = ulDurationIntro + ulDurationRender + ulDurationOuttro + 1;
@@ -314,8 +314,8 @@ CRiseDead::CRiseDead()
 	m_colorRays1 = Color3f(1.f, 1.f, 1.f);
 	m_colorRays2 = Color3f(0.f, 0.f, 0.f);
 	
-	stone[0] = NULL;
-	stone[1] = NULL;
+	m_stone[0] = NULL;
+	m_stone[1] = NULL;
 	
 	tex_light = TextureContainer::Load("graph/obj3d/textures/(fx)_tsu4");
 }
@@ -390,7 +390,7 @@ void CRiseDead::Create(Vec3f aeSrc, float afBeta)
 
 	SetDuration(ulDurationIntro, ulDurationRender, ulDurationOuttro);
 
-	eSrc = aeSrc + Vec3f(0.f, -10.f, 0.f);
+	m_eSrc = aeSrc + Vec3f(0.f, -10.f, 0.f);
 	SetAngle(afBeta);
 	sizeF = 0;
 	fSizeIntro = 0.0f;
@@ -403,12 +403,12 @@ void CRiseDead::Create(Vec3f aeSrc, float afBeta)
 		tfRaysb[i] = 0.4f * rnd();
 	}
 
-	v1a[0].x = eSrc.x - fBetaRadSin * 100;
-	v1a[0].y = eSrc.y;
-	v1a[0].z = eSrc.z + fBetaRadCos * 100;
-	v1a[end].x = eSrc.x + fBetaRadSin * 100;
-	v1a[end].y = eSrc.y;
-	v1a[end].z = eSrc.z - fBetaRadCos * 100;
+	v1a[0].x = m_eSrc.x - fBetaRadSin * 100;
+	v1a[0].y = m_eSrc.y;
+	v1a[0].z = m_eSrc.z + fBetaRadCos * 100;
+	v1a[end].x = m_eSrc.x + fBetaRadSin * 100;
+	v1a[end].y = m_eSrc.y;
+	v1a[end].z = m_eSrc.z - fBetaRadCos * 100;
 
 	v1b[0] = v1a[0];
 	v1b[end] = v1a[end];
@@ -422,22 +422,22 @@ void CRiseDead::Create(Vec3f aeSrc, float afBeta)
 	Split(v1b, 0, end, -80);
 	
 	for(i = 0; i <= end; i++) {
-		vb[i] = va[i] = eSrc;
+		vb[i] = va[i] = m_eSrc;
 	}
 	
 	sizeF = 0;
 	
 	// cailloux
-	this->timestone = 0;
-	this->nbstone = 0;
-	this->stone[0] = stone0; 
-	this->stone[1] = stone1; 
+	m_timestone = 0;
+	m_nbstone = 0;
+	m_stone[0] = stone0; 
+	m_stone[1] = stone1; 
 
 	int nb = 256;
 
 	while (nb--)
 	{
-		this->tstone[nb].actif = 0;
+		m_tstone[nb].actif = 0;
 	}
 }
 
@@ -448,16 +448,16 @@ unsigned long CRiseDead::GetDuration()
 
 void CRiseDead::AddStone(const Vec3f & pos) {
 	
-	if(arxtime.is_paused() || nbstone > 255) {
+	if(arxtime.is_paused() || m_nbstone > 255) {
 		return;
 	}
 	
 	int nb = 256;
 	while(nb--) {
-		T_STONE & s = tstone[nb];
+		T_STONE & s = m_tstone[nb];
 		
 		if(!s.actif) {
-			nbstone++;
+			m_nbstone++;
 			s.actif = 1;
 			s.numstone = Random::get(0, 1);
 			s.pos = pos;
@@ -481,7 +481,7 @@ void CRiseDead::DrawStone()
 	mat.setBlendType(RenderMaterial::Screen);
 	
 	while(nb--) {
-		T_STONE & s = tstone[nb];
+		T_STONE & s = m_tstone[nb];
 		
 		if(s.actif) {
 			float a = (float)s.currtime / (float)s.time;
@@ -492,7 +492,7 @@ void CRiseDead::DrawStone()
 			}
 
 			Color4f col = Color4f(Color3f::white, 1.f - a);
-			Draw3DObject(stone[s.numstone], s.ang, s.pos, s.scale, col, mat);
+			Draw3DObject(m_stone[s.numstone], s.ang, s.pos, s.scale, col, mat);
 			
 			PARTICLE_DEF * pd = createParticle();
 			if(pd) {
@@ -508,13 +508,13 @@ void CRiseDead::DrawStone()
 			
 			//update mvt
 			if(!arxtime.is_paused()) {
-				a = (((float)this->currframetime) * 100.f) / (float)s.time;
+				a = (((float)m_currframetime) * 100.f) / (float)s.time;
 				s.pos.y += s.yvel * a;
 				s.ang += s.angvel * a;
 
 				s.yvel *= 1.f - (1.f / 100.f);
 
-				s.currtime += this->currframetime;
+				s.currtime += m_currframetime;
 			}
 		}
 	}
@@ -615,8 +615,8 @@ void CRiseDead::RenderFissure()
 	vr[2].color = vr[3].color = m_colorBorder.toRGB();
 
 	for(i = 0; i < std::min(end, (int)fSizeIntro); i++) {
-		vt[2] = va[i] - (va[i] - eSrc) * 0.2f;
-		vt[3] = va[i + 1] - (va[i + 1] - eSrc) * 0.2f;
+		vt[2] = va[i] - (va[i] - m_eSrc) * 0.2f;
+		vt[3] = va[i + 1] - (va[i + 1] - m_eSrc) * 0.2f;
 		
 		vr[0].p = EE_RT(vt[3]);
 		vr[1].p = EE_RT(vt[2]);
@@ -625,8 +625,8 @@ void CRiseDead::RenderFissure()
 		drawTriangle(mat, &vr[0]);
 		drawTriangle(mat, &vr[1]);
 		
-		vt[2] = vb[i] - (vb[i] - eSrc) * 0.2f;
-		vt[3] = vb[i + 1] - (vb[i + 1] - eSrc) * 0.2f;
+		vt[2] = vb[i] - (vb[i] - m_eSrc) * 0.2f;
+		vt[3] = vb[i + 1] - (vb[i + 1] - m_eSrc) * 0.2f;
 		
 		vr[3].p = EE_RT(vb[i]);
 		vr[2].p = EE_RT(vb[i+1]);
@@ -644,9 +644,9 @@ void CRiseDead::RenderFissure()
 	mat.setWrapMode(TextureStage::WrapMirror);
 	mat.setTexture(tex_light);
 
-	target.x = eSrc.x ;
-	target.y = eSrc.y + 1.5f * sizeF; 
-	target.z = eSrc.z ;
+	target.x = m_eSrc.x ;
+	target.y = m_eSrc.y + 1.5f * sizeF; 
+	target.z = m_eSrc.z ;
 
 	EE_RTP(vt[1], &vr[0]);
 	vr[0].color = vr[1].color = m_colorRays1.toRGB();
@@ -773,10 +773,10 @@ void CRiseDead::RenderFissure()
 void CRiseDead::Update(float timeDelta)
 {
 	ulCurrentTime += timeDelta;
-	currframetime = timeDelta;
+	m_currframetime = timeDelta;
 
 	if(!arxtime.is_paused())
-		this->timestone -= timeDelta;
+		m_timestone -= timeDelta;
 }
 
 //-----------------------------------------------------------------------------
@@ -816,17 +816,17 @@ void CRiseDead::Render()
 	}
 	
 	//cailloux
-	if(this->timestone <= 0) {
-		this->timestone = Random::get(50, 150);
+	if(m_timestone <= 0) {
+		m_timestone = Random::get(50, 150);
 		Vec3f	pos;
 		float r = 80.f * frand2();
-		pos.x = this->eSrc.x + r;
-		pos.y = this->eSrc.y;
-		pos.z = this->eSrc.z + r;
-		this->AddStone(pos);
+		pos.x = m_eSrc.x + r;
+		pos.y = m_eSrc.y;
+		pos.z = m_eSrc.z + r;
+		AddStone(pos);
 	}
 	
 	RenderFissure();
 	
-	this->DrawStone();
+	DrawStone();
 }
