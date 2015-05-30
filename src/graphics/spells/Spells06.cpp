@@ -390,9 +390,7 @@ void CRiseDead::Create(Vec3f aeSrc, float afBeta)
 
 	SetDuration(ulDurationIntro, ulDurationRender, ulDurationOuttro);
 
-	eSrc.x = aeSrc.x;
-	eSrc.y = aeSrc.y - 10.f; 
-	eSrc.z = aeSrc.z;
+	eSrc = aeSrc + Vec3f(0.f, -10.f, 0.f);
 	SetAngle(afBeta);
 	sizeF = 0;
 	fSizeIntro = 0.0f;
