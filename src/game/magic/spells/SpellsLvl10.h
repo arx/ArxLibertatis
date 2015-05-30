@@ -23,7 +23,6 @@
 #include "game/magic/Spell.h"
 
 #include "graphics/spells/Spells07.h"
-#include "graphics/spells/Spells10.h"
 
 class MassLightningStrikeSpell : public SpellBase {
 public:
@@ -44,15 +43,19 @@ private:
 
 class ControlTargetSpell : public SpellBase {
 public:
-	~ControlTargetSpell();
-	
 	bool CanLaunch();
 	void Launch();
 	void End();
 	void Update(float timeDelta);
 	
 private:
-	CControlTarget * m_pSpellFx;
+	unsigned long ulCurrentTime;
+	Vec3f eSrc;
+	Vec3f eTarget;
+	TextureContainer * tex_mm;
+	TexturedVertex v1a[40];
+	TexturedVertex pathways[40];
+	float fTrail;
 };
 
 class FreezeTimeSpell : public SpellBase {

@@ -33,8 +33,6 @@
 
 #include "graphics/particle/ParticleEffects.h"
 
-#include "graphics/spells/Spells10.h"
-
 #include "graphics/Draw.h"
 #include "graphics/Renderer.h"
 
@@ -187,10 +185,6 @@ void MassLightningStrikeSpell::Update(float timeDelta) {
 	}	
 }
 
-ControlTargetSpell::~ControlTargetSpell() {
-	
-	delete m_pSpellFx;
-}
 
 bool ControlTargetSpell::CanLaunch()
 {
@@ -257,24 +251,155 @@ void ControlTargetSpell::Launch()
 	
 	m_duration = 1000;
 	
-	m_pSpellFx = new CControlTarget();
-	m_pSpellFx->Create(player.pos, MAKEANGLE(player.angle.getPitch()));
-	m_pSpellFx->SetDuration(m_duration);
+	eSrc = Vec3f_ZERO;
+	eTarget = Vec3f_ZERO;
+	fTrail = 0.f;
+	
+	tex_mm = TextureContainer::Load("graph/obj3d/textures/(fx)_ctrl_target");
+	
+	eSrc = player.pos;
+	
+	float fBetaRad = glm::radians(player.angle.getPitch());
+	float fBetaRadCos = glm::cos(fBetaRad);
+	float fBetaRadSin = glm::sin(fBetaRad);
+	
+	eTarget = eSrc + Vec3f(-fBetaRadSin * 1000.f, 100.f, fBetaRadCos * 1000.f);
+	
+	for(size_t i = 1; i < entities.size(); i++) {
+		const EntityHandle handle = EntityHandle(i);
+		Entity * e = entities[handle];
+		
+		if(e) {
+			eTarget = e->pos;
+		}
+	}
+	
+	int end = 20 - 1;
+	v1a[0].p = eSrc + Vec3f(0.f, 100.f, 0.f);
+	v1a[end].p = eTarget;
+	
+	Vec3f h;
+	Vec3f s = eSrc;
+	Vec3f e = eSrc;
+	int i = 0;
+	while(Visible(s, e, NULL, &h) && i < 20) {
+		e.x -= fBetaRadSin * 50;
+		e.z += fBetaRadCos * 50;
+		i++;
+	}
+	
+	pathways[0].p = eSrc + Vec3f(0.f, 100.f, 0.f);
+	pathways[9].p = eTarget;
+	Split(pathways, 0, 9, 150);
+	
+	for(int i = 0; i < 9; i++) {
+		if(pathways[i].p.y >= eSrc.y + 150) {
+			pathways[i].p.y = eSrc.y + 150;
+		}
+	}
+	
+	fTrail = 0;
 }
 
 void ControlTargetSpell::End() {
 	
-	delete m_pSpellFx;
-	m_pSpellFx = NULL;
 }
 
-void ControlTargetSpell::Update(float timeDelta)
-{
-	if(m_pSpellFx) {
-		m_pSpellFx->Update(timeDelta);
-		m_pSpellFx->Render();
-	}	
+void ControlTargetSpell::Update(float timeDelta) {
+	
+	ulCurrentTime += timeDelta;
+	
+	int i = 0;
+
+	GRenderer->SetCulling(Renderer::CullNone);
+	GRenderer->SetRenderState(Renderer::DepthWrite, false);
+	GRenderer->SetRenderState(Renderer::AlphaBlending, true);
+	GRenderer->SetBlendFunc(Renderer::BlendOne, Renderer::BlendOne);
+	GRenderer->SetTexture(0, tex_mm);
+
+	// -------------------
+	fTrail += 1;
+
+	if (fTrail >= 300) fTrail = 0;
+
+	int n = BEZIERPrecision;
+	float delta = 1.0f / n;
+
+	float fOneOnDuration = 1.f / (float)(m_duration);
+	fTrail = (ulCurrentTime * fOneOnDuration) * 9 * (n + 2);
+
+	Vec3f v;
+	
+	Vec3f newpos = Vec3f_ZERO;
+	Vec3f lastpos = pathways[0].p;
+	
+	for(i = 0; i < 9; i++) {
+		int kp		= i;
+		int kpprec	= (i > 0) ? kp - 1 : kp ;
+		int kpsuiv	= kp + 1 ;
+		int kpsuivsuiv = (i < (9 - 2)) ? kpsuiv + 1 : kpsuiv;
+
+		for(int toto = 1; toto < n; toto++) {
+			if(fTrail < i * n + toto)
+				break;
+
+			float t = toto * delta;
+
+			float t1 = t;
+			float t2 = t1 * t1 ;
+			float t3 = t2 * t1 ;
+			float f0 = 2.f * t3 - 3.f * t2 + 1.f ;
+			float f1 = -2.f * t3 + 3.f * t2 ;
+			float f2 = t3 - 2.f * t2 + t1 ;
+			float f3 = t3 - t2 ;
+
+			float val = pathways[kpsuiv].p.x;
+			float p0 = 0.5f * (val - pathways[kpprec].p.x) ;
+			float p1 = 0.5f * (pathways[kpsuivsuiv].p.x - pathways[kp].p.x) ;
+			v.x = f0 * pathways[kp].p.x + f1 * val + f2 * p0 + f3 * p1 ;
+
+			val = pathways[kpsuiv].p.y ;
+			p0 = 0.5f * (val - pathways[kpprec].p.y) ;
+			p1 = 0.5f * (pathways[kpsuivsuiv].p.y - pathways[kp].p.y) ;
+			v.y = f0 * pathways[kp].p.y + f1 * val + f2 * p0 + f3 * p1 ;
+
+			val = pathways[kpsuiv].p.z ;
+			p0 = 0.5f * (val - pathways[kpprec].p.z) ;
+			p1 = 0.5f * (pathways[kpsuivsuiv].p.z - pathways[kp].p.z) ;
+			v.z = f0 * pathways[kp].p.z + f1 * val + f2 * p0 + f3 * p1 ;
+			
+			newpos = v;
+			
+			if(fTrail - (i * n + toto) <= 70) {
+				float c = 1.0f - (fTrail - (i * n + toto)) / 70.0f;
+				PARTICLE_DEF * pd = createParticle();
+				if(pd) {
+					pd->ov = lastpos;
+					pd->siz = 5 * c;
+					pd->tolive = Random::get(10, 110);
+					pd->tc = tex_mm;
+					pd->special = FADE_IN_AND_OUT | ROTATING | MODULATE_ROTATION | DISSIPATING;
+					pd->fparam = 0.0000001f;
+					pd->rgb = Color3f::gray(c);
+				}
+			}
+			
+			std::swap(lastpos, newpos);
+			
+			PARTICLE_DEF * pd = createParticle();
+			if(pd) {
+				pd->ov = lastpos;
+				pd->siz = 5;
+				pd->tolive = Random::get(10, 110);
+				pd->tc = tex_mm;
+				pd->special = FADE_IN_AND_OUT | ROTATING | MODULATE_ROTATION | DISSIPATING;
+				pd->fparam = 0.0000001f;
+				pd->rgb = Color3f::gray(0.1f);
+			}
+		}
+	}
 }
+
 
 extern float GLOBAL_SLOWDOWN;
 
