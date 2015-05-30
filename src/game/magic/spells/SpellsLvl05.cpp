@@ -582,8 +582,7 @@ void PoisonProjectileSpell::Update(float timeDelta) {
 			DamageParameters damage;
 			damage.pos = projectile->eCurPos;
 			damage.radius = 120.f;
-			float v = m_level;
-			v = 4.f + v * ( 1.0f / 10 ) * 6.f ;
+			float v = 4.f + m_level * ( 1.0f / 10 ) * 6.f ;
 			damage.damages = v * ( 1.0f / 1000 ) * framedelay;
 			damage.area = DAMAGE_FULL;
 			damage.duration = static_cast<long>(framedelay);
