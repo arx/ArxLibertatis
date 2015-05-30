@@ -314,9 +314,6 @@ CRiseDead::CRiseDead()
 	m_colorRays1 = Color3f(1.f, 1.f, 1.f);
 	m_colorRays2 = Color3f(0.f, 0.f, 0.f);
 	
-	m_stone[0] = NULL;
-	m_stone[1] = NULL;
-	
 	tex_light = TextureContainer::Load("graph/obj3d/textures/(fx)_tsu4");
 }
 
@@ -430,8 +427,6 @@ void CRiseDead::Create(Vec3f aeSrc, float afBeta)
 	// cailloux
 	m_timestone = 0;
 	m_nbstone = 0;
-	m_stone[0] = stone0; 
-	m_stone[1] = stone1; 
 
 	int nb = 256;
 
@@ -492,7 +487,8 @@ void CRiseDead::DrawStone()
 			}
 
 			Color4f col = Color4f(Color3f::white, 1.f - a);
-			Draw3DObject(m_stone[s.numstone], s.ang, s.pos, s.scale, col, mat);
+			EERIE_3DOBJ * obj = (s.numstone == 0) ? stone0 : stone1;
+			Draw3DObject(obj, s.ang, s.pos, s.scale, col, mat);
 			
 			PARTICLE_DEF * pd = createParticle();
 			if(pd) {

@@ -136,8 +136,6 @@ private:
 	Vec3f v1a[40];
 	Vec3f v1b[40];
 	
-	EERIE_3DOBJ	*	m_stone[2];
-	
 	struct T_STONE {
 		short actif;
 		short numstone;
