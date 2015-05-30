@@ -652,9 +652,7 @@ void CLevitate::DrawStone()
 	}
 }
 
-void CLevitate::Update(float timeDelta)
-{
-	float	a;
+void CLevitate::Update(float timeDelta) {
 	
 	if(!arxtime.is_paused()) {
 		m_currdurationang += timeDelta;
@@ -674,9 +672,9 @@ void CLevitate::Update(float timeDelta)
 	int dustParticles = 0;
 	
 	switch(m_key) {
-		case 0:
+		case 0: {
 			//monté du cone
-			a = (float) ulCurrentTime / 1000.f;
+			float a = (float) ulCurrentTime / 1000.f;
 
 			if(a > 1.f) {
 				a = 0.f;
@@ -687,6 +685,7 @@ void CLevitate::Update(float timeDelta)
 			
 			dustParticles = 3;
 			break;
+		}
 		case 1:
 			//animation cone
 			m_coneScale = (float)ulCurrentTime / (float)ulDuration;
