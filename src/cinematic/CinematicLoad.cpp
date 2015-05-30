@@ -359,7 +359,7 @@ bool parseCinematic(Cinematic * c, const char * data, size_t size) {
 			c->speed = k.speed;
 			c->idsound = idsound;
 			c->force = k.force;
-			c->light = k.light;
+			c->m_light = k.light;
 			c->posgrille = k.posgrille;
 			c->angzgrille = k.angzgrille;
 			c->speedtrack = k.speedtrack;

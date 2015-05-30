@@ -93,7 +93,7 @@ Cinematic::Cinematic(int _w, int _h)
 	, numbitmapsuiv(-1)
 	, a()
 	, fx(-1)
-	, fxsuiv()
+	, m_fxsuiv()
 	, changekey(true)
 	, key(NULL)
 	, projectload(false)
@@ -104,8 +104,8 @@ Cinematic::Cinematic(int _w, int _h)
 	, colorflash()
 	, speed()
 	, idsound(-1)
-	, light()
-	, lightd()
+	, m_light()
+	, m_lightd()
 	, posgrille()
 	, angzgrille()
 	, posgrillesuiv()
@@ -211,7 +211,7 @@ void Cinematic::New() {
 	
 	AddKey(key);
 	}
-	this->lightd = this->light;
+	m_lightd = m_light;
 	
 	SetCurrFrame(GetStartFrame());
 	
@@ -466,7 +466,7 @@ void Cinematic::Render(float FDIFF) {
 		switch(fx & 0x0000ff00) {
 			case FX_DREAM:
 
-				if ((this->fxsuiv & 0x0000ff00) == FX_DREAM)
+				if ((m_fxsuiv & 0x0000ff00) == FX_DREAM)
 					FX_DreamPrecalc(tb, 15.f, (FPS > 1.f) ? GetTrackFPS() / FPS : 0.f);
 				else
 					FX_DreamPrecalc(tb, 15.f * a, (FPS > 1.f) ? GetTrackFPS() / FPS : 0.f);
@@ -496,8 +496,8 @@ void Cinematic::Render(float FDIFF) {
 
 		static const float SPEEDINTENSITYRND = 60.f / 1000.f;
 
-		if(this->light.intensity >= 0.f && this->lightd.intensity >= 0.f) {
-			lightt = this->light;
+		if(m_light.intensity >= 0.f && m_lightd.intensity >= 0.f) {
+			lightt = m_light;
 			
 			lightt.pos = lightt.pos * g_sizeRatio.y + Vec3f(g_size.center(), 0.f);
 			lightt.fallin *= g_sizeRatio.y;
@@ -535,8 +535,8 @@ void Cinematic::Render(float FDIFF) {
 
 			l = NULL;
 
-			if(this->light.intensity >= 0.f && this->lightd.intensity >= 0.f) {
-				lightt = this->lightd;
+			if(m_light.intensity >= 0.f && m_lightd.intensity >= 0.f) {
+				lightt = m_lightd;
 				
 				lightt.pos = lightt.pos * g_sizeRatio.y + Vec3f(g_size.center(), 0.f);
 				lightt.fallin *= g_sizeRatio.y;

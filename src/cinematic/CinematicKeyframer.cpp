@@ -490,7 +490,7 @@ bool GereTrack(Cinematic * c, float fpscurr, bool resized)
 	c->numbitmapsuiv	= ksuiv->numbitmap;
 	c->ti				= k->typeinterp;
 	c->fx				= k->fx;
-	c->fxsuiv			= ksuiv->fx;
+	c->m_fxsuiv			= ksuiv->fx;
 	c->color			= k->color;
 	c->colord			= k->colord;
 	c->colorflash		= k->colorf;
@@ -505,7 +505,7 @@ bool GereTrack(Cinematic * c, float fpscurr, bool resized)
 	}
 
 	lightnext = k->light.next;
-	c->lightd = lightnext->light;
+	c->m_lightd = lightnext->light;
 
 	if(lightprec != lightnext) {
 		alight = (CKTrack->currframe - (float)lightprec->frame) / ((float)(lightnext->frame - lightprec->frame));
@@ -535,7 +535,7 @@ consequences on light :
 */
 //ARX_END: jycorbel (2010-07-19)
 			//ARX_END: jycorbel (2010-06-28)
-			c->lightd = k->light;
+			c->m_lightd = k->light;
 			lightprec = k;
 		}
 	}
@@ -551,7 +551,7 @@ consequences on light :
 			c->angz = k->angz;
 			c->possuiv = ksuiv->pos;
 			c->angzsuiv = ksuiv->angz;
-			c->light = lightprec->light;
+			c->m_light = lightprec->light;
 			c->speedtrack = k->speedtrack;
 			break;
 		case INTERP_LINEAR:
@@ -564,29 +564,29 @@ consequences on light :
 				CinematicLight lend;
 
 				if(lightprec->light.intensity < 0.f) {
-					c->light.intensity = -1;
+					c->m_light.intensity = -1;
 					break;
 				} else {
 					ldep = lightprec->light;
 				}
 
-				if(c->lightd.intensity < 0.f) {
+				if(c->m_lightd.intensity < 0.f) {
 					break;
 				} else {
-					lend = c->lightd;
+					lend = c->m_lightd;
 				}
 
-				c->light.pos = lend.pos * alight + ldep.pos * unmoinsalight;
-				c->light.fallin = alight * lend.fallin + unmoinsalight * ldep.fallin;
-				c->light.fallout = alight * lend.fallout + unmoinsalight * ldep.fallout;
-				c->light.color = lend.color * alight + ldep.color * unmoinsalight;
-				c->light.intensity = alight * lend.intensity + unmoinsalight * ldep.intensity;
-				c->light.intensiternd = alight * lend.intensiternd
+				c->m_light.pos = lend.pos * alight + ldep.pos * unmoinsalight;
+				c->m_light.fallin = alight * lend.fallin + unmoinsalight * ldep.fallin;
+				c->m_light.fallout = alight * lend.fallout + unmoinsalight * ldep.fallout;
+				c->m_light.color = lend.color * alight + ldep.color * unmoinsalight;
+				c->m_light.intensity = alight * lend.intensity + unmoinsalight * ldep.intensity;
+				c->m_light.intensiternd = alight * lend.intensiternd
 				                        + unmoinsalight * ldep.intensiternd;
 			}
 			break;
 		case INTERP_BEZIER:
-			c->light = k->light;
+			c->m_light = k->light;
 
 			ksuivsuiv = ((num + 1) < CKTrack->nbkey) ? ksuiv + 1 : ksuiv;
 			kprec = (num > 1) ? k - 1 : k;
@@ -626,24 +626,24 @@ consequences on light :
 				CinematicLight lend;
 
 				if(lightprec->light.intensity < 0.f) {
-					c->light.intensity = -1;
+					c->m_light.intensity = -1;
 					break;
 				} else {
 					ldep = lightprec->light;
 				}
 
-				if(c->lightd.intensity < 0.f) {
+				if(c->m_lightd.intensity < 0.f) {
 					break;
 				} else {
-					lend = c->lightd;
+					lend = c->m_lightd;
 				}
 
-				c->light.pos = lend.pos * alight + ldep.pos * unmoinsalight;
-				c->light.fallin = alight * lend.fallin + unmoinsalight * ldep.fallin;
-				c->light.fallout = alight * lend.fallout + unmoinsalight * ldep.fallout;
-				c->light.color = lend.color * alight + ldep.color * unmoinsalight;
-				c->light.intensity = alight * lend.intensity + unmoinsalight * ldep.intensity;
-				c->light.intensiternd = alight * lend.intensiternd
+				c->m_light.pos = lend.pos * alight + ldep.pos * unmoinsalight;
+				c->m_light.fallin = alight * lend.fallin + unmoinsalight * ldep.fallin;
+				c->m_light.fallout = alight * lend.fallout + unmoinsalight * ldep.fallout;
+				c->m_light.color = lend.color * alight + ldep.color * unmoinsalight;
+				c->m_light.intensity = alight * lend.intensity + unmoinsalight * ldep.intensity;
+				c->m_light.intensiternd = alight * lend.intensiternd
 				                        + unmoinsalight * ldep.intensiternd;
 			}
 			break;
@@ -697,7 +697,7 @@ bool GereTrackNoPlay(Cinematic * c) {
 	c->numbitmapsuiv	= ksuiv->numbitmap;
 	c->ti				= k->typeinterp;
 	c->fx				= k->fx;
-	c->fxsuiv			= ksuiv->fx;
+	c->m_fxsuiv			= ksuiv->fx;
 	c->color			= k->color;
 	c->colord			= k->colord;
 	c->colorflash		= k->colorf;
@@ -714,7 +714,7 @@ bool GereTrackNoPlay(Cinematic * c) {
 	}
 
 	C_KEY * lightnext = k->light.next;
-	c->lightd = lightnext->light;
+	c->m_lightd = lightnext->light;
 	
 	float alight = 0;
 	float unmoinsalight = 0;
@@ -745,7 +745,7 @@ bool GereTrackNoPlay(Cinematic * c) {
 */
 //ARX_END: jycorbel (2010-07-19)
 			//ARX_END: jycorbel (2010-06-28)
-			c->lightd = k->light;
+			c->m_lightd = k->light;
 			lightprec = k;
 		}
 	}
@@ -765,7 +765,7 @@ bool GereTrackNoPlay(Cinematic * c) {
 			c->possuiv	= ksuiv->pos;
 			c->angzsuiv	= ksuiv->angz;
 
-			c->light	= lightprec->light;
+			c->m_light	= lightprec->light;
 			c->speedtrack = k->speedtrack;
 			break;
 		case INTERP_LINEAR:
@@ -778,24 +778,24 @@ bool GereTrackNoPlay(Cinematic * c) {
 				CinematicLight lend;
 
 				if(lightprec->light.intensity < 0.f) {
-					c->light.intensity = -1.f;
+					c->m_light.intensity = -1.f;
 					break;
 				} else {
 					ldep = lightprec->light;
 				}
 
-				if(c->lightd.intensity < 0.f) {
+				if(c->m_lightd.intensity < 0.f) {
 					break;
 				} else {
-					lend = c->lightd;
+					lend = c->m_lightd;
 				}
 
-				c->light.pos = lend.pos * alight + ldep.pos * unmoinsalight;
-				c->light.fallin = alight * lend.fallin + unmoinsalight * ldep.fallin;
-				c->light.fallout = alight * lend.fallout + unmoinsalight * ldep.fallout;
-				c->light.color = lend.color * alight + ldep.color * unmoinsalight;
-				c->light.intensity = alight * lend.intensity + unmoinsalight * ldep.intensity;
-				c->light.intensiternd = alight * lend.intensiternd
+				c->m_light.pos = lend.pos * alight + ldep.pos * unmoinsalight;
+				c->m_light.fallin = alight * lend.fallin + unmoinsalight * ldep.fallin;
+				c->m_light.fallout = alight * lend.fallout + unmoinsalight * ldep.fallout;
+				c->m_light.color = lend.color * alight + ldep.color * unmoinsalight;
+				c->m_light.intensity = alight * lend.intensity + unmoinsalight * ldep.intensity;
+				c->m_light.intensiternd = alight * lend.intensiternd
 				                        + unmoinsalight * ldep.intensiternd;
 			}
 			break;
@@ -841,24 +841,24 @@ bool GereTrackNoPlay(Cinematic * c) {
 				CinematicLight lend;
 
 				if(lightprec->light.intensity < 0.f) {
-					c->light.intensity = -1;
+					c->m_light.intensity = -1;
 					break;
 				} else {
 					ldep = lightprec->light;
 				}
 
-				if(c->lightd.intensity < 0.f) {
+				if(c->m_lightd.intensity < 0.f) {
 					break;
 				} else {
-					lend = c->lightd;
+					lend = c->m_lightd;
 				}
 
-				c->light.pos = lend.pos * alight + ldep.pos * unmoinsalight;
-				c->light.fallin = alight * lend.fallin + unmoinsalight * ldep.fallin;
-				c->light.fallout = alight * lend.fallout + unmoinsalight * ldep.fallout;
-				c->light.color = lend.color * alight + ldep.color * unmoinsalight;
-				c->light.intensity = alight * lend.intensity + unmoinsalight * ldep.intensity;
-				c->light.intensiternd = alight * lend.intensiternd
+				c->m_light.pos = lend.pos * alight + ldep.pos * unmoinsalight;
+				c->m_light.fallin = alight * lend.fallin + unmoinsalight * ldep.fallin;
+				c->m_light.fallout = alight * lend.fallout + unmoinsalight * ldep.fallout;
+				c->m_light.color = lend.color * alight + ldep.color * unmoinsalight;
+				c->m_light.intensity = alight * lend.intensity + unmoinsalight * ldep.intensity;
+				c->m_light.intensiternd = alight * lend.intensiternd
 				                        + unmoinsalight * ldep.intensiternd;
 			}
 			break;
