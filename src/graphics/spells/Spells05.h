@@ -60,22 +60,22 @@ public:
 		this->m_pos = *pos;
 	};
 	
-	void Create(int def, float rout, float rhaut, float hauteur, Vec3f * m_pos, unsigned long);
+	void Create(int def, float rout, float rhaut, float hauteur, Vec3f * pos, unsigned long);
 	void Update(float timeDelta);
 	void Render();
 	
 private:
-	short key;
-	short def;
+	short m_key;
+	short m_def;
 	Vec3f m_pos;
 	float m_baseRadius;
-	float rhaut;
-	float hauteur;
+	float m_rhaut;
+	float m_hauteur;
 	float m_coneScale;
-	float ang;
-	int currdurationang;
-	int currframetime;
-	TextureContainer * tsouffle;
+	float m_ang;
+	int m_currdurationang;
+	int m_currframetime;
+	TextureContainer * m_tsouffle;
 	
 	struct T_CONE {
 		int conenbvertex;
@@ -85,7 +85,7 @@ private:
 		unsigned short * coneind;
 	};
 	
-	T_CONE cone[2];
+	T_CONE m_cone[2];
 	
 	struct T_STONE {
 		short actif;
@@ -100,13 +100,13 @@ private:
 	};
 	
 	int m_stoneDelay;
-	int nbstone;
-	T_STONE tstone[256];
+	int m_nbstone;
+	T_STONE m_tstone[256];
 	
 	void AddStone(const Vec3f & pos);
 	void DrawStone();
 	
-	void CreateConeStrip(float rout, float rhaut, float hauteur, int def, int numcone);
+	void CreateConeStrip(float rout, float m_rhaut, float m_hauteur, int def, int numcone);
 	void createDustParticle();
 };
 
