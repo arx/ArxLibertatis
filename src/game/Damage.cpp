@@ -896,9 +896,9 @@ void ARX_DAMAGES_Reset()
 
 extern TextureContainer * TC_fire2;
 
-static void ARX_DAMAGES_AddVisual(DAMAGE_INFO * di, Vec3f * pos, float dmg, Entity * io) {
+static void ARX_DAMAGES_AddVisual(DAMAGE_INFO & di, const Vec3f & pos, float dmg, Entity * io) {
 	
-	if(!(di->params.type & DAMAGE_TYPE_FAKEFIRE)) {
+	if(!(di.params.type & DAMAGE_TYPE_FAKEFIRE)) {
 		return;
 	}
 	
@@ -908,12 +908,12 @@ static void ARX_DAMAGES_AddVisual(DAMAGE_INFO * di, Vec3f * pos, float dmg, Enti
 	}
 	
 	unsigned long tim = (unsigned long)(arxtime);
-	if(di->lastupd + 200 < tim) {
-		di->lastupd = tim;
-		if(di->params.type & DAMAGE_TYPE_MAGICAL) {
-			ARX_SOUND_PlaySFX(SND_SPELL_MAGICAL_HIT, pos, 0.8F + 0.4F * rnd());
+	if(di.lastupd + 200 < tim) {
+		di.lastupd = tim;
+		if(di.params.type & DAMAGE_TYPE_MAGICAL) {
+			ARX_SOUND_PlaySFX(SND_SPELL_MAGICAL_HIT, &pos, 0.8F + 0.4F * rnd());
 		} else {
-			ARX_SOUND_PlaySFX(SND_SPELL_FIRE_HIT, pos, 0.8F + 0.4F * rnd());
+			ARX_SOUND_PlaySFX(SND_SPELL_FIRE_HIT, &pos, 0.8F + 0.4F * rnd());
 		}
 	}
 	
@@ -928,14 +928,14 @@ static void ARX_DAMAGES_AddVisual(DAMAGE_INFO * di, Vec3f * pos, float dmg, Enti
 			arx_assert(num >= 0);
 			pd->ov = io->obj->vertexlist3[num].v + randomVec(-5.f, 5.f);
 		} else {
-			pd->ov = *pos + randomVec(-50.f, 50.f);
+			pd->ov = pos + randomVec(-50.f, 50.f);
 		}
 		pd->siz = glm::clamp(dmg, 5.f, 15.f);
 		pd->scale = Vec3f(-10.f);
 		pd->special = ROTATING | MODULATE_ROTATION | FIRE_TO_SMOKE;
 		pd->tolive = Random::get(500, 900);
 		pd->move = Vec3f(1.f - 2.f * rnd(), 2.f - 16.f * rnd(), 1.f - 2.f * rnd());
-		if(di->params.type & DAMAGE_TYPE_MAGICAL) {
+		if(di.params.type & DAMAGE_TYPE_MAGICAL) {
 			pd->rgb = Color3f(0.3f, 0.3f, 0.8f);
 		} else {
 			pd->rgb = Color3f::gray(0.5f);
@@ -1052,7 +1052,7 @@ static void ARX_DAMAGES_UpdateDamage(DamageHandle j, float tim) {
 					   && (entities[handle]->ioflags & IO_NPC)
 					   && (entities[handle]->_npcdata->lifePool.current > 0.f)
 					) {
-						ARX_DAMAGES_AddVisual(&damage, &sub, dmg, entities[handle]);
+						ARX_DAMAGES_AddVisual(damage, sub, dmg, entities[handle]);
 					}
 					
 					if(damage.params.type & DAMAGE_TYPE_DRAIN_MANA) {
