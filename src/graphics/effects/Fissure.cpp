@@ -149,9 +149,7 @@ void CRiseDead::Create(Vec3f aeSrc, float afBeta)
 	m_nbstone = 0;
 
 	int nb = 256;
-
-	while (nb--)
-	{
+	while(nb--) {
 		m_tstone[nb].actif = 0;
 	}
 }
