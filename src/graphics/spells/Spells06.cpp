@@ -388,7 +388,11 @@ void CRiseDead::Create(Vec3f aeSrc, float afBeta)
 	SetDuration(ulDurationIntro, ulDurationRender, ulDurationOuttro);
 
 	m_eSrc = aeSrc + Vec3f(0.f, -10.f, 0.f);
-	SetAngle(afBeta);
+	
+	float fBetaRad = glm::radians(afBeta);
+	fBetaRadCos = glm::cos(fBetaRad);
+	fBetaRadSin = glm::sin(fBetaRad);
+	
 	sizeF = 0;
 	fSizeIntro = 0.0f;
 	fTexWrap = 0;

@@ -103,11 +103,6 @@ public:
 private:
 	float	fBetaRadCos;
 	float	fBetaRadSin;
-	void SetAngle(float afAngle) {
-		float fBetaRad = glm::radians(afAngle);
-		fBetaRadCos = glm::cos(fBetaRad);
-		fBetaRadSin = glm::sin(fBetaRad);
-	}
 	
 	void Split(Vec3f * v, int a, int b, float yo);
 	void RenderFissure();

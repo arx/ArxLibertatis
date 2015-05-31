@@ -162,7 +162,11 @@ void CSummonCreature::Create(Vec3f aeSrc, float afBeta)
 	eSrc.x = aeSrc.x;
 	eSrc.y = aeSrc.y - 50;
 	eSrc.z = aeSrc.z;
-	SetAngle(afBeta);
+	
+	float fBetaRad = glm::radians(afBeta);
+	fBetaRadCos = glm::cos(fBetaRad);
+	fBetaRadSin = glm::sin(fBetaRad);
+	
 	sizeF = 0;
 	fSizeIntro = 0.0f;
 	fTexWrap = 0;
