@@ -85,7 +85,7 @@ static void LaunchPoisonExplosion(const Vec3f & aePos) {
 	cp.m_life = 1500;
 	cp.m_lifeRandom = 500;
 	cp.m_pos = Vec3f(5);
-	cp.m_direction = Vec3f(0, 4, 0) * 0.1f;
+	cp.m_direction = Vec3f(0.f, 1.f, 0.f);
 	cp.m_angle = glm::radians(360.f);
 	cp.m_speed = 200;
 	cp.m_speedRandom = 0;
