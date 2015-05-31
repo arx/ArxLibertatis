@@ -723,6 +723,7 @@ set(GRAPHICS_SOURCES
 	src/graphics/data/TextureContainer.cpp
 	src/graphics/effects/DrawEffects.cpp
 	src/graphics/effects/Fade.cpp
+	src/graphics/effects/Fissure.cpp
 	src/graphics/effects/Fog.cpp
 	src/graphics/effects/SpellEffects.cpp
 	src/graphics/effects/Halo.cpp
@@ -742,7 +743,6 @@ set(GRAPHICS_SOURCES
 	src/graphics/spells/Spells05.cpp
 	src/graphics/spells/Spells06.cpp
 	src/graphics/spells/Spells07.cpp
-	src/graphics/spells/Spells09.cpp
 	src/graphics/texture/PackedTexture.cpp
 	src/graphics/texture/Texture.cpp
 	src/graphics/texture/TextureStage.cpp

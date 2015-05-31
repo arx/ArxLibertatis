@@ -1,5 +1,5 @@
 /*
- * Copyright 2011-2012 Arx Libertatis Team (see the AUTHORS file)
+ * Copyright 2015 Arx Libertatis Team (see the AUTHORS file)
  *
  * This file is part of Arx Libertatis.
  *
@@ -16,36 +16,88 @@
  * You should have received a copy of the GNU General Public License
  * along with Arx Libertatis.  If not, see <http://www.gnu.org/licenses/>.
  */
-/* Based on:
-===========================================================================
-ARX FATALIS GPL Source Code
-Copyright (C) 1999-2010 Arkane Studios SA, a ZeniMax Media company.
 
-This file is part of the Arx Fatalis GPL Source Code ('Arx Fatalis Source Code'). 
-
-Arx Fatalis Source Code is free software: you can redistribute it and/or modify it under the terms of the GNU General Public 
-License as published by the Free Software Foundation, either version 3 of the License, or (at your option) any later version.
-
-Arx Fatalis Source Code is distributed in the hope that it will be useful, but WITHOUT ANY WARRANTY; without even the implied 
-warranty of MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE. See the GNU General Public License for more details.
-
-You should have received a copy of the GNU General Public License along with Arx Fatalis Source Code.  If not, see 
-<http://www.gnu.org/licenses/>.
-
-In addition, the Arx Fatalis Source Code is also subject to certain additional terms. You should have received a copy of these 
-additional terms immediately following the terms and conditions of the GNU General Public License which accompanied the Arx 
-Fatalis Source Code. If not, please request a copy in writing from Arkane Studios at the address below.
-
-If you have questions concerning this license or the applicable additional terms, you may contact in writing Arkane Studios, c/o 
-ZeniMax Media Inc., Suite 120, Rockville, Maryland 20850 USA.
-===========================================================================
-*/
-
-#ifndef ARX_GRAPHICS_SPELLS_SPELLS09_H
-#define ARX_GRAPHICS_SPELLS_SPELLS09_H
+#ifndef ARX_GRAPHICS_EFFECTS_FISSURE_H
+#define ARX_GRAPHICS_EFFECTS_FISSURE_H
 
 #include "graphics/effects/SpellEffects.h"
-#include "graphics/particle/ParticleSystem.h"
+
+// Done By : Didier Pedreno
+class CRiseDead : public CSpellFx {
+	
+public:
+	CRiseDead();
+	~CRiseDead();
+	
+	void SetDuration(const unsigned long duration);
+	void SetDuration(unsigned long, unsigned long, unsigned long);
+	
+	void SetPos(Vec3f);
+	
+	void SetColorBorder(Color3f color);
+	void SetColorRays1(Color3f color);
+	void SetColorRays2(Color3f color);
+	unsigned long GetDuration();
+	
+	void Create(Vec3f, float afBeta = 0);
+	void Update(float timeDelta);
+	void Render();
+	
+	Vec3f m_eSrc;
+	
+	LightHandle lLightId;
+private:
+	float	fBetaRadCos;
+	float	fBetaRadSin;
+	
+	void Split(Vec3f * v, int a, int b, float yo);
+	void RenderFissure();
+	
+	Color3f m_colorBorder;
+	Color3f m_colorRays1;
+	Color3f m_colorRays2;
+	
+	TextureContainer * tex_light;
+	int		end;
+	int		iSize;
+	bool	bIntro;
+	float	fOneOnDurationIntro;
+	float	fOneOnDurationRender;
+	float	fOneOnDurationOuttro;
+	float	sizeF;
+	float	fSizeIntro;
+	float	fTexWrap;
+	float	tfRaysa[40];
+	float	tfRaysb[40];
+	unsigned long ulDurationIntro;
+	unsigned long ulDurationRender;
+	unsigned long ulDurationOuttro;
+	Vec3f va[40];
+	Vec3f vb[40];
+	Vec3f v1a[40];
+	Vec3f v1b[40];
+	
+	struct T_STONE {
+		short actif;
+		short numstone;
+		Vec3f pos;
+		float yvel;
+		Anglef ang;
+		Anglef angvel;
+		Vec3f scale;
+		int time;
+		int currtime;
+	};
+	
+	int m_currframetime;
+	int m_timestone;
+	int m_nbstone;
+	T_STONE m_tstone[256];
+	
+	void AddStone(const Vec3f & pos);
+	void DrawStone();
+};
+
 
 // Done By : Didier Pedreno
 class CSummonCreature : public CSpellFx {
@@ -104,4 +156,4 @@ private:
 	Vec3f v1b[40];
 };
 
-#endif // ARX_GRAPHICS_SPELLS_SPELLS09_H
+#endif // ARX_GRAPHICS_EFFECTS_FISSURE_H

@@ -22,7 +22,7 @@
 
 #include "game/magic/Spell.h"
 
-#include "graphics/spells/Spells09.h"
+#include "graphics/effects/Fissure.h"
 
 class SummonCreatureSpell : public SpellBase {
 public:

@@ -30,10 +30,8 @@
 #include "game/Spells.h"
 #include "game/effect/Quake.h"
 #include "game/spell/Cheat.h"
-
+#include "graphics/RenderBatcher.h"
 #include "graphics/particle/ParticleEffects.h"
-
-#include "graphics/spells/Spells09.h"
 #include "physics/Collisions.h"
 #include "scene/GameSound.h"
 #include "scene/Interactive.h"
