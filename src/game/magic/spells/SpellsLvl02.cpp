@@ -65,7 +65,7 @@ void HealSpell::Launch()
 	cp.m_life = 800;
 	cp.m_lifeRandom = 2000;
 	cp.m_pos = Vec3f(100, 200, 100);
-	cp.m_direction = Vec3f(0, -10, 0) * 0.1f;
+	cp.m_direction = Vec3f(0.f, -1.f, 0.f);
 	cp.m_angle = glm::radians(5.f);
 	cp.m_speed = 120;
 	cp.m_speedRandom = 84;

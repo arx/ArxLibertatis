@@ -98,7 +98,7 @@ public:
 		m_life = 1500;
 		m_lifeRandom = 0;
 		m_pos = Vec3f(10.f);
-		m_direction = Vec3f(0.f, -10.f, 0.f) * 0.1f;
+		m_direction = Vec3f(0.f, -1.f, 0.f);
 		m_angle = glm::radians(360.f);
 		m_speed = 130;
 		m_speedRandom = 100;
