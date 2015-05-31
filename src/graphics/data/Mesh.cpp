@@ -747,8 +747,6 @@ int EERIELaunchRay3(const Vec3f & orgn, const Vec3f & dest,  Vec3f * hit, EERIEP
 bool Visible(const Vec3f & orgn, const Vec3f & dest, EERIEPOLY * epp, Vec3f * hit)
 {
 	Vec3f i;
-	long px,pz;
-
 	float pas = 35.f;
 
 	Vec3f found_hit = Vec3f_ZERO;
@@ -813,8 +811,8 @@ bool Visible(const Vec3f & orgn, const Vec3f & dest, EERIEPOLY * epp, Vec3f * hi
 		tmpPos.y += i.y;
 		tmpPos.z += i.z;
 
-		px = (long)(tmpPos.x * ACTIVEBKG->Xmul);
-		pz = (long)(tmpPos.z * ACTIVEBKG->Zmul);
+		long px = (long)(tmpPos.x * ACTIVEBKG->Xmul);
+		long pz = (long)(tmpPos.z * ACTIVEBKG->Zmul);
 
 		if(px < 0 || px > ACTIVEBKG->Xsize - 1 || pz < 0 || pz > ACTIVEBKG->Zsize - 1)
 			break;
