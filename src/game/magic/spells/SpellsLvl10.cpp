@@ -77,23 +77,18 @@ void MassLightningStrikeSpell::Launch()
 	
 	m_targetPos = target;
 	
+	m_duration = long(500 * m_level);
+	long lMax = 0;
+	
 	int number = glm::clamp(int(m_level), 1, 10);
+	float ft = 360.0f / (float)number;
 	
 	for(int i = 0; i < number; i++) {
 		CLightning * lightning = new CLightning();
+		pTab.push_back(lightning);
+		
 		lightning->m_isMassLightning = true;
 		lightning->m_fDamage = 2;
-		
-		pTab.push_back(lightning);
-	}
-	
-	m_duration = long(500 * m_level);
-	
-	long lMax = 0;
-	float ft = 360.0f / (float)pTab.size();
-
-	for(size_t i = 0; i < pTab.size(); i++) {
-		CLightning * lightning = pTab[i];
 		
 		Vec3f eTarget = target;
 		eTarget += angleToVectorXZ(i * ft) * 500.0f;
