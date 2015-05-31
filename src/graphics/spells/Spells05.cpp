@@ -145,7 +145,11 @@ CPoisonProjectile::CPoisonProjectile()
 void CPoisonProjectile::Create(Vec3f _eSrc, float _fBeta)
 {
 	SetDuration(ulDuration);
-	SetAngle(_fBeta);
+	
+	float fBetaRad = glm::radians(_fBeta);
+	fBetaRadCos = glm::cos(fBetaRad);
+	fBetaRadSin = glm::sin(fBetaRad);
+
 	eSrc = _eSrc;
 
 	bOk = false;
