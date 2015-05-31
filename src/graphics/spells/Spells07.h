@@ -58,7 +58,6 @@ class CLightning : public CSpellFx {
 public:
 	CLightning();
 	
-	void SetColor(long, long);
 	void SetPosSrc(Vec3f);
 	void SetPosDest(Vec3f);
 	
