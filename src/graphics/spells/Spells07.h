@@ -72,6 +72,8 @@ public:
 	bool m_isMassLightning;
 	
 private:
+	float fTotoro;
+	float fMySize;
 	size_t m_nbtotal;
 	long m_lNbSegments;
 	float m_invNbSegments;

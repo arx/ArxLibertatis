@@ -100,6 +100,8 @@ CLightning::CLightning()
 	ulCurrentTime = ulDuration + 1;
 	
 	m_tex_light = NULL;
+	fTotoro = 0;
+	fMySize = 2;
 }
 
 //------------------------------------------------------------------------------
@@ -211,9 +213,6 @@ void CLightning::BuildS(LIGHTNING * pLInfo)
 		}
 	}
 }
-
-float fTotoro = 0;
-float fMySize = 2;
 
 void CLightning::Create(Vec3f aeFrom, Vec3f aeTo) {
 	
