@@ -274,10 +274,6 @@ void ControlTargetSpell::Launch()
 		}
 	}
 	
-	int end = 20 - 1;
-	v1a[0].p = eSrc + Vec3f(0.f, 100.f, 0.f);
-	v1a[end].p = eTarget;
-	
 	Vec3f h;
 	Vec3f s = eSrc;
 	Vec3f e = eSrc;
