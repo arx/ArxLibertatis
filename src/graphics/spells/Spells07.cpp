@@ -299,14 +299,16 @@ void CLightning::Render()
 	float fbeta = fBeta + rnd() * 2 * fMySize;
 
 	for(size_t i = 0; i < m_nbtotal && i <= fTotoro; i++) {
-		Vec3f astart = m_cnodetab[m_cnodetab[i].parent].pos + m_cnodetab[m_cnodetab[i].parent].f;
-		float temp = 1.5f * fMySize;
-		Vec3f z_z = m_cnodetab[m_cnodetab[i].parent].f + randomVec(-temp, temp);
-		float zz = m_cnodetab[i].size + m_cnodetab[i].size * 0.3f * rnd();
-		float xx = m_cnodetab[i].size * glm::cos(glm::radians(-fbeta));
-		m_cnodetab[i].f = z_z;
+		CLightningNode & node = m_cnodetab[i];
 		
-		Vec3f a = m_cnodetab[i].pos + z_z;
+		Vec3f astart = m_cnodetab[node.parent].pos + m_cnodetab[node.parent].f;
+		float temp = 1.5f * fMySize;
+		Vec3f z_z = m_cnodetab[node.parent].f + randomVec(-temp, temp);
+		float zz = node.size + node.size * 0.3f * rnd();
+		float xx = node.size * glm::cos(glm::radians(-fbeta));
+		node.f = z_z;
+		
+		Vec3f a = node.pos + z_z;
 		if(!m_isMassLightning) {
 			Vec3f vv2;
 			Vec3f vv1 = astart;
@@ -324,7 +326,7 @@ void CLightning::Render()
 		if(i % 4 == 0) {
 			Sphere sphere;
 			sphere.origin = a;
-			sphere.radius = std::min(m_cnodetab[i].size, 50.f);
+			sphere.radius = std::min(node.size, 50.f);
 
 			if(CheckAnythingInSphere(sphere, m_caster, CAS_NO_SAME_GROUP)) {
 
