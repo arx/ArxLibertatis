@@ -743,6 +743,7 @@ int EERIELaunchRay3(const Vec3f & orgn, const Vec3f & dest,  Vec3f * hit, EERIEP
 	}
 }
 
+// TODO visible copy-paste
 // Computes the visibility from a point to another... (sort of...)
 bool Visible(const Vec3f & orgn, const Vec3f & dest, EERIEPOLY * epp, Vec3f * hit)
 {

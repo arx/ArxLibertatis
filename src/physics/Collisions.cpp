@@ -1565,7 +1565,7 @@ bool ARX_COLLISION_Move_Cylinder(IO_PHYSICS * ip, Entity * io, float MOVE_CYLIND
 	return true;
 }
 
-//TODO copy-paste
+// TODO visible copy-paste
 bool IO_Visible(const Vec3f & orgn, const Vec3f & dest, EERIEPOLY * epp, Vec3f * hit)
 {
 	ARX_PROFILE_FUNC();
