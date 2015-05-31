@@ -279,10 +279,7 @@ void CLightning::Render()
 	
 	float fBeta = 0.f;
 	float falpha = 0.f;
-
-	// Create hand position if a hand is defined
-	//	spells[spellinstance].hand_group=entities[spells[spellinstance].caster]->obj->fastaccess.primary_attach;//GetActionPointIdx(entities[spells[spellinstance].caster]->obj,"primary_attach");
-	// Player source
+	
 	if(m_isMassLightning) {
 		ePos = Vec3f_ZERO;
 	} else {
