@@ -44,28 +44,13 @@ FissureFx::FissureFx()
 
 void FissureFx::SetDuration(unsigned long alDurationIntro, unsigned long alDurationRender, unsigned long alDurationOuttro)
 {
-	if(alDurationIntro <= 0)
-		alDurationIntro = 100;
-	else if(alDurationIntro >= 100000)
-		alDurationIntro = 100000;
-	
-	ulDurationIntro = alDurationIntro;
+	ulDurationIntro = glm::clamp(alDurationIntro, 100ul, 100000ul);
 	fOneOnDurationIntro = 1.f / (float)(ulDurationIntro);
 	
-	if(alDurationRender <= 0)
-		alDurationRender = 100;
-	else if(alDurationRender >= 100000)
-		alDurationRender = 100000;
-	
-	ulDurationRender = alDurationRender;
+	ulDurationRender = glm::clamp(alDurationRender, 100ul, 100000ul);
 	fOneOnDurationRender = 1.f / (float)(ulDurationRender);
-	
-	if(alDurationOuttro <= 0)
-		alDurationOuttro = 100;
-	else if(alDurationOuttro >= 100000)
-		alDurationOuttro = 100000;
-	
-	ulDurationOuttro = alDurationOuttro;
+
+	ulDurationOuttro = glm::clamp(alDurationOuttro, 100ul, 100000ul);
 	fOneOnDurationOuttro = 1.f / (float)(ulDurationOuttro);
 	
 	ulCurrentTime = 0;
