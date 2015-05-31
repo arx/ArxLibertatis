@@ -536,9 +536,8 @@ void CRiseDead::Split(Vec3f * v, int a, int b, float yo)
 }
 
 // TODO copy-paste spell effect Fissure
-void CRiseDead::RenderFissure()
-{
-	int i;
+void CRiseDead::RenderFissure() {
+	
 	float ff;
 	Vec3f vt[4];
 	TexturedVertex vr[4];
@@ -555,7 +554,7 @@ void CRiseDead::RenderFissure()
 	//-------------------------------------------------------------------------
 	// computation des sommets
 
-	for(i = 0; i <= std::min(end, int(fSizeIntro)); i++) {
+	for(int i = 0; i <= std::min(end, int(fSizeIntro)); i++) {
 		if(i <= end * 0.5f)
 			ff = i / (end * 0.5f);
 		else
@@ -584,7 +583,7 @@ void CRiseDead::RenderFissure()
 	vr[0].color = vr[1].color = vr[2].color = vr[3].color = Color::black.toRGB();
 
 	if(bIntro) {
-		for(i = 0; i < std::min(end, (int)fSizeIntro); i++) {
+		for(int i = 0; i < std::min(end, (int)fSizeIntro); i++) {
 			vr[0].p = EE_RT(v1a[i]);
 			vr[1].p = EE_RT(v1b[i]);
 			vr[2].p = EE_RT(v1a[i+1]);
@@ -593,7 +592,7 @@ void CRiseDead::RenderFissure()
 			drawTriangle(mat, &vr[1]);
 		}
 	} else {
-		for(i = 0; i < std::min(end, (int)fSizeIntro); i++) {
+		for(int i = 0; i < std::min(end, (int)fSizeIntro); i++) {
 			vr[0].p = EE_RT(va[i]);
 			vr[1].p = EE_RT(vb[i]);
 			vr[2].p = EE_RT(va[i+1]);
@@ -609,7 +608,7 @@ void CRiseDead::RenderFissure()
 	vr[0].color = vr[1].color = Color::black.toRGB();
 	vr[2].color = vr[3].color = m_colorBorder.toRGB();
 
-	for(i = 0; i < std::min(end, (int)fSizeIntro); i++) {
+	for(int i = 0; i < std::min(end, (int)fSizeIntro); i++) {
 		vt[2] = va[i] - (va[i] - m_eSrc) * 0.2f;
 		vt[3] = va[i + 1] - (va[i + 1] - m_eSrc) * 0.2f;
 		
@@ -656,7 +655,7 @@ void CRiseDead::RenderFissure()
 	vr[3].uv.x = 1.0f + fTexWrap;
 	vr[3].uv.y = 0;
 
-	for(i = 0; i < end - 1; i++) {
+	for(int i = 0; i < end - 1; i++) {
 		float t = rnd();
 
 		if(t <= 0.15f) {
