@@ -28,6 +28,10 @@ public:
 	
 	void SetDuration(unsigned long alDurationIntro, unsigned long alDurationRender, unsigned long alDurationOuttro);
 	
+	void SetColorBorder(Color3f color);
+	void SetColorRays1(Color3f color);
+	void SetColorRays2(Color3f color);
+	
 	unsigned long ulDuration;
 	unsigned long ulCurrentTime;
 	unsigned long ulDurationIntro;
@@ -36,6 +40,10 @@ public:
 	float	fOneOnDurationIntro;
 	float	fOneOnDurationRender;
 	float	fOneOnDurationOuttro;
+	
+	Color3f m_colorBorder;
+	Color3f m_colorRays1;
+	Color3f m_colorRays2;
 };
 
 
@@ -46,9 +54,6 @@ public:
 	CRiseDead();
 	~CRiseDead();
 	
-	void SetColorBorder(Color3f color);
-	void SetColorRays1(Color3f color);
-	void SetColorRays2(Color3f color);
 	unsigned long GetDuration();
 	
 	void Create(Vec3f, float afBeta = 0);
@@ -64,10 +69,6 @@ private:
 	
 	void Split(Vec3f * v, int a, int b, float yo);
 	void RenderFissure();
-	
-	Color3f m_colorBorder;
-	Color3f m_colorRays1;
-	Color3f m_colorRays2;
 	
 	TextureContainer * tex_light;
 	int		end;
@@ -112,10 +113,6 @@ public:
 	
 	CSummonCreature();
 	
-	void SetColorBorder(Color3f);
-	void SetColorRays1(Color3f);
-	void SetColorRays2(Color3f);
-	
 	unsigned long GetDuration();
 	
 	void Create(Vec3f, float afBeta = 0);
@@ -127,8 +124,6 @@ public:
 private:
 	float	fBetaRadCos;
 	float	fBetaRadSin;
-	
-	Color3f fColorRays1;
 	
 	void Split(Vec3f * v, int a, int b, float yo);
 	void RenderFissure();
@@ -142,8 +137,6 @@ private:
 	float	sizeF;
 	float	fSizeIntro;
 	float	fTexWrap;
-	Color3f fColorBorder;
-	Color3f fColorRays2;
 	float tfRaysa[40];
 	float tfRaysb[40];
 	Vec3f va[40];

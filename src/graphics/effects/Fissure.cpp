@@ -35,6 +35,9 @@ FissureFx::FissureFx()
 	: ulDurationIntro(1000)
 	, ulDurationRender(1000)
 	, ulDurationOuttro(1000)
+	, m_colorBorder(Color3f::white)
+	, m_colorRays1(Color3f::white)
+	, m_colorRays2(Color3f::black)
 {
 	
 }
@@ -68,6 +71,21 @@ void FissureFx::SetDuration(unsigned long alDurationIntro, unsigned long alDurat
 	ulCurrentTime = 0;
 }
 
+void FissureFx::SetColorBorder(Color3f color)
+{
+	m_colorBorder = color;
+}
+
+void FissureFx::SetColorRays1(Color3f color)
+{
+	m_colorRays1 = color;
+}
+
+void FissureFx::SetColorRays2(Color3f color)
+{
+	m_colorRays2 = color;
+}
+
 //-----------------------------------------------------------------------------
 // RISE DEAD
 //-----------------------------------------------------------------------------
@@ -91,27 +109,10 @@ CRiseDead::CRiseDead()
 {
 	ulCurrentTime = ulDurationIntro + ulDurationRender + ulDurationOuttro + 1;
 	
-	m_colorBorder = Color3f(1.f, 1.f, 1.f);
-	m_colorRays1 = Color3f(1.f, 1.f, 1.f);
-	m_colorRays2 = Color3f(0.f, 0.f, 0.f);
-	
 	tex_light = TextureContainer::Load("graph/obj3d/textures/(fx)_tsu4");
 }
 
-void CRiseDead::SetColorBorder(Color3f color)
-{
-	m_colorBorder = color;
-}
 
-void CRiseDead::SetColorRays1(Color3f color)
-{
-	m_colorRays1 = color;
-}
-
-void CRiseDead::SetColorRays2(Color3f color)
-{
-	m_colorRays2 = color;
-}
 
 void CRiseDead::Create(Vec3f aeSrc, float afBeta)
 {
@@ -562,14 +563,11 @@ void CRiseDead::Render()
 CSummonCreature::CSummonCreature()
 	: fBetaRadCos(0.f)
 	, fBetaRadSin(0.f)
-	, fColorRays1(Color3f::white)
 	, end(0)
 	, bIntro(true)
 	, sizeF(0.f)
 	, fSizeIntro(0.f)
 	, fTexWrap(0.f)
-	, fColorBorder(Color3f::white)
-	, fColorRays2(Color3f::black)
 {
 	
 	eSrc = Vec3f_ZERO;
@@ -580,20 +578,6 @@ CSummonCreature::CSummonCreature()
 	fOneOniSize = 1.0f / ((float) iSize);
 	
 	tex_light = TextureContainer::Load("graph/obj3d/textures/(fx)_tsu4");
-}
-
-
-
-void CSummonCreature::SetColorBorder(Color3f color) {
-	fColorBorder = color;
-}
-
-void CSummonCreature::SetColorRays1(Color3f color) {
-	fColorRays1 = color;
-}
-
-void CSummonCreature::SetColorRays2(Color3f color) {
-	fColorRays2 = color;
 }
 
 unsigned long CSummonCreature::GetDuration() {
@@ -760,7 +744,7 @@ void CSummonCreature::RenderFissure() {
 	// rendu de la bordure
 	mat.setBlendType(RenderMaterial::Additive);
 	vr[0].color = vr[1].color = Color::black.toRGB();
-	vr[2].color = vr[3].color = fColorBorder.toRGB();
+	vr[2].color = vr[3].color = m_colorBorder.toRGB();
 
 	for(int i = 0; i < std::min(end, (int)fSizeIntro); i++) {
 		vt[2] = va[i] - (va[i] - eSrc) * 0.2f;
@@ -797,8 +781,8 @@ void CSummonCreature::RenderFissure() {
 	target.z = eSrc.z + fBetaRadCos * (1.5f * sizeF); 
 
 	EE_RTP(vt[1], &vr[0]);
-	vr[0].color = vr[1].color = fColorRays1.toRGB();
-	vr[2].color = vr[3].color = fColorRays2.toRGB();
+	vr[0].color = vr[1].color = m_colorRays1.toRGB();
+	vr[2].color = vr[3].color = m_colorRays2.toRGB();
 
 	vr[0].uv.x = fTexWrap;
 	vr[0].uv.y = 1;
@@ -817,10 +801,10 @@ void CSummonCreature::RenderFissure() {
 			vt[2] = va[i] + (va[i] - target) * 2.f;
 			vt[3] = va[i + 1] + (va[i + 1] - target) * 2.f;
 			
-			vr[0].color = (fColorRays1 * tfRaysa[i]).toRGB();
-			vr[1].color = (fColorRays1 * tfRaysa[i + 1]).toRGB();
-			vr[2].color = (fColorRays2 * tfRaysa[i]).toRGB();
-			vr[3].color = (fColorRays2 * tfRaysa[i + 1]).toRGB();
+			vr[0].color = (m_colorRays1 * tfRaysa[i]).toRGB();
+			vr[1].color = (m_colorRays1 * tfRaysa[i + 1]).toRGB();
+			vr[2].color = (m_colorRays2 * tfRaysa[i]).toRGB();
+			vr[3].color = (m_colorRays2 * tfRaysa[i + 1]).toRGB();
 			
 			vr[3].p = EE_RT(vt[0]);
 			vr[2].p = EE_RT(vt[1]);
@@ -836,10 +820,10 @@ void CSummonCreature::RenderFissure() {
 			vt[2] = vb[i + 1] + (vb[i + 1] - target) * 2.f;
 			vt[3] = vb[i] + (vb[i] - target) * 2.f;
 			
-			vr[0].color = (fColorRays1 * tfRaysb[i]).toRGB();
-			vr[1].color = (fColorRays1 * tfRaysb[i + 1]).toRGB();
-			vr[2].color = (fColorRays2 * tfRaysb[i]).toRGB();
-			vr[3].color = (fColorRays2 * tfRaysb[i + 1]).toRGB();
+			vr[0].color = (m_colorRays1 * tfRaysb[i]).toRGB();
+			vr[1].color = (m_colorRays1 * tfRaysb[i + 1]).toRGB();
+			vr[2].color = (m_colorRays2 * tfRaysb[i]).toRGB();
+			vr[3].color = (m_colorRays2 * tfRaysb[i + 1]).toRGB();
 			
 			vr[3].p = EE_RT(vt[0]);
 			vr[2].p = EE_RT(vt[1]);
