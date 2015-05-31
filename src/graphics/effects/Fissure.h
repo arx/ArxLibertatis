@@ -46,8 +46,6 @@ public:
 	CRiseDead();
 	~CRiseDead();
 	
-	void SetPos(Vec3f);
-	
 	void SetColorBorder(Color3f color);
 	void SetColorRays1(Color3f color);
 	void SetColorRays2(Color3f color);
@@ -113,8 +111,6 @@ public:
 	Vec3f eSrc;
 	
 	CSummonCreature();
-	
-	void SetPos(Vec3f);
 	
 	void SetColorBorder(Color3f);
 	void SetColorRays1(Color3f);
