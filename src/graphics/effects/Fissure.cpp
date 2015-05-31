@@ -101,8 +101,6 @@ CRiseDead::CRiseDead()
 
 void CRiseDead::Create(Vec3f aeSrc, float afBeta)
 {
-	int i;
-
 	SetDuration(ulDurationIntro, ulDurationRender, ulDurationOuttro);
 
 	m_eSrc = aeSrc + Vec3f(0.f, -10.f, 0.f);
@@ -117,11 +115,11 @@ void CRiseDead::Create(Vec3f aeSrc, float afBeta)
 	end = 40 - 1;
 	bIntro = true;
 
-	for(i = 0; i < 40; i++) {
+	for(int i = 0; i < 40; i++) {
 		tfRaysa[i] = 0.4f * rnd();
 		tfRaysb[i] = 0.4f * rnd();
 	}
-
+	
 	v1a[0].x = m_eSrc.x - fBetaRadSin * 100;
 	v1a[0].y = m_eSrc.y;
 	v1a[0].z = m_eSrc.z + fBetaRadCos * 100;
@@ -140,7 +138,7 @@ void CRiseDead::Create(Vec3f aeSrc, float afBeta)
 	Split(v1a, 0, end, 80);
 	Split(v1b, 0, end, -80);
 	
-	for(i = 0; i <= end; i++) {
+	for(int i = 0; i <= end; i++) {
 		vb[i] = va[i] = m_eSrc;
 	}
 	
@@ -555,7 +553,7 @@ CSummonCreature::CSummonCreature()
 	, fTexWrap(0.f)
 {
 	
-	eSrc = Vec3f_ZERO;
+	m_eSrc = Vec3f_ZERO;
 	
 	ulCurrentTime = ulDurationIntro + ulDurationRender + ulDurationOuttro + 1;
 	
@@ -573,9 +571,7 @@ void CSummonCreature::Create(Vec3f aeSrc, float afBeta)
 {
 	SetDuration(ulDurationIntro, ulDurationRender, ulDurationOuttro);
 
-	eSrc.x = aeSrc.x;
-	eSrc.y = aeSrc.y - 50;
-	eSrc.z = aeSrc.z;
+	m_eSrc = aeSrc + Vec3f(0.f, -50.f, 0.f);
 	
 	float fBetaRad = glm::radians(afBeta);
 	fBetaRadCos = glm::cos(fBetaRad);
@@ -589,11 +585,11 @@ void CSummonCreature::Create(Vec3f aeSrc, float afBeta)
 
 	for(int i = 0; i < 40; i++) {
 		tfRaysa[i] = 0.4f * rnd();
-		tfRaysb[i] = 0.4f * rnd(); 
+		tfRaysb[i] = 0.4f * rnd();
 	}
 	
-	v1a[0] = eSrc - Vec3f(0.f, 100.f, 0.f);
-	v1a[end] = eSrc + Vec3f(0.f, 100.f, 0.f);	
+	v1a[0] = m_eSrc - Vec3f(0.f, 100.f, 0.f);
+	v1a[end] = m_eSrc + Vec3f(0.f, 100.f, 0.f);
 	v1b[0] = v1a[0];
 	v1b[end] = v1a[end];
 
@@ -631,7 +627,7 @@ void CSummonCreature::Create(Vec3f aeSrc, float afBeta)
 	}
 	
 	for(int i = 0; i <= end; i++) {
-		vb[i] = va[i] = eSrc;
+		vb[i] = va[i] = m_eSrc;
 	}
 	
 	sizeF = 0;
@@ -732,8 +728,8 @@ void CSummonCreature::RenderFissure() {
 	vr[2].color = vr[3].color = m_colorBorder.toRGB();
 
 	for(int i = 0; i < std::min(end, (int)fSizeIntro); i++) {
-		vt[2] = va[i] - (va[i] - eSrc) * 0.2f;
-		vt[3] = va[i + 1] - (va[i + 1] - eSrc) * 0.2f;
+		vt[2] = va[i] - (va[i] - m_eSrc) * 0.2f;
+		vt[3] = va[i + 1] - (va[i + 1] - m_eSrc) * 0.2f;
 		
 		vr[0].p = EE_RT(vt[3]);
 		vr[1].p = EE_RT(vt[2]);
@@ -742,8 +738,8 @@ void CSummonCreature::RenderFissure() {
 		drawTriangle(mat, &vr[0]);
 		drawTriangle(mat, &vr[1]);
 		
-		vt[2] = vb[i] - (vb[i] - eSrc) * 0.2f;
-		vt[3] = vb[i + 1] - (vb[i + 1] - eSrc) * 0.2f;
+		vt[2] = vb[i] - (vb[i] - m_eSrc) * 0.2f;
+		vt[3] = vb[i + 1] - (vb[i + 1] - m_eSrc) * 0.2f;
 		
 		vr[3].p = EE_RT(vb[i]);
 		vr[2].p = EE_RT(vb[i+1]);
@@ -761,9 +757,9 @@ void CSummonCreature::RenderFissure() {
 	mat.setWrapMode(TextureStage::WrapMirror);
 	mat.setTexture(tex_light);
 
-	target.x = eSrc.x + -fBetaRadSin * (1.5f * sizeF); 
-	target.y = eSrc.y;
-	target.z = eSrc.z + fBetaRadCos * (1.5f * sizeF); 
+	target.x = m_eSrc.x + -fBetaRadSin * (1.5f * sizeF); 
+	target.y = m_eSrc.y;
+	target.z = m_eSrc.z + fBetaRadCos * (1.5f * sizeF); 
 
 	EE_RTP(vt[1], &vr[0]);
 	vr[0].color = vr[1].color = m_colorRays1.toRGB();

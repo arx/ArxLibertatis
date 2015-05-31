@@ -112,7 +112,7 @@ void SummonCreatureSpell::Launch()
 		light->fallend = 500.f;
 		light->fallstart = 400.f;
 		light->rgb = Color3f::red;
-		light->pos = m_pSpellFx->eSrc;
+		light->pos = m_pSpellFx->m_eSrc;
 	}
 }
 
@@ -164,7 +164,7 @@ void SummonCreatureSpell::Update(float timeDelta)
 		if(float(arxtime) - (float)m_timcreation <= 4000) {
 			if(rnd() > 0.7f) {
 				if(m_pSpellFx) {
-					Vec3f pos = m_pSpellFx->eSrc;
+					Vec3f pos = m_pSpellFx->m_eSrc;
 					MakeCoolFx(pos);
 				}
 			}
@@ -259,7 +259,7 @@ void SummonCreatureSpell::Update(float timeDelta)
 					SendIOScriptEvent(io,SM_SUMMONED);
 					
 					for(long j = 0; j < 3; j++) {
-						Vec3f pos = m_pSpellFx->eSrc;
+						Vec3f pos = m_pSpellFx->m_eSrc;
 						pos += Vec3f(rnd(), rnd(), rnd()) * 100.f;
 						pos += Vec3f(-50.f, 50.f, -50.f);
 						
@@ -322,7 +322,7 @@ void FakeSummonSpell::Launch()
 		light->fallend = 500.f;
 		light->fallstart = 400.f;
 		light->rgb = Color3f::red;
-		light->pos = m_pSpellFx->eSrc;
+		light->pos = m_pSpellFx->m_eSrc;
 	}
 }
 
@@ -341,7 +341,7 @@ void FakeSummonSpell::Update(float timeDelta)
 	if(!arxtime.is_paused()) {
 		if(rnd() > 0.7f) {
 			if(m_pSpellFx) {
-				Vec3f pos = m_pSpellFx->eSrc;
+				Vec3f pos = m_pSpellFx->m_eSrc;
 				MakeCoolFx(pos);
 			}
 		}

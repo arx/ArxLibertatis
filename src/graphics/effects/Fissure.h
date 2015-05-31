@@ -109,7 +109,7 @@ private:
 // Done By : Didier Pedreno
 class CSummonCreature : public FissureFx {
 public:
-	Vec3f eSrc;
+	Vec3f m_eSrc;
 	
 	CSummonCreature();
 	
