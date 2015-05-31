@@ -472,7 +472,6 @@ void CLevitate::DrawStone()
 	mat.setBlendType(RenderMaterial::Screen);
 	
 	int	nb = 256;
-
 	while(nb--) {
 		T_STONE & s = m_tstone[nb];
 		
@@ -485,10 +484,8 @@ void CLevitate::DrawStone()
 			}
 
 			Color4f col = Color4f(Color3f::white, 1.f - a);
-
 			EERIE_3DOBJ * obj = (s.numstone == 0) ? stone0 : stone1;
-			
-			Draw3DObject(obj, s.ang, s.pos, s.scale, Color4f(col), mat);
+			Draw3DObject(obj, s.ang, s.pos, s.scale, col, mat);
 			
 			PARTICLE_DEF * pd = createParticle();
 			if(pd) {
@@ -496,7 +493,7 @@ void CLevitate::DrawStone()
 				pd->move = Vec3f(0.f, 3.f * rnd(), 0.f);
 				pd->siz = 3.f + 3.f * rnd();
 				pd->tolive = 1000;
-				pd->timcreation = -(long(arxtime) + 1000l); // TODO WTF?
+				pd->timcreation = -(long(arxtime) + 1000l); // TODO WTF
 				pd->special = FIRE_TO_SMOKE | FADE_IN_AND_OUT | ROTATING | MODULATE_ROTATION
 				              | DISSIPATING;
 				pd->fparam = 0.0000001f;

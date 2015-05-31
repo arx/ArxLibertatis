@@ -189,12 +189,11 @@ void CRiseDead::AddStone(const Vec3f & pos) {
 
 void CRiseDead::DrawStone()
 {
-	int	nb = 256;
-	
 	RenderMaterial mat;
 	mat.setDepthTest(true);
 	mat.setBlendType(RenderMaterial::Screen);
 	
+	int	nb = 256;
 	while(nb--) {
 		T_STONE & s = m_tstone[nb];
 		
