@@ -543,12 +543,7 @@ void CRiseDead::RenderFissure()
 	Vec3f vt[4];
 	TexturedVertex vr[4];
 	Vec3f target;
-
-	Vec3f etarget;
-	etarget.x = fBetaRadCos;
-	etarget.y = 0;
-	etarget.z = fBetaRadSin;
-
+	
 	RenderMaterial mat;
 	mat.setCulling(Renderer::CullNone);
 	mat.setDepthTest(false);
