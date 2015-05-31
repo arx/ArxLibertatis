@@ -235,22 +235,11 @@ void CCreateField::Render()
 	b[3].z = pos.z + smul;
 
 	// top points
-	t[0].x = pos.x - smul;
-	t[0].y = pos.y - 250 * ysize;
-	t[0].z = pos.z - smul;
-
-	t[1].x = pos.x + smul;
-	t[1].y = pos.y - 250 * ysize;
-	t[1].z = pos.z - smul;
-
-	t[2].x = pos.x + smul;
-	t[2].y = pos.y - 250 * ysize;
-	t[2].z = pos.z + smul;
-
-	t[3].x = pos.x - smul;
-	t[3].y = pos.y - 250 * ysize;
-	t[3].z = pos.z + smul;
-
+	t[0] = b[0] + Vec3f(0.f, -250 * ysize, 0.f);
+	t[1] = b[1] + Vec3f(0.f, -250 * ysize, 0.f);
+	t[2] = b[2] + Vec3f(0.f, -250 * ysize, 0.f);
+	t[3] = b[3] + Vec3f(0.f, -250 * ysize, 0.f);
+	
 	fwrap -= 5.0f; // TODO ignores the frame delay
 	while(fwrap < 0) {
 		fwrap += 360;
