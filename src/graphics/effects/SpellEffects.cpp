@@ -136,7 +136,7 @@ void Split(Vec3f * v, int a, int b, Vec3f f)
 	}
 }
 
-void Split(TexturedVertex * v, int a, int b, float yo, float fMul)
+void Split(Vec3f * v, int a, int b, float yo, float fMul)
 {
 	if (a != b)
 	{
@@ -144,7 +144,7 @@ void Split(TexturedVertex * v, int a, int b, float yo, float fMul)
 
 		if ((i != a) && (i != b))
 		{
-			v[i].p = (v[a].p + v[b].p) * 0.5f + randomVec(-yo, yo);
+			v[i] = (v[a] + v[b]) * 0.5f + randomVec(-yo, yo);
 			Split(v, a, i, yo * fMul);
 			Split(v, i, b, yo * fMul);
 		}

@@ -54,7 +54,7 @@ private:
 	Vec3f eTarget;
 	TextureContainer * tex_mm;
 	TexturedVertex v1a[40];
-	TexturedVertex pathways[40];
+	Vec3f pathways[40];
 	float fTrail;
 };
 

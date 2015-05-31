@@ -288,13 +288,13 @@ void ControlTargetSpell::Launch()
 		i++;
 	}
 	
-	pathways[0].p = eSrc + Vec3f(0.f, 100.f, 0.f);
-	pathways[9].p = eTarget;
+	pathways[0] = eSrc + Vec3f(0.f, 100.f, 0.f);
+	pathways[9] = eTarget;
 	Split(pathways, 0, 9, 150);
 	
 	for(int i = 0; i < 9; i++) {
-		if(pathways[i].p.y >= eSrc.y + 150) {
-			pathways[i].p.y = eSrc.y + 150;
+		if(pathways[i].y >= eSrc.y + 150) {
+			pathways[i].y = eSrc.y + 150;
 		}
 	}
 	
@@ -331,7 +331,7 @@ void ControlTargetSpell::Update(float timeDelta) {
 	Vec3f v;
 	
 	Vec3f newpos = Vec3f_ZERO;
-	Vec3f lastpos = pathways[0].p;
+	Vec3f lastpos = pathways[0];
 	
 	for(i = 0; i < 9; i++) {
 		int kp		= i;
@@ -353,20 +353,20 @@ void ControlTargetSpell::Update(float timeDelta) {
 			float f2 = t3 - 2.f * t2 + t1 ;
 			float f3 = t3 - t2 ;
 
-			float val = pathways[kpsuiv].p.x;
-			float p0 = 0.5f * (val - pathways[kpprec].p.x) ;
-			float p1 = 0.5f * (pathways[kpsuivsuiv].p.x - pathways[kp].p.x) ;
-			v.x = f0 * pathways[kp].p.x + f1 * val + f2 * p0 + f3 * p1 ;
+			float val = pathways[kpsuiv].x;
+			float p0 = 0.5f * (val - pathways[kpprec].x) ;
+			float p1 = 0.5f * (pathways[kpsuivsuiv].x - pathways[kp].x) ;
+			v.x = f0 * pathways[kp].x + f1 * val + f2 * p0 + f3 * p1 ;
 
-			val = pathways[kpsuiv].p.y ;
-			p0 = 0.5f * (val - pathways[kpprec].p.y) ;
-			p1 = 0.5f * (pathways[kpsuivsuiv].p.y - pathways[kp].p.y) ;
-			v.y = f0 * pathways[kp].p.y + f1 * val + f2 * p0 + f3 * p1 ;
+			val = pathways[kpsuiv].y ;
+			p0 = 0.5f * (val - pathways[kpprec].y) ;
+			p1 = 0.5f * (pathways[kpsuivsuiv].y - pathways[kp].y) ;
+			v.y = f0 * pathways[kp].y + f1 * val + f2 * p0 + f3 * p1 ;
 
-			val = pathways[kpsuiv].p.z ;
-			p0 = 0.5f * (val - pathways[kpprec].p.z) ;
-			p1 = 0.5f * (pathways[kpsuivsuiv].p.z - pathways[kp].p.z) ;
-			v.z = f0 * pathways[kp].p.z + f1 * val + f2 * p0 + f3 * p1 ;
+			val = pathways[kpsuiv].z ;
+			p0 = 0.5f * (val - pathways[kpprec].z) ;
+			p1 = 0.5f * (pathways[kpsuivsuiv].z - pathways[kp].z) ;
+			v.z = f0 * pathways[kp].z + f1 * val + f2 * p0 + f3 * p1 ;
 			
 			newpos = v;
 			
