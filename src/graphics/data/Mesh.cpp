@@ -753,7 +753,7 @@ bool Visible(const Vec3f & orgn, const Vec3f & dest, EERIEPOLY * epp, Vec3f * hi
 
 	Vec3f found_hit = Vec3f_ZERO;
 	EERIEPOLY *found_ep = NULL;
-	float iter,t;
+	float iter;
 	
 	//current ray pos
 	Vec3f tmpPos = orgn;
@@ -777,7 +777,7 @@ bool Visible(const Vec3f & orgn, const Vec3f & dest, EERIEPOLY * epp, Vec3f * hi
 			i.x = pas;
 
 		iter = ad.x / pas;
-		t = 1.f / (iter);
+		float t = 1.f / (iter);
 		i.y = d.y * t;
 		i.z = d.z * t;
 	} else if(ad.y >= ad.x && ad.y >= ad.z) {
@@ -787,7 +787,7 @@ bool Visible(const Vec3f & orgn, const Vec3f & dest, EERIEPOLY * epp, Vec3f * hi
 			i.y = pas;
 
 		iter = ad.y / pas;
-		t = 1.f / (iter);
+		float t = 1.f / (iter);
 		i.x = d.x * t;
 		i.z = d.z * t;
 	} else {
@@ -797,7 +797,7 @@ bool Visible(const Vec3f & orgn, const Vec3f & dest, EERIEPOLY * epp, Vec3f * hi
 			i.z = pas;
 
 		iter = ad.z / pas;
-		t = 1.f / (iter);
+		float t = 1.f / (iter);
 		i.x = d.x * t;
 		i.y = d.y * t;
 	}
