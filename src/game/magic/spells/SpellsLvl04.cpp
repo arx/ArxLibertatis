@@ -92,8 +92,6 @@ void BlessSpell::Update(float timeDelta) {
 	
 	m_scale = (m_level + 10) * 6.f;
 	
-	int i = 0;
-	
 	Vec3f pos = m_pos + Vec3f(0, -5, 0);
 	
 	RenderMaterial mat;
@@ -137,7 +135,7 @@ void BlessSpell::Update(float timeDelta) {
 	drawQuadRTP(mat, q);
 	}
 	
-	for(i = 0; i < 12; i++) {
+	for(int i = 0; i < 12; i++) {
 		
 		PARTICLE_DEF * pd = createParticle();
 		if(!pd) {
