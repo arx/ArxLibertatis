@@ -34,7 +34,7 @@ public:
 	void Update(float timeDelta);
 	
 private:
-	Vec3f m_targetPos;
+	Vec3f m_pos;
 	bool m_soundEffectPlayed;
 	LightHandle m_light;
 	
