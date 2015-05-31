@@ -74,28 +74,26 @@ void MassLightningStrikeSpell::Launch()
 	}
 	m_pos += angleToVectorXZ(beta) * 500.f;
 	
-	m_duration = long(500 * m_level);
-	long lMax = 0;
+	long minDuration = long(500 * m_level);
+	long maxDuration = 0;
 	
 	int number = glm::clamp(int(m_level), 1, 10);
 	float ft = 360.0f / (float)number;
 	
 	for(int i = 0; i < number; i++) {
-		CLightning * lightning = new CLightning();
-		pTab.push_back(lightning);
+		Vec3f target = m_pos + angleToVectorXZ(i * ft) * 500.0f;
+		long duration = minDuration + Random::get(0, 5000);
+		maxDuration = std::max(maxDuration, duration);
 		
+		CLightning * lightning = new CLightning();
 		lightning->m_isMassLightning = true;
 		lightning->m_fDamage = 2;
-		
-		Vec3f eTarget = m_pos + angleToVectorXZ(i * ft) * 500.0f;
-		
-		lightning->Create(m_pos, eTarget);
-		long lTime = m_duration + Random::get(0, 5000);
-		lightning->SetDuration(lTime);
-		lMax = std::max(lMax, lTime);
+		lightning->Create(m_pos, target);
+		lightning->SetDuration(duration);
+		pTab.push_back(lightning);
 	}
 	
-	m_duration = lMax + 1000;
+	m_duration = maxDuration + 1000;
 	
 	m_light = GetFreeDynLight();
 	if(lightHandleIsValid(m_light)) {
