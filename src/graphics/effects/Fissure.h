@@ -22,8 +22,15 @@
 
 #include "graphics/effects/SpellEffects.h"
 
+class FissureFx {
+public:
+	unsigned long ulDuration;
+	unsigned long ulCurrentTime;
+};
+
+
 // Done By : Didier Pedreno
-class CRiseDead : public CSpellFx {
+class CRiseDead : public FissureFx {
 	
 public:
 	CRiseDead();
@@ -100,7 +107,7 @@ private:
 
 
 // Done By : Didier Pedreno
-class CSummonCreature : public CSpellFx {
+class CSummonCreature : public FissureFx {
 public:
 	Vec3f eSrc;
 	
