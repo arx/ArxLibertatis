@@ -24,8 +24,18 @@
 
 class FissureFx {
 public:
+	FissureFx();
+	
+	void SetDuration(unsigned long alDurationIntro, unsigned long alDurationRender, unsigned long alDurationOuttro);
+	
 	unsigned long ulDuration;
 	unsigned long ulCurrentTime;
+	unsigned long ulDurationIntro;
+	unsigned long ulDurationRender;
+	unsigned long ulDurationOuttro;
+	float	fOneOnDurationIntro;
+	float	fOneOnDurationRender;
+	float	fOneOnDurationOuttro;
 };
 
 
@@ -35,8 +45,6 @@ class CRiseDead : public FissureFx {
 public:
 	CRiseDead();
 	~CRiseDead();
-	
-	void SetDuration(unsigned long, unsigned long, unsigned long);
 	
 	void SetPos(Vec3f);
 	
@@ -67,17 +75,11 @@ private:
 	int		end;
 	int		iSize;
 	bool	bIntro;
-	float	fOneOnDurationIntro;
-	float	fOneOnDurationRender;
-	float	fOneOnDurationOuttro;
 	float	sizeF;
 	float	fSizeIntro;
 	float	fTexWrap;
 	float	tfRaysa[40];
 	float	tfRaysb[40];
-	unsigned long ulDurationIntro;
-	unsigned long ulDurationRender;
-	unsigned long ulDurationOuttro;
 	Vec3f va[40];
 	Vec3f vb[40];
 	Vec3f v1a[40];
@@ -112,7 +114,6 @@ public:
 	
 	CSummonCreature();
 	
-	void SetDuration(unsigned long, unsigned long, unsigned long);
 	void SetPos(Vec3f);
 	
 	void SetColorBorder(Color3f);
@@ -141,9 +142,6 @@ private:
 	int		iSize;
 	bool	bIntro;
 	float	fOneOniSize;
-	float	fOneOnDurationIntro;
-	float	fOneOnDurationRender;
-	float	fOneOnDurationOuttro;
 
 	float	sizeF;
 	float	fSizeIntro;
@@ -152,9 +150,6 @@ private:
 	Color3f fColorRays2;
 	float tfRaysa[40];
 	float tfRaysb[40];
-	unsigned long ulDurationIntro;
-	unsigned long ulDurationRender;
-	unsigned long ulDurationOuttro;
 	Vec3f va[40];
 	Vec3f vb[40];
 	Vec3f v1a[40];

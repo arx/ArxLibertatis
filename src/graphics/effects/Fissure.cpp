@@ -31,6 +31,43 @@
 #include "scene/Interactive.h"
 
 
+FissureFx::FissureFx()
+	: ulDurationIntro(1000)
+	, ulDurationRender(1000)
+	, ulDurationOuttro(1000)
+{
+	
+}
+
+void FissureFx::SetDuration(unsigned long alDurationIntro, unsigned long alDurationRender, unsigned long alDurationOuttro)
+{
+	if(alDurationIntro <= 0)
+		alDurationIntro = 100;
+	else if(alDurationIntro >= 100000)
+		alDurationIntro = 100000;
+	
+	ulDurationIntro = alDurationIntro;
+	fOneOnDurationIntro = 1.f / (float)(ulDurationIntro);
+	
+	if(alDurationRender <= 0)
+		alDurationRender = 100;
+	else if(alDurationRender >= 100000)
+		alDurationRender = 100000;
+	
+	ulDurationRender = alDurationRender;
+	fOneOnDurationRender = 1.f / (float)(ulDurationRender);
+	
+	if(alDurationOuttro <= 0)
+		alDurationOuttro = 100;
+	else if(alDurationOuttro >= 100000)
+		alDurationOuttro = 100000;
+	
+	ulDurationOuttro = alDurationOuttro;
+	fOneOnDurationOuttro = 1.f / (float)(ulDurationOuttro);
+	
+	ulCurrentTime = 0;
+}
+
 //-----------------------------------------------------------------------------
 // RISE DEAD
 //-----------------------------------------------------------------------------
@@ -48,9 +85,6 @@ CRiseDead::CRiseDead()
 	, sizeF(0)
 	, fSizeIntro(0.f)
 	, fTexWrap(0)
-	, ulDurationIntro(1000)
-	, ulDurationRender(1000)
-	, ulDurationOuttro(1000)
 	, m_currframetime(0)
 	, m_timestone(0)
 	, m_nbstone(0)
@@ -62,35 +96,6 @@ CRiseDead::CRiseDead()
 	m_colorRays2 = Color3f(0.f, 0.f, 0.f);
 	
 	tex_light = TextureContainer::Load("graph/obj3d/textures/(fx)_tsu4");
-}
-
-void CRiseDead::SetDuration(unsigned long alDurationIntro, unsigned long alDurationRender, unsigned long alDurationOuttro)
-{
-	if(alDurationIntro <= 0)
-		alDurationIntro = 100;
-	else if(alDurationIntro >= 100000)
-		alDurationIntro = 100000;
-
-	ulDurationIntro = alDurationIntro;
-	fOneOnDurationIntro = 1.f / (float)(ulDurationIntro);
-
-	if(alDurationRender <= 0)
-		alDurationRender = 100;
-	else if(alDurationRender >= 100000)
-		alDurationRender = 100000;
-
-	ulDurationRender = alDurationRender;
-	fOneOnDurationRender = 1.f / (float)(ulDurationRender);
-
-	if(alDurationOuttro <= 0)
-		alDurationOuttro = 100;
-	else if(alDurationOuttro >= 100000)
-		alDurationOuttro = 100000;
-
-	ulDurationOuttro = alDurationOuttro;
-	fOneOnDurationOuttro = 1.f / (float)(ulDurationOuttro);
-
-	ulCurrentTime = 0;
 }
 
 void CRiseDead::SetColorBorder(Color3f color)
@@ -577,34 +582,7 @@ CSummonCreature::CSummonCreature()
 	tex_light = TextureContainer::Load("graph/obj3d/textures/(fx)_tsu4");
 }
 
-void CSummonCreature::SetDuration(unsigned long alDurationIntro, unsigned long alDurationRender, unsigned long alDurationOuttro)
-{
-	if(alDurationIntro <= 0)
-		alDurationIntro = 100;
-	else if(alDurationIntro >= 100000)
-		alDurationIntro = 100000;
 
-	ulDurationIntro = alDurationIntro;
-	fOneOnDurationIntro = 1.f / (float)(ulDurationIntro);
-
-	if(alDurationRender <= 0)
-		alDurationRender = 100;
-	else if(alDurationRender >= 100000)
-		alDurationRender = 100000;
-
-	ulDurationRender = alDurationRender;
-	fOneOnDurationRender = 1.f / (float)(ulDurationRender);
-
-	if(alDurationOuttro <= 0)
-		alDurationOuttro = 100;
-	else if(alDurationOuttro >= 100000)
-		alDurationOuttro = 100000;
-
-	ulDurationOuttro = alDurationOuttro;
-	fOneOnDurationOuttro = 1.f / (float)(ulDurationOuttro);
-
-	ulCurrentTime = 0;
-}
 
 void CSummonCreature::SetColorBorder(Color3f color) {
 	fColorBorder = color;
@@ -921,3 +899,6 @@ void CSummonCreature::Render()
 	
 	//return (fSizeIntro / end);
 }
+
+
+
