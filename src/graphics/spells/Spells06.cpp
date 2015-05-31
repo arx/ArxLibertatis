@@ -214,26 +214,14 @@ void CCreateField::Render()
 	falpha = glm::sin(glm::radians(fglow)) + rnd() * 0.2f;
 	falpha = glm::clamp(falpha, 0.f, 1.f);
 	
-	Vec3f pos = eSrc;
 	float smul = 100 * size;
 
 	// bottom points
-	b[0].x = pos.x - smul;
-	b[0].y = pos.y;
-	b[0].z = pos.z - smul;
-
-	b[1].x = pos.x + smul;
-	b[1].y = pos.y;
-	b[1].z = pos.z - smul;
-
-	b[2].x = pos.x + smul;
-	b[2].y = pos.y;
-	b[2].z = pos.z + smul;
-
-	b[3].x = pos.x - smul;
-	b[3].y = pos.y;
-	b[3].z = pos.z + smul;
-
+	b[0] = eSrc + Vec3f(-smul, 0.f, -smul);
+	b[1] = eSrc + Vec3f(smul, 0.f, -smul);
+	b[2] = eSrc + Vec3f(smul, 0.f, smul);
+	b[3] = eSrc + Vec3f(-smul, 0.f, smul);
+	
 	// top points
 	t[0] = b[0] + Vec3f(0.f, -250 * ysize, 0.f);
 	t[1] = b[1] + Vec3f(0.f, -250 * ysize, 0.f);
