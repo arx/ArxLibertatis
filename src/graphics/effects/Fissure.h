@@ -36,7 +36,6 @@ public:
 	CRiseDead();
 	~CRiseDead();
 	
-	void SetDuration(const unsigned long duration);
 	void SetDuration(unsigned long, unsigned long, unsigned long);
 	
 	void SetPos(Vec3f);
@@ -113,7 +112,6 @@ public:
 	
 	CSummonCreature();
 	
-	void SetDuration(const unsigned long duration);
 	void SetDuration(unsigned long, unsigned long, unsigned long);
 	void SetPos(Vec3f);
 	

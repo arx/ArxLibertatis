@@ -55,7 +55,6 @@ CRiseDead::CRiseDead()
 	, m_timestone(0)
 	, m_nbstone(0)
 {
-	SetDuration(1000);
 	ulCurrentTime = ulDurationIntro + ulDurationRender + ulDurationOuttro + 1;
 	
 	m_colorBorder = Color3f(1.f, 1.f, 1.f);
@@ -63,26 +62,6 @@ CRiseDead::CRiseDead()
 	m_colorRays2 = Color3f(0.f, 0.f, 0.f);
 	
 	tex_light = TextureContainer::Load("graph/obj3d/textures/(fx)_tsu4");
-}
-
-void CRiseDead::SetDuration(const unsigned long alDuration)
-{
-	ulDurationIntro			= alDuration;
-
-	if(ulDurationIntro <= 0)
-		ulDurationIntro = 100;
-	else if(ulDurationIntro >= 100000)
-		ulDurationIntro = 100000;
-
-	fOneOnDurationIntro		= 1.f / (float)(ulDurationIntro);
-
-	ulDurationRender		= 1000;
-	fOneOnDurationRender	= 1.f / (float)(ulDurationRender);
-
-	ulDurationOuttro		= 1000;
-	fOneOnDurationOuttro	= 1.f / (float)(ulDurationOuttro);
-
-	ulCurrentTime = 0;
 }
 
 void CRiseDead::SetDuration(unsigned long alDurationIntro, unsigned long alDurationRender, unsigned long alDurationOuttro)
@@ -590,33 +569,12 @@ CSummonCreature::CSummonCreature()
 	
 	eSrc = Vec3f_ZERO;
 	
-	SetDuration(1000);
 	ulCurrentTime = ulDurationIntro + ulDurationRender + ulDurationOuttro + 1;
 	
 	iSize = 100;
 	fOneOniSize = 1.0f / ((float) iSize);
 	
 	tex_light = TextureContainer::Load("graph/obj3d/textures/(fx)_tsu4");
-}
-
-void CSummonCreature::SetDuration(const unsigned long alDuration)
-{
-	ulDurationIntro			=	alDuration;
-
-	if(ulDurationIntro <= 0)
-		ulDurationIntro	=	100;
-	else if(ulDurationIntro >= 100000)
-		ulDurationIntro	=	100000;
-
-	fOneOnDurationIntro		=	1.f / (float)(ulDurationIntro);
-
-	ulDurationRender		=	1000;
-	fOneOnDurationRender	=	1.f / (float)(ulDurationRender);
-
-	ulDurationOuttro		=	1000;
-	fOneOnDurationOuttro	=	1.f / (float)(ulDurationOuttro);
-
-	ulCurrentTime			=	0;
 }
 
 void CSummonCreature::SetDuration(unsigned long alDurationIntro, unsigned long alDurationRender, unsigned long alDurationOuttro)
