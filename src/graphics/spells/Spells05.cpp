@@ -357,10 +357,7 @@ CLevitate::CLevitate()
 	, m_coneScale(0.f)
 	, m_ang(0.f)
 	, m_currdurationang(0)
-	, m_currframetime(0)
 	, m_tsouffle(NULL)
-	, m_stoneDelay(0)
-	, m_nbstone(0)
 {
 	int nb = 2;
 
@@ -427,96 +424,16 @@ void CLevitate::Create(int def, float rbase, float rhaut, float hauteur, Vec3f *
 	m_def = (short)def;
 	m_tsouffle = TextureContainer::Load("graph/obj3d/textures/(fx)_sebsouffle");
 
-	m_stoneDelay = 0;
-	m_nbstone = 0;
-	
-	int nb = 256;
-	while(nb--) {
-		m_tstone[nb].actif = 0;
-	}
-}
-
-void CLevitate::AddStone(const Vec3f & pos) {
-	
-	if(arxtime.is_paused() || m_nbstone > 255) {
-		return;
-	}
-	
-	int nb = 256;
-	while(nb--) {
-		T_STONE & s = m_tstone[nb];
-		
-		if(!s.actif) {
-			m_nbstone++;
-			s.actif = 1;
-			s.numstone = Random::get(0, 1);
-			s.pos = pos;
-			s.yvel = rnd() * -5.f;
-			s.ang = Anglef(rnd(), rnd(), rnd()) * Anglef(360.f, 360.f, 360.f);
-			s.angvel = Anglef(rnd(), rnd(), rnd()) * Anglef(5.f, 6.f, 3.f);
-			s.scale = Vec3f(0.2f + rnd() * 0.3f);
-			s.time = Random::get(2000, 2500);
-			s.currtime = 0;
-			break;
-		}
-	}
-}
-
-void CLevitate::DrawStone()
-{
-	RenderMaterial mat;
-	mat.setDepthTest(true);
-	mat.setBlendType(RenderMaterial::Screen);
-	
-	int	nb = 256;
-	while(nb--) {
-		T_STONE & s = m_tstone[nb];
-		
-		if(s.actif) {
-			float a = (float)s.currtime / (float)s.time;
-
-			if(a > 1.f) {
-				a = 1.f;
-				s.actif = 0;
-			}
-
-			Color4f col = Color4f(Color3f::white, 1.f - a);
-			EERIE_3DOBJ * obj = (s.numstone == 0) ? stone0 : stone1;
-			Draw3DObject(obj, s.ang, s.pos, s.scale, col, mat);
-			
-			PARTICLE_DEF * pd = createParticle();
-			if(pd) {
-				pd->ov = s.pos;
-				pd->move = Vec3f(0.f, 3.f * rnd(), 0.f);
-				pd->siz = 3.f + 3.f * rnd();
-				pd->tolive = 1000;
-				pd->timcreation = -(long(arxtime) + 1000l); // TODO WTF
-				pd->special = FIRE_TO_SMOKE | FADE_IN_AND_OUT | ROTATING | MODULATE_ROTATION
-				              | DISSIPATING;
-				pd->fparam = 0.0000001f;
-			}
-			
-			//update mvt
-			if(!arxtime.is_paused()) {
-				a = (((float)m_currframetime) * 100.f) / (float)s.time;
-				s.pos.y += s.yvel * a;
-				s.ang += s.angvel * a;
-
-				s.yvel *= 1.f - (1.f / 100.f);
-
-				s.currtime += m_currframetime;
-			}
-		}
-	}
+	m_stones.Init(m_baseRadius);
 }
 
 void CLevitate::Update(float timeDelta) {
 	
+	m_stones.Update(timeDelta, m_pos);
+	
 	if(!arxtime.is_paused()) {
 		m_currdurationang += timeDelta;
 		ulCurrentTime += timeDelta;
-		m_currframetime = timeDelta;
-		m_stoneDelay -= timeDelta;
 	}
 	
 	//animation cone
@@ -559,12 +476,6 @@ void CLevitate::Update(float timeDelta) {
 	
 	for(int i = 0; i < dustParticles; i++) {
 		createDustParticle();
-	}
-	
-	if(m_stoneDelay <= 0) {
-		m_stoneDelay = Random::get(50, 150);
-		
-		AddStone(m_pos + randomOffsetXZ(m_baseRadius));
 	}
 }
 
@@ -739,5 +650,5 @@ void CLevitate::Render()
 		j++;
 	}
 	
-	DrawStone();
+	m_stones.DrawStone();
 }

@@ -1,0 +1,125 @@
+/*
+ * Copyright 2015 Arx Libertatis Team (see the AUTHORS file)
+ *
+ * This file is part of Arx Libertatis.
+ *
+ * Arx Libertatis is free software: you can redistribute it and/or modify
+ * it under the terms of the GNU General Public License as published by
+ * the Free Software Foundation, either version 3 of the License, or
+ * (at your option) any later version.
+ *
+ * Arx Libertatis is distributed in the hope that it will be useful,
+ * but WITHOUT ANY WARRANTY; without even the implied warranty of
+ * MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
+ * GNU General Public License for more details.
+ *
+ * You should have received a copy of the GNU General Public License
+ * along with Arx Libertatis.  If not, see <http://www.gnu.org/licenses/>.
+ */
+
+#include "graphics/effects/FloatingStones.h"
+
+#include "core/GameTime.h"
+#include "graphics/RenderBatcher.h"
+#include "graphics/particle/ParticleEffects.h"
+#include "math/Random.h"
+
+void FloatingStones::Init(float radius) {
+	
+	m_baseRadius = radius;
+	
+	// cailloux
+	m_timestone = 0;
+	m_nbstone = 0;
+
+	int nb = 256;
+	while(nb--) {
+		m_tstone[nb].actif = 0;
+	}
+}
+
+void FloatingStones::Update(float timeDelta, Vec3f pos) {
+	
+	m_timestone -= timeDelta;
+	m_currframetime = timeDelta;
+	
+	if(m_timestone <= 0) {
+		m_timestone = Random::get(50, 150);
+		
+		AddStone(pos + randomOffsetXZ(m_baseRadius));
+	}
+}
+
+void FloatingStones::AddStone(const Vec3f & pos) {
+	
+	if(arxtime.is_paused() || m_nbstone > 255) {
+		return;
+	}
+	
+	int nb = 256;
+	while(nb--) {
+		T_STONE & s = m_tstone[nb];
+		
+		if(!s.actif) {
+			m_nbstone++;
+			s.actif = 1;
+			s.numstone = Random::get(0, 1);
+			s.pos = pos;
+			s.yvel = rnd() * -5.f;
+			s.ang = Anglef(rnd(), rnd(), rnd()) * Anglef(360.f, 360.f, 360.f);
+			s.angvel = Anglef(rnd(), rnd(), rnd()) * Anglef(5.f, 6.f, 3.f);
+			s.scale = Vec3f(0.2f + rnd() * 0.3f);
+			s.time = Random::get(2000, 2500);
+			s.currtime = 0;
+			break;
+		}
+	}
+}
+
+void FloatingStones::DrawStone()
+{
+	RenderMaterial mat;
+	mat.setDepthTest(true);
+	mat.setBlendType(RenderMaterial::Screen);
+	
+	int	nb = 256;
+	while(nb--) {
+		T_STONE & s = m_tstone[nb];
+		
+		if(s.actif) {
+			float a = (float)s.currtime / (float)s.time;
+			
+			if(a > 1.f) {
+				a = 1.f;
+				s.actif = 0;
+			}
+			
+			Color4f col = Color4f(Color3f::white, 1.f - a);
+			EERIE_3DOBJ * obj = (s.numstone == 0) ? stone0 : stone1;
+			Draw3DObject(obj, s.ang, s.pos, s.scale, col, mat);
+			
+			PARTICLE_DEF * pd = createParticle();
+			if(pd) {
+				pd->ov = s.pos;
+				pd->move = Vec3f(0.f, 3.f * rnd(), 0.f);
+				pd->siz = 3.f + 3.f * rnd();
+				pd->tolive = 1000;
+				pd->timcreation = -(long(arxtime) + 1000l); // TODO WTF
+				pd->special = FIRE_TO_SMOKE | FADE_IN_AND_OUT | ROTATING | MODULATE_ROTATION
+				| DISSIPATING;
+				pd->fparam = 0.0000001f;
+			}
+			
+			//update mvt
+			if(!arxtime.is_paused()) {
+				a = (((float)m_currframetime) * 100.f) / (float)s.time;
+				s.pos.y += s.yvel * a;
+				s.ang += s.angvel * a;
+				
+				s.yvel *= 1.f - (1.f / 100.f);
+				
+				s.currtime += m_currframetime;
+			}
+		}
+	}
+}

@@ -88,9 +88,6 @@ CRiseDead::CRiseDead()
 	, sizeF(0)
 	, fSizeIntro(0.f)
 	, fTexWrap(0)
-	, m_currframetime(0)
-	, m_timestone(0)
-	, m_nbstone(0)
 {
 	ulCurrentTime = ulDurationIntro + ulDurationRender + ulDurationOuttro + 1;
 	
@@ -144,14 +141,7 @@ void CRiseDead::Create(Vec3f aeSrc, float afBeta)
 	
 	sizeF = 0;
 	
-	// cailloux
-	m_timestone = 0;
-	m_nbstone = 0;
-
-	int nb = 256;
-	while(nb--) {
-		m_tstone[nb].actif = 0;
-	}
+	m_stones.Init(80.f);
 }
 
 unsigned long CRiseDead::GetDuration()
@@ -159,79 +149,7 @@ unsigned long CRiseDead::GetDuration()
 	return (ulDurationIntro + ulDurationRender + ulDurationOuttro);
 }
 
-void CRiseDead::AddStone(const Vec3f & pos) {
-	
-	if(arxtime.is_paused() || m_nbstone > 255) {
-		return;
-	}
-	
-	int nb = 256;
-	while(nb--) {
-		T_STONE & s = m_tstone[nb];
-		
-		if(!s.actif) {
-			m_nbstone++;
-			s.actif = 1;
-			s.numstone = Random::get(0, 1);
-			s.pos = pos;
-			s.yvel = rnd() * -5.f;
-			s.ang = Anglef(rnd(), rnd(), rnd()) * Anglef(360.f, 360.f, 360.f);
-			s.angvel = Anglef(rnd(), rnd(), rnd()) * Anglef(5.f, 6.f, 3.f);
-			s.scale = Vec3f(0.2f + rnd() * 0.3f);
-			s.time = Random::get(2000, 2500);
-			s.currtime = 0;
-			break;
-		}
-	}
-}
 
-void CRiseDead::DrawStone()
-{
-	RenderMaterial mat;
-	mat.setDepthTest(true);
-	mat.setBlendType(RenderMaterial::Screen);
-	
-	int	nb = 256;
-	while(nb--) {
-		T_STONE & s = m_tstone[nb];
-		
-		if(s.actif) {
-			float a = (float)s.currtime / (float)s.time;
-
-			if(a > 1.f) {
-				a = 1.f;
-				s.actif = 0;
-			}
-
-			Color4f col = Color4f(Color3f::white, 1.f - a);
-			EERIE_3DOBJ * obj = (s.numstone == 0) ? stone0 : stone1;
-			Draw3DObject(obj, s.ang, s.pos, s.scale, col, mat);
-			
-			PARTICLE_DEF * pd = createParticle();
-			if(pd) {
-				pd->ov = s.pos;
-				pd->move = Vec3f(0.f, 3.f * rnd(), 0.f);
-				pd->siz = 3.f + 3.f * rnd();
-				pd->tolive = 1000;
-				pd->timcreation = -(long(arxtime) + 1000l); // TODO WTF
-				pd->special = FIRE_TO_SMOKE | FADE_IN_AND_OUT | ROTATING | MODULATE_ROTATION
-				              | DISSIPATING;
-				pd->fparam = 0.0000001f;
-			}
-			
-			//update mvt
-			if(!arxtime.is_paused()) {
-				a = (((float)m_currframetime) * 100.f) / (float)s.time;
-				s.pos.y += s.yvel * a;
-				s.ang += s.angvel * a;
-
-				s.yvel *= 1.f - (1.f / 100.f);
-
-				s.currtime += m_currframetime;
-			}
-		}
-	}
-}
 
 void CRiseDead::Split(Vec3f * v, int a, int b, float yo)
 {
@@ -480,10 +398,8 @@ void CRiseDead::RenderFissure() {
 void CRiseDead::Update(float timeDelta)
 {
 	ulCurrentTime += timeDelta;
-	m_currframetime = timeDelta;
-
-	if(!arxtime.is_paused())
-		m_timestone -= timeDelta;
+	
+	m_stones.Update(timeDelta, m_eSrc);
 }
 
 //-----------------------------------------------------------------------------
@@ -522,20 +438,9 @@ void CRiseDead::Render()
 		}
 	}
 	
-	//cailloux
-	if(m_timestone <= 0) {
-		m_timestone = Random::get(50, 150);
-		Vec3f	pos;
-		float r = 80.f * frand2();
-		pos.x = m_eSrc.x + r;
-		pos.y = m_eSrc.y;
-		pos.z = m_eSrc.z + r;
-		AddStone(pos);
-	}
-	
 	RenderFissure();
 	
-	DrawStone();
+	m_stones.DrawStone();
 }
 
 

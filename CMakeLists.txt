@@ -724,6 +724,7 @@ set(GRAPHICS_SOURCES
 	src/graphics/effects/DrawEffects.cpp
 	src/graphics/effects/Fade.cpp
 	src/graphics/effects/Fissure.cpp
+	src/graphics/effects/FloatingStones.cpp
 	src/graphics/effects/Fog.cpp
 	src/graphics/effects/SpellEffects.cpp
 	src/graphics/effects/Halo.cpp

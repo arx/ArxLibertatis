@@ -20,6 +20,7 @@
 #ifndef ARX_GRAPHICS_EFFECTS_FISSURE_H
 #define ARX_GRAPHICS_EFFECTS_FISSURE_H
 
+#include "graphics/effects/FloatingStones.h"
 #include "graphics/effects/SpellEffects.h"
 
 class FissureFx {
@@ -84,25 +85,7 @@ private:
 	Vec3f v1a[40];
 	Vec3f v1b[40];
 	
-	struct T_STONE {
-		short actif;
-		short numstone;
-		Vec3f pos;
-		float yvel;
-		Anglef ang;
-		Anglef angvel;
-		Vec3f scale;
-		int time;
-		int currtime;
-	};
-	
-	int m_currframetime;
-	int m_timestone;
-	int m_nbstone;
-	T_STONE m_tstone[256];
-	
-	void AddStone(const Vec3f & pos);
-	void DrawStone();
+	FloatingStones m_stones;
 };
 
 

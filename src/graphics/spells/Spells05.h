@@ -44,6 +44,7 @@ ZeniMax Media Inc., Suite 120, Rockville, Maryland 20850 USA.
 #ifndef ARX_GRAPHICS_SPELLS_SPELLS05_H
 #define ARX_GRAPHICS_SPELLS_SPELLS05_H
 
+#include "graphics/effects/FloatingStones.h"
 #include "graphics/effects/SpellEffects.h"
 #include "graphics/particle/ParticleSystem.h"
 
@@ -74,7 +75,6 @@ private:
 	float m_coneScale;
 	float m_ang;
 	int m_currdurationang;
-	int m_currframetime;
 	TextureContainer * m_tsouffle;
 	
 	struct T_CONE {
@@ -87,24 +87,7 @@ private:
 	
 	T_CONE m_cone[2];
 	
-	struct T_STONE {
-		short actif;
-		short numstone;
-		Vec3f pos;
-		float yvel;
-		Anglef ang;
-		Anglef angvel;
-		Vec3f scale;
-		int time;
-		int currtime;
-	};
-	
-	int m_stoneDelay;
-	int m_nbstone;
-	T_STONE m_tstone[256];
-	
-	void AddStone(const Vec3f & pos);
-	void DrawStone();
+	FloatingStones m_stones;
 	
 	void CreateConeStrip(float rout, float m_rhaut, float m_hauteur, int def, int numcone);
 	void createDustParticle();
