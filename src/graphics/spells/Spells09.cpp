@@ -239,9 +239,8 @@ void CSummonCreature::Split(Vec3f * v, int a, int b, float yo)
 }
 
 // TODO copy-paste spell effect Fissure
-void CSummonCreature::RenderFissure()
-{
-	int i;
+void CSummonCreature::RenderFissure() {
+	
 	float ff;
 	Vec3f vt[4];
 	TexturedVertex vr[4];
@@ -264,7 +263,7 @@ void CSummonCreature::RenderFissure()
 	//-------------------------------------------------------------------------
 	// computation des sommets
 
-	for(i = 0; i <= std::min(end, int(fSizeIntro)); i++) {
+	for(int i = 0; i <= std::min(end, int(fSizeIntro)); i++) {
 		if(i <= end * 0.5f)
 			ff = i / (end * 0.5f);
 		else
@@ -293,7 +292,7 @@ void CSummonCreature::RenderFissure()
 	vr[0].color = vr[1].color = vr[2].color = vr[3].color = Color::black.toRGB();
 
 	if(bIntro) {
-		for(i = 0; i < std::min(end, (int)fSizeIntro); i++) {
+		for(int i = 0; i < std::min(end, (int)fSizeIntro); i++) {
 			vr[0].p = EE_RT(v1a[i]);
 			vr[1].p = EE_RT(v1b[i]);
 			vr[2].p = EE_RT(v1a[i+1]);
@@ -302,7 +301,7 @@ void CSummonCreature::RenderFissure()
 			drawTriangle(mat, &vr[1]);
 		}
 	} else {
-		for(i = 0; i < std::min(end, (int)fSizeIntro); i++) {
+		for(int i = 0; i < std::min(end, (int)fSizeIntro); i++) {
 			vr[0].p = EE_RT(va[i]);
 			vr[1].p = EE_RT(vb[i]);
 			vr[2].p = EE_RT(va[i+1]);
@@ -318,7 +317,7 @@ void CSummonCreature::RenderFissure()
 	vr[0].color = vr[1].color = Color::black.toRGB();
 	vr[2].color = vr[3].color = fColorBorder.toRGB();
 
-	for(i = 0; i < std::min(end, (int)fSizeIntro); i++) {
+	for(int i = 0; i < std::min(end, (int)fSizeIntro); i++) {
 		vt[2] = va[i] - (va[i] - eSrc) * 0.2f;
 		vt[3] = va[i + 1] - (va[i + 1] - eSrc) * 0.2f;
 		
@@ -365,7 +364,7 @@ void CSummonCreature::RenderFissure()
 	vr[3].uv.x = 1.0f + fTexWrap;
 	vr[3].uv.y = 0;
 
-	for(i = 0; i < end - 1; i++) {
+	for(int i = 0; i < end - 1; i++) {
 		
 		if(i < fSizeIntro) {
 			vt[0] = va[i];
