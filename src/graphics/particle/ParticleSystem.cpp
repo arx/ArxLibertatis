@@ -59,12 +59,6 @@ ZeniMax Media Inc., Suite 120, Rockville, Maryland 20850 USA.
 #include "graphics/particle/Particle.h"
 
 
-void ParticleSystem::RecomputeDirection() {
-	Vec3f eVect = m_parameters.m_direction;
-	eVect.y = -eVect.y;
-	GenerateMatrixUsingVector(eMat, eVect, 0);
-}
-
 ParticleSystem::ParticleSystem() {
 	
 	int i;

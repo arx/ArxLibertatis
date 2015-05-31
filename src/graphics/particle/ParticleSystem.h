@@ -82,7 +82,6 @@ public:
 	bool IsAlive();
 	
 	void Update(long);
-	void RecomputeDirection();
 	
 private:
 	Vec3f m_nextPosition;
