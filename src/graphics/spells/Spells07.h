@@ -58,9 +58,6 @@ class CLightning : public CSpellFx {
 public:
 	CLightning();
 	
-	void SetPosSrc(Vec3f);
-	void SetPosDest(Vec3f);
-	
 	void Create(Vec3f, Vec3f);
 	void Update(float timeDelta);
 	void Render();

@@ -212,23 +212,16 @@ void CLightning::BuildS(LIGHTNING * pLInfo)
 	}
 }
 
-void CLightning::SetPosSrc(Vec3f aeSrc) {
-	m_eSrc = aeSrc;
-}
-
-void CLightning::SetPosDest(Vec3f aeDest) {
-	m_eDest = aeDest;
-}
-
 float fTotoro = 0;
 float fMySize = 2;
 
 void CLightning::Create(Vec3f aeFrom, Vec3f aeTo) {
 	
 	SetDuration(ulDuration);
-	SetPosSrc(aeFrom);
-	SetPosDest(aeTo);
-
+	
+	m_eSrc = aeFrom;
+	m_eDest = aeTo;
+	
 	ReCreate(15);
 }
 
