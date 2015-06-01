@@ -294,8 +294,6 @@ void ControlTargetSpell::Update(float timeDelta) {
 	
 	ulCurrentTime += timeDelta;
 	
-	int i = 0;
-
 	GRenderer->SetCulling(Renderer::CullNone);
 	GRenderer->SetRenderState(Renderer::DepthWrite, false);
 	GRenderer->SetRenderState(Renderer::AlphaBlending, true);
@@ -318,7 +316,7 @@ void ControlTargetSpell::Update(float timeDelta) {
 	Vec3f newpos = Vec3f_ZERO;
 	Vec3f lastpos = pathways[0];
 	
-	for(i = 0; i < 9; i++) {
+	for(int i = 0; i < 9; i++) {
 		int kp		= i;
 		int kpprec	= (i > 0) ? kp - 1 : kp ;
 		int kpsuiv	= kp + 1 ;
