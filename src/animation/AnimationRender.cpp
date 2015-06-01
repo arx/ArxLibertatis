@@ -340,23 +340,17 @@ void Cedric_ApplyLightingFirstPartRefactor(Entity *io) {
 						MakePlayerAppearsFX(io);
 						AddRandomSmoke(io, 50);
 						Color3f rgb = io->_npcdata->blood_color.to<float>();
-						Sphere sp;
-						sp.origin = io->pos;
-						sp.radius = 200.f;
+						Sphere sp = Sphere(io->pos, 200.f);
+						
 						long count = 6;
-
 						while(count--) {
-							Sphere splatSphere;
-							splatSphere.origin = sp.origin;
-							splatSphere.radius = rnd() * 30.f + 30.f;
+							Sphere splatSphere = Sphere(sp.origin, rnd() * 30.f + 30.f);
 							SpawnGroundSplat(splatSphere, rgb, 1);
 							sp.origin.y -= rnd() * 150.f;
 
 							ARX_PARTICLES_Spawn_Splat(sp.origin, 200.f, io->_npcdata->blood_color);
 
-							sp.origin.x = io->pos.x + rnd() * 200.f - 100.f;
-							sp.origin.y = io->pos.y + rnd() * 20.f - 10.f;
-							sp.origin.z = io->pos.z + rnd() * 200.f - 100.f;
+							sp.origin = io->pos + Vec3f(rnd(),rnd(),rnd()) * Vec3f(200.f, 20.f,200.f) - Vec3f(100.f, 10.f, 100.f);
 							sp.radius = rnd() * 100.f + 100.f;
 						}
 
