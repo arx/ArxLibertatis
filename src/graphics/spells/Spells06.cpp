@@ -170,7 +170,7 @@ void CCreateField::Update(float timeDelta)
 
 void CCreateField::Render()
 {
-	if(!VisibleSphere(eSrc - Vec3f(0.f, 120.f, 0.f), 400.f))
+	if(!VisibleSphere(Sphere(eSrc - Vec3f(0.f, 120.f, 0.f), 400.f)))
 		return;
 
 	if(ulCurrentTime >= ulDuration)

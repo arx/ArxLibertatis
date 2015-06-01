@@ -277,19 +277,14 @@ static bool FrustrumsClipSphere(const EERIE_FRUSTRUM_DATA & frustrums,
 	return true;
 }
 
-bool VisibleSphere(const Vec3f & pos, float radius) {
+bool VisibleSphere(const Sphere & sphere) {
 	
-	if(fartherThan(pos, ACTIVECAM->orgTrans.pos, ACTIVECAM->cdepth*0.5f + radius))
+	if(fartherThan(sphere.origin, ACTIVECAM->orgTrans.pos, ACTIVECAM->cdepth*0.5f + sphere.radius))
 		return false;
 
-	long room_num = ARX_PORTALS_GetRoomNumForPosition(pos);
+	long room_num = ARX_PORTALS_GetRoomNumForPosition(sphere.origin);
 
-	if (room_num>=0)
-	{
-		Sphere sphere;
-		sphere.origin = pos;
-		sphere.radius = radius;
-							
+	if(room_num>=0) {
 		EERIE_FRUSTRUM_DATA & frustrums = RoomDraw[room_num].frustrum;
 
 		if (FrustrumsClipSphere(frustrums, sphere))

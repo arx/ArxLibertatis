@@ -386,7 +386,7 @@ void FireFieldSpell::Update(float timeDelta) {
 			el->extras=0;
 		}
 		
-		if(VisibleSphere(m_pos - Vec3f(0.f, 120.f, 0.f), 350.f)) {
+		if(VisibleSphere(Sphere(m_pos - Vec3f(0.f, 120.f, 0.f), 350.f))) {
 			
 			pPSStream.Render();
 			pPSStream1.Render();
@@ -547,7 +547,7 @@ void IceFieldSpell::Update(float timeDelta) {
 		el->extras=0;
 	}
 
-	if(!VisibleSphere(m_pos - Vec3f(0.f, 120.f, 0.f), 350.f))
+	if(!VisibleSphere(Sphere(m_pos - Vec3f(0.f, 120.f, 0.f), 350.f)))
 		return;
 	
 	RenderMaterial mat;

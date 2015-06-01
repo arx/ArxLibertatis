@@ -50,6 +50,7 @@ ZeniMax Media Inc., Suite 120, Rockville, Maryland 20850 USA.
 #include "math/Types.h"
 
 class Entity;
+struct Sphere;
 
 long ARX_PORTALS_GetRoomNumForPosition(const Vec3f & pos, long flag = 0);
 
@@ -58,6 +59,6 @@ void ARX_SCENE_Render();
 bool ARX_SCENE_PORTAL_ClipIO(Entity * io, const Vec3f & position);
 void RoomDrawRelease();
 
-bool VisibleSphere(const Vec3f & pos, float radius);
+bool VisibleSphere(const Sphere & shpere);
 
 #endif // ARX_SCENE_SCENE_H
