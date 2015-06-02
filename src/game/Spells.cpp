@@ -400,7 +400,7 @@ static void SPELLCAST_Notify(const SpellBase & spell) {
 
 static void SPELLCAST_NotifyOnlyTarget(const SpellBase & spell) {
 	
-	if(spell.m_target < 0)
+	if(!ValidIONum(spell.m_target))
 		return;
 	
 	EntityHandle source = spell.m_caster;
@@ -460,7 +460,7 @@ void ARX_SPELLS_Fizzle(SpellBase * spell) {
 	
 	spells.endSpell(spell);
 	
-	if(spell->m_caster >= PlayerEntityHandle) {
+	if(ValidIONum(spell->m_caster)) {
 		ARX_SOUND_PlaySFX(SND_MAGIC_FIZZLE, &spell->m_caster_pos);
 	}
 }

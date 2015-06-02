@@ -850,7 +850,7 @@ bool CheckEverythingInSphere(const Sphere & sphere, long source, EntityHandle ta
 	float sr180 = sphere.radius + 500.f;
 
 	for(long i = 0; i < TREATZONE_CUR; i++) {
-		if(targ > -1) {
+		if(ValidIONum(targ)) {
 			i = TREATZONE_CUR;
 			io = entities[targ];
 

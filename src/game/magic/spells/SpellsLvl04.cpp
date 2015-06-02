@@ -398,7 +398,7 @@ void CurseSpell::Launch()
 	Vec3f target = getTargetPos(m_caster, m_target);
 	if(m_target == PlayerEntityHandle) {
 		target.y -= 200.f;
-	} else if(m_target > 0 && entities[m_target]) {
+	} else if(ValidIONum(m_target)) {
 		target.y += entities[m_target]->physics.cyl.height - 50.f;
 	}
 	
@@ -419,7 +419,7 @@ void CurseSpell::Update(float timeDelta) {
 	fRot += timeDelta * 0.25f;
 	
 	Vec3f target = Vec3f_ZERO;
-	if(m_target >= PlayerEntityHandle && entities[m_target]) {
+	if(ValidIONum(m_target)) {
 		target = entities[m_target]->pos;
 
 		if(m_target == PlayerEntityHandle)

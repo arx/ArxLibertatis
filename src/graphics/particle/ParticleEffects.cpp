@@ -450,7 +450,7 @@ void ARX_PARTICLES_Spawn_Blood2(const Vec3f & pos, float dmgs, Color col, Entity
 
 void ARX_PARTICLES_Spawn_Blood(const Vec3f & pos, float dmgs, EntityHandle source) {
 	
-	if(source < 0) {
+	if(!ValidIONum(source)) {
 		return;
 	}
 	
