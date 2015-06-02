@@ -408,7 +408,7 @@ static bool IsPlayerEquipedWith(Entity * io) {
 	}
 	
 	for(long i = 0; i < MAX_EQUIPED; i++) {
-		if(player.equiped[i] == num) {
+		if(ValidIONum(player.equiped[i]) && player.equiped[i] == num) {
 			return true;
 		}
 	}
@@ -768,7 +768,7 @@ static long ARX_CHANGELEVEL_Push_Player(long level) {
 	}
 
 	for(long k = 0; k < MAX_EQUIPED; k++) {
-		if(ValidIONum(player.equiped[k]) && (player.equiped[k] > 0))
+		if(ValidIONum(player.equiped[k]))
 			storeIdString(asp->equiped[k], entities[player.equiped[k]]);
 		else
 			strcpy(asp->equiped[k], "");
@@ -1840,7 +1840,7 @@ static long ARX_CHANGELEVEL_Pop_Player() {
 		Entity * e = ConvertToValidIO(asp->equiped[i]);
 		player.equiped[i] = (e == NULL) ? EntityHandle::Invalid : e->index();
 		if(!ValidIONum(player.equiped[i])) {
-			player.equiped[i] = EntityHandle(0); // TODO inband signaling
+			player.equiped[i] = EntityHandle::Invalid;
 		}
 	}
 	

@@ -2172,7 +2172,7 @@ public:
 				case 4: eq = EQUIP_SLOT_LEGGINGS; break;
 			}
 			
-			if(player.equiped[eq] > 0) {
+			if(ValidIONum(player.equiped[eq])) {
 				Entity *io = entities[player.equiped[eq]];
 				float ratio = io->durability / io->max_durability;
 				

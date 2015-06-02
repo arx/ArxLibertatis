@@ -809,7 +809,7 @@ bool ArxGame::initGame()
 	
 	entities.init();
 	
-	memset(&player,0,sizeof(ARXCHARACTER));
+	player = ARXCHARACTER();
 	ARX_PLAYER_InitPlayer();
 	
 	CleanInventory();

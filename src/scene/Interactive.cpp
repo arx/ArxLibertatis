@@ -212,9 +212,9 @@ void ARX_INTERACTIVE_DestroyDynamicInfo(Entity * io)
 	ARX_INTERACTIVE_ForceIOLeaveZone(io, 0);
 
 	for(long i = 0; i < MAX_EQUIPED; i++) {
-		if(player.equiped[i] && player.equiped[i] == n && ValidIONum(player.equiped[i])) {
+		if(player.equiped[i] == n && ValidIONum(player.equiped[i])) {
 			ARX_EQUIPMENT_UnEquip(entities.player(), entities[player.equiped[i]], 1);
-			player.equiped[i] = EntityHandle(0); // TODO inband signaling
+			player.equiped[i] = EntityHandle::Invalid;
 		}
 	}
 	
@@ -501,7 +501,7 @@ void PrepareIOTreatZone(long flag) {
 	short sGlobalPlayerRoom = checked_range_cast<short>(PlayerRoom);
 
 	for(long i = 0; i < MAX_EQUIPED; i++) {
-		if(player.equiped[i] != PlayerEntityHandle && ValidIONum(player.equiped[i])) {
+		if(ValidIONum(player.equiped[i])) {
 			Entity *toequip = entities[player.equiped[i]];
 
 			if(toequip) {
@@ -1989,7 +1989,7 @@ bool IsEquipedByPlayer(const Entity * io)
 	EntityHandle num = io->index();
 
 	for(long i = 0; i < MAX_EQUIPED; i++) {
-		if(player.equiped[i] != PlayerEntityHandle && player.equiped[i] == num)
+		if(ValidIONum(player.equiped[i]) && player.equiped[i] == num)
 			return true;
 	}
 

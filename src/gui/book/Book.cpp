@@ -418,7 +418,7 @@ static void RenderBookPlayerCharacter() {
 	
 	player.bookAnimation[0].cur_anim = herowaitbook;
 	
-	if(player.equiped[EQUIP_SLOT_WEAPON] && ValidIONum(player.equiped[EQUIP_SLOT_WEAPON])) {
+	if(ValidIONum(player.equiped[EQUIP_SLOT_WEAPON])) {
 		if(entities[player.equiped[EQUIP_SLOT_WEAPON]]->type_flags & OBJECT_TYPE_2H) {
 			player.bookAnimation[0].cur_anim = herowait_2h;
 		}
@@ -426,7 +426,7 @@ static void RenderBookPlayerCharacter() {
 	
 	GRenderer->SetCulling(Renderer::CullNone);
 	
-	if(player.equiped[EQUIP_SLOT_ARMOR] && ValidIONum(player.equiped[EQUIP_SLOT_ARMOR])) {
+	if(ValidIONum(player.equiped[EQUIP_SLOT_ARMOR])) {
 		Entity *tod = entities[player.equiped[EQUIP_SLOT_ARMOR]];
 		if(tod) {
 			tod->bbox2D.min = Vec2f(195.f, 116.f);
@@ -439,7 +439,7 @@ static void RenderBookPlayerCharacter() {
 		}
 	}
 	
-	if(player.equiped[EQUIP_SLOT_LEGGINGS] && ValidIONum(player.equiped[EQUIP_SLOT_LEGGINGS])) {
+	if(ValidIONum(player.equiped[EQUIP_SLOT_LEGGINGS])) {
 		Entity *tod = entities[player.equiped[EQUIP_SLOT_LEGGINGS]];
 		if(tod) {
 			tod->bbox2D.min = Vec2f(218.f, 183.f);
@@ -452,7 +452,7 @@ static void RenderBookPlayerCharacter() {
 		}
 	}
 	
-	if(player.equiped[EQUIP_SLOT_HELMET] && ValidIONum(player.equiped[EQUIP_SLOT_HELMET])) {
+	if(ValidIONum(player.equiped[EQUIP_SLOT_HELMET])) {
 		Entity *tod = entities[player.equiped[EQUIP_SLOT_HELMET]];
 		if(tod) {
 			tod->bbox2D.min = Vec2f(218.f, 75.f);
@@ -469,7 +469,7 @@ static void RenderBookPlayerCharacter() {
 	TextureContainer * tc2=NULL;
 	GRenderer->SetCulling(Renderer::CullNone);
 	
-	if(player.equiped[EQUIP_SLOT_RING_LEFT] && ValidIONum(player.equiped[EQUIP_SLOT_RING_LEFT])) {
+	if(ValidIONum(player.equiped[EQUIP_SLOT_RING_LEFT])) {
 		Entity *todraw = entities[player.equiped[EQUIP_SLOT_RING_LEFT]];
 		
 		tc = todraw->inv;
@@ -498,7 +498,7 @@ static void RenderBookPlayerCharacter() {
 	
 	tc2=NULL;
 	
-	if(player.equiped[EQUIP_SLOT_RING_RIGHT] && ValidIONum(player.equiped[EQUIP_SLOT_RING_RIGHT])) {
+	if(ValidIONum(player.equiped[EQUIP_SLOT_RING_RIGHT])) {
 		Entity *todraw = entities[player.equiped[EQUIP_SLOT_RING_RIGHT]];
 		
 		tc = todraw->inv;

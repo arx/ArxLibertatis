@@ -170,7 +170,6 @@ void ARX_THROWN_OBJECT_Throw(EntityHandle source, const Vec3f & position, const 
 	thrownObj->flags |= ATO_EXIST | ATO_MOVING;
 	
 	if(source == 0
-	   && player.equiped[EQUIP_SLOT_WEAPON] != PlayerEntityHandle
 	   && ValidIONum(player.equiped[EQUIP_SLOT_WEAPON])
 	) {
 		Entity * tio = entities[player.equiped[EQUIP_SLOT_WEAPON]];
@@ -253,7 +252,7 @@ static float ARX_THROWN_ComputeDamages(long thrownum, EntityHandle source,
 	}
 
 	if(io_target == entities.player()) {
-		if(player.equiped[EQUIP_SLOT_ARMOR] > 0) {
+		if(ValidIONum(player.equiped[EQUIP_SLOT_ARMOR])) {
 			Entity * io = entities[player.equiped[EQUIP_SLOT_ARMOR]];
 			if(io && !io->armormaterial.empty()) {
 				amat = &io->armormaterial;

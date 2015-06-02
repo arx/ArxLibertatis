@@ -661,7 +661,7 @@ void ManageNONCombatModeAnimations() {
 	if(player.Current_Movement & (PLAYER_LEAN_LEFT | PLAYER_LEAN_RIGHT))
 		return;
 
-	if(player.equiped[EQUIP_SLOT_SHIELD] != PlayerEntityHandle && !BLOCK_PLAYER_CONTROLS) {
+	if(ValidIONum(player.equiped[EQUIP_SLOT_SHIELD]) && !BLOCK_PLAYER_CONTROLS) {
 		if ( (useanim3->cur_anim==NULL)  ||
 			( (useanim3->cur_anim!=alist[ANIM_SHIELD_CYCLE])
 			&& (useanim3->cur_anim!=alist[ANIM_SHIELD_HIT])
@@ -747,7 +747,7 @@ static void strikeSpeak(Entity * io) {
 	
 	const std::string * str;
 	EntityHandle equiped = player.equiped[EQUIP_SLOT_WEAPON];
-	if(equiped != PlayerEntityHandle && !entities[equiped]->strikespeech.empty()) {
+	if(ValidIONum(equiped) && !entities[equiped]->strikespeech.empty()) {
 		str = &entities[equiped]->strikespeech;
 	} else if(!io->strikespeech.empty()) {
 		str = &io->strikespeech;

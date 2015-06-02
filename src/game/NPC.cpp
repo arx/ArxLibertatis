@@ -2836,7 +2836,7 @@ void ARX_NPC_NeedStepSound(Entity * io, const Vec3f & pos, const float volume, c
 		step_material = &io->stepmaterial;
 	}
 	
-	if(io == entities.player() && player.equiped[EQUIP_SLOT_LEGGINGS] > 0) {
+	if(io == entities.player()) {
 		if(ValidIONum(player.equiped[EQUIP_SLOT_LEGGINGS])) {
 			Entity * ioo = entities[player.equiped[EQUIP_SLOT_LEGGINGS]];
 			if(!ioo->stepmaterial.empty()) {

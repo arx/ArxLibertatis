@@ -1723,10 +1723,7 @@ void ArxGame::manageKeyMouse() {
 
 		if(pIO && g_cursorOverBook) {
 			for(long i = 0; i < MAX_EQUIPED; i++) {
-				if(player.equiped[i] != PlayerEntityHandle
-				   && ValidIONum(player.equiped[i])
-				   && entities[player.equiped[i]] == pIO
-				) {
+				if(ValidIONum(player.equiped[i]) && entities[player.equiped[i]] == pIO) {
 					FlyingOverIO = pIO;
 				}
 			}

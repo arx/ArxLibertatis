@@ -1794,6 +1794,7 @@ void ARX_PLAYER_InitPlayer() {
 	player.gold = 0;
 	player.bag = 1;
 	player.doingmagic = 0;
+	
 	ARX_PLAYER_MakeFreshHero();
 }
 

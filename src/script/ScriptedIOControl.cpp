@@ -136,7 +136,7 @@ public:
 				reInsert = false;
 			}
 			for(int i = 0; i < MAX_EQUIPED; i++) {
-				if(player.equiped[i] != PlayerEntityHandle && ValidIONum(player.equiped[i])) {
+				if(ValidIONum(player.equiped[i])) {
 					if(entities[player.equiped[i]] == ioo) {
 						// the init script was sneaky and equiped the item
 						reInsert = false;
@@ -149,7 +149,7 @@ public:
 					insertIntoInventory(ioo, oldPos);
 				} else {
 					for(int i = 0; i < MAX_EQUIPED; i++) {
-						if(player.equiped[i] != PlayerEntityHandle && ValidIONum(player.equiped[i])) {
+						if(ValidIONum(player.equiped[i])) {
 							if(entities[player.equiped[i]] == io) {
 								ARX_EQUIPMENT_UnEquip(entities.player(), io, 1);
 								ARX_EQUIPMENT_Equip(entities.player(), ioo);
