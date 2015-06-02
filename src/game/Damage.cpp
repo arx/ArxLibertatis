@@ -760,7 +760,7 @@ float ARX_DAMAGES_DamageNPC(Entity * io, float dmg, EntityHandle source, bool is
 		io->ouch_time = (unsigned long)(arxtime);
 		char tex[32];
 
-		if(EVENT_SENDER && EVENT_SENDER->summoner == 0) {
+		if(EVENT_SENDER && EVENT_SENDER->summoner == PlayerEntityHandle) {
 			EVENT_SENDER = entities.player();
 			sprintf(tex, "%5.2f summoned", io->dmg_sum);
 		} else {
@@ -845,7 +845,7 @@ float ARX_DAMAGES_DamageNPC(Entity * io, float dmg, EntityHandle source, bool is
 				else
 					sprintf(dmm, "%f", dmg);
 
-				if(EVENT_SENDER && EVENT_SENDER->summoner == 0) {
+				if(EVENT_SENDER && EVENT_SENDER->summoner == PlayerEntityHandle) {
 					EVENT_SENDER = entities.player();
 					sprintf(dmm, "%f summoned", dmg);
 				}
@@ -879,7 +879,7 @@ float ARX_DAMAGES_DamageNPC(Entity * io, float dmg, EntityHandle source, bool is
 				long xp = io->_npcdata->xpvalue;
 				ARX_DAMAGES_ForceDeath(io, entities[source]);
 
-				if(source == 0 || entities[source]->summoner == 0)
+				if(source == 0 || entities[source]->summoner == PlayerEntityHandle)
 					ARX_PLAYER_Modify_XP(xp);
 			}
 			else ARX_DAMAGES_ForceDeath(io, NULL);

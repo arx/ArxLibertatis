@@ -959,7 +959,7 @@ void RestoreInitialIOStatusOfIO(Entity * io)
 		io->show = SHOW_FLAG_IN_SCENE;
 		io->targetinfo = EntityHandle(TARGET_NONE);
 		io->spellcast_data.castingspell = SPELL_NONE;
-		io->summoner = -1;
+		io->summoner = EntityHandle::Invalid;
 		io->spark_n_blood = 0;
 
 		if(io->ioflags & IO_NPC) {

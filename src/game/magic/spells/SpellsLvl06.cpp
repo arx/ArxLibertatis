@@ -212,8 +212,7 @@ void RiseDeadSpell::Update(float timeDelta) {
 				ARX_INTERACTIVE_HideGore(io);
 				RestoreInitialIOStatusOfIO(io);
 				
-				long lSpellsCaster = m_caster;
-				io->summoner = checked_range_cast<short>(lSpellsCaster);
+				io->summoner = m_caster;
 				
 				io->ioflags|=IO_NOSAVE;
 				m_entity = io->index();

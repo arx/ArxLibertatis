@@ -231,8 +231,7 @@ void SummonCreatureSpell::Update(float timeDelta)
 				if(io) {
 					RestoreInitialIOStatusOfIO(io);
 					
-					long lSpellsCaster = m_caster ; 
-					io->summoner = checked_range_cast<short>(lSpellsCaster);
+					io->summoner = m_caster;
 
 					io->scriptload = 1;
 					

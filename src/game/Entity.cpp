@@ -188,7 +188,7 @@ Entity::Entity(const res::path & classPath, EntityInstance instance)
 	shop_multiply = 1.f;
 	isHit = false;
 	inzone_show = 0;
-	summoner = 0;
+	summoner = EntityHandle::Invalid;
 	spark_n_blood = 0;
 
 	special_color = Color3f::white;
