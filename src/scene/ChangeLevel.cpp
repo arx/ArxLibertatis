@@ -767,10 +767,8 @@ static long ARX_CHANGELEVEL_Push_Player(long level) {
 		}
 	}
 
-	for (long k = 0; k < MAX_EQUIPED; k++)
-	{
-		if (ValidIONum(player.equiped[k])
-				&&	(player.equiped[k] > 0))
+	for(long k = 0; k < MAX_EQUIPED; k++) {
+		if(ValidIONum(player.equiped[k]) && (player.equiped[k] > 0))
 			storeIdString(asp->equiped[k], entities[player.equiped[k]]);
 		else
 			strcpy(asp->equiped[k], "");
