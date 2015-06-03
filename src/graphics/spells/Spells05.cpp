@@ -506,20 +506,18 @@ void CLevitate::Render()
 		return;
 	
 	//calcul du cone
-	TexturedVertex *d3dv;
-	Vec3f	* vertex;
-	int			nb, nbc, col;
+	int			col;
 	float		ddu = m_ang;
 	float		u = ddu, du = .99999999f / (float)m_def;
 
 	if(m_key == 1)
 		m_coneScale = 1.f;
 	
-	nbc = 2;
+	int nbc = 2;
 	while(nbc--) {
-		vertex = m_cone[nbc].conevertex;
-		d3dv = m_cone[nbc].coned3d;
-		nb = (m_cone[nbc].conenbvertex) >> 1;
+		Vec3f * vertex = m_cone[nbc].conevertex;
+		TexturedVertex * d3dv = m_cone[nbc].coned3d;
+		int nb = (m_cone[nbc].conenbvertex) >> 1;
 		
 		while(nb) {
 			Vec3f d3dvs;
