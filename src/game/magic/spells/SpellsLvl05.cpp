@@ -178,7 +178,7 @@ void LevitateSpell::Launch()
 	}
 	
 	m_pSpellFx = new CLevitate();
-	m_pSpellFx->Create(16, 50.f, 100.f, 80.f, &target, m_duration);
+	m_pSpellFx->Create(&target, m_duration);
 	m_duration = m_pSpellFx->GetDuration();
 	
 	m_snd_loop = ARX_SOUND_PlaySFX(SND_SPELL_LEVITATE_LOOP,

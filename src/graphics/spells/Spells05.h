@@ -61,7 +61,7 @@ public:
 		this->m_pos = *pos;
 	};
 	
-	void Create(int def, float rout, float rhaut, float hauteur, Vec3f * pos, unsigned long);
+	void Create(Vec3f * pos, unsigned long);
 	void Update(float timeDelta);
 	void Render();
 	

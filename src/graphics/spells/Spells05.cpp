@@ -403,13 +403,15 @@ void CLevitate::CreateConeStrip(float rbase, float rhaut, float hauteur, int def
 	}
 }
 
-void CLevitate::Create(int def, float rbase, float rhaut, float hauteur, Vec3f * pos, unsigned long _ulDuration)
+void CLevitate::Create(Vec3f * pos, unsigned long _ulDuration)
 {
 	SetDuration(_ulDuration);
-
-	if(def < 3)
-		return;
-
+	
+	int def = 16;
+	float rbase = 50.f;
+	float rhaut = 100.f;
+	float hauteur = 80.f;
+	
 	CreateConeStrip(rbase, rhaut, hauteur, def, 0);
 	CreateConeStrip(rbase, rhaut * 1.5f, hauteur * 0.5f, def, 1);
 
