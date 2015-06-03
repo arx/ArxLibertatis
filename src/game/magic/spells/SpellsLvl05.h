@@ -42,14 +42,19 @@ private:
 
 class LevitateSpell : public SpellBase {
 public:
-	~LevitateSpell();
-	
 	void Launch();
 	void End();
 	void Update(float timeDelta);
 	
 private:
-	CLevitate * m_pSpellFx;
+	unsigned long ulCurrentTime;
+	Vec3f m_pos;
+	float m_baseRadius;
+	RotatingCone cone1;
+	RotatingCone cone2;
+	FloatingStones m_stones;
+	
+	void createDustParticle();
 };
 
 class CurePoisonSpell : public SpellBase {

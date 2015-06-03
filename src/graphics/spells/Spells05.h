@@ -50,35 +50,6 @@ ZeniMax Media Inc., Suite 120, Rockville, Maryland 20850 USA.
 #include "graphics/particle/ParticleSystem.h"
 
 
-// Done By : Sébastien Scieux
-class CLevitate : public CSpellFx {
-	
-public:
-	CLevitate();
-	~CLevitate();
-	
-	void ChangePos(Vec3f * pos)
-	{
-		this->m_pos = *pos;
-	};
-	
-	void Create(Vec3f * pos, unsigned long);
-	void Update(float timeDelta);
-	void Render();
-	
-private:
-	Vec3f m_pos;
-	float m_baseRadius;
-	float m_coneScale;
-	
-	RotatingCone cone1;
-	RotatingCone cone2;
-	
-	FloatingStones m_stones;
-	
-	void createDustParticle();
-};
-
 // Done By : Didier Pédreno
 class CPoisonProjectile : public CSpellFx {
 	

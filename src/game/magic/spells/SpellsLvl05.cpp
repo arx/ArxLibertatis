@@ -149,11 +149,6 @@ Vec3f RuneOfGuardingSpell::getPosition() {
 }
 
 
-LevitateSpell::~LevitateSpell() {
-	
-	delete m_pSpellFx;
-}
-
 void LevitateSpell::Launch()
 {
 	spells.endByCaster(m_caster, SPELL_LEVITATE);
@@ -177,9 +172,16 @@ void LevitateSpell::Launch()
 		target = entities[m_target]->pos;
 	}
 	
-	m_pSpellFx = new CLevitate();
-	m_pSpellFx->Create(&target, m_duration);
-	m_duration = m_pSpellFx->GetDuration();
+	m_pos = target;
+	
+	
+	m_baseRadius = 50.f;
+	float rhaut = 100.f;
+	float hauteur = 80.f;
+	
+	cone1.Init(m_baseRadius, rhaut, hauteur);
+	cone2.Init(m_baseRadius, rhaut * 1.5f, hauteur * 0.5f);
+	m_stones.Init(m_baseRadius);
 	
 	m_snd_loop = ARX_SOUND_PlaySFX(SND_SPELL_LEVITATE_LOOP,
 	                                       &entities[m_target]->pos, 0.7f,
@@ -196,12 +198,11 @@ void LevitateSpell::End()
 	
 	if(m_target == PlayerEntityHandle)
 		player.levitate = false;
-	
-	delete m_pSpellFx;
-	m_pSpellFx = NULL;
 }
 
 void LevitateSpell::Update(float timeDelta) {
+	
+	ulCurrentTime += timeDelta;
 	
 	Vec3f target;
 
@@ -211,15 +212,53 @@ void LevitateSpell::Update(float timeDelta) {
 	} else {
 		target = entities[m_caster]->pos;
 	}
-
-	m_pSpellFx->ChangePos(&target);
 	
-	if(m_pSpellFx) {
-		m_pSpellFx->Update(timeDelta);
-		m_pSpellFx->Render();
+	m_pos = target;
+	
+	float coneScale = 0.f;
+	int dustParticles = 0;
+	
+	if(ulCurrentTime < 1000) {
+		coneScale = (float) ulCurrentTime / 1000.f;
+		dustParticles = 3;
+	} else {
+		coneScale = 1.f;
+		dustParticles = 10;
 	}
 	
+	cone1.Update(timeDelta, m_pos, coneScale);
+	cone2.Update(timeDelta, m_pos, coneScale);
+	
+	m_stones.Update(timeDelta, m_pos);
+	
+	for(int i = 0; i < dustParticles; i++) {
+		createDustParticle();
+	}
+	
+	cone1.Render();
+	cone2.Render();
+	m_stones.DrawStone();
+	
 	ARX_SOUND_RefreshPosition(m_snd_loop, entities[m_target]->pos);
+}
+
+void LevitateSpell::createDustParticle() {
+	
+	PARTICLE_DEF * pd = createParticle();
+	if(!pd) {
+		return;
+	}
+	
+	float a = glm::radians(360.f * rnd());
+	pd->ov = m_pos + Vec3f(m_baseRadius * std::cos(a), 0.f, m_baseRadius * std::sin(a));
+	float t = fdist(pd->ov, m_pos);
+	pd->move = Vec3f((5.f + 5.f * rnd()) * ((pd->ov.x - m_pos.x) / t), 3.f * rnd(),
+	                 (5.f + 5.f * rnd()) * ((pd->ov.z - m_pos.z) / t));
+	pd->siz = 30.f + 30.f * rnd();
+	pd->tolive = 3000;
+	pd->timcreation = -(long(arxtime) + 3000l); // TODO WTF
+	pd->special = FIRE_TO_SMOKE | FADE_IN_AND_OUT | ROTATING | MODULATE_ROTATION | DISSIPATING;
+	pd->fparam = 0.0000001f;
 }
 
 
