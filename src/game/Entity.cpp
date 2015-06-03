@@ -90,7 +90,7 @@ Entity::Entity(const res::path & classPath, EntityInstance instance)
 	forcedmove = Vec3f_ZERO;
 	
 	angle = Anglef::ZERO;
-	std::memset(&physics, 0, sizeof(IO_PHYSICS)); // TODO use constructor
+	physics = IO_PHYSICS();
 	room = -1;
 	requestRoomUpdate = 1;
 	original_height = 0.f;
@@ -138,8 +138,8 @@ Entity::Entity(const res::path & classPath, EntityInstance instance)
 	dynlight = LightHandle::Invalid;
 	lastspeechflag = 2;
 	inzone = NULL;
-	std::memset(&halo, 0, sizeof(IO_HALO)); // TODO use constructor
-	std::memset(&halo_native, 0, sizeof(IO_HALO)); // TODO use constructor
+	halo = IO_HALO();
+	halo_native = IO_HALO();
 	halo_native.color = Color3f(0.2f, 0.5f, 1.f);
 	halo_native.radius = 45.f;
 	halo_native.flags = 0;
@@ -160,7 +160,7 @@ Entity::Entity(const res::path & classPath, EntityInstance instance)
 	ouch_time = 0;
 	dmg_sum = 0.f;
 	
-	std::memset(&spellcast_data, 0, sizeof(IO_SPELLCAST_DATA));
+	spellcast_data = IO_SPELLCAST_DATA();
 	flarecount = 0;
 	no_collide = EntityHandle::Invalid;
 	invisibility = 0.f;
