@@ -728,6 +728,7 @@ set(GRAPHICS_SOURCES
 	src/graphics/effects/Fog.cpp
 	src/graphics/effects/SpellEffects.cpp
 	src/graphics/effects/Halo.cpp
+	src/graphics/effects/RotatingCone.cpp
 	src/graphics/effects/Trail.cpp
 	src/graphics/font/Font.cpp
 	src/graphics/font/FontCache.cpp

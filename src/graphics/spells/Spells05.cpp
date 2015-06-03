@@ -348,133 +348,50 @@ void CPoisonProjectile::Render() {
 //-----------------------------------------------------------------------------
 
 CLevitate::CLevitate()
-	: m_key(0)
-	, m_def(16)
-	, m_pos(Vec3f_ZERO)
+	: m_pos(Vec3f_ZERO)
 	, m_baseRadius(50.f)
-	, m_rhaut(100.f)
-	, m_hauteur(80.f)
 	, m_coneScale(0.f)
-	, m_ang(0.f)
-	, m_currdurationang(0)
-	, m_tsouffle(NULL)
-{
-	int nb = 2;
-
-	while(nb--) {
-		m_cone[nb].coned3d = NULL;
-		m_cone[nb].coneind = NULL;
-		m_cone[nb].conevertex = NULL;
-	}
-}
+{}
 
 CLevitate::~CLevitate() {
-}
-
-void CLevitate::CreateConeStrip(float rbase, float rhaut, float hauteur, int def, int numcone) {
-	
-	T_CONE & c = m_cone[numcone];
-	
-	free(c.coned3d);
-	free(c.conevertex);
-	free(c.coneind);
-	
-	c.conenbvertex = def * 2 + 2;
-	c.conenbfaces = def * 2 + 2;
-	c.coned3d = (TexturedVertex *)malloc(c.conenbvertex * sizeof(TexturedVertex));
-	c.conevertex = (Vec3f *)malloc(c.conenbvertex * sizeof(Vec3f));
-	c.coneind = (unsigned short *)malloc(c.conenbvertex * sizeof(unsigned short));
-	
-	Vec3f * vertex = c.conevertex;
-	unsigned short * pind = c.coneind;
-	unsigned short ind = 0;
-	int nb;
-	float a = 0.f;
-	float da = 360.f / (float)def;
-	nb = m_cone[numcone].conenbvertex >> 1;
-	
-	while(nb) {
-		*pind++ = ind++;
-		*pind++ = ind++;
-		*vertex++ = Vec3f(rhaut * std::cos(glm::radians(a)), -hauteur, rhaut * std::sin(glm::radians(a)));
-		*vertex++ = Vec3f(rbase * std::cos(glm::radians(a)), 0.f, rbase * std::sin(glm::radians(a)));
-		a += da;
-		nb--;
-	}
 }
 
 void CLevitate::Create(Vec3f * pos, unsigned long _ulDuration)
 {
 	SetDuration(_ulDuration);
 	
-	int def = 16;
 	float rbase = 50.f;
 	float rhaut = 100.f;
 	float hauteur = 80.f;
 	
-	CreateConeStrip(rbase, rhaut, hauteur, def, 0);
-	CreateConeStrip(rbase, rhaut * 1.5f, hauteur * 0.5f, def, 1);
-
-	m_key = 0;
+	cone1.Init(rbase, rhaut, hauteur);
+	cone2.Init(rbase, rhaut * 1.5f, hauteur * 0.5f);
+	
 	m_pos = *pos;
 	m_baseRadius = rbase;
-	m_rhaut = rhaut;
-	m_hauteur = hauteur;
-	m_currdurationang = 0;
 	m_coneScale = 0.f;
-	m_ang = 0.f;
-	m_def = (short)def;
-	m_tsouffle = TextureContainer::Load("graph/obj3d/textures/(fx)_sebsouffle");
 
 	m_stones.Init(m_baseRadius);
 }
 
 void CLevitate::Update(float timeDelta) {
 	
-	m_stones.Update(timeDelta, m_pos);
-	
-	if(!arxtime.is_paused()) {
-		m_currdurationang += timeDelta;
-		ulCurrentTime += timeDelta;
-	}
-	
-	//animation cone
-	m_ang = (float)m_currdurationang / 1000.f;
-
-	if(m_ang > 1.f) {
-		m_currdurationang = 0;
-		m_ang = 1.f;
-	}
+	ulCurrentTime += timeDelta;
 	
 	int dustParticles = 0;
 	
-	switch(m_key) {
-		case 0: {
-			//monté du cone
-			float a = (float) ulCurrentTime / 1000.f;
-
-			if(a > 1.f) {
-				a = 0.f;
-				m_key++;
-			}
-
-			m_coneScale = a;
-			
-			dustParticles = 3;
-			break;
-		}
-		case 1:
-			//animation cone
-			m_coneScale = (float)ulCurrentTime / (float)ulDuration;
-
-			if(ulCurrentTime >= ulDuration) {
-				m_coneScale = 1.f;
-				m_key++;
-			}
-			
-			dustParticles = 10;
-			break;
+	if(ulCurrentTime < 1000) {
+		m_coneScale = (float) ulCurrentTime / 1000.f;
+		dustParticles = 3;
+	} else {
+		m_coneScale = 1.f;
+		dustParticles = 10;
 	}
+	
+	cone1.Update(timeDelta, m_pos, m_coneScale);
+	cone2.Update(timeDelta, m_pos, m_coneScale);
+	
+	m_stones.Update(timeDelta, m_pos);
 	
 	for(int i = 0; i < dustParticles; i++) {
 		createDustParticle();
@@ -500,108 +417,10 @@ void CLevitate::createDustParticle()
 	pd->fparam = 0.0000001f;
 }
 
-void CLevitate::Render()
-{
-	if(m_key > 1)
-		return;
+void CLevitate::Render() {
 	
-	//calcul du cone
-	int			col;
-	float		ddu = m_ang;
-	float		u = ddu, du = .99999999f / (float)m_def;
-
-	if(m_key == 1)
-		m_coneScale = 1.f;
-	
-	int nbc = 2;
-	while(nbc--) {
-		Vec3f * vertex = m_cone[nbc].conevertex;
-		TexturedVertex * d3dv = m_cone[nbc].coned3d;
-		int nb = (m_cone[nbc].conenbvertex) >> 1;
-		
-		while(nb) {
-			Vec3f d3dvs;
-			d3dvs.x = m_pos.x + (vertex + 1)->x + ((vertex->x - (vertex + 1)->x) * m_coneScale);
-			d3dvs.y = m_pos.y + (vertex + 1)->y + ((vertex->y - (vertex + 1)->y) * m_coneScale);
-			d3dvs.z = m_pos.z + (vertex + 1)->z + ((vertex->z - (vertex + 1)->z) * m_coneScale);
-			
-			d3dv->p = EE_RT(d3dvs);
-			col = Random::get(0, 80);
-			
-			if(!arxtime.is_paused())
-				d3dv->color = Color::grayb(col).toRGB(col);
-			
-			d3dv->uv.x = u;
-			d3dv->uv.y = 0.f;
-			vertex++;
-			d3dv++;
-			
-			d3dvs.x = m_pos.x + vertex->x;
-			d3dvs.y = m_pos.y;
-			d3dvs.z = m_pos.z + vertex->z;
-			
-			d3dv->p = EE_RT(d3dvs);
-			col = Random::get(0, 80);
-			
-			if(!arxtime.is_paused())
-				d3dv->color = Color::black.toRGB(col);
-			
-			d3dv->uv.x = u;
-			d3dv->uv.y = 1.f;
-			vertex++;
-			d3dv++;
-			
-			u += du;
-			nb--;
-		}
-		
-		u = ddu;
-		du = -du;
-	}
-	
-	//tracé du cone back
-	
-	RenderMaterial mat;
-	mat.setDepthTest(true);
-	mat.setBlendType(RenderMaterial::Additive);
-	mat.setWrapMode(TextureStage::WrapMirror);
-	mat.setTexture(m_tsouffle);
-	mat.setCulling(Renderer::CullCW);
-	
-	int i = m_cone[1].conenbfaces - 2;
-	int j = 0;
-
-	while(i--) {
-		drawTriangle(mat, &m_cone[1].coned3d[j]);
-		j++;
-	}
-
-	i = m_cone[0].conenbfaces - 2;
-	j = 0;
-
-	while(i--) {
-		drawTriangle(mat, &m_cone[0].coned3d[j]);
-		j++;
-	}
-
-	//tracé du cone front
-	mat.setCulling(Renderer::CullCCW);
-	
-	i = m_cone[1].conenbfaces - 2;
-	j = 0;
-
-	while(i--) {
-		drawTriangle(mat, &m_cone[1].coned3d[j]);
-		j++;
-	}
-
-	i = m_cone[0].conenbfaces - 2;
-	j = 0;
-
-	while(i--) {
-		drawTriangle(mat, &m_cone[0].coned3d[j]);
-		j++;
-	}
+	cone1.Render();
+	cone2.Render();
 	
 	m_stones.DrawStone();
 }
