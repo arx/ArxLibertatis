@@ -602,8 +602,7 @@ extern EERIE_CAMERA raycam;
 
 static bool RayIn3DPolyNoCull(const Vec3f & orgn, const Vec3f & dest, EERIEPOLY * epp) {
 
-	EERIEPOLY ep;
-	memcpy(&ep, epp, sizeof(EERIEPOLY));
+	EERIEPOLY ep = *epp;
 	raycam.orgTrans.pos = orgn;
 	raycam.setTargetCamera(dest);
 	SP_PrepareCamera(&raycam);
