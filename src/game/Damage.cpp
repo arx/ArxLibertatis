@@ -622,6 +622,8 @@ static void ARX_DAMAGES_PushIO(Entity * io_target, EntityHandle source, float po
 		Vec3f vect = io_target->pos - io->pos;
 		vect = glm::normalize(vect);
 		vect *= power;
+		arx_assert(isallfinite(vect));
+		
 		if(io_target == entities.player()) {
 			PUSH_PLAYER_FORCE = vect; // TODO why not +=?
 		} else {

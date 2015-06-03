@@ -1257,6 +1257,9 @@ static void StoreEntityMovement(Entity * io, Vec3f & ftr, float scale) {
 
 		io->lastmove = ftr2;
 	}
+	
+	arx_assert(isallfinite(io->move));
+	arx_assert(isallfinite(io->lastmove));
 }
 
 /*!
