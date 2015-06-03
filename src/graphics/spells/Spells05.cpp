@@ -512,10 +512,10 @@ void CLevitate::Render()
 	float		ddu = m_ang;
 	float		u = ddu, du = .99999999f / (float)m_def;
 
-	switch(m_key) {
-		case 0:
+	if(m_key == 1)
+		m_coneScale = 1.f;
+	
 			nbc = 2;
-
 			while(nbc--) {
 				vertex = m_cone[nbc].conevertex;
 				d3dv = m_cone[nbc].coned3d;
@@ -560,53 +560,7 @@ void CLevitate::Render()
 				u = ddu;
 				du = -du;
 			}
-			break;
-		case 1:
-			nbc = 2;
 
-			while(nbc--) {
-				vertex = m_cone[nbc].conevertex;
-				d3dv = m_cone[nbc].coned3d;
-				nb = (m_cone[nbc].conenbvertex) >> 1;
-
-				while(nb) {
-					Vec3f d3dvs = m_pos + *vertex;
-	
-					d3dv->p = EE_RT(d3dvs);
-					col = Random::get(0, 80);
-
-					if(!arxtime.is_paused())
-						d3dv->color = Color::grayb(col).toRGB(col);
-
-					d3dv->uv.x = u;
-					d3dv->uv.y = 0.f;
-					vertex++;
-					d3dv++;
-
-					d3dvs.x = m_pos.x + vertex->x;
-					d3dvs.y = m_pos.y;
-					d3dvs.z = m_pos.z + vertex->z;
-
-					d3dv->p = EE_RT(d3dvs);
-					col = Random::get(0, 80);
-
-					if(!arxtime.is_paused())
-						d3dv->color = Color::black.toRGB(col);
-
-					d3dv->uv.x = u;
-					d3dv->uv.y = 1.f;
-					vertex++;
-					d3dv++;
-
-					u += du;
-					nb--;
-				}
-
-				u = ddu;
-				du = -du;
-			}
-			break;
-	}
 
 	//tracé du cone back
 	
