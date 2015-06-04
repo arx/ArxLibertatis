@@ -465,10 +465,6 @@ CSummonCreature::CSummonCreature()
 	tex_light = TextureContainer::Load("graph/obj3d/textures/(fx)_tsu4");
 }
 
-unsigned long CSummonCreature::GetDuration() {
-	return (ulDurationIntro + ulDurationRender + ulDurationOuttro);
-}
-
 void CSummonCreature::Create(Vec3f aeSrc, float afBeta)
 {
 	SetDuration(ulDurationIntro, ulDurationRender, ulDurationOuttro);
