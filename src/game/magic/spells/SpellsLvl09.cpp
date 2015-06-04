@@ -279,11 +279,6 @@ void SummonCreatureSpell::Update(float timeDelta) {
 	}
 }
 
-FakeSummonSpell::~FakeSummonSpell() {
-	
-	delete m_pSpellFx;
-}
-
 bool FakeSummonSpell::CanLaunch()
 {
 	if(m_caster <= PlayerEntityHandle || !ValidIONum(m_target)) {
@@ -306,23 +301,22 @@ void FakeSummonSpell::Launch()
 	m_targetPos = target;
 	ARX_SOUND_PlaySFX(SND_SPELL_SUMMON_CREATURE, &m_targetPos);
 	
-	m_pSpellFx = new CSummonCreature();
-	m_pSpellFx->Create(target, MAKEANGLE(player.angle.getPitch()));
-	m_pSpellFx->SetDuration(2000, 500, 1500);
-	m_pSpellFx->SetColorBorder(Color3f::red);
-	m_pSpellFx->SetColorRays1(Color3f::red);
-	m_pSpellFx->SetColorRays2(Color3f::yellow * .5f);
+	m_fissure.Create(target, MAKEANGLE(player.angle.getPitch()));
+	m_fissure.SetDuration(2000, 500, 1500);
+	m_fissure.SetColorBorder(Color3f::red);
+	m_fissure.SetColorRays1(Color3f::red);
+	m_fissure.SetColorRays2(Color3f::yellow * .5f);
 	
-	m_pSpellFx->lLightId = GetFreeDynLight();
+	m_fissure.lLightId = GetFreeDynLight();
 	
-	if(lightHandleIsValid(m_pSpellFx->lLightId)) {
-		EERIE_LIGHT * light = lightHandleGet(m_pSpellFx->lLightId);
+	if(lightHandleIsValid(m_fissure.lLightId)) {
+		EERIE_LIGHT * light = lightHandleGet(m_fissure.lLightId);
 		
 		light->intensity = 0.3f;
 		light->fallend = 500.f;
 		light->fallstart = 400.f;
 		light->rgb = Color3f::red;
-		light->pos = m_pSpellFx->m_eSrc;
+		light->pos = m_fissure.m_eSrc;
 	}
 }
 
@@ -330,27 +324,20 @@ void FakeSummonSpell::End()
 {
 	ARX_SOUND_PlaySFX(SND_SPELL_ELECTRIC, &m_targetPos);
 	
-	lightHandleDestroy(m_pSpellFx->lLightId);
-	
-	delete m_pSpellFx;
-	m_pSpellFx = NULL;
+	lightHandleDestroy(m_fissure.lLightId);
 }
 
 void FakeSummonSpell::Update(float timeDelta)
 {
 	if(!arxtime.is_paused()) {
 		if(rnd() > 0.7f) {
-			if(m_pSpellFx) {
-				Vec3f pos = m_pSpellFx->m_eSrc;
-				MakeCoolFx(pos);
-			}
+			Vec3f pos = m_fissure.m_eSrc;
+			MakeCoolFx(pos);
 		}
 	}
 	
-	if(m_pSpellFx) {
-		m_pSpellFx->Update(timeDelta);
-		m_pSpellFx->Render();
-	}	
+	m_fissure.Update(timeDelta);
+	m_fissure.Render();
 }
 
 

@@ -46,15 +46,13 @@ private:
 
 class FakeSummonSpell : public SpellBase {
 public:
-	~FakeSummonSpell();
-	
 	bool CanLaunch();
 	void Launch();
 	void End();
 	void Update(float timeDelta);
 	
 private:
-	CSummonCreature * m_pSpellFx;
+	CSummonCreature m_fissure;
 	Vec3f m_targetPos;
 };
 
