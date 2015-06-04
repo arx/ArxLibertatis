@@ -158,9 +158,11 @@ void SummonCreatureSpell::End()
 	m_pSpellFx = NULL;
 }
 
-void SummonCreatureSpell::Update(float timeDelta)
-{
-	if(!arxtime.is_paused()) {
+void SummonCreatureSpell::Update(float timeDelta) {
+	
+	if(arxtime.is_paused())
+		return;
+	
 		if(float(arxtime) - (float)m_timcreation <= 4000) {
 			if(rnd() > 0.7f) {
 				if(m_pSpellFx) {
@@ -275,7 +277,6 @@ void SummonCreatureSpell::Update(float timeDelta)
 		} else if(m_longinfo2_entity <= PlayerEntityHandle) {
 			m_duration = 0;
 		}
-	}	
 }
 
 FakeSummonSpell::~FakeSummonSpell() {
