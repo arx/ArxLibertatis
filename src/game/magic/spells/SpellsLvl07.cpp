@@ -627,19 +627,13 @@ Vec3f IceFieldSpell::getPosition() {
 }
 
 
-LightningStrikeSpell::~LightningStrikeSpell() {
+void LightningStrikeSpell::Launch() {
 	
-	delete m_pSpellFx;
-}
-
-void LightningStrikeSpell::Launch()
-{
-	m_pSpellFx = new CLightning();
 	Vec3f target(0.f, 0.f, -500.f);
-	m_pSpellFx->Create(Vec3f_ZERO, target);
-	m_pSpellFx->SetDuration(long(500 * m_level));
-	m_pSpellFx->m_isMassLightning = false;
-	m_duration = m_pSpellFx->GetDuration();
+	m_lightning.Create(Vec3f_ZERO, target);
+	m_lightning.SetDuration(long(500 * m_level));
+	m_lightning.m_isMassLightning = false;
+	m_duration = m_lightning.GetDuration();
 	
 	ARX_SOUND_PlaySFX(SND_SPELL_LIGHTNING_START, &m_caster_pos);
 	
@@ -652,9 +646,6 @@ void LightningStrikeSpell::End()
 	
 	ARX_SOUND_Stop(m_snd_loop);
 	ARX_SOUND_PlaySFX(SND_SPELL_LIGHTNING_END, &entities[m_caster]->pos);
-	
-	delete m_pSpellFx;
-	m_pSpellFx = NULL;
 }
 
 static Vec3f GetChestPos(EntityHandle num) {
@@ -679,8 +670,6 @@ static Vec3f GetChestPos(EntityHandle num) {
 
 void LightningStrikeSpell::Update(float timeDelta) {
 	
-	if(m_pSpellFx) {
-		
 		float fBeta = 0.f;
 		float falpha = 0.f;
 		
@@ -708,16 +697,15 @@ void LightningStrikeSpell::Update(float timeDelta) {
 			}
 		}
 		
-		m_pSpellFx->m_pos = m_caster_pos;
-		m_pSpellFx->m_beta = fBeta;
-		m_pSpellFx->m_alpha = falpha;
+		m_lightning.m_pos = m_caster_pos;
+		m_lightning.m_beta = fBeta;
+		m_lightning.m_alpha = falpha;
 		
-		m_pSpellFx->m_caster = m_caster;
-		m_pSpellFx->m_level = m_level;
+		m_lightning.m_caster = m_caster;
+		m_lightning.m_level = m_level;
 		
-		m_pSpellFx->Update(timeDelta);
-		m_pSpellFx->Render();
-	}
+		m_lightning.Update(timeDelta);
+		m_lightning.Render();
 	
 	ARX_SOUND_RefreshPosition(m_snd_loop, entities[m_caster]->pos);
 }

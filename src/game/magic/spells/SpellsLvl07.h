@@ -84,14 +84,12 @@ private:
 
 class LightningStrikeSpell : public SpellBase {
 public:
-	~LightningStrikeSpell();
-	
 	void Launch();
 	void End();
 	void Update(float timeDelta);
 	
 private:
-	CLightning * m_pSpellFx;
+	CLightning m_lightning;
 };
 
 class ConfuseSpell : public SpellBase {
