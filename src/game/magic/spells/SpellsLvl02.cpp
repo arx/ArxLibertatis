@@ -260,9 +260,7 @@ void ArmorSpell::Launch()
 	if(ValidIONum(m_target)) {
 		Entity *io = entities[m_target];
 		io->halo.flags = HALO_ACTIVE;
-		io->halo.color.r = 0.5f;
-		io->halo.color.g = 0.5f;
-		io->halo.color.b = 0.25f;
+		io->halo.color = Color3f(0.5f, 0.5f, 0.25f);
 		io->halo.radius = 45.f;
 	}
 	
@@ -288,9 +286,7 @@ void ArmorSpell::Update(float timeDelta)
 	if(ValidIONum(m_target)) {
 		Entity *io = entities[m_target];
 		io->halo.flags = HALO_ACTIVE;
-		io->halo.color.r = 0.5f;
-		io->halo.color.g = 0.5f;
-		io->halo.color.b = 0.25f;
+		io->halo.color = Color3f(0.5f, 0.5f, 0.25f);
 		io->halo.radius = 45.f;
 	}
 	
@@ -331,9 +327,7 @@ void LowerArmorSpell::Launch()
 		
 		if(io && !(io->halo.flags & HALO_ACTIVE)) {
 			io->halo.flags |= HALO_ACTIVE;
-			io->halo.color.r = 1.f;
-			io->halo.color.g = 0.05f;
-			io->halo.color.b = 0.0f;
+			io->halo.color = Color3f(1.f, 0.05f, 0.0f);
 			io->halo.radius = 45.f;
 			
 			m_longinfo_lower_armor = 1;
@@ -367,9 +361,7 @@ void LowerArmorSpell::Update(float timeDelta)
 		
 		if(io && !(io->halo.flags & HALO_ACTIVE)) {
 			io->halo.flags |= HALO_ACTIVE;
-			io->halo.color.r = 1.f;
-			io->halo.color.g = 0.05f;
-			io->halo.color.b = 0.0f;
+			io->halo.color = Color3f(1.f, 0.05f, 0.0f);
 			io->halo.radius = 45.f;
 			
 			m_longinfo_lower_armor = 1;

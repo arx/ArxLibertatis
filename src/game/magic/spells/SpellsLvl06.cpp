@@ -184,9 +184,7 @@ void RiseDeadSpell::Update(float timeDelta) {
 		light->intensity = 0.7f + 2.3f;
 		light->fallend = 500.f;
 		light->fallstart = 400.f;
-		light->rgb.r = 0.8f;
-		light->rgb.g = 0.2f;
-		light->rgb.b = 0.2f;
+		light->rgb = Color3f(0.8f, 0.2f, 0.2f);
 		light->duration=800;
 		light->time_creation = (unsigned long)(arxtime);
 	}

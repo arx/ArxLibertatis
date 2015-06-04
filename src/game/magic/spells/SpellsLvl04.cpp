@@ -245,9 +245,7 @@ void FireProtectionSpell::Launch()
 	if(ValidIONum(m_target)) {
 		Entity *io = entities[m_target];
 		io->halo.flags = HALO_ACTIVE;
-		io->halo.color.r = 0.5f;
-		io->halo.color.g = 0.3f;
-		io->halo.color.b = 0.f;
+		io->halo.color = Color3f(0.5f, 0.3f, 0.f);
 		io->halo.radius = 45.f;
 	}
 	
@@ -275,9 +273,7 @@ void FireProtectionSpell::Update(float timeDelta)
 	if(ValidIONum(m_target)) {
 		Entity *io = entities[m_target];
 		io->halo.flags = HALO_ACTIVE;
-		io->halo.color.r = 0.5f;
-		io->halo.color.g = 0.3f;
-		io->halo.color.b = 0.f;
+		io->halo.color = Color3f(0.5f, 0.3f, 0.f);
 		io->halo.radius = 45.f;
 	}
 	
@@ -312,9 +308,7 @@ void ColdProtectionSpell::Launch()
 	if(ValidIONum(m_target)) {
 		Entity *io = entities[m_target];
 		io->halo.flags = HALO_ACTIVE;
-		io->halo.color.r = 0.2f;
-		io->halo.color.g = 0.2f;
-		io->halo.color.b = 0.45f;
+		io->halo.color = Color3f(0.2f, 0.2f, 0.45f);
 		io->halo.radius = 45.f;
 	}
 	
@@ -342,9 +336,7 @@ void ColdProtectionSpell::Update(float timeDelta)
 	if(ValidIONum(m_target)) {
 		Entity *io = entities[m_target];
 		io->halo.flags = HALO_ACTIVE;
-		io->halo.color.r = 0.2f;
-		io->halo.color.g = 0.2f;
-		io->halo.color.b = 0.45f;
+		io->halo.color = Color3f(0.2f, 0.2f, 0.45f);
 		io->halo.radius = 45.f;
 	}
 	
