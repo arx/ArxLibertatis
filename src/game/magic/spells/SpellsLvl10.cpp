@@ -107,8 +107,7 @@ void MassLightningStrikeSpell::Launch()
 	}
 	
 	ARX_SOUND_PlaySFX(SND_SPELL_LIGHTNING_START);
-	m_snd_loop = ARX_SOUND_PlaySFX(SND_SPELL_LIGHTNING_LOOP, &m_pos,
-	                                       1.f, ARX_SOUND_PLAY_LOOPED);
+	m_snd_loop = ARX_SOUND_PlaySFX(SND_SPELL_LIGHTNING_LOOP, &m_pos, 1.f, ARX_SOUND_PLAY_LOOPED);
 	
 	// Draws White Flash on Screen
 	GRenderer->SetBlendFunc(Renderer::BlendOne, Renderer::BlendOne);
@@ -446,9 +445,7 @@ void MassIncinerateSpell::Launch()
 	}
 	
 	if(nb_targets) {
-		m_snd_loop = ARX_SOUND_PlaySFX(SND_SPELL_INCINERATE_LOOP, 
-		                                       &m_caster_pos, 1.f, 
-		                                       ARX_SOUND_PLAY_LOOPED);
+		m_snd_loop = ARX_SOUND_PlaySFX(SND_SPELL_INCINERATE_LOOP, &m_caster_pos, 1.f, ARX_SOUND_PLAY_LOOPED);
 	} else {
 		m_snd_loop = audio::INVALID_ID;
 	}

@@ -270,9 +270,7 @@ void FireFieldSpell::Launch() {
 	damage.pos = target;
 	m_damage = DamageCreate(damage);
 	
-	m_snd_loop = ARX_SOUND_PlaySFX(SND_SPELL_FIRE_FIELD_LOOP,
-	                                       &target, 1.f,
-	                                       ARX_SOUND_PLAY_LOOPED);
+	m_snd_loop = ARX_SOUND_PlaySFX(SND_SPELL_FIRE_FIELD_LOOP, &target, 1.f, ARX_SOUND_PLAY_LOOPED);
 	
 	{
 	ParticleParams cp = ParticleParams();
@@ -645,9 +643,7 @@ void LightningStrikeSpell::Launch()
 	
 	ARX_SOUND_PlaySFX(SND_SPELL_LIGHTNING_START, &m_caster_pos);
 	
-	m_snd_loop = ARX_SOUND_PlaySFX(SND_SPELL_LIGHTNING_LOOP,
-	                                       &m_caster_pos, 1.f,
-	                                       ARX_SOUND_PLAY_LOOPED);
+	m_snd_loop = ARX_SOUND_PlaySFX(SND_SPELL_LIGHTNING_LOOP, &m_caster_pos, 1.f, ARX_SOUND_PLAY_LOOPED);
 }
 
 void LightningStrikeSpell::End()

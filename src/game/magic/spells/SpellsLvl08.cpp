@@ -106,9 +106,7 @@ void ManaDrainSpell::Launch()
 	m_hasDuration = true;
 	m_fManaCostPerSecond = 2.f;
 	
-	m_snd_loop = ARX_SOUND_PlaySFX(SND_SPELL_MAGICAL_SHIELD,
-	                                       &m_caster_pos, 1.2f,
-	                                       ARX_SOUND_PLAY_LOOPED);
+	m_snd_loop = ARX_SOUND_PlaySFX(SND_SPELL_MAGICAL_SHIELD, &m_caster_pos, 1.2f, ARX_SOUND_PLAY_LOOPED);
 	
 	DamageParameters damage;
 	damage.radius = 150.f;
@@ -381,9 +379,7 @@ void LifeDrainSpell::Launch()
 	m_hasDuration = true;
 	m_fManaCostPerSecond = 12.f;
 	
-	m_snd_loop = ARX_SOUND_PlaySFX(SND_SPELL_MAGICAL_SHIELD,
-	                                       &m_caster_pos, 0.8f,
-	                                       ARX_SOUND_PLAY_LOOPED);
+	m_snd_loop = ARX_SOUND_PlaySFX(SND_SPELL_MAGICAL_SHIELD, &m_caster_pos, 0.8f, ARX_SOUND_PLAY_LOOPED);
 	
 	DamageParameters damage;
 	damage.radius = 150.f;

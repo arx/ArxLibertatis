@@ -183,9 +183,7 @@ void LevitateSpell::Launch()
 	cone2.Init(m_baseRadius, rhaut * 1.5f, hauteur * 0.5f);
 	m_stones.Init(m_baseRadius);
 	
-	m_snd_loop = ARX_SOUND_PlaySFX(SND_SPELL_LEVITATE_LOOP,
-	                                       &entities[m_target]->pos, 0.7f,
-	                                       ARX_SOUND_PLAY_LOOPED);
+	m_snd_loop = ARX_SOUND_PlaySFX(SND_SPELL_LEVITATE_LOOP, &entities[m_target]->pos, 0.7f, ARX_SOUND_PLAY_LOOPED);
 	
 	m_targets.push_back(m_target);
 }
@@ -396,9 +394,7 @@ void RepelUndeadSpell::Launch()
 	
 	ARX_SOUND_PlaySFX(SND_SPELL_REPEL_UNDEAD, &entities[m_target]->pos);
 	if(m_target == PlayerEntityHandle) {
-		m_snd_loop = ARX_SOUND_PlaySFX(SND_SPELL_REPEL_UNDEAD_LOOP,
-		                                       &entities[m_target]->pos, 1.f,
-		                                       ARX_SOUND_PLAY_LOOPED);
+		m_snd_loop = ARX_SOUND_PlaySFX(SND_SPELL_REPEL_UNDEAD_LOOP, &entities[m_target]->pos, 1.f, ARX_SOUND_PLAY_LOOPED);
 	}
 	
 	m_duration = (m_launchDuration > -1) ? m_launchDuration : 20000000;

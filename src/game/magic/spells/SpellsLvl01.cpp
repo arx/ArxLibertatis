@@ -53,8 +53,7 @@ void MagicSightSpell::Launch()
 	
 	if(m_caster == PlayerEntityHandle) {
 		player.m_improve = true;
-		m_snd_loop = SND_SPELL_VISION_LOOP;
-		ARX_SOUND_PlaySFX(m_snd_loop, &m_caster_pos, 1.f, ARX_SOUND_PLAY_LOOPED);
+		m_snd_loop = ARX_SOUND_PlaySFX(SND_SPELL_VISION_LOOP, &m_caster_pos, 1.f, ARX_SOUND_PLAY_LOOPED);
 	}
 }
 

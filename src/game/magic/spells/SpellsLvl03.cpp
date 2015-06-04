@@ -55,9 +55,7 @@ void SpeedSpell::Launch()
 	ARX_SOUND_PlaySFX(SND_SPELL_SPEED_START, &entities[m_target]->pos);
 	
 	if(m_target == PlayerEntityHandle) {
-		m_snd_loop = ARX_SOUND_PlaySFX(SND_SPELL_SPEED_LOOP,
-		                                       &entities[m_target]->pos, 1.f,
-		                                       ARX_SOUND_PLAY_LOOPED);
+		m_snd_loop = ARX_SOUND_PlaySFX(SND_SPELL_SPEED_LOOP, &entities[m_target]->pos, 1.f, ARX_SOUND_PLAY_LOOPED);
 	}
 	
 	m_duration = (m_launchDuration > -1) ? m_launchDuration : 20000;
