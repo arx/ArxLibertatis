@@ -87,7 +87,6 @@ CRiseDead::CRiseDead()
 	, bIntro(true)
 	, sizeF(0)
 	, fSizeIntro(0.f)
-	, fTexWrap(0)
 {
 	ulCurrentTime = ulDurationIntro + ulDurationRender + ulDurationOuttro + 1;
 	
@@ -108,7 +107,6 @@ void CRiseDead::Create(Vec3f aeSrc, float afBeta)
 	
 	sizeF = 0;
 	fSizeIntro = 0.0f;
-	fTexWrap = 0;
 	end = 40 - 1;
 	bIntro = true;
 
@@ -277,13 +275,13 @@ void CRiseDead::RenderFissure() {
 	vr[0].color = vr[1].color = m_colorRays1.toRGB();
 	vr[2].color = vr[3].color = m_colorRays2.toRGB();
 
-	vr[0].uv.x = fTexWrap;
+	vr[0].uv.x = 0.f;
 	vr[0].uv.y = 1;
-	vr[1].uv.x = 1.0f + fTexWrap;
+	vr[1].uv.x = 1.0f;
 	vr[1].uv.y = 1;
-	vr[2].uv.x = fTexWrap;
+	vr[2].uv.x = 0.f;
 	vr[2].uv.y = 0;
-	vr[3].uv.x = 1.0f + fTexWrap;
+	vr[3].uv.x = 1.0f;
 	vr[3].uv.y = 0;
 
 	for(int i = 0; i < end - 1; i++) {
@@ -409,9 +407,6 @@ void CRiseDead::Render()
 	if(ulCurrentTime >= (ulDurationIntro + ulDurationRender + ulDurationOuttro))
 		return;
 	
-	if(fTexWrap >= 1.0f)
-		fTexWrap -= 1.0f;
-
 	//-------------------------------------------------------------------------
 	// render intro (opening + rays)
 	if(ulCurrentTime < ulDurationIntro) {
@@ -452,7 +447,6 @@ CSummonCreature::CSummonCreature()
 	, bIntro(true)
 	, sizeF(0.f)
 	, fSizeIntro(0.f)
-	, fTexWrap(0.f)
 {
 	
 	m_eSrc = Vec3f_ZERO;
@@ -477,7 +471,6 @@ void CSummonCreature::Create(Vec3f aeSrc, float afBeta)
 	
 	sizeF = 0;
 	fSizeIntro = 0.0f;
-	fTexWrap = 0;
 	end = 40 - 1;
 	bIntro = true;
 
@@ -663,13 +656,13 @@ void CSummonCreature::RenderFissure() {
 	vr[0].color = vr[1].color = m_colorRays1.toRGB();
 	vr[2].color = vr[3].color = m_colorRays2.toRGB();
 
-	vr[0].uv.x = fTexWrap;
+	vr[0].uv.x = 0.f;
 	vr[0].uv.y = 1;
-	vr[1].uv.x = 1.0f + fTexWrap;
+	vr[1].uv.x = 1.0f;
 	vr[1].uv.y = 1;
-	vr[2].uv.x = fTexWrap;
+	vr[2].uv.x = 0.f;
 	vr[2].uv.y = 0;
-	vr[3].uv.x = 1.0f + fTexWrap;
+	vr[3].uv.x = 1.0f;
 	vr[3].uv.y = 0;
 
 	for(int i = 0; i < end - 1; i++) {
@@ -726,12 +719,6 @@ void CSummonCreature::Render()
 	if(ulCurrentTime >= (ulDurationIntro + ulDurationRender + ulDurationOuttro))
 		return;
 	
-	//-------------------------------------------------------------------------
-	fTexWrap += 0.02f;
-
-	if(fTexWrap >= 1.0f)
-		fTexWrap -= 1.0f;
-
 	//-------------------------------------------------------------------------
 	// render intro (opening + rays)
 	if(ulCurrentTime < ulDurationIntro) {

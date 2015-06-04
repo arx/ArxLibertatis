@@ -77,7 +77,6 @@ private:
 	bool	bIntro;
 	float	sizeF;
 	float	fSizeIntro;
-	float	fTexWrap;
 	float	tfRaysa[40];
 	float	tfRaysb[40];
 	Vec3f va[40];
@@ -117,7 +116,6 @@ private:
 
 	float	sizeF;
 	float	fSizeIntro;
-	float	fTexWrap;
 	float tfRaysa[40];
 	float tfRaysb[40];
 	Vec3f va[40];
