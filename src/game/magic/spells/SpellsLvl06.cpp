@@ -273,10 +273,6 @@ CreateFieldSpell::CreateFieldSpell()
 {
 }
 
-CreateFieldSpell::~CreateFieldSpell() {
-	
-	delete m_pSpellFx;
-}
 
 void CreateFieldSpell::Launch()
 {
@@ -313,8 +309,6 @@ void CreateFieldSpell::Launch()
 	
 	ARX_SOUND_PlaySFX(SND_SPELL_CREATE_FIELD, &target);
 	
-	m_pSpellFx = new CCreateField();
-	
 	res::path cls = "graph/obj3d/interactive/fix_inter/blue_cube/blue_cube";
 	Entity * io = AddFix(cls, -1, IO_IMMEDIATELOAD);
 	if(io) {
@@ -327,24 +321,24 @@ void CreateFieldSpell::Launch()
 		io->initpos = io->pos = target;
 		SendInitScriptEvent(io);
 		
-		m_pSpellFx->Create(target);
-		m_pSpellFx->SetDuration(m_duration);
-		m_pSpellFx->lLightId = GetFreeDynLight();
+		m_field.Create(target);
+		m_field.SetDuration(m_duration);
+		m_field.lLightId = GetFreeDynLight();
 		
-		if(lightHandleIsValid(m_pSpellFx->lLightId)) {
-			EERIE_LIGHT * light = lightHandleGet(m_pSpellFx->lLightId);
+		if(lightHandleIsValid(m_field.lLightId)) {
+			EERIE_LIGHT * light = lightHandleGet(m_field.lLightId);
 			
 			light->intensity = 0.7f + 2.3f;
 			light->fallend = 500.f;
 			light->fallstart = 400.f;
 			light->rgb = Color3f(0.8f, 0.0f, 1.0f);
-			light->pos = m_pSpellFx->eSrc - Vec3f(0.f, 150.f, 0.f);
+			light->pos = m_field.eSrc - Vec3f(0.f, 150.f, 0.f);
 		}
 		
-		m_duration = m_pSpellFx->GetDuration();
+		m_duration = m_field.GetDuration();
 		
 		if(m_flags & SPELLCAST_FLAG_RESTORE) {
-			m_pSpellFx->Update(4000);
+			m_field.Update(4000);
 		}
 		
 	} else {
@@ -354,44 +348,33 @@ void CreateFieldSpell::Launch()
 
 void CreateFieldSpell::End() {
 	
-	if(m_pSpellFx) {
-		endLightDelayed(m_pSpellFx->lLightId, 800);
-	}
+	endLightDelayed(m_field.lLightId, 800);
 	
 	if(ValidIONum(m_entity)) {
 		delete entities[m_entity];
 	}
-	
-	delete m_pSpellFx;
-	m_pSpellFx = NULL;
 }
 
 void CreateFieldSpell::Update(float timeDelta) {
 	
-	if(m_pSpellFx) {
 		if(ValidIONum(m_entity)) {
 			Entity * io = entities[m_entity];
 			
-			io->pos = m_pSpellFx->eSrc;
+			io->pos = m_field.eSrc;
 
 			if (IsAnyNPCInPlatform(io))
 			{
 				m_duration=0;
 			}
 		
-			m_pSpellFx->Update(timeDelta);			
-			m_pSpellFx->Render();
+			m_field.Update(timeDelta);
+			m_field.Render();
 		}
-	}
 }
 
 Vec3f CreateFieldSpell::getPosition() {
 	
-	if(m_pSpellFx) {
-		return m_pSpellFx->eSrc;
-	} else {
-		return Vec3f_ZERO;
-	}
+	return m_field.eSrc;
 }
 
 void DisarmTrapSpell::Launch()

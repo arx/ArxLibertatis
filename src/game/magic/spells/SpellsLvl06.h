@@ -53,7 +53,6 @@ public:
 class CreateFieldSpell : public SpellBase {
 public:
 	CreateFieldSpell();
-	~CreateFieldSpell();
 	
 	void Launch();
 	void End();
@@ -65,7 +64,7 @@ public:
 	EntityHandle m_entity;
 	
 private:
-	CCreateField * m_pSpellFx;
+	CCreateField m_field;
 };
 
 class DisarmTrapSpell : public SpellBase {
