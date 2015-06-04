@@ -1011,7 +1011,7 @@ static void ARX_DAMAGES_UpdateDamage(DamageHandle j, float tim) {
 				sphere.origin = damage.params.pos;
 				sphere.radius = damage.params.radius - 10.f;
 				
-				if(CheckIOInSphere(sphere, EntityHandle(i), true)) {
+				if(CheckIOInSphere(sphere, *io, true)) {
 					Vec3f sub = io->pos + Vec3f(0.f, -60.f, 0.f);
 					
 					float dist = fdist(damage.params.pos, sub);
@@ -1155,7 +1155,7 @@ static void ARX_DAMAGES_UpdateDamage(DamageHandle j, float tim) {
 				sphere.origin = damage.params.pos;
 				sphere.radius = damage.params.radius + 15.f;
 				
-				if(CheckIOInSphere(sphere, EntityHandle(i))) {
+				if(CheckIOInSphere(sphere, *io)) {
 					ARX_DAMAGES_DamageFIX(io, dmg, damage.params.source, true);
 				}
 			}
