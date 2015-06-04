@@ -728,6 +728,7 @@ set(GRAPHICS_SOURCES
 	src/graphics/effects/Fog.cpp
 	src/graphics/effects/SpellEffects.cpp
 	src/graphics/effects/Halo.cpp
+	src/graphics/effects/Lightning.cpp
 	src/graphics/effects/RotatingCone.cpp
 	src/graphics/effects/Trail.cpp
 	src/graphics/font/Font.cpp
@@ -744,7 +745,6 @@ set(GRAPHICS_SOURCES
 	src/graphics/spells/Spells01.cpp
 	src/graphics/spells/Spells05.cpp
 	src/graphics/spells/Spells06.cpp
-	src/graphics/spells/Spells07.cpp
 	src/graphics/texture/PackedTexture.cpp
 	src/graphics/texture/Texture.cpp
 	src/graphics/texture/TextureStage.cpp

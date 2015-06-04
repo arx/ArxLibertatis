@@ -41,7 +41,7 @@ ZeniMax Media Inc., Suite 120, Rockville, Maryland 20850 USA.
 ===========================================================================
 */
 
-#include "graphics/spells/Spells07.h"
+#include "graphics/effects/Lightning.h"
 
 #include "animation/Animation.h"
 #include "animation/AnimationRender.h"

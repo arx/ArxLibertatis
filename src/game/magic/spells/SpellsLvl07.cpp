@@ -32,8 +32,6 @@
 
 #include "graphics/particle/ParticleEffects.h"
 
-#include "graphics/spells/Spells07.h"
-
 #include "gui/Interface.h"
 
 #include "scene/GameSound.h"

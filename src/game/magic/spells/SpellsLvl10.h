@@ -22,7 +22,7 @@
 
 #include "game/magic/Spell.h"
 
-#include "graphics/spells/Spells07.h"
+#include "graphics/effects/Lightning.h"
 
 class MassLightningStrikeSpell : public SpellBase {
 public:

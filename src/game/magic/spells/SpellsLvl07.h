@@ -23,7 +23,7 @@
 #include "game/magic/Spell.h"
 
 #include "graphics/particle/ParticleSystem.h"
-#include "graphics/spells/Spells07.h"
+#include "graphics/effects/Lightning.h"
 
 class FlyingEyeSpell : public SpellBase {
 public:
