@@ -1275,10 +1275,9 @@ void CheckForIgnition(const Vec3f & pos, float radius, bool mode, long flag) {
 		) {
 			if(closerThan(pos, io->obj->vertexlist3[io->obj->fastaccess.fire].v, radius)) {
 
-				if(mode && io->ignition <= 0 && io->obj->fastaccess.fire >= 0) {
+				if(mode && io->ignition <= 0) {
 					io->ignition = 1;
 				} else if(!mode && io->ignition > 0) {
-					if(io->obj->fastaccess.fire >= 0) {
 						io->ignition = 0; 
 						lightHandleDestroy(io->ignit_light);
 
@@ -1286,9 +1285,6 @@ void CheckForIgnition(const Vec3f & pos, float radius, bool mode, long flag) {
 							ARX_SOUND_Stop(io->ignit_sound);
 							io->ignit_sound = audio::INVALID_ID;
 						}
-					}
-					else if(!(flag & 2))
-						io->ignition = 0.00001f;
 				}
 			}
 		}
