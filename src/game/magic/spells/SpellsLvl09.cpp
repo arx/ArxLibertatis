@@ -163,120 +163,120 @@ void SummonCreatureSpell::Update(float timeDelta) {
 	if(arxtime.is_paused())
 		return;
 	
-		if(float(arxtime) - (float)m_timcreation <= 4000) {
-			if(rnd() > 0.7f) {
-				if(m_pSpellFx) {
-					Vec3f pos = m_pSpellFx->m_eSrc;
-					MakeCoolFx(pos);
-				}
+	if(float(arxtime) - (float)m_timcreation <= 4000) {
+		if(rnd() > 0.7f) {
+			if(m_pSpellFx) {
+				Vec3f pos = m_pSpellFx->m_eSrc;
+				MakeCoolFx(pos);
 			}
+		}
+		
+		if(m_pSpellFx) {
+			m_pSpellFx->Update(timeDelta);
+			m_pSpellFx->Render();
+		}
+		
+		m_longinfo_summon_creature = 1;
+		m_longinfo2_entity = EntityHandle::Invalid;
+
+	} else if(m_longinfo_summon_creature) {
+		lightHandleDestroy(m_pSpellFx->lLightId);
+		
+		m_longinfo_summon_creature = 0;
+		ARX_SOUND_PlaySFX(SND_SPELL_ELECTRIC, &m_targetPos);
+		
+		if(m_pSpellFx) {
+			Cylinder phys;
+			phys.height = -200;
+			phys.radius = 50;
+			phys.origin = m_targetPos;
+			float anything = CheckAnythingInCylinder(phys, NULL, CFLAG_JUST_TEST);
 			
-			if(m_pSpellFx) {
-				m_pSpellFx->Update(timeDelta);
-				m_pSpellFx->Render();
-			}	
-
-			m_longinfo_summon_creature = 1;
-			m_longinfo2_entity = EntityHandle::Invalid;
-
-		} else if(m_longinfo_summon_creature) {
-			lightHandleDestroy(m_pSpellFx->lLightId);
-
-			m_longinfo_summon_creature = 0;
-			ARX_SOUND_PlaySFX(SND_SPELL_ELECTRIC, &m_targetPos);
+			if(glm::abs(anything) < 30) {
 			
-			if(m_pSpellFx) {
-				Cylinder phys;
-				phys.height = -200;
-				phys.radius = 50;
-				phys.origin = m_targetPos;
-				float anything = CheckAnythingInCylinder(phys, NULL, CFLAG_JUST_TEST);
-
-				if(glm::abs(anything) < 30) {
-				
-				long tokeep;
-				res::path cls;
-				if(m_megaCheat) {
-					if(rnd() > 0.5) {
-						tokeep = -1;
-						cls = "graph/obj3d/interactive/npc/wrat_base/wrat_base";
-					} else {
-						tokeep = 0;
-						cls = "graph/obj3d/interactive/npc/y_mx/y_mx";
-					}
-				} else if(rnd() > 0.997f || (sp_max && rnd() > 0.8f)
-				   || (cur_mr >= 3 && rnd() > 0.3f)) {
-					tokeep = 0;
-					cls = "graph/obj3d/interactive/npc/y_mx/y_mx";
-				} else if(rnd() > 0.997f || (cur_rf >= 3 && rnd() > 0.8f)
-				   || (cur_mr >= 3 && rnd() > 0.3f)) {
-					tokeep = -1;
-					cls = "graph/obj3d/interactive/npc/wrat_base/wrat_base";
-				} else if(m_level >= 9) {
-					tokeep = 1;
-					cls = "graph/obj3d/interactive/npc/demon/demon";
-				} else if(rnd() > 0.98f) {
+			long tokeep;
+			res::path cls;
+			if(m_megaCheat) {
+				if(rnd() > 0.5) {
 					tokeep = -1;
 					cls = "graph/obj3d/interactive/npc/wrat_base/wrat_base";
 				} else {
 					tokeep = 0;
-					cls = "graph/obj3d/interactive/npc/chicken_base/chicken_base";
+					cls = "graph/obj3d/interactive/npc/y_mx/y_mx";
 				}
-				
-				Entity * io = AddNPC(cls, -1, IO_IMMEDIATELOAD);
-				if(!io) {
-					cls = "graph/obj3d/interactive/npc/chicken_base/chicken_base";
-					tokeep = 0;
-					io = AddNPC(cls, -1, IO_IMMEDIATELOAD);
-				}
-				
-				if(io) {
-					RestoreInitialIOStatusOfIO(io);
-					
-					io->summoner = m_caster;
-
-					io->scriptload = 1;
-					
-					if(tokeep == 1) {
-						io->ioflags |= IO_NOSAVE;
-					}
-					
-					io->pos = phys.origin;
-					SendInitScriptEvent(io);
-
-					if(tokeep < 0) {
-						io->scale=1.65f;
-						io->physics.cyl.radius=25;
-						io->physics.cyl.height=-43;
-						io->speed_modif=1.f;
-					}
-
-					if(ValidIONum(m_caster)) {
-						EVENT_SENDER = entities[m_caster];
-					} else {
-						EVENT_SENDER = NULL;
-					}
-
-					SendIOScriptEvent(io,SM_SUMMONED);
-					
-					for(long j = 0; j < 3; j++) {
-						Vec3f pos = m_pSpellFx->m_eSrc;
-						pos += Vec3f(rnd(), rnd(), rnd()) * 100.f;
-						pos += Vec3f(-50.f, 50.f, -50.f);
-						
-						MakeCoolFx(pos);
-					}
-
-					if(tokeep==1)
-						m_longinfo2_entity = io->index();
-					else
-						m_longinfo2_entity = EntityHandle::Invalid;
-				}
-				}
+			} else if(rnd() > 0.997f || (sp_max && rnd() > 0.8f)
+			   || (cur_mr >= 3 && rnd() > 0.3f)) {
+				tokeep = 0;
+				cls = "graph/obj3d/interactive/npc/y_mx/y_mx";
+			} else if(rnd() > 0.997f || (cur_rf >= 3 && rnd() > 0.8f)
+			   || (cur_mr >= 3 && rnd() > 0.3f)) {
+				tokeep = -1;
+				cls = "graph/obj3d/interactive/npc/wrat_base/wrat_base";
+			} else if(m_level >= 9) {
+				tokeep = 1;
+				cls = "graph/obj3d/interactive/npc/demon/demon";
+			} else if(rnd() > 0.98f) {
+				tokeep = -1;
+				cls = "graph/obj3d/interactive/npc/wrat_base/wrat_base";
+			} else {
+				tokeep = 0;
+				cls = "graph/obj3d/interactive/npc/chicken_base/chicken_base";
 			}
-		} else if(m_longinfo2_entity <= PlayerEntityHandle) {
-			m_duration = 0;
+			
+			Entity * io = AddNPC(cls, -1, IO_IMMEDIATELOAD);
+			if(!io) {
+				cls = "graph/obj3d/interactive/npc/chicken_base/chicken_base";
+				tokeep = 0;
+				io = AddNPC(cls, -1, IO_IMMEDIATELOAD);
+			}
+			
+			if(io) {
+				RestoreInitialIOStatusOfIO(io);
+				
+				io->summoner = m_caster;
+				
+				io->scriptload = 1;
+				
+				if(tokeep == 1) {
+					io->ioflags |= IO_NOSAVE;
+				}
+				
+				io->pos = phys.origin;
+				SendInitScriptEvent(io);
+				
+				if(tokeep < 0) {
+					io->scale=1.65f;
+					io->physics.cyl.radius=25;
+					io->physics.cyl.height=-43;
+					io->speed_modif=1.f;
+				}
+				
+				if(ValidIONum(m_caster)) {
+					EVENT_SENDER = entities[m_caster];
+				} else {
+					EVENT_SENDER = NULL;
+				}
+				
+				SendIOScriptEvent(io,SM_SUMMONED);
+				
+				for(long j = 0; j < 3; j++) {
+					Vec3f pos = m_pSpellFx->m_eSrc;
+					pos += Vec3f(rnd(), rnd(), rnd()) * 100.f;
+					pos += Vec3f(-50.f, 50.f, -50.f);
+					
+					MakeCoolFx(pos);
+				}
+				
+				if(tokeep==1)
+					m_longinfo2_entity = io->index();
+				else
+					m_longinfo2_entity = EntityHandle::Invalid;
+			}
+			}
 		}
+	} else if(m_longinfo2_entity <= PlayerEntityHandle) {
+		m_duration = 0;
+	}
 }
 
 FakeSummonSpell::~FakeSummonSpell() {
