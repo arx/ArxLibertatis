@@ -229,6 +229,8 @@ void ARX_SCRIPT_ResetAll(bool init) {
 
 void ARX_SCRIPT_AllowInterScriptExec() {
 	
+	ARX_PROFILE_FUNC();
+	
 	// FIXME static local variable
 	static long ppos = 0;
 	
@@ -1500,6 +1502,8 @@ void ARX_SCRIPT_EventStackClearForIo(Entity * io) {
 }
 
 void ARX_SCRIPT_EventStackExecute(size_t limit) {
+	
+	ARX_PROFILE_FUNC();
 	
 	size_t count = 0;
 	

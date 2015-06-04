@@ -62,6 +62,7 @@ ZeniMax Media Inc., Suite 120, Rockville, Maryland 20850 USA.
 #include "math/Vector.h"
 
 #include "platform/Flags.h"
+#include "platform/profiler/Profiler.h"
 
 #include "scene/Light.h"
 #include "scene/Interactive.h"
@@ -172,8 +173,10 @@ extern TextureContainer * TC_fire;
 
 //-----------------------------------------------------------------------------
 // Updates all currently launched projectiles
-void ARX_MISSILES_Update()
-{
+void ARX_MISSILES_Update() {
+	
+	ARX_PROFILE_FUNC();
+	
 	TextureContainer * tc = TC_fire; 
 
 	unsigned long tim = (unsigned long)(arxtime);

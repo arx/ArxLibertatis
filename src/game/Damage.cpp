@@ -87,6 +87,7 @@ ZeniMax Media Inc., Suite 120, Rockville, Maryland 20850 USA.
 #include "math/Random.h"
 
 #include "physics/Collisions.h"
+#include "platform/profiler/Profiler.h"
 
 #include "scene/GameSound.h"
 #include "scene/Light.h"
@@ -952,6 +953,8 @@ static void ARX_DAMAGES_AddVisual(DAMAGE_INFO & di, const Vec3f & pos, float dmg
 // source > 0  IO
 static void ARX_DAMAGES_UpdateDamage(DamageHandle j, float tim) {
 	
+	ARX_PROFILE_FUNC();
+	
 	DAMAGE_INFO & damage = damages[j];
 	
 	if(!damage.exist) {
@@ -1165,8 +1168,10 @@ static void ARX_DAMAGES_UpdateDamage(DamageHandle j, float tim) {
 		damage.exist = false;
 }
 
-void ARX_DAMAGES_UpdateAll()
-{
+void ARX_DAMAGES_UpdateAll() {
+	
+	ARX_PROFILE_FUNC();
+	
 	for (size_t j = 0; j < MAX_DAMAGES; j++)
 		ARX_DAMAGES_UpdateDamage(DamageHandle(j), arxtime);
 }

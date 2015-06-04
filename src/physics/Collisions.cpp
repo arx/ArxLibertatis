@@ -1160,6 +1160,8 @@ bool CheckAnythingInSphere(const Sphere & sphere, EntityHandle source, CASFlags 
 
 bool CheckIOInSphere(const Sphere & sphere, EntityHandle target, bool ignoreNoCollisionFlag) {
 	
+	ARX_PROFILE_FUNC();
+	
 	if(!ValidIONum(target))
 		return false;
 

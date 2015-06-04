@@ -66,6 +66,7 @@ ZeniMax Media Inc., Suite 120, Rockville, Maryland 20850 USA.
 #include "math/Random.h"
 
 #include "platform/Platform.h"
+#include "platform/profiler/Profiler.h"
 
 #include "scene/GameSound.h"
 
@@ -171,6 +172,8 @@ static ARX_PATH * ARX_PATH_CheckPlayerInZone() {
 long JUST_RELOADED = 0;
 
 void ARX_PATH_UpdateAllZoneInOutInside() {
+	
+	ARX_PROFILE_FUNC();
 	
 	arx_assert(entities.player());
 	
