@@ -27,7 +27,6 @@
 class SummonCreatureSpell : public SpellBase {
 public:
 	SummonCreatureSpell();
-	~SummonCreatureSpell();
 	
 	bool CanLaunch();
 	void Launch();
@@ -37,7 +36,7 @@ public:
 private:
 	void GetTargetAndBeta(Vec3f & target, float & beta);
 	
-	CSummonCreature * m_pSpellFx;
+	CSummonCreature m_fissure;
 	Vec3f m_targetPos;
 	bool m_megaCheat;
 	long m_longinfo_summon_creature;

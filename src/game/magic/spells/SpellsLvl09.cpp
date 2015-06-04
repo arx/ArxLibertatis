@@ -62,10 +62,6 @@ SummonCreatureSpell::SummonCreatureSpell()
 	
 }
 
-SummonCreatureSpell::~SummonCreatureSpell() {
-	
-	delete m_pSpellFx;
-}
 
 bool SummonCreatureSpell::CanLaunch()
 {
@@ -97,22 +93,21 @@ void SummonCreatureSpell::Launch()
 	m_targetPos = target;
 	ARX_SOUND_PlaySFX(SND_SPELL_SUMMON_CREATURE, &m_targetPos);
 	
-	m_pSpellFx = new CSummonCreature();
-	m_pSpellFx->Create(target, MAKEANGLE(player.angle.getPitch()));
-	m_pSpellFx->SetDuration(2000, 500, 1500);
-	m_pSpellFx->SetColorBorder(Color3f::red);
-	m_pSpellFx->SetColorRays1(Color3f::red);
-	m_pSpellFx->SetColorRays2(Color3f::yellow * .5f);
+	m_fissure.Create(target, MAKEANGLE(player.angle.getPitch()));
+	m_fissure.SetDuration(2000, 500, 1500);
+	m_fissure.SetColorBorder(Color3f::red);
+	m_fissure.SetColorRays1(Color3f::red);
+	m_fissure.SetColorRays2(Color3f::yellow * .5f);
 	
-	m_pSpellFx->lLightId = GetFreeDynLight();
-	if(lightHandleIsValid(m_pSpellFx->lLightId)) {
-		EERIE_LIGHT * light = lightHandleGet(m_pSpellFx->lLightId);
+	m_fissure.lLightId = GetFreeDynLight();
+	if(lightHandleIsValid(m_fissure.lLightId)) {
+		EERIE_LIGHT * light = lightHandleGet(m_fissure.lLightId);
 		
 		light->intensity = 0.3f;
 		light->fallend = 500.f;
 		light->fallstart = 400.f;
 		light->rgb = Color3f::red;
-		light->pos = m_pSpellFx->m_eSrc;
+		light->pos = m_fissure.m_eSrc;
 	}
 }
 
@@ -122,7 +117,7 @@ void SummonCreatureSpell::End()
 		ARX_SOUND_PlaySFX(SND_SPELL_ELECTRIC, &entities[m_longinfo2_entity]->pos);
 	}
 
-	lightHandleDestroy(m_pSpellFx->lLightId);
+	lightHandleDestroy(m_fissure.lLightId);
 	// need to killio
 	
 	if(ValidIONum(m_longinfo2_entity) && m_longinfo2_entity != PlayerEntityHandle) {
@@ -153,9 +148,6 @@ void SummonCreatureSpell::End()
 	
 	// TODO is this correct ?
 	m_longinfo2_entity = PlayerEntityHandle;
-	
-	delete m_pSpellFx;
-	m_pSpellFx = NULL;
 }
 
 void SummonCreatureSpell::Update(float timeDelta) {
@@ -165,27 +157,22 @@ void SummonCreatureSpell::Update(float timeDelta) {
 	
 	if(float(arxtime) - (float)m_timcreation <= 4000) {
 		if(rnd() > 0.7f) {
-			if(m_pSpellFx) {
-				Vec3f pos = m_pSpellFx->m_eSrc;
-				MakeCoolFx(pos);
-			}
+			Vec3f pos = m_fissure.m_eSrc;
+			MakeCoolFx(pos);
 		}
 		
-		if(m_pSpellFx) {
-			m_pSpellFx->Update(timeDelta);
-			m_pSpellFx->Render();
-		}
+		m_fissure.Update(timeDelta);
+		m_fissure.Render();
 		
 		m_longinfo_summon_creature = 1;
 		m_longinfo2_entity = EntityHandle::Invalid;
 
 	} else if(m_longinfo_summon_creature) {
-		lightHandleDestroy(m_pSpellFx->lLightId);
+		lightHandleDestroy(m_fissure.lLightId);
 		
 		m_longinfo_summon_creature = 0;
 		ARX_SOUND_PlaySFX(SND_SPELL_ELECTRIC, &m_targetPos);
 		
-		if(m_pSpellFx) {
 			Cylinder phys;
 			phys.height = -200;
 			phys.radius = 50;
@@ -260,7 +247,7 @@ void SummonCreatureSpell::Update(float timeDelta) {
 				SendIOScriptEvent(io,SM_SUMMONED);
 				
 				for(long j = 0; j < 3; j++) {
-					Vec3f pos = m_pSpellFx->m_eSrc;
+					Vec3f pos = m_fissure.m_eSrc;
 					pos += Vec3f(rnd(), rnd(), rnd()) * 100.f;
 					pos += Vec3f(-50.f, 50.f, -50.f);
 					
@@ -273,7 +260,6 @@ void SummonCreatureSpell::Update(float timeDelta) {
 					m_longinfo2_entity = EntityHandle::Invalid;
 			}
 			}
-		}
 	} else if(m_longinfo2_entity <= PlayerEntityHandle) {
 		m_duration = 0;
 	}
