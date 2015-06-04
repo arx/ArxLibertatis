@@ -60,10 +60,10 @@ void SpeedSpell::Launch()
 		                                       ARX_SOUND_PLAY_LOOPED);
 	}
 	
-	m_duration = (m_caster == PlayerEntityHandle) ? 200000000 : 20000;
-	if(m_launchDuration > -1) {
-		m_duration = m_launchDuration;
-	}
+	m_duration = (m_launchDuration > -1) ? m_launchDuration : 20000;
+	
+	if(m_caster == PlayerEntityHandle)
+		m_duration = 200000000;
 	
 	std::vector<VertexGroup> & grouplist = entities[m_target]->obj->grouplist;
 	

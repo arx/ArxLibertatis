@@ -455,10 +455,11 @@ void SlowDownSpell::Launch()
 {
 	ARX_SOUND_PlaySFX(SND_SPELL_SLOW_DOWN, &entities[m_target]->pos);
 	
-	m_duration = (m_caster == PlayerEntityHandle) ? 10000000 : 10000;
-	if(m_launchDuration > -1) {
-		m_duration = m_launchDuration;
-	}
+	m_duration = (m_launchDuration > -1) ? m_launchDuration : 10000;
+	
+	if(m_caster == PlayerEntityHandle)
+		m_duration = 10000000;
+	
 	m_hasDuration = true;
 	m_fManaCostPerSecond = 1.2f;
 	

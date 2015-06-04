@@ -249,11 +249,10 @@ void ArmorSpell::Launch()
 	                                       &entities[m_target]->pos, 1.f,
 	                                       ARX_SOUND_PLAY_LOOPED);
 	
-	if(m_launchDuration > -1) {
-		m_duration = m_launchDuration;
-	} else {
-		m_duration = (m_caster == PlayerEntityHandle) ? 20000000 : 20000;
-	}
+	m_duration = (m_launchDuration > -1) ? m_launchDuration : 20000;
+	
+	if(m_caster == PlayerEntityHandle)
+		m_duration = 20000000;
 	
 	m_hasDuration = true;
 	m_fManaCostPerSecond = 0.2f * m_level;
@@ -319,11 +318,10 @@ void LowerArmorSpell::Launch()
 		ARX_SOUND_PlaySFX(SND_SPELL_LOWER_ARMOR, &entities[m_target]->pos);
 	}
 	
-	if(m_launchDuration > -1) {
-		m_duration = m_launchDuration;
-	} else {
-		m_duration = (m_caster == PlayerEntityHandle) ? 20000000 : 20000;
-	}
+	m_duration = (m_launchDuration > -1) ? m_launchDuration : 20000;
+	
+	if(m_caster == PlayerEntityHandle)
+		m_duration = 20000000;
 	
 	m_hasDuration = true;
 	m_fManaCostPerSecond = 0.2f * m_level;

@@ -228,11 +228,10 @@ void FireProtectionSpell::Launch()
 	spells.endByCaster(m_caster, SPELL_LOWER_ARMOR);
 	spells.endByCaster(m_caster, SPELL_COLD_PROTECTION);
 	
-	if(m_launchDuration > -1) {
-		m_duration = m_launchDuration;
-	} else {
-		m_duration = (m_caster == PlayerEntityHandle) ? 2000000 : 20000;
-	}
+	m_duration = (m_launchDuration > -1) ? m_launchDuration : 20000;
+	
+	if(m_caster == PlayerEntityHandle)
+		m_duration = 2000000;
 	
 	if(m_caster == PlayerEntityHandle) {
 		m_target = PlayerEntityHandle;
@@ -302,11 +301,10 @@ void ColdProtectionSpell::Launch()
 	
 	ARX_SOUND_PlaySFX(SND_SPELL_COLD_PROTECTION_START, &entities[m_target]->pos);
 	
-	if(m_launchDuration > -1) {
-		m_duration = m_launchDuration;
-	} else {
-		m_duration = (m_caster == PlayerEntityHandle) ? 2000000 : 20000;
-	}
+	m_duration = (m_launchDuration > -1) ? m_launchDuration : 20000;
+	
+	if(m_caster == PlayerEntityHandle)
+		m_duration = 2000000;
 	
 	m_hasDuration = true;
 	m_fManaCostPerSecond = 1.f;
