@@ -60,10 +60,6 @@ RiseDeadSpell::RiseDeadSpell()
 	
 }
 
-RiseDeadSpell::~RiseDeadSpell() {
-	delete m_pSpellFx;
-}
-
 bool RiseDeadSpell::CanLaunch()
 {
 	//TODO always cancel spell even if new one can't be launched ?
@@ -98,18 +94,17 @@ void RiseDeadSpell::Launch()
 	m_fManaCostPerSecond = 1.2f;
 	m_entity = EntityHandle::Invalid;
 	
-	m_pSpellFx = new CRiseDead();
-	m_pSpellFx->Create(target, beta);
-	m_pSpellFx->SetDuration(2000, 500, 1800);
-	m_pSpellFx->SetColorBorder(Color3f(0.5, 0.5, 0.5));
-	m_pSpellFx->SetColorRays1(Color3f(0.5, 0.5, 0.5));
-	m_pSpellFx->SetColorRays2(Color3f(1.f, 0.f, 0.f));
+	m_fissure.Create(target, beta);
+	m_fissure.SetDuration(2000, 500, 1800);
+	m_fissure.SetColorBorder(Color3f(0.5, 0.5, 0.5));
+	m_fissure.SetColorRays1(Color3f(0.5, 0.5, 0.5));
+	m_fissure.SetColorRays2(Color3f(1.f, 0.f, 0.f));
 	
-	if(!lightHandleIsValid(m_pSpellFx->lLightId)) {
-		m_pSpellFx->lLightId = GetFreeDynLight();
+	if(!lightHandleIsValid(m_fissure.lLightId)) {
+		m_fissure.lLightId = GetFreeDynLight();
 	}
-	if(lightHandleIsValid(m_pSpellFx->lLightId)) {
-		EERIE_LIGHT * light = lightHandleGet(m_pSpellFx->lLightId);
+	if(lightHandleIsValid(m_fissure.lLightId)) {
+		EERIE_LIGHT * light = lightHandleGet(m_fissure.lLightId);
 		
 		light->intensity = 1.3f;
 		light->fallend = 450.f;
@@ -120,7 +115,7 @@ void RiseDeadSpell::Launch()
 		light->time_creation = (unsigned long)(arxtime);
 	}
 	
-	m_duration = m_pSpellFx->GetDuration();
+	m_duration = m_fissure.GetDuration();
 }
 
 void RiseDeadSpell::End()
@@ -154,32 +149,23 @@ void RiseDeadSpell::End()
 		}
 	}
 	
-	// All Levels - Kill Light
-	if(m_pSpellFx) {
-		endLightDelayed(m_pSpellFx->lLightId, 500);
-	}
-	
-	delete m_pSpellFx;
-	m_pSpellFx = NULL;
+	endLightDelayed(m_fissure.lLightId, 500);
 }
 
 void RiseDeadSpell::Update(float timeDelta) {
 	
-	if(!m_pSpellFx)
-		return;
-	
 	if(m_entity == -2) {
-		m_pSpellFx->lLightId = LightHandle::Invalid;
+		m_fissure.lLightId = LightHandle::Invalid;
 		return;
 	}
 	
 	m_duration+=200;
 	
-	m_pSpellFx->Update(timeDelta);
-	m_pSpellFx->Render();
+	m_fissure.Update(timeDelta);
+	m_fissure.Render();
 	
-	if(lightHandleIsValid(m_pSpellFx->lLightId)) {
-		EERIE_LIGHT * light = lightHandleGet(m_pSpellFx->lLightId);
+	if(lightHandleIsValid(m_fissure.lLightId)) {
+		EERIE_LIGHT * light = lightHandleGet(m_fissure.lLightId);
 		
 		light->intensity = 0.7f + 2.3f;
 		light->fallend = 500.f;
@@ -189,7 +175,7 @@ void RiseDeadSpell::Update(float timeDelta) {
 		light->time_creation = (unsigned long)(arxtime);
 	}
 	
-	unsigned long tim = m_pSpellFx->ulCurrentTime;
+	unsigned long tim = m_fissure.ulCurrentTime;
 	
 	if(tim > 3000 && m_entity == EntityHandle::Invalid) {
 		ARX_SOUND_PlaySFX(SND_SPELL_ELECTRIC, &m_targetPos);
@@ -227,14 +213,14 @@ void RiseDeadSpell::Update(float timeDelta) {
 				
 				SendIOScriptEvent(io,SM_SUMMONED);
 					
-				Vec3f pos = m_pSpellFx->m_eSrc;
+				Vec3f pos = m_fissure.m_eSrc;
 				pos += Vec3f(rnd(), rnd(), rnd()) * 100.f;
 				pos += Vec3f(-50.f, 50.f, -50.f);
 				
 				MakeCoolFx(pos);
 			}
 			
-			m_pSpellFx->lLightId = LightHandle::Invalid;
+			m_fissure.lLightId = LightHandle::Invalid;
 		} else {
 			ARX_SOUND_PlaySFX(SND_MAGIC_FIZZLE);
 			m_entity = EntityHandle(-2); // FIXME inband signaling
@@ -242,7 +228,7 @@ void RiseDeadSpell::Update(float timeDelta) {
 		}
 	} else if(!arxtime.is_paused() && tim < 4000) {
 	  if(rnd() > 0.95f) {
-			MakeCoolFx(m_pSpellFx->m_eSrc);
+			MakeCoolFx(m_fissure.m_eSrc);
 		}
 	}
 }

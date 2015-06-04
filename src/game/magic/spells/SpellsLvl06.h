@@ -28,7 +28,6 @@
 class RiseDeadSpell : public SpellBase {
 public:
 	RiseDeadSpell();
-	~RiseDeadSpell();
 	
 	bool CanLaunch();
 	void Launch();
@@ -38,7 +37,7 @@ public:
 private:
 	void GetTargetAndBeta(Vec3f & target, float & beta);
 	
-	CRiseDead * m_pSpellFx;
+	CRiseDead m_fissure;
 	Vec3f m_targetPos;
 	EntityHandle m_entity;
 };
