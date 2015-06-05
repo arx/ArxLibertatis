@@ -2151,12 +2151,10 @@ void ArxGame::render() {
 	} else {
 		updateLevel();
 		
-#ifdef ARX_DEBUG
 		if(g_debugToggles[7])
-			setHudScale(3);
+			setHudScale(2);
 		else
 			setHudScale(1);
-#endif
 		
 		renderLevel();
 
