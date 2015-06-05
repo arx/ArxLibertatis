@@ -324,6 +324,10 @@ path SystemPaths::find(const path & resource) const {
 	return path();
 }
 
+SystemPaths::SystemPaths()
+	: findData_(true)
+{}
+
 static void listDirectoriesFor(std::ostream & os, const std::string & regKey,
                                const char * prefixVar = NULL,
                                const char * suffixVar = NULL) {

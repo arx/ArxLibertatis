@@ -107,6 +107,8 @@ struct SystemPaths {
 	 */
 	path find(const path & resource) const;
 	
+	SystemPaths();
+	
 private:
 	
 	void list(std::ostream & os, const std::string & forceUser = std::string(),
