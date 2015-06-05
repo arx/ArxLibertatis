@@ -45,13 +45,8 @@ FissureFx::FissureFx()
 void FissureFx::SetDuration(unsigned long alDurationIntro, unsigned long alDurationRender, unsigned long alDurationOuttro)
 {
 	ulDurationIntro = glm::clamp(alDurationIntro, 100ul, 100000ul);
-	fOneOnDurationIntro = 1.f / (float)(ulDurationIntro);
-	
 	ulDurationRender = glm::clamp(alDurationRender, 100ul, 100000ul);
-	fOneOnDurationRender = 1.f / (float)(ulDurationRender);
-
 	ulDurationOuttro = glm::clamp(alDurationOuttro, 100ul, 100000ul);
-	fOneOnDurationOuttro = 1.f / (float)(ulDurationOuttro);
 	
 	ulCurrentTime = 0;
 }
@@ -410,6 +405,8 @@ void CRiseDead::Render()
 	//-------------------------------------------------------------------------
 	// render intro (opening + rays)
 	if(ulCurrentTime < ulDurationIntro) {
+		float fOneOnDurationIntro = 1.f / (float)(ulDurationIntro);
+		
 		if(ulCurrentTime < ulDurationIntro * 0.666f) {
 			fSizeIntro = (end + 2) * fOneOnDurationIntro * (1.5f) * ulCurrentTime;
 			sizeF = 1;
@@ -427,10 +424,9 @@ void CRiseDead::Render()
 	// close it all
 	else if (ulCurrentTime < (ulDurationIntro + ulDurationRender + ulDurationOuttro))
 	{
-		//if (sizeF > 0)
-		{
-			sizeF = iSize - (iSize) * fOneOnDurationOuttro * (ulCurrentTime - (ulDurationIntro + ulDurationRender));
-		}
+		float fOneOnDurationOuttro = 1.f / (float)(ulDurationOuttro);
+		
+		sizeF = iSize - (iSize) * fOneOnDurationOuttro * (ulCurrentTime - (ulDurationIntro + ulDurationRender));
 	}
 	
 	RenderFissure();
@@ -722,6 +718,8 @@ void CSummonCreature::Render()
 	//-------------------------------------------------------------------------
 	// render intro (opening + rays)
 	if(ulCurrentTime < ulDurationIntro) {
+		float fOneOnDurationIntro = 1.f / (float)(ulDurationIntro);
+		
 		if(ulCurrentTime < ulDurationIntro * 0.666f) {
 			fSizeIntro = (end + 2) * fOneOnDurationIntro * (1.5f) * ulCurrentTime;
 			sizeF = 1;
@@ -739,10 +737,9 @@ void CSummonCreature::Render()
 	// close it all
 	else if (ulCurrentTime < (ulDurationIntro + ulDurationRender + ulDurationOuttro))
 	{
-		//if (sizeF > 0)
-		{
-			sizeF = iSize - (iSize) * fOneOnDurationOuttro * (ulCurrentTime - (ulDurationIntro + ulDurationRender));
-		}
+		float fOneOnDurationOuttro = 1.f / (float)(ulDurationOuttro);
+		
+		sizeF = iSize - (iSize) * fOneOnDurationOuttro * (ulCurrentTime - (ulDurationIntro + ulDurationRender));
 	}
 	
 	RenderFissure();

@@ -33,14 +33,10 @@ public:
 	void SetColorRays1(Color3f color);
 	void SetColorRays2(Color3f color);
 	
-	unsigned long ulDuration;
 	unsigned long ulCurrentTime;
 	unsigned long ulDurationIntro;
 	unsigned long ulDurationRender;
 	unsigned long ulDurationOuttro;
-	float	fOneOnDurationIntro;
-	float	fOneOnDurationRender;
-	float	fOneOnDurationOuttro;
 	
 	Color3f m_colorBorder;
 	Color3f m_colorRays1;
