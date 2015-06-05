@@ -26,6 +26,11 @@
 
 RotatingCone::RotatingCone()
 	: m_def(16)
+	, ulCurrentTime(0)
+	, m_currdurationang(0)
+	, m_ang(0.f)
+	, m_coneScale(0.f)
+	, m_tsouffle(NULL)
 {
 	conenbvertex = m_def * 2 + 2;
 	conenbfaces = m_def * 2 + 2;
