@@ -811,7 +811,9 @@ void DrawEERIEInter_Render(EERIE_3DOBJ *eobj, const TransformInfo &t, Entity *io
 }
 
 void DrawEERIEInter(EERIE_3DOBJ *eobj, const TransformInfo &t, Entity *io, bool forceDraw, float invisibility) {
-
+	
+	ARX_PROFILE_FUNC();
+	
 	if(!eobj)
 		return;
 

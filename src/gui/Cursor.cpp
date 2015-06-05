@@ -46,6 +46,7 @@
 #include "animation/AnimationRender.h"
 #include "physics/Collisions.h"
 #include "physics/Box.h"
+#include "platform/profiler/Profiler.h"
 #include "scene/Interactive.h"
 #include "scene/GameSound.h"
 
@@ -708,8 +709,10 @@ static void ARX_INTERFACE_RenderCursorInternal(bool flag) {
 	}
 }
 
-void ARX_INTERFACE_RenderCursor(bool flag)
-{
+void ARX_INTERFACE_RenderCursor(bool flag) {
+	
+	ARX_PROFILE_FUNC();
+	
 	if (!SPECIAL_DRAGINTER_RENDER)
 	{
 		ManageIgnition_2(DRAGINTER);

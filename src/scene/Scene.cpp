@@ -630,6 +630,8 @@ static void ARX_PORTALS_Frustrum_ClearIndexCount(long room_num) {
 
 static void ARX_PORTALS_InitDrawnRooms() {
 	
+	ARX_PROFILE_FUNC();
+	
 	arx_assert(portals);
 
 	for(size_t i = 0; i < portals->portals.size(); i++) {
@@ -1234,7 +1236,9 @@ static void ARX_PORTALS_Frustrum_RenderRoomTCullSoft(long room_num, const EERIE_
 
 
 static void ARX_PORTALS_Frustrum_RenderRoomTCullSoftRender(long room_num) {
-
+	
+	ARX_PROFILE_FUNC();
+	
 	EERIE_ROOM_DATA & room = portals->rooms[room_num];
 
 	//render opaque
@@ -1284,6 +1288,8 @@ static const SMY_ARXMAT::TransparencyType transRenderOrder[] = {
 
 
 static void ARX_PORTALS_Frustrum_RenderRoom_TransparencyTSoftCull(long room_num) {
+	
+	ARX_PROFILE_FUNC();
 	
 	//render transparency
 	EERIE_ROOM_DATA & room = portals->rooms[room_num];

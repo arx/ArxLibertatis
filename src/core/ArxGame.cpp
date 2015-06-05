@@ -2203,8 +2203,10 @@ void ArxGame::render() {
 	gldebug::endFrame();
 }
 
-void ArxGame::update2DFX()
-{
+void ArxGame::update2DFX() {
+	
+	ARX_PROFILE_FUNC();
+	
 	TexturedVertex ltvv;
 
 	Entity* pTableIO[256];
@@ -2273,8 +2275,10 @@ void ArxGame::update2DFX()
 	}
 }
 
-void ArxGame::goFor2DFX()
-{
+void ArxGame::goFor2DFX() {
+	
+	ARX_PROFILE_FUNC();
+	
 	GRenderer->SetRenderState(Renderer::Fog, true);
 	GRenderer->SetBlendFunc(Renderer::BlendOne, Renderer::BlendOne);
 	GRenderer->SetRenderState(Renderer::AlphaBlending, true);

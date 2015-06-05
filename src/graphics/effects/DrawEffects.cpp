@@ -62,6 +62,7 @@ ZeniMax Media Inc., Suite 120, Rockville, Maryland 20850 USA.
 #include "graphics/data/Mesh.h"
 #include "graphics/particle/ParticleEffects.h"
 #include "graphics/texture/TextureStage.h"
+#include "platform/profiler/Profiler.h"
 
 #include "scene/Light.h"
 #include "scene/Interactive.h"
@@ -95,8 +96,10 @@ static void AddToShadowBatch(TexturedVertex * _pVertex1, TexturedVertex * _pVert
 	g_shadowBatch.push_back(pPointAdd[2]);
 }
 
-void ARXDRAW_DrawInterShadows()
-{	
+void ARXDRAW_DrawInterShadows() {
+	
+	ARX_PROFILE_FUNC();
+	
 	g_shadowBatch.clear();
 	
 	GRenderer->SetFogColor(Color::none);

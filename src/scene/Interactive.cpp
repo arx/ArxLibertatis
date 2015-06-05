@@ -2463,7 +2463,9 @@ void UpdateInter() {
  * \brief Render entities
  */
 void RenderInter() {
-
+	
+	ARX_PROFILE_FUNC();
+	
 	for(size_t i = 1; i < entities.size(); i++) { // Player isn't rendered here...
 		const EntityHandle handle = EntityHandle(i);
 		Entity * io = entities[handle];

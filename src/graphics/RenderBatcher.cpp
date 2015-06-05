@@ -55,6 +55,9 @@ void RenderBatcher::add(const RenderMaterial& mat, const TexturedQuad& sprite) {
 }
 
 void RenderBatcher::render() {
+	
+	ARX_PROFILE_FUNC();
+	
 	for(Batches::const_iterator it = m_BatchedSprites.begin(); it != m_BatchedSprites.end(); ++it) {
 		if(!it->second.empty()) {
 			it->first.apply();
