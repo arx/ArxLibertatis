@@ -76,6 +76,8 @@ private:
 
 class CreateFoodSpell : public SpellBase {
 public:
+	CreateFoodSpell();
+	
 	void Launch();
 	void End();
 	void Update(float timeDelta);

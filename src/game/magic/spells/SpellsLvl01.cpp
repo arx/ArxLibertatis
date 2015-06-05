@@ -182,6 +182,12 @@ static void LaunchMagicMissileExplosion(const Vec3f & _ePos, bool mrCheat) {
 }
 
 
+
+MagicMissileSpell::MagicMissileSpell()
+	: SpellBase()
+	, m_mrCheat(false)
+{}
+
 MagicMissileSpell::~MagicMissileSpell() {
 	
 	for(size_t i = 0; i < pTab.size(); i++) {

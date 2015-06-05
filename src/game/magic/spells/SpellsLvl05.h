@@ -42,6 +42,8 @@ private:
 
 class LevitateSpell : public SpellBase {
 public:
+	LevitateSpell();
+	
 	void Launch();
 	void End();
 	void Update(float timeDelta);
@@ -59,6 +61,8 @@ private:
 
 class CurePoisonSpell : public SpellBase {
 public:
+	CurePoisonSpell();
+	
 	void Launch();
 	void End();
 	void Update(float timeDelta);
@@ -72,6 +76,8 @@ private:
 
 class RepelUndeadSpell : public SpellBase {
 public:
+	RepelUndeadSpell();
+	
 	void Launch();
 	void End();
 	void Update(float timeDelta);

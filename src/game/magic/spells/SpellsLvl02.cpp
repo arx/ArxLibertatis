@@ -35,6 +35,12 @@
 #include "scene/Interactive.h"
 
 
+
+HealSpell::HealSpell()
+	: SpellBase()
+	, m_currentTime(0)
+{}
+
 bool HealSpell::CanLaunch() {
 	
 	return !spells.ExistAnyInstanceForThisCaster(m_type, m_caster);

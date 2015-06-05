@@ -149,6 +149,12 @@ Vec3f RuneOfGuardingSpell::getPosition() {
 }
 
 
+LevitateSpell::LevitateSpell()
+	: SpellBase()
+	, ulCurrentTime(0)
+	, m_baseRadius(50.f)
+{}
+
 void LevitateSpell::Launch()
 {
 	spells.endByCaster(m_caster, SPELL_LEVITATE);
@@ -174,8 +180,6 @@ void LevitateSpell::Launch()
 	
 	m_pos = target;
 	
-	
-	m_baseRadius = 50.f;
 	float rhaut = 100.f;
 	float hauteur = 80.f;
 	
@@ -259,6 +263,12 @@ void LevitateSpell::createDustParticle() {
 	pd->fparam = 0.0000001f;
 }
 
+
+
+CurePoisonSpell::CurePoisonSpell()
+	: SpellBase()
+	, ulCurrentTime(0)
+{}
 
 void CurePoisonSpell::Launch()
 {
@@ -383,6 +393,12 @@ void CurePoisonSpell::Update(float timeDelta) {
 	pPS.Render();
 }
 
+
+RepelUndeadSpell::RepelUndeadSpell()
+	: SpellBase()
+	, m_yaw(0.f)
+	, tex_p2(NULL)
+{}
 
 void RepelUndeadSpell::Launch()
 {

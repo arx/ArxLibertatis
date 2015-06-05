@@ -370,6 +370,13 @@ void TelekinesisSpell::End()
 }
 
 
+
+CurseSpell::CurseSpell()
+	: SpellBase()
+	, tex_p1(NULL)
+	, fRot(0.f)
+{}
+
 void CurseSpell::Launch()
 {
 	spells.endByCaster(m_target, SPELL_CURSE);

@@ -61,6 +61,8 @@ private:
 
 class IceFieldSpell : public SpellBase {
 public:
+	IceFieldSpell();
+	
 	void Launch();
 	void End();
 	void Update(float timeDelta);
@@ -75,7 +77,7 @@ private:
 	TextureContainer * tex_p1;
 	TextureContainer * tex_p2;
 	
-	int iMax;
+	static const int iMax = 50;
 	int tType[50];
 	Vec3f tPos[50];
 	Vec3f tSize[50];
@@ -94,6 +96,8 @@ private:
 
 class ConfuseSpell : public SpellBase {
 public:
+	ConfuseSpell();
+	
 	void Launch();
 	void End();
 	void Update(float timeDelta);

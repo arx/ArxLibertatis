@@ -73,6 +73,8 @@ public:
 
 class CurseSpell : public SpellBase {
 public:
+	CurseSpell();
+	
 	void Launch();
 	void End();
 	void Update(float timeDelta);

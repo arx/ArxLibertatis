@@ -427,6 +427,13 @@ Vec3f FireFieldSpell::getPosition() {
 }
 
 
+
+IceFieldSpell::IceFieldSpell()
+	: SpellBase()
+	, tex_p1(NULL)
+	, tex_p2(NULL)
+{}
+
 void IceFieldSpell::Launch()
 {
 	spells.endByCaster(m_caster, SPELL_ICE_FIELD);
@@ -472,7 +479,6 @@ void IceFieldSpell::Launch()
 	damage.pos = target;
 	m_damage = DamageCreate(damage);
 	
-	iMax = 50;
 	tex_p1 = TextureContainer::Load("graph/obj3d/textures/(fx)_tsu_blueting");
 	tex_p2 = TextureContainer::Load("graph/obj3d/textures/(fx)_tsu_bluepouf");
 	
@@ -710,6 +716,13 @@ void LightningStrikeSpell::Update(float timeDelta) {
 	ARX_SOUND_RefreshPosition(m_snd_loop, entities[m_caster]->pos);
 }
 
+
+
+ConfuseSpell::ConfuseSpell()
+	: SpellBase()
+	, tex_p1(NULL)
+	, tex_trail(NULL)
+{}
 
 void ConfuseSpell::Launch() {
 	

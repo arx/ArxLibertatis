@@ -34,6 +34,7 @@ public:
 
 class MagicMissileSpell : public SpellBase {
 public:
+	MagicMissileSpell();
 	~MagicMissileSpell();
 	
 	void Launch();

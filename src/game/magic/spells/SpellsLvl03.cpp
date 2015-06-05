@@ -160,7 +160,10 @@ void DispellIllusionSpell::Update(float timeDelta) {
 
 
 FireballSpell::FireballSpell()
-	: m_light(LightHandle::Invalid)
+	: SpellBase()
+	, ulCurrentTime(0)
+	, bExplo(false)
+	, m_createBallDuration(2000)
 {
 }
 
@@ -169,10 +172,6 @@ FireballSpell::~FireballSpell() {
 }
 
 void FireballSpell::Launch() {
-	
-	m_createBallDuration = 2000;
-	bExplo = false;
-	ulCurrentTime = 0;
 	
 	m_duration = 6000ul;
 	
@@ -337,6 +336,12 @@ Vec3f FireballSpell::getPosition() {
 	return eCurPos;
 }
 
+
+
+CreateFoodSpell::CreateFoodSpell()
+	: SpellBase()
+	, m_currentTime(0)
+{}
 
 void CreateFoodSpell::Launch()
 {
