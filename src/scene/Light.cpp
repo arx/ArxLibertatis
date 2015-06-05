@@ -103,8 +103,7 @@ void ColorMod::updateFromEntity(Entity *io, bool inBook) {
 
 void RecalcLight(EERIE_LIGHT * el) {
 	el->rgb255 = el->rgb * 255.f;
-	el->falldiff = el->fallend - el->fallstart;
-	el->falldiffmul = 1.f / el->falldiff;
+	el->falldiffmul = 1.f / (el->fallend - el->fallstart);
 }
 
 void EERIE_LIGHT_GlobalInit() {

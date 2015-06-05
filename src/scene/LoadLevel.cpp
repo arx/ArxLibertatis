@@ -691,8 +691,7 @@ bool DanaeLoadLevel(const res::path & file, bool loadEntities) {
 				el->treat = 1;
 				el->fallend = dlight->fallend;
 				el->fallstart = dlight->fallstart;
-				el->falldiff = el->fallend - el->fallstart;
-				el->falldiffmul = 1.f / el->falldiff;
+				el->falldiffmul = 1.f / (el->fallend - el->fallstart);
 				el->intensity = dlight->intensity;
 				el->pos = dlight->pos.toVec3();
 				el->rgb = dlight->rgb;
@@ -865,8 +864,7 @@ bool DanaeLoadLevel(const res::path & file, bool loadEntities) {
 			el->treat = 1;
 			el->fallend = dlight->fallend;
 			el->fallstart = dlight->fallstart;
-			el->falldiff = el->fallend - el->fallstart;
-			el->falldiffmul = 1.f / el->falldiff;
+			el->falldiffmul = 1.f / (el->fallend - el->fallstart);
 			el->intensity = dlight->intensity;
 			
 			el->pos = dlight->pos.toVec3();

@@ -103,7 +103,6 @@ struct EERIE_LIGHT {
 	Vec3f pos;
 	float fallstart;
 	float fallend;
-	float falldiff;
 	float falldiffmul;
 	Color3f rgb255;
 	float intensity;
