@@ -1456,6 +1456,11 @@ private:
 	float m_intensity;
 	
 public:
+	ChangeLevelIconGui()
+		: m_tex(NULL)
+		, m_intensity(1.f)
+	{}
+	
 	void init() {
 		m_tex = TextureContainer::LoadUI("graph/interface/icons/change_lvl");
 		arx_assert(m_tex);
@@ -1643,6 +1648,9 @@ private:
 public:
 	HealthGauge()
 		: m_size(33.f, 80.f)
+		, m_emptyTex(NULL)
+		, m_filledTex(NULL)
+		, m_amount(0.f)
 	{}
 	
 	void init() {
@@ -1749,6 +1757,9 @@ public:
 	MecanismIcon()
 		: HudItem()
 		, m_iconSize(32.f, 32.f)
+		, m_tex(NULL)
+		, m_timeToDraw(0)
+		, m_nbToDraw(0)
 	{}
 	
 	void init() {
@@ -1809,6 +1820,8 @@ public:
 		: HudItem()
 		, m_horizontalArrowSize(8, 16)
 		, m_verticalArrowSize(16, 8)
+		, m_arrowLeftTex(NULL)
+		, fArrowMove(0.f)
 	{}
 	
 	void init() {
@@ -2133,6 +2146,7 @@ public:
 	DamagedEquipmentGui()
 		: HudItem()
 		, m_size(64.f, 64.f)
+		, iconequip({NULL})
 	{}
 	
 	void init() {
@@ -2215,7 +2229,14 @@ private:
 	bool m_visible;
 	Color m_color;
 	Vec2f m_size;
+	
 public:
+	StealthGauge()
+		: HudItem()
+		, stealth_gauge_tc(NULL)
+		, m_visible(false)
+	{}
+	
 	void init() {
 		stealth_gauge_tc = TextureContainer::LoadUI("graph/interface/icons/stealth_gauge");
 		arx_assert(stealth_gauge_tc);
