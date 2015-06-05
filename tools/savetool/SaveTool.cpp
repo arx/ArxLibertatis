@@ -77,6 +77,7 @@ static int main_extract(SaveBlock & save, int argc, char ** argv) {
 			cerr << "error writing to " << *file << endl;
 		}
 		
+		free(data);
 	}
 	
 	return 0;
