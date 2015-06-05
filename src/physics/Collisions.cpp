@@ -472,6 +472,8 @@ static bool CollidedFromBack(Entity * io,Entity * ioo) {
 // Else returns Y Offset to put cylinder in a proper place
 float CheckAnythingInCylinder(const Cylinder & cyl, Entity * ioo, long flags) {
 	
+	ARX_PROFILE_FUNC();
+	
 	NPC_IN_CYLINDER = 0;
 	
 	long rad = (cyl.radius + 100) * ACTIVEBKG->Xmul;

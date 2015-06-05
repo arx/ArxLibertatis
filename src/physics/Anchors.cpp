@@ -54,6 +54,7 @@ ZeniMax Media Inc., Suite 120, Rockville, Maryland 20850 USA.
 #include "graphics/Math.h"
 #include "io/log/Logger.h"
 #include "physics/Collisions.h"
+#include "platform/profiler/Profiler.h"
 
 extern float MAX_ALLOWED_PER_SECOND;
 extern bool DIRECT_PATH;
@@ -224,6 +225,8 @@ static float ANCHOR_IsPolyInCylinder(const EERIEPOLY & ep, const Cylinder & cyl,
  * \return 0 if nothing in cyl else returns Y Offset to put cylinder in a proper place
  */
 static float ANCHOR_CheckAnythingInCylinder(const Cylinder & cyl, CollisionFlags flags) {
+	
+	ARX_PROFILE_FUNC();
 	
 	long rad = (cyl.radius + 230) * ACTIVEBKG->Xmul;
 	

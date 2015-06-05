@@ -84,6 +84,7 @@ ZeniMax Media Inc., Suite 120, Rockville, Maryland 20850 USA.
 #include "physics/Collisions.h"
 
 #include "platform/Platform.h"
+#include "platform/profiler/Profiler.h"
 
 #include "scene/Object.h"
 #include "scene/LinkedObject.h"
@@ -655,6 +656,8 @@ static float ARX_EQUIPMENT_GetSpecialValue(Entity * io, long val) {
 //-----------------------------------------------------------------------------------------------
 //***********************************************************************************************
 bool ARX_EQUIPMENT_Strike_Check(Entity * io_source, Entity * io_weapon, float ratioaim, long flags, EntityHandle targ) {
+	
+	ARX_PROFILE_FUNC();
 	
 	arx_assert(io_source);
 	arx_assert(io_weapon);

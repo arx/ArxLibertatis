@@ -279,6 +279,8 @@ static bool FrustrumsClipSphere(const EERIE_FRUSTRUM_DATA & frustrums,
 
 bool VisibleSphere(const Sphere & sphere) {
 	
+	ARX_PROFILE_FUNC();
+	
 	if(fartherThan(sphere.origin, ACTIVECAM->orgTrans.pos, ACTIVECAM->cdepth*0.5f + sphere.radius))
 		return false;
 

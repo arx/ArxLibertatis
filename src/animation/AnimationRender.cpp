@@ -477,7 +477,9 @@ void drawTriangle(const RenderMaterial & mat, const TexturedVertex * vertices) {
 }
 
 static bool Cedric_IO_Visible(const Vec3f & pos) {
-
+	
+	ARX_PROFILE_FUNC();
+	
 	if(ACTIVEBKG) {
 		//TODO maybe readd this
 		//if(fartherThan(io->pos, ACTIVECAM->orgTrans.pos, ACTIVECAM->cdepth * 0.6f))
