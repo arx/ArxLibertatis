@@ -74,7 +74,8 @@ CRiseDead::~CRiseDead() {
 }
 
 CRiseDead::CRiseDead()
-	: m_eSrc(Vec3f_ZERO)
+	: FissureFx()
+	, m_eSrc(Vec3f_ZERO)
 	, fBetaRadCos(0.f)
 	, fBetaRadSin(0.f)
 	, tex_light(NULL)
@@ -438,7 +439,8 @@ void CRiseDead::Render()
 
 
 CSummonCreature::CSummonCreature()
-	: fBetaRadCos(0.f)
+	: FissureFx()
+	, fBetaRadCos(0.f)
 	, fBetaRadSin(0.f)
 	, end(0)
 	, bIntro(true)
