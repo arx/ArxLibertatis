@@ -32,7 +32,8 @@
 
 
 FissureFx::FissureFx()
-	: ulDurationIntro(1000)
+	: ulCurrentTime(0)
+	, ulDurationIntro(1000)
 	, ulDurationRender(1000)
 	, ulDurationOuttro(1000)
 	, m_colorBorder(Color3f::white)
