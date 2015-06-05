@@ -2146,8 +2146,13 @@ public:
 	DamagedEquipmentGui()
 		: HudItem()
 		, m_size(64.f, 64.f)
-		, iconequip({NULL})
-	{}
+	{
+		iconequip[0] = NULL;
+		iconequip[1] = NULL;
+		iconequip[2] = NULL;
+		iconequip[3] = NULL;
+		iconequip[4] = NULL;
+	}
 	
 	void init() {
 		iconequip[0] = TextureContainer::LoadUI("graph/interface/icons/equipment_sword");
