@@ -528,9 +528,8 @@ TILE_LIGHTS tilelights[MAX_BKGX][MAX_BKGZ];
 
 void InitTileLights()
 {
-	for (long j=0;j<MAX_BKGZ;j++)
-	for (long i=0;i<MAX_BKGZ;i++)
-	{
+	for(long j = 0; j < MAX_BKGZ; j++)
+	for(long i = 0; i < MAX_BKGX; i++) {
 		tilelights[i][j].el.clear();
 	}
 }
