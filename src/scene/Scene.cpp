@@ -867,7 +867,9 @@ static void CalculateLavaDisplacement(float & fTu, float & fTv, EERIEPOLY * ep,
 const int FTVU_STEP_COUNT = 3; //For fTv and fTu calculations
 
 static void RenderWater() {
-
+	
+	ARX_PROFILE_FUNC();
+	
 	if(vPolyWater.empty()) {
 		return;
 	}
@@ -973,7 +975,9 @@ static void RenderLavaBatch() {
 }
 
 static void RenderLava() {
-
+	
+	ARX_PROFILE_FUNC();
+	
 	if(vPolyLava.empty()) {
 		return;
 	}

@@ -188,6 +188,9 @@ static void PopOneTriangleListTransparency(TextureContainer *_pTex) {
 }
 
 void PopAllTriangleList(bool clear) {
+	
+	ARX_PROFILE_FUNC();
+	
 	GRenderer->SetAlphaFunc(Renderer::CmpGreater, .5f);
 	GRenderer->SetCulling(Renderer::CullNone);
 
@@ -200,7 +203,9 @@ void PopAllTriangleList(bool clear) {
 }
 
 void PopAllTriangleListTransparency() {
-
+	
+	ARX_PROFILE_FUNC();
+	
 	GRenderer->SetFogColor(Color::none);
 	GRenderer->SetRenderState(Renderer::AlphaBlending, true);
 	GRenderer->SetRenderState(Renderer::DepthWrite, false);

@@ -240,8 +240,10 @@ static void IncrementPolyWithNormalOutput(EERIEPOLY * _pPoly, TexturedVertex * _
 }
 
 extern float framedelay;
-void ARXDRAW_DrawPolyBoom()
-{
+void ARXDRAW_DrawPolyBoom() {
+	
+	ARX_PROFILE_FUNC();
+	
 	TexturedVertex ltv[4];
 
 	GRenderer->SetFogColor(Color::none); // TODO: not handled by RenderMaterial
