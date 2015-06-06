@@ -1632,12 +1632,8 @@ bool IO_Visible(const Vec3f & orgn, const Vec3f & dest, EERIEPOLY * epp, Vec3f *
 		tmpPos.y += i.y;
 		tmpPos.z += i.z;
 
-		Sphere sphere;
-		sphere.origin.x=tmpPos.x;
-		sphere.origin.y=tmpPos.y;
-		sphere.origin.z=tmpPos.z;
-		sphere.radius=65.f;
-
+		Sphere sphere = Sphere(tmpPos, 65.f);
+		
 		for(size_t num = 0; num < entities.size(); num++) {
 			const EntityHandle handle = EntityHandle(num);
 			Entity * io = entities[handle];
