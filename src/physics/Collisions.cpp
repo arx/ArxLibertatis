@@ -495,8 +495,6 @@ float CheckAnythingInCylinder(const Cylinder & cyl, Entity * ioo, long flags) {
 
 	float anything = 999999.f; 
 	
-	EERIEPOLY * ep;
-	
 	for(short z = pz - rad; z <= pz + rad; z++)
 	for(short x = px - rad; x <= px + rad; x++) {
 		float nearx,nearz;
@@ -526,7 +524,7 @@ float CheckAnythingInCylinder(const Cylinder & cyl, Entity * ioo, long flags) {
 
 		EERIE_BKG_INFO * feg = &ACTIVEBKG->fastdata[x][z];
 		for(long k = 0; k < feg->nbpoly; k++) {
-			ep = &feg->polydata[k];
+			EERIEPOLY * ep = &feg->polydata[k];
 
 			if(ep->type & (POLY_WATER | POLY_TRANS | POLY_NOCOL))
 				continue;
@@ -544,7 +542,7 @@ float CheckAnythingInCylinder(const Cylinder & cyl, Entity * ioo, long flags) {
 
 	float tempo;
 	
-	ep = CheckInPoly(cyl.origin + Vec3f(0.f, cyl.height, 0.f), &tempo);
+	EERIEPOLY * ep = CheckInPoly(cyl.origin + Vec3f(0.f, cyl.height, 0.f), &tempo);
 	
 	if(ep) {
 		anything = std::min(anything, tempo);
