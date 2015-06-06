@@ -1571,10 +1571,8 @@ bool IO_Visible(const Vec3f & orgn, const Vec3f & dest, EERIEPOLY * epp, Vec3f *
 	ARX_PROFILE_FUNC();
 	
 	Vec3f i;
-	long px,pz;
-
 	float pas = 35.f;
- 
+
 	Vec3f found_hit = Vec3f_ZERO;
 	EERIEPOLY *found_ep = NULL;
 	float iter;
@@ -1661,37 +1659,31 @@ bool IO_Visible(const Vec3f & orgn, const Vec3f & dest, EERIEPOLY * epp, Vec3f *
 			}
 		}
 
-		px = (long)(tmpPos.x * ACTIVEBKG->Xmul);
-		pz = (long)(tmpPos.z * ACTIVEBKG->Zmul);
+		long px = (long)(tmpPos.x * ACTIVEBKG->Xmul);
+		long pz = (long)(tmpPos.z * ACTIVEBKG->Zmul);
 
 		if(px < 0 || px >= ACTIVEBKG->Xsize || pz < 0 || pz >= ACTIVEBKG->Zsize)
-			goto fini;
+			break;
 
-			EERIE_BKG_INFO * feg = &ACTIVEBKG->fastdata[px][pz];
+		EERIE_BKG_INFO * eg = &ACTIVEBKG->fastdata[px][pz];
 
-			for(long k = 0; k < feg->nbpolyin; k++) {
-				EERIEPOLY * ep = feg->polyin[k];
+		for(long k = 0; k < eg->nbpolyin; k++) {
+			EERIEPOLY * ep = eg->polyin[k];
 
-				if(!(ep->type & (POLY_WATER | POLY_TRANS | POLY_NOCOL)))
-				if((ep->min.y - pas < tmpPos.y) && (ep->max.y + pas > tmpPos.y))
-				if((ep->min.x - pas < tmpPos.x) && (ep->max.x + pas > tmpPos.x))
-				if((ep->min.z - pas < tmpPos.z) && (ep->max.z + pas > tmpPos.z))
-				{
-					if(RayCollidingPoly(orgn, dest, ep, hit)) {
-						dd = fdist(orgn, *hit);
-						if(dd < nearest) {
-							nearest = dd;
-							found_ep = ep;
-							found_hit = *hit;
-						}
-					}
+			if(!(ep->type & (POLY_WATER | POLY_TRANS | POLY_NOCOL)))
+			if((ep->min.y - pas < tmpPos.y) && (ep->max.y + pas > tmpPos.y))
+			if((ep->min.x - pas < tmpPos.x) && (ep->max.x + pas > tmpPos.x))
+			if((ep->min.z - pas < tmpPos.z) && (ep->max.z + pas > tmpPos.z))
+			if(RayCollidingPoly(orgn, dest, ep, hit)) {
+				dd = fdist(orgn, *hit);
+				if(dd < nearest) {
+					nearest = dd;
+					found_ep = ep;
+					found_hit = *hit;
 				}
 			}
-			
 		}
-		
-fini:
-	;
+	}
 	
 	if(!found_ep)
 		return true;
