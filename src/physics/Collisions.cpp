@@ -1620,8 +1620,7 @@ bool IO_Visible(const Vec3f & orgn, const Vec3f & dest, EERIEPOLY * epp, Vec3f *
 		i.x = d.x * t;
 		i.y = d.y * t;
 	}
-
-	float dd;
+	
 	tmpPos.x -= i.x;
 	tmpPos.y -= i.y;
 	tmpPos.z -= i.z;
@@ -1640,7 +1639,7 @@ bool IO_Visible(const Vec3f & orgn, const Vec3f & dest, EERIEPOLY * epp, Vec3f *
 
 			if(io && (io->gameFlags & GFLAG_VIEW_BLOCKER)) {
 				if(CheckIOInSphere(sphere, *io)) {
-					dd = fdist(orgn, sphere.origin);
+					float dd = fdist(orgn, sphere.origin);
 
 					if(dd < nearest) {
 						hit->x=tmpPos.x;
@@ -1668,7 +1667,7 @@ bool IO_Visible(const Vec3f & orgn, const Vec3f & dest, EERIEPOLY * epp, Vec3f *
 			if((ep->min.x - pas < tmpPos.x) && (ep->max.x + pas > tmpPos.x))
 			if((ep->min.z - pas < tmpPos.z) && (ep->max.z + pas > tmpPos.z))
 			if(RayCollidingPoly(orgn, dest, ep, hit)) {
-				dd = fdist(orgn, *hit);
+				float dd = fdist(orgn, *hit);
 				if(dd < nearest) {
 					nearest = dd;
 					found_ep = ep;

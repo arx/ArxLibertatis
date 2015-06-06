@@ -802,8 +802,7 @@ bool Visible(const Vec3f & orgn, const Vec3f & dest, EERIEPOLY * epp, Vec3f * hi
 		i.x = d.x * t;
 		i.y = d.y * t;
 	}
-
-	float dd;
+	
 	tmpPos.x -= i.x;
 	tmpPos.y -= i.y;
 	tmpPos.z -= i.z;
@@ -830,7 +829,7 @@ bool Visible(const Vec3f & orgn, const Vec3f & dest, EERIEPOLY * epp, Vec3f * hi
 			if((ep->min.x - pas < tmpPos.x) && (ep->max.x + pas > tmpPos.x))
 			if((ep->min.z - pas < tmpPos.z) && (ep->max.z + pas > tmpPos.z))
 			if(RayCollidingPoly(orgn, dest, ep, hit)) {
-				dd = fdist(orgn, *hit);
+				float dd = fdist(orgn, *hit);
 
 				if(dd < nearest) {
 					nearest = dd;
