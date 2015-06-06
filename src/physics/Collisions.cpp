@@ -1569,21 +1569,19 @@ bool ARX_COLLISION_Move_Cylinder(IO_PHYSICS * ip, Entity * io, float MOVE_CYLIND
 bool IO_Visible(const Vec3f & orgn, const Vec3f & dest, EERIEPOLY * epp, Vec3f * hit)
 {
 	ARX_PROFILE_FUNC();
-
-	float ix,iy,iz;
+	
+	Vec3f i;
 	long px,pz;
 
 	float pas = 35.f;
  
 	Vec3f found_hit = Vec3f_ZERO;
 	EERIEPOLY *found_ep = NULL;
-	float iter,t;
-
+	float iter;
+	
 	//current ray pos
-	float x = orgn.x;
-	float y = orgn.y;
-	float z = orgn.z;
-
+	Vec3f tmpPos = orgn;
+	
 	float distance;
 	float nearest = distance = fdist(orgn, dest);
 
@@ -1591,62 +1589,58 @@ bool IO_Visible(const Vec3f & orgn, const Vec3f & dest, EERIEPOLY * epp, Vec3f *
 		pas = distance * .5f;
 
 	// ray incs
-	float dx = (dest.x - orgn.x);
-	float dy = (dest.y - orgn.y);
-	float dz = (dest.z - orgn.z);
-
+	Vec3f d = dest - orgn;
+	
 	// absolute ray incs
-	float adx = glm::abs(dx);
-	float ady = glm::abs(dy);
-	float adz = glm::abs(dz);
-
-	if(adx >= ady && adx >= adz) {
-		if(adx != dx)
-			ix = -pas;
+	Vec3f ad = glm::abs(d);
+	
+	if(ad.x >= ad.y && ad.x >= ad.z) {
+		if(ad.x != d.x)
+			i.x = -pas;
 		else
-			ix = pas;
+			i.x = pas;
 
-		iter = adx / pas;
-		t = 1.f / (iter);
-		iy = dy * t;
-		iz = dz * t;
-	} else if(ady >= adx && ady >= adz) {
-		if(ady != dy)
-			iy = -pas;
+		iter = ad.x / pas;
+		float t = 1.f / (iter);
+		i.y = d.y * t;
+		i.z = d.z * t;
+	} else if(ad.y >= ad.x && ad.y >= ad.z) {
+		if(ad.y != d.y)
+			i.y = -pas;
 		else
-			iy = pas;
+			i.y = pas;
 
-		iter = ady / pas;
-		t = 1.f / (iter);
-		ix = dx * t;
-		iz = dz * t;
+		iter = ad.y / pas;
+		float t = 1.f / (iter);
+		i.x = d.x * t;
+		i.z = d.z * t;
 	} else {
-		if(adz != dz)
-			iz = -pas;
+		if(ad.z != d.z)
+			i.z = -pas;
 		else
-			iz = pas;
+			i.z = pas;
 
-		iter = adz / pas;
-		t = 1.f / (iter);
-		ix = dx * t;
-		iy = dy * t;
+		iter = ad.z / pas;
+		float t = 1.f / (iter);
+		i.x = d.x * t;
+		i.y = d.y * t;
 	}
 
 	float dd;
-	x -= ix;
-	y -= iy;
-	z -= iz;
+	tmpPos.x -= i.x;
+	tmpPos.y -= i.y;
+	tmpPos.z -= i.z;
 
 	while(iter > 0.f) {
 		iter -= 1.f;
-		x += ix;
-		y += iy;
-		z += iz;
+		tmpPos.x += i.x;
+		tmpPos.y += i.y;
+		tmpPos.z += i.z;
 
 		Sphere sphere;
-		sphere.origin.x=x;
-		sphere.origin.y=y;
-		sphere.origin.z=z;
+		sphere.origin.x=tmpPos.x;
+		sphere.origin.y=tmpPos.y;
+		sphere.origin.z=tmpPos.z;
 		sphere.radius=65.f;
 
 		for(size_t num = 0; num < entities.size(); num++) {
@@ -1658,17 +1652,17 @@ bool IO_Visible(const Vec3f & orgn, const Vec3f & dest, EERIEPOLY * epp, Vec3f *
 					dd = fdist(orgn, sphere.origin);
 
 					if(dd < nearest) {
-						hit->x=x;
-						hit->y=y;
-						hit->z=z;
+						hit->x=tmpPos.x;
+						hit->y=tmpPos.y;
+						hit->z=tmpPos.z;
 						return false;
 					}
 				}
 			}
 		}
 
-		px = (long)(x * ACTIVEBKG->Xmul);
-		pz = (long)(z * ACTIVEBKG->Zmul);
+		px = (long)(tmpPos.x * ACTIVEBKG->Xmul);
+		pz = (long)(tmpPos.z * ACTIVEBKG->Zmul);
 
 		if(px < 0 || px >= ACTIVEBKG->Xsize || pz < 0 || pz >= ACTIVEBKG->Zsize)
 			goto fini;
@@ -1679,9 +1673,9 @@ bool IO_Visible(const Vec3f & orgn, const Vec3f & dest, EERIEPOLY * epp, Vec3f *
 				EERIEPOLY * ep = feg->polyin[k];
 
 				if(!(ep->type & (POLY_WATER | POLY_TRANS | POLY_NOCOL)))
-				if((ep->min.y - pas < y) && (ep->max.y + pas > y))
-				if((ep->min.x - pas < x) && (ep->max.x + pas > x))
-				if((ep->min.z - pas < z) && (ep->max.z + pas > z))
+				if((ep->min.y - pas < tmpPos.y) && (ep->max.y + pas > tmpPos.y))
+				if((ep->min.x - pas < tmpPos.x) && (ep->max.x + pas > tmpPos.x))
+				if((ep->min.z - pas < tmpPos.z) && (ep->max.z + pas > tmpPos.z))
 				{
 					if(RayCollidingPoly(orgn, dest, ep, hit)) {
 						dd = fdist(orgn, *hit);
