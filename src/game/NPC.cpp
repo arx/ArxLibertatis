@@ -263,8 +263,6 @@ static void ARX_NPC_CreateExRotateData(Entity * io) {
 		io->_npcdata->ex_rotate->group_rotate[n] = Anglef::ZERO;
 	}
 	
-	io->_npcdata->ex_rotate->flags = 0;
-	
 	io->_npcdata->look_around_inc = 0.f;
 }
 

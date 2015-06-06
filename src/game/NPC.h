@@ -120,14 +120,7 @@ struct IO_PATHFIND {
 	{}
 };
 
-enum ExtraRotateFlag {
-	EXTRA_ROTATE_REALISTIC = (1<<0)
-};
-DECLARE_FLAGS(ExtraRotateFlag, ExtraRotateFlags)
-DECLARE_FLAGS_OPERATORS(ExtraRotateFlags)
-
 struct EERIE_EXTRA_ROTATE {
-	ExtraRotateFlags flags;
 	short group_number[MAX_EXTRA_ROTATE];
 	Anglef group_rotate[MAX_EXTRA_ROTATE];
 };

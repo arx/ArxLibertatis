@@ -1561,12 +1561,7 @@ static int view_io(SaveBlock & save, const char * dat, size_t size) {
 			
 			if(ais.saveflags & SAVEFLAGS_EXTRA_ROTATE) {
 				
-				cout << endl << "  Extra rotate flags:";
-				ExtraRotateFlags flags = ExtraRotateFlags::load(as->ex_rotate.flags);
-				if(!flags) cout << " (none)";
-				if(flags & EXTRA_ROTATE_REALISTIC) cout << " realistic";
-				if(flags & ~EXTRA_ROTATE_REALISTIC) cout << " (unknown)";
-				cout << endl;
+				cout << endl << "  Extra rotate flags (unused): " << as->ex_rotate.flags << endl;
 				
 				for(size_t i = 0; i < SAVED_MAX_EXTRA_ROTATE; i++) {
 					cout << "    Extra rotate #" << i << ": group=" << as->ex_rotate.group_number[i] << " rotation=" << as->ex_rotate.group_rotate[i] << endl;

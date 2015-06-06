@@ -1134,7 +1134,6 @@ void ManageCombatModeAnimationsEND() {
 			||	(useanim->cur_anim == io->anims[ANIM_2H_UNREADY_PART_2])
 			||	(useanim->cur_anim == io->anims[ANIM_MISSILE_UNREADY_PART_2])	)
 		) {
-			io->_npcdata->ex_rotate->flags |= EXTRA_ROTATE_REALISTIC;
 			AcquireLastAnim(io);
 			useanim->cur_anim = NULL;
 		}

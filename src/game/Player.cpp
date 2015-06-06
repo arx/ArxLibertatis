@@ -253,7 +253,6 @@ void ARX_PLAYER_RectifyPosition() {
 		for(long n = 0; n < MAX_EXTRA_ROTATE; n++) {
 			io->_npcdata->ex_rotate->group_rotate[n] = Anglef::ZERO;
 		}
-		io->_npcdata->ex_rotate->flags = 0;
 	}
 }
 
@@ -1277,8 +1276,6 @@ void ARX_PLAYER_LoadHeroAnimsAndMesh(){
 		{
 			io->_npcdata->ex_rotate->group_rotate[n] = Anglef::ZERO;
 		}
-		
-		io->_npcdata->ex_rotate->flags = 0;
 	}
 
 	ARX_INTERACTIVE_RemoveGoreOnIO(entities.player());
@@ -1891,9 +1888,6 @@ void ARX_PLAYER_Frame_Update()
 			extraRotation->group_rotate[2].setYaw(v); //chest
 			extraRotation->group_rotate[3].setYaw(v); //belt*/
 		}
-
-		if((player.Interface & INTER_COMBATMODE) || player.doingmagic == 2)
-			extraRotation->flags &= ~EXTRA_ROTATE_REALISTIC;
 	}
 
 	ARX_PLAYER_ComputePlayerFullStats();
