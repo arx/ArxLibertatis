@@ -606,10 +606,8 @@ float GetColorz(const Vec3f &pos) {
 	ep = CheckInPoly(pos, &needy);
 
 	if(ep != NULL) {
-		float _ffr = 0;
-		float _ffg = 0;
-		float _ffb = 0;
-
+		Color3f _ff = Color3f(0.f, 0.f, 0.f);
+		
 		long to = (ep->type & POLY_QUAD) ? 4 : 3;
 		float div = (1.0f / to);
 
@@ -618,21 +616,21 @@ float GetColorz(const Vec3f &pos) {
 
 		for(long i = 0; i < to; i++) {
 			Color col = Color::fromRGBA(ep->tv[i].color);
-			_ffr += float(col.r);
-			_ffg += float(col.g);
-			_ffb += float(col.b);
+			_ff.r += float(col.r);
+			_ff.g += float(col.g);
+			_ff.b += float(col.b);
 		}
 
-		_ffr *= div;
-		_ffg *= div;
-		_ffb *= div;
+		_ff.r *= div;
+		_ff.g *= div;
+		_ff.b *= div;
 		float ratio, ratio2;
 		ratio = glm::abs(needy - pos.y) * ( 1.0f / 300 );
 		ratio = (1.f - ratio);
 		ratio2 = 1.f - ratio;
-		ff.r = ff.r * ratio2 + _ffr * ratio;
-		ff.g = ff.g * ratio2 + _ffg * ratio;
-		ff.b = ff.b * ratio2 + _ffb * ratio;
+		ff.r = ff.r * ratio2 + _ff.r * ratio;
+		ff.g = ff.g * ratio2 + _ff.g * ratio;
+		ff.b = ff.b * ratio2 + _ff.b * ratio;
 	}
 
 	return (std::min(ff.r, 255.f) + std::min(ff.g, 255.f) + std::min(ff.b, 255.f)) * (1.f/3);
