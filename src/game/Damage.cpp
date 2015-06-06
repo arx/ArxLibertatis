@@ -75,6 +75,7 @@ ZeniMax Media Inc., Suite 120, Rockville, Maryland 20850 USA.
 #include "graphics/BaseGraphicsTypes.h"
 #include "graphics/Color.h"
 #include "graphics/Draw.h"
+#include "graphics/DrawLine.h"
 #include "graphics/GraphicsTypes.h"
 #include "graphics/Math.h"
 #include "graphics/Renderer.h"
@@ -1534,3 +1535,14 @@ float ARX_DAMAGES_ComputeRepairPrice(Entity * torepair, Entity * blacksmith)
 	return price;
 }
 
+void ARX_DAMAGES_DrawDebug() {
+	
+	for(size_t i = 0; i < MAX_DAMAGES; i++) {
+		if(!damages[i].exist)
+			continue;
+		
+		DAMAGE_INFO & d = damages[i];
+		
+		drawLineSphere(Sphere(d.params.pos, d.params.radius), Color::red);
+	}
+}

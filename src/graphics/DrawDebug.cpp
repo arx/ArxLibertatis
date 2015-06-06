@@ -90,6 +90,7 @@ enum DebugViewType {
 	DebugView_CollisionShapes,
 	DebugView_Portals,
 	DebugView_Materials,
+	DebugView_Damages,
 	DebugViewCount
 };
 
@@ -881,6 +882,11 @@ void drawDebugRender() {
 		case DebugView_Materials: {
 			ss << "Materials";
 			drawDebugMaterials();
+			break;
+		}
+		case DebugView_Damages: {
+			ss << "Damages";
+			ARX_DAMAGES_DrawDebug();
 			break;
 		}
 		default: return;

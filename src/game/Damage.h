@@ -150,4 +150,6 @@ void ARX_DAMAGES_DurabilityRestore(Entity * io, float ratio);
 void ARX_DAMAGES_DamagePlayerEquipment(float damages);
 float ARX_DAMAGES_ComputeRepairPrice(Entity * torepair, Entity * blacksmith);
 
+void ARX_DAMAGES_DrawDebug();
+
 #endif // ARX_GAME_DAMAGE_H
