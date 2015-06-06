@@ -569,11 +569,9 @@ void ClearTileLights() {
 float GetColorz(const Vec3f &pos) {
 
 	UpdateLlights(pos, true);
-
-	float ffr = 0;
-	float ffg = 0;
-	float ffb = 0;
-
+	
+	Color3f ff = Color3f(0.f, 0.f, 0.f);
+	
 	for(long k = 0; k < MAX_LLIGHTS; k++) {
 		EERIE_LIGHT * el = llights[k];
 
@@ -595,9 +593,9 @@ float GetColorz(const Vec3f &pos) {
 				}
 
 				dc *= 0.4f * 255.f;
-				ffr = std::max(ffr, el->rgb.r * dc);
-				ffg = std::max(ffg, el->rgb.g * dc);
-				ffb = std::max(ffb, el->rgb.b * dc);
+				ff.r = std::max(ff.r, el->rgb.r * dc);
+				ff.g = std::max(ff.g, el->rgb.g * dc);
+				ff.b = std::max(ff.b, el->rgb.b * dc);
 			}
 		}
 	}
@@ -632,12 +630,12 @@ float GetColorz(const Vec3f &pos) {
 		ratio = glm::abs(needy - pos.y) * ( 1.0f / 300 );
 		ratio = (1.f - ratio);
 		ratio2 = 1.f - ratio;
-		ffr = ffr * ratio2 + _ffr * ratio;
-		ffg = ffg * ratio2 + _ffg * ratio;
-		ffb = ffb * ratio2 + _ffb * ratio;
+		ff.r = ff.r * ratio2 + _ffr * ratio;
+		ff.g = ff.g * ratio2 + _ffg * ratio;
+		ff.b = ff.b * ratio2 + _ffb * ratio;
 	}
 
-	return (std::min(ffr, 255.f) + std::min(ffg, 255.f) + std::min(ffb, 255.f)) * (1.f/3);
+	return (std::min(ff.r, 255.f) + std::min(ff.g, 255.f) + std::min(ff.b, 255.f)) * (1.f/3);
 }
 
 ColorRGBA ApplyLight(const glm::quat * quat, const Vec3f & position, const Vec3f & normal, const ColorMod & colorMod, float materialDiffuse) {
