@@ -36,6 +36,7 @@ public:
 private:
 	void GetTargetAndBeta(Vec3f & target, float & beta);
 	
+	LightHandle m_light;
 	CSummonCreature m_fissure;
 	Vec3f m_targetPos;
 	bool m_megaCheat;
@@ -51,6 +52,7 @@ public:
 	void Update(float timeDelta);
 	
 private:
+	LightHandle m_light;
 	CSummonCreature m_fissure;
 	Vec3f m_targetPos;
 };

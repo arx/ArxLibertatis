@@ -99,9 +99,9 @@ void SummonCreatureSpell::Launch()
 	m_fissure.SetColorRays1(Color3f::red);
 	m_fissure.SetColorRays2(Color3f::yellow * .5f);
 	
-	m_fissure.lLightId = GetFreeDynLight();
-	if(lightHandleIsValid(m_fissure.lLightId)) {
-		EERIE_LIGHT * light = lightHandleGet(m_fissure.lLightId);
+	m_light = GetFreeDynLight();
+	if(lightHandleIsValid(m_light)) {
+		EERIE_LIGHT * light = lightHandleGet(m_light);
 		
 		light->intensity = 0.3f;
 		light->fallend = 500.f;
@@ -117,7 +117,7 @@ void SummonCreatureSpell::End()
 		ARX_SOUND_PlaySFX(SND_SPELL_ELECTRIC, &entities[m_longinfo2_entity]->pos);
 	}
 
-	lightHandleDestroy(m_fissure.lLightId);
+	lightHandleDestroy(m_light);
 	// need to killio
 	
 	if(ValidIONum(m_longinfo2_entity) && m_longinfo2_entity != PlayerEntityHandle) {
@@ -168,7 +168,7 @@ void SummonCreatureSpell::Update(float timeDelta) {
 		m_longinfo2_entity = EntityHandle::Invalid;
 
 	} else if(m_longinfo_summon_creature) {
-		lightHandleDestroy(m_fissure.lLightId);
+		lightHandleDestroy(m_light);
 		
 		m_longinfo_summon_creature = 0;
 		ARX_SOUND_PlaySFX(SND_SPELL_ELECTRIC, &m_targetPos);
@@ -293,10 +293,10 @@ void FakeSummonSpell::Launch()
 	m_fissure.SetColorRays1(Color3f::red);
 	m_fissure.SetColorRays2(Color3f::yellow * .5f);
 	
-	m_fissure.lLightId = GetFreeDynLight();
+	m_light = GetFreeDynLight();
 	
-	if(lightHandleIsValid(m_fissure.lLightId)) {
-		EERIE_LIGHT * light = lightHandleGet(m_fissure.lLightId);
+	if(lightHandleIsValid(m_light)) {
+		EERIE_LIGHT * light = lightHandleGet(m_light);
 		
 		light->intensity = 0.3f;
 		light->fallend = 500.f;
@@ -310,7 +310,7 @@ void FakeSummonSpell::End()
 {
 	ARX_SOUND_PlaySFX(SND_SPELL_ELECTRIC, &m_targetPos);
 	
-	lightHandleDestroy(m_fissure.lLightId);
+	lightHandleDestroy(m_light);
 }
 
 void FakeSummonSpell::Update(float timeDelta)
