@@ -59,7 +59,6 @@ public:
 	
 	Vec3f m_eSrc;
 	
-	LightHandle lLightId;
 private:
 	float	fBetaRadCos;
 	float	fBetaRadSin;

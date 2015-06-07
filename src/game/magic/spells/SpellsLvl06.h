@@ -38,6 +38,7 @@ private:
 	void GetTargetAndBeta(Vec3f & target, float & beta);
 	
 	CRiseDead m_fissure;
+	LightHandle m_light;
 	Vec3f m_targetPos;
 	EntityHandle m_entity;
 };

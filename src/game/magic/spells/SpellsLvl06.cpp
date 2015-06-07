@@ -100,11 +100,11 @@ void RiseDeadSpell::Launch()
 	m_fissure.SetColorRays1(Color3f(0.5, 0.5, 0.5));
 	m_fissure.SetColorRays2(Color3f(1.f, 0.f, 0.f));
 	
-	if(!lightHandleIsValid(m_fissure.lLightId)) {
-		m_fissure.lLightId = GetFreeDynLight();
+	if(!lightHandleIsValid(m_light)) {
+		m_light = GetFreeDynLight();
 	}
-	if(lightHandleIsValid(m_fissure.lLightId)) {
-		EERIE_LIGHT * light = lightHandleGet(m_fissure.lLightId);
+	if(lightHandleIsValid(m_light)) {
+		EERIE_LIGHT * light = lightHandleGet(m_light);
 		
 		light->intensity = 1.3f;
 		light->fallend = 450.f;
@@ -149,13 +149,13 @@ void RiseDeadSpell::End()
 		}
 	}
 	
-	endLightDelayed(m_fissure.lLightId, 500);
+	endLightDelayed(m_light, 500);
 }
 
 void RiseDeadSpell::Update(float timeDelta) {
 	
 	if(m_entity == -2) {
-		m_fissure.lLightId = LightHandle::Invalid;
+		m_light = LightHandle::Invalid;
 		return;
 	}
 	
@@ -164,8 +164,8 @@ void RiseDeadSpell::Update(float timeDelta) {
 	m_fissure.Update(timeDelta);
 	m_fissure.Render();
 	
-	if(lightHandleIsValid(m_fissure.lLightId)) {
-		EERIE_LIGHT * light = lightHandleGet(m_fissure.lLightId);
+	if(lightHandleIsValid(m_light)) {
+		EERIE_LIGHT * light = lightHandleGet(m_light);
 		
 		light->intensity = 0.7f + 2.3f;
 		light->fallend = 500.f;
@@ -220,7 +220,7 @@ void RiseDeadSpell::Update(float timeDelta) {
 				MakeCoolFx(pos);
 			}
 			
-			m_fissure.lLightId = LightHandle::Invalid;
+			m_light = LightHandle::Invalid;
 		} else {
 			ARX_SOUND_PlaySFX(SND_MAGIC_FIZZLE);
 			m_entity = EntityHandle(-2); // FIXME inband signaling
