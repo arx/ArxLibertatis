@@ -1056,25 +1056,25 @@ static bool PointInBBox(const Vec3f & point, const EERIE_2D_BBOX & bb) {
 	return true;
 }
 
-void EERIEPOLY_Compute_PolyIn()
-{
-	for(long j = 0; j < ACTIVEBKG->Zsize; j++)
-	for(long i = 0; i < ACTIVEBKG->Xsize; i++) {
-		EERIE_BKG_INFO *eg = &ACTIVEBKG->fastdata[i][j];
+void EERIEPOLY_Compute_PolyIn() {
+	
+	for(long z = 0; z < ACTIVEBKG->Zsize; z++)
+	for(long x = 0; x < ACTIVEBKG->Xsize; x++) {
+		EERIE_BKG_INFO *eg = &ACTIVEBKG->fastdata[x][z];
 		
 		free(eg->polyin);
 		eg->polyin = NULL;
 		eg->nbpolyin = 0;
 		
-		long ii = std::max(i - 2, 0L);
-		long ij = std::max(j - 2, 0L);
-		long ai = std::min(i + 2, ACTIVEBKG->Xsize - 1L);
-		long aj = std::min(j + 2, ACTIVEBKG->Zsize - 1L);
+		long ii = std::max(x - 2, 0L);
+		long ij = std::max(z - 2, 0L);
+		long ai = std::min(x + 2, ACTIVEBKG->Xsize - 1L);
+		long aj = std::min(z + 2, ACTIVEBKG->Zsize - 1L);
 		
 		EERIE_2D_BBOX bb;
-		bb.min.x = (float)i * ACTIVEBKG->Xdiv - 10;
+		bb.min.x = (float)x * ACTIVEBKG->Xdiv - 10;
 		bb.max.x = (float)bb.min.x + ACTIVEBKG->Xdiv + 20;
-		bb.min.y = (float)j * ACTIVEBKG->Zdiv - 10;
+		bb.min.y = (float)z * ACTIVEBKG->Zdiv - 10;
 		bb.max.y = (float)bb.min.y + ACTIVEBKG->Zdiv + 20;
 		Vec3f bbcenter;
 		bbcenter.x = (bb.min.x + bb.max.x) * .5f;
