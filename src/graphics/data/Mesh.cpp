@@ -1246,17 +1246,15 @@ long CountBkgVertex() {
 
 	for(long z = 0; z < ACTIVEBKG->Zsize; z++) {
 		for(long x = 0; x < ACTIVEBKG->Xsize; x++) {
-			EERIE_BKG_INFO *eg = &ACTIVEBKG->fastdata[x][z];
+			const EERIE_BKG_INFO & eg = ACTIVEBKG->fastdata[x][z];
 
-			for(long l = 0; l < eg->nbpoly; l++) {
-				EERIEPOLY *ep = &eg->polydata[l];
-
-				if(ep) {
-					if(ep->type & POLY_QUAD)
-						count += 4;
-					else
-						count += 3;
-				}
+			for(long l = 0; l < eg.nbpoly; l++) {
+				const EERIEPOLY & ep = eg.polydata[l];
+				
+				if(ep.type & POLY_QUAD)
+					count += 4;
+				else
+					count += 3;
 			}
 		}
 	}
