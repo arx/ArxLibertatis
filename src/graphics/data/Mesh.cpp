@@ -1080,9 +1080,9 @@ void EERIEPOLY_Compute_PolyIn() {
 		bbcenter.x = (bb.min.x + bb.max.x) * .5f;
 		bbcenter.z = (bb.min.y + bb.max.y) * .5f;
 		
-		for(long cj = ij; cj < aj; cj++)
-		for(long ci = ii; ci < ai; ci++) {
-			EERIE_BKG_INFO *eg2 = &ACTIVEBKG->fastdata[ci][cj];
+		for(long z2 = ij; z2 < aj; z2++)
+		for(long x2 = ii; x2 < ai; x2++) {
+			EERIE_BKG_INFO *eg2 = &ACTIVEBKG->fastdata[x2][z2];
 			
 			for(long l = 0; l < eg2->nbpoly; l++) {
 				EERIEPOLY *ep2 = &eg2->polydata[l];
