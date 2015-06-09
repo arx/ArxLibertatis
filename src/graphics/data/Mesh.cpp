@@ -1244,9 +1244,9 @@ long CountBkgVertex() {
 
 	long count = 0;
 
-	for(long j = 0; j < ACTIVEBKG->Zsize; j++) {
-		for(long i = 0; i < ACTIVEBKG->Xsize; i++) {
-			EERIE_BKG_INFO *eg = &ACTIVEBKG->fastdata[i][j];
+	for(long z = 0; z < ACTIVEBKG->Zsize; z++) {
+		for(long x = 0; x < ACTIVEBKG->Xsize; x++) {
+			EERIE_BKG_INFO *eg = &ACTIVEBKG->fastdata[x][z];
 
 			for(long l = 0; l < eg->nbpoly; l++) {
 				EERIEPOLY *ep = &eg->polydata[l];
