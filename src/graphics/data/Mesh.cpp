@@ -193,24 +193,27 @@ EERIEPOLY * CheckInPoly(const Vec3f & poss, float * needY)
 	float rz = poss.z - ((float)pz * ACTIVEBKG->Zdiv);
 	
 	
-	short pzi, pza, pxi, pxa;
+	short minx;
+	short minz;
+	short maxx;
+	short maxz;
 	
 	(void)checked_range_cast<short>(pz - 1);
 	(void)checked_range_cast<short>(pz + 1);
 	short sPz = static_cast<short>(pz);
 	
 	if (rz < -40.f) {
-		pzi = sPz - 1;
-		pza = sPz - 1;
+		minz = sPz - 1;
+		maxz = sPz - 1;
 	} else if (rz < 40.f) {
-		pzi = sPz - 1;
-		pza = sPz;
+		minz = sPz - 1;
+		maxz = sPz;
 	} else if(rz > 60.f) {
-		pzi = sPz;
-		pza = sPz + 1;
+		minz = sPz;
+		maxz = sPz + 1;
 	} else {
-		pzi = sPz;
-		pza = sPz;
+		minz = sPz;
+		maxz = sPz;
 	}
 	
 	(void)checked_range_cast<short>(px + 1);
@@ -218,24 +221,24 @@ EERIEPOLY * CheckInPoly(const Vec3f & poss, float * needY)
 	short sPx = static_cast<short>(px);
 	
 	if(rx < -40.f) {
-		pxi = sPx - 1;
-		pxa = sPx - 1;
+		minx = sPx - 1;
+		maxx = sPx - 1;
 	} else if(rx < 40.f) {
-		pxi = sPx - 1;
-		pxa = sPx;
+		minx = sPx - 1;
+		maxx = sPx;
 	} else if(rx > 60.f) {
-		pxi = sPx;
-		pxa = sPx + 1;
+		minx = sPx;
+		maxx = sPx + 1;
 	} else {
-		pxi = sPx;
-		pxa = sPx;
+		minx = sPx;
+		maxx = sPx;
 	}
 	
 	EERIEPOLY * found = NULL;
 	float foundY = 0.f;
 	
-	for(short z = pzi; z <= pza; z++)
-	for(short x = pxi; x <= pxa; x++) {
+	for(short z = minz; z <= maxz; z++)
+	for(short x = minx; x <= maxx; x++) {
 		const EERIE_BKG_INFO & feg = ACTIVEBKG->fastdata[x][z];
 		
 		for(short k = 0; k < feg.nbpolyin; k++) {
