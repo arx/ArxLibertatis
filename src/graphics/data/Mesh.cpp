@@ -1066,10 +1066,10 @@ void EERIEPOLY_Compute_PolyIn() {
 		eg->polyin = NULL;
 		eg->nbpolyin = 0;
 		
-		long ii = std::max(x - 2, 0L);
-		long ij = std::max(z - 2, 0L);
-		long ai = std::min(x + 2, ACTIVEBKG->Xsize - 1L);
-		long aj = std::min(z + 2, ACTIVEBKG->Zsize - 1L);
+		long minx = std::max(x - 2, 0L);
+		long minz = std::max(z - 2, 0L);
+		long maxx = std::min(x + 2, ACTIVEBKG->Xsize - 1L);
+		long maxz = std::min(z + 2, ACTIVEBKG->Zsize - 1L);
 		
 		EERIE_2D_BBOX bb;
 		bb.min.x = (float)x * ACTIVEBKG->Xdiv - 10;
@@ -1080,8 +1080,8 @@ void EERIEPOLY_Compute_PolyIn() {
 		bbcenter.x = (bb.min.x + bb.max.x) * .5f;
 		bbcenter.z = (bb.min.y + bb.max.y) * .5f;
 		
-		for(long z2 = ij; z2 < aj; z2++)
-		for(long x2 = ii; x2 < ai; x2++) {
+		for(long z2 = minz; z2 < maxz; z2++)
+		for(long x2 = minx; x2 < maxx; x2++) {
 			EERIE_BKG_INFO *eg2 = &ACTIVEBKG->fastdata[x2][z2];
 			
 			for(long l = 0; l < eg2->nbpoly; l++) {
