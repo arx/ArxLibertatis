@@ -415,8 +415,6 @@ void DrawGrille(CinematicBitmap * bitmap, Color col, int fx, CinematicLight * li
 /*---------------------------------------------------------------*/
 void Cinematic::Render(float FDIFF) {
 	
-	CinematicBitmap * tb;
-	
 	bool resized = (cinRenderSize != g_size.size());
 	cinRenderSize = g_size.size();
 	
@@ -443,7 +441,7 @@ void Cinematic::Render(float FDIFF) {
 		}
 		
 		//image key
-		tb = m_bitmaps[numbitmap];
+		CinematicBitmap * tb = m_bitmaps[numbitmap];
 
 		//fx
 		Color col = Color(255, 255, 255, 0);
