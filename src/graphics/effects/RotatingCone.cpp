@@ -86,7 +86,6 @@ void RotatingCone::Update(float timeDelta, Vec3f pos, float coneScale) {
 
 void RotatingCone::Render() {
 	
-	int col;
 	float u = m_ang;
 	float du = .99999999f / (float)m_def;
 	
@@ -101,7 +100,7 @@ void RotatingCone::Render() {
 		d3dvs.z = m_pos.z + (vertex + 1)->z + ((vertex->z - (vertex + 1)->z) * m_coneScale);
 		
 		d3dv->p = EE_RT(d3dvs);
-		col = Random::get(0, 80);
+		int col = Random::get(0, 80);
 		
 		if(!arxtime.is_paused())
 			d3dv->color = Color::grayb(col).toRGB(col);
