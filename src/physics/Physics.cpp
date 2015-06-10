@@ -139,7 +139,6 @@ static void ComputeForces(PHYSVERT * phys, long nb) {
 //! \param DeltaTime that has passed since last iteration
 static void RK4Integrate(PHYSICS_BOX_DATA * pbox, float DeltaTime) {
 	
-	PHYSVERT * source, * target, * accum1, * accum2, * accum3, * accum4;
 	float halfDeltaT, sixthDeltaT;
 	halfDeltaT = DeltaTime * .5f; // some time values i will need
 	sixthDeltaT = ( 1.0f / 6 );
@@ -157,9 +156,9 @@ static void RK4Integrate(PHYSICS_BOX_DATA * pbox, float DeltaTime) {
 
 		for(long kk = 0; kk < pbox->nb_physvert; kk++) {
 
-			source = &pbox->vert[kk];
-			accum1 = &m_TempSys[jj + 1][kk];
-			target = &m_TempSys[0][kk];
+			PHYSVERT * source = &pbox->vert[kk];
+			PHYSVERT * accum1 = &m_TempSys[jj + 1][kk];
+			PHYSVERT * target = &m_TempSys[0][kk];
 
 			accum1->force = source->force * (source->mass * halfDeltaT);
 			accum1->velocity = source->velocity * halfDeltaT;
@@ -177,12 +176,12 @@ static void RK4Integrate(PHYSICS_BOX_DATA * pbox, float DeltaTime) {
 
 	for(long kk = 0; kk < pbox->nb_physvert; kk++) {
 
-		source = &pbox->vert[kk]; // current state of particle
-		target = &pbox->vert[kk];
-		accum1 = &m_TempSys[1][kk];
-		accum2 = &m_TempSys[2][kk];
-		accum3 = &m_TempSys[3][kk];
-		accum4 = &m_TempSys[4][kk];
+		PHYSVERT * source = &pbox->vert[kk]; // current state of particle
+		PHYSVERT * target = &pbox->vert[kk];
+		PHYSVERT * accum1 = &m_TempSys[1][kk];
+		PHYSVERT * accum2 = &m_TempSys[2][kk];
+		PHYSVERT * accum3 = &m_TempSys[3][kk];
+		PHYSVERT * accum4 = &m_TempSys[4][kk];
 
 		// determine the new velocity for the particle using rk4 formula
 		Vec3f dv = accum1->force + ((accum2->force + accum3->force) * 2.f) + accum4->force;
