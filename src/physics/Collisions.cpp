@@ -497,13 +497,12 @@ float CheckAnythingInCylinder(const Cylinder & cyl, Entity * ioo, long flags) {
 	
 	for(short z = pz - rad; z <= pz + rad; z++)
 	for(short x = px - rad; x <= px + rad; x++) {
-		float nearx,nearz;
 		float nearest = 99999999.f;
 
 		for(long num = 0; num < 4; num++) {
 
-			nearx = static_cast<float>(x * 100);
-			nearz = static_cast<float>(z * 100);
+			float nearx = static_cast<float>(x * 100);
+			float nearz = static_cast<float>(z * 100);
 
 			if(num == 1 || num == 2)
 				nearx += 100;
