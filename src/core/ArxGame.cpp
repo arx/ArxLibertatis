@@ -2229,7 +2229,7 @@ void ArxGame::update2DFX() {
 		if(el->extras & EXTRAS_FLARE) {
 			Vec3f lv = el->pos;
 			EE_RTP(lv, &ltvv);
-			el->temp -= temp_increase;
+			el->m_flareFader -= temp_increase;
 
 			if(!(player.Interface & INTER_COMBATMODE) && (player.Interface & INTER_MAP))
 				continue;
@@ -2264,13 +2264,13 @@ void ArxGame::update2DFX() {
 					GetFirstInterAtPos(ees2dlv, 3, &ee3dlv, pTableIO, &nNbInTableIO )
 					)
 				{
-					el->temp-=temp_increase*2.f;
+					el->m_flareFader -= temp_increase * 2.f;
 				} else {
-					el->temp+=temp_increase*2.f;
+					el->m_flareFader += temp_increase * 2.f;
 				}
 			}
 
-			el->temp = glm::clamp(el->temp, 0.f, .8f);
+			el->m_flareFader = glm::clamp(el->m_flareFader, 0.f, .8f);
 		}
 	}
 }
@@ -2294,10 +2294,10 @@ void ArxGame::goFor2DFX() {
 			continue;
 
 		if(el->extras & EXTRAS_FLARE) {
-			if (el->temp > 0.f) {
+			if(el->m_flareFader > 0.f) {
 				Vec3f ltvv = EE_RT(el->pos);
 				
-				float v=el->temp;
+				float v = el->m_flareFader;
 
 				if(FADEDIR) {
 					v *= 1.f - LAST_FADEVALUE;

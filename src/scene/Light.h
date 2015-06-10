@@ -110,7 +110,7 @@ struct EERIE_LIGHT {
 	
 	EERIE_2D_BBOX m_screenRect;
 	
-	float temp;
+	float m_flareFader;
 	Color3f ex_flicker;
 	float ex_radius;
 	float ex_frequency;
