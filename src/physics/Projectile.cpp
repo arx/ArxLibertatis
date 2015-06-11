@@ -475,7 +475,7 @@ void ARX_THROWN_OBJECT_Manage(unsigned long time_offset)
 			thrownObj->position.y += thrownObj->vector.y * mod + (time_offset * gmod);
 			thrownObj->position.z += thrownObj->vector.z * mod;
 
-			CheckForIgnition(original_pos, 10.f, 0, 2);
+			CheckForIgnition(Sphere(original_pos, 10.f), 0, 2);
 
 			Vec3f wpos = thrownObj->position;
 			wpos.y += 20.f;

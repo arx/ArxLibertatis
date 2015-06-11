@@ -1243,7 +1243,7 @@ bool ARX_DAMAGES_TryToDoDamage(const Vec3f & pos, float dmg, float radius, Entit
 	return ret;
 }
 
-void CheckForIgnition(const Vec3f & pos, float radius, bool mode, long flag) {
+void CheckForIgnition(const Sphere & sphere, bool mode, long flag) {
 	
 	if(!(flag & 1))
 		for(size_t i = 0; i < MAX_LIGHTS; i++) {
@@ -1257,7 +1257,7 @@ void CheckForIgnition(const Vec3f & pos, float radius, bool mode, long flag) {
 				if((el->extras & EXTRAS_FIREPLACE) && (flag & 2))
 					continue;
 
-				if(!fartherThan(pos, el->pos, radius)) {
+				if(!fartherThan(sphere.origin, el->pos, sphere.radius)) {
 					if(mode) {
 						if (!(el->extras & EXTRAS_NO_IGNIT))
 							el->m_ignitionStatus = true;
@@ -1279,7 +1279,7 @@ void CheckForIgnition(const Vec3f & pos, float radius, bool mode, long flag) {
 		   && !(io->ioflags & IO_UNDERWATER)
 		   && io->obj->fastaccess.fire >= 0
 		) {
-			if(closerThan(pos, io->obj->vertexlist3[io->obj->fastaccess.fire].v, radius)) {
+			if(closerThan(sphere.origin, io->obj->vertexlist3[io->obj->fastaccess.fire].v, sphere.radius)) {
 
 				if(mode && io->ignition <= 0) {
 					io->ignition = 1;
@@ -1414,7 +1414,7 @@ void DoSphericDamage(const Sphere & sphere, float dmg, DamageArea flags, DamageT
 	}
 	
 	if (typ & DAMAGE_TYPE_FIRE)
-		CheckForIgnition(sphere.origin, sphere.radius, 1);
+		CheckForIgnition(sphere, 1);
 }
 
 void ARX_DAMAGES_DurabilityRestore(Entity * io, float percent)
