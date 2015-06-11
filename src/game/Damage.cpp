@@ -1297,12 +1297,10 @@ void CheckForIgnition(const Vec3f & pos, float radius, bool mode, long flag) {
 	}
 }
 
-bool DoSphericDamage(const Vec3f & pos, float dmg, float radius, DamageArea flags, DamageType typ, EntityHandle numsource)
-{
-	bool damagesdone = false;
+void DoSphericDamage(const Vec3f & pos, float dmg, float radius, DamageArea flags, DamageType typ, EntityHandle numsource) {
 	
 	if(radius <= 0.f)
-		return damagesdone;
+		return;
 	
 	float rad = 1.f / radius;
 	bool validsource = ValidIONum(numsource);
@@ -1397,9 +1395,6 @@ bool DoSphericDamage(const Vec3f & pos, float dmg, float radius, DamageArea flag
 					
 					ARX_DAMAGES_DamageNPC(ioo, dmg * ratio, numsource, true, &pos);
 				}
-				
-				if(dmg > 1)
-					damagesdone = true;
 			}
 		} else {
 			if(mindist <= radius + 30.f) {
@@ -1414,17 +1409,12 @@ bool DoSphericDamage(const Vec3f & pos, float dmg, float radius, DamageArea flag
 				
 				if(entities[handle]->ioflags & IO_FIX)
 					ARX_DAMAGES_DamageFIX(entities[handle], dmg * ratio, numsource, true);
-				
-				if(dmg > 0.2f)
-					damagesdone = true;
 			}
 		}
 	}
 	
 	if (typ & DAMAGE_TYPE_FIRE)
 		CheckForIgnition(pos, radius, 1);
-	
-	return damagesdone;
 }
 
 void ARX_DAMAGES_DurabilityRestore(Entity * io, float percent)

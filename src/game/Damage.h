@@ -128,7 +128,7 @@ void DamageRequestEnd(DamageHandle handle);
  */
 void CheckForIgnition(const Vec3f & pos, float radius, bool mode, long flag = 0);
 
-bool DoSphericDamage(const Vec3f & pos, float dmg, float radius, DamageArea flags, DamageType typ = 0, EntityHandle numsource = EntityHandle::Invalid);
+void DoSphericDamage(const Vec3f & pos, float dmg, float radius, DamageArea flags, DamageType typ = 0, EntityHandle numsource = EntityHandle::Invalid);
 
 void ARX_DAMAGE_Reset_Blood_Info();
 void ARX_DAMAGE_Show_Hit_Blood();
