@@ -347,7 +347,7 @@ static void CheckExp(long i) {
 
 		ARX_BOOMS_Add(pos);
 		LaunchFireballBoom(pos, 10);
-		DoSphericDamage(pos, 4.f * 2, 50.f, DAMAGE_AREA, DAMAGE_TYPE_FIRE | DAMAGE_TYPE_MAGICAL, PlayerEntityHandle);
+		DoSphericDamage(Sphere(pos, 50.f), 4.f * 2, DAMAGE_AREA, DAMAGE_TYPE_FIRE | DAMAGE_TYPE_MAGICAL, PlayerEntityHandle);
 		ARX_SOUND_PlaySFX(SND_SPELL_FIRE_HIT, &pos);
 		ARX_NPC_SpawnAudibleSound(pos, entities.player());
 		LightHandle id = GetFreeDynLight();

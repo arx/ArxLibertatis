@@ -50,6 +50,7 @@ ZeniMax Media Inc., Suite 120, Rockville, Maryland 20850 USA.
 #include <stddef.h>
 
 #include "game/GameTypes.h"
+#include "graphics/BaseGraphicsTypes.h"
 #include "math/Types.h"
 #include "math/Vector.h"
 #include "platform/Flags.h"
@@ -128,7 +129,7 @@ void DamageRequestEnd(DamageHandle handle);
  */
 void CheckForIgnition(const Vec3f & pos, float radius, bool mode, long flag = 0);
 
-void DoSphericDamage(const Vec3f & pos, float dmg, float radius, DamageArea flags, DamageType typ = 0, EntityHandle numsource = EntityHandle::Invalid);
+void DoSphericDamage(const Sphere & sphere, float dmg, DamageArea flags, DamageType typ = 0, EntityHandle numsource = EntityHandle::Invalid);
 
 void ARX_DAMAGE_Reset_Blood_Info();
 void ARX_DAMAGE_Show_Hit_Blood();

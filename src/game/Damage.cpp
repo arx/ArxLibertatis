@@ -1297,12 +1297,12 @@ void CheckForIgnition(const Vec3f & pos, float radius, bool mode, long flag) {
 	}
 }
 
-void DoSphericDamage(const Vec3f & pos, float dmg, float radius, DamageArea flags, DamageType typ, EntityHandle numsource) {
+void DoSphericDamage(const Sphere & sphere, float dmg, DamageArea flags, DamageType typ, EntityHandle numsource) {
 	
-	if(radius <= 0.f)
+	if(sphere.radius <= 0.f)
 		return;
 	
-	float rad = 1.f / radius;
+	float rad = 1.f / sphere.radius;
 	bool validsource = ValidIONum(numsource);
 	
 	for(size_t i = 0; i < entities.size(); i++) {
@@ -1329,8 +1329,8 @@ void DoSphericDamage(const Vec3f & pos, float dmg, float radius, DamageArea flag
 					if(kk != k) {
 						Vec3f posi = (entities[handle]->obj->vertexlist3[k].v
 									  + entities[handle]->obj->vertexlist3[kk].v) * 0.5f;
-						float dist = fdist(pos, posi);
-						if(dist <= radius) {
+						float dist = fdist(sphere.origin, posi);
+						if(dist <= sphere.radius) {
 							count2++;
 							if(dist < mindist)
 								mindist = dist;
@@ -1340,9 +1340,9 @@ void DoSphericDamage(const Vec3f & pos, float dmg, float radius, DamageArea flag
 			}
 			
 			{
-			float dist = fdist(pos, entities[handle]->obj->vertexlist3[k].v);
+			float dist = fdist(sphere.origin, entities[handle]->obj->vertexlist3[k].v);
 			
-			if(dist <= radius) {
+			if(dist <= sphere.radius) {
 				count++;
 				
 				if(dist < mindist)
@@ -1360,13 +1360,13 @@ void DoSphericDamage(const Vec3f & pos, float dmg, float radius, DamageArea flag
 			ratio = 2.f;
 		
 		if(ioo->ioflags & IO_NPC) {
-			if(mindist <= radius + 30.f) {
+			if(mindist <= sphere.radius + 30.f) {
 				switch (flags) {
 					case DAMAGE_AREA:
-						dmg = dmg * (radius + 30 - mindist) * rad;
+						dmg = dmg * (sphere.radius + 30 - mindist) * rad;
 						break;
 					case DAMAGE_AREAHALF:
-						dmg = dmg * (radius + 30 - mindist * ( 1.0f / 2 )) * rad;
+						dmg = dmg * (sphere.radius + 30 - mindist * ( 1.0f / 2 )) * rad;
 						break;
 					case DAMAGE_FULL: break;
 				}
@@ -1393,11 +1393,11 @@ void DoSphericDamage(const Vec3f & pos, float dmg, float radius, DamageArea flag
 						dmg = ARX_SPELLS_ApplyColdProtection(ioo, dmg * ratio);
 					}
 					
-					ARX_DAMAGES_DamageNPC(ioo, dmg * ratio, numsource, true, &pos);
+					ARX_DAMAGES_DamageNPC(ioo, dmg * ratio, numsource, true, &sphere.origin);
 				}
 			}
 		} else {
-			if(mindist <= radius + 30.f) {
+			if(mindist <= sphere.radius + 30.f) {
 				if(typ & DAMAGE_TYPE_FIRE) {
 					dmg = ARX_SPELLS_ApplyFireProtection(ioo, dmg * ratio);
 					ARX_DAMAGES_IgnitIO(entities[handle], dmg);
@@ -1414,7 +1414,7 @@ void DoSphericDamage(const Vec3f & pos, float dmg, float radius, DamageArea flag
 	}
 	
 	if (typ & DAMAGE_TYPE_FIRE)
-		CheckForIgnition(pos, radius, 1);
+		CheckForIgnition(sphere.origin, sphere.radius, 1);
 }
 
 void ARX_DAMAGES_DurabilityRestore(Entity * io, float percent)
