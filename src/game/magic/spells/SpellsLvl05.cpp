@@ -37,6 +37,12 @@
 #include "scene/Interactive.h"
 
 
+RuneOfGuardingSpell::RuneOfGuardingSpell()
+	: SpellBase()
+	, tex_p2(NULL)
+	, ulCurrentTime(0)
+{}
+
 void RuneOfGuardingSpell::Launch()
 {
 	spells.endByCaster(m_caster, SPELL_RUNE_OF_GUARDING);
