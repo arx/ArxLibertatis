@@ -2518,7 +2518,7 @@ void ArxGame::drawAllInterface() {
 }
 
 
-void manageEditorControlsHUD() {
+void hudUpdateInput() {
 	if(!BLOCK_PLAYER_CONTROLS) {
 		if(!(player.Interface & INTER_COMBATMODE)) {
 			if(!TRUE_PLAYER_MOUSELOOK_ON) {

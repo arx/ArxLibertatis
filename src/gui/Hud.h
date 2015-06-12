@@ -47,7 +47,7 @@ void bookIconGuiRequestHalo();
 //! Hide the quick save indicator
 void hideQuickSaveIcon();
 
-void manageEditorControlsHUD();
+void hudUpdateInput();
 void manageEditorControlsHUD2();
 
 bool inventoryGuiupdateInputPROXY();

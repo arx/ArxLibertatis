@@ -2146,7 +2146,7 @@ void ArxGame::manageEditorControls() {
 		DRAGGING = false;
 	}
 	
-	manageEditorControlsHUD();
+	hudUpdateInput();
 	
 	// gros player book
 	if(player.Interface & INTER_MAP) {
