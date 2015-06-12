@@ -90,7 +90,7 @@ extern float PULSATE;
 extern float framedelay;
 extern float BASE_FOCAL;
 
-extern bool FirstFrame;
+extern bool g_requestLevelInit;
 
 extern long CURRENTLEVEL;
 extern long TELEPORT_TO_ANGLE;

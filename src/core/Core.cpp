@@ -236,7 +236,7 @@ bool g_cursorOverBook = false;
 //-----------------------------------------------------------------------------
 // DEBUG FLAGS/Vars
 //-----------------------------------------------------------------------------
-bool FirstFrame=true;
+bool g_requestLevelInit = true;
 unsigned long WILLADDSPEECHTIME=0;
 unsigned long AimTime;
 //-----------------------------------------------------------------------------
@@ -473,7 +473,7 @@ void FirstFrameHandling() {
 	
 	LogDebug("FirstFrameHandling");
 	Vec3f trans;
-	FirstFrame = true;
+	g_requestLevelInit = true;
 
 	ARX_PARTICLES_FirstInit();
 	RenderBatcher::getInstance().reset();
@@ -578,7 +578,7 @@ void FirstFrameHandling() {
 	progressBarAdvance();
 	LoadLevelScreen();
 
-	FirstFrame=false;
+	g_requestLevelInit = false;
 	PrepareIOTreatZone(1);
 	CURRENTLEVEL=GetLevelNumByName(LastLoadedScene.string());
 	
@@ -1308,7 +1308,7 @@ void DANAE_StartNewQuest()
 	progressBarAdvance(2.f);
 	LoadLevelScreen();
 	DanaeLoadLevel("graph/levels/level1/level1.dlf");
-	FirstFrame=true;
+	g_requestLevelInit = true;
 	START_NEW_QUEST=0;
 	BLOCK_PLAYER_CONTROLS = false;
 	fadeReset();

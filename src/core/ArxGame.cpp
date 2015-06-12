@@ -740,7 +740,7 @@ static bool HandleGameFlowTransitions() {
 
 	if(GameFlow::getTransition() == GameFlow::InGame) {
 		GameFlow::setTransition(GameFlow::NoTransition);
-		FirstFrame = true;
+		g_requestLevelInit = true;
 		return true;
 	}
 
@@ -1306,7 +1306,7 @@ void ArxGame::doFrame() {
 		
 	}
 	
-	if(FirstFrame) {
+	if(g_requestLevelInit) {
 		FirstFrameHandling();
 	} else {
 		update();
