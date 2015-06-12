@@ -99,7 +99,7 @@ extern bool GLOBAL_MAGIC_MODE;
 float FORCE_TIME_RESTORE = 0;
 extern Vec3f WILL_RESTORE_PLAYER_POSITION;
 extern long WILL_RESTORE_PLAYER_POSITION_FLAG;
-extern long NO_GMOD_RESET;
+extern bool GMOD_RESET;
 
 extern long NO_PLAYER_POSITION_RESET;
 extern long HERO_SHOW_1ST;
@@ -358,7 +358,7 @@ void ARX_CHANGELEVEL_Change(const std::string & level, const std::string & targe
 	DONT_WANT_PLAYER_INZONE = 1;
 	ARX_PLAYER_RectifyPosition();
 	JUST_RELOADED = 1;
-	NO_GMOD_RESET = 0;
+	GMOD_RESET = true;
 	LogDebug("-----------------------------------");
 }
 
@@ -1606,7 +1606,7 @@ static long ARX_CHANGELEVEL_Pop_Level(ARX_CHANGELEVEL_INDEX * asi, long num,
 	
 	desired = asi->gmods_desired;
 	current = asi->gmods_current;
-	NO_GMOD_RESET = 1;
+	GMOD_RESET = false;
 	arxtime.force_time_restore(ARX_CHANGELEVEL_DesiredTime);
 	FORCE_TIME_RESTORE = ARX_CHANGELEVEL_DesiredTime;
 	

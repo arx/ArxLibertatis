@@ -390,7 +390,7 @@ void SetEditMode(long ed, const bool stop_sound) {
 }
 
 
-long NO_GMOD_RESET=0;
+bool GMOD_RESET = true;
 
 Vec3f LastValidPlayerPos;
 Vec3f	WILL_RESTORE_PLAYER_POSITION;
@@ -413,10 +413,10 @@ void levelInit() {
 	if(!pParticleManager)
 		pParticleManager = new ParticleManager();
 
-	if(!NO_GMOD_RESET)
+	if(GMOD_RESET)
 		ARX_GLOBALMODS_Reset();
 
-	NO_GMOD_RESET = 0;
+	GMOD_RESET = true;
 	
 	STARTDRAG = Vec2s_ZERO;
 	DANAEMouse = Vec2s_ZERO;
