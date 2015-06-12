@@ -38,7 +38,6 @@ static float OLD_PROGRESS_BAR_COUNT = 0;
 static long lastloadednum = -1;
 static TextureContainer * tc = NULL;
 static TextureContainer * pbar = NULL;
-static long nopbar = -1;
 static long lastnum = -1;
 
 void progressBarReset() {
@@ -100,8 +99,6 @@ void LoadLevelScreen(long num) {
 		} else {
 			pbar = TextureContainer::LoadUI("graph/interface/menus/load_full_level");
 		}
-		
-		nopbar = 1;
 		
 		if(num != lastloadednum) {
 			delete tc, tc = NULL;
