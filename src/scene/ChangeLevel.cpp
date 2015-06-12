@@ -101,7 +101,7 @@ extern Vec3f WILL_RESTORE_PLAYER_POSITION;
 extern long WILL_RESTORE_PLAYER_POSITION_FLAG;
 extern bool GMOD_RESET;
 
-extern long NO_PLAYER_POSITION_RESET;
+extern bool PLAYER_POSITION_RESET;
 extern long HERO_SHOW_1ST;
 extern bool EXTERNALVIEW;
 extern bool LOAD_N_ERASE;
@@ -314,7 +314,7 @@ void ARX_CHANGELEVEL_Change(const std::string & level, const std::string & targe
 		if(t > 0 && entities[t]) {
 			Vec3f pos = GetItemWorldPosition(entities[t]);
 			moveto = player.pos = pos + player.baseOffset();
-			NO_PLAYER_POSITION_RESET = 1;
+			PLAYER_POSITION_RESET = false;
 		}
 		player.desiredangle.setPitch(angle);
 		player.angle.setPitch(angle);
@@ -347,7 +347,7 @@ void ARX_CHANGELEVEL_Change(const std::string & level, const std::string & targe
 		Vec3f pos = GetItemWorldPosition(entities[t]);
 		
 		moveto = player.pos = pos + player.baseOffset();
-		NO_PLAYER_POSITION_RESET = 1;
+		PLAYER_POSITION_RESET = false;
 		WILL_RESTORE_PLAYER_POSITION = moveto;
 		WILL_RESTORE_PLAYER_POSITION_FLAG = 1;
 	}
@@ -2644,11 +2644,11 @@ static bool ARX_CHANGELEVEL_PopLevel(long instance, bool reloadflag) {
 	if(!g_currentSavedGame->hasFile(loadfile.str())) {
 		firstTime = true;
 		FORBID_SCRIPT_IO_CREATION = 0;
-		NO_PLAYER_POSITION_RESET = 0;
+		PLAYER_POSITION_RESET = true;
 	} else {
 		firstTime = false;
 		FORBID_SCRIPT_IO_CREATION = 1;
-		NO_PLAYER_POSITION_RESET = 1;
+		PLAYER_POSITION_RESET = false;
 	}
 	LogDebug("firstTime = " << firstTime);
 	
