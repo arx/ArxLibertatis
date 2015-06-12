@@ -473,7 +473,6 @@ void levelInit() {
 	
 	LogDebug("Initializing level ...");
 	
-	Vec3f trans;
 	g_requestLevelInit = true;
 
 	ARX_PARTICLES_FirstInit();
@@ -487,7 +486,7 @@ void levelInit() {
 	if(FASTmse) {
 		FASTmse = 0;
 		if(LOADEDD) {
-			trans = Mscenepos;
+			Vec3f trans = Mscenepos;
 			player.pos = loddpos + trans;
 		} else {
 			player.pos.y += player.baseHeight();
@@ -526,7 +525,7 @@ void levelInit() {
 		progressBarAdvance(2.f);
 		LoadLevelScreen();
 
-		trans = mse->pos;
+		Vec3f trans = mse->pos;
 
 		ReleaseMultiScene(mse);
 		mse=NULL;
