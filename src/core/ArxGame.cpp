@@ -1307,7 +1307,7 @@ void ArxGame::doFrame() {
 	}
 	
 	if(g_requestLevelInit) {
-		FirstFrameHandling();
+		levelInit();
 	} else {
 		update();
 		render();

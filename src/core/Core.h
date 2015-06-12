@@ -131,7 +131,7 @@ void DANAE_StartNewQuest();
 void DanaeRestoreFullScreen();
 bool AdjustUI();
 
-void FirstFrameHandling();
+void levelInit();
 
 void DrawImproveVisionInterface();
 

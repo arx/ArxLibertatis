@@ -467,11 +467,12 @@ Vec3f LastValidPlayerPos;
 Vec3f	WILL_RESTORE_PLAYER_POSITION;
 long WILL_RESTORE_PLAYER_POSITION_FLAG=0;
 
-void FirstFrameHandling() {
+void levelInit() {
 	
 	arx_assert(entities.player());
 	
-	LogDebug("FirstFrameHandling");
+	LogDebug("Initializing level ...");
+	
 	Vec3f trans;
 	g_requestLevelInit = true;
 
