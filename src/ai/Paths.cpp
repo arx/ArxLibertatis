@@ -200,7 +200,7 @@ void ARX_PATH_UpdateAllZoneInOutInside() {
 				ARX_PATH * p = ARX_PATH_CheckInZone(io);
 				ARX_PATH * op = io->inzone;
 
-				if(op == NULL && p == NULL)
+				if(!op && !p)
 					goto next; // Not in a zone
 
 				if(op == p) { // Stayed inside Zone OP
@@ -208,9 +208,7 @@ void ARX_PATH_UpdateAllZoneInOutInside() {
 						io->inzone_show = io->show;
 						goto entering;
 					}
-				}
-				else if ((op != NULL) && (p == NULL)) // Leaving Zone OP
-				{
+				} else if(op && !p) { // Leaving Zone OP
 					SendIOScriptEvent(io, SM_LEAVEZONE, op->name);
 
 					if(!op->controled.empty()) {
@@ -221,9 +219,7 @@ void ARX_PATH_UpdateAllZoneInOutInside() {
 							SendIOScriptEvent(entities[t], SM_CONTROLLEDZONE_LEAVE, str);
 						}
 					}
-				}
-				else if ((op == NULL) && (p != NULL)) // Entering Zone P
-				{
+				} else if(!op && p) { // Entering Zone P
 					io->inzone_show = io->show;
 				entering:
 
