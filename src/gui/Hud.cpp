@@ -286,11 +286,13 @@ void hitStrengthGaugeRequestFlash(float flashIntensity) {
 
 class SecondaryInventoryGui {
 private:
+	Vec2f m_size;
 	TextureContainer * ingame_inventory;
 	TextureContainer * m_canNotSteal;
 	
 public:
 	void init() {
+		m_size = Vec2f(115.f, 378.f);
 		m_canNotSteal = TextureContainer::LoadUI("graph/interface/icons/cant_steal_item");
 		arx_assert(m_canNotSteal);
 	}
@@ -348,7 +350,7 @@ public:
 				ingame_inventory = tc;
 		}
 		
-		Rectf rect = Rectf(Vec2f(INTERFACE_RATIO(InventoryX), 0.f), ingame_inventory->m_dwWidth, ingame_inventory->m_dwHeight);
+		Rectf rect = Rectf(Vec2f(INTERFACE_RATIO(InventoryX), 0.f), m_size.x, m_size.y);
 		EERIEDrawBitmap(rect, 0.001f, ingame_inventory, Color::white);
 		
 		for(long y = 0; y < inventory->m_size.y; y++) {
