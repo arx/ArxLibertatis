@@ -390,10 +390,25 @@ void SetEditMode(long ed, const bool stop_sound) {
 }
 
 
-
 long NO_GMOD_RESET=0;
 
-static void FirstFrameProc() {
+Vec3f LastValidPlayerPos;
+Vec3f	WILL_RESTORE_PLAYER_POSITION;
+long WILL_RESTORE_PLAYER_POSITION_FLAG=0;
+
+void levelInit() {
+	
+	arx_assert(entities.player());
+	
+	LogDebug("Initializing level ...");
+	
+	g_requestLevelInit = true;
+
+	ARX_PARTICLES_FirstInit();
+	RenderBatcher::getInstance().reset();
+	
+	progressBarAdvance(2.f);
+	LoadLevelScreen();
 	
 	if(!pParticleManager)
 		pParticleManager = new ParticleManager();
@@ -462,26 +477,7 @@ static void FirstFrameProc() {
 	}
 	
 	InitSnapShot(fs::paths.user / "snapshot");
-}
-Vec3f LastValidPlayerPos;
-Vec3f	WILL_RESTORE_PLAYER_POSITION;
-long WILL_RESTORE_PLAYER_POSITION_FLAG=0;
-
-void levelInit() {
 	
-	arx_assert(entities.player());
-	
-	LogDebug("Initializing level ...");
-	
-	g_requestLevelInit = true;
-
-	ARX_PARTICLES_FirstInit();
-	RenderBatcher::getInstance().reset();
-	
-	progressBarAdvance(2.f);
-	LoadLevelScreen();
-	
-	FirstFrameProc();
 	
 	if(FASTmse) {
 		FASTmse = 0;
