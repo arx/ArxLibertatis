@@ -229,7 +229,7 @@ void ARX_Menu_Resources_Release(bool _bNoSound) {
 	delete pTextureLoad, pTextureLoad = NULL;
 }
 
-extern long NO_TIME_INIT;
+extern bool TIME_INIT;
 
 void ARX_MENU_Clicked_QUIT() {
 	
@@ -239,7 +239,7 @@ void ARX_MENU_Clicked_QUIT() {
 	
 	ARX_Menu_Resources_Release();
 	ARXmenu.currentmode = AMCM_OFF;
-	if(!NO_TIME_INIT) {
+	if(TIME_INIT) {
 		arxtime.resume();
 	}
 }

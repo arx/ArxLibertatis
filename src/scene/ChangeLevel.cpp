@@ -106,7 +106,7 @@ extern long HERO_SHOW_1ST;
 extern bool EXTERNALVIEW;
 extern bool LOAD_N_ERASE;
 extern long FORBID_SCRIPT_IO_CREATION;
-extern long NO_TIME_INIT;
+extern bool TIME_INIT;
 extern Vec3f LastValidPlayerPos;
 #define MAX_IO_SAVELOAD 1500
 
@@ -2742,14 +2742,14 @@ static bool ARX_CHANGELEVEL_PopLevel(long instance, bool reloadflag) {
 	LoadLevelScreen();
 	
 	arxtime.force_time_restore(ARX_CHANGELEVEL_DesiredTime);
-	NO_TIME_INIT = 1;
+	TIME_INIT = false;
 	FORCE_TIME_RESTORE = ARX_CHANGELEVEL_DesiredTime;
 	LogDebug("After  Player Misc Init");
 	
 	LogDebug("Before Memory Release");
 	delete[] idx_io, idx_io = NULL;
 	FORBID_SCRIPT_IO_CREATION = 0;
-	NO_TIME_INIT = 1;
+	TIME_INIT = false;
 	LogDebug("After  Memory Release");
 	
 	LogDebug("Before Final Inits");
@@ -2898,7 +2898,7 @@ long ARX_CHANGELEVEL_Load(const fs::path & savefile) {
 		ARX_CHANGELEVEL_DesiredTime	=	fPldTime;
 		ARX_CHANGELEVEL_PopLevel(pld.level, false);
 		arxtime.force_time_restore(fPldTime);
-		NO_TIME_INIT = 1;
+		TIME_INIT = false;
 		FORCE_TIME_RESTORE = fPldTime;
 		
 	} else {

@@ -208,7 +208,7 @@ float STRIKE_AIMTIME=0.f;
 float framedelay=0.f;
 
 bool LOAD_N_ERASE = true;
-long NO_TIME_INIT=0;
+bool TIME_INIT = true;
 
 Rect g_size(640, 480);
 Vec2f g_sizeRatio(1.f, 1.f);
@@ -578,7 +578,7 @@ void levelInit() {
 	PrepareIOTreatZone(1);
 	CURRENTLEVEL=GetLevelNumByName(LastLoadedScene.string());
 	
-	if(!NO_TIME_INIT)
+	if(TIME_INIT)
 		arxtime.init();
 	
 	arxtime.update_last_frame_time();
@@ -604,7 +604,7 @@ void levelInit() {
 	PLAYER_MOUSELOOK_ON = false;
 	player.Interface &= ~INTER_NOTE;
 
-	if(NO_TIME_INIT) {
+	if(!TIME_INIT) {
 		arxtime.force_time_restore(FORCE_TIME_RESTORE);
 		arxtime.force_frame_time_restore(FORCE_TIME_RESTORE);
 	} else {
