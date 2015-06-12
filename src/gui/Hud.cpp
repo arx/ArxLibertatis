@@ -1312,8 +1312,13 @@ private:
 	bool m_isActive;
 	Rectf m_rect;
 	TextureContainer * m_tex;
+	Vec2f m_size;
 	
 public:
+	void init() {
+		m_size = Vec2f(32.f, 64.f);
+	}
+	
 	void updateInput() {
 		if(player.torch) {
 			Vec2f pos(InventoryX + 110, g_size.height() - (158 + 32));
@@ -1324,8 +1329,8 @@ public:
 			const Rect mouseTestRect(
 			pos.x,
 			pos.y,
-			pos.x + INTERFACE_RATIO(32),
-			pos.y + INTERFACE_RATIO(64)
+			pos.x + m_size.x,
+			pos.y + m_size.y
 			);
 			
 			if(mouseTestRect.contains(Vec2i(DANAEMouse))) {
@@ -1413,7 +1418,7 @@ public:
 		float px = INTERFACE_RATIO(std::max(InventoryX + 110.f, 10.f));
 		float py = g_size.height() - INTERFACE_RATIO(158.f + 32.f);
 		
-		m_rect = Rectf(Vec2f(px, py), m_tex->m_dwWidth, m_tex->m_dwHeight);
+		m_rect = Rectf(Vec2f(px, py), m_size.x, m_size.y);
 		
 		if(rnd() <= 0.2f) {
 			return;
@@ -2291,6 +2296,7 @@ StealthGauge stealthGauge;
 
 void hudElementsInit() {
 	changeLevelIconGui.init();
+	currentTorchIconGui.init();
 	activeSpellsGui.init();
 	damagedEquipmentGui.init();
 	mecanismIcon.init();
