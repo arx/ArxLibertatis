@@ -1359,21 +1359,20 @@ bool PutInInventory() {
 }
 
 /*!
- * \brief Returns true if xx,yy is a position in secondary inventory
+ * \brief Returns true if position is in secondary inventory
  */
 bool InSecondaryInventoryPos(const Vec2s & pos) {
 	if(SecondaryInventory != NULL) {
-		short tx, ty;
+		Vec2s t;
+		t.x = pos.x + checked_range_cast<short>(InventoryX) - SHORT_INTERFACE_RATIO(2);
+		t.y = pos.y - SHORT_INTERFACE_RATIO(13);
+		t.x = t.x / SHORT_INTERFACE_RATIO(32);
+		t.y = t.y / SHORT_INTERFACE_RATIO(32);
 
-		tx = pos.x + checked_range_cast<short>(InventoryX) - SHORT_INTERFACE_RATIO(2);
-		ty = pos.y - SHORT_INTERFACE_RATIO(13);
-		tx = tx / SHORT_INTERFACE_RATIO(32);
-		ty = ty / SHORT_INTERFACE_RATIO(32);
-
-		if(tx < 0 || tx >= SecondaryInventory->m_size.x)
+		if(t.x < 0 || t.x >= SecondaryInventory->m_size.x)
 			return false;
 
-		if(ty < 0 || ty >= SecondaryInventory->m_size.y)
+		if(t.y < 0 || t.y >= SecondaryInventory->m_size.y)
 			return false;
 
 		return true;
