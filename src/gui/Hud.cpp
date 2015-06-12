@@ -1992,6 +1992,7 @@ class ActiveSpellsGui {
 private:
 	TextureContainer * m_texUnknown;
 	long currpos;
+	Vec2f m_slotSize;
 	
 	struct ActiveSpellIconSlot {
 		Rectf m_rect;
@@ -2061,7 +2062,7 @@ private:
 		if(bOk && spell.m_type >= 0 && (size_t)spell.m_type < SPELL_TYPES_COUNT) {
 			TextureContainer * tc = spellicons[spell.m_type].tc;
 			arx_assert(tc);
-			Rectf rect(Vec2f(posx, posy), tc->m_dwWidth * 0.5f, tc->m_dwHeight * 0.5f);
+			Rectf rect(Vec2f(posx, posy), m_slotSize.x, m_slotSize.y);
 			
 			activeSpellIconSlot.update(rect, tc, color);
 			activeSpellIconSlot.spellIndex = spell.m_thisHandle;
@@ -2083,6 +2084,8 @@ public:
 	void init() {
 		m_texUnknown = TextureContainer::Load("graph/interface/icons/spell_unknown");
 		arx_assert(m_texUnknown);
+		
+		m_slotSize = Vec2f(24.f, 24.f);
 	}
 	
 	void spellsByPlayerUpdate(float intensity) {
