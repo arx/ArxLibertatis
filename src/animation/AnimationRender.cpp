@@ -597,8 +597,9 @@ static bool CullFace(const EERIE_3DOBJ * eobj, const EERIE_FACE & face) {
 	return false;
 }
 
+// TODO copy-paste halo
 static void AddFixedObjectHalo(const EERIE_FACE & face, const TransformInfo & t,
-                               const Entity * io, TexturedVertex * tvList,
+                               const IO_HALO & halo, TexturedVertex * tvList,
                                const EERIE_3DOBJ * eobj) {
 	
 	float mdist=ACTIVECAM->cdepth;
@@ -622,9 +623,9 @@ static void AddFixedObjectHalo(const EERIE_FACE & face, const TransformInfo & t,
 		tot += power;
 		_ffr[o] = power;
 
-		u8 lfr = io->halo.color.r * power;
-		u8 lfg = io->halo.color.g * power;
-		u8 lfb = io->halo.color.b * power;
+		u8 lfr = halo.color.r * power;
+		u8 lfg = halo.color.g * power;
+		u8 lfb = halo.color.b * power;
 		tvList[o].color = Color(lfr, lfg, lfb, 255).toRGBA();
 	}
 
@@ -667,7 +668,7 @@ static void AddFixedObjectHalo(const EERIE_FACE & face, const TransformInfo & t,
 			vert[2] = tvList[second];
 			vert[3] = tvList[second];
 
-			float siz = ddist * (io->halo.radius * 1.5f * (std::sin(arxtime.get_frame_time() * .01f) * .1f + .7f)) * .6f;
+			float siz = ddist * (halo.radius * 1.5f * (std::sin(arxtime.get_frame_time() * .01f) * .1f + .7f)) * .6f;
 
 			Vec3f vect1;
 			vect1.x = tvList[first].p.x - tvList[third].p.x;
@@ -703,7 +704,7 @@ static void AddFixedObjectHalo(const EERIE_FACE & face, const TransformInfo & t,
 			vert[2].p.x += (vect2.x + 0.2f - rnd() * 0.1f) * siz;
 			vert[2].p.y += (vect2.y + 0.2f - rnd() * 0.1f) * siz;
 
-			if(io->halo.flags & HALO_NEGATIVE)
+			if(halo.flags & HALO_NEGATIVE)
 				vert[2].color = Color(0, 0, 0, 0).toRGBA();
 			else
 				vert[2].color = Color(0, 0, 0, 255).toRGBA();
@@ -810,7 +811,8 @@ void DrawEERIEInter_Render(EERIE_3DOBJ *eobj, const TransformInfo &t, Entity *io
 
 		// HALO HANDLING START
 		if(io && (io->halo.flags & HALO_ACTIVE)) {
-			AddFixedObjectHalo(face, t, io, tvList, eobj);
+			IO_HALO & halo = io->halo;
+			AddFixedObjectHalo(face, t, halo, tvList, eobj);
 		}
 	}
 }
@@ -930,6 +932,7 @@ static void PrepareAnimatedObjectHalo(HaloInfo & haloInfo, const Vec3f & pos,
 	}
 }
 
+// TODO copy-paste halo
 static void AddAnimatedObjectHalo(HaloInfo & haloInfo, const unsigned short * paf,
                                   float invisibility, EERIE_3DOBJ * eobj, Entity * io,
                                   TexturedVertex * tvList) {
