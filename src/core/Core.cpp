@@ -207,7 +207,7 @@ float STRIKE_AIMTIME=0.f;
 
 float framedelay=0.f;
 
-long LOAD_N_DONT_ERASE=0;
+bool LOAD_N_ERASE = true;
 long NO_TIME_INIT=0;
 
 Rect g_size(640, 480);
@@ -422,7 +422,7 @@ void levelInit() {
 	DANAEMouse = Vec2s_ZERO;
 	bookclick = false;
 	
-	if(!LOAD_N_DONT_ERASE)
+	if(LOAD_N_ERASE)
 		arxtime.init();
 
 	ARX_BOOMS_ClearAllPolyBooms();
@@ -432,7 +432,7 @@ void levelInit() {
 	ARX_SPELLS_ClearAllSymbolDraw();
 	ARX_PARTICLES_ClearAll();
 
-	if(!LOAD_N_DONT_ERASE) {
+	if(LOAD_N_ERASE) {
 		CleanScriptLoadedIO();
 		RestoreInitialIOStatus();
 		DRAGINTER=NULL;
@@ -450,7 +450,7 @@ void levelInit() {
 	
 	arxtime.update_last_frame_time();
 	
-	if(!LOAD_N_DONT_ERASE) {
+	if(LOAD_N_ERASE) {
 		CleanInventory();
 		ARX_SCRIPT_Timer_ClearAll();
 		UnlinkAllLinkedObjects();
@@ -461,7 +461,7 @@ void levelInit() {
 	TSecondaryInventory=NULL;
 	ARX_FOGS_Render();
 
-	if(!LOAD_N_DONT_ERASE) {
+	if(LOAD_N_ERASE) {
 		arxtime.init();
 
 		if(!DONT_ERASE_PLAYER)
@@ -562,13 +562,13 @@ void levelInit() {
 	progressBarAdvance();
 	LoadLevelScreen();
 
-	if(!LOAD_N_DONT_ERASE)
+	if(LOAD_N_ERASE)
 		SetEditMode(0);
 
 	progressBarAdvance();
 	LoadLevelScreen();
 
-	LOAD_N_DONT_ERASE=0;
+	LOAD_N_ERASE = true;
 	DONT_ERASE_PLAYER=0;
 
 	progressBarAdvance();

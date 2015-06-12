@@ -104,7 +104,7 @@ extern long NO_GMOD_RESET;
 extern long NO_PLAYER_POSITION_RESET;
 extern long HERO_SHOW_1ST;
 extern bool EXTERNALVIEW;
-extern long LOAD_N_DONT_ERASE;
+extern bool LOAD_N_ERASE;
 extern long FORBID_SCRIPT_IO_CREATION;
 extern long NO_TIME_INIT;
 extern Vec3f LastValidPlayerPos;
@@ -1569,7 +1569,7 @@ static long ARX_CHANGELEVEL_Pop_Level(ARX_CHANGELEVEL_INDEX * asi, long num,
 	GetLevelNameByNum(num, levelId);
 	std::string levelFile = std::string("graph/levels/level") + levelId + "/level" + levelId + ".dlf";
 	
-	LOAD_N_DONT_ERASE = 1;
+	LOAD_N_ERASE = false;
 	
 	if(!resources->getFile(levelFile)) {
 		LogError << "Unable To Find " << levelFile;
