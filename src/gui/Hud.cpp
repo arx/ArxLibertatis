@@ -1338,44 +1338,7 @@ public:
 			if(mouseTestRect.contains(Vec2i(DANAEMouse))) {
 				eMouseState=MOUSE_IN_TORCH_ICON;
 				SpecialCursor=CURSOR_INTERACTION_ON;
-
-				if(eeMouseUp1()) {
-					Entity * temp = player.torch;
-
-					if(temp && !temp->locname.empty()) {
-						if(((player.torch->ioflags & IO_ITEM) && player.torch->_itemdata->equipitem)
-							&& (player.m_skillFull.objectKnowledge + player.m_attributeFull.mind
-								>= player.torch->_itemdata->equipitem->elements[IO_EQUIPITEM_ELEMENT_Identify_Value].value) )
-						{
-							SendIOScriptEvent(FlyingOverIO,SM_IDENTIFY);
-						}
-
-						WILLADDSPEECH = getLocalised(temp->locname);
-
-						if(temp->ioflags & IO_GOLD) {
-							std::stringstream ss;
-							ss << temp->_itemdata->price << " " << WILLADDSPEECH;
-							WILLADDSPEECH = ss.str();
-						}
-
-						if(temp->poisonous > 0 && temp->poisonous_count != 0) {
-							std::string Text = getLocalised("description_poisoned", "error");
-							std::stringstream ss;
-							ss << WILLADDSPEECH << " (" << Text << " " << (int)temp->poisonous << ")";
-							WILLADDSPEECH = ss.str();
-						}
-
-						if ((temp->ioflags & IO_ITEM) && temp->durability < 100.f) {
-							std::string Text = getLocalised("description_durability", "error");
-							std::stringstream ss;
-							ss << WILLADDSPEECH << " " << Text << " " << std::fixed << std::setw(3) << std::setprecision(0) << temp->durability << std::setw(0) << "/" << std::setw(3) << temp->max_durability;
-							WILLADDSPEECH = ss.str();
-						}
-
-						WILLADDSPEECHTIME = (unsigned long)(arxtime);
-					}
-				}
-
+				
 				if(!DRAGINTER && !PLAYER_MOUSELOOK_ON && DRAGGING) {
 					Entity * io=player.torch;
 					player.torch->show=SHOW_FLAG_IN_SCENE;

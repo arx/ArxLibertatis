@@ -321,6 +321,11 @@ Entity * FlyingOverObject(const Vec2s & pos)
 {
 	Entity* io = NULL;
 
+	// TODO do this properly!
+	if(player.torch && eMouseState == MOUSE_IN_TORCH_ICON) {
+		return player.torch;
+	}
+	
 	if((io = GetFromInventory(pos)) != NULL)
 		return io;
 
