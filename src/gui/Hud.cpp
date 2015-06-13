@@ -1376,11 +1376,6 @@ public:
 					}
 				}
 
-				if((EERIEMouseButton & 1) && (LastMouseClick & 1)) {
-					if(abs(DANAEMouse.x-STARTDRAG.x) > 2 || abs(DANAEMouse.y-STARTDRAG.y) > 2)
-						DRAGGING = true;
-				}
-
 				if(!DRAGINTER && !PLAYER_MOUSELOOK_ON && DRAGGING) {
 					Entity * io=player.torch;
 					player.torch->show=SHOW_FLAG_IN_SCENE;
