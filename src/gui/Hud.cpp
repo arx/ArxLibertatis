@@ -22,6 +22,8 @@
 #include <iomanip>
 #include <sstream>
 
+#include <boost/foreach.hpp>
+
 #include "core/Application.h"
 #include "core/ArxGame.h"
 #include "core/Config.h"
@@ -1992,26 +1994,23 @@ public:
 };
 PrecastSpellsGui precastSpellsGui;
 
-//AFFICHAGE ICONE DE SPELLS DE DURATION
-class ActiveSpellsGui {
+
+class ActiveSpellsGui : public HudItem {
 private:
-	TextureContainer * m_texUnknown;
-	long currpos;
-	Vec2f m_slotSize;
-	
+
 	struct ActiveSpellIconSlot {
 		Rectf m_rect;
 		TextureContainer * m_tc;
 		Color m_color;
 		SpellHandle spellIndex;
-		
-		void update(const Rectf & rect, TextureContainer * tc, Color color) {
-			m_rect = rect;
-			m_tc = tc;
-			m_color = color;
-		}
+		bool m_flicker;
+		bool m_abortable;
 		
 		void updateInput() {
+			
+			if(!m_abortable)
+				return;
+			
 			if(m_rect.contains(Vec2f(DANAEMouse))) {
 				SpecialCursor = CURSOR_INTERACTION_ON;
 				
@@ -2031,59 +2030,18 @@ private:
 		}
 		
 		void draw() {
+			
+			if(!m_flicker)
+				return;
+			
 			EERIEDrawBitmap(m_rect, 0.01f, m_tc, m_color);
 		}
 	};
-	ActiveSpellIconSlot activeSpellIconSlot;
-	
-	
-	void ManageSpellIcon(SpellBase & spell, float intensity, bool flag)
-	{
-		float POSX = g_size.width()-INTERFACE_RATIO(35);
-		Color color;
-		float posx = POSX+lSLID_VALUE;
-		float posy = (float)currpos;
-		
-		if(flag) {
-			color = Color3f(intensity, 0, 0).to<u8>();
-		} else {
-			color = Color3f::gray(intensity).to<u8>();
-		}
-		
-		bool bOk=true;
-		
-		if(spell.m_hasDuration) {
-			if(player.manaPool.current < 20 || spell.m_timcreation + spell.m_duration - float(arxtime) < 2000) {
-				if(ucFlick&1)
-					bOk=false;
-			}
-		} else {
-			if(player.manaPool.current<20) {
-				if(ucFlick&1)
-					bOk=false;
-			}
-		}
-		
-		if(bOk && spell.m_type >= 0 && (size_t)spell.m_type < SPELL_TYPES_COUNT) {
-			TextureContainer * tc = spellicons[spell.m_type].tc;
-			arx_assert(tc);
-			Rectf rect(Vec2f(posx, posy), m_slotSize.x, m_slotSize.y);
-			
-			activeSpellIconSlot.update(rect, tc, color);
-			activeSpellIconSlot.spellIndex = spell.m_thisHandle;
-			if(!flag && !(player.Interface & INTER_COMBATMODE)) {
-				activeSpellIconSlot.updateInput();
-			}
-			activeSpellIconSlot.draw();
-		}
-		
-		currpos += static_cast<long>(INTERFACE_RATIO(33.f));
-	}
 	
 public:
 	ActiveSpellsGui()
-		: m_texUnknown(NULL)
-		, currpos(0.f)
+		: HudItem()
+		, m_texUnknown(NULL)
 	{}
 	
 	void init() {
@@ -2091,7 +2049,54 @@ public:
 		arx_assert(m_texUnknown);
 		
 		m_slotSize = Vec2f(24.f, 24.f);
+		m_spacerSize = Vec2f(60.f, 50.f);
+		m_slotSpacerSize = Vec2f(0.f, 9.f);
 	}
+	
+	void update(Rectf parent) {
+		
+		float intensity = 1.f - PULSATE * 0.5f;
+		intensity = glm::clamp(intensity, 0.f, 1.f);
+		
+		m_slots.clear();
+		
+		spellsByPlayerUpdate(intensity);
+		spellsOnPlayerUpdate(intensity);
+		
+		Rectf spacer = createChild(parent, Anchor_TopRight, m_spacerSize * m_scale, Anchor_TopRight);
+		Rectf siblingRect = spacer;
+		
+		BOOST_FOREACH(ActiveSpellIconSlot & slot, m_slots) {
+			
+			Rectf slotRect = createChild(siblingRect, Anchor_BottomLeft, m_slotSize * m_scale, Anchor_TopLeft);
+			Rectf slotSpacer = createChild(slotRect, Anchor_BottomLeft, m_slotSpacerSize * m_scale, Anchor_TopLeft);
+			siblingRect = slotSpacer;
+			
+			slot.m_rect = slotRect;
+		}
+		
+		BOOST_FOREACH(ActiveSpellIconSlot & slot, m_slots) {
+			slot.updateInput();
+		}
+	}
+	
+	void draw() {
+		
+		GRenderer->SetBlendFunc(Renderer::BlendOne, Renderer::BlendOne);
+		GRenderer->SetRenderState(Renderer::AlphaBlending, true);
+		
+		BOOST_FOREACH(ActiveSpellIconSlot & slot, m_slots) {
+			slot.draw();
+		}
+	}
+	
+private:
+	TextureContainer * m_texUnknown;
+	Vec2f m_slotSize;
+	Vec2f m_spacerSize;
+	Vec2f m_slotSpacerSize;
+	
+	std::vector<ActiveSpellIconSlot> m_slots;
 	
 	void spellsByPlayerUpdate(float intensity) {
 		for(size_t i = 0; i < MAX_SPELLS; i++) {
@@ -2122,21 +2127,36 @@ public:
 		}
 	}
 	
-	void update() {
-		currpos = static_cast<long>(INTERFACE_RATIO(50.f));
+	void ManageSpellIcon(SpellBase & spell, float intensity, bool flag) {
 		
-		float intensity = 1.f - PULSATE * 0.5f;
-		intensity = glm::clamp(intensity, 0.f, 1.f);
 		
-		GRenderer->SetBlendFunc(Renderer::BlendOne, Renderer::BlendOne);
-		GRenderer->SetRenderState(Renderer::AlphaBlending, true);
+		Color color = (flag) ? Color3f(intensity, 0, 0).to<u8>() : Color3f::gray(intensity).to<u8>();
 		
-		spellsByPlayerUpdate(intensity);
-		spellsOnPlayerUpdate(intensity);
-	}
-	
-	void draw() {
-		update();
+		bool flicker = true;
+		
+		if(spell.m_hasDuration) {
+			if(player.manaPool.current < 20 || spell.m_timcreation + spell.m_duration - float(arxtime) < 2000) {
+				if(ucFlick&1)
+					flicker = false;
+			}
+		} else {
+			if(player.manaPool.current<20) {
+				if(ucFlick&1)
+					flicker = false;
+			}
+		}
+		
+		if(spell.m_type >= 0 && (size_t)spell.m_type < SPELL_TYPES_COUNT) {
+		
+			ActiveSpellIconSlot slot;
+			slot.m_tc = spellicons[spell.m_type].tc;
+			slot.m_color = color;
+			slot.spellIndex = spell.m_thisHandle;
+			slot.m_flicker = flicker;
+			slot.m_abortable = (!flag && !(player.Interface & INTER_COMBATMODE));
+			
+			m_slots.push_back(slot);
+		}
 	}
 };
 ActiveSpellsGui activeSpellsGui = ActiveSpellsGui();
@@ -2337,6 +2357,7 @@ void setHudScale(float scale) {
 	
 	changeLevelIconGui.setScale(scale);
 	memorizedRunesHud.setScale(scale);
+	activeSpellsGui.setScale(scale);
 	
 	mecanismIcon.setScale(scale);
 	screenArrows.setScale(scale);
@@ -2514,6 +2535,7 @@ void ArxGame::drawAllInterface() {
 	GRenderer->GetTextureStage(0)->setWrapMode(TextureStage::WrapRepeat);
 	
 	precastSpellsGui.draw();
+	activeSpellsGui.update(hudSlider);
 	activeSpellsGui.draw();
 }
 
