@@ -20,6 +20,8 @@
 #ifndef ARX_GAME_MAGIC_SPELL_H
 #define ARX_GAME_MAGIC_SPELL_H
 
+#include <boost/noncopyable.hpp>
+
 #include "game/Damage.h"
 
 #include "graphics/effects/SpellEffects.h"
@@ -124,7 +126,7 @@ DECLARE_FLAGS(SpellcastFlag, SpellcastFlags)
 DECLARE_FLAGS_OPERATORS(SpellcastFlags)
 
 
-class SpellBase {
+class SpellBase : private boost::noncopyable {
 public:
 	SpellBase();
 	virtual ~SpellBase() {}
