@@ -2468,17 +2468,16 @@ void RenderInter() {
 		const EntityHandle handle = EntityHandle(i);
 		Entity * io = entities[handle];
 
-		if(!io || io == DRAGINTER || !(io->gameFlags & GFLAG_ISINTREATZONE))
-			continue;
-
-		if(io->show != SHOW_FLAG_IN_SCENE) {
+		if(   !io
+		   || io == DRAGINTER
+		   || !(io->gameFlags & GFLAG_ISINTREATZONE)
+		   || io->show != SHOW_FLAG_IN_SCENE
+		   || (io->ioflags & IO_CAMERA)
+		   || (io->ioflags & IO_MARKER)
+		) {
 			continue;
 		}
-
-		if((io->ioflags & IO_CAMERA) || (io->ioflags & IO_MARKER)) {
-			continue;
-		}
-
+		
 		Anglef temp = io->angle;
 
 		if(io->ioflags & IO_NPC) {
