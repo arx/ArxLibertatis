@@ -1319,21 +1319,18 @@ public:
 		m_size = Vec2f(32.f, 64.f);
 	}
 	
+	void updateRect() {
+		
+		float px = INTERFACE_RATIO(std::max(InventoryX + 110.f, 10.f));
+		float py = g_size.height() - INTERFACE_RATIO(158.f + 32.f);
+		
+		m_rect = Rectf(Vec2f(px, py), m_size.x, m_size.y);
+	}
+	
 	void updateInput() {
 		if(player.torch) {
-			Vec2f pos(InventoryX + 110, g_size.height() - (158 + 32));
 			
-			if(pos.x < INTERFACE_RATIO(10))
-				pos.x = INTERFACE_RATIO(10);
-			
-			const Rect mouseTestRect(
-			pos.x,
-			pos.y,
-			pos.x + m_size.x,
-			pos.y + m_size.y
-			);
-			
-			if(mouseTestRect.contains(Vec2i(DANAEMouse))) {
+			if(m_rect.contains(Vec2f(DANAEMouse))) {
 				eMouseState=MOUSE_IN_TORCH_ICON;
 				SpecialCursor=CURSOR_INTERACTION_ON;
 				
@@ -1372,17 +1369,11 @@ public:
 		m_tex = player.torch->inv;
 		arx_assert(m_tex);
 		
-		
-		float px = INTERFACE_RATIO(std::max(InventoryX + 110.f, 10.f));
-		float py = g_size.height() - INTERFACE_RATIO(158.f + 32.f);
-		
-		m_rect = Rectf(Vec2f(px, py), m_size.x, m_size.y);
-		
 		if(rnd() <= 0.2f) {
 			return;
 		}
 		
-		createFireParticle(Vec2f(px, py));
+		createFireParticle(m_rect.topLeft());
 	}
 	
 	void createFireParticle(Vec2f p) {
@@ -2503,6 +2494,7 @@ void hudUpdateInput() {
 		if(!(player.Interface & INTER_COMBATMODE)) {
 			if(!TRUE_PLAYER_MOUSELOOK_ON) {
 				
+				currentTorchIconGui.updateRect();
 				currentTorchIconGui.updateInput();
 				levelUpIconGui.updateInput();
 				purseIconGui.updateInput();
