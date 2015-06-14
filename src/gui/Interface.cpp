@@ -1613,8 +1613,7 @@ public:
 	}
 	
 	void updateFirst() {
-		/////////////////////////////////////////////////////
-		// begining to count time for sliding interface
+		
 		if(PLAYER_INTERFACE_HIDE_COUNT && !m_direction) {
 			bool bOk = true;
 	
