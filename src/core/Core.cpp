@@ -190,8 +190,6 @@ EERIE_3DOBJ	* arrowobj=NULL;			// 3D Object for arrows
 EERIE_3DOBJ * cameraobj=NULL;			// Camera 3D Object		// NEEDTO: Remove for Final
 EERIE_3DOBJ * markerobj=NULL;			// Marker 3D Object		// NEEDTO: Remove for Final
 
-std::string WILLADDSPEECH;
-
 Vec2s STARTDRAG;
 Entity * COMBINE=NULL;
 
@@ -237,7 +235,6 @@ bool g_cursorOverBook = false;
 // DEBUG FLAGS/Vars
 //-----------------------------------------------------------------------------
 bool g_requestLevelInit = true;
-unsigned long WILLADDSPEECHTIME=0;
 unsigned long AimTime;
 //-----------------------------------------------------------------------------
 
@@ -446,8 +443,6 @@ void levelInit() {
 	ARX_SPELLS_ResetRecognition();
 	
 	eyeball.exist=0;
-	WILLADDSPEECHTIME=0;
-	WILLADDSPEECH.clear();
 	
 	for(size_t i = 0; i < MAX_DYNLIGHTS; i++) {
 		lightHandleGet((LightHandle)i)->exist = 0;

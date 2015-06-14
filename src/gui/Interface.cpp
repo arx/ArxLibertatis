@@ -2063,9 +2063,7 @@ void ArxGame::manageKeyMouse() {
 						ss << " " << Text << " " << std::fixed << std::setw(3) << std::setprecision(0) << temp->durability << "/" << temp->max_durability;
 						description += ss.str();
 					}
-
-					WILLADDSPEECHTIME = (unsigned long)(arxtime);//treat warning C4244 conversion from 'float' to 'unsigned long'
-
+					
 					bool bAddText = true;
 					if(temp->obj && temp->obj->pbox && temp->obj->pbox->active == 1) {
 						bAddText=false;
@@ -2088,16 +2086,6 @@ void ArxGame::manageKeyMouse() {
 			}
 		}
 	}
-
-	if ((EERIEMouseButton & 4) || (LastMouseClick & 4))
-		WILLADDSPEECH.clear();
-
-	if (!WILLADDSPEECH.empty())
-		if (WILLADDSPEECHTIME+300<arxtime.get_frame_time())
-		{
-			ARX_SPEECH_Add(WILLADDSPEECH);
-			WILLADDSPEECH.clear();
-		}
 }
 
 

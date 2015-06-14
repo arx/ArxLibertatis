@@ -119,8 +119,6 @@ extern long LOADEDD;
 
 extern bool g_debugToggles[10];
 
-extern std::string WILLADDSPEECH;
-extern unsigned long WILLADDSPEECHTIME;
 extern long		CHANGE_LEVEL_ICON;
 
 void SetEditMode(long ed, const bool stop_sound = true);

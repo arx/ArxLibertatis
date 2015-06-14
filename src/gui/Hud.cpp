@@ -1842,10 +1842,9 @@ private:
 				SpecialCursor = CURSOR_INTERACTION_ON;
 				
 				if(eeMouseUp1()) {
-					if(Precast[m_precastIndex].typ >= 0)
-						WILLADDSPEECH = spellicons[Precast[m_precastIndex].typ].name;
-					
-					WILLADDSPEECHTIME = (unsigned long)(arxtime);
+					if(Precast[m_precastIndex].typ >= 0) {
+						ARX_SPEECH_Add(spellicons[Precast[m_precastIndex].typ].name);
+					}
 				}
 				
 				if(EERIEMouseButton & 4) {
@@ -1973,10 +1972,9 @@ private:
 				SpecialCursor = CURSOR_INTERACTION_ON;
 				
 				if(eeMouseUp1()) {
-					if(spells[spellIndex]->m_type >= 0)
-						WILLADDSPEECH = spellicons[spells[spellIndex]->m_type].name;
-					
-					WILLADDSPEECHTIME = (unsigned long)(arxtime);
+					if(spells[spellIndex]->m_type >= 0) {
+						ARX_SPEECH_Add(spellicons[spells[spellIndex]->m_type].name);
+					}
 				}
 				
 				if(EERIEMouseButton & 4) {
