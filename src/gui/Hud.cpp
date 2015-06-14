@@ -1098,10 +1098,8 @@ public:
 			SpecialCursor=CURSOR_INTERACTION_ON;
 
 			if(eeMouseDown1()) {
-				if(TSecondaryInventory) {
-					// play un son que si un item est pris
-					ARX_INVENTORY_TakeAllFromSecondaryInventory();
-				}
+				// play un son que si un item est pris
+				ARX_INVENTORY_TakeAllFromSecondaryInventory();
 
 				EERIEMouseButton &=~1;
 			}
