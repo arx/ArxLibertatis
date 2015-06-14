@@ -968,17 +968,17 @@ void ArxGame::managePlayerControls() {
 									SendIOScriptEvent(ioSteal, SM_STEAL,"off");
 									player.Interface &= ~INTER_STEAL;
 								}
-
-								ARX_INVENTORY_OpenClose(t);
-
-								if(player.Interface & (INTER_INVENTORY | INTER_INVENTORYALL)) {
-									ARX_SOUND_PlayInterface(SND_BACKPACK, 0.9F + 0.2F * rnd());
-								}
-
-								if(SecondaryInventory) {
-									bForceEscapeFreeLook=true;
-									lOldTruePlayerMouseLook=!TRUE_PLAYER_MOUSELOOK_ON;
-								}
+							
+							ARX_INVENTORY_OpenClose(t);
+							
+							if(player.Interface & (INTER_INVENTORY | INTER_INVENTORYALL)) {
+								ARX_SOUND_PlayInterface(SND_BACKPACK, 0.9F + 0.2F * rnd());
+							}
+							
+							if(SecondaryInventory) {
+								bForceEscapeFreeLook=true;
+								lOldTruePlayerMouseLook=!TRUE_PLAYER_MOUSELOOK_ON;
+							}
 						}
 					}
 				}
