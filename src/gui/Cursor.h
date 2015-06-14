@@ -20,13 +20,14 @@
 #ifndef ARX_GUI_CURSOR_H
 #define ARX_GUI_CURSOR_H
 
+class Entity;
 class TextureContainer;
 
 extern TextureContainer * cursorMovable;
 
 void cursorTexturesInit();
 
-bool Manage3DCursor(bool simulate);
+bool Manage3DCursor(Entity * io, bool simulate);
 
 void ARX_INTERFACE_RenderCursor(bool flag = false);
 

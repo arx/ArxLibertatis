@@ -2265,7 +2265,7 @@ void ArxGame::manageEditorControls() {
 				) {
 					//Put object in fromt of player
 					
-					bool res = Manage3DCursor(false);
+					bool res = Manage3DCursor(DRAGINTER, false);
 					// Throw Object
 					if(!res) {
 						Entity * io=DRAGINTER;
