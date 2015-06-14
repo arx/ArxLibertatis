@@ -2041,27 +2041,27 @@ void ArxGame::manageKeyMouse() {
 					{
 						SendIOScriptEvent(FlyingOverIO,SM_IDENTIFY);
 					}
-
-					WILLADDSPEECH = getLocalised(temp->locname);
+					
+					std::string description = getLocalised(temp->locname);
 
 					if(temp->ioflags & IO_GOLD) {
 						std::stringstream ss;
-						ss << temp->_itemdata->price << " " << WILLADDSPEECH;
-						WILLADDSPEECH = ss.str();
+						ss << temp->_itemdata->price << " " << description;
+						description = ss.str();
 					}
 
 					if(temp->poisonous > 0 && temp->poisonous_count != 0) {
 						std::string Text = getLocalised("description_poisoned", "error");
 						std::stringstream ss;
 						ss << " (" << Text << " " << (int)temp->poisonous << ")";
-						WILLADDSPEECH += ss.str();
+						description += ss.str();
 					}
 
 					if((temp->ioflags & IO_ITEM) && temp->durability < 100.f) {
 						std::string Text = getLocalised("description_durability", "error");
 						std::stringstream ss;
 						ss << " " << Text << " " << std::fixed << std::setw(3) << std::setprecision(0) << temp->durability << "/" << temp->max_durability;
-						WILLADDSPEECH += ss.str();
+						description += ss.str();
 					}
 
 					WILLADDSPEECHTIME = (unsigned long)(arxtime);//treat warning C4244 conversion from 'float' to 'unsigned long'
@@ -2079,13 +2079,11 @@ void ArxGame::manageKeyMouse() {
 						Rect rDraw(x, y, w, h);
 						pTextManage->Clear();
 						if(!config.input.autoDescription) {
-							pTextManage->AddText(hFontInBook, WILLADDSPEECH, rDraw, Color(232, 204, 143), 2000 + WILLADDSPEECH.length()*60);
+							pTextManage->AddText(hFontInBook, description, rDraw, Color(232, 204, 143), 2000 + description.length()*60);
 						} else {
-							pTextManage->AddText(hFontInBook, WILLADDSPEECH, rDraw, Color(232, 204, 143));
+							pTextManage->AddText(hFontInBook, description, rDraw, Color(232, 204, 143));
 						}
 					}
-
-					WILLADDSPEECH.clear();
 				}
 			}
 		}
