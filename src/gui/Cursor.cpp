@@ -198,11 +198,8 @@ bool Manage3DCursor(bool simulate) {
 	long iterating = 40;
 
 	cyl2.height = std::min(-30.f, height);
+	cyl2.radius = glm::clamp(maxdist, 20.f, 150.f);
 	
-	maxdist = glm::clamp(maxdist, 15.f, 150.f);
-	cyl2.radius = std::max(20.f, maxdist);
-
-
 	while(iterating > 0) {
 		cyl2.origin = pos + movev * inc + Vec3f(0.f, bbox.max.y, 0.f);
 
