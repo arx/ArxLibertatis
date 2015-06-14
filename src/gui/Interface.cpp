@@ -1567,22 +1567,22 @@ void ArxGame::managePlayerControls() {
 
 class PlayerInterfaceFader {
 private:
-	long SMOOTHSLID;
-	float SLID_VALUE;
+	long m_direction;
+	float m_current;
 	
 public:
 	PlayerInterfaceFader()
-		: SMOOTHSLID(0)
-		, SLID_VALUE(0.f)
+		: m_direction(0)
+		, m_current(0.f)
 	{}
 	
 	void reset() {
-		SMOOTHSLID=0;
+		m_direction = 0;
 		PLAYER_INTERFACE_HIDE_COUNT = true;
 	}
 	
 	void resetSlid() {
-		SLID_VALUE = 0.f;
+		m_current = 0.f;
 	}
 	
 	void requestFade(FadeDirection showhide, long smooth) {
@@ -1599,23 +1599,23 @@ public:
 		
 		if(smooth) {
 			if(showhide == FadeDirection_In)
-				SMOOTHSLID = -1;
+				m_direction = -1;
 			else
-				SMOOTHSLID = 1;
+				m_direction = 1;
 		} else {
 			if(showhide == FadeDirection_In)
-				SLID_VALUE = 0.f;
+				m_current = 0.f;
 			else
-				SLID_VALUE = 100.f;
+				m_current = 100.f;
 			
-			lSLID_VALUE = SLID_VALUE;
+			lSLID_VALUE = m_current;
 		}
 	}
 	
 	void updateFirst() {
 		/////////////////////////////////////////////////////
 		// begining to count time for sliding interface
-		if(PLAYER_INTERFACE_HIDE_COUNT && !SMOOTHSLID) {
+		if(PLAYER_INTERFACE_HIDE_COUNT && !m_direction) {
 			bool bOk = true;
 	
 			if(TRUE_PLAYER_MOUSELOOK_ON) {
@@ -1625,12 +1625,12 @@ public:
 					float t=float(arxtime);
 	
 					if(t-SLID_START > 10000.f) {
-						SLID_VALUE += (float)Original_framedelay*( 1.0f / 10 );
+						m_current += (float)Original_framedelay*( 1.0f / 10 );
 	
-						if(SLID_VALUE > 100.f)
-							SLID_VALUE = 100.f;
+						if(m_current > 100.f)
+							m_current = 100.f;
 	
-						lSLID_VALUE = SLID_VALUE;
+						lSLID_VALUE = m_current;
 					} else {
 						bOk = true;
 					}
@@ -1638,33 +1638,33 @@ public:
 			}
 	
 			if(bOk) {
-				SLID_VALUE -= (float)Original_framedelay*( 1.0f / 10 );
+				m_current -= (float)Original_framedelay*( 1.0f / 10 );
 	
-				if(SLID_VALUE < 0.f)
-					SLID_VALUE = 0.f;
+				if(m_current < 0.f)
+					m_current = 0.f;
 	
-				lSLID_VALUE = SLID_VALUE;
+				lSLID_VALUE = m_current;
 			}
 		}
 	}
 	
 	void update() {
-		if(SMOOTHSLID == 1) {
-			SLID_VALUE += (float)Original_framedelay*( 1.0f / 10 );
+		if(m_direction == 1) {
+			m_current += (float)Original_framedelay*( 1.0f / 10 );
 			
-			if(SLID_VALUE > 100.f) {
-				SLID_VALUE = 100.f;
-				SMOOTHSLID = 0;
+			if(m_current > 100.f) {
+				m_current = 100.f;
+				m_direction = 0;
 			}
-			lSLID_VALUE = SLID_VALUE;
-		} else if(SMOOTHSLID == -1) {
-			SLID_VALUE -= (float)Original_framedelay*( 1.0f / 10 );
+			lSLID_VALUE = m_current;
+		} else if(m_direction == -1) {
+			m_current -= (float)Original_framedelay*( 1.0f / 10 );
 			
-			if (SLID_VALUE < 0.f) {
-				SLID_VALUE = 0.f;
-				SMOOTHSLID = 0;
+			if(m_current < 0.f) {
+				m_current = 0.f;
+				m_direction = 0;
 			}
-			lSLID_VALUE = SLID_VALUE;
+			lSLID_VALUE = m_current;
 		}
 	}
 };
