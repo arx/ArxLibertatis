@@ -1961,12 +1961,12 @@ private:
 		bool m_flicker;
 		bool m_abortable;
 		
-		void updateInput() {
+		void updateInput(const Vec2f & mousePos) {
 			
 			if(!m_abortable)
 				return;
 			
-			if(m_rect.contains(Vec2f(DANAEMouse))) {
+			if(m_rect.contains(mousePos)) {
 				SpecialCursor = CURSOR_INTERACTION_ON;
 				
 				if(eeMouseUp1()) {
@@ -2028,9 +2028,12 @@ public:
 			
 			slot.m_rect = slotRect;
 		}
+	}
+	
+	void updateInput(const Vec2f & mousePos) {
 		
 		BOOST_FOREACH(ActiveSpellIconSlot & slot, m_slots) {
-			slot.updateInput();
+			slot.updateInput(mousePos);
 		}
 	}
 	
@@ -2490,6 +2493,7 @@ void ArxGame::drawAllInterface() {
 	
 	precastSpellsGui.draw();
 	activeSpellsGui.update(hudSlider);
+	activeSpellsGui.updateInput(Vec2f(DANAEMouse));
 	activeSpellsGui.draw();
 }
 
