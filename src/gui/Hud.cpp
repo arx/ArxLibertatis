@@ -1319,6 +1319,10 @@ public:
 		m_size = Vec2f(32.f, 64.f);
 	}
 	
+	bool isVisible() {
+		return !(player.Interface & INTER_COMBATMODE) && player.torch;
+	}
+	
 	void updateRect() {
 		
 		float px = INTERFACE_RATIO(std::max(InventoryX + 110.f, 10.f));
@@ -1359,6 +1363,10 @@ public:
 	}
 	
 	void update() {
+		
+		if(!isVisible())
+			return;
+		
 		if((player.Interface & INTER_NOTE) && TSecondaryInventory != NULL
 		   && (openNote.type() == gui::Note::BigNote || openNote.type() == gui::Note::Book)) {
 			m_isActive = false;
@@ -1397,6 +1405,10 @@ public:
 	}
 	
 	void draw() {
+		
+		if(!isVisible())
+			return;
+		
 		EERIEDrawBitmap(m_rect, 0.001f, m_tex, Color::white);
 	}
 };
@@ -2397,10 +2409,8 @@ void ArxGame::drawAllInterface() {
 		}
 	}
 	
-	if(!(player.Interface & INTER_COMBATMODE) && player.torch) {
-		currentTorchIconGui.update();
-		currentTorchIconGui.draw();
-	}
+	currentTorchIconGui.update();
+	currentTorchIconGui.draw();
 	
 	changeLevelIconGui.draw();
 	
