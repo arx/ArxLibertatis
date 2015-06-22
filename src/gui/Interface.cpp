@@ -2034,53 +2034,53 @@ void ArxGame::manageKeyMouse() {
 	) {
 		Entity * temp = FlyingOverIO;
 		
-					if (((FlyingOverIO->ioflags & IO_ITEM) && FlyingOverIO->_itemdata->equipitem)
-						&& (player.m_skillFull.objectKnowledge + player.m_attributeFull.mind
-						>= FlyingOverIO->_itemdata->equipitem->elements[IO_EQUIPITEM_ELEMENT_Identify_Value].value) )
-					{
-						SendIOScriptEvent(FlyingOverIO,SM_IDENTIFY);
-					}
-					
-					std::string description = getLocalised(temp->locname);
-
-					if(temp->ioflags & IO_GOLD) {
-						std::stringstream ss;
-						ss << temp->_itemdata->price << " " << description;
-						description = ss.str();
-					}
-
-					if(temp->poisonous > 0 && temp->poisonous_count != 0) {
-						std::string Text = getLocalised("description_poisoned", "error");
-						std::stringstream ss;
-						ss << " (" << Text << " " << (int)temp->poisonous << ")";
-						description += ss.str();
-					}
-
-					if((temp->ioflags & IO_ITEM) && temp->durability < 100.f) {
-						std::string Text = getLocalised("description_durability", "error");
-						std::stringstream ss;
-						ss << " " << Text << " " << std::fixed << std::setw(3) << std::setprecision(0) << temp->durability << "/" << temp->max_durability;
-						description += ss.str();
-					}
-					
-					bool bAddText = true;
-					if(temp->obj && temp->obj->pbox && temp->obj->pbox->active == 1) {
-						bAddText=false;
-					}
-
-					if(bAddText) {
-						Rect::Num x = checked_range_cast<Rect::Num>(120 * g_sizeRatio.x);
-						Rect::Num y = checked_range_cast<Rect::Num>(14 * g_sizeRatio.y);
-						Rect::Num w = checked_range_cast<Rect::Num>((120 + 500) * g_sizeRatio.x);
-						Rect::Num h = checked_range_cast<Rect::Num>((14 + 200) * g_sizeRatio.y);
-						Rect rDraw(x, y, w, h);
-						pTextManage->Clear();
-						if(!config.input.autoDescription) {
-							pTextManage->AddText(hFontInBook, description, rDraw, Color(232, 204, 143), 2000 + description.length()*60);
-						} else {
-							pTextManage->AddText(hFontInBook, description, rDraw, Color(232, 204, 143));
-						}
-					}
+		if (((FlyingOverIO->ioflags & IO_ITEM) && FlyingOverIO->_itemdata->equipitem)
+			&& (player.m_skillFull.objectKnowledge + player.m_attributeFull.mind
+			>= FlyingOverIO->_itemdata->equipitem->elements[IO_EQUIPITEM_ELEMENT_Identify_Value].value) )
+		{
+			SendIOScriptEvent(FlyingOverIO,SM_IDENTIFY);
+		}
+		
+		std::string description = getLocalised(temp->locname);
+		
+		if(temp->ioflags & IO_GOLD) {
+			std::stringstream ss;
+			ss << temp->_itemdata->price << " " << description;
+			description = ss.str();
+		}
+		
+		if(temp->poisonous > 0 && temp->poisonous_count != 0) {
+			std::string Text = getLocalised("description_poisoned", "error");
+			std::stringstream ss;
+			ss << " (" << Text << " " << (int)temp->poisonous << ")";
+			description += ss.str();
+		}
+		
+		if((temp->ioflags & IO_ITEM) && temp->durability < 100.f) {
+			std::string Text = getLocalised("description_durability", "error");
+			std::stringstream ss;
+			ss << " " << Text << " " << std::fixed << std::setw(3) << std::setprecision(0) << temp->durability << "/" << temp->max_durability;
+			description += ss.str();
+		}
+		
+		bool bAddText = true;
+		if(temp->obj && temp->obj->pbox && temp->obj->pbox->active == 1) {
+			bAddText=false;
+		}
+		
+		if(bAddText) {
+			Rect::Num x = checked_range_cast<Rect::Num>(120 * g_sizeRatio.x);
+			Rect::Num y = checked_range_cast<Rect::Num>(14 * g_sizeRatio.y);
+			Rect::Num w = checked_range_cast<Rect::Num>((120 + 500) * g_sizeRatio.x);
+			Rect::Num h = checked_range_cast<Rect::Num>((14 + 200) * g_sizeRatio.y);
+			Rect rDraw(x, y, w, h);
+			pTextManage->Clear();
+			if(!config.input.autoDescription) {
+				pTextManage->AddText(hFontInBook, description, rDraw, Color(232, 204, 143), 2000 + description.length()*60);
+			} else {
+				pTextManage->AddText(hFontInBook, description, rDraw, Color(232, 204, 143));
+			}
+		}
 	}
 }
 
