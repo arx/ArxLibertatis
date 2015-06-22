@@ -2025,15 +2025,15 @@ void ArxGame::manageKeyMouse() {
 		}
 	}
 
-	if((!BLOCK_PLAYER_CONTROLS) && !(player.Interface & INTER_COMBATMODE)) {
-		if(!DRAGINTER) {
-			if(config.input.autoDescription || (eeMouseUp1() && !(EERIEMouseButton & 4) && !(LastMouseClick & 4)))
-			{
-				Entity * temp;
-				temp = FlyingOverIO;
-
-				if(temp && !temp->locname.empty()) {
-
+	if(   !BLOCK_PLAYER_CONTROLS
+	   && !(player.Interface & INTER_COMBATMODE)
+	   && !DRAGINTER
+	   && (config.input.autoDescription || (eeMouseUp1() && !(EERIEMouseButton & 4) && !(LastMouseClick & 4)))
+	   && FlyingOverIO
+	   && !FlyingOverIO->locname.empty()
+	) {
+		Entity * temp = FlyingOverIO;
+		
 					if (((FlyingOverIO->ioflags & IO_ITEM) && FlyingOverIO->_itemdata->equipitem)
 						&& (player.m_skillFull.objectKnowledge + player.m_attributeFull.mind
 						>= FlyingOverIO->_itemdata->equipitem->elements[IO_EQUIPITEM_ELEMENT_Identify_Value].value) )
@@ -2081,9 +2081,6 @@ void ArxGame::manageKeyMouse() {
 							pTextManage->AddText(hFontInBook, description, rDraw, Color(232, 204, 143));
 						}
 					}
-				}
-			}
-		}
 	}
 }
 
