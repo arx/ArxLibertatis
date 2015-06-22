@@ -810,19 +810,7 @@ private:
 		
 		for(long i = 0; i < 12; i++) {
 			
-			PARTICLE_DEF * pd = createParticle();
-			if(!pd) {
-				break;
-			}
-			
-			pd->ov = pos + Vec3f(rnd() * 6.f - rnd() * 12.f, rnd() * 6.f - rnd() * 12.f, 0.f);
-			pd->move = Vec3f(6.f - rnd() * 12.f, -8.f + rnd() * 16.f, 0.f);
-			pd->scale = Vec3f(4.4f, 4.4f, 1.f);
-			pd->tolive = Random::get(1500, 2400);
-			pd->tc = healing;
-			pd->rgb = Color3f::magenta;
-			pd->siz = 56.f;
-			pd->is2D = true;
+			MagFX(pos);
 		}
 		
 		for(int i = 0; i < 5; i++) {
