@@ -90,7 +90,6 @@ extern float InventoryX;
 extern float InventoryDir;
 
 void ARX_INVENTORY_ReOrder();
-void ARX_INVENTORY_IdentifyIO(Entity * _pIO);
 
 //------------------------------------------------------------------------------------
 //CInventory Inventory;
@@ -1945,14 +1944,8 @@ void ARX_INVENTORY_IdentifyAll() {
 	for(size_t y = 0; y < INVENTORY_Y; y++)
 	for(size_t x = 0; x < INVENTORY_X; x++) {
 		Entity * io = inventory[bag][x][y].io;
-		if(!io || !(io->ioflags & IO_ITEM) || !io->_itemdata->equipitem)
-			continue;
 		
-		const float identifyValue = io->_itemdata->equipitem->elements[IO_EQUIPITEM_ELEMENT_Identify_Value].value;
-		
-		if(player.m_skillFull.objectKnowledge + player.m_attributeFull.mind >= identifyValue) {
-			SendIOScriptEvent(io, SM_IDENTIFY);
-		}
+		ARX_INVENTORY_IdentifyIO(io);
 	}
 }
 

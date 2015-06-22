@@ -2034,12 +2034,7 @@ void ArxGame::manageKeyMouse() {
 	) {
 		Entity * temp = FlyingOverIO;
 		
-		if (((FlyingOverIO->ioflags & IO_ITEM) && FlyingOverIO->_itemdata->equipitem)
-			&& (player.m_skillFull.objectKnowledge + player.m_attributeFull.mind
-			>= FlyingOverIO->_itemdata->equipitem->elements[IO_EQUIPITEM_ELEMENT_Identify_Value].value) )
-		{
-			SendIOScriptEvent(FlyingOverIO,SM_IDENTIFY);
-		}
+		ARX_INVENTORY_IdentifyIO(temp);
 		
 		std::string description = getLocalised(temp->locname);
 		
