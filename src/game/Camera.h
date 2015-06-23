@@ -20,8 +20,9 @@
 #ifndef ARX_GAME_CAMERA_H
 #define ARX_GAME_CAMERA_H
 
-#include "math/Rectangle.h"
 #include "graphics/GraphicsTypes.h"
+#include "math/Rectangle.h"
+#include "platform/Alignment.h"
 
 //TODO Remove
 #define CAM_SUBJVIEW 0
@@ -82,11 +83,14 @@ struct EERIE_CAMERA {
 		angle.setPitch((180.f + glm::degrees(getAngle(orgTrans.pos.x, orgTrans.pos.z, x, z)))); //beta entre orgn et dest;
 		angle.setRoll(0.f);
 	}
+	
+	ARX_USE_ALIGNED_NEW(EERIE_CAMERA) // for ProjectionMatrix
 };
 
 
 struct IO_CAMDATA {
 	EERIE_CAMERA cam;
+	ARX_USE_ALIGNED_NEW(IO_CAMDATA) // for cam
 };
 
 
@@ -103,5 +107,8 @@ void PrepareCamera(EERIE_CAMERA *cam, const Rect & size);
 
 extern EERIE_CAMERA * ACTIVECAM;
 void SetActiveCamera(EERIE_CAMERA* cam);
+
+ARX_USE_ALIGNED_ALLOCATOR(EERIE_CAMERA) // for ProjectionMatrix
+ARX_USE_ALIGNED_ALLOCATOR(IO_CAMDATA) // for cam
 
 #endif // ARX_GAME_CAMERA_H
