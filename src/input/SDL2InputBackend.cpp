@@ -19,9 +19,8 @@
 
 #include "input/SDL2InputBackend.h"
 
-#include <boost/static_assert.hpp>
-
 #include "io/log/Logger.h"
+#include "platform/PlatformConfig.h"
 
 static int sdlToArxKey[SDL_NUM_SCANCODES];
 
@@ -155,19 +154,19 @@ SDL2InputBackend::SDL2InputBackend(SDL2Window * window) : m_window(window) {
 	
 	std::fill_n(sdlToArxButton, ARRAY_SIZE(sdlToArxButton), -1);
 	
-	BOOST_STATIC_ASSERT(9 < ARRAY_SIZE(sdlToArxButton));
+	ARX_STATIC_ASSERT(9 < ARRAY_SIZE(sdlToArxButton), "array size mismatch");
 	sdlToArxButton[8] = Mouse::Button_5;
 	sdlToArxButton[9] = Mouse::Button_6;
 	
-	BOOST_STATIC_ASSERT(SDL_BUTTON_LEFT < ARRAY_SIZE(sdlToArxButton));
+	ARX_STATIC_ASSERT(SDL_BUTTON_LEFT < ARRAY_SIZE(sdlToArxButton), "array size mismatch");
 	sdlToArxButton[SDL_BUTTON_LEFT] = Mouse::Button_0;
-	BOOST_STATIC_ASSERT(SDL_BUTTON_MIDDLE < ARRAY_SIZE(sdlToArxButton));
+	ARX_STATIC_ASSERT(SDL_BUTTON_MIDDLE < ARRAY_SIZE(sdlToArxButton), "array size mismatch");
 	sdlToArxButton[SDL_BUTTON_MIDDLE] = Mouse::Button_2;
-	BOOST_STATIC_ASSERT(SDL_BUTTON_RIGHT < ARRAY_SIZE(sdlToArxButton));
+	ARX_STATIC_ASSERT(SDL_BUTTON_RIGHT < ARRAY_SIZE(sdlToArxButton), "array size mismatch");
 	sdlToArxButton[SDL_BUTTON_RIGHT] = Mouse::Button_1;
-	BOOST_STATIC_ASSERT(SDL_BUTTON_X1 < ARRAY_SIZE(sdlToArxButton));
+	ARX_STATIC_ASSERT(SDL_BUTTON_X1 < ARRAY_SIZE(sdlToArxButton), "array size mismatch");
 	sdlToArxButton[SDL_BUTTON_X1] = Mouse::Button_3;
-	BOOST_STATIC_ASSERT(SDL_BUTTON_X2 < ARRAY_SIZE(sdlToArxButton));
+	ARX_STATIC_ASSERT(SDL_BUTTON_X2 < ARRAY_SIZE(sdlToArxButton), "array size mismatch");
 	sdlToArxButton[SDL_BUTTON_X2] = Mouse::Button_4;
 	
 	

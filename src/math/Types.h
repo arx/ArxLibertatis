@@ -22,8 +22,6 @@
 
 #include "platform/Platform.h"
 
-#include <boost/static_assert.hpp>
-
 #include <glm/glm.hpp>
 
 template <class T>
@@ -44,7 +42,7 @@ typedef Rectangle_<float> Rectf;
 		enum { num_components = N };
 		typedef T component_type;
 		typedef V<T, glm::highp> type;
-		BOOST_STATIC_ASSERT(sizeof(type) == sizeof(component_type) * N);
+		ARX_STATIC_ASSERT(sizeof(type) == sizeof(component_type) * N, "vector has padding");
 	};
 #else
 	template <class T, template <class> class V, int N>
@@ -52,7 +50,7 @@ typedef Rectangle_<float> Rectf;
 		enum { num_components = N };
 		typedef T component_type;
 		typedef V<T> type;
-		BOOST_STATIC_ASSERT(sizeof(type) == sizeof(component_type) * N);
+		ARX_STATIC_ASSERT(sizeof(type) == sizeof(component_type) * N, "vector has padding");
 	};
 #endif
 

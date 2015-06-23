@@ -84,6 +84,8 @@ ZeniMax Media Inc., Suite 120, Rockville, Maryland 20850 USA.
 #include "io/SaveBlock.h"
 #include "io/log/Logger.h"
 
+#include "platform/Platform.h"
+
 #include "scene/Interactive.h"
 #include "scene/GameSound.h"
 #include "scene/LoadLevel.h"
@@ -608,7 +610,7 @@ template <size_t N>
 static void storeIdString(char (&tofill)[N], const Entity * io) {
 	
 	if(!io || !ValidIOAddress(io)) {
-		BOOST_STATIC_ASSERT(N >= 4);
+		ARX_STATIC_ASSERT(N >= 4, "id string too short");
 		strcpy(tofill, "none");
 	} else {
 		
@@ -852,7 +854,7 @@ static Entity * GetObjIOSource(const EERIE_3DOBJ * obj) {
 
 template <size_t N>
 void FillTargetInfo(char (&info)[N], EntityHandle numtarget) {
-	BOOST_STATIC_ASSERT(N >= 6);
+	ARX_STATIC_ASSERT(N >= 6, "id string too short");
 	if(numtarget == -2) {
 		strcpy(info, "self");
 	} else if(numtarget == -1) {

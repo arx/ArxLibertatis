@@ -52,12 +52,12 @@ ZeniMax Media Inc., Suite 120, Rockville, Maryland 20850 USA.
 #include <cstring>
 
 #include <boost/numeric/conversion/cast.hpp>
-#include <boost/static_assert.hpp>
 
 #include <glm/gtx/norm.hpp>
 
 #include "graphics/GraphicsTypes.h"
 #include "graphics/data/Mesh.h"
+#include "platform/Platform.h"
 
 // RANDOM Sequences Funcs/Defs
 inline float rnd() {
@@ -112,7 +112,7 @@ bool SphereInCylinder(const Cylinder & cyl1, const Sphere & s);
 
 template <class T, class O>
 inline T reinterpret(O v) {
-	BOOST_STATIC_ASSERT(sizeof(T) == sizeof(O));
+	ARX_STATIC_ASSERT(sizeof(T) == sizeof(O), "can only reinterpret to type of same size");
 	T t;
 	memcpy(&t, &v, sizeof(T));
 	return t; 

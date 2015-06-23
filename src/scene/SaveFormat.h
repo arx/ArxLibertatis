@@ -47,8 +47,6 @@ ZeniMax Media Inc., Suite 120, Rockville, Maryland 20850 USA.
 #include <algorithm>
 #include <cstring>
 
-#include <boost/static_assert.hpp>
-
 #include "gui/MiniMap.h"
 #include "game/Item.h"
 #include "game/NPC.h"
@@ -255,8 +253,8 @@ struct SavedMiniMap {
 		a.m_ratioY = yratio;
 		a.m_width = width;
 		a.m_height = height;
-		BOOST_STATIC_ASSERT(SavedMiniMap::MAX_X == MINIMAP_MAX_X);
-		BOOST_STATIC_ASSERT(SavedMiniMap::MAX_Z == MINIMAP_MAX_Z);
+		ARX_STATIC_ASSERT(SavedMiniMap::MAX_X == MINIMAP_MAX_X, "array size mismatch");
+		ARX_STATIC_ASSERT(SavedMiniMap::MAX_Z == MINIMAP_MAX_Z, "array size mismatch");
 		std::copy(&revealed[0][0], &revealed[0][0] + (SavedMiniMap::MAX_X * SavedMiniMap::MAX_Z), &a.m_revealed[0][0]);
 		return a;
 	}
@@ -269,8 +267,8 @@ struct SavedMiniMap {
 		yratio = b.m_ratioY;
 		width = b.m_width;
 		height = b.m_height;
-		BOOST_STATIC_ASSERT(SavedMiniMap::MAX_X == MINIMAP_MAX_X);
-		BOOST_STATIC_ASSERT(SavedMiniMap::MAX_Z == MINIMAP_MAX_Z);
+		ARX_STATIC_ASSERT(SavedMiniMap::MAX_X == MINIMAP_MAX_X, "array size mismatch");
+		ARX_STATIC_ASSERT(SavedMiniMap::MAX_Z == MINIMAP_MAX_Z, "array size mismatch");
 		std::copy(&b.m_revealed[0][0], &b.m_revealed[0][0] + (SavedMiniMap::MAX_X * SavedMiniMap::MAX_Z), &revealed[0][0]);
 		return *this;
 	}
@@ -522,7 +520,7 @@ struct SavedSpellcastData {
 	inline operator IO_SPELLCAST_DATA() const {
 		IO_SPELLCAST_DATA a;
 		a.castingspell = (castingspell < 0) ? SPELL_NONE : (SpellType)castingspell; // TODO save/load enum
-		BOOST_STATIC_ASSERT(ARRAY_SIZE(a.symb) == 4);
+		ARX_STATIC_ASSERT(ARRAY_SIZE(a.symb) == 4, "array size mismatch");
 		a.symb[0] = (Rune)symb[0]; // TODO save/load enum
 		a.symb[1] = (Rune)symb[1];
 		a.symb[2] = (Rune)symb[2];
@@ -536,7 +534,7 @@ struct SavedSpellcastData {
 	
 	inline SavedSpellcastData & operator=(const IO_SPELLCAST_DATA & b) {
 		castingspell = (b.castingspell == SPELL_NONE) ? -1 : b.castingspell;
-		BOOST_STATIC_ASSERT(ARRAY_SIZE(b.symb) == 4);
+		ARX_STATIC_ASSERT(ARRAY_SIZE(b.symb) == 4, "array size mismatch");
 		std::copy(b.symb, b.symb + 4, symb);
 		spell_flags = b.spell_flags;
 		spell_level = b.spell_level;
@@ -683,7 +681,7 @@ struct SavedBehaviour {
 		a.tactics = tactics;
 		a.target = EntityHandle(target);
 		a.movemode = (MoveMode)movemode; // TODO save/load enum
-		BOOST_STATIC_ASSERT(SAVED_MAX_ANIM_LAYERS == MAX_ANIM_LAYERS);
+		ARX_STATIC_ASSERT(SAVED_MAX_ANIM_LAYERS == MAX_ANIM_LAYERS, "array size mismatch");
 		std::copy(animlayer, animlayer + SAVED_MAX_ANIM_LAYERS, a.animlayer);
 		return a;
 	}
@@ -695,7 +693,7 @@ struct SavedBehaviour {
 		tactics = b.tactics;
 		target = b.target;
 		movemode = b.movemode;
-		BOOST_STATIC_ASSERT(SAVED_MAX_ANIM_LAYERS == MAX_ANIM_LAYERS);
+		ARX_STATIC_ASSERT(SAVED_MAX_ANIM_LAYERS == MAX_ANIM_LAYERS, "array size mismatch");
 		std::copy(b.animlayer, b.animlayer + SAVED_MAX_ANIM_LAYERS, animlayer);
 		return *this;
 	}
@@ -734,7 +732,7 @@ struct SavedExtraRotate {
 	
 	inline operator EERIE_EXTRA_ROTATE() const {
 		EERIE_EXTRA_ROTATE a;
-		BOOST_STATIC_ASSERT(SAVED_MAX_EXTRA_ROTATE == MAX_EXTRA_ROTATE);
+		ARX_STATIC_ASSERT(SAVED_MAX_EXTRA_ROTATE == MAX_EXTRA_ROTATE, "array size mismatch");
 		std::copy(group_number, group_number + SAVED_MAX_EXTRA_ROTATE, a.group_number);
 		std::copy(group_rotate, group_rotate + SAVED_MAX_EXTRA_ROTATE, a.group_rotate);
 		return a;
@@ -742,7 +740,7 @@ struct SavedExtraRotate {
 	
 	inline SavedExtraRotate & operator=(const EERIE_EXTRA_ROTATE & b) {
 		flags = 0;
-		BOOST_STATIC_ASSERT(SAVED_MAX_EXTRA_ROTATE == MAX_EXTRA_ROTATE);
+		ARX_STATIC_ASSERT(SAVED_MAX_EXTRA_ROTATE == MAX_EXTRA_ROTATE, "array size mismatch");
 		std::copy(b.group_number, b.group_number + SAVED_MAX_EXTRA_ROTATE, group_number);
 		std::copy(b.group_rotate, b.group_rotate + SAVED_MAX_EXTRA_ROTATE, group_rotate);
 		return *this;
@@ -838,13 +836,15 @@ struct SavedEquipItem {
 	
 	inline operator IO_EQUIPITEM() const {
 		IO_EQUIPITEM a;
-		BOOST_STATIC_ASSERT(SAVED_IO_EQUIPITEM_ELEMENT_Number == IO_EQUIPITEM_ELEMENT_Number);
+		ARX_STATIC_ASSERT(SAVED_IO_EQUIPITEM_ELEMENT_Number == IO_EQUIPITEM_ELEMENT_Number,
+		                  "array size mismatch");
 		std::copy(elements, elements + SAVED_IO_EQUIPITEM_ELEMENT_Number, a.elements);
 		return a;
 	}
 	
 	inline SavedEquipItem & operator=(const IO_EQUIPITEM & b) {
-		BOOST_STATIC_ASSERT(SAVED_IO_EQUIPITEM_ELEMENT_Number == IO_EQUIPITEM_ELEMENT_Number);
+		ARX_STATIC_ASSERT(SAVED_IO_EQUIPITEM_ELEMENT_Number == IO_EQUIPITEM_ELEMENT_Number,
+		                  "array size mismatch");
 		std::copy(b.elements, b.elements + SAVED_IO_EQUIPITEM_ELEMENT_Number, elements);
 		return *this;
 	}

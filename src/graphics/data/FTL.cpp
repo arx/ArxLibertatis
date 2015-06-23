@@ -55,7 +55,6 @@ ZeniMax Media Inc., Suite 120, Rockville, Maryland 20850 USA.
 #include <cstring>
 
 #include <boost/algorithm/string/case_conv.hpp>
-#include <boost/static_assert.hpp>
 
 #include "graphics/data/FTLFormat.h"
 #include "graphics/data/TextureContainer.h"
@@ -69,6 +68,8 @@ ZeniMax Media Inc., Suite 120, Rockville, Maryland 20850 USA.
 #include "io/Implode.h"
 #include "io/IO.h"
 #include "io/log/Logger.h"
+
+#include "platform/Platform.h"
 
 #include "scene/Object.h"
 
@@ -549,7 +550,7 @@ EERIE_3DOBJ * ARX_FTL_Load(const res::path & file) {
 			face.norm = eff->norm.toVec3();
 			
 			// Copy in all the texture and normals data
-			BOOST_STATIC_ASSERT(IOPOLYVERT_FTL == IOPOLYVERT);
+			ARX_STATIC_ASSERT(IOPOLYVERT_FTL == IOPOLYVERT, "array size mismatch");
 			for(size_t kk = 0; kk < IOPOLYVERT_FTL; kk++) {
 				face.nrmls[kk] = eff->nrmls[kk].toVec3();
 				face.vid[kk] = eff->vid[kk];
