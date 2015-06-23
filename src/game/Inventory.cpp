@@ -813,16 +813,14 @@ static bool CanBePutInInventory(Entity * io) {
 	}
 	
 	const Vec2s s = io->m_inventorySize;
+	const Vec2s p = sInventoryPos;
 	
 	// on essaie de le remettre à son ancienne place --------------------------
 	if(   sInventory == 1
-	   && sInventoryPos.x >= 0
-	   && sInventoryPos.x <= short(INVENTORY_X) - s.x
-	   && sInventoryPos.y >= 0
-	   && sInventoryPos.y <= short(INVENTORY_Y) - s.y
-	) {
-		long j = sInventoryPos.y;
-		long i = sInventoryPos.x;
+	   && p.x >= 0
+	   && p.x + s.x <= short(INVENTORY_X)
+	   && p.y >= 0
+	   && p.y + s.y <= short(INVENTORY_Y)) {
 		
 		arx_assert(player.bag >= 0);
 		arx_assert(player.bag <= 3);
@@ -830,7 +828,7 @@ static bool CanBePutInInventory(Entity * io) {
 		// first try to stack -------------------------------------------------
 		for(size_t bag = 0; bag < size_t(player.bag); bag++) {
 				
-				Entity * ioo = inventory[bag][i][j].io;
+				Entity * ioo = inventory[bag][p.x][p.y].io;
 				
 				if(ioo && ioo->_itemdata->playerstacksize > 1 && IsSameObject(io, ioo)) {
 					if(ioo->_itemdata->count < ioo->_itemdata->playerstacksize) {
@@ -857,26 +855,26 @@ static bool CanBePutInInventory(Entity * io) {
 		arx_assert(player.bag <= 3);
 		
 		for(size_t bag = 0; bag < size_t(player.bag); bag++) {
-				if(inventory[bag][i][j].io == NULL) {
+				if(inventory[bag][p.x][p.y].io == NULL) {
 					bool valid = true;
 					
 					if(s.x == 0 || s.y == 0)
 						valid = false;
 					
-					for(long k = j; k < j + s.y; k++)
-					for(long l = i; l < i + s.x; l++) {
+					for(long k = p.y; k < p.y + s.y; k++)
+					for(long l = p.x; l < p.x + s.x; l++) {
 						if(inventory[bag][l][k].io != NULL)
 							valid = false;
 					}
 					
 					if(valid) {
-						for(long k = j; k < j + s.y; k++)
-						for(long l = i; l < i + s.x; l++) {
+						for(long k = p.y; k < p.y + s.y; k++)
+						for(long l = p.x; l < p.x + s.x; l++) {
 							inventory[bag][l][k].io = io;
 							inventory[bag][l][k].show = 0;
 						}
 						
-						inventory[bag][i][j].show = 1;
+						inventory[bag][p.x][p.y].show = 1;
 						ARX_INVENTORY_Declare_InventoryIn(io);
 						sInventory = -1;
 						return true;
