@@ -87,7 +87,7 @@ struct CinematicFadeOut {
 	float bottom;
 	float left;
 	float right;
-	CinematicFadeOut(float v = 0.f) : top(v), bottom(v), left(v), right(v) { }
+	explicit CinematicFadeOut(float v = 0.f) : top(v), bottom(v), left(v), right(v) { }
 };
 
 class Cinematic {
