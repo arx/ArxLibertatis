@@ -514,6 +514,16 @@ else(MSVC)
 		check_builtin(ARX_HAVE_GCC_ALIGNOF           "__alignof__")
 	endif()
 	
+	if(WIN32)
+		check_symbol_exists(_aligned_malloc "malloc.h" ARX_HAVE_ALIGNED_MALLOC)
+		check_symbol_exists(_aligned_free "malloc.h" ARX_HAVE_ALIGNED_FREE)
+	endif()
+	if(NOT ARX_HAVE_ALIGNED_MALLOC OR NOT ARX_HAVE_ALIGNED_FREE)
+		check_symbol_exists(aligned_alloc "stdlib.h" ARX_HAVE_ALIGNED_ALLOC)
+		if(NOT ARX_HAVE_ALIGNED_ALLOC)
+			check_symbol_exists(posix_memalign "stdlib.h" ARX_HAVE_POSIX_MEMALIGN)
+		endif()
+	endif()
 	
 	check_symbol_exists(nanosleep "time.h" ARX_HAVE_NANOSLEEP)
 	
@@ -846,6 +856,7 @@ set(PHYSICS_SOURCES
 
 # Basic platform abstraction sources
 set(PLATFORM_SOURCES
+	src/platform/Alignment.cpp
 	src/platform/Environment.cpp
 	src/platform/Lock.cpp
 	src/platform/OS.cpp

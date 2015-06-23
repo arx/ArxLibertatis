@@ -2,6 +2,15 @@
 #ifndef ARX_CONFIGURE_H
 #define ARX_CONFIGURE_H
 
+// Aligned allocation
+// C11
+#cmakedefine01 ARX_HAVE_ALIGNED_ALLOC
+// Windows
+#cmakedefine01 ARX_HAVE_ALIGNED_MALLOC
+#cmakedefine01 ARX_HAVE_ALIGNED_FREE
+// POSIX
+#cmakedefine01 ARX_HAVE_POSIX_MEMALIGN
+
 // Thread & process control
 #cmakedefine01 ARX_HAVE_PTHREADS
 #cmakedefine01 ARX_HAVE_PRCTL
