@@ -240,6 +240,27 @@ namespace ARX_ANONYMOUS_NAMESPACE {
 #define ARRAY_SIZE(a) \
 	((sizeof(a) / sizeof(*(a))) / static_cast<size_t>(!(sizeof(a) % sizeof(*(a)))))
 
+/*!
+ * \def ARX_NOEXCEPT
+ * \brief Declare that a function never throws exceptions.
+ */
+#if ARX_HAVE_CXX11_NOEXCEPT
+	#define ARX_NOEXCEPT noexcept
+#else
+	#define ARX_NOEXCEPT throw()
+#endif
+
+/*!
+ * \def ARX_STATIC_ASSERT
+ * \brief Declare that a function never throws exceptions.
+ */
+#if ARX_HAVE_CXX11_STATIC_ASSERT
+	#define ARX_STATIC_ASSERT(Condition, Message) static_assert(Condition, Message)
+#else
+	#include <boost/static_assert.hpp>
+	#define ARX_STATIC_ASSERT(Condition, Message) BOOST_STATIC_ASSERT_MSG(Condition, Message)
+#endif
+
 /* ---------------------------------------------------------
                           Assertions
 ------------------------------------------------------------*/

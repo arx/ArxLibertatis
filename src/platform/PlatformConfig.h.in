@@ -9,19 +9,48 @@
  * libraries and their features belongs in src/Configure.h.in
  */
 
-// Support for __attribute__((format(printf, i, j)))
-#cmakedefine01 ARX_HAVE_ATTRIBUTE_FORMAT_PRINTF
-
-// Support for __builtin_trap()
-#cmakedefine01 ARX_HAVE_BUILTIN_TRAP
-
-// Support for __builtin_unreachable()
-#cmakedefine01 ARX_HAVE_BUILTIN_UNREACHABLE
-
 // C++11 features
+
+// alignas(n)
+#cmakedefine01 ARX_HAVE_CXX11_ALIGNAS
+// alignof(T)
+#cmakedefine01 ARX_HAVE_CXX11_ALIGNOF
+// auto
 #cmakedefine01 ARX_HAVE_CXX11_AUTO
+// std::forward in <utility>
+#cmakedefine01 ARX_HAVE_CXX11_FORWARD
+// std::itegral_constant in <type_traits>
+#cmakedefine01 ARX_HAVE_CXX11_INTEGRAL_CONSTANT
+// long long
+#cmakedefine01 ARX_HAVE_CXX11_LONG_LONG
+// std::max_align_t <cstddef>
+#cmakedefine01 ARX_HAVE_CXX11_MAX_ALIGN_T
+// noexcept
+#cmakedefine01 ARX_HAVE_CXX11_NOEXCEPT
+// static_assert(cond, msg)
+#cmakedefine01 ARX_HAVE_CXX11_STATIC_ASSERT
+// variadic templates
 #cmakedefine01 ARX_HAVE_CXX11_VARIADIC_TEMPLATES
 
+// GCC extensions
+// __attribute__((aligned(n)))
+#cmakedefine01 ARX_HAVE_ATTRIBUTE_ALIGNED
+// __attribute__((format(printf, i, j)))
+#cmakedefine01 ARX_HAVE_ATTRIBUTE_FORMAT_PRINTF
+// __builtin_trap()
+#cmakedefine01 ARX_HAVE_BUILTIN_TRAP
+// __builtin_unreachable()
+#cmakedefine01 ARX_HAVE_BUILTIN_UNREACHABLE
+// __alignof__(T)
+#cmakedefine01 ARX_HAVE_GCC_ALIGNOF
+
+// MSVC extensions
+// __declspec(align(n))
+#cmakedefine01 ARX_HAVE_DECLSPEC_ALIGN
+// __alignof(T)
+#cmakedefine01 ARX_HAVE_MSVC_ALIGNOF
+
+// Code generation options
 #cmakedefine01 BUILD_PROFILER_INSTRUMENT
 
 #endif // ARX_PLATFORM_PLATFORMCONFIG_H
