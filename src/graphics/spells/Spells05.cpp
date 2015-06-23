@@ -160,7 +160,7 @@ void CPoisonProjectile::Create(Vec3f _eSrc, float _fBeta)
 	Vec3f dest = eSrc;
 
 	int i = 0;
-	while(Visible(eSrc, dest, NULL, &tempHit) && i < 20) {
+	while(Visible(eSrc, dest, &tempHit) && i < 20) {
 		dest.x -= fBetaRadSin * 50;
 		dest.z += fBetaRadCos * 50;
 

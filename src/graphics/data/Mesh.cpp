@@ -748,7 +748,7 @@ int EERIELaunchRay3(const Vec3f & orgn, const Vec3f & dest, Vec3f & hit, long fl
 
 // TODO visible copy-paste
 // Computes the visibility from a point to another... (sort of...)
-bool Visible(const Vec3f & orgn, const Vec3f & dest, EERIEPOLY * epp, Vec3f * hit) {
+bool Visible(const Vec3f & orgn, const Vec3f & dest, Vec3f * hit) {
 	
 	ARX_PROFILE_FUNC();
 	
@@ -846,7 +846,7 @@ bool Visible(const Vec3f & orgn, const Vec3f & dest, EERIEPOLY * epp, Vec3f * hi
 	if(!found_ep)
 		return true;
 
-	if(found_ep == epp)
+	if(found_ep == NULL)
 		return true;
 	
 	*hit = found_hit;

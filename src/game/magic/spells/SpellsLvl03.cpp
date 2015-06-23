@@ -463,7 +463,7 @@ void IceProjectileSpell::Launch()
 	Vec3f e = s + angleToVectorXZ(angleb) * fspelldist;
 	
 	Vec3f h;
-	if(!Visible(s, e, NULL, &h)) {
+	if(!Visible(s, e, &h)) {
 		e = h + angleToVectorXZ(angleb) * 20.f;
 	}
 
