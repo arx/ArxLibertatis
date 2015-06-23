@@ -491,20 +491,12 @@ if(NOT MSVC)
 		endif()
 	endif()
 	
-	# Not a symbol, so we can't use check_symbol_exists
-	check_compile(ARX_HAVE_BUILTIN_TRAP
-		"${CMAKE_MODULE_PATH}/check_compiler_builtin_trap.cpp"
-		"__builtin_trap" "compiler feature"
-	)
-	check_compile(ARX_HAVE_BUILTIN_UNREACHABLE
-		"${CMAKE_MODULE_PATH}/check_compiler_builtin_unreachable.cpp"
-		"__builtin_unreachable" "compiler feature"
-	)
+	# Check compiler builtins & language extensions
+	# These are a symbols, so we can't use check_symbol_exists
+	check_builtin(ARX_HAVE_ATTRIBUTE_FORMAT_PRINTF "__attribute__((format(printf, i, j)))")
+	check_builtin(ARX_HAVE_BUILTIN_TRAP            "__builtin_trap")
+	check_builtin(ARX_HAVE_BUILTIN_UNREACHABLE     "__builtin_unreachable")
 	
-	check_compile(ARX_HAVE_ATTRIBUTE_FORMAT_PRINTF
-		"${CMAKE_MODULE_PATH}/check_compiler_attribute_format_printf.cpp"
-		"__attribute__((format(printf, i, j)))" "compiler feature"
-	)
 	
 	check_symbol_exists(nanosleep "time.h" ARX_HAVE_NANOSLEEP)
 	

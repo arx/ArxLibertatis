@@ -106,6 +106,35 @@ function(check_flag RESULT FLAG TYPE)
 	set(${RESULT} "${result}" PARENT_SCOPE)
 endfunction(check_flag)
 
+macro(strip_warning_flags VAR)
+	string(REGEX REPLACE "(^| )\\-(W[^ ]*|pedantic)" "" ${VAR} "${${VAR}}")
+endmacro()
+
+function(check_builtin RESULT EXPR)
+	string(REGEX REPLACE "[^a-zA-Z0-9_][^a-zA-Z0-9_]*" "-" check "${EXPR}")
+	string(REGEX REPLACE "_*\\-_*" "-" check "${check}")
+	string(REGEX REPLACE "^[_\\-]+" "" check "${check}")
+	string(REGEX REPLACE "[_\\-]+$" "" check "${check}")
+	if(EXISTS "${CMAKE_MODULE_PATH}/check-${check}.cpp")
+		set(compile_test_file "${CMAKE_MODULE_PATH}/check-${check}.cpp")
+		set(type "${EXPR}")
+	else()
+		set(compile_test_file "${CMAKE_CURRENT_BINARY_DIR}/check-builtin-${check}.cpp")
+		file(WRITE ${compile_test_file}
+			"__attribute__((const)) int main(){ (void)(${EXPR}); return 0; }\n"
+		)
+		string(REGEX MATCH "[a-zA-Z_][a-zA-Z_0-9]*" type "${EXPR}")
+	endif()
+	set(old_CMAKE_CXX_FLAGS "${CMAKE_CXX_FLAGS}")
+	set(old_CMAKE_EXE_LINKER_FLAGS "${CMAKE_EXE_LINKER_FLAGS}")
+	strip_warning_flags(CMAKE_CXX_FLAGS)
+	strip_warning_flags(CMAKE_EXE_LINKER_FLAGS)
+	check_compile(result "${compile_test_file}" "${type}" "compiler builtin")
+	set(CMAKE_CXX_FLAGS "${old_CMAKE_CXX_FLAGS}")
+	set(CMAKE_EXE_LINKER_FLAGS "${old_CMAKE_EXE_LINKER_FLAGS}")
+	set(${RESULT} "${result}" PARENT_SCOPE)
+endfunction(check_builtin)
+
 function(check_compiler_flag RESULT FLAG)
 	check_flag(result "${FLAG}" compiler)
 	set(${RESULT} "${result}" PARENT_SCOPE)
@@ -168,6 +197,12 @@ endfunction(try_link_library)
 ##############################################################################
 # Check that a a library actually works for the current configuration
 function(check_link_library LIBRARY_NAME LIBRARY_VARIABLE)
+	
+	if(MSVC)
+		# The main point of this is to work around CMakes ignorance of lib32.
+		# This doesn't really apply for systems that don't use a unix-like library dir layout.
+		return()
+	endif()
 	
 	set(lib_current "${${LIBRARY_VARIABLE}}")
 	set(found_var "ARX_CLL_${LIBRARY_NAME}_FOUND")
