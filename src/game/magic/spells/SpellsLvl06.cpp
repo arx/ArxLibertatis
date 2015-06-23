@@ -28,7 +28,6 @@
 #include "game/Player.h"
 #include "game/Spells.h"
 #include "game/magic/spells/SpellsLvl05.h"
-#include "game/magic/spells/SpellsLvl06.h"
 #include "graphics/particle/ParticleEffects.h"
 
 #include "graphics/spells/Spells05.h"

@@ -27,7 +27,6 @@
 #include "game/EntityManager.h"
 #include "game/Player.h"
 #include "game/Spells.h"
-#include "game/magic/spells/SpellsLvl04.h"
 #include "game/magic/spells/SpellsLvl06.h"
 #include "game/magic/spells/SpellsLvl07.h"
 #include "gui/Speech.h"
