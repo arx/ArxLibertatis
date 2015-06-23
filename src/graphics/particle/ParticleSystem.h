@@ -53,17 +53,17 @@ ZeniMax Media Inc., Suite 120, Rockville, Maryland 20850 USA.
 #include "math/Types.h"
 #include "math/Vector.h"
 #include "math/Quantizer.h"
+#include "platform/Alignment.h"
 #include "platform/Flags.h"
  
 class Particle;
 class ParticleParams;
 class TextureContainer;
 
-
-
 class ParticleSystem {
 	
 public:
+	
 	std::list<Particle *> listParticle;
 	
 	// these are used for the particles it creates
@@ -84,6 +84,7 @@ public:
 	void Update(long);
 	
 private:
+	
 	Vec3f m_nextPosition;
 	int iParticleNbAlive;
 	
@@ -99,6 +100,12 @@ private:
 	void SetParticleParams(Particle * particle);
 	
 	void SetTexture(const char *, int, int);
+	
+public:
+	
+	ARX_USE_ALIGNED_NEW(ParticleSystem) // for eMat
 };
+
+ARX_USE_ALIGNED_ALLOCATOR(ParticleSystem) // for eMat
 
 #endif // ARX_GRAPHICS_PARTICLE_PARTICLESYSTEM_H
