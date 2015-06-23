@@ -97,17 +97,17 @@ ZeniMax Media Inc., Suite 120, Rockville, Maryland 20850 USA.
 
 static void EERIE_PORTAL_Release();
 
-static bool RayIn3DPolyNoCull(const Vec3f & orgn, const Vec3f & dest, EERIEPOLY * epp);
+static bool RayIn3DPolyNoCull(const Vec3f & orgn, const Vec3f & dest, const EERIEPOLY & epp);
 
-static bool IntersectLinePlane(const Vec3f & l1, const Vec3f & l2, const EERIEPOLY * ep, Vec3f * intersect) {
+static bool IntersectLinePlane(const Vec3f & l1, const Vec3f & l2, const EERIEPOLY & ep, Vec3f * intersect) {
 	
 	Vec3f v = l2 - l1;
 	
-	float d = glm::dot(v, ep->norm);
+	float d = glm::dot(v, ep.norm);
 	
 	if(d != 0.0f) {
-		Vec3f v1 = ep->center - l2;
-		d = glm::dot(v1, ep->norm) / d;
+		Vec3f v1 = ep.center - l2;
+		d = glm::dot(v1, ep.norm) / d;
 		
 		*intersect = (v * d) + l2;
 		
@@ -117,7 +117,7 @@ static bool IntersectLinePlane(const Vec3f & l1, const Vec3f & l2, const EERIEPO
 	return false;
 }
 
-bool RayCollidingPoly(const Vec3f & orgn, const Vec3f & dest, EERIEPOLY * ep, Vec3f * hit)
+bool RayCollidingPoly(const Vec3f & orgn, const Vec3f & dest, const EERIEPOLY & ep, Vec3f * hit)
 {
 	if(IntersectLinePlane(orgn, dest, ep, hit)) {
 		if(RayIn3DPolyNoCull(orgn, dest, ep))
@@ -604,9 +604,9 @@ int PointIn2DPolyXZ(const EERIEPOLY * ep, float x, float z) {
 
 extern EERIE_CAMERA raycam;
 
-static bool RayIn3DPolyNoCull(const Vec3f & orgn, const Vec3f & dest, EERIEPOLY * epp) {
+static bool RayIn3DPolyNoCull(const Vec3f & orgn, const Vec3f & dest, const EERIEPOLY & epp) {
 
-	EERIEPOLY ep = *epp;
+	EERIEPOLY ep = epp;
 	raycam.orgTrans.pos = orgn;
 	raycam.setTargetCamera(dest);
 	SP_PrepareCamera(&raycam);
@@ -721,18 +721,19 @@ int EERIELaunchRay3(const Vec3f & orgn, const Vec3f & dest, Vec3f & hit, long fl
 		
 		for(short z = minz; z < maxz; z++)
 		for(short x = minx; x < maxx; x++) {
-			EERIE_BKG_INFO * eg = &ACTIVEBKG->fastdata[x][z];
-			for(long k = 0; k < eg->nbpoly; k++) {
-				EERIEPOLY * ep = &eg->polydata[k];
-				if(ep->type & POLY_TRANS) {
+			const EERIE_BKG_INFO & eg = ACTIVEBKG->fastdata[x][z];
+			for(long k = 0; k < eg.nbpoly; k++) {
+				const EERIEPOLY & ep = eg.polydata[k];
+				
+				if(ep.type & POLY_TRANS) {
 					continue;
 				}
-				if(   p.y < ep->min.y - 10.f
-				   || p.y > ep->max.y + 10.f
-				   || p.x < ep->min.x - 10.f
-				   || p.x > ep->max.x + 10.f
-				   || p.z < ep->min.z - 10.f
-				   || p.z > ep->max.z + 10.f
+				if(   p.y < ep.min.y - 10.f
+				   || p.y > ep.max.y + 10.f
+				   || p.x < ep.min.x - 10.f
+				   || p.x > ep.max.x + 10.f
+				   || p.z < ep.min.z - 10.f
+				   || p.z > ep.max.z + 10.f
 				) {
 					continue;
 				}
@@ -831,7 +832,7 @@ bool Visible(const Vec3f & orgn, const Vec3f & dest, Vec3f * hit) {
 			if((ep->min.y - pas < tmpPos.y) && (ep->max.y + pas > tmpPos.y))
 			if((ep->min.x - pas < tmpPos.x) && (ep->max.x + pas > tmpPos.x))
 			if((ep->min.z - pas < tmpPos.z) && (ep->max.z + pas > tmpPos.z))
-			if(RayCollidingPoly(orgn, dest, ep, hit)) {
+			if(RayCollidingPoly(orgn, dest, *ep, hit)) {
 				float dd = fdist(orgn, *hit);
 
 				if(dd < nearest) {
