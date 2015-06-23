@@ -25,6 +25,7 @@
 #include "game/Damage.h"
 
 #include "graphics/effects/SpellEffects.h"
+#include "platform/Alignment.h"
 #include "platform/Flags.h"
 #include "scene/Light.h"
 
@@ -125,9 +126,13 @@ enum SpellcastFlag {
 DECLARE_FLAGS(SpellcastFlag, SpellcastFlags)
 DECLARE_FLAGS_OPERATORS(SpellcastFlags)
 
-
-class SpellBase : private boost::noncopyable {
+class ARX_ALIGNAS(16) SpellBase : private boost::noncopyable {
+	
 public:
+	
+	// We can't use ARX_ALIGNOF(glm::mat4x4) directly because MSVC sucks
+	ARX_STATIC_ASSERT(ARX_ALIGNOF(glm::mat4x4) <= 16, "need to increase alignment");
+	
 	SpellBase();
 	virtual ~SpellBase() {}
 	
@@ -178,10 +183,9 @@ public:
 	
 protected:
 	Vec3f getTargetPos(EntityHandle source, EntityHandle target);
+	
+public:
+	ARX_USE_ALIGNED_NEW(SpellBase)
 };
-
-
-
-
 
 #endif // ARX_GAME_MAGIC_SPELL_H
