@@ -174,6 +174,11 @@ else(MSVC)
 		add_cxxflag("-fcatch-undefined-behavior")
 		add_cxxflag("-Wstrict-aliasing=1")
 		add_cxxflag("-fstack-protector-all")
+		
+		add_cxxflag("-fsanitize=address")
+		add_cxxflag("-fsanitize=thread")
+		add_cxxflag("-fsanitize=leak")
+		add_cxxflag("-fsanitize=undefined")
 		add_definitions(-D_FORTIFY_SOURCE=2)
 	endif(DEBUG_EXTRA)
 	
