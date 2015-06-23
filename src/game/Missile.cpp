@@ -241,8 +241,7 @@ void ARX_MISSILES_Update() {
 				}
 
 				Vec3f hit;
-				EERIEPOLY *tp = NULL;
-				if(EERIELaunchRay3(orgn, dest, &hit, tp, 1)) {
+				if(EERIELaunchRay3(orgn, dest, &hit, 1)) {
 					ARX_MISSILES_Kill(i);
 					ARX_BOOMS_Add(hit);
 					Add3DBoom(hit);

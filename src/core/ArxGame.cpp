@@ -2247,7 +2247,6 @@ void ArxGame::update2DFX() {
 				float fZFar=ACTIVECAM->ProjectionMatrix[2][2]*(1.f/(ACTIVECAM->cdepth*fZFogEnd))+ACTIVECAM->ProjectionMatrix[3][2];
 
 				Vec3f hit;
-				EERIEPOLY *tp=NULL;
 				Vec2s ees2dlv;
 				Vec3f ee3dlv = lv;
 
@@ -2260,7 +2259,7 @@ void ArxGame::update2DFX() {
 				}
 
 				if(ltvv.p.z > fZFar ||
-					EERIELaunchRay3(ACTIVECAM->orgTrans.pos, ee3dlv, &hit, tp, 1) ||
+					EERIELaunchRay3(ACTIVECAM->orgTrans.pos, ee3dlv, &hit, 1) ||
 					GetFirstInterAtPos(ees2dlv, 3, &ee3dlv, pTableIO, &nNbInTableIO )
 					)
 				{

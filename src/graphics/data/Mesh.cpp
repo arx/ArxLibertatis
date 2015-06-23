@@ -618,7 +618,7 @@ static bool RayIn3DPolyNoCull(const Vec3f & orgn, const Vec3f & dest, EERIEPOLY 
 	return false;
 }
 
-int EERIELaunchRay3(const Vec3f & orgn, const Vec3f & dest,  Vec3f * hit, EERIEPOLY * epp, long flag) {
+int EERIELaunchRay3(const Vec3f & orgn, const Vec3f & dest,  Vec3f * hit, long flag) {
 	
 	Vec3f p; //current ray pos
 	Vec3f i;
@@ -739,7 +739,7 @@ int EERIELaunchRay3(const Vec3f & orgn, const Vec3f & dest,  Vec3f * hit, EERIEP
 				voidlast = 0;
 				if(RayIn3DPolyNoCull(orgn, dest, ep)) {
 					*hit = p;
-					return (ep == epp) ? 0 : 1;
+					return 1;
 				}
 			}
 		}
