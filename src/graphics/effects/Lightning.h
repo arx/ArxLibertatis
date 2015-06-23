@@ -41,8 +41,8 @@ ZeniMax Media Inc., Suite 120, Rockville, Maryland 20850 USA.
 ===========================================================================
 */
 
-#ifndef ARX_GRAPHICS_SPELLS_SPELLS07_H
-#define ARX_GRAPHICS_SPELLS_SPELLS07_H
+#ifndef ARX_GRAPHICS_EFFECTS_LIGHTNING_H
+#define ARX_GRAPHICS_EFFECTS_LIGHTNING_H
 
 #include "game/Entity.h"
 #include "graphics/Vertex.h"
@@ -103,4 +103,4 @@ private:
 	void ReCreate(float rootSize);
 };
 
-#endif // ARX_GRAPHICS_SPELLS_SPELLS07_H
+#endif // ARX_GRAPHICS_EFFECTS_LIGHTNING_H
