@@ -618,7 +618,7 @@ static bool RayIn3DPolyNoCull(const Vec3f & orgn, const Vec3f & dest, EERIEPOLY 
 	return false;
 }
 
-int EERIELaunchRay3(const Vec3f & orgn, const Vec3f & dest,  Vec3f * hit, long flag) {
+int EERIELaunchRay3(const Vec3f & orgn, const Vec3f & dest, Vec3f & hit, long flag) {
 	
 	Vec3f p; //current ray pos
 	Vec3f i;
@@ -628,7 +628,7 @@ int EERIELaunchRay3(const Vec3f & orgn, const Vec3f & dest,  Vec3f * hit, long f
 	
 	long iii = 0;
 	float maxstepp = 20000.f / pas;
-	*hit = p = orgn;
+	hit = p = orgn;
 	
 	voidlast = 0;
 	lpx = lpz = -1;
@@ -657,39 +657,39 @@ int EERIELaunchRay3(const Vec3f & orgn, const Vec3f & dest,  Vec3f * hit, long f
 		p += i;
 		
 		if(i.x == -1.f * pas && p.x <= dest.x) {
-			*hit = p;
+			hit = p;
 			return 0;
 		}
 		
 		if(i.x == 1.f * pas && p.x >= dest.x) {
-			*hit = p;
+			hit = p;
 			return 0;
 		}
 		
 		if(i.y == -1.f * pas && p.y <= dest.y) {
-			*hit = p;
+			hit = p;
 			return 0;
 		}
 		
 		if(i.y == 1.f * pas && p.y >= dest.y) {
-			*hit = p;
+			hit = p;
 			return 0;
 		}
 		
 		if(i.z == -1.f * pas && p.z <= dest.z) {
-			*hit = p;
+			hit = p;
 			return 0;
 		}
 		
 		if(i.z == 1.f * pas && p.z >= dest.z) {
-			*hit = p;
+			hit = p;
 			return 0;
 		}
 		
 		iii++;
 		
 		if(iii > maxstepp) {
-			*hit = p;
+			hit = p;
 			return -1;
 		}
 		
@@ -697,7 +697,7 @@ int EERIELaunchRay3(const Vec3f & orgn, const Vec3f & dest,  Vec3f * hit, long f
 		long tilez = long(p.z * ACTIVEBKG->Zmul);
 		
 		if(tilex < 0 || tilex > ACTIVEBKG->Xsize - 1 || tilez < 0 || tilez > ACTIVEBKG->Zsize - 1) {
-			*hit = p;
+			hit = p;
 			return -1;
 		}
 		
@@ -715,7 +715,7 @@ int EERIELaunchRay3(const Vec3f & orgn, const Vec3f & dest,  Vec3f * hit, long f
 		
 		EERIE_BKG_INFO * eg = &ACTIVEBKG->fastdata[tilex][tilez];
 		if(eg->nbpoly == 0) {
-			*hit = p;
+			hit = p;
 			return 1;
 		}
 		
@@ -738,7 +738,7 @@ int EERIELaunchRay3(const Vec3f & orgn, const Vec3f & dest,  Vec3f * hit, long f
 				}
 				voidlast = 0;
 				if(RayIn3DPolyNoCull(orgn, dest, ep)) {
-					*hit = p;
+					hit = p;
 					return 1;
 				}
 			}

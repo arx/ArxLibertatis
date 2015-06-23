@@ -2259,7 +2259,7 @@ void ArxGame::update2DFX() {
 				}
 
 				if(ltvv.p.z > fZFar ||
-					EERIELaunchRay3(ACTIVECAM->orgTrans.pos, ee3dlv, &hit, 1) ||
+					EERIELaunchRay3(ACTIVECAM->orgTrans.pos, ee3dlv, hit, 1) ||
 					GetFirstInterAtPos(ees2dlv, 3, &ee3dlv, pTableIO, &nNbInTableIO )
 					)
 				{
