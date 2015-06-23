@@ -32,7 +32,7 @@
 #if defined(__INTEL_COMPILER)
 	#define ARX_COMPILER_NAME           "Intel C++"
 	struct arx_icc_vername { };
-	std::ostream & operator<<(std::ostream & os, const arx_icc_vername & /* tag */) {
+	inline std::ostream & operator<<(std::ostream & os, const arx_icc_vername & /* tag */) {
 		return os << ARX_COMPILER_NAME << ' ' << (__INTEL_COMPILER / 100) << '.'
 		          << (__INTEL_COMPILER % 100);
 	}
