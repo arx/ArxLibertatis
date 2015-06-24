@@ -112,6 +112,7 @@ static void ResetVertexLists(TextureContainer * tex) {
 	free(tex->list[TextureContainer::Multiplicative]);
 	tex->list[TextureContainer::Multiplicative] = NULL;
 
+	tex->tMatRoomSize = 0;
 	free(tex->tMatRoom);
 	tex->tMatRoom = NULL;
 }
@@ -165,6 +166,7 @@ TextureContainer::TextureContainer(const res::path & strName, TCFlags flags) : m
 	count[TextureContainer::Multiplicative] = 0;
 	list[TextureContainer::Multiplicative] = NULL;
 
+	tMatRoomSize = 0;
 	tMatRoom = NULL;
 
 }

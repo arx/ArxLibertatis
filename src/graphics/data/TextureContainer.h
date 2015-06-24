@@ -165,6 +165,7 @@ public:
 	
 	// BEGIN TODO: Move to a RenderBatch class... This RenderBatch class should contain a pointer to the TextureContainer used by the batch
 	
+	size_t tMatRoomSize;
 	SMY_ARXMAT * tMatRoom;
 	
 	enum TransparencyType {

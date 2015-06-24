@@ -2640,9 +2640,9 @@ void ComputePortalVertexBuffer() {
 				continue;
 			}
 			
-			if(!poly.tex->tMatRoom) {
-				poly.tex->tMatRoom = (SMY_ARXMAT *)malloc(sizeof(SMY_ARXMAT)
-														   * (portals->rooms.size()));
+			if(poly.tex->tMatRoomSize != portals->rooms.size()) {
+				poly.tex->tMatRoomSize = portals->rooms.size();
+				poly.tex->tMatRoom = (SMY_ARXMAT *)realloc(poly.tex->tMatRoom, sizeof(SMY_ARXMAT) * (portals->rooms.size()));
 			}
 			
 			SINFO_TEXTURE_VERTEX & info = infos[poly.tex];
