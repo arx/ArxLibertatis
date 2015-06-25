@@ -1308,8 +1308,8 @@ static void Cedric_AnimateObject(Skeleton * obj, ANIM_USE * animlayer)
 			if(grps[j])
 				continue;
 
-			EERIE_GROUP * sGroup = &eanim->groups[j+(animuse->fr*eanim->nb_groups)];
-			EERIE_GROUP * eGroup = &eanim->groups[j+(animuse->fr*eanim->nb_groups)+eanim->nb_groups];
+			const EERIE_GROUP & sGroup = eanim->groups[j+(animuse->fr*eanim->nb_groups)];
+			const EERIE_GROUP & eGroup = eanim->groups[j+(animuse->fr*eanim->nb_groups)+eanim->nb_groups];
 
 			if(!eanim->voidgroups[j])
 				grps[j] = 1;
@@ -1319,9 +1319,9 @@ static void Cedric_AnimateObject(Skeleton * obj, ANIM_USE * animlayer)
 
 				BoneTransform temp;
 
-				temp.quat = Quat_Slerp(sGroup->quat, eGroup->quat, animuse->pour);
-				temp.trans = sGroup->translate + (eGroup->translate - sGroup->translate) * animuse->pour;
-				temp.scale = sGroup->zoom + (eGroup->zoom - sGroup->zoom) * animuse->pour;
+				temp.quat = Quat_Slerp(sGroup.quat, eGroup.quat, animuse->pour);
+				temp.trans = sGroup.translate + (eGroup.translate - sGroup.translate) * animuse->pour;
+				temp.scale = sGroup.zoom + (eGroup.zoom - sGroup.zoom) * animuse->pour;
 
 				bone.init.quat = bone.init.quat * temp.quat;
 				bone.init.trans = temp.trans + bone.transinit_global;
