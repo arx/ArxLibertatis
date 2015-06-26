@@ -69,9 +69,6 @@ ZeniMax Media Inc., Suite 120, Rockville, Maryland 20850 USA.
 
 #include "cinematic/CinematicSound.h"
 
-static const int WIDTHS = 512;
-static const int HEIGHTS = 384;
-
 static Vec2i cinRenderSize;
 
 TexturedVertex AllTLVertex[40000];
