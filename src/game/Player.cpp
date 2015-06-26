@@ -1410,10 +1410,10 @@ void ARX_PLAYER_Manage_Visual() {
 		}
 	}
 	
-	ANIM_HANDLE * ChangeMoveAnim = NULL;
+	ANIM_HANDLE * request0_anim = NULL;
 	ANIM_HANDLE * ChangeMoveAnim2 = NULL;
-	bool ChangeMA_Loop = true;
-	bool ChangeMA_Stopend = false;
+	bool request0_loop = true;
+	bool request0_stopend = false;
 	
 	if(io->ioflags & IO_FREEZESCRIPT) {
 		goto nochanges;
@@ -1422,9 +1422,9 @@ void ARX_PLAYER_Manage_Visual() {
 	if(player.lifePool.current <= 0) {
 		HERO_SHOW_1ST = -1;
 		io->animlayer[1].cur_anim = NULL;
-		ChangeMoveAnim = alist[ANIM_DIE];
-		ChangeMA_Loop = false;
-		ChangeMA_Stopend = true;
+		request0_anim = alist[ANIM_DIE];
+		request0_loop = false;
+		request0_stopend = true;
 		goto makechanges;
 	}
 	
@@ -1433,14 +1433,14 @@ void ARX_PLAYER_Manage_Visual() {
 	   || (player.Current_Movement & PLAYER_ROTATE)
 	) {
 		if(player.Interface & INTER_COMBATMODE) {
-			ChangeMoveAnim = alist[ANIM_FIGHT_WAIT];
+			request0_anim = alist[ANIM_FIGHT_WAIT];
 		} else if(EXTERNALVIEW) {
-			ChangeMoveAnim = alist[ANIM_WAIT];
+			request0_anim = alist[ANIM_WAIT];
 		} else {
-			ChangeMoveAnim = alist[ANIM_WAIT_SHORT];
+			request0_anim = alist[ANIM_WAIT_SHORT];
 		}
 		
-		ChangeMA_Loop = true;
+		request0_loop = true;
 	}
 	
 	if(ROTATE_START
@@ -1451,17 +1451,17 @@ void ARX_PLAYER_Manage_Visual() {
 	) {
 		if(PLAYER_ROTATION < 0) {
 			if(player.Interface & INTER_COMBATMODE)
-				ChangeMoveAnim = alist[ANIM_U_TURN_LEFT_FIGHT];
+				request0_anim = alist[ANIM_U_TURN_LEFT_FIGHT];
 			else
-				ChangeMoveAnim = alist[ANIM_U_TURN_LEFT];
+				request0_anim = alist[ANIM_U_TURN_LEFT];
 		} else {
 			if(player.Interface & INTER_COMBATMODE)
-				ChangeMoveAnim = alist[ANIM_U_TURN_RIGHT_FIGHT];
+				request0_anim = alist[ANIM_U_TURN_RIGHT_FIGHT];
 			else
-				ChangeMoveAnim = alist[ANIM_U_TURN_RIGHT];
+				request0_anim = alist[ANIM_U_TURN_RIGHT];
 		}
 		
-		ChangeMA_Loop = true;
+		request0_loop = true;
 		
 		if(ause0->cur_anim == alist[ANIM_U_TURN_LEFT]
 		   || ause0->cur_anim == alist[ANIM_U_TURN_LEFT_FIGHT])
@@ -1517,50 +1517,50 @@ void ARX_PLAYER_Manage_Visual() {
 		
 			if(tmove & PLAYER_MOVE_STRAFE_LEFT) {
 				if(player.Interface & INTER_COMBATMODE)
-					ChangeMoveAnim = alist[ANIM_FIGHT_STRAFE_LEFT];
+					request0_anim = alist[ANIM_FIGHT_STRAFE_LEFT];
 				else if(player.Current_Movement & PLAYER_MOVE_STEALTH)
-					ChangeMoveAnim = alist[ANIM_STRAFE_LEFT];
+					request0_anim = alist[ANIM_STRAFE_LEFT];
 				else
-					ChangeMoveAnim = alist[ANIM_STRAFE_RUN_LEFT];
+					request0_anim = alist[ANIM_STRAFE_RUN_LEFT];
 			}
 			
 			if(tmove & PLAYER_MOVE_STRAFE_RIGHT) {
 				if(player.Interface & INTER_COMBATMODE)
-					ChangeMoveAnim = alist[ANIM_FIGHT_STRAFE_RIGHT];
+					request0_anim = alist[ANIM_FIGHT_STRAFE_RIGHT];
 				else if(player.Current_Movement & PLAYER_MOVE_STEALTH)
-					ChangeMoveAnim = alist[ANIM_STRAFE_RIGHT];
+					request0_anim = alist[ANIM_STRAFE_RIGHT];
 				else
-					ChangeMoveAnim = alist[ANIM_STRAFE_RUN_RIGHT];
+					request0_anim = alist[ANIM_STRAFE_RUN_RIGHT];
 			}
 		
 		if(tmove & PLAYER_MOVE_WALK_BACKWARD) {
 			if(player.Interface & INTER_COMBATMODE)
-				ChangeMoveAnim = alist[ANIM_FIGHT_WALK_BACKWARD];
+				request0_anim = alist[ANIM_FIGHT_WALK_BACKWARD];
 			else if(player.Current_Movement & PLAYER_MOVE_STEALTH)
-				ChangeMoveAnim = alist[ANIM_WALK_BACKWARD];
+				request0_anim = alist[ANIM_WALK_BACKWARD];
 			else if(player.Current_Movement & PLAYER_CROUCH)
-				ChangeMoveAnim = alist[ANIM_WALK_BACKWARD];
+				request0_anim = alist[ANIM_WALK_BACKWARD];
 			else
-				ChangeMoveAnim = alist[ANIM_RUN_BACKWARD];
+				request0_anim = alist[ANIM_RUN_BACKWARD];
 		}
 		
 		if(tmove & PLAYER_MOVE_WALK_FORWARD) {
 			if(player.Interface & INTER_COMBATMODE)
-				ChangeMoveAnim = alist[ANIM_FIGHT_WALK_FORWARD];
+				request0_anim = alist[ANIM_FIGHT_WALK_FORWARD];
 			else if(player.Current_Movement & PLAYER_MOVE_STEALTH)
-				ChangeMoveAnim = alist[ANIM_WALK];
+				request0_anim = alist[ANIM_WALK];
 			else
-				ChangeMoveAnim = alist[ANIM_RUN];
+				request0_anim = alist[ANIM_RUN];
 		}
 	}
 	
-	if(!ChangeMoveAnim) {
+	if(!request0_anim) {
 		if(EXTERNALVIEW)
-			ChangeMoveAnim = alist[ANIM_WAIT];
+			request0_anim = alist[ANIM_WAIT];
 		else
-			ChangeMoveAnim = alist[ANIM_WAIT_SHORT];
+			request0_anim = alist[ANIM_WAIT_SHORT];
 		
-		ChangeMA_Loop = true;
+		request0_loop = true;
 	}
 	
 	// Finally update anim
@@ -1594,50 +1594,50 @@ void ARX_PLAYER_Manage_Visual() {
 	if((player.Current_Movement & PLAYER_CROUCH) && !(player.Last_Movement & PLAYER_CROUCH)
 			&& !player.levitate)
 	{
-		ChangeMoveAnim = alist[ANIM_CROUCH_START];
-		ChangeMA_Loop = false;
+		request0_anim = alist[ANIM_CROUCH_START];
+		request0_loop = false;
 	}
 	else if(!(player.Current_Movement & PLAYER_CROUCH) && (player.Last_Movement & PLAYER_CROUCH))
 	{
-		ChangeMoveAnim = alist[ANIM_CROUCH_END];
-		ChangeMA_Loop = false;
+		request0_anim = alist[ANIM_CROUCH_END];
+		request0_loop = false;
 	} else if(player.Current_Movement & PLAYER_CROUCH) {
 		if(ause0->cur_anim == alist[ANIM_CROUCH_START]) {
 			if(!(ause0->flags & EA_ANIMEND)) {
-				ChangeMoveAnim = alist[ANIM_CROUCH_START];
-				ChangeMA_Loop = false;
+				request0_anim = alist[ANIM_CROUCH_START];
+				request0_loop = false;
 			} else {
-				ChangeMoveAnim = alist[ANIM_CROUCH_WAIT];
-				ChangeMA_Loop = true;
+				request0_anim = alist[ANIM_CROUCH_WAIT];
+				request0_loop = true;
 				player.physics.cyl.height = player.crouchHeight();
 			}
 		} else {
-			if(ChangeMoveAnim == alist[ANIM_STRAFE_LEFT]
-			   || ChangeMoveAnim == alist[ANIM_STRAFE_RUN_LEFT]
-			   || ChangeMoveAnim == alist[ANIM_FIGHT_STRAFE_LEFT]
+			if(request0_anim == alist[ANIM_STRAFE_LEFT]
+			   || request0_anim == alist[ANIM_STRAFE_RUN_LEFT]
+			   || request0_anim == alist[ANIM_FIGHT_STRAFE_LEFT]
 			) {
-				ChangeMoveAnim = alist[ANIM_CROUCH_STRAFE_LEFT];
-				ChangeMA_Loop = true;
-			} else if(ChangeMoveAnim == alist[ANIM_STRAFE_RIGHT]
-					 || ChangeMoveAnim == alist[ANIM_STRAFE_RUN_RIGHT]
-					 || ChangeMoveAnim == alist[ANIM_FIGHT_STRAFE_RIGHT]
+				request0_anim = alist[ANIM_CROUCH_STRAFE_LEFT];
+				request0_loop = true;
+			} else if(request0_anim == alist[ANIM_STRAFE_RIGHT]
+					 || request0_anim == alist[ANIM_STRAFE_RUN_RIGHT]
+					 || request0_anim == alist[ANIM_FIGHT_STRAFE_RIGHT]
 			) {
-				ChangeMoveAnim = alist[ANIM_CROUCH_STRAFE_RIGHT];
-				ChangeMA_Loop = true;
-			} else if(ChangeMoveAnim == alist[ANIM_WALK]
-					 || ChangeMoveAnim == alist[ANIM_RUN]
-					 || ChangeMoveAnim == alist[ANIM_FIGHT_WALK_FORWARD]
+				request0_anim = alist[ANIM_CROUCH_STRAFE_RIGHT];
+				request0_loop = true;
+			} else if(request0_anim == alist[ANIM_WALK]
+					 || request0_anim == alist[ANIM_RUN]
+					 || request0_anim == alist[ANIM_FIGHT_WALK_FORWARD]
 			) {
-				ChangeMoveAnim = alist[ANIM_CROUCH_WALK];
-				ChangeMA_Loop = true;
-			} else if(ChangeMoveAnim == alist[ANIM_WALK_BACKWARD]
-					 || ChangeMoveAnim == alist[ANIM_FIGHT_WALK_BACKWARD]
+				request0_anim = alist[ANIM_CROUCH_WALK];
+				request0_loop = true;
+			} else if(request0_anim == alist[ANIM_WALK_BACKWARD]
+					 || request0_anim == alist[ANIM_FIGHT_WALK_BACKWARD]
 			) {
-				ChangeMoveAnim = alist[ANIM_CROUCH_WALK_BACKWARD];
-				ChangeMA_Loop = true;
+				request0_anim = alist[ANIM_CROUCH_WALK_BACKWARD];
+				request0_loop = true;
 			} else {
-				ChangeMoveAnim = alist[ANIM_CROUCH_WAIT];
-				ChangeMA_Loop = true;
+				request0_anim = alist[ANIM_CROUCH_WAIT];
+				request0_loop = true;
 			}
 		}
 	}
@@ -1651,12 +1651,12 @@ retry:
 	;
 	
 	if(spells.ExistAnyInstanceForThisCaster(SPELL_FLYING_EYE, PlayerEntityHandle)) {
-		ChangeMoveAnim = alist[ANIM_MEDITATION];
-		ChangeMA_Loop = true;
+		request0_anim = alist[ANIM_MEDITATION];
+		request0_loop = true;
 		goto makechanges;
 	} else if(spells.getSpellOnTarget(io->index(), SPELL_LEVITATE)) {
-		ChangeMoveAnim = alist[ANIM_LEVITATE];
-		ChangeMA_Loop = true;
+		request0_anim = alist[ANIM_LEVITATE];
+		request0_loop = true;
 		goto makechanges;
 	} else if(player.jumpphase != NotJumping) {
 		
@@ -1666,16 +1666,16 @@ retry:
 			case JumpStart: { // Anticipation
 				FALLING_TIME = 0;
 				player.jumpphase = JumpAscending;
-				ChangeMoveAnim = alist[ANIM_JUMP_UP];
+				request0_anim = alist[ANIM_JUMP_UP];
 				player.jumpstarttime = (unsigned long)(arxtime);
 				player.jumplastposition = -1.f;
 				break;
 			}
 			case JumpAscending: { // Moving up
-				ChangeMoveAnim = alist[ANIM_JUMP_UP];
+				request0_anim = alist[ANIM_JUMP_UP];
 				if(player.jumplastposition >= 1.f) {
 					player.jumpphase = JumpDescending;
-					ChangeMoveAnim = alist[ANIM_JUMP_CYCLE];
+					request0_anim = alist[ANIM_JUMP_CYCLE];
 					ARX_PLAYER_StartFall();
 				}
 				break;
@@ -1685,9 +1685,9 @@ retry:
 				if((ause0->cur_anim == alist[ANIM_JUMP_END] && (ause0->flags & EA_ANIMEND))
 				   || player.onfirmground) {
 					player.jumpphase = JumpEnd;
-					ChangeMoveAnim = alist[ANIM_JUMP_END_PART2];
+					request0_anim = alist[ANIM_JUMP_END_PART2];
 				} else {
-					ChangeMoveAnim = alist[ANIM_JUMP_END];
+					request0_anim = alist[ANIM_JUMP_END];
 				}
 				break;
 			}
@@ -1705,22 +1705,22 @@ retry:
 					player.jumpphase = NotJumping;
 					goto retry;
 				} else {
-					ChangeMoveAnim = alist[ANIM_JUMP_END_PART2];
+					request0_anim = alist[ANIM_JUMP_END_PART2];
 				}
 				break;
 			}
 		}
 		
-		if(ChangeMoveAnim && ChangeMoveAnim != ause0->cur_anim) {
+		if(request0_anim && request0_anim != ause0->cur_anim) {
 			AcquireLastAnim(io);
 			ResetAnim(ause0);
-			ause0->cur_anim = ChangeMoveAnim;
+			ause0->cur_anim = request0_anim;
 			ause0->flags = EA_STATICANIM;
 
-			if(ChangeMoveAnim == alist[ANIM_U_TURN_LEFT]
-			   || ChangeMoveAnim == alist[ANIM_U_TURN_RIGHT]
-			   || ChangeMoveAnim == alist[ANIM_U_TURN_RIGHT_FIGHT]
-			   || ChangeMoveAnim == alist[ANIM_U_TURN_LEFT_FIGHT]
+			if(request0_anim == alist[ANIM_U_TURN_LEFT]
+			   || request0_anim == alist[ANIM_U_TURN_RIGHT]
+			   || request0_anim == alist[ANIM_U_TURN_RIGHT_FIGHT]
+			   || request0_anim == alist[ANIM_U_TURN_LEFT_FIGHT]
 			) {
 				ause0->flags |= EA_EXCONTROL;
 			}
@@ -1736,22 +1736,22 @@ retry:
 	makechanges:
 		;
 		
-		if(ChangeMoveAnim && ChangeMoveAnim != ause0->cur_anim) {
+		if(request0_anim && request0_anim != ause0->cur_anim) {
 			AcquireLastAnim(io);
 			ResetAnim(ause0);
-			ause0->cur_anim = ChangeMoveAnim;
+			ause0->cur_anim = request0_anim;
 			ause0->flags = EA_STATICANIM;
 			
-			if(ChangeMA_Loop)
+			if(request0_loop)
 				ause0->flags |= EA_LOOP;
 			
-			if(ChangeMA_Stopend)
+			if(request0_stopend)
 				ause0->flags |= EA_STOPEND;
 			
-			if(ChangeMoveAnim == alist[ANIM_U_TURN_LEFT]
-			   || ChangeMoveAnim == alist[ANIM_U_TURN_RIGHT]
-			   || ChangeMoveAnim == alist[ANIM_U_TURN_RIGHT_FIGHT]
-			   || ChangeMoveAnim == alist[ANIM_U_TURN_LEFT_FIGHT]
+			if(request0_anim == alist[ANIM_U_TURN_LEFT]
+			   || request0_anim == alist[ANIM_U_TURN_RIGHT]
+			   || request0_anim == alist[ANIM_U_TURN_RIGHT_FIGHT]
+			   || request0_anim == alist[ANIM_U_TURN_LEFT_FIGHT]
 			) {
 				ause0->flags |= EA_EXCONTROL;
 			}
