@@ -276,9 +276,7 @@ void ARX_PATH_UpdateAllZoneInOutInside() {
 
 		if(!last && !current) { // Not in a zone
 		} else if(last == current) { // Stayed inside last zone
-		}
-		else if(last != NULL && current == NULL) // Leaving last zone
-		{
+		} else if(last && !current) { // Leaving last zone
 			SendIOScriptEvent(entities.player(), SM_LEAVEZONE, last->name);
 			CHANGE_LEVEL_ICON = -1;
 
@@ -289,9 +287,7 @@ void ARX_PATH_UpdateAllZoneInOutInside() {
 					SendIOScriptEvent(entities[t], SM_CONTROLLEDZONE_LEAVE, "player " + last->name);
 				}
 			}
-		}
-		else if ((last == NULL) && (current != NULL)) // Entering current zone
-		{
+		} else if(!last && current) { // Entering current zone
 			SendIOScriptEvent(entities.player(), SM_ENTERZONE, current->name);
 
 			if(current->flags & PATH_AMBIANCE && !current->ambiance.empty())
