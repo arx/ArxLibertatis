@@ -200,10 +200,8 @@ void ARX_PATH_UpdateAllZoneInOutInside() {
 				ARX_PATH * p = ARX_PATH_CheckInZone(io);
 				ARX_PATH * op = io->inzone;
 
-				if(!op && !p)
-					goto next; // Not in a zone
-
-				if(op == p) { // Stayed inside Zone OP
+				if(!op && !p) { // Not in a zone
+				} else if(op == p) { // Stayed inside Zone OP
 					if(io->show != io->inzone_show) {
 						io->inzone_show = io->show;
 						goto entering;
@@ -264,8 +262,7 @@ void ARX_PATH_UpdateAllZoneInOutInside() {
 
 				io->inzone = p;
 			}
-
-		next:
+			
 			count++;
 
 			if(count >= entities.size())
