@@ -274,9 +274,7 @@ void ExplosionSpell::Launch()
 		light->intensity = 2.3f;
 		light->fallend = 700.f;
 		light->fallstart = 500.f;
-		light->rgb.r = 0.1f + rnd() * (1.f / 3);
-		light->rgb.g = 0.1f + rnd() * (1.f / 3);
-		light->rgb.b = 0.8f + rnd() * (1.f / 5);
+		light->rgb = Color3f(0.1f, 0.1f, 0.8f) + Color3f(1.f/3, 1.f/3, 1.f/5) * Color3f(rnd(), rnd(), rnd());
 		light->pos = target;
 		light->duration = 200;
 	}
