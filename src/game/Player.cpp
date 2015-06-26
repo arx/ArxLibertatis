@@ -1387,25 +1387,25 @@ void ARX_PLAYER_Manage_Visual() {
 	
 	io->gameFlags |= GFLAG_ISINTREATZONE;
 	
-	ANIM_USE * ause0 = &io->animlayer[0];
+	ANIM_USE & ause0 = io->animlayer[0];
 	ANIM_USE * ause1 = &io->animlayer[1];
 	ANIM_USE * ause2 = &io->animlayer[2];
 	ANIM_USE * ause3 = &io->animlayer[3];
 	
-	ause0->next_anim = NULL;
+	ause0.next_anim = NULL;
 	ause1->next_anim = NULL;
 	ause2->next_anim = NULL;
 	ause3->next_anim = NULL;
 	
 	ANIM_HANDLE ** alist = io->anims;
 	
-	if(ause0->flags & EA_FORCEPLAY) {
-		if(ause0->flags & EA_ANIMEND) {
-			ause0->flags &= ~EA_FORCEPLAY;
-			ause0->flags |= EA_STATICANIM;
+	if(ause0.flags & EA_FORCEPLAY) {
+		if(ause0.flags & EA_ANIMEND) {
+			ause0.flags &= ~EA_FORCEPLAY;
+			ause0.flags |= EA_STATICANIM;
 			io->move = io->lastmove = Vec3f_ZERO;
 		} else {
-			ause0->flags &= ~EA_STATICANIM;
+			ause0.flags &= ~EA_STATICANIM;
 			player.pos = moveto = player.pos + io->move;
 			io->pos = player.basePosition();
 			goto nochanges;
@@ -1465,8 +1465,8 @@ void ARX_PLAYER_Manage_Visual() {
 		
 		request0_loop = true;
 		
-		if(ause0->cur_anim == alist[ANIM_U_TURN_LEFT]
-		   || ause0->cur_anim == alist[ANIM_U_TURN_LEFT_FIGHT])
+		if(ause0.cur_anim == alist[ANIM_U_TURN_LEFT]
+		   || ause0.cur_anim == alist[ANIM_U_TURN_LEFT_FIGHT])
 		{
 			float fv = PLAYER_ROTATION * 5;
 			long vv = fv;
@@ -1474,13 +1474,13 @@ void ARX_PLAYER_Manage_Visual() {
 			
 			if (io->frameloss < 0) io->frameloss = 0;
 			
-			ause0->ctime -= vv;
+			ause0.ctime -= vv;
 			
-			if(ause0->ctime < 0)
-				ause0->ctime = 0;
+			if(ause0.ctime < 0)
+				ause0.ctime = 0;
 		}
-		else if(ause0->cur_anim == alist[ANIM_U_TURN_RIGHT]
-				 ||	ause0->cur_anim == alist[ANIM_U_TURN_RIGHT_FIGHT])
+		else if(ause0.cur_anim == alist[ANIM_U_TURN_RIGHT]
+				 ||	ause0.cur_anim == alist[ANIM_U_TURN_RIGHT_FIGHT])
 		{
 			long vv = PLAYER_ROTATION * 5;
 			float fv = PLAYER_ROTATION * 5;
@@ -1488,10 +1488,10 @@ void ARX_PLAYER_Manage_Visual() {
 			
 			if (io->frameloss < 0) io->frameloss = 0;
 			
-			ause0->ctime += vv;
+			ause0.ctime += vv;
 			
-			if(ause0->ctime < 0)
-				ause0->ctime = 0;
+			if(ause0.ctime < 0)
+				ause0.ctime = 0;
 		}
 	}
 	
@@ -1567,7 +1567,7 @@ void ARX_PLAYER_Manage_Visual() {
 	
 	// Finally update anim
 	if(ause1->cur_anim == NULL
-	   && (ause0->cur_anim == alist[ANIM_WAIT] || ause0->cur_anim == alist[ANIM_WAIT_SHORT])
+	   && (ause0.cur_anim == alist[ANIM_WAIT] || ause0.cur_anim == alist[ANIM_WAIT_SHORT])
 	   && !(player.Current_Movement & PLAYER_CROUCH)
 	) {
 		if ((player.Current_Movement & PLAYER_LEAN_LEFT)
@@ -1604,8 +1604,8 @@ void ARX_PLAYER_Manage_Visual() {
 		request0_anim = alist[ANIM_CROUCH_END];
 		request0_loop = false;
 	} else if(player.Current_Movement & PLAYER_CROUCH) {
-		if(ause0->cur_anim == alist[ANIM_CROUCH_START]) {
-			if(!(ause0->flags & EA_ANIMEND)) {
+		if(ause0.cur_anim == alist[ANIM_CROUCH_START]) {
+			if(!(ause0.flags & EA_ANIMEND)) {
 				request0_anim = alist[ANIM_CROUCH_START];
 				request0_loop = false;
 			} else {
@@ -1644,8 +1644,8 @@ void ARX_PLAYER_Manage_Visual() {
 		}
 	}
 	
-	if(ause0->cur_anim == alist[ANIM_CROUCH_END]) {
-		if(!(ause0->flags & EA_ANIMEND))
+	if(ause0.cur_anim == alist[ANIM_CROUCH_END]) {
+		if(!(ause0.flags & EA_ANIMEND))
 			goto nochanges;
 	}
 	
@@ -1684,7 +1684,7 @@ retry:
 			}
 			case JumpDescending: { // Post-synch
 				LAST_JUMP_ENDTIME = (unsigned long)(arxtime);
-				if((ause0->cur_anim == alist[ANIM_JUMP_END] && (ause0->flags & EA_ANIMEND))
+				if((ause0.cur_anim == alist[ANIM_JUMP_END] && (ause0.flags & EA_ANIMEND))
 				   || player.onfirmground) {
 					player.jumpphase = JumpEnd;
 					request0_anim = alist[ANIM_JUMP_END_PART2];
@@ -1695,14 +1695,14 @@ retry:
 			}
 			case JumpEnd: { // Post-synch
 				LAST_JUMP_ENDTIME = (unsigned long)(arxtime);
-				if(ause0->cur_anim == alist[ANIM_JUMP_END_PART2] && (ause0->flags & EA_ANIMEND)) {
+				if(ause0.cur_anim == alist[ANIM_JUMP_END_PART2] && (ause0.flags & EA_ANIMEND)) {
 					AcquireLastAnim(io);
 					player.jumpphase = NotJumping;
 					goto retry;
-				} else if(ause0->cur_anim == alist[ANIM_JUMP_END_PART2]
+				} else if(ause0.cur_anim == alist[ANIM_JUMP_END_PART2]
 						 && glm::abs(player.physics.velocity.x)
 							 + glm::abs(player.physics.velocity.z) > (4.f/TARGET_DT)
-						 && ause0->ctime > 1) {
+						 && ause0.ctime > 1) {
 					AcquireLastAnim(io);
 					player.jumpphase = NotJumping;
 					goto retry;
@@ -1718,24 +1718,24 @@ retry:
 	makechanges:
 		;
 		
-		if(request0_anim && request0_anim != ause0->cur_anim) {
+		if(request0_anim && request0_anim != ause0.cur_anim) {
 			AcquireLastAnim(io);
-			ResetAnim(ause0);
-			ause0->cur_anim = request0_anim;
-			ause0->flags = EA_STATICANIM;
+			ResetAnim(&ause0);
+			ause0.cur_anim = request0_anim;
+			ause0.flags = EA_STATICANIM;
 			
 			if(request0_loop)
-				ause0->flags |= EA_LOOP;
+				ause0.flags |= EA_LOOP;
 			
 			if(request0_stopend)
-				ause0->flags |= EA_STOPEND;
+				ause0.flags |= EA_STOPEND;
 			
 			if(request0_anim == alist[ANIM_U_TURN_LEFT]
 			   || request0_anim == alist[ANIM_U_TURN_RIGHT]
 			   || request0_anim == alist[ANIM_U_TURN_RIGHT_FIGHT]
 			   || request0_anim == alist[ANIM_U_TURN_LEFT_FIGHT]
 			) {
-				ause0->flags |= EA_EXCONTROL;
+				ause0.flags |= EA_EXCONTROL;
 			}
 		}
 		
