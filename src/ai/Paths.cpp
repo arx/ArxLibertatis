@@ -271,72 +271,72 @@ void ARX_PATH_UpdateAllZoneInOutInside() {
 
 	// player check*************************************************
 	{
-		ARX_PATH * p = ARX_PATH_CheckPlayerInZone();
-		ARX_PATH * op = player.inzone;
+		ARX_PATH * current = ARX_PATH_CheckPlayerInZone();
+		ARX_PATH * last = player.inzone;
 
-		if(!op && !p) { // Not in a zone
-		} else if(op == p) { // Stayed inside Zone OP
+		if(!last && !current) { // Not in a zone
+		} else if(last == current) { // Stayed inside last zone
 		}
-		else if(op != NULL && p == NULL) // Leaving Zone OP
+		else if(last != NULL && current == NULL) // Leaving last zone
 		{
-			SendIOScriptEvent(entities.player(), SM_LEAVEZONE, op->name);
+			SendIOScriptEvent(entities.player(), SM_LEAVEZONE, last->name);
 			CHANGE_LEVEL_ICON = -1;
 
-			if(!op->controled.empty()) {
-				EntityHandle t = entities.getById(op->controled);
+			if(!last->controled.empty()) {
+				EntityHandle t = entities.getById(last->controled);
 
 				if(t != EntityHandle::Invalid) {
-					SendIOScriptEvent(entities[t], SM_CONTROLLEDZONE_LEAVE, "player " + op->name);
+					SendIOScriptEvent(entities[t], SM_CONTROLLEDZONE_LEAVE, "player " + last->name);
 				}
 			}
 		}
-		else if ((op == NULL) && (p != NULL)) // Entering Zone P
+		else if ((last == NULL) && (current != NULL)) // Entering current zone
 		{
-			SendIOScriptEvent(entities.player(), SM_ENTERZONE, p->name);
+			SendIOScriptEvent(entities.player(), SM_ENTERZONE, current->name);
 
-			if(p->flags & PATH_AMBIANCE && !p->ambiance.empty())
-				ARX_SOUND_PlayZoneAmbiance(p->ambiance, ARX_SOUND_PLAY_LOOPED, p->amb_max_vol * ( 1.0f / 100 ));
+			if(current->flags & PATH_AMBIANCE && !current->ambiance.empty())
+				ARX_SOUND_PlayZoneAmbiance(current->ambiance, ARX_SOUND_PLAY_LOOPED, current->amb_max_vol * ( 1.0f / 100 ));
 
-			if(p->flags & PATH_FARCLIP) {
+			if(current->flags & PATH_FARCLIP) {
 				desired.flags |= GMOD_ZCLIP;
-				desired.zclip = p->farclip;
+				desired.zclip = current->farclip;
 			}
 
-			if (p->flags & PATH_REVERB)
+			if (current->flags & PATH_REVERB)
 			{
 			}
 
-			if(p->flags & PATH_RGB) {
+			if(current->flags & PATH_RGB) {
 				desired.flags |= GMOD_DCOLOR;
-				desired.depthcolor = p->rgb;
+				desired.depthcolor = current->rgb;
 			}
 
-			if(!p->controled.empty()) {
-				EntityHandle t = entities.getById(p->controled);
+			if(!current->controled.empty()) {
+				EntityHandle t = entities.getById(current->controled);
 
 				if(t != EntityHandle::Invalid) {
-					SendIOScriptEvent(entities[t], SM_CONTROLLEDZONE_ENTER, "player " + p->name);
+					SendIOScriptEvent(entities[t], SM_CONTROLLEDZONE_ENTER, "player " + current->name);
 				}
 			}
-		} else {
-			if(!op->controled.empty()) {
-				EntityHandle t = entities.getById(op->controled);
+		} else { // Changed from last to current zone
+			if(!last->controled.empty()) {
+				EntityHandle t = entities.getById(last->controled);
 
 				if(t != EntityHandle::Invalid) {
-					SendIOScriptEvent(entities[t], SM_CONTROLLEDZONE_LEAVE, "player " + p->name);
+					SendIOScriptEvent(entities[t], SM_CONTROLLEDZONE_LEAVE, "player " + current->name);
 				}
 			}
 
-			if(!op->controled.empty()) {
-				EntityHandle t = entities.getById(p->controled);
+			if(!last->controled.empty()) {
+				EntityHandle t = entities.getById(current->controled);
 
 				if(t != EntityHandle::Invalid) {
-					SendIOScriptEvent(entities[t], SM_CONTROLLEDZONE_ENTER, "player " + p->name);
+					SendIOScriptEvent(entities[t], SM_CONTROLLEDZONE_ENTER, "player " + current->name);
 				}
 			}
 		}
 
-		player.inzone = p;
+		player.inzone = current;
 	}
 	
 	JUST_RELOADED = 0;
