@@ -1389,12 +1389,14 @@ void ARX_PLAYER_Manage_Visual() {
 	
 	ANIM_USE * ause0 = &io->animlayer[0];
 	ANIM_USE * ause1 = &io->animlayer[1];
+	ANIM_USE * ause2 = &io->animlayer[2];
 	ANIM_USE * ause3 = &io->animlayer[3];
 	
 	ause0->next_anim = NULL;
-	entities.player()->animlayer[1].next_anim = NULL;
-	entities.player()->animlayer[2].next_anim = NULL;
-	entities.player()->animlayer[3].next_anim = NULL;
+	ause1->next_anim = NULL;
+	ause2->next_anim = NULL;
+	ause3->next_anim = NULL;
+	
 	ANIM_HANDLE ** alist = io->anims;
 	
 	if(ause0->flags & EA_FORCEPLAY) {
