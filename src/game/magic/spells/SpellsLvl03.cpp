@@ -400,9 +400,7 @@ void CreateFoodSpell::Update(float timeDelta) {
 	
 	m_pos = entities.player()->pos;
 	
-	unsigned long ulCalc = m_duration - m_currentTime;
-	arx_assert(ulCalc <= LONG_MAX);
-	long ff =  static_cast<long>(ulCalc);
+	long ff = m_duration - m_currentTime;
 	
 	if(ff < 1500) {
 		m_particles.m_parameters.m_spawnFlags = PARTICLE_CIRCULAR;

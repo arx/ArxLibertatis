@@ -354,10 +354,8 @@ void CurePoisonSpell::Update(float timeDelta) {
 	if(m_target == PlayerEntityHandle)
 		m_pos.y += 200;
 	
-	unsigned long ulCalc = m_duration - ulCurrentTime ;
-	arx_assert(ulCalc <= LONG_MAX);
-	long ff = 	static_cast<long>(ulCalc);
-
+	long ff = m_duration - ulCurrentTime;
+	
 	if(ff < 1500) {
 		pPS.m_parameters.m_spawnFlags = PARTICLE_CIRCULAR;
 		pPS.m_parameters.m_gravity = Vec3f_ZERO;
