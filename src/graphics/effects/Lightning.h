@@ -77,7 +77,6 @@ private:
 	size_t m_nbtotal;
 	long m_lNbSegments;
 	float m_invNbSegments;
-	float m_fSize;
 	float m_fLengthMin;
 	float m_fLengthMax;
 	Vec3f m_fAngleMin;

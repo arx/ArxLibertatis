@@ -89,7 +89,6 @@ CLightning::CLightning()
 	m_nbtotal(0),
 	m_lNbSegments(40),
 	m_invNbSegments(1.0f / 40.0f),
-	m_fSize(100.0f),
 	m_fLengthMin(5.0f),  
 	m_fLengthMax(40.0f),  
 	m_fAngleMin(5.0f, 5.0f, 5.0f),
