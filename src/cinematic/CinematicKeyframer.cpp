@@ -466,8 +466,6 @@ bool GereTrack(Cinematic * c, float fpscurr, bool resized)
 {
 	float	a, unmoinsa, alight = 0, unmoinsalight = 0;
 	int		num;
-	C_KEY	* kprec, *ksuivsuiv;
-	float	t1, t2, t3, f0, f1, f2, f3, p0, p1, temp;
 	C_KEY	* lightprec, *lightnext;
 
 	if(!CKTrack || !CKTrack->nbkey)
@@ -585,11 +583,14 @@ consequences on light :
 				                        + unmoinsalight * ldep.intensiternd;
 			}
 			break;
-		case INTERP_BEZIER:
+		case INTERP_BEZIER: {
 			c->m_light = k->light;
-
-			ksuivsuiv = ((num + 1) < CKTrack->nbkey) ? ksuiv + 1 : ksuiv;
-			kprec = (num > 1) ? k - 1 : k;
+			
+			// TODO copy-paste bezier
+			float	t1, t2, t3, f0, f1, f2, f3, p0, p1, temp;
+			
+			C_KEY * ksuivsuiv = ((num + 1) < CKTrack->nbkey) ? ksuiv + 1 : ksuiv;
+			C_KEY * kprec = (num > 1) ? k - 1 : k;
 
 			t1 = a;
 			t2 = t1 * t1;
@@ -647,6 +648,7 @@ consequences on light :
 				                        + unmoinsalight * ldep.intensiternd;
 			}
 			break;
+		}
 	}
 	
 	updateFadeOut(c, CKTrack, num, a, k != c->key || resized);
@@ -801,6 +803,7 @@ bool GereTrackNoPlay(Cinematic * c) {
 			break;
 			
 		case INTERP_BEZIER: {
+			// TODO copy-paste bezier
 			float	t1, t2, t3, f0, f1, f2, f3, p0, p1, temp;
 			
 			C_KEY * ksuivsuiv = ((num + 1) < CKTrack->nbkey) ? ksuiv + 1 : ksuiv;
