@@ -363,58 +363,58 @@ void FireFieldSpell::Update(float timeDelta) {
 	pPSStream1.Update(timeDelta);
 	
 	
-		if(!lightHandleIsValid(m_light))
-			m_light = GetFreeDynLight();
-
-		if(lightHandleIsValid(m_light)) {
-			EERIE_LIGHT * el = lightHandleGet(m_light);
-			
-			el->pos = m_pos + Vec3f(0.f, -120.f, 0.f);
-			el->intensity = 4.6f;
-			el->fallstart = 150.f+rnd()*30.f;
-			el->fallend   = 290.f+rnd()*30.f;
-			el->rgb = Color3f(1.f, 0.8f, 0.6f) - Color3f(rnd()*(1.0f/10), 0.f, 0.f);
-			el->duration = 600;
-			el->extras=0;
-		}
+	if(!lightHandleIsValid(m_light))
+		m_light = GetFreeDynLight();
+	
+	if(lightHandleIsValid(m_light)) {
+		EERIE_LIGHT * el = lightHandleGet(m_light);
 		
-		if(VisibleSphere(Sphere(m_pos - Vec3f(0.f, 120.f, 0.f), 350.f))) {
+		el->pos = m_pos + Vec3f(0.f, -120.f, 0.f);
+		el->intensity = 4.6f;
+		el->fallstart = 150.f+rnd()*30.f;
+		el->fallend   = 290.f+rnd()*30.f;
+		el->rgb = Color3f(1.f, 0.8f, 0.6f) - Color3f(rnd()*(1.0f/10), 0.f, 0.f);
+		el->duration = 600;
+		el->extras=0;
+	}
+	
+	if(VisibleSphere(Sphere(m_pos - Vec3f(0.f, 120.f, 0.f), 350.f))) {
+		
+		pPSStream.Render();
+		pPSStream1.Render();
+		
+		float fDiff = timeDelta / 8.f;
+		int nTime = checked_range_cast<int>(fDiff);
+		
+		for(long nn=0;nn<=nTime+1;nn++) {
 			
-			pPSStream.Render();
-			pPSStream1.Render();
-			
-			float fDiff = timeDelta / 8.f;
-			int nTime = checked_range_cast<int>(fDiff);
-			
-			for(long nn=0;nn<=nTime+1;nn++) {
-				
-				PARTICLE_DEF * pd = createParticle();
-				if(!pd) {
-					break;
-				}
-				
-				float t = rnd() * (PI * 2.f) - PI;
-				float ts = std::sin(t);
-				float tc = std::cos(t);
-				pd->ov = m_pos + Vec3f(120.f * ts, 15.f * ts, 120.f * tc) * randomVec();
-				pd->move = Vec3f(2.f, 1.f, 2.f) + Vec3f(-4.f, -8.f, -4.f) * Vec3f(rnd(), rnd(), rnd());
-				pd->siz = 7.f;
-				pd->tolive = Random::get(500, 1500);
-				pd->tc = fire2;
-				pd->special = ROTATING | MODULATE_ROTATION | FIRE_TO_SMOKE;
-				pd->fparam = 0.1f - rnd() * 0.2f;
-				pd->scale = Vec3f(-8.f);
-				
-				PARTICLE_DEF * pd2 = createParticle();
-				if(!pd2) {
-					break;
-				}
-				
-				*pd2 = *pd;
-				pd2->delay = Random::get(60, 210);
+			PARTICLE_DEF * pd = createParticle();
+			if(!pd) {
+				break;
 			}
 			
+			float t = rnd() * (PI * 2.f) - PI;
+			float ts = std::sin(t);
+			float tc = std::cos(t);
+			pd->ov = m_pos + Vec3f(120.f * ts, 15.f * ts, 120.f * tc) * randomVec();
+			pd->move = Vec3f(2.f, 1.f, 2.f) + Vec3f(-4.f, -8.f, -4.f) * Vec3f(rnd(), rnd(), rnd());
+			pd->siz = 7.f;
+			pd->tolive = Random::get(500, 1500);
+			pd->tc = fire2;
+			pd->special = ROTATING | MODULATE_ROTATION | FIRE_TO_SMOKE;
+			pd->fparam = 0.1f - rnd() * 0.2f;
+			pd->scale = Vec3f(-8.f);
+			
+			PARTICLE_DEF * pd2 = createParticle();
+			if(!pd2) {
+				break;
+			}
+			
+			*pd2 = *pd;
+			pd2->delay = Random::get(60, 210);
 		}
+		
+	}
 }
 
 Vec3f FireFieldSpell::getPosition() {
