@@ -277,12 +277,8 @@ void ARX_PATH_UpdateAllZoneInOutInside() {
 		ARX_PATH * p = ARX_PATH_CheckPlayerInZone();
 		ARX_PATH * op = player.inzone;
 
-		if((op == NULL) && (p == NULL))
-			goto suite; // Not in a zone
-
-		if(op == p) // Stayed inside Zone OP
-		{
-		
+		if(!op && !p) { // Not in a zone
+		} else if(op == p) { // Stayed inside Zone OP
 		}
 		else if(op != NULL && p == NULL) // Leaving Zone OP
 		{
@@ -345,9 +341,7 @@ void ARX_PATH_UpdateAllZoneInOutInside() {
 
 		player.inzone = p;
 	}
-
 	
-suite:
 	JUST_RELOADED = 0;
 }
 
