@@ -631,8 +631,7 @@ void PrepareAnim(ANIM_USE *eanim, unsigned long time, Entity *io) {
 					eanim->flags&=~EA_ANIMEND;
 				}
 		} else {
-			if(io) {
-				if(eanim->next_anim) {
+			if(io && eanim->next_anim) {
 					FinishAnim(io,eanim->cur_anim);
 					
 					if (io->animBlend.lastanimtime!=0)
@@ -647,17 +646,14 @@ void PrepareAnim(ANIM_USE *eanim, unsigned long time, Entity *io) {
 					eanim->ctime = lost;
 					eanim->flags=eanim->nextflags;
 					eanim->flags&=~EA_ANIMEND;
-					goto suite;
-				}
+			} else {
+				eanim->flags |= EA_ANIMEND;
+				eanim->ctime = eanim->cur_anim->anims[eanim->altidx_cur]->anim_time;
 			}
-			
-			eanim->flags |= EA_ANIMEND;
-			eanim->ctime = eanim->cur_anim->anims[eanim->altidx_cur]->anim_time;
 		}
 	
 	}
-suite:
-
+	
 	if (!eanim->cur_anim)
 		return;
 
