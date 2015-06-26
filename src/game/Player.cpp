@@ -1388,12 +1388,12 @@ void ARX_PLAYER_Manage_Visual() {
 	io->gameFlags |= GFLAG_ISINTREATZONE;
 	
 	ANIM_USE & ause0 = io->animlayer[0];
-	ANIM_USE * ause1 = &io->animlayer[1];
+	ANIM_USE & ause1 = io->animlayer[1];
 	ANIM_USE * ause2 = &io->animlayer[2];
 	ANIM_USE * ause3 = &io->animlayer[3];
 	
 	ause0.next_anim = NULL;
-	ause1->next_anim = NULL;
+	ause1.next_anim = NULL;
 	ause2->next_anim = NULL;
 	ause3->next_anim = NULL;
 	
@@ -1566,7 +1566,7 @@ void ARX_PLAYER_Manage_Visual() {
 	}
 	
 	// Finally update anim
-	if(ause1->cur_anim == NULL
+	if(ause1.cur_anim == NULL
 	   && (ause0.cur_anim == alist[ANIM_WAIT] || ause0.cur_anim == alist[ANIM_WAIT_SHORT])
 	   && !(player.Current_Movement & PLAYER_CROUCH)
 	) {
