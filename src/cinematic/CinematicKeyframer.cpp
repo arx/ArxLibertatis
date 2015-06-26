@@ -462,26 +462,29 @@ static void updateFadeOut(Cinematic * c, CinematicTrack * track, int num, float 
 	
 }
 
-bool GereTrack(Cinematic * c, float fpscurr, bool resized)
-{
-	float	a, unmoinsa, alight = 0, unmoinsalight = 0;
-	int		num;
-	C_KEY	* lightprec, *lightnext;
-
+// TODO copy-paste GereTrack
+bool GereTrack(Cinematic * c, float fpscurr, bool resized) {
+	
 	if(!CKTrack || !CKTrack->nbkey)
 		return false;
-
+	
+	int num;
+	
 	if(CKTrack->pause)
 		return true;
 
-	C_KEY * k = GetKey((int)CKTrack->currframe, &num);
+	C_KEY * k = GetKey((int) CKTrack->currframe, &num);
 	C_KEY * ksuiv = (num == CKTrack->nbkey) ? k : k + 1;
-
+	
+	float a;
+	
 	if(ksuiv->frame != k->frame)
 		a = (CKTrack->currframe - (float)k->frame) / ((float)(ksuiv->frame - k->frame));
 	else
 		a = 1.f;
-
+	
+	float unmoinsa;
+	
 	c->a = unmoinsa = 1.0f - a;
 
 	c->numbitmap		= k->numbitmap;
@@ -495,16 +498,21 @@ bool GereTrack(Cinematic * c, float fpscurr, bool resized)
 	c->speed			= k->speed;
 	c->idsound			= k->idsound;
 	c->force			= k->force;
-
+	
+	C_KEY * lightprec;
+	
 	if((k->fx & 0xFF000000) == FX_LIGHT) {
 		lightprec = k;
 	} else {
 		lightprec = k->light.prev;
 	}
 
-	lightnext = k->light.next;
+	C_KEY * lightnext = k->light.next;
 	c->m_lightd = lightnext->light;
-
+	
+	float alight = 0;
+	float unmoinsalight = 0;
+	
 	if(lightprec != lightnext) {
 		alight = (CKTrack->currframe - (float)lightprec->frame) / ((float)(lightnext->frame - lightprec->frame));
 
@@ -516,10 +524,7 @@ bool GereTrack(Cinematic * c, float fpscurr, bool resized)
 		if(k == (CKTrack->key + CKTrack->nbkey - 1)) {
 			alight			= 1.f;
 			unmoinsalight	= 0.f;
-		}
-		else
-		{
-
+		} else {
 			//alight can't be used because it is not initialized
 //ARX_BEGIN: jycorbel (2010-07-19) - Set light coeff to 0 to keep null all possibly light created from uninitialyzed var.
 /*
@@ -538,9 +543,9 @@ consequences on light :
 		}
 	}
 
-	c->posgrille	  = k->posgrille;
-	c->angzgrille	  = k->angzgrille;
-	c->posgrillesuiv  = ksuiv->posgrille;
+	c->posgrille = k->posgrille;
+	c->angzgrille = k->angzgrille;
+	c->posgrillesuiv = ksuiv->posgrille;
 	c->angzgrillesuiv = ksuiv->angzgrille;
 
 	switch(k->typeinterp) {
@@ -562,7 +567,7 @@ consequences on light :
 				CinematicLight lend;
 
 				if(lightprec->light.intensity < 0.f) {
-					c->m_light.intensity = -1;
+					c->m_light.intensity = -1.f;
 					break;
 				} else {
 					ldep = lightprec->light;
@@ -670,6 +675,7 @@ consequences on light :
 	return true;
 }
 
+// TODO copy-paste GereTrack
 bool GereTrackNoPlay(Cinematic * c) {
 	
 	if(!CKTrack || !CKTrack->nbkey || !CKTrack->pause)
@@ -752,22 +758,21 @@ bool GereTrackNoPlay(Cinematic * c) {
 		}
 	}
 
-	c->posgrille		= k->posgrille;
-	c->angzgrille		= k->angzgrille;
-	c->posgrillesuiv	= ksuiv->posgrille;
-	c->angzgrillesuiv	= ksuiv->angzgrille;
+	c->posgrille = k->posgrille;
+	c->angzgrille = k->angzgrille;
+	c->posgrillesuiv = ksuiv->posgrille;
+	c->angzgrillesuiv = ksuiv->angzgrille;
 
 	if(k->numbitmap < 0 || ksuiv->numbitmap < 0)
 		return false;
 
 	switch(k->typeinterp) {
 		case INTERP_NO:
-			c->pos		= k->pos;
-			c->angz		= k->angz;
-			c->possuiv	= ksuiv->pos;
-			c->angzsuiv	= ksuiv->angz;
-
-			c->m_light	= lightprec->light;
+			c->pos = k->pos;
+			c->angz = k->angz;
+			c->possuiv = ksuiv->pos;
+			c->angzsuiv = ksuiv->angz;
+			c->m_light = lightprec->light;
 			c->speedtrack = k->speedtrack;
 			break;
 		case INTERP_LINEAR:
