@@ -401,7 +401,7 @@ void FireFieldSpell::Update(float timeDelta) {
 				float ts = std::sin(t);
 				float tc = std::cos(t);
 				pd->ov = m_pos + Vec3f(120.f * ts, 15.f * ts, 120.f * tc) * randomVec();
-				pd->move = Vec3f(2.f - 4.f * rnd(), 1.f - 8.f * rnd(), 2.f - 4.f * rnd());
+				pd->move = Vec3f(2.f, 1.f, 2.f) + Vec3f(-4.f, -8.f, -4.f) * Vec3f(rnd(), rnd(), rnd());
 				pd->siz = 7.f;
 				pd->tolive = Random::get(500, 1500);
 				pd->tc = fire2;
