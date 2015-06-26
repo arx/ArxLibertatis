@@ -200,7 +200,7 @@ void FlyingEyeSpell::Update(float timeDelta)
 				}
 				
 				pd->ov = eobj->vertexlist3[id].v + randomVec(-1.f, 1.f);
-				pd->move = Vec3f(0.1f - 0.2f * rnd(), -2.2f * rnd(), 0.1f - 0.2f * rnd());
+				pd->move = Vec3f(0.1f, 0.f, 0.1f) + Vec3f(-0.2f, -2.2f, -0.2f) * Vec3f(rnd(), rnd(), rnd());
 				pd->siz = 5.f;
 				pd->tolive = Random::get(1500, 3500);
 				pd->scale = Vec3f(0.2f);
