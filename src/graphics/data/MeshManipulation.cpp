@@ -705,7 +705,6 @@ void EERIE_MESH_TWEAK_Do(Entity * io, TweakType tw, const res::path & path) {
 
 	EERIE_3DOBJ * tobj = NULL;
 	EERIE_3DOBJ * result = NULL;
-	EERIE_3DOBJ * result2 = NULL;
 
 	{
 		tobj = loadObject(path);
@@ -724,16 +723,18 @@ void EERIE_MESH_TWEAK_Do(Entity * io, TweakType tw, const res::path & path) {
 				io->obj = tobj;
 				return;
 				break;
-			case (u32)TWEAK_HEAD | (u32)TWEAK_TORSO:
-				result2 = CreateIntermediaryMesh(io->obj, tobj, TWEAK_HEAD);
+			case (u32)TWEAK_HEAD | (u32)TWEAK_TORSO: {
+				EERIE_3DOBJ * result2 = CreateIntermediaryMesh(io->obj, tobj, TWEAK_HEAD);
 				result = CreateIntermediaryMesh(result2, tobj, TWEAK_TORSO);
 				delete result2;
 				break;
-			case (u32)TWEAK_TORSO | (u32)TWEAK_LEGS:
-				result2 = CreateIntermediaryMesh(io->obj, tobj, TWEAK_TORSO);
+			}
+			case (u32)TWEAK_TORSO | (u32)TWEAK_LEGS: {
+				EERIE_3DOBJ * result2 = CreateIntermediaryMesh(io->obj, tobj, TWEAK_TORSO);
 				result = CreateIntermediaryMesh(result2, tobj, TWEAK_LEGS);
 				delete result2;
 				break;
+			}
 			case (u32)TWEAK_HEAD | (u32)TWEAK_LEGS:
 				result = CreateIntermediaryMesh(tobj, io->obj, TWEAK_TORSO);
 				break;
