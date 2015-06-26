@@ -3028,7 +3028,7 @@ void createFireParticles(Vec3f &pos, const int particlesToCreate, const int part
 		}
 
 		pd->ov = pos;
-		pd->move = Vec3f(2.f - 4.f * rnd(), 2.f - 22.f * rnd(), 2.f - 4.f * rnd());
+		pd->move = Vec3f(2.f, 2.f, 2.f) - Vec3f(4.f, 22.f, 4.f) * Vec3f(rnd(), rnd(), rnd());
 		pd->siz = 7.f;
 		pd->tolive = Random::get(500, 1500);
 		pd->special = FIRE_TO_SMOKE | ROTATING | MODULATE_ROTATION;
