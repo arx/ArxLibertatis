@@ -450,12 +450,8 @@ void IceProjectileSpell::Launch()
 	tex_p1 = TextureContainer::Load("graph/obj3d/textures/(fx)_tsu_blueting");
 	tex_p2 = TextureContainer::Load("graph/obj3d/textures/(fx)_tsu_bluepouf");
 	iMax = (int)(30 + m_level * 5.2f);
-
 	
-	float fspelldist	= static_cast<float>(iMax * 15);
-
-	fspelldist = std::min(fspelldist, 200.0f);
-	fspelldist = std::max(fspelldist, 450.0f);
+	float fspelldist = glm::clamp(float(iMax * 15), 200.0f, 450.0f);
 	
 	Vec3f s = target + Vec3f(0.f, -100.f, 0.f);
 	Vec3f e = s + angleToVectorXZ(angleb) * fspelldist;
