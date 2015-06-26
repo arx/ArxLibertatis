@@ -369,9 +369,7 @@ void FireFieldSpell::Update(float timeDelta) {
 		if(lightHandleIsValid(m_light)) {
 			EERIE_LIGHT * el = lightHandleGet(m_light);
 			
-			el->pos.x = m_pos.x;
-			el->pos.y = m_pos.y-120.f;
-			el->pos.z = m_pos.z;
+			el->pos = m_pos + Vec3f(0.f, -120.f, 0.f);
 			el->intensity = 4.6f;
 			el->fallstart = 150.f+rnd()*30.f;
 			el->fallend   = 290.f+rnd()*30.f;
