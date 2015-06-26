@@ -171,7 +171,7 @@ void ARX_INTERFACE_BookToggle() {
 			for(long i = 0; i < MAX_FLYOVER; i++) {
 				ARXmenu.mda->flyover[i].clear();
 			}
-			free(ARXmenu.mda);
+			delete ARXmenu.mda;
 			ARXmenu.mda=NULL;
 		}
 		
