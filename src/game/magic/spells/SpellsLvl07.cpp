@@ -375,9 +375,7 @@ void FireFieldSpell::Update(float timeDelta) {
 			el->intensity = 4.6f;
 			el->fallstart = 150.f+rnd()*30.f;
 			el->fallend   = 290.f+rnd()*30.f;
-			el->rgb.r = 1.f-rnd()*( 1.0f / 10 );
-			el->rgb.g = 0.8f;
-			el->rgb.b = 0.6f;
+			el->rgb = Color3f(1.f, 0.8f, 0.6f) - Color3f(rnd()*(1.0f/10), 0.f, 0.f);
 			el->duration = 600;
 			el->extras=0;
 		}
