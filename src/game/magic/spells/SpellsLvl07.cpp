@@ -209,7 +209,7 @@ void FlyingEyeSpell::Update(float timeDelta)
 				pd->sourceionum = PlayerEntityHandle;
 				pd->source = &eobj->vertexlist3[id].v;
 				pd->fparam = 0.0000001f;
-				pd->rgb = Color3f(.7f - rnd() * .1f, .3f - rnd() * .1f, 1.f - rnd() * .1f);
+				pd->rgb = Color3f(.7f, .3f, 1.f) + Color3f(-.1f, -.1f, -.1f) * Color3f(rnd(), rnd(), rnd());
 			}
 		}
 	}
