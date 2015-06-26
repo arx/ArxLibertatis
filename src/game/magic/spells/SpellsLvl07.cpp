@@ -823,9 +823,7 @@ void ConfuseSpell::Update(float timeDelta) {
 		light->intensity = 1.3f;
 		light->fallstart = 180.f;
 		light->fallend   = 420.f;
-		light->rgb.r = 0.3f + rnd() * ( 1.0f / 5 );
-		light->rgb.g = 0.3f;
-		light->rgb.b = 0.5f + rnd() * ( 1.0f / 5 );
+		light->rgb = Color3f(0.3f, 0.3f, 0.5f) + Color3f(0.2f, 0.f, 0.2f) * Color3f(rnd(), rnd(), rnd());
 		light->pos = eCurPos;
 		light->duration = 200;
 		light->extras = 0;
