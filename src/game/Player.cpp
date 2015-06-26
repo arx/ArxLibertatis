@@ -1338,436 +1338,436 @@ void ARX_PLAYER_Manage_Visual() {
 	}
 	
 	{
-		Entity * io = entities.player();
-		
-		if(!BLOCK_PLAYER_CONTROLS && sp_max) {
-			io->halo.color = Color3f::red;
-			io->halo.flags |= HALO_ACTIVE | HALO_DYNLIGHT;
-			io->halo.radius = 20.f;
-			player.lifePool.current += float(framedelay) * 0.1f;
-			player.lifePool.current = std::min(player.lifePool.current, player.Full_maxlife);
-			player.manaPool.current += float(framedelay) * 0.1f;
-			player.manaPool.current = std::min(player.manaPool.current, player.Full_maxmana);
+	Entity * io = entities.player();
+	
+	if(!BLOCK_PLAYER_CONTROLS && sp_max) {
+		io->halo.color = Color3f::red;
+		io->halo.flags |= HALO_ACTIVE | HALO_DYNLIGHT;
+		io->halo.radius = 20.f;
+		player.lifePool.current += float(framedelay) * 0.1f;
+		player.lifePool.current = std::min(player.lifePool.current, player.Full_maxlife);
+		player.manaPool.current += float(framedelay) * 0.1f;
+		player.manaPool.current = std::min(player.manaPool.current, player.Full_maxmana);
+	}
+	
+	if(cur_mr == 3) {
+		player.lifePool.current += float(framedelay) * 0.05f;
+		player.lifePool.current = std::min(player.lifePool.current, player.Full_maxlife);
+		player.manaPool.current += float(framedelay) * 0.05f;
+		player.manaPool.current = std::min(player.manaPool.current, player.Full_maxmana);
+	}
+	
+	io->pos = player.basePosition();
+	
+	if(player.jumpphase == NotJumping && !LAST_ON_PLATFORM) {
+		float t;
+		EERIEPOLY * ep = CheckInPoly(player.pos, &t);
+		if(ep && io->pos.y > t - 30.f && io->pos.y < t) {
+			player.onfirmground = true;
 		}
-		
-		if(cur_mr == 3) {
-			player.lifePool.current += float(framedelay) * 0.05f;
-			player.lifePool.current = std::min(player.lifePool.current, player.Full_maxlife);
-			player.manaPool.current += float(framedelay) * 0.05f;
-			player.manaPool.current = std::min(player.manaPool.current, player.Full_maxmana);
+	}
+	
+	ComputeVVPos(io);
+	io->pos.y = io->_npcdata->vvpos;
+	
+	if(!(player.Current_Movement & PLAYER_CROUCH) && player.physics.cyl.height > -150.f) {
+		float old = player.physics.cyl.height;
+		player.physics.cyl.height = player.baseHeight();
+		player.physics.cyl.origin = player.basePosition();
+		float anything = CheckAnythingInCylinder(player.physics.cyl, entities.player());
+		if(anything < 0.f) {
+			player.Current_Movement |= PLAYER_CROUCH;
+			player.physics.cyl.height = old;
 		}
-		
-		io->pos = player.basePosition();
-		
-		if(player.jumpphase == NotJumping && !LAST_ON_PLATFORM) {
-			float t;
-			EERIEPOLY * ep = CheckInPoly(player.pos, &t);
-			if(ep && io->pos.y > t - 30.f && io->pos.y < t) {
-				player.onfirmground = true;
-			}
-		}
-		
-		ComputeVVPos(io);
-		io->pos.y = io->_npcdata->vvpos;
-		
-		if(!(player.Current_Movement & PLAYER_CROUCH) && player.physics.cyl.height > -150.f) {
-			float old = player.physics.cyl.height;
-			player.physics.cyl.height = player.baseHeight();
-			player.physics.cyl.origin = player.basePosition();
-			float anything = CheckAnythingInCylinder(player.physics.cyl, entities.player());
-			if(anything < 0.f) {
-				player.Current_Movement |= PLAYER_CROUCH;
-				player.physics.cyl.height = old;
-			}
-		}
-		
-		if(player.lifePool.current > 0) {
-			io->angle = Anglef(0.f, 180.f - player.angle.getPitch(), 0.f);
-		}
-		
-		io->gameFlags |= GFLAG_ISINTREATZONE;
-		
-		ANIM_USE * ause0 = &io->animlayer[0];
-		ANIM_USE * ause1 = &io->animlayer[1];
-		ANIM_USE * ause3 = &io->animlayer[3];
-		
-		ause0->next_anim = NULL;
-		entities.player()->animlayer[1].next_anim = NULL;
-		entities.player()->animlayer[2].next_anim = NULL;
-		entities.player()->animlayer[3].next_anim = NULL;
-		ANIM_HANDLE ** alist = io->anims;
-		
-		if(ause0->flags & EA_FORCEPLAY) {
-			if(ause0->flags & EA_ANIMEND) {
-				ause0->flags &= ~EA_FORCEPLAY;
-				ause0->flags |= EA_STATICANIM;
-				io->move = io->lastmove = Vec3f_ZERO;
-			} else {
-				ause0->flags &= ~EA_STATICANIM;
-				player.pos = moveto = player.pos + io->move;
-				io->pos = player.basePosition();
-				goto nochanges;
-			}
-		}
-		
-		ANIM_HANDLE * ChangeMoveAnim = NULL;
-		ANIM_HANDLE * ChangeMoveAnim2 = NULL;
-		bool ChangeMA_Loop = true;
-		bool ChangeMA_Stopend = false;
-		
-		if(io->ioflags & IO_FREEZESCRIPT) {
+	}
+	
+	if(player.lifePool.current > 0) {
+		io->angle = Anglef(0.f, 180.f - player.angle.getPitch(), 0.f);
+	}
+	
+	io->gameFlags |= GFLAG_ISINTREATZONE;
+	
+	ANIM_USE * ause0 = &io->animlayer[0];
+	ANIM_USE * ause1 = &io->animlayer[1];
+	ANIM_USE * ause3 = &io->animlayer[3];
+	
+	ause0->next_anim = NULL;
+	entities.player()->animlayer[1].next_anim = NULL;
+	entities.player()->animlayer[2].next_anim = NULL;
+	entities.player()->animlayer[3].next_anim = NULL;
+	ANIM_HANDLE ** alist = io->anims;
+	
+	if(ause0->flags & EA_FORCEPLAY) {
+		if(ause0->flags & EA_ANIMEND) {
+			ause0->flags &= ~EA_FORCEPLAY;
+			ause0->flags |= EA_STATICANIM;
+			io->move = io->lastmove = Vec3f_ZERO;
+		} else {
+			ause0->flags &= ~EA_STATICANIM;
+			player.pos = moveto = player.pos + io->move;
+			io->pos = player.basePosition();
 			goto nochanges;
 		}
-		
-		if(player.lifePool.current <= 0) {
-			HERO_SHOW_1ST = -1;
-			io->animlayer[1].cur_anim = NULL;
-			ChangeMoveAnim = alist[ANIM_DIE];
-			ChangeMA_Loop = false;
-			ChangeMA_Stopend = true;
-			goto makechanges;
+	}
+	
+	ANIM_HANDLE * ChangeMoveAnim = NULL;
+	ANIM_HANDLE * ChangeMoveAnim2 = NULL;
+	bool ChangeMA_Loop = true;
+	bool ChangeMA_Stopend = false;
+	
+	if(io->ioflags & IO_FREEZESCRIPT) {
+		goto nochanges;
+	}
+	
+	if(player.lifePool.current <= 0) {
+		HERO_SHOW_1ST = -1;
+		io->animlayer[1].cur_anim = NULL;
+		ChangeMoveAnim = alist[ANIM_DIE];
+		ChangeMA_Loop = false;
+		ChangeMA_Stopend = true;
+		goto makechanges;
+	}
+	
+	if(   player.Current_Movement == 0
+	   || player.Current_Movement == PLAYER_MOVE_STEALTH
+	   || (player.Current_Movement & PLAYER_ROTATE)
+	) {
+		if(player.Interface & INTER_COMBATMODE) {
+			ChangeMoveAnim = alist[ANIM_FIGHT_WAIT];
+		} else if(EXTERNALVIEW) {
+			ChangeMoveAnim = alist[ANIM_WAIT];
+		} else {
+			ChangeMoveAnim = alist[ANIM_WAIT_SHORT];
 		}
 		
-		if(   player.Current_Movement == 0
-		   || player.Current_Movement == PLAYER_MOVE_STEALTH
-		   || (player.Current_Movement & PLAYER_ROTATE)
-		) {
-			if(player.Interface & INTER_COMBATMODE) {
-				ChangeMoveAnim = alist[ANIM_FIGHT_WAIT];
-			} else if(EXTERNALVIEW) {
-				ChangeMoveAnim = alist[ANIM_WAIT];
-			} else {
-				ChangeMoveAnim = alist[ANIM_WAIT_SHORT];
-			}
-
-			ChangeMA_Loop = true;
-		}
-		
-		if(ROTATE_START
-		   && player.angle.getYaw() > 60.f
-		   && player.angle.getYaw() < 180.f
-		   && LASTPLAYERA > 60.f
-		   && LASTPLAYERA < 180.f
-		) {
-			if(PLAYER_ROTATION < 0) {
-				if(player.Interface & INTER_COMBATMODE)
-					ChangeMoveAnim = alist[ANIM_U_TURN_LEFT_FIGHT];
-				else
-					ChangeMoveAnim = alist[ANIM_U_TURN_LEFT];
-			} else {
-				if(player.Interface & INTER_COMBATMODE)
-					ChangeMoveAnim = alist[ANIM_U_TURN_RIGHT_FIGHT];
-				else
-					ChangeMoveAnim = alist[ANIM_U_TURN_RIGHT];
-			}
-
-			ChangeMA_Loop = true;
-
-			if(ause0->cur_anim == alist[ANIM_U_TURN_LEFT]
-			   || ause0->cur_anim == alist[ANIM_U_TURN_LEFT_FIGHT])
-			{
-				float fv = PLAYER_ROTATION * 5;
-				long vv = fv;
-				io->frameloss -= fv - (float)vv;
-
-				if (io->frameloss < 0) io->frameloss = 0;
-
-				ause0->ctime -= vv;
-
-				if(ause0->ctime < 0)
-					ause0->ctime = 0;
-			}
-			else if(ause0->cur_anim == alist[ANIM_U_TURN_RIGHT]
-					 ||	ause0->cur_anim == alist[ANIM_U_TURN_RIGHT_FIGHT])
-			{
-				long vv = PLAYER_ROTATION * 5;
-				float fv = PLAYER_ROTATION * 5;
-				io->frameloss += fv - (float)vv;
-
-				if (io->frameloss < 0) io->frameloss = 0;
-
-				ause0->ctime += vv;
-
-				if(ause0->ctime < 0)
-					ause0->ctime = 0;
-			}
-		}
-
-		LASTPLAYERA = player.angle.getYaw();
-
-		{
-			long tmove = player.Current_Movement;
-
-			if((tmove & PLAYER_MOVE_STRAFE_LEFT) && (tmove & PLAYER_MOVE_STRAFE_RIGHT)) {
-				tmove &= ~PLAYER_MOVE_STRAFE_LEFT;
-				tmove &= ~PLAYER_MOVE_STRAFE_RIGHT;
-			}
-
-			if(MOVE_PRECEDENCE == PLAYER_MOVE_STRAFE_LEFT)
-				tmove &= ~PLAYER_MOVE_STRAFE_RIGHT;
-
-			if(MOVE_PRECEDENCE == PLAYER_MOVE_STRAFE_RIGHT)
-				tmove &= ~PLAYER_MOVE_STRAFE_LEFT;
-
-			if(MOVE_PRECEDENCE == PLAYER_MOVE_WALK_FORWARD)
-				tmove &= ~PLAYER_MOVE_WALK_BACKWARD;
-
-			if(player.Current_Movement & PLAYER_MOVE_WALK_FORWARD)
-				tmove = PLAYER_MOVE_WALK_FORWARD;
-
-				if(tmove & PLAYER_MOVE_STRAFE_LEFT) {
-					if(player.Interface & INTER_COMBATMODE)
-						ChangeMoveAnim = alist[ANIM_FIGHT_STRAFE_LEFT];
-					else if(player.Current_Movement & PLAYER_MOVE_STEALTH)
-						ChangeMoveAnim = alist[ANIM_STRAFE_LEFT];
-					else
-						ChangeMoveAnim = alist[ANIM_STRAFE_RUN_LEFT];
-				}
-
-				if(tmove & PLAYER_MOVE_STRAFE_RIGHT) {
-					if(player.Interface & INTER_COMBATMODE)
-						ChangeMoveAnim = alist[ANIM_FIGHT_STRAFE_RIGHT];
-					else if(player.Current_Movement & PLAYER_MOVE_STEALTH)
-						ChangeMoveAnim = alist[ANIM_STRAFE_RIGHT];
-					else
-						ChangeMoveAnim = alist[ANIM_STRAFE_RUN_RIGHT];
-				}
-
-			if(tmove & PLAYER_MOVE_WALK_BACKWARD) {
-				if(player.Interface & INTER_COMBATMODE)
-					ChangeMoveAnim = alist[ANIM_FIGHT_WALK_BACKWARD];
-				else if(player.Current_Movement & PLAYER_MOVE_STEALTH)
-					ChangeMoveAnim = alist[ANIM_WALK_BACKWARD];
-				else if(player.Current_Movement & PLAYER_CROUCH)
-					ChangeMoveAnim = alist[ANIM_WALK_BACKWARD];
-				else
-					ChangeMoveAnim = alist[ANIM_RUN_BACKWARD];
-			}
-
-			if(tmove & PLAYER_MOVE_WALK_FORWARD) {
-				if(player.Interface & INTER_COMBATMODE)
-					ChangeMoveAnim = alist[ANIM_FIGHT_WALK_FORWARD];
-				else if(player.Current_Movement & PLAYER_MOVE_STEALTH)
-					ChangeMoveAnim = alist[ANIM_WALK];
-				else
-					ChangeMoveAnim = alist[ANIM_RUN];
-			}
-		}
-
-		if(!ChangeMoveAnim) {
-			if(EXTERNALVIEW)
-				ChangeMoveAnim = alist[ANIM_WAIT];
+		ChangeMA_Loop = true;
+	}
+	
+	if(ROTATE_START
+	   && player.angle.getYaw() > 60.f
+	   && player.angle.getYaw() < 180.f
+	   && LASTPLAYERA > 60.f
+	   && LASTPLAYERA < 180.f
+	) {
+		if(PLAYER_ROTATION < 0) {
+			if(player.Interface & INTER_COMBATMODE)
+				ChangeMoveAnim = alist[ANIM_U_TURN_LEFT_FIGHT];
 			else
-				ChangeMoveAnim = alist[ANIM_WAIT_SHORT];
-
-			ChangeMA_Loop = true;
+				ChangeMoveAnim = alist[ANIM_U_TURN_LEFT];
+		} else {
+			if(player.Interface & INTER_COMBATMODE)
+				ChangeMoveAnim = alist[ANIM_U_TURN_RIGHT_FIGHT];
+			else
+				ChangeMoveAnim = alist[ANIM_U_TURN_RIGHT];
 		}
-
-		// Finally update anim
-		if(ause1->cur_anim == NULL
-		   && (ause0->cur_anim == alist[ANIM_WAIT] || ause0->cur_anim == alist[ANIM_WAIT_SHORT])
-		   && !(player.Current_Movement & PLAYER_CROUCH)
-		) {
-			if ((player.Current_Movement & PLAYER_LEAN_LEFT)
-			        &&	(player.Current_Movement & PLAYER_LEAN_RIGHT))
-			{
-			} else {
-				if(player.Current_Movement & PLAYER_LEAN_LEFT) {
-					ChangeMoveAnim2 = alist[ANIM_LEAN_LEFT];
-					//ChangeMA_Loop=0;
-				}
-
-				if(player.Current_Movement & PLAYER_LEAN_RIGHT) {
-					ChangeMoveAnim2 = alist[ANIM_LEAN_RIGHT];
-				}
-			}
-		}
-
-		if(ChangeMoveAnim2 == NULL
-		   && ause3->cur_anim
-		   && (ause3->cur_anim == alist[ANIM_LEAN_RIGHT] || ause3->cur_anim == alist[ANIM_LEAN_LEFT])
-		) {
-			AcquireLastAnim(io);
-			ause3->cur_anim = NULL;
-		}
-
-		if((player.Current_Movement & PLAYER_CROUCH) && !(player.Last_Movement & PLAYER_CROUCH)
-		        && !player.levitate)
+		
+		ChangeMA_Loop = true;
+		
+		if(ause0->cur_anim == alist[ANIM_U_TURN_LEFT]
+		   || ause0->cur_anim == alist[ANIM_U_TURN_LEFT_FIGHT])
 		{
-			ChangeMoveAnim = alist[ANIM_CROUCH_START];
-			ChangeMA_Loop = false;
-		}
-		else if(!(player.Current_Movement & PLAYER_CROUCH) && (player.Last_Movement & PLAYER_CROUCH))
-		{
-			ChangeMoveAnim = alist[ANIM_CROUCH_END];
-			ChangeMA_Loop = false;
-		} else if(player.Current_Movement & PLAYER_CROUCH) {
-			if(ause0->cur_anim == alist[ANIM_CROUCH_START]) {
-				if(!(ause0->flags & EA_ANIMEND)) {
-					ChangeMoveAnim = alist[ANIM_CROUCH_START];
-					ChangeMA_Loop = false;
-				} else {
-					ChangeMoveAnim = alist[ANIM_CROUCH_WAIT];
-					ChangeMA_Loop = true;
-					player.physics.cyl.height = player.crouchHeight();
-				}
-			} else {
-				if(ChangeMoveAnim == alist[ANIM_STRAFE_LEFT]
-				   || ChangeMoveAnim == alist[ANIM_STRAFE_RUN_LEFT]
-				   || ChangeMoveAnim == alist[ANIM_FIGHT_STRAFE_LEFT]
-				) {
-					ChangeMoveAnim = alist[ANIM_CROUCH_STRAFE_LEFT];
-					ChangeMA_Loop = true;
-				} else if(ChangeMoveAnim == alist[ANIM_STRAFE_RIGHT]
-						 || ChangeMoveAnim == alist[ANIM_STRAFE_RUN_RIGHT]
-						 || ChangeMoveAnim == alist[ANIM_FIGHT_STRAFE_RIGHT]
-				) {
-					ChangeMoveAnim = alist[ANIM_CROUCH_STRAFE_RIGHT];
-					ChangeMA_Loop = true;
-				} else if(ChangeMoveAnim == alist[ANIM_WALK]
-						 || ChangeMoveAnim == alist[ANIM_RUN]
-						 || ChangeMoveAnim == alist[ANIM_FIGHT_WALK_FORWARD]
-				) {
-					ChangeMoveAnim = alist[ANIM_CROUCH_WALK];
-					ChangeMA_Loop = true;
-				} else if(ChangeMoveAnim == alist[ANIM_WALK_BACKWARD]
-						 || ChangeMoveAnim == alist[ANIM_FIGHT_WALK_BACKWARD]
-				) {
-					ChangeMoveAnim = alist[ANIM_CROUCH_WALK_BACKWARD];
-					ChangeMA_Loop = true;
-				} else {
-					ChangeMoveAnim = alist[ANIM_CROUCH_WAIT];
-					ChangeMA_Loop = true;
-				}
-			}
-		}
-
-		if(ause0->cur_anim == alist[ANIM_CROUCH_END]) {
-			if(!(ause0->flags & EA_ANIMEND))
-				goto nochanges;
-		}
-
-	retry:
-		;
-
-		if(spells.ExistAnyInstanceForThisCaster(SPELL_FLYING_EYE, PlayerEntityHandle)) {
-			ChangeMoveAnim = alist[ANIM_MEDITATION];
-			ChangeMA_Loop = true;
-			goto makechanges;
-		} else if(spells.getSpellOnTarget(io->index(), SPELL_LEVITATE)) {
-			ChangeMoveAnim = alist[ANIM_LEVITATE];
-			ChangeMA_Loop = true;
-			goto makechanges;
-		} else if(player.jumpphase != NotJumping) {
+			float fv = PLAYER_ROTATION * 5;
+			long vv = fv;
+			io->frameloss -= fv - (float)vv;
 			
-			switch(player.jumpphase) {
-				case NotJumping:
-				break;
-				case JumpStart: { // Anticipation
-					FALLING_TIME = 0;
-					player.jumpphase = JumpAscending;
-					ChangeMoveAnim = alist[ANIM_JUMP_UP];
-					player.jumpstarttime = (unsigned long)(arxtime);
-					player.jumplastposition = -1.f;
-					break;
-				}
-				case JumpAscending: { // Moving up
-					ChangeMoveAnim = alist[ANIM_JUMP_UP];
-					if(player.jumplastposition >= 1.f) {
-						player.jumpphase = JumpDescending;
-						ChangeMoveAnim = alist[ANIM_JUMP_CYCLE];
-						ARX_PLAYER_StartFall();
-					}
-					break;
-				}
-				case JumpDescending: { // Post-synch
-					LAST_JUMP_ENDTIME = (unsigned long)(arxtime);
-					if((ause0->cur_anim == alist[ANIM_JUMP_END] && (ause0->flags & EA_ANIMEND))
-					   || player.onfirmground) {
-						player.jumpphase = JumpEnd;
-						ChangeMoveAnim = alist[ANIM_JUMP_END_PART2];
-					} else {
-						ChangeMoveAnim = alist[ANIM_JUMP_END];
-					}
-					break;
-				}
-				case JumpEnd: { // Post-synch
-					LAST_JUMP_ENDTIME = (unsigned long)(arxtime);
-					if(ause0->cur_anim == alist[ANIM_JUMP_END_PART2] && (ause0->flags & EA_ANIMEND)) {
-						AcquireLastAnim(io);
-						player.jumpphase = NotJumping;
-						goto retry;
-					} else if(ause0->cur_anim == alist[ANIM_JUMP_END_PART2]
-					         && glm::abs(player.physics.velocity.x)
-					             + glm::abs(player.physics.velocity.z) > (4.f/TARGET_DT)
-					         && ause0->ctime > 1) {
-						AcquireLastAnim(io);
-						player.jumpphase = NotJumping;
-						goto retry;
-					} else {
-						ChangeMoveAnim = alist[ANIM_JUMP_END_PART2];
-					}
-					break;
-				}
+			if (io->frameloss < 0) io->frameloss = 0;
+			
+			ause0->ctime -= vv;
+			
+			if(ause0->ctime < 0)
+				ause0->ctime = 0;
+		}
+		else if(ause0->cur_anim == alist[ANIM_U_TURN_RIGHT]
+				 ||	ause0->cur_anim == alist[ANIM_U_TURN_RIGHT_FIGHT])
+		{
+			long vv = PLAYER_ROTATION * 5;
+			float fv = PLAYER_ROTATION * 5;
+			io->frameloss += fv - (float)vv;
+			
+			if (io->frameloss < 0) io->frameloss = 0;
+			
+			ause0->ctime += vv;
+			
+			if(ause0->ctime < 0)
+				ause0->ctime = 0;
+		}
+	}
+	
+	LASTPLAYERA = player.angle.getYaw();
+	
+	{
+		long tmove = player.Current_Movement;
+		
+		if((tmove & PLAYER_MOVE_STRAFE_LEFT) && (tmove & PLAYER_MOVE_STRAFE_RIGHT)) {
+			tmove &= ~PLAYER_MOVE_STRAFE_LEFT;
+			tmove &= ~PLAYER_MOVE_STRAFE_RIGHT;
+		}
+		
+		if(MOVE_PRECEDENCE == PLAYER_MOVE_STRAFE_LEFT)
+			tmove &= ~PLAYER_MOVE_STRAFE_RIGHT;
+		
+		if(MOVE_PRECEDENCE == PLAYER_MOVE_STRAFE_RIGHT)
+			tmove &= ~PLAYER_MOVE_STRAFE_LEFT;
+		
+		if(MOVE_PRECEDENCE == PLAYER_MOVE_WALK_FORWARD)
+			tmove &= ~PLAYER_MOVE_WALK_BACKWARD;
+		
+		if(player.Current_Movement & PLAYER_MOVE_WALK_FORWARD)
+			tmove = PLAYER_MOVE_WALK_FORWARD;
+		
+			if(tmove & PLAYER_MOVE_STRAFE_LEFT) {
+				if(player.Interface & INTER_COMBATMODE)
+					ChangeMoveAnim = alist[ANIM_FIGHT_STRAFE_LEFT];
+				else if(player.Current_Movement & PLAYER_MOVE_STEALTH)
+					ChangeMoveAnim = alist[ANIM_STRAFE_LEFT];
+				else
+					ChangeMoveAnim = alist[ANIM_STRAFE_RUN_LEFT];
 			}
-
-			if(ChangeMoveAnim && ChangeMoveAnim != ause0->cur_anim) {
-				AcquireLastAnim(io);
-				ResetAnim(ause0);
-				ause0->cur_anim = ChangeMoveAnim;
-				ause0->flags = EA_STATICANIM;
-
-				if(ChangeMoveAnim == alist[ANIM_U_TURN_LEFT]
-				   || ChangeMoveAnim == alist[ANIM_U_TURN_RIGHT]
-				   || ChangeMoveAnim == alist[ANIM_U_TURN_RIGHT_FIGHT]
-				   || ChangeMoveAnim == alist[ANIM_U_TURN_LEFT_FIGHT]
-				) {
-					ause0->flags |= EA_EXCONTROL;
-				}
+			
+			if(tmove & PLAYER_MOVE_STRAFE_RIGHT) {
+				if(player.Interface & INTER_COMBATMODE)
+					ChangeMoveAnim = alist[ANIM_FIGHT_STRAFE_RIGHT];
+				else if(player.Current_Movement & PLAYER_MOVE_STEALTH)
+					ChangeMoveAnim = alist[ANIM_STRAFE_RIGHT];
+				else
+					ChangeMoveAnim = alist[ANIM_STRAFE_RUN_RIGHT];
 			}
-
-			if(ChangeMoveAnim2 && ChangeMoveAnim2 != ause3->cur_anim) {
-				AcquireLastAnim(io);
-				ResetAnim(ause3);
-				ause3->cur_anim = ChangeMoveAnim2;
-				ause3->flags = EA_STATICANIM;
+		
+		if(tmove & PLAYER_MOVE_WALK_BACKWARD) {
+			if(player.Interface & INTER_COMBATMODE)
+				ChangeMoveAnim = alist[ANIM_FIGHT_WALK_BACKWARD];
+			else if(player.Current_Movement & PLAYER_MOVE_STEALTH)
+				ChangeMoveAnim = alist[ANIM_WALK_BACKWARD];
+			else if(player.Current_Movement & PLAYER_CROUCH)
+				ChangeMoveAnim = alist[ANIM_WALK_BACKWARD];
+			else
+				ChangeMoveAnim = alist[ANIM_RUN_BACKWARD];
+		}
+		
+		if(tmove & PLAYER_MOVE_WALK_FORWARD) {
+			if(player.Interface & INTER_COMBATMODE)
+				ChangeMoveAnim = alist[ANIM_FIGHT_WALK_FORWARD];
+			else if(player.Current_Movement & PLAYER_MOVE_STEALTH)
+				ChangeMoveAnim = alist[ANIM_WALK];
+			else
+				ChangeMoveAnim = alist[ANIM_RUN];
+		}
+	}
+	
+	if(!ChangeMoveAnim) {
+		if(EXTERNALVIEW)
+			ChangeMoveAnim = alist[ANIM_WAIT];
+		else
+			ChangeMoveAnim = alist[ANIM_WAIT_SHORT];
+		
+		ChangeMA_Loop = true;
+	}
+	
+	// Finally update anim
+	if(ause1->cur_anim == NULL
+	   && (ause0->cur_anim == alist[ANIM_WAIT] || ause0->cur_anim == alist[ANIM_WAIT_SHORT])
+	   && !(player.Current_Movement & PLAYER_CROUCH)
+	) {
+		if ((player.Current_Movement & PLAYER_LEAN_LEFT)
+				&&	(player.Current_Movement & PLAYER_LEAN_RIGHT))
+		{
+		} else {
+			if(player.Current_Movement & PLAYER_LEAN_LEFT) {
+				ChangeMoveAnim2 = alist[ANIM_LEAN_LEFT];
+				//ChangeMA_Loop=0;
+			}
+			
+			if(player.Current_Movement & PLAYER_LEAN_RIGHT) {
+				ChangeMoveAnim2 = alist[ANIM_LEAN_RIGHT];
+			}
+		}
+	}
+	
+	if(ChangeMoveAnim2 == NULL
+	   && ause3->cur_anim
+	   && (ause3->cur_anim == alist[ANIM_LEAN_RIGHT] || ause3->cur_anim == alist[ANIM_LEAN_LEFT])
+	) {
+		AcquireLastAnim(io);
+		ause3->cur_anim = NULL;
+	}
+	
+	if((player.Current_Movement & PLAYER_CROUCH) && !(player.Last_Movement & PLAYER_CROUCH)
+			&& !player.levitate)
+	{
+		ChangeMoveAnim = alist[ANIM_CROUCH_START];
+		ChangeMA_Loop = false;
+	}
+	else if(!(player.Current_Movement & PLAYER_CROUCH) && (player.Last_Movement & PLAYER_CROUCH))
+	{
+		ChangeMoveAnim = alist[ANIM_CROUCH_END];
+		ChangeMA_Loop = false;
+	} else if(player.Current_Movement & PLAYER_CROUCH) {
+		if(ause0->cur_anim == alist[ANIM_CROUCH_START]) {
+			if(!(ause0->flags & EA_ANIMEND)) {
+				ChangeMoveAnim = alist[ANIM_CROUCH_START];
+				ChangeMA_Loop = false;
+			} else {
+				ChangeMoveAnim = alist[ANIM_CROUCH_WAIT];
+				ChangeMA_Loop = true;
+				player.physics.cyl.height = player.crouchHeight();
 			}
 		} else {
-		makechanges:
-			;
-
-			if(ChangeMoveAnim && ChangeMoveAnim != ause0->cur_anim) {
-				AcquireLastAnim(io);
-				ResetAnim(ause0);
-				ause0->cur_anim = ChangeMoveAnim;
-				ause0->flags = EA_STATICANIM;
-
-				if(ChangeMA_Loop)
-					ause0->flags |= EA_LOOP;
-
-				if(ChangeMA_Stopend)
-					ause0->flags |= EA_STOPEND;
-
-				if(ChangeMoveAnim == alist[ANIM_U_TURN_LEFT]
-				   || ChangeMoveAnim == alist[ANIM_U_TURN_RIGHT]
-				   || ChangeMoveAnim == alist[ANIM_U_TURN_RIGHT_FIGHT]
-				   || ChangeMoveAnim == alist[ANIM_U_TURN_LEFT_FIGHT]
-				) {
-					ause0->flags |= EA_EXCONTROL;
-				}
-			}
-
-			if(ChangeMoveAnim2 && ChangeMoveAnim2 != ause3->cur_anim) {
-				AcquireLastAnim(io);
-				ResetAnim(ause3);
-				ause3->cur_anim = ChangeMoveAnim2;
-				ause3->flags = EA_STATICANIM;
+			if(ChangeMoveAnim == alist[ANIM_STRAFE_LEFT]
+			   || ChangeMoveAnim == alist[ANIM_STRAFE_RUN_LEFT]
+			   || ChangeMoveAnim == alist[ANIM_FIGHT_STRAFE_LEFT]
+			) {
+				ChangeMoveAnim = alist[ANIM_CROUCH_STRAFE_LEFT];
+				ChangeMA_Loop = true;
+			} else if(ChangeMoveAnim == alist[ANIM_STRAFE_RIGHT]
+					 || ChangeMoveAnim == alist[ANIM_STRAFE_RUN_RIGHT]
+					 || ChangeMoveAnim == alist[ANIM_FIGHT_STRAFE_RIGHT]
+			) {
+				ChangeMoveAnim = alist[ANIM_CROUCH_STRAFE_RIGHT];
+				ChangeMA_Loop = true;
+			} else if(ChangeMoveAnim == alist[ANIM_WALK]
+					 || ChangeMoveAnim == alist[ANIM_RUN]
+					 || ChangeMoveAnim == alist[ANIM_FIGHT_WALK_FORWARD]
+			) {
+				ChangeMoveAnim = alist[ANIM_CROUCH_WALK];
+				ChangeMA_Loop = true;
+			} else if(ChangeMoveAnim == alist[ANIM_WALK_BACKWARD]
+					 || ChangeMoveAnim == alist[ANIM_FIGHT_WALK_BACKWARD]
+			) {
+				ChangeMoveAnim = alist[ANIM_CROUCH_WALK_BACKWARD];
+				ChangeMA_Loop = true;
+			} else {
+				ChangeMoveAnim = alist[ANIM_CROUCH_WAIT];
+				ChangeMA_Loop = true;
 			}
 		}
-
-		io->physics = player.physics;
 	}
+	
+	if(ause0->cur_anim == alist[ANIM_CROUCH_END]) {
+		if(!(ause0->flags & EA_ANIMEND))
+			goto nochanges;
+	}
+	
+retry:
+	;
+	
+	if(spells.ExistAnyInstanceForThisCaster(SPELL_FLYING_EYE, PlayerEntityHandle)) {
+		ChangeMoveAnim = alist[ANIM_MEDITATION];
+		ChangeMA_Loop = true;
+		goto makechanges;
+	} else if(spells.getSpellOnTarget(io->index(), SPELL_LEVITATE)) {
+		ChangeMoveAnim = alist[ANIM_LEVITATE];
+		ChangeMA_Loop = true;
+		goto makechanges;
+	} else if(player.jumpphase != NotJumping) {
+		
+		switch(player.jumpphase) {
+			case NotJumping:
+			break;
+			case JumpStart: { // Anticipation
+				FALLING_TIME = 0;
+				player.jumpphase = JumpAscending;
+				ChangeMoveAnim = alist[ANIM_JUMP_UP];
+				player.jumpstarttime = (unsigned long)(arxtime);
+				player.jumplastposition = -1.f;
+				break;
+			}
+			case JumpAscending: { // Moving up
+				ChangeMoveAnim = alist[ANIM_JUMP_UP];
+				if(player.jumplastposition >= 1.f) {
+					player.jumpphase = JumpDescending;
+					ChangeMoveAnim = alist[ANIM_JUMP_CYCLE];
+					ARX_PLAYER_StartFall();
+				}
+				break;
+			}
+			case JumpDescending: { // Post-synch
+				LAST_JUMP_ENDTIME = (unsigned long)(arxtime);
+				if((ause0->cur_anim == alist[ANIM_JUMP_END] && (ause0->flags & EA_ANIMEND))
+				   || player.onfirmground) {
+					player.jumpphase = JumpEnd;
+					ChangeMoveAnim = alist[ANIM_JUMP_END_PART2];
+				} else {
+					ChangeMoveAnim = alist[ANIM_JUMP_END];
+				}
+				break;
+			}
+			case JumpEnd: { // Post-synch
+				LAST_JUMP_ENDTIME = (unsigned long)(arxtime);
+				if(ause0->cur_anim == alist[ANIM_JUMP_END_PART2] && (ause0->flags & EA_ANIMEND)) {
+					AcquireLastAnim(io);
+					player.jumpphase = NotJumping;
+					goto retry;
+				} else if(ause0->cur_anim == alist[ANIM_JUMP_END_PART2]
+						 && glm::abs(player.physics.velocity.x)
+							 + glm::abs(player.physics.velocity.z) > (4.f/TARGET_DT)
+						 && ause0->ctime > 1) {
+					AcquireLastAnim(io);
+					player.jumpphase = NotJumping;
+					goto retry;
+				} else {
+					ChangeMoveAnim = alist[ANIM_JUMP_END_PART2];
+				}
+				break;
+			}
+		}
+		
+		if(ChangeMoveAnim && ChangeMoveAnim != ause0->cur_anim) {
+			AcquireLastAnim(io);
+			ResetAnim(ause0);
+			ause0->cur_anim = ChangeMoveAnim;
+			ause0->flags = EA_STATICANIM;
 
+			if(ChangeMoveAnim == alist[ANIM_U_TURN_LEFT]
+			   || ChangeMoveAnim == alist[ANIM_U_TURN_RIGHT]
+			   || ChangeMoveAnim == alist[ANIM_U_TURN_RIGHT_FIGHT]
+			   || ChangeMoveAnim == alist[ANIM_U_TURN_LEFT_FIGHT]
+			) {
+				ause0->flags |= EA_EXCONTROL;
+			}
+		}
+		
+		if(ChangeMoveAnim2 && ChangeMoveAnim2 != ause3->cur_anim) {
+			AcquireLastAnim(io);
+			ResetAnim(ause3);
+			ause3->cur_anim = ChangeMoveAnim2;
+			ause3->flags = EA_STATICANIM;
+		}
+	} else {
+	makechanges:
+		;
+		
+		if(ChangeMoveAnim && ChangeMoveAnim != ause0->cur_anim) {
+			AcquireLastAnim(io);
+			ResetAnim(ause0);
+			ause0->cur_anim = ChangeMoveAnim;
+			ause0->flags = EA_STATICANIM;
+			
+			if(ChangeMA_Loop)
+				ause0->flags |= EA_LOOP;
+			
+			if(ChangeMA_Stopend)
+				ause0->flags |= EA_STOPEND;
+			
+			if(ChangeMoveAnim == alist[ANIM_U_TURN_LEFT]
+			   || ChangeMoveAnim == alist[ANIM_U_TURN_RIGHT]
+			   || ChangeMoveAnim == alist[ANIM_U_TURN_RIGHT_FIGHT]
+			   || ChangeMoveAnim == alist[ANIM_U_TURN_LEFT_FIGHT]
+			) {
+				ause0->flags |= EA_EXCONTROL;
+			}
+		}
+		
+		if(ChangeMoveAnim2 && ChangeMoveAnim2 != ause3->cur_anim) {
+			AcquireLastAnim(io);
+			ResetAnim(ause3);
+			ause3->cur_anim = ChangeMoveAnim2;
+			ause3->flags = EA_STATICANIM;
+		}
+	}
+	
+	io->physics = player.physics;
+	}
+	
 nochanges:
 	;
 	player.Last_Movement = player.Current_Movement;
