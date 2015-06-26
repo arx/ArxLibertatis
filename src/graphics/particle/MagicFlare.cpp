@@ -218,15 +218,15 @@ void AddFlare(const Vec2s & pos, float sm, short typ, Entity * io, bool bookDraw
 
 	switch(PIPOrgb) {
 		case 0: {
-			fl->rgb = Color3f(rnd() * (2.f/3) + .4f, rnd() * (2.f/3), rnd() * (2.f/3) + .4f);
+			fl->rgb = Color3f(.4f, 0.f, .4f) + Color3f(2.f/3, 2.f/3, 2.f/3) * Color3f(rnd(), rnd(), rnd());
 			break;
 		}
 		case 1: {
-			fl->rgb = Color3f(rnd() * .625f + .5f, rnd() * .625f + .5f, rnd() * .55f);
+			fl->rgb = Color3f(.5f, .5f, 0.f) + Color3f(.625f, .625f, .55f) * Color3f(rnd(), rnd(), rnd());
 			break;
 		}
 		case 2: {
-			fl->rgb = Color3f(rnd() * (2.f/3) + .4f, rnd() * .55f, rnd() * .55f);
+			fl->rgb = Color3f(.4f, 0.f, 0.f) + Color3f(2.f/3, .55f, .55f) * Color3f(rnd(), rnd(), rnd());
 			break;
 		}
 	}
