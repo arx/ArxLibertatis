@@ -491,9 +491,7 @@ void IceFieldSpell::Launch()
 			tType[i] = 1;
 		
 		tSize[i] = Vec3f_ZERO;
-		tSizeMax[i].x = rnd();
-		tSizeMax[i].y = rnd() + 0.2f;
-		tSizeMax[i].z = rnd();
+		tSizeMax[i] = Vec3f(rnd(), rnd(), rnd()) + Vec3f(0.f, 0.2f, 0.f);
 		
 		Vec3f minPos;
 		if(tType[i] == 0) {
