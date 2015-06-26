@@ -1411,7 +1411,7 @@ void ARX_PLAYER_Manage_Visual() {
 	}
 	
 	ANIM_HANDLE * request0_anim = NULL;
-	ANIM_HANDLE * ChangeMoveAnim2 = NULL;
+	ANIM_HANDLE * request3_anim = NULL;
 	bool request0_loop = true;
 	bool request0_stopend = false;
 	
@@ -1573,17 +1573,17 @@ void ARX_PLAYER_Manage_Visual() {
 		{
 		} else {
 			if(player.Current_Movement & PLAYER_LEAN_LEFT) {
-				ChangeMoveAnim2 = alist[ANIM_LEAN_LEFT];
+				request3_anim = alist[ANIM_LEAN_LEFT];
 				//ChangeMA_Loop=0;
 			}
 			
 			if(player.Current_Movement & PLAYER_LEAN_RIGHT) {
-				ChangeMoveAnim2 = alist[ANIM_LEAN_RIGHT];
+				request3_anim = alist[ANIM_LEAN_RIGHT];
 			}
 		}
 	}
 	
-	if(ChangeMoveAnim2 == NULL
+	if(request3_anim == NULL
 	   && ause3->cur_anim
 	   && (ause3->cur_anim == alist[ANIM_LEAN_RIGHT] || ause3->cur_anim == alist[ANIM_LEAN_LEFT])
 	) {
@@ -1726,10 +1726,10 @@ retry:
 			}
 		}
 		
-		if(ChangeMoveAnim2 && ChangeMoveAnim2 != ause3->cur_anim) {
+		if(request3_anim && request3_anim != ause3->cur_anim) {
 			AcquireLastAnim(io);
 			ResetAnim(ause3);
-			ause3->cur_anim = ChangeMoveAnim2;
+			ause3->cur_anim = request3_anim;
 			ause3->flags = EA_STATICANIM;
 		}
 	} else {
@@ -1757,10 +1757,10 @@ retry:
 			}
 		}
 		
-		if(ChangeMoveAnim2 && ChangeMoveAnim2 != ause3->cur_anim) {
+		if(request3_anim && request3_anim != ause3->cur_anim) {
 			AcquireLastAnim(io);
 			ResetAnim(ause3);
-			ause3->cur_anim = ChangeMoveAnim2;
+			ause3->cur_anim = request3_anim;
 			ause3->flags = EA_STATICANIM;
 		}
 	}
