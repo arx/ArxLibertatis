@@ -542,9 +542,7 @@ void IceFieldSpell::Update(float timeDelta) {
 		el->intensity = 4.6f;
 		el->fallstart = 150.f+rnd()*30.f;
 		el->fallend   = 290.f+rnd()*30.f;
-		el->rgb.r = 0.76f;
-		el->rgb.g = 0.76f;
-		el->rgb.b = 1.0f-rnd()*( 1.0f / 10 );
+		el->rgb = Color3f(0.76f, 0.76f, 1.0f) + Color3f(0.f, 0.f, -rnd()*(1.0f/10));
 		el->duration = 600;
 		el->extras=0;
 	}
