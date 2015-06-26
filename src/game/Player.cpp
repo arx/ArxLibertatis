@@ -1711,27 +1711,7 @@ retry:
 			}
 		}
 		
-		if(request0_anim && request0_anim != ause0->cur_anim) {
-			AcquireLastAnim(io);
-			ResetAnim(ause0);
-			ause0->cur_anim = request0_anim;
-			ause0->flags = EA_STATICANIM;
-
-			if(request0_anim == alist[ANIM_U_TURN_LEFT]
-			   || request0_anim == alist[ANIM_U_TURN_RIGHT]
-			   || request0_anim == alist[ANIM_U_TURN_RIGHT_FIGHT]
-			   || request0_anim == alist[ANIM_U_TURN_LEFT_FIGHT]
-			) {
-				ause0->flags |= EA_EXCONTROL;
-			}
-		}
-		
-		if(request3_anim && request3_anim != ause3->cur_anim) {
-			AcquireLastAnim(io);
-			ResetAnim(ause3);
-			ause3->cur_anim = request3_anim;
-			ause3->flags = EA_STATICANIM;
-		}
+		goto makechanges;
 	} else {
 	makechanges:
 		;
