@@ -138,8 +138,6 @@ PackedTexture::TextureTree::Node::~Node() {
 
 PackedTexture::TextureTree::Node * PackedTexture::TextureTree::Node::insertImage(const Image & image) {
 	
-	Node * result = NULL;
-	
 	// We're in a full node/leaf, return immediately.
 	if(used) {
 		return NULL;
@@ -148,7 +146,7 @@ PackedTexture::TextureTree::Node * PackedTexture::TextureTree::Node::insertImage
 	// If we're not a leaf, try inserting in childs
 	if(children[0]) {
 		
-		result = children[0]->insertImage(image);
+		Node * result = children[0]->insertImage(image);
 		
 		if(!result) {
 			result = children[1]->insertImage(image);
