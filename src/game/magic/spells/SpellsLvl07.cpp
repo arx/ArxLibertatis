@@ -676,42 +676,42 @@ static Vec3f GetChestPos(EntityHandle num) {
 
 void LightningStrikeSpell::Update(float timeDelta) {
 	
-		float fBeta = 0.f;
-		float falpha = 0.f;
-		
-		Entity * caster = entities[m_caster];
-		long idx = GetGroupOriginByName(caster->obj, "chest");
-		if(idx >= 0) {
-			m_caster_pos = caster->obj->vertexlist3[idx].v;
-		} else {
-			m_caster_pos = caster->pos;
+	float fBeta = 0.f;
+	float falpha = 0.f;
+	
+	Entity * caster = entities[m_caster];
+	long idx = GetGroupOriginByName(caster->obj, "chest");
+	if(idx >= 0) {
+		m_caster_pos = caster->obj->vertexlist3[idx].v;
+	} else {
+		m_caster_pos = caster->pos;
+	}
+	
+	if(m_caster == PlayerEntityHandle) {
+		falpha = -player.angle.getYaw();
+		fBeta = player.angle.getPitch();
+	} else {
+		fBeta = caster->angle.getPitch();
+		if(ValidIONum(caster->targetinfo) && caster->targetinfo != m_caster) {
+			const Vec3f & p1 = m_caster_pos;
+			Vec3f p2 = GetChestPos(caster->targetinfo);
+			falpha = MAKEANGLE(glm::degrees(getAngle(p1.y, p1.z, p2.y, p2.z + glm::distance(Vec2f(p2.x, p2.z), Vec2f(p1.x, p1.z))))); //alpha entre orgn et dest;
+		} else if(ValidIONum(m_target)) {
+			const Vec3f & p1 = m_caster_pos;
+			Vec3f p2 = GetChestPos(m_target);
+			falpha = MAKEANGLE(glm::degrees(getAngle(p1.y, p1.z, p2.y, p2.z + glm::distance(Vec2f(p2.x, p2.z), Vec2f(p1.x, p1.z))))); //alpha entre orgn et dest;
 		}
-		
-		if(m_caster == PlayerEntityHandle) {
-			falpha = -player.angle.getYaw();
-			fBeta = player.angle.getPitch();
-		} else {
-			fBeta = caster->angle.getPitch();
-			if(ValidIONum(caster->targetinfo) && caster->targetinfo != m_caster) {
-				const Vec3f & p1 = m_caster_pos;
-				Vec3f p2 = GetChestPos(caster->targetinfo);
-				falpha = MAKEANGLE(glm::degrees(getAngle(p1.y, p1.z, p2.y, p2.z + glm::distance(Vec2f(p2.x, p2.z), Vec2f(p1.x, p1.z))))); //alpha entre orgn et dest;
-			} else if(ValidIONum(m_target)) {
-				const Vec3f & p1 = m_caster_pos;
-				Vec3f p2 = GetChestPos(m_target);
-				falpha = MAKEANGLE(glm::degrees(getAngle(p1.y, p1.z, p2.y, p2.z + glm::distance(Vec2f(p2.x, p2.z), Vec2f(p1.x, p1.z))))); //alpha entre orgn et dest;
-			}
-		}
-		
-		m_lightning.m_pos = m_caster_pos;
-		m_lightning.m_beta = fBeta;
-		m_lightning.m_alpha = falpha;
-		
-		m_lightning.m_caster = m_caster;
-		m_lightning.m_level = m_level;
-		
-		m_lightning.Update(timeDelta);
-		m_lightning.Render();
+	}
+	
+	m_lightning.m_pos = m_caster_pos;
+	m_lightning.m_beta = fBeta;
+	m_lightning.m_alpha = falpha;
+	
+	m_lightning.m_caster = m_caster;
+	m_lightning.m_level = m_level;
+	
+	m_lightning.Update(timeDelta);
+	m_lightning.Render();
 	
 	ARX_SOUND_RefreshPosition(m_snd_loop, entities[m_caster]->pos);
 }
