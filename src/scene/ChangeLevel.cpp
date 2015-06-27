@@ -2089,26 +2089,27 @@ static Entity * ARX_CHANGELEVEL_Pop_IO(const std::string & idString, EntityInsta
 		std::copy(ais->animlayer, ais->animlayer + SAVED_MAX_ANIM_LAYERS, io->animlayer);
 		
 		for(long k = 0; k < MAX_ANIM_LAYERS; k++) {
+			ANIM_USE & layer = io->animlayer[k];
 			
 			long nn = (long)ais->animlayer[k].cur_anim;
 			if(nn == -1) {
-				io->animlayer[k].cur_anim = NULL;
+				layer.cur_anim = NULL;
 			} else {
-				io->animlayer[k].cur_anim = io->anims[nn];
-				if(io->animlayer[k].cur_anim && io->animlayer[k].altidx_cur >= io->animlayer[k].cur_anim->alt_nb) {
-					LogWarning << "Out of bounds animation alternative index " << io->animlayer[k].altidx_cur << " for " << io->animlayer[k].cur_anim->path << ", resetting to 0";
-					io->animlayer[k].altidx_cur = 0;
+				layer.cur_anim = io->anims[nn];
+				if(layer.cur_anim && layer.altidx_cur >= layer.cur_anim->alt_nb) {
+					LogWarning << "Out of bounds animation alternative index " << layer.altidx_cur << " for " << layer.cur_anim->path << ", resetting to 0";
+					layer.altidx_cur = 0;
 				}
 			}
 			
 			nn = (long)ais->animlayer[k].next_anim;
 			if(nn == -1) {
-				io->animlayer[k].next_anim = NULL;
+				layer.next_anim = NULL;
 			} else {
-				io->animlayer[k].next_anim = io->anims[nn];
-				if(io->animlayer[k].next_anim && io->animlayer[k].altidx_next >= io->animlayer[k].next_anim->alt_nb) {
-					LogWarning << "Out of bounds animation alternative index " << io->animlayer[k].altidx_next << " for " << io->animlayer[k].next_anim->path << ", resetting to 0";
-					io->animlayer[k].altidx_next = 0;
+				layer.next_anim = io->anims[nn];
+				if(layer.next_anim && layer.altidx_next >= layer.next_anim->alt_nb) {
+					LogWarning << "Out of bounds animation alternative index " << layer.altidx_next << " for " << layer.next_anim->path << ", resetting to 0";
+					layer.altidx_next = 0;
 				}
 			}
 		}
