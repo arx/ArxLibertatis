@@ -1614,26 +1614,26 @@ void ARX_PLAYER_Manage_Visual() {
 				player.physics.cyl.height = player.crouchHeight();
 			}
 		} else {
-			if(request0_anim == alist[ANIM_STRAFE_LEFT]
+			if(   request0_anim == alist[ANIM_STRAFE_LEFT]
 			   || request0_anim == alist[ANIM_STRAFE_RUN_LEFT]
 			   || request0_anim == alist[ANIM_FIGHT_STRAFE_LEFT]
 			) {
 				request0_anim = alist[ANIM_CROUCH_STRAFE_LEFT];
 				request0_loop = true;
-			} else if(request0_anim == alist[ANIM_STRAFE_RIGHT]
-					 || request0_anim == alist[ANIM_STRAFE_RUN_RIGHT]
-					 || request0_anim == alist[ANIM_FIGHT_STRAFE_RIGHT]
+			} else if(   request0_anim == alist[ANIM_STRAFE_RIGHT]
+			          || request0_anim == alist[ANIM_STRAFE_RUN_RIGHT]
+			          || request0_anim == alist[ANIM_FIGHT_STRAFE_RIGHT]
 			) {
 				request0_anim = alist[ANIM_CROUCH_STRAFE_RIGHT];
 				request0_loop = true;
-			} else if(request0_anim == alist[ANIM_WALK]
-					 || request0_anim == alist[ANIM_RUN]
-					 || request0_anim == alist[ANIM_FIGHT_WALK_FORWARD]
+			} else if(   request0_anim == alist[ANIM_WALK]
+			          || request0_anim == alist[ANIM_RUN]
+			          || request0_anim == alist[ANIM_FIGHT_WALK_FORWARD]
 			) {
 				request0_anim = alist[ANIM_CROUCH_WALK];
 				request0_loop = true;
-			} else if(request0_anim == alist[ANIM_WALK_BACKWARD]
-					 || request0_anim == alist[ANIM_FIGHT_WALK_BACKWARD]
+			} else if(   request0_anim == alist[ANIM_WALK_BACKWARD]
+			          || request0_anim == alist[ANIM_FIGHT_WALK_BACKWARD]
 			) {
 				request0_anim = alist[ANIM_CROUCH_WALK_BACKWARD];
 				request0_loop = true;
