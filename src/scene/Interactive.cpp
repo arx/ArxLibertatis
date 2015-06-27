@@ -941,9 +941,7 @@ void RestoreInitialIOStatusOfIO(Entity * io)
 		io->poisonous_count = 0;
 
 		for(long count = 0; count < MAX_ANIM_LAYERS; count++) {
-			memset(&io->animlayer[count], 0, sizeof(ANIM_USE));
-			io->animlayer[count].cur_anim = NULL;
-			io->animlayer[count].next_anim = NULL;
+			io->animlayer[count] = ANIM_USE();
 		}
 
 		if(io->obj && io->obj->pbox) {
