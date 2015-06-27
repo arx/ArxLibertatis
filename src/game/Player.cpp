@@ -1498,62 +1498,62 @@ void ARX_PLAYER_Manage_Visual() {
 	LASTPLAYERA = player.angle.getYaw();
 	
 	{
-		long tmove = player.Current_Movement;
-		
-		if((tmove & PLAYER_MOVE_STRAFE_LEFT) && (tmove & PLAYER_MOVE_STRAFE_RIGHT)) {
-			tmove &= ~PLAYER_MOVE_STRAFE_LEFT;
-			tmove &= ~PLAYER_MOVE_STRAFE_RIGHT;
-		}
-		
-		if(MOVE_PRECEDENCE == PLAYER_MOVE_STRAFE_LEFT)
-			tmove &= ~PLAYER_MOVE_STRAFE_RIGHT;
-		
-		if(MOVE_PRECEDENCE == PLAYER_MOVE_STRAFE_RIGHT)
-			tmove &= ~PLAYER_MOVE_STRAFE_LEFT;
-		
-		if(MOVE_PRECEDENCE == PLAYER_MOVE_WALK_FORWARD)
-			tmove &= ~PLAYER_MOVE_WALK_BACKWARD;
-		
-		if(player.Current_Movement & PLAYER_MOVE_WALK_FORWARD)
-			tmove = PLAYER_MOVE_WALK_FORWARD;
-		
-			if(tmove & PLAYER_MOVE_STRAFE_LEFT) {
-				if(player.Interface & INTER_COMBATMODE)
-					request0_anim = alist[ANIM_FIGHT_STRAFE_LEFT];
-				else if(player.Current_Movement & PLAYER_MOVE_STEALTH)
-					request0_anim = alist[ANIM_STRAFE_LEFT];
-				else
-					request0_anim = alist[ANIM_STRAFE_RUN_LEFT];
-			}
-			
-			if(tmove & PLAYER_MOVE_STRAFE_RIGHT) {
-				if(player.Interface & INTER_COMBATMODE)
-					request0_anim = alist[ANIM_FIGHT_STRAFE_RIGHT];
-				else if(player.Current_Movement & PLAYER_MOVE_STEALTH)
-					request0_anim = alist[ANIM_STRAFE_RIGHT];
-				else
-					request0_anim = alist[ANIM_STRAFE_RUN_RIGHT];
-			}
-		
-		if(tmove & PLAYER_MOVE_WALK_BACKWARD) {
-			if(player.Interface & INTER_COMBATMODE)
-				request0_anim = alist[ANIM_FIGHT_WALK_BACKWARD];
-			else if(player.Current_Movement & PLAYER_MOVE_STEALTH)
-				request0_anim = alist[ANIM_WALK_BACKWARD];
-			else if(player.Current_Movement & PLAYER_CROUCH)
-				request0_anim = alist[ANIM_WALK_BACKWARD];
-			else
-				request0_anim = alist[ANIM_RUN_BACKWARD];
-		}
-		
-		if(tmove & PLAYER_MOVE_WALK_FORWARD) {
-			if(player.Interface & INTER_COMBATMODE)
-				request0_anim = alist[ANIM_FIGHT_WALK_FORWARD];
-			else if(player.Current_Movement & PLAYER_MOVE_STEALTH)
-				request0_anim = alist[ANIM_WALK];
-			else
-				request0_anim = alist[ANIM_RUN];
-		}
+	long tmove = player.Current_Movement;
+	
+	if((tmove & PLAYER_MOVE_STRAFE_LEFT) && (tmove & PLAYER_MOVE_STRAFE_RIGHT)) {
+		tmove &= ~PLAYER_MOVE_STRAFE_LEFT;
+		tmove &= ~PLAYER_MOVE_STRAFE_RIGHT;
+	}
+	
+	if(MOVE_PRECEDENCE == PLAYER_MOVE_STRAFE_LEFT)
+		tmove &= ~PLAYER_MOVE_STRAFE_RIGHT;
+	
+	if(MOVE_PRECEDENCE == PLAYER_MOVE_STRAFE_RIGHT)
+		tmove &= ~PLAYER_MOVE_STRAFE_LEFT;
+	
+	if(MOVE_PRECEDENCE == PLAYER_MOVE_WALK_FORWARD)
+		tmove &= ~PLAYER_MOVE_WALK_BACKWARD;
+	
+	if(player.Current_Movement & PLAYER_MOVE_WALK_FORWARD)
+		tmove = PLAYER_MOVE_WALK_FORWARD;
+	
+	if(tmove & PLAYER_MOVE_STRAFE_LEFT) {
+		if(player.Interface & INTER_COMBATMODE)
+			request0_anim = alist[ANIM_FIGHT_STRAFE_LEFT];
+		else if(player.Current_Movement & PLAYER_MOVE_STEALTH)
+			request0_anim = alist[ANIM_STRAFE_LEFT];
+		else
+			request0_anim = alist[ANIM_STRAFE_RUN_LEFT];
+	}
+	
+	if(tmove & PLAYER_MOVE_STRAFE_RIGHT) {
+		if(player.Interface & INTER_COMBATMODE)
+			request0_anim = alist[ANIM_FIGHT_STRAFE_RIGHT];
+		else if(player.Current_Movement & PLAYER_MOVE_STEALTH)
+			request0_anim = alist[ANIM_STRAFE_RIGHT];
+		else
+			request0_anim = alist[ANIM_STRAFE_RUN_RIGHT];
+	}
+	
+	if(tmove & PLAYER_MOVE_WALK_BACKWARD) {
+		if(player.Interface & INTER_COMBATMODE)
+			request0_anim = alist[ANIM_FIGHT_WALK_BACKWARD];
+		else if(player.Current_Movement & PLAYER_MOVE_STEALTH)
+			request0_anim = alist[ANIM_WALK_BACKWARD];
+		else if(player.Current_Movement & PLAYER_CROUCH)
+			request0_anim = alist[ANIM_WALK_BACKWARD];
+		else
+			request0_anim = alist[ANIM_RUN_BACKWARD];
+	}
+	
+	if(tmove & PLAYER_MOVE_WALK_FORWARD) {
+		if(player.Interface & INTER_COMBATMODE)
+			request0_anim = alist[ANIM_FIGHT_WALK_FORWARD];
+		else if(player.Current_Movement & PLAYER_MOVE_STEALTH)
+			request0_anim = alist[ANIM_WALK];
+		else
+			request0_anim = alist[ANIM_RUN];
+	}
 	}
 	
 	if(!request0_anim) {
