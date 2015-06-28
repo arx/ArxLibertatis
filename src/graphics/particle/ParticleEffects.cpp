@@ -1376,7 +1376,7 @@ void TreatBackgroundActions() {
 					float t = rnd() * PI;
 					Vec3f s = Vec3f(std::sin(t), std::sin(t), std::cos(t)) * randomVec();
 					pd->ov = gl->pos + s * gl->ex_radius;
-					pd->move = Vec3f(2.f - 4.f * rnd(), 2.f - 22.f * rnd(), 2.f - 4.f * rnd());
+					pd->move = Vec3f(2.f, 2.f, 2.f) - Vec3f(4.f, 22.f, 4.f) * Vec3f(rnd(), rnd(), rnd());
 					pd->move *= gl->ex_speed;
 					pd->siz = 7.f * gl->ex_size;
 					pd->tolive = 500 + Random::get(0, 1000 * gl->ex_speed);
