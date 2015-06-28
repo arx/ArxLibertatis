@@ -289,7 +289,7 @@ void MagicMissileSpell::Launch() {
 		if(m_mrCheat) {
 			missile->SetColor(Color3f(0.9f, 0.2f, 0.5f));
 		} else {
-			missile->SetColor(Color3f(0.9f + rnd() * 0.1f, 0.9f + rnd() * 0.1f, 0.7f + rnd() * 0.3f));
+			missile->SetColor(Color3f(0.9f, 0.9f, 0.7f) + Color3f(0.1f, 0.1f, 0.3f) * Color3f(rnd(), rnd(), rnd()));
 		}
 		
 		missile->lLightId = GetFreeDynLight();
