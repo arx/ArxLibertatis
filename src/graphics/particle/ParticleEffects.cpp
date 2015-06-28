@@ -160,7 +160,7 @@ static void ARX_PARTICLES_Spawn_Rogue_Blood(const Vec3f & pos, float dmgs, Color
 	pd->special = PARTICLE_SUB2 | SUBSTRACT | GRAVITY | ROTATING | MODULATE_ROTATION
 	              | SPLAT_GROUND;
 	pd->tolive = 1600;
-	pd->move = Vec3f(rnd() * 60.f - 30.f, rnd() * -10.f - 15.f, rnd() * 60.f - 30.f);
+	pd->move = Vec3f(rnd(), rnd(), rnd()) * Vec3f(60.f, -10.f, 60.f) - Vec3f(30.f, 15.f, 30.f);
 	pd->rgb = col.to<float>();
 	long num = Random::get(0, 5);
 	pd->tc = bloodsplat[num];
