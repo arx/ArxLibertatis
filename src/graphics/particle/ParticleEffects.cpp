@@ -690,7 +690,7 @@ void ARX_BOOMS_Add(const Vec3f & poss,long type) {
 		pd = createParticle(true);
 		if(pd) {
 			pd->ov = poss;
-			pd->move = Vec3f(3.f - 6.f * rnd(), 4.f - 12.f * rnd(), 3.f - 6.f * rnd());
+			pd->move = Vec3f(3.f , 4.f, 3.f) - Vec3f(6.f, 12.f, 6.f) * Vec3f(rnd(), rnd(), rnd());
 			pd->tolive = Random::get(600, 700);
 			pd->tc = tc1;
 			pd->siz = (40.f + 30.f * rnd()) * ((type == 1) ? 2.f : 1.f);
