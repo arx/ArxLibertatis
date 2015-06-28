@@ -1244,7 +1244,9 @@ static void StoreEntityMovement(Entity * io, Vec3f & ftr, float scale) {
 
 	if(!io)
 		return;
-
+	
+	arx_assert(isallfinite(ftr));
+	
 	Vec3f ftr2 = Vec3f_ZERO;
 
 	ftr *= scale;
@@ -1274,9 +1276,6 @@ static void StoreEntityMovement(Entity * io, Vec3f & ftr, float scale) {
 
 		io->lastmove = ftr2;
 	}
-	
-	arx_assert(isallfinite(io->move));
-	arx_assert(isallfinite(io->lastmove));
 }
 
 /*!

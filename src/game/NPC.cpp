@@ -1128,9 +1128,6 @@ void FaceTarget2(Entity * io)
 		io->lastmove = VRotateY(temp, rot);
 	}
 	
-	arx_assert(isallfinite(io->move));
-	arx_assert(isallfinite(io->lastmove));
-	
 	// Needed angle to turn toward target
 	io->angle.setPitch(MAKEANGLE(io->angle.getPitch() - rot)); // -tt
 }
