@@ -271,7 +271,7 @@ void ARX_MISSILES_Update() {
 				if(pd) {
 					pd->ov = pos;
 					pd->move = missiles[i].velocity;
-					pd->move += Vec3f(3.f - 6.f * rnd(), 4.f - 12.f * rnd(), 3.f - 6.f * rnd());
+					pd->move += Vec3f(3.f, 4.f, 3.f) + Vec3f(-6.f, -12.f, -6.f) * Vec3f(rnd(), rnd(), rnd());
 					pd->tolive = Random::get(500, 1000);
 					pd->tc = tc;
 					pd->siz = 12.f * float(missiles[i].tolive - framediff3) * (1.f / 4000);
