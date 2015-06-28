@@ -136,7 +136,7 @@ void ARX_PARTICLES_Spawn_Lava_Burn(Vec3f pos, Entity * io) {
 	}
 	
 	pd->ov = pos;
-	pd->move = Vec3f(rnd() * 2.f - 4.f, rnd() * -12.f - 15.f, rnd() * 2.f - 4.f);
+	pd->move = Vec3f(rnd(), rnd(), rnd()) * Vec3f(2.f, -12.f, 2.f) - Vec3f(4.f, 15.f, 4.f);
 	pd->tolive = 800;
 	pd->tc = smokeparticle;
 	pd->siz = 15.f;
