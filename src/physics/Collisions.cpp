@@ -350,7 +350,7 @@ void PushIO_ON_Top(Entity * ioo, float ydec) {
 							if(io == entities.player()) {
 								if(ydec <= 0) {
 									player.pos.y += ydec;
-									moveto.y += ydec;
+									g_moveto.y += ydec;
 									Cylinder cyl = player.baseCylinder();
 									cyl.origin.y += ydec;
 									float vv = CheckAnythingInCylinder(cyl, entities.player(), 0);
@@ -362,7 +362,7 @@ void PushIO_ON_Top(Entity * ioo, float ydec) {
 									cyl.origin.y += ydec;
 									if(CheckAnythingInCylinder(cyl, entities.player(), 0) >= 0) {
 										player.pos.y += ydec;
-										moveto.y += ydec;
+										g_moveto.y += ydec;
 									}
 								}
 							} else {

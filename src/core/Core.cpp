@@ -182,7 +182,7 @@ long ADDED_IO_NOT_SAVED = 0;
 #endif
 
 Vec2s DANAEMouse;
-Vec3f moveto;
+Vec3f g_moveto;
 Vec3f Mscenepos;
 Vec3f lastteleport;
 EERIE_3DOBJ * GoldCoinsObj[MAX_GOLD_COINS_VISUALS];// 3D Objects For Gold Coins
@@ -553,7 +553,7 @@ void levelInit() {
 	MagicFlareSetCamera(&subj);
 	
 	lastteleport = player.basePosition();
-	subj.orgTrans.pos = moveto = player.pos;
+	subj.orgTrans.pos = g_moveto = player.pos;
 
 	subj.angle = player.angle;
 	

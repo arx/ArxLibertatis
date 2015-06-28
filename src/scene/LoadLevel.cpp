@@ -591,7 +591,7 @@ bool DanaeLoadLevel(const res::path & file, bool loadEntities) {
 		mse->pos.x = Mscenepos.x = Mscenepos.x + BKG_SIZX - t1;
 		mse->pos.z = Mscenepos.z = Mscenepos.z + BKG_SIZZ - t2;
 		mse->pos.y = Mscenepos.y = -mse->cub.ymin - 100.f - mse->point0.y;
-		lastteleport = player.pos = subj.orgTrans.pos = moveto = mse->pos + mse->point0;
+		lastteleport = player.pos = subj.orgTrans.pos = g_moveto = mse->pos + mse->point0;
 		lastteleport.y -= 180.f;
 		player.pos.y = subj.orgTrans.pos.y -= 180.f;
 		trans = mse->pos;

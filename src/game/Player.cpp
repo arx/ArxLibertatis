@@ -1406,7 +1406,7 @@ void ARX_PLAYER_Manage_Visual() {
 			io->move = io->lastmove = Vec3f_ZERO;
 		} else {
 			ause0.flags &= ~EA_STATICANIM;
-			player.pos = moveto = player.pos + io->move;
+			player.pos = g_moveto = player.pos + io->move;
 			io->pos = player.basePosition();
 			goto nochanges;
 		}
@@ -1831,7 +1831,7 @@ void ARX_PLAYER_Frame_Update()
 	}
 
 	// Reset player moveto info
-	moveto = player.pos;
+	g_moveto = player.pos;
 
 	// Reset current movement flags
 	player.Current_Movement = 0;
@@ -2188,7 +2188,7 @@ void PlayerMovementIterate(float DeltaTime) {
 			}
 		}
 		
-		Vec3f impulse = moveto - player.pos;
+		Vec3f impulse = g_moveto - player.pos;
 		if(impulse != Vec3f_ZERO) {
 			
 			float scale = 1.25f / 1000;
@@ -2222,7 +2222,7 @@ void PlayerMovementIterate(float DeltaTime) {
 			// No Vertical Interpolation
 			entities.player()->_npcdata->vvpos = -99999.f;
 			if(player.jumpphase == JumpAscending) {
-				moveto.y = player.pos.y;
+				g_moveto.y = player.pos.y;
 				player.physics.velocity.y = 0;
 			}
 		}
@@ -2232,14 +2232,14 @@ void PlayerMovementIterate(float DeltaTime) {
 			player.physics.velocity.y *= 0.5f;
 			player.physics.velocity.z = 0.f;
 			if(player.Current_Movement & PLAYER_MOVE_WALK_FORWARD) {
-				moveto.x = player.pos.x;
-				moveto.z = player.pos.z;
+				g_moveto.x = player.pos.x;
+				g_moveto.z = player.pos.z;
 			}
 			if(player.Current_Movement & PLAYER_MOVE_WALK_BACKWARD) {
 				impulse.x = 0;
 				impulse.z = 0;
-				moveto.x = player.pos.x;
-				moveto.z = player.pos.z;
+				g_moveto.x = player.pos.x;
+				g_moveto.z = player.pos.z;
 			}
 		}
 		
@@ -2326,7 +2326,7 @@ void PlayerMovementIterate(float DeltaTime) {
 		   && player.onfirmground
 		   && player.jumpphase == NotJumping
 		) {
-			moveto = player.pos;
+			g_moveto = player.pos;
 			goto lasuite;
 		} else {
 			
@@ -2432,23 +2432,23 @@ void PlayerMovementIterate(float DeltaTime) {
 				player.climbing = false;
 			}
 			
-			moveto = player.physics.cyl.origin + player.baseOffset();
-			d = glm::distance(player.pos, moveto);
+			g_moveto = player.physics.cyl.origin + player.baseOffset();
+			d = glm::distance(player.pos, g_moveto);
 		}
 	} else {
-		Vec3f vect = moveto - player.pos;
+		Vec3f vect = g_moveto - player.pos;
 		float divv = glm::length(vect);
 		if(divv > 0.f) {
 			float mul = (float)framedelay * 0.001f * 200.f;
 			divv = mul / divv;
 			vect *= divv;
-			moveto = player.pos + vect;
+			g_moveto = player.pos + vect;
 		}
 		
 		player.onfirmground = false;
 	}
 	
-	if(player.pos == moveto) {
+	if(player.pos == g_moveto) {
 		d = 0.f;
 	}
 	
@@ -2465,7 +2465,7 @@ void PlayerMovementIterate(float DeltaTime) {
 	}
 	
 	// Finally update player pos !
-	player.pos = moveto;
+	player.pos = g_moveto;
 	
 lasuite:
 	;

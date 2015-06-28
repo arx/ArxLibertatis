@@ -1235,7 +1235,7 @@ void ARX_INTERACTIVE_Teleport(Entity * io, const Vec3f & target, bool flag) {
 	io->room = -1;
 	
 	if(io == entities.player()) {
-		moveto = player.pos = target + player.baseOffset();
+		g_moveto = player.pos = target + player.baseOffset();
 	}
 	
 	// In case it is being dragged... (except for drag teleport update)

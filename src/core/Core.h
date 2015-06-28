@@ -72,7 +72,7 @@ extern Vec3f lastteleport;
 extern EERIE_CAMERA bookcam;
 extern Vec2s DANAEMouse;
 extern EERIE_CAMERA subj;
-extern Vec3f moveto;
+extern Vec3f g_moveto;
 extern Vec2s STARTDRAG;
 extern EERIE_3DOBJ * GoldCoinsObj[MAX_GOLD_COINS_VISUALS];
 extern Vec3f Mscenepos;

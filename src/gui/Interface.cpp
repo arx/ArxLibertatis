@@ -1184,7 +1184,7 @@ void ArxGame::managePlayerControls() {
 		else if(MOVE_PRECEDENCE == PLAYER_MOVE_STRAFE_RIGHT)
 			MOVE_PRECEDENCE = 0;
 
-		moveto = player.pos + tm;
+		g_moveto = player.pos + tm;
 	}
 
 	// Checks CROUCH Key Status.
