@@ -959,7 +959,6 @@ void ArxGame::managePlayerControls() {
 				if(t->script.data) {
 					if(t->_npcdata->lifePool.current>0.f) {
 						SendIOScriptEvent(t,SM_CHAT);
-						EERIEMouseButton&=~4;
 						DRAGGING = false;
 					} else {
 						if(t->inventory) {
@@ -1000,13 +999,10 @@ void ArxGame::managePlayerControls() {
 				} else if (t->script.data) {
 					SendIOScriptEvent(t,SM_ACTION);
 				}
-				EERIEMouseButton&=~4;
 				DRAGGING = false;
-				EERIEMouseButton = 0;
 			}
 
-			EERIEMouseButton&=~4;
-			EERIEMouseButton = 0;
+			EERIEMouseButton &= ~4;
 		}
 	}
 
