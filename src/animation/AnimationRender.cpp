@@ -355,7 +355,7 @@ void Cedric_ApplyLightingFirstPartRefactor(Entity *io) {
 
 							ARX_PARTICLES_Spawn_Splat(sp.origin, 200.f, io->_npcdata->blood_color);
 
-							sp.origin = io->pos + Vec3f(rnd(),rnd(),rnd()) * Vec3f(200.f, 20.f,200.f) - Vec3f(100.f, 10.f, 100.f);
+							sp.origin = io->pos + randomVec3f() * Vec3f(200.f, 20.f,200.f) - Vec3f(100.f, 10.f, 100.f);
 							sp.radius = rnd() * 100.f + 100.f;
 						}
 

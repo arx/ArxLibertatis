@@ -136,7 +136,7 @@ void ARX_PARTICLES_Spawn_Lava_Burn(Vec3f pos, Entity * io) {
 	}
 	
 	pd->ov = pos;
-	pd->move = Vec3f(rnd(), rnd(), rnd()) * Vec3f(2.f, -12.f, 2.f) - Vec3f(4.f, 15.f, 4.f);
+	pd->move = randomVec3f() * Vec3f(2.f, -12.f, 2.f) - Vec3f(4.f, 15.f, 4.f);
 	pd->tolive = 800;
 	pd->tc = smokeparticle;
 	pd->siz = 15.f;
@@ -160,7 +160,7 @@ static void ARX_PARTICLES_Spawn_Rogue_Blood(const Vec3f & pos, float dmgs, Color
 	pd->special = PARTICLE_SUB2 | SUBSTRACT | GRAVITY | ROTATING | MODULATE_ROTATION
 	              | SPLAT_GROUND;
 	pd->tolive = 1600;
-	pd->move = Vec3f(rnd(), rnd(), rnd()) * Vec3f(60.f, -10.f, 60.f) - Vec3f(30.f, 15.f, 30.f);
+	pd->move = randomVec3f() * Vec3f(60.f, -10.f, 60.f) - Vec3f(30.f, 15.f, 30.f);
 	pd->rgb = col.to<float>();
 	long num = Random::get(0, 5);
 	pd->tc = bloodsplat[num];
@@ -678,7 +678,7 @@ void ARX_BOOMS_Add(const Vec3f & poss,long type) {
 		static TextureContainer * tc1 = TextureContainer::Load("graph/particles/fire_hit");
 		
 		pd->ov = poss;
-		pd->move = Vec3f(3.f, 4.f, 3.f) - Vec3f(6.f, 12.f, 6.f) * Vec3f(rnd(), rnd(), rnd());
+		pd->move = Vec3f(3.f, 4.f, 3.f) - Vec3f(6.f, 12.f, 6.f) * randomVec3f();
 		pd->tolive = Random::get(600, 700);
 		pd->tc = tc1;
 		pd->siz = (100.f + 10.f * rnd()) * ((type == 1) ? 2.f : 1.f);
@@ -690,7 +690,7 @@ void ARX_BOOMS_Add(const Vec3f & poss,long type) {
 		pd = createParticle(true);
 		if(pd) {
 			pd->ov = poss;
-			pd->move = Vec3f(3.f , 4.f, 3.f) - Vec3f(6.f, 12.f, 6.f) * Vec3f(rnd(), rnd(), rnd());
+			pd->move = Vec3f(3.f , 4.f, 3.f) - Vec3f(6.f, 12.f, 6.f) * randomVec3f();
 			pd->tolive = Random::get(600, 700);
 			pd->tc = tc1;
 			pd->siz = (40.f + 30.f * rnd()) * ((type == 1) ? 2.f : 1.f);
@@ -928,7 +928,7 @@ void ARX_PARTICLES_SpawnWaterSplash(const Vec3f & _ePos) {
 		
 		pd->special = FADE_IN_AND_OUT | ROTATING | MODULATE_ROTATION | DISSIPATING
 		              | GRAVITY | SPLAT_WATER;
-		pd->ov = _ePos + Vec3f(30.f, -20.f, 30.f) * Vec3f(rnd(), rnd(), rnd());
+		pd->ov = _ePos + Vec3f(30.f, -20.f, 30.f) * randomVec3f();
 		pd->move = Vec3f(6.5f * frand2(), -11.5f * rnd(), 6.5f * frand2());
 		pd->tolive = Random::get(1000, 1300);
 		
@@ -1376,7 +1376,7 @@ void TreatBackgroundActions() {
 					float t = rnd() * PI;
 					Vec3f s = Vec3f(std::sin(t), std::sin(t), std::cos(t)) * randomVec();
 					pd->ov = gl->pos + s * gl->ex_radius;
-					pd->move = Vec3f(2.f, 2.f, 2.f) - Vec3f(4.f, 22.f, 4.f) * Vec3f(rnd(), rnd(), rnd());
+					pd->move = Vec3f(2.f, 2.f, 2.f) - Vec3f(4.f, 22.f, 4.f) * randomVec3f();
 					pd->move *= gl->ex_speed;
 					pd->siz = 7.f * gl->ex_size;
 					pd->tolive = 500 + Random::get(0, 1000 * gl->ex_speed);

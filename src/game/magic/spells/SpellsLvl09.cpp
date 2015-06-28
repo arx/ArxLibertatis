@@ -248,7 +248,7 @@ void SummonCreatureSpell::Update(float timeDelta) {
 				
 				for(long j = 0; j < 3; j++) {
 					Vec3f pos = m_fissure.m_eSrc;
-					pos += Vec3f(rnd(), rnd(), rnd()) * 100.f;
+					pos += randomVec3f() * 100.f;
 					pos += Vec3f(-50.f, 50.f, -50.f);
 					
 					MakeCoolFx(pos);
