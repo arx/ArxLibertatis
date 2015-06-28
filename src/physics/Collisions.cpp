@@ -1678,9 +1678,6 @@ bool IO_Visible(const Vec3f & orgn, const Vec3f & dest, Vec3f * hit)
 	
 	if(!found_ep)
 		return true;
-
-	if(found_ep == NULL)
-		return true;
 	
 	*hit = found_hit;
 
