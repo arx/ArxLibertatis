@@ -281,7 +281,7 @@ void TreatBackgroundDynlights() {
 					dynamicLight->extras       = light->extras;
 					dynamicLight->duration     = std::numeric_limits<long>::max();
 					
-					dynamicLight->rgb = light->rgb - light->rgb * light->ex_flicker * Color3f(rnd(), rnd(), rnd()) * 0.5f;
+					dynamicLight->rgb = light->rgb - light->rgb * light->ex_flicker * randomColor3f() * 0.5f;
 					
 					dynamicLight->rgb = componentwise_max(dynamicLight->rgb, Color3f::black);
 					RecalcLight(dynamicLight);

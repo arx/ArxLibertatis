@@ -274,7 +274,7 @@ void ExplosionSpell::Launch()
 		light->intensity = 2.3f;
 		light->fallend = 700.f;
 		light->fallstart = 500.f;
-		light->rgb = Color3f(0.1f, 0.1f, 0.8f) + Color3f(1.f/3, 1.f/3, 1.f/5) * Color3f(rnd(), rnd(), rnd());
+		light->rgb = Color3f(0.1f, 0.1f, 0.8f) + Color3f(1.f/3, 1.f/3, 1.f/5) * randomColor3f();
 		light->pos = target;
 		light->duration = 200;
 	}
@@ -285,7 +285,7 @@ void ExplosionSpell::Launch()
 		for(long j = -100 ; j < 100 ; j += 50) {
 			Vec3f dir = angleToVectorXZ(i_angle) * 60.f;
 			
-			Color3f color = Color3f(0.1f, 0.1f, 0.8f) + Color3f(rnd(), rnd(), rnd()) * Color3f(1.f/3, 1.f/3, 1.f/5);
+			Color3f color = Color3f(0.1f, 0.1f, 0.8f) + randomColor3f() * Color3f(1.f/3, 1.f/3, 1.f/5);
 			
 			Vec3f posi = target + Vec3f(0.f, j * 2, 0.f);
 			LaunchFireballBoom(posi, 16, &dir, &color);
@@ -305,7 +305,7 @@ void ExplosionSpell::Update(float timeDelta)
 	if(lightHandleIsValid(m_light)) {
 		EERIE_LIGHT * light = lightHandleGet(m_light);
 		
-		light->rgb = Color3f(0.1f, 0.1f, 0.8f) + Color3f(rnd(), rnd(), rnd()) * Color3f(1.f/3, 1.f/3, 1.f/5);
+		light->rgb = Color3f(0.1f, 0.1f, 0.8f) + randomColor3f() * Color3f(1.f/3, 1.f/3, 1.f/5);
 		light->duration = 200;
 	
 		float rr,r2;
@@ -320,7 +320,7 @@ void ExplosionSpell::Update(float timeDelta)
 			pos.y=light->pos.y-std::sin(r2)*260;
 			pos.z=light->pos.z+std::cos(rr)*260;
 			
-			Color3f color = Color3f(0.1f, 0.1f, 0.8f) + Color3f(rnd(), rnd(), rnd()) * Color3f(1.f/3, 1.f/3, 1.f/5);
+			Color3f color = Color3f(0.1f, 0.1f, 0.8f) + randomColor3f() * Color3f(1.f/3, 1.f/3, 1.f/5);
 			
 			LaunchFireballBoom(pos, static_cast<float>(lvl), NULL, &color);
 		} else if(choice > .6f) {

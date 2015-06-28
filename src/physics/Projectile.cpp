@@ -358,7 +358,7 @@ static void CheckExp(long i) {
 			light->intensity = 3.9f;
 			light->fallstart = 400.f;
 			light->fallend   = 440.f;
-			light->rgb = Color3f(1.f, .8f, .6f) - Color3f(rnd(), rnd(), rnd()) * Color3f(.2f, .2f, .2f);
+			light->rgb = Color3f(1.f, .8f, .6f) - randomColor3f() * Color3f(.2f, .2f, .2f);
 			light->pos = pos;
 			light->ex_flaresize = 40.f;
 			light->duration = 1500;
@@ -421,7 +421,7 @@ void ARX_THROWN_OBJECT_Manage(unsigned long time_offset)
 				light->intensity = 1.f;
 				light->fallstart = 100.f;
 				light->fallend   = 240.f;
-				light->rgb = Color3f(1.f, .8f, .6f) - Color3f(rnd(), rnd(), rnd()) * Color3f(.2f, .2f, .2f);
+				light->rgb = Color3f(1.f, .8f, .6f) - randomColor3f() * Color3f(.2f, .2f, .2f);
 				light->pos = thrownObj->position;
 				light->ex_flaresize = 40.f;
 				light->extras |= EXTRAS_FLARE;

@@ -289,7 +289,7 @@ void FireballSpell::Update(float timeDelta) {
 		light->intensity = 2.2f;
 		light->fallend = 500.f;
 		light->fallstart = 400.f;
-		light->rgb = Color3f(1.0f, 0.6f, 0.3f) - Color3f(0.3f, 0.1f, 0.1f) * Color3f(rnd(), rnd(), rnd());
+		light->rgb = Color3f(1.0f, 0.6f, 0.3f) - Color3f(0.3f, 0.1f, 0.1f) * randomColor3f();
 	}
 	
 	Sphere sphere;

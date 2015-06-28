@@ -79,6 +79,10 @@ inline Vec3f randomVec3f() {
 	return Vec3f(rnd(), rnd(), rnd());
 }
 
+inline Color3f randomColor3f() {
+	return Color3f(rnd(), rnd(), rnd());
+}
+
 inline bool In3DBBoxTolerance(const Vec3f & pos, const EERIE_3D_BBOX & bbox, const float tolerance) {
 	return ((pos.x >= bbox.min.x - tolerance)
 	        && (pos.x <= bbox.max.x + tolerance)
