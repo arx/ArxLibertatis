@@ -1608,7 +1608,7 @@ public:
 		}
 	}
 	
-	void updateFirst() {
+	void update() {
 		
 		if(PLAYER_INTERFACE_HIDE_COUNT && !m_direction) {
 			bool bOk = true;
@@ -1641,9 +1641,7 @@ public:
 				lSLID_VALUE = m_current;
 			}
 		}
-	}
-	
-	void update() {
+		
 		if(m_direction == 1) {
 			m_current += (float)Original_framedelay*( 1.0f / 10 );
 			
@@ -2089,8 +2087,6 @@ void ArxGame::manageEditorControls() {
 	) {
 		DANAEMouse = g_size.center();
 	}
-	
-	playerInterfaceFader.updateFirst();
 	
 	// on ferme
 	if((player.Interface & INTER_COMBATMODE) || player.doingmagic >= 2) {
