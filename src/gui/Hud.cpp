@@ -923,10 +923,19 @@ public:
 		{
 		static float flDelay=0;
 		
+		// Check for backpack Icon
+		if(m_rect.contains(Vec2f(DANAEMouse))) {
+			if(eeMouseUp1() && CanBePutInInventory(DRAGINTER)) {
+				ARX_SOUND_PlayInterface(SND_INVSTD);
+				Set_DragInter(NULL);
+			}
+		}
+		
 		if(m_rect.contains(Vec2f(DANAEMouse)) || flDelay) {
 			eMouseState = MOUSE_IN_INVENTORY_ICON;
 			SpecialCursor = CURSOR_INTERACTION_ON;
-
+			
+			
 			if(EERIEMouseButton & 4) {
 				ARX_SOUND_PlayInterface(SND_BACKPACK, 0.9F + 0.2F * rnd());
 

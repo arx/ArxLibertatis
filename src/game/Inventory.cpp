@@ -799,7 +799,7 @@ bool insertIntoInventory(Entity * item, const InventoryPos & pos) {
 /*!
  * \brief tries to put an object in player inventory
  */
-static bool CanBePutInInventory(Entity * io) {
+bool CanBePutInInventory(Entity * io) {
 	
 	if(io == NULL)
 		return false;
@@ -1096,22 +1096,6 @@ bool PutInInventory() {
 	Vec2s t = Vec2s_ZERO;
 	
 	Vec2s s = DRAGINTER->m_inventorySize;
-	
-	const Rect backpackMouseTestRect(
-	g_size.width() - 35,
-	g_size.height() - 113,
-	g_size.width() - 35 + 32,
-	g_size.height() - 113 + 32
-	);
-	
-	// Check for backpack Icon
-	if(backpackMouseTestRect.contains(Vec2i(DANAEMouse))) {
-		if(CanBePutInInventory(DRAGINTER)) {
-			ARX_SOUND_PlayInterface(SND_INVSTD);
-			Set_DragInter(NULL);
-		}
-		return false;
-	}
 	
 	// First Look for Identical Item...
 	if(SecondaryInventory && InSecondaryInventoryPos(DANAEMouse)) {

@@ -2228,8 +2228,6 @@ void ArxGame::manageEditorControls() {
 			//if (ARX_EQUIPMENT_PutOnPlayer(DRAGINTER))
 			if(InInventoryPos(DANAEMouse)) {// Attempts to put it in inventory
 				PutInInventory();
-			} else if(eMouseState == MOUSE_IN_INVENTORY_ICON) {
-				PutInInventory();
 			} else if(ARX_INTERFACE_MouseInBook()) {
 				if(Book_Mode == BOOKMODE_STATS) {
 					SendIOScriptEvent(DRAGINTER,SM_INVENTORYUSE);
