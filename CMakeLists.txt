@@ -100,7 +100,9 @@ if(CMAKE_VERSION VERSION_LESS 2.8.5)
 	    STRING "program executables (libexec) (relative to prefix).")
 	set(CMAKE_INSTALL_MANDIR "${CMAKE_INSTALL_DATAROOTDIR}/man" CACHE
 	    STRING "man documentation (DATAROOTDIR/man) (relative to prefix).")
-	foreach(dir BINDIR LIBDIR LIBEXECDIR DATAROOTDIR MANDIR)
+	set(CMAKE_INSTALL_INCLUDEDIR "include" CACHE
+	    STRING "C header files (include) (relative to prefix).")
+	foreach(dir BINDIR LIBDIR LIBEXECDIR DATAROOTDIR MANDIR INCLUDEDIR)
 		if(NOT IS_ABSOLUTE ${CMAKE_INSTALL_${dir}})
 			set(CMAKE_INSTALL_FULL_${dir} "${CMAKE_INSTALL_PREFIX}/${CMAKE_INSTALL_${dir}}")
 		else()
@@ -112,6 +114,7 @@ if(CMAKE_VERSION VERSION_LESS 2.8.5)
 		CMAKE_INSTALL_BINDIR
 		CMAKE_INSTALL_LIBEXECDIR
 		CMAKE_INSTALL_MANDIR
+		CMAKE_INSTALL_INCLUDEDIR
 	)
 else()
 	include(GNUInstallDirs)
@@ -1450,6 +1453,7 @@ if(BUILD_IO_LIBRARY)
 	set(ArxIO_LIBRARIES ${BASE_LIBRARIES} ${ZLIB_LIBRARIES})
 	
 	add_library_shared(ArxIO "${ArxIO_SOURCES}" "${ArxIO_LIBRARIES}")
+	set_binary_public_headers(ArxIO src/lib/ArxIO.h)
 	
 endif()
 

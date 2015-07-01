@@ -63,6 +63,7 @@ The following options can be used to customize where `make install` puts the var
 * `CMAKE_INSTALL_DATAROOTDIR` (default: `share`): Where to install data files
 * `ICONDIR` (default: `${DATAROOTDIR}/pixmaps`): Where to install icons
 * `APPDIR` (default: `${DATAROOTDIR}/applications`): Where to install .desktop files
+* `CMAKE_INSTALL_INCLUDEDIR` (default: `include`): Where to install C include files
 * `CMAKE_INSTALL_MANDIR` (default: `${DATAROOTDIR}/man`): Where to install man pages
 * `CMAKE_INSTALL_BINDIR` (default: `bin`): Where to install user executables
 * `GAMESBINDIR` (default: `${BINDIR}`): Where to install game executables

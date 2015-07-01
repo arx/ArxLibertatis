@@ -126,11 +126,16 @@ function(set_binary_installdir BIN DIR)
 			LIBRARY DESTINATION "${DIR}"
 			ARCHIVE DESTINATION "${DIR}"
 			RUNTIME DESTINATION "${DIR}"
+			PUBLIC_HEADER DESTINATION "${CMAKE_INSTALL_INCLUDEDIR}"
 		)
 	else()
 		set(install RUNTIME DESTINATION "${DIR}")
 	endif()
 	set(SHARED_BUILD_${BIN}_INSTALL "${install}" CACHE INTERNAL "")
+endfunction()
+
+function(set_binary_public_headers BIN HEADERS)
+	set(SHARED_BUILD_${BIN}_HEADERS "${HEADERS}" CACHE INTERNAL "")
 endfunction()
 
 
@@ -141,6 +146,7 @@ function(_add_binary_shared BIN TYPE SRC LIBS EXTRA INSTALLDIR)
 	set(SHARED_BUILD_${BIN}_SOURCES "${SRC}" CACHE INTERNAL "")
 	set(SHARED_BUILD_${BIN}_LIBS "${LIBS}" CACHE INTERNAL "")
 	set(SHARED_BUILD_${BIN}_EXTRA "${EXTRA}" CACHE INTERNAL "")
+	set(SHARED_BUILD_${BIN}_HEADERS "" CACHE INTERNAL "")
 	set_binary_installdir("${BIN}" "${INSTALLDIR}")
 	set(SHARED_BUILD_BINARIES ${SHARED_BUILD_BINARIES} ${BIN} CACHE INTERNAL "")
 endfunction()
@@ -297,6 +303,7 @@ function(_shared_build_cleanup)
 		unset(SHARED_BUILD_${bin}_LIBS CACHE)
 		unset(SHARED_BUILD_${bin}_EXTRA CACHE)
 		unset(SHARED_BUILD_${bin}_INSTALL CACHE)
+		unset(SHARED_BUILD_${bin}_HEADERS CACHE)
 	endforeach()
 	
 	unset(SHARED_BUILD_BINARIES CACHE)
@@ -329,6 +336,10 @@ function(_shared_build_add_binary bin)
 	endif()
 	
 	target_link_libraries(${bin} ${SHARED_BUILD_${bin}_LIBS})
+	
+	if(NOT "${SHARED_BUILD_${bin}_HEADERS}" STREQUAL "")
+		set_target_properties(${bin} PROPERTIES PUBLIC_HEADER "${SHARED_BUILD_${bin}_HEADERS}")
+	endif()
 	
 	install(TARGETS ${bin} ${SHARED_BUILD_${bin}_INSTALL})
 	
