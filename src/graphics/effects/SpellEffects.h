@@ -51,6 +51,7 @@ ZeniMax Media Inc., Suite 120, Rockville, Maryland 20850 USA.
 #include "graphics/Color.h"
 #include "graphics/Math.h"
 #include "math/Types.h"
+#include "platform/Alignment.h"
 #include "scene/Light.h"
 
 struct TexturedVertex;
@@ -58,13 +59,16 @@ struct RenderMaterial;
 
 const int BEZIERPrecision = 32;
 
-class CSpellFx
-{
-	public:
+class ARX_ALIGNAS(16) CSpellFx {
+	
+public:
+	
+	// We can't use ARX_ALIGNOF(glm::mat4x4) directly because MSVC sucks
+	ARX_STATIC_ASSERT(ARX_ALIGNOF(glm::mat4x4) <= 16, "need to increase alignment");
+	
 		unsigned long ulDuration;
 		unsigned long ulCurrentTime;
 
-	public:
 		CSpellFx();
 		virtual ~CSpellFx() { }
 		
@@ -73,6 +77,8 @@ class CSpellFx
 		
 		virtual void Update(float timeDelta) = 0;
 		virtual void Render() = 0;
+	
+	ARX_USE_ALIGNED_NEW(CSpellFx)
 };
 
 #define frand2() (1.0f - (2.0f * rnd()))
