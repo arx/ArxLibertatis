@@ -1642,13 +1642,9 @@ public:
 		}
 	}
 	
-	void draw() {
-		
-		EERIEDrawBitmap2DecalY(m_rect, 0.f, m_filledTex, m_color, (1.f - m_amount));
-		EERIEDrawBitmap(m_rect, 0.001f, m_emptyTex, Color::white);
-		
+	void updateInput(const Vec2f & mousePos) {
 		if(!(player.Interface & INTER_COMBATMODE)) {
-			if(m_rect.contains(Vec2f(DANAEMouse))) {
+			if(m_rect.contains(mousePos)) {
 				if(eeMouseDown1()) {
 					std::stringstream ss;
 					ss << checked_range_cast<int>(player.lifePool.current);
@@ -1656,6 +1652,12 @@ public:
 				}
 			}
 		}
+	}
+	
+	void draw() {
+		
+		EERIEDrawBitmap2DecalY(m_rect, 0.f, m_filledTex, m_color, (1.f - m_amount));
+		EERIEDrawBitmap(m_rect, 0.001f, m_emptyTex, Color::white);
 	}
 };
 HealthGauge healthGauge;
@@ -1691,13 +1693,9 @@ public:
 		m_amount = player.manaPool.current / player.Full_maxmana;
 	}
 	
-	void draw() {
-		
-		EERIEDrawBitmap2DecalY(m_rect, 0.f, m_filledTex, Color::white, (1.f - m_amount));
-		EERIEDrawBitmap(m_rect, 0.001f, m_emptyTex, Color::white);
-		
+	void updateInput(const Vec2f & mousePos) {
 		if(!(player.Interface & INTER_COMBATMODE)) {
-			if(m_rect.contains(Vec2f(DANAEMouse))) {
+			if(m_rect.contains(mousePos)) {
 				if(eeMouseDown1()) {
 					std::stringstream ss;
 					ss << checked_range_cast<int>(player.manaPool.current);
@@ -1705,6 +1703,12 @@ public:
 				}
 			}
 		}
+	}
+	
+	void draw() {
+		
+		EERIEDrawBitmap2DecalY(m_rect, 0.f, m_filledTex, Color::white, (1.f - m_amount));
+		EERIEDrawBitmap(m_rect, 0.001f, m_emptyTex, Color::white);
 	}
 };
 ManaGauge manaGauge;
@@ -2434,11 +2438,13 @@ void ArxGame::drawAllInterface() {
 	}
 	
 	healthGauge.updateRect(hudSlider);
+	healthGauge.updateInput(mousePos);
 	healthGauge.update();
 	
 	
 	if(player.Interface & INTER_LIFE_MANA) {
 		manaGauge.update(hudSlider);
+		manaGauge.updateInput(mousePos);
 		manaGauge.draw();
 		
 		healthGauge.draw();
@@ -2493,7 +2499,7 @@ void ArxGame::drawAllInterface() {
 	
 	precastSpellsGui.draw();
 	activeSpellsGui.update(hudSlider);
-	activeSpellsGui.updateInput(Vec2f(DANAEMouse));
+	activeSpellsGui.updateInput(mousePos);
 	activeSpellsGui.draw();
 }
 
