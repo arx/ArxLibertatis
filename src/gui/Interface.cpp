@@ -2306,11 +2306,8 @@ void ArxGame::manageEditorControls() {
 					}
 				}
 			} else { // GLights
-				float fMaxdist = 300;
-	
-				if(player.m_telekinesis)
-					fMaxdist = 850;
-	
+				float fMaxdist = player.m_telekinesis ? 850 : 300;
+				
 				for(size_t i = 0; i < MAX_LIGHTS; i++) {
 					EERIE_LIGHT * light = GLight[i];
 					
@@ -2356,10 +2353,7 @@ void ArxGame::manageEditorControls() {
 		
 		//lights
 		if(COMBINE) {
-			float fMaxdist = 300;
-			
-			if(player.m_telekinesis)
-				fMaxdist = 850;
+			float fMaxdist = player.m_telekinesis ? 850 : 300;
 			
 			for(size_t i = 0; i < MAX_LIGHTS; i++) {
 				EERIE_LIGHT * light = GLight[i];

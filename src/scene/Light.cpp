@@ -199,11 +199,8 @@ static void ComputeLight2DPos(EERIE_LIGHT * _pL) {
 	
 	if(out.p.z > 0.f && out.p.z < 1000.f && out.rhw > 0) {
 		float siz = 50;
-		float fMaxdist = 300;
-
-		if(player.m_telekinesis)
-			fMaxdist = 850;
-
+		float fMaxdist = player.m_telekinesis ? 850 : 300;
+		
 		float t = siz * (1.0f - 1.0f / (out.rhw * fMaxdist)) + 10;
 
 		_pL->m_screenRect.max.x = out.p.x + t;
@@ -221,11 +218,9 @@ void TreatBackgroundDynlights() {
 		EERIE_LIGHT *light = GLight[i];
 
 		if(light && (light->extras & EXTRAS_SEMIDYNAMIC)) {
-
-			float fMaxdist = 300;
-			if(player.m_telekinesis)
-				fMaxdist = 850;
-
+			
+			float fMaxdist = player.m_telekinesis ? 850 : 300;
+			
 			if(!fartherThan(light->pos, ACTIVECAM->orgTrans.pos, fMaxdist)) {
 				ComputeLight2DPos(light);
 			} else {
