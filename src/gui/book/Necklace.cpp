@@ -111,7 +111,7 @@ static void PlayerBookDrawRune(Rune rune) {
 
 long LastRune = -1;
 
-void ARX_INTERFACE_ManageOpenedBook_Finish()
+void ARX_INTERFACE_ManageOpenedBook_Finish(const Vec2f & mousePos)
 {
 
 	Vec3f pos = Vec3f(0.f, 0.f, 2100.f);
@@ -195,11 +195,11 @@ void ARX_INTERFACE_ManageOpenedBook_Finish()
 			);
 			
 			// Checks for Mouse floating over a rune...
-			if(runeMouseTestRect.contains(Vec2i(DANAEMouse))) {
+			if(runeMouseTestRect.contains(Vec2i(mousePos))) {
 				long r=0;
 				
 				for(size_t j = 0; j < rune->facelist.size(); j++) {
-					float n = PtIn2DPolyProj(rune, &rune->facelist[j], (float)DANAEMouse.x, (float)DANAEMouse.y);
+					float n = PtIn2DPolyProj(rune, &rune->facelist[j], mousePos.x, mousePos.y);
 					
 					if(n!=0.f) {
 						r=1;

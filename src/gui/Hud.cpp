@@ -2326,6 +2326,8 @@ void setHudScale(float scale) {
 
 void ArxGame::drawAllInterface() {
 	
+	const Vec2f mousePos = Vec2f(DANAEMouse);
+	
 	Rectf hudSlider = Rectf(g_size);
 	hudSlider.left  -= lSLID_VALUE;
 	hudSlider.right += lSLID_VALUE;
@@ -2421,7 +2423,7 @@ void ArxGame::drawAllInterface() {
 		
 		if((player.Interface & INTER_MAP) && !(player.Interface & INTER_COMBATMODE)) {
 			if(Book_Mode == BOOKMODE_SPELLS) {
-				gui::ARX_INTERFACE_ManageOpenedBook_Finish();
+				gui::ARX_INTERFACE_ManageOpenedBook_Finish(mousePos);
 				ARX_INTERFACE_ManageOpenedBook_SpellsDraw();
 			}
 		}
