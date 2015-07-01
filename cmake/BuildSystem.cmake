@@ -122,7 +122,11 @@ endfunction()
 function(set_binary_installdir BIN DIR)
 	set(build_type "${SHARED_BUILD_${BIN}_TYPE}")
 	if(build_type STREQUAL "SHARED")
-		set(install LIBRARY DESTINATION "${DIR}" ARCHIVE DESTINATION "${DIR}")
+		set(install
+			LIBRARY DESTINATION "${DIR}"
+			ARCHIVE DESTINATION "${DIR}"
+			RUNTIME DESTINATION "${DIR}"
+		)
 	else()
 		set(install RUNTIME DESTINATION "${DIR}")
 	endif()
