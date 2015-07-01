@@ -34,7 +34,9 @@
 	#endif
 #endif
 
+#ifdef __cplusplus
 extern "C" {
+#endif
 
 ARX_LIB_PUBLIC void ArxIO_init();
 
@@ -48,6 +50,9 @@ ARX_LIB_PUBLIC int  ArxIO_ftlGetRawData(char * outData, int size);
 
 ARX_LIB_PUBLIC void ArxIO_unpack_alloc(const char * in, const size_t inSize, char ** out, size_t * outSize);
 ARX_LIB_PUBLIC void ArxIO_unpack_free(char * buffer);
+
+#ifdef __cplusplus
 }
+#endif
 
 #endif // ARX_LIB_ARXIO_H
