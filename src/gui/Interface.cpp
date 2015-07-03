@@ -1461,7 +1461,7 @@ void ArxGame::managePlayerControls() {
 	   && !InInventoryPos(DANAEMouse)
 	   && config.input.autoReadyWeapon
 	) {
-		if(!(LastMouseClick & 1)) {
+		if(eeMouseDown1()) {
 			COMBAT_MODE_ON_START_TIME = (unsigned long)(arxtime);
 		} else {
 			if(float(arxtime) - COMBAT_MODE_ON_START_TIME > 10) {
