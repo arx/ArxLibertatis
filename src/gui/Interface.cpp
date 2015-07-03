@@ -2088,14 +2088,6 @@ void ArxGame::manageEditorControls() {
 		DANAEMouse = g_size.center();
 	}
 	
-	// on ferme
-	if((player.Interface & INTER_COMBATMODE) || player.doingmagic >= 2) {
-		gui::CloseSecondaryInventory();
-	}
-	
-	playerInterfaceFader.update();
-	cinematicBorder.update();
-	
 	if(eeMousePressed1()) {
 		static Vec2s dragThreshold = Vec2s_ZERO;
 		
@@ -2114,6 +2106,16 @@ void ArxGame::manageEditorControls() {
 	} else {
 		DRAGGING = false;
 	}
+	
+	// on ferme
+	if((player.Interface & INTER_COMBATMODE) || player.doingmagic >= 2) {
+		gui::CloseSecondaryInventory();
+	}
+	
+	playerInterfaceFader.update();
+	cinematicBorder.update();
+	
+
 	
 	hudUpdateInput();
 	
