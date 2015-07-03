@@ -2091,7 +2091,7 @@ void ArxGame::manageEditorControls() {
 	if(eeMousePressed1()) {
 		static Vec2s dragThreshold = Vec2s_ZERO;
 		
-		if(!(LastMouseClick & 1)) {
+		if(eeMouseDown1()) {
 			
 			STARTDRAG = DANAEMouse;
 			DRAGGING = false;
