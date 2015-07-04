@@ -618,8 +618,7 @@ void ManageTorch() {
 		el->fallstart = 280.f + rr * 20.f;
 		el->fallend = el->fallstart + 280.f;
 		el->exist = 1;
-		el->rgb = Color3f(player.m_torchColor.r - rr * 0.1f, player.m_torchColor.g - rr * 0.1f,
-		                  player.m_torchColor.b - rr * 0.1f);
+		el->rgb = player.m_torchColor - Color3f(rr, rr, rr) * Color3f(0.1f, 0.1f, 0.1f);
 		el->duration = 0;
 		el->extras = 0;
 		
