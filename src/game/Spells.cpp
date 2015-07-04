@@ -466,7 +466,6 @@ void ARX_SPELLS_Fizzle(SpellBase * spell) {
 
 extern long PLAYER_PARALYSED;
 
-extern long passwall;
 
 void ARX_SPELLS_ManageMagic() {
 	arx_assert(entities.player());
@@ -588,31 +587,8 @@ void ARX_SPELLS_ManageMagic() {
 	}
 	
 	if(ARX_FLARES_broken == 3) {
-		cur_arm=0;
-		cur_mega=0;
-		passwall=0;
-
-		if(cur_mr != 3)
-			cur_mr=0;
-
-		if(cur_mx != 3)
-			cur_mx=0;
-
-		if(cur_rf != 3)
-			cur_rf=0;
-
-		if(cur_pom != 3)
-			cur_pom=0;
-
-		if(cur_pnux < 3)
-			cur_pnux=0;
-
-		if(cur_sm < 3)
-			cur_sm=0;
-
-		cur_bh=0;
-		cur_sos=0;
-
+		CheatDetectionReset();
+		
 		if(CurrSpellSymbol != 0) {
 			if(!ARX_SPELLS_AnalyseSPELL()) {
 				if(io->anims[ANIM_CAST]) {

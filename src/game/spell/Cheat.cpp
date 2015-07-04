@@ -43,6 +43,7 @@
 
 extern Rect g_size;
 
+long passwall = 0;
 long cur_mx=0;
 long cur_pnux=0;
 long cur_pom=0;
@@ -136,6 +137,33 @@ void CheatReset() {
 	cur_pom = 0;
 	cur_rf = 0;
 	cur_mr = 0;
+}
+
+void CheatDetectionReset() {
+	cur_arm=0;
+	cur_mega=0;
+	passwall=0;
+	
+	if(cur_mr != 3)
+		cur_mr=0;
+	
+	if(cur_mx != 3)
+		cur_mx=0;
+	
+	if(cur_rf != 3)
+		cur_rf=0;
+	
+	if(cur_pom != 3)
+		cur_pom=0;
+	
+	if(cur_pnux < 3)
+		cur_pnux=0;
+	
+	if(cur_sm < 3)
+		cur_sm=0;
+	
+	cur_bh=0;
+	cur_sos=0;
 }
 
 

@@ -350,8 +350,6 @@ void ARX_SPELLS_Analyse() {
 	}
 }
 
-long passwall = 0;
-
 void ARX_SPELLS_AnalyseSYMBOL() {
 	
 	long sm = 0;

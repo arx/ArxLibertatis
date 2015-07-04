@@ -20,6 +20,7 @@
 #ifndef ARX_GAME_SPELL_CHEAT_H
 #define ARX_GAME_SPELL_CHEAT_H
 
+extern long passwall;
 extern long cur_mx;
 extern long cur_pnux;
 extern long cur_pom;
@@ -44,6 +45,7 @@ extern long sp_max;
 void Manage_sp_max();
 
 void CheatReset();
+void CheatDetectionReset();
 
 void ApplyPasswall();
 void ApplySPArm();
