@@ -465,14 +465,13 @@ static void RenderBookPlayerCharacter() {
 		}
 	}
 	
-	TextureContainer * tc;
-	TextureContainer * tc2=NULL;
 	GRenderer->SetCulling(Renderer::CullNone);
 	
 	if(ValidIONum(player.equiped[EQUIP_SLOT_RING_LEFT])) {
 		Entity *todraw = entities[player.equiped[EQUIP_SLOT_RING_LEFT]];
 		
-		tc = todraw->inv;
+		TextureContainer * tc = todraw->inv;
+		TextureContainer * tc2 = NULL;
 		
 		if(NeedHalo(todraw))
 			tc2 = todraw->inv->getHalo();
@@ -496,12 +495,11 @@ static void RenderBookPlayerCharacter() {
 		}
 	}
 	
-	tc2=NULL;
-	
 	if(ValidIONum(player.equiped[EQUIP_SLOT_RING_RIGHT])) {
 		Entity *todraw = entities[player.equiped[EQUIP_SLOT_RING_RIGHT]];
 		
-		tc = todraw->inv;
+		TextureContainer * tc = todraw->inv;
+		TextureContainer * tc2 = NULL;
 		
 		if(NeedHalo(todraw))
 			tc2 = todraw->inv->getHalo();
