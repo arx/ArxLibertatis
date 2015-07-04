@@ -558,8 +558,6 @@ void ARX_SPELLS_ManageMagic() {
 					g_LastFlareTime = time - std::min(time - g_LastFlareTime - interval, interval);
 				}
 				
-				OPIPOrgb = PIPOrgb;
-				
 				ARX_FLARES_broken=0;
 				
 				if(!ARX_SOUND_IsPlaying(SND_MAGIC_DRAW))

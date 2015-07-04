@@ -136,7 +136,6 @@ static const float FLARE_MUL = 2.f;
 static const float BOOM_RADIUS = 420.f;
 static const float BOOM_RADIUS2 = 250.f;
 
-extern short OPIPOrgb;
 extern short PIPOrgb;
 extern std::vector<POLYBOOM> polyboom;
 extern TextureContainer * fire2;
