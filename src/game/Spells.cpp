@@ -522,10 +522,7 @@ void ARX_SPELLS_ManageMagic() {
 		if(snip >= 2) {
 			if(!eeMousePressed1() && ARX_FLARES_broken == 0) {
 				ARX_FLARES_broken = 2;
-				PIPOrgb++;
-
-				if(PIPOrgb > 2)
-					PIPOrgb = 0;
+				MagicFlareChangeColor();
 			}
 			
 			if(eeMousePressed1()) {
@@ -570,11 +567,8 @@ void ARX_SPELLS_ManageMagic() {
 		}
 	} else {
 		ARX_FLARES_broken = 1;
-		PIPOrgb++;
-
-		if(PIPOrgb > 2)
-			PIPOrgb = 0;
-
+		MagicFlareChangeColor();
+		
 		if(player.doingmagic != 0) { //==2)
 			player.doingmagic = 0;//1
 			if(io->anims[ANIM_CAST_END]) {

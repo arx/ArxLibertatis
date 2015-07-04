@@ -101,8 +101,6 @@ TextureContainer * fire2=NULL;
 static const size_t MAX_EXPLO = 24;
 static TextureContainer * explo[MAX_EXPLO]; // TextureContainer for animated explosion bitmaps (24 frames)
 
-short			PIPOrgb=0;
-
 long			NewSpell=0;
 
 long getParticleCount() {

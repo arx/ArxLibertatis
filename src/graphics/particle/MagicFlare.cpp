@@ -141,6 +141,15 @@ void ARX_MAGICAL_FLARES_KillAll() {
 	flarenum=0;
 }
 
+short PIPOrgb = 0;
+
+void MagicFlareChangeColor() {
+	PIPOrgb++;
+
+	if(PIPOrgb > 2)
+		PIPOrgb = 0;
+}
+
 void AddFlare(const Vec2s & pos, float sm, short typ, Entity * io, bool bookDraw) {
 	
 	int oldest = 0;
