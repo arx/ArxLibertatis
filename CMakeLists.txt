@@ -239,7 +239,15 @@ endif()
 if(WIN32)
 	# Ensure we aren't using functionalities not found under Window XP SP1
 	add_definitions(-D_WIN32_WINNT=0x0502)
-	if(NOT MSVC)
+	if(MSVC)
+		if(CMAKE_LIBRARY_ARCHITECTURE STREQUAL "x64")
+			set(subsystem_xp "5.02")
+		else()
+			set(subsystem_xp "5.01")
+		endif()
+		set(CMAKE_CREATE_WIN32_EXE "/subsystem:windows,${subsystem_xp}")
+		set(CMAKE_CREATE_CONSOLE_EXE "/subsystem:console,${subsystem_xp}")
+	else()
 		# We need to define WINVER for MinGW when requiring anything newer than Win95/WinNT
 		add_definitions(-DWINVER=0x0500) # Require at least Windows 2000
 		add_definitions(-D_WIN32_IE=0x0500) # Required for "SHGFP_TYPE_CURRENT"
