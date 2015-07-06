@@ -206,7 +206,7 @@ char * SaveBlock::File::loadData(std::istream & handle, size_t & size, const std
 		case File::ImplodeCrypt: {
 			unsigned char * crypt = (unsigned char *)buf;
 			for(size_t i = 0; i < storedSize; i += 2) {
-				crypt[i] = ~crypt[i];
+				crypt[i] = (unsigned char)~(unsigned int)crypt[i];
 			}
 			char * uncompressed = blastMemAlloc(buf, storedSize, size);
 			free(buf);
