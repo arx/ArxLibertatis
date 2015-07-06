@@ -44,6 +44,8 @@ static str_t ignore_exe_dir = ARX_GET_STR("${IGNORE_EXE_DIR}");
 
 static str_t libexec_dir = ARX_GET_STR("${RUNTIME_LIBEXECDIR}");
 
+static str_t relative_data_dir = ARX_GET_STR("${RUNTIME_DATADIR}");
+
 #undef ARX_GET_STR
 
 } // namespace fs

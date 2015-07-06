@@ -236,18 +236,22 @@ std::vector<path> SystemPaths::getSearchPaths(bool filter) const {
 	}
 	
 	// Search the executable directory
-	if(!exepath.empty()) {
-		path dir = canonical(exepath.parent());
+	if(relative_data_dir && !exepath.empty()) {
+		path exedir = canonical(exepath.parent());
 		bool ignored = false;
 		if(ignore_exe_dir) {
 			std::vector<path> ignored_dirs = fs::getSearchPaths(ignore_exe_dir);
-			ignored = (std::find(ignored_dirs.begin(), ignored_dirs.end(), dir)
+			ignored = (std::find(ignored_dirs.begin(), ignored_dirs.end(), exedir)
 			           != ignored_dirs.end());
 		}
-		if(!ignored && addExeSearchPath(result, dir, filter)) {
-			LogDebug("got data dir from exe: " << exepath << " -> " << dir);
-		} else {
-			LogDebug("ignoring data dir from exe: " << exepath << " -> " << dir);
+		std::vector<path> relative_data_dirs = fs::getSearchPaths(relative_data_dir);
+		BOOST_FOREACH(const path & p, relative_data_dirs) {
+			path dir = exedir / p;
+			if(!ignored && addExeSearchPath(result, dir, filter)) {
+				LogDebug("got data dir from exe: " << exepath << " + " << p << " -> " << dir);
+			} else {
+				LogDebug("ignoring data dir from exe: " << exepath << " + " << p << " -> " << dir);
+			}
 		}
 	}
 	

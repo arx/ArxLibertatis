@@ -33,6 +33,7 @@ This file describes additional build options that are recognized by the CMakeLis
 These pairs define prefixes and suffixes that are combined to form searched paths for the user, config and data directories respectively.
 
 To avoid possible performance issues, there is `IGNORE_EXE_DIR` to list directories to *not* search for data files even if they contain the game executable. By default, this is only set for Linux: `/usr/bin:/usr/games:/usr/games/bin:/usr/local/bin:/usr/local/games:/usr/local/games/bin`
+To completely disable searching for data locations relative to the executable, set `RUNTIME_DATADIR` to an empty string.
 
 All the configuration options above can reference environment variables in operating-system specific shell syntax which will be expanded at run-time. For Windows `%FOLDERID_SavedGames%` is defined to the Windows saved games directory for the current user. For other systems arx will make sure that [XDG Base Directory Specification](http://standards.freedesktop.org/basedir-spec/basedir-spec-latest.html) variables are defined.
 
@@ -70,6 +71,7 @@ The following options can be used to customize where `make install` puts the var
 * `CMAKE_INSTALL_LIBDIR` (default: `lib`): Where to install libraries
 * `CMAKE_INSTALL_LIBEXECDIR` (default: `libexec`): Where to install non-user executables
 * `RUNTIME_LIBEXECDIR` (default: `${CMAKE_INSTALL_PREFIX}/${CMAKE_INSTALL_LIBEXECDIR}`): Runtime search locations for utilities, relative to the game executable
+* `RUNTIME_DATADIR` (default: `.`): Paths relative to the game executable to search for data files
 * `SCRIPTDIR` (default: `${BINDIR}`): Where to install the data install script
 * `INSTALL_DATADIR` (default: `${DATAROOTDIR}/games/arx`): Where to install Arx Libertatis data files. This should be one of the directories found from DATA_DIR_PREFIXES + DATA_DIR combinations at runtime.
 

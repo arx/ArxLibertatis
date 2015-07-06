@@ -179,6 +179,7 @@ else()
 		CACHE STRING "Executable locations that should not be used as a data dir"
 	)
 endif()
+set(RUNTIME_DATADIR "." CACHE STRING "Data dir paths relative to the executable")
 mark_as_advanced(
 	DATA_DIR
 	DATA_DIR_PREFIXES
@@ -187,6 +188,7 @@ mark_as_advanced(
 	CONFIG_DIR
 	CONFIG_DIR_PREFIXES
 	IGNORE_EXE_DIR
+	RUNTIME_DATADIR
 )
 
 
