@@ -57,6 +57,9 @@
 #include <sys/sysctl.h>
 #endif
 
+#include <boost/tokenizer.hpp>
+#include <boost/foreach.hpp>
+#include <boost/algorithm/string/case_conv.hpp>
 #include <boost/range/size.hpp>
 
 #include "io/fs/PathConstants.h"
@@ -372,23 +375,26 @@ fs::path getHelperExecutable(const std::string & name) {
 		if(exe.is_relative()) {
 			exe = fs::current_path() / exe;
 		}
-		fs::path helper = exe.parent() / name;
-		if(fs::is_regular_file(helper)) {
-			return helper;
-		}
-		helper = exe.parent().parent() / name;
+		exe = exe.parent();
+		fs::path helper = exe / name;
 		if(fs::is_regular_file(helper)) {
 			return helper;
 		}
 	}
 	
 	if(fs::libexec_dir) {
-		fs::path helper = fs::path(fs::libexec_dir) / name;
-		if(helper.is_relative()) {
-			helper = exe.parent() / helper;
-		}
-		if(fs::is_regular_file(helper)) {
-			return helper;
+		std::string decoded = platform::expandEnvironmentVariables(fs::libexec_dir);
+		typedef boost::tokenizer< boost::char_separator<char> >  tokenizer;
+		boost::char_separator<char> sep(platform::env_list_seperators);
+		tokenizer tokens(decoded, sep);
+		BOOST_FOREACH(fs::path libexec_dir, tokens) {
+			fs::path helper = libexec_dir / name;
+			if(helper.is_relative()) {
+				helper = exe / helper;
+			}
+			if(fs::is_regular_file(helper)) {
+				return helper;
+			}
 		}
 	}
 	

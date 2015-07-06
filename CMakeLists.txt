@@ -130,7 +130,7 @@ set(SCRIPTDIR "${CMAKE_INSTALL_BINDIR}" CACHE
 set(INSTALL_DATADIR "${CMAKE_INSTALL_DATAROOTDIR}/games/arx" CACHE
     STRING "Install location for Arx Libertatis data files (relative to prefix).")
 set(RUNTIME_LIBEXECDIR "${CMAKE_INSTALL_FULL_LIBEXECDIR}" CACHE
-    STRING "Runtime search location for arxcrashreporter, relative to arx binary.")
+    STRING "Runtime search locations for helpers, relative to the game executable.")
 mark_as_advanced(
 	ICONDIR
 	APPDIR
