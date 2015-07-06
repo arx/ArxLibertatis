@@ -309,7 +309,7 @@ static void fix_player(SaveBlock & save, Idents & idents) {
 	
 	cout << "player" << endl;
 	
-	const string & loadfile = "player";
+	const std::string loadfile = "player";
 	
 	size_t size;
 	char * dat = save.load(loadfile, size);
