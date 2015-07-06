@@ -1617,12 +1617,10 @@ static long ARX_CHANGELEVEL_Pop_Level(ARX_CHANGELEVEL_INDEX * asi, long num,
 
 static long ARX_CHANGELEVEL_Pop_Player() {
 	
-	const std::string & loadfile = "player";
-	
 	size_t size;
-	char * dat = g_currentSavedGame->load(loadfile, size);
+	char * dat = g_currentSavedGame->load("player", size);
 	if(!dat) {
-		LogError << "Unable to Open " << loadfile << " for Read...";
+		LogError << "Unable to Open player for Read...";
 		return -1;
 	}
 	
