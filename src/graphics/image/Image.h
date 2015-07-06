@@ -98,7 +98,6 @@ public:
 	
 	void FlipY();
 	bool ToGrayscale(Format newFormat = Format_L8);
-	bool ToNormalMap();
 	
 	void ResizeFrom(const Image &source, unsigned int width, unsigned int height, bool flip_vertical = false);
 	
