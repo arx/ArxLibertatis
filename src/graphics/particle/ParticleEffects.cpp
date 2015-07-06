@@ -635,10 +635,6 @@ void ManageTorch() {
 		
 	} else {
 		
-		if(flarenum == 0) {
-			el->exist = 0;
-		} else {
-			
 			long count = MagicFlareCountNonFlagged();
 			
 			if(count) {
@@ -649,8 +645,9 @@ void ManageTorch() {
 				el->intensity = 1.6f;
 				el->exist = 1;
 				el->rgb = Color3f(0.01f * count, 0.009f * count, 0.008f * count);
+			} else {
+				el->exist = 0;
 			}
-		}
 	}
 	
 	if(   entities.player()->obj

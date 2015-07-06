@@ -98,6 +98,10 @@ void MagicFlareReleaseEntity(Entity * io) {
 }
 
 long MagicFlareCountNonFlagged() {
+	
+	if(!flarenum)
+		return 0;
+	
 	long count = 0;
 	for(size_t i = 0; i < MAX_FLARES; i++) {
 		if(magicFlares[i].exist && magicFlares[i].flags == 0) {

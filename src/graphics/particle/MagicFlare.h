@@ -23,8 +23,6 @@
 #include "game/Entity.h"
 #include "game/Camera.h"
 
-extern long flarenum;
-
 void MagicFlareLoadTextures();
 void MagicFlareSetCamera(EERIE_CAMERA * camera);
 
