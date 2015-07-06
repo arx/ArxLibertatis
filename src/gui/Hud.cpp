@@ -1022,10 +1022,9 @@ public:
 		m_size = Vec2f(32, 32);
 	}
 	
-	void update() {
-		Vec2f pos(static_cast<float>(-lSLID_VALUE), g_size.height() - (78 + 32));
+	void updateRect(const Rectf & parent) {
 		
-		m_rect = Rectf(pos, m_size.x, m_size.y);
+		m_rect = createChild(parent, Anchor_TopLeft, m_size * m_scale, Anchor_BottomLeft);
 	}
 	
 	void updateInput() {
@@ -2309,6 +2308,7 @@ void hudElementsInit() {
 void setHudScale(float scale) {
 	hitStrengthGauge.setScale(scale);
 	healthGauge.setScale(scale);
+	stealIconGui.setScale(scale);
 	
 	manaGauge.setScale(scale);
 	backpackIconGui.setScale(scale);
@@ -2390,12 +2390,16 @@ void ArxGame::drawAllInterface() {
 		SpecialCursor=CURSOR_INTERACTION_ON;
 	}
 	
+	healthGauge.updateRect(hudSlider);
+	healthGauge.updateInput(mousePos);
+	healthGauge.update();
+	
 	damagedEquipmentGui.draw();
 	
 	if(!(player.Interface & INTER_COMBATMODE) && (player.Interface & INTER_MINIBACK)) {
 		
 		if(player.Interface & INTER_STEAL) {
-			stealIconGui.update();
+			stealIconGui.updateRect(healthGauge.rect());
 			stealIconGui.draw();			
 		}
 		// Pick All/Close Secondary Inventory
@@ -2437,9 +2441,7 @@ void ArxGame::drawAllInterface() {
 		memorizedRunesHud.draw();
 	}
 	
-	healthGauge.updateRect(hudSlider);
-	healthGauge.updateInput(mousePos);
-	healthGauge.update();
+
 	
 	
 	if(player.Interface & INTER_LIFE_MANA) {
