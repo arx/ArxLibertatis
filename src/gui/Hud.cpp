@@ -1303,7 +1303,7 @@ void purseIconGuiRequestHalo() {
 }
 
 
-class CurrentTorchIconGui {
+class CurrentTorchIconGui : public HudItem {
 private:
 	bool m_isActive;
 	Rectf m_rect;
@@ -1319,12 +1319,15 @@ public:
 		return !(player.Interface & INTER_COMBATMODE) && player.torch;
 	}
 	
-	void updateRect() {
+	void updateRect(const Rectf & parent) {
 		
-		float px = INTERFACE_RATIO(std::max(InventoryX + 110.f, 10.f));
-		float py = g_size.height() - INTERFACE_RATIO(158.f + 32.f);
+		float secondaryInventoryX = InventoryX + 110.f;
 		
-		m_rect = Rectf(Vec2f(px, py), m_size.x, m_size.y);
+		m_rect = createChild(parent, Anchor_TopLeft, m_size * m_scale, Anchor_BottomLeft);
+		
+		if(m_rect.left < secondaryInventoryX) {
+			m_rect.move(secondaryInventoryX, 0.f);
+		}
 	}
 	
 	void updateInput() {
@@ -1377,26 +1380,26 @@ public:
 			return;
 		}
 		
-		createFireParticle(m_rect.topLeft());
+		createFireParticle();
 	}
 	
-	void createFireParticle(Vec2f p) {
+	void createFireParticle() {
 		
 		PARTICLE_DEF * pd = createParticle();
 		if(!pd) {
 			return;
 		}
 		
+		Vec2f pos = m_rect.topLeft() + Vec2f(12.f - rnd() * 3.f, rnd() * 6.f) * m_scale;
+		
 		pd->special = FIRE_TO_SMOKE;
-		pd->ov = Vec3f(p.x + INTERFACE_RATIO(12.f - rnd() * 3.f),
-		               p.y + INTERFACE_RATIO(rnd() * 6.f), 0.0000001f);
-		pd->move = Vec3f(INTERFACE_RATIO(1.5f - rnd() * 3.f),
-		                 -INTERFACE_RATIO(5.f + rnd() * 1.f), 0.f);
+		pd->ov = Vec3f(pos, 0.0000001f);
+		pd->move = Vec3f((1.5f - rnd() * 3.f), -(5.f + rnd() * 1.f), 0.f) * m_scale;
 		pd->scale = Vec3f(1.8f, 1.8f, 1.f);
 		pd->tolive = Random::get(500, 900);
 		pd->tc = fire2;
 		pd->rgb = Color3f(1.f, .6f, .5f);
-		pd->siz = INTERFACE_RATIO(14.f);
+		pd->siz = 14.f * m_scale;
 		pd->is2D = true;
 	}
 	
@@ -2309,6 +2312,7 @@ void setHudScale(float scale) {
 	hitStrengthGauge.setScale(scale);
 	healthGauge.setScale(scale);
 	stealIconGui.setScale(scale);
+	currentTorchIconGui.setScale(scale);
 	
 	manaGauge.setScale(scale);
 	backpackIconGui.setScale(scale);
@@ -2394,12 +2398,13 @@ void ArxGame::drawAllInterface() {
 	healthGauge.updateInput(mousePos);
 	healthGauge.update();
 	
+	stealIconGui.updateRect(healthGauge.rect());
+	
 	damagedEquipmentGui.draw();
 	
 	if(!(player.Interface & INTER_COMBATMODE) && (player.Interface & INTER_MINIBACK)) {
 		
 		if(player.Interface & INTER_STEAL) {
-			stealIconGui.updateRect(healthGauge.rect());
 			stealIconGui.draw();			
 		}
 		// Pick All/Close Secondary Inventory
@@ -2416,6 +2421,7 @@ void ArxGame::drawAllInterface() {
 		}
 	}
 	
+	currentTorchIconGui.updateRect(stealIconGui.rect());
 	currentTorchIconGui.update();
 	currentTorchIconGui.draw();
 	
@@ -2511,7 +2517,6 @@ void hudUpdateInput() {
 		if(!(player.Interface & INTER_COMBATMODE)) {
 			if(!TRUE_PLAYER_MOUSELOOK_ON) {
 				
-				currentTorchIconGui.updateRect();
 				currentTorchIconGui.updateInput();
 				levelUpIconGui.updateInput();
 				purseIconGui.updateInput();
