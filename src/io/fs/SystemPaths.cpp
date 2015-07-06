@@ -153,7 +153,7 @@ static bool addSearchPath(std::vector<path> & result, const path & dir, bool fil
 	return true;
 }
 
-static bool addExeSearchPath(std::vector<path> & result, const path & dir, bool filter) {
+static bool addSearchRoot(std::vector<path> & result, const path & dir, bool filter) {
 	
 	// Add "data" subdirectory or dirs referenced in "data" file
 	fs::path subdir = dir / "data";
@@ -163,13 +163,13 @@ static bool addExeSearchPath(std::vector<path> & result, const path & dir, bool 
 		while(std::getline(ifs, line)) {
 			fs::path datadir = dir / line;
 			if(addSearchPath(result, datadir, filter)) {
-				LogDebug("got data dir from data file in exe dir: " << datadir);
+				LogDebug("got data dir from data file in dir: " << datadir);
 			} else {
-				LogDebug("ignoring data dir from data file in exe dir: " << datadir);
+				LogDebug("ignoring data dir from data file in dir: " << datadir);
 			}
 		}
 	} else if(addSearchPath(result, subdir, filter)) {
-		LogDebug("got data dir from exe subdir: " << subdir);
+		LogDebug("got data dir from data subdir: " << subdir);
 	}
 	
 	return addSearchPath(result, dir, filter);
@@ -188,8 +188,8 @@ std::vector<path> SystemPaths::getSearchPaths(bool filter) const {
 	std::vector<path> result;
 	
 	// Use the user diretcory as the highest-priority data directory
-	if(!user.empty()) {
-		result.push_back(user);
+	if(!user.empty() && addSearchRoot(result, user, filter)) {
+		LogDebug("got data dir from user dir: " << user);
 	}
 	
 	// Use paths specifed on the command-line
@@ -209,7 +209,7 @@ std::vector<path> SystemPaths::getSearchPaths(bool filter) const {
 	std::string temp;
 	if(platform::getSystemConfiguration("DataDir", temp)) {
 		path dir = canonical(temp);
-		if(addSearchPath(result, dir, filter)) {
+		if(addSearchRoot(result, dir, filter)) {
 			LogDebug("got data dir from registry: \"" << temp << "\" = " << dir);
 		} else {
 			LogDebug("ignoring data dir from registry: \"" << temp << "\" = " << dir);
@@ -227,7 +227,7 @@ std::vector<path> SystemPaths::getSearchPaths(bool filter) const {
 				continue; // not defined
 			}
 			#endif
-			if(addExeSearchPath(result, p, filter)) {
+			if(addSearchRoot(result, p, filter)) {
 				LogDebug("got data dir from exe: " << var << " = " << p);
 			} else {
 				LogDebug("ignoring data dir from exe: " << var << " = " << p);
@@ -247,7 +247,7 @@ std::vector<path> SystemPaths::getSearchPaths(bool filter) const {
 		std::vector<path> relative_data_dirs = fs::getSearchPaths(relative_data_dir);
 		BOOST_FOREACH(const path & p, relative_data_dirs) {
 			path dir = exedir / p;
-			if(!ignored && addExeSearchPath(result, dir, filter)) {
+			if(!ignored && addSearchRoot(result, dir, filter)) {
 				LogDebug("got data dir from exe: " << exepath << " + " << p << " -> " << dir);
 			} else {
 				LogDebug("ignoring data dir from exe: " << exepath << " + " << p << " -> " << dir);
@@ -262,7 +262,7 @@ std::vector<path> SystemPaths::getSearchPaths(bool filter) const {
 		BOOST_FOREACH(const path & prefix, prefixes) {
 			BOOST_FOREACH(const path & suffix, suffixes) {
 				path dir = canonical(prefix / suffix);
-				if(addSearchPath(result, dir, filter)) {
+				if(addSearchRoot(result, dir, filter)) {
 					LogDebug("got data dir from search: " << prefix
 					         << " + " << suffix << " = " << dir);
 				} else {
@@ -416,9 +416,11 @@ void SystemPaths::list(std::ostream & os, const std::string & forceUser,
 		os << forceData;
 	}
 	std::string exevar = getSearchPathVar(platform::getExecutablePath());
-	os << " - Paths specifed in \"" << exevar << "\" and \"" << exevar << "/data\"\n";
-	os << " - The directory containing the game executable and the \"data\" subdirectory or file\n";
+	os << " - Paths specifed in \"" << exevar << "\"\n";
+	os << " - The directory containing the game executable\n";
 	listDirectoriesFor(os, "DataDir", data_dir_prefixes, data_dir);
+	os << "For all of these (except those specified via --data-dir),\n";
+	os << "the \"data\" subdirectory or file will also be searched.\n";
 	os << "selected:";
 	if(data.empty()) {
 		os << " (none)\n";

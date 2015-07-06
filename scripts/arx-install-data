@@ -2097,6 +2097,12 @@ probe_data_dirs() {
 		for _probe_data_dirs_prefix in "$@" ; do
 			eval "set -- $(to_list "$data_dir_suffixes")"
 			for _probe_data_dirs_suffix ; do
+				_probe_data_dirs_force=$_probe_data_dirs_existing
+				[ -e "$_probe_data_dirs_prefix/$_probe_data_dirs_suffix" ] && \
+					_probe_data_dirs_force=0
+				probe_data_dir $_probe_data_dirs_force \
+					"$_probe_data_dirs_prefix/$_probe_data_dirs_suffix/data" "system" \
+					&& return $true
 				probe_data_dir $_probe_data_dirs_existing \
 					"$_probe_data_dirs_prefix/$_probe_data_dirs_suffix" "system" \
 					&& return $true
@@ -2107,7 +2113,13 @@ probe_data_dirs() {
 		if [ $is_root = 0 ] ; then
 			eval "set -- $(to_list "$user_dir_suffixes")"
 			for _probe_data_dirs_suffix ; do
-				probe_data_dir $_probe_data_dirs_existing \
+				_probe_data_dirs_force=$_probe_data_dirs_existing
+				[ -e "$data_home/$_probe_data_dirs_suffix" ] && \
+					_probe_data_dirs_force=0
+				probe_data_dir $_probe_data_dirs_force \
+					"$data_home/$_probe_data_dirs_suffix/data" "user" \
+					&& return $true
+				[ $install = 0 ] && probe_data_dir $_probe_data_dirs_existing \
 					"$data_home/$_probe_data_dirs_suffix" "user" \
 					&& return $true
 			done
