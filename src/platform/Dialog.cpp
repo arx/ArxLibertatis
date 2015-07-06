@@ -88,7 +88,7 @@ bool showDialog(DialogType type, const std::string & message, const std::string 
 #else
 
 static std::string escape(const std::string & input) {
-	return util::escapeString(input, "\\\"$");
+	return util::escapeString(input, "\\\"$`");
 }
 
 static bool isAllowedInUrl(char c) {
