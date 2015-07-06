@@ -360,10 +360,8 @@ void DrawGrille(CinematicBitmap * bitmap, Color col, int fx, CinematicLight * li
 	{
 		C_INDEXED* mat = &(*it);
 
-		if (mat->tex)
-			GRenderer->SetTexture(0, mat->tex);
-		else
-			GRenderer->ResetTexture(0);
+		arx_assert(mat->tex);
+		GRenderer->SetTexture(0, mat->tex);
 		
 		int	nb2 = mat->nbvertexs;
 		while(nb2--) {
