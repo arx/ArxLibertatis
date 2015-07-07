@@ -699,7 +699,7 @@ void PrepareAnim(ANIM_USE *eanim, unsigned long time, Entity *io) {
 			   && (eanim->cur_anim->anims[eanim->altidx_cur]->frames[fr].flag > 0)
 			   && (eanim->lastframe != fr)) {
 				
-				if(io != entities.player()) {
+				if(io && io != entities.player()) {
 					if(eanim->lastframe < fr && eanim->lastframe != -1) {
 						for(long n = eanim->lastframe + 1; n <= fr; n++) {
 							if(eanim->cur_anim->anims[eanim->altidx_cur]->frames[n].flag == 9)
