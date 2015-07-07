@@ -119,7 +119,8 @@ std::string expandEnvironmentVariables(const std::string & in) {
 }
 
 #if ARX_PLATFORM == ARX_PLATFORM_WIN32
-static bool getRegistryValue(HKEY hkey, const std::string & name, std::string & result) {
+static bool getRegistryValue(HKEY hkey, const std::string & name, std::string & result,
+                             REGSAM flags = 0) {
 	
 	boost::scoped_array<char> buffer(NULL);
 
@@ -129,7 +130,7 @@ static bool getRegistryValue(HKEY hkey, const std::string & name, std::string & 
 
 	long ret = 0;
 
-	ret = RegOpenKeyEx(hkey, "Software\\ArxLibertatis\\", 0, KEY_QUERY_VALUE, &handle);
+	ret = RegOpenKeyEx(hkey, "Software\\ArxLibertatis\\", 0, KEY_QUERY_VALUE | flags, &handle);
 
 	if (ret == ERROR_SUCCESS)
 	{
@@ -161,11 +162,23 @@ bool getSystemConfiguration(const std::string & name, std::string & result) {
 	
 #if ARX_PLATFORM == ARX_PLATFORM_WIN32
 	
+	#if defined(_WIN64)
+	REGSAM foreign_registry = KEY_WOW64_32KEY;
+	#else
+	REGSAM foreign_registry = KEY_WOW64_64KEY;
+	#endif
+	
 	if(getRegistryValue(HKEY_CURRENT_USER, name, result)) {
+		return true;
+	}
+	if(getRegistryValue(HKEY_CURRENT_USER, name, result, foreign_registry)) {
 		return true;
 	}
 	
 	if(getRegistryValue(HKEY_LOCAL_MACHINE, name, result)) {
+		return true;
+	}
+	if(getRegistryValue(HKEY_LOCAL_MACHINE, name, result, foreign_registry)) {
 		return true;
 	}
 	
