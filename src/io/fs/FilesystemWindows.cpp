@@ -203,10 +203,26 @@ bool create_directories(const path & p) {
 	return create_directory(p);
 }
 
+static void update_last_write_time(const path & p) {
+	
+	HANDLE handle = CreateFileA(p.string().c_str(), GENERIC_WRITE, 0, NULL, OPEN_EXISTING, 0, NULL);
+	if(handle == INVALID_HANDLE_VALUE) {
+		return;
+	}
+	
+	FILETIME filetime;
+	GetSystemTimeAsFileTime(&filetime);
+	SetFileTime(handle, &filetime, &filetime, &filetime);
+	
+	CloseHandle(handle);
+}
+
 bool copy_file(const path & from_p, const path & to_p, bool overwrite) {
 	bool ret = CopyFileA(from_p.string().c_str(), to_p.string().c_str(), !overwrite) == TRUE;
 	if(!ret) {
 		LogWarning << "CopyFileA(" << from_p << ", " << to_p << ", " << !overwrite << ") failed! " << getLastErrorString();
+	} else {
+		update_last_write_time(to_p);
 	}
 	return ret;
 }
