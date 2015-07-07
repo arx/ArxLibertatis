@@ -820,13 +820,13 @@ private:
 				break;
 			}
 			
-			pd->ov = pos - Vec3f(float(i * 2), float(i * 2), 0.f);
-			pd->move = Vec3f(-float(i) * 0.5f, -float(i) * 0.5f, 0.f);
-			pd->scale = Vec3f(float(i * 10), float(i * 10), 0.f);
+			pd->ov = pos - Vec3f(i * 2, i * 2, 0.f);
+			pd->move = Vec3f(i * -0.5f, i * -0.5f, 0.f);
+			pd->scale = Vec3f(i * 10, i * 10, 0.f);
 			pd->tolive = Random::get(1200, 1600);
 			pd->tc = m_tex;
-			pd->rgb = Color3f(1.f - float(i) * 0.1f, float(i) * 0.1f, 0.5f - float(i) * 0.1f);
-			pd->siz = 32.f + float(i * 4);
+			pd->rgb = Color3f(1.f - i * 0.1f, i * 0.1f, 0.5f - i * 0.1f);
+			pd->siz = 32.f + i * 4.f;
 			pd->is2D = true;
 		}
 		
