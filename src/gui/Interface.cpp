@@ -2401,9 +2401,9 @@ void ArxGame::manageEditorControls() {
 		) {
 			if(!TakeFromInventory(STARTDRAG)) {
 				bool bOk = false;
-
+				
 				Entity *io = InterClick(STARTDRAG);
-
+				
 				if(io && !BLOCK_PLAYER_CONTROLS) {
 					if(g_cursorOverBook) {
 						if(io->show == SHOW_FLAG_ON_PLAYER)
@@ -2412,30 +2412,30 @@ void ArxGame::manageEditorControls() {
 						bOk = true;
 					}
 				}
-
+				
 				if(bOk) {
 					Set_DragInter(io);
-
+					
 					if(io) {
 						ARX_PLAYER_Remove_Invisibility();
-
+						
 						if(DRAGINTER->show==SHOW_FLAG_ON_PLAYER) {
 							ARX_EQUIPMENT_UnEquip(entities.player(),DRAGINTER);
 							RemoveFromAllInventories(DRAGINTER);
 							DRAGINTER->bbox2D.max.x = -1;
 						}
-
+						
 						if((io->ioflags & IO_NPC) || (io->ioflags & IO_FIX)) {
 							Set_DragInter(NULL);
 						} else {
-
-						if(io->ioflags & IO_UNDERWATER) {
-							io->ioflags&=~IO_UNDERWATER;
-							ARX_SOUND_PlayInterface(SND_PLOUF, 0.8F + 0.4F * rnd());
-						}
-
-						DRAGINTER->show=SHOW_FLAG_NOT_DRAWN;
-						ARX_SOUND_PlayInterface(SND_INVSTD);
+							
+							if(io->ioflags & IO_UNDERWATER) {
+								io->ioflags&=~IO_UNDERWATER;
+								ARX_SOUND_PlayInterface(SND_PLOUF, 0.8F + 0.4F * rnd());
+							}
+							
+							DRAGINTER->show=SHOW_FLAG_NOT_DRAWN;
+							ARX_SOUND_PlayInterface(SND_INVSTD);
 						}
 					}
 				} else {
