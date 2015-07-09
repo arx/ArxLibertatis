@@ -2427,8 +2427,7 @@ void ArxGame::manageEditorControls() {
 
 						if((io->ioflags & IO_NPC) || (io->ioflags & IO_FIX)) {
 							Set_DragInter(NULL);
-							goto suivant;
-						}
+						} else {
 
 						if(io->ioflags & IO_UNDERWATER) {
 							io->ioflags&=~IO_UNDERWATER;
@@ -2437,13 +2436,11 @@ void ArxGame::manageEditorControls() {
 
 						DRAGINTER->show=SHOW_FLAG_NOT_DRAWN;
 						ARX_SOUND_PlayInterface(SND_INVSTD);
+						}
 					}
 				} else {
 					Set_DragInter(NULL);
 				}
-
-				suivant:
-					;
 			}
 			else
 				ARX_PLAYER_Remove_Invisibility();
