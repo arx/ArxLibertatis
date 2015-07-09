@@ -1265,9 +1265,9 @@ void ArxGame::managePlayerControls() {
 		} else if(InPlayerInventoryPos(DANAEMouse)) {
 				if((player.Interface & INTER_INVENTORY)) {
 					if(player.bag) {
-						if(sActiveInventory > 0) {
+						if(g_currentInventoryBag > 0) {
 							ARX_SOUND_PlayInterface(SND_BACKPACK, 0.9F + 0.2F * rnd());
-							sActiveInventory --;
+							g_currentInventoryBag --;
 						}
 					}
 				}
@@ -1276,9 +1276,9 @@ void ArxGame::managePlayerControls() {
 		} else {
 				if((player.Interface & INTER_INVENTORY)) {
 					if(player.bag) {
-						if(sActiveInventory > 0) {
+						if(g_currentInventoryBag > 0) {
 							ARX_SOUND_PlayInterface(SND_BACKPACK, 0.9F + 0.2F * rnd());
-							sActiveInventory --;
+							g_currentInventoryBag --;
 						}
 					}
 				}
@@ -1293,9 +1293,9 @@ void ArxGame::managePlayerControls() {
 		} else if(InPlayerInventoryPos(DANAEMouse)) {
 				if((player.Interface & INTER_INVENTORY)) {
 					if(player.bag) {
-						if(sActiveInventory < player.bag - 1) {
+						if(g_currentInventoryBag < player.bag - 1) {
 							ARX_SOUND_PlayInterface(SND_BACKPACK, 0.9F + 0.2F * rnd());
-							sActiveInventory ++;
+							g_currentInventoryBag ++;
 						}
 					}
 				}
@@ -1304,9 +1304,9 @@ void ArxGame::managePlayerControls() {
 		} else {
 				if((player.Interface & INTER_INVENTORY)) {
 					if(player.bag) {
-						if(sActiveInventory < player.bag - 1) {
+						if(g_currentInventoryBag < player.bag - 1) {
 							ARX_SOUND_PlayInterface(SND_BACKPACK, 0.9F + 0.2F * rnd());
-							sActiveInventory ++;
+							g_currentInventoryBag ++;
 						}
 					}
 				}

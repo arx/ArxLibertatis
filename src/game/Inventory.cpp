@@ -99,7 +99,7 @@ Entity * DRAGINTER = NULL;
 Entity * ioSteal = NULL;
 long InventoryY = 100;
 static long HERO_OR_SECONDARY = 0;
-short sActiveInventory = 0;
+short g_currentInventoryBag = 0;
 
 // 1 player 2 secondary
 short sInventory = -1;
@@ -148,7 +148,7 @@ void CleanInventory() {
 		slot.show = 1;
 	}
 	
-	sActiveInventory = 0;
+	g_currentInventoryBag = 0;
 }
 
 extern Vec2s DANAEMouse;
@@ -170,7 +170,7 @@ static Entity * GetInventoryObj(const Vec2s & pos) {
 			ty = checked_range_cast<long>(ty / INTERFACE_RATIO(32));
 
 			if((tx >= 0) && ((size_t)tx < INVENTORY_X) && (ty >= 0) && ((size_t)ty < INVENTORY_Y)) {
-				Entity *result = inventory[sActiveInventory][tx][ty].io;
+				Entity *result = inventory[g_currentInventoryBag][tx][ty].io;
 
 				if(result && (result->gameFlags & GFLAG_INTERACTIVITY)) {
 					HERO_OR_SECONDARY = 1;
@@ -1243,7 +1243,7 @@ bool PutInInventory() {
 		t.y = t.y / SHORT_INTERFACE_RATIO(32); 
 		
 		if((t.x >= 0) && (t.x <= 16 - s.x) && (t.y >= 0) && (t.y <= 3 - s.y)) {
-			bag = sActiveInventory;
+			bag = g_currentInventoryBag;
 		} else {
 			return false;
 		}

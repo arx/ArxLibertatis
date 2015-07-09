@@ -456,7 +456,7 @@ public:
 		
 		bool bQuitCombine = true;
 		
-		if(sActiveInventory > 0) {
+		if(g_currentInventoryBag > 0) {
 			const Rect mouseTestRect(
 			pos.x,
 			pos.y,
@@ -468,7 +468,7 @@ public:
 				bQuitCombine = false;
 		}
 
-		if(sActiveInventory < player.bag-1) {
+		if(g_currentInventoryBag < player.bag-1) {
 			float fRatio = INTERFACE_RATIO(32 + 5);
 
 			pos.y += checked_range_cast<int>(fRatio);
@@ -627,11 +627,11 @@ public:
 	void draw() {
 		if(player.Interface & INTER_INVENTORY) {		
 			if(player.bag) {
-				ARX_INTERFACE_DrawInventory(sActiveInventory);
+				ARX_INTERFACE_DrawInventory(g_currentInventoryBag);
 				
 				CalculateInventoryCoordinates();
 				
-				if(sActiveInventory > 0) {
+				if(g_currentInventoryBag > 0) {
 					Rectf rect = Rectf(m_pos, 32.f, 32.f);
 					
 					EERIEDrawBitmap(rect, 0.001f, m_heroInventoryUp, Color::white);
@@ -649,9 +649,9 @@ public:
 						if ((eeMouseDown1())
 							|| (eeMouseUp1() && DRAGINTER))
 						{
-							if(sActiveInventory > 0) {
+							if(g_currentInventoryBag > 0) {
 								ARX_SOUND_PlayInterface(SND_BACKPACK, 0.9F + 0.2F * rnd());
-								sActiveInventory --;
+								g_currentInventoryBag --;
 							}
 							
 							EERIEMouseButton &= ~1;
@@ -659,7 +659,7 @@ public:
 					}
 				}
 				
-				if(sActiveInventory < player.bag-1) {
+				if(g_currentInventoryBag < player.bag-1) {
 					Rectf rect = Rectf(m_pos + Vec2f(0.f, 32.f + 5.f), 32.f, 32.f);
 					
 					EERIEDrawBitmap(rect, 0.001f, m_heroInventoryDown, Color::white);
@@ -676,9 +676,9 @@ public:
 						if ((eeMouseDown1())
 							|| (eeMouseUp1() && DRAGINTER))
 						{
-							if(sActiveInventory < player.bag-1) {
+							if(g_currentInventoryBag < player.bag-1) {
 								ARX_SOUND_PlayInterface(SND_BACKPACK, 0.9F + 0.2F * rnd());
-								sActiveInventory ++;
+								g_currentInventoryBag ++;
 							}
 							
 							EERIEMouseButton &= ~1;
