@@ -2394,7 +2394,7 @@ void ArxGame::manageEditorControls() {
 		}
 		
 		// Checks for Object Dragging
-		if(DRAGGING
+		if(   DRAGGING
 		   && (!PLAYER_MOUSELOOK_ON || !config.input.autoReadyWeapon)
 		   && !GInput->actionPressed(CONTROLS_CUST_MAGICMODE)
 		   && !DRAGINTER
@@ -2419,7 +2419,7 @@ void ArxGame::manageEditorControls() {
 					if(io) {
 						ARX_PLAYER_Remove_Invisibility();
 						
-						if(DRAGINTER->show==SHOW_FLAG_ON_PLAYER) {
+						if(DRAGINTER->show == SHOW_FLAG_ON_PLAYER) {
 							ARX_EQUIPMENT_UnEquip(entities.player(),DRAGINTER);
 							RemoveFromAllInventories(DRAGINTER);
 							DRAGINTER->bbox2D.max.x = -1;
@@ -2430,20 +2430,20 @@ void ArxGame::manageEditorControls() {
 						} else {
 							
 							if(io->ioflags & IO_UNDERWATER) {
-								io->ioflags&=~IO_UNDERWATER;
+								io->ioflags &= ~IO_UNDERWATER;
 								ARX_SOUND_PlayInterface(SND_PLOUF, 0.8F + 0.4F * rnd());
 							}
 							
-							DRAGINTER->show=SHOW_FLAG_NOT_DRAWN;
+							DRAGINTER->show = SHOW_FLAG_NOT_DRAWN;
 							ARX_SOUND_PlayInterface(SND_INVSTD);
 						}
 					}
 				} else {
 					Set_DragInter(NULL);
 				}
-			}
-			else
+			} else {
 				ARX_PLAYER_Remove_Invisibility();
+			}
 		}
 	
 		// Debug Selection
