@@ -50,8 +50,6 @@ void hideQuickSaveIcon();
 void hudUpdateInput();
 void manageEditorControlsHUD2();
 
-bool inventoryGuiupdateInputPROXY();
-
 Vec2f getInventoryGuiAnchorPosition();
 
 #endif // ARX_GUI_HUD_H
