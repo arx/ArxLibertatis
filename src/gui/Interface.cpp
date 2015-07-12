@@ -1264,25 +1264,11 @@ void ArxGame::managePlayerControls() {
 				openBookPage(prevBookPage());
 			}
 		} else if(InPlayerInventoryPos(DANAEMouse)) {
-				if((player.Interface & INTER_INVENTORY)) {
-					if(player.bag) {
-						if(g_currentInventoryBag > 0) {
-							ARX_SOUND_PlayInterface(SND_BACKPACK, 0.9F + 0.2F * rnd());
-							g_currentInventoryBag --;
-						}
-					}
-				}
+			playerInventoryPreviousBag();
 		} else if(player.Interface & INTER_MAP) {
 			openBookPage(prevBookPage());
 		} else {
-				if((player.Interface & INTER_INVENTORY)) {
-					if(player.bag) {
-						if(g_currentInventoryBag > 0) {
-							ARX_SOUND_PlayInterface(SND_BACKPACK, 0.9F + 0.2F * rnd());
-							g_currentInventoryBag --;
-						}
-					}
-				}
+			playerInventoryPreviousBag();
 		}
 	}
 
