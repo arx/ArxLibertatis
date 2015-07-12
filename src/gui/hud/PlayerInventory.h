@@ -30,7 +30,7 @@ extern short g_currentInventoryBag;
 
 void playerInventoryInit();
 void playerInventoryUpdate();
-bool inventoryGuiupdateInputPROXY();
+bool playerInventoryUpdateInput();
 void playerInventoryDraw();
 
 void playerInventoryNextBag();

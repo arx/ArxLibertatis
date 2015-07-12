@@ -2316,7 +2316,7 @@ void ArxGame::manageEditorControls() {
 	
 			if((player.Interface & INTER_INVENTORY)) {
 				if(player.bag) {
-					bQuitCombine = inventoryGuiupdateInputPROXY();
+					bQuitCombine = playerInventoryUpdateInput();
 				}
 			}
 	

@@ -335,7 +335,7 @@ void playerInventoryUpdate() {
 	inventoryGui.update();
 }
 
-bool inventoryGuiupdateInputPROXY() {
+bool playerInventoryUpdateInput() {
 	return inventoryGui.updateInput();
 }
 
