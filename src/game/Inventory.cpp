@@ -1317,36 +1317,12 @@ bool InInventoryPos(const Vec2s & pos) {
 }
 
 /*!
- * \brief returns true if cursor is flying over any inventory
- */
-bool IsFlyingOverInventory(const Vec2s & pos) {
-	//	if(eMouseState==MOUSE_IN_WORLD) return false;
-
-	if(SecondaryInventory != NULL) {
-		short tx = pos.x + checked_range_cast<short>(InventoryX) - SHORT_INTERFACE_RATIO(2);
-		short ty = pos.y - SHORT_INTERFACE_RATIO(13);
-		tx /= SHORT_INTERFACE_RATIO(32);
-		ty /= SHORT_INTERFACE_RATIO(32);
-
-		if(   tx >= 0
-		   && tx <= SecondaryInventory->m_size.x
-		   && ty >= 0
-		   && ty <= SecondaryInventory->m_size.y
-		) {
-			return true;
-		}
-	}
-
-	return InPlayerInventoryPos(pos);
-}
-
-/*!
  * \brief Returns IO under position xx,yy in any INVENTORY or NULL if no IO was found
  */
 Entity * GetFromInventory(const Vec2s & pos) {
 	HERO_OR_SECONDARY = 0;
 
-	if(!IsFlyingOverInventory(pos))
+	if(!InInventoryPos(pos))
 		return NULL;
 
 	if(SecondaryInventory != NULL) {

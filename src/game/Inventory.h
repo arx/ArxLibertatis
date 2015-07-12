@@ -265,7 +265,6 @@ void SendInventoryObjectCommand(const std::string & _lpszText, ScriptMessage _lC
 bool PutInInventory();
 bool TakeFromInventory(const Vec2s & pos);
 Entity * GetFromInventory(const Vec2s & pos);
-bool IsFlyingOverInventory(const Vec2s & pos);
 bool IsInPlayerInventory(Entity * io);
 bool IsInSecondaryInventory(Entity * io);
 bool InInventoryPos(const Vec2s & pos);

@@ -1989,7 +1989,7 @@ bool IsEquipedByPlayer(const Entity * io)
 extern long LOOKING_FOR_SPELL_TARGET;
 Entity * InterClick(const Vec2s & pos) {
 	
-	if(IsFlyingOverInventory(pos)) {
+	if(InInventoryPos(pos)) {
 		return NULL;
 	}
 
