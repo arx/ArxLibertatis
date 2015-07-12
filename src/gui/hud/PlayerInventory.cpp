@@ -370,6 +370,25 @@ extern Vec2s DANAEMouse;
 
 extern Rect g_size;
 
+
+static bool InPlayerInventoryBag(const Vec2s & pos) {
+	if(pos.x >= 0 && pos.y >= 0) {
+		Vec2s t;
+		t.x = pos.x / SHORT_INTERFACE_RATIO(32);
+		t.y = pos.y / SHORT_INTERFACE_RATIO(32);
+
+		if(   t.x >= 0
+		   && (size_t)t.x <= INVENTORY_X
+		   && t.y >= 0
+		   && (size_t)t.y < INVENTORY_Y
+		) {
+			return true;
+		}
+	}
+	
+	return false;
+}
+
 /*!
  * \brief Returns true if xx,yy is a position in player inventory
  */
@@ -381,19 +400,7 @@ bool InPlayerInventoryPos(const Vec2s & pos) {
 	if(player.Interface & INTER_INVENTORY) {
 		Vec2s t = pos - iPos;
 		
-		if(t.x >= 0 && t.y >= 0) {
-			t.x = t.x / SHORT_INTERFACE_RATIO(32);
-			t.y = t.y / SHORT_INTERFACE_RATIO(32);
-
-			if(   t.x >= 0
-			   && (size_t)t.x <= INVENTORY_X
-			   && t.y >= 0
-			   && (size_t)t.y < INVENTORY_Y
-			)
-				return true;
-			else
-				return false;
-		}
+		return InPlayerInventoryBag(t);
 	} else if(player.Interface & INTER_INVENTORYALL) {
 		float fBag = (player.bag - 1) * INTERFACE_RATIO(-121);
 
@@ -411,19 +418,9 @@ bool InPlayerInventoryPos(const Vec2s & pos) {
 			Vec2s t = pos - iPos;
 			t.y -= iY;
 			
-			if(t.x >= 0 && t.y >= 0) {
-				t.x = t.x / SHORT_INTERFACE_RATIO(32);
-				t.y = t.y / SHORT_INTERFACE_RATIO(32);
-
-				if(   t.x >= 0
-				   && (size_t)t.x <= INVENTORY_X
-				   && t.y >= 0
-				   && (size_t)t.y < INVENTORY_Y
-				) {
-					return true;
-				}
-			}
-
+			if(InPlayerInventoryBag(t))
+				return true;
+			
 			float fRatio	= INTERFACE_RATIO(121);
 
 			iY = checked_range_cast<short>(iY + fRatio);
