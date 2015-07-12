@@ -100,7 +100,6 @@ Entity * DRAGINTER = NULL;
 Entity * ioSteal = NULL;
 long InventoryY = 100;
 long HERO_OR_SECONDARY = 0;
-short g_currentInventoryBag = 0;
 
 // 1 player 2 secondary
 short sInventory = -1;

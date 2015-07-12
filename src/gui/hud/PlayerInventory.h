@@ -26,6 +26,7 @@ class Entity;
 
 extern bool bInventorySwitch;
 extern float fDecPulse;
+extern short g_currentInventoryBag;
 
 void playerInventoryInit();
 void playerInventoryUpdate();

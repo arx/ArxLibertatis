@@ -33,6 +33,7 @@
 
 bool bInventorySwitch = false;
 float fDecPulse;
+short g_currentInventoryBag = 0;
 
 extern PlayerInterfaceFlags lOldInterface;
 
