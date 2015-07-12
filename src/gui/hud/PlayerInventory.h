@@ -20,6 +20,10 @@
 #ifndef ARX_GUI_HUD_PLAYERINVENTORY_H
 #define ARX_GUI_HUD_PLAYERINVENTORY_H
 
+#include "math/Vector.h"
+
+class Entity;
+
 extern bool bInventorySwitch;
 extern float fDecPulse;
 
@@ -30,5 +34,8 @@ void playerInventoryDraw();
 
 void playerInventoryNextBag();
 void playerInventoryPreviousBag();
+
+bool InPlayerInventoryPos(const Vec2s & pos);
+Entity * GetInventoryObj(const Vec2s & pos);
 
 #endif // ARX_GUI_HUD_PLAYERINVENTORY_H

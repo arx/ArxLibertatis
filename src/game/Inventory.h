@@ -256,7 +256,6 @@ Entity * GetInventoryObj_INVENTORYUSE(const Vec2s & pos);
 void CheckForInventoryReplaceMe(Entity * io, Entity * old);
 
 bool InSecondaryInventoryPos(const Vec2s & pos);
-bool InPlayerInventoryPos(const Vec2s & pos);
 
 bool CanBePutInInventory(Entity * io);
 bool CanBePutInSecondaryInventory(INVENTORY_DATA * id, Entity * io);

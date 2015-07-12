@@ -365,3 +365,128 @@ void playerInventoryPreviousBag() {
 		}
 	}
 }
+
+extern Vec2s DANAEMouse;
+
+extern Rect g_size;
+
+/*!
+ * \brief Returns true if xx,yy is a position in player inventory
+ */
+bool InPlayerInventoryPos(const Vec2s & pos) {
+	Vec2f anchorPos = getInventoryGuiAnchorPosition();
+	
+	Vec2s iPos = Vec2s(anchorPos);
+
+	if(player.Interface & INTER_INVENTORY) {
+		Vec2s t = pos - iPos;
+		
+		if(t.x >= 0 && t.y >= 0) {
+			t.x = t.x / SHORT_INTERFACE_RATIO(32);
+			t.y = t.y / SHORT_INTERFACE_RATIO(32);
+
+			if(   t.x >= 0
+			   && (size_t)t.x <= INVENTORY_X
+			   && t.y >= 0
+			   && (size_t)t.y < INVENTORY_Y
+			)
+				return true;
+			else
+				return false;
+		}
+	} else if(player.Interface & INTER_INVENTORYALL) {
+		float fBag = (player.bag - 1) * INTERFACE_RATIO(-121);
+
+		short iY = checked_range_cast<short>(fBag);
+
+		if(   pos.x >= iPos.x
+		   && pos.x <= iPos.x + INVENTORY_X * INTERFACE_RATIO(32)
+		   && pos.y >= iPos.y + iY
+		   && pos.y <= g_size.height()
+		) {
+			return true;
+		}
+
+		for(int i = 0; i < player.bag; i++) {
+			Vec2s t = pos - iPos;
+			t.y -= iY;
+			
+			if(t.x >= 0 && t.y >= 0) {
+				t.x = t.x / SHORT_INTERFACE_RATIO(32);
+				t.y = t.y / SHORT_INTERFACE_RATIO(32);
+
+				if(   t.x >= 0
+				   && (size_t)t.x <= INVENTORY_X
+				   && t.y >= 0
+				   && (size_t)t.y < INVENTORY_Y
+				) {
+					return true;
+				}
+			}
+
+			float fRatio	= INTERFACE_RATIO(121);
+
+			iY = checked_range_cast<short>(iY + fRatio);
+		}
+	}
+
+	return false;
+}
+
+extern long HERO_OR_SECONDARY;
+
+Entity * GetInventoryObj(const Vec2s & pos) {
+	
+	Vec2f anchorPos = getInventoryGuiAnchorPosition();
+	
+	Vec2i iPos = Vec2i(anchorPos);
+	
+	if(player.Interface & INTER_INVENTORY) {
+		long tx = pos.x - iPos.x; //-4
+		long ty = pos.y - iPos.y; //-2
+
+		if(tx >= 0 && ty >= 0) {
+			tx = checked_range_cast<long>(tx / INTERFACE_RATIO(32));
+			ty = checked_range_cast<long>(ty / INTERFACE_RATIO(32));
+
+			if((tx >= 0) && ((size_t)tx < INVENTORY_X) && (ty >= 0) && ((size_t)ty < INVENTORY_Y)) {
+				Entity *result = inventory[g_currentInventoryBag][tx][ty].io;
+
+				if(result && (result->gameFlags & GFLAG_INTERACTIVITY)) {
+					HERO_OR_SECONDARY = 1;
+					return result;
+				}
+			}
+
+			return NULL;
+		}
+	} else if(player.Interface & INTER_INVENTORYALL) {
+
+		float fBag	= (player.bag - 1) * INTERFACE_RATIO(-121);
+
+		int iY = checked_range_cast<int>(fBag);
+
+		for(size_t bag = 0; bag < size_t(player.bag); bag++) {
+			long tx = pos.x - iPos.x;
+			long ty = pos.y - iPos.y - iY;
+
+			tx = checked_range_cast<long>(tx / INTERFACE_RATIO(32));
+			ty = checked_range_cast<long>(ty / INTERFACE_RATIO(32));
+
+			if(tx >= 0 && (size_t)tx < INVENTORY_X && ty >= 0 && (size_t)ty < INVENTORY_Y) {
+				Entity *result = inventory[bag][tx][ty].io;
+
+				if(result && (result->gameFlags & GFLAG_INTERACTIVITY)) {
+					HERO_OR_SECONDARY = 1;
+					return result;
+				}
+
+				return NULL;
+			}
+
+			iY += checked_range_cast<int>(INTERFACE_RATIO(121));
+		}
+	}
+
+	return NULL;
+}
