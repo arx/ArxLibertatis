@@ -257,7 +257,6 @@ void CheckForInventoryReplaceMe(Entity * io, Entity * old);
 
 bool InSecondaryInventoryPos(const Vec2s & pos);
 
-bool CanBePutInInventory(Entity * io);
 bool CanBePutInSecondaryInventory(INVENTORY_DATA * id, Entity * io);
 
 void CleanInventory();

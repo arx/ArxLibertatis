@@ -623,7 +623,7 @@ public:
 		
 		// Check for backpack Icon
 		if(m_rect.contains(Vec2f(DANAEMouse))) {
-			if(eeMouseUp1() && CanBePutInInventory(DRAGINTER)) {
+			if(eeMouseUp1() && playerInventory.insert(DRAGINTER)) {
 				ARX_SOUND_PlayInterface(SND_INVSTD);
 				Set_DragInter(NULL);
 			}
