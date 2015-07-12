@@ -350,3 +350,16 @@ bool inventoryGuiupdateInputPROXY() {
 void playerInventoryDraw() {
 	inventoryGui.draw();
 }
+
+
+void playerInventoryNextBag() {
+	
+	if((player.Interface & INTER_INVENTORY)) {
+		if(player.bag) {
+			if(g_currentInventoryBag < player.bag - 1) {
+				ARX_SOUND_PlayInterface(SND_BACKPACK, 0.9F + 0.2F * rnd());
+				g_currentInventoryBag ++;
+			}
+		}
+	}
+}

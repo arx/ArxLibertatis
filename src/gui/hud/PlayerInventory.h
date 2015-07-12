@@ -28,4 +28,6 @@ void playerInventoryUpdate();
 bool inventoryGuiupdateInputPROXY();
 void playerInventoryDraw();
 
+void playerInventoryNextBag();
+
 #endif // ARX_GUI_HUD_PLAYERINVENTORY_H
