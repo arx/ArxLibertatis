@@ -110,7 +110,7 @@ Vec2s sInventoryPos = Vec2s(-1, -1);
  * Declares an IO as entering into player Inventory
  * Sends appropriate INVENTORYIN Event to player AND concerned io.
  */
-static void ARX_INVENTORY_Declare_InventoryIn(Entity * io) {
+void ARX_INVENTORY_Declare_InventoryIn(Entity * io) {
 	if(!io)
 		return;
 	
@@ -870,6 +870,7 @@ bool CanBePutInSecondaryInventory(INVENTORY_DATA * id, Entity * io)
 
 extern Vec2s DANAEMouse;
 
+
 /*!
  * \brief Try to put DRAGINTER object in an inventory
  * \return
@@ -1002,128 +1003,7 @@ bool PutInInventory() {
 		}
 	}
 	
-	if(!(player.Interface & INTER_INVENTORY) && !(player.Interface & INTER_INVENTORYALL))
-		return false;
-	
-	if(InventoryY != 0)
-		return false;
-	
-	if(!InPlayerInventoryPos(DANAEMouse))
-		return false;
-	
-	int bag = 0;
-	
-	Vec2f anchorPos = getInventoryGuiAnchorPosition();
-	
-	float fCenterX	= anchorPos.x;
-	float fSizY		= anchorPos.y;
-	
-	short iPosX = checked_range_cast<short>(fCenterX);
-	short iPosY = checked_range_cast<short>(fSizY);
-	
-	Vec2s t = Vec2s_ZERO;
-	
-	if(player.Interface & INTER_INVENTORY) {
-		t.x = DANAEMouse.x - iPosX;
-		t.y = DANAEMouse.y - iPosY;
-		t.x = t.x / SHORT_INTERFACE_RATIO(32); 
-		t.y = t.y / SHORT_INTERFACE_RATIO(32); 
-		
-		if((t.x >= 0) && (t.x <= 16 - s.x) && (t.y >= 0) && (t.y <= 3 - s.y)) {
-			bag = g_currentInventoryBag;
-		} else {
-			return false;
-		}
-	} else {
-		bool bOk = false;
-		
-		float fBag	= (player.bag - 1) * INTERFACE_RATIO(-121);
-		
-		short iY = checked_range_cast<short>(fBag);
-		
-		//We must enter the for-loop to initialyze tx/ty
-		arx_assert(0 < player.bag);
-		
-		for(int i = 0; i < player.bag; i++) {
-			t.x = DANAEMouse.x - iPosX;
-			t.y = DANAEMouse.y - iPosY - iY; 
-			
-			if((t.x >= 0) && (t.y >= 0)) {
-				t.x = t.x / SHORT_INTERFACE_RATIO(32); 
-				t.y = t.y / SHORT_INTERFACE_RATIO(32); 
-				
-				if((t.x >= 0) && (t.x <= 16 - s.x) && (t.y >= 0) && (t.y <= 3 - s.y)) {
-					bOk = true;
-					bag = i;
-					break;
-				}
-			}
-			
-			float fRatio = INTERFACE_RATIO(121);
-			
-			iY += checked_range_cast<short>(fRatio);
-		}
-		
-		if(!bOk)
-			return false;
-	}
-	
-	if(DRAGINTER->ioflags & IO_GOLD) {
-		ARX_PLAYER_AddGold(DRAGINTER);
-		Set_DragInter(NULL);
-		return true;
-	}
-
-	for(long j = 0; j < s.y; j++)
-	for(long i = 0; i < s.x; i++) {
-		Entity * ioo = inventory[bag][t.x+i][t.y+j].io;
-		
-		if(!ioo)
-			continue;
-		
-		ARX_INVENTORY_IdentifyIO(ioo);
-
-		if(   ioo->_itemdata->playerstacksize > 1
-		   && IsSameObject(DRAGINTER, ioo)
-		   && ioo->_itemdata->count < ioo->_itemdata->playerstacksize
-		) {
-			ioo->_itemdata->count += DRAGINTER->_itemdata->count;
-			
-			if(ioo->_itemdata->count > ioo->_itemdata->playerstacksize) {
-				DRAGINTER->_itemdata->count = ioo->_itemdata->count - ioo->_itemdata->playerstacksize;
-				ioo->_itemdata->count = ioo->_itemdata->playerstacksize;
-			} else {
-				DRAGINTER->_itemdata->count = 0;
-			}
-			
-			ioo->scale = 1.f;
-			ARX_INVENTORY_Declare_InventoryIn(DRAGINTER);
-			
-			if(!DRAGINTER->_itemdata->count) {
-				DRAGINTER->destroy();
-			}
-			
-			ARX_SOUND_PlayInterface(SND_INVSTD);
-			return true;
-		}
-		
-		return false;
-	}
-	
-	for(long j = 0; j < s.y; j++) {
-	for(long i = 0; i < s.x; i++) {
-		inventory[bag][t.x+i][t.y+j].io = DRAGINTER;
-		inventory[bag][t.x+i][t.y+j].show = 0;
-	}
-	}
-	
-	inventory[bag][t.x][t.y].show = 1;
-	
-	ARX_INVENTORY_Declare_InventoryIn(DRAGINTER);
-	ARX_SOUND_PlayInterface(SND_INVSTD);
-	DRAGINTER->show = SHOW_FLAG_IN_INVENTORY;
-	Set_DragInter(NULL);
-	return true;
+	return playerInventoryDropEntity();
 }
 
 /*!

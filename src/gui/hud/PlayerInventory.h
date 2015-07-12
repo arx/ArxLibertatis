@@ -38,4 +38,6 @@ void playerInventoryPreviousBag();
 bool InPlayerInventoryPos(const Vec2s & pos);
 Entity * GetInventoryObj(const Vec2s & pos);
 
+bool playerInventoryDropEntity();
+
 #endif // ARX_GUI_HUD_PLAYERINVENTORY_H
