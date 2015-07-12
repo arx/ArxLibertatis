@@ -810,6 +810,7 @@ set(GUI_SOURCES
 	src/gui/book/Book.cpp
 	src/gui/book/Necklace.cpp
 	src/gui/hud/PlayerInventory.cpp
+	src/gui/hud/SecondaryInventory.cpp
 )
 
 set(INPUT_SOURCES src/input/Input.cpp)
