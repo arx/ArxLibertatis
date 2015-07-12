@@ -248,7 +248,7 @@ float Cedric_GetInvisibility(Entity *io) {
 
 			if(spell) {
 				if(player.m_skillFull.intuition > spell->m_level * 10) {
-					invisibility -= (float)player.m_skillFull.intuition * (1.0f / 100)
+					invisibility -= player.m_skillFull.intuition * (1.0f / 100)
 									+ (float)spell->m_level * (1.0f / 10);
 
 					invisibility = glm::clamp(invisibility, 0.1f, 1.f);

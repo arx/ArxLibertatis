@@ -1104,7 +1104,7 @@ bool PutInInventory() {
 		float fprice = ARX_INTERACTIVE_GetPrice(DRAGINTER, io) / 3.0f; //>>1;
 		long price = checked_range_cast<long>(fprice);
 		price *= DRAGINTER->_itemdata->count;
-		fprice = price + price * ((float)player.m_skillFull.intuition) * 0.005f;
+		fprice = price + price * player.m_skillFull.intuition * 0.005f;
 		price = checked_range_cast<long>(fprice);
 		
 		// SHOP
@@ -1146,7 +1146,7 @@ bool PutInInventory() {
 			float fprice = ARX_INTERACTIVE_GetPrice(DRAGINTER, io) / 3.0f;
 			long price = checked_range_cast<long>(fprice);
 			price *= DRAGINTER->_itemdata->count;
-			fprice = price + price * ((float)player.m_skillFull.intuition) * 0.005f;
+			fprice = price + price * player.m_skillFull.intuition * 0.005f;
 			price = checked_range_cast<long>(fprice);
 			
 			for(long j = 0; j < s.y; j++) {
@@ -1697,7 +1697,7 @@ bool TakeFromInventory(const Vec2s & pos) {
 			if(ioo->ioflags & IO_SHOP) {
 				long cos = ARX_INTERACTIVE_GetPrice(io, ioo);
 				
-				float fcos	= cos - cos * ((float)player.m_skillFull.intuition) * 0.005f;
+				float fcos	= cos - cos * player.m_skillFull.intuition * 0.005f;
 				cos = checked_range_cast<long>(fcos);
 				
 				if(player.gold < cos) {
