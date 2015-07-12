@@ -41,4 +41,6 @@ public:
 
 extern SecondaryInventoryGui secondaryInventory;
 
+void manageEditorControlsHUD2();
+
 #endif // ARX_GUI_HUD_SECONDARYINVENTORY_H

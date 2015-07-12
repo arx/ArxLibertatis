@@ -48,7 +48,6 @@ void bookIconGuiRequestHalo();
 void hideQuickSaveIcon();
 
 void hudUpdateInput();
-void manageEditorControlsHUD2();
 
 Vec2f getInventoryGuiAnchorPosition();
 

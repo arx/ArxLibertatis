@@ -29,6 +29,7 @@
 #include "graphics/data/TextureContainer.h"
 #include "gui/Hud.h"
 #include "gui/Interface.h"
+#include "gui/hud/HudCommon.h"
 #include "gui/hud/PlayerInventory.h"
 #include "scene/GameSound.h"
 #include "scene/Interactive.h"
@@ -40,10 +41,114 @@ float InventoryX = -60.f;
 
 SecondaryInventoryGui secondaryInventory;
 
+
+
+
+class PickAllIconGui : public HudIconBase {
+private:
+	Vec2f m_size;
+	
+public:
+	void init() {
+		m_tex = TextureContainer::LoadUI("graph/interface/inventory/inv_pick");
+		arx_assert(m_tex);
+		
+		m_size = Vec2f(16, 16);
+	}
+	
+	void update() {
+		Rectf parent = Rectf(Vec2f(InventoryX, 0), BasicInventorySkin->m_dwWidth, BasicInventorySkin->m_dwHeight);
+		
+		Rectf spacer = createChild(parent, Anchor_BottomLeft, Vec2f(16, 16), Anchor_BottomLeft);
+		
+		m_rect = createChild(spacer, Anchor_BottomRight, m_size, Anchor_BottomLeft);
+	}
+	
+	void updateInput() {
+		
+		m_isSelected = m_rect.contains(Vec2f(DANAEMouse));
+		
+		if(m_isSelected) {
+			SpecialCursor=CURSOR_INTERACTION_ON;
+
+			if(eeMouseDown1()) {
+				// play un son que si un item est pris
+				ARX_INVENTORY_TakeAllFromSecondaryInventory();
+
+				EERIEMouseButton &=~1;
+			}
+
+			if(DRAGINTER == NULL)
+				return;
+		}
+	}
+};
+
+static PickAllIconGui pickAllIconGui;
+
+class CloseSecondaryInventoryIconGui : public HudIconBase {
+private:
+	Vec2f m_size;
+	
+public:
+	void init() {
+		m_tex = TextureContainer::LoadUI("graph/interface/inventory/inv_close");
+		arx_assert(m_tex);
+		
+		m_size = Vec2f(16, 16);
+	}
+	
+	void update() {
+		Rectf parent = Rectf(Vec2f(InventoryX, 0), BasicInventorySkin->m_dwWidth, BasicInventorySkin->m_dwHeight);
+		
+		Rectf spacer = createChild(parent, Anchor_BottomRight, Vec2f(16, 16), Anchor_BottomRight);
+		
+		m_rect = createChild(spacer, Anchor_BottomLeft, m_size, Anchor_BottomRight);
+	}
+	
+	void updateInput() {
+		
+		m_isSelected = m_rect.contains(Vec2f(DANAEMouse));
+		
+		if(m_isSelected) {
+			SpecialCursor=CURSOR_INTERACTION_ON;
+
+			if(eeMouseDown1()) {
+				Entity * io = NULL;
+
+				if(SecondaryInventory)
+					io = SecondaryInventory->io;
+				else if(player.Interface & INTER_STEAL)
+					io = ioSteal;
+
+				if(io) {
+					ARX_SOUND_PlayInterface(SND_BACKPACK, 0.9F + 0.2F * rnd());
+					InventoryDir=-1;
+					SendIOScriptEvent(io,SM_INVENTORY2_CLOSE);
+					TSecondaryInventory=SecondaryInventory;
+					SecondaryInventory=NULL;
+				}
+
+				EERIEMouseButton &=~1;
+			}
+
+			if(DRAGINTER == NULL)
+				return;
+		}
+	}
+};
+
+static CloseSecondaryInventoryIconGui closeSecondaryInventoryIconGui;
+
+
+
 void SecondaryInventoryGui::init() {
 	m_size = Vec2f(115.f, 378.f);
 	m_canNotSteal = TextureContainer::LoadUI("graph/interface/icons/cant_steal_item");
 	arx_assert(m_canNotSteal);
+	
+	pickAllIconGui.init();
+	closeSecondaryInventoryIconGui.init();
 }
 
 static Entity * getSecondaryOrStealInvEntity() {
@@ -78,6 +183,16 @@ void SecondaryInventoryGui::update() {
 		}
 	} else if(InventoryDir != -1) {
 		InventoryDir = -1;
+	}
+	
+	
+	if(!(player.Interface & INTER_COMBATMODE) && (player.Interface & INTER_MINIBACK)) {
+		// Pick All/Close Secondary Inventory
+		if(TSecondaryInventory) {
+			//These have to be calculated on each frame (to make them move).
+			pickAllIconGui.update();
+			closeSecondaryInventoryIconGui.update();
+		}
 	}
 }
 
@@ -164,5 +279,31 @@ void SecondaryInventoryGui::draw() {
 					ARX_INTERFACE_DrawNumber(p, io->_itemdata->count, 3, Color::white);
 			}
 		}
+	}
+	
+	
+	if(!(player.Interface & INTER_COMBATMODE) && (player.Interface & INTER_MINIBACK)) {
+		if(TSecondaryInventory) {
+			
+			Entity *temp = TSecondaryInventory->io;
+			if(temp && !(temp->ioflags & IO_SHOP) && !(temp == ioSteal)) {
+				pickAllIconGui.draw();
+			}
+			closeSecondaryInventoryIconGui.draw();
+		}
+	}
+}
+
+void manageEditorControlsHUD2()
+{
+	if(TSecondaryInventory) {
+		
+		Entity * temp = TSecondaryInventory->io;
+
+		if(temp && !(temp->ioflags & IO_SHOP) && !(temp == ioSteal)) {
+			pickAllIconGui.updateInput();
+		}
+		
+		closeSecondaryInventoryIconGui.updateInput();
 	}
 }

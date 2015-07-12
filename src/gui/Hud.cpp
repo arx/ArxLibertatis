@@ -48,6 +48,7 @@
 #include "gui/Interface.h"
 #include "gui/Speech.h"
 #include "gui/book/Book.h"
+#include "gui/hud/HudCommon.h"
 #include "gui/hud/PlayerInventory.h"
 #include "gui/hud/SecondaryInventory.h"
 
@@ -61,45 +62,6 @@ extern float InventoryDir;
 extern bool WILLRETURNTOFREELOOK;
 
 bool bIsAiming = false;
-
-enum Anchor {
-	Anchor_TopLeft,
-	Anchor_TopCenter,
-	Anchor_TopRight,
-	Anchor_LeftCenter,
-	Anchor_Center,
-	Anchor_RightCenter,
-	Anchor_BottomLeft,
-	Anchor_BottomCenter,
-	Anchor_BottomRight,
-};
-
-static Vec2f getAnchorPos(const Rectf & rect, const Anchor anchor) {
-	switch(anchor) {
-		case Anchor_TopLeft:      return rect.topLeft();
-		case Anchor_TopCenter:    return rect.topCenter();
-		case Anchor_TopRight:     return rect.topRight();
-		case Anchor_LeftCenter:   return Vec2f(rect.left, rect.top + rect.height() / 2);
-		case Anchor_Center:       return rect.center();
-		case Anchor_RightCenter:  return Vec2f(rect.right, rect.top + rect.height() / 2);
-		case Anchor_BottomLeft:   return rect.bottomLeft();
-		case Anchor_BottomCenter: return rect.bottomCenter();
-		case Anchor_BottomRight:  return rect.bottomRight();
-		default: return rect.topLeft();
-	}
-}
-
-static Rectf createChild(const Rectf & parent, const Anchor parentAnchor,
-                         const Vec2f & size, const Anchor childAnchor) {
-	
-	Vec2f parentPos = getAnchorPos(parent, parentAnchor);
-	
-	Rectf child(size.x, size.y);
-	Vec2f childPos = getAnchorPos(child, childAnchor);
-	child.move(parentPos.x, parentPos.y);
-	child.move(-childPos.x, -childPos.y);
-	return child;
-}
 
 namespace gui {
 
@@ -155,22 +117,7 @@ void CloseSecondaryInventory() {
 
 
 
-class HudItem {
-public:
-	HudItem()
-		: m_scale(1.f)
-	{}
-	
-	void setScale(float scale) {
-		m_scale = scale;
-	}
 
-	Rectf rect() { return m_rect; }
-	
-protected:
-	float m_scale;
-	Rectf m_rect;
-};
 
 /*!
  * \brief the hit strength diamond shown at the bottom of the UI.
@@ -325,44 +272,6 @@ static void DrawItemPrice() {
 	}
 }
 
-
-class HudIconBase : public HudItem {
-protected:
-	TextureContainer * m_tex;
-	bool m_isSelected;
-	
-	bool m_haloActive;
-	Color3f m_haloColor;
-	
-public:
-	HudIconBase()
-		: HudItem()
-		, m_tex(NULL)
-		, m_isSelected(false)
-		, m_haloActive(false)
-		, m_haloColor(Color3f::white)
-	{}
-	
-	//Used for drawing icons like the book or backpack icon.
-	void draw() {
-		arx_assert(m_tex);
-		
-		EERIEDrawBitmap(m_rect, 0.001f, m_tex, Color::white);
-		
-		if(m_isSelected) {
-			GRenderer->SetBlendFunc(Renderer::BlendOne, Renderer::BlendOne);
-			GRenderer->SetRenderState(Renderer::AlphaBlending, true);
-			
-			EERIEDrawBitmap(m_rect, 0.001f, m_tex, Color::white);
-			
-			GRenderer->SetRenderState(Renderer::AlphaBlending, false);
-		}
-		
-		if(m_haloActive && m_tex->getHalo()) {
-			ARX_INTERFACE_HALO_Render(m_haloColor, HALO_ACTIVE, m_tex->getHalo(), m_rect.topLeft());
-		}
-	}
-};
 
 extern TextureContainer * healing;
 
@@ -629,101 +538,6 @@ public:
 
 static StealIconGui stealIconGui;
 
-class PickAllIconGui : public HudIconBase {
-private:
-	Vec2f m_size;
-	
-public:
-	void init() {
-		m_tex = TextureContainer::LoadUI("graph/interface/inventory/inv_pick");
-		arx_assert(m_tex);
-		
-		m_size = Vec2f(16, 16);
-	}
-	
-	void update() {
-		Rectf parent = Rectf(Vec2f(InventoryX, 0), BasicInventorySkin->m_dwWidth, BasicInventorySkin->m_dwHeight);
-		
-		Rectf spacer = createChild(parent, Anchor_BottomLeft, Vec2f(16, 16), Anchor_BottomLeft);
-		
-		m_rect = createChild(spacer, Anchor_BottomRight, m_size, Anchor_BottomLeft);
-	}
-	
-	void updateInput() {
-		
-		m_isSelected = m_rect.contains(Vec2f(DANAEMouse));
-		
-		if(m_isSelected) {
-			SpecialCursor=CURSOR_INTERACTION_ON;
-
-			if(eeMouseDown1()) {
-				// play un son que si un item est pris
-				ARX_INVENTORY_TakeAllFromSecondaryInventory();
-
-				EERIEMouseButton &=~1;
-			}
-
-			if(DRAGINTER == NULL)
-				return;
-		}
-	}
-};
-
-static PickAllIconGui pickAllIconGui;
-
-class CloseSecondaryInventoryIconGui : public HudIconBase {
-private:
-	Vec2f m_size;
-	
-public:
-	void init() {
-		m_tex = TextureContainer::LoadUI("graph/interface/inventory/inv_close");
-		arx_assert(m_tex);
-		
-		m_size = Vec2f(16, 16);
-	}
-	
-	void update() {
-		Rectf parent = Rectf(Vec2f(InventoryX, 0), BasicInventorySkin->m_dwWidth, BasicInventorySkin->m_dwHeight);
-		
-		Rectf spacer = createChild(parent, Anchor_BottomRight, Vec2f(16, 16), Anchor_BottomRight);
-		
-		m_rect = createChild(spacer, Anchor_BottomLeft, m_size, Anchor_BottomRight);
-	}
-	
-	void updateInput() {
-		
-		m_isSelected = m_rect.contains(Vec2f(DANAEMouse));
-		
-		if(m_isSelected) {
-			SpecialCursor=CURSOR_INTERACTION_ON;
-
-			if(eeMouseDown1()) {
-				Entity * io = NULL;
-
-				if(SecondaryInventory)
-					io = SecondaryInventory->io;
-				else if(player.Interface & INTER_STEAL)
-					io = ioSteal;
-
-				if(io) {
-					ARX_SOUND_PlayInterface(SND_BACKPACK, 0.9F + 0.2F * rnd());
-					InventoryDir=-1;
-					SendIOScriptEvent(io,SM_INVENTORY2_CLOSE);
-					TSecondaryInventory=SecondaryInventory;
-					SecondaryInventory=NULL;
-				}
-
-				EERIEMouseButton &=~1;
-			}
-
-			if(DRAGINTER == NULL)
-				return;
-		}
-	}
-};
-
-static CloseSecondaryInventoryIconGui closeSecondaryInventoryIconGui;
 
 class LevelUpIconGui : public HudIconBase {
 private:
@@ -1863,8 +1677,6 @@ void hudElementsInit() {
 	arx_assert(BasicInventorySkin);
 	
 	purseIconGui.init();
-	pickAllIconGui.init();
-	closeSecondaryInventoryIconGui.init();
 	
 	hitStrengthGauge.init();
 	
@@ -1969,18 +1781,6 @@ void ArxGame::drawAllInterface() {
 		
 		if(player.Interface & INTER_STEAL) {
 			stealIconGui.draw();			
-		}
-		// Pick All/Close Secondary Inventory
-		if(TSecondaryInventory) {
-			//These have to be calculated on each frame (to make them move).
-			pickAllIconGui.update();
-			closeSecondaryInventoryIconGui.update();
-			
-			Entity *temp = TSecondaryInventory->io;
-			if(temp && !(temp->ioflags & IO_SHOP) && !(temp == ioSteal)) {
-				pickAllIconGui.draw();
-			}
-			closeSecondaryInventoryIconGui.draw();
 		}
 	}
 	
@@ -2093,21 +1893,6 @@ void hudUpdateInput() {
 		}
 	}
 }
-
-void manageEditorControlsHUD2()
-{
-	if(TSecondaryInventory) {
-		
-		Entity * temp = TSecondaryInventory->io;
-
-		if(temp && !(temp->ioflags & IO_SHOP) && !(temp == ioSteal)) {
-			pickAllIconGui.updateInput();
-		}
-		
-		closeSecondaryInventoryIconGui.updateInput();
-	}
-}
-
 
 Vec2f getInventoryGuiAnchorPosition() {
 	
