@@ -176,8 +176,6 @@ gui::Note openNote;
 
 bool				bInventoryClosing = false;
 
-float				InventoryDir=0; // 0 stable, 1 to right, -1 to left
-
 float				SLID_START=0.f; // Charging Weapon
 
 Vec2f				BOOKDEC = Vec2f(0.f, 0.f);

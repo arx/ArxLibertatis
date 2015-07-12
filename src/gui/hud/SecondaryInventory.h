@@ -20,5 +20,25 @@
 #ifndef ARX_GUI_HUD_SECONDARYINVENTORY_H
 #define ARX_GUI_HUD_SECONDARYINVENTORY_H
 
+#include "math/Vector.h"
+
+class TextureContainer;
+
+extern TextureContainer * BasicInventorySkin;
+extern float InventoryX;
+
+class SecondaryInventoryGui {
+private:
+	Vec2f m_size;
+	TextureContainer * ingame_inventory;
+	TextureContainer * m_canNotSteal;
+	
+public:
+	void init();
+	void update();
+	void draw();
+};
+
+extern SecondaryInventoryGui secondaryInventory;
 
 #endif // ARX_GUI_HUD_SECONDARYINVENTORY_H

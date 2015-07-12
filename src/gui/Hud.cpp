@@ -49,6 +49,7 @@
 #include "gui/Speech.h"
 #include "gui/book/Book.h"
 #include "gui/hud/PlayerInventory.h"
+#include "gui/hud/SecondaryInventory.h"
 
 #include "input/Input.h"
 
@@ -60,8 +61,6 @@ extern float InventoryDir;
 extern bool WILLRETURNTOFREELOOK;
 
 bool bIsAiming = false;
-TextureContainer * BasicInventorySkin=NULL;
-float InventoryX = -60.f;
 
 enum Anchor {
 	Anchor_TopLeft,
@@ -285,141 +284,7 @@ void hitStrengthGaugeRequestFlash(float flashIntensity) {
 	hitStrengthGauge.requestFlash(flashIntensity);
 }
 
-class SecondaryInventoryGui {
-private:
-	Vec2f m_size;
-	TextureContainer * ingame_inventory;
-	TextureContainer * m_canNotSteal;
-	
-public:
-	void init() {
-		m_size = Vec2f(115.f, 378.f);
-		m_canNotSteal = TextureContainer::LoadUI("graph/interface/icons/cant_steal_item");
-		arx_assert(m_canNotSteal);
-	}
-	
-	Entity* getSecondaryOrStealInvEntity() {
-		if(SecondaryInventory) {
-			return SecondaryInventory->io;
-		} else if(player.Interface & INTER_STEAL) {
-			return ioSteal;
-		}
-		return NULL;
-	}
-	
-	void update() {
-		Entity * io = getSecondaryOrStealInvEntity();
-		if(io) {
-			float dist = fdist(io->pos, player.pos + (Vec3f_Y_AXIS * 80.f));
-			
-			float maxDist = player.m_telekinesis ? 900.f : 350.f;
-			
-			if(dist > maxDist) {
-				if(InventoryDir != -1) {
-					ARX_SOUND_PlayInterface(SND_BACKPACK, 0.9F + 0.2F * rnd());
 
-					InventoryDir=-1;
-					SendIOScriptEvent(io,SM_INVENTORY2_CLOSE);
-					TSecondaryInventory=SecondaryInventory;
-					SecondaryInventory=NULL;
-				} else {
-					if(player.Interface & INTER_STEAL) {
-						player.Interface &= ~INTER_STEAL;
-					}
-				}
-			}
-		} else if(InventoryDir != -1) {
-			InventoryDir = -1;
-		}
-	}
-	
-	void draw() {
-		const INVENTORY_DATA * inventory = TSecondaryInventory;
-		
-		if(!inventory)
-			return;
-		
-		bool _bSteal = (bool)((player.Interface & INTER_STEAL) != 0);
-		
-		arx_assert(BasicInventorySkin);
-		ingame_inventory = BasicInventorySkin;
-		if(inventory->io && !inventory->io->inventory_skin.empty()) {
-			
-			res::path file = "graph/interface/inventory" / inventory->io->inventory_skin;
-			TextureContainer * tc = TextureContainer::LoadUI(file);
-			if(tc)
-				ingame_inventory = tc;
-		}
-		
-		Rectf rect = Rectf(Vec2f(INTERFACE_RATIO(InventoryX), 0.f), m_size.x, m_size.y);
-		EERIEDrawBitmap(rect, 0.001f, ingame_inventory, Color::white);
-		
-		for(long y = 0; y < inventory->m_size.y; y++) {
-		for(long x = 0; x < inventory->m_size.x; x++) {
-			Entity *io = inventory->slot[x][y].io;
-			if(!io)
-				continue;
-			
-			bool bItemSteal = false;
-			TextureContainer *tc = io->inv;
-			TextureContainer *tc2 = NULL;
-			
-			if(NeedHalo(io))
-				tc2 = io->inv->getHalo();
-			
-			if(_bSteal) {
-				if(!ARX_PLAYER_CanStealItem(io)) {
-					bItemSteal = true;
-					tc = m_canNotSteal;
-					tc2 = NULL;
-				}
-			}
-			
-			if(tc && (inventory->slot[x][y].show || bItemSteal)) {
-				UpdateGoldObject(io);
-				
-				Vec2f p = Vec2f(
-					INTERFACE_RATIO(InventoryX) + (float)x*INTERFACE_RATIO(32) + INTERFACE_RATIO(2),
-					(float)y*INTERFACE_RATIO(32) + INTERFACE_RATIO(13)
-				);
-				
-				Vec2f size = Vec2f(tc->size());
-				
-				Color color = (io->poisonous && io->poisonous_count!=0) ? Color::green : Color::white;
-				
-				Rectf rect(p, size.x, size.y);
-				// TODO use alpha blending so this will be anti-aliased even w/o alpha to coverage
-				EERIEDrawBitmap(rect, 0.001f, tc, color);
-				
-				Color overlayColor = Color::black;
-				
-				if(!bItemSteal && (io==FlyingOverIO))
-					overlayColor = Color::white;
-				else if(!bItemSteal && (io->ioflags & IO_CAN_COMBINE)) {
-					overlayColor = Color3f::gray(glm::abs(glm::cos(glm::radians(fDecPulse)))).to<u8>();
-				}
-				
-				if(overlayColor != Color::black) {
-					GRenderer->SetBlendFunc(Renderer::BlendSrcAlpha, Renderer::BlendOne);
-					GRenderer->SetRenderState(Renderer::AlphaBlending, true);
-					
-					EERIEDrawBitmap(rect, 0.001f, tc, overlayColor);
-					
-					GRenderer->SetRenderState(Renderer::AlphaBlending, false);
-				}
-				
-				if(tc2) {
-					ARX_INTERFACE_HALO_Draw(io, tc, tc2, p);
-				}
-				
-				if((io->ioflags & IO_ITEM) && io->_itemdata->count != 1)
-					ARX_INTERFACE_DrawNumber(p, io->_itemdata->count, 3, Color::white);
-			}
-		}
-		}
-	}
-};
-SecondaryInventoryGui secondaryInventory;
 
 
 static void DrawItemPrice() {
