@@ -256,13 +256,8 @@ public:
 						GRenderer->SetRenderState(Renderer::AlphaBlending, false);
 						SpecialCursor=CURSOR_INTERACTION_ON;
 						
-						if ((eeMouseDown1())
-							|| (eeMouseUp1() && DRAGINTER))
-						{
-							if(g_currentInventoryBag > 0) {
-								ARX_SOUND_PlayInterface(SND_BACKPACK, 0.9F + 0.2F * rnd());
-								g_currentInventoryBag --;
-							}
+						if(eeMouseDown1() || (eeMouseUp1() && DRAGINTER)) {
+							playerInventoryPreviousBag();
 							
 							EERIEMouseButton &= ~1;
 						}
@@ -283,13 +278,8 @@ public:
 						GRenderer->SetRenderState(Renderer::AlphaBlending, false);
 						SpecialCursor=CURSOR_INTERACTION_ON;
 						
-						if ((eeMouseDown1())
-							|| (eeMouseUp1() && DRAGINTER))
-						{
-							if(g_currentInventoryBag < player.bag-1) {
-								ARX_SOUND_PlayInterface(SND_BACKPACK, 0.9F + 0.2F * rnd());
-								g_currentInventoryBag ++;
-							}
+						if(eeMouseDown1() || (eeMouseUp1() && DRAGINTER)) {
+							playerInventoryNextBag();
 							
 							EERIEMouseButton &= ~1;
 						}
