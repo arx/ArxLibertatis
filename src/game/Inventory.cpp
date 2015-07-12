@@ -1093,8 +1093,6 @@ bool PutInInventory() {
 	if(!DRAGINTER || (DRAGINTER->ioflags & IO_MOVABLE))
 		return false;
 	
-	Vec2s t = Vec2s_ZERO;
-	
 	Vec2s s = DRAGINTER->m_inventorySize;
 	
 	// First Look for Identical Item...
@@ -1136,6 +1134,7 @@ bool PutInInventory() {
 			}
 		}
 		
+		Vec2s t = Vec2s_ZERO;
 		t.x = DANAEMouse.x + static_cast<short>(InventoryX) - SHORT_INTERFACE_RATIO(2);
 		t.y = DANAEMouse.y - SHORT_INTERFACE_RATIO(13);
 		t.x = t.x / SHORT_INTERFACE_RATIO(32);
@@ -1235,6 +1234,8 @@ bool PutInInventory() {
 	
 	short iPosX = checked_range_cast<short>(fCenterX);
 	short iPosY = checked_range_cast<short>(fSizY);
+	
+	Vec2s t = Vec2s_ZERO;
 	
 	if(player.Interface & INTER_INVENTORY) {
 		t.x = DANAEMouse.x - iPosX;
