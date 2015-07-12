@@ -434,7 +434,7 @@ bool playerInventoryContainsPos(const Vec2s & pos) {
 
 extern long HERO_OR_SECONDARY;
 
-Entity * GetInventoryObj(const Vec2s & pos) {
+Entity * playerInventoryGetObj(const Vec2s & pos) {
 	
 	Vec2f anchorPos = getInventoryGuiAnchorPosition();
 	

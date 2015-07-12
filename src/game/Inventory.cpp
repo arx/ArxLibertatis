@@ -1080,7 +1080,7 @@ Entity * GetFromInventory(const Vec2s & pos) {
 		}
 	}
 
-	return GetInventoryObj(pos);
+	return playerInventoryGetObj(pos);
 }
 
 /*!
