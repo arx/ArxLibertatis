@@ -1263,7 +1263,7 @@ void ArxGame::managePlayerControls() {
 			if(player.Interface & INTER_MAP) {
 				openBookPage(prevBookPage());
 			}
-		} else if(InPlayerInventoryPos(DANAEMouse)) {
+		} else if(playerInventoryContainsPos(DANAEMouse)) {
 			playerInventoryPreviousBag();
 		} else if(player.Interface & INTER_MAP) {
 			openBookPage(prevBookPage());
@@ -1277,7 +1277,7 @@ void ArxGame::managePlayerControls() {
 			if(player.Interface & INTER_MAP) {
 				openBookPage(nextBookPage());
 			}
-		} else if(InPlayerInventoryPos(DANAEMouse)) {
+		} else if(playerInventoryContainsPos(DANAEMouse)) {
 			playerInventoryNextBag();
 		} else if(player.Interface & INTER_MAP) {
 			openBookPage(nextBookPage());
@@ -2140,7 +2140,7 @@ void ArxGame::manageEditorControls() {
 		   && (FlyingOverIO->ioflags & IO_ITEM)
 		   && bOk
 		   && GInput->actionPressed(CONTROLS_CUST_STEALTHMODE)
-		   && !InPlayerInventoryPos(DANAEMouse)
+		   && !playerInventoryContainsPos(DANAEMouse)
 		   && !ARX_INTERFACE_MouseInBook()
 		) {
 			Vec2s s = Vec2s_ZERO;

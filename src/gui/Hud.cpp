@@ -439,7 +439,7 @@ static void DrawItemPrice() {
 			Color color = (amount <= player.gold) ? Color::green : Color::red;
 			
 			ARX_INTERFACE_DrawNumber(pos, amount, 6, color);
-		} else if(InPlayerInventoryPos(DANAEMouse)) {
+		} else if(playerInventoryContainsPos(DANAEMouse)) {
 			long amount = static_cast<long>( ARX_INTERACTIVE_GetPrice( FlyingOverIO, temp ) / 3.0f );
 			// achat
 			float famount = amount + amount * player.m_skillFull.intuition * 0.005f;

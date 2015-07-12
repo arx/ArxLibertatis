@@ -1035,7 +1035,7 @@ bool InInventoryPos(const Vec2s & pos) {
 	if(InSecondaryInventoryPos(pos))
 		return true;
 
-	return InPlayerInventoryPos(pos);
+	return playerInventoryContainsPos(pos);
 }
 
 /*!
@@ -1346,7 +1346,7 @@ bool TakeFromInventory(const Vec2s & pos) {
 	
 	Vec2i iPos = Vec2i(anchorPos);
 	
-	if(InPlayerInventoryPos(pos)) {
+	if(playerInventoryContainsPos(pos)) {
 		if(!GInput->actionPressed(CONTROLS_CUST_STEALTHMODE)) {
 			if((io->ioflags & IO_ITEM) && io->_itemdata->count > 1) {
 				if(io->_itemdata->count - 1 > 0) {

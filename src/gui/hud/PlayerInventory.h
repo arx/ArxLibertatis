@@ -36,7 +36,7 @@ void playerInventoryDraw();
 void playerInventoryNextBag();
 void playerInventoryPreviousBag();
 
-bool InPlayerInventoryPos(const Vec2s & pos);
+bool playerInventoryContainsPos(const Vec2s & pos);
 Entity * GetInventoryObj(const Vec2s & pos);
 
 bool playerInventoryDropEntity();

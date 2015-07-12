@@ -394,7 +394,7 @@ static bool InPlayerInventoryBag(const Vec2s & pos) {
 /*!
  * \brief Returns true if xx,yy is a position in player inventory
  */
-bool InPlayerInventoryPos(const Vec2s & pos) {
+bool playerInventoryContainsPos(const Vec2s & pos) {
 	Vec2f anchorPos = getInventoryGuiAnchorPosition();
 	
 	Vec2s iPos = Vec2s(anchorPos);
@@ -498,7 +498,7 @@ bool playerInventoryDropEntity() {
 	if(InventoryY != 0)
 		return false;
 	
-	if(!InPlayerInventoryPos(DANAEMouse))
+	if(!playerInventoryContainsPos(DANAEMouse))
 		return false;
 	
 	Vec2s s = DRAGINTER->m_inventorySize;
