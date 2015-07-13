@@ -166,15 +166,11 @@ static float ARX_INTERACTIVE_fGetPrice(Entity * io, Entity * shop) {
 	
 	if(!io || !(io->ioflags & IO_ITEM))
 		return 0;
-
+	
+	float shop_multiply = shop ? shop->shop_multiply : 1.f;
 	float durability_ratio = io->durability / io->max_durability;
-	float shop_multiply = 1.f;
-
-	if(shop)
-		shop_multiply = shop->shop_multiply;
-
+	
 	return io->_itemdata->price * shop_multiply * durability_ratio;
-
 }
 
 long ARX_INTERACTIVE_GetPrice(Entity * io, Entity * shop) {
