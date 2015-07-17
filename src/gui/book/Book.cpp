@@ -264,7 +264,7 @@ static inline Rectf scaleRectPosAndSize(const Rectf & r, const Vec2f & scale) {
 	r.bottom * scale.y);
 }
 
-static void DrawBookInterfaceItem(TextureContainer * tc, Vec2f pos, Color color = Color::white, float z = 0.000001f) {
+static void DrawBookInterfaceItem(TextureContainer * tc, Vec2f pos, Color color, float z) {
 	arx_assert(tc);
 	
 	Rectf rect = scaleRectPosAndSize(Rectf((pos + BOOKDEC), tc->m_dwWidth, tc->m_dwHeight), g_sizeRatio);
@@ -552,7 +552,7 @@ static bool CheckAttributeClick(Vec2f pos, float * val, TextureContainer * tc) {
 		rval = true;
 
 		if(((BOOKBUTTON & 1) || (BOOKBUTTON & 2)) && tc)
-			DrawBookInterfaceItem(tc, pos);
+			DrawBookInterfaceItem(tc, pos, Color::white, 0.000001f);
 
 		if(!(BOOKBUTTON & 1) && (LASTBOOKBUTTON & 1)) {
 			if(player.Attribute_Redistribute > 0) {
@@ -596,7 +596,7 @@ static bool CheckSkillClick(Vec2f pos, float * val, TextureContainer * tc,
 		rval=true;
 
 		if(((BOOKBUTTON & 1) || (BOOKBUTTON & 2)) && tc)
-			DrawBookInterfaceItem(tc, pos);
+			DrawBookInterfaceItem(tc, pos, Color::white, 0.000001f);
 
 		if(!(BOOKBUTTON & 1) && (LASTBOOKBUTTON & 1)) {
 			if(player.Skill_Redistribute > 0) {
@@ -704,14 +704,14 @@ static void ARX_INTERFACE_ManageOpenedBook_TopTabs() {
 		Vec2f pos = BOOKMARKS_POS;
 		
 		TextureContainer* tcBookmarkChar = ITC.bookmark_char;
-		DrawBookInterfaceItem(tcBookmarkChar, pos);
+		DrawBookInterfaceItem(tcBookmarkChar, pos, Color::white, 0.000001f);
 		
 		// Check for cursor on charcter sheet bookmark
 		if(MouseInBookRect(pos, Vec2f(tcBookmarkChar->m_dwWidth, tcBookmarkChar->m_dwHeight))) {
 			// Draw highlighted Character sheet icon
 			GRenderer->SetBlendFunc(Renderer::BlendOne, Renderer::BlendOne);
 			GRenderer->SetRenderState(Renderer::AlphaBlending, true);
-			DrawBookInterfaceItem(tcBookmarkChar, pos, Color::grayb(0x55));
+			DrawBookInterfaceItem(tcBookmarkChar, pos, Color::grayb(0x55), 0.000001f);
 			GRenderer->SetRenderState(Renderer::AlphaBlending, false);
 			
 			// Set cursor to interacting
@@ -730,7 +730,7 @@ static void ARX_INTERFACE_ManageOpenedBook_TopTabs() {
 		if(player.rune_flags) {
 			Vec2f pos = BOOKMARKS_POS + Vec2f(32, 0);
 			
-			DrawBookInterfaceItem(ITC.bookmark_magic, pos);
+			DrawBookInterfaceItem(ITC.bookmark_magic, pos, Color::white, 0.000001f);
 
 			if(NewSpell == 1) {
 				NewSpell = 2;
@@ -743,7 +743,7 @@ static void ARX_INTERFACE_ManageOpenedBook_TopTabs() {
 				// Draw highlighted Magic sheet icon
 				GRenderer->SetBlendFunc(Renderer::BlendOne, Renderer::BlendOne);
 				GRenderer->SetRenderState(Renderer::AlphaBlending, true);
-				DrawBookInterfaceItem(ITC.bookmark_magic, pos, Color::grayb(0x55));
+				DrawBookInterfaceItem(ITC.bookmark_magic, pos, Color::grayb(0x55), 0.000001f);
 				GRenderer->SetRenderState(Renderer::AlphaBlending, false);
 				
 				// Set cursor to interacting
@@ -762,12 +762,12 @@ static void ARX_INTERFACE_ManageOpenedBook_TopTabs() {
 	if(g_guiBookCurrentTopTab != BOOKMODE_MINIMAP) {
 		Vec2f pos = BOOKMARKS_POS + Vec2f(64, 0);
 		
-		DrawBookInterfaceItem(ITC.bookmark_map, pos);
+		DrawBookInterfaceItem(ITC.bookmark_map, pos, Color::white, 0.000001f);
 		
 		if(MouseInBookRect(pos, Vec2f(ITC.bookmark_map->m_dwWidth, ITC.bookmark_map->m_dwHeight))) {
 			GRenderer->SetBlendFunc(Renderer::BlendOne, Renderer::BlendOne);
 			GRenderer->SetRenderState(Renderer::AlphaBlending, true);
-			DrawBookInterfaceItem(ITC.bookmark_map, pos, Color::grayb(0x55));
+			DrawBookInterfaceItem(ITC.bookmark_map, pos, Color::grayb(0x55), 0.000001f);
 			GRenderer->SetRenderState(Renderer::AlphaBlending, false);
 			
 			// Set cursor to interacting
@@ -785,12 +785,12 @@ static void ARX_INTERFACE_ManageOpenedBook_TopTabs() {
 	if(g_guiBookCurrentTopTab != BOOKMODE_QUESTS) {
 		Vec2f pos = BOOKMARKS_POS + Vec2f(96, 0);
 		
-		DrawBookInterfaceItem(ITC.bookmark_quest, pos);
+		DrawBookInterfaceItem(ITC.bookmark_quest, pos, Color::white, 0.000001f);
 		
 		if(MouseInBookRect(pos, Vec2f(ITC.bookmark_quest->m_dwWidth, ITC.bookmark_quest->m_dwHeight))) {
 			GRenderer->SetBlendFunc(Renderer::BlendOne, Renderer::BlendOne);
 			GRenderer->SetRenderState(Renderer::AlphaBlending, true);
-			DrawBookInterfaceItem(ITC.bookmark_quest, pos, Color::grayb(0x55));
+			DrawBookInterfaceItem(ITC.bookmark_quest, pos, Color::grayb(0x55), 0.000001f);
 			GRenderer->SetRenderState(Renderer::AlphaBlending, false);
 			
 			// Set cursor to interacting
@@ -811,12 +811,12 @@ static void ARX_INTERFACE_ManageOpenedBook_LeftTabs_OneTab(bool tabVisibility[10
 	if(tabVisibility[t]) {
 		if(activeTab != t) {
 			
-			DrawBookInterfaceItem(ITC.accessibleTab[t], pos);
+			DrawBookInterfaceItem(ITC.accessibleTab[t], pos, Color::white, 0.000001f);
 
 			if(MouseInBookRect(pos, Vec2f(32, 32))) {
 				GRenderer->SetBlendFunc(Renderer::BlendOne, Renderer::BlendOne);
 				GRenderer->SetRenderState(Renderer::AlphaBlending, true);
-				DrawBookInterfaceItem(ITC.accessibleTab[t], pos, Color::grayb(0x55));
+				DrawBookInterfaceItem(ITC.accessibleTab[t], pos, Color::grayb(0x55), 0.000001f);
 				GRenderer->SetRenderState(Renderer::AlphaBlending, false);
 				SpecialCursor=CURSOR_INTERACTION_ON;
 				if(bookclick) {
@@ -825,7 +825,7 @@ static void ARX_INTERFACE_ManageOpenedBook_LeftTabs_OneTab(bool tabVisibility[10
 				}
 			}
 		}
-		else DrawBookInterfaceItem(ITC.currentTab[t], activePos);
+		else DrawBookInterfaceItem(ITC.currentTab[t], activePos, Color::white, 0.000001f);
 	}
 }
 
@@ -1511,7 +1511,7 @@ void ARX_INTERFACE_ManageOpenedBook() {
 		float x = (640 - ITC.playerbook->m_dwWidth) / 2.f;
 		float y = (480 - ITC.playerbook->m_dwHeight) / 2.f;
 		
-		DrawBookInterfaceItem(ITC.playerbook, Vec2f(x, y));
+		DrawBookInterfaceItem(ITC.playerbook, Vec2f(x, y), Color::white, 0.000001f);
 
 		BOOKDEC.x = x - 97;
 		// TODO copy paste error ?
@@ -1601,7 +1601,7 @@ void ARX_INTERFACE_ManageOpenedBook_SpellsDraw() {
 					Vec2f pos;
 					pos.x = 240 - (count * 32) * 0.5f + j * 32;
 					pos.y = 306;
-					DrawBookInterfaceItem(gui::necklace.pTexTab[spellInfo.symbols[j]], Vec2f(pos));
+					DrawBookInterfaceItem(gui::necklace.pTexTab[spellInfo.symbols[j]], Vec2f(pos), Color::white, 0.000001f);
 				}
 			}
 			GRenderer->GetTextureStage(0)->setMagFilter(TextureStage::FilterNearest);
@@ -1629,7 +1629,7 @@ void ARX_INTERFACE_ManageOpenedBook_SpellsDraw() {
 			}
 			
 			GRenderer->GetTextureStage(0)->setMagFilter(TextureStage::FilterLinear);
-			DrawBookInterfaceItem(spellInfo.tc, fPos, color);
+			DrawBookInterfaceItem(spellInfo.tc, fPos, color, 0.000001f);
 			GRenderer->GetTextureStage(0)->setMagFilter(TextureStage::FilterNearest);
 			
 			GRenderer->SetRenderState(Renderer::AlphaBlending, false);
