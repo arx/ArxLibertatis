@@ -255,14 +255,19 @@ bool ARX_INTERFACE_MouseInBook() {
 	}
 }
 
+static inline Rectf scaleRectPosAndSize(const Rectf & r, const Vec2f & scale) {
+	
+	return Rectf(
+	r.left * scale.x,
+	r.top * scale.y,
+	r.right * scale.x,
+	r.bottom * scale.y);
+}
+
 static void DrawBookInterfaceItem(TextureContainer * tc, Vec2f pos, Color color = Color::white, float z = 0.000001f) {
 	arx_assert(tc);
 	
-	Rectf rect = Rectf(
-	(pos + BOOKDEC) * g_sizeRatio,
-	tc->m_dwWidth * g_sizeRatio.x,
-	tc->m_dwHeight * g_sizeRatio.y);
-	
+	Rectf rect = scaleRectPosAndSize(Rectf((pos + BOOKDEC), tc->m_dwWidth, tc->m_dwHeight), g_sizeRatio);
 	EERIEDrawBitmap2(rect, z, tc, color);
 }
 
