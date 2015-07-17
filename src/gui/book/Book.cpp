@@ -650,8 +650,7 @@ bool manageNoteActions(Note & note) {
 		}
 		
 	} else if(note.area().contains(Vec2f(DANAEMouse))) {
-		if((eeMouseDown1() && TRUE_PLAYER_MOUSELOOK_ON)
-		   || (eeMouseDown2())) {
+		if((eeMouseDown1() && TRUE_PLAYER_MOUSELOOK_ON) || eeMouseDown2()) {
 			EERIEMouseButton &= ~2;
 			return true;
 		}
