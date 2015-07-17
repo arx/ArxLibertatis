@@ -238,13 +238,20 @@ void ARX_INTERFACE_BookToggle() {
 }
 
 
-
+static inline Rectf scaleRectPosAndSize(const Rectf & r, const Vec2f & scale) {
+	
+	return Rectf(
+	r.left * scale.x,
+	r.top * scale.y,
+	r.right * scale.x,
+	r.bottom * scale.y);
+}
 
 static bool MouseInBookRect(const Vec2f pos, const Vec2f size) {
-	return DANAEMouse.x >= (pos.x + BOOKDEC.x) * g_sizeRatio.x
-		&& DANAEMouse.x <= (pos.x + size.x + BOOKDEC.x) * g_sizeRatio.x
-		&& DANAEMouse.y >= (pos.y + BOOKDEC.y) * g_sizeRatio.y
-		&& DANAEMouse.y <= (pos.y + size.y + BOOKDEC.y) * g_sizeRatio.y;
+	
+	Rectf rect = scaleRectPosAndSize(Rectf(pos + BOOKDEC, size.x, size.y), g_sizeRatio);
+	
+	return rect.contains(Vec2f(DANAEMouse));
 }
 
 bool ARX_INTERFACE_MouseInBook() {
@@ -255,14 +262,6 @@ bool ARX_INTERFACE_MouseInBook() {
 	}
 }
 
-static inline Rectf scaleRectPosAndSize(const Rectf & r, const Vec2f & scale) {
-	
-	return Rectf(
-	r.left * scale.x,
-	r.top * scale.y,
-	r.right * scale.x,
-	r.bottom * scale.y);
-}
 
 static void DrawBookInterfaceItem(TextureContainer * tc, Vec2f pos, Color color, float z) {
 	arx_assert(tc);
