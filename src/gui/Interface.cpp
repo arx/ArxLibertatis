@@ -164,7 +164,6 @@ extern bool SHOW_INGAME_MINIMAP;
 std::vector<ARX_INTERFACE_HALO_STRUCT> deferredUiHalos;
 
 E_ARX_STATE_MOUSE	eMouseState;
-bool bookclick;
 Vec2s MemoMouse;
 
 INVENTORY_DATA *	TSecondaryInventory;

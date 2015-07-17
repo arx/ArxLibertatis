@@ -200,7 +200,6 @@ enum ARX_INTERFACE_CURSOR_MODE
 //-----------------------------------------------------------------------------
 extern INTERFACE_TC ITC;
 extern Vec2s MemoMouse;
-extern bool bookclick;
 
 extern long SpecialCursor;
 

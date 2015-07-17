@@ -714,7 +714,7 @@ static void ARX_INTERFACE_ManageOpenedBook_TopTabs() {
 			SpecialCursor=CURSOR_INTERACTION_ON;
 			
 			// Check for click
-			if(bookclick) {
+			if(eeMouseDown1() || eeMouseDown2()) {
 				ARX_SOUND_PlayInterface(SND_BOOK_PAGE_TURN, 0.9F + 0.2F * rnd());
 				openBookPage(BOOKMODE_STATS);
 				pTextManage->Clear();
@@ -746,7 +746,7 @@ static void ARX_INTERFACE_ManageOpenedBook_TopTabs() {
 				SpecialCursor=CURSOR_INTERACTION_ON;
 				
 				// Check for click
-				if(bookclick) {
+				if(eeMouseDown1() || eeMouseDown2()) {
 					ARX_SOUND_PlayInterface(SND_BOOK_PAGE_TURN, 0.9F + 0.2F * rnd());
 					openBookPage(BOOKMODE_SPELLS);
 					pTextManage->Clear();
@@ -770,7 +770,7 @@ static void ARX_INTERFACE_ManageOpenedBook_TopTabs() {
 			SpecialCursor=CURSOR_INTERACTION_ON;
 			
 			// Check for click
-			if(bookclick) {
+			if(eeMouseDown1() || eeMouseDown2()) {
 				ARX_SOUND_PlayInterface(SND_BOOK_PAGE_TURN, 0.9F + 0.2F * rnd());
 				openBookPage(BOOKMODE_MINIMAP);
 				pTextManage->Clear();
@@ -793,7 +793,7 @@ static void ARX_INTERFACE_ManageOpenedBook_TopTabs() {
 			SpecialCursor=CURSOR_INTERACTION_ON;
 			
 			// Check for click
-			if(bookclick) {
+			if(eeMouseDown1() || eeMouseDown2()) {
 				ARX_SOUND_PlayInterface(SND_BOOK_PAGE_TURN, 0.9F + 0.2F * rnd());
 				openBookPage(BOOKMODE_QUESTS);
 				pTextManage->Clear();
@@ -815,7 +815,7 @@ static void ARX_INTERFACE_ManageOpenedBook_LeftTabs_OneTab(bool tabVisibility[10
 				DrawBookInterfaceItem(ITC.accessibleTab[t], pos, Color::grayb(0x55), 0.000001f);
 				GRenderer->SetRenderState(Renderer::AlphaBlending, false);
 				SpecialCursor=CURSOR_INTERACTION_ON;
-				if(bookclick) {
+				if(eeMouseDown1() || eeMouseDown2()) {
 					activeTab = t;
 					ARX_SOUND_PlayInterface(SND_BOOK_PAGE_TURN, 0.9F + 0.2F * rnd());
 				}
@@ -1499,9 +1499,6 @@ void ARX_INTERFACE_ManageOpenedBook() {
 		}
 		
 		ARX_INTERFACE_ManageOpenedBook_TopTabs();
-		
-		bookclick = false;
-		
 	} else {
 		arx_assert(ITC.playerbook);
 		float x = (640 - ITC.playerbook->m_dwWidth) / 2.f;

@@ -2109,10 +2109,6 @@ void ArxGame::render() {
 		// Checks Clicks in Book Interface
 		if(ARX_INTERFACE_MouseInBook()) {
 			g_cursorOverBook = true;
-			
-			if(eeMouseDown1() || eeMouseDown2()) {
-				bookclick = true;
-			}
 		}
 	}
 	

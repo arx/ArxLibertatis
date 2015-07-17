@@ -424,7 +424,6 @@ void levelInit() {
 	
 	STARTDRAG = Vec2s_ZERO;
 	DANAEMouse = Vec2s_ZERO;
-	bookclick = false;
 	
 	if(LOAD_N_ERASE)
 		arxtime.init();
