@@ -1000,8 +1000,6 @@ void ArxGame::managePlayerControls() {
 				}
 				DRAGGING = false;
 			}
-
-			EERIEMouseButton &= ~4;
 		}
 	}
 
@@ -2320,7 +2318,6 @@ void ArxGame::manageEditorControls() {
 	
 			if(bQuitCombine) {
 				COMBINE=NULL;
-				EERIEMouseButton &= ~1;
 			}
 		}
 		
@@ -2357,10 +2354,7 @@ void ArxGame::manageEditorControls() {
 				if(FlyingOverIO && ((FlyingOverIO->ioflags & IO_ITEM) && !(FlyingOverIO->ioflags & IO_MOVABLE))) {
 					COMBINE=FlyingOverIO;
 					GetInfosCombine();
-					EERIEMouseButton &= ~4;
 				}
-				else if(InInventoryPos(DANAEMouse))
-					EERIEMouseButton &= 4;
 			}
 		}
 		

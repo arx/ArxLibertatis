@@ -260,8 +260,6 @@ public:
 						
 						if(eeMouseDown1() || (eeMouseUp1() && DRAGINTER)) {
 							playerInventoryPreviousBag();
-							
-							EERIEMouseButton &= ~1;
 						}
 					}
 				}
@@ -282,8 +280,6 @@ public:
 						
 						if(eeMouseDown1() || (eeMouseUp1() && DRAGINTER)) {
 							playerInventoryNextBag();
-							
-							EERIEMouseButton &= ~1;
 						}
 					}
 				}

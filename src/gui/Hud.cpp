@@ -358,7 +358,6 @@ public:
 
 			if(eeMouseDown1()) {
 				ARX_INTERFACE_BookToggle();
-				EERIEMouseButton &=~1;
 			}
 			return;
 		}
@@ -414,7 +413,6 @@ public:
 				playerInventory.optimize();
 
 				flDelay=0;
-				EERIEMouseButton&=~4;
 			} else if((eeMouseDown1()) || flDelay) {
 				if(!flDelay) {
 					flDelay=arxtime.get_updated();
@@ -434,8 +432,6 @@ public:
 					bInverseInventory=!bInverseInventory;
 					lOldTruePlayerMouseLook=TRUE_PLAYER_MOUSELOOK_ON;
 				}
-
-				EERIEMouseButton &=~1;
 			} else if(eeMouseDown2()) {
 				ARX_INTERFACE_BookClose();
 				ARX_INVENTORY_OpenClose(NULL);
@@ -461,8 +457,7 @@ public:
 						}
 					}
 				}
-
-				EERIEMouseButton &= ~2;
+				
 				TRUE_PLAYER_MOUSELOOK_ON = false;
 			}
 
@@ -520,8 +515,6 @@ public:
 						bForceEscapeFreeLook=true;
 					    lOldTruePlayerMouseLook=!TRUE_PLAYER_MOUSELOOK_ON;
 					}
-
-					EERIEMouseButton &=~1;
 				}
 
 				if(DRAGINTER == NULL)
@@ -576,7 +569,6 @@ public:
 			
 			if(eeMouseDown1()) {
 				ARX_INTERFACE_BookOpen();
-				EERIEMouseButton &=~1;
 			}
 		}
 	}
@@ -730,7 +722,6 @@ public:
 
 					if(eeMouseUp2()) {
 						ARX_PLAYER_ClickedOnTorch(player.torch);
-						EERIEMouseButton &= ~2;
 						TRUE_PLAYER_MOUSELOOK_ON = false;
 					}
 				}
@@ -1230,7 +1221,6 @@ private:
 				
 				if(eeMouseDoubleClick1()) {
 					ARX_SPELLS_Precast_Launch(m_precastIndex);
-					EERIEMouseButton &= ~4;
 				}
 			}
 		}
@@ -1360,7 +1350,6 @@ private:
 				
 				if(eeMouseDoubleClick1()) {
 					ARX_SOUND_PlaySFX(SND_MAGIC_FIZZLE);
-					EERIEMouseButton &= ~4;
 					spells.endSpell(spells[spellIndex]);
 				}
 			}

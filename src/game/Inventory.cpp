@@ -1559,7 +1559,6 @@ void ARX_INVENTORY_OpenClose(Entity * _io)
 		InventoryDir = -1;
 		TSecondaryInventory = SecondaryInventory;
 		SecondaryInventory = NULL;
-		EERIEMouseButton &= ~4;
 		DRAGGING = false;
 	} else {
 		if(TSecondaryInventory && TSecondaryInventory->io)
@@ -1586,8 +1585,7 @@ void ARX_INVENTORY_OpenClose(Entity * _io)
 
 		if(SecondaryInventory && SecondaryInventory->io && (SecondaryInventory->io->ioflags & IO_SHOP))
 			ARX_INVENTORY_ReOrder();
-
-		EERIEMouseButton &= ~4;
+		
 		DRAGGING = false;
 	}
 

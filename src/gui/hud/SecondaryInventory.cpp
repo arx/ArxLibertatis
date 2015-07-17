@@ -74,8 +74,6 @@ public:
 			if(eeMouseDown1()) {
 				// play un son que si un item est pris
 				ARX_INVENTORY_TakeAllFromSecondaryInventory();
-
-				EERIEMouseButton &=~1;
 			}
 
 			if(DRAGINTER == NULL)
@@ -128,8 +126,6 @@ public:
 					TSecondaryInventory=SecondaryInventory;
 					SecondaryInventory=NULL;
 				}
-
-				EERIEMouseButton &=~1;
 			}
 
 			if(DRAGINTER == NULL)
