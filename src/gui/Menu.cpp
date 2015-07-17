@@ -93,7 +93,7 @@ ZeniMax Media Inc., Suite 120, Rockville, Maryland 20850 USA.
 #include "util/Unicode.h"
 
 extern TextManager * pTextManage;
-extern ARX_INTERFACE_BOOK_MODE Book_Mode;
+extern ARX_INTERFACE_BOOK_MODE g_guiBookCurrentTopTab;
 extern long START_NEW_QUEST;
 extern long LASTBOOKBUTTON;
 extern long BOOKBUTTON;
@@ -251,7 +251,7 @@ void ARX_MENU_Clicked_NEWQUEST() {
 	REFUSE_GAME_RETURN = 1;
 	
 	ARX_PLAYER_Start_New_Quest();
-	Book_Mode = BOOKMODE_STATS;
+	g_guiBookCurrentTopTab = BOOKMODE_STATS;
 	player.skin = 0;
 	ARX_PLAYER_Restore_Skin();
 	ARXmenu.currentmode = AMCM_NEWQUEST;

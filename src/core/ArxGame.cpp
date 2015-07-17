@@ -1654,7 +1654,7 @@ void ArxGame::updateInput() {
 	}
 	
 	if(EERIEMouseGrab && GInput->hasMouseMoved()) {
-		if(!(ARXmenu.currentmode == AMCM_NEWQUEST || (player.Interface & INTER_MAP && (Book_Mode != BOOKMODE_MINIMAP)))) {
+		if(!(ARXmenu.currentmode == AMCM_NEWQUEST || (player.Interface & INTER_MAP && (g_guiBookCurrentTopTab != BOOKMODE_MINIMAP)))) {
 			GInput->setMousePosAbs(Vec2s(g_size.center()));
 		}
 	}
@@ -1793,7 +1793,7 @@ void ArxGame::updateLevel() {
 	ARX_PLAYER_Manage_Visual();
 
 	g_miniMap.setActiveBackground(ACTIVEBKG);
-	g_miniMap.validatePlayerPos(CURRENTLEVEL, BLOCK_PLAYER_CONTROLS, Book_Mode);
+	g_miniMap.validatePlayerPos(CURRENTLEVEL, BLOCK_PLAYER_CONTROLS, g_guiBookCurrentTopTab);
 
 
 	if(entities.player()->animlayer[0].cur_anim) {

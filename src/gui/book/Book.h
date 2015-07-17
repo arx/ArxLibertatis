@@ -30,7 +30,7 @@ enum ARX_INTERFACE_BOOK_MODE
 	BOOKMODE_QUESTS
 };
 
-extern ARX_INTERFACE_BOOK_MODE Book_Mode;
+extern ARX_INTERFACE_BOOK_MODE g_guiBookCurrentTopTab;
 
 extern long BOOKZOOM;
 

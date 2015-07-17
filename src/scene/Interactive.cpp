@@ -1887,7 +1887,7 @@ Entity * GetFirstInterAtPos(const Vec2s & pos, long flag, Vec3f * _pRef, Entity 
 		// Is Object Displayed on screen ???
 		if( !((io->show == SHOW_FLAG_IN_SCENE) ||
 			  (bPlayerEquiped && flag) ||
-			  (bPlayerEquiped && (player.Interface & INTER_MAP) && (Book_Mode == BOOKMODE_STATS))) )
+			  (bPlayerEquiped && (player.Interface & INTER_MAP) && (g_guiBookCurrentTopTab == BOOKMODE_STATS))) )
 			//((io->show==9) && (player.Interface & INTER_MAP)) )
 		{
 			continue;

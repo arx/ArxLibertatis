@@ -44,7 +44,7 @@
 #include "scene/Interactive.h"
 #include "script/Script.h"
 
-ARX_INTERFACE_BOOK_MODE Book_Mode = BOOKMODE_STATS;
+ARX_INTERFACE_BOOK_MODE g_guiBookCurrentTopTab = BOOKMODE_STATS;
 
 long Book_MapPage = 0;
 long Book_SpellPage = 0;
@@ -60,7 +60,7 @@ long lCursorRedistValue = 0;
 
 static void onBookClosePage() {
 	
-	if(Book_Mode == BOOKMODE_SPELLS) {
+	if(g_guiBookCurrentTopTab == BOOKMODE_SPELLS) {
 		// Closing spell page - clean up any rune flares
 		ARX_SPELLS_ClearAllSymbolDraw();
 	}
@@ -76,7 +76,7 @@ static bool canOpenBookPage(ARX_INTERFACE_BOOK_MODE page) {
 
 void openBookPage(ARX_INTERFACE_BOOK_MODE newPage, bool toggle) {
 	
-	if((player.Interface & INTER_MAP) && Book_Mode == newPage) {
+	if((player.Interface & INTER_MAP) && g_guiBookCurrentTopTab == newPage) {
 		
 		if(toggle) {
 			// Close the book
@@ -102,11 +102,11 @@ void openBookPage(ARX_INTERFACE_BOOK_MODE newPage, bool toggle) {
 		ARX_INTERFACE_BookToggle();
 	}
 	
-	Book_Mode = newPage;
+	g_guiBookCurrentTopTab = newPage;
 }
 
 ARX_INTERFACE_BOOK_MODE nextBookPage() {
-	ARX_INTERFACE_BOOK_MODE nextPage = Book_Mode, oldPage;
+	ARX_INTERFACE_BOOK_MODE nextPage = g_guiBookCurrentTopTab, oldPage;
 	do {
 		oldPage = nextPage;
 		
@@ -122,11 +122,11 @@ ARX_INTERFACE_BOOK_MODE nextBookPage() {
 		}
 		
 	} while(nextPage != oldPage);
-	return Book_Mode;
+	return g_guiBookCurrentTopTab;
 }
 
 ARX_INTERFACE_BOOK_MODE prevBookPage() {
-	ARX_INTERFACE_BOOK_MODE prevPage = Book_Mode, oldPage;
+	ARX_INTERFACE_BOOK_MODE prevPage = g_guiBookCurrentTopTab, oldPage;
 	do {
 		oldPage = prevPage;
 		
@@ -142,7 +142,7 @@ ARX_INTERFACE_BOOK_MODE prevBookPage() {
 		}
 		
 	} while(prevPage != oldPage);
-	return Book_Mode;
+	return g_guiBookCurrentTopTab;
 }
 
 void ARX_INTERFACE_BookOpen() {
@@ -697,7 +697,7 @@ static void ARX_INTERFACE_ManageOpenedBook_TopTabs() {
 	
 	static const Vec2f BOOKMARKS_POS = Vec2f(216.f, 60.f);
 	
-	if(Book_Mode != BOOKMODE_STATS) {
+	if(g_guiBookCurrentTopTab != BOOKMODE_STATS) {
 		Vec2f pos = BOOKMARKS_POS;
 		
 		TextureContainer* tcBookmarkChar = ITC.bookmark_char;
@@ -723,7 +723,7 @@ static void ARX_INTERFACE_ManageOpenedBook_TopTabs() {
 		}
 	}
 	
-	if(Book_Mode != BOOKMODE_SPELLS) {
+	if(g_guiBookCurrentTopTab != BOOKMODE_SPELLS) {
 		if(player.rune_flags) {
 			Vec2f pos = BOOKMARKS_POS + Vec2f(32, 0);
 			
@@ -756,7 +756,7 @@ static void ARX_INTERFACE_ManageOpenedBook_TopTabs() {
 		}
 	}
 	
-	if(Book_Mode != BOOKMODE_MINIMAP) {
+	if(g_guiBookCurrentTopTab != BOOKMODE_MINIMAP) {
 		Vec2f pos = BOOKMARKS_POS + Vec2f(64, 0);
 		
 		DrawBookInterfaceItem(ITC.bookmark_map, pos);
@@ -779,7 +779,7 @@ static void ARX_INTERFACE_ManageOpenedBook_TopTabs() {
 		}
 	}
 	
-	if(Book_Mode != BOOKMODE_QUESTS) {
+	if(g_guiBookCurrentTopTab != BOOKMODE_QUESTS) {
 		Vec2f pos = BOOKMARKS_POS + Vec2f(96, 0);
 		
 		DrawBookInterfaceItem(ITC.bookmark_quest, pos);
@@ -1478,7 +1478,7 @@ void ARX_INTERFACE_ManageOpenedBook() {
 	GRenderer->GetTextureStage(0)->setMagFilter(TextureStage::FilterLinear);
 	
 	if(ARXmenu.currentmode != AMCM_NEWQUEST) {
-		switch(Book_Mode) {
+		switch(g_guiBookCurrentTopTab) {
 			case BOOKMODE_STATS: {
 				DrawBookInterfaceItem(ITC.playerbook, Vec2f(97, 64), Color::white, 0.9999f);
 				break;
@@ -1518,9 +1518,9 @@ void ARX_INTERFACE_ManageOpenedBook() {
 	GRenderer->GetTextureStage(0)->setMinFilter(TextureStage::FilterNearest);
 	GRenderer->GetTextureStage(0)->setMagFilter(TextureStage::FilterNearest);
 
-	if(Book_Mode == BOOKMODE_STATS) {
+	if(g_guiBookCurrentTopTab == BOOKMODE_STATS) {
 		ARX_INTERFACE_ManageOpenedBook_Stats();
-	} else if (Book_Mode == BOOKMODE_MINIMAP) {
+	} else if (g_guiBookCurrentTopTab == BOOKMODE_MINIMAP) {
 		ARX_INTERFACE_ManageOpenedBook_Map();
 	}
 }

@@ -1769,7 +1769,7 @@ void ArxGame::manageKeyMouse() {
 		}
 
 		if((eMouseState == MOUSE_IN_WORLD) ||
-			((eMouseState == MOUSE_IN_BOOK) && !(g_cursorOverBook && (Book_Mode != BOOKMODE_MINIMAP)))
+			((eMouseState == MOUSE_IN_BOOK) && !(g_cursorOverBook && (g_guiBookCurrentTopTab != BOOKMODE_MINIMAP)))
 		) {
 			if(!config.input.mouseLookToggle) {
 				if(TRUE_PLAYER_MOUSELOOK_ON && !(EERIEMouseButton & 2) && !SPECIAL_DRAW_WEAPON) {
@@ -2203,7 +2203,7 @@ void ArxGame::manageEditorControls() {
 			if(InInventoryPos(DANAEMouse)) {// Attempts to put it in inventory
 				PutInInventory();
 			} else if(ARX_INTERFACE_MouseInBook()) {
-				if(Book_Mode == BOOKMODE_STATS) {
+				if(g_guiBookCurrentTopTab == BOOKMODE_STATS) {
 					SendIOScriptEvent(DRAGINTER,SM_INVENTORYUSE);
 					COMBINE=NULL;
 				}

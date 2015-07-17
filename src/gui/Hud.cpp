@@ -1799,7 +1799,7 @@ void ArxGame::drawAllInterface() {
 		GRenderer->SetRenderState(Renderer::DepthWrite, true);
 		
 		if((player.Interface & INTER_MAP) && !(player.Interface & INTER_COMBATMODE)) {
-			if(Book_Mode == BOOKMODE_SPELLS) {
+			if(g_guiBookCurrentTopTab == BOOKMODE_SPELLS) {
 				gui::ARX_INTERFACE_ManageOpenedBook_Finish(mousePos);
 				ARX_INTERFACE_ManageOpenedBook_SpellsDraw();
 			}
