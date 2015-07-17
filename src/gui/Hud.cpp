@@ -408,7 +408,7 @@ public:
 			SpecialCursor = CURSOR_INTERACTION_ON;
 			
 			
-			if(EERIEMouseButton & 4) {
+			if(eeMouseDoubleClick1()) {
 				ARX_SOUND_PlayInterface(SND_BACKPACK, 0.9F + 0.2F * rnd());
 
 				playerInventory.optimize();
@@ -650,7 +650,7 @@ public:
 				   && !GInput->actionPressed(CONTROLS_CUST_MAGICMODE)
 				   && !COMBINE
 				   && !COMBINEGOLD
-				   && (EERIEMouseButton & 4)
+				   && eeMouseDoubleClick1()
 				) {
 					COMBINEGOLD = true;
 				}
@@ -724,7 +724,7 @@ public:
 					io->ignition=1;
 					Set_DragInter(io);
 				} else {
-					if((EERIEMouseButton & 4) && !COMBINE) {
+					if(eeMouseDoubleClick1() && !COMBINE) {
 						COMBINE = player.torch;
 					}
 
@@ -1228,7 +1228,7 @@ private:
 					}
 				}
 				
-				if(EERIEMouseButton & 4) {
+				if(eeMouseDoubleClick1()) {
 					ARX_SPELLS_Precast_Launch(m_precastIndex);
 					EERIEMouseButton &= ~4;
 				}
@@ -1358,7 +1358,7 @@ private:
 					}
 				}
 				
-				if(EERIEMouseButton & 4) {
+				if(eeMouseDoubleClick1()) {
 					ARX_SOUND_PlaySFX(SND_MAGIC_FIZZLE);
 					EERIEMouseButton &= ~4;
 					spells.endSpell(spells[spellIndex]);

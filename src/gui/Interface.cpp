@@ -946,7 +946,7 @@ void ArxGame::managePlayerControls() {
 	
 	ARX_PROFILE_FUNC();
 	
-	if(   (EERIEMouseButton & 4)
+	if(   eeMouseDoubleClick1()
 	   && !(player.Interface & INTER_COMBATMODE)
 	   && !player.doingmagic
 	   && !g_cursorOverBook
@@ -1994,7 +1994,7 @@ void ArxGame::manageKeyMouse() {
 	if(   !BLOCK_PLAYER_CONTROLS
 	   && !(player.Interface & INTER_COMBATMODE)
 	   && !DRAGINTER
-	   && (config.input.autoDescription || (eeMouseUp1() && !(EERIEMouseButton & 4) && !(LastMouseClick & 4)))
+	   && (config.input.autoDescription || (eeMouseUp1() && !eeMouseDoubleClick1() && !(LastMouseClick & 4)))
 	   && FlyingOverIO
 	   && !FlyingOverIO->locname.empty()
 	) {
@@ -2344,7 +2344,7 @@ void ArxGame::manageEditorControls() {
 		}
 
 		// Double Clicked and not already combining.
-		if((EERIEMouseButton & 4) && !COMBINE) {
+		if(eeMouseDoubleClick1() && !COMBINE) {
 			bool accept_combine = true;
 			
 			if(SecondaryInventory && InSecondaryInventoryPos(DANAEMouse)) {
