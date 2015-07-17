@@ -373,15 +373,6 @@ bool ARX_Menu_Render() {
 	if(ARXmenu.currentmode == AMCM_OFF)
 		return false;
 
-	if(GInput->getMouseButton(Mouse::Button_0)) {
-		EERIEMouseButton = 1;
-		LastMouseClick = 1;
-	} else if(GInput->getMouseButton(Mouse::Button_1)) {
-		EERIEMouseButton = 2;
-		LastMouseClick = 2;
-	} else {
-		EERIEMouseButton = 0;
-	}
 
 	GRenderer->Clear(Renderer::ColorBuffer | Renderer::DepthBuffer);
 	

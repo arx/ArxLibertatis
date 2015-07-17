@@ -1651,6 +1651,24 @@ void ArxGame::updateInput() {
 		EERIEMouseButton &= ~2;
 	}
 	
+	
+	// Overwrite the mouse button status when menu is active
+	if(ARXmenu.currentmode != AMCM_OFF) {
+		
+		EERIEMouseButton = 0;
+		
+		if(GInput->getMouseButtonRepeat(Mouse::Button_0))
+			EERIEMouseButton |= 1;
+		else
+			EERIEMouseButton &= ~1;
+		
+		if(GInput->getMouseButtonRepeat(Mouse::Button_1))
+			EERIEMouseButton |= 2;
+		else
+			EERIEMouseButton &= ~2;
+	}
+	
+	
 	if(EERIEMouseGrab && GInput->hasMouseMoved()) {
 		if(!(ARXmenu.currentmode == AMCM_NEWQUEST || (player.Interface & INTER_MAP && (g_guiBookCurrentTopTab != BOOKMODE_MINIMAP)))) {
 			GInput->setMousePosAbs(Vec2s(g_size.center()));
