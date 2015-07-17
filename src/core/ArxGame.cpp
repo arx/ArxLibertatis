@@ -190,8 +190,6 @@ extern CircularVertexBuffer<SMY_VERTEX3> * pDynamicVertexBuffer;
 
 long STOP_KEYBOARD_INPUT= 0;
 
-long BOOKBUTTON=0;
-long LASTBOOKBUTTON=0;
 bool EXTERNALVIEW = false;
 bool SHOW_INGAME_MINIMAP = true;
 
@@ -2111,8 +2109,6 @@ void ArxGame::render() {
 		// Checks Clicks in Book Interface
 		if(ARX_INTERFACE_MouseInBook()) {
 			g_cursorOverBook = true;
-			LASTBOOKBUTTON = BOOKBUTTON;
-			BOOKBUTTON = EERIEMouseButton;
 			
 			if(eeMouseDown1() || eeMouseDown2()) {
 				bookclick = true;

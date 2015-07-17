@@ -539,9 +539,6 @@ static void ARX_INTERFACE_ERRORSOUND() {
 	ARX_SOUND_PlayInterface(SND_MENU_CLICK);
 }
 
-extern long BOOKBUTTON;
-extern long LASTBOOKBUTTON;
-
 static bool CheckAttributeClick(Vec2f pos, float * val, TextureContainer * tc) {
 	
 	bool rval=false;
@@ -550,10 +547,10 @@ static bool CheckAttributeClick(Vec2f pos, float * val, TextureContainer * tc) {
 	if(MouseInBookRect(pos, Vec2f(32, 32))) {
 		rval = true;
 
-		if(((BOOKBUTTON & 1) || (BOOKBUTTON & 2)) && tc)
+		if((eeMousePressed1() || eeMousePressed2()) && tc)
 			DrawBookInterfaceItem(tc, pos, Color::white, 0.000001f);
 
-		if(!(BOOKBUTTON & 1) && (LASTBOOKBUTTON & 1)) {
+		if(eeMouseUp1()) {
 			if(player.Attribute_Redistribute > 0) {
 				player.Attribute_Redistribute--;
 				t++;
@@ -564,7 +561,7 @@ static bool CheckAttributeClick(Vec2f pos, float * val, TextureContainer * tc) {
 				ARX_INTERFACE_ERRORSOUND();
 		}
 
-		if(!(BOOKBUTTON & 2) && (LASTBOOKBUTTON & 2)) {
+		if(eeMouseUp2()) {
 			if(ARXmenu.currentmode == AMCM_NEWQUEST) {
 				if(t > 6 && player.level == 0) {
 					player.Attribute_Redistribute++;
@@ -594,10 +591,10 @@ static bool CheckSkillClick(Vec2f pos, float * val, TextureContainer * tc,
 	if(MouseInBookRect(pos, Vec2f(32, 32))) {
 		rval=true;
 
-		if(((BOOKBUTTON & 1) || (BOOKBUTTON & 2)) && tc)
+		if((eeMousePressed1() || eeMousePressed2()) && tc)
 			DrawBookInterfaceItem(tc, pos, Color::white, 0.000001f);
 
-		if(!(BOOKBUTTON & 1) && (LASTBOOKBUTTON & 1)) {
+		if(eeMouseUp1()) {
 			if(player.Skill_Redistribute > 0) {
 				player.Skill_Redistribute--;
 				t++;
@@ -608,7 +605,7 @@ static bool CheckSkillClick(Vec2f pos, float * val, TextureContainer * tc,
 				ARX_INTERFACE_ERRORSOUND();
 		}
 
-		if(!(BOOKBUTTON & 2) && (LASTBOOKBUTTON & 2)) {
+		if(eeMouseUp2()) {
 			if(ARXmenu.currentmode == AMCM_NEWQUEST) {
 				if(t > ot && player.level == 0) {
 					player.Skill_Redistribute++;
@@ -1033,7 +1030,7 @@ static void ARX_INTERFACE_ManageOpenedBook_Stats()
 			SpecialCursor = CURSOR_REDIST;
 			lCursorRedistValue = player.Skill_Redistribute;
 
-			if((BOOKBUTTON & 1) && !(LASTBOOKBUTTON & 1)) {
+			if(eeMouseDown1()) {
 				ARX_INVENTORY_IdentifyAll();
 				ARX_EQUIPMENT_IdentifyAll();
 			}

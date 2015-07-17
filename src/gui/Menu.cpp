@@ -95,8 +95,6 @@ ZeniMax Media Inc., Suite 120, Rockville, Maryland 20850 USA.
 extern TextManager * pTextManage;
 extern ARX_INTERFACE_BOOK_MODE g_guiBookCurrentTopTab;
 extern long START_NEW_QUEST;
-extern long LASTBOOKBUTTON;
-extern long BOOKBUTTON;
 extern long OLD_FLYING_OVER;
 extern long FLYING_OVER;
 extern bool bFadeInOut;
@@ -415,9 +413,6 @@ bool ARX_Menu_Render() {
 
 			if(player.Skill_Redistribute == 0 && player.Attribute_Redistribute == 0)
 				DONE = 1;
-			
-			LASTBOOKBUTTON = BOOKBUTTON;
-			BOOKBUTTON = EERIEMouseButton;
 			
 			if(!ARXmenu.mda->flyover[FLYING_OVER].empty() ) //=ARXmenu.mda->flyover[FLYING_OVER];
 			{
