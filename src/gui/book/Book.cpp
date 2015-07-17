@@ -256,16 +256,16 @@ bool ARX_INTERFACE_MouseInBook() {
 }
 
 static void DrawBookInterfaceItem(TextureContainer * tc, Vec2f pos, Color color = Color::white, float z = 0.000001f) {
-	if(tc) {
-		EERIEDrawBitmap2(Rectf(
-			(pos + BOOKDEC) * g_sizeRatio,
-			tc->m_dwWidth * g_sizeRatio.x,
-			tc->m_dwHeight * g_sizeRatio.y),
-			z,
-			tc,
-			color
-		);
-	}
+	arx_assert(tc);
+	
+	EERIEDrawBitmap2(Rectf(
+		(pos + BOOKDEC) * g_sizeRatio,
+		tc->m_dwWidth * g_sizeRatio.x,
+		tc->m_dwHeight * g_sizeRatio.y),
+		z,
+		tc,
+		color
+	);
 }
 
 static void RenderBookPlayerCharacter() {
