@@ -623,16 +623,16 @@ static char * findParam(char * pcToken, const char * param) {
 	return pStartString;
 }
 
-static void GetInfosCombineWithIO(Entity * _pWithIO) {
+static void GetInfosCombineWithIO(Entity * combine, Entity * _pWithIO) {
 	
-	if(!COMBINE)
+	if(!combine)
 		return;
 	
-	std::string tcIndent = COMBINE->idString();
+	std::string tcIndent = combine->idString();
 	
 	char tTxtCombineDest[256];
 	
-	if(_pWithIO && _pWithIO != COMBINE && _pWithIO->script.data) {
+	if(_pWithIO && _pWithIO != combine && _pWithIO->script.data) {
 		char* pCopyScript = new char[_pWithIO->script.size + 1];
 		pCopyScript[_pWithIO->script.size] = '\0';
 		memcpy(pCopyScript, _pWithIO->script.data, _pWithIO->script.size);
@@ -678,7 +678,7 @@ static void GetInfosCombineWithIO(Entity * _pWithIO) {
 								memcpy(tTxtCombineDest, pStartString, pEndString - pStartString);
 								tTxtCombineDest[pEndString - pStartString] = 0;
 								
-								if(tTxtCombineDest == COMBINE->className()) {
+								if(tTxtCombineDest == combine->className()) {
 									//same class
 									bCanCombine = true;
 								}
@@ -720,7 +720,7 @@ static void GetInfosCombineWithIO(Entity * _pWithIO) {
 									if(pEndString) {
 										memcpy(tTxtCombineDest, pStartString, pEndString - pStartString);
 										tTxtCombineDest[pEndString - pStartString] = 0;
-										if(COMBINE->groups.find(tTxtCombineDest) != COMBINE->groups.end()) {
+										if(combine->groups.find(tTxtCombineDest) != combine->groups.end()) {
 											//same class
 											bCanCombine = true;
 										}
@@ -788,7 +788,7 @@ static void GetInfosCombineWithIO(Entity * _pWithIO) {
 							memcpy(tTxtCombineDest, pStartString, pEndString - pStartString);
 							tTxtCombineDest[pEndString - pStartString] = 0;
 							
-							if(tTxtCombineDest == COMBINE->className()) {
+							if(tTxtCombineDest == combine->className()) {
 								//same class
 								bCanCombine = true;
 							}
@@ -831,7 +831,7 @@ static void GetInfosCombineWithIO(Entity * _pWithIO) {
 									memcpy(tTxtCombineDest, pStartString, pEndString - pStartString);
 									tTxtCombineDest[pEndString - pStartString] = 0;
 									
-									if(COMBINE->groups.find(tTxtCombineDest) != COMBINE->groups.end()) {
+									if(combine->groups.find(tTxtCombineDest) != combine->groups.end()) {
 										// same class
 										bCanCombine = true;
 									}
@@ -876,14 +876,14 @@ static void GetInfosCombine() {
 	for(size_t y = 0; y < INVENTORY_Y; y++)
 	for(size_t x = 0; x < INVENTORY_X; x++) {
 		Entity * io = inventory[bag][x][y].io;
-		GetInfosCombineWithIO(io);
+		GetInfosCombineWithIO(COMBINE, io);
 	}
 
 	if(SecondaryInventory) {
 		for(long y = 0; y < SecondaryInventory->m_size.y; y++)
 		for(long x = 0; x < SecondaryInventory->m_size.x; x++) {
 			Entity * io = SecondaryInventory->slot[x][y].io;
-			GetInfosCombineWithIO(io);
+			GetInfosCombineWithIO(COMBINE, io);
 		}
 	}
 }
