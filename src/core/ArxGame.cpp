@@ -127,6 +127,7 @@ ZeniMax Media Inc., Suite 120, Rockville, Maryland 20850 USA.
 #include "math/Vector.h"
 
 #include "physics/Attractors.h"
+#include "platform/Time.h"
 
 #include "io/fs/FilePath.h"
 #include "io/fs/Filesystem.h"
@@ -1680,9 +1681,21 @@ void ArxGame::updateInput() {
 	}
 
 	if(g_debugInfo == InfoPanelDebugToggles) {
+		
 		for(size_t i = 0; i < ARRAY_SIZE(g_debugToggles); i++) {
-			if(GInput->isKeyPressedNowPressed(Keyboard::Key_NumPad0 + i)) {
-				g_debugToggles[i] = !g_debugToggles[i];
+			g_debugTriggers[i] = false;
+			
+			if(GInput->isKeyPressed(Keyboard::Key_NumPadEnter)) {
+				if(   GInput->isKeyPressed(Keyboard::Key_NumPad0 + i)
+				   && platform::getElapsedMs(g_debugTriggersTime[i]) > g_debugTriggersDecayDuration
+				) {
+					g_debugTriggersTime[i] = platform::getTimeMs();
+					g_debugTriggers[i] = true;
+				}
+			} else {
+				if(GInput->isKeyPressedNowPressed(Keyboard::Key_NumPad0 + i)) {
+					g_debugToggles[i] = !g_debugToggles[i];
+				}
 			}
 		}
 	}
@@ -2142,6 +2155,9 @@ void ArxGame::render() {
 	// Updates Externalview
 	EXTERNALVIEW = false;
 
+	if(g_debugTriggers[1])
+		bookIconGuiRequestFX();
+	
 	if(isInMenu()) {
 		renderMenu();
 	} else if(isInCinematic()) {

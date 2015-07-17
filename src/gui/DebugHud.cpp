@@ -368,6 +368,18 @@ void ShowDebugToggles() {
 		textStream << "Toggle " << i << ": " << (g_debugToggles[i] ? "true" : "false");
 		hFontDebug->draw(0.f, i * hFontDebug->getLineHeight(), textStream.str(), Color::white);
 	}
+	
+	for(size_t i = 0; i < ARRAY_SIZE(g_debugTriggersTime); i++) {
+		u32 time = g_debugTriggersTime[i];
+		float factor = platform::getElapsedMs(time) / g_debugTriggersDecayDuration;
+		factor = glm::clamp(factor, 0.f, 1.f);
+		
+		Color3f color = Color3f(1.f, factor, factor);
+		
+		std::stringstream textStream;
+		textStream << "Trigger " << i;
+		hFontDebug->draw(150.f, i * hFontDebug->getLineHeight(), textStream.str(), color.to<u8>());
+	}
 }
 
 void ShowFpsGraph() {

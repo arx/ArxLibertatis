@@ -118,6 +118,9 @@ extern float Original_framedelay;
 extern long LOADEDD;
 
 extern bool g_debugToggles[10];
+extern bool g_debugTriggers[10];
+extern u32 g_debugTriggersTime[10];
+static const u32 g_debugTriggersDecayDuration = 200;
 
 extern long		CHANGE_LEVEL_ICON;
 
