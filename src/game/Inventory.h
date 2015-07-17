@@ -270,6 +270,9 @@ bool IsInSecondaryInventory(Entity * io);
 bool InInventoryPos(const Vec2s & pos);
 void RemoveFromAllInventories(const Entity * io);
 Entity * ARX_INVENTORY_GetTorchLowestDurability();
+long Player_Arrow_Count();
+Entity * Player_Arrow_Count_Decrease();
+
 void ARX_INVENTORY_IdentifyAll();
 void ARX_INVENTORY_OpenClose(Entity * io);
 void ARX_INVENTORY_TakeAllFromSecondaryInventory();

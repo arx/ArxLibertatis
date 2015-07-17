@@ -676,43 +676,6 @@ void ManageNONCombatModeAnimations() {
 	}
 }
 
-static long Player_Arrow_Count() {
-	
-	long count = 0;
-	
-	arx_assert(player.bag >= 0);
-	arx_assert(player.bag <= 3);
-	
-	for(size_t bag = 0; bag < size_t(player.bag); bag++)
-	for(size_t y = 0; y < INVENTORY_Y; y++)
-	for(size_t x = 0; x < INVENTORY_X; x++) {
-		INVENTORY_SLOT & slot = inventory[bag][x][y];
-		
-		if(slot.io && slot.io->className() == "arrows" && slot.io->durability >= 1.f) {
-			count += checked_range_cast<long>(slot.io->durability);
-		}
-	}
-	
-	return count;
-}
-
-static Entity * Player_Arrow_Count_Decrease() {
-	
-	Entity * io = NULL;
-	
-	for(size_t bag = 0; bag < size_t(player.bag); bag++)
-	for(size_t y = 0; y < INVENTORY_Y; y++)
-	for(size_t x = 0; x < INVENTORY_X; x++) {
-		INVENTORY_SLOT & slot = inventory[bag][x][y];
-		
-		if(slot.io && slot.io->className() == "arrows" && slot.io->durability >= 1.f) {
-			if(!io || io->durability > slot.io->durability)
-				io = slot.io;
-		}
-	}
-	
-	return io;
-}
 float GLOBAL_SLOWDOWN=1.f;
 
 static bool StrikeAimtime() {
