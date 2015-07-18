@@ -1719,7 +1719,7 @@ void ArxGame::drawAllInterface() {
 	quickSaveIconGui.update();
 	
 	
-	Vec2f anchorPos = getInventoryGuiAnchorPosition();
+	Vec2f anchorPos = g_playerInventoryHud.anchorPosition();
 	
 	Rectf spacer;
 	spacer.left = std::max(InventoryX + 160, healthGauge.rect().right);
@@ -1881,10 +1881,4 @@ void hudUpdateInput() {
 			stealIconGui.updateInput();
 		}
 	}
-}
-
-Vec2f getInventoryGuiAnchorPosition() {
-	
-	return Vec2f(g_size.center().x - INTERFACE_RATIO(320) + INTERFACE_RATIO(35) ,
-	g_size.height() - INTERFACE_RATIO(101) + INTERFACE_RATIO_LONG(InventoryY));
 }

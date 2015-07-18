@@ -51,8 +51,15 @@ void PlayerInventoryHud::init() {
 	arx_assert(m_heroInventoryDown);
 }
 
+
+Vec2f PlayerInventoryHud::anchorPosition() {
+	
+	return Vec2f(g_size.center().x - INTERFACE_RATIO(320) + INTERFACE_RATIO(35) ,
+	g_size.height() - INTERFACE_RATIO(101) + INTERFACE_RATIO_LONG(InventoryY));
+}
+
 bool PlayerInventoryHud::updateInput() {
-	Vec2f anchorPos = getInventoryGuiAnchorPosition();
+	Vec2f anchorPos = anchorPosition();
 	
 	Vec2f pos = anchorPos + Vec2f(INTERFACE_RATIO_DWORD(m_heroInventory->m_dwWidth) - INTERFACE_RATIO(32 + 3), INTERFACE_RATIO(- 3 + 25));
 	
@@ -157,7 +164,7 @@ void PlayerInventoryHud::CalculateInventoryCoordinates() {
 	m_slotSize = Vec2f(32, 32);
 	m_slotSpacing = Vec2f(7, 6);
 	
-	Vec2f anchorPos = getInventoryGuiAnchorPosition();
+	Vec2f anchorPos = anchorPosition();
 	
 	m_pos.x = anchorPos.x + INTERFACE_RATIO_DWORD(m_heroInventory->m_dwWidth) - INTERFACE_RATIO(32 + 3) ;
 	m_pos.y = anchorPos.y + INTERFACE_RATIO(- 3 + 25);
@@ -168,7 +175,7 @@ void PlayerInventoryHud::ARX_INTERFACE_DrawInventory(size_t bag, int _iX, int _i
 {
 	fDecPulse += framedelay * 0.5f;
 	
-	Vec2f anchorPos = getInventoryGuiAnchorPosition();
+	Vec2f anchorPos = anchorPosition();
 	
 	const Vec2f pos = anchorPos + Vec2f(_iX, _iY);
 	
@@ -276,7 +283,7 @@ void PlayerInventoryHud::draw() {
 		}
 	} else if((player.Interface & INTER_INVENTORYALL) || bInventoryClosing) {				
 		
-		Vec2f anchorPos = getInventoryGuiAnchorPosition();
+		Vec2f anchorPos = anchorPosition();
 		
 		//TODO see about these coords, might be calculated once only
 		const float fBag = (player.bag-1) * INTERFACE_RATIO(-121);
@@ -362,7 +369,7 @@ static bool InPlayerInventoryBag(const Vec2s & pos) {
  * \brief Returns true if xx,yy is a position in player inventory
  */
 bool PlayerInventoryHud::containsPos(const Vec2s & pos) {
-	Vec2f anchorPos = getInventoryGuiAnchorPosition();
+	Vec2f anchorPos = anchorPosition();
 	
 	Vec2s iPos = Vec2s(anchorPos);
 
@@ -403,7 +410,7 @@ extern long HERO_OR_SECONDARY;
 
 Entity * PlayerInventoryHud::getObj(const Vec2s & pos) {
 	
-	Vec2f anchorPos = getInventoryGuiAnchorPosition();
+	Vec2f anchorPos = anchorPosition();
 	
 	Vec2i iPos = Vec2i(anchorPos);
 	
@@ -472,7 +479,7 @@ bool playerInventoryDropEntity() {
 	
 	int bag = 0;
 	
-	Vec2f anchorPos = getInventoryGuiAnchorPosition();
+	Vec2f anchorPos = g_playerInventoryHud.anchorPosition();
 	
 	float fCenterX	= anchorPos.x;
 	float fSizY		= anchorPos.y;
@@ -590,7 +597,7 @@ extern short sInventory;
 extern Vec2s sInventoryPos;
 
 void TakeFromInventoryPlayer(Entity * io, const Vec2s &pos) {
-	Vec2f anchorPos = getInventoryGuiAnchorPosition();
+	Vec2f anchorPos = g_playerInventoryHud.anchorPosition();
 	
 	Vec2i iPos = Vec2i(anchorPos);
 	

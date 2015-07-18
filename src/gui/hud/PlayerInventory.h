@@ -43,6 +43,7 @@ private:
 	
 public:
 	void init();
+	Vec2f anchorPosition();
 	void update();
 	bool updateInput();
 	void draw();

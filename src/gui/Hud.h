@@ -49,6 +49,4 @@ void hideQuickSaveIcon();
 
 void hudUpdateInput();
 
-Vec2f getInventoryGuiAnchorPosition();
-
 #endif // ARX_GUI_HUD_H
