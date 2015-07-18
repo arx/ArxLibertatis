@@ -949,12 +949,12 @@ static void ARX_INTERFACE_ManageOpenedBook_Stats()
 	std::stringstream ss;
 	ss << ITC.Level << " " << std::setw(3) << (int)player.level;
 	tex = ss.str();
-	DrawBookTextCenter(hFontInBook, Vec2f(398, 74), tex, color);
+	DrawBookTextCenter(hFontInBook, Vec2f(398, 74), tex, Color::black);
 
 	std::stringstream ss2;
 	ss2 << ITC.Xp << " " << std::setw(8) << player.xp;
 	tex = ss2.str();
-	DrawBookTextCenter(hFontInBook, Vec2f(510, 74), tex, color);
+	DrawBookTextCenter(hFontInBook, Vec2f(510, 74), tex, Color::black);
 
 	if (MouseInBookRect(Vec2f(463, 74), Vec2f(87, 20)))
 		FLYING_OVER = WND_XP;
