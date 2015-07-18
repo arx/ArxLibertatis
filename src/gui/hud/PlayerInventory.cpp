@@ -49,6 +49,9 @@ void PlayerInventoryHud::init() {
 	arx_assert(m_heroInventoryLink);
 	arx_assert(m_heroInventoryUp);
 	arx_assert(m_heroInventoryDown);
+	
+	m_slotSize = Vec2f(32, 32);
+	m_slotSpacing = Vec2f(7, 6);
 }
 
 
@@ -161,8 +164,6 @@ void PlayerInventoryHud::update() {
 
 void PlayerInventoryHud::CalculateInventoryCoordinates() {
 	
-	m_slotSize = Vec2f(32, 32);
-	m_slotSpacing = Vec2f(7, 6);
 	
 	Vec2f anchorPos = anchorPosition();
 	
