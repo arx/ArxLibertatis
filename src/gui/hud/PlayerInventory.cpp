@@ -52,6 +52,8 @@ void PlayerInventoryHud::init() {
 	
 	m_slotSize = Vec2f(32, 32);
 	m_slotSpacing = Vec2f(7, 6);
+	
+	m_bagBackgroundSize = Vec2f(562, 121);
 }
 
 
@@ -64,7 +66,7 @@ Vec2f PlayerInventoryHud::anchorPosition() {
 bool PlayerInventoryHud::updateInput() {
 	Vec2f anchorPos = anchorPosition();
 	
-	Vec2f pos = anchorPos + Vec2f(INTERFACE_RATIO_DWORD(m_heroInventory->m_dwWidth) - INTERFACE_RATIO(32 + 3), INTERFACE_RATIO(- 3 + 25));
+	Vec2f pos = anchorPos + Vec2f(INTERFACE_RATIO_DWORD(m_bagBackgroundSize.x) - INTERFACE_RATIO(32 + 3), INTERFACE_RATIO(- 3 + 25));
 	
 	bool bQuitCombine = true;
 	
@@ -167,7 +169,7 @@ void PlayerInventoryHud::CalculateInventoryCoordinates() {
 	
 	Vec2f anchorPos = anchorPosition();
 	
-	m_arrowsAnchor.x = anchorPos.x + INTERFACE_RATIO_DWORD(m_heroInventory->m_dwWidth) - INTERFACE_RATIO(32 + 3) ;
+	m_arrowsAnchor.x = anchorPos.x + INTERFACE_RATIO_DWORD(m_bagBackgroundSize.x) - INTERFACE_RATIO(32 + 3) ;
 	m_arrowsAnchor.y = anchorPos.y + INTERFACE_RATIO(- 3 + 25);
 }
 
@@ -180,7 +182,7 @@ void PlayerInventoryHud::ARX_INTERFACE_DrawInventory(size_t bag, int _iX, int _i
 	
 	const Vec2f pos = anchorPos + Vec2f(_iX, _iY);
 	
-	Rectf rect = Rectf(pos + Vec2f(0.f, -INTERFACE_RATIO(5)), m_heroInventory->m_dwWidth, m_heroInventory->m_dwHeight);
+	Rectf rect = Rectf(pos + Vec2f(0.f, -INTERFACE_RATIO(5)), m_bagBackgroundSize.x, m_bagBackgroundSize.y);
 	EERIEDrawBitmap(rect, 0.001f, m_heroInventory, Color::white);
 	
 	for(size_t y = 0; y < INVENTORY_Y; y++) {
@@ -296,8 +298,8 @@ void PlayerInventoryHud::draw() {
 		
 		for(int i = 0; i < player.bag; i++) {
 			Vec2f pos1 = Vec2f(posx + INTERFACE_RATIO(45), static_cast<float>(posy + iOffsetY));
-			Vec2f pos2 = Vec2f(posx + INTERFACE_RATIO_DWORD(m_heroInventory->m_dwWidth)*0.5f + INTERFACE_RATIO(-16), posy+iOffsetY + INTERFACE_RATIO(-5));
-			Vec2f pos3 = Vec2f(posx + INTERFACE_RATIO_DWORD(m_heroInventory->m_dwWidth) + INTERFACE_RATIO(-45-32), posy+iOffsetY + INTERFACE_RATIO(-15));
+			Vec2f pos2 = Vec2f(posx + INTERFACE_RATIO_DWORD(m_bagBackgroundSize.x)*0.5f + INTERFACE_RATIO(-16), posy+iOffsetY + INTERFACE_RATIO(-5));
+			Vec2f pos3 = Vec2f(posx + INTERFACE_RATIO_DWORD(m_bagBackgroundSize.x) + INTERFACE_RATIO(-45-32), posy+iOffsetY + INTERFACE_RATIO(-15));
 			
 			TextureContainer * tex = m_heroInventoryLink;
 			

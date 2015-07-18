@@ -41,6 +41,8 @@ private:
 	Vec2f m_slotSize;
 	Vec2f m_slotSpacing;
 	
+	Vec2f m_bagBackgroundSize;
+	
 public:
 	void init();
 	Vec2f anchorPosition();
