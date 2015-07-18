@@ -54,15 +54,14 @@ public:
 	bool containsPos(const Vec2s & pos);
 	Entity * getObj(const Vec2s & pos);
 	
+	bool dropEntity();
+	void dragEntity(Entity * io, const Vec2s &pos);
+	
 private:
 	void CalculateInventoryCoordinates();
 	void ARX_INTERFACE_DrawInventory(size_t bag, int _iX=0, int _iY=0);
 };
 
 extern PlayerInventoryHud g_playerInventoryHud;
-
-bool playerInventoryDropEntity();
-
-void TakeFromInventoryPlayer(Entity * io, const Vec2s &pos);
 
 #endif // ARX_GUI_HUD_PLAYERINVENTORY_H

@@ -1002,7 +1002,7 @@ bool PutInInventory() {
 		}
 	}
 	
-	return playerInventoryDropEntity();
+	return g_playerInventoryHud.dropEntity();
 }
 
 /*!
@@ -1343,7 +1343,7 @@ bool TakeFromInventory(const Vec2s & pos) {
 		}
 	}
 	
-	TakeFromInventoryPlayer(io, pos);
+	g_playerInventoryHud.dragEntity(io, pos);
 
 	return true;
 }

@@ -465,7 +465,7 @@ Entity * PlayerInventoryHud::getObj(const Vec2s & pos) {
 }
 
 
-bool playerInventoryDropEntity() {
+bool PlayerInventoryHud::dropEntity() {
 	if(!(player.Interface & INTER_INVENTORY) && !(player.Interface & INTER_INVENTORYALL))
 		return false;
 	
@@ -596,7 +596,7 @@ bool playerInventoryDropEntity() {
 extern short sInventory;
 extern Vec2s sInventoryPos;
 
-void TakeFromInventoryPlayer(Entity * io, const Vec2s &pos) {
+void PlayerInventoryHud::dragEntity(Entity * io, const Vec2s &pos) {
 	Vec2f anchorPos = g_playerInventoryHud.anchorPosition();
 	
 	Vec2i iPos = Vec2i(anchorPos);
