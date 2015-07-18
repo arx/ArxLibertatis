@@ -524,7 +524,7 @@ static void ARX_INTERFACE_RenderCursorInternal(bool flag) {
 						if(v > 0.f) {
 							long t = v;
 							Vec2f nuberOffset = Vec2f(-16, -10);
-							ARX_INTERFACE_DrawNumber(mousePos + nuberOffset, t, 6, Color::cyan);
+							ARX_INTERFACE_DrawNumber(mousePos + nuberOffset, t, 6, Color::cyan, 1.f);
 						}
 					}
 				} else {
@@ -642,7 +642,7 @@ static void ARX_INTERFACE_RenderCursorInternal(bool flag) {
 						
 						if((DRAGINTER->ioflags & IO_ITEM) && DRAGINTER->_itemdata->count != 1) {
 							Vec2f nuberOffset = Vec2f(2.f, 13.f);
-							ARX_INTERFACE_DrawNumber(pos + nuberOffset, DRAGINTER->_itemdata->count, 3, Color::white);
+							ARX_INTERFACE_DrawNumber(pos + nuberOffset, DRAGINTER->_itemdata->count, 3, Color::white, 1.f);
 						}
 					} else {
 						if((InInventoryPos(DANAEMouse) || InSecondaryInventoryPos(DANAEMouse)) || CANNOT_PUT_IT_HERE != -1) {

@@ -231,7 +231,7 @@ void PlayerInventoryHud::ARX_INTERFACE_DrawInventory(size_t bag, int _iX, int _i
 		}
 		
 		if((io->ioflags & IO_ITEM) && io->_itemdata->count != 1)
-			ARX_INTERFACE_DrawNumber(p, io->_itemdata->count, 3, Color::white);
+			ARX_INTERFACE_DrawNumber(p, io->_itemdata->count, 3, Color::white, m_scale);
 	}
 	}
 }

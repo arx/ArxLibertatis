@@ -272,7 +272,7 @@ void SecondaryInventoryGui::draw() {
 				}
 				
 				if((io->ioflags & IO_ITEM) && io->_itemdata->count != 1)
-					ARX_INTERFACE_DrawNumber(p, io->_itemdata->count, 3, Color::white);
+					ARX_INTERFACE_DrawNumber(p, io->_itemdata->count, 3, Color::white, 1.f);
 			}
 		}
 	}

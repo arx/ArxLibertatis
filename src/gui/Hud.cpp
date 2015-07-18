@@ -250,7 +250,7 @@ static void DrawItemPrice() {
 
 			Color color = (amount <= player.gold) ? Color::green : Color::red;
 			
-			ARX_INTERFACE_DrawNumber(pos, amount, 6, color);
+			ARX_INTERFACE_DrawNumber(pos, amount, 6, color, 1.f);
 		} else if(g_playerInventoryHud.containsPos(DANAEMouse)) {
 			long amount = static_cast<long>( ARX_INTERACTIVE_GetPrice( FlyingOverIO, temp ) / 3.0f );
 			// achat
@@ -266,7 +266,7 @@ static void DrawItemPrice() {
 
 					color = Color::green;
 				}
-				ARX_INTERFACE_DrawNumber(pos, amount, 6, color);
+				ARX_INTERFACE_DrawNumber(pos, amount, 6, color, 1.f);
 			}
 		}
 	}
@@ -660,7 +660,7 @@ public:
 			Vec2f numberPos = m_rect.topLeft();
 			numberPos += Vec2f(- INTERFACE_RATIO(30), + INTERFACE_RATIO(10 - 25));
 			
-			ARX_INTERFACE_DrawNumber(numberPos, player.gold, 6, Color::white);
+			ARX_INTERFACE_DrawNumber(numberPos, player.gold, 6, Color::white, m_scale);
 		}
 	}
 };

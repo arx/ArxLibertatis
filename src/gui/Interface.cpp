@@ -227,7 +227,7 @@ Entity *pIOChangeWeapon=NULL;
 PlayerInterfaceFlags lOldInterface;
 
 
-void ARX_INTERFACE_DrawNumber(const Vec2f & pos, const long num, const int _iNb, const Color color) {
+void ARX_INTERFACE_DrawNumber(const Vec2f & pos, const long num, const int _iNb, const Color color, float scale) {
 	
 	ColorRGBA col = color.toRGBA();
 	
@@ -258,10 +258,10 @@ void ARX_INTERFACE_DrawNumber(const Vec2f & pos, const long num, const int _iNb,
 
 			if(tt >= 0) {
 				removezero = 0;
-				v[0].p.x = v[3].p.x = pos.x + i * INTERFACE_RATIO(10);
-				v[1].p.x = v[2].p.x = v[0].p.x + INTERFACE_RATIO(10);
+				v[0].p.x = v[3].p.x = pos.x + i * (10 * scale);
+				v[1].p.x = v[2].p.x = v[0].p.x + (10 * scale);
 				v[0].p.y = v[1].p.y = pos.y;
-				v[2].p.y = v[3].p.y = pos.y + INTERFACE_RATIO(10);
+				v[2].p.y = v[3].p.y = pos.y + (10 * scale);
 				v[0].color = v[1].color = v[2].color = v[3].color = col;
 
 				ttx = ((float)tt * (float)11.f) + 1.5f;
