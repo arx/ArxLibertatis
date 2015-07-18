@@ -1694,6 +1694,8 @@ void setHudScale(float scale) {
 	stealthGauge.setScale(scale);
 	damagedEquipmentGui.setScale(scale);
 	precastSpellsGui.setScale(scale);
+	
+	g_playerInventoryHud.setScale(scale);
 }
 
 void ArxGame::drawAllInterface() {

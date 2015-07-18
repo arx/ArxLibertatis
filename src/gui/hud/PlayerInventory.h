@@ -20,6 +20,7 @@
 #ifndef ARX_GUI_HUD_PLAYERINVENTORY_H
 #define ARX_GUI_HUD_PLAYERINVENTORY_H
 
+#include "gui/hud/HudCommon.h"
 #include "math/Vector.h"
 
 class Entity;
@@ -29,7 +30,7 @@ extern bool bInventorySwitch;
 extern float fDecPulse;
 extern short g_currentInventoryBag;
 
-class PlayerInventoryHud {
+class PlayerInventoryHud : public HudItem {
 private:
 	TextureContainer * m_heroInventory;
 	TextureContainer * m_heroInventoryLink;
