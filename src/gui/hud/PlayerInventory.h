@@ -36,7 +36,7 @@ private:
 	TextureContainer * m_heroInventoryUp;
 	TextureContainer * m_heroInventoryDown;
 	
-	Vec2f m_pos;
+	Vec2f m_arrowsAnchor;
 	
 	Vec2f m_slotSize;
 	Vec2f m_slotSpacing;

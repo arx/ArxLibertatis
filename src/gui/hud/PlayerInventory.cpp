@@ -166,8 +166,8 @@ void PlayerInventoryHud::CalculateInventoryCoordinates() {
 	
 	Vec2f anchorPos = anchorPosition();
 	
-	m_pos.x = anchorPos.x + INTERFACE_RATIO_DWORD(m_heroInventory->m_dwWidth) - INTERFACE_RATIO(32 + 3) ;
-	m_pos.y = anchorPos.y + INTERFACE_RATIO(- 3 + 25);
+	m_arrowsAnchor.x = anchorPos.x + INTERFACE_RATIO_DWORD(m_heroInventory->m_dwWidth) - INTERFACE_RATIO(32 + 3) ;
+	m_arrowsAnchor.y = anchorPos.y + INTERFACE_RATIO(- 3 + 25);
 }
 
 //-----------------------------------------------------------------------------
@@ -241,7 +241,7 @@ void PlayerInventoryHud::draw() {
 			CalculateInventoryCoordinates();
 			
 			if(g_currentInventoryBag > 0) {
-				Rectf rect = Rectf(m_pos, 32.f, 32.f);
+				Rectf rect = Rectf(m_arrowsAnchor, 32.f, 32.f);
 				
 				EERIEDrawBitmap(rect, 0.001f, m_heroInventoryUp, Color::white);
 				
@@ -262,7 +262,7 @@ void PlayerInventoryHud::draw() {
 			}
 			
 			if(g_currentInventoryBag < player.bag-1) {
-				Rectf rect = Rectf(m_pos + Vec2f(0.f, 32.f + 5.f), 32.f, 32.f);
+				Rectf rect = Rectf(m_arrowsAnchor + Vec2f(0.f, 32.f + 5.f), 32.f, 32.f);
 				
 				EERIEDrawBitmap(rect, 0.001f, m_heroInventoryDown, Color::white);
 				
