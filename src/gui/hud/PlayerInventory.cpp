@@ -39,7 +39,7 @@ short g_currentInventoryBag = 0;
 
 extern PlayerInterfaceFlags lOldInterface;
 
-class InventoryGui {
+class PlayerInventoryHud {
 private:
 	TextureContainer * m_heroInventory;
 	TextureContainer * m_heroInventoryLink;
@@ -322,7 +322,7 @@ public:
 	}
 };
 
-static InventoryGui inventoryGui;
+static PlayerInventoryHud inventoryGui;
 
 
 void playerInventoryInit() {
