@@ -41,4 +41,6 @@ Entity * playerInventoryGetObj(const Vec2s & pos);
 
 bool playerInventoryDropEntity();
 
+void TakeFromInventoryPlayer(Entity * io, const Vec2s &pos);
+
 #endif // ARX_GUI_HUD_PLAYERINVENTORY_H

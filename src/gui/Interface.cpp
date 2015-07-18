@@ -2173,7 +2173,7 @@ void ArxGame::manageEditorControls() {
 			
 			if(!playerInventory.insert(FlyingOverIO)) {
 				if(TSecondaryInventory && bSecondary) {
-					// TODO
+					// TODO global sInventory
 					extern short sInventory;
 					extern Vec2s sInventoryPos;
 					sInventory = 2;

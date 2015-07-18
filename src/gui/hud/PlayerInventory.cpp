@@ -20,6 +20,7 @@
 #include "gui/hud/PlayerInventory.h"
 
 #include "core/Application.h"
+#include "core/Config.h"
 #include "core/Core.h"
 #include "game/Inventory.h"
 #include "game/Item.h"
@@ -28,6 +29,7 @@
 #include "graphics/data/TextureContainer.h"
 #include "gui/Hud.h"
 #include "gui/Interface.h"
+#include "input/Input.h"
 #include "scene/GameSound.h"
 #include "scene/Interactive.h"
 
@@ -612,4 +614,69 @@ bool playerInventoryDropEntity() {
 	DRAGINTER->show = SHOW_FLAG_IN_INVENTORY;
 	Set_DragInter(NULL);
 	return true;
+}
+
+// TODO global sInventory
+extern short sInventory;
+extern Vec2s sInventoryPos;
+
+void TakeFromInventoryPlayer(Entity * io, const Vec2s &pos) {
+	Vec2f anchorPos = getInventoryGuiAnchorPosition();
+	
+	Vec2i iPos = Vec2i(anchorPos);
+	
+	if(playerInventoryContainsPos(pos)) {
+		if(!GInput->actionPressed(CONTROLS_CUST_STEALTHMODE)) {
+			if((io->ioflags & IO_ITEM) && io->_itemdata->count > 1) {
+				if(io->_itemdata->count - 1 > 0) {
+					
+					Entity * ioo = AddItem(io->classPath());
+					ioo->show = SHOW_FLAG_NOT_DRAWN;
+					ioo->_itemdata->count = 1;
+					io->_itemdata->count--;
+					ioo->scriptload = 1;
+					ARX_SOUND_PlayInterface(SND_INVSTD);
+					Set_DragInter(ioo);
+					RemoveFromAllInventories(ioo);
+					sInventory = 1;
+					
+					float fX = (pos.x - iPos.x) / INTERFACE_RATIO(32);
+					float fY = (pos.y - iPos.y) / INTERFACE_RATIO(32);
+					
+					sInventoryPos.x = checked_range_cast<short>(fX);
+					sInventoryPos.y = checked_range_cast<short>(fY);
+					
+					SendInitScriptEvent(ioo);
+					ARX_INVENTORY_IdentifyIO(ioo);
+					return;
+				}
+			}
+		}
+	}
+	
+	arx_assert(player.bag >= 0);
+	arx_assert(player.bag <= 3);
+	
+	for(size_t bag = 0; bag < size_t(player.bag); bag++)
+	for(size_t y = 0; y < INVENTORY_Y; y++)
+	for(size_t x = 0; x < INVENTORY_X; x++) {
+		INVENTORY_SLOT & slot = inventory[bag][x][y];
+		
+		if(slot.io == io) {
+			slot.io = NULL;
+			slot.show = 1;
+			sInventory = 1;
+			
+			float fX = (pos.x - iPos.x) / INTERFACE_RATIO(32);
+			float fY = (pos.y - iPos.y) / INTERFACE_RATIO(32);
+			
+			sInventoryPos.x = checked_range_cast<short>(fX);
+			sInventoryPos.y = checked_range_cast<short>(fY);
+		}
+	}
+	
+	Set_DragInter(io);
+	
+	RemoveFromAllInventories(io);
+	ARX_INVENTORY_IdentifyIO(io);
 }
