@@ -322,23 +322,23 @@ public:
 	}
 };
 
-static PlayerInventoryHud inventoryGui;
+static PlayerInventoryHud g_playerInventoryHud;
 
 
 void playerInventoryInit() {
-	inventoryGui.init();
+	g_playerInventoryHud.init();
 }
 
 void playerInventoryUpdate() {
-	inventoryGui.update();
+	g_playerInventoryHud.update();
 }
 
 bool playerInventoryUpdateInput() {
-	return inventoryGui.updateInput();
+	return g_playerInventoryHud.updateInput();
 }
 
 void playerInventoryDraw() {
-	inventoryGui.draw();
+	g_playerInventoryHud.draw();
 }
 
 
