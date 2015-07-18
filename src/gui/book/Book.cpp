@@ -1390,8 +1390,8 @@ static void ARX_INTERFACE_ManageOpenedBook_Stats()
 	}
 	
 	// Secondary Attributes
+	{
 	std::stringstream ss4;
-	ss4.str("");
 	ss4 << F2L_RoundUp(player.Full_maxlife);
 	tex = ss4.str();
 	
@@ -1404,8 +1404,10 @@ static void ARX_INTERFACE_ManageOpenedBook_Stats()
 	}
 	
 	DrawBookTextCenter(hFontInBook, Vec2f(324, 158), tex, color);
+	}
 	
-	ss4.str("");
+	{
+	std::stringstream ss4;
 	ss4 << F2L_RoundUp(player.Full_maxmana);
 	tex = ss4.str();
 
@@ -1418,8 +1420,10 @@ static void ARX_INTERFACE_ManageOpenedBook_Stats()
 	}
 	
 	DrawBookTextCenter(hFontInBook, Vec2f(324, 218), tex, color);
+	}
 	
-	ss4.str("");
+	{
+	std::stringstream ss4;
 	ss4 << F2L_RoundUp(player.m_miscFull.damages);
 	tex = ss4.str();
 	
@@ -1431,10 +1435,11 @@ static void ARX_INTERFACE_ManageOpenedBook_Stats()
 		color = Color::black;
 	
 	DrawBookTextCenter(hFontInBook, Vec2f(324, 278), tex, color);
+	}
 	
-	float ac = player.m_miscFull.armorClass;
-	ss4.str("");
-	ss4 << F2L_RoundUp(ac);
+	{
+	std::stringstream ss4;
+	ss4 << F2L_RoundUp(player.m_miscFull.armorClass);
 	tex = ss4.str();
 	
 	if (player.m_miscMod.armorClass < 0.f)
@@ -1445,8 +1450,10 @@ static void ARX_INTERFACE_ManageOpenedBook_Stats()
 		color = Color::black;
 	
 	DrawBookTextCenter(hFontInBook, Vec2f(153, 158), tex, color);
+	}
 	
-	ss4.str("");
+	{
+	std::stringstream ss4;
 	ss4 << std::setw(3) << std::setprecision(0) << F2L_RoundUp( player.m_miscFull.resistMagic );
 	tex = ss4.str();
 	
@@ -1458,9 +1465,11 @@ static void ARX_INTERFACE_ManageOpenedBook_Stats()
 		color = Color::black;
 	
 	DrawBookTextCenter(hFontInBook, Vec2f(153, 218), tex, color);
+	}
 	
-	ss4.str("");
-	ss4 << F2L_RoundUp( player.m_miscFull.resistPoison );
+	{
+	std::stringstream ss4;
+	ss4 << std::setw(3) << std::setprecision(0) << F2L_RoundUp( player.m_miscFull.resistPoison );
 	tex = ss4.str();
 
 	if (player.m_miscMod.resistPoison<0.f)
@@ -1471,6 +1480,7 @@ static void ARX_INTERFACE_ManageOpenedBook_Stats()
 		color = Color::black;
 	
 	DrawBookTextCenter(hFontInBook, Vec2f(153, 278), tex, color);
+	}
 	
 	RenderBookPlayerCharacter();	
 }
