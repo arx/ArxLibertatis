@@ -442,10 +442,10 @@ static void ARX_PLAYER_ComputePlayerStats() {
 	float base_defense = player.m_skill.defense + player.m_attribute.constitution * 3;
 	float fCalc = base_defense * ( 1.0f / 10 ) - 1 ;
 	player.m_misc.armorClass = checked_range_cast<unsigned char>(fCalc);
-
-
-	if (player.m_misc.armorClass < 1) player.m_misc.armorClass = 1;
-
+	
+	if(player.m_misc.armorClass < 1)
+		player.m_misc.armorClass = 1;
+	
 	float base_casting = player.m_skill.casting + player.m_attribute.mind * 2.f;
 	player.m_misc.resistMagic = (unsigned char)(float)(player.m_attribute.mind * 2.f
 	                      * (1.f + base_casting * ( 1.0f / 200 )));
@@ -455,9 +455,10 @@ static void ARX_PLAYER_ComputePlayerStats() {
 
 
 	player.m_misc.damages = (player.m_attribute.strength - 10) * ( 1.0f / 2 );
-
-	if (player.m_misc.damages < 1.f) player.m_misc.damages = 1.f;
-
+	
+	if(player.m_misc.damages < 1.f)
+		player.m_misc.damages = 1.f;
+	
 	player.AimTime = 1500;
 	
 	float base_close_combat = player.m_skill.closeCombat
