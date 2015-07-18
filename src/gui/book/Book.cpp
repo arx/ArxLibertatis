@@ -1131,6 +1131,8 @@ static void ARX_INTERFACE_ManageOpenedBook_Stats()
 	//------------------------------
 	
 	{
+	Vec2f pos = Vec2f(391, 129);
+	
 	std::stringstream ss3;
 	ss3 << std::setw(3) << std::setprecision(0) << std::fixed << player.m_attributeFull.strength;
 	tex = ss3.str();
@@ -1147,10 +1149,12 @@ static void ARX_INTERFACE_ManageOpenedBook_Stats()
 			color = Color::red;
 	}
 	
-	DrawBookTextCenter(hFontInBook, Vec2f(391, 129), tex, color);
+	DrawBookTextCenter(hFontInBook, pos, tex, color);
 	}
 	
 	{
+	Vec2f pos = Vec2f(440, 129);
+	
 	std::stringstream ss3;
 	ss3 << std::setw(3) << std::setprecision(0) << std::fixed << player.m_attributeFull.mind;
 	tex = ss3.str();
@@ -1167,10 +1171,12 @@ static void ARX_INTERFACE_ManageOpenedBook_Stats()
 			color = Color::red;
 	}
 	
-	DrawBookTextCenter(hFontInBook, Vec2f(440, 129), tex, color);
+	DrawBookTextCenter(hFontInBook, pos, tex, color);
 	}
 	
 	{
+	Vec2f pos = Vec2f(490, 129);
+	
 	std::stringstream ss3;
 	ss3 << std::setw(3) << std::setprecision(0) << std::fixed << player.m_attributeFull.dexterity;
 	tex = ss3.str();
@@ -1187,10 +1193,12 @@ static void ARX_INTERFACE_ManageOpenedBook_Stats()
 			color = Color::red;
 	}
 	
-	DrawBookTextCenter(hFontInBook, Vec2f(490, 129), tex, color);
+	DrawBookTextCenter(hFontInBook, pos, tex, color);
 	}
 	
 	{
+	Vec2f pos = Vec2f(538, 129);
+	
 	std::stringstream ss3;
 	ss3 << std::setw(3) << std::setprecision(0) << std::fixed << player.m_attributeFull.constitution;
 	tex = ss3.str();
@@ -1207,11 +1215,13 @@ static void ARX_INTERFACE_ManageOpenedBook_Stats()
 			color = Color::red;
 	}
 	
-	DrawBookTextCenter(hFontInBook, Vec2f(538, 129), tex, color);
+	DrawBookTextCenter(hFontInBook, pos, tex, color);
 	}
 	
 	// Player Skills
 	{
+	Vec2f pos = Vec2f(405, 210);
+	
 	std::stringstream ss3;
 	ss3 << std::setw(3) << std::setprecision(0) << std::fixed << player.m_skillFull.stealth;
 	tex = ss3.str();
@@ -1228,10 +1238,12 @@ static void ARX_INTERFACE_ManageOpenedBook_Stats()
 			color = Color::red;
 	}
 	
-	DrawBookTextCenter(hFontInBook, Vec2f(405, 210), tex, color);
+	DrawBookTextCenter(hFontInBook, pos, tex, color);
 	}
 	
 	{
+	Vec2f pos = Vec2f(469, 210);
+	
 	std::stringstream ss3;
 	ss3 << std::setw(3) << std::setprecision(0) << std::fixed << player.m_skillFull.mecanism;
 	tex = ss3.str();
@@ -1248,10 +1260,14 @@ static void ARX_INTERFACE_ManageOpenedBook_Stats()
 			color = Color::red;
 	}
 	
-	DrawBookTextCenter(hFontInBook, Vec2f(469, 210), tex, color);
+	DrawBookTextCenter(hFontInBook, pos, tex, color);
+	}
 	
-	ss3.str("");
-	ss3 << player.m_skillFull.intuition;
+	{
+	Vec2f pos = Vec2f(533, 210);
+	
+	std::stringstream ss3;
+	ss3 << std::setw(3) << std::setprecision(0) << std::fixed << player.m_skillFull.intuition;
 	tex = ss3.str();
 	
 	if (player.m_skillMod.intuition < 0.f)
@@ -1266,10 +1282,12 @@ static void ARX_INTERFACE_ManageOpenedBook_Stats()
 			color = Color::red;
 	}
 
-	DrawBookTextCenter(hFontInBook, Vec2f(533, 210), tex, color);
+	DrawBookTextCenter(hFontInBook, pos, tex, color);
 	}
 	
 	{
+	Vec2f pos = Vec2f(405, 265);
+	
 	std::stringstream ss3;
 	ss3 << std::setw(3) << std::setprecision(0) << std::fixed << player.m_skillFull.etheralLink;
 	tex = ss3.str();
@@ -1286,10 +1304,12 @@ static void ARX_INTERFACE_ManageOpenedBook_Stats()
 			color = Color::red;
 	}
 
-	DrawBookTextCenter(hFontInBook, Vec2f(405, 265), tex, color);
+	DrawBookTextCenter(hFontInBook, pos, tex, color);
 	}
 	
 	{
+	Vec2f pos = Vec2f(469, 265);
+	
 	std::stringstream ss3;
 	ss3 << std::setw(3) << std::setprecision(0) << std::fixed << player.m_skillFull.objectKnowledge;
 	tex = ss3.str();
@@ -1306,10 +1326,12 @@ static void ARX_INTERFACE_ManageOpenedBook_Stats()
 			color = Color::red;
 	}
 	
-	DrawBookTextCenter(hFontInBook, Vec2f(469, 265), tex, color);
+	DrawBookTextCenter(hFontInBook, pos, tex, color);
 	}
 	
 	{
+	Vec2f pos = Vec2f(533, 265);
+	
 	std::stringstream ss3;
 	ss3 << std::setw(3) << std::setprecision(0) << std::fixed << player.m_skillFull.casting;
 	tex = ss3.str();
@@ -1326,10 +1348,12 @@ static void ARX_INTERFACE_ManageOpenedBook_Stats()
 			color = Color::red;
 	}
 
-	DrawBookTextCenter(hFontInBook, Vec2f(533, 265), tex, color);
+	DrawBookTextCenter(hFontInBook, pos, tex, color);
 	}
 	
 	{
+	Vec2f pos = Vec2f(405, 319);
+	
 	std::stringstream ss3;
 	ss3 << std::setw(3) << std::setprecision(0) << std::fixed << player.m_skillFull.closeCombat;
 	tex = ss3.str();
@@ -1346,10 +1370,12 @@ static void ARX_INTERFACE_ManageOpenedBook_Stats()
 			color = Color::red;
 	}
 
-	DrawBookTextCenter(hFontInBook, Vec2f(405, 319), tex, color);
+	DrawBookTextCenter(hFontInBook, pos, tex, color);
 	}
 
 	{
+	Vec2f pos = Vec2f(469, 319);
+	
 	std::stringstream ss3;
 	ss3 << std::setw(3) << std::setprecision(0) << std::fixed << player.m_skillFull.projectile;
 	tex = ss3.str();
@@ -1366,10 +1392,12 @@ static void ARX_INTERFACE_ManageOpenedBook_Stats()
 			color = Color::red;
 	}
 
-	DrawBookTextCenter(hFontInBook, Vec2f(469, 319), tex, color);
+	DrawBookTextCenter(hFontInBook, pos, tex, color);
 	}
 	
 	{
+	Vec2f pos = Vec2f(533, 319);
+	
 	std::stringstream ss3;
 	ss3 << std::setw(3) << std::setprecision(0) << std::fixed << player.m_skillFull.defense;
 	tex = ss3.str();
@@ -1386,11 +1414,13 @@ static void ARX_INTERFACE_ManageOpenedBook_Stats()
 			color = Color::red;
 	}
 	
-	DrawBookTextCenter(hFontInBook, Vec2f(533, 319), tex, color);
+	DrawBookTextCenter(hFontInBook, pos, tex, color);
 	}
 	
 	// Secondary Attributes
 	{
+	Vec2f pos = Vec2f(324, 158);
+	
 	std::stringstream ss4;
 	ss4 << F2L_RoundUp(player.Full_maxlife);
 	tex = ss4.str();
@@ -1403,10 +1433,12 @@ static void ARX_INTERFACE_ManageOpenedBook_Stats()
 		color = Color::black;
 	}
 	
-	DrawBookTextCenter(hFontInBook, Vec2f(324, 158), tex, color);
+	DrawBookTextCenter(hFontInBook, pos, tex, color);
 	}
 	
 	{
+	Vec2f pos = Vec2f(324, 218);
+	
 	std::stringstream ss4;
 	ss4 << F2L_RoundUp(player.Full_maxmana);
 	tex = ss4.str();
@@ -1419,10 +1451,12 @@ static void ARX_INTERFACE_ManageOpenedBook_Stats()
 		color = Color::black;
 	}
 	
-	DrawBookTextCenter(hFontInBook, Vec2f(324, 218), tex, color);
+	DrawBookTextCenter(hFontInBook, pos, tex, color);
 	}
 	
 	{
+	Vec2f pos = Vec2f(324, 278);
+	
 	std::stringstream ss4;
 	ss4 << F2L_RoundUp(player.m_miscFull.damages);
 	tex = ss4.str();
@@ -1434,10 +1468,12 @@ static void ARX_INTERFACE_ManageOpenedBook_Stats()
 	else
 		color = Color::black;
 	
-	DrawBookTextCenter(hFontInBook, Vec2f(324, 278), tex, color);
+	DrawBookTextCenter(hFontInBook, pos, tex, color);
 	}
 	
 	{
+	Vec2f pos = Vec2f(153, 158);
+	
 	std::stringstream ss4;
 	ss4 << F2L_RoundUp(player.m_miscFull.armorClass);
 	tex = ss4.str();
@@ -1449,10 +1485,12 @@ static void ARX_INTERFACE_ManageOpenedBook_Stats()
 	else
 		color = Color::black;
 	
-	DrawBookTextCenter(hFontInBook, Vec2f(153, 158), tex, color);
+	DrawBookTextCenter(hFontInBook, pos, tex, color);
 	}
 	
 	{
+	Vec2f pos = Vec2f(153, 218);
+	
 	std::stringstream ss4;
 	ss4 << std::setw(3) << std::setprecision(0) << F2L_RoundUp( player.m_miscFull.resistMagic );
 	tex = ss4.str();
@@ -1464,10 +1502,12 @@ static void ARX_INTERFACE_ManageOpenedBook_Stats()
 	else
 		color = Color::black;
 	
-	DrawBookTextCenter(hFontInBook, Vec2f(153, 218), tex, color);
+	DrawBookTextCenter(hFontInBook, pos, tex, color);
 	}
 	
 	{
+	Vec2f pos = Vec2f(153, 278);
+	
 	std::stringstream ss4;
 	ss4 << std::setw(3) << std::setprecision(0) << F2L_RoundUp( player.m_miscFull.resistPoison );
 	tex = ss4.str();
@@ -1479,7 +1519,7 @@ static void ARX_INTERFACE_ManageOpenedBook_Stats()
 	else
 		color = Color::black;
 	
-	DrawBookTextCenter(hFontInBook, Vec2f(153, 278), tex, color);
+	DrawBookTextCenter(hFontInBook, pos, tex, color);
 	}
 	
 	RenderBookPlayerCharacter();	
