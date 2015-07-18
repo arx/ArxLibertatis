@@ -1035,7 +1035,7 @@ bool InInventoryPos(const Vec2s & pos) {
 	if(InSecondaryInventoryPos(pos))
 		return true;
 
-	return playerInventoryContainsPos(pos);
+	return g_playerInventoryHud.containsPos(pos);
 }
 
 /*!
@@ -1080,7 +1080,7 @@ Entity * GetFromInventory(const Vec2s & pos) {
 		}
 	}
 
-	return playerInventoryGetObj(pos);
+	return g_playerInventoryHud.getObj(pos);
 }
 
 /*!

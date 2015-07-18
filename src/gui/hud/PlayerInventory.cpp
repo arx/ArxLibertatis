@@ -361,7 +361,7 @@ static bool InPlayerInventoryBag(const Vec2s & pos) {
 /*!
  * \brief Returns true if xx,yy is a position in player inventory
  */
-bool playerInventoryContainsPos(const Vec2s & pos) {
+bool PlayerInventoryHud::containsPos(const Vec2s & pos) {
 	Vec2f anchorPos = getInventoryGuiAnchorPosition();
 	
 	Vec2s iPos = Vec2s(anchorPos);
@@ -401,7 +401,7 @@ bool playerInventoryContainsPos(const Vec2s & pos) {
 
 extern long HERO_OR_SECONDARY;
 
-Entity * playerInventoryGetObj(const Vec2s & pos) {
+Entity * PlayerInventoryHud::getObj(const Vec2s & pos) {
 	
 	Vec2f anchorPos = getInventoryGuiAnchorPosition();
 	
@@ -465,7 +465,7 @@ bool playerInventoryDropEntity() {
 	if(InventoryY != 0)
 		return false;
 	
-	if(!playerInventoryContainsPos(DANAEMouse))
+	if(!g_playerInventoryHud.containsPos(DANAEMouse))
 		return false;
 	
 	Vec2s s = DRAGINTER->m_inventorySize;
@@ -594,7 +594,7 @@ void TakeFromInventoryPlayer(Entity * io, const Vec2s &pos) {
 	
 	Vec2i iPos = Vec2i(anchorPos);
 	
-	if(playerInventoryContainsPos(pos)) {
+	if(g_playerInventoryHud.containsPos(pos)) {
 		if(!GInput->actionPressed(CONTROLS_CUST_STEALTHMODE)) {
 			if((io->ioflags & IO_ITEM) && io->_itemdata->count > 1) {
 				if(io->_itemdata->count - 1 > 0) {
