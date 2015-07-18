@@ -412,16 +412,16 @@ public:
 
 				playerInventory.optimize();
 
-				flDelay=0;
-			} else if((eeMouseDown1()) || flDelay) {
+				flDelay = 0;
+			} else if(eeMouseDown1() || flDelay) {
 				if(!flDelay) {
-					flDelay=arxtime.get_updated();
+					flDelay = arxtime.get_updated();
 					return;
 				} else {
-					if((arxtime.get_updated() - flDelay) < 300) {
+					if(arxtime.get_updated() - flDelay < 300) {
 						return;
 					} else {
-						flDelay=0;
+						flDelay = 0;
 					}
 				}
 
