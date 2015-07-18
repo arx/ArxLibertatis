@@ -1134,7 +1134,6 @@ static void ARX_INTERFACE_ManageOpenedBook_Stats()
 	
 	std::stringstream ss3;
 	ss3 << std::setw(3) << std::setprecision(0) << std::fixed << player.m_attributeFull.strength;
-	tex = ss3.str();
 	
 	Color color;
 	if(player.m_attributeMod.strength < 0.f)
@@ -1149,7 +1148,7 @@ static void ARX_INTERFACE_ManageOpenedBook_Stats()
 			color = Color::red;
 	}
 	
-	DrawBookTextCenter(hFontInBook, pos, tex, color);
+	DrawBookTextCenter(hFontInBook, pos, ss3.str(), color);
 	}
 	
 	{
@@ -1157,7 +1156,6 @@ static void ARX_INTERFACE_ManageOpenedBook_Stats()
 	
 	std::stringstream ss3;
 	ss3 << std::setw(3) << std::setprecision(0) << std::fixed << player.m_attributeFull.mind;
-	tex = ss3.str();
 	
 	Color color;
 	if(player.m_attributeMod.mind < 0.f)
@@ -1172,7 +1170,7 @@ static void ARX_INTERFACE_ManageOpenedBook_Stats()
 			color = Color::red;
 	}
 	
-	DrawBookTextCenter(hFontInBook, pos, tex, color);
+	DrawBookTextCenter(hFontInBook, pos, ss3.str(), color);
 	}
 	
 	{
@@ -1180,7 +1178,6 @@ static void ARX_INTERFACE_ManageOpenedBook_Stats()
 	
 	std::stringstream ss3;
 	ss3 << std::setw(3) << std::setprecision(0) << std::fixed << player.m_attributeFull.dexterity;
-	tex = ss3.str();
 	
 	Color color;
 	if(player.m_attributeMod.dexterity < 0.f)
@@ -1195,7 +1192,7 @@ static void ARX_INTERFACE_ManageOpenedBook_Stats()
 			color = Color::red;
 	}
 	
-	DrawBookTextCenter(hFontInBook, pos, tex, color);
+	DrawBookTextCenter(hFontInBook, pos, ss3.str(), color);
 	}
 	
 	{
@@ -1203,7 +1200,6 @@ static void ARX_INTERFACE_ManageOpenedBook_Stats()
 	
 	std::stringstream ss3;
 	ss3 << std::setw(3) << std::setprecision(0) << std::fixed << player.m_attributeFull.constitution;
-	tex = ss3.str();
 	
 	Color color;
 	if(player.m_attributeMod.constitution < 0.f)
@@ -1218,7 +1214,7 @@ static void ARX_INTERFACE_ManageOpenedBook_Stats()
 			color = Color::red;
 	}
 	
-	DrawBookTextCenter(hFontInBook, pos, tex, color);
+	DrawBookTextCenter(hFontInBook, pos, ss3.str(), color);
 	}
 	
 	// Player Skills
@@ -1227,7 +1223,6 @@ static void ARX_INTERFACE_ManageOpenedBook_Stats()
 	
 	std::stringstream ss3;
 	ss3 << std::setw(3) << std::setprecision(0) << std::fixed << player.m_skillFull.stealth;
-	tex = ss3.str();
 	
 	Color color;
 	if (player.m_skillMod.stealth < 0.f)
@@ -1242,7 +1237,7 @@ static void ARX_INTERFACE_ManageOpenedBook_Stats()
 			color = Color::red;
 	}
 	
-	DrawBookTextCenter(hFontInBook, pos, tex, color);
+	DrawBookTextCenter(hFontInBook, pos, ss3.str(), color);
 	}
 	
 	{
@@ -1250,7 +1245,6 @@ static void ARX_INTERFACE_ManageOpenedBook_Stats()
 	
 	std::stringstream ss3;
 	ss3 << std::setw(3) << std::setprecision(0) << std::fixed << player.m_skillFull.mecanism;
-	tex = ss3.str();
 	
 	Color color;
 	if (player.m_skillMod.mecanism < 0.f)
@@ -1265,7 +1259,7 @@ static void ARX_INTERFACE_ManageOpenedBook_Stats()
 			color = Color::red;
 	}
 	
-	DrawBookTextCenter(hFontInBook, pos, tex, color);
+	DrawBookTextCenter(hFontInBook, pos, ss3.str(), color);
 	}
 	
 	{
@@ -1273,7 +1267,6 @@ static void ARX_INTERFACE_ManageOpenedBook_Stats()
 	
 	std::stringstream ss3;
 	ss3 << std::setw(3) << std::setprecision(0) << std::fixed << player.m_skillFull.intuition;
-	tex = ss3.str();
 	
 	Color color;
 	if (player.m_skillMod.intuition < 0.f)
@@ -1288,7 +1281,7 @@ static void ARX_INTERFACE_ManageOpenedBook_Stats()
 			color = Color::red;
 	}
 
-	DrawBookTextCenter(hFontInBook, pos, tex, color);
+	DrawBookTextCenter(hFontInBook, pos, ss3.str(), color);
 	}
 	
 	{
@@ -1296,7 +1289,6 @@ static void ARX_INTERFACE_ManageOpenedBook_Stats()
 	
 	std::stringstream ss3;
 	ss3 << std::setw(3) << std::setprecision(0) << std::fixed << player.m_skillFull.etheralLink;
-	tex = ss3.str();
 	
 	Color color;
 	if(player.m_skillMod.etheralLink < 0.f)
@@ -1311,7 +1303,7 @@ static void ARX_INTERFACE_ManageOpenedBook_Stats()
 			color = Color::red;
 	}
 
-	DrawBookTextCenter(hFontInBook, pos, tex, color);
+	DrawBookTextCenter(hFontInBook, pos, ss3.str(), color);
 	}
 	
 	{
@@ -1319,7 +1311,6 @@ static void ARX_INTERFACE_ManageOpenedBook_Stats()
 	
 	std::stringstream ss3;
 	ss3 << std::setw(3) << std::setprecision(0) << std::fixed << player.m_skillFull.objectKnowledge;
-	tex = ss3.str();
 	
 	Color color;
 	if(player.m_skillMod.objectKnowledge < 0.f)
@@ -1334,7 +1325,7 @@ static void ARX_INTERFACE_ManageOpenedBook_Stats()
 			color = Color::red;
 	}
 	
-	DrawBookTextCenter(hFontInBook, pos, tex, color);
+	DrawBookTextCenter(hFontInBook, pos, ss3.str(), color);
 	}
 	
 	{
@@ -1342,7 +1333,6 @@ static void ARX_INTERFACE_ManageOpenedBook_Stats()
 	
 	std::stringstream ss3;
 	ss3 << std::setw(3) << std::setprecision(0) << std::fixed << player.m_skillFull.casting;
-	tex = ss3.str();
 	
 	Color color;
 	if (player.m_skillMod.casting < 0.f)
@@ -1357,7 +1347,7 @@ static void ARX_INTERFACE_ManageOpenedBook_Stats()
 			color = Color::red;
 	}
 
-	DrawBookTextCenter(hFontInBook, pos, tex, color);
+	DrawBookTextCenter(hFontInBook, pos, ss3.str(), color);
 	}
 	
 	{
@@ -1365,7 +1355,6 @@ static void ARX_INTERFACE_ManageOpenedBook_Stats()
 	
 	std::stringstream ss3;
 	ss3 << std::setw(3) << std::setprecision(0) << std::fixed << player.m_skillFull.closeCombat;
-	tex = ss3.str();
 	
 	Color color;
 	if (player.m_skillMod.closeCombat < 0.f)
@@ -1380,7 +1369,7 @@ static void ARX_INTERFACE_ManageOpenedBook_Stats()
 			color = Color::red;
 	}
 
-	DrawBookTextCenter(hFontInBook, pos, tex, color);
+	DrawBookTextCenter(hFontInBook, pos, ss3.str(), color);
 	}
 
 	{
@@ -1388,7 +1377,6 @@ static void ARX_INTERFACE_ManageOpenedBook_Stats()
 	
 	std::stringstream ss3;
 	ss3 << std::setw(3) << std::setprecision(0) << std::fixed << player.m_skillFull.projectile;
-	tex = ss3.str();
 	
 	Color color;
 	if(player.m_skillMod.projectile < 0.f)
@@ -1403,7 +1391,7 @@ static void ARX_INTERFACE_ManageOpenedBook_Stats()
 			color = Color::red;
 	}
 
-	DrawBookTextCenter(hFontInBook, pos, tex, color);
+	DrawBookTextCenter(hFontInBook, pos, ss3.str(), color);
 	}
 	
 	{
@@ -1411,7 +1399,6 @@ static void ARX_INTERFACE_ManageOpenedBook_Stats()
 	
 	std::stringstream ss3;
 	ss3 << std::setw(3) << std::setprecision(0) << std::fixed << player.m_skillFull.defense;
-	tex = ss3.str();
 	
 	Color color;
 	if (player.m_skillMod.defense < 0.f)
@@ -1426,7 +1413,7 @@ static void ARX_INTERFACE_ManageOpenedBook_Stats()
 			color = Color::red;
 	}
 	
-	DrawBookTextCenter(hFontInBook, pos, tex, color);
+	DrawBookTextCenter(hFontInBook, pos, ss3.str(), color);
 	}
 	
 	// Secondary Attributes
@@ -1435,7 +1422,6 @@ static void ARX_INTERFACE_ManageOpenedBook_Stats()
 	
 	std::stringstream ss4;
 	ss4 << F2L_RoundUp(player.Full_maxlife);
-	tex = ss4.str();
 	
 	Color color;
 	if(player.Full_maxlife < player.lifePool.max) {
@@ -1446,7 +1432,7 @@ static void ARX_INTERFACE_ManageOpenedBook_Stats()
 		color = Color::black;
 	}
 	
-	DrawBookTextCenter(hFontInBook, pos, tex, color);
+	DrawBookTextCenter(hFontInBook, pos, ss4.str(), color);
 	}
 	
 	{
@@ -1454,7 +1440,6 @@ static void ARX_INTERFACE_ManageOpenedBook_Stats()
 	
 	std::stringstream ss4;
 	ss4 << F2L_RoundUp(player.Full_maxmana);
-	tex = ss4.str();
 	
 	Color color;
 	if(player.Full_maxmana < player.manaPool.max) {
@@ -1465,7 +1450,7 @@ static void ARX_INTERFACE_ManageOpenedBook_Stats()
 		color = Color::black;
 	}
 	
-	DrawBookTextCenter(hFontInBook, pos, tex, color);
+	DrawBookTextCenter(hFontInBook, pos, ss4.str(), color);
 	}
 	
 	{
@@ -1473,7 +1458,6 @@ static void ARX_INTERFACE_ManageOpenedBook_Stats()
 	
 	std::stringstream ss4;
 	ss4 << F2L_RoundUp(player.m_miscFull.damages);
-	tex = ss4.str();
 	
 	Color color;
 	if (player.m_miscMod.damages < 0.f)
@@ -1483,7 +1467,7 @@ static void ARX_INTERFACE_ManageOpenedBook_Stats()
 	else
 		color = Color::black;
 	
-	DrawBookTextCenter(hFontInBook, pos, tex, color);
+	DrawBookTextCenter(hFontInBook, pos, ss4.str(), color);
 	}
 	
 	{
@@ -1491,7 +1475,6 @@ static void ARX_INTERFACE_ManageOpenedBook_Stats()
 	
 	std::stringstream ss4;
 	ss4 << F2L_RoundUp(player.m_miscFull.armorClass);
-	tex = ss4.str();
 	
 	Color color;
 	if (player.m_miscMod.armorClass < 0.f)
@@ -1501,7 +1484,7 @@ static void ARX_INTERFACE_ManageOpenedBook_Stats()
 	else
 		color = Color::black;
 	
-	DrawBookTextCenter(hFontInBook, pos, tex, color);
+	DrawBookTextCenter(hFontInBook, pos, ss4.str(), color);
 	}
 	
 	{
@@ -1509,7 +1492,6 @@ static void ARX_INTERFACE_ManageOpenedBook_Stats()
 	
 	std::stringstream ss4;
 	ss4 << std::setw(3) << std::setprecision(0) << F2L_RoundUp( player.m_miscFull.resistMagic );
-	tex = ss4.str();
 	
 	Color color;
 	if (player.m_miscMod.resistMagic < 0.f)
@@ -1519,7 +1501,7 @@ static void ARX_INTERFACE_ManageOpenedBook_Stats()
 	else
 		color = Color::black;
 	
-	DrawBookTextCenter(hFontInBook, pos, tex, color);
+	DrawBookTextCenter(hFontInBook, pos, ss4.str(), color);
 	}
 	
 	{
@@ -1527,7 +1509,6 @@ static void ARX_INTERFACE_ManageOpenedBook_Stats()
 	
 	std::stringstream ss4;
 	ss4 << std::setw(3) << std::setprecision(0) << F2L_RoundUp( player.m_miscFull.resistPoison );
-	tex = ss4.str();
 	
 	Color color;
 	if (player.m_miscMod.resistPoison<0.f)
@@ -1537,7 +1518,7 @@ static void ARX_INTERFACE_ManageOpenedBook_Stats()
 	else
 		color = Color::black;
 	
-	DrawBookTextCenter(hFontInBook, pos, tex, color);
+	DrawBookTextCenter(hFontInBook, pos, ss4.str(), color);
 	}
 	
 	RenderBookPlayerCharacter();	
