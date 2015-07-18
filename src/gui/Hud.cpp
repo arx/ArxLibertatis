@@ -1660,7 +1660,7 @@ void hudElementsInit() {
 	levelUpIconGui.init();
 	stealIconGui.init();
 	secondaryInventory.init();
-	playerInventoryInit();
+	g_playerInventoryHud.init();
 	
 	BasicInventorySkin = TextureContainer::LoadUI("graph/interface/inventory/ingame_inventory");
 	arx_assert(BasicInventorySkin);
@@ -1709,7 +1709,7 @@ void ArxGame::drawAllInterface() {
 	hitStrengthGauge.update();
 	
 	secondaryInventory.update();
-	playerInventoryUpdate();
+	g_playerInventoryHud.update();
 	mecanismIcon.update();
 	screenArrows.update();
 	
@@ -1745,7 +1745,7 @@ void ArxGame::drawAllInterface() {
 	}	
 	
 	secondaryInventory.draw();
-	playerInventoryDraw();
+	g_playerInventoryHud.draw();
 	
 	if(FlyingOverIO 
 		&& !(player.Interface & INTER_COMBATMODE)

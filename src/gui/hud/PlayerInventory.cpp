@@ -39,20 +39,8 @@ short g_currentInventoryBag = 0;
 
 extern PlayerInterfaceFlags lOldInterface;
 
-class PlayerInventoryHud {
-private:
-	TextureContainer * m_heroInventory;
-	TextureContainer * m_heroInventoryLink;
-	TextureContainer * m_heroInventoryUp;
-	TextureContainer * m_heroInventoryDown;
-	
-	Vec2f m_pos;
-	
-	Vec2f m_slotSize;
-	Vec2f m_slotSpacing;
-	
-public:
-	void init() {
+
+	void PlayerInventoryHud::init() {
 		m_heroInventory = TextureContainer::LoadUI("graph/interface/inventory/hero_inventory");
 		m_heroInventoryLink = TextureContainer::LoadUI("graph/interface/inventory/hero_inventory_link");
 		m_heroInventoryUp = TextureContainer::LoadUI("graph/interface/inventory/scroll_up");
@@ -63,7 +51,7 @@ public:
 		arx_assert(m_heroInventoryDown);
 	}
 	
-	bool updateInput() {
+	bool PlayerInventoryHud::updateInput() {
 		Vec2f anchorPos = getInventoryGuiAnchorPosition();
 		
 		Vec2f pos = anchorPos + Vec2f(INTERFACE_RATIO_DWORD(m_heroInventory->m_dwWidth) - INTERFACE_RATIO(32 + 3), INTERFACE_RATIO(- 3 + 25));
@@ -101,7 +89,7 @@ public:
 		return bQuitCombine;
 	}
 	
-	void update() {
+	void PlayerInventoryHud::update() {
 		if(player.Interface & INTER_INVENTORY) {
 			if((player.Interface & INTER_COMBATMODE) || player.doingmagic >= 2) {
 				long t = Original_framedelay * (1.f/5) + 2;
@@ -164,7 +152,7 @@ public:
 		}
 	}
 	
-	void CalculateInventoryCoordinates() {
+	void PlayerInventoryHud::CalculateInventoryCoordinates() {
 		
 		m_slotSize = Vec2f(32, 32);
 		m_slotSpacing = Vec2f(7, 6);
@@ -176,7 +164,7 @@ public:
 	}
 	
 	//-----------------------------------------------------------------------------
-	void ARX_INTERFACE_DrawInventory(size_t bag, int _iX=0, int _iY=0)
+	void PlayerInventoryHud::ARX_INTERFACE_DrawInventory(size_t bag, int _iX, int _iY)
 	{
 		fDecPulse += framedelay * 0.5f;
 		
@@ -238,7 +226,7 @@ public:
 		}
 	}
 	
-	void draw() {
+	void PlayerInventoryHud::draw() {
 		if(player.Interface & INTER_INVENTORY) {		
 			if(player.bag) {
 				ARX_INTERFACE_DrawInventory(g_currentInventoryBag);
@@ -320,26 +308,8 @@ public:
 			}
 		}
 	}
-};
 
-static PlayerInventoryHud g_playerInventoryHud;
-
-
-void playerInventoryInit() {
-	g_playerInventoryHud.init();
-}
-
-void playerInventoryUpdate() {
-	g_playerInventoryHud.update();
-}
-
-bool playerInventoryUpdateInput() {
-	return g_playerInventoryHud.updateInput();
-}
-
-void playerInventoryDraw() {
-	g_playerInventoryHud.draw();
-}
+PlayerInventoryHud g_playerInventoryHud;
 
 
 void playerInventoryNextBag() {

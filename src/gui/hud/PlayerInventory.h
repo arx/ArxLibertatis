@@ -23,15 +23,36 @@
 #include "math/Vector.h"
 
 class Entity;
+class TextureContainer;
 
 extern bool bInventorySwitch;
 extern float fDecPulse;
 extern short g_currentInventoryBag;
 
-void playerInventoryInit();
-void playerInventoryUpdate();
-bool playerInventoryUpdateInput();
-void playerInventoryDraw();
+class PlayerInventoryHud {
+private:
+	TextureContainer * m_heroInventory;
+	TextureContainer * m_heroInventoryLink;
+	TextureContainer * m_heroInventoryUp;
+	TextureContainer * m_heroInventoryDown;
+	
+	Vec2f m_pos;
+	
+	Vec2f m_slotSize;
+	Vec2f m_slotSpacing;
+	
+public:
+	void init();
+	void update();
+	bool updateInput();
+	void draw();
+	
+private:
+	void CalculateInventoryCoordinates();
+	void ARX_INTERFACE_DrawInventory(size_t bag, int _iX=0, int _iY=0);
+};
+
+extern PlayerInventoryHud g_playerInventoryHud;
 
 void playerInventoryNextBag();
 void playerInventoryPreviousBag();
