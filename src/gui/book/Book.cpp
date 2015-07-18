@@ -1130,6 +1130,7 @@ static void ARX_INTERFACE_ManageOpenedBook_Stats()
 
 	//------------------------------
 	
+	{
 	std::stringstream ss3;
 	ss3 << std::setw(3) << std::setprecision(0) << std::fixed << player.m_attributeFull.strength;
 	tex = ss3.str();
@@ -1147,9 +1148,11 @@ static void ARX_INTERFACE_ManageOpenedBook_Stats()
 	}
 	
 	DrawBookTextCenter(hFontInBook, Vec2f(391, 129), tex, color);
+	}
 	
-	ss3.str(""); // clear the stream
-	ss3 << player.m_attributeFull.mind;
+	{
+	std::stringstream ss3;
+	ss3 << std::setw(3) << std::setprecision(0) << std::fixed << player.m_attributeFull.mind;
 	tex = ss3.str();
 	
 	if(player.m_attributeMod.mind < 0.f)
@@ -1165,9 +1168,11 @@ static void ARX_INTERFACE_ManageOpenedBook_Stats()
 	}
 	
 	DrawBookTextCenter(hFontInBook, Vec2f(440, 129), tex, color);
+	}
 	
-	ss3.str("");
-	ss3 << player.m_attributeFull.dexterity;
+	{
+	std::stringstream ss3;
+	ss3 << std::setw(3) << std::setprecision(0) << std::fixed << player.m_attributeFull.dexterity;
 	tex = ss3.str();
 
 	if(player.m_attributeMod.dexterity < 0.f)
@@ -1183,8 +1188,11 @@ static void ARX_INTERFACE_ManageOpenedBook_Stats()
 	}
 	
 	DrawBookTextCenter(hFontInBook, Vec2f(490, 129), tex, color);
-	ss3.str("");
-	ss3 << player.m_attributeFull.constitution;
+	}
+	
+	{
+	std::stringstream ss3;
+	ss3 << std::setw(3) << std::setprecision(0) << std::fixed << player.m_attributeFull.constitution;
 	tex = ss3.str();
 	
 	if(player.m_attributeMod.constitution < 0.f)
@@ -1200,10 +1208,12 @@ static void ARX_INTERFACE_ManageOpenedBook_Stats()
 	}
 	
 	DrawBookTextCenter(hFontInBook, Vec2f(538, 129), tex, color);
+	}
 	
 	// Player Skills
-	ss3.str("");
-	ss3 << player.m_skillFull.stealth;
+	{
+	std::stringstream ss3;
+	ss3 << std::setw(3) << std::setprecision(0) << std::fixed << player.m_skillFull.stealth;
 	tex = ss3.str();
 	
 	if (player.m_skillMod.stealth < 0.f)
@@ -1219,9 +1229,11 @@ static void ARX_INTERFACE_ManageOpenedBook_Stats()
 	}
 	
 	DrawBookTextCenter(hFontInBook, Vec2f(405, 210), tex, color);
+	}
 	
-	ss3.str("");
-	ss3 << player.m_skillFull.mecanism;
+	{
+	std::stringstream ss3;
+	ss3 << std::setw(3) << std::setprecision(0) << std::fixed << player.m_skillFull.mecanism;
 	tex = ss3.str();
 	
 	if (player.m_skillMod.mecanism < 0.f)
@@ -1255,9 +1267,11 @@ static void ARX_INTERFACE_ManageOpenedBook_Stats()
 	}
 
 	DrawBookTextCenter(hFontInBook, Vec2f(533, 210), tex, color);
+	}
 	
-	ss3.str("");
-	ss3 << player.m_skillFull.etheralLink;
+	{
+	std::stringstream ss3;
+	ss3 << std::setw(3) << std::setprecision(0) << std::fixed << player.m_skillFull.etheralLink;
 	tex = ss3.str();
 
 	if(player.m_skillMod.etheralLink < 0.f)
@@ -1273,9 +1287,11 @@ static void ARX_INTERFACE_ManageOpenedBook_Stats()
 	}
 
 	DrawBookTextCenter(hFontInBook, Vec2f(405, 265), tex, color);
+	}
 	
-	ss3.str("");
-	ss3 << player.m_skillFull.objectKnowledge;
+	{
+	std::stringstream ss3;
+	ss3 << std::setw(3) << std::setprecision(0) << std::fixed << player.m_skillFull.objectKnowledge;
 	tex = ss3.str();
 
 	if(player.m_skillMod.objectKnowledge < 0.f)
@@ -1291,9 +1307,11 @@ static void ARX_INTERFACE_ManageOpenedBook_Stats()
 	}
 	
 	DrawBookTextCenter(hFontInBook, Vec2f(469, 265), tex, color);
+	}
 	
-	ss3.str("");
-	ss3 << player.m_skillFull.casting;
+	{
+	std::stringstream ss3;
+	ss3 << std::setw(3) << std::setprecision(0) << std::fixed << player.m_skillFull.casting;
 	tex = ss3.str();
 	
 	if (player.m_skillMod.casting < 0.f)
@@ -1309,9 +1327,11 @@ static void ARX_INTERFACE_ManageOpenedBook_Stats()
 	}
 
 	DrawBookTextCenter(hFontInBook, Vec2f(533, 265), tex, color);
+	}
 	
-	ss3.str("");
-	ss3 << player.m_skillFull.closeCombat;
+	{
+	std::stringstream ss3;
+	ss3 << std::setw(3) << std::setprecision(0) << std::fixed << player.m_skillFull.closeCombat;
 	tex = ss3.str();
 
 	if (player.m_skillMod.closeCombat < 0.f)
@@ -1327,10 +1347,11 @@ static void ARX_INTERFACE_ManageOpenedBook_Stats()
 	}
 
 	DrawBookTextCenter(hFontInBook, Vec2f(405, 319), tex, color);
+	}
 
-	
-	ss3.str("");
-	ss3 << player.m_skillFull.projectile;
+	{
+	std::stringstream ss3;
+	ss3 << std::setw(3) << std::setprecision(0) << std::fixed << player.m_skillFull.projectile;
 	tex = ss3.str();
 
 	if(player.m_skillMod.projectile < 0.f)
@@ -1346,9 +1367,11 @@ static void ARX_INTERFACE_ManageOpenedBook_Stats()
 	}
 
 	DrawBookTextCenter(hFontInBook, Vec2f(469, 319), tex, color);
+	}
 	
-	ss3.str("");
-	ss3 << player.m_skillFull.defense;
+	{
+	std::stringstream ss3;
+	ss3 << std::setw(3) << std::setprecision(0) << std::fixed << player.m_skillFull.defense;
 	tex = ss3.str();
 
 	if (player.m_skillMod.defense < 0.f)
@@ -1364,6 +1387,7 @@ static void ARX_INTERFACE_ManageOpenedBook_Stats()
 	}
 	
 	DrawBookTextCenter(hFontInBook, Vec2f(533, 319), tex, color);
+	}
 	
 	// Secondary Attributes
 	std::stringstream ss4;
