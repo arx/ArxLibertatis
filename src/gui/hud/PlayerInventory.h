@@ -47,15 +47,15 @@ public:
 	bool updateInput();
 	void draw();
 	
+	void nextBag();
+	void previousBag();
+	
 private:
 	void CalculateInventoryCoordinates();
 	void ARX_INTERFACE_DrawInventory(size_t bag, int _iX=0, int _iY=0);
 };
 
 extern PlayerInventoryHud g_playerInventoryHud;
-
-void playerInventoryNextBag();
-void playerInventoryPreviousBag();
 
 bool playerInventoryContainsPos(const Vec2s & pos);
 Entity * playerInventoryGetObj(const Vec2s & pos);

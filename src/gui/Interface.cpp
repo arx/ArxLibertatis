@@ -1260,11 +1260,11 @@ void ArxGame::managePlayerControls() {
 				openBookPage(prevBookPage());
 			}
 		} else if(playerInventoryContainsPos(DANAEMouse)) {
-			playerInventoryPreviousBag();
+			g_playerInventoryHud.previousBag();
 		} else if(player.Interface & INTER_MAP) {
 			openBookPage(prevBookPage());
 		} else {
-			playerInventoryPreviousBag();
+			g_playerInventoryHud.previousBag();
 		}
 	}
 
@@ -1274,11 +1274,11 @@ void ArxGame::managePlayerControls() {
 				openBookPage(nextBookPage());
 			}
 		} else if(playerInventoryContainsPos(DANAEMouse)) {
-			playerInventoryNextBag();
+			g_playerInventoryHud.nextBag();
 		} else if(player.Interface & INTER_MAP) {
 			openBookPage(nextBookPage());
 		} else {
-			playerInventoryNextBag();
+			g_playerInventoryHud.nextBag();
 		}
 	}
 	

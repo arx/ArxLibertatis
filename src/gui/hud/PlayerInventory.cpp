@@ -249,7 +249,7 @@ extern PlayerInterfaceFlags lOldInterface;
 						SpecialCursor=CURSOR_INTERACTION_ON;
 						
 						if(eeMouseDown1() || (eeMouseUp1() && DRAGINTER)) {
-							playerInventoryPreviousBag();
+							previousBag();
 						}
 					}
 				}
@@ -269,7 +269,7 @@ extern PlayerInterfaceFlags lOldInterface;
 						SpecialCursor=CURSOR_INTERACTION_ON;
 						
 						if(eeMouseDown1() || (eeMouseUp1() && DRAGINTER)) {
-							playerInventoryNextBag();
+							nextBag();
 						}
 					}
 				}
@@ -309,10 +309,7 @@ extern PlayerInterfaceFlags lOldInterface;
 		}
 	}
 
-PlayerInventoryHud g_playerInventoryHud;
-
-
-void playerInventoryNextBag() {
+void PlayerInventoryHud::nextBag() {
 	
 	if((player.Interface & INTER_INVENTORY)) {
 		if(player.bag) {
@@ -324,7 +321,7 @@ void playerInventoryNextBag() {
 	}
 }
 
-void playerInventoryPreviousBag() {
+void PlayerInventoryHud::previousBag() {
 	
 	if((player.Interface & INTER_INVENTORY)) {
 		if(player.bag) {
@@ -335,6 +332,8 @@ void playerInventoryPreviousBag() {
 		}
 	}
 }
+
+PlayerInventoryHud g_playerInventoryHud;
 
 extern Vec2s DANAEMouse;
 
