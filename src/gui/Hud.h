@@ -211,6 +211,23 @@ public:
 	void draw();
 };
 
+class ManaGauge : public HudItem {
+private:
+	Vec2f m_size;
+	
+	TextureContainer * m_emptyTex;
+	TextureContainer * m_filledTex;
+	float m_amount;
+	
+public:
+	ManaGauge();
+	
+	void init();
+	void update(const Rectf & parent);
+	void updateInput(const Vec2f & mousePos);
+	void draw();
+};
+
 class HudRoot : public HudItem {
 public:
 	void setScale(float scale);
