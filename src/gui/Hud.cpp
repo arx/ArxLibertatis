@@ -1275,19 +1275,8 @@ void ActiveSpellsGui::ManageSpellIcon(SpellBase & spell, float intensity, bool f
 
 ActiveSpellsGui activeSpellsGui = ActiveSpellsGui();
 
-/*!
- * \brief Damaged Equipment Drawing
- */
-class DamagedEquipmentGui : public HudItem {
-private:
-	Vec2f m_size;
-	
-	TextureContainer * iconequip[5];
-	
-	Color m_colors[5];
-	
-public:
-	DamagedEquipmentGui()
+
+	DamagedEquipmentGui::DamagedEquipmentGui()
 		: HudItem()
 		, m_size(64.f, 64.f)
 	{
@@ -1298,7 +1287,7 @@ public:
 		iconequip[4] = NULL;
 	}
 	
-	void init() {
+	void DamagedEquipmentGui::init() {
 		iconequip[0] = TextureContainer::LoadUI("graph/interface/icons/equipment_sword");
 		iconequip[1] = TextureContainer::LoadUI("graph/interface/icons/equipment_shield");
 		iconequip[2] = TextureContainer::LoadUI("graph/interface/icons/equipment_helm");
@@ -1311,11 +1300,11 @@ public:
 		arx_assert(iconequip[4]);
 	}
 	
-	void updateRect(const Rectf & parent) {
+	void DamagedEquipmentGui::updateRect(const Rectf & parent) {
 		m_rect = createChild(parent, Anchor_BottomRight, m_size * m_scale, Anchor_BottomLeft);
 	}
 	
-	void update() {
+	void DamagedEquipmentGui::update() {
 		if(cinematicBorder.isActive() || BLOCK_PLAYER_CONTROLS)
 			return;
 	
@@ -1345,7 +1334,7 @@ public:
 		}
 	}
 	
-	void draw() {
+	void DamagedEquipmentGui::draw() {
 		
 		GRenderer->SetRenderState(Renderer::AlphaBlending, true);
 		GRenderer->SetBlendFunc(Renderer::BlendOne, Renderer::BlendOne);
@@ -1363,7 +1352,7 @@ public:
 		
 		GRenderer->SetRenderState(Renderer::AlphaBlending, false);
 	}
-};
+
 DamagedEquipmentGui damagedEquipmentGui;
 
 extern float CURRENT_PLAYER_COLOR;
