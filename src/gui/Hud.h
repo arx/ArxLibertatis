@@ -378,6 +378,11 @@ public:
 	
 	HitStrengthGauge hitStrengthGauge;
 	BookIconGui bookIconGui;
+	
+private:
+	BackpackIconGui backpackIconGui;
+	StealIconGui stealIconGui;
+	LevelUpIconGui levelUpIconGui;
 };
 
 extern HudRoot g_hudRoot;

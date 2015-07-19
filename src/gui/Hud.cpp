@@ -369,9 +369,6 @@ void BackpackIconGui::draw() {
 }
 
 
-static BackpackIconGui backpackIconGui;
-
-
 void StealIconGui::init() {
 	m_tex = TextureContainer::LoadUI("graph/interface/icons/steal");
 	arx_assert(m_tex);
@@ -418,8 +415,6 @@ void StealIconGui::draw() {
 	HudIconBase::draw();
 }
 
-static StealIconGui stealIconGui;
-
 
 LevelUpIconGui::LevelUpIconGui()
 	: HudIconBase()
@@ -462,8 +457,6 @@ void LevelUpIconGui::draw() {
 	
 	HudIconBase::draw();
 }
-
-LevelUpIconGui levelUpIconGui;
 
 
 PurseIconGui::PurseIconGui()
