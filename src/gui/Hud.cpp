@@ -707,49 +707,49 @@ void ChangeLevelIconGui::draw() {
 ChangeLevelIconGui changeLevelIconGui;
 
 
-	QuickSaveIconGui::QuickSaveIconGui()
-		: QUICK_SAVE_ICON_TIME(1000)
-		, g_quickSaveIconTime(0)
-	{}
-	
-	void QuickSaveIconGui::show() {
-		g_quickSaveIconTime = QUICK_SAVE_ICON_TIME;
-	}
-	
-	void QuickSaveIconGui::hide() {
-		g_quickSaveIconTime = 0;
-	}
-	
-	void QuickSaveIconGui::update() {
-		if(g_quickSaveIconTime) {
-			if(g_quickSaveIconTime > unsigned(framedelay)) {
-				g_quickSaveIconTime -= unsigned(framedelay);
-			} else {
-				g_quickSaveIconTime = 0;
-			}
+QuickSaveIconGui::QuickSaveIconGui()
+	: QUICK_SAVE_ICON_TIME(1000)
+	, g_quickSaveIconTime(0)
+{}
+
+void QuickSaveIconGui::show() {
+	g_quickSaveIconTime = QUICK_SAVE_ICON_TIME;
+}
+
+void QuickSaveIconGui::hide() {
+	g_quickSaveIconTime = 0;
+}
+
+void QuickSaveIconGui::update() {
+	if(g_quickSaveIconTime) {
+		if(g_quickSaveIconTime > unsigned(framedelay)) {
+			g_quickSaveIconTime -= unsigned(framedelay);
+		} else {
+			g_quickSaveIconTime = 0;
 		}
 	}
-	
-	void QuickSaveIconGui::draw() {
-		if(!g_quickSaveIconTime) {
-			return;
-		}
-		
-		// Flash the icon twice, starting at about 0.7 opacity
-		float step = 1.f - float(g_quickSaveIconTime) * (1.f / QUICK_SAVE_ICON_TIME);
-		float alpha = std::min(1.f, 0.6f * (std::sin(step * (7.f / 2.f * PI)) + 1.f));
-		
-		TextureContainer * tex = TextureContainer::LoadUI("graph/interface/icons/menu_main_save");
-		arx_assert(tex);
-		
-		GRenderer->SetRenderState(Renderer::AlphaBlending, true);
-		GRenderer->SetBlendFunc(Renderer::BlendSrcColor, Renderer::BlendOne);
-		
-		Vec2f size = Vec2f(tex->size());
-		EERIEDrawBitmap2(Rectf(Vec2f(0, 0), size.x, size.y), 0.f, tex, Color::gray(alpha));
-		
-		GRenderer->SetRenderState(Renderer::AlphaBlending, false);
+}
+
+void QuickSaveIconGui::draw() {
+	if(!g_quickSaveIconTime) {
+		return;
 	}
+	
+	// Flash the icon twice, starting at about 0.7 opacity
+	float step = 1.f - float(g_quickSaveIconTime) * (1.f / QUICK_SAVE_ICON_TIME);
+	float alpha = std::min(1.f, 0.6f * (std::sin(step * (7.f / 2.f * PI)) + 1.f));
+	
+	TextureContainer * tex = TextureContainer::LoadUI("graph/interface/icons/menu_main_save");
+	arx_assert(tex);
+	
+	GRenderer->SetRenderState(Renderer::AlphaBlending, true);
+	GRenderer->SetBlendFunc(Renderer::BlendSrcColor, Renderer::BlendOne);
+	
+	Vec2f size = Vec2f(tex->size());
+	EERIEDrawBitmap2(Rectf(Vec2f(0, 0), size.x, size.y), 0.f, tex, Color::gray(alpha));
+	
+	GRenderer->SetRenderState(Renderer::AlphaBlending, false);
+}
 
 
 QuickSaveIconGui quickSaveIconGui = QuickSaveIconGui();
