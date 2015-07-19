@@ -879,8 +879,6 @@ void PutInInventory() {
 	if(!DRAGINTER || (DRAGINTER->ioflags & IO_MOVABLE))
 		return;
 	
-	Vec2s s = DRAGINTER->m_inventorySize;
-	
 	// First Look for Identical Item...
 	if(SecondaryInventory && InSecondaryInventoryPos(DANAEMouse)) {
 		Entity * io = SecondaryInventory->io;
@@ -925,6 +923,8 @@ void PutInInventory() {
 		t.y = DANAEMouse.y - SHORT_INTERFACE_RATIO(13);
 		t.x = t.x / SHORT_INTERFACE_RATIO(32);
 		t.y = t.y / SHORT_INTERFACE_RATIO(32);
+		
+		Vec2s s = DRAGINTER->m_inventorySize;
 		
 		if(t.x <= SecondaryInventory->m_size.x - s.x && t.y <= SecondaryInventory->m_size.y - s.y) {
 			
