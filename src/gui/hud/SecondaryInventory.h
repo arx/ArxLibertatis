@@ -39,7 +39,7 @@ public:
 	void draw();
 };
 
-extern SecondaryInventoryHud secondaryInventory;
+extern SecondaryInventoryHud g_secondaryInventoryHud;
 
 void manageEditorControlsHUD2();
 

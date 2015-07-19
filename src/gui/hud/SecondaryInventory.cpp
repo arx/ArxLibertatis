@@ -39,7 +39,7 @@ float InventoryDir = 0; // 0 stable, 1 to right, -1 to left
 TextureContainer * BasicInventorySkin = NULL;
 float InventoryX = -60.f;
 
-SecondaryInventoryHud secondaryInventory;
+SecondaryInventoryHud g_secondaryInventoryHud;
 
 
 
