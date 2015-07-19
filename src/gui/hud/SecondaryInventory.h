@@ -71,6 +71,8 @@ public:
 	 */
 	bool containsPos(const Vec2s & pos);
 	Entity * getObj(const Vec2s & pos);
+	
+	void dropEntity();
 };
 
 extern SecondaryInventoryHud g_secondaryInventoryHud;
