@@ -929,47 +929,47 @@ void ManaGauge::draw() {
 ManaGauge manaGauge;
 
 
-	MecanismIcon::MecanismIcon()
-		: HudItem()
-		, m_iconSize(32.f, 32.f)
-		, m_tex(NULL)
-		, m_timeToDraw(0)
-		, m_nbToDraw(0)
-	{}
+MecanismIcon::MecanismIcon()
+	: HudItem()
+	, m_iconSize(32.f, 32.f)
+	, m_tex(NULL)
+	, m_timeToDraw(0)
+	, m_nbToDraw(0)
+{}
+
+void MecanismIcon::init() {
+	m_tex = TextureContainer::LoadUI("graph/interface/cursors/mecanism");
+	arx_assert(m_tex);
 	
-	void MecanismIcon::init() {
-		m_tex = TextureContainer::LoadUI("graph/interface/cursors/mecanism");
-		arx_assert(m_tex);
-		
-		reset();
-	}
-	
-	void MecanismIcon::reset() {
-		m_timeToDraw = 0;
-		m_nbToDraw = 0;
-	}
-	
-	void MecanismIcon::update() {
-		m_color = Color::white;
-		if(m_timeToDraw > 300) {
-			m_color = Color::black;
-			if(m_timeToDraw > 400) {
-				m_timeToDraw=0;
-				m_nbToDraw++;
-			}
+	reset();
+}
+
+void MecanismIcon::reset() {
+	m_timeToDraw = 0;
+	m_nbToDraw = 0;
+}
+
+void MecanismIcon::update() {
+	m_color = Color::white;
+	if(m_timeToDraw > 300) {
+		m_color = Color::black;
+		if(m_timeToDraw > 400) {
+			m_timeToDraw=0;
+			m_nbToDraw++;
 		}
-		m_timeToDraw += static_cast<long>(framedelay);
-		
-		m_rect = createChild(Rectf(g_size), Anchor_TopLeft, m_iconSize * m_scale, Anchor_TopLeft);
+	}
+	m_timeToDraw += static_cast<long>(framedelay);
+	
+	m_rect = createChild(Rectf(g_size), Anchor_TopLeft, m_iconSize * m_scale, Anchor_TopLeft);
+}
+
+void MecanismIcon::draw() {
+	if(m_nbToDraw >= 3) {
+		return;
 	}
 	
-	void MecanismIcon::draw() {
-		if(m_nbToDraw >= 3) {
-			return;
-		}
-		
-		EERIEDrawBitmap(m_rect, 0.01f, m_tex, m_color);
-	}
+	EERIEDrawBitmap(m_rect, 0.01f, m_tex, m_color);
+}
 
 MecanismIcon mecanismIcon;
 
