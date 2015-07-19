@@ -868,7 +868,7 @@ float ARX_DAMAGES_DamageNPC(Entity * io, float dmg, EntityHandle source, bool is
 		} else {
 			fHitFlash = io->_npcdata->lifePool.current / io->_npcdata->lifePool.max;
 		}
-		hitStrengthGaugeRequestFlash(fHitFlash);
+		g_hudRoot.hitStrengthGauge.requestFlash(fHitFlash);
 		
 		
 		if(io->_npcdata->lifePool.current <= 0.f) {

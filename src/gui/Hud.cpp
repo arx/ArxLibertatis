@@ -189,11 +189,7 @@ void HitStrengthGauge::draw() {
 	}
 }
 
-HitStrengthGauge hitStrengthGauge = HitStrengthGauge();
 
-void hitStrengthGaugeRequestFlash(float flashIntensity) {
-	hitStrengthGauge.requestFlash(flashIntensity);
-}
 
 
 extern TextureContainer * healing;

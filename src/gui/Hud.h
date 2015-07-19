@@ -375,6 +375,8 @@ public:
 	void updateInput();
 	
 	void draw();
+	
+	HitStrengthGauge hitStrengthGauge;
 };
 
 extern HudRoot g_hudRoot;
