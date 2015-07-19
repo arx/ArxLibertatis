@@ -764,72 +764,72 @@ void hideQuickSaveIcon() {
 }
 
 
-	MemorizedRunesHud::MemorizedRunesHud()
-		: HudIconBase()
-		, m_size()
-		, m_count(0)
-	{}
-	
-	void MemorizedRunesHud::update(const Rectf & parent) {
-		int count = 0;
-		int count2 = 0;
-		for(long j = 0; j < 6; j++) {
-			if(player.SpellToMemorize.iSpellSymbols[j] != RUNE_NONE) {
-				count++;
-			}
-			if(SpellSymbol[j] != RUNE_NONE) {
-				count2++;
-			}
+MemorizedRunesHud::MemorizedRunesHud()
+	: HudIconBase()
+	, m_size()
+	, m_count(0)
+{}
+
+void MemorizedRunesHud::update(const Rectf & parent) {
+	int count = 0;
+	int count2 = 0;
+	for(long j = 0; j < 6; j++) {
+		if(player.SpellToMemorize.iSpellSymbols[j] != RUNE_NONE) {
+			count++;
 		}
-		m_count = std::max(count, count2);
-		
-		m_size = Vec2f(m_count * 32, 32);
-		
-		m_rect = createChild(parent, Anchor_TopLeft, m_size * m_scale, Anchor_TopRight);
-	}
-	
-	void MemorizedRunesHud::draw() {
-		Vec2f pos = m_rect.topLeft();
-		
-		for(int i = 0; i < 6; i++) {
-			bool bHalo = false;
-			if(SpellSymbol[i] != RUNE_NONE) {
-				if(SpellSymbol[i] == player.SpellToMemorize.iSpellSymbols[i]) {
-					bHalo = true;
-				} else {
-					player.SpellToMemorize.iSpellSymbols[i] = SpellSymbol[i];
-	
-					for(int j = i+1; j < 6; j++) {
-						player.SpellToMemorize.iSpellSymbols[j] = RUNE_NONE;
-					}
-				}
-			}
-			if(player.SpellToMemorize.iSpellSymbols[i] != RUNE_NONE) {
-				
-				Vec2f size = Vec2f(32.f, 32.f) * m_scale;
-				Rectf rect = Rectf(pos, size.x, size.y);
-				
-				TextureContainer *tc = gui::necklace.pTexTab[player.SpellToMemorize.iSpellSymbols[i]];
-				
-				EERIEDrawBitmap2(rect, 0, tc, Color::white);
-				
-				if(bHalo) {				
-					ARX_INTERFACE_HALO_Render(Color3f(0.2f, 0.4f, 0.8f), HALO_ACTIVE, tc->getHalo(), pos, Vec2f(m_scale));
-				}
-				
-				if(!player.hasRune(player.SpellToMemorize.iSpellSymbols[i])) {
-					GRenderer->SetBlendFunc(Renderer::BlendInvDstColor, Renderer::BlendOne);
-					GRenderer->SetRenderState(Renderer::AlphaBlending, true);
-					EERIEDrawBitmap2(rect, 0, cursorMovable, Color3f::gray(.8f).to<u8>());
-					GRenderer->SetRenderState(Renderer::AlphaBlending, false);
-				}
-				pos.x += 32 * m_scale;
-			}
-		}
-		if(float(arxtime) - player.SpellToMemorize.lTimeCreation > 30000) {
-			player.SpellToMemorize.bSpell = false;
+		if(SpellSymbol[j] != RUNE_NONE) {
+			count2++;
 		}
 	}
+	m_count = std::max(count, count2);
+	
+	m_size = Vec2f(m_count * 32, 32);
+	
+	m_rect = createChild(parent, Anchor_TopLeft, m_size * m_scale, Anchor_TopRight);
+}
+
+void MemorizedRunesHud::draw() {
+	Vec2f pos = m_rect.topLeft();
+	
+	for(int i = 0; i < 6; i++) {
+		bool bHalo = false;
+		if(SpellSymbol[i] != RUNE_NONE) {
+			if(SpellSymbol[i] == player.SpellToMemorize.iSpellSymbols[i]) {
+				bHalo = true;
+			} else {
+				player.SpellToMemorize.iSpellSymbols[i] = SpellSymbol[i];
+				
+				for(int j = i+1; j < 6; j++) {
+					player.SpellToMemorize.iSpellSymbols[j] = RUNE_NONE;
+				}
+			}
+		}
+		if(player.SpellToMemorize.iSpellSymbols[i] != RUNE_NONE) {
+			
+			Vec2f size = Vec2f(32.f, 32.f) * m_scale;
+			Rectf rect = Rectf(pos, size.x, size.y);
+			
+			TextureContainer *tc = gui::necklace.pTexTab[player.SpellToMemorize.iSpellSymbols[i]];
+			
+			EERIEDrawBitmap2(rect, 0, tc, Color::white);
+			
+			if(bHalo) {
+				ARX_INTERFACE_HALO_Render(Color3f(0.2f, 0.4f, 0.8f), HALO_ACTIVE, tc->getHalo(), pos, Vec2f(m_scale));
+			}
+			
+			if(!player.hasRune(player.SpellToMemorize.iSpellSymbols[i])) {
+				GRenderer->SetBlendFunc(Renderer::BlendInvDstColor, Renderer::BlendOne);
+				GRenderer->SetRenderState(Renderer::AlphaBlending, true);
+				EERIEDrawBitmap2(rect, 0, cursorMovable, Color3f::gray(.8f).to<u8>());
+				GRenderer->SetRenderState(Renderer::AlphaBlending, false);
+			}
+			pos.x += 32 * m_scale;
+		}
+	}
+	if(float(arxtime) - player.SpellToMemorize.lTimeCreation > 30000) {
+		player.SpellToMemorize.bSpell = false;
+	}
+}
 
 MemorizedRunesHud memorizedRunesHud;
 
