@@ -961,7 +961,6 @@ void ScreenArrows::draw() {
 	EERIEDrawBitmapUVs(m_bottom, .01f, m_arrowLeftTex, lcolor, Vec2f(1.f, 1.f), Vec2f(1.f, 0.f), Vec2f(0.f, 1.f), Vec2f(0.f, 0.f));
 }
 
-ScreenArrows screenArrows;
 
 void PrecastSpellsGui::PrecastSpellIconSlot::update(const Rectf & rect, TextureContainer * tc, Color color, PrecastHandle precastIndex) {
 	m_rect = rect;
@@ -1074,7 +1073,6 @@ void PrecastSpellsGui::draw() {
 	}
 }
 
-PrecastSpellsGui precastSpellsGui;
 
 void ActiveSpellsGui::ActiveSpellIconSlot::updateInput(const Vec2f & mousePos) {
 	
@@ -1220,8 +1218,6 @@ void ActiveSpellsGui::ManageSpellIcon(SpellBase & spell, float intensity, bool f
 	}
 }
 
-ActiveSpellsGui activeSpellsGui = ActiveSpellsGui();
-
 
 DamagedEquipmentGui::DamagedEquipmentGui()
 	: HudItem()
@@ -1300,7 +1296,6 @@ void DamagedEquipmentGui::draw() {
 	GRenderer->SetRenderState(Renderer::AlphaBlending, false);
 }
 
-DamagedEquipmentGui damagedEquipmentGui;
 
 extern float CURRENT_PLAYER_COLOR;
 
@@ -1348,8 +1343,6 @@ void StealthGauge::draw() {
 	EERIEDrawBitmap(m_rect, 0.01f, stealth_gauge_tc, m_color);
 	GRenderer->SetRenderState(Renderer::AlphaBlending, false);
 }
-
-StealthGauge stealthGauge;
 
 
 void HudRoot::draw() {

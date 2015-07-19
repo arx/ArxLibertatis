@@ -391,6 +391,11 @@ private:
 	MemorizedRunesHud memorizedRunesHud;
 	HealthGauge healthGauge;
 	ManaGauge manaGauge;
+	ScreenArrows screenArrows;
+	PrecastSpellsGui precastSpellsGui;
+	ActiveSpellsGui activeSpellsGui;
+	DamagedEquipmentGui damagedEquipmentGui;
+	StealthGauge stealthGauge;
 };
 
 extern HudRoot g_hudRoot;
