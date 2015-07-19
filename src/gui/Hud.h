@@ -20,6 +20,7 @@
 #ifndef ARX_GUI_HUD_H
 #define ARX_GUI_HUD_H
 
+#include "game/GameTypes.h"
 #include "gui/hud/HudCommon.h"
 #include "math/Types.h"
 
@@ -263,6 +264,31 @@ public:
 	ScreenArrows();
 	
 	void init();
+	void update();
+	void draw();
+};
+
+class PrecastSpellsGui : public HudItem {
+private:
+	struct PrecastSpellIconSlot {
+		Rectf m_rect;
+		TextureContainer * m_tc;
+		Color m_color;
+		PrecastHandle m_precastIndex;
+		
+		void update(const Rectf & rect, TextureContainer * tc, Color color, PrecastHandle precastIndex);
+		void updateInput();
+		void draw();
+	};
+	
+	std::vector<PrecastSpellIconSlot> m_icons;
+	Vec2f m_iconSize;
+	
+public:
+	PrecastSpellsGui();
+	
+	bool isVisible();
+	void updateRect(const Rectf & parent);
 	void update();
 	void draw();
 };

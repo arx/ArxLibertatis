@@ -1016,22 +1016,14 @@ void ScreenArrows::draw() {
 
 ScreenArrows screenArrows;
 
-class PrecastSpellsGui : public HudItem {
-private:
-	struct PrecastSpellIconSlot {
-		Rectf m_rect;
-		TextureContainer * m_tc;
-		Color m_color;
-		PrecastHandle m_precastIndex;
-		
-		void update(const Rectf & rect, TextureContainer * tc, Color color, PrecastHandle precastIndex) {
+		void PrecastSpellsGui::PrecastSpellIconSlot::update(const Rectf & rect, TextureContainer * tc, Color color, PrecastHandle precastIndex) {
 			m_rect = rect;
 			m_tc = tc;
 			m_color = color;
 			m_precastIndex = precastIndex;
 		}
 		
-		void updateInput() {
+		void PrecastSpellsGui::PrecastSpellIconSlot::updateInput() {
 			if(m_rect.contains(Vec2f(DANAEMouse))) {
 				SpecialCursor = CURSOR_INTERACTION_ON;
 				
@@ -1047,7 +1039,7 @@ private:
 			}
 		}
 		
-		void draw() {
+		void PrecastSpellsGui::PrecastSpellIconSlot::draw() {
 			EERIEDrawBitmap(m_rect, 0.01f, m_tc, m_color);
 			
 			GRenderer->SetBlendFunc(Renderer::BlendZero, Renderer::BlendOne);
@@ -1062,32 +1054,25 @@ private:
 			
 			GRenderer->SetBlendFunc(Renderer::BlendOne, Renderer::BlendOne);
 		}
-	};
-	std::vector<PrecastSpellIconSlot> m_icons;
 	
-	
-	Vec2f m_iconSize;
-	
-public:
-	
-	PrecastSpellsGui()
+	PrecastSpellsGui::PrecastSpellsGui()
 		: HudItem()
 	{
 		m_iconSize = Vec2f(48, 48) / Vec2f(2);
 	}
 	
-	bool isVisible() {
+	bool PrecastSpellsGui::isVisible() {
 		return !(player.Interface & INTER_INVENTORYALL) && !(player.Interface & INTER_MAP);
 	}
 	
-	void updateRect(const Rectf & parent) {
+	void PrecastSpellsGui::updateRect(const Rectf & parent) {
 		
 		Vec2f size = m_iconSize * Vec2f(Precast.size(), 1);
 		
 		m_rect = createChild(parent, Anchor_BottomRight, size * m_scale, Anchor_BottomLeft);
 	}
 	
-	void update() {
+	void PrecastSpellsGui::update() {
 		m_icons.clear();
 		
 		if(!isVisible())
@@ -1132,7 +1117,7 @@ public:
 		}
 	}
 	
-	void draw() {
+	void PrecastSpellsGui::draw() {
 		GRenderer->SetBlendFunc(Renderer::BlendOne, Renderer::BlendOne);
 		GRenderer->SetRenderState(Renderer::AlphaBlending, true);
 		
@@ -1141,7 +1126,7 @@ public:
 			itr->draw();
 		}
 	}
-};
+
 PrecastSpellsGui precastSpellsGui;
 
 
