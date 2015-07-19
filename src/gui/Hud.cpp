@@ -789,8 +789,6 @@ void MemorizedRunesHud::draw() {
 	}
 }
 
-MemorizedRunesHud memorizedRunesHud;
-
 
 HealthGauge::HealthGauge()
 	: m_size(33.f, 80.f)
@@ -841,8 +839,6 @@ void HealthGauge::draw() {
 	EERIEDrawBitmap(m_rect, 0.001f, m_emptyTex, Color::white);
 }
 
-HealthGauge healthGauge;
-
 
 ManaGauge::ManaGauge()
 	: HudItem()
@@ -883,8 +879,6 @@ void ManaGauge::draw() {
 	EERIEDrawBitmap2DecalY(m_rect, 0.f, m_filledTex, Color::white, (1.f - m_amount));
 	EERIEDrawBitmap(m_rect, 0.001f, m_emptyTex, Color::white);
 }
-
-ManaGauge manaGauge;
 
 
 MecanismIcon::MecanismIcon()

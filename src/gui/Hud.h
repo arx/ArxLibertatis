@@ -387,6 +387,9 @@ private:
 	LevelUpIconGui levelUpIconGui;
 	CurrentTorchIconGui currentTorchIconGui;
 	ChangeLevelIconGui changeLevelIconGui;
+	MemorizedRunesHud memorizedRunesHud;
+	HealthGauge healthGauge;
+	ManaGauge manaGauge;
 };
 
 extern HudRoot g_hudRoot;
