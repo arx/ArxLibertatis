@@ -57,7 +57,7 @@ public:
 	bool containsPos(const Vec2s & pos);
 	Entity * getObj(const Vec2s & pos);
 	
-	bool dropEntity();
+	void dropEntity();
 	void dragEntity(Entity * io, const Vec2s &pos);
 	
 private:

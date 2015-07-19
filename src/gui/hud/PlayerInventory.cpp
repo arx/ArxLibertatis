@@ -468,15 +468,15 @@ Entity * PlayerInventoryHud::getObj(const Vec2s & pos) {
 }
 
 
-bool PlayerInventoryHud::dropEntity() {
+void PlayerInventoryHud::dropEntity() {
 	if(!(player.Interface & INTER_INVENTORY) && !(player.Interface & INTER_INVENTORYALL))
-		return false;
+		return;
 	
 	if(InventoryY != 0)
-		return false;
+		return;
 	
 	if(!g_playerInventoryHud.containsPos(DANAEMouse))
-		return false;
+		return;
 	
 	Vec2s s = DRAGINTER->m_inventorySize;
 	
@@ -501,7 +501,7 @@ bool PlayerInventoryHud::dropEntity() {
 		if((t.x >= 0) && (t.x <= 16 - s.x) && (t.y >= 0) && (t.y <= 3 - s.y)) {
 			bag = g_currentInventoryBag;
 		} else {
-			return false;
+			return;
 		}
 	} else {
 		bool bOk = false;
@@ -534,13 +534,13 @@ bool PlayerInventoryHud::dropEntity() {
 		}
 		
 		if(!bOk)
-			return false;
+			return;
 	}
 	
 	if(DRAGINTER->ioflags & IO_GOLD) {
 		ARX_PLAYER_AddGold(DRAGINTER);
 		Set_DragInter(NULL);
-		return true;
+		return;
 	}
 	
 	for(long j = 0; j < s.y; j++)
@@ -573,10 +573,10 @@ bool PlayerInventoryHud::dropEntity() {
 				}
 				
 				ARX_SOUND_PlayInterface(SND_INVSTD);
-				return true;
+				return;
 			}
 			
-			return false;
+			return;
 		}
 	
 	for(long j = 0; j < s.y; j++) {
@@ -592,7 +592,6 @@ bool PlayerInventoryHud::dropEntity() {
 	ARX_SOUND_PlayInterface(SND_INVSTD);
 	DRAGINTER->show = SHOW_FLAG_IN_INVENTORY;
 	Set_DragInter(NULL);
-	return true;
 }
 
 // TODO global sInventory

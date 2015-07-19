@@ -874,10 +874,10 @@ extern Vec2s DANAEMouse;
  * \brief Try to put DRAGINTER object in an inventory
  * \return
  */
-bool PutInInventory() {
+void PutInInventory() {
 	// Check Validity
 	if(!DRAGINTER || (DRAGINTER->ioflags & IO_MOVABLE))
-		return false;
+		return;
 	
 	Vec2s s = DRAGINTER->m_inventorySize;
 	
@@ -894,10 +894,10 @@ bool PutInInventory() {
 		// SHOP
 		if(io->ioflags & IO_SHOP) {
 			if(!io->shop_category.empty() && DRAGINTER->groups.find(io->shop_category) == DRAGINTER->groups.end())
-				return false;
+				return;
 			
 			if(price <= 0)
-				return false;
+				return;
 			
 			// Check shop group
 			for(long j = 0; j < SecondaryInventory->m_size.y; j++) {
@@ -915,7 +915,7 @@ bool PutInInventory() {
 				ARX_PLAYER_AddGold(price);
 				ARX_SOUND_PlayInterface(SND_GOLD);
 				ARX_SOUND_PlayInterface(SND_INVSTD);
-				return true;
+				return;
 			}
 			}
 		}
@@ -965,20 +965,20 @@ bool PutInInventory() {
 							ARX_SOUND_PlayInterface(SND_GOLD);
 						}
 					} else {
-						return false;
+						return;
 					}
 				}
 				
 				ARX_SOUND_PlayInterface(SND_INVSTD);
 				Set_DragInter(NULL);
-				return true;
+				return;
 			}
 			}
 			
 			if(DRAGINTER->ioflags & IO_GOLD) {
 				ARX_PLAYER_AddGold(DRAGINTER);
 				Set_DragInter(NULL);
-				return true;
+				return;
 			}
 
 			for(long j = 0; j < s.y; j++) {
@@ -998,11 +998,11 @@ bool PutInInventory() {
 			DRAGINTER->show = SHOW_FLAG_IN_INVENTORY;
 			ARX_SOUND_PlayInterface(SND_INVSTD);
 			Set_DragInter(NULL);
-			return true;
+			return;
 		}
 	}
 	
-	return g_playerInventoryHud.dropEntity();
+	g_playerInventoryHud.dropEntity();
 }
 
 /*!

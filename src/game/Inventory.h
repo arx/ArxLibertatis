@@ -262,7 +262,7 @@ bool CanBePutInSecondaryInventory(INVENTORY_DATA * id, Entity * io);
 
 void CleanInventory();
 void SendInventoryObjectCommand(const std::string & _lpszText, ScriptMessage _lCommand);
-bool PutInInventory();
+void PutInInventory();
 bool TakeFromInventory(const Vec2s & pos);
 Entity * GetFromInventory(const Vec2s & pos);
 bool IsInPlayerInventory(Entity * io);
