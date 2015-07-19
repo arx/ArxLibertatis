@@ -435,33 +435,26 @@ void StealIconGui::draw() {
 static StealIconGui stealIconGui;
 
 
-class LevelUpIconGui : public HudIconBase {
-private:
-	Vec2f m_pos;
-	Vec2f m_size;
-	bool m_visible;
-	
-public:
-	LevelUpIconGui()
+	LevelUpIconGui::LevelUpIconGui()
 		: HudIconBase()
 		, m_pos(0.f, 0.f)
 		, m_size(32.f, 32.f)
 		, m_visible(false)
 	{}
 	
-	void init() {
+	void LevelUpIconGui::init() {
 		m_tex = TextureContainer::LoadUI("graph/interface/icons/lvl_up");
 		arx_assert(m_tex);
 		m_size = Vec2f(32.f, 32.f);
 	}
 	
-	void update(const Rectf & parent) {
+	void LevelUpIconGui::update(const Rectf & parent) {
 		m_rect = createChild(parent, Anchor_TopRight, m_size * m_scale, Anchor_BottomRight);
 		
 		m_visible = (player.Skill_Redistribute) || (player.Attribute_Redistribute);
 	}
 	
-	void updateInput() {
+	void LevelUpIconGui::updateInput() {
 		if(!m_visible)
 			return;
 		
@@ -477,13 +470,12 @@ public:
 	}
 	
 
-	void draw() {
+	void LevelUpIconGui::draw() {
 		if(!m_visible)
 			return;
 		
 		HudIconBase::draw();
 	}
-};
 
 LevelUpIconGui levelUpIconGui;
 

@@ -94,6 +94,21 @@ public:
 	void draw();
 };
 
+class LevelUpIconGui : public HudIconBase {
+private:
+	Vec2f m_pos;
+	Vec2f m_size;
+	bool m_visible;
+	
+public:
+	LevelUpIconGui();
+	
+	void init();
+	void update(const Rectf & parent);
+	void updateInput();
+	void draw();
+};
+
 class HudRoot : public HudItem {
 public:
 	void setScale(float scale);
