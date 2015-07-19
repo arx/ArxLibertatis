@@ -386,25 +386,19 @@ void BackpackIconGui::draw() {
 static BackpackIconGui backpackIconGui;
 
 
-class StealIconGui : public HudIconBase {
-private:
-	Vec2f m_size;
-	Vec2f m_pos;
-	
-public:
-	void init() {
+	void StealIconGui::init() {
 		m_tex = TextureContainer::LoadUI("graph/interface/icons/steal");
 		arx_assert(m_tex);
 		
 		m_size = Vec2f(32, 32);
 	}
 	
-	void updateRect(const Rectf & parent) {
+	void StealIconGui::updateRect(const Rectf & parent) {
 		
 		m_rect = createChild(parent, Anchor_TopLeft, m_size * m_scale, Anchor_BottomLeft);
 	}
 	
-	void updateInput() {
+	void StealIconGui::updateInput() {
 		
 		// steal
 		if(player.Interface & INTER_STEAL) {
@@ -433,11 +427,10 @@ public:
 		}
 	}
 	
-	void draw() {
+	void StealIconGui::draw() {
 		m_isSelected = eMouseState == MOUSE_IN_STEAL_ICON;
 		HudIconBase::draw();
 	}
-};
 
 static StealIconGui stealIconGui;
 

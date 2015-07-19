@@ -82,6 +82,18 @@ public:
 	void draw();
 };
 
+class StealIconGui : public HudIconBase {
+private:
+	Vec2f m_size;
+	Vec2f m_pos;
+	
+public:
+	void init();
+	void updateRect(const Rectf & parent);
+	void updateInput();
+	void draw();
+};
+
 class HudRoot : public HudItem {
 public:
 	void setScale(float scale);
