@@ -64,6 +64,45 @@ extern bool WILLRETURNTOFREELOOK;
 bool bIsAiming = false;
 
 
+static void DrawItemPrice() {
+	
+	Entity *temp = SecondaryInventory->io;
+	if(temp->ioflags & IO_SHOP) {
+		Vec2f pos = Vec2f(DANAEMouse);
+		pos += Vec2f(0, -10);
+		
+		if(g_secondaryInventoryHud.containsPos(DANAEMouse)) {
+			long amount=ARX_INTERACTIVE_GetPrice(FlyingOverIO,temp);
+			// achat
+			float famount = amount - amount * player.m_skillFull.intuition * 0.005f;
+			// check should always be OK because amount is supposed positive
+			amount = checked_range_cast<long>(famount);
+
+			Color color = (amount <= player.gold) ? Color::green : Color::red;
+			
+			ARX_INTERFACE_DrawNumber(pos, amount, 6, color, 1.f);
+		} else if(g_playerInventoryHud.containsPos(DANAEMouse)) {
+			long amount = static_cast<long>( ARX_INTERACTIVE_GetPrice( FlyingOverIO, temp ) / 3.0f );
+			// achat
+			float famount = amount + amount * player.m_skillFull.intuition * 0.005f;
+			// check should always be OK because amount is supposed positive
+			amount = checked_range_cast<long>( famount );
+
+			if(amount) {
+				Color color = Color::red;
+				
+				if(temp->shop_category.empty() ||
+				   FlyingOverIO->groups.find(temp->shop_category) != FlyingOverIO->groups.end()) {
+
+					color = Color::green;
+				}
+				ARX_INTERFACE_DrawNumber(pos, amount, 6, color, 1.f);
+			}
+		}
+	}
+}
+
+
 HitStrengthGauge::HitStrengthGauge()
 	: m_emptyTex(NULL)
 	, m_fullTex(NULL)
@@ -154,47 +193,6 @@ HitStrengthGauge hitStrengthGauge = HitStrengthGauge();
 
 void hitStrengthGaugeRequestFlash(float flashIntensity) {
 	hitStrengthGauge.requestFlash(flashIntensity);
-}
-
-
-
-
-static void DrawItemPrice() {
-	
-	Entity *temp = SecondaryInventory->io;
-	if(temp->ioflags & IO_SHOP) {
-		Vec2f pos = Vec2f(DANAEMouse);
-		pos += Vec2f(0, -10);
-		
-		if(g_secondaryInventoryHud.containsPos(DANAEMouse)) {
-			long amount=ARX_INTERACTIVE_GetPrice(FlyingOverIO,temp);
-			// achat
-			float famount = amount - amount * player.m_skillFull.intuition * 0.005f;
-			// check should always be OK because amount is supposed positive
-			amount = checked_range_cast<long>(famount);
-
-			Color color = (amount <= player.gold) ? Color::green : Color::red;
-			
-			ARX_INTERFACE_DrawNumber(pos, amount, 6, color, 1.f);
-		} else if(g_playerInventoryHud.containsPos(DANAEMouse)) {
-			long amount = static_cast<long>( ARX_INTERACTIVE_GetPrice( FlyingOverIO, temp ) / 3.0f );
-			// achat
-			float famount = amount + amount * player.m_skillFull.intuition * 0.005f;
-			// check should always be OK because amount is supposed positive
-			amount = checked_range_cast<long>( famount );
-
-			if(amount) {
-				Color color = Color::red;
-				
-				if(temp->shop_category.empty() ||
-				   FlyingOverIO->groups.find(temp->shop_category) != FlyingOverIO->groups.end()) {
-
-					color = Color::green;
-				}
-				ARX_INTERFACE_DrawNumber(pos, amount, 6, color, 1.f);
-			}
-		}
-	}
 }
 
 
