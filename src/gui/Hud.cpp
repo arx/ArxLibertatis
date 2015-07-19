@@ -64,91 +64,91 @@ extern bool WILLRETURNTOFREELOOK;
 bool bIsAiming = false;
 
 
-	HitStrengthGauge::HitStrengthGauge()
-		: m_emptyTex(NULL)
-		, m_fullTex(NULL)
-		, m_hitTex(NULL)
-		, m_intensity(0.f)
-		, bHitFlash(false)
-		, ulHitFlash(0)
-		, m_flashIntensity(0.f)
-	{}
+HitStrengthGauge::HitStrengthGauge()
+	: m_emptyTex(NULL)
+	, m_fullTex(NULL)
+	, m_hitTex(NULL)
+	, m_intensity(0.f)
+	, bHitFlash(false)
+	, ulHitFlash(0)
+	, m_flashIntensity(0.f)
+{}
+
+void HitStrengthGauge::init() {
+	m_emptyTex = TextureContainer::LoadUI("graph/interface/bars/aim_empty");
+	m_fullTex = TextureContainer::LoadUI("graph/interface/bars/aim_maxi");
+	m_hitTex = TextureContainer::LoadUI("graph/interface/bars/flash_gauge");
+	arx_assert(m_emptyTex);
+	arx_assert(m_fullTex);
+	arx_assert(m_hitTex);
 	
-	void HitStrengthGauge::init() {
-		m_emptyTex = TextureContainer::LoadUI("graph/interface/bars/aim_empty");
-		m_fullTex = TextureContainer::LoadUI("graph/interface/bars/aim_maxi");
-		m_hitTex = TextureContainer::LoadUI("graph/interface/bars/flash_gauge");
-		arx_assert(m_emptyTex);
-		arx_assert(m_fullTex);
-		arx_assert(m_hitTex);
-		
-		m_size = Vec2f(122.f, 70.f);
-		m_hitSize = Vec2f(172.f, 130.f);
-	}
+	m_size = Vec2f(122.f, 70.f);
+	m_hitSize = Vec2f(172.f, 130.f);
+}
+
+void HitStrengthGauge::requestFlash(float flashIntensity) {
+	bHitFlash = true;
+	ulHitFlash = 0;
+	m_flashIntensity = flashIntensity;
+}
+
+void HitStrengthGauge::updateRect(const Rectf & parent) {
+	m_rect = createChild(parent, Anchor_BottomCenter, m_size * m_scale, Anchor_BottomCenter);
+	m_rect.move(0.f, -2.f);
 	
-	void HitStrengthGauge::requestFlash(float flashIntensity) {
-		bHitFlash = true;
-		ulHitFlash = 0;
-		m_flashIntensity = flashIntensity;
-	}
+	m_hitRect = createChild(m_rect, Anchor_Center, m_hitSize * m_scale, Anchor_Center);
+}
+
+void HitStrengthGauge::update() {
 	
-	void HitStrengthGauge::updateRect(const Rectf & parent) {
-		m_rect = createChild(parent, Anchor_BottomCenter, m_size * m_scale, Anchor_BottomCenter);
-		m_rect.move(0.f, -2.f);
-		
-		m_hitRect = createChild(m_rect, Anchor_Center, m_hitSize * m_scale, Anchor_Center);
-	}
-	
-	void HitStrengthGauge::update() {
-		
-		if(AimTime == 0) {
-			m_intensity = 0.2f;
+	if(AimTime == 0) {
+		m_intensity = 0.2f;
+	} else {
+		float j;
+		if(BOW_FOCAL) {
+			j=(float)(BOW_FOCAL)/710.f;
 		} else {
-			float j;
-			if(BOW_FOCAL) {
-				j=(float)(BOW_FOCAL)/710.f;
-			} else {
-				float at=float(arxtime)-(float)AimTime;
-				
-				//TODO global
-				bIsAiming = at > 0.f;
-				
-				at=at*(1.f+(1.f-GLOBAL_SLOWDOWN));
-				float aim = static_cast<float>(player.Full_AimTime);
-				j=at/aim;
-			}
-			m_intensity = glm::clamp(j, 0.2f, 1.f);
+			float at=float(arxtime)-(float)AimTime;
+			
+			//TODO global
+			bIsAiming = at > 0.f;
+			
+			at=at*(1.f+(1.f-GLOBAL_SLOWDOWN));
+			float aim = static_cast<float>(player.Full_AimTime);
+			j=at/aim;
 		}
-		
-		if(bHitFlash) {
-			float fCalc = ulHitFlash + Original_framedelay;
-			ulHitFlash = checked_range_cast<unsigned long>(fCalc);
-			if(ulHitFlash >= 500) {
-				bHitFlash = false;
-				ulHitFlash = 0;
-			}
-		}
+		m_intensity = glm::clamp(j, 0.2f, 1.f);
 	}
 	
-	void HitStrengthGauge::draw() {
+	if(bHitFlash) {
+		float fCalc = ulHitFlash + Original_framedelay;
+		ulHitFlash = checked_range_cast<unsigned long>(fCalc);
+		if(ulHitFlash >= 500) {
+			bHitFlash = false;
+			ulHitFlash = 0;
+		}
+	}
+}
+
+void HitStrengthGauge::draw() {
+	GRenderer->SetBlendFunc(Renderer::BlendOne, Renderer::BlendOne);
+	GRenderer->SetRenderState(Renderer::AlphaBlending, true);
+	EERIEDrawBitmap(m_rect, 0.0001f, m_fullTex, Color3f::gray(m_intensity).to<u8>());
+	
+	GRenderer->SetRenderState(Renderer::AlphaBlending, false);
+	EERIEDrawBitmap(m_rect, 0.0001f, m_emptyTex, Color::white);
+	
+	if(bHitFlash && player.m_skillFull.etheralLink >= 40) {
+		
+		float j = 1.0f - m_flashIntensity;
+		Color col = (j < 0.5f) ? Color3f(j*2.0f, 1, 0).to<u8>() : Color3f(1, m_flashIntensity, 0).to<u8>();
+		
 		GRenderer->SetBlendFunc(Renderer::BlendOne, Renderer::BlendOne);
 		GRenderer->SetRenderState(Renderer::AlphaBlending, true);
-		EERIEDrawBitmap(m_rect, 0.0001f, m_fullTex, Color3f::gray(m_intensity).to<u8>());
-		
+		EERIEDrawBitmap(m_hitRect, 0.0001f, m_hitTex, col);
 		GRenderer->SetRenderState(Renderer::AlphaBlending, false);
-		EERIEDrawBitmap(m_rect, 0.0001f, m_emptyTex, Color::white);
-		
-		if(bHitFlash && player.m_skillFull.etheralLink >= 40) {
-			
-			float j = 1.0f - m_flashIntensity;
-			Color col = (j < 0.5f) ? Color3f(j*2.0f, 1, 0).to<u8>() : Color3f(1, m_flashIntensity, 0).to<u8>();
-			
-			GRenderer->SetBlendFunc(Renderer::BlendOne, Renderer::BlendOne);
-			GRenderer->SetRenderState(Renderer::AlphaBlending, true);
-			EERIEDrawBitmap(m_hitRect, 0.0001f, m_hitTex, col);
-			GRenderer->SetRenderState(Renderer::AlphaBlending, false);
-		}
 	}
+}
 
 HitStrengthGauge hitStrengthGauge = HitStrengthGauge();
 
