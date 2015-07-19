@@ -1276,82 +1276,82 @@ void ActiveSpellsGui::ManageSpellIcon(SpellBase & spell, float intensity, bool f
 ActiveSpellsGui activeSpellsGui = ActiveSpellsGui();
 
 
-	DamagedEquipmentGui::DamagedEquipmentGui()
-		: HudItem()
-		, m_size(64.f, 64.f)
-	{
-		iconequip[0] = NULL;
-		iconequip[1] = NULL;
-		iconequip[2] = NULL;
-		iconequip[3] = NULL;
-		iconequip[4] = NULL;
-	}
-	
-	void DamagedEquipmentGui::init() {
-		iconequip[0] = TextureContainer::LoadUI("graph/interface/icons/equipment_sword");
-		iconequip[1] = TextureContainer::LoadUI("graph/interface/icons/equipment_shield");
-		iconequip[2] = TextureContainer::LoadUI("graph/interface/icons/equipment_helm");
-		iconequip[3] = TextureContainer::LoadUI("graph/interface/icons/equipment_chest");
-		iconequip[4] = TextureContainer::LoadUI("graph/interface/icons/equipment_leggings");
-		arx_assert(iconequip[0]);
-		arx_assert(iconequip[1]);
-		arx_assert(iconequip[2]);
-		arx_assert(iconequip[3]);
-		arx_assert(iconequip[4]);
-	}
-	
-	void DamagedEquipmentGui::updateRect(const Rectf & parent) {
-		m_rect = createChild(parent, Anchor_BottomRight, m_size * m_scale, Anchor_BottomLeft);
-	}
-	
-	void DamagedEquipmentGui::update() {
-		if(cinematicBorder.isActive() || BLOCK_PLAYER_CONTROLS)
-			return;
-	
-		if(player.Interface & INTER_INVENTORYALL)
-			return;
-		
-		for(long i = 0; i < 5; i++) {
-			m_colors[i] = Color::black;
-			
-			long eq=-1;
+DamagedEquipmentGui::DamagedEquipmentGui()
+	: HudItem()
+	, m_size(64.f, 64.f)
+{
+	iconequip[0] = NULL;
+	iconequip[1] = NULL;
+	iconequip[2] = NULL;
+	iconequip[3] = NULL;
+	iconequip[4] = NULL;
+}
 
-			switch (i) {
-				case 0: eq = EQUIP_SLOT_WEAPON; break;
-				case 1: eq = EQUIP_SLOT_SHIELD; break;
-				case 2: eq = EQUIP_SLOT_HELMET; break;
-				case 3: eq = EQUIP_SLOT_ARMOR; break;
-				case 4: eq = EQUIP_SLOT_LEGGINGS; break;
-			}
-			
-			if(ValidIONum(player.equiped[eq])) {
-				Entity *io = entities[player.equiped[eq]];
-				float ratio = io->durability / io->max_durability;
-				
-				if(ratio <= 0.5f)
-					m_colors[i] = Color3f(1.f-ratio, ratio, 0).to<u8>();
-			}
+void DamagedEquipmentGui::init() {
+	iconequip[0] = TextureContainer::LoadUI("graph/interface/icons/equipment_sword");
+	iconequip[1] = TextureContainer::LoadUI("graph/interface/icons/equipment_shield");
+	iconequip[2] = TextureContainer::LoadUI("graph/interface/icons/equipment_helm");
+	iconequip[3] = TextureContainer::LoadUI("graph/interface/icons/equipment_chest");
+	iconequip[4] = TextureContainer::LoadUI("graph/interface/icons/equipment_leggings");
+	arx_assert(iconequip[0]);
+	arx_assert(iconequip[1]);
+	arx_assert(iconequip[2]);
+	arx_assert(iconequip[3]);
+	arx_assert(iconequip[4]);
+}
+
+void DamagedEquipmentGui::updateRect(const Rectf & parent) {
+	m_rect = createChild(parent, Anchor_BottomRight, m_size * m_scale, Anchor_BottomLeft);
+}
+
+void DamagedEquipmentGui::update() {
+	if(cinematicBorder.isActive() || BLOCK_PLAYER_CONTROLS)
+		return;
+		
+	if(player.Interface & INTER_INVENTORYALL)
+		return;
+	
+	for(long i = 0; i < 5; i++) {
+		m_colors[i] = Color::black;
+		
+		long eq=-1;
+		
+		switch (i) {
+			case 0: eq = EQUIP_SLOT_WEAPON; break;
+			case 1: eq = EQUIP_SLOT_SHIELD; break;
+			case 2: eq = EQUIP_SLOT_HELMET; break;
+			case 3: eq = EQUIP_SLOT_ARMOR; break;
+			case 4: eq = EQUIP_SLOT_LEGGINGS; break;
 		}
+		
+		if(ValidIONum(player.equiped[eq])) {
+			Entity *io = entities[player.equiped[eq]];
+			float ratio = io->durability / io->max_durability;
+			
+			if(ratio <= 0.5f)
+				m_colors[i] = Color3f(1.f-ratio, ratio, 0).to<u8>();
+		}
+	}
+}
+
+void DamagedEquipmentGui::draw() {
+	
+	GRenderer->SetRenderState(Renderer::AlphaBlending, true);
+	GRenderer->SetBlendFunc(Renderer::BlendOne, Renderer::BlendOne);
+	
+	GRenderer->SetCulling(Renderer::CullNone);
+	GRenderer->SetRenderState(Renderer::DepthWrite, true);
+	GRenderer->SetRenderState(Renderer::Fog, false);
+	
+	for(long i = 0; i < 5; i++) {
+		if(m_colors[i] == Color::black)
+			continue;
+		
+		EERIEDrawBitmap2(m_rect, 0.001f, iconequip[i], m_colors[i]);
 	}
 	
-	void DamagedEquipmentGui::draw() {
-		
-		GRenderer->SetRenderState(Renderer::AlphaBlending, true);
-		GRenderer->SetBlendFunc(Renderer::BlendOne, Renderer::BlendOne);
-		
-		GRenderer->SetCulling(Renderer::CullNone);
-		GRenderer->SetRenderState(Renderer::DepthWrite, true);
-		GRenderer->SetRenderState(Renderer::Fog, false);
-		
-		for(long i = 0; i < 5; i++) {
-			if(m_colors[i] == Color::black)
-				continue;
-			
-			EERIEDrawBitmap2(m_rect, 0.001f, iconequip[i], m_colors[i]);
-		}
-		
-		GRenderer->SetRenderState(Renderer::AlphaBlending, false);
-	}
+	GRenderer->SetRenderState(Renderer::AlphaBlending, false);
+}
 
 DamagedEquipmentGui damagedEquipmentGui;
 
