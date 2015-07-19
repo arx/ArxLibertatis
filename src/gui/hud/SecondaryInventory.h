@@ -23,6 +23,7 @@
 #include "gui/hud/HudCommon.h"
 #include "math/Vector.h"
 
+class Entity;
 class TextureContainer;
 
 extern float InventoryX;
@@ -69,6 +70,7 @@ public:
 	 * \brief Returns true if position is in secondary inventory
 	 */
 	bool containsPos(const Vec2s & pos);
+	Entity * getObj(const Vec2s & pos);
 };
 
 extern SecondaryInventoryHud g_secondaryInventoryHud;

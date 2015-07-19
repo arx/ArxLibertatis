@@ -306,3 +306,43 @@ bool SecondaryInventoryHud::containsPos(const Vec2s & pos) {
 	
 	return false;
 }
+
+extern long HERO_OR_SECONDARY;
+
+Entity * SecondaryInventoryHud::getObj(const Vec2s & pos) {
+	
+	if(SecondaryInventory != NULL) {
+		short tx = pos.x + checked_range_cast<short>(InventoryX) - SHORT_INTERFACE_RATIO(2);
+		short ty = pos.y - SHORT_INTERFACE_RATIO(13);
+
+		if(tx >= 0 && ty >= 0) {
+			tx = tx / SHORT_INTERFACE_RATIO(32); 
+			ty = ty / SHORT_INTERFACE_RATIO(32); 
+
+			if(   tx >= 0
+			   && tx <= SecondaryInventory->m_size.x
+			   && ty >= 0
+			   && ty <= SecondaryInventory->m_size.y
+			) {
+				if(SecondaryInventory->slot[tx][ty].io == NULL)
+					return NULL;
+
+				if(   (player.Interface & INTER_STEAL)
+				   && !ARX_PLAYER_CanStealItem(SecondaryInventory->slot[tx][ty].io)
+				) {
+					return NULL;
+				}
+
+				Entity * io = SecondaryInventory->slot[tx][ty].io;
+
+				if(!(io->gameFlags & GFLAG_INTERACTIVITY))
+					return NULL;
+
+				HERO_OR_SECONDARY = 2;
+				return io;
+			}
+		}
+	}
+	
+	return NULL;
+}
