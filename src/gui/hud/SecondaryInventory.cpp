@@ -125,8 +125,8 @@ void SecondaryInventoryHud::init() {
 	m_canNotSteal = TextureContainer::LoadUI("graph/interface/icons/cant_steal_item");
 	arx_assert(m_canNotSteal);
 	
-	pickAllIconGui.init();
-	closeSecondaryInventoryIconGui.init();
+	m_pickAllButton.init();
+	m_closeButton.init();
 }
 
 static Entity * getSecondaryOrStealInvEntity() {
@@ -168,8 +168,8 @@ void SecondaryInventoryHud::update() {
 		// Pick All/Close Secondary Inventory
 		if(TSecondaryInventory) {
 			//These have to be calculated on each frame (to make them move).
-			pickAllIconGui.update();
-			closeSecondaryInventoryIconGui.update();
+			m_pickAllButton.update();
+			m_closeButton.update();
 		}
 	}
 }
@@ -265,9 +265,9 @@ void SecondaryInventoryHud::draw() {
 			
 			Entity *temp = TSecondaryInventory->io;
 			if(temp && !(temp->ioflags & IO_SHOP) && !(temp == ioSteal)) {
-				pickAllIconGui.draw();
+				m_pickAllButton.draw();
 			}
-			closeSecondaryInventoryIconGui.draw();
+			m_closeButton.draw();
 		}
 	}
 }
@@ -279,9 +279,9 @@ void SecondaryInventoryHud::updateInputButtons() {
 		Entity * temp = TSecondaryInventory->io;
 		
 		if(temp && !(temp->ioflags & IO_SHOP) && !(temp == ioSteal)) {
-			pickAllIconGui.updateInput();
+			m_pickAllButton.updateInput();
 		}
 		
-		closeSecondaryInventoryIconGui.updateInput();
+		m_closeButton.updateInput();
 	}
 }

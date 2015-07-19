@@ -55,8 +55,8 @@ private:
 	TextureContainer * ingame_inventory;
 	TextureContainer * m_canNotSteal;
 	
-	SecondaryInventoryPickAllHudIcon pickAllIconGui;
-	SecondaryInventoryCloseHudIcon closeSecondaryInventoryIconGui;
+	SecondaryInventoryPickAllHudIcon m_pickAllButton;
+	SecondaryInventoryCloseHudIcon m_closeButton;
 	
 public:
 	void init();
