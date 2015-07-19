@@ -886,45 +886,45 @@ void HealthGauge::draw() {
 HealthGauge healthGauge;
 
 
-	ManaGauge::ManaGauge()
-		: HudItem()
-		, m_size(33.f, 80.f)
-		, m_emptyTex(NULL)
-		, m_filledTex(NULL)
-		, m_amount(0.f)
-	{}
+ManaGauge::ManaGauge()
+	: HudItem()
+	, m_size(33.f, 80.f)
+	, m_emptyTex(NULL)
+	, m_filledTex(NULL)
+	, m_amount(0.f)
+{}
+
+void ManaGauge::init() {
+	m_emptyTex = TextureContainer::LoadUI("graph/interface/bars/empty_gauge_blue");
+	m_filledTex = TextureContainer::LoadUI("graph/interface/bars/filled_gauge_blue");
+	arx_assert(m_emptyTex);
+	arx_assert(m_filledTex);
+}
+
+void ManaGauge::update(const Rectf & parent) {
 	
-	void ManaGauge::init() {
-		m_emptyTex = TextureContainer::LoadUI("graph/interface/bars/empty_gauge_blue");
-		m_filledTex = TextureContainer::LoadUI("graph/interface/bars/filled_gauge_blue");
-		arx_assert(m_emptyTex);
-		arx_assert(m_filledTex);
-	}
+	m_rect = createChild(parent, Anchor_BottomRight, m_size * m_scale, Anchor_BottomRight);
 	
-	void ManaGauge::update(const Rectf & parent) {
-		
-		m_rect = createChild(parent, Anchor_BottomRight, m_size * m_scale, Anchor_BottomRight);
-		
-		m_amount = player.manaPool.current / player.Full_maxmana;
-	}
-	
-	void ManaGauge::updateInput(const Vec2f & mousePos) {
-		if(!(player.Interface & INTER_COMBATMODE)) {
-			if(m_rect.contains(mousePos)) {
-				if(eeMouseDown1()) {
-					std::stringstream ss;
-					ss << checked_range_cast<int>(player.manaPool.current);
-					ARX_SPEECH_Add(ss.str());
-				}
+	m_amount = player.manaPool.current / player.Full_maxmana;
+}
+
+void ManaGauge::updateInput(const Vec2f & mousePos) {
+	if(!(player.Interface & INTER_COMBATMODE)) {
+		if(m_rect.contains(mousePos)) {
+			if(eeMouseDown1()) {
+				std::stringstream ss;
+				ss << checked_range_cast<int>(player.manaPool.current);
+				ARX_SPEECH_Add(ss.str());
 			}
 		}
 	}
+}
+
+void ManaGauge::draw() {
 	
-	void ManaGauge::draw() {
-		
-		EERIEDrawBitmap2DecalY(m_rect, 0.f, m_filledTex, Color::white, (1.f - m_amount));
-		EERIEDrawBitmap(m_rect, 0.001f, m_emptyTex, Color::white);
-	}
+	EERIEDrawBitmap2DecalY(m_rect, 0.f, m_filledTex, Color::white, (1.f - m_amount));
+	EERIEDrawBitmap(m_rect, 0.001f, m_emptyTex, Color::white);
+}
 
 ManaGauge manaGauge;
 
