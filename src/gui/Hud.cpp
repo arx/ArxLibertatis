@@ -624,6 +624,14 @@ private:
 	Vec2f m_size;
 	
 public:
+	CurrentTorchIconGui()
+		: HudItem()
+		, m_isActive(false)
+		, m_rect()
+		, m_tex(NULL)
+		, m_size()
+	{}
+	
 	void init() {
 		m_size = Vec2f(32.f, 64.f);
 	}
