@@ -667,42 +667,42 @@ void CurrentTorchIconGui::draw() {
 
 CurrentTorchIconGui currentTorchIconGui;
 
-	ChangeLevelIconGui::ChangeLevelIconGui()
-		: m_tex(NULL)
-		, m_intensity(1.f)
-	{}
+ChangeLevelIconGui::ChangeLevelIconGui()
+	: m_tex(NULL)
+	, m_intensity(1.f)
+{}
+
+void ChangeLevelIconGui::init() {
+	m_tex = TextureContainer::LoadUI("graph/interface/icons/change_lvl");
+	arx_assert(m_tex);
+	m_size = Vec2f(32.f, 32.f);
+}
+
+bool ChangeLevelIconGui::isVisible() {
+	return CHANGE_LEVEL_ICON > -1;
+}
+
+void ChangeLevelIconGui::update(const Rectf & parent) {
+	m_rect = createChild(parent, Anchor_TopRight, m_size * m_scale, Anchor_TopRight);
 	
-	void ChangeLevelIconGui::init() {
-		m_tex = TextureContainer::LoadUI("graph/interface/icons/change_lvl");
-		arx_assert(m_tex);
-		m_size = Vec2f(32.f, 32.f);
-	}
+	m_intensity = 0.9f - std::sin(arxtime.get_frame_time()*( 1.0f / 50 ))*0.5f+rnd()*( 1.0f / 10 );
+	m_intensity = glm::clamp(m_intensity, 0.f, 1.f);
+}
+
+void ChangeLevelIconGui::draw() {
 	
-	bool ChangeLevelIconGui::isVisible() {
-		return CHANGE_LEVEL_ICON > -1;
-	}
+	if(!isVisible())
+		return;
 	
-	void ChangeLevelIconGui::update(const Rectf & parent) {
-		m_rect = createChild(parent, Anchor_TopRight, m_size * m_scale, Anchor_TopRight);
-		
-		m_intensity = 0.9f - std::sin(arxtime.get_frame_time()*( 1.0f / 50 ))*0.5f+rnd()*( 1.0f / 10 );
-		m_intensity = glm::clamp(m_intensity, 0.f, 1.f);
-	}
+	EERIEDrawBitmap(m_rect, 0.0001f, m_tex, Color3f::gray(m_intensity).to<u8>());
 	
-	void ChangeLevelIconGui::draw() {
-		
-		if(!isVisible())
-			return;
-		
-		EERIEDrawBitmap(m_rect, 0.0001f, m_tex, Color3f::gray(m_intensity).to<u8>());
-		
-	    if(m_rect.contains(Vec2f(DANAEMouse))) {
-			SpecialCursor=CURSOR_INTERACTION_ON;
-			if(eeMouseUp1()) {
-				CHANGE_LEVEL_ICON = 200;
-			}
+	if(m_rect.contains(Vec2f(DANAEMouse))) {
+		SpecialCursor=CURSOR_INTERACTION_ON;
+		if(eeMouseUp1()) {
+			CHANGE_LEVEL_ICON = 200;
 		}
 	}
+}
 
 ChangeLevelIconGui changeLevelIconGui;
 
