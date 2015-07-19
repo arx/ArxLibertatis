@@ -1357,50 +1357,50 @@ DamagedEquipmentGui damagedEquipmentGui;
 
 extern float CURRENT_PLAYER_COLOR;
 
-	StealthGauge::StealthGauge()
-		: HudItem()
-		, stealth_gauge_tc(NULL)
-		, m_visible(false)
-	{}
+StealthGauge::StealthGauge()
+	: HudItem()
+	, stealth_gauge_tc(NULL)
+	, m_visible(false)
+{}
+
+void StealthGauge::init() {
+	stealth_gauge_tc = TextureContainer::LoadUI("graph/interface/icons/stealth_gauge");
+	arx_assert(stealth_gauge_tc);
+	m_size = Vec2f(32.f, 32.f);
+}
+
+void StealthGauge::update(const Rectf & parent) {
+	m_rect = createChild(parent, Anchor_TopRight, m_size * m_scale, Anchor_BottomLeft);
 	
-	void StealthGauge::init() {
-		stealth_gauge_tc = TextureContainer::LoadUI("graph/interface/icons/stealth_gauge");
-		arx_assert(stealth_gauge_tc);
-		m_size = Vec2f(32.f, 32.f);
-	}
+	m_visible = false;
 	
-	void StealthGauge::update(const Rectf & parent) {
-		m_rect = createChild(parent, Anchor_TopRight, m_size * m_scale, Anchor_BottomLeft);
+	if(!cinematicBorder.isActive()) {
+		float v=GetPlayerStealth();
 		
-		m_visible = false;
-		
-		if(!cinematicBorder.isActive()) {
-			float v=GetPlayerStealth();
-	
-			if(CURRENT_PLAYER_COLOR < v) {
-				float t = v - CURRENT_PLAYER_COLOR;
-	
-				if(t >= 15)
-					v = 1.f;
-				else
-					v = (t*( 1.0f / 15 ))* 0.9f + 0.1f;
-				
-				m_color = Color3f::gray(v).to<u8>();
-				
-				m_visible = true;
-			}
+		if(CURRENT_PLAYER_COLOR < v) {
+			float t = v - CURRENT_PLAYER_COLOR;
+			
+			if(t >= 15)
+				v = 1.f;
+			else
+				v = (t*( 1.0f / 15 ))* 0.9f + 0.1f;
+			
+			m_color = Color3f::gray(v).to<u8>();
+			
+			m_visible = true;
 		}
 	}
+}
+
+void StealthGauge::draw() {
+	if(!m_visible)
+		return;
 	
-	void StealthGauge::draw() {
-		if(!m_visible)
-			return;
-		
-		GRenderer->SetRenderState(Renderer::AlphaBlending, true);
-		GRenderer->SetBlendFunc(Renderer::BlendOne, Renderer::BlendOne);
-		EERIEDrawBitmap(m_rect, 0.01f, stealth_gauge_tc, m_color);
-		GRenderer->SetRenderState(Renderer::AlphaBlending, false);
-	}
+	GRenderer->SetRenderState(Renderer::AlphaBlending, true);
+	GRenderer->SetBlendFunc(Renderer::BlendOne, Renderer::BlendOne);
+	EERIEDrawBitmap(m_rect, 0.01f, stealth_gauge_tc, m_color);
+	GRenderer->SetRenderState(Renderer::AlphaBlending, false);
+}
 
 StealthGauge stealthGauge;
 
