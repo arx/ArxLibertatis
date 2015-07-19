@@ -349,6 +349,24 @@ public:
 	void draw();
 };
 
+/*!
+ * \brief Stealth Gauge Drawing
+ */
+class StealthGauge : public HudItem {
+private:
+	TextureContainer * stealth_gauge_tc;
+	bool m_visible;
+	Color m_color;
+	Vec2f m_size;
+	
+public:
+	StealthGauge();
+	
+	void init();
+	void update(const Rectf & parent);
+	void draw();
+};
+
 class HudRoot : public HudItem {
 public:
 	void setScale(float scale);

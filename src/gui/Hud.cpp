@@ -1357,31 +1357,19 @@ DamagedEquipmentGui damagedEquipmentGui;
 
 extern float CURRENT_PLAYER_COLOR;
 
-/*!
- * \brief Stealth Gauge Drawing
- */
-class StealthGauge : public HudItem {
-private:
-	TextureContainer * stealth_gauge_tc;
-	
-	bool m_visible;
-	Color m_color;
-	Vec2f m_size;
-	
-public:
-	StealthGauge()
+	StealthGauge::StealthGauge()
 		: HudItem()
 		, stealth_gauge_tc(NULL)
 		, m_visible(false)
 	{}
 	
-	void init() {
+	void StealthGauge::init() {
 		stealth_gauge_tc = TextureContainer::LoadUI("graph/interface/icons/stealth_gauge");
 		arx_assert(stealth_gauge_tc);
 		m_size = Vec2f(32.f, 32.f);
 	}
 	
-	void update(const Rectf & parent) {
+	void StealthGauge::update(const Rectf & parent) {
 		m_rect = createChild(parent, Anchor_TopRight, m_size * m_scale, Anchor_BottomLeft);
 		
 		m_visible = false;
@@ -1404,7 +1392,7 @@ public:
 		}
 	}
 	
-	void draw() {
+	void StealthGauge::draw() {
 		if(!m_visible)
 			return;
 		
@@ -1413,7 +1401,7 @@ public:
 		EERIEDrawBitmap(m_rect, 0.01f, stealth_gauge_tc, m_color);
 		GRenderer->SetRenderState(Renderer::AlphaBlending, false);
 	}
-};
+
 StealthGauge stealthGauge;
 
 
