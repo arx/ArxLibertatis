@@ -834,54 +834,54 @@ void MemorizedRunesHud::draw() {
 MemorizedRunesHud memorizedRunesHud;
 
 
-	HealthGauge::HealthGauge()
-		: m_size(33.f, 80.f)
-		, m_emptyTex(NULL)
-		, m_filledTex(NULL)
-		, m_amount(0.f)
-	{}
+HealthGauge::HealthGauge()
+	: m_size(33.f, 80.f)
+	, m_emptyTex(NULL)
+	, m_filledTex(NULL)
+	, m_amount(0.f)
+{}
+
+void HealthGauge::init() {
+	m_emptyTex = TextureContainer::LoadUI("graph/interface/bars/empty_gauge_red");
+	m_filledTex = TextureContainer::LoadUI("graph/interface/bars/filled_gauge_red");
+	arx_assert(m_emptyTex);
+	arx_assert(m_filledTex);
+}
+
+void HealthGauge::updateRect(const Rectf & parent) {
+	m_rect = createChild(parent, Anchor_BottomLeft, m_size * m_scale, Anchor_BottomLeft);
+}
+
+void HealthGauge::update() {
 	
-	void HealthGauge::init() {
-		m_emptyTex = TextureContainer::LoadUI("graph/interface/bars/empty_gauge_red");
-		m_filledTex = TextureContainer::LoadUI("graph/interface/bars/filled_gauge_red");
-		arx_assert(m_emptyTex);
-		arx_assert(m_filledTex);
+	m_amount = (float)player.lifePool.current/(float)player.Full_maxlife;
+	
+	if(player.poison > 0.f) {
+		float val = std::min(player.poison, 0.2f) * 255.f * 5.f;
+		long g = val;
+		m_color = Color(u8(255 - g), u8(g) , 0);
+	} else {
+		m_color = Color::red;
 	}
-	
-	void HealthGauge::updateRect(const Rectf & parent) {
-		m_rect = createChild(parent, Anchor_BottomLeft, m_size * m_scale, Anchor_BottomLeft);
-	}
-	
-	void HealthGauge::update() {
-		
-		m_amount = (float)player.lifePool.current/(float)player.Full_maxlife;
-		
-		if(player.poison > 0.f) {
-			float val = std::min(player.poison, 0.2f) * 255.f * 5.f;
-			long g = val;
-			m_color = Color(u8(255 - g), u8(g) , 0);
-		} else {
-			m_color = Color::red;
-		}
-	}
-	
-	void HealthGauge::updateInput(const Vec2f & mousePos) {
-		if(!(player.Interface & INTER_COMBATMODE)) {
-			if(m_rect.contains(mousePos)) {
-				if(eeMouseDown1()) {
-					std::stringstream ss;
-					ss << checked_range_cast<int>(player.lifePool.current);
-					ARX_SPEECH_Add(ss.str());
-				}
+}
+
+void HealthGauge::updateInput(const Vec2f & mousePos) {
+	if(!(player.Interface & INTER_COMBATMODE)) {
+		if(m_rect.contains(mousePos)) {
+			if(eeMouseDown1()) {
+				std::stringstream ss;
+				ss << checked_range_cast<int>(player.lifePool.current);
+				ARX_SPEECH_Add(ss.str());
 			}
 		}
 	}
+}
+
+void HealthGauge::draw() {
 	
-	void HealthGauge::draw() {
-		
-		EERIEDrawBitmap2DecalY(m_rect, 0.f, m_filledTex, m_color, (1.f - m_amount));
-		EERIEDrawBitmap(m_rect, 0.001f, m_emptyTex, Color::white);
-	}
+	EERIEDrawBitmap2DecalY(m_rect, 0.f, m_filledTex, m_color, (1.f - m_amount));
+	EERIEDrawBitmap(m_rect, 0.001f, m_emptyTex, Color::white);
+}
 
 HealthGauge healthGauge;
 
