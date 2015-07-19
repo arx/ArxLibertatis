@@ -384,6 +384,8 @@ private:
 	BackpackIconGui backpackIconGui;
 	StealIconGui stealIconGui;
 	LevelUpIconGui levelUpIconGui;
+	CurrentTorchIconGui currentTorchIconGui;
+	ChangeLevelIconGui changeLevelIconGui;
 };
 
 extern HudRoot g_hudRoot;

@@ -638,7 +638,6 @@ void CurrentTorchIconGui::draw() {
 	EERIEDrawBitmap(m_rect, 0.001f, m_tex, Color::white);
 }
 
-CurrentTorchIconGui currentTorchIconGui;
 
 ChangeLevelIconGui::ChangeLevelIconGui()
 	: m_tex(NULL)
@@ -676,8 +675,6 @@ void ChangeLevelIconGui::draw() {
 		}
 	}
 }
-
-ChangeLevelIconGui changeLevelIconGui;
 
 
 QuickSaveIconGui::QuickSaveIconGui()
