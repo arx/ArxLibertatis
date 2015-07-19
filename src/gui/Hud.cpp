@@ -1696,6 +1696,7 @@ void setHudScale(float scale) {
 	precastSpellsGui.setScale(scale);
 	
 	g_playerInventoryHud.setScale(scale);
+	g_secondaryInventoryHud.setScale(scale);
 }
 
 void ArxGame::drawAllInterface() {

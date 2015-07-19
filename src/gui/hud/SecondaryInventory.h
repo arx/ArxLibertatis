@@ -20,6 +20,7 @@
 #ifndef ARX_GUI_HUD_SECONDARYINVENTORY_H
 #define ARX_GUI_HUD_SECONDARYINVENTORY_H
 
+#include "gui/hud/HudCommon.h"
 #include "math/Vector.h"
 
 class TextureContainer;
@@ -27,7 +28,7 @@ class TextureContainer;
 extern TextureContainer * BasicInventorySkin;
 extern float InventoryX;
 
-class SecondaryInventoryHud {
+class SecondaryInventoryHud : public HudItem {
 private:
 	Vec2f m_size;
 	TextureContainer * ingame_inventory;
