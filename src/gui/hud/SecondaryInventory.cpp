@@ -75,49 +75,49 @@ void PickAllIconGui::updateInput() {
 }
 
 
-	void CloseSecondaryInventoryIconGui::init() {
-		m_tex = TextureContainer::LoadUI("graph/interface/inventory/inv_close");
-		arx_assert(m_tex);
-		
-		m_size = Vec2f(16, 16);
-	}
+void CloseSecondaryInventoryIconGui::init() {
+	m_tex = TextureContainer::LoadUI("graph/interface/inventory/inv_close");
+	arx_assert(m_tex);
 	
-	void CloseSecondaryInventoryIconGui::update() {
-		Rectf parent = Rectf(Vec2f(InventoryX, 0), BasicInventorySkin->m_dwWidth, BasicInventorySkin->m_dwHeight);
-		
-		Rectf spacer = createChild(parent, Anchor_BottomRight, Vec2f(16, 16), Anchor_BottomRight);
-		
-		m_rect = createChild(spacer, Anchor_BottomLeft, m_size, Anchor_BottomRight);
-	}
+	m_size = Vec2f(16, 16);
+}
+
+void CloseSecondaryInventoryIconGui::update() {
+	Rectf parent = Rectf(Vec2f(InventoryX, 0), BasicInventorySkin->m_dwWidth, BasicInventorySkin->m_dwHeight);
 	
-	void CloseSecondaryInventoryIconGui::updateInput() {
+	Rectf spacer = createChild(parent, Anchor_BottomRight, Vec2f(16, 16), Anchor_BottomRight);
+	
+	m_rect = createChild(spacer, Anchor_BottomLeft, m_size, Anchor_BottomRight);
+}
+
+void CloseSecondaryInventoryIconGui::updateInput() {
+	
+	m_isSelected = m_rect.contains(Vec2f(DANAEMouse));
+	
+	if(m_isSelected) {
+		SpecialCursor=CURSOR_INTERACTION_ON;
 		
-		m_isSelected = m_rect.contains(Vec2f(DANAEMouse));
-		
-		if(m_isSelected) {
-			SpecialCursor=CURSOR_INTERACTION_ON;
+		if(eeMouseDown1()) {
+			Entity * io = NULL;
 			
-			if(eeMouseDown1()) {
-				Entity * io = NULL;
-				
-				if(SecondaryInventory)
-					io = SecondaryInventory->io;
-				else if(player.Interface & INTER_STEAL)
-					io = ioSteal;
-				
-				if(io) {
-					ARX_SOUND_PlayInterface(SND_BACKPACK, 0.9F + 0.2F * rnd());
-					InventoryDir=-1;
-					SendIOScriptEvent(io,SM_INVENTORY2_CLOSE);
-					TSecondaryInventory=SecondaryInventory;
-					SecondaryInventory=NULL;
-				}
+			if(SecondaryInventory)
+				io = SecondaryInventory->io;
+			else if(player.Interface & INTER_STEAL)
+				io = ioSteal;
+			
+			if(io) {
+				ARX_SOUND_PlayInterface(SND_BACKPACK, 0.9F + 0.2F * rnd());
+				InventoryDir=-1;
+				SendIOScriptEvent(io,SM_INVENTORY2_CLOSE);
+				TSecondaryInventory=SecondaryInventory;
+				SecondaryInventory=NULL;
 			}
-			
-			if(DRAGINTER == NULL)
-				return;
 		}
+		
+		if(DRAGINTER == NULL)
+			return;
 	}
+}
 
 
 static PickAllIconGui pickAllIconGui;
