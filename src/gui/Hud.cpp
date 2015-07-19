@@ -198,10 +198,8 @@ void hitStrengthGaugeRequestFlash(float flashIntensity) {
 
 extern TextureContainer * healing;
 
-class BookIconGui : public HudIconBase {
-private:
-	
-	void MakeBookFX(const Vec3f & pos) {
+
+	void BookIconGui::MakeBookFX(const Vec3f & pos) {
 		
 		for(long i = 0; i < 12; i++) {
 			
@@ -228,18 +226,13 @@ private:
 		NewSpell = 1;
 	}
 	
-	Vec2f m_size;
-	
-	unsigned long ulBookHaloTime;
-	
-public:
-	BookIconGui()
+	BookIconGui::BookIconGui()
 		: HudIconBase()
 		, m_size(Vec2f(32, 32))
 		, ulBookHaloTime(0)
 	{}
 	
-	void init() {
+	void BookIconGui::init() {
 		m_tex = TextureContainer::LoadUI("graph/interface/icons/book");
 		arx_assert(m_tex);
 		
@@ -251,16 +244,16 @@ public:
 		ulBookHaloTime = 0;
 	}
 	
-	void requestHalo() {
+	void BookIconGui::requestHalo() {
 		m_haloActive = true;
 		ulBookHaloTime = 0;
 	}
 	
-	void requestFX() {
+	void BookIconGui::requestFX() {
 		MakeBookFX(Vec3f(Vec2f(g_size.bottomRight()) + Vec2f(-35, -148), 0.00001f));
 	}
 	
-	void update(const Rectf & parent) {
+	void BookIconGui::update(const Rectf & parent) {
 		
 		m_rect = createChild(parent, Anchor_TopRight, m_size * m_scale, Anchor_BottomRight);
 		
@@ -273,7 +266,7 @@ public:
 		}
 	}
 	
-	void updateInput() {
+	void BookIconGui::updateInput() {
 		m_isSelected = m_rect.contains(Vec2f(DANAEMouse));
 		
 		if(m_isSelected) {
@@ -285,7 +278,6 @@ public:
 			return;
 		}
 	}
-};
 
 static BookIconGui bookIconGui;
 

@@ -55,6 +55,25 @@ public:
 	void requestFlash(float flashIntensity);
 };
 
+class BookIconGui : public HudIconBase {
+private:
+	Vec2f m_size;
+	unsigned long ulBookHaloTime;
+	
+public:
+	BookIconGui();
+	
+	void init();
+	void update(const Rectf & parent);
+	void updateInput();
+	
+	void requestHalo();
+	void requestFX();
+	
+private:
+	void MakeBookFX(const Vec3f & pos);
+};
+
 
 class HudRoot : public HudItem {
 public:
