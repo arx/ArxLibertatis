@@ -42,21 +42,14 @@ float InventoryX = -60.f;
 SecondaryInventoryHud g_secondaryInventoryHud;
 
 
-
-
-class PickAllIconGui : public HudIconBase {
-private:
-	Vec2f m_size;
-	
-public:
-	void init() {
+	void PickAllIconGui::init() {
 		m_tex = TextureContainer::LoadUI("graph/interface/inventory/inv_pick");
 		arx_assert(m_tex);
 		
 		m_size = Vec2f(16, 16);
 	}
 	
-	void update() {
+	void PickAllIconGui::update() {
 		Rectf parent = Rectf(Vec2f(InventoryX, 0), BasicInventorySkin->m_dwWidth, BasicInventorySkin->m_dwHeight);
 		
 		Rectf spacer = createChild(parent, Anchor_BottomLeft, Vec2f(16, 16), Anchor_BottomLeft);
@@ -64,23 +57,25 @@ public:
 		m_rect = createChild(spacer, Anchor_BottomRight, m_size, Anchor_BottomLeft);
 	}
 	
-	void updateInput() {
+	void PickAllIconGui::updateInput() {
 		
 		m_isSelected = m_rect.contains(Vec2f(DANAEMouse));
 		
 		if(m_isSelected) {
 			SpecialCursor=CURSOR_INTERACTION_ON;
-
+			
 			if(eeMouseDown1()) {
 				// play un son que si un item est pris
 				ARX_INVENTORY_TakeAllFromSecondaryInventory();
 			}
-
+			
 			if(DRAGINTER == NULL)
 				return;
 		}
 	}
-};
+
+
+
 
 static PickAllIconGui pickAllIconGui;
 

@@ -28,6 +28,17 @@ class TextureContainer;
 extern TextureContainer * BasicInventorySkin;
 extern float InventoryX;
 
+class PickAllIconGui : public HudIconBase {
+private:
+	Vec2f m_size;
+	
+public:
+	void init();
+	void update();
+	void updateInput();
+};
+
+
 class SecondaryInventoryHud : public HudItem {
 private:
 	Vec2f m_size;
