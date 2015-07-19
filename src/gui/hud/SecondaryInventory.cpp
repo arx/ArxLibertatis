@@ -42,14 +42,14 @@ float InventoryX = -60.f;
 SecondaryInventoryHud g_secondaryInventoryHud;
 
 
-void PickAllIconGui::init() {
+void SecondaryInventoryPickAllHudIcon::init() {
 	m_tex = TextureContainer::LoadUI("graph/interface/inventory/inv_pick");
 	arx_assert(m_tex);
 	
 	m_size = Vec2f(16, 16);
 }
 
-void PickAllIconGui::update() {
+void SecondaryInventoryPickAllHudIcon::update() {
 	Rectf parent = Rectf(Vec2f(InventoryX, 0), BasicInventorySkin->m_dwWidth, BasicInventorySkin->m_dwHeight);
 	
 	Rectf spacer = createChild(parent, Anchor_BottomLeft, Vec2f(16, 16), Anchor_BottomLeft);
@@ -57,7 +57,7 @@ void PickAllIconGui::update() {
 	m_rect = createChild(spacer, Anchor_BottomRight, m_size, Anchor_BottomLeft);
 }
 
-void PickAllIconGui::updateInput() {
+void SecondaryInventoryPickAllHudIcon::updateInput() {
 	
 	m_isSelected = m_rect.contains(Vec2f(DANAEMouse));
 	
