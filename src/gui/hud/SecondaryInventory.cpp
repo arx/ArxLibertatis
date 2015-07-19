@@ -120,14 +120,6 @@ void CloseSecondaryInventoryIconGui::updateInput() {
 }
 
 
-static PickAllIconGui pickAllIconGui;
-
-
-
-static CloseSecondaryInventoryIconGui closeSecondaryInventoryIconGui;
-
-
-
 void SecondaryInventoryHud::init() {
 	m_size = Vec2f(115.f, 378.f);
 	m_canNotSteal = TextureContainer::LoadUI("graph/interface/icons/cant_steal_item");
