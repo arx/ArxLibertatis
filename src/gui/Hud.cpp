@@ -977,21 +977,7 @@ void mecanismIconReset() {
 	mecanismIcon.reset();
 }
 
-class ScreenArrows : public HudItem {
-private:
-	Vec2f m_horizontalArrowSize;
-	Vec2f m_verticalArrowSize;
-	
-	Rectf m_left;
-	Rectf m_right;
-	Rectf m_top;
-	Rectf m_bottom;
-	
-	TextureContainer * m_arrowLeftTex;
-	
-	float fArrowMove;
-public:
-	ScreenArrows()
+	ScreenArrows::ScreenArrows()
 		: HudItem()
 		, m_horizontalArrowSize(8, 16)
 		, m_verticalArrowSize(16, 8)
@@ -999,12 +985,12 @@ public:
 		, fArrowMove(0.f)
 	{}
 	
-	void init() {
+	void ScreenArrows::init() {
 		m_arrowLeftTex = TextureContainer::LoadUI("graph/interface/icons/arrow_left");
 		arx_assert(m_arrowLeftTex);
 	}
 	
-	void update() {
+	void ScreenArrows::update() {
 		fArrowMove += .5f * framedelay;
 		if(fArrowMove > 180.f) {
 			fArrowMove=0.f;
@@ -1019,7 +1005,7 @@ public:
 		m_bottom = createChild(parent, Anchor_BottomCenter, m_verticalArrowSize * m_scale,   Anchor_BottomCenter);
 	}
 	
-	void draw() {
+	void ScreenArrows::draw() {
 		Color lcolor = Color3f::gray(.5f).to<u8>();
 
 		EERIEDrawBitmap(m_left, 0.01f, m_arrowLeftTex, lcolor);
@@ -1027,7 +1013,7 @@ public:
 		EERIEDrawBitmapUVs(m_top,    .01f, m_arrowLeftTex, lcolor, Vec2f(0.f, 1.f), Vec2f(0.f, 0.f), Vec2f(1.f, 1.f), Vec2f(1.f, 0.f));
 		EERIEDrawBitmapUVs(m_bottom, .01f, m_arrowLeftTex, lcolor, Vec2f(1.f, 1.f), Vec2f(1.f, 0.f), Vec2f(0.f, 1.f), Vec2f(0.f, 0.f));
 	}
-};
+
 ScreenArrows screenArrows;
 
 class PrecastSpellsGui : public HudItem {

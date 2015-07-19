@@ -246,6 +246,27 @@ public:
 	void draw();
 };
 
+class ScreenArrows : public HudItem {
+private:
+	Vec2f m_horizontalArrowSize;
+	Vec2f m_verticalArrowSize;
+	
+	Rectf m_left;
+	Rectf m_right;
+	Rectf m_top;
+	Rectf m_bottom;
+	
+	TextureContainer * m_arrowLeftTex;
+	
+	float fArrowMove;
+public:
+	ScreenArrows();
+	
+	void init();
+	void update();
+	void draw();
+};
+
 class HudRoot : public HudItem {
 public:
 	void setScale(float scale);
