@@ -923,11 +923,6 @@ void MecanismIcon::draw() {
 	EERIEDrawBitmap(m_rect, 0.01f, m_tex, m_color);
 }
 
-MecanismIcon mecanismIcon;
-
-void mecanismIconReset() {
-	mecanismIcon.reset();
-}
 
 ScreenArrows::ScreenArrows()
 	: HudItem()

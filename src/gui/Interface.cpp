@@ -1466,7 +1466,7 @@ void ArxGame::managePlayerControls() {
 			}
 		} else {
 			if(!bInventoryClosing) {
-				mecanismIconReset();
+				g_hudRoot.mecanismIcon.reset();
 				
 				if(player.Interface & INTER_INVENTORYALL) {
 					ARX_SOUND_PlayInterface(SND_BACKPACK, 0.9F + 0.2F * rnd());

@@ -380,6 +380,7 @@ public:
 	BookIconGui bookIconGui;
 	PurseIconGui purseIconGui;
 	QuickSaveIconGui quickSaveIconGui;
+	MecanismIcon mecanismIcon;
 	
 private:
 	BackpackIconGui backpackIconGui;
@@ -394,7 +395,6 @@ private:
 
 extern HudRoot g_hudRoot;
 
-void mecanismIconReset();
 void hitStrengthGaugeRequestFlash(float flashIntensity);
 void bookIconGuiRequestFX();
 void bookIconGuiRequestHalo();
