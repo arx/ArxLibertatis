@@ -42,37 +42,37 @@ float InventoryX = -60.f;
 SecondaryInventoryHud g_secondaryInventoryHud;
 
 
-	void PickAllIconGui::init() {
-		m_tex = TextureContainer::LoadUI("graph/interface/inventory/inv_pick");
-		arx_assert(m_tex);
-		
-		m_size = Vec2f(16, 16);
-	}
+void PickAllIconGui::init() {
+	m_tex = TextureContainer::LoadUI("graph/interface/inventory/inv_pick");
+	arx_assert(m_tex);
 	
-	void PickAllIconGui::update() {
-		Rectf parent = Rectf(Vec2f(InventoryX, 0), BasicInventorySkin->m_dwWidth, BasicInventorySkin->m_dwHeight);
-		
-		Rectf spacer = createChild(parent, Anchor_BottomLeft, Vec2f(16, 16), Anchor_BottomLeft);
-		
-		m_rect = createChild(spacer, Anchor_BottomRight, m_size, Anchor_BottomLeft);
-	}
+	m_size = Vec2f(16, 16);
+}
+
+void PickAllIconGui::update() {
+	Rectf parent = Rectf(Vec2f(InventoryX, 0), BasicInventorySkin->m_dwWidth, BasicInventorySkin->m_dwHeight);
 	
-	void PickAllIconGui::updateInput() {
+	Rectf spacer = createChild(parent, Anchor_BottomLeft, Vec2f(16, 16), Anchor_BottomLeft);
+	
+	m_rect = createChild(spacer, Anchor_BottomRight, m_size, Anchor_BottomLeft);
+}
+
+void PickAllIconGui::updateInput() {
+	
+	m_isSelected = m_rect.contains(Vec2f(DANAEMouse));
+	
+	if(m_isSelected) {
+		SpecialCursor=CURSOR_INTERACTION_ON;
 		
-		m_isSelected = m_rect.contains(Vec2f(DANAEMouse));
-		
-		if(m_isSelected) {
-			SpecialCursor=CURSOR_INTERACTION_ON;
-			
-			if(eeMouseDown1()) {
-				// play un son que si un item est pris
-				ARX_INVENTORY_TakeAllFromSecondaryInventory();
-			}
-			
-			if(DRAGINTER == NULL)
-				return;
+		if(eeMouseDown1()) {
+			// play un son que si un item est pris
+			ARX_INVENTORY_TakeAllFromSecondaryInventory();
 		}
+		
+		if(DRAGINTER == NULL)
+			return;
 	}
+}
 
 
 
