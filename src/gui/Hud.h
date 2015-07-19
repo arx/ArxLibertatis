@@ -400,8 +400,4 @@ private:
 
 extern HudRoot g_hudRoot;
 
-void hitStrengthGaugeRequestFlash(float flashIntensity);
-void bookIconGuiRequestFX();
-void bookIconGuiRequestHalo();
-
 #endif // ARX_GUI_HUD_H
