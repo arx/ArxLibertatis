@@ -148,6 +148,21 @@ private:
 	void createFireParticle();
 };
 
+class ChangeLevelIconGui : public HudItem {
+private:
+	TextureContainer * m_tex;
+	Vec2f m_size;
+	float m_intensity;
+	
+public:
+	ChangeLevelIconGui();
+	
+	void init();
+	bool isVisible();
+	void update(const Rectf & parent);
+	void draw();
+};
+
 class HudRoot : public HudItem {
 public:
 	void setScale(float scale);

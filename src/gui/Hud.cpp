@@ -667,38 +667,29 @@ void CurrentTorchIconGui::draw() {
 
 CurrentTorchIconGui currentTorchIconGui;
 
-
-class ChangeLevelIconGui : public HudItem {
-private:
-	TextureContainer * m_tex;
-	Vec2f m_size;
-	
-	float m_intensity;
-	
-public:
-	ChangeLevelIconGui()
+	ChangeLevelIconGui::ChangeLevelIconGui()
 		: m_tex(NULL)
 		, m_intensity(1.f)
 	{}
 	
-	void init() {
+	void ChangeLevelIconGui::init() {
 		m_tex = TextureContainer::LoadUI("graph/interface/icons/change_lvl");
 		arx_assert(m_tex);
 		m_size = Vec2f(32.f, 32.f);
 	}
 	
-	bool isVisible() {
+	bool ChangeLevelIconGui::isVisible() {
 		return CHANGE_LEVEL_ICON > -1;
 	}
 	
-	void update(const Rectf & parent) {
+	void ChangeLevelIconGui::update(const Rectf & parent) {
 		m_rect = createChild(parent, Anchor_TopRight, m_size * m_scale, Anchor_TopRight);
 		
 		m_intensity = 0.9f - std::sin(arxtime.get_frame_time()*( 1.0f / 50 ))*0.5f+rnd()*( 1.0f / 10 );
 		m_intensity = glm::clamp(m_intensity, 0.f, 1.f);
 	}
 	
-	void draw() {
+	void ChangeLevelIconGui::draw() {
 		
 		if(!isVisible())
 			return;
@@ -712,7 +703,7 @@ public:
 			}
 		}
 	}
-};
+
 ChangeLevelIconGui changeLevelIconGui;
 
 class QuickSaveIconGui {
