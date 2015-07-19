@@ -1129,149 +1129,149 @@ void PrecastSpellsGui::draw() {
 
 PrecastSpellsGui precastSpellsGui;
 
-		void ActiveSpellsGui::ActiveSpellIconSlot::updateInput(const Vec2f & mousePos) {
-			
-			if(!m_abortable)
-				return;
-			
-			if(m_rect.contains(mousePos)) {
-				SpecialCursor = CURSOR_INTERACTION_ON;
-				
-				if(eeMouseUp1()) {
-					if(spells[spellIndex]->m_type >= 0) {
-						ARX_SPEECH_Add(spellicons[spells[spellIndex]->m_type].name);
-					}
-				}
-				
-				if(eeMouseDoubleClick1()) {
-					ARX_SOUND_PlaySFX(SND_MAGIC_FIZZLE);
-					spells.endSpell(spells[spellIndex]);
-				}
+void ActiveSpellsGui::ActiveSpellIconSlot::updateInput(const Vec2f & mousePos) {
+	
+	if(!m_abortable)
+		return;
+	
+	if(m_rect.contains(mousePos)) {
+		SpecialCursor = CURSOR_INTERACTION_ON;
+		
+		if(eeMouseUp1()) {
+			if(spells[spellIndex]->m_type >= 0) {
+				ARX_SPEECH_Add(spellicons[spells[spellIndex]->m_type].name);
 			}
 		}
 		
-		void ActiveSpellsGui::ActiveSpellIconSlot::draw() {
-			
-			if(!m_flicker)
-				return;
-			
-			EERIEDrawBitmap(m_rect, 0.01f, m_tc, m_color);
-		}
-	
-	ActiveSpellsGui::ActiveSpellsGui()
-		: HudItem()
-		, m_texUnknown(NULL)
-	{}
-	
-	void ActiveSpellsGui::init() {
-		m_texUnknown = TextureContainer::Load("graph/interface/icons/spell_unknown");
-		arx_assert(m_texUnknown);
-		
-		m_slotSize = Vec2f(24.f, 24.f);
-		m_spacerSize = Vec2f(60.f, 50.f);
-		m_slotSpacerSize = Vec2f(0.f, 9.f);
-	}
-	
-	void ActiveSpellsGui::update(Rectf parent) {
-		
-		float intensity = 1.f - PULSATE * 0.5f;
-		intensity = glm::clamp(intensity, 0.f, 1.f);
-		
-		m_slots.clear();
-		
-		spellsByPlayerUpdate(intensity);
-		spellsOnPlayerUpdate(intensity);
-		
-		Rectf spacer = createChild(parent, Anchor_TopRight, m_spacerSize * m_scale, Anchor_TopRight);
-		Rectf siblingRect = spacer;
-		
-		BOOST_FOREACH(ActiveSpellIconSlot & slot, m_slots) {
-			
-			Rectf slotRect = createChild(siblingRect, Anchor_BottomLeft, m_slotSize * m_scale, Anchor_TopLeft);
-			Rectf slotSpacer = createChild(slotRect, Anchor_BottomLeft, m_slotSpacerSize * m_scale, Anchor_TopLeft);
-			siblingRect = slotSpacer;
-			
-			slot.m_rect = slotRect;
+		if(eeMouseDoubleClick1()) {
+			ARX_SOUND_PlaySFX(SND_MAGIC_FIZZLE);
+			spells.endSpell(spells[spellIndex]);
 		}
 	}
+}
+
+void ActiveSpellsGui::ActiveSpellIconSlot::draw() {
 	
-	void ActiveSpellsGui::updateInput(const Vec2f & mousePos) {
+	if(!m_flicker)
+		return;
+	
+	EERIEDrawBitmap(m_rect, 0.01f, m_tc, m_color);
+}
+
+ActiveSpellsGui::ActiveSpellsGui()
+	: HudItem()
+	, m_texUnknown(NULL)
+{}
+
+void ActiveSpellsGui::init() {
+	m_texUnknown = TextureContainer::Load("graph/interface/icons/spell_unknown");
+	arx_assert(m_texUnknown);
+	
+	m_slotSize = Vec2f(24.f, 24.f);
+	m_spacerSize = Vec2f(60.f, 50.f);
+	m_slotSpacerSize = Vec2f(0.f, 9.f);
+}
+
+void ActiveSpellsGui::update(Rectf parent) {
+	
+	float intensity = 1.f - PULSATE * 0.5f;
+	intensity = glm::clamp(intensity, 0.f, 1.f);
+	
+	m_slots.clear();
+	
+	spellsByPlayerUpdate(intensity);
+	spellsOnPlayerUpdate(intensity);
+	
+	Rectf spacer = createChild(parent, Anchor_TopRight, m_spacerSize * m_scale, Anchor_TopRight);
+	Rectf siblingRect = spacer;
+	
+	BOOST_FOREACH(ActiveSpellIconSlot & slot, m_slots) {
 		
-		BOOST_FOREACH(ActiveSpellIconSlot & slot, m_slots) {
-			slot.updateInput(mousePos);
+		Rectf slotRect = createChild(siblingRect, Anchor_BottomLeft, m_slotSize * m_scale, Anchor_TopLeft);
+		Rectf slotSpacer = createChild(slotRect, Anchor_BottomLeft, m_slotSpacerSize * m_scale, Anchor_TopLeft);
+		siblingRect = slotSpacer;
+		
+		slot.m_rect = slotRect;
+	}
+}
+
+void ActiveSpellsGui::updateInput(const Vec2f & mousePos) {
+	
+	BOOST_FOREACH(ActiveSpellIconSlot & slot, m_slots) {
+		slot.updateInput(mousePos);
+	}
+}
+
+void ActiveSpellsGui::draw() {
+	
+	GRenderer->SetBlendFunc(Renderer::BlendOne, Renderer::BlendOne);
+	GRenderer->SetRenderState(Renderer::AlphaBlending, true);
+	
+	BOOST_FOREACH(ActiveSpellIconSlot & slot, m_slots) {
+		slot.draw();
+	}
+}
+
+void ActiveSpellsGui::spellsByPlayerUpdate(float intensity) {
+	for(size_t i = 0; i < MAX_SPELLS; i++) {
+		SpellBase * spell = spells[SpellHandle(i)];
+		
+		if(   spell
+		   && spell->m_caster == PlayerEntityHandle
+		   && spellicons[spell->m_type].m_hasDuration
+		) {
+			ManageSpellIcon(*spell, intensity, false);
+		}
+	}
+}
+
+void ActiveSpellsGui::spellsOnPlayerUpdate(float intensity) {
+	for(size_t i = 0; i < MAX_SPELLS; i++) {
+		SpellBase * spell = spells[SpellHandle(i)];
+		if(!spell)
+			continue;
+		
+		if(std::find(spell->m_targets.begin(), spell->m_targets.end(), PlayerEntityHandle) == spell->m_targets.end()) {
+			continue;
+		}
+		
+		if(spell->m_caster != PlayerEntityHandle && spellicons[spell->m_type].m_hasDuration) {
+			ManageSpellIcon(*spell, intensity, true);
+		}
+	}
+}
+
+void ActiveSpellsGui::ManageSpellIcon(SpellBase & spell, float intensity, bool flag) {
+	
+	
+	Color color = (flag) ? Color3f(intensity, 0, 0).to<u8>() : Color3f::gray(intensity).to<u8>();
+	
+	bool flicker = true;
+	
+	if(spell.m_hasDuration) {
+		if(player.manaPool.current < 20 || spell.m_timcreation + spell.m_duration - float(arxtime) < 2000) {
+			if(ucFlick&1)
+				flicker = false;
+		}
+	} else {
+		if(player.manaPool.current<20) {
+			if(ucFlick&1)
+				flicker = false;
 		}
 	}
 	
-	void ActiveSpellsGui::draw() {
-		
-		GRenderer->SetBlendFunc(Renderer::BlendOne, Renderer::BlendOne);
-		GRenderer->SetRenderState(Renderer::AlphaBlending, true);
-		
-		BOOST_FOREACH(ActiveSpellIconSlot & slot, m_slots) {
-			slot.draw();
-		}
-	}
+	if(spell.m_type >= 0 && (size_t)spell.m_type < SPELL_TYPES_COUNT) {
 	
-	void ActiveSpellsGui::spellsByPlayerUpdate(float intensity) {
-		for(size_t i = 0; i < MAX_SPELLS; i++) {
-			SpellBase * spell = spells[SpellHandle(i)];
-			
-			if(   spell
-			   && spell->m_caster == PlayerEntityHandle
-			   && spellicons[spell->m_type].m_hasDuration
-			) {
-				ManageSpellIcon(*spell, intensity, false);
-			}
-		}
+		ActiveSpellIconSlot slot;
+		slot.m_tc = spellicons[spell.m_type].tc;
+		slot.m_color = color;
+		slot.spellIndex = spell.m_thisHandle;
+		slot.m_flicker = flicker;
+		slot.m_abortable = (!flag && !(player.Interface & INTER_COMBATMODE));
+		
+		m_slots.push_back(slot);
 	}
-	
-	void ActiveSpellsGui::spellsOnPlayerUpdate(float intensity) {
-		for(size_t i = 0; i < MAX_SPELLS; i++) {
-			SpellBase * spell = spells[SpellHandle(i)];
-			if(!spell)
-				continue;
-			
-			if(std::find(spell->m_targets.begin(), spell->m_targets.end(), PlayerEntityHandle) == spell->m_targets.end()) {
-				continue;
-			}
-			
-			if(spell->m_caster != PlayerEntityHandle && spellicons[spell->m_type].m_hasDuration) {
-				ManageSpellIcon(*spell, intensity, true);
-			}
-		}
-	}
-	
-	void ActiveSpellsGui::ManageSpellIcon(SpellBase & spell, float intensity, bool flag) {
-		
-		
-		Color color = (flag) ? Color3f(intensity, 0, 0).to<u8>() : Color3f::gray(intensity).to<u8>();
-		
-		bool flicker = true;
-		
-		if(spell.m_hasDuration) {
-			if(player.manaPool.current < 20 || spell.m_timcreation + spell.m_duration - float(arxtime) < 2000) {
-				if(ucFlick&1)
-					flicker = false;
-			}
-		} else {
-			if(player.manaPool.current<20) {
-				if(ucFlick&1)
-					flicker = false;
-			}
-		}
-		
-		if(spell.m_type >= 0 && (size_t)spell.m_type < SPELL_TYPES_COUNT) {
-		
-			ActiveSpellIconSlot slot;
-			slot.m_tc = spellicons[spell.m_type].tc;
-			slot.m_color = color;
-			slot.spellIndex = spell.m_thisHandle;
-			slot.m_flicker = flicker;
-			slot.m_abortable = (!flag && !(player.Interface & INTER_COMBATMODE));
-			
-			m_slots.push_back(slot);
-		}
-	}
+}
 
 ActiveSpellsGui activeSpellsGui = ActiveSpellsGui();
 
