@@ -378,8 +378,8 @@ void ARX_Player_Rune_Add(RuneFlag _ulRune)
 	}
 	
 	if(iNbSpellsAfter > iNbSpells) {
-		bookIconGuiRequestFX();
-		bookIconGuiRequestHalo();
+		g_hudRoot.bookIconGui.requestFX();
+		g_hudRoot.bookIconGui.requestHalo();
 	}
 }
 
@@ -403,7 +403,7 @@ void ARX_PLAYER_Quest_Add(const std::string & quest, bool _bLoad) {
 	PlayerQuest.back().ident = quest;
 	
 	if(!_bLoad)
-		bookIconGuiRequestHalo();
+		g_hudRoot.bookIconGui.requestHalo();
 	
 	gui::updateQuestBook();
 }

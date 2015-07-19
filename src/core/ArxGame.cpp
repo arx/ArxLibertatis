@@ -2166,7 +2166,7 @@ void ArxGame::render() {
 	EXTERNALVIEW = false;
 
 	if(g_debugTriggers[1])
-		bookIconGuiRequestFX();
+		g_hudRoot.bookIconGui.requestFX();
 	
 	if(isInMenu()) {
 		renderMenu();

@@ -275,16 +275,6 @@ void BookIconGui::updateInput() {
 	}
 }
 
-static BookIconGui bookIconGui;
-
-void bookIconGuiRequestHalo() {
-	bookIconGui.requestHalo();
-}
-
-void bookIconGuiRequestFX() {
-	bookIconGui.requestFX();
-}
-
 
 void BackpackIconGui::init() {
 	m_tex = TextureContainer::LoadUI("graph/interface/icons/backpack");

@@ -377,6 +377,7 @@ public:
 	void draw();
 	
 	HitStrengthGauge hitStrengthGauge;
+	BookIconGui bookIconGui;
 };
 
 extern HudRoot g_hudRoot;

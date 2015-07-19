@@ -437,7 +437,7 @@ public:
 			
 			DebugScript(" newspell");
 			
-			bookIconGuiRequestFX();
+			g_hudRoot.bookIconGui.requestFX();
 		} else if(type == "torch") {
 			
 			DebugScript(" torch");
