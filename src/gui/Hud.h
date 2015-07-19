@@ -293,6 +293,44 @@ public:
 	void draw();
 };
 
+#include "game/magic/Spell.h"
+
+class ActiveSpellsGui : public HudItem {
+private:
+
+	struct ActiveSpellIconSlot {
+		Rectf m_rect;
+		TextureContainer * m_tc;
+		Color m_color;
+		SpellHandle spellIndex;
+		bool m_flicker;
+		bool m_abortable;
+		
+		void updateInput(const Vec2f & mousePos);
+		void draw();
+	};
+	
+public:
+	ActiveSpellsGui();
+	
+	void init();
+	void update(Rectf parent);
+	void updateInput(const Vec2f & mousePos);
+	void draw();
+	
+private:
+	TextureContainer * m_texUnknown;
+	Vec2f m_slotSize;
+	Vec2f m_spacerSize;
+	Vec2f m_slotSpacerSize;
+	
+	std::vector<ActiveSpellIconSlot> m_slots;
+	
+	void spellsByPlayerUpdate(float intensity);
+	void spellsOnPlayerUpdate(float intensity);
+	void ManageSpellIcon(SpellBase & spell, float intensity, bool flag);
+};
+
 class HudRoot : public HudItem {
 public:
 	void setScale(float scale);

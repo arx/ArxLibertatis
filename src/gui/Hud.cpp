@@ -1129,19 +1129,7 @@ void PrecastSpellsGui::draw() {
 
 PrecastSpellsGui precastSpellsGui;
 
-
-class ActiveSpellsGui : public HudItem {
-private:
-
-	struct ActiveSpellIconSlot {
-		Rectf m_rect;
-		TextureContainer * m_tc;
-		Color m_color;
-		SpellHandle spellIndex;
-		bool m_flicker;
-		bool m_abortable;
-		
-		void updateInput(const Vec2f & mousePos) {
+		void ActiveSpellsGui::ActiveSpellIconSlot::updateInput(const Vec2f & mousePos) {
 			
 			if(!m_abortable)
 				return;
@@ -1162,22 +1150,20 @@ private:
 			}
 		}
 		
-		void draw() {
+		void ActiveSpellsGui::ActiveSpellIconSlot::draw() {
 			
 			if(!m_flicker)
 				return;
 			
 			EERIEDrawBitmap(m_rect, 0.01f, m_tc, m_color);
 		}
-	};
 	
-public:
-	ActiveSpellsGui()
+	ActiveSpellsGui::ActiveSpellsGui()
 		: HudItem()
 		, m_texUnknown(NULL)
 	{}
 	
-	void init() {
+	void ActiveSpellsGui::init() {
 		m_texUnknown = TextureContainer::Load("graph/interface/icons/spell_unknown");
 		arx_assert(m_texUnknown);
 		
@@ -1186,7 +1172,7 @@ public:
 		m_slotSpacerSize = Vec2f(0.f, 9.f);
 	}
 	
-	void update(Rectf parent) {
+	void ActiveSpellsGui::update(Rectf parent) {
 		
 		float intensity = 1.f - PULSATE * 0.5f;
 		intensity = glm::clamp(intensity, 0.f, 1.f);
@@ -1209,14 +1195,14 @@ public:
 		}
 	}
 	
-	void updateInput(const Vec2f & mousePos) {
+	void ActiveSpellsGui::updateInput(const Vec2f & mousePos) {
 		
 		BOOST_FOREACH(ActiveSpellIconSlot & slot, m_slots) {
 			slot.updateInput(mousePos);
 		}
 	}
 	
-	void draw() {
+	void ActiveSpellsGui::draw() {
 		
 		GRenderer->SetBlendFunc(Renderer::BlendOne, Renderer::BlendOne);
 		GRenderer->SetRenderState(Renderer::AlphaBlending, true);
@@ -1226,15 +1212,7 @@ public:
 		}
 	}
 	
-private:
-	TextureContainer * m_texUnknown;
-	Vec2f m_slotSize;
-	Vec2f m_spacerSize;
-	Vec2f m_slotSpacerSize;
-	
-	std::vector<ActiveSpellIconSlot> m_slots;
-	
-	void spellsByPlayerUpdate(float intensity) {
+	void ActiveSpellsGui::spellsByPlayerUpdate(float intensity) {
 		for(size_t i = 0; i < MAX_SPELLS; i++) {
 			SpellBase * spell = spells[SpellHandle(i)];
 			
@@ -1247,7 +1225,7 @@ private:
 		}
 	}
 	
-	void spellsOnPlayerUpdate(float intensity) {
+	void ActiveSpellsGui::spellsOnPlayerUpdate(float intensity) {
 		for(size_t i = 0; i < MAX_SPELLS; i++) {
 			SpellBase * spell = spells[SpellHandle(i)];
 			if(!spell)
@@ -1263,7 +1241,7 @@ private:
 		}
 	}
 	
-	void ManageSpellIcon(SpellBase & spell, float intensity, bool flag) {
+	void ActiveSpellsGui::ManageSpellIcon(SpellBase & spell, float intensity, bool flag) {
 		
 		
 		Color color = (flag) ? Color3f(intensity, 0, 0).to<u8>() : Color3f::gray(intensity).to<u8>();
@@ -1294,7 +1272,7 @@ private:
 			m_slots.push_back(slot);
 		}
 	}
-};
+
 ActiveSpellsGui activeSpellsGui = ActiveSpellsGui();
 
 /*!
