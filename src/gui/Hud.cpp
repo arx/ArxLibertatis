@@ -834,34 +834,25 @@ void MemorizedRunesHud::draw() {
 MemorizedRunesHud memorizedRunesHud;
 
 
-class HealthGauge : public HudItem {
-private:
-	Vec2f m_size;
-	
-	Color m_color;
-	TextureContainer * m_emptyTex;
-	TextureContainer * m_filledTex;
-	float m_amount;
-public:
-	HealthGauge()
+	HealthGauge::HealthGauge()
 		: m_size(33.f, 80.f)
 		, m_emptyTex(NULL)
 		, m_filledTex(NULL)
 		, m_amount(0.f)
 	{}
 	
-	void init() {
+	void HealthGauge::init() {
 		m_emptyTex = TextureContainer::LoadUI("graph/interface/bars/empty_gauge_red");
 		m_filledTex = TextureContainer::LoadUI("graph/interface/bars/filled_gauge_red");
 		arx_assert(m_emptyTex);
 		arx_assert(m_filledTex);
 	}
 	
-	void updateRect(const Rectf & parent) {
+	void HealthGauge::updateRect(const Rectf & parent) {
 		m_rect = createChild(parent, Anchor_BottomLeft, m_size * m_scale, Anchor_BottomLeft);
 	}
 	
-	void update() {
+	void HealthGauge::update() {
 		
 		m_amount = (float)player.lifePool.current/(float)player.Full_maxlife;
 		
@@ -874,7 +865,7 @@ public:
 		}
 	}
 	
-	void updateInput(const Vec2f & mousePos) {
+	void HealthGauge::updateInput(const Vec2f & mousePos) {
 		if(!(player.Interface & INTER_COMBATMODE)) {
 			if(m_rect.contains(mousePos)) {
 				if(eeMouseDown1()) {
@@ -886,12 +877,12 @@ public:
 		}
 	}
 	
-	void draw() {
+	void HealthGauge::draw() {
 		
 		EERIEDrawBitmap2DecalY(m_rect, 0.f, m_filledTex, m_color, (1.f - m_amount));
 		EERIEDrawBitmap(m_rect, 0.001f, m_emptyTex, Color::white);
 	}
-};
+
 HealthGauge healthGauge;
 
 class ManaGauge : public HudItem {

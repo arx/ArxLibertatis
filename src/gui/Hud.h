@@ -192,6 +192,25 @@ public:
 	void draw();
 };
 
+class HealthGauge : public HudItem {
+private:
+	Vec2f m_size;
+	
+	Color m_color;
+	TextureContainer * m_emptyTex;
+	TextureContainer * m_filledTex;
+	float m_amount;
+	
+public:
+	HealthGauge();
+	
+	void init();
+	void updateRect(const Rectf & parent);
+	void update();
+	void updateInput(const Vec2f & mousePos);
+	void draw();
+};
+
 class HudRoot : public HudItem {
 public:
 	void setScale(float scale);
