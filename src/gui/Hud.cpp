@@ -386,51 +386,51 @@ void BackpackIconGui::draw() {
 static BackpackIconGui backpackIconGui;
 
 
-	void StealIconGui::init() {
-		m_tex = TextureContainer::LoadUI("graph/interface/icons/steal");
-		arx_assert(m_tex);
-		
-		m_size = Vec2f(32, 32);
-	}
+void StealIconGui::init() {
+	m_tex = TextureContainer::LoadUI("graph/interface/icons/steal");
+	arx_assert(m_tex);
 	
-	void StealIconGui::updateRect(const Rectf & parent) {
-		
-		m_rect = createChild(parent, Anchor_TopLeft, m_size * m_scale, Anchor_BottomLeft);
-	}
+	m_size = Vec2f(32, 32);
+}
+
+void StealIconGui::updateRect(const Rectf & parent) {
 	
-	void StealIconGui::updateInput() {
-		
-		// steal
-		if(player.Interface & INTER_STEAL) {
-			if(m_rect.contains(Vec2f(DANAEMouse))) {
-				eMouseState=MOUSE_IN_STEAL_ICON;
-				SpecialCursor=CURSOR_INTERACTION_ON;
+	m_rect = createChild(parent, Anchor_TopLeft, m_size * m_scale, Anchor_BottomLeft);
+}
 
-				if(eeMouseDown1()) {
-					ARX_INVENTORY_OpenClose(ioSteal);
-
-					if(player.Interface&(INTER_INVENTORY | INTER_INVENTORYALL)) {
-						ARX_SOUND_PlayInterface(SND_BACKPACK, 0.9F + 0.2F * rnd());
-					}
-
-					if(SecondaryInventory) {
-						SendIOScriptEvent(ioSteal, SM_STEAL);
-
-						bForceEscapeFreeLook=true;
-					    lOldTruePlayerMouseLook=!TRUE_PLAYER_MOUSELOOK_ON;
-					}
+void StealIconGui::updateInput() {
+	
+	// steal
+	if(player.Interface & INTER_STEAL) {
+		if(m_rect.contains(Vec2f(DANAEMouse))) {
+			eMouseState=MOUSE_IN_STEAL_ICON;
+			SpecialCursor=CURSOR_INTERACTION_ON;
+			
+			if(eeMouseDown1()) {
+				ARX_INVENTORY_OpenClose(ioSteal);
+				
+				if(player.Interface&(INTER_INVENTORY | INTER_INVENTORYALL)) {
+					ARX_SOUND_PlayInterface(SND_BACKPACK, 0.9F + 0.2F * rnd());
 				}
-
-				if(DRAGINTER == NULL)
-					return;
+				
+				if(SecondaryInventory) {
+					SendIOScriptEvent(ioSteal, SM_STEAL);
+					
+					bForceEscapeFreeLook=true;
+					lOldTruePlayerMouseLook=!TRUE_PLAYER_MOUSELOOK_ON;
+				}
 			}
+			
+			if(DRAGINTER == NULL)
+				return;
 		}
 	}
-	
-	void StealIconGui::draw() {
-		m_isSelected = eMouseState == MOUSE_IN_STEAL_ICON;
-		HudIconBase::draw();
-	}
+}
+
+void StealIconGui::draw() {
+	m_isSelected = eMouseState == MOUSE_IN_STEAL_ICON;
+	HudIconBase::draw();
+}
 
 static StealIconGui stealIconGui;
 
