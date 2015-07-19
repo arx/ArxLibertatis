@@ -1098,78 +1098,8 @@ bool TakeFromInventory(const Vec2s & pos) {
 	if(io == NULL)
 		return false;
 	
-	if(SecondaryInventory != NULL) {
-		if(g_secondaryInventoryHud.containsPos(pos) && (io->ioflags & IO_ITEM)) {
-			Entity * ioo = SecondaryInventory->io;
-			
-			if(ioo->ioflags & IO_SHOP) {
-				long cos = ARX_INTERACTIVE_GetPrice(io, ioo);
-				
-				float fcos	= cos - cos * player.m_skillFull.intuition * 0.005f;
-				cos = checked_range_cast<long>(fcos);
-				
-				if(player.gold < cos) {
-					return false;
-				}
-				
-				ARX_SOUND_PlayInterface(SND_GOLD);
-				player.gold -= cos;
-				
-				if(io->_itemdata->count > 1) {
-					Entity * ioo = CloneIOItem(io);
-					ioo->show = SHOW_FLAG_NOT_DRAWN;
-					ioo->scriptload = 1;
-					ioo->_itemdata->count = 1;
-					io->_itemdata->count--;
-					ARX_SOUND_PlayInterface(SND_INVSTD);
-					Set_DragInter(ioo);
-					return true;
-				}
-			} else if(io->_itemdata->count > 1) {
-				
-				if(!GInput->actionPressed(CONTROLS_CUST_STEALTHMODE)) {
-					Entity * ioo = CloneIOItem(io);
-					ioo->show = SHOW_FLAG_NOT_DRAWN;
-					ioo->scriptload = 1;
-					ioo->_itemdata->count = 1;
-					io->_itemdata->count--;
-					ARX_SOUND_PlayInterface(SND_INVSTD);
-					Set_DragInter(ioo);
-					sInventory = 2;
-					
-					
-					float fCalcX = (pos.x + InventoryX - INTERFACE_RATIO(2)) / INTERFACE_RATIO(32);
-					float fCalcY = (pos.y - INTERFACE_RATIO(13)) / INTERFACE_RATIO(32);
-					
-					sInventoryPos.x = checked_range_cast<short>(fCalcX);
-					sInventoryPos.y = checked_range_cast<short>(fCalcY);
-					
-					//ARX_INVENTORY_Object_Out(SecondaryInventory->io, ioo);
-					
-					ARX_INVENTORY_IdentifyIO(ioo);
-					return true;
-				}
-			}
-		}
-		
-		for(long j = 0; j < SecondaryInventory->m_size.y; j++)
-		for(long i = 0; i < SecondaryInventory->m_size.x; i++) {
-			INVENTORY_SLOT & slot = SecondaryInventory->slot[i][j];
-			
-			if(slot.io != io)
-				continue;
-			
-			slot.io = NULL;
-			slot.show = 1;
-			sInventory = 2;
-			
-			float fCalcX = (pos.x + InventoryX - INTERFACE_RATIO(2)) / INTERFACE_RATIO(32);
-			float fCalcY = (pos.y - INTERFACE_RATIO(13)) / INTERFACE_RATIO(32);
-			
-			sInventoryPos.x = checked_range_cast<short>(fCalcX);
-			sInventoryPos.y = checked_range_cast<short>(fCalcY);
-		}
-	}
+	if(g_secondaryInventoryHud.dragEntity(io, pos))
+		return true;
 	
 	g_playerInventoryHud.dragEntity(io, pos);
 

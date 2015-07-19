@@ -73,6 +73,7 @@ public:
 	Entity * getObj(const Vec2s & pos);
 	
 	void dropEntity();
+	bool dragEntity(Entity * io, const Vec2s &pos);
 };
 
 extern SecondaryInventoryHud g_secondaryInventoryHud;
