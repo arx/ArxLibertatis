@@ -558,15 +558,7 @@ void purseIconGuiRequestHalo() {
 }
 
 
-class CurrentTorchIconGui : public HudItem {
-private:
-	bool m_isActive;
-	Rectf m_rect;
-	TextureContainer * m_tex;
-	Vec2f m_size;
-	
-public:
-	CurrentTorchIconGui()
+	CurrentTorchIconGui::CurrentTorchIconGui()
 		: HudItem()
 		, m_isActive(false)
 		, m_rect()
@@ -574,15 +566,15 @@ public:
 		, m_size()
 	{}
 	
-	void init() {
+	void CurrentTorchIconGui::init() {
 		m_size = Vec2f(32.f, 64.f);
 	}
 	
-	bool isVisible() {
+	bool CurrentTorchIconGui::isVisible() {
 		return !(player.Interface & INTER_COMBATMODE) && player.torch;
 	}
 	
-	void updateRect(const Rectf & parent) {
+	void CurrentTorchIconGui::updateRect(const Rectf & parent) {
 		
 		float secondaryInventoryX = InventoryX + 110.f;
 		
@@ -593,7 +585,7 @@ public:
 		}
 	}
 	
-	void updateInput() {
+	void CurrentTorchIconGui::updateInput() {
 		if(player.torch) {
 			
 			if(m_rect.contains(Vec2f(DANAEMouse))) {
@@ -623,7 +615,7 @@ public:
 		}
 	}
 	
-	void update() {
+	void CurrentTorchIconGui::update() {
 		
 		if(!isVisible())
 			return;
@@ -645,7 +637,7 @@ public:
 		createFireParticle();
 	}
 	
-	void createFireParticle() {
+	void CurrentTorchIconGui::createFireParticle() {
 		
 		PARTICLE_DEF * pd = createParticle();
 		if(!pd) {
@@ -665,14 +657,13 @@ public:
 		pd->is2D = true;
 	}
 	
-	void draw() {
+	void CurrentTorchIconGui::draw() {
 		
 		if(!isVisible())
 			return;
 		
 		EERIEDrawBitmap(m_rect, 0.001f, m_tex, Color::white);
 	}
-};
 
 CurrentTorchIconGui currentTorchIconGui;
 

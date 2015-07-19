@@ -127,6 +127,26 @@ public:
 	void requestHalo();
 };
 
+class CurrentTorchIconGui : public HudItem {
+private:
+	bool m_isActive;
+	Rectf m_rect;
+	TextureContainer * m_tex;
+	Vec2f m_size;
+	
+public:
+	CurrentTorchIconGui();
+	
+	void init();
+	void updateRect(const Rectf & parent);
+	void updateInput();
+	void update();
+	void draw();
+	
+private:
+	bool isVisible();
+	void createFireParticle();
+};
 
 class HudRoot : public HudItem {
 public:
