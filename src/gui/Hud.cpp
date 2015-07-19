@@ -241,7 +241,7 @@ static void DrawItemPrice() {
 		Vec2f pos = Vec2f(DANAEMouse);
 		pos += Vec2f(0, -10);
 		
-		if(InSecondaryInventoryPos(DANAEMouse)) {
+		if(g_secondaryInventoryHud.containsPos(DANAEMouse)) {
 			long amount=ARX_INTERACTIVE_GetPrice(FlyingOverIO,temp);
 			// achat
 			float famount = amount - amount * player.m_skillFull.intuition * 0.005f;

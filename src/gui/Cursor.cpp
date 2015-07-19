@@ -53,6 +53,7 @@
 #include "gui/Interface.h"
 #include "gui/Text.h"
 #include "gui/Menu.h"
+#include "gui/hud/SecondaryInventory.h"
 
 extern Rect g_size;
 extern Vec2s DANAEMouse;
@@ -645,7 +646,7 @@ static void ARX_INTERFACE_RenderCursorInternal(bool flag) {
 							ARX_INTERFACE_DrawNumber(pos + nuberOffset, DRAGINTER->_itemdata->count, 3, Color::white, 1.f);
 						}
 					} else {
-						if((InInventoryPos(DANAEMouse) || InSecondaryInventoryPos(DANAEMouse)) || CANNOT_PUT_IT_HERE != -1) {
+						if((InInventoryPos(DANAEMouse) || g_secondaryInventoryHud.containsPos(DANAEMouse)) || CANNOT_PUT_IT_HERE != -1) {
 							EERIEDrawBitmap(rect, .00001f, tc, color);
 						}
 					}
@@ -654,7 +655,7 @@ static void ARX_INTERFACE_RenderCursorInternal(bool flag) {
 					if(   CANNOT_PUT_IT_HERE
 					   && (eMouseState != MOUSE_IN_INVENTORY_ICON)
 					   && !InInventoryPos(DANAEMouse)
-					   && !InSecondaryInventoryPos(DANAEMouse)
+					   && !g_secondaryInventoryHud.containsPos(DANAEMouse)
 					   && !ARX_INTERFACE_MouseInBook()) {
 						TextureContainer * tcc = cursorMovable;
 						

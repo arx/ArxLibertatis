@@ -64,6 +64,11 @@ public:
 	void draw();
 	
 	void updateInputButtons();
+	
+	/*!
+	 * \brief Returns true if position is in secondary inventory
+	 */
+	bool containsPos(const Vec2s & pos);
 };
 
 extern SecondaryInventoryHud g_secondaryInventoryHud;

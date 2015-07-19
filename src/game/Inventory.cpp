@@ -64,6 +64,7 @@ ZeniMax Media Inc., Suite 120, Rockville, Maryland 20850 USA.
 #include "gui/Hud.h"
 #include "gui/Interface.h"
 #include "gui/hud/PlayerInventory.h"
+#include "gui/hud/SecondaryInventory.h"
 
 #include "graphics/GraphicsTypes.h"
 #include "graphics/Math.h"
@@ -880,7 +881,7 @@ void PutInInventory() {
 		return;
 	
 	// First Look for Identical Item...
-	if(SecondaryInventory && InSecondaryInventoryPos(DANAEMouse)) {
+	if(SecondaryInventory && g_secondaryInventoryHud.containsPos(DANAEMouse)) {
 		Entity * io = SecondaryInventory->io;
 		
 		float fprice = ARX_INTERACTIVE_GetPrice(DRAGINTER, io) / 3.0f; //>>1;
@@ -1006,33 +1007,10 @@ void PutInInventory() {
 }
 
 /*!
- * \brief Returns true if position is in secondary inventory
- */
-bool InSecondaryInventoryPos(const Vec2s & pos) {
-	if(SecondaryInventory != NULL) {
-		Vec2s t;
-		t.x = pos.x + checked_range_cast<short>(InventoryX) - SHORT_INTERFACE_RATIO(2);
-		t.y = pos.y - SHORT_INTERFACE_RATIO(13);
-		t.x = t.x / SHORT_INTERFACE_RATIO(32);
-		t.y = t.y / SHORT_INTERFACE_RATIO(32);
-
-		if(t.x < 0 || t.x >= SecondaryInventory->m_size.x)
-			return false;
-
-		if(t.y < 0 || t.y >= SecondaryInventory->m_size.y)
-			return false;
-
-		return true;
-	}
-
-	return false;
-}
-
-/*!
  * \brief Returns true if "pos" is a position in player inventory or in SECONDARY inventory
  */
 bool InInventoryPos(const Vec2s & pos) {
-	if(InSecondaryInventoryPos(pos))
+	if(g_secondaryInventoryHud.containsPos(pos))
 		return true;
 
 	return g_playerInventoryHud.containsPos(pos);
@@ -1271,7 +1249,7 @@ bool TakeFromInventory(const Vec2s & pos) {
 		return false;
 	
 	if(SecondaryInventory != NULL) {
-		if(InSecondaryInventoryPos(pos) && (io->ioflags & IO_ITEM)) {
+		if(g_secondaryInventoryHud.containsPos(pos) && (io->ioflags & IO_ITEM)) {
 			Entity * ioo = SecondaryInventory->io;
 			
 			if(ioo->ioflags & IO_SHOP) {

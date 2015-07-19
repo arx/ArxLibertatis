@@ -286,3 +286,23 @@ void SecondaryInventoryHud::updateInputButtons() {
 		m_closeButton.updateInput();
 	}
 }
+
+bool SecondaryInventoryHud::containsPos(const Vec2s & pos) {
+	if(SecondaryInventory != NULL) {
+		Vec2s t;
+		t.x = pos.x + checked_range_cast<short>(InventoryX) - SHORT_INTERFACE_RATIO(2);
+		t.y = pos.y - SHORT_INTERFACE_RATIO(13);
+		t.x = t.x / SHORT_INTERFACE_RATIO(32);
+		t.y = t.y / SHORT_INTERFACE_RATIO(32);
+		
+		if(t.x < 0 || t.x >= SecondaryInventory->m_size.x)
+			return false;
+		
+		if(t.y < 0 || t.y >= SecondaryInventory->m_size.y)
+			return false;
+		
+		return true;
+	}
+	
+	return false;
+}

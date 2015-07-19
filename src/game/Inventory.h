@@ -256,8 +256,6 @@ Vec3f GetItemWorldPositionSound(const Entity * io);
 Entity * GetInventoryObj_INVENTORYUSE(const Vec2s & pos);
 void CheckForInventoryReplaceMe(Entity * io, Entity * old);
 
-bool InSecondaryInventoryPos(const Vec2s & pos);
-
 bool CanBePutInSecondaryInventory(INVENTORY_DATA * id, Entity * io);
 
 void CleanInventory();

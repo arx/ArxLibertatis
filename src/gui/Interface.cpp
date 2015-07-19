@@ -2343,7 +2343,7 @@ void ArxGame::manageEditorControls() {
 		if(eeMouseDoubleClick1() && !COMBINE) {
 			bool accept_combine = true;
 			
-			if(SecondaryInventory && InSecondaryInventoryPos(DANAEMouse)) {
+			if(SecondaryInventory && g_secondaryInventoryHud.containsPos(DANAEMouse)) {
 				Entity * io = SecondaryInventory->io;
 				
 				if(io->ioflags & IO_SHOP)
