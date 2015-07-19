@@ -2115,7 +2115,7 @@ void ArxGame::manageEditorControls() {
 		}
 	}
 	
-	manageEditorControlsHUD2();
+	g_secondaryInventoryHud.updateInputButtons();
 	
 	// Single Click On Object
 	if(   eeMouseUp1()

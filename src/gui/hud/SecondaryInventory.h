@@ -59,10 +59,10 @@ public:
 	void init();
 	void update();
 	void draw();
+	
+	void updateInputButtons();
 };
 
 extern SecondaryInventoryHud g_secondaryInventoryHud;
-
-void manageEditorControlsHUD2();
 
 #endif // ARX_GUI_HUD_SECONDARYINVENTORY_H

@@ -280,12 +280,12 @@ void SecondaryInventoryHud::draw() {
 	}
 }
 
-void manageEditorControlsHUD2()
-{
+void SecondaryInventoryHud::updateInputButtons() {
+	
 	if(TSecondaryInventory) {
 		
 		Entity * temp = TSecondaryInventory->io;
-
+		
 		if(temp && !(temp->ioflags & IO_SHOP) && !(temp == ioSteal)) {
 			pickAllIconGui.updateInput();
 		}
