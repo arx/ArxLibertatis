@@ -435,47 +435,47 @@ void StealIconGui::draw() {
 static StealIconGui stealIconGui;
 
 
-	LevelUpIconGui::LevelUpIconGui()
-		: HudIconBase()
-		, m_pos(0.f, 0.f)
-		, m_size(32.f, 32.f)
-		, m_visible(false)
-	{}
+LevelUpIconGui::LevelUpIconGui()
+	: HudIconBase()
+	, m_pos(0.f, 0.f)
+	, m_size(32.f, 32.f)
+	, m_visible(false)
+{}
+
+void LevelUpIconGui::init() {
+	m_tex = TextureContainer::LoadUI("graph/interface/icons/lvl_up");
+	arx_assert(m_tex);
+	m_size = Vec2f(32.f, 32.f);
+}
+
+void LevelUpIconGui::update(const Rectf & parent) {
+	m_rect = createChild(parent, Anchor_TopRight, m_size * m_scale, Anchor_BottomRight);
 	
-	void LevelUpIconGui::init() {
-		m_tex = TextureContainer::LoadUI("graph/interface/icons/lvl_up");
-		arx_assert(m_tex);
-		m_size = Vec2f(32.f, 32.f);
-	}
+	m_visible = (player.Skill_Redistribute) || (player.Attribute_Redistribute);
+}
+
+void LevelUpIconGui::updateInput() {
+	if(!m_visible)
+		return;
 	
-	void LevelUpIconGui::update(const Rectf & parent) {
-		m_rect = createChild(parent, Anchor_TopRight, m_size * m_scale, Anchor_BottomRight);
-		
-		m_visible = (player.Skill_Redistribute) || (player.Attribute_Redistribute);
-	}
+	m_isSelected = m_rect.contains(Vec2f(DANAEMouse));
 	
-	void LevelUpIconGui::updateInput() {
-		if(!m_visible)
-			return;
+	if(m_isSelected) {
+		SpecialCursor = CURSOR_INTERACTION_ON;
 		
-		m_isSelected = m_rect.contains(Vec2f(DANAEMouse));
-		
-		if(m_isSelected) {
-			SpecialCursor = CURSOR_INTERACTION_ON;
-			
-			if(eeMouseDown1()) {
-				ARX_INTERFACE_BookOpen();
-			}
+		if(eeMouseDown1()) {
+			ARX_INTERFACE_BookOpen();
 		}
 	}
-	
+}
 
-	void LevelUpIconGui::draw() {
-		if(!m_visible)
-			return;
-		
-		HudIconBase::draw();
-	}
+
+void LevelUpIconGui::draw() {
+	if(!m_visible)
+		return;
+	
+	HudIconBase::draw();
+}
 
 LevelUpIconGui levelUpIconGui;
 
