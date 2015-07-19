@@ -20,11 +20,17 @@
 #ifndef ARX_GUI_HUD_H
 #define ARX_GUI_HUD_H
 
+#include "gui/hud/HudCommon.h"
 #include "math/Types.h"
 
 extern bool bIsAiming;
 
-void hudElementsInit();
+class HudRoot : public HudItem {
+public:
+	void init();
+};
+
+extern HudRoot g_hudRoot;
 
 void setHudScale(float scale);
 

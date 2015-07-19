@@ -1595,32 +1595,6 @@ public:
 StealthGauge stealthGauge;
 
 
-void hudElementsInit() {
-	changeLevelIconGui.init();
-	currentTorchIconGui.init();
-	activeSpellsGui.init();
-	damagedEquipmentGui.init();
-	mecanismIcon.init();
-	
-	stealthGauge.init();
-	screenArrows.init();
-	
-	healthGauge.init();
-	manaGauge.init();
-	bookIconGui.init();
-	backpackIconGui.init();
-	levelUpIconGui.init();
-	stealIconGui.init();
-	g_secondaryInventoryHud.init();
-	g_playerInventoryHud.init();
-	
-	purseIconGui.init();
-	
-	hitStrengthGauge.init();
-	
-	//setHudScale(2);
-}
-
 void setHudScale(float scale) {
 	hitStrengthGauge.setScale(scale);
 	healthGauge.setScale(scale);
@@ -1834,3 +1808,32 @@ void hudUpdateInput() {
 		}
 	}
 }
+
+
+void HudRoot::init() {
+	changeLevelIconGui.init();
+	currentTorchIconGui.init();
+	activeSpellsGui.init();
+	damagedEquipmentGui.init();
+	mecanismIcon.init();
+	
+	stealthGauge.init();
+	screenArrows.init();
+	
+	healthGauge.init();
+	manaGauge.init();
+	bookIconGui.init();
+	backpackIconGui.init();
+	levelUpIconGui.init();
+	stealIconGui.init();
+	g_secondaryInventoryHud.init();
+	g_playerInventoryHud.init();
+	
+	purseIconGui.init();
+	
+	hitStrengthGauge.init();
+	
+	//setHudScale(2);
+}
+
+HudRoot g_hudRoot;

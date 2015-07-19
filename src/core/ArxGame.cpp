@@ -561,7 +561,7 @@ static void LoadSysTextures() {
 	TextureContainer::LoadUI("graph/particles/light");
 	
 	//INTERFACE LOADING
-	hudElementsInit();
+	g_hudRoot.init();
 	
 	// Load book textures and text
 	ITC.init();
