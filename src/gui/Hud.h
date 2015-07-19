@@ -25,6 +25,37 @@
 
 extern bool bIsAiming;
 
+/*!
+ * \brief the hit strength diamond shown at the bottom of the UI.
+ */
+class HitStrengthGauge : public HudItem {
+private:
+	TextureContainer * m_emptyTex;
+	TextureContainer * m_fullTex;
+	TextureContainer * m_hitTex;
+	
+	Vec2f m_size;
+	Vec2f m_hitSize;
+	
+	Rectf m_hitRect;
+	
+	float m_intensity;
+	bool bHitFlash;
+	unsigned long ulHitFlash;
+	float m_flashIntensity;
+	
+public:
+	HitStrengthGauge();
+	
+	void init();
+	void updateRect(const Rectf & parent);
+	void update();
+	void draw();
+	
+	void requestFlash(float flashIntensity);
+};
+
+
 class HudRoot : public HudItem {
 public:
 	void setScale(float scale);

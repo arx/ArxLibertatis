@@ -63,27 +63,8 @@ extern bool WILLRETURNTOFREELOOK;
 
 bool bIsAiming = false;
 
-/*!
- * \brief the hit strength diamond shown at the bottom of the UI.
- */
-class HitStrengthGauge : public HudItem{
-private:
-	TextureContainer * m_emptyTex;
-	TextureContainer * m_fullTex;
-	TextureContainer * m_hitTex;
-	
-	Vec2f m_size;
-	Vec2f m_hitSize;
-	
-	Rectf m_hitRect;
-	
-	float m_intensity;
-	bool bHitFlash;
-	unsigned long ulHitFlash;
-	float m_flashIntensity;
-	
-public:
-	HitStrengthGauge()
+
+	HitStrengthGauge::HitStrengthGauge()
 		: m_emptyTex(NULL)
 		, m_fullTex(NULL)
 		, m_hitTex(NULL)
@@ -93,7 +74,7 @@ public:
 		, m_flashIntensity(0.f)
 	{}
 	
-	void init() {
+	void HitStrengthGauge::init() {
 		m_emptyTex = TextureContainer::LoadUI("graph/interface/bars/aim_empty");
 		m_fullTex = TextureContainer::LoadUI("graph/interface/bars/aim_maxi");
 		m_hitTex = TextureContainer::LoadUI("graph/interface/bars/flash_gauge");
@@ -105,20 +86,20 @@ public:
 		m_hitSize = Vec2f(172.f, 130.f);
 	}
 	
-	void requestFlash(float flashIntensity) {
+	void HitStrengthGauge::requestFlash(float flashIntensity) {
 		bHitFlash = true;
 		ulHitFlash = 0;
 		m_flashIntensity = flashIntensity;
 	}
 	
-	void updateRect(const Rectf & parent) {
+	void HitStrengthGauge::updateRect(const Rectf & parent) {
 		m_rect = createChild(parent, Anchor_BottomCenter, m_size * m_scale, Anchor_BottomCenter);
 		m_rect.move(0.f, -2.f);
 		
 		m_hitRect = createChild(m_rect, Anchor_Center, m_hitSize * m_scale, Anchor_Center);
 	}
 	
-	void update() {
+	void HitStrengthGauge::update() {
 		
 		if(AimTime == 0) {
 			m_intensity = 0.2f;
@@ -149,7 +130,7 @@ public:
 		}
 	}
 	
-	void draw() {
+	void HitStrengthGauge::draw() {
 		GRenderer->SetBlendFunc(Renderer::BlendOne, Renderer::BlendOne);
 		GRenderer->SetRenderState(Renderer::AlphaBlending, true);
 		EERIEDrawBitmap(m_rect, 0.0001f, m_fullTex, Color3f::gray(m_intensity).to<u8>());
@@ -168,7 +149,7 @@ public:
 			GRenderer->SetRenderState(Renderer::AlphaBlending, false);
 		}
 	}
-};
+
 HitStrengthGauge hitStrengthGauge = HitStrengthGauge();
 
 void hitStrengthGaugeRequestFlash(float flashIntensity) {
