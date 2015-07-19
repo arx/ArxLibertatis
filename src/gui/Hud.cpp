@@ -977,42 +977,42 @@ void mecanismIconReset() {
 	mecanismIcon.reset();
 }
 
-	ScreenArrows::ScreenArrows()
-		: HudItem()
-		, m_horizontalArrowSize(8, 16)
-		, m_verticalArrowSize(16, 8)
-		, m_arrowLeftTex(NULL)
-		, fArrowMove(0.f)
-	{}
-	
-	void ScreenArrows::init() {
-		m_arrowLeftTex = TextureContainer::LoadUI("graph/interface/icons/arrow_left");
-		arx_assert(m_arrowLeftTex);
-	}
-	
-	void ScreenArrows::update() {
-		fArrowMove += .5f * framedelay;
-		if(fArrowMove > 180.f) {
-			fArrowMove=0.f;
-		}
-		
-		float fMove = glm::abs(glm::sin(glm::radians(fArrowMove))) * m_horizontalArrowSize.x * m_scale * .5f;
-		
-		const Rectf parent = createChild(Rectf(g_size), Anchor_Center, Vec2f(g_size.size()) - Vec2f(fMove), Anchor_Center);
-		m_left   = createChild(parent, Anchor_LeftCenter,   m_horizontalArrowSize * m_scale, Anchor_LeftCenter);
-		m_right  = createChild(parent, Anchor_RightCenter,  m_horizontalArrowSize * m_scale, Anchor_RightCenter);
-		m_top    = createChild(parent, Anchor_TopCenter,    m_verticalArrowSize * m_scale,   Anchor_TopCenter);
-		m_bottom = createChild(parent, Anchor_BottomCenter, m_verticalArrowSize * m_scale,   Anchor_BottomCenter);
-	}
-	
-	void ScreenArrows::draw() {
-		Color lcolor = Color3f::gray(.5f).to<u8>();
+ScreenArrows::ScreenArrows()
+	: HudItem()
+	, m_horizontalArrowSize(8, 16)
+	, m_verticalArrowSize(16, 8)
+	, m_arrowLeftTex(NULL)
+	, fArrowMove(0.f)
+{}
 
-		EERIEDrawBitmap(m_left, 0.01f, m_arrowLeftTex, lcolor);
-		EERIEDrawBitmapUVs(m_right,  .01f, m_arrowLeftTex, lcolor, Vec2f(1.f, 0.f), Vec2f(0.f, 0.f), Vec2f(1.f, 1.f), Vec2f(0.f, 1.f));
-		EERIEDrawBitmapUVs(m_top,    .01f, m_arrowLeftTex, lcolor, Vec2f(0.f, 1.f), Vec2f(0.f, 0.f), Vec2f(1.f, 1.f), Vec2f(1.f, 0.f));
-		EERIEDrawBitmapUVs(m_bottom, .01f, m_arrowLeftTex, lcolor, Vec2f(1.f, 1.f), Vec2f(1.f, 0.f), Vec2f(0.f, 1.f), Vec2f(0.f, 0.f));
+void ScreenArrows::init() {
+	m_arrowLeftTex = TextureContainer::LoadUI("graph/interface/icons/arrow_left");
+	arx_assert(m_arrowLeftTex);
+}
+
+void ScreenArrows::update() {
+	fArrowMove += .5f * framedelay;
+	if(fArrowMove > 180.f) {
+		fArrowMove=0.f;
 	}
+	
+	float fMove = glm::abs(glm::sin(glm::radians(fArrowMove))) * m_horizontalArrowSize.x * m_scale * .5f;
+	
+	const Rectf parent = createChild(Rectf(g_size), Anchor_Center, Vec2f(g_size.size()) - Vec2f(fMove), Anchor_Center);
+	m_left   = createChild(parent, Anchor_LeftCenter,   m_horizontalArrowSize * m_scale, Anchor_LeftCenter);
+	m_right  = createChild(parent, Anchor_RightCenter,  m_horizontalArrowSize * m_scale, Anchor_RightCenter);
+	m_top    = createChild(parent, Anchor_TopCenter,    m_verticalArrowSize * m_scale,   Anchor_TopCenter);
+	m_bottom = createChild(parent, Anchor_BottomCenter, m_verticalArrowSize * m_scale,   Anchor_BottomCenter);
+}
+
+void ScreenArrows::draw() {
+	Color lcolor = Color3f::gray(.5f).to<u8>();
+	
+	EERIEDrawBitmap(m_left, 0.01f, m_arrowLeftTex, lcolor);
+	EERIEDrawBitmapUVs(m_right,  .01f, m_arrowLeftTex, lcolor, Vec2f(1.f, 0.f), Vec2f(0.f, 0.f), Vec2f(1.f, 1.f), Vec2f(0.f, 1.f));
+	EERIEDrawBitmapUVs(m_top,    .01f, m_arrowLeftTex, lcolor, Vec2f(0.f, 1.f), Vec2f(0.f, 0.f), Vec2f(1.f, 1.f), Vec2f(1.f, 0.f));
+	EERIEDrawBitmapUVs(m_bottom, .01f, m_arrowLeftTex, lcolor, Vec2f(1.f, 1.f), Vec2f(1.f, 0.f), Vec2f(0.f, 1.f), Vec2f(0.f, 0.f));
+}
 
 ScreenArrows screenArrows;
 
