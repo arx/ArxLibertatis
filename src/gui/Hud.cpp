@@ -928,17 +928,8 @@ void ManaGauge::draw() {
 
 ManaGauge manaGauge;
 
-//The cogwheel icon that shows up when switching from mouseview to interaction mode.
-class MecanismIcon : public HudItem {
-private:
-	Vec2f m_iconSize;
-	TextureContainer * m_tex;
-	Color m_color;
-	long m_timeToDraw;
-	long m_nbToDraw;
-	
-public:
-	MecanismIcon()
+
+	MecanismIcon::MecanismIcon()
 		: HudItem()
 		, m_iconSize(32.f, 32.f)
 		, m_tex(NULL)
@@ -946,19 +937,19 @@ public:
 		, m_nbToDraw(0)
 	{}
 	
-	void init() {
+	void MecanismIcon::init() {
 		m_tex = TextureContainer::LoadUI("graph/interface/cursors/mecanism");
 		arx_assert(m_tex);
 		
 		reset();
 	}
 	
-	void reset() {
+	void MecanismIcon::reset() {
 		m_timeToDraw = 0;
 		m_nbToDraw = 0;
 	}
 	
-	void update() {
+	void MecanismIcon::update() {
 		m_color = Color::white;
 		if(m_timeToDraw > 300) {
 			m_color = Color::black;
@@ -972,14 +963,14 @@ public:
 		m_rect = createChild(Rectf(g_size), Anchor_TopLeft, m_iconSize * m_scale, Anchor_TopLeft);
 	}
 	
-	void draw() {
+	void MecanismIcon::draw() {
 		if(m_nbToDraw >= 3) {
 			return;
 		}
 		
 		EERIEDrawBitmap(m_rect, 0.01f, m_tex, m_color);
 	}
-};
+
 MecanismIcon mecanismIcon;
 
 void mecanismIconReset() {
