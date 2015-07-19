@@ -38,7 +38,7 @@ public:
 	void updateInput();
 };
 
-class CloseSecondaryInventoryIconGui : public HudIconBase {
+class SecondaryInventoryCloseHudIcon : public HudIconBase {
 private:
 	Vec2f m_size;
 	
@@ -56,7 +56,7 @@ private:
 	TextureContainer * m_canNotSteal;
 	
 	PickAllIconGui pickAllIconGui;
-	CloseSecondaryInventoryIconGui closeSecondaryInventoryIconGui;
+	SecondaryInventoryCloseHudIcon closeSecondaryInventoryIconGui;
 	
 public:
 	void init();

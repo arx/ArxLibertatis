@@ -75,14 +75,14 @@ void PickAllIconGui::updateInput() {
 }
 
 
-void CloseSecondaryInventoryIconGui::init() {
+void SecondaryInventoryCloseHudIcon::init() {
 	m_tex = TextureContainer::LoadUI("graph/interface/inventory/inv_close");
 	arx_assert(m_tex);
 	
 	m_size = Vec2f(16, 16);
 }
 
-void CloseSecondaryInventoryIconGui::update() {
+void SecondaryInventoryCloseHudIcon::update() {
 	Rectf parent = Rectf(Vec2f(InventoryX, 0), BasicInventorySkin->m_dwWidth, BasicInventorySkin->m_dwHeight);
 	
 	Rectf spacer = createChild(parent, Anchor_BottomRight, Vec2f(16, 16), Anchor_BottomRight);
@@ -90,7 +90,7 @@ void CloseSecondaryInventoryIconGui::update() {
 	m_rect = createChild(spacer, Anchor_BottomLeft, m_size, Anchor_BottomRight);
 }
 
-void CloseSecondaryInventoryIconGui::updateInput() {
+void SecondaryInventoryCloseHudIcon::updateInput() {
 	
 	m_isSelected = m_rect.contains(Vec2f(DANAEMouse));
 	
