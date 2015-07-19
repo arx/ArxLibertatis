@@ -706,28 +706,21 @@ void ChangeLevelIconGui::draw() {
 
 ChangeLevelIconGui changeLevelIconGui;
 
-class QuickSaveIconGui {
-private:
-	//! Time in ms to show the icon
-	u32 QUICK_SAVE_ICON_TIME;
-	//! Remaining time for the quick sive icon
-	unsigned g_quickSaveIconTime;
-	
-public:
-	QuickSaveIconGui()
+
+	QuickSaveIconGui::QuickSaveIconGui()
 		: QUICK_SAVE_ICON_TIME(1000)
 		, g_quickSaveIconTime(0)
 	{}
 	
-	void show() {
+	void QuickSaveIconGui::show() {
 		g_quickSaveIconTime = QUICK_SAVE_ICON_TIME;
 	}
 	
-	void hide() {
+	void QuickSaveIconGui::hide() {
 		g_quickSaveIconTime = 0;
 	}
 	
-	void update() {
+	void QuickSaveIconGui::update() {
 		if(g_quickSaveIconTime) {
 			if(g_quickSaveIconTime > unsigned(framedelay)) {
 				g_quickSaveIconTime -= unsigned(framedelay);
@@ -737,7 +730,7 @@ public:
 		}
 	}
 	
-	void draw() {
+	void QuickSaveIconGui::draw() {
 		if(!g_quickSaveIconTime) {
 			return;
 		}
@@ -757,7 +750,7 @@ public:
 		
 		GRenderer->SetRenderState(Renderer::AlphaBlending, false);
 	}
-};
+
 
 QuickSaveIconGui quickSaveIconGui = QuickSaveIconGui();
 

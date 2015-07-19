@@ -163,6 +163,23 @@ public:
 	void draw();
 };
 
+class QuickSaveIconGui {
+private:
+	//! Time in ms to show the icon
+	u32 QUICK_SAVE_ICON_TIME;
+	//! Remaining time for the quick sive icon
+	unsigned g_quickSaveIconTime;
+	
+public:
+	QuickSaveIconGui();
+	
+	void update();
+	void draw();
+	
+	void show();
+	void hide();
+};
+
 class HudRoot : public HudItem {
 public:
 	void setScale(float scale);
