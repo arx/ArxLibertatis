@@ -480,22 +480,14 @@ void LevelUpIconGui::draw() {
 LevelUpIconGui levelUpIconGui;
 
 
-class PurseIconGui : public HudIconBase {
-private:
-	Vec2f m_pos;
-	Vec2f m_size;
-	
-	long ulGoldHaloTime;
-	
-public:
-	PurseIconGui()
+	PurseIconGui::PurseIconGui()
 		: HudIconBase()
 		, m_pos()
 		, m_size()
 		, ulGoldHaloTime(0)
 	{}
 	
-	void init() {
+	void PurseIconGui::init() {
 		m_tex = TextureContainer::LoadUI("graph/interface/inventory/gold");
 		arx_assert(m_tex);
 		m_size = Vec2f(32.f, 32.f);
@@ -506,12 +498,12 @@ public:
 		ulGoldHaloTime = 0;
 	}
 	
-	void requestHalo() {
+	void PurseIconGui::requestHalo() {
 		m_haloActive = true;
 		ulGoldHaloTime = 0;
 	}
 	
-	void update(const Rectf & parent) {
+	void PurseIconGui::update(const Rectf & parent) {
 		m_rect = createChild(parent, Anchor_TopRight, m_size * m_scale, Anchor_BottomRight);
 		
 		//A halo is drawn on the character's stats icon (book) when leveling up, for example.
@@ -524,7 +516,7 @@ public:
 		}
 	}
 	
-	void updateInput() {
+	void PurseIconGui::updateInput() {
 		m_isSelected = false;
 		// gold
 		if(player.gold > 0) {
@@ -548,7 +540,7 @@ public:
 		}
 	}
 	
-	void draw() {
+	void PurseIconGui::draw() {
 		HudIconBase::draw();
 		
 		if(m_isSelected) {
@@ -558,7 +550,6 @@ public:
 			ARX_INTERFACE_DrawNumber(numberPos, player.gold, 6, Color::white, m_scale);
 		}
 	}
-};
 
 static PurseIconGui purseIconGui;
 

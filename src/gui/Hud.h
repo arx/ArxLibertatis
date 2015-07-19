@@ -109,6 +109,25 @@ public:
 	void draw();
 };
 
+class PurseIconGui : public HudIconBase {
+private:
+	Vec2f m_pos;
+	Vec2f m_size;
+	
+	long ulGoldHaloTime;
+	
+public:
+	PurseIconGui();
+	
+	void init();
+	void update(const Rectf & parent);
+	void updateInput();
+	void draw();
+	
+	void requestHalo();
+};
+
+
 class HudRoot : public HudItem {
 public:
 	void setScale(float scale);
