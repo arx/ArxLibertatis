@@ -1662,9 +1662,6 @@ void hudElementsInit() {
 	g_secondaryInventoryHud.init();
 	g_playerInventoryHud.init();
 	
-	BasicInventorySkin = TextureContainer::LoadUI("graph/interface/inventory/ingame_inventory");
-	arx_assert(BasicInventorySkin);
-	
 	purseIconGui.init();
 	
 	hitStrengthGauge.init();

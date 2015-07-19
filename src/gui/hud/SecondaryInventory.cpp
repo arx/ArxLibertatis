@@ -36,7 +36,6 @@
 
 
 float InventoryDir = 0; // 0 stable, 1 to right, -1 to left
-TextureContainer * BasicInventorySkin = NULL;
 float InventoryX = -60.f;
 
 SecondaryInventoryHud g_secondaryInventoryHud;
@@ -123,6 +122,9 @@ void SecondaryInventoryHud::init() {
 	m_canNotSteal = TextureContainer::LoadUI("graph/interface/icons/cant_steal_item");
 	arx_assert(m_canNotSteal);
 	
+	m_defaultBackground = TextureContainer::LoadUI("graph/interface/inventory/ingame_inventory");
+	arx_assert(m_defaultBackground);
+	
 	m_pickAllButton.init();
 	m_closeButton.init();
 }
@@ -166,7 +168,7 @@ void SecondaryInventoryHud::update() {
 		// Pick All/Close Secondary Inventory
 		if(TSecondaryInventory) {
 			//These have to be calculated on each frame (to make them move).
-			Rectf parent = Rectf(Vec2f(InventoryX, 0), BasicInventorySkin->m_dwWidth, BasicInventorySkin->m_dwHeight);
+			Rectf parent = Rectf(Vec2f(InventoryX, 0), m_defaultBackground->m_dwWidth, m_defaultBackground->m_dwHeight);
 			m_pickAllButton.update(parent);
 			m_closeButton.update(parent);
 		}
@@ -181,8 +183,8 @@ void SecondaryInventoryHud::draw() {
 	
 	bool _bSteal = (bool)((player.Interface & INTER_STEAL) != 0);
 	
-	arx_assert(BasicInventorySkin);
-	ingame_inventory = BasicInventorySkin;
+	arx_assert(m_defaultBackground);
+	ingame_inventory = m_defaultBackground;
 	if(inventory->io && !inventory->io->inventory_skin.empty()) {
 		
 		res::path file = "graph/interface/inventory" / inventory->io->inventory_skin;

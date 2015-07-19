@@ -25,7 +25,6 @@
 
 class TextureContainer;
 
-extern TextureContainer * BasicInventorySkin;
 extern float InventoryX;
 
 class SecondaryInventoryPickAllHudIcon : public HudIconBase {
@@ -54,6 +53,7 @@ private:
 	Vec2f m_size;
 	TextureContainer * ingame_inventory;
 	TextureContainer * m_canNotSteal;
+	TextureContainer * m_defaultBackground;
 	
 	SecondaryInventoryPickAllHudIcon m_pickAllButton;
 	SecondaryInventoryCloseHudIcon m_closeButton;
