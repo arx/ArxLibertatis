@@ -49,8 +49,7 @@ void SecondaryInventoryPickAllHudIcon::init() {
 	m_size = Vec2f(16, 16);
 }
 
-void SecondaryInventoryPickAllHudIcon::update() {
-	Rectf parent = Rectf(Vec2f(InventoryX, 0), BasicInventorySkin->m_dwWidth, BasicInventorySkin->m_dwHeight);
+void SecondaryInventoryPickAllHudIcon::update(const Rectf & parent) {
 	
 	Rectf spacer = createChild(parent, Anchor_BottomLeft, Vec2f(16, 16), Anchor_BottomLeft);
 	
@@ -82,8 +81,7 @@ void SecondaryInventoryCloseHudIcon::init() {
 	m_size = Vec2f(16, 16);
 }
 
-void SecondaryInventoryCloseHudIcon::update() {
-	Rectf parent = Rectf(Vec2f(InventoryX, 0), BasicInventorySkin->m_dwWidth, BasicInventorySkin->m_dwHeight);
+void SecondaryInventoryCloseHudIcon::update(const Rectf & parent) {
 	
 	Rectf spacer = createChild(parent, Anchor_BottomRight, Vec2f(16, 16), Anchor_BottomRight);
 	
@@ -168,8 +166,9 @@ void SecondaryInventoryHud::update() {
 		// Pick All/Close Secondary Inventory
 		if(TSecondaryInventory) {
 			//These have to be calculated on each frame (to make them move).
-			m_pickAllButton.update();
-			m_closeButton.update();
+			Rectf parent = Rectf(Vec2f(InventoryX, 0), BasicInventorySkin->m_dwWidth, BasicInventorySkin->m_dwHeight);
+			m_pickAllButton.update(parent);
+			m_closeButton.update(parent);
 		}
 	}
 }

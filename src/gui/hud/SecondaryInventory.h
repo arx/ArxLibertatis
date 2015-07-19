@@ -34,7 +34,7 @@ private:
 	
 public:
 	void init();
-	void update();
+	void update(const Rectf & parent);
 	void updateInput();
 };
 
@@ -44,7 +44,7 @@ private:
 	
 public:
 	void init();
-	void update();
+	void update(const Rectf & parent);
 	void updateInput();
 };
 
