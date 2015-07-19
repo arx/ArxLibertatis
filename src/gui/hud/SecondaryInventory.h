@@ -38,6 +38,16 @@ public:
 	void updateInput();
 };
 
+class CloseSecondaryInventoryIconGui : public HudIconBase {
+private:
+	Vec2f m_size;
+	
+public:
+	void init();
+	void update();
+	void updateInput();
+};
+
 
 class SecondaryInventoryHud : public HudItem {
 private:
