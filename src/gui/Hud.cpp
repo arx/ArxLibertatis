@@ -1016,116 +1016,116 @@ void ScreenArrows::draw() {
 
 ScreenArrows screenArrows;
 
-		void PrecastSpellsGui::PrecastSpellIconSlot::update(const Rectf & rect, TextureContainer * tc, Color color, PrecastHandle precastIndex) {
-			m_rect = rect;
-			m_tc = tc;
-			m_color = color;
-			m_precastIndex = precastIndex;
-		}
+void PrecastSpellsGui::PrecastSpellIconSlot::update(const Rectf & rect, TextureContainer * tc, Color color, PrecastHandle precastIndex) {
+	m_rect = rect;
+	m_tc = tc;
+	m_color = color;
+	m_precastIndex = precastIndex;
+}
+
+void PrecastSpellsGui::PrecastSpellIconSlot::updateInput() {
+	if(m_rect.contains(Vec2f(DANAEMouse))) {
+		SpecialCursor = CURSOR_INTERACTION_ON;
 		
-		void PrecastSpellsGui::PrecastSpellIconSlot::updateInput() {
-			if(m_rect.contains(Vec2f(DANAEMouse))) {
-				SpecialCursor = CURSOR_INTERACTION_ON;
-				
-				if(eeMouseUp1()) {
-					if(Precast[m_precastIndex].typ >= 0) {
-						ARX_SPEECH_Add(spellicons[Precast[m_precastIndex].typ].name);
-					}
-				}
-				
-				if(eeMouseDoubleClick1()) {
-					ARX_SPELLS_Precast_Launch(m_precastIndex);
-				}
+		if(eeMouseUp1()) {
+			if(Precast[m_precastIndex].typ >= 0) {
+				ARX_SPEECH_Add(spellicons[Precast[m_precastIndex].typ].name);
 			}
 		}
 		
-		void PrecastSpellsGui::PrecastSpellIconSlot::draw() {
-			EERIEDrawBitmap(m_rect, 0.01f, m_tc, m_color);
-			
-			GRenderer->SetBlendFunc(Renderer::BlendZero, Renderer::BlendOne);
-			
-			Rectf rect2 = m_rect;
-			rect2.move(-1, -1);
-			EERIEDrawBitmap(rect2, 0.0001f, m_tc, m_color);
-			
-			Rectf rect3 = m_rect;
-			rect3.move(1, 1);
-			EERIEDrawBitmap(rect3, 0.0001f, m_tc, m_color);
-			
-			GRenderer->SetBlendFunc(Renderer::BlendOne, Renderer::BlendOne);
-		}
-	
-	PrecastSpellsGui::PrecastSpellsGui()
-		: HudItem()
-	{
-		m_iconSize = Vec2f(48, 48) / Vec2f(2);
-	}
-	
-	bool PrecastSpellsGui::isVisible() {
-		return !(player.Interface & INTER_INVENTORYALL) && !(player.Interface & INTER_MAP);
-	}
-	
-	void PrecastSpellsGui::updateRect(const Rectf & parent) {
-		
-		Vec2f size = m_iconSize * Vec2f(Precast.size(), 1);
-		
-		m_rect = createChild(parent, Anchor_BottomRight, size * m_scale, Anchor_BottomLeft);
-	}
-	
-	void PrecastSpellsGui::update() {
-		m_icons.clear();
-		
-		if(!isVisible())
-			return;
-		
-		float intensity = 1.f - PULSATE * 0.5f;
-		intensity = glm::clamp(intensity, 0.f, 1.f);
-		
-		
-		for(size_t i = 0; i < Precast.size(); i++) {
-			
-			PRECAST_STRUCT & precastSlot = Precast[i];
-			
-			float val = intensity;
-			
-			if(precastSlot.launch_time > 0 && (float(arxtime) >= precastSlot.launch_time)) {
-				float tt = (float(arxtime) - precastSlot.launch_time) * (1.0f/1000);
-				
-				if(tt > 1.f)
-					tt = 1.f;
-				
-				val *= (1.f - tt);
-			}
-	
-			Color color = Color3f(0, val * (1.0f/2), val).to<u8>();
-			
-			Rectf childRect = createChild(m_rect, Anchor_BottomLeft, m_iconSize * m_scale, Anchor_BottomLeft);
-			childRect.move(i * 33 * m_scale, 0);
-			
-			SpellType typ = precastSlot.typ;
-			
-			TextureContainer * tc = spellicons[typ].tc;
-			arx_assert(tc);
-			
-			PrecastSpellIconSlot icon;
-			icon.update(childRect, tc, color, PrecastHandle(i));
-			
-			if(!(player.Interface & INTER_COMBATMODE))
-				icon.updateInput();
-			
-			m_icons.push_back(icon);
+		if(eeMouseDoubleClick1()) {
+			ARX_SPELLS_Precast_Launch(m_precastIndex);
 		}
 	}
+}
+
+void PrecastSpellsGui::PrecastSpellIconSlot::draw() {
+	EERIEDrawBitmap(m_rect, 0.01f, m_tc, m_color);
 	
-	void PrecastSpellsGui::draw() {
-		GRenderer->SetBlendFunc(Renderer::BlendOne, Renderer::BlendOne);
-		GRenderer->SetRenderState(Renderer::AlphaBlending, true);
+	GRenderer->SetBlendFunc(Renderer::BlendZero, Renderer::BlendOne);
+	
+	Rectf rect2 = m_rect;
+	rect2.move(-1, -1);
+	EERIEDrawBitmap(rect2, 0.0001f, m_tc, m_color);
+	
+	Rectf rect3 = m_rect;
+	rect3.move(1, 1);
+	EERIEDrawBitmap(rect3, 0.0001f, m_tc, m_color);
+	
+	GRenderer->SetBlendFunc(Renderer::BlendOne, Renderer::BlendOne);
+}
+
+PrecastSpellsGui::PrecastSpellsGui()
+	: HudItem()
+{
+	m_iconSize = Vec2f(48, 48) / Vec2f(2);
+}
+
+bool PrecastSpellsGui::isVisible() {
+	return !(player.Interface & INTER_INVENTORYALL) && !(player.Interface & INTER_MAP);
+}
+
+void PrecastSpellsGui::updateRect(const Rectf & parent) {
+	
+	Vec2f size = m_iconSize * Vec2f(Precast.size(), 1);
+	
+	m_rect = createChild(parent, Anchor_BottomRight, size * m_scale, Anchor_BottomLeft);
+}
+
+void PrecastSpellsGui::update() {
+	m_icons.clear();
+	
+	if(!isVisible())
+		return;
+	
+	float intensity = 1.f - PULSATE * 0.5f;
+	intensity = glm::clamp(intensity, 0.f, 1.f);
+	
+	
+	for(size_t i = 0; i < Precast.size(); i++) {
 		
-		std::vector<PrecastSpellIconSlot>::iterator itr;
-		for(itr = m_icons.begin(); itr != m_icons.end(); ++itr) {
-			itr->draw();
+		PRECAST_STRUCT & precastSlot = Precast[i];
+		
+		float val = intensity;
+		
+		if(precastSlot.launch_time > 0 && (float(arxtime) >= precastSlot.launch_time)) {
+			float tt = (float(arxtime) - precastSlot.launch_time) * (1.0f/1000);
+			
+			if(tt > 1.f)
+				tt = 1.f;
+			
+			val *= (1.f - tt);
 		}
+
+		Color color = Color3f(0, val * (1.0f/2), val).to<u8>();
+		
+		Rectf childRect = createChild(m_rect, Anchor_BottomLeft, m_iconSize * m_scale, Anchor_BottomLeft);
+		childRect.move(i * 33 * m_scale, 0);
+		
+		SpellType typ = precastSlot.typ;
+		
+		TextureContainer * tc = spellicons[typ].tc;
+		arx_assert(tc);
+		
+		PrecastSpellIconSlot icon;
+		icon.update(childRect, tc, color, PrecastHandle(i));
+		
+		if(!(player.Interface & INTER_COMBATMODE))
+			icon.updateInput();
+		
+		m_icons.push_back(icon);
 	}
+}
+
+void PrecastSpellsGui::draw() {
+	GRenderer->SetBlendFunc(Renderer::BlendOne, Renderer::BlendOne);
+	GRenderer->SetRenderState(Renderer::AlphaBlending, true);
+	
+	std::vector<PrecastSpellIconSlot>::iterator itr;
+	for(itr = m_icons.begin(); itr != m_icons.end(); ++itr) {
+		itr->draw();
+	}
+}
 
 PrecastSpellsGui precastSpellsGui;
 
