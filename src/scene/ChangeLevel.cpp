@@ -73,6 +73,7 @@ ZeniMax Media Inc., Suite 120, Rockville, Maryland 20850 USA.
 #include "gui/MiniMap.h"
 #include "gui/Hud.h"
 #include "gui/Interface.h"
+#include "gui/hud/SecondaryInventory.h"
 
 #include "graphics/GraphicsModes.h"
 #include "graphics/Math.h"
@@ -371,7 +372,7 @@ static bool ARX_CHANGELEVEL_PushLevel(long num, long newnum) {
 	ARX_SCRIPT_EventStackExecuteAll();
 	
 	// Close secondary inventory before leaving
-	gui::CloseSecondaryInventory();
+	g_secondaryInventoryHud.close();
 	
 	// Now we can save our things
 	if(!ARX_CHANGELEVEL_Push_Index(num)) {

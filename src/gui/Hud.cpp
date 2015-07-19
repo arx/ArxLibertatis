@@ -96,23 +96,6 @@ void InventoryFaderUpdate() {
 	}
 }
 
-void CloseSecondaryInventory() {
-	
-	Entity * io = NULL;
-	
-	if(SecondaryInventory)
-		io = SecondaryInventory->io;
-	else if(player.Interface & INTER_STEAL)
-		io = ioSteal;
-	
-	if(io) {
-		InventoryDir = -1;
-		SendIOScriptEvent(io, SM_INVENTORY2_CLOSE);
-		TSecondaryInventory = SecondaryInventory;
-		SecondaryInventory = NULL;
-	}
-}
-
 }
 
 

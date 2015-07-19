@@ -28,8 +28,6 @@ namespace gui {
 
 void InventoryFaderUpdate();
 
-void CloseSecondaryInventory();
-
 }
 
 void hudElementsInit();

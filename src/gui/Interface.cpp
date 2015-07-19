@@ -1478,7 +1478,7 @@ void ArxGame::managePlayerControls() {
 				InventoryOpenClose(2);
 
 				if(player.Interface &INTER_INVENTORY) {
-					gui::CloseSecondaryInventory();
+					g_secondaryInventoryHud.close();
 				}
 
 				if(config.input.mouseLookToggle) {
@@ -1495,7 +1495,7 @@ void ArxGame::managePlayerControls() {
 				InventoryOpenClose(2);
 
 				if(player.Interface &INTER_INVENTORY) {
-					gui::CloseSecondaryInventory();
+					g_secondaryInventoryHud.close();
 				}
 
 				if(config.input.mouseLookToggle) {
@@ -2078,7 +2078,7 @@ void ArxGame::manageEditorControls() {
 	
 	// on ferme
 	if((player.Interface & INTER_COMBATMODE) || player.doingmagic >= 2) {
-		gui::CloseSecondaryInventory();
+		g_secondaryInventoryHud.close();
 	}
 	
 	playerInterfaceFader.update();

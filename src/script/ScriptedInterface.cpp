@@ -51,6 +51,7 @@ ZeniMax Media Inc., Suite 120, Rockville, Maryland 20850 USA.
 #include "gui/Interface.h"
 #include "gui/Menu.h"
 #include "gui/MiniMap.h"
+#include "gui/hud/SecondaryInventory.h"
 #include "scene/GameSound.h"
 #include "script/ScriptEvent.h"
 #include "script/ScriptUtils.h"
@@ -112,7 +113,7 @@ public:
 			return Success;
 		}
 		
-		gui::CloseSecondaryInventory();
+		g_secondaryInventoryHud.close();
 		
 		return Success;
 	}
