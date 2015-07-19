@@ -27,7 +27,7 @@ class TextureContainer;
 extern TextureContainer * BasicInventorySkin;
 extern float InventoryX;
 
-class SecondaryInventoryGui {
+class SecondaryInventoryHud {
 private:
 	Vec2f m_size;
 	TextureContainer * ingame_inventory;
@@ -39,7 +39,7 @@ public:
 	void draw();
 };
 
-extern SecondaryInventoryGui secondaryInventory;
+extern SecondaryInventoryHud secondaryInventory;
 
 void manageEditorControlsHUD2();
 

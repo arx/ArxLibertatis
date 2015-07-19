@@ -39,7 +39,7 @@ float InventoryDir = 0; // 0 stable, 1 to right, -1 to left
 TextureContainer * BasicInventorySkin = NULL;
 float InventoryX = -60.f;
 
-SecondaryInventoryGui secondaryInventory;
+SecondaryInventoryHud secondaryInventory;
 
 
 
@@ -138,7 +138,7 @@ static CloseSecondaryInventoryIconGui closeSecondaryInventoryIconGui;
 
 
 
-void SecondaryInventoryGui::init() {
+void SecondaryInventoryHud::init() {
 	m_size = Vec2f(115.f, 378.f);
 	m_canNotSteal = TextureContainer::LoadUI("graph/interface/icons/cant_steal_item");
 	arx_assert(m_canNotSteal);
@@ -156,7 +156,7 @@ static Entity * getSecondaryOrStealInvEntity() {
 	return NULL;
 }
 
-void SecondaryInventoryGui::update() {
+void SecondaryInventoryHud::update() {
 	Entity * io = getSecondaryOrStealInvEntity();
 	if(io) {
 		float dist = fdist(io->pos, player.pos + (Vec3f_Y_AXIS * 80.f));
@@ -192,7 +192,7 @@ void SecondaryInventoryGui::update() {
 	}
 }
 
-void SecondaryInventoryGui::draw() {
+void SecondaryInventoryHud::draw() {
 	const INVENTORY_DATA * inventory = TSecondaryInventory;
 	
 	if(!inventory)
