@@ -1648,7 +1648,7 @@ void ARX_INTERFACE_Reset()
 	cinematicBorder.reset2();
 	cinematicBorder.reset();
 	CINEMA_DECAL=0;
-	hideQuickSaveIcon();
+	g_hudRoot.quickSaveIconGui.hide();
 }
 
 

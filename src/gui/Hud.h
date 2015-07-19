@@ -379,6 +379,7 @@ public:
 	HitStrengthGauge hitStrengthGauge;
 	BookIconGui bookIconGui;
 	PurseIconGui purseIconGui;
+	QuickSaveIconGui quickSaveIconGui;
 	
 private:
 	BackpackIconGui backpackIconGui;
@@ -391,12 +392,8 @@ private:
 extern HudRoot g_hudRoot;
 
 void mecanismIconReset();
-//! Show the quick save indicator for a short time
-void showQuickSaveIcon();
 void hitStrengthGaugeRequestFlash(float flashIntensity);
 void bookIconGuiRequestFX();
 void bookIconGuiRequestHalo();
-//! Hide the quick save indicator
-void hideQuickSaveIcon();
 
 #endif // ARX_GUI_HUD_H

@@ -722,18 +722,6 @@ void QuickSaveIconGui::draw() {
 }
 
 
-QuickSaveIconGui quickSaveIconGui = QuickSaveIconGui();
-
-
-void showQuickSaveIcon() {
-	quickSaveIconGui.show();
-}
-
-void hideQuickSaveIcon() {
-	quickSaveIconGui.hide();
-}
-
-
 MemorizedRunesHud::MemorizedRunesHud()
 	: HudIconBase()
 	, m_size()

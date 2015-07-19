@@ -1298,7 +1298,7 @@ void ArxGame::doFrame() {
 		}
 		
 		if(GInput->actionNowPressed(CONTROLS_CUST_QUICKSAVE)) {
-			showQuickSaveIcon();
+			g_hudRoot.quickSaveIconGui.show();
 			GRenderer->getSnapshot(savegame_thumbnail, 160, 100);
 			ARX_QuickSave();
 		}
