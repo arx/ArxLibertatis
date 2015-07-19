@@ -52,9 +52,9 @@ void SecondaryInventoryPickAllHudIcon::init() {
 
 void SecondaryInventoryPickAllHudIcon::update(const Rectf & parent) {
 	
-	Rectf spacer = createChild(parent, Anchor_BottomLeft, Vec2f(16, 16), Anchor_BottomLeft);
+	Rectf spacer = createChild(parent, Anchor_BottomLeft, Vec2f(16, 16) * m_scale, Anchor_BottomLeft);
 	
-	m_rect = createChild(spacer, Anchor_BottomRight, m_size, Anchor_BottomLeft);
+	m_rect = createChild(spacer, Anchor_BottomRight, m_size * m_scale, Anchor_BottomLeft);
 }
 
 void SecondaryInventoryPickAllHudIcon::updateInput() {
@@ -84,9 +84,9 @@ void SecondaryInventoryCloseHudIcon::init() {
 
 void SecondaryInventoryCloseHudIcon::update(const Rectf & parent) {
 	
-	Rectf spacer = createChild(parent, Anchor_BottomRight, Vec2f(16, 16), Anchor_BottomRight);
+	Rectf spacer = createChild(parent, Anchor_BottomRight, Vec2f(16, 16) * m_scale, Anchor_BottomRight);
 	
-	m_rect = createChild(spacer, Anchor_BottomLeft, m_size, Anchor_BottomRight);
+	m_rect = createChild(spacer, Anchor_BottomLeft, m_size * m_scale, Anchor_BottomRight);
 }
 
 void SecondaryInventoryCloseHudIcon::updateInput() {
@@ -170,7 +170,11 @@ void SecondaryInventoryHud::update() {
 		// Pick All/Close Secondary Inventory
 		if(TSecondaryInventory) {
 			//These have to be calculated on each frame (to make them move).
-			Rectf parent = Rectf(Vec2f(InventoryX, 0), m_defaultBackground->m_dwWidth, m_defaultBackground->m_dwHeight);
+			Rectf parent = Rectf(Vec2f(InventoryX, 0), m_defaultBackground->m_dwWidth * m_scale, m_defaultBackground->m_dwHeight * m_scale);
+			
+			m_pickAllButton.setScale(m_scale);
+			m_closeButton.setScale(m_scale);
+			
 			m_pickAllButton.update(parent);
 			m_closeButton.update(parent);
 		}
@@ -195,7 +199,7 @@ void SecondaryInventoryHud::draw() {
 			ingame_inventory = tc;
 	}
 	
-	Rectf rect = Rectf(Vec2f(INTERFACE_RATIO(InventoryX), 0.f), m_size.x, m_size.y);
+	Rectf rect = Rectf(Vec2f(InventoryX * m_scale, 0.f), m_size.x * m_scale, m_size.y * m_scale);
 	EERIEDrawBitmap(rect, 0.001f, ingame_inventory, Color::white);
 	
 	for(long y = 0; y < inventory->m_size.y; y++) {
@@ -223,15 +227,15 @@ void SecondaryInventoryHud::draw() {
 				UpdateGoldObject(io);
 				
 				Vec2f p = Vec2f(
-				INTERFACE_RATIO(InventoryX) + (float)x*INTERFACE_RATIO(32) + INTERFACE_RATIO(2),
-				(float)y*INTERFACE_RATIO(32) + INTERFACE_RATIO(13)
+				(InventoryX * m_scale) + (float)x*(32 * m_scale) + (2 * m_scale),
+				(float)y*(32 * m_scale) + (13 * m_scale)
 				);
 				
 				Vec2f size = Vec2f(tc->size());
 				
 				Color color = (io->poisonous && io->poisonous_count!=0) ? Color::green : Color::white;
 				
-				Rectf rect(p, size.x, size.y);
+				Rectf rect(p, size.x * m_scale, size.y * m_scale);
 				// TODO use alpha blending so this will be anti-aliased even w/o alpha to coverage
 				EERIEDrawBitmap(rect, 0.001f, tc, color);
 				
@@ -253,11 +257,11 @@ void SecondaryInventoryHud::draw() {
 				}
 				
 				if(tc2) {
-					ARX_INTERFACE_HALO_Draw(io, tc, tc2, p);
+					ARX_INTERFACE_HALO_Draw(io, tc, tc2, p, Vec2f(m_scale));
 				}
 				
 				if((io->ioflags & IO_ITEM) && io->_itemdata->count != 1)
-					ARX_INTERFACE_DrawNumber(p, io->_itemdata->count, 3, Color::white, 1.f);
+					ARX_INTERFACE_DrawNumber(p, io->_itemdata->count, 3, Color::white, m_scale);
 			}
 		}
 	}
@@ -292,10 +296,10 @@ void SecondaryInventoryHud::updateInputButtons() {
 bool SecondaryInventoryHud::containsPos(const Vec2s & pos) {
 	if(SecondaryInventory != NULL) {
 		Vec2s t;
-		t.x = pos.x + checked_range_cast<short>(InventoryX) - SHORT_INTERFACE_RATIO(2);
-		t.y = pos.y - SHORT_INTERFACE_RATIO(13);
-		t.x = t.x / SHORT_INTERFACE_RATIO(32);
-		t.y = t.y / SHORT_INTERFACE_RATIO(32);
+		t.x = pos.x + checked_range_cast<short>(InventoryX) - (2 * m_scale);
+		t.y = pos.y - (13 * m_scale);
+		t.x = t.x / (32 * m_scale);
+		t.y = t.y / (32 * m_scale);
 		
 		if(t.x < 0 || t.x >= SecondaryInventory->m_size.x)
 			return false;
@@ -314,12 +318,12 @@ extern long HERO_OR_SECONDARY;
 Entity * SecondaryInventoryHud::getObj(const Vec2s & pos) {
 	
 	if(SecondaryInventory != NULL) {
-		short tx = pos.x + checked_range_cast<short>(InventoryX) - SHORT_INTERFACE_RATIO(2);
-		short ty = pos.y - SHORT_INTERFACE_RATIO(13);
+		short tx = pos.x + checked_range_cast<short>(InventoryX) - (2 * m_scale);
+		short ty = pos.y - (13 * m_scale);
 
 		if(tx >= 0 && ty >= 0) {
-			tx = tx / SHORT_INTERFACE_RATIO(32); 
-			ty = ty / SHORT_INTERFACE_RATIO(32); 
+			tx = tx / (32 * m_scale); 
+			ty = ty / (32 * m_scale); 
 
 			if(   tx >= 0
 			   && tx <= SecondaryInventory->m_size.x
@@ -391,10 +395,10 @@ void SecondaryInventoryHud::dropEntity() {
 		}
 		
 		Vec2s t = Vec2s_ZERO;
-		t.x = DANAEMouse.x + static_cast<short>(InventoryX) - SHORT_INTERFACE_RATIO(2);
-		t.y = DANAEMouse.y - SHORT_INTERFACE_RATIO(13);
-		t.x = t.x / SHORT_INTERFACE_RATIO(32);
-		t.y = t.y / SHORT_INTERFACE_RATIO(32);
+		t.x = DANAEMouse.x + static_cast<short>(InventoryX) - (2 * m_scale);
+		t.y = DANAEMouse.y - (13 * m_scale);
+		t.x = t.x / (32 * m_scale);
+		t.y = t.y / (32 * m_scale);
 		
 		Vec2s s = DRAGINTER->m_inventorySize;
 		
@@ -521,8 +525,8 @@ bool SecondaryInventoryHud::dragEntity(Entity * io, const Vec2s & pos) {
 					sInventory = 2;
 					
 					
-					float fCalcX = (pos.x + InventoryX - INTERFACE_RATIO(2)) / INTERFACE_RATIO(32);
-					float fCalcY = (pos.y - INTERFACE_RATIO(13)) / INTERFACE_RATIO(32);
+					float fCalcX = (pos.x + InventoryX - (2 * m_scale)) / (32 * m_scale);
+					float fCalcY = (pos.y - (13 * m_scale)) / (32 * m_scale);
 					
 					sInventoryPos.x = checked_range_cast<short>(fCalcX);
 					sInventoryPos.y = checked_range_cast<short>(fCalcY);
@@ -546,8 +550,8 @@ bool SecondaryInventoryHud::dragEntity(Entity * io, const Vec2s & pos) {
 			slot.show = 1;
 			sInventory = 2;
 			
-			float fCalcX = (pos.x + InventoryX - INTERFACE_RATIO(2)) / INTERFACE_RATIO(32);
-			float fCalcY = (pos.y - INTERFACE_RATIO(13)) / INTERFACE_RATIO(32);
+			float fCalcX = (pos.x + InventoryX - (2 * m_scale)) / (32 * m_scale);
+			float fCalcY = (pos.y - (13 * m_scale)) / (32 * m_scale);
 			
 			sInventoryPos.x = checked_range_cast<short>(fCalcX);
 			sInventoryPos.y = checked_range_cast<short>(fCalcY);
@@ -579,10 +583,10 @@ void SecondaryInventoryHud::updateFader() {
 	if(InventoryDir != 0) {
 		if((player.Interface & INTER_COMBATMODE) || player.doingmagic >= 2 || InventoryDir == -1) {
 			if(InventoryX > -160)
-				InventoryX -= INTERFACE_RATIO(framedelay * ( 1.0f / 3 ));
+				InventoryX -= (framedelay * ( 1.0f / 3 )) * m_scale;
 		} else {
 			if(InventoryX < 0)
-				InventoryX += InventoryDir * INTERFACE_RATIO(framedelay * ( 1.0f / 3 ));
+				InventoryX += InventoryDir * (framedelay * ( 1.0f / 3 )) * m_scale;
 		}
 		
 		if(InventoryX <= -160) {
