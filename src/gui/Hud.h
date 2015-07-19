@@ -74,6 +74,13 @@ private:
 	void MakeBookFX(const Vec3f & pos);
 };
 
+class BackpackIconGui : public HudIconBase {
+public:
+	void init();
+	void update(const Rectf & parent);
+	void updateInput();
+	void draw();
+};
 
 class HudRoot : public HudItem {
 public:

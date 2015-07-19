@@ -290,22 +290,17 @@ void bookIconGuiRequestFX() {
 }
 
 
-
-class BackpackIconGui : public HudIconBase {
-private:
-	
-public:
-	void init() {
+	void BackpackIconGui::init() {
 		m_tex = TextureContainer::LoadUI("graph/interface/icons/backpack");
 		arx_assert(m_tex);
 	}
 
-	void update(const Rectf & parent) {
+	void BackpackIconGui::update(const Rectf & parent) {
 		
 		m_rect = createChild(parent, Anchor_TopRight, Vec2f(32, 32) * m_scale, Anchor_BottomRight);
 	}
 	
-	void updateInput() {
+	void BackpackIconGui::updateInput() {
 		{
 		static float flDelay=0;
 		
@@ -382,11 +377,11 @@ public:
 		}
 	}
 	
-	void draw() {
+	void BackpackIconGui::draw() {
 		m_isSelected = eMouseState == MOUSE_IN_INVENTORY_ICON;
 		HudIconBase::draw();
 	}
-};
+
 
 static BackpackIconGui backpackIconGui;
 
