@@ -190,11 +190,6 @@ void HitStrengthGauge::draw() {
 }
 
 
-
-
-extern TextureContainer * healing;
-
-
 void BookIconGui::MakeBookFX(const Vec3f & pos) {
 	
 	for(long i = 0; i < 12; i++) {
