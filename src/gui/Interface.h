@@ -230,13 +230,6 @@ void ARX_INTERFACE_Combat_Mode(long i);
 long GetMainSpeakingIO();
 bool ARX_INTERFACE_MouseInBook();
 
-enum FadeDirection {
-	FadeDirection_Out,
-	FadeDirection_In,
-};
-
-void playerInterfaceFaderRequestFade(FadeDirection showhide, long smooth);
-void playerInterfaceFaderResetSlid();
 void ARX_INTERFACE_Reset();
 
 void ARX_INTERFACE_ManageOpenedBook();
@@ -258,6 +251,9 @@ void Set_DragInter(Entity * io);
 void ARX_INTERFACE_DrawNumber(const Vec2f & pos, const long num, const int _iNb, const Color color, float scale);
 
 void KillInterfaceTextureContainers();
+
+// 0 switch 1 forceopen 2 forceclose
+void InventoryOpenClose(unsigned long t);
 
 extern bool g_cursorOverBook;
 

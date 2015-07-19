@@ -176,7 +176,7 @@ gui::Note openNote;
 
 bool				bInventoryClosing = false;
 
-float				SLID_START=0.f; // Charging Weapon
+extern float SLID_START;
 
 Vec2f				BOOKDEC = Vec2f(0.f, 0.f);
 
@@ -188,7 +188,6 @@ static bool MEMO_PLAYER_MOUSELOOK_ON = false;
 bool				COMBINEGOLD = false;
 
 bool				DRAGGING = false;
-bool				PLAYER_INTERFACE_HIDE_COUNT = true;
 bool				MAGICMODE = false;
 long				SpecialCursor=0;
 
@@ -460,9 +459,8 @@ bool NeedHalo(Entity * io)
 	return false;
 }
 
-//-----------------------------------------------------------------------------
-// 0 switch 1 forceopen 2 forceclose
-static void InventoryOpenClose(unsigned long t) {
+
+void InventoryOpenClose(unsigned long t) {
 	
 	if(t == 1 && (player.Interface & INTER_INVENTORY))
 		return;
@@ -581,7 +579,7 @@ void ARX_INTERFACE_NoteManage() {
 
 void ResetPlayerInterface() {
 	player.Interface |= INTER_LIFE_MANA;
-	playerInterfaceFaderResetSlid();
+	g_hudRoot.playerInterfaceFader.resetSlid();
 	lSLID_VALUE = 0;
 	SLID_START=float(arxtime);
 }
@@ -1530,120 +1528,10 @@ void ArxGame::managePlayerControls() {
 	}
 }
 
-class PlayerInterfaceFader {
-private:
-	long m_direction;
-	float m_current;
-	
-public:
-	PlayerInterfaceFader()
-		: m_direction(0)
-		, m_current(0.f)
-	{}
-	
-	void reset() {
-		m_direction = 0;
-		PLAYER_INTERFACE_HIDE_COUNT = true;
-	}
-	
-	void resetSlid() {
-		m_current = 0.f;
-	}
-	
-	void requestFade(FadeDirection showhide, long smooth) {
-		if(showhide == FadeDirection_Out) {
-			InventoryOpenClose(2);
-			ARX_INTERFACE_BookClose();
-			ARX_INTERFACE_NoteClose();
-		}
-		
-		if(showhide == FadeDirection_In)
-			PLAYER_INTERFACE_HIDE_COUNT = true;
-		else
-			PLAYER_INTERFACE_HIDE_COUNT = false;
-		
-		if(smooth) {
-			if(showhide == FadeDirection_In)
-				m_direction = -1;
-			else
-				m_direction = 1;
-		} else {
-			if(showhide == FadeDirection_In)
-				m_current = 0.f;
-			else
-				m_current = 100.f;
-			
-			lSLID_VALUE = m_current;
-		}
-	}
-	
-	void update() {
-		
-		if(PLAYER_INTERFACE_HIDE_COUNT && !m_direction) {
-			bool bOk = true;
-	
-			if(TRUE_PLAYER_MOUSELOOK_ON) {
-				if(!(player.Interface & INTER_COMBATMODE) && player.doingmagic != 2 && !InInventoryPos(DANAEMouse)) {
-					bOk = false;
-	
-					float t=float(arxtime);
-	
-					if(t-SLID_START > 10000.f) {
-						m_current += (float)Original_framedelay*( 1.0f / 10 );
-	
-						if(m_current > 100.f)
-							m_current = 100.f;
-	
-						lSLID_VALUE = m_current;
-					} else {
-						bOk = true;
-					}
-				}
-			}
-	
-			if(bOk) {
-				m_current -= (float)Original_framedelay*( 1.0f / 10 );
-	
-				if(m_current < 0.f)
-					m_current = 0.f;
-	
-				lSLID_VALUE = m_current;
-			}
-		}
-		
-		if(m_direction == 1) {
-			m_current += (float)Original_framedelay*( 1.0f / 10 );
-			
-			if(m_current > 100.f) {
-				m_current = 100.f;
-				m_direction = 0;
-			}
-			lSLID_VALUE = m_current;
-		} else if(m_direction == -1) {
-			m_current -= (float)Original_framedelay*( 1.0f / 10 );
-			
-			if(m_current < 0.f) {
-				m_current = 0.f;
-				m_direction = 0;
-			}
-			lSLID_VALUE = m_current;
-		}
-	}
-};
-PlayerInterfaceFader playerInterfaceFader;
-
-void playerInterfaceFaderRequestFade(FadeDirection showhide, long smooth) {
-	playerInterfaceFader.requestFade(showhide, smooth);
-}
-
-void playerInterfaceFaderResetSlid() {
-	playerInterfaceFader.resetSlid();
-}
-
 void ARX_INTERFACE_Reset()
 {
-	playerInterfaceFader.reset();
-	playerInterfaceFader.resetSlid();
+	g_hudRoot.playerInterfaceFader.reset();
+	g_hudRoot.playerInterfaceFader.resetSlid();
 	BLOCK_PLAYER_CONTROLS = false;
 	cinematicBorder.reset2();
 	cinematicBorder.reset();
@@ -2081,7 +1969,7 @@ void ArxGame::manageEditorControls() {
 		g_secondaryInventoryHud.close();
 	}
 	
-	playerInterfaceFader.update();
+	g_hudRoot.playerInterfaceFader.update();
 	cinematicBorder.update();
 	
 	g_hudRoot.updateInput();

@@ -231,9 +231,9 @@ public:
 		DebugScript(' ' << options << ' ' << command);
 		
 		if(command == "hide") {
-			playerInterfaceFaderRequestFade(FadeDirection_Out, smooth);
+			g_hudRoot.playerInterfaceFader.requestFade(FadeDirection_Out, smooth);
 		} else if(command == "show") {
-			playerInterfaceFaderRequestFade(FadeDirection_In, smooth);
+			g_hudRoot.playerInterfaceFader.requestFade(FadeDirection_In, smooth);
 		} else {
 			ScriptWarning << "unknown command: " << command;
 			return Failed;

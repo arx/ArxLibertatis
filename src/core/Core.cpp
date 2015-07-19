@@ -468,7 +468,7 @@ void levelInit() {
 		if(!DONT_ERASE_PLAYER)
 			ARX_PLAYER_InitPlayer();
 
-		playerInterfaceFaderResetSlid();
+		g_hudRoot.playerInterfaceFader.resetSlid();
 
 		player.lifePool.current = player.lifePool.max;
 		player.manaPool.current = player.manaPool.max;

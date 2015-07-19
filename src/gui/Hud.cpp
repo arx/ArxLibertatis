@@ -1339,6 +1339,103 @@ void StealthGauge::draw() {
 	GRenderer->SetRenderState(Renderer::AlphaBlending, false);
 }
 
+bool PLAYER_INTERFACE_HIDE_COUNT = true;
+
+PlayerInterfaceFader::PlayerInterfaceFader()
+	: m_direction(0)
+	, m_current(0.f)
+{}
+
+void PlayerInterfaceFader::reset() {
+	m_direction = 0;
+	PLAYER_INTERFACE_HIDE_COUNT = true;
+}
+
+void PlayerInterfaceFader::resetSlid() {
+	m_current = 0.f;
+}
+
+void PlayerInterfaceFader::requestFade(FadeDirection showhide, long smooth) {
+	if(showhide == FadeDirection_Out) {
+		InventoryOpenClose(2);
+		ARX_INTERFACE_BookClose();
+		ARX_INTERFACE_NoteClose();
+	}
+	
+	if(showhide == FadeDirection_In)
+		PLAYER_INTERFACE_HIDE_COUNT = true;
+	else
+		PLAYER_INTERFACE_HIDE_COUNT = false;
+	
+	if(smooth) {
+		if(showhide == FadeDirection_In)
+			m_direction = -1;
+		else
+			m_direction = 1;
+	} else {
+		if(showhide == FadeDirection_In)
+			m_current = 0.f;
+		else
+			m_current = 100.f;
+		
+		lSLID_VALUE = m_current;
+	}
+}
+
+float SLID_START = 0.f; // Charging Weapon
+
+void PlayerInterfaceFader::update() {
+	
+	if(PLAYER_INTERFACE_HIDE_COUNT && !m_direction) {
+		bool bOk = true;
+		
+		if(TRUE_PLAYER_MOUSELOOK_ON) {
+			if(!(player.Interface & INTER_COMBATMODE) && player.doingmagic != 2 && !InInventoryPos(DANAEMouse)) {
+				bOk = false;
+				
+				float t=float(arxtime);
+				
+				if(t-SLID_START > 10000.f) {
+					m_current += (float)Original_framedelay*( 1.0f / 10 );
+					
+					if(m_current > 100.f)
+						m_current = 100.f;
+					
+					lSLID_VALUE = m_current;
+				} else {
+					bOk = true;
+				}
+			}
+		}
+		
+		if(bOk) {
+			m_current -= (float)Original_framedelay*( 1.0f / 10 );
+			
+			if(m_current < 0.f)
+				m_current = 0.f;
+			
+			lSLID_VALUE = m_current;
+		}
+	}
+	
+	if(m_direction == 1) {
+		m_current += (float)Original_framedelay*( 1.0f / 10 );
+		
+		if(m_current > 100.f) {
+			m_current = 100.f;
+			m_direction = 0;
+		}
+		lSLID_VALUE = m_current;
+	} else if(m_direction == -1) {
+		m_current -= (float)Original_framedelay*( 1.0f / 10 );
+		
+		if(m_current < 0.f) {
+			m_current = 0.f;
+			m_direction = 0;
+		}
+		lSLID_VALUE = m_current;
+	}
+}
 
 void HudRoot::draw() {
 	

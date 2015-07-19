@@ -367,6 +367,25 @@ public:
 	void draw();
 };
 
+enum FadeDirection {
+	FadeDirection_Out,
+	FadeDirection_In,
+};
+
+class PlayerInterfaceFader {
+private:
+	long m_direction;
+	float m_current;
+	
+public:
+	PlayerInterfaceFader();
+	
+	void reset();
+	void resetSlid();
+	void requestFade(FadeDirection showhide, long smooth);
+	void update();
+};
+
 class HudRoot : public HudItem {
 public:
 	void setScale(float scale);
@@ -375,6 +394,8 @@ public:
 	void updateInput();
 	
 	void draw();
+	
+	PlayerInterfaceFader playerInterfaceFader;
 	
 	HitStrengthGauge hitStrengthGauge;
 	BookIconGui bookIconGui;
