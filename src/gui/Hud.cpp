@@ -199,85 +199,85 @@ void hitStrengthGaugeRequestFlash(float flashIntensity) {
 extern TextureContainer * healing;
 
 
-	void BookIconGui::MakeBookFX(const Vec3f & pos) {
+void BookIconGui::MakeBookFX(const Vec3f & pos) {
+	
+	for(long i = 0; i < 12; i++) {
 		
-		for(long i = 0; i < 12; i++) {
-			
-			MagFX(pos);
+		MagFX(pos);
+	}
+	
+	for(int i = 0; i < 5; i++) {
+		
+		PARTICLE_DEF * pd = createParticle();
+		if(!pd) {
+			break;
 		}
 		
-		for(int i = 0; i < 5; i++) {
-			
-			PARTICLE_DEF * pd = createParticle();
-			if(!pd) {
-				break;
-			}
-			
-			pd->ov = pos - Vec3f(i * 2, i * 2, 0.f);
-			pd->move = Vec3f(i * -0.5f, i * -0.5f, 0.f);
-			pd->scale = Vec3f(i * 10, i * 10, 0.f);
-			pd->tolive = Random::get(1200, 1600);
-			pd->tc = m_tex;
-			pd->rgb = Color3f(1.f - i * 0.1f, i * 0.1f, 0.5f - i * 0.1f);
-			pd->siz = 32.f + i * 4.f;
-			pd->is2D = true;
-		}
-		
-		NewSpell = 1;
+		pd->ov = pos - Vec3f(i * 2, i * 2, 0.f);
+		pd->move = Vec3f(i * -0.5f, i * -0.5f, 0.f);
+		pd->scale = Vec3f(i * 10, i * 10, 0.f);
+		pd->tolive = Random::get(1200, 1600);
+		pd->tc = m_tex;
+		pd->rgb = Color3f(1.f - i * 0.1f, i * 0.1f, 0.5f - i * 0.1f);
+		pd->siz = 32.f + i * 4.f;
+		pd->is2D = true;
 	}
 	
-	BookIconGui::BookIconGui()
-		: HudIconBase()
-		, m_size(Vec2f(32, 32))
-		, ulBookHaloTime(0)
-	{}
-	
-	void BookIconGui::init() {
-		m_tex = TextureContainer::LoadUI("graph/interface/icons/book");
-		arx_assert(m_tex);
-		
-		m_size = Vec2f(32, 32);
-		
-		m_haloColor = Color3f(0.2f, 0.4f, 0.8f);
-		
-		m_haloActive = false;
-		ulBookHaloTime = 0;
-	}
-	
-	void BookIconGui::requestHalo() {
-		m_haloActive = true;
-		ulBookHaloTime = 0;
-	}
-	
-	void BookIconGui::requestFX() {
-		MakeBookFX(Vec3f(Vec2f(g_size.bottomRight()) + Vec2f(-35, -148), 0.00001f));
-	}
-	
-	void BookIconGui::update(const Rectf & parent) {
-		
-		m_rect = createChild(parent, Anchor_TopRight, m_size * m_scale, Anchor_BottomRight);
-		
-		if(m_haloActive) {
-			float fCalc = ulBookHaloTime + Original_framedelay;
-			ulBookHaloTime = checked_range_cast<unsigned long>(fCalc);
-			if(ulBookHaloTime >= 3000) { // ms
-				m_haloActive = false;
-			}
-		}
-	}
-	
-	void BookIconGui::updateInput() {
-		m_isSelected = m_rect.contains(Vec2f(DANAEMouse));
-		
-		if(m_isSelected) {
-			SpecialCursor = CURSOR_INTERACTION_ON;
+	NewSpell = 1;
+}
 
-			if(eeMouseDown1()) {
-				ARX_INTERFACE_BookToggle();
-			}
-			return;
+BookIconGui::BookIconGui()
+	: HudIconBase()
+	, m_size(Vec2f(32, 32))
+	, ulBookHaloTime(0)
+{}
+
+void BookIconGui::init() {
+	m_tex = TextureContainer::LoadUI("graph/interface/icons/book");
+	arx_assert(m_tex);
+	
+	m_size = Vec2f(32, 32);
+	
+	m_haloColor = Color3f(0.2f, 0.4f, 0.8f);
+	
+	m_haloActive = false;
+	ulBookHaloTime = 0;
+}
+
+void BookIconGui::requestHalo() {
+	m_haloActive = true;
+	ulBookHaloTime = 0;
+}
+
+void BookIconGui::requestFX() {
+	MakeBookFX(Vec3f(Vec2f(g_size.bottomRight()) + Vec2f(-35, -148), 0.00001f));
+}
+
+void BookIconGui::update(const Rectf & parent) {
+	
+	m_rect = createChild(parent, Anchor_TopRight, m_size * m_scale, Anchor_BottomRight);
+	
+	if(m_haloActive) {
+		float fCalc = ulBookHaloTime + Original_framedelay;
+		ulBookHaloTime = checked_range_cast<unsigned long>(fCalc);
+		if(ulBookHaloTime >= 3000) { // ms
+			m_haloActive = false;
 		}
 	}
+}
+
+void BookIconGui::updateInput() {
+	m_isSelected = m_rect.contains(Vec2f(DANAEMouse));
+	
+	if(m_isSelected) {
+		SpecialCursor = CURSOR_INTERACTION_ON;
+
+		if(eeMouseDown1()) {
+			ARX_INTERFACE_BookToggle();
+		}
+		return;
+	}
+}
 
 static BookIconGui bookIconGui;
 
