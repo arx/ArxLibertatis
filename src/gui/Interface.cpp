@@ -1533,7 +1533,6 @@ void ARX_INTERFACE_Reset()
 	g_hudRoot.playerInterfaceFader.reset();
 	g_hudRoot.playerInterfaceFader.resetSlid();
 	BLOCK_PLAYER_CONTROLS = false;
-	cinematicBorder.reset2();
 	cinematicBorder.reset();
 	CINEMA_DECAL=0;
 	g_hudRoot.quickSaveIconGui.hide();

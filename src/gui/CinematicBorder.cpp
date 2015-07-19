@@ -46,10 +46,8 @@ float CinematicBorder::elapsedTime() {
 }
 
 void CinematicBorder::reset() {
-	m_direction=0;
-}
-void CinematicBorder::reset2() {
 	m_active = false;
+	m_direction = 0;
 }
 
 void CinematicBorder::set(bool status, bool smooth)

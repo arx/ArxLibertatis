@@ -30,7 +30,6 @@ public:
 	float elapsedTime();
 	
 	void reset();
-	void reset2();
 	
 	void update();
 	void set(bool status, bool smooth);
