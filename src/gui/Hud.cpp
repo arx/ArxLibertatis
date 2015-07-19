@@ -558,112 +558,112 @@ void purseIconGuiRequestHalo() {
 }
 
 
-	CurrentTorchIconGui::CurrentTorchIconGui()
-		: HudItem()
-		, m_isActive(false)
-		, m_rect()
-		, m_tex(NULL)
-		, m_size()
-	{}
-	
-	void CurrentTorchIconGui::init() {
-		m_size = Vec2f(32.f, 64.f);
-	}
-	
-	bool CurrentTorchIconGui::isVisible() {
-		return !(player.Interface & INTER_COMBATMODE) && player.torch;
-	}
-	
-	void CurrentTorchIconGui::updateRect(const Rectf & parent) {
-		
-		float secondaryInventoryX = InventoryX + 110.f;
-		
-		m_rect = createChild(parent, Anchor_TopLeft, m_size * m_scale, Anchor_BottomLeft);
-		
-		if(m_rect.left < secondaryInventoryX) {
-			m_rect.move(secondaryInventoryX, 0.f);
-		}
-	}
-	
-	void CurrentTorchIconGui::updateInput() {
-		if(player.torch) {
-			
-			if(m_rect.contains(Vec2f(DANAEMouse))) {
-				eMouseState=MOUSE_IN_TORCH_ICON;
-				SpecialCursor=CURSOR_INTERACTION_ON;
-				
-				if(!DRAGINTER && !PLAYER_MOUSELOOK_ON && DRAGGING) {
-					Entity * io=player.torch;
-					player.torch->show=SHOW_FLAG_IN_SCENE;
-					ARX_SOUND_PlaySFX(SND_TORCH_END);
-					ARX_SOUND_Stop(SND_TORCH_LOOP);
-					player.torch=NULL;
-					lightHandleGet(torchLightHandle)->exist = 0;
-					io->ignition=1;
-					Set_DragInter(io);
-				} else {
-					if(eeMouseDoubleClick1() && !COMBINE) {
-						COMBINE = player.torch;
-					}
+CurrentTorchIconGui::CurrentTorchIconGui()
+	: HudItem()
+	, m_isActive(false)
+	, m_rect()
+	, m_tex(NULL)
+	, m_size()
+{}
 
-					if(eeMouseUp2()) {
-						ARX_PLAYER_ClickedOnTorch(player.torch);
-						TRUE_PLAYER_MOUSELOOK_ON = false;
-					}
+void CurrentTorchIconGui::init() {
+	m_size = Vec2f(32.f, 64.f);
+}
+
+bool CurrentTorchIconGui::isVisible() {
+	return !(player.Interface & INTER_COMBATMODE) && player.torch;
+}
+
+void CurrentTorchIconGui::updateRect(const Rectf & parent) {
+	
+	float secondaryInventoryX = InventoryX + 110.f;
+	
+	m_rect = createChild(parent, Anchor_TopLeft, m_size * m_scale, Anchor_BottomLeft);
+	
+	if(m_rect.left < secondaryInventoryX) {
+		m_rect.move(secondaryInventoryX, 0.f);
+	}
+}
+
+void CurrentTorchIconGui::updateInput() {
+	if(player.torch) {
+		
+		if(m_rect.contains(Vec2f(DANAEMouse))) {
+			eMouseState=MOUSE_IN_TORCH_ICON;
+			SpecialCursor=CURSOR_INTERACTION_ON;
+			
+			if(!DRAGINTER && !PLAYER_MOUSELOOK_ON && DRAGGING) {
+				Entity * io=player.torch;
+				player.torch->show=SHOW_FLAG_IN_SCENE;
+				ARX_SOUND_PlaySFX(SND_TORCH_END);
+				ARX_SOUND_Stop(SND_TORCH_LOOP);
+				player.torch=NULL;
+				lightHandleGet(torchLightHandle)->exist = 0;
+				io->ignition=1;
+				Set_DragInter(io);
+			} else {
+				if(eeMouseDoubleClick1() && !COMBINE) {
+					COMBINE = player.torch;
+				}
+				
+				if(eeMouseUp2()) {
+					ARX_PLAYER_ClickedOnTorch(player.torch);
+					TRUE_PLAYER_MOUSELOOK_ON = false;
 				}
 			}
 		}
 	}
+}
+
+void CurrentTorchIconGui::update() {
 	
-	void CurrentTorchIconGui::update() {
-		
-		if(!isVisible())
-			return;
-		
-		if((player.Interface & INTER_NOTE) && TSecondaryInventory != NULL
-		   && (openNote.type() == gui::Note::BigNote || openNote.type() == gui::Note::Book)) {
-			m_isActive = false;
-			return;
-		}
-		m_isActive = true;
-		
-		m_tex = player.torch->inv;
-		arx_assert(m_tex);
-		
-		if(rnd() <= 0.2f) {
-			return;
-		}
-		
-		createFireParticle();
+	if(!isVisible())
+		return;
+	
+	if((player.Interface & INTER_NOTE) && TSecondaryInventory != NULL
+	   && (openNote.type() == gui::Note::BigNote || openNote.type() == gui::Note::Book)) {
+		m_isActive = false;
+		return;
+	}
+	m_isActive = true;
+	
+	m_tex = player.torch->inv;
+	arx_assert(m_tex);
+	
+	if(rnd() <= 0.2f) {
+		return;
 	}
 	
-	void CurrentTorchIconGui::createFireParticle() {
-		
-		PARTICLE_DEF * pd = createParticle();
-		if(!pd) {
-			return;
-		}
-		
-		Vec2f pos = m_rect.topLeft() + Vec2f(12.f - rnd() * 3.f, rnd() * 6.f) * m_scale;
-		
-		pd->special = FIRE_TO_SMOKE;
-		pd->ov = Vec3f(pos, 0.0000001f);
-		pd->move = Vec3f((1.5f - rnd() * 3.f), -(5.f + rnd() * 1.f), 0.f) * m_scale;
-		pd->scale = Vec3f(1.8f, 1.8f, 1.f);
-		pd->tolive = Random::get(500, 900);
-		pd->tc = fire2;
-		pd->rgb = Color3f(1.f, .6f, .5f);
-		pd->siz = 14.f * m_scale;
-		pd->is2D = true;
+	createFireParticle();
+}
+
+void CurrentTorchIconGui::createFireParticle() {
+	
+	PARTICLE_DEF * pd = createParticle();
+	if(!pd) {
+		return;
 	}
 	
-	void CurrentTorchIconGui::draw() {
-		
-		if(!isVisible())
-			return;
-		
-		EERIEDrawBitmap(m_rect, 0.001f, m_tex, Color::white);
-	}
+	Vec2f pos = m_rect.topLeft() + Vec2f(12.f - rnd() * 3.f, rnd() * 6.f) * m_scale;
+	
+	pd->special = FIRE_TO_SMOKE;
+	pd->ov = Vec3f(pos, 0.0000001f);
+	pd->move = Vec3f((1.5f - rnd() * 3.f), -(5.f + rnd() * 1.f), 0.f) * m_scale;
+	pd->scale = Vec3f(1.8f, 1.8f, 1.f);
+	pd->tolive = Random::get(500, 900);
+	pd->tc = fire2;
+	pd->rgb = Color3f(1.f, .6f, .5f);
+	pd->siz = 14.f * m_scale;
+	pd->is2D = true;
+}
+
+void CurrentTorchIconGui::draw() {
+	
+	if(!isVisible())
+		return;
+	
+	EERIEDrawBitmap(m_rect, 0.001f, m_tex, Color::white);
+}
 
 CurrentTorchIconGui currentTorchIconGui;
 
