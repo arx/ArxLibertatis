@@ -1595,33 +1595,6 @@ public:
 StealthGauge stealthGauge;
 
 
-void setHudScale(float scale) {
-	hitStrengthGauge.setScale(scale);
-	healthGauge.setScale(scale);
-	stealIconGui.setScale(scale);
-	currentTorchIconGui.setScale(scale);
-	
-	manaGauge.setScale(scale);
-	backpackIconGui.setScale(scale);
-	bookIconGui.setScale(scale);
-	purseIconGui.setScale(scale);
-	levelUpIconGui.setScale(scale);
-	
-	changeLevelIconGui.setScale(scale);
-	memorizedRunesHud.setScale(scale);
-	activeSpellsGui.setScale(scale);
-	
-	mecanismIcon.setScale(scale);
-	screenArrows.setScale(scale);
-	
-	stealthGauge.setScale(scale);
-	damagedEquipmentGui.setScale(scale);
-	precastSpellsGui.setScale(scale);
-	
-	g_playerInventoryHud.setScale(scale);
-	g_secondaryInventoryHud.setScale(scale);
-}
-
 void ArxGame::drawAllInterface() {
 	
 	const Vec2f mousePos = Vec2f(DANAEMouse);
@@ -1809,6 +1782,35 @@ void hudUpdateInput() {
 	}
 }
 
+
+void HudRoot::setScale(float scale) {
+	HudItem::setScale(scale);
+	
+	hitStrengthGauge.setScale(scale);
+	healthGauge.setScale(scale);
+	stealIconGui.setScale(scale);
+	currentTorchIconGui.setScale(scale);
+	
+	manaGauge.setScale(scale);
+	backpackIconGui.setScale(scale);
+	bookIconGui.setScale(scale);
+	purseIconGui.setScale(scale);
+	levelUpIconGui.setScale(scale);
+	
+	changeLevelIconGui.setScale(scale);
+	memorizedRunesHud.setScale(scale);
+	activeSpellsGui.setScale(scale);
+	
+	mecanismIcon.setScale(scale);
+	screenArrows.setScale(scale);
+	
+	stealthGauge.setScale(scale);
+	damagedEquipmentGui.setScale(scale);
+	precastSpellsGui.setScale(scale);
+	
+	g_playerInventoryHud.setScale(scale);
+	g_secondaryInventoryHud.setScale(scale);
+}
 
 void HudRoot::init() {
 	changeLevelIconGui.init();

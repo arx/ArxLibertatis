@@ -27,12 +27,12 @@ extern bool bIsAiming;
 
 class HudRoot : public HudItem {
 public:
+	void setScale(float scale);
+	
 	void init();
 };
 
 extern HudRoot g_hudRoot;
-
-void setHudScale(float scale);
 
 void purseIconGuiRequestHalo();
 
