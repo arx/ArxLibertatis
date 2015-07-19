@@ -2084,9 +2084,7 @@ void ArxGame::manageEditorControls() {
 	playerInterfaceFader.update();
 	cinematicBorder.update();
 	
-
-	
-	hudUpdateInput();
+	g_hudRoot.updateInput();
 	
 	// gros player book
 	if(player.Interface & INTER_MAP) {

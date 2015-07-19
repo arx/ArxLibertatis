@@ -30,6 +30,7 @@ public:
 	void setScale(float scale);
 	
 	void init();
+	void updateInput();
 };
 
 extern HudRoot g_hudRoot;
@@ -44,7 +45,5 @@ void bookIconGuiRequestFX();
 void bookIconGuiRequestHalo();
 //! Hide the quick save indicator
 void hideQuickSaveIcon();
-
-void hudUpdateInput();
 
 #endif // ARX_GUI_HUD_H

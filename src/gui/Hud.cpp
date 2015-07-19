@@ -1763,25 +1763,6 @@ void ArxGame::drawAllInterface() {
 }
 
 
-void hudUpdateInput() {
-	if(!BLOCK_PLAYER_CONTROLS) {
-		if(!(player.Interface & INTER_COMBATMODE)) {
-			if(!TRUE_PLAYER_MOUSELOOK_ON) {
-				
-				currentTorchIconGui.updateInput();
-				levelUpIconGui.updateInput();
-				purseIconGui.updateInput();
-				bookIconGui.updateInput();
-				
-				backpackIconGui.updateInput();
-				
-				
-			}
-			stealIconGui.updateInput();
-		}
-	}
-}
-
 
 void HudRoot::setScale(float scale) {
 	HudItem::setScale(scale);
@@ -1836,6 +1817,25 @@ void HudRoot::init() {
 	hitStrengthGauge.init();
 	
 	//setHudScale(2);
+}
+
+void HudRoot::updateInput() {
+	if(!BLOCK_PLAYER_CONTROLS) {
+		if(!(player.Interface & INTER_COMBATMODE)) {
+			if(!TRUE_PLAYER_MOUSELOOK_ON) {
+				
+				currentTorchIconGui.updateInput();
+				levelUpIconGui.updateInput();
+				purseIconGui.updateInput();
+				bookIconGui.updateInput();
+				
+				backpackIconGui.updateInput();
+				
+				
+			}
+			stealIconGui.updateInput();
+		}
+	}
 }
 
 HudRoot g_hudRoot;
