@@ -530,12 +530,6 @@ void PurseIconGui::draw() {
 	}
 }
 
-static PurseIconGui purseIconGui;
-
-void purseIconGuiRequestHalo() {
-	purseIconGui.requestHalo();
-}
-
 
 CurrentTorchIconGui::CurrentTorchIconGui()
 	: HudItem()

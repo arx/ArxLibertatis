@@ -378,6 +378,7 @@ public:
 	
 	HitStrengthGauge hitStrengthGauge;
 	BookIconGui bookIconGui;
+	PurseIconGui purseIconGui;
 	
 private:
 	BackpackIconGui backpackIconGui;
@@ -386,8 +387,6 @@ private:
 };
 
 extern HudRoot g_hudRoot;
-
-void purseIconGuiRequestHalo();
 
 void mecanismIconReset();
 //! Show the quick save indicator for a short time

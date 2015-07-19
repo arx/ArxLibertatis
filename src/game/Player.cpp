@@ -2550,7 +2550,7 @@ void ARX_PLAYER_PutPlayerInNormalStance() {
  */
 void ARX_PLAYER_AddGold(long _lValue) {
 	player.gold += _lValue;
-	purseIconGuiRequestHalo();
+	g_hudRoot.purseIconGui.requestHalo();
 }
 
 void ARX_PLAYER_AddGold(Entity * gold) {
