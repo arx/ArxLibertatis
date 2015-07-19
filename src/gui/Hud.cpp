@@ -290,97 +290,97 @@ void bookIconGuiRequestFX() {
 }
 
 
-	void BackpackIconGui::init() {
-		m_tex = TextureContainer::LoadUI("graph/interface/icons/backpack");
-		arx_assert(m_tex);
-	}
+void BackpackIconGui::init() {
+	m_tex = TextureContainer::LoadUI("graph/interface/icons/backpack");
+	arx_assert(m_tex);
+}
 
-	void BackpackIconGui::update(const Rectf & parent) {
-		
-		m_rect = createChild(parent, Anchor_TopRight, Vec2f(32, 32) * m_scale, Anchor_BottomRight);
+void BackpackIconGui::update(const Rectf & parent) {
+	
+	m_rect = createChild(parent, Anchor_TopRight, Vec2f(32, 32) * m_scale, Anchor_BottomRight);
+}
+
+void BackpackIconGui::updateInput() {
+	{
+	static float flDelay=0;
+	
+	// Check for backpack Icon
+	if(m_rect.contains(Vec2f(DANAEMouse))) {
+		if(eeMouseUp1() && playerInventory.insert(DRAGINTER)) {
+			ARX_SOUND_PlayInterface(SND_INVSTD);
+			Set_DragInter(NULL);
+		}
 	}
 	
-	void BackpackIconGui::updateInput() {
-		{
-		static float flDelay=0;
+	if(m_rect.contains(Vec2f(DANAEMouse)) || flDelay) {
+		eMouseState = MOUSE_IN_INVENTORY_ICON;
+		SpecialCursor = CURSOR_INTERACTION_ON;
 		
-		// Check for backpack Icon
-		if(m_rect.contains(Vec2f(DANAEMouse))) {
-			if(eeMouseUp1() && playerInventory.insert(DRAGINTER)) {
-				ARX_SOUND_PlayInterface(SND_INVSTD);
-				Set_DragInter(NULL);
-			}
-		}
 		
-		if(m_rect.contains(Vec2f(DANAEMouse)) || flDelay) {
-			eMouseState = MOUSE_IN_INVENTORY_ICON;
-			SpecialCursor = CURSOR_INTERACTION_ON;
+		if(eeMouseDoubleClick1()) {
+			ARX_SOUND_PlayInterface(SND_BACKPACK, 0.9F + 0.2F * rnd());
 			
+			playerInventory.optimize();
 			
-			if(eeMouseDoubleClick1()) {
-				ARX_SOUND_PlayInterface(SND_BACKPACK, 0.9F + 0.2F * rnd());
-
-				playerInventory.optimize();
-
-				flDelay = 0;
-			} else if(eeMouseDown1() || flDelay) {
-				if(!flDelay) {
-					flDelay = arxtime.get_updated();
+			flDelay = 0;
+		} else if(eeMouseDown1() || flDelay) {
+			if(!flDelay) {
+				flDelay = arxtime.get_updated();
+				return;
+			} else {
+				if(arxtime.get_updated() - flDelay < 300) {
 					return;
 				} else {
-					if(arxtime.get_updated() - flDelay < 300) {
-						return;
-					} else {
-						flDelay = 0;
-					}
+					flDelay = 0;
 				}
-
-				if(player.Interface & INTER_INVENTORYALL) {
+			}
+			
+			if(player.Interface & INTER_INVENTORYALL) {
+				ARX_SOUND_PlayInterface(SND_BACKPACK, 0.9F + 0.2F * rnd());
+				bInventoryClosing = true;
+			} else {
+				bInverseInventory=!bInverseInventory;
+				lOldTruePlayerMouseLook=TRUE_PLAYER_MOUSELOOK_ON;
+			}
+		} else if(eeMouseDown2()) {
+			ARX_INTERFACE_BookClose();
+			ARX_INVENTORY_OpenClose(NULL);
+			
+			if(player.Interface & INTER_INVENTORYALL) {
+				bInventoryClosing = true;
+			} else {
+				if(player.Interface & INTER_INVENTORY) {
 					ARX_SOUND_PlayInterface(SND_BACKPACK, 0.9F + 0.2F * rnd());
 					bInventoryClosing = true;
+					bInventorySwitch = true;
 				} else {
-					bInverseInventory=!bInverseInventory;
-					lOldTruePlayerMouseLook=TRUE_PLAYER_MOUSELOOK_ON;
-				}
-			} else if(eeMouseDown2()) {
-				ARX_INTERFACE_BookClose();
-				ARX_INVENTORY_OpenClose(NULL);
-
-				if(player.Interface & INTER_INVENTORYALL) {
-					bInventoryClosing = true;
-				} else {
-					if(player.Interface & INTER_INVENTORY) {
-						ARX_SOUND_PlayInterface(SND_BACKPACK, 0.9F + 0.2F * rnd());
-						bInventoryClosing = true;
-						bInventorySwitch = true;
-					} else {
-						ARX_SOUND_PlayInterface(SND_BACKPACK, 0.9F + 0.2F * rnd());
-						player.Interface |= INTER_INVENTORYALL;
-
-						float fInventoryY = INTERFACE_RATIO(121.f) * (player.bag);
-						InventoryY = checked_range_cast<long>(fInventoryY);
-
-						ARX_INTERFACE_NoteClose();
-
-						if(TRUE_PLAYER_MOUSELOOK_ON) {
-							WILLRETURNTOFREELOOK = true;
-						}
+					ARX_SOUND_PlayInterface(SND_BACKPACK, 0.9F + 0.2F * rnd());
+					player.Interface |= INTER_INVENTORYALL;
+					
+					float fInventoryY = INTERFACE_RATIO(121.f) * (player.bag);
+					InventoryY = checked_range_cast<long>(fInventoryY);
+					
+					ARX_INTERFACE_NoteClose();
+					
+					if(TRUE_PLAYER_MOUSELOOK_ON) {
+						WILLRETURNTOFREELOOK = true;
 					}
 				}
-				
-				TRUE_PLAYER_MOUSELOOK_ON = false;
 			}
+			
+			TRUE_PLAYER_MOUSELOOK_ON = false;
+		}
+		
+		if(DRAGINTER == NULL)
+			return;
+	}
+	}
+}
 
-			if(DRAGINTER == NULL)
-				return;
-		}
-		}
-	}
-	
-	void BackpackIconGui::draw() {
-		m_isSelected = eMouseState == MOUSE_IN_INVENTORY_ICON;
-		HudIconBase::draw();
-	}
+void BackpackIconGui::draw() {
+	m_isSelected = eMouseState == MOUSE_IN_INVENTORY_ICON;
+	HudIconBase::draw();
+}
 
 
 static BackpackIconGui backpackIconGui;
