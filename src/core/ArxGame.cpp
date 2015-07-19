@@ -2018,7 +2018,7 @@ void ArxGame::renderLevel() {
 		GRenderer->SetRenderState(Renderer::DepthTest, false);
 		
 		ARX_INTERFACE_NoteManage();
-		drawAllInterface();
+		g_hudRoot.draw();
 		
 		if((player.Interface & INTER_MAP) && !(player.Interface & INTER_COMBATMODE)) {
 			ARX_MAGICAL_FLARES_Update();

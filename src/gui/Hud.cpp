@@ -1405,7 +1405,7 @@ void StealthGauge::draw() {
 StealthGauge stealthGauge;
 
 
-void ArxGame::drawAllInterface() {
+void HudRoot::draw() {
 	
 	const Vec2f mousePos = Vec2f(DANAEMouse);
 	

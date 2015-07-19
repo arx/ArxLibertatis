@@ -373,6 +373,8 @@ public:
 	
 	void init();
 	void updateInput();
+	
+	void draw();
 };
 
 extern HudRoot g_hudRoot;

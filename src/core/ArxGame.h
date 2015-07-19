@@ -77,8 +77,6 @@ protected:
 	void manageEditorControls();
 	void managePlayerControls();
 	void updateAllInterface();
-	void drawAllInterfac(); //TODO rename this
-	void drawAllInterface();
 
 	void update2DFX();
 	void goFor2DFX();
