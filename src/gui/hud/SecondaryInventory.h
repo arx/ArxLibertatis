@@ -76,6 +76,8 @@ public:
 	bool dragEntity(Entity * io, const Vec2s &pos);
 	
 	void close();
+	
+	void updateFader();
 };
 
 extern SecondaryInventoryHud g_secondaryInventoryHud;

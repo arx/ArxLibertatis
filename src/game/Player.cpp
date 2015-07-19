@@ -84,6 +84,7 @@ ZeniMax Media Inc., Suite 120, Rockville, Maryland 20850 USA.
 #include "gui/Speech.h"
 #include "gui/Interface.h"
 #include "gui/MiniMap.h"
+#include "gui/hud/SecondaryInventory.h"
 
 #include "graphics/BaseGraphicsTypes.h"
 #include "graphics/Color.h"
@@ -2482,7 +2483,7 @@ lasuite:
 		CURRENT_PLAYER_COLOR = std::max(CURRENT_PLAYER_COLOR, grnd_color);
 	}
 	
-	gui::InventoryFaderUpdate();
+	g_secondaryInventoryHud.updateFader();
 }
 
 /*!
