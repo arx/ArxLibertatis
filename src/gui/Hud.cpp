@@ -764,19 +764,13 @@ void hideQuickSaveIcon() {
 }
 
 
-class MemorizedRunesHud : public HudIconBase {
-private:
-	Vec2f m_size;
-	int m_count;
-	
-public:
-	MemorizedRunesHud()
+	MemorizedRunesHud::MemorizedRunesHud()
 		: HudIconBase()
 		, m_size()
 		, m_count(0)
 	{}
 	
-	void update(const Rectf & parent) {
+	void MemorizedRunesHud::update(const Rectf & parent) {
 		int count = 0;
 		int count2 = 0;
 		for(long j = 0; j < 6; j++) {
@@ -794,7 +788,7 @@ public:
 		m_rect = createChild(parent, Anchor_TopLeft, m_size * m_scale, Anchor_TopRight);
 	}
 	
-	void draw() {
+	void MemorizedRunesHud::draw() {
 		Vec2f pos = m_rect.topLeft();
 		
 		for(int i = 0; i < 6; i++) {
@@ -836,7 +830,6 @@ public:
 			player.SpellToMemorize.bSpell = false;
 		}
 	}
-};
 
 MemorizedRunesHud memorizedRunesHud;
 

@@ -180,6 +180,18 @@ public:
 	void hide();
 };
 
+class MemorizedRunesHud : public HudIconBase {
+private:
+	Vec2f m_size;
+	int m_count;
+	
+public:
+	MemorizedRunesHud();
+	
+	void update(const Rectf & parent);
+	void draw();
+};
+
 class HudRoot : public HudItem {
 public:
 	void setScale(float scale);
