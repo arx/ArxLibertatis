@@ -480,76 +480,76 @@ void LevelUpIconGui::draw() {
 LevelUpIconGui levelUpIconGui;
 
 
-	PurseIconGui::PurseIconGui()
-		: HudIconBase()
-		, m_pos()
-		, m_size()
-		, ulGoldHaloTime(0)
-	{}
+PurseIconGui::PurseIconGui()
+	: HudIconBase()
+	, m_pos()
+	, m_size()
+	, ulGoldHaloTime(0)
+{}
+
+void PurseIconGui::init() {
+	m_tex = TextureContainer::LoadUI("graph/interface/inventory/gold");
+	arx_assert(m_tex);
+	m_size = Vec2f(32.f, 32.f);
 	
-	void PurseIconGui::init() {
-		m_tex = TextureContainer::LoadUI("graph/interface/inventory/gold");
-		arx_assert(m_tex);
-		m_size = Vec2f(32.f, 32.f);
-		
-		m_haloColor = Color3f(0.9f, 0.9f, 0.1f);
-		
-		m_haloActive = false;
-		ulGoldHaloTime = 0;
-	}
+	m_haloColor = Color3f(0.9f, 0.9f, 0.1f);
 	
-	void PurseIconGui::requestHalo() {
-		m_haloActive = true;
-		ulGoldHaloTime = 0;
-	}
+	m_haloActive = false;
+	ulGoldHaloTime = 0;
+}
+
+void PurseIconGui::requestHalo() {
+	m_haloActive = true;
+	ulGoldHaloTime = 0;
+}
+
+void PurseIconGui::update(const Rectf & parent) {
+	m_rect = createChild(parent, Anchor_TopRight, m_size * m_scale, Anchor_BottomRight);
 	
-	void PurseIconGui::update(const Rectf & parent) {
-		m_rect = createChild(parent, Anchor_TopRight, m_size * m_scale, Anchor_BottomRight);
-		
-		//A halo is drawn on the character's stats icon (book) when leveling up, for example.
-		if(m_haloActive) {
-			float fCalc = ulGoldHaloTime + Original_framedelay;
-			ulGoldHaloTime = checked_range_cast<unsigned long>(fCalc);
-			if(ulGoldHaloTime >= 1000) { // ms
-				m_haloActive = false;
-			}
+	//A halo is drawn on the character's stats icon (book) when leveling up, for example.
+	if(m_haloActive) {
+		float fCalc = ulGoldHaloTime + Original_framedelay;
+		ulGoldHaloTime = checked_range_cast<unsigned long>(fCalc);
+		if(ulGoldHaloTime >= 1000) { // ms
+			m_haloActive = false;
 		}
 	}
-	
-	void PurseIconGui::updateInput() {
-		m_isSelected = false;
-		// gold
-		if(player.gold > 0) {
-			m_isSelected = m_rect.contains(Vec2f(DANAEMouse));
-			
-			if(m_isSelected) {
-				SpecialCursor = CURSOR_INTERACTION_ON;
+}
 
-				if(   player.gold > 0
-				   && !GInput->actionPressed(CONTROLS_CUST_MAGICMODE)
-				   && !COMBINE
-				   && !COMBINEGOLD
-				   && eeMouseDoubleClick1()
-				) {
-					COMBINEGOLD = true;
-				}
-
-				if(!DRAGINTER)
-					return;
-			}
-		}
-	}
-	
-	void PurseIconGui::draw() {
-		HudIconBase::draw();
+void PurseIconGui::updateInput() {
+	m_isSelected = false;
+	// gold
+	if(player.gold > 0) {
+		m_isSelected = m_rect.contains(Vec2f(DANAEMouse));
 		
 		if(m_isSelected) {
-			Vec2f numberPos = m_rect.topLeft();
-			numberPos += Vec2f(-30 * m_scale, -15 * m_scale);
+			SpecialCursor = CURSOR_INTERACTION_ON;
 			
-			ARX_INTERFACE_DrawNumber(numberPos, player.gold, 6, Color::white, m_scale);
+			if(   player.gold > 0
+			   && !GInput->actionPressed(CONTROLS_CUST_MAGICMODE)
+			   && !COMBINE
+			   && !COMBINEGOLD
+			   && eeMouseDoubleClick1()
+			) {
+				COMBINEGOLD = true;
+			}
+			
+			if(!DRAGINTER)
+				return;
 		}
 	}
+}
+
+void PurseIconGui::draw() {
+	HudIconBase::draw();
+	
+	if(m_isSelected) {
+		Vec2f numberPos = m_rect.topLeft();
+		numberPos += Vec2f(-30 * m_scale, -15 * m_scale);
+		
+		ARX_INTERFACE_DrawNumber(numberPos, player.gold, 6, Color::white, m_scale);
+	}
+}
 
 static PurseIconGui purseIconGui;
 
