@@ -20,6 +20,8 @@
 #ifndef ARX_GUI_HUD_H
 #define ARX_GUI_HUD_H
 
+#include <vector>
+
 #include "game/GameTypes.h"
 #include "gui/hud/HudCommon.h"
 #include "math/Types.h"
