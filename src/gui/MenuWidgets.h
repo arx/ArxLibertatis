@@ -258,10 +258,10 @@ public:
 		return (iID == zoneId) ? this : NULL;
 	}
 	
-	void SetShortCut(int _iShortCut)
-	{
+	void SetShortCut(int _iShortCut) {
 		iShortCut = _iShortCut;
-	};
+	}
+	
 	virtual void setEnabled(bool enable) {
 		enabled = enable;
 	}
@@ -269,14 +269,13 @@ public:
 	virtual void Move(const Vec2i & offset);
 	virtual void SetPos(Vec2i pos);
 	
-	void SetCheckOff()
-	{
+	void SetCheckOff() {
 		bCheck = false;
 	}
-	void SetCheckOn()
-	{
+	
+	void SetCheckOn() {
 		bCheck = true;
-	};
+	}
 	
 	bool getCheck() { return bCheck; }
 	
