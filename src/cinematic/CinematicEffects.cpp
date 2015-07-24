@@ -54,11 +54,10 @@ ZeniMax Media Inc., Suite 120, Rockville, Maryland 20850 USA.
 #include "graphics/data/TextureContainer.h"
 #include "graphics/texture/TextureStage.h"
 
-/*---------------------------------------------------------------------------------*/
-#define		NBOLDPOS	10
-/*---------------------------------------------------------------------------------*/
 float		FlashAlpha;
 int			TotOldPos;
+
+static const int NBOLDPOS = 10;
 static Vec3f OldPos[NBOLDPOS];
 static float OldAz[NBOLDPOS];
 
