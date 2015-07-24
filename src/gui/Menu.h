@@ -51,7 +51,7 @@ ZeniMax Media Inc., Suite 120, Rockville, Maryland 20850 USA.
 
 class TextureContainer;
 
-#define MAX_FLYOVER 32
+static const size_t MAX_FLYOVER = 32;
 
 struct MENU_DYNAMIC_DATA {
 	

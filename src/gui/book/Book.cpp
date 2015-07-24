@@ -168,7 +168,7 @@ void ARX_INTERFACE_BookToggle() {
 		g_miniMap.purgeTexContainer();
 
 		if(ARXmenu.mda) {
-			for(long i = 0; i < MAX_FLYOVER; i++) {
+			for(size_t i = 0; i < MAX_FLYOVER; i++) {
 				ARXmenu.mda->flyover[i].clear();
 			}
 			delete ARXmenu.mda;
