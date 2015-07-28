@@ -1642,9 +1642,6 @@ void ArxGame::updateInput() {
 	}
 	if(GInput->actionNowReleased(CONTROLS_CUST_ACTION)) {
 		EERIEMouseButton &= ~1;
-		
-		// TODO sometimes there are multiple frames between
-		// setting the double click flag and resetting it here
 		EERIEMouseButton &= ~4;
 	}
 	
