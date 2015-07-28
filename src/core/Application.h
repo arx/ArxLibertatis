@@ -69,7 +69,7 @@ inline bool eeMousePressed1() {
 }
 
 inline bool eeMouseDoubleClick1() {
-	return (EERIEMouseButton & 4);
+	return (EERIEMouseButton & 4) && !(LastMouseClick & 4);
 }
 
 inline bool eeMouseDown2() {
