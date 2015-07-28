@@ -81,7 +81,8 @@ const bool
 	autoReadyWeapon = false,
 	mouseLookToggle = true,
 	autoDescription = true,
-	forceToggle = false;
+	forceToggle = false,
+	hudScale = false;
 
 ActionKey actions[NUM_ACTION_KEY] = {
 	ActionKey(Keyboard::Key_Spacebar), // JUMP
@@ -159,7 +160,8 @@ const std::string
 	colorkeyAlphaToCoverage = "colorkey_alpha_to_coverage",
 	colorkeyAntialiasing = "colorkey_antialiasing",
 	limitSpeechWidth = "limit_speech_width",
-	cinematicWidescreenMode = "cinematic_widescreen_mode";
+	cinematicWidescreenMode = "cinematic_widescreen_mode",
+	hudScale = "hud_scale";
 
 // Window options
 const std::string
@@ -385,6 +387,7 @@ bool Config::save() {
 	writer.writeKey(Key::colorkeyAntialiasing, video.colorkeyAntialiasing);
 	writer.writeKey(Key::limitSpeechWidth, video.limitSpeechWidth);
 	writer.writeKey(Key::cinematicWidescreenMode, int(video.cinematicWidescreenMode));
+	writer.writeKey(Key::hudScale, video.hudScale);
 	
 	// window
 	writer.beginSection(Section::Window);
@@ -479,6 +482,7 @@ bool Config::init(const fs::path & file) {
 	video.limitSpeechWidth = reader.getKey(Section::Video, Key::limitSpeechWidth, Default::limitSpeechWidth);
 	int cinematicMode = reader.getKey(Section::Video, Key::cinematicWidescreenMode, Default::cinematicWidescreenMode);
 	video.cinematicWidescreenMode = CinematicWidescreenMode(glm::clamp(cinematicMode, 0, 2));
+	video.hudScale = reader.getKey(Section::Video, Key::hudScale, Default::hudScale);
 	
 	// Get window settings
 	window.framework = reader.getKey(Section::Window, Key::windowFramework, Default::windowFramework);

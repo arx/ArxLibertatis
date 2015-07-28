@@ -65,6 +65,7 @@ ZeniMax Media Inc., Suite 120, Rockville, Maryland 20850 USA.
 #include "core/SaveGame.h"
 #include "core/Version.h"
 
+#include "gui/Hud.h"
 #include "gui/LoadLevelScreen.h"
 #include "gui/MainMenu.h"
 #include "gui/Menu.h"
@@ -1350,6 +1351,10 @@ bool CheckboxWidget::OnMouseClick() {
 	case BUTTON_MENUOPTIONSVIDEO_VSYNC: {
 		config.video.vsync = iState ? true : false;
 		break;
+	}
+	case BUTTON_MENUOPTIONSVIDEO_HUDSCALE: {
+		config.video.hudScale = iState ? true : false;
+		g_hudRoot.recalcScale();
 	}
 	case BUTTON_MENUOPTIONSAUDIO_EAX: {
 		ARXMenu_Options_Audio_SetEAX(iState != 0);

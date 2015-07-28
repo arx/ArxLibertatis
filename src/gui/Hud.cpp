@@ -1604,6 +1604,12 @@ void HudRoot::draw() {
 	activeSpellsGui.draw();
 }
 
+void HudRoot::recalcScale() {
+	if(config.video.hudScale)
+		setScale(minSizeRatio());
+	else
+		setScale(1);
+}
 
 
 void HudRoot::setScale(float scale) {

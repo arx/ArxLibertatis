@@ -522,6 +522,17 @@ static void MainMenuOptionVideoCreate(CWindowMenuConsole * console, Vec2i size) 
 	}
 	
 	{
+	std::string szMenuText = getLocalised("system_menus_options_video_hud_scale", "Scale Hud");
+	szMenuText += " ";
+	TextWidget * text = new TextWidget(-1, hFontMenu, szMenuText, Vec2i(RATIO_X(20), 0), NOP);
+	text->SetCheckOff();
+	CheckboxWidget * cb = new CheckboxWidget(text);
+	cb->iID = BUTTON_MENUOPTIONSVIDEO_HUDSCALE;
+	cb->iState = config.video.hudScale ? 1 : 0;
+	console->AddMenuCenter(cb);
+	}
+	
+	{
 	HorizontalPanelWidget * pc = new HorizontalPanelWidget;
 	std::string szMenuText = getLocalised("system_menus_video_apply");
 	szMenuText += "   ";

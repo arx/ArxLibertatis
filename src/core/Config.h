@@ -129,6 +129,7 @@ public:
 		bool limitSpeechWidth;
 		CinematicWidescreenMode cinematicWidescreenMode;
 		
+		bool hudScale;
 	} video;
 	
 	// section 'window'

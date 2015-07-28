@@ -1261,6 +1261,7 @@ void ArxGame::doFrame() {
 		LogDebug("was resized");
 		wasResized = false;
 		DanaeRestoreFullScreen();
+		g_hudRoot.recalcScale();
 	}
 
 	// Manages Splash Screens if needed
@@ -2177,11 +2178,6 @@ void ArxGame::render() {
 		cinematicRender();
 	} else {
 		updateLevel();
-		
-		if(g_debugToggles[7])
-			g_hudRoot.setScale(2);
-		else
-			g_hudRoot.setScale(1);
 		
 		renderLevel();
 

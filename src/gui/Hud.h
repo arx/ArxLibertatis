@@ -397,6 +397,8 @@ public:
 	
 	void draw();
 	
+	void recalcScale();
+	
 	PlayerInterfaceFader playerInterfaceFader;
 	
 	HitStrengthGauge hitStrengthGauge;
