@@ -282,7 +282,7 @@ void BackpackIconGui::update(const Rectf & parent) {
 }
 
 void BackpackIconGui::updateInput() {
-	{
+	
 	static float flDelay=0;
 	
 	// Check for backpack Icon
@@ -354,7 +354,6 @@ void BackpackIconGui::updateInput() {
 		
 		if(DRAGINTER == NULL)
 			return;
-	}
 	}
 }
 
