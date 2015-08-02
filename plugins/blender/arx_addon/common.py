@@ -23,7 +23,14 @@ def createMaterial(rootDirectory, textureName):
     relativePath, fileExtension = os.path.splitext(textureName.replace("\\", "/").lower())
     foo, fileName = os.path.split(relativePath)
     
-    mat = bpy.data.materials.new(fileName + "-mat")
+    matName = fileName + "-mat"
+    
+    mats = bpy.data.materials
+    matches = [m for m in mats if m.name == matName]
+    if matches:
+        return matches[0]
+    
+    mat = bpy.data.materials.new(matName)
     mat.use_shadeless = True
     
     extensions = [".png", ".jpg", ".jpeg", ".bmp", ".tga"]
