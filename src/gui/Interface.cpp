@@ -480,7 +480,7 @@ void InventoryOpenClose(unsigned long t) {
 		}
 	} else {
 		player.Interface |= INTER_INVENTORY;
-		InventoryY = static_cast<long>(INTERFACE_RATIO(100.f));
+		InventoryY = 100;
 
 		if(TRUE_PLAYER_MOUSELOOK_ON)
 			WILLRETURNTOFREELOOK = true;

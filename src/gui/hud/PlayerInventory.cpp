@@ -105,18 +105,18 @@ void PlayerInventoryHud::update() {
 	if(player.Interface & INTER_INVENTORY) {
 		if((player.Interface & INTER_COMBATMODE) || player.doingmagic >= 2) {
 			long t = Original_framedelay * (1.f/5) + 2;
-			InventoryY += static_cast<long>((t * m_scale));
+			InventoryY += t;
 
-			if(InventoryY > (110.f * m_scale)) {
-				InventoryY = static_cast<long>((110.f * m_scale));
+			if(InventoryY > 110) {
+				InventoryY = 110;
 			}
 		} else {
 			if(bInventoryClosing) {
 				long t = Original_framedelay * (1.f/5) + 2;
-				InventoryY += static_cast<long>((t * m_scale));
+				InventoryY += t;
 
-				if(InventoryY > (110 * m_scale)) {
-					InventoryY = static_cast<long>((110.f * m_scale));
+				if(InventoryY > 110) {
+					InventoryY = 110;
 					bInventoryClosing = false;
 
 					player.Interface &=~ INTER_INVENTORY;
@@ -126,12 +126,12 @@ void PlayerInventoryHud::update() {
 						ARX_SOUND_PlayInterface(SND_BACKPACK, 0.9F + 0.2F * rnd());
 						player.Interface |= INTER_INVENTORYALL;
 						ARX_INTERFACE_NoteClose();
-						InventoryY = static_cast<long>((121.f * m_scale) * player.bag);
+						InventoryY = 121 * player.bag;
 						lOldInterface=INTER_INVENTORYALL;
 					}
 				}
 			} else if(InventoryY > 0) {
-				InventoryY -= static_cast<long>(((Original_framedelay * (1.f/5)) + 2.f) * m_scale);
+				InventoryY -= long((Original_framedelay * (1.f/5)) + 2.f);
 
 				if(InventoryY < 0) {
 					InventoryY = 0;
@@ -141,13 +141,13 @@ void PlayerInventoryHud::update() {
 	} else if((player.Interface & INTER_INVENTORYALL) || bInventoryClosing) {
 		float fSpeed = (1.f/3);
 		if((player.Interface & INTER_COMBATMODE) || player.doingmagic >= 2) {
-			if(InventoryY < (121 * m_scale) * player.bag) {
-				InventoryY += static_cast<long>(((Original_framedelay * fSpeed) + 2.f) * m_scale);
+			if(InventoryY < 121 * player.bag) {
+				InventoryY += long((Original_framedelay * fSpeed) + 2.f);
 			}
 		} else {
 			if(bInventoryClosing) {
-				InventoryY += static_cast<long>(((Original_framedelay * fSpeed) + 2.f) * m_scale);
-				if(InventoryY > (121 * m_scale) * player.bag) {
+				InventoryY += long((Original_framedelay * fSpeed) + 2.f);
+				if(InventoryY > 121 * player.bag) {
 					bInventoryClosing = false;
 					if(player.Interface & INTER_INVENTORYALL) {
 						player.Interface &= ~INTER_INVENTORYALL;
@@ -155,7 +155,7 @@ void PlayerInventoryHud::update() {
 					lOldInterface=0;
 				}
 			} else if(InventoryY > 0) {
-				InventoryY -= static_cast<long>(((Original_framedelay * fSpeed) + 2.f) * m_scale);
+				InventoryY -= long((Original_framedelay * fSpeed) + 2.f);
 				if(InventoryY < 0) {
 					InventoryY = 0;
 				}

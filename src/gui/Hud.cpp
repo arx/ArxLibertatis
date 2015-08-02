@@ -338,8 +338,7 @@ void BackpackIconGui::updateInput() {
 					ARX_SOUND_PlayInterface(SND_BACKPACK, 0.9F + 0.2F * rnd());
 					player.Interface |= INTER_INVENTORYALL;
 					
-					float fInventoryY = INTERFACE_RATIO(121.f) * (player.bag);
-					InventoryY = checked_range_cast<long>(fInventoryY);
+					InventoryY = 121 * player.bag;
 					
 					ARX_INTERFACE_NoteClose();
 					
