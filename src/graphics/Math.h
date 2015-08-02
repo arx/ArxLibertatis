@@ -219,6 +219,10 @@ inline float square(float x) {
 	return x * x;
 }
 
+inline float focalToFov(float focal) {
+	 return 2 * glm::atan(488 / (2 * focal)) * (180 / PI);
+}
+
 /*!
  * Compute (approximate) Distance between two 3D points
  * may use an approximative way of computing sqrt !

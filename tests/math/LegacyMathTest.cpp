@@ -322,3 +322,14 @@ void LegacyMathTest::vectorRotateTest() {
 		CPPUNIT_ASSERT_EQUAL(result, result2);
 	}
 }
+
+void LegacyMathTest::focalToFovTest() {
+	
+	for(float focal = 100; focal < 800; focal += 0.1f) {
+		float expected = focalToFovLegacy(focal);
+		float result = focalToFov(focal);
+		
+		std::string msg = "In: " + glm::to_string(focal) + " Expected: " + glm::to_string(expected) + ", Result: " + glm::to_string(result);
+		CPPUNIT_ASSERT_MESSAGE(msg, glm::epsilonEqual(expected, result, 3.f));
+	}
+}

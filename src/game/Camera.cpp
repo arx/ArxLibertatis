@@ -127,25 +127,6 @@ static glm::mat4 Util_SetViewMatrix(EERIE_TRANSFORM &transform) {
 	return Util_LookAt(vFrom, vView, vWorldUp);
 }
 
-static float focalToFov(float focal) {
-	if(focal < 200)
-		return (-.34f * focal + 168.5f);
-	else if(focal < 300)
-		return (-.25f * focal + 150.5f);
-	else if(focal < 400)
-		return (-.155f * focal + 124.f);
-	else if(focal < 500)
-		return (-.11f * focal + 106.f);
-	else if(focal < 600)
-		return (-.075f * focal + 88.5f);
-	else if(focal < 700)
-		return (-.055f * focal + 76.5f);
-	else if(focal < 800)
-		return (-.045f * focal + 69.5f);
-	else
-		return 33.5f;
-}
-
 static void EERIE_CreateMatriceProj(float _fWidth, float _fHeight, EERIE_CAMERA * cam) {
 
 	float _fFOV = focalToFov(cam->focal);
