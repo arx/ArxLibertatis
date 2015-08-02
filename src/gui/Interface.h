@@ -219,11 +219,6 @@ extern bool MAGICMODE;
 
 extern gui::Note openNote;
 
-//-----------------------------------------------------------------------------
-float INTERFACE_RATIO(const float);
-float INTERFACE_RATIO_LONG(const long);
-float INTERFACE_RATIO_DWORD(const u32);
-short SHORT_INTERFACE_RATIO(const float);
 
 void ARX_INTERFACE_Combat_Mode(long i);
 

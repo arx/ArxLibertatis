@@ -195,25 +195,6 @@ unsigned long		COMBAT_MODE_ON_START_TIME = 0;
 static long SPECIAL_DRAW_WEAPON = 0;
 bool bGCroucheToggle=false;
 
-float INTERFACE_RATIO(float a)
-{
-	return a;
-}
-float INTERFACE_RATIO_LONG(const long a)
-{
-	return INTERFACE_RATIO(static_cast<float>(a));
-}
-float INTERFACE_RATIO_DWORD(const u32 a)
-{
-	return INTERFACE_RATIO(static_cast<float>(a));
-}
-
-
-short SHORT_INTERFACE_RATIO(const float _a) {
-	float fRes = INTERFACE_RATIO(_a);
-	return checked_range_cast<short>(fRes);
-}
-
 
 bool bInverseInventory = false;
 bool lOldTruePlayerMouseLook = TRUE_PLAYER_MOUSELOOK_ON;
