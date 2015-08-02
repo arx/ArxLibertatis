@@ -330,6 +330,6 @@ void LegacyMathTest::focalToFovTest() {
 		float result = focalToFov(focal);
 		
 		std::string msg = "In: " + glm::to_string(focal) + " Expected: " + glm::to_string(expected) + ", Result: " + glm::to_string(result);
-		CPPUNIT_ASSERT_MESSAGE(msg, glm::epsilonEqual(expected, result, 3.f));
+		CPPUNIT_ASSERT_MESSAGE(msg, glm::epsilonEqual(expected, result, 2.f));
 	}
 }

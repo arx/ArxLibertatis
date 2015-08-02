@@ -220,7 +220,8 @@ inline float square(float x) {
 }
 
 inline float focalToFov(float focal) {
-	 return 2 * glm::atan(488 / (2 * focal)) * (180 / PI);
+	static const float imagePlaneHeight = 480;
+	return 2 * glm::atan(imagePlaneHeight / (2 * focal)) * (180 / PI);
 }
 
 /*!
