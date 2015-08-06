@@ -363,22 +363,23 @@ void ShowFPS() {
 }
 
 void ShowDebugToggles() {
+	
+	const int lineHeight = hFontDebug->getLineHeight();
+	int line = 0;
+	
+	hFontDebug->draw(0.f, line * lineHeight, "Key Toggle Trigger", Color::white);
+	line++;
+	
 	for(size_t i = 0; i < ARRAY_SIZE(g_debugToggles); i++) {
 		std::stringstream textStream;
-		textStream << "Toggle " << i << ": " << (g_debugToggles[i] ? "true" : "false");
-		hFontDebug->draw(0.f, i * hFontDebug->getLineHeight(), textStream.str(), Color::white);
-	}
-	
-	for(size_t i = 0; i < ARRAY_SIZE(g_debugTriggersTime); i++) {
-		u32 time = g_debugTriggersTime[i];
-		float factor = platform::getElapsedMs(time) / g_debugTriggersDecayDuration;
-		factor = glm::clamp(factor, 0.f, 1.f);
+		textStream << i << "   ";
+		textStream << (g_debugToggles[i] ? "on " : "off") << "    ";
 		
-		Color3f color = Color3f(1.f, factor, factor);
+		if(platform::getElapsedMs(g_debugTriggersTime[i]) <= g_debugTriggersDecayDuration)
+			textStream << "fired";
 		
-		std::stringstream textStream;
-		textStream << "Trigger " << i;
-		hFontDebug->draw(150.f, i * hFontDebug->getLineHeight(), textStream.str(), color.to<u8>());
+		hFontDebug->draw(0.f, line * lineHeight, textStream.str(), Color::white);
+		line++;
 	}
 }
 
