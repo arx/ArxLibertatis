@@ -1355,6 +1355,7 @@ bool CheckboxWidget::OnMouseClick() {
 	case BUTTON_MENUOPTIONSVIDEO_HUDSCALE: {
 		config.video.hudScale = iState ? true : false;
 		g_hudRoot.recalcScale();
+		break;
 	}
 	case BUTTON_MENUOPTIONSAUDIO_EAX: {
 		ARXMenu_Options_Audio_SetEAX(iState != 0);
