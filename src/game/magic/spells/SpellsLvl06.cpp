@@ -31,7 +31,6 @@
 #include "graphics/particle/ParticleEffects.h"
 
 #include "graphics/spells/Spells05.h"
-#include "graphics/spells/Spells06.h"
 #include "physics/Collisions.h"
 #include "scene/GameSound.h"
 #include "scene/Interactive.h"

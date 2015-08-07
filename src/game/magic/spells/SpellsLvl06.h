@@ -23,7 +23,7 @@
 #include "game/magic/Spell.h"
 
 #include "graphics/effects/Fissure.h"
-#include "graphics/spells/Spells06.h"
+#include "graphics/effects/Field.h"
 
 class RiseDeadSpell : public SpellBase {
 public:

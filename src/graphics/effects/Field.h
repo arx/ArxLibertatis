@@ -41,8 +41,8 @@ ZeniMax Media Inc., Suite 120, Rockville, Maryland 20850 USA.
 ===========================================================================
 */
 
-#ifndef ARX_GRAPHICS_SPELLS_SPELLS06_H
-#define ARX_GRAPHICS_SPELLS_SPELLS06_H
+#ifndef ARX_GRAPHICS_EFFECTS_FIELD_H
+#define ARX_GRAPHICS_EFFECTS_FIELD_H
 
 #include "graphics/effects/SpellEffects.h"
 
@@ -76,4 +76,4 @@ private:
 	void RenderSubDivFace(Vec3f * b, Vec3f * t, int b1, int b2, int t1, int t2, RenderMaterial & mat);
 };
 
-#endif // ARX_GRAPHICS_SPELLS_SPELLS06_H
+#endif // ARX_GRAPHICS_EFFECTS_FIELD_H

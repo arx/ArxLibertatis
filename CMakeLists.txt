@@ -755,6 +755,7 @@ set(GRAPHICS_SOURCES
 	src/graphics/data/TextureContainer.cpp
 	src/graphics/effects/DrawEffects.cpp
 	src/graphics/effects/Fade.cpp
+	src/graphics/effects/Field.cpp
 	src/graphics/effects/Fissure.cpp
 	src/graphics/effects/FloatingStones.cpp
 	src/graphics/effects/Fog.cpp
@@ -776,7 +777,6 @@ set(GRAPHICS_SOURCES
 	src/graphics/particle/MagicFlare.cpp
 	src/graphics/spells/Spells01.cpp
 	src/graphics/spells/Spells05.cpp
-	src/graphics/spells/Spells06.cpp
 	src/graphics/texture/PackedTexture.cpp
 	src/graphics/texture/Texture.cpp
 	src/graphics/texture/TextureStage.cpp

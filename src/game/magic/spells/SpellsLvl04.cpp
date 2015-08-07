@@ -31,7 +31,6 @@
 #include "game/magic/spells/SpellsLvl07.h"
 #include "gui/Speech.h"
 #include "graphics/particle/ParticleEffects.h"
-#include "graphics/spells/Spells06.h"
 
 #include "scene/GameSound.h"
 #include "scene/Interactive.h"
