@@ -26,6 +26,7 @@
 #include <string.h>
 #include <vector>
 
+#include <boost/array.hpp>
 #include <boost/atomic.hpp>
 
 #include "io/fs/FilePath.h"
@@ -68,7 +69,8 @@ private:
 	typedef std::map<thread_id_type, ThreadInfo> ThreadInfos;
 	
 	ThreadInfos        m_threads;
-	ProfilePoint       m_points[NB_POINTS];
+	
+	boost::array<ProfilePoint, NB_POINTS> m_points;
 	boost::atomic<int> m_writeIndex;
 	bool               m_canWrite;
 	
@@ -79,12 +81,12 @@ private:
 Profiler::Profiler() {
 	m_writeIndex = 0;
 	m_canWrite = true;
-	memset(m_points, 0, sizeof(m_points));
+	m_points.fill(ProfilePoint());
 }
 
 void Profiler::reset() {
 	m_writeIndex = 0;
-	memset(m_points, 0, sizeof(m_points));
+	m_points.fill(ProfilePoint());
 }
 
 void Profiler::registerThread(const std::string& threadName) {
