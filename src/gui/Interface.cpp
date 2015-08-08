@@ -608,8 +608,6 @@ static void GetInfosCombineWithIO(Entity * combine, Entity * _pWithIO) {
 	
 	std::string tcIndent = combine->idString();
 	
-	char tTxtCombineDest[256];
-	
 	if(_pWithIO && _pWithIO != combine && _pWithIO->script.data) {
 		char* pCopyScript = new char[_pWithIO->script.size + 1];
 		pCopyScript[_pWithIO->script.size] = '\0';
@@ -653,6 +651,7 @@ static void GetInfosCombineWithIO(Entity * combine, Entity * _pWithIO) {
 							pEndString = strstr(pStartString, "\"");
 							
 							if(pEndString) {
+								char tTxtCombineDest[256];
 								memcpy(tTxtCombineDest, pStartString, pEndString - pStartString);
 								tTxtCombineDest[pEndString - pStartString] = 0;
 								
@@ -672,6 +671,7 @@ static void GetInfosCombineWithIO(Entity * combine, Entity * _pWithIO) {
 								pEndString = strstr(pStartString, "\"");
 								
 								if(pEndString) {
+									char tTxtCombineDest[256];
 									memcpy(tTxtCombineDest, pStartString, pEndString - pStartString);
 									tTxtCombineDest[pEndString - pStartString] = 0;
 									
@@ -696,6 +696,7 @@ static void GetInfosCombineWithIO(Entity * combine, Entity * _pWithIO) {
 									}
 									
 									if(pEndString) {
+										char tTxtCombineDest[256];
 										memcpy(tTxtCombineDest, pStartString, pEndString - pStartString);
 										tTxtCombineDest[pEndString - pStartString] = 0;
 										if(combine->groups.find(tTxtCombineDest) != combine->groups.end()) {
@@ -763,6 +764,7 @@ static void GetInfosCombineWithIO(Entity * combine, Entity * _pWithIO) {
 						pEndString = strstr(pStartString, "\"");
 						
 						if(pEndString) {
+							char tTxtCombineDest[256];
 							memcpy(tTxtCombineDest, pStartString, pEndString - pStartString);
 							tTxtCombineDest[pEndString - pStartString] = 0;
 							
@@ -782,6 +784,7 @@ static void GetInfosCombineWithIO(Entity * combine, Entity * _pWithIO) {
 							pEndString = strstr(pStartString, "\"");
 							
 							if(pEndString) {
+								char tTxtCombineDest[256];
 								memcpy(tTxtCombineDest, pStartString, pEndString - pStartString);
 								tTxtCombineDest[pEndString - pStartString] = 0;
 								
@@ -806,6 +809,7 @@ static void GetInfosCombineWithIO(Entity * combine, Entity * _pWithIO) {
 								}
 								
 								if(pEndString) {
+									char tTxtCombineDest[256];
 									memcpy(tTxtCombineDest, pStartString, pEndString - pStartString);
 									tTxtCombineDest[pEndString - pStartString] = 0;
 									
