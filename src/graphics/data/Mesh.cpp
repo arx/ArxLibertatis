@@ -254,7 +254,7 @@ EERIEPOLY * CheckInPoly(const Vec3f & poss, float * needY)
 			&& PointIn2DPolyXZ(ep, poss.x, poss.z)
 			&& GetTruePolyY(ep, poss, &rz)
 			&& rz >= poss.y
-			&& (!found || (found && rz <= foundY))
+			&& (!found || rz <= foundY)
 			) {
 				found = ep;
 				foundY = rz;
