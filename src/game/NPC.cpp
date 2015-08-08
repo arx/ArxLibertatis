@@ -2013,7 +2013,7 @@ static void ManageNPCMovement(Entity * io)
 	
 	if(io->_npcdata->behavior & BEHAVIOUR_NONE) {
 		ARX_NPC_Manage_Anims(io, 0);
-		if(!ause0->cur_anim || (ause0->cur_anim && (ause0->flags & EA_ANIMEND))) {
+		if(!ause0->cur_anim || (ause0->flags & EA_ANIMEND)) {
 			changeAnimation(io, ANIM_WAIT);
 			ause0->flags &= ~EA_LOOP;
 		}
