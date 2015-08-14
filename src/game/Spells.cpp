@@ -1005,24 +1005,22 @@ bool ARX_SPELLS_Launch(SpellType typ, EntityHandle source, SpellcastFlags flags,
 	if(!spells.hasFreeSlot())
 		return false;
 	
-	SpellBase * sp = createSpellInstance(typ);
-	if(!sp)
+	SpellBase * spell = createSpellInstance(typ);
+	if(!spell)
 		return false;
-	
-	SpellBase & spell = *sp;
 	
 	if(ValidIONum(source) && spellicons[typ].bAudibleAtStart) {
 		ARX_NPC_SpawnAudibleSound(entities[source]->pos, entities[source]);
 	}
 	
-	spell.m_caster = source; // Caster...
-	spell.m_target = target;
+	spell->m_caster = source; // Caster...
+	spell->m_target = target;
 	
 	if(target == EntityHandle::Invalid)
-		spell.m_target = TemporaryGetSpellTarget(entities[spell.m_caster]->pos);
+		spell->m_target = TemporaryGetSpellTarget(entities[spell->m_caster]->pos);
 	
-	spell.updateCasterHand();
-	spell.updateCasterPosition();
+	spell->updateCasterHand();
+	spell->updateCasterPosition();
 	
 	float spellLevel;
 	
@@ -1042,38 +1040,38 @@ bool ARX_SPELLS_Launch(SpellType typ, EntityHandle source, SpellcastFlags flags,
 		spellLevel += 2;
 	}
 	
-	spell.m_level = spellLevel;
-	spell.m_flags = flags;
-	spell.m_type = typ;
-	spell.m_timcreation = (unsigned long)(arxtime);
-	spell.m_fManaCostPerSecond = 0.f;
-	spell.m_launchDuration = duration;
+	spell->m_level = spellLevel;
+	spell->m_flags = flags;
+	spell->m_type = typ;
+	spell->m_timcreation = (unsigned long)(arxtime);
+	spell->m_fManaCostPerSecond = 0.f;
+	spell->m_launchDuration = duration;
 
-	if(!CanPayMana(&spell, ARX_SPELLS_GetManaCost(typ, spell.m_level))) {
-		delete &spell;
+	if(!CanPayMana(spell, ARX_SPELLS_GetManaCost(typ, spell->m_level))) {
+		delete spell;
 		return false;
 	}
 	
 	if(!GLOBAL_MAGIC_MODE) {
 		ARX_SOUND_PlaySFX(SND_MAGIC_FIZZLE);
-		delete &spell;
+		delete spell;
 		return false;
 	}
 	
-	if(!spell.CanLaunch()) {
-		delete &spell;
+	if(!spell->CanLaunch()) {
+		delete spell;
 		return false;
 	}
 	
-	spell.Launch();
+	spell->Launch();
 	
-	spells.addSpell(sp);
+	spells.addSpell(spell);
 	
 	// TODO inconsistent use of the SM_SPELLCAST event
 	if(typ == SPELL_CONFUSE || typ == SPELL_ENCHANT_WEAPON) {
-		SPELLCAST_NotifyOnlyTarget(spell);
+		SPELLCAST_NotifyOnlyTarget(*spell);
 	} else {
-		SPELLCAST_Notify(spell);
+		SPELLCAST_Notify(*spell);
 	}
 	
 	return true;
