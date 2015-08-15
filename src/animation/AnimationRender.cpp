@@ -1224,12 +1224,12 @@ static Vec3f CalcTranslation(ANIM_USE * animuse) {
 	}
 	animuse->pour = glm::clamp(animuse->pour, 0.f, 1.f);
 	
+	// TODO Prevent invalid memory access, should be fixed properly
+	if(animuse->fr + 1 >= eanim->nb_key_frames)
+		return Vec3f_ZERO;
+	
 	// FRAME TRANSLATE : Gives the Virtual pos of Main Object
 	if(eanim->frames[animuse->fr].f_translate && !(animuse->flags & EA_STATICANIM)) {
-		
-		// TODO Prevent invalid memory access, should be fixed properly
-		if(animuse->fr+1 >= eanim->nb_key_frames)
-			return Vec3f_ZERO;
 		
 		EERIE_FRAME * sFrame = &eanim->frames[animuse->fr];
 		EERIE_FRAME * eFrame = &eanim->frames[animuse->fr+1];
