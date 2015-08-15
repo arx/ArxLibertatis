@@ -19,6 +19,8 @@
 
 #include "game/magic/spells/SpellsLvl05.h"
 
+#include <glm/gtc/random.hpp>
+
 #include "core/Application.h"
 #include "core/Config.h"
 #include "core/Core.h"
@@ -473,9 +475,10 @@ void RepelUndeadSpell::Update(float timeDelta) {
 			break;
 		}
 		
-		float dx = -std::sin(frand2() * 360.f) * vv;
-		float dz =  std::cos(frand2() * 360.f) * vv;
-		pd->ov = m_pos + Vec3f(dx, 0.f, dz);
+		// XXX was this supposed to be sphericalRand ?
+		Vec2f d = glm::diskRand(vv);
+		
+		pd->ov = m_pos + Vec3f(d.x, 0.f, d.y);
 		pd->move = Vec3f(0.8f * frand2(), -4.f * rnd(), 0.8f * frand2());
 		pd->scale = Vec3f(-0.1f);
 		pd->tolive = Random::get(2600, 3200);
