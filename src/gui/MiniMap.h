@@ -152,8 +152,7 @@ private:
 	EntityManager *m_entities;
 	EERIE_BACKGROUND *m_activeBkg;
 	
-	float m_miniOffsetX[MAX_MINIMAP_LEVELS];
-	float m_miniOffsetY[MAX_MINIMAP_LEVELS];
+	Vec2f m_miniOffset[MAX_MINIMAP_LEVELS];
 	float m_mapMaxY[MAX_MINIMAP_LEVELS];
 	
 	TextureContainer *m_pTexDetect;

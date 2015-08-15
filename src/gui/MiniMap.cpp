@@ -182,7 +182,7 @@ void MiniMap::loadOffsets(PakReader *pakRes) {
 	for(int i = 0; i < 29; i++) { // Why 29?
 		
 		char t[512];
-		int nRead = sscanf(dat + pos, "%s %f %f", t, &m_miniOffsetX[i], &m_miniOffsetY[i]);
+		int nRead = sscanf(dat + pos, "%s %f %f", t, &m_miniOffset[i].x, &m_miniOffset[i].y);
 		
 		if(nRead != 3) {
 			LogError << "Error parsing line " << i << " of mini_offsets.ini: read " << nRead;
@@ -201,14 +201,10 @@ void MiniMap::loadOffsets(PakReader *pakRes) {
 	
 	delete[] dat;
 	
-	m_miniOffsetX[0] = 0;
-	m_miniOffsetY[0] = -0.5;
-	m_miniOffsetX[1] = 0;
-	m_miniOffsetY[1] = 0;
-	m_miniOffsetX[14] = 130;
-	m_miniOffsetY[14] = 0;
-	m_miniOffsetX[15] = 31;
-	m_miniOffsetY[15] = -3.5;
+	m_miniOffset[0] = Vec2f(0, -0.5);
+	m_miniOffset[1] = Vec2f(0, 0);
+	m_miniOffset[14] = Vec2f(130, 0);
+	m_miniOffset[15] = Vec2f(31, -3.5);
 }
 
 void MiniMap::reveal() {
@@ -243,8 +239,7 @@ void MiniMap::firstInit(ARXCHARACTER *pl, PakReader *pakRes, EntityManager *enti
 	resetLevels();
 	
 	for(int i = 0; i < MAX_MINIMAP_LEVELS; i++) {
-		m_miniOffsetX[i] = 0;
-		m_miniOffsetY[i] = 0;
+		m_miniOffset[i] = Vec2f_ZERO;
 	}
 	
 	loadOffsets(pakRes);
@@ -510,14 +505,14 @@ Vec2f MiniMap::computePlayerPos(float zoom, int showLevel) {
 	
 	Vec2f pos(0.f, 0.f);
 	
-	float ofx = m_miniOffsetX[m_currentLevel];
-	float ofy = m_miniOffsetY[m_currentLevel];
+	float ofx = m_miniOffset[m_currentLevel].x;
+	float ofy = m_miniOffset[m_currentLevel].y;
 	Vec2f of2 = m_levels[showLevel].m_ratio;
 	
 	pos.x = ((m_player->pos.x + ofx - of2.x) * ( 1.0f / 100 ) * caseX
-	+ m_miniOffsetX[m_currentLevel] * ratio * m_modX) / m_modX;
+	+ m_miniOffset[m_currentLevel].x * ratio * m_modX) / m_modX;
 	pos.y = ((m_mapMaxY[showLevel] - ofy - of2.y) * ( 1.0f / 100 ) * caseY
-	- (m_player->pos.z + ofy - of2.y) * ( 1.0f / 100 ) * caseY + m_miniOffsetY[m_currentLevel] * ratio * m_modZ) / m_modZ;
+	- (m_player->pos.z + ofy - of2.y) * ( 1.0f / 100 ) * caseY + m_miniOffset[m_currentLevel].y * ratio * m_modZ) / m_modZ;
 	
 	return pos;
 }
@@ -733,9 +728,9 @@ void MiniMap::drawDetectedEntities(int showLevel, Vec2f start, float zoom) {
 	}
 	
 	// Computes playerpos
-	float ofx = m_miniOffsetX[m_currentLevel];
+	float ofx = m_miniOffset[m_currentLevel].x;
 	float ofx2 = m_levels[showLevel].m_ratio.x;
-	float ofy = m_miniOffsetY[m_currentLevel];
+	float ofy = m_miniOffset[m_currentLevel].y;
 	float ofy2 = m_levels[showLevel].m_ratio.y;
 	
 	GRenderer->SetRenderState(Renderer::AlphaBlending, true);
@@ -767,9 +762,9 @@ void MiniMap::drawDetectedEntities(int showLevel, Vec2f start, float zoom) {
 		}
 		
 		float fpx = start.x + ((npc->pos.x - 100 + ofx - ofx2) * ( 1.0f / 100 ) * caseX
-		+ m_miniOffsetX[m_currentLevel] * ratio * m_modX) / m_modX; 
+		+ m_miniOffset[m_currentLevel].x * ratio * m_modX) / m_modX;
 		float fpy = start.y + ((m_mapMaxY[showLevel] - ofy - ofy2) * ( 1.0f / 100 ) * caseY
-		- (npc->pos.z + 200 + ofy - ofy2) * ( 1.0f / 100 ) * caseY + m_miniOffsetY[m_currentLevel] * ratio * m_modZ) / m_modZ;
+		- (npc->pos.z + 200 + ofy - ofy2) * ( 1.0f / 100 ) * caseY + m_miniOffset[m_currentLevel].y * ratio * m_modZ) / m_modZ;
 		
 		float d = fdist(Vec2f(m_player->pos.x, m_player->pos.z), Vec2f(npc->pos.x, npc->pos.z));
 		if(d > 800 || glm::abs(ents.player()->pos.y - npc->pos.y) > 250.f) {
