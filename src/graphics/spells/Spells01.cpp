@@ -234,10 +234,9 @@ void CMagicMissile::Render()
 					alpha = 0.2f;
 
 				c += frand2() * 0.1f;
-
-				if (c < 0) c = 0;
-				else if (c > 1) c = 1;
-
+				
+				c = glm::clamp(c, 0.f, 1.f);
+				
 				Color color = (fColor * (c * alpha)).to<u8>();
 
 				if(fsize < 0.5f)
