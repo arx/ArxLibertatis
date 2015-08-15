@@ -557,7 +557,7 @@ void AddRandomSmoke(Entity * io, long amount) {
 			return;
 		}
 		
-		long vertex = Random::get(0, io->obj->vertexlist.size());
+		long vertex = Random::get(0, io->obj->vertexlist.size() - 1);
 		pd->ov = io->obj->vertexlist3[vertex].v + randomVec(-5.f, 5.f);
 		pd->siz = rnd() * 8.f;
 		if(pd->siz < 4.f) {
