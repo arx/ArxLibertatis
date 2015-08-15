@@ -251,8 +251,8 @@ struct SavedMiniMap {
 		a.m_offsetY = offsety;
 		a.m_ratioX = xratio;
 		a.m_ratioY = yratio;
-		a.m_width = width;
-		a.m_height = height;
+		a.m_size.x = width;
+		a.m_size.y = height;
 		ARX_STATIC_ASSERT(SavedMiniMap::MAX_X == MINIMAP_MAX_X, "array size mismatch");
 		ARX_STATIC_ASSERT(SavedMiniMap::MAX_Z == MINIMAP_MAX_Z, "array size mismatch");
 		std::copy(&revealed[0][0], &revealed[0][0] + (SavedMiniMap::MAX_X * SavedMiniMap::MAX_Z), &a.m_revealed[0][0]);
@@ -265,8 +265,8 @@ struct SavedMiniMap {
 		offsety = b.m_offsetY;
 		xratio = b.m_ratioX;
 		yratio = b.m_ratioY;
-		width = b.m_width;
-		height = b.m_height;
+		width = b.m_size.x;
+		height = b.m_size.y;
 		ARX_STATIC_ASSERT(SavedMiniMap::MAX_X == MINIMAP_MAX_X, "array size mismatch");
 		ARX_STATIC_ASSERT(SavedMiniMap::MAX_Z == MINIMAP_MAX_Z, "array size mismatch");
 		std::copy(&b.m_revealed[0][0], &b.m_revealed[0][0] + (SavedMiniMap::MAX_X * SavedMiniMap::MAX_Z), &revealed[0][0]);

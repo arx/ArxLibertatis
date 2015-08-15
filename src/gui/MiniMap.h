@@ -84,8 +84,7 @@ public:
 		float m_ratioY;
 		
 		//! Bitmap width/height
-		float m_width;
-		float m_height;
+		Vec2f m_size;
 		
 		unsigned char m_revealed[MINIMAP_MAX_X][MINIMAP_MAX_Z];
 		

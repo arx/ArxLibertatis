@@ -85,8 +85,7 @@ void MiniMap::getData(int showLevel) {
 		
 		if(m_levels[showLevel].m_texContainer) { // 4 pix/meter
 			
-			m_levels[showLevel].m_height = static_cast<float>(m_levels[showLevel].m_texContainer->m_size.y);
-			m_levels[showLevel].m_width = static_cast<float>(m_levels[showLevel].m_texContainer->m_size.x);
+			m_levels[showLevel].m_size = Vec2f(m_levels[showLevel].m_texContainer->m_size);
 			
 			float minX = std::numeric_limits<float>::max();
 			float maxX = std::numeric_limits<float>::min();
@@ -260,8 +259,7 @@ void MiniMap::resetLevels() {
 		m_levels[i].m_offsetY = 0.f;
 		m_levels[i].m_ratioX = 0.f;
 		m_levels[i].m_ratioY = 0.f;
-		m_levels[i].m_width = 0.f;
-		m_levels[i].m_height = 0.f;
+		m_levels[i].m_size = Vec2f_ZERO;
 		// Sets the whole array to 0
 		memset(m_levels[i].m_revealed, 0, sizeof(m_levels[i].m_revealed));
 	}
