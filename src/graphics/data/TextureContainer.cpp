@@ -126,8 +126,8 @@ TextureContainer::TextureContainer(const res::path & strName, TCFlags flags) : m
 	arx_assert(!strName.has_ext("bmp") && !strName.has_ext("tga"),
 	           "bad texture name: \"%s\"", strName.string().c_str());
 	
-	m_dwWidth = 0;
-	m_dwHeight = 0;
+	m_size.x = 0;
+	m_size.y = 0;
 	m_dwFlags = flags;
 
 	m_pTexture = NULL;
@@ -229,11 +229,11 @@ bool TextureContainer::LoadFile(const res::path & strPathname) {
 		return false;
 	}
 	
-	m_dwWidth = m_pTexture->getSize().x;
-	m_dwHeight = m_pTexture->getSize().y;
+	m_size.x = m_pTexture->getSize().x;
+	m_size.y = m_pTexture->getSize().y;
 	
 	Vec2i storedSize = m_pTexture->getStoredSize();
-	uv = Vec2f(float(m_dwWidth) / storedSize.x, float(m_dwHeight) / storedSize.y);
+	uv = Vec2f(float(m_size.x) / storedSize.x, float(m_size.y) / storedSize.y);
 	hd = Vec2f(.5f / storedSize.x, .5f / storedSize.y);
 	
 	return true;
@@ -301,8 +301,8 @@ bool TextureContainer::CreateHalo() {
 	
 	Image im;
 	
-	int width = m_dwWidth + HALO_RADIUS * 2;
-	int height = m_dwHeight + HALO_RADIUS * 2;
+	int width = m_size.x + HALO_RADIUS * 2;
+	int height = m_size.y + HALO_RADIUS * 2;
 	im.Create(width, height, srcImage.GetFormat());
 	
 	// Center the image, offset by radius to contain the edges of the blur
@@ -328,13 +328,13 @@ bool TextureContainer::CreateHalo() {
 	
 	TextureHalo->m_pTexture->Init(im, 0);
 	
-	TextureHalo->m_dwWidth = TextureHalo->m_pTexture->getSize().x;
-	TextureHalo->m_dwHeight = TextureHalo->m_pTexture->getSize().y;
+	TextureHalo->m_size.x = TextureHalo->m_pTexture->getSize().x;
+	TextureHalo->m_size.y = TextureHalo->m_pTexture->getSize().y;
 	
 	Vec2i storedSize = TextureHalo->m_pTexture->getStoredSize();
 	TextureHalo->uv = Vec2f(
-		float(TextureHalo->m_dwWidth) / storedSize.x,
-		float(TextureHalo->m_dwHeight) / storedSize.y
+		float(TextureHalo->m_size.x) / storedSize.x,
+		float(TextureHalo->m_size.y) / storedSize.y
 	);
 	TextureHalo->hd = Vec2f(.5f / storedSize.x, .5f / storedSize.y);
 	

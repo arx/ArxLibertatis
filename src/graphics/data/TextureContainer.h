@@ -141,9 +141,8 @@ public:
 	
 	const res::path m_texName; // Name of texture
 	
-	u32 m_dwWidth;
-	u32 m_dwHeight;
-	Vec2i size() { return Vec2i(m_dwWidth, m_dwHeight); }
+	Vec2i m_size;
+	Vec2i size() { return Vec2i(m_size.x, m_size.y); }
 	
 	TCFlags m_dwFlags;
 	u32 userflags;

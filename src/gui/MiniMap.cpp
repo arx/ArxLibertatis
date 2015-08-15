@@ -85,8 +85,8 @@ void MiniMap::getData(int showLevel) {
 		
 		if(m_levels[showLevel].m_texContainer) { // 4 pix/meter
 			
-			m_levels[showLevel].m_height = static_cast<float>(m_levels[showLevel].m_texContainer->m_dwHeight); 
-			m_levels[showLevel].m_width = static_cast<float>(m_levels[showLevel].m_texContainer->m_dwWidth);
+			m_levels[showLevel].m_height = static_cast<float>(m_levels[showLevel].m_texContainer->m_size.y);
+			m_levels[showLevel].m_width = static_cast<float>(m_levels[showLevel].m_texContainer->m_size.x);
 			
 			float minX = std::numeric_limits<float>::max();
 			float maxX = std::numeric_limits<float>::min();

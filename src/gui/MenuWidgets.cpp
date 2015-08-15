@@ -2067,14 +2067,14 @@ void CWindowMenuConsole::Render() {
 	GRenderer->SetBlendFunc(Renderer::BlendZero, Renderer::BlendInvSrcColor);
 
 	EERIEDrawBitmap2(Rectf(Vec2f(m_pos.x, m_pos.y),
-	                 RATIO_X(pTexBackground->m_dwWidth), RATIO_Y(pTexBackground->m_dwHeight)),
+	                 RATIO_X(pTexBackground->m_size.x), RATIO_Y(pTexBackground->m_size.y)),
 	                 0, pTexBackground, Color::white);
 
 	GRenderer->SetBlendFunc(Renderer::BlendOne, Renderer::BlendOne);
 	GRenderer->SetRenderState(Renderer::AlphaBlending, false);
 	
 	EERIEDrawBitmap2(Rectf(Vec2f(m_pos.x, m_pos.y),
-	                 RATIO_X(pTexBackgroundBorder->m_dwWidth), RATIO_Y(pTexBackgroundBorder->m_dwHeight)),
+	                 RATIO_X(pTexBackgroundBorder->m_size.x), RATIO_Y(pTexBackgroundBorder->m_size.y)),
 	                 0, pTexBackgroundBorder, Color::white);
 
 	//------------------------------------------------------------------------
@@ -2339,8 +2339,8 @@ ButtonWidget::ButtonWidget(Vec2i pos, const char * texturePath)
 	rZone.right  = rZone.left ;
 	rZone.bottom = rZone.top ;
 	
-	s32 rZoneR = rZone.left + RATIO_X(m_texture->m_dwWidth);
-	s32 rZoneB = rZone.top + RATIO_Y(m_texture->m_dwHeight);
+	s32 rZoneR = rZone.left + RATIO_X(m_texture->m_size.x);
+	s32 rZoneB = rZone.top + RATIO_Y(m_texture->m_size.y);
 	rZone.right  = std::max(rZone.right,  rZoneR);
 	rZone.bottom = std::max(rZone.bottom, rZoneB);
 }
@@ -2352,8 +2352,8 @@ void ButtonWidget::SetPos(Vec2i pos)
 {
 	Widget::SetPos(pos);
 	
-	int iWidth = RATIO_X(m_texture->m_dwWidth);
-	int iHeight = RATIO_Y(m_texture->m_dwHeight);
+	int iWidth = RATIO_X(m_texture->m_size.x);
+	int iHeight = RATIO_Y(m_texture->m_size.y);
 	
 	rZone.right = pos.x + iWidth;
 	rZone.bottom = pos.y + iHeight;
@@ -2654,10 +2654,10 @@ SliderWidget::SliderWidget(int _iID, Vec2i pos)
 
 	rZone.left   = pos.x;
 	rZone.top    = pos.y;
-	rZone.right  = pos.x + pLeftButton->rZone.width() + pRightButton->rZone.width() + 10 * std::max(pTex1->m_dwWidth, pTex2->m_dwWidth);
+	rZone.right  = pos.x + pLeftButton->rZone.width() + pRightButton->rZone.width() + 10 * std::max(pTex1->m_size.x, pTex2->m_size.x);
 	rZone.bottom = pos.y + std::max(pLeftButton->rZone.height(), pRightButton->rZone.height());
 	
-	pRightButton->Move(Vec2i(pLeftButton->rZone.width() + 10 * std::max(pTex1->m_dwWidth, pTex2->m_dwWidth), 0));
+	pRightButton->Move(Vec2i(pLeftButton->rZone.width() + 10 * std::max(pTex1->m_size.x, pTex2->m_size.x), 0));
 
 	pRef = this;
 }
@@ -2750,10 +2750,10 @@ void SliderWidget::Update(int _iTime) {
 	pRightButton->SetPos(rZone.topLeft());
 
 
-	float fWidth = pLeftButton->rZone.width() + RATIO_X(10 * std::max(pTex1->m_dwWidth, pTex2->m_dwWidth)) ;
+	float fWidth = pLeftButton->rZone.width() + RATIO_X(10 * std::max(pTex1->m_size.x, pTex2->m_size.x)) ;
 	pRightButton->Move(Vec2i(fWidth, 0));
 
-	rZone.right = rZone.left + pLeftButton->rZone.width() + pRightButton->rZone.width() + RATIO_X(10*std::max(pTex1->m_dwWidth, pTex2->m_dwWidth));
+	rZone.right = rZone.left + pLeftButton->rZone.width() + pRightButton->rZone.width() + RATIO_X(10*std::max(pTex1->m_size.x, pTex2->m_size.x));
 
 	rZone.bottom = rZone.top + std::max(pLeftButton->rZone.height(), pRightButton->rZone.height());
 }
@@ -2773,7 +2773,7 @@ void SliderWidget::Render() {
 	
 	for(int i = 0; i < 10; i++) {
 		TextureContainer * pTex = (i < m_value) ? pTex1 : pTex2;
-		Rectf rect = Rectf(pos, RATIO_X(pTex->m_dwWidth), RATIO_Y(pTex->m_dwHeight));
+		Rectf rect = Rectf(pos, RATIO_X(pTex->m_size.x), RATIO_Y(pTex->m_size.y));
 		
 		EERIEDrawBitmap2(rect, 0, pTex, Color::white);
 		

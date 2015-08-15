@@ -223,8 +223,8 @@ void ARX_INTERFACE_DrawNumber(const Vec2f & pos, const long num, const int _iNb,
 		
 		char tx[7];
 		float ttx;
-		float divideX = 1.f/((float) inventory_font->m_dwWidth);
-		float divideY = 1.f/((float) inventory_font->m_dwHeight);
+		float divideX = 1.f/((float) inventory_font->m_size.x);
+		float divideY = 1.f/((float) inventory_font->m_size.y);
 		
 		sprintf(tx, "%*ld", _iNb, num); // TODO use a safe string function.
 		long removezero = 1;
@@ -387,8 +387,8 @@ void ARX_INTERFACE_HALO_Render(Color3f color,
 	
 	float x = pos.x - TextureContainer::HALO_RADIUS * ratio.x;
 	float y = pos.y - TextureContainer::HALO_RADIUS * ratio.y;
-	float width = haloTexture->m_dwWidth * ratio.x;
-	float height = haloTexture->m_dwHeight * ratio.y;
+	float width = haloTexture->m_size.x * ratio.x;
+	float height = haloTexture->m_size.y * ratio.y;
 	
 	EERIEDrawBitmap(Rectf(Vec2f(x, y), width, height), 0.00001f, haloTexture, col);
 
@@ -1968,8 +1968,8 @@ void ArxGame::manageEditorControls() {
 		const Rect mouseTestRect(
 		pos.x,
 		pos.y,
-		pos.x + playerbook->m_dwWidth * g_sizeRatio.x,
-		pos.y + playerbook->m_dwHeight * g_sizeRatio.y
+		pos.x + playerbook->m_size.x * g_sizeRatio.x,
+		pos.y + playerbook->m_size.y * g_sizeRatio.y
 		);
 		
 		if(mouseTestRect.contains(Vec2i(DANAEMouse))) {

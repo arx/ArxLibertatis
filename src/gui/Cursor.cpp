@@ -514,7 +514,7 @@ static void ARX_INTERFACE_RenderCursorInternal(bool flag) {
 				else
 					tc = COMBINE->inv;
 				
-				Vec2f size(tc->m_dwWidth, tc->m_dwHeight);
+				Vec2f size(tc->m_size.x, tc->m_size.y);
 				
 				if(SpecialCursor == CURSOR_COMBINEON) {
 					EERIEDrawBitmap(Rectf(mousePos, size.x, size.y), .00001f, tc, Color::white);
@@ -555,7 +555,7 @@ static void ARX_INTERFACE_RenderCursorInternal(bool flag) {
 				surf = cursorTargetOn;
 				arx_assert(surf);
 				
-				Vec2i size = Vec2i(surf->m_dwWidth, surf->m_dwHeight);
+				Vec2i size = Vec2i(surf->m_size.x, surf->m_size.y);
 				
 				mousePos.x = 320.f - size.x / 2.f;
 				mousePos.y = 280.f - size.y / 2.f;
@@ -574,7 +574,7 @@ static void ARX_INTERFACE_RenderCursorInternal(bool flag) {
 			arx_assert(surf);
 			
 			if(SpecialCursor == CURSOR_REDIST) {
-				EERIEDrawBitmap(Rectf(mousePos, surf->m_dwWidth * g_sizeRatio.x, surf->m_dwHeight * g_sizeRatio.y),
+				EERIEDrawBitmap(Rectf(mousePos, surf->m_size.x * g_sizeRatio.x, surf->m_size.y * g_sizeRatio.y),
 								0.f, surf, Color::white);
 				
 				Vec2f textPos = Vec2f(DANAEMouse);
@@ -585,7 +585,7 @@ static void ARX_INTERFACE_RenderCursorInternal(bool flag) {
 				ARX_TEXT_Draw(hFontInBook, textPos, ss.str(), Color::black);
 			} else {
 				
-				EERIEDrawBitmap(Rectf(mousePos, surf->m_dwWidth, surf->m_dwHeight), 0.f, surf, Color::white);
+				EERIEDrawBitmap(Rectf(mousePos, surf->m_size.x, surf->m_size.y), 0.f, surf, Color::white);
 			}
 			
 			SpecialCursor = 0;
@@ -610,7 +610,7 @@ static void ARX_INTERFACE_RenderCursorInternal(bool flag) {
 					pos = MemoMouse;
 				}
 				
-				Vec2f size(surf->m_dwWidth, surf->m_dwHeight);
+				Vec2f size(surf->m_size.x, surf->m_size.y);
 				
 				pos += -size * 0.5f;
 				
@@ -636,7 +636,7 @@ static void ARX_INTERFACE_RenderCursorInternal(bool flag) {
 						pos = MemoMouse;
 					}
 					
-					Rectf rect(pos, tc->m_dwWidth, tc->m_dwHeight);
+					Rectf rect(pos, tc->m_size.x, tc->m_size.y);
 					
 					if(!(DRAGINTER->ioflags & IO_MOVABLE)) {
 						EERIEDrawBitmap(rect, .00001f, tc, color);
@@ -663,7 +663,7 @@ static void ARX_INTERFACE_RenderCursorInternal(bool flag) {
 							tcc = cursorThrowObject;
 						
 						if(tcc && tcc != tc) // to avoid movable double red cross...
-							EERIEDrawBitmap(Rectf(Vec2f(pos.x + 16, pos.y), tcc->m_dwWidth, tcc->m_dwHeight), 0.00001f, tcc, Color::white);
+							EERIEDrawBitmap(Rectf(Vec2f(pos.x + 16, pos.y), tcc->m_size.x, tcc->m_size.y), 0.00001f, tcc, Color::white);
 					}
 					
 					if(haloTc) {
@@ -674,7 +674,7 @@ static void ARX_INTERFACE_RenderCursorInternal(bool flag) {
 					TextureContainer * surf = cursorAnimatedHand.getCurrentTexture();
 					
 					if(surf) {
-						EERIEDrawBitmap(Rectf(mousePos, surf->m_dwWidth, surf->m_dwHeight), 0.f, surf, Color::white);
+						EERIEDrawBitmap(Rectf(mousePos, surf->m_size.x, surf->m_size.y), 0.f, surf, Color::white);
 					}
 				}
 			}
@@ -695,10 +695,10 @@ static void ARX_INTERFACE_RenderCursorInternal(bool flag) {
 			GRenderer->SetRenderState(Renderer::AlphaBlending, true);
 			GRenderer->SetBlendFunc(Renderer::BlendOne, Renderer::BlendOne);
 			
-			float POSX = g_size.center().x - surf->m_dwWidth * .5f;
-			float POSY = g_size.center().y - surf->m_dwHeight * .5f;
+			float POSX = g_size.center().x - surf->m_size.x * .5f;
+			float POSY = g_size.center().y - surf->m_size.y * .5f;
 			
-			EERIEDrawBitmap(Rectf(Vec2f(POSX, POSY), surf->m_dwWidth, surf->m_dwHeight), 0.f, surf, Color3f::gray(.5f).to<u8>());
+			EERIEDrawBitmap(Rectf(Vec2f(POSX, POSY), surf->m_size.x, surf->m_size.y), 0.f, surf, Color3f::gray(.5f).to<u8>());
 			
 			GRenderer->SetRenderState(Renderer::AlphaBlending, false);
 		}

@@ -205,7 +205,7 @@ void PlayerInventoryHud::ARX_INTERFACE_DrawInventory(size_t bag, int _iX, int _i
 		
 		Color color = (io->poisonous && io->poisonous_count != 0) ? Color::green : Color::white;
 		
-		Rectf rect(p, tc->m_dwWidth * m_scale, tc->m_dwHeight * m_scale);
+		Rectf rect(p, tc->m_size.x * m_scale, tc->m_size.y * m_scale);
 		// TODO use alpha blending so this will be anti-aliased even w/o alpha to coverage
 		EERIEDrawBitmap(rect, 0.001f, tc, color);
 		
@@ -303,9 +303,9 @@ void PlayerInventoryHud::draw() {
 			
 			TextureContainer * tex = m_heroInventoryLink;
 			
-			EERIEDrawBitmap(Rectf(pos1, tex->m_dwWidth, tex->m_dwHeight), 0.001f, tex, Color::white);
-			EERIEDrawBitmap(Rectf(pos2, tex->m_dwWidth, tex->m_dwHeight), 0.001f, tex, Color::white);
-			EERIEDrawBitmap(Rectf(pos3, tex->m_dwWidth, tex->m_dwHeight), 0.001f, tex, Color::white);
+			EERIEDrawBitmap(Rectf(pos1, tex->m_size.x, tex->m_size.y), 0.001f, tex, Color::white);
+			EERIEDrawBitmap(Rectf(pos2, tex->m_size.x, tex->m_size.y), 0.001f, tex, Color::white);
+			EERIEDrawBitmap(Rectf(pos3, tex->m_size.x, tex->m_size.y), 0.001f, tex, Color::white);
 			
 			iOffsetY += checked_range_cast<int>(fOffsetY);
 		}
