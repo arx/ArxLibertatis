@@ -505,14 +505,13 @@ Vec2f MiniMap::computePlayerPos(float zoom, int showLevel) {
 	
 	Vec2f pos(0.f, 0.f);
 	
-	float ofx = m_miniOffset[m_currentLevel].x;
-	float ofy = m_miniOffset[m_currentLevel].y;
-	Vec2f of2 = m_levels[showLevel].m_ratio;
+	const Vec2f of = m_miniOffset[m_currentLevel];
+	const Vec2f of2 = m_levels[showLevel].m_ratio;
 	
-	pos.x = ((m_player->pos.x + ofx - of2.x) * ( 1.0f / 100 ) * caseX
+	pos.x = ((m_player->pos.x + of.x - of2.x) * ( 1.0f / 100 ) * caseX
 	+ m_miniOffset[m_currentLevel].x * ratio * m_modX) / m_modX;
-	pos.y = ((m_mapMaxY[showLevel] - ofy - of2.y) * ( 1.0f / 100 ) * caseY
-	- (m_player->pos.z + ofy - of2.y) * ( 1.0f / 100 ) * caseY + m_miniOffset[m_currentLevel].y * ratio * m_modZ) / m_modZ;
+	pos.y = ((m_mapMaxY[showLevel] - of.y - of2.y) * ( 1.0f / 100 ) * caseY
+	- (m_player->pos.z + of.y - of2.y) * ( 1.0f / 100 ) * caseY + m_miniOffset[m_currentLevel].y * ratio * m_modZ) / m_modZ;
 	
 	return pos;
 }
