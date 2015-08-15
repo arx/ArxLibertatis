@@ -76,8 +76,7 @@ public:
 		TextureContainer* m_texContainer;
 		
 		//! Start of scene pos x
-		float m_offsetX;
-		float m_offsetY;
+		Vec2f m_offset;
 		
 		//! Multiply x by ratioX to obtain real-world pos
 		Vec2f m_ratio;

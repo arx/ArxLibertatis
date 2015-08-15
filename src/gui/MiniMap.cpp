@@ -111,8 +111,7 @@ void MiniMap::getData(int showLevel) {
 				m_levels[showLevel].m_ratio.y = minY;
 				
 				for(int l = 0; l < MAX_MINIMAP_LEVELS; l++) {
-					m_levels[l].m_offsetX = 0;
-					m_levels[l].m_offsetY = 0;
+					m_levels[l].m_offset = Vec2f_ZERO;
 				}
 			}
 		}
@@ -255,8 +254,7 @@ void MiniMap::resetLevels() {
 	
 	for(int i = 0; i < MAX_MINIMAP_LEVELS; i++) {
 		m_levels[i].m_texContainer = NULL;
-		m_levels[i].m_offsetX = 0.f;
-		m_levels[i].m_offsetY = 0.f;
+		m_levels[i].m_offset = Vec2f_ZERO;
 		m_levels[i].m_ratio = Vec2f_ZERO;
 		m_levels[i].m_size = Vec2f_ZERO;
 		// Sets the whole array to 0

@@ -247,8 +247,8 @@ struct SavedMiniMap {
 	inline operator MiniMap::MiniMapData() const {
 		MiniMap::MiniMapData a;
 		a.m_texContainer = NULL;
-		a.m_offsetX = offsetx;
-		a.m_offsetY = offsety;
+		a.m_offset.x = offsetx;
+		a.m_offset.y = offsety;
 		a.m_ratio.x = xratio;
 		a.m_ratio.y = yratio;
 		a.m_size.x = width;
@@ -261,8 +261,8 @@ struct SavedMiniMap {
 	
 	inline SavedMiniMap & operator=(const MiniMap::MiniMapData & b) {
 		padding = 0;
-		offsetx = b.m_offsetX;
-		offsety = b.m_offsetY;
+		offsetx = b.m_offset.x;
+		offsety = b.m_offset.y;
 		xratio = b.m_ratio.x;
 		yratio = b.m_ratio.y;
 		width = b.m_size.x;
