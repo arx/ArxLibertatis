@@ -509,9 +509,9 @@ Vec2f MiniMap::computePlayerPos(float zoom, int showLevel) {
 	const Vec2f of2 = m_levels[showLevel].m_ratio;
 	
 	pos.x = ((m_player->pos.x + of.x - of2.x) * ( 1.0f / 100 ) * caseX
-	+ m_miniOffset[m_currentLevel].x * ratio * m_modX) / m_modX;
+	+ of.x * ratio * m_modX) / m_modX;
 	pos.y = ((m_mapMaxY[showLevel] - of.y - of2.y) * ( 1.0f / 100 ) * caseY
-	- (m_player->pos.z + of.y - of2.y) * ( 1.0f / 100 ) * caseY + m_miniOffset[m_currentLevel].y * ratio * m_modZ) / m_modZ;
+	- (m_player->pos.z + of.y - of2.y) * ( 1.0f / 100 ) * caseY + of.y * ratio * m_modZ) / m_modZ;
 	
 	return pos;
 }
@@ -759,9 +759,9 @@ void MiniMap::drawDetectedEntities(int showLevel, Vec2f start, float zoom) {
 		}
 		
 		float fpx = start.x + ((npc->pos.x - 100 + of.x - of2.x) * ( 1.0f / 100 ) * caseX
-		+ m_miniOffset[m_currentLevel].x * ratio * m_modX) / m_modX;
+		+ of.x * ratio * m_modX) / m_modX;
 		float fpy = start.y + ((m_mapMaxY[showLevel] - of.y - of2.y) * ( 1.0f / 100 ) * caseY
-		- (npc->pos.z + 200 + of.y - of2.y) * ( 1.0f / 100 ) * caseY + m_miniOffset[m_currentLevel].y * ratio * m_modZ) / m_modZ;
+		- (npc->pos.z + 200 + of.y - of2.y) * ( 1.0f / 100 ) * caseY + of.y * ratio * m_modZ) / m_modZ;
 		
 		float d = fdist(Vec2f(m_player->pos.x, m_player->pos.z), Vec2f(npc->pos.x, npc->pos.z));
 		if(d > 800 || glm::abs(ents.player()->pos.y - npc->pos.y) > 250.f) {
