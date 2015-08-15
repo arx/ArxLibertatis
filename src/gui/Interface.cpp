@@ -1744,16 +1744,13 @@ void ArxGame::manageKeyMouse() {
 		}
 
 		if(bKeySpecialMove) {
-
-			int iAction=0;
-
 			if(pushTime[0].x || pushTime[1].x) {
 				if(pushTime[0].x < pushTime[1].x)
 					mouseDiff.x = 10;
 				else
 					mouseDiff.x = -10;
-
-				iAction |= 1;
+			} else {
+				mouseDiff.x = 0;
 			}
 
 			if(pushTime[0].y || pushTime[1].y) {
@@ -1761,15 +1758,9 @@ void ArxGame::manageKeyMouse() {
 					mouseDiff.y = 10;
 				else
 					mouseDiff.y = -10;
-
-				iAction |= 2;
-			}
-
-			if(!(iAction & 1))
-				mouseDiff.x = 0;
-
-			if(!(iAction & 2))
+			} else {
 				mouseDiff.y = 0;
+			}
 		} else {
 			if(bRenderInCursorMode) {
 				Vec2s mousePosRel = GInput->getMousePosRel();
