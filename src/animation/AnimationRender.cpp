@@ -1304,7 +1304,9 @@ static void Cedric_AnimateObject(Skeleton * obj, ANIM_USE * animlayer)
 			animuse->pour = 1.f;
 		}
 		animuse->pour = glm::clamp(animuse->pour, 0.f, 1.f);
-
+		
+		arx_assert(animuse->fr < eanim->nb_key_frames);
+		
 		// Now go for groups rotation/translation/scaling, And transform Linked objects by the way
 		int l = std::min(long(obj->bones.size() - 1), eanim->nb_groups - 1);
 
