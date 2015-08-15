@@ -174,13 +174,13 @@ void PlayerInventoryHud::CalculateInventoryCoordinates() {
 }
 
 //-----------------------------------------------------------------------------
-void PlayerInventoryHud::ARX_INTERFACE_DrawInventory(size_t bag, int _iX, int _iY)
+void PlayerInventoryHud::ARX_INTERFACE_DrawInventory(size_t bag, Vec2i i)
 {
 	fDecPulse += framedelay * 0.5f;
 	
 	Vec2f anchorPos = anchorPosition();
 	
-	const Vec2f pos = anchorPos + Vec2f(_iX, _iY);
+	const Vec2f pos = anchorPos + Vec2f(i.x, i.y);
 	
 	Rectf rect = Rectf(pos + Vec2f(0.f, -(5 * m_scale)), m_bagBackgroundSize.x * m_scale, m_bagBackgroundSize.y * m_scale);
 	EERIEDrawBitmap(rect, 0.001f, m_heroInventory, Color::white);
@@ -239,7 +239,7 @@ void PlayerInventoryHud::ARX_INTERFACE_DrawInventory(size_t bag, int _iX, int _i
 void PlayerInventoryHud::draw() {
 	if(player.Interface & INTER_INVENTORY) {		
 		if(player.bag) {
-			ARX_INTERFACE_DrawInventory(g_currentInventoryBag);
+			ARX_INTERFACE_DrawInventory(g_currentInventoryBag, Vec2i_ZERO);
 			
 			CalculateInventoryCoordinates();
 			
@@ -313,7 +313,7 @@ void PlayerInventoryHud::draw() {
 		iOffsetY = checked_range_cast<int>(fBag);
 		
 		for(short i = 0; i < player.bag; i++) {
-			ARX_INTERFACE_DrawInventory(i, 0, iOffsetY);
+			ARX_INTERFACE_DrawInventory(i, Vec2i(0, iOffsetY));
 			iOffsetY += checked_range_cast<int>(fOffsetY);
 		}
 	}

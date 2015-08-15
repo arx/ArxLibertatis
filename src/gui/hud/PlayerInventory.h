@@ -62,7 +62,7 @@ public:
 	
 private:
 	void CalculateInventoryCoordinates();
-	void ARX_INTERFACE_DrawInventory(size_t bag, int _iX=0, int _iY=0);
+	void ARX_INTERFACE_DrawInventory(size_t bag, Vec2i i);
 	bool InPlayerInventoryBag(const Vec2s & pos);
 };
 
