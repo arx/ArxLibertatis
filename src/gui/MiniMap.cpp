@@ -728,10 +728,8 @@ void MiniMap::drawDetectedEntities(int showLevel, Vec2f start, float zoom) {
 	}
 	
 	// Computes playerpos
-	float ofx = m_miniOffset[m_currentLevel].x;
-	float ofx2 = m_levels[showLevel].m_ratio.x;
-	float ofy = m_miniOffset[m_currentLevel].y;
-	float ofy2 = m_levels[showLevel].m_ratio.y;
+	const Vec2f of = m_miniOffset[m_currentLevel];
+	const Vec2f of2 = m_levels[showLevel].m_ratio;
 	
 	GRenderer->SetRenderState(Renderer::AlphaBlending, true);
 	GRenderer->SetBlendFunc(Renderer::BlendOne, Renderer::BlendOne);
@@ -761,10 +759,10 @@ void MiniMap::drawDetectedEntities(int showLevel, Vec2f start, float zoom) {
 			continue; // the player doesn't have enough skill to detect this NPC
 		}
 		
-		float fpx = start.x + ((npc->pos.x - 100 + ofx - ofx2) * ( 1.0f / 100 ) * caseX
+		float fpx = start.x + ((npc->pos.x - 100 + of.x - of2.x) * ( 1.0f / 100 ) * caseX
 		+ m_miniOffset[m_currentLevel].x * ratio * m_modX) / m_modX;
-		float fpy = start.y + ((m_mapMaxY[showLevel] - ofy - ofy2) * ( 1.0f / 100 ) * caseY
-		- (npc->pos.z + 200 + ofy - ofy2) * ( 1.0f / 100 ) * caseY + m_miniOffset[m_currentLevel].y * ratio * m_modZ) / m_modZ;
+		float fpy = start.y + ((m_mapMaxY[showLevel] - of.y - of2.y) * ( 1.0f / 100 ) * caseY
+		- (npc->pos.z + 200 + of.y - of2.y) * ( 1.0f / 100 ) * caseY + m_miniOffset[m_currentLevel].y * ratio * m_modZ) / m_modZ;
 		
 		float d = fdist(Vec2f(m_player->pos.x, m_player->pos.z), Vec2f(npc->pos.x, npc->pos.z));
 		if(d > 800 || glm::abs(ents.player()->pos.y - npc->pos.y) > 250.f) {
