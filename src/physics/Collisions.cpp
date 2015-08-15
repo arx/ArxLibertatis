@@ -696,8 +696,7 @@ float CheckAnythingInCylinder(const Cylinder & cyl, Entity * ioo, long flags) {
 
 					if(In3DBBoxTolerance(cyl.origin, io->bbox3D, cyl.radius + 30.f)) {
 						std::vector<EERIE_VERTEX> & vlist = io->obj->vertexlist3;
-						size_t nbv = io->obj->vertexlist.size();
-
+						
 						if(io->obj->grouplist.size() > 10) {
 							for(size_t ii = 0; ii < io->obj->grouplist.size(); ii++) {
 								long idx = io->obj->grouplist[ii].origin;
@@ -754,7 +753,9 @@ float CheckAnythingInCylinder(const Cylinder & cyl, Entity * ioo, long flags) {
 								sp.radius = 32.f;
 							else
 								sp.radius = 25.f;
-
+							
+							size_t nbv = io->obj->vertexlist.size();
+							
 							if(nbv < 300)
 								step = 1;
 							else if(nbv < 600)
