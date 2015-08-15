@@ -259,8 +259,9 @@ void LevitateSpell::createDustParticle() {
 		return;
 	}
 	
-	float a = glm::radians(360.f * rnd());
-	pd->ov = m_pos + Vec3f(m_baseRadius * std::cos(a), 0.f, m_baseRadius * std::sin(a));
+	Vec2f pos = glm::circularRand(m_baseRadius);
+	
+	pd->ov = m_pos + Vec3f(pos.x, 0.f, pos.y);
 	float t = fdist(pd->ov, m_pos);
 	pd->move = Vec3f((5.f + 5.f * rnd()) * ((pd->ov.x - m_pos.x) / t), 3.f * rnd(),
 	                 (5.f + 5.f * rnd()) * ((pd->ov.z - m_pos.z) / t));
