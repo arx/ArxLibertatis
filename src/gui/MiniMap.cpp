@@ -107,8 +107,8 @@ void MiniMap::getData(int showLevel) {
 				}
 				
 				m_mapMaxY[showLevel] = maxY;
-				m_levels[showLevel].m_ratioX = minX;
-				m_levels[showLevel].m_ratioY = minY;
+				m_levels[showLevel].m_ratio.x = minX;
+				m_levels[showLevel].m_ratio.y = minY;
 				
 				for(int l = 0; l < MAX_MINIMAP_LEVELS; l++) {
 					m_levels[l].m_offsetX = 0;
@@ -257,8 +257,7 @@ void MiniMap::resetLevels() {
 		m_levels[i].m_texContainer = NULL;
 		m_levels[i].m_offsetX = 0.f;
 		m_levels[i].m_offsetY = 0.f;
-		m_levels[i].m_ratioX = 0.f;
-		m_levels[i].m_ratioY = 0.f;
+		m_levels[i].m_ratio = Vec2f_ZERO;
 		m_levels[i].m_size = Vec2f_ZERO;
 		// Sets the whole array to 0
 		memset(m_levels[i].m_revealed, 0, sizeof(m_levels[i].m_revealed));
@@ -514,9 +513,9 @@ Vec2f MiniMap::computePlayerPos(float zoom, int showLevel) {
 	Vec2f pos(0.f, 0.f);
 	
 	float ofx = m_miniOffsetX[m_currentLevel];
-	float ofx2 = m_levels[showLevel].m_ratioX;
+	float ofx2 = m_levels[showLevel].m_ratio.x;
 	float ofy = m_miniOffsetY[m_currentLevel];
-	float ofy2 = m_levels[showLevel].m_ratioY;
+	float ofy2 = m_levels[showLevel].m_ratio.y;
 	
 	pos.x = ((m_player->pos.x + ofx - ofx2) * ( 1.0f / 100 ) * caseX
 	+ m_miniOffsetX[m_currentLevel] * ratio * m_modX) / m_modX;
@@ -738,9 +737,9 @@ void MiniMap::drawDetectedEntities(int showLevel, Vec2f start, float zoom) {
 	
 	// Computes playerpos
 	float ofx = m_miniOffsetX[m_currentLevel];
-	float ofx2 = m_levels[showLevel].m_ratioX;
+	float ofx2 = m_levels[showLevel].m_ratio.x;
 	float ofy = m_miniOffsetY[m_currentLevel];
-	float ofy2 = m_levels[showLevel].m_ratioY;
+	float ofy2 = m_levels[showLevel].m_ratio.y;
 	
 	GRenderer->SetRenderState(Renderer::AlphaBlending, true);
 	GRenderer->SetBlendFunc(Renderer::BlendOne, Renderer::BlendOne);

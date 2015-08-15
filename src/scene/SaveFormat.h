@@ -249,8 +249,8 @@ struct SavedMiniMap {
 		a.m_texContainer = NULL;
 		a.m_offsetX = offsetx;
 		a.m_offsetY = offsety;
-		a.m_ratioX = xratio;
-		a.m_ratioY = yratio;
+		a.m_ratio.x = xratio;
+		a.m_ratio.y = yratio;
 		a.m_size.x = width;
 		a.m_size.y = height;
 		ARX_STATIC_ASSERT(SavedMiniMap::MAX_X == MINIMAP_MAX_X, "array size mismatch");
@@ -263,8 +263,8 @@ struct SavedMiniMap {
 		padding = 0;
 		offsetx = b.m_offsetX;
 		offsety = b.m_offsetY;
-		xratio = b.m_ratioX;
-		yratio = b.m_ratioY;
+		xratio = b.m_ratio.x;
+		yratio = b.m_ratio.y;
 		width = b.m_size.x;
 		height = b.m_size.y;
 		ARX_STATIC_ASSERT(SavedMiniMap::MAX_X == MINIMAP_MAX_X, "array size mismatch");

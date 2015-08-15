@@ -80,8 +80,7 @@ public:
 		float m_offsetY;
 		
 		//! Multiply x by ratioX to obtain real-world pos
-		float m_ratioX;
-		float m_ratioY;
+		Vec2f m_ratio;
 		
 		//! Bitmap width/height
 		Vec2f m_size;
