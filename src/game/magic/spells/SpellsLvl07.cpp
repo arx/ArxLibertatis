@@ -19,6 +19,8 @@
 
 #include "game/magic/spells/SpellsLvl07.h"
 
+#include <glm/gtc/random.hpp>
+
 #include "core/Application.h"
 #include "core/Config.h"
 #include "core/Core.h"
@@ -782,10 +784,8 @@ void ConfuseSpell::Update(float timeDelta) {
 			break;
 		}
 		
-		float ang = rnd() * 360.f;
-		float rad = rnd() * 15.f;
-		pd->ov = eCurPos;
-		pd->ov += angleToVectorXZ(ang) * rad;
+		Vec2f p = glm::diskRand(15.f);
+		pd->ov = eCurPos + Vec3f(p.x, 0.f, p.y);
 		
 		pd->move = Vec3f(0.f, rnd() * 3.f + 1.f, 0.f);
 		pd->siz = 0.25f;
