@@ -19,6 +19,8 @@
 
 #include "game/magic/spells/SpellsLvl08.h"
 
+#include <glm/gtc/random.hpp>
+
 #include "core/Application.h"
 #include "core/Config.h"
 #include "core/GameTime.h"
@@ -307,35 +309,23 @@ void ExplosionSpell::Update(float timeDelta)
 		
 		light->rgb = Color3f(0.1f, 0.1f, 0.8f) + randomColor3f() * Color3f(1.f/3, 1.f/3, 1.f/5);
 		light->duration = 200;
-	
-		float rr,r2;
-		Vec3f pos;
 		
 		float choice = rnd();
 		if(choice > .8f) {
 			long lvl = Random::get(9, 13);
-			rr=glm::radians(rnd()*360.f);
-			r2=glm::radians(rnd()*360.f);
-			pos.x=light->pos.x-std::sin(rr)*260;
-			pos.y=light->pos.y-std::sin(r2)*260;
-			pos.z=light->pos.z+std::cos(rr)*260;
+			
+			Vec3f pos = light->pos + glm::sphericalRand(260.f);
 			
 			Color3f color = Color3f(0.1f, 0.1f, 0.8f) + randomColor3f() * Color3f(1.f/3, 1.f/3, 1.f/5);
 			
 			LaunchFireballBoom(pos, static_cast<float>(lvl), NULL, &color);
 		} else if(choice > .6f) {
-			rr=glm::radians(rnd()*360.f);
-			r2=glm::radians(rnd()*360.f);
-			pos.x=light->pos.x-std::sin(rr)*260;
-			pos.y=light->pos.y-std::sin(r2)*260;
-			pos.z=light->pos.z+std::cos(rr)*260;
+			Vec3f pos = light->pos + glm::sphericalRand(260.f);
+			
 			MakeCoolFx(pos);
 		} else if(choice > 0.4f) {
-			rr=glm::radians(rnd()*360.f);
-			r2=glm::radians(rnd()*360.f);
-			pos.x=light->pos.x-std::sin(rr)*160;
-			pos.y=light->pos.y-std::sin(r2)*160;
-			pos.z=light->pos.z+std::cos(rr)*160;
+			Vec3f pos = light->pos + glm::sphericalRand(160.f);
+
 			ARX_PARTICLES_Add_Smoke(pos, 2, 20); // flag 1 = randomize pos
 		}
 	}	
