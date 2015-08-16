@@ -1587,27 +1587,27 @@ void ArxGame::manageKeyMouse() {
 						}
 						
 						Entity * io = entities.player();
-						AnimLayer * useanim = &io->animlayer[1];
+						AnimLayer * layer1 = &io->animlayer[1];
 						WeaponType type = ARX_EQUIPMENT_GetPlayerWeaponType();
 						
 						switch(type) {
 						case WEAPON_DAGGER:
-							if(useanim->cur_anim == io->anims[ANIM_DAGGER_UNREADY_PART_1])
+							if(layer1->cur_anim == io->anims[ANIM_DAGGER_UNREADY_PART_1])
 								bOk = false;
 						
 							break;
 						case WEAPON_1H:
-							if(useanim->cur_anim == io->anims[ANIM_1H_UNREADY_PART_1])
+							if(layer1->cur_anim == io->anims[ANIM_1H_UNREADY_PART_1])
 								bOk = false;
 						
 							break;
 						case WEAPON_2H:
-							if(useanim->cur_anim == io->anims[ANIM_2H_UNREADY_PART_1])
+							if(layer1->cur_anim == io->anims[ANIM_2H_UNREADY_PART_1])
 								bOk = false;
 						
 							break;
 						case WEAPON_BOW:
-							if(useanim->cur_anim == io->anims[ANIM_MISSILE_UNREADY_PART_1])
+							if(layer1->cur_anim == io->anims[ANIM_MISSILE_UNREADY_PART_1])
 								bOk = false;
 						
 							break;
