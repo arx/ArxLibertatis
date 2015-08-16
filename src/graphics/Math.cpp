@@ -620,8 +620,9 @@ std::pair<Vec3f, Vec3f> angleToFrontUpVec(const Anglef & angle) {
 	
 	arx_assert(glm::abs(glm::dot(front, up)) < 5.f * std::numeric_limits<float>::epsilon(),
 	           "front=(%f,%f,%f) and up=(%f,%f,%f) should be orthogonal; dot=%1f*epsilon",
-	           front.x, front.y, front.z, up.x, up.y, up.z,
-	           glm::dot(front, up) / std::numeric_limits<float>::epsilon());
+	           double(front.x), double(front.y), double(front.z),
+	           double(up.x), double(up.y), double(up.z),
+	           double(glm::dot(front, up) / std::numeric_limits<float>::epsilon()));
 	
 	return std::make_pair(front, up);
 }
