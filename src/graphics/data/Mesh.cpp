@@ -1979,9 +1979,6 @@ static void EERIE_PORTAL_Poly_Add(EERIEPOLY * ep, const std::string& name, long 
 
 static int BkgAddPoly(EERIEPOLY * ep, EERIE_3DOBJ * eobj) {
 	
-	long type = -1;
-	long val1 = -1;
-	
 	if(TryToQuadify(ep, eobj))
 		return 0;
 	
@@ -2044,10 +2041,7 @@ static int BkgAddPoly(EERIEPOLY * ep, EERIE_3DOBJ * eobj) {
 	epp->area = fdist((epp->v[0].p + epp->v[1].p) * .5f, epp->v[2].p)
 	            * fdist(epp->v[0].p, epp->v[1].p) * .5f;
 	
-	if (type == TYPE_ROOM)
-		epp->room = checked_range_cast<short>(val1);
-	else
-		epp->room = -1;
+	epp->room = -1;
 	
 	eg->nbpoly++;
 	
