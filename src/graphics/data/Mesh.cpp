@@ -1556,10 +1556,7 @@ static bool loadFastScene(const res::path & file, const char * data, const char 
 				
 				float dist = 0.f;
 				for(int h = 0; h < to; h++) {
-					float x = ep2->v[h].p.x - ep2->center.x;
-					float y = ep2->v[h].p.y - ep2->center.y;
-					float z = ep2->v[h].p.z - ep2->center.z;
-					float d = sqrt((x * x) + (y * y) + (z * z));
+					float d = glm::distance(ep2->v[h].p, ep2->center);
 					dist = std::max(dist, d);
 				}
 				ep2->v[0].rhw = dist;
