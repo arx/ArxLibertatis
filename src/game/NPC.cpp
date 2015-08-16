@@ -1266,43 +1266,43 @@ static bool IsPlayerStriking() {
 	arx_assert(entities.player());
 	Entity * io = entities.player();
 	
-	AnimLayer * layer1 = &io->animlayer[1];
+	AnimLayer & layer1 = io->animlayer[1];
 	WeaponType weapontype = ARX_EQUIPMENT_GetPlayerWeaponType();
 
 	switch(weapontype) {
 	case WEAPON_BARE:
 		for(long j = 0; j < 4; j++) {
-			if(STRIKE_AIMTIME > 300 && layer1->cur_anim == io->anims[ANIM_BARE_STRIKE_LEFT_CYCLE+j*3])
+			if(STRIKE_AIMTIME > 300 && layer1.cur_anim == io->anims[ANIM_BARE_STRIKE_LEFT_CYCLE+j*3])
 				return true;
 
-			if(layer1->cur_anim == io->anims[ANIM_BARE_STRIKE_LEFT+j*3])
+			if(layer1.cur_anim == io->anims[ANIM_BARE_STRIKE_LEFT+j*3])
 				return true;
 		}
 		break;
 	case WEAPON_DAGGER:
 		for(long j = 0; j < 4; j++) {
-			if(STRIKE_AIMTIME > 300 && layer1->cur_anim == io->anims[ANIM_DAGGER_STRIKE_LEFT_CYCLE+j*3])
+			if(STRIKE_AIMTIME > 300 && layer1.cur_anim == io->anims[ANIM_DAGGER_STRIKE_LEFT_CYCLE+j*3])
 				return true;
 
-			if(layer1->cur_anim == io->anims[ANIM_DAGGER_STRIKE_LEFT+j*3])
+			if(layer1.cur_anim == io->anims[ANIM_DAGGER_STRIKE_LEFT+j*3])
 				return true;
 		}
 		break;
 	case WEAPON_1H:
 		for(long j = 0; j < 4; j++) {
-			if(STRIKE_AIMTIME > 300 && layer1->cur_anim == io->anims[ANIM_1H_STRIKE_LEFT_CYCLE+j*3])
+			if(STRIKE_AIMTIME > 300 && layer1.cur_anim == io->anims[ANIM_1H_STRIKE_LEFT_CYCLE+j*3])
 				return true;
 
-			if(layer1->cur_anim == io->anims[ANIM_1H_STRIKE_LEFT+j*3])
+			if(layer1.cur_anim == io->anims[ANIM_1H_STRIKE_LEFT+j*3])
 				return true;
 		}
 		break;
 	case WEAPON_2H:
 		for(long j = 0; j < 4; j++) {
-			if(STRIKE_AIMTIME > 300 && layer1->cur_anim == io->anims[ANIM_2H_STRIKE_LEFT_CYCLE+j*3])
+			if(STRIKE_AIMTIME > 300 && layer1.cur_anim == io->anims[ANIM_2H_STRIKE_LEFT_CYCLE+j*3])
 				return true;
 
-			if(layer1->cur_anim == io->anims[ANIM_2H_STRIKE_LEFT+j*3])
+			if(layer1.cur_anim == io->anims[ANIM_2H_STRIKE_LEFT+j*3])
 				return true;
 		}
 		break;
