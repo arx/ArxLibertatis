@@ -47,6 +47,7 @@ ZeniMax Media Inc., Suite 120, Rockville, Maryland 20850 USA.
 #include "scene/Scene.h"
 
 #include <cstdio>
+#include <cmath>
 
 #include "ai/Paths.h"
 
@@ -711,7 +712,7 @@ static void CreatePlane(EERIE_FRUSTRUM & frustrum, long numplane, const Vec3f & 
 	plane.b = A.z * B.x - A.x * B.z;
 	plane.c = A.x * B.y - A.y * B.x;
 	
-	float epnlen = (float)sqrt(plane.a * plane.a + plane.b * plane.b + plane.c * plane.c);
+	float epnlen = std::sqrt(plane.a * plane.a + plane.b * plane.b + plane.c * plane.c);
 	epnlen = 1.f / epnlen;
 	
 	plane.a *= epnlen;
@@ -751,7 +752,7 @@ static void CreateScreenFrustrum(EERIE_FRUSTRUM * frustrum) {
 	c=matres[2][3]-matres[2][0];
 	d=matres[3][3]-matres[3][0];
  b=-b;
-	n = (float)(1.f /sqrt(a*a+b*b+c*c));
+	n = 1.f / std::sqrt(a * a + b * b + c * c);
 
 	Frustrum_Set(frustrum,0,a*n,b*n,c*n,d*n);
 	a=matres[0][3]+matres[0][0];
@@ -759,7 +760,7 @@ static void CreateScreenFrustrum(EERIE_FRUSTRUM * frustrum) {
 	c=matres[2][3]+matres[2][0];
 	d=matres[3][3]+matres[3][0];
  b=-b;
-	n = (float)(1.f/sqrt(a*a+b*b+c*c));
+	n = 1.f / std::sqrt(a * a + b * b + c * c);
 
 	Frustrum_Set(frustrum,1,a*n,b*n,c*n,d*n);
 	a=matres[0][3]-matres[0][1];
@@ -767,7 +768,7 @@ static void CreateScreenFrustrum(EERIE_FRUSTRUM * frustrum) {
 	c=matres[2][3]-matres[2][1];
 	d=matres[3][3]-matres[3][1];
  b=-b;
-	n = (float)(1.f/sqrt(a*a+b*b+c*c));
+	n = 1.f / std::sqrt(a * a + b * b + c * c);
 
 	Frustrum_Set(frustrum,2,a*n,b*n,c*n,d*n);
 	a=matres[0][3]+matres[0][1];
@@ -775,7 +776,7 @@ static void CreateScreenFrustrum(EERIE_FRUSTRUM * frustrum) {
 	c=matres[2][3]+matres[2][1];
 	d=matres[3][3]+matres[3][1];
  b=-b;
-	n = (float)(1.f/sqrt(a*a+b*b+c*c));
+	n = 1.f / std::sqrt(a * a + b * b + c * c);
 
 	Frustrum_Set(frustrum,3,a*n,b*n,c*n,d*n);
 
@@ -784,7 +785,7 @@ static void CreateScreenFrustrum(EERIE_FRUSTRUM * frustrum) {
 	c=matres[2][3]+matres[2][2];
 	d=matres[3][3]+matres[3][2];
  b=-b;
-	n = (float)(1.f/sqrt(a*a+b*b+c*c));
+	n = 1.f / std::sqrt(a * a + b * b + c * c);
 	efpPlaneNear.a=a*n;
 	efpPlaneNear.b=b*n;
 	efpPlaneNear.c=c*n;
