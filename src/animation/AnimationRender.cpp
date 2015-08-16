@@ -1552,9 +1552,9 @@ void EERIEDrawAnimQuatUpdate(EERIE_3DOBJ *eobj, AnimLayer * animlayer,const Angl
 
 	if(time > 0) {
 		for(size_t count = 0; count < MAX_ANIM_LAYERS; count++) {
-			AnimLayer * animuse = &animlayer[count];
-			if(animuse->cur_anim)
-				PrepareAnim(animuse, time, io);
+			AnimLayer & layer = animlayer[count];
+			if(layer.cur_anim)
+				PrepareAnim(&layer, time, io);
 		}
 	}
 
