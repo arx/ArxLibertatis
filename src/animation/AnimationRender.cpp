@@ -938,7 +938,6 @@ static void AddAnimatedObjectHalo(HaloInfo & haloInfo, const unsigned short * pa
                                   TexturedVertex * tvList) {
 	
 	float & ddist = haloInfo.ddist;
-	float & MAX_ZEDE = haloInfo.MAX_ZEDE;
 	std::vector<HaloRenderInfo> & halos = haloInfo.halos;
 
 	IO_HALO * curhalo = NULL;
@@ -1069,8 +1068,8 @@ static void AddAnimatedObjectHalo(HaloInfo & haloInfo, const unsigned short * pa
 			vert[2].p.x += (vect2.x + 0.2f - rnd() * 0.1f) * siz;
 			vert[2].p.y += (vect2.y + 0.2f - rnd() * 0.1f) * siz;
 
-			vert[1].p.z = (vert[1].p.z + MAX_ZEDE) * ( 1.0f / 2 );
-			vert[2].p.z = (vert[2].p.z + MAX_ZEDE) * ( 1.0f / 2 );
+			vert[1].p.z = (vert[1].p.z + haloInfo.MAX_ZEDE) * ( 1.0f / 2 );
+			vert[2].p.z = (vert[2].p.z + haloInfo.MAX_ZEDE) * ( 1.0f / 2 );
 
 			if(curhalo->flags & HALO_NEGATIVE)
 				vert[2].color = Color(0, 0, 0, 0).toRGBA();
