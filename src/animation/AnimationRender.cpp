@@ -1200,39 +1200,39 @@ static void Cedric_AnimateDrawEntityRender(EERIE_3DOBJ * eobj, const Vec3f & pos
 	}
 }
 
-static Vec3f CalcTranslation(AnimLayer * animuse) {
+static Vec3f CalcTranslation(AnimLayer & layer) {
 	
-	if(!animuse || !animuse->cur_anim) {
+	if(!layer.cur_anim) {
 		return Vec3f_ZERO;
 	}
 	
-	EERIE_ANIM	*eanim = animuse->cur_anim->anims[animuse->altidx_cur];
+	EERIE_ANIM	*eanim = layer.cur_anim->anims[layer.altidx_cur];
 	
 	if(!eanim) {
 		return Vec3f_ZERO;
 	}
 	
 	//Avoiding impossible cases
-	if(animuse->fr < 0) {
-		animuse->fr = 0;
-		animuse->pour = 0.f;
-	} else if(animuse->fr >= eanim->nb_key_frames - 1) {
-		animuse->fr = eanim->nb_key_frames - 2;
-		animuse->pour = 1.f;
+	if(layer.fr < 0) {
+		layer.fr = 0;
+		layer.pour = 0.f;
+	} else if(layer.fr >= eanim->nb_key_frames - 1) {
+		layer.fr = eanim->nb_key_frames - 2;
+		layer.pour = 1.f;
 	}
-	animuse->pour = glm::clamp(animuse->pour, 0.f, 1.f);
+	layer.pour = glm::clamp(layer.pour, 0.f, 1.f);
 	
 	// FIXME animation indices prevent invalid memory access, should be fixed properly
-	if(animuse->fr < 0 || animuse->fr + 1 >= eanim->nb_key_frames)
+	if(layer.fr < 0 || layer.fr + 1 >= eanim->nb_key_frames)
 		return Vec3f_ZERO;
 	
 	// FRAME TRANSLATE : Gives the Virtual pos of Main Object
-	if(eanim->frames[animuse->fr].f_translate && !(animuse->flags & EA_STATICANIM)) {
+	if(eanim->frames[layer.fr].f_translate && !(layer.flags & EA_STATICANIM)) {
 		
-		EERIE_FRAME * sFrame = &eanim->frames[animuse->fr];
-		EERIE_FRAME * eFrame = &eanim->frames[animuse->fr+1];
+		EERIE_FRAME * sFrame = &eanim->frames[layer.fr];
+		EERIE_FRAME * eFrame = &eanim->frames[layer.fr+1];
 		// Linear interpolation of object translation (MOVE)
-		return sFrame->translate + (eFrame->translate - sFrame->translate) * animuse->pour;
+		return sFrame->translate + (eFrame->translate - sFrame->translate) * layer.pour;
 	}
 	
 	return Vec3f_ZERO;
@@ -1563,7 +1563,7 @@ void EERIEDrawAnimQuatUpdate(EERIE_3DOBJ *eobj, AnimLayer * animlayer,const Angl
 	float scale = (io) ? io->scale : 1.f;
 
 	// Only layer 0 controls movement
-	Vec3f ftr = CalcTranslation(&animlayer[0]);
+	Vec3f ftr = CalcTranslation(animlayer[0]);
 
 
 	if(update_movement)
