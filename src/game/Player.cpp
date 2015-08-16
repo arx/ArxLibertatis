@@ -174,29 +174,30 @@ bool ARX_PLAYER_IsInFightMode() {
 	
 	if (player.Interface & INTER_COMBATMODE) return true;
 
-	if(entities.player()->animlayer[1].cur_anim) {
+	const AnimLayer & layer1 = entities.player()->animlayer[1];
+	
+	if(layer1.cur_anim) {
 		
-		AnimLayer * ause1 = &entities.player()->animlayer[1];
 		ANIM_HANDLE ** alist = entities.player()->anims;
 
-		if ((ause1->cur_anim	==	alist[ANIM_BARE_READY])
-		        ||	(ause1->cur_anim	==	alist[ANIM_BARE_UNREADY])
-		        ||	(ause1->cur_anim	==	alist[ANIM_DAGGER_READY_PART_1])
-		        ||	(ause1->cur_anim	==	alist[ANIM_DAGGER_READY_PART_2])
-		        ||	(ause1->cur_anim	==	alist[ANIM_DAGGER_UNREADY_PART_1])
-		        ||	(ause1->cur_anim	==	alist[ANIM_DAGGER_UNREADY_PART_2])
-		        ||	(ause1->cur_anim	==	alist[ANIM_1H_READY_PART_1])
-		        ||	(ause1->cur_anim	==	alist[ANIM_1H_READY_PART_2])
-		        ||	(ause1->cur_anim	==	alist[ANIM_1H_UNREADY_PART_1])
-		        ||	(ause1->cur_anim	==	alist[ANIM_1H_UNREADY_PART_2])
-		        ||	(ause1->cur_anim	==	alist[ANIM_2H_READY_PART_1])
-		        ||	(ause1->cur_anim	==	alist[ANIM_2H_READY_PART_2])
-		        ||	(ause1->cur_anim	==	alist[ANIM_2H_UNREADY_PART_1])
-		        ||	(ause1->cur_anim	==	alist[ANIM_2H_UNREADY_PART_2])
-		        ||	(ause1->cur_anim	==	alist[ANIM_MISSILE_READY_PART_1])
-		        ||	(ause1->cur_anim	==	alist[ANIM_MISSILE_READY_PART_2])
-		        ||	(ause1->cur_anim	==	alist[ANIM_MISSILE_UNREADY_PART_1])
-		        ||	(ause1->cur_anim	==	alist[ANIM_MISSILE_UNREADY_PART_2])
+		if(   layer1.cur_anim == alist[ANIM_BARE_READY]
+		   || layer1.cur_anim == alist[ANIM_BARE_UNREADY]
+		   || layer1.cur_anim == alist[ANIM_DAGGER_READY_PART_1]
+		   || layer1.cur_anim == alist[ANIM_DAGGER_READY_PART_2]
+		   || layer1.cur_anim == alist[ANIM_DAGGER_UNREADY_PART_1]
+		   || layer1.cur_anim == alist[ANIM_DAGGER_UNREADY_PART_2]
+		   || layer1.cur_anim == alist[ANIM_1H_READY_PART_1]
+		   || layer1.cur_anim == alist[ANIM_1H_READY_PART_2]
+		   || layer1.cur_anim == alist[ANIM_1H_UNREADY_PART_1]
+		   || layer1.cur_anim == alist[ANIM_1H_UNREADY_PART_2]
+		   || layer1.cur_anim == alist[ANIM_2H_READY_PART_1]
+		   || layer1.cur_anim == alist[ANIM_2H_READY_PART_2]
+		   || layer1.cur_anim == alist[ANIM_2H_UNREADY_PART_1]
+		   || layer1.cur_anim == alist[ANIM_2H_UNREADY_PART_2]
+		   || layer1.cur_anim == alist[ANIM_MISSILE_READY_PART_1]
+		   || layer1.cur_anim == alist[ANIM_MISSILE_READY_PART_2]
+		   || layer1.cur_anim == alist[ANIM_MISSILE_UNREADY_PART_1]
+		   || layer1.cur_anim == alist[ANIM_MISSILE_UNREADY_PART_2]
 		   )
 			return true;
 	}
