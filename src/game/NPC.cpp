@@ -428,7 +428,10 @@ void ARX_NPC_Behaviour_UnStack(Entity * io)
 			ARX_NPC_LaunchPathfind(io, bd->target);
 
 			if(io->_npcdata->behavior & BEHAVIOUR_NONE) {
-				memcpy(io->animlayer, bd->animlayer, sizeof(AnimLayer)*MAX_ANIM_LAYERS);
+				
+				for(long l = 0; l < MAX_ANIM_LAYERS; l++) {
+					io->animlayer[l] = bd->animlayer[l];
+				}
 			}
 
 			return;
