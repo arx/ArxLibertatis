@@ -48,6 +48,7 @@ ZeniMax Media Inc., Suite 120, Rockville, Maryland 20850 USA.
 
 #include <string>
 #include <map>
+#include <cmath>
 
 #include "core/Application.h"
 #include "core/Config.h"
@@ -397,7 +398,7 @@ void Input::update() {
 		float fSensMax = 1.f / 6.f;
 		float fSensMin = 2.f;
 		float fSens = ( ( fSensMax - fSensMin ) * ( (float)iSensibility ) / 10.f ) + fSensMin;
-		fSens = pow( .7f, fSens ) * 2.f;
+		fSens = std::pow(0.7f, fSens) * 2.f;
 		iMouseR.x = relX * fSens;
 		iMouseR.y = relY * fSens;
 		
