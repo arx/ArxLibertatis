@@ -1311,13 +1311,13 @@ static bool IsPlayerStriking() {
 
 static void ARX_NPC_Manage_NON_Fight(Entity * io) {
 	
-	AnimLayer * ause1 = &io->animlayer[1];
+	AnimLayer * layer1 = &io->animlayer[1];
 
-	if((ause1->flags & EA_ANIMEND) && (ause1->cur_anim != NULL)) {
-		if(!(ause1->flags & EA_FORCEPLAY)) {
+	if((layer1->flags & EA_ANIMEND) && (layer1->cur_anim != NULL)) {
+		if(!(layer1->flags & EA_FORCEPLAY)) {
 			AcquireLastAnim(io);
-			FinishAnim(io, ause1->cur_anim);
-			ause1->cur_anim = NULL;
+			FinishAnim(io, layer1->cur_anim);
+			layer1->cur_anim = NULL;
 		}
 	}
 }
