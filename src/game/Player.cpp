@@ -2193,8 +2193,9 @@ void PlayerMovementIterate(float DeltaTime) {
 		Vec3f impulse = g_moveto - player.pos;
 		if(impulse != Vec3f_ZERO) {
 			
+			const AnimLayer & layer0 = entities.player()->animlayer[0];
 			float scale = 1.25f / 1000;
-			if(entities.player()->animlayer[0].cur_anim) {
+			if(layer0.cur_anim) {
 				if(player.jumpphase != NotJumping) {
 					if(player.Current_Movement & PLAYER_MOVE_WALK_BACKWARD) {
 						scale = 0.8f / 1000;
@@ -2210,9 +2211,9 @@ void PlayerMovementIterate(float DeltaTime) {
 				} else if(levitate && !player.climbing) {
 					scale = 0.875f / 1000;
 				} else {
-					short idx = entities.player()->animlayer[0].altidx_cur;
-					Vec3f mv = GetAnimTotalTranslate(entities.player()->animlayer[0].cur_anim, idx);
-					float time = entities.player()->animlayer[0].cur_anim->anims[idx]->anim_time;
+					short idx = layer0.altidx_cur;
+					Vec3f mv = GetAnimTotalTranslate(layer0.cur_anim, idx);
+					float time = layer0.cur_anim->anims[idx]->anim_time;
 					scale = glm::length(mv) / time * 0.0125f;
 				}
 			}
