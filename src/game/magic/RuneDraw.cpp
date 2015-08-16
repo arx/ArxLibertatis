@@ -102,7 +102,7 @@ void ARX_SPELLS_UpdateSymbolDraw() {
 					if(layer1.cur_anim == io->anims[ANIM_CAST_START]  && (layer1.flags & EA_ANIMEND)) {
 						// TODO why no AcquireLastAnim() like everywhere else?
 						FinishAnim(io, layer1.cur_anim);
-						ANIM_Set(&layer1, io->anims[ANIM_CAST_CYCLE]);
+						ANIM_Set(layer1, io->anims[ANIM_CAST_CYCLE]);
 						tst = true;
 					} else if(layer1.cur_anim == io->anims[ANIM_CAST_CYCLE]) {
 						tst = true;

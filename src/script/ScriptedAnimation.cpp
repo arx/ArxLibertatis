@@ -108,7 +108,7 @@ class ForceAnimCommand : public Command {
 		
 		FinishAnim(&io, io.animlayer[0].cur_anim);
 		io.lastmove = Vec3f_ZERO;
-		ANIM_Set(&io.animlayer[0], ea);
+		ANIM_Set(io.animlayer[0], ea);
 		io.animlayer[0].flags |= EA_FORCEPLAY;
 		io.animlayer[0].nextflags = 0;
 		
@@ -176,7 +176,7 @@ class PlayAnimCommand : public Command {
 		}
 		
 		FinishAnim(io, io->animlayer[layer].cur_anim);
-		ANIM_Set(&io->animlayer[layer], ea);
+		ANIM_Set(io->animlayer[layer], ea);
 		io->animlayer[layer].next_anim = NULL;
 		
 		if(loop) {

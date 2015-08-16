@@ -109,23 +109,23 @@ short ANIM_GetAltIdx(ANIM_HANDLE * ah, long old) {
 	}
 }
 
-void ANIM_Set(AnimLayer *au, ANIM_HANDLE *anim)
+void ANIM_Set(AnimLayer & layer, ANIM_HANDLE *anim)
 {
-	if(!au || !anim)
+	if(!anim)
 		return;
 
-	au->cur_anim = anim;
-	au->altidx_cur = ANIM_GetAltIdx(anim, au->altidx_cur);
+	layer.cur_anim = anim;
+	layer.altidx_cur = ANIM_GetAltIdx(anim, layer.altidx_cur);
 
-	if(au->altidx_cur > au->cur_anim->alt_nb)
-		au->altidx_cur = 0;
+	if(layer.altidx_cur > layer.cur_anim->alt_nb)
+		layer.altidx_cur = 0;
 
-	au->ctime = 0;
-	au->lastframe = -1;
-	au->flags &= ~EA_PAUSED;
-	au->flags &= ~EA_ANIMEND;
-	au->flags &= ~EA_LOOP;
-	au->flags &= ~EA_FORCEPLAY;
+	layer.ctime = 0;
+	layer.lastframe = -1;
+	layer.flags &= ~EA_PAUSED;
+	layer.flags &= ~EA_ANIMEND;
+	layer.flags &= ~EA_LOOP;
+	layer.flags &= ~EA_FORCEPLAY;
 }
 
 void stopAnimation(Entity * entity, size_t layer) {
@@ -140,7 +140,7 @@ void changeAnimation(Entity * entity, size_t layer, ANIM_HANDLE * animation,
 	AnimLayer  & animlayer = entity->animlayer[layer];
 	AcquireLastAnim(entity);
 	FinishAnim(entity, animlayer.cur_anim);
-	ANIM_Set(&animlayer, animation);
+	ANIM_Set(animlayer, animation);
 	animlayer.flags |= flags;
 	if(startAtBeginning) {
 		animlayer.altidx_cur = 0;

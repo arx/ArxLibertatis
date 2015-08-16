@@ -1204,10 +1204,10 @@ void ManageCombatModeAnimationsEND() {
 						EERIE_LINKEDOBJ_UnLinkObjectFromObject(io->obj, arrowobj);
 					} else if(layer1.cur_anim == alist[ANIM_MISSILE_STRIKE_PART_1]) {
 						// TODO why no AcquireLastAnim()?
-						ANIM_Set(&layer1, alist[ANIM_MISSILE_STRIKE_PART_2]);
+						ANIM_Set(layer1, alist[ANIM_MISSILE_STRIKE_PART_2]);
 					} else if(layer1.cur_anim == alist[ANIM_MISSILE_STRIKE_PART_2]) {
 						// TODO why no AcquireLastAnim()?
-						ANIM_Set(&layer1, alist[ANIM_MISSILE_STRIKE_CYCLE]);
+						ANIM_Set(layer1, alist[ANIM_MISSILE_STRIKE_CYCLE]);
 					} else if(layer1.cur_anim == alist[ANIM_MISSILE_UNREADY_PART_1]) {
 						ARX_EQUIPMENT_AttachPlayerWeaponToBack();
 						changeAnimation(io, 1, alist[ANIM_MISSILE_UNREADY_PART_2]);

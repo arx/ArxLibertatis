@@ -731,7 +731,7 @@ void ConfuseSpell::Launch() {
 	const char tex[] = "graph/obj3d/interactive/fix_inter/fx_papivolle/fx_papivolle.tea";
 	ANIM_HANDLE * anim_papii = EERIE_ANIMMANAGER_Load(tex);
 	
-	ANIM_Set(&au, anim_papii);
+	ANIM_Set(au, anim_papii);
 	au.next_anim = NULL;
 	au.cur_anim = anim_papii;
 	au.ctime = 0;

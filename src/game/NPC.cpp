@@ -1025,7 +1025,7 @@ void ARX_PHYSICS_Apply() {
 				AnimLayer & layer0 = io->animlayer[0];
 
 				if(!layer0.cur_anim || (layer0.flags & EA_ANIMEND)) {
-					ANIM_Set(&layer0, io->anims[ANIM_WAIT]);
+					ANIM_Set(layer0, io->anims[ANIM_WAIT]);
 					layer0.altidx_cur = 0;
 				}
 
@@ -2003,7 +2003,7 @@ static void ManageNPCMovement(Entity * io)
 				if(layer0.flags & EA_ANIMEND) {
 					// TODO why no AcquireLastAnim(io) like everywhere else?
 					FinishAnim(io, layer0.cur_anim);
-					ANIM_Set(&layer0, alist[ANIM_WAIT]);
+					ANIM_Set(layer0, alist[ANIM_WAIT]);
 					layer0.altidx_cur = 0;
 				}
 				return;
@@ -2569,12 +2569,12 @@ static void ManageNPCMovement(Entity * io)
 		if(io->_npcdata->behavior & (BEHAVIOUR_FIGHT | BEHAVIOUR_MAGIC | BEHAVIOUR_DISTANT)) {
 			// TODO why no AcquireLastAnim() like everywhere else?
 			FinishAnim(io, layer0.cur_anim);
-			ANIM_Set(&layer0, alist[ANIM_FIGHT_WAIT]);
+			ANIM_Set(layer0, alist[ANIM_FIGHT_WAIT]);
 			layer0.flags |= EA_LOOP;
 		} else {
 			// TODO why no AcquireLastAnim() like everywhere else?
 			FinishAnim(io, layer0.cur_anim);
-			ANIM_Set(&layer0, alist[ANIM_WAIT]);
+			ANIM_Set(layer0, alist[ANIM_WAIT]);
 			if(io->_npcdata->behavior & BEHAVIOUR_FRIENDLY) {
 				layer0.altidx_cur = 0;
 			}
