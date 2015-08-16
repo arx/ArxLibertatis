@@ -40,7 +40,6 @@ static bool NearlyEqual(float a,float b) {
 static bool Quadable(EERIEPOLY * ep, EERIEPOLY * ep2, float tolerance) {
 
 	long count=0;
-	long common2=-1;
 
 	long ep_notcommon=-1;
 	long ep2_notcommon=-1;
@@ -68,7 +67,7 @@ static bool Quadable(EERIEPOLY * ep, EERIEPOLY * ep2, float tolerance) {
 	for (long i=0;i<3;i++)
 	{
 		long common=-1;
-		common2=-1;
+		long common2=-1;
 
 		for (long j=0;j<3;j++)
 		{
