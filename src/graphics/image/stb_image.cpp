@@ -926,7 +926,7 @@ stbi_inline static uint8 clamp(int x)
    return (uint8) x;
 }
 
-#define stbi_f2f(x)  (int) (((x) * 4096 + 0.5))
+#define stbi_f2f(x)  (int) (((x) * 4096 + 0.5f))
 #define stbi_fsh(x)  ((x) << 12)
 
 // derived from jidctint -- DCT_ISLOW
@@ -1465,7 +1465,7 @@ static uint8 *resample_row_generic(uint8 *out, uint8 *in_near, uint8 *in_far, in
    return out;
 }
 
-#define stbi_float2fixed(x)  ((int) ((x) * 65536 + 0.5))
+#define stbi_float2fixed(x)  ((int) ((x) * 65536 + 0.5f))
 
 // 0.38 seconds on 3*anemones.jpg   (0.25 with processor = Pro)
 // VC6 without processor=Pro is generating multiple LEAs per multiply!
