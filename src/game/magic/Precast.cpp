@@ -109,7 +109,7 @@ void ARX_SPELLS_Precast_Launch(PrecastHandle num) {
 void ARX_SPELLS_Precast_Check() {
 	for(size_t i = 0; i < Precast.size(); i++) {
 		if(Precast[i].launch_time > 0 && float(arxtime) >= Precast[i].launch_time) {
-			AnimLayer *ause1 = &entities.player()->animlayer[1];
+			AnimLayer & layer1 = entities.player()->animlayer[1];
 			
 			if(player.Interface & INTER_COMBATMODE) {
 				WILLRETURNTOCOMBATMODE = true;
@@ -118,8 +118,8 @@ void ARX_SPELLS_Precast_Check() {
 				entities.player()->animlayer[1].flags&=~EA_LOOP;
 			}
 
-			if(ause1->cur_anim && ause1->cur_anim == entities.player()->anims[ANIM_CAST]) {
-				if(ause1->ctime > ause1->cur_anim->anims[ause1->altidx_cur]->anim_time - 550)
+			if(layer1.cur_anim && layer1.cur_anim == entities.player()->anims[ANIM_CAST]) {
+				if(layer1.ctime > layer1.cur_anim->anims[layer1.altidx_cur]->anim_time - 550)
 				{
 					ARX_SPELLS_Launch(	Precast[i].typ,
 										PlayerEntityHandle,
