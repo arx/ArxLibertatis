@@ -221,6 +221,8 @@ else(MSVC)
 				add_cxxflag("-g2")
 			endif()
 			
+			add_cxxflag("-ffast-math")
+			
 		endif()
 		
 	endif(SET_OPTIMIZATION_FLAGS)
