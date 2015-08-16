@@ -457,13 +457,15 @@ void TREATZONE_AddIO(Entity * io, bool justCollide)
 void CheckSetAnimOutOfTreatZone(Entity * io, long num)
 {
 	arx_assert(io);
-
-	if( io->animlayer[num].cur_anim &&
+	
+	ANIM_USE & layer = io->animlayer[num];
+	
+	if( layer.cur_anim &&
 		!(io->gameFlags & GFLAG_ISINTREATZONE) &&
 		fartherThan(io->pos, ACTIVECAM->orgTrans.pos, 2500.f))
 	{
 
-		io->animlayer[num].ctime = io->animlayer[num].cur_anim->anims[io->animlayer[num].altidx_cur]->anim_time - 1;
+		layer.ctime = layer.cur_anim->anims[layer.altidx_cur]->anim_time - 1;
 	}
 }
 
