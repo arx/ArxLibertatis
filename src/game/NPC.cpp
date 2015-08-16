@@ -1533,7 +1533,7 @@ static void ARX_NPC_Manage_Anims(Entity * io, float TOLERANCE) {
 	
 	io->_npcdata->strike_time += (short)framedelay;
 	
-	AnimLayer * ause = &io->animlayer[0];
+	AnimLayer * layer0 = &io->animlayer[0];
 	AnimLayer * layer1 = &io->animlayer[1];
 	
 	float tdist = std::numeric_limits<float>::max();
@@ -1572,7 +1572,7 @@ static void ARX_NPC_Manage_Anims(Entity * io, float TOLERANCE) {
 		// Evade while (not) casting
 		
 		AcquireLastAnim(io);
-		FinishAnim(io, ause->cur_anim);
+		FinishAnim(io, layer0->cur_anim);
 		float r = (tdist < square(340)) ? 0.f : rnd();
 		if(r < 0.33f) {
 			TryAndCheckAnim(io, ANIM_FIGHT_WALK_BACKWARD, 0);
@@ -1586,7 +1586,7 @@ static void ARX_NPC_Manage_Anims(Entity * io, float TOLERANCE) {
 	
 	if(IsPlayerStriking() && isCurrentAnimation(io, ANIM_FIGHT_WAIT)) {
 		AcquireLastAnim(io);
-		FinishAnim(io, ause->cur_anim);
+		FinishAnim(io, layer0->cur_anim);
 		float r = rnd();
 		if(r < 0.2f) {
 			TryAndCheckAnim(io, ANIM_FIGHT_WALK_BACKWARD, 0);
