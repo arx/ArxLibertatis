@@ -65,7 +65,7 @@ inline bool eeMouseUp1() {
 }
 
 inline bool eeMousePressed1() {
-	return (EERIEMouseButton & 1);
+	return (EERIEMouseButton & 1) != 0;
 }
 
 inline bool eeMouseDoubleClick1() {
@@ -81,7 +81,7 @@ inline bool eeMouseUp2() {
 }
 
 inline bool eeMousePressed2() {
-	return (EERIEMouseButton & 2);
+	return (EERIEMouseButton & 2) != 0;
 }
 
 class Application {
