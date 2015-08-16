@@ -333,7 +333,7 @@ list(APPEND ARX_LIBRARIES ${FREETYPE_LIBRARIES})
 # OpenGL
 if(USE_OPENGL)
 	find_package(OpenGL ${OPTIONAL_DEPENDENCY})
-	find_package(GLEW ${OPTIONAL_DEPENDENCY})
+	find_package(GLEW 1.5.2 ${OPTIONAL_DEPENDENCY})
 	add_definitions(-DGLEW_NO_GLU)
 	if(NOT MSVC AND OPENGL_FOUND AND GLEW_FOUND)
 		check_link_library(OpenGL OPENGL_gl_LIBRARY)
@@ -389,7 +389,7 @@ include_directories(SYSTEM ${Boost_INCLUDE_DIRS})
 add_definitions(-DBOOST_ALL_NO_LIB)
 
 # glm
-find_package(GLM REQUIRED)
+find_package(GLM 0.9.5.0 REQUIRED)
 include_directories(SYSTEM ${GLM_INCLUDE_DIRS})
 add_definitions(-DGLM_FORCE_RADIANS)
 
