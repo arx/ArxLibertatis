@@ -147,7 +147,7 @@ void CLightning::BuildS(LIGHTNING * pLInfo)
 
 		float p = rnd();
 
-		if(p <= 0.15 && pLInfo->anbrec < 7) {
+		if(p <= 0.15f && pLInfo->anbrec < 7) {
 			float m = rnd();
 
 			if(pLInfo->abFollow) {
@@ -196,7 +196,7 @@ void CLightning::BuildS(LIGHTNING * pLInfo)
 				BuildS(pLInfo);
 			}
 		} else {
-			if(rnd() <= 0.10) {
+			if(rnd() <= 0.10f) {
 				pLInfo->abFollow = true;
 			}
 
