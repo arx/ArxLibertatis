@@ -266,7 +266,7 @@ static float LightRND;
 
 static Color CalculLight(CinematicLight * light, Vec2f pos, Color col) {
 	
-	float	ra = (float)sqrt((light->pos.x - pos.x) * (light->pos.x - pos.x) + (light->pos.y - pos.y) * (light->pos.y - pos.y));
+	float	ra = std::sqrt((light->pos.x - pos.x) * (light->pos.x - pos.x) + (light->pos.y - pos.y) * (light->pos.y - pos.y));
 
 	if(ra > light->fallout) {
 		return (col * LightRND);
