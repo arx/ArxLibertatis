@@ -22,6 +22,7 @@
 #include <sstream>
 #include <iomanip>
 #include <iterator>
+#include <cmath>
 
 #include <ft2build.h>
 #include FT_FREETYPE_H
@@ -263,8 +264,8 @@ static void addGlyphVertices(std::vector<TexturedVertex> & vertices,
 	float vEnd = glyph.uv_start.y;
 
 	Vec2f p;
-	p.x = floor(pos.x + glyph.draw_offset.x) - .5f;
-	p.y = floor(pos.y - glyph.draw_offset.y) - .5f;
+	p.x = std::floor(pos.x + glyph.draw_offset.x) - .5f;
+	p.y = std::floor(pos.y - glyph.draw_offset.y) - .5f;
 
 	TexturedVertex quad[4];
 	quad[0].p = Vec3f(p.x, p.y, 0);
