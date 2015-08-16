@@ -1070,7 +1070,7 @@ void ManageCombatModeAnimationsEND() {
 	Entity * io = entities.player();
 	
 	AnimLayer & layer1 = io->animlayer[1];
-	AnimLayer * layer3 = &io->animlayer[3];
+	AnimLayer & layer3 = io->animlayer[3];
 	
 	ANIM_HANDLE ** alist = io->anims;
 
@@ -1238,10 +1238,10 @@ void ManageCombatModeAnimationsEND() {
 	}
 
 	// Is the shield off ?
-	if(layer3->flags & EA_ANIMEND) {
-		if(io->anims[ANIM_SHIELD_END] && layer3->cur_anim == io->anims[ANIM_SHIELD_END]) {
+	if(layer3.flags & EA_ANIMEND) {
+		if(io->anims[ANIM_SHIELD_END] && layer3.cur_anim == io->anims[ANIM_SHIELD_END]) {
 			AcquireLastAnim(io);
-			layer3->cur_anim = NULL;
+			layer3.cur_anim = NULL;
 		}
 	}
 }
