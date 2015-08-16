@@ -152,8 +152,6 @@ static unsigned char OffsBits[] = {
 
 ImplodeResult implode(pkstream * pStr) {
 	
-	unsigned char ch; // Byte from input buffer
-	int nMaxCopyLen; // Length of longest duplicate data in the dictionary
 	unsigned char * pMaxCopyOffs; // Offset to longest duplicate data in the dictionary
 	int nCopyOffs = 0; // Offset used in actual compressed data
 	unsigned char * pCopyOffs; // Offset to duplicate data in the dictionary
@@ -204,8 +202,8 @@ ImplodeResult implode(pkstream * pStr) {
 	while(pStr->pInPos < pStr->pInBuffer + pStr->nInSize) {
 		
 		// Get a byte from the input buffer
-		ch = *pStr->pInPos++;
-		nMaxCopyLen = 0;
+		unsigned char ch = *pStr->pInPos++;
+		int nMaxCopyLen = 0; // Length of longest duplicate data in the dictionary
 		
 		// If the dictionary is not empty, search for duplicate data in the dictionary
 		if(pStr->nCurDictSize > 0 && pStr->nInSize - (pStr->pInPos - pStr->pInBuffer) > 0) {
