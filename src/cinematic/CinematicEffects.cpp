@@ -213,10 +213,10 @@ void FX_DreamPrecalc(CinematicBitmap * bi, float amp, float fps) {
 	Vec2f o;
 	o.x = amp * ((2 * (std::sin(nn.x / 20) + std::sin(nn.x * nn.y / 2000)
 	                  + std::sin((nn.x + nn.y) / 100) + std::sin((nn.y - nn.x) / 70) + std::sin((nn.x + 4 * nn.y) / 70)
-	                  + 2 * std::sin(hypot(256 - nn.x, (150 - nn.y / 8)) / 40))));
+	                  + 2 * std::sin(hypotf(256 - nn.x, (150 - nn.y / 8)) / 40))));
 	o.y = amp * (((std::cos(nn.x / 31) + std::cos(nn.x * nn.y / 1783) +
 	              + 2 * std::cos((nn.x + nn.y) / 137) + std::cos((nn.y - nn.x) / 55) + 2 * std::cos((nn.x + 8 * nn.y) / 57)
-	              + std::cos(hypot(384 - nn.x, (274 - nn.y / 9)) / 51))));
+	              + std::cos(hypotf(384 - nn.x, (274 - nn.y / 9)) / 51))));
 	
 	float * t = DreamTable;
 	n.y = ((bi->m_count.y * bi->grid.m_scale) + 1);
@@ -234,10 +234,10 @@ void FX_DreamPrecalc(CinematicBitmap * bi, float amp, float fps) {
 			
 			*t++ = (float)(-o.x + amp * ((2 * (std::sin(nn.x / 20) + std::sin(nn.x * nn.y / 2000)
 			                                  + std::sin((nn.x + nn.y) / 100) + std::sin((nn.y - nn.x) / 70) + std::sin((nn.x + 4 * nn.y) / 70)
-			                                  + 2 * std::sin(hypot(256 - nn.x, (150 - nn.y / 8)) / 40)))));
+			                                  + 2 * std::sin(hypotf(256 - nn.x, (150 - nn.y / 8)) / 40)))));
 			*t++ = (float)(-o.y + amp * (((std::cos(nn.x / 31) + std::cos(nn.x * nn.y / 1783) +
 			                              + 2 * std::cos((nn.x + nn.y) / 137) + std::cos((nn.y - nn.x) / 55) + 2 * std::cos((nn.x + 8 * nn.y) / 57)
-			                              + std::cos(hypot(384 - nn.x, (274 - nn.y / 9)) / 51)))));
+			                              + std::cos(hypotf(384 - nn.x, (274 - nn.y / 9)) / 51)))));
 			
 			n.x--;
 		}
