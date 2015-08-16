@@ -184,7 +184,7 @@ void SummonCreatureSpell::Update(float timeDelta) {
 			long tokeep;
 			res::path cls;
 			if(m_megaCheat) {
-				if(rnd() > 0.5) {
+				if(rnd() > 0.5f) {
 					tokeep = -1;
 					cls = "graph/obj3d/interactive/npc/wrat_base/wrat_base";
 				} else {
