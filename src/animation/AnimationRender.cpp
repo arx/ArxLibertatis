@@ -1222,8 +1222,8 @@ static Vec3f CalcTranslation(ANIM_USE * animuse) {
 	}
 	animuse->pour = glm::clamp(animuse->pour, 0.f, 1.f);
 	
-	// TODO Prevent invalid memory access, should be fixed properly
-	if(animuse->fr + 1 >= eanim->nb_key_frames)
+	// FIXME animation indices prevent invalid memory access, should be fixed properly
+	if(animuse->fr < 0 || animuse->fr + 1 >= eanim->nb_key_frames)
 		return Vec3f_ZERO;
 	
 	// FRAME TRANSLATE : Gives the Virtual pos of Main Object
@@ -1303,7 +1303,9 @@ static void Cedric_AnimateObject(Skeleton * obj, ANIM_USE * animlayer)
 		}
 		animuse->pour = glm::clamp(animuse->pour, 0.f, 1.f);
 		
-		arx_assert(animuse->fr < eanim->nb_key_frames);
+		// FIXME animation indices are sometimes negative
+		//arx_assert(animuse->fr >= 0 && animuse->fr < eanim->nb_key_frames);
+		animuse->fr = glm::clamp(animuse->fr, 0l, long(eanim->nb_key_frames - 1));
 		
 		// Now go for groups rotation/translation/scaling, And transform Linked objects by the way
 		int l = std::min(long(obj->bones.size() - 1), eanim->nb_groups - 1);
