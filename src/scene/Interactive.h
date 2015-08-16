@@ -175,7 +175,7 @@ bool IsSameObject(Entity * io, Entity * ioo);
 void ARX_INTERACTIVE_ClearAllDynData();
 bool HaveCommonGroup(Entity * io, Entity * ioo);
 void UpdateIOInvisibility(Entity * io);
-void CheckSetAnimOutOfTreatZone(Entity * io, long layerIndex);
+void CheckSetAnimOutOfTreatZone(Entity * io, AnimLayer & layer);
 void ARX_HALO_SetToNative(Entity * io);
 void ARX_INTERACTIVE_ActivatePhysics(EntityHandle t);
 void ResetVVPos(Entity * io);

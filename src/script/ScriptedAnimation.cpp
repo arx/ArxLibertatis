@@ -114,7 +114,7 @@ class ForceAnimCommand : public Command {
 		layer0.flags |= EA_FORCEPLAY;
 		layer0.nextflags = 0;
 		
-		CheckSetAnimOutOfTreatZone(&io, 0);
+		CheckSetAnimOutOfTreatZone(&io, layer0);
 	}
 	
 public:
@@ -252,7 +252,7 @@ public:
 		setNextAnim(iot, iot->anims[num], layer, loop, nointerpol);
 		
 		if(!loop) {
-			CheckSetAnimOutOfTreatZone(iot, layerIndex);
+			CheckSetAnimOutOfTreatZone(iot, layer);
 		}
 		
 		if(iot == entities.player()) {

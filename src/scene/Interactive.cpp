@@ -454,11 +454,9 @@ void TREATZONE_AddIO(Entity * io, bool justCollide)
 	TREATZONE_CUR++;
 }
 
-void CheckSetAnimOutOfTreatZone(Entity * io, long layerIndex)
-{
-	arx_assert(io);
+void CheckSetAnimOutOfTreatZone(Entity * io, AnimLayer & layer) {
 	
-	AnimLayer & layer = io->animlayer[layerIndex];
+	arx_assert(io);
 	
 	if( layer.cur_anim &&
 		!(io->gameFlags & GFLAG_ISINTREATZONE) &&
