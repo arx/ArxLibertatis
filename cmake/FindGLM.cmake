@@ -55,9 +55,31 @@ endif(GLM_ROOT_DIR)
 # locate header
 find_path(GLM_INCLUDE_DIR "glm/glm.hpp" PATHS ${_glm_HEADER_SEARCH_DIRS})
 
+set(_glm_VERSION_HEADER "${GLM_INCLUDE_DIR}/glm/detail/setup.hpp")
+if(GLM_INCLUDE_DIR AND NOT EXISTS "${_glm_VERSION_HEADER}")
+	set(_glm_VERSION_HEADER "${GLM_INCLUDE_DIR}/glm/core/setup.hpp")
+endif()
+if(GLM_INCLUDE_DIR AND EXISTS "${_glm_VERSION_HEADER}")
+	file(STRINGS "${_glm_VERSION_HEADER}" _glm_VERSION_DEFINES REGEX "#define.*")
+	foreach(component IN ITEMS "MAJOR" "MINOR" "PATCH" "REVISION")
+		set(_glm_VERSION_PATTERN ".*#define GLM_VERSION_${component}[ \t]+([0-9]+).*")
+		if("${_glm_VERSION_DEFINES}" MATCHES "${_glm_VERSION_PATTERN}")
+			string(REGEX REPLACE "${_glm_VERSION_PATTERN}" "\\1"
+			       _glm_${component} "${_glm_VERSION_DEFINES}")
+		endif()
+	endforeach()
+	if(DEFINED _glm_MAJOR AND DEFINED _glm_MINOR AND DEFINED _glm_PATCH
+	   AND DEFINED _glm_REVISION)
+		set(GLM_VERSION_STRING "${_glm_MAJOR}.${_glm_MINOR}.${_glm_PATCH}.${_glm_REVISION}")
+	endif()
+	unset(_glm_VERSION_DEFINES)
+endif()
+
+set(GLM_INCLUDE_SUBDIR "${GLM_INCLUDE_DIR}/glm")
 include(FindPackageHandleStandardArgs)
-find_package_handle_standard_args(GLM DEFAULT_MSG GLM_INCLUDE_DIR)
+find_package_handle_standard_args(GLM REQUIRED_VARS GLM_INCLUDE_SUBDIR GLM_INCLUDE_DIR
+                                  VERSION_VAR GLM_VERSION_STRING)
 
 if(GLM_FOUND)
-    set(GLM_INCLUDE_DIRS "${GLM_INCLUDE_DIR}")
+	set(GLM_INCLUDE_DIRS "${GLM_INCLUDE_DIR}")
 endif(GLM_FOUND)
