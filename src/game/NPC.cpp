@@ -1534,7 +1534,7 @@ static void ARX_NPC_Manage_Anims(Entity * io, float TOLERANCE) {
 	io->_npcdata->strike_time += (short)framedelay;
 	
 	AnimLayer * ause = &io->animlayer[0];
-	AnimLayer * ause1 = &io->animlayer[1];
+	AnimLayer * layer1 = &io->animlayer[1];
 	
 	float tdist = std::numeric_limits<float>::max();
 	if(io->_npcdata->pathfind.listnb && ValidIONum(io->_npcdata->pathfind.truetarget)) {
@@ -1600,7 +1600,7 @@ static void ARX_NPC_Manage_Anims(Entity * io, float TOLERANCE) {
 	
 	// Manage casting animation
 	
-	if(ause1->flags & EA_ANIMEND) {
+	if(layer1->flags & EA_ANIMEND) {
 		if(isCurrentAnimation(io, 1, ANIM_CAST)) {
 			changeAnimation(io, 1, ANIM_CAST_END);
 		} else if(isCurrentAnimation(io, 1, ANIM_CAST_END)) {
@@ -1647,7 +1647,7 @@ static void ARX_NPC_Manage_Anims(Entity * io, float TOLERANCE) {
 			AnimationNumber cycle = AnimationNumber(ANIM_BARE_STRIKE_LEFT_CYCLE + j * 3);
 			AnimationNumber strike = AnimationNumber(ANIM_BARE_STRIKE_LEFT + j * 3);
 			
-			if(isCurrentAnimation(io, 1, start) && (ause1->flags & EA_ANIMEND)) {
+			if(isCurrentAnimation(io, 1, start) && (layer1->flags & EA_ANIMEND)) {
 				
 				io->ioflags &= ~IO_HIT;
 				changeAnimation(io, 1, cycle, EA_LOOP);
@@ -1665,16 +1665,16 @@ static void ARX_NPC_Manage_Anims(Entity * io, float TOLERANCE) {
 				
 			} else if(isCurrentAnimation(io, 1, strike)) {
 				
-				if(ause1->flags & EA_ANIMEND) {
+				if(layer1->flags & EA_ANIMEND) {
 					io->ioflags &= ~IO_HIT;
 					changeAnimation(io, 1, ANIM_BARE_WAIT);
 					Strike_StartTickCount(io);
 					if((io->ioflags & IO_NPC) && !io->_npcdata->reachedtarget) {
-						ause1->cur_anim = NULL;
+						layer1->cur_anim = NULL;
 					}
 				} else if(!(io->ioflags & IO_HIT)) {
-					long ctime = ause1->ctime;
-					long animtime = ause1->cur_anim->anims[0]->anim_time;
+					long ctime = layer1->ctime;
+					long animtime = layer1->cur_anim->anims[0]->anim_time;
 					if(ctime > animtime * STRIKE_MUL && ctime <= animtime * STRIKE_MUL2) {
 						CheckHit(io, 1.f);
 						io->ioflags |= IO_HIT;
@@ -1704,10 +1704,10 @@ static void ARX_NPC_Manage_Anims(Entity * io, float TOLERANCE) {
 			
 			AnimationNumber part1 = AnimationNumber(ANIM_1H_UNREADY_PART_1 + wtype);
 			AnimationNumber part2 = AnimationNumber(ANIM_1H_UNREADY_PART_2 + wtype);
-			if(isCurrentAnimation(io, 1, part1) && (ause1->flags & EA_ANIMEND)) {
+			if(isCurrentAnimation(io, 1, part1) && (layer1->flags & EA_ANIMEND)) {
 				SetWeapon_Back(io);
 				changeAnimation(io, 1, part2);
-			} else if(isCurrentAnimation(io, 1, part2) && (ause1->flags & EA_ANIMEND)) {
+			} else if(isCurrentAnimation(io, 1, part2) && (layer1->flags & EA_ANIMEND)) {
 				stopAnimation(io, 1);
 				io->_npcdata->weaponinhand = 0;
 			} else if(!isCurrentAnimation(io, 1, part1) && isCurrentAnimation(io, 1, part2)) {
@@ -1719,10 +1719,10 @@ static void ARX_NPC_Manage_Anims(Entity * io, float TOLERANCE) {
 			
 			AnimationNumber part1 = AnimationNumber(ANIM_1H_READY_PART_1 + wtype);
 			AnimationNumber part2 = AnimationNumber(ANIM_1H_READY_PART_2 + wtype);
-			if(isCurrentAnimation(io, 1, part1) && (ause1->flags & EA_ANIMEND)) {
+			if(isCurrentAnimation(io, 1, part1) && (layer1->flags & EA_ANIMEND)) {
 				SetWeapon_On(io);
 				changeAnimation(io, 1, part2);
-			} else if(isCurrentAnimation(io, 1, part2) &&	(ause1->flags & EA_ANIMEND)) {
+			} else if(isCurrentAnimation(io, 1, part2) &&	(layer1->flags & EA_ANIMEND)) {
 				if(io->_npcdata->behavior & BEHAVIOUR_FIGHT) {
 					changeAnimation(io, 1, ready, EA_LOOP);
 					Strike_StartTickCount(io);
@@ -1730,7 +1730,7 @@ static void ARX_NPC_Manage_Anims(Entity * io, float TOLERANCE) {
 					stopAnimation(io, 1);
 				}
 				io->_npcdata->weaponinhand = 1;
-			} else if(!ause1->cur_anim || (ause1->flags & EA_ANIMEND)) {
+			} else if(!layer1->cur_anim || (layer1->flags & EA_ANIMEND)) {
 				changeAnimation(io, 1, part1);
 			}
 			
@@ -1749,7 +1749,7 @@ static void ARX_NPC_Manage_Anims(Entity * io, float TOLERANCE) {
 				AnimationNumber cycle = AnimationNumber(ANIM_1H_STRIKE_LEFT_CYCLE + j * 3 + wtype);
 				AnimationNumber strike = AnimationNumber(ANIM_1H_STRIKE_LEFT + j * 3 + wtype);
 				
-				if(isCurrentAnimation(io, 1, start) && (ause1->flags & EA_ANIMEND)) {
+				if(isCurrentAnimation(io, 1, start) && (layer1->flags & EA_ANIMEND)) {
 					
 					changeAnimation(io, 1, cycle, EA_LOOP);
 					io->_npcdata->aiming_start = long(arxtime);
@@ -1774,13 +1774,13 @@ static void ARX_NPC_Manage_Anims(Entity * io, float TOLERANCE) {
 					
 				} else if(isCurrentAnimation(io, 1, strike)) {
 					
-					if(ause1->flags & EA_ANIMEND) {
+					if(layer1->flags & EA_ANIMEND) {
 						io->ioflags &= ~IO_HIT;
 						changeAnimation(io, 1, ready);
 						Strike_StartTickCount(io);
 					} else {
-						long ctime = ause1->ctime;
-						long animtime = ause1->cur_anim->anims[0]->anim_time;
+						long ctime = layer1->ctime;
+						long animtime = layer1->cur_anim->anims[0]->anim_time;
 						if(ctime > animtime * STRIKE_MUL && ctime <= animtime * STRIKE_MUL2) {
 							if(!(io->ioflags & IO_HIT)) {
 								if(ARX_EQUIPMENT_Strike_Check(io, io->_npcdata->weapon, 1, 0, io->targetinfo)) {
