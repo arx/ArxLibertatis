@@ -1393,12 +1393,12 @@ void ARX_PLAYER_Manage_Visual() {
 	AnimLayer & ause0 = io->animlayer[0];
 	AnimLayer & ause1 = io->animlayer[1];
 	AnimLayer & ause2 = io->animlayer[2];
-	AnimLayer & ause3 = io->animlayer[3];
+	AnimLayer & layer3 = io->animlayer[3];
 	
 	ause0.next_anim = NULL;
 	ause1.next_anim = NULL;
 	ause2.next_anim = NULL;
-	ause3.next_anim = NULL;
+	layer3.next_anim = NULL;
 	
 	ANIM_HANDLE ** alist = io->anims;
 	
@@ -1589,11 +1589,11 @@ void ARX_PLAYER_Manage_Visual() {
 	}
 	
 	if(request3_anim == NULL
-	   && ause3.cur_anim
-	   && (ause3.cur_anim == alist[ANIM_LEAN_RIGHT] || ause3.cur_anim == alist[ANIM_LEAN_LEFT])
+	   && layer3.cur_anim
+	   && (layer3.cur_anim == alist[ANIM_LEAN_RIGHT] || layer3.cur_anim == alist[ANIM_LEAN_LEFT])
 	) {
 		AcquireLastAnim(io);
-		ause3.cur_anim = NULL;
+		layer3.cur_anim = NULL;
 	}
 	
 	if((player.Current_Movement & PLAYER_CROUCH) && !(player.Last_Movement & PLAYER_CROUCH)
@@ -1742,11 +1742,11 @@ retry:
 			}
 		}
 		
-		if(request3_anim && request3_anim != ause3.cur_anim) {
+		if(request3_anim && request3_anim != layer3.cur_anim) {
 			AcquireLastAnim(io);
-			ResetAnim(&ause3);
-			ause3.cur_anim = request3_anim;
-			ause3.flags = EA_STATICANIM;
+			ResetAnim(&layer3);
+			layer3.cur_anim = request3_anim;
+			layer3.flags = EA_STATICANIM;
 		}
 	}
 	
