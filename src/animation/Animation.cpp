@@ -720,17 +720,17 @@ void PrepareAnim(AnimLayer *eanim, unsigned long time, Entity *io) {
 }
 
 
-void ResetAnim(AnimLayer * eanim)
+void ResetAnim(AnimLayer * layer)
 {
-	if(!eanim)
+	if(!layer)
 		return;
 
-	eanim->ctime=0;
-	eanim->lastframe=-1;
-	eanim->flags&=~EA_PAUSED;
-	eanim->flags&=~EA_ANIMEND;
-	eanim->flags&=~EA_LOOP;
-	eanim->flags&=~EA_FORCEPLAY;
+	layer->ctime=0;
+	layer->lastframe=-1;
+	layer->flags&=~EA_PAUSED;
+	layer->flags&=~EA_ANIMEND;
+	layer->flags&=~EA_LOOP;
+	layer->flags&=~EA_FORCEPLAY;
 }
 
 static void EERIE_ANIMMANAGER_Clear(long i) {
