@@ -915,8 +915,6 @@ void Image::FlipY(unsigned char * pData, unsigned int pWidth, unsigned int pHeig
 		return;
 	}
 	
-	unsigned int offset;
-	
 	if(!IsCompressed()) {
 		
 		unsigned int imageSize = GetSize(mFormat, pWidth, pHeight);
@@ -927,7 +925,7 @@ void Image::FlipY(unsigned char * pData, unsigned int pWidth, unsigned int pHeig
 		
 		for(unsigned int n = 0; n < pDepth; n++) {
 			
-			offset = imageSize * n;
+			unsigned offset = imageSize * n;
 			
 			unsigned char * top = pData + offset;
 			unsigned char * bottom = top + (imageSize-lineSize);
