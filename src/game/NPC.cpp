@@ -1505,16 +1505,16 @@ static bool TryIOAnimMove(Entity * io, long animnum) {
 	return false;
 }
 
-static void TryAndCheckAnim(Entity * io, long animnum, long layer) {
+static void TryAndCheckAnim(Entity * io, long animnum, long layerIndex) {
 	
 	if(!io) {
 		return;
 	}
 	
-	AnimLayer * ause = &io->animlayer[layer];
+	AnimLayer * ause = &io->animlayer[layerIndex];
 	if(ause->cur_anim != io->anims[animnum] && ause->cur_anim) {
 		if(TryIOAnimMove(io, animnum)) {
-			changeAnimation(io, layer, AnimationNumber(animnum));
+			changeAnimation(io, layerIndex, AnimationNumber(animnum));
 		}
 	}
 }
