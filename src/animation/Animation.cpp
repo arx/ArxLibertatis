@@ -569,52 +569,49 @@ Vec3f GetAnimTotalTranslate(ANIM_HANDLE * eanim, long alt_idx) {
  * \param time Time increment to current animation in Ms
  * \param io Referrence to Interactive Object (NULL if no IO)
  */
-void PrepareAnim(AnimLayer *layer, unsigned long time, Entity *io) {
-	
-	if(!layer)
-		return;
+void PrepareAnim(AnimLayer & layer, unsigned long time, Entity *io) {
 
-	if(layer->flags & EA_PAUSED)
+	if(layer.flags & EA_PAUSED)
 		time = 0;
 
 	if(io && (io->ioflags & IO_FREEZESCRIPT))
 		time = 0;
 
-	if(layer->altidx_cur >= layer->cur_anim->alt_nb)
-		layer->altidx_cur = 0;
+	if(layer.altidx_cur >= layer.cur_anim->alt_nb)
+		layer.altidx_cur = 0;
 
-	if(!(layer->flags & EA_EXCONTROL))
-		layer->ctime += time;
+	if(!(layer.flags & EA_EXCONTROL))
+		layer.ctime += time;
 
-	layer->flags &= ~EA_ANIMEND;
+	layer.flags &= ~EA_ANIMEND;
 
-	const long animTime = layer->cur_anim->anims[layer->altidx_cur]->anim_time;
+	const long animTime = layer.cur_anim->anims[layer.altidx_cur]->anim_time;
 	
-	if(layer->ctime > animTime) {
+	if(layer.ctime > animTime) {
 	
-		if(layer->flags & EA_STOPEND) {
-			layer->ctime = animTime;
+		if(layer.flags & EA_STOPEND) {
+			layer.ctime = animTime;
 		}
 		
-		long lost = layer->ctime - animTime;
+		long lost = layer.ctime - animTime;
 		
-		if((layer->flags & EA_LOOP)
-		   || (io && ((layer->cur_anim == io->anims[ANIM_WALK])
-					  || (layer->cur_anim == io->anims[ANIM_WALK2])
-					  || (layer->cur_anim == io->anims[ANIM_WALK3])
-					  || (layer->cur_anim == io->anims[ANIM_RUN])
-					  || (layer->cur_anim == io->anims[ANIM_RUN2])
-					  || (layer->cur_anim == io->anims[ANIM_RUN3])))
+		if((layer.flags & EA_LOOP)
+		   || (io && ((layer.cur_anim == io->anims[ANIM_WALK])
+					  || (layer.cur_anim == io->anims[ANIM_WALK2])
+					  || (layer.cur_anim == io->anims[ANIM_WALK3])
+					  || (layer.cur_anim == io->anims[ANIM_RUN])
+					  || (layer.cur_anim == io->anims[ANIM_RUN2])
+					  || (layer.cur_anim == io->anims[ANIM_RUN3])))
 		) {
-				if(!layer->next_anim) {
+				if(!layer.next_anim) {
 					long t = animTime;
-					layer->ctime= layer->ctime % t;
+					layer.ctime= layer.ctime % t;
 	
 					if(io)
-						FinishAnim(io,layer->cur_anim);
+						FinishAnim(io,layer.cur_anim);
 				} else {
 					if(io) {
-						FinishAnim(io,layer->cur_anim);
+						FinishAnim(io,layer.cur_anim);
 						
 						if(io->animBlend.lastanimtime != 0)
 							AcquireLastAnim(io);
@@ -622,98 +619,98 @@ void PrepareAnim(AnimLayer *layer, unsigned long time, Entity *io) {
 							io->animBlend.lastanimtime = 1;
 					}
 					
-					layer->cur_anim=layer->next_anim;
-					layer->altidx_cur=ANIM_GetAltIdx(layer->next_anim,layer->altidx_cur);
-					layer->next_anim=NULL;
-					ResetAnim(layer);
-					layer->ctime = lost;
-					layer->flags=layer->nextflags;
-					layer->flags&=~EA_ANIMEND;
+					layer.cur_anim=layer.next_anim;
+					layer.altidx_cur=ANIM_GetAltIdx(layer.next_anim,layer.altidx_cur);
+					layer.next_anim=NULL;
+					ResetAnim(&layer);
+					layer.ctime = lost;
+					layer.flags=layer.nextflags;
+					layer.flags&=~EA_ANIMEND;
 				}
 		} else {
-			if(io && layer->next_anim) {
-					FinishAnim(io,layer->cur_anim);
+			if(io && layer.next_anim) {
+					FinishAnim(io,layer.cur_anim);
 					
 					if (io->animBlend.lastanimtime!=0)
 						AcquireLastAnim(io);
 					else
 						io->animBlend.lastanimtime=1;
 					
-					layer->cur_anim=layer->next_anim;
-					layer->altidx_cur=ANIM_GetAltIdx(layer->next_anim,layer->altidx_cur);
-					layer->next_anim=NULL;
-					ResetAnim(layer);
-					layer->ctime = lost;
-					layer->flags=layer->nextflags;
-					layer->flags&=~EA_ANIMEND;
+					layer.cur_anim=layer.next_anim;
+					layer.altidx_cur=ANIM_GetAltIdx(layer.next_anim,layer.altidx_cur);
+					layer.next_anim=NULL;
+					ResetAnim(&layer);
+					layer.ctime = lost;
+					layer.flags=layer.nextflags;
+					layer.flags&=~EA_ANIMEND;
 			} else {
-				layer->flags |= EA_ANIMEND;
-				layer->ctime = layer->cur_anim->anims[layer->altidx_cur]->anim_time;
+				layer.flags |= EA_ANIMEND;
+				layer.ctime = layer.cur_anim->anims[layer.altidx_cur]->anim_time;
 			}
 		}
 	
 	}
 	
-	if (!layer->cur_anim)
+	if (!layer.cur_anim)
 		return;
 
 	long tim;
-	if(layer->flags & EA_REVERSE)
-		tim = animTime - layer->ctime;
+	if(layer.flags & EA_REVERSE)
+		tim = animTime - layer.ctime;
 	else
-		tim = layer->ctime;
+		tim = layer.ctime;
 
-	layer->fr = layer->cur_anim->anims[layer->altidx_cur]->nb_key_frames - 2;
-	layer->pour = 1.f;
+	layer.fr = layer.cur_anim->anims[layer.altidx_cur]->nb_key_frames - 2;
+	layer.pour = 1.f;
 	
-	for(long i = 1; i < layer->cur_anim->anims[layer->altidx_cur]->nb_key_frames; i++) {
-		long tcf = (long)layer->cur_anim->anims[layer->altidx_cur]->frames[i - 1].time;
-		long tnf = (long)layer->cur_anim->anims[layer->altidx_cur]->frames[i].time;
+	for(long i = 1; i < layer.cur_anim->anims[layer.altidx_cur]->nb_key_frames; i++) {
+		long tcf = (long)layer.cur_anim->anims[layer.altidx_cur]->frames[i - 1].time;
+		long tnf = (long)layer.cur_anim->anims[layer.altidx_cur]->frames[i].time;
 
 		if(tcf == tnf)
 			return;
 
-		if((tim < tnf && tim >= tcf) || (i == layer->cur_anim->anims[layer->altidx_cur]->nb_key_frames - 1 && tim == tnf)) {
+		if((tim < tnf && tim >= tcf) || (i == layer.cur_anim->anims[layer.altidx_cur]->nb_key_frames - 1 && tim == tnf)) {
 			long fr = i - 1;
 			tim -= tcf;
 			float pour = (float)((float)tim/((float)tnf-(float)tcf));
 			
 			// Frame Sound Management
-			if(!(layer->flags & EA_ANIMEND) && time
-			   && (layer->cur_anim->anims[layer->altidx_cur]->frames[fr].sample != -1)
-			   && (layer->lastframe != fr)) {
+			if(!(layer.flags & EA_ANIMEND) && time
+			   && (layer.cur_anim->anims[layer.altidx_cur]->frames[fr].sample != -1)
+			   && (layer.lastframe != fr)) {
 
 				Vec3f * position = io ? &io->pos : NULL;
 				
-				if(layer->lastframe < fr && layer->lastframe != -1) {
-					for(long n = layer->lastframe + 1; n <= fr; n++)
-						ARX_SOUND_PlayAnim(layer->cur_anim->anims[layer->altidx_cur]->frames[n].sample, position);
+				if(layer.lastframe < fr && layer.lastframe != -1) {
+					for(long n = layer.lastframe + 1; n <= fr; n++)
+						ARX_SOUND_PlayAnim(layer.cur_anim->anims[layer.altidx_cur]->frames[n].sample, position);
 				} else {
-					ARX_SOUND_PlayAnim(layer->cur_anim->anims[layer->altidx_cur]->frames[fr].sample, position);
+					ARX_SOUND_PlayAnim(layer.cur_anim->anims[layer.altidx_cur]->frames[fr].sample, position);
 				}
 			}
 
 			// Frame Flags Management
-			if(!(layer->flags & EA_ANIMEND) && time
-			   && (layer->cur_anim->anims[layer->altidx_cur]->frames[fr].flag > 0)
-			   && (layer->lastframe != fr)) {
+			if(!(layer.flags & EA_ANIMEND) && time
+			   && (layer.cur_anim->anims[layer.altidx_cur]->frames[fr].flag > 0)
+			   && (layer.lastframe != fr)) {
 				
 				if(io && io != entities.player()) {
-					if(layer->lastframe < fr && layer->lastframe != -1) {
-						for(long n = layer->lastframe + 1; n <= fr; n++) {
-							if(layer->cur_anim->anims[layer->altidx_cur]->frames[n].flag == 9)
+					if(layer.lastframe < fr && layer.lastframe != -1) {
+						for(long n = layer.lastframe + 1; n <= fr; n++) {
+							if(layer.cur_anim->anims[layer.altidx_cur]->frames[n].flag == 9)
 								ARX_NPC_NeedStepSound(io, io->pos);
 						}
 					}
-					else if(layer->cur_anim->anims[layer->altidx_cur]->frames[fr].flag == 9)
+					else if(layer.cur_anim->anims[layer.altidx_cur]->frames[fr].flag == 9)
 						ARX_NPC_NeedStepSound(io, io->pos);
 				}
 			}
 			
 			// Memorize this frame as lastframe.
-			layer->lastframe = fr;
-			layer->fr = fr;
-			layer->pour = pour;
+			layer.lastframe = fr;
+			layer.fr = fr;
+			layer.pour = pour;
 			break;
 		}
 	}
