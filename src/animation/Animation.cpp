@@ -622,7 +622,7 @@ void PrepareAnim(AnimLayer & layer, unsigned long time, Entity *io) {
 					layer.cur_anim=layer.next_anim;
 					layer.altidx_cur=ANIM_GetAltIdx(layer.next_anim,layer.altidx_cur);
 					layer.next_anim=NULL;
-					ResetAnim(&layer);
+					ResetAnim(layer);
 					layer.ctime = lost;
 					layer.flags=layer.nextflags;
 					layer.flags&=~EA_ANIMEND;
@@ -639,7 +639,7 @@ void PrepareAnim(AnimLayer & layer, unsigned long time, Entity *io) {
 					layer.cur_anim=layer.next_anim;
 					layer.altidx_cur=ANIM_GetAltIdx(layer.next_anim,layer.altidx_cur);
 					layer.next_anim=NULL;
-					ResetAnim(&layer);
+					ResetAnim(layer);
 					layer.ctime = lost;
 					layer.flags=layer.nextflags;
 					layer.flags&=~EA_ANIMEND;
@@ -717,17 +717,14 @@ void PrepareAnim(AnimLayer & layer, unsigned long time, Entity *io) {
 }
 
 
-void ResetAnim(AnimLayer * layer)
-{
-	if(!layer)
-		return;
-
-	layer->ctime=0;
-	layer->lastframe=-1;
-	layer->flags&=~EA_PAUSED;
-	layer->flags&=~EA_ANIMEND;
-	layer->flags&=~EA_LOOP;
-	layer->flags&=~EA_FORCEPLAY;
+void ResetAnim(AnimLayer & layer) {
+	
+	layer.ctime=0;
+	layer.lastframe=-1;
+	layer.flags&=~EA_PAUSED;
+	layer.flags&=~EA_ANIMEND;
+	layer.flags&=~EA_LOOP;
+	layer.flags&=~EA_FORCEPLAY;
 }
 
 static void EERIE_ANIMMANAGER_Clear(long i) {

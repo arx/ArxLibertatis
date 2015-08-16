@@ -1723,7 +1723,7 @@ retry:
 		
 		if(request0_anim && request0_anim != layer0.cur_anim) {
 			AcquireLastAnim(io);
-			ResetAnim(&layer0);
+			ResetAnim(layer0);
 			layer0.cur_anim = request0_anim;
 			layer0.flags = EA_STATICANIM;
 			
@@ -1744,7 +1744,7 @@ retry:
 		
 		if(request3_anim && request3_anim != layer3.cur_anim) {
 			AcquireLastAnim(io);
-			ResetAnim(&layer3);
+			ResetAnim(layer3);
 			layer3.cur_anim = request3_anim;
 			layer3.flags = EA_STATICANIM;
 		}
