@@ -343,7 +343,7 @@ endif()
 
 # OpenAL
 if(USE_OPENAL)
-	find_package(OpenAL 1.1 ${OPTIONAL_DEPENDENCY})
+	find_package(OpenAL ${OPTIONAL_DEPENDENCY})
 	find_package(OpenALEFX)
 	if(NOT MSVC AND OPENAL_FOUND)
 		check_link_library(OpenAL OPENAL_LIBRARY)
