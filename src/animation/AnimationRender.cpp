@@ -1285,27 +1285,27 @@ static void Cedric_AnimateObject(Skeleton * obj, AnimLayer * animlayer)
 
 	for(long count = MAX_ANIM_LAYERS - 1; count >= 0; count--) {
 
-		AnimLayer * layer = &animlayer[count];
+		AnimLayer & layer = animlayer[count];
 
-		if(!layer || !layer->cur_anim)
+		if(!layer.cur_anim)
 			continue;
 
-		EERIE_ANIM *eanim = layer->cur_anim->anims[layer->altidx_cur];
+		EERIE_ANIM *eanim = layer.cur_anim->anims[layer.altidx_cur];
 		if(!eanim)
 			continue;
 
-		if(layer->fr < 0) {
-			layer->fr = 0;
-			layer->pour = 0.f;
-		} else if(layer->fr >= eanim->nb_key_frames - 1) {
-			layer->fr = eanim->nb_key_frames - 2;
-			layer->pour = 1.f;
+		if(layer.fr < 0) {
+			layer.fr = 0;
+			layer.pour = 0.f;
+		} else if(layer.fr >= eanim->nb_key_frames - 1) {
+			layer.fr = eanim->nb_key_frames - 2;
+			layer.pour = 1.f;
 		}
-		layer->pour = glm::clamp(layer->pour, 0.f, 1.f);
+		layer.pour = glm::clamp(layer.pour, 0.f, 1.f);
 		
 		// FIXME animation indices are sometimes negative
 		//arx_assert(animuse->fr >= 0 && animuse->fr < eanim->nb_key_frames);
-		layer->fr = glm::clamp(layer->fr, 0l, long(eanim->nb_key_frames - 1));
+		layer.fr = glm::clamp(layer.fr, 0l, long(eanim->nb_key_frames - 1));
 		
 		// Now go for groups rotation/translation/scaling, And transform Linked objects by the way
 		int l = std::min(long(obj->bones.size() - 1), eanim->nb_groups - 1);
@@ -1314,8 +1314,8 @@ static void Cedric_AnimateObject(Skeleton * obj, AnimLayer * animlayer)
 			if(grps[j])
 				continue;
 
-			const EERIE_GROUP & sGroup = eanim->groups[j+(layer->fr*eanim->nb_groups)];
-			const EERIE_GROUP & eGroup = eanim->groups[j+(layer->fr*eanim->nb_groups)+eanim->nb_groups];
+			const EERIE_GROUP & sGroup = eanim->groups[j+(layer.fr*eanim->nb_groups)];
+			const EERIE_GROUP & eGroup = eanim->groups[j+(layer.fr*eanim->nb_groups)+eanim->nb_groups];
 
 			if(!eanim->voidgroups[j])
 				grps[j] = 1;
@@ -1325,9 +1325,9 @@ static void Cedric_AnimateObject(Skeleton * obj, AnimLayer * animlayer)
 
 				BoneTransform temp;
 
-				temp.quat = Quat_Slerp(sGroup.quat, eGroup.quat, layer->pour);
-				temp.trans = sGroup.translate + (eGroup.translate - sGroup.translate) * layer->pour;
-				temp.scale = sGroup.zoom + (eGroup.zoom - sGroup.zoom) * layer->pour;
+				temp.quat = Quat_Slerp(sGroup.quat, eGroup.quat, layer.pour);
+				temp.trans = sGroup.translate + (eGroup.translate - sGroup.translate) * layer.pour;
+				temp.scale = sGroup.zoom + (eGroup.zoom - sGroup.zoom) * layer.pour;
 
 				bone.init.quat = bone.init.quat * temp.quat;
 				bone.init.trans = temp.trans + bone.transinit_global;
