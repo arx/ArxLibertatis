@@ -1514,8 +1514,8 @@ static void TryAndCheckAnim(Entity * io, long animnum, long layerIndex) {
 		return;
 	}
 	
-	AnimLayer * layer = &io->animlayer[layerIndex];
-	if(layer->cur_anim != io->anims[animnum] && layer->cur_anim) {
+	AnimLayer & layer = io->animlayer[layerIndex];
+	if(layer.cur_anim != io->anims[animnum] && layer.cur_anim) {
 		if(TryIOAnimMove(io, animnum)) {
 			changeAnimation(io, layerIndex, AnimationNumber(animnum));
 		}
