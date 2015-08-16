@@ -194,20 +194,20 @@ public:
 	Result execute(Context & context) {
 		
 		Entity * iot = context.getEntity();
-		long nu = 0;
+		long layerIndex = 0;
 		bool loop = false;
 		bool nointerpol = false;
 		bool execute = false;
 		
 		HandleFlags("123lnep") {
 			if(flg & flag('1')) {
-				nu = 0;
+				layerIndex = 0;
 			}
 			if(flg & flag('2')) {
-				nu = 1;
+				layerIndex = 1;
 			}
 			if(flg & flag('3')) {
-				nu = 2;
+				layerIndex = 2;
 			}
 			loop = test_flag(flg, 'l');
 			nointerpol = test_flag(flg, 'n');
@@ -227,7 +227,7 @@ public:
 			return Failed;
 		}
 		
-		AnimLayer & layer = iot->animlayer[nu];
+		AnimLayer & layer = iot->animlayer[layerIndex];
 		
 		if(anim == "none") {
 			layer.cur_anim = NULL;
@@ -247,10 +247,10 @@ public:
 		}
 		
 		iot->ioflags |= IO_NO_PHYSICS_INTERPOL;
-		setNextAnim(iot, iot->anims[num], nu, loop, nointerpol);
+		setNextAnim(iot, iot->anims[num], layerIndex, loop, nointerpol);
 		
 		if(!loop) {
-			CheckSetAnimOutOfTreatZone(iot, nu);
+			CheckSetAnimOutOfTreatZone(iot, layerIndex);
 		}
 		
 		if(iot == entities.player()) {
