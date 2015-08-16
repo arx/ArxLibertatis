@@ -167,7 +167,7 @@ public:
 
 class PlayAnimCommand : public Command {
 	
-	static void setNextAnim(Entity * io, ANIM_HANDLE * ea, long layer, bool loop, bool nointerpol) {
+	static void setNextAnim(Entity * io, ANIM_HANDLE * ea, AnimLayer & layer, bool loop, bool nointerpol) {
 		
 		if(IsDeadNPC(io)) {
 			return;
@@ -177,16 +177,16 @@ class PlayAnimCommand : public Command {
 			AcquireLastAnim(io);
 		}
 		
-		FinishAnim(io, io->animlayer[layer].cur_anim);
-		ANIM_Set(io->animlayer[layer], ea);
-		io->animlayer[layer].next_anim = NULL;
+		FinishAnim(io, layer.cur_anim);
+		ANIM_Set(layer, ea);
+		layer.next_anim = NULL;
 		
 		if(loop) {
-			io->animlayer[layer].flags |= EA_LOOP;
+			layer.flags |= EA_LOOP;
 		} else {
-			io->animlayer[layer].flags &= ~EA_LOOP;
+			layer.flags &= ~EA_LOOP;
 		}
-		io->animlayer[layer].flags |= EA_FORCEPLAY;
+		layer.flags |= EA_FORCEPLAY;
 	}
 	
 public:
@@ -249,7 +249,7 @@ public:
 		}
 		
 		iot->ioflags |= IO_NO_PHYSICS_INTERPOL;
-		setNextAnim(iot, iot->anims[num], layerIndex, loop, nointerpol);
+		setNextAnim(iot, iot->anims[num], layer, loop, nointerpol);
 		
 		if(!loop) {
 			CheckSetAnimOutOfTreatZone(iot, layerIndex);
