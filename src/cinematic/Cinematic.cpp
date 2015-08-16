@@ -373,8 +373,8 @@ void DrawGrille(CinematicBitmap * bitmap, Color col, int fx, CinematicLight * li
 				Vec2f pos = Vec2f(mat->bitmapdep) + uvs->uv * Vec2f(mat->tex->getStoredSize());
 				
 				// Roughen up the lines
-				float fx = 0.75 + std::sin(pos.x) * 0.25;
-				float fy = 0.75 + std::sin(pos.y) * 0.25;
+				float fx = 0.75f + std::sin(pos.x) * 0.25f;
+				float fy = 0.75f + std::sin(pos.y) * 0.25f;
 				
 				float interp = 1.f;
 				if(pos.x < fo.left * fy) {
