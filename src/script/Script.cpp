@@ -1205,7 +1205,7 @@ std::string GetVarValueInterpretedAsText(const std::string & temp1, const EERIE_
 					return var_text;
 					break;
 				default:
-					sprintf(var_text, "%f", fv);
+					sprintf(var_text, "%f", double(fv));
 					return var_text;
 					break;
 			}
@@ -1249,7 +1249,7 @@ std::string GetVarValueInterpretedAsText(const std::string & temp1, const EERIE_
 		return "";
 	}
 
-	sprintf(var_text, "%f", t1);
+	sprintf(var_text, "%f", double(t1));
 	return var_text;
 }
 
@@ -1361,7 +1361,7 @@ void MakeGlobalText(std::string & tx)
 			case TYPE_G_FLOAT:
 				tx += svar[i].name;
 				tx += " = ";
-				sprintf(texx, "%f", svar[i].fval);
+				sprintf(texx, "%f", double(svar[i].fval));
 				tx += texx;
 				tx += "\r\n";
 				break;
@@ -1401,7 +1401,7 @@ void MakeLocalText(EERIE_SCRIPT * es, std::string& tx)
 			case TYPE_L_FLOAT:
 				tx += v.name;
 				tx += " = ";
-				sprintf(texx, "%f", v.fval);
+				sprintf(texx, "%f", double(v.fval));
 				tx += texx;
 				tx += "\r\n";
 				break;

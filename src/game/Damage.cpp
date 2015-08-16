@@ -243,7 +243,7 @@ float ARX_DAMAGES_DamagePlayer(float dmg, DamageType type, EntityHandle source) 
 
 		entities.player()->ouch_time = (unsigned long)(arxtime);
 		char tex[32];
-		sprintf(tex, "%5.2f", entities.player()->dmg_sum);
+		sprintf(tex, "%5.2f", double(entities.player()->dmg_sum));
 		SendIOScriptEvent( entities.player(), SM_OUCH, tex );
 		EVENT_SENDER = oes;
 		float power = entities.player()->dmg_sum / player.lifePool.max * 220.f;
@@ -455,7 +455,7 @@ void ARX_DAMAGES_DamageFIX(Entity * io, float dmg, EntityHandle source, bool isS
 	if(float(arxtime) > io->ouch_time + 500) {
 		io->ouch_time = (unsigned long)(arxtime);
 		char tex[32];
-		sprintf(tex, "%5.2f", io->dmg_sum);
+		sprintf(tex, "%5.2f", double(io->dmg_sum));
 		SendIOScriptEvent(io, SM_OUCH, tex);
 		io->dmg_sum = 0.f;
 	}
@@ -471,33 +471,33 @@ void ARX_DAMAGES_DamageFIX(Entity * io, float dmg, EntityHandle source, bool isS
 
 		if(EVENT_SENDER == entities.player()) {
 			if(isSpellHit) {
-				sprintf(dmm, "%f spell", dmg);
+				sprintf(dmm, "%f spell", double(dmg));
 			}
 			else
 				switch(ARX_EQUIPMENT_GetPlayerWeaponType())
 				{
 					case WEAPON_BARE:
-						sprintf(dmm, "%f bare", dmg);
+						sprintf(dmm, "%f bare", double(dmg));
 						break;
 					case WEAPON_DAGGER:
-						sprintf(dmm, "%f dagger", dmg);
+						sprintf(dmm, "%f dagger", double(dmg));
 						break;
 					case WEAPON_1H:
-						sprintf(dmm, "%f 1h", dmg);
+						sprintf(dmm, "%f 1h", double(dmg));
 						break;
 					case WEAPON_2H:
-						sprintf(dmm, "%f 2h", dmg);
+						sprintf(dmm, "%f 2h", double(dmg));
 						break;
 					case WEAPON_BOW:
-						sprintf(dmm, "%f arrow", dmg);
+						sprintf(dmm, "%f arrow", double(dmg));
 						break;
 					default:
-						sprintf(dmm, "%f", dmg);
+						sprintf(dmm, "%f", double(dmg));
 						break;
 				}
 		}
 		else
-			sprintf(dmm, "%f", dmg);
+			sprintf(dmm, "%f", double(dmg));
 
 		if(SendIOScriptEvent(io, SM_HIT, dmm) != ACCEPT)
 			return;
@@ -766,9 +766,9 @@ float ARX_DAMAGES_DamageNPC(Entity * io, float dmg, EntityHandle source, bool is
 
 		if(EVENT_SENDER && EVENT_SENDER->summoner == PlayerEntityHandle) {
 			EVENT_SENDER = entities.player();
-			sprintf(tex, "%5.2f summoned", io->dmg_sum);
+			sprintf(tex, "%5.2f summoned", double(io->dmg_sum));
 		} else {
-			sprintf(tex, "%5.2f", io->dmg_sum);
+			sprintf(tex, "%5.2f", double(io->dmg_sum));
 		}
 
 		SendIOScriptEvent(io, SM_OUCH, tex);
@@ -822,36 +822,36 @@ float ARX_DAMAGES_DamageNPC(Entity * io, float dmg, EntityHandle source, bool is
 
 				if(EVENT_SENDER == entities.player()) {
 					if(isSpellHit) {
-						sprintf(dmm, "%f spell", dmg);
+						sprintf(dmm, "%f spell", double(dmg));
 					}
 					else
 						switch (ARX_EQUIPMENT_GetPlayerWeaponType()) {
 							case WEAPON_BARE:
-								sprintf(dmm, "%f bare", dmg);
+								sprintf(dmm, "%f bare", double(dmg));
 								break;
 							case WEAPON_DAGGER:
-								sprintf(dmm, "%f dagger", dmg);
+								sprintf(dmm, "%f dagger", double(dmg));
 								break;
 							case WEAPON_1H:
-								sprintf(dmm, "%f 1h", dmg);
+								sprintf(dmm, "%f 1h", double(dmg));
 								break;
 							case WEAPON_2H:
-								sprintf(dmm, "%f 2h", dmg);
+								sprintf(dmm, "%f 2h", double(dmg));
 								break;
 							case WEAPON_BOW:
-								sprintf(dmm, "%f arrow", dmg);
+								sprintf(dmm, "%f arrow", double(dmg));
 								break;
 							default:
-								sprintf(dmm, "%f", dmg);
+								sprintf(dmm, "%f", double(dmg));
 								break;
 						}
 				}
 				else
-					sprintf(dmm, "%f", dmg);
+					sprintf(dmm, "%f", double(dmg));
 
 				if(EVENT_SENDER && EVENT_SENDER->summoner == PlayerEntityHandle) {
 					EVENT_SENDER = entities.player();
-					sprintf(dmm, "%f summoned", dmg);
+					sprintf(dmm, "%f summoned", double(dmg));
 				}
 
 				if(SendIOScriptEvent(io, SM_HIT, dmm) != ACCEPT)
