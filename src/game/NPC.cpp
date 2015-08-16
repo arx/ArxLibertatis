@@ -1337,134 +1337,134 @@ static void ARX_NPC_Manage_Fight(Entity * io) {
 	
 	if(!(io->ioflags & IO_NPC))
 		return;
-
+	
 	Entity * ioo = io->_npcdata->weapon;
-
+	
 	if (ioo)
 		io->_npcdata->weapontype = ioo->type_flags;
 	else
 		io->_npcdata->weapontype = 0;
-
+	
 	if(io->_npcdata->weapontype != 0 && io->_npcdata->weaponinhand != 1)
 		return;
-
+	
 	AnimLayer * layer1 = &io->animlayer[1];
-
-		// BARE HANDS fight !!! *******************************
-		if(io->_npcdata->weapontype == 0)
+	
+	// BARE HANDS fight !!! *******************************
+	if(io->_npcdata->weapontype == 0)
+	{
+		if (((layer1->cur_anim != io->anims[ANIM_BARE_WAIT])
+				&&	(layer1->cur_anim != io->anims[ANIM_BARE_READY])
+				&&	(layer1->cur_anim != io->anims[ANIM_BARE_STRIKE_LEFT_START])
+				&&	(layer1->cur_anim != io->anims[ANIM_BARE_STRIKE_RIGHT_START])
+				&&	(layer1->cur_anim != io->anims[ANIM_BARE_STRIKE_TOP_START])
+				&&	(layer1->cur_anim != io->anims[ANIM_BARE_STRIKE_BOTTOM_START])
+				&&	(layer1->cur_anim != io->anims[ANIM_BARE_STRIKE_LEFT_CYCLE])
+				&&	(layer1->cur_anim != io->anims[ANIM_BARE_STRIKE_RIGHT_CYCLE])
+				&&	(layer1->cur_anim != io->anims[ANIM_BARE_STRIKE_TOP_CYCLE])
+				&&	(layer1->cur_anim != io->anims[ANIM_BARE_STRIKE_BOTTOM_CYCLE])
+				&&	(layer1->cur_anim != io->anims[ANIM_BARE_STRIKE_LEFT])
+				&&	(layer1->cur_anim != io->anims[ANIM_BARE_STRIKE_RIGHT])
+				&&	(layer1->cur_anim != io->anims[ANIM_BARE_STRIKE_TOP])
+				&&	(layer1->cur_anim != io->anims[ANIM_BARE_STRIKE_BOTTOM])
+				&& (layer1->cur_anim != io->anims[ANIM_CAST_CYCLE])
+				&& (layer1->cur_anim != io->anims[ANIM_CAST])
+				&& (layer1->cur_anim != io->anims[ANIM_CAST_END])
+				&& (layer1->cur_anim != io->anims[ANIM_CAST_START]))
+				|| (layer1->cur_anim == NULL))
 		{
-			if (((layer1->cur_anim != io->anims[ANIM_BARE_WAIT])
-			        &&	(layer1->cur_anim != io->anims[ANIM_BARE_READY])
-			        &&	(layer1->cur_anim != io->anims[ANIM_BARE_STRIKE_LEFT_START])
-			        &&	(layer1->cur_anim != io->anims[ANIM_BARE_STRIKE_RIGHT_START])
-			        &&	(layer1->cur_anim != io->anims[ANIM_BARE_STRIKE_TOP_START])
-			        &&	(layer1->cur_anim != io->anims[ANIM_BARE_STRIKE_BOTTOM_START])
-			        &&	(layer1->cur_anim != io->anims[ANIM_BARE_STRIKE_LEFT_CYCLE])
-			        &&	(layer1->cur_anim != io->anims[ANIM_BARE_STRIKE_RIGHT_CYCLE])
-			        &&	(layer1->cur_anim != io->anims[ANIM_BARE_STRIKE_TOP_CYCLE])
-			        &&	(layer1->cur_anim != io->anims[ANIM_BARE_STRIKE_BOTTOM_CYCLE])
-			        &&	(layer1->cur_anim != io->anims[ANIM_BARE_STRIKE_LEFT])
-			        &&	(layer1->cur_anim != io->anims[ANIM_BARE_STRIKE_RIGHT])
-			        &&	(layer1->cur_anim != io->anims[ANIM_BARE_STRIKE_TOP])
-			        &&	(layer1->cur_anim != io->anims[ANIM_BARE_STRIKE_BOTTOM])
-			        && (layer1->cur_anim != io->anims[ANIM_CAST_CYCLE])
-			        && (layer1->cur_anim != io->anims[ANIM_CAST])
-			        && (layer1->cur_anim != io->anims[ANIM_CAST_END])
-			        && (layer1->cur_anim != io->anims[ANIM_CAST_START]))
-			        || (layer1->cur_anim == NULL))
-			{
-				changeAnimation(io, 1, ANIM_BARE_WAIT, EA_LOOP);
-				Strike_StartTickCount(io);
-			}
+			changeAnimation(io, 1, ANIM_BARE_WAIT, EA_LOOP);
+			Strike_StartTickCount(io);
 		}
-		// DAGGER fight !!! ***********************************
-		else if (io->_npcdata->weapontype & OBJECT_TYPE_DAGGER)
+	}
+	// DAGGER fight !!! ***********************************
+	else if (io->_npcdata->weapontype & OBJECT_TYPE_DAGGER)
+	{
+		if (((layer1->cur_anim != io->anims[ANIM_DAGGER_WAIT])
+				&&	(layer1->cur_anim != io->anims[ANIM_DAGGER_READY_PART_1])
+				&&	(layer1->cur_anim != io->anims[ANIM_DAGGER_READY_PART_2])
+				&&	(layer1->cur_anim != io->anims[ANIM_DAGGER_STRIKE_LEFT_START])
+				&&	(layer1->cur_anim != io->anims[ANIM_DAGGER_STRIKE_RIGHT_START])
+				&&	(layer1->cur_anim != io->anims[ANIM_DAGGER_STRIKE_TOP_START])
+				&&	(layer1->cur_anim != io->anims[ANIM_DAGGER_STRIKE_BOTTOM_START])
+				&&	(layer1->cur_anim != io->anims[ANIM_DAGGER_STRIKE_LEFT_CYCLE])
+				&&	(layer1->cur_anim != io->anims[ANIM_DAGGER_STRIKE_RIGHT_CYCLE])
+				&&	(layer1->cur_anim != io->anims[ANIM_DAGGER_STRIKE_TOP_CYCLE])
+				&&	(layer1->cur_anim != io->anims[ANIM_DAGGER_STRIKE_BOTTOM_CYCLE])
+				&&	(layer1->cur_anim != io->anims[ANIM_DAGGER_STRIKE_LEFT])
+				&&	(layer1->cur_anim != io->anims[ANIM_DAGGER_STRIKE_RIGHT])
+				&&	(layer1->cur_anim != io->anims[ANIM_DAGGER_STRIKE_TOP])
+				&&	(layer1->cur_anim != io->anims[ANIM_DAGGER_STRIKE_BOTTOM])
+				&& (layer1->cur_anim != io->anims[ANIM_CAST_CYCLE])
+				&& (layer1->cur_anim != io->anims[ANIM_CAST])
+				&& (layer1->cur_anim != io->anims[ANIM_CAST_END])
+				&& (layer1->cur_anim != io->anims[ANIM_CAST_START]))
+				|| (layer1->cur_anim == NULL))
 		{
-			if (((layer1->cur_anim != io->anims[ANIM_DAGGER_WAIT])
-			        &&	(layer1->cur_anim != io->anims[ANIM_DAGGER_READY_PART_1])
-			        &&	(layer1->cur_anim != io->anims[ANIM_DAGGER_READY_PART_2])
-			        &&	(layer1->cur_anim != io->anims[ANIM_DAGGER_STRIKE_LEFT_START])
-			        &&	(layer1->cur_anim != io->anims[ANIM_DAGGER_STRIKE_RIGHT_START])
-			        &&	(layer1->cur_anim != io->anims[ANIM_DAGGER_STRIKE_TOP_START])
-			        &&	(layer1->cur_anim != io->anims[ANIM_DAGGER_STRIKE_BOTTOM_START])
-			        &&	(layer1->cur_anim != io->anims[ANIM_DAGGER_STRIKE_LEFT_CYCLE])
-			        &&	(layer1->cur_anim != io->anims[ANIM_DAGGER_STRIKE_RIGHT_CYCLE])
-			        &&	(layer1->cur_anim != io->anims[ANIM_DAGGER_STRIKE_TOP_CYCLE])
-			        &&	(layer1->cur_anim != io->anims[ANIM_DAGGER_STRIKE_BOTTOM_CYCLE])
-			        &&	(layer1->cur_anim != io->anims[ANIM_DAGGER_STRIKE_LEFT])
-			        &&	(layer1->cur_anim != io->anims[ANIM_DAGGER_STRIKE_RIGHT])
-			        &&	(layer1->cur_anim != io->anims[ANIM_DAGGER_STRIKE_TOP])
-			        &&	(layer1->cur_anim != io->anims[ANIM_DAGGER_STRIKE_BOTTOM])
-			        && (layer1->cur_anim != io->anims[ANIM_CAST_CYCLE])
-			        && (layer1->cur_anim != io->anims[ANIM_CAST])
-			        && (layer1->cur_anim != io->anims[ANIM_CAST_END])
-			        && (layer1->cur_anim != io->anims[ANIM_CAST_START]))
-			        || (layer1->cur_anim == NULL))
-			{
-				changeAnimation(io, 1, ANIM_DAGGER_WAIT, EA_LOOP);
-				Strike_StartTickCount(io);
-			}
+			changeAnimation(io, 1, ANIM_DAGGER_WAIT, EA_LOOP);
+			Strike_StartTickCount(io);
 		}
-		// 1H fight !!! ***************************************
-		else if (io->_npcdata->weapontype & OBJECT_TYPE_1H)
+	}
+	// 1H fight !!! ***************************************
+	else if (io->_npcdata->weapontype & OBJECT_TYPE_1H)
+	{
+		if (((layer1->cur_anim != io->anims[ANIM_1H_WAIT])
+				&&	(layer1->cur_anim != io->anims[ANIM_1H_READY_PART_1])
+				&&	(layer1->cur_anim != io->anims[ANIM_1H_READY_PART_2])
+				&&	(layer1->cur_anim != io->anims[ANIM_1H_STRIKE_LEFT_START])
+				&&	(layer1->cur_anim != io->anims[ANIM_1H_STRIKE_RIGHT_START])
+				&&	(layer1->cur_anim != io->anims[ANIM_1H_STRIKE_TOP_START])
+				&&	(layer1->cur_anim != io->anims[ANIM_1H_STRIKE_BOTTOM_START])
+				&&	(layer1->cur_anim != io->anims[ANIM_1H_STRIKE_LEFT_CYCLE])
+				&&	(layer1->cur_anim != io->anims[ANIM_1H_STRIKE_RIGHT_CYCLE])
+				&&	(layer1->cur_anim != io->anims[ANIM_1H_STRIKE_TOP_CYCLE])
+				&&	(layer1->cur_anim != io->anims[ANIM_1H_STRIKE_BOTTOM_CYCLE])
+				&&	(layer1->cur_anim != io->anims[ANIM_1H_STRIKE_LEFT])
+				&&	(layer1->cur_anim != io->anims[ANIM_1H_STRIKE_RIGHT])
+				&&	(layer1->cur_anim != io->anims[ANIM_1H_STRIKE_TOP])
+				&&	(layer1->cur_anim != io->anims[ANIM_1H_STRIKE_BOTTOM])
+				&& (layer1->cur_anim != io->anims[ANIM_CAST_CYCLE])
+				&& (layer1->cur_anim != io->anims[ANIM_CAST])
+				&& (layer1->cur_anim != io->anims[ANIM_CAST_END])
+				&& (layer1->cur_anim != io->anims[ANIM_CAST_START]))
+				|| (layer1->cur_anim == NULL))
 		{
-			if (((layer1->cur_anim != io->anims[ANIM_1H_WAIT])
-			        &&	(layer1->cur_anim != io->anims[ANIM_1H_READY_PART_1])
-			        &&	(layer1->cur_anim != io->anims[ANIM_1H_READY_PART_2])
-			        &&	(layer1->cur_anim != io->anims[ANIM_1H_STRIKE_LEFT_START])
-			        &&	(layer1->cur_anim != io->anims[ANIM_1H_STRIKE_RIGHT_START])
-			        &&	(layer1->cur_anim != io->anims[ANIM_1H_STRIKE_TOP_START])
-			        &&	(layer1->cur_anim != io->anims[ANIM_1H_STRIKE_BOTTOM_START])
-			        &&	(layer1->cur_anim != io->anims[ANIM_1H_STRIKE_LEFT_CYCLE])
-			        &&	(layer1->cur_anim != io->anims[ANIM_1H_STRIKE_RIGHT_CYCLE])
-			        &&	(layer1->cur_anim != io->anims[ANIM_1H_STRIKE_TOP_CYCLE])
-			        &&	(layer1->cur_anim != io->anims[ANIM_1H_STRIKE_BOTTOM_CYCLE])
-			        &&	(layer1->cur_anim != io->anims[ANIM_1H_STRIKE_LEFT])
-			        &&	(layer1->cur_anim != io->anims[ANIM_1H_STRIKE_RIGHT])
-			        &&	(layer1->cur_anim != io->anims[ANIM_1H_STRIKE_TOP])
-			        &&	(layer1->cur_anim != io->anims[ANIM_1H_STRIKE_BOTTOM])
-			        && (layer1->cur_anim != io->anims[ANIM_CAST_CYCLE])
-			        && (layer1->cur_anim != io->anims[ANIM_CAST])
-			        && (layer1->cur_anim != io->anims[ANIM_CAST_END])
-			        && (layer1->cur_anim != io->anims[ANIM_CAST_START]))
-			        || (layer1->cur_anim == NULL))
-			{
-				changeAnimation(io, 1, ANIM_1H_WAIT, EA_LOOP);
-				Strike_StartTickCount(io);
-			}
+			changeAnimation(io, 1, ANIM_1H_WAIT, EA_LOOP);
+			Strike_StartTickCount(io);
 		}
-		// 2H fight !!! ***************************************
-		else if (io->_npcdata->weapontype & OBJECT_TYPE_2H)
+	}
+	// 2H fight !!! ***************************************
+	else if (io->_npcdata->weapontype & OBJECT_TYPE_2H)
+	{
+		if (((layer1->cur_anim != io->anims[ANIM_2H_WAIT])
+				&&	(layer1->cur_anim != io->anims[ANIM_2H_READY_PART_1])
+				&&	(layer1->cur_anim != io->anims[ANIM_2H_READY_PART_2])
+				&&	(layer1->cur_anim != io->anims[ANIM_2H_STRIKE_LEFT_START])
+				&&	(layer1->cur_anim != io->anims[ANIM_2H_STRIKE_RIGHT_START])
+				&&	(layer1->cur_anim != io->anims[ANIM_2H_STRIKE_TOP_START])
+				&&	(layer1->cur_anim != io->anims[ANIM_2H_STRIKE_BOTTOM_START])
+				&&	(layer1->cur_anim != io->anims[ANIM_2H_STRIKE_LEFT_CYCLE])
+				&&	(layer1->cur_anim != io->anims[ANIM_2H_STRIKE_RIGHT_CYCLE])
+				&&	(layer1->cur_anim != io->anims[ANIM_2H_STRIKE_TOP_CYCLE])
+				&&	(layer1->cur_anim != io->anims[ANIM_2H_STRIKE_BOTTOM_CYCLE])
+				&&	(layer1->cur_anim != io->anims[ANIM_2H_STRIKE_LEFT])
+				&&	(layer1->cur_anim != io->anims[ANIM_2H_STRIKE_RIGHT])
+				&&	(layer1->cur_anim != io->anims[ANIM_2H_STRIKE_TOP])
+				&&	(layer1->cur_anim != io->anims[ANIM_2H_STRIKE_BOTTOM])
+				&& (layer1->cur_anim != io->anims[ANIM_CAST_CYCLE])
+				&& (layer1->cur_anim != io->anims[ANIM_CAST])
+				&& (layer1->cur_anim != io->anims[ANIM_CAST_END])
+				&& (layer1->cur_anim != io->anims[ANIM_CAST_START]))
+				|| (layer1->cur_anim == NULL))
 		{
-			if (((layer1->cur_anim != io->anims[ANIM_2H_WAIT])
-			        &&	(layer1->cur_anim != io->anims[ANIM_2H_READY_PART_1])
-			        &&	(layer1->cur_anim != io->anims[ANIM_2H_READY_PART_2])
-			        &&	(layer1->cur_anim != io->anims[ANIM_2H_STRIKE_LEFT_START])
-			        &&	(layer1->cur_anim != io->anims[ANIM_2H_STRIKE_RIGHT_START])
-			        &&	(layer1->cur_anim != io->anims[ANIM_2H_STRIKE_TOP_START])
-			        &&	(layer1->cur_anim != io->anims[ANIM_2H_STRIKE_BOTTOM_START])
-			        &&	(layer1->cur_anim != io->anims[ANIM_2H_STRIKE_LEFT_CYCLE])
-			        &&	(layer1->cur_anim != io->anims[ANIM_2H_STRIKE_RIGHT_CYCLE])
-			        &&	(layer1->cur_anim != io->anims[ANIM_2H_STRIKE_TOP_CYCLE])
-			        &&	(layer1->cur_anim != io->anims[ANIM_2H_STRIKE_BOTTOM_CYCLE])
-			        &&	(layer1->cur_anim != io->anims[ANIM_2H_STRIKE_LEFT])
-			        &&	(layer1->cur_anim != io->anims[ANIM_2H_STRIKE_RIGHT])
-			        &&	(layer1->cur_anim != io->anims[ANIM_2H_STRIKE_TOP])
-			        &&	(layer1->cur_anim != io->anims[ANIM_2H_STRIKE_BOTTOM])
-			        && (layer1->cur_anim != io->anims[ANIM_CAST_CYCLE])
-			        && (layer1->cur_anim != io->anims[ANIM_CAST])
-			        && (layer1->cur_anim != io->anims[ANIM_CAST_END])
-			        && (layer1->cur_anim != io->anims[ANIM_CAST_START]))
-			        || (layer1->cur_anim == NULL))
-			{
-				changeAnimation(io, 1, ANIM_2H_WAIT, EA_LOOP);
-			}
+			changeAnimation(io, 1, ANIM_2H_WAIT, EA_LOOP);
 		}
-		// BOW fight !!! **************************************
-		else if (io->_npcdata->weapontype & OBJECT_TYPE_BOW)
-		{
-			////////////// later...
-		}
+	}
+	// BOW fight !!! **************************************
+	else if (io->_npcdata->weapontype & OBJECT_TYPE_BOW)
+	{
+		////////////// later...
+	}
 }
 
 static void ARX_NPC_Manage_Anims_End(Entity * io) {
