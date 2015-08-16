@@ -96,11 +96,11 @@ static path findUserPath(const char * name, const path & force,
 	}
 	
 	// Search standard locations
-	bool create_exists = false;
 	path to_create;
 	std::vector<path> prefixes = getSearchPaths(prefix);
 	std::vector<path> suffixes = getSearchPaths(suffix);
 	if(prefix || suffix) {
+		bool create_exists = false;
 		BOOST_FOREACH(const path & prefix, prefixes) {
 			BOOST_FOREACH(const path & suffix, suffixes) {
 				
