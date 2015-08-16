@@ -109,7 +109,7 @@ void ARX_SPELLS_Precast_Launch(PrecastHandle num) {
 void ARX_SPELLS_Precast_Check() {
 	for(size_t i = 0; i < Precast.size(); i++) {
 		if(Precast[i].launch_time > 0 && float(arxtime) >= Precast[i].launch_time) {
-			ANIM_USE *ause1 = &entities.player()->animlayer[1];
+			AnimLayer *ause1 = &entities.player()->animlayer[1];
 			
 			if(player.Interface & INTER_COMBATMODE) {
 				WILLRETURNTOCOMBATMODE = true;

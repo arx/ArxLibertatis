@@ -176,7 +176,7 @@ bool ARX_PLAYER_IsInFightMode() {
 
 	if(entities.player()->animlayer[1].cur_anim) {
 		
-		ANIM_USE * ause1 = &entities.player()->animlayer[1];
+		AnimLayer * ause1 = &entities.player()->animlayer[1];
 		ANIM_HANDLE ** alist = entities.player()->anims;
 
 		if ((ause1->cur_anim	==	alist[ANIM_BARE_READY])
@@ -1389,10 +1389,10 @@ void ARX_PLAYER_Manage_Visual() {
 	
 	io->gameFlags |= GFLAG_ISINTREATZONE;
 	
-	ANIM_USE & ause0 = io->animlayer[0];
-	ANIM_USE & ause1 = io->animlayer[1];
-	ANIM_USE & ause2 = io->animlayer[2];
-	ANIM_USE & ause3 = io->animlayer[3];
+	AnimLayer & ause0 = io->animlayer[0];
+	AnimLayer & ause1 = io->animlayer[1];
+	AnimLayer & ause2 = io->animlayer[2];
+	AnimLayer & ause3 = io->animlayer[3];
 	
 	ause0.next_anim = NULL;
 	ause1.next_anim = NULL;

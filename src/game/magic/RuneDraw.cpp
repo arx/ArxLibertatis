@@ -97,7 +97,7 @@ void ARX_SPELLS_UpdateSymbolDraw() {
 				bool tst = false;
 
 				if(!(io->spellcast_data.spell_flags & SPELLCAST_FLAG_NOANIM) && (io->ioflags & IO_NPC)) {
-					ANIM_USE * ause1 = &io->animlayer[1];
+					AnimLayer * ause1 = &io->animlayer[1];
 
 					if(ause1->cur_anim == io->anims[ANIM_CAST_START]  && (ause1->flags & EA_ANIMEND)) {
 						// TODO why no AcquireLastAnim() like everywhere else?

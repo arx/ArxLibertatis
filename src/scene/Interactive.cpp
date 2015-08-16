@@ -458,7 +458,7 @@ void CheckSetAnimOutOfTreatZone(Entity * io, long num)
 {
 	arx_assert(io);
 	
-	ANIM_USE & layer = io->animlayer[num];
+	AnimLayer & layer = io->animlayer[num];
 	
 	if( layer.cur_anim &&
 		!(io->gameFlags & GFLAG_ISINTREATZONE) &&
@@ -939,7 +939,7 @@ void RestoreInitialIOStatusOfIO(Entity * io)
 		io->poisonous_count = 0;
 
 		for(long count = 0; count < MAX_ANIM_LAYERS; count++) {
-			io->animlayer[count] = ANIM_USE();
+			io->animlayer[count] = AnimLayer();
 		}
 
 		if(io->obj && io->obj->pbox) {

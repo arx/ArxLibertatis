@@ -2088,7 +2088,7 @@ static Entity * ARX_CHANGELEVEL_Pop_IO(const std::string & idString, EntityInsta
 		std::copy(ais->animlayer, ais->animlayer + SAVED_MAX_ANIM_LAYERS, io->animlayer);
 		
 		for(long k = 0; k < MAX_ANIM_LAYERS; k++) {
-			ANIM_USE & layer = io->animlayer[k];
+			AnimLayer & layer = io->animlayer[k];
 			
 			long nn = (long)ais->animlayer[k].cur_anim;
 			if(nn == -1) {

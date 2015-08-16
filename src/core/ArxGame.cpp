@@ -1319,7 +1319,7 @@ void ArxGame::updateFirstPersonCamera() {
 	arx_assert(entities.player());
 	
 	Entity * io = entities.player();
-	ANIM_USE * useanim = &io->animlayer[1];
+	AnimLayer * useanim = &io->animlayer[1];
 	ANIM_HANDLE ** alist = io->anims;
 
 	if ( BOW_FOCAL

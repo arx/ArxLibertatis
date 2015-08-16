@@ -1200,7 +1200,7 @@ static void Cedric_AnimateDrawEntityRender(EERIE_3DOBJ * eobj, const Vec3f & pos
 	}
 }
 
-static Vec3f CalcTranslation(ANIM_USE * animuse) {
+static Vec3f CalcTranslation(AnimLayer * animuse) {
 	
 	if(!animuse || !animuse->cur_anim) {
 		return Vec3f_ZERO;
@@ -1279,13 +1279,13 @@ static void StoreEntityMovement(Entity * io, Vec3f & ftr, float scale) {
 /*!
  * Animate skeleton
  */
-static void Cedric_AnimateObject(Skeleton * obj, ANIM_USE * animlayer)
+static void Cedric_AnimateObject(Skeleton * obj, AnimLayer * animlayer)
 {
 	std::vector<unsigned char> grps(obj->bones.size());
 
 	for(long count = MAX_ANIM_LAYERS - 1; count >= 0; count--) {
 
-		ANIM_USE * animuse = &animlayer[count];
+		AnimLayer * animuse = &animlayer[count];
 
 		if(!animuse || !animuse->cur_anim)
 			continue;
@@ -1480,7 +1480,7 @@ static void Cedric_UpdateBbox2d(const EERIE_3DOBJ & eobj, EERIE_2D_BBOX & box2D)
 /*!
  * \brief Apply animation and draw object
  */
-static void Cedric_AnimateDrawEntity(Skeleton & skeleton, ANIM_USE * animlayer,
+static void Cedric_AnimateDrawEntity(Skeleton & skeleton, AnimLayer * animlayer,
                                      EERIE_EXTRA_ROTATE * extraRotation,
                                      AnimationBlendStatus * animBlend,
                                      EERIE_EXTRA_SCALE & extraScale) {
@@ -1524,7 +1524,7 @@ static void Cedric_AnimateDrawEntity(Skeleton & skeleton, ANIM_USE * animlayer,
 	}
 }
 
-void EERIEDrawAnimQuatUpdate(EERIE_3DOBJ *eobj, ANIM_USE * animlayer,const Anglef & angle, const Vec3f & pos, unsigned long time, Entity *io, bool update_movement) {
+void EERIEDrawAnimQuatUpdate(EERIE_3DOBJ *eobj, AnimLayer * animlayer,const Anglef & angle, const Vec3f & pos, unsigned long time, Entity *io, bool update_movement) {
 
 	ARX_PROFILE_FUNC();
 	
@@ -1552,7 +1552,7 @@ void EERIEDrawAnimQuatUpdate(EERIE_3DOBJ *eobj, ANIM_USE * animlayer,const Angle
 
 	if(time > 0) {
 		for(size_t count = 0; count < MAX_ANIM_LAYERS; count++) {
-			ANIM_USE * animuse = &animlayer[count];
+			AnimLayer * animuse = &animlayer[count];
 			if(animuse->cur_anim)
 				PrepareAnim(animuse, time, io);
 		}
@@ -1638,7 +1638,7 @@ void EERIEDrawAnimQuatRender(EERIE_3DOBJ *eobj, const Vec3f & pos, Entity *io, f
 	Cedric_AnimateDrawEntityRender(eobj, pos, io, invisibility);
 }
 
-void EERIEDrawAnimQuat(EERIE_3DOBJ *eobj, ANIM_USE * animlayer,const Anglef & angle, const Vec3f & pos, unsigned long time, Entity *io, bool update_movement, float invisibility) {
+void EERIEDrawAnimQuat(EERIE_3DOBJ *eobj, AnimLayer * animlayer,const Anglef & angle, const Vec3f & pos, unsigned long time, Entity *io, bool update_movement, float invisibility) {
 
 	EERIEDrawAnimQuatUpdate(eobj, animlayer,angle, pos, time, io, update_movement);
 	EERIEDrawAnimQuatRender(eobj, pos, io, invisibility);

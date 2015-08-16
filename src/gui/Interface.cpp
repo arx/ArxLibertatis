@@ -1587,7 +1587,7 @@ void ArxGame::manageKeyMouse() {
 						}
 						
 						Entity * io = entities.player();
-						ANIM_USE * useanim = &io->animlayer[1];
+						AnimLayer * useanim = &io->animlayer[1];
 						WeaponType type = ARX_EQUIPMENT_GetPlayerWeaponType();
 						
 						switch(type) {

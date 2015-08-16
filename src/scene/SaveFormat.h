@@ -477,8 +477,8 @@ struct SavedAnimUse {
 	f32 pour;
 	s32 fr;
 	
-	inline operator ANIM_USE() const {
-		ANIM_USE a;
+	inline operator AnimLayer() const {
+		AnimLayer a;
 		a.next_anim = NULL;
 		a.cur_anim = NULL;
 		a.altidx_next = altidx_next;
@@ -492,7 +492,7 @@ struct SavedAnimUse {
 		return a;
 	}
 	
-	inline SavedAnimUse & operator=(const ANIM_USE & b) {
+	inline SavedAnimUse & operator=(const AnimLayer & b) {
 		next_anim = 0;
 		cur_anim = 0;
 		altidx_next = b.altidx_next;

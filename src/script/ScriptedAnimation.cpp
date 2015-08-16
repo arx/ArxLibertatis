@@ -227,7 +227,7 @@ public:
 			return Failed;
 		}
 		
-		ANIM_USE & layer = iot->animlayer[nu];
+		AnimLayer & layer = iot->animlayer[nu];
 		
 		if(anim == "none") {
 			layer.cur_anim = NULL;

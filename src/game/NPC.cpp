@@ -428,7 +428,7 @@ void ARX_NPC_Behaviour_UnStack(Entity * io)
 			ARX_NPC_LaunchPathfind(io, bd->target);
 
 			if(io->_npcdata->behavior & BEHAVIOUR_NONE) {
-				memcpy(io->animlayer, bd->animlayer, sizeof(ANIM_USE)*MAX_ANIM_LAYERS);
+				memcpy(io->animlayer, bd->animlayer, sizeof(AnimLayer)*MAX_ANIM_LAYERS);
 			}
 
 			return;
@@ -1019,7 +1019,7 @@ void ARX_PHYSICS_Apply() {
 
 		if(io->ioflags & IO_PHYSICAL_OFF) {
 			if(io->ioflags & IO_NPC) {
-				ANIM_USE * ause0 = &io->animlayer[0];
+				AnimLayer * ause0 = &io->animlayer[0];
 
 				if(!ause0->cur_anim || (ause0->flags & EA_ANIMEND)) {
 					ANIM_Set(ause0, io->anims[ANIM_WAIT]);
@@ -1263,7 +1263,7 @@ static bool IsPlayerStriking() {
 	arx_assert(entities.player());
 	Entity * io = entities.player();
 	
-	ANIM_USE * useanim = &io->animlayer[1];
+	AnimLayer * useanim = &io->animlayer[1];
 	WeaponType weapontype = ARX_EQUIPMENT_GetPlayerWeaponType();
 
 	switch(weapontype) {
@@ -1311,7 +1311,7 @@ static bool IsPlayerStriking() {
 
 static void ARX_NPC_Manage_NON_Fight(Entity * io) {
 	
-	ANIM_USE * ause1 = &io->animlayer[1];
+	AnimLayer * ause1 = &io->animlayer[1];
 
 	if((ause1->flags & EA_ANIMEND) && (ause1->cur_anim != NULL)) {
 		if(!(ause1->flags & EA_FORCEPLAY)) {
@@ -1345,7 +1345,7 @@ static void ARX_NPC_Manage_Fight(Entity * io) {
 	if(io->_npcdata->weapontype != 0 && io->_npcdata->weaponinhand != 1)
 		return;
 
-	ANIM_USE * ause = &io->animlayer[1];
+	AnimLayer * ause = &io->animlayer[1];
 
 		// BARE HANDS fight !!! *******************************
 		if(io->_npcdata->weapontype == 0)
@@ -1466,7 +1466,7 @@ static void ARX_NPC_Manage_Fight(Entity * io) {
 
 static void ARX_NPC_Manage_Anims_End(Entity * io) {
 	
-	ANIM_USE * ause = &io->animlayer[0];
+	AnimLayer * ause = &io->animlayer[0];
 	if((ause->flags & EA_ANIMEND) && ause->cur_anim) {
 		
 		if(ause->flags & EA_FORCEPLAY) {
@@ -1511,7 +1511,7 @@ static void TryAndCheckAnim(Entity * io, long animnum, long layer) {
 		return;
 	}
 	
-	ANIM_USE * ause = &io->animlayer[layer];
+	AnimLayer * ause = &io->animlayer[layer];
 	if(ause->cur_anim != io->anims[animnum] && ause->cur_anim) {
 		if(TryIOAnimMove(io, animnum)) {
 			changeAnimation(io, layer, AnimationNumber(animnum));
@@ -1533,8 +1533,8 @@ static void ARX_NPC_Manage_Anims(Entity * io, float TOLERANCE) {
 	
 	io->_npcdata->strike_time += (short)framedelay;
 	
-	ANIM_USE * ause = &io->animlayer[0];
-	ANIM_USE * ause1 = &io->animlayer[1];
+	AnimLayer * ause = &io->animlayer[0];
+	AnimLayer * ause1 = &io->animlayer[1];
 	
 	float tdist = std::numeric_limits<float>::max();
 	if(io->_npcdata->pathfind.listnb && ValidIONum(io->_npcdata->pathfind.truetarget)) {
@@ -1950,7 +1950,7 @@ static void ManageNPCMovement(Entity * io)
 		return;
 	}
 
-	ANIM_USE * ause0 = &io->animlayer[0];
+	AnimLayer * ause0 = &io->animlayer[0];
 	ANIM_HANDLE ** alist = io->anims;
 
 	// Using USER animation ?

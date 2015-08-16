@@ -91,7 +91,7 @@ struct IO_BEHAVIOR_DATA {
 	long tactics; // 0=none ; 1=side ; 2=side+back
 	EntityHandle target;
 	MoveMode movemode;
-	ANIM_USE animlayer[MAX_ANIM_LAYERS];
+	AnimLayer animlayer[MAX_ANIM_LAYERS];
 };
 
 enum PathfindFlag {

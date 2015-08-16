@@ -108,7 +108,7 @@ private:
 	LightHandle m_light;
 	TextureContainer * tex_p1;
 	TextureContainer * tex_trail;
-	ANIM_USE au;
+	AnimLayer au;
 	Vec3f eCurPos;
 };
 

@@ -109,7 +109,7 @@ short ANIM_GetAltIdx(ANIM_HANDLE * ah, long old) {
 	}
 }
 
-void ANIM_Set(ANIM_USE *au, ANIM_HANDLE *anim)
+void ANIM_Set(AnimLayer *au, ANIM_HANDLE *anim)
 {
 	if(!au || !anim)
 		return;
@@ -129,7 +129,7 @@ void ANIM_Set(ANIM_USE *au, ANIM_HANDLE *anim)
 }
 
 void stopAnimation(Entity * entity, size_t layer) {
-	ANIM_USE  & animlayer = entity->animlayer[layer];
+	AnimLayer  & animlayer = entity->animlayer[layer];
 	AcquireLastAnim(entity);
 	FinishAnim(entity, animlayer.cur_anim);
 	animlayer.cur_anim = NULL;
@@ -137,7 +137,7 @@ void stopAnimation(Entity * entity, size_t layer) {
 
 void changeAnimation(Entity * entity, size_t layer, ANIM_HANDLE * animation,
                           AnimUseType flags, bool startAtBeginning) {
-	ANIM_USE  & animlayer = entity->animlayer[layer];
+	AnimLayer  & animlayer = entity->animlayer[layer];
 	AcquireLastAnim(entity);
 	FinishAnim(entity, animlayer.cur_anim);
 	ANIM_Set(&animlayer, animation);
@@ -569,7 +569,7 @@ Vec3f GetAnimTotalTranslate(ANIM_HANDLE * eanim, long alt_idx) {
  * \param time Time increment to current animation in Ms
  * \param io Referrence to Interactive Object (NULL if no IO)
  */
-void PrepareAnim(ANIM_USE *eanim, unsigned long time, Entity *io) {
+void PrepareAnim(AnimLayer *eanim, unsigned long time, Entity *io) {
 	
 	if(!eanim)
 		return;
@@ -720,7 +720,7 @@ void PrepareAnim(ANIM_USE *eanim, unsigned long time, Entity *io) {
 }
 
 
-void ResetAnim(ANIM_USE * eanim)
+void ResetAnim(AnimLayer * eanim)
 {
 	if(!eanim)
 		return;
@@ -875,7 +875,7 @@ void ReleaseAnimFromIO(Entity * io, long num) {
 
 	for(long count = 0; count < MAX_ANIM_LAYERS; count++) {
 		if(io->animlayer[count].cur_anim == io->anims[num]) {
-			memset(&io->animlayer[count], 0, sizeof(ANIM_USE));
+			memset(&io->animlayer[count], 0, sizeof(AnimLayer));
 			io->animlayer[count].cur_anim = NULL;
 		}
 

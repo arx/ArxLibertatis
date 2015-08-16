@@ -98,7 +98,7 @@ Entity::Entity(const res::path & classPath, EntityInstance instance)
 	inv = NULL;
 	obj = NULL;
 	std::fill_n(anims, MAX_ANIMS, (ANIM_HANDLE *)NULL);
-	std::memset(animlayer, 0, sizeof(ANIM_USE) * MAX_ANIM_LAYERS); // TODO use constructor
+	std::memset(animlayer, 0, sizeof(AnimLayer) * MAX_ANIM_LAYERS); // TODO use constructor
 
 	animBlend.m_active = false;
 	animBlend.lastanimtime = 0;

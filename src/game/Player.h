@@ -145,7 +145,7 @@ struct ARXCHARACTER {
 	Anglef angle;
 	IO_PHYSICS physics;
 	
-	ANIM_USE bookAnimation[MAX_ANIM_LAYERS];
+	AnimLayer bookAnimation[MAX_ANIM_LAYERS];
 
 	// Jump Sub-data
 	unsigned long jumpstarttime;

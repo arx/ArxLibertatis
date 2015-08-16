@@ -50,7 +50,7 @@ ZeniMax Media Inc., Suite 120, Rockville, Maryland 20850 USA.
 #include "math/Types.h"
 
 struct EERIE_3DOBJ;
-struct ANIM_USE;
+struct AnimLayer;
 class Entity;
 struct TexturedVertex;
 struct RenderMaterial;
@@ -97,10 +97,10 @@ void DrawEERIEInter_ViewProjectTransform(EERIE_3DOBJ *eobj);
 void DrawEERIEInter_Render(EERIE_3DOBJ *eobj, const TransformInfo &t, Entity *io, float invisibility = 0.f);
 void DrawEERIEInter(EERIE_3DOBJ *eobj, const TransformInfo & t, Entity *io, bool forceDraw = false, float invisibility = 0.f);
 
-void EERIEDrawAnimQuatUpdate(EERIE_3DOBJ *eobj, ANIM_USE * animlayer,const Anglef & angle, const Vec3f & pos, unsigned long time, Entity *io, bool update_movement);
+void EERIEDrawAnimQuatUpdate(EERIE_3DOBJ *eobj, AnimLayer * animlayer,const Anglef & angle, const Vec3f & pos, unsigned long time, Entity *io, bool update_movement);
 void EERIEDrawAnimQuatRender(EERIE_3DOBJ *eobj, const Vec3f & pos, Entity *io, float invisibility);
 
-void EERIEDrawAnimQuat(EERIE_3DOBJ *eobj, ANIM_USE * animlayer, const Anglef & angle, const Vec3f & pos, unsigned long time, Entity *io, bool update_movement = true, float invisibility = 0.f);
+void EERIEDrawAnimQuat(EERIE_3DOBJ *eobj, AnimLayer * animlayer, const Anglef & angle, const Vec3f & pos, unsigned long time, Entity *io, bool update_movement = true, float invisibility = 0.f);
 void AnimatedEntityUpdate(Entity * entity, float time);
 void AnimatedEntityRender(Entity * entity, float invisibility);
 

@@ -249,7 +249,7 @@ public:
 	TextureContainer * inv; // Object Icon
 	EERIE_3DOBJ * obj; // IO Mesh data
 	ANIM_HANDLE * anims[MAX_ANIMS]; // Object Animations
-	ANIM_USE animlayer[MAX_ANIM_LAYERS];
+	AnimLayer animlayer[MAX_ANIM_LAYERS];
 
 	AnimationBlendStatus animBlend;
 	

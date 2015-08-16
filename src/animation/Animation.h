@@ -112,9 +112,9 @@ enum AnimUseTypeFlag {
 DECLARE_FLAGS(AnimUseTypeFlag, AnimUseType)
 DECLARE_FLAGS_OPERATORS(AnimUseType)
 
-struct ANIM_USE {
+struct AnimLayer {
 
-	ANIM_USE()
+	AnimLayer()
 		: next_anim(NULL)
 		, cur_anim(NULL)
 		, altidx_next(0)
@@ -182,7 +182,7 @@ void setAnimation(Entity * entity, ANIM_HANDLE * animation,
 void stopAnimation(Entity * entity, size_t layer = 0);
 
 short ANIM_GetAltIdx(ANIM_HANDLE * ah,long old);
-void ANIM_Set(ANIM_USE * au,ANIM_HANDLE * anim);
+void ANIM_Set(AnimLayer * au,ANIM_HANDLE * anim);
 
 Vec3f GetAnimTotalTranslate(ANIM_HANDLE * eanim, long alt_idx);
 
@@ -192,8 +192,8 @@ void EERIE_ANIMMANAGER_ReleaseHandle(ANIM_HANDLE * anim);
 ANIM_HANDLE * EERIE_ANIMMANAGER_Load(const res::path & path);
 ANIM_HANDLE * EERIE_ANIMMANAGER_Load_NoWarning(const res::path & path);
 
-void PrepareAnim(ANIM_USE *eanim, unsigned long time, Entity *io);
-void ResetAnim(ANIM_USE * eanim);
+void PrepareAnim(AnimLayer *eanim, unsigned long time, Entity *io);
+void ResetAnim(AnimLayer * eanim);
 
 void AcquireLastAnim(Entity * io);
 void FinishAnim(Entity * io,ANIM_HANDLE * eanim);

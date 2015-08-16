@@ -652,7 +652,7 @@ void ManageNONCombatModeAnimations() {
 	
 	Entity *io = entities.player();
 
-	ANIM_USE * useanim3=&io->animlayer[3];
+	AnimLayer * useanim3=&io->animlayer[3];
 	ANIM_HANDLE ** alist=io->anims;
 
 	if(player.Current_Movement & (PLAYER_LEAN_LEFT | PLAYER_LEAN_RIGHT))
@@ -723,7 +723,7 @@ void ManageCombatModeAnimations() {
 		
 	Entity * const io = entities.player();
 	
-	ANIM_USE * useanim=&io->animlayer[1];
+	AnimLayer * useanim=&io->animlayer[1];
 
 	ANIM_HANDLE ** alist=io->anims;
 	WeaponType weapontype = ARX_EQUIPMENT_GetPlayerWeaponType();
@@ -1069,8 +1069,8 @@ void ManageCombatModeAnimationsEND() {
 	
 	Entity * io = entities.player();
 	
-	ANIM_USE * useanim = &io->animlayer[1];
-	ANIM_USE * useanim3 = &io->animlayer[3];
+	AnimLayer * useanim = &io->animlayer[1];
+	AnimLayer * useanim3 = &io->animlayer[3];
 	
 	ANIM_HANDLE ** alist = io->anims;
 
