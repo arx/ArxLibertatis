@@ -118,6 +118,7 @@ else(MSVC)
 		add_cxxflag("-Woverflow")
 		add_cxxflag("-Wmissing-declarations")
 		add_cxxflag("-Wredundant-decls")
+		add_cxxflag("-Wdouble-promotion")
 		
 		# TODO consider adding these
 		# add_cxxflag("-Wconversion") # very noisy
