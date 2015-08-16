@@ -1019,16 +1019,16 @@ void ARX_PHYSICS_Apply() {
 
 		if(io->ioflags & IO_PHYSICAL_OFF) {
 			if(io->ioflags & IO_NPC) {
-				AnimLayer * ause0 = &io->animlayer[0];
+				AnimLayer * layer0 = &io->animlayer[0];
 
-				if(!ause0->cur_anim || (ause0->flags & EA_ANIMEND)) {
-					ANIM_Set(ause0, io->anims[ANIM_WAIT]);
-					ause0->altidx_cur = 0;
+				if(!layer0->cur_anim || (layer0->flags & EA_ANIMEND)) {
+					ANIM_Set(layer0, io->anims[ANIM_WAIT]);
+					layer0->altidx_cur = 0;
 				}
 
 				GetTargetPos(io);
 
-				if(!arxtime.is_paused() && !(ause0->flags & EA_FORCEPLAY)) {
+				if(!arxtime.is_paused() && !(layer0->flags & EA_FORCEPLAY)) {
 					if(io->_npcdata->behavior & BEHAVIOUR_STARE_AT)
 						StareAtTarget(io);
 					else
