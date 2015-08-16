@@ -1469,10 +1469,10 @@ static void ARX_NPC_Manage_Fight(Entity * io) {
 
 static void ARX_NPC_Manage_Anims_End(Entity * io) {
 	
-	AnimLayer * layer0 = &io->animlayer[0];
-	if((layer0->flags & EA_ANIMEND) && layer0->cur_anim) {
+	AnimLayer & layer0 = io->animlayer[0];
+	if((layer0.flags & EA_ANIMEND) && layer0.cur_anim) {
 		
-		if(layer0->flags & EA_FORCEPLAY) {
+		if(layer0.flags & EA_FORCEPLAY) {
 			bool startAtBeginning = (io->_npcdata->behavior & BEHAVIOUR_FRIENDLY) != 0;
 			changeAnimation(io, ANIM_DEFAULT, 0, startAtBeginning);
 		}
