@@ -874,13 +874,15 @@ void ARX_SOUND_PopAnimSamples() {
 void ReleaseAnimFromIO(Entity * io, long num) {
 
 	for(long count = 0; count < MAX_ANIM_LAYERS; count++) {
-		if(io->animlayer[count].cur_anim == io->anims[num]) {
-			memset(&io->animlayer[count], 0, sizeof(AnimLayer));
-			io->animlayer[count].cur_anim = NULL;
+		AnimLayer & layer = io->animlayer[count];
+		
+		if(layer.cur_anim == io->anims[num]) {
+			memset(&layer, 0, sizeof(AnimLayer));
+			layer.cur_anim = NULL;
 		}
 
-		if(io->animlayer[count].next_anim == io->anims[num])
-			io->animlayer[count].next_anim = NULL;
+		if(layer.next_anim == io->anims[num])
+			layer.next_anim = NULL;
 	}
 
 	EERIE_ANIMMANAGER_ReleaseHandle(io->anims[num]);
