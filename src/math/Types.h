@@ -36,23 +36,13 @@ typedef Rectangle_<s32> Rect;
 typedef Rectangle_<float> Rectf;
 
 
-#if GLM_VERSION >= 95
-	template <class T, template <class, glm::precision> class V, int N>
-	struct vec_traits_base {
-		enum { num_components = N };
-		typedef T component_type;
-		typedef V<T, glm::highp> type;
-		ARX_STATIC_ASSERT(sizeof(type) == sizeof(component_type) * N, "vector has padding");
-	};
-#else
-	template <class T, template <class> class V, int N>
-	struct vec_traits_base {
-		enum { num_components = N };
-		typedef T component_type;
-		typedef V<T> type;
-		ARX_STATIC_ASSERT(sizeof(type) == sizeof(component_type) * N, "vector has padding");
-	};
-#endif
+template <class T, template <class, glm::precision> class V, int N>
+struct vec_traits_base {
+	enum { num_components = N };
+	typedef T component_type;
+	typedef V<T, glm::highp> type;
+	ARX_STATIC_ASSERT(sizeof(type) == sizeof(component_type) * N, "vector has padding");
+};
 
 //in GLM version 0.9.6 the template vector and matrix types is exposed in 'glm' namespace
 #if GLM_VERSION >= 96
