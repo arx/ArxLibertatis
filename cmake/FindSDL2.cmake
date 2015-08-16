@@ -130,8 +130,29 @@ endif()
 use_static_libs_restore()
 
 
+set(_sdl2_VERSION_HEADER "${SDL2_INCLUDE_DIR}/SDL_version.h")
+if(SDL2_INCLUDE_DIR AND EXISTS "${_sdl2_VERSION_HEADER}")
+	file(STRINGS "${_sdl2_VERSION_HEADER}" _sdl2_VERSION_DEFINES REGEX "#define.*")
+	foreach(component IN ITEMS "MAJOR_VERSION" "MINOR_VERSION" "PATCHLEVEL")
+		set(_sdl2_VERSION_PATTERN ".*#define SDL_${component}[ \t]+([0-9]+).*")
+		if("${_sdl2_VERSION_DEFINES}" MATCHES "${_sdl2_VERSION_PATTERN}")
+			string(REGEX REPLACE "${_sdl2_VERSION_PATTERN}" "\\1"
+			       _sdl2_${component} "${_sdl2_VERSION_DEFINES}")
+		endif()
+	endforeach()
+	if(DEFINED _sdl2_MAJOR_VERSION AND DEFINED _sdl2_MINOR_VERSION AND DEFINED _sdl2_PATCHLEVEL)
+		set(SDL2_VERSION_STRING "${_sdl2_MAJOR_VERSION}.${_sdl2_MINOR_VERSION}.${_sdl2_PATCHLEVEL}")
+	endif()
+	unset(_sdl2_VERSION_DEFINES)
+endif()
+if(UNIX AND NOT DEFINED SDL2_VERSION_STRING AND _PC_SDL2_FOUND)
+	set(SDL2_VERSION_STRING "${_PC_SDL2_VERSION}")
+endif()
+
+
 include(FindPackageHandleStandardArgs)
-find_package_handle_standard_args(SDL2 DEFAULT_MSG SDL2_LIBRARY SDL2_INCLUDE_DIR)
+find_package_handle_standard_args(SDL2 REQUIRED_VARS SDL2_LIBRARY SDL2_INCLUDE_DIR
+                                  VERSION_VAR SDL2_VERSION_STRING)
 
 
 if(SDL2_LIBRARY)
