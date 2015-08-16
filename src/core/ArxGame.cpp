@@ -1319,13 +1319,13 @@ void ArxGame::updateFirstPersonCamera() {
 	arx_assert(entities.player());
 	
 	Entity * io = entities.player();
-	AnimLayer * useanim = &io->animlayer[1];
+	AnimLayer * layer1 = &io->animlayer[1];
 	ANIM_HANDLE ** alist = io->anims;
 
 	if ( BOW_FOCAL
-		&& (useanim->cur_anim!=alist[ANIM_MISSILE_STRIKE_PART_1])
-		&& (useanim->cur_anim!=alist[ANIM_MISSILE_STRIKE_PART_2])
-		&& (useanim->cur_anim!=alist[ANIM_MISSILE_STRIKE_CYCLE]))
+		&& (layer1->cur_anim!=alist[ANIM_MISSILE_STRIKE_PART_1])
+		&& (layer1->cur_anim!=alist[ANIM_MISSILE_STRIKE_PART_2])
+		&& (layer1->cur_anim!=alist[ANIM_MISSILE_STRIKE_CYCLE]))
 	{
 		BOW_FOCAL -= Original_framedelay;
 
