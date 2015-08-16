@@ -1069,43 +1069,43 @@ void ManageCombatModeAnimationsEND() {
 	
 	Entity * io = entities.player();
 	
-	AnimLayer * layer1 = &io->animlayer[1];
+	AnimLayer & layer1 = io->animlayer[1];
 	AnimLayer * layer3 = &io->animlayer[3];
 	
 	ANIM_HANDLE ** alist = io->anims;
 
-	if(layer1->cur_anim
-		&&(		(layer1->cur_anim == alist[ANIM_BARE_READY])
-			||	(layer1->cur_anim == alist[ANIM_DAGGER_READY_PART_2])
-			||	(layer1->cur_anim == alist[ANIM_DAGGER_READY_PART_1])
-			||	(layer1->cur_anim == alist[ANIM_1H_READY_PART_2])
-			||	(layer1->cur_anim == alist[ANIM_1H_READY_PART_1])
-			||	(layer1->cur_anim == alist[ANIM_2H_READY_PART_2])
-			||	(layer1->cur_anim == alist[ANIM_2H_READY_PART_1])
-			||	(layer1->cur_anim == alist[ANIM_MISSILE_READY_PART_1])
-			||	(layer1->cur_anim == alist[ANIM_MISSILE_READY_PART_2])	)
+	if(layer1.cur_anim
+		&&(		(layer1.cur_anim == alist[ANIM_BARE_READY])
+			||	(layer1.cur_anim == alist[ANIM_DAGGER_READY_PART_2])
+			||	(layer1.cur_anim == alist[ANIM_DAGGER_READY_PART_1])
+			||	(layer1.cur_anim == alist[ANIM_1H_READY_PART_2])
+			||	(layer1.cur_anim == alist[ANIM_1H_READY_PART_1])
+			||	(layer1.cur_anim == alist[ANIM_2H_READY_PART_2])
+			||	(layer1.cur_anim == alist[ANIM_2H_READY_PART_1])
+			||	(layer1.cur_anim == alist[ANIM_MISSILE_READY_PART_1])
+			||	(layer1.cur_anim == alist[ANIM_MISSILE_READY_PART_2])	)
 	) {
 		AimTime = (unsigned long)(arxtime);
 	}
 
-	if(layer1->flags & EA_ANIMEND) {
+	if(layer1.flags & EA_ANIMEND) {
 		WeaponType weapontype = ARX_EQUIPMENT_GetPlayerWeaponType();
 
-		if(layer1->cur_anim &&
-			(	(layer1->cur_anim == io->anims[ANIM_BARE_UNREADY])
-			||	(layer1->cur_anim == io->anims[ANIM_DAGGER_UNREADY_PART_2])
-			||	(layer1->cur_anim == io->anims[ANIM_1H_UNREADY_PART_2])
-			||	(layer1->cur_anim == io->anims[ANIM_2H_UNREADY_PART_2])
-			||	(layer1->cur_anim == io->anims[ANIM_MISSILE_UNREADY_PART_2])	)
+		if(layer1.cur_anim &&
+			(	(layer1.cur_anim == io->anims[ANIM_BARE_UNREADY])
+			||	(layer1.cur_anim == io->anims[ANIM_DAGGER_UNREADY_PART_2])
+			||	(layer1.cur_anim == io->anims[ANIM_1H_UNREADY_PART_2])
+			||	(layer1.cur_anim == io->anims[ANIM_2H_UNREADY_PART_2])
+			||	(layer1.cur_anim == io->anims[ANIM_MISSILE_UNREADY_PART_2])	)
 		) {
 			AcquireLastAnim(io);
-			layer1->cur_anim = NULL;
+			layer1.cur_anim = NULL;
 		}
 
 		switch(weapontype) {
 			case WEAPON_BARE: {
 				// Is Weapon Ready ? In this case go to Fight Wait anim
-				if(layer1->cur_anim == alist[ANIM_BARE_READY]) {
+				if(layer1.cur_anim == alist[ANIM_BARE_READY]) {
 					if(player.Interface & INTER_NO_STRIKE) {
 						player.Interface &= ~INTER_NO_STRIKE;
 						changeAnimation(io, 1, alist[ANIM_BARE_WAIT], EA_LOOP);
@@ -1120,10 +1120,10 @@ void ManageCombatModeAnimationsEND() {
 			case WEAPON_DAGGER: // DAGGER ANIMS end
 
 				if(alist[ANIM_DAGGER_READY_PART_1]) {
-					if(layer1->cur_anim == alist[ANIM_DAGGER_READY_PART_1]) {
+					if(layer1.cur_anim == alist[ANIM_DAGGER_READY_PART_1]) {
 						ARX_EQUIPMENT_AttachPlayerWeaponToHand();
 						changeAnimation(io, 1, alist[ANIM_DAGGER_READY_PART_2]);
-					} else if(layer1->cur_anim == alist[ANIM_DAGGER_READY_PART_2]) {
+					} else if(layer1.cur_anim == alist[ANIM_DAGGER_READY_PART_2]) {
 						if(player.Interface & INTER_NO_STRIKE) {
 							player.Interface &= ~INTER_NO_STRIKE;
 							changeAnimation(io, 1, alist[ANIM_DAGGER_WAIT], EA_LOOP);
@@ -1132,7 +1132,7 @@ void ManageCombatModeAnimationsEND() {
 						}
 						AimTime = (unsigned long)(arxtime);
 						io->isHit = false;
-					} else if(layer1->cur_anim == alist[ANIM_DAGGER_UNREADY_PART_1]) {
+					} else if(layer1.cur_anim == alist[ANIM_DAGGER_UNREADY_PART_1]) {
 						ARX_EQUIPMENT_AttachPlayerWeaponToBack();
 						changeAnimation(io, 1, alist[ANIM_DAGGER_UNREADY_PART_2]);
 					}
@@ -1142,10 +1142,10 @@ void ManageCombatModeAnimationsEND() {
 			case WEAPON_1H:	// 1H ANIMS end
 
 				if(alist[ANIM_1H_READY_PART_1]) {
-					if(layer1->cur_anim == alist[ANIM_1H_READY_PART_1]) {
+					if(layer1.cur_anim == alist[ANIM_1H_READY_PART_1]) {
 						ARX_EQUIPMENT_AttachPlayerWeaponToHand();
 						changeAnimation(io, 1, alist[ANIM_1H_READY_PART_2]);
-					} else if(layer1->cur_anim == alist[ANIM_1H_READY_PART_2]) {
+					} else if(layer1.cur_anim == alist[ANIM_1H_READY_PART_2]) {
 						if(player.Interface & INTER_NO_STRIKE) {
 							player.Interface &= ~INTER_NO_STRIKE;
 							changeAnimation(io, 1, alist[ANIM_1H_WAIT], EA_LOOP);
@@ -1154,7 +1154,7 @@ void ManageCombatModeAnimationsEND() {
 						}
 						AimTime = (unsigned long)(arxtime);
 						io->isHit = false;
-					} else if (layer1->cur_anim == alist[ANIM_1H_UNREADY_PART_1]) {
+					} else if (layer1.cur_anim == alist[ANIM_1H_UNREADY_PART_1]) {
 						ARX_EQUIPMENT_AttachPlayerWeaponToBack();
 						changeAnimation(io, 1, alist[ANIM_1H_UNREADY_PART_2]);
 					}
@@ -1164,10 +1164,10 @@ void ManageCombatModeAnimationsEND() {
 			case WEAPON_2H:	// 2H ANIMS end
 
 				if(alist[ANIM_2H_READY_PART_1]) {
-					if(layer1->cur_anim == alist[ANIM_2H_READY_PART_1]) {
+					if(layer1.cur_anim == alist[ANIM_2H_READY_PART_1]) {
 						ARX_EQUIPMENT_AttachPlayerWeaponToHand();
 						changeAnimation(io, 1, alist[ANIM_2H_READY_PART_2]);
-					} else if(layer1->cur_anim == alist[ANIM_2H_READY_PART_2]) {
+					} else if(layer1.cur_anim == alist[ANIM_2H_READY_PART_2]) {
 						if(player.Interface & INTER_NO_STRIKE) {
 							player.Interface &= ~INTER_NO_STRIKE;
 							changeAnimation(io, 1, alist[ANIM_2H_WAIT], EA_LOOP);
@@ -1176,7 +1176,7 @@ void ManageCombatModeAnimationsEND() {
 						}
 						AimTime = (unsigned long)(arxtime);
 						io->isHit = false;
-					} else if(layer1->cur_anim == alist[ANIM_2H_UNREADY_PART_1]) {
+					} else if(layer1.cur_anim == alist[ANIM_2H_UNREADY_PART_1]) {
 						ARX_EQUIPMENT_AttachPlayerWeaponToBack();
 						changeAnimation(io, 1, alist[ANIM_2H_UNREADY_PART_2]);
 					}
@@ -1186,10 +1186,10 @@ void ManageCombatModeAnimationsEND() {
 			case WEAPON_BOW:// MISSILE Weapon ANIMS end
 
 				if(alist[ANIM_MISSILE_READY_PART_1]) {
-					if(layer1->cur_anim == alist[ANIM_MISSILE_READY_PART_1]) {
+					if(layer1.cur_anim == alist[ANIM_MISSILE_READY_PART_1]) {
 						ARX_EQUIPMENT_AttachPlayerWeaponToHand();
 						changeAnimation(io, 1, alist[ANIM_MISSILE_READY_PART_2]);
-					} else if(layer1->cur_anim == alist[ANIM_MISSILE_READY_PART_2]) {
+					} else if(layer1.cur_anim == alist[ANIM_MISSILE_READY_PART_2]) {
 						if(Player_Arrow_Count() > 0) {
 							if(player.Interface & INTER_NO_STRIKE) {
 								player.Interface &= ~INTER_NO_STRIKE;
@@ -1202,13 +1202,13 @@ void ManageCombatModeAnimationsEND() {
 							changeAnimation(io, 1, alist[ANIM_MISSILE_WAIT]);
 						}
 						EERIE_LINKEDOBJ_UnLinkObjectFromObject(io->obj, arrowobj);
-					} else if(layer1->cur_anim == alist[ANIM_MISSILE_STRIKE_PART_1]) {
+					} else if(layer1.cur_anim == alist[ANIM_MISSILE_STRIKE_PART_1]) {
 						// TODO why no AcquireLastAnim()?
-						ANIM_Set(layer1, alist[ANIM_MISSILE_STRIKE_PART_2]);
-					} else if(layer1->cur_anim == alist[ANIM_MISSILE_STRIKE_PART_2]) {
+						ANIM_Set(&layer1, alist[ANIM_MISSILE_STRIKE_PART_2]);
+					} else if(layer1.cur_anim == alist[ANIM_MISSILE_STRIKE_PART_2]) {
 						// TODO why no AcquireLastAnim()?
-						ANIM_Set(layer1, alist[ANIM_MISSILE_STRIKE_CYCLE]);
-					} else if(layer1->cur_anim == alist[ANIM_MISSILE_UNREADY_PART_1]) {
+						ANIM_Set(&layer1, alist[ANIM_MISSILE_STRIKE_CYCLE]);
+					} else if(layer1.cur_anim == alist[ANIM_MISSILE_UNREADY_PART_1]) {
 						ARX_EQUIPMENT_AttachPlayerWeaponToBack();
 						changeAnimation(io, 1, alist[ANIM_MISSILE_UNREADY_PART_2]);
 					}
@@ -1218,13 +1218,13 @@ void ManageCombatModeAnimationsEND() {
 		}
 
 		// Spell casting anims
-		if(alist[ANIM_CAST] && layer1->cur_anim == alist[ANIM_CAST]) {
+		if(alist[ANIM_CAST] && layer1.cur_anim == alist[ANIM_CAST]) {
 			if(alist[ANIM_CAST_END]) {
 				changeAnimation(io, 1, alist[ANIM_CAST_END]);
 			}
-		} else if(alist[ANIM_CAST_END] && layer1->cur_anim == alist[ANIM_CAST_END]) {
+		} else if(alist[ANIM_CAST_END] && layer1.cur_anim == alist[ANIM_CAST_END]) {
 			AcquireLastAnim(io);
-			layer1->cur_anim = NULL;
+			layer1.cur_anim = NULL;
 			player.doingmagic = 0;
 
 			if(WILLRETURNTOCOMBATMODE) {
