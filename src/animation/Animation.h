@@ -192,7 +192,7 @@ void EERIE_ANIMMANAGER_ReleaseHandle(ANIM_HANDLE * anim);
 ANIM_HANDLE * EERIE_ANIMMANAGER_Load(const res::path & path);
 ANIM_HANDLE * EERIE_ANIMMANAGER_Load_NoWarning(const res::path & path);
 
-void PrepareAnim(AnimLayer *eanim, unsigned long time, Entity *io);
+void PrepareAnim(AnimLayer *layer, unsigned long time, Entity *io);
 void ResetAnim(AnimLayer * layer);
 
 void AcquireLastAnim(Entity * io);
