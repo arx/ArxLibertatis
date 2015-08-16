@@ -877,7 +877,7 @@ void ReleaseAnimFromIO(Entity * io, long num) {
 		AnimLayer & layer = io->animlayer[count];
 		
 		if(layer.cur_anim == io->anims[num]) {
-			memset(&layer, 0, sizeof(AnimLayer));
+			layer = AnimLayer();
 			layer.cur_anim = NULL;
 		}
 
