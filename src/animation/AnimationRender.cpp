@@ -937,7 +937,6 @@ static void AddAnimatedObjectHalo(HaloInfo & haloInfo, const unsigned short * pa
                                   float invisibility, EERIE_3DOBJ * eobj, Entity * io,
                                   TexturedVertex * tvList) {
 	
-	float & ddist = haloInfo.ddist;
 	std::vector<HaloRenderInfo> & halos = haloInfo.halos;
 
 	IO_HALO * curhalo = NULL;
@@ -1016,9 +1015,9 @@ static void AddAnimatedObjectHalo(HaloInfo & haloInfo, const unsigned short * pa
 			vert[2].color = colors[second];
 			vert[3].color = colors[second];
 
-			float siz = ddist * (curhalo->radius * (std::sin(arxtime.get_frame_time() * .01f) * .1f + 1.f)) * .6f;
+			float siz = haloInfo.ddist * (curhalo->radius * (std::sin(arxtime.get_frame_time() * .01f) * .1f + 1.f)) * .6f;
 
-			if(io == entities.player() && ddist > 0.8f && !EXTERNALVIEW)
+			if(io == entities.player() && haloInfo.ddist > 0.8f && !EXTERNALVIEW)
 				siz *= 1.5f;
 
 			Vec3f vect1;
