@@ -100,17 +100,19 @@ class ForceAnimCommand : public Command {
 	
 	static void forceAnim(Entity & io, ANIM_HANDLE * ea) {
 		
-		if(io.animlayer[0].cur_anim
-		   && io.animlayer[0].cur_anim != io.anims[ANIM_DIE]
-		   && io.animlayer[0].cur_anim != io.anims[ANIM_HIT1]) {
+		AnimLayer & layer0 = io.animlayer[0];
+		
+		if(layer0.cur_anim
+		   && layer0.cur_anim != io.anims[ANIM_DIE]
+		   && layer0.cur_anim != io.anims[ANIM_HIT1]) {
 			AcquireLastAnim(&io);
 		}
 		
-		FinishAnim(&io, io.animlayer[0].cur_anim);
+		FinishAnim(&io, layer0.cur_anim);
 		io.lastmove = Vec3f_ZERO;
-		ANIM_Set(io.animlayer[0], ea);
-		io.animlayer[0].flags |= EA_FORCEPLAY;
-		io.animlayer[0].nextflags = 0;
+		ANIM_Set(layer0, ea);
+		layer0.flags |= EA_FORCEPLAY;
+		layer0.nextflags = 0;
 		
 		CheckSetAnimOutOfTreatZone(&io, 0);
 	}
