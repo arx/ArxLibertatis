@@ -659,50 +659,52 @@ void PrepareAnim(AnimLayer & layer, unsigned long time, Entity *io) {
 		tim = animTime - layer.ctime;
 	else
 		tim = layer.ctime;
-
-	layer.fr = layer.cur_anim->anims[layer.altidx_cur]->nb_key_frames - 2;
+	
+	EERIE_ANIM * anim = layer.cur_anim->anims[layer.altidx_cur];
+	
+	layer.fr = anim->nb_key_frames - 2;
 	layer.pour = 1.f;
 	
-	for(long i = 1; i < layer.cur_anim->anims[layer.altidx_cur]->nb_key_frames; i++) {
-		long tcf = (long)layer.cur_anim->anims[layer.altidx_cur]->frames[i - 1].time;
-		long tnf = (long)layer.cur_anim->anims[layer.altidx_cur]->frames[i].time;
+	for(long i = 1; i < anim->nb_key_frames; i++) {
+		long tcf = (long)anim->frames[i - 1].time;
+		long tnf = (long)anim->frames[i].time;
 
 		if(tcf == tnf)
 			return;
 
-		if((tim < tnf && tim >= tcf) || (i == layer.cur_anim->anims[layer.altidx_cur]->nb_key_frames - 1 && tim == tnf)) {
+		if((tim < tnf && tim >= tcf) || (i == anim->nb_key_frames - 1 && tim == tnf)) {
 			long fr = i - 1;
 			tim -= tcf;
 			float pour = (float)((float)tim/((float)tnf-(float)tcf));
 			
 			// Frame Sound Management
 			if(!(layer.flags & EA_ANIMEND) && time
-			   && (layer.cur_anim->anims[layer.altidx_cur]->frames[fr].sample != -1)
+			   && (anim->frames[fr].sample != -1)
 			   && (layer.lastframe != fr)) {
 
 				Vec3f * position = io ? &io->pos : NULL;
 				
 				if(layer.lastframe < fr && layer.lastframe != -1) {
 					for(long n = layer.lastframe + 1; n <= fr; n++)
-						ARX_SOUND_PlayAnim(layer.cur_anim->anims[layer.altidx_cur]->frames[n].sample, position);
+						ARX_SOUND_PlayAnim(anim->frames[n].sample, position);
 				} else {
-					ARX_SOUND_PlayAnim(layer.cur_anim->anims[layer.altidx_cur]->frames[fr].sample, position);
+					ARX_SOUND_PlayAnim(anim->frames[fr].sample, position);
 				}
 			}
 
 			// Frame Flags Management
 			if(!(layer.flags & EA_ANIMEND) && time
-			   && (layer.cur_anim->anims[layer.altidx_cur]->frames[fr].flag > 0)
+			   && (anim->frames[fr].flag > 0)
 			   && (layer.lastframe != fr)) {
 				
 				if(io && io != entities.player()) {
 					if(layer.lastframe < fr && layer.lastframe != -1) {
 						for(long n = layer.lastframe + 1; n <= fr; n++) {
-							if(layer.cur_anim->anims[layer.altidx_cur]->frames[n].flag == 9)
+							if(anim->frames[n].flag == 9)
 								ARX_NPC_NeedStepSound(io, io->pos);
 						}
 					}
-					else if(layer.cur_anim->anims[layer.altidx_cur]->frames[fr].flag == 9)
+					else if(anim->frames[fr].flag == 9)
 						ARX_NPC_NeedStepSound(io, io->pos);
 				}
 			}
