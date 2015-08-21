@@ -127,7 +127,9 @@ void Profiler::flush() {
 
 void Profiler::writeProfileLog() {
 	
-	std::string filename = util::getDateTimeString() + ".perf";
+	std::string filename = util::getDateTimeString() + ".arxprof";
+	LogInfo << "Writing profiler log to: " << filename;
+	
 	fs::ofstream out(fs::path(filename), std::ios::binary | std::ios::out);
 	
 	// Threads info

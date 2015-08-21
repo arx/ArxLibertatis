@@ -60,7 +60,7 @@ ArxProfiler::~ArxProfiler() {
 }
 
 void ArxProfiler::openFile() {
-	QString fileName = QFileDialog::getOpenFileName(this, tr("Open File"), "", tr("Ax performance log (*.perf)"));
+	QString fileName = QFileDialog::getOpenFileName(this, tr("Open File"), "", tr("Arx performance profiler log (*.arxprof)"));
 	
 	QFile file(fileName);
 
