@@ -24,26 +24,42 @@
 
 #pragma pack(push,1)
 
-struct SavedThreadInfoHeader {
-	u64  size;
+static const char * profilerMagic = "arxprof";
+struct SavedProfilerHeader {
+	char magic[8];
+	u32  version;
+	char padding[4];
 };
 
-struct SavedThreadInfo {
-	char threadName[32];
-	u64  threadId;
-	u64  startTime;
-	u64  endTime;
+ARX_STATIC_ASSERT(sizeof(SavedProfilerHeader) == 16, "Header size mismatch");
+
+enum ArxProfilerChunkType {
+	ArxProfilerChunkType_None = 0,
+	ArxProfilerChunkType_Strings = 1,
+	ArxProfilerChunkType_Threads = 2,
+	ArxProfilerChunkType_Samples = 3
 };
 
-struct SavedProfilePointHeader {
-	u64  size;
+struct SavedProfilerChunkHeader {
+	u32 type;
+	u64 size;
+	char padding[52];
 };
 
-struct SavedProfilePoint {
-	char tag[32];
-	u64  threadId;
-	u64  startTime;
-	u64  endTime;
+ARX_STATIC_ASSERT(sizeof(SavedProfilerChunkHeader) == 64, "Header size mismatch");
+
+struct SavedProfilerThread {
+	u32 stringIndex;
+	u64 threadId;
+	u64 startTime;
+	u64 endTime;
+};
+
+struct SavedProfilerSample {
+	u32 stringIndex;
+	u64 threadId;
+	u64 startTime;
+	u64 endTime;
 };
 
 #pragma pack(pop)

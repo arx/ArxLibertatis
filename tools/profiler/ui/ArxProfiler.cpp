@@ -59,6 +59,13 @@ ArxProfiler::~ArxProfiler() {
 	delete ui;
 }
 
+template<typename T>
+void readStruct(T & out, QByteArray & data, int & pos) {
+	
+	out = *reinterpret_cast<const T *>(data.mid(pos, sizeof(T)).constData());
+	pos += sizeof(T);
+}
+
 void ArxProfiler::openFile() {
 	QString fileName = QFileDialog::getOpenFileName(this, tr("Open File"), "", tr("Arx performance profiler log (*.arxprof)"));
 	
@@ -67,40 +74,88 @@ void ArxProfiler::openFile() {
 	if(!file.open(QIODevice::ReadOnly))
 		return;
 	
-	threadsData.clear();
+	m_threads.clear();
+	m_strings.clear();
 	
-	SavedThreadInfoHeader theadsHeader;
-	file.read((char*)&theadsHeader, sizeof(SavedThreadInfoHeader));
+	QByteArray fileData = file.readAll();
+	int filePos = 0;
 	
-	for(quint32 i = 0; i < theadsHeader.size; i++) 	{
-		SavedThreadInfo saved;
-		file.read((char*)&saved, sizeof(SavedThreadInfo));
-		
-		ThreadInfo& threadInfo = threadsData[saved.threadId].info;
-		threadInfo.threadId = saved.threadId;
-		threadInfo.threadName = QString::fromLatin1(util::loadString(saved.threadName).c_str());
-		threadInfo.startTime = saved.startTime;
-		threadInfo.endTime = saved.endTime;
+	SavedProfilerHeader header;
+	readStruct(header, fileData, filePos);
+	
+	if(strcmp(profilerMagic, header.magic) == 0) {
+		qDebug() << "Header magic found";
+	} else {
+		qDebug() << "Invalid magic";
+		return;
 	}
 	
-	SavedProfilePointHeader pointsHeader;
-	file.read((char*)&pointsHeader, sizeof(SavedProfilePointHeader));
+	qDebug() << "Found file version:" << header.version;
 	
-	for(quint32 i = 0; i < pointsHeader.size; i++) {
-		SavedProfilePoint saved;
-		file.read((char*)&saved, sizeof(SavedProfilePoint));
-		
-		// TODO: String table ftw
-		ProfilePoint point;
-		point.tag = QString::fromLatin1(util::loadString(saved.tag).c_str());
-		point.threadId = saved.threadId;
-		point.startTime = saved.startTime;
-		point.endTime = saved.endTime;
-		
-		threadsData[point.threadId].profilePoints.push_back(point);
+	u32 minimumVersion = 1;
+	if(header.version < minimumVersion) {
+		qWarning() << "File version too old, aborting";
+		return;
 	}
 	
-	view->setData(&threadsData);
+	while(filePos < fileData.size()){
+		SavedProfilerChunkHeader chunk;
+		readStruct(chunk, fileData, filePos);
+	
+		qDebug() << "Reading chunk at offset" << filePos << "type" << chunk.type << "size" << chunk.size;
+		QByteArray chunkData = fileData.mid(filePos, chunk.size);
+		if(chunkData.size() != int(chunk.size)) {
+			qWarning() << "Chunk too short, expected" << chunk.size << "got" << chunkData.size();
+			return;
+		}
+			
+		filePos += chunkData.size();
+		
+		if(chunk.type == ArxProfilerChunkType_Strings) {
+			int chunkPos = 0;
+			while(chunkPos < chunkData.size()) {
+				int foo = chunkData.indexOf('\0', chunkPos);
+				if(foo == -1)
+					break;
+				
+				QString string = QString::fromLatin1(chunkData.mid(chunkPos, foo));
+				m_strings.append(string);
+				chunkPos = foo + 1;
+			}
+		}
+		
+		if(chunk.type == ArxProfilerChunkType_Threads) {
+			int chunkPos = 0;
+			while(chunkPos < chunkData.size()) {
+				SavedProfilerSample saved;
+				readStruct(saved, chunkData, chunkPos);
+				
+				ThreadInfo & thread = m_threads[saved.threadId].info;
+				thread.threadId = saved.threadId;
+				thread.threadName = m_strings.at(saved.stringIndex);
+				thread.startTime = saved.startTime;
+				thread.endTime = saved.endTime;
+			}
+		}
+		
+		if(chunk.type == ArxProfilerChunkType_Samples) {
+			int pos = 0;
+			while(pos < chunkData.size()) {
+				SavedProfilerThread saved;
+				readStruct(saved, chunkData, pos);
+				
+				ProfilePoint point;
+				point.tag = m_strings.at(saved.stringIndex);
+				point.threadId = saved.threadId;
+				point.startTime = saved.startTime;
+				point.endTime = saved.endTime;
+				
+				m_threads[point.threadId].profilePoints.push_back(point);
+			}
+		}
+	}
+	
+	view->setData(&m_threads);
 }
 
 

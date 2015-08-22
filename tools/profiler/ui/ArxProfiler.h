@@ -96,7 +96,8 @@ private:
 	Ui::ArxProfilerClass * ui;
 	ProfilerView * view;
 	
-	ThreadsData threadsData;
+	QStringList m_strings;
+	ThreadsData m_threads;
 };
 
 #endif // ARX_TOOLS_PROFILER_UI_ARXPROFILER_H

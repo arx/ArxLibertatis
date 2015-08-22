@@ -22,12 +22,16 @@
 #if BUILD_PROFILER_INSTRUMENT
 
 #include <atomic>
+#include <cstring>
 #include <map>
 #include <iomanip>
 #include <string.h>
 #include <vector>
 
 #include <boost/array.hpp>
+#include <boost/algorithm/string/join.hpp>
+#include <boost/container/flat_map.hpp>
+#include <boost/foreach.hpp>
 
 #include "io/fs/FilePath.h"
 #include "io/fs/FileStream.h"
@@ -50,27 +54,27 @@ public:
 	void addProfilePoint(const char* tag, thread_id_type threadId, u64 startTime, u64 endTime);
 	
 private:
-	static const u32 NB_POINTS = 100 * 1000;
+	static const u32 NB_SAMPLES = 100 * 1000;
 	
-	struct ProfilePoint {
+	struct ProfilerSample {
 		const char*    tag;
 		thread_id_type threadId;
 		u64            startTime;
 		u64            endTime;
 	};
 
-	struct ThreadInfo {
+	struct ProfilerThread {
 		std::string    threadName;
 		thread_id_type threadId;
 		u64            startTime;
 		u64            endTime;
 	};
 
-	typedef std::map<thread_id_type, ThreadInfo> ThreadInfos;
+	typedef std::map<thread_id_type, ProfilerThread> ThreadInfos;
 	
 	ThreadInfos        m_threads;
 	
-	boost::array<ProfilePoint, NB_POINTS> m_points;
+	boost::array<ProfilerSample, NB_SAMPLES> m_samples;
 	std::atomic<int> m_writeIndex;
 	bool               m_canWrite;
 	
@@ -81,27 +85,27 @@ private:
 Profiler::Profiler() {
 	m_writeIndex = 0;
 	m_canWrite = true;
-	m_points.fill(ProfilePoint());
+	m_samples.fill(ProfilerSample());
 }
 
 void Profiler::reset() {
 	m_writeIndex = 0;
-	m_points.fill(ProfilePoint());
+	m_samples.fill(ProfilerSample());
 }
 
 void Profiler::registerThread(const std::string& threadName) {
 	thread_id_type threadId = Thread::getCurrentThreadId();
-	ThreadInfo& threadInfo = m_threads[threadId];
-	threadInfo.threadName = threadName;
-	threadInfo.threadId = threadId;
-	threadInfo.startTime = platform::getTimeUs();
-	threadInfo.endTime = threadInfo.startTime;
+	ProfilerThread & thread = m_threads[threadId];
+	thread.threadName = threadName;
+	thread.threadId = threadId;
+	thread.startTime = platform::getTimeUs();
+	thread.endTime = thread.startTime;
 }
 	
 void Profiler::unregisterThread() {
 	thread_id_type threadId = Thread::getCurrentThreadId();
-	ThreadInfo& threadInfo = m_threads[threadId];
-	threadInfo.endTime = platform::getTimeUs();
+	ProfilerThread & thread = m_threads[threadId];
+	thread.endTime = platform::getTimeUs();
 }
 
 void Profiler::addProfilePoint(const char* tag, thread_id_type threadId, u64 startTime, u64 endTime) {
@@ -110,11 +114,11 @@ void Profiler::addProfilePoint(const char* tag, thread_id_type threadId, u64 sta
 	
 	u32 pos = m_writeIndex.fetch_add(1);
 	
-	ProfilePoint& point = m_points[pos % NB_POINTS];
-	point.tag = tag;
-	point.threadId = threadId;
-	point.startTime = startTime;
-	point.endTime = endTime;
+	ProfilerSample & sample = m_samples[pos % NB_SAMPLES];
+	sample.tag = tag;
+	sample.threadId = threadId;
+	sample.startTime = startTime;
+	sample.endTime = endTime;
 }
 
 void Profiler::flush() {
@@ -125,53 +129,140 @@ void Profiler::flush() {
 	m_canWrite = true;
 }
 
+
+template<typename T>
+void writeStruct(std::ofstream & out, T & data, size_t & pos) {
+	out.write((const char*)&data, sizeof(T));
+	pos += sizeof(T);
+}
+
+static void writeChunk(std::ofstream & out, ArxProfilerChunkType type, size_t dataSize, size_t & pos) {
+	SavedProfilerChunkHeader chunk;
+	chunk.type = type;
+	chunk.size = dataSize;
+	std::memset(chunk.padding, 0, sizeof(chunk.padding));
+	writeStruct(out, chunk, pos);
+	LogDebug("Writing chunk at offset " << pos << " type " << chunk.type << " size " << chunk.size);
+}
+
+class ProfilerStringTable : public boost::noncopyable {
+public:
+	u32 add(std::string value) {
+		
+		boost::container::flat_map<std::string, u32>::iterator si = m_map.find(value);
+		u32 stringIndex;
+		
+		if(si == m_map.end()) {
+			m_list.push_back(value);
+			stringIndex = m_list.size() - 1;
+			m_map[value] = stringIndex;
+		} else {
+			stringIndex = si->second;
+		}
+		
+		return stringIndex;
+	}
+	
+	int entries() {
+		return m_list.size();
+	}
+	
+	std::string data() {
+		std::string result = boost::algorithm::join(m_list, std::string("\0", 1));
+		return result;
+	}
+	
+private:
+	boost::container::flat_map<std::string, u32> m_map;
+	std::vector<std::string> m_list;
+};
+
 void Profiler::writeProfileLog() {
 	
 	std::string filename = util::getDateTimeString() + ".arxprof";
 	LogInfo << "Writing profiler log to: " << filename;
 	
 	fs::ofstream out(fs::path(filename), std::ios::binary | std::ios::out);
+	size_t pos = 0;
 	
-	// Threads info
-	SavedThreadInfoHeader threadsHeader;
-	threadsHeader.size = m_threads.size();
-	out.write((const char*)&threadsHeader, sizeof(SavedThreadInfoHeader));
+	int fileVersion = 1;
+	
+	LogDebug("Writing Header");
+	
+	SavedProfilerHeader header;
+	std::strncpy(header.magic, profilerMagic, 8);
+	header.version = fileVersion;
+	std::memset(header.padding, 0, sizeof(header.padding));
+	writeStruct(out, header, pos);
+	
+	LogDebug("Building string table");
+	ProfilerStringTable stringTable;
+	std::vector<SavedProfilerThread> threadsData;
+	std::vector<SavedProfilerSample> samplesData;
 	
 	for(ThreadInfos::const_iterator it = m_threads.begin(); it != m_threads.end(); ++it) {
-		const ThreadInfo& threadInfo = it->second;
+		const ProfilerThread & thread = it->second;
 		
-		SavedThreadInfo saved;
-		util::storeString(saved.threadName, threadInfo.threadName);
-		saved.threadId = threadInfo.threadId;
-		saved.startTime = threadInfo.startTime;
-		saved.endTime = threadInfo.endTime;
-		out.write((const char*)&saved, sizeof(SavedThreadInfo));
+		u32 stringIndex = stringTable.add(thread.threadName);
+		
+		SavedProfilerThread saved;
+		saved.stringIndex = stringIndex;
+		saved.threadId = thread.threadId;
+		saved.startTime = thread.startTime;
+		saved.endTime = thread.endTime;
+		threadsData.push_back(saved);
 	}
 	
 	// Profile points
 	u32 index = 0;
 	u32 numItems = m_writeIndex;
 	
-	if(numItems >= NB_POINTS) {
+	if(numItems >= NB_SAMPLES) {
 		index = numItems;
-		numItems = NB_POINTS;
+		numItems = NB_SAMPLES;
 	}
 	
-	// Threads info
-	SavedProfilePointHeader pointsHeader;
-	pointsHeader.size = numItems;
-	out.write((const char*)&pointsHeader, sizeof(SavedProfilePointHeader));
-	
 	for(u32 i = 0; i < numItems; ++i, ++index) {
-		ProfilePoint& point = m_points[index % NB_POINTS];
+		ProfilerSample & sample = m_samples[index % NB_SAMPLES];
 		
-		SavedProfilePoint saved;
-		util::storeString(saved.tag, point.tag);
-		saved.threadId = point.threadId;
-		saved.startTime = point.startTime;
-		saved.endTime = point.endTime;
+		u32 stringIndex = stringTable.add(sample.tag);
 		
-		out.write((const char*)&saved, sizeof(SavedProfilePoint));
+		SavedProfilerSample saved;
+		saved.stringIndex = stringIndex;
+		saved.threadId = sample.threadId;
+		saved.startTime = sample.startTime;
+		saved.endTime = sample.endTime;
+		samplesData.push_back(saved);
+	}
+	
+	LogInfo << "Writing data: "
+	" Strings " << stringTable.entries() <<
+	", Threads " << threadsData.size() <<
+	", Points "  << samplesData.size();
+	
+	{
+		std::string stringsData = stringTable.data();
+		int dataSize = stringsData.size() + 1; // termination
+		writeChunk(out, ArxProfilerChunkType_Strings, dataSize, pos);
+		
+		out.write(stringsData.c_str(), dataSize);
+		pos += dataSize;
+	}
+	
+	{
+		int dataSize = threadsData.size() * sizeof(SavedProfilerThread);
+		writeChunk(out, ArxProfilerChunkType_Threads, dataSize, pos);
+		
+		out.write((const char*) threadsData.data(), dataSize);
+		pos += dataSize;
+	}
+	
+	{
+		int dataSize = samplesData.size() * sizeof(SavedProfilerSample);
+		writeChunk(out, ArxProfilerChunkType_Samples, dataSize, pos);
+		
+		out.write((const char*) samplesData.data(), dataSize);
+		pos += dataSize;
 	}
 	
 	out.close();
