@@ -21,13 +21,13 @@
 
 #if BUILD_PROFILER_INSTRUMENT
 
+#include <atomic>
 #include <map>
 #include <iomanip>
 #include <string.h>
 #include <vector>
 
 #include <boost/array.hpp>
-#include <boost/atomic.hpp>
 
 #include "io/fs/FilePath.h"
 #include "io/fs/FileStream.h"
@@ -71,7 +71,7 @@ private:
 	ThreadInfos        m_threads;
 	
 	boost::array<ProfilePoint, NB_POINTS> m_points;
-	boost::atomic<int> m_writeIndex;
+	std::atomic<int> m_writeIndex;
 	bool               m_canWrite;
 	
 	void writeProfileLog();
