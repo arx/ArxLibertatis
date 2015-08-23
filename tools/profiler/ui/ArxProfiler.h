@@ -68,6 +68,10 @@ protected:
 	
 	virtual void wheelEvent(QWheelEvent* event);
 	virtual void keyPressEvent(QKeyEvent* event);
+	void contextMenuEvent(QContextMenuEvent *event);
+	
+private slots:
+	void copyToClipboard();
 	
 private:
 	ThreadsData * m_data;

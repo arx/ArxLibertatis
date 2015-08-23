@@ -26,6 +26,7 @@
 #include <QDebug>
 #include <QHash>
 
+#include <QClipboard>
 #include <QFileDialog>
 
 #include <QMouseEvent>
@@ -191,6 +192,10 @@ public:
 			
 			painter->setTransform(transBefore);
 		}
+	}
+	
+	QString text() {
+		return m_Text;
 	}
 	
 	void setText(const QString& text) {
@@ -375,6 +380,30 @@ void ProfilerView::keyPressEvent(QKeyEvent* event) {
 		centerOn(viewCenter() + QPointF(1000, 0));
 	} else if(event->key() == Qt::Key_Left) {
 		centerOn(viewCenter() - QPointF(1000, 0));
+	}
+}
+
+void ProfilerView::contextMenuEvent(QContextMenuEvent * event) {
+	
+	if(QGraphicsItem *item = itemAt(event->pos())) {
+		if(QGraphicsProfilePoint * sample = dynamic_cast<QGraphicsProfilePoint *>(item)) {
+			QMenu menu(this);
+			
+			QAction * copyAction = new QAction("Copy text", this);
+			copyAction->setData(sample->text());
+			connect(copyAction, SIGNAL(triggered()),this, SLOT(copyToClipboard()));
+			
+			menu.addAction(copyAction);
+			menu.exec(event->globalPos());
+		}
+	}
+}
+
+void ProfilerView::copyToClipboard() {
+	if(QAction * action = dynamic_cast<QAction *>(QObject::sender())) {
+		QString text = action->data().toString();
+		qDebug() << "Copy text to clipboard" << text;
+		QApplication::clipboard()->setText(text);
 	}
 }
 
