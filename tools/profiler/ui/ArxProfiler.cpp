@@ -160,13 +160,7 @@ void ArxProfiler::openFile() {
 }
 
 
-class QGraphicsProfilePoint : public QGraphicsRectItem
-{
-	static const int Type = UserType + 1;
-	int type() const {
-		// Enable the use of qgraphicsitem_cast with this item.
-		return Type;
-	}
+class QGraphicsProfilePoint : public QGraphicsRectItem {
 	
 public:
 	QGraphicsProfilePoint(const QRectF &rect, QGraphicsItem *parent = 0)
@@ -175,6 +169,12 @@ public:
 	
 	~QGraphicsProfilePoint()
 	{}
+	
+	static const int Type = UserType + 1;
+	int type() const {
+		// Enable the use of qgraphicsitem_cast with this item.
+		return Type;
+	}
 	
 	void paint(QPainter *painter, const QStyleOptionGraphicsItem *option, QWidget *widget = 0) {
 		QGraphicsRectItem::paint(painter, option, widget);
@@ -386,7 +386,7 @@ void ProfilerView::keyPressEvent(QKeyEvent* event) {
 void ProfilerView::contextMenuEvent(QContextMenuEvent * event) {
 	
 	if(QGraphicsItem *item = itemAt(event->pos())) {
-		if(QGraphicsProfilePoint * sample = dynamic_cast<QGraphicsProfilePoint *>(item)) {
+		if(QGraphicsProfilePoint * sample = qgraphicsitem_cast<QGraphicsProfilePoint *>(item)) {
 			QMenu menu(this);
 			
 			QAction * copyAction = new QAction("Copy text", this);
@@ -400,7 +400,7 @@ void ProfilerView::contextMenuEvent(QContextMenuEvent * event) {
 }
 
 void ProfilerView::copyToClipboard() {
-	if(QAction * action = dynamic_cast<QAction *>(QObject::sender())) {
+	if(QAction * action = qobject_cast<QAction *>(QObject::sender())) {
 		QString text = action->data().toString();
 		qDebug() << "Copy text to clipboard" << text;
 		QApplication::clipboard()->setText(text);
