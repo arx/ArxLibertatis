@@ -293,6 +293,18 @@ void profiler::addProfilePoint(const char * tag, thread_id_type threadId, u64 st
 	g_profiler.addProfilePoint(tag, threadId, startTime, endTime);
 }
 
+
+ProfileScope::ProfileScope(const char * tag)
+	: m_tag(tag)
+	, m_startTime(platform::getTimeUs())
+{
+	arx_assert(tag != 0 && tag[0] != '\0');
+}
+
+ProfileScope::~ProfileScope() {
+	profiler::addProfilePoint(m_tag, Thread::getCurrentThreadId(), m_startTime, platform::getTimeUs());
+}
+
 #else
 
 void profiler::initialize() {

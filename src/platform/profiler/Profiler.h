@@ -42,16 +42,8 @@ namespace profiler {
 
 class ProfileScope {
 public:
-	explicit ProfileScope(const char* tag)
-		: m_tag(tag)
-		, m_startTime(platform::getTimeUs())
-	{
-		arx_assert(tag != 0 && tag[0] != '\0');
-	}
-	
-	~ProfileScope() {
-		profiler::addProfilePoint(m_tag, Thread::getCurrentThreadId(), m_startTime, platform::getTimeUs());
-	}
+	explicit ProfileScope(const char* tag);
+	~ProfileScope();
 	
 private:
 	const char* m_tag;
