@@ -189,6 +189,8 @@ else(MSVC)
 	
 	if(SET_OPTIMIZATION_FLAGS)
 		
+		add_cxxflag("-fno-rtti")
+		
 		if(MACOSX)
 			# TODO For some reason this check succeeds on OS X, but then
 			# flag causes the actual build to fail :(
