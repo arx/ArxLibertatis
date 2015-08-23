@@ -25,14 +25,14 @@
 
 #include <map>
 
-struct ProfilePoint {
+struct ProfileSample {
 	QString tag;
 	quint64 threadId;
 	quint64 startTime;
 	quint64 endTime;
 };
 
-struct ThreadInfo {
+struct ProfileThread {
 	QString threadName;
 	quint64 threadId;
 	quint64 startTime;
@@ -48,8 +48,8 @@ struct ThreadData {
 		maxDepth = 0;
 	}
 
-	ThreadInfo                  info;
-	std::vector<ProfilePoint>   profilePoints;
+	ProfileThread                  info;
+	std::vector<ProfileSample>   profilePoints;
 	quint32                     maxDepth;
 };
 

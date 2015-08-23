@@ -127,10 +127,10 @@ void ArxProfiler::openFile() {
 		if(chunk.type == ArxProfilerChunkType_Threads) {
 			int chunkPos = 0;
 			while(chunkPos < chunkData.size()) {
-				SavedProfilerSample saved;
+				SavedProfilerThread saved;
 				readStruct(saved, chunkData, chunkPos);
 				
-				ThreadInfo & thread = m_threads[saved.threadId].info;
+				ProfileThread & thread = m_threads[saved.threadId].info;
 				thread.threadId = saved.threadId;
 				thread.threadName = m_strings.at(saved.stringIndex);
 				thread.startTime = saved.startTime;
@@ -141,16 +141,16 @@ void ArxProfiler::openFile() {
 		if(chunk.type == ArxProfilerChunkType_Samples) {
 			int pos = 0;
 			while(pos < chunkData.size()) {
-				SavedProfilerThread saved;
+				SavedProfilerSample saved;
 				readStruct(saved, chunkData, pos);
 				
-				ProfilePoint point;
-				point.tag = m_strings.at(saved.stringIndex);
-				point.threadId = saved.threadId;
-				point.startTime = saved.startTime;
-				point.endTime = saved.endTime;
+				ProfileSample sample;
+				sample.tag = m_strings.at(saved.stringIndex);
+				sample.threadId = saved.threadId;
+				sample.startTime = saved.startTime;
+				sample.endTime = saved.endTime;
 				
-				m_threads[point.threadId].profilePoints.push_back(point);
+				m_threads[sample.threadId].profilePoints.push_back(sample);
 			}
 		}
 	}
@@ -263,7 +263,7 @@ void ProfilerView::setData(ThreadsData * data) {
 		
 		std::vector<quint64> threadStack;
 		
-		for(std::vector<ProfilePoint>::const_reverse_iterator it = threadData.profilePoints.rbegin(); it != threadData.profilePoints.rend(); ++it) {
+		for(std::vector<ProfileSample>::const_reverse_iterator it = threadData.profilePoints.rbegin(); it != threadData.profilePoints.rend(); ++it) {
 			
 			while(!threadStack.empty()) {
 				if(it->endTime <= threadStack.back()) {
