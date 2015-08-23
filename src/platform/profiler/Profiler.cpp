@@ -36,9 +36,12 @@
 #include "io/fs/FilePath.h"
 #include "io/fs/FileStream.h"
 #include "io/log/Logger.h"
-#include "util/String.h"
 
+#include "platform/Thread.h"
+#include "platform/Time.h"
 #include "platform/profiler/ProfilerDataFormat.h"
+
+#include "util/String.h"
 
 class Profiler {
 	
@@ -289,10 +292,6 @@ void profiler::unregisterThread() {
 	g_profiler.unregisterThread();
 }
 
-void profiler::addProfilePoint(const char * tag, thread_id_type threadId, u64 startTime, u64 endTime) {
-	g_profiler.addProfilePoint(tag, threadId, startTime, endTime);
-}
-
 
 ProfileScope::ProfileScope(const char * tag)
 	: m_tag(tag)
@@ -302,7 +301,7 @@ ProfileScope::ProfileScope(const char * tag)
 }
 
 ProfileScope::~ProfileScope() {
-	profiler::addProfilePoint(m_tag, Thread::getCurrentThreadId(), m_startTime, platform::getTimeUs());
+	g_profiler.addProfilePoint(m_tag, Thread::getCurrentThreadId(), m_startTime, platform::getTimeUs());
 }
 
 #else

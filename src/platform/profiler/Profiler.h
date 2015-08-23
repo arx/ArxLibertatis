@@ -20,9 +20,9 @@
 #ifndef ARX_PLATFORM_PROFILER_PROFILER_H
 #define ARX_PLATFORM_PROFILER_PROFILER_H
 
+#include <string>
+
 #include "platform/Platform.h"
-#include "platform/Thread.h"
-#include "platform/Time.h"
 
 namespace profiler {
 	
@@ -34,8 +34,6 @@ namespace profiler {
 	
 	void registerThread(const std::string& threadName);
 	void unregisterThread();
-	
-	void addProfilePoint(const char* tag, thread_id_type threadId, u64 startTime, u64 endTime);
 }
 
 #if BUILD_PROFILER_INSTRUMENT
