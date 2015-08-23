@@ -213,7 +213,6 @@ ProfilerView::ProfilerView(QWidget* parent)
 {
 	setBackgroundBrush(QBrush(QColor(160, 160, 160)));
 	setAlignment(Qt::AlignLeft | Qt::AlignTop);
-	setRenderHint(QPainter::HighQualityAntialiasing, true);
 	setViewportUpdateMode(QGraphicsView::FullViewportUpdate);
 	setOptimizationFlags(QGraphicsView::DontSavePainterState);
 	setHorizontalScrollBarPolicy(Qt::ScrollBarAlwaysOff);
