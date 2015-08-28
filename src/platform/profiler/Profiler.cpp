@@ -319,11 +319,4 @@ void profiler::registerThread(const std::string & threadName) {
 void profiler::unregisterThread() {
 }
 
-void profiler::addProfilePoint(const char * tag, thread_id_type threadId, u64 startTime, u64 endTime) {
-	ARX_UNUSED(tag);
-	ARX_UNUSED(threadId);
-	ARX_UNUSED(startTime);
-	ARX_UNUSED(endTime);
-}
-
 #endif // BUILD_PROFILER_INSTRUMENT
