@@ -30,6 +30,7 @@
 #include "io/resource/PakEntry.h"
 #include "io/resource/ResourcePath.h"
 #include "io/log/Logger.h"
+#include "util/Unicode.h"
 
 using std::transform;
 using std::ostringstream;
@@ -43,15 +44,21 @@ static void dump(PakDirectory & dir, const fs::path & dirname = fs::path()) {
 	
 	for(PakDirectory::files_iterator i = dir.files_begin(); i != dir.files_end(); ++i) {
 		
-		fs::path filename = dirname / i->first;
+		fs::path filenameISO = dirname / i->first;
 		
 		PakFile * file = i->second;
 		
-		printf("%s\n", filename.string().c_str());
+#if ARX_PLATFORM == ARX_PLATFORM_WIN32
+		std::string filename = filenameISO.string();
+#else
+		std::string filename = util::convert<util::ISO_8859_1, util::UTF8>(filenameISO.string().c_str());
+#endif
+		
+		printf("%s\n", filename.c_str());
 		
 		fs::ofstream ofs(filename, fs::fstream::out | fs::fstream::binary | fs::fstream::trunc);
 		if(!ofs.is_open()) {
-			printf("error opening file for writing: %s\n", filename.string().c_str());
+			printf("error opening file for writing: %s\n", filename.c_str());
 			exit(1);
 		}
 		
@@ -61,7 +68,7 @@ static void dump(PakDirectory & dir, const fs::path & dirname = fs::path()) {
 			arx_assert(data != NULL);
 			
 			if(ofs.write(data, file->size()).fail()) {
-				printf("error writing to file: %s\n", filename.string().c_str());
+				printf("error writing to file: %s\n", filename.c_str());
 				exit(1);
 			}
 			
