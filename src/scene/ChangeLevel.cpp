@@ -1775,10 +1775,11 @@ static long ARX_CHANGELEVEL_Pop_Player() {
 		}
 	}
 	
+	assert(SAVED_INVENTORY_BAGS == 3);
 	assert(SAVED_INVENTORY_Y == INVENTORY_Y);
 	assert(SAVED_INVENTORY_X == INVENTORY_X);
 	
-	for(size_t bag = 0; bag < 3; bag++)
+	for(size_t bag = 0; bag < SAVED_INVENTORY_BAGS; bag++)
 	for(size_t y = 0; y < SAVED_INVENTORY_Y; y++)
 	for(size_t x = 0; x < SAVED_INVENTORY_X; x++) {
 		inventory[bag][x][y].io = ConvertToValidIO(asp->id_inventory[bag][x][y]);

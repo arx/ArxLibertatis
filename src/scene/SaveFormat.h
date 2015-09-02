@@ -306,6 +306,7 @@ struct SavedPrecast {
 	
 };
 
+const size_t SAVED_INVENTORY_BAGS = 3;
 const size_t SAVED_INVENTORY_X = 16;
 const size_t SAVED_INVENTORY_Y = 3;
 const size_t SAVED_MAX_MINIMAPS = 32;
@@ -377,8 +378,8 @@ struct ARX_CHANGELEVEL_PLAYER {
 	u32 jumpstarttime;
 	s32 jumpphase;	// 0 no jump, 1 doing anticipation anim
 	
-	char id_inventory[3][SAVED_INVENTORY_X][SAVED_INVENTORY_Y][SIZE_ID];
-	s32 inventory_show[3][SAVED_INVENTORY_X][SAVED_INVENTORY_Y];
+	char id_inventory[SAVED_INVENTORY_BAGS][SAVED_INVENTORY_X][SAVED_INVENTORY_Y][SIZE_ID];
+	s32 inventory_show[SAVED_INVENTORY_BAGS][SAVED_INVENTORY_X][SAVED_INVENTORY_Y];
 	SavedMiniMap minimap[SAVED_MAX_MINIMAPS];
 	char equiped[SAVED_MAX_EQUIPED][SIZE_ID];
 	s32 nb_PlayerQuest;
