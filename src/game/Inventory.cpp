@@ -756,11 +756,10 @@ bool CanBePutInSecondaryInventory(INVENTORY_DATA * id, Entity * io)
 	   && sInventoryPos.y >= 0
 	   && sInventoryPos.y <= id->m_size.y - s.y
 	) {
-		long y = sInventoryPos.y;
-		long x = sInventoryPos.x;
+		Vec2s pos = sInventoryPos;
 		// first try to stack
 		
-		Entity * ioo = id->slot[x][y].io;
+		Entity * ioo = id->slot[pos.x][pos.y].io;
 		
 		if(   ioo
 		   && ioo->_itemdata->playerstacksize > 1
@@ -781,7 +780,7 @@ bool CanBePutInSecondaryInventory(INVENTORY_DATA * id, Entity * io)
 			return true;
 		}
 		
-		ioo = id->slot[x][y].io;
+		ioo = id->slot[pos.x][pos.y].io;
 		
 		if(!ioo) {
 			long valid = 1;
@@ -789,8 +788,8 @@ bool CanBePutInSecondaryInventory(INVENTORY_DATA * id, Entity * io)
 			if(s.x == 0 || s.y == 0)
 				valid = 0;
 			
-			for(long y2 = y; y2 < y + s.y; y2++)
-			for(long x2 = x; x2 < x + s.x; x2++) {
+			for(long y2 = pos.y; y2 < pos.y + s.y; y2++)
+			for(long x2 = pos.x; x2 < pos.x + s.x; x2++) {
 				if(id->slot[x2][y2].io != NULL) {
 					valid = 0;
 					break;
@@ -798,13 +797,13 @@ bool CanBePutInSecondaryInventory(INVENTORY_DATA * id, Entity * io)
 			}
 			
 			if(valid) {
-				for(long y2 = y; y2 < y + s.y; y2++)
-				for(long x2 = x; x2 < x + s.x; x2++) {
+				for(long y2 = pos.y; y2 < pos.y + s.y; y2++)
+				for(long x2 = pos.x; x2 < pos.x + s.x; x2++) {
 					id->slot[x2][y2].io = io;
 					id->slot[x2][y2].show = 0;
 				}
 				
-				id->slot[x][y].show = 1;
+				id->slot[pos.x][pos.y].show = 1;
 				sInventory = -1;
 				return true;
 			}
