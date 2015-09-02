@@ -48,7 +48,7 @@ void HudIconBase::draw() {
 	}
 	
 	if(m_haloActive && m_tex->getHalo()) {
-		ARX_INTERFACE_HALO_Render(m_haloColor, HALO_ACTIVE, m_tex->getHalo(), m_rect.topLeft());
+		ARX_INTERFACE_HALO_Render(m_haloColor, HALO_ACTIVE, m_tex->getHalo(), m_rect.topLeft(), Vec2f(m_scale));
 	}
 }
 
