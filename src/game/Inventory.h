@@ -56,11 +56,11 @@ class Entity;
 
 struct INVENTORY_SLOT {
 	Entity * io;
-	long show;
+	bool show;
 	
 	INVENTORY_SLOT()
 		: io(NULL)
-		, show(0)
+		, show(false)
 	{}
 };
 

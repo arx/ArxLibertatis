@@ -460,7 +460,7 @@ void SecondaryInventoryHud::dropEntity() {
 			for(long j = 0; j < s.y; j++) {
 			for(long i = 0; i < s.x; i++) {
 				SecondaryInventory->slot[t.x+i][t.y+j].io = DRAGINTER;
-				SecondaryInventory->slot[t.x+i][t.y+j].show = 0;
+				SecondaryInventory->slot[t.x+i][t.y+j].show = false;
 			}
 			}
 			
@@ -470,7 +470,7 @@ void SecondaryInventoryHud::dropEntity() {
 				ARX_SOUND_PlayInterface(SND_GOLD);
 			}
 
-			SecondaryInventory->slot[t.x][t.y].show = 1;
+			SecondaryInventory->slot[t.x][t.y].show = true;
 			DRAGINTER->show = SHOW_FLAG_IN_INVENTORY;
 			ARX_SOUND_PlayInterface(SND_INVSTD);
 			Set_DragInter(NULL);
@@ -547,7 +547,7 @@ bool SecondaryInventoryHud::dragEntity(Entity * io, const Vec2s & pos) {
 				continue;
 			
 			slot.io = NULL;
-			slot.show = 1;
+			slot.show = true;
 			sInventory = 2;
 			
 			float fCalcX = (pos.x + InventoryX - (2 * m_scale)) / (32 * m_scale);

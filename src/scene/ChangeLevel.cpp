@@ -2428,7 +2428,7 @@ static void ARX_CHANGELEVEL_PopAllIO_FINISH(bool reloadflag, bool firstTime) {
 					for(long x = 0; x < inv->m_size.x; x++)
 					for(long y = 0; y < inv->m_size.y; y++) {
 						inv->slot[x][y].io = NULL;
-						inv->slot[x][y].show = 0;
+						inv->slot[x][y].show = false;
 					}
 				} else {
 					for(long x = 0; x < inv->m_size.x; x++)

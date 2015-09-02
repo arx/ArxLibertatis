@@ -146,7 +146,7 @@ void CleanInventory() {
 		INVENTORY_SLOT & slot = inventory[bag][x][y];
 		
 		slot.io	 = NULL;
-		slot.show = 1;
+		slot.show = true;
 	}
 	
 	g_currentInventoryBag = 0;
@@ -333,7 +333,7 @@ private:
 		for(index_type j = pos.y; j < (pos.y + size_type(item->m_inventorySize.y)); j++) {
 			for(index_type i = pos.x; i < (pos.x + size_type(item->m_inventorySize.x)); i++) {
 				index(pos.bag, i, j).io = NULL;
-				index(pos.bag, i, j).show = 0;
+				index(pos.bag, i, j).show = false;
 			}
 		}
 	}
@@ -368,10 +368,10 @@ private:
 		for(index_type j = pos.y; j < (pos.y + item->m_inventorySize.y); j++) {
 			for (index_type i = pos.x; i < (pos.x + item->m_inventorySize.x); i++) {
 				index(pos.bag, i, j).io = item;
-				index(pos.bag, i, j).show = 0;
+				index(pos.bag, i, j).show = false;
 			}
 		}
-		index(pos).show = 1;
+		index(pos).show = true;
 		
 		return true;
 	}
@@ -532,7 +532,7 @@ public:
 						removeAt(slot.io, Pos(io, bag, i, j));
 					}
 					slot.io = NULL;
-					slot.show = 0;
+					slot.show = false;
 				}
 			}
 		}
@@ -599,7 +599,7 @@ public:
 				for(size_t i = 0; i < width; i++) {
 					if(index(pos.bag, i, j).io == item) {
 						index(pos.bag, i, j).io = NULL;
-						index(pos.bag, i, j).show = 0;
+						index(pos.bag, i, j).show = false;
 					}
 				}
 			}
@@ -800,10 +800,10 @@ bool CanBePutInSecondaryInventory(INVENTORY_DATA * id, Entity * io)
 				for(long y2 = pos.y; y2 < pos.y + s.y; y2++)
 				for(long x2 = pos.x; x2 < pos.x + s.x; x2++) {
 					id->slot[x2][y2].io = io;
-					id->slot[x2][y2].show = 0;
+					id->slot[x2][y2].show = false;
 				}
 				
-				id->slot[pos.x][pos.y].show = 1;
+				id->slot[pos.x][pos.y].show = true;
 				sInventory = -1;
 				return true;
 			}
@@ -855,10 +855,10 @@ bool CanBePutInSecondaryInventory(INVENTORY_DATA * id, Entity * io)
 				for(long y2 = y; y2 < y + s.y; y2++)
 				for(long x2 = x; x2 < x + s.x; x2++) {
 					id->slot[x2][y2].io = io;
-					id->slot[x2][y2].show = 0;
+					id->slot[x2][y2].show = false;
 				}
 				
-				id->slot[x][y].show = 1;
+				id->slot[x][y].show = true;
 				return true;
 			}
 		}
@@ -1049,7 +1049,7 @@ void RemoveFromAllInventories(const Entity * io) {
 		for(long k = 0; k < id->m_size.x; k++) {
 			if(id->slot[k][j].io == io) {
 				id->slot[k][j].io = NULL;
-				id->slot[k][j].show = 1;
+				id->slot[k][j].show = true;
 			}
 		}
 		}

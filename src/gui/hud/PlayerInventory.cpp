@@ -582,11 +582,11 @@ void PlayerInventoryHud::dropEntity() {
 	for(long j = 0; j < s.y; j++) {
 		for(long i = 0; i < s.x; i++) {
 			inventory[bag][t.x+i][t.y+j].io = DRAGINTER;
-			inventory[bag][t.x+i][t.y+j].show = 0;
+			inventory[bag][t.x+i][t.y+j].show = false;
 		}
 	}
 	
-	inventory[bag][t.x][t.y].show = 1;
+	inventory[bag][t.x][t.y].show = true;
 	
 	ARX_INVENTORY_Declare_InventoryIn(DRAGINTER);
 	ARX_SOUND_PlayInterface(SND_INVSTD);
@@ -642,7 +642,7 @@ void PlayerInventoryHud::dragEntity(Entity * io, const Vec2s &pos) {
 		
 		if(slot.io == io) {
 			slot.io = NULL;
-			slot.show = 1;
+			slot.show = true;
 			sInventory = 1;
 			
 			float fX = (pos.x - iPos.x) / (32 * m_scale);
