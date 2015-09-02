@@ -95,7 +95,7 @@ void ARX_INVENTORY_ReOrder();
 
 //------------------------------------------------------------------------------------
 //CInventory Inventory;
-INVENTORY_SLOT inventory[3][INVENTORY_X][INVENTORY_Y];
+INVENTORY_SLOT inventory[INVENTORY_BAGS][INVENTORY_X][INVENTORY_Y];
 INVENTORY_DATA * SecondaryInventory = NULL;
 Entity * DRAGINTER = NULL;
 Entity * ioSteal = NULL;
@@ -140,7 +140,7 @@ void ARX_INVENTORY_Declare_InventoryIn(Entity * io) {
  */
 void CleanInventory() {
 	
-	for(size_t bag = 0; bag < 3; bag++)
+	for(size_t bag = 0; bag < INVENTORY_BAGS; bag++)
 	for(size_t y = 0; y < INVENTORY_Y; y++)
 	for(size_t x = 0; x < INVENTORY_X; x++) {
 		INVENTORY_SLOT & slot = inventory[bag][x][y];
@@ -613,8 +613,8 @@ public:
 	
 };
 
-Inventory<3, INVENTORY_X, INVENTORY_Y> getPlayerInventory() {
-	return Inventory<3, INVENTORY_X, INVENTORY_Y>(0, inventory, player.bag,
+Inventory<INVENTORY_BAGS, INVENTORY_X, INVENTORY_Y> getPlayerInventory() {
+	return Inventory<INVENTORY_BAGS, INVENTORY_X, INVENTORY_Y>(0, inventory, player.bag,
 	                                              INVENTORY_X, INVENTORY_Y);
 }
 

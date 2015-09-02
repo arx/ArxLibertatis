@@ -76,11 +76,12 @@ struct INVENTORY_DATA {
 	{}
 };
 
+const size_t INVENTORY_BAGS = 3;
 const size_t INVENTORY_X = 16;
 const size_t INVENTORY_Y = 3;
 
 // TODO this should be completely wrapped in PlayerInventory!
-extern INVENTORY_SLOT inventory[3][INVENTORY_X][INVENTORY_Y];
+extern INVENTORY_SLOT inventory[INVENTORY_BAGS][INVENTORY_X][INVENTORY_Y];
 
 extern INVENTORY_DATA * SecondaryInventory;
 extern INVENTORY_DATA * TSecondaryInventory;

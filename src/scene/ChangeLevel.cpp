@@ -675,7 +675,7 @@ static long ARX_CHANGELEVEL_Push_Player(long level) {
 	}
 	
 	//inventaires
-	for(size_t bag = 0; bag < 3; bag++)
+	for(size_t bag = 0; bag < INVENTORY_BAGS; bag++)
 	for(size_t y = 0; y < INVENTORY_Y; y++)
 	for(size_t x = 0; x < INVENTORY_X; x++) {
 		storeIdString(asp->id_inventory[bag][x][y], inventory[bag][x][y].io);
@@ -1775,7 +1775,7 @@ static long ARX_CHANGELEVEL_Pop_Player() {
 		}
 	}
 	
-	assert(SAVED_INVENTORY_BAGS == 3);
+	assert(SAVED_INVENTORY_BAGS == INVENTORY_BAGS);
 	assert(SAVED_INVENTORY_Y == INVENTORY_Y);
 	assert(SAVED_INVENTORY_X == INVENTORY_X);
 	
