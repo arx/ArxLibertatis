@@ -107,10 +107,10 @@ class InventoryCommand : public Command {
 				return;
 			}
 			
-			for(long nj = 0; nj < id->m_size.y; nj++) {
-				for(long ni = 0; ni < id->m_size.x; ni++) {
-					Entity * item = id->slot[ni][nj].io;
-					if(item && id->slot[ni][nj].show) {
+			for(long y = 0; y < id->m_size.y; y++) {
+				for(long x = 0; x < id->m_size.x; x++) {
+					Entity * item = id->slot[x][y].io;
+					if(item && id->slot[x][y].show) {
 						// Delay destruction of the object to avoid invalid references
 						if(item->ioflags & IO_ITEM) {
 							item->_itemdata->count = 1;
@@ -120,7 +120,7 @@ class InventoryCommand : public Command {
 						item->show = SHOW_FLAG_MEGAHIDE;
 						item->ioflags |= IO_FREEZESCRIPT;
 					}
-					id->slot[ni][nj].io = NULL;
+					id->slot[x][y].io = NULL;
 				}
 			}
 			
