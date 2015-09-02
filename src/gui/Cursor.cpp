@@ -667,7 +667,7 @@ static void ARX_INTERFACE_RenderCursorInternal(bool flag) {
 					}
 					
 					if(haloTc) {
-						ARX_INTERFACE_HALO_Draw(DRAGINTER, tc, haloTc, pos);
+						ARX_INTERFACE_HALO_Draw(DRAGINTER, tc, haloTc, pos, Vec2f(1));
 					}
 				} else {
 					cursorAnimatedHand.update2();

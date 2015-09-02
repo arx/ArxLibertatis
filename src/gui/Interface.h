@@ -238,8 +238,8 @@ void ARX_INTERFACE_NoteClear();
 void ARX_INTERFACE_HALO_Flush();
 bool NeedHalo(Entity * io);
 
-void ARX_INTERFACE_HALO_Render(Color3f color, long _lHaloType, TextureContainer * haloTexture, Vec2f pos, Vec2f ratio = Vec2f(1));
-void ARX_INTERFACE_HALO_Draw(Entity * io, TextureContainer * tc, TextureContainer * tc2, Vec2f pos, Vec2f ratio = Vec2f(1));
+void ARX_INTERFACE_HALO_Render(Color3f color, long _lHaloType, TextureContainer * haloTexture, Vec2f pos, Vec2f ratio);
+void ARX_INTERFACE_HALO_Draw(Entity * io, TextureContainer * tc, TextureContainer * tc2, Vec2f pos, Vec2f ratio);
 void ReleaseHalo();
 void ResetPlayerInterface();
 void Set_DragInter(Entity * io);
