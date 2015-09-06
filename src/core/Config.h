@@ -130,6 +130,8 @@ public:
 		CinematicWidescreenMode cinematicWidescreenMode;
 		
 		bool hudScale;
+
+		Vec2i thumbnailSize;
 	} video;
 	
 	// section 'window'
