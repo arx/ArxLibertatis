@@ -44,6 +44,8 @@ namespace Default {
 
 #define ARX_DEFAULT_WIDTH 640
 #define ARX_DEFAULT_HEIGHT 480
+#define THUMBNAIL_DEFAULT_WIDTH 320
+#define THUMBNAIL_DEFAULT_HEIGHT 200
 
 const std::string
 	language = std::string(),
@@ -54,7 +56,10 @@ const std::string
 	windowSize = BOOST_PP_STRINGIZE(ARX_DEFAULT_WIDTH) "x"
 	             BOOST_PP_STRINGIZE(ARX_DEFAULT_HEIGHT),
 	debugLevels = "",
-	bufferUpload = "";
+	bufferUpload = "",
+	
+	thumbnailSize = BOOST_PP_STRINGIZE(THUMBNAIL_DEFAULT_WIDTH) "x"
+					BOOST_PP_STRINGIZE(THUMBNAIL_DEFAULT_HEIGHT);
 
 const int
 	levelOfDetail = 2,
@@ -169,7 +174,8 @@ const std::string
 	cinematicWidescreenMode = "cinematic_widescreen_mode",
 	hudScale = "hud_scale",
 	bufferSize = "buffer_size",
-	bufferUpload = "buffer_upload";
+	bufferUpload = "buffer_upload",
+	thumbnailSize = "save_thumbnail_size";
 
 // Window options
 const std::string
@@ -402,6 +408,10 @@ bool Config::save() {
 	writer.writeKey(Key::bufferSize, video.bufferSize);
 	writer.writeKey(Key::bufferUpload, video.bufferUpload);
 	
+	std::ostringstream osst;
+	osst << video.thumbnailSize.x << 'x' << video.thumbnailSize.y;
+	writer.writeKey(Key::thumbnailSize, osst.str());
+	
 	// window
 	writer.beginSection(Section::Window);
 	writer.writeKey(Key::windowFramework, window.framework);
@@ -464,6 +474,24 @@ static Vec2i parseResolution(const std::string & resolution) {
 	}
 }
 
+static Vec2i parseThumbnailSize(const std::string & thumbnailSize) {
+
+	Vec2i res;
+
+	std::istringstream iss(thumbnailSize);
+	iss >> res.x;
+	char x = '\0';
+	iss >> x;
+	iss >> res.y;
+	if (iss.fail() || x != 'x' || res.x <= 0 || res.y <= 0) {
+		LogWarning << "Bad thumbnail resolution string: " << thumbnailSize;
+		return Vec2i(THUMBNAIL_DEFAULT_WIDTH, THUMBNAIL_DEFAULT_HEIGHT);
+	}
+	else {
+		return res;
+	}
+}
+
 bool Config::init(const fs::path & file) {
 	
 	fs::ifstream ifs;
@@ -502,6 +530,9 @@ bool Config::init(const fs::path & file) {
 	video.hudScale = reader.getKey(Section::Video, Key::hudScale, Default::hudScale);
 	video.bufferSize = std::max(reader.getKey(Section::Video, Key::bufferSize, Default::bufferSize), 0);
 	video.bufferUpload = reader.getKey(Section::Video, Key::bufferUpload, Default::bufferUpload);
+	
+	std::string thumbnailSize = reader.getKey(Section::Video, Key::thumbnailSize, Default::thumbnailSize);
+	video.thumbnailSize = parseThumbnailSize(thumbnailSize);
 	
 	// Get window settings
 	window.framework = reader.getKey(Section::Window, Key::windowFramework, Default::windowFramework);

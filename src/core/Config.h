@@ -122,6 +122,7 @@ public:
 		int bufferSize;
 		std::string bufferUpload;
 		
+		Vec2i thumbnailSize;
 	} video;
 	
 	// section 'window'
