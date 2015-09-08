@@ -1783,7 +1783,7 @@ static long ARX_CHANGELEVEL_Pop_Player() {
 	for(size_t y = 0; y < SAVED_INVENTORY_Y; y++)
 	for(size_t x = 0; x < SAVED_INVENTORY_X; x++) {
 		inventory[bag][x][y].io = ConvertToValidIO(asp->id_inventory[bag][x][y]);
-		inventory[bag][x][y].show = asp->inventory_show[bag][x][y];
+		inventory[bag][x][y].show = asp->inventory_show[bag][x][y] != 0;
 	}
 	
 	if(size < pos + (asp->nb_PlayerQuest * 80)) {
@@ -2436,7 +2436,7 @@ static void ARX_CHANGELEVEL_PopAllIO_FINISH(bool reloadflag, bool firstTime) {
 					for(long y = 0; y < inv->m_size.y; y++) {
 						inv->slot[x][y].io = ConvertToValidIO(aids->slot_io[x][y]);
 						converted += CONVERT_CREATED;
-						inv->slot[x][y].show = aids->slot_show[x][y];
+						inv->slot[x][y].show = aids->slot_show[x][y] != 0;
 					}
 				}
 			}
