@@ -133,7 +133,7 @@ void Profiler::flush() {
 }
 
 
-template<typename T>
+template <typename T>
 void writeStruct(std::ofstream & out, T & data, size_t & pos) {
 	out.write((const char*)&data, sizeof(T));
 	pos += sizeof(T);
