@@ -60,11 +60,11 @@ ArxProfiler::~ArxProfiler() {
 	delete ui;
 }
 
-template<typename T>
+template <typename T>
 void readStruct(T & out, QByteArray & data, int & pos) {
 	
 	out = *reinterpret_cast<const T *>(data.mid(pos, sizeof(T)).constData());
-	pos += sizeof(T);
+	pos += int(sizeof(T));
 }
 
 void ArxProfiler::openFile() {
@@ -102,11 +102,12 @@ void ArxProfiler::openFile() {
 	while(filePos < fileData.size()){
 		SavedProfilerChunkHeader chunk;
 		readStruct(chunk, fileData, filePos);
-	
-		qDebug() << "Reading chunk at offset" << filePos << "type" << chunk.type << "size" << chunk.size;
-		QByteArray chunkData = fileData.mid(filePos, chunk.size);
-		if(chunkData.size() != int(chunk.size)) {
-			qWarning() << "Chunk too short, expected" << chunk.size << "got" << chunkData.size();
+		
+		int chunkSize = int(chunk.size);
+		qDebug() << "Reading chunk at offset" << filePos << "type" << chunk.type << "size" << chunkSize;
+		QByteArray chunkData = fileData.mid(filePos, chunkSize);
+		if(chunkData.size() != chunkSize) {
+			qWarning() << "Chunk too short, expected" << chunkSize << "got" << chunkData.size();
 			return;
 		}
 			
@@ -209,8 +210,8 @@ private:
 };
 
 
-const quint32 ITEM_HEIGHT = 15;
-const quint32 THREAD_SPACING = 50;
+const qreal ITEM_HEIGHT = 15;
+const qreal THREAD_SPACING = 50;
 
 ProfilerView::ProfilerView(QWidget* parent)
 	: QGraphicsView(parent)
@@ -254,7 +255,7 @@ void ProfilerView::setData(ThreadsData * data) {
 	m_scene->clear();
 	
 	// reverse iterate
-	int nextPos = 8;
+	qreal nextPos = 8;
 	
 	QPen profilePointPen(Qt::black);
 	profilePointPen.setCosmetic(true);
@@ -276,13 +277,13 @@ void ProfilerView::setData(ThreadsData * data) {
 					break;
 				}
 			}
-			qreal offset = ITEM_HEIGHT * threadStack.size();
+			qreal offset = ITEM_HEIGHT * qreal(threadStack.size());
 			
 			threadStack.push_back(it->startTime);
 			if(threadStack.size() > threadData.maxDepth)
 				threadData.maxDepth = threadStack.size();
 			
-			double duration = it->endTime - it->startTime;
+			qreal duration = qreal(it->endTime - it->startTime);
 			
 			const char* unitName = humanReadableTime(duration);
 			
@@ -290,7 +291,7 @@ void ProfilerView::setData(ThreadsData * data) {
 			duration = (int)(duration * 100);
 			duration /= 100;
 			
-			QRectF rect(it->startTime - firstTimestamp, offset, it->endTime - it->startTime, ITEM_HEIGHT);
+			QRectF rect(qreal(it->startTime - firstTimestamp), offset, qreal(it->endTime - it->startTime), ITEM_HEIGHT);
 			QGraphicsProfilePoint* profilePoint = new QGraphicsProfilePoint(rect, group);
 			
 			QString text = QString("%3 (%1 %2)").arg(duration).arg(unitName).arg(it->tag);
@@ -308,10 +309,10 @@ void ProfilerView::setData(ThreadsData * data) {
 		}
 		group->setPos(0, nextPos);
 		
-		nextPos += threadData.maxDepth * ITEM_HEIGHT + THREAD_SPACING;
+		nextPos += qreal(threadData.maxDepth) * ITEM_HEIGHT + THREAD_SPACING;
 	}
 	
-	setSceneRect(0, 0, lastTimestamp - firstTimestamp, nextPos);
+	setSceneRect(0, 0, qreal(lastTimestamp - firstTimestamp), nextPos);
 
 	scale(size().width() / (qreal)(lastTimestamp - firstTimestamp), 1.0);
 	
@@ -331,7 +332,7 @@ void ProfilerView::paintEvent(QPaintEvent * event) {
 	QPainter painter(viewport());
 	painter.setPen(Qt::white);
 	
-	int nextY = 5;
+	qreal nextY = 5;
 	
 	for(ThreadsData::iterator it = m_data->begin(); it != m_data->end(); ++it) {
 		ThreadData& threadData = it->second;
@@ -339,7 +340,7 @@ void ProfilerView::paintEvent(QPaintEvent * event) {
 		painter.drawLine(QPointF(0, nextY), QPointF(viewport()->width(), nextY));
 		painter.drawText(QPointF(0, nextY + 14), threadData.info.threadName);
 		
-		nextY += threadData.maxDepth * ITEM_HEIGHT + THREAD_SPACING;
+		nextY += qreal(threadData.maxDepth) * ITEM_HEIGHT + THREAD_SPACING;
 	}
 	
 	painter.end();
@@ -407,11 +408,11 @@ void ProfilerView::copyToClipboard() {
 	}
 }
 
-const char * ProfilerView::humanReadableTime(double & duration) {
+const char * ProfilerView::humanReadableTime(qreal & duration) {
 	
 	static const qint32 NUM_UNITS = 5;
 	static const char*  UNIT_NAME[NUM_UNITS + 1] = {"us", "ms", "s", "m", "h", "d"};
-	static const qint64 UNIT_NEXT[NUM_UNITS] =     {1000, 1000,  60,  60,  24     };
+	static const qreal  UNIT_NEXT[NUM_UNITS] =     {1000, 1000,  60,  60,  24     };
 	
 	int i;
 	for(i = 0; i < NUM_UNITS; i++) {

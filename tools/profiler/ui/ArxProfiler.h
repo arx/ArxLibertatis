@@ -50,7 +50,7 @@ struct ThreadData {
 
 	ProfileThread                  info;
 	std::vector<ProfileSample>   profilePoints;
-	quint32                     maxDepth;
+	size_t                     maxDepth;
 };
 
 typedef std::map<quint64, ThreadData> ThreadsData;
@@ -79,7 +79,7 @@ private:
 	
 	QPointF viewCenter() const;
 	void zoomEvent(QPoint mousePos, bool zoomIn);
-	const char * humanReadableTime(double & duration);
+	const char * humanReadableTime(qreal & duration);
 };
 
 namespace Ui {
