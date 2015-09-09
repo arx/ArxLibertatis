@@ -10,7 +10,7 @@ if(MSVC)
 		set(CMAKE_LIBRARY_ARCHITECTURE "x86")
 	endif()
 else()
-	cmake_minimum_required(VERSION 2.8)
+	cmake_minimum_required(VERSION 2.8.3)
 endif()
 
 # Eliminate a warning on Windows with CMake 2.8.11
