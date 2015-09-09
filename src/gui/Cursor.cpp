@@ -121,7 +121,7 @@ bool Manage3DCursor(Entity * io, bool simulate) {
 	if(ag > 180)
 		ag = ag - 360;
 
-	float drop_miny = (float)(g_size.center().y) - g_size.center().y * (ag * (1.f/70));
+	float drop_miny = float(g_size.center().y) - float(g_size.center().y) * ag * (1.f/70);
 
 	if(DANAEMouse.y < drop_miny)
 		return false;
@@ -478,7 +478,7 @@ static void ARX_INTERFACE_RenderCursorInternal(bool flag) {
 		if(ag > 180)
 			ag = ag - 360;
 		
-		float drop_miny=(float)(g_size.center().y)-g_size.center().y*(ag*( 1.0f / 70 ));
+		float drop_miny = float(g_size.center().y) - float(g_size.center().y) * ag * (1.0f/70);
 		
 		if(   DANAEMouse.y > drop_miny
 		   && DRAGINTER
@@ -523,7 +523,7 @@ static void ARX_INTERFACE_RenderCursorInternal(bool flag) {
 						float v=ARX_DAMAGES_ComputeRepairPrice(COMBINE,FlyingOverIO);
 						
 						if(v > 0.f) {
-							long t = v;
+							long t = long(v);
 							Vec2f nuberOffset = Vec2f(-16, -10);
 							ARX_INTERFACE_DrawNumber(mousePos + nuberOffset, t, 6, Color::cyan, 1.f);
 						}
@@ -555,10 +555,7 @@ static void ARX_INTERFACE_RenderCursorInternal(bool flag) {
 				surf = cursorTargetOn;
 				arx_assert(surf);
 				
-				Vec2i size = Vec2i(surf->m_size.x, surf->m_size.y);
-				
-				mousePos.x = 320.f - size.x / 2.f;
-				mousePos.y = 280.f - size.y / 2.f;
+				mousePos = Vec2f(320.f, 280.f) - Vec2f(surf->m_size) * 0.5f;
 				break;
 			}
 			case CURSOR_INTERACTION_ON:
@@ -574,7 +571,7 @@ static void ARX_INTERFACE_RenderCursorInternal(bool flag) {
 			arx_assert(surf);
 			
 			if(SpecialCursor == CURSOR_REDIST) {
-				EERIEDrawBitmap(Rectf(mousePos, surf->m_size.x * g_sizeRatio.x, surf->m_size.y * g_sizeRatio.y),
+				EERIEDrawBitmap(Rectf(mousePos, float(surf->m_size.x) * g_sizeRatio.x, float(surf->m_size.y) * g_sizeRatio.y),
 								0.f, surf, Color::white);
 				
 				Vec2f textPos = Vec2f(DANAEMouse);
@@ -585,7 +582,7 @@ static void ARX_INTERFACE_RenderCursorInternal(bool flag) {
 				ARX_TEXT_Draw(hFontInBook, textPos, ss.str(), Color::black);
 			} else {
 				
-				EERIEDrawBitmap(Rectf(mousePos, surf->m_size.x, surf->m_size.y), 0.f, surf, Color::white);
+				EERIEDrawBitmap(Rectf(mousePos, float(surf->m_size.x), float(surf->m_size.y)), 0.f, surf, Color::white);
 			}
 			
 			SpecialCursor = 0;
@@ -636,7 +633,7 @@ static void ARX_INTERFACE_RenderCursorInternal(bool flag) {
 						pos = MemoMouse;
 					}
 					
-					Rectf rect(pos, tc->m_size.x, tc->m_size.y);
+					Rectf rect(pos, float(tc->m_size.x), float(tc->m_size.y));
 					
 					if(!(DRAGINTER->ioflags & IO_MOVABLE)) {
 						EERIEDrawBitmap(rect, .00001f, tc, color);
@@ -663,7 +660,7 @@ static void ARX_INTERFACE_RenderCursorInternal(bool flag) {
 							tcc = cursorThrowObject;
 						
 						if(tcc && tcc != tc) // to avoid movable double red cross...
-							EERIEDrawBitmap(Rectf(Vec2f(pos.x + 16, pos.y), tcc->m_size.x, tcc->m_size.y), 0.00001f, tcc, Color::white);
+							EERIEDrawBitmap(Rectf(Vec2f(pos.x + 16, pos.y), float(tcc->m_size.x), float(tcc->m_size.y)), 0.00001f, tcc, Color::white);
 					}
 					
 					if(haloTc) {
@@ -674,7 +671,7 @@ static void ARX_INTERFACE_RenderCursorInternal(bool flag) {
 					TextureContainer * surf = cursorAnimatedHand.getCurrentTexture();
 					
 					if(surf) {
-						EERIEDrawBitmap(Rectf(mousePos, surf->m_size.x, surf->m_size.y), 0.f, surf, Color::white);
+						EERIEDrawBitmap(Rectf(mousePos, float(surf->m_size.x), float(surf->m_size.y)), 0.f, surf, Color::white);
 					}
 				}
 			}
@@ -695,10 +692,9 @@ static void ARX_INTERFACE_RenderCursorInternal(bool flag) {
 			GRenderer->SetRenderState(Renderer::AlphaBlending, true);
 			GRenderer->SetBlendFunc(Renderer::BlendOne, Renderer::BlendOne);
 			
-			float POSX = g_size.center().x - surf->m_size.x * .5f;
-			float POSY = g_size.center().y - surf->m_size.y * .5f;
+			Vec2f pos = Vec2f(g_size.center()) - Vec2f(surf->m_size) * .5f;
 			
-			EERIEDrawBitmap(Rectf(Vec2f(POSX, POSY), surf->m_size.x, surf->m_size.y), 0.f, surf, Color3f::gray(.5f).to<u8>());
+			EERIEDrawBitmap(Rectf(pos, float(surf->m_size.x), float(surf->m_size.y)), 0.f, surf, Color3f::gray(.5f).to<u8>());
 			
 			GRenderer->SetRenderState(Renderer::AlphaBlending, false);
 		}
