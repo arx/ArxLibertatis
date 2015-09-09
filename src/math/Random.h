@@ -22,9 +22,12 @@
 
 #include <limits>
 
+#include <boost/type_traits.hpp>
 #include <boost/random/mersenne_twister.hpp>
 #include <boost/random/uniform_int_distribution.hpp>
 #include <boost/random/uniform_real_distribution.hpp>
+
+#include "platform/Platform.h"
 
 /*!
  * Random number generator.
@@ -72,6 +75,8 @@ private:
 
 template <class IntType>
 IntType Random::get(IntType min, IntType max) {
+	ARX_STATIC_ASSERT(boost::is_integral<IntType>::value, "get must be called with ints");
+	
 	return typename boost::random::uniform_int_distribution<IntType>(min, max)(rng);
 }
 
@@ -86,6 +91,8 @@ int Random::get(int min, int max) {
 
 template <class RealType>
 RealType Random::getf(RealType min, RealType max) {
+	ARX_STATIC_ASSERT(boost::is_float<RealType>::value, "getf must be called with floats");
+	
 	return typename boost::random::uniform_real_distribution<RealType>(min, max)(rng);
 }
 

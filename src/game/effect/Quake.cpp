@@ -89,8 +89,8 @@ void ManageQuakeFX(EERIE_CAMERA * cam) {
 		float truepower = periodicity * QuakeFx.intensity * itmod * 0.01f;
 		float halfpower = truepower * .5f;
 		cam->orgTrans.pos += randomVec(-halfpower, halfpower);
-		cam->angle.setYaw(cam->angle.getYaw() + rnd() * truepower - halfpower);
-		cam->angle.setPitch(cam->angle.getPitch() + rnd() * truepower - halfpower);
-		cam->angle.setRoll(cam->angle.getRoll() + rnd() * truepower - halfpower);
+		cam->angle.setYaw(cam->angle.getYaw() + Random::getf() * truepower - halfpower);
+		cam->angle.setPitch(cam->angle.getPitch() + Random::getf() * truepower - halfpower);
+		cam->angle.setRoll(cam->angle.getRoll() + Random::getf() * truepower - halfpower);
 	}
 }

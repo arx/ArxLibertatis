@@ -108,7 +108,7 @@ void ARX_FOGS_Render() {
 		long count = std::max(1l, checked_range_cast<long>(framedelay / flDiv));
 		while(count--) {
 			
-			if(rnd() * 2000.f >= fog.frequency) {
+			if(Random::getf(0.f, 2000.f) >= fog.frequency) {
 				continue;
 			}
 			
@@ -129,7 +129,7 @@ void ARX_FOGS_Render() {
 			pd->scale = Vec3f(fog.scale);
 			pd->tolive = fog.tolive + Random::get(0, fog.tolive);
 			pd->tc = TC_smoke;
-			pd->siz = (fog.size + rnd() * fog.size * 2.f) * (1.0f / 3);
+			pd->siz = (fog.size + Random::getf(0.f, 2.f) * fog.size) * (1.0f / 3);
 			pd->rgb = fog.rgb;
 			pd->fparam = fog.rotatespeed;
 		}

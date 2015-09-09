@@ -1292,7 +1292,7 @@ void ARX_INVENTORY_OpenClose(Entity * _io)
 	}
 
 	if(player.Interface & INTER_INVENTORYALL) {
-		ARX_SOUND_PlayInterface(SND_BACKPACK, 0.9F + 0.2F * rnd());
+		ARX_SOUND_PlayInterface(SND_BACKPACK, Random::getf(0.9f, 1.1f));
 		bInventoryClosing = true;
 	}
 }

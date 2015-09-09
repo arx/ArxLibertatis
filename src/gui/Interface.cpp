@@ -449,7 +449,7 @@ void InventoryOpenClose(unsigned long t) {
 	if(t == 2 && !(player.Interface & INTER_INVENTORY))
 		return;
 
-	ARX_SOUND_PlayInterface(SND_BACKPACK, 0.9F + 0.2F * rnd());
+	ARX_SOUND_PlayInterface(SND_BACKPACK, Random::getf(0.9f, 1.1f));
 
 	if((player.Interface & INTER_INVENTORY) || (player.Interface & INTER_INVENTORYALL)) {
 		bInventoryClosing = true;
@@ -494,14 +494,14 @@ void ARX_INTERFACE_NoteOpen(gui::Note::Type type, const std::string & text) {
 	
 	switch(openNote.type()) {
 		case gui::Note::Notice:
-			ARX_SOUND_PlayInterface(SND_MENU_CLICK, 0.9F + 0.2F * rnd());
+			ARX_SOUND_PlayInterface(SND_MENU_CLICK, Random::getf(0.9f, 1.1f));
 			break;
 		case gui::Note::Book:
-			ARX_SOUND_PlayInterface(SND_BOOK_OPEN, 0.9F + 0.2F * rnd());
+			ARX_SOUND_PlayInterface(SND_BOOK_OPEN, Random::getf(0.9f, 1.1f));
 			break;
 		case gui::Note::SmallNote:
 		case gui::Note::BigNote:
-			ARX_SOUND_PlayInterface(SND_SCROLL_OPEN, 0.9F + 0.2F * rnd());
+			ARX_SOUND_PlayInterface(SND_SCROLL_OPEN, Random::getf(0.9f, 1.1f));
 			break;
 		default: break;
 	}
@@ -512,7 +512,7 @@ void ARX_INTERFACE_NoteOpen(gui::Note::Type type, const std::string & text) {
 	
 	if(player.Interface & INTER_INVENTORYALL) {
 		bInventoryClosing = true;
-		ARX_SOUND_PlayInterface(SND_BACKPACK, 0.9F + 0.2F * rnd());
+		ARX_SOUND_PlayInterface(SND_BACKPACK, Random::getf(0.9f, 1.1f));
 	}
 }
 
@@ -524,15 +524,15 @@ void ARX_INTERFACE_NoteClose() {
 	
 	switch(openNote.type()) {
 		case gui::Note::Notice: {
-			ARX_SOUND_PlayInterface(SND_MENU_CLICK, 0.9F + 0.2F * rnd());
+			ARX_SOUND_PlayInterface(SND_MENU_CLICK, Random::getf(0.9f, 1.1f));
 			break;
 		}
 		case gui::Note::Book:
-			ARX_SOUND_PlayInterface(SND_BOOK_CLOSE, 0.9F + 0.2F * rnd());
+			ARX_SOUND_PlayInterface(SND_BOOK_CLOSE, Random::getf(0.9f, 1.1f));
 			break;
 		case gui::Note::SmallNote:
 		case gui::Note::BigNote:
-			ARX_SOUND_PlayInterface(SND_SCROLL_CLOSE, 0.9F + 0.2F * rnd());
+			ARX_SOUND_PlayInterface(SND_SCROLL_CLOSE, Random::getf(0.9f, 1.1f));
 			break;
 		default: break;
 	}
@@ -953,7 +953,7 @@ void ArxGame::managePlayerControls() {
 							ARX_INVENTORY_OpenClose(t);
 							
 							if(player.Interface & (INTER_INVENTORY | INTER_INVENTORYALL)) {
-								ARX_SOUND_PlayInterface(SND_BACKPACK, 0.9F + 0.2F * rnd());
+								ARX_SOUND_PlayInterface(SND_BACKPACK, Random::getf(0.9f, 1.1f));
 							}
 							
 							if(SecondaryInventory) {
@@ -1452,7 +1452,7 @@ void ArxGame::managePlayerControls() {
 				g_hudRoot.mecanismIcon.reset();
 				
 				if(player.Interface & INTER_INVENTORYALL) {
-					ARX_SOUND_PlayInterface(SND_BACKPACK, 0.9F + 0.2F * rnd());
+					ARX_SOUND_PlayInterface(SND_BACKPACK, Random::getf(0.9f, 1.1f));
 					bInventoryClosing = true;
 					lOldInterfaceTemp=INTER_INVENTORYALL;
 				}
@@ -1493,7 +1493,7 @@ void ArxGame::managePlayerControls() {
 				if(lOldInterfaceTemp) {
 					lOldInterface=lOldInterfaceTemp;
 					lOldInterfaceTemp=0;
-					ARX_SOUND_PlayInterface(SND_BACKPACK, 0.9F + 0.2F * rnd());
+					ARX_SOUND_PlayInterface(SND_BACKPACK, Random::getf(0.9f, 1.1f));
 				}
 
 				if(lOldInterface) {
@@ -2255,7 +2255,7 @@ void ArxGame::manageEditorControls() {
 							
 							if(io->ioflags & IO_UNDERWATER) {
 								io->ioflags &= ~IO_UNDERWATER;
-								ARX_SOUND_PlayInterface(SND_PLOUF, 0.8F + 0.4F * rnd());
+								ARX_SOUND_PlayInterface(SND_PLOUF, Random::getf(0.8f, 1.2f));
 							}
 							
 							DRAGINTER->show = SHOW_FLAG_NOT_DRAWN;

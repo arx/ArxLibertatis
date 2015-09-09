@@ -176,7 +176,7 @@ void ManaDrainSpell::Update(float timeDelta)
 		light->pos.x = cabalpos.x;
 		light->pos.y = refpos;
 		light->pos.z = cabalpos.z;
-		light->rgb.b = rnd() * 0.2f + 0.8f;
+		light->rgb.b = Random::getf(0.8f, 1.f);
 		light->fallstart = Es * 1.5f;
 	}
 	
@@ -310,7 +310,7 @@ void ExplosionSpell::Update(float timeDelta)
 		light->rgb = Color3f(0.1f, 0.1f, 0.8f) + randomColor3f() * Color3f(1.f/3, 1.f/3, 1.f/5);
 		light->duration = 200;
 		
-		float choice = rnd();
+		float choice = Random::getf();
 		if(choice > .8f) {
 			long lvl = Random::get(9, 13);
 			
@@ -435,7 +435,7 @@ void LifeDrainSpell::Update(float timeDelta)
 		light->pos.x = cabalpos.x;
 		light->pos.y = refpos;
 		light->pos.z = cabalpos.z;
-		light->rgb.r = rnd() * 0.2f + 0.8f;
+		light->rgb.r = Random::getf(0.8f, 1.f);
 		light->fallstart = Es * 1.5f;
 	}
 	

@@ -408,10 +408,8 @@ bool ARX_Menu_Render() {
 			if(!ARXmenu.mda->flyover[FLYING_OVER].empty() ) //=ARXmenu.mda->flyover[FLYING_OVER];
 			{
 				if(FLYING_OVER != OLD_FLYING_OVER) {
-
-					float fRandom = rnd() * 2;
-
-					int t = checked_range_cast<int>(fRandom);
+					
+					int t = Random::get(0, 2);
 
 					pTextManage->Clear();
 					OLD_FLYING_OVER = FLYING_OVER;

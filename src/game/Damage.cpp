@@ -247,7 +247,7 @@ float ARX_DAMAGES_DamagePlayer(float dmg, DamageType type, EntityHandle source) 
 		SendIOScriptEvent( entities.player(), SM_OUCH, tex );
 		EVENT_SENDER = oes;
 		float power = entities.player()->dmg_sum / player.lifePool.max * 220.f;
-		AddQuakeFX(power * 3.5f, 500 + power * 3, rnd() * 100.f + power + 200, false);
+		AddQuakeFX(power * 3.5f, 500 + power * 3, Random::getf(200.f, 300.f) + power, false);
 		entities.player()->dmg_sum = 0.f;
 	}
 
@@ -266,7 +266,7 @@ float ARX_DAMAGES_DamagePlayer(float dmg, DamageType type, EntityHandle source) 
 				pio = entities[source];
 
 			if(pio && pio->poisonous && pio->poisonous_count != 0) {
-				if(rnd() * 100.f > player.m_misc.resistPoison) {
+				if(Random::getf(0.f, 100.f) > player.m_misc.resistPoison) {
 					player.poison += pio->poisonous;
 				}
 
@@ -460,7 +460,7 @@ void ARX_DAMAGES_DamageFIX(Entity * io, float dmg, EntityHandle source, bool isS
 		io->dmg_sum = 0.f;
 	}
 
-	if(rnd() * 100.f > io->durability)
+	if(Random::getf(0.f, 100.f) > io->durability)
 		io->durability -= dmg * ( 1.0f / 2 ); //1.f;
 
 	if(io->durability <= 0.f) {
@@ -649,7 +649,7 @@ float ARX_DAMAGES_DealDamages(EntityHandle target, float dmg, EntityHandle sourc
 
 	if(target == 0) {
 		if(flags & DAMAGE_TYPE_POISON) {
-			if(rnd() * 100.f > player.m_misc.resistPoison) {
+			if(Random::getf(0.f, 100.f) > player.m_misc.resistPoison) {
 				damagesdone = dmg;
 				player.poison += damagesdone;
 			} else {
@@ -685,7 +685,7 @@ float ARX_DAMAGES_DealDamages(EntityHandle target, float dmg, EntityHandle sourc
 	} else {
 		if(io_target->ioflags & IO_NPC) {
 			if(flags & DAMAGE_TYPE_POISON) {
-				if(rnd() * 100.f > io_target->_npcdata->resist_poison) {
+				if(Random::getf(0.f, 100.f) > io_target->_npcdata->resist_poison) {
 					damagesdone = dmg;
 					io_target->_npcdata->poisonned += damagesdone;
 				} else {
@@ -693,7 +693,7 @@ float ARX_DAMAGES_DealDamages(EntityHandle target, float dmg, EntityHandle sourc
 				}
 			} else {
 				if(flags & DAMAGE_TYPE_FIRE) {
-					if(rnd() * 100.f <= io_target->_npcdata->resist_fire)
+					if(Random::getf(0.f, 100.f) <= io_target->_npcdata->resist_fire)
 						dmg = 0;
 
 					ARX_DAMAGES_IgnitIO(io_target, dmg);
@@ -802,7 +802,7 @@ float ARX_DAMAGES_DamageNPC(Entity * io, float dmg, EntityHandle source, bool is
 				pio = entities[source];
 
 			if(pio && pio->poisonous && (pio->poisonous_count != 0)) {
-				if(rnd() * 100.f > io->_npcdata->resist_poison) {
+				if(Random::getf(0.f, 100.f) > io->_npcdata->resist_poison) {
 					io->_npcdata->poisonned += pio->poisonous;
 				}
 
@@ -915,9 +915,9 @@ static void ARX_DAMAGES_AddVisual(DAMAGE_INFO & di, const Vec3f & pos, float dmg
 	if(di.lastupd + 200 < tim) {
 		di.lastupd = tim;
 		if(di.params.type & DAMAGE_TYPE_MAGICAL) {
-			ARX_SOUND_PlaySFX(SND_SPELL_MAGICAL_HIT, &pos, 0.8F + 0.4F * rnd());
+			ARX_SOUND_PlaySFX(SND_SPELL_MAGICAL_HIT, &pos, Random::getf(0.8f, 1.2f));
 		} else {
-			ARX_SOUND_PlaySFX(SND_SPELL_FIRE_HIT, &pos, 0.8F + 0.4F * rnd());
+			ARX_SOUND_PlaySFX(SND_SPELL_FIRE_HIT, &pos, Random::getf(0.8f, 1.2f));
 		}
 	}
 	
@@ -945,7 +945,7 @@ static void ARX_DAMAGES_AddVisual(DAMAGE_INFO & di, const Vec3f & pos, float dmg
 			pd->rgb = Color3f::gray(0.5f);
 		}
 		pd->tc = TC_fire2;
-		pd->fparam = 0.1f - rnd() * 0.2f;
+		pd->fparam = Random::getf(-0.1f, 0.1f);
 	}
 }
 
@@ -1089,7 +1089,7 @@ static void ARX_DAMAGES_UpdateDamage(DamageHandle j, float tim) {
 						// TODO copy-paste
 						if(i == 0) {
 							if(damage.params.type & DAMAGE_TYPE_POISON) {
-								if(rnd() * 100.f > player.m_misc.resistPoison) {
+								if(Random::getf(0.f, 100.f) > player.m_misc.resistPoison) {
 									// Failed Saving Throw
 									damagesdone = dmg; 
 									player.poison += damagesdone;
@@ -1117,7 +1117,7 @@ static void ARX_DAMAGES_UpdateDamage(DamageHandle j, float tim) {
 							if(   (entities[handle]->ioflags & IO_NPC)
 							   && (damage.params.type & DAMAGE_TYPE_POISON)
 							) {
-								if(rnd() * 100.f > entities[handle]->_npcdata->resist_poison) {
+								if(Random::getf(0.f, 100.f) > entities[handle]->_npcdata->resist_poison) {
 									// Failed Saving Throw
 									damagesdone = dmg; 
 									entities[handle]->_npcdata->poisonned += damagesdone;
@@ -1431,7 +1431,7 @@ void ARX_DAMAGES_DurabilityRestore(Entity * io, float percent)
 	} else {
 		float ratio			= percent * ( 1.0f / 100 );
 		float to_restore	= (io->max_durability - io->durability) * ratio;
-		float v				= rnd() * 100.f - percent;
+		float v				= Random::getf(0.f, 100.f) - percent;
 
 		if (v <= 0.f) {
 			float mloss = 1.f;
@@ -1471,7 +1471,7 @@ void ARX_DAMAGES_DurabilityCheck(Entity * io, float ratio)
 	if(!io)
 		return;
 
-	if(rnd() * 100.f > io->durability) {
+	if(Random::getf(0.f, 100.f) > io->durability) {
 		ARX_DAMAGES_DurabilityLoss(io, ratio);
 	}
 }

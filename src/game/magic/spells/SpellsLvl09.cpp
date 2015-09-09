@@ -134,7 +134,7 @@ void SummonCreatureSpell::End()
 			if(lightHandleIsValid(nn)) {
 				EERIE_LIGHT * light = lightHandleGet(nn);
 				
-				light->intensity = 0.7f + 2.f * rnd();
+				light->intensity = Random::getf(0.7f, 2.7f);
 				light->fallend = 600.f;
 				light->fallstart = 400.f;
 				light->rgb = Color3f(1.0f, 0.8f, 0.0f);
@@ -156,7 +156,7 @@ void SummonCreatureSpell::Update(float timeDelta) {
 		return;
 	
 	if(float(arxtime) - (float)m_timcreation <= 4000) {
-		if(rnd() > 0.7f) {
+		if(Random::getf() > 0.7f) {
 			Vec3f pos = m_fissure.m_eSrc;
 			MakeCoolFx(pos);
 		}
@@ -184,25 +184,25 @@ void SummonCreatureSpell::Update(float timeDelta) {
 			long tokeep;
 			res::path cls;
 			if(m_megaCheat) {
-				if(rnd() > 0.5f) {
+				if(Random::getf() > 0.5f) {
 					tokeep = -1;
 					cls = "graph/obj3d/interactive/npc/wrat_base/wrat_base";
 				} else {
 					tokeep = 0;
 					cls = "graph/obj3d/interactive/npc/y_mx/y_mx";
 				}
-			} else if(rnd() > 0.997f || (sp_max && rnd() > 0.8f)
-			   || (cur_mr >= 3 && rnd() > 0.3f)) {
+			} else if(Random::getf() > 0.997f || (sp_max && Random::getf() > 0.8f)
+			   || (cur_mr >= 3 && Random::getf() > 0.3f)) {
 				tokeep = 0;
 				cls = "graph/obj3d/interactive/npc/y_mx/y_mx";
-			} else if(rnd() > 0.997f || (cur_rf >= 3 && rnd() > 0.8f)
-			   || (cur_mr >= 3 && rnd() > 0.3f)) {
+			} else if(Random::getf() > 0.997f || (cur_rf >= 3 && Random::getf() > 0.8f)
+			   || (cur_mr >= 3 && Random::getf() > 0.3f)) {
 				tokeep = -1;
 				cls = "graph/obj3d/interactive/npc/wrat_base/wrat_base";
 			} else if(m_level >= 9) {
 				tokeep = 1;
 				cls = "graph/obj3d/interactive/npc/demon/demon";
-			} else if(rnd() > 0.98f) {
+			} else if(Random::getf() > 0.98f) {
 				tokeep = -1;
 				cls = "graph/obj3d/interactive/npc/wrat_base/wrat_base";
 			} else {
@@ -316,7 +316,7 @@ void FakeSummonSpell::End()
 void FakeSummonSpell::Update(float timeDelta)
 {
 	if(!arxtime.is_paused()) {
-		if(rnd() > 0.7f) {
+		if(Random::getf() > 0.7f) {
 			Vec3f pos = m_fissure.m_eSrc;
 			MakeCoolFx(pos);
 		}
@@ -373,7 +373,7 @@ void NegateMagicSpell::Update(float timeDelta)
 	mat.setBlendType(RenderMaterial::Additive);
 	
 	for(int i = 0; i < 360; i++) {
-		float t = rnd();
+		float t = Random::getf();
 		if(t < 0.04f) {
 			
 			PARTICLE_DEF * pd = createParticle();
@@ -381,8 +381,8 @@ void NegateMagicSpell::Update(float timeDelta)
 				break;
 			}
 			
-			pd->ov = stitepos + Vec3f(frand2() * 150.f, 0.f, frand2() * 150.f);
-			pd->move = Vec3f(0.f, -3.0f * rnd(), 0.f);
+			pd->ov = stitepos + Vec3f(Random::getf(-150.f, 150.f), 0.f, Random::getf(-150.f, 150.f));
+			pd->move = Vec3f(0.f, Random::getf(-3.f, 0.f), 0.f);
 			pd->siz = 0.3f;
 			pd->tolive = Random::get(2000, 4000);
 			pd->tc = tex_p2;

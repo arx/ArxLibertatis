@@ -135,7 +135,7 @@ void RiseDeadSpell::End()
 			if(lightHandleIsValid(nn)) {
 				EERIE_LIGHT * light = lightHandleGet(nn);
 				
-				light->intensity = 0.7f + 2.f*rnd();
+				light->intensity = Random::getf(0.7f, 2.7f);
 				light->fallend = 600.f;
 				light->fallstart = 400.f;
 				light->rgb = Color3f(1.0f, 0.8f, 0.f);
@@ -225,7 +225,7 @@ void RiseDeadSpell::Update(float timeDelta) {
 			m_duration=0;
 		}
 	} else if(!arxtime.is_paused() && tim < 4000) {
-	  if(rnd() > 0.95f) {
+	  if(Random::getf() > 0.95f) {
 			MakeCoolFx(m_fissure.m_eSrc);
 		}
 	}
@@ -243,7 +243,7 @@ void ParalyseSpell::Launch()
 	} else if(entities[m_target]->ioflags & IO_NPC) {
 		resist_magic = entities[m_target]->_npcdata->resist_magic;
 	}
-	if(rnd() * 100.f < resist_magic) {
+	if(Random::getf(0.f, 100.f) < resist_magic) {
 		float mul = std::max(0.5f, 1.f - (resist_magic * 0.005f));
 		m_duration = long(m_duration * mul);
 	}

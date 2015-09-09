@@ -546,7 +546,7 @@ void ARX_SPELLS_ManageMagic() {
 						g_LastFlarePosition = pos;
 					}
 					
-					if(rnd() > 0.6f)
+					if(Random::getf() > 0.6f)
 						AddFlare(pos, 1.f, -1);
 					else
 						AddFlare(pos, 1.f, 3);

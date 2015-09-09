@@ -127,9 +127,9 @@ void Split(Vec3f * v, int a, int b, Vec3f f)
 
 		if ((i != a) && (i != b))
 		{
-			v[i].x = (v[a].x + v[b].x) * 0.5f + f.x * frand2();
-			v[i].y = (v[a].y + v[b].y) * 0.5f + f.y * frand2();
-			v[i].z = (v[a].z + v[b].z) * 0.5f + f.z * frand2();
+			v[i].x = (v[a].x + v[b].x) * 0.5f + f.x * Random::getf(-1.f, 1.f);
+			v[i].y = (v[a].y + v[b].y) * 0.5f + f.y * Random::getf(-1.f, 1.f);
+			v[i].z = (v[a].z + v[b].z) * 0.5f + f.z * Random::getf(-1.f, 1.f);
 			Split(v, a, i, f);
 			Split(v, i, b, f);
 		}
@@ -195,7 +195,7 @@ void ReleaseSpellModels() {
 
 
 Vec3f randomOffsetXZ(float range) {
-	return Vec3f(frand2() * range, 0.f, frand2() * range);
+	return Vec3f(Random::getf(-range, range), 0.f, Random::getf(-range, range));
 }
 
 

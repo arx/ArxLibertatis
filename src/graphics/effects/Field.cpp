@@ -145,8 +145,8 @@ void CCreateField::RenderQuad(const Vec3f & p1, const Vec3f & p2, const Vec3f & 
 		q.v[3].uv.x = 0 + zab;
 		q.v[3].uv.y = 1 + zab;
 
-		q.v[1].color = q.v[2].color = Color3f(falpha * .3f + rnd() * .025f, 0.f, falpha * .5f + rnd() * .025f).toRGB();
-		q.v[0].color = q.v[3].color = Color3f(falpha * .3f + rnd() * .025f, 0.f, falpha * .5f + rnd() * .025f).toRGB();
+		q.v[1].color = q.v[2].color = Color3f(falpha * .3f + Random::getf(0.f, .025f), 0.f, falpha * .5f + Random::getf(0.f, .025f)).toRGB();
+		q.v[0].color = q.v[3].color = Color3f(falpha * .3f + Random::getf(0.f, .025f), 0.f, falpha * .5f + Random::getf(0.f, .025f)).toRGB();
 	
 		q.v[0].p = p1;
 		q.v[1].p = p2;
@@ -211,7 +211,7 @@ void CCreateField::Render()
 		ft = 0.0f;
 	}
 
-	falpha = glm::sin(glm::radians(fglow)) + rnd() * 0.2f;
+	falpha = glm::sin(glm::radians(fglow)) + Random::getf(0.f, 0.2f);
 	falpha = glm::clamp(falpha, 0.f, 1.f);
 	
 	float smul = 100 * size;

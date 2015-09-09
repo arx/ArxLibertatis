@@ -503,7 +503,7 @@ float ARX_EQUIPMENT_ComputeDamages(Entity * io_source, Entity * io_target, float
 
 		attack = player.m_miscFull.damages;
 
-		if(rnd() * 100 <= player.m_miscFull.criticalHit)
+		if(Random::getf(0.f, 100.f) <= player.m_miscFull.criticalHit)
 		{
 			if(SendIOScriptEvent(io_source, SM_CRITICAL) != REFUSE)
 				critical = true;
@@ -514,7 +514,7 @@ float ARX_EQUIPMENT_ComputeDamages(Entity * io_source, Entity * io_target, float
 		damages = attack * ratioaim; 
 
 		if(io_target->_npcdata->npcflags & NPCFLAG_BACKSTAB) {
-			if(rnd() * 100.f <= player.m_skillFull.stealth * ( 1.0f / 2 )) {
+			if(Random::getf(0.f, 100.f) <= player.m_skillFull.stealth * ( 1.0f / 2 )) {
 				if(SendIOScriptEvent(io_source, SM_BACKSTAB) != REFUSE)
 					backstab = 1.5f; 
 			}
@@ -536,21 +536,21 @@ float ARX_EQUIPMENT_ComputeDamages(Entity * io_source, Entity * io_target, float
 		
 		attack = io_source->_npcdata->tohit;
 		
-		damages = io_source->_npcdata->damages * ratioaim * (rnd() * ( 1.0f / 2 ) + 0.5f);
+		damages = io_source->_npcdata->damages * ratioaim * Random::getf(0.5f, 1.0f);
 
 		SpellBase * spell = spells.getSpellOnTarget(io_source->index(), SPELL_CURSE);
 		if(spell) {
 			damages *= (1 - spell->m_level * 0.05f);
 		}
 
-		if(rnd() * 100 <= io_source->_npcdata->critical) {
+		if(Random::getf(0.f, 100) <= io_source->_npcdata->critical) {
 			if(SendIOScriptEvent(io_source, SM_CRITICAL) != REFUSE)
 				critical = true;
 		}
 		else
 			critical = false;
 
-		if(rnd() * 100.f <= (float)io_source->_npcdata->backstab_skill) {
+		if(Random::getf(0.f, 100.f) <= (float)io_source->_npcdata->backstab_skill) {
 			if(SendIOScriptEvent(io_source, SM_BACKSTAB) != REFUSE)
 				backstab = 1.5f; 
 		}
@@ -595,7 +595,7 @@ float ARX_EQUIPMENT_ComputeDamages(Entity * io_source, Entity * io_target, float
 	ARX_SOUND_PlayCollision(*amat, *wmat, power, 1.f, pos, io_source);
 	
 	float chance = 100.f - (ac - attack); 
-	if(rnd() * 100.f > chance) {
+	if(Random::getf(0.f, 100.f) > chance) {
 		return 0.f;
 	}
 	
@@ -798,9 +798,9 @@ bool ARX_EQUIPMENT_Strike_Check(Entity * io_source, Entity * io_weapon, float ra
 							ARX_PARTICLES_Spawn_Blood2(pos, dmgs, color, target);
 						} else {
 							if(target->ioflags & IO_ITEM)
-								ARX_PARTICLES_Spawn_Spark(pos, rnd() * 3.f, 0);
+								ARX_PARTICLES_Spawn_Spark(pos, Random::getf(0.f, 3.f), 0);
 							else
-								ARX_PARTICLES_Spawn_Spark(pos, rnd() * 30.f, 0);
+								ARX_PARTICLES_Spawn_Spark(pos, Random::getf(0.f, 30.f), 0);
 
 							ARX_NPC_SpawnAudibleSound(pos, io_source);
 
@@ -887,7 +887,7 @@ bool ARX_EQUIPMENT_Strike_Check(Entity * io_source, Entity * io_weapon, float ra
 				}
 			}
 
-			ARX_PARTICLES_Spawn_Spark(sphere.origin, rnd() * 10.f, 0);
+			ARX_PARTICLES_Spawn_Spark(sphere.origin, Random::getf(0.f, 10.f), 0);
 			ARX_NPC_SpawnAudibleSound(sphere.origin, io_source);
 		}
 	}

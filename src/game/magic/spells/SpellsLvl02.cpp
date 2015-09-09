@@ -182,7 +182,7 @@ void HealSpell::Update(float timeDelta) {
 				dist=fdist(m_pos, e->pos);
 
 			if(dist<300.f) {
-				float gain=((rnd()*1.6f+0.8f)*m_level)*(300.f-dist)*( 1.0f / 300 )*timeDelta*( 1.0f / 1000 );
+				float gain = Random::getf(0.8f, 2.4f) * m_level * (300.f - dist) * (1.0f/300) * timeDelta * (1.0f/1000);
 
 				if(ii==0) {
 					if (!BLOCK_PLAYER_CONTROLS)
@@ -464,8 +464,8 @@ void HarmSpell::Update(float timeDelta)
 		light->pos.x = cabalpos.x;
 		light->pos.y = refpos;
 		light->pos.z = cabalpos.z;
-		light->rgb.r = rnd() * 0.2f + 0.8f;
-		light->rgb.g = rnd() * 0.2f + 0.6f;
+		light->rgb.r = Random::getf(0.8f, 1.0f);
+		light->rgb.g = Random::getf(0.6f, 0.8f);
 		light->fallstart = Es * 1.5f;
 	}
 	

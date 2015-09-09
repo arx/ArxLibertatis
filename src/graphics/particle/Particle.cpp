@@ -47,8 +47,8 @@ ZeniMax Media Inc., Suite 120, Rockville, Maryland 20850 USA.
 #include "graphics/effects/SpellEffects.h"
 
 Particle::Particle()
-	: p3Pos(frand2() * 5, frand2() * 5, frand2() * 5)
-	, p3Velocity(frand2() * 10, frand2() * 10, frand2() * 10)
+	: p3Pos(Random::getf(-5.f, 5.f), Random::getf(-5.f, 5.f), Random::getf(-5.f, 5.f))
+	, p3Velocity(Random::getf(-10.f, 10.f), Random::getf(-10.f, 10.f), Random::getf(-10.f, 10.f))
 	, m_age(0)
 	, fSize(1.f)
 	, fSizeStart(1.f)
@@ -59,7 +59,7 @@ Particle::Particle()
 	, iTexNum(0)
 {
 	
-	m_timeToLive = checked_range_cast<long>(2000 + rnd() * 3000);
+	m_timeToLive = Random::get(2000, 5000);
 	fOneOnTTL = 1.0f / float(m_timeToLive);
 	
 	fColorStart = Color4f(1, 1, 1, 0.5f);

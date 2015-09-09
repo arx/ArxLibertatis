@@ -65,10 +65,10 @@ void FloatingStones::AddStone(const Vec3f & pos) {
 			s.actif = 1;
 			s.numstone = Random::get(0, 1);
 			s.pos = pos;
-			s.yvel = rnd() * -5.f;
-			s.ang = Anglef(rnd(), rnd(), rnd()) * Anglef(360.f, 360.f, 360.f);
-			s.angvel = Anglef(rnd(), rnd(), rnd()) * Anglef(5.f, 6.f, 3.f);
-			s.scale = Vec3f(0.2f + rnd() * 0.3f);
+			s.yvel = Random::getf(-5.f, 0.f);
+			s.ang = Anglef(Random::getf(), Random::getf(), Random::getf()) * Anglef(360.f, 360.f, 360.f);
+			s.angvel = Anglef(Random::getf(), Random::getf(), Random::getf()) * Anglef(5.f, 6.f, 3.f);
+			s.scale = Vec3f(Random::getf(0.2f, 0.5f));
 			s.time = Random::get(2000, 2500);
 			s.currtime = 0;
 			break;
@@ -101,8 +101,8 @@ void FloatingStones::DrawStone()
 			PARTICLE_DEF * pd = createParticle();
 			if(pd) {
 				pd->ov = s.pos;
-				pd->move = Vec3f(0.f, 3.f * rnd(), 0.f);
-				pd->siz = 3.f + 3.f * rnd();
+				pd->move = Vec3f(0.f, Random::getf(0.f, 3.f), 0.f);
+				pd->siz = Random::getf(3.f, 6.f);
 				pd->tolive = 1000;
 				pd->timcreation = -(long(arxtime) + 1000l); // TODO WTF
 				pd->special = FIRE_TO_SMOKE | FADE_IN_AND_OUT | ROTATING | MODULATE_ROTATION

@@ -373,9 +373,9 @@ void FireFieldSpell::Update(float timeDelta) {
 		
 		el->pos = m_pos + Vec3f(0.f, -120.f, 0.f);
 		el->intensity = 4.6f;
-		el->fallstart = 150.f+rnd()*30.f;
-		el->fallend   = 290.f+rnd()*30.f;
-		el->rgb = Color3f(1.f, 0.8f, 0.6f) - Color3f(rnd()*(1.0f/10), 0.f, 0.f);
+		el->fallstart = Random::getf(150.f, 180.f);
+		el->fallend   = Random::getf(290.f, 320.f);
+		el->rgb = Color3f(1.f, 0.8f, 0.6f) + Color3f(Random::getf(-0.1f, 0.f), 0.f, 0.f);
 		el->duration = 600;
 		el->extras=0;
 	}
@@ -395,7 +395,7 @@ void FireFieldSpell::Update(float timeDelta) {
 				break;
 			}
 			
-			float t = rnd() * (PI * 2.f) - PI;
+			float t = Random::getf() * (PI * 2.f) - PI;
 			float ts = std::sin(t);
 			float tc = std::cos(t);
 			pd->ov = m_pos + Vec3f(120.f * ts, 15.f * ts, 120.f * tc) * randomVec();
@@ -404,7 +404,7 @@ void FireFieldSpell::Update(float timeDelta) {
 			pd->tolive = Random::get(500, 1500);
 			pd->tc = fire2;
 			pd->special = ROTATING | MODULATE_ROTATION | FIRE_TO_SMOKE;
-			pd->fparam = 0.1f - rnd() * 0.2f;
+			pd->fparam = Random::getf(-0.1f, 0.1f);
 			pd->scale = Vec3f(-8.f);
 			
 			PARTICLE_DEF * pd2 = createParticle();
@@ -481,7 +481,7 @@ void IceFieldSpell::Launch()
 	tex_p2 = TextureContainer::Load("graph/obj3d/textures/(fx)_tsu_bluepouf");
 	
 	for(int i = 0; i < iMax; i++) {
-		float t = rnd();
+		float t = Random::getf();
 
 		if (t < 0.5f)
 			tType[i] = 0;
@@ -501,13 +501,13 @@ void IceFieldSpell::Launch()
 		tSizeMax[i] = glm::max(tSizeMax[i], minPos);
 		
 		if(tType[i] == 0) {
-			tPos[i].x = m_pos.x + frand2() * 80;
+			tPos[i].x = m_pos.x + Random::getf(-80.f, 80.f);
 			tPos[i].y = m_pos.y;
-			tPos[i].z = m_pos.z + frand2() * 80;
+			tPos[i].z = m_pos.z + Random::getf(-80.f, 80.f);
 		} else {
-			tPos[i].x = m_pos.x + frand2() * 120;
+			tPos[i].x = m_pos.x + Random::getf(-120.f, 120.f);
 			tPos[i].y = m_pos.y;
-			tPos[i].z = m_pos.z + frand2() * 120;
+			tPos[i].z = m_pos.z + Random::getf(-120.f, 120.f);
 		}
 	}
 	
@@ -534,9 +534,9 @@ void IceFieldSpell::Update(float timeDelta) {
 		
 		el->pos = m_pos + Vec3f(0.f, -120.f, 0.f);
 		el->intensity = 4.6f;
-		el->fallstart = 150.f+rnd()*30.f;
-		el->fallend   = 290.f+rnd()*30.f;
-		el->rgb = Color3f(0.76f, 0.76f, 1.0f) + Color3f(0.f, 0.f, -rnd()*(1.0f/10));
+		el->fallstart = Random::getf(150.f, 180.f);
+		el->fallend   = Random::getf(290.f, 320.f);
+		el->rgb = Color3f(0.76f, 0.76f, 1.0f) + Color3f(0.f, 0.f, Random::getf(-0.1f, 0.f));
 		el->duration = 600;
 		el->extras=0;
 	}
@@ -587,7 +587,7 @@ void IceFieldSpell::Update(float timeDelta) {
 	
 	for(int i = 0; i < iMax * 0.5f; i++) {
 		
-		float t = rnd();
+		float t = Random::getf();
 		if(t < 0.01f) {
 			
 			PARTICLE_DEF * pd = createParticle();
@@ -607,7 +607,7 @@ void IceFieldSpell::Update(float timeDelta) {
 			PARTICLE_DEF * pd = createParticle();
 			if(pd) {
 				pd->ov = tPos[i] + randomVec(-5.f, 5.f) + Vec3f(0.f, 50.f, 0.f);
-				pd->move = Vec3f(0.f, 2.f - 4.f * rnd(), 0.f);
+				pd->move = Vec3f(0.f, Random::getf(-2.f, 2.f), 0.f);
 				pd->siz = 0.5f;
 				pd->tolive = Random::get(2000, 6000);
 				pd->tc = tex_p1;
@@ -787,7 +787,7 @@ void ConfuseSpell::Update(float timeDelta) {
 		Vec2f p = glm::diskRand(15.f);
 		pd->ov = eCurPos + Vec3f(p.x, 0.f, p.y);
 		
-		pd->move = Vec3f(0.f, rnd() * 3.f + 1.f, 0.f);
+		pd->move = Vec3f(0.f, Random::getf(1.f, 4.f), 0.f);
 		pd->siz = 0.25f;
 		pd->tolive = Random::get(2300, 3300);
 		pd->tc = tex_p1;

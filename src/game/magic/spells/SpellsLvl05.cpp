@@ -83,7 +83,7 @@ void RuneOfGuardingSpell::Update(float timeDelta) {
 	if(lightHandleIsValid(m_light)) {
 		EERIE_LIGHT * light = lightHandleGet(m_light);
 		
-		float fa = 1.0f - rnd() * 0.15f;
+		float fa = Random::getf(0.85f, 1.0f);
 		light->intensity = 0.7f + 2.3f * fa;
 		light->fallend = 350.f;
 		light->fallstart = 150.f;
@@ -130,8 +130,8 @@ void RuneOfGuardingSpell::Update(float timeDelta) {
 			break;
 		}
 		
-		pd->ov = pos + (Vec3f(40.f, 0.f, 40.f) * Vec3f(frand2(), 0.f, frand2()));
-		pd->move = Vec3f(0.8f, -4.f, 0.8f) * Vec3f(frand2(), rnd(), frand2());
+		pd->ov = pos + Vec3f(Random::getf(-40.f, 40.f), 0.f, Random::getf(-40.f, 40.f));
+		pd->move = Vec3f(Random::getf(-0.8f, 0.8f), Random::getf(-4.f, 0.f), Random::getf(-0.8f, 0.8f));
 		pd->scale = Vec3f(-0.1f);
 		pd->tolive = Random::get(2600, 3200);
 		pd->tc = tex_p2;
@@ -263,9 +263,9 @@ void LevitateSpell::createDustParticle() {
 	
 	pd->ov = m_pos + Vec3f(pos.x, 0.f, pos.y);
 	float t = fdist(pd->ov, m_pos);
-	pd->move = Vec3f((5.f + 5.f * rnd()) * ((pd->ov.x - m_pos.x) / t), 3.f * rnd(),
-	                 (5.f + 5.f * rnd()) * ((pd->ov.z - m_pos.z) / t));
-	pd->siz = 30.f + 30.f * rnd();
+	pd->move = Vec3f(Random::getf(5.f, 10.f) * ((pd->ov.x - m_pos.x) / t), Random::getf(0.f, 3.f),
+	                 Random::getf(5.f, 10.f) * ((pd->ov.z - m_pos.z) / t));
+	pd->siz = Random::getf(30.f, 60.f);
 	pd->tolive = 3000;
 	pd->timcreation = -(long(arxtime) + 3000l); // TODO WTF
 	pd->special = FIRE_TO_SMOKE | FADE_IN_AND_OUT | ROTATING | MODULATE_ROTATION | DISSIPATING;
@@ -480,7 +480,7 @@ void RepelUndeadSpell::Update(float timeDelta) {
 		Vec2f d = glm::diskRand(vv);
 		
 		pd->ov = m_pos + Vec3f(d.x, 0.f, d.y);
-		pd->move = Vec3f(0.8f * frand2(), -4.f * rnd(), 0.8f * frand2());
+		pd->move = Vec3f(Random::getf(-0.8f, 0.8f), Random::getf(-4.f, 0.f), Random::getf(-0.8f, 0.8f));
 		pd->scale = Vec3f(-0.1f);
 		pd->tolive = Random::get(2600, 3200);
 		pd->tc = tex_p2;
@@ -574,7 +574,7 @@ void PoisonProjectileSpell::Launch()
 	for(size_t i = 0; i < m_projectiles.size(); i++) {
 		CPoisonProjectile * projectile = m_projectiles[i];
 		
-		projectile->Create(srcPos, afBeta + frand2() * 10.0f);
+		projectile->Create(srcPos, afBeta + Random::getf(-10.f, 10.f));
 		long lTime = m_duration + Random::get(0, 5000);
 		projectile->SetDuration(lTime);
 		lMax = std::max(lMax, lTime);
@@ -664,7 +664,7 @@ void PoisonProjectileSpell::AddPoisonFog(const Vec3f & pos, float power) {
 	long count = std::max(1l, checked_range_cast<long>(framedelay / flDiv));
 	while(count--) {
 		
-		if(rnd() * 2000.f >= power) {
+		if(Random::getf(0.f, 2000.f) >= power) {
 			continue;
 		}
 		
@@ -678,12 +678,12 @@ void PoisonProjectileSpell::AddPoisonFog(const Vec3f & pos, float power) {
 		pd->special = FADE_IN_AND_OUT | ROTATING | MODULATE_ROTATION | DISSIPATING;
 		pd->ov = pos + randomVec(-100.f, 100.f);
 		pd->scale = Vec3f(8.f, 8.f, 10.f);
-		pd->move = Vec3f((speed - rnd()) * fval, (speed - speed * rnd()) * (1.f / 15),
-		                 (speed - rnd()) * fval);
+		pd->move = Vec3f((speed - Random::getf()) * fval, (speed - speed * Random::getf()) * (1.f / 15),
+		                 (speed - Random::getf()) * fval);
 		pd->tolive = Random::get(4500, 9000);
 		pd->tc = TC_smoke;
-		pd->siz = (80.f + rnd() * 160.f) * (1.f / 3);
-		pd->rgb = Color3f(rnd() * (1.f / 3), 1.f, rnd() * 0.1f);
+		pd->siz = (80.f + Random::getf(0.f, 160.f)) * (1.f / 3);
+		pd->rgb = Color3f(Random::getf(0.f, 1.f/3), 1.f, Random::getf(0.f, 0.1f));
 		pd->fparam = 0.001f;
 	}
 }

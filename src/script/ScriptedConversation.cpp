@@ -103,7 +103,7 @@ public:
 				loop = ARX_SOUND_PLAY_LOOPED;
 			}
 			if(flg & flag('p')) {
-				pitch = 0.9F + 0.2F * rnd();
+				pitch = Random::getf(0.9f, 1.1f);
 			}
 			stop = test_flag(flg, 's');
 			no_pos = test_flag(flg, 'o');

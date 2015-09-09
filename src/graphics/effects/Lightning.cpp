@@ -121,9 +121,9 @@ void CLightning::BuildS(LIGHTNING * pLInfo)
 		}
 
 		Vec3f fAngle;
-		fAngle.x = frand2() * (pLInfo->fAngleMax.x - pLInfo->fAngleMin.x) + pLInfo->fAngleMin.x;
-		fAngle.y = frand2() * (pLInfo->fAngleMax.y - pLInfo->fAngleMin.y) + pLInfo->fAngleMin.y;
-		fAngle.z = frand2() * (pLInfo->fAngleMax.z - pLInfo->fAngleMin.z) + pLInfo->fAngleMin.z;
+		fAngle.x = Random::getf(-1.f, 1.f) * (pLInfo->fAngleMax.x - pLInfo->fAngleMin.x) + pLInfo->fAngleMin.x;
+		fAngle.y = Random::getf(-1.f, 1.f) * (pLInfo->fAngleMax.y - pLInfo->fAngleMin.y) + pLInfo->fAngleMin.y;
+		fAngle.z = Random::getf(-1.f, 1.f) * (pLInfo->fAngleMax.z - pLInfo->fAngleMin.z) + pLInfo->fAngleMin.z;
 
 		Vec3f av;
 		av.x = glm::cos(glm::acos(avect.x) - glm::radians(fAngle.x));
@@ -132,7 +132,7 @@ void CLightning::BuildS(LIGHTNING * pLInfo)
 		av = glm::normalize(av);
 		avect = av;
 
-		float ts = rnd();
+		float ts = Random::getf();
 		av *= ts * (m_fLengthMax - m_fLengthMin) * pLInfo->anb * m_invNbSegments + m_fLengthMin;
 
 		astart += av;
@@ -145,10 +145,10 @@ void CLightning::BuildS(LIGHTNING * pLInfo)
 		int anb = pLInfo->anb;
 		int anbrec = pLInfo->anbrec;
 
-		float p = rnd();
+		float p = Random::getf();
 
 		if(p <= 0.15f && pLInfo->anbrec < 7) {
-			float m = rnd();
+			float m = Random::getf();
 
 			if(pLInfo->abFollow) {
 				pLInfo->eStart = astart;
@@ -196,7 +196,7 @@ void CLightning::BuildS(LIGHTNING * pLInfo)
 				BuildS(pLInfo);
 			}
 		} else {
-			if(rnd() <= 0.10f) {
+			if(Random::getf() <= 0.10f) {
 				pLInfo->abFollow = true;
 			}
 
@@ -246,11 +246,8 @@ void CLightning::ReCreate(float rootSize)
 
 		BuildS(&LInfo);
 	}
-
-
-	float fRandom	= 500 + rnd() * 1000;
-
-	m_iTTL = checked_range_cast<int>(fRandom);
+	
+	m_iTTL = Random::get(500, 1500);
 }
 
 void CLightning::Update(float timeDelta)
@@ -295,7 +292,7 @@ void CLightning::Render()
 	mat.setDepthTest(false);
 	mat.setBlendType(RenderMaterial::Additive);
 	
-	float fbeta = fBeta + rnd() * 2 * fMySize;
+	float fbeta = fBeta + Random::getf(0.f, 2.f) * fMySize;
 
 	for(size_t i = 0; i < m_nbtotal && i <= fTotoro; i++) {
 		CLightningNode & node = m_cnodetab[i];
@@ -303,7 +300,7 @@ void CLightning::Render()
 		Vec3f astart = m_cnodetab[node.parent].pos + m_cnodetab[node.parent].f;
 		float temp = 1.5f * fMySize;
 		Vec3f z_z = m_cnodetab[node.parent].f + randomVec(-temp, temp);
-		float zz = node.size + node.size * 0.3f * rnd();
+		float zz = node.size + node.size * Random::getf(0.f, 0.3f);
 		float xx = node.size * glm::cos(glm::radians(-fbeta));
 		node.f = z_z;
 		

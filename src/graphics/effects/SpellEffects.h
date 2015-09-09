@@ -50,6 +50,7 @@ ZeniMax Media Inc., Suite 120, Rockville, Maryland 20850 USA.
 #include "game/GameTypes.h"
 #include "graphics/Color.h"
 #include "graphics/Math.h"
+#include "math/Random.h"
 #include "math/Types.h"
 #include "platform/Alignment.h"
 #include "scene/Light.h"
@@ -80,8 +81,6 @@ public:
 	
 	ARX_USE_ALIGNED_NEW(CSpellFx)
 };
-
-#define frand2() (1.0f - (2.0f * rnd()))
 
 Vec3f randomOffsetXZ(float range);
 

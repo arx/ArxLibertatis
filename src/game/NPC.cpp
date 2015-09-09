@@ -861,7 +861,7 @@ static void ARX_NPC_ManagePoison(Entity * io) {
 	if(faster < 0.f)
 		faster = 0.f;
 
-	if(rnd() * 100.f > io->_npcdata->resist_poison + faster) {
+	if(Random::getf(0.f, 100.f) > io->_npcdata->resist_poison + faster) {
 		float dmg = cp * ( 1.0f / 3 );
 
 		if(io->_npcdata->lifePool.current > 0 && io->_npcdata->lifePool.current - dmg <= 0.f) {
@@ -1556,11 +1556,11 @@ static void ARX_NPC_Manage_Anims(Entity * io, float TOLERANCE) {
 	// Manage combat movement
 	
 	if((io->_npcdata->behavior & BEHAVIOUR_FIGHT) && tdist <= square(TOLERANCE + 10)
-	   && (tdist <= square(TOLERANCE - 20) || rnd() > 0.97f)
+	   && (tdist <= square(TOLERANCE - 20) || Random::getf() > 0.97f)
 	   && isCurrentAnimation(io, ANIM_FIGHT_WAIT)) {
 		// Evade during combat
 		
-		float r = (tdist < square(TOLERANCE - 20)) ? 0.f : rnd();
+		float r = (tdist < square(TOLERANCE - 20)) ? 0.f : Random::getf();
 		if(r < 0.1f) {
 			TryAndCheckAnim(io, ANIM_FIGHT_WALK_BACKWARD, 0);
 		} else if(r < 0.55f) {
@@ -1571,12 +1571,12 @@ static void ARX_NPC_Manage_Anims(Entity * io, float TOLERANCE) {
 		
 	} else if(((io->_npcdata->behavior & (BEHAVIOUR_MAGIC | BEHAVIOUR_DISTANT))
 	           || io->spellcast_data.castingspell != SPELL_NONE)
-	          && rnd() > 0.85f && isCurrentAnimation(io, ANIM_FIGHT_WAIT) ) {
+	          && Random::getf() > 0.85f && isCurrentAnimation(io, ANIM_FIGHT_WAIT) ) {
 		// Evade while (not) casting
 		
 		AcquireLastAnim(io);
 		FinishAnim(io, layer0.cur_anim);
-		float r = (tdist < square(340)) ? 0.f : rnd();
+		float r = (tdist < square(340)) ? 0.f : Random::getf();
 		if(r < 0.33f) {
 			TryAndCheckAnim(io, ANIM_FIGHT_WALK_BACKWARD, 0);
 		} else if(r < 0.66f) {
@@ -1590,7 +1590,7 @@ static void ARX_NPC_Manage_Anims(Entity * io, float TOLERANCE) {
 	if(IsPlayerStriking() && isCurrentAnimation(io, ANIM_FIGHT_WAIT)) {
 		AcquireLastAnim(io);
 		FinishAnim(io, layer0.cur_anim);
-		float r = rnd();
+		float r = Random::getf();
 		if(r < 0.2f) {
 			TryAndCheckAnim(io, ANIM_FIGHT_WALK_BACKWARD, 0);
 		} else if(r < 0.6f) {
@@ -1660,7 +1660,7 @@ static void ARX_NPC_Manage_Anims(Entity * io, float TOLERANCE) {
 				
 				float elapsed = float(arxtime) - float(io->_npcdata->aiming_start);
 				float aimtime = io->_npcdata->aimtime;
-				if((elapsed > aimtime || (elapsed > aimtime * 0.5f && rnd() > 0.9f))
+				if((elapsed > aimtime || (elapsed > aimtime * 0.5f && Random::getf() > 0.9f))
 				    && tdist < square(STRIKE_DISTANCE)) {
 					changeAnimation(io, 1, strike);
 					SendIOScriptEvent(io, SM_STRIKE, "bare");
@@ -1761,7 +1761,7 @@ static void ARX_NPC_Manage_Anims(Entity * io, float TOLERANCE) {
 					
 					float elapsed = float(arxtime) - float(io->_npcdata->aiming_start);
 					float aimtime = io->_npcdata->aimtime;
-					if((elapsed > aimtime || (elapsed > aimtime * 0.5f && rnd() > 0.9f))
+					if((elapsed > aimtime || (elapsed > aimtime * 0.5f && Random::getf() > 0.9f))
 					   && tdist < square(STRIKE_DISTANCE)) {
 						changeAnimation(io, 1, strike);
 						if(io->_npcdata->weapontype & OBJECT_TYPE_1H) {
@@ -2073,7 +2073,7 @@ static void ManageNPCMovement(Entity * io)
 				}
 			} else {
 				if(io->_npcdata->look_around_inc == 0.f) {
-					io->_npcdata->look_around_inc = (rnd() - 0.5f) * 0.08f;
+					io->_npcdata->look_around_inc = Random::getf(-0.04f, 0.04f);
 				}
 
 				for(long n = 0; n < 4; n++) {
@@ -3018,7 +3018,7 @@ void ManageIgnition(Entity * io)
 void createFireParticles(Vec3f &pos, const int particlesToCreate, const int particleDelayFactor) {
 	for(long nn = 0 ; nn < particlesToCreate; nn++) {
 
-		if(rnd() >= 0.4f) {
+		if(Random::getf() >= 0.4f) {
 			continue;
 		}
 
@@ -3033,7 +3033,7 @@ void createFireParticles(Vec3f &pos, const int particlesToCreate, const int part
 		pd->tolive = Random::get(500, 1500);
 		pd->special = FIRE_TO_SMOKE | ROTATING | MODULATE_ROTATION;
 		pd->tc = fire2;
-		pd->fparam = 0.1f - rnd() * 0.2f;
+		pd->fparam = Random::getf(-0.1f, 0.1f);
 		pd->scale = Vec3f(-8.f);
 		pd->rgb = Color3f(0.71f, 0.43f, 0.29f);
 		pd->delay = nn * particleDelayFactor;
@@ -3077,12 +3077,12 @@ void ManageIgnition_2(Entity * io) {
 
 		if(io->ignit_sound == audio::INVALID_ID) {
 			io->ignit_sound = SND_FIREPLACE;
-			ARX_SOUND_PlaySFX(io->ignit_sound, &position, 0.95F + 0.1F * rnd(), ARX_SOUND_PLAY_LOOPED);
+			ARX_SOUND_PlaySFX(io->ignit_sound, &position, Random::getf(0.95f, 1.05f), ARX_SOUND_PLAY_LOOPED);
 		} else {
 			ARX_SOUND_RefreshPosition(io->ignit_sound, position);
 		}
 
-		if(rnd() > 0.9f)
+		if(Random::getf() > 0.9f)
 			CheckForIgnition(Sphere(position, io->ignition), 1);
 	} else {
 		lightHandleDestroy(io->ignit_light);

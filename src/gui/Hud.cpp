@@ -299,7 +299,7 @@ void BackpackIconGui::updateInput() {
 		
 		
 		if(eeMouseDoubleClick1()) {
-			ARX_SOUND_PlayInterface(SND_BACKPACK, 0.9F + 0.2F * rnd());
+			ARX_SOUND_PlayInterface(SND_BACKPACK, Random::getf(0.9f, 1.1f));
 			
 			playerInventory.optimize();
 			
@@ -317,7 +317,7 @@ void BackpackIconGui::updateInput() {
 			}
 			
 			if(player.Interface & INTER_INVENTORYALL) {
-				ARX_SOUND_PlayInterface(SND_BACKPACK, 0.9F + 0.2F * rnd());
+				ARX_SOUND_PlayInterface(SND_BACKPACK, Random::getf(0.9f, 1.1f));
 				bInventoryClosing = true;
 			} else {
 				bInverseInventory=!bInverseInventory;
@@ -331,11 +331,11 @@ void BackpackIconGui::updateInput() {
 				bInventoryClosing = true;
 			} else {
 				if(player.Interface & INTER_INVENTORY) {
-					ARX_SOUND_PlayInterface(SND_BACKPACK, 0.9F + 0.2F * rnd());
+					ARX_SOUND_PlayInterface(SND_BACKPACK, Random::getf(0.9f, 1.1f));
 					bInventoryClosing = true;
 					bInventorySwitch = true;
 				} else {
-					ARX_SOUND_PlayInterface(SND_BACKPACK, 0.9F + 0.2F * rnd());
+					ARX_SOUND_PlayInterface(SND_BACKPACK, Random::getf(0.9f, 1.1f));
 					player.Interface |= INTER_INVENTORYALL;
 					
 					InventoryY = 121 * player.bag;
@@ -386,7 +386,7 @@ void StealIconGui::updateInput() {
 				ARX_INVENTORY_OpenClose(ioSteal);
 				
 				if(player.Interface&(INTER_INVENTORY | INTER_INVENTORYALL)) {
-					ARX_SOUND_PlayInterface(SND_BACKPACK, 0.9F + 0.2F * rnd());
+					ARX_SOUND_PlayInterface(SND_BACKPACK, Random::getf(0.9f, 1.1f));
 				}
 				
 				if(SecondaryInventory) {
@@ -596,7 +596,7 @@ void CurrentTorchIconGui::update() {
 	m_tex = player.torch->inv;
 	arx_assert(m_tex);
 	
-	if(rnd() <= 0.2f) {
+	if(Random::getf() <= 0.2f) {
 		return;
 	}
 	
@@ -610,11 +610,11 @@ void CurrentTorchIconGui::createFireParticle() {
 		return;
 	}
 	
-	Vec2f pos = m_rect.topLeft() + Vec2f(12.f - rnd() * 3.f, rnd() * 6.f) * m_scale;
+	Vec2f pos = m_rect.topLeft() + Vec2f(Random::getf(9.f, 12.f), Random::getf(0.f, 6.f)) * m_scale;
 	
 	pd->special = FIRE_TO_SMOKE;
 	pd->ov = Vec3f(pos, 0.0000001f);
-	pd->move = Vec3f((1.5f - rnd() * 3.f), -(5.f + rnd() * 1.f), 0.f) * m_scale;
+	pd->move = Vec3f(Random::getf(-1.5f, 1.5f), Random::getf(-6.f, -5.f), 0.f) * m_scale;
 	pd->scale = Vec3f(1.8f, 1.8f, 1.f);
 	pd->tolive = Random::get(500, 900);
 	pd->tc = fire2;
@@ -650,7 +650,7 @@ bool ChangeLevelIconGui::isVisible() {
 void ChangeLevelIconGui::update(const Rectf & parent) {
 	m_rect = createChild(parent, Anchor_TopRight, m_size * m_scale, Anchor_TopRight);
 	
-	m_intensity = 0.9f - std::sin(arxtime.get_frame_time()*( 1.0f / 50 ))*0.5f+rnd()*( 1.0f / 10 );
+	m_intensity = 0.9f - std::sin(arxtime.get_frame_time() * 0.02f) * 0.5f + Random::getf(0.f, 0.1f);
 	m_intensity = glm::clamp(m_intensity, 0.f, 1.f);
 }
 

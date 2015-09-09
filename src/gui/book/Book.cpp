@@ -95,7 +95,7 @@ void openBookPage(ARX_INTERFACE_BOOK_MODE newPage, bool toggle) {
 		onBookClosePage();
 		
 		// If the book is already open, play the page turn sound
-		ARX_SOUND_PlayInterface(SND_BOOK_PAGE_TURN, 0.9F + 0.2F * rnd());
+		ARX_SOUND_PlayInterface(SND_BOOK_PAGE_TURN, Random::getf(0.9f, 1.1f));
 		
 	} else {
 		// Otherwise open the book
@@ -162,7 +162,7 @@ void ARX_INTERFACE_BookClose() {
 void ARX_INTERFACE_BookToggle() {
 	
 	if(player.Interface & INTER_MAP) {
-		ARX_SOUND_PlayInterface(SND_BOOK_CLOSE, 0.9F + 0.2F * rnd());
+		ARX_SOUND_PlayInterface(SND_BOOK_CLOSE, Random::getf(0.9f, 1.1f));
 		SendIOScriptEvent(entities.player(),SM_BOOK_CLOSE);
 		player.Interface &=~ INTER_MAP;
 		g_miniMap.purgeTexContainer();
@@ -179,7 +179,7 @@ void ARX_INTERFACE_BookToggle() {
 	} else {
 		SendIOScriptEvent(entities.player(),SM_NULL,"","book_open");
 
-		ARX_SOUND_PlayInterface(SND_BOOK_OPEN, 0.9F + 0.2F * rnd());
+		ARX_SOUND_PlayInterface(SND_BOOK_OPEN, Random::getf(0.9f, 1.1f));
 		SendIOScriptEvent(entities.player(),SM_BOOK_OPEN);
 		ARX_INTERFACE_NoteClose();
 		player.Interface |= INTER_MAP;
@@ -227,7 +227,7 @@ void ARX_INTERFACE_BookToggle() {
 	}
 
 	if(player.Interface & INTER_INVENTORYALL) {
-		ARX_SOUND_PlayInterface(SND_BACKPACK, 0.9F + 0.2F * rnd());
+		ARX_SOUND_PlayInterface(SND_BACKPACK, Random::getf(0.9f, 1.1f));
 		bInventoryClosing = true;
 	}
 
@@ -636,7 +636,7 @@ bool manageNoteActions(Note & note) {
 	if(note.prevPageButton().contains(Vec2f(DANAEMouse))) {
 		SpecialCursor = CURSOR_INTERACTION_ON;
 		if(eeMouseUp1()) {
-			ARX_SOUND_PlayInterface(SND_BOOK_PAGE_TURN, 0.9f + 0.2f * rnd());
+			ARX_SOUND_PlayInterface(SND_BOOK_PAGE_TURN, Random::getf(0.9f, 1.1f));
 			arx_assert(note.page() >= 2);
 			note.setPage(note.page() - 2);
 		}
@@ -644,7 +644,7 @@ bool manageNoteActions(Note & note) {
 	} else if(note.nextPageButton().contains(Vec2f(DANAEMouse))) {
 		SpecialCursor = CURSOR_INTERACTION_ON;
 		if(eeMouseUp1()) {
-			ARX_SOUND_PlayInterface(SND_BOOK_PAGE_TURN, 0.9f + 0.2f * rnd());
+			ARX_SOUND_PlayInterface(SND_BOOK_PAGE_TURN, Random::getf(0.9f, 1.1f));
 			note.setPage(note.page() + 2);
 		}
 		
@@ -714,7 +714,7 @@ static void ARX_INTERFACE_ManageOpenedBook_TopTabs() {
 			
 			// Check for click
 			if(eeMouseDown1() || eeMouseDown2()) {
-				ARX_SOUND_PlayInterface(SND_BOOK_PAGE_TURN, 0.9F + 0.2F * rnd());
+				ARX_SOUND_PlayInterface(SND_BOOK_PAGE_TURN, Random::getf(0.9f, 1.1f));
 				openBookPage(BOOKMODE_STATS);
 				pTextManage->Clear();
 			}
@@ -746,7 +746,7 @@ static void ARX_INTERFACE_ManageOpenedBook_TopTabs() {
 				
 				// Check for click
 				if(eeMouseDown1() || eeMouseDown2()) {
-					ARX_SOUND_PlayInterface(SND_BOOK_PAGE_TURN, 0.9F + 0.2F * rnd());
+					ARX_SOUND_PlayInterface(SND_BOOK_PAGE_TURN, Random::getf(0.9f, 1.1f));
 					openBookPage(BOOKMODE_SPELLS);
 					pTextManage->Clear();
 				}
@@ -770,7 +770,7 @@ static void ARX_INTERFACE_ManageOpenedBook_TopTabs() {
 			
 			// Check for click
 			if(eeMouseDown1() || eeMouseDown2()) {
-				ARX_SOUND_PlayInterface(SND_BOOK_PAGE_TURN, 0.9F + 0.2F * rnd());
+				ARX_SOUND_PlayInterface(SND_BOOK_PAGE_TURN, Random::getf(0.9f, 1.1f));
 				openBookPage(BOOKMODE_MINIMAP);
 				pTextManage->Clear();
 			}
@@ -793,7 +793,7 @@ static void ARX_INTERFACE_ManageOpenedBook_TopTabs() {
 			
 			// Check for click
 			if(eeMouseDown1() || eeMouseDown2()) {
-				ARX_SOUND_PlayInterface(SND_BOOK_PAGE_TURN, 0.9F + 0.2F * rnd());
+				ARX_SOUND_PlayInterface(SND_BOOK_PAGE_TURN, Random::getf(0.9f, 1.1f));
 				openBookPage(BOOKMODE_QUESTS);
 				pTextManage->Clear();
 			}
@@ -816,7 +816,7 @@ static void ARX_INTERFACE_ManageOpenedBook_LeftTabs_OneTab(bool tabVisibility[10
 				SpecialCursor=CURSOR_INTERACTION_ON;
 				if(eeMouseDown1() || eeMouseDown2()) {
 					activeTab = t;
-					ARX_SOUND_PlayInterface(SND_BOOK_PAGE_TURN, 0.9F + 0.2F * rnd());
+					ARX_SOUND_PlayInterface(SND_BOOK_PAGE_TURN, Random::getf(0.9f, 1.1f));
 				}
 			}
 		}
@@ -1094,9 +1094,7 @@ static void ARX_INTERFACE_ManageOpenedBook_Stats()
 	//------------------------------ SEB 04/12/2001
 	if(ARXmenu.mda && !ARXmenu.mda->flyover[FLYING_OVER].empty()) {
 		
-		float fRandom = rnd() * 2;
-
-		int t = checked_range_cast<int>(fRandom);
+		int t = Random::get(0, 2);
 
 		pTextManage->Clear();
 		OLD_FLYING_OVER=FLYING_OVER;

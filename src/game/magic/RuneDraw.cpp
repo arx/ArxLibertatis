@@ -146,7 +146,7 @@ void ARX_SPELLS_UpdateSymbolDraw() {
 				light->pos += angleToVectorXZ(io->angle.getPitch() - 45.f) * 60.f;
 				light->pos += Vec3f(0.f, -120.f, 0.f);
 				
-				float rr = rnd();
+				float rr = Random::getf();
 				light->fallstart=140.f+(float)io->flarecount*0.333333f+rr*5.f;
 				light->fallend=220.f+(float)io->flarecount*0.5f+rr*5.f;
 				light->intensity=1.6f;

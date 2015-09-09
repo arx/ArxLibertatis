@@ -272,14 +272,13 @@ void MagicMissileSpell::Launch() {
 		Anglef angles(afAlpha, afBeta, 0.f);
 		
 		if(i > 0) {
-			angles.setYaw(angles.getYaw() + frand2() * 4.0f);
-			angles.setPitch(angles.getPitch() + frand2() * 6.0f);
+			angles.setYaw(angles.getYaw() + Random::getf(-4.0f, 4.0f));
+			angles.setPitch(angles.getPitch() + Random::getf(-6.0f, 6.0f));
 		}
 		
 		missile->Create(aePos, angles);
 		
-		float fTime = m_duration + frand2() * 1000.0f;
-		long lTime = checked_range_cast<long>(fTime);
+		long lTime = m_duration + Random::get(-1000, 1000);
 		
 		lTime		= std::max(1000L, lTime);
 		lMax		= std::max(lMax, lTime);
@@ -462,7 +461,7 @@ void IgnitSpell::Launch()
 			if(lightHandleIsValid(entry.idl)) {
 				EERIE_LIGHT * light = lightHandleGet(entry.idl);
 				
-				light->intensity = 0.7f + 2.f * rnd();
+				light->intensity = Random::getf(0.7f, 2.7f);
 				light->fallend = 400.f;
 				light->fallstart = 300.f;
 				light->rgb = Color3f(1.f, 1.f, 1.f);
@@ -519,7 +518,7 @@ void IgnitSpell::Update(float timeDelta)
 				if(lightHandleIsValid(id)) {
 					EERIE_LIGHT * light = lightHandleGet(id);
 					
-					light->intensity = 0.7f + 2.f * rnd();
+					light->intensity = Random::getf(0.7f, 2.7f);
 					light->pos = pos;
 				}
 		}

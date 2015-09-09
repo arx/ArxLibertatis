@@ -925,7 +925,7 @@ void ARX_PLAYER_QuickGeneration() {
 	player.skin = old_skin;
 
 	while(player.Attribute_Redistribute) {
-		float rn = rnd();
+		float rn = Random::getf();
 
 		if(rn < 0.25f && player.m_attribute.strength < 18) {
 			player.m_attribute.strength++;
@@ -943,7 +943,7 @@ void ARX_PLAYER_QuickGeneration() {
 	}
 
 	while(player.Skill_Redistribute) {
-		float rn = rnd();
+		float rn = Random::getf();
 
 		if(rn < 0.1f && player.m_skill.stealth < 18) {
 			player.m_skill.stealth++;
@@ -1051,7 +1051,7 @@ void ARX_PLAYER_Modify_XP(long val) {
  */
 void ARX_PLAYER_Poison(float val) {
 	// Make a poison saving throw to see if player is affected
-	if(rnd() * 100.f > player.m_misc.resistPoison) {
+	if(Random::getf(0.f, 100.f) > player.m_misc.resistPoison) {
 		player.poison += val;
 		ARX_SOUND_PlayInterface(SND_PLAYER_POISONED);
 	}
@@ -1129,7 +1129,7 @@ void ARX_PLAYER_FrameCheck(float Framedelay)
 				if(faster < 0.f)
 					faster = 0.f;
 
-				if(rnd() * 100.f > player.m_misc.resistPoison + faster) {
+				if(Random::getf(0.f, 100.f) > player.m_misc.resistPoison + faster) {
 					float dmg = cp * ( 1.0f / 3 );
 
 					if(player.lifePool.current - dmg <= 0.f)

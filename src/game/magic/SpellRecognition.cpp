@@ -923,7 +923,7 @@ void ARX_SPELLS_AnalyseSYMBOL() {
 		case 828282: {
 			player.skin++;
 
-			if(player.skin == 4 && rnd() < 0.9f)
+			if(player.skin == 4 && Random::getf() < 0.9f)
 				player.skin++;
 
 			if(player.skin > 5)

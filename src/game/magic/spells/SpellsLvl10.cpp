@@ -149,27 +149,27 @@ void MassLightningStrikeSpell::Update(float timeDelta) {
 	position = m_pos + randomVec(-250.f, 250.f);
 	ARX_SOUND_RefreshPosition(m_snd_loop, position);
 	ARX_SOUND_RefreshVolume(m_snd_loop, 1.f);
-	ARX_SOUND_RefreshPitch(m_snd_loop, 0.8F + 0.4F * rnd());
+	ARX_SOUND_RefreshPitch(m_snd_loop, Random::getf(0.8f, 1.2f));
 	
-	if(rnd() > 0.62f) {
+	if(Random::getf() > 0.62f) {
 		position = m_pos + randomVec(-250.f, 250.f);
-		ARX_SOUND_PlaySFX(SND_SPELL_SPARK, &position, 0.8F + 0.4F * rnd());
+		ARX_SOUND_PlaySFX(SND_SPELL_SPARK, &position, Random::getf(0.8f, 1.2f));
 	}
 	
-	if(rnd() > 0.82f) {
+	if(Random::getf() > 0.82f) {
 		position = m_pos + randomVec(-250.f, 250.f);
-		ARX_SOUND_PlaySFX(SND_SPELL_ELECTRIC, &position, 0.8F + 0.4F * rnd());
+		ARX_SOUND_PlaySFX(SND_SPELL_ELECTRIC, &position, Random::getf(0.8f, 1.2f));
 	}
 	
 	if(0 > (long(m_duration) - 1800) && !m_soundEffectPlayed) {
 		m_soundEffectPlayed = true;
-		ARX_SOUND_PlaySFX(SND_SPELL_ELECTRIC, NULL, 0.8F + 0.4F * rnd());
+		ARX_SOUND_PlaySFX(SND_SPELL_ELECTRIC, NULL, Random::getf(0.8f, 1.2f));
 	}
 
 	if(lightHandleIsValid(m_light)) {
 		EERIE_LIGHT * light = lightHandleGet(m_light);
 		
-		light->intensity = 1.3f + rnd() * 1.f;
+		light->intensity = Random::getf(1.3f, 2.3f);
 	}	
 }
 
