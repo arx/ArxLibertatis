@@ -1035,10 +1035,13 @@ else()
 	if(NOT boost_filesystem_abi_matches)
 		add_definitions(
 			# Different names for different Boost versions :/
-			-DBOOST_NO_SCOPED_ENUMS=1
-			-DBOOST_NO_CXX11_SCOPED_ENUMS=1
+			-DBOOST_NO_SCOPED_ENUMS
+			-DBOOST_NO_CXX11_SCOPED_ENUMS
 		)
 	endif()
+	
+	# We compile with -fno-rtti and boost is not able to detect that for all compilers.
+	add_definitions(-DBOOST_NO_RTTI -DBOOST_NO_TYPEID)
 	
 endif()
 list(APPEND IO_SOURCES ${IO_FILESYSTEM_SOURCES})
