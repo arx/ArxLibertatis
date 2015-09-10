@@ -389,6 +389,8 @@ endif()
 find_package(Boost 1.48 REQUIRED)
 include_directories(SYSTEM ${Boost_INCLUDE_DIRS})
 add_definitions(-DBOOST_ALL_NO_LIB)
+# We compile with -fno-rtti and boost is not able to detect that for all compilers.
+add_definitions(-DBOOST_NO_RTTI -DBOOST_NO_TYPEID)
 
 # glm
 find_package(GLM 0.9.5.0 REQUIRED)
@@ -1039,9 +1041,6 @@ else()
 			-DBOOST_NO_CXX11_SCOPED_ENUMS
 		)
 	endif()
-	
-	# We compile with -fno-rtti and boost is not able to detect that for all compilers.
-	add_definitions(-DBOOST_NO_RTTI -DBOOST_NO_TYPEID)
 	
 endif()
 list(APPEND IO_SOURCES ${IO_FILESYSTEM_SOURCES})
