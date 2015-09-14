@@ -495,18 +495,16 @@ long SPARK_COUNT = 0;
 
 // flag & 1 punch failed
 // flag & 2 punch success
-void ARX_PARTICLES_Spawn_Spark(const Vec3f & pos, float dmgs, long flags) {
-	
-	long spawn_nb = dmgs;
+void ARX_PARTICLES_Spawn_Spark(const Vec3f & pos, int count, long flags) {
 	
 	if(SPARK_COUNT < 1000) {
-		SPARK_COUNT += spawn_nb * 25;
+		SPARK_COUNT += count * 25;
 	} else {
 		SPARK_COUNT -= static_cast<long>(framedelay);
 		return;
 	}
 	
-	for(long k = 0; k < spawn_nb; k++) {
+	for(int k = 0; k < count; k++) {
 		
 		PARTICLE_DEF * pd = createParticle();
 		if(!pd) {
@@ -518,8 +516,8 @@ void ARX_PARTICLES_Spawn_Spark(const Vec3f & pos, float dmgs, long flags) {
 		pd->move = randomVec(-6.f, 6.f);
 		
 		pd->special = PARTICLE_SPARK;
-		float len = glm::clamp(spawn_nb * (1.f / 3), 3.f, 8.f);
-		pd->tolive = (unsigned long)(len * 90.f + float(spawn_nb));
+		float len = glm::clamp(count * (1.f / 3), 3.f, 8.f);
+		pd->tolive = (unsigned long)(len * 90.f + float(count));
 		
 		if(flags == 0) {
 			pd->rgb = Color3f(.3f, .3f, 0.f);

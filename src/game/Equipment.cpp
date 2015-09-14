@@ -798,9 +798,9 @@ bool ARX_EQUIPMENT_Strike_Check(Entity * io_source, Entity * io_weapon, float ra
 							ARX_PARTICLES_Spawn_Blood2(pos, dmgs, color, target);
 						} else {
 							if(target->ioflags & IO_ITEM)
-								ARX_PARTICLES_Spawn_Spark(pos, Random::getf(0.f, 3.f), 0);
+								ARX_PARTICLES_Spawn_Spark(pos, Random::get(0, 3), 0);
 							else
-								ARX_PARTICLES_Spawn_Spark(pos, Random::getf(0.f, 30.f), 0);
+								ARX_PARTICLES_Spawn_Spark(pos, Random::get(0, 30), 0);
 
 							ARX_NPC_SpawnAudibleSound(pos, io_source);
 
@@ -808,7 +808,7 @@ bool ARX_EQUIPMENT_Strike_Check(Entity * io_source, Entity * io_weapon, float ra
 								HIT_SPARK = 1;
 						}
 					} else if((target->ioflags & IO_NPC) && (dmgs <= 0.f || target->spark_n_blood == SP_SPARKING)) {
-						long nb;
+						int nb;
 
 						if(target->spark_n_blood == SP_SPARKING)
 							nb = Random::get(0, 3);
@@ -818,14 +818,14 @@ bool ARX_EQUIPMENT_Strike_Check(Entity * io_source, Entity * io_weapon, float ra
 						if(target->ioflags & IO_ITEM)
 							nb = 1;
 
-						ARX_PARTICLES_Spawn_Spark(pos, (float)nb, 0); 
+						ARX_PARTICLES_Spawn_Spark(pos, nb, 0);
 						ARX_NPC_SpawnAudibleSound(pos, io_source);
 						target->spark_n_blood = SP_SPARKING;
 
 						if(!(target->ioflags & IO_NPC))
 							HIT_SPARK = 1;
 					} else if(dmgs <= 0.f && ((target->ioflags & IO_FIX) || (target->ioflags & IO_ITEM))) {
-						long  nb;
+						int nb;
 
 						if(target->spark_n_blood == SP_SPARKING)
 							nb = Random::get(0, 3);
@@ -835,7 +835,7 @@ bool ARX_EQUIPMENT_Strike_Check(Entity * io_source, Entity * io_weapon, float ra
 						if(target->ioflags & IO_ITEM)
 							nb = 1;
 
-						ARX_PARTICLES_Spawn_Spark(pos, (float)nb, 0);
+						ARX_PARTICLES_Spawn_Spark(pos, nb, 0);
 						ARX_NPC_SpawnAudibleSound(pos, io_source);
 						target->spark_n_blood = SP_SPARKING;
 
@@ -887,7 +887,7 @@ bool ARX_EQUIPMENT_Strike_Check(Entity * io_source, Entity * io_weapon, float ra
 				}
 			}
 
-			ARX_PARTICLES_Spawn_Spark(sphere.origin, Random::getf(0.f, 10.f), 0);
+			ARX_PARTICLES_Spawn_Spark(sphere.origin, Random::get(0, 10), 0);
 			ARX_NPC_SpawnAudibleSound(sphere.origin, io_source);
 		}
 	}
