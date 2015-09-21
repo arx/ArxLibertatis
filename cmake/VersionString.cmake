@@ -1,4 +1,6 @@
 
+set(VERSION_STRING_SCRIPT "${CMAKE_CURRENT_LIST_DIR}/VersionScript.cmake")
+
 # Create a rule to generate a version string at compile time.
 #
 # An optional fifth argument can be used to add additional cmake defines.
@@ -29,7 +31,7 @@ function(version_file SRC DST VERSION_SOURCES GIT_DIR)
 	set(mode "variable")
 	
 	set(args)
-	set(dependencies "${CMAKE_MODULE_PATH}/VersionScript.cmake")
+	set(dependencies "${VERSION_STRING_SCRIPT}")
 	
 	foreach(arg IN LISTS VERSION_SOURCES)
 		
@@ -81,7 +83,7 @@ function(version_file SRC DST VERSION_SOURCES GIT_DIR)
 			"-DGIT_DIR=${abs_git_dir}"
 			"-DGIT_COMMAND=${GIT_COMMAND}"
 			${defines}
-			-P "${CMAKE_MODULE_PATH}/VersionScript.cmake"
+			-P "${VERSION_STRING_SCRIPT}"
 		MAIN_DEPENDENCY
 			"${abs_src}"
 		DEPENDS

@@ -1029,7 +1029,7 @@ else()
 	# This means the Boost.Filesystem ABI depends on what C++ version was used
 	# to compile the library - check for that!
 	check_compile(boost_filesystem_abi_matches
-		"${CMAKE_MODULE_PATH}/check_boostfs_cxx11_scoped_enum.cpp"
+		"${CXX11_CHECK_DIR}/check_boostfs_cxx11_scoped_enum.cpp"
 		"scoped enum" "Boost ABI"
 		"${Boost_LIBRARIES}"
 		"mismatch, fixing"
