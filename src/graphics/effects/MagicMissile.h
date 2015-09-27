@@ -41,8 +41,8 @@ ZeniMax Media Inc., Suite 120, Rockville, Maryland 20850 USA.
 ===========================================================================
 */
 
-#ifndef ARX_GRAPHICS_SPELLS_SPELLS01_H
-#define ARX_GRAPHICS_SPELLS_SPELLS01_H
+#ifndef ARX_GRAPHICS_EFFECTS_MAGICMISSILE_H
+#define ARX_GRAPHICS_EFFECTS_MAGICMISSILE_H
 
 #include "graphics/effects/SpellEffects.h"
 
@@ -87,4 +87,4 @@ public:
 	MrMagicMissileFx();
 };
 
-#endif // ARX_GRAPHICS_SPELLS_SPELLS01_H
+#endif // ARX_GRAPHICS_EFFECTS_MAGICMISSILE_H

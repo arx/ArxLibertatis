@@ -767,6 +767,7 @@ set(GRAPHICS_SOURCES
 	src/graphics/effects/SpellEffects.cpp
 	src/graphics/effects/Halo.cpp
 	src/graphics/effects/Lightning.cpp
+	src/graphics/effects/MagicMissile.cpp
 	src/graphics/effects/RotatingCone.cpp
 	src/graphics/effects/Trail.cpp
 	src/graphics/font/Font.cpp
@@ -780,7 +781,6 @@ set(GRAPHICS_SOURCES
 	src/graphics/particle/ParticleManager.cpp
 	src/graphics/particle/ParticleSystem.cpp
 	src/graphics/particle/MagicFlare.cpp
-	src/graphics/spells/Spells01.cpp
 	src/graphics/spells/Spells05.cpp
 	src/graphics/texture/PackedTexture.cpp
 	src/graphics/texture/Texture.cpp

@@ -22,7 +22,7 @@
 
 #include "game/magic/Spell.h"
 
-#include "graphics/spells/Spells01.h"
+#include "graphics/effects/MagicMissile.h"
 
 class MagicSightSpell : public SpellBase {
 public:
