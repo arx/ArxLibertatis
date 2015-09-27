@@ -50,11 +50,10 @@ ZeniMax Media Inc., Suite 120, Rockville, Maryland 20850 USA.
 class CMagicMissile : public CSpellFx {
 	
 public:
-	explicit CMagicMissile(bool mrCheat);
+	CMagicMissile();
 	~CMagicMissile();
 	
 	void SetTTL(unsigned long);
-	void SetColor(Color3f);
 	
 	void Create(const Vec3f &, const Anglef &);
 	void Update(float timeDelta);
@@ -68,16 +67,24 @@ public:
 	float lightIntensityFactor;
 	
 	LightHandle lLightId;
+	
+protected:
+	Color3f m_trailColor;
+	Color3f m_projectileColor;
+	TextureContainer * tex_mm;
+	
 private:
 	int iLength;
 	int	iBezierPrecision;
-	Color3f fColor;
 	float fTrail;
 	float fOneOnBezierPrecision;
-	TextureContainer * tex_mm;
 	Vec3f pathways[6];
 	audio::SourceId snd_loop;
-	bool m_mrCheat;
+};
+
+class MrMagicMissileFx : public CMagicMissile {
+public:
+	MrMagicMissileFx();
 };
 
 #endif // ARX_GRAPHICS_SPELLS_SPELLS01_H
