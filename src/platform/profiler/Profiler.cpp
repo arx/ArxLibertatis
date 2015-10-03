@@ -293,30 +293,26 @@ void profiler::unregisterThread() {
 }
 
 
-ProfileScope::ProfileScope(const char * tag)
+profiler::Scope::Scope(const char * tag)
 	: m_tag(tag)
 	, m_startTime(platform::getTimeUs())
 {
 	arx_assert(tag != 0 && tag[0] != '\0');
 }
 
-ProfileScope::~ProfileScope() {
+profiler::Scope::~Scope() {
 	g_profiler.addProfilePoint(m_tag, Thread::getCurrentThreadId(), m_startTime, platform::getTimeUs());
 }
 
 #else
 
-void profiler::initialize() {
-}
-
-void profiler::flush() {
-}
+void profiler::initialize() {}
+void profiler::flush() {}
 
 void profiler::registerThread(const std::string & threadName) {
 	ARX_UNUSED(threadName);
 }
 
-void profiler::unregisterThread() {
-}
+void profiler::unregisterThread() {}
 
 #endif // BUILD_PROFILER_INSTRUMENT
