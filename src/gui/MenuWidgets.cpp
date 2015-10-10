@@ -1149,7 +1149,7 @@ bool CheckboxWidget::OnMouseClick() {
 	ARX_SOUND_PlayMenu(SND_MENU_CLICK);
 
 	switch (iID) {
-	case BUTTON_MENUOPTIONSVIDEO_FULLSCREEN: {
+		case BUTTON_MENUOPTIONSVIDEO_FULLSCREEN: {
 			newFullscreen = ((iState)?true:false);
 			
 			if(pMenuSliderResol) {
@@ -1158,61 +1158,61 @@ bool CheckboxWidget::OnMouseClick() {
 			
 		}
 		break;
-	case BUTTON_MENUOPTIONSVIDEO_CROSSHAIR: {
+		case BUTTON_MENUOPTIONSVIDEO_CROSSHAIR: {
 			config.video.showCrosshair=(iState)?true:false;
 		}
 		break;
-	case BUTTON_MENUOPTIONSVIDEO_ANTIALIASING: {
-		config.video.antialiasing = iState ? true : false;
-		ARX_SetAntiAliasing();
-		break;
-	}
-	case BUTTON_MENUOPTIONSVIDEO_VSYNC: {
-		config.video.vsync = iState ? true : false;
-		break;
-	}
-	case BUTTON_MENUOPTIONSVIDEO_HUDSCALE: {
-		config.video.hudScale = iState ? true : false;
-		g_hudRoot.recalcScale();
-		break;
-	}
-	case BUTTON_MENUOPTIONSAUDIO_EAX: {
-		ARXMenu_Options_Audio_SetEAX(iState != 0);
-		break;
-	}
-	case BUTTON_MENUOPTIONS_CONTROLS_INVERTMOUSE: {
-			ARXMenu_Options_Control_SetInvertMouse((iState)?true:false);
+		case BUTTON_MENUOPTIONSVIDEO_ANTIALIASING: {
+			config.video.antialiasing = iState ? true : false;
+			ARX_SetAntiAliasing();
+			break;
 		}
-		break;
-	case BUTTON_MENUOPTIONS_CONTROLS_AUTOREADYWEAPON: {
-		config.input.autoReadyWeapon = (iState) ? true : false;
-		break;
-	}
-	case BUTTON_MENUOPTIONS_CONTROLS_MOUSELOOK: {
-		config.input.mouseLookToggle = (iState) ? true : false;
-		break;
-	}
-	case BUTTON_MENUOPTIONS_CONTROLS_AUTODESCRIPTION: {
-		config.input.autoDescription = (iState) ? true : false;
-		break;
-	}
-	case BUTTON_MENUOPTIONSVIDEO_BACK: {
-		if(pMenuSliderResol && pMenuSliderResol->getOldValue() >= 0) {
-			pMenuSliderResol->setValue(pMenuSliderResol->getOldValue());
-			pMenuSliderResol->setOldValue(-1);
-			newWidth=config.video.resolution.x;
-			newHeight=config.video.resolution.y;
+		case BUTTON_MENUOPTIONSVIDEO_VSYNC: {
+			config.video.vsync = iState ? true : false;
+			break;
 		}
-		
-		if(fullscreenCheckbox && fullscreenCheckbox->iOldState >= 0) {
-			fullscreenCheckbox->iState = fullscreenCheckbox->iOldState;
-			fullscreenCheckbox->iOldState = -1;
-			newFullscreen = config.video.fullscreen;
+		case BUTTON_MENUOPTIONSVIDEO_HUDSCALE: {
+			config.video.hudScale = iState ? true : false;
+			g_hudRoot.recalcScale();
+			break;
 		}
-		break;
-	}
-	default:
-		break;
+		case BUTTON_MENUOPTIONSAUDIO_EAX: {
+			ARXMenu_Options_Audio_SetEAX(iState != 0);
+			break;
+		}
+		case BUTTON_MENUOPTIONS_CONTROLS_INVERTMOUSE: {
+				ARXMenu_Options_Control_SetInvertMouse((iState)?true:false);
+			}
+			break;
+		case BUTTON_MENUOPTIONS_CONTROLS_AUTOREADYWEAPON: {
+			config.input.autoReadyWeapon = (iState) ? true : false;
+			break;
+		}
+		case BUTTON_MENUOPTIONS_CONTROLS_MOUSELOOK: {
+			config.input.mouseLookToggle = (iState) ? true : false;
+			break;
+		}
+		case BUTTON_MENUOPTIONS_CONTROLS_AUTODESCRIPTION: {
+			config.input.autoDescription = (iState) ? true : false;
+			break;
+		}
+		case BUTTON_MENUOPTIONSVIDEO_BACK: {
+			if(pMenuSliderResol && pMenuSliderResol->getOldValue() >= 0) {
+				pMenuSliderResol->setValue(pMenuSliderResol->getOldValue());
+				pMenuSliderResol->setOldValue(-1);
+				newWidth=config.video.resolution.x;
+				newHeight=config.video.resolution.y;
+			}
+			
+			if(fullscreenCheckbox && fullscreenCheckbox->iOldState >= 0) {
+				fullscreenCheckbox->iState = fullscreenCheckbox->iOldState;
+				fullscreenCheckbox->iOldState = -1;
+				newFullscreen = config.video.fullscreen;
+			}
+			break;
+		}
+		default:
+			break;
 	}
 
 	return false;
