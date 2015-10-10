@@ -25,7 +25,7 @@
 class WidgetContainer
 {
 public:
-	std::vector<Widget *>	vMenuZone;
+	std::vector<Widget *> m_widgets;
 public:
 	WidgetContainer();
 	virtual ~WidgetContainer();

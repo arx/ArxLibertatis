@@ -91,8 +91,8 @@ bool TextWidget::OnMouseDoubleClick() {
 				MenuPage * page = pWindowMenu->m_pages[i];
 
 				if(page->eMenuState == EDIT_QUEST_LOAD) {
-					for(size_t j = 0; j < page->MenuAllZone.vMenuZone.size(); j++) {
-						Widget *pMenuElement = page->MenuAllZone.vMenuZone[j]->GetZoneWithID(BUTTON_MENUEDITQUEST_LOAD_CONFIRM);
+					for(size_t j = 0; j < page->MenuAllZone.m_widgets.size(); j++) {
+						Widget *pMenuElement = page->MenuAllZone.m_widgets[j]->GetZoneWithID(BUTTON_MENUEDITQUEST_LOAD_CONFIRM);
 
 						if(pMenuElement) {
 							pMenuElement->OnMouseClick();
@@ -192,8 +192,8 @@ bool TextWidget::OnMouseClick() {
 				if(page->eMenuState == EDIT_QUEST_LOAD) {
 					page->m_savegame = m_savegame;
 					
-					for(size_t j = 0; j < page->MenuAllZone.vMenuZone.size(); j++) {
-						Widget *cz = page->MenuAllZone.vMenuZone[j];
+					for(size_t j = 0; j < page->MenuAllZone.m_widgets.size(); j++) {
+						Widget *cz = page->MenuAllZone.m_widgets[j];
 						
 						if(cz->iID == BUTTON_MENUEDITQUEST_LOAD) {
 							((TextWidget *)cz)->bSelected = false;
@@ -216,8 +216,8 @@ bool TextWidget::OnMouseClick() {
 					if(page->eMenuState == EDIT_QUEST_LOAD) {
 						page->m_savegame = m_savegame;
 						
-						for(size_t j = 0; j < page->MenuAllZone.vMenuZone.size(); j++) {
-							Widget *cz = page->MenuAllZone.vMenuZone[j];
+						for(size_t j = 0; j < page->MenuAllZone.m_widgets.size(); j++) {
+							Widget *cz = page->MenuAllZone.m_widgets[j];
 							
 							if(cz->iID == BUTTON_MENUEDITQUEST_LOAD) {
 								((TextWidget *)cz)->bSelected = false;
@@ -271,7 +271,7 @@ bool TextWidget::OnMouseClick() {
 				
 				if(page->eMenuState == EDIT_QUEST_SAVE_CONFIRM) {
 					page->m_savegame = m_savegame;
-					TextWidget * me = (TextWidget *) page->MenuAllZone.vMenuZone[1];
+					TextWidget * me = (TextWidget *) page->MenuAllZone.m_widgets[1];
 					
 					if(me) {
 						eMenuState = MAIN;
@@ -313,7 +313,7 @@ bool TextWidget::OnMouseClick() {
 					MenuPage * page = pWindowMenu->m_pages[i];
 					if(page->eMenuState == EDIT_QUEST_SAVE_CONFIRM) {
 						page->m_savegame = m_savegame;
-						TextWidget * me = (TextWidget *) page->MenuAllZone.vMenuZone[1];
+						TextWidget * me = (TextWidget *) page->MenuAllZone.m_widgets[1];
 						if(me) {
 							eMenuState = EDIT_QUEST_SAVE;
 							mainMenu->bReInitAll = true;
@@ -353,7 +353,7 @@ bool TextWidget::OnMouseClick() {
 
 			if(page->eMenuState == eMenuState) {
 				page->m_savegame = m_savegame;
-				TextWidget * me = (TextWidget *) page->MenuAllZone.vMenuZone[1];
+				TextWidget * me = (TextWidget *) page->MenuAllZone.m_widgets[1];
 
 				if(me) {
 					me->m_savegame = m_savegame;
