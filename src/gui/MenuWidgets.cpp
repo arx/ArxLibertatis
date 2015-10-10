@@ -492,9 +492,7 @@ bool Menu2_Render() {
 }
 
 
-
-
-TextWidget::TextWidget(int _iID, Font* _pFont, const std::string& _pText, Vec2i pos, MENUSTATE _eMs) : Widget(_eMs)
+TextWidget::TextWidget(MenuButton _iID, Font* _pFont, const std::string& _pText, Vec2i pos, MENUSTATE _eMs) : Widget(_eMs)
 {
 	iID = _iID;
 
@@ -558,6 +556,8 @@ bool TextWidget::OnMouseDoubleClick() {
 		}
 
 		return true;
+	default:
+		return false;
 	}
 
 	return false;
@@ -586,7 +586,7 @@ bool TextWidget::OnMouseClick() {
 	}
 
 	switch(iID) {
-		case -1: {
+		case BUTTON_INVALID: {
 				return false;
 			}
 			break;
@@ -878,6 +878,8 @@ bool TextWidget::OnMouseClick() {
 				config.save();
 			}
 			break;
+		default:
+			break;
 	}
 
 	if(eMenuState == EDIT_QUEST_SAVE_CONFIRM) {
@@ -1023,7 +1025,7 @@ void CMenuState::createChildElements()
 	pos.y += yOffset;
 	{
 	std::string szMenuText = getLocalised("system_menus_main_editquest");
-	TextWidget *me = new TextWidget(-1, hFontMainMenu, szMenuText, RATIO_2(pos), EDIT_QUEST);
+	TextWidget *me = new TextWidget(BUTTON_INVALID, hFontMainMenu, szMenuText, RATIO_2(pos), EDIT_QUEST);
 	mainMenu->AddMenuElement(me);
 	}
 	pos.y += yOffset;
@@ -1041,7 +1043,7 @@ void CMenuState::createChildElements()
 	pos.y += yOffset;
 	{
 	std::string szMenuText = getLocalised("system_menus_main_quit");
-	TextWidget *me = new TextWidget(-1, hFontMainMenu, szMenuText, RATIO_2(pos), QUIT);
+	TextWidget *me = new TextWidget(BUTTON_INVALID, hFontMainMenu, szMenuText, RATIO_2(pos), QUIT);
 	mainMenu->AddMenuElement(me);
 	}
 	pos.y += yOffset;
@@ -1054,7 +1056,7 @@ void CMenuState::createChildElements()
 	}
 
 	float verPosX = RATIO_X(620) - hFontControls->getTextSize(version).x;
-	TextWidget * me = new TextWidget( -1, hFontControls, version, Vec2i(verPosX, RATIO_Y(80)), NOP );
+	TextWidget * me = new TextWidget(BUTTON_INVALID, hFontControls, version, Vec2i(verPosX, RATIO_Y(80)), NOP );
 	
 	me->SetCheckOff();
 	me->lColor=Color(127,127,127);
@@ -1205,7 +1207,7 @@ CheckboxWidget::CheckboxWidget(TextWidget *_pText)
 	arx_assert(m_textureOn);
 	arx_assert(m_textureOff->size() == m_textureOn->size());
 	
-	iID = -1;
+	iID = BUTTON_INVALID;
 	iState    = 0;
 	iOldState = -1;
 	pText    = _pText;
@@ -1303,6 +1305,8 @@ bool CheckboxWidget::OnMouseClick() {
 		}
 		break;
 	}
+	default:
+		break;
 	}
 
 	return false;
@@ -1961,6 +1965,8 @@ static bool UpdateGameKey(bool bEdit, Widget *pmeElement, InputKeyId inputKeyId)
 		case BUTTON_MENUOPTIONS_CONTROLS_CUST_TOGGLE_FULLSCREEN2:
 			bChange=config.setActionKey(CONTROLS_CUST_TOGGLE_FULLSCREEN,pmeElement->iID-BUTTON_MENUOPTIONS_CONTROLS_CUST_TOGGLE_FULLSCREEN1,inputKeyId);
 			break;
+		default:
+			break;
 		}
 	}
 
@@ -2243,7 +2249,7 @@ ButtonWidget::ButtonWidget(Vec2i pos, const char * texturePath)
 	m_texture = TextureContainer::Load(texturePath);
 	arx_assert(m_texture);
 	
-	iID = -1;
+	iID = BUTTON_INVALID;
 
 	rZone.left=pos.x;
 	rZone.top=pos.y;
@@ -2312,7 +2318,7 @@ void ButtonWidget::RenderMouseOver() {
 	}
 }
 
-CycleTextWidget::CycleTextWidget(int _iID)
+CycleTextWidget::CycleTextWidget(MenuButton _iID)
 	: Widget(NOP)
 {
 	iID = _iID;
@@ -2480,6 +2486,8 @@ bool CycleTextWidget::OnMouseClick() {
 			ARXMenu_Options_Video_SetDetailsQuality(iPos);
 			break;
 		}
+		default:
+			break;
 	}
 	
 	return false;
@@ -2549,7 +2557,7 @@ void CycleTextWidget::RenderMouseOver() {
 // CMenuSlider
 //-----------------------------------------------------------------------------
 
-SliderWidget::SliderWidget(int _iID, Vec2i pos)
+SliderWidget::SliderWidget(MenuButton _iID, Vec2i pos)
 	: Widget(NOP)
 {
 	iID = _iID;
@@ -2644,11 +2652,13 @@ bool SliderWidget::OnMouseClick() {
 	case BUTTON_MENUOPTIONS_CONTROLS_MOUSESENSITIVITY:
 		ARXMenu_Options_Control_SetMouseSensitivity(m_value);
 		break;
-		case BUTTON_MENUOPTIONS_CONTROLS_QUICKSAVESLOTS: {
-			m_value = std::max(m_value, 1);
-			config.misc.quicksaveSlots = m_value;
-			break;
-		}
+	case BUTTON_MENUOPTIONS_CONTROLS_QUICKSAVESLOTS: {
+		m_value = std::max(m_value, 1);
+		config.misc.quicksaveSlots = m_value;
+		break;
+	}
+	default:
+		break;
 	}
 
 	return false;
