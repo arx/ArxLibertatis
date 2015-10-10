@@ -29,8 +29,8 @@ public:
 	virtual ~HorizontalPanelWidget();
 	
 	void Move(const Vec2i & offset);
-	void AddElement(Widget * element);
-	void AddElementNoCenterIn(Widget * element);
+	void AddElement(Widget * widget);
+	void AddElementNoCenterIn(Widget * widget);
 	
 	void Update(int time);
 	void Render();

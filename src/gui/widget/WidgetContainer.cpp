@@ -31,8 +31,8 @@ WidgetContainer::WidgetContainer() {
 	std::vector<Widget*>::iterator i;
 
 	for(i = m_widgets.begin(); i != m_widgets.end(); ++i) {
-		Widget *zone = *i;
-		delete zone;
+		Widget *widget = *i;
+		delete widget;
 	}
 }
 
@@ -42,9 +42,9 @@ WidgetContainer::~WidgetContainer() {
 		delete *it;
 }
 
-void WidgetContainer::AddZone(Widget *_pMenuZone) {
+void WidgetContainer::AddZone(Widget *widget) {
 
-	m_widgets.push_back(_pMenuZone);
+	m_widgets.push_back(widget);
 }
 
 Widget * WidgetContainer::CheckZone(const Vec2s& mousePos) const {
@@ -52,15 +52,15 @@ Widget * WidgetContainer::CheckZone(const Vec2s& mousePos) const {
 	std::vector<Widget*>::const_iterator i;
 
 	for(i = m_widgets.begin(); i != m_widgets.end(); ++i) {
-		Widget *zone = *i;
+		Widget * widget = *i;
 		
-		if(!zone->getCheck())
+		if(!widget->getCheck())
 			continue;
 		
-		Widget * pRef = zone->IsMouseOver(mousePos);
+		Widget * mouseOverWidget = widget->IsMouseOver(mousePos);
 		
-		if(pRef)
-			return pRef;
+		if(mouseOverWidget)
+			return mouseOverWidget;
 	}
 
 	return NULL;
@@ -73,8 +73,8 @@ Widget * WidgetContainer::GetZoneNum(size_t index) {
 Widget * WidgetContainer::GetZoneWithID(int _iID) {
 
 	for(std::vector<Widget*>::iterator i = m_widgets.begin(), i_end = m_widgets.end(); i != i_end; ++i) {
-		if(Widget *zone = (*i)->GetZoneWithID(_iID))
-			return zone;
+		if(Widget * widget = (*i)->GetZoneWithID(_iID))
+			return widget;
 	}
 
 	return NULL;

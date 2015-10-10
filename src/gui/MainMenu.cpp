@@ -1114,17 +1114,17 @@ MENUSTATE MainMenu::Update() {
 	
 	pZoneClick=NULL;
 
-	Widget * iR=m_widgets->CheckZone(GInput->getMousePosAbs());
+	Widget * widget = m_widgets->CheckZone(GInput->getMousePosAbs());
 
 	if(GInput->getMouseButton(Mouse::Button_0)) {
-		if(iR) {
-			pZoneClick = iR;
+		if(widget) {
+			pZoneClick = widget;
 			pZoneClick->OnMouseClick();
 			return pZoneClick->eMenuState;
 		}
 	} else {
-		if(iR) {
-			pZoneClick = iR;
+		if(widget) {
+			pZoneClick = widget;
 		}
 	}
 
@@ -1146,9 +1146,9 @@ void MainMenu::Render() {
 	int iARXDiffTimeMenu = checked_range_cast<int>(ARXDiffTimeMenu);
 
 	for(size_t i = 0; i < m_widgets->GetNbZone(); ++i) {
-		Widget * pMe = m_widgets->GetZoneNum(i);
-		pMe->Update(iARXDiffTimeMenu);
-		pMe->Render();
+		Widget * widget = m_widgets->GetZoneNum(i);
+		widget->Update(iARXDiffTimeMenu);
+		widget->Render();
 	}
 
 	//HIGHLIGHT

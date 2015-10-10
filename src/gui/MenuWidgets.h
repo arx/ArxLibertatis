@@ -65,9 +65,9 @@ class MenuPage {
 public:
 	MenuPage(Vec2i pos, Vec2i size, MENUSTATE state);
 	
-	void AddMenu(Widget * element);
-	void AddMenuCenter(Widget * element, bool centerX = false);
-	void AlignElementCenter(Widget * element);
+	void AddMenu(Widget * widget);
+	void AddMenuCenter(Widget * widget, bool centerX = false);
+	void AlignElementCenter(Widget * widget);
 	MENUSTATE Update(Vec2i pos);
 	void Render();
 	

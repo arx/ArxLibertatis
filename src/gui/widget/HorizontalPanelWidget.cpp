@@ -30,8 +30,8 @@ HorizontalPanelWidget::HorizontalPanelWidget()
 
 HorizontalPanelWidget::~HorizontalPanelWidget()
 {
-	BOOST_FOREACH(Widget * e, vElement) {
-		delete e;
+	BOOST_FOREACH(Widget * widget, vElement) {
+		delete widget;
 	}
 }
 
@@ -39,52 +39,52 @@ void HorizontalPanelWidget::Move(const Vec2i & offset)
 {
 	m_rect.move(offset.x, offset.y);
 	
-	BOOST_FOREACH(Widget * e, vElement) {
-		e->Move(offset);
+	BOOST_FOREACH(Widget * widget, vElement) {
+		widget->Move(offset);
 	}
 }
 
 // patch on ajoute à droite en ligne
-void HorizontalPanelWidget::AddElement(Widget* _pElem)
+void HorizontalPanelWidget::AddElement(Widget* widget)
 {
-	vElement.push_back(_pElem);
+	vElement.push_back(widget);
 
 	if(vElement.size() == 1) {
-		m_rect = _pElem->m_rect;
+		m_rect = widget->m_rect;
 	} else {
-		m_rect.left = std::min(m_rect.left, _pElem->m_rect.left);
-		m_rect.top = std::min(m_rect.top, _pElem->m_rect.top);
+		m_rect.left = std::min(m_rect.left, widget->m_rect.left);
+		m_rect.top = std::min(m_rect.top, widget->m_rect.top);
 	}
 
 	// + taille elem
-	m_rect.right = std::max(m_rect.right, _pElem->m_rect.right);
-	m_rect.bottom = std::max(m_rect.bottom, _pElem->m_rect.bottom);
+	m_rect.right = std::max(m_rect.right, widget->m_rect.right);
+	m_rect.bottom = std::max(m_rect.bottom, widget->m_rect.bottom);
 
-	_pElem->Move(Vec2i(0, ((m_rect.height() - _pElem->m_rect.bottom) / 2)));
+	widget->Move(Vec2i(0, ((m_rect.height() - widget->m_rect.bottom) / 2)));
 }
 
 // patch on ajoute à droite en ligne
-void HorizontalPanelWidget::AddElementNoCenterIn(Widget* _pElem)
+void HorizontalPanelWidget::AddElementNoCenterIn(Widget * widget)
 {
-	vElement.push_back(_pElem);
+	vElement.push_back(widget);
 
 	if(vElement.size() == 1) {
-		m_rect = _pElem->m_rect;
+		m_rect = widget->m_rect;
 	} else {
-		m_rect.left = std::min(m_rect.left, _pElem->m_rect.left);
-		m_rect.top = std::min(m_rect.top, _pElem->m_rect.top);
+		m_rect.left = std::min(m_rect.left, widget->m_rect.left);
+		m_rect.top = std::min(m_rect.top, widget->m_rect.top);
 	}
 
 	// + taille elem
-	m_rect.right = std::max(m_rect.right, _pElem->m_rect.right);
-	m_rect.bottom = std::max(m_rect.bottom, _pElem->m_rect.bottom);
+	m_rect.right = std::max(m_rect.right, widget->m_rect.right);
+	m_rect.bottom = std::max(m_rect.bottom, widget->m_rect.bottom);
 }
 
 Widget* HorizontalPanelWidget::OnShortCut()
 {
-	BOOST_FOREACH(Widget * e, vElement) {
-		if(e->OnShortCut())
-			return e;
+	BOOST_FOREACH(Widget * widget, vElement) {
+		if(widget->OnShortCut())
+			return widget;
 	}
 
 	return NULL;
@@ -95,10 +95,10 @@ void HorizontalPanelWidget::Update(int _iTime)
 	m_rect.right = m_rect.left;
 	m_rect.bottom = m_rect.top;
 
-	BOOST_FOREACH(Widget * e, vElement) {
-		e->Update(_iTime);
-		m_rect.right = std::max(m_rect.right, e->m_rect.right);
-		m_rect.bottom = std::max(m_rect.bottom, e->m_rect.bottom);
+	BOOST_FOREACH(Widget * widget, vElement) {
+		widget->Update(_iTime);
+		m_rect.right = std::max(m_rect.right, widget->m_rect.right);
+		m_rect.bottom = std::max(m_rect.bottom, widget->m_rect.bottom);
 	}
 }
 
@@ -110,15 +110,15 @@ void HorizontalPanelWidget::Render() {
 	if(bNoMenu)
 		return;
 
-	BOOST_FOREACH(Widget * e, vElement) {
-		e->Render();
+	BOOST_FOREACH(Widget * widget, vElement) {
+		widget->Render();
 	}
 }
 
 Widget * HorizontalPanelWidget::GetZoneWithID(int _iID)
 {
-	BOOST_FOREACH(Widget * e, vElement) {
-		if(Widget * pZone = e->GetZoneWithID(_iID))
+	BOOST_FOREACH(Widget * widget, vElement) {
+		if(Widget * pZone = widget->GetZoneWithID(_iID))
 			return pZone;
 	}
 	
@@ -128,9 +128,9 @@ Widget * HorizontalPanelWidget::GetZoneWithID(int _iID)
 Widget * HorizontalPanelWidget::IsMouseOver(const Vec2s& mousePos) const {
 
 	if(m_rect.contains(Vec2i(mousePos))) {
-		BOOST_FOREACH(Widget * e, vElement) {
-			if(e->getCheck() && e->m_rect.contains(Vec2i(mousePos))) {
-				return e->pRef;
+		BOOST_FOREACH(Widget * widget, vElement) {
+			if(widget->getCheck() && widget->m_rect.contains(Vec2i(mousePos))) {
+				return widget->pRef;
 			}
 		}
 	}

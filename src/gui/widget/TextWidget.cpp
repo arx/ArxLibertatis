@@ -92,10 +92,10 @@ bool TextWidget::OnMouseDoubleClick() {
 
 				if(page->eMenuState == EDIT_QUEST_LOAD) {
 					for(size_t j = 0; j < page->MenuAllZone.m_widgets.size(); j++) {
-						Widget *pMenuElement = page->MenuAllZone.m_widgets[j]->GetZoneWithID(BUTTON_MENUEDITQUEST_LOAD_CONFIRM);
+						Widget * widget = page->MenuAllZone.m_widgets[j]->GetZoneWithID(BUTTON_MENUEDITQUEST_LOAD_CONFIRM);
 
-						if(pMenuElement) {
-							pMenuElement->OnMouseClick();
+						if(widget) {
+							widget->OnMouseClick();
 						}
 					}
 				}
@@ -193,10 +193,10 @@ bool TextWidget::OnMouseClick() {
 					page->m_savegame = m_savegame;
 					
 					for(size_t j = 0; j < page->MenuAllZone.m_widgets.size(); j++) {
-						Widget *cz = page->MenuAllZone.m_widgets[j];
+						Widget * widget = page->MenuAllZone.m_widgets[j];
 						
-						if(cz->iID == BUTTON_MENUEDITQUEST_LOAD) {
-							((TextWidget *)cz)->bSelected = false;
+						if(widget->iID == BUTTON_MENUEDITQUEST_LOAD) {
+							((TextWidget *)widget)->bSelected = false;
 						}
 					}
 				}
@@ -217,10 +217,10 @@ bool TextWidget::OnMouseClick() {
 						page->m_savegame = m_savegame;
 						
 						for(size_t j = 0; j < page->MenuAllZone.m_widgets.size(); j++) {
-							Widget *cz = page->MenuAllZone.m_widgets[j];
+							Widget * widget = page->MenuAllZone.m_widgets[j];
 							
-							if(cz->iID == BUTTON_MENUEDITQUEST_LOAD) {
-								((TextWidget *)cz)->bSelected = false;
+							if(widget->iID == BUTTON_MENUEDITQUEST_LOAD) {
+								((TextWidget *)widget)->bSelected = false;
 							}
 						}
 						bSelected = true;

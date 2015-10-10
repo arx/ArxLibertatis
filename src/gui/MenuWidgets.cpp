@@ -572,21 +572,21 @@ MenuPage::MenuPage(Vec2i pos, Vec2i size, MENUSTATE _eMenuState)
 	bFrameOdd=false;
 }
 
-void MenuPage::AddMenu(Widget * element) {
-	element->ePlace = NOCENTER;
-	element->Move(m_offset);
-	MenuAllZone.AddZone(element);
+void MenuPage::AddMenu(Widget * widget) {
+	widget->ePlace = NOCENTER;
+	widget->Move(m_offset);
+	MenuAllZone.AddZone(widget);
 }
 
-void MenuPage::AddMenuCenter(Widget * element, bool centerX) {
+void MenuPage::AddMenuCenter(Widget * widget, bool centerX) {
 
 	int dx;
 	
 	if(centerX) {
-		element->ePlace = CENTER;
+		widget->ePlace = CENTER;
 		
-		int iDx = element->m_rect.right - element->m_rect.left;
-		dx  = ((m_size.x - iDx) >> 1) - element->m_rect.left;
+		int iDx = widget->m_rect.right - widget->m_rect.left;
+		dx  = ((m_size.x - iDx) >> 1) - widget->m_rect.left;
 	
 		if(dx < 0) {
 			dx = 0;
@@ -595,13 +595,13 @@ void MenuPage::AddMenuCenter(Widget * element, bool centerX) {
 		dx = 0;
 	}
 	
-	int iDy = element->m_rect.bottom - element->m_rect.top;
+	int iDy = widget->m_rect.bottom - widget->m_rect.top;
 
 	for(size_t iJ = 0; iJ < MenuAllZone.GetNbZone(); iJ++) {
-		Widget * pZone = MenuAllZone.GetZoneNum(iJ);
+		Widget * widget = MenuAllZone.GetZoneNum(iJ);
 
 		iDy += m_rowSpacing;
-		iDy += pZone->m_rect.bottom - pZone->m_rect.top;
+		iDy += widget->m_rect.bottom - widget->m_rect.top;
 	}
 
 	int iDepY = m_offset.y;
@@ -617,26 +617,26 @@ void MenuPage::AddMenuCenter(Widget * element, bool centerX) {
 	}
 	
 	for(size_t iJ = 0; iJ < MenuAllZone.GetNbZone(); iJ++) {
-		Widget *pZone = MenuAllZone.GetZoneNum(iJ);
-		iDepY += (pZone->m_rect.bottom - pZone->m_rect.top) + m_rowSpacing;
+		Widget * widget = MenuAllZone.GetZoneNum(iJ);
+		iDepY += (widget->m_rect.bottom - widget->m_rect.top) + m_rowSpacing;
 		
-		pZone->Move(Vec2i(0, dy));
+		widget->Move(Vec2i(0, dy));
 	}
 
-	element->Move(Vec2i(dx, iDepY));
+	widget->Move(Vec2i(dx, iDepY));
 
-	MenuAllZone.AddZone(element);
+	MenuAllZone.AddZone(widget);
 }
 
-void MenuPage::AlignElementCenter(Widget *_pMenuElement) {
+void MenuPage::AlignElementCenter(Widget * widget) {
 	
-	_pMenuElement->Move(Vec2i(-_pMenuElement->m_rect.left, 0));
-	_pMenuElement->ePlace = CENTER;
+	widget->Move(Vec2i(-widget->m_rect.left, 0));
+	widget->ePlace = CENTER;
 	
-	int iDx = _pMenuElement->m_rect.right - _pMenuElement->m_rect.left;
-	int dx = (m_size.x - iDx) / 2 - _pMenuElement->m_rect.left;
+	int iDx = widget->m_rect.right - widget->m_rect.left;
+	int dx = (m_size.x - iDx) / 2 - widget->m_rect.left;
 	
-	_pMenuElement->Move(Vec2i(std::max(dx, 0), 0));
+	widget->Move(Vec2i(std::max(dx, 0), 0));
 }
 
 void MenuPage::UpdateText() {
@@ -852,10 +852,10 @@ MENUSTATE MenuPage::Update(Vec2i pos) {
 	// Check if mouse over
 	if(!bEdit) {
 		pZoneClick=NULL;
-		Widget * iR = MenuAllZone.CheckZone(GInput->getMousePosAbs());
+		Widget * widget = MenuAllZone.CheckZone(GInput->getMousePosAbs());
 		
-		if(iR) {
-			pZoneClick = iR;
+		if(widget) {
+			pZoneClick = widget;
 			
 			if(GInput->getMouseButtonDoubleClick(Mouse::Button_0, 300)) {
 				MENUSTATE e = pZoneClick->eMenuState;
@@ -880,10 +880,10 @@ MENUSTATE MenuPage::Update(Vec2i pos) {
 		}
 	} else {
 		if(!pZoneClick) {
-			Widget * iR = MenuAllZone.CheckZone(GInput->getMousePosAbs());
+			Widget * widget = MenuAllZone.CheckZone(GInput->getMousePosAbs());
 			
-			if(iR) {
-				pZoneClick = iR;
+			if(widget) {
+				pZoneClick = widget;
 				
 				if(GInput->getMouseButtonDoubleClick(Mouse::Button_0, 300)) {
 					bEdit = pZoneClick->OnMouseDoubleClick();
@@ -898,14 +898,14 @@ MENUSTATE MenuPage::Update(Vec2i pos) {
 	//check les shortcuts
 	if(!bEdit) {
 		for(size_t iJ = 0; iJ < MenuAllZone.GetNbZone(); ++iJ) {
-			Widget * pMenuElement = MenuAllZone.GetZoneNum(iJ);
-			Widget *CMenuElementShortCut = pMenuElement->OnShortCut();
+			Widget * widget = MenuAllZone.GetZoneNum(iJ);
+			Widget * shortCutWidget = widget->OnShortCut();
 			
-			if(CMenuElementShortCut) {
-				pZoneClick=CMenuElementShortCut;
+			if(shortCutWidget) {
+				pZoneClick=shortCutWidget;
 				MENUSTATE e = pZoneClick->eMenuState;
 				bEdit = pZoneClick->OnMouseClick();
-				pZoneClick=CMenuElementShortCut;
+				pZoneClick=shortCutWidget;
 				return e;
 			}
 		}
@@ -914,174 +914,174 @@ MENUSTATE MenuPage::Update(Vec2i pos) {
 	return NOP;
 }
 
-static bool UpdateGameKey(bool bEdit, Widget *pmeElement, InputKeyId inputKeyId) {
+static bool UpdateGameKey(bool bEdit, Widget * widget, InputKeyId inputKeyId) {
 	bool bChange=false;
 
-	if(!bEdit && pmeElement) {
-		switch(pmeElement->iID) {
+	if(!bEdit && widget) {
+		switch(widget->iID) {
 		case BUTTON_MENUOPTIONS_CONTROLS_CUST_JUMP1:
 		case BUTTON_MENUOPTIONS_CONTROLS_CUST_JUMP2:
-			bChange=config.setActionKey(CONTROLS_CUST_JUMP,pmeElement->iID-BUTTON_MENUOPTIONS_CONTROLS_CUST_JUMP1,inputKeyId);
+			bChange=config.setActionKey(CONTROLS_CUST_JUMP,widget->iID-BUTTON_MENUOPTIONS_CONTROLS_CUST_JUMP1,inputKeyId);
 			break;
 		case BUTTON_MENUOPTIONS_CONTROLS_CUST_MAGICMODE1:
 		case BUTTON_MENUOPTIONS_CONTROLS_CUST_MAGICMODE2:
-			bChange=config.setActionKey(CONTROLS_CUST_MAGICMODE,pmeElement->iID-BUTTON_MENUOPTIONS_CONTROLS_CUST_MAGICMODE1,inputKeyId);
+			bChange=config.setActionKey(CONTROLS_CUST_MAGICMODE,widget->iID-BUTTON_MENUOPTIONS_CONTROLS_CUST_MAGICMODE1,inputKeyId);
 			break;
 		case BUTTON_MENUOPTIONS_CONTROLS_CUST_STEALTHMODE1:
 		case BUTTON_MENUOPTIONS_CONTROLS_CUST_STEALTHMODE2:
-			bChange=config.setActionKey(CONTROLS_CUST_STEALTHMODE,pmeElement->iID-BUTTON_MENUOPTIONS_CONTROLS_CUST_STEALTHMODE1,inputKeyId);
+			bChange=config.setActionKey(CONTROLS_CUST_STEALTHMODE,widget->iID-BUTTON_MENUOPTIONS_CONTROLS_CUST_STEALTHMODE1,inputKeyId);
 			break;
 		case BUTTON_MENUOPTIONS_CONTROLS_CUST_WALKFORWARD1:
 		case BUTTON_MENUOPTIONS_CONTROLS_CUST_WALKFORWARD2:
-			bChange=config.setActionKey(CONTROLS_CUST_WALKFORWARD,pmeElement->iID-BUTTON_MENUOPTIONS_CONTROLS_CUST_WALKFORWARD1,inputKeyId);
+			bChange=config.setActionKey(CONTROLS_CUST_WALKFORWARD,widget->iID-BUTTON_MENUOPTIONS_CONTROLS_CUST_WALKFORWARD1,inputKeyId);
 			break;
 		case BUTTON_MENUOPTIONS_CONTROLS_CUST_WALKBACKWARD1:
 		case BUTTON_MENUOPTIONS_CONTROLS_CUST_WALKBACKWARD2:
-			bChange=config.setActionKey(CONTROLS_CUST_WALKBACKWARD,pmeElement->iID-BUTTON_MENUOPTIONS_CONTROLS_CUST_WALKBACKWARD1,inputKeyId);
+			bChange=config.setActionKey(CONTROLS_CUST_WALKBACKWARD,widget->iID-BUTTON_MENUOPTIONS_CONTROLS_CUST_WALKBACKWARD1,inputKeyId);
 			break;
 		case BUTTON_MENUOPTIONS_CONTROLS_CUST_STRAFELEFT1:
 		case BUTTON_MENUOPTIONS_CONTROLS_CUST_STRAFELEFT2:
-			bChange=config.setActionKey(CONTROLS_CUST_STRAFELEFT,pmeElement->iID-BUTTON_MENUOPTIONS_CONTROLS_CUST_STRAFELEFT1,inputKeyId);
+			bChange=config.setActionKey(CONTROLS_CUST_STRAFELEFT,widget->iID-BUTTON_MENUOPTIONS_CONTROLS_CUST_STRAFELEFT1,inputKeyId);
 			break;
 		case BUTTON_MENUOPTIONS_CONTROLS_CUST_STRAFERIGHT1:
 		case BUTTON_MENUOPTIONS_CONTROLS_CUST_STRAFERIGHT2:
-			bChange=config.setActionKey(CONTROLS_CUST_STRAFERIGHT,pmeElement->iID-BUTTON_MENUOPTIONS_CONTROLS_CUST_STRAFERIGHT1,inputKeyId);
+			bChange=config.setActionKey(CONTROLS_CUST_STRAFERIGHT,widget->iID-BUTTON_MENUOPTIONS_CONTROLS_CUST_STRAFERIGHT1,inputKeyId);
 			break;
 		case BUTTON_MENUOPTIONS_CONTROLS_CUST_LEANLEFT1:
 		case BUTTON_MENUOPTIONS_CONTROLS_CUST_LEANLEFT2:
-			bChange=config.setActionKey(CONTROLS_CUST_LEANLEFT,pmeElement->iID-BUTTON_MENUOPTIONS_CONTROLS_CUST_LEANLEFT1,inputKeyId);
+			bChange=config.setActionKey(CONTROLS_CUST_LEANLEFT,widget->iID-BUTTON_MENUOPTIONS_CONTROLS_CUST_LEANLEFT1,inputKeyId);
 			break;
 		case BUTTON_MENUOPTIONS_CONTROLS_CUST_LEANRIGHT1:
 		case BUTTON_MENUOPTIONS_CONTROLS_CUST_LEANRIGHT2:
-			bChange=config.setActionKey(CONTROLS_CUST_LEANRIGHT,pmeElement->iID-BUTTON_MENUOPTIONS_CONTROLS_CUST_LEANRIGHT1,inputKeyId);
+			bChange=config.setActionKey(CONTROLS_CUST_LEANRIGHT,widget->iID-BUTTON_MENUOPTIONS_CONTROLS_CUST_LEANRIGHT1,inputKeyId);
 			break;
 		case BUTTON_MENUOPTIONS_CONTROLS_CUST_CROUCH1:
 		case BUTTON_MENUOPTIONS_CONTROLS_CUST_CROUCH2:
-			bChange=config.setActionKey(CONTROLS_CUST_CROUCH,pmeElement->iID-BUTTON_MENUOPTIONS_CONTROLS_CUST_CROUCH1,inputKeyId);
+			bChange=config.setActionKey(CONTROLS_CUST_CROUCH,widget->iID-BUTTON_MENUOPTIONS_CONTROLS_CUST_CROUCH1,inputKeyId);
 			break;
 		case BUTTON_MENUOPTIONS_CONTROLS_CUST_USE1:
 		case BUTTON_MENUOPTIONS_CONTROLS_CUST_USE2:
-			bChange=config.setActionKey(CONTROLS_CUST_USE,pmeElement->iID-BUTTON_MENUOPTIONS_CONTROLS_CUST_USE1,inputKeyId);
+			bChange=config.setActionKey(CONTROLS_CUST_USE,widget->iID-BUTTON_MENUOPTIONS_CONTROLS_CUST_USE1,inputKeyId);
 			break;
 		case BUTTON_MENUOPTIONS_CONTROLS_CUST_ACTIONCOMBINE1:
 		case BUTTON_MENUOPTIONS_CONTROLS_CUST_ACTIONCOMBINE2:
-			bChange=config.setActionKey(CONTROLS_CUST_ACTION,pmeElement->iID-BUTTON_MENUOPTIONS_CONTROLS_CUST_ACTIONCOMBINE1,inputKeyId);
+			bChange=config.setActionKey(CONTROLS_CUST_ACTION,widget->iID-BUTTON_MENUOPTIONS_CONTROLS_CUST_ACTIONCOMBINE1,inputKeyId);
 			break;
 		case BUTTON_MENUOPTIONS_CONTROLS_CUST_INVENTORY1:
 		case BUTTON_MENUOPTIONS_CONTROLS_CUST_INVENTORY2:
-			bChange=config.setActionKey(CONTROLS_CUST_INVENTORY,pmeElement->iID-BUTTON_MENUOPTIONS_CONTROLS_CUST_INVENTORY1,inputKeyId);
+			bChange=config.setActionKey(CONTROLS_CUST_INVENTORY,widget->iID-BUTTON_MENUOPTIONS_CONTROLS_CUST_INVENTORY1,inputKeyId);
 			break;
 		case BUTTON_MENUOPTIONS_CONTROLS_CUST_BOOK1:
 		case BUTTON_MENUOPTIONS_CONTROLS_CUST_BOOK2:
-			bChange=config.setActionKey(CONTROLS_CUST_BOOK,pmeElement->iID-BUTTON_MENUOPTIONS_CONTROLS_CUST_BOOK1,inputKeyId);
+			bChange=config.setActionKey(CONTROLS_CUST_BOOK,widget->iID-BUTTON_MENUOPTIONS_CONTROLS_CUST_BOOK1,inputKeyId);
 			break;
 		case BUTTON_MENUOPTIONS_CONTROLS_CUST_BOOKCHARSHEET1:
 		case BUTTON_MENUOPTIONS_CONTROLS_CUST_BOOKCHARSHEET2:
-			bChange=config.setActionKey(CONTROLS_CUST_BOOKCHARSHEET,pmeElement->iID-BUTTON_MENUOPTIONS_CONTROLS_CUST_BOOKCHARSHEET1,inputKeyId);
+			bChange=config.setActionKey(CONTROLS_CUST_BOOKCHARSHEET,widget->iID-BUTTON_MENUOPTIONS_CONTROLS_CUST_BOOKCHARSHEET1,inputKeyId);
 			break;
 		case BUTTON_MENUOPTIONS_CONTROLS_CUST_BOOKSPELL1:
 		case BUTTON_MENUOPTIONS_CONTROLS_CUST_BOOKSPELL2:
-			bChange=config.setActionKey(CONTROLS_CUST_BOOKSPELL,pmeElement->iID-BUTTON_MENUOPTIONS_CONTROLS_CUST_BOOKSPELL1,inputKeyId);
+			bChange=config.setActionKey(CONTROLS_CUST_BOOKSPELL,widget->iID-BUTTON_MENUOPTIONS_CONTROLS_CUST_BOOKSPELL1,inputKeyId);
 			break;
 		case BUTTON_MENUOPTIONS_CONTROLS_CUST_BOOKMAP1:
 		case BUTTON_MENUOPTIONS_CONTROLS_CUST_BOOKMAP2:
-			bChange=config.setActionKey(CONTROLS_CUST_BOOKMAP,pmeElement->iID-BUTTON_MENUOPTIONS_CONTROLS_CUST_BOOKMAP1,inputKeyId);
+			bChange=config.setActionKey(CONTROLS_CUST_BOOKMAP,widget->iID-BUTTON_MENUOPTIONS_CONTROLS_CUST_BOOKMAP1,inputKeyId);
 			break;
 		case BUTTON_MENUOPTIONS_CONTROLS_CUST_BOOKQUEST1:
 		case BUTTON_MENUOPTIONS_CONTROLS_CUST_BOOKQUEST2:
-			bChange=config.setActionKey(CONTROLS_CUST_BOOKQUEST,pmeElement->iID-BUTTON_MENUOPTIONS_CONTROLS_CUST_BOOKQUEST1,inputKeyId);
+			bChange=config.setActionKey(CONTROLS_CUST_BOOKQUEST,widget->iID-BUTTON_MENUOPTIONS_CONTROLS_CUST_BOOKQUEST1,inputKeyId);
 			break;
 		case BUTTON_MENUOPTIONS_CONTROLS_CUST_DRINKPOTIONLIFE1:
 		case BUTTON_MENUOPTIONS_CONTROLS_CUST_DRINKPOTIONLIFE2:
-			bChange=config.setActionKey(CONTROLS_CUST_DRINKPOTIONLIFE,pmeElement->iID-BUTTON_MENUOPTIONS_CONTROLS_CUST_DRINKPOTIONLIFE1,inputKeyId);
+			bChange=config.setActionKey(CONTROLS_CUST_DRINKPOTIONLIFE,widget->iID-BUTTON_MENUOPTIONS_CONTROLS_CUST_DRINKPOTIONLIFE1,inputKeyId);
 			break;
 		case BUTTON_MENUOPTIONS_CONTROLS_CUST_DRINKPOTIONMANA1:
 		case BUTTON_MENUOPTIONS_CONTROLS_CUST_DRINKPOTIONMANA2:
-			bChange=config.setActionKey(CONTROLS_CUST_DRINKPOTIONMANA,pmeElement->iID-BUTTON_MENUOPTIONS_CONTROLS_CUST_DRINKPOTIONMANA1,inputKeyId);
+			bChange=config.setActionKey(CONTROLS_CUST_DRINKPOTIONMANA,widget->iID-BUTTON_MENUOPTIONS_CONTROLS_CUST_DRINKPOTIONMANA1,inputKeyId);
 			break;
 		case BUTTON_MENUOPTIONS_CONTROLS_CUST_TORCH1:
 		case BUTTON_MENUOPTIONS_CONTROLS_CUST_TORCH2:
-			bChange=config.setActionKey(CONTROLS_CUST_TORCH,pmeElement->iID-BUTTON_MENUOPTIONS_CONTROLS_CUST_TORCH1,inputKeyId);
+			bChange=config.setActionKey(CONTROLS_CUST_TORCH,widget->iID-BUTTON_MENUOPTIONS_CONTROLS_CUST_TORCH1,inputKeyId);
 			break;
 		case BUTTON_MENUOPTIONS_CONTROLS_CUST_CANCELCURSPELL1:
 		case BUTTON_MENUOPTIONS_CONTROLS_CUST_CANCELCURSPELL2:    
-			bChange=config.setActionKey(CONTROLS_CUST_CANCELCURSPELL,pmeElement->iID-BUTTON_MENUOPTIONS_CONTROLS_CUST_CANCELCURSPELL1,inputKeyId);
+			bChange=config.setActionKey(CONTROLS_CUST_CANCELCURSPELL,widget->iID-BUTTON_MENUOPTIONS_CONTROLS_CUST_CANCELCURSPELL1,inputKeyId);
 			break;
 		case BUTTON_MENUOPTIONS_CONTROLS_CUST_PRECAST1:
 		case BUTTON_MENUOPTIONS_CONTROLS_CUST_PRECAST1_2:
-			bChange=config.setActionKey(CONTROLS_CUST_PRECAST1,pmeElement->iID-BUTTON_MENUOPTIONS_CONTROLS_CUST_PRECAST1,inputKeyId);
+			bChange=config.setActionKey(CONTROLS_CUST_PRECAST1,widget->iID-BUTTON_MENUOPTIONS_CONTROLS_CUST_PRECAST1,inputKeyId);
 			break;
 		case BUTTON_MENUOPTIONS_CONTROLS_CUST_PRECAST2:
 		case BUTTON_MENUOPTIONS_CONTROLS_CUST_PRECAST2_2:
-			bChange=config.setActionKey(CONTROLS_CUST_PRECAST2,pmeElement->iID-BUTTON_MENUOPTIONS_CONTROLS_CUST_PRECAST2,inputKeyId);
+			bChange=config.setActionKey(CONTROLS_CUST_PRECAST2,widget->iID-BUTTON_MENUOPTIONS_CONTROLS_CUST_PRECAST2,inputKeyId);
 			break;
 		case BUTTON_MENUOPTIONS_CONTROLS_CUST_PRECAST3:
 		case BUTTON_MENUOPTIONS_CONTROLS_CUST_PRECAST3_2:
-			bChange=config.setActionKey(CONTROLS_CUST_PRECAST3,pmeElement->iID-BUTTON_MENUOPTIONS_CONTROLS_CUST_PRECAST3,inputKeyId);
+			bChange=config.setActionKey(CONTROLS_CUST_PRECAST3,widget->iID-BUTTON_MENUOPTIONS_CONTROLS_CUST_PRECAST3,inputKeyId);
 			break;
 		case BUTTON_MENUOPTIONS_CONTROLS_CUST_WEAPON1:
 		case BUTTON_MENUOPTIONS_CONTROLS_CUST_WEAPON2:
-			bChange=config.setActionKey(CONTROLS_CUST_WEAPON,pmeElement->iID-BUTTON_MENUOPTIONS_CONTROLS_CUST_WEAPON1,inputKeyId);
+			bChange=config.setActionKey(CONTROLS_CUST_WEAPON,widget->iID-BUTTON_MENUOPTIONS_CONTROLS_CUST_WEAPON1,inputKeyId);
 			break;
 		case BUTTON_MENUOPTIONS_CONTROLS_CUST_QUICKLOAD:
 		case BUTTON_MENUOPTIONS_CONTROLS_CUST_QUICKLOAD2:
-			bChange=config.setActionKey(CONTROLS_CUST_QUICKLOAD,pmeElement->iID-BUTTON_MENUOPTIONS_CONTROLS_CUST_QUICKLOAD,inputKeyId);
+			bChange=config.setActionKey(CONTROLS_CUST_QUICKLOAD,widget->iID-BUTTON_MENUOPTIONS_CONTROLS_CUST_QUICKLOAD,inputKeyId);
 			break;
 		case BUTTON_MENUOPTIONS_CONTROLS_CUST_QUICKSAVE:
 		case BUTTON_MENUOPTIONS_CONTROLS_CUST_QUICKSAVE2:
-			bChange=config.setActionKey(CONTROLS_CUST_QUICKSAVE,pmeElement->iID-BUTTON_MENUOPTIONS_CONTROLS_CUST_QUICKSAVE,inputKeyId);
+			bChange=config.setActionKey(CONTROLS_CUST_QUICKSAVE,widget->iID-BUTTON_MENUOPTIONS_CONTROLS_CUST_QUICKSAVE,inputKeyId);
 			break;
 		case BUTTON_MENUOPTIONS_CONTROLS_CUST_TURNLEFT1:
 		case BUTTON_MENUOPTIONS_CONTROLS_CUST_TURNLEFT2:
-			bChange=config.setActionKey(CONTROLS_CUST_TURNLEFT,pmeElement->iID-BUTTON_MENUOPTIONS_CONTROLS_CUST_TURNLEFT1,inputKeyId);
+			bChange=config.setActionKey(CONTROLS_CUST_TURNLEFT,widget->iID-BUTTON_MENUOPTIONS_CONTROLS_CUST_TURNLEFT1,inputKeyId);
 			break;
 		case BUTTON_MENUOPTIONS_CONTROLS_CUST_TURNRIGHT1:
 		case BUTTON_MENUOPTIONS_CONTROLS_CUST_TURNRIGHT2:
-			bChange=config.setActionKey(CONTROLS_CUST_TURNRIGHT,pmeElement->iID-BUTTON_MENUOPTIONS_CONTROLS_CUST_TURNRIGHT1,inputKeyId);
+			bChange=config.setActionKey(CONTROLS_CUST_TURNRIGHT,widget->iID-BUTTON_MENUOPTIONS_CONTROLS_CUST_TURNRIGHT1,inputKeyId);
 			break;
 		case BUTTON_MENUOPTIONS_CONTROLS_CUST_LOOKUP1:
 		case BUTTON_MENUOPTIONS_CONTROLS_CUST_LOOKUP2:
-			bChange=config.setActionKey(CONTROLS_CUST_LOOKUP,pmeElement->iID-BUTTON_MENUOPTIONS_CONTROLS_CUST_LOOKUP1,inputKeyId);
+			bChange=config.setActionKey(CONTROLS_CUST_LOOKUP,widget->iID-BUTTON_MENUOPTIONS_CONTROLS_CUST_LOOKUP1,inputKeyId);
 			break;
 		case BUTTON_MENUOPTIONS_CONTROLS_CUST_LOOKDOWN1:
 		case BUTTON_MENUOPTIONS_CONTROLS_CUST_LOOKDOWN2:
-			bChange=config.setActionKey(CONTROLS_CUST_LOOKDOWN,pmeElement->iID-BUTTON_MENUOPTIONS_CONTROLS_CUST_LOOKDOWN1,inputKeyId);
+			bChange=config.setActionKey(CONTROLS_CUST_LOOKDOWN,widget->iID-BUTTON_MENUOPTIONS_CONTROLS_CUST_LOOKDOWN1,inputKeyId);
 			break;
 		case BUTTON_MENUOPTIONS_CONTROLS_CUST_STRAFE1:
 		case BUTTON_MENUOPTIONS_CONTROLS_CUST_STRAFE2:
-			bChange=config.setActionKey(CONTROLS_CUST_STRAFE,pmeElement->iID-BUTTON_MENUOPTIONS_CONTROLS_CUST_STRAFE1,inputKeyId);
+			bChange=config.setActionKey(CONTROLS_CUST_STRAFE,widget->iID-BUTTON_MENUOPTIONS_CONTROLS_CUST_STRAFE1,inputKeyId);
 			break;
 		case BUTTON_MENUOPTIONS_CONTROLS_CUST_CENTERVIEW1:
 		case BUTTON_MENUOPTIONS_CONTROLS_CUST_CENTERVIEW2:
-			bChange=config.setActionKey(CONTROLS_CUST_CENTERVIEW,pmeElement->iID-BUTTON_MENUOPTIONS_CONTROLS_CUST_CENTERVIEW1,inputKeyId);
+			bChange=config.setActionKey(CONTROLS_CUST_CENTERVIEW,widget->iID-BUTTON_MENUOPTIONS_CONTROLS_CUST_CENTERVIEW1,inputKeyId);
 			break;
 		case BUTTON_MENUOPTIONS_CONTROLS_CUST_FREELOOK1:
 		case BUTTON_MENUOPTIONS_CONTROLS_CUST_FREELOOK2:
-			bChange=config.setActionKey(CONTROLS_CUST_FREELOOK,pmeElement->iID-BUTTON_MENUOPTIONS_CONTROLS_CUST_FREELOOK1,inputKeyId);
+			bChange=config.setActionKey(CONTROLS_CUST_FREELOOK,widget->iID-BUTTON_MENUOPTIONS_CONTROLS_CUST_FREELOOK1,inputKeyId);
 			break;
 		case BUTTON_MENUOPTIONS_CONTROLS_CUST_PREVIOUS1:
 		case BUTTON_MENUOPTIONS_CONTROLS_CUST_PREVIOUS2:
-			bChange=config.setActionKey(CONTROLS_CUST_PREVIOUS,pmeElement->iID-BUTTON_MENUOPTIONS_CONTROLS_CUST_PREVIOUS1,inputKeyId);
+			bChange=config.setActionKey(CONTROLS_CUST_PREVIOUS,widget->iID-BUTTON_MENUOPTIONS_CONTROLS_CUST_PREVIOUS1,inputKeyId);
 			break;
 		case BUTTON_MENUOPTIONS_CONTROLS_CUST_NEXT1:
 		case BUTTON_MENUOPTIONS_CONTROLS_CUST_NEXT2:    
-			bChange=config.setActionKey(CONTROLS_CUST_NEXT,pmeElement->iID-BUTTON_MENUOPTIONS_CONTROLS_CUST_NEXT1,inputKeyId);
+			bChange=config.setActionKey(CONTROLS_CUST_NEXT,widget->iID-BUTTON_MENUOPTIONS_CONTROLS_CUST_NEXT1,inputKeyId);
 			break;
 		case BUTTON_MENUOPTIONS_CONTROLS_CUST_CROUCHTOGGLE1:
 		case BUTTON_MENUOPTIONS_CONTROLS_CUST_CROUCHTOGGLE2:    
-			bChange=config.setActionKey(CONTROLS_CUST_CROUCHTOGGLE,pmeElement->iID-BUTTON_MENUOPTIONS_CONTROLS_CUST_CROUCHTOGGLE1,inputKeyId);
+			bChange=config.setActionKey(CONTROLS_CUST_CROUCHTOGGLE,widget->iID-BUTTON_MENUOPTIONS_CONTROLS_CUST_CROUCHTOGGLE1,inputKeyId);
 			break;
 		case BUTTON_MENUOPTIONS_CONTROLS_CUST_UNEQUIPWEAPON1:
 		case BUTTON_MENUOPTIONS_CONTROLS_CUST_UNEQUIPWEAPON2:    
-			bChange=config.setActionKey(CONTROLS_CUST_UNEQUIPWEAPON,pmeElement->iID-BUTTON_MENUOPTIONS_CONTROLS_CUST_UNEQUIPWEAPON1,inputKeyId);
+			bChange=config.setActionKey(CONTROLS_CUST_UNEQUIPWEAPON,widget->iID-BUTTON_MENUOPTIONS_CONTROLS_CUST_UNEQUIPWEAPON1,inputKeyId);
 			break;
 		case BUTTON_MENUOPTIONS_CONTROLS_CUST_MINIMAP1:
 		case BUTTON_MENUOPTIONS_CONTROLS_CUST_MINIMAP2:
-			bChange=config.setActionKey(CONTROLS_CUST_MINIMAP,pmeElement->iID-BUTTON_MENUOPTIONS_CONTROLS_CUST_MINIMAP1,inputKeyId);
+			bChange=config.setActionKey(CONTROLS_CUST_MINIMAP,widget->iID-BUTTON_MENUOPTIONS_CONTROLS_CUST_MINIMAP1,inputKeyId);
 			break;
 		case BUTTON_MENUOPTIONS_CONTROLS_CUST_TOGGLE_FULLSCREEN1:
 		case BUTTON_MENUOPTIONS_CONTROLS_CUST_TOGGLE_FULLSCREEN2:
-			bChange=config.setActionKey(CONTROLS_CUST_TOGGLE_FULLSCREEN,pmeElement->iID-BUTTON_MENUOPTIONS_CONTROLS_CUST_TOGGLE_FULLSCREEN1,inputKeyId);
+			bChange=config.setActionKey(CONTROLS_CUST_TOGGLE_FULLSCREEN,widget->iID-BUTTON_MENUOPTIONS_CONTROLS_CUST_TOGGLE_FULLSCREEN1,inputKeyId);
 			break;
 		default:
 			break;
@@ -1117,10 +1117,10 @@ void MenuPage::Render() {
 	int iARXDiffTimeMenu  = checked_range_cast<int>(ARXDiffTimeMenu);
 
 	for(size_t i = 0; i < MenuAllZone.GetNbZone(); ++i) {
-		Widget * pMe = MenuAllZone.GetZoneNum(i);
+		Widget * widget = MenuAllZone.GetZoneNum(i);
 		
-		pMe->Update(iARXDiffTimeMenu);
-		pMe->Render();
+		widget->Update(iARXDiffTimeMenu);
+		widget->Render();
 	}
 
 	//HIGHLIGHT
@@ -1184,10 +1184,10 @@ void MenuPage::Render() {
 				}
 				
 				InputKeyId inputKeyId;
-				Widget *pmeElement = GetTouch(keyTouched, keyId, &inputKeyId, true);
+				Widget * widget = GetTouch(keyTouched, keyId, &inputKeyId, true);
 				
-				if(pmeElement) {
-					if(UpdateGameKey(bEdit,pmeElement, inputKeyId)) {
+				if(widget) {
+					if(UpdateGameKey(bEdit,widget, inputKeyId)) {
 						bReInit=true;
 					}
 				}
@@ -1196,9 +1196,9 @@ void MenuPage::Render() {
 			default:
 			{
 				if(GInput->getMouseButtonNowPressed(Mouse::Button_0)) {
-					Widget *pmzMenuZone = MenuAllZone.GetZoneWithID(BUTTON_MENUOPTIONS_CONTROLS_CUST_DEFAULT);
+					Widget * widget = MenuAllZone.GetZoneWithID(BUTTON_MENUOPTIONS_CONTROLS_CUST_DEFAULT);
 					
-					if(pmzMenuZone==pZoneClick) {
+					if(widget == pZoneClick) {
 						config.setDefaultActionKeys();
 						bReInit=true;
 					}
@@ -1225,18 +1225,18 @@ void MenuPage::ReInitActionKey()
 	while(iI--) {
 		int iTab=(iID-BUTTON_MENUOPTIONS_CONTROLS_CUST_JUMP1)>>1;
 
-		Widget *pmzMenuZone = MenuAllZone.GetZoneWithID(iID);
+		Widget * widget = MenuAllZone.GetZoneWithID(iID);
 
-		if(pmzMenuZone) {
-			if(pmzMenuZone) {
-				pZoneClick = pmzMenuZone;
+		if(widget) {
+			if(widget) {
+				pZoneClick = widget;
 				GetTouch(true, config.actions[iTab].key[0]);
 			}
 
-			pmzMenuZone = MenuAllZone.GetZoneWithID(iID+1);
+			widget = MenuAllZone.GetZoneWithID(iID+1);
 
-			if(pmzMenuZone) {
-				pZoneClick = pmzMenuZone;
+			if(widget) {
+				pZoneClick = widget;
 				GetTouch(true, config.actions[iTab].key[1]);
 			}
 		}
