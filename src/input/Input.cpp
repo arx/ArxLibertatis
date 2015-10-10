@@ -730,7 +730,7 @@ int Input::getMouseButtonClicked() const {
 	return 0;
 }
 
-bool Input::actionNowPressed(int actionId) const {
+bool Input::actionNowPressed(ControlAction actionId) const {
 	
 	for(size_t j = 0; j < ARRAY_SIZE(config.actions[actionId].key); j++) {
 		
@@ -771,7 +771,7 @@ bool Input::actionNowPressed(int actionId) const {
 static unsigned int uiOneHandedMagicMode = 0;
 static unsigned int uiOneHandedStealth = 0;
 
-bool Input::actionPressed(int actionId) const {
+bool Input::actionPressed(ControlAction actionId) const {
 	switch(actionId) {
 		case CONTROLS_CUST_USE:
 		case CONTROLS_CUST_ACTION:
@@ -871,6 +871,8 @@ bool Input::actionPressed(int actionId) const {
 										}
 									}
 									break;
+									default:
+										break;
 								}
 							}
 						}
@@ -887,7 +889,8 @@ bool Input::actionPressed(int actionId) const {
 						if(uiOneHandedStealth == 1 || uiOneHandedStealth == 2) {
 							return true;
 						}
-
+						break;
+					default:
 						break;
 				}
 			} else {
@@ -924,7 +927,7 @@ bool Input::actionPressed(int actionId) const {
 	return false;
 }
 
-bool Input::actionNowReleased(int actionId) const {
+bool Input::actionNowReleased(ControlAction actionId) const {
 	
 	for(size_t j = 0; j < ARRAY_SIZE(config.actions[actionId].key); j++) {
 		

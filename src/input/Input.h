@@ -47,6 +47,7 @@ ZeniMax Media Inc., Suite 120, Rockville, Maryland 20850 USA.
 #ifndef ARX_INPUT_INPUT_H
 #define ARX_INPUT_INPUT_H
 
+#include "core/Config.h"
 #include "input/Keyboard.h"
 #include "input/Mouse.h"
 #include "input/InputKey.h"
@@ -72,9 +73,9 @@ public:
 	
 	// Action
 	
-	bool actionNowPressed(int actionId) const;
-	bool actionPressed(int actionId) const;
-	bool actionNowReleased(int actionId) const;
+	bool actionNowPressed(ControlAction actionId) const;
+	bool actionPressed(ControlAction actionId) const;
+	bool actionNowReleased(ControlAction actionId) const;
 	
 	// Mouse
 	
