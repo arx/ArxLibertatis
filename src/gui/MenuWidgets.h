@@ -50,6 +50,7 @@ ZeniMax Media Inc., Suite 120, Rockville, Maryland 20850 USA.
 #include "graphics/Color.h"
 #include "gui/MainMenu.h"
 #include "gui/widget/Widget.h"
+#include "gui/widget/WidgetContainer.h"
 #include "input/InputKey.h"
 #include "math/Vector.h"
 #include "math/Rectangle.h"
@@ -57,24 +58,6 @@ ZeniMax Media Inc., Suite 120, Rockville, Maryland 20850 USA.
 
 class TextureContainer;
 class Font;
-
-class WidgetContainer
-{
-public:
-	std::vector<Widget *>	vMenuZone;
-public:
-	WidgetContainer();
-	virtual ~WidgetContainer();
-	
-	void AddZone(Widget * menuZone);
-	Widget * CheckZone(const Vec2s & mousePos) const;
-	
-	Widget * GetZoneNum(size_t index);
-	Widget * GetZoneWithID(int zoneId);
-	void Move(const Vec2i & offset);
-	void DrawZone();
-	size_t GetNbZone();
-};
 
 //-----------------------------------------------------------------------------
 // faire une classe
