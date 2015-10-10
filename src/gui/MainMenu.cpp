@@ -905,7 +905,7 @@ static void Menu2_Render_Quit(CWindowMenuConsole * console, Vec2i size) {
 	}
 }
 
-extern CMenuState *mainMenu;
+extern MainMenu *mainMenu;
 
 void MainMenuLeftCreate(MENUSTATE eMenuState)
 {

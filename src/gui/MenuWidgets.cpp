@@ -110,7 +110,7 @@ bool bNoMenu=false;
 static MenuCursor * pMenuCursor = NULL;
 
 extern CWindowMenu * pWindowMenu;
-CMenuState *mainMenu;
+MainMenu *mainMenu;
 
 extern TextWidget * pMenuElementApply;
 extern TextWidget * pLoadConfirm;
@@ -352,7 +352,7 @@ bool Menu2_Render() {
 			delete mainMenu, mainMenu = NULL;
 		}
 		
-		mainMenu = new CMenuState();
+		mainMenu = new MainMenu();
 		mainMenu->eOldMenuWindowState=eM;
 		
 		mainMenu->init();
@@ -877,7 +877,7 @@ void TextWidget::RenderMouseOver() {
 	}
 }
 
-CMenuState::CMenuState()
+MainMenu::MainMenu()
 	: bReInitAll(false)
 	, eOldMenuState(NOP)
 	, eOldMenuWindowState(NOP)
@@ -887,12 +887,12 @@ CMenuState::CMenuState()
 	, m_resumeGame(NULL)
 {}
 
-CMenuState::~CMenuState() {
+MainMenu::~MainMenu() {
 	delete m_widgets;
 	delete m_background;
 }
 
-void CMenuState::init()
+void MainMenu::init()
 {
 	m_background = TextureContainer::LoadUI("graph/interface/menus/menu_main_background", TextureContainer::NoColorKey);
 
@@ -958,11 +958,11 @@ void CMenuState::init()
 	add(me);
 }
 
-void CMenuState::add(Widget * widget) {
+void MainMenu::add(Widget * widget) {
 	m_widgets->AddZone(widget);
 }
 
-MENUSTATE CMenuState::Update() {
+MENUSTATE MainMenu::Update() {
 	
 	if(m_resumeGame) {
 		if(ARXMenu_CanResumeGame()) {
@@ -993,7 +993,7 @@ MENUSTATE CMenuState::Update() {
 	return NOP;
 }
 
-void CMenuState::Render() {
+void MainMenu::Render() {
 
 	if(bNoMenu)
 		return;

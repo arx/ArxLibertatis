@@ -228,7 +228,7 @@ private:
 	TextWidget	* pText;
 };
 
-class CMenuState {
+class MainMenu {
 public:
 	bool					bReInitAll;
 	MENUSTATE				eOldMenuState;
@@ -236,8 +236,8 @@ public:
 	
 	Widget		*	pZoneClick;
 	
-	explicit CMenuState();
-	virtual ~CMenuState();
+	explicit MainMenu();
+	virtual ~MainMenu();
 	
 	void init();
 	
