@@ -499,12 +499,12 @@ CWindowMenu::~CWindowMenu() {
 		delete *it;
 }
 
-void CWindowMenu::AddConsole(MenuPage *_pMenuConsoleElement) {
+void CWindowMenu::AddConsole(MenuPage *page) {
 
-	vWindowConsoleElement.push_back(_pMenuConsoleElement);
-	_pMenuConsoleElement->m_oldPos.x = 0;
-	_pMenuConsoleElement->m_oldPos.y = 0;
-	_pMenuConsoleElement->m_pos = m_pos;
+	vWindowConsoleElement.push_back(page);
+	page->m_oldPos.x = 0;
+	page->m_oldPos.y = 0;
+	page->m_pos = m_pos;
 }
 
 void CWindowMenu::Update(float _fDTime) {
@@ -528,18 +528,18 @@ MENUSTATE CWindowMenu::Render() {
 	
 	MENUSTATE eMS=NOP;
 	
-	BOOST_FOREACH(MenuPage * c, vWindowConsoleElement) {
-		if(eCurrentMenuState == c->eMenuState) {
-			eMS = c->Update(m_pos);
+	BOOST_FOREACH(MenuPage * page, vWindowConsoleElement) {
+		if(eCurrentMenuState == page->eMenuState) {
+			eMS = page->Update(m_pos);
 			
 			if(eMS != NOP)
 				break;
 		}
 	}
 	
-	BOOST_FOREACH(MenuPage * c, vWindowConsoleElement) {
-		if(eCurrentMenuState == c->eMenuState) {
-			c->Render();
+	BOOST_FOREACH(MenuPage * page, vWindowConsoleElement) {
+		if(eCurrentMenuState == page->eMenuState) {
+			page->Render();
 			break;
 		}
 	}
