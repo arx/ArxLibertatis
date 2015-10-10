@@ -62,27 +62,7 @@ class Font;
 // faire une classe
 // like a container in java
 
-class HorizontalPanelWidget : public Widget {
-	
-public:
-	HorizontalPanelWidget();
-	virtual ~HorizontalPanelWidget();
-	
-	void Move(const Vec2i & offset);
-	void AddElement(Widget * element);
-	void AddElementNoCenterIn(Widget * element);
-	
-	void Update(int time);
-	void Render();
-	bool OnMouseClick() { return false; }
-	Widget * OnShortCut();
-	void RenderMouseOver() { }
-	Widget * IsMouseOver(const Vec2s & mousePos) const;
-	Widget * GetZoneWithID(int zoneId);
-	
-private:
-	std::vector<Widget *>	vElement;
-};
+
 
 class TextWidget: public Widget {
 	
