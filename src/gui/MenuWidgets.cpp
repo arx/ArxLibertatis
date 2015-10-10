@@ -893,9 +893,9 @@ CMenuState::CMenuState()
 	: bReInitAll(false)
 	, eOldMenuState(NOP)
 	, eOldMenuWindowState(NOP)
+	, pZoneClick(NULL)
 	, pTexBackGround(NULL)
 	, pMenuAllZone(new CMenuAllZone())
-	, pZoneClick(NULL)
 {}
 
 CMenuState::~CMenuState() {
@@ -905,7 +905,7 @@ CMenuState::~CMenuState() {
 
 void CMenuState::createChildElements()
 {
-	mainMenu->pTexBackGround = TextureContainer::LoadUI("graph/interface/menus/menu_main_background", TextureContainer::NoColorKey);
+	pTexBackGround = TextureContainer::LoadUI("graph/interface/menus/menu_main_background", TextureContainer::NoColorKey);
 
 	Vec2i pos = Vec2i(370, 100);
 	int yOffset = 50;
@@ -919,38 +919,38 @@ void CMenuState::createChildElements()
 		me->SetCheckOff();
 		me->lColor = Color(127,127,127);
 	}
-	mainMenu->AddMenuElement(me);
+	AddMenuElement(me);
 	pMenuElementResume = me;
 	}
 	pos.y += yOffset;
 	{
 	std::string szMenuText = getLocalised("system_menus_main_newquest");
 	TextWidget *me = new TextWidget(BUTTON_MENUMAIN_NEWQUEST, hFontMainMenu, szMenuText, RATIO_2(pos), NEW_QUEST);
-	mainMenu->AddMenuElement(me);
+	AddMenuElement(me);
 	}
 	pos.y += yOffset;
 	{
 	std::string szMenuText = getLocalised("system_menus_main_editquest");
 	TextWidget *me = new TextWidget(BUTTON_INVALID, hFontMainMenu, szMenuText, RATIO_2(pos), EDIT_QUEST);
-	mainMenu->AddMenuElement(me);
+	AddMenuElement(me);
 	}
 	pos.y += yOffset;
 	{
 	std::string szMenuText = getLocalised("system_menus_main_options");
 	TextWidget *me = new TextWidget(BUTTON_MENUMAIN_OPTIONS, hFontMainMenu, szMenuText, RATIO_2(pos), OPTIONS);
-	mainMenu->AddMenuElement(me);
+	AddMenuElement(me);
 	}
 	pos.y += yOffset;
 	{
 	std::string szMenuText = getLocalised("system_menus_main_credits");
 	TextWidget *me = new TextWidget(BUTTON_MENUMAIN_CREDITS, hFontMainMenu, szMenuText, RATIO_2(pos), CREDITS);
-	mainMenu->AddMenuElement(me);
+	AddMenuElement(me);
 	}
 	pos.y += yOffset;
 	{
 	std::string szMenuText = getLocalised("system_menus_main_quit");
 	TextWidget *me = new TextWidget(BUTTON_INVALID, hFontMainMenu, szMenuText, RATIO_2(pos), QUIT);
-	mainMenu->AddMenuElement(me);
+	AddMenuElement(me);
 	}
 	pos.y += yOffset;
 	
@@ -966,7 +966,7 @@ void CMenuState::createChildElements()
 	
 	me->SetCheckOff();
 	me->lColor=Color(127,127,127);
-	mainMenu->AddMenuElement(me);
+	AddMenuElement(me);
 }
 
 void CMenuState::AddMenuElement(Widget * _me) {

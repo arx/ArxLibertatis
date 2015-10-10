@@ -229,24 +229,26 @@ private:
 };
 
 class CMenuState {
-	
 public:
 	bool					bReInitAll;
 	MENUSTATE				eOldMenuState;
 	MENUSTATE				eOldMenuWindowState;
-	TextureContainer	*	pTexBackGround;
-	CMenuAllZone		*	pMenuAllZone;
+	
 	Widget		*	pZoneClick;
 	
-public:
 	explicit CMenuState();
 	virtual ~CMenuState();
 	
 	void createChildElements();
 	
-	void AddMenuElement(Widget * element);
 	MENUSTATE Update();
 	void Render();
+	
+private:
+	TextureContainer * pTexBackGround;
+	CMenuAllZone * pMenuAllZone;
+	
+	void AddMenuElement(Widget * element);
 };
 
 class CWindowMenuConsole {
