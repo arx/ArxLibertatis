@@ -58,13 +58,13 @@ ZeniMax Media Inc., Suite 120, Rockville, Maryland 20850 USA.
 class TextureContainer;
 class Font;
 
-class CMenuAllZone
+class WidgetContainer
 {
 public:
 	std::vector<Widget *>	vMenuZone;
 public:
-	CMenuAllZone();
-	virtual ~CMenuAllZone();
+	WidgetContainer();
+	virtual ~WidgetContainer();
 	
 	void AddZone(Widget * menuZone);
 	Widget * CheckZone(const Vec2s & mousePos) const;
@@ -246,7 +246,7 @@ public:
 	
 private:
 	TextureContainer * m_background;
-	CMenuAllZone * m_widgets;
+	WidgetContainer * m_widgets;
 	
 	TextWidget * m_resumeGame;
 	
@@ -272,7 +272,7 @@ public:
 	int m_rowSpacing;
 	SavegameHandle m_savegame;
 	MENUSTATE eMenuState;
-	CMenuAllZone MenuAllZone;
+	WidgetContainer MenuAllZone;
 	
 private:
 	void UpdateText();

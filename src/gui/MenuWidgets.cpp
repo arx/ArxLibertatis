@@ -883,7 +883,7 @@ MainMenu::MainMenu()
 	, eOldMenuWindowState(NOP)
 	, pZoneClick(NULL)
 	, m_background(NULL)
-	, m_widgets(new CMenuAllZone())
+	, m_widgets(new WidgetContainer())
 	, m_resumeGame(NULL)
 {}
 
@@ -1021,7 +1021,7 @@ void MainMenu::Render() {
 
 
 
-CMenuAllZone::CMenuAllZone() {
+WidgetContainer::WidgetContainer() {
 
 	vMenuZone.clear();
 
@@ -1033,18 +1033,18 @@ CMenuAllZone::CMenuAllZone() {
 	}
 }
 
-CMenuAllZone::~CMenuAllZone() {
+WidgetContainer::~WidgetContainer() {
 
 	for(std::vector<Widget*>::iterator it = vMenuZone.begin(), it_end = vMenuZone.end(); it != it_end; ++it)
 		delete *it;
 }
 
-void CMenuAllZone::AddZone(Widget *_pMenuZone) {
+void WidgetContainer::AddZone(Widget *_pMenuZone) {
 
 	vMenuZone.push_back(_pMenuZone);
 }
 
-Widget * CMenuAllZone::CheckZone(const Vec2s& mousePos) const {
+Widget * WidgetContainer::CheckZone(const Vec2s& mousePos) const {
 
 	std::vector<Widget*>::const_iterator i;
 
@@ -1063,11 +1063,11 @@ Widget * CMenuAllZone::CheckZone(const Vec2s& mousePos) const {
 	return NULL;
 }
 
-Widget * CMenuAllZone::GetZoneNum(size_t index) {
+Widget * WidgetContainer::GetZoneNum(size_t index) {
 	return vMenuZone[index];
 }
 
-Widget * CMenuAllZone::GetZoneWithID(int _iID) {
+Widget * WidgetContainer::GetZoneWithID(int _iID) {
 
 	for(std::vector<Widget*>::iterator i = vMenuZone.begin(), i_end = vMenuZone.end(); i != i_end; ++i) {
 		if(Widget *zone = (*i)->GetZoneWithID(_iID))
@@ -1077,18 +1077,18 @@ Widget * CMenuAllZone::GetZoneWithID(int _iID) {
 	return NULL;
 }
 
-void CMenuAllZone::Move(const Vec2i & offset) {
+void WidgetContainer::Move(const Vec2i & offset) {
 
 	for(std::vector<Widget*>::iterator i = vMenuZone.begin(), i_end = vMenuZone.end(); i != i_end; ++i) {
 		(*i)->Move(offset);
 	}
 }
 
-size_t CMenuAllZone::GetNbZone() {
+size_t WidgetContainer::GetNbZone() {
 	return vMenuZone.size();
 }
 
-void CMenuAllZone::DrawZone()
+void WidgetContainer::DrawZone()
 {
 	if(g_debugInfo != InfoPanelGuiDebug)
 		return;
