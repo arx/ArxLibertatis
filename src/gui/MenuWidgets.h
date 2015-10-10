@@ -60,35 +60,6 @@ ZeniMax Media Inc., Suite 120, Rockville, Maryland 20850 USA.
 class TextureContainer;
 class Font;
 
-//-----------------------------------------------------------------------------
-// faire une classe
-// like a container in java
-
-
-
-class CheckboxWidget : public Widget {
-	
-public:
-	explicit CheckboxWidget(TextWidget * label);
-	virtual ~CheckboxWidget();
-	
-	void Move(const Vec2i & offset);
-	bool OnMouseClick();
-	void Update(int time);
-	
-	void renderCommon();
-	void Render();
-	void RenderMouseOver();
-	
-	int					iState;
-	int					iOldState;
-	
-private:
-	TextureContainer * m_textureOff;
-	TextureContainer * m_textureOn;
-	TextWidget	* pText;
-};
-
 class CWindowMenuConsole {
 	
 public:

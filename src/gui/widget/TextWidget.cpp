@@ -31,6 +31,7 @@
 #include "gui/Text.h"
 #include "gui/TextManager.h"
 #include "gui/menu/MenuCursor.h"
+#include "gui/widget/CheckboxWidget.h"
 #include "gui/widget/CycleTextWidget.h"
 #include "input/Input.h"
 #include "scene/GameSound.h"

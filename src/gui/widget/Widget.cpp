@@ -20,6 +20,7 @@
 #include "gui/widget/Widget.h"
 
 #include "gui/MenuWidgets.h"
+#include "gui/widget/CheckboxWidget.h"
 #include "gui/widget/CycleTextWidget.h"
 #include "input/Input.h"
 
