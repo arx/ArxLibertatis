@@ -116,7 +116,7 @@ public:
 	void Update(float time);
 	MENUSTATE Render();
 	
-	std::vector<MenuPage *>	vWindowConsoleElement;
+	std::vector<MenuPage *>	m_pages;
 	float				fAngle;
 	MENUSTATE			eCurrentMenuState;
 };

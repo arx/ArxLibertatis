@@ -479,7 +479,7 @@ CWindowMenu::CWindowMenu(Vec2i pos, Vec2i size)
 	m_pos = RATIO_2(pos);
 	m_size = RATIO_2(size);
 
-	vWindowConsoleElement.clear();
+	m_pages.clear();
 
 	fPosXCalc=((float)-m_size.x);
 	fDist=((float)(m_size.x+m_pos.x));
@@ -495,13 +495,13 @@ CWindowMenu::CWindowMenu(Vec2i pos, Vec2i size)
 
 CWindowMenu::~CWindowMenu() {
 
-	for(std::vector<MenuPage*>::iterator it = vWindowConsoleElement.begin(), it_end = vWindowConsoleElement.end(); it < it_end; ++it)
+	for(std::vector<MenuPage*>::iterator it = m_pages.begin(), it_end = m_pages.end(); it < it_end; ++it)
 		delete *it;
 }
 
 void CWindowMenu::AddConsole(MenuPage *page) {
 
-	vWindowConsoleElement.push_back(page);
+	m_pages.push_back(page);
 	page->m_oldPos.x = 0;
 	page->m_oldPos.y = 0;
 	page->m_pos = m_pos;
@@ -528,7 +528,7 @@ MENUSTATE CWindowMenu::Render() {
 	
 	MENUSTATE eMS=NOP;
 	
-	BOOST_FOREACH(MenuPage * page, vWindowConsoleElement) {
+	BOOST_FOREACH(MenuPage * page, m_pages) {
 		if(eCurrentMenuState == page->eMenuState) {
 			eMS = page->Update(m_pos);
 			
@@ -537,7 +537,7 @@ MENUSTATE CWindowMenu::Render() {
 		}
 	}
 	
-	BOOST_FOREACH(MenuPage * page, vWindowConsoleElement) {
+	BOOST_FOREACH(MenuPage * page, m_pages) {
 		if(eCurrentMenuState == page->eMenuState) {
 			page->Render();
 			break;
