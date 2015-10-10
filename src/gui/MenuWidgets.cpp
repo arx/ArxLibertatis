@@ -587,44 +587,44 @@ bool TextWidget::OnMouseClick() {
 
 	switch(iID) {
 		case BUTTON_INVALID: {
-				return false;
-			}
-			break;
+			return false;
+		}
+		break;
 		// MENUMAIN
 		case BUTTON_MENUMAIN_RESUMEGAME: {
-				pTextManage->Clear();
-				ARXMenu_ResumeGame();
-				ARX_SOUND_PlayMenu(SND_MENU_CLICK);
-			}
-			break;
+			pTextManage->Clear();
+			ARXMenu_ResumeGame();
+			ARX_SOUND_PlayMenu(SND_MENU_CLICK);
+		}
+		break;
 		case BUTTON_MENUMAIN_NEWQUEST: {
 				
-				if(!ARXMenu_CanResumeGame()) {
-					ARXMenu_NewQuest();
-				}
-			}
-			break;
-		case BUTTON_MENUMAIN_OPTIONS: {
-			}break;
-		case BUTTON_MENUMAIN_CREDITS: {
-				ARXMenu_Credits();
-			}
-			break;
-		case BUTTON_MENUMAIN_QUIT: {
-				ARXMenu_Quit();
-			}
-			break;
-		case BUTTON_MENUNEWQUEST_CONFIRM: {
+			if(!ARXMenu_CanResumeGame()) {
 				ARXMenu_NewQuest();
 			}
+		}
+		break;
+		case BUTTON_MENUMAIN_OPTIONS: {
+		}break;
+		case BUTTON_MENUMAIN_CREDITS: {
+			ARXMenu_Credits();
+		}
+		break;
+		case BUTTON_MENUMAIN_QUIT: {
+			ARXMenu_Quit();
+		}
+		break;
+		case BUTTON_MENUNEWQUEST_CONFIRM: {
+			ARXMenu_NewQuest();
+		}
+		break;
+		// MENULOADQUEST
+		case BUTTON_MENUOPTIONSVIDEO_INIT: {
+			newWidth = config.video.resolution.x;
+			newHeight = config.video.resolution.y;
+			newFullscreen = config.video.fullscreen;
 			break;
-			// MENULOADQUEST
-			case BUTTON_MENUOPTIONSVIDEO_INIT: {
-				newWidth = config.video.resolution.x;
-				newHeight = config.video.resolution.y;
-				newFullscreen = config.video.fullscreen;
-				break;
-			}
+		}
 		case BUTTON_MENUEDITQUEST_LOAD_INIT: {
 			if(pWindowMenu)
 			for(size_t i = 0; i < pWindowMenu->vWindowConsoleElement.size(); i++) {
@@ -780,10 +780,10 @@ bool TextWidget::OnMouseClick() {
 		}
 		break;
 		case BUTTON_MENUOPTIONS_CONTROLS_BACK:
-			{
-				config.save();
-			}
-			break;
+		{
+			config.save();
+		}
+		break;
 		default:
 			break;
 	}
