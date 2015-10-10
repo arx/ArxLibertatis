@@ -49,6 +49,7 @@ ZeniMax Media Inc., Suite 120, Rockville, Maryland 20850 USA.
 
 #include "graphics/Color.h"
 #include "gui/MainMenu.h"
+#include "gui/widget/Widget.h"
 #include "input/InputKey.h"
 #include "math/Vector.h"
 #include "math/Rectangle.h"
@@ -209,83 +210,8 @@ enum MenuButton {
 	BUTTON_MENUEDITQUEST_SAVEINFO,
 };
 
-enum ELEMSTATE
-{
-	TNOP,
-	//Element Text
-	EDIT,           //type d'etat
-	GETTOUCH,
-	EDIT_TIME,      //etat en cours
-	GETTOUCH_TIME
-};
 
-enum ELEMPOS
-{
-	NOCENTER,
-	CENTER,
-	CENTERY
-};
 
-ARX_HANDLE_TYPEDEF(long, SavegameHandle, -1);
-
-class Widget {
-	
-public:
-
-	bool	bTestYDouble;
-	Widget *	pRef;
-	Rect	rZone;
-	int			iID;
-	
-	SavegameHandle m_savegame;
-	
-	ELEMPOS     ePlace;			//placement de la zone
-	ELEMSTATE   eState;			//etat de l'element en cours
-	MENUSTATE   eMenuState;		//etat de retour de l'element
-	int         iShortCut;
-	
-public:
-	explicit Widget(MENUSTATE);
-	virtual ~Widget();
-	
-	virtual Widget * OnShortCut();
-	virtual bool OnMouseClick() = 0;
-	virtual void Update(int time) = 0;
-	virtual void Render() = 0;
-	virtual void RenderMouseOver() { }
-	virtual void EmptyFunction() { }
-	virtual bool OnMouseDoubleClick() { return false; }
-	virtual Widget * GetZoneWithID(int zoneId) {
-		return (iID == zoneId) ? this : NULL;
-	}
-	
-	void SetShortCut(int _iShortCut) {
-		iShortCut = _iShortCut;
-	}
-	
-	virtual void setEnabled(bool enable) {
-		enabled = enable;
-	}
-	
-	virtual void Move(const Vec2i & offset);
-	virtual void SetPos(Vec2i pos);
-	
-	void SetCheckOff() {
-		bCheck = false;
-	}
-	
-	void SetCheckOn() {
-		bCheck = true;
-	}
-	
-	bool getCheck() { return bCheck; }
-	
-	virtual Widget * IsMouseOver(const Vec2s& mousePos) const;
-	
-protected:
-	bool enabled;
-	bool bCheck;
-};
 
 class CMenuAllZone
 {

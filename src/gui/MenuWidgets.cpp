@@ -112,7 +112,8 @@ static MenuCursor * pMenuCursor = NULL;
 extern CWindowMenu * pWindowMenu;
 CMenuState *mainMenu;
 
-static TextWidget * pMenuElementResume = NULL;
+TextWidget * pMenuElementResume = NULL;
+
 extern TextWidget * pMenuElementApply;
 extern TextWidget * pLoadConfirm;
 extern TextWidget * pDeleteConfirm;
@@ -491,97 +492,7 @@ bool Menu2_Render() {
 }
 
 
-Widget::Widget(MENUSTATE _ms)
-	: bTestYDouble(false)
-	, pRef(NULL)
-	, rZone(0, 0, 0, 0)
-	, iID(-1)
-	, m_savegame(0)
-	, enabled(true)
-	, bCheck(true)
-{
-	ePlace=NOCENTER;
-	eState=TNOP;
-	eMenuState=_ms;
-	iShortCut=-1;
-}
 
-Widget::~Widget() {
-
-	if(this == pMenuElementApply) {
-		pMenuElementApply = NULL;
-	}
-
-	if(this == pMenuElementResume) {
-		pMenuElementResume = NULL;
-	}
-
-	if(this == pLoadConfirm) {
-		pLoadConfirm = NULL;
-	}
-
-	if(this == pDeleteConfirm) {
-		pDeleteConfirm = NULL;
-	}
-
-	if(this == pDeleteButton) {
-		pDeleteButton = NULL;
-	}
-
-	if(this == pMenuSliderResol) {
-		pMenuSliderResol = NULL;
-	}
-	
-	if(this == fullscreenCheckbox) {
-		fullscreenCheckbox = NULL;
-	}
-}
-
-Widget* Widget::OnShortCut() {
-
-	if(iShortCut == -1)
-		return NULL;
-
-	if(GInput->isKeyPressedNowUnPressed(iShortCut)) {
-		return this;
-	}
-
-	return NULL;
-}
-
-void Widget::Move(const Vec2i & offset) {
-	rZone.move(offset.x, offset.y);
-}
-
-void Widget::SetPos(Vec2i pos) {
-
-	int iWidth  = rZone.right - rZone.left;
-	int iHeight = rZone.bottom - rZone.top;
-	
-	rZone.left   = pos.x;
-	rZone.top    = pos.y;
-	rZone.right  = pos.x + abs(iWidth);
-	rZone.bottom = pos.y + abs(iHeight);
-}
-
-Widget * Widget::IsMouseOver(const Vec2s& mousePos) const {
-
-	int iYDouble=0;
-
-	if(bTestYDouble) {
-		iYDouble=(rZone.bottom-rZone.top)>>1;
-	}
-
-	if(   mousePos.x >= rZone.left
-	   && mousePos.y >= rZone.top - iYDouble
-	   && mousePos.x <= rZone.right
-	   && mousePos.y <= rZone.bottom + iYDouble
-	) {
-		return pRef;
-	}
-
-	return NULL;
-}
 
 TextWidget::TextWidget(int _iID, Font* _pFont, const std::string& _pText, Vec2i pos, MENUSTATE _eMs) : Widget(_eMs)
 {
