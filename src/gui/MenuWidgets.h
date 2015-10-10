@@ -542,48 +542,7 @@ public:
 
 struct TexturedVertex;
 
-class MenuCursor {
 
-public:
-	
-	enum CURSORSTATE {
-		CURSOR_OFF,
-		CURSOR_ON,
-	};
-	
-	MenuCursor();
-	virtual ~MenuCursor();
-	
-	void reset();
-	void update(float time);
-	void SetMouseOver();
-	void SetCursorOn();
-	void SetCursorOff();
-	void DrawCursor();
-	
-private:
-	bool ComputePer(const Vec2s & _psPoint1, const Vec2s & _psPoint2, TexturedVertex * _psd3dv1, TexturedVertex * _psd3dv2, float _fSize);
-	void DrawLine2D(float _fSize, Color3f color);
-	
-	void DrawOneCursor(const Vec2s & mousePos);
-	
-	Vec2s m_size;
-	bool exited; //! Has the mouse exited the window
-	
-	float m_storedTime;
-	
-	// Cursor
-	float				lFrameDiff;
-	CURSORSTATE			eNumTex;
-	int					m_currentFrame;
-	bool				bMouseOver;
-	
-	// For the ribbon effect
-	int					iNbOldCoord;
-	int					iMaxOldCoord;
-	Vec2s				iOldCoord[256];
-	
-};
 
 void MenuReInitAll();
 

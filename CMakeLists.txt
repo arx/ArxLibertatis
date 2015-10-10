@@ -817,6 +817,7 @@ set(GUI_SOURCES
 	src/gui/hud/HudCommon.cpp
 	src/gui/hud/PlayerInventory.cpp
 	src/gui/hud/SecondaryInventory.cpp
+	src/gui/menu/MenuCursor.cpp
 )
 
 set(INPUT_SOURCES src/input/Input.cpp)
