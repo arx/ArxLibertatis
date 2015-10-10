@@ -79,7 +79,7 @@ public:
 	int m_rowSpacing;
 	SavegameHandle m_savegame;
 	MENUSTATE eMenuState;
-	WidgetContainer MenuAllZone;
+	WidgetContainer m_children;
 	
 private:
 	void UpdateText();

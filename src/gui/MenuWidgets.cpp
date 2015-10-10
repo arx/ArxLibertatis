@@ -575,7 +575,7 @@ MenuPage::MenuPage(Vec2i pos, Vec2i size, MENUSTATE _eMenuState)
 void MenuPage::AddMenu(Widget * widget) {
 	widget->ePlace = NOCENTER;
 	widget->Move(m_offset);
-	MenuAllZone.AddZone(widget);
+	m_children.AddZone(widget);
 }
 
 void MenuPage::AddMenuCenter(Widget * widget, bool centerX) {
@@ -597,8 +597,8 @@ void MenuPage::AddMenuCenter(Widget * widget, bool centerX) {
 	
 	int iDy = widget->m_rect.bottom - widget->m_rect.top;
 
-	for(size_t iJ = 0; iJ < MenuAllZone.GetNbZone(); iJ++) {
-		Widget * widget = MenuAllZone.GetZoneNum(iJ);
+	for(size_t iJ = 0; iJ < m_children.GetNbZone(); iJ++) {
+		Widget * widget = m_children.GetZoneNum(iJ);
 
 		iDy += m_rowSpacing;
 		iDy += widget->m_rect.bottom - widget->m_rect.top;
@@ -612,12 +612,12 @@ void MenuPage::AddMenuCenter(Widget * widget, bool centerX) {
 
 	int dy = 0;
 
-	if(MenuAllZone.GetNbZone()) {
-		dy = iDepY - MenuAllZone.GetZoneNum(0)->m_rect.top;
+	if(m_children.GetNbZone()) {
+		dy = iDepY - m_children.GetZoneNum(0)->m_rect.top;
 	}
 	
-	for(size_t iJ = 0; iJ < MenuAllZone.GetNbZone(); iJ++) {
-		Widget * widget = MenuAllZone.GetZoneNum(iJ);
+	for(size_t iJ = 0; iJ < m_children.GetNbZone(); iJ++) {
+		Widget * widget = m_children.GetZoneNum(iJ);
 		iDepY += (widget->m_rect.bottom - widget->m_rect.top) + m_rowSpacing;
 		
 		widget->Move(Vec2i(0, dy));
@@ -625,7 +625,7 @@ void MenuPage::AddMenuCenter(Widget * widget, bool centerX) {
 
 	widget->Move(Vec2i(dx, iDepY));
 
-	MenuAllZone.AddZone(widget);
+	m_children.AddZone(widget);
 }
 
 void MenuPage::AlignElementCenter(Widget * widget) {
@@ -843,7 +843,7 @@ MENUSTATE MenuPage::Update(Vec2i pos) {
 
 	bFrameOdd=!bFrameOdd;
 	
-	MenuAllZone.Move(m_pos - m_oldPos);
+	m_children.Move(m_pos - m_oldPos);
 	
 	m_oldPos.x=m_pos.x;
 	m_oldPos.y=m_pos.y;
@@ -852,7 +852,7 @@ MENUSTATE MenuPage::Update(Vec2i pos) {
 	// Check if mouse over
 	if(!bEdit) {
 		pZoneClick=NULL;
-		Widget * widget = MenuAllZone.CheckZone(GInput->getMousePosAbs());
+		Widget * widget = m_children.CheckZone(GInput->getMousePosAbs());
 		
 		if(widget) {
 			pZoneClick = widget;
@@ -880,7 +880,7 @@ MENUSTATE MenuPage::Update(Vec2i pos) {
 		}
 	} else {
 		if(!pZoneClick) {
-			Widget * widget = MenuAllZone.CheckZone(GInput->getMousePosAbs());
+			Widget * widget = m_children.CheckZone(GInput->getMousePosAbs());
 			
 			if(widget) {
 				pZoneClick = widget;
@@ -897,8 +897,8 @@ MENUSTATE MenuPage::Update(Vec2i pos) {
 	
 	//check les shortcuts
 	if(!bEdit) {
-		for(size_t iJ = 0; iJ < MenuAllZone.GetNbZone(); ++iJ) {
-			Widget * widget = MenuAllZone.GetZoneNum(iJ);
+		for(size_t iJ = 0; iJ < m_children.GetNbZone(); ++iJ) {
+			Widget * widget = m_children.GetZoneNum(iJ);
 			Widget * shortCutWidget = widget->OnShortCut();
 			
 			if(shortCutWidget) {
@@ -1116,8 +1116,8 @@ void MenuPage::Render() {
 
 	int iARXDiffTimeMenu  = checked_range_cast<int>(ARXDiffTimeMenu);
 
-	for(size_t i = 0; i < MenuAllZone.GetNbZone(); ++i) {
-		Widget * widget = MenuAllZone.GetZoneNum(i);
+	for(size_t i = 0; i < m_children.GetNbZone(); ++i) {
+		Widget * widget = m_children.GetZoneNum(i);
 		
 		widget->Update(iARXDiffTimeMenu);
 		widget->Render();
@@ -1196,7 +1196,7 @@ void MenuPage::Render() {
 			default:
 			{
 				if(GInput->getMouseButtonNowPressed(Mouse::Button_0)) {
-					Widget * widget = MenuAllZone.GetZoneWithID(BUTTON_MENUOPTIONS_CONTROLS_CUST_DEFAULT);
+					Widget * widget = m_children.GetZoneWithID(BUTTON_MENUOPTIONS_CONTROLS_CUST_DEFAULT);
 					
 					if(widget == pZoneClick) {
 						config.setDefaultActionKeys();
@@ -1214,7 +1214,7 @@ void MenuPage::Render() {
 	}
 	
 	//DEBUG ZONE
-	MenuAllZone.DrawZone();
+	m_children.DrawZone();
 }
 
 void MenuPage::ReInitActionKey()
@@ -1225,7 +1225,7 @@ void MenuPage::ReInitActionKey()
 	while(iI--) {
 		int iTab=(iID-BUTTON_MENUOPTIONS_CONTROLS_CUST_JUMP1)>>1;
 
-		Widget * widget = MenuAllZone.GetZoneWithID(MenuButton(iID));
+		Widget * widget = m_children.GetZoneWithID(MenuButton(iID));
 
 		if(widget) {
 			if(widget) {
@@ -1233,7 +1233,7 @@ void MenuPage::ReInitActionKey()
 				GetTouch(true, config.actions[iTab].key[0]);
 			}
 
-			widget = MenuAllZone.GetZoneWithID(MenuButton(iID + 1));
+			widget = m_children.GetZoneWithID(MenuButton(iID + 1));
 
 			if(widget) {
 				pZoneClick = widget;
