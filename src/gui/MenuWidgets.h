@@ -48,6 +48,7 @@ ZeniMax Media Inc., Suite 120, Rockville, Maryland 20850 USA.
 #include <string>
 
 #include "graphics/Color.h"
+#include "gui/widget/ButtonWidget.h"
 #include "gui/widget/TextWidget.h"
 #include "gui/widget/Widget.h"
 #include "gui/widget/WidgetContainer.h"
@@ -63,28 +64,6 @@ class Font;
 // faire une classe
 // like a container in java
 
-
-
-
-
-class ButtonWidget: public Widget {
-	
-public:
-	ButtonWidget(Vec2i pos, const char * texturePath);
-	~ButtonWidget();
-	
-public:
-	void SetPos(Vec2i pos);
-	void AddText(const std::string & label);
-	Widget * OnShortCut() { return NULL; }
-	bool OnMouseClick();
-	void Update(int time);
-	void Render();
-	void RenderMouseOver();
-	
-private:
-	TextureContainer * m_texture;
-};
 
 class CycleTextWidget: public Widget {
 	
