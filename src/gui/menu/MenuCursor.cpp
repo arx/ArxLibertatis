@@ -30,9 +30,6 @@ extern TextureContainer * scursor[];
 MenuCursor::MenuCursor()
 	: m_size(Vec2s(64, 64))
 {
-	
-	SetCursorOff();
-	
 	iNbOldCoord=0;
 	iMaxOldCoord=40;
 	
@@ -49,17 +46,8 @@ MenuCursor::~MenuCursor()
 {
 }
 
-void MenuCursor::SetCursorOff() {
-	eNumTex=CURSOR_OFF;
-}
-
-void MenuCursor::SetCursorOn() {
-	eNumTex=CURSOR_ON;
-}
-
 void MenuCursor::SetMouseOver() {
 	bMouseOver=true;
-	SetCursorOn();
 }
 
 void MenuCursor::DrawOneCursor(const Vec2s& mousePos) {
@@ -212,8 +200,6 @@ void MenuCursor::DrawCursor() {
 					m_currentFrame--;
 				}
 			}
-
-			SetCursorOff();
 			bMouseOver=false;
 		} else {
 			if(m_currentFrame > 0) {

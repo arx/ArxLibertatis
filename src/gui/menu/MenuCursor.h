@@ -28,20 +28,12 @@ struct TexturedVertex;
 class MenuCursor {
 
 public:
-	
-	enum CURSORSTATE {
-		CURSOR_OFF,
-		CURSOR_ON,
-	};
-	
 	MenuCursor();
 	virtual ~MenuCursor();
 	
 	void reset();
 	void update(float time);
 	void SetMouseOver();
-	void SetCursorOn();
-	void SetCursorOff();
 	void DrawCursor();
 	
 private:
@@ -57,7 +49,6 @@ private:
 	
 	// Cursor
 	float				lFrameDiff;
-	CURSORSTATE			eNumTex;
 	int					m_currentFrame;
 	bool				bMouseOver;
 	
