@@ -64,39 +64,6 @@ class Font;
 // faire une classe
 // like a container in java
 
-
-class CycleTextWidget: public Widget {
-	
-public:
-	explicit CycleTextWidget(MenuButton _iID);
-	virtual ~CycleTextWidget();
-	
-	void setValue(int value) { iPos = value; }
-	int getValue() const { return iPos; }
-	void setOldValue(int value) { iOldPos = value; }
-	int getOldValue() const { return iOldPos; }
-	
-	void selectLast();
-	
-	void AddText(TextWidget * text);
-	
-	void Move(const Vec2i & offset);
-	bool OnMouseClick();
-	Widget * OnShortCut() { return NULL; }
-	void Update(int time);
-	void Render();
-	void RenderMouseOver();
-	void EmptyFunction();
-	virtual void setEnabled(bool enable);
-	
-private:
-	ButtonWidget		*	pLeftButton;
-	ButtonWidget		*	pRightButton;
-	std::vector<TextWidget*>	vText;
-	int					iPos;
-	int					iOldPos;
-};
-
 //! Slider with value in the range [0..10]
 class SliderWidget: public Widget {
 	

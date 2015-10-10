@@ -819,6 +819,7 @@ set(GUI_SOURCES
 	src/gui/hud/SecondaryInventory.cpp
 	src/gui/menu/MenuCursor.cpp
 	src/gui/widget/ButtonWidget.cpp
+	src/gui/widget/CycleTextWidget.cpp
 	src/gui/widget/HorizontalPanelWidget.cpp
 	src/gui/widget/TextWidget.cpp
 	src/gui/widget/Widget.cpp

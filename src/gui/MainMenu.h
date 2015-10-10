@@ -27,9 +27,6 @@
 #include "gui/widget/WidgetContainer.h"
 #include "math/Types.h"
 
-// FIXME remove this
-const std::string AUTO_RESOLUTION_STRING = "Automatic";
-
 void MainMenuLeftCreate(MENUSTATE eMenuState);
 
 class MainMenu {

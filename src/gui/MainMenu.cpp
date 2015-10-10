@@ -33,6 +33,7 @@
 #include "gui/MenuWidgets.h"
 #include "gui/MenuPublic.h"
 #include "gui/Text.h"
+#include "gui/widget/CycleTextWidget.h"
 #include "gui/widget/HorizontalPanelWidget.h"
 #include "graphics/Draw.h"
 #include "graphics/Math.h"

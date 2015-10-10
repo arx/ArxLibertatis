@@ -20,6 +20,7 @@
 #include "gui/widget/Widget.h"
 
 #include "gui/MenuWidgets.h"
+#include "gui/widget/CycleTextWidget.h"
 #include "input/Input.h"
 
 Widget::Widget(MENUSTATE _ms)
