@@ -48,7 +48,6 @@ ZeniMax Media Inc., Suite 120, Rockville, Maryland 20850 USA.
 #include <string>
 
 #include "graphics/Color.h"
-#include "gui/MainMenu.h"
 #include "gui/widget/Widget.h"
 #include "gui/widget/WidgetContainer.h"
 #include "input/InputKey.h"
@@ -209,31 +208,6 @@ private:
 	TextureContainer * m_textureOff;
 	TextureContainer * m_textureOn;
 	TextWidget	* pText;
-};
-
-class MainMenu {
-public:
-	bool					bReInitAll;
-	MENUSTATE				eOldMenuState;
-	MENUSTATE				eOldMenuWindowState;
-	
-	Widget		*	pZoneClick;
-	
-	explicit MainMenu();
-	virtual ~MainMenu();
-	
-	void init();
-	
-	MENUSTATE Update();
-	void Render();
-	
-private:
-	TextureContainer * m_background;
-	WidgetContainer * m_widgets;
-	
-	TextWidget * m_resumeGame;
-	
-	void add(Widget * widget);
 };
 
 class CWindowMenuConsole {

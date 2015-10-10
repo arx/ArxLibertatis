@@ -22,12 +22,39 @@
 
 #include <string>
 
+#include "gui/MenuWidgets.h"
 #include "gui/widget/Widget.h"
+#include "gui/widget/WidgetContainer.h"
 #include "math/Types.h"
 
 // FIXME remove this
 const std::string AUTO_RESOLUTION_STRING = "Automatic";
 
 void MainMenuLeftCreate(MENUSTATE eMenuState);
+
+class MainMenu {
+public:
+	bool					bReInitAll;
+	MENUSTATE				eOldMenuState;
+	MENUSTATE				eOldMenuWindowState;
+	
+	Widget		*	pZoneClick;
+	
+	explicit MainMenu();
+	virtual ~MainMenu();
+	
+	void init();
+	
+	MENUSTATE Update();
+	void Render();
+	
+private:
+	TextureContainer * m_background;
+	WidgetContainer * m_widgets;
+	
+	TextWidget * m_resumeGame;
+	
+	void add(Widget * widget);
+};
 
 #endif // ARX_GUI_MAINMENU_H
