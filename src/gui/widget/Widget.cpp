@@ -38,7 +38,6 @@ Widget::Widget(MENUSTATE _ms)
 }
 
 extern TextWidget * pMenuElementApply;
-extern TextWidget * pMenuElementResume;
 extern TextWidget * pLoadConfirm;
 extern TextWidget * pDeleteConfirm;
 extern TextWidget * pDeleteButton;
@@ -49,10 +48,6 @@ Widget::~Widget() {
 
 	if(this == pMenuElementApply) {
 		pMenuElementApply = NULL;
-	}
-
-	if(this == pMenuElementResume) {
-		pMenuElementResume = NULL;
 	}
 
 	if(this == pLoadConfirm) {

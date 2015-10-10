@@ -112,8 +112,6 @@ static MenuCursor * pMenuCursor = NULL;
 extern CWindowMenu * pWindowMenu;
 CMenuState *mainMenu;
 
-TextWidget * pMenuElementResume = NULL;
-
 extern TextWidget * pMenuElementApply;
 extern TextWidget * pLoadConfirm;
 extern TextWidget * pDeleteConfirm;
@@ -357,21 +355,11 @@ bool Menu2_Render() {
 		mainMenu = new CMenuState();
 		mainMenu->eOldMenuWindowState=eM;
 		
-		mainMenu->createChildElements();
+		mainMenu->init();
 	}
 
 	bool bScroll=true;
 	{
-	if(pMenuElementResume) {
-		
-		if(ARXMenu_CanResumeGame()) {
-			pMenuElementResume->SetCheckOn();
-			pMenuElementResume->lColor = Color(232, 204, 142);
-		} else {
-			pMenuElementResume->SetCheckOff();
-			pMenuElementResume->lColor = Color(127, 127, 127);
-		}
-	}
 	
 	MENUSTATE eMenuState = mainMenu->Update();
 	
@@ -894,18 +882,19 @@ CMenuState::CMenuState()
 	, eOldMenuState(NOP)
 	, eOldMenuWindowState(NOP)
 	, pZoneClick(NULL)
-	, pTexBackGround(NULL)
-	, pMenuAllZone(new CMenuAllZone())
+	, m_background(NULL)
+	, m_widgets(new CMenuAllZone())
+	, m_resumeGame(NULL)
 {}
 
 CMenuState::~CMenuState() {
-	delete pMenuAllZone;
-	delete pTexBackGround;
+	delete m_widgets;
+	delete m_background;
 }
 
-void CMenuState::createChildElements()
+void CMenuState::init()
 {
-	pTexBackGround = TextureContainer::LoadUI("graph/interface/menus/menu_main_background", TextureContainer::NoColorKey);
+	m_background = TextureContainer::LoadUI("graph/interface/menus/menu_main_background", TextureContainer::NoColorKey);
 
 	Vec2i pos = Vec2i(370, 100);
 	int yOffset = 50;
@@ -919,38 +908,38 @@ void CMenuState::createChildElements()
 		me->SetCheckOff();
 		me->lColor = Color(127,127,127);
 	}
-	AddMenuElement(me);
-	pMenuElementResume = me;
+	add(me);
+	m_resumeGame = me;
 	}
 	pos.y += yOffset;
 	{
 	std::string szMenuText = getLocalised("system_menus_main_newquest");
 	TextWidget *me = new TextWidget(BUTTON_MENUMAIN_NEWQUEST, hFontMainMenu, szMenuText, RATIO_2(pos), NEW_QUEST);
-	AddMenuElement(me);
+	add(me);
 	}
 	pos.y += yOffset;
 	{
 	std::string szMenuText = getLocalised("system_menus_main_editquest");
 	TextWidget *me = new TextWidget(BUTTON_INVALID, hFontMainMenu, szMenuText, RATIO_2(pos), EDIT_QUEST);
-	AddMenuElement(me);
+	add(me);
 	}
 	pos.y += yOffset;
 	{
 	std::string szMenuText = getLocalised("system_menus_main_options");
 	TextWidget *me = new TextWidget(BUTTON_MENUMAIN_OPTIONS, hFontMainMenu, szMenuText, RATIO_2(pos), OPTIONS);
-	AddMenuElement(me);
+	add(me);
 	}
 	pos.y += yOffset;
 	{
 	std::string szMenuText = getLocalised("system_menus_main_credits");
 	TextWidget *me = new TextWidget(BUTTON_MENUMAIN_CREDITS, hFontMainMenu, szMenuText, RATIO_2(pos), CREDITS);
-	AddMenuElement(me);
+	add(me);
 	}
 	pos.y += yOffset;
 	{
 	std::string szMenuText = getLocalised("system_menus_main_quit");
 	TextWidget *me = new TextWidget(BUTTON_INVALID, hFontMainMenu, szMenuText, RATIO_2(pos), QUIT);
-	AddMenuElement(me);
+	add(me);
 	}
 	pos.y += yOffset;
 	
@@ -966,18 +955,28 @@ void CMenuState::createChildElements()
 	
 	me->SetCheckOff();
 	me->lColor=Color(127,127,127);
-	AddMenuElement(me);
+	add(me);
 }
 
-void CMenuState::AddMenuElement(Widget * _me) {
-	pMenuAllZone->AddZone(_me);
+void CMenuState::add(Widget * widget) {
+	m_widgets->AddZone(widget);
 }
 
 MENUSTATE CMenuState::Update() {
 	
+	if(m_resumeGame) {
+		if(ARXMenu_CanResumeGame()) {
+			m_resumeGame->SetCheckOn();
+			m_resumeGame->lColor = Color(232, 204, 142);
+		} else {
+			m_resumeGame->SetCheckOff();
+			m_resumeGame->lColor = Color(127, 127, 127);
+		}
+	}
+	
 	pZoneClick=NULL;
 
-	Widget * iR=pMenuAllZone->CheckZone(GInput->getMousePosAbs());
+	Widget * iR=m_widgets->CheckZone(GInput->getMousePosAbs());
 
 	if(GInput->getMouseButton(Mouse::Button_0)) {
 		if(iR) {
@@ -999,13 +998,13 @@ void CMenuState::Render() {
 	if(bNoMenu)
 		return;
 
-	if(pTexBackGround)
-		EERIEDrawBitmap2(Rectf(Vec2f(0, 0), g_size.width(), g_size.height()), 0.999f, pTexBackGround, Color::white);
+	if(m_background)
+		EERIEDrawBitmap2(Rectf(Vec2f(0, 0), g_size.width(), g_size.height()), 0.999f, m_background, Color::white);
 	
 	int iARXDiffTimeMenu = checked_range_cast<int>(ARXDiffTimeMenu);
 
-	for(size_t i = 0; i < pMenuAllZone->GetNbZone(); ++i) {
-		Widget * pMe = pMenuAllZone->GetZoneNum(i);
+	for(size_t i = 0; i < m_widgets->GetNbZone(); ++i) {
+		Widget * pMe = m_widgets->GetZoneNum(i);
 		pMe->Update(iARXDiffTimeMenu);
 		pMe->Render();
 	}
@@ -1017,7 +1016,7 @@ void CMenuState::Render() {
 
 	//DEBUG ZONE
 	GRenderer->ResetTexture(0);
-	pMenuAllZone->DrawZone();
+	m_widgets->DrawZone();
 }
 
 

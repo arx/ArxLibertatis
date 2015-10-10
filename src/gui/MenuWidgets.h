@@ -239,16 +239,18 @@ public:
 	explicit CMenuState();
 	virtual ~CMenuState();
 	
-	void createChildElements();
+	void init();
 	
 	MENUSTATE Update();
 	void Render();
 	
 private:
-	TextureContainer * pTexBackGround;
-	CMenuAllZone * pMenuAllZone;
+	TextureContainer * m_background;
+	CMenuAllZone * m_widgets;
 	
-	void AddMenuElement(Widget * element);
+	TextWidget * m_resumeGame;
+	
+	void add(Widget * widget);
 };
 
 class CWindowMenuConsole {
