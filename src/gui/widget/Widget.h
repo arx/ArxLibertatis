@@ -209,10 +209,10 @@ ARX_HANDLE_TYPEDEF(long, SavegameHandle, -1);
 class Widget {
 	
 public:
-
+	Rect	m_rect;
 	bool	bTestYDouble;
 	Widget *	pRef;
-	Rect	rZone;
+	
 	MenuButton iID;
 	
 	SavegameHandle m_savegame;

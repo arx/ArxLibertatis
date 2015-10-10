@@ -48,9 +48,9 @@ CheckboxWidget::CheckboxWidget(TextWidget *_pText)
 	iState    = 0;
 	iOldState = -1;
 	pText    = _pText;
-	rZone = _pText->rZone;
+	m_rect = _pText->m_rect;
 	
-	rZone.right = rZone.left + RATIO_X(245.f);
+	m_rect.right = m_rect.left + RATIO_X(245.f);
 }
 
 CheckboxWidget::~CheckboxWidget() {
@@ -166,10 +166,10 @@ void CheckboxWidget::renderCommon() {
 	GRenderer->SetBlendFunc(Renderer::BlendOne, Renderer::BlendOne);
 	
 	Rectf checkboxRect;
-	checkboxRect.top = rZone.top;
-	checkboxRect.left = rZone.right - rZone.height();
-	checkboxRect.bottom = rZone.bottom;
-	checkboxRect.right = rZone.right;
+	checkboxRect.top = m_rect.top;
+	checkboxRect.left = m_rect.right - m_rect.height();
+	checkboxRect.bottom = m_rect.bottom;
+	checkboxRect.right = m_rect.right;
 	
 	TextureContainer *pTex = (iState == 0) ? m_textureOff : m_textureOn;
 	Color color = (bCheck) ? Color::white : Color(63, 63, 63, 255);

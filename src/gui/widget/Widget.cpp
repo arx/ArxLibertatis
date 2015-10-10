@@ -25,9 +25,9 @@
 #include "input/Input.h"
 
 Widget::Widget(MENUSTATE _ms)
-	: bTestYDouble(false)
+	: m_rect(0, 0, 0, 0)
+	, bTestYDouble(false)
 	, pRef(NULL)
-	, rZone(0, 0, 0, 0)
 	, iID(BUTTON_INVALID)
 	, m_savegame(0)
 	, enabled(true)
@@ -86,18 +86,18 @@ Widget* Widget::OnShortCut() {
 }
 
 void Widget::Move(const Vec2i & offset) {
-	rZone.move(offset.x, offset.y);
+	m_rect.move(offset.x, offset.y);
 }
 
 void Widget::SetPos(Vec2i pos) {
 
-	int iWidth  = rZone.right - rZone.left;
-	int iHeight = rZone.bottom - rZone.top;
+	int iWidth  = m_rect.right - m_rect.left;
+	int iHeight = m_rect.bottom - m_rect.top;
 	
-	rZone.left   = pos.x;
-	rZone.top    = pos.y;
-	rZone.right  = pos.x + abs(iWidth);
-	rZone.bottom = pos.y + abs(iHeight);
+	m_rect.left   = pos.x;
+	m_rect.top    = pos.y;
+	m_rect.right  = pos.x + abs(iWidth);
+	m_rect.bottom = pos.y + abs(iHeight);
 }
 
 Widget * Widget::IsMouseOver(const Vec2s& mousePos) const {
@@ -105,13 +105,13 @@ Widget * Widget::IsMouseOver(const Vec2s& mousePos) const {
 	int iYDouble=0;
 
 	if(bTestYDouble) {
-		iYDouble=(rZone.bottom-rZone.top)>>1;
+		iYDouble=(m_rect.bottom-m_rect.top)>>1;
 	}
 
-	if(   mousePos.x >= rZone.left
-	   && mousePos.y >= rZone.top - iYDouble
-	   && mousePos.x <= rZone.right
-	   && mousePos.y <= rZone.bottom + iYDouble
+	if(   mousePos.x >= m_rect.left
+	   && mousePos.y >= m_rect.top - iYDouble
+	   && mousePos.x <= m_rect.right
+	   && mousePos.y <= m_rect.bottom + iYDouble
 	) {
 		return pRef;
 	}

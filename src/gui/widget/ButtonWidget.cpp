@@ -36,15 +36,15 @@ ButtonWidget::ButtonWidget(Vec2i pos, const char * texturePath)
 	
 	iID = BUTTON_INVALID;
 
-	rZone.left=pos.x;
-	rZone.top=pos.y;
-	rZone.right  = rZone.left ;
-	rZone.bottom = rZone.top ;
+	m_rect.left=pos.x;
+	m_rect.top=pos.y;
+	m_rect.right  = m_rect.left ;
+	m_rect.bottom = m_rect.top ;
 	
-	s32 rZoneR = rZone.left + RATIO_X(m_texture->m_size.x);
-	s32 rZoneB = rZone.top + RATIO_Y(m_texture->m_size.y);
-	rZone.right  = std::max(rZone.right,  rZoneR);
-	rZone.bottom = std::max(rZone.bottom, rZoneB);
+	s32 rZoneR = m_rect.left + RATIO_X(m_texture->m_size.x);
+	s32 rZoneB = m_rect.top + RATIO_Y(m_texture->m_size.y);
+	m_rect.right  = std::max(m_rect.right,  rZoneR);
+	m_rect.bottom = std::max(m_rect.bottom, rZoneB);
 }
 
 ButtonWidget::~ButtonWidget() {
@@ -57,8 +57,8 @@ void ButtonWidget::SetPos(Vec2i pos)
 	int iWidth = RATIO_X(m_texture->m_size.x);
 	int iHeight = RATIO_Y(m_texture->m_size.y);
 	
-	rZone.right = pos.x + iWidth;
-	rZone.bottom = pos.y + iHeight;
+	m_rect.right = pos.x + iWidth;
+	m_rect.bottom = pos.y + iHeight;
 }
 
 bool ButtonWidget::OnMouseClick() {
@@ -85,7 +85,7 @@ void ButtonWidget::Render() {
 		return;
 	
 	Color color = (bCheck) ? Color::white : Color(63, 63, 63, 255);
-	EERIEDrawBitmap2(Rectf(rZone), 0, m_texture, color);
+	EERIEDrawBitmap2(Rectf(m_rect), 0, m_texture, color);
 }
 
 extern MenuCursor * pMenuCursor;
@@ -98,7 +98,7 @@ void ButtonWidget::RenderMouseOver() {
 	pMenuCursor->SetMouseOver();
 	
 	const Vec2i cursor = Vec2i(GInput->getMousePosAbs());
-	if(rZone.contains(cursor)) {
+	if(m_rect.contains(cursor)) {
 		GRenderer->SetRenderState(Renderer::AlphaBlending, true);
 		GRenderer->SetBlendFunc(Renderer::BlendOne, Renderer::BlendOne);
 		

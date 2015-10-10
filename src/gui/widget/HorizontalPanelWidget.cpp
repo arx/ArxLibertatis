@@ -37,7 +37,7 @@ HorizontalPanelWidget::~HorizontalPanelWidget()
 
 void HorizontalPanelWidget::Move(const Vec2i & offset)
 {
-	rZone.move(offset.x, offset.y);
+	m_rect.move(offset.x, offset.y);
 	
 	BOOST_FOREACH(Widget * e, vElement) {
 		e->Move(offset);
@@ -50,17 +50,17 @@ void HorizontalPanelWidget::AddElement(Widget* _pElem)
 	vElement.push_back(_pElem);
 
 	if(vElement.size() == 1) {
-		rZone = _pElem->rZone;
+		m_rect = _pElem->m_rect;
 	} else {
-		rZone.left = std::min(rZone.left, _pElem->rZone.left);
-		rZone.top = std::min(rZone.top, _pElem->rZone.top);
+		m_rect.left = std::min(m_rect.left, _pElem->m_rect.left);
+		m_rect.top = std::min(m_rect.top, _pElem->m_rect.top);
 	}
 
 	// + taille elem
-	rZone.right = std::max(rZone.right, _pElem->rZone.right);
-	rZone.bottom = std::max(rZone.bottom, _pElem->rZone.bottom);
+	m_rect.right = std::max(m_rect.right, _pElem->m_rect.right);
+	m_rect.bottom = std::max(m_rect.bottom, _pElem->m_rect.bottom);
 
-	_pElem->Move(Vec2i(0, ((rZone.height() - _pElem->rZone.bottom) / 2)));
+	_pElem->Move(Vec2i(0, ((m_rect.height() - _pElem->m_rect.bottom) / 2)));
 }
 
 // patch on ajoute à droite en ligne
@@ -69,15 +69,15 @@ void HorizontalPanelWidget::AddElementNoCenterIn(Widget* _pElem)
 	vElement.push_back(_pElem);
 
 	if(vElement.size() == 1) {
-		rZone = _pElem->rZone;
+		m_rect = _pElem->m_rect;
 	} else {
-		rZone.left = std::min(rZone.left, _pElem->rZone.left);
-		rZone.top = std::min(rZone.top, _pElem->rZone.top);
+		m_rect.left = std::min(m_rect.left, _pElem->m_rect.left);
+		m_rect.top = std::min(m_rect.top, _pElem->m_rect.top);
 	}
 
 	// + taille elem
-	rZone.right = std::max(rZone.right, _pElem->rZone.right);
-	rZone.bottom = std::max(rZone.bottom, _pElem->rZone.bottom);
+	m_rect.right = std::max(m_rect.right, _pElem->m_rect.right);
+	m_rect.bottom = std::max(m_rect.bottom, _pElem->m_rect.bottom);
 }
 
 Widget* HorizontalPanelWidget::OnShortCut()
@@ -92,13 +92,13 @@ Widget* HorizontalPanelWidget::OnShortCut()
 
 void HorizontalPanelWidget::Update(int _iTime)
 {
-	rZone.right = rZone.left;
-	rZone.bottom = rZone.top;
+	m_rect.right = m_rect.left;
+	m_rect.bottom = m_rect.top;
 
 	BOOST_FOREACH(Widget * e, vElement) {
 		e->Update(_iTime);
-		rZone.right = std::max(rZone.right, e->rZone.right);
-		rZone.bottom = std::max(rZone.bottom, e->rZone.bottom);
+		m_rect.right = std::max(m_rect.right, e->m_rect.right);
+		m_rect.bottom = std::max(m_rect.bottom, e->m_rect.bottom);
 	}
 }
 
@@ -127,9 +127,9 @@ Widget * HorizontalPanelWidget::GetZoneWithID(int _iID)
 
 Widget * HorizontalPanelWidget::IsMouseOver(const Vec2s& mousePos) const {
 
-	if(rZone.contains(Vec2i(mousePos))) {
+	if(m_rect.contains(Vec2i(mousePos))) {
 		BOOST_FOREACH(Widget * e, vElement) {
-			if(e->getCheck() && e->rZone.contains(Vec2i(mousePos))) {
+			if(e->getCheck() && e->m_rect.contains(Vec2i(mousePos))) {
 				return e->pRef;
 			}
 		}

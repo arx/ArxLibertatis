@@ -42,12 +42,12 @@ SliderWidget::SliderWidget(MenuButton _iID, Vec2i pos)
 	
 	m_value = 0;
 
-	rZone.left   = pos.x;
-	rZone.top    = pos.y;
-	rZone.right  = pos.x + pLeftButton->rZone.width() + pRightButton->rZone.width() + 10 * std::max(pTex1->m_size.x, pTex2->m_size.x);
-	rZone.bottom = pos.y + std::max(pLeftButton->rZone.height(), pRightButton->rZone.height());
+	m_rect.left   = pos.x;
+	m_rect.top    = pos.y;
+	m_rect.right  = pos.x + pLeftButton->m_rect.width() + pRightButton->m_rect.width() + 10 * std::max(pTex1->m_size.x, pTex2->m_size.x);
+	m_rect.bottom = pos.y + std::max(pLeftButton->m_rect.height(), pRightButton->m_rect.height());
 	
-	pRightButton->Move(Vec2i(pLeftButton->rZone.width() + 10 * std::max(pTex1->m_size.x, pTex2->m_size.x), 0));
+	pRightButton->Move(Vec2i(pLeftButton->m_rect.width() + 10 * std::max(pTex1->m_size.x, pTex2->m_size.x), 0));
 
 	pRef = this;
 }
@@ -87,14 +87,14 @@ bool SliderWidget::OnMouseClick() {
 
 	const Vec2i cursor = Vec2i(GInput->getMousePosAbs());
 	
-	if(rZone.contains(cursor)) {
-		if(pLeftButton->rZone.contains(cursor)) {
+	if(m_rect.contains(cursor)) {
+		if(pLeftButton->m_rect.contains(cursor)) {
 			m_value--;
 			if(m_value <= 0)
 				m_value = 0;
 		}
 		
-		if(pRightButton->rZone.contains(cursor)) {
+		if(pRightButton->m_rect.contains(cursor)) {
 			m_value++;
 			if(m_value >= 10)
 				m_value = 10;
@@ -139,15 +139,15 @@ void SliderWidget::Update(int _iTime) {
 	
 	pLeftButton->Update(_iTime);
 	pRightButton->Update(_iTime);
-	pRightButton->SetPos(rZone.topLeft());
+	pRightButton->SetPos(m_rect.topLeft());
 
 
-	float fWidth = pLeftButton->rZone.width() + RATIO_X(10 * std::max(pTex1->m_size.x, pTex2->m_size.x)) ;
+	float fWidth = pLeftButton->m_rect.width() + RATIO_X(10 * std::max(pTex1->m_size.x, pTex2->m_size.x)) ;
 	pRightButton->Move(Vec2i(fWidth, 0));
 
-	rZone.right = rZone.left + pLeftButton->rZone.width() + pRightButton->rZone.width() + RATIO_X(10*std::max(pTex1->m_size.x, pTex2->m_size.x));
+	m_rect.right = m_rect.left + pLeftButton->m_rect.width() + pRightButton->m_rect.width() + RATIO_X(10*std::max(pTex1->m_size.x, pTex2->m_size.x));
 
-	rZone.bottom = rZone.top + std::max(pLeftButton->rZone.height(), pRightButton->rZone.height());
+	m_rect.bottom = m_rect.top + std::max(pLeftButton->m_rect.height(), pRightButton->m_rect.height());
 }
 
 // TODO remove this
@@ -161,7 +161,7 @@ void SliderWidget::Render() {
 	pLeftButton->Render();
 	pRightButton->Render();
 
-	Vec2f pos(rZone.left + pLeftButton->rZone.width(), rZone.top);
+	Vec2f pos(m_rect.left + pLeftButton->m_rect.width(), m_rect.top);
 	
 	GRenderer->SetRenderState(Renderer::AlphaBlending, true);
 	GRenderer->SetBlendFunc(Renderer::BlendOne, Renderer::BlendOne);
@@ -192,12 +192,12 @@ void SliderWidget::RenderMouseOver() {
 	GRenderer->SetRenderState(Renderer::AlphaBlending, true);
 	GRenderer->SetBlendFunc(Renderer::BlendOne, Renderer::BlendOne);
 	
-	if(rZone.contains(cursor)) {
-		if(pLeftButton->rZone.contains(cursor)) {
+	if(m_rect.contains(cursor)) {
+		if(pLeftButton->m_rect.contains(cursor)) {
 			pLeftButton->Render();
 		}
 		
-		if(pRightButton->rZone.contains(cursor)) {
+		if(pRightButton->m_rect.contains(cursor)) {
 			pRightButton->Render();
 		}
 	}

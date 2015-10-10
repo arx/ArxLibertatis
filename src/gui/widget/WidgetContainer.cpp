@@ -97,6 +97,6 @@ void WidgetContainer::DrawZone()
 		return;
 
 	BOOST_FOREACH(Widget * zone, vMenuZone) {
-		drawLineRectangle(Rectf(zone->rZone), 0.f, Color::red);
+		drawLineRectangle(Rectf(zone->m_rect), 0.f, Color::red);
 	}
 }

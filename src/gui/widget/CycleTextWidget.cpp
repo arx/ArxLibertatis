@@ -40,10 +40,10 @@ CycleTextWidget::CycleTextWidget(MenuButton _iID)
 	iPos = 0;
 	iOldPos = -1;
 
-	rZone.left   = 0;
-	rZone.top    = 0;
-	rZone.right  = pLeftButton->rZone.width() + pRightButton->rZone.width();
-	rZone.bottom = std::max(pLeftButton->rZone.height(), pRightButton->rZone.height());
+	m_rect.left   = 0;
+	m_rect.top    = 0;
+	m_rect.right  = pLeftButton->m_rect.width() + pRightButton->m_rect.width();
+	m_rect.bottom = std::max(pLeftButton->m_rect.height(), pRightButton->m_rect.height());
 
 	pRef = this;
 }
@@ -64,30 +64,30 @@ void CycleTextWidget::AddText(TextWidget *_pText) {
 	
 	_pText->setEnabled(enabled);
 	
-	_pText->Move(Vec2i(rZone.left + pLeftButton->rZone.width(), rZone.top + 0));
+	_pText->Move(Vec2i(m_rect.left + pLeftButton->m_rect.width(), m_rect.top + 0));
 	vText.push_back(_pText);
 
-	Vec2i textSize = _pText->rZone.size();
+	Vec2i textSize = _pText->m_rect.size();
 
-	rZone.right  = std::max(rZone.right, rZone.left + pLeftButton->rZone.width() + pRightButton->rZone.width() + textSize.x);
-	rZone.bottom = std::max(rZone.bottom, rZone.top + textSize.y);
+	m_rect.right  = std::max(m_rect.right, m_rect.left + pLeftButton->m_rect.width() + pRightButton->m_rect.width() + textSize.x);
+	m_rect.bottom = std::max(m_rect.bottom, m_rect.top + textSize.y);
 
-	pLeftButton->SetPos(Vec2i(rZone.left,
-	                          rZone.top + rZone.height() / 2 - pLeftButton->rZone.height() / 2));
-	pRightButton->SetPos(Vec2i(rZone.right - pRightButton->rZone.width(),
-	                           rZone.top + rZone.height() / 2 - pRightButton->rZone.height() / 2));
+	pLeftButton->SetPos(Vec2i(m_rect.left,
+	                          m_rect.top + m_rect.height() / 2 - pLeftButton->m_rect.height() / 2));
+	pRightButton->SetPos(Vec2i(m_rect.right - pRightButton->m_rect.width(),
+	                           m_rect.top + m_rect.height() / 2 - pRightButton->m_rect.height() / 2));
 
-	int dx=rZone.width()-pLeftButton->rZone.width()-pRightButton->rZone.width();
+	int dx=m_rect.width()-pLeftButton->m_rect.width()-pRightButton->m_rect.width();
 	//on recentre tout
 	std::vector<TextWidget*>::iterator it;
 
 	for(it = vText.begin(); it < vText.end(); ++it) {
 		TextWidget *pMenuElementText=*it;
 		
-		textSize = pMenuElementText->rZone.size();
+		textSize = pMenuElementText->m_rect.size();
 
 		int dxx=(dx-textSize.x)>>1;
-		pMenuElementText->SetPos(Vec2i(pLeftButton->rZone.right + dxx, rZone.top + rZone.height() / 2 - textSize.y/2));
+		pMenuElementText->SetPos(Vec2i(pLeftButton->m_rect.right + dxx, m_rect.top + m_rect.height() / 2 - textSize.y/2));
 	}
 }
 
@@ -139,8 +139,8 @@ bool CycleTextWidget::OnMouseClick() {
 	
 	const Vec2i cursor = Vec2i(GInput->getMousePosAbs());
 
-	if(rZone.contains(cursor)) {
-		if(pLeftButton->rZone.contains(cursor)) {
+	if(m_rect.contains(cursor)) {
+		if(pLeftButton->m_rect.contains(cursor)) {
 			iPos--;
 
 			if(iPos < 0) {
@@ -148,7 +148,7 @@ bool CycleTextWidget::OnMouseClick() {
 			}
 		}
 		
-		if(pRightButton->rZone.contains(cursor)) {
+		if(pRightButton->m_rect.contains(cursor)) {
 			iPos++;
 
 			arx_assert(iPos >= 0);
@@ -259,12 +259,12 @@ void CycleTextWidget::RenderMouseOver() {
 	GRenderer->SetRenderState(Renderer::AlphaBlending, true);
 	GRenderer->SetBlendFunc(Renderer::BlendOne, Renderer::BlendOne);
 
-	if(rZone.contains(cursor)) {
-		if(pLeftButton->rZone.contains(cursor)) {
+	if(m_rect.contains(cursor)) {
+		if(pLeftButton->m_rect.contains(cursor)) {
 			pLeftButton->Render();
 		}
 		
-		if(pRightButton->rZone.contains(cursor)) {
+		if(pRightButton->m_rect.contains(cursor)) {
 			pRightButton->Render();
 		}
 	}

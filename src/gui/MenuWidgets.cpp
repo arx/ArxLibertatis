@@ -585,8 +585,8 @@ void CWindowMenuConsole::AddMenuCenter(Widget * element, bool centerX) {
 	if(centerX) {
 		element->ePlace = CENTER;
 		
-		int iDx = element->rZone.right - element->rZone.left;
-		dx  = ((m_size.x - iDx) >> 1) - element->rZone.left;
+		int iDx = element->m_rect.right - element->m_rect.left;
+		dx  = ((m_size.x - iDx) >> 1) - element->m_rect.left;
 	
 		if(dx < 0) {
 			dx = 0;
@@ -595,13 +595,13 @@ void CWindowMenuConsole::AddMenuCenter(Widget * element, bool centerX) {
 		dx = 0;
 	}
 	
-	int iDy = element->rZone.bottom - element->rZone.top;
+	int iDy = element->m_rect.bottom - element->m_rect.top;
 
 	for(size_t iJ = 0; iJ < MenuAllZone.GetNbZone(); iJ++) {
 		Widget * pZone = MenuAllZone.GetZoneNum(iJ);
 
 		iDy += m_rowSpacing;
-		iDy += pZone->rZone.bottom - pZone->rZone.top;
+		iDy += pZone->m_rect.bottom - pZone->m_rect.top;
 	}
 
 	int iDepY = m_offset.y;
@@ -613,12 +613,12 @@ void CWindowMenuConsole::AddMenuCenter(Widget * element, bool centerX) {
 	int dy = 0;
 
 	if(MenuAllZone.GetNbZone()) {
-		dy = iDepY - MenuAllZone.GetZoneNum(0)->rZone.top;
+		dy = iDepY - MenuAllZone.GetZoneNum(0)->m_rect.top;
 	}
 	
 	for(size_t iJ = 0; iJ < MenuAllZone.GetNbZone(); iJ++) {
 		Widget *pZone = MenuAllZone.GetZoneNum(iJ);
-		iDepY += (pZone->rZone.bottom - pZone->rZone.top) + m_rowSpacing;
+		iDepY += (pZone->m_rect.bottom - pZone->m_rect.top) + m_rowSpacing;
 		
 		pZone->Move(Vec2i(0, dy));
 	}
@@ -630,11 +630,11 @@ void CWindowMenuConsole::AddMenuCenter(Widget * element, bool centerX) {
 
 void CWindowMenuConsole::AlignElementCenter(Widget *_pMenuElement) {
 	
-	_pMenuElement->Move(Vec2i(-_pMenuElement->rZone.left, 0));
+	_pMenuElement->Move(Vec2i(-_pMenuElement->m_rect.left, 0));
 	_pMenuElement->ePlace = CENTER;
 	
-	int iDx = _pMenuElement->rZone.right - _pMenuElement->rZone.left;
-	int dx = (m_size.x - iDx) / 2 - _pMenuElement->rZone.left;
+	int iDx = _pMenuElement->m_rect.right - _pMenuElement->m_rect.left;
+	int dx = (m_size.x - iDx) / 2 - _pMenuElement->m_rect.left;
 	
 	_pMenuElement->Move(Vec2i(std::max(dx, 0), 0));
 }
@@ -656,17 +656,17 @@ void CWindowMenuConsole::UpdateText() {
 
 				((TextWidget*)pZoneClick)->SetText(szMenuText);
 
-				int iDx=pZoneClick->rZone.right-pZoneClick->rZone.left;
+				int iDx=pZoneClick->m_rect.right-pZoneClick->m_rect.left;
 
 				if(pZoneClick->ePlace) {
-					pZoneClick->rZone.left=m_pos.x+((m_size.x-iDx)>>1);
+					pZoneClick->m_rect.left=m_pos.x+((m_size.x-iDx)>>1);
 
-					if(pZoneClick->rZone.left < 0) {
-						pZoneClick->rZone.left=0;
+					if(pZoneClick->m_rect.left < 0) {
+						pZoneClick->m_rect.left=0;
 					}
 				}
 
-				pZoneClick->rZone.right=pZoneClick->rZone.left+iDx;
+				pZoneClick->m_rect.right=pZoneClick->m_rect.left+iDx;
 			}
 
 			pZoneClick=NULL;
@@ -708,30 +708,30 @@ void CWindowMenuConsole::UpdateText() {
 		if(bKey) {
 			pZoneText->SetText(tText);
 
-			if(pZoneText->rZone.right - pZoneText->rZone.left > m_size.x - RATIO_X(64)) {
+			if(pZoneText->m_rect.right - pZoneText->m_rect.left > m_size.x - RATIO_X(64)) {
 				if(!tText.empty()) {
 					tText.resize(tText.size() - 1);
 					pZoneText->SetText(tText);
 				}
 			}
 
-			int iDx=pZoneClick->rZone.right-pZoneClick->rZone.left;
+			int iDx=pZoneClick->m_rect.right-pZoneClick->m_rect.left;
 
 			if(pZoneClick->ePlace) {
-				pZoneClick->rZone.left=m_pos.x+((m_size.x-iDx)>>1);
+				pZoneClick->m_rect.left=m_pos.x+((m_size.x-iDx)>>1);
 
-				if(pZoneClick->rZone.left < 0) {
-					pZoneClick->rZone.left=0;
+				if(pZoneClick->m_rect.left < 0) {
+					pZoneClick->m_rect.left=0;
 				}
 			}
 
-			pZoneClick->rZone.right=pZoneClick->rZone.left+iDx;
+			pZoneClick->m_rect.right=pZoneClick->m_rect.left+iDx;
 		}
 	}
 
-	if(pZoneClick->rZone.top == pZoneClick->rZone.bottom) {
+	if(pZoneClick->m_rect.top == pZoneClick->m_rect.bottom) {
 		Vec2i textSize = ((TextWidget*)pZoneClick)->pFont->getTextSize("|");
-		pZoneClick->rZone.bottom += textSize.y;
+		pZoneClick->m_rect.bottom += textSize.y;
 	}
 	
 	m_textCursorCurrentTime += ARXDiffTimeMenu;
@@ -748,12 +748,12 @@ void CWindowMenuConsole::UpdateText() {
 	v[0].p.z=v[1].p.z=v[2].p.z=v[3].p.z=0.f;    
 	v[0].rhw=v[1].rhw=v[2].rhw=v[3].rhw=1.f;
 
-	v[0].p.x = (float)pZoneClick->rZone.right;
-	v[0].p.y = (float)pZoneClick->rZone.top;
+	v[0].p.x = (float)pZoneClick->m_rect.right;
+	v[0].p.y = (float)pZoneClick->m_rect.top;
 	v[1].p.x = v[0].p.x+2.f;
 	v[1].p.y = v[0].p.y;
 	v[2].p.x = v[0].p.x;
-	v[2].p.y = (float)pZoneClick->rZone.bottom;
+	v[2].p.y = (float)pZoneClick->m_rect.bottom;
 	v[3].p.x = v[1].p.x;
 	v[3].p.y = v[2].p.y;
 
@@ -810,17 +810,17 @@ Widget * CWindowMenuConsole::GetTouch(bool keyTouched, int keyId, InputKeyId* pI
 			pZoneText->eState=GETTOUCH;
 			pZoneText->SetText(pText);
 			
-			int iDx=pZoneClick->rZone.right-pZoneClick->rZone.left;
+			int iDx=pZoneClick->m_rect.right-pZoneClick->m_rect.left;
 
 			if(pZoneClick->ePlace) {
-				pZoneClick->rZone.left=(m_size.x-iDx)>>1;
+				pZoneClick->m_rect.left=(m_size.x-iDx)>>1;
 
-				if(pZoneClick->rZone.left < 0) {
-					pZoneClick->rZone.left=0;
+				if(pZoneClick->m_rect.left < 0) {
+					pZoneClick->m_rect.left=0;
 				}
 			}
 
-			pZoneClick->rZone.right=pZoneClick->rZone.left+iDx;
+			pZoneClick->m_rect.right=pZoneClick->m_rect.left+iDx;
 
 			pZoneClick=NULL;
 			bEdit=false;
