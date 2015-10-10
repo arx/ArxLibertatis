@@ -27,63 +27,19 @@
 
 extern TextureContainer * scursor[];
 
-MenuCursor::MenuCursor()
-	: m_size(Vec2s(64, 64))
-{
-	iNbOldCoord=0;
-	iMaxOldCoord=40;
-	
-	exited = true;
+CursorTrail::CursorTrail() {
 	m_storedTime = 0;
-	
-	bMouseOver=false;
-	
-	m_currentFrame=0;
-	lFrameDiff = 0.f;
+	iNbOldCoord = 0;
+	iMaxOldCoord = 40;
 }
 
-MenuCursor::~MenuCursor()
-{
-}
-
-void MenuCursor::SetMouseOver() {
-	bMouseOver=true;
-}
-
-void MenuCursor::DrawOneCursor(const Vec2s& mousePos) {
-	
-	if(!GInput->isMouseInWindow()) {
-		return;
-	}
-	
-	GRenderer->GetTextureStage(0)->setMinFilter(TextureStage::FilterNearest);
-	GRenderer->GetTextureStage(0)->setMagFilter(TextureStage::FilterNearest);
-	GRenderer->GetTextureStage(0)->setWrapMode(TextureStage::WrapClamp);
-
-	EERIEDrawBitmap2(Rectf(Vec2f(mousePos), m_size.x, m_size.y),
-	                 0.00000001f, scursor[m_currentFrame], Color::white);
-
-	GRenderer->GetTextureStage(0)->setMinFilter(TextureStage::FilterLinear);
-	GRenderer->GetTextureStage(0)->setMagFilter(TextureStage::FilterLinear);
-	GRenderer->GetTextureStage(0)->setWrapMode(TextureStage::WrapRepeat);
-}
-
-void MenuCursor::reset() {
+void CursorTrail::reset() {
 	iNbOldCoord = 0;
 }
 
-void MenuCursor::update(float time) {
-	
-	bool inWindow = GInput->isMouseInWindow();
-	if(inWindow && exited) {
-		// Mouse is re-entering the window - reset the cursor trail
-		reset();
-	}
-	exited = !inWindow;
-	
-	Vec2s iDiff = m_size / Vec2s(2);
-	
-	iOldCoord[iNbOldCoord] = GInput->getMousePosAbs() + iDiff;
+void CursorTrail::add(float time, const Vec2s & pos)
+{
+	iOldCoord[iNbOldCoord] = pos;
 	
 	const float targetFPS = 61.f;
 	const float targetDelay = 1000.f / targetFPS;
@@ -97,12 +53,14 @@ void MenuCursor::update(float time) {
 			iNbOldCoord = iMaxOldCoord - 1;
 			memmove(iOldCoord, iOldCoord + 1, sizeof(Vec2s) * iNbOldCoord);
 		}
-		
 	}
-	
 }
 
-bool MenuCursor::ComputePer(const Vec2s & _psPoint1, const Vec2s & _psPoint2, TexturedVertex * _psd3dv1, TexturedVertex * _psd3dv2, float _fSize) {
+void CursorTrail::draw() {
+	DrawLine2D(10.f, Color3f(.725f, .619f, 0.56f));
+}
+
+bool CursorTrail::ComputePer(const Vec2s & _psPoint1, const Vec2s & _psPoint2, TexturedVertex * _psd3dv1, TexturedVertex * _psd3dv2, float _fSize) {
 	
 	Vec2f sTemp((float)(_psPoint2.x - _psPoint1.x), (float)(_psPoint2.y - _psPoint1.y));
 	float fTemp = sTemp.x;
@@ -125,7 +83,7 @@ bool MenuCursor::ComputePer(const Vec2s & _psPoint1, const Vec2s & _psPoint2, Te
 	return true;
 }
 
-void MenuCursor::DrawLine2D(float _fSize, Color3f color) {
+void CursorTrail::DrawLine2D(float _fSize, Color3f color) {
 	
 	if(iNbOldCoord < 2) {
 		return;
@@ -181,11 +139,68 @@ void MenuCursor::DrawLine2D(float _fSize, Color3f color) {
 	GRenderer->SetRenderState(Renderer::AlphaBlending, false);
 }
 
+
+MenuCursor::MenuCursor()
+	: m_size(Vec2s(64, 64))
+{
+	exited = true;
+	
+	bMouseOver=false;
+	
+	m_currentFrame=0;
+	lFrameDiff = 0.f;
+}
+
+MenuCursor::~MenuCursor()
+{
+}
+
+void MenuCursor::SetMouseOver() {
+	bMouseOver=true;
+}
+
+void MenuCursor::DrawOneCursor(const Vec2s& mousePos) {
+	
+	if(!GInput->isMouseInWindow()) {
+		return;
+	}
+	
+	GRenderer->GetTextureStage(0)->setMinFilter(TextureStage::FilterNearest);
+	GRenderer->GetTextureStage(0)->setMagFilter(TextureStage::FilterNearest);
+	GRenderer->GetTextureStage(0)->setWrapMode(TextureStage::WrapClamp);
+
+	EERIEDrawBitmap2(Rectf(Vec2f(mousePos), m_size.x, m_size.y),
+	                 0.00000001f, scursor[m_currentFrame], Color::white);
+
+	GRenderer->GetTextureStage(0)->setMinFilter(TextureStage::FilterLinear);
+	GRenderer->GetTextureStage(0)->setMagFilter(TextureStage::FilterLinear);
+	GRenderer->GetTextureStage(0)->setWrapMode(TextureStage::WrapRepeat);
+}
+
+void MenuCursor::reset() {
+	trail.reset();
+}
+
+void MenuCursor::update(float time) {
+	
+	bool inWindow = GInput->isMouseInWindow();
+	if(inWindow && exited) {
+		// Mouse is re-entering the window - reset the cursor trail
+		reset();
+	}
+	exited = !inWindow;
+	
+	Vec2s iDiff = m_size / Vec2s(2);
+	
+	trail.add(time, GInput->getMousePosAbs() + iDiff);
+}
+
+
 extern float ARXDiffTimeMenu;
 
 void MenuCursor::DrawCursor() {
 	
-	DrawLine2D(10.f, Color3f(.725f, .619f, 0.56f));
+	trail.draw();
 	
 	DrawOneCursor(GInput->getMousePosAbs());
 

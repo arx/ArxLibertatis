@@ -25,6 +25,24 @@
 
 struct TexturedVertex;
 
+class CursorTrail {
+public:
+	CursorTrail();
+	
+	void reset();
+	void add(float time, const Vec2s & pos);
+	void draw();
+	
+private:
+	float m_storedTime;
+	int   iNbOldCoord;
+	int   iMaxOldCoord;
+	Vec2s iOldCoord[256];
+	
+	bool ComputePer(const Vec2s & _psPoint1, const Vec2s & _psPoint2, TexturedVertex * _psd3dv1, TexturedVertex * _psd3dv2, float _fSize);
+	void DrawLine2D(float _fSize, Color3f color);
+};
+
 class MenuCursor {
 
 public:
@@ -37,26 +55,14 @@ public:
 	void DrawCursor();
 	
 private:
-	bool ComputePer(const Vec2s & _psPoint1, const Vec2s & _psPoint2, TexturedVertex * _psd3dv1, TexturedVertex * _psd3dv2, float _fSize);
-	void DrawLine2D(float _fSize, Color3f color);
-	
 	void DrawOneCursor(const Vec2s & mousePos);
 	
 	Vec2s m_size;
 	bool exited; //! Has the mouse exited the window
-	
-	float m_storedTime;
-	
-	// Cursor
 	float				lFrameDiff;
 	int					m_currentFrame;
 	bool				bMouseOver;
-	
-	// For the ribbon effect
-	int					iNbOldCoord;
-	int					iMaxOldCoord;
-	Vec2s				iOldCoord[256];
-	
+	CursorTrail trail;
 };
 
 #endif // ARX_GUI_MENU_MENUCURSOR_H
