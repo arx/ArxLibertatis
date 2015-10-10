@@ -495,11 +495,11 @@ CWindowMenu::CWindowMenu(Vec2i pos, Vec2i size)
 
 CWindowMenu::~CWindowMenu() {
 
-	for(std::vector<CWindowMenuConsole*>::iterator it = vWindowConsoleElement.begin(), it_end = vWindowConsoleElement.end(); it < it_end; ++it)
+	for(std::vector<MenuPage*>::iterator it = vWindowConsoleElement.begin(), it_end = vWindowConsoleElement.end(); it < it_end; ++it)
 		delete *it;
 }
 
-void CWindowMenu::AddConsole(CWindowMenuConsole *_pMenuConsoleElement) {
+void CWindowMenu::AddConsole(MenuPage *_pMenuConsoleElement) {
 
 	vWindowConsoleElement.push_back(_pMenuConsoleElement);
 	_pMenuConsoleElement->m_oldPos.x = 0;
@@ -528,7 +528,7 @@ MENUSTATE CWindowMenu::Render() {
 	
 	MENUSTATE eMS=NOP;
 	
-	BOOST_FOREACH(CWindowMenuConsole * c, vWindowConsoleElement) {
+	BOOST_FOREACH(MenuPage * c, vWindowConsoleElement) {
 		if(eCurrentMenuState == c->eMenuState) {
 			eMS = c->Update(m_pos);
 			
@@ -537,7 +537,7 @@ MENUSTATE CWindowMenu::Render() {
 		}
 	}
 	
-	BOOST_FOREACH(CWindowMenuConsole * c, vWindowConsoleElement) {
+	BOOST_FOREACH(MenuPage * c, vWindowConsoleElement) {
 		if(eCurrentMenuState == c->eMenuState) {
 			c->Render();
 			break;
@@ -553,7 +553,7 @@ MENUSTATE CWindowMenu::Render() {
 	return eMS;
 }
 
-CWindowMenuConsole::CWindowMenuConsole(Vec2i pos, Vec2i size, MENUSTATE _eMenuState)
+MenuPage::MenuPage(Vec2i pos, Vec2i size, MENUSTATE _eMenuState)
 	: m_rowSpacing(10)
 	, m_savegame(0)
 	, pZoneClick(NULL)
@@ -572,13 +572,13 @@ CWindowMenuConsole::CWindowMenuConsole(Vec2i pos, Vec2i size, MENUSTATE _eMenuSt
 	bFrameOdd=false;
 }
 
-void CWindowMenuConsole::AddMenu(Widget * element) {
+void MenuPage::AddMenu(Widget * element) {
 	element->ePlace = NOCENTER;
 	element->Move(m_offset);
 	MenuAllZone.AddZone(element);
 }
 
-void CWindowMenuConsole::AddMenuCenter(Widget * element, bool centerX) {
+void MenuPage::AddMenuCenter(Widget * element, bool centerX) {
 
 	int dx;
 	
@@ -628,7 +628,7 @@ void CWindowMenuConsole::AddMenuCenter(Widget * element, bool centerX) {
 	MenuAllZone.AddZone(element);
 }
 
-void CWindowMenuConsole::AlignElementCenter(Widget *_pMenuElement) {
+void MenuPage::AlignElementCenter(Widget *_pMenuElement) {
 	
 	_pMenuElement->Move(Vec2i(-_pMenuElement->m_rect.left, 0));
 	_pMenuElement->ePlace = CENTER;
@@ -639,7 +639,7 @@ void CWindowMenuConsole::AlignElementCenter(Widget *_pMenuElement) {
 	_pMenuElement->Move(Vec2i(std::max(dx, 0), 0));
 }
 
-void CWindowMenuConsole::UpdateText() {
+void MenuPage::UpdateText() {
 
 	if(GInput->isAnyKeyPressed()) {
 
@@ -761,7 +761,7 @@ void CWindowMenuConsole::UpdateText() {
 	}
 }
 
-Widget * CWindowMenuConsole::GetTouch(bool keyTouched, int keyId, InputKeyId* pInputKeyId, bool _bValidateTest)
+Widget * MenuPage::GetTouch(bool keyTouched, int keyId, InputKeyId* pInputKeyId, bool _bValidateTest)
 {
 	int iMouseButton = keyTouched ? 0 : GInput->getMouseButtonClicked();
 	
@@ -839,7 +839,7 @@ Widget * CWindowMenuConsole::GetTouch(bool keyTouched, int keyId, InputKeyId* pI
 	return NULL;
 }
 
-MENUSTATE CWindowMenuConsole::Update(Vec2i pos) {
+MENUSTATE MenuPage::Update(Vec2i pos) {
 
 	bFrameOdd=!bFrameOdd;
 	
@@ -1091,7 +1091,7 @@ static bool UpdateGameKey(bool bEdit, Widget *pmeElement, InputKeyId inputKeyId)
 	return bChange;
 }
 
-void CWindowMenuConsole::Render() {
+void MenuPage::Render() {
 
 	if(bNoMenu)
 		return;
@@ -1217,7 +1217,7 @@ void CWindowMenuConsole::Render() {
 	MenuAllZone.DrawZone();
 }
 
-void CWindowMenuConsole::ReInitActionKey()
+void MenuPage::ReInitActionKey()
 {
 	int iID=BUTTON_MENUOPTIONS_CONTROLS_CUST_JUMP1;
 	int iI=NUM_ACTION_KEY;

@@ -88,7 +88,7 @@ bool TextWidget::OnMouseDoubleClick() {
 
 		if(pWindowMenu) {
 			for(size_t i = 0; i < pWindowMenu->vWindowConsoleElement.size(); i++) {
-				CWindowMenuConsole *p = pWindowMenu->vWindowConsoleElement[i];
+				MenuPage *p = pWindowMenu->vWindowConsoleElement[i];
 
 				if(p->eMenuState == EDIT_QUEST_LOAD) {
 					for(size_t j = 0; j < p->MenuAllZone.vMenuZone.size(); j++) {
@@ -187,7 +187,7 @@ bool TextWidget::OnMouseClick() {
 		case BUTTON_MENUEDITQUEST_LOAD_INIT: {
 			if(pWindowMenu)
 			for(size_t i = 0; i < pWindowMenu->vWindowConsoleElement.size(); i++) {
-				CWindowMenuConsole * p = pWindowMenu->vWindowConsoleElement[i];
+				MenuPage * p = pWindowMenu->vWindowConsoleElement[i];
 				
 				if(p->eMenuState == EDIT_QUEST_LOAD) {						
 					p->m_savegame = m_savegame;
@@ -211,7 +211,7 @@ bool TextWidget::OnMouseClick() {
 				pDeleteConfirm->lColor = pDeleteConfirm->lOldColor;
 				
 				for(size_t i = 0; i < pWindowMenu->vWindowConsoleElement.size(); i++) {
-					CWindowMenuConsole *p = pWindowMenu->vWindowConsoleElement[i];
+					MenuPage *p = pWindowMenu->vWindowConsoleElement[i];
 					
 					if(p->eMenuState == EDIT_QUEST_LOAD) {
 						p->m_savegame = m_savegame;
@@ -232,7 +232,7 @@ bool TextWidget::OnMouseClick() {
 		case BUTTON_MENUEDITQUEST_LOAD_CONFIRM: {
 			if(pWindowMenu) {
 				for(size_t i = 0; i < pWindowMenu->vWindowConsoleElement.size(); i++) {
-					CWindowMenuConsole *p = pWindowMenu->vWindowConsoleElement[i];
+					MenuPage *p = pWindowMenu->vWindowConsoleElement[i];
 		
 					if(p->eMenuState == EDIT_QUEST_LOAD) {
 						
@@ -267,7 +267,7 @@ bool TextWidget::OnMouseClick() {
 		case BUTTON_MENUEDITQUEST_SAVE: {
 			if(pWindowMenu)
 			for(size_t i = 0; i < pWindowMenu->vWindowConsoleElement.size(); i++) {
-				CWindowMenuConsole *p = pWindowMenu->vWindowConsoleElement[i];
+				MenuPage *p = pWindowMenu->vWindowConsoleElement[i];
 				
 				if(p->eMenuState == EDIT_QUEST_SAVE_CONFIRM) {
 					p->m_savegame = m_savegame;
@@ -287,7 +287,7 @@ bool TextWidget::OnMouseClick() {
 		case BUTTON_MENUEDITQUEST_DELETE_CONFIRM: {
 			if(pWindowMenu) {
 				for(size_t i = 0 ; i < pWindowMenu->vWindowConsoleElement.size(); i++) {
-					CWindowMenuConsole *p = pWindowMenu->vWindowConsoleElement[i];
+					MenuPage *p = pWindowMenu->vWindowConsoleElement[i];
 					if(p->eMenuState == EDIT_QUEST_LOAD) {
 						m_savegame = p->m_savegame;
 						if(m_savegame != SavegameHandle::Invalid) {
@@ -310,7 +310,7 @@ bool TextWidget::OnMouseClick() {
 		case BUTTON_MENUEDITQUEST_DELETE: {
 			if(pWindowMenu) {
 				for(size_t i = 0 ; i < pWindowMenu->vWindowConsoleElement.size(); i++) {
-					CWindowMenuConsole *p = pWindowMenu->vWindowConsoleElement[i];
+					MenuPage *p = pWindowMenu->vWindowConsoleElement[i];
 					if(p->eMenuState == EDIT_QUEST_SAVE_CONFIRM) {
 						p->m_savegame = m_savegame;
 						TextWidget * me = (TextWidget *) p->MenuAllZone.vMenuZone[1];
@@ -349,7 +349,7 @@ bool TextWidget::OnMouseClick() {
 
 	if(eMenuState == EDIT_QUEST_SAVE_CONFIRM) {
 		for(size_t i = 0; i < pWindowMenu->vWindowConsoleElement.size(); i++) {
-			CWindowMenuConsole *p = pWindowMenu->vWindowConsoleElement[i];
+			MenuPage *p = pWindowMenu->vWindowConsoleElement[i];
 
 			if(p->eMenuState == eMenuState) {
 				p->m_savegame = m_savegame;

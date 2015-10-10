@@ -60,10 +60,10 @@ ZeniMax Media Inc., Suite 120, Rockville, Maryland 20850 USA.
 class TextureContainer;
 class Font;
 
-class CWindowMenuConsole {
+class MenuPage {
 	
 public:
-	CWindowMenuConsole(Vec2i pos, Vec2i size, MENUSTATE state);
+	MenuPage(Vec2i pos, Vec2i size, MENUSTATE state);
 	
 	void AddMenu(Widget * element);
 	void AddMenuCenter(Widget * element, bool centerX = false);
@@ -112,11 +112,11 @@ public:
 	CWindowMenu(Vec2i pos, Vec2i size);
 	virtual ~CWindowMenu();
 	
-	void AddConsole(CWindowMenuConsole * console);
+	void AddConsole(MenuPage * console);
 	void Update(float time);
 	MENUSTATE Render();
 	
-	std::vector<CWindowMenuConsole *>	vWindowConsoleElement;
+	std::vector<MenuPage *>	vWindowConsoleElement;
 	float				fAngle;
 	MENUSTATE			eCurrentMenuState;
 };

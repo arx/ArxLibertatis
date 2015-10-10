@@ -54,7 +54,7 @@ CheckboxWidget * fullscreenCheckbox = NULL;
 CycleTextWidget * pMenuSliderResol = NULL;
 TextWidget * pMenuElementApply = NULL;
 
-static void Menu2_Render_NewQuest(CWindowMenuConsole * console, Vec2i size) {
+static void Menu2_Render_NewQuest(MenuPage * console, Vec2i size) {
 	
 	{
 	std::string szMenuText = getLocalised("system_menus_main_editquest_confirm");
@@ -92,7 +92,7 @@ static void Menu2_Render_NewQuest(CWindowMenuConsole * console, Vec2i size) {
 	console->AddMenu(pPanel);
 }
 
-static void MainMenuCreateEditQuest(CWindowMenuConsole * console) {
+static void MainMenuCreateEditQuest(MenuPage * console) {
 	
 	{
 	std::string szMenuText = getLocalised("system_menus_main_editquest_load");
@@ -120,7 +120,7 @@ static void MainMenuCreateEditQuest(CWindowMenuConsole * console) {
 	}
 }
 
-static void MainMenuCreateEditQuestLoad(CWindowMenuConsole * console, Vec2i size) {
+static void MainMenuCreateEditQuestLoad(MenuPage * console, Vec2i size) {
 	
 	{
 	ButtonWidget * cb = new ButtonWidget(Vec2i(0, 0), "graph/interface/icons/menu_main_load");
@@ -210,7 +210,7 @@ static void MainMenuCreateEditQuestLoad(CWindowMenuConsole * console, Vec2i size
 	}
 }
 
-static void MainMenuCreateEditQuestSave(CWindowMenuConsole * console) {
+static void MainMenuCreateEditQuestSave(MenuPage * console) {
 	
 	{
 	ButtonWidget * cb = new ButtonWidget(Vec2i(RATIO_X(10), 0), "graph/interface/icons/menu_main_save");
@@ -283,7 +283,7 @@ static void MainMenuCreateEditQuestSave(CWindowMenuConsole * console) {
 	}
 }
 
-static void MainMenuCreateEditQuestSaveConfirm(CWindowMenuConsole * console, Vec2i size) {
+static void MainMenuCreateEditQuestSaveConfirm(MenuPage * console, Vec2i size) {
 	
 	{
 	ButtonWidget * cb = new ButtonWidget(Vec2i(0, 0), "graph/interface/icons/menu_main_save");
@@ -331,7 +331,7 @@ static void MainMenuCreateEditQuestSaveConfirm(CWindowMenuConsole * console, Vec
 	console->AddMenu(pPanel);
 }
 
-static void MainMenuOptionGroupsCreate(CWindowMenuConsole * console) {
+static void MainMenuOptionGroupsCreate(MenuPage * console) {
 	
 	{
 	std::string szMenuText = getLocalised("system_menus_options_video");
@@ -359,7 +359,7 @@ static void MainMenuOptionGroupsCreate(CWindowMenuConsole * console) {
 	}
 }
 
-static void MainMenuOptionVideoCreate(CWindowMenuConsole * console, Vec2i size) {
+static void MainMenuOptionVideoCreate(MenuPage * console, Vec2i size) {
 	
 	// Renderer selection
 	{
@@ -561,7 +561,7 @@ static void MainMenuOptionVideoCreate(CWindowMenuConsole * console, Vec2i size) 
 	}
 }
 
-static void MainMenuOptionAudioCreate(CWindowMenuConsole * console, Vec2i size) {
+static void MainMenuOptionAudioCreate(MenuPage * console, Vec2i size) {
 	
 	// Audio backend selection
 	{
@@ -667,7 +667,7 @@ static void MainMenuOptionAudioCreate(CWindowMenuConsole * console, Vec2i size) 
 	}
 }
 
-static void MainMenuOptionInputCreate(CWindowMenuConsole * console) {
+static void MainMenuOptionInputCreate(MenuPage * console) {
 	
 	{
 	std::string szMenuText = getLocalised("system_menus_options_input_customize_controls");
@@ -748,7 +748,7 @@ static void MainMenuOptionInputCreate(CWindowMenuConsole * console) {
 }
 
 
-static void CUSTOM_CTRL_FUNC(CWindowMenuConsole * console, long & y,
+static void CUSTOM_CTRL_FUNC(MenuPage * console, long & y,
                              const std::string & a, MenuButton c, MenuButton d,
                              const char * defaultText = "?",
                              const char * specialSuffix = "") {
@@ -774,7 +774,7 @@ static void CUSTOM_CTRL_FUNC(CWindowMenuConsole * console, long & y,
 	y += pc->m_rect.height() + RATIO_Y(3.f);
 }
 
-static void MainMenuOptionControlsCreatePage1(CWindowMenuConsole * console, Vec2i size) {
+static void MainMenuOptionControlsCreatePage1(MenuPage * console, Vec2i size) {
 	
 	long y = static_cast<long>(RATIO_Y(8.f));
 
@@ -831,7 +831,7 @@ static void MainMenuOptionControlsCreatePage1(CWindowMenuConsole * console, Vec2
 	console->ReInitActionKey();
 }
 
-static void MainMenuOptionControlsCreatePage2(CWindowMenuConsole * console, Vec2i size) {
+static void MainMenuOptionControlsCreatePage2(MenuPage * console, Vec2i size) {
 	
 	long y = static_cast<long>(RATIO_Y(8.f));
 	
@@ -884,7 +884,7 @@ static void MainMenuOptionControlsCreatePage2(CWindowMenuConsole * console, Vec2
 	console->ReInitActionKey();
 }
 
-static void Menu2_Render_Quit(CWindowMenuConsole * console, Vec2i size) {
+static void Menu2_Render_Quit(MenuPage * console, Vec2i size) {
 	
 	{
 	TextWidget * me = new TextWidget(BUTTON_INVALID, hFontMenu, getLocalised("system_menus_main_quit"));
@@ -934,19 +934,19 @@ void MainMenuLeftCreate(MENUSTATE eMenuState)
 	
 	// TODO Special case to prevent displaying confirmation dialog on new game during fade
 	if(ARXMenu_CanResumeGame()){
-		CWindowMenuConsole * console = new CWindowMenuConsole(offset, size, NEW_QUEST);
+		MenuPage * console = new MenuPage(offset, size, NEW_QUEST);
 		Menu2_Render_NewQuest(console, size);
 		pWindowMenu->AddConsole(console);
 	}
 
 	{
-	CWindowMenuConsole * console = new CWindowMenuConsole(offset, size, EDIT_QUEST);
+	MenuPage * console = new MenuPage(offset, size, EDIT_QUEST);
 	MainMenuCreateEditQuest(console);
 	pWindowMenu->AddConsole(console);
 	}
 	
 	{
-	CWindowMenuConsole * console = new CWindowMenuConsole(offset + Vec2i(0, -40), size, EDIT_QUEST_LOAD);
+	MenuPage * console = new MenuPage(offset + Vec2i(0, -40), size, EDIT_QUEST_LOAD);
 	console->m_savegame = SavegameHandle::Invalid;
 	console->m_rowSpacing = 5;
 	
@@ -955,7 +955,7 @@ void MainMenuLeftCreate(MENUSTATE eMenuState)
 	}
 	
 	{
-	CWindowMenuConsole * console = new CWindowMenuConsole(offset + Vec2i(0, -40), size, EDIT_QUEST_SAVE);
+	MenuPage * console = new MenuPage(offset + Vec2i(0, -40), size, EDIT_QUEST_SAVE);
 	console->m_rowSpacing = 5;
 	
 	MainMenuCreateEditQuestSave(console);
@@ -963,7 +963,7 @@ void MainMenuLeftCreate(MENUSTATE eMenuState)
 	}
 	
 	{
-	CWindowMenuConsole * console = new CWindowMenuConsole(offset, size, EDIT_QUEST_SAVE_CONFIRM);
+	MenuPage * console = new MenuPage(offset, size, EDIT_QUEST_SAVE_CONFIRM);
 	console->m_savegame = SavegameHandle::Invalid;
 	
 	MainMenuCreateEditQuestSaveConfirm(console, size);
@@ -971,43 +971,43 @@ void MainMenuLeftCreate(MENUSTATE eMenuState)
 	}
 	
 	{
-	CWindowMenuConsole * console = new CWindowMenuConsole(offset, size, OPTIONS);
+	MenuPage * console = new MenuPage(offset, size, OPTIONS);
 	MainMenuOptionGroupsCreate(console);
 	pWindowMenu->AddConsole(console);
 	}
 	
 	{
-	CWindowMenuConsole * console = new CWindowMenuConsole(offset + Vec2i(0, -35), size, OPTIONS_VIDEO);
+	MenuPage * console = new MenuPage(offset + Vec2i(0, -35), size, OPTIONS_VIDEO);
 	MainMenuOptionVideoCreate(console, size);
 	pWindowMenu->AddConsole(console);
 	}
 	
 	{
-	CWindowMenuConsole * console = new CWindowMenuConsole(offset, size, OPTIONS_AUDIO);
+	MenuPage * console = new MenuPage(offset, size, OPTIONS_AUDIO);
 	MainMenuOptionAudioCreate(console, size);
 	pWindowMenu->AddConsole(console);
 	}
 	
 	{
-	CWindowMenuConsole * console = new CWindowMenuConsole(offset, size, OPTIONS_INPUT);
+	MenuPage * console = new MenuPage(offset, size, OPTIONS_INPUT);
 	MainMenuOptionInputCreate(console);
 	pWindowMenu->AddConsole(console);
 	}
 	
 	{
-	CWindowMenuConsole * console = new CWindowMenuConsole(offset, size, OPTIONS_INPUT_CUSTOMIZE_KEYS_1);
+	MenuPage * console = new MenuPage(offset, size, OPTIONS_INPUT_CUSTOMIZE_KEYS_1);
 	MainMenuOptionControlsCreatePage1(console, size);
 	pWindowMenu->AddConsole(console);
 	}
 	
 	{
-	CWindowMenuConsole * console = new CWindowMenuConsole(offset, size, OPTIONS_INPUT_CUSTOMIZE_KEYS_2);
+	MenuPage * console = new MenuPage(offset, size, OPTIONS_INPUT_CUSTOMIZE_KEYS_2);
 	MainMenuOptionControlsCreatePage2(console, size);
 	pWindowMenu->AddConsole(console);
 	}
 	
 	{
-	CWindowMenuConsole * console = new CWindowMenuConsole(offset, size, QUIT);
+	MenuPage * console = new MenuPage(offset, size, QUIT);
 	Menu2_Render_Quit(console, size);
 	pWindowMenu->AddConsole(console);
 	}
