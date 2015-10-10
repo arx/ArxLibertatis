@@ -457,25 +457,25 @@ bool Menu2_Render() {
 
 	if(ProcessFadeInOut(bFadeInOut,0.1f)) {
 		switch(iFadeAction) {
-		case AMCM_CREDITS:
-			ARX_MENU_Clicked_CREDITS();
-			iFadeAction=-1;
-			bFadeInOut=false;
-			bFade=true;
-			break;
-		case AMCM_NEWQUEST:
-			ARX_MENU_Clicked_NEWQUEST();
-			iFadeAction=-1;
-			bFadeInOut=false;
-			bFade=true;
-			cinematicBorder.reset();
-			break;
-		case AMCM_OFF:
-			ARX_MENU_Clicked_QUIT_GAME();
-			iFadeAction=-1;
-			bFadeInOut=false;
-			bFade=true;
-			break;
+			case AMCM_CREDITS:
+				ARX_MENU_Clicked_CREDITS();
+				iFadeAction=-1;
+				bFadeInOut=false;
+				bFade=true;
+				break;
+			case AMCM_NEWQUEST:
+				ARX_MENU_Clicked_NEWQUEST();
+				iFadeAction=-1;
+				bFadeInOut=false;
+				bFade=true;
+				cinematicBorder.reset();
+				break;
+			case AMCM_OFF:
+				ARX_MENU_Clicked_QUIT_GAME();
+				iFadeAction=-1;
+				bFadeInOut=false;
+				bFade=true;
+				break;
 		}
 	}
 
