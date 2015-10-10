@@ -1225,7 +1225,7 @@ void MenuPage::ReInitActionKey()
 	while(iI--) {
 		int iTab=(iID-BUTTON_MENUOPTIONS_CONTROLS_CUST_JUMP1)>>1;
 
-		Widget * widget = MenuAllZone.GetZoneWithID(iID);
+		Widget * widget = MenuAllZone.GetZoneWithID(MenuButton(iID));
 
 		if(widget) {
 			if(widget) {
@@ -1233,7 +1233,7 @@ void MenuPage::ReInitActionKey()
 				GetTouch(true, config.actions[iTab].key[0]);
 			}
 
-			widget = MenuAllZone.GetZoneWithID(iID+1);
+			widget = MenuAllZone.GetZoneWithID(MenuButton(iID + 1));
 
 			if(widget) {
 				pZoneClick = widget;

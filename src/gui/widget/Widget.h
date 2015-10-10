@@ -233,7 +233,7 @@ public:
 	virtual void RenderMouseOver() { }
 	virtual void EmptyFunction() { }
 	virtual bool OnMouseDoubleClick() { return false; }
-	virtual Widget * GetZoneWithID(int zoneId);
+	virtual Widget * GetZoneWithID(MenuButton zoneId);
 	
 	void SetShortCut(int _iShortCut);
 	

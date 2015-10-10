@@ -38,7 +38,7 @@ public:
 	Widget * OnShortCut();
 	void RenderMouseOver() { }
 	Widget * IsMouseOver(const Vec2s & mousePos) const;
-	Widget * GetZoneWithID(int zoneId);
+	Widget * GetZoneWithID(MenuButton zoneId);
 	
 private:
 	std::vector<Widget *>	vElement;

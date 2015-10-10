@@ -119,7 +119,7 @@ Widget * Widget::IsMouseOver(const Vec2s& mousePos) const {
 	return NULL;
 }
 
-Widget *Widget::GetZoneWithID(int zoneId) {
+Widget *Widget::GetZoneWithID(MenuButton zoneId) {
 	return (iID == zoneId) ? this : NULL;
 }
 

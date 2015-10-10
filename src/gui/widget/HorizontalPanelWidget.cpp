@@ -115,7 +115,7 @@ void HorizontalPanelWidget::Render() {
 	}
 }
 
-Widget * HorizontalPanelWidget::GetZoneWithID(int _iID)
+Widget * HorizontalPanelWidget::GetZoneWithID(MenuButton _iID)
 {
 	BOOST_FOREACH(Widget * widget, vElement) {
 		if(Widget * pZone = widget->GetZoneWithID(_iID))

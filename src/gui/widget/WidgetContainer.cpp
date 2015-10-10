@@ -70,7 +70,7 @@ Widget * WidgetContainer::GetZoneNum(size_t index) {
 	return m_widgets[index];
 }
 
-Widget * WidgetContainer::GetZoneWithID(int _iID) {
+Widget * WidgetContainer::GetZoneWithID(MenuButton _iID) {
 
 	for(std::vector<Widget*>::iterator i = m_widgets.begin(), i_end = m_widgets.end(); i != i_end; ++i) {
 		if(Widget * widget = (*i)->GetZoneWithID(_iID))

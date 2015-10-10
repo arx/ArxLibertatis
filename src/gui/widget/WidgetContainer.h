@@ -34,7 +34,7 @@ public:
 	Widget * CheckZone(const Vec2s & mousePos) const;
 	
 	Widget * GetZoneNum(size_t index);
-	Widget * GetZoneWithID(int zoneId);
+	Widget * GetZoneWithID(MenuButton zoneId);
 	void Move(const Vec2i & offset);
 	void DrawZone();
 	size_t GetNbZone();
