@@ -48,6 +48,7 @@ ZeniMax Media Inc., Suite 120, Rockville, Maryland 20850 USA.
 #include <string>
 
 #include "graphics/Color.h"
+#include "gui/widget/TextWidget.h"
 #include "gui/widget/Widget.h"
 #include "gui/widget/WidgetContainer.h"
 #include "input/InputKey.h"
@@ -64,31 +65,7 @@ class Font;
 
 
 
-class TextWidget: public Widget {
-	
-public:
-	std::string lpszText;
-	Font*	pFont;
-	Color lColor;
-	Color lOldColor;
-	Color lColorHighlight;
-	bool	bSelected;
-	
-public:
-	TextWidget(MenuButton id, Font * font, const std::string & text, Vec2i pos = Vec2i_ZERO, MENUSTATE state = NOP);
-	virtual ~TextWidget();
-	
-	void setColor(Color color) { lColor = color; }
-	
-	Widget * OnShortCut();
-	bool OnMouseClick();
-	void Update(int time);
-	void Render();
-	void SetText(const std::string & _pText);
-	void RenderMouseOver();
-	
-	bool OnMouseDoubleClick();
-};
+
 
 class ButtonWidget: public Widget {
 	
