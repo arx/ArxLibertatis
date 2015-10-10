@@ -64,31 +64,7 @@ class Font;
 // faire une classe
 // like a container in java
 
-//! Slider with value in the range [0..10]
-class SliderWidget: public Widget {
-	
-public:
-	SliderWidget(MenuButton id, Vec2i pos);
-	virtual ~SliderWidget();
-	
-	void setValue(int value) { m_value = value; }
-	int getValue() const { return m_value; }
-	
-	void Move(const Vec2i & offset);
-	bool OnMouseClick();
-	Widget * OnShortCut() { return NULL; }
-	void Update(int time);
-	void Render();
-	void RenderMouseOver();
-	void EmptyFunction();
-	
-private:
-	ButtonWidget		*	pLeftButton;
-	ButtonWidget		*	pRightButton;
-	TextureContainer	* pTex1;
-	TextureContainer	* pTex2;
-	int					m_value;
-};
+
 
 class CheckboxWidget : public Widget {
 	

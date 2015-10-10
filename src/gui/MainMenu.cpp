@@ -35,6 +35,7 @@
 #include "gui/Text.h"
 #include "gui/widget/CycleTextWidget.h"
 #include "gui/widget/HorizontalPanelWidget.h"
+#include "gui/widget/SliderWidget.h"
 #include "graphics/Draw.h"
 #include "graphics/Math.h"
 #include "graphics/Renderer.h"
