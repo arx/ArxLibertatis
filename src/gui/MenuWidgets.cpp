@@ -2537,34 +2537,34 @@ bool SliderWidget::OnMouseClick() {
 	}
 	
 	switch (iID) {
-	// MENUOPTIONS_VIDEO
-	case BUTTON_MENUOPTIONSVIDEO_FOG:
-		ARXMenu_Options_Video_SetFogDistance(m_value);
-		break;
-	// MENUOPTIONS_AUDIO
-	case BUTTON_MENUOPTIONSAUDIO_MASTER:
-		ARXMenu_Options_Audio_SetMasterVolume(m_value);
-		break;
-	case BUTTON_MENUOPTIONSAUDIO_SFX:
-		ARXMenu_Options_Audio_SetSfxVolume(m_value);
-		break;
-	case BUTTON_MENUOPTIONSAUDIO_SPEECH:
-		ARXMenu_Options_Audio_SetSpeechVolume(m_value);
-		break;
-	case BUTTON_MENUOPTIONSAUDIO_AMBIANCE:
-		ARXMenu_Options_Audio_SetAmbianceVolume(m_value);
-		break;
-	// MENUOPTIONS_CONTROLS
-	case BUTTON_MENUOPTIONS_CONTROLS_MOUSESENSITIVITY:
-		ARXMenu_Options_Control_SetMouseSensitivity(m_value);
-		break;
-	case BUTTON_MENUOPTIONS_CONTROLS_QUICKSAVESLOTS: {
-		m_value = std::max(m_value, 1);
-		config.misc.quicksaveSlots = m_value;
-		break;
-	}
-	default:
-		break;
+		// MENUOPTIONS_VIDEO
+		case BUTTON_MENUOPTIONSVIDEO_FOG:
+			ARXMenu_Options_Video_SetFogDistance(m_value);
+			break;
+		// MENUOPTIONS_AUDIO
+		case BUTTON_MENUOPTIONSAUDIO_MASTER:
+			ARXMenu_Options_Audio_SetMasterVolume(m_value);
+			break;
+		case BUTTON_MENUOPTIONSAUDIO_SFX:
+			ARXMenu_Options_Audio_SetSfxVolume(m_value);
+			break;
+		case BUTTON_MENUOPTIONSAUDIO_SPEECH:
+			ARXMenu_Options_Audio_SetSpeechVolume(m_value);
+			break;
+		case BUTTON_MENUOPTIONSAUDIO_AMBIANCE:
+			ARXMenu_Options_Audio_SetAmbianceVolume(m_value);
+			break;
+		// MENUOPTIONS_CONTROLS
+		case BUTTON_MENUOPTIONS_CONTROLS_MOUSESENSITIVITY:
+			ARXMenu_Options_Control_SetMouseSensitivity(m_value);
+			break;
+		case BUTTON_MENUOPTIONS_CONTROLS_QUICKSAVESLOTS: {
+			m_value = std::max(m_value, 1);
+			config.misc.quicksaveSlots = m_value;
+			break;
+		}
+		default:
+			break;
 	}
 
 	return false;
