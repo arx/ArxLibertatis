@@ -1918,15 +1918,15 @@ void CWindowMenuConsole::Render() {
 		pZoneClick->RenderMouseOver();
 
 		switch(pZoneClick->eState) {
-		case EDIT_TIME:
-			UpdateText();
-			break;
-		case GETTOUCH_TIME: {
+			case EDIT_TIME:
+				UpdateText();
+				break;
+			case GETTOUCH_TIME: {
 				if(bFrameOdd)
 					((TextWidget*)pZoneClick)->lColorHighlight = Color(255, 0, 0);
 				else
 					((TextWidget*)pZoneClick)->lColorHighlight = Color(50, 0, 0);
-
+				
 				bool keyTouched = GInput->isAnyKeyPressed();
 				int keyId = GInput->getKeyPressed();
 				
@@ -1944,36 +1944,36 @@ void CWindowMenuConsole::Render() {
 						keyTouched = true;
 						keyId = Keyboard::Key_LeftShift;
 					}
-
+					
 					if(GInput->isKeyPressedNowUnPressed(Keyboard::Key_RightShift)) {
 						keyTouched = true;
 						keyId = Keyboard::Key_RightShift;
 					}
-
+					
 					if(GInput->isKeyPressedNowUnPressed(Keyboard::Key_LeftCtrl)) {
 						keyTouched = true;
 						keyId = Keyboard::Key_LeftCtrl;
 					}
-
+					
 					if(GInput->isKeyPressedNowUnPressed(Keyboard::Key_RightCtrl)) {
 						keyTouched = true;
 						keyId = Keyboard::Key_RightCtrl;
 					}
-
+					
 					if(GInput->isKeyPressedNowUnPressed(Keyboard::Key_LeftAlt)) {
 						keyTouched = true;
 						keyId = Keyboard::Key_LeftAlt;
 					}
-
+					
 					if(GInput->isKeyPressedNowUnPressed(Keyboard::Key_RightAlt)) {
 						keyTouched = true;
 						keyId = Keyboard::Key_RightAlt;
 					}
 				}
-
+				
 				InputKeyId inputKeyId;
 				Widget *pmeElement = GetTouch(keyTouched, keyId, &inputKeyId, true);
-
+				
 				if(pmeElement) {
 					if(UpdateGameKey(bEdit,pmeElement, inputKeyId)) {
 						bReInit=true;
@@ -1981,11 +1981,11 @@ void CWindowMenuConsole::Render() {
 				}
 			}
 			break;
-		default:
+			default:
 			{
 				if(GInput->getMouseButtonNowPressed(Mouse::Button_0)) {
 					Widget *pmzMenuZone = MenuAllZone.GetZoneWithID(BUTTON_MENUOPTIONS_CONTROLS_CUST_DEFAULT);
-
+					
 					if(pmzMenuZone==pZoneClick) {
 						config.setDefaultActionKeys();
 						bReInit=true;
@@ -1994,13 +1994,13 @@ void CWindowMenuConsole::Render() {
 			}
 			break;
 		}
-
+		
 		if(bReInit) {
 			ReInitActionKey();
 			bMouseAttack=false;
 		}
 	}
-
+	
 	//DEBUG ZONE
 	MenuAllZone.DrawZone();
 }
