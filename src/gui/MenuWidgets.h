@@ -88,7 +88,7 @@ private:
 	bool					bFrameOdd;
 	
 	Vec2i m_offset;
-	Vec2i m_size;
+	Vec2i m_scaledSize;
 	
 	Widget		*	m_selected;
 	bool					bEdit;
