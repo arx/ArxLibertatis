@@ -402,7 +402,13 @@ void init() {
 }
 };
 
-static void MainMenuOptionVideoCreate(MenuPage * page, Vec2i size) {
+class VideoOptionsMenuPage : public MenuPage {
+public:
+	VideoOptionsMenuPage(Vec2i pos, Vec2i size)
+		: MenuPage(pos, size, OPTIONS_VIDEO)
+	{}
+	
+void init(Vec2i size) {
 	
 	// Renderer selection
 	{
@@ -426,7 +432,7 @@ static void MainMenuOptionVideoCreate(MenuPage * page, Vec2i size) {
 		float fRatio    = (RATIO_X(size.x-9) - slider->m_rect.width());
 		slider->Move(Vec2i(checked_range_cast<int>(fRatio), 0));
 		pc->AddElement(slider);
-		page->addCenter(pc);
+		addCenter(pc);
 	}
 	
 	{
@@ -443,7 +449,7 @@ static void MainMenuOptionVideoCreate(MenuPage * page, Vec2i size) {
 	CheckboxWidget * cb = new CheckboxWidget(text);
 	cb->iID = BUTTON_MENUOPTIONSVIDEO_FULLSCREEN;
 	cb->iState = config.video.fullscreen ? 1 : 0;
-	page->addCenter(cb);
+	addCenter(cb);
 	fullscreenCheckbox = cb;
 	}
 	
@@ -500,7 +506,7 @@ static void MainMenuOptionVideoCreate(MenuPage * page, Vec2i size) {
 	pMenuSliderResol->Move(Vec2i(checked_range_cast<int>(fRatio), 0));
 	
 	pc->AddElement(pMenuSliderResol);
-	page->addCenter(pc);
+	addCenter(pc);
 	}
 
 	{
@@ -523,7 +529,7 @@ static void MainMenuOptionVideoCreate(MenuPage * page, Vec2i size) {
 	cb->Move(Vec2i(RATIO_X(size.x-9) - cb->m_rect.width(), 0));
 	pc->AddElement(cb);
 	
-	page->addCenter(pc);
+	addCenter(pc);
 	}
 	
 	{
@@ -535,7 +541,7 @@ static void MainMenuOptionVideoCreate(MenuPage * page, Vec2i size) {
 	SliderWidget * sld = new SliderWidget(BUTTON_MENUOPTIONSVIDEO_FOG, Vec2i(RATIO_X(200), 0));
 	sld->setValue(config.video.fogDistance);
 	pc->AddElement(sld);
-	page->addCenter(pc);
+	addCenter(pc);
 	}
 	
 	{
@@ -546,7 +552,7 @@ static void MainMenuOptionVideoCreate(MenuPage * page, Vec2i size) {
 	CheckboxWidget * cb = new CheckboxWidget(text);
 	cb->iID = BUTTON_MENUOPTIONSVIDEO_CROSSHAIR;
 	cb->iState = config.video.showCrosshair ? 1 : 0;
-	page->addCenter(cb);
+	addCenter(cb);
 	}
 	
 	{
@@ -557,7 +563,7 @@ static void MainMenuOptionVideoCreate(MenuPage * page, Vec2i size) {
 	CheckboxWidget * cb = new CheckboxWidget(text);
 	cb->iID = BUTTON_MENUOPTIONSVIDEO_ANTIALIASING;
 	cb->iState = config.video.antialiasing ? 1 : 0;
-	page->addCenter(cb);
+	addCenter(cb);
 	}
 	
 	ARX_SetAntiAliasing();
@@ -570,7 +576,7 @@ static void MainMenuOptionVideoCreate(MenuPage * page, Vec2i size) {
 	CheckboxWidget * cb = new CheckboxWidget(text);
 	cb->iID = BUTTON_MENUOPTIONSVIDEO_VSYNC;
 	cb->iState = config.video.vsync ? 1 : 0;
-	page->addCenter(cb);
+	addCenter(cb);
 	}
 	
 	{
@@ -581,7 +587,7 @@ static void MainMenuOptionVideoCreate(MenuPage * page, Vec2i size) {
 	CheckboxWidget * cb = new CheckboxWidget(text);
 	cb->iID = BUTTON_MENUOPTIONSVIDEO_HUDSCALE;
 	cb->iState = config.video.hudScale ? 1 : 0;
-	page->addCenter(cb);
+	addCenter(cb);
 	}
 	
 	{
@@ -600,9 +606,10 @@ static void MainMenuOptionVideoCreate(MenuPage * page, Vec2i size) {
 	cb->SetShortCut(Keyboard::Key_Escape);
 	pc->AddElementNoCenterIn(cb);
 	
-	page->add(pc);
+	add(pc);
 	}
 }
+};
 
 static void MainMenuOptionAudioCreate(MenuPage * page, Vec2i size) {
 	
@@ -1019,8 +1026,8 @@ void MainMenuLeftCreate(MENUSTATE eMenuState)
 	}
 	
 	{
-	MenuPage * page = new MenuPage(offset + Vec2i(0, -35), size, OPTIONS_VIDEO);
-	MainMenuOptionVideoCreate(page, size);
+	VideoOptionsMenuPage * page = new VideoOptionsMenuPage(offset + Vec2i(0, -35), size);
+	page->init(size);
 	pWindowMenu->add(page);
 	}
 	
