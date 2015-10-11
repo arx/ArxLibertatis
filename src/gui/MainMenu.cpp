@@ -232,12 +232,18 @@ void init(Vec2i size) {
 }
 };
 
-static void MainMenuCreateEditQuestSave(MenuPage * page) {
+class SaveMenuPage : public MenuPage {
+public:
+	SaveMenuPage(Vec2i pos, Vec2i size)
+		: MenuPage(pos, size, EDIT_QUEST_SAVE)
+	{}
+
+void init() {
 	
 	{
 	ButtonWidget * cb = new ButtonWidget(Vec2i(RATIO_X(10), 0), "graph/interface/icons/menu_main_save");
 	cb->SetCheckOff();
-	page->addCenter(cb, true);
+	addCenter(cb, true);
 	}
 	
 	std::string quicksaveName = getLocalised("system_menus_main_quickloadsave", "Quicksave");
@@ -259,7 +265,7 @@ static void MainMenuCreateEditQuestSave(MenuPage * page) {
 		e->setColor(Color::grayb(127));
 		e->SetCheckOff();
 		e->m_savegame = SavegameHandle(i);
-		page->addCenter(e);
+		addCenter(e);
 	}
 	
 	// Show regular saves.
@@ -275,7 +281,7 @@ static void MainMenuCreateEditQuestSave(MenuPage * page) {
 		TextWidget * e = new TextWidget(BUTTON_MENUEDITQUEST_SAVEINFO, hFontControls,
 		                                        text, Vec2i(RATIO_X(20), 0.f), EDIT_QUEST_SAVE_CONFIRM);
 		e->m_savegame = SavegameHandle(i);
-		page->addCenter(e);
+		addCenter(e);
 	}
 	
 	for(size_t i = savegames.size(); i <= 15; i++) {
@@ -287,23 +293,24 @@ static void MainMenuCreateEditQuestSave(MenuPage * page) {
 
 		e->eMenuState = EDIT_QUEST_SAVE_CONFIRM;
 		e->m_savegame = SavegameHandle::Invalid;
-		page->addCenter(e);
+		addCenter(e);
 	}
 
 	{
 	TextWidget * me01 = new TextWidget(BUTTON_INVALID, hFontControls, " ", Vec2i(RATIO_X(20), 0), EDIT_QUEST_SAVE_CONFIRM);
 	me01->m_savegame = SavegameHandle::Invalid;
 	me01->SetCheckOff();
-	page->addCenter(me01);
+	addCenter(me01);
 	}
 	
 	{
 	ButtonWidget * cb = new ButtonWidget(RATIO_2(Vec2i(20, 420)), "graph/interface/menus/back");
 	cb->eMenuState = EDIT_QUEST;
 	cb->SetShortCut(Keyboard::Key_Escape);
-	page->add(cb);
+	add(cb);
 	}
 }
+};
 
 static void MainMenuCreateEditQuestSaveConfirm(MenuPage * page, Vec2i size) {
 	
@@ -978,10 +985,9 @@ void MainMenuLeftCreate(MENUSTATE eMenuState)
 	}
 	
 	{
-	MenuPage * page = new MenuPage(offset + Vec2i(0, -40), size, EDIT_QUEST_SAVE);
+	SaveMenuPage * page = new SaveMenuPage(offset + Vec2i(0, -40), size);
 	page->m_rowSpacing = 5;
-	
-	MainMenuCreateEditQuestSave(page);
+	page->init();
 	pWindowMenu->add(page);
 	}
 	
