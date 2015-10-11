@@ -100,13 +100,19 @@ void init(Vec2i size) {
 }
 };
 
-static void MainMenuCreateEditQuest(MenuPage * page) {
+class ChooseLoadOrSaveMenuPage : public MenuPage {
+public:
+	ChooseLoadOrSaveMenuPage(Vec2i pos, Vec2i size)
+		: MenuPage(pos, size, EDIT_QUEST)
+	{}
+
+void init() {
 	
 	{
 	std::string szMenuText = getLocalised("system_menus_main_editquest_load");
 	TextWidget * me = new TextWidget(BUTTON_MENUEDITQUEST_LOAD_INIT, hFontMenu, szMenuText, Vec2i(0, 0), EDIT_QUEST_LOAD);
 	me->m_savegame = SavegameHandle::Invalid;
-	page->addCenter(me, true);
+	addCenter(me, true);
 	}
 
 	{
@@ -117,16 +123,17 @@ static void MainMenuCreateEditQuest(MenuPage * page) {
 		me->SetCheckOff();
 		me->lColor = Color(127, 127, 127);
 	}
-	page->addCenter(me, true);
+	addCenter(me, true);
 	}
 	
 	{
 	ButtonWidget * cb = new ButtonWidget(RATIO_2(Vec2i(20, 380)), "graph/interface/menus/back");
 	cb->eMenuState = MAIN;
 	cb->SetShortCut(Keyboard::Key_Escape);
-	page->add(cb);
+	add(cb);
 	}
 }
+};
 
 static void MainMenuCreateEditQuestLoad(MenuPage * page, Vec2i size) {
 	
@@ -950,8 +957,8 @@ void MainMenuLeftCreate(MENUSTATE eMenuState)
 	}
 
 	{
-	MenuPage * page = new MenuPage(offset, size, EDIT_QUEST);
-	MainMenuCreateEditQuest(page);
+	ChooseLoadOrSaveMenuPage * page = new ChooseLoadOrSaveMenuPage(offset, size);
+	page->init();
 	pWindowMenu->add(page);
 	}
 	
