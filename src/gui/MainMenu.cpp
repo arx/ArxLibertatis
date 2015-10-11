@@ -904,7 +904,15 @@ void init(Vec2i size) {
 }
 };
 
-static void MainMenuOptionControlsCreatePage2(MenuPage * page, Vec2i size) {
+class ControlOptionsMenuPage2 : public MenuPage {
+public:
+	ControlOptionsMenuPage2(Vec2i pos, Vec2i size)
+		: MenuPage(pos, size, OPTIONS_INPUT_CUSTOMIZE_KEYS_2)
+	{}
+
+void init(Vec2i size) {
+	
+	MenuPage * page = this;
 	
 	long y = static_cast<long>(RATIO_Y(8.f));
 	
@@ -956,6 +964,7 @@ static void MainMenuOptionControlsCreatePage2(MenuPage * page, Vec2i size) {
 	page->add(pc);
 	page->ReInitActionKey();
 }
+};
 
 static void Menu2_Render_Quit(MenuPage * page, Vec2i size) {
 	
@@ -1073,8 +1082,8 @@ void MainMenuLeftCreate(MENUSTATE eMenuState)
 	}
 	
 	{
-	MenuPage * page = new MenuPage(offset, size, OPTIONS_INPUT_CUSTOMIZE_KEYS_2);
-	MainMenuOptionControlsCreatePage2(page, size);
+	ControlOptionsMenuPage2 * page = new ControlOptionsMenuPage2(offset, size);
+	page->init(size);
 	pWindowMenu->add(page);
 	}
 	
