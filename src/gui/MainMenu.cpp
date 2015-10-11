@@ -367,33 +367,40 @@ void init(Vec2i size) {
 }
 };
 
-static void MainMenuOptionGroupsCreate(MenuPage * page) {
+class OptionsMenuPage : public MenuPage {
+public:
+	OptionsMenuPage(Vec2i pos, Vec2i size)
+		: MenuPage(pos, size, OPTIONS)
+	{}
+	
+void init() {
 	
 	{
 	std::string szMenuText = getLocalised("system_menus_options_video");
 	TextWidget * me = new TextWidget(BUTTON_MENUOPTIONSVIDEO_INIT, hFontMenu, szMenuText, Vec2i(0, 0), OPTIONS_VIDEO);
-	page->addCenter(me, true);
+	addCenter(me, true);
 	}
 	
 	{
 	std::string szMenuText = getLocalised("system_menus_options_audio");
 	TextWidget * me = new TextWidget(BUTTON_INVALID, hFontMenu, szMenuText, Vec2i(0, 0), OPTIONS_AUDIO);
-	page->addCenter(me, true);
+	addCenter(me, true);
 	}
 	
 	{
 	std::string szMenuText = getLocalised("system_menus_options_input");
 	TextWidget * me = new TextWidget(BUTTON_INVALID, hFontMenu, szMenuText, Vec2i(0, 0), OPTIONS_INPUT);
-	page->addCenter(me, true);
+	addCenter(me, true);
 	}
 	
 	{
 	ButtonWidget * cb = new ButtonWidget(RATIO_2(Vec2i(20, 380)), "graph/interface/menus/back");
 	cb->eMenuState = MAIN;
 	cb->SetShortCut(Keyboard::Key_Escape);
-	page->add(cb);
+	add(cb);
 	}
 }
+};
 
 static void MainMenuOptionVideoCreate(MenuPage * page, Vec2i size) {
 	
@@ -1006,8 +1013,8 @@ void MainMenuLeftCreate(MENUSTATE eMenuState)
 	}
 	
 	{
-	MenuPage * page = new MenuPage(offset, size, OPTIONS);
-	MainMenuOptionGroupsCreate(page);
+	OptionsMenuPage * page = new OptionsMenuPage(offset, size);
+	page->init();
 	pWindowMenu->add(page);
 	}
 	
