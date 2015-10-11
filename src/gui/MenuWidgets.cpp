@@ -578,7 +578,7 @@ void MenuPage::add(Widget * widget) {
 	m_children.AddZone(widget);
 }
 
-void MenuPage::AddMenuCenter(Widget * widget, bool centerX) {
+void MenuPage::addCenter(Widget * widget, bool centerX) {
 
 	int dx;
 	

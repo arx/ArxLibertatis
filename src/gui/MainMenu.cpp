@@ -60,14 +60,14 @@ static void Menu2_Render_NewQuest(MenuPage * page, Vec2i size) {
 	std::string szMenuText = getLocalised("system_menus_main_editquest_confirm");
 	TextWidget * me = new TextWidget(BUTTON_INVALID, hFontMenu, szMenuText);
 	me->SetCheckOff();
-	page->AddMenuCenter(me, true);
+	page->addCenter(me, true);
 	}
 	
 	{
 	std::string szMenuText = getLocalised("system_menus_main_newquest_confirm");
 	TextWidget * me = new TextWidget(BUTTON_INVALID, hFontMenu, szMenuText);
 	me->SetCheckOff();
-	page->AddMenuCenter(me, true);
+	page->addCenter(me, true);
 	}
 	
 	HorizontalPanelWidget * pPanel = new HorizontalPanelWidget;
@@ -98,7 +98,7 @@ static void MainMenuCreateEditQuest(MenuPage * page) {
 	std::string szMenuText = getLocalised("system_menus_main_editquest_load");
 	TextWidget * me = new TextWidget(BUTTON_MENUEDITQUEST_LOAD_INIT, hFontMenu, szMenuText, Vec2i(0, 0), EDIT_QUEST_LOAD);
 	me->m_savegame = SavegameHandle::Invalid;
-	page->AddMenuCenter(me, true);
+	page->addCenter(me, true);
 	}
 
 	{
@@ -109,7 +109,7 @@ static void MainMenuCreateEditQuest(MenuPage * page) {
 		me->SetCheckOff();
 		me->lColor = Color(127, 127, 127);
 	}
-	page->AddMenuCenter(me, true);
+	page->addCenter(me, true);
 	}
 	
 	{
@@ -125,7 +125,7 @@ static void MainMenuCreateEditQuestLoad(MenuPage * page, Vec2i size) {
 	{
 	ButtonWidget * cb = new ButtonWidget(Vec2i(0, 0), "graph/interface/icons/menu_main_load");
 	cb->SetCheckOff();
-	page->AddMenuCenter(cb, true);
+	page->addCenter(cb, true);
 	}
 	
 	std::string quicksaveName = getLocalised("system_menus_main_quickloadsave", "Quicksave");
@@ -149,7 +149,7 @@ static void MainMenuCreateEditQuestLoad(MenuPage * page, Vec2i size) {
 		
 		TextWidget * e = new TextWidget(BUTTON_MENUEDITQUEST_LOAD, hFontControls, text.str(), Vec2i(RATIO_X(20), 0), NOP);
 		e->m_savegame = SavegameHandle(i);
-		page->AddMenuCenter(e);
+		page->addCenter(e);
 	}
 	
 	// Show regular saves.
@@ -164,14 +164,14 @@ static void MainMenuCreateEditQuestLoad(MenuPage * page, Vec2i size) {
 		
 		TextWidget * e = new TextWidget(BUTTON_MENUEDITQUEST_LOAD, hFontControls, text, Vec2i(RATIO_X(20), 0), NOP);
 		e->m_savegame = SavegameHandle(i);
-		page->AddMenuCenter(e);
+		page->addCenter(e);
 	}
 	
 	{
 	TextWidget * confirm = new TextWidget(BUTTON_INVALID, hFontControls, " ", Vec2i(RATIO_X(20), 0), EDIT_QUEST_SAVE_CONFIRM);
 	confirm->SetCheckOff();
 	confirm->m_savegame = SavegameHandle::Invalid;
-	page->AddMenuCenter(confirm);
+	page->addCenter(confirm);
 	}
 	
 	// Delete button
@@ -215,7 +215,7 @@ static void MainMenuCreateEditQuestSave(MenuPage * page) {
 	{
 	ButtonWidget * cb = new ButtonWidget(Vec2i(RATIO_X(10), 0), "graph/interface/icons/menu_main_save");
 	cb->SetCheckOff();
-	page->AddMenuCenter(cb, true);
+	page->addCenter(cb, true);
 	}
 	
 	std::string quicksaveName = getLocalised("system_menus_main_quickloadsave", "Quicksave");
@@ -237,7 +237,7 @@ static void MainMenuCreateEditQuestSave(MenuPage * page) {
 		e->setColor(Color::grayb(127));
 		e->SetCheckOff();
 		e->m_savegame = SavegameHandle(i);
-		page->AddMenuCenter(e);
+		page->addCenter(e);
 	}
 	
 	// Show regular saves.
@@ -253,7 +253,7 @@ static void MainMenuCreateEditQuestSave(MenuPage * page) {
 		TextWidget * e = new TextWidget(BUTTON_MENUEDITQUEST_SAVEINFO, hFontControls,
 		                                        text, Vec2i(RATIO_X(20), 0.f), EDIT_QUEST_SAVE_CONFIRM);
 		e->m_savegame = SavegameHandle(i);
-		page->AddMenuCenter(e);
+		page->addCenter(e);
 	}
 	
 	for(size_t i = savegames.size(); i <= 15; i++) {
@@ -265,14 +265,14 @@ static void MainMenuCreateEditQuestSave(MenuPage * page) {
 
 		e->eMenuState = EDIT_QUEST_SAVE_CONFIRM;
 		e->m_savegame = SavegameHandle::Invalid;
-		page->AddMenuCenter(e);
+		page->addCenter(e);
 	}
 
 	{
 	TextWidget * me01 = new TextWidget(BUTTON_INVALID, hFontControls, " ", Vec2i(RATIO_X(20), 0), EDIT_QUEST_SAVE_CONFIRM);
 	me01->m_savegame = SavegameHandle::Invalid;
 	me01->SetCheckOff();
-	page->AddMenuCenter(me01);
+	page->addCenter(me01);
 	}
 	
 	{
@@ -288,7 +288,7 @@ static void MainMenuCreateEditQuestSaveConfirm(MenuPage * page, Vec2i size) {
 	{
 	ButtonWidget * cb = new ButtonWidget(Vec2i(0, 0), "graph/interface/icons/menu_main_save");
 	cb->SetCheckOff();
-	page->AddMenuCenter(cb, true);
+	page->addCenter(cb, true);
 	}
 	
 	{
@@ -297,7 +297,7 @@ static void MainMenuCreateEditQuestSaveConfirm(MenuPage * page, Vec2i size) {
 	me->m_savegame = SavegameHandle::Invalid;
 	me->eState=EDIT;
 	me->ePlace=CENTER;
-	page->AddMenuCenter(me, true);
+	page->addCenter(me, true);
 	}
 	
 	HorizontalPanelWidget * pPanel = new HorizontalPanelWidget;
@@ -336,19 +336,19 @@ static void MainMenuOptionGroupsCreate(MenuPage * page) {
 	{
 	std::string szMenuText = getLocalised("system_menus_options_video");
 	TextWidget * me = new TextWidget(BUTTON_MENUOPTIONSVIDEO_INIT, hFontMenu, szMenuText, Vec2i(0, 0), OPTIONS_VIDEO);
-	page->AddMenuCenter(me, true);
+	page->addCenter(me, true);
 	}
 	
 	{
 	std::string szMenuText = getLocalised("system_menus_options_audio");
 	TextWidget * me = new TextWidget(BUTTON_INVALID, hFontMenu, szMenuText, Vec2i(0, 0), OPTIONS_AUDIO);
-	page->AddMenuCenter(me, true);
+	page->addCenter(me, true);
 	}
 	
 	{
 	std::string szMenuText = getLocalised("system_menus_options_input");
 	TextWidget * me = new TextWidget(BUTTON_INVALID, hFontMenu, szMenuText, Vec2i(0, 0), OPTIONS_INPUT);
-	page->AddMenuCenter(me, true);
+	page->addCenter(me, true);
 	}
 	
 	{
@@ -383,7 +383,7 @@ static void MainMenuOptionVideoCreate(MenuPage * page, Vec2i size) {
 		float fRatio    = (RATIO_X(size.x-9) - slider->m_rect.width());
 		slider->Move(Vec2i(checked_range_cast<int>(fRatio), 0));
 		pc->AddElement(slider);
-		page->AddMenuCenter(pc);
+		page->addCenter(pc);
 	}
 	
 	{
@@ -400,7 +400,7 @@ static void MainMenuOptionVideoCreate(MenuPage * page, Vec2i size) {
 	CheckboxWidget * cb = new CheckboxWidget(text);
 	cb->iID = BUTTON_MENUOPTIONSVIDEO_FULLSCREEN;
 	cb->iState = config.video.fullscreen ? 1 : 0;
-	page->AddMenuCenter(cb);
+	page->addCenter(cb);
 	fullscreenCheckbox = cb;
 	}
 	
@@ -457,7 +457,7 @@ static void MainMenuOptionVideoCreate(MenuPage * page, Vec2i size) {
 	pMenuSliderResol->Move(Vec2i(checked_range_cast<int>(fRatio), 0));
 	
 	pc->AddElement(pMenuSliderResol);
-	page->AddMenuCenter(pc);
+	page->addCenter(pc);
 	}
 
 	{
@@ -480,7 +480,7 @@ static void MainMenuOptionVideoCreate(MenuPage * page, Vec2i size) {
 	cb->Move(Vec2i(RATIO_X(size.x-9) - cb->m_rect.width(), 0));
 	pc->AddElement(cb);
 	
-	page->AddMenuCenter(pc);
+	page->addCenter(pc);
 	}
 	
 	{
@@ -492,7 +492,7 @@ static void MainMenuOptionVideoCreate(MenuPage * page, Vec2i size) {
 	SliderWidget * sld = new SliderWidget(BUTTON_MENUOPTIONSVIDEO_FOG, Vec2i(RATIO_X(200), 0));
 	sld->setValue(config.video.fogDistance);
 	pc->AddElement(sld);
-	page->AddMenuCenter(pc);
+	page->addCenter(pc);
 	}
 	
 	{
@@ -503,7 +503,7 @@ static void MainMenuOptionVideoCreate(MenuPage * page, Vec2i size) {
 	CheckboxWidget * cb = new CheckboxWidget(text);
 	cb->iID = BUTTON_MENUOPTIONSVIDEO_CROSSHAIR;
 	cb->iState = config.video.showCrosshair ? 1 : 0;
-	page->AddMenuCenter(cb);
+	page->addCenter(cb);
 	}
 	
 	{
@@ -514,7 +514,7 @@ static void MainMenuOptionVideoCreate(MenuPage * page, Vec2i size) {
 	CheckboxWidget * cb = new CheckboxWidget(text);
 	cb->iID = BUTTON_MENUOPTIONSVIDEO_ANTIALIASING;
 	cb->iState = config.video.antialiasing ? 1 : 0;
-	page->AddMenuCenter(cb);
+	page->addCenter(cb);
 	}
 	
 	ARX_SetAntiAliasing();
@@ -527,7 +527,7 @@ static void MainMenuOptionVideoCreate(MenuPage * page, Vec2i size) {
 	CheckboxWidget * cb = new CheckboxWidget(text);
 	cb->iID = BUTTON_MENUOPTIONSVIDEO_VSYNC;
 	cb->iState = config.video.vsync ? 1 : 0;
-	page->AddMenuCenter(cb);
+	page->addCenter(cb);
 	}
 	
 	{
@@ -538,7 +538,7 @@ static void MainMenuOptionVideoCreate(MenuPage * page, Vec2i size) {
 	CheckboxWidget * cb = new CheckboxWidget(text);
 	cb->iID = BUTTON_MENUOPTIONSVIDEO_HUDSCALE;
 	cb->iState = config.video.hudScale ? 1 : 0;
-	page->AddMenuCenter(cb);
+	page->addCenter(cb);
 	}
 	
 	{
@@ -593,7 +593,7 @@ static void MainMenuOptionAudioCreate(MenuPage * page, Vec2i size) {
 		float fRatio    = (RATIO_X(size.x-9) - slider->m_rect.width());
 		slider->Move(Vec2i(checked_range_cast<int>(fRatio), 0));
 		pc->AddElement(slider);
-		page->AddMenuCenter(pc);
+		page->addCenter(pc);
 		
 	}
 	
@@ -606,7 +606,7 @@ static void MainMenuOptionAudioCreate(MenuPage * page, Vec2i size) {
 	SliderWidget * sld = new SliderWidget(BUTTON_MENUOPTIONSAUDIO_MASTER, Vec2i(RATIO_X(200), 0));
 	sld->setValue((int)config.audio.volume); // TODO use float sliders
 	pc->AddElement(sld);
-	page->AddMenuCenter(pc);
+	page->addCenter(pc);
 	}
 	
 	{
@@ -618,7 +618,7 @@ static void MainMenuOptionAudioCreate(MenuPage * page, Vec2i size) {
 	SliderWidget * sld = new SliderWidget(BUTTON_MENUOPTIONSAUDIO_SFX, Vec2i(RATIO_X(200), 0));
 	sld->setValue((int)config.audio.sfxVolume);
 	pc->AddElement(sld);
-	page->AddMenuCenter(pc);
+	page->addCenter(pc);
 	}
 	
 	{
@@ -630,7 +630,7 @@ static void MainMenuOptionAudioCreate(MenuPage * page, Vec2i size) {
 	SliderWidget * sld = new SliderWidget(BUTTON_MENUOPTIONSAUDIO_SPEECH, Vec2i(RATIO_X(200), 0));
 	sld->setValue((int)config.audio.speechVolume);
 	pc->AddElement(sld);
-	page->AddMenuCenter(pc);
+	page->addCenter(pc);
 	}
 	
 	{
@@ -642,7 +642,7 @@ static void MainMenuOptionAudioCreate(MenuPage * page, Vec2i size) {
 	SliderWidget * sld = new SliderWidget(BUTTON_MENUOPTIONSAUDIO_AMBIANCE, Vec2i(RATIO_X(200), 0));
 	sld->setValue((int)config.audio.ambianceVolume);
 	pc->AddElement(sld);
-	page->AddMenuCenter(pc);
+	page->addCenter(pc);
 	}
 	
 	{
@@ -656,7 +656,7 @@ static void MainMenuOptionAudioCreate(MenuPage * page, Vec2i size) {
 	} else {
 		cb->SetCheckOff();
 	}
-	page->AddMenuCenter(cb);
+	page->addCenter(cb);
 	}
 	
 	{
@@ -672,7 +672,7 @@ static void MainMenuOptionInputCreate(MenuPage * page) {
 	{
 	std::string szMenuText = getLocalised("system_menus_options_input_customize_controls");
 	TextWidget * me = new TextWidget(BUTTON_INVALID, hFontMenu, szMenuText, Vec2i(RATIO_X(20), 0), OPTIONS_INPUT_CUSTOMIZE_KEYS_1);
-	page->AddMenuCenter(me);
+	page->addCenter(me);
 	}
 	
 	{
@@ -682,7 +682,7 @@ static void MainMenuOptionInputCreate(MenuPage * page) {
 	CheckboxWidget * cb = new CheckboxWidget(text);
 	cb->iID = BUTTON_MENUOPTIONS_CONTROLS_INVERTMOUSE;
 	cb->iState = config.input.invertMouse ? 1 : 0;
-	page->AddMenuCenter(cb);
+	page->addCenter(cb);
 	}
 	
 	{
@@ -692,7 +692,7 @@ static void MainMenuOptionInputCreate(MenuPage * page) {
 	CheckboxWidget * cb = new CheckboxWidget(text);
 	cb->iID = BUTTON_MENUOPTIONS_CONTROLS_AUTOREADYWEAPON;
 	cb->iState = config.input.autoReadyWeapon ? 1 : 0;
-	page->AddMenuCenter(cb);
+	page->addCenter(cb);
 	}
 
 	{
@@ -702,7 +702,7 @@ static void MainMenuOptionInputCreate(MenuPage * page) {
 	CheckboxWidget * cb = new CheckboxWidget(text);
 	cb->iID = BUTTON_MENUOPTIONS_CONTROLS_MOUSELOOK;
 	cb->iState = config.input.mouseLookToggle ? 1 : 0;
-	page->AddMenuCenter(cb);
+	page->addCenter(cb);
 	}
 	
 	{
@@ -714,7 +714,7 @@ static void MainMenuOptionInputCreate(MenuPage * page) {
 	SliderWidget * sld = new SliderWidget(BUTTON_MENUOPTIONS_CONTROLS_MOUSESENSITIVITY, Vec2i(RATIO_X(200), 0));
 	sld->setValue(config.input.mouseSensitivity);
 	pc->AddElement(sld);
-	page->AddMenuCenter(pc);
+	page->addCenter(pc);
 	}
 	
 	{
@@ -724,7 +724,7 @@ static void MainMenuOptionInputCreate(MenuPage * page) {
 	CheckboxWidget * cb = new CheckboxWidget(text);
 	cb->iID = BUTTON_MENUOPTIONS_CONTROLS_AUTODESCRIPTION;
 	cb->iState = config.input.autoDescription ? 1 : 0;
-	page->AddMenuCenter(cb);
+	page->addCenter(cb);
 	}
 	
 	{
@@ -736,7 +736,7 @@ static void MainMenuOptionInputCreate(MenuPage * page) {
 	SliderWidget * sld = new SliderWidget(BUTTON_MENUOPTIONS_CONTROLS_QUICKSAVESLOTS, Vec2i(RATIO_X(200), 0));
 	sld->setValue(config.misc.quicksaveSlots);
 	pc->AddElement(sld);
-	page->AddMenuCenter(pc);
+	page->addCenter(pc);
 	}
 	
 	{
@@ -889,13 +889,13 @@ static void Menu2_Render_Quit(MenuPage * page, Vec2i size) {
 	{
 	TextWidget * me = new TextWidget(BUTTON_INVALID, hFontMenu, getLocalised("system_menus_main_quit"));
 	me->SetCheckOff();
-	page->AddMenuCenter(me, true);
+	page->addCenter(me, true);
 	}
 	
 	{
 	TextWidget * me = new TextWidget(BUTTON_INVALID, hFontMenu, getLocalised("system_menus_main_editquest_confirm"));
 	me->SetCheckOff();
-	page->AddMenuCenter(me, true);
+	page->addCenter(me, true);
 	}
 	
 	{
