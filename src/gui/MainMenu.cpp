@@ -426,6 +426,7 @@ struct VideoRendererOnChangeHandler {
 };
 
 // TODO remove this
+const std::string AUTO_RESOLUTION_STRING = "Automatic";
 extern int newWidth;
 extern int newHeight;
 

@@ -25,9 +25,6 @@
 #include "gui/widget/ButtonWidget.h"
 #include "gui/widget/Widget.h"
 
-// FIXME remove this
-const std::string AUTO_RESOLUTION_STRING = "Automatic";
-
 class CycleTextWidget: public Widget {
 	
 public:
