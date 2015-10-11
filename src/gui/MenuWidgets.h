@@ -120,8 +120,8 @@ public:
 	MENUSTATE			eCurrentMenuState;
 	
 private:
-	TextureContainer * pTexBackground;
-	TextureContainer * pTexBackgroundBorder;
+	TextureContainer * m_background;
+	TextureContainer * m_border;
 };
 
 struct TexturedVertex;

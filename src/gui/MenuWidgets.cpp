@@ -492,8 +492,8 @@ CWindowMenu::CWindowMenu(Vec2i pos, Vec2i size)
 
 	m_pos.x = checked_range_cast<int>(fCalc);
 	
-	pTexBackground = TextureContainer::LoadUI("graph/interface/menus/menu_console_background");
-	pTexBackgroundBorder = TextureContainer::LoadUI("graph/interface/menus/menu_console_background_border");
+	m_background = TextureContainer::LoadUI("graph/interface/menus/menu_console_background");
+	m_border = TextureContainer::LoadUI("graph/interface/menus/menu_console_background_border");
 }
 
 CWindowMenu::~CWindowMenu() {
@@ -545,15 +545,15 @@ MENUSTATE CWindowMenu::Render() {
 	GRenderer->SetBlendFunc(Renderer::BlendZero, Renderer::BlendInvSrcColor);
 
 	EERIEDrawBitmap2(Rectf(Vec2f(m_pos.x, m_pos.y),
-	                 RATIO_X(pTexBackground->m_size.x), RATIO_Y(pTexBackground->m_size.y)),
-	                 0, pTexBackground, Color::white);
+	                 RATIO_X(m_background->m_size.x), RATIO_Y(m_background->m_size.y)),
+	                 0, m_background, Color::white);
 
 	GRenderer->SetBlendFunc(Renderer::BlendOne, Renderer::BlendOne);
 	GRenderer->SetRenderState(Renderer::AlphaBlending, false);
 	
 	EERIEDrawBitmap2(Rectf(Vec2f(m_pos.x, m_pos.y),
-	                 RATIO_X(pTexBackgroundBorder->m_size.x), RATIO_Y(pTexBackgroundBorder->m_size.y)),
-	                 0, pTexBackgroundBorder, Color::white);
+	                 RATIO_X(m_border->m_size.x), RATIO_Y(m_border->m_size.y)),
+	                 0, m_border, Color::white);
 	
 	BOOST_FOREACH(MenuPage * page, m_pages) {
 		if(eCurrentMenuState == page->eMenuState) {
