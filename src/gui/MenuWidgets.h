@@ -89,7 +89,7 @@ private:
 	Vec2i m_offset;
 	Vec2i m_size;
 	
-	Widget		*	pZoneClick;
+	Widget		*	m_selected;
 	bool					bEdit;
 	TextureContainer	*	pTexBackground;
 	TextureContainer	*	pTexBackgroundBorder;

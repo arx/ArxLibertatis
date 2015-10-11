@@ -556,7 +556,7 @@ MENUSTATE CWindowMenu::Render() {
 MenuPage::MenuPage(Vec2i pos, Vec2i size, MENUSTATE _eMenuState)
 	: m_rowSpacing(10)
 	, m_savegame(0)
-	, pZoneClick(NULL)
+	, m_selected(NULL)
 	, bEdit(false)
 	, bMouseAttack(false)
 	, m_textCursorCurrentTime(0.f)
@@ -648,28 +648,28 @@ void MenuPage::UpdateText() {
 		   || GInput->isKeyPressed(Keyboard::Key_Escape)
 		) {
 			ARX_SOUND_PlayMenu(SND_MENU_CLICK);
-			((TextWidget*)pZoneClick)->eState=EDIT;
+			((TextWidget*)m_selected)->eState=EDIT;
 
-			if(((TextWidget*)pZoneClick)->lpszText.empty()) {
+			if(((TextWidget*)m_selected)->lpszText.empty()) {
 				std::string szMenuText;
 				szMenuText = getLocalised("system_menu_editquest_newsavegame");
 
-				((TextWidget*)pZoneClick)->SetText(szMenuText);
+				((TextWidget*)m_selected)->SetText(szMenuText);
 
-				int iDx=pZoneClick->m_rect.right-pZoneClick->m_rect.left;
+				int iDx=m_selected->m_rect.right-m_selected->m_rect.left;
 
-				if(pZoneClick->ePlace) {
-					pZoneClick->m_rect.left=m_pos.x+((m_size.x-iDx)>>1);
+				if(m_selected->ePlace) {
+					m_selected->m_rect.left=m_pos.x+((m_size.x-iDx)>>1);
 
-					if(pZoneClick->m_rect.left < 0) {
-						pZoneClick->m_rect.left=0;
+					if(m_selected->m_rect.left < 0) {
+						m_selected->m_rect.left=0;
 					}
 				}
 
-				pZoneClick->m_rect.right=pZoneClick->m_rect.left+iDx;
+				m_selected->m_rect.right=m_selected->m_rect.left+iDx;
 			}
 
-			pZoneClick=NULL;
+			m_selected=NULL;
 			bEdit=false;
 			return;
 		}
@@ -677,7 +677,7 @@ void MenuPage::UpdateText() {
 		bool bKey=false;
 		std::string tText;
 		
-		TextWidget *pZoneText=(TextWidget*)pZoneClick;
+		TextWidget *pZoneText=(TextWidget*)m_selected;
 
 		if(GInput->isKeyPressedNowPressed(Keyboard::Key_Backspace)) {
 			tText = pZoneText->lpszText;
@@ -715,23 +715,23 @@ void MenuPage::UpdateText() {
 				}
 			}
 
-			int iDx=pZoneClick->m_rect.right-pZoneClick->m_rect.left;
+			int iDx=m_selected->m_rect.right-m_selected->m_rect.left;
 
-			if(pZoneClick->ePlace) {
-				pZoneClick->m_rect.left=m_pos.x+((m_size.x-iDx)>>1);
+			if(m_selected->ePlace) {
+				m_selected->m_rect.left=m_pos.x+((m_size.x-iDx)>>1);
 
-				if(pZoneClick->m_rect.left < 0) {
-					pZoneClick->m_rect.left=0;
+				if(m_selected->m_rect.left < 0) {
+					m_selected->m_rect.left=0;
 				}
 			}
 
-			pZoneClick->m_rect.right=pZoneClick->m_rect.left+iDx;
+			m_selected->m_rect.right=m_selected->m_rect.left+iDx;
 		}
 	}
 
-	if(pZoneClick->m_rect.top == pZoneClick->m_rect.bottom) {
-		Vec2i textSize = ((TextWidget*)pZoneClick)->pFont->getTextSize("|");
-		pZoneClick->m_rect.bottom += textSize.y;
+	if(m_selected->m_rect.top == m_selected->m_rect.bottom) {
+		Vec2i textSize = ((TextWidget*)m_selected)->pFont->getTextSize("|");
+		m_selected->m_rect.bottom += textSize.y;
 	}
 	
 	m_textCursorCurrentTime += ARXDiffTimeMenu;
@@ -748,12 +748,12 @@ void MenuPage::UpdateText() {
 	v[0].p.z=v[1].p.z=v[2].p.z=v[3].p.z=0.f;    
 	v[0].rhw=v[1].rhw=v[2].rhw=v[3].rhw=1.f;
 
-	v[0].p.x = (float)pZoneClick->m_rect.right;
-	v[0].p.y = (float)pZoneClick->m_rect.top;
+	v[0].p.x = (float)m_selected->m_rect.right;
+	v[0].p.y = (float)m_selected->m_rect.top;
 	v[1].p.x = v[0].p.x+2.f;
 	v[1].p.y = v[0].p.y;
 	v[2].p.x = v[0].p.x;
-	v[2].p.y = (float)pZoneClick->m_rect.bottom;
+	v[2].p.y = (float)m_selected->m_rect.bottom;
 	v[3].p.x = v[1].p.x;
 	v[3].p.y = v[2].p.y;
 
@@ -774,11 +774,11 @@ Widget * MenuPage::GetTouch(bool keyTouched, int keyId, InputKeyId* pInputKeyId,
 			return NULL;
 		}
 
-		TextWidget *pZoneText=(TextWidget*)pZoneClick;
+		TextWidget *pZoneText=(TextWidget*)m_selected;
 
 		if(_bValidateTest) {
-			if(pZoneClick->iID == BUTTON_MENUOPTIONS_CONTROLS_CUST_ACTIONCOMBINE1 ||
-			   pZoneClick->iID == BUTTON_MENUOPTIONS_CONTROLS_CUST_ACTIONCOMBINE2)
+			if(m_selected->iID == BUTTON_MENUOPTIONS_CONTROLS_CUST_ACTIONCOMBINE1 ||
+			   m_selected->iID == BUTTON_MENUOPTIONS_CONTROLS_CUST_ACTIONCOMBINE2)
 			{
 				bool bOk=true;
 
@@ -810,19 +810,19 @@ Widget * MenuPage::GetTouch(bool keyTouched, int keyId, InputKeyId* pInputKeyId,
 			pZoneText->eState=GETTOUCH;
 			pZoneText->SetText(pText);
 			
-			int iDx=pZoneClick->m_rect.right-pZoneClick->m_rect.left;
+			int iDx=m_selected->m_rect.right-m_selected->m_rect.left;
 
-			if(pZoneClick->ePlace) {
-				pZoneClick->m_rect.left=(m_size.x-iDx)>>1;
+			if(m_selected->ePlace) {
+				m_selected->m_rect.left=(m_size.x-iDx)>>1;
 
-				if(pZoneClick->m_rect.left < 0) {
-					pZoneClick->m_rect.left=0;
+				if(m_selected->m_rect.left < 0) {
+					m_selected->m_rect.left=0;
 				}
 			}
 
-			pZoneClick->m_rect.right=pZoneClick->m_rect.left+iDx;
+			m_selected->m_rect.right=m_selected->m_rect.left+iDx;
 
-			pZoneClick=NULL;
+			m_selected=NULL;
 			bEdit=false;
 
 			if(iMouseButton & (Mouse::ButtonBase | Mouse::WheelBase)) {
@@ -851,45 +851,45 @@ MENUSTATE MenuPage::Update(Vec2i pos) {
 	
 	// Check if mouse over
 	if(!bEdit) {
-		pZoneClick=NULL;
+		m_selected=NULL;
 		Widget * widget = m_children.getAtPos(GInput->getMousePosAbs());
 		
 		if(widget) {
-			pZoneClick = widget;
+			m_selected = widget;
 			
 			if(GInput->getMouseButtonDoubleClick(Mouse::Button_0, 300)) {
-				MENUSTATE e = pZoneClick->eMenuState;
-				bEdit = pZoneClick->OnMouseDoubleClick();
+				MENUSTATE e = m_selected->eMenuState;
+				bEdit = m_selected->OnMouseDoubleClick();
 				
-				if(pZoneClick->iID == BUTTON_MENUEDITQUEST_LOAD)
+				if(m_selected->iID == BUTTON_MENUEDITQUEST_LOAD)
 					return MAIN;
 				
 				if(bEdit)
-					return pZoneClick->eMenuState;
+					return m_selected->eMenuState;
 				
 				return e;
 			}
 			
 			if(GInput->getMouseButton(Mouse::Button_0)) {
-				MENUSTATE e = pZoneClick->eMenuState;
-				bEdit = pZoneClick->OnMouseClick();
+				MENUSTATE e = m_selected->eMenuState;
+				bEdit = m_selected->OnMouseClick();
 				return e;
 			} else {
-				pZoneClick->EmptyFunction();
+				m_selected->EmptyFunction();
 			}
 		}
 	} else {
-		if(!pZoneClick) {
+		if(!m_selected) {
 			Widget * widget = m_children.getAtPos(GInput->getMousePosAbs());
 			
 			if(widget) {
-				pZoneClick = widget;
+				m_selected = widget;
 				
 				if(GInput->getMouseButtonDoubleClick(Mouse::Button_0, 300)) {
-					bEdit = pZoneClick->OnMouseDoubleClick();
+					bEdit = m_selected->OnMouseDoubleClick();
 					
 					if(bEdit)
-						return pZoneClick->eMenuState;
+						return m_selected->eMenuState;
 				}
 			}
 		}
@@ -902,10 +902,10 @@ MENUSTATE MenuPage::Update(Vec2i pos) {
 			Widget * shortCutWidget = widget->OnShortCut();
 			
 			if(shortCutWidget) {
-				pZoneClick=shortCutWidget;
-				MENUSTATE e = pZoneClick->eMenuState;
-				bEdit = pZoneClick->OnMouseClick();
-				pZoneClick=shortCutWidget;
+				m_selected=shortCutWidget;
+				MENUSTATE e = m_selected->eMenuState;
+				bEdit = m_selected->OnMouseClick();
+				m_selected=shortCutWidget;
 				return e;
 			}
 		}
@@ -1124,20 +1124,20 @@ void MenuPage::Render() {
 	}
 
 	//HIGHLIGHT
-	if(pZoneClick) {
+	if(m_selected) {
 		bool bReInit=false;
 
-		pZoneClick->RenderMouseOver();
+		m_selected->RenderMouseOver();
 
-		switch(pZoneClick->eState) {
+		switch(m_selected->eState) {
 			case EDIT_TIME:
 				UpdateText();
 				break;
 			case GETTOUCH_TIME: {
 				if(bFrameOdd)
-					((TextWidget*)pZoneClick)->lColorHighlight = Color(255, 0, 0);
+					((TextWidget*)m_selected)->lColorHighlight = Color(255, 0, 0);
 				else
-					((TextWidget*)pZoneClick)->lColorHighlight = Color(50, 0, 0);
+					((TextWidget*)m_selected)->lColorHighlight = Color(50, 0, 0);
 				
 				bool keyTouched = GInput->isAnyKeyPressed();
 				int keyId = GInput->getKeyPressed();
@@ -1198,7 +1198,7 @@ void MenuPage::Render() {
 				if(GInput->getMouseButtonNowPressed(Mouse::Button_0)) {
 					Widget * widget = m_children.GetZoneWithID(BUTTON_MENUOPTIONS_CONTROLS_CUST_DEFAULT);
 					
-					if(widget == pZoneClick) {
+					if(widget == m_selected) {
 						config.setDefaultActionKeys();
 						bReInit=true;
 					}
@@ -1229,14 +1229,14 @@ void MenuPage::ReInitActionKey()
 
 		if(widget) {
 			if(widget) {
-				pZoneClick = widget;
+				m_selected = widget;
 				GetTouch(true, config.actions[iTab].key[0]);
 			}
 
 			widget = m_children.GetZoneWithID(MenuButton(iID + 1));
 
 			if(widget) {
-				pZoneClick = widget;
+				m_selected = widget;
 				GetTouch(true, config.actions[iTab].key[1]);
 			}
 		}
