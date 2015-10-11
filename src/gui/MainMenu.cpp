@@ -611,7 +611,13 @@ void init(Vec2i size) {
 }
 };
 
-static void MainMenuOptionAudioCreate(MenuPage * page, Vec2i size) {
+class AudioOptionsMenuPage : public MenuPage {
+public:
+	AudioOptionsMenuPage(Vec2i pos, Vec2i size)
+		: MenuPage(pos, size, OPTIONS_AUDIO)
+	{}
+	
+void init(Vec2i size) {
 	
 	// Audio backend selection
 	{
@@ -643,7 +649,7 @@ static void MainMenuOptionAudioCreate(MenuPage * page, Vec2i size) {
 		float fRatio    = (RATIO_X(size.x-9) - slider->m_rect.width());
 		slider->Move(Vec2i(checked_range_cast<int>(fRatio), 0));
 		pc->AddElement(slider);
-		page->addCenter(pc);
+		addCenter(pc);
 		
 	}
 	
@@ -656,7 +662,7 @@ static void MainMenuOptionAudioCreate(MenuPage * page, Vec2i size) {
 	SliderWidget * sld = new SliderWidget(BUTTON_MENUOPTIONSAUDIO_MASTER, Vec2i(RATIO_X(200), 0));
 	sld->setValue((int)config.audio.volume); // TODO use float sliders
 	pc->AddElement(sld);
-	page->addCenter(pc);
+	addCenter(pc);
 	}
 	
 	{
@@ -668,7 +674,7 @@ static void MainMenuOptionAudioCreate(MenuPage * page, Vec2i size) {
 	SliderWidget * sld = new SliderWidget(BUTTON_MENUOPTIONSAUDIO_SFX, Vec2i(RATIO_X(200), 0));
 	sld->setValue((int)config.audio.sfxVolume);
 	pc->AddElement(sld);
-	page->addCenter(pc);
+	addCenter(pc);
 	}
 	
 	{
@@ -680,7 +686,7 @@ static void MainMenuOptionAudioCreate(MenuPage * page, Vec2i size) {
 	SliderWidget * sld = new SliderWidget(BUTTON_MENUOPTIONSAUDIO_SPEECH, Vec2i(RATIO_X(200), 0));
 	sld->setValue((int)config.audio.speechVolume);
 	pc->AddElement(sld);
-	page->addCenter(pc);
+	addCenter(pc);
 	}
 	
 	{
@@ -692,7 +698,7 @@ static void MainMenuOptionAudioCreate(MenuPage * page, Vec2i size) {
 	SliderWidget * sld = new SliderWidget(BUTTON_MENUOPTIONSAUDIO_AMBIANCE, Vec2i(RATIO_X(200), 0));
 	sld->setValue((int)config.audio.ambianceVolume);
 	pc->AddElement(sld);
-	page->addCenter(pc);
+	addCenter(pc);
 	}
 	
 	{
@@ -706,16 +712,17 @@ static void MainMenuOptionAudioCreate(MenuPage * page, Vec2i size) {
 	} else {
 		cb->SetCheckOff();
 	}
-	page->addCenter(cb);
+	addCenter(cb);
 	}
 	
 	{
 	ButtonWidget * cb = new ButtonWidget(RATIO_2(Vec2i(20, 380)), "graph/interface/menus/back");
 	cb->eMenuState = OPTIONS;
 	cb->SetShortCut(Keyboard::Key_Escape);
-	page->add(cb);
+	add(cb);
 	}
 }
+};
 
 static void MainMenuOptionInputCreate(MenuPage * page) {
 	
@@ -1032,8 +1039,8 @@ void MainMenuLeftCreate(MENUSTATE eMenuState)
 	}
 	
 	{
-	MenuPage * page = new MenuPage(offset, size, OPTIONS_AUDIO);
-	MainMenuOptionAudioCreate(page, size);
+	AudioOptionsMenuPage * page = new AudioOptionsMenuPage(offset, size);
+	page->init(size);
 	pWindowMenu->add(page);
 	}
 	
