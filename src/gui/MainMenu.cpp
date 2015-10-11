@@ -54,20 +54,27 @@ CheckboxWidget * fullscreenCheckbox = NULL;
 CycleTextWidget * pMenuSliderResol = NULL;
 TextWidget * pMenuElementApply = NULL;
 
-static void Menu2_Render_NewQuest(MenuPage * page, Vec2i size) {
+
+class NewQuestMenuPage : public MenuPage {
+public:
+	NewQuestMenuPage(Vec2i pos, Vec2i size)
+		: MenuPage(pos, size, NEW_QUEST)
+	{}
+
+void init(Vec2i size) {
 	
 	{
 	std::string szMenuText = getLocalised("system_menus_main_editquest_confirm");
 	TextWidget * me = new TextWidget(BUTTON_INVALID, hFontMenu, szMenuText);
 	me->SetCheckOff();
-	page->addCenter(me, true);
+	addCenter(me, true);
 	}
 	
 	{
 	std::string szMenuText = getLocalised("system_menus_main_newquest_confirm");
 	TextWidget * me = new TextWidget(BUTTON_INVALID, hFontMenu, szMenuText);
 	me->SetCheckOff();
-	page->addCenter(me, true);
+	addCenter(me, true);
 	}
 	
 	HorizontalPanelWidget * pPanel = new HorizontalPanelWidget;
@@ -89,8 +96,9 @@ static void Menu2_Render_NewQuest(MenuPage * page, Vec2i size) {
 	
 	pPanel->Move(Vec2i(0, RATIO_Y(380)));
 	
-	page->add(pPanel);
+	add(pPanel);
 }
+};
 
 static void MainMenuCreateEditQuest(MenuPage * page) {
 	
@@ -914,6 +922,8 @@ static void Menu2_Render_Quit(MenuPage * page, Vec2i size) {
 	}
 }
 
+
+
 extern MainMenu *mainMenu;
 
 void MainMenuLeftCreate(MENUSTATE eMenuState)
@@ -934,8 +944,8 @@ void MainMenuLeftCreate(MENUSTATE eMenuState)
 	
 	// TODO Special case to prevent displaying confirmation dialog on new game during fade
 	if(ARXMenu_CanResumeGame()){
-		MenuPage * page = new MenuPage(offset, size, NEW_QUEST);
-		Menu2_Render_NewQuest(page, size);
+		NewQuestMenuPage * page = new NewQuestMenuPage(offset, size);
+		page->init(size);
 		pWindowMenu->add(page);
 	}
 
