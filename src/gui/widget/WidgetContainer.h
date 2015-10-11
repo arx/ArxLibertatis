@@ -30,7 +30,7 @@ public:
 	WidgetContainer();
 	virtual ~WidgetContainer();
 	
-	void AddZone(Widget * widget);
+	void add(Widget * widget);
 	Widget * getAtPos(const Vec2s & mousePos) const;
 	
 	Widget * GetZoneNum(size_t index);

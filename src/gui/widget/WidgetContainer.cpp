@@ -42,7 +42,7 @@ WidgetContainer::~WidgetContainer() {
 		delete *it;
 }
 
-void WidgetContainer::AddZone(Widget *widget) {
+void WidgetContainer::add(Widget *widget) {
 
 	m_widgets.push_back(widget);
 }

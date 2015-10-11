@@ -575,7 +575,7 @@ MenuPage::MenuPage(Vec2i pos, Vec2i size, MENUSTATE _eMenuState)
 void MenuPage::add(Widget * widget) {
 	widget->ePlace = NOCENTER;
 	widget->Move(m_offset);
-	m_children.AddZone(widget);
+	m_children.add(widget);
 }
 
 void MenuPage::addCenter(Widget * widget, bool centerX) {
@@ -625,7 +625,7 @@ void MenuPage::addCenter(Widget * widget, bool centerX) {
 
 	widget->Move(Vec2i(dx, iDepY));
 
-	m_children.AddZone(widget);
+	m_children.add(widget);
 }
 
 void MenuPage::AlignElementCenter(Widget * widget) {

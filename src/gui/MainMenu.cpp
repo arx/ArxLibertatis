@@ -1097,7 +1097,7 @@ void MainMenu::init()
 }
 
 void MainMenu::add(Widget * widget) {
-	m_widgets->AddZone(widget);
+	m_widgets->add(widget);
 }
 
 MENUSTATE MainMenu::Update() {
