@@ -384,15 +384,10 @@ bool Menu2_Render() {
 		}
 
 		pWindowMenu->Update(ARXDiffTimeMenu);
-
-		if(pWindowMenu) {
-			MENUSTATE eMS=pWindowMenu->Render();
-
-			if(eMS != NOP) {
-				mainMenu->eOldMenuWindowState=eMS;
-			}
+		MENUSTATE eMS = pWindowMenu->Render();
+		if(eMS != NOP) {
+			mainMenu->eOldMenuWindowState=eMS;
 		}
-
 		Check_Apply();
 	}
 
