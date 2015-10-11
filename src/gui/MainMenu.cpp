@@ -838,7 +838,15 @@ static void CUSTOM_CTRL_FUNC(MenuPage * page, long & y,
 	y += pc->m_rect.height() + RATIO_Y(3.f);
 }
 
-static void MainMenuOptionControlsCreatePage1(MenuPage * page, Vec2i size) {
+class ControlOptionsMenuPage1 : public MenuPage {
+public:
+	ControlOptionsMenuPage1(Vec2i pos, Vec2i size)
+		: MenuPage(pos, size, OPTIONS_INPUT_CUSTOMIZE_KEYS_1)
+	{}
+
+void init(Vec2i size) {
+	
+	MenuPage * page = this;
 	
 	long y = static_cast<long>(RATIO_Y(8.f));
 
@@ -894,6 +902,7 @@ static void MainMenuOptionControlsCreatePage1(MenuPage * page, Vec2i size) {
 	page->add(pc);
 	page->ReInitActionKey();
 }
+};
 
 static void MainMenuOptionControlsCreatePage2(MenuPage * page, Vec2i size) {
 	
@@ -1058,8 +1067,8 @@ void MainMenuLeftCreate(MENUSTATE eMenuState)
 	}
 	
 	{
-	MenuPage * page = new MenuPage(offset, size, OPTIONS_INPUT_CUSTOMIZE_KEYS_1);
-	MainMenuOptionControlsCreatePage1(page, size);
+	ControlOptionsMenuPage1 * page = new ControlOptionsMenuPage1(offset, size);
+	page->init(size);
 	pWindowMenu->add(page);
 	}
 	
