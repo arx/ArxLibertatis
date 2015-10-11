@@ -1019,7 +1019,7 @@ MainMenu::MainMenu()
 	: bReInitAll(false)
 	, eOldMenuState(NOP)
 	, eOldMenuWindowState(NOP)
-	, pZoneClick(NULL)
+	, m_selected(NULL)
 	, m_background(NULL)
 	, m_widgets(new WidgetContainer())
 	, m_resumeGame(NULL)
@@ -1112,22 +1112,13 @@ MENUSTATE MainMenu::Update() {
 		}
 	}
 	
-	pZoneClick=NULL;
-
-	Widget * widget = m_widgets->getAtPos(GInput->getMousePosAbs());
-
-	if(GInput->getMouseButton(Mouse::Button_0)) {
-		if(widget) {
-			pZoneClick = widget;
-			pZoneClick->OnMouseClick();
-			return pZoneClick->eMenuState;
-		}
-	} else {
-		if(widget) {
-			pZoneClick = widget;
-		}
+	m_selected = m_widgets->getAtPos(GInput->getMousePosAbs());
+	
+	if(m_selected && GInput->getMouseButton(Mouse::Button_0)) {
+		m_selected->OnMouseClick();
+		return m_selected->eMenuState;
 	}
-
+	
 	return NOP;
 }
 
@@ -1152,8 +1143,8 @@ void MainMenu::Render() {
 	}
 
 	//HIGHLIGHT
-	if(pZoneClick) {
-		pZoneClick->RenderMouseOver();
+	if(m_selected) {
+		m_selected->RenderMouseOver();
 	}
 
 	//DEBUG ZONE

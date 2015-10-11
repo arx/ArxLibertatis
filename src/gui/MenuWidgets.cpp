@@ -359,7 +359,7 @@ bool Menu2_Render() {
 	if(eMenuState == RESUME_GAME) {
 		pTextManage->Clear();
 		ARXmenu.currentmode = AMCM_OFF;
-		mainMenu->pZoneClick = NULL;
+		mainMenu->m_selected = NULL;
 		
 		delete pWindowMenu, pWindowMenu = NULL;
 		delete mainMenu, mainMenu = NULL;

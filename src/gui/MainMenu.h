@@ -35,7 +35,7 @@ public:
 	MENUSTATE				eOldMenuState;
 	MENUSTATE				eOldMenuWindowState;
 	
-	Widget		*	pZoneClick;
+	Widget		*	m_selected;
 	
 	explicit MainMenu();
 	virtual ~MainMenu();
