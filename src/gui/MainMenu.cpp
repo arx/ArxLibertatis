@@ -89,7 +89,7 @@ static void Menu2_Render_NewQuest(MenuPage * page, Vec2i size) {
 	
 	pPanel->Move(Vec2i(0, RATIO_Y(380)));
 	
-	page->AddMenu(pPanel);
+	page->add(pPanel);
 }
 
 static void MainMenuCreateEditQuest(MenuPage * page) {
@@ -116,7 +116,7 @@ static void MainMenuCreateEditQuest(MenuPage * page) {
 	ButtonWidget * cb = new ButtonWidget(RATIO_2(Vec2i(20, 380)), "graph/interface/menus/back");
 	cb->eMenuState = MAIN;
 	cb->SetShortCut(Keyboard::Key_Escape);
-	page->AddMenu(cb);
+	page->add(cb);
 	}
 }
 
@@ -183,7 +183,7 @@ static void MainMenuCreateEditQuestLoad(MenuPage * page, Vec2i size) {
 	me->SetCheckOff();
 	me->lOldColor = me->lColor;
 	me->lColor = Color::grayb(127);
-	page->AddMenu(me);
+	page->add(me);
 	pDeleteConfirm = me;
 	}
 	
@@ -196,7 +196,7 @@ static void MainMenuCreateEditQuestLoad(MenuPage * page, Vec2i size) {
 	me->SetCheckOff();
 	me->lOldColor = me->lColor;
 	me->lColor = Color::grayb(127);
-	page->AddMenu(me);
+	page->add(me);
 	pLoadConfirm = me;
 	}
 	
@@ -205,7 +205,7 @@ static void MainMenuCreateEditQuestLoad(MenuPage * page, Vec2i size) {
 	ButtonWidget * cb = new ButtonWidget(RATIO_2(Vec2i(20, 420)), "graph/interface/menus/back");
 	cb->eMenuState = EDIT_QUEST;
 	cb->SetShortCut(Keyboard::Key_Escape);
-	page->AddMenu(cb);
+	page->add(cb);
 	}
 	}
 }
@@ -279,7 +279,7 @@ static void MainMenuCreateEditQuestSave(MenuPage * page) {
 	ButtonWidget * cb = new ButtonWidget(RATIO_2(Vec2i(20, 420)), "graph/interface/menus/back");
 	cb->eMenuState = EDIT_QUEST;
 	cb->SetShortCut(Keyboard::Key_Escape);
-	page->AddMenu(cb);
+	page->add(cb);
 	}
 }
 
@@ -328,7 +328,7 @@ static void MainMenuCreateEditQuestSaveConfirm(MenuPage * page, Vec2i size) {
 	pPanel->AddElementNoCenterIn(cb);
 	}
 
-	page->AddMenu(pPanel);
+	page->add(pPanel);
 }
 
 static void MainMenuOptionGroupsCreate(MenuPage * page) {
@@ -355,7 +355,7 @@ static void MainMenuOptionGroupsCreate(MenuPage * page) {
 	ButtonWidget * cb = new ButtonWidget(RATIO_2(Vec2i(20, 380)), "graph/interface/menus/back");
 	cb->eMenuState = MAIN;
 	cb->SetShortCut(Keyboard::Key_Escape);
-	page->AddMenu(cb);
+	page->add(cb);
 	}
 }
 
@@ -557,7 +557,7 @@ static void MainMenuOptionVideoCreate(MenuPage * page, Vec2i size) {
 	cb->SetShortCut(Keyboard::Key_Escape);
 	pc->AddElementNoCenterIn(cb);
 	
-	page->AddMenu(pc);
+	page->add(pc);
 	}
 }
 
@@ -663,7 +663,7 @@ static void MainMenuOptionAudioCreate(MenuPage * page, Vec2i size) {
 	ButtonWidget * cb = new ButtonWidget(RATIO_2(Vec2i(20, 380)), "graph/interface/menus/back");
 	cb->eMenuState = OPTIONS;
 	cb->SetShortCut(Keyboard::Key_Escape);
-	page->AddMenu(cb);
+	page->add(cb);
 	}
 }
 
@@ -743,7 +743,7 @@ static void MainMenuOptionInputCreate(MenuPage * page) {
 	ButtonWidget * cb = new ButtonWidget(RATIO_2(Vec2i(20, 380)), "graph/interface/menus/back");
 	cb->eMenuState = OPTIONS;
 	cb->SetShortCut(Keyboard::Key_Escape);
-	page->AddMenu(cb);
+	page->add(cb);
 	}
 }
 
@@ -770,7 +770,7 @@ static void CUSTOM_CTRL_FUNC(MenuPage * page, long & y,
 	pc->AddElement(me);
 	
 	pc->Move(Vec2i(0, y));
-	page->AddMenu(pc);
+	page->add(pc);
 	y += pc->m_rect.height() + RATIO_Y(3.f);
 }
 
@@ -827,7 +827,7 @@ static void MainMenuOptionControlsCreatePage1(MenuPage * page, Vec2i size) {
 	pc->AddElementNoCenterIn(cb);
 	}
 
-	page->AddMenu(pc);
+	page->add(pc);
 	page->ReInitActionKey();
 }
 
@@ -880,7 +880,7 @@ static void MainMenuOptionControlsCreatePage2(MenuPage * page, Vec2i size) {
 	pc->AddElementNoCenterIn(me);
 	}
 
-	page->AddMenu(pc);
+	page->add(pc);
 	page->ReInitActionKey();
 }
 
@@ -910,7 +910,7 @@ static void Menu2_Render_Quit(MenuPage * page, Vec2i size) {
 	pPanel->AddElementNoCenterIn(no);
 	
 	pPanel->Move(Vec2i(0, RATIO_Y(380)));
-	page->AddMenu(pPanel);
+	page->add(pPanel);
 	}
 }
 

@@ -572,7 +572,7 @@ MenuPage::MenuPage(Vec2i pos, Vec2i size, MENUSTATE _eMenuState)
 	bFrameOdd=false;
 }
 
-void MenuPage::AddMenu(Widget * widget) {
+void MenuPage::add(Widget * widget) {
 	widget->ePlace = NOCENTER;
 	widget->Move(m_offset);
 	m_children.AddZone(widget);
