@@ -1128,12 +1128,6 @@ void MainMenu::init()
 	{
 	std::string szMenuText = getLocalised("system_menus_main_resumegame");
 	TextWidget *me = new TextWidget(BUTTON_MENUMAIN_RESUMEGAME, hFontMainMenu, szMenuText, RATIO_2(pos), RESUME_GAME);
-	if(ARXMenu_CanResumeGame()) {
-		me->SetCheckOn();
-	} else {
-		me->SetCheckOff();
-		me->lColor = Color(127,127,127);
-	}
 	add(me);
 	m_resumeGame = me;
 	}
