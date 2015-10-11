@@ -128,7 +128,7 @@ void init() {
 	
 	{
 	ButtonWidget * cb = new ButtonWidget(RATIO_2(Vec2i(20, 380)), "graph/interface/menus/back");
-	cb->eMenuState = MAIN;
+	cb->m_targetMenu = MAIN;
 	cb->SetShortCut(Keyboard::Key_Escape);
 	add(cb);
 	}
@@ -224,7 +224,7 @@ void init(Vec2i size) {
 	// Back button
 	{
 	ButtonWidget * cb = new ButtonWidget(RATIO_2(Vec2i(20, 420)), "graph/interface/menus/back");
-	cb->eMenuState = EDIT_QUEST;
+	cb->m_targetMenu = EDIT_QUEST;
 	cb->SetShortCut(Keyboard::Key_Escape);
 	add(cb);
 	}
@@ -291,7 +291,7 @@ void init() {
 		
 		TextWidget * e = new TextWidget(BUTTON_MENUEDITQUEST_SAVEINFO, hFontControls, text.str(), Vec2i(RATIO_X(20), 0), EDIT_QUEST_SAVE_CONFIRM);
 
-		e->eMenuState = EDIT_QUEST_SAVE_CONFIRM;
+		e->m_targetMenu = EDIT_QUEST_SAVE_CONFIRM;
 		e->m_savegame = SavegameHandle::Invalid;
 		addCenter(e);
 	}
@@ -305,7 +305,7 @@ void init() {
 	
 	{
 	ButtonWidget * cb = new ButtonWidget(RATIO_2(Vec2i(20, 420)), "graph/interface/menus/back");
-	cb->eMenuState = EDIT_QUEST;
+	cb->m_targetMenu = EDIT_QUEST;
 	cb->SetShortCut(Keyboard::Key_Escape);
 	add(cb);
 	}
@@ -358,7 +358,7 @@ void init(Vec2i size) {
 	// Back button
 	{
 	ButtonWidget * cb = new ButtonWidget(RATIO_2(Vec2i(20, 380)), "graph/interface/menus/back");
-	cb->eMenuState = EDIT_QUEST_SAVE;
+	cb->m_targetMenu = EDIT_QUEST_SAVE;
 	cb->SetShortCut(Keyboard::Key_Escape);
 	pPanel->AddElementNoCenterIn(cb);
 	}
@@ -395,7 +395,7 @@ void init() {
 	
 	{
 	ButtonWidget * cb = new ButtonWidget(RATIO_2(Vec2i(20, 380)), "graph/interface/menus/back");
-	cb->eMenuState = MAIN;
+	cb->m_targetMenu = MAIN;
 	cb->SetShortCut(Keyboard::Key_Escape);
 	add(cb);
 	}
@@ -602,7 +602,7 @@ void init(Vec2i size) {
 	
 	ButtonWidget * cb = new ButtonWidget(RATIO_2(Vec2i(20, 420)), "graph/interface/menus/back");
 	cb->iID = BUTTON_MENUOPTIONSVIDEO_BACK;
-	cb->eMenuState = OPTIONS;
+	cb->m_targetMenu = OPTIONS;
 	cb->SetShortCut(Keyboard::Key_Escape);
 	pc->AddElementNoCenterIn(cb);
 	
@@ -717,7 +717,7 @@ void init(Vec2i size) {
 	
 	{
 	ButtonWidget * cb = new ButtonWidget(RATIO_2(Vec2i(20, 380)), "graph/interface/menus/back");
-	cb->eMenuState = OPTIONS;
+	cb->m_targetMenu = OPTIONS;
 	cb->SetShortCut(Keyboard::Key_Escape);
 	add(cb);
 	}
@@ -804,7 +804,7 @@ void init() {
 	
 	{
 	ButtonWidget * cb = new ButtonWidget(RATIO_2(Vec2i(20, 380)), "graph/interface/menus/back");
-	cb->eMenuState = OPTIONS;
+	cb->m_targetMenu = OPTIONS;
 	cb->SetShortCut(Keyboard::Key_Escape);
 	add(cb);
 	}
@@ -879,7 +879,7 @@ void init(Vec2i size) {
 	{
 	ButtonWidget * cb = new ButtonWidget(RATIO_2(Vec2i(20, 380)), "graph/interface/menus/back");
 	cb->iID = BUTTON_MENUOPTIONS_CONTROLS_CUST_BACK;
-	cb->eMenuState = OPTIONS_INPUT;
+	cb->m_targetMenu = OPTIONS_INPUT;
 	cb->SetShortCut(Keyboard::Key_Escape);
 	pc->AddElementNoCenterIn(cb);
 	}
@@ -894,7 +894,7 @@ void init(Vec2i size) {
 	{
 	ButtonWidget * cb = new ButtonWidget(RATIO_2(Vec2i(280, 380)), "graph/interface/menus/next");
 	cb->iID = BUTTON_MENUOPTIONS_CONTROLS_CUST_BACK;
-	cb->eMenuState = OPTIONS_INPUT_CUSTOMIZE_KEYS_2;
+	cb->m_targetMenu = OPTIONS_INPUT_CUSTOMIZE_KEYS_2;
 	cb->SetShortCut(Keyboard::Key_Escape);
 	pc->AddElementNoCenterIn(cb);
 	}
@@ -949,7 +949,7 @@ void init(Vec2i size) {
 	{
 	ButtonWidget * cb = new ButtonWidget(RATIO_2(Vec2i(20, 380)), "graph/interface/menus/back");
 	cb->iID = BUTTON_MENUOPTIONS_CONTROLS_CUST_BACK;
-	cb->eMenuState = OPTIONS_INPUT_CUSTOMIZE_KEYS_1;
+	cb->m_targetMenu = OPTIONS_INPUT_CUSTOMIZE_KEYS_1;
 	cb->SetShortCut(Keyboard::Key_Escape);
 	pc->AddElementNoCenterIn(cb);
 	}
@@ -1198,7 +1198,7 @@ MENUSTATE MainMenu::Update() {
 	
 	if(m_selected && GInput->getMouseButton(Mouse::Button_0)) {
 		m_selected->OnMouseClick();
-		return m_selected->eMenuState;
+		return m_selected->m_targetMenu;
 	}
 	
 	return NOP;

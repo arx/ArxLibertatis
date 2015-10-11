@@ -35,7 +35,7 @@ Widget::Widget(MENUSTATE _ms)
 {
 	ePlace=NOCENTER;
 	eState=TNOP;
-	eMenuState=_ms;
+	m_targetMenu=_ms;
 	iShortCut=-1;
 }
 

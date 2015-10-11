@@ -187,7 +187,7 @@ bool CycleTextWidget::OnMouseClick() {
 			break;
 		}
 		case BUTTON_MENUOPTIONSVIDEO_RENDERER: {
-			switch((vText.at(iPos))->eMenuState) {
+			switch((vText.at(iPos))->m_targetMenu) {
 				case OPTIONS_VIDEO_RENDERER_OPENGL:    config.window.framework = "SDL"; break;
 				case OPTIONS_VIDEO_RENDERER_AUTOMATIC: config.window.framework = "auto"; break;
 				default: break;

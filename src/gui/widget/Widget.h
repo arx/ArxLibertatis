@@ -219,7 +219,7 @@ public:
 	
 	ELEMPOS     ePlace;			//placement de la zone
 	ELEMSTATE   eState;			//etat de l'element en cours
-	MENUSTATE   eMenuState;		//etat de retour de l'element
+	MENUSTATE   m_targetMenu;		//etat de retour de l'element
 	int         iShortCut;
 	
 public:

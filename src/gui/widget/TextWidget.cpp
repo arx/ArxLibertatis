@@ -238,7 +238,7 @@ bool TextWidget::OnMouseClick() {
 						
 						m_savegame = page->m_savegame;
 						if(m_savegame != SavegameHandle::Invalid) {
-							eMenuState = MAIN;
+							m_targetMenu = MAIN;
 							GRenderer->Clear(Renderer::DepthBuffer);
 							ARXMenu_LoadQuest(m_savegame);
 							bNoMenu=true;
@@ -274,7 +274,7 @@ bool TextWidget::OnMouseClick() {
 					TextWidget * me = (TextWidget *) page->m_children.m_widgets[1];
 					
 					if(me) {
-						eMenuState = MAIN;
+						m_targetMenu = MAIN;
 						ARXMenu_SaveQuest(me->lpszText, me->m_savegame);
 						break;
 					}
@@ -291,7 +291,7 @@ bool TextWidget::OnMouseClick() {
 					if(page->eMenuState == EDIT_QUEST_LOAD) {
 						m_savegame = page->m_savegame;
 						if(m_savegame != SavegameHandle::Invalid) {
-							eMenuState = EDIT_QUEST_LOAD;
+							m_targetMenu = EDIT_QUEST_LOAD;
 							mainMenu->bReInitAll = true;
 							savegames.remove(m_savegame);
 							break;
@@ -315,7 +315,7 @@ bool TextWidget::OnMouseClick() {
 						page->m_savegame = m_savegame;
 						TextWidget * me = (TextWidget *) page->m_children.m_widgets[1];
 						if(me) {
-							eMenuState = EDIT_QUEST_SAVE;
+							m_targetMenu = EDIT_QUEST_SAVE;
 							mainMenu->bReInitAll = true;
 							savegames.remove(me->m_savegame);
 							break;
@@ -347,11 +347,11 @@ bool TextWidget::OnMouseClick() {
 			break;
 	}
 
-	if(eMenuState == EDIT_QUEST_SAVE_CONFIRM) {
+	if(m_targetMenu == EDIT_QUEST_SAVE_CONFIRM) {
 		for(size_t i = 0; i < pWindowMenu->m_pages.size(); i++) {
 			MenuPage * page = pWindowMenu->m_pages[i];
 
-			if(page->eMenuState == eMenuState) {
+			if(page->eMenuState == m_targetMenu) {
 				page->m_savegame = m_savegame;
 				TextWidget * me = (TextWidget *) page->m_children.m_widgets[1];
 

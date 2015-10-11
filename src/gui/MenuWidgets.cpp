@@ -872,20 +872,20 @@ MENUSTATE MenuPage::Update(Vec2i pos) {
 			m_selected = widget;
 			
 			if(GInput->getMouseButtonDoubleClick(Mouse::Button_0, 300)) {
-				MENUSTATE e = m_selected->eMenuState;
+				MENUSTATE e = m_selected->m_targetMenu;
 				bEdit = m_selected->OnMouseDoubleClick();
 				
 				if(m_selected->iID == BUTTON_MENUEDITQUEST_LOAD)
 					return MAIN;
 				
 				if(bEdit)
-					return m_selected->eMenuState;
+					return m_selected->m_targetMenu;
 				
 				return e;
 			}
 			
 			if(GInput->getMouseButton(Mouse::Button_0)) {
-				MENUSTATE e = m_selected->eMenuState;
+				MENUSTATE e = m_selected->m_targetMenu;
 				bEdit = m_selected->OnMouseClick();
 				return e;
 			} else {
@@ -903,7 +903,7 @@ MENUSTATE MenuPage::Update(Vec2i pos) {
 					bEdit = m_selected->OnMouseDoubleClick();
 					
 					if(bEdit)
-						return m_selected->eMenuState;
+						return m_selected->m_targetMenu;
 				}
 			}
 		}
@@ -917,7 +917,7 @@ MENUSTATE MenuPage::Update(Vec2i pos) {
 			
 			if(shortCutWidget) {
 				m_selected=shortCutWidget;
-				MENUSTATE e = m_selected->eMenuState;
+				MENUSTATE e = m_selected->m_targetMenu;
 				bEdit = m_selected->OnMouseClick();
 				m_selected=shortCutWidget;
 				return e;
