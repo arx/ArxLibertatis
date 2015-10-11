@@ -724,12 +724,18 @@ void init(Vec2i size) {
 }
 };
 
-static void MainMenuOptionInputCreate(MenuPage * page) {
+class InputOptionsMenuPage : public MenuPage {
+public:
+	InputOptionsMenuPage(Vec2i pos, Vec2i size)
+		: MenuPage(pos, size, OPTIONS_INPUT)
+	{}
+
+void init() {
 	
 	{
 	std::string szMenuText = getLocalised("system_menus_options_input_customize_controls");
 	TextWidget * me = new TextWidget(BUTTON_INVALID, hFontMenu, szMenuText, Vec2i(RATIO_X(20), 0), OPTIONS_INPUT_CUSTOMIZE_KEYS_1);
-	page->addCenter(me);
+	addCenter(me);
 	}
 	
 	{
@@ -739,7 +745,7 @@ static void MainMenuOptionInputCreate(MenuPage * page) {
 	CheckboxWidget * cb = new CheckboxWidget(text);
 	cb->iID = BUTTON_MENUOPTIONS_CONTROLS_INVERTMOUSE;
 	cb->iState = config.input.invertMouse ? 1 : 0;
-	page->addCenter(cb);
+	addCenter(cb);
 	}
 	
 	{
@@ -749,7 +755,7 @@ static void MainMenuOptionInputCreate(MenuPage * page) {
 	CheckboxWidget * cb = new CheckboxWidget(text);
 	cb->iID = BUTTON_MENUOPTIONS_CONTROLS_AUTOREADYWEAPON;
 	cb->iState = config.input.autoReadyWeapon ? 1 : 0;
-	page->addCenter(cb);
+	addCenter(cb);
 	}
 
 	{
@@ -759,7 +765,7 @@ static void MainMenuOptionInputCreate(MenuPage * page) {
 	CheckboxWidget * cb = new CheckboxWidget(text);
 	cb->iID = BUTTON_MENUOPTIONS_CONTROLS_MOUSELOOK;
 	cb->iState = config.input.mouseLookToggle ? 1 : 0;
-	page->addCenter(cb);
+	addCenter(cb);
 	}
 	
 	{
@@ -771,7 +777,7 @@ static void MainMenuOptionInputCreate(MenuPage * page) {
 	SliderWidget * sld = new SliderWidget(BUTTON_MENUOPTIONS_CONTROLS_MOUSESENSITIVITY, Vec2i(RATIO_X(200), 0));
 	sld->setValue(config.input.mouseSensitivity);
 	pc->AddElement(sld);
-	page->addCenter(pc);
+	addCenter(pc);
 	}
 	
 	{
@@ -781,7 +787,7 @@ static void MainMenuOptionInputCreate(MenuPage * page) {
 	CheckboxWidget * cb = new CheckboxWidget(text);
 	cb->iID = BUTTON_MENUOPTIONS_CONTROLS_AUTODESCRIPTION;
 	cb->iState = config.input.autoDescription ? 1 : 0;
-	page->addCenter(cb);
+	addCenter(cb);
 	}
 	
 	{
@@ -793,16 +799,17 @@ static void MainMenuOptionInputCreate(MenuPage * page) {
 	SliderWidget * sld = new SliderWidget(BUTTON_MENUOPTIONS_CONTROLS_QUICKSAVESLOTS, Vec2i(RATIO_X(200), 0));
 	sld->setValue(config.misc.quicksaveSlots);
 	pc->AddElement(sld);
-	page->addCenter(pc);
+	addCenter(pc);
 	}
 	
 	{
 	ButtonWidget * cb = new ButtonWidget(RATIO_2(Vec2i(20, 380)), "graph/interface/menus/back");
 	cb->eMenuState = OPTIONS;
 	cb->SetShortCut(Keyboard::Key_Escape);
-	page->add(cb);
+	add(cb);
 	}
 }
+};
 
 
 static void CUSTOM_CTRL_FUNC(MenuPage * page, long & y,
@@ -1045,8 +1052,8 @@ void MainMenuLeftCreate(MENUSTATE eMenuState)
 	}
 	
 	{
-	MenuPage * page = new MenuPage(offset, size, OPTIONS_INPUT);
-	MainMenuOptionInputCreate(page);
+	InputOptionsMenuPage * page = new InputOptionsMenuPage(offset, size);
+	page->init();
 	pWindowMenu->add(page);
 	}
 	
