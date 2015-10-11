@@ -92,8 +92,6 @@ private:
 	
 	Widget		*	m_selected;
 	bool					bEdit;
-	TextureContainer	*	pTexBackground;
-	TextureContainer	*	pTexBackgroundBorder;
 	
 	bool				bMouseAttack;
 	
@@ -120,6 +118,10 @@ public:
 	std::vector<MenuPage *>	m_pages;
 	float				fAngle;
 	MENUSTATE			eCurrentMenuState;
+	
+private:
+	TextureContainer * pTexBackground;
+	TextureContainer * pTexBackgroundBorder;
 };
 
 struct TexturedVertex;

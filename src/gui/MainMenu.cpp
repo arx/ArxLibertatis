@@ -927,8 +927,8 @@ void MainMenuLeftCreate(MENUSTATE eMenuState)
 	
 	pWindowMenu = new CWindowMenu(windowMenuPos, windowMenuSize);
 	
-	Vec2i offset = Vec2i(0, 14 - 10);
-	Vec2i size = windowMenuSize - offset + Vec2i(0, 20);
+	Vec2i offset = Vec2i(0, 0);
+	Vec2i size = windowMenuSize - offset;
 	
 	pWindowMenu->eCurrentMenuState = eMenuState;
 	

@@ -491,6 +491,9 @@ CWindowMenu::CWindowMenu(Vec2i pos, Vec2i size)
 	float fCalc	= fPosXCalc + (fDist * glm::sin(glm::radians(fAngle)));
 
 	m_pos.x = checked_range_cast<int>(fCalc);
+	
+	pTexBackground = TextureContainer::LoadUI("graph/interface/menus/menu_console_background");
+	pTexBackgroundBorder = TextureContainer::LoadUI("graph/interface/menus/menu_console_background_border");
 }
 
 CWindowMenu::~CWindowMenu() {
@@ -537,6 +540,21 @@ MENUSTATE CWindowMenu::Render() {
 		}
 	}
 	
+	// Draw backgound and border
+	GRenderer->SetRenderState(Renderer::AlphaBlending, true);
+	GRenderer->SetBlendFunc(Renderer::BlendZero, Renderer::BlendInvSrcColor);
+
+	EERIEDrawBitmap2(Rectf(Vec2f(m_pos.x, m_pos.y),
+	                 RATIO_X(pTexBackground->m_size.x), RATIO_Y(pTexBackground->m_size.y)),
+	                 0, pTexBackground, Color::white);
+
+	GRenderer->SetBlendFunc(Renderer::BlendOne, Renderer::BlendOne);
+	GRenderer->SetRenderState(Renderer::AlphaBlending, false);
+	
+	EERIEDrawBitmap2(Rectf(Vec2f(m_pos.x, m_pos.y),
+	                 RATIO_X(pTexBackgroundBorder->m_size.x), RATIO_Y(pTexBackgroundBorder->m_size.y)),
+	                 0, pTexBackgroundBorder, Color::white);
+	
 	BOOST_FOREACH(MenuPage * page, m_pages) {
 		if(eCurrentMenuState == page->eMenuState) {
 			page->Render();
@@ -569,9 +587,6 @@ MenuPage::MenuPage(Vec2i pos, Vec2i size, MENUSTATE _eMenuState)
 	m_size = RATIO_2(size);
 	
 	eMenuState=_eMenuState;
-
-	pTexBackground = TextureContainer::LoadUI("graph/interface/menus/menu_console_background");
-	pTexBackgroundBorder = TextureContainer::LoadUI("graph/interface/menus/menu_console_background_border");
 
 	bFrameOdd=false;
 }
@@ -1100,21 +1115,7 @@ void MenuPage::Render() {
 	if(bNoMenu)
 		return;
 	
-	//------------------------------------------------------------------------
-	// Console display
-	GRenderer->SetRenderState(Renderer::AlphaBlending, true);
-	GRenderer->SetBlendFunc(Renderer::BlendZero, Renderer::BlendInvSrcColor);
 
-	EERIEDrawBitmap2(Rectf(Vec2f(m_pos.x, m_pos.y),
-	                 RATIO_X(pTexBackground->m_size.x), RATIO_Y(pTexBackground->m_size.y)),
-	                 0, pTexBackground, Color::white);
-
-	GRenderer->SetBlendFunc(Renderer::BlendOne, Renderer::BlendOne);
-	GRenderer->SetRenderState(Renderer::AlphaBlending, false);
-	
-	EERIEDrawBitmap2(Rectf(Vec2f(m_pos.x, m_pos.y),
-	                 RATIO_X(pTexBackgroundBorder->m_size.x), RATIO_Y(pTexBackgroundBorder->m_size.y)),
-	                 0, pTexBackgroundBorder, Color::white);
 
 	//------------------------------------------------------------------------
 
