@@ -223,7 +223,7 @@ public:
 	int         iShortCut;
 	
 public:
-	explicit Widget(MENUSTATE);
+	explicit Widget();
 	virtual ~Widget();
 	
 	virtual Widget * OnShortCut();

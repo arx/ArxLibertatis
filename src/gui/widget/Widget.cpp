@@ -24,7 +24,7 @@
 #include "gui/widget/CycleTextWidget.h"
 #include "input/Input.h"
 
-Widget::Widget(MENUSTATE _ms)
+Widget::Widget()
 	: m_rect(0, 0, 0, 0)
 	, bTestYDouble(false)
 	, pRef(NULL)
@@ -35,7 +35,7 @@ Widget::Widget(MENUSTATE _ms)
 {
 	ePlace=NOCENTER;
 	eState=TNOP;
-	m_targetMenu=_ms;
+	m_targetMenu = NOP;
 	iShortCut=-1;
 }
 

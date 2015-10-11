@@ -28,7 +28,7 @@
 #include "scene/GameSound.h"
 
 CycleTextWidget::CycleTextWidget(MenuButton _iID)
-	: Widget(NOP)
+	: Widget()
 {
 	iID = _iID;
 	

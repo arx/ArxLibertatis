@@ -32,7 +32,7 @@
 #include "scene/GameSound.h"
 
 CheckboxWidget::CheckboxWidget(TextWidget *_pText)
-	:Widget(NOP)
+	: Widget()
 {
 	pRef = this; // TODO remove this
 	

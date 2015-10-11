@@ -29,7 +29,7 @@
 #include "scene/GameSound.h"
 
 SliderWidget::SliderWidget(MenuButton _iID, Vec2i pos)
-	: Widget(NOP)
+	: Widget()
 {
 	iID = _iID;
 	

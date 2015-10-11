@@ -27,7 +27,7 @@
 #include "scene/GameSound.h"
 
 ButtonWidget::ButtonWidget(Vec2i pos, const char * texturePath)
-	: Widget(NOP)
+	: Widget()
 {
 	pRef = this; //TODO remove this
 	

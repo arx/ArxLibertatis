@@ -22,7 +22,7 @@
 #include <boost/foreach.hpp>
 
 HorizontalPanelWidget::HorizontalPanelWidget()
-	: Widget(NOP)
+	: Widget()
 {
 	vElement.clear();
 	pRef = this;

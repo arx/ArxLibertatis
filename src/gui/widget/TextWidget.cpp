@@ -36,7 +36,8 @@
 #include "input/Input.h"
 #include "scene/GameSound.h"
 
-TextWidget::TextWidget(MenuButton _iID, Font* _pFont, const std::string& _pText, Vec2i pos, MENUSTATE _eMs) : Widget(_eMs)
+TextWidget::TextWidget(MenuButton _iID, Font* _pFont, const std::string& _pText, Vec2i pos)
+	: Widget()
 {
 	iID = _iID;
 

@@ -89,7 +89,8 @@ void init(Vec2i size) {
 	
 	{
 	std::string szMenuText = getLocalised("system_no");
-	TextWidget * me = new TextWidget(BUTTON_INVALID, hFontMenu, szMenuText, Vec2i(RATIO_X(10), 0), MAIN);
+	TextWidget * me = new TextWidget(BUTTON_INVALID, hFontMenu, szMenuText, Vec2i(RATIO_X(10), 0));
+	me->m_targetMenu = MAIN;
 	me->SetShortCut(Keyboard::Key_Escape);
 	pPanel->AddElementNoCenterIn(me);
 	}
@@ -110,14 +111,16 @@ void init() {
 	
 	{
 	std::string szMenuText = getLocalised("system_menus_main_editquest_load");
-	TextWidget * me = new TextWidget(BUTTON_MENUEDITQUEST_LOAD_INIT, hFontMenu, szMenuText, Vec2i(0, 0), EDIT_QUEST_LOAD);
+	TextWidget * me = new TextWidget(BUTTON_MENUEDITQUEST_LOAD_INIT, hFontMenu, szMenuText, Vec2i(0, 0));
+	me->m_targetMenu = EDIT_QUEST_LOAD;
 	me->m_savegame = SavegameHandle::Invalid;
 	addCenter(me, true);
 	}
 
 	{
 	std::string szMenuText = getLocalised( "system_menus_main_editquest_save");
-	TextWidget * me = new TextWidget(BUTTON_INVALID, hFontMenu, szMenuText, Vec2i(0, 0), EDIT_QUEST_SAVE);
+	TextWidget * me = new TextWidget(BUTTON_INVALID, hFontMenu, szMenuText, Vec2i(0, 0));
+	me->m_targetMenu = EDIT_QUEST_SAVE;
 	
 	if(!ARXMenu_CanResumeGame()) {
 		me->SetCheckOff();
@@ -168,7 +171,7 @@ void init(Vec2i size) {
 		std::ostringstream text;
 		text << quicksaveName << ' ' << ++quicksaveNum << "   " << save.time;
 		
-		TextWidget * e = new TextWidget(BUTTON_MENUEDITQUEST_LOAD, hFontControls, text.str(), Vec2i(RATIO_X(20), 0), NOP);
+		TextWidget * e = new TextWidget(BUTTON_MENUEDITQUEST_LOAD, hFontControls, text.str(), Vec2i(RATIO_X(20), 0));
 		e->m_savegame = SavegameHandle(i);
 		addCenter(e);
 	}
@@ -183,13 +186,14 @@ void init(Vec2i size) {
 		
 		std::string text = save.name +  "   " + save.time;
 		
-		TextWidget * e = new TextWidget(BUTTON_MENUEDITQUEST_LOAD, hFontControls, text, Vec2i(RATIO_X(20), 0), NOP);
+		TextWidget * e = new TextWidget(BUTTON_MENUEDITQUEST_LOAD, hFontControls, text, Vec2i(RATIO_X(20), 0));
 		e->m_savegame = SavegameHandle(i);
 		addCenter(e);
 	}
 	
 	{
-	TextWidget * confirm = new TextWidget(BUTTON_INVALID, hFontControls, " ", Vec2i(RATIO_X(20), 0), EDIT_QUEST_SAVE_CONFIRM);
+	TextWidget * confirm = new TextWidget(BUTTON_INVALID, hFontControls, " ", Vec2i(RATIO_X(20), 0));
+	confirm->m_targetMenu = EDIT_QUEST_SAVE_CONFIRM;
 	confirm->SetCheckOff();
 	confirm->m_savegame = SavegameHandle::Invalid;
 	addCenter(confirm);
@@ -199,7 +203,8 @@ void init(Vec2i size) {
 	{
 	std::string szMenuText = getLocalised("system_menus_main_editquest_delete");
 	szMenuText += "   ";
-	TextWidget * me = new TextWidget(BUTTON_MENUEDITQUEST_DELETE_CONFIRM, hFontMenu, szMenuText, Vec2i(0, 0), EDIT_QUEST_LOAD);
+	TextWidget * me = new TextWidget(BUTTON_MENUEDITQUEST_DELETE_CONFIRM, hFontMenu, szMenuText, Vec2i(0, 0));
+	me->m_targetMenu = EDIT_QUEST_LOAD;
 	me->SetPos(Vec2i(RATIO_X(size.x-10)-me->m_rect.width(), RATIO_Y(42)));
 	me->SetCheckOff();
 	me->lOldColor = me->lColor;
@@ -212,7 +217,8 @@ void init(Vec2i size) {
 	{
 	std::string szMenuText = getLocalised("system_menus_main_editquest_load");
 	szMenuText += "   ";
-	TextWidget * me = new TextWidget(BUTTON_MENUEDITQUEST_LOAD_CONFIRM, hFontMenu, szMenuText, Vec2i(0, 0), MAIN);
+	TextWidget * me = new TextWidget(BUTTON_MENUEDITQUEST_LOAD_CONFIRM, hFontMenu, szMenuText, Vec2i(0, 0));
+	me->m_targetMenu = MAIN;
 	me->SetPos(Vec2i(RATIO_X(size.x-10)-me->m_rect.width(), RATIO_Y(380) + RATIO_Y(40)));
 	me->SetCheckOff();
 	me->lOldColor = me->lColor;
@@ -260,8 +266,8 @@ void init() {
 		std::ostringstream text;
 		text << quicksaveName << ' ' << ++quicksaveNum << "   " << save.time;
 		
-		TextWidget * e = new TextWidget(BUTTON_MENUEDITQUEST_SAVEINFO, hFontControls,
-		                                        text.str(), Vec2i(RATIO_X(20), 0.f), EDIT_QUEST_SAVE_CONFIRM);
+		TextWidget * e = new TextWidget(BUTTON_MENUEDITQUEST_SAVEINFO, hFontControls, text.str(), Vec2i(RATIO_X(20), 0.f));
+		e->m_targetMenu = EDIT_QUEST_SAVE_CONFIRM;
 		e->setColor(Color::grayb(127));
 		e->SetCheckOff();
 		e->m_savegame = SavegameHandle(i);
@@ -278,8 +284,8 @@ void init() {
 		
 		std::string text = save.name +  "   " + save.time;
 		
-		TextWidget * e = new TextWidget(BUTTON_MENUEDITQUEST_SAVEINFO, hFontControls,
-		                                        text, Vec2i(RATIO_X(20), 0.f), EDIT_QUEST_SAVE_CONFIRM);
+		TextWidget * e = new TextWidget(BUTTON_MENUEDITQUEST_SAVEINFO, hFontControls, text, Vec2i(RATIO_X(20), 0.f));
+		e->m_targetMenu = EDIT_QUEST_SAVE_CONFIRM;
 		e->m_savegame = SavegameHandle(i);
 		addCenter(e);
 	}
@@ -289,15 +295,15 @@ void init() {
 		std::ostringstream text;
 		text << '-' << std::setfill('0') << std::setw(4) << i << '-';
 		
-		TextWidget * e = new TextWidget(BUTTON_MENUEDITQUEST_SAVEINFO, hFontControls, text.str(), Vec2i(RATIO_X(20), 0), EDIT_QUEST_SAVE_CONFIRM);
-
+		TextWidget * e = new TextWidget(BUTTON_MENUEDITQUEST_SAVEINFO, hFontControls, text.str(), Vec2i(RATIO_X(20), 0));
 		e->m_targetMenu = EDIT_QUEST_SAVE_CONFIRM;
 		e->m_savegame = SavegameHandle::Invalid;
 		addCenter(e);
 	}
 
 	{
-	TextWidget * me01 = new TextWidget(BUTTON_INVALID, hFontControls, " ", Vec2i(RATIO_X(20), 0), EDIT_QUEST_SAVE_CONFIRM);
+	TextWidget * me01 = new TextWidget(BUTTON_INVALID, hFontControls, " ", Vec2i(RATIO_X(20), 0));
+	me01->m_targetMenu = EDIT_QUEST_SAVE_CONFIRM;
 	me01->m_savegame = SavegameHandle::Invalid;
 	me01->SetCheckOff();
 	addCenter(me01);
@@ -328,7 +334,7 @@ void init(Vec2i size) {
 	
 	{
 	std::string szMenuText = getLocalised("system_menu_editquest_newsavegame", "---");
-	TextWidget * me = new TextWidget(BUTTON_INVALID, hFontMenu, szMenuText, Vec2i(RATIO_X(20), 0), NOP);
+	TextWidget * me = new TextWidget(BUTTON_INVALID, hFontMenu, szMenuText, Vec2i(RATIO_X(20), 0));
 	me->m_savegame = SavegameHandle::Invalid;
 	me->eState=EDIT;
 	me->ePlace=CENTER;
@@ -340,7 +346,8 @@ void init(Vec2i size) {
 	// Delete button
 	{
 	std::string szMenuText = getLocalised("system_menus_main_editquest_delete");
-	TextWidget * me = new TextWidget(BUTTON_MENUEDITQUEST_DELETE, hFontMenu, szMenuText, Vec2i(0, 0), EDIT_QUEST_SAVE);
+	TextWidget * me = new TextWidget(BUTTON_MENUEDITQUEST_DELETE, hFontMenu, szMenuText, Vec2i(0, 0));
+	me->m_targetMenu = EDIT_QUEST_SAVE;
 	me->SetPos(Vec2i(RATIO_X(size.x-10)-me->m_rect.width(), RATIO_Y(5)));
 	me->lOldColor = me->lColor;
 	pPanel->AddElementNoCenterIn(me);
@@ -350,7 +357,8 @@ void init(Vec2i size) {
 	// Save button
 	{
 	std::string szMenuText = getLocalised("system_menus_main_editquest_save");
-	TextWidget * me = new TextWidget(BUTTON_MENUEDITQUEST_SAVE, hFontMenu, szMenuText, Vec2i(0, 0), MAIN);
+	TextWidget * me = new TextWidget(BUTTON_MENUEDITQUEST_SAVE, hFontMenu, szMenuText, Vec2i(0, 0));
+	me->m_targetMenu = MAIN;
 	me->SetPos(Vec2i(RATIO_X(size.x-10)-me->m_rect.width(), RATIO_Y(380)));
 	pPanel->AddElementNoCenterIn(me);
 	}
@@ -377,19 +385,22 @@ void init() {
 	
 	{
 	std::string szMenuText = getLocalised("system_menus_options_video");
-	TextWidget * me = new TextWidget(BUTTON_MENUOPTIONSVIDEO_INIT, hFontMenu, szMenuText, Vec2i(0, 0), OPTIONS_VIDEO);
+	TextWidget * me = new TextWidget(BUTTON_MENUOPTIONSVIDEO_INIT, hFontMenu, szMenuText, Vec2i(0, 0));
+	me->m_targetMenu = OPTIONS_VIDEO;
 	addCenter(me, true);
 	}
 	
 	{
 	std::string szMenuText = getLocalised("system_menus_options_audio");
-	TextWidget * me = new TextWidget(BUTTON_INVALID, hFontMenu, szMenuText, Vec2i(0, 0), OPTIONS_AUDIO);
+	TextWidget * me = new TextWidget(BUTTON_INVALID, hFontMenu, szMenuText, Vec2i(0, 0));
+	me->m_targetMenu = OPTIONS_AUDIO;
 	addCenter(me, true);
 	}
 	
 	{
 	std::string szMenuText = getLocalised("system_menus_options_input");
-	TextWidget * me = new TextWidget(BUTTON_INVALID, hFontMenu, szMenuText, Vec2i(0, 0), OPTIONS_INPUT);
+	TextWidget * me = new TextWidget(BUTTON_INVALID, hFontMenu, szMenuText, Vec2i(0, 0));
+	me->m_targetMenu = OPTIONS_INPUT;
 	addCenter(me, true);
 	}
 	
@@ -415,17 +426,26 @@ void init(Vec2i size) {
 		HorizontalPanelWidget * pc = new HorizontalPanelWidget;
 		std::string szMenuText = getLocalised("system_menus_options_video_renderer", "Renderer");
 		szMenuText += "  ";
-		TextWidget * me = new TextWidget(BUTTON_INVALID, hFontMenu, szMenuText, Vec2i(RATIO_X(20), 0), NOP);
+		TextWidget * me = new TextWidget(BUTTON_INVALID, hFontMenu, szMenuText, Vec2i(RATIO_X(20), 0));
 		me->SetCheckOff();
 		pc->AddElement(me);
 		CycleTextWidget * slider = new CycleTextWidget(BUTTON_MENUOPTIONSVIDEO_RENDERER);
 		
-		slider->AddText(new TextWidget(BUTTON_INVALID, hFontMenu, "Auto-Select", Vec2i(0, 0), OPTIONS_VIDEO_RENDERER_AUTOMATIC));
-		slider->selectLast();
-#if ARX_HAVE_SDL1 || ARX_HAVE_SDL2
-		slider->AddText(new TextWidget(BUTTON_INVALID, hFontMenu, "OpenGL", Vec2i(0, 0), OPTIONS_VIDEO_RENDERER_OPENGL));
-		if(config.window.framework == "SDL") {
+		{
+			TextWidget * text = new TextWidget(BUTTON_INVALID, hFontMenu, "Auto-Select", Vec2i(0, 0));
+			text->m_targetMenu = OPTIONS_VIDEO_RENDERER_AUTOMATIC; // FIXME inband signaling
+			slider->AddText(text);
 			slider->selectLast();
+		}
+		
+#if ARX_HAVE_SDL1 || ARX_HAVE_SDL2
+		{
+			TextWidget * text = new TextWidget(BUTTON_INVALID, hFontMenu, "OpenGL", Vec2i(0, 0));
+			text->m_targetMenu = OPTIONS_VIDEO_RENDERER_OPENGL; // FIXME inband signaling
+			slider->AddText(text);
+			if(config.window.framework == "SDL") {
+				slider->selectLast();
+			}
 		}
 #endif
 		
@@ -444,7 +464,7 @@ void init(Vec2i size) {
 		szMenuText = getLocalised("system_menus_options_video_full_screen");
 	}
 	szMenuText += "  ";
-	TextWidget * text = new TextWidget(BUTTON_INVALID, hFontMenu, szMenuText, Vec2i(RATIO_X(20), 0.f), NOP);
+	TextWidget * text = new TextWidget(BUTTON_INVALID, hFontMenu, szMenuText, Vec2i(RATIO_X(20), 0.f));
 	text->SetCheckOff();
 	CheckboxWidget * cb = new CheckboxWidget(text);
 	cb->iID = BUTTON_MENUOPTIONSVIDEO_FULLSCREEN;
@@ -457,7 +477,7 @@ void init(Vec2i size) {
 	HorizontalPanelWidget * pc = new HorizontalPanelWidget;
 	std::string szMenuText = getLocalised("system_menus_options_video_resolution");
 	szMenuText += "  ";
-	TextWidget * me = new TextWidget(BUTTON_INVALID, hFontMenu, szMenuText, Vec2i(RATIO_X(20), 0.f), NOP);
+	TextWidget * me = new TextWidget(BUTTON_INVALID, hFontMenu, szMenuText, Vec2i(RATIO_X(20), 0.f));
 	me->SetCheckOff();
 	pc->AddElement(me);
 	pMenuSliderResol = new CycleTextWidget(BUTTON_MENUOPTIONSVIDEO_RESOLUTION);
@@ -513,7 +533,7 @@ void init(Vec2i size) {
 	HorizontalPanelWidget * pc = new HorizontalPanelWidget;
 	std::string szMenuText = getLocalised("system_menus_options_detail");
 	szMenuText += " ";
-	TextWidget * me = new TextWidget(BUTTON_INVALID, hFontMenu, szMenuText, Vec2i(RATIO_X(20), 0), NOP);
+	TextWidget * me = new TextWidget(BUTTON_INVALID, hFontMenu, szMenuText, Vec2i(RATIO_X(20), 0));
 	me->SetCheckOff();
 	pc->AddElement(me);
 	
@@ -535,7 +555,7 @@ void init(Vec2i size) {
 	{
 	HorizontalPanelWidget * pc = new HorizontalPanelWidget;
 	std::string szMenuText = getLocalised("system_menus_options_video_brouillard");
-	TextWidget * me = new TextWidget(BUTTON_INVALID, hFontMenu, szMenuText, Vec2i(RATIO_X(20), 0.f), NOP);
+	TextWidget * me = new TextWidget(BUTTON_INVALID, hFontMenu, szMenuText, Vec2i(RATIO_X(20), 0.f));
 	me->SetCheckOff();
 	pc->AddElement(me);
 	SliderWidget * sld = new SliderWidget(BUTTON_MENUOPTIONSVIDEO_FOG, Vec2i(RATIO_X(200), 0));
@@ -547,7 +567,7 @@ void init(Vec2i size) {
 	{
 	std::string szMenuText = getLocalised("system_menus_options_video_crosshair", "Show Crosshair");
 	szMenuText += " ";
-	TextWidget * text = new TextWidget(BUTTON_INVALID, hFontMenu, szMenuText, Vec2i(RATIO_X(20), 0.f), NOP);
+	TextWidget * text = new TextWidget(BUTTON_INVALID, hFontMenu, szMenuText, Vec2i(RATIO_X(20), 0.f));
 	text->SetCheckOff();
 	CheckboxWidget * cb = new CheckboxWidget(text);
 	cb->iID = BUTTON_MENUOPTIONSVIDEO_CROSSHAIR;
@@ -558,7 +578,7 @@ void init(Vec2i size) {
 	{
 	std::string szMenuText = getLocalised("system_menus_options_video_antialiasing", "antialiasing");
 	szMenuText += " ";
-	TextWidget * text = new TextWidget(BUTTON_INVALID, hFontMenu, szMenuText, Vec2i(RATIO_X(20), 0), NOP);
+	TextWidget * text = new TextWidget(BUTTON_INVALID, hFontMenu, szMenuText, Vec2i(RATIO_X(20), 0));
 	text->SetCheckOff();
 	CheckboxWidget * cb = new CheckboxWidget(text);
 	cb->iID = BUTTON_MENUOPTIONSVIDEO_ANTIALIASING;
@@ -571,7 +591,7 @@ void init(Vec2i size) {
 	{
 	std::string szMenuText = getLocalised("system_menus_options_video_vsync", "VSync");
 	szMenuText += " ";
-	TextWidget * text = new TextWidget(BUTTON_INVALID, hFontMenu, szMenuText, Vec2i(RATIO_X(20), 0), NOP);
+	TextWidget * text = new TextWidget(BUTTON_INVALID, hFontMenu, szMenuText, Vec2i(RATIO_X(20), 0));
 	text->SetCheckOff();
 	CheckboxWidget * cb = new CheckboxWidget(text);
 	cb->iID = BUTTON_MENUOPTIONSVIDEO_VSYNC;
@@ -582,7 +602,7 @@ void init(Vec2i size) {
 	{
 	std::string szMenuText = getLocalised("system_menus_options_video_hud_scale", "Scale Hud");
 	szMenuText += " ";
-	TextWidget * text = new TextWidget(BUTTON_INVALID, hFontMenu, szMenuText, Vec2i(RATIO_X(20), 0), NOP);
+	TextWidget * text = new TextWidget(BUTTON_INVALID, hFontMenu, szMenuText, Vec2i(RATIO_X(20), 0));
 	text->SetCheckOff();
 	CheckboxWidget * cb = new CheckboxWidget(text);
 	cb->iID = BUTTON_MENUOPTIONSVIDEO_HUDSCALE;
@@ -594,7 +614,7 @@ void init(Vec2i size) {
 	HorizontalPanelWidget * pc = new HorizontalPanelWidget;
 	std::string szMenuText = getLocalised("system_menus_video_apply");
 	szMenuText += "   ";
-	TextWidget * me = new TextWidget(BUTTON_MENUOPTIONSVIDEO_APPLY, hFontMenu, szMenuText, Vec2i(RATIO_X(240), 0), NOP);
+	TextWidget * me = new TextWidget(BUTTON_MENUOPTIONSVIDEO_APPLY, hFontMenu, szMenuText, Vec2i(RATIO_X(240), 0));
 	me->SetPos(Vec2i(RATIO_X(size.x-10)-me->m_rect.width(), RATIO_Y(380) + RATIO_Y(40)));
 	me->SetCheckOff();
 	pc->AddElementNoCenterIn(me);
@@ -625,7 +645,7 @@ void init(Vec2i size) {
 		HorizontalPanelWidget * pc = new HorizontalPanelWidget;
 		std::string szMenuText = getLocalised("system_menus_options_audio_device", "Device");
 		szMenuText += "  ";
-		TextWidget * me = new TextWidget(BUTTON_INVALID, hFontMenu, szMenuText, Vec2i(RATIO_X(20), 0), NOP);
+		TextWidget * me = new TextWidget(BUTTON_INVALID, hFontMenu, szMenuText, Vec2i(RATIO_X(20), 0));
 		me->SetCheckOff();
 		pc->AddElement(me);
 		CycleTextWidget * slider = new CycleTextWidget(BUTTON_MENUOPTIONSAUDIO_DEVICE);
@@ -656,7 +676,7 @@ void init(Vec2i size) {
 	{
 	HorizontalPanelWidget * pc = new HorizontalPanelWidget;
 	std::string szMenuText = getLocalised("system_menus_options_audio_master_volume");
-	TextWidget * me = new TextWidget(BUTTON_INVALID, hFontMenu, szMenuText, Vec2i(RATIO_X(20), 0.f), NOP);
+	TextWidget * me = new TextWidget(BUTTON_INVALID, hFontMenu, szMenuText, Vec2i(RATIO_X(20), 0.f));
 	me->SetCheckOff();
 	pc->AddElement(me);
 	SliderWidget * sld = new SliderWidget(BUTTON_MENUOPTIONSAUDIO_MASTER, Vec2i(RATIO_X(200), 0));
@@ -668,7 +688,8 @@ void init(Vec2i size) {
 	{
 	HorizontalPanelWidget * pc = new HorizontalPanelWidget;
 	std::string szMenuText = getLocalised("system_menus_options_audio_effects_volume");
-	TextWidget * me = new TextWidget(BUTTON_INVALID, hFontMenu, szMenuText, Vec2i(RATIO_X(20), 0.f), OPTIONS_AUDIO);
+	TextWidget * me = new TextWidget(BUTTON_INVALID, hFontMenu, szMenuText, Vec2i(RATIO_X(20), 0.f));
+	me->m_targetMenu = OPTIONS_AUDIO;
 	me->SetCheckOff();
 	pc->AddElement(me);
 	SliderWidget * sld = new SliderWidget(BUTTON_MENUOPTIONSAUDIO_SFX, Vec2i(RATIO_X(200), 0));
@@ -680,7 +701,8 @@ void init(Vec2i size) {
 	{
 	HorizontalPanelWidget * pc = new HorizontalPanelWidget;
 	std::string szMenuText = getLocalised("system_menus_options_audio_speech_volume");
-	TextWidget * me = new TextWidget(BUTTON_INVALID, hFontMenu, szMenuText, Vec2i(RATIO_X(20), 0.f), OPTIONS_AUDIO);
+	TextWidget * me = new TextWidget(BUTTON_INVALID, hFontMenu, szMenuText, Vec2i(RATIO_X(20), 0.f));
+	me->m_targetMenu = OPTIONS_AUDIO;
 	me->SetCheckOff();
 	pc->AddElement(me);
 	SliderWidget * sld = new SliderWidget(BUTTON_MENUOPTIONSAUDIO_SPEECH, Vec2i(RATIO_X(200), 0));
@@ -692,7 +714,8 @@ void init(Vec2i size) {
 	{
 	HorizontalPanelWidget * pc = new HorizontalPanelWidget;
 	std::string szMenuText = getLocalised("system_menus_options_audio_ambiance_volume");
-	TextWidget * me = new TextWidget(BUTTON_INVALID, hFontMenu, szMenuText, Vec2i(RATIO_X(20), 0), OPTIONS_AUDIO);
+	TextWidget * me = new TextWidget(BUTTON_INVALID, hFontMenu, szMenuText, Vec2i(RATIO_X(20), 0));
+	me->m_targetMenu = OPTIONS_AUDIO;
 	me->SetCheckOff();
 	pc->AddElement(me);
 	SliderWidget * sld = new SliderWidget(BUTTON_MENUOPTIONSAUDIO_AMBIANCE, Vec2i(RATIO_X(200), 0));
@@ -704,7 +727,8 @@ void init(Vec2i size) {
 	{
 	std::string szMenuText = getLocalised("system_menus_options_audio_eax", "EAX");
 	szMenuText += " ";
-	TextWidget * text = new TextWidget(BUTTON_INVALID, hFontMenu, szMenuText, Vec2i(RATIO_X(20), 0), OPTIONS_INPUT);
+	TextWidget * text = new TextWidget(BUTTON_INVALID, hFontMenu, szMenuText, Vec2i(RATIO_X(20), 0));
+	text->m_targetMenu = OPTIONS_INPUT;
 	CheckboxWidget * cb = new CheckboxWidget(text);
 	cb->iID = BUTTON_MENUOPTIONSAUDIO_EAX;
 	if(audio::isReverbSupported()) {
@@ -734,14 +758,16 @@ void init() {
 	
 	{
 	std::string szMenuText = getLocalised("system_menus_options_input_customize_controls");
-	TextWidget * me = new TextWidget(BUTTON_INVALID, hFontMenu, szMenuText, Vec2i(RATIO_X(20), 0), OPTIONS_INPUT_CUSTOMIZE_KEYS_1);
+	TextWidget * me = new TextWidget(BUTTON_INVALID, hFontMenu, szMenuText, Vec2i(RATIO_X(20), 0));
+	me->m_targetMenu = OPTIONS_INPUT_CUSTOMIZE_KEYS_1;
 	addCenter(me);
 	}
 	
 	{
 	std::string szMenuText = getLocalised("system_menus_options_input_invert_mouse");
 	szMenuText += " ";
-	TextWidget * text = new TextWidget(BUTTON_INVALID, hFontMenu, szMenuText, Vec2i(RATIO_X(20), 0), OPTIONS_INPUT);
+	TextWidget * text = new TextWidget(BUTTON_INVALID, hFontMenu, szMenuText, Vec2i(RATIO_X(20), 0));
+	text->m_targetMenu = OPTIONS_INPUT; // TODO is this correct ?
 	CheckboxWidget * cb = new CheckboxWidget(text);
 	cb->iID = BUTTON_MENUOPTIONS_CONTROLS_INVERTMOUSE;
 	cb->iState = config.input.invertMouse ? 1 : 0;
@@ -751,7 +777,8 @@ void init() {
 	{
 	std::string szMenuText = getLocalised("system_menus_options_auto_ready_weapon");
 	szMenuText += " ";
-	TextWidget * text = new TextWidget(BUTTON_INVALID, hFontMenu, szMenuText, Vec2i(RATIO_X(20), 0), OPTIONS_INPUT);
+	TextWidget * text = new TextWidget(BUTTON_INVALID, hFontMenu, szMenuText, Vec2i(RATIO_X(20), 0));
+	text->m_targetMenu = OPTIONS_INPUT; // TODO is this correct ?
 	CheckboxWidget * cb = new CheckboxWidget(text);
 	cb->iID = BUTTON_MENUOPTIONS_CONTROLS_AUTOREADYWEAPON;
 	cb->iState = config.input.autoReadyWeapon ? 1 : 0;
@@ -761,7 +788,8 @@ void init() {
 	{
 	std::string szMenuText = getLocalised("system_menus_options_input_mouse_look_toggle");
 	szMenuText += " ";
-	TextWidget * text = new TextWidget(BUTTON_INVALID, hFontMenu, szMenuText, Vec2i(RATIO_X(20), 0.f), OPTIONS_INPUT);
+	TextWidget * text = new TextWidget(BUTTON_INVALID, hFontMenu, szMenuText, Vec2i(RATIO_X(20), 0.f));
+	text->m_targetMenu = OPTIONS_INPUT; // TODO is this correct ?
 	CheckboxWidget * cb = new CheckboxWidget(text);
 	cb->iID = BUTTON_MENUOPTIONS_CONTROLS_MOUSELOOK;
 	cb->iState = config.input.mouseLookToggle ? 1 : 0;
@@ -771,7 +799,7 @@ void init() {
 	{
 	HorizontalPanelWidget *pc = new HorizontalPanelWidget;
 	std::string szMenuText = getLocalised("system_menus_options_input_mouse_sensitivity");
-	TextWidget * me = new TextWidget(BUTTON_INVALID, hFontMenu, szMenuText, Vec2i(RATIO_X(20), 0.f), NOP);
+	TextWidget * me = new TextWidget(BUTTON_INVALID, hFontMenu, szMenuText, Vec2i(RATIO_X(20), 0.f));
 	me->SetCheckOff();
 	pc->AddElement(me);
 	SliderWidget * sld = new SliderWidget(BUTTON_MENUOPTIONS_CONTROLS_MOUSESENSITIVITY, Vec2i(RATIO_X(200), 0));
@@ -783,7 +811,8 @@ void init() {
 	{
 	std::string szMenuText = getLocalised("system_menus_autodescription", "auto_description");
 	szMenuText += " ";
-	TextWidget * text = new TextWidget(BUTTON_INVALID, hFontMenu, szMenuText, Vec2i(RATIO_X(20), 0), OPTIONS_INPUT);
+	TextWidget * text = new TextWidget(BUTTON_INVALID, hFontMenu, szMenuText, Vec2i(RATIO_X(20), 0));
+	text->m_targetMenu = OPTIONS_INPUT; // TODO is this correct ?
 	CheckboxWidget * cb = new CheckboxWidget(text);
 	cb->iID = BUTTON_MENUOPTIONS_CONTROLS_AUTODESCRIPTION;
 	cb->iState = config.input.autoDescription ? 1 : 0;
@@ -793,7 +822,7 @@ void init() {
 	{
 	HorizontalPanelWidget * pc = new HorizontalPanelWidget;
 	std::string szMenuText = getLocalised("system_menus_options_misc_quicksave_slots", "Quicksave slots");
-	TextWidget * me = new TextWidget(BUTTON_INVALID, hFontMenu, szMenuText, Vec2i(RATIO_X(20), 0), NOP);
+	TextWidget * me = new TextWidget(BUTTON_INVALID, hFontMenu, szMenuText, Vec2i(RATIO_X(20), 0));
 	me->SetCheckOff();
 	pc->AddElement(me);
 	SliderWidget * sld = new SliderWidget(BUTTON_MENUOPTIONS_CONTROLS_QUICKSAVESLOTS, Vec2i(RATIO_X(200), 0));
@@ -821,15 +850,15 @@ static void CUSTOM_CTRL_FUNC(MenuPage * page, long & y,
 	
 	std::string szMenuText = getLocalised(a, defaultText);
 	szMenuText += specialSuffix;
-	TextWidget * me = new TextWidget(BUTTON_INVALID, hFontControls, szMenuText, Vec2i(RATIO_X(20), 0), NOP);
+	TextWidget * me = new TextWidget(BUTTON_INVALID, hFontControls, szMenuText, Vec2i(RATIO_X(20), 0));
 	me->SetCheckOff();
 	pc->AddElement(me);
 	
-	me = new TextWidget(c, hFontControls, "---", Vec2i(RATIO_X(150), 0), NOP);
+	me = new TextWidget(c, hFontControls, "---", Vec2i(RATIO_X(150), 0));
 	me->eState=GETTOUCH;
 	pc->AddElement(me);
 	
-	me = new TextWidget(d, hFontControls, "---", Vec2i(RATIO_X(245), 0), NOP);
+	me = new TextWidget(d, hFontControls, "---", Vec2i(RATIO_X(245), 0));
 	me->eState=GETTOUCH;
 	pc->AddElement(me);
 	
@@ -993,7 +1022,8 @@ void init(Vec2i size) {
 	yes->SetPos(Vec2i(RATIO_X(size.x-10)-yes->m_rect.width(), 0));
 	pPanel->AddElementNoCenterIn(yes);
 	
-	TextWidget * no = new TextWidget(BUTTON_INVALID, hFontMenu, getLocalised("system_no"), Vec2i(RATIO_X(10), 0), MAIN);
+	TextWidget * no = new TextWidget(BUTTON_INVALID, hFontMenu, getLocalised("system_no"), Vec2i(RATIO_X(10), 0));
+	no->m_targetMenu = MAIN;
 	no->SetShortCut(Keyboard::Key_Escape);
 	pPanel->AddElementNoCenterIn(no);
 	
@@ -1127,38 +1157,44 @@ void MainMenu::init()
 	
 	{
 	std::string szMenuText = getLocalised("system_menus_main_resumegame");
-	TextWidget *me = new TextWidget(BUTTON_MENUMAIN_RESUMEGAME, hFontMainMenu, szMenuText, RATIO_2(pos), RESUME_GAME);
+	TextWidget *me = new TextWidget(BUTTON_MENUMAIN_RESUMEGAME, hFontMainMenu, szMenuText, RATIO_2(pos));
+	me->m_targetMenu = RESUME_GAME;
 	add(me);
 	m_resumeGame = me;
 	}
 	pos.y += yOffset;
 	{
 	std::string szMenuText = getLocalised("system_menus_main_newquest");
-	TextWidget *me = new TextWidget(BUTTON_MENUMAIN_NEWQUEST, hFontMainMenu, szMenuText, RATIO_2(pos), NEW_QUEST);
+	TextWidget *me = new TextWidget(BUTTON_MENUMAIN_NEWQUEST, hFontMainMenu, szMenuText, RATIO_2(pos));
+	me->m_targetMenu = NEW_QUEST;
 	add(me);
 	}
 	pos.y += yOffset;
 	{
 	std::string szMenuText = getLocalised("system_menus_main_editquest");
-	TextWidget *me = new TextWidget(BUTTON_INVALID, hFontMainMenu, szMenuText, RATIO_2(pos), EDIT_QUEST);
+	TextWidget *me = new TextWidget(BUTTON_INVALID, hFontMainMenu, szMenuText, RATIO_2(pos));
+	me->m_targetMenu = EDIT_QUEST;
 	add(me);
 	}
 	pos.y += yOffset;
 	{
 	std::string szMenuText = getLocalised("system_menus_main_options");
-	TextWidget *me = new TextWidget(BUTTON_MENUMAIN_OPTIONS, hFontMainMenu, szMenuText, RATIO_2(pos), OPTIONS);
+	TextWidget *me = new TextWidget(BUTTON_MENUMAIN_OPTIONS, hFontMainMenu, szMenuText, RATIO_2(pos));
+	me->m_targetMenu = OPTIONS;
 	add(me);
 	}
 	pos.y += yOffset;
 	{
 	std::string szMenuText = getLocalised("system_menus_main_credits");
-	TextWidget *me = new TextWidget(BUTTON_MENUMAIN_CREDITS, hFontMainMenu, szMenuText, RATIO_2(pos), CREDITS);
+	TextWidget *me = new TextWidget(BUTTON_MENUMAIN_CREDITS, hFontMainMenu, szMenuText, RATIO_2(pos));
+	me->m_targetMenu = CREDITS;
 	add(me);
 	}
 	pos.y += yOffset;
 	{
 	std::string szMenuText = getLocalised("system_menus_main_quit");
-	TextWidget *me = new TextWidget(BUTTON_INVALID, hFontMainMenu, szMenuText, RATIO_2(pos), QUIT);
+	TextWidget *me = new TextWidget(BUTTON_INVALID, hFontMainMenu, szMenuText, RATIO_2(pos));
+	me->m_targetMenu = QUIT;
 	add(me);
 	}
 	pos.y += yOffset;
@@ -1171,7 +1207,7 @@ void MainMenu::init()
 	}
 
 	float verPosX = RATIO_X(620) - hFontControls->getTextSize(version).x;
-	TextWidget * me = new TextWidget(BUTTON_INVALID, hFontControls, version, Vec2i(verPosX, RATIO_Y(80)), NOP );
+	TextWidget * me = new TextWidget(BUTTON_INVALID, hFontControls, version, Vec2i(verPosX, RATIO_Y(80)));
 	
 	me->SetCheckOff();
 	me->lColor=Color(127,127,127);
