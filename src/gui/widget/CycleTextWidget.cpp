@@ -122,10 +122,6 @@ void CycleTextWidget::EmptyFunction() {
 	}
 }
 
-// TODO remove this
-extern int newWidth;
-extern int newHeight;
-
 bool CycleTextWidget::OnMouseClick() {
 	
 	if(!enabled) {
@@ -159,48 +155,8 @@ bool CycleTextWidget::OnMouseClick() {
 		}
 	}
 
-	switch(iID) {
-		
-		case BUTTON_MENUOPTIONSAUDIO_DEVICE: {
-			if(iPos == 0) {
-				ARXMenu_Options_Audio_SetDevice("auto");
-			} else {
-				ARXMenu_Options_Audio_SetDevice(vText.at(iPos)->lpszText);
-			}
-			break;
-		}
-		
-		case BUTTON_MENUOPTIONSVIDEO_RESOLUTION: {
-			std::string pcText = (vText.at(iPos))->lpszText;
-			
-			if(pcText == AUTO_RESOLUTION_STRING) {
-				newWidth = newHeight = 0;
-			} else {
-				std::stringstream ss( pcText );
-				int iX = config.video.resolution.x;
-				int iY = config.video.resolution.y;
-				char tmp;
-				ss >> iX >> tmp >> iY;
-				newWidth = iX;
-				newHeight = iY;
-			}
-			break;
-		}
-		case BUTTON_MENUOPTIONSVIDEO_RENDERER: {
-			switch((vText.at(iPos))->m_targetMenu) {
-				case OPTIONS_VIDEO_RENDERER_OPENGL:    config.window.framework = "SDL"; break;
-				case OPTIONS_VIDEO_RENDERER_AUTOMATIC: config.window.framework = "auto"; break;
-				default: break;
-			}
-			break;
-		}
-		// MENUOPTIONS_VIDEO
-		case BUTTON_MENUOPTIONSVIDEO_OTHERSDETAILS: {
-			ARXMenu_Options_Video_SetDetailsQuality(iPos);
-			break;
-		}
-		default:
-			break;
+	if(m_onChange) {
+		m_onChange(iPos, vText.at(iPos)->lpszText);
 	}
 	
 	return false;

@@ -413,6 +413,48 @@ void init() {
 }
 };
 
+struct VideoRendererOnChangeHandler {
+	void operator()(int pos, const std::string & str) {
+		ARX_UNUSED(str);
+		
+		switch(pos) {
+			case 0:  config.window.framework = "auto"; break;
+			case 1:  config.window.framework = "SDL";  break;
+			default: config.window.framework = "auto"; break;
+		}
+	}
+};
+
+// TODO remove this
+extern int newWidth;
+extern int newHeight;
+
+struct VideoResolutionOnChangeHandler {
+	void operator()(int pos, const std::string & str) {
+		ARX_UNUSED(pos);
+		
+		if(str == AUTO_RESOLUTION_STRING) {
+			newWidth = newHeight = 0;
+		} else {
+			std::stringstream ss(str);
+			int iX = config.video.resolution.x;
+			int iY = config.video.resolution.y;
+			char tmp;
+			ss >> iX >> tmp >> iY;
+			newWidth = iX;
+			newHeight = iY;
+		}
+	}
+};
+
+struct VideoQualityOnChangeHandler {
+	void operator()(int pos, const std::string & str) {
+		ARX_UNUSED(str);
+		
+		ARXMenu_Options_Video_SetDetailsQuality(pos);
+	}
+};
+
 class VideoOptionsMenuPage : public MenuPage {
 public:
 	VideoOptionsMenuPage(Vec2i pos, Vec2i size)
@@ -430,10 +472,10 @@ void init(Vec2i size) {
 		me->SetCheckOff();
 		pc->AddElement(me);
 		CycleTextWidget * slider = new CycleTextWidget(BUTTON_MENUOPTIONSVIDEO_RENDERER);
+		slider->m_onChange = VideoRendererOnChangeHandler();
 		
 		{
 			TextWidget * text = new TextWidget(BUTTON_INVALID, hFontMenu, "Auto-Select", Vec2i(0, 0));
-			text->m_targetMenu = OPTIONS_VIDEO_RENDERER_AUTOMATIC; // FIXME inband signaling
 			slider->AddText(text);
 			slider->selectLast();
 		}
@@ -441,7 +483,6 @@ void init(Vec2i size) {
 #if ARX_HAVE_SDL1 || ARX_HAVE_SDL2
 		{
 			TextWidget * text = new TextWidget(BUTTON_INVALID, hFontMenu, "OpenGL", Vec2i(0, 0));
-			text->m_targetMenu = OPTIONS_VIDEO_RENDERER_OPENGL; // FIXME inband signaling
 			slider->AddText(text);
 			if(config.window.framework == "SDL") {
 				slider->selectLast();
@@ -481,6 +522,7 @@ void init(Vec2i size) {
 	me->SetCheckOff();
 	pc->AddElement(me);
 	pMenuSliderResol = new CycleTextWidget(BUTTON_MENUOPTIONSVIDEO_RESOLUTION);
+	pMenuSliderResol->m_onChange = VideoResolutionOnChangeHandler();
 	
 	pMenuSliderResol->setEnabled(config.video.fullscreen);
 	
@@ -538,6 +580,7 @@ void init(Vec2i size) {
 	pc->AddElement(me);
 	
 	CycleTextWidget * cb = new CycleTextWidget(BUTTON_MENUOPTIONSVIDEO_OTHERSDETAILS);
+	cb->m_onChange = VideoQualityOnChangeHandler();
 	szMenuText = getLocalised("system_menus_options_video_texture_low");
 	cb->AddText(new TextWidget(BUTTON_INVALID, hFontMenu, szMenuText));
 	szMenuText = getLocalised("system_menus_options_video_texture_med");
@@ -631,6 +674,16 @@ void init(Vec2i size) {
 }
 };
 
+struct AudioDeviceOnChangeHandler {
+	void operator()(int pos, const std::string & str) {
+		if(pos == 0) {
+			ARXMenu_Options_Audio_SetDevice("auto");
+		} else {
+			ARXMenu_Options_Audio_SetDevice(str);
+		}
+	}
+};
+
 class AudioOptionsMenuPage : public MenuPage {
 public:
 	AudioOptionsMenuPage(Vec2i pos, Vec2i size)
@@ -649,6 +702,7 @@ void init(Vec2i size) {
 		me->SetCheckOff();
 		pc->AddElement(me);
 		CycleTextWidget * slider = new CycleTextWidget(BUTTON_MENUOPTIONSAUDIO_DEVICE);
+		slider->m_onChange = AudioDeviceOnChangeHandler();
 		
 		int maxwidth = RATIO_X(size.x - 28) - me->m_rect.width() - slider->m_rect.width();
 		

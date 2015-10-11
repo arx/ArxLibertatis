@@ -20,6 +20,8 @@
 #ifndef ARX_GUI_WIDGET_CYCLETEXTWIDGET_H
 #define ARX_GUI_WIDGET_CYCLETEXTWIDGET_H
 
+#include <boost/function.hpp>
+
 #include "gui/widget/ButtonWidget.h"
 #include "gui/widget/Widget.h"
 
@@ -49,6 +51,8 @@ public:
 	void RenderMouseOver();
 	void EmptyFunction();
 	virtual void setEnabled(bool enable);
+	
+	boost::function<void(int, const std::string &)> m_onChange;
 	
 private:
 	ButtonWidget		*	pLeftButton;
