@@ -499,7 +499,7 @@ CWindowMenu::~CWindowMenu() {
 		delete *it;
 }
 
-void CWindowMenu::AddConsole(MenuPage *page) {
+void CWindowMenu::add(MenuPage *page) {
 
 	m_pages.push_back(page);
 	page->m_oldPos.x = 0;

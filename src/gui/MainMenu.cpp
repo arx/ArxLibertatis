@@ -936,13 +936,13 @@ void MainMenuLeftCreate(MENUSTATE eMenuState)
 	if(ARXMenu_CanResumeGame()){
 		MenuPage * page = new MenuPage(offset, size, NEW_QUEST);
 		Menu2_Render_NewQuest(page, size);
-		pWindowMenu->AddConsole(page);
+		pWindowMenu->add(page);
 	}
 
 	{
 	MenuPage * page = new MenuPage(offset, size, EDIT_QUEST);
 	MainMenuCreateEditQuest(page);
-	pWindowMenu->AddConsole(page);
+	pWindowMenu->add(page);
 	}
 	
 	{
@@ -951,7 +951,7 @@ void MainMenuLeftCreate(MENUSTATE eMenuState)
 	page->m_rowSpacing = 5;
 	
 	MainMenuCreateEditQuestLoad(page, size);
-	pWindowMenu->AddConsole(page);
+	pWindowMenu->add(page);
 	}
 	
 	{
@@ -959,7 +959,7 @@ void MainMenuLeftCreate(MENUSTATE eMenuState)
 	page->m_rowSpacing = 5;
 	
 	MainMenuCreateEditQuestSave(page);
-	pWindowMenu->AddConsole(page);
+	pWindowMenu->add(page);
 	}
 	
 	{
@@ -967,49 +967,49 @@ void MainMenuLeftCreate(MENUSTATE eMenuState)
 	page->m_savegame = SavegameHandle::Invalid;
 	
 	MainMenuCreateEditQuestSaveConfirm(page, size);
-	pWindowMenu->AddConsole(page);
+	pWindowMenu->add(page);
 	}
 	
 	{
 	MenuPage * page = new MenuPage(offset, size, OPTIONS);
 	MainMenuOptionGroupsCreate(page);
-	pWindowMenu->AddConsole(page);
+	pWindowMenu->add(page);
 	}
 	
 	{
 	MenuPage * page = new MenuPage(offset + Vec2i(0, -35), size, OPTIONS_VIDEO);
 	MainMenuOptionVideoCreate(page, size);
-	pWindowMenu->AddConsole(page);
+	pWindowMenu->add(page);
 	}
 	
 	{
 	MenuPage * page = new MenuPage(offset, size, OPTIONS_AUDIO);
 	MainMenuOptionAudioCreate(page, size);
-	pWindowMenu->AddConsole(page);
+	pWindowMenu->add(page);
 	}
 	
 	{
 	MenuPage * page = new MenuPage(offset, size, OPTIONS_INPUT);
 	MainMenuOptionInputCreate(page);
-	pWindowMenu->AddConsole(page);
+	pWindowMenu->add(page);
 	}
 	
 	{
 	MenuPage * page = new MenuPage(offset, size, OPTIONS_INPUT_CUSTOMIZE_KEYS_1);
 	MainMenuOptionControlsCreatePage1(page, size);
-	pWindowMenu->AddConsole(page);
+	pWindowMenu->add(page);
 	}
 	
 	{
 	MenuPage * page = new MenuPage(offset, size, OPTIONS_INPUT_CUSTOMIZE_KEYS_2);
 	MainMenuOptionControlsCreatePage2(page, size);
-	pWindowMenu->AddConsole(page);
+	pWindowMenu->add(page);
 	}
 	
 	{
 	MenuPage * page = new MenuPage(offset, size, QUIT);
 	Menu2_Render_Quit(page, size);
-	pWindowMenu->AddConsole(page);
+	pWindowMenu->add(page);
 	}
 }
 

@@ -112,7 +112,7 @@ public:
 	CWindowMenu(Vec2i pos, Vec2i size);
 	virtual ~CWindowMenu();
 	
-	void AddConsole(MenuPage * page);
+	void add(MenuPage * page);
 	void Update(float time);
 	MENUSTATE Render();
 	
