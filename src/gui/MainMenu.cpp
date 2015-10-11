@@ -135,12 +135,18 @@ void init() {
 }
 };
 
-static void MainMenuCreateEditQuestLoad(MenuPage * page, Vec2i size) {
+class LoadMenuPage : public MenuPage {
+public:
+	LoadMenuPage(Vec2i pos, Vec2i size)
+		: MenuPage(pos, size, EDIT_QUEST_LOAD)
+	{}
+
+void init(Vec2i size) {
 	
 	{
 	ButtonWidget * cb = new ButtonWidget(Vec2i(0, 0), "graph/interface/icons/menu_main_load");
 	cb->SetCheckOff();
-	page->addCenter(cb, true);
+	addCenter(cb, true);
 	}
 	
 	std::string quicksaveName = getLocalised("system_menus_main_quickloadsave", "Quicksave");
@@ -164,7 +170,7 @@ static void MainMenuCreateEditQuestLoad(MenuPage * page, Vec2i size) {
 		
 		TextWidget * e = new TextWidget(BUTTON_MENUEDITQUEST_LOAD, hFontControls, text.str(), Vec2i(RATIO_X(20), 0), NOP);
 		e->m_savegame = SavegameHandle(i);
-		page->addCenter(e);
+		addCenter(e);
 	}
 	
 	// Show regular saves.
@@ -179,14 +185,14 @@ static void MainMenuCreateEditQuestLoad(MenuPage * page, Vec2i size) {
 		
 		TextWidget * e = new TextWidget(BUTTON_MENUEDITQUEST_LOAD, hFontControls, text, Vec2i(RATIO_X(20), 0), NOP);
 		e->m_savegame = SavegameHandle(i);
-		page->addCenter(e);
+		addCenter(e);
 	}
 	
 	{
 	TextWidget * confirm = new TextWidget(BUTTON_INVALID, hFontControls, " ", Vec2i(RATIO_X(20), 0), EDIT_QUEST_SAVE_CONFIRM);
 	confirm->SetCheckOff();
 	confirm->m_savegame = SavegameHandle::Invalid;
-	page->addCenter(confirm);
+	addCenter(confirm);
 	}
 	
 	// Delete button
@@ -198,7 +204,7 @@ static void MainMenuCreateEditQuestLoad(MenuPage * page, Vec2i size) {
 	me->SetCheckOff();
 	me->lOldColor = me->lColor;
 	me->lColor = Color::grayb(127);
-	page->add(me);
+	add(me);
 	pDeleteConfirm = me;
 	}
 	
@@ -211,7 +217,7 @@ static void MainMenuCreateEditQuestLoad(MenuPage * page, Vec2i size) {
 	me->SetCheckOff();
 	me->lOldColor = me->lColor;
 	me->lColor = Color::grayb(127);
-	page->add(me);
+	add(me);
 	pLoadConfirm = me;
 	}
 	
@@ -220,10 +226,11 @@ static void MainMenuCreateEditQuestLoad(MenuPage * page, Vec2i size) {
 	ButtonWidget * cb = new ButtonWidget(RATIO_2(Vec2i(20, 420)), "graph/interface/menus/back");
 	cb->eMenuState = EDIT_QUEST;
 	cb->SetShortCut(Keyboard::Key_Escape);
-	page->add(cb);
+	add(cb);
 	}
 	}
 }
+};
 
 static void MainMenuCreateEditQuestSave(MenuPage * page) {
 	
@@ -963,11 +970,10 @@ void MainMenuLeftCreate(MENUSTATE eMenuState)
 	}
 	
 	{
-	MenuPage * page = new MenuPage(offset + Vec2i(0, -40), size, EDIT_QUEST_LOAD);
+	LoadMenuPage * page = new LoadMenuPage(offset + Vec2i(0, -40), size);
 	page->m_savegame = SavegameHandle::Invalid;
 	page->m_rowSpacing = 5;
-	
-	MainMenuCreateEditQuestLoad(page, size);
+	page->init(size);
 	pWindowMenu->add(page);
 	}
 	
