@@ -966,18 +966,24 @@ void init(Vec2i size) {
 }
 };
 
-static void Menu2_Render_Quit(MenuPage * page, Vec2i size) {
+class QuitConfirmMenuPage : public MenuPage {
+public:
+	QuitConfirmMenuPage(Vec2i pos, Vec2i size)
+		: MenuPage(pos, size, QUIT)
+	{}
+
+void init(Vec2i size) {
 	
 	{
 	TextWidget * me = new TextWidget(BUTTON_INVALID, hFontMenu, getLocalised("system_menus_main_quit"));
 	me->SetCheckOff();
-	page->addCenter(me, true);
+	addCenter(me, true);
 	}
 	
 	{
 	TextWidget * me = new TextWidget(BUTTON_INVALID, hFontMenu, getLocalised("system_menus_main_editquest_confirm"));
 	me->SetCheckOff();
-	page->addCenter(me, true);
+	addCenter(me, true);
 	}
 	
 	{
@@ -992,9 +998,10 @@ static void Menu2_Render_Quit(MenuPage * page, Vec2i size) {
 	pPanel->AddElementNoCenterIn(no);
 	
 	pPanel->Move(Vec2i(0, RATIO_Y(380)));
-	page->add(pPanel);
+	add(pPanel);
 	}
 }
+};
 
 
 
@@ -1088,8 +1095,8 @@ void MainMenuLeftCreate(MENUSTATE eMenuState)
 	}
 	
 	{
-	MenuPage * page = new MenuPage(offset, size, QUIT);
-	Menu2_Render_Quit(page, size);
+	QuitConfirmMenuPage * page = new QuitConfirmMenuPage(offset, size);
+	page->init(size);
 	pWindowMenu->add(page);
 	}
 }
