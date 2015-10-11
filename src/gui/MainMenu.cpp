@@ -1149,5 +1149,5 @@ void MainMenu::Render() {
 
 	//DEBUG ZONE
 	GRenderer->ResetTexture(0);
-	m_widgets->DrawZone();
+	m_widgets->drawDebug();
 }

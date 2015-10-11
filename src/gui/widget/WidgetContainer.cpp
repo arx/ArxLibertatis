@@ -91,7 +91,7 @@ size_t WidgetContainer::GetNbZone() {
 	return m_widgets.size();
 }
 
-void WidgetContainer::DrawZone()
+void WidgetContainer::drawDebug()
 {
 	if(g_debugInfo != InfoPanelGuiDebug)
 		return;

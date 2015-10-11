@@ -70,6 +70,7 @@ public:
 	void AlignElementCenter(Widget * widget);
 	MENUSTATE Update(Vec2i pos);
 	void Render();
+	void drawDebug();
 	
 	Widget * GetTouch(bool keyTouched, int keyId, InputKeyId* pInputKeyId = NULL, bool _bValidateTest = false);
 	void ReInitActionKey();

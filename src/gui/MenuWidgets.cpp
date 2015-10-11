@@ -540,6 +540,10 @@ MENUSTATE CWindowMenu::Render() {
 	BOOST_FOREACH(MenuPage * page, m_pages) {
 		if(eCurrentMenuState == page->eMenuState) {
 			page->Render();
+			
+			if(g_debugInfo == InfoPanelGuiDebug)
+				page->drawDebug();
+			
 			break;
 		}
 	}
@@ -1212,9 +1216,13 @@ void MenuPage::Render() {
 			bMouseAttack=false;
 		}
 	}
+}
+
+void MenuPage::drawDebug() {
+	Rectf rect = Rectf(Vec2f(m_pos.x, m_pos.y), m_size.x, m_size.y);
+	drawLineRectangle(rect, 0.f, Color::green);
 	
-	//DEBUG ZONE
-	m_children.DrawZone();
+	m_children.drawDebug();
 }
 
 void MenuPage::ReInitActionKey()
