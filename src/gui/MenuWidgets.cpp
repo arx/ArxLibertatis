@@ -183,7 +183,7 @@ bool ARX_SlotLoad(int slotIndex) {
 
 bool MENU_NoActiveWindow() {
 	if(!pWindowMenu
-	   || (pWindowMenu && pWindowMenu->eCurrentMenuState == MAIN)
+	   || (pWindowMenu && pWindowMenu->m_currentPageId == MAIN)
 	) {
 		return true;
 	}
@@ -380,7 +380,7 @@ bool Menu2_Render() {
 	if(pWindowMenu) {
 		if(!bScroll) {
 			pWindowMenu->fAngle=90.f;
-			pWindowMenu->eCurrentMenuState=mainMenu->eOldMenuWindowState;
+			pWindowMenu->m_currentPageId=mainMenu->eOldMenuWindowState;
 		}
 
 		pWindowMenu->Update(ARXDiffTimeMenu);
@@ -485,7 +485,7 @@ CWindowMenu::CWindowMenu(Vec2i pos, Vec2i size)
 	fDist=((float)(m_size.x+m_pos.x));
 	fAngle=0.f;
 
-	eCurrentMenuState=NOP;
+	m_currentPageId=NOP;
 
 
 	float fCalc	= fPosXCalc + (fDist * glm::sin(glm::radians(fAngle)));
@@ -532,7 +532,7 @@ MENUSTATE CWindowMenu::Render() {
 	MENUSTATE eMS=NOP;
 	
 	BOOST_FOREACH(MenuPage * page, m_pages) {
-		if(eCurrentMenuState == page->eMenuState) {
+		if(m_currentPageId == page->eMenuState) {
 			eMS = page->Update(m_pos);
 			
 			if(eMS != NOP)
@@ -556,7 +556,7 @@ MENUSTATE CWindowMenu::Render() {
 	                 0, m_border, Color::white);
 	
 	BOOST_FOREACH(MenuPage * page, m_pages) {
-		if(eCurrentMenuState == page->eMenuState) {
+		if(m_currentPageId == page->eMenuState) {
 			page->Render();
 			
 			if(g_debugInfo == InfoPanelGuiDebug)
@@ -569,7 +569,7 @@ MENUSTATE CWindowMenu::Render() {
 	GRenderer->SetRenderState(Renderer::AlphaBlending, false);
 	
 	if(eMS != NOP) {
-		eCurrentMenuState=eMS;
+		m_currentPageId=eMS;
 	}
 	
 	return eMS;

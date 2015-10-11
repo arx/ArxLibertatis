@@ -930,7 +930,7 @@ void MainMenuLeftCreate(MENUSTATE eMenuState)
 	Vec2i offset = Vec2i(0, 0);
 	Vec2i size = windowMenuSize - offset;
 	
-	pWindowMenu->eCurrentMenuState = eMenuState;
+	pWindowMenu->m_currentPageId = eMenuState;
 	
 	// TODO Special case to prevent displaying confirmation dialog on new game during fade
 	if(ARXMenu_CanResumeGame()){

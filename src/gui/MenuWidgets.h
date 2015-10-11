@@ -117,7 +117,7 @@ public:
 	
 	std::vector<MenuPage *>	m_pages;
 	float				fAngle;
-	MENUSTATE			eCurrentMenuState;
+	MENUSTATE			m_currentPageId;
 	
 private:
 	TextureContainer * m_background;
