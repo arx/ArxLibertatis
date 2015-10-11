@@ -31,7 +31,7 @@ public:
 	virtual ~WidgetContainer();
 	
 	void AddZone(Widget * widget);
-	Widget * CheckZone(const Vec2s & mousePos) const;
+	Widget * getAtPos(const Vec2s & mousePos) const;
 	
 	Widget * GetZoneNum(size_t index);
 	Widget * GetZoneWithID(MenuButton zoneId);

@@ -47,7 +47,7 @@ void WidgetContainer::AddZone(Widget *widget) {
 	m_widgets.push_back(widget);
 }
 
-Widget * WidgetContainer::CheckZone(const Vec2s& mousePos) const {
+Widget * WidgetContainer::getAtPos(const Vec2s& mousePos) const {
 
 	std::vector<Widget*>::const_iterator i;
 

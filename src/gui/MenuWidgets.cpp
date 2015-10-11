@@ -852,7 +852,7 @@ MENUSTATE MenuPage::Update(Vec2i pos) {
 	// Check if mouse over
 	if(!bEdit) {
 		pZoneClick=NULL;
-		Widget * widget = m_children.CheckZone(GInput->getMousePosAbs());
+		Widget * widget = m_children.getAtPos(GInput->getMousePosAbs());
 		
 		if(widget) {
 			pZoneClick = widget;
@@ -880,7 +880,7 @@ MENUSTATE MenuPage::Update(Vec2i pos) {
 		}
 	} else {
 		if(!pZoneClick) {
-			Widget * widget = m_children.CheckZone(GInput->getMousePosAbs());
+			Widget * widget = m_children.getAtPos(GInput->getMousePosAbs());
 			
 			if(widget) {
 				pZoneClick = widget;

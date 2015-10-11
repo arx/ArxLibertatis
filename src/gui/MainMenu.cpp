@@ -1114,7 +1114,7 @@ MENUSTATE MainMenu::Update() {
 	
 	pZoneClick=NULL;
 
-	Widget * widget = m_widgets->CheckZone(GInput->getMousePosAbs());
+	Widget * widget = m_widgets->getAtPos(GInput->getMousePosAbs());
 
 	if(GInput->getMouseButton(Mouse::Button_0)) {
 		if(widget) {
