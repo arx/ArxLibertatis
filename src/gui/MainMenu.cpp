@@ -312,12 +312,18 @@ void init() {
 }
 };
 
-static void MainMenuCreateEditQuestSaveConfirm(MenuPage * page, Vec2i size) {
+class SaveConfirmMenuPage : public MenuPage {
+public:
+	SaveConfirmMenuPage(Vec2i pos, Vec2i size)
+		: MenuPage(pos, size, EDIT_QUEST_SAVE_CONFIRM)
+	{}
+
+void init(Vec2i size) {
 	
 	{
 	ButtonWidget * cb = new ButtonWidget(Vec2i(0, 0), "graph/interface/icons/menu_main_save");
 	cb->SetCheckOff();
-	page->addCenter(cb, true);
+	addCenter(cb, true);
 	}
 	
 	{
@@ -326,7 +332,7 @@ static void MainMenuCreateEditQuestSaveConfirm(MenuPage * page, Vec2i size) {
 	me->m_savegame = SavegameHandle::Invalid;
 	me->eState=EDIT;
 	me->ePlace=CENTER;
-	page->addCenter(me, true);
+	addCenter(me, true);
 	}
 	
 	HorizontalPanelWidget * pPanel = new HorizontalPanelWidget;
@@ -357,8 +363,9 @@ static void MainMenuCreateEditQuestSaveConfirm(MenuPage * page, Vec2i size) {
 	pPanel->AddElementNoCenterIn(cb);
 	}
 
-	page->add(pPanel);
+	add(pPanel);
 }
+};
 
 static void MainMenuOptionGroupsCreate(MenuPage * page) {
 	
@@ -992,10 +999,9 @@ void MainMenuLeftCreate(MENUSTATE eMenuState)
 	}
 	
 	{
-	MenuPage * page = new MenuPage(offset, size, EDIT_QUEST_SAVE_CONFIRM);
+	SaveConfirmMenuPage * page = new SaveConfirmMenuPage(offset, size);
 	page->m_savegame = SavegameHandle::Invalid;
-	
-	MainMenuCreateEditQuestSaveConfirm(page, size);
+	page->init(size);
 	pWindowMenu->add(page);
 	}
 	
