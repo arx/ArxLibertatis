@@ -41,7 +41,7 @@ TextWidget::TextWidget(MenuButton _iID, Font* _pFont, const std::string& _pText,
 {
 	m_id = _iID;
 
-	pFont = _pFont;
+	m_font = _pFont;
 
 	if(!_pText.compare("---")) {
 		bTestYDouble=true;
@@ -68,7 +68,7 @@ void TextWidget::SetText(const std::string & _pText)
 {
 	lpszText = _pText;
 
-	Vec2i textSize = pFont->getTextSize(_pText);
+	Vec2i textSize = m_font->getTextSize(_pText);
 
 	m_rect.right  = textSize.x + m_rect.left + 1;
 	m_rect.bottom = textSize.y + m_rect.top + 1;
@@ -404,11 +404,11 @@ void TextWidget::Render() {
 		return;
 
 	if(bSelected) {
-		FontRenderText(pFont, m_rect, lpszText, lColorHighlight);
+		FontRenderText(m_font, m_rect, lpszText, lColorHighlight);
 	} else if(enabled) {
-		FontRenderText(pFont, m_rect, lpszText, lColor);
+		FontRenderText(m_font, m_rect, lpszText, lColor);
 	} else {
-		FontRenderText(pFont, m_rect, lpszText, Color::grayb(127));
+		FontRenderText(m_font, m_rect, lpszText, Color::grayb(127));
 	}
 
 }
@@ -427,7 +427,7 @@ void TextWidget::RenderMouseOver() {
 	GRenderer->SetRenderState(Renderer::AlphaBlending, true);
 	GRenderer->SetBlendFunc(Renderer::BlendOne, Renderer::BlendOne);
 	
-	FontRenderText(pFont, m_rect, lpszText, lColorHighlight);
+	FontRenderText(m_font, m_rect, lpszText, lColorHighlight);
 
 	GRenderer->SetRenderState(Renderer::AlphaBlending, false);
 

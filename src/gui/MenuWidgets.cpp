@@ -744,7 +744,7 @@ void MenuPage::UpdateText() {
 	}
 
 	if(m_selected->m_rect.top == m_selected->m_rect.bottom) {
-		Vec2i textSize = ((TextWidget*)m_selected)->pFont->getTextSize("|");
+		Vec2i textSize = ((TextWidget*)m_selected)->m_font->getTextSize("|");
 		m_selected->m_rect.bottom += textSize.y;
 	}
 	

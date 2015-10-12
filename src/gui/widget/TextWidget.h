@@ -29,7 +29,7 @@ class TextWidget: public Widget {
 	
 public:
 	std::string lpszText;
-	Font*	pFont;
+	Font * m_font;
 	Color lColor;
 	Color lOldColor;
 	Color lColorHighlight;
