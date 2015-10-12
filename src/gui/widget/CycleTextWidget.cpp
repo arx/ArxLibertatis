@@ -27,10 +27,10 @@
 #include "input/Input.h"
 #include "scene/GameSound.h"
 
-CycleTextWidget::CycleTextWidget(MenuButton _iID)
+CycleTextWidget::CycleTextWidget()
 	: Widget()
 {
-	m_id = _iID;
+	m_id = BUTTON_INVALID;
 	
 	pLeftButton = new ButtonWidget(Vec2i_ZERO, "graph/interface/menus/menu_slider_button_left");
 	pRightButton = new ButtonWidget(Vec2i_ZERO, "graph/interface/menus/menu_slider_button_right");

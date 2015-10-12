@@ -29,7 +29,7 @@
 class CycleTextWidget: public Widget {
 	
 public:
-	explicit CycleTextWidget(MenuButton _iID);
+	explicit CycleTextWidget();
 	virtual ~CycleTextWidget();
 	
 	void setValue(int value) { iPos = value; }
