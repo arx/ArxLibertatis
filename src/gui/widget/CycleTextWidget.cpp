@@ -30,7 +30,7 @@
 CycleTextWidget::CycleTextWidget(MenuButton _iID)
 	: Widget()
 {
-	iID = _iID;
+	m_id = _iID;
 	
 	pLeftButton = new ButtonWidget(Vec2i_ZERO, "graph/interface/menus/menu_slider_button_left");
 	pRightButton = new ButtonWidget(Vec2i_ZERO, "graph/interface/menus/menu_slider_button_right");

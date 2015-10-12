@@ -209,7 +209,7 @@ public:
 	bool	bTestYDouble;
 	Widget *	pRef;
 	
-	MenuButton iID;
+	MenuButton m_id;
 	
 	SavegameHandle m_savegame;
 	

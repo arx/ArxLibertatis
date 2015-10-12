@@ -39,7 +39,7 @@
 TextWidget::TextWidget(MenuButton _iID, Font* _pFont, const std::string& _pText, Vec2i pos)
 	: Widget()
 {
-	iID = _iID;
+	m_id = _iID;
 
 	pFont = _pFont;
 
@@ -83,7 +83,7 @@ extern CWindowMenu * pWindowMenu;
 
 bool TextWidget::OnMouseDoubleClick() {
 
-	switch(iID) {
+	switch(m_id) {
 	case BUTTON_MENUEDITQUEST_LOAD:
 		OnMouseClick();
 
@@ -141,11 +141,11 @@ bool TextWidget::OnMouseClick() {
 		default: break;
 	}
 
-	if(iID != BUTTON_MENUMAIN_RESUMEGAME) {
+	if(m_id != BUTTON_MENUMAIN_RESUMEGAME) {
 		ARX_SOUND_PlayMenu(SND_MENU_CLICK);
 	}
 
-	switch(iID) {
+	switch(m_id) {
 		case BUTTON_INVALID: {
 			return false;
 		}
@@ -196,7 +196,7 @@ bool TextWidget::OnMouseClick() {
 					for(size_t j = 0; j < page->m_children.m_widgets.size(); j++) {
 						Widget * widget = page->m_children.m_widgets[j];
 						
-						if(widget->iID == BUTTON_MENUEDITQUEST_LOAD) {
+						if(widget->m_id == BUTTON_MENUEDITQUEST_LOAD) {
 							((TextWidget *)widget)->bSelected = false;
 						}
 					}
@@ -220,7 +220,7 @@ bool TextWidget::OnMouseClick() {
 						for(size_t j = 0; j < page->m_children.m_widgets.size(); j++) {
 							Widget * widget = page->m_children.m_widgets[j];
 							
-							if(widget->iID == BUTTON_MENUEDITQUEST_LOAD) {
+							if(widget->m_id == BUTTON_MENUEDITQUEST_LOAD) {
 								((TextWidget *)widget)->bSelected = false;
 							}
 						}
@@ -431,7 +431,7 @@ void TextWidget::RenderMouseOver() {
 
 	GRenderer->SetRenderState(Renderer::AlphaBlending, false);
 
-	switch(iID) {
+	switch(m_id) {
 		case BUTTON_MENUEDITQUEST_LOAD:
 		case BUTTON_MENUEDITQUEST_SAVEINFO: {
 			

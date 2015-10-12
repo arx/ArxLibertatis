@@ -28,7 +28,7 @@ Widget::Widget()
 	: m_rect(0, 0, 0, 0)
 	, bTestYDouble(false)
 	, pRef(NULL)
-	, iID(BUTTON_INVALID)
+	, m_id(BUTTON_INVALID)
 	, m_savegame(0)
 	, enabled(true)
 	, bCheck(true)
@@ -120,7 +120,7 @@ Widget * Widget::IsMouseOver(const Vec2s& mousePos) const {
 }
 
 Widget *Widget::GetZoneWithID(MenuButton zoneId) {
-	return (iID == zoneId) ? this : NULL;
+	return (m_id == zoneId) ? this : NULL;
 }
 
 void Widget::SetShortCut(int _iShortCut) {

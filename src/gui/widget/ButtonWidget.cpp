@@ -34,7 +34,7 @@ ButtonWidget::ButtonWidget(Vec2i pos, const char * texturePath)
 	m_texture = TextureContainer::Load(texturePath);
 	arx_assert(m_texture);
 	
-	iID = BUTTON_INVALID;
+	m_id = BUTTON_INVALID;
 
 	m_rect.left=pos.x;
 	m_rect.top=pos.y;

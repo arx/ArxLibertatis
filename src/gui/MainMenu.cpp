@@ -509,7 +509,7 @@ void init(Vec2i size) {
 	TextWidget * text = new TextWidget(BUTTON_INVALID, hFontMenu, szMenuText, Vec2i(RATIO_X(20), 0.f));
 	text->SetCheckOff();
 	CheckboxWidget * cb = new CheckboxWidget(text);
-	cb->iID = BUTTON_MENUOPTIONSVIDEO_FULLSCREEN;
+	cb->m_id = BUTTON_MENUOPTIONSVIDEO_FULLSCREEN;
 	cb->iState = config.video.fullscreen ? 1 : 0;
 	addCenter(cb);
 	fullscreenCheckbox = cb;
@@ -614,7 +614,7 @@ void init(Vec2i size) {
 	TextWidget * text = new TextWidget(BUTTON_INVALID, hFontMenu, szMenuText, Vec2i(RATIO_X(20), 0.f));
 	text->SetCheckOff();
 	CheckboxWidget * cb = new CheckboxWidget(text);
-	cb->iID = BUTTON_MENUOPTIONSVIDEO_CROSSHAIR;
+	cb->m_id = BUTTON_MENUOPTIONSVIDEO_CROSSHAIR;
 	cb->iState = config.video.showCrosshair ? 1 : 0;
 	addCenter(cb);
 	}
@@ -625,7 +625,7 @@ void init(Vec2i size) {
 	TextWidget * text = new TextWidget(BUTTON_INVALID, hFontMenu, szMenuText, Vec2i(RATIO_X(20), 0));
 	text->SetCheckOff();
 	CheckboxWidget * cb = new CheckboxWidget(text);
-	cb->iID = BUTTON_MENUOPTIONSVIDEO_ANTIALIASING;
+	cb->m_id = BUTTON_MENUOPTIONSVIDEO_ANTIALIASING;
 	cb->iState = config.video.antialiasing ? 1 : 0;
 	addCenter(cb);
 	}
@@ -638,7 +638,7 @@ void init(Vec2i size) {
 	TextWidget * text = new TextWidget(BUTTON_INVALID, hFontMenu, szMenuText, Vec2i(RATIO_X(20), 0));
 	text->SetCheckOff();
 	CheckboxWidget * cb = new CheckboxWidget(text);
-	cb->iID = BUTTON_MENUOPTIONSVIDEO_VSYNC;
+	cb->m_id = BUTTON_MENUOPTIONSVIDEO_VSYNC;
 	cb->iState = config.video.vsync ? 1 : 0;
 	addCenter(cb);
 	}
@@ -649,7 +649,7 @@ void init(Vec2i size) {
 	TextWidget * text = new TextWidget(BUTTON_INVALID, hFontMenu, szMenuText, Vec2i(RATIO_X(20), 0));
 	text->SetCheckOff();
 	CheckboxWidget * cb = new CheckboxWidget(text);
-	cb->iID = BUTTON_MENUOPTIONSVIDEO_HUDSCALE;
+	cb->m_id = BUTTON_MENUOPTIONSVIDEO_HUDSCALE;
 	cb->iState = config.video.hudScale ? 1 : 0;
 	addCenter(cb);
 	}
@@ -665,7 +665,7 @@ void init(Vec2i size) {
 	pMenuElementApply = me;
 	
 	ButtonWidget * cb = new ButtonWidget(RATIO_2(Vec2i(20, 420)), "graph/interface/menus/back");
-	cb->iID = BUTTON_MENUOPTIONSVIDEO_BACK;
+	cb->m_id = BUTTON_MENUOPTIONSVIDEO_BACK;
 	cb->m_targetMenu = OPTIONS;
 	cb->SetShortCut(Keyboard::Key_Escape);
 	pc->AddElementNoCenterIn(cb);
@@ -785,7 +785,7 @@ void init(Vec2i size) {
 	TextWidget * text = new TextWidget(BUTTON_INVALID, hFontMenu, szMenuText, Vec2i(RATIO_X(20), 0));
 	text->m_targetMenu = OPTIONS_INPUT;
 	CheckboxWidget * cb = new CheckboxWidget(text);
-	cb->iID = BUTTON_MENUOPTIONSAUDIO_EAX;
+	cb->m_id = BUTTON_MENUOPTIONSAUDIO_EAX;
 	if(audio::isReverbSupported()) {
 		cb->iState = config.audio.eax ? 1 : 0;
 	} else {
@@ -824,7 +824,7 @@ void init() {
 	TextWidget * text = new TextWidget(BUTTON_INVALID, hFontMenu, szMenuText, Vec2i(RATIO_X(20), 0));
 	text->m_targetMenu = OPTIONS_INPUT; // TODO is this correct ?
 	CheckboxWidget * cb = new CheckboxWidget(text);
-	cb->iID = BUTTON_MENUOPTIONS_CONTROLS_INVERTMOUSE;
+	cb->m_id = BUTTON_MENUOPTIONS_CONTROLS_INVERTMOUSE;
 	cb->iState = config.input.invertMouse ? 1 : 0;
 	addCenter(cb);
 	}
@@ -835,7 +835,7 @@ void init() {
 	TextWidget * text = new TextWidget(BUTTON_INVALID, hFontMenu, szMenuText, Vec2i(RATIO_X(20), 0));
 	text->m_targetMenu = OPTIONS_INPUT; // TODO is this correct ?
 	CheckboxWidget * cb = new CheckboxWidget(text);
-	cb->iID = BUTTON_MENUOPTIONS_CONTROLS_AUTOREADYWEAPON;
+	cb->m_id = BUTTON_MENUOPTIONS_CONTROLS_AUTOREADYWEAPON;
 	cb->iState = config.input.autoReadyWeapon ? 1 : 0;
 	addCenter(cb);
 	}
@@ -846,7 +846,7 @@ void init() {
 	TextWidget * text = new TextWidget(BUTTON_INVALID, hFontMenu, szMenuText, Vec2i(RATIO_X(20), 0.f));
 	text->m_targetMenu = OPTIONS_INPUT; // TODO is this correct ?
 	CheckboxWidget * cb = new CheckboxWidget(text);
-	cb->iID = BUTTON_MENUOPTIONS_CONTROLS_MOUSELOOK;
+	cb->m_id = BUTTON_MENUOPTIONS_CONTROLS_MOUSELOOK;
 	cb->iState = config.input.mouseLookToggle ? 1 : 0;
 	addCenter(cb);
 	}
@@ -869,7 +869,7 @@ void init() {
 	TextWidget * text = new TextWidget(BUTTON_INVALID, hFontMenu, szMenuText, Vec2i(RATIO_X(20), 0));
 	text->m_targetMenu = OPTIONS_INPUT; // TODO is this correct ?
 	CheckboxWidget * cb = new CheckboxWidget(text);
-	cb->iID = BUTTON_MENUOPTIONS_CONTROLS_AUTODESCRIPTION;
+	cb->m_id = BUTTON_MENUOPTIONS_CONTROLS_AUTODESCRIPTION;
 	cb->iState = config.input.autoDescription ? 1 : 0;
 	addCenter(cb);
 	}
@@ -962,7 +962,7 @@ void init(Vec2i size) {
 	
 	{
 	ButtonWidget * cb = new ButtonWidget(RATIO_2(Vec2i(20, 380)), "graph/interface/menus/back");
-	cb->iID = BUTTON_MENUOPTIONS_CONTROLS_CUST_BACK;
+	cb->m_id = BUTTON_MENUOPTIONS_CONTROLS_CUST_BACK;
 	cb->m_targetMenu = OPTIONS_INPUT;
 	cb->SetShortCut(Keyboard::Key_Escape);
 	pc->AddElementNoCenterIn(cb);
@@ -977,7 +977,7 @@ void init(Vec2i size) {
 	
 	{
 	ButtonWidget * cb = new ButtonWidget(RATIO_2(Vec2i(280, 380)), "graph/interface/menus/next");
-	cb->iID = BUTTON_MENUOPTIONS_CONTROLS_CUST_BACK;
+	cb->m_id = BUTTON_MENUOPTIONS_CONTROLS_CUST_BACK;
 	cb->m_targetMenu = OPTIONS_INPUT_CUSTOMIZE_KEYS_2;
 	cb->SetShortCut(Keyboard::Key_Escape);
 	pc->AddElementNoCenterIn(cb);
@@ -1032,7 +1032,7 @@ void init(Vec2i size) {
 	
 	{
 	ButtonWidget * cb = new ButtonWidget(RATIO_2(Vec2i(20, 380)), "graph/interface/menus/back");
-	cb->iID = BUTTON_MENUOPTIONS_CONTROLS_CUST_BACK;
+	cb->m_id = BUTTON_MENUOPTIONS_CONTROLS_CUST_BACK;
 	cb->m_targetMenu = OPTIONS_INPUT_CUSTOMIZE_KEYS_1;
 	cb->SetShortCut(Keyboard::Key_Escape);
 	pc->AddElementNoCenterIn(cb);

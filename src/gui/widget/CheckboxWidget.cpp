@@ -44,7 +44,7 @@ CheckboxWidget::CheckboxWidget(TextWidget *_pText)
 	arx_assert(m_textureOn);
 	arx_assert(m_textureOff->size() == m_textureOn->size());
 	
-	iID = BUTTON_INVALID;
+	m_id = BUTTON_INVALID;
 	iState    = 0;
 	iOldState = -1;
 	pText    = _pText;
@@ -86,7 +86,7 @@ bool CheckboxWidget::OnMouseClick() {
 
 	ARX_SOUND_PlayMenu(SND_MENU_CLICK);
 
-	switch (iID) {
+	switch (m_id) {
 		case BUTTON_MENUOPTIONSVIDEO_FULLSCREEN: {
 			newFullscreen = ((iState)?true:false);
 			

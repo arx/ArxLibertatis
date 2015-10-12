@@ -31,7 +31,7 @@
 SliderWidget::SliderWidget(MenuButton _iID, Vec2i pos)
 	: Widget()
 {
-	iID = _iID;
+	m_id = _iID;
 	
 	pLeftButton = new ButtonWidget(pos, "graph/interface/menus/menu_slider_button_left");
 	pRightButton = new ButtonWidget(pos, "graph/interface/menus/menu_slider_button_right");
@@ -101,7 +101,7 @@ bool SliderWidget::OnMouseClick() {
 		}
 	}
 	
-	switch (iID) {
+	switch (m_id) {
 		// MENUOPTIONS_VIDEO
 		case BUTTON_MENUOPTIONSVIDEO_FOG:
 			ARXMenu_Options_Video_SetFogDistance(m_value);
