@@ -381,10 +381,10 @@ bool TextWidget::OnMouseClick() {
 // true: block les zones de checks
 Widget* TextWidget::OnShortCut() {
 
-	if(iShortCut==-1)
+	if(m_shortcut==-1)
 		return NULL;
 
-	if(GInput->isKeyPressedNowUnPressed(iShortCut)) {
+	if(GInput->isKeyPressedNowUnPressed(m_shortcut)) {
 		return this;
 	}
 

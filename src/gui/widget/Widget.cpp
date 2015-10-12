@@ -36,7 +36,7 @@ Widget::Widget()
 	ePlace=NOCENTER;
 	eState=TNOP;
 	m_targetMenu = NOP;
-	iShortCut=-1;
+	m_shortcut = -1;
 }
 
 extern TextWidget * pMenuElementApply;
@@ -75,10 +75,10 @@ Widget::~Widget() {
 
 Widget* Widget::OnShortCut() {
 
-	if(iShortCut == -1)
+	if(m_shortcut == -1)
 		return NULL;
 
-	if(GInput->isKeyPressedNowUnPressed(iShortCut)) {
+	if(GInput->isKeyPressedNowUnPressed(m_shortcut)) {
 		return this;
 	}
 
@@ -124,7 +124,7 @@ Widget *Widget::GetZoneWithID(MenuButton zoneId) {
 }
 
 void Widget::SetShortCut(int _iShortCut) {
-	iShortCut = _iShortCut;
+	m_shortcut = _iShortCut;
 }
 
 void Widget::setEnabled(bool enable) {

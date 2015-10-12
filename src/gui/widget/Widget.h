@@ -216,7 +216,7 @@ public:
 	ELEMPOS     ePlace;			//placement de la zone
 	ELEMSTATE   eState;			//etat de l'element en cours
 	MENUSTATE   m_targetMenu;		//etat de retour de l'element
-	int         iShortCut;
+	int         m_shortcut;
 	
 public:
 	explicit Widget();
