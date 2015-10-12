@@ -28,7 +28,7 @@ class Font;
 class TextWidget: public Widget {
 	
 public:
-	std::string lpszText;
+	std::string m_text;
 	Font * m_font;
 	Color lColor;
 	Color lOldColor;

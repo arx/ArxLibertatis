@@ -664,7 +664,7 @@ void MenuPage::UpdateText() {
 			ARX_SOUND_PlayMenu(SND_MENU_CLICK);
 			((TextWidget*)m_selected)->eState=EDIT;
 
-			if(((TextWidget*)m_selected)->lpszText.empty()) {
+			if(((TextWidget*)m_selected)->m_text.empty()) {
 				std::string szMenuText;
 				szMenuText = getLocalised("system_menu_editquest_newsavegame");
 
@@ -694,7 +694,7 @@ void MenuPage::UpdateText() {
 		TextWidget *pZoneText=(TextWidget*)m_selected;
 
 		if(GInput->isKeyPressedNowPressed(Keyboard::Key_Backspace)) {
-			tText = pZoneText->lpszText;
+			tText = pZoneText->m_text;
 
 			if(!tText.empty()) {
 				tText.resize(tText.size() - 1);
@@ -705,7 +705,7 @@ void MenuPage::UpdateText() {
 			iKey&=0xFFFF;
 
 			if(GInput->isKeyPressedNowPressed(iKey)) {
-				tText = pZoneText->lpszText;
+				tText = pZoneText->m_text;
 
 				char tCat;
 				

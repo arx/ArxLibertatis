@@ -66,7 +66,7 @@ TextWidget::~TextWidget()
 
 void TextWidget::SetText(const std::string & _pText)
 {
-	lpszText = _pText;
+	m_text = _pText;
 
 	Vec2i textSize = m_font->getTextSize(_pText);
 
@@ -276,7 +276,7 @@ bool TextWidget::OnMouseClick() {
 					
 					if(me) {
 						m_targetMenu = MAIN;
-						ARXMenu_SaveQuest(me->lpszText, me->m_savegame);
+						ARXMenu_SaveQuest(me->m_text, me->m_savegame);
 						break;
 					}
 				}
@@ -404,11 +404,11 @@ void TextWidget::Render() {
 		return;
 
 	if(bSelected) {
-		FontRenderText(m_font, m_rect, lpszText, lColorHighlight);
+		FontRenderText(m_font, m_rect, m_text, lColorHighlight);
 	} else if(enabled) {
-		FontRenderText(m_font, m_rect, lpszText, lColor);
+		FontRenderText(m_font, m_rect, m_text, lColor);
 	} else {
-		FontRenderText(m_font, m_rect, lpszText, Color::grayb(127));
+		FontRenderText(m_font, m_rect, m_text, Color::grayb(127));
 	}
 
 }
@@ -427,7 +427,7 @@ void TextWidget::RenderMouseOver() {
 	GRenderer->SetRenderState(Renderer::AlphaBlending, true);
 	GRenderer->SetBlendFunc(Renderer::BlendOne, Renderer::BlendOne);
 	
-	FontRenderText(m_font, m_rect, lpszText, lColorHighlight);
+	FontRenderText(m_font, m_rect, m_text, lColorHighlight);
 
 	GRenderer->SetRenderState(Renderer::AlphaBlending, false);
 
