@@ -61,44 +61,44 @@ public:
 		: MenuPage(pos, size, NEW_QUEST)
 	{}
 
-void init(Vec2i size) {
-	
-	{
-	std::string szMenuText = getLocalised("system_menus_main_editquest_confirm");
-	TextWidget * me = new TextWidget(BUTTON_INVALID, hFontMenu, szMenuText);
-	me->SetCheckOff();
-	addCenter(me, true);
+	void init(Vec2i size) {
+		
+		{
+			std::string szMenuText = getLocalised("system_menus_main_editquest_confirm");
+			TextWidget * me = new TextWidget(BUTTON_INVALID, hFontMenu, szMenuText);
+			me->SetCheckOff();
+			addCenter(me, true);
+		}
+		
+		{
+			std::string szMenuText = getLocalised("system_menus_main_newquest_confirm");
+			TextWidget * me = new TextWidget(BUTTON_INVALID, hFontMenu, szMenuText);
+			me->SetCheckOff();
+			addCenter(me, true);
+		}
+		
+		HorizontalPanelWidget * pPanel = new HorizontalPanelWidget;
+		
+		{
+			std::string szMenuText = getLocalised("system_yes");
+			szMenuText += "   "; // TODO This space can probably go
+			TextWidget * me = new TextWidget(BUTTON_MENUNEWQUEST_CONFIRM, hFontMenu, szMenuText);
+			me->SetPos(Vec2i(RATIO_X(size.x - (me->m_rect.width() + 10)), 0));
+			pPanel->AddElementNoCenterIn(me);
+		}
+		
+		{
+			std::string szMenuText = getLocalised("system_no");
+			TextWidget * me = new TextWidget(BUTTON_INVALID, hFontMenu, szMenuText, Vec2i(RATIO_X(10), 0));
+			me->m_targetMenu = MAIN;
+			me->SetShortCut(Keyboard::Key_Escape);
+			pPanel->AddElementNoCenterIn(me);
+		}
+		
+		pPanel->Move(Vec2i(0, RATIO_Y(380)));
+		
+		add(pPanel);
 	}
-	
-	{
-	std::string szMenuText = getLocalised("system_menus_main_newquest_confirm");
-	TextWidget * me = new TextWidget(BUTTON_INVALID, hFontMenu, szMenuText);
-	me->SetCheckOff();
-	addCenter(me, true);
-	}
-	
-	HorizontalPanelWidget * pPanel = new HorizontalPanelWidget;
-	
-	{
-	std::string szMenuText = getLocalised("system_yes");
-	szMenuText += "   "; // TODO This space can probably go
-	TextWidget * me = new TextWidget(BUTTON_MENUNEWQUEST_CONFIRM, hFontMenu, szMenuText);
-	me->SetPos(Vec2i(RATIO_X(size.x - (me->m_rect.width() + 10)), 0));
-	pPanel->AddElementNoCenterIn(me);
-	}
-	
-	{
-	std::string szMenuText = getLocalised("system_no");
-	TextWidget * me = new TextWidget(BUTTON_INVALID, hFontMenu, szMenuText, Vec2i(RATIO_X(10), 0));
-	me->m_targetMenu = MAIN;
-	me->SetShortCut(Keyboard::Key_Escape);
-	pPanel->AddElementNoCenterIn(me);
-	}
-	
-	pPanel->Move(Vec2i(0, RATIO_Y(380)));
-	
-	add(pPanel);
-}
 };
 
 class ChooseLoadOrSaveMenuPage : public MenuPage {
@@ -106,36 +106,36 @@ public:
 	ChooseLoadOrSaveMenuPage(Vec2i pos, Vec2i size)
 		: MenuPage(pos, size, EDIT_QUEST)
 	{}
-
-void init() {
 	
-	{
-	std::string szMenuText = getLocalised("system_menus_main_editquest_load");
-	TextWidget * me = new TextWidget(BUTTON_MENUEDITQUEST_LOAD_INIT, hFontMenu, szMenuText, Vec2i(0, 0));
-	me->m_targetMenu = EDIT_QUEST_LOAD;
-	me->m_savegame = SavegameHandle::Invalid;
-	addCenter(me, true);
+	void init() {
+		
+		{
+			std::string szMenuText = getLocalised("system_menus_main_editquest_load");
+			TextWidget * me = new TextWidget(BUTTON_MENUEDITQUEST_LOAD_INIT, hFontMenu, szMenuText, Vec2i(0, 0));
+			me->m_targetMenu = EDIT_QUEST_LOAD;
+			me->m_savegame = SavegameHandle::Invalid;
+			addCenter(me, true);
+		}
+		
+		{
+			std::string szMenuText = getLocalised( "system_menus_main_editquest_save");
+			TextWidget * me = new TextWidget(BUTTON_INVALID, hFontMenu, szMenuText, Vec2i(0, 0));
+			me->m_targetMenu = EDIT_QUEST_SAVE;
+			
+			if(!ARXMenu_CanResumeGame()) {
+				me->SetCheckOff();
+				me->lColor = Color(127, 127, 127);
+			}
+			addCenter(me, true);
+		}
+		
+		{
+			ButtonWidget * cb = new ButtonWidget(RATIO_2(Vec2i(20, 380)), "graph/interface/menus/back");
+			cb->m_targetMenu = MAIN;
+			cb->SetShortCut(Keyboard::Key_Escape);
+			add(cb);
+		}
 	}
-
-	{
-	std::string szMenuText = getLocalised( "system_menus_main_editquest_save");
-	TextWidget * me = new TextWidget(BUTTON_INVALID, hFontMenu, szMenuText, Vec2i(0, 0));
-	me->m_targetMenu = EDIT_QUEST_SAVE;
-	
-	if(!ARXMenu_CanResumeGame()) {
-		me->SetCheckOff();
-		me->lColor = Color(127, 127, 127);
-	}
-	addCenter(me, true);
-	}
-	
-	{
-	ButtonWidget * cb = new ButtonWidget(RATIO_2(Vec2i(20, 380)), "graph/interface/menus/back");
-	cb->m_targetMenu = MAIN;
-	cb->SetShortCut(Keyboard::Key_Escape);
-	add(cb);
-	}
-}
 };
 
 class LoadMenuPage : public MenuPage {
@@ -144,98 +144,98 @@ public:
 		: MenuPage(pos, size, EDIT_QUEST_LOAD)
 	{}
 
-void init(Vec2i size) {
-	
-	{
-	ButtonWidget * cb = new ButtonWidget(Vec2i(0, 0), "graph/interface/icons/menu_main_load");
-	cb->SetCheckOff();
-	addCenter(cb, true);
-	}
-	
-	std::string quicksaveName = getLocalised("system_menus_main_quickloadsave", "Quicksave");
-	
-	// TODO make this list scrollable
-	// TODO align the date part to the right!
-	
-	{
-	size_t quicksaveNum = 0;
-	
-	// Show quicksaves.
-	for(size_t i = 0; i < savegames.size(); i++) {
-		const SaveGame & save = savegames[i];
+	void init(Vec2i size) {
 		
-		if(!save.quicksave) {
-			continue;
+		{
+			ButtonWidget * cb = new ButtonWidget(Vec2i(0, 0), "graph/interface/icons/menu_main_load");
+			cb->SetCheckOff();
+			addCenter(cb, true);
 		}
 		
-		std::ostringstream text;
-		text << quicksaveName << ' ' << ++quicksaveNum << "   " << save.time;
+		std::string quicksaveName = getLocalised("system_menus_main_quickloadsave", "Quicksave");
 		
-		TextWidget * e = new TextWidget(BUTTON_MENUEDITQUEST_LOAD, hFontControls, text.str(), Vec2i(RATIO_X(20), 0));
-		e->m_savegame = SavegameHandle(i);
-		addCenter(e);
-	}
-	
-	// Show regular saves.
-	for(size_t i = 0; i < savegames.size(); i++) {
-		const SaveGame & save = savegames[i];
+		// TODO make this list scrollable
+		// TODO align the date part to the right!
 		
-		if(save.quicksave) {
-			continue;
+		{
+		size_t quicksaveNum = 0;
+		
+		// Show quicksaves.
+		for(size_t i = 0; i < savegames.size(); i++) {
+			const SaveGame & save = savegames[i];
+			
+			if(!save.quicksave) {
+				continue;
+			}
+			
+			std::ostringstream text;
+			text << quicksaveName << ' ' << ++quicksaveNum << "   " << save.time;
+			
+			TextWidget * e = new TextWidget(BUTTON_MENUEDITQUEST_LOAD, hFontControls, text.str(), Vec2i(RATIO_X(20), 0));
+			e->m_savegame = SavegameHandle(i);
+			addCenter(e);
 		}
 		
-		std::string text = save.name +  "   " + save.time;
+		// Show regular saves.
+		for(size_t i = 0; i < savegames.size(); i++) {
+			const SaveGame & save = savegames[i];
+			
+			if(save.quicksave) {
+				continue;
+			}
+			
+			std::string text = save.name +  "   " + save.time;
+			
+			TextWidget * e = new TextWidget(BUTTON_MENUEDITQUEST_LOAD, hFontControls, text, Vec2i(RATIO_X(20), 0));
+			e->m_savegame = SavegameHandle(i);
+			addCenter(e);
+		}
 		
-		TextWidget * e = new TextWidget(BUTTON_MENUEDITQUEST_LOAD, hFontControls, text, Vec2i(RATIO_X(20), 0));
-		e->m_savegame = SavegameHandle(i);
-		addCenter(e);
+		{
+			TextWidget * confirm = new TextWidget(BUTTON_INVALID, hFontControls, " ", Vec2i(RATIO_X(20), 0));
+			confirm->m_targetMenu = EDIT_QUEST_SAVE_CONFIRM;
+			confirm->SetCheckOff();
+			confirm->m_savegame = SavegameHandle::Invalid;
+			addCenter(confirm);
+		}
+		
+		// Delete button
+		{
+			std::string szMenuText = getLocalised("system_menus_main_editquest_delete");
+			szMenuText += "   ";
+			TextWidget * me = new TextWidget(BUTTON_MENUEDITQUEST_DELETE_CONFIRM, hFontMenu, szMenuText, Vec2i(0, 0));
+			me->m_targetMenu = EDIT_QUEST_LOAD;
+			me->SetPos(Vec2i(RATIO_X(size.x-10)-me->m_rect.width(), RATIO_Y(42)));
+			me->SetCheckOff();
+			me->lOldColor = me->lColor;
+			me->lColor = Color::grayb(127);
+			add(me);
+			pDeleteConfirm = me;
+		}
+		
+		// Load button
+		{
+			std::string szMenuText = getLocalised("system_menus_main_editquest_load");
+			szMenuText += "   ";
+			TextWidget * me = new TextWidget(BUTTON_MENUEDITQUEST_LOAD_CONFIRM, hFontMenu, szMenuText, Vec2i(0, 0));
+			me->m_targetMenu = MAIN;
+			me->SetPos(Vec2i(RATIO_X(size.x-10)-me->m_rect.width(), RATIO_Y(380) + RATIO_Y(40)));
+			me->SetCheckOff();
+			me->lOldColor = me->lColor;
+			me->lColor = Color::grayb(127);
+			add(me);
+			pLoadConfirm = me;
+		}
+		
+		// Back button
+		{
+			ButtonWidget * cb = new ButtonWidget(RATIO_2(Vec2i(20, 420)), "graph/interface/menus/back");
+			cb->m_targetMenu = EDIT_QUEST;
+			cb->SetShortCut(Keyboard::Key_Escape);
+			add(cb);
+		}
+		}
 	}
-	
-	{
-	TextWidget * confirm = new TextWidget(BUTTON_INVALID, hFontControls, " ", Vec2i(RATIO_X(20), 0));
-	confirm->m_targetMenu = EDIT_QUEST_SAVE_CONFIRM;
-	confirm->SetCheckOff();
-	confirm->m_savegame = SavegameHandle::Invalid;
-	addCenter(confirm);
-	}
-	
-	// Delete button
-	{
-	std::string szMenuText = getLocalised("system_menus_main_editquest_delete");
-	szMenuText += "   ";
-	TextWidget * me = new TextWidget(BUTTON_MENUEDITQUEST_DELETE_CONFIRM, hFontMenu, szMenuText, Vec2i(0, 0));
-	me->m_targetMenu = EDIT_QUEST_LOAD;
-	me->SetPos(Vec2i(RATIO_X(size.x-10)-me->m_rect.width(), RATIO_Y(42)));
-	me->SetCheckOff();
-	me->lOldColor = me->lColor;
-	me->lColor = Color::grayb(127);
-	add(me);
-	pDeleteConfirm = me;
-	}
-	
-	// Load button
-	{
-	std::string szMenuText = getLocalised("system_menus_main_editquest_load");
-	szMenuText += "   ";
-	TextWidget * me = new TextWidget(BUTTON_MENUEDITQUEST_LOAD_CONFIRM, hFontMenu, szMenuText, Vec2i(0, 0));
-	me->m_targetMenu = MAIN;
-	me->SetPos(Vec2i(RATIO_X(size.x-10)-me->m_rect.width(), RATIO_Y(380) + RATIO_Y(40)));
-	me->SetCheckOff();
-	me->lOldColor = me->lColor;
-	me->lColor = Color::grayb(127);
-	add(me);
-	pLoadConfirm = me;
-	}
-	
-	// Back button
-	{
-	ButtonWidget * cb = new ButtonWidget(RATIO_2(Vec2i(20, 420)), "graph/interface/menus/back");
-	cb->m_targetMenu = EDIT_QUEST;
-	cb->SetShortCut(Keyboard::Key_Escape);
-	add(cb);
-	}
-	}
-}
 };
 
 class SaveMenuPage : public MenuPage {
@@ -243,79 +243,79 @@ public:
 	SaveMenuPage(Vec2i pos, Vec2i size)
 		: MenuPage(pos, size, EDIT_QUEST_SAVE)
 	{}
-
-void init() {
 	
-	{
-	ButtonWidget * cb = new ButtonWidget(Vec2i(RATIO_X(10), 0), "graph/interface/icons/menu_main_save");
-	cb->SetCheckOff();
-	addCenter(cb, true);
-	}
-	
-	std::string quicksaveName = getLocalised("system_menus_main_quickloadsave", "Quicksave");
-	size_t quicksaveNum = 0;
-	
-	// Show quicksaves.
-	for(size_t i = 0; i < savegames.size(); i++) {
-		const SaveGame & save = savegames[i];
+	void init() {
 		
-		if(!save.quicksave) {
-			continue;
+		{
+			ButtonWidget * cb = new ButtonWidget(Vec2i(RATIO_X(10), 0), "graph/interface/icons/menu_main_save");
+			cb->SetCheckOff();
+			addCenter(cb, true);
 		}
 		
-		std::ostringstream text;
-		text << quicksaveName << ' ' << ++quicksaveNum << "   " << save.time;
+		std::string quicksaveName = getLocalised("system_menus_main_quickloadsave", "Quicksave");
+		size_t quicksaveNum = 0;
 		
-		TextWidget * e = new TextWidget(BUTTON_MENUEDITQUEST_SAVEINFO, hFontControls, text.str(), Vec2i(RATIO_X(20), 0.f));
-		e->m_targetMenu = EDIT_QUEST_SAVE_CONFIRM;
-		e->setColor(Color::grayb(127));
-		e->SetCheckOff();
-		e->m_savegame = SavegameHandle(i);
-		addCenter(e);
-	}
-	
-	// Show regular saves.
-	for(size_t i = 0; i < savegames.size(); i++) {
-		const SaveGame & save = savegames[i];
-		
-		if(save.quicksave) {
-			continue;
+		// Show quicksaves.
+		for(size_t i = 0; i < savegames.size(); i++) {
+			const SaveGame & save = savegames[i];
+			
+			if(!save.quicksave) {
+				continue;
+			}
+			
+			std::ostringstream text;
+			text << quicksaveName << ' ' << ++quicksaveNum << "   " << save.time;
+			
+			TextWidget * e = new TextWidget(BUTTON_MENUEDITQUEST_SAVEINFO, hFontControls, text.str(), Vec2i(RATIO_X(20), 0.f));
+			e->m_targetMenu = EDIT_QUEST_SAVE_CONFIRM;
+			e->setColor(Color::grayb(127));
+			e->SetCheckOff();
+			e->m_savegame = SavegameHandle(i);
+			addCenter(e);
 		}
 		
-		std::string text = save.name +  "   " + save.time;
+		// Show regular saves.
+		for(size_t i = 0; i < savegames.size(); i++) {
+			const SaveGame & save = savegames[i];
+			
+			if(save.quicksave) {
+				continue;
+			}
+			
+			std::string text = save.name +  "   " + save.time;
+			
+			TextWidget * e = new TextWidget(BUTTON_MENUEDITQUEST_SAVEINFO, hFontControls, text, Vec2i(RATIO_X(20), 0.f));
+			e->m_targetMenu = EDIT_QUEST_SAVE_CONFIRM;
+			e->m_savegame = SavegameHandle(i);
+			addCenter(e);
+		}
 		
-		TextWidget * e = new TextWidget(BUTTON_MENUEDITQUEST_SAVEINFO, hFontControls, text, Vec2i(RATIO_X(20), 0.f));
-		e->m_targetMenu = EDIT_QUEST_SAVE_CONFIRM;
-		e->m_savegame = SavegameHandle(i);
-		addCenter(e);
-	}
+		for(size_t i = savegames.size(); i <= 15; i++) {
+			
+			std::ostringstream text;
+			text << '-' << std::setfill('0') << std::setw(4) << i << '-';
+			
+			TextWidget * e = new TextWidget(BUTTON_MENUEDITQUEST_SAVEINFO, hFontControls, text.str(), Vec2i(RATIO_X(20), 0));
+			e->m_targetMenu = EDIT_QUEST_SAVE_CONFIRM;
+			e->m_savegame = SavegameHandle::Invalid;
+			addCenter(e);
+		}
 	
-	for(size_t i = savegames.size(); i <= 15; i++) {
+		{
+			TextWidget * me01 = new TextWidget(BUTTON_INVALID, hFontControls, " ", Vec2i(RATIO_X(20), 0));
+			me01->m_targetMenu = EDIT_QUEST_SAVE_CONFIRM;
+			me01->m_savegame = SavegameHandle::Invalid;
+			me01->SetCheckOff();
+			addCenter(me01);
+		}
 		
-		std::ostringstream text;
-		text << '-' << std::setfill('0') << std::setw(4) << i << '-';
-		
-		TextWidget * e = new TextWidget(BUTTON_MENUEDITQUEST_SAVEINFO, hFontControls, text.str(), Vec2i(RATIO_X(20), 0));
-		e->m_targetMenu = EDIT_QUEST_SAVE_CONFIRM;
-		e->m_savegame = SavegameHandle::Invalid;
-		addCenter(e);
+		{
+			ButtonWidget * cb = new ButtonWidget(RATIO_2(Vec2i(20, 420)), "graph/interface/menus/back");
+			cb->m_targetMenu = EDIT_QUEST;
+			cb->SetShortCut(Keyboard::Key_Escape);
+			add(cb);
+		}
 	}
-
-	{
-	TextWidget * me01 = new TextWidget(BUTTON_INVALID, hFontControls, " ", Vec2i(RATIO_X(20), 0));
-	me01->m_targetMenu = EDIT_QUEST_SAVE_CONFIRM;
-	me01->m_savegame = SavegameHandle::Invalid;
-	me01->SetCheckOff();
-	addCenter(me01);
-	}
-	
-	{
-	ButtonWidget * cb = new ButtonWidget(RATIO_2(Vec2i(20, 420)), "graph/interface/menus/back");
-	cb->m_targetMenu = EDIT_QUEST;
-	cb->SetShortCut(Keyboard::Key_Escape);
-	add(cb);
-	}
-}
 };
 
 class SaveConfirmMenuPage : public MenuPage {
@@ -323,56 +323,56 @@ public:
 	SaveConfirmMenuPage(Vec2i pos, Vec2i size)
 		: MenuPage(pos, size, EDIT_QUEST_SAVE_CONFIRM)
 	{}
-
-void init(Vec2i size) {
 	
-	{
-	ButtonWidget * cb = new ButtonWidget(Vec2i(0, 0), "graph/interface/icons/menu_main_save");
-	cb->SetCheckOff();
-	addCenter(cb, true);
+	void init(Vec2i size) {
+		
+		{
+			ButtonWidget * cb = new ButtonWidget(Vec2i(0, 0), "graph/interface/icons/menu_main_save");
+			cb->SetCheckOff();
+			addCenter(cb, true);
+		}
+		
+		{
+			std::string szMenuText = getLocalised("system_menu_editquest_newsavegame", "---");
+			TextWidget * me = new TextWidget(BUTTON_INVALID, hFontMenu, szMenuText, Vec2i(RATIO_X(20), 0));
+			me->m_savegame = SavegameHandle::Invalid;
+			me->eState=EDIT;
+			me->ePlace=CENTER;
+			addCenter(me, true);
+		}
+		
+		HorizontalPanelWidget * pPanel = new HorizontalPanelWidget;
+		
+		// Delete button
+		{
+			std::string szMenuText = getLocalised("system_menus_main_editquest_delete");
+			TextWidget * me = new TextWidget(BUTTON_MENUEDITQUEST_DELETE, hFontMenu, szMenuText, Vec2i(0, 0));
+			me->m_targetMenu = EDIT_QUEST_SAVE;
+			me->SetPos(Vec2i(RATIO_X(size.x-10)-me->m_rect.width(), RATIO_Y(5)));
+			me->lOldColor = me->lColor;
+			pPanel->AddElementNoCenterIn(me);
+			pDeleteButton = me;
+		}
+		
+		// Save button
+		{
+			std::string szMenuText = getLocalised("system_menus_main_editquest_save");
+			TextWidget * me = new TextWidget(BUTTON_MENUEDITQUEST_SAVE, hFontMenu, szMenuText, Vec2i(0, 0));
+			me->m_targetMenu = MAIN;
+			me->SetPos(Vec2i(RATIO_X(size.x-10)-me->m_rect.width(), RATIO_Y(380)));
+			pPanel->AddElementNoCenterIn(me);
+		}
+		
+		// Back button
+		{
+			ButtonWidget * cb = new ButtonWidget(RATIO_2(Vec2i(20, 380)), "graph/interface/menus/back");
+			cb->m_targetMenu = EDIT_QUEST_SAVE;
+			cb->SetShortCut(Keyboard::Key_Escape);
+			pPanel->AddElementNoCenterIn(cb);
+		}
+		
+		add(pPanel);
 	}
-	
-	{
-	std::string szMenuText = getLocalised("system_menu_editquest_newsavegame", "---");
-	TextWidget * me = new TextWidget(BUTTON_INVALID, hFontMenu, szMenuText, Vec2i(RATIO_X(20), 0));
-	me->m_savegame = SavegameHandle::Invalid;
-	me->eState=EDIT;
-	me->ePlace=CENTER;
-	addCenter(me, true);
-	}
-	
-	HorizontalPanelWidget * pPanel = new HorizontalPanelWidget;
-	
-	// Delete button
-	{
-	std::string szMenuText = getLocalised("system_menus_main_editquest_delete");
-	TextWidget * me = new TextWidget(BUTTON_MENUEDITQUEST_DELETE, hFontMenu, szMenuText, Vec2i(0, 0));
-	me->m_targetMenu = EDIT_QUEST_SAVE;
-	me->SetPos(Vec2i(RATIO_X(size.x-10)-me->m_rect.width(), RATIO_Y(5)));
-	me->lOldColor = me->lColor;
-	pPanel->AddElementNoCenterIn(me);
-	pDeleteButton = me;
-	}
-	
-	// Save button
-	{
-	std::string szMenuText = getLocalised("system_menus_main_editquest_save");
-	TextWidget * me = new TextWidget(BUTTON_MENUEDITQUEST_SAVE, hFontMenu, szMenuText, Vec2i(0, 0));
-	me->m_targetMenu = MAIN;
-	me->SetPos(Vec2i(RATIO_X(size.x-10)-me->m_rect.width(), RATIO_Y(380)));
-	pPanel->AddElementNoCenterIn(me);
-	}
-	
-	// Back button
-	{
-	ButtonWidget * cb = new ButtonWidget(RATIO_2(Vec2i(20, 380)), "graph/interface/menus/back");
-	cb->m_targetMenu = EDIT_QUEST_SAVE;
-	cb->SetShortCut(Keyboard::Key_Escape);
-	pPanel->AddElementNoCenterIn(cb);
-	}
-
-	add(pPanel);
-}
 };
 
 class OptionsMenuPage : public MenuPage {
@@ -381,36 +381,36 @@ public:
 		: MenuPage(pos, size, OPTIONS)
 	{}
 	
-void init() {
-	
-	{
-	std::string szMenuText = getLocalised("system_menus_options_video");
-	TextWidget * me = new TextWidget(BUTTON_MENUOPTIONSVIDEO_INIT, hFontMenu, szMenuText, Vec2i(0, 0));
-	me->m_targetMenu = OPTIONS_VIDEO;
-	addCenter(me, true);
+	void init() {
+		
+		{
+			std::string szMenuText = getLocalised("system_menus_options_video");
+			TextWidget * me = new TextWidget(BUTTON_MENUOPTIONSVIDEO_INIT, hFontMenu, szMenuText, Vec2i(0, 0));
+			me->m_targetMenu = OPTIONS_VIDEO;
+			addCenter(me, true);
+		}
+		
+		{
+			std::string szMenuText = getLocalised("system_menus_options_audio");
+			TextWidget * me = new TextWidget(BUTTON_INVALID, hFontMenu, szMenuText, Vec2i(0, 0));
+			me->m_targetMenu = OPTIONS_AUDIO;
+			addCenter(me, true);
+		}
+		
+		{
+			std::string szMenuText = getLocalised("system_menus_options_input");
+			TextWidget * me = new TextWidget(BUTTON_INVALID, hFontMenu, szMenuText, Vec2i(0, 0));
+			me->m_targetMenu = OPTIONS_INPUT;
+			addCenter(me, true);
+		}
+		
+		{
+			ButtonWidget * cb = new ButtonWidget(RATIO_2(Vec2i(20, 380)), "graph/interface/menus/back");
+			cb->m_targetMenu = MAIN;
+			cb->SetShortCut(Keyboard::Key_Escape);
+			add(cb);
+		}
 	}
-	
-	{
-	std::string szMenuText = getLocalised("system_menus_options_audio");
-	TextWidget * me = new TextWidget(BUTTON_INVALID, hFontMenu, szMenuText, Vec2i(0, 0));
-	me->m_targetMenu = OPTIONS_AUDIO;
-	addCenter(me, true);
-	}
-	
-	{
-	std::string szMenuText = getLocalised("system_menus_options_input");
-	TextWidget * me = new TextWidget(BUTTON_INVALID, hFontMenu, szMenuText, Vec2i(0, 0));
-	me->m_targetMenu = OPTIONS_INPUT;
-	addCenter(me, true);
-	}
-	
-	{
-	ButtonWidget * cb = new ButtonWidget(RATIO_2(Vec2i(20, 380)), "graph/interface/menus/back");
-	cb->m_targetMenu = MAIN;
-	cb->SetShortCut(Keyboard::Key_Escape);
-	add(cb);
-	}
-}
 };
 
 struct VideoRendererOnChangeHandler {
