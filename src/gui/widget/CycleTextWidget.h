@@ -20,6 +20,7 @@
 #ifndef ARX_GUI_WIDGET_CYCLETEXTWIDGET_H
 #define ARX_GUI_WIDGET_CYCLETEXTWIDGET_H
 
+#include <vector>
 #include <boost/function.hpp>
 
 #include "gui/widget/ButtonWidget.h"

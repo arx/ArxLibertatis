@@ -20,6 +20,8 @@
 #ifndef ARX_GUI_WIDGET_HORIZONTALPANELWIDGET_H
 #define ARX_GUI_WIDGET_HORIZONTALPANELWIDGET_H
 
+#include <vector>
+
 #include "gui/widget/Widget.h"
 
 class HorizontalPanelWidget : public Widget {
