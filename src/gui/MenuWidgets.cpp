@@ -347,7 +347,6 @@ bool Menu2_Render() {
 	}
 
 	bool bScroll=true;
-	{
 	
 	MENUSTATE eMenuState = mainMenu->Update();
 	
@@ -374,7 +373,7 @@ bool Menu2_Render() {
 		MainMenuLeftCreate(eMenuState);
 	
 	}
-	}
+	
 	mainMenu->Render();
 
 	if(pWindowMenu) {
