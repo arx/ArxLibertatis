@@ -1108,8 +1108,7 @@ void MainMenuLeftCreate(MENUSTATE eMenuState)
 	
 	pWindowMenu->m_currentPageId = eMenuState;
 	
-	// TODO Special case to prevent displaying confirmation dialog on new game during fade
-	if(ARXMenu_CanResumeGame()){
+	{
 		NewQuestMenuPage * page = new NewQuestMenuPage(offset, size);
 		page->init(size);
 		pWindowMenu->add(page);
