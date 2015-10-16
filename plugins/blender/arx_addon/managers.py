@@ -195,7 +195,7 @@ class ArxSceneManager(object):
         return result
 
     def importScene(self, sceneName):
-        log.info("Importing scene: %s" % sceneName)
+        self.log.info("Importing scene: %s" % sceneName)
 
         files = self.getSceneFiles(sceneName)
 
@@ -272,7 +272,7 @@ class ArxSceneManager(object):
                         if matIdx is not None:
                             bmFace.material_index = matIdx[0]
                         else:
-                            log.info("Matrial id not found %i" % face.tex)
+                            self.log.info("Matrial id not found %i" % face.tex)
 
                     for i, loop in enumerate(bmFace.loops):
                         loop[uvLayer].uv = tempVerts[i][1]
