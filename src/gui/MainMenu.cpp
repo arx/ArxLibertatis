@@ -83,7 +83,8 @@ public:
 		{
 			std::string szMenuText = getLocalised("system_yes");
 			szMenuText += "   "; // TODO This space can probably go
-			TextWidget * me = new TextWidget(BUTTON_MENUNEWQUEST_CONFIRM, hFontMenu, szMenuText);
+			TextWidget * me = new TextWidget(BUTTON_INVALID, hFontMenu, szMenuText);
+			me->m_onClick = boost::bind(ARXMenu_NewQuest);
 			me->SetPos(Vec2i(RATIO_X(size.x - (me->m_rect.width() + 10)), 0));
 			pPanel->AddElementNoCenterIn(me);
 		}
@@ -1074,7 +1075,8 @@ public:
 		{
 			HorizontalPanelWidget *pPanel = new HorizontalPanelWidget;
 			
-			TextWidget * yes = new TextWidget(BUTTON_MENUMAIN_QUIT, hFontMenu, getLocalised("system_yes"));
+			TextWidget * yes = new TextWidget(BUTTON_INVALID, hFontMenu, getLocalised("system_yes"));
+			yes->m_onClick = boost::bind(ARXMenu_Quit);
 			yes->SetPos(Vec2i(RATIO_X(size.x-10)-yes->m_rect.width(), 0));
 			pPanel->AddElementNoCenterIn(yes);
 			

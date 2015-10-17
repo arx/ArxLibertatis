@@ -170,14 +170,6 @@ bool TextWidget::OnMouseClick() {
 		break;
 		case BUTTON_MENUMAIN_OPTIONS: {
 		}break;
-		case BUTTON_MENUMAIN_QUIT: {
-			ARXMenu_Quit();
-		}
-		break;
-		case BUTTON_MENUNEWQUEST_CONFIRM: {
-			ARXMenu_NewQuest();
-		}
-		break;
 		// MENULOADQUEST
 		case BUTTON_MENUOPTIONSVIDEO_INIT: {
 			newWidth = config.video.resolution.x;
