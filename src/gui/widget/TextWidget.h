@@ -20,6 +20,8 @@
 #ifndef ARX_GUI_WIDGET_TEXTWIDGET_H
 #define ARX_GUI_WIDGET_TEXTWIDGET_H
 
+#include <boost/function.hpp>
+
 #include "graphics/Color.h"
 #include "gui/widget/Widget.h"
 
@@ -34,6 +36,8 @@ public:
 	Color lOldColor;
 	Color lColorHighlight;
 	bool	bSelected;
+	
+	boost::function<void(TextWidget *)> m_onClick;
 	
 public:
 	TextWidget(MenuButton id, Font * font, const std::string & text, Vec2i pos = Vec2i_ZERO);

@@ -21,6 +21,7 @@
 
 #include <iomanip>
 
+#include <boost/bind.hpp>
 #include <boost/foreach.hpp>
 
 #include "audio/Audio.h"
@@ -1240,7 +1241,8 @@ void MainMenu::init()
 	pos.y += yOffset;
 	{
 	std::string szMenuText = getLocalised("system_menus_main_credits");
-	TextWidget *me = new TextWidget(BUTTON_MENUMAIN_CREDITS, hFontMainMenu, szMenuText, RATIO_2(pos));
+	TextWidget *me = new TextWidget(BUTTON_INVALID, hFontMainMenu, szMenuText, RATIO_2(pos));
+	me->m_onClick = boost::bind(ARXMenu_Credits);
 	me->m_targetMenu = CREDITS;
 	add(me);
 	}

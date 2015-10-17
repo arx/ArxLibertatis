@@ -130,6 +130,10 @@ bool TextWidget::OnMouseClick() {
 		return false;
 	}
 	
+	if(m_onClick) {
+		m_onClick(this);
+	}
+	
 	switch(eState) {
 		case EDIT:
 			eState=EDIT_TIME;
@@ -166,10 +170,6 @@ bool TextWidget::OnMouseClick() {
 		break;
 		case BUTTON_MENUMAIN_OPTIONS: {
 		}break;
-		case BUTTON_MENUMAIN_CREDITS: {
-			ARXMenu_Credits();
-		}
-		break;
 		case BUTTON_MENUMAIN_QUIT: {
 			ARXMenu_Quit();
 		}
