@@ -81,7 +81,7 @@ static EERIEPOLY * ANCHOR_CheckInPolyPrecis(const Vec3f & pos) {
 					Vec3f poss = pos;
 					float yy;
 
-					if(GetTruePolyY(ep, poss, &yy) && yy >= pos.y && (!found || (found && (yy <= foundY)))) {
+					if(GetTruePolyY(ep, poss, &yy) && yy >= pos.y && (!found || yy <= foundY)) {
 						found = ep;
 						foundY = yy;
 					}
