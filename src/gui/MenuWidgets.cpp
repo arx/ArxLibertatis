@@ -182,12 +182,11 @@ bool ARX_SlotLoad(int slotIndex) {
 }
 
 bool MENU_NoActiveWindow() {
-	if(!pWindowMenu
-	   || (pWindowMenu && pWindowMenu->m_currentPageId == MAIN)
-	) {
+	
+	if(!pWindowMenu || pWindowMenu->m_currentPageId == MAIN) {
 		return true;
 	}
-
+	
 	return false;
 }
 
