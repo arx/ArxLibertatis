@@ -1147,12 +1147,7 @@ void AnchorData_Create(EERIE_BACKGROUND * eb) {
 			if(ep) {
 				EERIEPOLY * epmax;
 				epmax = GetMaxPoly(pos);
-				float roof = 9999999.f;
-				
-				roof = ep->min.y - 300;
-				
-				if(epmax)
-					roof = epmax->min.y - 300;
+				float roof = (epmax ? epmax->min.y : ep->min.y) - 300;
 				
 				float current_y = ep->max.y;
 				
