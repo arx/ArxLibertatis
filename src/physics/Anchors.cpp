@@ -113,7 +113,7 @@ static EERIEPOLY * ANCHOR_CheckInPoly(const Vec3f & pos) {
 		        &&	((ep->norm.y < 0.f) || ((ep->type & POLY_QUAD) && (ep->norm2.y < 0.f)))
 		        &&	(PointIn2DPolyXZ(ep, pos.x, pos.z)))
 		{
-			if(!found || (found && ep->min.y < found->min.y))
+			if(!found || ep->min.y < found->min.y)
 				found = ep;
 		}
 	}
