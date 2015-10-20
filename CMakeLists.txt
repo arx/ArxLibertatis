@@ -565,6 +565,7 @@ else(MSVC)
 	find_library(LIBRT_LIBRARY rt)
 	
 	if(LIBRT_LIBRARY)
+		check_link_library(librt LIBRT_LIBRARY)
 		set(CMAKE_REQUIRED_LIBRARIES "${LIBRT_LIBRARY}")
 	endif()
 	check_symbol_exists(clock_gettime "time.h" ARX_HAVE_CLOCK_GETTIME)
