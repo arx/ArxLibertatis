@@ -743,7 +743,7 @@ float ARX_DAMAGES_DamageNPC(Entity * io, float dmg, EntityHandle source, bool is
 	float damagesdone = 0.f;
 
 	if(io->_npcdata->lifePool.current <= 0.f) {
-		if(source != PlayerEntityHandle || (source == PlayerEntityHandle && ValidIONum(player.equiped[EQUIP_SLOT_WEAPON]))) {
+		if(source != PlayerEntityHandle || ValidIONum(player.equiped[EQUIP_SLOT_WEAPON])) {
 			if(dmg >= io->_npcdata->lifePool.max * 0.4f && pos)
 				ARX_NPC_TryToCutSomething(io, pos);
 
