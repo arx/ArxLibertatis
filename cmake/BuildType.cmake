@@ -184,7 +184,6 @@ else(MSVC)
 		add_cxxflag("-fsanitize=thread")
 		add_cxxflag("-fsanitize=leak")
 		add_cxxflag("-fsanitize=undefined")
-		add_definitions(-D_FORTIFY_SOURCE=2)
 	endif(DEBUG_EXTRA)
 	
 	if(CMAKE_BUILD_TYPE STREQUAL "")
