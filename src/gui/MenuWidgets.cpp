@@ -331,7 +331,7 @@ bool Menu2_Render() {
 		eM = mainMenu->eOldMenuWindowState;
 	}
 	
-	if(!mainMenu || (mainMenu && mainMenu->bReInitAll)) {
+	if(!mainMenu || mainMenu->bReInitAll) {
 		
 		if(mainMenu && mainMenu->bReInitAll) {
 			eOldMenuState = mainMenu->eOldMenuState;
