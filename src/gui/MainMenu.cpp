@@ -578,7 +578,8 @@ public:
 			TextWidget * me = new TextWidget(BUTTON_INVALID, hFontMenu, szMenuText, Vec2i(RATIO_X(20), 0.f));
 			me->SetCheckOff();
 			pc->AddElement(me);
-			SliderWidget * sld = new SliderWidget(BUTTON_MENUOPTIONSVIDEO_FOG, Vec2i(RATIO_X(200), 0));
+			SliderWidget * sld = new SliderWidget(BUTTON_INVALID, Vec2i(RATIO_X(200), 0));
+			sld->valueChanged = boost::bind(&VideoOptionsMenuPage::onChangedFogDistance, this, _1);
 			sld->setValue(config.video.fogDistance);
 			pc->AddElement(sld);
 			addCenter(pc);
@@ -692,6 +693,10 @@ public:
 		ARXMenu_Options_Video_SetDetailsQuality(pos);
 	}
 	
+	void onChangedFogDistance(int value) {
+		ARXMenu_Options_Video_SetFogDistance(value);
+	}
+	
 	void onChangedCrosshair(int state) {
 		config.video.showCrosshair = state ? true : false;
 	}
@@ -787,7 +792,8 @@ public:
 			TextWidget * me = new TextWidget(BUTTON_INVALID, hFontMenu, szMenuText, Vec2i(RATIO_X(20), 0.f));
 			me->SetCheckOff();
 			pc->AddElement(me);
-			SliderWidget * sld = new SliderWidget(BUTTON_MENUOPTIONSAUDIO_MASTER, Vec2i(RATIO_X(200), 0));
+			SliderWidget * sld = new SliderWidget(BUTTON_INVALID, Vec2i(RATIO_X(200), 0));
+			sld->valueChanged = boost::bind(&AudioOptionsMenuPage::onChangedMasterVolume, this, _1);
 			sld->setValue((int)config.audio.volume); // TODO use float sliders
 			pc->AddElement(sld);
 			addCenter(pc);
@@ -800,7 +806,8 @@ public:
 			me->m_targetMenu = OPTIONS_AUDIO;
 			me->SetCheckOff();
 			pc->AddElement(me);
-			SliderWidget * sld = new SliderWidget(BUTTON_MENUOPTIONSAUDIO_SFX, Vec2i(RATIO_X(200), 0));
+			SliderWidget * sld = new SliderWidget(BUTTON_INVALID, Vec2i(RATIO_X(200), 0));
+			sld->valueChanged = boost::bind(&AudioOptionsMenuPage::onChangedEffectsVolume, this, _1);
 			sld->setValue((int)config.audio.sfxVolume);
 			pc->AddElement(sld);
 			addCenter(pc);
@@ -813,7 +820,8 @@ public:
 			me->m_targetMenu = OPTIONS_AUDIO;
 			me->SetCheckOff();
 			pc->AddElement(me);
-			SliderWidget * sld = new SliderWidget(BUTTON_MENUOPTIONSAUDIO_SPEECH, Vec2i(RATIO_X(200), 0));
+			SliderWidget * sld = new SliderWidget(BUTTON_INVALID, Vec2i(RATIO_X(200), 0));
+			sld->valueChanged = boost::bind(&AudioOptionsMenuPage::onChangedSpeechVolume, this, _1);
 			sld->setValue((int)config.audio.speechVolume);
 			pc->AddElement(sld);
 			addCenter(pc);
@@ -826,7 +834,8 @@ public:
 			me->m_targetMenu = OPTIONS_AUDIO;
 			me->SetCheckOff();
 			pc->AddElement(me);
-			SliderWidget * sld = new SliderWidget(BUTTON_MENUOPTIONSAUDIO_AMBIANCE, Vec2i(RATIO_X(200), 0));
+			SliderWidget * sld = new SliderWidget(BUTTON_INVALID, Vec2i(RATIO_X(200), 0));
+			sld->valueChanged = boost::bind(&AudioOptionsMenuPage::onChangedAmbianceVolume, this, _1);
 			sld->setValue((int)config.audio.ambianceVolume);
 			pc->AddElement(sld);
 			addCenter(pc);
@@ -862,6 +871,22 @@ public:
 		} else {
 			ARXMenu_Options_Audio_SetDevice(str);
 		}
+	}
+	
+	void onChangedMasterVolume(int value) {
+		ARXMenu_Options_Audio_SetMasterVolume(value);
+	}
+	
+	void onChangedEffectsVolume(int value) {
+		ARXMenu_Options_Audio_SetSfxVolume(value);
+	}
+	
+	void onChangedSpeechVolume(int value) {
+		ARXMenu_Options_Audio_SetSpeechVolume(value);
+	}
+	
+	void onChangedAmbianceVolume(int value) {
+		ARXMenu_Options_Audio_SetAmbianceVolume(value);
 	}
 	
 	void onChangedEax(int state) {
@@ -923,7 +948,8 @@ public:
 			TextWidget * me = new TextWidget(BUTTON_INVALID, hFontMenu, szMenuText, Vec2i(RATIO_X(20), 0.f));
 			me->SetCheckOff();
 			pc->AddElement(me);
-			SliderWidget * sld = new SliderWidget(BUTTON_MENUOPTIONS_CONTROLS_MOUSESENSITIVITY, Vec2i(RATIO_X(200), 0));
+			SliderWidget * sld = new SliderWidget(BUTTON_INVALID, Vec2i(RATIO_X(200), 0));
+			sld->valueChanged = boost::bind(&InputOptionsMenuPage::onChangedMouseSensitivity, this, _1);
 			sld->setValue(config.input.mouseSensitivity);
 			pc->AddElement(sld);
 			addCenter(pc);
@@ -946,7 +972,9 @@ public:
 			TextWidget * me = new TextWidget(BUTTON_INVALID, hFontMenu, szMenuText, Vec2i(RATIO_X(20), 0));
 			me->SetCheckOff();
 			pc->AddElement(me);
-			SliderWidget * sld = new SliderWidget(BUTTON_MENUOPTIONS_CONTROLS_QUICKSAVESLOTS, Vec2i(RATIO_X(200), 0));
+			SliderWidget * sld = new SliderWidget(BUTTON_INVALID, Vec2i(RATIO_X(200), 0));
+			sld->setMinimum(1);
+			sld->valueChanged = boost::bind(&InputOptionsMenuPage::onChangedQuicksaveSlots, this, _1);
 			sld->setValue(config.misc.quicksaveSlots);
 			pc->AddElement(sld);
 			addCenter(pc);
@@ -972,8 +1000,16 @@ public:
 		config.input.mouseLookToggle = (state) ? true : false;
 	}
 	
+	void onChangedMouseSensitivity(int value) {
+		ARXMenu_Options_Control_SetMouseSensitivity(value);
+	}
+	
 	void onChangedAutoDescription(int state) {
 		config.input.autoDescription = (state) ? true : false;
+	}
+	
+	void onChangedQuicksaveSlots(int value) {
+		config.misc.quicksaveSlots = value;
 	}
 };
 

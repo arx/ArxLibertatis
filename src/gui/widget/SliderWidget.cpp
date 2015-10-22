@@ -40,6 +40,7 @@ SliderWidget::SliderWidget(MenuButton _iID, Vec2i pos)
 	arx_assert(pTex1);
 	arx_assert(pTex2);
 	
+	m_minimum = 0;
 	m_value = 0;
 
 	m_rect.left   = pos.x;
@@ -57,6 +58,11 @@ SliderWidget::~SliderWidget() {
 	delete pRightButton;
 }
 
+void SliderWidget::setMinimum(int minimum) {
+	m_minimum = minimum;
+	m_value = std::max(m_minimum, m_value);
+}
+
 void SliderWidget::Move(const Vec2i & offset) {
 	Widget::Move(offset);
 	pLeftButton->Move(offset);
@@ -69,8 +75,8 @@ void SliderWidget::EmptyFunction() {
 	if(GInput->isKeyPressedNowPressed(Keyboard::Key_LeftArrow)) {
 		m_value--;
 
-		if(m_value <= 0)
-			m_value = 0;
+		if(m_value <= m_minimum)
+			m_value = m_minimum;
 	} else {
 		if(GInput->isKeyPressedNowPressed(Keyboard::Key_RightArrow)) {
 			m_value++;
@@ -90,8 +96,8 @@ bool SliderWidget::OnMouseClick() {
 	if(m_rect.contains(cursor)) {
 		if(pLeftButton->m_rect.contains(cursor)) {
 			m_value--;
-			if(m_value <= 0)
-				m_value = 0;
+			if(m_value <= m_minimum)
+				m_value = m_minimum;
 		}
 		
 		if(pRightButton->m_rect.contains(cursor)) {
@@ -101,37 +107,10 @@ bool SliderWidget::OnMouseClick() {
 		}
 	}
 	
-	switch (m_id) {
-		// MENUOPTIONS_VIDEO
-		case BUTTON_MENUOPTIONSVIDEO_FOG:
-			ARXMenu_Options_Video_SetFogDistance(m_value);
-			break;
-		// MENUOPTIONS_AUDIO
-		case BUTTON_MENUOPTIONSAUDIO_MASTER:
-			ARXMenu_Options_Audio_SetMasterVolume(m_value);
-			break;
-		case BUTTON_MENUOPTIONSAUDIO_SFX:
-			ARXMenu_Options_Audio_SetSfxVolume(m_value);
-			break;
-		case BUTTON_MENUOPTIONSAUDIO_SPEECH:
-			ARXMenu_Options_Audio_SetSpeechVolume(m_value);
-			break;
-		case BUTTON_MENUOPTIONSAUDIO_AMBIANCE:
-			ARXMenu_Options_Audio_SetAmbianceVolume(m_value);
-			break;
-		// MENUOPTIONS_CONTROLS
-		case BUTTON_MENUOPTIONS_CONTROLS_MOUSESENSITIVITY:
-			ARXMenu_Options_Control_SetMouseSensitivity(m_value);
-			break;
-		case BUTTON_MENUOPTIONS_CONTROLS_QUICKSAVESLOTS: {
-			m_value = std::max(m_value, 1);
-			config.misc.quicksaveSlots = m_value;
-			break;
-		}
-		default:
-			break;
+	if(valueChanged) {
+		valueChanged(m_value);
 	}
-
+	
 	return false;
 }
 

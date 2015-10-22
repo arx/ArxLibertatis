@@ -20,6 +20,8 @@
 #ifndef ARX_GUI_WIDGET_SLIDERWIDGET_H
 #define ARX_GUI_WIDGET_SLIDERWIDGET_H
 
+#include <boost/function.hpp>
+
 #include "gui/widget/ButtonWidget.h"
 #include "gui/widget/Widget.h"
 
@@ -29,6 +31,8 @@ class SliderWidget: public Widget {
 public:
 	SliderWidget(MenuButton id, Vec2i pos);
 	virtual ~SliderWidget();
+	
+	void setMinimum(int minimum);
 	
 	void setValue(int value) { m_value = value; }
 	int getValue() const { return m_value; }
@@ -41,11 +45,15 @@ public:
 	void RenderMouseOver();
 	void EmptyFunction();
 	
+	boost::function<void(int)> valueChanged;
+	
 private:
 	ButtonWidget		*	pLeftButton;
 	ButtonWidget		*	pRightButton;
 	TextureContainer	* pTex1;
 	TextureContainer	* pTex2;
+	
+	int m_minimum;
 	int					m_value;
 };
 
