@@ -155,8 +155,8 @@ bool CycleTextWidget::OnMouseClick() {
 		}
 	}
 
-	if(m_onChange) {
-		m_onChange(iPos, vText.at(iPos)->m_text);
+	if(valueChanged) {
+		valueChanged(iPos, vText.at(iPos)->m_text);
 	}
 	
 	return false;

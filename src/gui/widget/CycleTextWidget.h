@@ -50,7 +50,7 @@ public:
 	void EmptyFunction();
 	virtual void setEnabled(bool enable);
 	
-	boost::function<void(int, const std::string &)> m_onChange;
+	boost::function<void(int, const std::string &)> valueChanged;
 	
 private:
 	ButtonWidget		*	pLeftButton;

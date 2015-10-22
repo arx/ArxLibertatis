@@ -487,7 +487,7 @@ public:
 			me->SetCheckOff();
 			pc->AddElement(me);
 			CycleTextWidget * slider = new CycleTextWidget;
-			slider->m_onChange = VideoRendererOnChangeHandler();
+			slider->valueChanged = VideoRendererOnChangeHandler();
 			
 			{
 				TextWidget * text = new TextWidget(BUTTON_INVALID, hFontMenu, "Auto-Select", Vec2i(0, 0));
@@ -537,7 +537,7 @@ public:
 			me->SetCheckOff();
 			pc->AddElement(me);
 			pMenuSliderResol = new CycleTextWidget;
-			pMenuSliderResol->m_onChange = VideoResolutionOnChangeHandler();
+			pMenuSliderResol->valueChanged = VideoResolutionOnChangeHandler();
 			
 			pMenuSliderResol->setEnabled(config.video.fullscreen);
 			
@@ -595,7 +595,7 @@ public:
 			pc->AddElement(me);
 			
 			CycleTextWidget * cb = new CycleTextWidget;
-			cb->m_onChange = VideoQualityOnChangeHandler();
+			cb->valueChanged = VideoQualityOnChangeHandler();
 			szMenuText = getLocalised("system_menus_options_video_texture_low");
 			cb->AddText(new TextWidget(BUTTON_INVALID, hFontMenu, szMenuText));
 			szMenuText = getLocalised("system_menus_options_video_texture_med");
@@ -771,7 +771,7 @@ public:
 			me->SetCheckOff();
 			pc->AddElement(me);
 			CycleTextWidget * slider = new CycleTextWidget;
-			slider->m_onChange = AudioDeviceOnChangeHandler();
+			slider->valueChanged = AudioDeviceOnChangeHandler();
 			
 			int maxwidth = RATIO_X(size.x - 28) - me->m_rect.width() - slider->m_rect.width();
 			
