@@ -28,7 +28,6 @@
 #include "gui/MenuPublic.h"
 #include "gui/menu/MenuCursor.h"
 #include "gui/widget/TextWidget.h"
-#include "gui/widget/CycleTextWidget.h"
 #include "scene/GameSound.h"
 
 CheckboxWidget::CheckboxWidget(TextWidget *_pText)
@@ -63,13 +62,6 @@ void CheckboxWidget::Move(const Vec2i & offset) {
 	pText->Move(offset);
 }
 
-// TODO remove this
-extern int newWidth;
-extern int newHeight;
-extern bool newFullscreen;
-extern CycleTextWidget * pMenuSliderResol;
-extern CheckboxWidget * fullscreenCheckbox;
-
 bool CheckboxWidget::OnMouseClick() {
 	
 	if(iOldState<0)
@@ -90,26 +82,6 @@ bool CheckboxWidget::OnMouseClick() {
 		stateChanged(iState);
 	}
 	
-	switch (m_id) {
-		case BUTTON_MENUOPTIONSVIDEO_BACK: {
-			if(pMenuSliderResol && pMenuSliderResol->getOldValue() >= 0) {
-				pMenuSliderResol->setValue(pMenuSliderResol->getOldValue());
-				pMenuSliderResol->setOldValue(-1);
-				newWidth=config.video.resolution.x;
-				newHeight=config.video.resolution.y;
-			}
-			
-			if(fullscreenCheckbox && fullscreenCheckbox->iOldState >= 0) {
-				fullscreenCheckbox->iState = fullscreenCheckbox->iOldState;
-				fullscreenCheckbox->iOldState = -1;
-				newFullscreen = config.video.fullscreen;
-			}
-			break;
-		}
-		default:
-			break;
-	}
-
 	return false;
 }
 
