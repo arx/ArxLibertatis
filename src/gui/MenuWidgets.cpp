@@ -112,7 +112,6 @@ extern CWindowMenu * pWindowMenu;
 MainMenu *mainMenu;
 
 extern TextWidget * pMenuElementApply;
-extern CycleTextWidget * pMenuSliderResol;
 
 float ARXTimeMenu;
 float ARXDiffTimeMenu;

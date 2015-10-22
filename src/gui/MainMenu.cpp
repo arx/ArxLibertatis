@@ -52,8 +52,6 @@ CWindowMenu * pWindowMenu = NULL;
 TextWidget * pDeleteConfirm = NULL;
 TextWidget * pLoadConfirm = NULL;
 TextWidget * pDeleteButton = NULL;
-CheckboxWidget * fullscreenCheckbox = NULL;
-CycleTextWidget * pMenuSliderResol = NULL;
 TextWidget * pMenuElementApply = NULL;
 
 extern MainMenu *mainMenu;
@@ -468,6 +466,9 @@ public:
 		: MenuPage(pos, size, OPTIONS_VIDEO)
 	{}
 	
+	CheckboxWidget * fullscreenCheckbox = NULL;
+	CycleTextWidget * pMenuSliderResol = NULL;
+	
 	void init(Vec2i size) {
 		
 		// Renderer selection
@@ -708,9 +709,6 @@ public:
 	}
 	
 	void onClickedBack() {
-		extern CycleTextWidget * pMenuSliderResol;
-		extern CheckboxWidget * fullscreenCheckbox;
-		
 		if(pMenuSliderResol && pMenuSliderResol->getOldValue() >= 0) {
 			pMenuSliderResol->setValue(pMenuSliderResol->getOldValue());
 			pMenuSliderResol->setOldValue(-1);

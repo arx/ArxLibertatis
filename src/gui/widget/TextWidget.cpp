@@ -117,8 +117,6 @@ extern int newHeight;
 extern bool newFullscreen;
 extern TextWidget * pLoadConfirm;
 extern TextWidget * pDeleteConfirm;
-extern CycleTextWidget * pMenuSliderResol;
-extern CheckboxWidget * fullscreenCheckbox;
 extern TextWidget * pDeleteButton;
 extern bool bNoMenu;
 extern MainMenu *mainMenu;

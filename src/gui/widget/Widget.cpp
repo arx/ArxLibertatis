@@ -43,8 +43,6 @@ extern TextWidget * pMenuElementApply;
 extern TextWidget * pLoadConfirm;
 extern TextWidget * pDeleteConfirm;
 extern TextWidget * pDeleteButton;
-extern CycleTextWidget * pMenuSliderResol;
-extern CheckboxWidget * fullscreenCheckbox;
 
 Widget::~Widget() {
 
@@ -62,14 +60,6 @@ Widget::~Widget() {
 
 	if(this == pDeleteButton) {
 		pDeleteButton = NULL;
-	}
-
-	if(this == pMenuSliderResol) {
-		pMenuSliderResol = NULL;
-	}
-	
-	if(this == fullscreenCheckbox) {
-		fullscreenCheckbox = NULL;
 	}
 }
 
