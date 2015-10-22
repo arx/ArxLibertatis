@@ -662,7 +662,7 @@ void MenuPage::UpdateText() {
 		   || GInput->isKeyPressed(Keyboard::Key_Escape)
 		) {
 			ARX_SOUND_PlayMenu(SND_MENU_CLICK);
-			((TextWidget*)m_selected)->eState=EDIT;
+			((TextWidget*)m_selected)->eState = EDIT;
 
 			if(((TextWidget*)m_selected)->m_text.empty()) {
 				std::string szMenuText;
@@ -670,39 +670,39 @@ void MenuPage::UpdateText() {
 
 				((TextWidget*)m_selected)->SetText(szMenuText);
 
-				int iDx=m_selected->m_rect.right-m_selected->m_rect.left;
+				int iDx = m_selected->m_rect.right - m_selected->m_rect.left;
 
 				if(m_selected->ePlace) {
-					m_selected->m_rect.left=m_pos.x+((m_scaledSize.x-iDx)>>1);
+					m_selected->m_rect.left = m_pos.x + ((m_scaledSize.x-iDx)>>1);
 
 					if(m_selected->m_rect.left < 0) {
-						m_selected->m_rect.left=0;
+						m_selected->m_rect.left = 0;
 					}
 				}
 
-				m_selected->m_rect.right=m_selected->m_rect.left+iDx;
+				m_selected->m_rect.right = m_selected->m_rect.left+iDx;
 			}
 
-			m_selected=NULL;
-			bEdit=false;
+			m_selected = NULL;
+			bEdit = false;
 			return;
 		}
 
-		bool bKey=false;
+		bool bKey = false;
 		std::string tText;
 		
-		TextWidget *pZoneText=(TextWidget*)m_selected;
+		TextWidget *pZoneText = (TextWidget*)m_selected;
 
 		if(GInput->isKeyPressedNowPressed(Keyboard::Key_Backspace)) {
 			tText = pZoneText->m_text;
 
 			if(!tText.empty()) {
 				tText.resize(tText.size() - 1);
-				bKey=true;
+				bKey = true;
 			}
 		} else {
 			int iKey = GInput->getKeyPressed();
-			iKey&=0xFFFF;
+			iKey &= 0xFFFF;
 
 			if(GInput->isKeyPressedNowPressed(iKey)) {
 				tText = pZoneText->m_text;
@@ -729,17 +729,17 @@ void MenuPage::UpdateText() {
 				}
 			}
 
-			int iDx=m_selected->m_rect.right-m_selected->m_rect.left;
+			int iDx = m_selected->m_rect.right - m_selected->m_rect.left;
 
 			if(m_selected->ePlace) {
-				m_selected->m_rect.left=m_pos.x+((m_scaledSize.x-iDx)>>1);
+				m_selected->m_rect.left = m_pos.x + ((m_scaledSize.x-iDx)>>1);
 
 				if(m_selected->m_rect.left < 0) {
-					m_selected->m_rect.left=0;
+					m_selected->m_rect.left = 0;
 				}
 			}
 
-			m_selected->m_rect.right=m_selected->m_rect.left+iDx;
+			m_selected->m_rect.right = m_selected->m_rect.left+iDx;
 		}
 	}
 
