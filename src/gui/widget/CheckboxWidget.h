@@ -20,6 +20,8 @@
 #ifndef ARX_GUI_WIDGET_CHECKBOXWIDGET_H
 #define ARX_GUI_WIDGET_CHECKBOXWIDGET_H
 
+#include <boost/function.hpp>
+
 #include "gui/widget/Widget.h"
 
 class TextWidget;
@@ -41,6 +43,8 @@ public:
 	
 	int					iState;
 	int					iOldState;
+	
+	boost::function<void(int)> stateChanged;
 	
 private:
 	TextureContainer * m_textureOff;

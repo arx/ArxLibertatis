@@ -33,6 +33,7 @@
 #include "core/Version.h"
 #include "gui/MenuWidgets.h"
 #include "gui/MenuPublic.h"
+#include "gui/Hud.h"
 #include "gui/Text.h"
 #include "gui/widget/CheckboxWidget.h"
 #include "gui/widget/CycleTextWidget.h"
@@ -511,7 +512,7 @@ public:
 			TextWidget * text = new TextWidget(BUTTON_INVALID, hFontMenu, szMenuText, Vec2i(RATIO_X(20), 0.f));
 			text->SetCheckOff();
 			CheckboxWidget * cb = new CheckboxWidget(text);
-			cb->m_id = BUTTON_MENUOPTIONSVIDEO_FULLSCREEN;
+			cb->stateChanged = boost::bind(&VideoOptionsMenuPage::onChangedFullscreen, this, _1);
 			cb->iState = config.video.fullscreen ? 1 : 0;
 			addCenter(cb);
 			fullscreenCheckbox = cb;
@@ -616,7 +617,7 @@ public:
 			TextWidget * text = new TextWidget(BUTTON_INVALID, hFontMenu, szMenuText, Vec2i(RATIO_X(20), 0.f));
 			text->SetCheckOff();
 			CheckboxWidget * cb = new CheckboxWidget(text);
-			cb->m_id = BUTTON_MENUOPTIONSVIDEO_CROSSHAIR;
+			cb->stateChanged = boost::bind(&VideoOptionsMenuPage::onChangedCrosshair, this, _1);
 			cb->iState = config.video.showCrosshair ? 1 : 0;
 			addCenter(cb);
 		}
@@ -627,7 +628,7 @@ public:
 			TextWidget * text = new TextWidget(BUTTON_INVALID, hFontMenu, szMenuText, Vec2i(RATIO_X(20), 0));
 			text->SetCheckOff();
 			CheckboxWidget * cb = new CheckboxWidget(text);
-			cb->m_id = BUTTON_MENUOPTIONSVIDEO_ANTIALIASING;
+			cb->stateChanged = boost::bind(&VideoOptionsMenuPage::onChangedAntialiasing, this, _1);
 			cb->iState = config.video.antialiasing ? 1 : 0;
 			addCenter(cb);
 		}
@@ -640,7 +641,7 @@ public:
 			TextWidget * text = new TextWidget(BUTTON_INVALID, hFontMenu, szMenuText, Vec2i(RATIO_X(20), 0));
 			text->SetCheckOff();
 			CheckboxWidget * cb = new CheckboxWidget(text);
-			cb->m_id = BUTTON_MENUOPTIONSVIDEO_VSYNC;
+			cb->stateChanged = boost::bind(&VideoOptionsMenuPage::onChangedVsync, this, _1);
 			cb->iState = config.video.vsync ? 1 : 0;
 			addCenter(cb);
 		}
@@ -651,7 +652,7 @@ public:
 			TextWidget * text = new TextWidget(BUTTON_INVALID, hFontMenu, szMenuText, Vec2i(RATIO_X(20), 0));
 			text->SetCheckOff();
 			CheckboxWidget * cb = new CheckboxWidget(text);
-			cb->m_id = BUTTON_MENUOPTIONSVIDEO_HUDSCALE;
+			cb->stateChanged = boost::bind(&VideoOptionsMenuPage::onChangedHudScale, this, _1);
 			cb->iState = config.video.hudScale ? 1 : 0;
 			addCenter(cb);
 		}
@@ -674,6 +675,34 @@ public:
 			
 			add(pc);
 		}
+	}
+	
+	void onChangedFullscreen(int state) {
+		extern bool newFullscreen;
+		
+		newFullscreen = ((state)?true:false);
+		
+		if(pMenuSliderResol) {
+			pMenuSliderResol->setEnabled(newFullscreen);
+		}
+	}
+	
+	void onChangedCrosshair(int state) {
+		config.video.showCrosshair = state ? true : false;
+	}
+	
+	void onChangedAntialiasing(int state) {
+		config.video.antialiasing = state ? true : false;
+		ARX_SetAntiAliasing();
+	}
+	
+	void onChangedVsync(int state) {
+		config.video.vsync = state ? true : false;
+	}
+	
+	void onChangedHudScale(int state) {
+		config.video.hudScale = state ? true : false;
+		g_hudRoot.recalcScale();
 	}
 };
 

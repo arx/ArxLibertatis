@@ -85,35 +85,12 @@ bool CheckboxWidget::OnMouseClick() {
 	}
 
 	ARX_SOUND_PlayMenu(SND_MENU_CLICK);
-
+	
+	if(stateChanged) {
+		stateChanged(iState);
+	}
+	
 	switch (m_id) {
-		case BUTTON_MENUOPTIONSVIDEO_FULLSCREEN: {
-			newFullscreen = ((iState)?true:false);
-			
-			if(pMenuSliderResol) {
-				pMenuSliderResol->setEnabled(newFullscreen);
-			}
-			
-		}
-		break;
-		case BUTTON_MENUOPTIONSVIDEO_CROSSHAIR: {
-			config.video.showCrosshair=(iState)?true:false;
-		}
-		break;
-		case BUTTON_MENUOPTIONSVIDEO_ANTIALIASING: {
-			config.video.antialiasing = iState ? true : false;
-			ARX_SetAntiAliasing();
-			break;
-		}
-		case BUTTON_MENUOPTIONSVIDEO_VSYNC: {
-			config.video.vsync = iState ? true : false;
-			break;
-		}
-		case BUTTON_MENUOPTIONSVIDEO_HUDSCALE: {
-			config.video.hudScale = iState ? true : false;
-			g_hudRoot.recalcScale();
-			break;
-		}
 		case BUTTON_MENUOPTIONSAUDIO_EAX: {
 			ARXMenu_Options_Audio_SetEAX(iState != 0);
 			break;
