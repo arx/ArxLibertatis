@@ -112,9 +112,6 @@ bool TextWidget::OnMouseDoubleClick() {
 }
 
 // TODO remove this
-extern int newWidth;
-extern int newHeight;
-extern bool newFullscreen;
 extern TextWidget * pLoadConfirm;
 extern TextWidget * pDeleteConfirm;
 extern TextWidget * pDeleteButton;
