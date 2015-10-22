@@ -93,9 +93,9 @@ ZeniMax Media Inc., Suite 120, Rockville, Maryland 20850 USA.
 
 #include "window/RenderWindow.h"
 
-int newWidth;
-int newHeight;
-bool newFullscreen;
+extern int newWidth;
+extern int newHeight;
+extern bool newFullscreen;
 
 // Imported global variables and functions
 extern ARX_MENU_DATA ARXmenu;

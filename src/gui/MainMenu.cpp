@@ -56,6 +56,7 @@ CheckboxWidget * fullscreenCheckbox = NULL;
 CycleTextWidget * pMenuSliderResol = NULL;
 TextWidget * pMenuElementApply = NULL;
 
+extern MainMenu *mainMenu;
 
 class NewQuestMenuPage : public MenuPage {
 public:
@@ -430,8 +431,10 @@ struct VideoRendererOnChangeHandler {
 
 // TODO remove this
 const std::string AUTO_RESOLUTION_STRING = "Automatic";
-extern int newWidth;
-extern int newHeight;
+
+int newWidth;
+int newHeight;
+bool newFullscreen;
 
 struct VideoResolutionOnChangeHandler {
 	void operator()(int pos, const std::string & str) {
@@ -661,7 +664,8 @@ public:
 			HorizontalPanelWidget * pc = new HorizontalPanelWidget;
 			std::string szMenuText = getLocalised("system_menus_video_apply");
 			szMenuText += "   ";
-			TextWidget * me = new TextWidget(BUTTON_MENUOPTIONSVIDEO_APPLY, hFontMenu, szMenuText, Vec2i(RATIO_X(240), 0));
+			TextWidget * me = new TextWidget(BUTTON_INVALID, hFontMenu, szMenuText, Vec2i(RATIO_X(240), 0));
+			me->clicked = boost::bind(&VideoOptionsMenuPage::onClickedApply, this);
 			me->SetPos(Vec2i(RATIO_X(size.x-10)-me->m_rect.width(), RATIO_Y(380) + RATIO_Y(40)));
 			me->SetCheckOff();
 			pc->AddElementNoCenterIn(me);
@@ -678,8 +682,6 @@ public:
 	}
 	
 	void onChangedFullscreen(int state) {
-		extern bool newFullscreen;
-		
 		newFullscreen = ((state)?true:false);
 		
 		if(pMenuSliderResol) {
@@ -706,9 +708,6 @@ public:
 	}
 	
 	void onClickedBack() {
-		extern int newWidth;
-		extern int newHeight;
-		extern bool newFullscreen;
 		extern CycleTextWidget * pMenuSliderResol;
 		extern CheckboxWidget * fullscreenCheckbox;
 		
@@ -724,6 +723,18 @@ public:
 			fullscreenCheckbox->iOldState = -1;
 			newFullscreen = config.video.fullscreen;
 		}
+	}
+	
+	void onClickedApply() {
+		if(newWidth != config.video.resolution.x
+		   || newHeight!=config.video.resolution.y
+		   || newFullscreen != config.video.fullscreen
+		) {
+			ARXMenu_Private_Options_Video_SetResolution(newFullscreen, newWidth, newHeight);
+			pMenuSliderResol->setOldValue(-1);
+			fullscreenCheckbox->iOldState = -1;
+		}
+		mainMenu->bReInitAll=true;
 	}
 };
 
@@ -1163,7 +1174,7 @@ public:
 
 
 
-extern MainMenu *mainMenu;
+
 
 void MainMenuLeftCreate(MENUSTATE eMenuState)
 {

@@ -318,19 +318,6 @@ bool TextWidget::OnMouseClick() {
 			}
 			break;
 		}
-			
-		case BUTTON_MENUOPTIONSVIDEO_APPLY: {
-			if(newWidth != config.video.resolution.x
-			   || newHeight!=config.video.resolution.y
-			   || newFullscreen != config.video.fullscreen
-			) {
-				ARXMenu_Private_Options_Video_SetResolution(newFullscreen, newWidth, newHeight);
-				pMenuSliderResol->setOldValue(-1);
-				fullscreenCheckbox->iOldState = -1;
-			}
-			mainMenu->bReInitAll=true;
-		}
-		break;
 		case BUTTON_MENUOPTIONS_CONTROLS_BACK:
 		{
 			config.save();
