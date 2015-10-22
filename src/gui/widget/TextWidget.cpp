@@ -142,21 +142,12 @@ bool TextWidget::OnMouseClick() {
 			return true;
 		default: break;
 	}
-
-	if(m_id != BUTTON_MENUMAIN_RESUMEGAME) {
-		ARX_SOUND_PlayMenu(SND_MENU_CLICK);
-	}
-
+	
 	switch(m_id) {
-		case BUTTON_INVALID: {
-			return false;
-		}
-		break;
 		// MENUMAIN
 		case BUTTON_MENUMAIN_RESUMEGAME: {
 			pTextManage->Clear();
 			ARXMenu_ResumeGame();
-			ARX_SOUND_PlayMenu(SND_MENU_CLICK);
 		}
 		break;
 		case BUTTON_MENUMAIN_NEWQUEST: {
@@ -345,7 +336,9 @@ bool TextWidget::OnMouseClick() {
 			}
 		}
 	}
-
+	
+	ARX_SOUND_PlayMenu(SND_MENU_CLICK);
+	
 	return false;
 }
 
