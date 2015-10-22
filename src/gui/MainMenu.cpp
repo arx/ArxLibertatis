@@ -738,16 +738,6 @@ public:
 	}
 };
 
-struct AudioDeviceOnChangeHandler {
-	void operator()(int pos, const std::string & str) {
-		if(pos == 0) {
-			ARXMenu_Options_Audio_SetDevice("auto");
-		} else {
-			ARXMenu_Options_Audio_SetDevice(str);
-		}
-	}
-};
-
 class AudioOptionsMenuPage : public MenuPage {
 public:
 	AudioOptionsMenuPage(Vec2i pos, Vec2i size)
@@ -766,7 +756,7 @@ public:
 			me->SetCheckOff();
 			pc->AddElement(me);
 			CycleTextWidget * slider = new CycleTextWidget;
-			slider->valueChanged = AudioDeviceOnChangeHandler();
+			slider->valueChanged = boost::bind(&AudioOptionsMenuPage::onChangedDevice, this, _1, _2);
 			
 			int maxwidth = RATIO_X(size.x - 28) - me->m_rect.width() - slider->m_rect.width();
 			
@@ -862,6 +852,15 @@ public:
 			cb->m_targetMenu = OPTIONS;
 			cb->SetShortCut(Keyboard::Key_Escape);
 			add(cb);
+		}
+	}
+	
+	
+	void onChangedDevice(int pos, const std::string & str) {
+		if(pos == 0) {
+			ARXMenu_Options_Audio_SetDevice("auto");
+		} else {
+			ARXMenu_Options_Audio_SetDevice(str);
 		}
 	}
 	
