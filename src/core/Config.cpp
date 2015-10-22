@@ -307,10 +307,11 @@ void Config::setDefaultActionKeys() {
 	}
 }
 
-bool Config::setActionKey(ControlAction actionId, int index, InputKeyId key) {
+void Config::setActionKey(ControlAction actionId, int index, InputKeyId key) {
 	
 	if(actionId < 0 || (size_t)actionId >= NUM_ACTION_KEY || index > 1 || index < 0) {
-		return false;
+		arx_assert(false);
+		return;
 	}
 	
 	ActionKey & action = actions[actionId];
@@ -344,8 +345,6 @@ bool Config::setActionKey(ControlAction actionId, int index, InputKeyId key) {
 		}
 		
 	}
-	
-	return true;
 }
 
 void Config::setOutputFile(const fs::path & _file) {

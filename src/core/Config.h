@@ -178,7 +178,7 @@ public:
 	
 public:
 	
-	bool setActionKey(ControlAction action, int index, InputKeyId key);
+	void setActionKey(ControlAction action, int index, InputKeyId key);
 	void setDefaultActionKeys();
 	
 	/*!
