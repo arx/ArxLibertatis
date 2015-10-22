@@ -29,7 +29,7 @@
 class SliderWidget: public Widget {
 	
 public:
-	SliderWidget(MenuButton id, Vec2i pos);
+	SliderWidget(Vec2i pos);
 	virtual ~SliderWidget();
 	
 	void setMinimum(int minimum);

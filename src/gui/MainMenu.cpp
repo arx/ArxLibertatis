@@ -578,7 +578,7 @@ public:
 			TextWidget * me = new TextWidget(BUTTON_INVALID, hFontMenu, szMenuText, Vec2i(RATIO_X(20), 0.f));
 			me->SetCheckOff();
 			pc->AddElement(me);
-			SliderWidget * sld = new SliderWidget(BUTTON_INVALID, Vec2i(RATIO_X(200), 0));
+			SliderWidget * sld = new SliderWidget(Vec2i(RATIO_X(200), 0));
 			sld->valueChanged = boost::bind(&VideoOptionsMenuPage::onChangedFogDistance, this, _1);
 			sld->setValue(config.video.fogDistance);
 			pc->AddElement(sld);
@@ -792,7 +792,7 @@ public:
 			TextWidget * me = new TextWidget(BUTTON_INVALID, hFontMenu, szMenuText, Vec2i(RATIO_X(20), 0.f));
 			me->SetCheckOff();
 			pc->AddElement(me);
-			SliderWidget * sld = new SliderWidget(BUTTON_INVALID, Vec2i(RATIO_X(200), 0));
+			SliderWidget * sld = new SliderWidget(Vec2i(RATIO_X(200), 0));
 			sld->valueChanged = boost::bind(&AudioOptionsMenuPage::onChangedMasterVolume, this, _1);
 			sld->setValue((int)config.audio.volume); // TODO use float sliders
 			pc->AddElement(sld);
@@ -806,7 +806,7 @@ public:
 			me->m_targetMenu = OPTIONS_AUDIO;
 			me->SetCheckOff();
 			pc->AddElement(me);
-			SliderWidget * sld = new SliderWidget(BUTTON_INVALID, Vec2i(RATIO_X(200), 0));
+			SliderWidget * sld = new SliderWidget(Vec2i(RATIO_X(200), 0));
 			sld->valueChanged = boost::bind(&AudioOptionsMenuPage::onChangedEffectsVolume, this, _1);
 			sld->setValue((int)config.audio.sfxVolume);
 			pc->AddElement(sld);
@@ -820,7 +820,7 @@ public:
 			me->m_targetMenu = OPTIONS_AUDIO;
 			me->SetCheckOff();
 			pc->AddElement(me);
-			SliderWidget * sld = new SliderWidget(BUTTON_INVALID, Vec2i(RATIO_X(200), 0));
+			SliderWidget * sld = new SliderWidget(Vec2i(RATIO_X(200), 0));
 			sld->valueChanged = boost::bind(&AudioOptionsMenuPage::onChangedSpeechVolume, this, _1);
 			sld->setValue((int)config.audio.speechVolume);
 			pc->AddElement(sld);
@@ -834,7 +834,7 @@ public:
 			me->m_targetMenu = OPTIONS_AUDIO;
 			me->SetCheckOff();
 			pc->AddElement(me);
-			SliderWidget * sld = new SliderWidget(BUTTON_INVALID, Vec2i(RATIO_X(200), 0));
+			SliderWidget * sld = new SliderWidget(Vec2i(RATIO_X(200), 0));
 			sld->valueChanged = boost::bind(&AudioOptionsMenuPage::onChangedAmbianceVolume, this, _1);
 			sld->setValue((int)config.audio.ambianceVolume);
 			pc->AddElement(sld);
@@ -948,7 +948,7 @@ public:
 			TextWidget * me = new TextWidget(BUTTON_INVALID, hFontMenu, szMenuText, Vec2i(RATIO_X(20), 0.f));
 			me->SetCheckOff();
 			pc->AddElement(me);
-			SliderWidget * sld = new SliderWidget(BUTTON_INVALID, Vec2i(RATIO_X(200), 0));
+			SliderWidget * sld = new SliderWidget(Vec2i(RATIO_X(200), 0));
 			sld->valueChanged = boost::bind(&InputOptionsMenuPage::onChangedMouseSensitivity, this, _1);
 			sld->setValue(config.input.mouseSensitivity);
 			pc->AddElement(sld);
@@ -972,7 +972,7 @@ public:
 			TextWidget * me = new TextWidget(BUTTON_INVALID, hFontMenu, szMenuText, Vec2i(RATIO_X(20), 0));
 			me->SetCheckOff();
 			pc->AddElement(me);
-			SliderWidget * sld = new SliderWidget(BUTTON_INVALID, Vec2i(RATIO_X(200), 0));
+			SliderWidget * sld = new SliderWidget(Vec2i(RATIO_X(200), 0));
 			sld->setMinimum(1);
 			sld->valueChanged = boost::bind(&InputOptionsMenuPage::onChangedQuicksaveSlots, this, _1);
 			sld->setValue(config.misc.quicksaveSlots);

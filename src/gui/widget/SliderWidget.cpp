@@ -28,10 +28,10 @@
 #include "input/Input.h"
 #include "scene/GameSound.h"
 
-SliderWidget::SliderWidget(MenuButton _iID, Vec2i pos)
+SliderWidget::SliderWidget(Vec2i pos)
 	: Widget()
 {
-	m_id = _iID;
+	m_id = BUTTON_INVALID;
 	
 	pLeftButton = new ButtonWidget(pos, "graph/interface/menus/menu_slider_button_left");
 	pRightButton = new ButtonWidget(pos, "graph/interface/menus/menu_slider_button_right");
