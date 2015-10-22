@@ -426,46 +426,8 @@ public:
 	}
 };
 
-struct VideoRendererOnChangeHandler {
-	void operator()(int pos, const std::string & str) {
-		ARX_UNUSED(str);
-		
-		switch(pos) {
-			case 0:  config.window.framework = "auto"; break;
-			case 1:  config.window.framework = "SDL";  break;
-			default: config.window.framework = "auto"; break;
-		}
-	}
-};
-
 // TODO remove this
 const std::string AUTO_RESOLUTION_STRING = "Automatic";
-
-struct VideoResolutionOnChangeHandler {
-	void operator()(int pos, const std::string & str) {
-		ARX_UNUSED(pos);
-		
-		if(str == AUTO_RESOLUTION_STRING) {
-			newWidth = newHeight = 0;
-		} else {
-			std::stringstream ss(str);
-			int iX = config.video.resolution.x;
-			int iY = config.video.resolution.y;
-			char tmp;
-			ss >> iX >> tmp >> iY;
-			newWidth = iX;
-			newHeight = iY;
-		}
-	}
-};
-
-struct VideoQualityOnChangeHandler {
-	void operator()(int pos, const std::string & str) {
-		ARX_UNUSED(str);
-		
-		ARXMenu_Options_Video_SetDetailsQuality(pos);
-	}
-};
 
 class VideoOptionsMenuPage : public MenuPage {
 public:
@@ -487,7 +449,7 @@ public:
 			me->SetCheckOff();
 			pc->AddElement(me);
 			CycleTextWidget * slider = new CycleTextWidget;
-			slider->valueChanged = VideoRendererOnChangeHandler();
+			slider->valueChanged = boost::bind(&VideoOptionsMenuPage::onChangedRenderer, this, _1, _2);
 			
 			{
 				TextWidget * text = new TextWidget(BUTTON_INVALID, hFontMenu, "Auto-Select", Vec2i(0, 0));
@@ -537,7 +499,7 @@ public:
 			me->SetCheckOff();
 			pc->AddElement(me);
 			pMenuSliderResol = new CycleTextWidget;
-			pMenuSliderResol->valueChanged = VideoResolutionOnChangeHandler();
+			pMenuSliderResol->valueChanged = boost::bind(&VideoOptionsMenuPage::onChangedResolution, this, _1, _2);
 			
 			pMenuSliderResol->setEnabled(config.video.fullscreen);
 			
@@ -595,7 +557,7 @@ public:
 			pc->AddElement(me);
 			
 			CycleTextWidget * cb = new CycleTextWidget;
-			cb->valueChanged = VideoQualityOnChangeHandler();
+			cb->valueChanged = boost::bind(&VideoOptionsMenuPage::onChangedQuality, this, _1, _2);
 			szMenuText = getLocalised("system_menus_options_video_texture_low");
 			cb->AddText(new TextWidget(BUTTON_INVALID, hFontMenu, szMenuText));
 			szMenuText = getLocalised("system_menus_options_video_texture_med");
@@ -689,12 +651,45 @@ public:
 		}
 	}
 	
+	
+	void onChangedRenderer(int pos, const std::string & str) {
+		ARX_UNUSED(str);
+		
+		switch(pos) {
+			case 0:  config.window.framework = "auto"; break;
+			case 1:  config.window.framework = "SDL";  break;
+			default: config.window.framework = "auto"; break;
+		}
+	}
+	
 	void onChangedFullscreen(int state) {
 		newFullscreen = ((state)?true:false);
 		
 		if(pMenuSliderResol) {
 			pMenuSliderResol->setEnabled(newFullscreen);
 		}
+	}
+	
+	void onChangedResolution(int pos, const std::string & str) {
+		ARX_UNUSED(pos);
+		
+		if(str == AUTO_RESOLUTION_STRING) {
+			newWidth = newHeight = 0;
+		} else {
+			std::stringstream ss(str);
+			int iX = config.video.resolution.x;
+			int iY = config.video.resolution.y;
+			char tmp;
+			ss >> iX >> tmp >> iY;
+			newWidth = iX;
+			newHeight = iY;
+		}
+	}
+	
+	void onChangedQuality(int pos, const std::string & str) {
+		ARX_UNUSED(str);
+		
+		ARXMenu_Options_Video_SetDetailsQuality(pos);
 	}
 	
 	void onChangedCrosshair(int state) {
