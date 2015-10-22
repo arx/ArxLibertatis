@@ -377,6 +377,10 @@ public:
 	}
 };
 
+int newWidth;
+int newHeight;
+bool newFullscreen;
+
 class OptionsMenuPage : public MenuPage {
 public:
 	OptionsMenuPage(Vec2i pos, Vec2i size)
@@ -387,7 +391,8 @@ public:
 		
 		{
 			std::string szMenuText = getLocalised("system_menus_options_video");
-			TextWidget * me = new TextWidget(BUTTON_MENUOPTIONSVIDEO_INIT, hFontMenu, szMenuText, Vec2i(0, 0));
+			TextWidget * me = new TextWidget(BUTTON_INVALID, hFontMenu, szMenuText, Vec2i(0, 0));
+			me->clicked = boost::bind(&OptionsMenuPage::onClickedVideo, this);
 			me->m_targetMenu = OPTIONS_VIDEO;
 			addCenter(me, true);
 		}
@@ -413,6 +418,12 @@ public:
 			add(cb);
 		}
 	}
+	
+	void onClickedVideo() {
+		newWidth = config.video.resolution.x;
+		newHeight = config.video.resolution.y;
+		newFullscreen = config.video.fullscreen;
+	}
 };
 
 struct VideoRendererOnChangeHandler {
@@ -429,10 +440,6 @@ struct VideoRendererOnChangeHandler {
 
 // TODO remove this
 const std::string AUTO_RESOLUTION_STRING = "Automatic";
-
-int newWidth;
-int newHeight;
-bool newFullscreen;
 
 struct VideoResolutionOnChangeHandler {
 	void operator()(int pos, const std::string & str) {

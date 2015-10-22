@@ -169,12 +169,6 @@ bool TextWidget::OnMouseClick() {
 		case BUTTON_MENUMAIN_OPTIONS: {
 		}break;
 		// MENULOADQUEST
-		case BUTTON_MENUOPTIONSVIDEO_INIT: {
-			newWidth = config.video.resolution.x;
-			newHeight = config.video.resolution.y;
-			newFullscreen = config.video.fullscreen;
-			break;
-		}
 		case BUTTON_MENUEDITQUEST_LOAD_INIT: {
 			if(pWindowMenu)
 			for(size_t i = 0; i < pWindowMenu->m_pages.size(); i++) {
