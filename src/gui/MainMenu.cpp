@@ -35,6 +35,7 @@
 #include "gui/MenuPublic.h"
 #include "gui/Hud.h"
 #include "gui/Text.h"
+#include "gui/TextManager.h"
 #include "gui/widget/CheckboxWidget.h"
 #include "gui/widget/CycleTextWidget.h"
 #include "gui/widget/HorizontalPanelWidget.h"
@@ -1330,7 +1331,8 @@ void MainMenu::init()
 	
 	{
 	std::string szMenuText = getLocalised("system_menus_main_resumegame");
-	TextWidget *me = new TextWidget(BUTTON_MENUMAIN_RESUMEGAME, hFontMainMenu, szMenuText, RATIO_2(pos));
+	TextWidget *me = new TextWidget(BUTTON_INVALID, hFontMainMenu, szMenuText, RATIO_2(pos));
+	me->clicked = boost::bind(&MainMenu::onClickedResumeGame, this);
 	me->m_targetMenu = RESUME_GAME;
 	add(me);
 	m_resumeGame = me;
@@ -1338,7 +1340,8 @@ void MainMenu::init()
 	pos.y += yOffset;
 	{
 	std::string szMenuText = getLocalised("system_menus_main_newquest");
-	TextWidget *me = new TextWidget(BUTTON_MENUMAIN_NEWQUEST, hFontMainMenu, szMenuText, RATIO_2(pos));
+	TextWidget *me = new TextWidget(BUTTON_INVALID, hFontMainMenu, szMenuText, RATIO_2(pos));
+	me->clicked = boost::bind(&MainMenu::onClickedNewQuest, this);
 	me->m_targetMenu = NEW_QUEST;
 	add(me);
 	}
@@ -1352,7 +1355,7 @@ void MainMenu::init()
 	pos.y += yOffset;
 	{
 	std::string szMenuText = getLocalised("system_menus_main_options");
-	TextWidget *me = new TextWidget(BUTTON_MENUMAIN_OPTIONS, hFontMainMenu, szMenuText, RATIO_2(pos));
+	TextWidget *me = new TextWidget(BUTTON_INVALID, hFontMainMenu, szMenuText, RATIO_2(pos));
 	me->m_targetMenu = OPTIONS;
 	add(me);
 	}
@@ -1387,6 +1390,18 @@ void MainMenu::init()
 	me->lColor=Color(127,127,127);
 	add(me);
 }
+
+void MainMenu::onClickedResumeGame(){
+	pTextManage->Clear();
+	ARXMenu_ResumeGame();
+}
+
+void MainMenu::onClickedNewQuest() {
+	if(!ARXMenu_CanResumeGame()) {
+		ARXMenu_NewQuest();
+	}
+}
+
 
 void MainMenu::add(Widget * widget) {
 	m_widgets->add(widget);

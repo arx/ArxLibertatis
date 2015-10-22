@@ -144,21 +144,6 @@ bool TextWidget::OnMouseClick() {
 	}
 	
 	switch(m_id) {
-		// MENUMAIN
-		case BUTTON_MENUMAIN_RESUMEGAME: {
-			pTextManage->Clear();
-			ARXMenu_ResumeGame();
-		}
-		break;
-		case BUTTON_MENUMAIN_NEWQUEST: {
-				
-			if(!ARXMenu_CanResumeGame()) {
-				ARXMenu_NewQuest();
-			}
-		}
-		break;
-		case BUTTON_MENUMAIN_OPTIONS: {
-		}break;
 		// MENULOADQUEST
 		case BUTTON_MENUEDITQUEST_LOAD_INIT: {
 			if(pWindowMenu)

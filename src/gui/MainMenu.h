@@ -41,6 +41,8 @@ public:
 	virtual ~MainMenu();
 	
 	void init();
+	void onClickedResumeGame();
+	void onClickedNewQuest();
 	
 	MENUSTATE Update();
 	void Render();
