@@ -37,7 +37,7 @@ public:
 	Color lColorHighlight;
 	bool	bSelected;
 	
-	boost::function<void(TextWidget *)> m_onClick;
+	boost::function<void(TextWidget *)> clicked;
 	
 public:
 	TextWidget(MenuButton id, Font * font, const std::string & text, Vec2i pos = Vec2i_ZERO);

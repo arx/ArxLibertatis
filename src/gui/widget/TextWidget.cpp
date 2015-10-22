@@ -130,8 +130,8 @@ bool TextWidget::OnMouseClick() {
 		return false;
 	}
 	
-	if(m_onClick) {
-		m_onClick(this);
+	if(clicked) {
+		clicked(this);
 	}
 	
 	switch(eState) {

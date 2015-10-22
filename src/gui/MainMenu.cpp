@@ -85,7 +85,7 @@ public:
 			std::string szMenuText = getLocalised("system_yes");
 			szMenuText += "   "; // TODO This space can probably go
 			TextWidget * me = new TextWidget(BUTTON_INVALID, hFontMenu, szMenuText);
-			me->m_onClick = boost::bind(ARXMenu_NewQuest);
+			me->clicked = boost::bind(ARXMenu_NewQuest);
 			me->SetPos(Vec2i(RATIO_X(size.x - (me->m_rect.width() + 10)), 0));
 			pPanel->AddElementNoCenterIn(me);
 		}
@@ -1146,7 +1146,7 @@ public:
 			HorizontalPanelWidget *pPanel = new HorizontalPanelWidget;
 			
 			TextWidget * yes = new TextWidget(BUTTON_INVALID, hFontMenu, getLocalised("system_yes"));
-			yes->m_onClick = boost::bind(ARXMenu_Quit);
+			yes->clicked = boost::bind(ARXMenu_Quit);
 			yes->SetPos(Vec2i(RATIO_X(size.x-10)-yes->m_rect.width(), 0));
 			pPanel->AddElementNoCenterIn(yes);
 			
@@ -1314,7 +1314,7 @@ void MainMenu::init()
 	{
 	std::string szMenuText = getLocalised("system_menus_main_credits");
 	TextWidget *me = new TextWidget(BUTTON_INVALID, hFontMainMenu, szMenuText, RATIO_2(pos));
-	me->m_onClick = boost::bind(ARXMenu_Credits);
+	me->clicked = boost::bind(ARXMenu_Credits);
 	me->m_targetMenu = CREDITS;
 	add(me);
 	}
