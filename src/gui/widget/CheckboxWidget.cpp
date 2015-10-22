@@ -91,26 +91,6 @@ bool CheckboxWidget::OnMouseClick() {
 	}
 	
 	switch (m_id) {
-		case BUTTON_MENUOPTIONSAUDIO_EAX: {
-			ARXMenu_Options_Audio_SetEAX(iState != 0);
-			break;
-		}
-		case BUTTON_MENUOPTIONS_CONTROLS_INVERTMOUSE: {
-				ARXMenu_Options_Control_SetInvertMouse((iState)?true:false);
-			}
-			break;
-		case BUTTON_MENUOPTIONS_CONTROLS_AUTOREADYWEAPON: {
-			config.input.autoReadyWeapon = (iState) ? true : false;
-			break;
-		}
-		case BUTTON_MENUOPTIONS_CONTROLS_MOUSELOOK: {
-			config.input.mouseLookToggle = (iState) ? true : false;
-			break;
-		}
-		case BUTTON_MENUOPTIONS_CONTROLS_AUTODESCRIPTION: {
-			config.input.autoDescription = (iState) ? true : false;
-			break;
-		}
 		case BUTTON_MENUOPTIONSVIDEO_BACK: {
 			if(pMenuSliderResol && pMenuSliderResol->getOldValue() >= 0) {
 				pMenuSliderResol->setValue(pMenuSliderResol->getOldValue());

@@ -816,7 +816,7 @@ public:
 			TextWidget * text = new TextWidget(BUTTON_INVALID, hFontMenu, szMenuText, Vec2i(RATIO_X(20), 0));
 			text->m_targetMenu = OPTIONS_INPUT;
 			CheckboxWidget * cb = new CheckboxWidget(text);
-			cb->m_id = BUTTON_MENUOPTIONSAUDIO_EAX;
+			cb->stateChanged = boost::bind(&AudioOptionsMenuPage::onChangedEax, this, _1);
 			if(audio::isReverbSupported()) {
 				cb->iState = config.audio.eax ? 1 : 0;
 			} else {
@@ -831,6 +831,10 @@ public:
 			cb->SetShortCut(Keyboard::Key_Escape);
 			add(cb);
 		}
+	}
+	
+	void onChangedEax(int state) {
+		ARXMenu_Options_Audio_SetEAX(state != 0);
 	}
 };
 
@@ -855,7 +859,7 @@ public:
 			TextWidget * text = new TextWidget(BUTTON_INVALID, hFontMenu, szMenuText, Vec2i(RATIO_X(20), 0));
 			text->m_targetMenu = OPTIONS_INPUT; // TODO is this correct ?
 			CheckboxWidget * cb = new CheckboxWidget(text);
-			cb->m_id = BUTTON_MENUOPTIONS_CONTROLS_INVERTMOUSE;
+			cb->stateChanged = boost::bind(&InputOptionsMenuPage::onChangedInvertMouse, this, _1);
 			cb->iState = config.input.invertMouse ? 1 : 0;
 			addCenter(cb);
 		}
@@ -866,7 +870,7 @@ public:
 			TextWidget * text = new TextWidget(BUTTON_INVALID, hFontMenu, szMenuText, Vec2i(RATIO_X(20), 0));
 			text->m_targetMenu = OPTIONS_INPUT; // TODO is this correct ?
 			CheckboxWidget * cb = new CheckboxWidget(text);
-			cb->m_id = BUTTON_MENUOPTIONS_CONTROLS_AUTOREADYWEAPON;
+			cb->stateChanged = boost::bind(&InputOptionsMenuPage::onChangedAutoReadyWeapon, this, _1);
 			cb->iState = config.input.autoReadyWeapon ? 1 : 0;
 			addCenter(cb);
 		}
@@ -877,7 +881,7 @@ public:
 			TextWidget * text = new TextWidget(BUTTON_INVALID, hFontMenu, szMenuText, Vec2i(RATIO_X(20), 0.f));
 			text->m_targetMenu = OPTIONS_INPUT; // TODO is this correct ?
 			CheckboxWidget * cb = new CheckboxWidget(text);
-			cb->m_id = BUTTON_MENUOPTIONS_CONTROLS_MOUSELOOK;
+			cb->stateChanged = boost::bind(&InputOptionsMenuPage::onChangedToggleMouselook, this, _1);
 			cb->iState = config.input.mouseLookToggle ? 1 : 0;
 			addCenter(cb);
 		}
@@ -900,7 +904,7 @@ public:
 			TextWidget * text = new TextWidget(BUTTON_INVALID, hFontMenu, szMenuText, Vec2i(RATIO_X(20), 0));
 			text->m_targetMenu = OPTIONS_INPUT; // TODO is this correct ?
 			CheckboxWidget * cb = new CheckboxWidget(text);
-			cb->m_id = BUTTON_MENUOPTIONS_CONTROLS_AUTODESCRIPTION;
+			cb->stateChanged = boost::bind(&InputOptionsMenuPage::onChangedAutoDescription, this, _1);
 			cb->iState = config.input.autoDescription ? 1 : 0;
 			addCenter(cb);
 		}
@@ -923,6 +927,22 @@ public:
 			cb->SetShortCut(Keyboard::Key_Escape);
 			add(cb);
 		}
+	}
+	
+	void onChangedInvertMouse(int state) {
+		ARXMenu_Options_Control_SetInvertMouse((state)?true:false);
+	}
+	
+	void onChangedAutoReadyWeapon(int state) {
+		config.input.autoReadyWeapon = (state) ? true : false;
+	}
+	
+	void onChangedToggleMouselook(int state) {
+		config.input.mouseLookToggle = (state) ? true : false;
+	}
+	
+	void onChangedAutoDescription(int state) {
+		config.input.autoDescription = (state) ? true : false;
 	}
 };
 
