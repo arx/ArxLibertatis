@@ -579,6 +579,7 @@ MenuPage::MenuPage(Vec2i pos, Vec2i size, MENUSTATE _eMenuState)
 	, m_textCursorCurrentTime(0.f)
 {
 	m_offset = RATIO_2(pos);
+	m_size = size;
 	m_scaledSize = RATIO_2(size);
 	
 	eMenuState=_eMenuState;

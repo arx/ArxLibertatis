@@ -82,6 +82,9 @@ public:
 	MENUSTATE eMenuState;
 	WidgetContainer m_children;
 	
+protected:
+	Vec2i m_size;
+	
 private:
 	void UpdateText();
 	

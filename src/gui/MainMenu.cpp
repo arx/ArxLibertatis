@@ -63,7 +63,7 @@ public:
 		: MenuPage(pos, size, NEW_QUEST)
 	{}
 
-	void init(Vec2i size) {
+	void init() {
 		
 		{
 			std::string szMenuText = getLocalised("system_menus_main_editquest_confirm");
@@ -86,7 +86,7 @@ public:
 			szMenuText += "   "; // TODO This space can probably go
 			TextWidget * me = new TextWidget(BUTTON_INVALID, hFontMenu, szMenuText);
 			me->clicked = boost::bind(ARXMenu_NewQuest);
-			me->SetPos(Vec2i(RATIO_X(size.x - (me->m_rect.width() + 10)), 0));
+			me->SetPos(Vec2i(RATIO_X(m_size.x - (me->m_rect.width() + 10)), 0));
 			pPanel->AddElementNoCenterIn(me);
 		}
 		
@@ -167,7 +167,7 @@ public:
 		: MenuPage(pos, size, EDIT_QUEST_LOAD)
 	{}
 
-	void init(Vec2i size) {
+	void init() {
 		
 		{
 			ButtonWidget * cb = new ButtonWidget(Vec2i(0, 0), "graph/interface/icons/menu_main_load");
@@ -228,7 +228,7 @@ public:
 			szMenuText += "   ";
 			TextWidget * me = new TextWidget(BUTTON_MENUEDITQUEST_DELETE_CONFIRM, hFontMenu, szMenuText, Vec2i(0, 0));
 			me->m_targetMenu = EDIT_QUEST_LOAD;
-			me->SetPos(Vec2i(RATIO_X(size.x-10)-me->m_rect.width(), RATIO_Y(42)));
+			me->SetPos(Vec2i(RATIO_X(m_size.x-10)-me->m_rect.width(), RATIO_Y(42)));
 			me->SetCheckOff();
 			me->lOldColor = me->lColor;
 			me->lColor = Color::grayb(127);
@@ -242,7 +242,7 @@ public:
 			szMenuText += "   ";
 			TextWidget * me = new TextWidget(BUTTON_MENUEDITQUEST_LOAD_CONFIRM, hFontMenu, szMenuText, Vec2i(0, 0));
 			me->m_targetMenu = MAIN;
-			me->SetPos(Vec2i(RATIO_X(size.x-10)-me->m_rect.width(), RATIO_Y(380) + RATIO_Y(40)));
+			me->SetPos(Vec2i(RATIO_X(m_size.x-10)-me->m_rect.width(), RATIO_Y(380) + RATIO_Y(40)));
 			me->SetCheckOff();
 			me->lOldColor = me->lColor;
 			me->lColor = Color::grayb(127);
@@ -355,7 +355,7 @@ public:
 		: MenuPage(pos, size, EDIT_QUEST_SAVE_CONFIRM)
 	{}
 	
-	void init(Vec2i size) {
+	void init() {
 		
 		{
 			ButtonWidget * cb = new ButtonWidget(Vec2i(0, 0), "graph/interface/icons/menu_main_save");
@@ -379,7 +379,7 @@ public:
 			std::string szMenuText = getLocalised("system_menus_main_editquest_delete");
 			TextWidget * me = new TextWidget(BUTTON_MENUEDITQUEST_DELETE, hFontMenu, szMenuText, Vec2i(0, 0));
 			me->m_targetMenu = EDIT_QUEST_SAVE;
-			me->SetPos(Vec2i(RATIO_X(size.x-10)-me->m_rect.width(), RATIO_Y(5)));
+			me->SetPos(Vec2i(RATIO_X(m_size.x-10)-me->m_rect.width(), RATIO_Y(5)));
 			me->lOldColor = me->lColor;
 			pPanel->AddElementNoCenterIn(me);
 			pDeleteButton = me;
@@ -390,7 +390,7 @@ public:
 			std::string szMenuText = getLocalised("system_menus_main_editquest_save");
 			TextWidget * me = new TextWidget(BUTTON_MENUEDITQUEST_SAVE, hFontMenu, szMenuText, Vec2i(0, 0));
 			me->m_targetMenu = MAIN;
-			me->SetPos(Vec2i(RATIO_X(size.x-10)-me->m_rect.width(), RATIO_Y(380)));
+			me->SetPos(Vec2i(RATIO_X(m_size.x-10)-me->m_rect.width(), RATIO_Y(380)));
 			pPanel->AddElementNoCenterIn(me);
 		}
 		
@@ -467,7 +467,7 @@ public:
 	CheckboxWidget * fullscreenCheckbox = NULL;
 	CycleTextWidget * pMenuSliderResol = NULL;
 	
-	void init(Vec2i size) {
+	void init() {
 		
 		// Renderer selection
 		{
@@ -496,7 +496,7 @@ public:
 			}
 	#endif
 			
-			float fRatio    = (RATIO_X(size.x-9) - slider->m_rect.width());
+			float fRatio    = (RATIO_X(m_size.x-9) - slider->m_rect.width());
 			slider->Move(Vec2i(checked_range_cast<int>(fRatio), 0));
 			pc->AddElement(slider);
 			addCenter(pc);
@@ -569,7 +569,7 @@ public:
 				pMenuSliderResol->selectLast();
 			}
 		
-			float fRatio    = (RATIO_X(size.x-9) - pMenuSliderResol->m_rect.width()); 
+			float fRatio    = (RATIO_X(m_size.x-9) - pMenuSliderResol->m_rect.width()); 
 		
 			pMenuSliderResol->Move(Vec2i(checked_range_cast<int>(fRatio), 0));
 			
@@ -595,7 +595,7 @@ public:
 			cb->AddText(new TextWidget(BUTTON_INVALID, hFontMenu, szMenuText));
 			cb->setValue(config.video.levelOfDetail);
 			
-			cb->Move(Vec2i(RATIO_X(size.x-9) - cb->m_rect.width(), 0));
+			cb->Move(Vec2i(RATIO_X(m_size.x-9) - cb->m_rect.width(), 0));
 			pc->AddElement(cb);
 			
 			addCenter(pc);
@@ -666,7 +666,7 @@ public:
 			szMenuText += "   ";
 			TextWidget * me = new TextWidget(BUTTON_INVALID, hFontMenu, szMenuText, Vec2i(RATIO_X(240), 0));
 			me->clicked = boost::bind(&VideoOptionsMenuPage::onClickedApply, this);
-			me->SetPos(Vec2i(RATIO_X(size.x-10)-me->m_rect.width(), RATIO_Y(380) + RATIO_Y(40)));
+			me->SetPos(Vec2i(RATIO_X(m_size.x-10)-me->m_rect.width(), RATIO_Y(380) + RATIO_Y(40)));
 			me->SetCheckOff();
 			pc->AddElementNoCenterIn(me);
 			pMenuElementApply = me;
@@ -778,7 +778,7 @@ public:
 		: MenuPage(pos, size, OPTIONS_AUDIO)
 	{}
 	
-	void init(Vec2i size) {
+	void init() {
 		
 		// Audio backend selection
 		{
@@ -792,7 +792,7 @@ public:
 			CycleTextWidget * slider = new CycleTextWidget;
 			slider->valueChanged = boost::bind(&AudioOptionsMenuPage::onChangedDevice, this, _1, _2);
 			
-			int maxwidth = RATIO_X(size.x - 28) - me->m_rect.width() - slider->m_rect.width();
+			int maxwidth = RATIO_X(m_size.x - 28) - me->m_rect.width() - slider->m_rect.width();
 			
 			slider->AddText(new TextWidget(BUTTON_INVALID, hFontControls, "Default"));
 			slider->selectLast();
@@ -808,7 +808,7 @@ public:
 				}
 			}
 			
-			float fRatio    = (RATIO_X(size.x-9) - slider->m_rect.width());
+			float fRatio    = (RATIO_X(m_size.x-9) - slider->m_rect.width());
 			slider->Move(Vec2i(checked_range_cast<int>(fRatio), 0));
 			pc->AddElement(slider);
 			addCenter(pc);
@@ -1083,7 +1083,7 @@ public:
 		: ControlOptionsPage(pos, size, OPTIONS_INPUT_CUSTOMIZE_KEYS_1)
 	{}
 	
-	void init(Vec2i size) {
+	void init() {
 		
 		long y = static_cast<long>(RATIO_Y(8.f));
 		
@@ -1123,7 +1123,7 @@ public:
 		{
 			std::string szMenuText = getLocalised( "system_menus_options_input_customize_default" );
 			TextWidget * me = new TextWidget(BUTTON_MENUOPTIONS_CONTROLS_CUST_DEFAULT, hFontMenu, szMenuText);
-			me->SetPos(Vec2i((RATIO_X(size.x) - me->m_rect.width())*0.5f, RATIO_Y(380)));
+			me->SetPos(Vec2i((RATIO_X(m_size.x) - me->m_rect.width())*0.5f, RATIO_Y(380)));
 			pc->AddElementNoCenterIn(me);
 		}
 		
@@ -1145,7 +1145,7 @@ public:
 		: ControlOptionsPage(pos, size, OPTIONS_INPUT_CUSTOMIZE_KEYS_2)
 	{}
 	
-	void init(Vec2i size) {
+	void init() {
 		
 		long y = static_cast<long>(RATIO_Y(8.f));
 		
@@ -1189,7 +1189,7 @@ public:
 		{
 			std::string szMenuText = getLocalised( "system_menus_options_input_customize_default" );
 			TextWidget * me = new TextWidget(BUTTON_MENUOPTIONS_CONTROLS_CUST_DEFAULT, hFontMenu, szMenuText);
-			me->SetPos(Vec2i((RATIO_X(size.x) - me->m_rect.width())*0.5f, RATIO_Y(380)));
+			me->SetPos(Vec2i((RATIO_X(m_size.x) - me->m_rect.width())*0.5f, RATIO_Y(380)));
 			pc->AddElementNoCenterIn(me);
 		}
 		
@@ -1204,7 +1204,7 @@ public:
 		: MenuPage(pos, size, QUIT)
 	{}
 	
-	void init(Vec2i size) {
+	void init() {
 		
 		{
 			TextWidget * me = new TextWidget(BUTTON_INVALID, hFontMenu, getLocalised("system_menus_main_quit"));
@@ -1223,7 +1223,7 @@ public:
 			
 			TextWidget * yes = new TextWidget(BUTTON_INVALID, hFontMenu, getLocalised("system_yes"));
 			yes->clicked = boost::bind(ARXMenu_Quit);
-			yes->SetPos(Vec2i(RATIO_X(size.x-10)-yes->m_rect.width(), 0));
+			yes->SetPos(Vec2i(RATIO_X(m_size.x-10)-yes->m_rect.width(), 0));
 			pPanel->AddElementNoCenterIn(yes);
 			
 			TextWidget * no = new TextWidget(BUTTON_INVALID, hFontMenu, getLocalised("system_no"), Vec2i(RATIO_X(10), 0));
@@ -1259,7 +1259,7 @@ void MainMenuLeftCreate(MENUSTATE eMenuState)
 	
 	{
 		NewQuestMenuPage * page = new NewQuestMenuPage(offset, size);
-		page->init(size);
+		page->init();
 		pWindowMenu->add(page);
 	}
 
@@ -1273,7 +1273,7 @@ void MainMenuLeftCreate(MENUSTATE eMenuState)
 	LoadMenuPage * page = new LoadMenuPage(offset + Vec2i(0, -40), size);
 	page->m_savegame = SavegameHandle::Invalid;
 	page->m_rowSpacing = 5;
-	page->init(size);
+	page->init();
 	pWindowMenu->add(page);
 	}
 	
@@ -1287,7 +1287,7 @@ void MainMenuLeftCreate(MENUSTATE eMenuState)
 	{
 	SaveConfirmMenuPage * page = new SaveConfirmMenuPage(offset, size);
 	page->m_savegame = SavegameHandle::Invalid;
-	page->init(size);
+	page->init();
 	pWindowMenu->add(page);
 	}
 	
@@ -1299,13 +1299,13 @@ void MainMenuLeftCreate(MENUSTATE eMenuState)
 	
 	{
 	VideoOptionsMenuPage * page = new VideoOptionsMenuPage(offset + Vec2i(0, -35), size);
-	page->init(size);
+	page->init();
 	pWindowMenu->add(page);
 	}
 	
 	{
 	AudioOptionsMenuPage * page = new AudioOptionsMenuPage(offset, size);
-	page->init(size);
+	page->init();
 	pWindowMenu->add(page);
 	}
 	
@@ -1317,19 +1317,19 @@ void MainMenuLeftCreate(MENUSTATE eMenuState)
 	
 	{
 	ControlOptionsMenuPage1 * page = new ControlOptionsMenuPage1(offset, size);
-	page->init(size);
+	page->init();
 	pWindowMenu->add(page);
 	}
 	
 	{
 	ControlOptionsMenuPage2 * page = new ControlOptionsMenuPage2(offset, size);
-	page->init(size);
+	page->init();
 	pWindowMenu->add(page);
 	}
 	
 	{
 	QuitConfirmMenuPage * page = new QuitConfirmMenuPage(offset, size);
-	page->init(size);
+	page->init();
 	pWindowMenu->add(page);
 	}
 }
