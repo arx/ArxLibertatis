@@ -668,7 +668,7 @@ public:
 			pMenuElementApply = me;
 			
 			ButtonWidget * cb = new ButtonWidget(RATIO_2(Vec2i(20, 420)), "graph/interface/menus/back");
-			cb->m_id = BUTTON_MENUOPTIONSVIDEO_BACK;
+			cb->clicked = boost::bind(&VideoOptionsMenuPage::onClickedBack, this);
 			cb->m_targetMenu = OPTIONS;
 			cb->SetShortCut(Keyboard::Key_Escape);
 			pc->AddElementNoCenterIn(cb);
@@ -703,6 +703,27 @@ public:
 	void onChangedHudScale(int state) {
 		config.video.hudScale = state ? true : false;
 		g_hudRoot.recalcScale();
+	}
+	
+	void onClickedBack() {
+		extern int newWidth;
+		extern int newHeight;
+		extern bool newFullscreen;
+		extern CycleTextWidget * pMenuSliderResol;
+		extern CheckboxWidget * fullscreenCheckbox;
+		
+		if(pMenuSliderResol && pMenuSliderResol->getOldValue() >= 0) {
+			pMenuSliderResol->setValue(pMenuSliderResol->getOldValue());
+			pMenuSliderResol->setOldValue(-1);
+			newWidth=config.video.resolution.x;
+			newHeight=config.video.resolution.y;
+		}
+		
+		if(fullscreenCheckbox && fullscreenCheckbox->iOldState >= 0) {
+			fullscreenCheckbox->iState = fullscreenCheckbox->iOldState;
+			fullscreenCheckbox->iOldState = -1;
+			newFullscreen = config.video.fullscreen;
+		}
 	}
 };
 

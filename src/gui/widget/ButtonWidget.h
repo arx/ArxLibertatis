@@ -20,6 +20,8 @@
 #ifndef ARX_GUI_WIDGET_BUTTONWIDGET_H
 #define ARX_GUI_WIDGET_BUTTONWIDGET_H
 
+#include <boost/function.hpp>
+
 #include "gui/widget/TextWidget.h"
 #include "gui/widget/Widget.h"
 
@@ -39,6 +41,8 @@ public:
 	void Update(int time);
 	void Render();
 	void RenderMouseOver();
+	
+	boost::function<void()> clicked;
 	
 private:
 	TextureContainer * m_texture;

@@ -26,10 +26,6 @@
 #include "input/Input.h"
 #include "scene/GameSound.h"
 
-// TODO remove this
-#include "gui/widget/CheckboxWidget.h"
-#include "gui/widget/CycleTextWidget.h"
-
 ButtonWidget::ButtonWidget(Vec2i pos, const char * texturePath)
 	: Widget()
 {
@@ -73,30 +69,8 @@ bool ButtonWidget::OnMouseClick() {
 	
 	ARX_SOUND_PlayMenu(SND_MENU_CLICK);
 	
-	switch (m_id) {
-		case BUTTON_MENUOPTIONSVIDEO_BACK: {
-			extern int newWidth;
-			extern int newHeight;
-			extern bool newFullscreen;
-			extern CycleTextWidget * pMenuSliderResol;
-			extern CheckboxWidget * fullscreenCheckbox;
-			
-			if(pMenuSliderResol && pMenuSliderResol->getOldValue() >= 0) {
-				pMenuSliderResol->setValue(pMenuSliderResol->getOldValue());
-				pMenuSliderResol->setOldValue(-1);
-				newWidth=config.video.resolution.x;
-				newHeight=config.video.resolution.y;
-			}
-			
-			if(fullscreenCheckbox && fullscreenCheckbox->iOldState >= 0) {
-				fullscreenCheckbox->iState = fullscreenCheckbox->iOldState;
-				fullscreenCheckbox->iOldState = -1;
-				newFullscreen = config.video.fullscreen;
-			}
-			break;
-		}
-		default:
-			break;
+	if(clicked) {
+		clicked();
 	}
 	
 	return false;
