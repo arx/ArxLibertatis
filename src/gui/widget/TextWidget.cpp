@@ -145,25 +145,6 @@ bool TextWidget::OnMouseClick() {
 	
 	switch(m_id) {
 		// MENULOADQUEST
-		case BUTTON_MENUEDITQUEST_LOAD_INIT: {
-			if(pWindowMenu)
-			for(size_t i = 0; i < pWindowMenu->m_pages.size(); i++) {
-				MenuPage * page = pWindowMenu->m_pages[i];
-				
-				if(page->eMenuState == EDIT_QUEST_LOAD) {
-					page->m_savegame = m_savegame;
-					
-					for(size_t j = 0; j < page->m_children.m_widgets.size(); j++) {
-						Widget * widget = page->m_children.m_widgets[j];
-						
-						if(widget->m_id == BUTTON_MENUEDITQUEST_LOAD) {
-							((TextWidget *)widget)->bSelected = false;
-						}
-					}
-				}
-			}
-		}
-			break;
 		case BUTTON_MENUEDITQUEST_LOAD: {
 			if(pWindowMenu) {
 				pLoadConfirm->SetCheckOn();

@@ -114,7 +114,8 @@ public:
 		
 		{
 			std::string szMenuText = getLocalised("system_menus_main_editquest_load");
-			TextWidget * me = new TextWidget(BUTTON_MENUEDITQUEST_LOAD_INIT, hFontMenu, szMenuText, Vec2i(0, 0));
+			TextWidget * me = new TextWidget(BUTTON_INVALID, hFontMenu, szMenuText, Vec2i(0, 0));
+			me->clicked = boost::bind(&ChooseLoadOrSaveMenuPage::onClickLoad, this);
 			me->m_targetMenu = EDIT_QUEST_LOAD;
 			me->m_savegame = SavegameHandle::Invalid;
 			addCenter(me, true);
@@ -137,6 +138,25 @@ public:
 			cb->m_targetMenu = MAIN;
 			cb->SetShortCut(Keyboard::Key_Escape);
 			add(cb);
+		}
+	}
+	
+	void onClickLoad() {
+		if(pWindowMenu)
+		for(size_t i = 0; i < pWindowMenu->m_pages.size(); i++) {
+			MenuPage * page = pWindowMenu->m_pages[i];
+			
+			if(page->eMenuState == EDIT_QUEST_LOAD) {
+				page->m_savegame = m_savegame;
+				
+				for(size_t j = 0; j < page->m_children.m_widgets.size(); j++) {
+					Widget * widget = page->m_children.m_widgets[j];
+					
+					if(widget->m_id == BUTTON_MENUEDITQUEST_LOAD) {
+						((TextWidget *)widget)->bSelected = false;
+					}
+				}
+			}
 		}
 	}
 };
