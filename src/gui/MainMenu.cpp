@@ -253,11 +253,19 @@ public:
 		// Back button
 		{
 			ButtonWidget * cb = new ButtonWidget(RATIO_2(Vec2i(20, 420)), "graph/interface/menus/back");
+			cb->clicked = boost::bind(&LoadMenuPage::onClickBack, this);
 			cb->m_targetMenu = EDIT_QUEST;
 			cb->SetShortCut(Keyboard::Key_Escape);
 			add(cb);
 		}
 		}
+	}
+	
+	void onClickBack() {
+		pLoadConfirm->SetCheckOff();
+		pLoadConfirm->lColor = Color::grayb(127);
+		pDeleteConfirm->SetCheckOff();
+		pDeleteConfirm->lColor = Color::grayb(127);
 	}
 };
 

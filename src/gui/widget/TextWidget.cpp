@@ -199,12 +199,6 @@ bool TextWidget::OnMouseClick() {
 			}
 		}
 		break;
-		case BUTTON_MENUEDITQUEST_LOAD_CONFIRM_BACK:
-			pLoadConfirm->SetCheckOff();
-			pLoadConfirm->lColor = Color::grayb(127);
-			pDeleteConfirm->SetCheckOff();
-			pDeleteConfirm->lColor = Color::grayb(127);
-			break;
 		// MENUSAVEQUEST
 		case BUTTON_MENUEDITQUEST_SAVE: {
 			if(pWindowMenu)
