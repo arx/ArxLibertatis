@@ -29,7 +29,7 @@
 class SliderWidget: public Widget {
 	
 public:
-	SliderWidget(Vec2i pos);
+	SliderWidget(Vec2i unscaled);
 	virtual ~SliderWidget();
 	
 	void setMinimum(int minimum);
