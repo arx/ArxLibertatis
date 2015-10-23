@@ -20,6 +20,7 @@
 #include "gui/widget/TextWidget.h"
 
 #include "core/Config.h"
+#include "core/Core.h"
 #include "core/Localisation.h"
 #include "core/SaveGame.h"
 #include "graphics/Renderer.h"
@@ -43,8 +44,10 @@ TextWidget::TextWidget(MenuButton _iID, Font* _pFont, const std::string& _pText,
 
 	m_font = _pFont;
 	
-	m_rect.left = pos.x;
-	m_rect.top = pos.y;
+	Vec2i scaledPos = RATIO_2(pos);
+	
+	m_rect.left = scaledPos.x;
+	m_rect.top = scaledPos.y;
 	
 	SetText(_pText);
 	
