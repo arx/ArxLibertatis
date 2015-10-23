@@ -1366,7 +1366,7 @@ void MainMenu::init()
 	TextWidget *me = new TextWidget(BUTTON_INVALID, hFontMainMenu, szMenuText, RATIO_2(pos));
 	me->clicked = boost::bind(&MainMenu::onClickedResumeGame, this);
 	me->m_targetMenu = RESUME_GAME;
-	add(me);
+	m_widgets->add(me);
 	m_resumeGame = me;
 	}
 	pos.y += yOffset;
@@ -1375,21 +1375,21 @@ void MainMenu::init()
 	TextWidget *me = new TextWidget(BUTTON_INVALID, hFontMainMenu, szMenuText, RATIO_2(pos));
 	me->clicked = boost::bind(&MainMenu::onClickedNewQuest, this);
 	me->m_targetMenu = NEW_QUEST;
-	add(me);
+	m_widgets->add(me);
 	}
 	pos.y += yOffset;
 	{
 	std::string szMenuText = getLocalised("system_menus_main_editquest");
 	TextWidget *me = new TextWidget(BUTTON_INVALID, hFontMainMenu, szMenuText, RATIO_2(pos));
 	me->m_targetMenu = EDIT_QUEST;
-	add(me);
+	m_widgets->add(me);
 	}
 	pos.y += yOffset;
 	{
 	std::string szMenuText = getLocalised("system_menus_main_options");
 	TextWidget *me = new TextWidget(BUTTON_INVALID, hFontMainMenu, szMenuText, RATIO_2(pos));
 	me->m_targetMenu = OPTIONS;
-	add(me);
+	m_widgets->add(me);
 	}
 	pos.y += yOffset;
 	{
@@ -1397,14 +1397,14 @@ void MainMenu::init()
 	TextWidget *me = new TextWidget(BUTTON_INVALID, hFontMainMenu, szMenuText, RATIO_2(pos));
 	me->clicked = boost::bind(ARXMenu_Credits);
 	me->m_targetMenu = CREDITS;
-	add(me);
+	m_widgets->add(me);
 	}
 	pos.y += yOffset;
 	{
 	std::string szMenuText = getLocalised("system_menus_main_quit");
 	TextWidget *me = new TextWidget(BUTTON_INVALID, hFontMainMenu, szMenuText, RATIO_2(pos));
 	me->m_targetMenu = QUIT;
-	add(me);
+	m_widgets->add(me);
 	}
 	pos.y += yOffset;
 	
@@ -1420,7 +1420,7 @@ void MainMenu::init()
 	
 	me->SetCheckOff();
 	me->lColor=Color(127,127,127);
-	add(me);
+	m_widgets->add(me);
 }
 
 void MainMenu::onClickedResumeGame(){
@@ -1434,10 +1434,6 @@ void MainMenu::onClickedNewQuest() {
 	}
 }
 
-
-void MainMenu::add(Widget * widget) {
-	m_widgets->add(widget);
-}
 
 MENUSTATE MainMenu::Update() {
 	

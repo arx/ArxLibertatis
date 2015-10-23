@@ -52,8 +52,6 @@ private:
 	WidgetContainer * m_widgets;
 	
 	TextWidget * m_resumeGame;
-	
-	void add(Widget * widget);
 };
 
 #endif // ARX_GUI_MAINMENU_H
