@@ -42,10 +42,6 @@ TextWidget::TextWidget(MenuButton _iID, Font* _pFont, const std::string& _pText,
 	m_id = _iID;
 
 	m_font = _pFont;
-
-	if(!_pText.compare("---")) {
-		bTestYDouble=true;
-	}
 	
 	m_rect.left = pos.x;
 	m_rect.top = pos.y;

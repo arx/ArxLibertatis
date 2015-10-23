@@ -26,7 +26,6 @@
 
 Widget::Widget()
 	: m_rect(0, 0, 0, 0)
-	, bTestYDouble(false)
 	, pRef(NULL)
 	, m_id(BUTTON_INVALID)
 	, m_savegame(0)
@@ -91,17 +90,11 @@ void Widget::SetPos(Vec2i pos) {
 }
 
 Widget * Widget::IsMouseOver(const Vec2s& mousePos) const {
-
-	int iYDouble=0;
-
-	if(bTestYDouble) {
-		iYDouble=(m_rect.bottom-m_rect.top)>>1;
-	}
-
+	
 	if(   mousePos.x >= m_rect.left
-	   && mousePos.y >= m_rect.top - iYDouble
+	   && mousePos.y >= m_rect.top
 	   && mousePos.x <= m_rect.right
-	   && mousePos.y <= m_rect.bottom + iYDouble
+	   && mousePos.y <= m_rect.bottom
 	) {
 		return pRef;
 	}

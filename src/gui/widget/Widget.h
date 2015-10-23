@@ -166,7 +166,6 @@ class Widget {
 	
 public:
 	Rect	m_rect;
-	bool	bTestYDouble;
 	Widget *	pRef;
 	
 	MenuButton m_id;
