@@ -462,10 +462,13 @@ class VideoOptionsMenuPage : public MenuPage {
 public:
 	VideoOptionsMenuPage(Vec2i pos, Vec2i size)
 		: MenuPage(pos, size, OPTIONS_VIDEO)
-	{}
+	{
+		fullscreenCheckbox = NULL;
+		pMenuSliderResol = NULL;
+	}
 	
-	CheckboxWidget * fullscreenCheckbox = NULL;
-	CycleTextWidget * pMenuSliderResol = NULL;
+	CheckboxWidget * fullscreenCheckbox;
+	CycleTextWidget * pMenuSliderResol;
 	
 	void init() {
 		
