@@ -35,8 +35,8 @@ SliderWidget::SliderWidget(Vec2i unscaled)
 	
 	Vec2i pos = RATIO_2(unscaled);
 	
-	pLeftButton = new ButtonWidget(pos, "graph/interface/menus/menu_slider_button_left");
-	pRightButton = new ButtonWidget(pos, "graph/interface/menus/menu_slider_button_right");
+	pLeftButton = new ButtonWidget(unscaled, "graph/interface/menus/menu_slider_button_left");
+	pRightButton = new ButtonWidget(unscaled, "graph/interface/menus/menu_slider_button_right");
 	pTex1 = TextureContainer::Load("graph/interface/menus/menu_slider_on");
 	pTex2 = TextureContainer::Load("graph/interface/menus/menu_slider_off");
 	arx_assert(pTex1);

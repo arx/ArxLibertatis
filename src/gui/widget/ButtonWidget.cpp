@@ -35,9 +35,11 @@ ButtonWidget::ButtonWidget(Vec2i pos, const char * texturePath)
 	arx_assert(m_texture);
 	
 	m_id = BUTTON_INVALID;
-
-	m_rect.left=pos.x;
-	m_rect.top=pos.y;
+	
+	Vec2i scaledPos = RATIO_2(pos);
+	
+	m_rect.left = scaledPos.x;
+	m_rect.top = scaledPos.y;
 	m_rect.right  = m_rect.left ;
 	m_rect.bottom = m_rect.top ;
 	
