@@ -37,19 +37,19 @@
 #include "input/Input.h"
 #include "scene/GameSound.h"
 
-TextWidget::TextWidget(MenuButton _iID, Font* _pFont, const std::string& _pText, Vec2i pos)
+TextWidget::TextWidget(MenuButton id, Font* font, const std::string& text, Vec2i pos)
 	: Widget()
 {
-	m_id = _iID;
+	m_id = id;
 
-	m_font = _pFont;
+	m_font = font;
 	
 	Vec2i scaledPos = RATIO_2(pos);
 	
 	m_rect.left = scaledPos.x;
 	m_rect.top = scaledPos.y;
 	
-	SetText(_pText);
+	SetText(text);
 	
 	lColor = Color(232, 204, 142);
 	lColorHighlight=lOldColor=Color(255, 255, 255);
