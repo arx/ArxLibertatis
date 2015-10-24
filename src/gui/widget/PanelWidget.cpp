@@ -17,25 +17,25 @@
  * along with Arx Libertatis.  If not, see <http://www.gnu.org/licenses/>.
  */
 
-#include "gui/widget/HorizontalPanelWidget.h"
+#include "gui/widget/PanelWidget.h"
 
 #include <boost/foreach.hpp>
 
-HorizontalPanelWidget::HorizontalPanelWidget()
+PanelWidget::PanelWidget()
 	: Widget()
 {
 	vElement.clear();
 	pRef = this;
 }
 
-HorizontalPanelWidget::~HorizontalPanelWidget()
+PanelWidget::~PanelWidget()
 {
 	BOOST_FOREACH(Widget * widget, vElement) {
 		delete widget;
 	}
 }
 
-void HorizontalPanelWidget::Move(const Vec2i & offset)
+void PanelWidget::Move(const Vec2i & offset)
 {
 	m_rect.move(offset.x, offset.y);
 	
@@ -45,7 +45,7 @@ void HorizontalPanelWidget::Move(const Vec2i & offset)
 }
 
 // patch on ajoute à droite en ligne
-void HorizontalPanelWidget::AddElement(Widget* widget)
+void PanelWidget::AddElement(Widget* widget)
 {
 	vElement.push_back(widget);
 
@@ -64,7 +64,7 @@ void HorizontalPanelWidget::AddElement(Widget* widget)
 }
 
 // patch on ajoute à droite en ligne
-void HorizontalPanelWidget::AddElementNoCenterIn(Widget * widget)
+void PanelWidget::AddElementNoCenterIn(Widget * widget)
 {
 	vElement.push_back(widget);
 
@@ -80,7 +80,7 @@ void HorizontalPanelWidget::AddElementNoCenterIn(Widget * widget)
 	m_rect.bottom = std::max(m_rect.bottom, widget->m_rect.bottom);
 }
 
-Widget* HorizontalPanelWidget::OnShortCut()
+Widget* PanelWidget::OnShortCut()
 {
 	BOOST_FOREACH(Widget * widget, vElement) {
 		if(widget->OnShortCut())
@@ -90,7 +90,7 @@ Widget* HorizontalPanelWidget::OnShortCut()
 	return NULL;
 }
 
-void HorizontalPanelWidget::Update(int _iTime)
+void PanelWidget::Update(int _iTime)
 {
 	m_rect.right = m_rect.left;
 	m_rect.bottom = m_rect.top;
@@ -105,7 +105,7 @@ void HorizontalPanelWidget::Update(int _iTime)
 // TODO remove this
 extern bool bNoMenu;
 
-void HorizontalPanelWidget::Render() {
+void PanelWidget::Render() {
 
 	if(bNoMenu)
 		return;
@@ -115,7 +115,7 @@ void HorizontalPanelWidget::Render() {
 	}
 }
 
-Widget * HorizontalPanelWidget::GetZoneWithID(MenuButton _iID)
+Widget * PanelWidget::GetZoneWithID(MenuButton _iID)
 {
 	BOOST_FOREACH(Widget * widget, vElement) {
 		if(Widget * pZone = widget->GetZoneWithID(_iID))
@@ -125,7 +125,7 @@ Widget * HorizontalPanelWidget::GetZoneWithID(MenuButton _iID)
 	return NULL;
 }
 
-Widget * HorizontalPanelWidget::IsMouseOver(const Vec2s& mousePos) const {
+Widget * PanelWidget::IsMouseOver(const Vec2s& mousePos) const {
 
 	if(m_rect.contains(Vec2i(mousePos))) {
 		BOOST_FOREACH(Widget * widget, vElement) {

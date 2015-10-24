@@ -38,7 +38,7 @@
 #include "gui/TextManager.h"
 #include "gui/widget/CheckboxWidget.h"
 #include "gui/widget/CycleTextWidget.h"
-#include "gui/widget/HorizontalPanelWidget.h"
+#include "gui/widget/PanelWidget.h"
 #include "gui/widget/SliderWidget.h"
 #include "graphics/Draw.h"
 #include "graphics/Math.h"
@@ -79,7 +79,7 @@ public:
 			addCenter(me, true);
 		}
 		
-		HorizontalPanelWidget * pPanel = new HorizontalPanelWidget;
+		PanelWidget * pPanel = new PanelWidget;
 		
 		{
 			std::string szMenuText = getLocalised("system_yes");
@@ -372,7 +372,7 @@ public:
 			addCenter(me, true);
 		}
 		
-		HorizontalPanelWidget * pPanel = new HorizontalPanelWidget;
+		PanelWidget * pPanel = new PanelWidget;
 		
 		// Delete button
 		{
@@ -474,7 +474,7 @@ public:
 		
 		// Renderer selection
 		{
-			HorizontalPanelWidget * pc = new HorizontalPanelWidget;
+			PanelWidget * pc = new PanelWidget;
 			std::string szMenuText = getLocalised("system_menus_options_video_renderer", "Renderer");
 			szMenuText += "  ";
 			TextWidget * me = new TextWidget(BUTTON_INVALID, hFontMenu, szMenuText, Vec2i(20, 0));
@@ -524,7 +524,7 @@ public:
 		}
 		
 		{
-			HorizontalPanelWidget * pc = new HorizontalPanelWidget;
+			PanelWidget * pc = new PanelWidget;
 			std::string szMenuText = getLocalised("system_menus_options_video_resolution");
 			szMenuText += "  ";
 			TextWidget * me = new TextWidget(BUTTON_INVALID, hFontMenu, szMenuText, Vec2i(20, 0));
@@ -581,7 +581,7 @@ public:
 		}
 		
 		{
-			HorizontalPanelWidget * pc = new HorizontalPanelWidget;
+			PanelWidget * pc = new PanelWidget;
 			std::string szMenuText = getLocalised("system_menus_options_detail");
 			szMenuText += " ";
 			TextWidget * me = new TextWidget(BUTTON_INVALID, hFontMenu, szMenuText, Vec2i(20, 0));
@@ -605,7 +605,7 @@ public:
 		}
 		
 		{
-			HorizontalPanelWidget * pc = new HorizontalPanelWidget;
+			PanelWidget * pc = new PanelWidget;
 			std::string szMenuText = getLocalised("system_menus_options_video_brouillard");
 			TextWidget * me = new TextWidget(BUTTON_INVALID, hFontMenu, szMenuText, Vec2i(20, 0));
 			me->SetCheckOff();
@@ -664,7 +664,7 @@ public:
 		}
 		
 		{
-			HorizontalPanelWidget * pc = new HorizontalPanelWidget;
+			PanelWidget * pc = new PanelWidget;
 			std::string szMenuText = getLocalised("system_menus_video_apply");
 			szMenuText += "   ";
 			TextWidget * me = new TextWidget(BUTTON_INVALID, hFontMenu, szMenuText, Vec2i(240, 0));
@@ -786,7 +786,7 @@ public:
 		// Audio backend selection
 		{
 			
-			HorizontalPanelWidget * pc = new HorizontalPanelWidget;
+			PanelWidget * pc = new PanelWidget;
 			std::string szMenuText = getLocalised("system_menus_options_audio_device", "Device");
 			szMenuText += "  ";
 			TextWidget * me = new TextWidget(BUTTON_INVALID, hFontMenu, szMenuText, Vec2i(20, 0));
@@ -819,7 +819,7 @@ public:
 		}
 		
 		{
-			HorizontalPanelWidget * pc = new HorizontalPanelWidget;
+			PanelWidget * pc = new PanelWidget;
 			std::string szMenuText = getLocalised("system_menus_options_audio_master_volume");
 			TextWidget * me = new TextWidget(BUTTON_INVALID, hFontMenu, szMenuText, Vec2i(20, 0));
 			me->SetCheckOff();
@@ -832,7 +832,7 @@ public:
 		}
 		
 		{
-			HorizontalPanelWidget * pc = new HorizontalPanelWidget;
+			PanelWidget * pc = new PanelWidget;
 			std::string szMenuText = getLocalised("system_menus_options_audio_effects_volume");
 			TextWidget * me = new TextWidget(BUTTON_INVALID, hFontMenu, szMenuText, Vec2i(20, 0));
 			me->m_targetMenu = OPTIONS_AUDIO;
@@ -846,7 +846,7 @@ public:
 		}
 		
 		{
-			HorizontalPanelWidget * pc = new HorizontalPanelWidget;
+			PanelWidget * pc = new PanelWidget;
 			std::string szMenuText = getLocalised("system_menus_options_audio_speech_volume");
 			TextWidget * me = new TextWidget(BUTTON_INVALID, hFontMenu, szMenuText, Vec2i(20, 0));
 			me->m_targetMenu = OPTIONS_AUDIO;
@@ -860,7 +860,7 @@ public:
 		}
 		
 		{
-			HorizontalPanelWidget * pc = new HorizontalPanelWidget;
+			PanelWidget * pc = new PanelWidget;
 			std::string szMenuText = getLocalised("system_menus_options_audio_ambiance_volume");
 			TextWidget * me = new TextWidget(BUTTON_INVALID, hFontMenu, szMenuText, Vec2i(20, 0));
 			me->m_targetMenu = OPTIONS_AUDIO;
@@ -975,7 +975,7 @@ public:
 		}
 		
 		{
-			HorizontalPanelWidget *pc = new HorizontalPanelWidget;
+			PanelWidget *pc = new PanelWidget;
 			std::string szMenuText = getLocalised("system_menus_options_input_mouse_sensitivity");
 			TextWidget * me = new TextWidget(BUTTON_INVALID, hFontMenu, szMenuText, Vec2i(20, 0));
 			me->SetCheckOff();
@@ -999,7 +999,7 @@ public:
 		}
 		
 		{
-			HorizontalPanelWidget * pc = new HorizontalPanelWidget;
+			PanelWidget * pc = new PanelWidget;
 			std::string szMenuText = getLocalised("system_menus_options_misc_quicksave_slots", "Quicksave slots");
 			TextWidget * me = new TextWidget(BUTTON_INVALID, hFontMenu, szMenuText, Vec2i(20, 0));
 			me->SetCheckOff();
@@ -1057,7 +1057,7 @@ public:
 	                             const char * defaultText = "?",
 	                             const char * specialSuffix = "") {
 		
-		HorizontalPanelWidget * pc = new HorizontalPanelWidget;
+		PanelWidget * pc = new PanelWidget;
 		
 		std::string szMenuText = getLocalised(a, defaultText);
 		szMenuText += specialSuffix;
@@ -1114,7 +1114,7 @@ public:
 		addControlRow(y, "system_menus_options_input_customize_controls_look_up", BUTTON_MENUOPTIONS_CONTROLS_CUST_LOOKUP1, BUTTON_MENUOPTIONS_CONTROLS_CUST_LOOKUP2);
 		addControlRow(y, "system_menus_options_input_customize_controls_look_down", BUTTON_MENUOPTIONS_CONTROLS_CUST_LOOKDOWN1, BUTTON_MENUOPTIONS_CONTROLS_CUST_LOOKDOWN2);
 		
-		HorizontalPanelWidget * pc = new HorizontalPanelWidget;
+		PanelWidget * pc = new PanelWidget;
 		
 		{
 			ButtonWidget * cb = new ButtonWidget(Vec2i(20, 380), "graph/interface/menus/back");
@@ -1180,7 +1180,7 @@ public:
 		
 		addControlRow(y, "system_menus_options_input_customize_controls_toggle_fullscreen", BUTTON_MENUOPTIONS_CONTROLS_CUST_TOGGLE_FULLSCREEN1, BUTTON_MENUOPTIONS_CONTROLS_CUST_TOGGLE_FULLSCREEN2, "Toggle fullscreen");
 		
-		HorizontalPanelWidget * pc = new HorizontalPanelWidget;
+		PanelWidget * pc = new PanelWidget;
 		
 		{
 			ButtonWidget * cb = new ButtonWidget(Vec2i(20, 380), "graph/interface/menus/back");
@@ -1222,7 +1222,7 @@ public:
 		}
 		
 		{
-			HorizontalPanelWidget *pPanel = new HorizontalPanelWidget;
+			PanelWidget *pPanel = new PanelWidget;
 			
 			TextWidget * yes = new TextWidget(BUTTON_INVALID, hFontMenu, getLocalised("system_yes"));
 			yes->clicked = boost::bind(ARXMenu_Quit);

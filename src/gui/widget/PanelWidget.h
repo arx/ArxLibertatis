@@ -17,18 +17,18 @@
  * along with Arx Libertatis.  If not, see <http://www.gnu.org/licenses/>.
  */
 
-#ifndef ARX_GUI_WIDGET_HORIZONTALPANELWIDGET_H
-#define ARX_GUI_WIDGET_HORIZONTALPANELWIDGET_H
+#ifndef ARX_GUI_WIDGET_PANELWIDGET_H
+#define ARX_GUI_WIDGET_PANELWIDGET_H
 
 #include <vector>
 
 #include "gui/widget/Widget.h"
 
-class HorizontalPanelWidget : public Widget {
+class PanelWidget : public Widget {
 	
 public:
-	HorizontalPanelWidget();
-	virtual ~HorizontalPanelWidget();
+	PanelWidget();
+	virtual ~PanelWidget();
 	
 	void Move(const Vec2i & offset);
 	void AddElement(Widget * widget);
@@ -46,4 +46,4 @@ private:
 	std::vector<Widget *>	vElement;
 };
 
-#endif // ARX_GUI_WIDGET_HORIZONTALPANELWIDGET_H
+#endif // ARX_GUI_WIDGET_PANELWIDGET_H
