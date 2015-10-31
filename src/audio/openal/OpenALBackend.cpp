@@ -480,9 +480,8 @@ aalError OpenALBackend::setReverbEnabled(bool enable) {
 	return enable ? AAL_ERROR_SYSTEM : AAL_OK;
 }
 
-aalError OpenALBackend::setRoomRolloffFactor(float factor) {
-	ARX_UNUSED(factor);
-	return AAL_ERROR_INIT;
+bool OpenALBackend::isReverbSupported() {
+	return false;
 }
 
 aalError OpenALBackend::setListenerEnvironment(const Environment & env) {
