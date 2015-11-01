@@ -93,7 +93,7 @@ public:
 	virtual bool initialize() = 0;
 	virtual void shutdown();
 	
-	RenderWindow * getWindow() { return m_MainWindow; }
+	RenderWindow * getWindow() const { return m_MainWindow; }
 	
 	//! Ask the game to quit at the end of the current frame.
 	void quit();

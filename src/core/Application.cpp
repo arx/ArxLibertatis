@@ -48,27 +48,9 @@ ZeniMax Media Inc., Suite 120, Rockville, Maryland 20850 USA.
 
 #include "core/Application.h"
 
-#include <stddef.h>
-#include <algorithm>
-#include <set>
-#include <sstream>
+#include <cassert>
 
-#include <boost/algorithm/string/case_conv.hpp>
-#include <boost/foreach.hpp>
-
-#include "core/Config.h"
 #include "core/GameTime.h"
-
-#include "graphics/Renderer.h"
-
-#include "io/fs/FilePath.h"
-#include "io/fs/Filesystem.h"
-#include "io/fs/SystemPaths.h"
-#include "io/log/Logger.h"
-
-#include "math/Random.h"
-
-#include "platform/Platform.h"
 
 #include "window/RenderWindow.h"
 
@@ -89,7 +71,7 @@ Application::Application() : m_MainWindow(NULL) {
 }
 
 Application::~Application() {
-		
+	assert(!m_MainWindow);
 }
 
 void Application::shutdown() {
