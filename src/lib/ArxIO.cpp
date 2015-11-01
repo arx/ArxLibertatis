@@ -106,11 +106,15 @@ int ArxIO_ftlLoad(char * filePath) {
 	}
 
 	// get length of file:
-	is.seekg(0, is.end);
+	is.seekg(0, std::ifstream::end);
 	size_t compressedSize = is.tellg();
-	is.seekg(0, is.beg);
+	is.seekg(0, std::ifstream::beg);
 
-	char * compressedData = new char[compressedSize];
+	char * compressedData = (char *)malloc(compressedSize);
+	if (!compressedData) {
+		LogError << "Failed to allocate " << compressedSize << " bytes";
+		return -1;
+	}
 
 	LogInfo << "Reading " << compressedSize << " uncompressed bytes";
 	is.read(compressedData, compressedSize);
@@ -119,7 +123,7 @@ int ArxIO_ftlLoad(char * filePath) {
 		LogInfo << "File read successfully";
 	} else {
 		LogError << "Full read failed " << (compressedSize - is.gcount()) << " bytes left";
-		delete[] compressedData;
+		free(compressedData);
 		return -1;
 	}
 
