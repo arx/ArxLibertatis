@@ -44,7 +44,7 @@ public:
 	int					iState;
 	int					iOldState;
 	
-	boost::function<void(int)> stateChanged;
+	boost::function<void(int)> stateChanged;	// NOLINT
 	
 private:
 	TextureContainer * m_textureOff;

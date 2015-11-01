@@ -29,7 +29,7 @@
 class SliderWidget: public Widget {
 	
 public:
-	SliderWidget(Vec2i pos);
+	explicit SliderWidget(const Vec2i & pos);
 	virtual ~SliderWidget();
 	
 	void setMinimum(int minimum);
@@ -45,7 +45,7 @@ public:
 	void RenderMouseOver();
 	void EmptyFunction();
 	
-	boost::function<void(int)> valueChanged;
+	boost::function<void(int)> valueChanged;	// NOLINT
 	
 private:
 	ButtonWidget		*	pLeftButton;
@@ -53,8 +53,8 @@ private:
 	TextureContainer	* pTex1;
 	TextureContainer	* pTex2;
 	
-	int m_minimum;
-	int					m_value;
+	int	m_minimum;
+	int	m_value;
 };
 
 #endif // ARX_GUI_WIDGET_SLIDERWIDGET_H
