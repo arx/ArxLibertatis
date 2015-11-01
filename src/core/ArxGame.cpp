@@ -64,11 +64,12 @@ ZeniMax Media Inc., Suite 120, Rockville, Maryland 20850 USA.
 #include "cinematic/Cinematic.h"
 #include "cinematic/CinematicController.h"
 
-#include "core/Core.h"
 #include "core/Config.h"
+#include "core/Core.h"
 #include "core/GameTime.h"
 #include "core/Localisation.h"
 #include "core/SaveGame.h"
+#include "core/URLConstants.h"
 #include "core/Version.h"
 
 #include "game/Damage.h"
@@ -127,7 +128,6 @@ ZeniMax Media Inc., Suite 120, Rockville, Maryland 20850 USA.
 #include "math/Vector.h"
 
 #include "physics/Attractors.h"
-#include "platform/Time.h"
 
 #include "io/fs/FilePath.h"
 #include "io/fs/Filesystem.h"
@@ -143,6 +143,7 @@ ZeniMax Media Inc., Suite 120, Rockville, Maryland 20850 USA.
 #include "platform/Process.h"
 #include "platform/ProgramOptions.h"
 #include "platform/profiler/Profiler.h"
+#include "platform/Time.h"
 
 #include "scene/ChangeLevel.h"
 #include "scene/Interactive.h"
@@ -155,7 +156,8 @@ ZeniMax Media Inc., Suite 120, Rockville, Maryland 20850 USA.
 #include "script/ScriptEvent.h"
 
 #include "Configure.h"
-#include "core/URLConstants.h"
+
+#include "window/RenderWindow.h"
 
 #if ARX_HAVE_SDL2
 #include "window/SDL2Window.h"
@@ -200,7 +202,7 @@ Anglef LASTCAMANGLE;
 
 // ArxGame constructor. Sets attributes for the app.
 ArxGame::ArxGame()
-	: wasResized(false)
+	: m_wasResized(false)
 	, m_gameInitialized(false)
 {}
 
@@ -1199,7 +1201,7 @@ void ArxGame::onResizeWindow(const Window & window) {
 	
 	// A new window size will require a new backbuffer
 	// size, so the 3D structures must be changed accordingly.
-	wasResized = true;
+	m_wasResized = true;
 	
 	if(window.isFullScreen()) {
 		if(config.video.resolution == Vec2i_ZERO) {
@@ -1257,9 +1259,9 @@ void ArxGame::doFrame() {
 
 	updateInput();
 
-	if(wasResized) {
+	if(m_wasResized) {
 		LogDebug("was resized");
-		wasResized = false;
+		m_wasResized = false;
 		DanaeRestoreFullScreen();
 		g_hudRoot.recalcScale();
 	}
