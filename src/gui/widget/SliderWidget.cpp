@@ -28,7 +28,7 @@
 #include "input/Input.h"
 #include "scene/GameSound.h"
 
-SliderWidget::SliderWidget(Vec2i unscaled)
+SliderWidget::SliderWidget(const Vec2i & unscaled)
 	: Widget()
 {
 	m_id = BUTTON_INVALID;
