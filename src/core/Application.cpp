@@ -59,10 +59,7 @@ bool EERIEMouseGrab = false;
 Application * mainApp = 0;
 float FPS;
 
-//*************************************************************************************
-// Application()
-// Constructor
-//*************************************************************************************
+
 Application::Application() : m_MainWindow(NULL) {
 	m_bReady = true;
 	m_RunLoop = true;
