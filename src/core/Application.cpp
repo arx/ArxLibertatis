@@ -48,8 +48,6 @@ ZeniMax Media Inc., Suite 120, Rockville, Maryland 20850 USA.
 
 #include "core/Application.h"
 
-#include <cassert>
-
 #include "core/GameTime.h"
 
 #include "window/RenderWindow.h"
@@ -71,7 +69,7 @@ Application::Application() : m_MainWindow(NULL) {
 }
 
 Application::~Application() {
-	assert(!m_MainWindow);
+	arx_assert(!m_MainWindow);
 }
 
 void Application::shutdown() {
