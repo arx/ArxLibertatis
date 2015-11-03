@@ -39,8 +39,9 @@ except ImportError:
 print("Running inside blender: " + str(blenderFound))
 
 if blenderFound:
+    import importlib
     if "main" in locals():
-        imp.reload(main)
+        importlib.reload(main)
 
     from .main import register
 
