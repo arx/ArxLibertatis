@@ -139,7 +139,7 @@ public:
 		m_elements.push_back(std::pair<std::string, std::string>(key, valueStr));
 	}
 	
-	void add(std::string key, const double value) {
+	void add(std::string key, const float value) {
 		m_maxKeyLen = std::max(m_maxKeyLen, key.length());
 		std::string valueStr = boost::str(boost::format("%4.2f") % value);
 		m_elements.push_back(std::pair<std::string, std::string>(key, valueStr));
