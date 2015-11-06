@@ -356,9 +356,9 @@ void ProfilerView::zoomEvent(QPoint mousePos, bool zoomIn) {
 	
 	double scaleFactor = 1.15;
 	if(zoomIn) {
-		scale(scaleFactor, 1.0f);
+		scale(scaleFactor, qreal(1));
 	} else {
-		scale(1.0 / scaleFactor, 1.0f);
+		scale(qreal(1) / scaleFactor, qreal(1));
 	}
 	
 	QPointF offset = oldScenePos - mapToScene(mousePos);
