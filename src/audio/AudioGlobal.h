@@ -87,7 +87,7 @@ size_t unitsToBytes(size_t v, const PCMFormat & format, TimeUnit unit = UNIT_MS)
 size_t bytesToUnits(size_t v, const PCMFormat & format, TimeUnit unit = UNIT_MS);
 
 inline float LinearToLogVolume(float volume) {
-	return 0.2F * (float)log10(volume) + 1.0F;
+	return 0.2F * std::log10(volume) + 1.0F;
 }
 
 } // namespace audio
