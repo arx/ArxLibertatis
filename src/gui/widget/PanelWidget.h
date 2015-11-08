@@ -20,7 +20,7 @@
 #ifndef ARX_GUI_WIDGET_PANELWIDGET_H
 #define ARX_GUI_WIDGET_PANELWIDGET_H
 
-#include <vector>
+#include <boost/ptr_container/ptr_vector.hpp>
 
 #include "gui/widget/Widget.h"
 
@@ -43,7 +43,7 @@ public:
 	Widget * GetZoneWithID(MenuButton zoneId);
 	
 private:
-	std::vector<Widget *>	vElement;
+	boost::ptr_vector<Widget> vElement;
 };
 
 #endif // ARX_GUI_WIDGET_PANELWIDGET_H
