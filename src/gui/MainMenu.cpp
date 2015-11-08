@@ -835,7 +835,6 @@ public:
 			PanelWidget * pc = new PanelWidget;
 			std::string szMenuText = getLocalised("system_menus_options_audio_effects_volume");
 			TextWidget * me = new TextWidget(BUTTON_INVALID, hFontMenu, szMenuText, Vec2f(20, 0));
-			me->m_targetMenu = OPTIONS_AUDIO;
 			me->SetCheckOff();
 			pc->AddElement(me);
 			SliderWidget * sld = new SliderWidget(Vec2f(200, 0));
@@ -849,7 +848,6 @@ public:
 			PanelWidget * pc = new PanelWidget;
 			std::string szMenuText = getLocalised("system_menus_options_audio_speech_volume");
 			TextWidget * me = new TextWidget(BUTTON_INVALID, hFontMenu, szMenuText, Vec2f(20, 0));
-			me->m_targetMenu = OPTIONS_AUDIO;
 			me->SetCheckOff();
 			pc->AddElement(me);
 			SliderWidget * sld = new SliderWidget(Vec2f(200, 0));
@@ -863,7 +861,6 @@ public:
 			PanelWidget * pc = new PanelWidget;
 			std::string szMenuText = getLocalised("system_menus_options_audio_ambiance_volume");
 			TextWidget * me = new TextWidget(BUTTON_INVALID, hFontMenu, szMenuText, Vec2f(20, 0));
-			me->m_targetMenu = OPTIONS_AUDIO;
 			me->SetCheckOff();
 			pc->AddElement(me);
 			SliderWidget * sld = new SliderWidget(Vec2f(200, 0));
@@ -877,7 +874,6 @@ public:
 			std::string szMenuText = getLocalised("system_menus_options_audio_eax", "EAX");
 			szMenuText += " ";
 			TextWidget * text = new TextWidget(BUTTON_INVALID, hFontMenu, szMenuText, Vec2f(20, 0));
-			text->m_targetMenu = OPTIONS_INPUT;
 			CheckboxWidget * cb = new CheckboxWidget(text);
 			cb->stateChanged = boost::bind(&AudioOptionsMenuPage::onChangedEax, this, _1);
 			if(audio::isReverbSupported()) {
@@ -945,7 +941,6 @@ public:
 			std::string szMenuText = getLocalised("system_menus_options_input_invert_mouse");
 			szMenuText += " ";
 			TextWidget * text = new TextWidget(BUTTON_INVALID, hFontMenu, szMenuText, Vec2f(20, 0));
-			text->m_targetMenu = OPTIONS_INPUT; // TODO is this correct ?
 			CheckboxWidget * cb = new CheckboxWidget(text);
 			cb->stateChanged = boost::bind(&InputOptionsMenuPage::onChangedInvertMouse, this, _1);
 			cb->iState = config.input.invertMouse ? 1 : 0;
@@ -956,7 +951,6 @@ public:
 			std::string szMenuText = getLocalised("system_menus_options_auto_ready_weapon");
 			szMenuText += " ";
 			TextWidget * text = new TextWidget(BUTTON_INVALID, hFontMenu, szMenuText, Vec2f(20, 0));
-			text->m_targetMenu = OPTIONS_INPUT; // TODO is this correct ?
 			CheckboxWidget * cb = new CheckboxWidget(text);
 			cb->stateChanged = boost::bind(&InputOptionsMenuPage::onChangedAutoReadyWeapon, this, _1);
 			cb->iState = config.input.autoReadyWeapon ? 1 : 0;
@@ -967,7 +961,6 @@ public:
 			std::string szMenuText = getLocalised("system_menus_options_input_mouse_look_toggle");
 			szMenuText += " ";
 			TextWidget * text = new TextWidget(BUTTON_INVALID, hFontMenu, szMenuText, Vec2f(20, 0));
-			text->m_targetMenu = OPTIONS_INPUT; // TODO is this correct ?
 			CheckboxWidget * cb = new CheckboxWidget(text);
 			cb->stateChanged = boost::bind(&InputOptionsMenuPage::onChangedToggleMouselook, this, _1);
 			cb->iState = config.input.mouseLookToggle ? 1 : 0;
@@ -991,7 +984,6 @@ public:
 			std::string szMenuText = getLocalised("system_menus_autodescription", "auto_description");
 			szMenuText += " ";
 			TextWidget * text = new TextWidget(BUTTON_INVALID, hFontMenu, szMenuText, Vec2f(20, 0));
-			text->m_targetMenu = OPTIONS_INPUT; // TODO is this correct ?
 			CheckboxWidget * cb = new CheckboxWidget(text);
 			cb->stateChanged = boost::bind(&InputOptionsMenuPage::onChangedAutoDescription, this, _1);
 			cb->iState = config.input.autoDescription ? 1 : 0;
