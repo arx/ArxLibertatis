@@ -49,7 +49,7 @@ public:
 private:
 	TextureContainer * m_textureOff;
 	TextureContainer * m_textureOn;
-	TextWidget	* pText;
+	TextWidget	* m_label;
 };
 
 #endif // ARX_GUI_WIDGET_CHECKBOXWIDGET_H

@@ -30,12 +30,13 @@
 #include "gui/widget/TextWidget.h"
 #include "scene/GameSound.h"
 
-CheckboxWidget::CheckboxWidget(TextWidget *_pText)
+CheckboxWidget::CheckboxWidget(TextWidget * label)
 	: Widget()
 {
 	pRef = this; // TODO remove this
+	m_id = BUTTON_INVALID; // TODO remove this
 	
-	arx_assert(_pText);
+	arx_assert(label);
 	
 	m_textureOff = TextureContainer::Load("graph/interface/menus/menu_checkbox_off");
 	m_textureOn = TextureContainer::Load("graph/interface/menus/menu_checkbox_on");
@@ -43,23 +44,23 @@ CheckboxWidget::CheckboxWidget(TextWidget *_pText)
 	arx_assert(m_textureOn);
 	arx_assert(m_textureOff->size() == m_textureOn->size());
 	
-	m_id = BUTTON_INVALID;
 	iState    = 0;
 	iOldState = -1;
-	pText    = _pText;
-	m_rect = _pText->m_rect;
+	
+	m_label = label;
+	m_rect = label->m_rect;
 	
 	m_rect.right = m_rect.left + RATIO_X(245.f);
 }
 
 CheckboxWidget::~CheckboxWidget() {
-	delete pText;
+	delete m_label;
 }
 
 void CheckboxWidget::Move(const Vec2f & offset) {
 	
 	Widget::Move(offset);
-	pText->Move(offset);
+	m_label->Move(offset);
 }
 
 bool CheckboxWidget::OnMouseClick() {
@@ -116,7 +117,7 @@ void CheckboxWidget::Render() {
 	
 	renderCommon();
 	
-	pText->Render();
+	m_label->Render();
 }
 
 extern MenuCursor * pMenuCursor;
@@ -130,5 +131,5 @@ void CheckboxWidget::RenderMouseOver() {
 
 	renderCommon();
 	
-	pText->RenderMouseOver();
+	m_label->RenderMouseOver();
 }
