@@ -24,41 +24,26 @@
 PanelWidget::PanelWidget()
 	: Widget()
 {
-	vElement.clear();
 	pRef = this;
 }
 
 PanelWidget::~PanelWidget()
 {
-	BOOST_FOREACH(Widget * widget, vElement) {
-		delete widget;
-	}
 }
 
 void PanelWidget::Move(const Vec2i & offset)
 {
 	m_rect.move(offset.x, offset.y);
 	
-	BOOST_FOREACH(Widget * widget, vElement) {
-		widget->Move(offset);
+	BOOST_FOREACH(Widget & widget, vElement) {
+		widget.Move(offset);
 	}
 }
 
 // patch on ajoute à droite en ligne
 void PanelWidget::AddElement(Widget* widget)
 {
-	vElement.push_back(widget);
-
-	if(vElement.size() == 1) {
-		m_rect = widget->m_rect;
-	} else {
-		m_rect.left = std::min(m_rect.left, widget->m_rect.left);
-		m_rect.top = std::min(m_rect.top, widget->m_rect.top);
-	}
-
-	// + taille elem
-	m_rect.right = std::max(m_rect.right, widget->m_rect.right);
-	m_rect.bottom = std::max(m_rect.bottom, widget->m_rect.bottom);
+	AddElementNoCenterIn(widget);
 
 	widget->Move(Vec2i(0, ((m_rect.height() - widget->m_rect.bottom) / 2)));
 }
@@ -66,6 +51,8 @@ void PanelWidget::AddElement(Widget* widget)
 // patch on ajoute à droite en ligne
 void PanelWidget::AddElementNoCenterIn(Widget * widget)
 {
+	// By default ptr_vector doesn't allow null values.
+	arx_assert(widget);
 	vElement.push_back(widget);
 
 	if(vElement.size() == 1) {
@@ -82,9 +69,9 @@ void PanelWidget::AddElementNoCenterIn(Widget * widget)
 
 Widget* PanelWidget::OnShortCut()
 {
-	BOOST_FOREACH(Widget * widget, vElement) {
-		if(widget->OnShortCut())
-			return widget;
+	BOOST_FOREACH(Widget & widget, vElement) {
+		if(widget.OnShortCut())
+			return &widget;
 	}
 
 	return NULL;
@@ -95,10 +82,10 @@ void PanelWidget::Update(int _iTime)
 	m_rect.right = m_rect.left;
 	m_rect.bottom = m_rect.top;
 
-	BOOST_FOREACH(Widget * widget, vElement) {
-		widget->Update(_iTime);
-		m_rect.right = std::max(m_rect.right, widget->m_rect.right);
-		m_rect.bottom = std::max(m_rect.bottom, widget->m_rect.bottom);
+	BOOST_FOREACH(Widget & widget, vElement) {
+		widget.Update(_iTime);
+		m_rect.right = std::max(m_rect.right, widget.m_rect.right);
+		m_rect.bottom = std::max(m_rect.bottom, widget.m_rect.bottom);
 	}
 }
 
@@ -110,15 +97,15 @@ void PanelWidget::Render() {
 	if(bNoMenu)
 		return;
 
-	BOOST_FOREACH(Widget * widget, vElement) {
-		widget->Render();
+	BOOST_FOREACH(Widget & widget, vElement) {
+		widget.Render();
 	}
 }
 
 Widget * PanelWidget::GetZoneWithID(MenuButton _iID)
 {
-	BOOST_FOREACH(Widget * widget, vElement) {
-		if(Widget * pZone = widget->GetZoneWithID(_iID))
+	BOOST_FOREACH(Widget & widget, vElement) {
+		if(Widget * pZone = widget.GetZoneWithID(_iID))
 			return pZone;
 	}
 	
@@ -126,11 +113,10 @@ Widget * PanelWidget::GetZoneWithID(MenuButton _iID)
 }
 
 Widget * PanelWidget::IsMouseOver(const Vec2s& mousePos) const {
-
 	if(m_rect.contains(Vec2i(mousePos))) {
-		BOOST_FOREACH(Widget * widget, vElement) {
-			if(widget->getCheck() && widget->m_rect.contains(Vec2i(mousePos))) {
-				return widget->pRef;
+		BOOST_FOREACH(const Widget & widget, vElement) {
+			if(widget.getCheck() && widget.m_rect.contains(Vec2i(mousePos))) {
+				return widget.pRef;
 			}
 		}
 	}

@@ -122,6 +122,6 @@ void Widget::SetCheckOn() {
 	bCheck = true;
 }
 
-bool Widget::getCheck() {
+bool Widget::getCheck() const {
 	return bCheck;
 }

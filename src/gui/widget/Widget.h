@@ -200,7 +200,7 @@ public:
 	void SetCheckOff();
 	void SetCheckOn();
 	
-	bool getCheck();
+	bool getCheck() const;
 	
 	virtual Widget * IsMouseOver(const Vec2s& mousePos) const;
 	
