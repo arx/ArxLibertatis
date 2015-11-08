@@ -26,9 +26,12 @@
 #include "input/Input.h"
 #include "scene/GameSound.h"
 
-ButtonWidget::ButtonWidget(const Vec2f & pos, const char * texturePath)
+ButtonWidget::ButtonWidget(const Vec2f & pos, const Vec2f & size, const char * texturePath)
 	: Widget()
 {
+	m_pos = pos;
+	m_size = size;
+	
 	pRef = this; //TODO remove this
 	
 	m_texture = TextureContainer::Load(texturePath);
@@ -43,8 +46,8 @@ ButtonWidget::ButtonWidget(const Vec2f & pos, const char * texturePath)
 	m_rect.right  = m_rect.left ;
 	m_rect.bottom = m_rect.top ;
 	
-	float rZoneR = m_rect.left + RATIO_X(m_texture->m_size.x);
-	float rZoneB = m_rect.top + RATIO_Y(m_texture->m_size.y);
+	float rZoneR = m_rect.left + RATIO_X(m_size.x);
+	float rZoneB = m_rect.top + RATIO_Y(m_size.y);
 	m_rect.right  = std::max(m_rect.right,  rZoneR);
 	m_rect.bottom = std::max(m_rect.bottom, rZoneB);
 }
@@ -56,8 +59,8 @@ void ButtonWidget::SetPos(Vec2f pos)
 {
 	Widget::SetPos(pos);
 	
-	float iWidth = RATIO_X(m_texture->m_size.x);
-	float iHeight = RATIO_Y(m_texture->m_size.y);
+	float iWidth = RATIO_X(m_size.x);
+	float iHeight = RATIO_Y(m_size.y);
 	
 	m_rect.right = pos.x + iWidth;
 	m_rect.bottom = pos.y + iHeight;

@@ -30,7 +30,7 @@ class TextureContainer;
 class ButtonWidget: public Widget {
 	
 public:
-	ButtonWidget(const Vec2f & pos, const char * texturePath);
+	ButtonWidget(const Vec2f & pos, const Vec2f & size, const char * texturePath);
 	~ButtonWidget();
 	
 public:
@@ -45,6 +45,9 @@ public:
 	boost::function<void()> clicked;
 	
 private:
+	Vec2f m_pos;
+	Vec2f m_size;
+	
 	TextureContainer * m_texture;
 };
 
