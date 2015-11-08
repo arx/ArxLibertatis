@@ -513,7 +513,6 @@ public:
 				// for the german version there
 				szMenuText = getLocalised("system_menus_options_video_full_screen");
 			}
-			szMenuText += "  ";
 			TextWidget * txt = new TextWidget(BUTTON_INVALID, hFontMenu, szMenuText, Vec2f(20, 0));
 			txt->SetCheckOff();
 			CheckboxWidget * cb = new CheckboxWidget(txt);
@@ -619,7 +618,6 @@ public:
 		
 		{
 			std::string szMenuText = getLocalised("system_menus_options_video_crosshair", "Show Crosshair");
-			szMenuText += " ";
 			TextWidget * txt = new TextWidget(BUTTON_INVALID, hFontMenu, szMenuText, Vec2f(20, 0));
 			txt->SetCheckOff();
 			CheckboxWidget * cb = new CheckboxWidget(txt);
@@ -630,7 +628,6 @@ public:
 		
 		{
 			std::string szMenuText = getLocalised("system_menus_options_video_antialiasing", "antialiasing");
-			szMenuText += " ";
 			TextWidget * txt = new TextWidget(BUTTON_INVALID, hFontMenu, szMenuText, Vec2f(20, 0));
 			txt->SetCheckOff();
 			CheckboxWidget * cb = new CheckboxWidget(txt);
@@ -643,7 +640,6 @@ public:
 		
 		{
 			std::string szMenuText = getLocalised("system_menus_options_video_vsync", "VSync");
-			szMenuText += " ";
 			TextWidget * txt = new TextWidget(BUTTON_INVALID, hFontMenu, szMenuText, Vec2f(20, 0));
 			txt->SetCheckOff();
 			CheckboxWidget * cb = new CheckboxWidget(txt);
@@ -654,7 +650,6 @@ public:
 		
 		{
 			std::string szMenuText = getLocalised("system_menus_options_video_hud_scale", "Scale Hud");
-			szMenuText += " ";
 			TextWidget * txt = new TextWidget(BUTTON_INVALID, hFontMenu, szMenuText, Vec2f(20, 0));
 			txt->SetCheckOff();
 			CheckboxWidget * cb = new CheckboxWidget(txt);
@@ -872,7 +867,6 @@ public:
 		
 		{
 			std::string szMenuText = getLocalised("system_menus_options_audio_eax", "EAX");
-			szMenuText += " ";
 			TextWidget * txt = new TextWidget(BUTTON_INVALID, hFontMenu, szMenuText, Vec2f(20, 0));
 			CheckboxWidget * cb = new CheckboxWidget(txt);
 			cb->stateChanged = boost::bind(&AudioOptionsMenuPage::onChangedEax, this, _1);
@@ -939,7 +933,6 @@ public:
 		
 		{
 			std::string szMenuText = getLocalised("system_menus_options_input_invert_mouse");
-			szMenuText += " ";
 			TextWidget * txt = new TextWidget(BUTTON_INVALID, hFontMenu, szMenuText, Vec2f(20, 0));
 			CheckboxWidget * cb = new CheckboxWidget(txt);
 			cb->stateChanged = boost::bind(&InputOptionsMenuPage::onChangedInvertMouse, this, _1);
@@ -949,7 +942,6 @@ public:
 		
 		{
 			std::string szMenuText = getLocalised("system_menus_options_auto_ready_weapon");
-			szMenuText += " ";
 			TextWidget * txt = new TextWidget(BUTTON_INVALID, hFontMenu, szMenuText, Vec2f(20, 0));
 			CheckboxWidget * cb = new CheckboxWidget(txt);
 			cb->stateChanged = boost::bind(&InputOptionsMenuPage::onChangedAutoReadyWeapon, this, _1);
@@ -959,7 +951,6 @@ public:
 		
 		{
 			std::string szMenuText = getLocalised("system_menus_options_input_mouse_look_toggle");
-			szMenuText += " ";
 			TextWidget * txt = new TextWidget(BUTTON_INVALID, hFontMenu, szMenuText, Vec2f(20, 0));
 			CheckboxWidget * cb = new CheckboxWidget(txt);
 			cb->stateChanged = boost::bind(&InputOptionsMenuPage::onChangedToggleMouselook, this, _1);
@@ -982,7 +973,6 @@ public:
 		
 		{
 			std::string szMenuText = getLocalised("system_menus_autodescription", "auto_description");
-			szMenuText += " ";
 			TextWidget * txt = new TextWidget(BUTTON_INVALID, hFontMenu, szMenuText, Vec2f(20, 0));
 			CheckboxWidget * cb = new CheckboxWidget(txt);
 			cb->stateChanged = boost::bind(&InputOptionsMenuPage::onChangedAutoDescription, this, _1);
