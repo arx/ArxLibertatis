@@ -30,11 +30,11 @@ class TextureContainer;
 class ButtonWidget: public Widget {
 	
 public:
-	ButtonWidget(Vec2i pos, const char * texturePath);
+	ButtonWidget(const Vec2f & pos, const char * texturePath);
 	~ButtonWidget();
 	
 public:
-	void SetPos(Vec2i pos);
+	void SetPos(Vec2f pos);
 	void AddText(const std::string & label);
 	Widget * OnShortCut() { return NULL; }
 	bool OnMouseClick();

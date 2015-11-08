@@ -33,11 +33,11 @@ public:
 	virtual ~WidgetContainer();
 	
 	void add(Widget * widget);
-	Widget * getAtPos(const Vec2s & mousePos) const;
+	Widget * getAtPos(const Vec2f & mousePos) const;
 	
 	Widget * GetZoneNum(size_t index);
 	Widget * GetZoneWithID(MenuButton zoneId);
-	void Move(const Vec2i & offset);
+	void Move(const Vec2f & offset);
 	void drawDebug();
 	size_t GetNbZone();
 };

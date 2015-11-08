@@ -59,7 +59,7 @@ extern MainMenu *mainMenu;
 
 class NewQuestMenuPage : public MenuPage {
 public:
-	NewQuestMenuPage(Vec2i pos, Vec2i size)
+	NewQuestMenuPage(const Vec2f & pos, const Vec2f & size)
 		: MenuPage(pos, size, NEW_QUEST)
 	{}
 
@@ -86,19 +86,19 @@ public:
 			szMenuText += "   "; // TODO This space can probably go
 			TextWidget * me = new TextWidget(BUTTON_INVALID, hFontMenu, szMenuText);
 			me->clicked = boost::bind(ARXMenu_NewQuest);
-			me->SetPos(Vec2i(RATIO_X(m_size.x - (me->m_rect.width() + 10)), 0));
+			me->SetPos(Vec2f(RATIO_X(m_size.x - (me->m_rect.width() + 10)), 0));
 			pPanel->AddElementNoCenterIn(me);
 		}
 		
 		{
 			std::string szMenuText = getLocalised("system_no");
-			TextWidget * me = new TextWidget(BUTTON_INVALID, hFontMenu, szMenuText, Vec2i(10, 0));
+			TextWidget * me = new TextWidget(BUTTON_INVALID, hFontMenu, szMenuText, Vec2f(10, 0));
 			me->m_targetMenu = MAIN;
 			me->SetShortCut(Keyboard::Key_Escape);
 			pPanel->AddElementNoCenterIn(me);
 		}
 		
-		pPanel->Move(Vec2i(0, RATIO_Y(380)));
+		pPanel->Move(Vec2f(0, RATIO_Y(380)));
 		
 		add(pPanel);
 	}
@@ -106,7 +106,7 @@ public:
 
 class ChooseLoadOrSaveMenuPage : public MenuPage {
 public:
-	ChooseLoadOrSaveMenuPage(Vec2i pos, Vec2i size)
+	ChooseLoadOrSaveMenuPage(const Vec2f & pos, const Vec2f & size)
 		: MenuPage(pos, size, EDIT_QUEST)
 	{}
 	
@@ -114,7 +114,7 @@ public:
 		
 		{
 			std::string szMenuText = getLocalised("system_menus_main_editquest_load");
-			TextWidget * me = new TextWidget(BUTTON_INVALID, hFontMenu, szMenuText, Vec2i(0, 0));
+			TextWidget * me = new TextWidget(BUTTON_INVALID, hFontMenu, szMenuText, Vec2f_ZERO);
 			me->clicked = boost::bind(&ChooseLoadOrSaveMenuPage::onClickLoad, this);
 			me->m_targetMenu = EDIT_QUEST_LOAD;
 			me->m_savegame = SavegameHandle::Invalid;
@@ -123,7 +123,7 @@ public:
 		
 		{
 			std::string szMenuText = getLocalised( "system_menus_main_editquest_save");
-			TextWidget * me = new TextWidget(BUTTON_INVALID, hFontMenu, szMenuText, Vec2i(0, 0));
+			TextWidget * me = new TextWidget(BUTTON_INVALID, hFontMenu, szMenuText, Vec2f_ZERO);
 			me->m_targetMenu = EDIT_QUEST_SAVE;
 			
 			if(!ARXMenu_CanResumeGame()) {
@@ -134,7 +134,7 @@ public:
 		}
 		
 		{
-			ButtonWidget * cb = new ButtonWidget(Vec2i(20, 380), "graph/interface/menus/back");
+			ButtonWidget * cb = new ButtonWidget(Vec2f(20, 380), "graph/interface/menus/back");
 			cb->m_targetMenu = MAIN;
 			cb->SetShortCut(Keyboard::Key_Escape);
 			add(cb);
@@ -163,14 +163,14 @@ public:
 
 class LoadMenuPage : public MenuPage {
 public:
-	LoadMenuPage(Vec2i pos, Vec2i size)
+	LoadMenuPage(const Vec2f & pos, const Vec2f & size)
 		: MenuPage(pos, size, EDIT_QUEST_LOAD)
 	{}
 
 	void init() {
 		
 		{
-			ButtonWidget * cb = new ButtonWidget(Vec2i(0, 0), "graph/interface/icons/menu_main_load");
+			ButtonWidget * cb = new ButtonWidget(Vec2f_ZERO, "graph/interface/icons/menu_main_load");
 			cb->SetCheckOff();
 			addCenter(cb, true);
 		}
@@ -194,7 +194,7 @@ public:
 			std::ostringstream text;
 			text << quicksaveName << ' ' << ++quicksaveNum << "   " << save.time;
 			
-			TextWidget * e = new TextWidget(BUTTON_MENUEDITQUEST_LOAD, hFontControls, text.str(), Vec2i(20, 0));
+			TextWidget * e = new TextWidget(BUTTON_MENUEDITQUEST_LOAD, hFontControls, text.str(), Vec2f(20, 0));
 			e->m_savegame = SavegameHandle(i);
 			addCenter(e);
 		}
@@ -209,13 +209,13 @@ public:
 			
 			std::string text = save.name +  "   " + save.time;
 			
-			TextWidget * e = new TextWidget(BUTTON_MENUEDITQUEST_LOAD, hFontControls, text, Vec2i(20, 0));
+			TextWidget * e = new TextWidget(BUTTON_MENUEDITQUEST_LOAD, hFontControls, text, Vec2f(20, 0));
 			e->m_savegame = SavegameHandle(i);
 			addCenter(e);
 		}
 		
 		{
-			TextWidget * confirm = new TextWidget(BUTTON_INVALID, hFontControls, " ", Vec2i(20, 0));
+			TextWidget * confirm = new TextWidget(BUTTON_INVALID, hFontControls, " ", Vec2f(20, 0));
 			confirm->m_targetMenu = EDIT_QUEST_SAVE_CONFIRM;
 			confirm->SetCheckOff();
 			confirm->m_savegame = SavegameHandle::Invalid;
@@ -226,9 +226,9 @@ public:
 		{
 			std::string szMenuText = getLocalised("system_menus_main_editquest_delete");
 			szMenuText += "   ";
-			TextWidget * me = new TextWidget(BUTTON_MENUEDITQUEST_DELETE_CONFIRM, hFontMenu, szMenuText, Vec2i(0, 0));
+			TextWidget * me = new TextWidget(BUTTON_MENUEDITQUEST_DELETE_CONFIRM, hFontMenu, szMenuText, Vec2f_ZERO);
 			me->m_targetMenu = EDIT_QUEST_LOAD;
-			me->SetPos(Vec2i(RATIO_X(m_size.x-10)-me->m_rect.width(), RATIO_Y(42)));
+			me->SetPos(Vec2f(RATIO_X(m_size.x-10)-me->m_rect.width(), RATIO_Y(42)));
 			me->SetCheckOff();
 			me->lOldColor = me->lColor;
 			me->lColor = Color::grayb(127);
@@ -240,9 +240,9 @@ public:
 		{
 			std::string szMenuText = getLocalised("system_menus_main_editquest_load");
 			szMenuText += "   ";
-			TextWidget * me = new TextWidget(BUTTON_MENUEDITQUEST_LOAD_CONFIRM, hFontMenu, szMenuText, Vec2i(0, 0));
+			TextWidget * me = new TextWidget(BUTTON_MENUEDITQUEST_LOAD_CONFIRM, hFontMenu, szMenuText, Vec2f_ZERO);
 			me->m_targetMenu = MAIN;
-			me->SetPos(Vec2i(RATIO_X(m_size.x-10)-me->m_rect.width(), RATIO_Y(380) + RATIO_Y(40)));
+			me->SetPos(Vec2f(RATIO_X(m_size.x-10)-me->m_rect.width(), RATIO_Y(380) + RATIO_Y(40)));
 			me->SetCheckOff();
 			me->lOldColor = me->lColor;
 			me->lColor = Color::grayb(127);
@@ -252,7 +252,7 @@ public:
 		
 		// Back button
 		{
-			ButtonWidget * cb = new ButtonWidget(Vec2i(20, 420), "graph/interface/menus/back");
+			ButtonWidget * cb = new ButtonWidget(Vec2f(20, 420), "graph/interface/menus/back");
 			cb->clicked = boost::bind(&LoadMenuPage::onClickBack, this);
 			cb->m_targetMenu = EDIT_QUEST;
 			cb->SetShortCut(Keyboard::Key_Escape);
@@ -271,14 +271,14 @@ public:
 
 class SaveMenuPage : public MenuPage {
 public:
-	SaveMenuPage(Vec2i pos, Vec2i size)
+	SaveMenuPage(const Vec2f & pos, const Vec2f & size)
 		: MenuPage(pos, size, EDIT_QUEST_SAVE)
 	{}
 	
 	void init() {
 		
 		{
-			ButtonWidget * cb = new ButtonWidget(Vec2i(10, 0), "graph/interface/icons/menu_main_save");
+			ButtonWidget * cb = new ButtonWidget(Vec2f(10, 0), "graph/interface/icons/menu_main_save");
 			cb->SetCheckOff();
 			addCenter(cb, true);
 		}
@@ -297,7 +297,7 @@ public:
 			std::ostringstream text;
 			text << quicksaveName << ' ' << ++quicksaveNum << "   " << save.time;
 			
-			TextWidget * e = new TextWidget(BUTTON_MENUEDITQUEST_SAVEINFO, hFontControls, text.str(), Vec2i(20, 0));
+			TextWidget * e = new TextWidget(BUTTON_MENUEDITQUEST_SAVEINFO, hFontControls, text.str(), Vec2f(20, 0));
 			e->m_targetMenu = EDIT_QUEST_SAVE_CONFIRM;
 			e->setColor(Color::grayb(127));
 			e->SetCheckOff();
@@ -315,7 +315,7 @@ public:
 			
 			std::string text = save.name +  "   " + save.time;
 			
-			TextWidget * e = new TextWidget(BUTTON_MENUEDITQUEST_SAVEINFO, hFontControls, text, Vec2i(20, 0));
+			TextWidget * e = new TextWidget(BUTTON_MENUEDITQUEST_SAVEINFO, hFontControls, text, Vec2f(20, 0));
 			e->m_targetMenu = EDIT_QUEST_SAVE_CONFIRM;
 			e->m_savegame = SavegameHandle(i);
 			addCenter(e);
@@ -326,14 +326,14 @@ public:
 			std::ostringstream text;
 			text << '-' << std::setfill('0') << std::setw(4) << i << '-';
 			
-			TextWidget * e = new TextWidget(BUTTON_MENUEDITQUEST_SAVEINFO, hFontControls, text.str(), Vec2i(20, 0));
+			TextWidget * e = new TextWidget(BUTTON_MENUEDITQUEST_SAVEINFO, hFontControls, text.str(), Vec2f(20, 0));
 			e->m_targetMenu = EDIT_QUEST_SAVE_CONFIRM;
 			e->m_savegame = SavegameHandle::Invalid;
 			addCenter(e);
 		}
 	
 		{
-			TextWidget * me01 = new TextWidget(BUTTON_INVALID, hFontControls, " ", Vec2i(20, 0));
+			TextWidget * me01 = new TextWidget(BUTTON_INVALID, hFontControls, " ", Vec2f(20, 0));
 			me01->m_targetMenu = EDIT_QUEST_SAVE_CONFIRM;
 			me01->m_savegame = SavegameHandle::Invalid;
 			me01->SetCheckOff();
@@ -341,7 +341,7 @@ public:
 		}
 		
 		{
-			ButtonWidget * cb = new ButtonWidget(Vec2i(20, 420), "graph/interface/menus/back");
+			ButtonWidget * cb = new ButtonWidget(Vec2f(20, 420), "graph/interface/menus/back");
 			cb->m_targetMenu = EDIT_QUEST;
 			cb->SetShortCut(Keyboard::Key_Escape);
 			add(cb);
@@ -351,21 +351,21 @@ public:
 
 class SaveConfirmMenuPage : public MenuPage {
 public:
-	SaveConfirmMenuPage(Vec2i pos, Vec2i size)
+	SaveConfirmMenuPage(const Vec2f & pos, const Vec2f & size)
 		: MenuPage(pos, size, EDIT_QUEST_SAVE_CONFIRM)
 	{}
 	
 	void init() {
 		
 		{
-			ButtonWidget * cb = new ButtonWidget(Vec2i(0, 0), "graph/interface/icons/menu_main_save");
+			ButtonWidget * cb = new ButtonWidget(Vec2f_ZERO, "graph/interface/icons/menu_main_save");
 			cb->SetCheckOff();
 			addCenter(cb, true);
 		}
 		
 		{
 			std::string szMenuText = getLocalised("system_menu_editquest_newsavegame", "---");
-			TextWidget * me = new TextWidget(BUTTON_INVALID, hFontMenu, szMenuText, Vec2i(20, 0));
+			TextWidget * me = new TextWidget(BUTTON_INVALID, hFontMenu, szMenuText, Vec2f(20, 0));
 			me->m_savegame = SavegameHandle::Invalid;
 			me->eState=EDIT;
 			me->ePlace=CENTER;
@@ -377,9 +377,9 @@ public:
 		// Delete button
 		{
 			std::string szMenuText = getLocalised("system_menus_main_editquest_delete");
-			TextWidget * me = new TextWidget(BUTTON_MENUEDITQUEST_DELETE, hFontMenu, szMenuText, Vec2i(0, 0));
+			TextWidget * me = new TextWidget(BUTTON_MENUEDITQUEST_DELETE, hFontMenu, szMenuText, Vec2f_ZERO);
 			me->m_targetMenu = EDIT_QUEST_SAVE;
-			me->SetPos(Vec2i(RATIO_X(m_size.x-10)-me->m_rect.width(), RATIO_Y(5)));
+			me->SetPos(Vec2f(RATIO_X(m_size.x-10)-me->m_rect.width(), RATIO_Y(5)));
 			me->lOldColor = me->lColor;
 			pPanel->AddElementNoCenterIn(me);
 			pDeleteButton = me;
@@ -388,15 +388,15 @@ public:
 		// Save button
 		{
 			std::string szMenuText = getLocalised("system_menus_main_editquest_save");
-			TextWidget * me = new TextWidget(BUTTON_MENUEDITQUEST_SAVE, hFontMenu, szMenuText, Vec2i(0, 0));
+			TextWidget * me = new TextWidget(BUTTON_MENUEDITQUEST_SAVE, hFontMenu, szMenuText, Vec2f_ZERO);
 			me->m_targetMenu = MAIN;
-			me->SetPos(Vec2i(RATIO_X(m_size.x-10)-me->m_rect.width(), RATIO_Y(380)));
+			me->SetPos(Vec2f(RATIO_X(m_size.x-10)-me->m_rect.width(), RATIO_Y(380)));
 			pPanel->AddElementNoCenterIn(me);
 		}
 		
 		// Back button
 		{
-			ButtonWidget * cb = new ButtonWidget(Vec2i(20, 380), "graph/interface/menus/back");
+			ButtonWidget * cb = new ButtonWidget(Vec2f(20, 380), "graph/interface/menus/back");
 			cb->m_targetMenu = EDIT_QUEST_SAVE;
 			cb->SetShortCut(Keyboard::Key_Escape);
 			pPanel->AddElementNoCenterIn(cb);
@@ -412,7 +412,7 @@ bool newFullscreen;
 
 class OptionsMenuPage : public MenuPage {
 public:
-	OptionsMenuPage(Vec2i pos, Vec2i size)
+	OptionsMenuPage(const Vec2f & pos, const Vec2f & size)
 		: MenuPage(pos, size, OPTIONS)
 	{}
 	
@@ -420,7 +420,7 @@ public:
 		
 		{
 			std::string szMenuText = getLocalised("system_menus_options_video");
-			TextWidget * me = new TextWidget(BUTTON_INVALID, hFontMenu, szMenuText, Vec2i(0, 0));
+			TextWidget * me = new TextWidget(BUTTON_INVALID, hFontMenu, szMenuText, Vec2f_ZERO);
 			me->clicked = boost::bind(&OptionsMenuPage::onClickedVideo, this);
 			me->m_targetMenu = OPTIONS_VIDEO;
 			addCenter(me, true);
@@ -428,20 +428,20 @@ public:
 		
 		{
 			std::string szMenuText = getLocalised("system_menus_options_audio");
-			TextWidget * me = new TextWidget(BUTTON_INVALID, hFontMenu, szMenuText, Vec2i(0, 0));
+			TextWidget * me = new TextWidget(BUTTON_INVALID, hFontMenu, szMenuText, Vec2f_ZERO);
 			me->m_targetMenu = OPTIONS_AUDIO;
 			addCenter(me, true);
 		}
 		
 		{
 			std::string szMenuText = getLocalised("system_menus_options_input");
-			TextWidget * me = new TextWidget(BUTTON_INVALID, hFontMenu, szMenuText, Vec2i(0, 0));
+			TextWidget * me = new TextWidget(BUTTON_INVALID, hFontMenu, szMenuText, Vec2f_ZERO);
 			me->m_targetMenu = OPTIONS_INPUT;
 			addCenter(me, true);
 		}
 		
 		{
-			ButtonWidget * cb = new ButtonWidget(Vec2i(20, 380), "graph/interface/menus/back");
+			ButtonWidget * cb = new ButtonWidget(Vec2f(20, 380), "graph/interface/menus/back");
 			cb->m_targetMenu = MAIN;
 			cb->SetShortCut(Keyboard::Key_Escape);
 			add(cb);
@@ -460,7 +460,7 @@ const std::string AUTO_RESOLUTION_STRING = "Automatic";
 
 class VideoOptionsMenuPage : public MenuPage {
 public:
-	VideoOptionsMenuPage(Vec2i pos, Vec2i size)
+	VideoOptionsMenuPage(const Vec2f & pos, const Vec2f & size)
 		: MenuPage(pos, size, OPTIONS_VIDEO)
 	{
 		fullscreenCheckbox = NULL;
@@ -477,21 +477,21 @@ public:
 			PanelWidget * pc = new PanelWidget;
 			std::string szMenuText = getLocalised("system_menus_options_video_renderer", "Renderer");
 			szMenuText += "  ";
-			TextWidget * me = new TextWidget(BUTTON_INVALID, hFontMenu, szMenuText, Vec2i(20, 0));
+			TextWidget * me = new TextWidget(BUTTON_INVALID, hFontMenu, szMenuText, Vec2f(20, 0));
 			me->SetCheckOff();
 			pc->AddElement(me);
 			CycleTextWidget * slider = new CycleTextWidget;
 			slider->valueChanged = boost::bind(&VideoOptionsMenuPage::onChangedRenderer, this, _1, _2);
 			
 			{
-				TextWidget * text = new TextWidget(BUTTON_INVALID, hFontMenu, "Auto-Select", Vec2i(0, 0));
+				TextWidget * text = new TextWidget(BUTTON_INVALID, hFontMenu, "Auto-Select", Vec2f_ZERO);
 				slider->AddText(text);
 				slider->selectLast();
 			}
 			
 	#if ARX_HAVE_SDL1 || ARX_HAVE_SDL2
 			{
-				TextWidget * text = new TextWidget(BUTTON_INVALID, hFontMenu, "OpenGL", Vec2i(0, 0));
+				TextWidget * text = new TextWidget(BUTTON_INVALID, hFontMenu, "OpenGL", Vec2f_ZERO);
 				slider->AddText(text);
 				if(config.window.framework == "SDL") {
 					slider->selectLast();
@@ -500,7 +500,7 @@ public:
 	#endif
 			
 			float fRatio    = (RATIO_X(m_size.x-9) - slider->m_rect.width());
-			slider->Move(Vec2i(checked_range_cast<int>(fRatio), 0));
+			slider->Move(Vec2f(fRatio, 0));
 			pc->AddElement(slider);
 			addCenter(pc);
 		}
@@ -514,7 +514,7 @@ public:
 				szMenuText = getLocalised("system_menus_options_video_full_screen");
 			}
 			szMenuText += "  ";
-			TextWidget * text = new TextWidget(BUTTON_INVALID, hFontMenu, szMenuText, Vec2i(20, 0));
+			TextWidget * text = new TextWidget(BUTTON_INVALID, hFontMenu, szMenuText, Vec2f(20, 0));
 			text->SetCheckOff();
 			CheckboxWidget * cb = new CheckboxWidget(text);
 			cb->stateChanged = boost::bind(&VideoOptionsMenuPage::onChangedFullscreen, this, _1);
@@ -527,7 +527,7 @@ public:
 			PanelWidget * pc = new PanelWidget;
 			std::string szMenuText = getLocalised("system_menus_options_video_resolution");
 			szMenuText += "  ";
-			TextWidget * me = new TextWidget(BUTTON_INVALID, hFontMenu, szMenuText, Vec2i(20, 0));
+			TextWidget * me = new TextWidget(BUTTON_INVALID, hFontMenu, szMenuText, Vec2f(20, 0));
 			me->SetCheckOff();
 			pc->AddElement(me);
 			pMenuSliderResol = new CycleTextWidget;
@@ -574,7 +574,7 @@ public:
 		
 			float fRatio    = (RATIO_X(m_size.x-9) - pMenuSliderResol->m_rect.width()); 
 		
-			pMenuSliderResol->Move(Vec2i(checked_range_cast<int>(fRatio), 0));
+			pMenuSliderResol->Move(Vec2f(fRatio, 0));
 			
 			pc->AddElement(pMenuSliderResol);
 			addCenter(pc);
@@ -584,7 +584,7 @@ public:
 			PanelWidget * pc = new PanelWidget;
 			std::string szMenuText = getLocalised("system_menus_options_detail");
 			szMenuText += " ";
-			TextWidget * me = new TextWidget(BUTTON_INVALID, hFontMenu, szMenuText, Vec2i(20, 0));
+			TextWidget * me = new TextWidget(BUTTON_INVALID, hFontMenu, szMenuText, Vec2f(20, 0));
 			me->SetCheckOff();
 			pc->AddElement(me);
 			
@@ -598,7 +598,7 @@ public:
 			cb->AddText(new TextWidget(BUTTON_INVALID, hFontMenu, szMenuText));
 			cb->setValue(config.video.levelOfDetail);
 			
-			cb->Move(Vec2i(RATIO_X(m_size.x-9) - cb->m_rect.width(), 0));
+			cb->Move(Vec2f(RATIO_X(m_size.x-9) - cb->m_rect.width(), 0));
 			pc->AddElement(cb);
 			
 			addCenter(pc);
@@ -607,10 +607,10 @@ public:
 		{
 			PanelWidget * pc = new PanelWidget;
 			std::string szMenuText = getLocalised("system_menus_options_video_brouillard");
-			TextWidget * me = new TextWidget(BUTTON_INVALID, hFontMenu, szMenuText, Vec2i(20, 0));
+			TextWidget * me = new TextWidget(BUTTON_INVALID, hFontMenu, szMenuText, Vec2f(20, 0));
 			me->SetCheckOff();
 			pc->AddElement(me);
-			SliderWidget * sld = new SliderWidget(Vec2i(200, 0));
+			SliderWidget * sld = new SliderWidget(Vec2f(200, 0));
 			sld->valueChanged = boost::bind(&VideoOptionsMenuPage::onChangedFogDistance, this, _1);
 			sld->setValue(config.video.fogDistance);
 			pc->AddElement(sld);
@@ -620,7 +620,7 @@ public:
 		{
 			std::string szMenuText = getLocalised("system_menus_options_video_crosshair", "Show Crosshair");
 			szMenuText += " ";
-			TextWidget * text = new TextWidget(BUTTON_INVALID, hFontMenu, szMenuText, Vec2i(20, 0));
+			TextWidget * text = new TextWidget(BUTTON_INVALID, hFontMenu, szMenuText, Vec2f(20, 0));
 			text->SetCheckOff();
 			CheckboxWidget * cb = new CheckboxWidget(text);
 			cb->stateChanged = boost::bind(&VideoOptionsMenuPage::onChangedCrosshair, this, _1);
@@ -631,7 +631,7 @@ public:
 		{
 			std::string szMenuText = getLocalised("system_menus_options_video_antialiasing", "antialiasing");
 			szMenuText += " ";
-			TextWidget * text = new TextWidget(BUTTON_INVALID, hFontMenu, szMenuText, Vec2i(20, 0));
+			TextWidget * text = new TextWidget(BUTTON_INVALID, hFontMenu, szMenuText, Vec2f(20, 0));
 			text->SetCheckOff();
 			CheckboxWidget * cb = new CheckboxWidget(text);
 			cb->stateChanged = boost::bind(&VideoOptionsMenuPage::onChangedAntialiasing, this, _1);
@@ -644,7 +644,7 @@ public:
 		{
 			std::string szMenuText = getLocalised("system_menus_options_video_vsync", "VSync");
 			szMenuText += " ";
-			TextWidget * text = new TextWidget(BUTTON_INVALID, hFontMenu, szMenuText, Vec2i(20, 0));
+			TextWidget * text = new TextWidget(BUTTON_INVALID, hFontMenu, szMenuText, Vec2f(20, 0));
 			text->SetCheckOff();
 			CheckboxWidget * cb = new CheckboxWidget(text);
 			cb->stateChanged = boost::bind(&VideoOptionsMenuPage::onChangedVsync, this, _1);
@@ -655,7 +655,7 @@ public:
 		{
 			std::string szMenuText = getLocalised("system_menus_options_video_hud_scale", "Scale Hud");
 			szMenuText += " ";
-			TextWidget * text = new TextWidget(BUTTON_INVALID, hFontMenu, szMenuText, Vec2i(20, 0));
+			TextWidget * text = new TextWidget(BUTTON_INVALID, hFontMenu, szMenuText, Vec2f(20, 0));
 			text->SetCheckOff();
 			CheckboxWidget * cb = new CheckboxWidget(text);
 			cb->stateChanged = boost::bind(&VideoOptionsMenuPage::onChangedHudScale, this, _1);
@@ -667,14 +667,14 @@ public:
 			PanelWidget * pc = new PanelWidget;
 			std::string szMenuText = getLocalised("system_menus_video_apply");
 			szMenuText += "   ";
-			TextWidget * me = new TextWidget(BUTTON_INVALID, hFontMenu, szMenuText, Vec2i(240, 0));
+			TextWidget * me = new TextWidget(BUTTON_INVALID, hFontMenu, szMenuText, Vec2f(240, 0));
 			me->clicked = boost::bind(&VideoOptionsMenuPage::onClickedApply, this);
-			me->SetPos(Vec2i(RATIO_X(m_size.x-10)-me->m_rect.width(), RATIO_Y(380) + RATIO_Y(40)));
+			me->SetPos(Vec2f(RATIO_X(m_size.x-10)-me->m_rect.width(), RATIO_Y(380) + RATIO_Y(40)));
 			me->SetCheckOff();
 			pc->AddElementNoCenterIn(me);
 			pMenuElementApply = me;
 			
-			ButtonWidget * cb = new ButtonWidget(Vec2i(20, 420), "graph/interface/menus/back");
+			ButtonWidget * cb = new ButtonWidget(Vec2f(20, 420), "graph/interface/menus/back");
 			cb->clicked = boost::bind(&VideoOptionsMenuPage::onClickedBack, this);
 			cb->m_targetMenu = OPTIONS;
 			cb->SetShortCut(Keyboard::Key_Escape);
@@ -777,7 +777,7 @@ public:
 
 class AudioOptionsMenuPage : public MenuPage {
 public:
-	AudioOptionsMenuPage(Vec2i pos, Vec2i size)
+	AudioOptionsMenuPage(const Vec2f & pos, const Vec2f & size)
 		: MenuPage(pos, size, OPTIONS_AUDIO)
 	{}
 	
@@ -789,13 +789,13 @@ public:
 			PanelWidget * pc = new PanelWidget;
 			std::string szMenuText = getLocalised("system_menus_options_audio_device", "Device");
 			szMenuText += "  ";
-			TextWidget * me = new TextWidget(BUTTON_INVALID, hFontMenu, szMenuText, Vec2i(20, 0));
+			TextWidget * me = new TextWidget(BUTTON_INVALID, hFontMenu, szMenuText, Vec2f(20, 0));
 			me->SetCheckOff();
 			pc->AddElement(me);
 			CycleTextWidget * slider = new CycleTextWidget;
 			slider->valueChanged = boost::bind(&AudioOptionsMenuPage::onChangedDevice, this, _1, _2);
 			
-			int maxwidth = RATIO_X(m_size.x - 28) - me->m_rect.width() - slider->m_rect.width();
+			float maxwidth = RATIO_X(m_size.x - 28) - me->m_rect.width() - slider->m_rect.width();
 			
 			slider->AddText(new TextWidget(BUTTON_INVALID, hFontControls, "Default"));
 			slider->selectLast();
@@ -812,7 +812,7 @@ public:
 			}
 			
 			float fRatio    = (RATIO_X(m_size.x-9) - slider->m_rect.width());
-			slider->Move(Vec2i(checked_range_cast<int>(fRatio), 0));
+			slider->Move(Vec2f(fRatio, 0));
 			pc->AddElement(slider);
 			addCenter(pc);
 			
@@ -821,10 +821,10 @@ public:
 		{
 			PanelWidget * pc = new PanelWidget;
 			std::string szMenuText = getLocalised("system_menus_options_audio_master_volume");
-			TextWidget * me = new TextWidget(BUTTON_INVALID, hFontMenu, szMenuText, Vec2i(20, 0));
+			TextWidget * me = new TextWidget(BUTTON_INVALID, hFontMenu, szMenuText, Vec2f(20, 0));
 			me->SetCheckOff();
 			pc->AddElement(me);
-			SliderWidget * sld = new SliderWidget(Vec2i(200, 0));
+			SliderWidget * sld = new SliderWidget(Vec2f(200, 0));
 			sld->valueChanged = boost::bind(&AudioOptionsMenuPage::onChangedMasterVolume, this, _1);
 			sld->setValue((int)config.audio.volume); // TODO use float sliders
 			pc->AddElement(sld);
@@ -834,11 +834,11 @@ public:
 		{
 			PanelWidget * pc = new PanelWidget;
 			std::string szMenuText = getLocalised("system_menus_options_audio_effects_volume");
-			TextWidget * me = new TextWidget(BUTTON_INVALID, hFontMenu, szMenuText, Vec2i(20, 0));
+			TextWidget * me = new TextWidget(BUTTON_INVALID, hFontMenu, szMenuText, Vec2f(20, 0));
 			me->m_targetMenu = OPTIONS_AUDIO;
 			me->SetCheckOff();
 			pc->AddElement(me);
-			SliderWidget * sld = new SliderWidget(Vec2i(200, 0));
+			SliderWidget * sld = new SliderWidget(Vec2f(200, 0));
 			sld->valueChanged = boost::bind(&AudioOptionsMenuPage::onChangedEffectsVolume, this, _1);
 			sld->setValue((int)config.audio.sfxVolume);
 			pc->AddElement(sld);
@@ -848,11 +848,11 @@ public:
 		{
 			PanelWidget * pc = new PanelWidget;
 			std::string szMenuText = getLocalised("system_menus_options_audio_speech_volume");
-			TextWidget * me = new TextWidget(BUTTON_INVALID, hFontMenu, szMenuText, Vec2i(20, 0));
+			TextWidget * me = new TextWidget(BUTTON_INVALID, hFontMenu, szMenuText, Vec2f(20, 0));
 			me->m_targetMenu = OPTIONS_AUDIO;
 			me->SetCheckOff();
 			pc->AddElement(me);
-			SliderWidget * sld = new SliderWidget(Vec2i(200, 0));
+			SliderWidget * sld = new SliderWidget(Vec2f(200, 0));
 			sld->valueChanged = boost::bind(&AudioOptionsMenuPage::onChangedSpeechVolume, this, _1);
 			sld->setValue((int)config.audio.speechVolume);
 			pc->AddElement(sld);
@@ -862,11 +862,11 @@ public:
 		{
 			PanelWidget * pc = new PanelWidget;
 			std::string szMenuText = getLocalised("system_menus_options_audio_ambiance_volume");
-			TextWidget * me = new TextWidget(BUTTON_INVALID, hFontMenu, szMenuText, Vec2i(20, 0));
+			TextWidget * me = new TextWidget(BUTTON_INVALID, hFontMenu, szMenuText, Vec2f(20, 0));
 			me->m_targetMenu = OPTIONS_AUDIO;
 			me->SetCheckOff();
 			pc->AddElement(me);
-			SliderWidget * sld = new SliderWidget(Vec2i(200, 0));
+			SliderWidget * sld = new SliderWidget(Vec2f(200, 0));
 			sld->valueChanged = boost::bind(&AudioOptionsMenuPage::onChangedAmbianceVolume, this, _1);
 			sld->setValue((int)config.audio.ambianceVolume);
 			pc->AddElement(sld);
@@ -876,7 +876,7 @@ public:
 		{
 			std::string szMenuText = getLocalised("system_menus_options_audio_eax", "EAX");
 			szMenuText += " ";
-			TextWidget * text = new TextWidget(BUTTON_INVALID, hFontMenu, szMenuText, Vec2i(20, 0));
+			TextWidget * text = new TextWidget(BUTTON_INVALID, hFontMenu, szMenuText, Vec2f(20, 0));
 			text->m_targetMenu = OPTIONS_INPUT;
 			CheckboxWidget * cb = new CheckboxWidget(text);
 			cb->stateChanged = boost::bind(&AudioOptionsMenuPage::onChangedEax, this, _1);
@@ -889,7 +889,7 @@ public:
 		}
 		
 		{
-			ButtonWidget * cb = new ButtonWidget(Vec2i(20, 380), "graph/interface/menus/back");
+			ButtonWidget * cb = new ButtonWidget(Vec2f(20, 380), "graph/interface/menus/back");
 			cb->m_targetMenu = OPTIONS;
 			cb->SetShortCut(Keyboard::Key_Escape);
 			add(cb);
@@ -928,7 +928,7 @@ public:
 
 class InputOptionsMenuPage : public MenuPage {
 public:
-	InputOptionsMenuPage(Vec2i pos, Vec2i size)
+	InputOptionsMenuPage(const Vec2f & pos, const Vec2f & size)
 		: MenuPage(pos, size, OPTIONS_INPUT)
 	{}
 	
@@ -936,7 +936,7 @@ public:
 		
 		{
 			std::string szMenuText = getLocalised("system_menus_options_input_customize_controls");
-			TextWidget * me = new TextWidget(BUTTON_INVALID, hFontMenu, szMenuText, Vec2i(20, 0));
+			TextWidget * me = new TextWidget(BUTTON_INVALID, hFontMenu, szMenuText, Vec2f(20, 0));
 			me->m_targetMenu = OPTIONS_INPUT_CUSTOMIZE_KEYS_1;
 			addCenter(me);
 		}
@@ -944,7 +944,7 @@ public:
 		{
 			std::string szMenuText = getLocalised("system_menus_options_input_invert_mouse");
 			szMenuText += " ";
-			TextWidget * text = new TextWidget(BUTTON_INVALID, hFontMenu, szMenuText, Vec2i(20, 0));
+			TextWidget * text = new TextWidget(BUTTON_INVALID, hFontMenu, szMenuText, Vec2f(20, 0));
 			text->m_targetMenu = OPTIONS_INPUT; // TODO is this correct ?
 			CheckboxWidget * cb = new CheckboxWidget(text);
 			cb->stateChanged = boost::bind(&InputOptionsMenuPage::onChangedInvertMouse, this, _1);
@@ -955,7 +955,7 @@ public:
 		{
 			std::string szMenuText = getLocalised("system_menus_options_auto_ready_weapon");
 			szMenuText += " ";
-			TextWidget * text = new TextWidget(BUTTON_INVALID, hFontMenu, szMenuText, Vec2i(20, 0));
+			TextWidget * text = new TextWidget(BUTTON_INVALID, hFontMenu, szMenuText, Vec2f(20, 0));
 			text->m_targetMenu = OPTIONS_INPUT; // TODO is this correct ?
 			CheckboxWidget * cb = new CheckboxWidget(text);
 			cb->stateChanged = boost::bind(&InputOptionsMenuPage::onChangedAutoReadyWeapon, this, _1);
@@ -966,7 +966,7 @@ public:
 		{
 			std::string szMenuText = getLocalised("system_menus_options_input_mouse_look_toggle");
 			szMenuText += " ";
-			TextWidget * text = new TextWidget(BUTTON_INVALID, hFontMenu, szMenuText, Vec2i(20, 0));
+			TextWidget * text = new TextWidget(BUTTON_INVALID, hFontMenu, szMenuText, Vec2f(20, 0));
 			text->m_targetMenu = OPTIONS_INPUT; // TODO is this correct ?
 			CheckboxWidget * cb = new CheckboxWidget(text);
 			cb->stateChanged = boost::bind(&InputOptionsMenuPage::onChangedToggleMouselook, this, _1);
@@ -977,10 +977,10 @@ public:
 		{
 			PanelWidget *pc = new PanelWidget;
 			std::string szMenuText = getLocalised("system_menus_options_input_mouse_sensitivity");
-			TextWidget * me = new TextWidget(BUTTON_INVALID, hFontMenu, szMenuText, Vec2i(20, 0));
+			TextWidget * me = new TextWidget(BUTTON_INVALID, hFontMenu, szMenuText, Vec2f(20, 0));
 			me->SetCheckOff();
 			pc->AddElement(me);
-			SliderWidget * sld = new SliderWidget(Vec2i(200, 0));
+			SliderWidget * sld = new SliderWidget(Vec2f(200, 0));
 			sld->valueChanged = boost::bind(&InputOptionsMenuPage::onChangedMouseSensitivity, this, _1);
 			sld->setValue(config.input.mouseSensitivity);
 			pc->AddElement(sld);
@@ -990,7 +990,7 @@ public:
 		{
 			std::string szMenuText = getLocalised("system_menus_autodescription", "auto_description");
 			szMenuText += " ";
-			TextWidget * text = new TextWidget(BUTTON_INVALID, hFontMenu, szMenuText, Vec2i(20, 0));
+			TextWidget * text = new TextWidget(BUTTON_INVALID, hFontMenu, szMenuText, Vec2f(20, 0));
 			text->m_targetMenu = OPTIONS_INPUT; // TODO is this correct ?
 			CheckboxWidget * cb = new CheckboxWidget(text);
 			cb->stateChanged = boost::bind(&InputOptionsMenuPage::onChangedAutoDescription, this, _1);
@@ -1001,10 +1001,10 @@ public:
 		{
 			PanelWidget * pc = new PanelWidget;
 			std::string szMenuText = getLocalised("system_menus_options_misc_quicksave_slots", "Quicksave slots");
-			TextWidget * me = new TextWidget(BUTTON_INVALID, hFontMenu, szMenuText, Vec2i(20, 0));
+			TextWidget * me = new TextWidget(BUTTON_INVALID, hFontMenu, szMenuText, Vec2f(20, 0));
 			me->SetCheckOff();
 			pc->AddElement(me);
-			SliderWidget * sld = new SliderWidget(Vec2i(200, 0));
+			SliderWidget * sld = new SliderWidget(Vec2f(200, 0));
 			sld->setMinimum(1);
 			sld->valueChanged = boost::bind(&InputOptionsMenuPage::onChangedQuicksaveSlots, this, _1);
 			sld->setValue(config.misc.quicksaveSlots);
@@ -1013,7 +1013,7 @@ public:
 		}
 		
 		{
-			ButtonWidget * cb = new ButtonWidget(Vec2i(20, 380), "graph/interface/menus/back");
+			ButtonWidget * cb = new ButtonWidget(Vec2f(20, 380), "graph/interface/menus/back");
 			cb->m_targetMenu = OPTIONS;
 			cb->SetShortCut(Keyboard::Key_Escape);
 			add(cb);
@@ -1048,7 +1048,7 @@ public:
 
 class ControlOptionsPage : public MenuPage {
 public:
-	ControlOptionsPage(Vec2i pos, Vec2i size, MENUSTATE state)
+	ControlOptionsPage(const Vec2f & pos, const Vec2f & size, MENUSTATE state)
 		: MenuPage(pos, size, state)
 	{}
 	
@@ -1061,19 +1061,19 @@ public:
 		
 		std::string szMenuText = getLocalised(a, defaultText);
 		szMenuText += specialSuffix;
-		TextWidget * me = new TextWidget(BUTTON_INVALID, hFontControls, szMenuText, Vec2i(20, 0));
+		TextWidget * me = new TextWidget(BUTTON_INVALID, hFontControls, szMenuText, Vec2f(20, 0));
 		me->SetCheckOff();
 		pc->AddElement(me);
 		
-		me = new TextWidget(c, hFontControls, "---", Vec2i(150, 0));
+		me = new TextWidget(c, hFontControls, "---", Vec2f(150, 0));
 		me->eState=GETTOUCH;
 		pc->AddElement(me);
 		
-		me = new TextWidget(d, hFontControls, "---", Vec2i(245, 0));
+		me = new TextWidget(d, hFontControls, "---", Vec2f(245, 0));
 		me->eState=GETTOUCH;
 		pc->AddElement(me);
 		
-		pc->Move(Vec2i(0, y));
+		pc->Move(Vec2f(0, y));
 		add(pc);
 		y += pc->m_rect.height() + RATIO_Y(3.f);
 	}
@@ -1082,7 +1082,7 @@ public:
 
 class ControlOptionsMenuPage1 : public ControlOptionsPage {
 public:
-	ControlOptionsMenuPage1(Vec2i pos, Vec2i size)
+	ControlOptionsMenuPage1(const Vec2f & pos, const Vec2f & size)
 		: ControlOptionsPage(pos, size, OPTIONS_INPUT_CUSTOMIZE_KEYS_1)
 	{}
 	
@@ -1117,7 +1117,7 @@ public:
 		PanelWidget * pc = new PanelWidget;
 		
 		{
-			ButtonWidget * cb = new ButtonWidget(Vec2i(20, 380), "graph/interface/menus/back");
+			ButtonWidget * cb = new ButtonWidget(Vec2f(20, 380), "graph/interface/menus/back");
 			cb->m_targetMenu = OPTIONS_INPUT;
 			cb->SetShortCut(Keyboard::Key_Escape);
 			pc->AddElementNoCenterIn(cb);
@@ -1126,12 +1126,12 @@ public:
 		{
 			std::string szMenuText = getLocalised( "system_menus_options_input_customize_default" );
 			TextWidget * me = new TextWidget(BUTTON_MENUOPTIONS_CONTROLS_CUST_DEFAULT, hFontMenu, szMenuText);
-			me->SetPos(Vec2i((RATIO_X(m_size.x) - me->m_rect.width())*0.5f, RATIO_Y(380)));
+			me->SetPos(Vec2f((RATIO_X(m_size.x) - me->m_rect.width())*0.5f, RATIO_Y(380)));
 			pc->AddElementNoCenterIn(me);
 		}
 		
 		{
-			ButtonWidget * cb = new ButtonWidget(Vec2i(280, 380), "graph/interface/menus/next");
+			ButtonWidget * cb = new ButtonWidget(Vec2f(280, 380), "graph/interface/menus/next");
 			cb->m_targetMenu = OPTIONS_INPUT_CUSTOMIZE_KEYS_2;
 			cb->SetShortCut(Keyboard::Key_Escape);
 			pc->AddElementNoCenterIn(cb);
@@ -1144,7 +1144,7 @@ public:
 
 class ControlOptionsMenuPage2 : public ControlOptionsPage {
 public:
-	ControlOptionsMenuPage2(Vec2i pos, Vec2i size)
+	ControlOptionsMenuPage2(const Vec2f & pos, const Vec2f & size)
 		: ControlOptionsPage(pos, size, OPTIONS_INPUT_CUSTOMIZE_KEYS_2)
 	{}
 	
@@ -1183,7 +1183,7 @@ public:
 		PanelWidget * pc = new PanelWidget;
 		
 		{
-			ButtonWidget * cb = new ButtonWidget(Vec2i(20, 380), "graph/interface/menus/back");
+			ButtonWidget * cb = new ButtonWidget(Vec2f(20, 380), "graph/interface/menus/back");
 			cb->m_targetMenu = OPTIONS_INPUT_CUSTOMIZE_KEYS_1;
 			cb->SetShortCut(Keyboard::Key_Escape);
 			pc->AddElementNoCenterIn(cb);
@@ -1192,7 +1192,7 @@ public:
 		{
 			std::string szMenuText = getLocalised( "system_menus_options_input_customize_default" );
 			TextWidget * me = new TextWidget(BUTTON_MENUOPTIONS_CONTROLS_CUST_DEFAULT, hFontMenu, szMenuText);
-			me->SetPos(Vec2i((RATIO_X(m_size.x) - me->m_rect.width())*0.5f, RATIO_Y(380)));
+			me->SetPos(Vec2f((RATIO_X(m_size.x) - me->m_rect.width())*0.5f, RATIO_Y(380)));
 			pc->AddElementNoCenterIn(me);
 		}
 		
@@ -1203,7 +1203,7 @@ public:
 
 class QuitConfirmMenuPage : public MenuPage {
 public:
-	QuitConfirmMenuPage(Vec2i pos, Vec2i size)
+	QuitConfirmMenuPage(const Vec2f & pos, const Vec2f & size)
 		: MenuPage(pos, size, QUIT)
 	{}
 	
@@ -1226,15 +1226,15 @@ public:
 			
 			TextWidget * yes = new TextWidget(BUTTON_INVALID, hFontMenu, getLocalised("system_yes"));
 			yes->clicked = boost::bind(ARXMenu_Quit);
-			yes->SetPos(Vec2i(RATIO_X(m_size.x-10)-yes->m_rect.width(), 0));
+			yes->SetPos(Vec2f(RATIO_X(m_size.x-10)-yes->m_rect.width(), 0));
 			pPanel->AddElementNoCenterIn(yes);
 			
-			TextWidget * no = new TextWidget(BUTTON_INVALID, hFontMenu, getLocalised("system_no"), Vec2i(10, 0));
+			TextWidget * no = new TextWidget(BUTTON_INVALID, hFontMenu, getLocalised("system_no"), Vec2f(10, 0));
 			no->m_targetMenu = MAIN;
 			no->SetShortCut(Keyboard::Key_Escape);
 			pPanel->AddElementNoCenterIn(no);
 			
-			pPanel->Move(Vec2i(0, RATIO_Y(380)));
+			pPanel->Move(Vec2f(0, RATIO_Y(380)));
 			add(pPanel);
 		}
 	}
@@ -1250,13 +1250,13 @@ void MainMenuLeftCreate(MENUSTATE eMenuState)
 	
 	delete pWindowMenu, pWindowMenu = NULL;
 	
-	Vec2i windowMenuPos = Vec2i(20, 25);
-	Vec2i windowMenuSize = Vec2i(321, 430);
+	Vec2f windowMenuPos = Vec2f(20, 25);
+	Vec2f windowMenuSize = Vec2f(321, 430);
 	
 	pWindowMenu = new CWindowMenu(windowMenuPos, windowMenuSize);
 	
-	Vec2i offset = Vec2i(0, 0);
-	Vec2i size = windowMenuSize - offset;
+	Vec2f offset = Vec2f_ZERO;
+	Vec2f size = windowMenuSize - offset;
 	
 	pWindowMenu->m_currentPageId = eMenuState;
 	
@@ -1273,7 +1273,7 @@ void MainMenuLeftCreate(MENUSTATE eMenuState)
 	}
 	
 	{
-	LoadMenuPage * page = new LoadMenuPage(offset + Vec2i(0, -40), size);
+	LoadMenuPage * page = new LoadMenuPage(offset + Vec2f(0, -40), size);
 	page->m_savegame = SavegameHandle::Invalid;
 	page->m_rowSpacing = 5;
 	page->init();
@@ -1281,7 +1281,7 @@ void MainMenuLeftCreate(MENUSTATE eMenuState)
 	}
 	
 	{
-	SaveMenuPage * page = new SaveMenuPage(offset + Vec2i(0, -40), size);
+	SaveMenuPage * page = new SaveMenuPage(offset + Vec2f(0, -40), size);
 	page->m_rowSpacing = 5;
 	page->init();
 	pWindowMenu->add(page);
@@ -1301,7 +1301,7 @@ void MainMenuLeftCreate(MENUSTATE eMenuState)
 	}
 	
 	{
-	VideoOptionsMenuPage * page = new VideoOptionsMenuPage(offset + Vec2i(0, -35), size);
+	VideoOptionsMenuPage * page = new VideoOptionsMenuPage(offset + Vec2f(0, -35), size);
 	page->init();
 	pWindowMenu->add(page);
 	}
@@ -1358,7 +1358,7 @@ void MainMenu::init()
 {
 	m_background = TextureContainer::LoadUI("graph/interface/menus/menu_main_background", TextureContainer::NoColorKey);
 
-	Vec2i pos = Vec2i(370, 100);
+	Vec2f pos = Vec2f(370, 100);
 	int yOffset = 50;
 	
 	{
@@ -1416,7 +1416,7 @@ void MainMenu::init()
 	}
 
 	float verPosX = 620 - (hFontControls->getTextSize(version).x / g_sizeRatio.y);
-	TextWidget * me = new TextWidget(BUTTON_INVALID, hFontControls, version, Vec2i(verPosX, 80));
+	TextWidget * me = new TextWidget(BUTTON_INVALID, hFontControls, version, Vec2f(verPosX, 80));
 	
 	me->SetCheckOff();
 	me->lColor=Color(127,127,127);
@@ -1447,7 +1447,7 @@ MENUSTATE MainMenu::Update() {
 		}
 	}
 	
-	m_selected = m_widgets->getAtPos(GInput->getMousePosAbs());
+	m_selected = m_widgets->getAtPos(Vec2f(GInput->getMousePosAbs()));
 	
 	if(m_selected && GInput->getMouseButton(Mouse::Button_0)) {
 		m_selected->OnMouseClick();

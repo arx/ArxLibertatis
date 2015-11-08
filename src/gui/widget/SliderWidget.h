@@ -29,7 +29,7 @@
 class SliderWidget: public Widget {
 	
 public:
-	explicit SliderWidget(const Vec2i & unscaled);
+	explicit SliderWidget(const Vec2f & unscaled);
 	virtual ~SliderWidget();
 	
 	void setMinimum(int minimum);
@@ -37,7 +37,7 @@ public:
 	void setValue(int value) { m_value = value; }
 	int getValue() const { return m_value; }
 	
-	void Move(const Vec2i & offset);
+	void Move(const Vec2f & offset);
 	bool OnMouseClick();
 	Widget * OnShortCut() { return NULL; }
 	void Update(int time);

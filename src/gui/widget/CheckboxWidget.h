@@ -33,7 +33,7 @@ public:
 	explicit CheckboxWidget(TextWidget * label);
 	virtual ~CheckboxWidget();
 	
-	void Move(const Vec2i & offset);
+	void Move(const Vec2f & offset);
 	bool OnMouseClick();
 	void Update(int time);
 	

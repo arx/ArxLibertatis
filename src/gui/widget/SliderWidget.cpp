@@ -28,12 +28,12 @@
 #include "input/Input.h"
 #include "scene/GameSound.h"
 
-SliderWidget::SliderWidget(const Vec2i & unscaled)
+SliderWidget::SliderWidget(const Vec2f & unscaled)
 	: Widget()
 {
 	m_id = BUTTON_INVALID;
 	
-	Vec2i pos = RATIO_2(unscaled);
+	Vec2f pos = RATIO_2(unscaled);
 	
 	pLeftButton = new ButtonWidget(unscaled, "graph/interface/menus/menu_slider_button_left");
 	pRightButton = new ButtonWidget(unscaled, "graph/interface/menus/menu_slider_button_right");
@@ -50,7 +50,7 @@ SliderWidget::SliderWidget(const Vec2i & unscaled)
 	m_rect.right  = pos.x + pLeftButton->m_rect.width() + pRightButton->m_rect.width() + 10 * std::max(pTex1->m_size.x, pTex2->m_size.x);
 	m_rect.bottom = pos.y + std::max(pLeftButton->m_rect.height(), pRightButton->m_rect.height());
 	
-	pRightButton->Move(Vec2i(pLeftButton->m_rect.width() + 10 * std::max(pTex1->m_size.x, pTex2->m_size.x), 0));
+	pRightButton->Move(Vec2f(pLeftButton->m_rect.width() + 10 * std::max(pTex1->m_size.x, pTex2->m_size.x), 0));
 
 	pRef = this;
 }
@@ -65,7 +65,7 @@ void SliderWidget::setMinimum(int minimum) {
 	m_value = std::max(m_minimum, m_value);
 }
 
-void SliderWidget::Move(const Vec2i & offset) {
+void SliderWidget::Move(const Vec2f & offset) {
 	Widget::Move(offset);
 	pLeftButton->Move(offset);
 	pRightButton->Move(offset);
@@ -93,7 +93,7 @@ bool SliderWidget::OnMouseClick() {
 	
 	ARX_SOUND_PlayMenu(SND_MENU_CLICK);
 
-	const Vec2i cursor = Vec2i(GInput->getMousePosAbs());
+	const Vec2f cursor = Vec2f(GInput->getMousePosAbs());
 	
 	if(m_rect.contains(cursor)) {
 		if(pLeftButton->m_rect.contains(cursor)) {
@@ -124,7 +124,7 @@ void SliderWidget::Update(int _iTime) {
 
 
 	float fWidth = pLeftButton->m_rect.width() + RATIO_X(10 * std::max(pTex1->m_size.x, pTex2->m_size.x)) ;
-	pRightButton->Move(Vec2i(fWidth, 0));
+	pRightButton->Move(Vec2f(fWidth, 0));
 
 	m_rect.right = m_rect.left + pLeftButton->m_rect.width() + pRightButton->m_rect.width() + RATIO_X(10*std::max(pTex1->m_size.x, pTex2->m_size.x));
 
@@ -168,7 +168,7 @@ void SliderWidget::RenderMouseOver() {
 
 	pMenuCursor->SetMouseOver();
 
-	const Vec2i cursor = Vec2i(GInput->getMousePosAbs());
+	const Vec2f cursor = Vec2f(GInput->getMousePosAbs());
 
 	GRenderer->SetRenderState(Renderer::AlphaBlending, true);
 	GRenderer->SetBlendFunc(Renderer::BlendOne, Renderer::BlendOne);

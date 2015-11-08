@@ -56,7 +56,7 @@ CheckboxWidget::~CheckboxWidget() {
 	delete pText;
 }
 
-void CheckboxWidget::Move(const Vec2i & offset) {
+void CheckboxWidget::Move(const Vec2f & offset) {
 	
 	Widget::Move(offset);
 	pText->Move(offset);

@@ -32,8 +32,8 @@ CycleTextWidget::CycleTextWidget()
 {
 	m_id = BUTTON_INVALID;
 	
-	pLeftButton = new ButtonWidget(Vec2i_ZERO, "graph/interface/menus/menu_slider_button_left");
-	pRightButton = new ButtonWidget(Vec2i_ZERO, "graph/interface/menus/menu_slider_button_right");
+	pLeftButton = new ButtonWidget(Vec2f_ZERO, "graph/interface/menus/menu_slider_button_left");
+	pRightButton = new ButtonWidget(Vec2f_ZERO, "graph/interface/menus/menu_slider_button_right");
 
 	vText.clear();
 
@@ -64,17 +64,17 @@ void CycleTextWidget::AddText(TextWidget *_pText) {
 	
 	_pText->setEnabled(enabled);
 	
-	_pText->Move(Vec2i(m_rect.left + pLeftButton->m_rect.width(), m_rect.top + 0));
+	_pText->Move(Vec2f(m_rect.left + pLeftButton->m_rect.width(), m_rect.top + 0));
 	vText.push_back(_pText);
 
-	Vec2i textSize = _pText->m_rect.size();
+	Vec2f textSize = _pText->m_rect.size();
 
 	m_rect.right  = std::max(m_rect.right, m_rect.left + pLeftButton->m_rect.width() + pRightButton->m_rect.width() + textSize.x);
 	m_rect.bottom = std::max(m_rect.bottom, m_rect.top + textSize.y);
 
-	pLeftButton->SetPos(Vec2i(m_rect.left,
+	pLeftButton->SetPos(Vec2f(m_rect.left,
 	                          m_rect.top + m_rect.height() / 2 - pLeftButton->m_rect.height() / 2));
-	pRightButton->SetPos(Vec2i(m_rect.right - pRightButton->m_rect.width(),
+	pRightButton->SetPos(Vec2f(m_rect.right - pRightButton->m_rect.width(),
 	                           m_rect.top + m_rect.height() / 2 - pRightButton->m_rect.height() / 2));
 
 	int dx=m_rect.width()-pLeftButton->m_rect.width()-pRightButton->m_rect.width();
@@ -86,12 +86,12 @@ void CycleTextWidget::AddText(TextWidget *_pText) {
 		
 		textSize = pMenuElementText->m_rect.size();
 
-		int dxx=(dx-textSize.x)>>1;
-		pMenuElementText->SetPos(Vec2i(pLeftButton->m_rect.right + dxx, m_rect.top + m_rect.height() / 2 - textSize.y/2));
+		float dxx = (dx - textSize.x) / 2.f;
+		pMenuElementText->SetPos(Vec2f(pLeftButton->m_rect.right + dxx, m_rect.top + m_rect.height() / 2 - textSize.y/2));
 	}
 }
 
-void CycleTextWidget::Move(const Vec2i & offset) {
+void CycleTextWidget::Move(const Vec2f & offset) {
 
 	Widget::Move(offset);
 
@@ -133,7 +133,7 @@ bool CycleTextWidget::OnMouseClick() {
 	if(iOldPos<0)
 		iOldPos=iPos;
 	
-	const Vec2i cursor = Vec2i(GInput->getMousePosAbs());
+	const Vec2f cursor = Vec2f(GInput->getMousePosAbs());
 
 	if(m_rect.contains(cursor)) {
 		if(pLeftButton->m_rect.contains(cursor)) {
@@ -206,7 +206,7 @@ void CycleTextWidget::RenderMouseOver() {
 
 	pMenuCursor->SetMouseOver();
 
-	Vec2i cursor = Vec2i(GInput->getMousePosAbs());
+	Vec2f cursor = Vec2f(GInput->getMousePosAbs());
 	
 	if(!enabled) {
 		return;

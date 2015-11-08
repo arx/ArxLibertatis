@@ -30,7 +30,7 @@ public:
 	PanelWidget();
 	virtual ~PanelWidget();
 	
-	void Move(const Vec2i & offset);
+	void Move(const Vec2f & offset);
 	void AddElement(Widget * widget);
 	void AddElementNoCenterIn(Widget * widget);
 	
@@ -39,7 +39,7 @@ public:
 	bool OnMouseClick() { return false; }
 	Widget * OnShortCut();
 	void RenderMouseOver() { }
-	Widget * IsMouseOver(const Vec2s & mousePos) const;
+	Widget * IsMouseOver(const Vec2f & mousePos) const;
 	Widget * GetZoneWithID(MenuButton zoneId);
 	
 private:

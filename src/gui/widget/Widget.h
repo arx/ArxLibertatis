@@ -167,7 +167,7 @@ ARX_HANDLE_TYPEDEF(long, SavegameHandle, -1);
 class Widget : private boost::noncopyable {
 	
 public:
-	Rect	m_rect;
+	Rectf m_rect;
 	Widget *	pRef;
 	
 	MenuButton m_id;
@@ -196,15 +196,15 @@ public:
 	
 	virtual void setEnabled(bool enable);
 	
-	virtual void Move(const Vec2i & offset);
-	virtual void SetPos(Vec2i pos);
+	virtual void Move(const Vec2f & offset);
+	virtual void SetPos(Vec2f pos);
 	
 	void SetCheckOff();
 	void SetCheckOn();
 	
 	bool getCheck();
 	
-	virtual Widget * IsMouseOver(const Vec2s& mousePos) const;
+	virtual Widget * IsMouseOver(const Vec2f & mousePos) const;
 	
 protected:
 	bool enabled;

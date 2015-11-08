@@ -47,7 +47,7 @@ void WidgetContainer::add(Widget *widget) {
 	m_widgets.push_back(widget);
 }
 
-Widget * WidgetContainer::getAtPos(const Vec2s& mousePos) const {
+Widget * WidgetContainer::getAtPos(const Vec2f & mousePos) const {
 
 	std::vector<Widget*>::const_iterator i;
 
@@ -80,7 +80,7 @@ Widget * WidgetContainer::GetZoneWithID(MenuButton _iID) {
 	return NULL;
 }
 
-void WidgetContainer::Move(const Vec2i & offset) {
+void WidgetContainer::Move(const Vec2f & offset) {
 
 	for(std::vector<Widget*>::iterator i = m_widgets.begin(), i_end = m_widgets.end(); i != i_end; ++i) {
 		(*i)->Move(offset);

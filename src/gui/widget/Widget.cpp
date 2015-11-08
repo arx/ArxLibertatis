@@ -74,22 +74,21 @@ Widget* Widget::OnShortCut() {
 	return NULL;
 }
 
-void Widget::Move(const Vec2i & offset) {
+void Widget::Move(const Vec2f & offset) {
 	m_rect.move(offset.x, offset.y);
 }
 
-void Widget::SetPos(Vec2i pos) {
-
-	int iWidth  = m_rect.right - m_rect.left;
-	int iHeight = m_rect.bottom - m_rect.top;
+void Widget::SetPos(Vec2f pos) {
+	
+	Vec2f size = m_rect.size();
 	
 	m_rect.left   = pos.x;
 	m_rect.top    = pos.y;
-	m_rect.right  = pos.x + abs(iWidth);
-	m_rect.bottom = pos.y + abs(iHeight);
+	m_rect.right  = pos.x + size.x;
+	m_rect.bottom = pos.y + size.y;
 }
 
-Widget * Widget::IsMouseOver(const Vec2s& mousePos) const {
+Widget * Widget::IsMouseOver(const Vec2f & mousePos) const {
 	
 	if(   mousePos.x >= m_rect.left
 	   && mousePos.y >= m_rect.top

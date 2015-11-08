@@ -469,7 +469,7 @@ bool Menu2_Render() {
 
 
 
-CWindowMenu::CWindowMenu(Vec2i pos, Vec2i size)
+CWindowMenu::CWindowMenu(const Vec2f & pos, const Vec2f & size)
 {
 	m_pos = RATIO_2(pos);
 	m_size = RATIO_2(size);
@@ -570,7 +570,7 @@ MENUSTATE CWindowMenu::Render() {
 	return eMS;
 }
 
-MenuPage::MenuPage(Vec2i pos, Vec2i size, MENUSTATE _eMenuState)
+MenuPage::MenuPage(const Vec2f & pos, const Vec2f & size, MENUSTATE _eMenuState)
 	: m_rowSpacing(10)
 	, m_savegame(0)
 	, m_selected(NULL)
@@ -601,7 +601,7 @@ void MenuPage::addCenter(Widget * widget, bool centerX) {
 		widget->ePlace = CENTER;
 		
 		int iDx = widget->m_rect.right - widget->m_rect.left;
-		dx  = ((m_scaledSize.x - iDx) >> 1) - widget->m_rect.left;
+		dx  = ((m_scaledSize.x - iDx) / 2) - widget->m_rect.left;
 	
 		if(dx < 0) {
 			dx = 0;
@@ -622,7 +622,7 @@ void MenuPage::addCenter(Widget * widget, bool centerX) {
 	int iDepY = m_offset.y;
 
 	if(iDy < m_scaledSize.y) {
-		iDepY += ((m_scaledSize.y - iDy) >> 1);
+		iDepY += ((m_scaledSize.y - iDy) / 2);
 	}
 
 	int dy = 0;
@@ -635,23 +635,23 @@ void MenuPage::addCenter(Widget * widget, bool centerX) {
 		Widget * widget = m_children.GetZoneNum(iJ);
 		iDepY += (widget->m_rect.bottom - widget->m_rect.top) + m_rowSpacing;
 		
-		widget->Move(Vec2i(0, dy));
+		widget->Move(Vec2f(0, dy));
 	}
 
-	widget->Move(Vec2i(dx, iDepY));
+	widget->Move(Vec2f(dx, iDepY));
 
 	m_children.add(widget);
 }
 
 void MenuPage::AlignElementCenter(Widget * widget) {
 	
-	widget->Move(Vec2i(-widget->m_rect.left, 0));
+	widget->Move(Vec2f(-widget->m_rect.left, 0));
 	widget->ePlace = CENTER;
 	
-	int iDx = widget->m_rect.right - widget->m_rect.left;
-	int dx = (m_scaledSize.x - iDx) / 2 - widget->m_rect.left;
+	float iDx = widget->m_rect.right - widget->m_rect.left;
+	float dx = (m_scaledSize.x - iDx) / 2 - widget->m_rect.left;
 	
-	widget->Move(Vec2i(std::max(dx, 0), 0));
+	widget->Move(Vec2f(std::max(dx, 0.f), 0.f));
 }
 
 void MenuPage::UpdateText() {
@@ -671,10 +671,10 @@ void MenuPage::UpdateText() {
 
 				((TextWidget*)m_selected)->SetText(szMenuText);
 
-				int iDx = m_selected->m_rect.right - m_selected->m_rect.left;
+				float iDx = m_selected->m_rect.right - m_selected->m_rect.left;
 
 				if(m_selected->ePlace) {
-					m_selected->m_rect.left = m_pos.x + ((m_scaledSize.x-iDx)>>1);
+					m_selected->m_rect.left = m_pos.x + ((m_scaledSize.x - iDx) / 2.f);
 
 					if(m_selected->m_rect.left < 0) {
 						m_selected->m_rect.left = 0;
@@ -730,10 +730,10 @@ void MenuPage::UpdateText() {
 				}
 			}
 
-			int iDx = m_selected->m_rect.right - m_selected->m_rect.left;
+			float iDx = m_selected->m_rect.right - m_selected->m_rect.left;
 
 			if(m_selected->ePlace) {
-				m_selected->m_rect.left = m_pos.x + ((m_scaledSize.x-iDx)>>1);
+				m_selected->m_rect.left = m_pos.x + ((m_scaledSize.x - iDx) / 2.f);
 
 				if(m_selected->m_rect.left < 0) {
 					m_selected->m_rect.left = 0;
@@ -825,10 +825,10 @@ Widget * MenuPage::GetTouch(bool keyTouched, int keyId, InputKeyId* pInputKeyId,
 			pZoneText->eState=GETTOUCH;
 			pZoneText->SetText(pText);
 			
-			int iDx=m_selected->m_rect.right-m_selected->m_rect.left;
+			float iDx = m_selected->m_rect.right - m_selected->m_rect.left;
 
 			if(m_selected->ePlace) {
-				m_selected->m_rect.left=(m_scaledSize.x-iDx)>>1;
+				m_selected->m_rect.left = (m_scaledSize.x - iDx) / 2.f;
 
 				if(m_selected->m_rect.left < 0) {
 					m_selected->m_rect.left=0;
@@ -854,7 +854,7 @@ Widget * MenuPage::GetTouch(bool keyTouched, int keyId, InputKeyId* pInputKeyId,
 	return NULL;
 }
 
-MENUSTATE MenuPage::Update(Vec2i pos) {
+MENUSTATE MenuPage::Update(Vec2f pos) {
 
 	bFrameOdd=!bFrameOdd;
 	
@@ -867,7 +867,7 @@ MENUSTATE MenuPage::Update(Vec2i pos) {
 	// Check if mouse over
 	if(!bEdit) {
 		m_selected=NULL;
-		Widget * widget = m_children.getAtPos(GInput->getMousePosAbs());
+		Widget * widget = m_children.getAtPos(Vec2f(GInput->getMousePosAbs()));
 		
 		if(widget) {
 			m_selected = widget;
@@ -895,7 +895,7 @@ MENUSTATE MenuPage::Update(Vec2i pos) {
 		}
 	} else {
 		if(!m_selected) {
-			Widget * widget = m_children.getAtPos(GInput->getMousePosAbs());
+			Widget * widget = m_children.getAtPos(Vec2f(GInput->getMousePosAbs()));
 			
 			if(widget) {
 				m_selected = widget;

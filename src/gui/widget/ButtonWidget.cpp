@@ -26,7 +26,7 @@
 #include "input/Input.h"
 #include "scene/GameSound.h"
 
-ButtonWidget::ButtonWidget(Vec2i pos, const char * texturePath)
+ButtonWidget::ButtonWidget(const Vec2f & pos, const char * texturePath)
 	: Widget()
 {
 	pRef = this; //TODO remove this
@@ -36,15 +36,15 @@ ButtonWidget::ButtonWidget(Vec2i pos, const char * texturePath)
 	
 	m_id = BUTTON_INVALID;
 	
-	Vec2i scaledPos = RATIO_2(pos);
+	Vec2f scaledPos = RATIO_2(pos);
 	
 	m_rect.left = scaledPos.x;
 	m_rect.top = scaledPos.y;
 	m_rect.right  = m_rect.left ;
 	m_rect.bottom = m_rect.top ;
 	
-	s32 rZoneR = m_rect.left + RATIO_X(m_texture->m_size.x);
-	s32 rZoneB = m_rect.top + RATIO_Y(m_texture->m_size.y);
+	float rZoneR = m_rect.left + RATIO_X(m_texture->m_size.x);
+	float rZoneB = m_rect.top + RATIO_Y(m_texture->m_size.y);
 	m_rect.right  = std::max(m_rect.right,  rZoneR);
 	m_rect.bottom = std::max(m_rect.bottom, rZoneB);
 }
@@ -52,12 +52,12 @@ ButtonWidget::ButtonWidget(Vec2i pos, const char * texturePath)
 ButtonWidget::~ButtonWidget() {
 }
 
-void ButtonWidget::SetPos(Vec2i pos)
+void ButtonWidget::SetPos(Vec2f pos)
 {
 	Widget::SetPos(pos);
 	
-	int iWidth = RATIO_X(m_texture->m_size.x);
-	int iHeight = RATIO_Y(m_texture->m_size.y);
+	float iWidth = RATIO_X(m_texture->m_size.x);
+	float iHeight = RATIO_Y(m_texture->m_size.y);
 	
 	m_rect.right = pos.x + iWidth;
 	m_rect.bottom = pos.y + iHeight;
@@ -103,7 +103,7 @@ void ButtonWidget::RenderMouseOver() {
 	
 	pMenuCursor->SetMouseOver();
 	
-	const Vec2i cursor = Vec2i(GInput->getMousePosAbs());
+	const Vec2f cursor = Vec2f(GInput->getMousePosAbs());
 	if(m_rect.contains(cursor)) {
 		GRenderer->SetRenderState(Renderer::AlphaBlending, true);
 		GRenderer->SetBlendFunc(Renderer::BlendOne, Renderer::BlendOne);

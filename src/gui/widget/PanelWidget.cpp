@@ -35,7 +35,7 @@ PanelWidget::~PanelWidget()
 	}
 }
 
-void PanelWidget::Move(const Vec2i & offset)
+void PanelWidget::Move(const Vec2f & offset)
 {
 	m_rect.move(offset.x, offset.y);
 	
@@ -60,7 +60,7 @@ void PanelWidget::AddElement(Widget* widget)
 	m_rect.right = std::max(m_rect.right, widget->m_rect.right);
 	m_rect.bottom = std::max(m_rect.bottom, widget->m_rect.bottom);
 
-	widget->Move(Vec2i(0, ((m_rect.height() - widget->m_rect.bottom) / 2)));
+	widget->Move(Vec2f(0, ((m_rect.height() - widget->m_rect.bottom) / 2)));
 }
 
 // patch on ajoute à droite en ligne
@@ -125,11 +125,11 @@ Widget * PanelWidget::GetZoneWithID(MenuButton _iID)
 	return NULL;
 }
 
-Widget * PanelWidget::IsMouseOver(const Vec2s& mousePos) const {
+Widget * PanelWidget::IsMouseOver(const Vec2f & mousePos) const {
 
-	if(m_rect.contains(Vec2i(mousePos))) {
+	if(m_rect.contains(mousePos)) {
 		BOOST_FOREACH(Widget * widget, vElement) {
-			if(widget->getCheck() && widget->m_rect.contains(Vec2i(mousePos))) {
+			if(widget->getCheck() && widget->m_rect.contains(mousePos)) {
 				return widget->pRef;
 			}
 		}

@@ -37,14 +37,14 @@
 #include "input/Input.h"
 #include "scene/GameSound.h"
 
-TextWidget::TextWidget(MenuButton id, Font* font, const std::string& text, Vec2i pos)
+TextWidget::TextWidget(MenuButton id, Font* font, const std::string& text, Vec2f pos)
 	: Widget()
 {
 	m_id = id;
 
 	m_font = font;
 	
-	Vec2i scaledPos = RATIO_2(pos);
+	Vec2f scaledPos = RATIO_2(pos);
 	
 	m_rect.left = scaledPos.x;
 	m_rect.top = scaledPos.y;
@@ -311,10 +311,10 @@ Widget* TextWidget::OnShortCut() {
 	return NULL;
 }
 
-static void FontRenderText(Font * _pFont, const Rect & rzone,
-                           const std::string & _pText, Color _c) {
+static void FontRenderText(Font * _pFont, const Rectf & rzone, const std::string & _pText, Color _c) {
+	
 	if(pTextManage && !rzone.empty()) {
-		pTextManage->AddText(_pFont, _pText, rzone, _c);
+		pTextManage->AddText(_pFont, _pText, Rect(rzone), _c);
 	}
 }
 

@@ -63,35 +63,35 @@ class Font;
 class MenuPage {
 	
 public:
-	MenuPage(Vec2i pos, Vec2i size, MENUSTATE state);
+	MenuPage(const Vec2f & pos, const Vec2f & size, MENUSTATE state);
 	
 	void add(Widget * widget);
 	void addCenter(Widget * widget, bool centerX = false);
 	void AlignElementCenter(Widget * widget);
-	MENUSTATE Update(Vec2i pos);
+	MENUSTATE Update(Vec2f pos);
 	void Render();
 	void drawDebug();
 	
 	Widget * GetTouch(bool keyTouched, int keyId, InputKeyId* pInputKeyId = NULL, bool _bValidateTest = false);
 	void ReInitActionKey();
 	
-	Vec2i m_pos;
-	Vec2i m_oldPos;
+	Vec2f m_pos;
+	Vec2f m_oldPos;
 	int m_rowSpacing;
 	SavegameHandle m_savegame;
 	MENUSTATE eMenuState;
 	WidgetContainer m_children;
 	
 protected:
-	Vec2i m_size;
+	Vec2f m_size;
 	
 private:
 	void UpdateText();
 	
 	bool					bFrameOdd;
 	
-	Vec2i m_offset;
-	Vec2i m_scaledSize;
+	Vec2f m_offset;
+	Vec2f m_scaledSize;
 	
 	Widget		*	m_selected;
 	bool					bEdit;
@@ -105,13 +105,13 @@ private:
 class CWindowMenu {
 	
 private:
-	Vec2i m_pos;
-	Vec2i m_size;
+	Vec2f m_pos;
+	Vec2f m_size;
 	float				fPosXCalc;
 	float				fDist;
 	
 public:
-	CWindowMenu(Vec2i pos, Vec2i size);
+	CWindowMenu(const Vec2f & pos, const Vec2f & size);
 	virtual ~CWindowMenu();
 	
 	void add(MenuPage * page);
