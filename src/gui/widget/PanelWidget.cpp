@@ -43,20 +43,7 @@ void PanelWidget::Move(const Vec2i & offset)
 // patch on ajoute à droite en ligne
 void PanelWidget::AddElement(Widget* widget)
 {
-	// By default ptr_vector doesn't allow null values.
-	arx_assert(widget);
-	vElement.push_back(widget);
-
-	if(vElement.size() == 1) {
-		m_rect = widget->m_rect;
-	} else {
-		m_rect.left = std::min(m_rect.left, widget->m_rect.left);
-		m_rect.top = std::min(m_rect.top, widget->m_rect.top);
-	}
-
-	// + taille elem
-	m_rect.right = std::max(m_rect.right, widget->m_rect.right);
-	m_rect.bottom = std::max(m_rect.bottom, widget->m_rect.bottom);
+	AddElementNoCenterIn(widget);
 
 	widget->Move(Vec2i(0, ((m_rect.height() - widget->m_rect.bottom) / 2)));
 }
