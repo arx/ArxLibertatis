@@ -20,6 +20,8 @@
 #ifndef ARX_GUI_WIDGET_WIDGET_H
 #define ARX_GUI_WIDGET_WIDGET_H
 
+#include <boost/noncopyable.hpp>
+
 #include "math/Rectangle.h"
 #include "util/HandleType.h"
 
@@ -162,7 +164,7 @@ enum MENUSTATE
 
 ARX_HANDLE_TYPEDEF(long, SavegameHandle, -1);
 
-class Widget {
+class Widget : private boost::noncopyable {
 	
 public:
 	Rect	m_rect;
