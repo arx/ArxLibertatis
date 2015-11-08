@@ -578,9 +578,10 @@ MenuPage::MenuPage(const Vec2f & pos, const Vec2f & size, MENUSTATE _eMenuState)
 	, bMouseAttack(false)
 	, m_textCursorCurrentTime(0.f)
 {
-	m_offset = RATIO_2(pos);
 	m_size = size;
-	m_scaledSize = RATIO_2(size);
+	
+	Vec2f scaledSize = RATIO_2(size);
+	m_rect = Rectf(RATIO_2(pos), scaledSize.x, scaledSize.y);
 	
 	eMenuState=_eMenuState;
 
@@ -589,7 +590,7 @@ MenuPage::MenuPage(const Vec2f & pos, const Vec2f & size, MENUSTATE _eMenuState)
 
 void MenuPage::add(Widget * widget) {
 	widget->ePlace = NOCENTER;
-	widget->Move(m_offset);
+	widget->Move(m_rect.topLeft());
 	m_children.add(widget);
 }
 
@@ -601,7 +602,7 @@ void MenuPage::addCenter(Widget * widget, bool centerX) {
 		widget->ePlace = CENTER;
 		
 		int iDx = widget->m_rect.right - widget->m_rect.left;
-		dx  = ((m_scaledSize.x - iDx) / 2) - widget->m_rect.left;
+		dx  = ((m_rect.width() - iDx) / 2) - widget->m_rect.left;
 	
 		if(dx < 0) {
 			dx = 0;
@@ -619,10 +620,10 @@ void MenuPage::addCenter(Widget * widget, bool centerX) {
 		iDy += widget->m_rect.bottom - widget->m_rect.top;
 	}
 
-	int iDepY = m_offset.y;
+	int iDepY = m_rect.left;
 
-	if(iDy < m_scaledSize.y) {
-		iDepY += ((m_scaledSize.y - iDy) / 2);
+	if(iDy < m_rect.height()) {
+		iDepY += ((m_rect.height() - iDy) / 2);
 	}
 
 	int dy = 0;
@@ -649,7 +650,7 @@ void MenuPage::AlignElementCenter(Widget * widget) {
 	widget->ePlace = CENTER;
 	
 	float iDx = widget->m_rect.right - widget->m_rect.left;
-	float dx = (m_scaledSize.x - iDx) / 2 - widget->m_rect.left;
+	float dx = (m_rect.width() - iDx) / 2 - widget->m_rect.left;
 	
 	widget->Move(Vec2f(std::max(dx, 0.f), 0.f));
 }
@@ -674,7 +675,7 @@ void MenuPage::UpdateText() {
 				float iDx = m_selected->m_rect.right - m_selected->m_rect.left;
 
 				if(m_selected->ePlace) {
-					m_selected->m_rect.left = m_pos.x + ((m_scaledSize.x - iDx) / 2.f);
+					m_selected->m_rect.left = m_pos.x + ((m_rect.width() - iDx) / 2.f);
 
 					if(m_selected->m_rect.left < 0) {
 						m_selected->m_rect.left = 0;
@@ -723,7 +724,7 @@ void MenuPage::UpdateText() {
 		if(bKey) {
 			pZoneText->SetText(tText);
 
-			if(pZoneText->m_rect.right - pZoneText->m_rect.left > m_scaledSize.x - RATIO_X(64)) {
+			if(pZoneText->m_rect.right - pZoneText->m_rect.left > m_rect.width() - RATIO_X(64)) {
 				if(!tText.empty()) {
 					tText.resize(tText.size() - 1);
 					pZoneText->SetText(tText);
@@ -733,7 +734,7 @@ void MenuPage::UpdateText() {
 			float iDx = m_selected->m_rect.right - m_selected->m_rect.left;
 
 			if(m_selected->ePlace) {
-				m_selected->m_rect.left = m_pos.x + ((m_scaledSize.x - iDx) / 2.f);
+				m_selected->m_rect.left = m_pos.x + ((m_rect.width() - iDx) / 2.f);
 
 				if(m_selected->m_rect.left < 0) {
 					m_selected->m_rect.left = 0;
@@ -828,7 +829,7 @@ Widget * MenuPage::GetTouch(bool keyTouched, int keyId, InputKeyId* pInputKeyId,
 			float iDx = m_selected->m_rect.right - m_selected->m_rect.left;
 
 			if(m_selected->ePlace) {
-				m_selected->m_rect.left = (m_scaledSize.x - iDx) / 2.f;
+				m_selected->m_rect.left = (m_rect.width() - iDx) / 2.f;
 
 				if(m_selected->m_rect.left < 0) {
 					m_selected->m_rect.left=0;
@@ -1212,7 +1213,7 @@ void MenuPage::Render() {
 }
 
 void MenuPage::drawDebug() {
-	Rectf rect = Rectf(Vec2f(m_pos.x, m_pos.y), m_scaledSize.x, m_scaledSize.y);
+	Rectf rect = Rectf(Vec2f(m_pos.x, m_pos.y), m_rect.width(), m_rect.height());
 	drawLineRectangle(rect, 0.f, Color::green);
 	
 	m_children.drawDebug();

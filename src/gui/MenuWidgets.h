@@ -83,15 +83,13 @@ public:
 	WidgetContainer m_children;
 	
 protected:
+	Rectf m_rect;
 	Vec2f m_size;
 	
 private:
 	void UpdateText();
 	
 	bool					bFrameOdd;
-	
-	Vec2f m_offset;
-	Vec2f m_scaledSize;
 	
 	Widget		*	m_selected;
 	bool					bEdit;
