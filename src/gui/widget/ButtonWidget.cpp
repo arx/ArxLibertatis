@@ -33,37 +33,23 @@ ButtonWidget::ButtonWidget(const Vec2f & pos, const Vec2f & size, const char * t
 	m_size = size;
 	
 	pRef = this; //TODO remove this
+	m_id = BUTTON_INVALID; //TODO remove this
 	
 	m_texture = TextureContainer::Load(texturePath);
 	arx_assert(m_texture);
 	
-	m_id = BUTTON_INVALID;
-	
 	Vec2f scaledPos = RATIO_2(pos);
-	
-	m_rect.left = scaledPos.x;
-	m_rect.top = scaledPos.y;
-	m_rect.right  = m_rect.left ;
-	m_rect.bottom = m_rect.top ;
-	
-	float rZoneR = m_rect.left + RATIO_X(m_size.x);
-	float rZoneB = m_rect.top + RATIO_Y(m_size.y);
-	m_rect.right  = std::max(m_rect.right,  rZoneR);
-	m_rect.bottom = std::max(m_rect.bottom, rZoneB);
+	Vec2f scaledSize = RATIO_2(m_size);
+	m_rect = Rectf(scaledPos, scaledSize.x, scaledSize.y);
 }
 
 ButtonWidget::~ButtonWidget() {
 }
 
-void ButtonWidget::SetPos(Vec2f pos)
-{
-	Widget::SetPos(pos);
+void ButtonWidget::SetPos(Vec2f pos) {
 	
-	float iWidth = RATIO_X(m_size.x);
-	float iHeight = RATIO_Y(m_size.y);
-	
-	m_rect.right = pos.x + iWidth;
-	m_rect.bottom = pos.y + iHeight;
+	Vec2f scaledSize = RATIO_2(m_size);
+	m_rect = Rectf(pos, scaledSize.x, scaledSize.y);
 }
 
 bool ButtonWidget::OnMouseClick() {
@@ -94,7 +80,7 @@ void ButtonWidget::Render() {
 		return;
 	
 	Color color = (bCheck) ? Color::white : Color(63, 63, 63, 255);
-	EERIEDrawBitmap2(Rectf(m_rect), 0, m_texture, color);
+	EERIEDrawBitmap2(m_rect, 0, m_texture, color);
 }
 
 extern MenuCursor * pMenuCursor;
