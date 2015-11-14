@@ -258,7 +258,7 @@ void PlayerInventoryHud::draw() {
 					GRenderer->SetRenderState(Renderer::AlphaBlending, false);
 					SpecialCursor=CURSOR_INTERACTION_ON;
 					
-					if(eeMouseDown1() || (eeMouseUp1() && DRAGINTER)) {
+					if(eeMouseUp1()) {
 						previousBag();
 					}
 				}
@@ -278,7 +278,7 @@ void PlayerInventoryHud::draw() {
 					GRenderer->SetRenderState(Renderer::AlphaBlending, false);
 					SpecialCursor=CURSOR_INTERACTION_ON;
 					
-					if(eeMouseDown1() || (eeMouseUp1() && DRAGINTER)) {
+					if(eeMouseUp1()) {
 						nextBag();
 					}
 				}
