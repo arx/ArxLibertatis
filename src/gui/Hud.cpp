@@ -1435,6 +1435,12 @@ void PlayerInterfaceFader::update() {
 	}
 }
 
+static void setHudTextureState() {
+	GRenderer->GetTextureStage(0)->setMinFilter(TextureStage::FilterLinear);
+	GRenderer->GetTextureStage(0)->setMagFilter(TextureStage::FilterLinear);
+	GRenderer->GetTextureStage(0)->setWrapMode(TextureStage::WrapClamp);
+}
+
 void HudRoot::draw() {
 	
 	const Vec2f mousePos = Vec2f(DANAEMouse);
@@ -1474,11 +1480,8 @@ void HudRoot::draw() {
 	precastSpellsGui.updateRect(damagedEquipmentGui.rect());
 	precastSpellsGui.update();
 	
+	setHudTextureState();
 	
-	GRenderer->GetTextureStage(0)->setMinFilter(TextureStage::FilterLinear);
-	GRenderer->GetTextureStage(0)->setMagFilter(TextureStage::FilterNearest);
-	GRenderer->GetTextureStage(0)->setWrapMode(TextureStage::WrapClamp);
-
 	if(player.Interface & INTER_COMBATMODE) {
 		hitStrengthGauge.draw();
 	}	
@@ -1532,6 +1535,8 @@ void HudRoot::draw() {
 				ARX_INTERFACE_ManageOpenedBook_SpellsDraw();
 			}
 		}
+		
+		setHudTextureState();
 	}
 	
 	if(CurrSpellSymbol || player.SpellToMemorize.bSpell) {
@@ -1592,14 +1597,14 @@ void HudRoot::draw() {
 		levelUpIconGui.draw();
 	}
 	
-	GRenderer->GetTextureStage(0)->setMinFilter(TextureStage::FilterLinear);
-	GRenderer->GetTextureStage(0)->setMagFilter(TextureStage::FilterLinear);
-	GRenderer->GetTextureStage(0)->setWrapMode(TextureStage::WrapRepeat);
-	
 	precastSpellsGui.draw();
 	activeSpellsGui.update(hudSlider);
 	activeSpellsGui.updateInput(mousePos);
 	activeSpellsGui.draw();
+	
+	GRenderer->GetTextureStage(0)->setMinFilter(TextureStage::FilterLinear);
+	GRenderer->GetTextureStage(0)->setMagFilter(TextureStage::FilterLinear);
+	GRenderer->GetTextureStage(0)->setWrapMode(TextureStage::WrapRepeat);
 }
 
 void HudRoot::recalcScale() {
