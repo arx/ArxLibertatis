@@ -81,7 +81,7 @@ void MiniMap::getData(int showLevel) {
 		GetLevelNameByNum(showLevel, name);
 		
 		sprintf(levelMap, "graph/levels/level%s/map", name);
-		m_levels[showLevel].m_texContainer = TextureContainer::Load(levelMap);
+		m_levels[showLevel].m_texContainer = TextureContainer::Load(levelMap, TextureContainer::NoColorKey);
 		
 		if(m_levels[showLevel].m_texContainer) { // 4 pix/meter
 			
