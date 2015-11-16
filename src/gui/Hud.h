@@ -117,7 +117,7 @@ private:
 	Vec2f m_pos;
 	Vec2f m_size;
 	
-	long ulGoldHaloTime;
+	long m_haloTime;
 	
 public:
 	PurseIconGui();
