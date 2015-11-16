@@ -109,7 +109,7 @@ HitStrengthGauge::HitStrengthGauge()
 	, m_hitTex(NULL)
 	, m_intensity(0.f)
 	, bHitFlash(false)
-	, ulHitFlash(0)
+	, m_flashTime(0)
 	, m_flashIntensity(0.f)
 {}
 
@@ -127,7 +127,7 @@ void HitStrengthGauge::init() {
 
 void HitStrengthGauge::requestFlash(float flashIntensity) {
 	bHitFlash = true;
-	ulHitFlash = 0;
+	m_flashTime = 0;
 	m_flashIntensity = flashIntensity;
 }
 
@@ -160,11 +160,11 @@ void HitStrengthGauge::update() {
 	}
 	
 	if(bHitFlash) {
-		float fCalc = ulHitFlash + Original_framedelay;
-		ulHitFlash = checked_range_cast<unsigned long>(fCalc);
-		if(ulHitFlash >= 500) {
+		float fCalc = m_flashTime + Original_framedelay;
+		m_flashTime = checked_range_cast<unsigned long>(fCalc);
+		if(m_flashTime >= 500) {
 			bHitFlash = false;
-			ulHitFlash = 0;
+			m_flashTime = 0;
 		}
 	}
 }

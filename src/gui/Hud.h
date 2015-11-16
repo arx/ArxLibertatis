@@ -44,7 +44,7 @@ private:
 	
 	float m_intensity;
 	bool bHitFlash;
-	unsigned long ulHitFlash;
+	unsigned long m_flashTime;
 	float m_flashIntensity;
 	
 public:
