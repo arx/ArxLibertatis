@@ -43,7 +43,7 @@ private:
 	Rectf m_hitRect;
 	
 	float m_intensity;
-	bool bHitFlash;
+	bool m_flashActive;
 	unsigned long m_flashTime;
 	float m_flashIntensity;
 	

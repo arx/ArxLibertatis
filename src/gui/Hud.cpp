@@ -108,7 +108,7 @@ HitStrengthGauge::HitStrengthGauge()
 	, m_fullTex(NULL)
 	, m_hitTex(NULL)
 	, m_intensity(0.f)
-	, bHitFlash(false)
+	, m_flashActive(false)
 	, m_flashTime(0)
 	, m_flashIntensity(0.f)
 {}
@@ -126,7 +126,7 @@ void HitStrengthGauge::init() {
 }
 
 void HitStrengthGauge::requestFlash(float flashIntensity) {
-	bHitFlash = true;
+	m_flashActive = true;
 	m_flashTime = 0;
 	m_flashIntensity = flashIntensity;
 }
@@ -159,11 +159,11 @@ void HitStrengthGauge::update() {
 		m_intensity = glm::clamp(j, 0.2f, 1.f);
 	}
 	
-	if(bHitFlash) {
+	if(m_flashActive) {
 		float fCalc = m_flashTime + Original_framedelay;
 		m_flashTime = checked_range_cast<unsigned long>(fCalc);
 		if(m_flashTime >= 500) {
-			bHitFlash = false;
+			m_flashActive = false;
 			m_flashTime = 0;
 		}
 	}
@@ -177,7 +177,7 @@ void HitStrengthGauge::draw() {
 	GRenderer->SetRenderState(Renderer::AlphaBlending, false);
 	EERIEDrawBitmap(m_rect, 0.0001f, m_emptyTex, Color::white);
 	
-	if(bHitFlash && player.m_skillFull.etheralLink >= 40) {
+	if(m_flashActive && player.m_skillFull.etheralLink >= 40) {
 		
 		float j = 1.0f - m_flashIntensity;
 		Color col = (j < 0.5f) ? Color3f(j*2.0f, 1, 0).to<u8>() : Color3f(1, m_flashIntensity, 0).to<u8>();
