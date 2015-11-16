@@ -1294,13 +1294,13 @@ extern float CURRENT_PLAYER_COLOR;
 
 StealthGauge::StealthGauge()
 	: HudItem()
-	, stealth_gauge_tc(NULL)
+	, m_texture(NULL)
 	, m_visible(false)
 {}
 
 void StealthGauge::init() {
-	stealth_gauge_tc = TextureContainer::LoadUI("graph/interface/icons/stealth_gauge");
-	arx_assert(stealth_gauge_tc);
+	m_texture = TextureContainer::LoadUI("graph/interface/icons/stealth_gauge");
+	arx_assert(m_texture);
 	m_size = Vec2f(32.f, 32.f);
 }
 
@@ -1333,7 +1333,7 @@ void StealthGauge::draw() {
 	
 	GRenderer->SetRenderState(Renderer::AlphaBlending, true);
 	GRenderer->SetBlendFunc(Renderer::BlendOne, Renderer::BlendOne);
-	EERIEDrawBitmap(m_rect, 0.01f, stealth_gauge_tc, m_color);
+	EERIEDrawBitmap(m_rect, 0.01f, m_texture, m_color);
 	GRenderer->SetRenderState(Renderer::AlphaBlending, false);
 }
 

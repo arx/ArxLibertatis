@@ -356,7 +356,7 @@ public:
  */
 class StealthGauge : public HudItem {
 private:
-	TextureContainer * stealth_gauge_tc;
+	TextureContainer * m_texture;
 	bool m_visible;
 	Color m_color;
 	Vec2f m_size;
