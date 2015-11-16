@@ -671,12 +671,12 @@ void ChangeLevelIconGui::draw() {
 
 
 QuickSaveIconGui::QuickSaveIconGui()
-	: QUICK_SAVE_ICON_TIME(1000)
+	: m_duration(1000)
 	, g_quickSaveIconTime(0)
 {}
 
 void QuickSaveIconGui::show() {
-	g_quickSaveIconTime = QUICK_SAVE_ICON_TIME;
+	g_quickSaveIconTime = m_duration;
 }
 
 void QuickSaveIconGui::hide() {
@@ -699,7 +699,7 @@ void QuickSaveIconGui::draw() {
 	}
 	
 	// Flash the icon twice, starting at about 0.7 opacity
-	float step = 1.f - float(g_quickSaveIconTime) * (1.f / QUICK_SAVE_ICON_TIME);
+	float step = 1.f - float(g_quickSaveIconTime) * (1.f / m_duration);
 	float alpha = std::min(1.f, 0.6f * (std::sin(step * (7.f / 2.f * PI)) + 1.f));
 	
 	TextureContainer * tex = TextureContainer::LoadUI("graph/interface/icons/menu_main_save");

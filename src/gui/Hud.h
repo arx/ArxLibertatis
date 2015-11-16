@@ -169,7 +169,7 @@ public:
 class QuickSaveIconGui {
 private:
 	//! Time in ms to show the icon
-	u32 QUICK_SAVE_ICON_TIME;
+	u32 m_duration;
 	//! Remaining time for the quick sive icon
 	unsigned g_quickSaveIconTime;
 	
