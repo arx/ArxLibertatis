@@ -99,14 +99,6 @@ public:
 		FillSolid
 	};
 	
-	//! Fog
-	enum FogMode {
-		FogNone,
-		FogExp,
-		FogExp2,
-		FogLinear
-	};
-	
 	//! Target surface
 	enum BufferType {
 		ColorBuffer   = (1<<0),
@@ -193,7 +185,7 @@ public:
 	
 	// Fog
 	virtual void SetFogColor(Color color) = 0;
-	virtual void SetFogParams(FogMode fogMode, float fogStart, float fogEnd, float fogDensity = 1.0f) = 0;
+	virtual void SetFogParams(float fogStart, float fogEnd, float fogDensity = 1.0f) = 0;
 	virtual bool isFogInEyeCoordinates() = 0;
 	
 	// Rasterizer

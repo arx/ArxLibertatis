@@ -220,6 +220,8 @@ void OpenGLRenderer::reinit() {
 	glEnable(GL_DEPTH_TEST);
 	SetRenderState(DepthTest, false);
 	
+	glFogi(GL_FOG_MODE, GL_LINEAR);
+	
 	glPixelStorei(GL_UNPACK_ALIGNMENT, 1);
 	glPixelStorei(GL_PACK_ALIGNMENT, 1);
 	
@@ -629,18 +631,7 @@ void OpenGLRenderer::SetFogColor(Color color) {
 	glFogfv(GL_FOG_COLOR, fogColor);
 }
 
-static const GLint arxToGlFogMode[] = {
-	-1, // FogNone, TODO(unused) why is there a FogNone if there is also a separate Fog render state?
-	GL_EXP, // FogExp,
-	GL_EXP2, // FogExp2,
-	GL_LINEAR, // FogLinear
-};
-
-
-void OpenGLRenderer::SetFogParams(FogMode fogMode, float fogStart, float fogEnd, float fogDensity) {
-	
-	glFogi(GL_FOG_MODE, arxToGlFogMode[fogMode]);
-	
+void OpenGLRenderer::SetFogParams(float fogStart, float fogEnd, float fogDensity) {
 	glFogf(GL_FOG_START, fogStart);
 	glFogf(GL_FOG_END, fogEnd);
 	glFogf(GL_FOG_DENSITY, fogDensity);

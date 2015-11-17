@@ -74,7 +74,7 @@ public:
 	
 	// Fog
 	void SetFogColor(Color color);
-	void SetFogParams(FogMode fogMode, float fogStart, float fogEnd, float fogDensity = 1.0f);
+	void SetFogParams(float fogStart, float fogEnd, float fogDensity = 1.0f);
 	
 	// Rasterizer
 	void SetAntialiasing(bool enable);

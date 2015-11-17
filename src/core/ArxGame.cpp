@@ -1931,7 +1931,7 @@ void ArxGame::renderLevel() {
 	}
 
 	GRenderer->SetRenderState(Renderer::AlphaBlending, false);
-	GRenderer->SetFogParams(Renderer::FogLinear, fogStart, fogEnd);
+	GRenderer->SetFogParams(fogStart, fogEnd);
 	GRenderer->SetFogColor(ulBKGColor);
 	GRenderer->SetRenderState(Renderer::DepthWrite, true);
 	GRenderer->SetRenderState(Renderer::DepthTest, true);
@@ -2370,7 +2370,7 @@ void ArxGame::onRendererInit(Renderer & renderer) {
 	// Fog
 	float fogEnd = 0.48f;
 	float fogStart = fogEnd * 0.65f;
-	renderer.SetFogParams(Renderer::FogLinear, fogStart, fogEnd);
+	renderer.SetFogParams(fogStart, fogEnd);
 	renderer.SetFogColor(current.depthcolor.to<u8>());
 	renderer.SetRenderState(Renderer::Fog, true);
 	
