@@ -249,7 +249,8 @@ void ARXDRAW_DrawPolyBoom() {
 	GRenderer->SetFogColor(Color::none); // TODO: not handled by RenderMaterial
 	unsigned long tim = (unsigned long)(arxtime);
 	
-	RenderMaterial mat = RenderMaterial::getCurrent();
+	RenderMaterial mat;
+	mat.setDepthTest(true);
 	mat.setDepthBias(8);
 	mat.setLayer(RenderMaterial::Decal);
 
