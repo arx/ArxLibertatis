@@ -238,6 +238,7 @@ void CCreateField::Render()
 	mat.setWrapMode(TextureStage::WrapRepeat);
 	mat.setDepthTest(true);
 	mat.setBlendType(RenderMaterial::Additive);
+	mat.setCulling(Renderer::CullNone);
 
 	RenderSubDivFace(b, b, 0, 1, 2, 3, mat);
 	RenderSubDivFace(t, t, 0, 3, 2, 1, mat);
