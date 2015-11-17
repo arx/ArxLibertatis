@@ -597,7 +597,7 @@ void OpenGLRenderer::Clear(BufferFlags bufferFlags, Color clearColor, float clea
 	}
 	
 	if(bufferFlags & DepthBuffer) {
-		glClearDepth(clearDepth);
+		glClearDepth((GLclampd)clearDepth);
 		buffers |= GL_DEPTH_BUFFER_BIT;
 	}
 	
