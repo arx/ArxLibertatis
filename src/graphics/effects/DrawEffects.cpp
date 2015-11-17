@@ -253,6 +253,7 @@ void ARXDRAW_DrawPolyBoom() {
 	mat.setDepthTest(true);
 	mat.setDepthBias(8);
 	mat.setLayer(RenderMaterial::Decal);
+	mat.setWrapMode(TextureStage::WrapClamp);
 
 	std::vector<POLYBOOM>::iterator pb = polyboom.begin();
 	while (pb != polyboom.end()) {
@@ -281,7 +282,7 @@ void ARXDRAW_DrawPolyBoom() {
 		
 		switch(typp) {
 			
-		case 0: {
+		case 0: { // Scorch mark
 			
 			float tt = t / (float)pb->tolive * 0.8f;
 			
@@ -325,7 +326,6 @@ void ARXDRAW_DrawPolyBoom() {
 				ltv[k].color = col;
 			}
 			
-			mat.setWrapMode(TextureStage::WrapClamp);
 			mat.setBlendType(RenderMaterial::Subtractive2);
 			mat.setTexture(pb->tc);
 			
@@ -378,7 +378,6 @@ void ARXDRAW_DrawPolyBoom() {
 				&&	(ltv[3].uv.y>1.f) )
 				break;
 			
-			mat.setWrapMode(TextureStage::WrapClamp);
 			mat.setBlendType(RenderMaterial::Screen);
 			mat.setTexture(pb->tc);
 			
