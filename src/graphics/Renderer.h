@@ -185,7 +185,7 @@ public:
 	
 	// Fog
 	virtual void SetFogColor(Color color) = 0;
-	virtual void SetFogParams(float fogStart, float fogEnd, float fogDensity = 1.0f) = 0;
+	virtual void SetFogParams(float fogStart, float fogEnd) = 0;
 	virtual bool isFogInEyeCoordinates() = 0;
 	
 	// Rasterizer

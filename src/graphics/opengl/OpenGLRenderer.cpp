@@ -631,10 +631,9 @@ void OpenGLRenderer::SetFogColor(Color color) {
 	glFogfv(GL_FOG_COLOR, fogColor);
 }
 
-void OpenGLRenderer::SetFogParams(float fogStart, float fogEnd, float fogDensity) {
+void OpenGLRenderer::SetFogParams(float fogStart, float fogEnd) {
 	glFogf(GL_FOG_START, fogStart);
 	glFogf(GL_FOG_END, fogEnd);
-	glFogf(GL_FOG_DENSITY, fogDensity);
 }
 
 void OpenGLRenderer::SetAntialiasing(bool enable) {
