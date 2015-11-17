@@ -601,10 +601,6 @@ void OpenGLRenderer::Clear(BufferFlags bufferFlags, Color clearColor, float clea
 		buffers |= GL_DEPTH_BUFFER_BIT;
 	}
 	
-	if(bufferFlags & StencilBuffer) {
-		buffers |= GL_STENCIL_BUFFER_BIT;
-	}
-	
 	if(nrects) {
 		
 		glEnable(GL_SCISSOR_TEST);
