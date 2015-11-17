@@ -95,7 +95,6 @@ public:
 	};
 	
 	enum FillMode {
-		FillPoint,
 		FillWireframe,
 		FillSolid
 	};

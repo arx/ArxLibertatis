@@ -703,7 +703,6 @@ void OpenGLRenderer::SetDepthBias(int depthBias) {
 }
 
 static const GLenum arxToGlFillMode[] = {
-	GL_POINT, // FillPoint,
 	GL_LINE,  // FillWireframe,
 	GL_FILL,  // FillSolid
 };
