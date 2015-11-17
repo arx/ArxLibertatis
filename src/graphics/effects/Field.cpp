@@ -233,13 +233,11 @@ void CCreateField::Render()
 		fwrap += 360;
 	}
 	
-	RenderMaterial mat = RenderMaterial::getCurrent();
+	RenderMaterial mat;
 	mat.setTexture(tex_jelly);
-	mat.setWrapMode(TextureStage::WrapRepeat);
 	mat.setDepthTest(true);
 	mat.setBlendType(RenderMaterial::Additive);
-	mat.setCulling(Renderer::CullNone);
-
+	
 	RenderSubDivFace(b, b, 0, 1, 2, 3, mat);
 	RenderSubDivFace(t, t, 0, 3, 2, 1, mat);
 	RenderSubDivFace(b, t, 1, 0, 0, 1, mat);
