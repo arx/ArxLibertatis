@@ -82,9 +82,6 @@ struct RenderMaterial {
 	Renderer::CullingMode getCulling() const { return m_cullingMode; }
 	void setCulling(Renderer::CullingMode cullMode) { m_cullingMode = cullMode; }
 	
-	// TODO remove this - construct material instead of setting render state directly
-	static RenderMaterial getCurrent();
-	
 private:
 	Texture * m_texture;
 	bool m_depthTest;
