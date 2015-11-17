@@ -58,7 +58,6 @@ public:
 		DepthTest,
 		DepthWrite,
 		Fog,
-		ZBias
 	};
 	
 	//! Pixel comparison functions

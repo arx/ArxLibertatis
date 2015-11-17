@@ -215,7 +215,7 @@ void OpenGLRenderer::reinit() {
 
 	resetStateCache();
 	
-	SetRenderState(ZBias, true);
+	glEnable(GL_POLYGON_OFFSET_FILL);
 	
 	glEnable(GL_DEPTH_TEST);
 	SetRenderState(DepthTest, false);
@@ -439,10 +439,6 @@ bool OpenGLRenderer::GetRenderState(RenderState renderState) const {
 			return getGLState(GL_FOG);
 		}
 		
-		case ZBias: {
-			return getGLState(GL_POLYGON_OFFSET_FILL);
-		}
-		
 		default:
 			LogWarning << "Unsupported render state: " << renderState;
 	}
@@ -508,11 +504,6 @@ void OpenGLRenderer::SetRenderState(RenderState renderState, bool enable) {
 		
 		case Fog: {
 			setGLState(GL_FOG, enable);
-			break;
-		}
-		
-		case ZBias: {
-			setGLState(GL_POLYGON_OFFSET_FILL, enable);
 			break;
 		}
 		
