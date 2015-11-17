@@ -58,7 +58,6 @@ public:
 		DepthTest,
 		DepthWrite,
 		Fog,
-		Lighting,
 		ZBias
 	};
 	

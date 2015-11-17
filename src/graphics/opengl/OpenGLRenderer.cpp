@@ -439,10 +439,6 @@ bool OpenGLRenderer::GetRenderState(RenderState renderState) const {
 			return getGLState(GL_FOG);
 		}
 		
-		case Lighting: {
-			return getGLState(GL_LIGHTING);
-		}
-		
 		case ZBias: {
 			return getGLState(GL_POLYGON_OFFSET_FILL);
 		}
@@ -512,11 +508,6 @@ void OpenGLRenderer::SetRenderState(RenderState renderState, bool enable) {
 		
 		case Fog: {
 			setGLState(GL_FOG, enable);
-			break;
-		}
-		
-		case Lighting: {
-			setGLState(GL_LIGHTING, enable);
 			break;
 		}
 		

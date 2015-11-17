@@ -362,7 +362,6 @@ Vec2i Font::process(int x, int y, text_iterator start, text_iterator end, Color 
 	
 	if(DoDraw && !mapTextureVertices.empty()) {
 
-		GRenderer->SetRenderState(Renderer::Lighting, false);
 		GRenderer->SetRenderState(Renderer::AlphaBlending, true);
 		GRenderer->SetBlendFunc(Renderer::BlendSrcAlpha, Renderer::BlendInvSrcAlpha);
 

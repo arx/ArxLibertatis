@@ -2362,9 +2362,6 @@ void ArxGame::onRendererInit(Renderer & renderer) {
 
 	ARX_PLAYER_Restore_Skin();
 	
-	// Disable Lighting RenderState
-	renderer.SetRenderState(Renderer::Lighting, false);
-
 	// Setup Texture Border RenderState
 	renderer.GetTextureStage(0)->setWrapMode(TextureStage::WrapRepeat);
 
