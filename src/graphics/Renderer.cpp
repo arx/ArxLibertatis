@@ -64,7 +64,9 @@ Renderer::Renderer()
 	, m_hasBlend()
 	, m_srcBlend(BlendOne)
 	, m_dstBlend(BlendZero)
-{ }
+{
+	m_state.setColorKey(true); // TODO only enable this when needed
+}
 
 Renderer::~Renderer() {
 	if(isInitialized()) {

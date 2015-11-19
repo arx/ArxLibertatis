@@ -53,7 +53,6 @@ OpenGLRenderer::OpenGLRenderer()
 	, m_maximumAnisotropy(0.f)
 	, m_glcull(GL_NONE)
 	, m_hasMSAA(false)
-	, m_hasColorKey(false)
 	, m_hasTextureNPOT(false)
 {
 	resetStateCache();
@@ -223,6 +222,9 @@ void OpenGLRenderer::reinit() {
 	glFogi(GL_FOG_MODE, GL_LINEAR);
 	m_glstate.setFog(false);
 	
+	SetAlphaFunc(CmpNotEqual, 0.0f);
+	m_glstate.setColorKey(false);
+	
 	glEnable(GL_DEPTH_TEST);
 	glDepthFunc(GL_ALWAYS);
 	m_glstate.setDepthTest(false);
@@ -245,8 +247,6 @@ void OpenGLRenderer::reinit() {
 	for(size_t i = 0; i < m_TextureStages.size(); ++i) {
 		m_TextureStages[i] = new GLTextureStage(this, i);
 	}
-	
-	SetRenderState(ColorKey, true);
 	
 	// Clear screen
 	Clear(ColorBuffer | DepthBuffer);
@@ -422,48 +422,17 @@ void OpenGLRenderer::SetRenderState(RenderStateFlag renderState, bool enable) {
 	switch(renderState) {
 		
 		case AlphaBlending: {
-			if(m_hasBlend == enable) {
-				return;
-			}
 			if(enable) {
 				m_state.setBlend(m_srcBlend, m_dstBlend);
 			} else {
 				m_state.setBlend(BlendOne, BlendZero);
 			}
-			/*
-			 * When rendering color-keyed textures with GL_BLEND enabled we still
-			 * need to 'discard' transparent texels, as blending might not use the src alpha!
-			 * On the other hand, we can't use GL_SAMPLE_ALPHA_TO_COVERAGE when blending
-			 * as that could result in the src alpha being applied twice (e.g. for text).
-			 * So we must toggle between alpha to coverage and alpha test when toggling blending.
-			 * TODO Fix it so that the apha channel from the color-keyed textures is
-			 *      always used as part of the blending factor.
-			 */
-			bool colorkey = m_hasColorKey;
-			if(colorkey && m_hasMSAA && config.video.colorkeyAlphaToCoverage) {
-				SetRenderState(ColorKey, false);
-			}
 			m_hasBlend = enable;
-			if(colorkey && m_hasMSAA && config.video.colorkeyAlphaToCoverage) {
-				SetRenderState(ColorKey, true);
-			}
 			break;
 		}
 		
 		case ColorKey: {
-			if(m_hasColorKey == enable) {
-				return;
-			}
-			m_hasColorKey = enable;
-			if(m_hasMSAA && config.video.colorkeyAlphaToCoverage && !m_hasBlend) {
-				// TODO(option-video) add a config option for this
-				setGLState(GL_SAMPLE_ALPHA_TO_COVERAGE, enable);
-			} else {
-				setGLState(GL_ALPHA_TEST, enable);
-				if(enable) {
-					SetAlphaFunc(CmpNotEqual, 0.0f);
-				}
-			}
+			m_state.setColorKey(enable);
 			break;
 		}
 		
@@ -585,19 +554,26 @@ void OpenGLRenderer::SetFogParams(float fogStart, float fogEnd) {
 
 void OpenGLRenderer::SetAntialiasing(bool enable) {
 	
-	bool colorkey = m_hasColorKey;
-	if(colorkey) {
-		SetRenderState(ColorKey, false);
+	if(enable == m_hasMSAA) {
+		return;
+	}
+	
+	// The state used for color keying can differ between msaa and non-msaa.
+	// Clear the old flushed state.
+	if(m_glstate.getColorKey()) {
+		bool colorkey = m_state.getColorKey();
+		m_state.setColorKey(false);
+		flushState();
+		m_state.setColorKey(colorkey);
 	}
 	
 	// This is mostly useless as multisampling must be enabled/disabled at GL context creation.
-	setGLState(GL_MULTISAMPLE, enable);
-	
-	m_hasMSAA = enable;
-	
-	if(colorkey) {
-		SetRenderState(ColorKey, true);
+	if(enable) {
+		glEnable(GL_MULTISAMPLE);
+	} else {
+		glDisable(GL_MULTISAMPLE);
 	}
+	m_hasMSAA = enable;
 }
 
 static const GLenum arxToGlFillMode[] = {
@@ -732,6 +708,36 @@ void OpenGLRenderer::flushState() {
 				glEnable(GL_FOG);
 			} else {
 				glDisable(GL_FOG);
+			}
+		}
+		
+		bool useA2C = m_hasMSAA && config.video.colorkeyAlphaToCoverage;
+		if(m_glstate.getColorKey() != m_state.getColorKey()
+		   || (useA2C && m_state.getColorKey()
+		       && m_glstate.isBlendEnabled() != m_state.isBlendEnabled())) {
+			/* When rendering color-keyed textures with alpha blending enabled we still
+			 * need to 'discard' transparent texels, as blending might not use the src alpha!
+			 * On the other hand, we can't use GL_SAMPLE_ALPHA_TO_COVERAGE when blending
+			 * as that could result in the src alpha being applied twice (e.g. for text).
+			 * So we must toggle between alpha to coverage and alpha test when toggling blending.
+			 */
+			bool disableA2C = useA2C && !m_glstate.isBlendEnabled()
+				                && (!m_state.getColorKey() || m_state.isBlendEnabled());
+			bool enableA2C = useA2C && !m_state.isBlendEnabled()
+				               && (!m_glstate.getColorKey() || m_glstate.isBlendEnabled());
+			if(m_glstate.getColorKey()) {
+				if(disableA2C) {
+					glDisable(GL_SAMPLE_ALPHA_TO_COVERAGE);
+				} else if(!m_state.getColorKey() || enableA2C) {
+					glDisable(GL_ALPHA_TEST);
+				}
+			}
+			if(m_state.getColorKey()) {
+				if(enableA2C) {
+					glEnable(GL_SAMPLE_ALPHA_TO_COVERAGE);
+				} else if(!m_glstate.getColorKey() || disableA2C) {
+					glEnable(GL_ALPHA_TEST);
+				}
 			}
 		}
 		

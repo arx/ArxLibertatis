@@ -144,7 +144,6 @@ private:
 	GLenum m_glcull;
 	
 	bool m_hasMSAA;
-	bool m_hasColorKey;
 	bool m_hasTextureNPOT;
 	
 };
