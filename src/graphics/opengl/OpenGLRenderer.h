@@ -77,7 +77,6 @@ public:
 	
 	// Rasterizer
 	void SetAntialiasing(bool enable);
-	CullingMode GetCulling() const;
 	void SetCulling(CullingMode mode);
 	int GetDepthBias() const;
 	void SetDepthBias(int depthBias);

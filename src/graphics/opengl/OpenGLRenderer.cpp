@@ -625,10 +625,6 @@ static const GLenum arxToGlCullMode[] = {
 	GL_FRONT, // CullCCW,
 };
 
-CullingMode OpenGLRenderer::GetCulling() const {
-	return m_cachedCullMode;
-}
-
 void OpenGLRenderer::SetCulling(CullingMode mode) {
 	if(mode == m_cachedCullMode)
 		return;
