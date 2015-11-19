@@ -120,7 +120,6 @@ private:
 	void enableTransform();
 	void disableTransform();
 
-	bool getGLState(GLenum state) const;
 	void setGLState(GLenum state, bool enable);
 	
 	template <class Vertex>

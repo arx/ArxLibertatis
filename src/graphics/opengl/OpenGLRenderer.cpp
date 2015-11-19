@@ -394,19 +394,6 @@ Texture2D * OpenGLRenderer::CreateTexture2D() {
 	return texture;
 }
 
-bool OpenGLRenderer::getGLState(GLenum state) const {
-	BoolStateCache::iterator it = m_cachedStates.find(state);
-	
-	if(it != m_cachedStates.end()) {
-		return it->second;
-	}
-
-	bool isEnabled = glIsEnabled(state) == GL_TRUE;
-	m_cachedStates[state] = isEnabled;
-
-	return isEnabled;
-}
-
 void OpenGLRenderer::setGLState(GLenum state, bool enable) {
 	BoolStateCache::iterator it = m_cachedStates.find(state);
 
