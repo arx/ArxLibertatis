@@ -59,7 +59,6 @@ public:
 	
 	// Alphablending & Transparency
 	void SetAlphaFunc(PixelCompareFunc func, float fef); // Ref = [0.0f, 1.0f]
-	void GetBlendFunc(BlendingFactor & srcFactor, BlendingFactor & dstFactor) const;
 	void SetBlendFunc(BlendingFactor srcFactor, BlendingFactor dstFactor);
 	
 	// Viewport
