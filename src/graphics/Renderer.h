@@ -355,7 +355,6 @@ public:
 	
 	// Rasterizer
 	virtual void SetAntialiasing(bool enable) = 0;
-	virtual void SetDepthBias(int depthBias) = 0;
 	virtual void SetFillMode(FillMode mode) = 0;
 	
 	// Texturing
@@ -383,6 +382,7 @@ public:
 	
 	// TODO remove these when all uses are changed to RenderState
 	void SetCulling(CullingMode mode) { m_state.setCull(mode); }
+	void SetDepthBias(int depthBias) { m_state.setDepthOffset(depthBias); }
 	
 protected:
 	

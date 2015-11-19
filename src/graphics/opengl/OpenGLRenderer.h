@@ -77,7 +77,6 @@ public:
 	
 	// Rasterizer
 	void SetAntialiasing(bool enable);
-	void SetDepthBias(int depthBias);
 	void SetFillMode(FillMode mode);
 	
 	inline float getMaxAnisotropy() const { return m_maximumAnisotropy; }
@@ -144,7 +143,6 @@ private:
 	mutable BoolStateCache m_cachedStates;
 	BlendingFactor m_cachedSrcBlend;
 	BlendingFactor m_cachedDstBlend;
-	int m_cachedDepthBias;
 	
 	RenderState m_glstate;
 	GLenum m_glcull;

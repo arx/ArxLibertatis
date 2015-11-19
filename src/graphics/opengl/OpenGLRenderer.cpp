@@ -216,8 +216,6 @@ void OpenGLRenderer::reinit() {
 
 	resetStateCache();
 	
-	glEnable(GL_POLYGON_OFFSET_FILL);
-	
 	// Synchronize GL state cache
 	
 	m_glcull = GL_BACK;
@@ -228,6 +226,9 @@ void OpenGLRenderer::reinit() {
 	m_glstate.setDepthTest(false);
 	
 	m_glstate.setDepthWrite(true);
+	
+	glEnable(GL_POLYGON_OFFSET_FILL);
+	m_glstate.setDepthOffset(0);
 	
 	
 	glFogi(GL_FOG_MODE, GL_LINEAR);
@@ -278,7 +279,6 @@ void OpenGLRenderer::resetStateCache() {
 	m_cachedStates.clear();
 	m_cachedSrcBlend = BlendOne;
 	m_cachedDstBlend = BlendZero;
-	m_cachedDepthBias = 0;
 }
 
 void OpenGLRenderer::shutdown() {
@@ -623,17 +623,6 @@ void OpenGLRenderer::SetAntialiasing(bool enable) {
 	}
 }
 
-void OpenGLRenderer::SetDepthBias(int depthBias) {
-	if(depthBias == m_cachedDepthBias)
-		return;
-	
-	m_cachedDepthBias = depthBias;
-
-	float bias = -(float)m_cachedDepthBias;
-	
-	glPolygonOffset(bias, bias);
-}
-
 static const GLenum arxToGlFillMode[] = {
 	GL_LINE,  // FillWireframe,
 	GL_FILL,  // FillSolid
@@ -753,6 +742,11 @@ void OpenGLRenderer::flushState() {
 		
 		if(m_glstate.getDepthWrite() != m_state.getDepthWrite()) {
 			glDepthMask(m_state.getDepthWrite() ? GL_TRUE : GL_FALSE);
+		}
+		
+		if(m_glstate.getDepthOffset() != m_state.getDepthOffset()) {
+			GLfloat depthOffset = -GLfloat(m_state.getDepthOffset());
+			glPolygonOffset(depthOffset, depthOffset);
 		}
 		
 		m_glstate = m_state;
