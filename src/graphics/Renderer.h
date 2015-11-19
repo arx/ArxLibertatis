@@ -331,7 +331,6 @@ public:
 	virtual Texture2D * CreateTexture2D() = 0;
 	
 	// Render states
-	virtual bool GetRenderState(RenderStateFlag renderState) const = 0;
 	virtual void SetRenderState(RenderStateFlag renderState, bool enable) = 0;
 	
 	// Alphablending & Transparency

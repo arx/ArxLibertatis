@@ -55,7 +55,6 @@ public:
 	Texture2D * CreateTexture2D();
 	
 	// Render states
-	bool GetRenderState(RenderStateFlag renderState) const;
 	void SetRenderState(RenderStateFlag renderState, bool enable);
 	
 	// Alphablending & Transparency

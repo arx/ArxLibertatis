@@ -421,33 +421,6 @@ void OpenGLRenderer::setGLState(GLenum state, bool enable) {
 	}
 }
 
-bool OpenGLRenderer::GetRenderState(RenderStateFlag renderState) const {
-
-	switch(renderState) {
-		
-		case AlphaBlending: {
-			return m_hasBlend;
-		}
-		
-		case ColorKey: {
-			return m_hasColorKey;
-		}
-		
-		case DepthTest: {
-			return getGLState(GL_DEPTH_TEST);
-		}
-				
-		case Fog: {
-			return getGLState(GL_FOG);
-		}
-		
-		default:
-			LogWarning << "Unsupported render state: " << renderState;
-	}
-
-	return false;
-}
-
 void OpenGLRenderer::SetRenderState(RenderStateFlag renderState, bool enable) {
 	
 	switch(renderState) {
