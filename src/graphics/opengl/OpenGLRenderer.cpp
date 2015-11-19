@@ -220,6 +220,9 @@ void OpenGLRenderer::reinit() {
 	m_glcull = GL_BACK;
 	m_glstate.setCull(CullNone);
 	
+	glFogi(GL_FOG_MODE, GL_LINEAR);
+	m_glstate.setFog(false);
+	
 	glEnable(GL_DEPTH_TEST);
 	glDepthFunc(GL_ALWAYS);
 	m_glstate.setDepthTest(false);
@@ -231,8 +234,6 @@ void OpenGLRenderer::reinit() {
 	
 	glEnable(GL_BLEND);
 	m_glstate.setBlend(BlendOne, BlendZero);
-	
-	glFogi(GL_FOG_MODE, GL_LINEAR);
 	
 	glPixelStorei(GL_UNPACK_ALIGNMENT, 1);
 	glPixelStorei(GL_PACK_ALIGNMENT, 1);
@@ -477,7 +478,7 @@ void OpenGLRenderer::SetRenderState(RenderStateFlag renderState, bool enable) {
 		}
 		
 		case Fog: {
-			setGLState(GL_FOG, enable);
+			m_state.setFog(enable);
 			break;
 		}
 		
@@ -723,6 +724,14 @@ void OpenGLRenderer::flushState() {
 					glCullFace(glcull);
 					m_glcull = glcull;
 				}
+			}
+		}
+		
+		if(m_glstate.getFog() != m_state.getFog()) {
+			if(m_state.getFog()) {
+				glEnable(GL_FOG);
+			} else {
+				glDisable(GL_FOG);
 			}
 		}
 		
