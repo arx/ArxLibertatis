@@ -55,8 +55,8 @@ public:
 	Texture2D * CreateTexture2D();
 	
 	// Render states
-	bool GetRenderState(RenderState renderState) const;
-	void SetRenderState(RenderState renderState, bool enable);
+	bool GetRenderState(RenderStateFlag renderState) const;
+	void SetRenderState(RenderStateFlag renderState, bool enable);
 	
 	// Alphablending & Transparency
 	void SetAlphaFunc(PixelCompareFunc func, float fef); // Ref = [0.0f, 1.0f]

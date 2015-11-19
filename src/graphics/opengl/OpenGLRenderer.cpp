@@ -421,7 +421,7 @@ void OpenGLRenderer::setGLState(GLenum state, bool enable) {
 	}
 }
 
-bool OpenGLRenderer::GetRenderState(RenderState renderState) const {
+bool OpenGLRenderer::GetRenderState(RenderStateFlag renderState) const {
 
 	switch(renderState) {
 		
@@ -448,7 +448,7 @@ bool OpenGLRenderer::GetRenderState(RenderState renderState) const {
 	return false;
 }
 
-void OpenGLRenderer::SetRenderState(RenderState renderState, bool enable) {
+void OpenGLRenderer::SetRenderState(RenderStateFlag renderState, bool enable) {
 	
 	switch(renderState) {
 		
