@@ -704,7 +704,7 @@ static void ARX_INTERFACE_ManageOpenedBook_TopTabs() {
 		// Check for cursor on charcter sheet bookmark
 		if(MouseInBookRect(pos, Vec2f(tcBookmarkChar->m_size.x, tcBookmarkChar->m_size.y))) {
 			// Draw highlighted Character sheet icon
-			GRenderer->SetBlendFunc(Renderer::BlendOne, Renderer::BlendOne);
+			GRenderer->SetBlendFunc(BlendOne, BlendOne);
 			GRenderer->SetRenderState(Renderer::AlphaBlending, true);
 			DrawBookInterfaceItem(tcBookmarkChar, pos, Color::grayb(0x55), 0.000001f);
 			GRenderer->SetRenderState(Renderer::AlphaBlending, false);
@@ -736,7 +736,7 @@ static void ARX_INTERFACE_ManageOpenedBook_TopTabs() {
 			
 			if(MouseInBookRect(pos, Vec2f(ITC.bookmark_magic->m_size.x, ITC.bookmark_magic->m_size.y))) {
 				// Draw highlighted Magic sheet icon
-				GRenderer->SetBlendFunc(Renderer::BlendOne, Renderer::BlendOne);
+				GRenderer->SetBlendFunc(BlendOne, BlendOne);
 				GRenderer->SetRenderState(Renderer::AlphaBlending, true);
 				DrawBookInterfaceItem(ITC.bookmark_magic, pos, Color::grayb(0x55), 0.000001f);
 				GRenderer->SetRenderState(Renderer::AlphaBlending, false);
@@ -760,7 +760,7 @@ static void ARX_INTERFACE_ManageOpenedBook_TopTabs() {
 		DrawBookInterfaceItem(ITC.bookmark_map, pos, Color::white, 0.000001f);
 		
 		if(MouseInBookRect(pos, Vec2f(ITC.bookmark_map->m_size.x, ITC.bookmark_map->m_size.y))) {
-			GRenderer->SetBlendFunc(Renderer::BlendOne, Renderer::BlendOne);
+			GRenderer->SetBlendFunc(BlendOne, BlendOne);
 			GRenderer->SetRenderState(Renderer::AlphaBlending, true);
 			DrawBookInterfaceItem(ITC.bookmark_map, pos, Color::grayb(0x55), 0.000001f);
 			GRenderer->SetRenderState(Renderer::AlphaBlending, false);
@@ -783,7 +783,7 @@ static void ARX_INTERFACE_ManageOpenedBook_TopTabs() {
 		DrawBookInterfaceItem(ITC.bookmark_quest, pos, Color::white, 0.000001f);
 		
 		if(MouseInBookRect(pos, Vec2f(ITC.bookmark_quest->m_size.x, ITC.bookmark_quest->m_size.y))) {
-			GRenderer->SetBlendFunc(Renderer::BlendOne, Renderer::BlendOne);
+			GRenderer->SetBlendFunc(BlendOne, BlendOne);
 			GRenderer->SetRenderState(Renderer::AlphaBlending, true);
 			DrawBookInterfaceItem(ITC.bookmark_quest, pos, Color::grayb(0x55), 0.000001f);
 			GRenderer->SetRenderState(Renderer::AlphaBlending, false);
@@ -809,7 +809,7 @@ static void ARX_INTERFACE_ManageOpenedBook_LeftTabs_OneTab(bool tabVisibility[10
 			DrawBookInterfaceItem(ITC.accessibleTab[t], pos, Color::white, 0.000001f);
 
 			if(MouseInBookRect(pos, Vec2f(32, 32))) {
-				GRenderer->SetBlendFunc(Renderer::BlendOne, Renderer::BlendOne);
+				GRenderer->SetBlendFunc(BlendOne, BlendOne);
 				GRenderer->SetRenderState(Renderer::AlphaBlending, true);
 				DrawBookInterfaceItem(ITC.accessibleTab[t], pos, Color::grayb(0x55), 0.000001f);
 				GRenderer->SetRenderState(Renderer::AlphaBlending, false);
@@ -1672,7 +1672,7 @@ void ARX_INTERFACE_ManageOpenedBook_SpellsDraw() {
 		
 		if(spellInfo.tc) {
 			GRenderer->SetRenderState(Renderer::AlphaBlending, true);
-			GRenderer->SetBlendFunc(Renderer::BlendZero, Renderer::BlendInvSrcColor);
+			GRenderer->SetBlendFunc(BlendZero, BlendInvSrcColor);
 			
 			Color color;
 			if(flyingover) {

@@ -95,7 +95,7 @@ void ButtonWidget::RenderMouseOver() {
 	const Vec2f cursor = Vec2f(GInput->getMousePosAbs());
 	if(m_rect.contains(cursor)) {
 		GRenderer->SetRenderState(Renderer::AlphaBlending, true);
-		GRenderer->SetBlendFunc(Renderer::BlendOne, Renderer::BlendOne);
+		GRenderer->SetBlendFunc(BlendOne, BlendOne);
 		
 		Render();
 		

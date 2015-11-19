@@ -209,7 +209,7 @@ void ARX_INTERFACE_ManageOpenedBook_Finish(const Vec2f & mousePos)
 				
 				if(r) {
 					GRenderer->SetRenderState(Renderer::AlphaBlending, true);
-					GRenderer->SetBlendFunc(Renderer::BlendOne, Renderer::BlendOne);
+					GRenderer->SetBlendFunc(BlendOne, BlendOne);
 					
 					TransformInfo t(pos, glm::toQuat(toRotationMatrix(angle)));
 					DrawEERIEInter(rune, t, NULL);

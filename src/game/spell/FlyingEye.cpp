@@ -54,7 +54,7 @@ void DrawMagicSightInterface()
 		return;
 
 
-	GRenderer->SetBlendFunc(Renderer::BlendZero, Renderer::BlendInvSrcColor);
+	GRenderer->SetBlendFunc(BlendZero, BlendInvSrcColor);
 
 	float col = 0.75f + PULSATE * (1.f/20);
 
@@ -80,7 +80,7 @@ void DrawMagicSightInterface()
 			MagicSightFader = 0.f;
 	}
 
-	GRenderer->SetBlendFunc(Renderer::BlendOne, Renderer::BlendOne);
+	GRenderer->SetBlendFunc(BlendOne, BlendOne);
 }
 
 

@@ -285,7 +285,7 @@ void CPoisonProjectile::Render() {
 	
 	GRenderer->SetCulling(Renderer::CullNone);
 	GRenderer->SetRenderState(Renderer::DepthWrite, false);
-	GRenderer->SetBlendFunc(Renderer::BlendOne, Renderer::BlendOne);
+	GRenderer->SetBlendFunc(BlendOne, BlendOne);
 	GRenderer->SetRenderState(Renderer::AlphaBlending, true);
 	
 	int n = BEZIERPrecision;

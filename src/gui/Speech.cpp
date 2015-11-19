@@ -192,7 +192,7 @@ static void ARX_SPEECH_Render() {
 		);
 		
 		GRenderer->SetRenderState(Renderer::AlphaBlending, true);
-		GRenderer->SetBlendFunc(Renderer::BlendSrcAlpha, Renderer::BlendInvSrcAlpha);
+		GRenderer->SetBlendFunc(BlendSrcAlpha, BlendInvSrcAlpha);
 		
 		EERIEDrawBitmap(rect, .00001f, arx_logo_tc, Color::white);
 		
@@ -513,7 +513,7 @@ void ARX_SPEECH_Update() {
 							Color::white,
 							&clippingRect);
 
-		GRenderer->SetBlendFunc(Renderer::BlendZero, Renderer::BlendInvSrcColor);
+		GRenderer->SetBlendFunc(BlendZero, BlendInvSrcColor);
 		GRenderer->SetRenderState(Renderer::AlphaBlending, true);
 		GRenderer->SetRenderState(Renderer::DepthTest, false);
 
@@ -524,7 +524,7 @@ void ARX_SPEECH_Update() {
 		                          Vec2f(static_cast<float>(g_size.width()), fZoneClippY + fZoneClippHeight),
 		                          0.f, Color::black, Color::white);
 
-		GRenderer->SetBlendFunc(Renderer::BlendOne, Renderer::BlendZero);
+		GRenderer->SetBlendFunc(BlendOne, BlendZero);
 		GRenderer->SetRenderState(Renderer::DepthTest, true);
 		GRenderer->SetRenderState(Renderer::AlphaBlending, false);
 

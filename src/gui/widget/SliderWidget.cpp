@@ -147,7 +147,7 @@ void SliderWidget::Render() {
 	Vec2f pos(m_rect.left + pLeftButton->m_rect.width(), m_rect.top);
 	
 	GRenderer->SetRenderState(Renderer::AlphaBlending, true);
-	GRenderer->SetBlendFunc(Renderer::BlendOne, Renderer::BlendOne);
+	GRenderer->SetBlendFunc(BlendOne, BlendOne);
 	
 	for(int i = 0; i < 10; i++) {
 		TextureContainer * pTex = (i < m_value) ? pTex1 : pTex2;
@@ -173,7 +173,7 @@ void SliderWidget::RenderMouseOver() {
 	const Vec2f cursor = Vec2f(GInput->getMousePosAbs());
 
 	GRenderer->SetRenderState(Renderer::AlphaBlending, true);
-	GRenderer->SetBlendFunc(Renderer::BlendOne, Renderer::BlendOne);
+	GRenderer->SetBlendFunc(BlendOne, BlendOne);
 	
 	if(m_rect.contains(cursor)) {
 		if(pLeftButton->m_rect.contains(cursor)) {

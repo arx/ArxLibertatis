@@ -213,7 +213,7 @@ void ARXDRAW_DrawInterShadows() {
 	if(g_shadowBatch.size() > 0)
 	{
 		GRenderer->SetRenderState(Renderer::DepthWrite, false);
-		GRenderer->SetBlendFunc(Renderer::BlendZero, Renderer::BlendInvSrcColor);
+		GRenderer->SetBlendFunc(BlendZero, BlendInvSrcColor);
 		GRenderer->SetRenderState(Renderer::AlphaBlending, true);
 		GRenderer->SetTexture(0, Boom);
 		

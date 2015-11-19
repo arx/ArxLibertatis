@@ -237,7 +237,7 @@ static void FadeInOut(float _fVal) {
 	d3dvertex[3].color=iColor;
 
 	GRenderer->ResetTexture(0);
-	GRenderer->SetBlendFunc(Renderer::BlendZero, Renderer::BlendInvSrcColor);
+	GRenderer->SetBlendFunc(BlendZero, BlendInvSrcColor);
 
 	GRenderer->SetRenderState(Renderer::AlphaBlending, true);
 	GRenderer->SetRenderState(Renderer::DepthWrite, false);
@@ -522,7 +522,7 @@ MENUSTATE CWindowMenu::Render() {
 		return NOP;
 	
 	GRenderer->SetRenderState(Renderer::AlphaBlending, false);
-	GRenderer->SetBlendFunc(Renderer::BlendOne, Renderer::BlendOne);
+	GRenderer->SetBlendFunc(BlendOne, BlendOne);
 	
 	MENUSTATE eMS=NOP;
 	
@@ -537,13 +537,13 @@ MENUSTATE CWindowMenu::Render() {
 	
 	// Draw backgound and border
 	GRenderer->SetRenderState(Renderer::AlphaBlending, true);
-	GRenderer->SetBlendFunc(Renderer::BlendZero, Renderer::BlendInvSrcColor);
+	GRenderer->SetBlendFunc(BlendZero, BlendInvSrcColor);
 
 	EERIEDrawBitmap2(Rectf(Vec2f(m_pos.x, m_pos.y),
 	                 RATIO_X(m_background->m_size.x), RATIO_Y(m_background->m_size.y)),
 	                 0, m_background, Color::white);
 
-	GRenderer->SetBlendFunc(Renderer::BlendOne, Renderer::BlendOne);
+	GRenderer->SetBlendFunc(BlendOne, BlendOne);
 	GRenderer->SetRenderState(Renderer::AlphaBlending, false);
 	
 	EERIEDrawBitmap2(Rectf(Vec2f(m_pos.x, m_pos.y),

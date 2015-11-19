@@ -546,9 +546,9 @@ void MiniMap::drawBackground(int showLevel, Rect boundaries, float startX, float
 	
 	GRenderer->SetRenderState(Renderer::AlphaBlending, true);
 	if(invColor) {
-		GRenderer->SetBlendFunc(Renderer::BlendOne, Renderer::BlendInvSrcColor);
+		GRenderer->SetBlendFunc(BlendOne, BlendInvSrcColor);
 	} else {
-		GRenderer->SetBlendFunc(Renderer::BlendZero, Renderer::BlendInvSrcColor);
+		GRenderer->SetBlendFunc(BlendZero, BlendInvSrcColor);
 	}
 	GRenderer->GetTextureStage(0)->setWrapMode(TextureStage::WrapClamp);
 	GRenderer->GetTextureStage(0)->setMinFilter(TextureStage::FilterLinear);
@@ -708,7 +708,7 @@ void MiniMap::drawPlayer(float playerSize, Vec2f playerPos, bool alphaBlending) 
 	GRenderer->ResetTexture(0);
 	GRenderer->SetRenderState(Renderer::AlphaBlending, alphaBlending);
 	if(alphaBlending) {
-		GRenderer->SetBlendFunc(Renderer::BlendOne, Renderer::BlendInvSrcColor);
+		GRenderer->SetBlendFunc(BlendOne, BlendInvSrcColor);
 	}
 	
 	EERIEDRAWPRIM(Renderer::TriangleFan, verts);
@@ -731,7 +731,7 @@ void MiniMap::drawDetectedEntities(int showLevel, Vec2f start, float zoom) {
 	const Vec2f of2 = m_levels[showLevel].m_ratio;
 	
 	GRenderer->SetRenderState(Renderer::AlphaBlending, true);
-	GRenderer->SetBlendFunc(Renderer::BlendOne, Renderer::BlendOne);
+	GRenderer->SetBlendFunc(BlendOne, BlendOne);
 	
 	const EntityManager &ents = *m_entities; // for convenience
 	for(size_t lnpc = 1; lnpc < ents.size(); lnpc++) {

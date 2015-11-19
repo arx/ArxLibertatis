@@ -186,24 +186,24 @@ void RenderMaterial::apply() const {
 		switch(m_blendType) {
 		
 		case Additive:
-			GRenderer->SetBlendFunc(Renderer::BlendOne, Renderer::BlendOne);
+			GRenderer->SetBlendFunc(BlendOne, BlendOne);
 			break;
 		
 		case AlphaAdditive:
-			GRenderer->SetBlendFunc(Renderer::BlendSrcAlpha, Renderer::BlendOne);
+			GRenderer->SetBlendFunc(BlendSrcAlpha, BlendOne);
 			break;
 		
 		case Screen:
-			GRenderer->SetBlendFunc(Renderer::BlendOne, Renderer::BlendInvSrcColor);
+			GRenderer->SetBlendFunc(BlendOne, BlendInvSrcColor);
 			break;
 		
 		case Subtractive:
-			GRenderer->SetBlendFunc(Renderer::BlendZero, Renderer::BlendInvSrcColor);
+			GRenderer->SetBlendFunc(BlendZero, BlendInvSrcColor);
 			break;
 		
 		case Subtractive2:
 			GRenderer->GetTextureStage(0)->setAlphaOp(TextureStage::OpModulate);
-			GRenderer->SetBlendFunc(Renderer::BlendInvSrcAlpha, Renderer::BlendInvSrcAlpha);
+			GRenderer->SetBlendFunc(BlendInvSrcAlpha, BlendInvSrcAlpha);
 			break;
 		
 		default:

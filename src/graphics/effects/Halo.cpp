@@ -52,19 +52,19 @@ void Halo_Render() {
 		return;
 
 	GRenderer->ResetTexture(0);
-	GRenderer->SetBlendFunc(Renderer::BlendSrcColor, Renderer::BlendOne);
+	GRenderer->SetBlendFunc(BlendSrcColor, BlendOne);
 	GRenderer->SetRenderState(Renderer::AlphaBlending, true);
 	GRenderer->SetCulling(Renderer::CullNone);
 	GRenderer->SetRenderState(Renderer::DepthWrite, false);
 
 	if(HALOCUR[0] > 0) {
-		GRenderer->SetBlendFunc(Renderer::BlendZero, Renderer::BlendInvSrcColor);
+		GRenderer->SetBlendFunc(BlendZero, BlendInvSrcColor);
 		EERIEDRAWPRIM(Renderer::TriangleList, LATERDRAWHALO[0], HALOCUR[0] * 6);
 		HALOCUR[0] = 0;
 	}
 
 	if(HALOCUR[1] > 0) {
-		GRenderer->SetBlendFunc(Renderer::BlendSrcColor, Renderer::BlendOne);
+		GRenderer->SetBlendFunc(BlendSrcColor, BlendOne);
 		EERIEDRAWPRIM(Renderer::TriangleList, LATERDRAWHALO[1], HALOCUR[1] * 6);
 		HALOCUR[1] = 0;
 	}

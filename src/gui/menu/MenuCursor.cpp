@@ -99,7 +99,7 @@ void CursorTrail::DrawLine2D(float _fSize, Color3f color) {
 	float fDColorBlue = color.b / iNbOldCoord;
 	float fColorBlue = fDColorBlue;
 	
-	GRenderer->SetBlendFunc(Renderer::BlendDstColor, Renderer::BlendInvDstColor);
+	GRenderer->SetBlendFunc(BlendDstColor, BlendInvDstColor);
 	GRenderer->ResetTexture(0);
 	GRenderer->SetRenderState(Renderer::AlphaBlending, true);
 	

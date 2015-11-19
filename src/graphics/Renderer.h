@@ -36,6 +36,20 @@ class Texture;
 class Texture2D;
 template <class Vertex> class VertexBuffer;
 
+enum BlendingFactor {
+	BlendZero,              //!< Zero
+	BlendOne,               //!< One
+	BlendSrcColor,          //!< Source color
+	BlendSrcAlpha,          //!< Source alpha
+	BlendInvSrcColor,       //!< One minus source color
+	BlendInvSrcAlpha,       //!< One minus source alpha
+	BlendSrcAlphaSaturate,  //!< Source alpha saturate
+	BlendDstColor,          //!< Destination color
+	BlendDstAlpha,          //!< Destination alpha
+	BlendInvDstColor,       //!< One minus destination color
+	BlendInvDstAlpha        //!< One minus destination alpha
+};
+
 class Renderer {
 	
 public:
@@ -70,21 +84,6 @@ public:
 		CmpNotEqual,            //!< Not Equal
 		CmpGreaterEqual,        //!< Greater Equal
 		CmpAlways               //!< Always
-	};
-	
-	//! Pixel blending factor
-	enum PixelBlendingFactor {
-		BlendZero,              //!< Zero
-		BlendOne,               //!< One
-		BlendSrcColor,          //!< Source color
-		BlendSrcAlpha,          //!< Source alpha
-		BlendInvSrcColor,       //!< Inverse source color
-		BlendInvSrcAlpha,       //!< Inverse source alpha
-		BlendSrcAlphaSaturate,  //!< Source alpha saturate
-		BlendDstColor,          //!< Destination color
-		BlendDstAlpha,          //!< Destination alpha
-		BlendInvDstColor,       //!< Inverse destination color
-		BlendInvDstAlpha        //!< Inverse destination alpha
 	};
 	
 	//! Culling 
@@ -169,8 +168,8 @@ public:
 	
 	// Alphablending & Transparency
 	virtual void SetAlphaFunc(PixelCompareFunc func, float fef) = 0; // Ref = [0.0f, 1.0f]
-	virtual void GetBlendFunc(PixelBlendingFactor& srcFactor, PixelBlendingFactor& dstFactor) const = 0;
-	virtual void SetBlendFunc(PixelBlendingFactor srcFactor, PixelBlendingFactor dstFactor) = 0;
+	virtual void GetBlendFunc(BlendingFactor & srcFactor, BlendingFactor & dstFactor) const = 0;
+	virtual void SetBlendFunc(BlendingFactor srcFactor, BlendingFactor dstFactor) = 0;
 	
 	// Viewport
 	virtual void SetViewport(const Rect & viewport) = 0;

@@ -151,7 +151,7 @@ static void PopOneTriangleListTransparency(TextureContainer *_pTex) {
 	GRenderer->SetTexture(0, _pTex);
 
 	if(_pTex->count[TextureContainer::Blended]) {
-		GRenderer->SetBlendFunc(Renderer::BlendDstColor, Renderer::BlendSrcColor);
+		GRenderer->SetBlendFunc(BlendDstColor, BlendSrcColor);
 		if(_pTex->count[TextureContainer::Blended]) {
 			EERIEDRAWPRIM(Renderer::TriangleList, _pTex->list[TextureContainer::Blended],
 						  _pTex->count[TextureContainer::Blended]);
@@ -160,7 +160,7 @@ static void PopOneTriangleListTransparency(TextureContainer *_pTex) {
 	}
 
 	if(_pTex->count[TextureContainer::Additive]) {
-		GRenderer->SetBlendFunc(Renderer::BlendOne, Renderer::BlendOne);
+		GRenderer->SetBlendFunc(BlendOne, BlendOne);
 		if(_pTex->count[TextureContainer::Additive]) {
 			EERIEDRAWPRIM(Renderer::TriangleList, _pTex->list[TextureContainer::Additive],
 						  _pTex->count[TextureContainer::Additive]);
@@ -169,7 +169,7 @@ static void PopOneTriangleListTransparency(TextureContainer *_pTex) {
 	}
 
 	if(_pTex->count[TextureContainer::Subtractive]) {
-		GRenderer->SetBlendFunc(Renderer::BlendZero, Renderer::BlendInvSrcColor);
+		GRenderer->SetBlendFunc(BlendZero, BlendInvSrcColor);
 		if(_pTex->count[TextureContainer::Subtractive]) {
 			EERIEDRAWPRIM(Renderer::TriangleList, _pTex->list[TextureContainer::Subtractive],
 						  _pTex->count[TextureContainer::Subtractive]);
@@ -178,7 +178,7 @@ static void PopOneTriangleListTransparency(TextureContainer *_pTex) {
 	}
 
 	if(_pTex->count[TextureContainer::Multiplicative]) {
-		GRenderer->SetBlendFunc(Renderer::BlendOne, Renderer::BlendOne);
+		GRenderer->SetBlendFunc(BlendOne, BlendOne);
 		if(_pTex->count[TextureContainer::Multiplicative]) {
 			EERIEDRAWPRIM(Renderer::TriangleList, _pTex->list[TextureContainer::Multiplicative],
 						  _pTex->count[TextureContainer::Multiplicative]);
@@ -209,7 +209,7 @@ void PopAllTriangleListTransparency() {
 	GRenderer->SetFogColor(Color::none);
 	GRenderer->SetRenderState(Renderer::AlphaBlending, true);
 	GRenderer->SetRenderState(Renderer::DepthWrite, false);
-	GRenderer->SetBlendFunc(Renderer::BlendDstColor, Renderer::BlendOne);
+	GRenderer->SetBlendFunc(BlendDstColor, BlendOne);
 	GRenderer->SetAlphaFunc(Renderer::CmpGreater, .5f);
 
 	GRenderer->SetCulling(Renderer::CullNone);

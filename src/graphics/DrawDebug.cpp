@@ -117,7 +117,7 @@ static void drawDebugLights() {
 	GRenderer->SetRenderState(Renderer::AlphaBlending, true);
 	GRenderer->SetCulling(Renderer::CullNone);
 	
-	GRenderer->SetBlendFunc(Renderer::BlendOne, Renderer::BlendOne);
+	GRenderer->SetBlendFunc(BlendOne, BlendOne);
 	
 	for(size_t i = 0; i < MAX_LIGHTS; i++) {
 		

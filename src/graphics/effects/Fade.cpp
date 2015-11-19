@@ -77,7 +77,7 @@ void ManageFade()
 	}
 
 	LAST_FADEVALUE=Visibility;
-	GRenderer->SetBlendFunc(Renderer::BlendSrcAlpha, Renderer::BlendInvSrcAlpha);
+	GRenderer->SetBlendFunc(BlendSrcAlpha, BlendInvSrcAlpha);
 	GRenderer->SetRenderState(Renderer::DepthWrite, false);
 	GRenderer->SetRenderState(Renderer::AlphaBlending, true);
 	

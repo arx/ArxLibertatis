@@ -171,7 +171,7 @@ void ARX_DAMAGE_Show_Hit_Blood()
 		Blood_Pos = 0.f;
 		duration = 0;
 	} else if (Blood_Pos > 1.f) {
-		GRenderer->SetBlendFunc(Renderer::BlendZero, Renderer::BlendSrcColor);
+		GRenderer->SetBlendFunc(BlendZero, BlendSrcColor);
 		GRenderer->SetRenderState(Renderer::AlphaBlending, true);
 		GRenderer->SetRenderState(Renderer::DepthWrite, false);
 
@@ -184,7 +184,7 @@ void ARX_DAMAGE_Show_Hit_Blood()
 		GRenderer->SetRenderState(Renderer::DepthWrite, true);
 		GRenderer->SetRenderState(Renderer::AlphaBlending, false);
 	} else if(Blood_Pos > 0.f) {
-		GRenderer->SetBlendFunc(Renderer::BlendZero, Renderer::BlendSrcColor);
+		GRenderer->SetBlendFunc(BlendZero, BlendSrcColor);
 		GRenderer->SetRenderState(Renderer::AlphaBlending, true);
 		GRenderer->SetRenderState(Renderer::DepthWrite, false);
 

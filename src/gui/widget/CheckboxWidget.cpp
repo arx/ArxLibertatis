@@ -93,7 +93,7 @@ void CheckboxWidget::Update(int /*_iDTime*/)
 void CheckboxWidget::renderCommon() {
 	
 	GRenderer->SetRenderState(Renderer::AlphaBlending, true);
-	GRenderer->SetBlendFunc(Renderer::BlendOne, Renderer::BlendOne);
+	GRenderer->SetBlendFunc(BlendOne, BlendOne);
 	
 	Rectf checkboxRect;
 	checkboxRect.top = m_rect.top;

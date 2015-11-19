@@ -218,7 +218,7 @@ void PlayerInventoryHud::ARX_INTERFACE_DrawInventory(size_t bag, Vec2i i)
 		
 		
 		if(overlayColor != Color::black) {
-			GRenderer->SetBlendFunc(Renderer::BlendSrcAlpha, Renderer::BlendOne);
+			GRenderer->SetBlendFunc(BlendSrcAlpha, BlendOne);
 			GRenderer->SetRenderState(Renderer::AlphaBlending, true);
 			
 			EERIEDrawBitmap(rect, 0.001f, tc, overlayColor);
@@ -249,7 +249,7 @@ void PlayerInventoryHud::draw() {
 				EERIEDrawBitmap(rect, 0.001f, m_heroInventoryUp, Color::white);
 				
 				if(rect.contains(Vec2f(DANAEMouse))) {
-					GRenderer->SetBlendFunc(Renderer::BlendOne, Renderer::BlendOne);
+					GRenderer->SetBlendFunc(BlendOne, BlendOne);
 					GRenderer->SetRenderState(Renderer::AlphaBlending, true);
 					SpecialCursor=CURSOR_INTERACTION_ON;
 					
@@ -270,7 +270,7 @@ void PlayerInventoryHud::draw() {
 				EERIEDrawBitmap(rect, 0.001f, m_heroInventoryDown, Color::white);
 				
 				if(rect.contains(Vec2f(DANAEMouse))) {
-					GRenderer->SetBlendFunc(Renderer::BlendOne, Renderer::BlendOne);
+					GRenderer->SetBlendFunc(BlendOne, BlendOne);
 					GRenderer->SetRenderState(Renderer::AlphaBlending, true);
 					
 					EERIEDrawBitmap(rect, 0.001f, m_heroInventoryDown, Color::white);

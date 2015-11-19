@@ -170,7 +170,7 @@ void HitStrengthGauge::update() {
 }
 
 void HitStrengthGauge::draw() {
-	GRenderer->SetBlendFunc(Renderer::BlendOne, Renderer::BlendOne);
+	GRenderer->SetBlendFunc(BlendOne, BlendOne);
 	GRenderer->SetRenderState(Renderer::AlphaBlending, true);
 	EERIEDrawBitmap(m_rect, 0.0001f, m_fullTex, Color3f::gray(m_intensity).to<u8>());
 	
@@ -182,7 +182,7 @@ void HitStrengthGauge::draw() {
 		float j = 1.0f - m_flashIntensity;
 		Color col = (j < 0.5f) ? Color3f(j*2.0f, 1, 0).to<u8>() : Color3f(1, m_flashIntensity, 0).to<u8>();
 		
-		GRenderer->SetBlendFunc(Renderer::BlendOne, Renderer::BlendOne);
+		GRenderer->SetBlendFunc(BlendOne, BlendOne);
 		GRenderer->SetRenderState(Renderer::AlphaBlending, true);
 		EERIEDrawBitmap(m_hitRect, 0.0001f, m_hitTex, col);
 		GRenderer->SetRenderState(Renderer::AlphaBlending, false);
@@ -706,7 +706,7 @@ void QuickSaveIconGui::draw() {
 	arx_assert(tex);
 	
 	GRenderer->SetRenderState(Renderer::AlphaBlending, true);
-	GRenderer->SetBlendFunc(Renderer::BlendSrcColor, Renderer::BlendOne);
+	GRenderer->SetBlendFunc(BlendSrcColor, BlendOne);
 	
 	Vec2f size = Vec2f(tex->size());
 	EERIEDrawBitmap2(Rectf(Vec2f(0, 0), size.x, size.y), 0.f, tex, Color::gray(alpha));
@@ -769,7 +769,7 @@ void MemorizedRunesHud::draw() {
 			}
 			
 			if(!player.hasRune(player.SpellToMemorize.iSpellSymbols[i])) {
-				GRenderer->SetBlendFunc(Renderer::BlendInvDstColor, Renderer::BlendOne);
+				GRenderer->SetBlendFunc(BlendInvDstColor, BlendOne);
 				GRenderer->SetRenderState(Renderer::AlphaBlending, true);
 				EERIEDrawBitmap2(rect, 0, cursorMovable, Color3f::gray(.8f).to<u8>());
 				GRenderer->SetRenderState(Renderer::AlphaBlending, false);
@@ -981,7 +981,7 @@ void PrecastSpellsGui::PrecastSpellIconSlot::updateInput() {
 void PrecastSpellsGui::PrecastSpellIconSlot::draw() {
 	EERIEDrawBitmap(m_rect, 0.01f, m_tc, m_color);
 	
-	GRenderer->SetBlendFunc(Renderer::BlendZero, Renderer::BlendOne);
+	GRenderer->SetBlendFunc(BlendZero, BlendOne);
 	
 	Rectf rect2 = m_rect;
 	rect2.move(-1, -1);
@@ -991,7 +991,7 @@ void PrecastSpellsGui::PrecastSpellIconSlot::draw() {
 	rect3.move(1, 1);
 	EERIEDrawBitmap(rect3, 0.0001f, m_tc, m_color);
 	
-	GRenderer->SetBlendFunc(Renderer::BlendOne, Renderer::BlendOne);
+	GRenderer->SetBlendFunc(BlendOne, BlendOne);
 }
 
 PrecastSpellsGui::PrecastSpellsGui()
@@ -1057,7 +1057,7 @@ void PrecastSpellsGui::update() {
 }
 
 void PrecastSpellsGui::draw() {
-	GRenderer->SetBlendFunc(Renderer::BlendOne, Renderer::BlendOne);
+	GRenderer->SetBlendFunc(BlendOne, BlendOne);
 	GRenderer->SetRenderState(Renderer::AlphaBlending, true);
 	
 	std::vector<PrecastSpellIconSlot>::iterator itr;
@@ -1142,7 +1142,7 @@ void ActiveSpellsGui::updateInput(const Vec2f & mousePos) {
 
 void ActiveSpellsGui::draw() {
 	
-	GRenderer->SetBlendFunc(Renderer::BlendOne, Renderer::BlendOne);
+	GRenderer->SetBlendFunc(BlendOne, BlendOne);
 	GRenderer->SetRenderState(Renderer::AlphaBlending, true);
 	
 	BOOST_FOREACH(ActiveSpellIconSlot & slot, m_slots) {
@@ -1273,7 +1273,7 @@ void DamagedEquipmentGui::update() {
 void DamagedEquipmentGui::draw() {
 	
 	GRenderer->SetRenderState(Renderer::AlphaBlending, true);
-	GRenderer->SetBlendFunc(Renderer::BlendOne, Renderer::BlendOne);
+	GRenderer->SetBlendFunc(BlendOne, BlendOne);
 	
 	GRenderer->SetCulling(Renderer::CullNone);
 	GRenderer->SetRenderState(Renderer::DepthWrite, true);
@@ -1332,7 +1332,7 @@ void StealthGauge::draw() {
 		return;
 	
 	GRenderer->SetRenderState(Renderer::AlphaBlending, true);
-	GRenderer->SetBlendFunc(Renderer::BlendOne, Renderer::BlendOne);
+	GRenderer->SetBlendFunc(BlendOne, BlendOne);
 	EERIEDrawBitmap(m_rect, 0.01f, m_texture, m_color);
 	GRenderer->SetRenderState(Renderer::AlphaBlending, false);
 }
@@ -1555,7 +1555,7 @@ void HudRoot::draw() {
 		
 		if(bRenderInCursorMode) {
 			GRenderer->SetRenderState(Renderer::AlphaBlending, true);
-			GRenderer->SetBlendFunc(Renderer::BlendOne, Renderer::BlendOne);
+			GRenderer->SetBlendFunc(BlendOne, BlendOne);
 			if(!MAGICMODE) {
 				mecanismIcon.draw();
 			}

@@ -248,7 +248,7 @@ void SecondaryInventoryHud::draw() {
 				}
 				
 				if(overlayColor != Color::black) {
-					GRenderer->SetBlendFunc(Renderer::BlendSrcAlpha, Renderer::BlendOne);
+					GRenderer->SetBlendFunc(BlendSrcAlpha, BlendOne);
 					GRenderer->SetRenderState(Renderer::AlphaBlending, true);
 					
 					EERIEDrawBitmap(rect, 0.001f, tc, overlayColor);

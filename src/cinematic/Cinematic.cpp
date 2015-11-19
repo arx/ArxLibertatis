@@ -423,7 +423,7 @@ void Cinematic::Render(float FDIFF) {
 			PlaySoundKeyFramer(idsound);
 
 		//draw
-		GRenderer->SetBlendFunc(Renderer::BlendSrcAlpha, Renderer::BlendInvSrcAlpha);
+		GRenderer->SetBlendFunc(BlendSrcAlpha, BlendInvSrcAlpha);
 
 		GRenderer->GetTextureStage(0)->setColorOp(TextureStage::OpModulate, TextureStage::ArgTexture, TextureStage::ArgDiffuse);
 		GRenderer->GetTextureStage(0)->setAlphaOp(TextureStage::OpModulate, TextureStage::ArgTexture, TextureStage::ArgDiffuse);

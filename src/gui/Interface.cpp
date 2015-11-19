@@ -378,9 +378,9 @@ void ARX_INTERFACE_HALO_Render(Color3f color,
 	Color col = Color4f(color).to<u8>();
 
 	if(_lHaloType & HALO_NEGATIVE) {
-		GRenderer->SetBlendFunc(Renderer::BlendZero, Renderer::BlendInvSrcColor);
+		GRenderer->SetBlendFunc(BlendZero, BlendInvSrcColor);
 	} else {
-		GRenderer->SetBlendFunc(Renderer::BlendSrcAlpha, Renderer::BlendOne);
+		GRenderer->SetBlendFunc(BlendSrcAlpha, BlendOne);
 	}
 	
 	GRenderer->SetRenderState(Renderer::AlphaBlending, true);

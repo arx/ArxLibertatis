@@ -543,12 +543,12 @@ static const GLenum arxToGlBlendFactor[] = {
 	GL_ONE_MINUS_DST_ALPHA // BlendInvDstAlpha
 };
 
-void OpenGLRenderer::GetBlendFunc(PixelBlendingFactor& srcFactor, PixelBlendingFactor& dstFactor) const {
+void OpenGLRenderer::GetBlendFunc(BlendingFactor & srcFactor, BlendingFactor & dstFactor) const {
 	srcFactor = m_cachedSrcBlend;
 	dstFactor = m_cachedDstBlend;
 }
 
-void OpenGLRenderer::SetBlendFunc(PixelBlendingFactor srcFactor, PixelBlendingFactor dstFactor) {
+void OpenGLRenderer::SetBlendFunc(BlendingFactor srcFactor, BlendingFactor dstFactor) {
 	if(srcFactor != m_cachedSrcBlend || dstFactor != m_cachedDstBlend) {
 		glBlendFunc(arxToGlBlendFactor[srcFactor], arxToGlBlendFactor[dstFactor]);
 		m_cachedSrcBlend = srcFactor;

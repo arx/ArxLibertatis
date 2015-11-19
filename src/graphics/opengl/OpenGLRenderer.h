@@ -60,8 +60,8 @@ public:
 	
 	// Alphablending & Transparency
 	void SetAlphaFunc(PixelCompareFunc func, float fef); // Ref = [0.0f, 1.0f]
-	void GetBlendFunc(PixelBlendingFactor& srcFactor, PixelBlendingFactor& dstFactor) const;
-	void SetBlendFunc(PixelBlendingFactor srcFactor, PixelBlendingFactor dstFactor);
+	void GetBlendFunc(BlendingFactor & srcFactor, BlendingFactor & dstFactor) const;
+	void SetBlendFunc(BlendingFactor srcFactor, BlendingFactor dstFactor);
 	
 	// Viewport
 	void SetViewport(const Rect & viewport);
@@ -147,8 +147,8 @@ private:
 	void resetStateCache();
 	typedef std::map<GLenum, bool> BoolStateCache;
 	mutable BoolStateCache m_cachedStates;
-	PixelBlendingFactor	m_cachedSrcBlend;
-	PixelBlendingFactor	m_cachedDstBlend;
+	BlendingFactor m_cachedSrcBlend;
+	BlendingFactor m_cachedDstBlend;
 	CullingMode m_cachedCullMode;
 	int m_cachedDepthBias;
 	

@@ -163,7 +163,7 @@ bool FX_FlashBlanc(Vec2f size, float speed, Color color, float fps, float currfp
 	
 	GRenderer->GetTextureStage(0)->setColorOp(TextureStage::ArgDiffuse);
 	GRenderer->GetTextureStage(0)->setAlphaOp(TextureStage::ArgDiffuse);
-	GRenderer->SetBlendFunc(Renderer::BlendSrcAlpha, Renderer::BlendOne);
+	GRenderer->SetBlendFunc(BlendSrcAlpha, BlendOne);
 	
 	color.a = 255.f * FlashAlpha;
 	ColorRGBA col = color.toRGBA();

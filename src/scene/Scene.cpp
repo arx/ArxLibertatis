@@ -880,7 +880,7 @@ static void RenderWater() {
 	
 	dynamicVertices.lock();
 	
-	GRenderer->SetBlendFunc(Renderer::BlendDstColor, Renderer::BlendOne);
+	GRenderer->SetBlendFunc(BlendDstColor, BlendOne);
 	GRenderer->SetTexture(0, enviro);
 	GRenderer->SetTexture(1, enviro);
 	GRenderer->SetTexture(2, enviro);
@@ -950,7 +950,7 @@ static void RenderWater() {
 
 static void RenderLavaBatch() {
 	
-	GRenderer->SetBlendFunc(Renderer::BlendDstColor, Renderer::BlendOne);
+	GRenderer->SetBlendFunc(BlendDstColor, BlendOne);
 	GRenderer->GetTextureStage(0)->setColorOp(TextureStage::OpModulate2X, TextureStage::ArgTexture, TextureStage::ArgDiffuse);
 	
 	if(!dynamicVertices.nbindices) {
@@ -965,7 +965,7 @@ static void RenderLavaBatch() {
 	
 	dynamicVertices.draw(Renderer::TriangleList);
 	
-	GRenderer->SetBlendFunc(Renderer::BlendZero, Renderer::BlendInvSrcColor);
+	GRenderer->SetBlendFunc(BlendZero, BlendInvSrcColor);
 	GRenderer->GetTextureStage(0)->setColorOp(TextureStage::OpModulate);
 	
 	dynamicVertices.draw(Renderer::TriangleList);
@@ -988,7 +988,7 @@ static void RenderLava() {
 	
 	dynamicVertices.lock();
 	
-	GRenderer->SetBlendFunc(Renderer::BlendDstColor, Renderer::BlendOne);
+	GRenderer->SetBlendFunc(BlendDstColor, BlendOne);
 	GRenderer->SetTexture(0, enviro);
 	GRenderer->SetTexture(1, enviro);
 	GRenderer->SetTexture(2, enviro);
@@ -1321,22 +1321,22 @@ static void ARX_PORTALS_Frustrum_RenderRoom_TransparencyTSoftCull(long room_num)
 			}
 			case SMY_ARXMAT::Blended: {
 				GRenderer->SetDepthBias(2);
-				GRenderer->SetBlendFunc(Renderer::BlendSrcColor, Renderer::BlendDstColor);
+				GRenderer->SetBlendFunc(BlendSrcColor, BlendDstColor);
 				break;
 			}
 			case SMY_ARXMAT::Multiplicative: {
 				GRenderer->SetDepthBias(2);
-				GRenderer->SetBlendFunc(Renderer::BlendOne, Renderer::BlendOne);
+				GRenderer->SetBlendFunc(BlendOne, BlendOne);
 				break;
 			}
 			case SMY_ARXMAT::Additive: {
 				GRenderer->SetDepthBias(2);
-				GRenderer->SetBlendFunc(Renderer::BlendOne, Renderer::BlendOne);
+				GRenderer->SetBlendFunc(BlendOne, BlendOne);
 				break;
 			}
 			case SMY_ARXMAT::Subtractive: {
 				GRenderer->SetDepthBias(8);
-				GRenderer->SetBlendFunc(Renderer::BlendZero, Renderer::BlendInvSrcColor);
+				GRenderer->SetBlendFunc(BlendZero, BlendInvSrcColor);
 				break;
 			}
 			}
@@ -1502,7 +1502,7 @@ void ARX_SCENE_Render() {
 	if(uw_mode)
 		GRenderer->GetTextureStage(0)->setMipMapLODBias(10.f);
 
-	GRenderer->SetBlendFunc(Renderer::BlendZero, Renderer::BlendInvSrcColor);
+	GRenderer->SetBlendFunc(BlendZero, BlendInvSrcColor);
 	for(size_t i = 0; i < RoomDrawList.size(); i++) {
 
 		ARX_PORTALS_Frustrum_RenderRoomTCullSoftRender(RoomDrawList[i]);
