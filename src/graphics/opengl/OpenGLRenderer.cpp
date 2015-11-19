@@ -217,9 +217,13 @@ void OpenGLRenderer::reinit() {
 	
 	glEnable(GL_POLYGON_OFFSET_FILL);
 	
+	// Synchronize GL state cache
+	
 	glEnable(GL_DEPTH_TEST);
 	glDepthFunc(GL_ALWAYS);
 	m_glstate.setDepthTest(false);
+	
+	m_glstate.setDepthWrite(true);
 	
 	glFogi(GL_FOG_MODE, GL_LINEAR);
 	
@@ -461,7 +465,7 @@ void OpenGLRenderer::SetRenderState(RenderStateFlag renderState, bool enable) {
 		}
 		
 		case DepthWrite: {
-			glDepthMask(enable ? GL_TRUE : GL_FALSE);
+			m_state.setDepthWrite(enable);
 			break;
 		}
 		
@@ -558,6 +562,11 @@ void OpenGLRenderer::Clear(BufferFlags bufferFlags, Color clearColor, float clea
 	}
 	
 	if(bufferFlags & DepthBuffer) {
+		if(!m_glstate.getDepthWrite()) {
+			// glClear() respects the depth mask
+			glDepthMask(GL_TRUE);
+			m_glstate.setDepthWrite(true);
+		}
 		glClearDepth((GLclampd)clearDepth);
 		buffers |= GL_DEPTH_BUFFER_BIT;
 	}
@@ -749,6 +758,10 @@ void OpenGLRenderer::flushState() {
 		
 		if(m_glstate.getDepthTest() != m_state.getDepthTest()) {
 			glDepthFunc(m_state.getDepthTest() ? GL_LEQUAL : GL_ALWAYS);
+		}
+		
+		if(m_glstate.getDepthWrite() != m_state.getDepthWrite()) {
+			glDepthMask(m_state.getDepthWrite() ? GL_TRUE : GL_FALSE);
 		}
 		
 		m_glstate = m_state;
