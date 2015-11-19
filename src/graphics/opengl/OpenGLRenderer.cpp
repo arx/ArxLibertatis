@@ -218,7 +218,8 @@ void OpenGLRenderer::reinit() {
 	glEnable(GL_POLYGON_OFFSET_FILL);
 	
 	glEnable(GL_DEPTH_TEST);
-	SetRenderState(DepthTest, false);
+	glDepthFunc(GL_ALWAYS);
+	m_glstate.setDepthTest(false);
 	
 	glFogi(GL_FOG_MODE, GL_LINEAR);
 	
@@ -455,7 +456,7 @@ void OpenGLRenderer::SetRenderState(RenderStateFlag renderState, bool enable) {
 		}
 		
 		case DepthTest: {
-			glDepthFunc(enable ? GL_LEQUAL : GL_ALWAYS);
+			m_state.setDepthTest(enable);
 			break;
 		}
 		
@@ -742,10 +743,21 @@ bool OpenGLRenderer::getSnapshot(Image & image, size_t width, size_t height) {
 	return true;
 }
 
-void OpenGLRenderer::applyTextureStages() {
+void OpenGLRenderer::flushState() {
+	
+	if(m_glstate != m_state) {
+		
+		if(m_glstate.getDepthTest() != m_state.getDepthTest()) {
+			glDepthFunc(m_state.getDepthTest() ? GL_LEQUAL : GL_ALWAYS);
+		}
+		
+		m_glstate = m_state;
+	}
+	
 	for(size_t i = 0; i <= maxTextureStage; i++) {
 		GetTextureStage(i)->apply();
 	}
+	
 }
 
 bool OpenGLRenderer::isFogInEyeCoordinates() {

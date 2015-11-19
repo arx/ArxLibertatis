@@ -112,7 +112,7 @@ private:
 	
 	Rect viewport;
 	
-	void applyTextureStages();
+	void flushState();
 	
 	template <class Vertex>
 	void selectTrasform();
@@ -123,7 +123,7 @@ private:
 	void setGLState(GLenum state, bool enable);
 	
 	template <class Vertex>
-	inline void beforeDraw() { applyTextureStages(); selectTrasform<Vertex>(); }
+	inline void beforeDraw() { flushState(); selectTrasform<Vertex>(); }
 	
 	template <class Vertex>
 	friend class GLNoVertexBuffer;
@@ -149,6 +149,8 @@ private:
 	BlendingFactor m_cachedDstBlend;
 	CullingMode m_cachedCullMode;
 	int m_cachedDepthBias;
+	
+	RenderState m_glstate;
 	
 	bool m_hasMSAA;
 	bool m_hasColorKey;
