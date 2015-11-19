@@ -77,7 +77,6 @@ public:
 	
 	// Rasterizer
 	void SetAntialiasing(bool enable);
-	int GetDepthBias() const;
 	void SetDepthBias(int depthBias);
 	void SetFillMode(FillMode mode);
 	

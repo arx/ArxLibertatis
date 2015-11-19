@@ -623,10 +623,6 @@ void OpenGLRenderer::SetAntialiasing(bool enable) {
 	}
 }
 
-int OpenGLRenderer::GetDepthBias() const {
-	return m_cachedDepthBias;
-}
-
 void OpenGLRenderer::SetDepthBias(int depthBias) {
 	if(depthBias == m_cachedDepthBias)
 		return;

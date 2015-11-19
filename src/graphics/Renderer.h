@@ -355,7 +355,6 @@ public:
 	
 	// Rasterizer
 	virtual void SetAntialiasing(bool enable) = 0;
-	virtual int GetDepthBias() const = 0;
 	virtual void SetDepthBias(int depthBias) = 0;
 	virtual void SetFillMode(FillMode mode) = 0;
 	
