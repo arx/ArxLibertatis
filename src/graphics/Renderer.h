@@ -355,7 +355,6 @@ public:
 	
 	// Rasterizer
 	virtual void SetAntialiasing(bool enable) = 0;
-	virtual void SetCulling(CullingMode mode) = 0;
 	virtual int GetDepthBias() const = 0;
 	virtual void SetDepthBias(int depthBias) = 0;
 	virtual void SetFillMode(FillMode mode) = 0;
@@ -382,6 +381,9 @@ public:
 	
 	void setRenderState(RenderState state) { m_state = state; }
 	RenderState getRenderState() const { return m_state; }
+	
+	// TODO remove these when all uses are changed to RenderState
+	void SetCulling(CullingMode mode) { m_state.setCull(mode); }
 	
 protected:
 	

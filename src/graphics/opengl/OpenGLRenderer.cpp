@@ -51,6 +51,7 @@ OpenGLRenderer::OpenGLRenderer()
 	, maxTextureStage(0)
 	, shader(0)
 	, m_maximumAnisotropy(0.f)
+	, m_glcull(GL_NONE)
 	, m_hasMSAA(false)
 	, m_hasColorKey(false)
 	, m_hasBlend(false)
@@ -219,11 +220,15 @@ void OpenGLRenderer::reinit() {
 	
 	// Synchronize GL state cache
 	
+	m_glcull = GL_BACK;
+	m_glstate.setCull(CullNone);
+	
 	glEnable(GL_DEPTH_TEST);
 	glDepthFunc(GL_ALWAYS);
 	m_glstate.setDepthTest(false);
 	
 	m_glstate.setDepthWrite(true);
+	
 	
 	glFogi(GL_FOG_MODE, GL_LINEAR);
 	
@@ -274,7 +279,6 @@ void OpenGLRenderer::resetStateCache() {
 	m_cachedSrcBlend = BlendOne;
 	m_cachedDstBlend = BlendZero;
 	m_cachedDepthBias = 0;
-	m_cachedCullMode = CullNone;
 }
 
 void OpenGLRenderer::shutdown() {
@@ -619,26 +623,6 @@ void OpenGLRenderer::SetAntialiasing(bool enable) {
 	}
 }
 
-static const GLenum arxToGlCullMode[] = {
-	(GLenum)-1, // CullNone,
-	GL_BACK, // CullCW,
-	GL_FRONT, // CullCCW,
-};
-
-void OpenGLRenderer::SetCulling(CullingMode mode) {
-	if(mode == m_cachedCullMode)
-		return;
-
-	m_cachedCullMode = mode;
-
-	if(mode == CullNone) {
-		setGLState(GL_CULL_FACE, false);
-	} else {
-		setGLState(GL_CULL_FACE, true);
-		glCullFace(arxToGlCullMode[mode]);
-	}
-}
-
 int OpenGLRenderer::GetDepthBias() const {
 	return m_cachedDepthBias;
 }
@@ -751,6 +735,21 @@ bool OpenGLRenderer::getSnapshot(Image & image, size_t width, size_t height) {
 void OpenGLRenderer::flushState() {
 	
 	if(m_glstate != m_state) {
+		
+		if(m_glstate.getCull() != m_state.getCull()) {
+			if(m_state.getCull() == CullNone) {
+				glDisable(GL_CULL_FACE);
+			} else {
+				if(m_glstate.getCull() == CullNone) {
+					glEnable(GL_CULL_FACE);
+				}
+				GLenum glcull = m_state.getCull() == CullCW ? GL_BACK : GL_FRONT;
+				if(m_glcull != glcull) {
+					glCullFace(glcull);
+					m_glcull = glcull;
+				}
+			}
+		}
 		
 		if(m_glstate.getDepthTest() != m_state.getDepthTest()) {
 			glDepthFunc(m_state.getDepthTest() ? GL_LEQUAL : GL_ALWAYS);

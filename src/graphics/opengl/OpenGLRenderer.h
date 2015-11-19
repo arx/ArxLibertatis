@@ -77,7 +77,6 @@ public:
 	
 	// Rasterizer
 	void SetAntialiasing(bool enable);
-	void SetCulling(CullingMode mode);
 	int GetDepthBias() const;
 	void SetDepthBias(int depthBias);
 	void SetFillMode(FillMode mode);
@@ -146,10 +145,10 @@ private:
 	mutable BoolStateCache m_cachedStates;
 	BlendingFactor m_cachedSrcBlend;
 	BlendingFactor m_cachedDstBlend;
-	CullingMode m_cachedCullMode;
 	int m_cachedDepthBias;
 	
 	RenderState m_glstate;
+	GLenum m_glcull;
 	
 	bool m_hasMSAA;
 	bool m_hasColorKey;
