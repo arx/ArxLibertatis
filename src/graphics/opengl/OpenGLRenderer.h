@@ -59,7 +59,6 @@ public:
 	
 	// Alphablending & Transparency
 	void SetAlphaFunc(PixelCompareFunc func, float fef); // Ref = [0.0f, 1.0f]
-	void SetBlendFunc(BlendingFactor srcFactor, BlendingFactor dstFactor);
 	
 	// Viewport
 	void SetViewport(const Rect & viewport);
@@ -140,15 +139,12 @@ private:
 	void resetStateCache();
 	typedef std::map<GLenum, bool> BoolStateCache;
 	mutable BoolStateCache m_cachedStates;
-	BlendingFactor m_cachedSrcBlend;
-	BlendingFactor m_cachedDstBlend;
 	
 	RenderState m_glstate;
 	GLenum m_glcull;
 	
 	bool m_hasMSAA;
 	bool m_hasColorKey;
-	bool m_hasBlend;
 	bool m_hasTextureNPOT;
 	
 };

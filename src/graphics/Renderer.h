@@ -335,7 +335,6 @@ public:
 	
 	// Alphablending & Transparency
 	virtual void SetAlphaFunc(PixelCompareFunc func, float fef) = 0; // Ref = [0.0f, 1.0f]
-	virtual void SetBlendFunc(BlendingFactor srcFactor, BlendingFactor dstFactor) = 0;
 	
 	// Viewport
 	virtual void SetViewport(const Rect & viewport) = 0;
@@ -382,12 +381,23 @@ public:
 	// TODO remove these when all uses are changed to RenderState
 	void SetCulling(CullingMode mode) { m_state.setCull(mode); }
 	void SetDepthBias(int depthBias) { m_state.setDepthOffset(depthBias); }
+	void SetBlendFunc(BlendingFactor srcFactor, BlendingFactor dstFactor) {
+		m_srcBlend = srcFactor, m_dstBlend = dstFactor;
+		if(m_hasBlend) {
+			m_state.setBlend(srcFactor, dstFactor);
+		}
+	}
 	
 protected:
 	
 	std::vector<TextureStage *> m_TextureStages;
 	bool m_initialized;
 	RenderState m_state;
+	
+	// TODO remove these when all uses are changed to RenderState
+	bool m_hasBlend;
+	BlendingFactor m_srcBlend;
+	BlendingFactor m_dstBlend;
 	
 	void onRendererInit();
 	void onRendererShutdown();

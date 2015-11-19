@@ -54,7 +54,6 @@ OpenGLRenderer::OpenGLRenderer()
 	, m_glcull(GL_NONE)
 	, m_hasMSAA(false)
 	, m_hasColorKey(false)
-	, m_hasBlend(false)
 	, m_hasTextureNPOT(false)
 {
 	resetStateCache();
@@ -230,6 +229,8 @@ void OpenGLRenderer::reinit() {
 	glEnable(GL_POLYGON_OFFSET_FILL);
 	m_glstate.setDepthOffset(0);
 	
+	glEnable(GL_BLEND);
+	m_glstate.setBlend(BlendOne, BlendZero);
 	
 	glFogi(GL_FOG_MODE, GL_LINEAR);
 	
@@ -277,8 +278,6 @@ void OpenGLRenderer::reinit() {
 
 void OpenGLRenderer::resetStateCache() {
 	m_cachedStates.clear();
-	m_cachedSrcBlend = BlendOne;
-	m_cachedDstBlend = BlendZero;
 }
 
 void OpenGLRenderer::shutdown() {
@@ -425,6 +424,11 @@ void OpenGLRenderer::SetRenderState(RenderStateFlag renderState, bool enable) {
 			if(m_hasBlend == enable) {
 				return;
 			}
+			if(enable) {
+				m_state.setBlend(m_srcBlend, m_dstBlend);
+			} else {
+				m_state.setBlend(BlendOne, BlendZero);
+			}
 			/*
 			 * When rendering color-keyed textures with GL_BLEND enabled we still
 			 * need to 'discard' transparent texels, as blending might not use the src alpha!
@@ -442,7 +446,6 @@ void OpenGLRenderer::SetRenderState(RenderStateFlag renderState, bool enable) {
 			if(colorkey && m_hasMSAA && config.video.colorkeyAlphaToCoverage) {
 				SetRenderState(ColorKey, true);
 			}
-			setGLState(GL_BLEND, enable);
 			break;
 		}
 		
@@ -496,28 +499,6 @@ static const GLenum arxToGlPixelCompareFunc[] = {
 
 void OpenGLRenderer::SetAlphaFunc(PixelCompareFunc func, float ref) {
 	glAlphaFunc(arxToGlPixelCompareFunc[func], ref);
-}
-
-static const GLenum arxToGlBlendFactor[] = {
-	GL_ZERO, // BlendZero,
-	GL_ONE, // BlendOne,
-	GL_SRC_COLOR, // BlendSrcColor,
-	GL_SRC_ALPHA, // BlendSrcAlpha,
-	GL_ONE_MINUS_SRC_COLOR, // BlendInvSrcColor,
-	GL_ONE_MINUS_SRC_ALPHA, // BlendInvSrcAlpha,
-	GL_SRC_ALPHA_SATURATE, // BlendSrcAlphaSaturate,
-	GL_DST_COLOR, // BlendDstColor,
-	GL_DST_ALPHA, // BlendDstAlpha,
-	GL_ONE_MINUS_DST_COLOR, // BlendInvDstColor,
-	GL_ONE_MINUS_DST_ALPHA // BlendInvDstAlpha
-};
-
-void OpenGLRenderer::SetBlendFunc(BlendingFactor srcFactor, BlendingFactor dstFactor) {
-	if(srcFactor != m_cachedSrcBlend || dstFactor != m_cachedDstBlend) {
-		glBlendFunc(arxToGlBlendFactor[srcFactor], arxToGlBlendFactor[dstFactor]);
-		m_cachedSrcBlend = srcFactor;
-		m_cachedDstBlend = dstFactor;
-	}
 }
 
 void OpenGLRenderer::SetViewport(const Rect & _viewport) {
@@ -712,6 +693,20 @@ bool OpenGLRenderer::getSnapshot(Image & image, size_t width, size_t height) {
 	return true;
 }
 
+static const GLenum arxToGlBlendFactor[] = {
+	GL_ZERO, // BlendZero,
+	GL_ONE, // BlendOne,
+	GL_SRC_COLOR, // BlendSrcColor,
+	GL_SRC_ALPHA, // BlendSrcAlpha,
+	GL_ONE_MINUS_SRC_COLOR, // BlendInvSrcColor,
+	GL_ONE_MINUS_SRC_ALPHA, // BlendInvSrcAlpha,
+	GL_SRC_ALPHA_SATURATE, // BlendSrcAlphaSaturate,
+	GL_DST_COLOR, // BlendDstColor,
+	GL_DST_ALPHA, // BlendDstAlpha,
+	GL_ONE_MINUS_DST_COLOR, // BlendInvDstColor,
+	GL_ONE_MINUS_DST_ALPHA // BlendInvDstAlpha
+};
+
 void OpenGLRenderer::flushState() {
 	
 	if(m_glstate != m_state) {
@@ -742,6 +737,13 @@ void OpenGLRenderer::flushState() {
 		if(m_glstate.getDepthOffset() != m_state.getDepthOffset()) {
 			GLfloat depthOffset = -GLfloat(m_state.getDepthOffset());
 			glPolygonOffset(depthOffset, depthOffset);
+		}
+		
+		if(m_glstate.getBlendSrc() != m_state.getBlendSrc()
+		   || m_glstate.getBlendDst() != m_state.getBlendDst()) {
+			GLenum blendSrc = arxToGlBlendFactor[m_state.getBlendSrc()];
+			GLenum blendDst = arxToGlBlendFactor[m_state.getBlendDst()];
+			glBlendFunc(blendSrc, blendDst);
 		}
 		
 		m_glstate = m_state;
