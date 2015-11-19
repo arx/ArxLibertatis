@@ -82,12 +82,12 @@ class RenderState {
 	u32 m_state;
 	ARX_STATIC_ASSERT(sizeof(m_state) * 8 >= End, "fields to not fit into m_state");
 	
-	template <size_t Offset, size_t Size = 1>
+	template <size_t Offset, size_t Size>
 	u32 get() const {
 		return (m_state >> Offset) & ((u32(1) << Size) - 1);
 	}
 	
-	template <size_t Offset, size_t Size = 1>
+	template <size_t Offset, size_t Size>
 	void set(u32 value) {
 		m_state = (m_state & ~(((u32(1) << Size) - 1) << Offset)) | (value << Offset);
 	}
@@ -119,7 +119,7 @@ public:
 	}
 	
 	void setFog(bool enable) {
-		set<Fog>(enable);
+		set<Fog, 1>(enable);
 	}
 	
 	RenderState fog(bool enable = true) const {
@@ -129,11 +129,11 @@ public:
 	}
 	
 	bool getFog() const {
-		return get<Fog>();
+		return get<Fog, 1>();
 	}
 	
 	void setColorKey(bool enable) {
-		set<ColorKey>(enable);
+		set<ColorKey, 1>(enable);
 	}
 	
 	RenderState colorKey(bool enable = true) const {
@@ -143,11 +143,11 @@ public:
 	}
 	
 	bool getColorKey() const {
-		return get<ColorKey>();
+		return get<ColorKey, 1>();
 	}
 	
 	void setDepthTest(bool enable) {
-		set<DepthTest>(enable);
+		set<DepthTest, 1>(enable);
 	}
 	
 	RenderState depthTest(bool enable = true) const {
@@ -157,11 +157,11 @@ public:
 	}
 	
 	bool getDepthTest() const {
-		return get<DepthTest>();
+		return get<DepthTest, 1>();
 	}
 	
 	void setDepthWrite(bool enable) {
-		set<DepthWrite>(enable);
+		set<DepthWrite, 1>(enable);
 	}
 	
 	RenderState depthWrite(bool enable = true) const {
@@ -171,7 +171,7 @@ public:
 	}
 	
 	bool getDepthWrite() const {
-		return get<DepthWrite>();
+		return get<DepthWrite, 1>();
 	}
 	
 	void setDepthOffset(unsigned offset) {
