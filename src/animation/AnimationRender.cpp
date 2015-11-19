@@ -192,7 +192,7 @@ void PopAllTriangleList(bool clear) {
 	ARX_PROFILE_FUNC();
 	
 	GRenderer->SetAlphaFunc(Renderer::CmpGreater, .5f);
-	GRenderer->SetCulling(Renderer::CullNone);
+	GRenderer->SetCulling(CullNone);
 
 	TextureContainer * pTex = GetTextureList();
 	while(pTex) {
@@ -212,7 +212,7 @@ void PopAllTriangleListTransparency() {
 	GRenderer->SetBlendFunc(BlendDstColor, BlendOne);
 	GRenderer->SetAlphaFunc(Renderer::CmpGreater, .5f);
 
-	GRenderer->SetCulling(Renderer::CullNone);
+	GRenderer->SetCulling(CullNone);
 
 	PopOneTriangleList(&TexSpecialColor, true);
 

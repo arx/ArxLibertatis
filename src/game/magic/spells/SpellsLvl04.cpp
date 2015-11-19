@@ -92,7 +92,7 @@ void BlessSpell::Update(float timeDelta) {
 	Vec3f pos = m_pos + Vec3f(0, -5, 0);
 	
 	RenderMaterial mat;
-	mat.setCulling(Renderer::CullNone);
+	mat.setCulling(CullNone);
 	mat.setBlendType(RenderMaterial::Additive);
 	mat.setDepthTest(true);
 	mat.setLayer(RenderMaterial::Decal);
@@ -420,7 +420,7 @@ void CurseSpell::Update(float timeDelta) {
 	m_pos = target;
 	
 	RenderMaterial mat;
-	mat.setCulling(Renderer::CullCW);
+	mat.setCulling(CullCW);
 	mat.setDepthTest(true);
 	mat.setBlendType(RenderMaterial::Opaque);
 	

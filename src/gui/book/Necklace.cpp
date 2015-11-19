@@ -233,7 +233,7 @@ void ARX_INTERFACE_ManageOpenedBook_Finish(const Vec2f & mousePos)
 		}
 	}
 	
-	GRenderer->SetCulling(Renderer::CullCCW);
+	GRenderer->SetCulling(CullCCW);
 	
 	LastRune=-1;
 	

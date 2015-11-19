@@ -242,14 +242,14 @@ static void FadeInOut(float _fVal) {
 	GRenderer->SetRenderState(Renderer::AlphaBlending, true);
 	GRenderer->SetRenderState(Renderer::DepthWrite, false);
 	GRenderer->SetRenderState(Renderer::DepthTest, false);
-	GRenderer->SetCulling(Renderer::CullNone);
+	GRenderer->SetCulling(CullNone);
 
 	EERIEDRAWPRIM(Renderer::TriangleStrip, d3dvertex, 4, true);
 
 	GRenderer->SetRenderState(Renderer::AlphaBlending, false);
 	GRenderer->SetRenderState(Renderer::DepthWrite, true);
 	GRenderer->SetRenderState(Renderer::DepthTest, true);
-	GRenderer->SetCulling(Renderer::CullCCW);
+	GRenderer->SetCulling(CullCCW);
 }
 
 bool ProcessFadeInOut(bool _bFadeIn, float _fspeed) {
@@ -319,7 +319,7 @@ bool Menu2_Render() {
 	GRenderer->SetRenderState(Renderer::Fog, false);
 	GRenderer->SetRenderState(Renderer::DepthWrite, false);
 	GRenderer->SetRenderState(Renderer::DepthTest, false);
-	GRenderer->SetCulling(Renderer::CullNone);
+	GRenderer->SetCulling(CullNone);
 
 	MENUSTATE eOldMenuState=NOP;
 	MENUSTATE eM;
@@ -404,7 +404,7 @@ bool Menu2_Render() {
 
 	GRenderer->SetRenderState(Renderer::Fog, false);
 	GRenderer->SetRenderState(Renderer::DepthWrite, false);
-	GRenderer->SetCulling(Renderer::CullNone);
+	GRenderer->SetCulling(CullNone);
 	pMenuCursor->DrawCursor();
 
 	if(pTextureLoadRender) {
@@ -457,7 +457,7 @@ bool Menu2_Render() {
 	GRenderer->SetRenderState(Renderer::AlphaBlending, false);
 	GRenderer->SetRenderState(Renderer::DepthWrite, true);
 	GRenderer->SetRenderState(Renderer::DepthTest, true);
-	GRenderer->SetCulling(Renderer::CullCCW);
+	GRenderer->SetCulling(CullCCW);
 
 	return true;
 }

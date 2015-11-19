@@ -54,7 +54,7 @@ void Halo_Render() {
 	GRenderer->ResetTexture(0);
 	GRenderer->SetBlendFunc(BlendSrcColor, BlendOne);
 	GRenderer->SetRenderState(Renderer::AlphaBlending, true);
-	GRenderer->SetCulling(Renderer::CullNone);
+	GRenderer->SetCulling(CullNone);
 	GRenderer->SetRenderState(Renderer::DepthWrite, false);
 
 	if(HALOCUR[0] > 0) {

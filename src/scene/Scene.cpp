@@ -1247,7 +1247,7 @@ static void ARX_PORTALS_Frustrum_RenderRoomTCullSoftRender(long room_num) {
 	EERIE_ROOM_DATA & room = portals->rooms[room_num];
 
 	//render opaque
-	GRenderer->SetCulling(Renderer::CullNone);
+	GRenderer->SetCulling(CullNone);
 	GRenderer->SetAlphaFunc(Renderer::CmpGreater, .5f);
 	
 	std::vector<TextureContainer *>::const_iterator itr;
@@ -1556,7 +1556,7 @@ void ARX_SCENE_Render() {
 
 	GRenderer->SetFogColor(Color::none);
 	GRenderer->SetRenderState(Renderer::AlphaBlending, true);
-	GRenderer->SetCulling(Renderer::CullNone);
+	GRenderer->SetCulling(CullNone);
 	GRenderer->SetRenderState(Renderer::DepthWrite, false);
 	GRenderer->SetAlphaFunc(Renderer::CmpGreater, .5f);
 
@@ -1567,7 +1567,7 @@ void ARX_SCENE_Render() {
 
 	GRenderer->SetDepthBias(8);
 	GRenderer->SetRenderState(Renderer::DepthWrite, false);
-	GRenderer->SetCulling(Renderer::CullCW);
+	GRenderer->SetCulling(CullCW);
 	GRenderer->SetAlphaFunc(Renderer::CmpNotEqual, 0.f);
 
 	RenderWater();
@@ -1580,7 +1580,7 @@ void ARX_SCENE_Render() {
 
 	Halo_Render();
 
-	GRenderer->SetCulling(Renderer::CullCCW);
+	GRenderer->SetCulling(CullCCW);
 	GRenderer->SetRenderState(Renderer::AlphaBlending, false);	
 	GRenderer->SetRenderState(Renderer::DepthWrite, true);
 }

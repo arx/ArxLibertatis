@@ -1995,7 +1995,7 @@ void ArxGame::renderLevel() {
 	// Update spells
 	ARX_SPELLS_Update();
 
-	GRenderer->SetCulling(Renderer::CullNone);
+	GRenderer->SetCulling(CullNone);
 	GRenderer->SetRenderState(Renderer::Fog, true);
 		
 	GRenderer->SetFogColor(Color::none);
@@ -2304,7 +2304,7 @@ void ArxGame::goFor2DFX() {
 	GRenderer->SetBlendFunc(BlendOne, BlendOne);
 	GRenderer->SetRenderState(Renderer::AlphaBlending, true);
 	GRenderer->SetRenderState(Renderer::DepthWrite, false);
-	GRenderer->SetCulling(Renderer::CullNone);
+	GRenderer->SetCulling(CullNone);
 	GRenderer->SetRenderState(Renderer::DepthTest, false);
 	GRenderer->SetFogColor(Color::none);
 

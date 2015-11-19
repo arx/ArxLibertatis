@@ -75,7 +75,7 @@ void Trail::Update(float timeDelta) {
 void Trail::Render()
 {
 	RenderMaterial mat;
-	mat.setCulling(Renderer::CullNone);
+	mat.setCulling(CullNone);
 	mat.setBlendType(RenderMaterial::Additive);
 	
 	for(size_t i = 0; i + 1 < m_positions.size() && i + 1 < m_segments.size(); i++) {

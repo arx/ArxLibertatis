@@ -115,7 +115,7 @@ static void drawDebugBoundingBox(const EERIE_2D_BBOX & box, Color color = Color:
 static void drawDebugLights() {
 	
 	GRenderer->SetRenderState(Renderer::AlphaBlending, true);
-	GRenderer->SetCulling(Renderer::CullNone);
+	GRenderer->SetCulling(CullNone);
 	
 	GRenderer->SetBlendFunc(BlendOne, BlendOne);
 	
@@ -162,7 +162,7 @@ static void drawDebugLights() {
 		EERIEDrawSprite(light->pos, 11.f, g_lightSourceTexture, light->rgb.to<u8>(), 0.5f);
 	}
 	
-	GRenderer->SetCulling(Renderer::CullCCW);
+	GRenderer->SetCulling(CullCCW);
 	GRenderer->SetRenderState(Renderer::AlphaBlending, false);
 	
 }

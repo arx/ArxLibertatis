@@ -170,7 +170,7 @@ void CRiseDead::RenderFissure() {
 	Vec3f target;
 	
 	RenderMaterial mat;
-	mat.setCulling(Renderer::CullNone);
+	mat.setCulling(CullNone);
 	mat.setDepthTest(false);
 	mat.setWrapMode(TextureStage::WrapClamp);
 	mat.setBlendType(RenderMaterial::Opaque);
@@ -552,7 +552,7 @@ void CSummonCreature::RenderFissure() {
 	etarget.z = fBetaRadSin;
 	
 	RenderMaterial mat;
-	mat.setCulling(Renderer::CullNone);
+	mat.setCulling(CullNone);
 	mat.setDepthTest(false);
 	mat.setWrapMode(TextureStage::WrapClamp);
 	mat.setBlendType(RenderMaterial::Opaque);

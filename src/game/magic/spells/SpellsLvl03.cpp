@@ -531,7 +531,7 @@ void IceProjectileSpell::Update(float timeDelta) {
 	}
 	
 	RenderMaterial mat;
-	mat.setCulling(Renderer::CullCW);
+	mat.setCulling(CullCW);
 	mat.setDepthTest(true);
 	mat.setBlendType(RenderMaterial::Screen);
 	

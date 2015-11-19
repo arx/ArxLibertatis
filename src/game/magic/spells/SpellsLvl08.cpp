@@ -181,7 +181,7 @@ void ManaDrainSpell::Update(float timeDelta)
 	}
 	
 	RenderMaterial mat;
-	mat.setCulling(Renderer::CullNone);
+	mat.setCulling(CullNone);
 	mat.setDepthTest(true);
 	mat.setBlendType(RenderMaterial::Additive);
 	
@@ -440,7 +440,7 @@ void LifeDrainSpell::Update(float timeDelta)
 	}
 	
 	RenderMaterial mat;
-	mat.setCulling(Renderer::CullNone);
+	mat.setCulling(CullNone);
 	mat.setDepthTest(true);
 	mat.setBlendType(RenderMaterial::Additive);
 	

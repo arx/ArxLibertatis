@@ -50,6 +50,12 @@ enum BlendingFactor {
 	BlendInvDstAlpha        //!< One minus destination alpha
 };
 
+enum CullingMode {
+	CullNone,
+	CullCW,
+	CullCCW
+};
+
 class Renderer {
 	
 public:
@@ -84,13 +90,6 @@ public:
 		CmpNotEqual,            //!< Not Equal
 		CmpGreaterEqual,        //!< Greater Equal
 		CmpAlways               //!< Always
-	};
-	
-	//! Culling 
-	enum CullingMode {
-		CullNone,
-		CullCW,
-		CullCCW
 	};
 	
 	enum FillMode {

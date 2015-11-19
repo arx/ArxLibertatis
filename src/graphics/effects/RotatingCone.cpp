@@ -136,7 +136,7 @@ void RotatingCone::Render() {
 	mat.setBlendType(RenderMaterial::Additive);
 	mat.setWrapMode(TextureStage::WrapMirror);
 	mat.setTexture(m_tsouffle);
-	mat.setCulling(Renderer::CullCW);
+	mat.setCulling(CullCW);
 
 	int i = conenbfaces - 2;
 	int j = 0;
@@ -147,7 +147,7 @@ void RotatingCone::Render() {
 	}
 
 	//tracé du cone front
-	mat.setCulling(Renderer::CullCCW);
+	mat.setCulling(CullCCW);
 
 	i = conenbfaces - 2;
 	j = 0;

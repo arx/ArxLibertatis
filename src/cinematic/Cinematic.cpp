@@ -233,7 +233,7 @@ void Cinematic::InitDeviceObjects() {
 	
 	GRenderer->SetRenderState(Renderer::DepthTest, false);
 	GRenderer->SetRenderState(Renderer::DepthWrite, false);
-	GRenderer->SetCulling(Renderer::CullNone);
+	GRenderer->SetCulling(CullNone);
 	GRenderer->GetTextureStage(0)->setWrapMode(TextureStage::WrapClamp);
 	
 	GRenderer->GetTextureStage(0)->setMipMapLODBias(0);
@@ -246,7 +246,7 @@ void Cinematic::DeleteDeviceObjects() {
 	
 	GRenderer->SetRenderState(Renderer::DepthTest, true);
 	GRenderer->SetRenderState(Renderer::DepthWrite, true);
-	GRenderer->SetCulling(Renderer::CullCCW);
+	GRenderer->SetCulling(CullCCW);
 	GRenderer->GetTextureStage(0)->setWrapMode(TextureStage::WrapRepeat);
 	
 	GRenderer->GetTextureStage(0)->setMipMapLODBias(0);

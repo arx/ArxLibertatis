@@ -293,7 +293,7 @@ void ControlTargetSpell::Update(float timeDelta) {
 	
 	ulCurrentTime += timeDelta;
 	
-	GRenderer->SetCulling(Renderer::CullNone);
+	GRenderer->SetCulling(CullNone);
 	GRenderer->SetRenderState(Renderer::DepthWrite, false);
 	GRenderer->SetRenderState(Renderer::AlphaBlending, true);
 	GRenderer->SetBlendFunc(BlendOne, BlendOne);

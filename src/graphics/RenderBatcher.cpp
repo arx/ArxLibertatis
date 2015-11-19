@@ -70,7 +70,7 @@ void RenderBatcher::render() {
 	GRenderer->GetTextureStage(0)->setWrapMode(TextureStage::WrapRepeat);
 	GRenderer->SetDepthBias(0);
 	GRenderer->SetRenderState(Renderer::DepthTest, true);
-	GRenderer->SetCulling(Renderer::CullCCW);
+	GRenderer->SetCulling(CullCCW);
 	GRenderer->SetRenderState(Renderer::AlphaBlending, false);
 }
 
@@ -120,7 +120,7 @@ RenderMaterial::RenderMaterial()
 	, m_layer(Effect)
 	, m_wrapMode(TextureStage::WrapRepeat)
 	, m_depthBias(0)
-	, m_cullingMode(Renderer::CullNone) {
+	, m_cullingMode(CullNone) {
 }
 
 bool RenderMaterial::operator<(const RenderMaterial & other) const {

@@ -414,7 +414,7 @@ static void RenderBookPlayerCharacter() {
 	GRenderer->SetScissor(Rect::ZERO);
 	
 	GRenderer->SetRenderState(Renderer::AlphaBlending, false);
-	GRenderer->SetCulling(Renderer::CullNone);
+	GRenderer->SetCulling(CullNone);
 	SetActiveCamera(oldcam);
 	PrepareCamera(oldcam, g_size);
 	
@@ -426,7 +426,7 @@ static void RenderBookPlayerCharacter() {
 		}
 	}
 	
-	GRenderer->SetCulling(Renderer::CullNone);
+	GRenderer->SetCulling(CullNone);
 	
 	if(ValidIONum(player.equiped[EQUIP_SLOT_ARMOR])) {
 		Entity *tod = entities[player.equiped[EQUIP_SLOT_ARMOR]];
@@ -467,7 +467,7 @@ static void RenderBookPlayerCharacter() {
 		}
 	}
 	
-	GRenderer->SetCulling(Renderer::CullNone);
+	GRenderer->SetCulling(CullNone);
 	
 	if(ValidIONum(player.equiped[EQUIP_SLOT_RING_LEFT])) {
 		Entity *todraw = entities[player.equiped[EQUIP_SLOT_RING_LEFT]];

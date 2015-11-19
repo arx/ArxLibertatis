@@ -288,7 +288,7 @@ void CLightning::Render()
 	m_cnodetab[0].f = randomVec(-f, f);
 	
 	RenderMaterial mat;
-	mat.setCulling(Renderer::CullNone);
+	mat.setCulling(CullNone);
 	mat.setDepthTest(false);
 	mat.setBlendType(RenderMaterial::Additive);
 	

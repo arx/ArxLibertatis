@@ -367,7 +367,7 @@ Vec2i Font::process(int x, int y, text_iterator start, text_iterator end, Color 
 
 		GRenderer->SetRenderState(Renderer::DepthTest, false);
 		GRenderer->SetRenderState(Renderer::DepthWrite, false);
-		GRenderer->SetCulling(Renderer::CullNone);
+		GRenderer->SetCulling(CullNone);
 		
 		// Fixed pipeline texture stage operation
 		GRenderer->GetTextureStage(0)->setColorOp(TextureStage::ArgDiffuse);
@@ -396,7 +396,7 @@ Vec2i Font::process(int x, int y, text_iterator start, text_iterator end, Color 
 		
 		GRenderer->SetRenderState(Renderer::AlphaBlending, false);
 		GRenderer->SetRenderState(Renderer::DepthWrite, true);
-		GRenderer->SetCulling(Renderer::CullCCW);
+		GRenderer->SetCulling(CullCCW);
 		
 	}
 	

@@ -89,7 +89,7 @@ void LoadLevelScreen(long num) {
 		GRenderer->Clear(Renderer::ColorBuffer | Renderer::DepthBuffer);
 		
 		GRenderer->SetRenderState(Renderer::DepthTest, true);
-		GRenderer->SetCulling(Renderer::CullNone);
+		GRenderer->SetCulling(CullNone);
 		GRenderer->SetRenderState(Renderer::DepthWrite, true);
 		GRenderer->SetRenderState(Renderer::Fog, false);
 		GRenderer->SetRenderState(Renderer::AlphaBlending, false);
