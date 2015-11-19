@@ -403,20 +403,6 @@ Texture2D * OpenGLRenderer::CreateTexture2D() {
 	return texture;
 }
 
-void OpenGLRenderer::setGLState(GLenum state, bool enable) {
-	BoolStateCache::iterator it = m_cachedStates.find(state);
-
-	// No change ?
-	if(it == m_cachedStates.end() || it->second != enable) {
-		if(enable) {
-			glEnable(state);
-		} else {
-			glDisable(state);
-		}
-		m_cachedStates[state] = enable;
-	}
-}
-
 static const GLenum arxToGlPixelCompareFunc[] = {
 	GL_NEVER, // CmpNever,
 	GL_LESS, // CmpLess,
