@@ -417,45 +417,6 @@ void OpenGLRenderer::setGLState(GLenum state, bool enable) {
 	}
 }
 
-void OpenGLRenderer::SetRenderState(RenderStateFlag renderState, bool enable) {
-	
-	switch(renderState) {
-		
-		case AlphaBlending: {
-			if(enable) {
-				m_state.setBlend(m_srcBlend, m_dstBlend);
-			} else {
-				m_state.setBlend(BlendOne, BlendZero);
-			}
-			m_hasBlend = enable;
-			break;
-		}
-		
-		case ColorKey: {
-			m_state.setColorKey(enable);
-			break;
-		}
-		
-		case DepthTest: {
-			m_state.setDepthTest(enable);
-			break;
-		}
-		
-		case DepthWrite: {
-			m_state.setDepthWrite(enable);
-			break;
-		}
-		
-		case Fog: {
-			m_state.setFog(enable);
-			break;
-		}
-		
-		default:
-			LogWarning << "Unsupported render state: " << renderState;
-	}
-}
-
 static const GLenum arxToGlPixelCompareFunc[] = {
 	GL_NEVER, // CmpNever,
 	GL_LESS, // CmpLess,

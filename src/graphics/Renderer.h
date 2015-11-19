@@ -240,15 +240,6 @@ public:
 		
 	};
 	
-	//! Render states
-	enum RenderStateFlag {
-		AlphaBlending,
-		ColorKey,
-		DepthTest,
-		DepthWrite,
-		Fog,
-	};
-	
 	//! Pixel comparison functions
 	enum PixelCompareFunc {
 		CmpNever,               //!< Never
@@ -330,10 +321,6 @@ public:
 	// Factory
 	virtual Texture2D * CreateTexture2D() = 0;
 	
-	// Render states
-	virtual void SetRenderState(RenderStateFlag renderState, bool enable) = 0;
-	
-	// Alphablending & Transparency
 	virtual void SetAlphaFunc(PixelCompareFunc func, float fef) = 0; // Ref = [0.0f, 1.0f]
 	
 	// Viewport
@@ -379,6 +366,14 @@ public:
 	RenderState getRenderState() const { return m_state; }
 	
 	// TODO remove these when all uses are changed to RenderState
+	enum RenderStateFlag {
+		AlphaBlending,
+		ColorKey,
+		DepthTest,
+		DepthWrite,
+		Fog,
+	};
+	void SetRenderState(RenderStateFlag renderState, bool enable);
 	void SetCulling(CullingMode mode) { m_state.setCull(mode); }
 	void SetDepthBias(int depthBias) { m_state.setDepthOffset(depthBias); }
 	void SetBlendFunc(BlendingFactor srcFactor, BlendingFactor dstFactor) {
