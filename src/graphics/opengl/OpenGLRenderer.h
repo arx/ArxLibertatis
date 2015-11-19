@@ -20,7 +20,6 @@
 #ifndef ARX_GRAPHICS_OPENGL_OPENGLRENDERER_H
 #define ARX_GRAPHICS_OPENGL_OPENGLRENDERER_H
 
-#include <map>
 #include <boost/intrusive/list.hpp>
 
 #include "graphics/Renderer.h"
@@ -132,11 +131,6 @@ private:
 	
 	typedef boost::intrusive::list<GLTexture2D, boost::intrusive::constant_time_size<false> > TextureList;
 	TextureList textures;
-
-	// State cache...
-	void resetStateCache();
-	typedef std::map<GLenum, bool> BoolStateCache;
-	mutable BoolStateCache m_cachedStates;
 	
 	RenderState m_glstate;
 	GLenum m_glcull;

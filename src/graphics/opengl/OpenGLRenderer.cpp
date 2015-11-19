@@ -54,9 +54,7 @@ OpenGLRenderer::OpenGLRenderer()
 	, m_glcull(GL_NONE)
 	, m_hasMSAA(false)
 	, m_hasTextureNPOT(false)
-{
-	resetStateCache();
-}
+{ }
 
 OpenGLRenderer::~OpenGLRenderer() {
 	
@@ -212,8 +210,6 @@ void OpenGLRenderer::reinit() {
 		LogWarning << "Missing OpenGL extension ARB_map_buffer_range, VBO performance will suffer.";
 	}
 
-	resetStateCache();
-	
 	// Synchronize GL state cache
 	
 	m_glcull = GL_BACK;
@@ -275,10 +271,6 @@ void OpenGLRenderer::reinit() {
 	
 	onRendererInit();
 	
-}
-
-void OpenGLRenderer::resetStateCache() {
-	m_cachedStates.clear();
 }
 
 void OpenGLRenderer::shutdown() {
