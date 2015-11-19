@@ -361,13 +361,8 @@ Vec2i Font::process(int x, int y, text_iterator start, text_iterator end, Color 
 	}
 	
 	if(DoDraw && !mapTextureVertices.empty()) {
-
-		GRenderer->SetRenderState(Renderer::AlphaBlending, true);
-		GRenderer->SetBlendFunc(BlendSrcAlpha, BlendInvSrcAlpha);
-
-		GRenderer->SetRenderState(Renderer::DepthTest, false);
-		GRenderer->SetRenderState(Renderer::DepthWrite, false);
-		GRenderer->SetCulling(CullNone);
+		
+		UseRenderState state(render2D());
 		
 		// Fixed pipeline texture stage operation
 		GRenderer->GetTextureStage(0)->setColorOp(TextureStage::ArgDiffuse);
@@ -393,10 +388,6 @@ Vec2i Font::process(int x, int y, text_iterator start, text_iterator end, Color 
 		stage->setWrapMode(TextureStage::WrapRepeat);
 		stage->setMinFilter(TextureStage::FilterLinear);
 		stage->setMagFilter(TextureStage::FilterLinear);
-		
-		GRenderer->SetRenderState(Renderer::AlphaBlending, false);
-		GRenderer->SetRenderState(Renderer::DepthWrite, true);
-		GRenderer->SetCulling(CullCCW);
 		
 	}
 	
