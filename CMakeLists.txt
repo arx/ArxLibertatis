@@ -1082,7 +1082,8 @@ set(ARX_SOURCES
 
 # Set the icon for the Windows executable by adding this resource file to the sources
 if(WIN32)
-	list(APPEND ARX_SOURCES data/icons/arx-libertatis.rc)
+	set(ARX_ICON_RC data/icons/arx-libertatis.rc)
+	list(APPEND ARX_SOURCES ${ARX_ICON_RC})
 endif()
 
 
@@ -1106,7 +1107,7 @@ set(VERSION_FILE     "${CMAKE_BINARY_DIR}/core/Version.cpp")
 set(VERSION_SOURCES  VERSION "VERSION" AUTHORS "AUTHORS" COPYING "COPYING")
 file(MAKE_DIRECTORY "${CMAKE_BINARY_DIR}/core")
 version_file("${VERSION_TEMPLATE}" "${VERSION_FILE}" "${VERSION_SOURCES}" ".git")
-list(APPEND ARX_SOURCES "${VERSION_FILE}")
+list(APPEND ARX_SOURCES ${VERSION_FILE})
 
 
 # Add executables
@@ -1141,13 +1142,14 @@ if(ARX_HAVE_CRASHREPORTER)
 		${IO_FILESYSTEM_SOURCES}
 		${IO_LOGGER_SOURCES}
 		${UTIL_SOURCES}
-		"${VERSION_FILE}"
+		${VERSION_FILE}
 	)
 	
 	if(WIN32)
 		list(APPEND arxcrashreporter_SOURCES
 			tools/crashreporter/Win32Utilities.h
 			tools/crashreporter/Win32Utilities.cpp
+			${ARX_ICON_RC}
 		)
 	endif()
 	
@@ -1229,8 +1231,14 @@ if(ARX_HAVE_PROFILER)
 	set(arxprofiler_SOURCES
 		src/platform/profiler/ProfilerDataFormat.h
 		${UTIL_SOURCES}
-		"${VERSION_FILE}"
+		${VERSION_FILE}
 	)
+	
+	if(WIN32)
+		list(APPEND arxprofiler_SOURCES
+			${ARX_ICON_RC}
+		)
+	endif()
 	
 	set(arxprofiler_MANUAL_SOURCES
 		${arxprofiler_SOURCES}
