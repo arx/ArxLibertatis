@@ -312,9 +312,9 @@ Widget* TextWidget::OnShortCut() {
 }
 
 static void FontRenderText(Font * _pFont, const Rectf & rzone, const std::string & _pText, Color _c) {
-	
-	if(pTextManage && !rzone.empty()) {
-		pTextManage->AddText(_pFont, _pText, Rect(rzone), _c);
+	Rect rect(rzone);
+	if(pTextManage && !rect.empty()) {
+		pTextManage->AddText(_pFont, _pText, rect, _c);
 	}
 }
 

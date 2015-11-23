@@ -83,6 +83,8 @@ bool TextManager::AddText(Font* _pFont, const std::string & _lpszUText, const Re
 		return false;
 	}
 	
+	arx_assert(!_rRect.empty());
+	
 	pArxText->pFont = _pFont;
 	pArxText->lpszUText = _lpszUText;
 	pArxText->rRect = _rRect;
