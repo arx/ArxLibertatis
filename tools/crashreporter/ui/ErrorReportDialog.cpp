@@ -77,6 +77,8 @@ ErrorReportDialog::ErrorReportDialog(ErrorReport& errorReport, QWidget *parent) 
 	ui->pageBinary->layout()->addWidget(&m_fileViewHex);
 
 	startTask(new GatherInfoTask(m_errorReport), Pane_Welcome);
+	
+	setWindowIcon(QApplication::windowIcon());
 }
 
 ErrorReportDialog::~ErrorReportDialog()
