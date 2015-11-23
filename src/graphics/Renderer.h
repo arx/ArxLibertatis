@@ -80,7 +80,6 @@ class RenderState {
 	
 	// We coul use bitfields here instead but they are missing (an efficient) operator==.
 	u32 m_state;
-	ARX_STATIC_ASSERT(sizeof(m_state) * 8 >= End, "fields to not fit into m_state");
 	
 	template <size_t Offset, size_t Size>
 	u32 get() const {
@@ -97,6 +96,7 @@ public:
 	RenderState()
 		: m_state(0)
 	{
+		ARX_STATIC_ASSERT(sizeof(m_state) * 8 >= End, "fields do not fit into m_state");
 		disableBlend();
 	}
 	
