@@ -129,7 +129,7 @@ public:
 	}
 	
 	bool getFog() const {
-		return get<Fog, 1>();
+		return get<Fog, 1>() != 0;
 	}
 	
 	void setColorKey(bool enable) {
@@ -143,7 +143,7 @@ public:
 	}
 	
 	bool getColorKey() const {
-		return get<ColorKey, 1>();
+		return get<ColorKey, 1>() != 0;
 	}
 	
 	void setDepthTest(bool enable) {
@@ -157,7 +157,7 @@ public:
 	}
 	
 	bool getDepthTest() const {
-		return get<DepthTest, 1>();
+		return get<DepthTest, 1>() != 0;
 	}
 	
 	void setDepthWrite(bool enable) {
@@ -171,7 +171,7 @@ public:
 	}
 	
 	bool getDepthWrite() const {
-		return get<DepthWrite, 1>();
+		return get<DepthWrite, 1>() != 0;
 	}
 	
 	void setDepthOffset(unsigned offset) {
