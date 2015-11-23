@@ -215,7 +215,7 @@ public:
 		}
 		
 		{
-			TextWidget * txt = new TextWidget(BUTTON_INVALID, hFontControls, " ", Vec2f(20, 0));
+			TextWidget * txt = new TextWidget(BUTTON_INVALID, hFontControls, std::string(), Vec2f(20, 0));
 			txt->m_targetMenu = EDIT_QUEST_SAVE_CONFIRM;
 			txt->SetCheckOff();
 			txt->m_savegame = SavegameHandle::Invalid;
@@ -333,7 +333,7 @@ public:
 		}
 	
 		{
-			TextWidget * txt = new TextWidget(BUTTON_INVALID, hFontControls, " ", Vec2f(20, 0));
+			TextWidget * txt = new TextWidget(BUTTON_INVALID, hFontControls, std::string(), Vec2f(20, 0));
 			txt->m_targetMenu = EDIT_QUEST_SAVE_CONFIRM;
 			txt->m_savegame = SavegameHandle::Invalid;
 			txt->SetCheckOff();
