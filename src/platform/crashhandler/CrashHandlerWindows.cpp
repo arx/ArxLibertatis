@@ -323,7 +323,7 @@ void CrashHandlerWindows::handleCrash(int crashType, void* crashExtraInfo, int F
 	}
 	
 	// Get current thread id
-	m_pCrashInfo->threadHandle = GetCurrentThread();
+	m_pCrashInfo->threadHandle = u64(GetCurrentThread());
 	
 	// Try to spawn a sub-process to process the crash info
 	STARTUPINFO si;

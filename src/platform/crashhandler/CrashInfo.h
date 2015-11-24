@@ -28,6 +28,8 @@
 #include "platform/Platform.h"
 #include "platform/Process.h"
 
+#pragma pack(push,1)
+
 struct CrashInfoBase {
 	
 	CrashInfoBase()
@@ -52,11 +54,11 @@ struct CrashInfoBase {
 	u32 architecture;
 	
 	// Files to attach to the report.
-	int	 nbFilesAttached;
+	u32 nbFilesAttached;
 	char attachedFiles[MaxNbFiles][MaxFilenameLen];
 	
 	// Variables to add to the report.
-	int nbVariables;
+	u32 nbVariables;
 	struct Variable {
 		char name[MaxVariableNameLen];
 		char value[MaxVariableValueLen];
@@ -78,6 +80,7 @@ struct CrashInfoBase {
 	
 };
 
+#pragma pack(pop)
 
 #if ARX_PLATFORM != ARX_PLATFORM_WIN32
 
@@ -99,17 +102,21 @@ struct CrashInfo : public CrashInfoBase {
 #include <windows.h>
 #include <dbghelp.h>
 
+#pragma pack(push,1)
+
 struct CrashInfo : public CrashInfoBase {
 	
 	// Detailed crash info (messages, registers, whatever).
 	char detailedCrashInfo[MaxDetailCrashInfoLen];
 	
 	CONTEXT contextRecord;
-	CHAR	miniDumpTmpFile[MAX_PATH];
-	HANDLE  threadHandle;
-	DWORD	exceptionCode;
+	CHAR miniDumpTmpFile[MAX_PATH];
+	u64 threadHandle;
+	DWORD exceptionCode;
 	
 };
+
+#pragma pack(pop)
 
 #endif
 

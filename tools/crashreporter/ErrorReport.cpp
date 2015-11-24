@@ -117,7 +117,7 @@ bool ErrorReport::Initialize()
 	m_pCrashInfo->reporterStarted.post();
 
 	// Add attached files from the report
-	for(int i = 0; i < m_pCrashInfo->nbFilesAttached; i++)
+	for(u32 i = 0; i < m_pCrashInfo->nbFilesAttached; i++)
 		AddFile(m_pCrashInfo->attachedFiles[i]);
 
 	m_ReportFolder = fs::path(m_pCrashInfo->crashReportFolder) / fs::path(m_CrashDateTime.toString("yyyy.MM.dd hh.mm.ss").toUtf8());
@@ -532,7 +532,9 @@ bool ErrorReport::GetMiscCrashInfo() {
 	std::string callStack, callstackTop;
 	u32 callstackCrc;
 
-	bool bCallstack = GetCallStackInfo(hProcess, m_pCrashInfo->threadHandle, &m_pCrashInfo->contextRecord, callStack, callstackTop, callstackCrc);
+	bool bCallstack = GetCallStackInfo(hProcess, HANDLE(m_pCrashInfo->threadHandle),
+	                                   &m_pCrashInfo->contextRecord, callStack,
+	                                   callstackTop, callstackCrc);
 	if(!bCallstack) 
 	{
 		m_DetailedError = "A failure occured when obtaining information regarding the callstack.";
@@ -620,7 +622,7 @@ bool ErrorReport::WriteReport(const fs::path & fileName) {
 
 		xml.writeComment("Variables attached by the crashed process");
 		xml.writeStartElement("Variables");
-		for(int i = 0; i < m_pCrashInfo->nbVariables; ++i)
+		for(u32 i = 0; i < m_pCrashInfo->nbVariables; ++i)
 		{
 			xml.writeStartElement("Variable");
 			xml.writeAttribute("Name", m_pCrashInfo->variables[i].name);

@@ -189,6 +189,7 @@ void CrashHandlerImpl::destroySharedMemory() {
 }
 
 void CrashHandlerImpl::fillBasicCrashInfo() {
+	
 	m_pCrashInfo->architecture = ARX_ARCH;
 	m_pCrashInfo->processId = platform::getProcessId();
 
@@ -227,7 +228,7 @@ bool CrashHandlerImpl::addAttachedFile(const fs::path & file) {
 		return false;
 	}
 
-	for(int i = 0; i < m_pCrashInfo->nbFilesAttached; i++) {
+	for(u32 i = 0; i < m_pCrashInfo->nbFilesAttached; i++) {
 		if(strcmp(m_pCrashInfo->attachedFiles[i], file.string().c_str()) == 0) {
 			LogWarning << "File \"" << file << "\" is already attached.";
 			return false;
@@ -254,7 +255,7 @@ bool CrashHandlerImpl::setNamedVariable(const std::string& name, const std::stri
 	}
 
 	// Check if our array already contains this variable.
-	for(int i = 0; i < m_pCrashInfo->nbVariables; i++) {
+	for(u32 i = 0; i < m_pCrashInfo->nbVariables; i++) {
 		if(strcmp(m_pCrashInfo->variables[i].name, name.c_str()) == 0) {
 			util::storeStringTerminated(m_pCrashInfo->variables[i].value, value);
 			return true;
