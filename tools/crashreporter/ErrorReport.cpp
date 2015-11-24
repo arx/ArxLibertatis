@@ -21,6 +21,7 @@
 
 #include "platform/Platform.h"
 
+#include <algorithm>
 #include <signal.h>
 
 #if ARX_PLATFORM == ARX_PLATFORM_WIN32
@@ -69,15 +70,17 @@
 
 #include "core/Version.h"
 
-#include "io/fs/Filesystem.h"
-#include "io/fs/FileStream.h"
-
 #include "crashreporter/Win32Utilities.h"
 #include "crashreporter/tbg/TBG.h"
+
+#include "io/fs/Filesystem.h"
+#include "io/fs/FileStream.h"
 
 #include "platform/Architecture.h"
 #include "platform/OS.h"
 #include "platform/Process.h"
+
+#include "util/String.h"
 
 ErrorReport::ErrorReport(const QString& sharedMemoryName)
 	: m_RunningTimeSec(0)
@@ -117,10 +120,14 @@ bool ErrorReport::Initialize()
 	m_pCrashInfo->reporterStarted.post();
 
 	// Add attached files from the report
-	for(u32 i = 0; i < m_pCrashInfo->nbFilesAttached; i++)
-		AddFile(m_pCrashInfo->attachedFiles[i]);
+	size_t nbFilesAttached = std::min(size_t(m_pCrashInfo->nbFilesAttached),
+	                                  size_t(CrashInfo::MaxNbFiles));
+	for(size_t i = 0; i < nbFilesAttached; i++) {
+		AddFile(util::loadString(m_pCrashInfo->attachedFiles[i]));
+	}
 
-	m_ReportFolder = fs::path(m_pCrashInfo->crashReportFolder) / fs::path(m_CrashDateTime.toString("yyyy.MM.dd hh.mm.ss").toUtf8());
+	m_ReportFolder = fs::path(util::loadString(m_pCrashInfo->crashReportFolder))
+	                 / fs::path(m_CrashDateTime.toString("yyyy.MM.dd hh.mm.ss").toUtf8());
 
 	if(!fs::create_directories(m_ReportFolder))
 	{
@@ -134,13 +141,13 @@ bool ErrorReport::Initialize()
 bool ErrorReport::GetCrashDump(const fs::path & fileName) {
 	
 #if ARX_PLATFORM == ARX_PLATFORM_WIN32
+	
+	fs::path miniDumpTmpFile = util::loadString(m_pCrashInfo->miniDumpTmpFile);
+	
 	bool bHaveDump = false;
-
-	if(fs::exists(m_pCrashInfo->miniDumpTmpFile))
-	{
+	if(!miniDumpTmpFile.empty() && fs::exists(miniDumpTmpFile)) {
 		fs::path fullPath = m_ReportFolder / fileName;
-		if(fs::rename(m_pCrashInfo->miniDumpTmpFile, fullPath))
-		{
+		if(fs::rename(miniDumpTmpFile, fullPath)) {
 			AddFile(fullPath);
 			bHaveDump = true;
 		}
@@ -543,7 +550,7 @@ bool ErrorReport::GetMiscCrashInfo() {
 	
 	m_ReportUniqueID = QString("[%1]").arg(QString::number(callstackCrc, 16).toUpper());
 	
-	m_ReportDescription = m_pCrashInfo->detailedCrashInfo;
+	m_ReportDescription = util::loadString(m_pCrashInfo->detailedCrashInfo).c_str();
 	m_ReportDescription += "\nCallstack:\n";
 	m_ReportDescription += callStack.c_str();
 	m_ReportTitle = QString("%1 %2").arg(m_ReportUniqueID, callstackTop.c_str());
@@ -586,8 +593,8 @@ bool ErrorReport::WriteReport(const fs::path & fileName) {
 		
 		xml.writeComment("Information related to the crashed process");
 		xml.writeStartElement("Process");
-			xml.writeTextElement("Path", m_pCrashInfo->executablePath);
-			xml.writeTextElement("Version", m_pCrashInfo->executableVersion);
+			xml.writeTextElement("Path", util::loadString(m_pCrashInfo->executablePath).c_str());
+			xml.writeTextElement("Version", util::loadString(m_pCrashInfo->executableVersion).c_str());
 			if(m_ProcessMemoryUsage != 0) {
 				xml.writeTextElement("MemoryUsage", QString::number(m_ProcessMemoryUsage));
 			}
@@ -622,11 +629,12 @@ bool ErrorReport::WriteReport(const fs::path & fileName) {
 
 		xml.writeComment("Variables attached by the crashed process");
 		xml.writeStartElement("Variables");
-		for(u32 i = 0; i < m_pCrashInfo->nbVariables; ++i)
-		{
+		size_t nbVariables = std::min(size_t(m_pCrashInfo->nbVariables),
+		                              size_t(CrashInfo::MaxNbVariables));
+		for(size_t i = 0; i < nbVariables; ++i) {
 			xml.writeStartElement("Variable");
-			xml.writeAttribute("Name", m_pCrashInfo->variables[i].name);
-			xml.writeAttribute("Value", m_pCrashInfo->variables[i].value);
+			xml.writeAttribute("Name", util::loadString(m_pCrashInfo->variables[i].name).c_str());
+			xml.writeAttribute("Value", util::loadString(m_pCrashInfo->variables[i].value).c_str());
 			xml.writeEndElement();
 		}
 		xml.writeEndElement();
