@@ -225,6 +225,8 @@ ProfilerView::ProfilerView(QWidget* parent)
 	setVerticalScrollBarPolicy(Qt::ScrollBarAlwaysOff);
 
 	m_scene = new QGraphicsScene(this);
+	m_scene->setItemIndexMethod(QGraphicsScene::NoIndex);
+	
 	setScene(m_scene);
 
 	QFont font;
