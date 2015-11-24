@@ -55,7 +55,6 @@
 #include <QFile>
 #include <QFileInfo>
 #include <QFileInfoList>
-#include <QSslSocket>
 #include <QThread>
 #include <QXmlStreamWriter>
 #include <QByteArray>
@@ -699,9 +698,6 @@ bool ErrorReport::SendReport(ErrorReport::IProgressNotifier* pProgressNotifier)
 
 	pProgressNotifier->taskStarted("Sending crash report", 3 + nbFilesToSend);
 
-	// This must be called before creating our QNetworkAccessManager
-	AddSSLCertificate();
-
 	TBG::Server server("https://bugs.arx-libertatis.org");
 	
 	// Login to TBG server
@@ -816,30 +812,6 @@ void ErrorReport::ReleaseApplicationLock() {
 	// Kill the original, busy-waiting process.
 	kill(m_pCrashInfo->processId, SIGKILL);
 #endif
-}
-
-void ErrorReport::AddSSLCertificate() {
-	
-	QFile file(":/startcom.cer", 0);
-	if(file.open(QIODevice::ReadOnly)) {
-		QSslCertificate certificate(file.readAll(), QSsl::Der);
-		
-		if(certificate.isNull()) {
-			return;
-		}
-		
-		#if QT_VERSION < QT_VERSION_CHECK(5, 0, 0)
-		if(!certificate.isValid()) {
-			return;
-		}
-		#else
-		if(certificate.isBlacklisted()) {
-			return;
-		}
-		#endif
-		
-		QSslSocket::addDefaultCaCertificate(certificate);
-	}
 }
 
 void ErrorReport::AddFile(const fs::path& fileName)
