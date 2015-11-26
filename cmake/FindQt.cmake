@@ -40,6 +40,7 @@ if(NOT HAVE_QT AND (NOT WITH_QT OR WITH_QT EQUAL 5))
 		set(Qt${lib}_DEFINITIONS ${Qt5${lib}_DEFINITIONS})
 		set(Qt${lib}_INCLUDE_DIRS ${Qt5${lib}_INCLUDE_DIRS})
 		set(Qt${lib}_EXECUTABLE_COMPILE_FLAGS ${Qt5${lib}_EXECUTABLE_COMPILE_FLAGS})
+		set(Qt${lib}_SOURCES)
 	endforeach()
 	
 	if(HAVE_QT5)
@@ -58,6 +59,88 @@ if(NOT HAVE_QT AND (NOT WITH_QT OR WITH_QT EQUAL 5))
 		
 		set(Qt_VERSION ${Qt5Core_VERSION})
 		set(HAVE_QT 1)
+		
+		# Handle static Qt 5 windows builds
+		# Even though Qt ships it's own CMake configuration files, they do not add
+		# all the required dependencies for their imported static library targets
+		# - and those they do add are set with the wrong property :/
+		if(WIN32)
+			foreach(lib IN LISTS _Qt_COMPONENTS)
+				
+				if(NOT TARGET Qt5::${lib})
+					continue()
+				endif()
+				
+				get_property(_Qt_lib TARGET Qt5::${lib} PROPERTY IMPORTED_LOCATION_RELEASE)
+				if(NOT _Qt_lib)
+					get_property(_Qt_lib TARGET Qt5::${lib} PROPERTY IMPORTED_LOCATION)
+				endif()
+				get_property(_Qt_implib TARGET Qt5::${lib} PROPERTY IMPORTED_IMPLIB_RELEASE)
+				if(NOT _Qt_implib)
+					get_property(_Qt_implib TARGET Qt5::${lib} PROPERTY IMPORTED_IMPLIB)
+				endif()
+				
+				if(_Qt_implib OR NOT _Qt_lib OR NOT _Qt_lib MATCHES ".(lib|a)$")
+					# Does not look like a static library
+					continue()
+				endif()
+				
+				set(_Qt_extra_libs)
+				
+				# Qt sets this for Qt5::Gui on either ANGLE or opengl
+				foreach(var IN ITEMS DEPENDENT_LIBRARIES_RELEASE DEPENDENT_LIBRARIES)
+					get_property(_Qt_deps TARGET Qt5::${lib} PROPERTY IMPORTED_LINK_${var})
+					if(_Qt_deps)
+						list(APPEND _Qt_extra_libs ${_Qt_deps})
+					endif()
+				endforeach()
+				
+				if(lib STREQUAL "Core")
+					get_filename_component(_Qt_libdir ${_Qt_lib} PATH)
+					foreach(ext IN ITEMS lib a)
+						if(EXISTS "${_Qt_libdir}/qtpcre.lib")
+							list(APPEND _Qt_extra_libs "${_Qt_libdir}/qtpcre.lib")
+							break()
+						endif()
+					endforeach()
+					list(APPEND _Qt_extra_libs kernel32 user32 shell32 uuid ole32 advapi32 ws2_32)
+				elseif(lib STREQUAL "Concurrent")
+					list(APPEND _Qt_extra_libs ${QtCore_LIBRARIES})
+				elseif(lib STREQUAL "Gui")
+					get_filename_component(_Qt_libdir ${_Qt_lib} PATH)
+					foreach(ext IN ITEMS lib a)
+						if(EXISTS "${_Qt_libdir}/Qt5PlatformSupport.lib")
+							list(APPEND _Qt_extra_libs "${_Qt_libdir}/Qt5PlatformSupport.lib")
+							break()
+						endif()
+					endforeach()
+					if(TARGET Qt5::QWindowsIntegrationPlugin)
+						list(APPEND _Qt_extra_libs Qt5::QWindowsIntegrationPlugin)
+					endif()
+					# Just statically linking the plugin is not enough
+					set(_Qt_usewinplugin "${CMAKE_BINARY_DIR}/QtUseWindowsIntegration.cpp")
+					file(WRITE ${_Qt_usewinplugin} "#include <QtPlugin>\n")
+					file(APPEND ${_Qt_usewinplugin} "Q_IMPORT_PLUGIN(QWindowsIntegrationPlugin)\n")
+					list(APPEND QtGui_SOURCES ${_Qt_usewinplugin})
+					list(APPEND _Qt_extra_libs gdi32 comdlg32 oleaut32 imm32 winmm ws2_32 ole32
+					                           user32 advapi32 ${Qt5Core_LIBRARIES})
+				elseif(lib STREQUAL "Widgets")
+					list(APPEND _Qt_extra_libs gdi32 comdlg32 oleaut32 imm32 winmm ws2_32 ole32
+					                           user32 advapi32 ${Qt5Core_LIBRARIES}
+					                           ${Qt5Gui_LIBRARIES})
+				elseif(lib STREQUAL "Network")
+					list(APPEND _Qt_extra_libs ws2_32 ${Qt5Core_LIBRARIES})
+				else()
+					message(WARNING "Don't know how to statically link Qt${lib}: ${_Qt_lib}")
+				endif()
+				
+				if(_Qt_extra_libs)
+					set_property(TARGET Qt5::${lib} APPEND PROPERTY INTERFACE_LINK_LIBRARIES
+					             ${_Qt_extra_libs})
+				endif()
+				
+			endforeach()
+		endif()
 		
 	endif()
 	
@@ -96,6 +179,7 @@ if(NOT HAVE_QT AND (NOT WITH_QT OR WITH_QT EQUAL 4))
 			set(Qt${lib}_DEFINITIONS ${QT_DEFINITIONS})
 			set(Qt${lib}_INCLUDE_DIRS ${QT_INCLUDE_DIR} ${QT_QT${_Qt_LIB}_INCLUDE_DIR})
 			set(Qt${lib}_EXECUTABLE_COMPILE_FLAGS)
+			set(Qt${lib}_SOURCES)
 		endforeach()
 		set(QtCore_QTMAIN_LIBRARIES ${QT_QTMAIN_LIBRARY_RELEASE})
 		

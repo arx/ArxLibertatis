@@ -1133,6 +1133,7 @@ if(ARX_HAVE_CRASHREPORTER)
 		tools/crashreporter/tbg/TBG.cpp
 		tools/crashreporter/ui/ErrorReportDialog.h
 		tools/crashreporter/ui/ErrorReportDialog.cpp
+		${QtGui_SOURCES}
 	)
 	
 	set(arxcrashreporter_SOURCES
@@ -1222,6 +1223,7 @@ if(ARX_HAVE_PROFILER)
 		tools/profiler/ProfilerMain.cpp
 		tools/profiler/ui/ArxProfiler.h
 		tools/profiler/ui/ArxProfiler.cpp
+		${QtGui_SOURCES}
 	)
 	
 	set(arxprofiler_SOURCES
