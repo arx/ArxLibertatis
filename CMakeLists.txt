@@ -1173,12 +1173,11 @@ if(ARX_HAVE_CRASHREPORTER)
 	
 	list(APPEND arxcrashreporter_SOURCES ${arxcrashreporter_Qt_SOURCES})
 	
-	set_property(
-		SOURCE ${arxcrashreporter_Qt_SOURCES}
-		APPEND PROPERTY COMPILE_FLAGS " ${QtCore_EXECUTABLE_COMPILE_FLAGS}"
+	add_source_flags("${arxcrashreporter_Qt_SOURCES}"
+		"${QtCore_EXECUTABLE_COMPILE_FLAGS}"
 	)
 	
-	add_definitions(
+	add_source_definitions("${arxcrashreporter_Qt_SOURCES}"
 		${QtCore_DEFINITIONS}
 		${QtGui_DEFINITIONS}
 		${QtWidgets_DEFINITIONS}
@@ -1248,12 +1247,11 @@ if(ARX_HAVE_PROFILER)
 	
 	list(APPEND arxprofiler_SOURCES ${arxprofiler_Qt_SOURCES})
 	
-	set_property(
-		SOURCE ${arxprofiler_Qt_SOURCES}
-		APPEND PROPERTY COMPILE_FLAGS " ${QtCore_EXECUTABLE_COMPILE_FLAGS}"
+	add_source_flags("${arxprofiler_Qt_SOURCES}"
+		"${QtCore_EXECUTABLE_COMPILE_FLAGS}"
 	)
 	
-	add_definitions(
+	add_source_definitions("${arxprofiler_Qt_SOURCES}"
 		${QtCore_DEFINITIONS}
 		${QtGui_DEFINITIONS}
 		${QtWidgets_DEFINITIONS}

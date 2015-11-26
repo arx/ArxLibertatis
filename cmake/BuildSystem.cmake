@@ -7,6 +7,33 @@
 # Build the binaries using either separate_build(), shared_build() or unity_build().
 #
 
+# Add compile flags for specific source files
+#  SOURCES Source(s) to add flags to
+#  FLAG    String containing the flag(s) to add
+function(add_source_flags SOURCES FLAG)
+	foreach(source IN LISTS SOURCES)
+		get_source_file_property(flags "${source}" COMPILE_FLAGS)
+		if(flags)
+			set_source_files_properties("${source}" PROPERTIES COMPILE_FLAGS "${flags} ${FLAG}")
+		else()
+			set_source_files_properties("${source}" PROPERTIES COMPILE_FLAGS "${FLAG}")
+		endif()
+	endforeach()
+endfunction()
+
+# Add compile definitions for specific source files
+#  SOURCES Source(s) to add definitjons to
+#  ...     Compile definitons to add
+function(add_source_definitions SOURCES)
+	foreach(def IN LISTS ARGN)
+		if("${def}" MATCHES "^([/-]D)?([a-zA-Z0-9_]+(=.*)?)$")
+			set_property(SOURCE ${SOURCES} APPEND PROPERTY COMPILE_DEFINITIONS ${CMAKE_MATCH_2})
+		else()
+			add_source_flags("${SOURCES}" "${def}")
+		endif()
+	endforeach()
+endfunction()
+
 function(get_short_filename variable file)
 	get_filename_component(file "${file}" ABSOLUTE)
 	get_source_file_property(is_generated "${file}" GENERATED)
