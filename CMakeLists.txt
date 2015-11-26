@@ -1185,7 +1185,7 @@ if(ARX_HAVE_CRASHREPORTER)
 		-DQT_NO_DEBUG
 	)
 	
-	include_directories(SYSTEM
+	set(arxcrashreporter_INCLUDES
 		${QtCore_INCLUDE_DIRS}
 		${QtGui_INCLUDE_DIRS}
 		${QtWidgets_INCLUDE_DIRS}
@@ -1212,6 +1212,7 @@ if(ARX_HAVE_CRASHREPORTER)
 	                      "${arxcrashreporter_SOURCES}" "${arxcrashreporter_LIBRARIES}")
 	set_binary_type(arxcrashreporter WIN32)
 	set_binary_installdir(arxcrashreporter "${CMAKE_INSTALL_LIBEXECDIR}")
+	add_binary_includes(arxcrashreporter ${arxcrashreporter_INCLUDES})
 	
 endif()
 
@@ -1258,7 +1259,7 @@ if(ARX_HAVE_PROFILER)
 		-DQT_NO_DEBUG
 	)
 	
-	include_directories(SYSTEM
+	set(arxprofiler_INCLUDES
 		${QtCore_INCLUDE_DIRS}
 		${QtGui_INCLUDE_DIRS}
 		${QtWidgets_INCLUDE_DIRS}
@@ -1277,6 +1278,7 @@ if(ARX_HAVE_PROFILER)
 	                      "${arxprofiler_SOURCES}" "${arxprofiler_LIBRARIES}")
 	set_binary_type(arxprofiler WIN32)
 	set_binary_installdir(arxprofiler "${CMAKE_INSTALL_LIBEXECDIR}")
+	add_binary_includes(arxprofiler ${arxprofiler_INCLUDES})
 	
 endif()
 

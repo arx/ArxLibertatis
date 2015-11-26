@@ -171,6 +171,14 @@ function(set_binary_public_headers BIN HEADERS)
 	set(SHARED_BUILD_${BIN}_HEADERS "${HEADERS}" CACHE INTERNAL "")
 endfunction()
 
+# Add include directories to a binary
+#  BIN  Name of the binary to add include directories to.
+#  ...  Include directories to add to the binary.
+function(add_binary_includes BIN)
+	set(includes ${SHARED_BUILD_${BIN}_INCLUDES})
+	list(APPEND includes ${ARGN})
+	set(SHARED_BUILD_${BIN}_INCLUDES "${includes}" CACHE INTERNAL "")
+endfunction()
 
 function(_add_binary_shared BIN TYPE SRC LIBS EXTRA INSTALLDIR)
 	list(REMOVE_DUPLICATES SRC)
@@ -180,6 +188,7 @@ function(_add_binary_shared BIN TYPE SRC LIBS EXTRA INSTALLDIR)
 	set(SHARED_BUILD_${BIN}_LIBS "${LIBS}" CACHE INTERNAL "")
 	set(SHARED_BUILD_${BIN}_EXTRA "${EXTRA}" CACHE INTERNAL "")
 	set(SHARED_BUILD_${BIN}_HEADERS "" CACHE INTERNAL "")
+	set(SHARED_BUILD_${BIN}_INCLUDES "" CACHE INTERNAL "")
 	set_binary_installdir("${BIN}" "${INSTALLDIR}")
 	set(SHARED_BUILD_BINARIES ${SHARED_BUILD_BINARIES} ${BIN} CACHE INTERNAL "")
 endfunction()
@@ -381,6 +390,15 @@ function(_shared_build_add_binary bin)
 	
 	if(NOT "${SHARED_BUILD_${bin}_HEADERS}" STREQUAL "")
 		set_target_properties(${bin} PROPERTIES PUBLIC_HEADER "${SHARED_BUILD_${bin}_HEADERS}")
+	endif()
+	
+	if(NOT "${SHARED_BUILD_${bin}_INCLUDES}" STREQUAL "")
+		if(CMAKE_VERSION VERSION_LESS 2.8.12)
+			# Cannot set per-target (SYSTEM) includes
+			include_directories(SYSTEM ${SHARED_BUILD_${bin}_INCLUDES})
+		else()
+			target_include_directories(${bin} SYSTEM PRIVATE ${SHARED_BUILD_${bin}_INCLUDES})
+		endif()
 	endif()
 	
 	install(TARGETS ${bin} ${SHARED_BUILD_${bin}_INSTALL})
