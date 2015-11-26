@@ -401,46 +401,12 @@ add_definitions(-DGLM_FORCE_RADIANS)
 set(ARX_HAVE_CRASHREPORTER 0)
 if(BUILD_CRASHREPORTER OR BUILD_PROFILER)
 	
-	# Try to find Qt 5 modules
-	if(NOT HAVE_QT AND (NOT WITH_QT OR WITH_QT EQUAL 5))
-		if(NOT WITH_QT)
-			# Missing Qt5*Config.cmake files are not errors, reduce log spam
-			set(Qt_OPTIONAL_DEPENDENCY QUIET)
-		else()
-			set(Qt_OPTIONAL_DEPENDENCY ${OPTIONAL_DEPENDENCY})
-		endif()
-		find_package(Qt5Core ${Qt_OPTIONAL_DEPENDENCY})
-		find_package(Qt5Gui ${Qt_OPTIONAL_DEPENDENCY})
-		find_package(Qt5Widgets ${Qt_OPTIONAL_DEPENDENCY})
-		find_package(Qt5Network ${Qt_OPTIONAL_DEPENDENCY})
-		if(Qt5Core_FOUND AND Qt5Gui_FOUND AND Qt5Widgets_FOUND AND Qt5Network_FOUND)
-			if(NOT ARX_FOUND_QT_VERSION EQUAL 5)
-				message(STATUS "Using Qt 5")
-				set(ARX_FOUND_QT_VERSION 5 CACHE INTERNAL "foobar")
-			endif()
-			set(HAVE_QT5 1)
-			set(HAVE_QT 1)
-		endif()
-	endif()
+	find_package(Qt 4.7 COMPONENTS Core Gui Widgets Network ${OPTIONAL_DEPENDENCY})
 	
-	# Otherwise, look for Qt 4
-	if(NOT HAVE_QT AND (NOT WITH_QT OR WITH_QT EQUAL 4))
-		set(QT_USE_IMPORTED_TARGETS 1)
-		find_package(Qt4 4.7 COMPONENTS QtCore QtGui QtNetwork ${OPTIONAL_DEPENDENCY})
-		# QT_VERSION_MAJOR check required because of FindQt4.cmake bug
-		if(QT4_FOUND AND QT_VERSION_MAJOR EQUAL 4)
-			if(NOT MSVC)
-				check_link_library(QtCore QT_QTCORE_LIBRARY_RELEASE QT_QTCORE)
-				check_link_library(QtGui QT_QTGUI_LIBRARY_RELEASE QT_QTGUI)
-				check_link_library(QtNetwork QT_QTNETWORK_LIBRARY_RELEASE QT_QTNETWORK)
-			endif()
-			if(NOT ARX_FOUND_QT_VERSION EQUAL 4)
-				message(STATUS "Using Qt 4")
-				set(ARX_FOUND_QT_VERSION 4 CACHE INTERNAL "foobar")
-			endif()
-			set(HAVE_QT4 1)
-			set(HAVE_QT 1)
-		endif()
+	if(HAVE_QT4 AND NOT MSVC)
+		check_link_library(QtCore QT_QTCORE_LIBRARY_RELEASE QT_QTCORE)
+		check_link_library(QtGui QT_QTGUI_LIBRARY_RELEASE QT_QTGUI)
+		check_link_library(QtNetwork QT_QTNETWORK_LIBRARY_RELEASE QT_QTNETWORK)
 	endif()
 	
 	# Needed by the crash reporter
@@ -1184,20 +1150,6 @@ if(ARX_HAVE_CRASHREPORTER)
 		)
 	endif()
 	
-	set(arxcrashreporter_UIs
-		tools/crashreporter/ui/ErrorReportDialog.ui
-	)
-	
-	set(arxcrashreporter_MOC_HEADERS
-		tools/crashreporter/ui/ErrorReportDialog.h
-		tools/crashreporter/qhexedit/QHexEdit.h
-		tools/crashreporter/qhexedit/QHexEditPrivate.h
-	)
-	
-	set(arxcrashreporter_RESOURCES
-		tools/crashreporter/resources/CrashReporter.qrc
-	)
-	
 	set(arxcrashreporter_MANUAL_SOURCES
 		${arxcrashreporter_SOURCES}
 		${arxcrashreporter_Qt_SOURCES}
@@ -1205,99 +1157,57 @@ if(ARX_HAVE_CRASHREPORTER)
 	
 	set(SRC_DIR tools/crashreporter/)
 	
-	create_source_groups(arxcrashreporter_SOURCES)
+	create_source_groups(arxcrashreporter_MANUAL_SOURCES)
+	
+	qt_wrap_ui(arxcrashreporter_Qt_SOURCES
+		tools/crashreporter/ui/ErrorReportDialog.ui
+	)
+	qt_wrap_cpp(arxcrashreporter_Qt_SOURCES
+		tools/crashreporter/ui/ErrorReportDialog.h
+		tools/crashreporter/qhexedit/QHexEdit.h
+		tools/crashreporter/qhexedit/QHexEditPrivate.h
+	)
+	qt_add_resources(arxcrashreporter_Qt_SOURCES
+		tools/crashreporter/resources/CrashReporter.qrc
+	)
+	
+	list(APPEND arxcrashreporter_SOURCES ${arxcrashreporter_Qt_SOURCES})
+	
+	set_property(
+		SOURCE ${arxcrashreporter_Qt_SOURCES}
+		APPEND PROPERTY COMPILE_FLAGS " ${QtCore_EXECUTABLE_COMPILE_FLAGS}"
+	)
+	
+	add_definitions(
+		${QtCore_DEFINITIONS}
+		${QtGui_DEFINITIONS}
+		${QtWidgets_DEFINITIONS}
+		${QtNetwork_DEFINITIONS}
+		-DQT_NO_DEBUG
+	)
+	
+	include_directories(SYSTEM
+		${QtCore_INCLUDE_DIRS}
+		${QtGui_INCLUDE_DIRS}
+		${QtWidgets_INCLUDE_DIRS}
+		${QtNetwork_INCLUDE_DIRS}
+	)
 	
 	set(arxcrashreporter_LIBRARIES
 		${BASE_LIBRARIES}
 		${CMAKE_THREAD_LIBS_INIT}
+		${QtCore_LIBRARIES}
+		${QtGui_LIBRARIES}
+		${QtWidgets_LIBRARIES}
+		${QtNetwork_LIBRARIES}
+		${QtCore_QTMAIN_LIBRARIES}
 	)
-	
-	if(HAVE_QT5)
-		
-		qt5_wrap_ui(arxcrashreporter_Qt_SOURCES ${arxcrashreporter_UIs})
-		qt5_wrap_cpp(arxcrashreporter_Qt_SOURCES ${arxcrashreporter_MOC_HEADERS})
-		qt5_add_resources(arxcrashreporter_Qt_SOURCES ${arxcrashreporter_RESOURCES})
-		
-		set_property(
-			SOURCE ${arxcrashreporter_Qt_SOURCES}
-			APPEND PROPERTY COMPILE_FLAGS " ${Qt5Core_EXECUTABLE_COMPILE_FLAGS}"
-		)
-		
-		set(arxcrashreporter_qt_LIBRARIES
-			${Qt5Core_LIBRARIES}
-			${Qt5Gui_LIBRARIES}
-			${Qt5Widgets_LIBRARIES}
-			${Qt5Network_LIBRARIES}
-			${Qt5Core_QTMAIN_LIBRARIES}
-		)
-		
-		add_definitions(
-			${Qt5Core_DEFINITIONS}
-			${Qt5Gui_DEFINITIONS}
-			${Qt5Widgets_DEFINITIONS}
-			${Qt5Network_DEFINITIONS}
-			-DQT_NO_DEBUG
-		)
-		
-		include_directories(SYSTEM
-			${Qt5Core_INCLUDE_DIRS}
-			${Qt5Gui_INCLUDE_DIRS}
-			${Qt5Widgets_INCLUDE_DIRS}
-			${Qt5Network_INCLUDE_DIRS}
-		)
-		
-	elseif(HAVE_QT4)
-		
-		qt4_wrap_ui(arxcrashreporter_Qt_SOURCES ${arxcrashreporter_UIs})
-		qt4_wrap_cpp(arxcrashreporter_Qt_SOURCES ${arxcrashreporter_MOC_HEADERS})
-		qt4_add_resources(arxcrashreporter_Qt_RC_SOURCES ${arxcrashreporter_RESOURCES})
-		set_property(
-			SOURCE ${arxcrashreporter_Qt_RC_SOURCES}
-			APPEND PROPERTY COMPILE_FLAGS " -Wno-missing-declarations"
-		)
-		list(APPEND arxcrashreporter_Qt_SOURCES ${arxcrashreporter_Qt_RC_SOURCES})
-		
-		set(arxcrashreporter_qt_LIBRARIES
-			${QT_QTCORE_LIBRARY_RELEASE}
-			${QT_QTGUI_LIBRARY_RELEASE}
-			${QT_QTNETWORK_LIBRARY_RELEASE}
-			${QT_QTMAIN_LIBRARY_RELEASE}
-		)
-		
-		add_definitions(
-			${QT_DEFINITIONS}
-			-DQT_NO_DEBUG
-		)
-		
-		include_directories(SYSTEM
-			${QT_INCLUDE_DIR}
-			${QT_QTCORE_INCLUDE_DIR}
-			${QT_QTGUI_INCLUDE_DIR}
-			${QT_QTNETWORK_INCLUDE_DIR}
-		)
-		
-	endif()
-	
-	# Always link agains release versions of the Qt libraries
-	# This is important on windows where we would otherwise end up
-	# with inconsistencies in the stdlib configuration.
-	if(MSVC AND NOT DEBUG_EXTRA)
-		foreach(lib IN LISTS arxcrashreporter_qt_LIBRARIES)
-			if(TARGET ${lib})
-				set_target_properties(${lib} PROPERTIES MAP_IMPORTED_CONFIG_DEBUG "Release")
-			endif()
-		endforeach()
-	endif()
-	
-	list(APPEND arxcrashreporter_LIBRARIES ${arxcrashreporter_qt_LIBRARIES})
 	
 	if(MSVC)
 		list(APPEND arxcrashreporter_LIBRARIES winmm psapi imm32)
 		list(APPEND arxcrashreporter_LIBRARIES ${DBGHELP_LIBRARIES})
 		include_directories(SYSTEM ${DBGHELP_INCLUDE_DIR})
 	endif()
-	
-	list(APPEND arxcrashreporter_SOURCES ${arxcrashreporter_Qt_SOURCES})
 	
 	add_executable_shared(arxcrashreporter
 	                      "${arxcrashreporter_SOURCES}" "${arxcrashreporter_LIBRARIES}")
@@ -1320,14 +1230,6 @@ if(ARX_HAVE_PROFILER)
 		"${VERSION_FILE}"
 	)
 	
-	set(arxprofiler_UIs
-		tools/profiler/ui/ArxProfiler.ui
-	)
-	
-	set(arxprofiler_MOC_HEADERS
-		tools/profiler/ui/ArxProfiler.h
-	)
-	
 	set(arxprofiler_MANUAL_SOURCES
 		${arxprofiler_SOURCES}
 		${arxprofiler_Qt_SOURCES}
@@ -1337,85 +1239,41 @@ if(ARX_HAVE_PROFILER)
 	
 	create_source_groups(arxprofiler_SOURCES)
 	
+	qt_wrap_ui(arxprofiler_Qt_SOURCES
+		tools/profiler/ui/ArxProfiler.ui
+	)
+	qt_wrap_cpp(arxprofiler_Qt_SOURCES
+		tools/profiler/ui/ArxProfiler.h
+	)
+	
+	list(APPEND arxprofiler_SOURCES ${arxprofiler_Qt_SOURCES})
+	
+	set_property(
+		SOURCE ${arxprofiler_Qt_SOURCES}
+		APPEND PROPERTY COMPILE_FLAGS " ${QtCore_EXECUTABLE_COMPILE_FLAGS}"
+	)
+	
+	add_definitions(
+		${QtCore_DEFINITIONS}
+		${QtGui_DEFINITIONS}
+		${QtWidgets_DEFINITIONS}
+		-DQT_NO_DEBUG
+	)
+	
+	include_directories(SYSTEM
+		${QtCore_INCLUDE_DIRS}
+		${QtGui_INCLUDE_DIRS}
+		${QtWidgets_INCLUDE_DIRS}
+	)
+	
 	set(arxprofiler_LIBRARIES
 		${BASE_LIBRARIES}
 		${CMAKE_THREAD_LIBS_INIT}
+		${QtCore_LIBRARIES}
+		${QtGui_LIBRARIES}
+		${QtWidgets_LIBRARIES}
+		${QtCore_QTMAIN_LIBRARIES}
 	)
-	
-	if(HAVE_QT5)
-		
-		qt5_wrap_ui(arxprofiler_Qt_SOURCES ${arxprofiler_UIs})
-		qt5_wrap_cpp(arxprofiler_Qt_SOURCES ${arxprofiler_MOC_HEADERS})
-		
-		set_property(
-			SOURCE ${arxprofiler_Qt_SOURCES}
-			APPEND PROPERTY COMPILE_FLAGS " ${Qt5Core_EXECUTABLE_COMPILE_FLAGS}"
-		)
-		
-		set(arxprofiler_qt_LIBRARIES
-			${Qt5Core_LIBRARIES}
-			${Qt5Gui_LIBRARIES}
-			${Qt5Widgets_LIBRARIES}
-			${Qt5Network_LIBRARIES}
-			${Qt5Core_QTMAIN_LIBRARIES}
-		)
-		
-		add_definitions(
-			${Qt5Core_DEFINITIONS}
-			${Qt5Gui_DEFINITIONS}
-			${Qt5Widgets_DEFINITIONS}
-			${Qt5Network_DEFINITIONS}
-			-DQT_NO_DEBUG
-		)
-		
-		include_directories(SYSTEM
-			${Qt5Core_INCLUDE_DIRS}
-			${Qt5Gui_INCLUDE_DIRS}
-			${Qt5Widgets_INCLUDE_DIRS}
-			${Qt5Network_INCLUDE_DIRS}
-		)
-		
-	elseif(HAVE_QT4)
-		
-		qt4_wrap_ui(arxprofiler_Qt_SOURCES ${arxprofiler_UIs})
-		qt4_wrap_cpp(arxprofiler_Qt_SOURCES ${arxprofiler_MOC_HEADERS})
-		
-		set(arxprofiler_qt_LIBRARIES
-			${QT_QTCORE_LIBRARY_RELEASE}
-			${QT_QTGUI_LIBRARY_RELEASE}
-			${QT_QTNETWORK_LIBRARY_RELEASE}
-			${QT_QTMAIN_LIBRARY_RELEASE}
-		)
-		
-		add_definitions(
-			${QT_DEFINITIONS}
-			-DQT_NO_DEBUG
-		)
-		
-		include_directories(SYSTEM
-			${QT_INCLUDE_DIR}
-			${QT_QTCORE_INCLUDE_DIR}
-			${QT_QTGUI_INCLUDE_DIR}
-			${QT_QTNETWORK_INCLUDE_DIR}
-		)
-		
-	endif()
-	
-	# Always link agains release versions of the Qt libraries
-	# This is important on windows where we would otherwise end up
-	# with inconsistencies in the stdlib configuration.
-	if(MSVC AND NOT DEBUG_EXTRA)
-		foreach(lib IN LISTS arxprofiler_qt_LIBRARIES)
-			if(TARGET ${lib})
-				set_target_properties(${lib} PROPERTIES MAP_IMPORTED_CONFIG_DEBUG "Release")
-			endif()
-		endforeach()
-	endif()
-	
-	list(APPEND arxprofiler_LIBRARIES ${arxprofiler_qt_LIBRARIES})
-	
-	
-	list(APPEND arxprofiler_SOURCES ${arxprofiler_Qt_SOURCES})
 	
 	add_executable_shared(arxprofiler
 	                      "${arxprofiler_SOURCES}" "${arxprofiler_LIBRARIES}")
