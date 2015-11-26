@@ -39,6 +39,7 @@ function(enable_unity_build UB_SUFFIX SOURCE_VARIABLE_NAME)
 	else()
 		set(compile_flags "")
 	endif()
+	set(compile_definitions)
 	
 	# Add include statement for each translation unit
 	list(LENGTH files numfiles)
@@ -57,6 +58,10 @@ function(enable_unity_build UB_SUFFIX SOURCE_VARIABLE_NAME)
 			get_source_file_property(source_compile_flags "${source_file}" COMPILE_FLAGS)
 			if(source_compile_flags)
 				set(compile_flags "${compile_flags} ${source_compile_flags}")
+			endif()
+			get_source_file_property(source_compile_defs "${source_file}" COMPILE_DEFINITIONS)
+			if(source_compile_defs)
+				list(APPEND compile_definitions ${source_compile_defs})
 			endif()
 			
 			get_filename_component(source_file "${source_file}" ABSOLUTE)
@@ -96,6 +101,7 @@ function(enable_unity_build UB_SUFFIX SOURCE_VARIABLE_NAME)
 	set(${SOURCE_VARIABLE_NAME} ${${SOURCE_VARIABLE_NAME}} ${unit_build_file} PARENT_SCOPE)
 	
 	set_source_files_properties("${unit_build_file}" PROPERTIES COMPILE_FLAGS "${compile_flags}")
+	set_property(SOURCE "${unit_build_file}" PROPERTY COMPILE_DEFINITIONS ${compile_definitions})
 	
 	# Put ub file at the root of the project
 	source_group("" FILES ${unit_build_file})
