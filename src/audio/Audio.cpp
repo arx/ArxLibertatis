@@ -61,6 +61,7 @@ ZeniMax Media Inc., Suite 120, Rockville, Maryland 20850 USA.
 
 #include "platform/Lock.h"
 #include "platform/Time.h"
+#include "platform/profiler/Profiler.h"
 
 namespace audio {
 
@@ -223,6 +224,8 @@ bool isReverbSupported() {
 }
 
 aalError update() {
+	
+	ARX_PROFILE_FUNC();
 	
 	AAL_ENTRY
 	

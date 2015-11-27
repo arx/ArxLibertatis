@@ -1687,6 +1687,8 @@ class SoundUpdateThread : public StoppableThread {
 		
 		while(!isStopRequested()) {
 			
+			ARX_PROFILE("SoundUpdate");
+			
 			sleep(ARX_SOUND_UPDATE_INTERVAL);
 			
 			audio::update();
