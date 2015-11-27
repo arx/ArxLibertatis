@@ -1566,6 +1566,8 @@ void ArxGame::handlePlayerDeath() {
 
 void ArxGame::updateActiveCamera() {
 
+	ARX_PROFILE_FUNC();
+	
 	EERIE_CAMERA * cam = NULL;
 
 	if(MasterCamera.exist) {

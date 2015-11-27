@@ -53,6 +53,7 @@
 
 #include "physics/Anchors.h"
 #include "physics/Collisions.h"
+#include "platform/profiler/Profiler.h"
 
 #include "scene/Interactive.h"
 #include "scene/Light.h"
@@ -835,6 +836,8 @@ static void drawDebugMaterials() {
 }
 
 void drawDebugRender() {
+	
+	ARX_PROFILE_FUNC();
 	
 	if(g_debugView == DebugView_None) {
 		return;

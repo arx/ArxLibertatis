@@ -1067,6 +1067,8 @@ long PLAYER_PARALYSED = 0;
  */
 void ARX_PLAYER_FrameCheck(float Framedelay)
 {
+	ARX_PROFILE_FUNC();
+	
 	//	ARX_PLAYER_QuickGeneration();
 	if(Framedelay > 0) {
 		UpdateIOInvisibility(entities.player());

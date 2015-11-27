@@ -75,6 +75,9 @@ void RenderBatcher::render() {
 }
 
 void RenderBatcher::clear() {
+	
+	ARX_PROFILE_FUNC();
+	
 	for(Batches::iterator itBatch = m_BatchedSprites.begin(); itBatch != m_BatchedSprites.end(); ++itBatch)
 		itBatch->second.clear();
 }

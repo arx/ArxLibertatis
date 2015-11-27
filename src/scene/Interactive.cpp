@@ -264,6 +264,8 @@ void ARX_INTERACTIVE_Detach(EntityHandle n_source, EntityHandle n_target)
 
 void ARX_INTERACTIVE_Show_Hide_1st(Entity * io, long state)
 {
+	ARX_PROFILE_FUNC();
+	
 	if(!io || HERO_SHOW_1ST == state)
 		return;
 

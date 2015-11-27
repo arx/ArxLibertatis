@@ -67,6 +67,8 @@ ZeniMax Media Inc., Suite 120, Rockville, Maryland 20850 USA.
 
 #include "io/log/Logger.h"
 
+#include "platform/profiler/Profiler.h"
+
 #include "scene/Interactive.h"
 #include "scene/SaveFormat.h"
 
@@ -272,6 +274,8 @@ void MiniMap::purgeTexContainer() {
 }
 
 void MiniMap::showPlayerMiniMap(int showLevel) {
+	
+	ARX_PROFILE_FUNC();
 	
 	const float miniMapZoom = 300.f; // zoom of the minimap
 	const Rect miniMapRect(390, 135, 590, 295); // minimap rect on a 640*480 screen

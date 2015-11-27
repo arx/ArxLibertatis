@@ -76,6 +76,7 @@ ZeniMax Media Inc., Suite 120, Rockville, Maryland 20850 USA.
 #include "scene/Interactive.h"
 
 #include "util/String.h"
+#include "platform/profiler/Profiler.h"
 
 
 using audio::AmbianceId;
@@ -461,6 +462,9 @@ void ARX_SOUND_MixerSwitch(audio::MixerId from, audio::MixerId to) {
 
 // Sets the position of the listener
 void ARX_SOUND_SetListener(const Vec3f & position, const Vec3f & front, const Vec3f & up) {
+	
+	ARX_PROFILE_FUNC();
+	
 	if(bIsActive) {
 		audio::setListenerPosition(position);
 		audio::setListenerDirection(front, up);

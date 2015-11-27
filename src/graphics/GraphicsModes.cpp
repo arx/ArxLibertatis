@@ -52,6 +52,7 @@ ZeniMax Media Inc., Suite 120, Rockville, Maryland 20850 USA.
 #include "graphics/BaseGraphicsTypes.h"
 #include "graphics/Renderer.h"
 #include "graphics/data/Mesh.h"
+#include "platform/profiler/Profiler.h"
 
 GLOBAL_MODS current;
 GLOBAL_MODS desired;
@@ -89,7 +90,9 @@ static float Approach(float current, float desired, float increment) {
 }
 
 void ARX_GLOBALMODS_Apply() {
-
+	
+	ARX_PROFILE_FUNC();
+	
 	float baseinc = framedelay;
 	float incdiv1000 = framedelay * ( 1.0f / 1000 );
 

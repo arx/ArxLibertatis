@@ -50,6 +50,7 @@
 #include "graphics/DrawLine.h"
 
 #include "window/RenderWindow.h"
+#include "platform/profiler/Profiler.h"
 
 template <typename T>
 struct FlagName {
@@ -384,6 +385,8 @@ void ShowDebugToggles() {
 }
 
 void ShowFpsGraph() {
+	
+	ARX_PROFILE_FUNC();
 
 	GRenderer->ResetTexture(0);
 
