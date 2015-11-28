@@ -79,7 +79,7 @@ private:
 	
 	boost::array<ProfilerSample, NB_SAMPLES> m_samples;
 	std::atomic<int> m_writeIndex;
-	bool               m_canWrite;
+	volatile bool    m_canWrite;
 	
 	void writeProfileLog();
 };
