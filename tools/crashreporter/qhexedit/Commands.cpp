@@ -26,6 +26,8 @@
 
 CharCommand::CharCommand(XByteArray * xData, Cmd cmd, int charPos, char newChar, QUndoCommand *parent)
     : QUndoCommand(parent)
+	, _wasChanged()
+	, _oldChar()
 {
     _xData = xData;
     _charPos = charPos;
