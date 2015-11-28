@@ -67,7 +67,7 @@ public:
 	static const Color3 cyan;
 	static const Color3 magenta;
 	
-	inline Color3() { }
+	inline Color3() : b(T(0)), g(T(0)), r(T(0)) { }
 	inline Color3(T _r, T _g, T _b) : b(_b), g(_g), r(_r) { }
 	inline Color3(const Color3 & o) : b(o.b), g(o.g), r(o.r) { }
 	
@@ -174,7 +174,7 @@ public:
 	//! A fully transparent, black color.
 	static const Color4 none;
 	
-	inline Color4() : C3() { }
+	inline Color4() : C3(), a(T(0)) { }
 	inline Color4(T _r, T _g, T _b, T _a = Limits::max()) : C3(_r, _g, _b), a(_a) { }
 	inline Color4(const Color4 & o) : C3(o), a(o.a) { }
 	inline Color4(const C3 & o, T _a = Limits::max()) : C3(o), a(_a) { }
