@@ -40,7 +40,10 @@ void Thread::setThreadName(const std::string & _threadName) {
 #include <pthread_np.h>
 #endif
 
-Thread::Thread() : started(false) {
+Thread::Thread()
+	: thread()
+	, started(false)
+{
 	setPriority(Normal);
 }
 
