@@ -62,7 +62,7 @@ static QByteArray toQByteArray(const std::string & string) {
 
 Server::Server(const QString & serverAddress, const std::string & userAgent)
 	: m_serverAddress(serverAddress)
-	, m_ServerPrefix(serverAddress + "/arxcrashreporter/v1")
+	, m_serverPrefix(serverAddress + "/arxcrashreporter/v1")
 	, m_session(http::createSession(userAgent))
 { }
 
@@ -128,7 +128,7 @@ bool Server::login(const QString & username, const QString & password) {
 	params.addQueryItem("tbg3_referer", m_serverAddress);
 	params.addQueryItem("tbg3_username", username);
 	
-	http::POSTRequest request(toUTF8(m_ServerPrefix + "/do/login"));
+	http::POSTRequest request(toUTF8(m_serverPrefix + "/do/login"));
 	request.setData(qUrlQueryToPostData(params));
 	request.setFollowRedirects(false);
 	
@@ -156,7 +156,7 @@ QString Server::createCrashReport(const QString & title, const QString & descrip
 	params.addQueryItem("resolution_id", "0");
 	params.addQueryItem("severity_id", "0");
 	
-	http::POSTRequest request(toUTF8(m_ServerPrefix + "/arx/issues/new"));
+	http::POSTRequest request(toUTF8(m_serverPrefix + "/arx/issues/new"));
 	request.setData(qUrlQueryToPostData(params));
 	request.setFollowRedirects(false);
 	
@@ -179,7 +179,7 @@ bool Server::addComment(int issue_id, const QString & comment) {
 	QString format = "/comment/add/for/module/core/item/type/1/id/%1";
 	QString url = format.arg(QString::number(issue_id));
 
-	http::POSTRequest request(toUTF8(m_ServerPrefix + url));
+	http::POSTRequest request(toUTF8(m_serverPrefix + url));
 	request.setData(qUrlQueryToPostData(params));
 	request.setFollowRedirects(false);
 	
@@ -202,7 +202,7 @@ bool Server::setFieldValue(const QString & fieldName, int issue_id, int value_id
 	QString url = format.arg(QString::number(issue_id), fieldName,
 	                         QString::number(value_id));
 
-	http::POSTRequest request(toUTF8(m_ServerPrefix + url));
+	http::POSTRequest request(toUTF8(m_serverPrefix + url));
 	request.setFollowRedirects(false);
 	
 	boost::scoped_ptr<http::Response> response(post(request));
@@ -241,7 +241,7 @@ bool Server::attachFile(int issue_id, const QString & filePath,
 
 	QString url = "/upload/to/issue/" + QString::number(issue_id);
 	
-	http::POSTRequest request(toUTF8(m_ServerPrefix + url));
+	http::POSTRequest request(toUTF8(m_serverPrefix + url));
 	request.setData(toStdString(data));
 	request.setContentType(toStdString(contentType));
 	request.setFollowRedirects(false);
@@ -262,7 +262,7 @@ QString Server::findIssue(const QString & text, int & issue_id) {
 	QString url = "/arx/issues/find/format/rss?issues/project_key/arx&"
 	              + toQString(qUrlQueryToPostData(params));
 	
-	http::Request request(toUTF8(m_ServerPrefix + url));
+	http::Request request(toUTF8(m_serverPrefix + url));
 	
 	boost::scoped_ptr<http::Response> response(get(request));
 	

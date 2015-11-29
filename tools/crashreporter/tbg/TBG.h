@@ -77,7 +77,7 @@ private:
 	bool getIssueIdFromUrl(const std::string & url, int & issue_id);
 	
 	QString m_serverAddress;
-	QString m_ServerPrefix;
+	QString m_serverPrefix;
 	http::Session * m_session;
 	QString m_LastErrorString;
 	
