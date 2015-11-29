@@ -60,7 +60,14 @@ extern Vec2s DANAEMouse;
 
 extern float STARTED_ANGLE;
 long SPECIAL_DRAGINTER_RENDER=0;
-long CANNOT_PUT_IT_HERE=0;
+
+enum EntityMoveCursor {
+	EntityMoveCursor_Throw = -1,
+	EntityMoveCursor_Ok = 0,
+	EntityMoveCursor_Invalid = 1
+};
+
+EntityMoveCursor CANNOT_PUT_IT_HERE = EntityMoveCursor_Ok;
 
 static TextureContainer * cursorTargetOn = NULL;
 static TextureContainer * cursorTargetOff = NULL;
@@ -206,7 +213,7 @@ bool Manage3DCursor(Entity * io, bool simulate) {
 
 		if(anything < 0.f) {
 			if(iterating == 40) {
-				CANNOT_PUT_IT_HERE = 1;
+				CANNOT_PUT_IT_HERE = EntityMoveCursor_Invalid;
 				// TODO is this correct ?
 				return true;
 			}
@@ -239,7 +246,7 @@ bool Manage3DCursor(Entity * io, bool simulate) {
 	pos.z -= objcenter.z;
 
 	if(!collidpos_ok) {
-		CANNOT_PUT_IT_HERE = 1;
+		CANNOT_PUT_IT_HERE = EntityMoveCursor_Invalid;
 		return false;
 	}
 
@@ -308,7 +315,7 @@ bool Manage3DCursor(Entity * io, bool simulate) {
 		GRenderer->SetCulling(CullNone);
 		return true;
 	} else {
-		CANNOT_PUT_IT_HERE=-1;
+		CANNOT_PUT_IT_HERE = EntityMoveCursor_Throw;
 	}
 
 	return false;
@@ -472,7 +479,7 @@ static void ARX_INTERFACE_RenderCursorInternal(bool flag) {
 		 && (config.input.autoReadyWeapon == false))
 	   || (MAGICMODE && PLAYER_MOUSELOOK_ON)
 	) {
-		CANNOT_PUT_IT_HERE=0;
+		CANNOT_PUT_IT_HERE = EntityMoveCursor_Ok;
 		float ag=player.angle.getYaw();
 		
 		if(ag > 180)
@@ -486,14 +493,14 @@ static void ARX_INTERFACE_RenderCursorInternal(bool flag) {
 		   && !g_cursorOverBook
 		) {
 			if(!Manage3DCursor(DRAGINTER, true))
-				CANNOT_PUT_IT_HERE = -1;
+				CANNOT_PUT_IT_HERE = EntityMoveCursor_Throw;
 			
 			if(SPECIAL_DRAGINTER_RENDER) {
-				CANNOT_PUT_IT_HERE=0;
+				CANNOT_PUT_IT_HERE = EntityMoveCursor_Ok;
 				return;
 			}
 		} else {
-			CANNOT_PUT_IT_HERE = -1;
+			CANNOT_PUT_IT_HERE = EntityMoveCursor_Throw;
 		}
 		
 		if(SPECIAL_DRAGINTER_RENDER)
@@ -643,20 +650,20 @@ static void ARX_INTERFACE_RenderCursorInternal(bool flag) {
 							ARX_INTERFACE_DrawNumber(pos + nuberOffset, DRAGINTER->_itemdata->count, 3, Color::white, 1.f);
 						}
 					} else {
-						if((InInventoryPos(DANAEMouse) || g_secondaryInventoryHud.containsPos(DANAEMouse)) || CANNOT_PUT_IT_HERE != -1) {
+						if((InInventoryPos(DANAEMouse) || g_secondaryInventoryHud.containsPos(DANAEMouse)) || CANNOT_PUT_IT_HERE != EntityMoveCursor_Throw) {
 							EERIEDrawBitmap(rect, .00001f, tc, color);
 						}
 					}
 					
 					//cross not over inventory icon
-					if(   CANNOT_PUT_IT_HERE
+					if(   CANNOT_PUT_IT_HERE != EntityMoveCursor_Ok
 					   && (eMouseState != MOUSE_IN_INVENTORY_ICON)
 					   && !InInventoryPos(DANAEMouse)
 					   && !g_secondaryInventoryHud.containsPos(DANAEMouse)
 					   && !ARX_INTERFACE_MouseInBook()) {
 						TextureContainer * tcc = cursorMovable;
 						
-						if(CANNOT_PUT_IT_HERE == -1)
+						if(CANNOT_PUT_IT_HERE == EntityMoveCursor_Throw)
 							tcc = cursorThrowObject;
 						
 						if(tcc && tcc != tc) // to avoid movable double red cross...
