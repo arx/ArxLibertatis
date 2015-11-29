@@ -107,10 +107,8 @@ function(enable_unity_build UB_SUFFIX SOURCE_VARIABLE_NAME)
 			endif()
 			
 			get_short_filename(relative_file "${source_file}")
-			if(NOT DEBUG)
-				file(APPEND ${unit_build_file} "#undef ARX_FILE\n")
-				file(APPEND ${unit_build_file} "#define ARX_FILE \"${relative_file}\"\n")
-			endif()
+			file(APPEND ${unit_build_file} "#undef ARX_FILE\n")
+			file(APPEND ${unit_build_file} "#define ARX_FILE \"${relative_file}\"\n")
 			string(REGEX REPLACE "\\.[^\\./\\\\]*$" "" file_symbol "${relative_file}")
 			string(REGEX REPLACE "^(src|build)[/\\\\]" "" file_symbol "${file_symbol}")
 			string(REGEX REPLACE "[^a-zA-Z0-9]+" "_" file_symbol "${file_symbol}")
@@ -294,13 +292,11 @@ function(_shared_build_helper LIB LIST BINARIES FIRST)
 			set(lib _${LIB}_common)
 		endif()
 		
-		if(NOT DEBUG)
-			foreach(source_file IN LISTS common_src)
-				get_short_filename(relative_file "${source_file}")
-				set_property(SOURCE "${source_file}" APPEND PROPERTY COMPILE_DEFINITIONS
-				             "ARX_FILE=\"${relative_file}\"")
-			endforeach()
-		endif()
+		foreach(source_file IN LISTS common_src)
+			get_short_filename(relative_file "${source_file}")
+			set_property(SOURCE "${source_file}" APPEND PROPERTY COMPILE_DEFINITIONS
+			             "ARX_FILE=\"${relative_file}\"")
+		endforeach()
 		
 		# Add a new library for the common sources
 		if(CMAKE_VERSION VERSION_LESS 2.8.8)
@@ -371,14 +367,6 @@ endfunction()
 
 function(_shared_build_add_binary bin)
 	
-	if(NOT DEBUG)
-		foreach(source_file IN LISTS SHARED_BUILD_${bin}_SOURCES)
-			get_short_filename(relative_file "${source_file}")
-			set_property(SOURCE "${source_file}" APPEND PROPERTY COMPILE_DEFINITIONS
-			             "ARX_FILE=\"${relative_file}\"")
-		endforeach()
-	endif()
-	
 	set(build_type "${SHARED_BUILD_${bin}_TYPE}")
 	if(build_type STREQUAL "SHARED")
 		add_library(
@@ -417,6 +405,11 @@ endfunction()
 function(separate_build)
 	
 	foreach(bin IN LISTS SHARED_BUILD_BINARIES)
+		foreach(source_file IN LISTS SHARED_BUILD_${bin}_SOURCES)
+			get_short_filename(relative_file "${source_file}")
+			set_property(SOURCE "${source_file}" APPEND PROPERTY COMPILE_DEFINITIONS
+			             "ARX_FILE=\"${relative_file}\"")
+		endforeach()
 		_shared_build_add_binary(${bin})
 	endforeach()
 	
