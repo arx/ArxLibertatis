@@ -277,8 +277,10 @@ function(_shared_build_helper LIB LIST BINARIES FIRST)
 		if(first)
 			set(first 0)
 			set(common_src "${SHARED_BUILD_${bin}_SOURCES}")
+			set(common_inc "${SHARED_BUILD_${bin}_INCLUDES}")
 		else()
 			intersect(common_src "${common_src}" "${SHARED_BUILD_${bin}_SOURCES}")
+			intersect(common_inc "${common_inc}" "${SHARED_BUILD_${bin}_INCLUDES}")
 		endif()
 	endforeach()
 	
@@ -339,6 +341,12 @@ function(_shared_build_helper LIB LIST BINARIES FIRST)
 			else()
 				set_target_properties(${lib} PROPERTIES POSITION_INDEPENDENT_CODE ON)
 			endif()
+		endif()
+		
+		if(CMAKE_VERSION VERSION_LESS 2.8.12)
+			# these will be included globally later on
+		else()
+			target_include_directories(${lib} SYSTEM PRIVATE ${common_inc})
 		endif()
 		
 	endif()
