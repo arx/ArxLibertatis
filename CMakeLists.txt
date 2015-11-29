@@ -861,6 +861,9 @@ set(PLATFORM_SOURCES
 	src/platform/ProgramOptions.cpp
 	src/platform/Time.cpp
 )
+if(WIN32)
+	list(APPEND PLATFORM_SOURCES src/platform/WindowsUtils.cpp)
+endif()
 
 # Extra platform abstraction - depends on the crash handler or SDL
 set(PLATFORM_EXTRA_SOURCES
@@ -1347,6 +1350,9 @@ if(BUILD_IO_LIBRARY)
 		src/platform/Environment.cpp
 		src/lib/ArxIO.cpp
 	)
+	if(WIN32)
+		list(APPEND ArxIO_SOURCES src/platform/WindowsUtils.cpp)
+	endif()
 	
 	set(ArxIO_LIBRARIES ${BASE_LIBRARIES} ${ZLIB_LIBRARIES})
 	
