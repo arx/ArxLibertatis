@@ -26,7 +26,7 @@
 
 #include "io/log/Logger.h"
 
-typedef void (*signal_handler)(int);
+typedef void (*signal_handler)(int signal);
 
 struct ThreadExceptionHandlers {
 	terminate_handler m_terminateHandler;     // Terminate handler
