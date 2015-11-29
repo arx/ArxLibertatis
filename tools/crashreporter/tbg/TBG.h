@@ -65,7 +65,7 @@ public:
 	                const QString & comment);
 	QString findIssue(const QString & text, int & issue_id);
 	
-	const QString & getErrorString() const { return m_LastErrorString; }
+	const QString & getErrorString() const { return m_lastErrorString; }
 	
 private:
 	
@@ -79,7 +79,7 @@ private:
 	QString m_serverAddress;
 	QString m_serverPrefix;
 	http::Session * m_session;
-	QString m_LastErrorString;
+	QString m_lastErrorString;
 	
 };
 

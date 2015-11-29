@@ -101,13 +101,13 @@ http::Response * Server::wait(QFuture<http::Response *> future) {
 	http::Response * response = future.result();
 	
 	if(response->ok()) {
-		m_LastErrorString.clear();
+		m_lastErrorString.clear();
 	} else if(!response->error().empty()) {
-		m_LastErrorString = toQString(response->error());
+		m_lastErrorString = toQString(response->error());
 	} else if(!response->data().empty()) {
-		m_LastErrorString = toQString(response->data());
+		m_lastErrorString = toQString(response->data());
 	} else {
-		m_LastErrorString = "HTTP Error " + QString::number(response->status());
+		m_lastErrorString = "HTTP Error " + QString::number(response->status());
 	}
 	
 	return response;
@@ -307,7 +307,7 @@ bool Server::getIssueIdFromUrl(const std::string & url, int & issue_id) {
 	issue_id = -1; // Not found
 	
 	if(url.empty()) {
-		m_LastErrorString = "Could not get issue URL";
+		m_lastErrorString = "Could not get issue URL";
 		return false;
 	}
 	
@@ -332,7 +332,7 @@ bool Server::getIssueIdFromUrl(const std::string & url, int & issue_id) {
 		}
 	}
 	
-	m_LastErrorString = "Could not get issue ID";
+	m_lastErrorString = "Could not get issue ID";
 	return false;
 }
 
