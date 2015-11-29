@@ -216,7 +216,7 @@ function(_shared_build_helper LIB LIST BINARIES FIRST)
 	set(list ${LIST})
 	set(first ${FIRST})
 	
-	# Find common sources and extract static libraries.
+	# Find common sources and extract object libraries.
 	foreach(bin IN LISTS LIST)
 		
 		list(REMOVE_ITEM list ${bin})
@@ -259,7 +259,11 @@ function(_shared_build_helper LIB LIST BINARIES FIRST)
 		endif()
 		
 		# Add a new library for the common sources
-		add_library(${lib} STATIC ${common_src})
+		if(CMAKE_VERSION VERSION_LESS 2.8.8)
+			add_library(${lib} STATIC ${common_src})
+		else()
+			add_library(${lib} OBJECT ${common_src})
+		endif()
 		
 		set(is_shared_lib 0)
 		
@@ -277,7 +281,12 @@ function(_shared_build_helper LIB LIST BINARIES FIRST)
 			endforeach()
 			set(SHARED_BUILD_${bin}_SOURCES "${uncommon_src}" CACHE INTERNAL "")
 			
-			set(SHARED_BUILD_${bin}_LIBS ${lib} "${SHARED_BUILD_${bin}_LIBS}" CACHE INTERNAL "")
+			if(CMAKE_VERSION VERSION_LESS 2.8.8)
+				set(SHARED_BUILD_${bin}_LIBS ${lib} "${SHARED_BUILD_${bin}_LIBS}" CACHE INTERNAL "")
+			else()
+				set(SHARED_BUILD_${bin}_EXTRA $<TARGET_OBJECTS:${lib}>
+				    "${SHARED_BUILD_${bin}_EXTRA}" CACHE INTERNAL "")
+			endif()
 			
 		endforeach()
 		
