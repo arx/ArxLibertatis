@@ -26,7 +26,6 @@
 #include "crashreporter/ErrorReport.h"
 
 #include "io/log/Logger.h"
-#include "io/log/FileLogger.h"
 
 int main(int argc, char * argv[]) {
 	
