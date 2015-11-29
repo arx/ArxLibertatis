@@ -42,15 +42,15 @@ int main(int argc, char * argv[]) {
 	const QStringList args = app.arguments();
 	QStringList::const_iterator itArgs;
 	for (itArgs = args.constBegin(); itArgs != args.constEnd(); ++itArgs) {
-		if((*itArgs).startsWith("-crashinfo=")) {
+		if((*itArgs).startsWith("--crashinfo=")) {
 			QString crashInfo = (*itArgs);
-			crashInfo.remove("-crashinfo=");
+			crashInfo.remove("--crashinfo=");
 			sharedMemoryName = crashInfo;
 		}
 	}
 	
 	if(sharedMemoryName.isEmpty()) {
-		LogError << "Missing -crashinfo parameter!";
+		LogError << "Missing --crashinfo parameter!";
 		return EXIT_FAILURE;
 	}
 	

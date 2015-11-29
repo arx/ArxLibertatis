@@ -377,7 +377,7 @@ void CrashHandlerWindows::waitForReporter() {
 	memset(&pi, 0, sizeof(PROCESS_INFORMATION));
 	
 	char arguments[256];
-	strcpy(arguments, "-crashinfo=");
+	strcpy(arguments, "--crashinfo=");
 	strcat(arguments, m_SharedMemoryName.c_str());
 
 	BOOL bCreateProcess;
