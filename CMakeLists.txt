@@ -49,6 +49,7 @@ option(INSTALL_SCRIPTS "Install the data install script" ON)
 # Optional dependencies
 option(USE_OPENAL "Build the OpenAL audio backend" ON)
 option(USE_OPENGL "Build the OpenGL renderer backend" ON)
+option(USE_WINHTTP "Use the native WinHTTP API instead of CURL on Windows" ON)
 option(USE_NATIVE_FS "Use the native filesystem backend directly instead of boost" ON)
 
 # Alternative dependencies
@@ -410,8 +411,10 @@ if(BUILD_CRASHREPORTER OR BUILD_PROFILER)
 	# Needed by the crash reporter
 	
 	if(HAVE_QT AND BUILD_CRASHREPORTER)
-		find_package(CURL 7.20.0 ${OPTIONAL_DEPENDENCY})
-		if(CURL_FOUND)
+		if(NOT WIN32 OR NOT USE_WINHTTP)
+			find_package(CURL 7.20.0 ${OPTIONAL_DEPENDENCY})
+		endif()
+		if((WIN32 AND USE_WINHTTP) OR CURL_FOUND)
 			if(MSVC)
 				find_package(DbgHelp ${OPTIONAL_DEPENDENCY})
 			endif()
@@ -1141,13 +1144,18 @@ if(ARX_HAVE_CRASHREPORTER)
 	
 	set(arxcrashreporter_SOURCES
 		tools/crashreporter/tbg/HTTPClient.h
-		tools/crashreporter/tbg/HTTPClientCURL.cpp
 		${PLATFORM_SOURCES}
 		${IO_FILESYSTEM_SOURCES}
 		${IO_LOGGER_SOURCES}
 		${UTIL_SOURCES}
 		${VERSION_FILE}
 	)
+	
+	if(WIN32 AND USE_WINHTTP)
+		list(APPEND arxcrashreporter_SOURCES tools/crashreporter/tbg/HTTPClientWindows.cpp)
+	else()
+		list(APPEND arxcrashreporter_SOURCES tools/crashreporter/tbg/HTTPClientCURL.cpp)
+	endif()
 	
 	if(WIN32)
 		list(APPEND arxcrashreporter_SOURCES
@@ -1197,8 +1205,11 @@ if(ARX_HAVE_CRASHREPORTER)
 		${QtConcurrent_INCLUDE_DIRS}
 		${QtGui_INCLUDE_DIRS}
 		${QtWidgets_INCLUDE_DIRS}
-		${CURL_INCLUDE_DIRS}
 	)
+	
+	if(NOT WIN32 OR NOT USE_WINHTTP)
+		list(APPEND arxcrashreporter_INCLUDES ${CURL_INCLUDE_DIRS})
+	endif()
 	
 	set(arxcrashreporter_LIBRARIES
 		${BASE_LIBRARIES}
@@ -1208,8 +1219,13 @@ if(ARX_HAVE_CRASHREPORTER)
 		${QtGui_LIBRARIES}
 		${QtWidgets_LIBRARIES}
 		${QtCore_QTMAIN_LIBRARIES}
-		${CURL_LIBRARIES}
 	)
+	
+	if(WIN32 AND USE_WINHTTP)
+		list(APPEND arxcrashreporter_LIBRARIES winhttp wininet)
+	else()
+		list(APPEND arxcrashreporter_LIBRARIES ${CURL_LIBRARIES})
+	endif()
 	
 	if(MSVC)
 		list(APPEND arxcrashreporter_LIBRARIES winmm psapi imm32)

@@ -86,6 +86,7 @@ By default, optional components will be automatically disabled if their dependen
 * `USE_OPENAL` (default: ON): Build the OpenAL audio backend^2
 * `WITH_SDL` (default: *not set*): Select the SDL version to use: 1 or 2. If not set, we will try to use either version, preferring SDL 2. ^3
 * `WITH_QT` (default: *not set*): Select the Qt version to use: 4 or 5. If not set, we will try to use either version, preferring Qt 5. Ignored if `BUILD_CRASHREPORTER` is disabled. ^3
+* `USE_WINHTTP` (default: ON): Use the native WinHTTP API instead of CURL on Windows.
 * `USE_NATIVE_FS` (default: ON): Use the native filesystem backend (POSIX / Win32) if available and not boost::filesystem.
 
 1. There is currently no other rendering backend, disabling this will make the build fail.
