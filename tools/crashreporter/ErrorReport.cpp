@@ -697,8 +697,9 @@ bool ErrorReport::SendReport(ErrorReport::IProgressNotifier* pProgressNotifier)
 	}
 
 	pProgressNotifier->taskStarted("Sending crash report", 3 + nbFilesToSend);
-
-	TBG::Server server("https://bugs.arx-libertatis.org");
+	
+	std::string userAgent = "Arx Libertatis Crash Reporter (" + arx_version + ")";
+	TBG::Server server("https://bugs.arx-libertatis.org", userAgent);
 	
 	// Login to TBG server
 	pProgressNotifier->taskStepStarted("Connecting to the bug tracker");
@@ -710,26 +711,22 @@ bool ErrorReport::SendReport(ErrorReport::IProgressNotifier* pProgressNotifier)
 		pProgressNotifier->setDetailedError(server.getErrorString());
 		return false;
 	}
-
+	
 	// Look for existing issue
 	int issue_id = -1;
 	pProgressNotifier->taskStepStarted("Searching for existing issue");
-	bool bSearchSuccessful = m_ReportUniqueID.isEmpty() || server.findIssue(m_ReportUniqueID, issue_id);
-	pProgressNotifier->taskStepEnded();
-	if(!bSearchSuccessful)
-	{
-		pProgressNotifier->setError("Failure occured when searching issue on the bug tracker");
-		pProgressNotifier->setDetailedError(server.getErrorString());
-		return false;
+	if(!m_ReportUniqueID.isEmpty()) {
+		m_IssueLink = server.findIssue(m_ReportUniqueID, issue_id);
 	}
-
+	pProgressNotifier->taskStepEnded();
+	
 	// Create new issue if no match was found
-	if(issue_id == -1)
-	{
+	if(issue_id == -1) {
+		
 		pProgressNotifier->taskStepStarted("Creating new issue");
-		bool bCreatedIssue = server.createCrashReport(m_ReportTitle, m_ReportDescription, m_ReproSteps, tbg_version_id, issue_id);
-		if(!bCreatedIssue)
-		{
+		m_IssueLink = server.createCrashReport(m_ReportTitle, m_ReportDescription,
+		                                       m_ReproSteps, tbg_version_id, issue_id);
+		if(m_IssueLink.isNull()) {
 			pProgressNotifier->taskStepEnded();
 			pProgressNotifier->setError("Could not create a new issue on the bug tracker");
 			pProgressNotifier->setDetailedError(server.getErrorString());
@@ -799,8 +796,6 @@ bool ErrorReport::SendReport(ErrorReport::IProgressNotifier* pProgressNotifier)
 			return false;
 		}
 	}
-
-	m_IssueLink = server.getUrl().toString();
 	
 	return true;
 }

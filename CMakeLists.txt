@@ -229,7 +229,6 @@ if((NOT LAST_CMAKE_CXX_FLAGS STREQUAL CMAKE_CXX_FLAGS)
 	force_recheck_library(Boost)
 	force_recheck_library(QtCore QT_QTCORE)
 	force_recheck_library(QtGui QT_QTGUI)
-	force_recheck_library(QtNetwork QT_QTNETWORK)
 	unset(Boost_INCLUDE_DIR CACHE)
 	set(LAST_CMAKE_CXX_FLAGS "${CMAKE_CXX_FLAGS}" CACHE INTERNAL
 	    "The last C++ compiler flags")
@@ -401,24 +400,24 @@ add_definitions(-DGLM_FORCE_RADIANS)
 set(ARX_HAVE_CRASHREPORTER 0)
 if(BUILD_CRASHREPORTER OR BUILD_PROFILER)
 	
-	find_package(Qt 4.7 COMPONENTS Core Gui Widgets Network ${OPTIONAL_DEPENDENCY})
+	find_package(Qt 4.7 COMPONENTS Core Concurrent Gui Widgets ${OPTIONAL_DEPENDENCY})
 	
 	if(HAVE_QT4 AND NOT MSVC)
 		check_link_library(QtCore QT_QTCORE_LIBRARY_RELEASE QT_QTCORE)
 		check_link_library(QtGui QT_QTGUI_LIBRARY_RELEASE QT_QTGUI)
-		check_link_library(QtNetwork QT_QTNETWORK_LIBRARY_RELEASE QT_QTNETWORK)
 	endif()
 	
 	# Needed by the crash reporter
 	
 	if(HAVE_QT AND BUILD_CRASHREPORTER)
-		if(MSVC)
-			find_package(DbgHelp ${OPTIONAL_DEPENDENCY})
-			if(DBGHELP_FOUND)
+		find_package(CURL 7.20.0 ${OPTIONAL_DEPENDENCY})
+		if(CURL_FOUND)
+			if(MSVC)
+				find_package(DbgHelp ${OPTIONAL_DEPENDENCY})
+			endif()
+			if(NOT MSVC OR DBGHELP_FOUND)
 				set(ARX_HAVE_CRASHREPORTER 1)
 			endif()
-		else()
-			set(ARX_HAVE_CRASHREPORTER 1)
 		endif()
 	endif()
 	
@@ -1138,6 +1137,8 @@ if(ARX_HAVE_CRASHREPORTER)
 	)
 	
 	set(arxcrashreporter_SOURCES
+		tools/crashreporter/tbg/HTTPClient.h
+		tools/crashreporter/tbg/HTTPClientCURL.cpp
 		${PLATFORM_SOURCES}
 		${IO_FILESYSTEM_SOURCES}
 		${IO_LOGGER_SOURCES}
@@ -1182,27 +1183,29 @@ if(ARX_HAVE_CRASHREPORTER)
 	
 	add_source_definitions("${arxcrashreporter_Qt_SOURCES}"
 		${QtCore_DEFINITIONS}
+		${QtConcurrent_DEFINITIONS}
 		${QtGui_DEFINITIONS}
 		${QtWidgets_DEFINITIONS}
-		${QtNetwork_DEFINITIONS}
 		-DQT_NO_DEBUG
 	)
 	
 	set(arxcrashreporter_INCLUDES
 		${QtCore_INCLUDE_DIRS}
+		${QtConcurrent_INCLUDE_DIRS}
 		${QtGui_INCLUDE_DIRS}
 		${QtWidgets_INCLUDE_DIRS}
-		${QtNetwork_INCLUDE_DIRS}
+		${CURL_INCLUDE_DIRS}
 	)
 	
 	set(arxcrashreporter_LIBRARIES
 		${BASE_LIBRARIES}
 		${CMAKE_THREAD_LIBS_INIT}
 		${QtCore_LIBRARIES}
+		${QtConcurrent_LIBRARIES}
 		${QtGui_LIBRARIES}
 		${QtWidgets_LIBRARIES}
-		${QtNetwork_LIBRARIES}
 		${QtCore_QTMAIN_LIBRARIES}
+		${CURL_LIBRARIES}
 	)
 	
 	if(MSVC)

@@ -19,10 +19,17 @@
 
 #include "crashreporter/tbg/TBG.h"
 
+#include <QEventLoop>
 #include <QFile>
 #include <QFileInfo>
-#include <QEventLoop>
+#include <QFutureWatcher>
+#include <QTimer>
+#include <QUrl>
+#include <QUuid>
 #include <QXmlStreamReader>
+#include <QtConcurrentRun>
+
+#include "boost/scoped_ptr.hpp"
 
 #if QT_VERSION >= QT_VERSION_CHECK(5, 0, 0)
 #include <QUrlQuery>
@@ -32,51 +39,109 @@ typedef QUrl QUrlQuery;
 
 #include <boost/range/size.hpp>
 
-namespace TBG
-{
+#include "crashreporter/tbg/HTTPClient.h"
 
-Server::Server(const QString& serverAddress)
-	: m_ServerAddress(serverAddress)
-	, m_ServerPrefix(serverAddress + "/arxcrashreporter/v1")
-	, m_CurrentReply(NULL)
-{
+namespace TBG {
+
+static std::string toUTF8(const QString & string) {
+	QByteArray data = string.toUtf8();
+	return std::string(data, size_t(data.length()));
 }
 
-static QByteArray qUrlQueryToPostData(const QUrlQuery & query) {
+static std::string toStdString(const QByteArray & string) {
+	return std::string(string.data(), string.length());
+}
+
+static QString toQString(const std::string & string) {
+	return QString::fromUtf8(string.data(), string.length());
+}
+
+static QByteArray toQByteArray(const std::string & string) {
+	return QByteArray(string.data(), string.length());
+}
+
+Server::Server(const QString & serverAddress, const std::string & userAgent)
+	: m_ServerAddress(serverAddress)
+	, m_ServerPrefix(serverAddress + "/arxcrashreporter/v1")
+	, m_session(http::createSession(userAgent))
+{ }
+
+Server::~Server() {
+	delete m_session;
+}
+
+static std::string qUrlQueryToPostData(const QUrlQuery & query) {
 #if QT_VERSION < QT_VERSION_CHECK(5, 0, 0)
-	return query.encodedQuery();
+	return toStdString(query.encodedQuery());
 #else
-	return query.query(QUrl::FullyEncoded).toUtf8();
+	return toUTF8(query.query(QUrl::FullyEncoded));
 #endif
 }
 
-bool Server::login(const QString& username, const QString& password)
-{
-	QUrlQuery params;
+http::Response * Server::wait(QFuture<http::Response *> future) {
 	
+	QEventLoop loop;
+	
+	// Interrrupt the event loop when the result is available
+	QFutureWatcher<http::Response *> watcher;
+	watcher.setFuture(future);
+	loop.connect(&watcher, SIGNAL(finished()), SLOT(quit()));
+	
+	// Prevent infinite loop if the future completes before we start the loop
+	QTimer timer;
+	loop.connect(&timer, SIGNAL(timeout()), SLOT(quit()));
+	timer.setSingleShot(false);
+	timer.start(1000);
+	
+	// Process events while waiting so that the UI stays responsive
+	while(!future.isFinished()) {
+		loop.exec();
+	}
+	
+	http::Response * response = future.result();
+	
+	if(response->ok()) {
+		m_LastErrorString.clear();
+	} else if(!response->error().empty()) {
+		m_LastErrorString = toQString(response->error());
+	} else if(!response->data().empty()) {
+		m_LastErrorString = toQString(response->data());
+	} else {
+		m_LastErrorString = "HTTP Error " + QString::number(response->status());
+	}
+	
+	return response;
+}
+
+http::Response * Server::get(const http::Request & request) {
+	return wait(QtConcurrent::run(m_session, &http::Session::get, request));
+}
+
+http::Response * Server::post(const http::POSTRequest & request) {
+	return wait(QtConcurrent::run(m_session, &http::Session::post, request));
+}
+
+bool Server::login(const QString & username, const QString & password) {
+	
+	QUrlQuery params;
 	params.addQueryItem("tbg3_password", password);
 	params.addQueryItem("tbg3_referer", m_ServerAddress);
 	params.addQueryItem("tbg3_username", username);
 	
-	QUrl loginUrl = m_ServerPrefix + "/do/login";
-	QNetworkRequest request(loginUrl);
-	request.setHeader(QNetworkRequest::ContentTypeHeader,"application/x-www-form-urlencoded");
+	http::POSTRequest request(toUTF8(m_ServerPrefix + "/do/login"));
+	request.setData(qUrlQueryToPostData(params));
+	request.setFollowRedirects(false);
 	
-	QByteArray data = qUrlQueryToPostData(params);
-	m_CurrentReply = m_NetAccessManager.post(request, data);
+	boost::scoped_ptr<http::Response> response(post(request));
 	
-	// TBG redirects to the account page if there is no previous page
-	// but the bot doesn't have access to its account page, so ignore the redirect
-	bool bSucceeded = waitForReply(false);
-	m_CurrentReply->deleteLater();
-	
-	return bSucceeded;
+	return response->ok();
 }
 
-bool Server::createCrashReport(const QString& title, const QString& description, const QString& reproSteps, int version_id, int& issue_id)
-{
-	QUrlQuery params;
+QString Server::createCrashReport(const QString & title, const QString & description,
+                                  const QString & reproSteps, int version_id,
+                                  int & issue_id) {
 	
+	QUrlQuery params;
 	params.addQueryItem("project_id", "2");
 	params.addQueryItem("issuetype_id", "7");
 	params.addQueryItem("title", title);
@@ -91,237 +156,184 @@ bool Server::createCrashReport(const QString& title, const QString& description,
 	params.addQueryItem("resolution_id", "0");
 	params.addQueryItem("severity_id", "0");
 	
-	QUrl newIssueUrl = m_ServerPrefix + "/arx/issues/new";
-	QNetworkRequest request(newIssueUrl);
-	request.setHeader(QNetworkRequest::ContentTypeHeader,"application/x-www-form-urlencoded");
+	http::POSTRequest request(toUTF8(m_ServerPrefix + "/arx/issues/new"));
+	request.setData(qUrlQueryToPostData(params));
+	request.setFollowRedirects(false);
 	
-	QByteArray data = qUrlQueryToPostData(params);
+	boost::scoped_ptr<http::Response> response(post(request));
 	
-	m_CurrentReply = m_NetAccessManager.post(request, data);
-	bool bSucceeded = waitForReply();
-	if(bSucceeded)
-	{
-		QUrl currentUrl = m_CurrentReply->url();
-		m_CurrentReply->deleteLater();
-		bSucceeded = getIssueIdFromUrl(currentUrl, issue_id);
+	if(response->ok() && getIssueIdFromUrl(response->url(), issue_id)) {
+		return toQString(response->url());
 	}
 	
-	return bSucceeded;
+	return QString();
 }
 
-bool Server::addComment(int issue_id, const QString& comment)
-{
+bool Server::addComment(int issue_id, const QString & comment) {
+	
 	QUrlQuery params;
-
 	params.addQueryItem("comment_visibility", "1");
 	params.addQueryItem("comment_body", comment);
 	params.addQueryItem("comment_save_changes", "1");
 	
-	QString strUrl = QString("/comment/add/for/module/core/item/type/1/id/%1").arg(QString::number(issue_id));
+	QString format = "/comment/add/for/module/core/item/type/1/id/%1";
+	QString url = format.arg(QString::number(issue_id));
 
-	QUrl newIssueUrl = m_ServerPrefix + strUrl;
-	QNetworkRequest request(newIssueUrl);
-	request.setHeader(QNetworkRequest::ContentTypeHeader,"application/x-www-form-urlencoded");
-
-	QByteArray data = qUrlQueryToPostData(params);
-
-	m_CurrentReply = m_NetAccessManager.post(request, data);
-	bool bSucceeded = waitForReply();
-	m_CurrentReply->deleteLater();
+	http::POSTRequest request(toUTF8(m_ServerPrefix + url));
+	request.setData(qUrlQueryToPostData(params));
+	request.setFollowRedirects(false);
 	
-	return bSucceeded;
+	boost::scoped_ptr<http::Response> response(post(request));
+	
+	return response->ok();
 }
 
-bool Server::setOperatingSystem(int issue_id, int os_id)
-{
+bool Server::setOperatingSystem(int issue_id, int os_id) {
 	return setFieldValue("operatingsystem", issue_id, os_id);
 }
 
-bool Server::setArchitecture(int issue_id, int arch_id)
-{
+bool Server::setArchitecture(int issue_id, int arch_id) {
 	return setFieldValue("architecture", issue_id, arch_id);
 }
 
-bool Server::setFieldValue(const QString& fieldName, int issue_id, int value_id)
-{
-	QString strUrl = QString("/arx/issues/%1/set/%2/%2_value/%3").arg(QString::number(issue_id),
-																	  fieldName,
-																	  QString::number(value_id));
+bool Server::setFieldValue(const QString & fieldName, int issue_id, int value_id) {
+	
+	QString format = "/arx/issues/%1/set/%2/%2_value/%3";
+	QString url = format.arg(QString::number(issue_id), fieldName,
+	                         QString::number(value_id));
 
-	QUrl newIssueUrl = m_ServerPrefix + strUrl;
-	QNetworkRequest request(newIssueUrl);
-	m_CurrentReply = m_NetAccessManager.get(request);
-	bool bSucceeded = waitForReply();
-	m_CurrentReply->deleteLater();
-	return bSucceeded;
+	http::POSTRequest request(toUTF8(m_ServerPrefix + url));
+	request.setFollowRedirects(false);
+	
+	boost::scoped_ptr<http::Response> response(post(request));
+	
+	return response->ok();
 }
 
-bool Server::attachFile(int issue_id, const QString& filePath, const QString& fileDescription, const QString& comment)
-{
+bool Server::attachFile(int issue_id, const QString & filePath,
+                        const QString & fileDescription, const QString & comment) {
+	
 	QFile file(filePath, this);
-	if(!file.open(QIODevice::ReadOnly))
+	if(!file.open(QIODevice::ReadOnly)) {
 		return false;
+	}
 	
-	QFileInfo fileInfo(file);	
+	QString uuid = QUuid::createUuid().toString();
+	QByteArray boundaryRegular = ("--" + uuid.mid(1, uuid.length() - 2)).toUtf8();
+	QByteArray boundary = "\r\n--" + boundaryRegular + "\r\n";
+	QByteArray boundaryLast = "\r\n--" + boundaryRegular + "--\r\n";
 
-	QByteArray boundaryRegular(QString("--"+QString::number(qrand(), 10)).toLatin1());
-	QByteArray boundary("\r\n--"+boundaryRegular+"\r\n");
-	QByteArray boundaryLast("\r\n--"+boundaryRegular+"--\r\n");
+	QByteArray data;
+	data.append("--" + boundaryRegular + "\r\n");
+	data.append("Content-Disposition: form-data; name=\"uploader_file\"; filename=\""
+	            + QFileInfo(file).fileName().toUtf8() + "\"\r\n");
+	data.append("Content-Type: application/octet-stream\r\n\r\n");
+	data.append(file.readAll());
+	data.append(boundary);
+	data.append("Content-Disposition: form-data; name=\"uploader_file_description\"\r\n\r\n");
+	data.append(fileDescription.toUtf8());
+	data.append(boundary);
+	data.append("Content-Disposition: form-data; name=\"comment\"\r\n\r\n");
+	data.append(comment.toUtf8());
+	data.append(boundaryLast);
+	
+	QByteArray contentType = "multipart/form-data; boundary=\"" + boundaryRegular + "\"";
 
-	QByteArray dataToSend;
-	dataToSend.append("--"+boundaryRegular+"\r\n");
-	dataToSend.append("Content-Disposition: form-data; name=\"uploader_file\"; filename=\""+fileInfo.fileName().toUtf8()+"\"\r\n");
-	dataToSend.append("Content-Type: application/octet-stream\r\n\r\n");
-	dataToSend.append(file.readAll());
-	dataToSend.append(boundary);
-	dataToSend.append("Content-Disposition: form-data; name=\"uploader_file_description\"\r\n\r\n");
-	dataToSend.append(fileDescription.toUtf8());
-	dataToSend.append(boundary);
-	dataToSend.append("Content-Disposition: form-data; name=\"comment\"\r\n\r\n");
-	dataToSend.append(comment.toUtf8());
-	dataToSend.append(boundaryLast);
-
-	QString urlString = m_ServerPrefix + "/upload/to/issue/" + QString::number(issue_id);
-	QUrl url(urlString);
-	QNetworkRequest request(url);
-	request.setRawHeader("Content-Type","multipart/form-data; boundary=\""+boundaryRegular+"\"");
-	request.setHeader(QNetworkRequest::ContentLengthHeader,dataToSend.size());
-
-	m_CurrentReply = m_NetAccessManager.post(request,dataToSend);
-	bool bSucceeded = waitForReply();
-	m_CurrentReply->deleteLater();
-	return bSucceeded;
+	QString url = "/upload/to/issue/" + QString::number(issue_id);
+	
+	http::POSTRequest request(toUTF8(m_ServerPrefix + url));
+	request.setData(toStdString(data));
+	request.setContentType(toStdString(contentType));
+	request.setFollowRedirects(false);
+	
+	boost::scoped_ptr<http::Response> response(post(request));
+	
+	return response->ok();
 }
 
-bool Server::findIssue(const QString& text, int& issue_id)
-{
+QString Server::findIssue(const QString & text, int & issue_id) {
+	
 	issue_id = -1; // Not found
-
-	QString addrSearchRSS = m_ServerPrefix +  "/arx/issues/find/format/rss?issues/project_key/arx&filters[text][operator]==&filters[text][value]=";
-	addrSearchRSS += text;
-	QUrl urlSearchRSS(addrSearchRSS);
-
-	QNetworkRequest request(urlSearchRSS);
-	m_CurrentReply = m_NetAccessManager.get(request);
-	bool bSucceeded = waitForReply();
-	if(bSucceeded)
-	{
-		QXmlStreamReader xml ;
-		xml.setDevice(m_CurrentReply);
-
-		// Using XPath would have probably been simpler, but it would
-		// add a dependency to QtXmlPatterns...
-		// Look for the first "/rss/channel/item/link" entry...
-		const QString XML_PATH[] = { "rss", "channel", "item", "link" };
-		size_t currentItem = 0;
-		QString issueLink;
-
-		while(!xml.atEnd() && !xml.hasError())
-		{
-			// Read next element
-			QXmlStreamReader::TokenType token = xml.readNext();
-
-			if(currentItem == size_t(boost::size(XML_PATH)))
-			{
-				issueLink = xml.text().toString();
-				break;
-			}
-
-			// If token is StartElement, we'll see if we can read it.
-			if(token == QXmlStreamReader::StartElement) 
-			{
-				if(xml.name() == XML_PATH[currentItem])
-					currentItem++;
-			}
-		}
-
-		if(!issueLink.isEmpty())
-		{
-			bSucceeded = getIssueIdFromUrl(QUrl(issueLink), issue_id);
-		}
-		else
-		{
-			bSucceeded = true; // Issue not found, but search was successful nonetheless, issue_id will be -1
-		}
-	}
-
-	return bSucceeded;
-}
-
-bool Server::getIssueIdFromUrl(const QUrl& url, int& issue_id)
-{
-	QUrl issueJSON = url.toString() + "?format=json";
-	QNetworkRequest request(issueJSON);
-
-	m_CurrentReply = m_NetAccessManager.get(request);
-	bool bSucceeded = waitForReply();
-	if(bSucceeded)
-	{
-		QByteArray data = m_CurrentReply->readAll();
-
-		issue_id = -1;
-
-		QString dataStr(data);
-		const QString idToken = "{\"id\":";
-		if(dataStr.startsWith(idToken))
-		{
-			int posEnd = dataStr.indexOf(",");
-			if(posEnd != -1)
-				issue_id = dataStr.mid(idToken.length(), posEnd - idToken.length()).toInt();
-		}
-
-		if(issue_id == -1)
-			bSucceeded = false;
-	}
-
-	m_CurrentReply->deleteLater();
-	return bSucceeded;
-}
-
-bool Server::waitForReply(bool followRedirect) {
 	
-	QUrl lastRedirectUrl;
-	do {
-		QEventLoop loop;
-		loop.connect(m_CurrentReply, SIGNAL(finished()), SLOT(quit()));
-		loop.exec();
+	QUrlQuery params;
+	params.addQueryItem("filters[text][operator]", "=");
+	params.addQueryItem("filters[text][value]", text);
+	
+	QString url = "/arx/issues/find/format/rss?issues/project_key/arx&"
+	              + toQString(qUrlQueryToPostData(params));
+	
+	http::Request request(toUTF8(m_ServerPrefix + url));
+	
+	boost::scoped_ptr<http::Response> response(get(request));
+	
+	if(!response->ok()) {
+		return QString();
+	}
+	
+	QXmlStreamReader xml(toQByteArray(response->data()));
+	
+	// Using XPath would have probably been simpler, but it would
+	// add a dependency to QtXmlPatterns...
+	// Look for the first "/rss/channel/item/link" entry...
+	const QString XML_PATH[] = { "rss", "channel", "item", "link" };
+	
+	size_t currentItem = 0;
+	QString issueLink;
+	while(!xml.atEnd() && !xml.hasError()) {
 		
-		// Handle redirections
-		QUrl redirectUrl = m_CurrentReply->attribute(QNetworkRequest::RedirectionTargetAttribute).toUrl();
-		if(followRedirect && !redirectUrl.isEmpty() && redirectUrl != lastRedirectUrl) {
-			
-			lastRedirectUrl = redirectUrl;
-			// Attribute "RedirectionTargetAttribute" might return a relative URL, so we must resolve it
-			QUrl baseUrl = m_ServerAddress;
-			redirectUrl = baseUrl.resolved(redirectUrl);
-			m_CurrentReply->deleteLater();
-			m_CurrentReply = m_NetAccessManager.get(QNetworkRequest(redirectUrl));
-			
-		} else {
-			lastRedirectUrl.clear();
+		// Read next element
+		QXmlStreamReader::TokenType token = xml.readNext();
+		
+		if(currentItem == size_t(boost::size(XML_PATH))) {
+			QString issue = xml.text().toString();
+			if(getIssueIdFromUrl(toUTF8(issue), issue_id)) {
+				return issue;
+			}
+			break;
 		}
-	} while(!lastRedirectUrl.isEmpty());
-
-	m_CurrentUrl = m_CurrentReply->url();
-
-	bool succeeded = m_CurrentReply->error() == QNetworkReply::NoError;
-	if(!succeeded)
-		m_LastErrorString = m_CurrentReply->errorString();
-	else
-		m_LastErrorString.clear();
-
-	return succeeded;
+		
+		// If token is StartElement, we'll see if we can read it.
+		if(token == QXmlStreamReader::StartElement && xml.name() == XML_PATH[currentItem]) {
+			currentItem++;
+		}
+		
+	}
+	
+	return QString();
 }
 
-QUrl Server::getUrl() const {
-	QUrl httpUrl = m_CurrentUrl;
-	httpUrl.setScheme("http");
-	return httpUrl;
-}
-
-const QString& Server::getErrorString() const
-{
-	return m_LastErrorString;
+bool Server::getIssueIdFromUrl(const std::string & url, int & issue_id) {
+	
+	issue_id = -1; // Not found
+	
+	if(url.empty()) {
+		m_LastErrorString = "Could not get issue URL";
+		return false;
+	}
+	
+	http::Request request(url + "?format=json");
+	
+	boost::scoped_ptr<http::Response> response(get(request));
+	
+	if(!response->ok()) {
+		return false;
+	}
+	
+	QString data = toQString(response->data());
+	
+	const QString idToken = "{\"id\":";
+	if(data.startsWith(idToken)) {
+		int posEnd = data.indexOf(",");
+		if(posEnd != -1) {
+			issue_id = data.mid(idToken.length(), posEnd - idToken.length()).toInt();
+			if(issue_id >= 0) {
+				return true;
+			}
+		}
+	}
+	
+	m_LastErrorString = "Could not get issue ID";
+	return false;
 }
 
 } // namespace TBG
