@@ -633,19 +633,19 @@ void ManageTorch() {
 		
 	} else {
 		
-			long count = MagicFlareCountNonFlagged();
-			
-			if(count) {
-				float rr = Random::getf();
-				el->pos = player.pos;
-				el->fallstart = 140.f + float(count) * 0.333333f + rr * 5.f;
-				el->fallend = 220.f + float(count) * 0.5f + rr * 5.f;
-				el->intensity = 1.6f;
-				el->exist = 1;
-				el->rgb = Color3f(0.01f * count, 0.009f * count, 0.008f * count);
-			} else {
-				el->exist = 0;
-			}
+		long count = MagicFlareCountNonFlagged();
+		
+		if(count) {
+			float rr = Random::getf();
+			el->pos = player.pos;
+			el->fallstart = 140.f + float(count) * 0.333333f + rr * 5.f;
+			el->fallend = 220.f + float(count) * 0.5f + rr * 5.f;
+			el->intensity = 1.6f;
+			el->exist = 1;
+			el->rgb = Color3f(0.01f * count, 0.009f * count, 0.008f * count);
+		} else {
+			el->exist = 0;
+		}
 	}
 	
 	if(   entities.player()->obj
