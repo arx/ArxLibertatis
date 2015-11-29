@@ -76,7 +76,7 @@ private:
 	bool setFieldValue(const QString & fieldName, int issue_id, int value_id);
 	bool getIssueIdFromUrl(const std::string & url, int & issue_id);
 	
-	QString m_ServerAddress;
+	QString m_serverAddress;
 	QString m_ServerPrefix;
 	http::Session * m_session;
 	QString m_LastErrorString;

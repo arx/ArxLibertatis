@@ -61,7 +61,7 @@ static QByteArray toQByteArray(const std::string & string) {
 }
 
 Server::Server(const QString & serverAddress, const std::string & userAgent)
-	: m_ServerAddress(serverAddress)
+	: m_serverAddress(serverAddress)
 	, m_ServerPrefix(serverAddress + "/arxcrashreporter/v1")
 	, m_session(http::createSession(userAgent))
 { }
@@ -125,7 +125,7 @@ bool Server::login(const QString & username, const QString & password) {
 	
 	QUrlQuery params;
 	params.addQueryItem("tbg3_password", password);
-	params.addQueryItem("tbg3_referer", m_ServerAddress);
+	params.addQueryItem("tbg3_referer", m_serverAddress);
 	params.addQueryItem("tbg3_username", username);
 	
 	http::POSTRequest request(toUTF8(m_ServerPrefix + "/do/login"));
