@@ -177,6 +177,9 @@ static void addCreditsLine(std::string & phrase, float & drawpos, int sourceLine
 		// Heading
 		phrase[0] = ' ';
 		infomations.fColors = Color::white;
+	} else if(phrase[0] == '&') {
+		// Heading continued
+		infomations.fColors = Color::white;
 	} else {
 		// Name or text
 		infomations.fColors = Color(232, 204, 143);
