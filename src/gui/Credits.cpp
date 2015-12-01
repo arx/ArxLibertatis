@@ -459,9 +459,6 @@ void Credits::render() {
 
 
 	if(iSize <= CreditsData.iFirstLine && iFadeAction != AMCM_MAIN) {
-		ARXmenu.mda->creditspos = 0;
-		ARXmenu.mda->creditstart = 0 ;
-		CreditsData.iFirstLine = 0 ;
 		
 		bFadeInOut = true;
 		bFade = true;
@@ -471,6 +468,9 @@ void Credits::render() {
 	}
 
 	if(ProcessFadeInOut(bFadeInOut,0.1f) && iFadeAction == AMCM_MAIN) {
+		CreditsData.iFirstLine = 0;
+		ARXmenu.mda->creditspos = 0;
+		ARXmenu.mda->creditstart = 0 ;
 		ARXmenu.currentmode = AMCM_MAIN;
 		iFadeAction = -1;
 		bFadeInOut = false;
