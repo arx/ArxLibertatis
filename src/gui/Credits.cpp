@@ -173,6 +173,7 @@ static void addCreditsLine(std::string & phrase, float & drawpos, int sourceLine
 	infomations.sourceLineNumber = sourceLineNumber;
 	
 	// Determnine the type of the line
+	bool isSimpleLine = false;
 	if(!phrase.empty() && phrase[0] == '~') {
 		// Heading
 		drawpos += CreditsData.iFontAverageHeight * 0.6f;
@@ -183,17 +184,25 @@ static void addCreditsLine(std::string & phrase, float & drawpos, int sourceLine
 		infomations.fColors = Color::white;
 	} else {
 		// Name or text
+		isSimpleLine = true;
 		infomations.fColors = Color(232, 204, 143);
 	}
 	
-	static const int MARGIN_WIDTH = 20;
-	Rect linerect(g_size.width() - MARGIN_WIDTH - MARGIN_WIDTH, hFontCredits->getLineHeight());
+	static const int Margin = 20;
+	Rect linerect(g_size.width() - Margin - Margin, hFontCredits->getLineHeight());
 	
 	while(!phrase.empty()) {
+		
+		// Calculate height position
+		infomations.sPos.y = static_cast<int>(drawpos);
+		drawpos += CreditsData.iFontAverageHeight;
 		
 		// Split long lines
 		long n = ARX_UNICODE_ForceFormattingInRect(hFontCredits, phrase, linerect);
 		arx_assert(n >= 0 && size_t(n) < phrase.length());
+		
+		// Long lines are not simple
+		isSimpleLine = isSimpleLine && size_t(n + 1) == phrase.length();
 		
 		infomations.sText = phrase.substr(0, size_t(n + 1) == phrase.length() ? n + 1 : n);
 		phrase = phrase.substr(n + 1);
@@ -202,11 +211,48 @@ static void addCreditsLine(std::string & phrase, float & drawpos, int sourceLine
 		int linesize = hFontCredits->getTextSize(infomations.sText).x;
 		infomations.sPos.x = (g_size.width() - linesize) / 2;
 		
-		LogDebug("credit line: '" << infomations.sText << "' (" << linesize << "," << infomations.sText.length() << ")");
-		
-		// Calculate height position
-		infomations.sPos.y = static_cast<int>(drawpos);
-		drawpos += CreditsData.iFontAverageHeight;
+		if(isSimpleLine) {
+			
+			// Check if there is a suffix that should be styled differently
+			size_t p = size_t(-1);
+			for(;;) {
+				p = infomations.sText.find_first_of("-(0123456789", p + 1);
+				if(p == std::string::npos) {
+					break;
+				}
+				if(p != 0 && infomations.sText[p  - 1] != ' ') {
+					continue;
+				}
+				if(infomations.sText[p] == '(') {
+					if(infomations.sText[infomations.sText.length() - 1] != ')') {
+						continue;
+					}
+					if(infomations.sText.find_first_of('(', p + 1) != std::string::npos) {
+						continue;
+					}
+				}
+				if(infomations.sText[p] >= '0' && infomations.sText[p] < '9') {
+					if(infomations.sText.find_first_not_of(".", p) == std::string::npos) {
+						continue;
+					}
+					if(infomations.sText.find_first_not_of("0123456789.", p) != std::string::npos) {
+						continue;
+					}
+				}
+				break;
+			}
+			
+			if(p != std::string::npos) {
+				CreditsTextInformations prefix = infomations;
+				prefix.sText.resize(p);
+				int prefixsize = hFontCredits->getTextSize(prefix.sText).x;
+				CreditsData.aCreditsInformations.push_back(prefix);
+				infomations.sPos.x = prefix.sPos.x + prefixsize + 20;
+				infomations.sText = infomations.sText.substr(p);
+				infomations.fColors = Color::gray(0.7f);
+			}
+			
+		}
 		
 		CreditsData.aCreditsInformations.push_back(infomations);
 	}
