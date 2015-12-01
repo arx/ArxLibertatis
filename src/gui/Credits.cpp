@@ -70,11 +70,14 @@ struct CreditsTextInformations {
 	CreditsTextInformations() {
 		sPos = Vec2i_ZERO;
 		fColors = Color::none;
+		sourceLineNumber = -1;
 	}
 	
 	std::string  sText;
 	Color fColors;
 	Vec2i sPos;
+	int sourceLineNumber;
+	
 };
 
 
@@ -104,6 +107,32 @@ static void InitCredits() {
 		return;
 	}
 	
+	// When the screen is resized, try to keep the credits scrolled to the 'same' position
+	static int anchorLine = -1;
+	static float offset;
+	typedef std::vector<CreditsTextInformations>::iterator Iterator;
+	if(CreditsData.iFontAverageHeight != -1 && CreditsData.iFirstLine >= 0
+	   && size_t(CreditsData.iFirstLine) < CreditsData.aCreditsInformations.size()) {
+		// We use the first line that is still visible as our anchor
+		Iterator it = CreditsData.aCreditsInformations.begin() + CreditsData.iFirstLine;
+		anchorLine = it->sourceLineNumber;
+		// Find the first credits line that comes from this source line
+		Iterator first = it;
+		while(first != CreditsData.aCreditsInformations.begin()
+		      && (first - 1)->sourceLineNumber == anchorLine) {
+			--first;
+		}
+		// Find the first credits line that comes from this source line
+		Iterator last = it;
+		while((last + 1) != CreditsData.aCreditsInformations.end()
+		      && (last + 1)->sourceLineNumber == anchorLine) {
+			++last;
+		}
+		// Remember the offset from the anchor line to the current scroll position
+		float pos = (first->sPos.y + last->sPos.y) * 0.5f;
+		offset = (pos + ARXmenu.mda->creditspos) / float(CreditsData.iFontAverageHeight);
+	}
+	
 	CreditsData.sizex = g_size.width();
 	CreditsData.sizey = g_size.height();
 	
@@ -115,6 +144,26 @@ static void InitCredits() {
 	ExtractAllCreditsTextInformations();
 	
 	LogDebug("Credits lines " << CreditsData.aCreditsInformations.size());
+	
+	if(anchorLine >= 0) {
+		// Find the first credits line that comes from our source anchor line
+		Iterator first = CreditsData.aCreditsInformations.begin();
+		while(first != CreditsData.aCreditsInformations.end()
+		      && first->sourceLineNumber != anchorLine) {
+			++first;
+		}
+		if(first != CreditsData.aCreditsInformations.end()) {
+			// Find the last credits line that comes from our source anchor line
+			Iterator last = first;
+			while((last + 1) != CreditsData.aCreditsInformations.end()
+			      && (last + 1)->sourceLineNumber == anchorLine) {
+				++last;
+			}
+			// Restore the scroll positon using the offset to our anchor line
+			float pos = (first->sPos.y + last->sPos.y) * 0.5f;
+			ARXmenu.mda->creditspos = offset * float(CreditsData.iFontAverageHeight) - pos;
+		}
+	}
 	
 }
 
@@ -129,10 +178,11 @@ static Color ExtractPhraseColor(std::string & phrase) {
 	}
 }
 
-static void addCreditsLine(std::string & phrase, float & drawpos) {
+static void addCreditsLine(std::string & phrase, float & drawpos, int sourceLineNumber) {
 	
 	//Create a data containers
 	CreditsTextInformations infomations;
+	infomations.sourceLineNumber = sourceLineNumber;
 	
 	infomations.fColors = ExtractPhraseColor(phrase);
 	
@@ -206,8 +256,8 @@ static void ExtractAllCreditsTextInformations() {
 
 	//Use to calculate the positions
 	float drawpos = static_cast<float>(g_size.height());
-
-	while(std::getline(iss, phrase)) {
+	
+	for(int sourceLineNumber = 0; std::getline(iss, phrase); sourceLineNumber++) {
 		
 		strip(phrase);
 		
@@ -215,7 +265,7 @@ static void ExtractAllCreditsTextInformations() {
 			// Separator line
 			drawpos += CreditsData.iFontAverageHeight;
 		} else {
-			addCreditsLine(phrase, drawpos);
+			addCreditsLine(phrase, drawpos, sourceLineNumber);
 		}
 	}
 }
