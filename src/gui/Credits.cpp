@@ -167,26 +167,20 @@ static void InitCredits() {
 	
 }
 
-static Color ExtractPhraseColor(std::string & phrase) {
-	//Get the good color
-	if(!phrase.empty() && phrase[0] == '~') {
-		phrase[0] = ' ';
-		return Color(255,255,255);
-	} else {
-		//print in gold color
-		return Color(232,204,143);
-	}
-}
-
 static void addCreditsLine(std::string & phrase, float & drawpos, int sourceLineNumber) {
 	
-	//Create a data containers
 	CreditsTextInformations infomations;
 	infomations.sourceLineNumber = sourceLineNumber;
 	
-	infomations.fColors = ExtractPhraseColor(phrase);
-	
-	//int linesize = hFontCredits->GetTextSize(phrase).x;
+	// Determnine the type of the line
+	if(!phrase.empty() && phrase[0] == '~') {
+		// Heading
+		phrase[0] = ' ';
+		infomations.fColors = Color::white;
+	} else {
+		// Name or text
+		infomations.fColors = Color(232, 204, 143);
+	}
 	
 	static const int MARGIN_WIDTH = 20;
 	Rect linerect(g_size.width() - MARGIN_WIDTH - MARGIN_WIDTH, hFontCredits->getLineHeight());
