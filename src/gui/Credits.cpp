@@ -242,10 +242,43 @@ static void addCreditsLine(std::string & phrase, float & drawpos, int sourceLine
 				break;
 			}
 			
+			// Center names around the surname start
+			size_t s = std::string::npos;
+			if(p != std::string::npos && p > 2) {
+				if(infomations.sText[p] == '-' || infomations.sText[p] == '(') {
+					s = p - 1; // Skip space before the suffix
+				} else {
+					s = p;
+				}
+			} else if(p != 0) {
+				s = infomations.sText.length();
+			}
+			if(s != std::string::npos && s != 0) {
+				if(std::count(infomations.sText.begin(), infomations.sText.begin() + s, ' ') > 2) {
+					s = std::string::npos; // A sentence
+				} else if(infomations.sText.find_last_of(',', s - 1) != std::string::npos) {
+					s = std::string::npos; // An inline list
+				} else {
+					s = infomations.sText.find_last_of(' ', s - 1);
+				}
+			}
+			bool centered = false;
+			if(s != std::string::npos && s!= 0) {
+				int firstsize = hFontCredits->getTextSize(infomations.sText.substr(0, s)).x;
+				if(firstsize < g_size.width() / 2 && linesize - firstsize < g_size.width() / 2) {
+					infomations.sPos.x = g_size.width() / 2 - firstsize;
+					centered = true;
+				}
+			}
+			
 			if(p != std::string::npos) {
 				CreditsTextInformations prefix = infomations;
 				prefix.sText.resize(p);
 				int prefixsize = hFontCredits->getTextSize(prefix.sText).x;
+				if(!centered && p != 0 && prefixsize / 2 < g_size.width() / 2
+					 && linesize - prefixsize / 2 < g_size.width() / 2) {
+					prefix.sPos.x = (g_size.width() - prefixsize) / 2;
+				}
 				CreditsData.aCreditsInformations.push_back(prefix);
 				infomations.sPos.x = prefix.sPos.x + prefixsize + 20;
 				infomations.sText = infomations.sText.substr(p);
