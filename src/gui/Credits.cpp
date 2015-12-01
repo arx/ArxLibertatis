@@ -55,6 +55,8 @@ ZeniMax Media Inc., Suite 120, Rockville, Maryland 20850 USA.
 #include "graphics/Draw.h"
 #include "graphics/font/Font.h"
 
+#include "input/Input.h"
+
 #include "io/log/Logger.h"
 
 #include "scene/GameSound.h"
@@ -371,11 +373,66 @@ void Credits::render() {
 		
 		// Use time passed between frame to create scroll effect
 		float time = arxtime.get_updated(false);
-		float dtime = (float)(time - ARXmenu.mda->creditstart);
-		ARXmenu.mda->creditspos -= 0.03f * g_sizeRatio.y * dtime;
+		float dtime = time - ARXmenu.mda->creditstart;
+		
+		static float lastKeyPressTime = 0.f;
+		static float lastUserScrollTime = 0.f;
+		static float scrollDirection = 1.f;
+		
+		float keyRepeatDelay = 256.f; // delay after key press before continuous scrolling
+		float autoScrollDelay = 250.f; // ms after user input before resuming normal scrolling
+		
+		// Process user input
+		float userScroll = 15.f * GInput->getMouseWheelDir();
+		if(GInput->isKeyPressed(Keyboard::Key_UpArrow)) {
+			userScroll += 0.2f * dtime;
+		}
+		if(GInput->isKeyPressedNowPressed(Keyboard::Key_PageUp)) {
+			userScroll += 150.f;
+			lastKeyPressTime = time;
+		} else if(GInput->isKeyPressed(Keyboard::Key_PageUp)) {
+			if(time - lastKeyPressTime > keyRepeatDelay) {
+				userScroll += 0.5f * dtime;
+			}
+		}
+		if(GInput->isKeyPressedNowPressed(Keyboard::Key_PageDown)) {
+			userScroll -= 150.f;
+			lastKeyPressTime = time;
+		} else if(GInput->isKeyPressed(Keyboard::Key_PageDown)) {
+			if(time - lastKeyPressTime > keyRepeatDelay) {
+				userScroll -= 0.5f * dtime;
+			}
+		}
+		if(GInput->isKeyPressed(Keyboard::Key_DownArrow)) {
+			userScroll -= 0.2f * dtime;
+		}
+		ARXmenu.mda->creditspos += g_sizeRatio.y * userScroll;
+		
+		// If the user wants to scroll up, also change the automatic scroll direction …
+		if(userScroll > 0.f) {
+			lastUserScrollTime = time;
+			scrollDirection = -1.f;
+		}
+		// … but restore normal scrolling after a short delay.
+		if(time - lastUserScrollTime > autoScrollDelay) {
+			scrollDirection = 1.f;
+		}
+		
+		ARXmenu.mda->creditspos -= 0.03f * g_sizeRatio.y * dtime * scrollDirection;
 		ARXmenu.mda->creditstart = time;
 		
+		// Don't scroll past the credits start
+		ARXmenu.mda->creditspos = std::min(0.f, ARXmenu.mda->creditspos);
+		
 		std::vector<CreditsTextInformations>::const_iterator it = CreditsData.aCreditsInformations.begin() + CreditsData.iFirstLine ;
+		
+		for(; it != CreditsData.aCreditsInformations.begin(); --it, --CreditsData.iFirstLine) {
+			float yy = (it - 1)->sPos.y + ARXmenu.mda->creditspos;
+			if (yy <= -CreditsData.iFontAverageHeight) {
+				break;
+			}
+		}
+		
 		for (; it != CreditsData.aCreditsInformations.end(); ++it)
 		{
 			//Update the Y word display
