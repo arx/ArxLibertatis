@@ -175,6 +175,7 @@ static void addCreditsLine(std::string & phrase, float & drawpos, int sourceLine
 	// Determnine the type of the line
 	if(!phrase.empty() && phrase[0] == '~') {
 		// Heading
+		drawpos += CreditsData.iFontAverageHeight * 0.6f;
 		phrase[0] = ' ';
 		infomations.fColors = Color::white;
 	} else if(phrase[0] == '&') {
@@ -260,7 +261,7 @@ static void ExtractAllCreditsTextInformations() {
 		
 		if(phrase.empty()) {
 			// Separator line
-			drawpos += CreditsData.iFontAverageHeight;
+			drawpos += 0.4f * CreditsData.iFontAverageHeight;
 		} else {
 			addCreditsLine(phrase, drawpos, sourceLineNumber);
 		}
