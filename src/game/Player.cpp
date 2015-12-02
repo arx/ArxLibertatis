@@ -759,9 +759,8 @@ void ARX_PLAYER_ComputePlayerFullStats() {
 	float base_critical_hit  = player.m_attributeFull.dexterity * 2.f
 	                           + player.m_skillFull.closeCombat * 0.2f
 	                           + -18.f;
-	float base_damages       = std::max(1.f, player.m_attributeFull.strength * 0.5f
-	                           + player.m_skillFull.closeCombat * 0.1f
-	                           + -5.f);
+	float base_damages       = std::max(1.f, player.m_attributeFull.strength * 0.5f - 5.f)
+	                           + player.m_skillFull.closeCombat * 0.1f;
 	
 	// Calculate equipment modifiers for stats
 	player.m_miscMod.armorClass += getEquipmentModifier(
