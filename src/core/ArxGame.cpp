@@ -566,7 +566,7 @@ static void LoadSysTextures() {
 	g_hudRoot.init();
 	
 	// Load book textures and text
-	ITC.init();
+	g_bookResouces.init();
 	
 	// MENU2
 	TextureContainer::LoadUI("graph/interface/menus/menu_main_background", TextureContainer::NoColorKey);

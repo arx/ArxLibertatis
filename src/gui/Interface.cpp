@@ -170,7 +170,7 @@ INVENTORY_DATA *	TSecondaryInventory;
 Entity * FlyingOverIO=NULL;
 Entity *	STARTED_ACTION_ON_IO=NULL;
 
-INTERFACE_TC ITC = INTERFACE_TC();
+INTERFACE_TC g_bookResouces = INTERFACE_TC();
 
 gui::Note openNote;
 
@@ -348,8 +348,8 @@ void INTERFACE_TC::init() {
 	arx_assert(currentTab[8]);
 	arx_assert(currentTab[9]);
 	
-	ITC.Level = getLocalised("system_charsheet_player_lvl");
-	ITC.Xp = getLocalised("system_charsheet_player_xp");
+	g_bookResouces.Level = getLocalised("system_charsheet_player_lvl");
+	g_bookResouces.Xp = getLocalised("system_charsheet_player_xp");
 }
 
 
@@ -1941,8 +1941,8 @@ void ArxGame::manageEditorControls() {
 	if(player.Interface & INTER_MAP) {
 		Vec2f pos(97 * g_sizeRatio.x, 64 * g_sizeRatio.y);
 		
-		TextureContainer* playerbook = ITC.playerbook;
-		arx_assert(ITC.playerbook);
+		TextureContainer* playerbook = g_bookResouces.playerbook;
+		arx_assert(g_bookResouces.playerbook);
 		
 		const Rect mouseTestRect(
 		pos.x,

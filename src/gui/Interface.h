@@ -196,7 +196,7 @@ enum ARX_INTERFACE_CURSOR_MODE
 };
 
 //-----------------------------------------------------------------------------
-extern INTERFACE_TC ITC;
+extern INTERFACE_TC g_bookResouces;
 extern Vec2s MemoMouse;
 
 extern long SpecialCursor;
