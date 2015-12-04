@@ -947,6 +947,11 @@ static Color attrubuteModToColor(float modValue, float baseValue = 0.f) {
 		return Color::black;
 }
 
+static void DrawBookTextCenter(Font* font, const Vec2f & pos, const std::string& text, Color col) {
+	
+	UNICODE_ARXDrawTextCenter(font, (BOOKDEC + pos) * g_sizeRatio, text, col);
+}
+
 static void ARX_INTERFACE_ManageOpenedBook_Stats()
 {
 	FLYING_OVER = 0;
