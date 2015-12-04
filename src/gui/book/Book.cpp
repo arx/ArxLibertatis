@@ -938,6 +938,15 @@ static void ARX_INTERFACE_ManageOpenedBook_LeftTabs_Map() {
 	ARX_INTERFACE_ManageOpenedBook_LeftTabs(tabVisibility, Book_MapPage);
 }
 
+static Color attrubuteModToColor(float modValue, float baseValue = 0.f) {
+	if(modValue < baseValue)
+		return Color::red;
+	else if(modValue > baseValue)
+		return Color::blue;
+	else
+		return Color::black;
+}
+
 static void ARX_INTERFACE_ManageOpenedBook_Stats()
 {
 	FLYING_OVER = 0;
@@ -1134,13 +1143,7 @@ static void ARX_INTERFACE_ManageOpenedBook_Stats()
 	std::stringstream ss3;
 	ss3 << std::setw(3) << std::setprecision(0) << std::fixed << player.m_attributeFull.strength;
 	
-	Color color;
-	if(player.m_attributeMod.strength < 0.f)
-		color = Color::red;
-	else if(player.m_attributeMod.strength > 0.f)
-		color = Color::blue;
-	else
-		color = Color::black;
+	Color color = attrubuteModToColor(player.m_attributeMod.strength);
 	
 	if(ARXmenu.currentmode == AMCM_NEWQUEST) {
 		if(player.m_attributeFull.strength == 6)
@@ -1156,13 +1159,7 @@ static void ARX_INTERFACE_ManageOpenedBook_Stats()
 	std::stringstream ss3;
 	ss3 << std::setw(3) << std::setprecision(0) << std::fixed << player.m_attributeFull.mind;
 	
-	Color color;
-	if(player.m_attributeMod.mind < 0.f)
-		color = Color::red;
-	else if(player.m_attributeMod.mind > 0.f)
-		color = Color::blue;
-	else
-		color = Color::black;
+	Color color = attrubuteModToColor(player.m_attributeMod.mind);
 	
 	if(ARXmenu.currentmode == AMCM_NEWQUEST) {
 		if(player.m_attributeFull.mind == 6)
@@ -1178,13 +1175,7 @@ static void ARX_INTERFACE_ManageOpenedBook_Stats()
 	std::stringstream ss3;
 	ss3 << std::setw(3) << std::setprecision(0) << std::fixed << player.m_attributeFull.dexterity;
 	
-	Color color;
-	if(player.m_attributeMod.dexterity < 0.f)
-		color = Color::red;
-	else if(player.m_attributeMod.dexterity > 0.f)
-		color = Color::blue;
-	else
-		color = Color::black;
+	Color color = attrubuteModToColor(player.m_attributeMod.dexterity);
 	
 	if(ARXmenu.currentmode == AMCM_NEWQUEST) {
 		if(player.m_attributeFull.dexterity == 6)
@@ -1200,13 +1191,7 @@ static void ARX_INTERFACE_ManageOpenedBook_Stats()
 	std::stringstream ss3;
 	ss3 << std::setw(3) << std::setprecision(0) << std::fixed << player.m_attributeFull.constitution;
 	
-	Color color;
-	if(player.m_attributeMod.constitution < 0.f)
-		color = Color::red;
-	else if(player.m_attributeMod.constitution > 0.f)
-		color = Color::blue;
-	else
-		color = Color::black;
+	Color color = attrubuteModToColor(player.m_attributeMod.constitution);
 	
 	if(ARXmenu.currentmode == AMCM_NEWQUEST) {
 		if(player.m_attributeFull.constitution == 6)
@@ -1223,13 +1208,7 @@ static void ARX_INTERFACE_ManageOpenedBook_Stats()
 	std::stringstream ss3;
 	ss3 << std::setw(3) << std::setprecision(0) << std::fixed << player.m_skillFull.stealth;
 	
-	Color color;
-	if (player.m_skillMod.stealth < 0.f)
-		color = Color::red;
-	else if (player.m_skillMod.stealth > 0.f)
-		color = Color::blue;
-	else
-		color = Color::black;
+	Color color = attrubuteModToColor(player.m_skillMod.stealth);
 	
 	if(ARXmenu.currentmode == AMCM_NEWQUEST) {
 		if(player.m_skill.stealth == 0)
@@ -1245,13 +1224,7 @@ static void ARX_INTERFACE_ManageOpenedBook_Stats()
 	std::stringstream ss3;
 	ss3 << std::setw(3) << std::setprecision(0) << std::fixed << player.m_skillFull.mecanism;
 	
-	Color color;
-	if (player.m_skillMod.mecanism < 0.f)
-		color = Color::red;
-	else if (player.m_skillMod.mecanism > 0.f)
-		color = Color::blue;
-	else
-		color = Color::black;
+	Color color = attrubuteModToColor(player.m_skillMod.mecanism);
 	
 	if(ARXmenu.currentmode == AMCM_NEWQUEST) {
 		if(player.m_skill.mecanism == 0)
@@ -1267,13 +1240,7 @@ static void ARX_INTERFACE_ManageOpenedBook_Stats()
 	std::stringstream ss3;
 	ss3 << std::setw(3) << std::setprecision(0) << std::fixed << player.m_skillFull.intuition;
 	
-	Color color;
-	if (player.m_skillMod.intuition < 0.f)
-		color = Color::red;
-	else if (player.m_skillMod.intuition > 0.f)
-		color = Color::blue;
-	else
-		color = Color::black;
+	Color color = attrubuteModToColor(player.m_skillMod.intuition);
 	
 	if(ARXmenu.currentmode == AMCM_NEWQUEST) {
 		if(player.m_skill.intuition == 0)
@@ -1289,13 +1256,7 @@ static void ARX_INTERFACE_ManageOpenedBook_Stats()
 	std::stringstream ss3;
 	ss3 << std::setw(3) << std::setprecision(0) << std::fixed << player.m_skillFull.etheralLink;
 	
-	Color color;
-	if(player.m_skillMod.etheralLink < 0.f)
-		color = Color::red;
-	else if(player.m_skillMod.etheralLink > 0.f)
-		color = Color::blue;
-	else
-		color = Color::black;
+	Color color = attrubuteModToColor(player.m_skillMod.etheralLink);
 	
 	if(ARXmenu.currentmode == AMCM_NEWQUEST) {
 		if(player.m_skill.etheralLink == 0)
@@ -1311,13 +1272,7 @@ static void ARX_INTERFACE_ManageOpenedBook_Stats()
 	std::stringstream ss3;
 	ss3 << std::setw(3) << std::setprecision(0) << std::fixed << player.m_skillFull.objectKnowledge;
 	
-	Color color;
-	if(player.m_skillMod.objectKnowledge < 0.f)
-		color = Color::red;
-	else if(player.m_skillMod.objectKnowledge > 0.f)
-		color = Color::blue;
-	else
-		color = Color::black;
+	Color color = attrubuteModToColor(player.m_skillMod.objectKnowledge);
 	
 	if(ARXmenu.currentmode == AMCM_NEWQUEST) {
 		if(player.m_skill.objectKnowledge == 0)
@@ -1333,13 +1288,7 @@ static void ARX_INTERFACE_ManageOpenedBook_Stats()
 	std::stringstream ss3;
 	ss3 << std::setw(3) << std::setprecision(0) << std::fixed << player.m_skillFull.casting;
 	
-	Color color;
-	if (player.m_skillMod.casting < 0.f)
-		color = Color::red;
-	else if (player.m_skillMod.casting > 0.f)
-		color = Color::blue;
-	else
-		color = Color::black;
+	Color color = attrubuteModToColor(player.m_skillMod.casting);
 	
 	if(ARXmenu.currentmode == AMCM_NEWQUEST) {
 		if(player.m_skill.casting == 0)
@@ -1355,13 +1304,7 @@ static void ARX_INTERFACE_ManageOpenedBook_Stats()
 	std::stringstream ss3;
 	ss3 << std::setw(3) << std::setprecision(0) << std::fixed << player.m_skillFull.closeCombat;
 	
-	Color color;
-	if (player.m_skillMod.closeCombat < 0.f)
-		color = Color::red;
-	else if (player.m_skillMod.closeCombat > 0.f)
-		color = Color::blue;
-	else
-		color = Color::black;
+	Color color = attrubuteModToColor(player.m_skillMod.closeCombat);
 	
 	if(ARXmenu.currentmode == AMCM_NEWQUEST) {
 		if(player.m_skill.closeCombat == 0)
@@ -1377,13 +1320,7 @@ static void ARX_INTERFACE_ManageOpenedBook_Stats()
 	std::stringstream ss3;
 	ss3 << std::setw(3) << std::setprecision(0) << std::fixed << player.m_skillFull.projectile;
 	
-	Color color;
-	if(player.m_skillMod.projectile < 0.f)
-		color = Color::red;
-	else if(player.m_skillMod.projectile > 0.f)
-		color = Color::blue;
-	else
-		color = Color::black;
+	Color color = attrubuteModToColor(player.m_skillMod.projectile);
 	
 	if(ARXmenu.currentmode == AMCM_NEWQUEST) {
 		if(player.m_skill.projectile == 0)
@@ -1399,13 +1336,7 @@ static void ARX_INTERFACE_ManageOpenedBook_Stats()
 	std::stringstream ss3;
 	ss3 << std::setw(3) << std::setprecision(0) << std::fixed << player.m_skillFull.defense;
 	
-	Color color;
-	if (player.m_skillMod.defense < 0.f)
-		color = Color::red;
-	else if (player.m_skillMod.defense > 0.f)
-		color = Color::blue;
-	else
-		color = Color::black;
+	Color color = attrubuteModToColor(player.m_skillMod.defense);
 	
 	if(ARXmenu.currentmode == AMCM_NEWQUEST) {
 		if(player.m_skill.defense == 0)
@@ -1422,14 +1353,7 @@ static void ARX_INTERFACE_ManageOpenedBook_Stats()
 	std::stringstream ss4;
 	ss4 << F2L_RoundUp(player.Full_maxlife);
 	
-	Color color;
-	if(player.Full_maxlife < player.lifePool.max) {
-		color = Color::red;
-	} else if(player.Full_maxlife > player.lifePool.max) {
-		color = Color::blue;
-	} else {
-		color = Color::black;
-	}
+	Color color = attrubuteModToColor(player.Full_maxlife, player.lifePool.max);
 	
 	DrawBookTextCenter(hFontInBook, pos, ss4.str(), color);
 	}
@@ -1440,14 +1364,7 @@ static void ARX_INTERFACE_ManageOpenedBook_Stats()
 	std::stringstream ss4;
 	ss4 << F2L_RoundUp(player.Full_maxmana);
 	
-	Color color;
-	if(player.Full_maxmana < player.manaPool.max) {
-		color = Color::red;
-	} else if(player.Full_maxmana > player.manaPool.max) {
-		color = Color::blue;
-	} else {
-		color = Color::black;
-	}
+	Color color = attrubuteModToColor(player.Full_maxmana, player.manaPool.max);
 	
 	DrawBookTextCenter(hFontInBook, pos, ss4.str(), color);
 	}
@@ -1458,13 +1375,7 @@ static void ARX_INTERFACE_ManageOpenedBook_Stats()
 	std::stringstream ss4;
 	ss4 << F2L_RoundUp(player.m_miscFull.damages);
 	
-	Color color;
-	if (player.m_miscMod.damages < 0.f)
-		color = Color::red;
-	else if (player.m_miscMod.damages > 0.f)
-		color = Color::blue;
-	else
-		color = Color::black;
+	Color color = attrubuteModToColor(player.m_miscMod.damages);
 	
 	DrawBookTextCenter(hFontInBook, pos, ss4.str(), color);
 	}
@@ -1475,13 +1386,7 @@ static void ARX_INTERFACE_ManageOpenedBook_Stats()
 	std::stringstream ss4;
 	ss4 << F2L_RoundUp(player.m_miscFull.armorClass);
 	
-	Color color;
-	if (player.m_miscMod.armorClass < 0.f)
-		color = Color::red;
-	else if (player.m_miscMod.armorClass > 0.f)
-		color = Color::blue;
-	else
-		color = Color::black;
+	Color color = attrubuteModToColor(player.m_miscMod.armorClass);
 	
 	DrawBookTextCenter(hFontInBook, pos, ss4.str(), color);
 	}
@@ -1492,13 +1397,7 @@ static void ARX_INTERFACE_ManageOpenedBook_Stats()
 	std::stringstream ss4;
 	ss4 << std::setw(3) << std::setprecision(0) << F2L_RoundUp( player.m_miscFull.resistMagic );
 	
-	Color color;
-	if (player.m_miscMod.resistMagic < 0.f)
-		color = Color::red;
-	else if (player.m_miscMod.resistMagic > 0.f)
-		color = Color::blue;
-	else
-		color = Color::black;
+	Color color = attrubuteModToColor(player.m_miscMod.resistMagic);
 	
 	DrawBookTextCenter(hFontInBook, pos, ss4.str(), color);
 	}
@@ -1509,13 +1408,7 @@ static void ARX_INTERFACE_ManageOpenedBook_Stats()
 	std::stringstream ss4;
 	ss4 << std::setw(3) << std::setprecision(0) << F2L_RoundUp( player.m_miscFull.resistPoison );
 	
-	Color color;
-	if (player.m_miscMod.resistPoison<0.f)
-		color = Color::red;
-	else if (player.m_miscMod.resistPoison>0.f)
-		color = Color::blue;
-	else
-		color = Color::black;
+	Color color = attrubuteModToColor(player.m_miscMod.resistPoison);
 	
 	DrawBookTextCenter(hFontInBook, pos, ss4.str(), color);
 	}
