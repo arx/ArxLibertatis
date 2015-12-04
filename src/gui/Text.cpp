@@ -217,14 +217,6 @@ long ARX_UNICODE_DrawTextInRect(Font* font,
 	return height;
 }
 
-void ARX_TEXT_Draw(Font* ef, const Vec2f & pos, const std::string& car, Color col) {
-	
-	if (car.empty() || car[0] == 0)
-		return;
-	
-	ARX_UNICODE_DrawTextInRect(ef, pos, std::numeric_limits<float>::infinity(), car, col);
-}
-
 void DrawBookTextCenter(Font* font, const Vec2f & pos, const std::string& text, Color col)
 {
 	UNICODE_ARXDrawTextCenter(font, (BOOKDEC + pos) * g_sizeRatio, text, col);

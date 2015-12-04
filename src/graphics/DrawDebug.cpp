@@ -900,5 +900,5 @@ void drawDebugRender() {
 	pos += Vec2f(-10 , 10);
 	pos += Vec2f(-width, 0);
 	
-	ARX_TEXT_Draw(hFontDebug, pos, ss.str(), Color::yellow);
+	hFontDebug->draw(pos.x, pos.y, ss.str(), Color::yellow);
 }
