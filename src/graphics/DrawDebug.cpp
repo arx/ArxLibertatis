@@ -896,9 +896,9 @@ void drawDebugRender() {
 	}
 	
 	s32 width = hFontDebug->getTextSize(ss.str()).x;
-	Vec2f pos = Vec2f(g_size.topRight());
-	pos += Vec2f(-10 , 10);
-	pos += Vec2f(-width, 0);
+	Vec2i pos = g_size.topRight();
+	pos += Vec2i(-10 , 10);
+	pos += Vec2i(-width, 0);
 	
-	hFontDebug->draw(pos.x, pos.y, ss.str(), Color::yellow);
+	hFontDebug->draw(pos, ss.str(), Color::yellow);
 }
