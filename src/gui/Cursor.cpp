@@ -82,7 +82,6 @@ TextureContainer * cursorMovable = NULL;   // TextureContainer for Movable Items
 TextureContainer *	scursor[8];			// Animated Hand Cursor TC
 
 void cursorTexturesInit() {
-	ITC.Reset();
 	
 	cursorTargetOn       = TextureContainer::LoadUI("graph/interface/cursors/target_on");
 	cursorTargetOff      = TextureContainer::LoadUI("graph/interface/cursors/target_off");

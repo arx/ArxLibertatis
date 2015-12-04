@@ -259,16 +259,6 @@ void ARX_INTERFACE_DrawNumber(const Vec2f & pos, const long num, const int _iNb,
 	}
 }
 
-void KillInterfaceTextureContainers() {
-	ITC.Reset();
-}
-
-void INTERFACE_TC::Reset()
-{
-	ITC.Level.clear();
-	ITC.Xp.clear();
-}
-
 void INTERFACE_TC::init() {
 	
 	playerbook            = TextureContainer::LoadUI("graph/interface/book/character_sheet/char_sheet_book");

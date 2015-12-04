@@ -98,8 +98,6 @@ public:
 		std::fill_n(currentTab, ARRAY_SIZE(currentTab), (TextureContainer *)NULL);
 	}
 	
-	void Reset();
-	
 	void init();
 
 public:
@@ -244,8 +242,6 @@ void ReleaseHalo();
 void ResetPlayerInterface();
 void Set_DragInter(Entity * io);
 void ARX_INTERFACE_DrawNumber(const Vec2f & pos, const long num, const int _iNb, const Color color, float scale);
-
-void KillInterfaceTextureContainers();
 
 // 0 switch 1 forceopen 2 forceclose
 void InventoryOpenClose(unsigned long t);
