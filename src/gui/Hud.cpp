@@ -555,17 +555,17 @@ void CurrentTorchIconGui::updateInput() {
 	if(player.torch) {
 		
 		if(m_rect.contains(Vec2f(DANAEMouse))) {
-			eMouseState=MOUSE_IN_TORCH_ICON;
-			SpecialCursor=CURSOR_INTERACTION_ON;
+			eMouseState = MOUSE_IN_TORCH_ICON;
+			SpecialCursor = CURSOR_INTERACTION_ON;
 			
 			if(!DRAGINTER && !PLAYER_MOUSELOOK_ON && DRAGGING) {
-				Entity * io=player.torch;
-				player.torch->show=SHOW_FLAG_IN_SCENE;
+				Entity * io = player.torch;
+				player.torch->show = SHOW_FLAG_IN_SCENE;
 				ARX_SOUND_PlaySFX(SND_TORCH_END);
 				ARX_SOUND_Stop(SND_TORCH_LOOP);
-				player.torch=NULL;
+				player.torch = NULL;
 				lightHandleGet(torchLightHandle)->exist = 0;
-				io->ignition=1;
+				io->ignition = 1;
 				Set_DragInter(io);
 			} else {
 				if(eeMouseDoubleClick1() && !COMBINE) {
