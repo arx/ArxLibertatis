@@ -135,12 +135,6 @@ bool ErrorReport::GenerateReport(ErrorReport::IProgressNotifier* pProgressNotifi
 		return false;
 	}
 	
-	if(m_pCrashInfo->architecture != ARX_ARCH) {
-		pProgressNotifier->setError("Architecture mismatch between the crashed process and the crash reporter.");
-		pProgressNotifier->setDetailedError(m_DetailedError);
-		return false;
-	}
-	
 	// Wait for crash to be processed
 	pProgressNotifier->taskStepStarted("Processing crash information");
 	while(platform::isProcessRunning(m_pCrashInfo->processorProcessId)) {
