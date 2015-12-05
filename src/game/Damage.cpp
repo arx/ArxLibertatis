@@ -1284,13 +1284,13 @@ void CheckForIgnition(const Sphere & sphere, bool mode, long flag) {
 				if(mode && io->ignition <= 0) {
 					io->ignition = 1;
 				} else if(!mode && io->ignition > 0) {
-						io->ignition = 0; 
-						lightHandleDestroy(io->ignit_light);
-
-						if(io->ignit_sound != audio::INVALID_ID) {
-							ARX_SOUND_Stop(io->ignit_sound);
-							io->ignit_sound = audio::INVALID_ID;
-						}
+					io->ignition = 0;
+					lightHandleDestroy(io->ignit_light);
+					
+					if(io->ignit_sound != audio::INVALID_ID) {
+						ARX_SOUND_Stop(io->ignit_sound);
+						io->ignit_sound = audio::INVALID_ID;
+					}
 				}
 			}
 		}
