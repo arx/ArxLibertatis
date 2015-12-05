@@ -121,6 +121,23 @@ std::string flagNames(const FlagName<T> (&names)[N], const T flags) {
 	return ss.str();
 }
 
+
+static const char * entityVisilibityToString(EntityVisilibity value) {
+	switch (value) {
+		case SHOW_FLAG_NOT_DRAWN:    return "NOT_DRAWN"; break;
+		case SHOW_FLAG_IN_SCENE:     return "IN_SCENE"; break;
+		case SHOW_FLAG_LINKED:       return "LINKED"; break;
+		case SHOW_FLAG_IN_INVENTORY: return "IN_INVENTORY"; break;
+		case SHOW_FLAG_HIDDEN:       return "HIDDEN"; break;
+		case SHOW_FLAG_TELEPORTING:  return "TELEPORTING"; break;
+		case SHOW_FLAG_KILLED:       return "KILLED"; break;
+		case SHOW_FLAG_MEGAHIDE:     return "MEGAHIDE"; break;
+		case SHOW_FLAG_ON_PLAYER:    return "ON_PLAYER"; break;
+		default:                     return "Unknown";
+	}
+}
+
+
 class DebugBox {
 public:
 	DebugBox(const Vec2i & pos, const std::string & title)
@@ -313,6 +330,7 @@ void ShowInfoText() {
 			entityBox.add("Room", static_cast<long>(io->room));
 			entityBox.add("Move", io->move);
 			entityBox.add("Flags", flagNames(EntityFlagNames, io->ioflags));
+			entityBox.add("Show", entityVisilibityToString(io->show));
 			entityBox.print();
 			
 			if(io->ioflags & IO_NPC) {
