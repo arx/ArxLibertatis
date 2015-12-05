@@ -76,7 +76,8 @@ Getting all the dependencies set up for Windows is more tricky. Pre-build depend
 
 * `BUILD_TOOLS` (default=ON): Build tools
 * `BUILD_IO_LIBRARY` (default=ON): Build helper library for the Blender plugin
-* `BUILD_CRASHREPORTER` (default=ON): Build the Qt crash reporter gui (default OFF for Mac)
+* `BUILD_CRASHHANDLER` (default=ON): Enable the built-in crash handler (default OFF for Mac)
+* `BUILD_CRASHREPORTER` (default=ON): Build the Qt crash reporter gui - requires `BUILD_CRASHHANDLER` (default OFF for Mac)
 * `UNITY_BUILD` (default=OFF): Unity build (faster build, better optimizations but no incremental build)
 * `CMAKE_BUILD_TYPE` (default=Release): Set to `Debug` for debug binaries
 * `DEBUG` (default=OFF^1): Enable debug output and runtime checks
