@@ -2912,11 +2912,10 @@ void ARX_NPC_SpawnAudibleSound(const Vec3f & pos, Entity * source, const float f
 	}
 }
 
-void ManageIgnition(Entity * io)
-{
-	if(!io)
-		return;
-
+void ManageIgnition(Entity * io) {
+	
+	arx_assert(io);
+	
 	if(player.torch == io) {
 		lightHandleDestroy(io->ignit_light);
 		
