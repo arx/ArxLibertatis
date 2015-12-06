@@ -2929,37 +2929,15 @@ void ManageIgnition(Entity * io) {
 
 	if(ValidIONum(player.equiped[EQUIP_SLOT_WEAPON]))
 		plw = entities[player.equiped[EQUIP_SLOT_WEAPON]];
-
-	int particlesToCreate = 0;
-	int particleDelayFactor = 1;
-	Vec3f pos;
 	
 	if((io->ioflags & IO_FIERY) && (!(io->type_flags & OBJECT_TYPE_BOW))
 	   && (io->show == SHOW_FLAG_IN_SCENE || io == plw)) {
 		
-		float p = io->ignition = 25.f;
-		while(p > 0.f) {
-			p -= 6.f;
-			
-			if(!io->obj || io->obj->facelist.empty()) {
-				break;
-			}
-			
-			long notok = 10;
-			size_t num = 0;
-			while(notok-- > 0) {
-				num = Random::get(0, io->obj->facelist.size() - 1);
-				if(io->obj->facelist[num].facetype & POLY_HIDE) {
-					continue;
-				}
-				notok = -1;
-			}
-			
-			particlesToCreate = 1;
-			particleDelayFactor = 1;
-			pos = io->obj->vertexlist3[io->obj->facelist[num].vid[0]].v;
-		}
+		io->ignition = 25.f;
 		
+		if(io->obj && !io->obj->facelist.empty()) {
+			createObjFireParticles(io->obj, 4, 1, 1);
+		}
 	} else if(io->obj && io->obj->fastaccess.fire >= 0 && io->ignition > 0.f) {
 		
 		io->ignition = 25.f;
@@ -2971,41 +2949,20 @@ void ManageIgnition(Entity * io) {
 			return;
 		}
 		
-		particlesToCreate = 2;
-		particleDelayFactor = 2;
-		pos = io->obj->vertexlist3[io->obj->fastaccess.fire].v;
+		Vec3f pos = io->obj->vertexlist3[io->obj->fastaccess.fire].v;
+		
+		createFireParticles(pos, 2, 2);
+		
 	} else {
 		io->ignition -= framedelay * 0.01f;
-		if(!io->obj) {
-			return;
-		}
 		
-		float p = io->ignition * framedelay * 0.001f * io->obj->facelist.size() * 0.001f;
-		p = std::min(p, 5.f);
-		while(p > 0.f) {
-			p -= 0.5f;
+		if(io->obj && !io->obj->facelist.empty()) {
+			float p = io->ignition * framedelay * 0.001f * io->obj->facelist.size() * 0.001f * 2.f;
+			int positions = std::min(int(std::ceil(p)), 10);
 			
-			if(io->obj->facelist.empty()) {
-				break;
-			}
-			
-			long notok = 10;
-			size_t num = 0;
-			while(notok-- > 0) {
-				num = Random::get(0, io->obj->facelist.size() - 1);
-				if(io->obj->facelist[num].facetype & POLY_HIDE) {
-					continue;
-				}
-				notok = -1;
-			}
-			
-			particlesToCreate = 6;
-			particleDelayFactor = 180;
-			pos = io->obj->vertexlist3[io->obj->facelist[num].vid[0]].v;
+			createObjFireParticles(io->obj, positions, 6, 180);
 		}
 	}
-
-	createFireParticles(pos, particlesToCreate, particleDelayFactor);
 	
 	ManageIgnition_2(io);
 }
