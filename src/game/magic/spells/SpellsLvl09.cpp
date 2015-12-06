@@ -121,12 +121,12 @@ void SummonCreatureSpell::End()
 	// need to killio
 	
 	if(ValidIONum(m_longinfo2_entity) && m_longinfo2_entity != PlayerEntityHandle) {
+		Entity * io = entities[m_longinfo2_entity];
 		
-		if(entities[m_longinfo2_entity]->scriptload
-		   && (entities[m_longinfo2_entity]->ioflags & IO_NOSAVE)) {
+		if(io->scriptload && (io->ioflags & IO_NOSAVE)) {
 			
-			AddRandomSmoke(entities[m_longinfo2_entity], 100);
-			Vec3f posi = entities[m_longinfo2_entity]->pos;
+			AddRandomSmoke(io, 100);
+			Vec3f posi = io->pos;
 			posi.y -= 100.f;
 			MakeCoolFx(posi);
 		
@@ -142,7 +142,7 @@ void SummonCreatureSpell::End()
 				light->duration = 600;
 			}
 			
-			entities[m_longinfo2_entity]->destroyOne();
+			io->destroyOne();
 		}
 	}
 	
