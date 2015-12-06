@@ -82,7 +82,7 @@ void SummonCreatureSpell::Launch()
 	m_hasDuration = true;
 	m_fManaCostPerSecond = 1.9f;
 	m_longinfo_summon_creature = 0;
-	m_longinfo2_entity = PlayerEntityHandle; // TODO is this correct ?
+	m_longinfo2_entity = EntityHandle::Invalid;
 	m_duration = (m_launchDuration > -1) ? m_launchDuration : 2000000;
 	
 	Vec3f target;
@@ -116,7 +116,7 @@ void SummonCreatureSpell::End() {
 	lightHandleDestroy(m_light);
 	// need to killio
 	
-	if(ValidIONum(m_longinfo2_entity) && m_longinfo2_entity != PlayerEntityHandle) {
+	if(ValidIONum(m_longinfo2_entity)) {
 		Entity * io = entities[m_longinfo2_entity];
 		
 		ARX_SOUND_PlaySFX(SND_SPELL_ELECTRIC, &io->pos);
@@ -144,8 +144,7 @@ void SummonCreatureSpell::End() {
 		}
 	}
 	
-	// TODO is this correct ?
-	m_longinfo2_entity = PlayerEntityHandle;
+	m_longinfo2_entity = EntityHandle::Invalid;
 }
 
 void SummonCreatureSpell::Update(float timeDelta) {
@@ -258,7 +257,7 @@ void SummonCreatureSpell::Update(float timeDelta) {
 					m_longinfo2_entity = EntityHandle::Invalid;
 			}
 		}
-	} else if(m_longinfo2_entity <= PlayerEntityHandle) {
+	} else if(m_longinfo2_entity == EntityHandle::Invalid) {
 		m_duration = 0;
 	}
 }
