@@ -425,7 +425,7 @@ void ARX_THROWN_OBJECT_Manage(unsigned long time_offset)
 				light->duration = static_cast<long>(framedelay * 0.5f);
 			}
 			
-			createObjFireParticles(thrownObj->obj, 6);
+			createObjFireParticles(thrownObj->obj, 6, 2, 180);
 		}
 
 		if(thrownObj->pRuban) {

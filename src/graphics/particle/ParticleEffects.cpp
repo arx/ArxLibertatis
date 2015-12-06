@@ -133,7 +133,7 @@ void createFireParticles(Vec3f & pos, int perPos, int delay) {
 	}
 }
 
-void createObjFireParticles(EERIE_3DOBJ * obj, int particlePositions) {
+void createObjFireParticles(EERIE_3DOBJ * obj, int particlePositions, int perPos, int delay) {
 	
 	for(int i = 0; i < particlePositions; i++) {
 		
@@ -153,7 +153,7 @@ void createObjFireParticles(EERIE_3DOBJ * obj, int particlePositions) {
 		if(notok < 0) {
 			Vec3f pos = obj->vertexlist3[it->vid[0]].v;
 			
-			createFireParticles(pos, 2, 180);
+			createFireParticles(pos, perPos, delay);
 		}
 	}
 }

@@ -173,7 +173,7 @@ void ARX_BOOMS_Add(const Vec3f & pos, long type = 0);
 
 void createFireParticles(Vec3f & pos, int perPos, int delay);
 
-void createObjFireParticles(EERIE_3DOBJ * obj, int particlePositions);
+void createObjFireParticles(EERIE_3DOBJ * obj, int particlePositions, int perPos, int delay);
 
 void LaunchFireballBoom(const Vec3f & poss, float level, Vec3f * direction = NULL, Color3f * rgb = NULL);
 void SpawnFireballTail(const Vec3f &, const Vec3f &, float, long);
