@@ -429,7 +429,6 @@ void ARX_THROWN_OBJECT_Manage(unsigned long time_offset)
 			
 			for(int i = 0; i < particlePositions; i++) {
 
-				if(thrownObj->obj) {
 					long notok = 10;
 					std::vector<EERIE_FACE>::iterator it;
 
@@ -448,7 +447,6 @@ void ARX_THROWN_OBJECT_Manage(unsigned long time_offset)
 
 						createFireParticles(pos, 2, 180);
 					}
-				}
 			}
 		}
 
