@@ -108,8 +108,8 @@ long getParticleCount() {
 	return ParticleCount;
 }
 
-void createFireParticles(Vec3f &pos, const int particlesToCreate, const int particleDelayFactor) {
-	for(long nn = 0 ; nn < particlesToCreate; nn++) {
+void createFireParticles(Vec3f & pos, int perPos, int delay) {
+	for(long nn = 0 ; nn < perPos; nn++) {
 
 		if(Random::getf() >= 0.4f) {
 			continue;
@@ -129,7 +129,7 @@ void createFireParticles(Vec3f &pos, const int particlesToCreate, const int part
 		pd->fparam = Random::getf(-0.1f, 0.1f);
 		pd->scale = Vec3f(-8.f);
 		pd->rgb = Color3f(0.71f, 0.43f, 0.29f);
-		pd->delay = nn * particleDelayFactor;
+		pd->delay = nn * delay;
 	}
 }
 

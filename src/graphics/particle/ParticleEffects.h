@@ -171,7 +171,7 @@ void ARX_PARTICLES_SpawnWaterSplash(const Vec3f & pos);
 void ARX_BOOMS_ClearAllPolyBooms();
 void ARX_BOOMS_Add(const Vec3f & pos, long type = 0);
 
-void createFireParticles(Vec3f &pos,const int particlesToCreate, const int particleDelayFactor);
+void createFireParticles(Vec3f & pos, int perPos, int delay);
 
 void createObjFireParticles(EERIE_3DOBJ * obj, int particlePositions);
 
