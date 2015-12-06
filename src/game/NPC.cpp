@@ -3010,30 +3010,6 @@ void ManageIgnition(Entity * io) {
 	ManageIgnition_2(io);
 }
 
-void createFireParticles(Vec3f &pos, const int particlesToCreate, const int particleDelayFactor) {
-	for(long nn = 0 ; nn < particlesToCreate; nn++) {
-
-		if(Random::getf() >= 0.4f) {
-			continue;
-		}
-
-		PARTICLE_DEF * pd = createParticle();
-		if(!pd) {
-			break;
-		}
-
-		pd->ov = pos;
-		pd->move = Vec3f(2.f, 2.f, 2.f) - Vec3f(4.f, 22.f, 4.f) * randomVec3f();
-		pd->siz = 7.f;
-		pd->tolive = Random::get(500, 1500);
-		pd->special = FIRE_TO_SMOKE | ROTATING | MODULATE_ROTATION;
-		pd->tc = fire2;
-		pd->fparam = Random::getf(-0.1f, 0.1f);
-		pd->scale = Vec3f(-8.f);
-		pd->rgb = Color3f(0.71f, 0.43f, 0.29f);
-		pd->delay = nn * particleDelayFactor;
-	}
-}
 
 void ManageIgnition_2(Entity * io) {
 	

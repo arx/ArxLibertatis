@@ -254,6 +254,4 @@ float GetIORadius(Entity * io);
 
 Cylinder GetIOCyl(Entity * io);
 
-void createFireParticles(Vec3f &pos,const int particlesToCreate, const int particleDelayFactor);
-
 #endif // ARX_GAME_NPC_H
