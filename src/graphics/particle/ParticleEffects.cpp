@@ -133,12 +133,12 @@ void createFireParticles(Vec3f & pos, int perPos, int delay) {
 	}
 }
 
-void createObjFireParticles(EERIE_3DOBJ * obj, int particlePositions, int perPos, int delay) {
+void createObjFireParticles(const EERIE_3DOBJ * obj, int particlePositions, int perPos, int delay) {
 	
 	for(int i = 0; i < particlePositions; i++) {
 		
 		long notok = 10;
-		std::vector<EERIE_FACE>::iterator it;
+		std::vector<EERIE_FACE>::const_iterator it;
 		
 		while(notok-- > 0) {
 			it = Random::getIterator(obj->facelist);
