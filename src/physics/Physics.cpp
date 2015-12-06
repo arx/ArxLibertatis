@@ -205,10 +205,8 @@ static bool IsObjectInField(PHYSICS_BOX_DATA * pbox) {
 			if(ValidIONum(sp->m_entity)) {
 				Entity * pfrm = entities[sp->m_entity];
 				
-				Cylinder cyl;
-				cyl.height = -35.f;
-				cyl.radius = 35.f;
-
+				Cylinder cyl = Cylinder(Vec3f_ZERO, 35.f, -35.f);
+				
 				for(long k = 0; k < pbox->nb_physvert; k++) {
 					PHYSVERT * pv = &pbox->vert[k];
 					cyl.origin = pv->pos + Vec3f(0.f, 17.5f, 0.f);

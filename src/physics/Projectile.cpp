@@ -86,11 +86,8 @@ static bool IsPointInField(const Vec3f & pos) {
 			if(ValidIONum(sp->m_entity)) {
 				Entity * pfrm = entities[sp->m_entity];
 				
-				Cylinder cyl;
-				cyl.height = -35.f;
-				cyl.radius = 35.f;
-				cyl.origin = pos + Vec3f(0.f, 17.5f, 0.f);
-
+				Cylinder cyl = Cylinder(pos + Vec3f(0.f, 17.5f, 0.f), 35.f, -35.f);
+				
 				if(CylinderPlatformCollide(cyl, pfrm) != 0.f) {
 					return true;
 				}

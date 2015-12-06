@@ -198,12 +198,10 @@ bool Manage3DCursor(Entity * io, bool simulate) {
 		}
 	}
 	
-	Cylinder cyl2;
+	Cylinder cyl2 = Cylinder(Vec3f_ZERO, glm::clamp(maxdist, 20.f, 150.f), std::min(-30.f, height));
+	
 	const float inc = 10.f;
 	long iterating = 40;
-
-	cyl2.height = std::min(-30.f, height);
-	cyl2.radius = glm::clamp(maxdist, 20.f, 150.f);
 	
 	while(iterating > 0) {
 		cyl2.origin = pos + movev * inc + Vec3f(0.f, bbox.max.y, 0.f);

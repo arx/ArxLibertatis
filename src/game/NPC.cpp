@@ -1832,11 +1832,7 @@ float GetIORadius(Entity * io) {
 }
 
 Cylinder GetIOCyl(Entity * io) {
-	Cylinder cyl;
-	cyl.height = GetIOHeight(io);
-	cyl.radius = GetIORadius(io);
-	cyl.origin = io->pos;
-	return cyl;
+	return Cylinder(io->pos, GetIORadius(io), GetIOHeight(io));
 }
 
 /*!

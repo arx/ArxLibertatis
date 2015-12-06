@@ -170,10 +170,8 @@ void SummonCreatureSpell::Update(float timeDelta) {
 		m_requestSummon = false;
 		ARX_SOUND_PlaySFX(SND_SPELL_ELECTRIC, &m_targetPos);
 		
-		Cylinder phys;
-		phys.height = -200;
-		phys.radius = 50;
-		phys.origin = m_targetPos;
+		Cylinder phys = Cylinder(m_targetPos, 50, -200);
+		
 		float anything = CheckAnythingInCylinder(phys, NULL, CFLAG_JUST_TEST);
 		
 		if(glm::abs(anything) < 30) {

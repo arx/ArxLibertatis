@@ -1933,10 +1933,8 @@ static bool Valid_Jump_Pos() {
 		return true;
 	}
 	
-	Cylinder tmpp;
-	tmpp.height = player.physics.cyl.height;
-	tmpp.origin = player.basePosition();
-	tmpp.radius = player.physics.cyl.radius * 0.85f;
+	Cylinder tmpp = Cylinder(player.basePosition(), player.physics.cyl.radius * 0.85f, player.physics.cyl.height);
+	
 	float tmp = CheckAnythingInCylinder(tmpp, entities.player(),
 	                                    CFLAG_PLAYER | CFLAG_JUST_TEST);
 	if(tmp <= 20.f) {
@@ -2122,10 +2120,8 @@ void PlayerMovementIterate(float DeltaTime) {
 			LAST_ON_PLATFORM = 0;
 		}
 		
-		Cylinder cyl;
-		cyl.origin = player.basePosition() + Vec3f(0.f, 1.f, 0.f);
-		cyl.radius = player.physics.cyl.radius;
-		cyl.height = player.physics.cyl.height;
+		Cylinder cyl = Cylinder(player.basePosition() + Vec3f(0.f, 1.f, 0.f), player.physics.cyl.radius, player.physics.cyl.height);
+		
 		float anything2 = CheckAnythingInCylinder(cyl, entities.player(), CFLAG_JUST_TEST | CFLAG_PLAYER); //-cyl->origin.y;
 		
 		if(   anything2 > -5

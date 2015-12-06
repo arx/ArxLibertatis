@@ -331,11 +331,7 @@ struct ARXCHARACTER {
 	}
 	
 	Cylinder baseCylinder() {
-		Cylinder c;
-		c.height = baseHeight();
-		c.radius = baseRadius();
-		c.origin = basePosition();
-		return c;
+		return Cylinder(basePosition(), baseRadius(), baseHeight());
 	}
 	
 };

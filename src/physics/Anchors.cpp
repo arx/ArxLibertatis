@@ -994,10 +994,7 @@ static void AnchorData_Create_Phase_II_Original_Method(EERIE_BACKGROUND * eb) {
 		pos.x = (float)((float)((float)i) * (float)eb->Xdiv);
 		pos.y = 0.f;
 		pos.z = (float)((float)((float)j) * (float)eb->Zdiv);
-		Cylinder currcyl;
-		currcyl.radius = 30;
-		currcyl.height = -150.f;
-		currcyl.origin = pos;
+		Cylinder currcyl = Cylinder(pos, 30, -150.f);
 		
 		if(eg->nbpolyin) {
 			long ok = 0;
@@ -1139,10 +1136,7 @@ void AnchorData_Create(EERIE_BACKGROUND * eb) {
 			pos.y = 0.f;
 			pos.z = (float)((float)((float)j + 0.33f * (float)divvy) * (float)eb->Zdiv);
 			EERIEPOLY * ep = GetMinPoly(pos);
-			Cylinder currcyl;
-			currcyl.radius = 20 - (4.f * divv);
-			currcyl.height = -120.f;
-			currcyl.origin = pos;
+			Cylinder currcyl = Cylinder(pos, 20 - (4.f * divv), -120.f);
 			
 			if(ep) {
 				EERIEPOLY * epmax;

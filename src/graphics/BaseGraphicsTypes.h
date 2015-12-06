@@ -51,6 +51,18 @@ struct Cylinder {
 	Vec3f origin;
 	float radius;
 	float height;
+	
+	Cylinder()
+		: origin(Vec3f_ZERO)
+		, radius(0.f)
+		, height(0.f)
+	{}
+	
+	Cylinder(const Vec3f & origin, float radius, float height)
+		: origin(origin)
+		, radius(radius)
+		, height(height)
+	{}
 };
 
 struct Sphere {

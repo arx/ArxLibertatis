@@ -422,10 +422,8 @@ static void drawDebugEntityPhysicsCylinder(Entity * io) {
 		levitate = CFLAG_LEVITATE;
 	}
 	
-	Cylinder cyll;
-	cyll.height = GetIOHeight(io);
-	cyll.radius = GetIORadius(io);
-	cyll.origin = io->physics.startpos;
+	Cylinder cyll = Cylinder(io->physics.startpos, GetIORadius(io), GetIOHeight(io));
+	
 	drawLineCylinder(cyll, Color::green);
 	
 	if(!(AttemptValidCylinderPos(cyll, io, levitate | CFLAG_NPC))) {
