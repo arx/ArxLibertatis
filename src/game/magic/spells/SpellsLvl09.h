@@ -40,7 +40,7 @@ private:
 	CSummonCreature m_fissure;
 	Vec3f m_targetPos;
 	bool m_megaCheat;
-	bool m_longinfo_summon_creature;
+	bool m_requestSummon;
 	EntityHandle m_summonedEntity;
 };
 
