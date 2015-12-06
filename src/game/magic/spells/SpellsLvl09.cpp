@@ -56,7 +56,7 @@ void SummonCreatureSpell::GetTargetAndBeta(Vec3f & target, float & beta)
 SummonCreatureSpell::SummonCreatureSpell()
 	: m_targetPos(Vec3f_ZERO)
 	, m_megaCheat(false)
-	, m_longinfo_summon_creature(-1) //TODO is this correct ?
+	, m_longinfo_summon_creature(false)
 	, m_summonedEntity(EntityHandle::Invalid)
 {
 	
@@ -81,7 +81,7 @@ void SummonCreatureSpell::Launch()
 {
 	m_hasDuration = true;
 	m_fManaCostPerSecond = 1.9f;
-	m_longinfo_summon_creature = 0;
+	m_longinfo_summon_creature = false;
 	m_summonedEntity = EntityHandle::Invalid;
 	m_duration = (m_launchDuration > -1) ? m_launchDuration : 2000000;
 	
@@ -161,13 +161,13 @@ void SummonCreatureSpell::Update(float timeDelta) {
 		m_fissure.Update(timeDelta);
 		m_fissure.Render();
 		
-		m_longinfo_summon_creature = 1;
+		m_longinfo_summon_creature = true;
 		m_summonedEntity = EntityHandle::Invalid;
 
 	} else if(m_longinfo_summon_creature) {
 		lightHandleDestroy(m_light);
 		
-		m_longinfo_summon_creature = 0;
+		m_longinfo_summon_creature = false;
 		ARX_SOUND_PlaySFX(SND_SPELL_ELECTRIC, &m_targetPos);
 		
 		Cylinder phys;
