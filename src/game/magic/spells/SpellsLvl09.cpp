@@ -57,7 +57,7 @@ SummonCreatureSpell::SummonCreatureSpell()
 	: m_targetPos(Vec3f_ZERO)
 	, m_megaCheat(false)
 	, m_longinfo_summon_creature(-1) //TODO is this correct ?
-	, m_longinfo2_entity(EntityHandle::Invalid)
+	, m_summonedEntity(EntityHandle::Invalid)
 {
 	
 }
@@ -82,7 +82,7 @@ void SummonCreatureSpell::Launch()
 	m_hasDuration = true;
 	m_fManaCostPerSecond = 1.9f;
 	m_longinfo_summon_creature = 0;
-	m_longinfo2_entity = EntityHandle::Invalid;
+	m_summonedEntity = EntityHandle::Invalid;
 	m_duration = (m_launchDuration > -1) ? m_launchDuration : 2000000;
 	
 	Vec3f target;
@@ -116,8 +116,8 @@ void SummonCreatureSpell::End() {
 	lightHandleDestroy(m_light);
 	// need to killio
 	
-	if(ValidIONum(m_longinfo2_entity)) {
-		Entity * io = entities[m_longinfo2_entity];
+	if(ValidIONum(m_summonedEntity)) {
+		Entity * io = entities[m_summonedEntity];
 		
 		ARX_SOUND_PlaySFX(SND_SPELL_ELECTRIC, &io->pos);
 		
@@ -144,7 +144,7 @@ void SummonCreatureSpell::End() {
 		}
 	}
 	
-	m_longinfo2_entity = EntityHandle::Invalid;
+	m_summonedEntity = EntityHandle::Invalid;
 }
 
 void SummonCreatureSpell::Update(float timeDelta) {
@@ -162,7 +162,7 @@ void SummonCreatureSpell::Update(float timeDelta) {
 		m_fissure.Render();
 		
 		m_longinfo_summon_creature = 1;
-		m_longinfo2_entity = EntityHandle::Invalid;
+		m_summonedEntity = EntityHandle::Invalid;
 
 	} else if(m_longinfo_summon_creature) {
 		lightHandleDestroy(m_light);
@@ -252,12 +252,12 @@ void SummonCreatureSpell::Update(float timeDelta) {
 				}
 				
 				if(tokeep==1)
-					m_longinfo2_entity = io->index();
+					m_summonedEntity = io->index();
 				else
-					m_longinfo2_entity = EntityHandle::Invalid;
+					m_summonedEntity = EntityHandle::Invalid;
 			}
 		}
-	} else if(m_longinfo2_entity == EntityHandle::Invalid) {
+	} else if(m_summonedEntity == EntityHandle::Invalid) {
 		m_duration = 0;
 	}
 }
