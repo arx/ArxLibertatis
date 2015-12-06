@@ -425,29 +425,7 @@ void ARX_THROWN_OBJECT_Manage(unsigned long time_offset)
 				light->duration = static_cast<long>(framedelay * 0.5f);
 			}
 			
-			const int particlePositions = 6;
-			
-			for(int i = 0; i < particlePositions; i++) {
-
-					long notok = 10;
-					std::vector<EERIE_FACE>::iterator it;
-
-					while(notok-- > 0) {
-						it = Random::getIterator(thrownObj->obj->facelist);
-						arx_assert(it != thrownObj->obj->facelist.end());
-
-						if(it->facetype & POLY_HIDE)
-							continue;
-
-						notok = -1;
-					}
-
-					if(notok < 0) {
-						Vec3f pos = thrownObj->obj->vertexlist3[it->vid[0]].v;
-
-						createFireParticles(pos, 2, 180);
-					}
-			}
+			createObjFireParticles(thrownObj->obj, 6);
 		}
 
 		if(thrownObj->pRuban) {

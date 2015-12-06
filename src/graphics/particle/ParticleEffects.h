@@ -63,6 +63,7 @@ struct EERIE_CAMERA;
 struct Sphere;
 class TextureContainer;
 class Entity;
+struct EERIE_3DOBJ;
 
 enum ParticlesTypeFlag {
 	FIRE_TO_SMOKE       = 0x00000001,
@@ -171,6 +172,8 @@ void ARX_BOOMS_ClearAllPolyBooms();
 void ARX_BOOMS_Add(const Vec3f & pos, long type = 0);
 
 void createFireParticles(Vec3f &pos,const int particlesToCreate, const int particleDelayFactor);
+
+void createObjFireParticles(EERIE_3DOBJ * obj, int particlePositions);
 
 void LaunchFireballBoom(const Vec3f & poss, float level, Vec3f * direction = NULL, Color3f * rgb = NULL);
 void SpawnFireballTail(const Vec3f &, const Vec3f &, float, long);

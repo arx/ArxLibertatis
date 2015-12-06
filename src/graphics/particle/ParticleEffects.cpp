@@ -65,6 +65,7 @@ ZeniMax Media Inc., Suite 120, Rockville, Maryland 20850 USA.
 
 #include "graphics/Draw.h"
 #include "graphics/GraphicsModes.h"
+#include "graphics/GraphicsTypes.h"
 #include "graphics/Math.h"
 #include "graphics/data/TextureContainer.h"
 #include "graphics/effects/SpellEffects.h"
@@ -129,6 +130,31 @@ void createFireParticles(Vec3f &pos, const int particlesToCreate, const int part
 		pd->scale = Vec3f(-8.f);
 		pd->rgb = Color3f(0.71f, 0.43f, 0.29f);
 		pd->delay = nn * particleDelayFactor;
+	}
+}
+
+void createObjFireParticles(EERIE_3DOBJ * obj, int particlePositions) {
+	
+	for(int i = 0; i < particlePositions; i++) {
+		
+		long notok = 10;
+		std::vector<EERIE_FACE>::iterator it;
+		
+		while(notok-- > 0) {
+			it = Random::getIterator(obj->facelist);
+			arx_assert(it != obj->facelist.end());
+			
+			if(it->facetype & POLY_HIDE)
+				continue;
+			
+			notok = -1;
+		}
+		
+		if(notok < 0) {
+			Vec3f pos = obj->vertexlist3[it->vid[0]].v;
+			
+			createFireParticles(pos, 2, 180);
+		}
 	}
 }
 
