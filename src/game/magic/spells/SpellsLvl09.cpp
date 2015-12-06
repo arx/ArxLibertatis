@@ -171,13 +171,13 @@ void SummonCreatureSpell::Update(float timeDelta) {
 		m_longinfo_summon_creature = 0;
 		ARX_SOUND_PlaySFX(SND_SPELL_ELECTRIC, &m_targetPos);
 		
-			Cylinder phys;
-			phys.height = -200;
-			phys.radius = 50;
-			phys.origin = m_targetPos;
-			float anything = CheckAnythingInCylinder(phys, NULL, CFLAG_JUST_TEST);
-			
-			if(glm::abs(anything) < 30) {
+		Cylinder phys;
+		phys.height = -200;
+		phys.radius = 50;
+		phys.origin = m_targetPos;
+		float anything = CheckAnythingInCylinder(phys, NULL, CFLAG_JUST_TEST);
+		
+		if(glm::abs(anything) < 30) {
 			
 			long tokeep;
 			res::path cls;
@@ -257,7 +257,7 @@ void SummonCreatureSpell::Update(float timeDelta) {
 				else
 					m_longinfo2_entity = EntityHandle::Invalid;
 			}
-			}
+		}
 	} else if(m_longinfo2_entity <= PlayerEntityHandle) {
 		m_duration = 0;
 	}
