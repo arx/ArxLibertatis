@@ -111,17 +111,15 @@ void SummonCreatureSpell::Launch()
 	}
 }
 
-void SummonCreatureSpell::End()
-{
-	if(ValidIONum(m_longinfo2_entity) && m_longinfo2_entity != PlayerEntityHandle) {
-		ARX_SOUND_PlaySFX(SND_SPELL_ELECTRIC, &entities[m_longinfo2_entity]->pos);
-	}
-
+void SummonCreatureSpell::End() {
+	
 	lightHandleDestroy(m_light);
 	// need to killio
 	
 	if(ValidIONum(m_longinfo2_entity) && m_longinfo2_entity != PlayerEntityHandle) {
 		Entity * io = entities[m_longinfo2_entity];
+		
+		ARX_SOUND_PlaySFX(SND_SPELL_ELECTRIC, &io->pos);
 		
 		if(io->scriptload && (io->ioflags & IO_NOSAVE)) {
 			
