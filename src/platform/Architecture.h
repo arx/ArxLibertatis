@@ -20,6 +20,8 @@
 #ifndef ARX_PLATFORM_ARCHITECTURE_H
 #define ARX_PLATFORM_ARCHITECTURE_H
 
+namespace platform {
+
 #define ARX_ARCH_UNKNOWN          0
 #define ARX_ARCH_X86_64           1
 #define ARX_ARCH_IA64             2
@@ -92,5 +94,22 @@
 #define ARX_ARCH_NAME ARX_ARCH_NAME_UNKNOWN
 
 #endif
+
+inline const char * getArchitectureName(unsigned arch) {
+	switch(arch) {
+		case ARX_ARCH_X86_64:  return ARX_ARCH_NAME_X86_64;
+		case ARX_ARCH_IA64:    return ARX_ARCH_NAME_IA64;
+		case ARX_ARCH_X86:     return ARX_ARCH_NAME_X86;
+		case ARX_ARCH_ARM:     return ARX_ARCH_NAME_ARM;
+		case ARX_ARCH_ALPHA:   return ARX_ARCH_NAME_ALPHA;
+		case ARX_ARCH_M68K:    return ARX_ARCH_NAME_M68K;
+		case ARX_ARCH_MIPS:    return ARX_ARCH_NAME_MIPS;
+		case ARX_ARCH_POWERPC: return ARX_ARCH_NAME_POWERPC;
+		case ARX_ARCH_SPARC:   return ARX_ARCH_NAME_SPARC;
+		default: return ARX_ARCH_NAME_UNKNOWN;
+	}
+}
+
+} // namespace platform
 
 #endif // ARX_PLATFORM_ARCHITECTURE_H

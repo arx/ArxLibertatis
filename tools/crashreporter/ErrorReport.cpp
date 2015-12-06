@@ -475,7 +475,7 @@ bool ErrorReport::GetMiscCrashInfo() {
 	// Get crash time
 	m_CrashDateTime = QDateTime::currentDateTime();
 	
-	m_ProcessArchitecture = ARX_ARCH_NAME;
+	m_ProcessArchitecture = platform::getArchitectureName(m_pCrashInfo->architecture);
 	
 	m_OSName = QString::fromUtf8(platform::getOSName().c_str());
 	m_OSArchitecture = QString::fromUtf8(platform::getOSArchitecture().c_str());
