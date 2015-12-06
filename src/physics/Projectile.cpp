@@ -424,11 +424,10 @@ void ARX_THROWN_OBJECT_Manage(unsigned long time_offset)
 				light->extras |= EXTRAS_FLARE;
 				light->duration = static_cast<long>(framedelay * 0.5f);
 			}
-
-			float p = 3.f;
-
-			while(p > 0.f) {
-				p -= 0.5f;
+			
+			const int particlePositions = 6;
+			
+			for(int i = 0; i < particlePositions; i++) {
 
 				if(thrownObj->obj) {
 					long notok = 10;
