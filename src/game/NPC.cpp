@@ -2967,11 +2967,11 @@ void ManageIgnition(Entity * io) {
 	} else if(io->obj && io->obj->fastaccess.fire >= 0 && io->ignition > 0.f) {
 		
 		io->ignition = 25.f;
-		io->durability -= framedelay * ( 1.0f / 10000 );
+        io->durability -= framedelay * ( 1.0f / 10000 );
 		
 		if(io->durability <= 0.f) {
 			ARX_SOUND_PlaySFX(SND_TORCH_END, &io->pos);
-			io->destroyOne();
+            ARX_INTERACTIVE_DestroyIOdelayed(io);
 			return;
 		}
 		
