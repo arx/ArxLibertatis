@@ -2970,9 +2970,8 @@ void ManageIgnition(Entity * io) {
 
 void ManageIgnition_2(Entity * io) {
 	
-	if(!io)
-		return;
-
+	arx_assert(io);
+	
 	if(io->ignition > 0.f) {
 		if(io->ignition > 100.f)
 			io->ignition = 100.f;
