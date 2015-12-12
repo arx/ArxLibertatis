@@ -44,8 +44,8 @@ ZeniMax Media Inc., Suite 120, Rockville, Maryland 20850 USA.
 //
 // Copyright (c) 1999 ARKANE Studios SA. All rights reserved
 
-#ifndef  ARX_ANIMATION_ANIMATION_H
-#define  ARX_ANIMATION_ANIMATION_H
+#ifndef ARX_ANIMATION_ANIMATION_H
+#define ARX_ANIMATION_ANIMATION_H
 
 #include <stddef.h>
 #include <string>
