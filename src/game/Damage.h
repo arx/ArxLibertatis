@@ -127,7 +127,7 @@ void DamageRequestEnd(DamageHandle handle);
  * flag & 1 no lights;
  * flag & 2 Only affects small sources
  */
-void CheckForIgnition(const Sphere & sphere, bool mode, long flag = 0);
+void CheckForIgnition(const Sphere & sphere, bool mode, long flag);
 
 void DoSphericDamage(const Sphere & sphere, float dmg, DamageArea flags, DamageType typ = 0, EntityHandle numsource = EntityHandle::Invalid);
 

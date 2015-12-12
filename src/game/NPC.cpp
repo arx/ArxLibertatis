@@ -3010,7 +3010,7 @@ void ManageIgnition_2(Entity * io) {
 		}
 
 		if(Random::getf() > 0.9f)
-			CheckForIgnition(Sphere(position, io->ignition), 1);
+			CheckForIgnition(Sphere(position, io->ignition), 1, 0);
 	} else {
 		lightHandleDestroy(io->ignit_light);
 		
