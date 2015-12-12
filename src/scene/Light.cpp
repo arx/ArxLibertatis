@@ -81,27 +81,27 @@ void ColorMod::updateFromEntity(Entity *io, bool inBook) {
 	factor = Color3f::white;
 	term = Color3f::black;
 	if(io) {
-	   factor *= io->special_color;
-	   term += io->highlightColor;
+		factor *= io->special_color;
+		term += io->highlightColor;
 	}
 
 	if(player.m_improve) {
-	   Color3f infra = (io) ? io->infracolor : Color3f(0.6f, 0.f, 1.f);
-
-	   factor *= infra;
-
-	   // Special case for drawing runes in book
-	   if(inBook) {
-		   term.r += infra.r * 512.f;
-		   term.g += infra.g;
-		   term.b += infra.b * 400.f;
-	   }
+		Color3f infra = (io) ? io->infracolor : Color3f(0.6f, 0.f, 1.f);
+		
+		factor *= infra;
+		
+		// Special case for drawing runes in book
+		if(inBook) {
+			term.r += infra.r * 512.f;
+			term.g += infra.g;
+			term.b += infra.b * 400.f;
+		}
 	}
-
+	
 	// Ambient light
 	ambientColor = ACTIVEBKG->ambient * 255.f;
 	if(io && (io->ioflags & (IO_NPC | IO_ITEM)))
-	   ambientColor = Color3f::gray(NPC_ITEMS_AMBIENT_VALUE_255);
+		ambientColor = Color3f::gray(NPC_ITEMS_AMBIENT_VALUE_255);
 }
 
 void RecalcLight(EERIE_LIGHT * el) {
