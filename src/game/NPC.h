@@ -54,8 +54,8 @@ ZeniMax Media Inc., Suite 120, Rockville, Maryland 20850 USA.
 #include "math/Types.h"
 #include "platform/Flags.h"
 
-#define MAX_STACKED_BEHAVIOR 5
-#define MAX_EXTRA_ROTATE 4
+static const int MAX_STACKED_BEHAVIOR = 5;
+static const int MAX_EXTRA_ROTATE = 4;
 
 enum MoveMode {
 	WALKMODE = 0,
