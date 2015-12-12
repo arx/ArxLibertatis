@@ -212,9 +212,6 @@ struct PORTAL_ROOM_DRAW
 	EERIE_FRUSTRUM_DATA	frustrum;
 };
 
-// Default Mode for Portals when found
-#define NPC_ITEMS_AMBIENT_VALUE_255 35
-
 struct ROOM_DIST_DATA
 {
 	float	distance; // -1 means use truedist

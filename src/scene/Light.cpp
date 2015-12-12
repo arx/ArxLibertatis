@@ -65,6 +65,9 @@ ZeniMax Media Inc., Suite 120, Rockville, Maryland 20850 USA.
 
 static const float GLOBAL_LIGHT_FACTOR=0.85f;
 
+// TODO is this correct?
+static const int NPC_ITEMS_AMBIENT_VALUE_255 = 35;
+
 EERIE_LIGHT * GLight[MAX_LIGHTS];
 EERIE_LIGHT DynLight[MAX_DYNLIGHTS];
 
