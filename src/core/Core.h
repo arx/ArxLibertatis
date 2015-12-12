@@ -121,6 +121,7 @@ extern bool g_debugToggles[10];
 extern bool g_debugTriggers[10];
 extern u32 g_debugTriggersTime[10];
 static const u32 g_debugTriggersDecayDuration = 200;
+extern float g_debugValues[10];
 
 extern long		CHANGE_LEVEL_ICON;
 

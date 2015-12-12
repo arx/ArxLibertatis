@@ -400,6 +400,19 @@ void ShowDebugToggles() {
 		hFontDebug->draw(0.f, line * lineHeight, textStream.str(), Color::white);
 		line++;
 	}
+	
+	line++;
+	
+	hFontDebug->draw(0.f, line * lineHeight, "Values", Color::white);
+	line++;
+	
+	for(size_t i = 0; i < ARRAY_SIZE(g_debugValues); i++) {
+		std::stringstream textStream;
+		textStream << i << "   ";
+		textStream << g_debugValues[i];
+		hFontDebug->draw(0.f, line * lineHeight, textStream.str(), Color::white);
+		line++;
+	}
 }
 
 void ShowFpsGraph() {

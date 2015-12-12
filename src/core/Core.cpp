@@ -251,6 +251,7 @@ extern EERIE_CAMERA * ACTIVECAM;
 bool g_debugToggles[10];
 bool g_debugTriggers[10];
 u32 g_debugTriggersTime[10] = {0};
+float g_debugValues[10];
 
 // Sends ON GAME_READY msg to all IOs
 void SendGameReadyMsg()
