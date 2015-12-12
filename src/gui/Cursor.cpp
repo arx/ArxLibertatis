@@ -712,7 +712,6 @@ void ARX_INTERFACE_RenderCursor(bool flag) {
 	
 	if (!SPECIAL_DRAGINTER_RENDER)
 	{
-		ManageIgnition_2(DRAGINTER);
 		GRenderer->GetTextureStage(0)->setMinFilter(TextureStage::FilterNearest);
 		GRenderer->GetTextureStage(0)->setMagFilter(TextureStage::FilterNearest);
 		GRenderer->GetTextureStage(0)->setWrapMode(TextureStage::WrapClamp);
