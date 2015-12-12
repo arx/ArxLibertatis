@@ -1752,24 +1752,39 @@ void ArxGame::manageKeyMouse() {
 				mouseDiff.y = 0;
 			}
 		} else {
-			if(bRenderInCursorMode) {
-				Vec2s mousePosRel = GInput->getMousePosRel();
-				if(DANAEMouse.x == g_size.width() - 1 && mousePosRel.x > 8) {
-					mouseDiff.y = 0;
-					mouseDiff.x = mousePosRel.x;
-					bKeySpecialMove = true;
-				} else if(DANAEMouse.x == 0 && mousePosRel.x < -8) {
-					mouseDiff.y = 0;
-					mouseDiff.x = mousePosRel.x;
+			// Turn the player if the curser is close to the edges
+			if(bRenderInCursorMode && GInput->isMouseInWindow()) {
+				
+				static const int borderSize = 10;
+				
+				int distLeft = DANAEMouse.x - g_size.left;
+				int distRight = g_size.right - DANAEMouse.x;
+				int distTop = DANAEMouse.y - g_size.top;
+				int distBottom = g_size.bottom - DANAEMouse.y;
+				
+				mouseDiff = Vec2s_ZERO;
+				
+				if(distLeft < borderSize) {
+					float speed = 1.f - float(distLeft) / float(borderSize);
+					mouseDiff.x -= speed * framedelay;
 					bKeySpecialMove = true;
 				}
-				if(DANAEMouse.y == g_size.height() - 1 && mousePosRel.y > 8) {
-					mouseDiff.y = mousePosRel.y;
-					mouseDiff.x = 0;
+				
+				if(distRight < borderSize) {
+					float speed = 1.f - float(distRight) / float(borderSize);
+					mouseDiff.x += speed * framedelay;
 					bKeySpecialMove = true;
-				} else if(DANAEMouse.y == 0 && mousePosRel.y < -8) {
-					mouseDiff.y = mousePosRel.y;
-					mouseDiff.x = 0;
+				}
+				
+				if(distTop < borderSize) {
+					float speed = 1.f - float(distTop) / float(borderSize);
+					mouseDiff.y -= speed * framedelay;
+					bKeySpecialMove = true;
+				}
+				
+				if(distBottom < borderSize) {
+					float speed = 1.f - float(distBottom) / float(borderSize);
+					mouseDiff.y += speed * framedelay;
 					bKeySpecialMove = true;
 				}
 			}
