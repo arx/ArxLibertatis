@@ -1031,7 +1031,7 @@ void ARX_INTERACTIVE_TWEAK_Icon(Entity * io, const res::path & s1) {
 	
 	if(tc) {
 		io->m_inventorySize = inventorySizeFromTextureSize(tc->size());
-		io->inv = tc;
+		io->m_icon = tc;
 	}
 }
 
@@ -1061,7 +1061,7 @@ Entity * CloneIOItem(Entity * src) {
 	}
 	
 	SendInitScriptEvent(dest);
-	dest->inv = src->inv;
+	dest->m_icon = src->m_icon;
 	dest->m_inventorySize = src->m_inventorySize;
 	delete dest->obj;
 	dest->obj = Eerie_Copy(src->obj);
@@ -1461,7 +1461,7 @@ Entity * AddFix(const res::path & classPath, EntityInstance instance, AddInterac
 	
 	if(tc) {
 		io->m_inventorySize = inventorySizeFromTextureSize(tc->size());
-		io->inv = tc;
+		io->m_icon = tc;
 	}
 	
 	io->collision = COLLIDE_WITH_PLAYER;
@@ -1706,7 +1706,7 @@ Entity * AddNPC(const res::path & classPath, EntityInstance instance, AddInterac
 	
 	io->infracolor = Color3f(1.f, 0.f, 0.2f);
 	io->collision = COLLIDE_WITH_PLAYER;
-	io->inv = NULL;
+	io->m_icon = NULL;
 	
 	ARX_INTERACTIVE_HideGore(io);
 	return io;
@@ -1816,7 +1816,7 @@ Entity * AddItem(const res::path & classPath_, EntityInstance instance, AddInter
 	
 	if(tc) {
 		io->m_inventorySize = inventorySizeFromTextureSize(tc->size());
-		io->inv = tc;
+		io->m_icon = tc;
 	}
 
 	io->infracolor = Color3f(0.2f, 0.2f, 1.f);
@@ -2700,6 +2700,6 @@ void UpdateGoldObject(Entity * io) {
 			num=6;
 
 		io->obj=GoldCoinsObj[num];
-		io->inv=GoldCoinsTC[num];
+		io->m_icon=GoldCoinsTC[num];
 	}
 }

@@ -246,7 +246,7 @@ public:
 	bool requestRoomUpdate;
 	float original_height;
 	float original_radius;
-	TextureContainer * inv; // Object Icon
+	TextureContainer * m_icon; // Object Icon
 	EERIE_3DOBJ * obj; // IO Mesh data
 	ANIM_HANDLE * anims[MAX_ANIMS]; // Object Animations
 	AnimLayer animlayer[MAX_ANIM_LAYERS];

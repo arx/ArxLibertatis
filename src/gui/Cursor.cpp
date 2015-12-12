@@ -506,7 +506,7 @@ static void ARX_INTERFACE_RenderCursorInternal(bool flag) {
 		Vec2f mousePos = Vec2f(DANAEMouse);
 		
 		if(SpecialCursor && !DRAGINTER) {
-			if((COMBINE && COMBINE->inv) || COMBINEGOLD) {
+			if((COMBINE && COMBINE->m_icon) || COMBINEGOLD) {
 				if(TRUE_PLAYER_MOUSELOOK_ON && (config.input.autoReadyWeapon)) {
 					mousePos = MemoMouse;
 				}
@@ -516,7 +516,7 @@ static void ARX_INTERFACE_RenderCursorInternal(bool flag) {
 				if(COMBINEGOLD)
 					tc = GoldCoinsTC[5];
 				else
-					tc = COMBINE->inv;
+					tc = COMBINE->m_icon;
 				
 				Vec2f size(tc->m_size.x, tc->m_size.y);
 				
@@ -623,12 +623,12 @@ static void ARX_INTERFACE_RenderCursorInternal(bool flag) {
 					MAGICMODE = false;
 				}
 				
-				if(DRAGINTER && DRAGINTER->inv) {
-					TextureContainer * tc = DRAGINTER->inv;
+				if(DRAGINTER && DRAGINTER->m_icon) {
+					TextureContainer * tc = DRAGINTER->m_icon;
 					TextureContainer * haloTc = NULL;
 					
 					if(NeedHalo(DRAGINTER))
-						haloTc = DRAGINTER->inv->getHalo();//>_itemdata->halo_tc;
+						haloTc = DRAGINTER->m_icon->getHalo();//>_itemdata->halo_tc;
 					
 					Color color = (DRAGINTER->poisonous && DRAGINTER->poisonous_count != 0) ? Color::green : Color::white;
 					

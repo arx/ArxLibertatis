@@ -593,7 +593,7 @@ void CurrentTorchIconGui::update() {
 	}
 	m_isActive = true;
 	
-	m_tex = player.torch->inv;
+	m_tex = player.torch->m_icon;
 	arx_assert(m_tex);
 	
 	if(Random::getf() <= 0.2f) {

@@ -209,11 +209,11 @@ void SecondaryInventoryHud::draw() {
 				continue;
 			
 			bool bItemSteal = false;
-			TextureContainer *tc = io->inv;
+			TextureContainer *tc = io->m_icon;
 			TextureContainer *tc2 = NULL;
 			
 			if(NeedHalo(io))
-				tc2 = io->inv->getHalo();
+				tc2 = io->m_icon->getHalo();
 			
 			if(_bSteal) {
 				if(!ARX_PLAYER_CanStealItem(io)) {

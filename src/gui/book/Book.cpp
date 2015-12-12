@@ -472,11 +472,11 @@ static void RenderBookPlayerCharacter() {
 	if(ValidIONum(player.equiped[EQUIP_SLOT_RING_LEFT])) {
 		Entity *todraw = entities[player.equiped[EQUIP_SLOT_RING_LEFT]];
 		
-		TextureContainer * tc = todraw->inv;
+		TextureContainer * tc = todraw->m_icon;
 		TextureContainer * tc2 = NULL;
 		
 		if(NeedHalo(todraw))
-			tc2 = todraw->inv->getHalo();
+			tc2 = todraw->m_icon->getHalo();
 		
 		if(tc) {
 			todraw->bbox2D.min = Vec2f(146.f, 312.f);
@@ -500,11 +500,11 @@ static void RenderBookPlayerCharacter() {
 	if(ValidIONum(player.equiped[EQUIP_SLOT_RING_RIGHT])) {
 		Entity *todraw = entities[player.equiped[EQUIP_SLOT_RING_RIGHT]];
 		
-		TextureContainer * tc = todraw->inv;
+		TextureContainer * tc = todraw->m_icon;
 		TextureContainer * tc2 = NULL;
 		
 		if(NeedHalo(todraw))
-			tc2 = todraw->inv->getHalo();
+			tc2 = todraw->m_icon->getHalo();
 		
 		if(tc) {
 			todraw->bbox2D.min = Vec2f(296.f, 312.f);

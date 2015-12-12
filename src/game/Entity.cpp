@@ -95,7 +95,7 @@ Entity::Entity(const res::path & classPath, EntityInstance instance)
 	requestRoomUpdate = 1;
 	original_height = 0.f;
 	original_radius = 0.f;
-	inv = NULL;
+	m_icon = NULL;
 	obj = NULL;
 	std::fill_n(anims, MAX_ANIMS, (ANIM_HANDLE *)NULL);
 	

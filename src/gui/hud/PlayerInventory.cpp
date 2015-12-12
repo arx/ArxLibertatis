@@ -192,11 +192,11 @@ void PlayerInventoryHud::ARX_INTERFACE_DrawInventory(size_t bag, Vec2i i)
 		if(!io || !inventory[bag][x][y].show)
 			continue;
 		
-		TextureContainer *tc = io->inv;
+		TextureContainer *tc = io->m_icon;
 		TextureContainer *tc2 = NULL;
 		
 		if(NeedHalo(io))
-			tc2 = io->inv->getHalo();
+			tc2 = io->m_icon->getHalo();
 		
 		if(!tc)
 			continue;

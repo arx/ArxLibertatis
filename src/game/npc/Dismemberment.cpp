@@ -251,7 +251,7 @@ static void ARX_NPC_SpawnMember(Entity * ioo, long num) {
 	
 	io->infracolor = Color3f::blue * 0.8f;
 	io->collision = COLLIDE_WITH_PLAYER;
-	io->inv = NULL;
+	io->m_icon = NULL;
 	io->scriptload = 1;
 	io->obj = nouvo;
 	io->lastpos = io->initpos = io->pos = ioo->obj->vertexlist3[inpos].v;

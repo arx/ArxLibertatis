@@ -421,8 +421,8 @@ bool NeedHalo(Entity * io)
 		return false;
 
 	if(io->halo.flags & HALO_ACTIVE) {
-		if(io->inv)
-			io->inv->getHalo();
+		if(io->m_icon)
+			io->m_icon->getHalo();
 
 		return true;
 	}
