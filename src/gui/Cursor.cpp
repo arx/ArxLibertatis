@@ -61,12 +61,6 @@ extern Vec2s DANAEMouse;
 extern float STARTED_ANGLE;
 long SPECIAL_DRAGINTER_RENDER=0;
 
-enum EntityMoveCursor {
-	EntityMoveCursor_Throw = -1,
-	EntityMoveCursor_Ok = 0,
-	EntityMoveCursor_Invalid = 1
-};
-
 EntityMoveCursor CANNOT_PUT_IT_HERE = EntityMoveCursor_Ok;
 
 static TextureContainer * cursorTargetOn = NULL;

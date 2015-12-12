@@ -77,6 +77,7 @@ ZeniMax Media Inc., Suite 120, Rockville, Maryland 20850 USA.
 #include "game/Player.h"
 #include "game/Spells.h"
 
+#include "gui/Cursor.h"
 #include "gui/Interface.h"
 #include "gui/Speech.h"
 
@@ -2923,7 +2924,9 @@ void ManageIgnition(Entity * io) {
 
 		return;
 	}
-
+	
+	bool addParticles = !(io == DRAGINTER && CANNOT_PUT_IT_HERE != EntityMoveCursor_Ok);
+	
 	// Torch Management
 	Entity * plw = NULL;
 
@@ -2935,7 +2938,7 @@ void ManageIgnition(Entity * io) {
 		
 		io->ignition = 25.f;
 		
-		if(io->obj && !io->obj->facelist.empty()) {
+		if(addParticles && io->obj && !io->obj->facelist.empty()) {
 			createObjFireParticles(io->obj, 4, 1, 1);
 		}
 	} else if(io->obj && io->obj->fastaccess.fire >= 0 && io->ignition > 0.f) {
@@ -2949,14 +2952,14 @@ void ManageIgnition(Entity * io) {
 			return;
 		}
 		
-		Vec3f pos = io->obj->vertexlist3[io->obj->fastaccess.fire].v;
-		
-		createFireParticles(pos, 2, 2);
-		
+		if(addParticles) {
+			Vec3f pos = io->obj->vertexlist3[io->obj->fastaccess.fire].v;
+			createFireParticles(pos, 2, 2);
+		}
 	} else {
 		io->ignition -= framedelay * 0.01f;
 		
-		if(io->obj && !io->obj->facelist.empty()) {
+		if(addParticles && io->obj && !io->obj->facelist.empty()) {
 			float p = io->ignition * framedelay * 0.001f * io->obj->facelist.size() * 0.001f * 2.f;
 			int positions = std::min(int(std::ceil(p)), 10);
 			
