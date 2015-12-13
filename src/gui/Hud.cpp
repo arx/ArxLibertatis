@@ -740,6 +740,11 @@ void MemorizedRunesHud::update(const Rectf & parent) {
 }
 
 void MemorizedRunesHud::draw() {
+	
+	if(!(CurrSpellSymbol || player.SpellToMemorize.bSpell)) {
+		return;
+	}
+	
 	Vec2f pos = m_rect.topLeft();
 	
 	for(int i = 0; i < 6; i++) {
@@ -1549,12 +1554,7 @@ void HudRoot::draw() {
 		setHudTextureState();
 	}
 	
-	if(CurrSpellSymbol || player.SpellToMemorize.bSpell) {
-		memorizedRunesHud.draw();
-	}
-	
-
-	
+	memorizedRunesHud.draw();
 	
 	if(player.Interface & INTER_LIFE_MANA) {
 		manaGauge.update(hudSlider);
