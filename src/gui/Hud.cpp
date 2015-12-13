@@ -931,6 +931,11 @@ void ScreenArrows::init() {
 }
 
 void ScreenArrows::update() {
+	
+	if(!config.input.borderTurning) {
+		return;
+	}
+	
 	fArrowMove += .5f * framedelay;
 	if(fArrowMove > 180.f) {
 		fArrowMove=0.f;
@@ -946,6 +951,11 @@ void ScreenArrows::update() {
 }
 
 void ScreenArrows::draw() {
+	
+	if(!config.input.borderTurning) {
+		return;
+	}
+	
 	Color lcolor = Color3f::gray(.5f).to<u8>();
 	
 	EERIEDrawBitmap(m_left, 0.01f, m_arrowLeftTex, lcolor);

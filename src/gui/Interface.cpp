@@ -1753,7 +1753,7 @@ void ArxGame::manageKeyMouse() {
 			}
 		} else {
 			// Turn the player if the curser is close to the edges
-			if(bRenderInCursorMode && GInput->isMouseInWindow()) {
+			if(config.input.borderTurning && bRenderInCursorMode && GInput->isMouseInWindow()) {
 				
 				static const int borderSize = 10;
 				

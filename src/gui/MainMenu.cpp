@@ -995,6 +995,15 @@ public:
 		}
 		
 		{
+			std::string szMenuText = getLocalised("system_menus_border_turning", "Border turning");
+			TextWidget * txt = new TextWidget(BUTTON_INVALID, hFontMenu, szMenuText, Vec2f(20, 0));
+			CheckboxWidget * cb = new CheckboxWidget(txt);
+			cb->stateChanged = boost::bind(&InputOptionsMenuPage::onChangedBorderTurning, this, _1);
+			cb->iState = config.input.borderTurning ? 1 : 0;
+			addCenter(cb);
+		}
+		
+		{
 			ButtonWidget * cb = new ButtonWidget(Vec2f(20, 380), Vec2f(16, 16), "graph/interface/menus/back");
 			cb->m_targetMenu = OPTIONS;
 			cb->SetShortCut(Keyboard::Key_Escape);
@@ -1024,6 +1033,10 @@ public:
 	
 	void onChangedQuicksaveSlots(int value) {
 		config.misc.quicksaveSlots = value;
+	}
+	
+	void onChangedBorderTurning(int value) {
+		config.input.borderTurning = (value) ? true : false;
 	}
 };
 

@@ -82,7 +82,8 @@ const bool
 	mouseLookToggle = true,
 	autoDescription = true,
 	forceToggle = false,
-	hudScale = false;
+	hudScale = false,
+	borderTurning = true;
 
 ActionKey actions[NUM_ACTION_KEY] = {
 	ActionKey(Keyboard::Key_Spacebar), // JUMP
@@ -184,7 +185,8 @@ const std::string
 	autoReadyWeapon = "auto_ready_weapon",
 	mouseLookToggle = "mouse_look_toggle",
 	mouseSensitivity = "mouse_sensitivity",
-	autoDescription = "auto_description";
+	autoDescription = "auto_description",
+	borderTurning = "border_turning";
 
 // Input key options
 const std::string actions[NUM_ACTION_KEY] = {
@@ -412,6 +414,7 @@ bool Config::save() {
 	writer.writeKey(Key::mouseLookToggle, input.mouseLookToggle);
 	writer.writeKey(Key::mouseSensitivity, input.mouseSensitivity);
 	writer.writeKey(Key::autoDescription, input.autoDescription);
+	writer.writeKey(Key::borderTurning, input.borderTurning);
 	
 	// key
 	writer.beginSection(Section::Key);
@@ -503,6 +506,7 @@ bool Config::init(const fs::path & file) {
 	input.mouseLookToggle = reader.getKey(Section::Input, Key::mouseLookToggle, Default::mouseLookToggle);
 	input.mouseSensitivity = reader.getKey(Section::Input, Key::mouseSensitivity, Default::mouseSensitivity);
 	input.autoDescription = reader.getKey(Section::Input, Key::autoDescription, Default::autoDescription);
+	input.borderTurning = reader.getKey(Section::Input, Key::borderTurning, Default::borderTurning);
 	
 	// Get action key settings
 	for(size_t i = 0; i < NUM_ACTION_KEY; i++) {
