@@ -20,11 +20,18 @@
 #ifndef ARX_GRAPHICS_DRAWDEBUG_H
 #define ARX_GRAPHICS_DRAWDEBUG_H
 
+#include "graphics/Color.h"
+#include "math/Types.h"
+
 void drawDebugInitialize();
 void drawDebugRelease();
 
 void drawDebugCycleViews();
 
 void drawDebugRender();
+
+namespace debug {
+	void drawRay(Vec3f start, Vec3f dir, Color color = Color::white, float duration = 0.0f);
+}
 
 #endif // ARX_GRAPHICS_DRAWDEBUG_H

@@ -27,6 +27,7 @@
 
 #include "core/Core.h"
 #include "core/ArxGame.h"
+#include "core/GameTime.h"
 
 #include "font/Font.h"
 
@@ -833,9 +834,51 @@ static void drawDebugMaterials() {
 	
 }
 
+
+struct DebugRay {
+	Vec3f start;
+	Vec3f dir;
+	Color color;
+	float expiration;
+	
+	DebugRay(Vec3f start, Vec3f dir, Color color, float expiration)
+		: start(start)
+		, dir(dir)
+		, color(color)
+		, expiration(expiration)
+	{}
+};
+
+std::vector<DebugRay> debugRays;
+
+void debug::drawRay(Vec3f start, Vec3f dir, Color color, float duration) {
+	DebugRay ray = DebugRay(start, dir, color, float(arxtime) + duration * 1000);
+	debugRays.push_back(ray);
+}
+
+static void updateAndRenderDebugDrawables() {
+	for(size_t i = 0; i < debugRays.size(); i++) {
+		const DebugRay & ray = debugRays[i];
+		drawLine(ray.start, ray.dir, ray.color);
+	}
+	
+	float currentTime = float(arxtime);
+	
+	for(size_t i = 0; i < debugRays.size(); i++) {
+		if(debugRays[i].expiration < currentTime) {
+			std::swap(debugRays[i], debugRays.back());
+			debugRays.pop_back();
+			i--;
+		}
+	}
+}
+
+
 void drawDebugRender() {
 	
 	ARX_PROFILE_FUNC();
+	
+	updateAndRenderDebugDrawables();
 	
 	if(g_debugView == DebugView_None) {
 		return;
