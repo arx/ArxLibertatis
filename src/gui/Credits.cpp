@@ -366,13 +366,17 @@ static void ExtractAllCreditsTextInformations() {
 
 void CreditsInformations::render() {
 	
-	//We initialize the datas
-	init();
-	
-	int iSize = m_lines.size() ;
+	// Initialze the data on demand
+	if(!init()) {
+		LogError << "Could not initialize credits";
+		reset();
+		ARXmenu.currentmode = AMCM_MAIN;
+		iFadeAction = -1;
+		bFadeInOut = false;
+		bFade = true;
+	}
 	
 	//We display them
-	if(m_lineHeight != -1) {
 		
 		GRenderer->SetRenderState(Renderer::AlphaBlending, false);
 		GRenderer->SetRenderState(Renderer::Fog, false);
@@ -467,13 +471,9 @@ void CreditsInformations::render() {
 			if ( yy >= g_size.height() )
 				break ; //it's useless to continue because next phrase will not be inside the viewport
 		}
-	} else {
-		LogWarning << "Error initializing credits";
-	}
 
-
-
-	if(iSize <= m_firstVisibleLine && iFadeAction != AMCM_MAIN) {
+	
+	if(m_firstVisibleLine >= m_lines.size() && iFadeAction != AMCM_MAIN) {
 		
 		bFadeInOut = true;
 		bFade = true;
