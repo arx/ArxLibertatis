@@ -90,7 +90,7 @@ struct CreditsInformations {
 		: m_scrollPosition(0.f)
 		, m_lastUpdateTime(0.f)
 		, m_firstVisibleLine(0)
-		, iFontAverageHeight(-1)
+		, m_lineHeight(-1)
 		, sizex(0)
 		, sizey(0)
 	{ }
@@ -99,7 +99,7 @@ struct CreditsInformations {
 	float m_lastUpdateTime;
 	
 	size_t m_firstVisibleLine;
-	int iFontAverageHeight;
+	int m_lineHeight;
 	
 	int sizex, sizey; // save the screen size so we know when to re-initialize the credits
 	
@@ -125,7 +125,7 @@ static void InitCredits() {
 	static int anchorLine = -1;
 	static float offset;
 	typedef std::vector<CreditsTextInformations>::iterator Iterator;
-	if(g_credits.iFontAverageHeight != -1
+	if(g_credits.m_lineHeight != -1
 	   && size_t(g_credits.m_firstVisibleLine) < g_credits.aCreditsInformations.size()) {
 		// We use the first line that is still visible as our anchor
 		Iterator it = g_credits.aCreditsInformations.begin() + g_credits.m_firstVisibleLine;
@@ -440,7 +440,7 @@ void Credits::render() {
 		
 		for(; it != g_credits.aCreditsInformations.begin(); --it, --g_credits.m_firstVisibleLine) {
 			float yy = (it - 1)->sPos.y + g_credits.m_scrollPosition;
-			if (yy <= -g_credits.iFontAverageHeight) {
+			if (yy <= -g_credits.m_lineHeight) {
 				break;
 			}
 		}
