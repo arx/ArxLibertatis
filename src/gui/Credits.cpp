@@ -96,7 +96,7 @@ struct CreditsInformations {
 };
 
 
-static CreditsInformations CreditsData;
+static CreditsInformations g_credits;
 
 static void InitCredits();
 static void CalculAverageWidth();
@@ -104,8 +104,8 @@ static void ExtractAllCreditsTextInformations();
 
 static void InitCredits() {
 	
-	if(CreditsData.iFontAverageHeight != -1
-		&& CreditsData.sizex == g_size.width() && CreditsData.sizey == g_size.height()) {
+	if(g_credits.iFontAverageHeight != -1
+		&& g_credits.sizex == g_size.width() && g_credits.sizey == g_size.height()) {
 		return;
 	}
 	
@@ -113,57 +113,57 @@ static void InitCredits() {
 	static int anchorLine = -1;
 	static float offset;
 	typedef std::vector<CreditsTextInformations>::iterator Iterator;
-	if(CreditsData.iFontAverageHeight != -1 && CreditsData.iFirstLine >= 0
-	   && size_t(CreditsData.iFirstLine) < CreditsData.aCreditsInformations.size()) {
+	if(g_credits.iFontAverageHeight != -1 && g_credits.iFirstLine >= 0
+	   && size_t(g_credits.iFirstLine) < g_credits.aCreditsInformations.size()) {
 		// We use the first line that is still visible as our anchor
-		Iterator it = CreditsData.aCreditsInformations.begin() + CreditsData.iFirstLine;
+		Iterator it = g_credits.aCreditsInformations.begin() + g_credits.iFirstLine;
 		anchorLine = it->sourceLineNumber;
 		// Find the first credits line that comes from this source line
 		Iterator first = it;
-		while(first != CreditsData.aCreditsInformations.begin()
+		while(first != g_credits.aCreditsInformations.begin()
 		      && (first - 1)->sourceLineNumber == anchorLine) {
 			--first;
 		}
 		// Find the first credits line that comes from this source line
 		Iterator last = it;
-		while((last + 1) != CreditsData.aCreditsInformations.end()
+		while((last + 1) != g_credits.aCreditsInformations.end()
 		      && (last + 1)->sourceLineNumber == anchorLine) {
 			++last;
 		}
 		// Remember the offset from the anchor line to the current scroll position
 		float pos = (first->sPos.y + last->sPos.y) * 0.5f;
-		offset = (pos + ARXmenu.mda->creditspos) / float(CreditsData.iFontAverageHeight);
+		offset = (pos + ARXmenu.mda->creditspos) / float(g_credits.iFontAverageHeight);
 	}
 	
-	CreditsData.sizex = g_size.width();
-	CreditsData.sizey = g_size.height();
+	g_credits.sizex = g_size.width();
+	g_credits.sizey = g_size.height();
 	
-	CreditsData.aCreditsInformations.clear();
+	g_credits.aCreditsInformations.clear();
 	
 	LogDebug("InitCredits");
 	
 	CalculAverageWidth();
 	ExtractAllCreditsTextInformations();
 	
-	LogDebug("Credits lines " << CreditsData.aCreditsInformations.size());
+	LogDebug("Credits lines " << g_credits.aCreditsInformations.size());
 	
 	if(anchorLine >= 0) {
 		// Find the first credits line that comes from our source anchor line
-		Iterator first = CreditsData.aCreditsInformations.begin();
-		while(first != CreditsData.aCreditsInformations.end()
+		Iterator first = g_credits.aCreditsInformations.begin();
+		while(first != g_credits.aCreditsInformations.end()
 		      && first->sourceLineNumber != anchorLine) {
 			++first;
 		}
-		if(first != CreditsData.aCreditsInformations.end()) {
+		if(first != g_credits.aCreditsInformations.end()) {
 			// Find the last credits line that comes from our source anchor line
 			Iterator last = first;
-			while((last + 1) != CreditsData.aCreditsInformations.end()
+			while((last + 1) != g_credits.aCreditsInformations.end()
 			      && (last + 1)->sourceLineNumber == anchorLine) {
 				++last;
 			}
 			// Restore the scroll positon using the offset to our anchor line
 			float pos = (first->sPos.y + last->sPos.y) * 0.5f;
-			ARXmenu.mda->creditspos = offset * float(CreditsData.iFontAverageHeight) - pos;
+			ARXmenu.mda->creditspos = offset * float(g_credits.iFontAverageHeight) - pos;
 		}
 	}
 	
@@ -178,7 +178,7 @@ static void addCreditsLine(std::string & phrase, float & drawpos, int sourceLine
 	bool isSimpleLine = false;
 	if(!phrase.empty() && phrase[0] == '~') {
 		// Heading
-		drawpos += CreditsData.iFontAverageHeight * 0.6f;
+		drawpos += g_credits.iFontAverageHeight * 0.6f;
 		phrase[0] = ' ';
 		infomations.fColors = Color::white;
 	} else if(phrase[0] == '&') {
@@ -197,7 +197,7 @@ static void addCreditsLine(std::string & phrase, float & drawpos, int sourceLine
 		
 		// Calculate height position
 		infomations.sPos.y = static_cast<int>(drawpos);
-		drawpos += CreditsData.iFontAverageHeight;
+		drawpos += g_credits.iFontAverageHeight;
 		
 		// Split long lines
 		long n = ARX_UNICODE_ForceFormattingInRect(hFontCredits, phrase, linerect);
@@ -281,7 +281,7 @@ static void addCreditsLine(std::string & phrase, float & drawpos, int sourceLine
 					 && linesize - prefixsize / 2 < g_size.width() / 2) {
 					prefix.sPos.x = (g_size.width() - prefixsize) / 2;
 				}
-				CreditsData.aCreditsInformations.push_back(prefix);
+				g_credits.aCreditsInformations.push_back(prefix);
 				infomations.sPos.x = prefix.sPos.x + prefixsize + 20;
 				infomations.sText = infomations.sText.substr(p);
 				infomations.fColors = Color::gray(0.7f);
@@ -289,7 +289,7 @@ static void addCreditsLine(std::string & phrase, float & drawpos, int sourceLine
 			
 		}
 		
-		CreditsData.aCreditsInformations.push_back(infomations);
+		g_credits.aCreditsInformations.push_back(infomations);
 	}
 	
 }
@@ -299,7 +299,7 @@ static void CalculAverageWidth() {
 	
 	// Calculate the average value
 	Vec2i size = hFontCredits->getTextSize("aA(");
-	CreditsData.iFontAverageHeight = size.y;
+	g_credits.iFontAverageHeight = size.y;
 }
 
 static bool iswhitespace(char c) {
@@ -342,7 +342,7 @@ static void ExtractAllCreditsTextInformations() {
 		
 		if(phrase.empty()) {
 			// Separator line
-			drawpos += 0.4f * CreditsData.iFontAverageHeight;
+			drawpos += 0.4f * g_credits.iFontAverageHeight;
 		} else {
 			addCreditsLine(phrase, drawpos, sourceLineNumber);
 		}
@@ -354,10 +354,10 @@ void Credits::render() {
 	//We initialize the datas
 	InitCredits();
 	
-	int iSize = CreditsData.aCreditsInformations.size() ;
+	int iSize = g_credits.aCreditsInformations.size() ;
 	
 	//We display them
-	if(CreditsData.iFontAverageHeight != -1) {
+	if(g_credits.iFontAverageHeight != -1) {
 		
 		GRenderer->SetRenderState(Renderer::AlphaBlending, false);
 		GRenderer->SetRenderState(Renderer::Fog, false);
@@ -424,29 +424,29 @@ void Credits::render() {
 		// Don't scroll past the credits start
 		ARXmenu.mda->creditspos = std::min(0.f, ARXmenu.mda->creditspos);
 		
-		std::vector<CreditsTextInformations>::const_iterator it = CreditsData.aCreditsInformations.begin() + CreditsData.iFirstLine ;
+		std::vector<CreditsTextInformations>::const_iterator it = g_credits.aCreditsInformations.begin() + g_credits.iFirstLine ;
 		
-		for(; it != CreditsData.aCreditsInformations.begin(); --it, --CreditsData.iFirstLine) {
+		for(; it != g_credits.aCreditsInformations.begin(); --it, --g_credits.iFirstLine) {
 			float yy = (it - 1)->sPos.y + ARXmenu.mda->creditspos;
-			if (yy <= -CreditsData.iFontAverageHeight) {
+			if (yy <= -g_credits.iFontAverageHeight) {
 				break;
 			}
 		}
 		
-		for (; it != CreditsData.aCreditsInformations.end(); ++it)
+		for (; it != g_credits.aCreditsInformations.end(); ++it)
 		{
 			//Update the Y word display
 			float yy = it->sPos.y + ARXmenu.mda->creditspos;
 
 			//Display the text only if he is on the viewport
-			if ((yy >= -CreditsData.iFontAverageHeight) && (yy <= g_size.height())) 
+			if ((yy >= -g_credits.iFontAverageHeight) && (yy <= g_size.height())) 
 			{
 				hFontCredits->draw(it->sPos.x, static_cast<int>(yy), it->sText, it->fColors);
 			}
 			
-			if (yy <= -CreditsData.iFontAverageHeight)
+			if (yy <= -g_credits.iFontAverageHeight)
 			{
-				++CreditsData.iFirstLine;
+				++g_credits.iFirstLine;
 			}
 			
 			if ( yy >= g_size.height() )
@@ -458,7 +458,7 @@ void Credits::render() {
 
 
 
-	if(iSize <= CreditsData.iFirstLine && iFadeAction != AMCM_MAIN) {
+	if(iSize <= g_credits.iFirstLine && iFadeAction != AMCM_MAIN) {
 		
 		bFadeInOut = true;
 		bFade = true;
@@ -468,7 +468,7 @@ void Credits::render() {
 	}
 
 	if(ProcessFadeInOut(bFadeInOut,0.1f) && iFadeAction == AMCM_MAIN) {
-		CreditsData.iFirstLine = 0;
+		g_credits.iFirstLine = 0;
 		ARXmenu.mda->creditspos = 0;
 		ARXmenu.mda->creditstart = 0 ;
 		ARXmenu.currentmode = AMCM_MAIN;
@@ -485,6 +485,6 @@ void Credits::render() {
 void Credits::reset() {
 	ARXmenu.mda->creditstart = arxtime.get_updated(false);
 	ARXmenu.mda->creditspos = 0;
-	CreditsData.iFirstLine = 0;
+	g_credits.iFirstLine = 0;
 }
 
