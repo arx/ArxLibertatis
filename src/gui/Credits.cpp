@@ -43,6 +43,7 @@ ZeniMax Media Inc., Suite 120, Rockville, Maryland 20850 USA.
 
 #include "gui/Credits.h"
 
+#include <stddef.h>
 #include <sstream>
 
 #include "core/Core.h"
@@ -88,7 +89,7 @@ struct CreditsInformations {
 	CreditsInformations()
 		: m_scrollPosition(0.f)
 		, m_lastUpdateTime(0.f)
-		, iFirstLine(0)
+		, m_firstVisibleLine(0)
 		, iFontAverageHeight(-1)
 		, sizex(0)
 		, sizey(0)
@@ -97,7 +98,7 @@ struct CreditsInformations {
 	float m_scrollPosition;
 	float m_lastUpdateTime;
 	
-	int iFirstLine;
+	size_t m_firstVisibleLine;
 	int iFontAverageHeight;
 	
 	int sizex, sizey; // save the screen size so we know when to re-initialize the credits
@@ -124,10 +125,10 @@ static void InitCredits() {
 	static int anchorLine = -1;
 	static float offset;
 	typedef std::vector<CreditsTextInformations>::iterator Iterator;
-	if(g_credits.iFontAverageHeight != -1 && g_credits.iFirstLine >= 0
-	   && size_t(g_credits.iFirstLine) < g_credits.aCreditsInformations.size()) {
+	if(g_credits.iFontAverageHeight != -1
+	   && size_t(g_credits.m_firstVisibleLine) < g_credits.aCreditsInformations.size()) {
 		// We use the first line that is still visible as our anchor
-		Iterator it = g_credits.aCreditsInformations.begin() + g_credits.iFirstLine;
+		Iterator it = g_credits.aCreditsInformations.begin() + g_credits.m_firstVisibleLine;
 		anchorLine = it->sourceLineNumber;
 		// Find the first credits line that comes from this source line
 		Iterator first = it;
@@ -435,9 +436,9 @@ void Credits::render() {
 		// Don't scroll past the credits start
 		g_credits.m_scrollPosition = std::min(0.f, g_credits.m_scrollPosition);
 		
-		std::vector<CreditsTextInformations>::const_iterator it = g_credits.aCreditsInformations.begin() + g_credits.iFirstLine ;
+		std::vector<CreditsTextInformations>::const_iterator it = g_credits.aCreditsInformations.begin() + g_credits.m_firstVisibleLine ;
 		
-		for(; it != g_credits.aCreditsInformations.begin(); --it, --g_credits.iFirstLine) {
+		for(; it != g_credits.aCreditsInformations.begin(); --it, --g_credits.m_firstVisibleLine) {
 			float yy = (it - 1)->sPos.y + g_credits.m_scrollPosition;
 			if (yy <= -g_credits.iFontAverageHeight) {
 				break;
@@ -457,7 +458,7 @@ void Credits::render() {
 			
 			if (yy <= -g_credits.m_lineHeight)
 			{
-				++g_credits.iFirstLine;
+				++g_credits.m_firstVisibleLine;
 			}
 			
 			if ( yy >= g_size.height() )
@@ -469,7 +470,7 @@ void Credits::render() {
 
 
 
-	if(iSize <= g_credits.iFirstLine && iFadeAction != AMCM_MAIN) {
+	if(iSize <= g_credits.m_firstVisibleLine && iFadeAction != AMCM_MAIN) {
 		
 		bFadeInOut = true;
 		bFade = true;
@@ -479,7 +480,7 @@ void Credits::render() {
 	}
 
 	if(ProcessFadeInOut(bFadeInOut,0.1f) && iFadeAction == AMCM_MAIN) {
-		g_credits.iFirstLine = 0;
+		g_credits.m_firstVisibleLine = 0;
 		g_credits.m_scrollPosition = 0;
 		g_credits.m_lastUpdateTime = 0 ;
 		ARXmenu.currentmode = AMCM_MAIN;
@@ -496,5 +497,5 @@ void Credits::render() {
 void Credits::reset() {
 	g_credits.m_lastUpdateTime = arxtime.get_updated(false);
 	g_credits.m_scrollPosition = 0;
-	g_credits.iFirstLine = 0;
+	g_credits.m_firstVisibleLine = 0;
 }
