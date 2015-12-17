@@ -70,9 +70,9 @@ extern bool bFade;
 extern int iFadeAction;
 
 
-struct CreditsTextInformations {
+struct CreditsLine {
 	
-	CreditsTextInformations() {
+	CreditsLine() {
 		sPos = Vec2i_ZERO;
 		fColors = Color::none;
 		sourceLineNumber = -1;
@@ -104,7 +104,7 @@ struct CreditsInformations {
 	
 	Vec2i m_windowSize; // save the screen size so we know when to re-initialize the credits
 	
-	std::vector<CreditsTextInformations> m_lines;
+	std::vector<CreditsLine> m_lines;
 	
 };
 
@@ -124,7 +124,7 @@ static void InitCredits() {
 	// When the screen is resized, try to keep the credits scrolled to the 'same' position
 	static int anchorLine = -1;
 	static float offset;
-	typedef std::vector<CreditsTextInformations>::iterator Iterator;
+	typedef std::vector<CreditsLine>::iterator Iterator;
 	if(g_credits.m_lineHeight != -1
 	   && size_t(g_credits.m_firstVisibleLine) < g_credits.m_lines.size()) {
 		// We use the first line that is still visible as our anchor
@@ -182,7 +182,7 @@ static void InitCredits() {
 
 static void addCreditsLine(std::string & phrase, float & drawpos, int sourceLineNumber) {
 	
-	CreditsTextInformations infomations;
+	CreditsLine infomations;
 	infomations.sourceLineNumber = sourceLineNumber;
 	
 	// Determnine the type of the line
@@ -285,7 +285,7 @@ static void addCreditsLine(std::string & phrase, float & drawpos, int sourceLine
 			}
 			
 			if(p != std::string::npos) {
-				CreditsTextInformations prefix = infomations;
+				CreditsLine prefix = infomations;
 				prefix.sText.resize(p);
 				int prefixsize = hFontCredits->getTextSize(prefix.sText).x;
 				if(!centered && p != 0 && prefixsize / 2 < g_size.width() / 2
@@ -435,7 +435,7 @@ void Credits::render() {
 		// Don't scroll past the credits start
 		g_credits.m_scrollPosition = std::min(0.f, g_credits.m_scrollPosition);
 		
-		std::vector<CreditsTextInformations>::const_iterator it = g_credits.m_lines.begin() + g_credits.m_firstVisibleLine ;
+		std::vector<CreditsLine>::const_iterator it = g_credits.m_lines.begin() + g_credits.m_firstVisibleLine ;
 		
 		for(; it != g_credits.m_lines.begin(); --it, --g_credits.m_firstVisibleLine) {
 			float yy = (it - 1)->sPos.y + g_credits.m_scrollPosition;
