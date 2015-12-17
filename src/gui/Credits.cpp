@@ -85,7 +85,15 @@ struct CreditsTextInformations {
 
 struct CreditsInformations {
 	
-	CreditsInformations() : iFirstLine(0), iFontAverageHeight(-1), sizex(0), sizey(0) { }
+	CreditsInformations()
+		: m_scrollPosition(0.f)
+		, iFirstLine(0)
+		, iFontAverageHeight(-1)
+		, sizex(0)
+		, sizey(0)
+	{ }
+	
+	float m_scrollPosition;
 	
 	int iFirstLine;
 	int iFontAverageHeight;
@@ -93,6 +101,7 @@ struct CreditsInformations {
 	int sizex, sizey; // save the screen size so we know when to re-initialize the credits
 	
 	std::vector<CreditsTextInformations> aCreditsInformations;
+	
 };
 
 
@@ -104,7 +113,7 @@ static void ExtractAllCreditsTextInformations();
 
 static void InitCredits() {
 	
-	if(g_credits.iFontAverageHeight != -1
+	if(g_credits.m_lineHeight != -1
 		&& g_credits.sizex == g_size.width() && g_credits.sizey == g_size.height()) {
 		return;
 	}
@@ -132,7 +141,7 @@ static void InitCredits() {
 		}
 		// Remember the offset from the anchor line to the current scroll position
 		float pos = (first->sPos.y + last->sPos.y) * 0.5f;
-		offset = (pos + ARXmenu.mda->creditspos) / float(g_credits.iFontAverageHeight);
+		offset = (pos + g_credits.m_scrollPosition) / float(g_credits.m_lineHeight);
 	}
 	
 	g_credits.sizex = g_size.width();
@@ -163,7 +172,7 @@ static void InitCredits() {
 			}
 			// Restore the scroll positon using the offset to our anchor line
 			float pos = (first->sPos.y + last->sPos.y) * 0.5f;
-			ARXmenu.mda->creditspos = offset * float(g_credits.iFontAverageHeight) - pos;
+			g_credits.m_scrollPosition = offset * float(g_credits.m_lineHeight) - pos;
 		}
 	}
 	
@@ -178,7 +187,7 @@ static void addCreditsLine(std::string & phrase, float & drawpos, int sourceLine
 	bool isSimpleLine = false;
 	if(!phrase.empty() && phrase[0] == '~') {
 		// Heading
-		drawpos += g_credits.iFontAverageHeight * 0.6f;
+		drawpos += g_credits.m_lineHeight * 0.6f;
 		phrase[0] = ' ';
 		infomations.fColors = Color::white;
 	} else if(phrase[0] == '&') {
@@ -197,7 +206,7 @@ static void addCreditsLine(std::string & phrase, float & drawpos, int sourceLine
 		
 		// Calculate height position
 		infomations.sPos.y = static_cast<int>(drawpos);
-		drawpos += g_credits.iFontAverageHeight;
+		drawpos += g_credits.m_lineHeight;
 		
 		// Split long lines
 		long n = ARX_UNICODE_ForceFormattingInRect(hFontCredits, phrase, linerect);
@@ -299,7 +308,7 @@ static void CalculAverageWidth() {
 	
 	// Calculate the average value
 	Vec2i size = hFontCredits->getTextSize("aA(");
-	g_credits.iFontAverageHeight = size.y;
+	g_credits.m_lineHeight = size.y;
 }
 
 static bool iswhitespace(char c) {
@@ -342,7 +351,7 @@ static void ExtractAllCreditsTextInformations() {
 		
 		if(phrase.empty()) {
 			// Separator line
-			drawpos += 0.4f * g_credits.iFontAverageHeight;
+			drawpos += 0.4f * g_credits.m_lineHeight;
 		} else {
 			addCreditsLine(phrase, drawpos, sourceLineNumber);
 		}
@@ -357,7 +366,7 @@ void Credits::render() {
 	int iSize = g_credits.aCreditsInformations.size() ;
 	
 	//We display them
-	if(g_credits.iFontAverageHeight != -1) {
+	if(g_credits.m_lineHeight != -1) {
 		
 		GRenderer->SetRenderState(Renderer::AlphaBlending, false);
 		GRenderer->SetRenderState(Renderer::Fog, false);
@@ -406,7 +415,7 @@ void Credits::render() {
 		if(GInput->isKeyPressed(Keyboard::Key_DownArrow)) {
 			userScroll -= 0.2f * dtime;
 		}
-		ARXmenu.mda->creditspos += g_sizeRatio.y * userScroll;
+		g_credits.m_scrollPosition += g_sizeRatio.y * userScroll;
 		
 		// If the user wants to scroll up, also change the automatic scroll direction …
 		if(userScroll > 0.f) {
@@ -418,16 +427,16 @@ void Credits::render() {
 			scrollDirection = 1.f;
 		}
 		
-		ARXmenu.mda->creditspos -= 0.03f * g_sizeRatio.y * dtime * scrollDirection;
+		g_credits.m_scrollPosition -= 0.03f * g_sizeRatio.y * dtime * scrollDirection;
 		ARXmenu.mda->creditstart = time;
 		
 		// Don't scroll past the credits start
-		ARXmenu.mda->creditspos = std::min(0.f, ARXmenu.mda->creditspos);
+		g_credits.m_scrollPosition = std::min(0.f, g_credits.m_scrollPosition);
 		
 		std::vector<CreditsTextInformations>::const_iterator it = g_credits.aCreditsInformations.begin() + g_credits.iFirstLine ;
 		
 		for(; it != g_credits.aCreditsInformations.begin(); --it, --g_credits.iFirstLine) {
-			float yy = (it - 1)->sPos.y + ARXmenu.mda->creditspos;
+			float yy = (it - 1)->sPos.y + g_credits.m_scrollPosition;
 			if (yy <= -g_credits.iFontAverageHeight) {
 				break;
 			}
@@ -436,15 +445,15 @@ void Credits::render() {
 		for (; it != g_credits.aCreditsInformations.end(); ++it)
 		{
 			//Update the Y word display
-			float yy = it->sPos.y + ARXmenu.mda->creditspos;
+			float yy = it->sPos.y + g_credits.m_scrollPosition;
 
 			//Display the text only if he is on the viewport
-			if ((yy >= -g_credits.iFontAverageHeight) && (yy <= g_size.height())) 
+			if ((yy >= -g_credits.m_lineHeight) && (yy <= g_size.height())) 
 			{
 				hFontCredits->draw(it->sPos.x, static_cast<int>(yy), it->sText, it->fColors);
 			}
 			
-			if (yy <= -g_credits.iFontAverageHeight)
+			if (yy <= -g_credits.m_lineHeight)
 			{
 				++g_credits.iFirstLine;
 			}
@@ -469,7 +478,7 @@ void Credits::render() {
 
 	if(ProcessFadeInOut(bFadeInOut,0.1f) && iFadeAction == AMCM_MAIN) {
 		g_credits.iFirstLine = 0;
-		ARXmenu.mda->creditspos = 0;
+		g_credits.m_scrollPosition = 0;
 		ARXmenu.mda->creditstart = 0 ;
 		ARXmenu.currentmode = AMCM_MAIN;
 		iFadeAction = -1;
@@ -484,7 +493,6 @@ void Credits::render() {
 
 void Credits::reset() {
 	ARXmenu.mda->creditstart = arxtime.get_updated(false);
-	ARXmenu.mda->creditspos = 0;
+	g_credits.m_scrollPosition = 0;
 	g_credits.iFirstLine = 0;
 }
-

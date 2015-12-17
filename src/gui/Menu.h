@@ -57,7 +57,6 @@ struct MENU_DYNAMIC_DATA {
 	
 	TextureContainer * BookBackground;
 	TextureContainer * pTexCredits;
-	float creditspos;
 	float creditstart;
 	std::string flyover[MAX_FLYOVER];
 	std::string credits;
@@ -69,7 +68,6 @@ struct MENU_DYNAMIC_DATA {
 	MENU_DYNAMIC_DATA()
 		: BookBackground(NULL)
 		, pTexCredits(NULL)
-		, creditspos(0)
 		, creditstart(0)
 	{}
 	
