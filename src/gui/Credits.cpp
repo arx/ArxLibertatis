@@ -60,6 +60,8 @@ ZeniMax Media Inc., Suite 120, Rockville, Maryland 20850 USA.
 
 #include "io/log/Logger.h"
 
+#include "math/Vector.h"
+
 #include "scene/GameSound.h"
 
 // TODO extern globals
@@ -91,8 +93,7 @@ struct CreditsInformations {
 		, m_lastUpdateTime(0.f)
 		, m_firstVisibleLine(0)
 		, m_lineHeight(-1)
-		, sizex(0)
-		, sizey(0)
+		, m_windowSize(Vec2i_ZERO)
 	{ }
 	
 	float m_scrollPosition;
@@ -101,7 +102,7 @@ struct CreditsInformations {
 	size_t m_firstVisibleLine;
 	int m_lineHeight;
 	
-	int sizex, sizey; // save the screen size so we know when to re-initialize the credits
+	Vec2i m_windowSize; // save the screen size so we know when to re-initialize the credits
 	
 	std::vector<CreditsTextInformations> aCreditsInformations;
 	
@@ -116,8 +117,7 @@ static void ExtractAllCreditsTextInformations();
 
 static void InitCredits() {
 	
-	if(g_credits.m_lineHeight != -1
-		&& g_credits.sizex == g_size.width() && g_credits.sizey == g_size.height()) {
+	if(g_credits.m_lineHeight != -1 && g_credits.m_windowSize == g_size.size()) {
 		return;
 	}
 	
@@ -147,8 +147,7 @@ static void InitCredits() {
 		offset = (pos + g_credits.m_scrollPosition) / float(g_credits.m_lineHeight);
 	}
 	
-	g_credits.sizex = g_size.width();
-	g_credits.sizey = g_size.height();
+	g_credits.m_windowSize = g_size.size();
 	
 	g_credits.aCreditsInformations.clear();
 	
