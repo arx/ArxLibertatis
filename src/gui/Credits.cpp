@@ -106,6 +106,8 @@ struct CreditsInformations {
 	
 	std::vector<CreditsLine> m_lines;
 	
+	bool init();
+	
 	void render();
 	
 	void reset();
@@ -115,73 +117,71 @@ struct CreditsInformations {
 
 static CreditsInformations g_credits;
 
-static void InitCredits();
 static void CalculAverageWidth();
 static void ExtractAllCreditsTextInformations();
 
-static void InitCredits() {
+bool CreditsInformations::init() {
 	
-	if(g_credits.m_lineHeight != -1 && g_credits.m_windowSize == g_size.size()) {
-		return;
+	if(m_lineHeight != -1 && m_windowSize == g_size.size()) {
+		return true;
 	}
 	
 	// When the screen is resized, try to keep the credits scrolled to the 'same' position
 	static int anchorLine = -1;
 	static float offset;
 	typedef std::vector<CreditsLine>::iterator Iterator;
-	if(g_credits.m_lineHeight != -1
-	   && size_t(g_credits.m_firstVisibleLine) < g_credits.m_lines.size()) {
+	if(m_lineHeight != -1 && m_firstVisibleLine < m_lines.size()) {
 		// We use the first line that is still visible as our anchor
-		Iterator it = g_credits.m_lines.begin() + g_credits.m_firstVisibleLine;
+		Iterator it = m_lines.begin() + m_firstVisibleLine;
 		anchorLine = it->sourceLineNumber;
 		// Find the first credits line that comes from this source line
 		Iterator first = it;
-		while(first != g_credits.m_lines.begin()
-		      && (first - 1)->sourceLineNumber == anchorLine) {
+		while(first != m_lines.begin() && (first - 1)->sourceLineNumber == anchorLine) {
 			--first;
 		}
 		// Find the first credits line that comes from this source line
 		Iterator last = it;
-		while((last + 1) != g_credits.m_lines.end()
+		while((last + 1) != m_lines.end()
 		      && (last + 1)->sourceLineNumber == anchorLine) {
 			++last;
 		}
 		// Remember the offset from the anchor line to the current scroll position
 		float pos = (first->sPos.y + last->sPos.y) * 0.5f;
-		offset = (pos + g_credits.m_scrollPosition) / float(g_credits.m_lineHeight);
+		offset = (pos + m_scrollPosition) / float(m_lineHeight);
 	}
 	
-	g_credits.m_windowSize = g_size.size();
+	m_windowSize = g_size.size();
 	
-	g_credits.m_lines.clear();
+	m_lines.clear();
 	
 	LogDebug("InitCredits");
 	
 	CalculAverageWidth();
 	ExtractAllCreditsTextInformations();
 	
-	LogDebug("Credits lines " << g_credits.m_lines.size());
+	LogDebug("Credits lines " << m_lines.size());
 	
 	if(anchorLine >= 0) {
 		// Find the first credits line that comes from our source anchor line
-		Iterator first = g_credits.m_lines.begin();
-		while(first != g_credits.m_lines.end()
+		Iterator first = m_lines.begin();
+		while(first != m_lines.end()
 		      && first->sourceLineNumber != anchorLine) {
 			++first;
 		}
-		if(first != g_credits.m_lines.end()) {
+		if(first != m_lines.end()) {
 			// Find the last credits line that comes from our source anchor line
 			Iterator last = first;
-			while((last + 1) != g_credits.m_lines.end()
+			while((last + 1) != m_lines.end()
 			      && (last + 1)->sourceLineNumber == anchorLine) {
 				++last;
 			}
 			// Restore the scroll positon using the offset to our anchor line
 			float pos = (first->sPos.y + last->sPos.y) * 0.5f;
-			g_credits.m_scrollPosition = offset * float(g_credits.m_lineHeight) - pos;
+			m_scrollPosition = offset * float(m_lineHeight) - pos;
 		}
 	}
 	
+	return m_lineHeight != -1;
 }
 
 static void addCreditsLine(std::string & phrase, float & drawpos, int sourceLineNumber) {
@@ -367,7 +367,7 @@ static void ExtractAllCreditsTextInformations() {
 void CreditsInformations::render() {
 	
 	//We initialize the datas
-	InitCredits();
+	init();
 	
 	int iSize = m_lines.size() ;
 	
