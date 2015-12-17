@@ -479,9 +479,7 @@ void Credits::render() {
 	}
 
 	if(ProcessFadeInOut(bFadeInOut,0.1f) && iFadeAction == AMCM_MAIN) {
-		g_credits.m_firstVisibleLine = 0;
-		g_credits.m_scrollPosition = 0;
-		g_credits.m_lastUpdateTime = 0 ;
+		reset();
 		ARXmenu.currentmode = AMCM_MAIN;
 		iFadeAction = -1;
 		bFadeInOut = false;
@@ -497,4 +495,6 @@ void Credits::reset() {
 	g_credits.m_lastUpdateTime = arxtime.get_updated(false);
 	g_credits.m_scrollPosition = 0;
 	g_credits.m_firstVisibleLine = 0;
+	g_credits.m_lineHeight = -1;
+	g_credits.m_lines.clear();
 }
