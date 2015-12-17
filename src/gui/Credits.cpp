@@ -106,6 +106,8 @@ struct CreditsInformations {
 	
 	std::vector<CreditsLine> m_lines;
 	
+	void render();
+	
 	void reset();
 	
 };
@@ -362,15 +364,15 @@ static void ExtractAllCreditsTextInformations() {
 	}
 }
 
-void Credits::render() {
+void CreditsInformations::render() {
 	
 	//We initialize the datas
 	InitCredits();
 	
-	int iSize = g_credits.m_lines.size() ;
+	int iSize = m_lines.size() ;
 	
 	//We display them
-	if(g_credits.m_lineHeight != -1) {
+	if(m_lineHeight != -1) {
 		
 		GRenderer->SetRenderState(Renderer::AlphaBlending, false);
 		GRenderer->SetRenderState(Renderer::Fog, false);
@@ -386,7 +388,7 @@ void Credits::render() {
 		
 		// Use time passed between frame to create scroll effect
 		float time = arxtime.get_updated(false);
-		float dtime = time - g_credits.m_lastUpdateTime;
+		float dtime = time - m_lastUpdateTime;
 		
 		static float lastKeyPressTime = 0.f;
 		static float lastUserScrollTime = 0.f;
@@ -419,7 +421,7 @@ void Credits::render() {
 		if(GInput->isKeyPressed(Keyboard::Key_DownArrow)) {
 			userScroll -= 0.2f * dtime;
 		}
-		g_credits.m_scrollPosition += g_sizeRatio.y * userScroll;
+		m_scrollPosition += g_sizeRatio.y * userScroll;
 		
 		// If the user wants to scroll up, also change the automatic scroll direction …
 		if(userScroll > 0.f) {
@@ -431,35 +433,35 @@ void Credits::render() {
 			scrollDirection = 1.f;
 		}
 		
-		g_credits.m_scrollPosition -= 0.03f * g_sizeRatio.y * dtime * scrollDirection;
-		g_credits.m_lastUpdateTime = time;
+		m_scrollPosition -= 0.03f * g_sizeRatio.y * dtime * scrollDirection;
+		m_lastUpdateTime = time;
 		
 		// Don't scroll past the credits start
-		g_credits.m_scrollPosition = std::min(0.f, g_credits.m_scrollPosition);
+		m_scrollPosition = std::min(0.f, m_scrollPosition);
 		
-		std::vector<CreditsLine>::const_iterator it = g_credits.m_lines.begin() + g_credits.m_firstVisibleLine ;
+		std::vector<CreditsLine>::const_iterator it = m_lines.begin() + m_firstVisibleLine ;
 		
-		for(; it != g_credits.m_lines.begin(); --it, --g_credits.m_firstVisibleLine) {
-			float yy = (it - 1)->sPos.y + g_credits.m_scrollPosition;
-			if (yy <= -g_credits.m_lineHeight) {
+		for(; it != m_lines.begin(); --it, --m_firstVisibleLine) {
+			float yy = (it - 1)->sPos.y + m_scrollPosition;
+			if (yy <= -m_lineHeight) {
 				break;
 			}
 		}
 		
-		for (; it != g_credits.m_lines.end(); ++it)
+		for (; it != m_lines.end(); ++it)
 		{
 			//Update the Y word display
-			float yy = it->sPos.y + g_credits.m_scrollPosition;
+			float yy = it->sPos.y + m_scrollPosition;
 
 			//Display the text only if he is on the viewport
-			if ((yy >= -g_credits.m_lineHeight) && (yy <= g_size.height())) 
+			if ((yy >= -m_lineHeight) && (yy <= g_size.height())) 
 			{
 				hFontCredits->draw(it->sPos.x, static_cast<int>(yy), it->sText, it->fColors);
 			}
 			
-			if (yy <= -g_credits.m_lineHeight)
+			if (yy <= -m_lineHeight)
 			{
-				++g_credits.m_firstVisibleLine;
+				++m_firstVisibleLine;
 			}
 			
 			if ( yy >= g_size.height() )
@@ -471,7 +473,7 @@ void Credits::render() {
 
 
 
-	if(iSize <= g_credits.m_firstVisibleLine && iFadeAction != AMCM_MAIN) {
+	if(iSize <= m_firstVisibleLine && iFadeAction != AMCM_MAIN) {
 		
 		bFadeInOut = true;
 		bFade = true;
@@ -499,6 +501,10 @@ void CreditsInformations::reset() {
 	m_firstVisibleLine = 0;
 	m_lineHeight = -1;
 	m_lines.clear();
+}
+
+void Credits::render() {
+	g_credits.render();
 }
 
 void Credits::reset() {
