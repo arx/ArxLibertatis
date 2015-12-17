@@ -377,101 +377,100 @@ void CreditsInformations::render() {
 	}
 	
 	//We display them
+	
+	GRenderer->SetRenderState(Renderer::AlphaBlending, false);
+	GRenderer->SetRenderState(Renderer::Fog, false);
+	GRenderer->SetRenderState(Renderer::DepthWrite, true);
+	GRenderer->SetRenderState(Renderer::DepthTest, false);
+	
+	//Draw Background
+	if(ARXmenu.mda->pTexCredits) {
+		Rectf rect(Vec2f_ZERO, g_size.width(), g_size.height() + 1);
 		
-		GRenderer->SetRenderState(Renderer::AlphaBlending, false);
-		GRenderer->SetRenderState(Renderer::Fog, false);
-		GRenderer->SetRenderState(Renderer::DepthWrite, true);
-		GRenderer->SetRenderState(Renderer::DepthTest, false);
-		
-		//Draw Background
-		if(ARXmenu.mda->pTexCredits) {
-			Rectf rect(Vec2f_ZERO, g_size.width(), g_size.height() + 1);
-			
-			EERIEDrawBitmap2(rect, .999f, ARXmenu.mda->pTexCredits, Color::white);
+		EERIEDrawBitmap2(rect, .999f, ARXmenu.mda->pTexCredits, Color::white);
+	}
+	
+	// Use time passed between frame to create scroll effect
+	float time = arxtime.get_updated(false);
+	float dtime = time - m_lastUpdateTime;
+	
+	static float lastKeyPressTime = 0.f;
+	static float lastUserScrollTime = 0.f;
+	static float scrollDirection = 1.f;
+	
+	float keyRepeatDelay = 256.f; // delay after key press before continuous scrolling
+	float autoScrollDelay = 250.f; // ms after user input before resuming normal scrolling
+	
+	// Process user input
+	float userScroll = 15.f * GInput->getMouseWheelDir();
+	if(GInput->isKeyPressed(Keyboard::Key_UpArrow)) {
+		userScroll += 0.2f * dtime;
+	}
+	if(GInput->isKeyPressedNowPressed(Keyboard::Key_PageUp)) {
+		userScroll += 150.f;
+		lastKeyPressTime = time;
+	} else if(GInput->isKeyPressed(Keyboard::Key_PageUp)) {
+		if(time - lastKeyPressTime > keyRepeatDelay) {
+			userScroll += 0.5f * dtime;
 		}
-		
-		// Use time passed between frame to create scroll effect
-		float time = arxtime.get_updated(false);
-		float dtime = time - m_lastUpdateTime;
-		
-		static float lastKeyPressTime = 0.f;
-		static float lastUserScrollTime = 0.f;
-		static float scrollDirection = 1.f;
-		
-		float keyRepeatDelay = 256.f; // delay after key press before continuous scrolling
-		float autoScrollDelay = 250.f; // ms after user input before resuming normal scrolling
-		
-		// Process user input
-		float userScroll = 15.f * GInput->getMouseWheelDir();
-		if(GInput->isKeyPressed(Keyboard::Key_UpArrow)) {
-			userScroll += 0.2f * dtime;
+	}
+	if(GInput->isKeyPressedNowPressed(Keyboard::Key_PageDown)) {
+		userScroll -= 150.f;
+		lastKeyPressTime = time;
+	} else if(GInput->isKeyPressed(Keyboard::Key_PageDown)) {
+		if(time - lastKeyPressTime > keyRepeatDelay) {
+			userScroll -= 0.5f * dtime;
 		}
-		if(GInput->isKeyPressedNowPressed(Keyboard::Key_PageUp)) {
-			userScroll += 150.f;
-			lastKeyPressTime = time;
-		} else if(GInput->isKeyPressed(Keyboard::Key_PageUp)) {
-			if(time - lastKeyPressTime > keyRepeatDelay) {
-				userScroll += 0.5f * dtime;
-			}
+	}
+	if(GInput->isKeyPressed(Keyboard::Key_DownArrow)) {
+		userScroll -= 0.2f * dtime;
+	}
+	m_scrollPosition += g_sizeRatio.y * userScroll;
+	
+	// If the user wants to scroll up, also change the automatic scroll direction …
+	if(userScroll > 0.f) {
+		lastUserScrollTime = time;
+		scrollDirection = -1.f;
+	}
+	// … but restore normal scrolling after a short delay.
+	if(time - lastUserScrollTime > autoScrollDelay) {
+		scrollDirection = 1.f;
+	}
+	
+	m_scrollPosition -= 0.03f * g_sizeRatio.y * dtime * scrollDirection;
+	m_lastUpdateTime = time;
+	
+	// Don't scroll past the credits start
+	m_scrollPosition = std::min(0.f, m_scrollPosition);
+	
+	std::vector<CreditsLine>::const_iterator it = m_lines.begin() + m_firstVisibleLine ;
+	
+	for(; it != m_lines.begin(); --it, --m_firstVisibleLine) {
+		float yy = (it - 1)->sPos.y + m_scrollPosition;
+		if (yy <= -m_lineHeight) {
+			break;
 		}
-		if(GInput->isKeyPressedNowPressed(Keyboard::Key_PageDown)) {
-			userScroll -= 150.f;
-			lastKeyPressTime = time;
-		} else if(GInput->isKeyPressed(Keyboard::Key_PageDown)) {
-			if(time - lastKeyPressTime > keyRepeatDelay) {
-				userScroll -= 0.5f * dtime;
-			}
-		}
-		if(GInput->isKeyPressed(Keyboard::Key_DownArrow)) {
-			userScroll -= 0.2f * dtime;
-		}
-		m_scrollPosition += g_sizeRatio.y * userScroll;
+	}
+	
+	for (; it != m_lines.end(); ++it)
+	{
+		//Update the Y word display
+		float yy = it->sPos.y + m_scrollPosition;
 		
-		// If the user wants to scroll up, also change the automatic scroll direction …
-		if(userScroll > 0.f) {
-			lastUserScrollTime = time;
-			scrollDirection = -1.f;
-		}
-		// … but restore normal scrolling after a short delay.
-		if(time - lastUserScrollTime > autoScrollDelay) {
-			scrollDirection = 1.f;
-		}
-		
-		m_scrollPosition -= 0.03f * g_sizeRatio.y * dtime * scrollDirection;
-		m_lastUpdateTime = time;
-		
-		// Don't scroll past the credits start
-		m_scrollPosition = std::min(0.f, m_scrollPosition);
-		
-		std::vector<CreditsLine>::const_iterator it = m_lines.begin() + m_firstVisibleLine ;
-		
-		for(; it != m_lines.begin(); --it, --m_firstVisibleLine) {
-			float yy = (it - 1)->sPos.y + m_scrollPosition;
-			if (yy <= -m_lineHeight) {
-				break;
-			}
-		}
-		
-		for (; it != m_lines.end(); ++it)
+		//Display the text only if he is on the viewport
+		if ((yy >= -m_lineHeight) && (yy <= g_size.height())) 
 		{
-			//Update the Y word display
-			float yy = it->sPos.y + m_scrollPosition;
-
-			//Display the text only if he is on the viewport
-			if ((yy >= -m_lineHeight) && (yy <= g_size.height())) 
-			{
-				hFontCredits->draw(it->sPos.x, static_cast<int>(yy), it->sText, it->fColors);
-			}
-			
-			if (yy <= -m_lineHeight)
-			{
-				++m_firstVisibleLine;
-			}
-			
-			if ( yy >= g_size.height() )
-				break ; //it's useless to continue because next phrase will not be inside the viewport
+			hFontCredits->draw(it->sPos.x, static_cast<int>(yy), it->sText, it->fColors);
 		}
-
+		
+		if (yy <= -m_lineHeight)
+		{
+			++m_firstVisibleLine;
+		}
+		
+		if ( yy >= g_size.height() )
+			break ; //it's useless to continue because next phrase will not be inside the viewport
+	}
 	
 	if(m_firstVisibleLine >= m_lines.size() && iFadeAction != AMCM_MAIN) {
 		
