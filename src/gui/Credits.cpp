@@ -104,7 +104,7 @@ struct CreditsInformations {
 	
 	Vec2i m_windowSize; // save the screen size so we know when to re-initialize the credits
 	
-	std::vector<CreditsTextInformations> aCreditsInformations;
+	std::vector<CreditsTextInformations> m_lines;
 	
 };
 
@@ -126,19 +126,19 @@ static void InitCredits() {
 	static float offset;
 	typedef std::vector<CreditsTextInformations>::iterator Iterator;
 	if(g_credits.m_lineHeight != -1
-	   && size_t(g_credits.m_firstVisibleLine) < g_credits.aCreditsInformations.size()) {
+	   && size_t(g_credits.m_firstVisibleLine) < g_credits.m_lines.size()) {
 		// We use the first line that is still visible as our anchor
-		Iterator it = g_credits.aCreditsInformations.begin() + g_credits.m_firstVisibleLine;
+		Iterator it = g_credits.m_lines.begin() + g_credits.m_firstVisibleLine;
 		anchorLine = it->sourceLineNumber;
 		// Find the first credits line that comes from this source line
 		Iterator first = it;
-		while(first != g_credits.aCreditsInformations.begin()
+		while(first != g_credits.m_lines.begin()
 		      && (first - 1)->sourceLineNumber == anchorLine) {
 			--first;
 		}
 		// Find the first credits line that comes from this source line
 		Iterator last = it;
-		while((last + 1) != g_credits.aCreditsInformations.end()
+		while((last + 1) != g_credits.m_lines.end()
 		      && (last + 1)->sourceLineNumber == anchorLine) {
 			++last;
 		}
@@ -149,26 +149,26 @@ static void InitCredits() {
 	
 	g_credits.m_windowSize = g_size.size();
 	
-	g_credits.aCreditsInformations.clear();
+	g_credits.m_lines.clear();
 	
 	LogDebug("InitCredits");
 	
 	CalculAverageWidth();
 	ExtractAllCreditsTextInformations();
 	
-	LogDebug("Credits lines " << g_credits.aCreditsInformations.size());
+	LogDebug("Credits lines " << g_credits.m_lines.size());
 	
 	if(anchorLine >= 0) {
 		// Find the first credits line that comes from our source anchor line
-		Iterator first = g_credits.aCreditsInformations.begin();
-		while(first != g_credits.aCreditsInformations.end()
+		Iterator first = g_credits.m_lines.begin();
+		while(first != g_credits.m_lines.end()
 		      && first->sourceLineNumber != anchorLine) {
 			++first;
 		}
-		if(first != g_credits.aCreditsInformations.end()) {
+		if(first != g_credits.m_lines.end()) {
 			// Find the last credits line that comes from our source anchor line
 			Iterator last = first;
-			while((last + 1) != g_credits.aCreditsInformations.end()
+			while((last + 1) != g_credits.m_lines.end()
 			      && (last + 1)->sourceLineNumber == anchorLine) {
 				++last;
 			}
@@ -292,7 +292,7 @@ static void addCreditsLine(std::string & phrase, float & drawpos, int sourceLine
 					 && linesize - prefixsize / 2 < g_size.width() / 2) {
 					prefix.sPos.x = (g_size.width() - prefixsize) / 2;
 				}
-				g_credits.aCreditsInformations.push_back(prefix);
+				g_credits.m_lines.push_back(prefix);
 				infomations.sPos.x = prefix.sPos.x + prefixsize + 20;
 				infomations.sText = infomations.sText.substr(p);
 				infomations.fColors = Color::gray(0.7f);
@@ -300,7 +300,7 @@ static void addCreditsLine(std::string & phrase, float & drawpos, int sourceLine
 			
 		}
 		
-		g_credits.aCreditsInformations.push_back(infomations);
+		g_credits.m_lines.push_back(infomations);
 	}
 	
 }
@@ -365,7 +365,7 @@ void Credits::render() {
 	//We initialize the datas
 	InitCredits();
 	
-	int iSize = g_credits.aCreditsInformations.size() ;
+	int iSize = g_credits.m_lines.size() ;
 	
 	//We display them
 	if(g_credits.m_lineHeight != -1) {
@@ -435,16 +435,16 @@ void Credits::render() {
 		// Don't scroll past the credits start
 		g_credits.m_scrollPosition = std::min(0.f, g_credits.m_scrollPosition);
 		
-		std::vector<CreditsTextInformations>::const_iterator it = g_credits.aCreditsInformations.begin() + g_credits.m_firstVisibleLine ;
+		std::vector<CreditsTextInformations>::const_iterator it = g_credits.m_lines.begin() + g_credits.m_firstVisibleLine ;
 		
-		for(; it != g_credits.aCreditsInformations.begin(); --it, --g_credits.m_firstVisibleLine) {
+		for(; it != g_credits.m_lines.begin(); --it, --g_credits.m_firstVisibleLine) {
 			float yy = (it - 1)->sPos.y + g_credits.m_scrollPosition;
 			if (yy <= -g_credits.m_lineHeight) {
 				break;
 			}
 		}
 		
-		for (; it != g_credits.aCreditsInformations.end(); ++it)
+		for (; it != g_credits.m_lines.end(); ++it)
 		{
 			//Update the Y word display
 			float yy = it->sPos.y + g_credits.m_scrollPosition;
