@@ -87,6 +87,7 @@ struct CreditsInformations {
 	
 	CreditsInformations()
 		: m_scrollPosition(0.f)
+		, m_lastUpdateTime(0.f)
 		, iFirstLine(0)
 		, iFontAverageHeight(-1)
 		, sizex(0)
@@ -94,6 +95,7 @@ struct CreditsInformations {
 	{ }
 	
 	float m_scrollPosition;
+	float m_lastUpdateTime;
 	
 	int iFirstLine;
 	int iFontAverageHeight;
@@ -382,7 +384,7 @@ void Credits::render() {
 		
 		// Use time passed between frame to create scroll effect
 		float time = arxtime.get_updated(false);
-		float dtime = time - ARXmenu.mda->creditstart;
+		float dtime = time - g_credits.m_lastUpdateTime;
 		
 		static float lastKeyPressTime = 0.f;
 		static float lastUserScrollTime = 0.f;
@@ -428,7 +430,7 @@ void Credits::render() {
 		}
 		
 		g_credits.m_scrollPosition -= 0.03f * g_sizeRatio.y * dtime * scrollDirection;
-		ARXmenu.mda->creditstart = time;
+		g_credits.m_lastUpdateTime = time;
 		
 		// Don't scroll past the credits start
 		g_credits.m_scrollPosition = std::min(0.f, g_credits.m_scrollPosition);
@@ -479,7 +481,7 @@ void Credits::render() {
 	if(ProcessFadeInOut(bFadeInOut,0.1f) && iFadeAction == AMCM_MAIN) {
 		g_credits.iFirstLine = 0;
 		g_credits.m_scrollPosition = 0;
-		ARXmenu.mda->creditstart = 0 ;
+		g_credits.m_lastUpdateTime = 0 ;
 		ARXmenu.currentmode = AMCM_MAIN;
 		iFadeAction = -1;
 		bFadeInOut = false;
@@ -492,7 +494,7 @@ void Credits::render() {
 }
 
 void Credits::reset() {
-	ARXmenu.mda->creditstart = arxtime.get_updated(false);
+	g_credits.m_lastUpdateTime = arxtime.get_updated(false);
 	g_credits.m_scrollPosition = 0;
 	g_credits.iFirstLine = 0;
 }
