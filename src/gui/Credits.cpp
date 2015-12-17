@@ -106,6 +106,8 @@ struct CreditsInformations {
 	
 	std::vector<CreditsLine> m_lines;
 	
+	void reset();
+	
 };
 
 
@@ -491,10 +493,14 @@ void Credits::render() {
 	
 }
 
+void CreditsInformations::reset() {
+	m_lastUpdateTime = arxtime.get_updated(false);
+	m_scrollPosition = 0;
+	m_firstVisibleLine = 0;
+	m_lineHeight = -1;
+	m_lines.clear();
+}
+
 void Credits::reset() {
-	g_credits.m_lastUpdateTime = arxtime.get_updated(false);
-	g_credits.m_scrollPosition = 0;
-	g_credits.m_firstVisibleLine = 0;
-	g_credits.m_lineHeight = -1;
-	g_credits.m_lines.clear();
+	g_credits.reset();
 }
