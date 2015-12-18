@@ -60,7 +60,6 @@ ZeniMax Media Inc., Suite 120, Rockville, Maryland 20850 USA.
 #include "core/Core.h"
 #include "core/GameTime.h"
 #include "core/Localisation.h"
-#include "core/Version.h"
 
 #include "game/Player.h"
 
@@ -80,7 +79,6 @@ ZeniMax Media Inc., Suite 120, Rockville, Maryland 20850 USA.
 
 #include "input/Input.h"
 
-#include "io/resource/PakReader.h"
 #include "io/resource/ResourcePath.h"
 #include "io/Screenshot.h"
 #include "io/fs/Filesystem.h"
@@ -89,8 +87,6 @@ ZeniMax Media Inc., Suite 120, Rockville, Maryland 20850 USA.
 #include "scene/LoadLevel.h"
 #include "scene/GameSound.h"
 #include "scene/Light.h"
-
-#include "util/Unicode.h"
 
 extern TextManager * pTextManage;
 extern ARX_INTERFACE_BOOK_MODE g_guiBookCurrentTopTab;
@@ -166,45 +162,6 @@ void ARX_Menu_Resources_Create() {
 	ARXmenu.mda->str_button_skin = getLocalised("system_charsheet_button_skin");
 	ARXmenu.mda->str_button_done = getLocalised("system_charsheet_button_done");
 
-	
-	// Load credits.
-	
-	std::string creditsFile = "localisation/ucredits_" +  config.language + ".txt";
-	
-	size_t creditsSize;
-	char * credits = resources->readAlloc(creditsFile, creditsSize);
-	
-	std::string englishCreditsFile;
-	if(!credits) {
-		// Fallback if there is no localised credits file
-		englishCreditsFile = "localisation/ucredits_english.txt";
-		credits = resources->readAlloc(englishCreditsFile, creditsSize);
-	}
-	
-	if(!credits) {
-		if(!englishCreditsFile.empty() && englishCreditsFile != creditsFile) {
-			LogWarning << "Unable to read credits files " << creditsFile
-			           << " and " << englishCreditsFile;
-		} else {
-			LogWarning << "Unable to read credits file " << creditsFile;
-		}
-	} else {
-		
-		LogDebug("Loaded credits file: " << creditsFile << " of size " << creditsSize);
-		
-		ARXmenu.mda->credits = arx_credits;
-		
-		ARXmenu.mda->credits += "\n\n\n" + arx_copyright;
-		
-		ARXmenu.mda->credits += "\n\n\n~ORIGINAL ARX FATALIS CREDITS:\n\n\n";
-		
-		char * creditsEnd = credits + creditsSize;
-		ARXmenu.mda->credits += util::convert<util::UTF16LE, util::UTF8>(credits, creditsEnd);
-		
-		LogDebug("Converted to UTF8 string of length " << ARXmenu.mda->credits.size());
-		
-		free(credits);
-	}
 }
 
 void ARX_Menu_Resources_Release(bool _bNoSound) {

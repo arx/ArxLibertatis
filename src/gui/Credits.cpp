@@ -50,6 +50,7 @@ ZeniMax Media Inc., Suite 120, Rockville, Maryland 20850 USA.
 
 #include "core/Core.h"
 #include "core/GameTime.h"
+#include "core/Version.h"
 
 #include "gui/Menu.h"
 #include "gui/Text.h"
@@ -62,10 +63,13 @@ ZeniMax Media Inc., Suite 120, Rockville, Maryland 20850 USA.
 #include "input/Input.h"
 
 #include "io/log/Logger.h"
+#include "io/resource/PakReader.h"
 
 #include "math/Vector.h"
 
 #include "scene/GameSound.h"
+
+#include "util/Unicode.h"
 
 // TODO extern globals
 extern bool bFadeInOut;
@@ -99,6 +103,8 @@ struct CreditsInformations {
 	
 	TextureContainer * m_background;
 	
+	std::string m_text;
+	
 	float m_scrollPosition;
 	float m_lastUpdateTime;
 	
@@ -108,6 +114,8 @@ struct CreditsInformations {
 	Vec2i m_windowSize; // save the screen size so we know when to re-initialize the credits
 	
 	std::vector<CreditsLine> m_lines;
+	
+	bool load();
 	
 	bool init();
 	
@@ -124,10 +132,58 @@ struct CreditsInformations {
 
 static CreditsInformations g_credits;
 
+bool CreditsInformations::load() {
+	
+	// Load credits.
+	
+	std::string creditsFile = "localisation/ucredits_" +  config.language + ".txt";
+	
+	size_t creditsSize;
+	char * credits = resources->readAlloc(creditsFile, creditsSize);
+	
+	std::string englishCreditsFile;
+	if(!credits) {
+		// Fallback if there is no localised credits file
+		englishCreditsFile = "localisation/ucredits_english.txt";
+		credits = resources->readAlloc(englishCreditsFile, creditsSize);
+	}
+	
+	if(!credits) {
+		if(!englishCreditsFile.empty() && englishCreditsFile != creditsFile) {
+			LogWarning << "Unable to read credits files " << creditsFile
+			           << " and " << englishCreditsFile;
+		} else {
+			LogWarning << "Unable to read credits file " << creditsFile;
+		}
+		return false;
+	}
+	
+	LogDebug("Loaded credits file: " << creditsFile << " of size " << creditsSize);
+	
+	m_text = arx_credits;
+	
+	m_text += "\n\n\n" + arx_copyright;
+	
+	m_text += "\n\n\n~ORIGINAL ARX FATALIS CREDITS:\n\n\n";
+	
+	char * creditsEnd = credits + creditsSize;
+	m_text += util::convert<util::UTF16LE, util::UTF8>(credits, creditsEnd);
+	
+	LogDebug("Final credits length: " << m_text.size());
+	
+	free(credits);
+	
+	return true;
+}
+
 bool CreditsInformations::init() {
 	
 	if(!m_background) {
 		m_background = TextureContainer::LoadUI("graph/interface/menus/menu_credits");
+	}
+	
+	if(m_text.empty() && !load()) {
+		return false;
 	}
 	
 	if(m_lineHeight != -1 && m_windowSize == g_size.size()) {
@@ -322,7 +378,7 @@ void CreditsInformations::layout() {
 	m_lineHeight = hFontCredits->getTextSize("aA(").y;
 	
 	// Retrieve the rows to display
-	std::istringstream iss(ARXmenu.mda->credits);
+	std::istringstream iss(m_text);
 	std::string phrase;
 
 	//Use to calculate the positions
@@ -468,6 +524,7 @@ void CreditsInformations::reset() {
 	m_lineHeight = -1;
 	m_lines.clear();
 	delete m_background, m_background = NULL;
+	m_text.clear();
 }
 
 void Credits::render() {

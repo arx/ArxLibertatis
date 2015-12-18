@@ -57,7 +57,6 @@ struct MENU_DYNAMIC_DATA {
 	
 	TextureContainer * BookBackground;
 	std::string flyover[MAX_FLYOVER];
-	std::string credits;
 	// New Quest Buttons Strings
 	std::string str_button_quickgen;
 	std::string str_button_skin;
