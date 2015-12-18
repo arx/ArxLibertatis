@@ -751,7 +751,7 @@ static bool HandleGameFlowTransitions() {
 
 Vec3f PUSH_PLAYER_FORCE;
 static EERIE_BACKGROUND DefaultBkg;
-EERIE_CAMERA subj,bookcam,raycam,conversationcamera;
+EERIE_CAMERA subj,bookcam,conversationcamera;
 
 bool ArxGame::initGame()
 {
@@ -877,11 +877,7 @@ bool ArxGame::initGame()
 	SetActiveCamera(&subj);
 
 	bookcam = subj;
-	raycam = subj;
 	conversationcamera = subj;
-	
-	raycam.clip = Rect(0, 0, 640, 640);
-	raycam.center = raycam.clip.center();
 	
 	bookcam.angle = Anglef::ZERO;
 	bookcam.orgTrans.pos = Vec3f_ZERO;

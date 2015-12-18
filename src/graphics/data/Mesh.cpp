@@ -53,6 +53,8 @@ ZeniMax Media Inc., Suite 120, Rockville, Maryland 20850 USA.
 #include <boost/scoped_array.hpp>
 #include <boost/unordered_map.hpp>
 
+#include <glm/gtx/intersect.hpp>
+
 #include "ai/PathFinder.h"
 #include "ai/PathFinderManager.h"
 
@@ -470,35 +472,6 @@ void EE_RTP(const Vec3f & in, TexturedVertex * out) {
 	EE_P(&out->p, out);
 }
 
-static void camEE_RTP(const Vec3f & in, TexturedVertex * out, EERIE_CAMERA * cam) {
-	
-	const Vec3f rt = Vec3f(cam->orgTrans.worldToView * Vec4f(in, 1.0f));
-	
-	if(rt.z <= 0.f) {
-		out->rhw = 1.f - rt.z;
-	} else {
-		out->rhw = 1.f / rt.z;
-	}
-
-	const float rhw = (cam->focal * g_sizeRatio.x) * out->rhw;
-	out->p.z = rt.z * (1.f / (cam->cdepth * 1.2f));
-	out->p.x = cam->orgTrans.mod.x + (rt.x * rhw);
-	out->p.y = cam->orgTrans.mod.y + (rt.y * rhw) ;
-}
-
-//*************************************************************************************
-//*************************************************************************************
-static void EERIERTPPolyCam(EERIEPOLY * ep, EERIE_CAMERA * cam) {
-	
-	camEE_RTP(ep->v[0].p, &ep->tv[0], cam);
-	camEE_RTP(ep->v[1].p, &ep->tv[1], cam);
-	camEE_RTP(ep->v[2].p, &ep->tv[2], cam);
-
-	if (ep->type & POLY_QUAD)
-		camEE_RTP(ep->v[3].p, &ep->tv[3], cam);
-}
-
-
 //*************************************************************************************
 //*************************************************************************************
 
@@ -514,32 +487,6 @@ Vec3f GetVertexPos(Entity * io, long id) {
 }
 
 long EERIEDrawnPolys = 0;
-
-//! Check if point (x,y) is in a 2D poly defined by ep
-static int PointIn2DPoly(EERIEPOLY * ep, float x, float y) {
-	
-	int i, j, c = 0;
-
-	for (i = 0, j = 2; i < 3; j = i++)
-	{
-		if ((((ep->tv[i].p.y <= y) && (y < ep->tv[j].p.y)) ||
-				((ep->tv[j].p.y <= y) && (y < ep->tv[i].p.y))) &&
-				(x < (ep->tv[j].p.x - ep->tv[i].p.x) *(y - ep->tv[i].p.y) / (ep->tv[j].p.y - ep->tv[i].p.y) + ep->tv[i].p.x))
-			c = !c;
-	}
-
-	if (c) return c;
-	else if (ep->type & POLY_QUAD)
-		for (i = 1, j = 3; i < 4; j = i++)
-		{
-			if ((((ep->tv[i].p.y <= y) && (y < ep->tv[j].p.y)) ||
-					((ep->tv[j].p.y <= y) && (y < ep->tv[i].p.y))) &&
-					(x < (ep->tv[j].p.x - ep->tv[i].p.x) *(y - ep->tv[i].p.y) / (ep->tv[j].p.y - ep->tv[i].p.y) + ep->tv[i].p.x))
-				c = !c;
-		}
-
-	return c;
-}
 
 //*************************************************************************************
 //*************************************************************************************
@@ -602,20 +549,18 @@ int PointIn2DPolyXZ(const EERIEPOLY * ep, float x, float z) {
 	return c + d;
 }
 
-extern EERIE_CAMERA raycam;
-
 static bool RayIn3DPolyNoCull(const Vec3f & orgn, const Vec3f & dest, const EERIEPOLY & epp) {
 
-	EERIEPOLY ep = epp;
-	raycam.orgTrans.pos = orgn;
-	raycam.setTargetCamera(dest);
-	SP_PrepareCamera(&raycam);
-	EERIERTPPolyCam(&ep, &raycam);
-
-	if(PointIn2DPoly(&ep, 320.f, 320.f))
-		return true;
-
-	return false;
+	Vec3f dir = dest - orgn;
+	
+	Vec3f hitPos;
+	bool hit = glm::intersectLineTriangle(orgn, dir, epp.v[0].p, epp.v[1].p, epp.v[2].p, hitPos);
+	
+	if(!hit && (epp.type & POLY_QUAD)) {
+		hit = glm::intersectLineTriangle(orgn, dir, epp.v[1].p, epp.v[3].p, epp.v[2].p, hitPos);
+	}
+	
+	return hit;
 }
 
 int EERIELaunchRay3(const Vec3f & orgn, const Vec3f & dest, Vec3f & hit, long flag) {
