@@ -46,6 +46,8 @@ ZeniMax Media Inc., Suite 120, Rockville, Maryland 20850 USA.
 #include <stddef.h>
 #include <sstream>
 
+#include <boost/algorithm/string/trim.hpp>
+
 #include "core/Core.h"
 #include "core/GameTime.h"
 
@@ -308,29 +310,6 @@ void CreditsInformations::addLine(std::string & phrase, float & drawpos,
 	
 }
 
-static bool iswhitespace(char c) {
-	return (c == ' ' || c == '\t' || c == '\r' || c == '\n');
-}
-
-static void strip(std::string & str) {
-	
-	size_t startpos = 0;
-	while(startpos < str.length() && iswhitespace(str[startpos])) {
-		startpos++;
-	}
-	
-	size_t endpos = str.length();
-	while(endpos > startpos && iswhitespace(str[endpos - 1])) {
-		endpos--;
-	}
-	
-	if(startpos != 0) {
-		str = str.substr(startpos, endpos - startpos);
-	} else {
-		str.resize(endpos);
-	}
-}
-
 void CreditsInformations::layout() {
 	
 	m_lineHeight = hFontCredits->getTextSize("aA(").y;
@@ -344,7 +323,7 @@ void CreditsInformations::layout() {
 	
 	for(int sourceLineNumber = 0; std::getline(iss, phrase); sourceLineNumber++) {
 		
-		strip(phrase);
+		boost::trim(phrase);
 		
 		if(phrase.empty()) {
 			// Separator line
