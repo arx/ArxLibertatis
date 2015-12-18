@@ -117,7 +117,6 @@ struct CreditsInformations {
 
 static CreditsInformations g_credits;
 
-static void CalculAverageWidth();
 static void ExtractAllCreditsTextInformations();
 
 bool CreditsInformations::init() {
@@ -156,7 +155,6 @@ bool CreditsInformations::init() {
 	
 	LogDebug("InitCredits");
 	
-	CalculAverageWidth();
 	ExtractAllCreditsTextInformations();
 	
 	LogDebug("Credits lines " << m_lines.size());
@@ -309,14 +307,6 @@ static void addCreditsLine(std::string & phrase, float & drawpos, int sourceLine
 	
 }
 
-//Use to calculate an Average height for text fonts
-static void CalculAverageWidth() {
-	
-	// Calculate the average value
-	Vec2i size = hFontCredits->getTextSize("aA(");
-	g_credits.m_lineHeight = size.y;
-}
-
 static bool iswhitespace(char c) {
 	return (c == ' ' || c == '\t' || c == '\r' || c == '\n');
 }
@@ -343,6 +333,8 @@ static void strip(std::string & str) {
 
 //Use to extract string info from src buffer
 static void ExtractAllCreditsTextInformations() {
+	
+	g_credits.m_lineHeight = hFontCredits->getTextSize("aA(").y;
 	
 	// Retrieve the rows to display
 	std::istringstream iss(ARXmenu.mda->credits);
