@@ -59,7 +59,6 @@ CrashHandlerWindows* CrashHandlerWindows::m_sInstance = 0;
 
 CrashHandlerWindows::CrashHandlerWindows() {
 	m_sInstance = this;
-	m_CrashHandlerApp = "arxcrashreporter.exe";
 }
 
 CrashHandlerWindows::~CrashHandlerWindows() {

@@ -73,7 +73,6 @@ private:
 protected:
 	virtual void fillBasicCrashInfo();
 	
-	std::string m_CrashHandlerApp;
 	fs::path m_CrashHandlerPath;
 	
 	// Memory shared to the crash reporter.
