@@ -26,6 +26,7 @@
 #include <signal.h>
 #endif
 
+#include "gui/Credits.h"
 #include "graphics/opengl/GLDebug.h"
 #include "graphics/opengl/OpenGLRenderer.h"
 #include "input/SDL2InputBackend.h"
@@ -96,8 +97,9 @@ bool SDL2Window::initializeFramework() {
 	SDL_GetVersion(&ver);
 	std::ostringstream runtimeVersion;
 	runtimeVersion << int(ver.major) << '.' << int(ver.minor) << '.' << int(ver.patch);
-	CrashHandler::setVariable("SDL version (runtime)", runtimeVersion.str());
 	LogInfo << "Using SDL " << runtimeVersion.str();
+	CrashHandler::setVariable("SDL version (runtime)", runtimeVersion.str());
+	credits::setLibraryCredits("windowing", "SDL " + runtimeVersion.str());
 	
 	int ndisplays = SDL_GetNumVideoDisplays();
 	for(int display = 0; display < ndisplays; display++) {

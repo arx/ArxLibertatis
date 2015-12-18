@@ -56,6 +56,7 @@
 #include "core/Config.h"
 #include "core/Core.h"
 #include "core/Version.h"
+#include "gui/Credits.h"
 #include "io/fs/Filesystem.h"
 #include "io/fs/SystemPaths.h"
 #include "io/log/CriticalLogger.h"
@@ -146,18 +147,28 @@ INT WINAPI WinMain(HINSTANCE hInstance, HINSTANCE hPrevInstance, PSTR lpCmdLine,
 	}
 	
 	{
-		CrashHandler::setVariable("Compiler", ARX_COMPILER_VERNAME);
-		CrashHandler::setVariable("CMake", cmake_version);
 		std::ostringstream oss;
+		oss << ARX_COMPILER_VERNAME;
+		CrashHandler::setVariable("Compiler", oss.str());
+		credits::setLibraryCredits("compiler", oss.str());
+		CrashHandler::setVariable("CMake", cmake_version);
+		credits::setLibraryCredits("build", "CMake " + cmake_version);
+		oss.str(std::string());
 		oss << (BOOST_VERSION / 100000) << '.' << (BOOST_VERSION / 100 % 1000)
 		    << '.' << (BOOST_VERSION % 100);
 		CrashHandler::setVariable("Boost version", oss.str());
+		credits::setLibraryCredits("boost", "Boost " + oss.str());
 		oss.str(std::string());
 		oss << GLM_VERSION_MAJOR << '.' << GLM_VERSION_MINOR << '.' << GLM_VERSION_PATCH
 		    << '.' << GLM_VERSION_REVISION;
 		CrashHandler::setVariable("GLM version", oss.str());
+		credits::setLibraryCredits("math", "GLM " + oss.str());
+		oss.str(std::string());
+		oss << zlibVersion();
 		CrashHandler::setVariable("zlib version (headers)", ZLIB_VERSION);
-		CrashHandler::setVariable("zlib version (runtime)", zlibVersion());
+		CrashHandler::setVariable("zlib version (runtime)", oss.str());
+		credits::setLibraryCredits("deflate", "zlib " + oss.str());
+		credits::setLibraryCredits("image", "stb_image");
 	}
 	
 	// Also intialize the logging system early as we might need it

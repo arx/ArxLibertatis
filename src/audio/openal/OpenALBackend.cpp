@@ -22,6 +22,7 @@
 #include <stddef.h>
 #include <cstring>
 #include <cmath>
+#include <sstream>
 
 #include <boost/math/special_functions/fpclassify.hpp>
 
@@ -30,6 +31,7 @@
 #include "audio/AudioEnvironment.h"
 #include "audio/AudioGlobal.h"
 #include "audio/AudioSource.h"
+#include "gui/Credits.h"
 #include "io/log/Logger.h"
 #include "math/Vector.h"
 #include "platform/Platform.h"
@@ -157,6 +159,36 @@ aalError OpenALBackend::init(const char * requestedDeviceName) {
 		LogInfo << "Using OpenAL " << version << " without EFX";
 	}
 	CrashHandler::setVariable("OpenAL version", version);
+	{
+		const char * start, * end, * type;
+		for(int i = 0; i < 2; i++) {
+			if(i == 0) {
+				start = std::strstr(version, "ALSOFT");
+				if(!start) {
+					continue;
+				}
+				start += 6;
+				type = "OpenAL Soft ";
+			} else {
+				start = version;
+				type = "OpenAL ";
+			}
+			while(*start == ' ') {
+				start++;
+			}
+			end = start;
+			while(*end != '\0' && *end != ' ') {
+				end++;
+			}
+			if(start != end) {
+				break;
+			}
+		}
+		std::ostringstream oss;
+		oss << type;
+		oss.write(start, end - start);
+		credits::setLibraryCredits("audio", oss.str());
+	}
 	
 	const char * vendor = alGetString(AL_VENDOR);
 	LogInfo << " ├─ Vendor: " << vendor;

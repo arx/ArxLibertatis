@@ -24,6 +24,7 @@
 
 #include "boost/foreach.hpp"
 
+#include "gui/Credits.h"
 #include "graphics/opengl/OpenGLRenderer.h"
 #include "input/SDL1InputBackend.h"
 #include "io/log/Logger.h"
@@ -74,8 +75,9 @@ bool SDL1Window::initializeFramework() {
 	const SDL_version * ver = SDL_Linked_Version();
 	std::ostringstream runtimeVersion;
 	runtimeVersion << int(ver->major) << '.' << int(ver->minor) << '.' << int(ver->patch);
-	CrashHandler::setVariable("SDL version (runtime)", runtimeVersion.str());
 	LogInfo << "Using SDL " << runtimeVersion.str();
+	CrashHandler::setVariable("SDL version (runtime)", runtimeVersion.str());
+	credits::setLibraryCredits("windowing", "SDL " + runtimeVersion.str());
 	
 	const SDL_VideoInfo * vid = SDL_GetVideoInfo();
 	m_desktopMode.resolution.x = vid->current_w;

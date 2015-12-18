@@ -44,8 +44,14 @@ ZeniMax Media Inc., Suite 120, Rockville, Maryland 20850 USA.
 #include "gui/Credits.h"
 
 #include <stddef.h>
+#include <algorithm>
+#include <iterator>
 #include <sstream>
+#include <vector>
 
+#include <boost/foreach.hpp>
+#include <boost/tokenizer.hpp>
+#include <boost/unordered_map.hpp>
 #include <boost/algorithm/string/trim.hpp>
 
 #include "core/Core.h"
@@ -107,6 +113,8 @@ public:
 		, m_windowSize(Vec2i_ZERO)
 	{ }
 	
+	void setLibraryCredits(const std::string & subsystem, const std::string & credits);
+	
 	void render();
 	
 	void reset();
@@ -114,6 +122,9 @@ public:
 private:
 	
 	TextureContainer * m_background;
+	
+	typedef boost::unordered_map<std::string, std::string> Libraries;
+	Libraries m_libraries;
 	
 	std::string m_text;
 	
@@ -139,6 +150,11 @@ private:
 };
 
 static Credits g_credits;
+
+void Credits::setLibraryCredits(const std::string & subsystem,
+                                const std::string & credits) {
+	m_libraries[subsystem] = credits;
+}
 
 bool Credits::load() {
 	
@@ -172,7 +188,30 @@ bool Credits::load() {
 	
 	m_text += "\n\n\n" + arx_copyright;
 	
-	m_text += "\n\n\n~ORIGINAL ARX FATALIS CREDITS:\n\n\n";
+	if(!m_libraries.empty()) {
+		m_text += "\n\n\n" "~This build uses the following tools and libraries:\n\n";
+		Libraries::const_iterator compiler = m_libraries.find("compiler");
+		if(compiler != m_libraries.end()) {
+			m_text += "Compiler: ";
+			m_text += compiler->second;
+			m_text += '\n';
+		}
+		std::vector<std::string> libraries;
+		BOOST_FOREACH(const Libraries::value_type & library, m_libraries) {
+			if(library.first != "compiler" && !library.second.empty()) {
+				boost::char_separator<char> sep("\n");
+				boost::tokenizer< boost::char_separator<char> > tokens(library.second, sep);
+				std::copy(tokens.begin(), tokens.end(), std::back_inserter(libraries));
+			}
+		}
+		std::sort(libraries.begin(), libraries.end());
+		BOOST_FOREACH(const std::string & library, libraries) {
+			m_text += library;
+			m_text += '\n';
+		}
+	}
+	
+	m_text += "\n\n\n\n~ORIGINAL ARX FATALIS CREDITS:\n\n\n";
 	
 	char * creditsEnd = credits + creditsSize;
 	m_text += util::convert<util::UTF16LE, util::UTF8>(credits, creditsEnd);
@@ -537,6 +576,10 @@ void Credits::reset() {
 }
 
 } // anonymous namespace
+
+void setLibraryCredits(const std::string & subsystem, const std::string & credits) {
+	g_credits.setLibraryCredits(subsystem, credits);
+}
 
 void render() {
 	g_credits.render();

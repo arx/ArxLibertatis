@@ -28,6 +28,7 @@
 #include <ft2build.h>
 #include FT_FREETYPE_H
 
+#include "gui/Credits.h"
 #include "graphics/font/Font.h"
 #include "io/fs/FilePath.h"
 #include "io/log/Logger.h"
@@ -81,8 +82,9 @@ FontCache::Impl::Impl() : m_library(NULL) {
 	std::ostringstream version;
 	version << ftMajor << '.' << ftMinor << '.' << ftPatch;
 	
-	CrashHandler::setVariable("FreeType version", version.str());
 	LogInfo << "Using FreeType " << version.str();
+	CrashHandler::setVariable("FreeType version", version.str());
+	credits::setLibraryCredits("font", "FreeType " + version.str());
 }
 
 FontCache::Impl::~Impl() {

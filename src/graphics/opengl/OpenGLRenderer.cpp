@@ -19,10 +19,13 @@
 
 #include "graphics/opengl/OpenGLRenderer.h"
 
+#include <sstream>
+
 #include <glm/gtc/type_ptr.hpp>
 
 #include "core/Application.h"
 #include "core/Config.h"
+#include "gui/Credits.h"
 #include "graphics/opengl/GLDebug.h"
 #include "graphics/opengl/GLNoVertexBuffer.h"
 #include "graphics/opengl/GLTexture2D.h"
@@ -136,17 +139,37 @@ void OpenGLRenderer::initialize() {
 		return;
 	}
 	
-	LogInfo << "Using GLEW " << glewGetString(GLEW_VERSION);
-	CrashHandler::setVariable("GLEW version", glewGetString(GLEW_VERSION));
+	const GLubyte * glewVersion = glewGetString(GLEW_VERSION);
+	LogInfo << "Using GLEW " << glewVersion;
+	CrashHandler::setVariable("GLEW version", glewVersion);
 	
-	LogInfo << "Using OpenGL " << glGetString(GL_VERSION);
-	CrashHandler::setVariable("OpenGL version", glGetString(GL_VERSION));
+	const GLubyte * glVersion = glGetString(GL_VERSION);
+	LogInfo << "Using OpenGL " << glVersion;
+	CrashHandler::setVariable("OpenGL version", glVersion);
 	
-	LogInfo << " ├─ Vendor: " << glGetString(GL_VENDOR);
-	CrashHandler::setVariable("OpenGL vendor", glGetString(GL_VENDOR));
+	const GLubyte * glVendor = glGetString(GL_VENDOR);
+	LogInfo << " ├─ Vendor: " << glVendor;
+	CrashHandler::setVariable("OpenGL vendor", glVendor);
 	
-	LogInfo << " └─ Device: " << glGetString(GL_RENDERER);
-	CrashHandler::setVariable("OpenGL device", glGetString(GL_RENDERER));
+	const GLubyte * glRenderer = glGetString(GL_RENDERER);
+	LogInfo << " └─ Device: " << glRenderer;
+	CrashHandler::setVariable("OpenGL device", glRenderer);
+	
+	{
+		std::ostringstream oss;
+		oss << "GLEW " << glewVersion << '\n';
+		const char * start = reinterpret_cast<const char *>(glVersion);
+		while(*start == ' ') {
+			start++;
+		}
+		const char * end = start;
+		while(*end != '\0' && *end != ' ') {
+			end++;
+		}
+		oss << "OpenGL ";
+		oss.write(start, end - start);
+		credits::setLibraryCredits("graphics", oss.str());
+	}
 	
 	gldebug::initialize();
 }
