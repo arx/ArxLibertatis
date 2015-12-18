@@ -106,6 +106,8 @@ struct CreditsInformations {
 	
 	bool init();
 	
+	void addLine(std::string & phrase, float & drawpos, int sourceLineNumber);
+	
 	//! Parse the credits text and compute line positions
 	void layout();
 	
@@ -180,7 +182,8 @@ bool CreditsInformations::init() {
 	return m_lineHeight != -1;
 }
 
-static void addCreditsLine(std::string & phrase, float & drawpos, int sourceLineNumber) {
+void CreditsInformations::addLine(std::string & phrase, float & drawpos,
+                                  int sourceLineNumber) {
 	
 	CreditsLine infomations;
 	infomations.sourceLineNumber = sourceLineNumber;
@@ -189,7 +192,7 @@ static void addCreditsLine(std::string & phrase, float & drawpos, int sourceLine
 	bool isSimpleLine = false;
 	if(!phrase.empty() && phrase[0] == '~') {
 		// Heading
-		drawpos += g_credits.m_lineHeight * 0.6f;
+		drawpos += m_lineHeight * 0.6f;
 		phrase[0] = ' ';
 		infomations.fColors = Color::white;
 	} else if(phrase[0] == '&') {
@@ -208,7 +211,7 @@ static void addCreditsLine(std::string & phrase, float & drawpos, int sourceLine
 		
 		// Calculate height position
 		infomations.sPos.y = static_cast<int>(drawpos);
-		drawpos += g_credits.m_lineHeight;
+		drawpos += m_lineHeight;
 		
 		// Split long lines
 		long n = ARX_UNICODE_ForceFormattingInRect(hFontCredits, phrase, linerect);
@@ -292,7 +295,7 @@ static void addCreditsLine(std::string & phrase, float & drawpos, int sourceLine
 					 && linesize - prefixsize / 2 < g_size.width() / 2) {
 					prefix.sPos.x = (g_size.width() - prefixsize) / 2;
 				}
-				g_credits.m_lines.push_back(prefix);
+				m_lines.push_back(prefix);
 				infomations.sPos.x = prefix.sPos.x + prefixsize + 20;
 				infomations.sText = infomations.sText.substr(p);
 				infomations.fColors = Color::gray(0.7f);
@@ -300,7 +303,7 @@ static void addCreditsLine(std::string & phrase, float & drawpos, int sourceLine
 			
 		}
 		
-		g_credits.m_lines.push_back(infomations);
+		m_lines.push_back(infomations);
 	}
 	
 }
@@ -347,7 +350,7 @@ void CreditsInformations::layout() {
 			// Separator line
 			drawpos += 0.4f * m_lineHeight;
 		} else {
-			addCreditsLine(phrase, drawpos, sourceLineNumber);
+			addLine(phrase, drawpos, sourceLineNumber);
 		}
 	}
 }
