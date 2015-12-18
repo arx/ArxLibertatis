@@ -134,7 +134,7 @@ static CreditsInformations g_credits;
 
 bool CreditsInformations::load() {
 	
-	// Load credits.
+	LogDebug("Loading credits");
 	
 	std::string creditsFile = "localisation/ucredits_" +  config.language + ".txt";
 	
@@ -190,6 +190,8 @@ bool CreditsInformations::init() {
 		return true;
 	}
 	
+	LogDebug("Layout credits");
+	
 	// When the screen is resized, try to keep the credits scrolled to the 'same' position
 	static int anchorLine = -1;
 	static float offset;
@@ -216,13 +218,7 @@ bool CreditsInformations::init() {
 	
 	m_windowSize = g_size.size();
 	
-	m_lines.clear();
-	
-	LogDebug("InitCredits");
-	
 	layout();
-	
-	LogDebug("Credits lines " << m_lines.size());
 	
 	if(anchorLine >= 0) {
 		// Find the first credits line that comes from our source anchor line
@@ -377,6 +373,8 @@ void CreditsInformations::layout() {
 	
 	m_lineHeight = hFontCredits->getTextSize("aA(").y;
 	
+	m_lines.clear();
+	
 	// Retrieve the rows to display
 	std::istringstream iss(m_text);
 	std::string phrase;
@@ -395,6 +393,9 @@ void CreditsInformations::layout() {
 			addLine(phrase, drawpos, sourceLineNumber);
 		}
 	}
+	
+	LogDebug("Credits lines: " << m_lines.size());
+	
 }
 
 void CreditsInformations::render() {
@@ -518,6 +519,7 @@ void CreditsInformations::render() {
 }
 
 void CreditsInformations::reset() {
+	LogDebug("Reset credits");
 	m_lastUpdateTime = arxtime.get_updated(false);
 	m_scrollPosition = 0;
 	m_firstVisibleLine = 0;
