@@ -95,11 +95,11 @@ struct CreditsLine {
 	
 };
 
-class CreditsInformations {
+class Credits {
 	
 public:
 	
-	CreditsInformations()
+	Credits()
 		: m_scrollPosition(0.f)
 		, m_lastUpdateTime(0.f)
 		, m_firstVisibleLine(0)
@@ -138,9 +138,9 @@ private:
 	
 };
 
-static CreditsInformations g_credits;
+static Credits g_credits;
 
-bool CreditsInformations::load() {
+bool Credits::load() {
 	
 	LogDebug("Loading credits");
 	
@@ -184,7 +184,7 @@ bool CreditsInformations::load() {
 	return true;
 }
 
-bool CreditsInformations::init() {
+bool Credits::init() {
 	
 	if(!m_background) {
 		m_background = TextureContainer::LoadUI("graph/interface/menus/menu_credits");
@@ -251,8 +251,7 @@ bool CreditsInformations::init() {
 	return m_lineHeight != -1;
 }
 
-void CreditsInformations::addLine(std::string & phrase, float & drawpos,
-                                  int sourceLineNumber) {
+void Credits::addLine(std::string & phrase, float & drawpos, int sourceLineNumber) {
 	
 	CreditsLine infomations;
 	infomations.sourceLineNumber = sourceLineNumber;
@@ -377,7 +376,7 @@ void CreditsInformations::addLine(std::string & phrase, float & drawpos,
 	
 }
 
-void CreditsInformations::layout() {
+void Credits::layout() {
 	
 	m_lineHeight = hFontCredits->getTextSize("aA(").y;
 	
@@ -406,7 +405,7 @@ void CreditsInformations::layout() {
 	
 }
 
-void CreditsInformations::render() {
+void Credits::render() {
 	
 	// Initialze the data on demand
 	if(!init()) {
@@ -526,7 +525,7 @@ void CreditsInformations::render() {
 	
 }
 
-void CreditsInformations::reset() {
+void Credits::reset() {
 	LogDebug("Reset credits");
 	m_lastUpdateTime = arxtime.get_updated(false);
 	m_scrollPosition = 0;
