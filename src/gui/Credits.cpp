@@ -91,7 +91,9 @@ struct CreditsLine {
 	
 };
 
-struct CreditsInformations {
+class CreditsInformations {
+	
+public:
 	
 	CreditsInformations()
 		: m_scrollPosition(0.f)
@@ -100,6 +102,12 @@ struct CreditsInformations {
 		, m_lineHeight(-1)
 		, m_windowSize(Vec2i_ZERO)
 	{ }
+	
+	void render();
+	
+	void reset();
+	
+private:
 	
 	TextureContainer * m_background;
 	
@@ -123,10 +131,6 @@ struct CreditsInformations {
 	
 	//! Parse the credits text and compute line positions
 	void layout();
-	
-	void render();
-	
-	void reset();
 	
 };
 
