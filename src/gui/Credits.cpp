@@ -365,7 +365,7 @@ void CreditsInformations::render() {
 	float autoScrollDelay = 250.f; // ms after user input before resuming normal scrolling
 	
 	// Process user input
-	float userScroll = 15.f * GInput->getMouseWheelDir();
+	float userScroll = 20.f * GInput->getMouseWheelDir();
 	if(GInput->isKeyPressed(Keyboard::Key_UpArrow)) {
 		userScroll += 0.2f * dtime;
 	}
