@@ -376,17 +376,10 @@ void CreditsInformations::render() {
 		bFade = true;
 	}
 	
-	//We display them
-	
-	GRenderer->SetRenderState(Renderer::AlphaBlending, false);
-	GRenderer->SetRenderState(Renderer::Fog, false);
-	GRenderer->SetRenderState(Renderer::DepthWrite, true);
-	GRenderer->SetRenderState(Renderer::DepthTest, false);
-	
-	//Draw Background
+	// Draw the background
 	if(ARXmenu.mda->pTexCredits) {
 		Rectf rect(Vec2f_ZERO, g_size.width(), g_size.height() + 1);
-		
+		UseRenderState state(render2D().noBlend());
 		EERIEDrawBitmap2(rect, .999f, ARXmenu.mda->pTexCredits, Color::white);
 	}
 	
@@ -488,9 +481,6 @@ void CreditsInformations::render() {
 		bFadeInOut = false;
 		bFade = true;
 	}
-	
-	GRenderer->SetRenderState(Renderer::DepthWrite, true);
-	GRenderer->SetRenderState(Renderer::DepthTest, true);
 	
 }
 
