@@ -219,7 +219,7 @@ static void ARX_MENU_NEW_QUEST_Clicked_QUIT() {
 
 void ARX_MENU_Clicked_CREDITS() {
 	ARXmenu.currentmode = AMCM_CREDITS;
-	Credits::reset();
+	credits::reset();
 	ARX_MENU_LaunchAmb(AMB_CREDITS);
 }
 

@@ -44,13 +44,11 @@ ZeniMax Media Inc., Suite 120, Rockville, Maryland 20850 USA.
 #ifndef ARX_GUI_CREDITS_H
 #define ARX_GUI_CREDITS_H
 
-class Credits {
-	
-public:
-	
-	static void render();
-	static void reset();
-	
-};
+namespace credits {
+
+void render();
+void reset();
+
+} // namespace credits
 
 #endif // ARX_GUI_CREDITS_H

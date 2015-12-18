@@ -303,7 +303,7 @@ bool Menu2_Render() {
 		delete mainMenu, mainMenu = NULL;
 		
 		if(ARXmenu.currentmode == AMCM_CREDITS){
-			Credits::render();
+			credits::render();
 			return true;
 		}
 		

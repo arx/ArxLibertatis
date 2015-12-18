@@ -76,6 +76,10 @@ extern bool bFadeInOut;
 extern bool bFade;
 extern int iFadeAction;
 
+namespace credits {
+
+namespace {
+
 struct CreditsLine {
 	
 	CreditsLine() {
@@ -533,10 +537,14 @@ void CreditsInformations::reset() {
 	m_text.clear();
 }
 
-void Credits::render() {
+} // anonymous namespace
+
+void render() {
 	g_credits.render();
 }
 
-void Credits::reset() {
+void reset() {
 	g_credits.reset();
 }
+
+} // namespace credits
