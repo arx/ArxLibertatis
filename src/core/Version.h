@@ -28,6 +28,8 @@ extern const std::string arx_release_codename;
 extern const std::string arx_credits;
 extern const std::string arx_copyright;
 
+extern const std::string cmake_version;
+
 extern const int tbg_version_id;
 
 #endif // ARX_CORE_VERSION_H

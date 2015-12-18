@@ -36,4 +36,6 @@ const std::string arx_release_codename = "${VERSION_4}";
 const std::string arx_credits = "${AUTHORS}";
 const std::string arx_copyright = "${COPYING}";
 
+const std::string cmake_version = "${CMAKE_VERSION}";
+
 const int tbg_version_id = ${VERSION_2};

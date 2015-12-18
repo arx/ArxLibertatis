@@ -38,6 +38,10 @@
 #include <boost/foreach.hpp>
 #include <boost/version.hpp>
 
+#include <glm/glm.hpp>
+
+#include <zlib.h>
+
 /*
  * Under OS X we want SDLmain to replace the entry point with its own.
  * This is needed to initialize NSApplication - otherwise we will later
@@ -133,14 +137,27 @@ INT WINAPI WinMain(HINSTANCE hInstance, HINSTANCE hPrevInstance, PSTR lpCmdLine,
 	// Initialize the crash handler
 	{
 		CrashHandler::initialize();
-		CrashHandler::setVariable("Compiler", ARX_COMPILER_VERNAME);
-		CrashHandler::setVariable("Boost version", BOOST_LIB_VERSION);
 		std::string command_line;
 		for(int i = 1; i < argc; i++) {
 			command_line += util::escapeString(argv[i], "\\\" '$!");
 			command_line += ' ';
 		}
 		CrashHandler::setVariable("Command line", command_line);
+	}
+	
+	{
+		CrashHandler::setVariable("Compiler", ARX_COMPILER_VERNAME);
+		CrashHandler::setVariable("CMake", cmake_version);
+		std::ostringstream oss;
+		oss << (BOOST_VERSION / 100000) << '.' << (BOOST_VERSION / 100 % 1000)
+		    << '.' << (BOOST_VERSION % 100);
+		CrashHandler::setVariable("Boost version", oss.str());
+		oss.str(std::string());
+		oss << GLM_VERSION_MAJOR << '.' << GLM_VERSION_MINOR << '.' << GLM_VERSION_PATCH
+		    << '.' << GLM_VERSION_REVISION;
+		CrashHandler::setVariable("GLM version", oss.str());
+		CrashHandler::setVariable("zlib version (headers)", ZLIB_VERSION);
+		CrashHandler::setVariable("zlib version (runtime)", zlibVersion());
 	}
 	
 	// Also intialize the logging system early as we might need it
