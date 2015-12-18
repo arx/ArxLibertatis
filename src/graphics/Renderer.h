@@ -183,9 +183,15 @@ public:
 		setDepthOffset(0);
 	}
 	
-	RenderState depthOffset(unsigned offset) {
+	RenderState depthOffset(unsigned offset) const {
 		RenderState copy = *this;
 		copy.setDepthOffset(offset);
+		return copy;
+	}
+	
+	RenderState noDepthOffset() const {
+		RenderState copy = *this;
+		copy.disableDepthOffset();
 		return copy;
 	}
 	
@@ -208,6 +214,12 @@ public:
 	                  BlendingFactor dst = BlendInvSrcAlpha) const {
 		RenderState copy = *this;
 		copy.setBlend(src, dst);
+		return copy;
+	}
+	
+	RenderState noBlend() const {
+		RenderState copy = *this;
+		copy.disableBlend();
 		return copy;
 	}
 	
