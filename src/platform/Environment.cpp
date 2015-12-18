@@ -385,6 +385,12 @@ fs::path getHelperExecutable(const std::string & name) {
 		if(fs::is_regular_file(helper)) {
 			return helper;
 		}
+		#if ARX_PLATFORM == ARX_PLATFORM_WIN32
+		helper.append(".exe");
+		if(fs::is_regular_file(helper)) {
+			return helper;
+		}
+		#endif
 	}
 	
 	if(fs::libexec_dir) {
@@ -400,6 +406,12 @@ fs::path getHelperExecutable(const std::string & name) {
 			if(fs::is_regular_file(helper)) {
 				return helper;
 			}
+			#if ARX_PLATFORM == ARX_PLATFORM_WIN32
+			helper.append(".exe");
+			if(fs::is_regular_file(helper)) {
+				return helper;
+			}
+			#endif
 		}
 	}
 	
