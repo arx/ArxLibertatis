@@ -56,6 +56,7 @@ ZeniMax Media Inc., Suite 120, Rockville, Maryland 20850 USA.
 #include "gui/MenuWidgets.h"
 
 #include "graphics/Draw.h"
+#include "graphics/data/TextureContainer.h"
 #include "graphics/font/Font.h"
 
 #include "input/Input.h"
@@ -96,6 +97,8 @@ struct CreditsInformations {
 		, m_windowSize(Vec2i_ZERO)
 	{ }
 	
+	TextureContainer * m_background;
+	
 	float m_scrollPosition;
 	float m_lastUpdateTime;
 	
@@ -122,6 +125,10 @@ struct CreditsInformations {
 static CreditsInformations g_credits;
 
 bool CreditsInformations::init() {
+	
+	if(!m_background) {
+		m_background = TextureContainer::LoadUI("graph/interface/menus/menu_credits");
+	}
 	
 	if(m_lineHeight != -1 && m_windowSize == g_size.size()) {
 		return true;
@@ -347,10 +354,10 @@ void CreditsInformations::render() {
 	}
 	
 	// Draw the background
-	if(ARXmenu.mda->pTexCredits) {
+	if(m_background) {
 		Rectf rect(Vec2f_ZERO, g_size.width(), g_size.height() + 1);
 		UseRenderState state(render2D().noBlend());
-		EERIEDrawBitmap2(rect, .999f, ARXmenu.mda->pTexCredits, Color::white);
+		EERIEDrawBitmap2(rect, .999f, m_background, Color::white);
 	}
 	
 	// Use time passed between frame to create scroll effect
@@ -460,6 +467,7 @@ void CreditsInformations::reset() {
 	m_firstVisibleLine = 0;
 	m_lineHeight = -1;
 	m_lines.clear();
+	delete m_background, m_background = NULL;
 }
 
 void Credits::render() {

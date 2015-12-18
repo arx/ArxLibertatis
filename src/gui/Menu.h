@@ -56,7 +56,6 @@ static const size_t MAX_FLYOVER = 32;
 struct MENU_DYNAMIC_DATA {
 	
 	TextureContainer * BookBackground;
-	TextureContainer * pTexCredits;
 	std::string flyover[MAX_FLYOVER];
 	std::string credits;
 	// New Quest Buttons Strings
@@ -66,7 +65,6 @@ struct MENU_DYNAMIC_DATA {
 	
 	MENU_DYNAMIC_DATA()
 		: BookBackground(NULL)
-		, pTexCredits(NULL)
 	{}
 	
 };
