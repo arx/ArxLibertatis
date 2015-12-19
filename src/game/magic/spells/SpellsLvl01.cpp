@@ -494,7 +494,8 @@ void IgnitSpell::End() {
 	
 	std::vector<T_LINKLIGHTTOFX>::iterator itr;
 	for(itr = m_lights.begin(); itr != m_lights.end(); ++itr) {
-		GLight[itr->iLightNum]->m_ignitionStatus = true;
+		EERIE_LIGHT * light = GLight[itr->iLightNum];
+		light->m_ignitionStatus = true;
 		ARX_SOUND_PlaySFX(SND_SPELL_IGNITE, &itr->poslight);
 		lightHandleDestroy(itr->idl);
 	}
