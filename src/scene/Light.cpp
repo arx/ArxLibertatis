@@ -421,11 +421,11 @@ LightHandle GetFreeDynLight() {
 			DynLight[i].duration = 0;
 			DynLight[i].extras = 0;
 			DynLight[i].m_storedFlameTime.reset();
-			return (LightHandle)i;
+			return LightHandle(i);
 		}
 	}
 
-	return (LightHandle)-1;
+	return LightHandle();
 }
 
 void ClearDynLights() {
