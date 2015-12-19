@@ -371,13 +371,13 @@ void PrecalcIOLighting(const Vec3f & pos, float radius) {
 		   && (el->pos.z >= pos.z - radius)
 		   && (el->pos.z <= pos.z + radius)
 		) {
-				RecalcLight(el);
-				IO_PDL[TOTIOPDL] = el;
-
-				TOTIOPDL++;
-
-				if((size_t)TOTIOPDL >= MAX_DYNLIGHTS)
-					TOTIOPDL--;
+			RecalcLight(el);
+			IO_PDL[TOTIOPDL] = el;
+			
+			TOTIOPDL++;
+			
+			if((size_t)TOTIOPDL >= MAX_DYNLIGHTS)
+				TOTIOPDL--;
 		}
 	}
 }
