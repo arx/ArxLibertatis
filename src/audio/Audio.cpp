@@ -267,12 +267,12 @@ aalError update() {
 
 MixerId createMixer() {
 	
-	AAL_ENTRY_V(MixerId::Invalid)
+	AAL_ENTRY_V(MixerId())
 	
 	Mixer * mixer = new Mixer();
 	
 	MixerId id = MixerId(_mixer.add(mixer));
-	if(id == MixerId::Invalid) {
+	if(id == MixerId()) {
 		delete mixer;
 	}
 	
