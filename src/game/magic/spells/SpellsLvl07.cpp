@@ -222,7 +222,7 @@ Vec3f FlyingEyeSpell::getPosition() {
 }
 
 FireFieldSpell::FireFieldSpell()
-	: m_light(LightHandle::Invalid)
+	: m_light()
 	, m_damage(DamageHandle::Invalid)
 {
 }
@@ -236,7 +236,7 @@ void FireFieldSpell::Launch() {
 	m_duration = (m_launchDuration > -1) ? m_launchDuration : 100000;
 	m_hasDuration = true;
 	m_fManaCostPerSecond = 2.8f;
-	m_light = LightHandle::Invalid;
+	m_light = LightHandle();
 	
 	Vec3f target;
 	float beta = 0.f;
@@ -441,7 +441,7 @@ void IceFieldSpell::Launch()
 	m_duration = (m_launchDuration > -1) ? m_launchDuration : 100000;
 	m_hasDuration = true;
 	m_fManaCostPerSecond = 2.8f;
-	m_light = LightHandle::Invalid;
+	m_light = LightHandle();
 	
 	Vec3f target;
 	float beta = 0.f;

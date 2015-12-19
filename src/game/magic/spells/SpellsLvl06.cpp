@@ -153,7 +153,7 @@ void RiseDeadSpell::End()
 void RiseDeadSpell::Update(float timeDelta) {
 	
 	if(m_entity == -2) {
-		m_light = LightHandle::Invalid;
+		m_light = LightHandle();
 		return;
 	}
 	
@@ -215,7 +215,7 @@ void RiseDeadSpell::Update(float timeDelta) {
 				MakeCoolFx(pos);
 			}
 			
-			m_light = LightHandle::Invalid;
+			m_light = LightHandle();
 		} else {
 			ARX_SOUND_PlaySFX(SND_MAGIC_FIZZLE);
 			m_entity = EntityHandle(-2); // FIXME inband signaling

@@ -922,7 +922,7 @@ void RestoreInitialIOStatusOfIO(Entity * io)
 		io->ouch_time = 0;
 		io->dmg_sum = 0;
 		io->ignition = 0.f;
-		io->ignit_light = LightHandle::Invalid;
+		io->ignit_light = LightHandle();
 		io->ignit_sound = audio::INVALID_ID;
 
 		if(io->obj && io->obj->pbox)

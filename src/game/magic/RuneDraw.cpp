@@ -156,7 +156,7 @@ void ARX_SPELLS_UpdateSymbolDraw() {
 			}
 		} else if(lightHandleIsValid(io->dynlight)) {
 			lightHandleGet(io->dynlight)->exist = 0;
-			io->dynlight = LightHandle::Invalid;
+			io->dynlight = LightHandle();
 		}
 
 		if(io->symboldraw) {
@@ -165,7 +165,7 @@ void ARX_SPELLS_UpdateSymbolDraw() {
 
 			if(tim > sd->duration) {
 				endLightDelayed(io->dynlight, 600);
-				io->dynlight = LightHandle::Invalid;
+				io->dynlight = LightHandle();
 				
 				delete io->symboldraw;
 				io->symboldraw = NULL;

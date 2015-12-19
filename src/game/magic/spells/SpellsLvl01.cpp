@@ -343,7 +343,7 @@ void MagicMissileSpell::Update(float timeDelta) {
 			missile->bExplo = true;
 			missile->bMove  = false;
 			
-			missile->lLightId = LightHandle::Invalid;
+			missile->lLightId = LightHandle();
 			
 			DamageParameters damage;
 			damage.pos = missile->eCurPos;

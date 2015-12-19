@@ -44,7 +44,7 @@ extern Rect g_size;
 MassLightningStrikeSpell::MassLightningStrikeSpell()
 	: m_pos(Vec3f_ZERO)
 	, m_soundEffectPlayed(false)
-	, m_light(LightHandle::Invalid)
+	, m_light()
 {
 }
 

@@ -138,7 +138,7 @@ Entity::Entity(const res::path & classPath, EntityInstance instance)
 	
 	usepath = NULL;
 	symboldraw = NULL;
-	dynlight = LightHandle::Invalid;
+	dynlight = LightHandle();
 	lastspeechflag = 2;
 	inzone = NULL;
 	halo = IO_HALO();
@@ -178,7 +178,7 @@ Entity::Entity(const res::path & classPath, EntityInstance instance)
 	poisonous_count = 0;
 	
 	ignition = 0.f;
-	ignit_light = LightHandle::Invalid;
+	ignit_light = LightHandle();
 	ignit_sound = audio::INVALID_ID;
 	head_rot = 0.f;
 	

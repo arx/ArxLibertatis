@@ -92,7 +92,7 @@ CMagicMissile::CMagicMissile()
 
 CMagicMissile::~CMagicMissile() {
 
-	lLightId = LightHandle::Invalid;
+	lLightId = LightHandle();
 
 	ARX_SOUND_Stop(snd_loop);
 }
@@ -138,7 +138,7 @@ void CMagicMissile::SetTTL(unsigned long aulTTL)
 	SetDuration(ulDuration);
 	ulCurrentTime = t;
 	
-	lLightId = LightHandle::Invalid;
+	lLightId = LightHandle();
 }
 
 void CMagicMissile::Update(float timeDelta)

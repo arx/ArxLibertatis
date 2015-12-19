@@ -87,7 +87,7 @@ Vec3f InvisibilitySpell::getPosition() {
 
 
 ManaDrainSpell::ManaDrainSpell()
-	: m_light(LightHandle::Invalid)
+	: m_light()
 	, m_damage(DamageHandle::Invalid)
 	, m_pitch(0.f)
 {
@@ -240,7 +240,7 @@ Vec3f ManaDrainSpell::getPosition() {
 
 
 ExplosionSpell::ExplosionSpell()
-	: m_light(LightHandle::Invalid)
+	: m_light()
 	, m_damage(DamageHandle::Invalid)
 {
 }
@@ -347,7 +347,7 @@ void EnchantWeaponSpell::Update(float timeDelta) {
 
 
 LifeDrainSpell::LifeDrainSpell()
-	: m_light(LightHandle::Invalid)
+	: m_light()
 	, m_damage(DamageHandle::Invalid)
 	, m_pitch(0.f)
 {
