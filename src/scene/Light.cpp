@@ -519,7 +519,7 @@ struct TILE_LIGHTS
 	std::vector<EERIE_LIGHT *> el;
 };
 
-TILE_LIGHTS tilelights[MAX_BKGX][MAX_BKGZ];
+static TILE_LIGHTS tilelights[MAX_BKGX][MAX_BKGZ];
 
 void InitTileLights()
 {
