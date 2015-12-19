@@ -557,9 +557,9 @@ void ComputeTileLights(short x,short z)
 }
 
 void ClearTileLights() {
-	for(long j = 0; j < MAX_BKGZ; j++) {
-		for(long i = 0; i < MAX_BKGZ; i++) {
-			tilelights[i][j].el.clear();
+	for(long z = 0; z < MAX_BKGZ; z++) {
+		for(long x = 0; x < MAX_BKGX; x++) {
+			tilelights[x][z].el.clear();
 		}
 	}
 }
