@@ -174,7 +174,7 @@ bool TryToQuadify(EERIEPOLY * ep,EERIE_3DOBJ * eobj) {
 
 		if(eg)
 		for(long n = 0; n < eg->nbpoly; n++) {
-			EERIEPOLY *ep2 = (EERIEPOLY *)&eg->polydata[n];
+			EERIEPOLY *ep2 = &eg->polydata[n];
 
 			if(ep2->room != val1)
 				continue;
