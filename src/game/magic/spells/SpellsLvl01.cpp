@@ -614,7 +614,8 @@ void DouseSpell::End() {
 	
 	std::vector<T_LINKLIGHTTOFX>::const_iterator itr;
 	for(itr = m_lights.begin(); itr != m_lights.end(); ++itr) {
-		GLight[itr->iLightNum]->m_ignitionStatus = false;
+		EERIE_LIGHT * light = GLight[itr->iLightNum];
+		light->m_ignitionStatus = false;
 		ARX_SOUND_PlaySFX(SND_SPELL_DOUSE, &itr->poslight);
 	}
 }
