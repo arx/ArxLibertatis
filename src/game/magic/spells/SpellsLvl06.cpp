@@ -53,7 +53,7 @@ void RiseDeadSpell::GetTargetAndBeta(Vec3f & target, float & beta)
 }
 
 RiseDeadSpell::RiseDeadSpell()
-	: m_entity(EntityHandle::Invalid)
+	: m_entity()
 {
 	
 }
@@ -90,7 +90,7 @@ void RiseDeadSpell::Launch()
 	m_duration = (m_launchDuration > -1) ? m_launchDuration : 2000000;
 	m_hasDuration = true;
 	m_fManaCostPerSecond = 1.2f;
-	m_entity = EntityHandle::Invalid;
+	m_entity = EntityHandle();
 	
 	m_fissure.Create(target, beta);
 	m_fissure.SetDuration(2000, 500, 1800);
@@ -175,7 +175,7 @@ void RiseDeadSpell::Update(float timeDelta) {
 	
 	unsigned long tim = m_fissure.ulCurrentTime;
 	
-	if(tim > 3000 && m_entity == EntityHandle::Invalid) {
+	if(tim > 3000 && m_entity == EntityHandle()) {
 		ARX_SOUND_PlaySFX(SND_SPELL_ELECTRIC, &m_targetPos);
 		
 		Cylinder phys = Cylinder(m_targetPos, 50, -200);
@@ -264,7 +264,7 @@ Vec3f ParalyseSpell::getPosition() {
 }
 
 CreateFieldSpell::CreateFieldSpell()
-	: m_entity(EntityHandle::Invalid)
+	: m_entity()
 {
 }
 

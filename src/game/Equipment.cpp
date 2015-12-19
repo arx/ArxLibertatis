@@ -155,7 +155,7 @@ static void ARX_EQUIPMENT_Release(EntityHandle id) {
 	if(ValidIONum(id)) {
 		for(long i = 0; i < MAX_EQUIPED; i++) {
 			if(player.equiped[i] == id) {
-				player.equiped[i] = EntityHandle::Invalid;
+				player.equiped[i] = EntityHandle();
 			}
 		}
 	}
@@ -941,7 +941,7 @@ void ARX_EQUIPMENT_UnEquipPlayerWeapon()
 		DRAGINTER = pioOldDragInter;
 	}
 
-	player.equiped[EQUIP_SLOT_WEAPON] = EntityHandle::Invalid;
+	player.equiped[EQUIP_SLOT_WEAPON] = EntityHandle();
 }
 
 bool bRing = false;
@@ -951,7 +951,7 @@ void ARX_EQUIPMENT_Equip(Entity * target, Entity * toequip)
 	if(!target || !toequip || target != entities.player())
 		return;
 
-	EntityHandle validid = EntityHandle::Invalid;
+	EntityHandle validid = EntityHandle();
 
 	for(size_t i = 0; i < entities.size(); i++) {
 		const EntityHandle handle = EntityHandle(i);
@@ -963,7 +963,7 @@ void ARX_EQUIPMENT_Equip(Entity * target, Entity * toequip)
 		}
 	}
 
-	if(validid == EntityHandle::Invalid)
+	if(validid == EntityHandle())
 		return;
 
 	RemoveFromAllInventories(toequip);
@@ -1003,10 +1003,10 @@ void ARX_EQUIPMENT_Equip(Entity * target, Entity * toequip)
 		{
 			long willequip = -1;
 
-			if(player.equiped[EQUIP_SLOT_RING_LEFT] == EntityHandle::Invalid)
+			if(player.equiped[EQUIP_SLOT_RING_LEFT] == EntityHandle())
 				willequip = EQUIP_SLOT_RING_LEFT;
 
-			if(player.equiped[EQUIP_SLOT_RING_RIGHT] == EntityHandle::Invalid)
+			if(player.equiped[EQUIP_SLOT_RING_RIGHT] == EntityHandle())
 				willequip = EQUIP_SLOT_RING_RIGHT;
 
 			if(willequip == -1) {

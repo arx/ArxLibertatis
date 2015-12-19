@@ -82,7 +82,7 @@ CLightning::CLightning()
 	: m_pos(Vec3f_ZERO)
 	, m_beta(0.f)
 	, m_alpha(0.f)
-	, m_caster(EntityHandle::Invalid)
+	, m_caster()
 	, m_level(1.f)
 	, m_fDamage(1)
 	, m_isMassLightning(false),

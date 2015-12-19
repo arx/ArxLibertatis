@@ -165,7 +165,7 @@ Entity::Entity(const res::path & classPath, EntityInstance instance)
 	
 	spellcast_data = IO_SPELLCAST_DATA();
 	flarecount = 0;
-	no_collide = EntityHandle::Invalid;
+	no_collide = EntityHandle();
 	invisibility = 0.f;
 	frameloss = 0.f;
 	basespeed = 1.f;
@@ -191,7 +191,7 @@ Entity::Entity(const res::path & classPath, EntityInstance instance)
 	shop_multiply = 1.f;
 	isHit = false;
 	inzone_show = 0;
-	summoner = EntityHandle::Invalid;
+	summoner = EntityHandle();
 	spark_n_blood = 0;
 
 	special_color = Color3f::white;

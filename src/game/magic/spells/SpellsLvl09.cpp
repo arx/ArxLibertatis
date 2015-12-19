@@ -57,7 +57,7 @@ SummonCreatureSpell::SummonCreatureSpell()
 	: m_targetPos(Vec3f_ZERO)
 	, m_megaCheat(false)
 	, m_requestSummon(false)
-	, m_summonedEntity(EntityHandle::Invalid)
+	, m_summonedEntity()
 {
 	
 }
@@ -82,7 +82,7 @@ void SummonCreatureSpell::Launch()
 	m_hasDuration = true;
 	m_fManaCostPerSecond = 1.9f;
 	m_requestSummon = false;
-	m_summonedEntity = EntityHandle::Invalid;
+	m_summonedEntity = EntityHandle();
 	m_duration = (m_launchDuration > -1) ? m_launchDuration : 2000000;
 	
 	Vec3f target;
@@ -144,7 +144,7 @@ void SummonCreatureSpell::End() {
 		}
 	}
 	
-	m_summonedEntity = EntityHandle::Invalid;
+	m_summonedEntity = EntityHandle();
 }
 
 void SummonCreatureSpell::Update(float timeDelta) {
@@ -162,7 +162,7 @@ void SummonCreatureSpell::Update(float timeDelta) {
 		m_fissure.Render();
 		
 		m_requestSummon = true;
-		m_summonedEntity = EntityHandle::Invalid;
+		m_summonedEntity = EntityHandle();
 
 	} else if(m_requestSummon) {
 		lightHandleDestroy(m_light);
@@ -252,10 +252,10 @@ void SummonCreatureSpell::Update(float timeDelta) {
 				if(tokeep==1)
 					m_summonedEntity = io->index();
 				else
-					m_summonedEntity = EntityHandle::Invalid;
+					m_summonedEntity = EntityHandle();
 			}
 		}
-	} else if(m_summonedEntity == EntityHandle::Invalid) {
+	} else if(m_summonedEntity == EntityHandle()) {
 		m_duration = 0;
 	}
 }

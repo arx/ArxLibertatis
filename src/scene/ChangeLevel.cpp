@@ -178,14 +178,14 @@ static EntityHandle ReadTargetInfo(const char (&str)[N]) {
 	std::string idString = boost::to_lower_copy(util::loadString(str));
 	
 	if(idString == "none") {
-		return EntityHandle::Invalid;
+		return EntityHandle();
 	} else if(idString == "self") {
 		return EntityHandle(-2);
 	} else if(idString == "player") {
 		return PlayerEntityHandle;
 	} else {
 		Entity * e = convertToValidIO(idString);
-		return (e == NULL) ? EntityHandle::Invalid : e->index();
+		return (e == NULL) ? EntityHandle() : e->index();
 	}
 }
 
@@ -1840,9 +1840,9 @@ static long ARX_CHANGELEVEL_Pop_Player() {
 	assert(SAVED_MAX_EQUIPED == MAX_EQUIPED);
 	for(size_t i = 0; i < SAVED_MAX_EQUIPED; i++) {
 		Entity * e = ConvertToValidIO(asp->equiped[i]);
-		player.equiped[i] = (e == NULL) ? EntityHandle::Invalid : e->index();
+		player.equiped[i] = (e == NULL) ? EntityHandle() : e->index();
 		if(!ValidIONum(player.equiped[i])) {
-			player.equiped[i] = EntityHandle::Invalid;
+			player.equiped[i] = EntityHandle();
 		}
 	}
 	
@@ -1987,7 +1987,7 @@ static Entity * ARX_CHANGELEVEL_Pop_IO(const std::string & idString, EntityInsta
 		
 		io->requestRoomUpdate = 1;
 		io->room = -1;
-		io->no_collide = EntityHandle::Invalid;
+		io->no_collide = EntityHandle();
 		io->ioflags = EntityFlags::load(ais->ioflags); // TODO save/load flags
 		
 		io->ioflags &= ~IO_FREEZESCRIPT;
@@ -2463,7 +2463,7 @@ static void ARX_CHANGELEVEL_PopAllIO_FINISH(bool reloadflag, bool firstTime) {
 			
 			io->targetinfo = ReadTargetInfo(aids->targetinfo);
 			if((io->ioflags & IO_NPC) && io->_npcdata->behavior == BEHAVIOUR_NONE) {
-				io->targetinfo = EntityHandle::Invalid;
+				io->targetinfo = EntityHandle();
 			}
 			
 			if(io->ioflags & IO_NPC) {

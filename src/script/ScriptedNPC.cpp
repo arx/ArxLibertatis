@@ -476,7 +476,7 @@ public:
 			io->_camdata->cam.translatetarget = Vec3f_ZERO;
 		}
 		
-		EntityHandle i = EntityHandle::Invalid;
+		EntityHandle i = EntityHandle();
 		if(t != NULL) {
 			i = io->targetinfo = t->index();
 			GetTargetPos(io);

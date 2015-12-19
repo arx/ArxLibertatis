@@ -836,7 +836,7 @@ bool CheckEverythingInSphere(const Sphere & sphere, long source, EntityHandle ta
 	bool vreturn = false;
 	
 	Entity * io;
-	EntityHandle ret_idx = EntityHandle::Invalid;
+	EntityHandle ret_idx = EntityHandle();
 	
 	float sr30 = sphere.radius + 20.f;
 	float sr40 = sphere.radius + 30.f;
@@ -1005,7 +1005,7 @@ bool CheckAnythingInSphere(const Sphere & sphere, EntityHandle source, CASFlags 
 	ARX_PROFILE_FUNC();
 	
 	if(num)
-		*num = EntityHandle::Invalid;
+		*num = EntityHandle();
 	
 	if(!(flags & CAS_NO_BACKGROUND_COL)) {
 		ARX_PROFILE("Background Collision");

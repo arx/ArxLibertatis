@@ -125,7 +125,7 @@ void ARX_SPELLS_Precast_Check() {
 										PlayerEntityHandle,
 										Precast[i].flags | SPELLCAST_FLAG_LAUNCHPRECAST, 
 										Precast[i].level, 
-										EntityHandle::Invalid,
+										EntityHandle(),
 										Precast[i].duration);
 					
 					Precast.erase(Precast.begin() + i);

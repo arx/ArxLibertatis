@@ -87,7 +87,7 @@ void SpellBase::updateCasterPosition() {
 Vec3f SpellBase::getTargetPos(EntityHandle source, EntityHandle target)
 {
 	Vec3f targetPos;
-	if(target == EntityHandle::Invalid) {
+	if(target == EntityHandle()) {
 		// no target... targeted by sight
 		if(source == PlayerEntityHandle) {
 			// no target... player spell targeted by sight

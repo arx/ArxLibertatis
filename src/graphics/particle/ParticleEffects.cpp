@@ -1091,7 +1091,7 @@ void ARX_PARTICLES_Update(EERIE_CAMERA * cam)  {
 		if(part->delay > 0) {
 			part->timcreation += part->delay;
 			part->delay=0;
-			if((part->special & DELAY_FOLLOW_SOURCE) && part->sourceionum != EntityHandle::Invalid
+			if((part->special & DELAY_FOLLOW_SOURCE) && part->sourceionum != EntityHandle()
 					&& entities[part->sourceionum]) {
 				part->ov = *part->source;
 				Entity * target = entities[part->sourceionum];
@@ -1162,10 +1162,10 @@ void ARX_PARTICLES_Update(EERIE_CAMERA * cam)  {
 		
 		float val = (part->tolive - framediff) * 0.01f;
 		
-		if((part->special & FOLLOW_SOURCE) && part->sourceionum != EntityHandle::Invalid
+		if((part->special & FOLLOW_SOURCE) && part->sourceionum != EntityHandle()
 				&& entities[part->sourceionum]) {
 			inn = in = *part->source;
-		} else if((part->special & FOLLOW_SOURCE2) && part->sourceionum != EntityHandle::Invalid
+		} else if((part->special & FOLLOW_SOURCE2) && part->sourceionum != EntityHandle()
 							&& entities[part->sourceionum]) {
 			inn = in = *part->source + part->move * val;
 		} else {
@@ -1377,7 +1377,7 @@ void TreatBackgroundActions() {
 			damage.damages = gl->ex_radius * (1.0f / 7);
 			damage.area = DAMAGE_FULL;
 			damage.duration = 1;
-			damage.source = EntityHandle::Invalid;
+			damage.source = EntityHandle();
 			damage.flags = 0;
 			damage.type = DAMAGE_TYPE_MAGICAL | DAMAGE_TYPE_FIRE | DAMAGE_TYPE_NO_FIX;
 			damage.pos = gl->pos;

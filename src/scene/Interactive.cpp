@@ -190,7 +190,7 @@ static void ARX_INTERACTIVE_ForceIOLeaveZone(Entity * io, long flags) {
 		if(!op->controled.empty()) {
 			EntityHandle t = entities.getById(op->controled);
 
-			if(t != EntityHandle::Invalid) {
+			if(t != EntityHandle()) {
 				std::string str = io->idString() + ' ' + temp;
 				SendIOScriptEvent( entities[t], SM_CONTROLLEDZONE_LEAVE, str ); 
 			}
@@ -210,7 +210,7 @@ void ARX_INTERACTIVE_DestroyDynamicInfo(Entity * io)
 	for(long i = 0; i < MAX_EQUIPED; i++) {
 		if(player.equiped[i] == n && ValidIONum(player.equiped[i])) {
 			ARX_EQUIPMENT_UnEquip(entities.player(), entities[player.equiped[i]], 1);
-			player.equiped[i] = EntityHandle::Invalid;
+			player.equiped[i] = EntityHandle();
 		}
 	}
 	
@@ -796,7 +796,7 @@ static void ARX_INTERACTIVE_ClearIODynData_II(Entity * io) {
 		free(io->_npcdata->pathfind.list);
 		io->_npcdata->pathfind.list = NULL;
 		io->_npcdata->pathfind = IO_PATHFIND();
-		io->_npcdata->pathfind.truetarget = EntityHandle::Invalid;
+		io->_npcdata->pathfind.truetarget = EntityHandle();
 		io->_npcdata->pathfind.listnb = -1;
 		ARX_NPC_Behaviour_Reset(io);
 	}
@@ -887,7 +887,7 @@ void RestoreInitialIOStatusOfIO(Entity * io)
 		io->ioflags &= ~IO_INVERTED;
 		io->lastspeechflag = 2;
 	
-		io->no_collide = EntityHandle::Invalid;
+		io->no_collide = EntityHandle();
 
 		MagicFlareReleaseEntity(io);
 
@@ -953,7 +953,7 @@ void RestoreInitialIOStatusOfIO(Entity * io)
 		io->show = SHOW_FLAG_IN_SCENE;
 		io->targetinfo = EntityHandle(TARGET_NONE);
 		io->spellcast_data.castingspell = SPELL_NONE;
-		io->summoner = EntityHandle::Invalid;
+		io->summoner = EntityHandle();
 		io->spark_n_blood = 0;
 
 		if(io->ioflags & IO_NPC) {
@@ -1385,7 +1385,7 @@ static EntityInstance getFreeEntityInstance(const res::path & classPath) {
 		std::string idString = EntityId(className, instance).string();
 		
 		// Check if the candidate instance number is used in the current scene
-		if(entities.getById(idString) != EntityHandle::Invalid) {
+		if(entities.getById(idString) != EntityHandle()) {
 			continue;
 		}
 		
@@ -1698,7 +1698,7 @@ Entity * AddNPC(const res::path & classPath, EntityInstance instance, AddInterac
 	
 	io->_npcdata->pathfind.listnb = -1;
 	io->_npcdata->behavior = BEHAVIOUR_NONE;
-	io->_npcdata->pathfind.truetarget = EntityHandle::Invalid;
+	io->_npcdata->pathfind.truetarget = EntityHandle();
 	
 	if(!(flags & NO_MESH) && (flags & IO_IMMEDIATELOAD)) {
 		EERIE_COLLISION_Cylinder_Create(io);
@@ -2087,7 +2087,7 @@ void SetYlsideDeath(Entity * io) {
 bool ARX_INTERACTIVE_CheckFULLCollision(PHYSICS_BOX_DATA * pbox, EntityHandle source) {
 	
 	bool col = false;
-	EntityHandle avoid = EntityHandle::Invalid;
+	EntityHandle avoid = EntityHandle();
 	Entity * io_source = NULL;
 
 	if(ValidIONum(source)) {

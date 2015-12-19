@@ -2280,10 +2280,10 @@ void ArxGame::manageEditorControls() {
 			if(io) {
 				LastSelectedIONum = io->index();
 			} else {
-				if(LastSelectedIONum == EntityHandle::Invalid)
+				if(LastSelectedIONum == EntityHandle())
 					LastSelectedIONum = PlayerEntityHandle;
 				else
-					LastSelectedIONum = EntityHandle::Invalid;
+					LastSelectedIONum = EntityHandle();
 			}
 		}
 	}

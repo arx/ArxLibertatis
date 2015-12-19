@@ -867,7 +867,7 @@ static void ARX_NPC_ManagePoison(Entity * io) {
 
 		if(io->_npcdata->lifePool.current > 0 && io->_npcdata->lifePool.current - dmg <= 0.f) {
 			long xp = io->_npcdata->xpvalue;
-			ARX_DAMAGES_DamageNPC(io, dmg, EntityHandle::Invalid, false, NULL);
+			ARX_DAMAGES_DamageNPC(io, dmg, EntityHandle(), false, NULL);
 			ARX_PLAYER_Modify_XP(xp);
 		}
 		else
@@ -987,7 +987,7 @@ void ARX_PHYSICS_Apply() {
 			if(io->ioflags & IO_NPC) {
 				const float LAVA_DAMAGE = 10.f;
 				float dmg = LAVA_DAMAGE * framedelay * (1.f/100);
-				ARX_DAMAGES_DamageNPC(io, dmg, EntityHandle::Invalid, false, NULL);
+				ARX_DAMAGES_DamageNPC(io, dmg, EntityHandle(), false, NULL);
 			}
 		}
 
@@ -3088,7 +3088,7 @@ void GetTargetPos(Entity * io, unsigned long smoothing) {
 		return;
 	}
 	
-	if(io->targetinfo == TARGET_PLAYER || io->targetinfo == EntityHandle::Invalid) {
+	if(io->targetinfo == TARGET_PLAYER || io->targetinfo == EntityHandle()) {
 		io->target = player.pos + Vec3f(0.f, player.size.y, 0.f);
 		return;
 	} else if(ValidIONum(io->targetinfo)) {

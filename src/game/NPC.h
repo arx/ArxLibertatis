@@ -116,7 +116,7 @@ struct IO_PATHFIND {
 		, list(NULL)
 		, listpos(0)
 		, pathwait(0)
-		, truetarget(0) // TODO is this correct ? use EntityHandle::Invalid ?
+		, truetarget(0) // TODO is this correct ? use EntityHandle() ?
 	{}
 };
 

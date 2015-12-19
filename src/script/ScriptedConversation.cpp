@@ -254,7 +254,7 @@ class SpeakCommand : public Command {
 		std::string target = context.getWord();
 		Entity * t = entities.getById(target, context.getEntity());
 		
-		acs.ionum = (t == NULL) ? EntityHandle::Invalid : t->index();
+		acs.ionum = (t == NULL) ? EntityHandle() : t->index();
 		acs.startpos = context.getFloat();
 		acs.endpos = context.getFloat();
 		
@@ -314,11 +314,11 @@ public:
 					acs.endangle.setPitch(context.getFloat());
 					acs.startpos = context.getFloat();
 					acs.endpos = context.getFloat();
-					acs.ionum = (io == NULL) ? EntityHandle::Invalid : io->index();
+					acs.ionum = (io == NULL) ? EntityHandle() : io->index();
 					if(player) {
 						computeACSPos(acs, entities.player(), acs.ionum);
 					} else {
-						computeACSPos(acs, io, EntityHandle::Invalid);
+						computeACSPos(acs, io, EntityHandle());
 					}
 					
 				} else if(command == "ccctalker_l" || command == "ccctalker_r") {

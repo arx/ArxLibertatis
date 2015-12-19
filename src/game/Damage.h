@@ -115,7 +115,7 @@ struct DamageParameters {
 		area = DAMAGE_AREA;
 		flags = 0;
 		type = 0;
-		source = EntityHandle::Invalid;
+		source = EntityHandle();
 	}
 };
 
@@ -129,14 +129,14 @@ void DamageRequestEnd(DamageHandle handle);
  */
 void CheckForIgnition(const Sphere & sphere, bool mode, long flag);
 
-void DoSphericDamage(const Sphere & sphere, float dmg, DamageArea flags, DamageType typ = 0, EntityHandle numsource = EntityHandle::Invalid);
+void DoSphericDamage(const Sphere & sphere, float dmg, DamageArea flags, DamageType typ = 0, EntityHandle numsource = EntityHandle());
 
 void ARX_DAMAGE_Reset_Blood_Info();
 void ARX_DAMAGE_Show_Hit_Blood();
 void ARX_DAMAGES_Reset();
  
 void ARX_DAMAGES_UpdateAll();
-float ARX_DAMAGES_DamagePlayer(float dmg, DamageType type, EntityHandle source = EntityHandle::Invalid);
+float ARX_DAMAGES_DamagePlayer(float dmg, DamageType type, EntityHandle source = EntityHandle());
 void ARX_DAMAGES_DamageFIX(Entity * io, float dmg, EntityHandle source, bool isSpellHit);
 float ARX_DAMAGES_DamageNPC(Entity * io, float dmg, EntityHandle source, bool isSpellHit, const Vec3f * pos);
 bool ARX_DAMAGES_TryToDoDamage(const Vec3f & pos, float dmg, float radius, EntityHandle source);
