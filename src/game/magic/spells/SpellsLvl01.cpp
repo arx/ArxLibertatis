@@ -454,7 +454,7 @@ void IgnitSpell::Launch()
 			
 			T_LINKLIGHTTOFX entry;
 			
-			entry.iLightNum = ii;
+			entry.m_targetLight = ii;
 			
 			entry.m_effectLight = GetFreeDynLight();
 		
@@ -493,7 +493,7 @@ void IgnitSpell::End() {
 	
 	std::vector<T_LINKLIGHTTOFX>::iterator itr;
 	for(itr = m_lights.begin(); itr != m_lights.end(); ++itr) {
-		EERIE_LIGHT * light = GLight[itr->iLightNum];
+		EERIE_LIGHT * light = GLight[itr->m_targetLight];
 		light->m_ignitionStatus = true;
 		ARX_SOUND_PlaySFX(SND_SPELL_IGNITE, &light->pos);
 		lightHandleDestroy(itr->m_effectLight);
@@ -513,7 +513,7 @@ void IgnitSpell::Update(float timeDelta)
 		std::vector<T_LINKLIGHTTOFX>::iterator itr;
 		for(itr = m_lights.begin(); itr != m_lights.end(); ++itr) {
 			
-			EERIE_LIGHT * targetLight = GLight[itr->iLightNum];
+			EERIE_LIGHT * targetLight = GLight[itr->m_targetLight];
 			
 			Vec3f pos = glm::mix(m_srcPos, targetLight->pos, a);
 			
