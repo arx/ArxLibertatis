@@ -547,9 +547,11 @@ void ComputeTileLights(short x,short z)
 	float zz=((float)z+0.5f)*ACTIVEBKG->Zdiv;
 
 	for(long i=0; i < TOTPDL; i++) {
-		if(closerThan(Vec2f(xx, zz), Vec2f(PDL[i]->pos.x, PDL[i]->pos.z), PDL[i]->fallend + 60.f)) {
+		EERIE_LIGHT * light = PDL[i];
+		
+		if(closerThan(Vec2f(xx, zz), Vec2f(light->pos.x, light->pos.z), light->fallend + 60.f)) {
 
-			tilelights[x][z].el.push_back(PDL[i]);
+			tilelights[x][z].el.push_back(light);
 		}
 	}
 }
