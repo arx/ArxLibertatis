@@ -456,10 +456,10 @@ void IgnitSpell::Launch()
 			
 			entry.iLightNum = ii;
 			
-			entry.idl = GetFreeDynLight();
+			entry.m_effectLight = GetFreeDynLight();
 		
-			if(lightHandleIsValid(entry.idl)) {
-				EERIE_LIGHT * light = lightHandleGet(entry.idl);
+			if(lightHandleIsValid(entry.m_effectLight)) {
+				EERIE_LIGHT * light = lightHandleGet(entry.m_effectLight);
 				
 				light->intensity = Random::getf(0.7f, 2.7f);
 				light->fallend = 400.f;
@@ -496,7 +496,7 @@ void IgnitSpell::End() {
 		EERIE_LIGHT * light = GLight[itr->iLightNum];
 		light->m_ignitionStatus = true;
 		ARX_SOUND_PlaySFX(SND_SPELL_IGNITE, &light->pos);
-		lightHandleDestroy(itr->idl);
+		lightHandleDestroy(itr->m_effectLight);
 	}
 	
 	m_lights.clear();
@@ -517,7 +517,7 @@ void IgnitSpell::Update(float timeDelta)
 			
 			Vec3f pos = glm::mix(m_srcPos, targetLight->pos, a);
 			
-			LightHandle id = itr->idl;
+			LightHandle id = itr->m_effectLight;
 			
 			if(lightHandleIsValid(id)) {
 				EERIE_LIGHT * light = lightHandleGet(id);

@@ -59,7 +59,7 @@ private:
 	unsigned int m_elapsed;
 	
 	struct T_LINKLIGHTTOFX {
-		LightHandle idl;
+		LightHandle m_effectLight;
 		int iLightNum;
 	};
 	std::vector<T_LINKLIGHTTOFX> m_lights;
