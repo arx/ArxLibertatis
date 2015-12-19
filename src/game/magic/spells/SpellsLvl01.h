@@ -59,7 +59,6 @@ private:
 	unsigned int m_elapsed;
 	
 	struct T_LINKLIGHTTOFX {
-		Vec3f poslight;
 		LightHandle idl;
 		int iLightNum;
 	};

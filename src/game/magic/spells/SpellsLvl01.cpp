@@ -455,8 +455,7 @@ void IgnitSpell::Launch()
 			T_LINKLIGHTTOFX entry;
 			
 			entry.iLightNum = ii;
-			entry.poslight = light->pos;
-		
+			
 			entry.idl = GetFreeDynLight();
 		
 			if(lightHandleIsValid(entry.idl)) {
@@ -466,7 +465,7 @@ void IgnitSpell::Launch()
 				light->fallend = 400.f;
 				light->fallstart = 300.f;
 				light->rgb = Color3f(1.f, 1.f, 1.f);
-				light->pos = entry.poslight;
+				light->pos = light->pos;
 			}
 		
 			m_lights.push_back(entry);
@@ -496,7 +495,7 @@ void IgnitSpell::End() {
 	for(itr = m_lights.begin(); itr != m_lights.end(); ++itr) {
 		EERIE_LIGHT * light = GLight[itr->iLightNum];
 		light->m_ignitionStatus = true;
-		ARX_SOUND_PlaySFX(SND_SPELL_IGNITE, &itr->poslight);
+		ARX_SOUND_PlaySFX(SND_SPELL_IGNITE, &light->pos);
 		lightHandleDestroy(itr->idl);
 	}
 	
@@ -513,7 +512,10 @@ void IgnitSpell::Update(float timeDelta)
 		
 		std::vector<T_LINKLIGHTTOFX>::iterator itr;
 		for(itr = m_lights.begin(); itr != m_lights.end(); ++itr) {
-			Vec3f pos = glm::mix(m_srcPos, itr->poslight, a);
+			
+			EERIE_LIGHT * targetLight = GLight[itr->iLightNum];
+			
+			Vec3f pos = glm::mix(m_srcPos, targetLight->pos, a);
 			
 				LightHandle id = itr->idl;
 				
