@@ -223,7 +223,7 @@ Vec3f FlyingEyeSpell::getPosition() {
 
 FireFieldSpell::FireFieldSpell()
 	: m_light()
-	, m_damage(DamageHandle::Invalid)
+	, m_damage()
 {
 }
 

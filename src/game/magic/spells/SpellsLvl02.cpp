@@ -377,7 +377,7 @@ Vec3f LowerArmorSpell::getPosition() {
 
 HarmSpell::HarmSpell()
 	: m_light()
-	, m_damage(DamageHandle::Invalid)
+	, m_damage()
 	, m_pitch(0.f)
 {
 	
