@@ -2235,7 +2235,7 @@ void ArxGame::update2DFX() {
 
 	bool bComputeIO = false;
 
-	for(int i=0; i < TOTPDL; i++) {
+	for(size_t i = 0; i < TOTPDL; i++) {
 		EERIE_LIGHT *el = PDL[i];
 
 		EERIE_BKG_INFO * bkgData = getFastBackgroundData(el->pos.x, el->pos.z);
@@ -2305,7 +2305,7 @@ void ArxGame::goFor2DFX() {
 	GRenderer->SetRenderState(Renderer::DepthTest, false);
 	GRenderer->SetFogColor(Color::none);
 
-	for (int i=0; i < TOTPDL; i++) {
+	for(size_t i = 0; i < TOTPDL; i++) {
 		EERIE_LIGHT *el = PDL[i];
 
 		if(!el->exist || !el->treat)

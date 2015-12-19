@@ -324,7 +324,7 @@ static void RenderBookPlayerCharacter() {
 	EERIE_LIGHT * SavePDL[2];
 	SavePDL[0] = PDL[0];
 	SavePDL[1] = PDL[1];
-	int iSavePDL = TOTPDL;
+	size_t iSavePDL = TOTPDL;
 	
 	PDL[0] = &eLight1;
 	PDL[1] = &eLight2;

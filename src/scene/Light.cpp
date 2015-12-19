@@ -72,7 +72,7 @@ EERIE_LIGHT * GLight[MAX_LIGHTS];
 EERIE_LIGHT DynLight[MAX_DYNLIGHTS];
 
 EERIE_LIGHT * PDL[MAX_DYNLIGHTS];
-long TOTPDL = 0;
+size_t TOTPDL = 0;
 
 static EERIE_LIGHT * IO_PDL[MAX_DYNLIGHTS];
 size_t TOTIOPDL = 0;
@@ -346,7 +346,7 @@ void PrecalcDynamicLighting(long x0, long z0, long x1, long z1) {
 				PDL[TOTPDL] = el;
 				TOTPDL++;
 
-				if((size_t)TOTPDL >= MAX_DYNLIGHTS)
+				if(TOTPDL >= MAX_DYNLIGHTS)
 					TOTPDL--;
 			}
 			else if(el->treat)
@@ -509,7 +509,7 @@ void UpdateLlights(const Vec3f pos, bool forPlayerColor) {
 		Insertllight(IO_PDL[i], pos, forPlayerColor);
 	}
 
-	for(int i = 0; i < TOTPDL; i++) {
+	for(size_t i = 0; i < TOTPDL; i++) {
 		Insertllight(PDL[i], pos, forPlayerColor);
 	}
 }
@@ -546,7 +546,7 @@ void ComputeTileLights(short x,short z)
 	float xx=((float)x+0.5f)*ACTIVEBKG->Xdiv;
 	float zz=((float)z+0.5f)*ACTIVEBKG->Zdiv;
 
-	for(long i=0; i < TOTPDL; i++) {
+	for(size_t i = 0; i < TOTPDL; i++) {
 		EERIE_LIGHT * light = PDL[i];
 		
 		if(closerThan(Vec2f(xx, zz), Vec2f(light->pos.x, light->pos.z), light->fallend + 60.f)) {

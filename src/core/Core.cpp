@@ -167,7 +167,7 @@ extern TextManager	*pTextManage;
 extern float FORCE_TIME_RESTORE;
 
 extern long		DONT_WANT_PLAYER_INZONE;
-extern long		TOTPDL;
+extern size_t		TOTPDL;
 extern long		COLLIDED_CLIMB_POLY;
 
 //-----------------------------------------------------------------------------
