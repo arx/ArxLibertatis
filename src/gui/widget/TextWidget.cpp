@@ -175,7 +175,7 @@ bool TextWidget::OnMouseClick() {
 					if(page->eMenuState == EDIT_QUEST_LOAD) {
 						
 						m_savegame = page->m_savegame;
-						if(m_savegame != SavegameHandle::Invalid) {
+						if(m_savegame != SavegameHandle()) {
 							m_targetMenu = MAIN;
 							GRenderer->Clear(Renderer::DepthBuffer);
 							ARXMenu_LoadQuest(m_savegame);
@@ -222,7 +222,7 @@ bool TextWidget::OnMouseClick() {
 					MenuPage * page = pWindowMenu->m_pages[i];
 					if(page->eMenuState == EDIT_QUEST_LOAD) {
 						m_savegame = page->m_savegame;
-						if(m_savegame != SavegameHandle::Invalid) {
+						if(m_savegame != SavegameHandle()) {
 							m_targetMenu = EDIT_QUEST_LOAD;
 							mainMenu->bReInitAll = true;
 							savegames.remove(m_savegame);
@@ -277,7 +277,7 @@ bool TextWidget::OnMouseClick() {
 				if(me) {
 					me->m_savegame = m_savegame;
 					
-					if(m_savegame != SavegameHandle::Invalid) {
+					if(m_savegame != SavegameHandle()) {
 						me->SetText(savegames[m_savegame].name);
 						pDeleteButton->lColor = pDeleteButton->lOldColor;
 						pDeleteButton->SetCheckOn();
@@ -355,7 +355,7 @@ void TextWidget::RenderMouseOver() {
 		case BUTTON_MENUEDITQUEST_LOAD:
 		case BUTTON_MENUEDITQUEST_SAVEINFO: {
 			
-			if(m_savegame == SavegameHandle::Invalid) {
+			if(m_savegame == SavegameHandle()) {
 				pTextureLoadRender = NULL;
 				break;
 			}

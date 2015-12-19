@@ -117,7 +117,7 @@ public:
 			TextWidget * txt = new TextWidget(BUTTON_INVALID, hFontMenu, szMenuText, Vec2f_ZERO);
 			txt->clicked = boost::bind(&ChooseLoadOrSaveMenuPage::onClickLoad, this);
 			txt->m_targetMenu = EDIT_QUEST_LOAD;
-			txt->m_savegame = SavegameHandle::Invalid;
+			txt->m_savegame = SavegameHandle();
 			addCenter(txt, true);
 		}
 		
@@ -218,7 +218,7 @@ public:
 			TextWidget * txt = new TextWidget(BUTTON_INVALID, hFontControls, std::string(), Vec2f(20, 0));
 			txt->m_targetMenu = EDIT_QUEST_SAVE_CONFIRM;
 			txt->SetCheckOff();
-			txt->m_savegame = SavegameHandle::Invalid;
+			txt->m_savegame = SavegameHandle();
 			addCenter(txt);
 		}
 		
@@ -328,14 +328,14 @@ public:
 			
 			TextWidget * txt = new TextWidget(BUTTON_MENUEDITQUEST_SAVEINFO, hFontControls, text.str(), Vec2f(20, 0));
 			txt->m_targetMenu = EDIT_QUEST_SAVE_CONFIRM;
-			txt->m_savegame = SavegameHandle::Invalid;
+			txt->m_savegame = SavegameHandle();
 			addCenter(txt);
 		}
 	
 		{
 			TextWidget * txt = new TextWidget(BUTTON_INVALID, hFontControls, std::string(), Vec2f(20, 0));
 			txt->m_targetMenu = EDIT_QUEST_SAVE_CONFIRM;
-			txt->m_savegame = SavegameHandle::Invalid;
+			txt->m_savegame = SavegameHandle();
 			txt->SetCheckOff();
 			addCenter(txt);
 		}
@@ -366,7 +366,7 @@ public:
 		{
 			std::string szMenuText = getLocalised("system_menu_editquest_newsavegame", "---");
 			TextWidget * txt = new TextWidget(BUTTON_INVALID, hFontMenu, szMenuText, Vec2f(20, 0));
-			txt->m_savegame = SavegameHandle::Invalid;
+			txt->m_savegame = SavegameHandle();
 			txt->eState=EDIT;
 			txt->ePlace=CENTER;
 			addCenter(txt, true);
@@ -1269,7 +1269,7 @@ void MainMenuLeftCreate(MENUSTATE eMenuState)
 	
 	{
 	LoadMenuPage * page = new LoadMenuPage(offset + Vec2f(0, -40), size);
-	page->m_savegame = SavegameHandle::Invalid;
+	page->m_savegame = SavegameHandle();
 	page->m_rowSpacing = 5;
 	page->init();
 	pWindowMenu->add(page);
@@ -1284,7 +1284,7 @@ void MainMenuLeftCreate(MENUSTATE eMenuState)
 	
 	{
 	SaveConfirmMenuPage * page = new SaveConfirmMenuPage(offset, size);
-	page->m_savegame = SavegameHandle::Invalid;
+	page->m_savegame = SavegameHandle();
 	page->init();
 	pWindowMenu->add(page);
 	}
