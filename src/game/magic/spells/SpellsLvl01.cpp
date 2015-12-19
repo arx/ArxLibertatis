@@ -517,14 +517,14 @@ void IgnitSpell::Update(float timeDelta)
 			
 			Vec3f pos = glm::mix(m_srcPos, targetLight->pos, a);
 			
-				LightHandle id = itr->idl;
+			LightHandle id = itr->idl;
+			
+			if(lightHandleIsValid(id)) {
+				EERIE_LIGHT * light = lightHandleGet(id);
 				
-				if(lightHandleIsValid(id)) {
-					EERIE_LIGHT * light = lightHandleGet(id);
-					
-					light->intensity = Random::getf(0.7f, 2.7f);
-					light->pos = pos;
-				}
+				light->intensity = Random::getf(0.7f, 2.7f);
+				light->pos = pos;
+			}
 		}
 	}
 	
