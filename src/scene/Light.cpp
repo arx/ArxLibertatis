@@ -75,7 +75,7 @@ EERIE_LIGHT * PDL[MAX_DYNLIGHTS];
 long TOTPDL = 0;
 
 static EERIE_LIGHT * IO_PDL[MAX_DYNLIGHTS];
-long TOTIOPDL = 0;
+size_t TOTIOPDL = 0;
 
 void ColorMod::updateFromEntity(Entity *io, bool inBook) {
 	factor = Color3f::white;
@@ -376,7 +376,7 @@ void PrecalcIOLighting(const Vec3f & pos, float radius) {
 			
 			TOTIOPDL++;
 			
-			if((size_t)TOTIOPDL >= MAX_DYNLIGHTS)
+			if(TOTIOPDL >= MAX_DYNLIGHTS)
 				TOTIOPDL--;
 		}
 	}
@@ -505,7 +505,7 @@ static void Insertllight(EERIE_LIGHT * el, const Vec3f & pos, bool forPlayerColo
 void UpdateLlights(const Vec3f pos, bool forPlayerColor) {
 	llightsInit();
 
-	for(int i = 0; i < TOTIOPDL; i++) {
+	for(size_t i = 0; i < TOTIOPDL; i++) {
 		Insertllight(IO_PDL[i], pos, forPlayerColor);
 	}
 
