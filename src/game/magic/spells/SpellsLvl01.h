@@ -73,11 +73,7 @@ public:
 	void Update(float timeDelta);
 	
 private:
-	struct T_LINKLIGHTTOFX {
-		Vec3f poslight;
-		int iLightNum;
-	};
-	std::vector<T_LINKLIGHTTOFX> m_lights;
+	std::vector<size_t> m_lights;
 };
 
 class ActivatePortalSpell : public SpellBase {

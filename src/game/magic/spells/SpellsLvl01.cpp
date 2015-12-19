@@ -19,6 +19,8 @@
 
 #include "game/magic/spells/SpellsLvl01.h"
 
+#include <boost/foreach.hpp>
+
 #include "core/Application.h"
 #include "core/GameTime.h"
 
@@ -561,11 +563,7 @@ void DouseSpell::Launch()
 		}
 		
 		if(!fartherThan(target, light->pos, fPerimeter)) {
-			T_LINKLIGHTTOFX entry;
-			
-			entry.iLightNum = ii;
-			entry.poslight = light->pos;
-			m_lights.push_back(entry);
+			m_lights.push_back(ii);
 		}
 	}
 	
@@ -612,9 +610,8 @@ void DouseSpell::Launch()
 
 void DouseSpell::End() {
 	
-	std::vector<T_LINKLIGHTTOFX>::const_iterator itr;
-	for(itr = m_lights.begin(); itr != m_lights.end(); ++itr) {
-		EERIE_LIGHT * light = GLight[itr->iLightNum];
+	BOOST_FOREACH(size_t index, m_lights) {
+		EERIE_LIGHT * light = GLight[index];
 		light->m_ignitionStatus = false;
 		ARX_SOUND_PlaySFX(SND_SPELL_DOUSE, &light->pos);
 	}
