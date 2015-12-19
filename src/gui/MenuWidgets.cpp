@@ -764,12 +764,12 @@ void MenuPage::UpdateText() {
 	v[0].p.z=v[1].p.z=v[2].p.z=v[3].p.z=0.f;    
 	v[0].rhw=v[1].rhw=v[2].rhw=v[3].rhw=1.f;
 
-	v[0].p.x = (float)m_selected->m_rect.right;
-	v[0].p.y = (float)m_selected->m_rect.top;
+	v[0].p.x = m_selected->m_rect.right;
+	v[0].p.y = m_selected->m_rect.top;
 	v[1].p.x = v[0].p.x+2.f;
 	v[1].p.y = v[0].p.y;
 	v[2].p.x = v[0].p.x;
-	v[2].p.y = (float)m_selected->m_rect.bottom;
+	v[2].p.y = m_selected->m_rect.bottom;
 	v[3].p.x = v[1].p.x;
 	v[3].p.y = v[2].p.y;
 
