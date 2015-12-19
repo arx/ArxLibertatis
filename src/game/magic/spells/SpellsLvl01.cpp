@@ -616,7 +616,7 @@ void DouseSpell::End() {
 	for(itr = m_lights.begin(); itr != m_lights.end(); ++itr) {
 		EERIE_LIGHT * light = GLight[itr->iLightNum];
 		light->m_ignitionStatus = false;
-		ARX_SOUND_PlaySFX(SND_SPELL_DOUSE, &itr->poslight);
+		ARX_SOUND_PlaySFX(SND_SPELL_DOUSE, &light->pos);
 	}
 }
 
