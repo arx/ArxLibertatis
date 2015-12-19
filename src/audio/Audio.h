@@ -95,7 +95,7 @@ AmbianceId getAmbiance(const res::path & ambiance_name);
 EnvId getEnvironment(const res::path & environment_name);
 
 //! Retrieving by ID (If resource_id == INVALID_ID, return first found)
-AmbianceId getNextAmbiance(AmbianceId ambiance_id = AmbianceId::Invalid);
+AmbianceId getNextAmbiance(AmbianceId ambiance_id = AmbianceId());
 
 // Listener
 

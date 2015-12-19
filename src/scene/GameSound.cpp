@@ -138,8 +138,8 @@ static const res::path ARX_SOUND_COLLISION_MAP_NAMES[] = {
 static bool bIsActive(false);
 
 
-static AmbianceId ambiance_zone = AmbianceId::Invalid;
-static AmbianceId ambiance_menu = AmbianceId::Invalid;
+static AmbianceId ambiance_zone = AmbianceId();
+static AmbianceId ambiance_menu = AmbianceId();
 
 static long Inter_Materials[MAX_MATERIALS][MAX_MATERIALS][MAX_VARIANTS];
 
@@ -942,7 +942,7 @@ bool ARX_SOUND_PlayZoneAmbiance(const res::path & name, SoundLoopMode loop, floa
 
 	if(name == "none") {
 		audio::ambianceStop(ambiance_zone, AMBIANCE_FADE_TIME);
-		ambiance_zone = AmbianceId::Invalid;
+		ambiance_zone = AmbianceId();
 		return true;
 	}
 
@@ -987,13 +987,13 @@ void ARX_SOUND_KillAmbiances() {
 		ambiance_id = audio::getNextAmbiance(ambiance_id);
 	}
 	
-	ambiance_zone = AmbianceId::Invalid;
+	ambiance_zone = AmbianceId();
 }
 
 AmbianceId ARX_SOUND_PlayMenuAmbiance(const res::path & ambiance_name) {
 	
 	if(!bIsActive) {
-		return AmbianceId::Invalid;
+		return AmbianceId();
 	}
 	
 	audio::deleteAmbiance(ambiance_menu);
