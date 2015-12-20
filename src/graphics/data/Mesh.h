@@ -95,7 +95,6 @@ struct EERIE_BACKGROUND
 	float		Zmul;
 	long		  nbanchors;
 	ANCHOR_DATA * anchors;
-	char		name[256];
 };
 
 extern long EERIEDrawnPolys;
