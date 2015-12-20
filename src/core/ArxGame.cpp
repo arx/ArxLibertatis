@@ -883,8 +883,6 @@ bool ArxGame::initGame()
 	bookcam.orgTrans.pos = Vec3f_ZERO;
 	bookcam.focal = BASE_FOCAL;
 	
-	ACTIVEBKG->ambient = Color3f(0.09f, 0.09f, 0.09f);
-	
 	LoadSysTextures();
 	cursorTexturesInit();
 	

@@ -65,7 +65,7 @@ ZeniMax Media Inc., Suite 120, Rockville, Maryland 20850 USA.
 
 static const float GLOBAL_LIGHT_FACTOR=0.85f;
 
-// TODO is this correct?
+static const Color3f defaultAmbient = Color3f(0.09f, 0.09f, 0.09f);
 static const int NPC_ITEMS_AMBIENT_VALUE_255 = 35;
 
 EERIE_LIGHT * GLight[MAX_LIGHTS];
@@ -99,7 +99,7 @@ void ColorMod::updateFromEntity(Entity *io, bool inBook) {
 	}
 	
 	// Ambient light
-	ambientColor = ACTIVEBKG->ambient * 255.f;
+	ambientColor = defaultAmbient * 255.f;
 	if(io && (io->ioflags & (IO_NPC | IO_ITEM)))
 		ambientColor = Color3f::gray(NPC_ITEMS_AMBIENT_VALUE_255);
 }

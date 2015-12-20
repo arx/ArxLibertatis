@@ -93,7 +93,6 @@ struct EERIE_BACKGROUND
 	short		Zdiv;
 	float		Xmul;
 	float		Zmul;
-	Color3f ambient;
 	long		  nbanchors;
 	ANCHOR_DATA * anchors;
 	char		name[256];
