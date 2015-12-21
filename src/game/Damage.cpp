@@ -647,7 +647,7 @@ float ARX_DAMAGES_DealDamages(EntityHandle target, float dmg, EntityHandle sourc
 		dmg = dmg * framedelay * ( 1.0f / 1000 );
 	}
 
-	if(target == 0) {
+	if(target == PlayerEntityHandle) {
 		if(flags & DAMAGE_TYPE_POISON) {
 			if(Random::getf(0.f, 100.f) > player.m_misc.resistPoison) {
 				damagesdone = dmg;
@@ -781,7 +781,7 @@ float ARX_DAMAGES_DamageNPC(Entity * io, float dmg, EntityHandle source, bool is
 		if(ValidIONum(source)) {
 			Entity * pio = NULL;
 
-			if(source == 0) {
+			if(source == PlayerEntityHandle) {
 				if(ValidIONum(player.equiped[EQUIP_SLOT_WEAPON])) {
 					pio = entities[player.equiped[EQUIP_SLOT_WEAPON]];
 
@@ -883,7 +883,7 @@ float ARX_DAMAGES_DamageNPC(Entity * io, float dmg, EntityHandle source, bool is
 				long xp = io->_npcdata->xpvalue;
 				ARX_DAMAGES_ForceDeath(io, entities[source]);
 
-				if(source == 0 || entities[source]->summoner == PlayerEntityHandle)
+				if(source == PlayerEntityHandle || entities[source]->summoner == PlayerEntityHandle)
 					ARX_PLAYER_Modify_XP(xp);
 			}
 			else ARX_DAMAGES_ForceDeath(io, NULL);
