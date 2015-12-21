@@ -176,7 +176,7 @@ void HealSpell::Update(float timeDelta) {
 		{
 			float dist;
 
-			if(long(ii) == m_caster)
+			if(handle == m_caster)
 				dist=0;
 			else
 				dist=fdist(m_pos, e->pos);
@@ -184,7 +184,7 @@ void HealSpell::Update(float timeDelta) {
 			if(dist<300.f) {
 				float gain = Random::getf(0.8f, 2.4f) * m_level * (300.f - dist) * (1.0f/300) * timeDelta * (1.0f/1000);
 
-				if(ii==0) {
+				if(handle == PlayerEntityHandle) {
 					if (!BLOCK_PLAYER_CONTROLS)
 						player.lifePool.current=std::min(player.lifePool.current+gain,player.Full_maxlife);									
 				}
