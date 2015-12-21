@@ -257,9 +257,9 @@ void ARX_MISSILES_Update() {
 					break;
 				}
 
-				long ici = IsCollidingAnyInter(dest, tro);
+				EntityHandle ici = IsCollidingAnyInter(dest, tro);
 
-				if(ici != -1 && ici != missiles[i].owner) {
+				if(ici != EntityHandle() && ici != missiles[i].owner) {
 					ARX_MISSILES_Kill(i);
 					ARX_BOOMS_Add(dest);
 					Add3DBoom(dest);
