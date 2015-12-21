@@ -225,7 +225,7 @@ bool TextWidget::OnMouseClick() {
 						if(m_savegame != SavegameHandle()) {
 							m_targetMenu = EDIT_QUEST_LOAD;
 							mainMenu->bReInitAll = true;
-							savegames.remove(m_savegame);
+							savegames.remove(m_savegame.handleData());
 							break;
 						}
 					}
@@ -249,7 +249,7 @@ bool TextWidget::OnMouseClick() {
 						if(me) {
 							m_targetMenu = EDIT_QUEST_SAVE;
 							mainMenu->bReInitAll = true;
-							savegames.remove(me->m_savegame);
+							savegames.remove(me->m_savegame.handleData());
 							break;
 						}
 					}
@@ -278,7 +278,7 @@ bool TextWidget::OnMouseClick() {
 					me->m_savegame = m_savegame;
 					
 					if(m_savegame != SavegameHandle()) {
-						me->SetText(savegames[m_savegame].name);
+						me->SetText(savegames[m_savegame.handleData()].name);
 						pDeleteButton->lColor = pDeleteButton->lOldColor;
 						pDeleteButton->SetCheckOn();
 					} else {
@@ -360,7 +360,7 @@ void TextWidget::RenderMouseOver() {
 				break;
 			}
 			
-			const res::path & image = savegames[m_savegame].thumbnail;
+			const res::path & image = savegames[m_savegame.handleData()].thumbnail;
 			if(!image.empty()) {
 				TextureContainer * t = TextureContainer::LoadUI(image, TextureContainer::NoColorKey);
 				if(t != pTextureLoad) {

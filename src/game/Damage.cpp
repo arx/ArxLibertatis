@@ -127,8 +127,8 @@ DamageHandle DamageCreate(const DamageParameters & params) {
 }
 
 void DamageRequestEnd(DamageHandle handle) {
-	if(long(handle) >= 0) {
-		damages[handle].exist = 0;
+	if(handle.handleData() >= 0) {
+		damages[handle.handleData()].exist = 0;
 	}
 }
 
@@ -303,12 +303,12 @@ float ARX_DAMAGES_DamagePlayer(float dmg, DamageType type, EntityHandle source) 
 					Entity * ioo = entities[handle];
 					
 					if(ioo && (ioo->ioflags & IO_NPC)) {
-						if(ioo->targetinfo == TARGET_PLAYER) {
+						if(ioo->targetinfo == EntityHandle(TARGET_PLAYER)) {
 							EVENT_SENDER = entities.player();
 							std::string killer;
 							if(source == PlayerEntityHandle) {
 								killer = "player";
-							} else if(source <= EntityHandle()) {
+							} else if(source.handleData() <= EntityHandle().handleData()) {
 								killer = "none";
 							} else if(ValidIONum(source)) {
 								killer = entities[source]->idString();
@@ -812,7 +812,7 @@ float ARX_DAMAGES_DamageNPC(Entity * io, float dmg, EntityHandle source, bool is
 		}
 
 		if(io->script.data != NULL) {
-			if(source >= PlayerEntityHandle) {
+			if(source.handleData() >= PlayerEntityHandle.handleData()) {
 				if(ValidIONum(source))
 					EVENT_SENDER = entities[source]; 
 				else
@@ -956,7 +956,7 @@ static void ARX_DAMAGES_UpdateDamage(DamageHandle j, float tim) {
 	
 	ARX_PROFILE_FUNC();
 	
-	DAMAGE_INFO & damage = damages[j];
+	DAMAGE_INFO & damage = damages[j.handleData()];
 	
 	if(!damage.exist) {
 		return;

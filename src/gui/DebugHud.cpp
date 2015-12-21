@@ -346,7 +346,7 @@ void ShowInfoText() {
 				npcBox.add("Moveproblem", npcData->moveproblem);
 				npcBox.add("Pathfind listpos", static_cast<long>(npcData->pathfind.listpos));
 				npcBox.add("Pathfind listnb", npcData->pathfind.listnb);
-				npcBox.add("Pathfind targ", npcData->pathfind.truetarget);
+				npcBox.add("Pathfind targ", npcData->pathfind.truetarget.handleData());
 				npcBox.add("Behavior", flagNames(BehaviourFlagNames, npcData->behavior));
 				
 				// TODO should those really be flags ?

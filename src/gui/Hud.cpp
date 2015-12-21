@@ -982,8 +982,8 @@ void PrecastSpellsGui::PrecastSpellIconSlot::updateInput() {
 		SpecialCursor = CURSOR_INTERACTION_ON;
 		
 		if(eeMouseUp1()) {
-			if(Precast[m_precastIndex].typ >= 0) {
-				ARX_SPEECH_Add(spellicons[Precast[m_precastIndex].typ].name);
+			if(Precast[m_precastIndex.handleData()].typ >= 0) {
+				ARX_SPEECH_Add(spellicons[Precast[m_precastIndex.handleData()].typ].name);
 			}
 		}
 		

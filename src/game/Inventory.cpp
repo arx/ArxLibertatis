@@ -206,7 +206,7 @@ void PutInFrontOfPlayer(Entity * io)
 }
 
 std::ostream & operator<<(std::ostream & strm, const InventoryPos & p) {
-	return strm << '(' << p.io << ", " << p.bag << ", " << p.x << ", " << p.y << ')';
+	return strm << '(' << p.io.handleData() << ", " << p.bag << ", " << p.x << ", " << p.y << ')';
 }
 
 namespace {
@@ -621,7 +621,7 @@ Inventory<INVENTORY_BAGS, INVENTORY_X, INVENTORY_Y> getPlayerInventory() {
 Inventory<1, 20, 20> getIoInventory(Entity * io) {
 	arx_assert(io != NULL && io->inventory != NULL);
 	INVENTORY_DATA * inv = io->inventory;
-	return Inventory<1, 20, 20>(io->index(), inv->slot, 1, inv->m_size.x, inv->m_size.y);
+	return Inventory<1, 20, 20>(io->index().handleData(), inv->slot, 1, inv->m_size.x, inv->m_size.y);
 }
 
 } // anonymous namespace

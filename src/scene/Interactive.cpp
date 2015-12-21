@@ -142,7 +142,7 @@ void Set_DragInter(Entity * io)
 // Checks if an IO index number is valid
 bool ValidIONum(EntityHandle num) {
 	
-	return !(num < 0 || num >= long(entities.size()) || !entities[num]);
+	return !(num.handleData() < 0 || num.handleData() >= long(entities.size()) || !entities[num]);
 }
 
 bool ValidIOAddress(const Entity * io) {

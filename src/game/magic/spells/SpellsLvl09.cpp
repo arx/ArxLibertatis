@@ -262,7 +262,7 @@ void SummonCreatureSpell::Update(float timeDelta) {
 
 bool FakeSummonSpell::CanLaunch()
 {
-	if(m_caster <= PlayerEntityHandle || !ValidIONum(m_target)) {
+	if(m_caster.handleData() <= PlayerEntityHandle.handleData() || !ValidIONum(m_target)) {
 		return false;
 	}
 	

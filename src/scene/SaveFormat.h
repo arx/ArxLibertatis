@@ -539,7 +539,7 @@ struct SavedSpellcastData {
 		std::copy(b.symb, b.symb + 4, symb);
 		spell_flags = b.spell_flags;
 		spell_level = b.spell_level;
-		target = b.target;
+		target = b.target.handleData();
 		duration = b.duration;
 		return *this;
 	}
@@ -692,7 +692,7 @@ struct SavedBehaviour {
 		behavior = b.behavior;
 		behavior_param = b.behavior_param;
 		tactics = b.tactics;
-		target = b.target;
+		target = b.target.handleData();
 		movemode = b.movemode;
 		ARX_STATIC_ASSERT(SAVED_MAX_ANIM_LAYERS == MAX_ANIM_LAYERS, "array size mismatch");
 		std::copy(b.animlayer, b.animlayer + SAVED_MAX_ANIM_LAYERS, animlayer);
@@ -717,7 +717,7 @@ struct SavedPathfindTarget {
 	
 	inline SavedPathfindTarget & operator=(const IO_PATHFIND & b) {
 		padding[0] = padding[1] = padding[2] = padding[3] = 0;
-		truetarget = b.truetarget;
+		truetarget = b.truetarget.handleData();
 		return *this;
 	}
 	

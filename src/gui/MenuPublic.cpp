@@ -270,7 +270,7 @@ void ARXMenu_SaveQuest(const std::string & name, SavegameHandle num) {
 	
 	ARX_SOUND_MixerPause(ARX_SOUND_MixerMenu);
 	
-	savegames.save(name, num, savegame_thumbnail);
+	savegames.save(name, num.handleData(), savegame_thumbnail);
 	
 	ARX_SOUND_MixerResume(ARX_SOUND_MixerMenu);
 }

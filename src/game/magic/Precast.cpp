@@ -62,10 +62,10 @@ void ARX_SPELLS_Precast_Add(SpellType typ, long _level, SpellcastFlags flags, lo
 
 static long PrecastCheckCanPayMana(PrecastHandle num, float cost) {
 	
-	if(num < 0)
+	if(num.handleData() < 0)
 		return 0;
 
-	if(Precast[num].flags & SPELLCAST_FLAG_NOMANA)
+	if(Precast[num.handleData()].flags & SPELLCAST_FLAG_NOMANA)
 		return 1;
 
 	if(player.manaPool.current >= cost)
@@ -81,12 +81,12 @@ static long PrecastCheckCanPayMana(PrecastHandle num, float cost) {
 
 void ARX_SPELLS_Precast_Launch(PrecastHandle num) {
 	
-	if(size_t(num) >= Precast.size()) {
+	if(num.handleData() >= Precast.size()) {
 		return;
 	}
 	
 	if(float(arxtime) >= LAST_PRECAST_TIME + 1000) {
-		SpellType type = Precast[num].typ;
+		SpellType type = Precast[num.handleData()].typ;
 		
 		// Calculate the player's magic level
 		float playerCasterLevel = player.m_skillFull.casting + player.m_attributeFull.mind;
@@ -99,8 +99,8 @@ void ARX_SPELLS_Precast_Launch(PrecastHandle num) {
 
 		LAST_PRECAST_TIME = (unsigned long)(arxtime);
 
-		if(Precast[num].launch_time == 0) {
-			Precast[num].launch_time = (unsigned long)(arxtime);
+		if(Precast[num.handleData()].launch_time == 0) {
+			Precast[num.handleData()].launch_time = (unsigned long)(arxtime);
 			ARX_SOUND_PlaySFX(SND_SPELL_CREATE_FIELD);
 		}
 	}

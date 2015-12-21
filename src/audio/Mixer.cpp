@@ -75,7 +75,7 @@ void Mixer::clear(bool force) {
 	
 	for(size_t i = 0; i < _amb.size(); i++) {
 		Ambiance * ambiance = _amb[i];
-		if(ambiance && _mixer[ambiance->getChannel().mixer] == this) {
+		if(ambiance && _mixer[ambiance->getChannel().mixer.handleData()] == this) {
 			if(force || ambiance->getChannel().flags & FLAG_AUTOFREE) {
 				_amb.remove(i);
 			} else {
@@ -86,7 +86,7 @@ void Mixer::clear(bool force) {
 	
 	// Delete sources referencing this mixer.
 	for(Backend::source_iterator p = backend->sourcesBegin(); p != backend->sourcesEnd();) {
-		if(*p && _mixer.isValid((*p)->getChannel().mixer) && _mixer[(*p)->getChannel().mixer] == this) {
+		if(*p && _mixer.isValid((*p)->getChannel().mixer.handleData()) && _mixer[(*p)->getChannel().mixer.handleData()] == this) {
 			p = backend->deleteSource(p);
 		} else {
 			++p;
@@ -123,7 +123,7 @@ void Mixer::updateVolume() {
 	}
 	
 	for(Backend::source_iterator p = backend->sourcesBegin(); p != backend->sourcesEnd(); ++p) {
-		if(*p && _mixer.isValid((*p)->getChannel().mixer) && _mixer[(*p)->getChannel().mixer] == this) {
+		if(*p && _mixer.isValid((*p)->getChannel().mixer.handleData()) && _mixer[(*p)->getChannel().mixer.handleData()] == this) {
 			(*p)->updateVolume();
 		}
 	}
@@ -181,13 +181,13 @@ aalError Mixer::pause() {
 	}
 	
 	for(size_t i = 0; i < _amb.size(); i++) {
-		if(_amb[i] && _mixer[_amb[i]->getChannel().mixer] == this) {
+		if(_amb[i] && _mixer[_amb[i]->getChannel().mixer.handleData()] == this) {
 			_amb[i]->pause();
 		}
 	}
 	
 	for(Backend::source_iterator p = backend->sourcesBegin(); p != backend->sourcesEnd(); ++p) {
-		if(*p && _mixer.isValid((*p)->getChannel().mixer) && _mixer[(*p)->getChannel().mixer] == this) {
+		if(*p && _mixer.isValid((*p)->getChannel().mixer.handleData()) && _mixer[(*p)->getChannel().mixer.handleData()] == this) {
 			(*p)->pause();
 		}
 	}
@@ -210,13 +210,13 @@ aalError Mixer::resume() {
 	}
 	
 	for(size_t i = 0; i < _amb.size(); i++) {
-		if(_amb[i] && _mixer[_amb[i]->getChannel().mixer] == this) {
+		if(_amb[i] && _mixer[_amb[i]->getChannel().mixer.handleData()] == this) {
 			_amb[i]->resume();
 		}
 	}
 	
 	for(Backend::source_iterator p = backend->sourcesBegin(); p != backend->sourcesEnd(); ++p) {
-		if(*p && _mixer.isValid((*p)->getChannel().mixer) && _mixer[(*p)->getChannel().mixer] == this) {
+		if(*p && _mixer.isValid((*p)->getChannel().mixer.handleData()) && _mixer[(*p)->getChannel().mixer.handleData()] == this) {
 			(*p)->resume();
 		}
 	}

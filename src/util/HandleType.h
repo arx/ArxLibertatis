@@ -41,9 +41,9 @@ struct D                                                        \
     D() : t(INVALID_VALUE) {}                                   \
     D(const D & t_) : t(t_.t){}                                 \
     D & operator=(const D & rhs) { t = rhs.t; return *this;}    \
-    operator const T & () const {return t; }                    \
-    operator T & () { return t; }                               \
     bool operator==(const D & rhs) const { return t == rhs.t; } \
+    bool operator!=(const D & rhs) const { return t != rhs.t; } \
+    const T & handleData() const { return t; }                  \
 };
 
 #endif // ARX_UTIL_HANDLETYPE_H

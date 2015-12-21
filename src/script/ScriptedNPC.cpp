@@ -453,13 +453,13 @@ public:
 			}
 		}
 		
-		long old_target = -12;
+		EntityHandle old_target = EntityHandle(-12);
 		if(io->ioflags & IO_NPC) {
 			if(io->_npcdata->reachedtarget) {
 				old_target = io->targetinfo;
 			}
 			if(io->_npcdata->behavior & (BEHAVIOUR_FLEE|BEHAVIOUR_WANDER_AROUND)) {
-				old_target = -12;
+				old_target = EntityHandle(-12);
 			}
 		}
 		

@@ -245,7 +245,7 @@ void ARX_SCRIPT_AllowInterScriptExec() {
 	for(long n = 0; n < heartbeat_count; n++) {
 		
 		EntityHandle i = EntityHandle(ppos++);
-		if(i >= long(entities.size())){
+		if(i.handleData() >= long(entities.size())){
 			ppos = 0;
 			return;
 		}

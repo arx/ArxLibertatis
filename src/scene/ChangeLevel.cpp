@@ -148,8 +148,8 @@ static Entity * convertToValidIO(const std::string & idString) {
 	
 	EntityHandle t = entities.getById(idString);
 	
-	if(t > 0) {
-		arx_assert(ValidIONum(t), "got invalid IO num %ld", long(t));
+	if(t.handleData() > 0) {
+		arx_assert(ValidIONum(t), "got invalid IO num %ld", long(t.handleData()));
 		return entities[t];
 	}
 	
@@ -314,7 +314,7 @@ void ARX_CHANGELEVEL_Change(const std::string & level, const std::string & targe
 	// not changing level, just teleported
 	if(num == CURRENTLEVEL) {
 		EntityHandle t = entities.getById(target);
-		if(t > 0 && entities[t]) {
+		if(t.handleData() > 0 && entities[t]) {
 			Vec3f pos = GetItemWorldPosition(entities[t]);
 			g_moveto = player.pos = pos + player.baseOffset();
 			PLAYER_POSITION_RESET = false;
@@ -346,7 +346,7 @@ void ARX_CHANGELEVEL_Change(const std::string & level, const std::string & targe
 	
 	// Now restore player pos to destination
 	EntityHandle t = entities.getById(target);
-	if(t > 0 && entities[t]) {
+	if(t.handleData() > 0 && entities[t]) {
 		Vec3f pos = GetItemWorldPosition(entities[t]);
 		
 		g_moveto = player.pos = pos + player.baseOffset();
@@ -856,11 +856,11 @@ static Entity * GetObjIOSource(const EERIE_3DOBJ * obj) {
 template <size_t N>
 void FillTargetInfo(char (&info)[N], EntityHandle numtarget) {
 	ARX_STATIC_ASSERT(N >= 6, "id string too short");
-	if(numtarget == -2) {
+	if(numtarget == EntityHandle(-2)) {
 		strcpy(info, "self");
-	} else if(numtarget == -1) {
+	} else if(numtarget == EntityHandle()) {
 		strcpy(info, "none");
-	} else if(numtarget == 0) {
+	} else if(numtarget == PlayerEntityHandle) {
 		strcpy(info, "player");
 	} else if(ValidIONum(numtarget)) {
 		storeIdString(info, entities[numtarget]);
@@ -1352,7 +1352,7 @@ static long ARX_CHANGELEVEL_Push_IO(const Entity * io, long level) {
 			as->pathfind = IO_PATHFIND();
 
 			if (io->_npcdata->pathfind.listnb > 0)
-				as->pathfind.truetarget = io->_npcdata->pathfind.truetarget;
+				as->pathfind.truetarget = io->_npcdata->pathfind.truetarget.handleData();
 			else as->pathfind.truetarget = -1;
 
 			if(io->_npcdata->ex_rotate) {
@@ -1981,9 +1981,9 @@ static Entity * ARX_CHANGELEVEL_Pop_IO(const std::string & idString, EntityInsta
 	} else {
 		
 		EntityHandle Gaids_Number = io->index();
-		Gaids[Gaids_Number] = new ARX_CHANGELEVEL_INVENTORY_DATA_SAVE;
+		Gaids[Gaids_Number.handleData()] = new ARX_CHANGELEVEL_INVENTORY_DATA_SAVE;
 		
-		memset(Gaids[Gaids_Number], 0, sizeof(ARX_CHANGELEVEL_INVENTORY_DATA_SAVE));
+		memset(Gaids[Gaids_Number.handleData()], 0, sizeof(ARX_CHANGELEVEL_INVENTORY_DATA_SAVE));
 		
 		io->requestRoomUpdate = 1;
 		io->room = -1;
@@ -2115,7 +2115,7 @@ static Entity * ARX_CHANGELEVEL_Pop_IO(const std::string & idString, EntityInsta
 		}
 		
 		// Target Info
-		memcpy(Gaids[Gaids_Number]->targetinfo, ais->id_targetinfo, SIZE_ID);
+		memcpy(Gaids[Gaids_Number.handleData()]->targetinfo, ais->id_targetinfo, SIZE_ID);
 		
 		ARX_SCRIPT_Timer_Clear_For_IO(io);
 		
@@ -2167,7 +2167,7 @@ static Entity * ARX_CHANGELEVEL_Pop_IO(const std::string & idString, EntityInsta
 			return io;
 		}
 		
-		Gaids[Gaids_Number]->weapon[0] = '\0';
+		Gaids[Gaids_Number.handleData()]->weapon[0] = '\0';
 		
 		switch (ais->savesystem_type) {
 			
@@ -2189,7 +2189,7 @@ static Entity * ARX_CHANGELEVEL_Pop_IO(const std::string & idString, EntityInsta
 				io->_npcdata->detect = as->detect;
 				io->_npcdata->fightdecision = as->fightdecision;
 				
-				memcpy(Gaids[Gaids_Number]->weapon, as->id_weapon, SIZE_ID);
+				memcpy(Gaids[Gaids_Number.handleData()]->weapon, as->id_weapon, SIZE_ID);
 				
 				io->_npcdata->lastmouth = as->lastmouth;
 				io->_npcdata->look_around_inc = as->look_around_inc;
@@ -2213,7 +2213,7 @@ static Entity * ARX_CHANGELEVEL_Pop_IO(const std::string & idString, EntityInsta
 				std::copy(as->stacked, as->stacked + SAVED_MAX_STACKED_BEHAVIOR, io->_npcdata->stacked);
 				// TODO properly load stacked animations
 				
-				memcpy(Gaids[Gaids_Number]->stackedtarget, as->stackedtarget, SIZE_ID * SAVED_MAX_STACKED_BEHAVIOR);
+				memcpy(Gaids[Gaids_Number.handleData()]->stackedtarget, as->stackedtarget, SIZE_ID * SAVED_MAX_STACKED_BEHAVIOR);
 				
 				io->_npcdata->critical = as->critical;
 				io->_npcdata->reach = as->reach;
@@ -2294,7 +2294,7 @@ static Entity * ARX_CHANGELEVEL_Pop_IO(const std::string & idString, EntityInsta
 		
 		if(ais->system_flags & SYSTEM_FLAG_INVENTORY) {
 			
-			memcpy(Gaids[Gaids_Number], dat + pos, sizeof(ARX_CHANGELEVEL_INVENTORY_DATA_SAVE)
+			memcpy(Gaids[Gaids_Number.handleData()], dat + pos, sizeof(ARX_CHANGELEVEL_INVENTORY_DATA_SAVE)
 			       - SIZE_ID - SIZE_ID - MAX_LINKED_SAVE * SIZE_ID - SIZE_ID * SAVED_MAX_STACKED_BEHAVIOR);
 			pos += sizeof(ARX_CHANGELEVEL_INVENTORY_DATA_SAVE);
 			
@@ -2350,7 +2350,7 @@ static Entity * ARX_CHANGELEVEL_Pop_IO(const std::string & idString, EntityInsta
 					io->obj->linked[n].lgroup = ais->linked_data[n].lgroup;
 					io->obj->linked[n].lidx = ais->linked_data[n].lidx;
 					io->obj->linked[n].lidx2 = ais->linked_data[n].lidx2;
-					memcpy(Gaids[Gaids_Number]->linked_id[n], ais->linked_data[n].linked_id, SIZE_ID);
+					memcpy(Gaids[Gaids_Number.handleData()]->linked_id[n], ais->linked_data[n].linked_id, SIZE_ID);
 					io->obj->linked[n].io = NULL;
 					io->obj->linked[n].obj = NULL;
 				}
@@ -2388,7 +2388,7 @@ static void ARX_CHANGELEVEL_PopAllIO(ARX_CHANGELEVEL_INDEX * asi) {
 		std::ostringstream oss;
 		oss << res::path::load(util::loadString(idx_io[i].filename)).basename() << '_'
 		    << std::setfill('0') << std::setw(4) << idx_io[i].ident;
-		if(entities.getById(oss.str()) < 0) {
+		if(entities.getById(oss.str()).handleData() < 0) {
 			ARX_CHANGELEVEL_Pop_IO(oss.str(), idx_io[i].ident);
 		}
 	}

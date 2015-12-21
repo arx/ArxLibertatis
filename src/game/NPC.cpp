@@ -555,7 +555,7 @@ bool ARX_NPC_LaunchPathfind(Entity * io, EntityHandle target)
 
 	long MUST_SELECT_Start_Anchor = -1;
 	io->physics.cyl.origin = io->pos;
-	long old_target = io->targetinfo;
+	EntityHandle old_target = io->targetinfo;
 
 	if(!(io->ioflags & IO_PHYSICAL_OFF)) {
 		if(!ForceNPC_Above_Ground(io)) {
@@ -586,10 +586,10 @@ bool ARX_NPC_LaunchPathfind(Entity * io, EntityHandle target)
 		goto wander;
 	}
 	
-	if(target < 0 || (io->_npcdata->behavior & BEHAVIOUR_GO_HOME)) {
+	if(target.handleData() < 0 || (io->_npcdata->behavior & BEHAVIOUR_GO_HOME)) {
 		target = io->index();
 
-		if(target == -1)
+		if(target == EntityHandle())
 			goto failure;
 
 		io->_npcdata->pathfind.truetarget = target;
@@ -2458,7 +2458,7 @@ static void ManageNPCMovement(Entity * io)
 					}
 				}
 				
-				if(io->targetinfo == TARGET_NONE) {
+				if(io->targetinfo == EntityHandle(TARGET_NONE)) {
 					desiredanim = alist[ANIM_DEFAULT];
 				}
 				
@@ -3062,7 +3062,7 @@ void GetTargetPos(Entity * io, unsigned long smoothing) {
 		}
 	}
 	
-	if(io->targetinfo == TARGET_PATH) {
+	if(io->targetinfo == EntityHandle(TARGET_PATH)) {
 		
 		if(!io->usepath) {
 			io->target = io->pos;
@@ -3083,12 +3083,12 @@ void GetTargetPos(Entity * io, unsigned long smoothing) {
 		return;
 	}
 	
-	if(io->targetinfo == TARGET_NONE) {
+	if(io->targetinfo == EntityHandle(TARGET_NONE)) {
 		io->target = io->pos;
 		return;
 	}
 	
-	if(io->targetinfo == TARGET_PLAYER || io->targetinfo == EntityHandle()) {
+	if(io->targetinfo == EntityHandle(TARGET_PLAYER) || io->targetinfo == EntityHandle()) {
 		io->target = player.pos + Vec3f(0.f, player.size.y, 0.f);
 		return;
 	} else if(ValidIONum(io->targetinfo)) {

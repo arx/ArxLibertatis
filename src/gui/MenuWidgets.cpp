@@ -171,13 +171,13 @@ bool ARX_QuickLoad() {
 }
 
 bool ARX_SlotLoad(SavegameHandle slotIndex) {
-	if(slotIndex >= (int)savegames.size()) {
+	if(slotIndex.handleData() >= (int)savegames.size()) {
 		// Invalid slot!
 		return false;
 	}
 
 	ARX_SOUND_MixerPause(ARX_SOUND_MixerMenu);
-	return ARX_LoadGame(savegames[slotIndex]);
+	return ARX_LoadGame(savegames[slotIndex.handleData()]);
 }
 
 bool MENU_NoActiveWindow() {

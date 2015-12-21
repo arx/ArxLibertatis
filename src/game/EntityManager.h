@@ -51,7 +51,7 @@ public:
 	Entity * getById(const std::string & idString, Entity * self) const;
 	
 	Entity * operator[](EntityHandle index) const {
-		return entries[index];
+		return entries[index.handleData()];
 	}
 	
 	//! Get the player entity

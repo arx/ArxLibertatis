@@ -170,7 +170,7 @@ void SpellManager::clearAll() {
 }
 
 SpellBase * SpellManager::operator[](const SpellHandle handle) {
-	return m_spells[handle];
+	return m_spells[handle.handleData()];
 }
 
 void SpellManager::endSpell(SpellBase * spell)
@@ -911,8 +911,9 @@ bool ARX_SPELLS_Launch(SpellType typ, EntityHandle source, SpellcastFlags flags,
 			Player_Magic_Level = static_cast<float>(level);
 		}
 	}
-
-	arx_assert(!(source && (flags & SPELLCAST_FLAG_PRECAST)));
+	
+	// Todo what was this assert supposed to do ?
+	// arx_assert(!(source && (flags & SPELLCAST_FLAG_PRECAST)));
 
 	if(flags & SPELLCAST_FLAG_PRECAST) {
 		int l = level;

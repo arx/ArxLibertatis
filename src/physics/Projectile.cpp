@@ -166,7 +166,7 @@ void ARX_THROWN_OBJECT_Throw(EntityHandle source, const Vec3f & position, const 
 	thrownObj->creation_time = (unsigned long)(arxtime);
 	thrownObj->flags |= ATO_EXIST | ATO_MOVING;
 	
-	if(source == 0
+	if(source == PlayerEntityHandle
 	   && ValidIONum(player.equiped[EQUIP_SLOT_WEAPON])
 	) {
 		Entity * tio = entities[player.equiped[EQUIP_SLOT_WEAPON]];
@@ -202,7 +202,7 @@ static float ARX_THROWN_ComputeDamages(long thrownum, EntityHandle source,
 	backstab = 1.f;
 	bool critical = false;
 
-	if(source == 0) {
+	if(source == PlayerEntityHandle) {
 		attack = Thrown[thrownum].damages;
 
 		if(Random::getf(0.f, 100.f) <= float(player.m_attributeFull.dexterity - 9) * 2.f
@@ -229,7 +229,7 @@ static float ARX_THROWN_ComputeDamages(long thrownum, EntityHandle source,
 
 	float absorb;
 
-	if(target == 0) {
+	if(target == PlayerEntityHandle) {
 		ac = player.m_miscFull.armorClass;
 		absorb = player.m_skillFull.defense * .5f;
 	} else {
@@ -563,7 +563,7 @@ void ARX_THROWN_OBJECT_Manage(unsigned long time_offset)
 											pos = target->obj->vertexlist3[hitpoint].v;
 										}
 
-										if(thrownObj->source == 0) {
+										if(thrownObj->source == PlayerEntityHandle) {
 											float damages = ARX_THROWN_ComputeDamages(i, thrownObj->source, sphereContent[jj]);
 
 											if(damages > 0.f) {

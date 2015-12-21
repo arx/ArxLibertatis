@@ -131,7 +131,7 @@ EntityHandle EntityManager::getById(const EntityId & id) const {
 }
 
 Entity * EntityManager::getById(const std::string & name, Entity * self) const {
-	long index = getById(name);
+	long index = getById(name).handleData();
 	return (index == -1) ? NULL : (index == -2) ? self : entries[index]; 
 }
 

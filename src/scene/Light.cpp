@@ -383,12 +383,12 @@ void PrecalcIOLighting(const Vec3f & pos, float radius) {
 }
 
 EERIE_LIGHT * lightHandleGet(LightHandle lightHandle) {
-	return &DynLight[lightHandle];
+	return &DynLight[lightHandle.handleData()];
 }
 
 bool lightHandleIsValid(LightHandle num)
 {
-	return (long)num >= 0 && ((size_t)num < MAX_DYNLIGHTS) && DynLight[num].exist;
+	return (long)num.handleData() >= 0 && ((size_t)num.handleData() < MAX_DYNLIGHTS) && DynLight[num.handleData()].exist;
 }
 
 void lightHandleDestroy(LightHandle & handle) {
@@ -437,7 +437,7 @@ void ClearDynLights() {
 	}
 
 	for(size_t i = 0; i < MAX_LIGHTS; i++) {
-		if(GLight[i] && GLight[i]->m_ignitionLightHandle > 0) {
+		if(GLight[i] && GLight[i]->m_ignitionLightHandle.handleData() > 0) {
 			GLight[i]->m_ignitionLightHandle = LightHandle(0); // TODO is this correct ?
 		}
 	}
