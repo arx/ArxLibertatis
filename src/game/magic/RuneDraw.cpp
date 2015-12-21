@@ -125,7 +125,7 @@ void ARX_SPELLS_UpdateSymbolDraw() {
 					io->gameFlags &= ~GFLAG_INVISIBILITY;
 				} else if(tst) { // cast spell !!!
 					io->gameFlags &= ~GFLAG_INVISIBILITY;
-					ARX_SPELLS_Launch(io->spellcast_data.castingspell, EntityHandle(i), io->spellcast_data.spell_flags,io->spellcast_data.spell_level,io->spellcast_data.target,io->spellcast_data.duration);
+					ARX_SPELLS_Launch(io->spellcast_data.castingspell, handle, io->spellcast_data.spell_flags,io->spellcast_data.spell_level,io->spellcast_data.target,io->spellcast_data.duration);
 
 					if(!(io->spellcast_data.spell_flags & SPELLCAST_FLAG_NOANIM) && (io->ioflags & IO_NPC)) {
 						changeAnimation(io, 1, io->anims[ANIM_CAST]);
