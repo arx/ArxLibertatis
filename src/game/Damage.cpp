@@ -1312,9 +1312,13 @@ void DoSphericDamage(const Sphere & sphere, float dmg, DamageArea flags, DamageT
 		if(!ioo || handle == numsource || !ioo->obj)
 			continue;
 			
-		if ((i != 0) && (numsource != PlayerEntityHandle)
-				&& validsource && (HaveCommonGroup(ioo, entities[numsource])))
+		if(   handle != PlayerEntityHandle
+		   && numsource != PlayerEntityHandle
+		   && validsource
+		   && HaveCommonGroup(ioo, entities[numsource])
+		) {
 			continue;
+		}
 		
 		if((ioo->ioflags & IO_CAMERA) || (ioo->ioflags & IO_MARKER))
 			continue;
@@ -1371,7 +1375,7 @@ void DoSphericDamage(const Sphere & sphere, float dmg, DamageArea flags, DamageT
 					case DAMAGE_FULL: break;
 				}
 				
-				if(i == 0) {
+				if(handle == PlayerEntityHandle) {
 					if(typ & DAMAGE_TYPE_FIRE) {
 						dmg = ARX_SPELLS_ApplyFireProtection(ioo, dmg);
 						ARX_DAMAGES_IgnitIO(entities.player(), dmg);
