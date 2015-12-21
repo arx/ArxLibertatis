@@ -19,6 +19,8 @@
 
 #include "game/magic/spells/SpellsLvl09.h"
 
+#include <boost/foreach.hpp>
+
 #include "core/Application.h"
 #include "core/Config.h"
 #include "core/GameTime.h"
@@ -508,11 +510,7 @@ void MassParalyseSpell::Launch()
 
 void MassParalyseSpell::End()
 {
-	
-	std::vector<EntityHandle>::const_iterator itr;
-	for(itr = m_targets.begin(); itr != m_targets.end(); ++itr) {
-		EntityHandle handle = *itr;
-		
+	BOOST_FOREACH(EntityHandle handle, m_targets) {
 		if(ValidIONum(handle)) {
 			entities[handle]->ioflags &= ~IO_FREEZESCRIPT;
 		}
