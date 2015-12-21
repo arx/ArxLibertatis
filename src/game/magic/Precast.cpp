@@ -60,23 +60,23 @@ void ARX_SPELLS_Precast_Add(SpellType typ, long _level, SpellcastFlags flags, lo
 	Precast.push_back(precast);
 }
 
-static long PrecastCheckCanPayMana(PrecastHandle num, float cost) {
+static bool PrecastCheckCanPayMana(PrecastHandle num, float cost) {
 	
 	if(num.handleData() < 0)
-		return 0;
+		return false;
 
 	if(Precast[num.handleData()].flags & SPELLCAST_FLAG_NOMANA)
-		return 1;
+		return true;
 
 	if(player.manaPool.current >= cost)
-		return 1;
+		return true;
 	
 	ARX_SOUND_PlaySFX(SND_MAGIC_FIZZLE);
 	
 	ARX_SPEECH_Add(getLocalised("player_cantcast"));
 	ARX_SPEECH_AddSpeech(entities.player(), "player_cantcast", ANIM_TALK_NEUTRAL);
 	
-	return 0;
+	return false;
 }
 
 void ARX_SPELLS_Precast_Launch(PrecastHandle num) {
