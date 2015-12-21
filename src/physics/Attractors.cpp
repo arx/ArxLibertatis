@@ -52,7 +52,7 @@ ZeniMax Media Inc., Suite 120, Rockville, Maryland 20850 USA.
 #include "scene/Interactive.h"
 
 struct ARX_SPECIAL_ATTRACTOR {
-	EntityHandle	ionum;  // -1 == not defined
+	EntityHandle ionum;
 	float	power;
 	float	radius;
 };
