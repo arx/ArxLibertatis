@@ -1979,7 +1979,7 @@ static void ManageNPCMovement(Entity * io)
 					io->_npcdata->reachedtarget = 1;
 					io->_npcdata->reachedtime = (unsigned long)(arxtime);//treat warning C4244 conversion from 'float' to 'unsigned long'
 
-					if(io->targetinfo != long(io->index()))
+					if(io->targetinfo != io->index())
 						SendIOScriptEvent(io, SM_REACHEDTARGET);
 				} else if(layer0.cur_anim == alist[ANIM_WAIT] && (layer0.flags & EA_ANIMEND)) {
 					io->_npcdata->pathfind.listnb = -1;
@@ -2545,7 +2545,7 @@ static void ManageNPCMovement(Entity * io)
 				if(io->animlayer[1].flags & EA_ANIMEND)
 					io->animlayer[1].cur_anim = NULL;
 
-				if(io->targetinfo != long(io->index()))
+				if(io->targetinfo != io->index())
 					SendIOScriptEvent(io, SM_REACHEDTARGET);
 			}
 		}
