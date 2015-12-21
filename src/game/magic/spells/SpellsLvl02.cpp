@@ -298,7 +298,7 @@ Vec3f ArmorSpell::getPosition() {
 }
 
 LowerArmorSpell::LowerArmorSpell()
-	: m_longinfo_lower_armor(-1) //TODO is this correct ?
+	: m_longinfo_lower_armor(false)
 {
 	
 }
@@ -330,9 +330,9 @@ void LowerArmorSpell::Launch()
 			io->halo.color = Color3f(1.f, 0.05f, 0.0f);
 			io->halo.radius = 45.f;
 			
-			m_longinfo_lower_armor = 1;
+			m_longinfo_lower_armor = true;
 		} else {
-			m_longinfo_lower_armor = 0;
+			m_longinfo_lower_armor = false;
 		}
 	}
 	
@@ -364,7 +364,7 @@ void LowerArmorSpell::Update(float timeDelta)
 			io->halo.color = Color3f(1.f, 0.05f, 0.0f);
 			io->halo.radius = 45.f;
 			
-			m_longinfo_lower_armor = 1;
+			m_longinfo_lower_armor = true;
 		}
 	}
 	
