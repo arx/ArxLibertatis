@@ -40,6 +40,7 @@ private:
 	CRiseDead m_fissure;
 	LightHandle m_light;
 	Vec3f m_targetPos;
+	bool m_creationFailed;
 	EntityHandle m_entity;
 };
 

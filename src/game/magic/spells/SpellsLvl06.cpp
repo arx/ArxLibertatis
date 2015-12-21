@@ -90,6 +90,8 @@ void RiseDeadSpell::Launch()
 	m_duration = (m_launchDuration > -1) ? m_launchDuration : 2000000;
 	m_hasDuration = true;
 	m_fManaCostPerSecond = 1.2f;
+	
+	m_creationFailed = false;
 	m_entity = EntityHandle();
 	
 	m_fissure.Create(target, beta);
@@ -152,7 +154,7 @@ void RiseDeadSpell::End()
 
 void RiseDeadSpell::Update(float timeDelta) {
 	
-	if(m_entity == -2) {
+	if(m_creationFailed) {
 		m_light = LightHandle();
 		return;
 	}
@@ -175,7 +177,7 @@ void RiseDeadSpell::Update(float timeDelta) {
 	
 	unsigned long tim = m_fissure.ulCurrentTime;
 	
-	if(tim > 3000 && m_entity == EntityHandle()) {
+	if(tim > 3000 && m_entity == EntityHandle() && !m_creationFailed) {
 		ARX_SOUND_PlaySFX(SND_SPELL_ELECTRIC, &m_targetPos);
 		
 		Cylinder phys = Cylinder(m_targetPos, 50, -200);
@@ -218,7 +220,7 @@ void RiseDeadSpell::Update(float timeDelta) {
 			m_light = LightHandle();
 		} else {
 			ARX_SOUND_PlaySFX(SND_MAGIC_FIZZLE);
-			m_entity = EntityHandle(-2); // FIXME inband signaling
+			m_creationFailed = true;
 			m_duration=0;
 		}
 	} else if(!arxtime.is_paused() && tim < 4000) {
