@@ -2291,21 +2291,21 @@ void UpdateCameras() {
 			}
 
 			if(io->damager_damages > 0 && io->show == SHOW_FLAG_IN_SCENE) {
-				for(size_t ii = 0; ii < entities.size(); ii++) {
-					const EntityHandle handle = EntityHandle(ii);
-					Entity * ioo = entities[handle];
+				for(size_t i2 = 0; i2 < entities.size(); i2++) {
+					const EntityHandle handle2 = EntityHandle(i2);
+					Entity * io2 = entities[handle2];
 
-					if(ioo
-					   && ii != i
-					   && ioo->show == SHOW_FLAG_IN_SCENE
-					   && (ioo->ioflags & IO_NPC)
-					   && closerThan(io->pos, ioo->pos, 600.f)
+					if(io2
+					   && i2 != i
+					   && io2->show == SHOW_FLAG_IN_SCENE
+					   && (io2->ioflags & IO_NPC)
+					   && closerThan(io->pos, io2->pos, 600.f)
 					) {
 						bool Touched = false;
 
 						for(size_t ri = 0; ri < io->obj->vertexlist.size(); ri += 3) {
-							for(size_t rii = 0; rii < ioo->obj->vertexlist.size(); rii += 3) {
-								if(closerThan(io->obj->vertexlist3[ri].v, ioo->obj->vertexlist3[rii].v, 20.f)) {
+							for(size_t rii = 0; rii < io2->obj->vertexlist.size(); rii += 3) {
+								if(closerThan(io->obj->vertexlist3[ri].v, io2->obj->vertexlist3[rii].v, 20.f)) {
 									Touched = true;
 									ri = io->obj->vertexlist.size();
 									break;
@@ -2314,7 +2314,7 @@ void UpdateCameras() {
 						}
 
 						if(Touched)
-							ARX_DAMAGES_DealDamages(EntityHandle(ii), io->damager_damages, EntityHandle(i), io->damager_type, &ioo->pos);
+							ARX_DAMAGES_DealDamages(EntityHandle(i2), io->damager_damages, EntityHandle(i), io->damager_type, &io2->pos);
 					}
 				}
 			}
