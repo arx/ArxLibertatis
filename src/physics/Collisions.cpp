@@ -831,7 +831,7 @@ static bool InExceptionList(long val) {
 	return false;
 }
 
-bool CheckEverythingInSphere(const Sphere & sphere, long source, EntityHandle targ, std::vector<EntityHandle> & sphereContent) //except source...
+bool CheckEverythingInSphere(const Sphere & sphere, EntityHandle source, EntityHandle targ, std::vector<EntityHandle> & sphereContent) //except source...
 {
 	bool vreturn = false;
 	
