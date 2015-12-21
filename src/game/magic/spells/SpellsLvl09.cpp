@@ -483,7 +483,7 @@ void MassParalyseSpell::Launch()
 		const EntityHandle handle = EntityHandle(ii);
 		Entity * tio = entities[handle];
 		
-		if(long(ii) == m_caster || !tio || !(tio->ioflags & IO_NPC)) {
+		if(handle == m_caster || !tio || !(tio->ioflags & IO_NPC)) {
 			continue;
 		}
 		
