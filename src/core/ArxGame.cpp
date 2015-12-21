@@ -169,7 +169,7 @@ ZeniMax Media Inc., Suite 120, Rockville, Maryland 20850 USA.
 InfoPanels g_debugInfo = InfoPanelNone;
 
 extern long START_NEW_QUEST;
-long LOADQUEST_SLOT = -1; // OH NO, ANOTHER GLOBAL! - TEMP PATCH TO CLEAN CODE FLOW
+SavegameHandle LOADQUEST_SLOT = SavegameHandle(); // OH NO, ANOTHER GLOBAL! - TEMP PATCH TO CLEAN CODE FLOW
 extern long PLAYER_PARALYSED;
 extern long DeadTime;
 
@@ -647,9 +647,9 @@ static void loadLevel(u32 lvl) {
 }
 ARX_PROGRAM_OPTION("loadlevel", "", "Load a specific level", &loadLevel, "LEVELID");
 
-extern long LOADQUEST_SLOT;
+extern SavegameHandle LOADQUEST_SLOT;
 static void loadSlot(u32 saveSlot) {
-	LOADQUEST_SLOT = saveSlot;
+	LOADQUEST_SLOT = SavegameHandle(saveSlot);
 	GameFlow::setTransition(GameFlow::InGame);
 }
 ARX_PROGRAM_OPTION("loadslot", "", "Load a specific savegame slot", &loadSlot, "SAVESLOT");
@@ -1278,9 +1278,9 @@ void ArxGame::doFrame() {
 		TELEPORT_TO_POSITION.clear();
 	}
 
-	if(LOADQUEST_SLOT != -1) {
+	if(LOADQUEST_SLOT != SavegameHandle()) {
 		ARX_SlotLoad(LOADQUEST_SLOT);
-		LOADQUEST_SLOT = -1;
+		LOADQUEST_SLOT = SavegameHandle();
 	}
 
 	if(cinematicIsStopped()

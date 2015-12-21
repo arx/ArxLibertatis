@@ -170,7 +170,7 @@ bool ARX_QuickLoad() {
 	return loaded;
 }
 
-bool ARX_SlotLoad(int slotIndex) {
+bool ARX_SlotLoad(SavegameHandle slotIndex) {
 	if(slotIndex >= (int)savegames.size()) {
 		// Invalid slot!
 		return false;

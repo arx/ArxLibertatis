@@ -22,6 +22,7 @@
 
 #include <boost/noncopyable.hpp>
 
+#include "core/SaveGame.h"
 #include "math/Rectangle.h"
 #include "util/HandleType.h"
 
@@ -162,7 +163,6 @@ enum MENUSTATE
 	NOP
 };
 
-ARX_HANDLE_TYPEDEF(long, SavegameHandle, -1);
 
 class Widget : private boost::noncopyable {
 	

@@ -47,6 +47,8 @@ ZeniMax Media Inc., Suite 120, Rockville, Maryland 20850 USA.
 #include <stddef.h>
 #include <string>
 
+#include "core/SaveGame.h"
+
 // Video options
 
 void ARXMenu_Options_Video_SetFogDistance(int fogDistance);
@@ -78,8 +80,8 @@ void ARXMenu_NewQuest();
 
 // Save/Load quest
 
-void ARXMenu_LoadQuest(size_t num);
-void ARXMenu_SaveQuest(const std::string & name, size_t num = size_t(-1));
+void ARXMenu_LoadQuest(SavegameHandle num);
+void ARXMenu_SaveQuest(const std::string & name, SavegameHandle num = SavegameHandle());
 
 // Credits
 

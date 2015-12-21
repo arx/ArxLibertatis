@@ -86,7 +86,7 @@ extern bool bQuickGenFirstClick;
 
 extern Rect g_size;
 
-extern long LOADQUEST_SLOT;
+extern SavegameHandle LOADQUEST_SLOT;
 
 extern long REFUSE_GAME_RETURN;
 
@@ -257,7 +257,7 @@ void ARXMenu_NewQuest() {
 	ARX_PLAYER_MakeFreshHero();
 }
 
-void ARXMenu_LoadQuest(size_t num) {
+void ARXMenu_LoadQuest(SavegameHandle num) {
 	
 	LOADQUEST_SLOT = num;
 
@@ -266,7 +266,7 @@ void ARXMenu_LoadQuest(size_t num) {
 	ARX_MENU_Clicked_QUIT();
 }
 
-void ARXMenu_SaveQuest(const std::string & name, size_t num) {
+void ARXMenu_SaveQuest(const std::string & name, SavegameHandle num) {
 	
 	ARX_SOUND_MixerPause(ARX_SOUND_MixerMenu);
 	

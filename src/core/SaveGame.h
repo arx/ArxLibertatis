@@ -28,6 +28,9 @@
 #include "graphics/image/Image.h"
 #include "io/fs/FilePath.h"
 #include "io/resource/ResourcePath.h"
+#include "util/HandleType.h"
+
+ARX_HANDLE_TYPEDEF(long, SavegameHandle, -1);
 
 struct SaveGame {
 	
