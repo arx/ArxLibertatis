@@ -298,7 +298,7 @@ Vec3f ArmorSpell::getPosition() {
 }
 
 LowerArmorSpell::LowerArmorSpell()
-	: m_longinfo_lower_armor(false)
+	: m_haloCreated(false)
 {
 	
 }
@@ -330,9 +330,9 @@ void LowerArmorSpell::Launch()
 			io->halo.color = Color3f(1.f, 0.05f, 0.0f);
 			io->halo.radius = 45.f;
 			
-			m_longinfo_lower_armor = true;
+			m_haloCreated = true;
 		} else {
-			m_longinfo_lower_armor = false;
+			m_haloCreated = false;
 		}
 	}
 	
@@ -344,7 +344,7 @@ void LowerArmorSpell::End()
 	ARX_SOUND_PlaySFX(SND_SPELL_LOWER_ARMOR_END);
 	Entity *io = entities[m_target];
 	
-	if(m_longinfo_lower_armor) {
+	if(m_haloCreated) {
 		io->halo.flags &= ~HALO_ACTIVE;
 		ARX_HALO_SetToNative(io);
 	}
@@ -364,7 +364,7 @@ void LowerArmorSpell::Update(float timeDelta)
 			io->halo.color = Color3f(1.f, 0.05f, 0.0f);
 			io->halo.radius = 45.f;
 			
-			m_longinfo_lower_armor = true;
+			m_haloCreated = true;
 		}
 	}
 	

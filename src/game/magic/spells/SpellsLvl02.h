@@ -67,7 +67,7 @@ public:
 	Vec3f getPosition();
 	
 private:
-	bool m_longinfo_lower_armor;
+	bool m_haloCreated;
 };
 
 class HarmSpell : public SpellBase {
