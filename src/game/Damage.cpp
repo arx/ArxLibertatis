@@ -996,8 +996,8 @@ static void ARX_DAMAGES_UpdateDamage(DamageHandle j, float tim) {
 		if(io
 		   && (io->gameFlags & GFLAG_ISINTREATZONE)
 		   && (io->show == SHOW_FLAG_IN_SCENE)
-		   && (damage.params.source != long(i)
-		   || (damage.params.source == long(i) && !(damage.params.flags & DAMAGE_FLAG_DONT_HURT_SOURCE)))
+		   && (damage.params.source != handle
+		   || (damage.params.source == handle && !(damage.params.flags & DAMAGE_FLAG_DONT_HURT_SOURCE)))
 		){
 			if(io->ioflags & IO_NPC) {
 				if(   i != 0
@@ -1309,7 +1309,7 @@ void DoSphericDamage(const Sphere & sphere, float dmg, DamageArea flags, DamageT
 		const EntityHandle handle = EntityHandle(i);
 		Entity * ioo = entities[handle];
 		
-		if(!ioo || long(i) == numsource || !ioo->obj)
+		if(!ioo || handle == numsource || !ioo->obj)
 			continue;
 			
 		if ((i != 0) && (numsource != PlayerEntityHandle)
