@@ -120,12 +120,11 @@ void RiseDeadSpell::Launch()
 
 void RiseDeadSpell::End()
 {
-	if(ValidIONum(m_entity) && m_entity != PlayerEntityHandle) {
-		
-		ARX_SOUND_PlaySFX(SND_SPELL_ELECTRIC, &entities[m_entity]->pos);
-		
+	if(ValidIONum(m_entity)) {
 		Entity *entity = entities[m_entity];
-
+		
+		ARX_SOUND_PlaySFX(SND_SPELL_ELECTRIC, &entity->pos);
+		
 		if(entity->scriptload && (entity->ioflags & IO_NOSAVE)) {
 			AddRandomSmoke(entity,100);
 			Vec3f posi = entity->pos;
