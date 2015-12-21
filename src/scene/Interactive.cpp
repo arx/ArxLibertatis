@@ -2296,7 +2296,7 @@ void UpdateCameras() {
 					Entity * io2 = entities[handle2];
 
 					if(io2
-					   && i2 != i
+					   && handle2 != handle
 					   && io2->show == SHOW_FLAG_IN_SCENE
 					   && (io2->ioflags & IO_NPC)
 					   && closerThan(io->pos, io2->pos, 600.f)
@@ -2314,7 +2314,7 @@ void UpdateCameras() {
 						}
 
 						if(Touched)
-							ARX_DAMAGES_DealDamages(EntityHandle(i2), io->damager_damages, EntityHandle(i), io->damager_type, &io2->pos);
+							ARX_DAMAGES_DealDamages(handle2, io->damager_damages, handle, io->damager_type, &io2->pos);
 					}
 				}
 			}
