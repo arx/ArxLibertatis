@@ -540,14 +540,14 @@ void PrepareIOTreatZone(long flag) {
 		             ||	(io->show == SHOW_FLAG_ON_PLAYER)
 		             ||	(io->show == SHOW_FLAG_HIDDEN)))   
 		{
-			char treat;
+			bool treat;
 
 			if (io->ioflags & IO_CAMERA) {
-				treat = 0;
+				treat = false;
 			} else if (io->ioflags & IO_MARKER) {
-				treat = 0;
+				treat = false;
 			} else if ((io->ioflags & IO_NPC) && (io->_npcdata->pathfind.flags & PATHFIND_ALWAYS)) {
-				treat = 1;
+				treat = true;
 			} else {
 				float dists;
 
@@ -571,14 +571,14 @@ void PrepareIOTreatZone(long flag) {
 				}
 		
 				if(dists < square(TREATZONE_LIMIT))
-					treat = 1;
+					treat = true;
 				else
-					treat = 0;
+					treat = false;
 			}
 
 			if(!treat) {
 				if(io == DRAGINTER)
-					treat = 1;
+					treat = true;
 			}
 			
 			if(io->gameFlags & GFLAG_ISINTREATZONE) {
