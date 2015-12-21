@@ -648,7 +648,7 @@ void LightningStrikeSpell::End()
 
 static Vec3f GetChestPos(EntityHandle num) {
 	
-	if(num == 0) {
+	if(num == PlayerEntityHandle) {
 		return player.pos + Vec3f(0.f, 70.f, 0.f);
 	}
 
