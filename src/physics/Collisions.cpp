@@ -62,7 +62,7 @@ ZeniMax Media Inc., Suite 120, Rockville, Maryland 20850 USA.
 long ON_PLATFORM=0;
 //-----------------------------------------------------------------------------
 size_t EXCEPTIONS_LIST_Pos = 0;
-short EXCEPTIONS_LIST[MAX_IN_SPHERE + 1];
+EntityHandle EXCEPTIONS_LIST[MAX_IN_SPHERE + 1];
 
 static long POLYIN = 0;
 long COLLIDED_CLIMB_POLY=0;
@@ -820,7 +820,7 @@ float CheckAnythingInCylinder(const Cylinder & cyl, Entity * ioo, long flags) {
 	return anything;	
 }
 
-static bool InExceptionList(long val) {
+static bool InExceptionList(EntityHandle val) {
 	
 	for(size_t i = 0; i < EXCEPTIONS_LIST_Pos; i++) {
 		if(val == EXCEPTIONS_LIST[i]) {

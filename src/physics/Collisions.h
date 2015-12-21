@@ -79,7 +79,8 @@ DECLARE_FLAGS_OPERATORS(CollisionFlags)
 const size_t MAX_IN_SPHERE = 20;
 
 extern size_t EXCEPTIONS_LIST_Pos;
-extern short EXCEPTIONS_LIST[MAX_IN_SPHERE + 1];
+extern EntityHandle EXCEPTIONS_LIST[MAX_IN_SPHERE + 1];
+
 extern bool DIRECT_PATH;
 
 bool ARX_COLLISION_Move_Cylinder(IO_PHYSICS * ip, Entity * io, float MOVE_CYLINDER_STEP, CollisionFlags flags = 0);
