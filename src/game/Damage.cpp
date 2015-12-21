@@ -1000,7 +1000,7 @@ static void ARX_DAMAGES_UpdateDamage(DamageHandle j, float tim) {
 		   || (damage.params.source == handle && !(damage.params.flags & DAMAGE_FLAG_DONT_HURT_SOURCE)))
 		){
 			if(io->ioflags & IO_NPC) {
-				if(   i != 0
+				if(   handle != PlayerEntityHandle
 				   && damage.params.source != PlayerEntityHandle
 				   && validsource
 				   && HaveCommonGroup(io, entities[damage.params.source])
@@ -1064,7 +1064,7 @@ static void ARX_DAMAGES_UpdateDamage(DamageHandle j, float tim) {
 					if(damage.params.type & DAMAGE_TYPE_DRAIN_MANA) {
 						float manadrained;
 						
-						if(i == 0) {
+						if(handle == PlayerEntityHandle) {
 							manadrained = std::min(dmg, player.manaPool.current);
 							player.manaPool.current -= manadrained;
 						} else {
@@ -1087,7 +1087,7 @@ static void ARX_DAMAGES_UpdateDamage(DamageHandle j, float tim) {
 						float damagesdone;
 						
 						// TODO copy-paste
-						if(i == 0) {
+						if(handle == PlayerEntityHandle) {
 							if(damage.params.type & DAMAGE_TYPE_POISON) {
 								if(Random::getf(0.f, 100.f) > player.m_misc.resistPoison) {
 									// Failed Saving Throw
