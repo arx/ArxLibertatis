@@ -653,7 +653,7 @@ static bool CanPayMana(SpellBase * spell, float cost, bool _bSound = true) {
 static EntityHandle TemporaryGetSpellTarget(const Vec3f & from) {
 	
 	float mindist = std::numeric_limits<float>::max();
-	EntityHandle found = EntityHandle(0);
+	EntityHandle found = PlayerEntityHandle;
 	for(size_t i = 1; i < entities.size(); i++) {
 		const EntityHandle handle = EntityHandle(i);
 		Entity * e = entities[handle];
@@ -661,7 +661,7 @@ static EntityHandle TemporaryGetSpellTarget(const Vec3f & from) {
 		if(e && e->ioflags & IO_NPC) {
 			float dist = glm::distance2(from, e->pos);
 			if(dist < mindist) {
-				found = EntityHandle(i);
+				found = handle;
 				mindist = dist;
 			}
 		}
