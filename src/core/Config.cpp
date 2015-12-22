@@ -339,7 +339,7 @@ void Config::setActionKey(ControlAction actionId, int index, InputKeyId key) {
 			continue;
 		}
 		
-		for(int k = 0; i < 2; i++) {
+		for(int k = 0; k < 2; k++) {
 			if(actions[i].key[k] == key) {
 				actions[i].key[k] = oldKey;
 				oldKey = -1;
