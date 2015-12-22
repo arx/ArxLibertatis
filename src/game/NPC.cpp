@@ -171,25 +171,25 @@ static void CheckHit(Entity * source, float ratioaim) {
 	if(!ValidIONum(i))
 		return;
 
-	Entity * ioo = entities[i];
+	Entity * target = entities[i];
 
-	if(!ioo)
+	if(!target)
 		return;
 
-	if(ioo->ioflags & (IO_MARKER | IO_CAMERA))
+	if(target->ioflags & (IO_MARKER | IO_CAMERA))
 		return;
 
-	if(ioo->gameFlags & GFLAG_ISINTREATZONE)
-	if(ioo->show == SHOW_FLAG_IN_SCENE)
-	if(ioo->obj)
-	if(ioo->pos.y > (source->pos.y + source->physics.cyl.height))
-	if(source->pos.y >	(ioo->pos.y + ioo->physics.cyl.height))
+	if(target->gameFlags & GFLAG_ISINTREATZONE)
+	if(target->show == SHOW_FLAG_IN_SCENE)
+	if(target->obj)
+	if(target->pos.y > (source->pos.y + source->physics.cyl.height))
+	if(source->pos.y > (target->pos.y + target->physics.cyl.height))
 	{
 		float dist_limit = source->_npcdata->reach + source->physics.cyl.radius;
 		long count = 0;
 		float mindist = std::numeric_limits<float>::max();
 
-		for(size_t k = 0; k < ioo->obj->vertexlist.size(); k += 2) {
+		for(size_t k = 0; k < target->obj->vertexlist.size(); k += 2) {
 			float dist = fdist(pos, entities[i]->obj->vertexlist3[k].v);
 
 			if(dist <= dist_limit && glm::abs(pos.y - entities[i]->obj->vertexlist3[k].v.y) < 60.f) {
@@ -200,15 +200,15 @@ static void CheckHit(Entity * source, float ratioaim) {
 			}
 		}
 
-		float ratio = (float)count / ((float)ioo->obj->vertexlist.size() * ( 1.0f / 2 ));
+		float ratio = (float)count / ((float)target->obj->vertexlist.size() * ( 1.0f / 2 ));
 
-		if(ioo->ioflags & IO_NPC) {
+		if(target->ioflags & IO_NPC) {
 			if(mindist <= dist_limit) {
-				ARX_EQUIPMENT_ComputeDamages(source, ioo, ratioaim);
+				ARX_EQUIPMENT_ComputeDamages(source, target, ratioaim);
 			}
 		} else {
 			if(mindist <= 120.f) {
-				ARX_DAMAGES_DamageFIX(ioo, dmg * ratio, source->index(), false);
+				ARX_DAMAGES_DamageFIX(target, dmg * ratio, source->index(), false);
 			}
 		}
 	}
