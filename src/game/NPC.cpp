@@ -149,24 +149,24 @@ static void setAnimation(Entity * entity, AnimationNumber anim,
 	setAnimation(entity, entity->anims[anim], flags, startAtBeginning);
 }
 
-static void CheckHit(Entity * io, float ratioaim) {
+static void CheckHit(Entity * source, float ratioaim) {
 
-	if(!io)
+	if(!source)
 		return;
 	
 	Vec3f from(0.f, 0.f, -90.f);
-	Vec3f to = VRotateY(from, MAKEANGLE(180.f - io->angle.getPitch()));
-	Vec3f ppos = io->pos + Vec3f(0.f, -80.f, 0.f);
+	Vec3f to = VRotateY(from, MAKEANGLE(180.f - source->angle.getPitch()));
+	Vec3f ppos = source->pos + Vec3f(0.f, -80.f, 0.f);
 	Vec3f pos = ppos + to;
 
 	float dmg;
 
-	if(io->ioflags & IO_NPC)
-		dmg = io->_npcdata->damages;
+	if(source->ioflags & IO_NPC)
+		dmg = source->_npcdata->damages;
 	else
 		dmg = 40.f;
 
-	EntityHandle i = io->targetinfo;
+	EntityHandle i = source->targetinfo;
 
 	if(!ValidIONum(i))
 		return;
@@ -182,10 +182,10 @@ static void CheckHit(Entity * io, float ratioaim) {
 	if(ioo->gameFlags & GFLAG_ISINTREATZONE)
 	if(ioo->show == SHOW_FLAG_IN_SCENE)
 	if(ioo->obj)
-	if(ioo->pos.y > (io->pos.y + io->physics.cyl.height))
-	if(io->pos.y >	(ioo->pos.y + ioo->physics.cyl.height))
+	if(ioo->pos.y > (source->pos.y + source->physics.cyl.height))
+	if(source->pos.y >	(ioo->pos.y + ioo->physics.cyl.height))
 	{
-		float dist_limit = io->_npcdata->reach + io->physics.cyl.radius;
+		float dist_limit = source->_npcdata->reach + source->physics.cyl.radius;
 		long count = 0;
 		float mindist = std::numeric_limits<float>::max();
 
@@ -204,11 +204,11 @@ static void CheckHit(Entity * io, float ratioaim) {
 
 		if(ioo->ioflags & IO_NPC) {
 			if(mindist <= dist_limit) {
-				ARX_EQUIPMENT_ComputeDamages(io, ioo, ratioaim);
+				ARX_EQUIPMENT_ComputeDamages(source, ioo, ratioaim);
 			}
 		} else {
 			if(mindist <= 120.f) {
-				ARX_DAMAGES_DamageFIX(ioo, dmg * ratio, io->index(), false);
+				ARX_DAMAGES_DamageFIX(ioo, dmg * ratio, source->index(), false);
 			}
 		}
 	}
