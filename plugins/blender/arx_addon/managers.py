@@ -549,7 +549,6 @@ class ArxSceneManager(object):
         scene.objects.link(groupObject)
         groupObject.location = correctionMatrix * mathutils.Vector(sceneOffset)
 
-        flf = open('C:/Users/Freddy/Desktop/lights-'+scene.name+'.txt','w+')
         for light in llfData["lights"]:
             lampData = bpy.data.lamps.new(name=scene.name + "-lamp-data", type='POINT')
             lampData.use_specular = False
@@ -561,11 +560,8 @@ class ArxSceneManager(object):
             obj.location = correctionMatrix * mathutils.Vector([light.pos.x, light.pos.y, light.pos.z])
             obj.parent_type = 'OBJECT'
             obj.parent = groupObject
-            
-            flf.write(str(obj.location.x) + ',' + str(obj.location.y) + ',' + str(obj.location.z) + ',' + str(lampData.color.r) + ',' + str(lampData.color.g) + ',' + str(lampData.color.b) + ',' + str(lampData.distance) + ',' + str(lampData.energy) +"\n");
 
             scene.objects.link(obj)
-        flf.close()
 
     def AddSceneObjects(self, scene, dlfData, sceneOffset):
 
