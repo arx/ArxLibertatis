@@ -580,7 +580,8 @@ class ArxSceneManager(object):
 
             # FIXME proper rotation conversion
             obj.rotation_mode = 'YXZ'
-            obj.rotation_euler = [math.radians(e.angle.a), math.radians(e.angle.g), math.radians(e.angle.b)]
+            obj.rotation_euler = [math.radians(e.angle.a-90), math.radians(e.angle.g+90), math.radians(e.angle.b)]
+            obj.scale = [0.001,0.001,0.001] # TODO hardcoded scale
 
 
 class ArxAddon(object):
