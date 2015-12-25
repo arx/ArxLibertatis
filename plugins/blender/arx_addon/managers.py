@@ -17,6 +17,7 @@
 
 import importlib
 import sys
+import os
 
 if "bpy" in locals():
     importlib.reload(sys.modules["arx_addon.common"])
@@ -205,7 +206,9 @@ class ArxObjectManager(object):
         for m in data.mats:
             mat = createMaterial(self.dataPath, m)
             obj.data.materials.append(mat)
-
+            
+        bpy.ops.object.mode_set(mode='OBJECT')
+        
         return obj
 
     def createArmature(self, canonicalId, bm, groups):
@@ -216,16 +219,15 @@ class ArxObjectManager(object):
         # Create armature and object
         amt = bpy.data.armatures.new(amtname)
         amt.draw_type = 'WIRE'
-        object = bpy.data.objects.new(amtname + "-amt", amt)
-        object.show_x_ray = True
-        object.location = origin
+        amtobject = bpy.data.objects.new(amtname + "-amt", amt)
+        amtobject.show_x_ray = True
+        amtobject.location = origin
         # ob.show_name = True
 
         # Link object to scene and make active
-        scn = bpy.context.scene
-        scn.objects.link(object)
-        scn.objects.active = object
-        object.select = True
+        bpy.context.scene.objects.link(amtobject)
+        bpy.context.scene.objects.active = amtobject
+        amtobject.select = True
 
         bpy.ops.object.mode_set(mode='EDIT')
 
@@ -239,7 +241,7 @@ class ArxObjectManager(object):
 
         bpy.ops.object.mode_set(mode='OBJECT')
 
-        return object
+        return amtobject
 
     def addInstance(self, scene, classPath, ident):
         print("Creating new object type %s, id %i" % (classPath, ident))
@@ -247,16 +249,7 @@ class ArxObjectManager(object):
         entityObject = 'game' + classPath + '.ftl'
         ftlFileName = os.path.join(self.dataPath, entityObject)
         print("Name: %s" % ftlFileName)
-
-        ftlData = self.ftlSerializer.readFile(ftlFileName)
-
-        bm = self.createBmesh(ftlData.verts, ftlData.faces)
-
-        entityName = "{0:s}_{1:04d}".format(classPath, ident)
-
-        msg = "File \"" + ftlFileName + "\" loaded successfully."
-        obj = self.createObject(bm, ftlData, entityName, self.dataPath)
-        return obj
+        return self.loadFile(ftlFileName)
 
     def loadFile(self, filePath):
         print("Loading file: %s" % filePath)
@@ -469,7 +462,7 @@ class ArxSceneManager(object):
         # FIXME
         self.AddScenePortals(scn, ftsData)
         self.AddSceneLights(scn, llfData, ftsData["sceneOffset"])
-        #self.AddSceneObjects(scn, dlfData, ftsData["sceneOffset"])
+        self.AddSceneObjects(scn, dlfData, ftsData["sceneOffset"])
 
     def AddSceneBackground(self, cells, mappedMaterials):
         bm = bmesh.new()
@@ -556,6 +549,7 @@ class ArxSceneManager(object):
         scene.objects.link(groupObject)
         groupObject.location = correctionMatrix * mathutils.Vector(sceneOffset)
 
+        flf = open('C:/Users/Freddy/Desktop/lights-'+scene.name+'.txt','w+')
         for light in llfData["lights"]:
             lampData = bpy.data.lamps.new(name=scene.name + "-lamp-data", type='POINT')
             lampData.use_specular = False
@@ -567,8 +561,11 @@ class ArxSceneManager(object):
             obj.location = correctionMatrix * mathutils.Vector([light.pos.x, light.pos.y, light.pos.z])
             obj.parent_type = 'OBJECT'
             obj.parent = groupObject
+            
+            flf.write(str(obj.location.x) + ',' + str(obj.location.y) + ',' + str(obj.location.z) + ',' + str(lampData.color.r) + ',' + str(lampData.color.g) + ',' + str(lampData.color.b) + ',' + str(lampData.distance) + ',' + str(lampData.energy) +"\n");
 
             scene.objects.link(obj)
+        flf.close()
 
     def AddSceneObjects(self, scene, dlfData, sceneOffset):
 
