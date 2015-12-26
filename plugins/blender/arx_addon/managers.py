@@ -84,7 +84,7 @@ class ArxObjectManager(object):
         self.log = logging.getLogger('ArxObjectManager')
         self.ioLib = ioLib
         self.dataPath = dataPath
-        self.ftlSerializer = FtlSerializer(ioLib)
+        self.ftlSerializer = FtlSerializer()
 
     def analyzeFaceData(self, faceData):
         # find weird face data
