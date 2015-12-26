@@ -257,11 +257,6 @@ bool TextWidget::OnMouseClick() {
 			}
 			break;
 		}
-		case BUTTON_MENUOPTIONS_CONTROLS_BACK:
-		{
-			config.save();
-		}
-		break;
 		default:
 			break;
 	}
