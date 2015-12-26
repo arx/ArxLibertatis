@@ -44,6 +44,8 @@ namespace Default {
 
 #define ARX_DEFAULT_WIDTH 640
 #define ARX_DEFAULT_HEIGHT 480
+#define THUMBNAIL_DEFAULT_WIDTH 320
+#define THUMBNAIL_DEFAULT_HEIGHT 200
 
 const std::string
 	language = std::string(),
@@ -53,6 +55,8 @@ const std::string
 	windowFramework = "auto",
 	windowSize = BOOST_PP_STRINGIZE(ARX_DEFAULT_WIDTH) "x"
 	             BOOST_PP_STRINGIZE(ARX_DEFAULT_HEIGHT),
+	thumbnailSize = BOOST_PP_STRINGIZE(THUMBNAIL_DEFAULT_WIDTH) "x"
+					BOOST_PP_STRINGIZE(THUMBNAIL_DEFAULT_HEIGHT),
 	debugLevels = "";
 
 const int
@@ -162,7 +166,8 @@ const std::string
 	colorkeyAntialiasing = "colorkey_antialiasing",
 	limitSpeechWidth = "limit_speech_width",
 	cinematicWidescreenMode = "cinematic_widescreen_mode",
-	hudScale = "hud_scale";
+	hudScale = "hud_scale",
+	thumbnailSize = "save_thumbnail_size";
 
 // Window options
 const std::string
@@ -389,7 +394,10 @@ bool Config::save() {
 	writer.writeKey(Key::limitSpeechWidth, video.limitSpeechWidth);
 	writer.writeKey(Key::cinematicWidescreenMode, int(video.cinematicWidescreenMode));
 	writer.writeKey(Key::hudScale, video.hudScale);
-	
+	std::ostringstream osst;
+	osst << video.thumbnailSize.x << 'x' << video.thumbnailSize.y;
+	writer.writeKey(Key::thumbnailSize, osst.str());
+
 	// window
 	writer.beginSection(Section::Window);
 	writer.writeKey(Key::windowFramework, window.framework);
@@ -449,6 +457,24 @@ static Vec2i parseResolution(const std::string & resolution) {
 	}
 }
 
+static Vec2i parseThumbnailSize(const std::string & thumbnailSize) {
+
+	Vec2i res;
+
+	std::istringstream iss(thumbnailSize);
+	iss >> res.x;
+	char x = '\0';
+	iss >> x;
+	iss >> res.y;
+	if (iss.fail() || x != 'x' || res.x <= 0 || res.y <= 0) {
+		LogWarning << "Bad thumbnail resolution string: " << thumbnailSize;
+		return Vec2i(THUMBNAIL_DEFAULT_WIDTH, THUMBNAIL_DEFAULT_HEIGHT);
+	}
+	else {
+		return res;
+	}
+}
+
 bool Config::init(const fs::path & file) {
 	
 	fs::ifstream ifs;
@@ -485,6 +511,8 @@ bool Config::init(const fs::path & file) {
 	int cinematicMode = reader.getKey(Section::Video, Key::cinematicWidescreenMode, Default::cinematicWidescreenMode);
 	video.cinematicWidescreenMode = CinematicWidescreenMode(glm::clamp(cinematicMode, 0, 2));
 	video.hudScale = reader.getKey(Section::Video, Key::hudScale, Default::hudScale);
+	std::string thumbnailSize = reader.getKey(Section::Video, Key::thumbnailSize, Default::thumbnailSize);
+	video.thumbnailSize = parseThumbnailSize(thumbnailSize);
 	
 	// Get window settings
 	window.framework = reader.getKey(Section::Window, Key::windowFramework, Default::windowFramework);
