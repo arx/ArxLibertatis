@@ -166,9 +166,8 @@ FtlFace = namedtuple("FtlFace", ["vids", "uvs", "texid", "facetype", "transval",
 
 
 class FtlSerializer(object):
-    def __init__(self, ioLib):
+    def __init__(self):
         self.log = logging.getLogger('FtlSerializer')
-        self.ioLib = ioLib
 
     def read(self, data):
         pos = 0
