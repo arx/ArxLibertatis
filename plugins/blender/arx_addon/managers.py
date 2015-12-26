@@ -255,25 +255,36 @@ class ArxObjectManager(object):
         print("Loading file: %s" % filePath)
 
         with open(filePath, "rb") as f:
-            data = f.read()
-            if data[:3] == b"FTL":
-                unpacked = data
+            fileData = f.read()
+            
+        unpackedFilePath = filePath + ".unpack"
+        
+        data = None
+        if os.path.isfile(unpackedFilePath):
+            md5hash = binaryMd5(fileData)
+            with open(unpackedFilePath) as f:
+                hash = f.read(16)
+                if hash == md5hash:
+                    data = f.read()
+                    self.log.debug("Loaded %i unpacked bytes from file %s" % (len(data), unpackedFilePath))
+
+        if data is None:
+            if fileData[:3] == b"FTL":
+                data = fileData
                 self.log.debug("Loaded %i unpacked bytes from file %s" % (len(data), filePath))
             else:
-                unpacked = self.ioLib.unpack(data)
-                with open(filePath + ".unpack", "wb") as f:
-                    f.write(unpacked)
-                    self.log.debug("Written unpacked ftl")
-                self.log.debug("Loaded %i packed bytes from file %s" % (len(data), filePath))
+                data = createUnpackedFile(filePath,fileData,self.ioLib)
+                self.log.debug("Written unpacked ftl")
+                self.log.debug("Loaded %i packed bytes from file %s" % (len(fileData), filePath))
 
         # create canonical id
         objPath = os.path.join(self.dataPath, "game/graph/obj3d/interactive")
         relPath = os.path.relpath(filePath, objPath)
         split = splitPath(relPath)
         canonicalId = split[:-1]
-        log.debug("Canonical ID: %s" % str(canonicalId))
+        self.log.debug("Canonical ID: %s" % str(canonicalId))
 
-        ftlData = self.ftlSerializer.read(unpacked)
+        ftlData = self.ftlSerializer.read(data)
 
         bm = self.createBmesh(ftlData.verts, ftlData.faces)
         obj = self.createObject(bm, ftlData, canonicalId)

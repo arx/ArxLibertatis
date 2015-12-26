@@ -19,6 +19,7 @@ import bpy
 
 import os
 import logging
+import hashlib
 
 log = logging.getLogger('Materials')
 
@@ -96,3 +97,18 @@ def createMaterial(rootDirectory, textureName):
         slot.texture = black
 
     return mat
+
+def binaryMd5(data):
+    md5hash = hashlib.md5()
+    md5hash.update(data)
+    return md5hash.digest()
+
+def createUnpackedFile(originalFilepath,originalPackedData,ioLib):
+    md5hash = binaryMd5(originalPackedData)
+    unpacked = ioLib.unpack(originalPackedData)
+    with open(originalFilepath + ".unpack", "wb") as f:
+        f.write(md5hash)
+        f.write(unpacked)
+    return unpacked
+    
+    
