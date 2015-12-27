@@ -31,6 +31,9 @@ class SavedVec3(LittleEndianStructure):
         ("y", c_float),
         ("z", c_float)
     ]
+    
+    def __str__(self):
+        return "<SavedVec3 (x={self.x}, y={self.y}, z={self.z})>".format(self=self)
 
 class SavedAnglef(LittleEndianStructure):
     _pack_ = 1
@@ -39,6 +42,9 @@ class SavedAnglef(LittleEndianStructure):
         ("b", c_float),
         ("g", c_float)
     ]
+    
+    def __str__(self):
+        return "<SavedAnglef (a={self.a}, b={self.b}, g={self.g})>".format(self=self)
 
 class ArxQuat(LittleEndianStructure):
     _pack_ = 1
@@ -48,6 +54,9 @@ class ArxQuat(LittleEndianStructure):
         ("y", c_float),
         ("z", c_float)
     ]
+    
+    def __str__(self):
+        return "<ArxQuat (w={self.w}, x={self.x}, y={self.y}, z={self.z})>".format(self=self)
 
 class SavedColor(LittleEndianStructure):
     _pack_ = 1
@@ -56,6 +65,9 @@ class SavedColor(LittleEndianStructure):
         ("g", c_float),
         ("b", c_float)
     ]
+    
+    def __str__(self):
+        return "<SavedColor (r={self.r}, g={self.g}, b={self.b})>".format(self=self)
 
 class PolyTypeFlag_bits(LittleEndianStructure):
      _fields_ = [
