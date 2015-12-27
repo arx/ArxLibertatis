@@ -79,28 +79,20 @@ public:
 			addCenter(txt, true);
 		}
 		
-		PanelWidget * panel = new PanelWidget;
-		
 		{
 			std::string szMenuText = getLocalised("system_yes");
-			szMenuText += "   "; // TODO This space can probably go
-			TextWidget * txt = new TextWidget(BUTTON_INVALID, hFontMenu, szMenuText);
+			TextWidget * txt = new TextWidget(BUTTON_INVALID, hFontMenu, szMenuText, Vec2f(m_size.x - 40, 380));
 			txt->clicked = boost::bind(ARXMenu_NewQuest);
-			txt->SetPos(Vec2f(RATIO_X(m_size.x - (txt->m_rect.width() + 10)), 0));
-			panel->AddElementNoCenterIn(txt);
+			add(txt);
 		}
 		
 		{
 			std::string szMenuText = getLocalised("system_no");
-			TextWidget * txt = new TextWidget(BUTTON_INVALID, hFontMenu, szMenuText, Vec2f(10, 0));
+			TextWidget * txt = new TextWidget(BUTTON_INVALID, hFontMenu, szMenuText, Vec2f(10, 380));
 			txt->m_targetMenu = MAIN;
 			txt->SetShortCut(Keyboard::Key_Escape);
-			panel->AddElementNoCenterIn(txt);
+			add(txt);
 		}
-		
-		panel->Move(Vec2f(0, RATIO_Y(380)));
-		
-		add(panel);
 	}
 };
 
@@ -372,8 +364,6 @@ public:
 			addCenter(txt, true);
 		}
 		
-		PanelWidget * panel = new PanelWidget;
-		
 		// Delete button
 		{
 			std::string szMenuText = getLocalised("system_menus_main_editquest_delete");
@@ -381,7 +371,7 @@ public:
 			txt->m_targetMenu = EDIT_QUEST_SAVE;
 			txt->SetPos(Vec2f(RATIO_X(m_size.x-10)-txt->m_rect.width(), RATIO_Y(5)));
 			txt->lOldColor = txt->lColor;
-			panel->AddElementNoCenterIn(txt);
+			add(txt);
 			pDeleteButton = txt;
 		}
 		
@@ -391,7 +381,7 @@ public:
 			TextWidget * txt = new TextWidget(BUTTON_MENUEDITQUEST_SAVE, hFontMenu, szMenuText, Vec2f_ZERO);
 			txt->m_targetMenu = MAIN;
 			txt->SetPos(Vec2f(RATIO_X(m_size.x-10)-txt->m_rect.width(), RATIO_Y(380)));
-			panel->AddElementNoCenterIn(txt);
+			add(txt);
 		}
 		
 		// Back button
@@ -399,10 +389,8 @@ public:
 			ButtonWidget * cb = new ButtonWidget(Vec2f(20, 380), Vec2f(16, 16), "graph/interface/menus/back");
 			cb->m_targetMenu = EDIT_QUEST_SAVE;
 			cb->SetShortCut(Keyboard::Key_Escape);
-			panel->AddElementNoCenterIn(cb);
+			add(cb);
 		}
-		
-		add(panel);
 	}
 };
 
@@ -659,23 +647,22 @@ public:
 		}
 		
 		{
-			PanelWidget * panel = new PanelWidget;
 			std::string szMenuText = getLocalised("system_menus_video_apply");
 			szMenuText += "   ";
 			TextWidget * txt = new TextWidget(BUTTON_INVALID, hFontMenu, szMenuText, Vec2f(240, 0));
 			txt->clicked = boost::bind(&VideoOptionsMenuPage::onClickedApply, this);
 			txt->SetPos(Vec2f(RATIO_X(m_size.x-10)-txt->m_rect.width(), RATIO_Y(380) + RATIO_Y(40)));
 			txt->SetCheckOff();
-			panel->AddElementNoCenterIn(txt);
+			add(txt);
 			pMenuElementApply = txt;
-			
+		}
+		
+		{
 			ButtonWidget * cb = new ButtonWidget(Vec2f(20, 420), Vec2f(16, 16), "graph/interface/menus/back");
 			cb->clicked = boost::bind(&VideoOptionsMenuPage::onClickedBack, this);
 			cb->m_targetMenu = OPTIONS;
 			cb->SetShortCut(Keyboard::Key_Escape);
-			panel->AddElementNoCenterIn(cb);
-			
-			add(panel);
+			add(cb);
 		}
 	}
 	
@@ -1109,31 +1096,28 @@ public:
 		addControlRow(y, "system_menus_options_input_customize_controls_look_up", BUTTON_MENUOPTIONS_CONTROLS_CUST_LOOKUP1, BUTTON_MENUOPTIONS_CONTROLS_CUST_LOOKUP2);
 		addControlRow(y, "system_menus_options_input_customize_controls_look_down", BUTTON_MENUOPTIONS_CONTROLS_CUST_LOOKDOWN1, BUTTON_MENUOPTIONS_CONTROLS_CUST_LOOKDOWN2);
 		
-		PanelWidget * panel = new PanelWidget;
-		
 		{
 			ButtonWidget * cb = new ButtonWidget(Vec2f(20, 380), Vec2f(16, 16), "graph/interface/menus/back");
 			cb->m_targetMenu = OPTIONS_INPUT;
 			cb->SetShortCut(Keyboard::Key_Escape);
 			cb->clicked = boost::bind(&ControlOptionsMenuPage1::onClickedBack, this);
-			panel->AddElementNoCenterIn(cb);
+			add(cb);
 		}
 		
 		{
 			std::string szMenuText = getLocalised( "system_menus_options_input_customize_default" );
 			TextWidget * txt = new TextWidget(BUTTON_MENUOPTIONS_CONTROLS_CUST_DEFAULT, hFontMenu, szMenuText);
 			txt->SetPos(Vec2f((RATIO_X(m_size.x) - txt->m_rect.width())*0.5f, RATIO_Y(380)));
-			panel->AddElementNoCenterIn(txt);
+			add(txt);
 		}
 		
 		{
 			ButtonWidget * cb = new ButtonWidget(Vec2f(280, 380), Vec2f(16, 16), "graph/interface/menus/next");
 			cb->m_targetMenu = OPTIONS_INPUT_CUSTOMIZE_KEYS_2;
 			cb->SetShortCut(Keyboard::Key_Escape);
-			panel->AddElementNoCenterIn(cb);
+			add(cb);
 		}
 	
-		add(panel);
 		ReInitActionKey();
 	}
 	
@@ -1180,23 +1164,20 @@ public:
 		
 		addControlRow(y, "system_menus_options_input_customize_controls_toggle_fullscreen", BUTTON_MENUOPTIONS_CONTROLS_CUST_TOGGLE_FULLSCREEN1, BUTTON_MENUOPTIONS_CONTROLS_CUST_TOGGLE_FULLSCREEN2, "Toggle fullscreen");
 		
-		PanelWidget * panel = new PanelWidget;
-		
 		{
 			ButtonWidget * cb = new ButtonWidget(Vec2f(20, 380), Vec2f(16, 16), "graph/interface/menus/back");
 			cb->m_targetMenu = OPTIONS_INPUT_CUSTOMIZE_KEYS_1;
 			cb->SetShortCut(Keyboard::Key_Escape);
-			panel->AddElementNoCenterIn(cb);
+			add(cb);
 		}
 		
 		{
 			std::string szMenuText = getLocalised( "system_menus_options_input_customize_default" );
 			TextWidget * txt = new TextWidget(BUTTON_MENUOPTIONS_CONTROLS_CUST_DEFAULT, hFontMenu, szMenuText);
 			txt->SetPos(Vec2f((RATIO_X(m_size.x) - txt->m_rect.width())*0.5f, RATIO_Y(380)));
-			panel->AddElementNoCenterIn(txt);
+			add(txt);
 		}
 		
-		add(panel);
 		ReInitActionKey();
 	}
 };
@@ -1222,20 +1203,16 @@ public:
 		}
 		
 		{
-			PanelWidget * panel = new PanelWidget;
-			
-			TextWidget * yes = new TextWidget(BUTTON_INVALID, hFontMenu, getLocalised("system_yes"));
+			TextWidget * yes = new TextWidget(BUTTON_INVALID, hFontMenu, getLocalised("system_yes"), Vec2f(m_size.x - 40, 380));
 			yes->clicked = boost::bind(ARXMenu_Quit);
-			yes->SetPos(Vec2f(RATIO_X(m_size.x-10)-yes->m_rect.width(), 0));
-			panel->AddElementNoCenterIn(yes);
-			
-			TextWidget * no = new TextWidget(BUTTON_INVALID, hFontMenu, getLocalised("system_no"), Vec2f(10, 0));
+			add(yes);
+		}
+		
+		{
+			TextWidget * no = new TextWidget(BUTTON_INVALID, hFontMenu, getLocalised("system_no"), Vec2f(10, 380));
 			no->m_targetMenu = MAIN;
 			no->SetShortCut(Keyboard::Key_Escape);
-			panel->AddElementNoCenterIn(no);
-			
-			panel->Move(Vec2f(0, RATIO_Y(380)));
-			add(panel);
+			add(no);
 		}
 	}
 };
