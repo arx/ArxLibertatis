@@ -71,14 +71,8 @@ void ButtonWidget::Update(int _iDTime) {
 	(void)_iDTime;
 }
 
-// TODO remove this
-extern bool bNoMenu;
-
 void ButtonWidget::Render() {
 
-	if(bNoMenu)
-		return;
-	
 	Color color = (bCheck) ? Color::white : Color(63, 63, 63, 255);
 	EERIEDrawBitmap2(m_rect, 0, m_texture, color);
 }
@@ -87,9 +81,6 @@ extern MenuCursor * pMenuCursor;
 
 void ButtonWidget::RenderMouseOver() {
 
-	if(bNoMenu)
-		return;
-	
 	pMenuCursor->SetMouseOver();
 	
 	const Vec2f cursor = Vec2f(GInput->getMousePosAbs());

@@ -75,13 +75,7 @@ void PanelWidget::Update(int _iTime)
 	}
 }
 
-// TODO remove this
-extern bool bNoMenu;
-
 void PanelWidget::Render() {
-
-	if(bNoMenu)
-		return;
 
 	BOOST_FOREACH(Widget * widget, vElement) {
 		widget->Render();

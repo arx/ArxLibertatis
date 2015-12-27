@@ -107,14 +107,8 @@ void CheckboxWidget::renderCommon() {
 	EERIEDrawBitmap2(checkboxRect, 0.f, pTex, color);
 }
 
-// TODO remove this
-extern bool bNoMenu;
-
 void CheckboxWidget::Render() {
 
-	if(bNoMenu)
-		return;
-	
 	renderCommon();
 	
 	m_label->Render();
@@ -123,9 +117,6 @@ void CheckboxWidget::Render() {
 extern MenuCursor * pMenuCursor;
 
 void CheckboxWidget::RenderMouseOver() {
-
-	if(bNoMenu)
-		return;
 
 	pMenuCursor->SetMouseOver();
 

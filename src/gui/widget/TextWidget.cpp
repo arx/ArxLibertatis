@@ -302,9 +302,6 @@ static void FontRenderText(Font * _pFont, const Rectf & rzone, const std::string
 
 void TextWidget::Render() {
 
-	if(bNoMenu)
-		return;
-
 	if(bSelected) {
 		FontRenderText(m_font, m_rect, m_text, lColorHighlight);
 	} else if(enabled) {
@@ -320,9 +317,6 @@ extern TextureContainer *pTextureLoad;
 extern TextureContainer *pTextureLoadRender;
 
 void TextWidget::RenderMouseOver() {
-
-	if(bNoMenu)
-		return;
 
 	pMenuCursor->SetMouseOver();
 

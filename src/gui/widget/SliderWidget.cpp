@@ -133,13 +133,7 @@ void SliderWidget::Update(int _iTime) {
 	m_rect.bottom = m_rect.top + std::max(pLeftButton->m_rect.height(), pRightButton->m_rect.height());
 }
 
-// TODO remove this
-extern bool bNoMenu;
-
 void SliderWidget::Render() {
-
-	if(bNoMenu)
-		return;
 
 	pLeftButton->Render();
 	pRightButton->Render();
@@ -164,9 +158,6 @@ void SliderWidget::Render() {
 extern MenuCursor * pMenuCursor;
 
 void SliderWidget::RenderMouseOver() {
-
-	if(bNoMenu)
-		return;
 
 	pMenuCursor->SetMouseOver();
 

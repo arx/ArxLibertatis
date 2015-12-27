@@ -170,13 +170,7 @@ void CycleTextWidget::Update(int _iTime) {
 	pRightButton->Update(_iTime);
 }
 
-// TODO remove this
-extern bool bNoMenu;
-
 void CycleTextWidget::Render() {
-	
-	if(bNoMenu)
-		return;
 	
 	if(enabled) {
 		pLeftButton->Render();
@@ -202,9 +196,6 @@ void CycleTextWidget::setEnabled(bool enable) {
 extern MenuCursor * pMenuCursor;
 
 void CycleTextWidget::RenderMouseOver() {
-
-	if(bNoMenu)
-		return;
 
 	pMenuCursor->SetMouseOver();
 
