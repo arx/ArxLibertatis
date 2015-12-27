@@ -196,9 +196,9 @@ void SaveGameList::update(bool verbose) {
 	LogDebug("Found " << savelist.size() << " savegames");
 }
 
-void SaveGameList::remove(size_t handle) {
+void SaveGameList::remove(SavegameHandle handle) {
 	
-	iterator save = begin() + handle;
+	iterator save = begin() + handle.handleData();
 	
 	arx_assert(save >= begin() && save < end());
 	

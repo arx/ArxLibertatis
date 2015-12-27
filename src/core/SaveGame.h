@@ -86,7 +86,7 @@ public:
 	iterator quickload();
 	
 	//! Delete the given savegame. This removes the actual on-disk files.
-	void remove(size_t handle);
+	void remove(SavegameHandle handle);
 	
 	iterator begin() const { return savelist.begin(); }
 	iterator end() const { return savelist.end(); }

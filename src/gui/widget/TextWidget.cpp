@@ -225,7 +225,7 @@ bool TextWidget::OnMouseClick() {
 						if(m_savegame != SavegameHandle()) {
 							m_targetMenu = EDIT_QUEST_LOAD;
 							mainMenu->bReInitAll = true;
-							savegames.remove(m_savegame.handleData());
+							savegames.remove(m_savegame);
 							break;
 						}
 					}
@@ -249,7 +249,7 @@ bool TextWidget::OnMouseClick() {
 						if(me) {
 							m_targetMenu = EDIT_QUEST_SAVE;
 							mainMenu->bReInitAll = true;
-							savegames.remove(me->m_savegame.handleData());
+							savegames.remove(me->m_savegame);
 							break;
 						}
 					}
