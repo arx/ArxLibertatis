@@ -262,9 +262,9 @@ class ArxObjectManager(object):
         data = None
         if os.path.isfile(unpackedFilePath):
             md5hash = binaryMd5(fileData)
-            with open(unpackedFilePath) as f:
-                hash = f.read(16)
-                if hash == md5hash:
+            with open(unpackedFilePath, "rb") as f:
+                fileHash = f.read(16)
+                if fileHash == md5hash:
                     data = f.read()
                     self.log.debug("Loaded %i unpacked bytes from file %s" % (len(data), unpackedFilePath))
 
