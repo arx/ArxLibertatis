@@ -63,23 +63,6 @@ void PanelWidget::AddElement(Widget* widget)
 	widget->Move(Vec2f(0, ((m_rect.height() - widget->m_rect.bottom) / 2)));
 }
 
-// patch on ajoute à droite en ligne
-void PanelWidget::AddElementNoCenterIn(Widget * widget)
-{
-	vElement.push_back(widget);
-
-	if(vElement.size() == 1) {
-		m_rect = widget->m_rect;
-	} else {
-		m_rect.left = std::min(m_rect.left, widget->m_rect.left);
-		m_rect.top = std::min(m_rect.top, widget->m_rect.top);
-	}
-
-	// + taille elem
-	m_rect.right = std::max(m_rect.right, widget->m_rect.right);
-	m_rect.bottom = std::max(m_rect.bottom, widget->m_rect.bottom);
-}
-
 void PanelWidget::Update(int _iTime)
 {
 	m_rect.right = m_rect.left;

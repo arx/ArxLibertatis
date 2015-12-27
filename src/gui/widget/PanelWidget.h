@@ -32,7 +32,6 @@ public:
 	
 	void Move(const Vec2f & offset);
 	void AddElement(Widget * widget);
-	void AddElementNoCenterIn(Widget * widget);
 	
 	void Update(int time);
 	void Render();
