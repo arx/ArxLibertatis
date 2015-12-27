@@ -146,15 +146,9 @@ class ImportTea(bpy.types.Operator, ImportHelper):
     path_mode = path_reference_mode
 
     def execute(self, context):
-        from .dataTea import TeaSerializer
-
-        serializer = TeaSerializer()
-        data = serializer.read(self.filepath)
-
-        # TODO implement skeleton loading here
-
+        getAddon(context).animationManager.loadAnimation(self.filepath)
         return {'FINISHED'}
-
+    
 
 def menu_func_import_tea(self, context):
     self.layout.operator(ImportTea.bl_idname, text="Tea animation (.tea)")
