@@ -45,7 +45,6 @@ public:
 	
 	void setColor(Color color) { lColor = color; }
 	
-	Widget * OnShortCut();
 	bool OnMouseClick();
 	void Update(int time);
 	void Render();

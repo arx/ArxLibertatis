@@ -43,7 +43,6 @@ public:
 	
 	void Move(const Vec2f & offset);
 	bool OnMouseClick();
-	Widget * OnShortCut() { return NULL; }
 	void Update(int time);
 	void Render();
 	void RenderMouseOver();

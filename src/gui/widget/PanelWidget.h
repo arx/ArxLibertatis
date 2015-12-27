@@ -37,7 +37,6 @@ public:
 	void Update(int time);
 	void Render();
 	bool OnMouseClick() { return false; }
-	Widget * OnShortCut();
 	void RenderMouseOver() { }
 	Widget * IsMouseOver(const Vec2f & mousePos) const;
 	Widget * GetZoneWithID(MenuButton zoneId);

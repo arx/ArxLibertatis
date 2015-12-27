@@ -181,7 +181,6 @@ public:
 	explicit Widget();
 	virtual ~Widget();
 	
-	virtual Widget * OnShortCut();
 	virtual bool OnMouseClick() = 0;
 	virtual void Update(int time) = 0;
 	virtual void Render() = 0;

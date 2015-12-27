@@ -80,16 +80,6 @@ void PanelWidget::AddElementNoCenterIn(Widget * widget)
 	m_rect.bottom = std::max(m_rect.bottom, widget->m_rect.bottom);
 }
 
-Widget* PanelWidget::OnShortCut()
-{
-	BOOST_FOREACH(Widget * widget, vElement) {
-		if(widget->OnShortCut())
-			return widget;
-	}
-
-	return NULL;
-}
-
 void PanelWidget::Update(int _iTime)
 {
 	m_rect.right = m_rect.left;

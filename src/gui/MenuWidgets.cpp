@@ -918,14 +918,15 @@ MENUSTATE MenuPage::Update(Vec2f pos) {
 	if(!bEdit) {
 		for(size_t iJ = 0; iJ < m_children.GetNbZone(); ++iJ) {
 			Widget * widget = m_children.GetZoneNum(iJ);
-			Widget * shortCutWidget = widget->OnShortCut();
 			
-			if(shortCutWidget) {
-				m_selected=shortCutWidget;
-				MENUSTATE e = m_selected->m_targetMenu;
-				bEdit = m_selected->OnMouseClick();
-				m_selected=shortCutWidget;
-				return e;
+			arx_assert(widget);
+			
+			if(widget->m_shortcut != -1) {
+				if(GInput->isKeyPressedNowUnPressed(widget->m_shortcut)) {
+					bEdit = widget->OnMouseClick();
+					m_selected = widget;
+					return widget->m_targetMenu;
+				}
 			}
 		}
 	}

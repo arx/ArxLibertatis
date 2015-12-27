@@ -293,19 +293,6 @@ bool TextWidget::OnMouseClick() {
 	return false;
 }
 
-// true: block les zones de checks
-Widget* TextWidget::OnShortCut() {
-
-	if(m_shortcut==-1)
-		return NULL;
-
-	if(GInput->isKeyPressedNowUnPressed(m_shortcut)) {
-		return this;
-	}
-
-	return NULL;
-}
-
 static void FontRenderText(Font * _pFont, const Rectf & rzone, const std::string & _pText, Color _c) {
 	Rect rect(rzone);
 	if(pTextManage && !rect.empty()) {

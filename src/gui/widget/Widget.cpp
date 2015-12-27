@@ -62,18 +62,6 @@ Widget::~Widget() {
 	}
 }
 
-Widget* Widget::OnShortCut() {
-
-	if(m_shortcut == -1)
-		return NULL;
-
-	if(GInput->isKeyPressedNowUnPressed(m_shortcut)) {
-		return this;
-	}
-
-	return NULL;
-}
-
 void Widget::Move(const Vec2f & offset) {
 	m_rect.move(offset.x, offset.y);
 }

@@ -36,7 +36,6 @@ public:
 public:
 	void SetPos(Vec2f pos);
 	void AddText(const std::string & label);
-	Widget * OnShortCut() { return NULL; }
 	bool OnMouseClick();
 	void Update(int time);
 	void Render();
