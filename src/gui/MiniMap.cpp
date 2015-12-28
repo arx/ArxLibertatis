@@ -561,11 +561,10 @@ void MiniMap::drawBackground(int showLevel, Rect boundaries, float startX, float
 	for(int j = -2; j < MINIMAP_MAX_Z + 2; j++) {
 		for(int i = -2; i < MINIMAP_MAX_X + 2; i++) {
 			
-			float vx, vy, vxx, vyy;
-			vxx = ((float)i * (float)m_activeBkg->Xdiv * m_modX);
-			vyy = ((float)j * (float)m_activeBkg->Zdiv * m_modZ);
-			vx = (vxx * div) * dw;
-			vy = (vyy * div) * dh;
+			float vxx = ((float)i * (float)m_activeBkg->Xdiv * m_modX);
+			float vyy = ((float)j * (float)m_activeBkg->Zdiv * m_modZ);
+			float vx = (vxx * div) * dw;
+			float vy = (vyy * div) * dh;
 			
 			float posx = (startX + i * caseX) * g_sizeRatio.x;
 			float posy = (startY + j * caseY) * g_sizeRatio.y;
