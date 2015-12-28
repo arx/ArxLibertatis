@@ -558,16 +558,16 @@ void MiniMap::drawBackground(int showLevel, Rect boundaries, float startX, float
 	GRenderer->GetTextureStage(0)->setMinFilter(TextureStage::FilterLinear);
 	GRenderer->GetTextureStage(0)->setMagFilter(TextureStage::FilterLinear);
 
-	for(int j = -2; j < MINIMAP_MAX_Z + 2; j++) {
+	for(int z = -2; z < MINIMAP_MAX_Z + 2; z++) {
 		for(int x = -2; x < MINIMAP_MAX_X + 2; x++) {
 			
 			float vxx = float(x) * float(m_activeBkg->Xdiv) * m_modX;
-			float vyy = float(j) * float(m_activeBkg->Zdiv) * m_modZ;
+			float vyy = float(z) * float(m_activeBkg->Zdiv) * m_modZ;
 			float vx = (vxx * div) * dw;
 			float vy = (vyy * div) * dh;
 			
 			float posx = (startX + x * caseX) * g_sizeRatio.x;
-			float posy = (startY + j * caseY) * g_sizeRatio.y;
+			float posy = (startY + z * caseY) * g_sizeRatio.y;
 			
 			if((posx < boundaries.left * g_sizeRatio.x)
 			   || (posx > boundaries.right * g_sizeRatio.x)
@@ -605,10 +605,10 @@ void MiniMap::drawBackground(int showLevel, Rect boundaries, float startX, float
 				if(vert == 2 || vert == 3)
 					jOffset = 1;
 				
-				if((x + iOffset < 0) || (x + iOffset >= MINIMAP_MAX_X) || (j + jOffset < 0) || (j + jOffset >= MINIMAP_MAX_Z)) {
+				if((x + iOffset < 0) || (x + iOffset >= MINIMAP_MAX_X) || (z + jOffset < 0) || (z + jOffset >= MINIMAP_MAX_Z)) {
 					v = 0;
 				} else {
-					v = ((float)m_levels[showLevel].m_revealed[std::min(x+iOffset, MINIMAP_MAX_X-iOffset)][std::min(j+jOffset, MINIMAP_MAX_Z-jOffset)]) * (1.0f / 255);
+					v = ((float)m_levels[showLevel].m_revealed[std::min(x+iOffset, MINIMAP_MAX_X-iOffset)][std::min(z+jOffset, MINIMAP_MAX_Z-jOffset)]) * (1.0f / 255);
 				}
 				
 				if(fadeBorder > 0.f) {
