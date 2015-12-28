@@ -211,10 +211,10 @@ void MiniMap::loadOffsets(PakReader *pakRes) {
 
 void MiniMap::reveal() {
 	
-	for(int d = 0; d < MAX_MINIMAP_LEVELS; d++) {
-		for(int j = 0; j < MINIMAP_MAX_Z; j++) {
-			for(int i = 0; i < MINIMAP_MAX_X; i++) {
-				m_levels[d].m_revealed[i][j] = 255;
+	for(int l = 0; l < MAX_MINIMAP_LEVELS; l++) {
+		for(int z = 0; z < MINIMAP_MAX_Z; z++) {
+			for(int x = 0; x < MINIMAP_MAX_X; x++) {
+				m_levels[l].m_revealed[x][z] = 255;
 			}
 		}
 	}
