@@ -85,7 +85,10 @@ void ARX_SPELLS_Precast_Launch(PrecastHandle num) {
 		return;
 	}
 	
-	if(float(arxtime) >= LAST_PRECAST_TIME + 1000) {
+	if(float(arxtime) < LAST_PRECAST_TIME + 1000) {
+		return;
+	}
+	
 		SpellType type = Precast[num.handleData()].typ;
 		
 		// Calculate the player's magic level
@@ -103,7 +106,6 @@ void ARX_SPELLS_Precast_Launch(PrecastHandle num) {
 			Precast[num.handleData()].launch_time = (unsigned long)(arxtime);
 			ARX_SOUND_PlaySFX(SND_SPELL_CREATE_FIELD);
 		}
-	}
 }
 
 void ARX_SPELLS_Precast_Check() {
