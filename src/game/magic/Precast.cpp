@@ -60,22 +60,6 @@ void ARX_SPELLS_Precast_Add(SpellType typ, long _level, SpellcastFlags flags, lo
 	Precast.push_back(precast);
 }
 
-static bool PrecastCheckCanPayMana(PrecastHandle num, float cost) {
-	
-	if(Precast[num.handleData()].flags & SPELLCAST_FLAG_NOMANA)
-		return true;
-
-	if(player.manaPool.current >= cost)
-		return true;
-	
-	ARX_SOUND_PlaySFX(SND_MAGIC_FIZZLE);
-	
-	ARX_SPEECH_Add(getLocalised("player_cantcast"));
-	ARX_SPEECH_AddSpeech(entities.player(), "player_cantcast", ANIM_TALK_NEUTRAL);
-	
-	return false;
-}
-
 void ARX_SPELLS_Precast_Launch(PrecastHandle num) {
 	
 	if(num.handleData() < 0)
@@ -103,14 +87,20 @@ void ARX_SPELLS_Precast_Launch(PrecastHandle num) {
 	
 	float cost = ARX_SPELLS_GetManaCost(precast.typ, playerSpellLevel);
 	
-	if(!PrecastCheckCanPayMana(num,cost))
-		return;
-	
-	LAST_PRECAST_TIME = (unsigned long)(arxtime);
-	
-	if(precast.launch_time == 0) {
-		precast.launch_time = (unsigned long)(arxtime);
-		ARX_SOUND_PlaySFX(SND_SPELL_CREATE_FIELD);
+	if(   (precast.flags & SPELLCAST_FLAG_NOMANA)
+	   || player.manaPool.current >= cost
+	) {
+		LAST_PRECAST_TIME = (unsigned long)(arxtime);
+		
+		if(precast.launch_time == 0) {
+			precast.launch_time = (unsigned long)(arxtime);
+			ARX_SOUND_PlaySFX(SND_SPELL_CREATE_FIELD);
+		}
+	} else {
+		ARX_SOUND_PlaySFX(SND_MAGIC_FIZZLE);
+		
+		ARX_SPEECH_Add(getLocalised("player_cantcast"));
+		ARX_SPEECH_AddSpeech(entities.player(), "player_cantcast", ANIM_TALK_NEUTRAL);
 	}
 }
 
