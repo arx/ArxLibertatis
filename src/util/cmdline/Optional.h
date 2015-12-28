@@ -49,7 +49,7 @@ struct optional {
 	template <typename U>
 	explicit optional(const U & rh) : m_ptr(new T(rh)) { }
 	
-	explicit optional(const optional & rh)
+	optional(const optional & rh)
 		: m_ptr(rh.m_ptr ? new T(*rh.m_ptr) : 0) {
 	}
 	
