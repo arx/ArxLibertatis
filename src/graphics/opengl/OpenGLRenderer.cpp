@@ -555,6 +555,20 @@ static VertexBuffer<Vertex> * createVertexBufferImpl(OpenGLRenderer * renderer,
 	
 	if(GLEW_ARB_map_buffer_range) {
 		
+		if(GLEW_ARB_buffer_storage && usage != Renderer::Static) {
+			
+			if(setting.empty() || setting == "persistent-orphan") {
+				return new GLPersistentOrphanVertexBuffer<Vertex>(renderer, capacity);
+			} else if(setting == "persistent-x3" && usage == Renderer::Stream) {
+				return new GLPersistentFenceVertexBuffer<Vertex, 3>(renderer, capacity, 3);
+			} else if(setting == "persistent-x2" && usage == Renderer::Stream) {
+				return new GLPersistentFenceVertexBuffer<Vertex, 3>(renderer, capacity, 2);
+			} else if(setting == "persistent-nosync") {
+				return new GLPersistentUnsynchronizedVertexBuffer<Vertex>(renderer, capacity);
+			}
+			
+		}
+		
 		if(setting.empty() || setting == "maprange" || setting == "maprange+subdata") {
 			return new GLMapRangeVertexBuffer<Vertex>(renderer, capacity, usage);
 		}

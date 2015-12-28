@@ -335,4 +335,236 @@ protected:
 	
 };
 
+template <class Vertex>
+class BaseGLPersistentVertexBuffer : public BaseGLVertexBuffer<Vertex> {
+	
+	typedef BaseGLVertexBuffer<Vertex> Base;
+	
+public:
+	
+	using Base::capacity;
+	
+	BaseGLPersistentVertexBuffer(OpenGLRenderer * renderer, size_t capacity,
+	                             size_t multiplier = 1)
+		: Base(renderer, capacity)
+		, m_multiplier(multiplier)
+		, m_mapping(NULL)
+	{
+		
+		bindBuffer(m_buffer);
+		m_mapping = create();
+		
+	}
+	
+protected:
+	
+	size_t size() const { return capacity() * sizeof(Vertex) * m_multiplier; }
+	
+	Vertex * map(GLbitfield flags) const {
+		flags |= GL_MAP_WRITE_BIT | GL_MAP_PERSISTENT_BIT | GL_MAP_COHERENT_BIT;
+		return reinterpret_cast<Vertex *>(glMapBufferRange(GL_ARRAY_BUFFER, 0, size(), flags));
+	}
+	
+	Vertex * create() const {
+		
+		GLbitfield flags = GL_MAP_WRITE_BIT | GL_MAP_PERSISTENT_BIT | GL_MAP_COHERENT_BIT;
+		glBufferStorage(GL_ARRAY_BUFFER, size(), NULL, flags);
+		
+		return map(GL_MAP_UNSYNCHRONIZED_BIT);
+	}
+	
+	virtual void syncPersistent(BufferFlags flags) {
+		
+		if(!(flags & NoOverwrite)) {
+			LogWarning << "Blocking buffer upload, use DiscardBuffer or NoOverwrite!";
+			glFinish();
+		}
+		
+	}
+	
+public:
+	
+	void setData(const Vertex * vertices, size_t count, size_t offset, BufferFlags flags) {
+		
+		arx_assert(offset < capacity());
+		arx_assert(offset + count <= capacity());
+		
+		syncPersistent(flags);
+		
+		memcpy(m_mapping + m_offset + offset, vertices, count * sizeof(Vertex));
+		
+	}
+	
+	Vertex * lock(BufferFlags flags, size_t offset, size_t count) {
+		ARX_UNUSED(count);
+		
+		arx_assert(offset < capacity());
+		
+		syncPersistent(flags);
+		
+		return m_mapping + m_offset + offset;
+	}
+	
+	void unlock() { }
+	
+	~BaseGLPersistentVertexBuffer() {
+		
+		if(m_mapping) {
+			bindBuffer(m_buffer);
+			GLboolean ret = glUnmapBuffer(GL_ARRAY_BUFFER);
+			if(ret == GL_FALSE) {
+				LogWarning << "Persistently mapped vertex buffer invalidated";
+			}
+		}
+		
+	};
+	
+protected:
+	
+	using Base::m_buffer;
+	using Base::m_offset;
+	
+	size_t m_multiplier;
+	
+	Vertex * m_mapping;
+	
+};
+
+template <class Vertex>
+class GLPersistentUnsynchronizedVertexBuffer
+	: public BaseGLPersistentVertexBuffer<Vertex>
+{
+	
+	typedef BaseGLPersistentVertexBuffer<Vertex> Base;
+	
+public:
+	
+	GLPersistentUnsynchronizedVertexBuffer(OpenGLRenderer * renderer, size_t capacity)
+		: Base(renderer, capacity)
+	{ }
+	
+	void syncPersistent(BufferFlags flags) {
+		
+		if(flags & DiscardBuffer) {
+			// Assume the GL already rendered far enough
+			return;
+		}
+		
+		Base::syncPersistent(flags);
+	}
+	
+protected:
+	
+	using Base::map;
+	
+	using Base::m_buffer;
+	using Base::m_mapping;
+	
+};
+
+template <class Vertex>
+class GLPersistentOrphanVertexBuffer
+	: public BaseGLPersistentVertexBuffer<Vertex>
+{
+	
+	typedef BaseGLPersistentVertexBuffer<Vertex> Base;
+	
+public:
+	
+	GLPersistentOrphanVertexBuffer(OpenGLRenderer * renderer, size_t capacity)
+		: Base(renderer, capacity)
+	{ }
+	
+	void syncPersistent(BufferFlags flags) {
+		
+		if(flags & DiscardBuffer) {
+			bindBuffer(m_buffer);
+			glUnmapBuffer(GL_ARRAY_BUFFER);
+			m_mapping = map(GL_MAP_INVALIDATE_BUFFER_BIT);
+			return;
+		}
+		
+		Base::syncPersistent(flags);
+	}
+	
+protected:
+	
+	using Base::map;
+	
+	using Base::m_buffer;
+	using Base::m_mapping;
+	
+};
+
+template <class Vertex, size_t MaxFences>
+class GLPersistentFenceVertexBuffer
+	: public BaseGLPersistentVertexBuffer<Vertex>
+{
+	
+	typedef BaseGLPersistentVertexBuffer<Vertex> Base;
+	
+public:
+	
+	using Base::capacity;
+	
+	GLPersistentFenceVertexBuffer(OpenGLRenderer * renderer, size_t capacity,
+	                              size_t fenceCount)
+		: Base(renderer, capacity, fenceCount)
+	{
+		
+		m_position = 0;
+		
+		arx_assert(m_multiplier <= MaxFences);
+		for(size_t i = 0; i < m_multiplier; i++) {
+			m_fences[i] = 0;
+		}
+		
+	}
+	
+	void syncPersistent(BufferFlags flags) {
+		
+		if(flags & DiscardBuffer) {
+			
+			// Create a fence for the current buffer
+			arx_assert(!m_fences[m_position]);
+			m_fences[m_position] = glFenceSync(GL_SYNC_GPU_COMMANDS_COMPLETE, 0);
+			
+			// Switch to the next buffer and wait for its fence
+			m_position = (m_position + 1) % m_multiplier;
+			if(m_fences[m_position]) {
+				GLenum ret = GL_UNSIGNALED;
+				while(ret != GL_ALREADY_SIGNALED && ret != GL_CONDITION_SATISFIED) {
+					ret = glClientWaitSync(m_fences[m_position], GL_SYNC_FLUSH_COMMANDS_BIT, 1);
+				}
+				glDeleteSync(m_fences[m_position]);
+				m_fences[m_position] = 0;
+			}
+			
+			m_offset = m_position * capacity();
+			return;
+		}
+		
+		Base::syncPersistent(flags);
+	}
+	
+	~GLPersistentFenceVertexBuffer() {
+		
+		for(size_t i = 0; i < m_multiplier; i++) {
+			if(m_fences[i]) {
+				glDeleteSync(m_fences[i]);
+			}
+		}
+		
+	};
+	
+protected:
+	
+	using Base::m_offset;
+	using Base::m_multiplier;
+	
+	size_t m_position;
+	GLsync m_fences[MaxFences];
+	
+};
+
 #endif // ARX_GRAPHICS_OPENGL_GLVERTEXBUFFER_H
