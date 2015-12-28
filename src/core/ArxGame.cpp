@@ -64,6 +64,7 @@ ZeniMax Media Inc., Suite 120, Rockville, Maryland 20850 USA.
 #include "cinematic/Cinematic.h"
 #include "cinematic/CinematicController.h"
 
+#include "core/Benchmark.h"
 #include "core/Config.h"
 #include "core/Core.h"
 #include "core/GameTime.h"
@@ -675,6 +676,7 @@ static bool HandleGameFlowTransitions() {
 	}
 		
 	if(GameFlow::getTransition() == GameFlow::FirstLogo) {
+		benchmark::begin(benchmark::Splash);
 		//firsttime
 		if(TRANSITION_START == 0) {
 			if(!ARX_INTERFACE_InitFISHTANK()) {
@@ -699,6 +701,7 @@ static bool HandleGameFlowTransitions() {
 	}
 
 	if(GameFlow::getTransition() == GameFlow::SecondLogo) {
+		benchmark::begin(benchmark::Splash);
 		//firsttime
 		if(TRANSITION_START == 0) {
 			if(!ARX_INTERFACE_InitARKANE()) {
@@ -726,6 +729,8 @@ static bool HandleGameFlowTransitions() {
 		ARX_INTERFACE_KillFISHTANK();
 		ARX_INTERFACE_KillARKANE();
 		char loadfrom[256];
+		
+		benchmark::begin(benchmark::LoadLevel);
 		
 		ARX_CHANGELEVEL_StartNew();
 		
@@ -1239,6 +1244,9 @@ void ArxGame::run() {
 			m_MainWindow->showFrame();
 		}
 	}
+	
+	benchmark::begin(benchmark::Shutdown);
+	
 }
 
 /*!
@@ -1271,6 +1279,7 @@ void ArxGame::doFrame() {
 
 	// Are we being teleported ?
 	if(!TELEPORT_TO_LEVEL.empty() && CHANGE_LEVEL_ICON == 200) {
+		benchmark::begin(benchmark::LoadLevel);
 		LogDebug("teleport to " << TELEPORT_TO_LEVEL << " " << TELEPORT_TO_POSITION << " " << TELEPORT_TO_ANGLE);
 		CHANGE_LEVEL_ICON = -1;
 		ARX_CHANGELEVEL_Change(TELEPORT_TO_LEVEL, TELEPORT_TO_POSITION, TELEPORT_TO_ANGLE);
@@ -2167,10 +2176,13 @@ void ArxGame::render() {
 		g_hudRoot.bookIconGui.requestFX();
 	
 	if(isInMenu()) {
+		benchmark::begin(benchmark::Menu);
 		renderMenu();
 	} else if(isInCinematic()) {
+		benchmark::begin(benchmark::Cinematic);
 		cinematicRender();
 	} else {
+		benchmark::begin(CINEMA_DECAL ? benchmark::Cutscene : benchmark::Scene);
 		updateLevel();
 		
 		renderLevel();

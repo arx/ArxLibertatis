@@ -72,6 +72,7 @@ ZeniMax Media Inc., Suite 120, Rockville, Maryland 20850 USA.
 
 #include "core/Application.h"
 #include "core/ArxGame.h"
+#include "core/Benchmark.h"
 #include "core/Config.h"
 #include "core/Localisation.h"
 #include "core/GameTime.h"
@@ -1259,6 +1260,7 @@ void DrawImproveVisionInterface() {
 
 void DANAE_StartNewQuest()
 {
+	benchmark::begin(benchmark::LoadLevel);
 	player.Interface = INTER_LIFE_MANA | INTER_MINIBACK | INTER_MINIBOOK;
 	progressBarSetTotal(108);
 	progressBarReset();

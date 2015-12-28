@@ -20,7 +20,8 @@ Here is a short summary of the options available in innoextract. Please refer to
 .nf
  \-h \-\-help               Show supported options
  \-g \-\-debug \fILEVELS\fP       Set debug output levels
- --debug-gl              Enable OpenGL debug output
+ \-\-benchmark\fI[=TIMELIMIT]\fP Log loading times and framerates
+ \-\-debug\-gl              Enable OpenGL debug output
 .fi
 .TP
 .B Search path options:
@@ -38,6 +39,13 @@ Here is a short summary of the options available in innoextract. Please refer to
     --skiplogo           Skip logos at startup
 .fi
 .SH OPTIONS
+.TP
+\fB--benchmark\fP[=TIMELIMIT]\fP
+Log time taken for startup, loading levels and shutdown, and the minimum, maximum and average framerate.
+
+If a \fITIMELIMIT\fP argument is given, the game will exit after the specified amout of time has been spent rendering normal frames. This time does not include the startup or loading time. Valid values are a number, optionally followed by a unit. Valid units are "\fIms\fP" (milliseconds), "\fIs\fP" (seconds), "\fIm\fP" (minutes) and "\fIh\fP" (hours). The default unit is milliseconds.
+
+This option can be combined with the \fB--loadlevel\fP or \fB--loadslot\fP options to benchmark a specific scene.
 .TP
 \fB-c\fP, \fB--config-dir\fP=\fIDIR\fP
 By default arx will store configuration files in directories specified by the \fBXDG Base Directory Specification\fP.

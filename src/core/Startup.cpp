@@ -53,6 +53,7 @@
 	#undef main /* in case SDL.h was already included */
 #endif
 
+#include "core/Benchmark.h"
 #include "core/Config.h"
 #include "core/Core.h"
 #include "core/Version.h"
@@ -179,6 +180,9 @@ INT WINAPI WinMain(HINSTANCE hInstance, HINSTANCE hPrevInstance, PSTR lpCmdLine,
 	// Parse the command line and process options
 	ExitStatus status = parseCommandLine(argc, argv);
 	
+	platform::initializeTime();
+	benchmark::begin(benchmark::Startup);
+	
 	// Setup user, config and data directories
 	if(status == RunProgram) {
 		status = fs::paths.init();
@@ -197,8 +201,6 @@ INT WINAPI WinMain(HINSTANCE hInstance, HINSTANCE hPrevInstance, PSTR lpCmdLine,
 			CrashHandler::addAttachedFile(logFile);
 		}
 		
-		platform::initializeTime();
-		
 		profiler::initialize();
 		
 		// 14: Start the game already!
@@ -206,6 +208,8 @@ INT WINAPI WinMain(HINSTANCE hInstance, HINSTANCE hPrevInstance, PSTR lpCmdLine,
 		runGame();
 		
 	}
+	
+	benchmark::shutdown();
 	
 	// Shutdown the logging system
 	// If there has been a critical error, a dialog will be shown now

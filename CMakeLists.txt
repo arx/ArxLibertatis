@@ -676,6 +676,7 @@ set(AUDIO_OPENAL_SOURCES
 set(CORE_SOURCES
 	src/core/Application.cpp
 	src/core/ArxGame.cpp
+	src/core/Benchmark.cpp
 	src/core/Config.cpp
 	src/core/Core.cpp
 	src/core/GameTime.cpp
