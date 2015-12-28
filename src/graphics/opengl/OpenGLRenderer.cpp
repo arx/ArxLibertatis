@@ -550,13 +550,30 @@ void OpenGLRenderer::SetFillMode(FillMode mode) {
 template <typename Vertex>
 static VertexBuffer<Vertex> * createVertexBufferImpl(OpenGLRenderer * renderer,
                                                      size_t capacity,
-                                                     Renderer::BufferUsage usage) {
+                                                     Renderer::BufferUsage usage,
+                                                     const std::string & setting) {
 	
 	if(GLEW_ARB_map_buffer_range) {
-		return new GLMapRangeVertexBuffer<Vertex>(renderer, capacity, usage);
+		
+		if(setting.empty() || setting == "maprange" || setting == "maprange+subdata") {
+			return new GLMapRangeVertexBuffer<Vertex>(renderer, capacity, usage);
+		}
+		
 	}
 	
-	return new GLVertexBuffer<Vertex>(renderer, capacity, usage);
+	if(setting.empty() || setting == "map" || setting == "map+subdata") {
+		return new GLVertexBuffer<Vertex>(renderer, capacity, usage);
+	}
+	
+	return createVertexBufferImpl<Vertex>(renderer, capacity, usage, std::string());
+}
+
+template <typename Vertex>
+static VertexBuffer<Vertex> * createVertexBufferImpl(OpenGLRenderer * renderer,
+                                                     size_t capacity,
+                                                     Renderer::BufferUsage usage) {
+	const std::string & setting = config.video.bufferUpload;
+	return createVertexBufferImpl<Vertex>(renderer, capacity, usage, setting);
 }
 
 VertexBuffer<TexturedVertex> * OpenGLRenderer::createVertexBufferTL(size_t capacity, BufferUsage usage) {

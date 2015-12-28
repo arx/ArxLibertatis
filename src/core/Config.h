@@ -120,6 +120,7 @@ public:
 		bool hudScale;
 		
 		int bufferSize;
+		std::string bufferUpload;
 		
 	} video;
 	

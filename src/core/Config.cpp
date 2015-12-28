@@ -53,7 +53,8 @@ const std::string
 	windowFramework = "auto",
 	windowSize = BOOST_PP_STRINGIZE(ARX_DEFAULT_WIDTH) "x"
 	             BOOST_PP_STRINGIZE(ARX_DEFAULT_HEIGHT),
-	debugLevels = "";
+	debugLevels = "",
+	bufferUpload = "";
 
 const int
 	levelOfDetail = 2,
@@ -164,7 +165,8 @@ const std::string
 	limitSpeechWidth = "limit_speech_width",
 	cinematicWidescreenMode = "cinematic_widescreen_mode",
 	hudScale = "hud_scale",
-	bufferSize = "buffer_size";
+	bufferSize = "buffer_size",
+	bufferUpload = "buffer_upload";
 
 // Window options
 const std::string
@@ -392,6 +394,7 @@ bool Config::save() {
 	writer.writeKey(Key::cinematicWidescreenMode, int(video.cinematicWidescreenMode));
 	writer.writeKey(Key::hudScale, video.hudScale);
 	writer.writeKey(Key::bufferSize, video.bufferSize);
+	writer.writeKey(Key::bufferUpload, video.bufferUpload);
 	
 	// window
 	writer.beginSection(Section::Window);
@@ -489,6 +492,7 @@ bool Config::init(const fs::path & file) {
 	video.cinematicWidescreenMode = CinematicWidescreenMode(glm::clamp(cinematicMode, 0, 2));
 	video.hudScale = reader.getKey(Section::Video, Key::hudScale, Default::hudScale);
 	video.bufferSize = std::max(reader.getKey(Section::Video, Key::bufferSize, Default::bufferSize), 0);
+	video.bufferUpload = reader.getKey(Section::Video, Key::bufferUpload, Default::bufferUpload);
 	
 	// Get window settings
 	window.framework = reader.getKey(Section::Window, Key::windowFramework, Default::windowFramework);
