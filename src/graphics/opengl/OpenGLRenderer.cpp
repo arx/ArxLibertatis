@@ -555,6 +555,8 @@ static VertexBuffer<Vertex> * createVertexBufferImpl(OpenGLRenderer * renderer,
 	
 	if(GLEW_ARB_map_buffer_range) {
 		
+		#ifdef GL_ARB_buffer_storage
+		
 		if(GLEW_ARB_buffer_storage && usage != Renderer::Static) {
 			
 			if(setting.empty() || setting == "persistent-orphan") {
@@ -568,6 +570,8 @@ static VertexBuffer<Vertex> * createVertexBufferImpl(OpenGLRenderer * renderer,
 			}
 			
 		}
+		
+		#endif // GL_ARB_buffer_storage
 		
 		if(setting.empty() || setting == "maprange" || setting == "maprange+subdata") {
 			return new GLMapRangeVertexBuffer<Vertex>(renderer, capacity, usage);

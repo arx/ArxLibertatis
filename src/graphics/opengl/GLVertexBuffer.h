@@ -335,6 +335,8 @@ protected:
 	
 };
 
+#ifdef GL_ARB_buffer_storage
+
 template <class Vertex>
 class BaseGLPersistentVertexBuffer : public BaseGLVertexBuffer<Vertex> {
 	
@@ -566,5 +568,7 @@ protected:
 	GLsync m_fences[MaxFences];
 	
 };
+
+#endif // GL_ARB_buffer_storage
 
 #endif // ARX_GRAPHICS_OPENGL_GLVERTEXBUFFER_H
