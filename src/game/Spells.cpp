@@ -892,7 +892,7 @@ bool ARX_SPELLS_Launch(SpellType typ, EntityHandle source, SpellcastFlags flags,
 		}
 	}
 	
-	float Player_Magic_Level = 0;
+	float playerSpellLevel = 0;
 	
 	if(source == PlayerEntityHandle) {
 		ARX_SPELLS_ResetRecognition();
@@ -905,10 +905,10 @@ bool ARX_SPELLS_Launch(SpellType typ, EntityHandle source, SpellcastFlags flags,
 		ARX_PLAYER_ComputePlayerFullStats();
 
 		if(level == -1) {
-			Player_Magic_Level = player.m_skillFull.casting + player.m_attributeFull.mind;
-			Player_Magic_Level = glm::clamp(Player_Magic_Level * 0.1f, 1.0f, 10.0f);
+			playerSpellLevel = player.m_skillFull.casting + player.m_attributeFull.mind;
+			playerSpellLevel = glm::clamp(playerSpellLevel * 0.1f, 1.0f, 10.0f);
 		} else {
-			Player_Magic_Level = static_cast<float>(level);
+			playerSpellLevel = static_cast<float>(level);
 		}
 	}
 	
@@ -919,7 +919,7 @@ bool ARX_SPELLS_Launch(SpellType typ, EntityHandle source, SpellcastFlags flags,
 		int l = level;
 
 		if(l <= 0) {
-			l = checked_range_cast<int>(Player_Magic_Level);
+			l = checked_range_cast<int>(playerSpellLevel);
 		}
 
 		SpellcastFlags flgs = flags;
@@ -1027,7 +1027,7 @@ bool ARX_SPELLS_Launch(SpellType typ, EntityHandle source, SpellcastFlags flags,
 	
 	if(source == PlayerEntityHandle) {
 		// Player source
-		spellLevel = Player_Magic_Level; // Level of caster
+		spellLevel = playerSpellLevel; // Level of caster
 	} else {
 		// IO source
 		spellLevel = (float)glm::clamp(level, 1l, 10l);
