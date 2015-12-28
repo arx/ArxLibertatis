@@ -93,13 +93,17 @@ void ARX_SPELLS_Precast_Launch(PrecastHandle num) {
 	
 	PRECAST_STRUCT & precast = Precast[idx];
 	
+	if(precast.typ == SPELL_NONE) {
+		return;
+	}
+	
 	// Calculate the player's magic level
 	float playerSpellLevel = player.m_skillFull.casting + player.m_attributeFull.mind;
 	playerSpellLevel = glm::clamp(playerSpellLevel * 0.1f, 1.f, 10.f);
 	
 	float cost = ARX_SPELLS_GetManaCost(precast.typ, playerSpellLevel);
 	
-	if(precast.typ != SPELL_NONE && !PrecastCheckCanPayMana(num,cost))
+	if(!PrecastCheckCanPayMana(num,cost))
 		return;
 	
 	LAST_PRECAST_TIME = (unsigned long)(arxtime);
