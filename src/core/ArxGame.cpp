@@ -2387,10 +2387,8 @@ void ArxGame::onRendererInit(Renderer & renderer) {
 	VertexBuffer<SMY_VERTEX3> * vb3 = renderer.createVertexBuffer3(4000, Renderer::Stream);
 	pDynamicVertexBuffer = new CircularVertexBuffer<SMY_VERTEX3>(vb3);
 	
-	VertexBuffer<TexturedVertex> * vb = renderer.createVertexBufferTL(4000, Renderer::Stream);
+	VertexBuffer<TexturedVertex> * vb = renderer.createVertexBufferTL(32 * 1024, Renderer::Stream);
 	pDynamicVertexBuffer_TLVERTEX = new CircularVertexBuffer<TexturedVertex>(vb);
-
-	RenderBatcher::getInstance().initialize();
 	
 	MenuReInitAll();
 	
@@ -2413,8 +2411,6 @@ void ArxGame::onRendererShutdown(Renderer & renderer) {
 
 	delete pDynamicVertexBuffer_TLVERTEX, pDynamicVertexBuffer_TLVERTEX = NULL;
 	delete pDynamicVertexBuffer, pDynamicVertexBuffer = NULL;
-
-	RenderBatcher::getInstance().shutdown();
 	
 	EERIE_PORTAL_ReleaseOnlyVertexBuffer();
 	

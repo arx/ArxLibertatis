@@ -23,10 +23,9 @@
 #include <map>
 #include <vector>
 
-#include "platform/profiler/Profiler.h"
+#include "graphics/Draw.h"
 
-RenderBatcher::RenderBatcher() : m_VertexBuffer(NULL) {
-}
+#include "platform/profiler/Profiler.h"
 
 RenderBatcher::~RenderBatcher() {
 	reset();
@@ -61,7 +60,7 @@ void RenderBatcher::render() {
 	for(Batches::const_iterator it = m_BatchedSprites.begin(); it != m_BatchedSprites.end(); ++it) {
 		if(!it->second.empty()) {
 			it->first.apply();
-			m_VertexBuffer->draw(Renderer::TriangleList, &it->second.front(), it->second.size());
+			EERIEDRAWPRIM(Renderer::TriangleList, &it->second.front(), it->second.size(), true);
 			GRenderer->GetTextureStage(0)->setAlphaOp(TextureStage::OpSelectArg1);
 		}
 	}
@@ -98,17 +97,6 @@ u32 RenderBatcher::getMemoryUsed() const {
 	}
 
 	return memoryUsed;
-}
-
-void RenderBatcher::initialize() {
-	arx_assert(m_VertexBuffer == NULL);
-	m_VertexBuffer = new CircularVertexBuffer<TexturedVertex>(GRenderer->createVertexBufferTL(32 * 1024, Renderer::Stream));
-}
-
-void RenderBatcher::shutdown() {
-	arx_assert(m_VertexBuffer != NULL);
-	delete m_VertexBuffer;
-	m_VertexBuffer = NULL;
 }
 
 RenderBatcher& RenderBatcher::getInstance() {

@@ -21,7 +21,6 @@
 #define ARX_GRAPHICS_RENDERBATCHER_H
 
 #include "graphics/Renderer.h"
-#include "graphics/VertexBuffer.h"
 #include "graphics/data/TextureContainer.h"
 #include "graphics/texture/TextureStage.h"
 
@@ -93,8 +92,9 @@ private:
 };
 
 class RenderBatcher {
+	
 public:
-	RenderBatcher();
+	
 	~RenderBatcher();
 
 	void add(const RenderMaterial& mat, const TexturedVertex(&vertices)[3]);
@@ -111,18 +111,15 @@ public:
 
 	u32 getMemoryUsed() const;
 
-	void initialize();
-	void shutdown();
-
 	static RenderBatcher& getInstance();
 	
 private:
+	
 	typedef std::vector<TexturedVertex> VertexBatch;
 	typedef std::map<RenderMaterial, VertexBatch> Batches;
 	
-private:
 	Batches m_BatchedSprites;
-	CircularVertexBuffer<TexturedVertex> * m_VertexBuffer;
+	
 };
 
 #endif // ARX_GRAPHICS_RENDERBATCHER_H
