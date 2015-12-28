@@ -44,6 +44,7 @@ void bindBuffer(GLuint buffer);
 void unbindBuffer(GLuint buffer);
 void setVertexArrayTexCoord(int index, const void * coord, size_t stride);
 bool switchVertexArray(GLArrayClientState type, const void * ref, int texcount);
+void clearVertexArray(const void * ref);
 
 template <>
 inline void setVertexArray(const TexturedVertex * vertices, const void * ref) {
@@ -174,6 +175,7 @@ public:
 	}
 	
 	~BaseGLVertexBuffer() {
+		clearVertexArray(this);
 		unbindBuffer(m_buffer);
 		glDeleteBuffers(1, &m_buffer);
 	};

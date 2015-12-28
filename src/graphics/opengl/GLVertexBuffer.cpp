@@ -55,6 +55,12 @@ bool switchVertexArray(GLArrayClientState type, const void * ref, int texcount) 
 	return true;
 }
 
+void clearVertexArray(const void * ref) {
+	if(glArrayClientStateRef == ref) {
+		glArrayClientStateRef = NULL;
+	}
+}
+
 void bindBuffer(GLuint buffer) {
 	if(buffer != glBoundBuffer) {
 		glBoundBuffer = buffer;
