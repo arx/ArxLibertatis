@@ -92,10 +92,10 @@ void ARX_SPELLS_Precast_Launch(PrecastHandle num) {
 	SpellType type = Precast[num.handleData()].typ;
 	
 	// Calculate the player's magic level
-	float playerCasterLevel = player.m_skillFull.casting + player.m_attributeFull.mind;
-	playerCasterLevel = glm::clamp(playerCasterLevel * 0.1f, 1.f, 10.f);
+	float playerSpellLevel = player.m_skillFull.casting + player.m_attributeFull.mind;
+	playerSpellLevel = glm::clamp(playerSpellLevel * 0.1f, 1.f, 10.f);
 	
-	float cost = ARX_SPELLS_GetManaCost(type, playerCasterLevel);
+	float cost = ARX_SPELLS_GetManaCost(type, playerSpellLevel);
 	
 	if(type != SPELL_NONE && !PrecastCheckCanPayMana(num,cost))
 		return;
