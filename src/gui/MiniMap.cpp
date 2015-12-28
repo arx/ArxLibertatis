@@ -608,7 +608,9 @@ void MiniMap::drawBackground(int showLevel, Rect boundaries, float startX, float
 				if((x + iOffset < 0) || (x + iOffset >= MINIMAP_MAX_X) || (z + jOffset < 0) || (z + jOffset >= MINIMAP_MAX_Z)) {
 					v = 0;
 				} else {
-					v = ((float)m_levels[showLevel].m_revealed[std::min(x+iOffset, MINIMAP_MAX_X-iOffset)][std::min(z+jOffset, MINIMAP_MAX_Z-jOffset)]) * (1.0f / 255);
+					int minx = std::min(x + iOffset, MINIMAP_MAX_X - iOffset);
+					int minz = std::min(z + jOffset, MINIMAP_MAX_Z - jOffset);
+					v = float(m_levels[showLevel].m_revealed[minx][minz]) * (1.0f / 255);
 				}
 				
 				if(fadeBorder > 0.f) {
