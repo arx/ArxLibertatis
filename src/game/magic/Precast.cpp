@@ -62,9 +62,6 @@ void ARX_SPELLS_Precast_Add(SpellType typ, long _level, SpellcastFlags flags, lo
 
 static bool PrecastCheckCanPayMana(PrecastHandle num, float cost) {
 	
-	if(num.handleData() < 0)
-		return false;
-
 	if(Precast[num.handleData()].flags & SPELLCAST_FLAG_NOMANA)
 		return true;
 
@@ -80,6 +77,9 @@ static bool PrecastCheckCanPayMana(PrecastHandle num, float cost) {
 }
 
 void ARX_SPELLS_Precast_Launch(PrecastHandle num) {
+	
+	if(num.handleData() < 0)
+		return;
 	
 	if(num.handleData() >= Precast.size()) {
 		return;
