@@ -27,6 +27,7 @@
 
 #include "platform/Platform.h"
 #include "util/cmdline/Interpreter.h"
+#include "util/cmdline/Optional.h"
 
 // Linked list of statically defined options (no memory allocation)
 class BaseOption : public boost::intrusive::list_base_hook<
@@ -64,6 +65,25 @@ protected:
 	const char * longName, const char * shortName, const char * description, \
 	const Handler & handler, const char * args
 
+namespace detail {
+
+template <typename T>
+struct is_arg_optional {
+	static const bool value = false;
+};
+
+template <typename T>
+struct is_arg_optional<void(util::cmdline::optional<T>)> {
+	static const bool value = true;
+};
+
+template <typename T>
+struct is_arg_optional<void(*)(util::cmdline::optional<T>)> {
+	static const bool value = true;
+};
+
+} // namespace detail
+
 template <typename Handler>
 class Option : public BaseOption {
 	
@@ -82,6 +102,7 @@ public:
 			  .description(m_description)
 			  .arg_count(boost::function_types::function_arity<Handler>::value)
 			  .arg_names(m_argNames)
+				.arg_optional(detail::is_arg_optional<Handler>::value)
 		);
 	}
 	

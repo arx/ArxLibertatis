@@ -233,6 +233,9 @@ struct opname_size {
 			} else {
 				cur_size += 4 * key.get_arg_count();
 			}
+			if(key.get_arg_count() == 1 && key.is_arg_optional()) {
+				cur_size += 2;
+			}
 		}
 		
 		value = std::max(cur_size, value);
@@ -278,12 +281,23 @@ struct print_op_t {
 		}
 		
 		if(key.has_args()) {
+			if(key.get_arg_count() == 1 && key.is_arg_optional()) {
+				(*stream_) << "[=";
+			} else {
+				(*stream_) << ' ';
+			}
 			if(key.has_arg_names()) {
-				(*stream_) << ' ' << key.get_arg_names();
+				(*stream_) << key.get_arg_names();
 			} else {
 				for(size_t i = 0; i < key.get_arg_count(); i++) {
-					(*stream_) << " ARG";
+					if(i != 0) {
+						(*stream_) << ' ';
+					}
+					(*stream_) << "ARG";
 				}
+			}
+			if(key.get_arg_count() == 1 && key.is_arg_optional()) {
+				(*stream_) << "]";
 			}
 		}
 		

@@ -61,7 +61,11 @@ public:
 	using super_t::end;
 	using super_t::erase;
 	
-	explicit key_type(const value_type & v) : m_argCount(0), m_argNames(NULL) {
+	explicit key_type(const value_type & v)
+		: m_argCount(0)
+		, m_argNames(NULL)
+		, m_argOptional(false)
+	{
 		(*this)(v);
 	}
 	
@@ -106,11 +110,21 @@ public:
 		return m_argNames != NULL;
 	}
 	
+	key_type & arg_optional(const bool argOptional) {
+		m_argOptional = argOptional;
+		return *this;
+	}
+	
+	bool is_arg_optional() const {
+		return m_argOptional;
+	}
+	
 private:
 	
 	StringType   m_description;
 	size_t       m_argCount;
 	const char * m_argNames;
+	bool         m_argOptional;
 	
 };
 
