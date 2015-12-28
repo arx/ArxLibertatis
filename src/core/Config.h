@@ -118,6 +118,9 @@ public:
 		CinematicWidescreenMode cinematicWidescreenMode;
 		
 		bool hudScale;
+		
+		int bufferSize;
+		
 	} video;
 	
 	// section 'window'

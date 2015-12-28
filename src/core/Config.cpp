@@ -66,7 +66,8 @@ const int
 	ambianceVolume = 10,
 	mouseSensitivity = 6,
 	migration = Config::OriginalAssets,
-	quicksaveSlots = 3;
+	quicksaveSlots = 3,
+	bufferSize = 0;
 
 const bool
 	fullscreen = true,
@@ -162,7 +163,8 @@ const std::string
 	colorkeyAntialiasing = "colorkey_antialiasing",
 	limitSpeechWidth = "limit_speech_width",
 	cinematicWidescreenMode = "cinematic_widescreen_mode",
-	hudScale = "hud_scale";
+	hudScale = "hud_scale",
+	bufferSize = "buffer_size";
 
 // Window options
 const std::string
@@ -389,6 +391,7 @@ bool Config::save() {
 	writer.writeKey(Key::limitSpeechWidth, video.limitSpeechWidth);
 	writer.writeKey(Key::cinematicWidescreenMode, int(video.cinematicWidescreenMode));
 	writer.writeKey(Key::hudScale, video.hudScale);
+	writer.writeKey(Key::bufferSize, video.bufferSize);
 	
 	// window
 	writer.beginSection(Section::Window);
@@ -485,6 +488,7 @@ bool Config::init(const fs::path & file) {
 	int cinematicMode = reader.getKey(Section::Video, Key::cinematicWidescreenMode, Default::cinematicWidescreenMode);
 	video.cinematicWidescreenMode = CinematicWidescreenMode(glm::clamp(cinematicMode, 0, 2));
 	video.hudScale = reader.getKey(Section::Video, Key::hudScale, Default::hudScale);
+	video.bufferSize = std::max(reader.getKey(Section::Video, Key::bufferSize, Default::bufferSize), 0);
 	
 	// Get window settings
 	window.framework = reader.getKey(Section::Window, Key::windowFramework, Default::windowFramework);
