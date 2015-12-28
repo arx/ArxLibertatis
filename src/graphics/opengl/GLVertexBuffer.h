@@ -335,40 +335,4 @@ protected:
 	
 };
 
-template <class Vertex>
-class GLAlwaysMapRangeVertexBuffer : public GLMapRangeVertexBuffer<Vertex> {
-	
-	typedef GLMapRangeVertexBuffer<Vertex> Base;
-	
-public:
-	
-	using Base::capacity;
-	
-	GLAlwaysMapRangeVertexBuffer(OpenGLRenderer * renderer, size_t capacity,
-	                             Renderer::BufferUsage usage)
-		: Base(renderer, capacity, usage)
-	{ }
-	
-	void setData(const Vertex * vertices, size_t count, size_t offset, BufferFlags flags) {
-		
-		arx_assert(offset < capacity());
-		arx_assert(offset + count <= capacity());
-		
-		flags |= DiscardRange;
-		
-		Vertex * buf = Base::lock(flags, offset, count);
-		
-		if(buf) {
-			
-			size_t nbytes = count * sizeof(Vertex);
-			std::memcpy(buf, vertices, nbytes);
-			
-			Base::unlock();
-			
-		}
-		
-	}
-	
-};
-
 #endif // ARX_GRAPHICS_OPENGL_GLVERTEXBUFFER_H

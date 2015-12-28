@@ -553,7 +553,7 @@ static VertexBuffer<Vertex> * createVertexBufferImpl(OpenGLRenderer * renderer,
                                                      Renderer::BufferUsage usage) {
 	
 	if(GLEW_ARB_map_buffer_range) {
-		return new GLAlwaysMapRangeVertexBuffer<Vertex>(renderer, capacity, usage);
+		return new GLMapRangeVertexBuffer<Vertex>(renderer, capacity, usage);
 	}
 	
 	return new GLVertexBuffer<Vertex>(renderer, capacity, usage);
