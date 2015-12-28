@@ -81,7 +81,9 @@ void ARX_SPELLS_Precast_Launch(PrecastHandle num) {
 	if(num.handleData() < 0)
 		return;
 	
-	if(num.handleData() >= Precast.size()) {
+	size_t idx = size_t(num.handleData());
+	
+	if(idx >= Precast.size()) {
 		return;
 	}
 	
@@ -89,21 +91,21 @@ void ARX_SPELLS_Precast_Launch(PrecastHandle num) {
 		return;
 	}
 	
-	SpellType type = Precast[num.handleData()].typ;
+	PRECAST_STRUCT & precast = Precast[idx];
 	
 	// Calculate the player's magic level
 	float playerSpellLevel = player.m_skillFull.casting + player.m_attributeFull.mind;
 	playerSpellLevel = glm::clamp(playerSpellLevel * 0.1f, 1.f, 10.f);
 	
-	float cost = ARX_SPELLS_GetManaCost(type, playerSpellLevel);
+	float cost = ARX_SPELLS_GetManaCost(precast.typ, playerSpellLevel);
 	
-	if(type != SPELL_NONE && !PrecastCheckCanPayMana(num,cost))
+	if(precast.typ != SPELL_NONE && !PrecastCheckCanPayMana(num,cost))
 		return;
 	
 	LAST_PRECAST_TIME = (unsigned long)(arxtime);
 	
-	if(Precast[num.handleData()].launch_time == 0) {
-		Precast[num.handleData()].launch_time = (unsigned long)(arxtime);
+	if(precast.launch_time == 0) {
+		precast.launch_time = (unsigned long)(arxtime);
 		ARX_SOUND_PlaySFX(SND_SPELL_CREATE_FIELD);
 	}
 }
