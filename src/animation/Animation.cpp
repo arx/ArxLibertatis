@@ -869,7 +869,7 @@ void ARX_SOUND_PopAnimSamples() {
 
 void ReleaseAnimFromIO(Entity * io, long num) {
 
-	for(long count = 0; count < MAX_ANIM_LAYERS; count++) {
+	for(size_t count = 0; count < MAX_ANIM_LAYERS; count++) {
 		AnimLayer & layer = io->animlayer[count];
 		
 		if(layer.cur_anim == io->anims[num]) {

@@ -430,7 +430,7 @@ void ARX_NPC_Behaviour_UnStack(Entity * io)
 
 			if(io->_npcdata->behavior & BEHAVIOUR_NONE) {
 				
-				for(long l = 0; l < MAX_ANIM_LAYERS; l++) {
+				for(size_t l = 0; l < MAX_ANIM_LAYERS; l++) {
 					io->animlayer[l] = bd->animlayer[l];
 				}
 			}

@@ -938,7 +938,7 @@ void RestoreInitialIOStatusOfIO(Entity * io)
 		io->poisonous = 0;
 		io->poisonous_count = 0;
 
-		for(long count = 0; count < MAX_ANIM_LAYERS; count++) {
+		for(size_t count = 0; count < MAX_ANIM_LAYERS; count++) {
 			io->animlayer[count] = AnimLayer();
 		}
 

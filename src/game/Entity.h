@@ -77,7 +77,7 @@ struct IO_NPCDATA;
 struct TWEAK_INFO;
 
 static const int MAX_ANIMS = 200; // max loadable anims per character
-static const int MAX_ANIM_LAYERS = 4;
+static const size_t MAX_ANIM_LAYERS = 4;
 static const float BASE_RUBBER = 1.5f;
 
 struct IO_PHYSICS {
