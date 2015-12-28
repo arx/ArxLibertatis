@@ -547,17 +547,29 @@ void OpenGLRenderer::SetFillMode(FillMode mode) {
 	glPolygonMode(GL_FRONT_AND_BACK, arxToGlFillMode[mode]);
 }
 
+template <typename Vertex>
+static VertexBuffer<Vertex> * createVertexBufferImpl(OpenGLRenderer * renderer,
+                                                     size_t capacity,
+                                                     Renderer::BufferUsage usage) {
+	
+	if(GLEW_ARB_map_buffer_range) {
+		return new GLAlwaysMapRangeVertexBuffer<Vertex>(renderer, capacity, usage);
+	}
+	
+	return new GLVertexBuffer<Vertex>(renderer, capacity, usage);
+}
+
 VertexBuffer<TexturedVertex> * OpenGLRenderer::createVertexBufferTL(size_t capacity, BufferUsage usage) {
 	if(useVBOs && shader) {
-		return new GLVertexBuffer<TexturedVertex>(this, capacity, usage); 
+		return createVertexBufferImpl<TexturedVertex>(this, capacity, usage); 
 	} else {
-		return new GLNoVertexBuffer<TexturedVertex>(this, capacity); 
+		return new GLNoVertexBuffer<TexturedVertex>(this, capacity);
 	}
 }
 
 VertexBuffer<SMY_VERTEX> * OpenGLRenderer::createVertexBuffer(size_t capacity, BufferUsage usage) {
 	if(useVBOs) {
-		return new GLVertexBuffer<SMY_VERTEX>(this, capacity, usage);
+		return createVertexBufferImpl<SMY_VERTEX>(this, capacity, usage);
 	} else {
 		return new GLNoVertexBuffer<SMY_VERTEX>(this, capacity);
 	}
@@ -565,7 +577,7 @@ VertexBuffer<SMY_VERTEX> * OpenGLRenderer::createVertexBuffer(size_t capacity, B
 
 VertexBuffer<SMY_VERTEX3> * OpenGLRenderer::createVertexBuffer3(size_t capacity, BufferUsage usage) {
 	if(useVBOs) {
-		return new GLVertexBuffer<SMY_VERTEX3>(this, capacity, usage);
+		return createVertexBufferImpl<SMY_VERTEX3>(this, capacity, usage);
 	} else {
 		return new GLNoVertexBuffer<SMY_VERTEX3>(this, capacity);
 	}

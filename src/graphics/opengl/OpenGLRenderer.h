@@ -94,6 +94,9 @@ public:
 	}
 	
 	bool hasTextureNPOT() { return m_hasTextureNPOT; }
+
+	template <class Vertex>
+	inline void beforeDraw() { flushState(); selectTrasform<Vertex>(); }
 	
 private:
 	
@@ -112,14 +115,6 @@ private:
 	
 	void enableTransform();
 	void disableTransform();
-
-	template <class Vertex>
-	inline void beforeDraw() { flushState(); selectTrasform<Vertex>(); }
-	
-	template <class Vertex>
-	friend class GLNoVertexBuffer;
-	template <class Vertex>
-	friend class GLVertexBuffer;
 	
 	friend class GLTextureStage;
 	
