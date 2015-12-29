@@ -209,6 +209,7 @@ void CrashHandlerWindows::unregisterThreadCrashHandlers() {
 
 
 enum CrashType {
+	USER_CRASH,
 	SEH_EXCEPTION,
 	TERMINATE_CALL,
 	UNEXPECTED_CALL,
@@ -358,6 +359,7 @@ void CrashHandlerWindows::getCrashSummary(int crashType, int FPECode) {
 	const char* crashSummary;
 
 	switch(crashType) {
+		case USER_CRASH:         crashSummary = "Aborted"; break;
 		case SEH_EXCEPTION:      crashSummary = "Unhandled exception"; break;
 		case TERMINATE_CALL:     crashSummary = "terminate() was called"; break;
 		case UNEXPECTED_CALL:    crashSummary = "unexpected() was called"; break;

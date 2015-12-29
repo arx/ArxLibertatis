@@ -28,6 +28,10 @@
 #warning "Unknown target platform"
 #endif
 
+typedef void(*AssertHandler)(const char * expr, const char * file, unsigned int line,
+                             const char * msg);
+AssertHandler g_assertHandler = 0;
+
 void assertionFailed(const char * expr, const char * file, unsigned int line,
                      const char * msg, ...) {
 	
@@ -43,6 +47,13 @@ void assertionFailed(const char * expr, const char * file, unsigned int line,
 		vsnprintf(formattedmsgbuf, sizeof(formattedmsgbuf) - 1, msg, args);
 		va_end(args);
 		Logger(file, line, Logger::Critical) << "Message: " << formattedmsgbuf;
+		if(g_assertHandler) {
+			g_assertHandler(expr, file, line, formattedmsgbuf);
+		}
+	} else {
+		if(g_assertHandler) {
+			g_assertHandler(expr, file, line, NULL);
+		}
 	}
 	
 }

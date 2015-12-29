@@ -21,6 +21,7 @@
 
 #include <cstdlib>
 #include <cstring>
+#include <cstdio>
 
 #include <boost/algorithm/string/predicate.hpp>
 
@@ -41,8 +42,41 @@
 #endif
 
 #if ARX_HAVE_CRASHHANDLER
+
 static CrashHandlerImpl * gCrashHandlerImpl = 0;
 static int gCrashHandlerInitCount = 0;
+
+typedef void(*AssertHandler)(const char * expr, const char * file, unsigned int line,
+                             const char * msg);
+extern AssertHandler g_assertHandler;
+
+static void crashAssertHandler(const char * expr, const char * file, unsigned int line,
+                               const char * msg) {
+	
+	gCrashHandlerImpl->addText("Assertion Failed at ");
+	const char * filename = file + std::strlen(file);
+	while(filename != file && filename[-1] != '/' && filename[-1] != '\\') {
+		filename--;
+	}
+	gCrashHandlerImpl->addText(filename);
+	gCrashHandlerImpl->addText(":");
+	char buffer[32];
+	std::sprintf(buffer, "%d", line);
+	gCrashHandlerImpl->addText(buffer);
+	gCrashHandlerImpl->addText(": ");
+	gCrashHandlerImpl->addText(expr);
+	gCrashHandlerImpl->addText("\n");
+	
+	if(msg) {
+		gCrashHandlerImpl->addText("Message: ");
+		gCrashHandlerImpl->addText(msg);
+		gCrashHandlerImpl->addText("\n");
+	}
+	
+	gCrashHandlerImpl->addText("\n");
+	
+}
+
 #endif
 
 bool CrashHandler::initialize(int argc, char ** argv) {
@@ -84,6 +118,8 @@ bool CrashHandler::initialize(int argc, char ** argv) {
 		} else {
 			return false;
 		}
+		
+		g_assertHandler = crashAssertHandler;
 	}
 	
 	gCrashHandlerInitCount++;
@@ -99,6 +135,7 @@ void CrashHandler::shutdown() {
 #if ARX_HAVE_CRASHHANDLER
 	gCrashHandlerInitCount--;
 	if(gCrashHandlerInitCount == 0) {
+		g_assertHandler = NULL;
 		gCrashHandlerImpl->shutdown();
 		delete gCrashHandlerImpl;
 		gCrashHandlerImpl = 0;
