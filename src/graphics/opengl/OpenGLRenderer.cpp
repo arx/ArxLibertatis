@@ -553,20 +553,37 @@ static VertexBuffer<Vertex> * createVertexBufferImpl(OpenGLRenderer * renderer,
                                                      Renderer::BufferUsage usage,
                                                      const std::string & setting) {
 	
+	bool matched = false;
+	
 	if(GLEW_ARB_map_buffer_range) {
 		
 		#ifdef GL_ARB_buffer_storage
 		
-		if(GLEW_ARB_buffer_storage && usage != Renderer::Static) {
+		if(GLEW_ARB_buffer_storage) {
 			
 			if(setting.empty() || setting == "persistent-orphan") {
-				return new GLPersistentOrphanVertexBuffer<Vertex>(renderer, capacity);
-			} else if(setting == "persistent-x3" && usage == Renderer::Stream) {
-				return new GLPersistentFenceVertexBuffer<Vertex, 3>(renderer, capacity, 3);
-			} else if(setting == "persistent-x2" && usage == Renderer::Stream) {
-				return new GLPersistentFenceVertexBuffer<Vertex, 3>(renderer, capacity, 2);
-			} else if(setting == "persistent-nosync") {
-				return new GLPersistentUnsynchronizedVertexBuffer<Vertex>(renderer, capacity);
+				if(usage != Renderer::Static) {
+					return new GLPersistentOrphanVertexBuffer<Vertex>(renderer, capacity);
+				}
+				matched = true;
+			}
+			if(setting.empty() || setting == "persistent-x3") {
+				if(usage == Renderer::Stream) {
+					return new GLPersistentFenceVertexBuffer<Vertex, 3>(renderer, capacity, 3);
+				}
+				matched = true;
+			}
+			if(setting.empty() || setting == "persistent-x2") {
+				if(usage == Renderer::Stream) {
+					return new GLPersistentFenceVertexBuffer<Vertex, 3>(renderer, capacity, 2);
+				}
+				matched = true;
+			}
+			if(setting.empty() || setting == "persistent-nosync") {
+				if(usage != Renderer::Static) {
+					return new GLPersistentUnsynchronizedVertexBuffer<Vertex>(renderer, capacity);
+				}
+				matched = true;
 			}
 			
 		}
@@ -583,6 +600,11 @@ static VertexBuffer<Vertex> * createVertexBufferImpl(OpenGLRenderer * renderer,
 		return new GLVertexBuffer<Vertex>(renderer, capacity, usage);
 	}
 	
+	static bool warned = false;
+	if(!matched && !warned) {
+		LogWarning << "Ignoring unsupported video.buffer_upload setting: " << setting;
+		warned = true;
+	}
 	return createVertexBufferImpl<Vertex>(renderer, capacity, usage, std::string());
 }
 
