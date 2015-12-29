@@ -25,6 +25,7 @@
 #cmakedefine01 ARX_HAVE_WAITPID
 #cmakedefine01 ARX_HAVE_SIGACTION
 #cmakedefine01 ARX_HAVE_GETPID
+#cmakedefine01 ARX_HAVE_KILL
 
 // Time
 #cmakedefine01 ARX_HAVE_CLOCK_GETTIME

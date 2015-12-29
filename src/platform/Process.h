@@ -34,8 +34,10 @@ namespace platform {
 	
 #if ARX_PLATFORM == ARX_PLATFORM_WIN32
 typedef DWORD process_id;
+typedef HANDLE process_handle;
 #else
 typedef pid_t process_id;
+typedef pid_t process_handle;
 #endif
 
 /*!
@@ -88,8 +90,11 @@ inline int run(const std::string & exe, const char * const args[]) {
  * \param exe  the program to run, either an absolute path or a program name in the PATH.
  * \param args program arguments. The first argument should be the program name/path and
  *             the last argument must be NULL.
+ *
+ * \return a process handle that should be closed with \ref closeProcessHandle
+ *         if no longer needed.
  */
-void runAsync(const char * exe, const char * const args[]);
+process_handle runAsync(const char * exe, const char * const args[]);
 
 /*!
  * \brief Start a program without waiting for it to finish
@@ -98,9 +103,12 @@ void runAsync(const char * exe, const char * const args[]);
  *
  * \param args program arguments. The first argument is the program to run, either an
  *             absolute path or a program name in the PATH. The last argument must be NULL.
+ *
+ * \return a process handle that should be closed with \ref closeProcessHandle
+ *         if no longer needed.
  */
-inline void runAsync(const char * const args[]) {
-	runAsync(args[0], args);
+inline process_handle runAsync(const char * const args[]) {
+	return runAsync(args[0], args);
 }
 
 /*!
@@ -111,13 +119,52 @@ inline void runAsync(const char * const args[]) {
  * \param exe  the program to run, either an absolute path or a program name in the PATH.
  * \param args program arguments. The first argument should be the program name/path and
  *             the last argument must be NULL.
+ *
+ * \return a process handle that should be closed with \ref closeProcessHandle
+ *         if no longer needed.
  */
-inline void runAsync(const std::string & exe, const char * const args[]) {
-	runAsync(exe.c_str(), args);
+inline process_handle runAsync(const std::string & exe, const char * const args[]) {
+	return runAsync(exe.c_str(), args);
 }
 
 //! Get the id of the current process
 process_id getProcessId();
+
+//! Get the process id from a handle returned by \ref runAsync
+process_id getProcessId(process_handle process);
+
+/*!
+ * Check if a process is still running
+ *
+ * Note that that this check is subject to race conditions as the process id may be
+ * reused after the process exits.
+ *
+ * If we have a handle to the process it is better to use \ref getProcessExitCode.
+ */
+bool isProcessRunning(process_id pid);
+
+//! Forcibly exit a running process
+void killProcess(process_id pid);
+
+enum ProcessExitCode {
+	StillRunning = -1,
+	ExitSuccess = 0
+};
+
+/*!
+ * Get the return code of a child process
+ *
+ * This function implicitly closes the process handle if the process exited.
+ *
+ * \param wait whether we should wait for the process to exit or return immediately.
+ *
+ * \return the process exit code, or \ref StillRunning if the process is still running or
+ *         another negative number if there was an error.
+ */
+int getProcessExitCode(process_handle process, bool wait = true);
+
+//! Clean up a process handle returned by \ref runAsync
+void closeProcessHandle(process_handle process);
 
 /*!
  * \brief Run a helper executable

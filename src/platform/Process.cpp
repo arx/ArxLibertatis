@@ -45,6 +45,10 @@
 #include <unistd.h>
 #endif
 
+#if ARX_HAVE_KILL
+#include <signal.h>
+#endif
+
 #if ARX_HAVE_POSIX_SPAWNP
 #include <spawn.h>
 #if defined(__FreeBSD__) && defined(__GNUC__) && __GNUC__ >= 4
@@ -68,12 +72,11 @@ extern char ** environ;
 #include "platform/Environment.h"
 #include "util/String.h"
 
-
 namespace platform {
 
 #if ARX_PLATFORM != ARX_PLATFORM_WIN32
-static int run(const char * exe, bool wait, const char * const args[],
-               int stdout, bool unlocalized, bool detach) {
+static process_handle run(const char * exe, const char * const args[], int stdout,
+                          bool unlocalized, bool detach) {
 	
 	char ** argv = const_cast<char **>(args);
 	
@@ -84,7 +87,7 @@ static int run(const char * exe, bool wait, const char * const args[],
 	}
 	#endif
 	
-	pid_t pid = -1;
+	pid_t pid = 0;
 	
 #if ARX_HAVE_POSIX_SPAWNP
 	
@@ -114,7 +117,9 @@ static int run(const char * exe, bool wait, const char * const args[],
 		}
 		
 		// Run the executable in a new process
-		(void)posix_spawnp(&pid, exe, file_actionsp, attrp, argv, environ);
+		if(posix_spawnp(&pid, exe, file_actionsp, attrp, argv, environ) != 0) {
+			pid = 0;
+		}
 		
 	}
 	
@@ -173,33 +178,11 @@ static int run(const char * exe, bool wait, const char * const args[],
 	#warning "Executing helper processes not supported on this system."
 #endif
 	
-	if(pid < 0) {
-		return -1;
-	}
-	
-	#if ARX_HAVE_WAITPID
-	if(wait) {
-		int status;
-		(void)waitpid(pid, &status, 0);
-		if(WIFEXITED(status) && (WEXITSTATUS(status) >= 0 && WEXITSTATUS(status) < 127)) {
-			return WEXITSTATUS(status);
-		} else if(WIFSIGNALED(status)) {
-			return -WTERMSIG(status);
-		} else {
-			return -1;
-		}
-	}
-	#else
-	ARX_UNUSED(wait);
-	# warning "Waiting for processes not supported on this system."
-	#endif
-	
-	return 0;
+	return (pid <= 0) ? 0 : pid;
 }
 #endif // ARX_PLATFORM != ARX_PLATFORM_WIN32
 
-
-static int run(const char * exe, bool wait, const char * const args[]) {
+process_handle runAsync(const char * exe, const char * const args[]) {
 	
 #if ARX_PLATFORM == ARX_PLATFORM_WIN32
 	
@@ -227,29 +210,19 @@ static int run(const char * exe, bool wait, const char * const args[]) {
 	free(cmdline);
 	
 	if(!success) {
-		return -1; // Could not start process
+		return 0; // Could not start process
 	}
 	
-	int status = 0;
-	if(wait) {
-		status = WaitForSingleObject(pi.hProcess, INFINITE);
-	}
-	
-	CloseHandle(pi.hProcess);
 	CloseHandle(pi.hThread);
 	
-	return status;
+	return pi.hProcess;
 	
 #else
 	
-	return run(exe, wait, args, /*stdout=*/ 0, /*unlocalized=*/ false, /*detach=*/ true);
+	return run(exe, args, /*stdout=*/ 0, /*unlocalized=*/ false, /*detach=*/ true);
 	
 #endif
 	
-}
-
-int run(const char * exe, const char * const args[]) {
-	return run(exe, true, args);
 }
 
 process_id getProcessId() {
@@ -263,12 +236,128 @@ process_id getProcessId() {
 	#endif
 }
 
-void runAsync(const char * exe, const char * const args[]) {
-	(void)run(exe, false, args);
+process_id getProcessId(process_handle process) {
+	#if ARX_PLATFORM == ARX_PLATFORM_WIN32
+	return process ? GetProcessId(process) : 0;
+	#else
+	return process_id(process);
+	#endif
+}
+
+bool isProcessRunning(process_id pid) {
+	
+	if(!pid) {
+		return false;
+	}
+	
+	#if ARX_PLATFORM == ARX_PLATFORM_WIN32
+	HANDLE process = OpenProcess(SYNCHRONIZE, FALSE, pid);
+	DWORD ret = WaitForSingleObject(process, 0);
+	CloseHandle(process);
+	return ret == WAIT_TIMEOUT;
+	#elif ARX_HAVE_KILL
+	return kill(pid, 0) == 0;
+	#else
+	return true;
+	#endif
+}
+
+void killProcess(process_id pid) {
+	
+	if(!pid) {
+		return;
+	}
+	
+	#if ARX_PLATFORM == ARX_PLATFORM_WIN32
+	HANDLE process = OpenProcess(PROCESS_TERMINATE, FALSE, pid);
+	if(process) {
+		TerminateProcess(process, 1);
+		CloseHandle(process);
+	}
+	#elif ARX_HAVE_KILL
+	// Kill the original, busy-waiting process.
+	kill(pid, SIGKILL);
+	#else
+	#warning "Killing processes not supported on this system."
+	return;
+	#endif
+}
+
+
+int getProcessExitCode(process_handle process, bool wait) {
+	
+	if(!process) {
+		return -2;
+	}
+	
+	#if ARX_PLATFORM == ARX_PLATFORM_WIN32
+	
+	if(wait) {
+		WaitForSingleObject(process, INFINITE);
+	}
+	
+	DWORD code = DWORD(-2);
+	if(GetExitCodeProcess(process, &code) == FALSE) {
+		CloseHandle(process);
+		return -2;
+	} else if(code == STILL_ACTIVE) {
+		return StillRunning;
+	}
+	
+	CloseHandle(process);
+	
+	return code;
+	
+	#elif ARX_HAVE_WAITPID
+	
+	int status;
+	pid_t ret = waitpid(process, &status, wait ? 0 : WNOHANG);
+	if(ret == 0) {
+		return StillRunning;
+	} else if(ret != process) {
+		return -2;
+	}
+	if(WIFEXITED(status) && (WEXITSTATUS(status) >= 0 && WEXITSTATUS(status) < 127)) {
+		return WEXITSTATUS(status);
+	} else if(WIFSIGNALED(status)) {
+		return -WTERMSIG(status);
+	} else {
+		return -2;
+	}
+	
+	#else
+	
+	ARX_UNUSED(process), ARX_UNUSED(wait);
+	# warning "Waiting for processes not supported on this system."
+	return StillRunning;
+	
+	#endif
+	
+}
+
+void closeProcessHandle(process_handle process) {
+	#if ARX_PLATFORM == ARX_PLATFORM_WIN32
+	CloseHandle(process);
+	#elif ARX_HAVE_WAITPID
+	waitpid(process, NULL, WNOHANG);
+	#else
+	ARX_UNUSED(process);
+	#endif
+}
+
+int run(const char * exe, const char * const args[]) {
+	process_handle process = runAsync(exe, args);
+	return getProcessExitCode(process);
 }
 
 int runHelper(const char * const args[], bool wait) {
-	return run(getHelperExecutable(args[0]).string().c_str(), wait, args);
+	process_handle process = runAsync(getHelperExecutable(args[0]).string().c_str(), args);
+	if(wait) {
+		return getProcessExitCode(process);
+	} else {
+		closeProcessHandle(process);
+		return 0;
+	}
 }
 
 #if !ARX_HAVE_CXX11_VARIADIC_TEMPLATES
@@ -303,7 +392,8 @@ std::string getOutputOf(const char * exe, const char * const args[], bool unloca
 		return std::string();
 	}
 	
-	if(run(exe, /*wait=*/ false, args, pipefd[1], unlocalized, false) < 0) {
+	process_handle process = run(exe, args, pipefd[1], unlocalized, false);
+	if(!process) {
 		close(pipefd[0]);
 		close(pipefd[1]);
 		return std::string();
@@ -324,6 +414,8 @@ std::string getOutputOf(const char * exe, const char * const args[], bool unloca
 	}
 	
 	close(pipefd[0]);
+	
+	closeProcessHandle(process);
 	
 	return result;
 	
