@@ -61,6 +61,9 @@
 
 // Boost
 #include <boost/crc.hpp>
+#include <boost/date_time/microsec_time_clock.hpp>
+#include <boost/date_time/time_duration.hpp>
+#include <boost/date_time/posix_time/ptime.hpp>
 
 #include "Configure.h"
 
@@ -645,7 +648,7 @@ bool ErrorReport::GenerateReport(ErrorReport::IProgressNotifier* pProgressNotifi
 		report->ReleaseApplicationLock();
 	} BOOST_SCOPE_EXIT_END
 
-	pProgressNotifier->taskStarted("Generating crash report", 3);
+	pProgressNotifier->taskStarted("Generating crash report", 4);
 	
 	// Initialize shared memory
 	pProgressNotifier->taskStepStarted("Connecting to crashed application");
@@ -663,6 +666,18 @@ bool ErrorReport::GenerateReport(ErrorReport::IProgressNotifier* pProgressNotifi
 		pProgressNotifier->setDetailedError(m_DetailedError);
 		return false;
 	}
+	
+	// Wait for crash to be processed
+	pProgressNotifier->taskStepStarted("Processing crash information");
+	while(platform::isProcessRunning(m_pCrashInfo->processorProcessId)) {
+		boost::posix_time::ptime timeout
+		 = boost::posix_time::microsec_clock::universal_time()
+		 + boost::posix_time::milliseconds(100);
+		if(m_pCrashInfo->processorDone.timed_wait(timeout)) {
+			break;
+		}
+	}
+	pProgressNotifier->taskStepEnded();
 	
 	// Generate minidump
 	pProgressNotifier->taskStepStarted("Generating crash dump");
@@ -808,6 +823,7 @@ bool ErrorReport::SendReport(ErrorReport::IProgressNotifier* pProgressNotifier)
 
 void ErrorReport::ReleaseApplicationLock() {
 	// Kill the original, busy-waiting process.
+	platform::killProcess(m_pCrashInfo->processorProcessId);
 	m_pCrashInfo->exitLock.post();
 	platform::killProcess(m_pCrashInfo->processId);
 }

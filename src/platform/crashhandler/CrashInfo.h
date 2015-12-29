@@ -31,7 +31,8 @@
 struct CrashInfoBase {
 	
 	CrashInfoBase()
-		: reporterStarted(0)
+		: processorDone(0)
+		, reporterStarted(0)
 		, exitLock(0)
 	{ }
 	
@@ -66,6 +67,9 @@ struct CrashInfoBase {
 	
 	// Where the crash reports should be written.
 	char crashReportFolder[MaxFilenameLen];
+	
+	platform::process_id processorProcessId;
+	boost::interprocess::interprocess_semaphore processorDone;
 	
 	boost::interprocess::interprocess_semaphore reporterStarted;
 	

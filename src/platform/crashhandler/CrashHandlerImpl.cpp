@@ -70,6 +70,10 @@ void CrashHandlerImpl::processCrash(const std::string & sharedMemoryName) {
 
 void CrashHandlerImpl::processCrash() {
 	
+	if(m_pCrashInfo) {
+		m_pCrashInfo->processorProcessId = platform::getProcessId();
+	}
+	
 	// Launch crash reporter GUI
 	platform::process_handle reporter = 0;
 	{
@@ -93,6 +97,11 @@ void CrashHandlerImpl::processCrash() {
 		if(m_pCrashInfo->reporterStarted.timed_wait(timeout)) {
 			break;
 		}
+	}
+	
+	// Tell the crash reporter we are done
+	if(m_pCrashInfo) {
+		m_pCrashInfo->processorDone.post();
 	}
 	
 	// If the crash reporter started successfully, we are done here
@@ -191,6 +200,8 @@ void CrashHandlerImpl::fillBasicCrashInfo() {
 
 	strncpy(m_pCrashInfo->executableVersion, arx_version.c_str(), sizeof(m_pCrashInfo->executableVersion));
 	m_pCrashInfo->executableVersion[sizeof(m_pCrashInfo->executableVersion)-1] = 0; // Make sure our string is null terminated
+	
+	m_pCrashInfo->processorProcessId = 0;
 	
 }
 
