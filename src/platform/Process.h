@@ -166,6 +166,9 @@ int getProcessExitCode(process_handle process, bool wait = true);
 //! Clean up a process handle returned by \ref runAsync
 void closeProcessHandle(process_handle process);
 
+//! Clean up terminated child processes
+void reapZombies();
+
 /*!
  * \brief Run a helper executable
  *

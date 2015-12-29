@@ -1231,6 +1231,8 @@ void ArxGame::run() {
 		
 		ARX_PROFILE(Main Loop);
 		
+		platform::reapZombies();
+		
 		m_MainWindow->tick();
 		if(!m_RunLoop) {
 			break;

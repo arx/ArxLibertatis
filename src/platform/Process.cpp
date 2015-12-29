@@ -335,13 +335,37 @@ int getProcessExitCode(process_handle process, bool wait) {
 	
 }
 
+#if ARX_PLATFORM != ARX_PLATFORM_WIN32 && ARX_HAVE_WAITPID
+static std::vector<process_handle> g_childProcesses;
+#endif
+
 void closeProcessHandle(process_handle process) {
+	
+	if(!process) {
+		return;
+	}
+	
 	#if ARX_PLATFORM == ARX_PLATFORM_WIN32
 	CloseHandle(process);
 	#elif ARX_HAVE_WAITPID
-	waitpid(process, NULL, WNOHANG);
+	if(waitpid(process, NULL, WNOHANG) == 0) {
+		g_childProcesses.push_back(process);
+	}
 	#else
 	ARX_UNUSED(process);
+	#endif
+}
+
+void reapZombies() {
+	#if ARX_PLATFORM != ARX_PLATFORM_WIN32 && ARX_HAVE_WAITPID
+	std::vector<process_handle>::iterator it = g_childProcesses.begin();
+	while(it != g_childProcesses.end()) {
+		if(waitpid(*it, NULL, WNOHANG) == 0) {
+			it = g_childProcesses.erase(it);
+		} else {
+			++it;
+		}
+	}
 	#endif
 }
 
