@@ -131,7 +131,7 @@ bool CrashHandler::setNamedVariable(const std::string & name, const std::string 
 	if(!isInitialized()) {
 		return false;
 	}
-	return gCrashHandlerImpl->setNamedVariable(name, value);
+	return gCrashHandlerImpl->setVariable(name, value);
 #else
 	ARX_UNUSED(name), ARX_UNUSED(value);
 	return false;

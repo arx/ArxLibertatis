@@ -54,7 +54,7 @@ public:
 	virtual void shutdown();
 
 	bool addAttachedFile(const fs::path& file);
-	bool setNamedVariable(const std::string& name, const std::string& value);
+	bool setVariable(const std::string& name, const std::string& value);
 
 	bool setReportLocation(const fs::path& location);
 	bool deleteOldReports(size_t nbReportsToKeep);
