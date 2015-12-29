@@ -19,33 +19,27 @@
  
 #include "platform/Dialog.h"
 
+#include <cstdlib>
+#include <cstring>
 #include <iostream>
+#include <sstream>
+#include <vector>
 
 #include "platform/Platform.h"
 
 #include "Configure.h"
 
 #if ARX_PLATFORM == ARX_PLATFORM_WIN32
-
 #include <windows.h>
-
-#else
-
-#include <cstdlib>
-#include <sstream>
-#include <cstring>
-#include <sys/wait.h>
+#endif
 
 #if ARX_HAVE_SDL2
 #include <SDL.h>
 #endif
 
-#endif
-
-#include <boost/format.hpp>
 #include <boost/foreach.hpp>
 
-#include "util/String.h"
+#include "platform/Process.h"
 
 
 namespace platform {
@@ -86,10 +80,6 @@ static bool showDialog(DialogType type, const std::string & message,
 bool showDialog(DialogType type, const std::string & message, const std::string & title);
 
 #else
-
-static std::string escape(const std::string & input) {
-	return util::escapeString(input, "\\\"$`");
-}
 
 static bool isAllowedInUrl(char c) {
 	return !isspace(c) && c != '"' && c != '\'' && c != ')';
@@ -212,84 +202,121 @@ static std::string formatAsHtml(const std::string & text, bool newline, bool ul 
 static int zenityCommand(DialogType type, const std::string & message,
                          const std::string & title) {
 	
-	const char * options = "";
+	std::vector<const char *> command;
+	command.push_back("zenity");
 	switch(type) {
-		case DialogInfo:      options = "--info"; break;
-		case DialogWarning:   options = "--warning"; break;
-		case DialogError:     options = "--error"; break;
-		case DialogYesNo:     options = "--question --ok-label=Yes --cancel-label=No"; break;
-		case DialogWarnYesNo: options = "--question --ok-label=Yes --cancel-label=No"
-		                                "  --window-icon=warning --icon-name=dialog-warning";
-		break;
-		case DialogOkCancel:  options = "--question --ok-label=OK --cancel-label=Cancel";
-		break;
+		case DialogInfo:      command.push_back("--info"); break;
+		case DialogWarning:   command.push_back("--warning"); break;
+		case DialogError:     command.push_back("--error"); break;
+		case DialogYesNo: {
+			command.push_back("--question");
+			command.push_back("--ok-label=Yes");
+			command.push_back("--cancel-label=No");
+			break;
+		}
+		case DialogWarnYesNo: {
+			command.push_back("--question");
+			command.push_back("--ok-label=Yes");
+			command.push_back("--cancel-label=No");
+			command.push_back("--icon-name=dialog-warning");
+			command.push_back("--window-icon=warning");
+			break;
+		}
+		case DialogOkCancel:  {
+			command.push_back("--question");
+			command.push_back("--ok-label=OK");
+			command.push_back("--cancel-label=Cancel");
+			break;
+		}
 	}
+	command.push_back("--no-wrap");
+	std::string messageArg = "--text=" + formatAsHtml(message, true);
+	command.push_back(messageArg.c_str());
+	std::string titleArg = "--text=" + title;
+	command.push_back(messageArg.c_str());
+	command.push_back(NULL);
 	
-	boost::format command("zenity %1% --no-wrap --text=\"%2%\" --title=\"%3%\"");
-	command = command % options;
-	command = command % escape(formatAsHtml(message, true));
-	command = command % escape(title);
-	
-	return system(command.str().c_str());
+	return platform::run(&command[0]);
 }
 
 static int kdialogCommand(DialogType type, const std::string & message,
                           const std::string & title) {
 	
-	const char * options = "";
+	std::vector<const char *> command;
+	command.push_back("kdialog");
 	switch(type) {
-		case DialogInfo:      options = "--msgbox"; break;
-		case DialogWarning:   options = "--sorry"; break;
-		case DialogError:     options = "--error"; break;
-		case DialogYesNo:     options = "--yesno"; break;
-		case DialogWarnYesNo: options = "--warningyesno"; break;
-		case DialogOkCancel:  options = "--continuecancel"; break;
+		case DialogInfo:      command.push_back("--msgbox"); break;
+		case DialogWarning:   command.push_back("--sorry"); break;
+		case DialogError:     command.push_back("--error"); break;
+		case DialogYesNo:     command.push_back("--yesno"); break;
+		case DialogWarnYesNo: command.push_back("--warningyesno"); break;
+		case DialogOkCancel:  command.push_back("--continuecancel"); break;
+	}
+	std::string messageArg = formatAsHtml(message, false);
+	command.push_back(messageArg.c_str());
+	command.push_back("--title");
+	command.push_back(title.c_str());
+	command.push_back("--icon");
+	command.push_back("arx-libertatis");
+	command.push_back(NULL);
+	
+	return platform::run(&command[0]);
+}
+
+static void xmessageButtons(std::vector<const char *> & command, DialogType type) {
+	
+	command.push_back("-center");
+	command.push_back("-buttons");
+	switch(type) {
+		default:             command.push_back("OK"); break;
+		case DialogWarnYesNo: /* fall-through */
+		case DialogYesNo:    command.push_back("Yes:0,No:1"); break;
+		case DialogOkCancel: command.push_back("OK:0,Cancel:1"); break;
 	}
 	
-	boost::format command("kdialog %1% \"%2%\" --title \"%3%\" --icon arx-libertatis");
-	command = command % options;
-	command = command % escape(formatAsHtml(message, false));
-	command = command % escape(title);
-	
-	return system(command.str().c_str());
 }
 
 static int gxmessageCommand(DialogType type, const std::string & message,
                             const std::string & title) {
 	
-	const char * options = "";
-	switch(type) {
-		default:             options = "-buttons OK"; break;
-		case DialogWarnYesNo: /* fall-through */
-		case DialogYesNo:    options = "-buttons Yes:0,No:1"; break;
-		case DialogOkCancel: options = "-buttons OK:0,Cancel:1"; break;
-	}
+	std::vector<const char *> command;
+	command.push_back("gxmessage");
+	command.push_back("-geometry");
+	command.push_back("550x300");
+	xmessageButtons(command, type);
+	command.push_back("-title");
+	command.push_back(title.c_str());
+	command.push_back(message.c_str());
+	command.push_back(NULL);
 	
-	boost::format command("gxmessage -geometry 550x300 -center %1% -title \"%2%\" \"%3%\"");
-	command = command % options;
-	command = command % escape(title);
-	command = command % escape(message);
-	
-	return system(command.str().c_str());
+	return platform::run(&command[0]);
 }
 
 static int xdialogCommand(DialogType type, const std::string & message,
                           const std::string & title) {
 	
-	const char * options = "";
+	std::vector<const char *> command;
+	command.push_back("Xdialog");
+	command.push_back("--left");
+	command.push_back("--title");
+	command.push_back(title.c_str());
 	switch(type) {
-		default:             options = "--msgbox"; break;
+		default:             command.push_back("--msgbox"); break;
 		case DialogWarnYesNo: /* fall-through */
-		case DialogYesNo:    options = "--yesno"; break;
-		case DialogOkCancel: options = "--ok-label OK --cancel-label Cancel --yesno"; break;
+		case DialogYesNo:    command.push_back("--yesno"); break;
+		case DialogOkCancel: {
+			command.push_back("--ok-label"), command.push_back("OK");
+			command.push_back("--cancel-label"), command.push_back("Cancel");
+			command.push_back("--yesno");
+			break;
+		}
 	}
+	command.push_back(message.c_str());
+	command.push_back("0");
+	command.push_back("0");
+	command.push_back(NULL);
 	
-	boost::format command("Xdialog --left --title \"%3%\" %1% \"%2%\" 0 0");
-	command = command % options;
-	command = command % escape(message);
-	command = command % escape(title);
-	
-	return system(command.str().c_str());
+	return platform::run(&command[0]);
 }
 
 static int xmessageCommand(DialogType type, const std::string & message,
@@ -297,19 +324,13 @@ static int xmessageCommand(DialogType type, const std::string & message,
 	
 	ARX_UNUSED(title);
 	
-	const char * options = "";
-	switch(type) {
-		default:             options = "-buttons OK"; break;
-		case DialogWarnYesNo: /* fall-through */
-		case DialogYesNo:    options = "-buttons Yes:0,No:1"; break;
-		case DialogOkCancel: options = "-buttons OK:0,Cancel:1"; break;
-	}
+	std::vector<const char *> command;
+	command.push_back("xmessage");
+	xmessageButtons(command, type);
+	command.push_back(message.c_str());
+	command.push_back(NULL);
 	
-	boost::format command("xmessage -center %1% \"%2%\"");
-	command = command % options;
-	command = command % escape(message);
-	
-	return system(command.str().c_str());
+	return platform::run(&command[0]);
 }
 
 static bool showDialog(DialogType type, const std::string & message,
@@ -335,14 +356,9 @@ static bool showDialog(DialogType type, const std::string & message,
 	
 	BOOST_FOREACH(dialogCommand_t command, commands) {
 		int code = command(type, message, title);
-		if(WIFEXITED(code) && WEXITSTATUS(code) >= 0 && WEXITSTATUS(code) < 127) {
-			return WEXITSTATUS(code) == 0;
+		if(code >= 0) {
+			return code == 0;
 		}
-		#ifdef SIGINT
-		if(WIFSIGNALED(code) && WTERMSIG(code) == SIGINT) {
-			return false;
-		}
-		#endif
 	}
 	
 	/*
