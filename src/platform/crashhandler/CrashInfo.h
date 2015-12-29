@@ -79,7 +79,6 @@ struct CrashInfo : public CrashInfoBase {
 	CrashInfo()
 		: signal(0)
 		, code(0)
-		, backtrace()
 	{}
 	
 	int signal;
