@@ -24,7 +24,6 @@
 
 #include <string.h>
 #include <stdlib.h>
-#include <stdarg.h>
 
 #include "Configure.h"
 #include "platform/Platform.h"
@@ -383,28 +382,6 @@ int runHelper(const char * const args[], bool wait) {
 		return 0;
 	}
 }
-
-#if !ARX_HAVE_CXX11_VARIADIC_TEMPLATES
-void runHelper(const char * name, ...) {
-	
-	// Parse the argument list
-	std::vector<const char *> arglist;
-	arglist.push_back(name);
-	va_list args;
-	va_start(args, name);
-	while(true) {
-		const char * arg = va_arg(args, const char *);
-		arglist.push_back(arg);
-		if(!arg) {
-			break;
-		}
-	}
-	va_end(args);
-	const char * const * argv = &arglist.front();
-	
-	(void)runHelper(argv);
-}
-#endif
 
 #if ARX_PLATFORM != ARX_PLATFORM_WIN32
 std::string getOutputOf(const char * exe, const char * const args[], bool unlocalized) {

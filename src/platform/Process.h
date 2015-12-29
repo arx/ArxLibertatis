@@ -20,9 +20,9 @@
 #ifndef ARX_PLATFORM_PROCESS_H
 #define ARX_PLATFORM_PROCESS_H
 
-#include "platform/Platform.h"
-
 #include <string>
+
+#include "platform/Platform.h"
 
 #if ARX_PLATFORM == ARX_PLATFORM_WIN32
 #include <windows.h>
@@ -182,24 +182,6 @@ void reapZombies();
  * \return if \ref wait is \c true, the return code of the executed program.
  */
 int runHelper(const char * const args[], bool wait = false);
-
-/*!
- * \brief Run a helper executable
- *
- * Shortcut for
- * \code
-const char * args[] = { name, ... };
-platform::runHelper(args); \endcode
- */
-#if ARX_HAVE_CXX11_VARIADIC_TEMPLATES
-template <typename... Args>
-inline void runHelper(const char * name, Args... args) {
-	const char * const argArray[] = { name, args... };
-	(void)runHelper(argArray);
-}
-#else
-void runHelper(const char * name, ...);
-#endif
 
 #if ARX_PLATFORM != ARX_PLATFORM_WIN32
 
