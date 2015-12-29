@@ -231,6 +231,7 @@ void ShowInfoText() {
 	DebugBox frameInfo = DebugBox(Vec2i(10, 10), "FrameInfo");
 	frameInfo.add("Prims", EERIEDrawnPolys);
 	frameInfo.add("Particles", getParticleCount());
+	frameInfo.add("Polybooms", long(polyboom.size()));
 	frameInfo.add("TIME", static_cast<long>((unsigned long)(arxtime) / 1000));
 	frameInfo.print();
 	

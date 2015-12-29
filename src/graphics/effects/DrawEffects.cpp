@@ -249,16 +249,9 @@ void ARXDRAW_DrawPolyBoom() {
 	GRenderer->SetFogColor(Color::none); // TODO: not handled by RenderMaterial
 	unsigned long tim = (unsigned long)(arxtime);
 	
-	RenderMaterial mat;
-	mat.setDepthTest(true);
-	mat.setDepthBias(8);
-	mat.setLayer(RenderMaterial::Decal);
-	mat.setWrapMode(TextureStage::WrapClamp);
-
-	std::vector<POLYBOOM>::iterator itr = polyboom.begin();
-	while (itr != polyboom.end()) {
-
-		POLYBOOM & pb = *itr;
+	for(size_t i = 0; i < polyboom.size(); i++) {
+		
+		POLYBOOM & pb = polyboom[i];
 		
 		if(pb.type & 128) {
 			if(pb.timecreation - framedelay > 0) {
@@ -275,10 +268,25 @@ void ARXDRAW_DrawPolyBoom() {
 		float t = (float)pb.timecreation + (float)pb.tolive - (float)tim;
 
 		if(t <= 0) {
-			itr = polyboom.erase(itr);
-			continue;
+			std::swap(polyboom[i], polyboom.back());
+			polyboom.pop_back();
+			i--;
 		}
+	}
+	
+	RenderMaterial mat;
+	mat.setDepthTest(true);
+	mat.setDepthBias(8);
+	mat.setLayer(RenderMaterial::Decal);
+	mat.setWrapMode(TextureStage::WrapClamp);
 
+	std::vector<POLYBOOM>::iterator itr = polyboom.begin();
+	while (itr != polyboom.end()) {
+
+		POLYBOOM & pb = *itr;
+		
+		float t = (float)pb.timecreation + (float)pb.tolive - (float)tim;
+		
 		long typp = pb.type;
 		typp &= ~128;
 		
