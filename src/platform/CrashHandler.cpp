@@ -126,7 +126,7 @@ bool CrashHandler::addAttachedFile(const fs::path & file) {
 #endif
 }
 
-bool CrashHandler::setNamedVariable(const std::string & name, const std::string & value) {
+bool CrashHandler::setVariable(const std::string & name, const std::string & value) {
 #if ARX_HAVE_CRASHHANDLER
 	if(!isInitialized()) {
 		return false;
