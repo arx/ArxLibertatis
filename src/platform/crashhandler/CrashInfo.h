@@ -31,7 +31,8 @@
 struct CrashInfoBase {
 	
 	CrashInfoBase()
-		: exitLock(0)
+		: reporterStarted(0)
+		, exitLock(0)
 	{ }
 	
 	enum Constants {
@@ -65,6 +66,8 @@ struct CrashInfoBase {
 	
 	// Where the crash reports should be written.
 	char crashReportFolder[MaxFilenameLen];
+	
+	boost::interprocess::interprocess_semaphore reporterStarted;
 	
 	// Once released, this lock will allow the crashed application to terminate.
 	boost::interprocess::interprocess_semaphore exitLock;

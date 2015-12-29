@@ -19,7 +19,12 @@
 
 #include "platform/crashhandler/CrashHandlerImpl.h"
 
+#include <iostream>
 #include <sstream>
+
+#include <boost/date_time/microsec_time_clock.hpp>
+#include <boost/date_time/time_duration.hpp>
+#include <boost/date_time/posix_time/ptime.hpp>
 
 #include "core/Version.h"
 
@@ -31,9 +36,11 @@
 
 #include "platform/Architecture.h"
 #include "platform/Environment.h"
+#include "platform/Process.h"
 
 #include "util/String.h"
 
+namespace bip = boost::interprocess;
 
 CrashHandlerImpl::CrashHandlerImpl()
 	: m_pCrashInfo(0) {
@@ -42,12 +49,80 @@ CrashHandlerImpl::CrashHandlerImpl()
 CrashHandlerImpl::~CrashHandlerImpl() {
 }
 
+void CrashHandlerImpl::processCrash(const std::string & sharedMemoryName) {
+	
+	m_SharedMemoryName = sharedMemoryName;
+	
+	// Create a shared memory object.
+	m_SharedMemory = bip::shared_memory_object(bip::open_only, m_SharedMemoryName.c_str(),
+	                                           bip::read_write);
+	
+	// Map the whole shared memory in this process
+	m_MemoryMappedRegion = bip::mapped_region(m_SharedMemory, bip::read_write);
+	
+	// Our SharedCrashInfo will be stored in this shared memory.
+	m_pCrashInfo = reinterpret_cast<CrashInfo *>(m_MemoryMappedRegion.get_address());
+	
+	processCrash();
+	
+	std::exit(0);
+}
+
+void CrashHandlerImpl::processCrash() {
+	
+	// Launch crash reporter GUI
+	platform::process_handle reporter = 0;
+	{
+		fs::path executable = platform::getHelperExecutable("arxcrashreporter");
+		char argument[256];
+		strcpy(argument, "--crashinfo=");
+		strcat(argument, m_SharedMemoryName.c_str());
+		const char * args[] = { executable.string().c_str(), argument, NULL };
+		reporter = platform::runAsync(args);
+	}
+	
+	// Wait for the crash reporter to start
+	while(reporter) {
+		if(platform::getProcessExitCode(reporter, false) != platform::StillRunning) {
+			reporter = 0;
+			break;
+		}
+		boost::posix_time::ptime timeout
+		 = boost::posix_time::microsec_clock::universal_time()
+		 + boost::posix_time::milliseconds(100);
+		if(m_pCrashInfo->reporterStarted.timed_wait(timeout)) {
+			break;
+		}
+	}
+	
+	// If the crash reporter started successfully, we are done here
+	if(reporter) {
+		// TODO The reporter still needs the original process
+		(void)platform::getProcessExitCode(reporter);
+		return;
+	}
+	
+	// Something went wrong - the crash reporter failed to start!
+	
+	std::cerr << "Arx Libertatis crashed, but arxcrashreporter could not be run.\n";
+	std::cerr << "arx.log might contain more information.\n";
+	std::cerr << "Please install arxcrashreporter to generate a detailed bug report!\n";
+	std::cerr.flush();
+	
+	// Terminate the crashed process
+	if(m_pCrashInfo) {
+		m_pCrashInfo->exitLock.post();
+		platform::killProcess(m_pCrashInfo->processId);
+	}
+	
+}
+
 bool CrashHandlerImpl::initialize() {
 	Autolock autoLock(&m_Lock);
 	
 	bool initialized = true;
 	
-	m_CrashHandlerPath = platform::getHelperExecutable("arxcrashreporter");
+	m_executable = platform::getExecutablePath();
 	
 	if(!createSharedMemory()) {
 		return false;

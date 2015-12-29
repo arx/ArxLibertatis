@@ -44,8 +44,6 @@
 #include <string.h>
 #include <unistd.h>
 
-#include <iostream>
-
 
 #if ARX_HAVE_SIGACTION
 
@@ -221,6 +219,7 @@ void CrashHandlerPOSIX::handleCrash(int signal, int code) {
 	backtrace(m_pCrashInfo->backtrace, ARRAY_SIZE(m_pCrashInfo->backtrace));
 	#endif
 	
+	// Try to spawn a sub-process to process the crash info
 	// Using fork() in a signal handler is bad, but we are already crashing anyway
 	pid_t processor = fork();
 	if(processor > 0) {
@@ -244,27 +243,16 @@ void CrashHandlerPOSIX::handleCrash(int signal, int code) {
 		kill(getpid(), SIGKILL);
 		std::abort();
 	}
-	
-	// Try to execute the crash reporter
 	#ifdef ARX_HAVE_EXECVP
 	char argument[256];
 	strcpy(argument, "--crashinfo=");
 	strcat(argument, m_SharedMemoryName.c_str());
-	const char * args[] = { m_CrashHandlerPath.string().c_str(), argument, NULL };
-	execvp(m_CrashHandlerPath.string().c_str(), const_cast<char **>(args));
+	const char * args[] = { m_executable.string().c_str(), argument, NULL };
+	execvp(m_executable.string().c_str(), const_cast<char **>(args));
 	#endif
 	
-	// Something went wrong - the crash reporter failed to start!
+	// Fallback: process the crash info in-process
+	processCrash();
 	
-	std::cerr << "Arx Libertatis crashed with signal " << m_pCrashInfo->signal
-	          << ", but " << m_CrashHandlerApp << " could not be found.\n";
-	std::cerr << "arx.log might contain more information.\n";
-	std::cerr << "Please install " << m_CrashHandlerApp
-	          << " to generate a detailed bug report!" << std::endl;
-	
-	// Kill the original process
-	kill(m_pCrashInfo->processId, SIGKILL);
-	
-	exit(0);
-	
+	std::abort();
 }

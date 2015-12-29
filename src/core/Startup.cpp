@@ -133,7 +133,7 @@ int utf8_main(int argc, char ** argv) {
 	
 	// Initialize the crash handler
 	{
-		CrashHandler::initialize();
+		CrashHandler::initialize(argc, argv);
 		std::string command_line;
 		for(int i = 1; i < argc; i++) {
 			command_line += util::escapeString(argv[i], "\\\" '$!");

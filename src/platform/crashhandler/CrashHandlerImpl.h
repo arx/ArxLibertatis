@@ -64,18 +64,23 @@ public:
 
 	virtual bool registerThreadCrashHandlers() = 0;
 	virtual void unregisterThreadCrashHandlers() = 0;
-
+	
+	void processCrash(const std::string & sharedMemoryName);
+	
 private:
+	
 	virtual bool registerCrashHandlers() = 0;
 	virtual void unregisterCrashHandlers() = 0;
 	
 	bool createSharedMemory();
 	void destroySharedMemory();
+	void fillBasicCrashInfo();
 	
 protected:
-	virtual void fillBasicCrashInfo();
 	
-	fs::path m_CrashHandlerPath;
+	void processCrash();
+	
+	fs::path m_executable;
 	
 	// Memory shared to the crash reporter.
 	boost::interprocess::shared_memory_object m_SharedMemory;

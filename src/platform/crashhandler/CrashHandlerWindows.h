@@ -22,12 +22,16 @@
 
 #include "platform/crashhandler/CrashHandlerImpl.h"
 
+#include "platform/WindowsUtils.h"
+
 class CrashHandlerWindows : public CrashHandlerImpl {
 	
 public:
 	
 	CrashHandlerWindows();
 	virtual ~CrashHandlerWindows();
+	
+	virtual bool initialize();
 	
 	bool registerThreadCrashHandlers();
 	void unregisterThreadCrashHandlers();
@@ -40,14 +44,17 @@ public:
 	static CrashHandlerWindows& getInstance();
 	
 private:
+	
 	bool registerCrashHandlers();
 	void unregisterCrashHandlers();
 	
 	void writeCrashDump(PEXCEPTION_POINTERS pExceptionPointers);
 	void getCrashSummary(int crashType, int FPECode);
-	void waitForReporter();
 	
 private:
+	
+	platform::WideString m_exe;
+	platform::WideString m_args;
 	
 	// Crash handlers to restore
 	struct PlatformCrashHandlers * m_pPreviousCrashHandlers;

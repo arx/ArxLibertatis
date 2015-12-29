@@ -63,7 +63,7 @@ public:
 	 *
 	 * \return True if initialized correctly, false otherwise.
 	 */
-	static bool initialize();
+	static bool initialize(int argc, char ** argv);
 
 	/*!
 	 * \brief Shut down the crash handler

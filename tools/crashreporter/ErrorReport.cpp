@@ -110,6 +110,8 @@ bool ErrorReport::Initialize()
 	bool bMiscCrashInfo = GetMiscCrashInfo();
 	if(!bMiscCrashInfo)
 		return false;
+	
+	m_pCrashInfo->reporterStarted.post();
 
 	// Add attached files from the report
 	for(int i = 0; i < m_pCrashInfo->nbFilesAttached; i++)

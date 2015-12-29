@@ -19,6 +19,11 @@
 
 #include "platform/CrashHandler.h"
 
+#include <cstdlib>
+#include <cstring>
+
+#include <boost/algorithm/string/predicate.hpp>
+
 #include "io/fs/Filesystem.h"
 #include "io/resource/ResourcePath.h"
 #include "io/log/Logger.h"
@@ -40,7 +45,7 @@ static CrashHandlerImpl * gCrashHandlerImpl = 0;
 static int gCrashHandlerInitCount = 0;
 #endif
 
-bool CrashHandler::initialize() {
+bool CrashHandler::initialize(int argc, char ** argv) {
 	
 #if ARX_HAVE_CRASHHANDLER
 	
@@ -61,6 +66,14 @@ bool CrashHandler::initialize() {
 		
 #endif
 		
+		const char * arg = "--crashinfo=";
+		if(argc >= 2 && boost::starts_with(argv[1], arg)) {
+			if(gCrashHandlerImpl) {
+				gCrashHandlerImpl->processCrash(argv[1] + std::strlen(arg));
+			}
+			std::exit(0);
+		}
+		
 		if(gCrashHandlerImpl) {
 			bool initialized = gCrashHandlerImpl->initialize();
 			if(!initialized) {
@@ -77,6 +90,7 @@ bool CrashHandler::initialize() {
 	return true;
 	
 #else
+	ARX_UNUSED(argc), ARX_UNUSED(argv);
 	return false;
 #endif
 }

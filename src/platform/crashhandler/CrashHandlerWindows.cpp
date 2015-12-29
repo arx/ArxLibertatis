@@ -65,6 +65,19 @@ CrashHandlerWindows::~CrashHandlerWindows() {
 	m_sInstance = 0;
 }
 
+bool CrashHandlerWindows::initialize() {
+	
+	if(!CrashHandlerImpl::initialize()) {
+		return false;
+	}
+	
+	// Cache WideString exe & arg so we don't need to do the conversion in the crash handler
+	m_exe = m_executable.string();
+	m_args = m_executable.filename() + " --crashinfo=" + m_SharedMemoryName;
+	
+	return true;
+}
+
 CrashHandlerWindows& CrashHandlerWindows::getInstance() {
 	arx_assert(m_sInstance != 0);
 	return *m_sInstance;
@@ -311,10 +324,34 @@ void CrashHandlerWindows::handleCrash(int crashType, void* crashExtraInfo, int F
 	
 	// Get current thread id
 	m_pCrashInfo->threadHandle = GetCurrentThread();
-
-	waitForReporter();
 	
-	TerminateProcess(GetCurrentProcess(), 1);
+	// Try to spawn a sub-process to process the crash info
+	STARTUPINFO si;
+	memset(&si, 0, sizeof(STARTUPINFO));
+	si.cb = sizeof(STARTUPINFO);
+	PROCESS_INFORMATION pi;
+	memset(&pi, 0, sizeof(PROCESS_INFORMATION));
+	BOOL created = CreateProcessW(m_exe, m_args.data(), NULL, NULL, FALSE,
+	                              0, NULL, NULL, &si, &pi);
+	if(created) {
+		while(true) {
+			if(m_pCrashInfo->exitLock.try_wait()) {
+				break;
+			}
+			if(WaitForSingleObject(pi.hProcess, 100) != WAIT_TIMEOUT) {
+				break;
+			}
+		}
+		TerminateProcess(GetCurrentProcess(), 1);
+		unregisterCrashHandlers();
+		std::abort();
+	}
+	
+	// Fallback: process the crash info in-process
+	unregisterCrashHandlers();
+	processCrash();
+	
+	std::abort();
 }
 
 void CrashHandlerWindows::getCrashSummary(int crashType, int FPECode) {
@@ -365,41 +402,6 @@ void CrashHandlerWindows::getCrashSummary(int crashType, int FPECode) {
 		strcat(m_pCrashInfo->detailedCrashInfo, FPEDetailed);
 	}
 	strcat(m_pCrashInfo->detailedCrashInfo, "\n");
-}
-
-void CrashHandlerWindows::waitForReporter() {
-	STARTUPINFO si;
-	memset(&si, 0, sizeof(STARTUPINFO));
-	si.cb = sizeof(STARTUPINFO);
-
-	PROCESS_INFORMATION pi;
-	memset(&pi, 0, sizeof(PROCESS_INFORMATION));
-	
-	char arguments[256];
-	strcpy(arguments, "--crashinfo=");
-	strcat(arguments, m_SharedMemoryName.c_str());
-
-	BOOL bCreateProcess;
-	
-	bCreateProcess = CreateProcess(m_CrashHandlerPath.string().c_str(), arguments, 0, 0, 0, 0, 0, 0, &si, &pi);
-	
-	// If CrashReporter was started, wait for its signal before exiting.
-	// Also test if the crash reporter has exited so that we don't wait forever in exceptionnal situations.
-	if(bCreateProcess) {
-		HANDLE crashHandlerProcess = OpenProcess(SYNCHRONIZE, FALSE, pi.dwProcessId);
-		
-		bool exit;
-		do {
-			exit = m_pCrashInfo->exitLock.try_wait();
-			if(!exit) {
-				exit = WaitForSingleObject(crashHandlerProcess, 100) != WAIT_TIMEOUT;
-			}
-		} while(!exit);
-
-		CloseHandle(crashHandlerProcess);
-	} else {
-		// TODO(crash-handler) start fallback in-process crash handler and dump everything to file
-	}
 }
 
 LONG WINAPI SEHHandler(PEXCEPTION_POINTERS pExceptionPtrs) {
