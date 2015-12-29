@@ -234,17 +234,10 @@ void ErrorReportDialog::onTaskStepStarted(const QString& taskStepDescription)
 								.arg(taskStepDescription);
 
 	ui->lblProgressDescription->setText(textDescription);
-
-	taskTimer.start();
 }
 
 void ErrorReportDialog::onTaskStepEnded()
 {
-	qint64 sleepTimeMs = 500 - taskTimer.elapsed();
-
-	if(sleepTimeMs > 0)
-		m_pCurrentTask->msleep(sleepTimeMs);
-
 	ui->progressBar->setValue(ui->progressBar->value() + 1);
 }
 

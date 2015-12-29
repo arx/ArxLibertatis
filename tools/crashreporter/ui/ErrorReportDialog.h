@@ -246,8 +246,6 @@ private:
 	CrashReportTask* m_pCurrentTask;
 	int m_nextPane;
 
-	QElapsedTimer taskTimer;
-
 	ErrorReport& m_errorReport;
 };
 
