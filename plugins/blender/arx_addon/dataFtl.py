@@ -166,13 +166,15 @@ FtlFace = namedtuple("FtlFace", ["vids", "uvs", "texid", "facetype", "transval",
 
 def getFatherIndex(groups, childIndex):
     child = groups[childIndex]
-    for i,group in enumerate(reversed(groups)):
-        if((len(groups)-i) < childIndex):
-            for vertexIndex in group[2]:
-                if vertexIndex == child[1]:
-                    return i
-    return -1
+    i = childIndex-1
+    while i >= 0:
+        group = groups[i]
+        for vertexIndex in group[2]:
+            if vertexIndex == child[1]:
+                return i
+        i-=1
 
+    return -1
 
 class FtlSerializer(object):
     def __init__(self):
