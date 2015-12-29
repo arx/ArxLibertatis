@@ -805,12 +805,9 @@ bool ErrorReport::SendReport(ErrorReport::IProgressNotifier* pProgressNotifier)
 }
 
 void ErrorReport::ReleaseApplicationLock() {
-#if ARX_PLATFORM == ARX_PLATFORM_WIN32
-	m_pCrashInfo->exitLock.post();
-#else
 	// Kill the original, busy-waiting process.
-	kill(m_pCrashInfo->processId, SIGKILL);
-#endif
+	m_pCrashInfo->exitLock.post();
+	platform::killProcess(m_pCrashInfo->processId);
 }
 
 void ErrorReport::AddFile(const fs::path& fileName)

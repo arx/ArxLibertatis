@@ -36,6 +36,10 @@
 #include <sys/wait.h>
 #endif
 
+#if ARX_HAVE_NANOSLEEP
+#include <time.h>
+#endif
+
 #include <signal.h>
 #include <string.h>
 #include <unistd.h>
@@ -218,19 +222,27 @@ void CrashHandlerPOSIX::handleCrash(int signal, int code) {
 	#endif
 	
 	// Using fork() in a signal handler is bad, but we are already crashing anyway
-	// Maybe we should use the fork() syscall directly, like google breakpad does.
-	// TODO Or better yet, switch to using google breakpad!
-	if(fork() > 0) {
-		#if ARX_HAVE_WAITPID
-		int status;
-		(void)waitpid(-1, &status, 0);
-		// Exit if the crash reporter failed
-		exit(0);
-		#else
+	pid_t processor = fork();
+	if(processor > 0) {
 		while(true) {
-			// Busy wait - we'll be killed by our child anyway
+			if(m_pCrashInfo->exitLock.try_wait()) {
+				break;
+			}
+			#if ARX_HAVE_WAITPID
+			if(waitpid(processor, NULL, WNOHANG) != 0) {
+				break;
+			}
+			#endif
+			#if ARX_HAVE_NANOSLEEP
+			timespec t;
+			t.tv_sec = 0;
+			t.tv_nsec = 100 * 1000;
+			nanosleep(&t, NULL);
+			#endif
 		}
-		#endif
+		// Exit if the crash reporter failed
+		kill(getpid(), SIGKILL);
+		std::abort();
 	}
 	
 	// Try to execute the crash reporter
