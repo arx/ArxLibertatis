@@ -389,7 +389,7 @@ void SpawnGroundSplat(const Sphere & sp, const Color3f & col, long flags) {
 
 			if(oki) {
 
-				if(polyboom.capacity() > 0) {
+				if(polyboom.size() < MAX_POLYBOOM) {
 					POLYBOOM pb;
 
 					if(flags & 2) {
@@ -784,7 +784,7 @@ void ARX_BOOMS_Add(const Vec3f & poss,long type) {
 				continue;
 			}
 			
-			if(polyboom.capacity() == 0) {
+			if(polyboom.size() >= MAX_POLYBOOM) {
 				continue;
 			}
 			
