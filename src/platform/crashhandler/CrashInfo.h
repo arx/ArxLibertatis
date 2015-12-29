@@ -44,7 +44,7 @@ struct CrashInfoBase {
 		MaxNbVariables = 64,
 		MaxVariableNameLen = 64,
 		MaxVariableValueLen = 128,
-		MaxDetailCrashInfoLen = 4096,
+		MaxDetailCrashInfoLen = 10 * 1024,
 		MaxCallstackDepth = 256
 	};
 	
@@ -69,6 +69,9 @@ struct CrashInfoBase {
 	
 	// Where the crash reports should be written.
 	char crashReportFolder[MaxFilenameLen];
+	
+	// Detailed crash info (messages, registers, whatever).
+	char description[MaxDetailCrashInfoLen];
 	
 	platform::process_id processorProcessId;
 	boost::interprocess::interprocess_semaphore processorDone;
@@ -105,9 +108,6 @@ struct CrashInfo : public CrashInfoBase {
 #pragma pack(push,1)
 
 struct CrashInfo : public CrashInfoBase {
-	
-	// Detailed crash info (messages, registers, whatever).
-	char description[MaxDetailCrashInfoLen];
 	
 	CONTEXT contextRecord;
 	CHAR miniDumpTmpFile[MAX_PATH];

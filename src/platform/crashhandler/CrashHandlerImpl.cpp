@@ -21,10 +21,12 @@
 
 #include <iostream>
 #include <sstream>
+#include <cstring>
 
 #include <boost/date_time/microsec_time_clock.hpp>
 #include <boost/date_time/time_duration.hpp>
 #include <boost/date_time/posix_time/ptime.hpp>
+#include <boost/range/size.hpp>
 
 #include "core/Version.h"
 
@@ -201,6 +203,8 @@ void CrashHandlerImpl::fillBasicCrashInfo() {
 
 	strncpy(m_pCrashInfo->executableVersion, arx_version.c_str(), sizeof(m_pCrashInfo->executableVersion));
 	m_pCrashInfo->executableVersion[sizeof(m_pCrashInfo->executableVersion)-1] = 0; // Make sure our string is null terminated
+	
+	m_pCrashInfo->description[0] = '\0';
 	
 	m_pCrashInfo->processorProcessId = 0;
 	
