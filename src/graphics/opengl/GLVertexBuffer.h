@@ -375,9 +375,13 @@ protected:
 		return map(GL_MAP_UNSYNCHRONIZED_BIT);
 	}
 	
-	virtual void syncPersistent(BufferFlags flags) {
+	virtual void discardBuffer() = 0;
+	
+	void syncPersistent(BufferFlags flags) {
 		
-		if(!(flags & NoOverwrite)) {
+		if(flags & DiscardBuffer) {
+			discardBuffer();
+		} else if(!(flags & NoOverwrite)) {
 			LogWarning << "Blocking buffer upload, use DiscardBuffer or NoOverwrite!";
 			glFinish();
 		}
@@ -445,14 +449,8 @@ public:
 		: Base(renderer, capacity)
 	{ }
 	
-	void syncPersistent(BufferFlags flags) {
-		
-		if(flags & DiscardBuffer) {
-			// Assume the GL already rendered far enough
-			return;
-		}
-		
-		Base::syncPersistent(flags);
+	void discardBuffer() {
+		// Assume the GL already rendered far enough
 	}
 	
 protected:
@@ -477,16 +475,12 @@ public:
 		: Base(renderer, capacity)
 	{ }
 	
-	void syncPersistent(BufferFlags flags) {
+	void discardBuffer() {
 		
-		if(flags & DiscardBuffer) {
-			bindBuffer(m_buffer);
-			glUnmapBuffer(GL_ARRAY_BUFFER);
-			m_mapping = map(GL_MAP_INVALIDATE_BUFFER_BIT);
-			return;
-		}
+		bindBuffer(m_buffer);
+		glUnmapBuffer(GL_ARRAY_BUFFER);
+		m_mapping = map(GL_MAP_INVALIDATE_BUFFER_BIT);
 		
-		Base::syncPersistent(flags);
 	}
 	
 protected:
@@ -523,30 +517,25 @@ public:
 		
 	}
 	
-	void syncPersistent(BufferFlags flags) {
+	void discardBuffer() {
 		
-		if(flags & DiscardBuffer) {
-			
-			// Create a fence for the current buffer
-			arx_assert(!m_fences[m_position]);
-			m_fences[m_position] = glFenceSync(GL_SYNC_GPU_COMMANDS_COMPLETE, 0);
-			
-			// Switch to the next buffer and wait for its fence
-			m_position = (m_position + 1) % m_multiplier;
-			if(m_fences[m_position]) {
-				GLenum ret = GL_UNSIGNALED;
-				while(ret != GL_ALREADY_SIGNALED && ret != GL_CONDITION_SATISFIED) {
-					ret = glClientWaitSync(m_fences[m_position], GL_SYNC_FLUSH_COMMANDS_BIT, 1);
-				}
-				glDeleteSync(m_fences[m_position]);
-				m_fences[m_position] = 0;
+		// Create a fence for the current buffer
+		arx_assert(!m_fences[m_position]);
+		m_fences[m_position] = glFenceSync(GL_SYNC_GPU_COMMANDS_COMPLETE, 0);
+		
+		// Switch to the next buffer and wait for its fence
+		m_position = (m_position + 1) % m_multiplier;
+		if(m_fences[m_position]) {
+			GLenum ret = GL_UNSIGNALED;
+			while(ret != GL_ALREADY_SIGNALED && ret != GL_CONDITION_SATISFIED) {
+				ret = glClientWaitSync(m_fences[m_position], GL_SYNC_FLUSH_COMMANDS_BIT, 1);
 			}
-			
-			m_offset = m_position * capacity();
-			return;
+			glDeleteSync(m_fences[m_position]);
+			m_fences[m_position] = 0;
 		}
 		
-		Base::syncPersistent(flags);
+		m_offset = m_position * capacity();
+		
 	}
 	
 	~GLPersistentFenceVertexBuffer() {
