@@ -160,15 +160,6 @@ public:
 	 * \brief Unregister a previously registed crash callback
 	 */
 	static void unregisterCrashCallback(CrashCallback crashCallback);
-
-	/*!
-	 * \brief Handle a crash and trigger the execution of the crash reporter
-	 *
-	 * This method is public in order to allow you to trigger it by yourself.
-	 * It might be useful for test purpose, or to allow a user to report a
-	 * defect which is not a crash.
-	 */
-	static void handleCrash(int crashType, void* crashExtraInfo = 0, int fpeCode = 0);
 	
 };
 
