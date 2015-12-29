@@ -333,6 +333,80 @@ static int xmessageCommand(DialogType type, const std::string & message,
 	return platform::run(&command[0]);
 }
 
+#if ARX_HAVE_SDL2
+static int sdlDialogCommand(DialogType type, const std::string & message,
+                            const std::string & title) {
+	
+	bool wasInitialized = (SDL_WasInit(SDL_INIT_VIDEO) != 0);
+	if(!wasInitialized && SDL_Init(SDL_INIT_VIDEO) != 0) {
+		return -2;
+	}
+	
+	int ret = -2;
+	
+	SDL_MessageBoxData box = {
+		SDL_MESSAGEBOX_INFORMATION,
+		NULL,
+		title.c_str(),
+		message.c_str(),
+		0, NULL,
+		NULL
+	};
+	
+	switch(type) {
+		case DialogInfo:      box.flags = SDL_MESSAGEBOX_INFORMATION; break;
+		case DialogWarning:   box.flags = SDL_MESSAGEBOX_WARNING; break;
+		case DialogError:     box.flags = SDL_MESSAGEBOX_ERROR; break;
+		case DialogYesNo:     box.flags = SDL_MESSAGEBOX_INFORMATION; break;
+		case DialogWarnYesNo: box.flags = SDL_MESSAGEBOX_WARNING; break;
+		case DialogOkCancel:  box.flags = SDL_MESSAGEBOX_INFORMATION; break;
+	}
+	
+	const SDL_MessageBoxButtonData buttonsOK[] = {
+		{ SDL_MESSAGEBOX_BUTTON_RETURNKEY_DEFAULT, 0, "OK" },
+	};
+	const SDL_MessageBoxButtonData buttonsYesNo[] = {
+		{ SDL_MESSAGEBOX_BUTTON_RETURNKEY_DEFAULT, 0, "Yes" },
+		{ SDL_MESSAGEBOX_BUTTON_ESCAPEKEY_DEFAULT, 1, "No" },
+	};
+	const SDL_MessageBoxButtonData buttonsOKCancel[] = {
+		{ SDL_MESSAGEBOX_BUTTON_RETURNKEY_DEFAULT, 0, "OK" },
+		{ SDL_MESSAGEBOX_BUTTON_ESCAPEKEY_DEFAULT, 1, "Cancel" },
+	};
+	switch(type) {
+		case DialogInfo:
+		case DialogWarning:
+		case DialogError: {
+			box.buttons = buttonsOK,
+			box.numbuttons = ARRAY_SIZE(buttonsOK);
+			break;
+		}
+		case DialogYesNo:
+		case DialogWarnYesNo: {
+			box.buttons = buttonsYesNo,
+			box.numbuttons = ARRAY_SIZE(buttonsYesNo);
+			break;
+		}
+		case DialogOkCancel: {
+			box.buttons = buttonsOKCancel,
+			box.numbuttons = ARRAY_SIZE(buttonsOKCancel);
+			break;
+		}
+	}
+	
+	int buttonid;
+	if(SDL_ShowMessageBox(&box, &buttonid) >= 0) {
+		ret = (buttonid == -1) ? 2 : buttonid;
+	}
+	
+	if(!wasInitialized) {
+		SDL_QuitSubSystem(SDL_INIT_VIDEO);
+	}
+	
+	return ret;
+}
+#endif
+
 static bool showDialog(DialogType type, const std::string & message,
                        const std::string & title) {
 	
@@ -351,6 +425,9 @@ static bool showDialog(DialogType type, const std::string & message,
 		usingKDE ? &zenityCommand : &kdialogCommand,
 		&gxmessageCommand,
 		&xdialogCommand,
+		#if ARX_HAVE_SDL2
+		&sdlDialogCommand,
+		#endif
 		&xmessageCommand
 	};
 	
@@ -364,8 +441,6 @@ static bool showDialog(DialogType type, const std::string & message,
 	/*
 	 * If we have no native way to display a message box, fall back to SDL.
 	 * This will look ugly on Linux, so do this only if we really have to.
-	 * We can't use SDL_ShowMessageBox for additional button support as that requires
-	 * SDL to be initialized.
 	 */
 	#if ARX_HAVE_SDL2
 	Uint32 flags = 0;
