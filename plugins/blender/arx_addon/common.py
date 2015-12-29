@@ -110,5 +110,3 @@ def createUnpackedFile(originalFilepath,originalPackedData,ioLib):
         f.write(md5hash)
         f.write(unpacked)
     return unpacked
-    
-    

@@ -175,7 +175,7 @@ class ArxObjectManager(object):
         obj['arx.ftl.name'] = data.metadata.name
         obj['arx.ftl.org'] = data.metadata.org
 
-        for i, (name, origin, indices) in enumerate(data.groups):
+        for i, (name, origin, indices, parentIndex) in enumerate(data.groups):
             grp = obj.vertex_groups.new(name="grp:" + str(i).zfill(2) + ":" + name)
             # XXX add the origin to the group ?
             for v in indices:
@@ -211,7 +211,6 @@ class ArxObjectManager(object):
             obj.data.materials.append(mat)
             
         bpy.ops.object.mode_set(mode='OBJECT')
-        
         return obj
 
     def createArmature(self, canonicalId, bm, groups):
@@ -234,13 +233,19 @@ class ArxObjectManager(object):
 
         bpy.ops.object.mode_set(mode='EDIT')
 
-        for i, (name, origin, indices) in enumerate(groups):
+        for i, (name, origin, indices, parentIndex) in enumerate(groups):
             bGrpName = "grp:" + str(i).zfill(2) + ":" + name
 
             bone = amt.edit_bones.new(bGrpName)
             bone.head = bm.verts[origin].co
             bone.tail = bm.verts[origin].co + Vector((0, -5, 0))
             bone["OriginVertex"] = origin
+
+        editBonesArray = amt.edit_bones.values()
+        for i, (name, origin, indices, parentIndex) in enumerate(groups):
+            if parentIndex>=0:
+                bone = editBonesArray[i]
+                bone.parent = editBonesArray[parentIndex]
 
         bpy.ops.object.mode_set(mode='OBJECT')
 
