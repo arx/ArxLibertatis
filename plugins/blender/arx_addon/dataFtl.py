@@ -164,6 +164,15 @@ FtlMetadata = namedtuple("FtlMetadata", ["name", "org"])
 FtlVertex = namedtuple("FtlVertex", ["xyz", "n"])
 FtlFace = namedtuple("FtlFace", ["vids", "uvs", "texid", "facetype", "transval", "normal"])
 
+def getFatherIndex(groups, childIndex):
+    child = groups[childIndex]
+    for i,group in enumerate(reversed(groups)):
+        if((len(groups)-i) < childIndex):
+            for vertexIndex in group[2]:
+                if vertexIndex == child[1]:
+                    return i
+    return -1
+
 
 class FtlSerializer(object):
     def __init__(self):
@@ -265,7 +274,15 @@ class FtlSerializer(object):
             vertArray = c_int32 * count
             vertsIndices = vertArray.from_buffer_copy(data, pos)
             pos += sizeof(vertsIndices)
-            groups.append((name, origin, list(vertsIndices)))
+            groups.append([name, origin, list(vertsIndices),0]) #0 temporarily for parentIndex. using list cause tuples cant be changed
+
+        #parenting
+        for i,group in enumerate(groups):
+            father = getFatherIndex(groups,i)
+            print("group %d with father %d" % (i,father))
+            group[3] = father
+
+        groups = [tuple(l) for l in groups] # converting stuff back to tuples so it doesnt break code
 
         actions = []
         for i in range(chunkHeader.nb_action):
