@@ -81,9 +81,6 @@ static process_handle run(const char * exe, const char * const args[], int stdou
 	
 	#if ARX_HAVE_OPEN
 	static int dev_null = open("/dev/null", O_RDWR);
-	if(stdout <= 0) {
-		stdout = dev_null;
-	}
 	#endif
 	
 	pid_t pid = 0;
@@ -92,13 +89,13 @@ static process_handle run(const char * exe, const char * const args[], int stdou
 	
 	// Fast POSIX implementation: posix_spawnp avoids unnecessary vm copies
 	
-	if(stdout == dev_null && unlocalized == false && detach) {
+	if(stdout <= 0 && unlocalized == false) {
 		
 		// Redirect standard input, output and error to /dev/null
 		static posix_spawn_file_actions_t * file_actionsp = NULL;
 		#if ARX_HAVE_OPEN
 		static posix_spawn_file_actions_t file_actions;
-		if(!file_actionsp && dev_null > 0 && !posix_spawn_file_actions_init(&file_actions)) {
+		if(detach && dev_null > 0 && !posix_spawn_file_actions_init(&file_actions)) {
 			file_actionsp = &file_actions;
 			(void)posix_spawn_file_actions_adddup2(file_actionsp, dev_null, 0);
 			(void)posix_spawn_file_actions_adddup2(file_actionsp, dev_null, 1);
@@ -109,7 +106,7 @@ static process_handle run(const char * exe, const char * const args[], int stdou
 		// Detach the child process from the parent
 		static posix_spawnattr_t * attrp = NULL;
 		static posix_spawnattr_t attr;
-		if(!attrp && !posix_spawnattr_init(&attr)) {
+		if(detach && !posix_spawnattr_init(&attr)) {
 			attrp = &attr;
 			(void)posix_spawnattr_setflags(attrp, POSIX_SPAWN_SETPGROUP);
 			(void)posix_spawnattr_setpgroup(attrp, 0);
@@ -138,8 +135,11 @@ static process_handle run(const char * exe, const char * const args[], int stdou
 			// Redirect standard input, output and error to /dev/null
 			#if ARX_HAVE_DUP2
 			#if ARX_HAVE_OPEN
-			if(dev_null > 0) {
+			if(detach && dev_null > 0) {
 				(void)dup2(dev_null, 0);
+				if(stdout > 0) {
+					dup2(dev_null, 1);
+				}
 				(void)dup2(dev_null, 2);
 			}
 			#endif
@@ -181,9 +181,11 @@ static process_handle run(const char * exe, const char * const args[], int stdou
 }
 #endif // ARX_PLATFORM != ARX_PLATFORM_WIN32
 
-process_handle runAsync(const char * exe, const char * const args[]) {
+process_handle runAsync(const char * exe, const char * const args[], bool detach) {
 	
 #if ARX_PLATFORM == ARX_PLATFORM_WIN32
+	
+	ARX_UNUSED(detach);
 	
 	// Format the command line arguments
 	std::ostringstream oss;
@@ -218,7 +220,7 @@ process_handle runAsync(const char * exe, const char * const args[]) {
 	
 #else
 	
-	return run(exe, args, /*stdout=*/ 0, /*unlocalized=*/ false, /*detach=*/ true);
+	return run(exe, args, /*stdout=*/ 0, /*unlocalized=*/ false, detach);
 	
 #endif
 	
@@ -368,13 +370,14 @@ void reapZombies() {
 	#endif
 }
 
-int run(const char * exe, const char * const args[]) {
-	process_handle process = runAsync(exe, args);
+int run(const char * exe, const char * const args[], bool detach) {
+	process_handle process = runAsync(exe, args, detach);
 	return getProcessExitCode(process);
 }
 
-int runHelper(const char * const args[], bool wait) {
-	process_handle process = runAsync(getHelperExecutable(args[0]).string().c_str(), args);
+int runHelper(const char * const args[], bool wait, bool detach) {
+	fs::path exe = getHelperExecutable(args[0]);
+	process_handle process = runAsync(exe.string().c_str(), args, detach);
 	if(wait) {
 		return getProcessExitCode(process);
 	} else {

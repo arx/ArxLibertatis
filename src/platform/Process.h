@@ -51,7 +51,7 @@ typedef pid_t process_handle;
  *
  * \return the programs exit code or a negative value on error.
  */
-int run(const char * exe, const char * const args[]);
+int run(const char * exe, const char * const args[], bool detach = false);
 
 /*!
  * \brief Start a program and wait for it to finish
@@ -63,8 +63,8 @@ int run(const char * exe, const char * const args[]);
  *
  * \return the programs exit code or a negative value on error.
  */
-inline int run(const char * const args[]) {
-	return run(args[0], args);
+inline int run(const char * const args[], bool detach = false) {
+	return run(args[0], args, detach);
 }
 
 /*!
@@ -78,8 +78,8 @@ inline int run(const char * const args[]) {
  *
  * \return the programs exit code or a negative value on error.
  */
-inline int run(const std::string & exe, const char * const args[]) {
-	return run(exe.c_str(), args);
+inline int run(const std::string & exe, const char * const args[], bool detach = false) {
+	return run(exe.c_str(), args, detach);
 }
 
 /*!
@@ -94,7 +94,7 @@ inline int run(const std::string & exe, const char * const args[]) {
  * \return a process handle that should be closed with \ref closeProcessHandle
  *         if no longer needed.
  */
-process_handle runAsync(const char * exe, const char * const args[]);
+process_handle runAsync(const char * exe, const char * const args[], bool detach = false);
 
 /*!
  * \brief Start a program without waiting for it to finish
@@ -107,8 +107,8 @@ process_handle runAsync(const char * exe, const char * const args[]);
  * \return a process handle that should be closed with \ref closeProcessHandle
  *         if no longer needed.
  */
-inline process_handle runAsync(const char * const args[]) {
-	return runAsync(args[0], args);
+inline process_handle runAsync(const char * const args[], bool detach = false) {
+	return runAsync(args[0], args, detach);
 }
 
 /*!
@@ -123,8 +123,9 @@ inline process_handle runAsync(const char * const args[]) {
  * \return a process handle that should be closed with \ref closeProcessHandle
  *         if no longer needed.
  */
-inline process_handle runAsync(const std::string & exe, const char * const args[]) {
-	return runAsync(exe.c_str(), args);
+inline process_handle runAsync(const std::string & exe, const char * const args[],
+                               bool detach = false) {
+	return runAsync(exe.c_str(), args, detach);
 }
 
 //! Get the id of the current process
@@ -181,7 +182,7 @@ void reapZombies();
  *
  * \return if \ref wait is \c true, the return code of the executed program.
  */
-int runHelper(const char * const args[], bool wait = false);
+int runHelper(const char * const args[], bool wait = false, bool detach = false);
 
 #if ARX_PLATFORM != ARX_PLATFORM_WIN32
 
