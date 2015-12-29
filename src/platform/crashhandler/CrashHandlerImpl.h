@@ -55,6 +55,8 @@ public:
 
 	bool addAttachedFile(const fs::path& file);
 	bool setVariable(const std::string& name, const std::string& value);
+	
+	bool addText(const char * text);
 
 	bool setReportLocation(const fs::path& location);
 	bool deleteOldReports(size_t nbReportsToKeep);
@@ -91,6 +93,7 @@ protected:
 	
 	// Crash information (pointer to shared memory)
 	CrashInfo * m_pCrashInfo;
+	size_t m_textLength;
 	
 	// Protect against multiple accesses.
 	Lock m_Lock;

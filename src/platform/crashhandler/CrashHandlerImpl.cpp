@@ -19,6 +19,7 @@
 
 #include "platform/crashhandler/CrashHandlerImpl.h"
 
+#include <algorithm>
 #include <iostream>
 #include <sstream>
 #include <cstring>
@@ -45,8 +46,9 @@
 namespace bip = boost::interprocess;
 
 CrashHandlerImpl::CrashHandlerImpl()
-	: m_pCrashInfo(0) {
-}
+	: m_pCrashInfo(0)
+	, m_textLength(0)
+{ }
 
 CrashHandlerImpl::~CrashHandlerImpl() {
 }
@@ -64,6 +66,9 @@ void CrashHandlerImpl::processCrash(const std::string & sharedMemoryName) {
 	
 	// Our SharedCrashInfo will be stored in this shared memory.
 	m_pCrashInfo = reinterpret_cast<CrashInfo *>(m_MemoryMappedRegion.get_address());
+	m_textLength = std::find(m_pCrashInfo->description, m_pCrashInfo->description
+	                         + boost::size(m_pCrashInfo->description), '\0')
+	               - m_pCrashInfo->description;
 	
 	processCrash();
 	
@@ -176,6 +181,7 @@ bool CrashHandlerImpl::createSharedMemory() {
 		
 		// Our CrashInfo will be stored in this shared memory.
 		m_pCrashInfo = new (m_MemoryMappedRegion.get_address()) CrashInfo;
+		m_textLength = 0;
 		
 	} catch(boost::interprocess::interprocess_exception) {
 		return false;
@@ -277,6 +283,26 @@ bool CrashHandlerImpl::setVariable(const std::string& name, const std::string& v
 	m_pCrashInfo->nbVariables++;
 
 	return true;
+}
+
+bool CrashHandlerImpl::addText(const char * text) {
+	
+	Autolock autoLock(&m_Lock);
+	
+	if(!m_pCrashInfo) {
+		return false;
+	}
+	
+	size_t length = std::strlen(text);
+	size_t remaining = boost::size(m_pCrashInfo->description) - m_textLength - 1;
+	
+	size_t n = std::min(length, remaining);
+	std::memcpy(&m_pCrashInfo->description[m_textLength], text, n);
+	m_textLength += n;
+	
+	m_pCrashInfo->description[m_textLength] = '\0';
+	
+	return n == length;
 }
 
 bool CrashHandlerImpl::setReportLocation(const fs::path & location) {
