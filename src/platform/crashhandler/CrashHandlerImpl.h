@@ -78,6 +78,8 @@ private:
 	void destroySharedMemory();
 	void fillBasicCrashInfo();
 	
+	virtual void processCrashSignal() { }
+	
 protected:
 	
 	void processCrash();

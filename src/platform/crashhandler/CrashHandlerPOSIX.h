@@ -46,6 +46,8 @@ private:
 	bool registerCrashHandlers();
 	void unregisterCrashHandlers();
 	
+	void processCrashSignal();
+	
 	// Crash handlers to restore
 	struct PlatformCrashHandlers * m_pPreviousCrashHandlers;
 	static CrashHandlerPOSIX * m_sInstance;

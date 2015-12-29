@@ -92,6 +92,10 @@ void CrashHandlerImpl::processCrash() {
 		reporter = platform::runAsync(args);
 	}
 	
+	if(m_pCrashInfo) {
+		processCrashSignal();
+	}
+	
 	// Wait for the crash reporter to start
 	while(reporter) {
 		if(platform::getProcessExitCode(reporter, false) != platform::StillRunning) {

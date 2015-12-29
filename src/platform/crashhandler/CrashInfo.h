@@ -44,7 +44,7 @@ struct CrashInfoBase {
 		MaxNbVariables = 64,
 		MaxVariableNameLen = 64,
 		MaxVariableValueLen = 128,
-		MaxDetailCrashInfoLen = 10 * 1024,
+		MaxDetailCrashInfoLen = 128 * 1024,
 		MaxCallstackDepth = 256
 	};
 	
