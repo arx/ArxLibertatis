@@ -40,7 +40,8 @@
 #endif
 
 #if (ARX_HAVE_FORK && ARX_HAVE_EXECVP) \
- || (ARX_HAVE_PIPE && ARX_HAVE_READ && ARX_HAVE_CLOSE)
+ || (ARX_HAVE_PIPE && ARX_HAVE_READ && ARX_HAVE_CLOSE) \
+ || ARX_HAVE_GETPID
 #include <unistd.h>
 #endif
 
@@ -249,6 +250,17 @@ static int run(const char * exe, bool wait, const char * const args[]) {
 
 int run(const char * exe, const char * const args[]) {
 	return run(exe, true, args);
+}
+
+process_id getProcessId() {
+	#if ARX_PLATFORM == ARX_PLATFORM_WIN32
+	return GetCurrentProcessId();
+	#elif ARX_HAVE_GETPID
+	return getpid();
+	#else
+	#warning "Getting process id not supported on this system."
+	return 0;
+	#endif
 }
 
 void runAsync(const char * exe, const char * const args[]) {

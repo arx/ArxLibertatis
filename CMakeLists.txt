@@ -580,10 +580,11 @@ else(MSVC)
 	check_symbol_exists(backtrace "execinfo.h" ARX_HAVE_BACKTRACE)
 	
 	check_include_file("sys/types.h" ARX_HAVE_SYS_TYPES_H)
-	check_symbol_exists(getpid "unistd.h" ARX_HAVE_GETPID)
-	if(CMAKE_USE_PTHREADS_INIT AND ARX_HAVE_SYS_TYPES_H AND ARX_HAVE_GETPID)
+	if(CMAKE_USE_PTHREADS_INIT AND ARX_HAVE_SYS_TYPES_H)
 		set(ARX_HAVE_PTHREADS 1)
 	endif()
+	
+	check_symbol_exists(getpid "unistd.h" ARX_HAVE_GETPID)
 	
 	check_symbol_exists(sysconf "unistd.h" ARX_HAVE_SYSCONF)
 	

@@ -24,7 +24,19 @@
 
 #include <string>
 
+#if ARX_PLATFORM == ARX_PLATFORM_WIN32
+#include <windows.h>
+#else
+#include <sys/types.h>
+#endif
+
 namespace platform {
+	
+#if ARX_PLATFORM == ARX_PLATFORM_WIN32
+typedef DWORD process_id;
+#else
+typedef pid_t process_id;
+#endif
 
 /*!
  * \brief Start a program and wait for it to finish
@@ -103,6 +115,9 @@ inline void runAsync(const char * const args[]) {
 inline void runAsync(const std::string & exe, const char * const args[]) {
 	runAsync(exe.c_str(), args);
 }
+
+//! Get the id of the current process
+process_id getProcessId();
 
 /*!
  * \brief Run a helper executable

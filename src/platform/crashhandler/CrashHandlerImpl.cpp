@@ -76,7 +76,7 @@ bool CrashHandlerImpl::createSharedMemory() {
 		
 		// Generate a random name for our shared memory object
 		std::ostringstream oss;
-		oss << "arxcrash-" << getProcessId() << "-" << Random::get<u32>();
+		oss << "arxcrash-" << platform::getProcessId() << "-" << Random::get<u32>();
 		m_SharedMemoryName = oss.str();
 		
 		// Create a shared memory object.
@@ -106,7 +106,7 @@ void CrashHandlerImpl::destroySharedMemory() {
 
 void CrashHandlerImpl::fillBasicCrashInfo() {
 	m_pCrashInfo->architecture = ARX_ARCH;
-	m_pCrashInfo->processId = getProcessId();
+	m_pCrashInfo->processId = platform::getProcessId();
 
 	strcpy(m_pCrashInfo->crashReportFolder, "crashes");
 	

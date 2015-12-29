@@ -134,10 +134,6 @@ thread_id_type Thread::getCurrentThreadId() {
 	return pthread_self();
 }
 
-process_id_type getProcessId() {
-	return getpid();
-}
-
 #elif ARX_PLATFORM == ARX_PLATFORM_WIN32
 
 Thread::Thread() {
@@ -236,10 +232,6 @@ void Thread::waitForCompletion() {
 
 thread_id_type Thread::getCurrentThreadId() {
 	return GetCurrentThreadId();
-}
-
-process_id_type getProcessId() {
-	return GetCurrentProcessId();
 }
 
 #endif

@@ -24,6 +24,7 @@
 #cmakedefine01 ARX_HAVE_POSIX_SPAWNP
 #cmakedefine01 ARX_HAVE_WAITPID
 #cmakedefine01 ARX_HAVE_SIGACTION
+#cmakedefine01 ARX_HAVE_GETPID
 
 // Time
 #cmakedefine01 ARX_HAVE_CLOCK_GETTIME

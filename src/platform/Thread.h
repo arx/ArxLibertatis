@@ -29,11 +29,9 @@
 #include <pthread.h>
 #include <sys/types.h>
 typedef pthread_t thread_id_type;
-typedef pid_t process_id_type;
 #elif ARX_PLATFORM == ARX_PLATFORM_WIN32
 #include <windows.h>
 typedef DWORD thread_id_type;
-typedef DWORD process_id_type;
 #else
 #error "Threads not supported: need ARX_HAVE_PTHREADS on non-Windows systems"
 #endif
@@ -136,7 +134,5 @@ public:
 	}
 	
 };
-
-process_id_type getProcessId();
 
 #endif // ARX_PLATFORM_THREAD_H

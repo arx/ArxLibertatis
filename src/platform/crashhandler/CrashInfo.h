@@ -26,7 +26,7 @@
 #include <boost/interprocess/detail/os_thread_functions.hpp>
 
 #include "platform/Platform.h"
-#include "platform/Thread.h"
+#include "platform/Process.h"
 
 struct CrashInfoBase {
 	
@@ -57,7 +57,7 @@ struct CrashInfoBase {
 	} variables[MaxNbVariables];
 	
 	// ID of the crashed process & thread
-	process_id_type processId;
+	platform::process_id processId;
 	
 	// Where the crash reports should be written.
 	char crashReportFolder[MaxFilenameLen];
