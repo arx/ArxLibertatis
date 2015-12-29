@@ -188,7 +188,7 @@ bool CrashHandlerImpl::setReportLocation(const fs::path& location) {
 	}
 	
 	util::storeStringTerminated(m_pCrashInfo->crashReportFolder, location.string());
-
+	
 	return true;
 }
 
@@ -208,7 +208,7 @@ bool CrashHandlerImpl::deleteOldReports(size_t nbReportsToKeep)
 
 	typedef std::map<std::string, fs::path> CrashReportMap;
 	CrashReportMap oldCrashes;
-
+	
 	for(fs::directory_iterator it(location); !it.end(); ++it) {
 		fs::path folderPath = location / it.name();
 		if(fs::is_directory(folderPath)) {

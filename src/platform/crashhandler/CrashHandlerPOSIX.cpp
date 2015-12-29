@@ -218,7 +218,7 @@ void CrashHandlerPOSIX::handleCrash(int signal, int code) {
 	
 	// Store the backtrace in the shared crash info
 	#if ARX_HAVE_BACKTRACE
-		backtrace(m_pCrashInfo->backtrace, ARRAY_SIZE(m_pCrashInfo->backtrace));
+	backtrace(m_pCrashInfo->backtrace, ARRAY_SIZE(m_pCrashInfo->backtrace));
 	#endif
 	
 	// Using fork() in a signal handler is bad, but we are already crashing anyway

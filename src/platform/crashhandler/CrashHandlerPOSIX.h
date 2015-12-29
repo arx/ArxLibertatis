@@ -48,8 +48,8 @@ private:
 	
 	// Crash handlers to restore.
 	struct PlatformCrashHandlers * m_pPreviousCrashHandlers;
-	
 	static CrashHandlerPOSIX * m_sInstance;
+	
 };
 
 #endif // ARX_PLATFORM_CRASHHANDLER_CRASHHANDLERPOSIX_H

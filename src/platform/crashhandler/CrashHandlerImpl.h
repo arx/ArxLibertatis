@@ -44,7 +44,9 @@
 #include "platform/Lock.h"
 
 class CrashHandlerImpl {
+	
 public:
+	
 	CrashHandlerImpl();
 	virtual ~CrashHandlerImpl();
 
@@ -81,15 +83,16 @@ protected:
 	
 	// Name of the shared memory.
 	std::string m_SharedMemoryName;
-
+	
 	// Crash information (pointer to shared memory)
-	CrashInfo* m_pCrashInfo;
-
+	CrashInfo * m_pCrashInfo;
+	
 	// Protect against multiple accesses.
 	Lock m_Lock;
-
+	
 	// Crash callbacks
 	std::vector<CrashHandler::CrashCallback> m_crashCallbacks;
+	
 };
 
 #endif // ARX_PLATFORM_CRASHHANDLER_CRASHHANDLERIMPL_H
