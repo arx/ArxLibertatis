@@ -263,6 +263,8 @@ void CrashHandlerImpl::fillBasicCrashInfo() {
 	strncpy(m_pCrashInfo->executableVersion, arx_version.c_str(), sizeof(m_pCrashInfo->executableVersion));
 	m_pCrashInfo->executableVersion[sizeof(m_pCrashInfo->executableVersion)-1] = 0; // Make sure our string is null terminated
 	
+	m_pCrashInfo->title[0] = '\0';
+	
 	m_pCrashInfo->description[0] = '\0';
 	
 	m_pCrashInfo->crashId = 0;

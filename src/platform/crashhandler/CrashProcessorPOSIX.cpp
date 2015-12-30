@@ -36,6 +36,8 @@
 #include "io/fs/FilePath.h"
 #include "io/fs/Filesystem.h"
 
+#include "util/String.h"
+
 
 void CrashHandlerPOSIX::processCrashSignal() {
 	
@@ -226,27 +228,50 @@ void CrashHandlerPOSIX::processCrashTrace() {
 		}
 		description << "\nCallstack:\n";
 		boost::crc_32_type checksum;
+		std::string exe = fs::path(util::loadString(m_pCrashInfo->executablePath)).filename();
+		enum FrameType { Handler = 0, System = 1, Fault = 2, Done = 3 } status = Handler;
+		u64 minOffset = std::numeric_limits<u64>::max();
 		for(size_t i = 0; i < boost::size(m_pCrashInfo->backtrace); i++) {
 			if(m_pCrashInfo->backtrace[i] == 0) {
 				break;
 			}
+			std::ostringstream line;
 			intptr_t value = intptr_t(m_pCrashInfo->backtrace[i]);
-			description << ' ';
+			// Map the frame address to a mapped executable / library
 			if(!regions.empty()) {
 				std::map<intptr_t, MemoryRegion>::const_iterator it = regions.lower_bound(value);
 				if(it != regions.end() && value >= it->second.begin) {
-					description << it->second.file;
+					line << it->second.file;
 					checksum.process_bytes(it->second.file.data(), it->second.file.length());
 					value = it->second.offset + (value - it->second.begin);
+					if(status == Handler && it->second.file != exe) {
+						status = System;
+					}
 				} else {
-					description << "??";
+					line << "??";
 				}
-				description << '!';
+				line << '!';
 			}
 			checksum.process_bytes(&value, sizeof(value));
-			description << "0x" << std::hex << intptr_t(m_pCrashInfo->backtrace[i]) << '\n';
+			line << "0x" << std::hex << intptr_t(m_pCrashInfo->backtrace[i]);
+			description << ' ' << line.str() << '\n';
+			// Guess fault frame based on the offset to the fault address
+			if(m_pCrashInfo->address && m_pCrashInfo->address >= u64(m_pCrashInfo->backtrace[i])) {
+				u64 offset = m_pCrashInfo->address - u64(m_pCrashInfo->backtrace[i]);
+				if(offset < minOffset) {
+					util::storeStringTerminated(m_pCrashInfo->title, line.str());
+					status = Done;
+					minOffset = offset;
+				}
+			}
+			// Guess fault frame based on the offset to the fault address
+			if((i == 2 && status != Done) || status == System) {
+				util::storeStringTerminated(m_pCrashInfo->title, line.str());
+				status = Done;
+			} else if(status == System) {
+				status = Fault;
+			}
 		}
-		description << std::dec;
 		m_pCrashInfo->crashId = checksum.checksum();
 	}
 	#endif

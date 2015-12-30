@@ -45,7 +45,8 @@ struct CrashInfoBase {
 		MaxVariableNameLen = 64,
 		MaxVariableValueLen = 128,
 		MaxDetailCrashInfoLen = 128 * 1024,
-		MaxCallstackDepth = 256
+		MaxCallstackDepth = 256,
+		MaxCrashTitleLen = 256,
 	};
 	
 	char executablePath[MaxFilenameLen];
@@ -69,6 +70,9 @@ struct CrashInfoBase {
 	
 	// Where the crash reports should be written.
 	char crashReportFolder[MaxFilenameLen];
+	
+	// On-line crash description
+	char title[MaxCrashTitleLen];
 	
 	// Detailed crash info (messages, registers, whatever).
 	char description[MaxDetailCrashInfoLen];
