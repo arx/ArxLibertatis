@@ -350,9 +350,11 @@ bool CrashHandlerImpl::deleteOldReports(size_t nbReportsToKeep) {
 	CrashReportMap oldCrashes;
 	
 	for(fs::directory_iterator it(location); !it.end(); ++it) {
-		fs::path folderPath = location / it.name();
-		if(fs::is_directory(folderPath)) {
-			oldCrashes[it.name()] = folderPath;
+		fs::path path = location / it.name();
+		if(fs::is_directory(path)) {
+			oldCrashes[it.name()] = path;
+		} else {
+			fs::remove(path);
 		}
 	}
 	
