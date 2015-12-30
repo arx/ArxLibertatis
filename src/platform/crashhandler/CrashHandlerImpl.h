@@ -86,6 +86,8 @@ protected:
 	
 	fs::path m_executable;
 	
+	fs::path m_crashReportDir;
+	
 	// Memory shared to the crash reporter.
 	boost::interprocess::shared_memory_object m_SharedMemory;
 	boost::interprocess::mapped_region m_MemoryMappedRegion;

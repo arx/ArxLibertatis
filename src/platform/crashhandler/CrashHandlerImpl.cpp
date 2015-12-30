@@ -20,9 +20,11 @@
 #include "platform/crashhandler/CrashHandlerImpl.h"
 
 #include <algorithm>
+#include <iomanip>
 #include <iostream>
 #include <sstream>
 #include <cstring>
+#include <ctime>
 
 #include <boost/date_time/microsec_time_clock.hpp>
 #include <boost/date_time/time_duration.hpp>
@@ -93,6 +95,26 @@ void CrashHandlerImpl::processCrash() {
 	}
 	
 	if(m_pCrashInfo) {
+		{
+			fs::path crashReportDir = util::loadString(m_pCrashInfo->crashReportFolder);
+			std::time_t timestamp = std::time(NULL);
+			std::tm * time = std::gmtime(&timestamp);
+			for(int count = 0; ; count++) {
+				std::ostringstream oss;
+				oss << (time->tm_year + 1900) << '-'
+				    << std::setfill('0') << std::setw(2) << (time->tm_mon + 1) << '-'
+				    << std::setfill('0') << std::setw(2) << time->tm_mday << '-'
+				    << std::setfill('0') << std::setw(2) << time->tm_hour << '-'
+				    << std::setfill('0') << std::setw(2) << time->tm_min << '-'
+				    << std::setfill('0') << std::setw(2) << time->tm_sec << '-'
+				    << std::setfill('0') << std::setw(2) << count;
+				m_crashReportDir = crashReportDir / oss.str();
+				if(!fs::exists(m_crashReportDir)) {
+					break;
+				}
+			}
+			fs::create_directories(m_crashReportDir);
+		}
 		processCrashSignal();
 	}
 	
@@ -325,6 +347,8 @@ bool CrashHandlerImpl::setReportLocation(const fs::path & location) {
 		LogError << "Report location path is too long.";
 		return false;
 	}
+	
+	fs::create_directories(location);
 	
 	util::storeStringTerminated(m_pCrashInfo->crashReportFolder, location.string());
 	
