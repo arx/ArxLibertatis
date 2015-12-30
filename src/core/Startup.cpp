@@ -187,7 +187,7 @@ int utf8_main(int argc, char ** argv) {
 		
 		// Configure the crash report location
 		CrashHandler::setReportLocation(fs::paths.user / "crashes");
-		CrashHandler::deleteOldReports(/* nb to keep = */5);
+		CrashHandler::deleteOldReports(/* nb to keep = */1);
 		
 		// Now that data directories are initialized, create a log file
 		{
