@@ -28,6 +28,9 @@
 
 #include "Configure.h"
 
+#include "io/fs/FilePath.h"
+#include "io/fs/Filesystem.h"
+
 
 void CrashHandlerPOSIX::processCrashSignal() {
 	
@@ -164,6 +167,18 @@ void CrashHandlerPOSIX::processCrashSignal() {
 }
 
 void CrashHandlerPOSIX::processCrashTrace() {
+	
+	{
+		std::ostringstream oss;
+		oss << "/proc/" << m_pCrashInfo->processId << "/maps";
+		std::string maps = fs::read(oss.str());
+		if(!maps.empty()) {
+			fs::path file = m_crashReportDir / "maps.txt";
+			if(fs::write(file, maps)) {
+				addAttachedFile(file);
+			}
+		}
+	}
 	
 	#if ARX_HAVE_BACKTRACE
 	if(m_pCrashInfo->backtrace[0] != 0) {
