@@ -346,13 +346,13 @@ bool CrashHandlerImpl::deleteOldReports(size_t nbReportsToKeep) {
 		return true;
 	}
 	
-	typedef std::map<std::string, fs::path> CrashReportMap;
+	typedef std::multimap<std::time_t, fs::path> CrashReportMap;
 	CrashReportMap oldCrashes;
 	
 	for(fs::directory_iterator it(location); !it.end(); ++it) {
 		fs::path path = location / it.name();
 		if(fs::is_directory(path)) {
-			oldCrashes[it.name()] = path;
+			oldCrashes.insert(CrashReportMap::value_type(fs::last_write_time(path), path));
 		} else {
 			fs::remove(path);
 		}
@@ -365,7 +365,6 @@ bool CrashHandlerImpl::deleteOldReports(size_t nbReportsToKeep) {
 	
 	int nbReportsToDelete = oldCrashes.size() - nbReportsToKeep; 
 	
-	// std::map will return the oldest reports first as folders are named "yyyy.MM.dd hh.mm.ss"
 	CrashReportMap::const_iterator it = oldCrashes.begin();
 	for(int i = 0; i < nbReportsToDelete; ++i, ++it) {
 		fs::remove_all(it->second);
