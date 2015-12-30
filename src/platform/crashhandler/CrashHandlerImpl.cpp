@@ -331,20 +331,21 @@ bool CrashHandlerImpl::setReportLocation(const fs::path & location) {
 	return true;
 }
 
-bool CrashHandlerImpl::deleteOldReports(size_t nbReportsToKeep)
-{
+bool CrashHandlerImpl::deleteOldReports(size_t nbReportsToKeep) {
+	
 	Autolock autoLock(&m_Lock);
-
-    if(strlen(m_pCrashInfo->crashReportFolder) == 0) {
+	
+	if(strlen(m_pCrashInfo->crashReportFolder) == 0) {
 		LogError << "Report location has not been specified";
 		return false;
 	}
 	
 	// Exit if there is no crash report folder yet...
 	fs::path location(m_pCrashInfo->crashReportFolder);
-	if(!fs::is_directory(location))
+	if(!fs::is_directory(location)) {
 		return true;
-
+	}
+	
 	typedef std::map<std::string, fs::path> CrashReportMap;
 	CrashReportMap oldCrashes;
 	
@@ -358,13 +359,14 @@ bool CrashHandlerImpl::deleteOldReports(size_t nbReportsToKeep)
 			}
 		}
 	}
-
+	
 	// Nothing to delete
-	if(nbReportsToKeep >= oldCrashes.size())
+	if(nbReportsToKeep >= oldCrashes.size()) {
 		return true;
-
+	}
+	
 	int nbReportsToDelete = oldCrashes.size() - nbReportsToKeep; 
-
+	
 	// std::map will return the oldest reports first as folders are named "yyyy.MM.dd hh.mm.ss"
 	CrashReportMap::const_iterator it = oldCrashes.begin();
 	for(int i = 0; i < nbReportsToDelete; ++i, ++it) {
