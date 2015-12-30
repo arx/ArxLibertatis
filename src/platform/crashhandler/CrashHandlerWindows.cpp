@@ -374,7 +374,7 @@ void CrashHandlerWindows::getCrashSummary(int crashType, int FPECode) {
 		default:                 crashSummary = "Unknown error"; break;
 	}
 	
-	strcpy(m_pCrashInfo->detailedCrashInfo, crashSummary);
+	strcpy(m_pCrashInfo->description, crashSummary);
 	if(crashType == SIGNAL_SIGFPE) {
 		// Append detailed information in case of a FPE exception
 		const char* FPEDetailed;
@@ -399,9 +399,9 @@ void CrashHandlerWindows::getCrashSummary(int crashType, int FPECode) {
 			default:                   FPEDetailed = "";
 		}
 		
-		strcat(m_pCrashInfo->detailedCrashInfo, FPEDetailed);
+		strcat(m_pCrashInfo->description, FPEDetailed);
 	}
-	strcat(m_pCrashInfo->detailedCrashInfo, "\n");
+	strcat(m_pCrashInfo->description, "\n");
 }
 
 LONG WINAPI SEHHandler(PEXCEPTION_POINTERS pExceptionPtrs) {

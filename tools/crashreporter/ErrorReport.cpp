@@ -550,7 +550,7 @@ bool ErrorReport::GetMiscCrashInfo() {
 	
 	m_ReportUniqueID = QString("[%1]").arg(QString::number(callstackCrc, 16).toUpper());
 	
-	m_ReportDescription = util::loadString(m_pCrashInfo->detailedCrashInfo).c_str();
+	m_ReportDescription = util::loadString(m_pCrashInfo->description).c_str();
 	m_ReportDescription += "\nCallstack:\n";
 	m_ReportDescription += callStack.c_str();
 	m_ReportTitle = QString("%1 %2").arg(m_ReportUniqueID, callstackTop.c_str());

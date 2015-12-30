@@ -107,7 +107,7 @@ struct CrashInfo : public CrashInfoBase {
 struct CrashInfo : public CrashInfoBase {
 	
 	// Detailed crash info (messages, registers, whatever).
-	char detailedCrashInfo[MaxDetailCrashInfoLen];
+	char description[MaxDetailCrashInfoLen];
 	
 	CONTEXT contextRecord;
 	CHAR miniDumpTmpFile[MAX_PATH];
