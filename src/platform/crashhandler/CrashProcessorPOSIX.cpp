@@ -19,11 +19,16 @@
 
 #include "platform/crashhandler/CrashHandlerPOSIX.h"
 
+#include <algorithm>
+#include <iomanip>
+#include <limits>
+#include <map>
 #include <sstream>
 
 #include <signal.h>
 
 #include <boost/crc.hpp>
+#include <boost/algorithm/string/trim.hpp>
 #include <boost/range/size.hpp>
 
 #include "Configure.h"
@@ -168,10 +173,13 @@ void CrashHandlerPOSIX::processCrashSignal() {
 
 void CrashHandlerPOSIX::processCrashTrace() {
 	
+	std::ostringstream description;
+	
+	std::string maps;
 	{
 		std::ostringstream oss;
 		oss << "/proc/" << m_pCrashInfo->processId << "/maps";
-		std::string maps = fs::read(oss.str());
+		maps = fs::read(oss.str());
 		if(!maps.empty()) {
 			fs::path file = m_crashReportDir / "maps.txt";
 			if(fs::write(file, maps)) {
@@ -182,16 +190,59 @@ void CrashHandlerPOSIX::processCrashTrace() {
 	
 	#if ARX_HAVE_BACKTRACE
 	if(m_pCrashInfo->backtrace[0] != 0) {
+		struct MemoryRegion {
+			intptr_t begin;
+			intptr_t offset;
+			std::string file;
+		};
+		std::map<intptr_t, MemoryRegion> regions;
+		if(!maps.empty()) {
+			std::istringstream iss(maps);
+			while(iss.good()) {
+				MemoryRegion region;
+				iss >> std::hex >> region.begin;
+				if(iss.get() != '-') {
+					continue;
+				}
+				intptr_t end;
+				iss >> std::hex >> end;
+				if(iss.get() != ' ') {
+					continue;
+				}
+				iss.ignore(std::numeric_limits<std::streamsize>::max(), ' ');
+				iss >> std::hex >> region.offset;
+				if(iss.get() != ' ') {
+					continue;
+				}
+				iss.ignore(std::numeric_limits<std::streamsize>::max(), ' ');
+				iss.ignore(std::numeric_limits<std::streamsize>::max(), ' ');
+				std::getline(iss, region.file);
+				boost::trim(region.file);
+				if(!iss.fail() && !region.file.empty()) {
+					region.file = fs::path(region.file).filename();
+					regions[end] = region;
+				}
+			}
+		}
 		boost::crc_32_type checksum;
 		for(size_t i = 0; i < boost::size(m_pCrashInfo->backtrace); i++) {
 			if(m_pCrashInfo->backtrace[i] == 0) {
 				break;
 			}
 			intptr_t value = intptr_t(m_pCrashInfo->backtrace[i]);
+			description << ' ';
+			if(!regions.empty()) {
+				std::map<intptr_t, MemoryRegion>::const_iterator it = regions.lower_bound(value);
+				if(it != regions.end() && value >= it->second.begin) {
+					checksum.process_bytes(it->second.file.data(), it->second.file.length());
+					value = it->second.offset + (value - it->second.begin);
+				}
+			}
 			checksum.process_bytes(&value, sizeof(value));
 		}
 		m_pCrashInfo->crashId = checksum.checksum();
 	}
 	#endif
 	
+	addText(description.str().c_str());
 }

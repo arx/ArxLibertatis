@@ -47,6 +47,7 @@ private:
 	void unregisterCrashHandlers();
 	
 	void processCrashSignal();
+	void processCrashTrace();
 	
 	// Crash handlers to restore
 	struct PlatformCrashHandlers * m_pPreviousCrashHandlers;
