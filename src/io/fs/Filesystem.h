@@ -139,6 +139,24 @@ char * read_file(const path & p, size_t & size);
 std::string read(const path & p);
 
 /*!
+ * \brief Write a string into a file
+ *
+ * \param p The file to write to.
+ *
+ * \return true if the write succeeded
+ */
+bool write(const path & p, const char * contents, size_t size);
+
+/*!
+ * \brief Write an \ref std::string into a file
+ *
+ * \param p The file to write to.
+ *
+ * \return true if the write succeeded
+ */
+bool write(const path & p, const std::string & contents);
+
+/*!
  * \brief Get the current working directory
  */
 path current_path();
