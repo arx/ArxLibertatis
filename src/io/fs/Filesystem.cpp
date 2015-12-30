@@ -19,6 +19,8 @@
 
 #include "io/fs/Filesystem.h"
 
+#include <iterator>
+
 #include "io/fs/FileStream.h"
 
 namespace fs {
@@ -44,20 +46,24 @@ char * read_file(const path & p, size_t & size) {
 
 std::string read(const path & p) {
 	
-	size_t size;
-	char * data = read_file(p, size);
+	std::string result;
 	
-	if(data) {
-		try {
-			std::string result(data, size);
-			delete[] data;
-			return result;
-		} catch(...) {
-			delete[] data;
+	fs::ifstream ifs(p, fs::fstream::in | fs::fstream::binary | fs::fstream::ate);
+	if(ifs.is_open()) {
+		result.resize(ifs.tellg());
+		ifs.seekg(0).read(&result[0], result.size());
+	} else {
+		ifs.open(p, fs::fstream::in | fs::fstream::binary);
+		if(ifs.is_open()) {
+			result.assign(std::istreambuf_iterator<char>(ifs), std::istreambuf_iterator<char>());
 		}
 	}
 	
-	return std::string();
+	if(ifs.fail()) {
+		result.clear();
+	}
+	
+	return result;
 }
 
 } // namespace fs
