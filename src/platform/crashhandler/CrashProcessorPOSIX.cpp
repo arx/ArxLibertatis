@@ -224,6 +224,7 @@ void CrashHandlerPOSIX::processCrashTrace() {
 				}
 			}
 		}
+		description << "\nCallstack:\n";
 		boost::crc_32_type checksum;
 		for(size_t i = 0; i < boost::size(m_pCrashInfo->backtrace); i++) {
 			if(m_pCrashInfo->backtrace[i] == 0) {
@@ -234,12 +235,18 @@ void CrashHandlerPOSIX::processCrashTrace() {
 			if(!regions.empty()) {
 				std::map<intptr_t, MemoryRegion>::const_iterator it = regions.lower_bound(value);
 				if(it != regions.end() && value >= it->second.begin) {
+					description << it->second.file;
 					checksum.process_bytes(it->second.file.data(), it->second.file.length());
 					value = it->second.offset + (value - it->second.begin);
+				} else {
+					description << "??";
 				}
+				description << '!';
 			}
 			checksum.process_bytes(&value, sizeof(value));
+			description << "0x" << std::hex << intptr_t(m_pCrashInfo->backtrace[i]) << '\n';
 		}
+		description << std::dec;
 		m_pCrashInfo->crashId = checksum.checksum();
 	}
 	#endif
