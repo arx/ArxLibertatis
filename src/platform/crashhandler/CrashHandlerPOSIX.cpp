@@ -46,6 +46,8 @@
 
 #include <boost/range/size.hpp>
 
+#include "platform/Thread.h"
+
 
 #if ARX_HAVE_SIGACTION
 
@@ -110,10 +112,10 @@ bool CrashHandlerPOSIX::initialize() {
 	
 	m_pCrashInfo->signal = 0;
 	
-#if ARX_HAVE_PRCTL
+	#if ARX_HAVE_PRCTL
 	// Allow all processes in the same pid namespace to PTRACE this process
-	prctl(PR_SET_PTRACER, getpid());
-#endif
+	prctl(PR_SET_PTRACER, platform::getProcessId());
+	#endif
 	
 	return true;
 }
