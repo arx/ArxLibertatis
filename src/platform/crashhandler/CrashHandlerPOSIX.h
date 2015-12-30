@@ -37,7 +37,7 @@ public:
 	void registerCrashCallback(CrashHandler::CrashCallback crashCallback);
 	void unregisterCrashCallback(CrashHandler::CrashCallback crashCallback);
 	
-	void handleCrash(int signal, int code);
+	void handleCrash(int signal, void * info, void * context);
 	
 	static CrashHandlerPOSIX & getInstance();
 	

@@ -75,6 +75,15 @@ struct CrashInfoBase {
 	
 	u32 crashId;
 	
+	bool hasAddress;
+	bool hasMemory;
+	bool hasStack;
+	bool hasFrame;
+	u64 address;
+	u64 memory;
+	u64 stack;
+	u64 frame;
+	
 	platform::process_id processorProcessId;
 	boost::interprocess::interprocess_semaphore processorDone;
 	

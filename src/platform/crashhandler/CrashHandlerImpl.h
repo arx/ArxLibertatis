@@ -79,6 +79,7 @@ private:
 	void fillBasicCrashInfo();
 	
 	virtual void processCrashSignal() { }
+	void processCrashRegisters();
 	virtual void processCrashTrace() { }
 	
 protected:

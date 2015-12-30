@@ -77,6 +77,31 @@ void CrashHandlerImpl::processCrash(const std::string & sharedMemoryName) {
 	std::exit(0);
 }
 
+void CrashHandlerImpl::processCrashRegisters() {
+	
+	std::ostringstream description;
+	
+	if(m_pCrashInfo->hasAddress || m_pCrashInfo->hasMemory || m_pCrashInfo->hasStack
+	   || m_pCrashInfo->hasFrame) {
+		description << '\n';
+	}
+	if(m_pCrashInfo->hasAddress) {
+		description << "Instruction address: 0x" << std::hex << m_pCrashInfo->address << '\n';
+	}
+	if(m_pCrashInfo->hasMemory) {
+		description << "Memory accessed: 0x" << std::hex << m_pCrashInfo->memory << '\n';
+	}
+	if(m_pCrashInfo->hasStack) {
+		description << "Stack pointer: 0x" << std::hex << m_pCrashInfo->stack << '\n';
+	}
+	if(m_pCrashInfo->hasFrame) {
+		description << "Frame pointer: 0x" << std::hex << m_pCrashInfo->frame << '\n';
+	}
+	description << std::dec;
+	
+	addText(description.str().c_str());
+}
+
 void CrashHandlerImpl::processCrash() {
 	
 	if(m_pCrashInfo) {
@@ -116,6 +141,7 @@ void CrashHandlerImpl::processCrash() {
 			fs::create_directories(m_crashReportDir);
 		}
 		processCrashSignal();
+		processCrashRegisters();
 		processCrashTrace();
 	}
 	
@@ -240,6 +266,15 @@ void CrashHandlerImpl::fillBasicCrashInfo() {
 	m_pCrashInfo->description[0] = '\0';
 	
 	m_pCrashInfo->crashId = 0;
+	
+	m_pCrashInfo->hasAddress = false;
+	m_pCrashInfo->address = 0;
+	m_pCrashInfo->hasMemory = false;
+	m_pCrashInfo->memory = 0;
+	m_pCrashInfo->hasStack = false;
+	m_pCrashInfo->stack = 0;
+	m_pCrashInfo->hasFrame = false;
+	m_pCrashInfo->frame = 0;
 	
 	m_pCrashInfo->processorProcessId = 0;
 	

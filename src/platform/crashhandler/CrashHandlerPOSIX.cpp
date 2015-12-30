@@ -19,6 +19,8 @@
 
 #include "platform/crashhandler/CrashHandlerPOSIX.h"
 
+#include <cstring>
+
 #include "Configure.h"
 
 #if ARX_HAVE_BACKTRACE
@@ -40,20 +42,24 @@
 #include <time.h>
 #endif
 
+#if ARX_HAVE_SIGACTION && ARX_PLATFORM == ARX_PLATFORM_LINUX
+#include <ucontext.h>
+#endif
+
 #include <signal.h>
 #include <string.h>
 #include <unistd.h>
 
 #include <boost/range/size.hpp>
 
+#include "platform/Architecture.h"
 #include "platform/Thread.h"
 
 
 #if ARX_HAVE_SIGACTION
 
 static void signalHandler(int signal, siginfo_t * info, void * context) {
-	ARX_UNUSED(context);
-	CrashHandlerPOSIX::getInstance().handleCrash(signal, info->si_code);
+	CrashHandlerPOSIX::getInstance().handleCrash(signal, info, context);
 }
 
 typedef struct sigaction signal_handler;
@@ -73,7 +79,7 @@ static void unregisterSignalHandler(int s, signal_handler & old_handler) {
 #else
 
 static void signalHandler(int signal) {
-	CrashHandlerPOSIX::getInstance().handleCrash(signal, -1);
+	CrashHandlerPOSIX::getInstance().handleCrash(signal, NULL, NULL);
 }
 
 typedef void (*signal_handler)(int signal);
@@ -111,6 +117,8 @@ bool CrashHandlerPOSIX::initialize() {
 	}
 	
 	m_pCrashInfo->signal = 0;
+	
+	std::memset(m_pCrashInfo->backtrace, 0, sizeof(m_pCrashInfo->backtrace));
 	
 	#if ARX_HAVE_PRCTL
 	// Allow all processes in the same pid namespace to PTRACE this process
@@ -204,7 +212,7 @@ void CrashHandlerPOSIX::unregisterThreadCrashHandlers() {
 	// All POSIX signals are process wide, so no thread specific actions are needed
 }
 
-void CrashHandlerPOSIX::handleCrash(int signal, int code) {
+void CrashHandlerPOSIX::handleCrash(int signal, void * info, void * context) {
 	
 	// Remove crash handlers so we don't end in an infinite crash loop
 	removeCrashHandlers(m_pPreviousCrashHandlers);
@@ -216,7 +224,44 @@ void CrashHandlerPOSIX::handleCrash(int signal, int code) {
 	}
 	
 	m_pCrashInfo->signal = signal;
-	m_pCrashInfo->code = code;
+	
+	#if ARX_HAVE_SIGACTION
+	if(info) {
+		siginfo_t * siginfo = reinterpret_cast<siginfo_t *>(info);
+		m_pCrashInfo->code = siginfo->si_code;
+		#if defined(SIGILL) || defined(SIGFPE)
+		if(signal == SIGILL || signal == SIGFPE) {
+			m_pCrashInfo->address = u64(siginfo->si_addr);
+			m_pCrashInfo->hasAddress = true;
+		}
+		#endif
+		#if defined(SIGSEGV) && defined(SIGBUS)
+		if(signal == SIGSEGV || signal == SIGBUS) {
+			m_pCrashInfo->memory = u64(siginfo->si_addr);
+			m_pCrashInfo->hasMemory = true;
+		}
+		#endif
+	}
+	#endif
+	
+	#if ARX_HAVE_SIGACTION && ARX_PLATFORM == ARX_PLATFORM_LINUX
+	if(context) {
+		ucontext_t * ctx = reinterpret_cast<ucontext_t *>(context);
+		#if ARX_ARCH == ARX_ARCH_X86 && defined(REG_EIP)
+		m_pCrashInfo->address = ctx->uc_mcontext.gregs[REG_EIP];
+		m_pCrashInfo->hasAddress = true;
+		m_pCrashInfo->stack = ctx->uc_mcontext.gregs[REG_ESP];
+		m_pCrashInfo->hasStack = true;
+		m_pCrashInfo->frame = ctx->uc_mcontext.gregs[REG_EBP];
+		m_pCrashInfo->hasFrame = true;
+		#elif ARX_ARCH == ARX_ARCH_X86_64 && defined(REG_RIP)
+		m_pCrashInfo->address = ctx->uc_mcontext.gregs[REG_RIP];
+		m_pCrashInfo->hasAddress = true;
+		m_pCrashInfo->stack = ctx->uc_mcontext.gregs[REG_RSP];
+		m_pCrashInfo->hasStack = true;
+		#endif
+	}
+	#endif
 	
 	// Store the backtrace in the shared crash info
 	#if ARX_HAVE_BACKTRACE
