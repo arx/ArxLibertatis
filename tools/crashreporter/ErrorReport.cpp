@@ -119,13 +119,6 @@ bool ErrorReport::Initialize()
 	
 	m_pCrashInfo->reporterStarted.post();
 
-	// Add attached files from the report
-	size_t nbFilesAttached = std::min(size_t(m_pCrashInfo->nbFilesAttached),
-	                                  size_t(CrashInfo::MaxNbFiles));
-	for(size_t i = 0; i < nbFilesAttached; i++) {
-		AddFile(util::loadString(m_pCrashInfo->attachedFiles[i]));
-	}
-
 	m_ReportFolder = fs::path(util::loadString(m_pCrashInfo->crashReportFolder))
 	                 / fs::path(m_CrashDateTime.toString("yyyy.MM.dd hh.mm.ss").toUtf8());
 
@@ -142,6 +135,13 @@ bool ErrorReport::GetCrashDump(const fs::path & fileName) {
 	
 	if(!getCrashDescription()) {
 		return false;
+	}
+	
+	// Add attached files from the report
+	size_t nbFilesAttached = std::min(size_t(m_pCrashInfo->nbFilesAttached),
+	                                  size_t(CrashInfo::MaxNbFiles));
+	for(size_t i = 0; i < nbFilesAttached; i++) {
+		AddFile(util::loadString(m_pCrashInfo->attachedFiles[i]));
 	}
 	
 #if ARX_PLATFORM == ARX_PLATFORM_WIN32
