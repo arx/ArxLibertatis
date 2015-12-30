@@ -197,11 +197,22 @@ class ArxObjectManager(object):
             action.show_name = True
             action.scale = [3, 3, 3]
             
-        armatureModifier = obj.modifiers.new(type='ARMATURE', name="Skeleton")
-        armatureModifier.object = armatureObj
+        #armatureModifier = obj.modifiers.new(type='ARMATURE', name="Skeleton")
+        #armatureModifier.object = armatureObj
+
+        for toDeSel in bpy.context.scene.objects: #deselect all first just to be sure
+            toDeSel.select = False
 
         bpy.context.scene.objects.link(obj)
+
+        #FIXME properly bind bones to mesh via vertex groups
+        obj.select = True
+        armatureObj.select = True
+        bpy.context.scene.objects.active = armatureObj #select both the mesh and armature and set armature active
+        bpy.ops.object.parent_set(type='ARMATURE_AUTO') # ctrl+p and automatic weights
         bpy.context.scene.objects.active = obj
+        armatureObj.select = False
+
         bpy.ops.object.mode_set(mode='EDIT')  # initialises UVmap correctly
 
         mesh.uv_textures.new()
