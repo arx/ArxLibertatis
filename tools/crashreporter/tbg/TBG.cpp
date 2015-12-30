@@ -218,6 +218,10 @@ bool Server::attachFile(int issue_id, const QString & filePath,
 		return false;
 	}
 	
+	if(file.size() > 20 * 1024 * 1024) {
+		return false;
+	}
+	
 	QString uuid = QUuid::createUuid().toString();
 	QByteArray boundaryRegular = ("--" + uuid.mid(1, uuid.length() - 2)).toUtf8();
 	QByteArray boundary = "\r\n--" + boundaryRegular + "\r\n";
