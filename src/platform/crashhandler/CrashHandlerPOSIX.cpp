@@ -44,6 +44,8 @@
 #include <string.h>
 #include <unistd.h>
 
+#include <boost/range/size.hpp>
+
 
 #if ARX_HAVE_SIGACTION
 
@@ -216,7 +218,7 @@ void CrashHandlerPOSIX::handleCrash(int signal, int code) {
 	
 	// Store the backtrace in the shared crash info
 	#if ARX_HAVE_BACKTRACE
-	backtrace(m_pCrashInfo->backtrace, ARRAY_SIZE(m_pCrashInfo->backtrace));
+	backtrace(m_pCrashInfo->backtrace, boost::size(m_pCrashInfo->backtrace));
 	#endif
 	
 	// Try to spawn a sub-process to process the crash info

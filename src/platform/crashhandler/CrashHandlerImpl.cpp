@@ -116,6 +116,7 @@ void CrashHandlerImpl::processCrash() {
 			fs::create_directories(m_crashReportDir);
 		}
 		processCrashSignal();
+		processCrashTrace();
 	}
 	
 	// Wait for the crash reporter to start
@@ -237,6 +238,8 @@ void CrashHandlerImpl::fillBasicCrashInfo() {
 	m_pCrashInfo->executableVersion[sizeof(m_pCrashInfo->executableVersion)-1] = 0; // Make sure our string is null terminated
 	
 	m_pCrashInfo->description[0] = '\0';
+	
+	m_pCrashInfo->crashId = 0;
 	
 	m_pCrashInfo->processorProcessId = 0;
 	

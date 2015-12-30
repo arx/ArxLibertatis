@@ -61,7 +61,6 @@
 #include <QByteArray>
 
 // Boost
-#include <boost/crc.hpp>
 #include <boost/date_time/microsec_time_clock.hpp>
 #include <boost/date_time/time_duration.hpp>
 #include <boost/date_time/posix_time/ptime.hpp>
@@ -368,21 +367,9 @@ bool ErrorReport::getCrashDescription() {
 		return false;
 	}
 	
-#if ARX_HAVE_BACKTRACE
-	
-	boost::crc_32_type callstackCRC32;
-	
-	for(size_t i = 0; i < ARRAY_SIZE(m_pCrashInfo->backtrace); i++) {
-		if(m_pCrashInfo->backtrace[i] == 0) {
-			break;
-		}
-		callstackCRC32.process_bytes(&m_pCrashInfo->backtrace[i], sizeof(m_pCrashInfo->backtrace[i]));
+	if(m_pCrashInfo->crashId != 0) {
+		m_ReportUniqueID = QString("[%1]").arg(QString::number(m_pCrashInfo->crashId, 16).toUpper());
 	}
-	
-	u32 callstackCrc = callstackCRC32.checksum();
-	m_ReportUniqueID = QString("[%1]").arg(QString::number(callstackCrc, 16).toUpper());
-	
-#endif
 	
 	QString traceStr = QString::fromUtf8(gdbstdout.c_str());
 	QString callstackTop = "Unknown";

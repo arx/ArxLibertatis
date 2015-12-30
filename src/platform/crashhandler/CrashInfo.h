@@ -73,6 +73,8 @@ struct CrashInfoBase {
 	// Detailed crash info (messages, registers, whatever).
 	char description[MaxDetailCrashInfoLen];
 	
+	u32 crashId;
+	
 	platform::process_id processorProcessId;
 	boost::interprocess::interprocess_semaphore processorDone;
 	

@@ -23,6 +23,11 @@
 
 #include <signal.h>
 
+#include <boost/crc.hpp>
+#include <boost/range/size.hpp>
+
+#include "Configure.h"
+
 
 void CrashHandlerPOSIX::processCrashSignal() {
 	
@@ -156,4 +161,22 @@ void CrashHandlerPOSIX::processCrashSignal() {
 	description << "\n\n";
 	
 	addText(description.str().c_str());
+}
+
+void CrashHandlerPOSIX::processCrashTrace() {
+	
+	#if ARX_HAVE_BACKTRACE
+	if(m_pCrashInfo->backtrace[0] != 0) {
+		boost::crc_32_type checksum;
+		for(size_t i = 0; i < boost::size(m_pCrashInfo->backtrace); i++) {
+			if(m_pCrashInfo->backtrace[i] == 0) {
+				break;
+			}
+			intptr_t value = intptr_t(m_pCrashInfo->backtrace[i]);
+			checksum.process_bytes(&value, sizeof(value));
+		}
+		m_pCrashInfo->crashId = checksum.checksum();
+	}
+	#endif
+	
 }
