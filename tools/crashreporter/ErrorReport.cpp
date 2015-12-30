@@ -693,6 +693,7 @@ bool ErrorReport::SendReport(ErrorReport::IProgressNotifier* pProgressNotifier)
 	}
 
 	// Send files
+	QString commonPath;
 	for(FileList::const_iterator it = m_AttachedFiles.begin(); it != m_AttachedFiles.end(); ++it) 
 	{
 		// Ignore files that were removed by the user.
@@ -704,14 +705,24 @@ bool ErrorReport::SendReport(ErrorReport::IProgressNotifier* pProgressNotifier)
 			continue;
 
 		pProgressNotifier->taskStepStarted(QString("Sending file \"%1\"").arg(it->path.filename().c_str()));
-		bool bAttached = server.attachFile(issue_id, it->path.string().c_str(), it->path.filename().c_str(), m_SharedMemoryName);
-		pProgressNotifier->taskStepEnded();
-		if(!bAttached)
-		{
-			pProgressNotifier->setError(QString("Could not send file \"%1\"").arg(it->path.filename().c_str()));
-			pProgressNotifier->setDetailedError(server.getErrorString());
-			return false;
+		QString path = it->path.parent().string().c_str();
+		QString file = it->path.string().c_str();
+		QString name = it->path.filename().c_str();
+		if(server.attachFile(issue_id, file, name, m_SharedMemoryName)) {
+			commonPath.clear();
+		} else {
+			m_failedFiles.append(file);
+			if(it == m_AttachedFiles.begin()) {
+				commonPath = path;
+			} else if(path != commonPath) {
+				commonPath.clear();
+			}
 		}
+		pProgressNotifier->taskStepEnded();
+	}
+	if(!commonPath.isEmpty() && m_failedFiles.count() > 1) {
+		m_failedFiles.clear();
+		m_failedFiles.append(commonPath);
 	}
 	
 	return true;

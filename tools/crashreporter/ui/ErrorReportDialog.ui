@@ -702,6 +702,16 @@ Thank you!</string>
          </property>
         </spacer>
        </item>
+       <item>
+        <widget class="QLabel" name="lblFailedFiles">
+         <property name="text">
+          <string></string>
+         </property>
+         <property name="alignment">
+          <set>Qt::AlignCenter</set>
+         </property>
+        </widget>
+       </item>
       </layout>
      </widget>
      <widget class="QWidget" name="pageExitError">

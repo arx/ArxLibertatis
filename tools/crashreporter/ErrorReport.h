@@ -75,6 +75,8 @@ public:
 
 	const QString& GetErrorDescription() const;
 	const QString& GetIssueLink() const;
+	
+	const QList<QString> & getFailedFiles() const { return m_failedFiles; }
 
 	void SetLoginInfo(const QString& username, const QString& password);
 	void SetReproSteps(const QString& reproSteps);
@@ -127,6 +129,9 @@ private:
 	QString m_Password;
 
 	QString m_DetailedError;
+	
+	QList<QString> m_failedFiles;
+	
 };
 
 #endif // ARX_TOOLS_CRASHREPORTER_ERRORREPORT_H

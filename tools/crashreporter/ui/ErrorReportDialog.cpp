@@ -252,6 +252,18 @@ void ErrorReportDialog::onTaskCompleted()
 		}
 		QString htmlLink = QString("<a href=\"%1\">%1</a>").arg(link);
 		ui->lblIssueLink->setText(htmlLink);
+		
+		const QList<QString> & files = m_errorReport.getFailedFiles();
+		if(!files.empty()) {
+			QString message = "<b>The following files could not be uploaded:</b><br><br>";
+			Q_FOREACH(const QString & file, files) {
+				message += file + "<br>";
+			}
+			message += "<br>Please attach them manually!";
+			ui->lblFailedFiles->setText(message);
+			ui->lblFailedFiles->setTextInteractionFlags(Qt::TextSelectableByMouse);
+		}
+		
 		ui->stackedWidget->setCurrentIndex(m_nextPane);
 	}
 	else
