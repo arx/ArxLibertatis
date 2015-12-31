@@ -986,7 +986,7 @@ void ARX_PLAYER_QuickGeneration() {
  * \param level
  * \return
  */
-long GetXPforLevel(long level)
+long GetXPforLevel(short level)
 {
 	const long XP_FOR_LEVEL[] = { 
 		0, 
@@ -1007,7 +1007,7 @@ long GetXPforLevel(long level)
 	};
 
 	long xpNeeded;
-	if(level < (long)ARRAY_SIZE(XP_FOR_LEVEL))
+	if(level < short(ARRAY_SIZE(XP_FOR_LEVEL)))
 		xpNeeded = XP_FOR_LEVEL[level];
 	else
 		xpNeeded = level * 60000;
@@ -1037,7 +1037,7 @@ void ARX_PLAYER_Modify_XP(long val) {
 	
 	player.xp += val;
 	
-	for(long i = player.level + 1; i < 11; i++) {
+	for(short i = player.level + 1; i < 11; i++) {
 		if(player.xp >= GetXPforLevel(i)) {
 			ARX_PLAYER_LEVEL_UP();
 		}
