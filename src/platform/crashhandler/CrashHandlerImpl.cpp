@@ -277,11 +277,8 @@ void CrashHandlerImpl::fillBasicCrashInfo() {
 	strcpy(m_pCrashInfo->crashReportFolder, "crashes");
 	
 	std::string exe = platform::getExecutablePath().string();
-	strncpy(m_pCrashInfo->executablePath, exe.c_str(), sizeof(m_pCrashInfo->executablePath));
-	m_pCrashInfo->executablePath[sizeof(m_pCrashInfo->executablePath)-1] = 0; // Make sure our string is null terminated
-
-	strncpy(m_pCrashInfo->executableVersion, arx_version.c_str(), sizeof(m_pCrashInfo->executableVersion));
-	m_pCrashInfo->executableVersion[sizeof(m_pCrashInfo->executableVersion)-1] = 0; // Make sure our string is null terminated
+	util::storeStringTerminated(m_pCrashInfo->executablePath, exe);
+	util::storeStringTerminated(m_pCrashInfo->executableVersion, arx_version);
 	
 	m_pCrashInfo->title[0] = '\0';
 	
