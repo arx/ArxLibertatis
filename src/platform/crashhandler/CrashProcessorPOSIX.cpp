@@ -36,6 +36,8 @@
 #include "io/fs/FilePath.h"
 #include "io/fs/Filesystem.h"
 
+#include "platform/Process.h"
+
 #include "util/String.h"
 
 
@@ -190,6 +192,7 @@ void CrashHandlerPOSIX::processCrashTrace() {
 		}
 	}
 	
+	enum FrameType { Handler = 0, System = 1, Fault = 2, Done = 3 };
 	#if ARX_HAVE_BACKTRACE
 	if(m_pCrashInfo->backtrace[0] != 0) {
 		struct MemoryRegion {
@@ -229,7 +232,7 @@ void CrashHandlerPOSIX::processCrashTrace() {
 		description << "\nCallstack:\n";
 		boost::crc_32_type checksum;
 		std::string exe = fs::path(util::loadString(m_pCrashInfo->executablePath)).filename();
-		enum FrameType { Handler = 0, System = 1, Fault = 2, Done = 3 } status = Handler;
+		FrameType status = Handler;
 		u64 minOffset = std::numeric_limits<u64>::max();
 		for(size_t i = 0; i < boost::size(m_pCrashInfo->backtrace); i++) {
 			if(m_pCrashInfo->backtrace[i] == 0) {
@@ -275,6 +278,68 @@ void CrashHandlerPOSIX::processCrashTrace() {
 		m_pCrashInfo->crashId = checksum.checksum();
 	}
 	#endif
+	
+	// Get a stack trace via GDB
+	if(platform::isProcessRunning(m_pCrashInfo->processId)) {
+		char pid[32];
+		std::sprintf(pid, "%d", m_pCrashInfo->processId);
+		const char * args[] = {
+			"gdb", "--batch", "-n",
+			"-ex", "thread",
+			"-ex", "set confirm off",
+			"-ex", "set print frame-arguments all",
+			"-ex", "set print static-members off",
+			"-ex", "info threads",
+			"-ex", "thread apply all bt full",
+			"--pid", pid, NULL
+		};
+		std::string gdbstdout = platform::getOutputOf(args, /*unlocalized=*/ true);
+		if(!gdbstdout.empty()) {
+			description << "\nGDB stack trace:\n";
+			std::istringstream iss(gdbstdout);
+			std::string line;
+			FrameType status = Handler;
+			while(iss.good()) {
+				std::getline(iss, line);
+				if(status == Handler && line.find("<signal handler called>") != std::string::npos) {
+					status = Fault;
+				} else if(status == Fault) {
+					size_t start = line.find('#');
+					if(start != std::string::npos) {
+						size_t sstart = line.find(" in ", start);
+						if(sstart != std::string::npos) {
+							start = sstart + 4;
+						}
+						std::string function = line.substr(start);
+						size_t pstart = function.find('(');
+						if(pstart != std::string::npos) {
+							if(pstart != 0 && function[pstart - 1] == ' ') {
+								function.erase(pstart - 1, 1);
+								pstart--;
+							}
+							size_t pend = function.find(')', pstart);
+							if(pend != std::string::npos) {
+								function.erase(pstart + 1, pend - pstart - 1);
+							}
+						}
+						size_t fstart = function.find(") at");
+						if(fstart != std::string::npos) {
+							size_t fend = function.find_last_of('/');
+							if(fend != std::string::npos && fend > fstart) {
+								function.erase(fstart + 2, fend + 1 - fstart - 2);
+							}
+						}
+						boost::trim(function);
+						if(!function.empty()) {
+							util::storeStringTerminated(m_pCrashInfo->title, function);
+						}
+						status = Done;
+					}
+				}
+				description << ' ' << line << '\n';
+			}
+		}
+	}
 	
 	addText(description.str().c_str());
 }

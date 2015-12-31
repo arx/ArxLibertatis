@@ -346,82 +346,12 @@ bool ErrorReport::getCrashDescription() {
 	
 	m_ReportDescriptionText = m_ReportDescription;
 	
-	// Get a stack trace via GDB
-	char pid_buf[36];
-	memset(&pid_buf, 0, sizeof(pid_buf));
-	sprintf(pid_buf, "--pid=%d", m_pCrashInfo->processId);
-	const char * args[] = {
-		"gdb", "--batch", "-n",
-		"-ex", "thread",
-		"-ex", "set confirm off",
-		"-ex", "set print frame-arguments all",
-		"-ex", "set print static-members off",
-		"-ex", "info threads",
-		"-ex", "thread apply all bt full",
-		pid_buf, NULL
-	};
-	std::string gdbstdout = platform::getOutputOf(args, /*unlocalized=*/ true);
-	if(gdbstdout.empty()) {
-		m_DetailedError = "GDB is probably not installed on your machine."
-		                  " Please install it in order to obtain valuable crash reports in the future.";
-		return false;
-	}
-	
 	if(m_pCrashInfo->crashId != 0) {
 		m_ReportUniqueID = QString("[%1]").arg(QString::number(m_pCrashInfo->crashId, 16).toUpper());
 	}
 	
-	QString traceStr = QString::fromUtf8(gdbstdout.c_str());
-	QString callstackTop = "Unknown";
-	
-	// The useful stack frames are found below "<signal handler called>"
-	int posStart = traceStr.indexOf("<signal handler called>");
-	int posEnd = -1;
-	if(posStart != -1) {
-		posStart = traceStr.indexOf("#", posStart);
-		if(posStart != -1)
-			posEnd = traceStr.indexOf("\n", posStart);
-	}
-	
-	// Capture the entry where the crash occured and format it
-	if(posStart != -1 && posEnd != -1)	{
-		callstackTop = traceStr.mid(posStart, posEnd - posStart);
-
-		// Remove "#N 0x???????? in "
-		posEnd = callstackTop.indexOf(" in ");
-		if(posEnd != -1) {
-			posEnd += 4;
-			callstackTop.remove(0, posEnd);
-		}
-		
-		// Remove params
-		posStart = callstackTop.indexOf("(");
-		posEnd = callstackTop.indexOf(")", posStart);
-		if(posStart != -1 && posEnd != -1) {
-			posStart++;
-			callstackTop.remove(posStart, posEnd - posStart);
-		}
-		
-		// Trim filenames
-		posStart = callstackTop.lastIndexOf(") at");
-		posEnd = callstackTop.lastIndexOf("/");
-		if(posStart != -1 && posEnd != -1) {
-			posStart += 2;
-			posEnd++;
-			callstackTop.remove(posStart, posEnd - posStart);
-		}
-	}
-	
-	m_ReportDescription += "\nGDB stack trace:\n";
-	m_ReportDescription += "<source lang=\"gdb\">\n";
-	m_ReportDescription += traceStr;
-	m_ReportDescription += "</source>\n";
-	
-	m_ReportDescriptionText += "\nGDB stack trace:\n";
-	m_ReportDescriptionText += "\n";
-	m_ReportDescriptionText += traceStr;
-	
-	m_ReportTitle = QString("%1 %2").arg(m_ReportUniqueID, callstackTop.trimmed());
+	std::string title = util::loadString(m_pCrashInfo->title);
+	m_ReportTitle = QString("%1 %2").arg(m_ReportUniqueID, title.c_str());
 	
 #endif // ARX_PLATFORM != ARX_PLATFORM_WIN32
 	
