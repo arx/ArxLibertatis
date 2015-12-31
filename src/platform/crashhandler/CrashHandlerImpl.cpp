@@ -120,6 +120,7 @@ void CrashHandlerImpl::processCrash() {
 	}
 	
 	if(m_pCrashInfo) {
+		
 		{
 			fs::path crashReportDir = util::loadString(m_pCrashInfo->crashReportFolder);
 			std::time_t timestamp = std::time(NULL);
@@ -140,10 +141,28 @@ void CrashHandlerImpl::processCrash() {
 			}
 			fs::create_directories(m_crashReportDir);
 		}
+		
 		processCrashSignal();
 		processCrashRegisters();
 		processCrashTrace();
 		processCrashDump();
+		
+		{
+			size_t nfiles = std::min(size_t(m_pCrashInfo->nbFilesAttached),
+			                         size_t(CrashInfo::MaxNbFiles));
+			for(size_t i = 0; i < nfiles; i++) {
+				fs::path file = util::loadString(m_pCrashInfo->attachedFiles[i]);
+				if(file.empty() || !fs::is_regular_file(file)) {
+					continue;
+				}
+				fs::path copy = m_crashReportDir / file.filename();
+				if(copy == file || !fs::copy_file(file, copy)) {
+					continue;
+				}
+				util::storeStringTerminated(m_pCrashInfo->attachedFiles[i], copy.string());
+			}
+		}
+		
 	}
 	
 	// Wait for the crash reporter to start
