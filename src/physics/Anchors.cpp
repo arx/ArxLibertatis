@@ -1015,9 +1015,9 @@ static void AnchorData_Create_Phase_II_Original_Method(EERIE_BACKGROUND * eb) {
 		count += 1.f;
 		
 		EERIE_BKG_INFO * eg = &eb->fastdata[x][z];
-		pos.x = (float)((float)((float)x) * (float)eb->Xdiv);
+		pos.x = float(x) * float(eb->Xdiv);
 		pos.y = 0.f;
-		pos.z = (float)((float)((float)z) * (float)eb->Zdiv);
+		pos.z = float(z) * float(eb->Zdiv);
 		Cylinder currcyl = Cylinder(pos, 30, -150.f);
 		
 		if(eg->nbpolyin) {
