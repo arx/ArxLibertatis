@@ -340,11 +340,7 @@ bool ErrorReport::getCrashDescription() {
 	
 	CloseHandle(hProcess);
 	
-	m_ReportDescriptionText = m_ReportDescription;
-	
 #else // ARX_PLATFORM != ARX_PLATFORM_WIN32
-	
-	m_ReportDescriptionText = m_ReportDescription;
 	
 	if(m_pCrashInfo->crashId != 0) {
 		m_ReportUniqueID = QString("[%1]").arg(QString::number(m_pCrashInfo->crashId, 16).toUpper());
@@ -666,7 +662,7 @@ ErrorReport::FileList& ErrorReport::GetAttachedFiles()
 
 const QString& ErrorReport::GetErrorDescription() const
 {
-	return m_ReportDescriptionText;
+	return m_ReportDescription;
 }
 
 const QString& ErrorReport::GetIssueLink() const
