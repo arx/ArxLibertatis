@@ -143,6 +143,7 @@ void CrashHandlerImpl::processCrash() {
 		processCrashSignal();
 		processCrashRegisters();
 		processCrashTrace();
+		processCrashDump();
 	}
 	
 	// Wait for the crash reporter to start

@@ -20,6 +20,7 @@
 #include "platform/crashhandler/CrashHandlerPOSIX.h"
 
 #include <cstring>
+#include <sstream>
 
 #include "Configure.h"
 
@@ -42,6 +43,19 @@
 #include <time.h>
 #endif
 
+#if ARX_HAVE_SETRLIMIT
+#include <sys/resource.h>
+#endif
+
+#if ARX_HAVE_UNAME
+#include <sys/utsname.h>
+#endif
+
+#if ARX_HAVE_SYSCTLBYNAME
+#include <sys/types.h>
+#include <sys/sysctl.h>
+#endif
+
 #if ARX_HAVE_SIGACTION && ARX_PLATFORM == ARX_PLATFORM_LINUX
 #include <ucontext.h>
 #endif
@@ -50,10 +64,18 @@
 #include <string.h>
 #include <unistd.h>
 
+#include <boost/algorithm/string/trim.hpp>
 #include <boost/range/size.hpp>
 
+#include "io/fs/FilePath.h"
+#include "io/fs/Filesystem.h"
+
 #include "platform/Architecture.h"
+#include "platform/Environment.h"
+#include "platform/Process.h"
 #include "platform/Thread.h"
+
+#include "util/String.h"
 
 
 #if ARX_HAVE_SIGACTION
@@ -110,6 +132,164 @@ CrashHandlerPOSIX::CrashHandlerPOSIX() : m_pPreviousCrashHandlers(NULL) {
 	m_sInstance = this;
 }
 
+static fs::path getCoreDumpFile() {
+	
+	#if ARX_PLATFORM == ARX_PLATFORM_LINUX
+	
+	std::string pattern = fs::read("/proc/sys/kernel/core_pattern");
+	std::string usesPID = fs::read("/proc/sys/kernel/core_uses_pid");
+	boost::trim(pattern), boost::trim(usesPID);
+	
+	if(pattern.empty()) {
+		if(usesPID.empty() || usesPID == "0") {
+			return "core";
+		} else {
+			std::ostringstream oss;
+			oss << "core." << platform::getProcessId();
+			return oss.str();
+		}
+	}
+	
+	if(pattern[0] == '|') {
+		if(pattern.find("/apport ") != std::string::npos) {
+			// Ubuntu …
+			std::ostringstream oss;
+			oss << "/var/crash/";
+			std::string exe = platform::getExecutablePath().string();
+			std::replace(exe.begin(), exe.end(), '/', '_');
+			oss << exe << '.' << getuid() << ".crash";
+			return oss.str();
+		}
+		// Unknown system crash handler
+		return fs::path();
+	}
+	
+	
+	bool hasPID;
+	std::ostringstream oss;
+	size_t start = 0;
+	while(start < pattern.length()) {
+		
+		size_t end = pattern.find('%');
+		if(end == std::string::npos) {
+			end = pattern.length();
+		}
+		
+		oss.write(&pattern[start], end - start);
+		
+		if(end + 1 >= pattern.length()) {
+			break;
+		}
+		
+		switch(pattern[end + 1]) {
+			case '%': oss << '%'; break;
+			case 'p': oss << platform::getProcessId(); hasPID = true; break;
+			#if ARX_HAVE_GETUID
+			case 'u': oss << getuid(); break;
+			#endif
+			#if ARX_HAVE_GETGID
+			case 'g': oss << getgid(); break;
+			#endif
+			#ifdef SIGABRT
+			case 's': oss << SIGABRT; break;
+			#endif
+			#if ARX_HAVE_UNAME
+			case 'h': {
+				utsname info;
+				if(uname(&info) < 0) {
+					return fs::path();
+				}
+				oss << info.nodename;
+				break;
+			}
+			#endif
+			case 'e': oss << platform::getExecutablePath().filename(); break;
+			case 'E': {
+				std::string exe = platform::getExecutablePath().string();
+				std::replace(exe.begin(), exe.end(), '/', '!');
+				oss << exe << '.' << getuid() << ".crash";
+				break;
+			}
+			default: {
+				// Unknown or unsupported pattern
+				return fs::path();
+			}
+		}
+		
+		start = end + 2;
+	}
+	
+	if(!hasPID && usesPID != "0") {
+		oss << '.' << platform::getProcessId();
+	}
+	
+	return oss.str();
+	
+	#elif ARX_PLATFORM == ARX_PLATFORM_BSD
+	
+	std::string pattern;
+	#if ARX_HAVE_SYSCTLBYNAME && defined(PATH_MAX)
+	char pathname[PATH_MAX];
+	size_t size = sizeof(pathname);
+	int error = sysctlbyname("kern.corefile", pathname, &size, NULL, 0);
+	if(error != -1 || size > 0 || size <= sizeof(pathname)) {
+		pattern = util::loadString(pathname, size);
+	} else {
+	#endif
+		pattern = "%N.core"
+	#if ARX_HAVE_SYSCTLBYNAME && defined(PATH_MAX)
+	}
+	#endif
+	
+	std::ostringstream oss;
+	size_t start = 0;
+	while(start < pattern.length()) {
+		
+		size_t end = pattern.find('%');
+		if(end == std::string::npos) {
+			end = pattern.length();
+		}
+		
+		oss.write(&pattern[start], end - start);
+		
+		if(end + 1 >= pattern.length()) {
+			break;
+		}
+		
+		switch(pattern[end + 1]) {
+			case '%': oss << '%'; break;
+			#if ARX_HAVE_UNAME
+			case 'H': {
+				utsname info;
+				if(uname(&info) < 0) {
+					return fs::path();
+				}
+				oss << info.nodename;
+				break;
+			}
+			#endif
+			case 'N': oss << platform::getExecutablePath().filename(); break;
+			case 'P': oss << platform::getProcessId();  break;
+			#if ARX_HAVE_GETUID
+			case 'U': oss << getuid(); break;
+			#endif
+			default: {
+				// Unknown or unsupported pattern
+				return fs::path();
+			}
+		}
+		
+		start = end + 2;
+	}
+	
+	return oss.str();
+	
+	#else
+	return fs::path();
+	#endif
+	
+}
+
 bool CrashHandlerPOSIX::initialize() {
 	
 	if(!CrashHandlerImpl::initialize()) {
@@ -124,6 +304,18 @@ bool CrashHandlerPOSIX::initialize() {
 	// Allow all processes in the same pid namespace to PTRACE this process
 	prctl(PR_SET_PTRACER, platform::getProcessId());
 	#endif
+	
+	m_pCrashInfo->coreDumpFile[0] = '\0';
+	fs::path core = getCoreDumpFile();
+	if(!core.empty() && core.string().length() < boost::size(m_pCrashInfo->coreDumpFile)) {
+		std::strcpy(m_pCrashInfo->coreDumpFile, core.string().c_str());
+		#if ARX_HAVE_SETRLIMIT
+		struct rlimit core_limit;
+		core_limit.rlim_cur = RLIM_INFINITY;
+		core_limit.rlim_max = RLIM_INFINITY;
+		(void)setrlimit(RLIMIT_CORE, &core_limit);
+		#endif
+	}
 	
 	return true;
 }
@@ -267,6 +459,15 @@ void CrashHandlerPOSIX::handleCrash(int signal, void * info, void * context) {
 	#if ARX_HAVE_BACKTRACE
 	backtrace(m_pCrashInfo->backtrace, boost::size(m_pCrashInfo->backtrace));
 	#endif
+	
+	// Change directory core dumps are written to
+	if(m_pCrashInfo->crashReportFolder[0] != '\0') {
+		#if ARX_HAVE_CHDIR
+		if(chdir(m_pCrashInfo->crashReportFolder) == 0) {
+			// Shut up GCC, we don't care
+		}
+		#endif
+	}
 	
 	// Try to spawn a sub-process to process the crash info
 	// Using fork() in a signal handler is bad, but we are already crashing anyway

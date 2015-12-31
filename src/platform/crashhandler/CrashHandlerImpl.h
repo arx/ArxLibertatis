@@ -81,6 +81,7 @@ private:
 	virtual void processCrashSignal() { }
 	void processCrashRegisters();
 	virtual void processCrashTrace() { }
+	virtual void processCrashDump() { }
 	
 protected:
 	

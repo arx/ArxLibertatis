@@ -25,7 +25,10 @@
 #cmakedefine01 ARX_HAVE_WAITPID
 #cmakedefine01 ARX_HAVE_SIGACTION
 #cmakedefine01 ARX_HAVE_GETPID
+#cmakedefine01 ARX_HAVE_GETUID
+#cmakedefine01 ARX_HAVE_GETGID
 #cmakedefine01 ARX_HAVE_KILL
+#cmakedefine01 ARX_HAVE_SETRLIMIT
 
 // Time
 #cmakedefine01 ARX_HAVE_CLOCK_GETTIME
@@ -47,6 +50,7 @@
 #cmakedefine01 ARX_HAVE_PC_CASE_SENSITIVE
 #cmakedefine01 ARX_HAVE_DIRFD
 #cmakedefine01 ARX_HAVE_FSTATAT
+#cmakedefine01 ARX_HAVE_CHDIR
 
 // Audio backend
 #cmakedefine01 ARX_HAVE_OPENAL
@@ -70,6 +74,7 @@
 #cmakedefine01 ARX_HAVE_SYSCONF
 #cmakedefine01 ARX_HAVE_GETEXECNAME
 #cmakedefine01 ARX_HAVE_SYSCTL
+#cmakedefine01 ARX_HAVE_SYSCTLBYNAME
 #cmakedefine01 ARX_HAVE_SETENV
 
 // Arx components

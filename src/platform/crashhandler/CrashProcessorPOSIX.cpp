@@ -37,6 +37,7 @@
 #include "io/fs/Filesystem.h"
 
 #include "platform/Process.h"
+#include "platform/Thread.h"
 
 #include "util/String.h"
 
@@ -342,4 +343,37 @@ void CrashHandlerPOSIX::processCrashTrace() {
 	}
 	
 	addText(description.str().c_str());
+}
+
+void CrashHandlerPOSIX::processCrashDump() {
+	
+	// Generate a core dump
+	#if ARX_HAVE_KILL && defined(SIGABRT)
+	fs::path coredump = m_crashReportDir / "crash.dmp";
+	if(m_pCrashInfo->coreDumpFile[0] != '\0'
+	   && m_pCrashInfo->processId != platform::getProcessId()) {
+		kill(m_pCrashInfo->processId, SIGABRT);
+		for(size_t i = 1; platform::isProcessRunning(m_pCrashInfo->processId) && i < 10; i++) {
+			Thread::sleep(100);
+		}
+		fs::path core = util::loadString(m_pCrashInfo->coreDumpFile);
+		fs::path crashReportDir = util::loadString(m_pCrashInfo->crashReportFolder);
+		if(core.is_relative() && !crashReportDir.empty() && fs::exists(crashReportDir / core)) {
+			fs::rename(crashReportDir / core, coredump);
+			addAttachedFile(coredump);
+		} else if(fs::exists(core)) {
+			if(core.is_absolute()) {
+				u64 oldsize, newsize = fs::file_size(core);
+				do {
+					oldsize = newsize;
+					Thread::sleep(500);
+					newsize = fs::file_size(core);
+				} while(newsize != oldsize);
+			}
+			fs::copy_file(core, coredump);
+			addAttachedFile(coredump);
+		}
+	}
+	#endif
+	
 }

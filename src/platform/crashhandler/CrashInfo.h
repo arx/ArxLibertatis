@@ -113,6 +113,9 @@ struct CrashInfo : public CrashInfoBase {
 	int code;
 	
 	void * backtrace[100];
+	
+	char coreDumpFile[MaxFilenameLen];
+	
 };
 
 #else

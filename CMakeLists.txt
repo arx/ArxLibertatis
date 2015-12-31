@@ -558,6 +558,7 @@ else(MSVC)
 	check_symbol_exists(open "fcntl.h" ARX_HAVE_OPEN)
 	check_symbol_exists(fcntl "fcntl.h" ARX_HAVE_FCNTL)
 	
+	check_symbol_exists(chdir "unistd.h" ARX_HAVE_CHDIR)
 	check_symbol_exists(fork "unistd.h" ARX_HAVE_FORK)
 	check_symbol_exists(readlink "unistd.h" ARX_HAVE_READLINK)
 	check_symbol_exists(dup2 "unistd.h" ARX_HAVE_DUP2)
@@ -585,12 +586,17 @@ else(MSVC)
 	endif()
 	
 	check_symbol_exists(getpid "unistd.h" ARX_HAVE_GETPID)
+	check_symbol_exists(getgid "unistd.h" ARX_HAVE_GETGID)
+	check_symbol_exists(getuid "unistd.h" ARX_HAVE_GETUID)
 	
 	check_symbol_exists(sysconf "unistd.h" ARX_HAVE_SYSCONF)
 	
 	check_symbol_exists(sigaction "signal.h" ARX_HAVE_SIGACTION)
 	
+	check_symbol_exists(setrlimit "sys/resource.h" ARX_HAVE_SETRLIMIT)
+	
 	check_symbol_exists(sysctl "sys/sysctl.h" ARX_HAVE_SYSCTL)
+	check_symbol_exists(sysctlbyname "sys/sysctl.h" ARX_HAVE_SYSCTLBYNAME)
 	
 	if(USE_NATIVE_FS)
 		
