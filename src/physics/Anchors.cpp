@@ -1003,7 +1003,7 @@ static void AnchorData_Create_Phase_II_Original_Method(EERIE_BACKGROUND * eb) {
 	long per;
 	float total		=	static_cast<float>(eb->Zsize * eb->Xsize);
 	
-	for(long j = 0; j < eb->Zsize; j++)
+	for(long z = 0; z < eb->Zsize; z++)
 	for(long i = 0; i < eb->Xsize; i++) {
 		per = count / total * 100.f;
 		
@@ -1014,10 +1014,10 @@ static void AnchorData_Create_Phase_II_Original_Method(EERIE_BACKGROUND * eb) {
 		
 		count += 1.f;
 		
-		EERIE_BKG_INFO * eg = &eb->fastdata[i][j];
+		EERIE_BKG_INFO * eg = &eb->fastdata[i][z];
 		pos.x = (float)((float)((float)i) * (float)eb->Xdiv);
 		pos.y = 0.f;
-		pos.z = (float)((float)((float)j) * (float)eb->Zdiv);
+		pos.z = (float)((float)((float)z) * (float)eb->Zdiv);
 		Cylinder currcyl = Cylinder(pos, 30, -150.f);
 		
 		if(eg->nbpolyin) {
@@ -1035,8 +1035,8 @@ static void AnchorData_Create_Phase_II_Original_Method(EERIE_BACKGROUND * eb) {
 			if(!ok)
 				continue;
 			
-			float roof = GetTileMinY(i, j); 
-			float current_y = GetTileMaxY(i, j); 
+			float roof = GetTileMinY(i, z); 
+			float current_y = GetTileMaxY(i, z); 
 			
 			while(current_y > roof) {
 				long added = 0;
