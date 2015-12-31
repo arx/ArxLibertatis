@@ -790,9 +790,9 @@ void ARX_PLAYER_ComputePlayerFullStats() {
 	/////////////////////////////////////////////////////////////////////////////////////
 	
 	player.Full_life = player.lifePool.current;
-	player.Full_maxlife = (float)player.m_attributeFull.constitution * (float)(player.level + 2);
+	player.Full_maxlife = player.m_attributeFull.constitution * (player.level + 2);
 	player.lifePool.current = std::min(player.lifePool.current, player.Full_maxlife);
-	player.Full_maxmana = (float)player.m_attributeFull.mind * (float)(player.level + 1);
+	player.Full_maxmana = player.m_attributeFull.mind * (player.level + 1);
 	player.manaPool.current = std::min(player.manaPool.current, player.Full_maxmana);
 }
 
