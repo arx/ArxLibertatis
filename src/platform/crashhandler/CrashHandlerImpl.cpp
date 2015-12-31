@@ -289,6 +289,9 @@ void CrashHandlerImpl::fillBasicCrashInfo() {
 	
 	m_pCrashInfo->crashId = 0;
 	
+	m_pCrashInfo->signal = 0;
+	m_pCrashInfo->code = 0;
+	
 	m_pCrashInfo->hasAddress = false;
 	m_pCrashInfo->address = 0;
 	m_pCrashInfo->hasMemory = false;

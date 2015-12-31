@@ -49,7 +49,8 @@ private:
 	void unregisterCrashHandlers();
 	
 	void writeCrashDump(PEXCEPTION_POINTERS pExceptionPointers);
-	void getCrashSummary(int crashType, int FPECode);
+	
+	void processCrashSignal();
 	
 private:
 	

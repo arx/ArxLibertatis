@@ -904,7 +904,10 @@ set(PLATFORM_CRASHHANDLER_POSIX_SOURCES
 	src/platform/crashhandler/CrashHandlerPOSIX.cpp
 	src/platform/crashhandler/CrashProcessorPOSIX.cpp
 )
-set(PLATFORM_CRASHHANDLER_WINDOWS_SOURCES src/platform/crashhandler/CrashHandlerWindows.cpp)
+set(PLATFORM_CRASHHANDLER_WINDOWS_SOURCES
+	src/platform/crashhandler/CrashHandlerWindows.cpp
+	src/platform/crashhandler/CrashProcessorWindows.cpp
+)
 
 # Profiler sources
 set(PLATFORM_PROFILER_SOURCES src/platform/profiler/Profiler.cpp)

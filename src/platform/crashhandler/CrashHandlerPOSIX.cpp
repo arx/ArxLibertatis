@@ -296,8 +296,6 @@ bool CrashHandlerPOSIX::initialize() {
 		return false;
 	}
 	
-	m_pCrashInfo->signal = 0;
-	
 	std::memset(m_pCrashInfo->backtrace, 0, sizeof(m_pCrashInfo->backtrace));
 	
 	#if ARX_HAVE_PRCTL

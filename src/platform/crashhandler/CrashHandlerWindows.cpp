@@ -20,7 +20,6 @@
 #include "platform/crashhandler/CrashHandlerWindows.h"
 
 #include <new.h>     // <new> won't do it... we need some MS specific functions...
-#include <cfloat>    // For _FPE_XXX constants
 #include <intrin.h>  // _ReturnAddress()
 #include <csignal>
 
@@ -207,24 +206,6 @@ void CrashHandlerWindows::unregisterThreadCrashHandlers() {
 	m_pPreviousCrashHandlers->m_threadExceptionHandlers.erase(it);
 }
 
-
-enum CrashType {
-	USER_CRASH,
-	SEH_EXCEPTION,
-	TERMINATE_CALL,
-	UNEXPECTED_CALL,
-	PURE_CALL,
-	NEW_OPERATOR_ERROR,
-	INVALID_PARAMETER,
-	SIGNAL_SIGABRT,
-	SIGNAL_SIGFPE,
-	SIGNAL_SIGILL,
-	SIGNAL_SIGINT,
-	SIGNAL_SIGSEGV,
-	SIGNAL_SIGTERM,
-	SIGNAL_UNKNOWN
-};
-
 // This callbask function is called by MiniDumpWriteDump
 BOOL CALLBACK miniDumpCallback(PVOID, PMINIDUMP_CALLBACK_INPUT pInput, PMINIDUMP_CALLBACK_OUTPUT pOutput) {
 	BOOL bRet = FALSE; 
@@ -298,19 +279,21 @@ void CrashHandlerWindows::writeCrashDump(PEXCEPTION_POINTERS pExceptionPointers)
 	CloseHandle(hFile);
 }
 
-void CrashHandlerWindows::handleCrash(int crashType, void* crashExtraInfo, int FPECode) {
-
-	Autolock autoLock(&m_Lock);
-
-	EXCEPTION_POINTERS* pExceptionPointers = (EXCEPTION_POINTERS*)crashExtraInfo;
-
-	// Run the callbacks
-	for(std::vector<CrashHandler::CrashCallback>::iterator it = m_crashCallbacks.begin(); it != m_crashCallbacks.end(); ++it)
-		(*it)();
+void CrashHandlerWindows::handleCrash(int crashType, void * crashExtraInfo, int fpeCode) {
 	
-	// Get summary 
-	getCrashSummary(crashType, FPECode);
-
+	Autolock autoLock(&m_Lock);
+	
+	EXCEPTION_POINTERS * pExceptionPointers = (EXCEPTION_POINTERS*)crashExtraInfo;
+	
+	// Run the callbacks
+	for(std::vector<CrashHandler::CrashCallback>::iterator it = m_crashCallbacks.begin();
+	    it != m_crashCallbacks.end(); ++it) {
+		(*it)();
+	}
+	
+	m_pCrashInfo->signal = crashType;
+	m_pCrashInfo->code = fpeCode;
+	
 	// Write crash dump
 	writeCrashDump(pExceptionPointers);
 
@@ -353,57 +336,6 @@ void CrashHandlerWindows::handleCrash(int crashType, void* crashExtraInfo, int F
 	processCrash();
 	
 	std::abort();
-}
-
-void CrashHandlerWindows::getCrashSummary(int crashType, int FPECode) {
-	const char* crashSummary;
-
-	switch(crashType) {
-		case USER_CRASH:         crashSummary = "Aborted"; break;
-		case SEH_EXCEPTION:      crashSummary = "Unhandled exception"; break;
-		case TERMINATE_CALL:     crashSummary = "terminate() was called"; break;
-		case UNEXPECTED_CALL:    crashSummary = "unexpected() was called"; break;
-		case PURE_CALL:          crashSummary = "Pure virtual function called"; break;
-		case NEW_OPERATOR_ERROR: crashSummary = "new operator failed"; break;
-		case INVALID_PARAMETER:  crashSummary = "Invalid parameter detected"; break;
-		case SIGNAL_SIGABRT:     crashSummary = "Abnormal termination"; break;
-		case SIGNAL_SIGFPE:      crashSummary = "Floating-point error"; break;
-		case SIGNAL_SIGILL:      crashSummary = "Illegal instruction"; break;
-		case SIGNAL_SIGINT:      crashSummary = "CTRL+C signal"; break;
-		case SIGNAL_SIGSEGV:     crashSummary = "Illegal storage access"; break;
-		case SIGNAL_SIGTERM:     crashSummary = "Termination request"; break;
-		case SIGNAL_UNKNOWN:     crashSummary = "Unknown signal"; break;
-		default:                 crashSummary = "Unknown error"; break;
-	}
-	
-	strcpy(m_pCrashInfo->description, crashSummary);
-	if(crashType == SIGNAL_SIGFPE) {
-		// Append detailed information in case of a FPE exception
-		const char* FPEDetailed;
-		switch(FPECode) {
-			case _FPE_INVALID:         FPEDetailed = ": Invalid result"; break;
-			case _FPE_DENORMAL:        FPEDetailed = ": Denormal operand"; break;
-			case _FPE_ZERODIVIDE:      FPEDetailed = ": Divide by zero"; break;
-			case _FPE_OVERFLOW:        FPEDetailed = ": Overflow"; break;
-			case _FPE_UNDERFLOW:       FPEDetailed = ": Underflow"; break;
-			case _FPE_INEXACT:         FPEDetailed = ": Inexact precision"; break;
-			case _FPE_UNEMULATED:      FPEDetailed = ": Unemulated"; break;
-			case _FPE_SQRTNEG:         FPEDetailed = ": Negative square root"; break;
-			case _FPE_STACKOVERFLOW:   FPEDetailed = ": Stack Overflow"; break;
-			case _FPE_STACKUNDERFLOW:  FPEDetailed = ": Stack Underflow"; break;
-			case _FPE_EXPLICITGEN:     FPEDetailed = ": raise( SIGFPE ) was called"; break;
-#ifdef _FPE_MULTIPLE_TRAPS // Not available on all VC++ versions
-			case _FPE_MULTIPLE_TRAPS:  FPEDetailed = ": Multiple traps"; break;
-#endif
-#ifdef _FPE_MULTIPLE_FAULTS // Not available on all VC++ versions
-			case _FPE_MULTIPLE_FAULTS: FPEDetailed = ": Multiple faults"; break;
-#endif
-			default:                   FPEDetailed = "";
-		}
-		
-		strcat(m_pCrashInfo->description, FPEDetailed);
-	}
-	strcat(m_pCrashInfo->description, "\n");
 }
 
 LONG WINAPI SEHHandler(PEXCEPTION_POINTERS pExceptionPtrs) {

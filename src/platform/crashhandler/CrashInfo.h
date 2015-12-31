@@ -82,6 +82,9 @@ struct CrashInfoBase {
 	
 	u32 crashId;
 	
+	int signal;
+	int code;
+	
 	bool hasAddress;
 	bool hasMemory;
 	bool hasStack;
@@ -107,14 +110,6 @@ struct CrashInfoBase {
 
 struct CrashInfo : public CrashInfoBase {
 	
-	CrashInfo()
-		: signal(0)
-		, code(0)
-	{}
-	
-	int signal;
-	int code;
-	
 	void * backtrace[100];
 	
 	char coreDumpFile[MaxFilenameLen];
@@ -125,6 +120,23 @@ struct CrashInfo : public CrashInfoBase {
 
 #include <windows.h>
 #include <dbghelp.h>
+
+enum CrashType {
+	USER_CRASH,
+	SEH_EXCEPTION,
+	TERMINATE_CALL,
+	UNEXPECTED_CALL,
+	PURE_CALL,
+	NEW_OPERATOR_ERROR,
+	INVALID_PARAMETER,
+	SIGNAL_SIGABRT,
+	SIGNAL_SIGFPE,
+	SIGNAL_SIGILL,
+	SIGNAL_SIGINT,
+	SIGNAL_SIGSEGV,
+	SIGNAL_SIGTERM,
+	SIGNAL_UNKNOWN
+};
 
 #pragma pack(push,1)
 
