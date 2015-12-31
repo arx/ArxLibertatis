@@ -1687,7 +1687,7 @@ static long ARX_CHANGELEVEL_Pop_Player() {
 	player.jumpstarttime = asp->jumpstarttime;
 	player.Last_Movement = PlayerMovement::load(asp->Last_Movement); // TODO save/load flags
 	
-	player.level = checked_range_cast<unsigned char>(asp->level);
+	player.level = checked_range_cast<short>(asp->level);
 	
 	player.lifePool.current = asp->life;
 	player.manaPool.current = asp->mana;

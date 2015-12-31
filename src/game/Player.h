@@ -297,7 +297,7 @@ struct ARXCHARACTER {
 	unsigned char Attribute_Redistribute;
 	unsigned char Skill_Redistribute;
 	
-	unsigned char level;
+	short level;
 	
 	long xp;
 	char skin;

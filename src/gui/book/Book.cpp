@@ -960,7 +960,7 @@ static void ARX_INTERFACE_ManageOpenedBook_Stats()
 	
 	{
 		std::stringstream ss;
-		ss << g_bookResouces.Level << " " << std::setw(3) << (int)player.level;
+		ss << g_bookResouces.Level << " " << std::setw(3) << player.level;
 		DrawBookTextCenter(hFontInBook, Vec2f(398, 74), ss.str(), Color::black);
 	}
 	
