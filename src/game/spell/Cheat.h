@@ -34,7 +34,7 @@ extern long cur_arm;
 extern long cur_sos;
 
 extern long cur_mega;
-extern float sp_max_start;
+extern unsigned long sp_max_start;
 extern long sp_wep;
 extern short uw_mode;
 
