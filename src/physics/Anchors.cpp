@@ -1098,7 +1098,7 @@ void AnchorData_Create(EERIE_BACKGROUND * eb) {
 	float total		=	static_cast<float>(eb->Zsize * eb->Xsize * 9);
 
 	for(long z = 0; z < eb->Zsize; z++)
-	for(long i = 0; i < eb->Xsize; i++) {
+	for(long x = 0; x < eb->Xsize; x++) {
 		long LASTFOUND = 0;
 		
 		for(long divv = 0; divv < 9; divv++) {
@@ -1155,8 +1155,8 @@ void AnchorData_Create(EERIE_BACKGROUND * eb) {
 			if(LASTFOUND)
 				break;
 			
-			EERIE_BKG_INFO * eg = &eb->fastdata[i][z];
-			pos.x = (float)((float)((float)i + 0.33f * (float)divvx) * (float)eb->Xdiv);
+			EERIE_BKG_INFO * eg = &eb->fastdata[x][z];
+			pos.x = (float)((float)((float)x + 0.33f * (float)divvx) * (float)eb->Xdiv);
 			pos.y = 0.f;
 			pos.z = (float)((float)((float)z + 0.33f * (float)divvy) * (float)eb->Zdiv);
 			EERIEPOLY * ep = GetMinPoly(pos);
