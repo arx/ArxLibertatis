@@ -174,8 +174,6 @@ bool RayCollidingPoly(const Vec3f & orgn, const Vec3f & dest, const EERIEPOLY & 
 
 void EERIEPOLY_Compute_PolyIn();
 
-float GetTileMinY(long i,long j);
-float GetTileMaxY(long i,long j);
 
 #define MAX_FRUSTRUMS 32
 

@@ -1056,29 +1056,7 @@ void EERIEPOLY_Compute_PolyIn() {
 	}
 }
 
-float GetTileMinY(long i, long j) {
-	float minf = 9999999999.f;
-	EERIE_BKG_INFO *eg = &ACTIVEBKG->fastdata[i][j];
 
-	for (long kk = 0; kk < eg->nbpolyin; kk++) {
-		EERIEPOLY * ep = eg->polyin[kk];
-		minf = std::min(minf, ep->min.y);
-	}
-
-	return minf;
-}
-
-float GetTileMaxY(long i, long j) {
-	float maxf = -9999999999.f;
-	EERIE_BKG_INFO *eg = &ACTIVEBKG->fastdata[i][j];
-
-	for(long kk = 0; kk < eg->nbpolyin; kk++) {
-		EERIEPOLY * ep = eg->polyin[kk];
-		maxf = std::max(maxf, ep->max.y);
-	}
-
-	return maxf;
-}
 
 #define TYPE_PORTAL	1
 #define TYPE_ROOM	2

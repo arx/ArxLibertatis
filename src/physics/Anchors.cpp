@@ -970,6 +970,30 @@ static void AnchorData_Create_Links_Original_Method(EERIE_BACKGROUND * eb) {
 	EERIE_PATHFINDER_Create();
 }
 
+static float GetTileMinY(long i, long j) {
+	float minf = 9999999999.f;
+	EERIE_BKG_INFO *eg = &ACTIVEBKG->fastdata[i][j];
+
+	for (long kk = 0; kk < eg->nbpolyin; kk++) {
+		EERIEPOLY * ep = eg->polyin[kk];
+		minf = std::min(minf, ep->min.y);
+	}
+
+	return minf;
+}
+
+static float GetTileMaxY(long i, long j) {
+	float maxf = -9999999999.f;
+	EERIE_BKG_INFO *eg = &ACTIVEBKG->fastdata[i][j];
+
+	for(long kk = 0; kk < eg->nbpolyin; kk++) {
+		EERIEPOLY * ep = eg->polyin[kk];
+		maxf = std::max(maxf, ep->max.y);
+	}
+
+	return maxf;
+}
+
 static void AnchorData_Create_Phase_II_Original_Method(EERIE_BACKGROUND * eb) {
 	
 	Vec3f pos;
