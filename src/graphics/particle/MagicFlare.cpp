@@ -171,26 +171,26 @@ void AddFlare(const Vec2s & pos, float sm, short typ, Entity * io, bool bookDraw
 		i = oldest;
 	}
 
-	FLARES * fl = &magicFlares[i];
-	fl->exist = 1;
+	FLARES & flare = magicFlares[i];
+	flare.exist = 1;
 	flarenum++;
 
 	if(!bookDraw)
-		fl->bDrawBitmap = 0;
+		flare.bDrawBitmap = 0;
 	else
-		fl->bDrawBitmap = 1;
+		flare.bDrawBitmap = 1;
 
-	fl->io = io;
+	flare.io = io;
 	if(io) {
-		fl->flags = 1;
+		flare.flags = 1;
 		io->flarecount++;
 	} else {
-		fl->flags = 0;
+		flare.flags = 0;
 	}
 
-	fl->pos.x = float(pos.x) - Random::getf(0.f, 4.f);
-	fl->pos.y = float(pos.y) - Random::getf(0.f, 4.f) - 50.f;
-	fl->tv.rhw = fl->v.rhw = 1.f;
+	flare.pos.x = float(pos.x) - Random::getf(0.f, 4.f);
+	flare.pos.y = float(pos.y) - Random::getf(0.f, 4.f) - 50.f;
+	flare.tv.rhw = flare.v.rhw = 1.f;
 
 	if(!bookDraw) {
 		EERIE_CAMERA ka = *Kam;
@@ -198,47 +198,47 @@ void AddFlare(const Vec2s & pos, float sm, short typ, Entity * io, bool bookDraw
 		EERIE_CAMERA * oldcam = ACTIVECAM;
 		SetActiveCamera(&ka);
 		PrepareCamera(&ka, g_size);
-		fl->v.p += ka.orgTrans.pos;
-		EE_RTP(fl->tv.p, &fl->v);
-		fl->v.p += ka.orgTrans.pos;
+		flare.v.p += ka.orgTrans.pos;
+		EE_RTP(flare.tv.p, &flare.v);
+		flare.v.p += ka.orgTrans.pos;
 
-		float vx = -(fl->pos.x - subj.center.x) * 0.2173913f;
-		float vy = (fl->pos.y - subj.center.y) * 0.1515151515151515f;
+		float vx = -(flare.pos.x - subj.center.x) * 0.2173913f;
+		float vy = (flare.pos.y - subj.center.y) * 0.1515151515151515f;
 		if(io) {
-			fl->v.p = io->pos;
-			fl->v.p += angleToVectorXZ(io->angle.getPitch() + vx) * 100.f;
-			fl->v.p.y += std::sin(glm::radians(MAKEANGLE(io->angle.getYaw() + vy))) * 100.f - 150.f;
+			flare.v.p = io->pos;
+			flare.v.p += angleToVectorXZ(io->angle.getPitch() + vx) * 100.f;
+			flare.v.p.y += std::sin(glm::radians(MAKEANGLE(io->angle.getYaw() + vy))) * 100.f - 150.f;
 		} else {
-			fl->v.p.x = 1.0f  * float(pos.x - (g_size.width()  / 2)) * 156.f / (640.f * g_sizeRatio.y);
-			fl->v.p.y = 0.75f * float(pos.y - (g_size.height() / 2)) * 156.f / (480.f * g_sizeRatio.y);
-			fl->v.p.z = 75.f;
+			flare.v.p.x = 1.0f  * float(pos.x - (g_size.width()  / 2)) * 156.f / (640.f * g_sizeRatio.y);
+			flare.v.p.y = 0.75f * float(pos.y - (g_size.height() / 2)) * 156.f / (480.f * g_sizeRatio.y);
+			flare.v.p.z = 75.f;
 			ka = *oldcam;
 			SetActiveCamera(&ka);
 			PrepareCamera(&ka, g_size);
-			float temp = (fl->v.p.y * -ka.orgTrans.xsin) + (fl->v.p.z * ka.orgTrans.xcos);
-			fl->v.p.y = (fl->v.p.y * ka.orgTrans.xcos) - (-fl->v.p.z * ka.orgTrans.xsin);
-			fl->v.p.z = (temp * ka.orgTrans.ycos) - (-fl->v.p.x * ka.orgTrans.ysin);
-			fl->v.p.x = (temp * -ka.orgTrans.ysin) + (fl->v.p.x * ka.orgTrans.ycos);
-			fl->v.p += oldcam->orgTrans.pos;
+			float temp = (flare.v.p.y * -ka.orgTrans.xsin) + (flare.v.p.z * ka.orgTrans.xcos);
+			flare.v.p.y = (flare.v.p.y * ka.orgTrans.xcos) - (-flare.v.p.z * ka.orgTrans.xsin);
+			flare.v.p.z = (temp * ka.orgTrans.ycos) - (-flare.v.p.x * ka.orgTrans.ysin);
+			flare.v.p.x = (temp * -ka.orgTrans.ysin) + (flare.v.p.x * ka.orgTrans.ycos);
+			flare.v.p += oldcam->orgTrans.pos;
 		}
-		fl->tv.p = fl->v.p;
+		flare.tv.p = flare.v.p;
 		SetActiveCamera(oldcam);
 		PrepareCamera(oldcam, g_size);
 	} else {
-		fl->tv.p = Vec3f(fl->pos.x, fl->pos.y, 0.001f);
+		flare.tv.p = Vec3f(flare.pos.x, flare.pos.y, 0.001f);
 	}
 
 	switch(PIPOrgb) {
 		case 0: {
-			fl->rgb = Color3f(.4f, 0.f, .4f) + Color3f(2.f/3, 2.f/3, 2.f/3) * randomColor3f();
+			flare.rgb = Color3f(.4f, 0.f, .4f) + Color3f(2.f/3, 2.f/3, 2.f/3) * randomColor3f();
 			break;
 		}
 		case 1: {
-			fl->rgb = Color3f(.5f, .5f, 0.f) + Color3f(.625f, .625f, .55f) * randomColor3f();
+			flare.rgb = Color3f(.5f, .5f, 0.f) + Color3f(.625f, .625f, .55f) * randomColor3f();
 			break;
 		}
 		case 2: {
-			fl->rgb = Color3f(.4f, 0.f, 0.f) + Color3f(2.f/3, .55f, .55f) * randomColor3f();
+			flare.rgb = Color3f(.4f, 0.f, 0.f) + Color3f(2.f/3, .55f, .55f) * randomColor3f();
 			break;
 		}
 	}
@@ -246,25 +246,25 @@ void AddFlare(const Vec2s & pos, float sm, short typ, Entity * io, bool bookDraw
 	if(typ == -1) {
 		float zz = eeMousePressed1() ? 0.29f : ((sm > 0.5f) ? Random::getf() : 1.f);
 		if(zz < 0.2f) {
-			fl->type = 2;
-			fl->size = Random::getf(42.f, 84.f);
-			fl->tolive = Random::getf(800.f, 1600.f) * FLARE_MUL;
+			flare.type = 2;
+			flare.size = Random::getf(42.f, 84.f);
+			flare.tolive = Random::getf(800.f, 1600.f) * FLARE_MUL;
 		} else if(zz < 0.5f) {
-			fl->type = 3;
-			fl->size = Random::getf(16.f, 68.f);
-			fl->tolive = Random::getf(800.f, 1600.f) * FLARE_MUL;
+			flare.type = 3;
+			flare.size = Random::getf(16.f, 68.f);
+			flare.tolive = Random::getf(800.f, 1600.f) * FLARE_MUL;
 		} else {
-			fl->type = 1;
-			fl->size = Random::getf(32.f, 56.f) * sm;
-			fl->tolive = Random::getf(1700.f, 2200.f) * FLARE_MUL;
+			flare.type = 1;
+			flare.size = Random::getf(32.f, 56.f) * sm;
+			flare.tolive = Random::getf(1700.f, 2200.f) * FLARE_MUL;
 		}
 	} else {
-		fl->type = (Random::getf() > 0.8f) ? 1 : 4;
-		fl->size = Random::getf(64.f, 102.f) * sm;
-		fl->tolive = Random::getf(1700.f, 2200.f) * FLARE_MUL;
+		flare.type = (Random::getf() > 0.8f) ? 1 : 4;
+		flare.size = Random::getf(64.f, 102.f) * sm;
+		flare.tolive = Random::getf(1700.f, 2200.f) * FLARE_MUL;
 	}
 
-	fl->dynlight = LightHandle();
+	flare.dynlight = LightHandle();
 
 	for(long kk = 0; kk < 3; kk++) {
 
@@ -286,7 +286,7 @@ void AddFlare(const Vec2s & pos, float sm, short typ, Entity * io, bool bookDraw
 			pd->special = FADE_IN_AND_OUT;
 		}
 
-		pd->ov = fl->v.p + randomVec(-5.f, 5.f);
+		pd->ov = flare.v.p + randomVec(-5.f, 5.f);
 		pd->move = Vec3f(0.f, 5.f, 0.f);
 		pd->scale = Vec3f(-2.f);
 		pd->tolive = 1300 + kk * 100 + Random::get(0, 800);
@@ -297,7 +297,7 @@ void AddFlare(const Vec2s & pos, float sm, short typ, Entity * io, bool bookDraw
 		} else {
 			pd->siz = Random::getf(1.f, 2.f);
 		}
-		pd->rgb = Color3f(fl->rgb.r * (2.f/3), fl->rgb.g * (2.f/3), fl->rgb.b * (2.f/3));
+		pd->rgb = Color3f(flare.rgb.r * (2.f/3), flare.rgb.g * (2.f/3), flare.rgb.b * (2.f/3));
 		pd->fparam = 1.2f;
 
 		if(bookDraw)
