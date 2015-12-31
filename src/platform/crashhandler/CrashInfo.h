@@ -68,6 +68,9 @@ struct CrashInfoBase {
 	// ID of the crashed process & thread
 	platform::process_id processId;
 	
+	u64 memoryUsage;
+	double runningTime;
+	
 	// Where the crash reports should be written.
 	char crashReportFolder[MaxFilenameLen];
 	

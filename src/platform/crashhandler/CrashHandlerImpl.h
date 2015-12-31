@@ -78,6 +78,7 @@ private:
 	void destroySharedMemory();
 	void fillBasicCrashInfo();
 	
+	virtual void processCrashInfo() { }
 	virtual void processCrashSignal() { }
 	void processCrashRegisters();
 	virtual void processCrashTrace() { }

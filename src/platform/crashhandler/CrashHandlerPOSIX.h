@@ -46,6 +46,7 @@ private:
 	bool registerCrashHandlers();
 	void unregisterCrashHandlers();
 	
+	void processCrashInfo();
 	void processCrashSignal();
 	void processCrashTrace();
 	void processCrashDump();

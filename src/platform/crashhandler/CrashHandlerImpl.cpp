@@ -142,6 +142,7 @@ void CrashHandlerImpl::processCrash() {
 			fs::create_directories(m_crashReportDir);
 		}
 		
+		processCrashInfo();
 		processCrashSignal();
 		processCrashRegisters();
 		processCrashTrace();
@@ -273,6 +274,8 @@ void CrashHandlerImpl::fillBasicCrashInfo() {
 	
 	m_pCrashInfo->architecture = ARX_ARCH;
 	m_pCrashInfo->processId = platform::getProcessId();
+	m_pCrashInfo->memoryUsage = 0;
+	m_pCrashInfo->runningTime = 0.0;
 
 	strcpy(m_pCrashInfo->crashReportFolder, "crashes");
 	

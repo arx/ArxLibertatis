@@ -30,22 +30,6 @@
 #include <psapi.h>
 #endif
 
-#if ARX_HAVE_GETRUSAGE
-#include <sys/resource.h>
-#include <sys/time.h>
-#endif
-
-#if ARX_HAVE_PRCTL
-#include <sys/prctl.h>
-#ifndef PR_SET_PTRACER
-#define PR_SET_PTRACER 0x59616d61
-#endif
-#endif
-
-#if ARX_HAVE_SYSCONF
-#include <unistd.h>
-#endif
-
 // Qt
 #include <QApplication>
 #include <QMessageBox>
@@ -132,6 +116,9 @@ bool ErrorReport::Initialize()
 
 bool ErrorReport::GetCrashDump(const fs::path & fileName) {
 	
+	m_ProcessMemoryUsage = m_pCrashInfo->memoryUsage;
+	m_RunningTimeSec = m_pCrashInfo->runningTime;
+	
 	if(!getCrashDescription()) {
 		return false;
 	}
@@ -170,95 +157,6 @@ bool ErrorReport::GetCrashDump(const fs::path & fileName) {
 #endif
 	
 }
-
-#if ARX_PLATFORM != ARX_PLATFORM_WIN32
-
-static void getProcessSatus(QString filename, u64 & rss, u64 & startTicks) {
-	
-	rss = startTicks = 0;
-	
-	QFile file(filename);
-	
-	if(!file.open(QIODevice::ReadOnly)) {
-		return;
-	}
-	QByteArray stat = file.readAll();
-	file.close();
-	
-	QList<QByteArray> stat_fields = stat.split(' ');
-	
-	const int rss_index = 23;
-	if(rss_index < stat_fields.size()) {
-		rss = stat_fields[rss_index].toULongLong();
-	}
-	
-	const int starttime_index = 21;
-	if(starttime_index < stat_fields.size()) {
-		startTicks = stat_fields[starttime_index].toULongLong();
-	}
-	
-}
-
-static void getResourceUsage(int pid, quint64 & memoryUsage, double & runningTimeSec) {
-	
-	memoryUsage = 0;
-	runningTimeSec = 0.0;
-	
-#if ARX_HAVE_GETRUSAGE && ARX_PLATFORM != ARX_PLATFORM_MACOSX
-	{
-		struct rusage usage;
-		if(getrusage(pid, &usage) == 0) {
-			memoryUsage = usage.ru_maxrss * 1024;
-		}
-	}
-#endif
-	
-#if ARX_HAVE_SYSCONF && (defined(_SC_PAGESIZE) || defined(_SC_CLK_TCK))
-	
-	u64 rss, startTicks, endTicks, dummy;
-	
-	getProcessSatus(QString("/proc/%1/stat").arg(pid), rss, startTicks);
-	
-	// Get the rss memory usage from /proc/pid/stat
-#ifdef _SC_PAGESIZE
-	if(rss != 0) {
-		long pagesize = sysconf(_SC_PAGESIZE);
-		if(pagesize > 0) {
-			memoryUsage = rss * pagesize;
-		}
-	}
-#endif
-	
-#ifdef _SC_CLK_TCK
-
-	if(startTicks == 0) {
-		return;
-	}
-	
-	pid_t child = fork();
-	if(!child) {
-		while(1) {
-			// wait
-		}
-	}
-	
-	getProcessSatus(QString("/proc/%1/stat").arg(child), dummy, endTicks);
-	kill(child, SIGTERM);
-	
-	if(startTicks != 0 && endTicks != 0) {
-		u64 ticksPerSecond = sysconf(_SC_CLK_TCK);
-		if(ticksPerSecond > 0) {
-			runningTimeSec = double(endTicks - startTicks) / double(ticksPerSecond);
-		}
-	}
-	
-#endif
-	
-#endif
-	
-}
-
-#endif //  ARX_PLATFORM != ARX_PLATFORM_WIN32
 
 bool ErrorReport::getCrashDescription() {
 	
@@ -364,12 +262,6 @@ bool ErrorReport::GetMiscCrashInfo() {
 	m_OSName = QString::fromUtf8(platform::getOSName().c_str());
 	m_OSArchitecture = QString::fromUtf8(platform::getOSArchitecture().c_str());
 	m_OSDistribution = QString::fromUtf8(platform::getOSDistribution().c_str());
-	
-#if ARX_PLATFORM != ARX_PLATFORM_WIN32
-	
-	getResourceUsage(m_pCrashInfo->processId, m_ProcessMemoryUsage, m_RunningTimeSec);
-	
-#endif
 
 	return true;
 }

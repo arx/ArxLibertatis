@@ -26,12 +26,25 @@
 #include <sstream>
 
 #include <signal.h>
+#include <unistd.h>
+
+#include "Configure.h"
+
+#if ARX_HAVE_GETRUSAGE
+#include <sys/resource.h>
+#include <sys/time.h>
+#endif
+
+#if ARX_HAVE_PRCTL
+#include <sys/prctl.h>
+#ifndef PR_SET_PTRACER
+#define PR_SET_PTRACER 0x59616d61
+#endif
+#endif
 
 #include <boost/crc.hpp>
 #include <boost/algorithm/string/trim.hpp>
 #include <boost/range/size.hpp>
-
-#include "Configure.h"
 
 #include "io/fs/FilePath.h"
 #include "io/fs/Filesystem.h"
@@ -41,6 +54,83 @@
 
 #include "util/String.h"
 
+
+static void getProcessSatus(platform::process_id pid, u64 & rss, u64 & startTicks) {
+	
+	rss = startTicks = 0;
+	
+	std::ostringstream oss;
+	oss << "/proc/" << pid << "/stat";
+	std::istringstream iss(fs::read(oss.str()));
+	
+	const int rssIndex = 23;
+	const int startTicksIndex = 21;
+	for(size_t i = 0; iss.good(); i++) {
+		if(i == rssIndex) {
+			iss >> rss;
+		} else if(i == startTicksIndex) {
+			iss >> startTicks;
+		}
+		iss.ignore(std::numeric_limits<std::streamsize>::max(), ' ');
+	}
+	
+}
+
+void CrashHandlerPOSIX::processCrashInfo() {
+	
+	#if ARX_HAVE_GETRUSAGE && ARX_PLATFORM != ARX_PLATFORM_MACOSX
+	{
+		struct rusage usage;
+		if(getrusage(m_pCrashInfo->processId, &usage) == 0) {
+			m_pCrashInfo->memoryUsage = usage.ru_maxrss * 1024;
+		}
+	}
+	#endif
+	
+	#if ARX_HAVE_SYSCONF && (defined(_SC_PAGESIZE) || defined(_SC_CLK_TCK))
+	
+	u64 rss, startTicks, endTicks, dummy;
+	
+	getProcessSatus(m_pCrashInfo->processId, rss, startTicks);
+	
+	// Get the rss memory usage from /proc/pid/stat
+	#ifdef _SC_PAGESIZE
+	if(rss != 0) {
+		long pagesize = sysconf(_SC_PAGESIZE);
+		if(pagesize > 0) {
+			m_pCrashInfo->memoryUsage = rss * pagesize;
+		}
+	}
+	#endif
+	
+	#ifdef _SC_CLK_TCK
+	
+	if(startTicks == 0) {
+		return;
+	}
+	
+	pid_t child = fork();
+	if(!child) {
+		while(1) {
+			// wait
+		}
+	}
+	
+	getProcessSatus(child, dummy, endTicks);
+	kill(child, SIGTERM);
+	
+	if(startTicks != 0 && endTicks != 0) {
+		u64 ticksPerSecond = sysconf(_SC_CLK_TCK);
+		if(ticksPerSecond > 0) {
+			m_pCrashInfo->runningTime = double(endTicks - startTicks) / double(ticksPerSecond);
+		}
+	}
+	
+	#endif
+	
+	#endif
+	
+}
 
 void CrashHandlerPOSIX::processCrashSignal() {
 	
