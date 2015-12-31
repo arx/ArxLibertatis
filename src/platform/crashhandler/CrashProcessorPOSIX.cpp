@@ -348,8 +348,8 @@ void CrashHandlerPOSIX::processCrashTrace() {
 void CrashHandlerPOSIX::processCrashDump() {
 	
 	// Generate a core dump
-	#if ARX_HAVE_KILL && defined(SIGABRT)
 	fs::path coredump = m_crashReportDir / "crash.dmp";
+	#if ARX_HAVE_KILL && defined(SIGABRT)
 	if(m_pCrashInfo->coreDumpFile[0] != '\0'
 	   && m_pCrashInfo->processId != platform::getProcessId()) {
 		kill(m_pCrashInfo->processId, SIGABRT);
@@ -374,6 +374,24 @@ void CrashHandlerPOSIX::processCrashDump() {
 			addAttachedFile(coredump);
 		}
 	}
+	else
 	#endif
+	if(platform::isProcessRunning(m_pCrashInfo->processId)) {
+		char pid[32];
+		std::sprintf(pid, "%d", m_pCrashInfo->processId);
+		const char * command[] = { "gcore", "-o", "arx-crash-core-dump", pid, NULL };
+		(void)platform::runHelper(command, true);
+		if(fs::exists("arx-crash-core-dump")) {
+			fs::rename("arx-crash-core-dump", coredump);
+			addAttachedFile(coredump);
+		} else {
+			char filename[1024];
+			std::sprintf(filename, "arx-crash-core-dump.%d", m_pCrashInfo->processId);
+			if(fs::exists(filename)) {
+				fs::rename(filename, coredump);
+				addAttachedFile(coredump);
+			}
+		}
+	}
 	
 }
