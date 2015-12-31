@@ -438,8 +438,8 @@ static const float skill_attribute_factors[max_skills][max_attributes] = {
  */
 static void ARX_PLAYER_ComputePlayerStats() {
 	
-	player.lifePool.max = (float)player.m_attribute.constitution * (float)(player.level + 2);
-	player.manaPool.max = (float)player.m_attribute.mind * (float)(player.level + 1);
+	player.lifePool.max = player.m_attribute.constitution * (player.level + 2);
+	player.manaPool.max = player.m_attribute.mind * (player.level + 1);
 	
 	float base_defense = player.m_skill.defense + player.m_attribute.constitution * 3;
 	float fCalc = base_defense * ( 1.0f / 10 ) - 1 ;
