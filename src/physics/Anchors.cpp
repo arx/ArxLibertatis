@@ -1097,7 +1097,7 @@ void AnchorData_Create(EERIE_BACKGROUND * eb) {
 	long per;
 	float total		=	static_cast<float>(eb->Zsize * eb->Xsize * 9);
 
-	for(long j = 0; j < eb->Zsize; j++)
+	for(long z = 0; z < eb->Zsize; z++)
 	for(long i = 0; i < eb->Xsize; i++) {
 		long LASTFOUND = 0;
 		
@@ -1155,10 +1155,10 @@ void AnchorData_Create(EERIE_BACKGROUND * eb) {
 			if(LASTFOUND)
 				break;
 			
-			EERIE_BKG_INFO * eg = &eb->fastdata[i][j];
+			EERIE_BKG_INFO * eg = &eb->fastdata[i][z];
 			pos.x = (float)((float)((float)i + 0.33f * (float)divvx) * (float)eb->Xdiv);
 			pos.y = 0.f;
-			pos.z = (float)((float)((float)j + 0.33f * (float)divvy) * (float)eb->Zdiv);
+			pos.z = (float)((float)((float)z + 0.33f * (float)divvy) * (float)eb->Zdiv);
 			EERIEPOLY * ep = GetMinPoly(pos);
 			Cylinder currcyl = Cylinder(pos, 20 - (4.f * divv), -120.f);
 			
