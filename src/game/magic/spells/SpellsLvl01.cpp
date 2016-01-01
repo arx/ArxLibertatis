@@ -381,7 +381,7 @@ void MagicMissileSpell::Update(float timeDelta) {
 	for(size_t i = 0; i < pTab.size(); i++) {
 		pTab[i]->Render();
 		
-		CMagicMissile * pMM = (CMagicMissile *) pTab[i];
+		CMagicMissile * pMM = pTab[i];
 		
 		if(lightHandleIsValid(pMM->lLightId)) {
 			EERIE_LIGHT * el	= lightHandleGet(pMM->lLightId);
