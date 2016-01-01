@@ -23,9 +23,12 @@
 #include <intrin.h>  // _ReturnAddress()
 #include <csignal>
 
+#include <dbghelp.h>
+
 #include "io/log/Logger.h"
 
 #include "platform/Architecture.h"
+#include "platform/Platform.h"
 
 
 typedef void (*signal_handler)(int signal);
@@ -308,7 +311,9 @@ void CrashHandlerWindows::handleCrash(int crashType, void * crashExtraInfo, int 
 	writeCrashDump(pointers);
 
 	// Copy CONTEXT to crash info structure
-	PCONTEXT context = &m_pCrashInfo->contextRecord;
+	PCONTEXT context = reinterpret_cast<PCONTEXT>(m_pCrashInfo->contextRecord);
+	ARX_STATIC_ASSERT(sizeof(m_pCrashInfo->contextRecord) >= sizeof(*context),
+	                  "buffer too small");
 	memset(context, 0, sizeof(*context));
 	if(pointers != 0) {
 		u32 code = m_pCrashInfo->exceptionCode = pointers->ExceptionRecord->ExceptionCode;

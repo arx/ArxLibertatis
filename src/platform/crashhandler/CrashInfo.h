@@ -119,7 +119,6 @@ struct CrashInfo : public CrashInfoBase {
 #else
 
 #include <windows.h>
-#include <dbghelp.h>
 
 enum CrashType {
 	USER_CRASH,
@@ -142,7 +141,7 @@ enum CrashType {
 
 struct CrashInfo : public CrashInfoBase {
 	
-	CONTEXT contextRecord;
+	char contextRecord[1232];
 	CHAR miniDumpTmpFile[MAX_PATH];
 	u32 threadId;
 	u32 exceptionCode;

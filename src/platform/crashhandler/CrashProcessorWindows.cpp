@@ -196,7 +196,9 @@ void CrashHandlerWindows::processCrashTrace() {
 		description << "\nCould not load symbols: " << platform::getErrorString() << '\n';
 	}
 	
-	PCONTEXT context = &m_pCrashInfo->contextRecord;
+	PCONTEXT context = reinterpret_cast<PCONTEXT>(m_pCrashInfo->contextRecord);
+	ARX_STATIC_ASSERT(sizeof(m_pCrashInfo->contextRecord) >= sizeof(*context),
+	                  "buffer too small");
 	STACKFRAME64 stackFrame;
 	memset(&stackFrame, 0, sizeof(stackFrame));
 	DWORD imageType;
