@@ -103,7 +103,7 @@ extern ARX_MENU_DATA ARXmenu;
 
 extern Rect g_size;
 
-extern long REFUSE_GAME_RETURN;
+extern bool REFUSE_GAME_RETURN;
 
 bool bNoMenu=false;
 
@@ -152,7 +152,7 @@ static bool ARX_LoadGame(const SaveGame & save) {
 	
 	long ret = ARX_CHANGELEVEL_Load(save.savefile);
 	
-	REFUSE_GAME_RETURN = 0;
+	REFUSE_GAME_RETURN = false;
 
 	return ret != -1;
 }

@@ -88,7 +88,7 @@ extern Rect g_size;
 
 extern SavegameHandle LOADQUEST_SLOT;
 
-extern long REFUSE_GAME_RETURN;
+extern bool REFUSE_GAME_RETURN;
 
 extern bool bFade;
 extern bool	bFadeInOut;
@@ -262,7 +262,7 @@ void ARXMenu_LoadQuest(SavegameHandle num) {
 	LOADQUEST_SLOT = num;
 
 	ARX_SOUND_PlayMenu(SND_MENU_CLICK);
-	REFUSE_GAME_RETURN = 0;
+	REFUSE_GAME_RETURN = false;
 	ARX_MENU_Clicked_QUIT();
 }
 

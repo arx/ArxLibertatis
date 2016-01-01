@@ -112,7 +112,7 @@ extern TextureContainer * pTextureLoad;
 
 bool bQuickGenFirstClick = true;
 ARX_MENU_DATA ARXmenu;
-long REFUSE_GAME_RETURN = 0;
+bool REFUSE_GAME_RETURN = false;
 
 static long SP_HEAD = 0;
 
@@ -202,7 +202,7 @@ void ARX_MENU_Clicked_NEWQUEST() {
 	
 	arxtime.resume();
 	
-	REFUSE_GAME_RETURN = 1;
+	REFUSE_GAME_RETURN = true;
 	
 	ARX_PLAYER_Start_New_Quest();
 	g_guiBookCurrentTopTab = BOOKMODE_STATS;
@@ -213,7 +213,7 @@ void ARX_MENU_Clicked_NEWQUEST() {
 
 static void ARX_MENU_NEW_QUEST_Clicked_QUIT() {
 	START_NEW_QUEST = true;
-	REFUSE_GAME_RETURN = 0;
+	REFUSE_GAME_RETURN = false;
 	ARX_MENU_Clicked_QUIT();
 }
 
