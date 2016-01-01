@@ -275,7 +275,7 @@ static void loadObjectData(EERIE_3DOBJ * eerie, const char * adr, size_t * poss,
 	// Lecture des FACES THEO
 	pos = to->faces_seek;
 
-	for(long i = 0; i < tn->nb_faces; i++) {
+	for(size_t i = 0; i < size_t(tn->nb_faces); i++) {
 		
 		THEO_FACES_3006 tf3006;
 		const THEO_FACES_3006 * ptf3006;
