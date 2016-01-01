@@ -152,11 +152,11 @@ void EERIE_Object_Precompute_Fast_Access(EERIE_3DOBJ * eerie) {
 	
 	eerie->fastaccess.head_group = EERIE_OBJECT_GetGroup(eerie, "head");
 
-	if(eerie->fastaccess.head_group == -1)
+	if(eerie->fastaccess.head_group == ObjVertGroup())
 		eerie->fastaccess.head_group_origin = -1;
 	else
 	{
-		long lHeadOrigin  = eerie->grouplist[eerie->fastaccess.head_group].origin;
+		long lHeadOrigin  = eerie->grouplist[eerie->fastaccess.head_group.handleData()].origin;
 		eerie->fastaccess.head_group_origin = checked_range_cast<short>(lHeadOrigin);
 	}
 	
@@ -997,18 +997,18 @@ ObjSelection EERIE_OBJECT_GetSelection(const EERIE_3DOBJ * obj, const std::strin
 	return ObjSelection();
 }
 
-long EERIE_OBJECT_GetGroup(const EERIE_3DOBJ * obj, const std::string & groupname) {
+ObjVertGroup EERIE_OBJECT_GetGroup(const EERIE_3DOBJ * obj, const std::string & groupname) {
 	
 	if(!obj)
-		return -1;
+		return ObjVertGroup();
 	
 	for(size_t i = 0; i < obj->grouplist.size(); i++) {
 		if(obj->grouplist[i].name == groupname) {
-			return i;
+			return ObjVertGroup(i);
 		}
 	}
 	
-	return -1;
+	return ObjVertGroup();
 }
 
 static long GetFather(EERIE_3DOBJ * eobj, long origin, long startgroup) {
@@ -1292,10 +1292,10 @@ static EERIE_3DOBJ * TheoToEerie(const char * adr, long size, const res::path & 
 
 	// Apply Normals Spherical correction for NPC head
 	long neck_orgn = GetGroupOriginByName(eerie, "neck");
-	long head_idx = EERIE_OBJECT_GetGroup(eerie, "head");
+	ObjVertGroup head_idx = EERIE_OBJECT_GetGroup(eerie, "head");
 
-	if(head_idx >= 0 && neck_orgn >= 0) {
-		VertexGroup & headGroup = eerie->grouplist[head_idx];
+	if(head_idx != ObjVertGroup() && neck_orgn >= 0) {
+		VertexGroup & headGroup = eerie->grouplist[head_idx.handleData()];
 		
 		Vec3f center = Vec3f_ZERO;
 		Vec3f origin = eerie->vertexlist[neck_orgn].v;

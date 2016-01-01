@@ -52,6 +52,7 @@ ZeniMax Media Inc., Suite 120, Rockville, Maryland 20850 USA.
 #include "game/NPC.h"
 #include "graphics/GraphicsFormat.h"
 #include "graphics/GraphicsModes.h"
+#include "graphics/GraphicsTypes.h"
 #include "graphics/data/Mesh.h"
 #include "graphics/data/MeshManipulation.h"
 #include "platform/Platform.h"
@@ -725,6 +726,14 @@ struct SavedPathfindTarget {
 
 const size_t SAVED_MAX_EXTRA_ROTATE = 4;
 
+inline ObjVertGroup saved_toObjGroup(short value) {
+	return ObjVertGroup(value);
+}
+
+inline short saved_fromObjGroup(ObjVertGroup value) {
+	return value.handleData();
+}
+
 struct SavedExtraRotate {
 	
 	s32 flags;
@@ -734,7 +743,7 @@ struct SavedExtraRotate {
 	inline operator EERIE_EXTRA_ROTATE() const {
 		EERIE_EXTRA_ROTATE a;
 		ARX_STATIC_ASSERT(SAVED_MAX_EXTRA_ROTATE == MAX_EXTRA_ROTATE, "array size mismatch");
-		std::copy(group_number, group_number + SAVED_MAX_EXTRA_ROTATE, a.group_number);
+		std::transform(group_number, group_number + SAVED_MAX_EXTRA_ROTATE, a.group_number, saved_toObjGroup);
 		std::copy(group_rotate, group_rotate + SAVED_MAX_EXTRA_ROTATE, a.group_rotate);
 		return a;
 	}
@@ -742,7 +751,7 @@ struct SavedExtraRotate {
 	inline SavedExtraRotate & operator=(const EERIE_EXTRA_ROTATE & b) {
 		flags = 0;
 		ARX_STATIC_ASSERT(SAVED_MAX_EXTRA_ROTATE == MAX_EXTRA_ROTATE, "array size mismatch");
-		std::copy(b.group_number, b.group_number + SAVED_MAX_EXTRA_ROTATE, group_number);
+		std::transform(b.group_number, b.group_number + SAVED_MAX_EXTRA_ROTATE, group_number, saved_fromObjGroup);
 		std::copy(b.group_rotate, b.group_rotate + SAVED_MAX_EXTRA_ROTATE, group_rotate);
 		return *this;
 	}

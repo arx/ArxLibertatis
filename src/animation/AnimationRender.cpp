@@ -1496,10 +1496,10 @@ static void Cedric_AnimateDrawEntity(Skeleton & skeleton, AnimLayer * animlayer,
 	// Apply Extra Rotations in Local Space
 	if(extraRotation) {
 		for(long k = 0; k < MAX_EXTRA_ROTATE; k++) {
-			long i = extraRotation->group_number[k];
+			ObjVertGroup i = extraRotation->group_number[k];
 
-			if(i >= 0) {
-				skeleton.bones[i].init.quat = angleToQuatForExtraRotation(extraRotation->group_rotate[k]);
+			if(i != ObjVertGroup()) {
+				skeleton.bones[i.handleData()].init.quat = angleToQuatForExtraRotation(extraRotation->group_rotate[k]);
 			}
 		}
 	}
@@ -1507,8 +1507,8 @@ static void Cedric_AnimateDrawEntity(Skeleton & skeleton, AnimLayer * animlayer,
 	// Perform animation in Local space
 	Cedric_AnimateObject(&skeleton, animlayer);
 
-	if(extraScale.groupIndex != -1) {
-		Bone & bone = skeleton.bones[extraScale.groupIndex];
+	if(extraScale.groupIndex != ObjVertGroup()) {
+		Bone & bone = skeleton.bones[extraScale.groupIndex.handleData()];
 
 		bone.init.scale += extraScale.scale;
 	}
@@ -1595,7 +1595,7 @@ void EERIEDrawAnimQuatUpdate(EERIE_3DOBJ *eobj, AnimLayer * animlayer,const Angl
 
 	EERIE_EXTRA_SCALE extraScale;
 
-	if(BH_MODE && eobj->fastaccess.head_group != -1) {
+	if(BH_MODE && eobj->fastaccess.head_group != ObjVertGroup()) {
 		extraScale.groupIndex = eobj->fastaccess.head_group;
 		extraScale.scale = Vec3f_ONE;
 	}

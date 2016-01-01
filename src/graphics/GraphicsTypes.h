@@ -69,6 +69,7 @@ struct EERIE_LIGHT;
 
 ARX_HANDLE_TYPEDEF(long, ActionPoint, -1)
 ARX_HANDLE_TYPEDEF(long, ObjSelection, -1)
+ARX_HANDLE_TYPEDEF(short, ObjVertGroup, -1)
 
 struct EERIE_TRI {
 	Vec3f v[3];
@@ -298,7 +299,7 @@ struct EERIE_FASTACCESS
 		, weapon_attach()
 		, secondary_attach()
 		, head_group_origin(0)
-		, head_group(0)
+		, head_group()
 		, fire()
 		, sel_head()
 		, sel_chest()
@@ -311,7 +312,7 @@ struct EERIE_FASTACCESS
 	ActionPoint weapon_attach;
 	ActionPoint secondary_attach;
 	long head_group_origin;
-	long head_group;
+	ObjVertGroup head_group;
 	ActionPoint fire;
 	ObjSelection sel_head;
 	ObjSelection sel_chest;

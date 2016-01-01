@@ -121,16 +121,16 @@ struct IO_PATHFIND {
 };
 
 struct EERIE_EXTRA_ROTATE {
-	short group_number[MAX_EXTRA_ROTATE];
+	ObjVertGroup group_number[MAX_EXTRA_ROTATE];
 	Anglef group_rotate[MAX_EXTRA_ROTATE];
 };
 
 struct EERIE_EXTRA_SCALE {
-	int groupIndex;
+	ObjVertGroup groupIndex;
 	Vec3f scale;
 
 	EERIE_EXTRA_SCALE()
-		: groupIndex(-1)
+		: groupIndex()
 		, scale(Vec3f_ZERO)
 	{}
 };

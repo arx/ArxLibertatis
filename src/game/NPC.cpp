@@ -255,10 +255,10 @@ static void ARX_NPC_CreateExRotateData(Entity * io) {
 	io->_npcdata->ex_rotate = new EERIE_EXTRA_ROTATE();
 	io->head_rot = 0;
 	
-	io->_npcdata->ex_rotate->group_number[0] = (short)EERIE_OBJECT_GetGroup(io->obj, "head");
-	io->_npcdata->ex_rotate->group_number[1] = (short)EERIE_OBJECT_GetGroup(io->obj, "neck");
-	io->_npcdata->ex_rotate->group_number[2] = (short)EERIE_OBJECT_GetGroup(io->obj, "chest");
-	io->_npcdata->ex_rotate->group_number[3] = (short)EERIE_OBJECT_GetGroup(io->obj, "belt");
+	io->_npcdata->ex_rotate->group_number[0] = EERIE_OBJECT_GetGroup(io->obj, "head");
+	io->_npcdata->ex_rotate->group_number[1] = EERIE_OBJECT_GetGroup(io->obj, "neck");
+	io->_npcdata->ex_rotate->group_number[2] = EERIE_OBJECT_GetGroup(io->obj, "chest");
+	io->_npcdata->ex_rotate->group_number[3] = EERIE_OBJECT_GetGroup(io->obj, "belt");
 	
 	for(long n = 0; n < MAX_EXTRA_ROTATE; n++) {
 		io->_npcdata->ex_rotate->group_rotate[n] = Anglef::ZERO;

@@ -69,7 +69,7 @@ void ReleaseMultiScene(EERIE_MULTI3DSCENE * ms);
 #endif
 
 void MakeUserFlag(TextureContainer * tc);
-long EERIE_OBJECT_GetGroup(const EERIE_3DOBJ * obj, const std::string & groupname);
+ObjVertGroup EERIE_OBJECT_GetGroup(const EERIE_3DOBJ * obj, const std::string & groupname);
 ObjSelection EERIE_OBJECT_GetSelection(const EERIE_3DOBJ * obj, const std::string & selname);
 
 long GetGroupOriginByName(const EERIE_3DOBJ * eobj, const std::string & text);

@@ -1262,17 +1262,17 @@ void ARX_PLAYER_LoadHeroAnimsAndMesh(){
 	io->armormaterial = "leather";
 	loadScript(io->script, resources->getFile("graph/obj3d/interactive/player/player.asl"));
 
-	if ((EERIE_OBJECT_GetGroup(io->obj, "head") != -1)
-	        &&	(EERIE_OBJECT_GetGroup(io->obj, "neck") != -1)
-	        &&	(EERIE_OBJECT_GetGroup(io->obj, "chest") != -1)
-	        &&	(EERIE_OBJECT_GetGroup(io->obj, "belt") != -1))
+	if ((EERIE_OBJECT_GetGroup(io->obj, "head") != ObjVertGroup())
+	        &&	(EERIE_OBJECT_GetGroup(io->obj, "neck") != ObjVertGroup())
+	        &&	(EERIE_OBJECT_GetGroup(io->obj, "chest") != ObjVertGroup())
+	        &&	(EERIE_OBJECT_GetGroup(io->obj, "belt") != ObjVertGroup()))
 	{
 		io->_npcdata->ex_rotate = new EERIE_EXTRA_ROTATE();
 		
-		io->_npcdata->ex_rotate->group_number[0] = (short)EERIE_OBJECT_GetGroup(io->obj, "head");
-		io->_npcdata->ex_rotate->group_number[1] = (short)EERIE_OBJECT_GetGroup(io->obj, "neck");
-		io->_npcdata->ex_rotate->group_number[2] = (short)EERIE_OBJECT_GetGroup(io->obj, "chest");
-		io->_npcdata->ex_rotate->group_number[3] = (short)EERIE_OBJECT_GetGroup(io->obj, "belt");
+		io->_npcdata->ex_rotate->group_number[0] = EERIE_OBJECT_GetGroup(io->obj, "head");
+		io->_npcdata->ex_rotate->group_number[1] = EERIE_OBJECT_GetGroup(io->obj, "neck");
+		io->_npcdata->ex_rotate->group_number[2] = EERIE_OBJECT_GetGroup(io->obj, "chest");
+		io->_npcdata->ex_rotate->group_number[3] = EERIE_OBJECT_GetGroup(io->obj, "belt");
 		
 		for (long n = 0; n < MAX_EXTRA_ROTATE; n++)
 		{
