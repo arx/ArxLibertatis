@@ -22,6 +22,45 @@
 #include <cfloat>
 #include <sstream>
 
+#include <windows.h>
+#include <psapi.h>
+
+
+static u64 convertFileTimeToInteger(const FILETIME & ft) {
+	ULARGE_INTEGER integer;
+	integer.LowPart = ft.dwLowDateTime;
+	integer.HighPart = ft.dwHighDateTime;
+	return integer.QuadPart ;
+}
+
+void CrashHandlerWindows::processCrashInfo() {
+	
+	// Required for XP - for Vista+, PROCESS_QUERY_LIMITED_INFORMATION would be enough
+	DWORD access = PROCESS_QUERY_INFORMATION | PROCESS_VM_READ;
+	HANDLE process = OpenProcess(access, FALSE, m_pCrashInfo->processId);
+	if(!process) {
+		return;
+	}
+	
+	// Get memory usage info
+	PROCESS_MEMORY_COUNTERS meminfo;
+	if(GetProcessMemoryInfo(process, &meminfo, sizeof(meminfo))) {
+		m_pCrashInfo->memoryUsage = meminfo.WorkingSetSize;
+	}
+	
+	// Determine how long thre process was running
+	FILETIME creation, exit, kernel, user, now;
+	if(GetProcessTimes(process, &creation, &exit, &kernel, &user)) {
+		SYSTEMTIME time;
+		GetSystemTime(&time);
+		SystemTimeToFileTime(&time, &now) ;
+		u64 delta = convertFileTimeToInteger(now) - convertFileTimeToInteger(creation);
+		m_pCrashInfo->runningTime = double(delta) * 10e-08;
+	}
+	
+	CloseHandle(process);
+	
+}
 
 void CrashHandlerWindows::processCrashSignal() {
 	

@@ -33,16 +33,6 @@
 
 #include "io/fs/FilePath.h"
 
-ULONG64 ConvertSystemTimeToULONG64( const SYSTEMTIME& st )
-{
-	FILETIME ft ;
-	SystemTimeToFileTime( &st, &ft ) ;
-	ULARGE_INTEGER integer ;
-	integer.LowPart = ft.dwLowDateTime ;
-	integer.HighPart = ft.dwHighDateTime ;
-	return integer.QuadPart ;
-}
-
 static BOOL CALLBACK LoadModuleCB(PCSTR ModuleName, DWORD64 ModuleBase, ULONG ModuleSize, PVOID UserContext)
 {
     SymLoadModule64((HANDLE)UserContext, 0, ModuleName, ModuleName, ModuleBase, ModuleSize);

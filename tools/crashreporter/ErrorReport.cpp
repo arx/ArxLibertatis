@@ -27,7 +27,6 @@
 #if ARX_PLATFORM == ARX_PLATFORM_WIN32
 // Win32
 #include <windows.h>
-#include <psapi.h>
 #endif
 
 // Qt
@@ -164,37 +163,9 @@ bool ErrorReport::getCrashDescription() {
 	
 #if ARX_PLATFORM == ARX_PLATFORM_WIN32
 	
-
 	// Open parent process handle
 	HANDLE hProcess = OpenProcess(PROCESS_ALL_ACCESS, FALSE, m_pCrashInfo->processId);
-	if(hProcess != NULL)
-	{
-		// Get memory usage info
-		PROCESS_MEMORY_COUNTERS meminfo;
-		BOOL bGetMemInfo = GetProcessMemoryInfo(hProcess, &meminfo, sizeof(PROCESS_MEMORY_COUNTERS));
-		if(bGetMemInfo)
-			m_ProcessMemoryUsage = meminfo.WorkingSetSize;
-
-		// Determine the period of time the process is working.
-		FILETIME CreationTime, ExitTime, KernelTime, UserTime;
-		BOOL bGetTimes = GetProcessTimes(hProcess, &CreationTime, &ExitTime, &KernelTime, &UserTime);
-		if(bGetTimes)
-		{
-			SYSTEMTIME AppStartTime;
-			FileTimeToSystemTime(&CreationTime, &AppStartTime);
-
-			SYSTEMTIME CurTime;
-			GetSystemTime(&CurTime);
-			ULONG64 uCurTime = ConvertSystemTimeToULONG64(CurTime);
-			ULONG64 uStartTime = ConvertSystemTimeToULONG64(AppStartTime);
-
-			// Check that the application works for at least one minute before crash.
-			// This might help to avoid cyclic error report generation when the applciation
-			// crashes on startup.
-			m_RunningTimeSec = (double)(uCurTime-uStartTime)*10E-08;
-		}
-	}
-	else
+	if(hProcess == NULL)
 	{
 		m_DetailedError = QString("Unable to obtain an handle to the crashed process (Error %1).").arg(QString::number(GetLastError()));
 		return false;

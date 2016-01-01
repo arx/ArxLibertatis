@@ -27,8 +27,6 @@
 #include <windows.h>
 #include <string>
 
-ULONG64 ConvertSystemTimeToULONG64( const SYSTEMTIME& st );
-
 bool GetCallStackInfo(HANDLE hProcess, HANDLE hThread, PCONTEXT pContext, std::string& callstack, std::string& callstackTop, u32& callstackCrc);
 std::string GetRegisters(PCONTEXT pCtx);
 std::string GetExceptionString(DWORD dwCode);

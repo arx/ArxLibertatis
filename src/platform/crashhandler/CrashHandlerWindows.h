@@ -50,6 +50,7 @@ private:
 	
 	void writeCrashDump(PEXCEPTION_POINTERS pExceptionPointers);
 	
+	void processCrashInfo();
 	void processCrashSignal();
 	
 private:
