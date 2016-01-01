@@ -169,7 +169,7 @@ ZeniMax Media Inc., Suite 120, Rockville, Maryland 20850 USA.
 
 InfoPanels g_debugInfo = InfoPanelNone;
 
-extern long START_NEW_QUEST;
+extern bool START_NEW_QUEST;
 SavegameHandle LOADQUEST_SLOT = SavegameHandle(); // OH NO, ANOTHER GLOBAL! - TEMP PATCH TO CLEAN CODE FLOW
 extern long DeadTime;
 

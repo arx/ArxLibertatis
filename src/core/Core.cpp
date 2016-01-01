@@ -239,7 +239,7 @@ bool g_requestLevelInit = true;
 unsigned long AimTime;
 //-----------------------------------------------------------------------------
 
-long START_NEW_QUEST=0;
+bool START_NEW_QUEST = false;
 static long LAST_WEAPON_TYPE = -1;
 
 float Original_framedelay=0.f;
@@ -1271,7 +1271,7 @@ void DANAE_StartNewQuest()
 	LoadLevelScreen();
 	DanaeLoadLevel("graph/levels/level1/level1.dlf");
 	g_requestLevelInit = true;
-	START_NEW_QUEST=0;
+	START_NEW_QUEST = false;
 	BLOCK_PLAYER_CONTROLS = false;
 	fadeReset();
 	player.Interface = INTER_LIFE_MANA | INTER_MINIBACK | INTER_MINIBOOK;

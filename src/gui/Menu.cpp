@@ -212,7 +212,7 @@ void ARX_MENU_Clicked_NEWQUEST() {
 }
 
 static void ARX_MENU_NEW_QUEST_Clicked_QUIT() {
-	START_NEW_QUEST = 1;
+	START_NEW_QUEST = true;
 	REFUSE_GAME_RETURN = 0;
 	ARX_MENU_Clicked_QUIT();
 }
