@@ -70,8 +70,8 @@ void SpellBase::updateCasterHand() {
 		m_hand_group = entities[m_caster]->obj->fastaccess.left_attach;
 	}
 	
-	if(m_hand_group != -1) {
-		m_hand_pos = entities[m_caster]->obj->vertexlist3[m_hand_group].v;
+	if(m_hand_group != ActionPoint()) {
+		m_hand_pos = entities[m_caster]->obj->vertexlist3[m_hand_group.handleData()].v;
 	}
 }
 

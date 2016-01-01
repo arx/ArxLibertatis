@@ -681,7 +681,7 @@ bool ARX_EQUIPMENT_Strike_Check(Entity * io_source, Entity * io_weapon, float ra
 		if(rad == -1)
 			continue;
 		
-		v0 = &io_weapon->obj->vertexlist3[io_weapon->obj->actionlist[j].idx].v;
+		v0 = &io_weapon->obj->vertexlist3[io_weapon->obj->actionlist[j].idx.handleData()].v;
 		sphere.origin = *v0;
 		
 		sphere.radius = rad; 

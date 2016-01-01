@@ -1358,10 +1358,10 @@ void ArxGame::updateFirstPersonCamera() {
 	} else {
 		subj.angle = player.angle;
 		
-		long id = entities.player()->obj->fastaccess.view_attach;
+		ActionPoint id = entities.player()->obj->fastaccess.view_attach;
 		
-		if(id!=-1) {
-			subj.orgTrans.pos = entities.player()->obj->vertexlist3[id].v;
+		if(id != ActionPoint()) {
+			subj.orgTrans.pos = entities.player()->obj->vertexlist3[id.handleData()].v;
 			Vec3f vect;
 			vect.x = subj.orgTrans.pos.x - player.pos.x;
 			vect.y = 0;
@@ -1540,17 +1540,17 @@ void ArxGame::handlePlayerDeath() {
 
 		Vec3f targetpos = player.pos;
 
-		long id  = entities.player()->obj->fastaccess.view_attach;
-		long id2 = GetActionPointIdx(entities.player()->obj, "chest2leggings");
+		ActionPoint id  = entities.player()->obj->fastaccess.view_attach;
+		ActionPoint id2 = GetActionPointIdx(entities.player()->obj, "chest2leggings");
 
-		if(id != -1) {
-			targetpos = entities.player()->obj->vertexlist3[id].v;
+		if(id != ActionPoint()) {
+			targetpos = entities.player()->obj->vertexlist3[id.handleData()].v;
 		}
 
 		conversationcamera.orgTrans.pos = targetpos;
 
-		if(id2 != -1) {
-			conversationcamera.orgTrans.pos = entities.player()->obj->vertexlist3[id2].v;
+		if(id2 != ActionPoint()) {
+			conversationcamera.orgTrans.pos = entities.player()->obj->vertexlist3[id2.handleData()].v;
 		}
 
 		conversationcamera.orgTrans.pos.y -= DeadCameraDistance;

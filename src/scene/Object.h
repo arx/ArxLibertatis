@@ -71,10 +71,10 @@ void ReleaseMultiScene(EERIE_MULTI3DSCENE * ms);
 void MakeUserFlag(TextureContainer * tc);
 long EERIE_OBJECT_GetGroup(const EERIE_3DOBJ * obj, const std::string & groupname);
 long EERIE_OBJECT_GetSelection(const EERIE_3DOBJ * obj, const std::string & selname);
- 
+
 long GetGroupOriginByName(const EERIE_3DOBJ * eobj, const std::string & text);
-long GetActionPointIdx(const EERIE_3DOBJ * eobj, const std::string & text);
-long GetActionPointGroup(const EERIE_3DOBJ * eobj, long idx);
+ActionPoint GetActionPointIdx(const EERIE_3DOBJ * eobj, const std::string & text);
+long GetActionPointGroup(const EERIE_3DOBJ * eobj, ActionPoint idx);
 
 /*!
  * Load a possibly cached 3D object using the default texture path.

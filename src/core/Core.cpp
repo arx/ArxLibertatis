@@ -770,7 +770,7 @@ void ManageCombatModeAnimations() {
 							&& layer1.ctime < layer1.cur_anim->anims[layer1.altidx_cur]->anim_time * 0.8f
 							&& PlayerWeaponBlocked == -1
 					) {
-						long id = -1;
+						ActionPoint id = ActionPoint();
 						
 						if(layer1.cur_anim == alist[ANIM_BARE_STRIKE_LEFT]) {
 							id = io->obj->fastaccess.left_attach;
@@ -778,9 +778,9 @@ void ManageCombatModeAnimations() {
 							id = io->obj->fastaccess.primary_attach;
 						}
 						
-						if(id != -1) {
+						if(id != ActionPoint()) {
 							Sphere sphere;
-							sphere.origin = io->obj->vertexlist3[id].v;
+							sphere.origin = io->obj->vertexlist3[id.handleData()].v;
 							sphere.radius = 25.f;
 							
 							EntityHandle num;
@@ -788,7 +788,7 @@ void ManageCombatModeAnimations() {
 							if(CheckAnythingInSphere(sphere, PlayerEntityHandle, 0, &num)) {
 								float dmgs = (player.m_miscFull.damages + 1) * STRIKE_AIMTIME;
 								
-								if(ARX_DAMAGES_TryToDoDamage(io->obj->vertexlist3[id].v, dmgs, 40, PlayerEntityHandle)) {
+								if(ARX_DAMAGES_TryToDoDamage(io->obj->vertexlist3[id.handleData()].v, dmgs, 40, PlayerEntityHandle)) {
 									PlayerWeaponBlocked = layer1.ctime;
 								}
 								
@@ -1019,8 +1019,8 @@ void ManageCombatModeAnimations() {
 
 				Vec3f orgPos = player.pos + Vec3f(0.f, 40.f, 0.f);
 
-				if(io->obj->fastaccess.left_attach >= 0) {
-					orgPos = io->obj->vertexlist3[io->obj->fastaccess.left_attach].v;
+				if(io->obj->fastaccess.left_attach != ActionPoint()) {
+					orgPos = io->obj->vertexlist3[io->obj->fastaccess.left_attach.handleData()].v;
 				}
 
 				Anglef orgAngle = player.angle;

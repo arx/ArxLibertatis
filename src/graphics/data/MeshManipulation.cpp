@@ -160,10 +160,10 @@ static long ObjectAddVertex(EERIE_3DOBJ * obj, const EERIE_VERTEX * vert) {
 	return obj->vertexlist.size() - 1;
 }
 
-static long GetActionPoint(const EERIE_3DOBJ * obj, const char * name) {
+static ActionPoint GetActionPoint(const EERIE_3DOBJ * obj, const char * name) {
 	
 	if(!obj)
-		return -1;
+		return ActionPoint();
 
 	for(size_t n = 0; n < obj->actionlist.size(); n++) { // TODO iterator
 		if(obj->actionlist[n].name == name) {
@@ -171,7 +171,7 @@ static long GetActionPoint(const EERIE_3DOBJ * obj, const char * name) {
 		}
 	}
 
-	return -1;
+	return ActionPoint();
 }
 
 static long ObjectAddFace(EERIE_3DOBJ * obj, const EERIE_FACE * face, const EERIE_3DOBJ * srcobj) {
@@ -242,7 +242,7 @@ static long ObjectAddAction(EERIE_3DOBJ * obj, const std::string & name, long ac
 	action.name = name;
 	action.act = act;
 	action.sfx = sfx;
-	action.idx = newvert;
+	action.idx = ActionPoint(newvert);
 	
 	return (obj->actionlist.size() - 1);
 }
@@ -367,20 +367,20 @@ static EERIE_3DOBJ * CreateIntermediaryMesh(const EERIE_3DOBJ * obj1, const EERI
 
 	// Now Retreives Tweak Action Points
 	{
-		long idx_head1 = GetActionPoint(obj1, "head2chest");
-		if(idx_head1 < 0)
+		ActionPoint idx_head1 = GetActionPoint(obj1, "head2chest");
+		if(idx_head1 == ActionPoint())
 			return NULL;
 
-		long idx_head2 = GetActionPoint(obj2, "head2chest");
-		if(idx_head2 < 0)
+		ActionPoint idx_head2 = GetActionPoint(obj2, "head2chest");
+		if(idx_head2 == ActionPoint())
 			return NULL;
 
-		long idx_torso1 = GetActionPoint(obj1, "chest2leggings");
-		if(idx_torso1 < 0)
+		ActionPoint idx_torso1 = GetActionPoint(obj1, "chest2leggings");
+		if(idx_torso1 == ActionPoint())
 			return NULL;
 
-		long idx_torso2 = GetActionPoint(obj2, "chest2leggings");
-		if(idx_torso2 < 0)
+		ActionPoint idx_torso2 = GetActionPoint(obj2, "chest2leggings");
+		if(idx_torso2 == ActionPoint())
 			return NULL;
 	}
 
@@ -419,13 +419,13 @@ static EERIE_3DOBJ * CreateIntermediaryMesh(const EERIE_3DOBJ * obj1, const EERI
 	for(size_t i = 0; i < obj1->actionlist.size(); i++) {
 		const EERIE_ACTIONLIST & action = obj1->actionlist[i];
 
-		if(IsInSelection(obj1, action.idx, iw1) != -1
-				|| IsInSelection(obj1, action.idx, jw1) != -1
+		if(IsInSelection(obj1, action.idx.handleData(), iw1) != -1
+				|| IsInSelection(obj1, action.idx.handleData(), jw1) != -1
 				|| action.name == "head2chest"
 				|| action.name == "chest2leggings"
 		) {
 			ObjectAddAction(work, action.name, action.act,
-							action.sfx, &obj1vertexlist2[action.idx]);
+							action.sfx, &obj1vertexlist2[action.idx.handleData()]);
 		}
 	}
 
@@ -433,12 +433,12 @@ static EERIE_3DOBJ * CreateIntermediaryMesh(const EERIE_3DOBJ * obj1, const EERI
 	for(size_t i = 0; i < obj2->actionlist.size(); i++) {
 		const EERIE_ACTIONLIST & action = obj2->actionlist[i];
 
-		if(IsInSelection(obj2, action.idx, tw2) != -1
+		if(IsInSelection(obj2, action.idx.handleData(), tw2) != -1
 				|| action.name == "head2chest"
 				|| action.name == "chest2leggings"
 		) {
 			ObjectAddAction(work, action.name, action.act,
-							action.sfx, &obj2vertexlist2[action.idx]);
+							action.sfx, &obj2vertexlist2[action.idx.handleData()]);
 		}
 	}
 

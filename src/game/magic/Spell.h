@@ -160,7 +160,7 @@ public:
 	EntityHandle m_target; //!< Number of the target interactive obj if any
 	float m_level; //!< Level of Magic 1-10
 	
-	long m_hand_group;
+	ActionPoint m_hand_group;
 	Vec3f m_hand_pos; //!< Only valid if hand_group>=0
 	Vec3f m_caster_pos;
 	

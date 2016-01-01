@@ -85,16 +85,16 @@ bool EERIE_LINKEDOBJ_LinkObjectToObject(EERIE_3DOBJ * obj, EERIE_3DOBJ * tolink,
 	if(!obj || !tolink)
 		return false;
 	
-	long ni = GetActionPointIdx(obj, actiontext);
-	if(ni < 0)
+	ActionPoint ni = GetActionPointIdx(obj, actiontext);
+	if(ni == ActionPoint())
 		return false;
 	
 	long group = GetActionPointGroup(obj, ni);
 	if(group < 0)
 		return false;
 
-	long ni2 = GetActionPointIdx(tolink, actiontext2);
-	if(ni2 < 0)
+	ActionPoint ni2 = GetActionPointIdx(tolink, actiontext2);
+	if(ni2 == ActionPoint())
 		return false;
 
 	EERIE_LINKED link;

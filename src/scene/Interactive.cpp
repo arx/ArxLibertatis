@@ -391,7 +391,7 @@ void IO_UnlinkAllLinkedObjects(Entity * io) {
 		linked->show = SHOW_FLAG_IN_SCENE;
 		linked->no_collide = io->index();
 		
-		Vec3f pos = io->obj->vertexlist3[io->obj->linked[k].lidx].v;
+		Vec3f pos = io->obj->vertexlist3[io->obj->linked[k].lidx.handleData()].v;
 		
 		Vec3f vector = angleToVectorXZ(linked->angle.getPitch()) * 0.5f;
 		
@@ -1316,14 +1316,14 @@ void SetWeapon_Back(Entity * io) {
 		if(io->gameFlags & GFLAG_HIDEWEAPON)
 			return;
 
-		long ni = io->obj->fastaccess.weapon_attach;
+		ActionPoint ni = io->obj->fastaccess.weapon_attach;
 
-		if(ni >= 0) {
+		if(ni != ActionPoint()) {
 			EERIE_LINKEDOBJ_LinkObjectToObject(io->obj, ioo->obj, "weapon_attach", "primary_attach", ioo);
 		} else {
 			ni = io->obj->fastaccess.secondary_attach;
 
-			if(ni >= 0)
+			if(ni != ActionPoint())
 				EERIE_LINKEDOBJ_LinkObjectToObject(io->obj, ioo->obj, "secondary_attach", "primary_attach", ioo);
 		}
 	}

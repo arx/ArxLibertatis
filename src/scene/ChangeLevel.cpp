@@ -1025,8 +1025,8 @@ static long ARX_CHANGELEVEL_Push_IO(const Entity * io, long level) {
 			if (GetObjIOSource(io->obj->linked[n].obj))
 			{
 				ais.linked_data[count].lgroup = io->obj->linked[count].lgroup;
-				ais.linked_data[count].lidx = io->obj->linked[count].lidx;
-				ais.linked_data[count].lidx2 = io->obj->linked[count].lidx2;
+				ais.linked_data[count].lidx = io->obj->linked[count].lidx.handleData();
+				ais.linked_data[count].lidx2 = io->obj->linked[count].lidx2.handleData();
 				ais.linked_data[count].modinfo = SavedModInfo();
 				storeIdString(ais.linked_data[count].linked_id, GetObjIOSource(io->obj->linked[count].obj));
 				count++;
@@ -2348,8 +2348,8 @@ static Entity * ARX_CHANGELEVEL_Pop_IO(const std::string & idString, EntityInsta
 			if(io->obj->linked.size()) {
 				for(long n = 0; n < ais->nb_linked; n++) {
 					io->obj->linked[n].lgroup = ais->linked_data[n].lgroup;
-					io->obj->linked[n].lidx = ais->linked_data[n].lidx;
-					io->obj->linked[n].lidx2 = ais->linked_data[n].lidx2;
+					io->obj->linked[n].lidx = ActionPoint(ais->linked_data[n].lidx);
+					io->obj->linked[n].lidx2 = ActionPoint(ais->linked_data[n].lidx2);
 					memcpy(Gaids[Gaids_Number.handleData()]->linked_id[n], ais->linked_data[n].linked_id, SIZE_ID);
 					io->obj->linked[n].io = NULL;
 					io->obj->linked[n].obj = NULL;

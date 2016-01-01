@@ -203,10 +203,10 @@ void MagicMissileSpell::Launch() {
 	
 	m_hand_group = GetActionPointIdx(entities[m_caster]->obj, "primary_attach");
 	
-	if(m_hand_group != -1) {
+	if(m_hand_group != ActionPoint()) {
 		Entity * caster = entities[m_caster];
-		long group = m_hand_group;
-		m_hand_pos = caster->obj->vertexlist3[group].v;
+		ActionPoint group = m_hand_group;
+		m_hand_pos = caster->obj->vertexlist3[group.handleData()].v;
 	}
 	
 	Vec3f aePos;
@@ -217,7 +217,7 @@ void MagicMissileSpell::Launch() {
 		
 		Vec3f vector = angleToVector(Anglef(afAlpha, afBeta, 0.f)) * 60.f;
 		
-		if(m_hand_group != -1) {
+		if(m_hand_group != ActionPoint()) {
 			aePos = m_hand_pos;
 		} else {
 			aePos = player.pos;
@@ -232,7 +232,7 @@ void MagicMissileSpell::Launch() {
 		
 		Vec3f vector = angleToVector(Anglef(afAlpha, afBeta, 0.f)) * 60.f;
 		
-		if(m_hand_group != -1) {
+		if(m_hand_group != ActionPoint()) {
 			aePos = m_hand_pos;
 		} else {
 			aePos = entities[m_caster]->pos;
@@ -404,7 +404,7 @@ void IgnitSpell::Launch()
 {
 	m_duration = 500;
 	
-	if(m_hand_group != -1) {
+	if(m_hand_group != ActionPoint()) {
 		m_srcPos = m_hand_pos;
 	} else {
 		m_srcPos = m_caster_pos - Vec3f(0.f, 50.f, 0.f);
@@ -537,7 +537,7 @@ void DouseSpell::Launch()
 	m_duration = 500;
 	
 	Vec3f target;
-	if(m_hand_group >= 0) {
+	if(m_hand_group != ActionPoint()) {
 		target = m_hand_pos;
 	} else {
 		target = m_caster_pos;

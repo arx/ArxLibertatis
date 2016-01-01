@@ -532,16 +532,16 @@ void PoisonProjectileSpell::Launch()
 	Entity * caster = entities[m_caster];
 	m_hand_group = caster->obj->fastaccess.primary_attach;
 
-	if(m_hand_group != -1) {
-		long group = m_hand_group;
-		m_hand_pos = caster->obj->vertexlist3[group].v;
+	if(m_hand_group != ActionPoint()) {
+		ActionPoint group = m_hand_group;
+		m_hand_pos = caster->obj->vertexlist3[group.handleData()].v;
 	}
 	
 	if(m_caster == PlayerEntityHandle) {
 
 		afBeta = player.angle.getPitch();
 
-		if(m_hand_group != -1) {
+		if(m_hand_group != ActionPoint()) {
 			srcPos = m_hand_pos;
 		} else {
 			srcPos = player.pos;
@@ -549,7 +549,7 @@ void PoisonProjectileSpell::Launch()
 	} else {
 		afBeta = entities[m_caster]->angle.getPitch();
 
-		if(m_hand_group != -1) {
+		if(m_hand_group != ActionPoint()) {
 			srcPos = m_hand_pos;
 		} else {
 			srcPos = entities[m_caster]->pos;

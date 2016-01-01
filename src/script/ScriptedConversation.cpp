@@ -230,9 +230,9 @@ class SpeakCommand : public Command {
 	static void computeACSPos(CinematicSpeech & acs, Entity * io, EntityHandle ionum) {
 		
 		if(io) {
-			long id = io->obj->fastaccess.view_attach;
-			if(id != -1) {
-				acs.pos1 = io->obj->vertexlist3[id].v;
+			ActionPoint id = io->obj->fastaccess.view_attach;
+			if(id != ActionPoint()) {
+				acs.pos1 = io->obj->vertexlist3[id.handleData()].v;
 			} else {
 				acs.pos1 = io->pos + Vec3f(0.f, io->physics.cyl.height, 0.f);
 			}
@@ -240,9 +240,9 @@ class SpeakCommand : public Command {
 		
 		if(ValidIONum(ionum)) {
 			Entity * ioo = entities[ionum];
-			long id = ioo->obj->fastaccess.view_attach;
-			if(id != -1) {
-				acs.pos2 = ioo->obj->vertexlist3[id].v;
+			ActionPoint id = ioo->obj->fastaccess.view_attach;
+			if(id != ActionPoint()) {
+				acs.pos2 = ioo->obj->vertexlist3[id.handleData()].v;
 			} else {
 				acs.pos2 = ioo->pos + Vec3f(0.f, ioo->physics.cyl.height, 0.f);
 			}

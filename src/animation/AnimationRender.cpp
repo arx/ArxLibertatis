@@ -1164,7 +1164,7 @@ static void Cedric_AnimateDrawEntityRender(EERIE_3DOBJ * eobj, const Vec3f & pos
 	/* Get nearest lights */
 	Vec3f tv = pos;
 
-	if(io && io->obj->fastaccess.view_attach >= 0 && io->obj->fastaccess.head_group_origin != -1)
+	if(io && io->obj->fastaccess.view_attach != ActionPoint() && io->obj->fastaccess.head_group_origin != -1)
 		tv.y = io->obj->vertexlist3[io->obj->fastaccess.head_group_origin].v.y + 10;
 	else
 		tv.y -= 90.f;
@@ -1191,10 +1191,10 @@ static void Cedric_AnimateDrawEntityRender(EERIE_3DOBJ * eobj, const Vec3f & pos
 
 
 		TransformInfo t(
-			eobj->vertexlist3[link.lidx].v,
+			eobj->vertexlist3[link.lidx.handleData()].v,
 			eobj->m_skeleton->bones[link.lgroup].anim.quat,
 			link.io ? link.io->scale : 1.f,
-			link.obj->vertexlist[link.lidx2].v - link.obj->vertexlist[link.obj->origin].v);
+			link.obj->vertexlist[link.lidx2.handleData()].v - link.obj->vertexlist[link.obj->origin].v);
 
 		DrawEERIEInter(link.obj, t, link.io, true, invisibility);
 	}

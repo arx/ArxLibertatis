@@ -1790,18 +1790,18 @@ void ForcePlayerLookAtIO(Entity * io) {
 	EERIE_CAMERA tcam;
 	Vec3f target;
 
-	long id = entities.player()->obj->fastaccess.view_attach;
+	ActionPoint id = entities.player()->obj->fastaccess.view_attach;
 
-	if(id != -1) {
-		tcam.orgTrans.pos = entities.player()->obj->vertexlist3[id].v;
+	if(id != ActionPoint()) {
+		tcam.orgTrans.pos = entities.player()->obj->vertexlist3[id.handleData()].v;
 	} else {
 		tcam.orgTrans.pos = player.pos;
 	}
 
 	id = io->obj->fastaccess.view_attach;
 
-	if(id != -1) {
-		target = io->obj->vertexlist3[id].v;
+	if(id != ActionPoint()) {
+		target = io->obj->vertexlist3[id.handleData()].v;
 	} else {
 		target = io->pos;
 	}

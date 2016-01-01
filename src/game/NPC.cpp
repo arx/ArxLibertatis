@@ -2941,7 +2941,7 @@ void ManageIgnition(Entity * io) {
 		if(addParticles && io->obj && !io->obj->facelist.empty()) {
 			createObjFireParticles(io->obj, 4, 1, 1);
 		}
-	} else if(io->obj && io->obj->fastaccess.fire >= 0 && io->ignition > 0.f) {
+	} else if(io->obj && io->obj->fastaccess.fire != ActionPoint() && io->ignition > 0.f) {
 		
 		io->ignition = 25.f;
 		io->durability -= framedelay * ( 1.0f / 10000 );
@@ -2953,7 +2953,7 @@ void ManageIgnition(Entity * io) {
 		}
 		
 		if(addParticles) {
-			Vec3f pos = io->obj->vertexlist3[io->obj->fastaccess.fire].v;
+			Vec3f pos = io->obj->vertexlist3[io->obj->fastaccess.fire.handleData()].v;
 			createFireParticles(pos, 2, 2);
 		}
 	} else {
@@ -2981,11 +2981,11 @@ void ManageIgnition_2(Entity * io) {
 
 		Vec3f position;
 
-		if(io->obj && io->obj->fastaccess.fire >= 0)
+		if(io->obj && io->obj->fastaccess.fire != ActionPoint())
 			if(io == DRAGINTER)
 				position = player.pos;
 			else
-				position = io->obj->vertexlist3[io->obj->fastaccess.fire].v;
+				position = io->obj->vertexlist3[io->obj->fastaccess.fire.handleData()].v;
 		else
 			position = io->pos;
 

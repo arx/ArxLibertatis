@@ -100,10 +100,10 @@ long GetGroupOriginByName(const EERIE_3DOBJ * eobj, const std::string & text) {
 	return -1;
 }
 
-long GetActionPointIdx(const EERIE_3DOBJ * eobj, const std::string & text) {
+ActionPoint GetActionPointIdx(const EERIE_3DOBJ * eobj, const std::string & text) {
 	
 	if(!eobj)
-		return -1;
+		return ActionPoint();
 	
 	for(std::vector<EERIE_ACTIONLIST>::const_iterator i = eobj->actionlist.begin();
 	    i != eobj->actionlist.end(); ++i) {
@@ -112,10 +112,10 @@ long GetActionPointIdx(const EERIE_3DOBJ * eobj, const std::string & text) {
 		}
 	}
 	
-	return -1;
+	return ActionPoint();
 }
 
-long GetActionPointGroup(const EERIE_3DOBJ * eobj, long idx) {
+long GetActionPointGroup(const EERIE_3DOBJ * eobj, ActionPoint idx) {
 	
 	if(!eobj)
 		return -1;
@@ -123,7 +123,7 @@ long GetActionPointGroup(const EERIE_3DOBJ * eobj, long idx) {
 	for(long i = eobj->grouplist.size() - 1; i >= 0; i--) {
 		const std::vector<long> & indices = eobj->grouplist[i].indexes;
 		for(size_t j = 0; j < indices.size(); j++){
-			if(indices[j] == idx) {
+			if(indices[j] == idx.handleData()) {
 				return i;
 			}
 		}
@@ -489,7 +489,7 @@ static void loadObjectData(EERIE_3DOBJ * eerie, const char * adr, size_t * poss,
 		
 		eerie->actionlist[i].act = ptap->action;
 		eerie->actionlist[i].sfx = ptap->num_sfx;
-		eerie->actionlist[i].idx = ptap->vert_index;
+		eerie->actionlist[i].idx = ActionPoint(ptap->vert_index);
 		eerie->actionlist[i].name = boost::to_lower_copy(util::loadString(ptap->name));
 	}
 	

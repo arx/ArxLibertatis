@@ -176,11 +176,11 @@ void FireballSpell::Launch() {
 	m_duration = 6000ul;
 	
 	if(m_caster != PlayerEntityHandle) {
-		m_hand_group = -1;
+		m_hand_group = ActionPoint();
 	}
 	
 	Vec3f target;
-	if(m_hand_group >= 0) {
+	if(m_hand_group != ActionPoint()) {
 		target = m_hand_pos;
 	} else {
 		target = m_caster_pos;

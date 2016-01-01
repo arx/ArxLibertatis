@@ -172,7 +172,7 @@ void FlyingEyeSpell::Update(float timeDelta)
 	long pouet = 2;
 
 	while(pouet) {
-		long id;
+		ActionPoint id;
 
 		if(pouet == 2)
 			id = io->obj->fastaccess.primary_attach;
@@ -181,7 +181,7 @@ void FlyingEyeSpell::Update(float timeDelta)
 
 		pouet--;
 
-		if(id != -1) {
+		if(id != ActionPoint()) {
 			if(!lightHandleIsValid(special[pouet])) {
 				special[pouet] = GetFreeDynLight();
 			}
@@ -191,7 +191,7 @@ void FlyingEyeSpell::Update(float timeDelta)
 				el->fallend = 180.f;
 				el->fallstart = 50.f;
 				el->rgb = Color3f(0.7f, 0.3f, 1.f);
-				el->pos = eobj->vertexlist3[id].v;
+				el->pos = eobj->vertexlist3[id.handleData()].v;
 			}
 			
 			for(long kk = 0; kk < 2; kk++) {
@@ -201,7 +201,7 @@ void FlyingEyeSpell::Update(float timeDelta)
 					break;
 				}
 				
-				pd->ov = eobj->vertexlist3[id].v + randomVec(-1.f, 1.f);
+				pd->ov = eobj->vertexlist3[id.handleData()].v + randomVec(-1.f, 1.f);
 				pd->move = Vec3f(0.1f, 0.f, 0.1f) + Vec3f(-0.2f, -2.2f, -0.2f) * randomVec3f();
 				pd->siz = 5.f;
 				pd->tolive = Random::get(1500, 3500);
@@ -209,7 +209,7 @@ void FlyingEyeSpell::Update(float timeDelta)
 				pd->tc = TC_smoke;
 				pd->special = FADE_IN_AND_OUT | ROTATING | MODULATE_ROTATION | DISSIPATING;
 				pd->sourceionum = PlayerEntityHandle;
-				pd->source = &eobj->vertexlist3[id].v;
+				pd->source = &eobj->vertexlist3[id.handleData()].v;
 				pd->fparam = 0.0000001f;
 				pd->rgb = Color3f(.7f, .3f, 1.f) + Color3f(-.1f, -.1f, -.1f) * randomColor3f();
 			}

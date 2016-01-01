@@ -161,7 +161,7 @@ struct EERIE_ACTIONLIST_FTL {
 	inline operator EERIE_ACTIONLIST() const {
 		EERIE_ACTIONLIST a;
 		a.name = boost::to_lower_copy(util::loadString(name));
-		a.idx = idx;
+		a.idx = ActionPoint(idx);
 		a.act = action;
 		a.sfx = sfx;
 		return a;
@@ -169,7 +169,7 @@ struct EERIE_ACTIONLIST_FTL {
 	
 	inline EERIE_ACTIONLIST_FTL & operator=(const EERIE_ACTIONLIST & b) {
 		util::storeString(name, b.name.c_str());
-		idx = b.idx;
+		idx = b.idx.handleData();
 		action = b.act;
 		sfx = b.sfx;
 		return *this;
