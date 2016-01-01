@@ -1755,7 +1755,7 @@ void ArxGame::updateLevel() {
 	
 	RenderBatcher::getInstance().clear();
 
-	if(!player.PLAYER_PARALYSED) {
+	if(!player.m_paralysed) {
 		manageEditorControls();
 
 		if(!BLOCK_PLAYER_CONTROLS) {
@@ -1879,7 +1879,7 @@ void ArxGame::updateLevel() {
 	TreatBackgroundActions();
 
 	// Checks Magic Flares Drawing
-	if(!player.PLAYER_PARALYSED) {
+	if(!player.m_paralysed) {
 		if(eeMousePressed1()) {
 			if(!ARX_FLARES_Block) {
 				ARX_SPELLS_AddPoint(DANAEMouse);
@@ -1975,7 +1975,7 @@ void ArxGame::renderLevel() {
 	if(eyeball.exist != 0)
 		DrawMagicSightInterface();
 
-	if(player.PLAYER_PARALYSED) {
+	if(player.m_paralysed) {
 		GRenderer->SetRenderState(Renderer::DepthWrite, false);
 		GRenderer->SetRenderState(Renderer::AlphaBlending, true);
 		GRenderer->SetBlendFunc(BlendOne, BlendOne);
@@ -2152,7 +2152,7 @@ void ArxGame::render() {
 		}
 	}
 	
-	if(!player.PLAYER_PARALYSED || ARXmenu.currentmode != AMCM_OFF) {
+	if(!player.m_paralysed || ARXmenu.currentmode != AMCM_OFF) {
 		if(!STOP_KEYBOARD_INPUT) {
 			manageKeyMouse();
 		} else {

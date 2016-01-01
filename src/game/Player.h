@@ -154,7 +154,7 @@ struct ARXCHARACTER {
 	
 	bool climbing;
 	
-	long PLAYER_PARALYSED;
+	long m_paralysed;
 	
 	// Updated by spells
 	bool levitate;

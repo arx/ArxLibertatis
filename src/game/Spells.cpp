@@ -492,7 +492,7 @@ void ARX_SPELLS_ManageMagic() {
 	if(   !(player.Current_Movement & PLAYER_CROUCH)
 	   && !BLOCK_PLAYER_CONTROLS
 	   && GInput->actionPressed(CONTROLS_CUST_MAGICMODE)
-	   && !player.PLAYER_PARALYSED
+	   && !player.m_paralysed
 	) {
 		if(player.Interface & INTER_COMBATMODE) {
 			WILLRETURNTOCOMBATMODE = true;
