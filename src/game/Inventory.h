@@ -103,7 +103,7 @@ struct InventoryPos {
 	index_type y;
 	
 	InventoryPos()
-		: io(-1)
+		: io()
 		, bag(0)
 		, x(0)
 		, y(0)
