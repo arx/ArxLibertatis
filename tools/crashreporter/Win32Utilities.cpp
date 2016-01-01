@@ -201,47 +201,4 @@ std::string GetRegisters(PCONTEXT pCtx)
 	return registersStr;
 }
 
-// Given an exception code, returns a pointer to a static string with a description of the exception                                         
-std::string GetExceptionString( DWORD dwCode )
-{
-    #define EXCEPTION( x ) case EXCEPTION_##x: return (#x);
-
-    switch ( dwCode )
-    {
-        EXCEPTION( ACCESS_VIOLATION )
-        EXCEPTION( DATATYPE_MISALIGNMENT )
-        EXCEPTION( BREAKPOINT )
-        EXCEPTION( SINGLE_STEP )
-        EXCEPTION( ARRAY_BOUNDS_EXCEEDED )
-        EXCEPTION( FLT_DENORMAL_OPERAND )
-        EXCEPTION( FLT_DIVIDE_BY_ZERO )
-        EXCEPTION( FLT_INEXACT_RESULT )
-        EXCEPTION( FLT_INVALID_OPERATION )
-        EXCEPTION( FLT_OVERFLOW )
-        EXCEPTION( FLT_STACK_CHECK )
-        EXCEPTION( FLT_UNDERFLOW )
-        EXCEPTION( INT_DIVIDE_BY_ZERO )
-        EXCEPTION( INT_OVERFLOW )
-        EXCEPTION( PRIV_INSTRUCTION )
-        EXCEPTION( IN_PAGE_ERROR )
-        EXCEPTION( ILLEGAL_INSTRUCTION )
-        EXCEPTION( NONCONTINUABLE_EXCEPTION )
-        EXCEPTION( STACK_OVERFLOW )
-        EXCEPTION( INVALID_DISPOSITION )
-        EXCEPTION( GUARD_PAGE )
-        EXCEPTION( INVALID_HANDLE )
-    }
-
-    // If not one of the "known" exceptions, try to get the string
-    // from NTDLL.DLL's message table.
-
-    static char szBuffer[512] = { 0 };
-
-    FormatMessageA( FORMAT_MESSAGE_IGNORE_INSERTS | FORMAT_MESSAGE_FROM_HMODULE,
-                    GetModuleHandleA( "NTDLL.DLL" ),
-                    dwCode, 0, szBuffer, sizeof( szBuffer ), 0 );
-
-    return szBuffer;
-}
-
 #endif // ARX_PLATFORM == ARX_PLATFORM_WIN32

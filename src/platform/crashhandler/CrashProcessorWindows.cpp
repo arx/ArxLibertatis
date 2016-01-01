@@ -62,6 +62,41 @@ void CrashHandlerWindows::processCrashInfo() {
 	
 }
 
+static std::string getExceptionString(u32 code) {
+	
+	#define ARX_EXCEPTION(x) case EXCEPTION_##x: return ARX_STR(x);
+	switch(code) {
+		ARX_EXCEPTION(ACCESS_VIOLATION)
+		ARX_EXCEPTION(DATATYPE_MISALIGNMENT)
+		ARX_EXCEPTION(BREAKPOINT)
+		ARX_EXCEPTION(SINGLE_STEP)
+		ARX_EXCEPTION(ARRAY_BOUNDS_EXCEEDED)
+		ARX_EXCEPTION(FLT_DENORMAL_OPERAND)
+		ARX_EXCEPTION(FLT_DIVIDE_BY_ZERO)
+		ARX_EXCEPTION(FLT_INEXACT_RESULT)
+		ARX_EXCEPTION(FLT_INVALID_OPERATION)
+		ARX_EXCEPTION(FLT_OVERFLOW)
+		ARX_EXCEPTION(FLT_STACK_CHECK)
+		ARX_EXCEPTION(FLT_UNDERFLOW)
+		ARX_EXCEPTION(INT_DIVIDE_BY_ZERO)
+		ARX_EXCEPTION(INT_OVERFLOW)
+		ARX_EXCEPTION(PRIV_INSTRUCTION)
+		ARX_EXCEPTION(IN_PAGE_ERROR)
+		ARX_EXCEPTION(ILLEGAL_INSTRUCTION)
+		ARX_EXCEPTION(NONCONTINUABLE)
+		ARX_EXCEPTION(STACK_OVERFLOW)
+		ARX_EXCEPTION(INVALID_DISPOSITION)
+		ARX_EXCEPTION(GUARD_PAGE)
+		ARX_EXCEPTION(INVALID_HANDLE)
+		default: break;
+	}
+	#undef ARX_EXCEPTION
+	
+	// If not one of the "known" exceptions, try to get the string
+	// from NTDLL.DLL's message table.
+	return platform::getErrorString(code, GetModuleHandleW(L"ntdll.dll"));
+}
+
 void CrashHandlerWindows::processCrashSignal() {
 	
 	std::ostringstream description;
@@ -109,6 +144,13 @@ void CrashHandlerWindows::processCrashSignal() {
 	}
 	
 	description << "\n\n";
+	
+	if(m_pCrashInfo->exceptionCode) {
+		std::string exception = getExceptionString(m_pCrashInfo->exceptionCode);
+		if(!exception.empty()) {
+			description << "Exception code: " << exception << "\n\n";
+		}
+	}
 	
 	addText(description.str().c_str());
 }

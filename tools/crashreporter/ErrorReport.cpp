@@ -170,17 +170,6 @@ bool ErrorReport::getCrashDescription() {
 		m_DetailedError = QString("Unable to obtain an handle to the crashed process (Error %1).").arg(QString::number(GetLastError()));
 		return false;
 	}
-	
-	if(m_pCrashInfo->exceptionCode != 0)
-	{
-		QString exceptionStr = GetExceptionString(m_pCrashInfo->exceptionCode).c_str();
-		if(!exceptionStr.isEmpty())
-		{
-			m_ReportDescription += "\nException code:\n  ";
-			m_ReportDescription += exceptionStr;
-			m_ReportDescription += "\n";
-		}
-	}
 
 	std::string callStack, callstackTop;
 	u32 callstackCrc;
