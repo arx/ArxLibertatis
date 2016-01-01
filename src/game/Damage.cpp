@@ -206,12 +206,12 @@ void ARX_DAMAGE_Show_Hit_Blood()
 			}
 
 			if(duration > Blood_Duration)
-				Blood_Pos += (float)framedelay * ( 1.0f / 300 );
+				Blood_Pos += framedelay * ( 1.0f / 300 );
 
 			duration += static_cast<long>(framedelay);
 		}
 		else
-			Blood_Pos += (float)framedelay * ( 1.0f / 40 );
+			Blood_Pos += framedelay * ( 1.0f / 40 );
 	}
 
 	Last_Blood_Pos = Blood_Pos;
