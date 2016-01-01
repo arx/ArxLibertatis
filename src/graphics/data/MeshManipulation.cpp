@@ -53,6 +53,8 @@ ZeniMax Media Inc., Suite 120, Rockville, Maryland 20850 USA.
 #include <string>
 #include <vector>
 
+#include <boost/foreach.hpp>
+
 #include "game/Entity.h"
 
 #include "graphics/BaseGraphicsTypes.h"
@@ -164,10 +166,10 @@ static ActionPoint GetActionPoint(const EERIE_3DOBJ * obj, const char * name) {
 	
 	if(!obj)
 		return ActionPoint();
-
-	for(size_t n = 0; n < obj->actionlist.size(); n++) { // TODO iterator
-		if(obj->actionlist[n].name == name) {
-			return obj->actionlist[n].idx;
+	
+	BOOST_FOREACH(const EERIE_ACTIONLIST & act, obj->actionlist) {
+		if(act.name == name) {
+			return act.idx;
 		}
 	}
 
