@@ -83,46 +83,49 @@ CrashHandlerWindows& CrashHandlerWindows::getInstance() {
 }
 
 bool CrashHandlerWindows::registerCrashHandlers() {
+	
 	arx_assert(m_pPreviousCrashHandlers == 0);
 	m_pPreviousCrashHandlers = new PlatformCrashHandlers;
-
+	
 	// Unhandled exception handler.
 	m_pPreviousCrashHandlers->m_SEHHandler = SetUnhandledExceptionFilter(SEHHandler);
-
+	
 	// Prevent dialog box.
 	_set_error_mode(_OUT_TO_STDERR);
-
+	
 	// Catch pure virtual function calls.
 	// Because there is one _purecall_handler for the whole process,
 	// calling this function immediately impacts all threads. The last
 	// caller on any thread sets the handler.
 	// http://msdn.microsoft.com/en-us/library/t296ys27.aspx
 	m_pPreviousCrashHandlers->m_pureCallHandler = _set_purecall_handler(PureCallHandler);
-
+	
 	// Catch new operator memory allocation exceptions.
 	_set_new_mode(1); // Force malloc() to call new handler too
 	m_pPreviousCrashHandlers->m_newHandler = _set_new_handler(NewHandler);
-
+	
 	// Catch invalid parameter exceptions.
-	m_pPreviousCrashHandlers->m_invalidParameterHandler = _set_invalid_parameter_handler(InvalidParameterHandler);
-
+	m_pPreviousCrashHandlers->m_invalidParameterHandler
+		= _set_invalid_parameter_handler(InvalidParameterHandler);
+	
 	// Catch an abnormal program termination.
 	_set_abort_behavior(_CALL_REPORTFAULT, _CALL_REPORTFAULT);
 	m_pPreviousCrashHandlers->m_SIGABRTHandler = signal(SIGABRT, SignalHandler);
-
+	
 	// Catch illegal instruction handler.
 	m_pPreviousCrashHandlers->m_SIGINTHandler = signal(SIGINT, SignalHandler);
-
+	
 	// Catch a termination request.
 	m_pPreviousCrashHandlers->m_SIGTERMHandler = signal(SIGTERM, SignalHandler);
-
+	
 	// We must also register the main thread crash handlers.
 	return registerThreadCrashHandlers();
 }
 
 void CrashHandlerWindows::unregisterCrashHandlers() {
+	
 	unregisterThreadCrashHandlers();
-
+	
 	SetUnhandledExceptionFilter(m_pPreviousCrashHandlers->m_SEHHandler);
 	_set_purecall_handler(m_pPreviousCrashHandlers->m_pureCallHandler);
 	_set_new_handler(m_pPreviousCrashHandlers->m_newHandler);
@@ -130,10 +133,10 @@ void CrashHandlerWindows::unregisterCrashHandlers() {
 	signal(SIGABRT, m_pPreviousCrashHandlers->m_SIGABRTHandler);
 	signal(SIGINT, m_pPreviousCrashHandlers->m_SIGINTHandler);
 	signal(SIGTERM, m_pPreviousCrashHandlers->m_SIGTERMHandler);
-
+	
 	if(!m_pPreviousCrashHandlers->m_threadExceptionHandlers.empty())
 		LogWarning << "Some threads crash handlers are still registered.";
-
+	
 	delete m_pPreviousCrashHandlers;
 	m_pPreviousCrashHandlers = 0;
 }
@@ -145,64 +148,68 @@ void SIGILLHandler(int signalCode);
 void SIGSEGVHandler(int signalCode);
 
 bool CrashHandlerWindows::registerThreadCrashHandlers() {
+	
 	Autolock autoLock(&m_Lock);
-
+	
 	DWORD dwThreadId = GetCurrentThreadId();
-
+	
 	std::map<DWORD, ThreadExceptionHandlers>::iterator it = m_pPreviousCrashHandlers->m_threadExceptionHandlers.find(dwThreadId);
 	if(it != m_pPreviousCrashHandlers->m_threadExceptionHandlers.end()) {
 		LogWarning << "Crash handlers are already registered for this thread.";
 		return false;
 	}
-
-	ThreadExceptionHandlers& threadHandlers = m_pPreviousCrashHandlers->m_threadExceptionHandlers[dwThreadId];
-
+	
+	ThreadExceptionHandlers& threadHandlers
+		= m_pPreviousCrashHandlers->m_threadExceptionHandlers[dwThreadId];
+	
 	// Catch terminate() calls.
 	// In a multithreaded environment, terminate functions are maintained
 	// separately for each thread. Each new thread needs to install its own
 	// terminate function. Thus, each thread is in charge of its own termination handling.
 	// http://msdn.microsoft.com/en-us/library/t6fk7h29.aspx
 	threadHandlers.m_terminateHandler = set_terminate(TerminateHandler);
-
+	
 	// Catch unexpected() calls.
 	// In a multithreaded environment, unexpected functions are maintained
 	// separately for each thread. Each new thread needs to install its own
 	// unexpected function. Thus, each thread is in charge of its own unexpected handling.
 	// http://msdn.microsoft.com/en-us/library/h46t5b69.aspx
 	threadHandlers.m_unexpectedHandler = set_unexpected(UnexpectedHandler);
-
+	
 	// Catch a floating point error
 	threadHandlers.m_SIGFPEHandler = signal(SIGFPE, (signal_handler)SIGFPEHandler);
-
+	
 	// Catch an illegal instruction
 	threadHandlers.m_SIGILLHandler = signal(SIGILL, SignalHandler);
-
+	
 	// Catch illegal storage access errors
 	threadHandlers.m_SIGSEGVHandler = signal(SIGSEGV, SignalHandler);
-
+	
 	return true;
 }
 
 void CrashHandlerWindows::unregisterThreadCrashHandlers() {
+	
 	Autolock autoLock(&m_Lock);
-
+	
 	DWORD dwThreadId = GetCurrentThreadId();
-
-	std::map<DWORD, ThreadExceptionHandlers>::iterator it = m_pPreviousCrashHandlers->m_threadExceptionHandlers.find(dwThreadId);
+	
+	std::map<DWORD, ThreadExceptionHandlers>::iterator it
+		= m_pPreviousCrashHandlers->m_threadExceptionHandlers.find(dwThreadId);
 	if(it == m_pPreviousCrashHandlers->m_threadExceptionHandlers.end()) {
 		LogWarning << "Crash handlers were not registered for this thread.";
 		return;
 	}
-
+	
 	ThreadExceptionHandlers& threadHandlers = it->second;
-
+	
 	set_terminate(threadHandlers.m_terminateHandler);
 	set_unexpected(threadHandlers.m_unexpectedHandler);
-
+	
 	signal(SIGFPE, threadHandlers.m_SIGFPEHandler);
 	signal(SIGILL, threadHandlers.m_SIGILLHandler);
 	signal(SIGSEGV, threadHandlers.m_SIGSEGVHandler);
-
+	
 	m_pPreviousCrashHandlers->m_threadExceptionHandlers.erase(it);
 }
 
@@ -355,7 +362,9 @@ void PureCallHandler() {
 	CrashHandlerWindows::getInstance().handleCrash(PURE_CALL);
 }
 
-void InvalidParameterHandler(const wchar_t* /*expression*/, const wchar_t* /*function*/, const wchar_t* /*file*/, unsigned int /*line*/, uintptr_t /*pReserved*/) {
+void InvalidParameterHandler(const wchar_t * /*expression*/, const wchar_t * /*function*/,
+                             const wchar_t * /*file*/, unsigned int /*line*/,
+                             uintptr_t /*pReserved*/) {
 	CrashHandlerWindows::getInstance().handleCrash(INVALID_PARAMETER);
 }
 
@@ -365,6 +374,7 @@ int NewHandler(size_t) {
 }
 
 void SignalHandler(int signalCode) {
+	
 	int crashType;
 	switch(signalCode) {
 		case SIGABRT: crashType = SIGNAL_SIGABRT; break;
@@ -375,7 +385,7 @@ void SignalHandler(int signalCode) {
 		case SIGFPE:  crashType = SIGNAL_SIGFPE; break;
 		default:      crashType = SIGNAL_UNKNOWN; break;
 	}
-
+	
 	CrashHandlerWindows::getInstance().handleCrash(crashType, _pxcptinfoptrs);
 }
 
