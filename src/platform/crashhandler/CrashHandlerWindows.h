@@ -52,6 +52,7 @@ private:
 	
 	void processCrashInfo();
 	void processCrashSignal();
+	void processCrashTrace();
 	
 private:
 	

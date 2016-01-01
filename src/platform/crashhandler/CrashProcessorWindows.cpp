@@ -20,10 +20,20 @@
 #include "platform/crashhandler/CrashHandlerWindows.h"
 
 #include <cfloat>
+#include <iomanip>
 #include <sstream>
 
 #include <windows.h>
 #include <psapi.h>
+#include <dbghelp.h>
+
+#include <boost/crc.hpp>
+
+#include "io/fs/FilePath.h"
+
+#include "platform/Architecture.h"
+
+#include "util/String.h"
 
 
 static u64 convertFileTimeToInteger(const FILETIME & ft) {
@@ -151,6 +161,145 @@ void CrashHandlerWindows::processCrashSignal() {
 			description << "Exception code: " << exception << "\n\n";
 		}
 	}
+	
+	addText(description.str().c_str());
+}
+
+
+static BOOL CALLBACK loadModuleCB(PCSTR name, DWORD64 base, ULONG size, PVOID context) {
+	SymLoadModule64((HANDLE)context, 0, name, name, base, size);
+	return TRUE;
+}
+
+void CrashHandlerWindows::processCrashTrace() {
+	
+	std::ostringstream description;
+	
+	// Open parent process handle
+	HANDLE process = OpenProcess(PROCESS_ALL_ACCESS, FALSE, m_pCrashInfo->processId);
+	if(!process) {
+		description << "\nCould not open process: " << platform::getErrorString() << '\n';
+		return;
+	}
+	
+	HANDLE thread = OpenThread(THREAD_ALL_ACCESS, FALSE, m_pCrashInfo->threadId);
+	if(!thread) {
+		description << "\nCould not open thread: " << platform::getErrorString() << '\n';
+	}
+	
+	DWORD options = SymGetOptions();
+	options |= SYMOPT_LOAD_LINES;
+	options &= ~SYMOPT_DEFERRED_LOADS;
+	options &= ~SYMOPT_UNDNAME;
+	SymSetOptions(options);
+	if(SymInitialize(process, NULL, FALSE) != TRUE) {
+		description << "\nCould not load symbols: " << platform::getErrorString() << '\n';
+	}
+	
+	PCONTEXT context = &m_pCrashInfo->contextRecord;
+	STACKFRAME64 stackFrame;
+	memset(&stackFrame, 0, sizeof(stackFrame));
+	DWORD imageType;
+	#if ARX_ARCH == ARX_ARCH_X86
+	imageType = IMAGE_FILE_MACHINE_I386;
+	stackFrame.AddrPC.Offset = context->Eip;
+	stackFrame.AddrPC.Mode = AddrModeFlat;
+	stackFrame.AddrFrame.Offset = context->Ebp;
+	stackFrame.AddrFrame.Mode = AddrModeFlat;
+	stackFrame.AddrStack.Offset = context->Esp;
+	stackFrame.AddrStack.Mode = AddrModeFlat;
+	#elif ARX_ARCH == ARX_ARCH_X86_64
+	imageType = IMAGE_FILE_MACHINE_AMD64;
+	stackFrame.AddrPC.Offset = context->Rip;
+	stackFrame.AddrPC.Mode = AddrModeFlat;
+	stackFrame.AddrFrame.Offset = context->Rsp;
+	stackFrame.AddrFrame.Mode = AddrModeFlat;
+	stackFrame.AddrStack.Offset = context->Rsp;
+	stackFrame.AddrStack.Mode = AddrModeFlat;
+	#else
+	#error "Unsupported architecture"
+	#endif
+	
+	const size_t MaxSymbolLength = 1024;
+	char symbolBuffer[sizeof(IMAGEHLP_SYMBOL64) + MaxSymbolLength];
+	memset(symbolBuffer, 0, sizeof(symbolBuffer));
+	IMAGEHLP_SYMBOL64 * symbol = reinterpret_cast<IMAGEHLP_SYMBOL64 *>(symbolBuffer);
+	symbol->SizeOfStruct = sizeof(IMAGEHLP_SYMBOL64);
+	symbol->MaxNameLength = MaxSymbolLength;
+	char undecoratedName[MaxSymbolLength];
+	
+	IMAGEHLP_LINE64 line;
+	memset(&line, 0, sizeof(line));
+	line.SizeOfStruct = sizeof(line);
+	
+	IMAGEHLP_MODULE64 module;
+	memset(&module, 0, sizeof(module));
+	module.SizeOfStruct = sizeof(module);
+	
+	EnumerateLoadedModules64(process, loadModuleCB, process);
+	
+	description << "\nCallstack:\n";
+	
+	if(platform::isWoW64Process(process)) {
+		description << " Warning: WoW64 process detected, stack may be corrupted!\n";
+	}
+	
+	boost::crc_32_type checksum;
+
+	for(int i = 0; i < CrashInfo::MaxCallstackDepth; ++i) {
+		
+		BOOL ret = StackWalk64(imageType, process, thread, &stackFrame, context, NULL,
+		                       SymFunctionTableAccess64, SymGetModuleBase64, NULL);
+		if(ret != TRUE || stackFrame.AddrPC.Offset == 0) {
+			break;
+		}
+		DWORD64 address = stackFrame.AddrPC.Offset;
+		
+		char * function = 0;
+		DWORD64 dSymbol = 0;
+		BOOL hasSymbol = SymGetSymFromAddr64(process, address, &dSymbol, symbol);
+		if(hasSymbol == TRUE) {
+			DWORD undecorated = UnDecorateSymbolName(symbol->Name, undecoratedName,
+			                                         MaxSymbolLength, UNDNAME_COMPLETE);
+			function = (undecorated != 0) ? undecoratedName : symbol->Name;
+		}
+		
+		DWORD dLine = 0;
+		BOOL hasLine = SymGetLineFromAddr64(process, address, &dLine, &line);
+		BOOL hasModule = SymGetModuleInfo64(process, address, &module);
+		
+		std::ostringstream frame;
+		if(hasModule == TRUE) {
+			std::string image = fs::path(module.ImageName).filename();
+			frame << image;
+			checksum.process_bytes(image.data(), image.length());
+			address -= module.BaseOfImage;
+		} else {
+			frame << "??";
+		}
+		
+		frame << '!';
+		checksum.process_bytes(&address, sizeof(address));
+		if(hasSymbol == TRUE) {
+			frame << function << "()";
+		} else {
+			frame << "0x" << std::hex << stackFrame.AddrPC.Offset << std::dec;
+		}
+		if(hasLine == TRUE) {
+			frame << "  " << fs::path(line.FileName).filename() << ':' << line.LineNumber;
+		}
+			
+		if(i == 0) {
+			util::storeStringTerminated(m_pCrashInfo->title, frame.str());
+		}
+		
+		description << ' ' << frame.str() << '\n';
+	}
+	
+	m_pCrashInfo->crashId = checksum.checksum();
+	
+	CloseHandle(thread);
+	CloseHandle(process);
 	
 	addText(description.str().c_str());
 }

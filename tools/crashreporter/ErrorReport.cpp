@@ -22,12 +22,6 @@
 #include "platform/Platform.h"
 
 #include <algorithm>
-#include <signal.h>
-
-#if ARX_PLATFORM == ARX_PLATFORM_WIN32
-// Win32
-#include <windows.h>
-#endif
 
 // Qt
 #include <QApplication>
@@ -52,7 +46,6 @@
 
 #include "core/Version.h"
 
-#include "crashreporter/Win32Utilities.h"
 #include "crashreporter/tbg/TBG.h"
 
 #include "io/fs/Filesystem.h"
@@ -161,46 +154,12 @@ bool ErrorReport::getCrashDescription() {
 	
 	m_ReportDescription = util::loadString(m_pCrashInfo->description).c_str();
 	
-#if ARX_PLATFORM == ARX_PLATFORM_WIN32
-	
-	// Open parent process handle
-	HANDLE hProcess = OpenProcess(PROCESS_ALL_ACCESS, FALSE, m_pCrashInfo->processId);
-	if(hProcess == NULL)
-	{
-		m_DetailedError = QString("Unable to obtain an handle to the crashed process (Error %1).").arg(QString::number(GetLastError()));
-		return false;
-	}
-
-	std::string callStack, callstackTop;
-	u32 callstackCrc;
-
-	bool bCallstack = GetCallStackInfo(hProcess, HANDLE(m_pCrashInfo->threadHandle),
-	                                   &m_pCrashInfo->contextRecord, callStack,
-	                                   callstackTop, callstackCrc);
-	if(!bCallstack) 
-	{
-		m_DetailedError = "A failure occured when obtaining information regarding the callstack.";
-		return false;
-	}
-	
-	m_ReportUniqueID = QString("[%1]").arg(QString::number(callstackCrc, 16).toUpper());
-	
-	m_ReportDescription += "\nCallstack:\n";
-	m_ReportDescription += callStack.c_str();
-	m_ReportTitle = QString("%1 %2").arg(m_ReportUniqueID, callstackTop.c_str());
-
-	CloseHandle(hProcess);
-	
-#else // ARX_PLATFORM != ARX_PLATFORM_WIN32
-	
 	if(m_pCrashInfo->crashId != 0) {
 		m_ReportUniqueID = QString("[%1]").arg(QString::number(m_pCrashInfo->crashId, 16).toUpper());
 	}
 	
 	std::string title = util::loadString(m_pCrashInfo->title);
 	m_ReportTitle = QString("%1 %2").arg(m_ReportUniqueID, title.c_str());
-	
-#endif // ARX_PLATFORM != ARX_PLATFORM_WIN32
 	
 	return true;
 }

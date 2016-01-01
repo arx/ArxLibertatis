@@ -144,7 +144,7 @@ struct CrashInfo : public CrashInfoBase {
 	
 	CONTEXT contextRecord;
 	CHAR miniDumpTmpFile[MAX_PATH];
-	u64 threadHandle;
+	u32 threadId;
 	u32 exceptionCode;
 	
 };

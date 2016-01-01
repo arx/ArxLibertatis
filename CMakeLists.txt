@@ -1185,11 +1185,7 @@ if(ARX_HAVE_CRASHREPORTER)
 	endif()
 	
 	if(WIN32)
-		list(APPEND arxcrashreporter_SOURCES
-			tools/crashreporter/Win32Utilities.h
-			tools/crashreporter/Win32Utilities.cpp
-			${ARX_ICON_RC}
-		)
+		list(APPEND arxcrashreporter_SOURCES ${ARX_ICON_RC})
 	endif()
 	
 	set(arxcrashreporter_MANUAL_SOURCES
@@ -1252,12 +1248,6 @@ if(ARX_HAVE_CRASHREPORTER)
 		list(APPEND arxcrashreporter_LIBRARIES winhttp wininet)
 	else()
 		list(APPEND arxcrashreporter_LIBRARIES ${CURL_LIBRARIES})
-	endif()
-	
-	if(MSVC)
-		list(APPEND arxcrashreporter_LIBRARIES winmm imm32)
-		list(APPEND arxcrashreporter_LIBRARIES ${DBGHELP_LIBRARIES})
-		include_directories(SYSTEM ${DBGHELP_INCLUDE_DIR})
 	endif()
 	
 	add_executable_shared(arxcrashreporter
