@@ -142,7 +142,7 @@ enum CrashType {
 struct CrashInfo : public CrashInfoBase {
 	
 	char contextRecord[1232];
-	CHAR miniDumpTmpFile[MAX_PATH];
+	WCHAR miniDumpTmpFile[MAX_PATH + 64];
 	u32 threadId;
 	u32 exceptionCode;
 	

@@ -20,6 +20,8 @@
 #ifndef ARX_PLATFORM_CRASHHANDLER_CRASHHANDLERWINDOWS_H
 #define ARX_PLATFORM_CRASHHANDLER_CRASHHANDLERWINDOWS_H
 
+#include <windows.h>
+
 #include "platform/crashhandler/CrashHandlerImpl.h"
 
 #include "platform/WindowsUtils.h"
@@ -48,11 +50,12 @@ private:
 	bool registerCrashHandlers();
 	void unregisterCrashHandlers();
 	
-	void writeCrashDump(PEXCEPTION_POINTERS pExceptionPointers);
+	void writeCrashDump(PEXCEPTION_POINTERS pointers);
 	
 	void processCrashInfo();
 	void processCrashSignal();
 	void processCrashTrace();
+	void processCrashDump();
 	
 private:
 	

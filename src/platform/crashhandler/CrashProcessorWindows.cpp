@@ -23,15 +23,17 @@
 #include <iomanip>
 #include <sstream>
 
-#include <windows.h>
 #include <psapi.h>
 #include <dbghelp.h>
 
 #include <boost/crc.hpp>
+#include <boost/range/size.hpp>
 
 #include "io/fs/FilePath.h"
+#include "io/fs/Filesystem.h"
 
 #include "platform/Architecture.h"
+#include "platform/WindowsUtils.h"
 
 #include "util/String.h"
 
@@ -304,4 +306,22 @@ void CrashHandlerWindows::processCrashTrace() {
 	CloseHandle(process);
 	
 	addText(description.str().c_str());
+}
+
+void CrashHandlerWindows::processCrashDump() {
+	
+	if(m_pCrashInfo->miniDumpTmpFile[0] == L'\0') {
+		return;
+	}
+	
+	m_pCrashInfo->miniDumpTmpFile[boost::size(m_pCrashInfo->miniDumpTmpFile) - 1] = L'\0';
+	fs::path tempfile = platform::WideString::toUTF8(m_pCrashInfo->miniDumpTmpFile);
+	if(!fs::is_regular_file(tempfile)) {
+		return;
+	}
+	
+	fs::path minidump = m_crashReportDir / "crash.dmp";
+	fs::rename(tempfile, minidump);
+	
+	addAttachedFile(minidump);
 }

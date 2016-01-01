@@ -87,8 +87,7 @@ private:
 
 	bool WriteReport(const fs::path& fileName);
 
-	bool GetCrashDump(const fs::path& fileName);
-	bool getCrashDescription();
+	bool getCrashInfo();
 	bool GetMiscCrashInfo();
 
 	void AddFile(const fs::path& fileName);

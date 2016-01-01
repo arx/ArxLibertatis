@@ -106,51 +106,10 @@ bool ErrorReport::Initialize()
 	return true;
 }
 
-bool ErrorReport::GetCrashDump(const fs::path & fileName) {
+bool ErrorReport::getCrashInfo() {
 	
 	m_ProcessMemoryUsage = m_pCrashInfo->memoryUsage;
 	m_RunningTimeSec = m_pCrashInfo->runningTime;
-	
-	if(!getCrashDescription()) {
-		return false;
-	}
-	
-	// Add attached files from the report
-	size_t nbFilesAttached = std::min(size_t(m_pCrashInfo->nbFilesAttached),
-	                                  size_t(CrashInfo::MaxNbFiles));
-	for(size_t i = 0; i < nbFilesAttached; i++) {
-		AddFile(util::loadString(m_pCrashInfo->attachedFiles[i]));
-	}
-	
-#if ARX_PLATFORM == ARX_PLATFORM_WIN32
-	
-	fs::path miniDumpTmpFile = util::loadString(m_pCrashInfo->miniDumpTmpFile);
-	
-	bool bHaveDump = false;
-	if(!miniDumpTmpFile.empty() && fs::exists(miniDumpTmpFile)) {
-		fs::path fullPath = m_ReportFolder / fileName;
-		if(fs::rename(miniDumpTmpFile, fullPath)) {
-			AddFile(fullPath);
-			bHaveDump = true;
-		}
-	}
-	
-	return bHaveDump;
-	
-#else //  ARX_PLATFORM != ARX_PLATFORM_WIN32
-	
-	ARX_UNUSED(fileName);
-	
-	// TODO: Write core dump to 
-	// fs::path fullPath = m_ReportFolder / fileName;
-	
-	return true;
-	
-#endif
-	
-}
-
-bool ErrorReport::getCrashDescription() {
 	
 	m_ReportDescription = util::loadString(m_pCrashInfo->description).c_str();
 	
@@ -160,6 +119,13 @@ bool ErrorReport::getCrashDescription() {
 	
 	std::string title = util::loadString(m_pCrashInfo->title);
 	m_ReportTitle = QString("%1 %2").arg(m_ReportUniqueID, title.c_str());
+	
+	// Add attached files from the report
+	size_t nbFilesAttached = std::min(size_t(m_pCrashInfo->nbFilesAttached),
+	                                  size_t(CrashInfo::MaxNbFiles));
+	for(size_t i = 0; i < nbFilesAttached; i++) {
+		AddFile(util::loadString(m_pCrashInfo->attachedFiles[i]));
+	}
 	
 	return true;
 }
@@ -293,12 +259,12 @@ bool ErrorReport::GenerateReport(ErrorReport::IProgressNotifier* pProgressNotifi
 	pProgressNotifier->taskStepEnded();
 	
 	// Generate minidump
-	pProgressNotifier->taskStepStarted("Generating crash dump");
-	bool bCrashDump = GetCrashDump("crash.dmp");
+	pProgressNotifier->taskStepStarted("Retrieving crash information");
+	bool bCrashInfo = getCrashInfo();
 	pProgressNotifier->taskStepEnded();
-	if(!bCrashDump)
+	if(!bCrashInfo)
 	{
-		pProgressNotifier->setError("Could not generate the crash dump.");
+		pProgressNotifier->setError("Could not retrieve crash information.");
 		pProgressNotifier->setDetailedError(m_DetailedError);
 		return false;
 	}
