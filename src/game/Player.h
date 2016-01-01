@@ -154,6 +154,8 @@ struct ARXCHARACTER {
 	
 	bool climbing;
 	
+	long PLAYER_PARALYSED;
+	
 	// Updated by spells
 	bool levitate;
 	bool m_telekinesis;

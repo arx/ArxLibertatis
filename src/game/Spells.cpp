@@ -463,8 +463,6 @@ void ARX_SPELLS_Fizzle(SpellBase * spell) {
 	}
 }
 
-extern long PLAYER_PARALYSED;
-
 
 void ARX_SPELLS_ManageMagic() {
 	arx_assert(entities.player());
@@ -494,7 +492,7 @@ void ARX_SPELLS_ManageMagic() {
 	if(   !(player.Current_Movement & PLAYER_CROUCH)
 	   && !BLOCK_PLAYER_CONTROLS
 	   && GInput->actionPressed(CONTROLS_CUST_MAGICMODE)
-	   && !PLAYER_PARALYSED
+	   && !player.PLAYER_PARALYSED
 	) {
 		if(player.Interface & INTER_COMBATMODE) {
 			WILLRETURNTOCOMBATMODE = true;

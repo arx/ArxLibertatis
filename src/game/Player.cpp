@@ -1056,8 +1056,6 @@ void ARX_PLAYER_Poison(float val) {
 	}
 }
 
-long PLAYER_PARALYSED = 0;
-
 /*!
  * \brief updates some player stats depending on time
  * \param Framedelay
@@ -1828,10 +1826,10 @@ void ARX_PLAYER_Frame_Update()
 	ARX_PROFILE_FUNC();
 	
 	if(spells.getSpellOnTarget(PlayerEntityHandle, SPELL_PARALYSE)) {
-		PLAYER_PARALYSED = 1;
+		player.PLAYER_PARALYSED = 1;
 	} else {
 		entities.player()->ioflags &= ~IO_FREEZESCRIPT;
-		PLAYER_PARALYSED = 0;
+		player.PLAYER_PARALYSED = 0;
 	}
 
 	// Reset player moveto info
@@ -2492,7 +2490,7 @@ void ARX_PLAYER_Manage_Death() {
 	if(DeadTime <= 2000)
 		return;
 
-	PLAYER_PARALYSED = 0;
+	player.PLAYER_PARALYSED = 0;
 	float ratio = (float)(DeadTime - 2000) * ( 1.0f / 5000 );
 
 	if(ratio >= 1.f) {
@@ -2658,7 +2656,7 @@ void ARX_GAME_Reset(long type) {
 	entities.player()->gameFlags &= ~GFLAG_INVISIBILITY;
 	
 	ARX_PLAYER_Invulnerability(0);
-	PLAYER_PARALYSED = 0;
+	player.PLAYER_PARALYSED = 0;
 
 	ARX_PLAYER_Reset_Fall();
 

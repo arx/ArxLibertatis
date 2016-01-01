@@ -171,7 +171,6 @@ InfoPanels g_debugInfo = InfoPanelNone;
 
 extern long START_NEW_QUEST;
 SavegameHandle LOADQUEST_SLOT = SavegameHandle(); // OH NO, ANOTHER GLOBAL! - TEMP PATCH TO CLEAN CODE FLOW
-extern long PLAYER_PARALYSED;
 extern long DeadTime;
 
 static const float CURRENT_BASE_FOCAL = 310.f;
@@ -1756,7 +1755,7 @@ void ArxGame::updateLevel() {
 	
 	RenderBatcher::getInstance().clear();
 
-	if(!PLAYER_PARALYSED) {
+	if(!player.PLAYER_PARALYSED) {
 		manageEditorControls();
 
 		if(!BLOCK_PLAYER_CONTROLS) {
@@ -1880,7 +1879,7 @@ void ArxGame::updateLevel() {
 	TreatBackgroundActions();
 
 	// Checks Magic Flares Drawing
-	if(!PLAYER_PARALYSED) {
+	if(!player.PLAYER_PARALYSED) {
 		if(eeMousePressed1()) {
 			if(!ARX_FLARES_Block) {
 				ARX_SPELLS_AddPoint(DANAEMouse);
@@ -1976,7 +1975,7 @@ void ArxGame::renderLevel() {
 	if(eyeball.exist != 0)
 		DrawMagicSightInterface();
 
-	if(PLAYER_PARALYSED) {
+	if(player.PLAYER_PARALYSED) {
 		GRenderer->SetRenderState(Renderer::DepthWrite, false);
 		GRenderer->SetRenderState(Renderer::AlphaBlending, true);
 		GRenderer->SetBlendFunc(BlendOne, BlendOne);
@@ -2153,7 +2152,7 @@ void ArxGame::render() {
 		}
 	}
 	
-	if(!PLAYER_PARALYSED || ARXmenu.currentmode != AMCM_OFF) {
+	if(!player.PLAYER_PARALYSED || ARXmenu.currentmode != AMCM_OFF) {
 		if(!STOP_KEYBOARD_INPUT) {
 			manageKeyMouse();
 		} else {
