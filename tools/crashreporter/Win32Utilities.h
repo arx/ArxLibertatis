@@ -28,7 +28,6 @@
 #include <string>
 
 bool GetCallStackInfo(HANDLE hProcess, HANDLE hThread, PCONTEXT pContext, std::string& callstack, std::string& callstackTop, u32& callstackCrc);
-std::string GetRegisters(PCONTEXT pCtx);
 
 #endif // ARX_PLATFORM == ARX_PLATFORM_WIN32
 

@@ -25,6 +25,9 @@
 
 #include "io/log/Logger.h"
 
+#include "platform/Architecture.h"
+
+
 typedef void (*signal_handler)(int signal);
 
 struct ThreadExceptionHandlers {
@@ -290,8 +293,6 @@ void CrashHandlerWindows::handleCrash(int crashType, void * crashExtraInfo, int 
 	
 	Autolock autoLock(&m_Lock);
 	
-	EXCEPTION_POINTERS * pExceptionPointers = (EXCEPTION_POINTERS*)crashExtraInfo;
-	
 	// Run the callbacks
 	for(std::vector<CrashHandler::CrashCallback>::iterator it = m_crashCallbacks.begin();
 	    it != m_crashCallbacks.end(); ++it) {
@@ -301,16 +302,34 @@ void CrashHandlerWindows::handleCrash(int crashType, void * crashExtraInfo, int 
 	m_pCrashInfo->signal = crashType;
 	m_pCrashInfo->code = fpeCode;
 	
+	EXCEPTION_POINTERS * pointers = (EXCEPTION_POINTERS*)crashExtraInfo;
+	
 	// Write crash dump
-	writeCrashDump(pExceptionPointers);
+	writeCrashDump(pointers);
 
 	// Copy CONTEXT to crash info structure
-	memset(&m_pCrashInfo->contextRecord, 0, sizeof(m_pCrashInfo->contextRecord));
-	if(pExceptionPointers != 0) {
-		m_pCrashInfo->exceptionCode = pExceptionPointers->ExceptionRecord->ExceptionCode;
-		memcpy(&m_pCrashInfo->contextRecord, pExceptionPointers->ContextRecord, sizeof(m_pCrashInfo->contextRecord));
+	PCONTEXT context = &m_pCrashInfo->contextRecord;
+	memset(context, 0, sizeof(*context));
+	if(pointers != 0) {
+		u32 code = m_pCrashInfo->exceptionCode = pointers->ExceptionRecord->ExceptionCode;
+		m_pCrashInfo->address = u64(pointers->ExceptionRecord->ExceptionAddress);
+		m_pCrashInfo->hasAddress = true;
+		if(code == EXCEPTION_ACCESS_VIOLATION || code == EXCEPTION_IN_PAGE_ERROR) {
+			m_pCrashInfo->memory = pointers->ExceptionRecord->ExceptionInformation[1];
+			m_pCrashInfo->hasMemory = true;
+		}
+		#if ARX_ARCH == ARX_ARCH_X86
+		m_pCrashInfo->stack =  pointers->ContextRecord->Esp;
+		m_pCrashInfo->hasStack = true;
+		m_pCrashInfo->frame =  pointers->ContextRecord->Ebp;
+		m_pCrashInfo->hasFrame = true;
+		#elif ARX_ARCH == ARX_ARCH_X86_64
+		m_pCrashInfo->stack =  pointers->ContextRecord->Rsp;
+		m_pCrashInfo->hasStack = true;
+		#endif
+		memcpy(context, pointers->ContextRecord, sizeof(*context));
 	} else {
-		RtlCaptureContext(&m_pCrashInfo->contextRecord);
+		RtlCaptureContext(context);
 	}
 	
 	// Get current thread id

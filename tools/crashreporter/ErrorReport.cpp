@@ -189,13 +189,6 @@ bool ErrorReport::getCrashDescription() {
 	m_ReportDescription += callStack.c_str();
 	m_ReportTitle = QString("%1 %2").arg(m_ReportUniqueID, callstackTop.c_str());
 
-	QString registers(GetRegisters(&m_pCrashInfo->contextRecord).c_str());
-	if(!registers.isEmpty())
-	{
-		m_ReportDescription += "\nRegisters:\n";
-		m_ReportDescription += registers;
-	}
-	
 	CloseHandle(hProcess);
 	
 #else // ARX_PLATFORM != ARX_PLATFORM_WIN32

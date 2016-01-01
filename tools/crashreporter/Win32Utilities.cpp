@@ -167,38 +167,4 @@ bool GetCallStackInfo(HANDLE hProcess, HANDLE hThread, PCONTEXT pContext, std::s
 	return !callstack.empty();
 }
 
-std::string GetRegisters(PCONTEXT pCtx)
-{
-	std::string registersStr;
-	char buf[256];
-		
-#if defined(_WIN64)
-	sprintf(buf, "  RAX:%016X  RBX:%016X  RCX:%016X  RDX:%016X  RSI:%016X  RDI:%016X\n", pCtx->Rax, pCtx->Rbx, pCtx->Rcx, pCtx->Rdx, pCtx->Rsi, pCtx->Rdi);
-	registersStr += buf;
-
-	sprintf(buf, "  CS:RIP:%04X:%08X\n", pCtx->SegCs, pCtx->Rip);
-	registersStr += buf;
-
-	sprintf(buf, "  SS:RSP:%04X:%016X  RBP:%016X\n", pCtx->SegSs, pCtx->Rsp, pCtx->Rbp);
-	registersStr += buf;
-#else
-    sprintf(buf, "  EAX:%08X  EBX:%08X  ECX:%08X  EDX:%08X  ESI:%08X  EDI:%08X\n", pCtx->Eax, pCtx->Ebx, pCtx->Ecx, pCtx->Edx, pCtx->Esi, pCtx->Edi);
-	registersStr += buf;
-
-	sprintf(buf, "  CS:EIP:%04X:%08X\n", pCtx->SegCs, pCtx->Eip);
-	registersStr += buf;
-
-	sprintf(buf, "  SS:ESP:%04X:%08X  EBP:%08X\n", pCtx->SegSs, pCtx->Esp, pCtx->Ebp);
-	registersStr += buf;
-#endif
-
-	sprintf(buf, "  DS:%04X  ES:%04X  FS:%04X  GS:%04X\n", pCtx->SegDs, pCtx->SegEs, pCtx->SegFs, pCtx->SegGs);
-	registersStr += buf;
-
-	sprintf(buf, "  Flags:%08X\n", pCtx->EFlags);
-	registersStr += buf;
-
-	return registersStr;
-}
-
 #endif // ARX_PLATFORM == ARX_PLATFORM_WIN32
