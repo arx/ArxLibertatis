@@ -317,10 +317,10 @@ static short GetCutFlag(const std::string & str) {
 	return 0;
 }
 
-static long GetCutSelection(Entity * io, short flag) {
+static ObjSelection GetCutSelection(Entity * io, short flag) {
 	
 	if(!io || !(io->ioflags & IO_NPC) || flag == 0)
-		return -1;
+		return ObjSelection();
 
 	std::string tx;
 
@@ -345,12 +345,12 @@ static long GetCutSelection(Entity * io, short flag) {
 		typedef std::vector<EERIE_SELECTIONS>::iterator iterator; // Convenience
 		for(iterator iter = io->obj->selections.begin(); iter != io->obj->selections.end(); ++iter) {
 			if(iter->selected.size() > 0 && iter->name == tx) {
-				return iter - io->obj->selections.begin();
+				return ObjSelection(iter - io->obj->selections.begin());
 			}
 		}
 	}
 
-	return -1;
+	return ObjSelection();
 }
 
 static void ReComputeCutFlags(Entity * io) {
@@ -412,9 +412,9 @@ static long ARX_NPC_ApplyCuts(Entity * io) {
 
 	for(long jj = 0; jj < 6; jj++) {
 		short flg = 1 << jj;
-		long numsel = GetCutSelection(io, flg);
+		ObjSelection numsel = GetCutSelection(io, flg);
 
-		if((io->_npcdata->cuts & flg) && numsel >= 0) {
+		if((io->_npcdata->cuts & flg) && numsel != ObjSelection()) {
 			for(size_t ll = 0; ll < io->obj->facelist.size(); ll++) {
 				EERIE_FACE & face = io->obj->facelist[ll];
 
@@ -462,6 +462,8 @@ void ARX_NPC_TryToCutSomething(Entity * target, const Vec3f * pos)
 	}
 
 	for(size_t i = 0; i < target->obj->selections.size(); i++) {
+		ObjSelection sel = ObjSelection(i);
+		
 		if(target->obj->selections[i].selected.size() > 0
 		   && boost::contains(target->obj->selections[i].name, "cut_")
 		) {
@@ -476,9 +478,9 @@ void ARX_NPC_TryToCutSomething(Entity * target, const Vec3f * pos)
 				EERIE_FACE & face = target->obj->facelist[ll];
 
 				if(face.texid != goretex) {
-					if(IsInSelection(target->obj, face.vid[0], i) != -1
-					   || IsInSelection(target->obj, face.vid[1], i) != -1
-					   || IsInSelection(target->obj, face.vid[2], i) != -1
+					if(IsInSelection(target->obj, face.vid[0], sel) != -1
+					   || IsInSelection(target->obj, face.vid[1], sel) != -1
+					   || IsInSelection(target->obj, face.vid[2], sel) != -1
 					) {
 						if(face.facetype & POLY_HIDE) {
 							out++;

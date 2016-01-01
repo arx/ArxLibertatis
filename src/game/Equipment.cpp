@@ -200,14 +200,14 @@ static void applyTweak(EquipmentSlot equip, TweakType tw, const std::string & se
 	
 	long mapidx = ObjectAddMap(io->obj, temp);
 	
-	long sel = -1;
+	ObjSelection sel = ObjSelection();
 	for(size_t i = 0; i < io->obj->selections.size(); i++) {
 		if(io->obj->selections[i].name == selection) {
-			sel = i;
+			sel = ObjSelection(i);
 			break;
 		}
 	}
-	if(sel == -1) {
+	if(sel == ObjSelection()) {
 		return;
 	}
 	

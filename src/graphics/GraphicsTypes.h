@@ -68,6 +68,7 @@ class Entity;
 struct EERIE_LIGHT;
 
 ARX_HANDLE_TYPEDEF(long, ActionPoint, -1)
+ARX_HANDLE_TYPEDEF(long, ObjSelection, -1)
 
 struct EERIE_TRI {
 	Vec3f v[3];
@@ -299,9 +300,9 @@ struct EERIE_FASTACCESS
 		, head_group_origin(0)
 		, head_group(0)
 		, fire()
-		, sel_head(0)
-		, sel_chest(0)
-		, sel_leggings(0)
+		, sel_head()
+		, sel_chest()
+		, sel_leggings()
 	{}
 	
 	ActionPoint view_attach;
@@ -312,9 +313,9 @@ struct EERIE_FASTACCESS
 	long head_group_origin;
 	long head_group;
 	ActionPoint fire;
-	long sel_head;
-	long sel_chest;
-	long sel_leggings;
+	ObjSelection sel_head;
+	ObjSelection sel_chest;
+	ObjSelection sel_leggings;
 };
 
 /////////////////////////////////////////////////////////////////////////////////

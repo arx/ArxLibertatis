@@ -170,11 +170,11 @@ static float GetSphereRadiusForGroup(EERIE_3DOBJ * obj, const Vec3f & center, co
 	float curradius = 0.f;
 	float maxf = 0.f;
 	float div = 0.f;
-	long sel = -1;
+	ObjSelection sel = ObjSelection();
 
 	for(size_t i = 0; i < obj->selections.size(); i++) { // TODO iterator
 		if(obj->selections[i].name == "mou") {
-			sel = i;
+			sel = ObjSelection(i);
 			break;
 		}
 	}
@@ -183,7 +183,7 @@ static float GetSphereRadiusForGroup(EERIE_3DOBJ * obj, const Vec3f & center, co
 		if(!IsExclusiveGroupMember(obj, obj->grouplist[group].indexes[i], group))
 			continue;
 
-		if(sel > -1 && IsInSelection(obj, obj->grouplist[group].indexes[i], sel) >= 0)
+		if(sel != ObjSelection() && IsInSelection(obj, obj->grouplist[group].indexes[i], sel) >= 0)
 			continue;
 
 		Vec3f target = obj->vertexlist[obj->grouplist[group].indexes[i]].v;

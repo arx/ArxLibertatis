@@ -117,30 +117,30 @@ static short GetIDXVert(EERIE_3DOBJ * obj, short num) {
 //*************************************************************************************
 void EERIEOBJECT_AddClothesData(EERIE_3DOBJ * obj) {
 
-	long sel = -1;
-	long selmounocol = -1;
+	ObjSelection sel = ObjSelection();
+	ObjSelection selmounocol = ObjSelection();
 
 	for(size_t i = 0; i < obj->selections.size(); i++) { // TODO iterator
 		if(obj->selections[i].name == "mou") {
-			sel = i;
+			sel = ObjSelection(i);
 			break;
 		}
 	}
 	
 	for(size_t i = 0; i < obj->selections.size(); i++) { // TODO iterator
 		if(obj->selections[i].name == "mounocol") {
-			selmounocol = i;
+			selmounocol = ObjSelection(i);
 			break;
 		}
 	}
 
-	if(sel == -1)
+	if(sel == ObjSelection())
 		return;
 
-	if(obj->selections[sel].selected.size() > 0) {
+	if(obj->selections[sel.handleData()].selected.size() > 0) {
 		obj->cdata = new CLOTHES_DATA();
 
-		obj->cdata->nb_cvert = (short)obj->selections[sel].selected.size();
+		obj->cdata->nb_cvert = (short)obj->selections[sel.handleData()].selected.size();
 		obj->cdata->cvert = new CLOTHESVERTEX[obj->cdata->nb_cvert]; 
 		memset(obj->cdata->cvert, 0, sizeof(CLOTHESVERTEX)*obj->cdata->nb_cvert);
 
@@ -150,14 +150,14 @@ void EERIEOBJECT_AddClothesData(EERIE_3DOBJ * obj) {
 
 
 	// There is a Mollesse (TM) (C) Selection
-	if(obj->selections[sel].selected.size() > 0) {
+	if(obj->selections[sel.handleData()].selected.size() > 0) {
 		for(int i = 0; i < obj->cdata->nb_cvert; i++) {
-			obj->cdata->cvert[i].idx = (short)obj->selections[sel].selected[i];
+			obj->cdata->cvert[i].idx = (short)obj->selections[sel.handleData()].selected[i];
 			obj->cdata->cvert[i].pos = obj->vertexlist[obj->cdata->cvert[i].idx].v;
 			obj->cdata->cvert[i].t_pos = obj->vertexlist[obj->cdata->cvert[i].idx].v;
 			obj->cdata->cvert[i].mass = 0.5f; 
 
-			if(selmounocol != -1 && IsInSelection(obj, obj->selections[sel].selected[i], selmounocol) >= 0) {
+			if(selmounocol != ObjSelection() && IsInSelection(obj, obj->selections[sel.handleData()].selected[i], selmounocol) >= 0) {
 				obj->cdata->cvert[i].flags = CLOTHES_FLAG_NORMAL | CLOTHES_FLAG_NOCOL;
 			} else {
 				obj->cdata->cvert[i].flags = CLOTHES_FLAG_NORMAL;

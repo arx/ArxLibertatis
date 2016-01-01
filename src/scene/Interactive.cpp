@@ -270,9 +270,9 @@ void ARX_INTERACTIVE_Show_Hide_1st(Entity * io, long state)
 		return;
 
 	HERO_SHOW_1ST = state;
-	long grp = EERIE_OBJECT_GetSelection(io->obj, "1st");
+	ObjSelection grp = EERIE_OBJECT_GetSelection(io->obj, "1st");
 
-	if(grp != -1) {
+	if(grp != ObjSelection()) {
 		for(size_t nn = 0; nn < io->obj->facelist.size(); nn++) {
 			EERIE_FACE * ef = &io->obj->facelist[nn];
 

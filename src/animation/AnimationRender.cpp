@@ -847,22 +847,22 @@ void DrawEERIEInter(EERIE_3DOBJ *eobj, const TransformInfo &t, Entity *io, bool 
 
 struct HaloRenderInfo {
 
-	HaloRenderInfo(IO_HALO * halo, long selection)
+	HaloRenderInfo(IO_HALO * halo, ObjSelection selection)
 		: halo(halo)
 		, selection(selection)
 	{}
 
 	explicit HaloRenderInfo(IO_HALO * halo)
 		: halo(halo)
-		, selection(-1)
+		, selection()
 	{}
 
 	IO_HALO * halo;
-	short selection;
+	ObjSelection selection;
 };
 
 static void pushSlotHalo(std::vector<HaloRenderInfo> & halos, EquipmentSlot slot,
-                         short selection) {
+                         ObjSelection selection) {
 
 	if(ValidIONum(player.equiped[slot])) {
 		Entity * tio = entities[player.equiped[slot]];
@@ -942,7 +942,7 @@ static void AddAnimatedObjectHalo(HaloInfo & haloInfo, const unsigned short * pa
 	IO_HALO * curhalo = NULL;
 
 	for(size_t h = 0; h < halos.size(); h++) {
-		if(halos[h].selection == -1 || IsInSelection(eobj, paf[0], halos[h].selection) >= 0) {
+		if(halos[h].selection == ObjSelection() || IsInSelection(eobj, paf[0], halos[h].selection) >= 0) {
 			curhalo = halos[h].halo;
 			break;
 		}

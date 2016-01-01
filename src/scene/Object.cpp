@@ -983,18 +983,18 @@ EERIE_3DOBJ * Eerie_Copy(const EERIE_3DOBJ * obj) {
 	return nouvo;
 }
 
-long EERIE_OBJECT_GetSelection(const EERIE_3DOBJ * obj, const std::string & selname) {
+ObjSelection EERIE_OBJECT_GetSelection(const EERIE_3DOBJ * obj, const std::string & selname) {
 	
 	if(!obj)
-		return -1;
+		return ObjSelection();
 	
 	for(size_t i = 0; i < obj->selections.size(); i++) {
 		if(obj->selections[i].name == selname) {
-			return i;
+			return ObjSelection(i);
 		}
 	}
 	
-	return -1;
+	return ObjSelection();
 }
 
 long EERIE_OBJECT_GetGroup(const EERIE_3DOBJ * obj, const std::string & groupname) {
