@@ -2954,7 +2954,7 @@ void ManageIgnition(Entity * io) {
 		}
 		
 		if(addParticles) {
-			Vec3f pos = io->obj->vertexlist3[io->obj->fastaccess.fire.handleData()].v;
+			Vec3f pos = actionPointPosition(io->obj, io->obj->fastaccess.fire);
 			createFireParticles(pos, 2, 2);
 		}
 	} else {
@@ -2986,7 +2986,7 @@ void ManageIgnition_2(Entity * io) {
 			if(io == DRAGINTER)
 				position = player.pos;
 			else
-				position = io->obj->vertexlist3[io->obj->fastaccess.fire.handleData()].v;
+				position = actionPointPosition(io->obj, io->obj->fastaccess.fire);
 		else
 			position = io->pos;
 

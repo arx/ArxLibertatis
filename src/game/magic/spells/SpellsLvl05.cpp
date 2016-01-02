@@ -534,7 +534,7 @@ void PoisonProjectileSpell::Launch()
 
 	if(m_hand_group != ActionPoint()) {
 		ActionPoint group = m_hand_group;
-		m_hand_pos = caster->obj->vertexlist3[group.handleData()].v;
+		m_hand_pos = actionPointPosition(caster->obj, group);
 	}
 	
 	if(m_caster == PlayerEntityHandle) {

@@ -71,7 +71,7 @@ void SpellBase::updateCasterHand() {
 	}
 	
 	if(m_hand_group != ActionPoint()) {
-		m_hand_pos = entities[m_caster]->obj->vertexlist3[m_hand_group.handleData()].v;
+		m_hand_pos = actionPointPosition(entities[m_caster]->obj, m_hand_group);
 	}
 }
 

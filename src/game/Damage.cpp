@@ -1279,7 +1279,7 @@ void CheckForIgnition(const Sphere & sphere, bool mode, long flag) {
 		   && !(io->ioflags & IO_UNDERWATER)
 		   && io->obj->fastaccess.fire != ActionPoint()
 		) {
-			if(closerThan(sphere.origin, io->obj->vertexlist3[io->obj->fastaccess.fire.handleData()].v, sphere.radius)) {
+			if(closerThan(sphere.origin, actionPointPosition(io->obj, io->obj->fastaccess.fire), sphere.radius)) {
 
 				if(mode && io->ignition <= 0) {
 					io->ignition = 1;

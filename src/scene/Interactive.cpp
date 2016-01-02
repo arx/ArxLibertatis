@@ -391,7 +391,7 @@ void IO_UnlinkAllLinkedObjects(Entity * io) {
 		linked->show = SHOW_FLAG_IN_SCENE;
 		linked->no_collide = io->index();
 		
-		Vec3f pos = io->obj->vertexlist3[io->obj->linked[k].lidx.handleData()].v;
+		Vec3f pos = actionPointPosition(io->obj, io->obj->linked[k].lidx);
 		
 		Vec3f vector = angleToVectorXZ(linked->angle.getPitch()) * 0.5f;
 		

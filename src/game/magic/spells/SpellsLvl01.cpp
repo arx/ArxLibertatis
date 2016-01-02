@@ -206,7 +206,7 @@ void MagicMissileSpell::Launch() {
 	if(m_hand_group != ActionPoint()) {
 		Entity * caster = entities[m_caster];
 		ActionPoint group = m_hand_group;
-		m_hand_pos = caster->obj->vertexlist3[group.handleData()].v;
+		m_hand_pos = actionPointPosition(caster->obj, group);
 	}
 	
 	Vec3f aePos;

@@ -1793,7 +1793,7 @@ void ForcePlayerLookAtIO(Entity * io) {
 	ActionPoint id = entities.player()->obj->fastaccess.view_attach;
 
 	if(id != ActionPoint()) {
-		tcam.orgTrans.pos = entities.player()->obj->vertexlist3[id.handleData()].v;
+		tcam.orgTrans.pos = actionPointPosition(entities.player()->obj, id);
 	} else {
 		tcam.orgTrans.pos = player.pos;
 	}
@@ -1801,7 +1801,7 @@ void ForcePlayerLookAtIO(Entity * io) {
 	id = io->obj->fastaccess.view_attach;
 
 	if(id != ActionPoint()) {
-		target = io->obj->vertexlist3[id.handleData()].v;
+		target = actionPointPosition(io->obj, id);
 	} else {
 		target = io->pos;
 	}

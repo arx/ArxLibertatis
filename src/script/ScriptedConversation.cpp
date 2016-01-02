@@ -232,7 +232,7 @@ class SpeakCommand : public Command {
 		if(io) {
 			ActionPoint id = io->obj->fastaccess.view_attach;
 			if(id != ActionPoint()) {
-				acs.pos1 = io->obj->vertexlist3[id.handleData()].v;
+				acs.pos1 = actionPointPosition(io->obj, id);
 			} else {
 				acs.pos1 = io->pos + Vec3f(0.f, io->physics.cyl.height, 0.f);
 			}
@@ -242,7 +242,7 @@ class SpeakCommand : public Command {
 			Entity * ioo = entities[ionum];
 			ActionPoint id = ioo->obj->fastaccess.view_attach;
 			if(id != ActionPoint()) {
-				acs.pos2 = ioo->obj->vertexlist3[id.handleData()].v;
+				acs.pos2 = actionPointPosition(ioo->obj, id);
 			} else {
 				acs.pos2 = ioo->pos + Vec3f(0.f, ioo->physics.cyl.height, 0.f);
 			}

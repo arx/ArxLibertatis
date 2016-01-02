@@ -474,7 +474,7 @@ void ARX_THROWN_OBJECT_Manage(unsigned long time_offset)
 
 				rad *= .5f;
 
-				const Vec3f v0 = thrownObj->obj->vertexlist3[thrownObj->obj->actionlist[j].idx.handleData()].v;
+				const Vec3f v0 = actionPointPosition(thrownObj->obj, thrownObj->obj->actionlist[j].idx);
 				Vec3f dest = original_pos + thrownObj->vector * 95.f;
 				Vec3f orgn = original_pos - thrownObj->vector * 25.f;
 				EERIEPOLY * ep = CheckArrowPolyCollision(orgn, dest);

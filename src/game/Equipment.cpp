@@ -668,7 +668,6 @@ bool ARX_EQUIPMENT_Strike_Check(Entity * io_source, Entity * io_weapon, float ra
 	EntityHandle weapon = io_weapon->index();
 	Sphere sphere;
 
-	Vec3f * v0;
 	EXCEPTIONS_LIST_Pos = 0;
 
 	long nbact = io_weapon->obj->actionlist.size();
@@ -682,9 +681,7 @@ bool ARX_EQUIPMENT_Strike_Check(Entity * io_source, Entity * io_weapon, float ra
 		if(rad == -1)
 			continue;
 		
-		v0 = &io_weapon->obj->vertexlist3[io_weapon->obj->actionlist[j].idx.handleData()].v;
-		sphere.origin = *v0;
-		
+		sphere.origin = actionPointPosition(io_weapon->obj, io_weapon->obj->actionlist[j].idx);
 		sphere.radius = rad; 
 
 		if(source != PlayerEntityHandle)

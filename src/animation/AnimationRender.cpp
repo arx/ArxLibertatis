@@ -1191,7 +1191,7 @@ static void Cedric_AnimateDrawEntityRender(EERIE_3DOBJ * eobj, const Vec3f & pos
 
 
 		TransformInfo t(
-			eobj->vertexlist3[link.lidx.handleData()].v,
+			actionPointPosition(eobj, link.lidx),
 			eobj->m_skeleton->bones[link.lgroup.handleData()].anim.quat,
 			link.io ? link.io->scale : 1.f,
 			link.obj->vertexlist[link.lidx2.handleData()].v - link.obj->vertexlist[link.obj->origin].v);

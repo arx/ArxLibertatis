@@ -1361,7 +1361,7 @@ void ArxGame::updateFirstPersonCamera() {
 		ActionPoint id = entities.player()->obj->fastaccess.view_attach;
 		
 		if(id != ActionPoint()) {
-			subj.orgTrans.pos = entities.player()->obj->vertexlist3[id.handleData()].v;
+			subj.orgTrans.pos = actionPointPosition(entities.player()->obj, id);
 			Vec3f vect;
 			vect.x = subj.orgTrans.pos.x - player.pos.x;
 			vect.y = 0;
@@ -1544,13 +1544,13 @@ void ArxGame::handlePlayerDeath() {
 		ActionPoint id2 = GetActionPointIdx(entities.player()->obj, "chest2leggings");
 
 		if(id != ActionPoint()) {
-			targetpos = entities.player()->obj->vertexlist3[id.handleData()].v;
+			targetpos = actionPointPosition(entities.player()->obj, id);
 		}
 
 		conversationcamera.orgTrans.pos = targetpos;
 
 		if(id2 != ActionPoint()) {
-			conversationcamera.orgTrans.pos = entities.player()->obj->vertexlist3[id2.handleData()].v;
+			conversationcamera.orgTrans.pos = actionPointPosition(entities.player()->obj, id2);
 		}
 
 		conversationcamera.orgTrans.pos.y -= DeadCameraDistance;
