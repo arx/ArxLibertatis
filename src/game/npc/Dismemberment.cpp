@@ -108,15 +108,17 @@ static void ARX_NPC_SpawnMember(Entity * ioo, ObjSelection num) {
 	for(size_t k = 0; k < from->vertexlist.size(); k++) {
 		equival[k] = -1;
 	}
+	
+	const EERIE_SELECTIONS & cutSelection = from->selections[num.handleData()];
 
-	arx_assert(0 < from->selections[num.handleData()].selected.size());
+	arx_assert(0 < cutSelection.selected.size());
 
-	for(size_t k = 0; k < from->selections[num.handleData()].selected.size(); k++) {
-		inpos = from->selections[num.handleData()].selected[k];
-		equival[from->selections[num.handleData()].selected[k]] = k;
+	for(size_t k = 0; k < cutSelection.selected.size(); k++) {
+		inpos = cutSelection.selected[k];
+		equival[cutSelection.selected[k]] = k;
 		
-		nouvo->vertexlist[k] = from->vertexlist[from->selections[num.handleData()].selected[k]];
-		nouvo->vertexlist[k].v = from->vertexlist3[from->selections[num.handleData()].selected[k]].v;
+		nouvo->vertexlist[k] = from->vertexlist[cutSelection.selected[k]];
+		nouvo->vertexlist[k].v = from->vertexlist3[cutSelection.selected[k]].v;
 		nouvo->vertexlist[k].v -= ioo->pos;
 		nouvo->vertexlist[k].vert.p = nouvo->vertexlist[k].v;
 		
@@ -126,7 +128,7 @@ static void ARX_NPC_SpawnMember(Entity * ioo, ObjSelection num) {
 		nouvo->vertexlist3[k] = nouvo->vertexlist[k];
 	}
 
-	size_t count = from->selections[num.handleData()].selected.size();
+	size_t count = cutSelection.selected.size();
 
 	for(size_t k = 0; k < from->facelist.size(); k++) {
 		if(from->facelist[k].texid == gore) {
