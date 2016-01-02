@@ -942,7 +942,7 @@ static void AddAnimatedObjectHalo(HaloInfo & haloInfo, const unsigned short * pa
 	IO_HALO * curhalo = NULL;
 
 	for(size_t h = 0; h < halos.size(); h++) {
-		if(halos[h].selection == ObjSelection() || IsInSelection(eobj, paf[0], halos[h].selection) >= 0) {
+		if(halos[h].selection == ObjSelection() || IsInSelection(eobj, paf[0], halos[h].selection)) {
 			curhalo = halos[h].halo;
 			break;
 		}

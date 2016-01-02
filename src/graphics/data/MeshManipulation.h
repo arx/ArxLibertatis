@@ -73,7 +73,7 @@ struct TWEAK_INFO {
 };
 
 void EERIE_MESH_TWEAK_Do(Entity * io, TweakType tw, const res::path & path);
-long IsInSelection(const EERIE_3DOBJ * obj, long vert, ObjSelection tw);
+bool IsInSelection(const EERIE_3DOBJ * obj, long vert, ObjSelection tw);
 void AddVertexIdxToGroup(EERIE_3DOBJ * obj, long group, long val);
 void EERIE_MESH_TWEAK_Skin(EERIE_3DOBJ * obj, const res::path & skintochange, const res::path & skinname);
 long ObjectAddMap(EERIE_3DOBJ * obj, TextureContainer * tc);

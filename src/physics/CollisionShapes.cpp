@@ -183,7 +183,7 @@ static float GetSphereRadiusForGroup(EERIE_3DOBJ * obj, const Vec3f & center, co
 		if(!IsExclusiveGroupMember(obj, obj->grouplist[group].indexes[i], group))
 			continue;
 
-		if(sel != ObjSelection() && IsInSelection(obj, obj->grouplist[group].indexes[i], sel) >= 0)
+		if(sel != ObjSelection() && IsInSelection(obj, obj->grouplist[group].indexes[i], sel))
 			continue;
 
 		Vec3f target = obj->vertexlist[obj->grouplist[group].indexes[i]].v;

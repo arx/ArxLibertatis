@@ -277,7 +277,7 @@ void ARX_INTERACTIVE_Show_Hide_1st(Entity * io, long state)
 			EERIE_FACE * ef = &io->obj->facelist[nn];
 
 			for(long jj = 0; jj < 3; jj++) {
-				if(IsInSelection(io->obj, ef->vid[jj], grp) != -1) {
+				if(IsInSelection(io->obj, ef->vid[jj], grp)) {
 					if(state)
 						ef->facetype |= POLY_HIDE;
 					else
