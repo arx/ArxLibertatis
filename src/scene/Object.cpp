@@ -115,21 +115,21 @@ ActionPoint GetActionPointIdx(const EERIE_3DOBJ * eobj, const std::string & text
 	return ActionPoint();
 }
 
-long GetActionPointGroup(const EERIE_3DOBJ * eobj, ActionPoint idx) {
+ObjVertGroup GetActionPointGroup(const EERIE_3DOBJ * eobj, ActionPoint idx) {
 	
 	if(!eobj)
-		return -1;
+		return ObjVertGroup();
 	
 	for(long i = eobj->grouplist.size() - 1; i >= 0; i--) {
 		const std::vector<long> & indices = eobj->grouplist[i].indexes;
 		for(size_t j = 0; j < indices.size(); j++){
 			if(indices[j] == idx.handleData()) {
-				return i;
+				return ObjVertGroup(i);
 			}
 		}
 	}
 	
-	return -1;
+	return ObjVertGroup();
 }
 
 void EERIE_Object_Precompute_Fast_Access(EERIE_3DOBJ * eerie) {

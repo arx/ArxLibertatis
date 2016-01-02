@@ -74,7 +74,7 @@ ObjSelection EERIE_OBJECT_GetSelection(const EERIE_3DOBJ * obj, const std::strin
 
 long GetGroupOriginByName(const EERIE_3DOBJ * eobj, const std::string & text);
 ActionPoint GetActionPointIdx(const EERIE_3DOBJ * eobj, const std::string & text);
-long GetActionPointGroup(const EERIE_3DOBJ * eobj, ActionPoint idx);
+ObjVertGroup GetActionPointGroup(const EERIE_3DOBJ * eobj, ActionPoint idx);
 
 /*!
  * Load a possibly cached 3D object using the default texture path.

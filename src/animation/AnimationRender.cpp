@@ -1179,7 +1179,7 @@ static void Cedric_AnimateDrawEntityRender(EERIE_3DOBJ * eobj, const Vec3f & pos
 	for(size_t k = 0; k < eobj->linked.size(); k++) {
 		const EERIE_LINKED & link = eobj->linked[k];
 
-		if(link.lgroup == -1 || !link.obj)
+		if(link.lgroup == ObjVertGroup() || !link.obj)
 			continue;
 
 		// specific check to avoid drawing player weapon on its back when in subjective view
@@ -1192,7 +1192,7 @@ static void Cedric_AnimateDrawEntityRender(EERIE_3DOBJ * eobj, const Vec3f & pos
 
 		TransformInfo t(
 			eobj->vertexlist3[link.lidx.handleData()].v,
-			eobj->m_skeleton->bones[link.lgroup].anim.quat,
+			eobj->m_skeleton->bones[link.lgroup.handleData()].anim.quat,
 			link.io ? link.io->scale : 1.f,
 			link.obj->vertexlist[link.lidx2.handleData()].v - link.obj->vertexlist[link.obj->origin].v);
 

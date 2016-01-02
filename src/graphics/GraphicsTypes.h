@@ -278,7 +278,7 @@ struct CUB3D
 };
 
 struct EERIE_LINKED {
-	long lgroup; //linked to group n° if lgroup=-1 NOLINK
+	ObjVertGroup lgroup; //linked to group n° if lgroup=-1 NOLINK
 	ActionPoint lidx;
 	ActionPoint lidx2;
 	EERIE_3DOBJ * obj;
