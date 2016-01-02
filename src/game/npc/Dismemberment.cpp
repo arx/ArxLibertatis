@@ -34,10 +34,10 @@
 #include "platform/Flags.h"
 #include "scene/GameSound.h"
 
-static long IsNearSelection(EERIE_3DOBJ * obj, long vert, ObjSelection tw) {
+static bool IsNearSelection(EERIE_3DOBJ * obj, long vert, ObjSelection tw) {
 	
 	if(!obj || tw == ObjSelection() || vert < 0)
-		return -1;
+		return false;
 
 	const EERIE_SELECTIONS & sel = obj->selections[tw.handleData()];
 	
@@ -45,10 +45,10 @@ static long IsNearSelection(EERIE_3DOBJ * obj, long vert, ObjSelection tw) {
 		float d = glm::distance(obj->vertexlist[sel.selected[i]].v, obj->vertexlist[vert].v);
 
 		if(d < 8.f)
-			return i;
+			return true;
 	}
 
-	return -1;
+	return false;
 }
 
 /*!
@@ -86,9 +86,9 @@ static void ARX_NPC_SpawnMember(Entity * ioo, ObjSelection num) {
 
 	for(size_t k = 0; k < from->facelist.size(); k++) {
 		if(from->facelist[k].texid == gore) {
-			if(IsNearSelection(from, from->facelist[k].vid[0], num) >= 0
-			   || IsNearSelection(from, from->facelist[k].vid[1], num) >= 0
-			   || IsNearSelection(from, from->facelist[k].vid[2], num) >= 0
+			if(IsNearSelection(from, from->facelist[k].vid[0], num)
+			   || IsNearSelection(from, from->facelist[k].vid[1], num)
+			   || IsNearSelection(from, from->facelist[k].vid[2], num)
 			) {
 				nvertex += 3;
 			}
@@ -130,9 +130,9 @@ static void ARX_NPC_SpawnMember(Entity * ioo, ObjSelection num) {
 
 	for(size_t k = 0; k < from->facelist.size(); k++) {
 		if(from->facelist[k].texid == gore) {
-			if(IsNearSelection(from, from->facelist[k].vid[0], num) >= 0
-			   || IsNearSelection(from, from->facelist[k].vid[1], num) >= 0
-			   || IsNearSelection(from, from->facelist[k].vid[2], num) >= 0
+			if(IsNearSelection(from, from->facelist[k].vid[0], num)
+			   || IsNearSelection(from, from->facelist[k].vid[1], num)
+			   || IsNearSelection(from, from->facelist[k].vid[2], num)
 			) {
 				for(long j = 0; j < 3; j++) {
 					equival[from->facelist[k].vid[j]] = count;
