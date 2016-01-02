@@ -287,19 +287,9 @@ static void ARX_NPC_SpawnMember(Entity * ioo, ObjSelection num) {
 	EERIE_PHYSICS_BOX_Launch(io->obj, io->pos, io->angle, vector);
 }
 
-enum DismembermentFlag {
-	FLAG_CUT_HEAD  = (1<<0),
-	FLAG_CUT_TORSO = (1<<1),
-	FLAG_CUT_LARM  = (1<<2),
-	FLAG_CUT_RARM  = (1<<3),
-	FLAG_CUT_LLEG  = (1<<4),
-	FLAG_CUT_RLEG  = (1<<5)
-};
 
-DECLARE_FLAGS(DismembermentFlag, DismembermentFlags)
-DECLARE_FLAGS_OPERATORS(DismembermentFlags)
 
-static short GetCutFlag(const std::string & str) {
+static DismembermentFlag GetCutFlag(const std::string & str) {
 	
 	if(str == "cut_head") {
 		return FLAG_CUT_HEAD;
@@ -315,10 +305,10 @@ static short GetCutFlag(const std::string & str) {
 		return FLAG_CUT_RLEG;
 	}
 	
-	return 0;
+	return DismembermentFlag(0);
 }
 
-static ObjSelection GetCutSelection(Entity * io, short flag) {
+static ObjSelection GetCutSelection(Entity * io, DismembermentFlag flag) {
 	
 	if(!io || !(io->ioflags & IO_NPC) || flag == 0)
 		return ObjSelection();
@@ -366,7 +356,7 @@ static void ReComputeCutFlags(Entity * io) {
 	}
 }
 
-static bool IsAlreadyCut(Entity * io, short fl) {
+static bool IsAlreadyCut(Entity * io, DismembermentFlag fl) {
 	
 	if(io->_npcdata->cuts & fl)
 		return true;
@@ -412,7 +402,7 @@ static long ARX_NPC_ApplyCuts(Entity * io) {
 	}
 
 	for(long jj = 0; jj < 6; jj++) {
-		short flg = 1 << jj;
+		DismembermentFlag flg = DismembermentFlag(1 << jj);
 		ObjSelection numsel = GetCutSelection(io, flg);
 
 		if((io->_npcdata->cuts & flg) && numsel != ObjSelection()) {
@@ -467,7 +457,7 @@ void ARX_NPC_TryToCutSomething(Entity * target, const Vec3f * pos)
 		if(target->obj->selections[i].selected.size() > 0
 		   && boost::contains(target->obj->selections[i].name, "cut_")
 		) {
-			short fll = GetCutFlag(target->obj->selections[i].name);
+			DismembermentFlag fll = GetCutFlag(target->obj->selections[i].name);
 
 			if(IsAlreadyCut(target, fll))
 				continue;
@@ -506,7 +496,7 @@ void ARX_NPC_TryToCutSomething(Entity * target, const Vec3f * pos)
 	long hid = 0;
 
 	if(mindistSqr < square(60)) { // can only cut a close part...
-		short fl = GetCutFlag( target->obj->selections[numsel.handleData()].name );
+		DismembermentFlag fl = GetCutFlag( target->obj->selections[numsel.handleData()].name );
 
 		if(fl && !(target->_npcdata->cuts & fl)) {
 			target->_npcdata->cuts |= fl;

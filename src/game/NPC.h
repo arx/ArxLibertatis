@@ -141,6 +141,18 @@ enum NPCFlag {
 DECLARE_FLAGS(NPCFlag, NPCFlags)
 DECLARE_FLAGS_OPERATORS(NPCFlags)
 
+enum DismembermentFlag {
+	FLAG_CUT_HEAD  = (1<<0),
+	FLAG_CUT_TORSO = (1<<1),
+	FLAG_CUT_LARM  = (1<<2),
+	FLAG_CUT_RARM  = (1<<3),
+	FLAG_CUT_LLEG  = (1<<4),
+	FLAG_CUT_RLEG  = (1<<5)
+};
+
+DECLARE_FLAGS(DismembermentFlag, DismembermentFlags)
+DECLARE_FLAGS_OPERATORS(DismembermentFlags)
+
 struct IO_NPCDATA {
 	
 	IO_NPCDATA();
@@ -203,7 +215,7 @@ struct IO_NPCDATA {
 	float climb_count;
 	float stare_factor;
 	float fDetect;
-	short cuts;
+	DismembermentFlags cuts;
 	short unused;
 	
 };

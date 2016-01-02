@@ -2227,7 +2227,7 @@ static Entity * ARX_CHANGELEVEL_Pop_IO(const std::string & idString, EntityInsta
 				io->_npcdata->aiming_start = as->aiming_start;
 				io->_npcdata->npcflags = NPCFlags::load(as->npcflags); // TODO save/load flags
 				io->_npcdata->fDetect = as->fDetect;
-				io->_npcdata->cuts = as->cuts;
+				io->_npcdata->cuts = DismembermentFlags::load(as->cuts); // TODO save/load flags
 				
 				io->_npcdata->pathfind = IO_PATHFIND();
 				
