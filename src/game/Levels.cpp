@@ -140,67 +140,36 @@ void GetLevelNameByNum(long num, char * name)
 		strcpy(name, "none");
 
 		if (num == 0) strcpy(name, "0");
-
 		if (num == 1) strcpy(name, "1");
-
 		if (num == 2) strcpy(name, "2");
-
 		if (num == 3) strcpy(name, "3");
-
 		if (num == 4) strcpy(name, "4");
-
 		if (num == 5) strcpy(name, "5");
-
 		if (num == 6) strcpy(name, "6");
-
 		if (num == 7) strcpy(name, "7");
-
 		if (num == 8) strcpy(name, "8");
-
 		if (num == 9) strcpy(name, "9");
-
 		if (num == 10) strcpy(name, "10");
-
 		if (num == 11) strcpy(name, "11");
-
 		if (num == 12) strcpy(name, "12");
-
 		if (num == 13) strcpy(name, "13");
-
 		if (num == 14) strcpy(name, "14");
-
 		if (num == 15) strcpy(name, "15");
-
 		if (num == 16) strcpy(name, "16");
-
 		if (num == 17) strcpy(name, "17");
-
 		if (num == 18) strcpy(name, "18");
-
 		if (num == 19) strcpy(name, "19");
-
 		if (num == 20) strcpy(name, "20");
-
 		if (num == 21) strcpy(name, "21");
-
 		if (num == 22) strcpy(name, "22");
-
 		if (num == 23) strcpy(name, "23");
-
 		if (num == 24) strcpy(name, "24");
-
 		if (num == 25) strcpy(name, "25");
-
 		if (num == 26) strcpy(name, "26");
-
 		if (num == 27) strcpy(name, "27");
-
 		if (num == 28) strcpy(name, "demo");
-
 		if (num == 29) strcpy(name, "demo2");
-
 		if (num == 30) strcpy(name, "demo3");
-
 		if (num == 31) strcpy(name, "demo4");
 	}
 }
