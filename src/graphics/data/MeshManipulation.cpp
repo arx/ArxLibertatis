@@ -604,9 +604,11 @@ static EERIE_3DOBJ * CreateIntermediaryMesh(const EERIE_3DOBJ * obj1, const EERI
 			}
 		}
 	} else {
-		for(size_t l = 0; l < obj1->selections[sel_legs1.handleData()].selected.size(); l++) {
+		const EERIE_SELECTIONS & sel = obj1->selections[sel_legs1.handleData()];
+		
+		for(size_t l = 0; l < sel.selected.size(); l++) {
 			EERIE_VERTEX temp;
-			temp.v = obj1vertexlist2[obj1->selections[sel_legs1.handleData()].selected[l]].v;
+			temp.v = obj1vertexlist2[sel.selected[l]].v;
 			long t = GetEquivalentVertex(work, &temp);
 
 			if(t != -1) {
