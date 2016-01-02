@@ -375,13 +375,13 @@ static bool IsAlreadyCut(Entity * io, DismembermentFlag fl) {
 	return false;
 }
 
-static long ARX_NPC_ApplyCuts(Entity * io) {
+static bool ARX_NPC_ApplyCuts(Entity * io) {
 	
 	if(!io || !(io->ioflags & IO_NPC))
-		return 0;
+		return false;
 
 	if(io->_npcdata->cuts == 0)
-		return 0;	// No cuts
+		return false;	// No cuts
 
 	ReComputeCutFlags(io);
 	long goretex = -1;
@@ -395,7 +395,7 @@ static long ARX_NPC_ApplyCuts(Entity * io) {
 		}
 	}
 
-	long hid = 0;
+	bool hid = false;
 
 	for(size_t nn = 0; nn < io->obj->facelist.size(); nn++) {
 		io->obj->facelist[nn].facetype &= ~POLY_HIDE;
@@ -415,7 +415,7 @@ static long ARX_NPC_ApplyCuts(Entity * io) {
 				) {
 					if(!(face.facetype & POLY_HIDE)) {
 						if(face.texid != goretex)
-							hid = 1;
+							hid = true;
 					}
 
 					face.facetype |= POLY_HIDE;
@@ -493,7 +493,7 @@ void ARX_NPC_TryToCutSomething(Entity * target, const Vec3f * pos)
 	if(numsel == ObjSelection())
 		return; // Nothing to cut...
 
-	long hid = 0;
+	bool hid = false;
 
 	if(mindistSqr < square(60)) { // can only cut a close part...
 		DismembermentFlag fl = GetCutFlag( target->obj->selections[numsel.handleData()].name );
