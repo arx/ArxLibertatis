@@ -512,14 +512,16 @@ static EERIE_3DOBJ * CreateIntermediaryMesh(const EERIE_3DOBJ * obj1, const EERI
 	work->grouplist.resize(std::max(obj1->grouplist.size(), obj2->grouplist.size()));
 
 	for(size_t k = 0; k < obj1->grouplist.size(); k++) {
-		work->grouplist[k].name = obj1->grouplist[k].name;
-		long v = GetEquivalentVertex(work, &obj1vertexlist2[obj1->grouplist[k].origin]);
+		const VertexGroup & grp = obj1->grouplist[k];
+		
+		work->grouplist[k].name = grp.name;
+		long v = GetEquivalentVertex(work, &obj1vertexlist2[grp.origin]);
 
 		if(v >= 0) {
-			work->grouplist[k].siz = obj1->grouplist[k].siz;
+			work->grouplist[k].siz = grp.siz;
 
-			if(IsInSelection(obj1, obj1->grouplist[k].origin, iw1)
-			        || IsInSelection(obj1, obj1->grouplist[k].origin, jw1))
+			if(IsInSelection(obj1, grp.origin, iw1)
+			        || IsInSelection(obj1, grp.origin, jw1))
 				work->grouplist[k].origin = v;
 		}
 	}
