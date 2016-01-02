@@ -635,9 +635,11 @@ static EERIE_3DOBJ * CreateIntermediaryMesh(const EERIE_3DOBJ * obj1, const EERI
 			ObjSelection ii = EERIE_OBJECT_GetSelection(obj2, obj1->selections[i].name);
 
 			if(ii != ObjSelection()) {
-				for(size_t l = 0; l < obj2->selections[ii.handleData()].selected.size(); l++) {
+				const EERIE_SELECTIONS & sel = obj2->selections[ii.handleData()];
+				
+				for(size_t l = 0; l < sel.selected.size(); l++) {
 					EERIE_VERTEX temp;
-					temp.v = obj2vertexlist2[obj2->selections[ii.handleData()].selected[l]].v;
+					temp.v = obj2vertexlist2[sel.selected[l]].v;
 					long t = GetEquivalentVertex(work, &temp);
 
 					if(t != -1) {
