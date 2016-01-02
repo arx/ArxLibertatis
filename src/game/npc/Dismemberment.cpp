@@ -86,7 +86,7 @@ static void ARX_NPC_SpawnMember(Entity * ioo, ObjSelection num) {
 
 	for(size_t k = 0; k < from->facelist.size(); k++) {
 		if(from->facelist[k].texid == gore) {
-			if(IsNearSelection(from, from->facelist[k].vid[0], num)
+			if(   IsNearSelection(from, from->facelist[k].vid[0], num)
 			   || IsNearSelection(from, from->facelist[k].vid[1], num)
 			   || IsNearSelection(from, from->facelist[k].vid[2], num)
 			) {
@@ -132,7 +132,7 @@ static void ARX_NPC_SpawnMember(Entity * ioo, ObjSelection num) {
 
 	for(size_t k = 0; k < from->facelist.size(); k++) {
 		if(from->facelist[k].texid == gore) {
-			if(IsNearSelection(from, from->facelist[k].vid[0], num)
+			if(   IsNearSelection(from, from->facelist[k].vid[0], num)
 			   || IsNearSelection(from, from->facelist[k].vid[1], num)
 			   || IsNearSelection(from, from->facelist[k].vid[2], num)
 			) {
@@ -184,7 +184,7 @@ static void ARX_NPC_SpawnMember(Entity * ioo, ObjSelection num) {
 	
 	size_t nfaces = 0;
 	for(size_t k = 0; k < from->facelist.size(); k++) {
-		if(equival[from->facelist[k].vid[0]] != -1
+		if(   equival[from->facelist[k].vid[0]] != -1
 		   && equival[from->facelist[k].vid[1]] != -1
 		   && equival[from->facelist[k].vid[2]] != -1
 		) {
@@ -196,7 +196,7 @@ static void ARX_NPC_SpawnMember(Entity * ioo, ObjSelection num) {
 		nouvo->facelist.reserve(nfaces);
 
 		for(size_t k = 0; k < from->facelist.size(); k++) {
-			if(equival[from->facelist[k].vid[0]] != -1
+			if(   equival[from->facelist[k].vid[0]] != -1
 			   && equival[from->facelist[k].vid[1]] != -1
 			   && equival[from->facelist[k].vid[2]] != -1
 			) {
