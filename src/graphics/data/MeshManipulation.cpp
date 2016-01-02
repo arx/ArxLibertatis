@@ -425,10 +425,10 @@ static EERIE_3DOBJ * CreateIntermediaryMesh(const EERIE_3DOBJ * obj1, const EERI
 	for(size_t i = 0; i < obj1->actionlist.size(); i++) {
 		const EERIE_ACTIONLIST & action = obj1->actionlist[i];
 
-		if(IsInSelection(obj1, action.idx.handleData(), iw1)
-				|| IsInSelection(obj1, action.idx.handleData(), jw1)
-				|| action.name == "head2chest"
-				|| action.name == "chest2leggings"
+		if(   IsInSelection(obj1, action.idx.handleData(), iw1)
+		   || IsInSelection(obj1, action.idx.handleData(), jw1)
+		   || action.name == "head2chest"
+		   || action.name == "chest2leggings"
 		) {
 			ObjectAddAction(work, action.name, action.act,
 							action.sfx, &obj1vertexlist2[action.idx.handleData()]);
@@ -439,9 +439,9 @@ static EERIE_3DOBJ * CreateIntermediaryMesh(const EERIE_3DOBJ * obj1, const EERI
 	for(size_t i = 0; i < obj2->actionlist.size(); i++) {
 		const EERIE_ACTIONLIST & action = obj2->actionlist[i];
 
-		if(IsInSelection(obj2, action.idx.handleData(), tw2)
-				|| action.name == "head2chest"
-				|| action.name == "chest2leggings"
+		if(   IsInSelection(obj2, action.idx.handleData(), tw2)
+		   || action.name == "head2chest"
+		   || action.name == "chest2leggings"
 		) {
 			ObjectAddAction(work, action.name, action.act,
 							action.sfx, &obj2vertexlist2[action.idx.handleData()]);
@@ -471,12 +471,9 @@ static EERIE_3DOBJ * CreateIntermediaryMesh(const EERIE_3DOBJ * obj1, const EERI
 	for(size_t i = 0; i < obj1->facelist.size(); i++) {
 		const EERIE_FACE & face = obj1->facelist[i];
 
-		if((IsInSelection(obj1, face.vid[0], iw1)
-				||	IsInSelection(obj1, face.vid[0], jw1))
-				&&	(IsInSelection(obj1, face.vid[1], iw1)
-					 ||	IsInSelection(obj1, face.vid[1], jw1))
-				&&	(IsInSelection(obj1, face.vid[2], iw1)
-					 ||	IsInSelection(obj1, face.vid[2], jw1))
+		if(   (IsInSelection(obj1, face.vid[0], iw1) || IsInSelection(obj1, face.vid[0], jw1))
+		   && (IsInSelection(obj1, face.vid[1], iw1) || IsInSelection(obj1, face.vid[1], jw1))
+		   && (IsInSelection(obj1, face.vid[2], iw1) || IsInSelection(obj1, face.vid[2], jw1))
 		) {
 			if(face.texid != -1) {
 				if(tc != obj1->texturecontainer[face.texid]) {
@@ -492,7 +489,7 @@ static EERIE_3DOBJ * CreateIntermediaryMesh(const EERIE_3DOBJ * obj1, const EERI
 	for(size_t i = 0; i < obj2->facelist.size(); i++) {
 		const EERIE_FACE & face = obj2->facelist[i];
 
-		if(IsInSelection(obj2, face.vid[0], tw2)
+		if(   IsInSelection(obj2, face.vid[0], tw2)
 		   || IsInSelection(obj2, face.vid[1], tw2)
 		   || IsInSelection(obj2, face.vid[2], tw2)
 		) {

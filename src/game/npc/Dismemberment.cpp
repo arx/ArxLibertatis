@@ -419,11 +419,10 @@ static long ARX_NPC_ApplyCuts(Entity * io) {
 			for(size_t ll = 0; ll < io->obj->facelist.size(); ll++) {
 				EERIE_FACE & face = io->obj->facelist[ll];
 
-				if	(IsInSelection(io->obj, face.vid[0], numsel)
-						||	IsInSelection(io->obj, face.vid[1], numsel)
-						||	IsInSelection(io->obj, face.vid[2], numsel)
-				   )
-				{
+				if(   IsInSelection(io->obj, face.vid[0], numsel)
+				   || IsInSelection(io->obj, face.vid[1], numsel)
+				   || IsInSelection(io->obj, face.vid[2], numsel)
+				) {
 					if(!(face.facetype & POLY_HIDE)) {
 						if(face.texid != goretex)
 							hid = 1;
@@ -479,7 +478,7 @@ void ARX_NPC_TryToCutSomething(Entity * target, const Vec3f * pos)
 				EERIE_FACE & face = target->obj->facelist[ll];
 
 				if(face.texid != goretex) {
-					if(IsInSelection(target->obj, face.vid[0], sel)
+					if(   IsInSelection(target->obj, face.vid[0], sel)
 					   || IsInSelection(target->obj, face.vid[1], sel)
 					   || IsInSelection(target->obj, face.vid[2], sel)
 					) {

@@ -224,9 +224,10 @@ static void applyTweak(EquipmentSlot equip, TweakType tw, const std::string & se
 	for(size_t i = 0; i < io->obj->facelist.size(); i++) {
 		EERIE_FACE & face = io->obj->facelist[i];
 
-		if(IsInSelection(io->obj, face.vid[0], sel)
+		if(   IsInSelection(io->obj, face.vid[0], sel)
 		   && IsInSelection(io->obj, face.vid[1], sel)
-		   && IsInSelection(io->obj, face.vid[2], sel)) {
+		   && IsInSelection(io->obj, face.vid[2], sel)
+		) {
 			if(face.texid == textochange) {
 				face.texid = (short)mapidx;
 			}
