@@ -61,38 +61,30 @@ long ARX_LEVELS_GetRealNum(long num)
 		case 11:
 		case 12:
 			return 0;
-			break;
 		case 1:
 		case 13:
 		case 14:
 			return 1;
-			break;
 		case 2:
 		case 15:
 			return 2;
-			break;
 		case 3:
 		case 16:
 		case 17:
 			return 3;
-			break;
 		case 4:
 		case 18:
 		case 19:
 			return 4;
-			break;
 		case 5:
 		case 21:
 			return 5;
-			break;
 		case 6:
 		case 22:
 			return 6;
-			break;
 		case 7:
 		case 23:
 			return 7;
-			break;
 	}
 
 	if (num < 0) return -1;
