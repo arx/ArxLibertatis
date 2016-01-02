@@ -34,12 +34,12 @@
 #include "platform/Flags.h"
 #include "scene/GameSound.h"
 
-static long IsNearSelection(EERIE_3DOBJ * obj, long vert, long tw) {
+static long IsNearSelection(EERIE_3DOBJ * obj, long vert, ObjSelection tw) {
 	
-	if(!obj || tw < 0 || vert < 0)
+	if(!obj || tw == ObjSelection() || vert < 0)
 		return -1;
 
-	const EERIE_SELECTIONS & sel = obj->selections[tw];
+	const EERIE_SELECTIONS & sel = obj->selections[tw.handleData()];
 	
 	for(size_t i = 0; i < sel.selected.size(); i++) {
 		float d = glm::distance(obj->vertexlist[sel.selected[i]].v, obj->vertexlist[vert].v);
@@ -56,14 +56,14 @@ static long IsNearSelection(EERIE_3DOBJ * obj, long vert, long tw) {
  * \param ioo
  * \param num
  */
-static void ARX_NPC_SpawnMember(Entity * ioo, long num) {
+static void ARX_NPC_SpawnMember(Entity * ioo, ObjSelection num) {
 	
 	if(!ioo)
 		return;
 
 	EERIE_3DOBJ * from = ioo->obj;
 
-	if(!from || num < 0 || (size_t)num >= from->selections.size())
+	if(!from || num == ObjSelection() || (size_t)num.handleData() >= from->selections.size())
 		return;
 
 	EERIE_3DOBJ * nouvo = new EERIE_3DOBJ;
@@ -71,7 +71,7 @@ static void ARX_NPC_SpawnMember(Entity * ioo, long num) {
 	if(!nouvo)
 		return;
 
-	size_t nvertex = from->selections[num].selected.size();
+	size_t nvertex = from->selections[num.handleData()].selected.size();
 
 	long gore = -1;
 
@@ -109,14 +109,14 @@ static void ARX_NPC_SpawnMember(Entity * ioo, long num) {
 		equival[k] = -1;
 	}
 
-	arx_assert(0 < from->selections[num].selected.size());
+	arx_assert(0 < from->selections[num.handleData()].selected.size());
 
-	for(size_t k = 0; k < from->selections[num].selected.size(); k++) {
-		inpos = from->selections[num].selected[k];
-		equival[from->selections[num].selected[k]] = k;
+	for(size_t k = 0; k < from->selections[num.handleData()].selected.size(); k++) {
+		inpos = from->selections[num.handleData()].selected[k];
+		equival[from->selections[num.handleData()].selected[k]] = k;
 		
-		nouvo->vertexlist[k] = from->vertexlist[from->selections[num].selected[k]];
-		nouvo->vertexlist[k].v = from->vertexlist3[from->selections[num].selected[k]].v;
+		nouvo->vertexlist[k] = from->vertexlist[from->selections[num.handleData()].selected[k]];
+		nouvo->vertexlist[k].v = from->vertexlist3[from->selections[num.handleData()].selected[k]].v;
 		nouvo->vertexlist[k].v -= ioo->pos;
 		nouvo->vertexlist[k].vert.p = nouvo->vertexlist[k].v;
 		
@@ -126,7 +126,7 @@ static void ARX_NPC_SpawnMember(Entity * ioo, long num) {
 		nouvo->vertexlist3[k] = nouvo->vertexlist[k];
 	}
 
-	size_t count = from->selections[num].selected.size();
+	size_t count = from->selections[num.handleData()].selected.size();
 
 	for(size_t k = 0; k < from->facelist.size(); k++) {
 		if(from->facelist[k].texid == gore) {
@@ -450,7 +450,7 @@ void ARX_NPC_TryToCutSomething(Entity * target, const Vec3f * pos)
 		return;
 
 	float mindistSqr = std::numeric_limits<float>::max();
-	long numsel = -1;
+	ObjSelection numsel = ObjSelection();
 	long goretex = -1;
 
 	for(size_t i = 0; i < target->obj->texturecontainer.size(); i++) {
@@ -495,19 +495,19 @@ void ARX_NPC_TryToCutSomething(Entity * target, const Vec3f * pos)
 
 				if(dist < mindistSqr) {
 					mindistSqr = dist;
-					numsel = i;
+					numsel = sel;
 				}
 			}
 		}
 	}
 
-	if(numsel == -1)
+	if(numsel == ObjSelection())
 		return; // Nothing to cut...
 
 	long hid = 0;
 
 	if(mindistSqr < square(60)) { // can only cut a close part...
-		short fl = GetCutFlag( target->obj->selections[numsel].name );
+		short fl = GetCutFlag( target->obj->selections[numsel.handleData()].name );
 
 		if(fl && !(target->_npcdata->cuts & fl)) {
 			target->_npcdata->cuts |= fl;
