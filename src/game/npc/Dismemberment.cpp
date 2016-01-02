@@ -39,9 +39,10 @@ static long IsNearSelection(EERIE_3DOBJ * obj, long vert, long tw) {
 	if(!obj || tw < 0 || vert < 0)
 		return -1;
 
-	for(size_t i = 0; i < obj->selections[tw].selected.size(); i++) {
-		float d = glm::distance(obj->vertexlist[obj->selections[tw].selected[i]].v,
-		               obj->vertexlist[vert].v);
+	const EERIE_SELECTIONS & sel = obj->selections[tw];
+	
+	for(size_t i = 0; i < sel.selected.size(); i++) {
+		float d = glm::distance(obj->vertexlist[sel.selected[i]].v, obj->vertexlist[vert].v);
 
 		if(d < 8.f)
 			return i;
