@@ -56,6 +56,7 @@ ZeniMax Media Inc., Suite 120, Rockville, Maryland 20850 USA.
 #include <vector>
 
 #include <boost/algorithm/string/predicate.hpp>
+#include <boost/foreach.hpp>
 
 #include <glm/gtx/norm.hpp>
 
@@ -303,12 +304,12 @@ void ARX_NPC_Revive(Entity * io, bool init)
 			break;
 		}
 	}
-
-	for(size_t ll = 0; ll < io->obj->facelist.size(); ll++) {
-		if(io->obj->facelist[ll].texid != goretex)
-			io->obj->facelist[ll].facetype &= ~POLY_HIDE;
+	
+	BOOST_FOREACH(EERIE_FACE & face, io->obj->facelist) {
+		if(face.texid != goretex)
+			face.facetype &= ~POLY_HIDE;
 		else
-			io->obj->facelist[ll].facetype |= POLY_HIDE;
+			face.facetype |= POLY_HIDE;
 	}
 
 	if(io->ioflags & IO_NPC)
