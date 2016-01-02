@@ -124,9 +124,11 @@ bool IsInSelection(const EERIE_3DOBJ * obj, long vert, ObjSelection tw) {
 	
 	if(!obj || tw == ObjSelection() || vert < 0)
 		return false;
-
-	for(size_t i = 0; i < obj->selections[tw.handleData()].selected.size(); i++) {
-		if(obj->selections[tw.handleData()].selected[i] == vert)
+	
+	const EERIE_SELECTIONS & sel = obj->selections[tw.handleData()];
+	
+	for(size_t i = 0; i < sel.selected.size(); i++) {
+		if(sel.selected[i] == vert)
 			return true;
 	}
 
