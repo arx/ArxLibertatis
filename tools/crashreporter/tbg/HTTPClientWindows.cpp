@@ -42,7 +42,7 @@ class WinHTTPSession : public Session {
 	
 	HINTERNET setup(const Request & request, LPCWSTR method);
 	Response * receive(HINTERNET wrequest, const Request & request,
-	                   platform::WideString & url);
+	                   std::basic_string<WCHAR> & url);
 	
 public:
 	
@@ -89,7 +89,7 @@ static std::string errorString(DWORD code = GetLastError()) {
 static void APIENTRY statusCallback(HINTERNET handle, DWORD_PTR context, DWORD status,
                                     LPVOID info, DWORD size) {
 	if(status == WINHTTP_CALLBACK_STATUS_REDIRECT && context && size >= 1) {
-		platform::WideString * url = reinterpret_cast<platform::WideString *>(context);
+		std::basic_string<WCHAR> * url = reinterpret_cast<std::basic_string<WCHAR> *>(context);
 		url->assign(reinterpret_cast<LPWSTR>(info), size - 1);
 	}
 }
@@ -148,7 +148,7 @@ HINTERNET WinHTTPSession::setup(const Request & request, LPCWSTR method) {
 }
 
 Response * WinHTTPSession::receive(HINTERNET wrequest, const Request & request,
-                                   platform::WideString & url) {
+                                   std::basic_string<WCHAR> & redirect) {
 	
 	
 	
@@ -165,6 +165,7 @@ Response * WinHTTPSession::receive(HINTERNET wrequest, const Request & request,
 		return new Response("Error getting status code: " + errorString());
 	}
 	
+	std::string url;
 	if(!request.followRedirects()) {
 		DWORD urlSize = 0;
 		WinHttpQueryHeaders(wrequest, WINHTTP_QUERY_LOCATION, WINHTTP_HEADER_NAME_BY_INDEX,
@@ -176,17 +177,17 @@ Response * WinHTTPSession::receive(HINTERNET wrequest, const Request & request,
 			                       redirect.data(), &urlSize, WINHTTP_NO_HEADER_INDEX)) {
 				redirect.resize(urlSize / sizeof(WCHAR));
 				platform::WideString base(request.url());
-				url.resize(2 * (base.size() + redirect.size()));
-				urlSize = url.size();
-				if(InternetCombineUrlW(base, redirect, url.data(), &urlSize, ICU_BROWSER_MODE)) {
-					url.resize(urlSize);
-				} else {
-					url.clear();
+				platform::WideString wurl;
+				wurl.resize(2 * (base.size() + redirect.size()));
+				urlSize = wurl.size();
+				if(InternetCombineUrlW(base, redirect, wurl.data(), &urlSize, ICU_BROWSER_MODE)) {
+					wurl.resize(urlSize);
+					url = wurl.toUTF8();
 				}
 			}
 		}
-	} else if(url.empty()) {
-		url = request.url();
+	} else {
+		url = redirect.empty() ? request.url() : platform::WideString::toUTF8(redirect);
 	}
 	
 	std::string data;
@@ -212,7 +213,7 @@ Response * WinHTTPSession::receive(HINTERNET wrequest, const Request & request,
 		data.resize(oldsize + size);
 	}
 	
-	return new Response(status, data, url.toUTF8());
+	return new Response(status, data, url);
 }
 
 Response * WinHTTPSession::get(const Request & request) {
@@ -227,14 +228,14 @@ Response * WinHTTPSession::get(const Request & request) {
 		WinHttpCloseHandle(wrequest);
 	} BOOST_SCOPE_EXIT_END
 	
-	platform::WideString url;
+	std::basic_string<WCHAR> redirect;
 	BOOL result = WinHttpSendRequest(wrequest, WINHTTP_NO_ADDITIONAL_HEADERS, 0,
-	                                 WINHTTP_NO_REQUEST_DATA, 0, 0, (DWORD_PTR)&url);
+	                                 WINHTTP_NO_REQUEST_DATA, 0, 0, (DWORD_PTR)&redirect);
 	if(!result) {
 		return new Response(errorString());
 	}
 	
-	return receive(wrequest, request, url);
+	return receive(wrequest, request, redirect);
 }
 
 Response * WinHTTPSession::post(const POSTRequest & request) {
@@ -252,20 +253,20 @@ Response * WinHTTPSession::post(const POSTRequest & request) {
 	LPCWSTR headers = WINHTTP_NO_ADDITIONAL_HEADERS;
 	platform::WideString wheaders;
 	if(!request.contentType().empty()) {
-		std::string header = "Content-Type: " + request.contentType() + "\r\n";
-		headers = wheaders = header;
+		wheaders = "Content-Type: " + request.contentType() + "\r\n";
+		headers = wheaders;
 	}
 	
 	LPVOID data = const_cast<LPVOID>(static_cast<LPCVOID>(request.data().data()));
 	DWORD size = request.data().size();
-	platform::WideString url;
+	std::basic_string<WCHAR> redirect;
 	BOOL result = WinHttpSendRequest(wrequest, headers, -1, data, size, size,
-	                                (DWORD_PTR)&url);
+	                                (DWORD_PTR)&redirect);
 	if(!result) {
 		return new Response("Could not send request: " + errorString());
 	}
 	
-	return receive(wrequest, request, url);
+	return receive(wrequest, request, redirect);
 }
 
 Session * createSession(const std::string & userAgent) {
