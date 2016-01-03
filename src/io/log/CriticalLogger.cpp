@@ -42,7 +42,7 @@ CriticalErrorDialog::~CriticalErrorDialog() {
 		message << errorString;
 		fs::path logfile = fs::paths.user / "arx.log";
 		if(fs::exists(logfile)) {
-			message << "\n\nYou might want to take a look at the log for more details:\n";
+			message << "\n\nYou might want to look at the log for more details:\n";
 			message << logfile.string();
 			if(g_exitQuestion && g_exitCommand) {
 				message << "\n";
