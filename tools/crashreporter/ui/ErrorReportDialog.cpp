@@ -252,7 +252,12 @@ void ErrorReportDialog::onTaskCompleted()
 {
 	if(m_pCurrentTask->getErrorString().isEmpty())
 	{
-		QString htmlLink = QString("<a href=\"%1\">%1</a>").arg(m_errorReport.GetIssueLink());
+		QString link = m_errorReport.GetIssueLink();
+		QString prefix = "https://bugs.arx-libertatis.org/arx/issues/";
+		if(link.startsWith(prefix)) {
+			link = "http://arx.vg/" + link.mid(prefix.length());
+		}
+		QString htmlLink = QString("<a href=\"%1\">%1</a>").arg(link);
 		ui->lblIssueLink->setText(htmlLink);
 		ui->stackedWidget->setCurrentIndex(m_nextPane);
 	}
