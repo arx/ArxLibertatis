@@ -62,9 +62,9 @@ ZeniMax Media Inc., Suite 120, Rockville, Maryland 20850 USA.
 class TextureContainer;
 struct SavedMiniMap;
 
-static const int MINIMAP_MAX_X = 50;
-static const int MINIMAP_MAX_Z = 50;
-static const int MAX_MINIMAP_LEVELS = 32;
+static const size_t MINIMAP_MAX_X = 50;
+static const size_t MINIMAP_MAX_Z = 50;
+static const size_t MAX_MINIMAP_LEVELS = 32;
 
 class MiniMap {
 	

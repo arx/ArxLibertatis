@@ -112,7 +112,7 @@ void MiniMap::getData(int showLevel) {
 				m_levels[showLevel].m_ratio.x = minX;
 				m_levels[showLevel].m_ratio.y = minY;
 				
-				for(int l = 0; l < MAX_MINIMAP_LEVELS; l++) {
+				for(size_t l = 0; l < MAX_MINIMAP_LEVELS; l++) {
 					m_levels[l].m_offset = Vec2f_ZERO;
 				}
 			}
@@ -124,7 +124,7 @@ void MiniMap::validatePos() {
 	
 	int showLevel = ARX_LEVELS_GetRealNum(m_currentLevel); 
 	
-	if((showLevel >= 0) && (showLevel < MAX_MINIMAP_LEVELS)) {
+	if((showLevel >= 0) && (showLevel < int(MAX_MINIMAP_LEVELS))) {
 		
 		if(m_levels[showLevel].m_texContainer == NULL) {
 			getData(showLevel);
@@ -211,9 +211,9 @@ void MiniMap::loadOffsets(PakReader *pakRes) {
 
 void MiniMap::reveal() {
 	
-	for(int l = 0; l < MAX_MINIMAP_LEVELS; l++) {
-		for(int z = 0; z < MINIMAP_MAX_Z; z++) {
-			for(int x = 0; x < MINIMAP_MAX_X; x++) {
+	for(size_t l = 0; l < MAX_MINIMAP_LEVELS; l++) {
+		for(size_t z = 0; z < MINIMAP_MAX_Z; z++) {
+			for(size_t x = 0; x < MINIMAP_MAX_X; x++) {
 				m_levels[l].m_revealed[x][z] = 255;
 			}
 		}
@@ -240,7 +240,7 @@ void MiniMap::firstInit(ARXCHARACTER *pl, PakReader *pakRes, EntityManager *enti
 
 	resetLevels();
 	
-	for(int i = 0; i < MAX_MINIMAP_LEVELS; i++) {
+	for(size_t i = 0; i < MAX_MINIMAP_LEVELS; i++) {
 		m_miniOffset[i] = Vec2f_ZERO;
 	}
 	
@@ -249,7 +249,7 @@ void MiniMap::firstInit(ARXCHARACTER *pl, PakReader *pakRes, EntityManager *enti
 
 void MiniMap::resetLevels() {
 	
-	for(int i = 0; i < MAX_MINIMAP_LEVELS; i++) {
+	for(size_t i = 0; i < MAX_MINIMAP_LEVELS; i++) {
 		m_levels[i].m_texContainer = NULL;
 		m_levels[i].m_offset = Vec2f_ZERO;
 		m_levels[i].m_ratio = Vec2f_ZERO;
@@ -267,7 +267,7 @@ void MiniMap::reset() {
 
 void MiniMap::purgeTexContainer() {
 	
-	for(int i = 0; i < MAX_MINIMAP_LEVELS; i++) {
+	for(size_t i = 0; i < MAX_MINIMAP_LEVELS; i++) {
 		delete m_levels[i].m_texContainer;
 		m_levels[i].m_texContainer = NULL;
 	}
@@ -472,8 +472,8 @@ void MiniMap::revealPlayerPos(int showLevel) {
 	
 	// TODO this is inefficient - we don't really need to iterate over the whole minimap!
 	// only the area around the player will be modified
-	for(int j = 0; j < MINIMAP_MAX_Z; j++) {
-		for(int i = 0; i < MINIMAP_MAX_X; i++) {
+	for(size_t j = 0; j < MINIMAP_MAX_Z; j++) {
+		for(size_t i = 0; i < MINIMAP_MAX_X; i++) {
 			
 			float posx = startX + i * caseX;
 			float posy = startY + j * caseY;
@@ -558,8 +558,8 @@ void MiniMap::drawBackground(int showLevel, Rect boundaries, float startX, float
 	GRenderer->GetTextureStage(0)->setMinFilter(TextureStage::FilterLinear);
 	GRenderer->GetTextureStage(0)->setMagFilter(TextureStage::FilterLinear);
 
-	for(int z = -2; z < MINIMAP_MAX_Z + 2; z++) {
-		for(int x = -2; x < MINIMAP_MAX_X + 2; x++) {
+	for(int z = -2; z < int(MINIMAP_MAX_Z) + 2; z++) {
+		for(int x = -2; x < int(MINIMAP_MAX_X) + 2; x++) {
 			
 			float vxx = float(x) * float(m_activeBkg->Xdiv) * m_modX;
 			float vyy = float(z) * float(m_activeBkg->Zdiv) * m_modZ;
@@ -605,11 +605,11 @@ void MiniMap::drawBackground(int showLevel, Rect boundaries, float startX, float
 				if(vert == 2 || vert == 3)
 					jOffset = 1;
 				
-				if((x + iOffset < 0) || (x + iOffset >= MINIMAP_MAX_X) || (z + jOffset < 0) || (z + jOffset >= MINIMAP_MAX_Z)) {
+				if((x + iOffset < 0) || (x + iOffset >= int(MINIMAP_MAX_X)) || (z + jOffset < 0) || (z + jOffset >= int(MINIMAP_MAX_Z))) {
 					v = 0;
 				} else {
-					int minx = std::min(x + iOffset, MINIMAP_MAX_X - iOffset);
-					int minz = std::min(z + jOffset, MINIMAP_MAX_Z - jOffset);
+					int minx = std::min(x + iOffset, int(MINIMAP_MAX_X) - iOffset);
+					int minz = std::min(z + jOffset, int(MINIMAP_MAX_Z) - jOffset);
 					v = float(m_levels[showLevel].m_revealed[minx][minz]) * (1.0f / 255);
 				}
 				
