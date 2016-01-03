@@ -113,6 +113,17 @@ struct IO_ITEMDATA {
 	char stealvalue;
 	short playerstacksize;
 	short LightValue;
+	
+	IO_ITEMDATA()
+		: equipitem(0)
+		, price(0)
+		, maxcount(0)
+		, count(0)
+		, food_value(0)
+		, stealvalue(0)
+		, playerstacksize(0)
+		, LightValue(0)
+	{}
 };
 
 #endif // ARX_GAME_ITEM_H

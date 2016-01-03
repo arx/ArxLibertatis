@@ -1748,8 +1748,7 @@ Entity * AddItem(const res::path & classPath_, EntityInstance instance, AddInter
 	Entity * io = new Entity(classPath, instance);
 	
 	io->ioflags = type;
-	io->_itemdata = (IO_ITEMDATA *)malloc(sizeof(IO_ITEMDATA));
-	memset(io->_itemdata, 0, sizeof(IO_ITEMDATA));
+	io->_itemdata = new IO_ITEMDATA();
 	io->_itemdata->count = 1;
 	io->_itemdata->maxcount = 1;
 	io->_itemdata->food_value = 0;

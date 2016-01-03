@@ -236,9 +236,7 @@ static void ARX_NPC_SpawnMember(Entity * ioo, ObjSelection num) {
 	
 	Entity * io = new Entity("noname", EntityInstance(0));
 	
-	io->_itemdata = (IO_ITEMDATA *)malloc(sizeof(IO_ITEMDATA));
-	
-	memset(io->_itemdata, 0, sizeof(IO_ITEMDATA));
+	io->_itemdata = new IO_ITEMDATA();
 	
 	io->ioflags = IO_ITEM | IO_NOSAVE | IO_MOVABLE;
 	io->script.size = 0;

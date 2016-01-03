@@ -247,8 +247,7 @@ Entity::~Entity() {
 		
 	} else if(ioflags & IO_ITEM) {
 		free(_itemdata->equipitem);
-		free(_itemdata);
-		
+		delete _itemdata;
 	} else if(ioflags & IO_FIX) {
 		delete _fixdata;
 		
