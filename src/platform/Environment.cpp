@@ -205,7 +205,7 @@ void initializeEnvironment(const char * argv0) {
 	
 	ARX_UNUSED(argv0);
 	
-	std::string strPath;
+	std::basic_string<WCHAR> path;
 	
 	// Vista and up
 	{
@@ -219,7 +219,7 @@ void initializeEnvironment(const char * argv0) {
 			0x4C5C32FF, 0xBB9D, 0x43b0, { 0xB5, 0xB4, 0x2D, 0x72, 0xE5, 0x4E, 0xAA, 0xA4 }
 		};
 		
-		CoInitializeEx(NULL, COINIT_APARTMENTTHREADED);
+		CoInitializeEx(NULL, COINIT_APARTMENTTHREADED | COINIT_DISABLE_OLE1DDE);
 		
 		HMODULE dll = GetModuleHandleW(L"shell32.dll");
 		if(dll) {
@@ -228,35 +228,38 @@ void initializeEnvironment(const char * argv0) {
 			if(proc) {
 				PSHGetKnownFolderPath GetKnownFolderPath = (PSHGetKnownFolderPath)proc;
 				
-				LPWSTR wszPath = NULL;
+				LPWSTR savedgames = NULL;
 				HRESULT hr = GetKnownFolderPath(FOLDERID_SavedGames, kfFlagCreate | kfFlagNoAlias,
-				                                NULL, &wszPath);
+				                                NULL, &savedgames);
 				if(SUCCEEDED(hr)) {
-					strPath = WideString::toUTF8(wszPath);
+					path = savedgames;
 				}
-				
-				CoTaskMemFree(wszPath);
+				CoTaskMemFree(savedgames);
 				
 			}
 			
 		}
 		
 		CoUninitialize();
+		
 	}
 	
 	// XP
-	if(strPath.empty()) {
-		CHAR szPath[MAX_PATH];
-		HRESULT hr = SHGetFolderPathA(NULL, CSIDL_PERSONAL | CSIDL_FLAG_CREATE, NULL,
-		                              SHGFP_TYPE_CURRENT, szPath);
+	{
+		WCHAR mydocuments[MAX_PATH];
+		HRESULT hr = SHGetFolderPathW(NULL, CSIDL_PERSONAL | CSIDL_FLAG_CREATE, NULL,
+		                              SHGFP_TYPE_CURRENT, mydocuments);
 		if(SUCCEEDED(hr)) {
-			strPath = szPath; 
-			strPath += "\\My Games";
+			if(!path.empty()) {
+				path += L';';
+			}
+			path += mydocuments;
+			path += L"\\My Games";
 		}
 	}
 	
-	if(!strPath.empty()) {
-		SetEnvironmentVariable("FOLDERID_SavedGames", strPath.c_str());
+	if(!path.empty()) {
+		SetEnvironmentVariableW(L"FOLDERID_SavedGames", path.c_str());
 	}
 	
 }
