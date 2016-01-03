@@ -125,35 +125,33 @@ std::string expandEnvironmentVariables(const std::string & in) {
 static bool getRegistryValue(HKEY hkey, const std::string & name, std::string & result,
                              REGSAM flags = 0) {
 	
-	boost::scoped_array<char> buffer(NULL);
-
-	DWORD type = 0;
-	DWORD length = 0;
 	HKEY handle = 0;
-
-	long ret = 0;
-
-	ret = RegOpenKeyEx(hkey, "Software\\ArxLibertatis\\", 0, KEY_QUERY_VALUE | flags, &handle);
-
-	if (ret == ERROR_SUCCESS)
-	{
-		// find size of value
-		ret = RegQueryValueEx(handle, name.c_str(), NULL, NULL, NULL, &length);
-
-		if (ret == ERROR_SUCCESS && length > 0)
-		{
-			// allocate buffer and read in value
-			buffer.reset(new char[length + 1]);
-			ret = RegQueryValueEx(handle, name.c_str(), NULL, &type, LPBYTE(buffer.get()), &length);
-			// ensure null termination
-			buffer.get()[length] = 0;
-		}
-
-		RegCloseKey(handle);
+	long ret = RegOpenKeyEx(hkey, L"Software\\ArxLibertatis\\", 0,
+	                        KEY_QUERY_VALUE | flags, &handle);
+	if(ret != ERROR_SUCCESS) {
+		return false;
 	}
-
-	if(ret == ERROR_SUCCESS) {
-		result = buffer.get();
+	
+	platform::WideString wname(name);
+	
+	platform::WideString buffer;
+	buffer.allocate(buffer.capacity());
+	
+	// find size of value
+	DWORD type = 0;
+	DWORD length = buffer.size() * sizeof(WCHAR);
+	ret = RegQueryValueExW(handle, wname, NULL, &type, LPBYTE(buffer.data()), &length);
+	if(ret == ERROR_MORE_DATA && length > 0) {
+		buffer.resize(length / sizeof(WCHAR) + 1);
+		ret = RegQueryValueExW(handle, wname, NULL, &type, LPBYTE(buffer.data()), &length);
+	}
+	buffer.resize(length / sizeof(WCHAR));
+	
+	RegCloseKey(handle);
+	
+	if(ret == ERROR_SUCCESS && type == REG_SZ) {
+		buffer.compact();
+		result = buffer.toUTF8();
 		return true;
 	} else {
 		return false;
