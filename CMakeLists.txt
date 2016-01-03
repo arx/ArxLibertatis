@@ -248,6 +248,9 @@ endif()
 if(WIN32)
 	# Ensure we aren't using functionalities not found under Window XP SP1
 	add_definitions(-D_WIN32_WINNT=0x0502)
+	# Define this so that we don't accitenally use ANSI functions
+	add_definitions(-DUNICODE)
+	add_definitions(-D_UNICODE)
 	if(MSVC)
 		if(CMAKE_LIBRARY_ARCHITECTURE STREQUAL "x64")
 			set(subsystem_xp "5.02")
