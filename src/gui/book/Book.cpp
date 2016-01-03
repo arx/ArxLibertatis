@@ -730,7 +730,8 @@ static void ARX_INTERFACE_ManageOpenedBook_TopTabs() {
 			if(NewSpell == 1) {
 				NewSpell = 2;
 				for(long nk = 0; nk < 2; nk++) {
-					MagFX(Vec3f(BOOKDEC.x + 220.f, BOOKDEC.y + 49.f, 0.000001f));
+					// TODO this effect is barely visible
+					MagFX(Vec3f(pos * g_sizeRatio, 0.000001f), 1.f);
 				}
 			}
 			

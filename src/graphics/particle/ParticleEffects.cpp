@@ -918,7 +918,7 @@ PARTICLE_DEF * createParticle(bool allocateWhilePaused) {
 	return NULL;
 }
 
-void MagFX(const Vec3f & pos) {
+void MagFX(const Vec3f & pos, float size) {
 	
 	PARTICLE_DEF * pd	=	createParticle();
 	if(!pd) {
@@ -931,7 +931,7 @@ void MagFX(const Vec3f & pos) {
 	pd->tolive = Random::get(1500, 2400);
 	pd->tc = healing;
 	pd->rgb = Color3f::magenta;
-	pd->siz = 56.f;
+	pd->siz = 56.f * size;
 	pd->is2D = true;
 }
 

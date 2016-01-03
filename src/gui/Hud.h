@@ -74,7 +74,7 @@ public:
 	void requestFX();
 	
 private:
-	void MakeBookFX(const Vec3f & pos);
+	void MakeBookFX();
 };
 
 class BackpackIconGui : public HudIconBase {

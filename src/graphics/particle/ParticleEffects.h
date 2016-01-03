@@ -141,7 +141,7 @@ extern std::vector<POLYBOOM> polyboom;
 extern TextureContainer * fire2;
 extern long NewSpell;
 
-void MagFX(const Vec3f & pos);
+void MagFX(const Vec3f & pos, float size);
 void RestoreAllLightsInitialStatus();
 void TreatBackgroundActions();
 

@@ -190,11 +190,13 @@ void HitStrengthGauge::draw() {
 }
 
 
-void BookIconGui::MakeBookFX(const Vec3f & pos) {
+void BookIconGui::MakeBookFX() {
+	
+	static const float z = 0.00001f;
 	
 	for(long i = 0; i < 12; i++) {
 		
-		MagFX(pos);
+		MagFX(Vec3f(m_rect.topLeft(), z), m_scale);
 	}
 	
 	for(int i = 0; i < 5; i++) {
@@ -204,13 +206,15 @@ void BookIconGui::MakeBookFX(const Vec3f & pos) {
 			break;
 		}
 		
-		pd->ov = pos - Vec3f(i * 2, i * 2, 0.f);
-		pd->move = Vec3f(i * -0.5f, i * -0.5f, 0.f);
-		pd->scale = Vec3f(i * 10, i * 10, 0.f);
+		float s = i * m_scale;
+		
+		pd->ov = Vec3f(m_rect.topLeft() - Vec2f(s * 2, s * 2), z);
+		pd->move = Vec3f(s * -0.5f, s * -0.5f, 0.f);
+		pd->scale = Vec3f(s * 10, s * 10, 0.f);
 		pd->tolive = Random::get(1200, 1600);
 		pd->tc = m_tex;
 		pd->rgb = Color3f(1.f - i * 0.1f, i * 0.1f, 0.5f - i * 0.1f);
-		pd->siz = 32.f + i * 4.f;
+		pd->siz = m_rect.width() + s * 4.f;
 		pd->is2D = true;
 	}
 	
@@ -241,7 +245,7 @@ void BookIconGui::requestHalo() {
 }
 
 void BookIconGui::requestFX() {
-	MakeBookFX(Vec3f(Vec2f(g_size.bottomRight()) + Vec2f(-35, -148), 0.00001f));
+	MakeBookFX();
 }
 
 void BookIconGui::update(const Rectf & parent) {
