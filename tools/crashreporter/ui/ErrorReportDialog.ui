@@ -676,7 +676,7 @@ Thank you!</string>
           <cursorShape>PointingHandCursor</cursorShape>
          </property>
          <property name="text">
-          <string>&lt;a href=&quot;http://bugs.arx-libertatis.org/arx&quot;&gt;http://bugs.arx-libertatis.org/arx&lt;/a&gt;</string>
+          <string>&lt;a href=&quot;http://arx.vg/bugs&quot;&gt;http://arx.vg/bugs&lt;/a&gt;</string>
          </property>
          <property name="alignment">
           <set>Qt::AlignCenter</set>
