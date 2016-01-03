@@ -19,6 +19,10 @@
 
 #include "platform/WindowsUtils.h"
 
+#include <sstream>
+
+#include <boost/algorithm/string/trim.hpp>
+
 namespace platform {
 
 WideString::WideString(const std::string & utf8) {
@@ -36,6 +40,32 @@ std::string WideString::toUTF8(const WCHAR * string, INT length) {
 
 std::string WideString::toUTF8() const {
 	return toUTF8(c_str(), length());
+}
+
+std::string getErrorString(WORD error, HMODULE module) {
+	
+	DWORD flags = FORMAT_MESSAGE_ALLOCATE_BUFFER | FORMAT_MESSAGE_IGNORE_INSERTS;
+	if(module) {
+		flags |= FORMAT_MESSAGE_FROM_HMODULE;
+	} else {
+		flags |= FORMAT_MESSAGE_FROM_SYSTEM;
+	}
+	
+	LPWSTR buffer = NULL;
+	DWORD n = FormatMessageW(FORMAT_MESSAGE_ALLOCATE_BUFFER | FORMAT_MESSAGE_FROM_SYSTEM,
+	                         module, error, MAKELANGID(LANG_NEUTRAL, SUBLANG_DEFAULT),
+	                         reinterpret_cast<LPWSTR>(&buffer), 0, NULL);
+	if(n != 0) {
+		std::string message = WideString::toUTF8(buffer, n);
+		boost::trim(message);
+		LocalFree(buffer);
+		return message;
+	} else {
+		std::ostringstream oss;
+		oss << "Unknown error (" << error << ").";
+		return oss.str();
+	}
+	
 }
 
 } // namespace platform

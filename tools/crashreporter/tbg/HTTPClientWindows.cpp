@@ -67,23 +67,8 @@ public:
 	
 };
 
-static std::string errorString(DWORD code = GetLastError()) {
-	
-	char * error;
-	DWORD n = FormatMessageA(FORMAT_MESSAGE_FROM_HMODULE | FORMAT_MESSAGE_ALLOCATE_BUFFER,
-	                         GetModuleHandle("winhttp.dll"), code,
-	                         MAKELANGID(LANG_NEUTRAL, SUBLANG_DEFAULT),
-	                         reinterpret_cast<char *>(&error), 0, NULL);
-	if(n == 0) {
-		return "unknown";
-	} else {
-		std::string ret(error, size_t(n));
-		LocalFree(error);
-		if(!ret.empty() && ret[ret.size() - 1] == '\n') {
-			ret.resize(ret.size() - 1);
-		}
-		return ret;
-	}
+static std::string errorString(DWORD error = GetLastError()) {
+	return platform::getErrorString(error, GetModuleHandleW(L"winhttp.dll"));
 }
 
 static void APIENTRY statusCallback(HINTERNET handle, DWORD_PTR context, DWORD status,

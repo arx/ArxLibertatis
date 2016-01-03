@@ -55,6 +55,8 @@ public:
 	
 };
 
+std::string getErrorString(WORD error = GetLastError(), HMODULE module = NULL);
+
 } // namespace
 
 #endif

@@ -28,32 +28,11 @@
 #include "io/fs/FilePath.h"
 #include "io/log/Logger.h"
 
+#include "platform/WindowsUtils.h"
+
 using std::string;
 
 namespace fs {
-
-static std::string getLastErrorString() {
-	LPSTR lpBuffer = NULL;
-	std::string strError;
-
-	if(FormatMessageA(FORMAT_MESSAGE_ALLOCATE_BUFFER | FORMAT_MESSAGE_FROM_SYSTEM, 
-					  NULL,
-					  GetLastError(),
-					  MAKELANGID(LANG_NEUTRAL, SUBLANG_DEFAULT),
-					  (LPSTR) &lpBuffer,
-					  0,
-					  NULL) != 0) {
-		strError = lpBuffer;
-		LocalFree( lpBuffer );
-	} else {
-		std::ostringstream buffer; //! Buffer for the log message excluding level, file and line.
-		buffer << "Unknown error (" << GetLastError() << ").";
-		strError = buffer.str();
-	}
-	
-	return strError;
-}
-
 
 bool exists(const path & p) {
 	if(p.empty()) {
@@ -135,12 +114,12 @@ bool remove(const path & p) {
 	if(is_directory(p)) {
 		succeeded &= RemoveDirectoryA(p.string().c_str()) == TRUE;
 		if(!succeeded) {
-			LogWarning << "RemoveDirectoryA(" << p << ") failed! " << getLastErrorString();
+			LogWarning << "RemoveDirectory(" << p << ") failed: " << platform::getErrorString();
 		}
 	} else {
 		succeeded &= DeleteFileA(p.string().c_str()) == TRUE;
 		if(!succeeded) {
-			LogWarning << "DeleteFileA(" << p << ") failed! " << getLastErrorString();
+			LogWarning << "DeleteFile(" << p << ") failed: " << platform::getErrorString();
 		}
 	}
 
@@ -180,7 +159,8 @@ bool create_directory(const path & p) {
 		ret = lastError == ERROR_ALREADY_EXISTS;
 
 		if(!ret) {
-			LogWarning << "CreateDirectoryA(" << p << ", NULL) failed! " << getLastErrorString();
+			LogWarning << "CreateDirectory(" << p << ", NULL) failed: "
+			           << platform::getErrorString();
 		}
 	}
 
@@ -220,7 +200,8 @@ static void update_last_write_time(const path & p) {
 bool copy_file(const path & from_p, const path & to_p, bool overwrite) {
 	bool ret = CopyFileA(from_p.string().c_str(), to_p.string().c_str(), !overwrite) == TRUE;
 	if(!ret) {
-		LogWarning << "CopyFileA(" << from_p << ", " << to_p << ", " << !overwrite << ") failed! " << getLastErrorString();
+		LogWarning << "CopyFile(" << from_p << ", " << to_p << ", " << !overwrite
+		           << ") failed: " << platform::getErrorString();
 	} else {
 		update_last_write_time(to_p);
 	}
@@ -231,8 +212,8 @@ bool rename(const path & old_p, const path & new_p, bool overwrite) {
 	DWORD flags = overwrite ? MOVEFILE_REPLACE_EXISTING : 0;
 	bool ret = MoveFileExA(old_p.string().c_str(), new_p.string().c_str(), flags) == TRUE;
 	if(!ret) {
-		LogWarning << "MoveFileExA(" << old_p << ", " << new_p << ", " << flags << ") failed! "
-		           << getLastErrorString();
+		LogWarning << "MoveFileEx(" << old_p << ", " << new_p << ", " << flags << ") failed: "
+		           << platform::getErrorString();
 	}
 	return ret;
 }
