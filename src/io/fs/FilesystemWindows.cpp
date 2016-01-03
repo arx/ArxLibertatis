@@ -209,7 +209,9 @@ static void update_last_write_time(const path & p) {
 }
 
 bool copy_file(const path & from_p, const path & to_p, bool overwrite) {
-	bool ret = CopyFileA(from_p.string().c_str(), to_p.string().c_str(), !overwrite) == TRUE;
+	
+	bool ret = CopyFileW(platform::WideString(from_p.string()),
+	                     platform::WideString(to_p.string()), !overwrite) == TRUE;
 	if(!ret) {
 		LogWarning << "CopyFile(" << from_p << ", " << to_p << ", " << !overwrite
 		           << ") failed: " << platform::getErrorString();
@@ -221,7 +223,8 @@ bool copy_file(const path & from_p, const path & to_p, bool overwrite) {
 
 bool rename(const path & old_p, const path & new_p, bool overwrite) {
 	DWORD flags = overwrite ? MOVEFILE_REPLACE_EXISTING : 0;
-	bool ret = MoveFileExA(old_p.string().c_str(), new_p.string().c_str(), flags) == TRUE;
+	bool ret = MoveFileExW(platform::WideString(old_p.string()),
+	                       platform::WideString(new_p.string()), flags) == TRUE;
 	if(!ret) {
 		LogWarning << "MoveFileEx(" << old_p << ", " << new_p << ", " << flags << ") failed: "
 		           << platform::getErrorString();
