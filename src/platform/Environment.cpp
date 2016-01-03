@@ -73,7 +73,7 @@ namespace platform {
 
 std::string expandEnvironmentVariables(const std::string & in) {
 	
-#if ARX_HAVE_WORDEXP
+	#if ARX_HAVE_WORDEXP
 	
 	wordexp_t p;
 	
@@ -94,29 +94,31 @@ std::string expandEnvironmentVariables(const std::string & in) {
 	
 	return oss.str();
 	
-#elif ARX_PLATFORM == ARX_PLATFORM_WIN32
+	#elif ARX_PLATFORM == ARX_PLATFORM_WIN32
 	
-	size_t length = std::max<size_t>(in.length() * 2, 1024);
-	boost::scoped_array<char> buffer(new char[length]);
+	platform::WideString win(in);
 	
-	DWORD ret = ExpandEnvironmentStringsA(in.c_str(), buffer.get(), length);
+	platform::WideString out;
+	out.allocate(out.capacity());
 	
-	if(ret > length) {
-		length = ret;
-		buffer.reset(new char[length]);
-		ret = ExpandEnvironmentStringsA(in.c_str(), buffer.get(), length);
+	DWORD length = ExpandEnvironmentStringsW(win, out.data(), out.size());
+	if(length > out.size()) {
+		out.allocate(length);
+		length = ExpandEnvironmentStringsW(win, out.data(), out.size());
 	}
 	
-	if(ret == 0 || ret > length) {
+	if(length == 0 || length > out.size()) {
 		return in;
 	}
 	
-	return std::string(buffer.get());
+	out.resize(length - 1);
 	
-#else
-# warning "Environment variable expansion not supported on this system."
+	return out.toUTF8();
+	
+	#else
+	# warning "Environment variable expansion not supported on this system."
 	return in;
-#endif
+	#endif
 }
 
 #if ARX_PLATFORM == ARX_PLATFORM_WIN32
