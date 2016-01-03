@@ -96,9 +96,9 @@ Advanced options not listed here are documented in **OPTIONS.md**.
 
 ## Data file, config and savegame locations
 
-You will need to [get either the full game or demo data of Arx Fatalis](http://wiki.arx-libertatis.org/Getting_the_game_data).
+You will need to [get either the full game or demo data of Arx Fatalis](http://arx.vg/data).
 
-Where arx will look for data files and write config and save files depends on the operating system and environment - the wiki has a page detailing the [full data directory detection algorithm](http://wiki.arx-libertatis.org/Data_directories).
+Where arx will look for data files and write config and save files depends on the operating system and environment - the wiki has a page detailing the [full data directory detection algorithm](http://arx.vg/paths).
 
 **For Unix-like systems**:
 The game will try to rename all used files in the user directory (but not the data directory) to lowercase on the first run. System-wide installations with case-sensitive filesystems always need to manually rename the files to lowercase. The `arx-install-data` script can be used to install the data files, convert them to lowercase and verify that all required files are present.
