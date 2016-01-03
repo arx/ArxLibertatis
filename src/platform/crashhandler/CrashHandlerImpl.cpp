@@ -140,6 +140,7 @@ void CrashHandlerImpl::processCrash() {
 				}
 			}
 			fs::create_directories(m_crashReportDir);
+			util::storeStringTerminated(m_pCrashInfo->crashReportFolder, m_crashReportDir.string());
 		}
 		
 		processCrashInfo();

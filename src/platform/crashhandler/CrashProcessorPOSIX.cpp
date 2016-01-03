@@ -447,7 +447,7 @@ void CrashHandlerPOSIX::processCrashDump() {
 			Thread::sleep(100);
 		}
 		fs::path core = util::loadString(m_pCrashInfo->coreDumpFile);
-		fs::path crashReportDir = util::loadString(m_pCrashInfo->crashReportFolder);
+		fs::path crashReportDir = m_crashReportDir.parent();
 		if(core.is_relative() && !crashReportDir.empty() && fs::exists(crashReportDir / core)) {
 			fs::rename(crashReportDir / core, coredump);
 			addAttachedFile(coredump);

@@ -94,8 +94,7 @@ bool ErrorReport::Initialize()
 	
 	m_pCrashInfo->reporterStarted.post();
 
-	m_ReportFolder = fs::path(util::loadString(m_pCrashInfo->crashReportFolder))
-	                 / fs::path(m_CrashDateTime.toString("yyyy.MM.dd hh.mm.ss").toUtf8());
+	m_ReportFolder = fs::path(util::loadString(m_pCrashInfo->crashReportFolder));
 
 	if(!fs::create_directories(m_ReportFolder))
 	{
