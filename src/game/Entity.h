@@ -140,6 +140,13 @@ struct IO_SPELLCAST_DATA {
 	short spell_level;
 	EntityHandle target;
 	long duration;
+	
+	IO_SPELLCAST_DATA()
+		: castingspell(SPELL_NONE)
+	{
+		for(unsigned long j(0); j < 4; j++)
+			symb[j] = RUNE_NONE;
+	}
 };
 
 enum EntityFlag {
