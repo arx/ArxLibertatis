@@ -122,12 +122,12 @@ bool remove(const path & p) {
 	bool succeeded = true;
 	
 	if(is_directory(p)) {
-		succeeded &= RemoveDirectoryA(p.string().c_str()) == TRUE;
+		succeeded &= RemoveDirectoryW(platform::WideString(p.string())) == TRUE;
 		if(!succeeded) {
 			LogWarning << "RemoveDirectory(" << p << ") failed: " << platform::getErrorString();
 		}
 	} else {
-		succeeded &= DeleteFileA(p.string().c_str()) == TRUE;
+		succeeded &= DeleteFileW(platform::WideString(p.string())) == TRUE;
 		if(!succeeded) {
 			LogWarning << "DeleteFile(" << p << ") failed: " << platform::getErrorString();
 		}
