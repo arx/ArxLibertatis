@@ -70,11 +70,14 @@ std::time_t last_write_time(const path & p) {
 	FILETIME creationTime;
 	FILETIME accessTime;
 	FILETIME modificationTime;
-
-	HANDLE hFile = CreateFileA(p.string().c_str(), GENERIC_READ, FILE_SHARE_READ | FILE_SHARE_WRITE | FILE_SHARE_DELETE, NULL, OPEN_EXISTING, FILE_ATTRIBUTE_NORMAL, NULL);
-	if(hFile == INVALID_HANDLE_VALUE)
+	
+	HANDLE hFile = CreateFileW(platform::WideString(p.string()), GENERIC_READ,
+	                           FILE_SHARE_READ | FILE_SHARE_WRITE | FILE_SHARE_DELETE,
+	                           NULL, OPEN_EXISTING, FILE_ATTRIBUTE_NORMAL, NULL);
+	if(hFile == INVALID_HANDLE_VALUE) {
 		return 0;
-
+	}
+	
 	std::time_t writeTime = 0;
 	BOOL res = GetFileTime(hFile, &creationTime, &accessTime, &modificationTime);
 	if(res)	{
@@ -93,10 +96,14 @@ std::time_t last_write_time(const path & p) {
 }
 
 u64 file_size(const path & p) {
-	HANDLE hFile = CreateFileA(p.string().c_str(), GENERIC_READ, FILE_SHARE_READ | FILE_SHARE_WRITE | FILE_SHARE_DELETE, NULL, OPEN_EXISTING, FILE_ATTRIBUTE_NORMAL, NULL);
-	if(hFile == INVALID_HANDLE_VALUE)
+	
+	HANDLE hFile = CreateFileW(platform::WideString(p.string()), GENERIC_READ,
+	                           FILE_SHARE_READ | FILE_SHARE_WRITE | FILE_SHARE_DELETE,
+	                           NULL, OPEN_EXISTING, FILE_ATTRIBUTE_NORMAL, NULL);
+	if(hFile == INVALID_HANDLE_VALUE) {
 		return (u64)-1;
-
+	}
+	
 	u64 fileSize = (u64)-1;
 
 	LARGE_INTEGER retSize;
@@ -188,7 +195,8 @@ bool create_directories(const path & p) {
 
 static void update_last_write_time(const path & p) {
 	
-	HANDLE handle = CreateFileA(p.string().c_str(), GENERIC_WRITE, 0, NULL, OPEN_EXISTING, 0, NULL);
+	HANDLE handle = CreateFileW(platform::WideString(p.string()), GENERIC_WRITE, 0,
+	                            NULL, OPEN_EXISTING, 0, NULL);
 	if(handle == INVALID_HANDLE_VALUE) {
 		return;
 	}
