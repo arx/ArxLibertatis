@@ -23,16 +23,19 @@
 
 #include <windows.h>
 
+#include "platform/WindowsUtils.h"
+
 namespace logger {
 
 MsvcDebugger::~MsvcDebugger() {
 	// nothing to clean up
 }
 
-void MsvcDebugger::log(const Source & file, int line, Logger::LogLevel level, const std::string & str) {
+void MsvcDebugger::log(const Source & file, int line, Logger::LogLevel level,
+                       const std::string & str) {
 	std::ostringstream oss;
 	format(oss, file, line, level, str);
-	OutputDebugString(oss.str().c_str());
+	OutputDebugStringW(platform::WideString(oss.str()));
 }
 
 MsvcDebugger * MsvcDebugger::get() {
