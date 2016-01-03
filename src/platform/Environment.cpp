@@ -312,10 +312,16 @@ fs::path getExecutablePath() {
 	
 #elif ARX_PLATFORM == ARX_PLATFORM_WIN32
 	
-	std::vector<char> buffer(MAX_PATH);	
-	size_t cnt = GetModuleFileNameA(NULL, &*buffer.begin(), buffer.size());
-	if (cnt > 0) {
-		return fs::path(&*buffer.begin(), &*buffer.begin() + cnt);
+	platform::WideString buffer;
+	buffer.allocate(buffer.capacity());
+	
+	while(true) {
+		DWORD size = GetModuleFileNameW(NULL, buffer.data(), buffer.size());
+		if(size < buffer.size()) {
+			buffer.resize(size);
+			return buffer.toUTF8();
+		}
+		buffer.allocate(buffer.size() * 2);
 	}
 
 #else
