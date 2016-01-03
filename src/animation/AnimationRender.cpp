@@ -1495,7 +1495,7 @@ static void Cedric_AnimateDrawEntity(Skeleton & skeleton, AnimLayer * animlayer,
 
 	// Apply Extra Rotations in Local Space
 	if(extraRotation) {
-		for(long k = 0; k < MAX_EXTRA_ROTATE; k++) {
+		for(size_t k = 0; k < MAX_EXTRA_ROTATE; k++) {
 			ObjVertGroup i = extraRotation->group_number[k];
 
 			if(i != ObjVertGroup()) {

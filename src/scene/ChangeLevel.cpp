@@ -2467,7 +2467,7 @@ static void ARX_CHANGELEVEL_PopAllIO_FINISH(bool reloadflag, bool firstTime) {
 			}
 			
 			if(io->ioflags & IO_NPC) {
-				for(long iii = 0; iii < MAX_STACKED_BEHAVIOR; iii++) {
+				for(size_t iii = 0; iii < MAX_STACKED_BEHAVIOR; iii++) {
 					io->_npcdata->stacked[iii].target = ReadTargetInfo(aids->stackedtarget[iii]);
 				}
 			}

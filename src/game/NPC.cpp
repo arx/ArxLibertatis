@@ -261,7 +261,7 @@ static void ARX_NPC_CreateExRotateData(Entity * io) {
 	io->_npcdata->ex_rotate->group_number[2] = EERIE_OBJECT_GetGroup(io->obj, "chest");
 	io->_npcdata->ex_rotate->group_number[3] = EERIE_OBJECT_GetGroup(io->obj, "belt");
 	
-	for(long n = 0; n < MAX_EXTRA_ROTATE; n++) {
+	for(size_t n = 0; n < MAX_EXTRA_ROTATE; n++) {
 		io->_npcdata->ex_rotate->group_rotate[n] = Anglef::ZERO;
 	}
 	
@@ -360,7 +360,7 @@ void ARX_NPC_Behaviour_Reset(Entity * io)
 
 	io->_npcdata->behavior = BEHAVIOUR_NONE;
 
-	for(long i = 0; i < MAX_STACKED_BEHAVIOR; i++)
+	for(size_t i = 0; i < MAX_STACKED_BEHAVIOR; i++)
 		io->_npcdata->stacked[i].exist = 0;
 }
 
@@ -387,7 +387,7 @@ void ARX_NPC_Behaviour_Stack(Entity * io) {
 	if(!io || !(io->ioflags & IO_NPC))
 		return;
 
-	for(long i = 0; i < MAX_STACKED_BEHAVIOR; i++) {
+	for(size_t i = 0; i < MAX_STACKED_BEHAVIOR; i++) {
 		IO_BEHAVIOR_DATA * bd = &io->_npcdata->stacked[i];
 
 		if(bd->exist == 0) {
@@ -416,7 +416,7 @@ void ARX_NPC_Behaviour_UnStack(Entity * io)
 	if(!io || !(io->ioflags & IO_NPC))
 		return;
 
-	for(long i = MAX_STACKED_BEHAVIOR - 1; i >= 0; i--) {
+	for(long i = long(MAX_STACKED_BEHAVIOR) - 1; i >= 0; i--) {
 		IO_BEHAVIOR_DATA * bd = &io->_npcdata->stacked[i];
 
 		if(bd->exist) {
