@@ -253,8 +253,8 @@ path current_path() {
 }
 
 struct directory_iterator_data {
-	WIN32_FIND_DATAA findData;
-	HANDLE			 findHandle;
+	WIN32_FIND_DATAW findData;
+	HANDLE findHandle;
 };
 
 directory_iterator::directory_iterator(const path & p) {
@@ -263,10 +263,9 @@ directory_iterator::directory_iterator(const path & p) {
 	handle = itData;
 
 	string searchPath = (p.empty() ? "." : p.string()) + "\\*";
-
-	itData->findHandle = FindFirstFileA(searchPath.c_str(), &itData->findData); 
-	if (itData->findHandle != INVALID_HANDLE_VALUE)
-	{
+	
+	itData->findHandle = FindFirstFileW(platform::WideString(searchPath), &itData->findData);
+	if(itData->findHandle != INVALID_HANDLE_VALUE) {
 		this->operator++();
 	}	
 };
@@ -288,19 +287,15 @@ directory_iterator & directory_iterator::operator++() {
 	arx_assert(itData->findHandle != INVALID_HANDLE_VALUE);
 	
 	bool cont = true;
-	while(cont)
-    {
-		cont = FindNextFileA(itData->findHandle, &itData->findData) == TRUE;
-
-        if(cont && itData->findData.cFileName[0] != '.')
-        {
-            break;
-        }
-    }
-
-    if(!cont)
-    {
-        FindClose(itData->findHandle);
+	while(cont) {
+		cont = FindNextFileW(itData->findHandle, &itData->findData) == TRUE;
+		if(cont && itData->findData.cFileName[0] != L'.') {
+			break;
+		}
+	}
+	
+	if(!cont) {
+		FindClose(itData->findHandle);
 		itData->findHandle = INVALID_HANDLE_VALUE;
 	}
 	
@@ -315,8 +310,8 @@ bool directory_iterator::end() {
 string directory_iterator::name() {
 	directory_iterator_data* itData = (directory_iterator_data*)handle;
 	arx_assert(itData->findHandle != INVALID_HANDLE_VALUE);
-
-	return itData->findData.cFileName;
+	
+	return platform::WideString::toUTF8(itData->findData.cFileName);
 }
 
 bool directory_iterator::is_directory() {
