@@ -86,14 +86,13 @@ private:
 
 
 Profiler::Profiler() {
-	m_writeIndex = 0;
-	m_canWrite = true;
-	m_samples.fill(ProfilerSample());
+	reset();
 }
 
 void Profiler::reset() {
 	m_writeIndex = 0;
 	m_samples.fill(ProfilerSample());
+	m_canWrite = true;
 }
 
 void Profiler::registerThread(const std::string& threadName) {
@@ -129,7 +128,6 @@ void Profiler::flush() {
 	m_canWrite = false;
 	writeProfileLog();
 	reset();
-	m_canWrite = true;
 }
 
 
