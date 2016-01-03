@@ -35,6 +35,7 @@ using std::string;
 namespace fs {
 
 bool exists(const path & p) {
+	
 	if(p.empty()) {
 		return true;
 	}
@@ -44,6 +45,7 @@ bool exists(const path & p) {
 }
 
 bool is_directory(const path & p) {
+	
 	if(p.empty()) {
 		return true;
 	}
@@ -67,6 +69,7 @@ bool is_regular_file(const path & p) {
 }
 
 std::time_t last_write_time(const path & p) {
+	
 	FILETIME creationTime;
 	FILETIME accessTime;
 	FILETIME modificationTime;
@@ -86,12 +89,11 @@ std::time_t last_write_time(const path & p) {
 		value <<= 32;
 		value |= modificationTime.dwLowDateTime; 
 		value -= 116444736000000000; 
-    
 		writeTime = (std::time_t)(value / 10000000);
 	}
-
+	
 	::CloseHandle(hFile);
-
+	
 	return writeTime;
 }
 
@@ -105,20 +107,19 @@ u64 file_size(const path & p) {
 	}
 	
 	u64 fileSize = (u64)-1;
-
 	LARGE_INTEGER retSize;
 	BOOL res = GetFileSizeEx(hFile, &retSize);
 	if(res) {
 		fileSize = retSize.QuadPart;
 	}
-
+	
 	::CloseHandle(hFile);
-
+	
 	return fileSize;
 }
 
 bool remove(const path & p) {
-
+	
 	bool succeeded = true;
 	
 	if(is_directory(p)) {
@@ -132,17 +133,18 @@ bool remove(const path & p) {
 			LogWarning << "DeleteFile(" << p << ") failed: " << platform::getErrorString();
 		}
 	}
-
+	
 	return succeeded;
 }
 
 bool remove_all(const path & p) {
+	
 	if(!exists(p)) {
 		return true;
 	}
 	
 	bool succeeded = true;
-
+	
 	if(is_directory(p)) {
 		for(directory_iterator it(p); !it.end(); ++it) {
 			if(it.is_regular_file()) {
@@ -152,13 +154,14 @@ bool remove_all(const path & p) {
 			}
 		}
 	}
-
+	
 	succeeded &= remove(p);
 	
 	return succeeded;
 }
 
 bool create_directory(const path & p) {
+	
 	if(p.empty()) {
 		return true;
 	}
@@ -167,13 +170,12 @@ bool create_directory(const path & p) {
 	if(!ret) {
 		int lastError = GetLastError();
 		ret = lastError == ERROR_ALREADY_EXISTS;
-
 		if(!ret) {
 			LogWarning << "CreateDirectory(" << p << ", NULL) failed: "
 			           << platform::getErrorString();
 		}
 	}
-
+	
 	return ret;
 }
 
@@ -218,10 +220,12 @@ bool copy_file(const path & from_p, const path & to_p, bool overwrite) {
 	} else {
 		update_last_write_time(to_p);
 	}
+	
 	return ret;
 }
 
 bool rename(const path & old_p, const path & new_p, bool overwrite) {
+	
 	DWORD flags = overwrite ? MOVEFILE_REPLACE_EXISTING : 0;
 	bool ret = MoveFileExW(platform::WideString(old_p.string()),
 	                       platform::WideString(new_p.string()), flags) == TRUE;
@@ -229,6 +233,7 @@ bool rename(const path & old_p, const path & new_p, bool overwrite) {
 		LogWarning << "MoveFileEx(" << old_p << ", " << new_p << ", " << flags << ") failed: "
 		           << platform::getErrorString();
 	}
+	
 	return ret;
 }
 
@@ -259,31 +264,32 @@ struct directory_iterator_data {
 
 directory_iterator::directory_iterator(const path & p) {
 	
-	directory_iterator_data* itData = new directory_iterator_data();
+	directory_iterator_data * itData = new directory_iterator_data();
 	handle = itData;
-
+	
 	string searchPath = (p.empty() ? "." : p.string()) + "\\*";
 	
 	itData->findHandle = FindFirstFileW(platform::WideString(searchPath), &itData->findData);
 	if(itData->findHandle != INVALID_HANDLE_VALUE) {
 		this->operator++();
-	}	
+	}
+	
 };
 
 directory_iterator::~directory_iterator() {
-
-	directory_iterator_data* itData = (directory_iterator_data*)handle;
-
+	
+	directory_iterator_data * itData = (directory_iterator_data *)handle;
+	
 	if(itData->findHandle != INVALID_HANDLE_VALUE) {
 		::FindClose(itData->findHandle);
 	}
-		
+	
 	delete itData;	
 }
 
 directory_iterator & directory_iterator::operator++() {
-
-	directory_iterator_data* itData = (directory_iterator_data*)handle;
+	
+	directory_iterator_data * itData = (directory_iterator_data *)handle;
 	arx_assert(itData->findHandle != INVALID_HANDLE_VALUE);
 	
 	bool cont = true;
@@ -303,28 +309,32 @@ directory_iterator & directory_iterator::operator++() {
 }
 
 bool directory_iterator::end() {
-	directory_iterator_data* itData = (directory_iterator_data*)handle;
+	directory_iterator_data * itData = (directory_iterator_data *)handle;
 	return itData->findHandle == INVALID_HANDLE_VALUE;
 }
 
 string directory_iterator::name() {
-	directory_iterator_data* itData = (directory_iterator_data*)handle;
+	
+	directory_iterator_data * itData = (directory_iterator_data *)handle;
 	arx_assert(itData->findHandle != INVALID_HANDLE_VALUE);
 	
 	return platform::WideString::toUTF8(itData->findData.cFileName);
 }
 
 bool directory_iterator::is_directory() {
-	directory_iterator_data* itData = (directory_iterator_data*)handle;
+	
+	directory_iterator_data * itData = (directory_iterator_data *)handle;
 	arx_assert(itData->findHandle != INVALID_HANDLE_VALUE);
-
-	return (itData->findData.dwFileAttributes & FILE_ATTRIBUTE_DIRECTORY) == FILE_ATTRIBUTE_DIRECTORY;
+	
+	return (itData->findData.dwFileAttributes & FILE_ATTRIBUTE_DIRECTORY)
+	       == FILE_ATTRIBUTE_DIRECTORY;
 }
 
 bool directory_iterator::is_regular_file() {
-	directory_iterator_data* itData = (directory_iterator_data*)handle;
+	
+	directory_iterator_data * itData = (directory_iterator_data *)handle;
 	arx_assert(itData->findHandle != INVALID_HANDLE_VALUE);
-
+	
 	return (itData->findData.dwFileAttributes & FILE_ATTRIBUTE_DIRECTORY) == 0;
 }
 
