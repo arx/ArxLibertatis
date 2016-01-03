@@ -96,7 +96,7 @@ demo_names="arx_demo_english.zip arxdemoenglish.zip arx_demo_english.exe"
 demo_names="$demo_names arx_fatalis_demo_fr.zip arx_demo_german.exe arx_jpn_demo.exe"
 demo_url='http://arx.vg/demo-data'
 
-bug_tracker_url='http://bugs.arx-libertatis.org/'
+bug_report_url='http://arx.vg/bug'
 
 cabextract_url='http://www.cabextract.org.uk/'
 innoextract_url='http://constexpr.org/innoextract/'
@@ -253,7 +253,7 @@ die() {
 
 If you think this is a bug in the install script
 please report the complete output at
-  $bug_tracker_url"
+  $bug_report_url"
 		if [ ! -z "$logfile" ] && [ -f "$logfile" ] ; then
 			_die_message="$_die_message
 
