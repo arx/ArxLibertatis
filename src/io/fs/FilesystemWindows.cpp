@@ -38,8 +38,8 @@ bool exists(const path & p) {
 	if(p.empty()) {
 		return true;
 	}
-
-	DWORD result = GetFileAttributesA(p.string().c_str());
+	
+	DWORD result = GetFileAttributesW(platform::WideString(p.string()));
 	return result != INVALID_FILE_ATTRIBUTES;
 }
 
@@ -48,18 +48,21 @@ bool is_directory(const path & p) {
 		return true;
 	}
 	
-	DWORD attributes = GetFileAttributesA(p.string().c_str());
-	if(attributes == INVALID_FILE_ATTRIBUTES)
+	DWORD attributes = GetFileAttributesW(platform::WideString(p.string()));
+	if(attributes == INVALID_FILE_ATTRIBUTES) {
 		return false;
-
+	}
+	
 	return (attributes & FILE_ATTRIBUTE_DIRECTORY) == FILE_ATTRIBUTE_DIRECTORY;
 }
 
 bool is_regular_file(const path & p) {
-	DWORD attributes = GetFileAttributesA(p.string().c_str());
-	if(attributes == INVALID_FILE_ATTRIBUTES)
+	
+	DWORD attributes = GetFileAttributesW(platform::WideString(p.string()));
+	if(attributes == INVALID_FILE_ATTRIBUTES) {
 		return false;
-
+	}
+	
 	return (attributes & FILE_ATTRIBUTE_DIRECTORY) == 0;	
 }
 
