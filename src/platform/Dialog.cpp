@@ -40,6 +40,7 @@
 #include <boost/foreach.hpp>
 
 #include "platform/Process.h"
+#include "platform/WindowsUtils.h"
 
 
 namespace platform {
@@ -59,7 +60,7 @@ static bool showDialog(DialogType type, const std::string & message,
 		case DialogOkCancel:  flags = MB_ICONQUESTION | MB_OKCANCEL; break;
 	}
 	
-	int ret = MessageBoxA(NULL, message.c_str(), title.c_str(),
+	int ret = MessageBoxW(NULL, platform::WideString(message), platform::WideString(title),
 	                      flags | MB_SETFOREGROUND | MB_TOPMOST);
 	
 	switch(ret) {
