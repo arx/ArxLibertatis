@@ -191,8 +191,7 @@ std::string getOSArchitecture() {
 	return ARX_ARCH_NAME_X86_64; // 64-bit programs run only on Win64
 	#elif defined(_WIN32)
 	// 32-bit programs run on both 32-bit and 64-bit Windows
-	BOOL f64 = FALSE;
-	if(IsWow64Process(GetCurrentProcess(), &f64) && f64) {
+	if(platform::isWoW64Process(GetCurrentProcess())) {
 		return ARX_ARCH_NAME_X86_64;
 	} else {
 		return ARX_ARCH_NAME_X86;

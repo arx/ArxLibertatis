@@ -184,7 +184,11 @@ void reapZombies();
  */
 int runHelper(const char * const args[], bool wait = false, bool detach = false);
 
-#if ARX_PLATFORM != ARX_PLATFORM_WIN32
+#if ARX_PLATFORM == ARX_PLATFORM_WIN32
+
+bool isWoW64Process(process_handle process);
+
+#else
 
 /*!
  * \brief Start a program and get its standard output

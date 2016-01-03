@@ -388,7 +388,30 @@ int runHelper(const char * const args[], bool wait, bool detach) {
 	}
 }
 
-#if ARX_PLATFORM != ARX_PLATFORM_WIN32
+#if ARX_PLATFORM == ARX_PLATFORM_WIN32
+
+bool isWoW64Process(process_handle process) {
+	
+	typedef BOOL (WINAPI * IsWow64Process_t)(HANDLE, PBOOL);
+	IsWow64Process_t IsWow64Process_p;
+	
+	// IsWow64Process is not available on all versions of Windows - load it dynamically.
+	HMODULE handle = GetModuleHandleW(L"kernel32");
+	IsWow64Process_p = (IsWow64Process_t)GetProcAddress(handle, "IsWow64Process");
+	if(!IsWow64Process_p) {
+		return false;
+	}
+	
+	BOOL result;
+	if(!IsWow64Process_p(process, &result)) {
+		return false;
+	}
+	
+	return result == TRUE;
+}
+
+#else
+
 std::string getOutputOf(const char * exe, const char * const args[], bool unlocalized) {
 	
 	#if ARX_HAVE_PIPE && ARX_HAVE_READ && ARX_HAVE_CLOSE
@@ -432,6 +455,7 @@ std::string getOutputOf(const char * exe, const char * const args[], bool unloca
 	#endif
 	
 }
+
 #endif
 
 } // namespace platform
