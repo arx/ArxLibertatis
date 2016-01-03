@@ -81,6 +81,13 @@ fs::path getExecutablePath();
  */
 fs::path getHelperExecutable(const std::string & name);
 
+/*!
+ * \brief Open a URL, file or directory in the appropriate program
+ *
+ * \param uri The URL, file or directory to open. This must be an absolute path.
+ */
+void launchDefaultProgram(const std::string & uri);
+
 #if ARX_PLATFORM != ARX_PLATFORM_WIN32
 static const char * const env_list_seperators = ":";
 #else
