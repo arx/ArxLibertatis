@@ -68,7 +68,10 @@ extern char ** environ;
 #endif // ARX_PLATFORM != ARX_PLATFORM_WIN32
 
 #include "io/fs/FilePath.h"
+
 #include "platform/Environment.h"
+#include "platform/WindowsUtils.h"
+
 #include "util/String.h"
 
 namespace platform {
@@ -197,7 +200,6 @@ process_handle runAsync(const char * exe, const char * const args[], bool detach
 		}
 		oss << util::escapeString(args[i], "\\\" '$!");
 	}
-	char * cmdline = strdup(oss.str().c_str());
 	
 	STARTUPINFO si;
 	memset(&si, 0, sizeof(STARTUPINFO));
@@ -206,9 +208,9 @@ process_handle runAsync(const char * exe, const char * const args[], bool detach
 	PROCESS_INFORMATION pi;
 	memset(&pi, 0, sizeof(PROCESS_INFORMATION));
 	
-	bool success = (CreateProcess(exe, cmdline, 0, 0, 0, 0, 0, 0, &si, &pi) != 0);
-	
-	free(cmdline);
+	platform::WideString wexe(exe);
+	platform::WideString wcmdline(oss.str());
+	bool success = (CreateProcessW(wexe, wcmdline.data(), 0, 0, 0, 0, 0, 0, &si, &pi) != 0);
 	
 	if(!success) {
 		return 0; // Could not start process
