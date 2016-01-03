@@ -162,8 +162,8 @@ bool create_directory(const path & p) {
 	if(p.empty()) {
 		return true;
 	}
-
-	bool ret = CreateDirectoryA(p.string().c_str(), NULL) == TRUE;
+	
+	bool ret = CreateDirectoryW(platform::WideString(p.string()), NULL) == TRUE;
 	if(!ret) {
 		int lastError = GetLastError();
 		ret = lastError == ERROR_ALREADY_EXISTS;
