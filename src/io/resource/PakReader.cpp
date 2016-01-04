@@ -175,13 +175,13 @@ size_t UncompressedFileHandle::tell() {
 /*! Compressed file in a .pak file archive. */
 class CompressedFile : public PakFile {
 	
-	std::ifstream & archive;
+	fs::ifstream & archive;
 	size_t offset;
 	size_t storedSize;
 	
 public:
 	
-	explicit CompressedFile(std::ifstream * _archive, size_t _offset, size_t size,
+	explicit CompressedFile(fs::ifstream * _archive, size_t _offset, size_t size,
 	                        size_t _storedSize)
 		: PakFile(size), archive(*_archive), offset(_offset), storedSize(_storedSize) { }
 	
@@ -215,12 +215,12 @@ public:
 
 struct BlastFileInBuffer : private boost::noncopyable {
 	
-	std::ifstream & file;
+	fs::ifstream & file;
 	size_t remaining;
 	
 	unsigned char readbuf[PAK_READ_BUF_SIZE];
 	
-	explicit BlastFileInBuffer(std::ifstream * f, size_t count)
+	explicit BlastFileInBuffer(fs::ifstream * f, size_t count)
 		: file(*f), remaining(count) { }
 	
 };
