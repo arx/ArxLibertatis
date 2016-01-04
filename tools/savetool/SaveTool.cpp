@@ -23,6 +23,8 @@
 #include "io/fs/Filesystem.h"
 #include "io/log/Logger.h"
 
+#include "platform/WindowsMain.h"
+
 #include "savetool/SaveFix.h"
 #include "savetool/SaveRename.h"
 #include "savetool/SaveView.h"
@@ -118,7 +120,7 @@ static int main_add(SaveBlock & save, int argc, char ** argv) {
 	return 0;
 }
 
-int main(int argc, char ** argv) {
+int utf8_main(int argc, char ** argv) {
 	
 	Logger::initialize();
 	

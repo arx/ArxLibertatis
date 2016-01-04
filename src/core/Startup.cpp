@@ -42,6 +42,32 @@
 
 #include <zlib.h>
 
+#include "core/Benchmark.h"
+#include "core/Config.h"
+#include "core/Core.h"
+#include "core/Version.h"
+
+#include "gui/Credits.h"
+
+#include "io/fs/Filesystem.h"
+#include "io/fs/SystemPaths.h"
+#include "io/log/CriticalLogger.h"
+#include "io/log/FileLogger.h"
+#include "io/log/Logger.h"
+
+#include "math/Random.h"
+
+#include "platform/Compiler.h"
+#include "platform/CrashHandler.h"
+#include "platform/Environment.h"
+#include "platform/profiler/Profiler.h"
+#include "platform/ProgramOptions.h"
+#include "platform/Time.h"
+#include "platform/WindowsMain.h"
+
+#include "util/String.h"
+#include "util/cmdline/Parser.h"
+
 /*
  * Under OS X we want SDLmain to replace the entry point with its own.
  * This is needed to initialize NSApplication - otherwise we will later
@@ -53,25 +79,6 @@
 	#undef main /* in case SDL.h was already included */
 #endif
 
-#include "core/Benchmark.h"
-#include "core/Config.h"
-#include "core/Core.h"
-#include "core/Version.h"
-#include "gui/Credits.h"
-#include "io/fs/Filesystem.h"
-#include "io/fs/SystemPaths.h"
-#include "io/log/CriticalLogger.h"
-#include "io/log/FileLogger.h"
-#include "io/log/Logger.h"
-#include "math/Random.h"
-#include "platform/Compiler.h"
-#include "platform/CrashHandler.h"
-#include "platform/Environment.h"
-#include "platform/profiler/Profiler.h"
-#include "platform/ProgramOptions.h"
-#include "platform/Time.h"
-#include "util/String.h"
-#include "util/cmdline/Parser.h"
 
 static void showCommandLineHelp(const util::cmdline::interpreter<std::string> & options,
                                 std::ostream & os) {
@@ -119,19 +126,7 @@ static ExitStatus parseCommandLine(int argc, char ** argv) {
 	return RunProgram;
 }
 
-#if ARX_PLATFORM != ARX_PLATFORM_WIN32
-extern int main(int argc, char ** argv) {
-#else
-// For windows we can't use main() in a GUI application
-INT WINAPI WinMain(HINSTANCE hInstance, HINSTANCE hPrevInstance, PSTR lpCmdLine,
-                   INT nCmdShow) {
-	ARX_UNUSED(hInstance);
-	ARX_UNUSED(hPrevInstance);
-	ARX_UNUSED(lpCmdLine);
-	ARX_UNUSED(nCmdShow);
-	int argc = __argc;
-	char ** argv = __argv;
-#endif
+int utf8_main(int argc, char ** argv) {
 	
 	// Initialize Random now so that the crash handler can use it
 	Random::seed();

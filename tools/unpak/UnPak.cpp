@@ -30,6 +30,9 @@
 #include "io/resource/PakEntry.h"
 #include "io/resource/ResourcePath.h"
 #include "io/log/Logger.h"
+
+#include "platform/WindowsMain.h"
+
 #include "util/Unicode.h"
 
 using std::transform;
@@ -84,7 +87,7 @@ static void dump(PakDirectory & dir, const fs::path & dirname = fs::path()) {
 	
 }
 
-int main(int argc, char ** argv) {
+int utf8_main(int argc, char ** argv) {
 	
 	ARX_UNUSED(resources);
 	
@@ -107,4 +110,5 @@ int main(int argc, char ** argv) {
 		
 	}
 	
+	return 0;
 }
