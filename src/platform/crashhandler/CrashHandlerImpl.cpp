@@ -35,12 +35,14 @@
 
 #include "io/fs/Filesystem.h"
 #include "io/fs/FilePath.h"
+#include "io/fs/FileStream.h"
 #include "io/log/Logger.h"
 
 #include "math/Random.h"
 
 #include "platform/Architecture.h"
 #include "platform/Environment.h"
+#include "platform/OS.h"
 #include "platform/Process.h"
 
 #include "util/String.h"
@@ -121,9 +123,9 @@ void CrashHandlerImpl::processCrash() {
 	
 	if(m_pCrashInfo) {
 		
+		std::time_t timestamp = std::time(NULL);
 		{
 			fs::path crashReportDir = util::loadString(m_pCrashInfo->crashReportFolder);
-			std::time_t timestamp = std::time(NULL);
 			std::tm * time = std::gmtime(&timestamp);
 			for(int count = 0; ; count++) {
 				std::ostringstream oss;
@@ -169,6 +171,68 @@ void CrashHandlerImpl::processCrash() {
 		if(m_pCrashInfo->processId != m_pCrashInfo->processorProcessId) {
 			m_pCrashInfo->exitLock.post();
 			platform::killProcess(m_pCrashInfo->processId);
+		}
+		
+		// Write the crash description to a file
+		fs::path crashinfo = m_crashReportDir / "crash.txt";
+		fs::ofstream ofs(crashinfo, fs::fstream::out | fs::fstream::trunc);
+		if(ofs.is_open()) {
+			
+			ofs.write(m_pCrashInfo->description, m_textLength);
+			
+			ofs << '\n';
+			
+			ofs << "\nProcess information:\n";
+			ofs << "- path: " << util::loadString(m_pCrashInfo->executablePath) << '\n';
+			ofs << "- version: " << util::loadString(m_pCrashInfo->executableVersion) << '\n';
+			if(m_pCrashInfo->memoryUsage != 0) {
+				ofs << "- memory usage: " << m_pCrashInfo->memoryUsage << " bytes" << '\n';
+			}
+			const char * arch = platform::getArchitectureName(m_pCrashInfo->architecture);
+			ofs << "- architecture: " << arch << '\n';
+			if(m_pCrashInfo->runningTime > 0.0) {
+				ofs << "- runnig time: " << m_pCrashInfo->runningTime << " seconds" << '\n';
+			}
+			std::tm * time = std::gmtime(&timestamp);
+			ofs << "- crash time: " << (time->tm_year + 1900) << '-'
+			    << std::setfill('0') << std::setw(2) << (time->tm_mon + 1) << '-'
+			    << std::setfill('0') << std::setw(2) << time->tm_mday << ' '
+			    << std::setfill('0') << std::setw(2) << time->tm_hour << ':'
+			    << std::setfill('0') << std::setw(2) << time->tm_min << ':'
+			    << std::setfill('0') << std::setw(2) << time->tm_sec << '\n';
+			
+			ofs << "\nSystem information:\n";
+			std::string os = platform::getOSName();
+			if(!os.empty()) {
+				ofs << "- operating system: " << os << '\n';
+			}
+			std::string osarch = platform::getOSArchitecture();
+			if(!osarch.empty()) {
+				ofs << "- architecture: " << osarch << '\n';
+			}
+			std::string distro = platform::getOSDistribution();
+			if(!distro.empty()) {
+				ofs << "- distribution: " << distro << '\n';
+			}
+			
+			ofs << "\nVariables:\n";
+			size_t nbVariables = std::min(size_t(m_pCrashInfo->nbVariables),
+			                              size_t(CrashInfo::MaxNbVariables));
+			for(size_t i = 0; i < nbVariables; ++i) {
+				ofs << "- " << util::loadString(m_pCrashInfo->variables[i].name) << ": "
+				    << util::loadString(m_pCrashInfo->variables[i].value) << '\n';
+			}
+			
+			ofs << "\nAdditional files:\n";
+			size_t nfiles = std::min(size_t(m_pCrashInfo->nbFilesAttached),
+			                         size_t(CrashInfo::MaxNbFiles));
+			for(size_t i = 0; i < nfiles; i++) {
+				fs::path file = util::loadString(m_pCrashInfo->attachedFiles[i]);
+				if(fs::exists(file) && fs::file_size(file) != 0) {
+					ofs << "- " << file.filename() << '\n';
+				}
+			}
+			
 		}
 		
 	}
