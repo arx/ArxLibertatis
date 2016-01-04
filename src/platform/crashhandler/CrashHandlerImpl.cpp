@@ -31,6 +31,7 @@
 #include <boost/date_time/posix_time/ptime.hpp>
 #include <boost/range/size.hpp>
 
+#include "core/URLConstants.h"
 #include "core/Version.h"
 
 #include "io/fs/Filesystem.h"
@@ -41,6 +42,7 @@
 #include "math/Random.h"
 
 #include "platform/Architecture.h"
+#include "platform/Dialog.h"
 #include "platform/Environment.h"
 #include "platform/OS.h"
 #include "platform/Process.h"
@@ -262,12 +264,19 @@ void CrashHandlerImpl::processCrash() {
 		return;
 	}
 	
-	// Something went wrong - the crash reporter failed to start!
-	
-	std::cerr << "Arx Libertatis crashed, but arxcrashreporter could not be run.\n";
-	std::cerr << "arx.log might contain more information.\n";
-	std::cerr << "Please install arxcrashreporter to generate a detailed bug report!\n";
-	std::cerr.flush();
+	// The crash reporter is not available or failed to start - provide our own dialog
+	{
+		std::ostringstream oss;
+		oss <<"Arx Libertatis crashed!\n\n";
+		oss << "Please install arxcrashreporter or manually report the crash to "
+		    << url::bug_report << "\n\n";
+		oss << "Include the files contained in the following directory in your report:\n";
+		oss << " " << m_crashReportDir;
+		std::cout << "\n\n" << oss.str() << '\n';
+		oss << "\n\nClick OK to open that directory now.";
+		platform::showErrorDialog(oss.str(), "Fatal Error - " + arx_version);
+		platform::launchDefaultProgram(m_crashReportDir.string());
+	}
 	
 }
 
