@@ -119,7 +119,16 @@ void CrashHandlerImpl::fillBasicCrashInfo() {
 	
 }
 
-bool CrashHandlerImpl::addAttachedFile(const fs::path& file) {
+bool CrashHandlerImpl::addAttachedFile(const fs::path & file) {
+	
+	if(file.is_relative()) {
+		fs::path absolute = fs::current_path() / file;
+		if(absolute.is_relative()) {
+			return false;
+		}
+		return addAttachedFile(absolute);
+	}
+	
 	Autolock autoLock(&m_Lock);
 
 	if(m_pCrashInfo->nbFilesAttached == CrashInfo::MaxNbFiles) {
