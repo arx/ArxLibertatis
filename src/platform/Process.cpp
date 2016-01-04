@@ -31,6 +31,7 @@
 #if ARX_PLATFORM == ARX_PLATFORM_WIN32
 
 #include <windows.h>
+#include <shellapi.h>
 
 #else // ARX_PLATFORM != ARX_PLATFORM_WIN32
 
@@ -457,5 +458,29 @@ std::string getOutputOf(const char * exe, const char * const args[], bool unloca
 }
 
 #endif
+
+void launchDefaultProgram(const std::string & uri) {
+	
+	#if ARX_PLATFORM == ARX_PLATFORM_WIN32
+	
+	CoInitializeEx(NULL, COINIT_APARTMENTTHREADED | COINIT_DISABLE_OLE1DDE);
+	
+	(void)ShellExecuteW(NULL, L"open", platform::WideString(uri), NULL, NULL, SW_SHOWNORMAL);
+	
+	CoUninitialize();
+	
+	#elif ARX_PLATFORM == ARX_PLATFORM_MACOSX
+	
+	const char * command[] = { "open", uri.c_str(), NULL };
+	runHelper(command);
+	
+	#else
+	
+	const char * command[] = { "xdg-open", uri.c_str(), NULL };
+	runHelper(command);
+	
+	#endif
+	
+}
 
 } // namespace platform

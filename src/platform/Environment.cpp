@@ -68,7 +68,6 @@
 #include "io/fs/FilePath.h"
 #include "io/fs/Filesystem.h"
 
-#include "platform/Process.h"
 #include "platform/WindowsUtils.h"
 
 #include "util/String.h"
@@ -430,30 +429,6 @@ fs::path getHelperExecutable(const std::string & name) {
 	}
 	
 	return fs::path(name);
-}
-
-void launchDefaultProgram(const std::string & uri) {
-	
-	#if ARX_PLATFORM == ARX_PLATFORM_WIN32
-	
-	CoInitializeEx(NULL, COINIT_APARTMENTTHREADED | COINIT_DISABLE_OLE1DDE);
-	
-	(void)ShellExecuteW(NULL, L"open", platform::WideString(uri), NULL, NULL, SW_SHOWNORMAL);
-	
-	CoUninitialize();
-	
-	#elif ARX_PLATFORM == ARX_PLATFORM_MACOSX
-	
-	const char * command[] = { "open", uri.c_str(), NULL };
-	runHelper(command);
-	
-	#else
-	
-	const char * command[] = { "xdg-open", uri.c_str(), NULL };
-	runHelper(command);
-	
-	#endif
-	
 }
 
 bool isFileDescriptorDisabled(int fd) {

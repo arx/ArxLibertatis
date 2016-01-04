@@ -239,6 +239,13 @@ inline std::string getOutputOf(const std::string & exe, const char * const args[
 
 #endif
 
+/*!
+ * \brief Open a URL, file or directory in the appropriate program
+ *
+ * \param uri The URL, file or directory to open. This must be an absolute path.
+ */
+void launchDefaultProgram(const std::string & uri);
+
 } // namespace platform
 
 #endif // ARX_PLATFORM_PROCESS_H
