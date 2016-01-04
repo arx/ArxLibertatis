@@ -165,6 +165,12 @@ void CrashHandlerImpl::processCrash() {
 			}
 		}
 		
+		// Terminate the crashed process - we collected all the information we could
+		if(m_pCrashInfo->processId != m_pCrashInfo->processorProcessId) {
+			m_pCrashInfo->exitLock.post();
+			platform::killProcess(m_pCrashInfo->processId);
+		}
+		
 	}
 	
 	// Wait for the crash reporter to start
@@ -188,8 +194,6 @@ void CrashHandlerImpl::processCrash() {
 	
 	// If the crash reporter started successfully, we are done here
 	if(reporter) {
-		// TODO The reporter still needs the original process
-		(void)platform::getProcessExitCode(reporter);
 		return;
 	}
 	
@@ -199,12 +203,6 @@ void CrashHandlerImpl::processCrash() {
 	std::cerr << "arx.log might contain more information.\n";
 	std::cerr << "Please install arxcrashreporter to generate a detailed bug report!\n";
 	std::cerr.flush();
-	
-	// Terminate the crashed process
-	if(m_pCrashInfo) {
-		m_pCrashInfo->exitLock.post();
-		platform::killProcess(m_pCrashInfo->processId);
-	}
 	
 }
 
