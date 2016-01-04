@@ -63,8 +63,8 @@ static void getProcessSatus(platform::process_id pid, u64 & rss, u64 & startTick
 	oss << "/proc/" << pid << "/stat";
 	std::istringstream iss(fs::read(oss.str()));
 	
-	const int rssIndex = 23;
-	const int startTicksIndex = 21;
+	const size_t rssIndex = 23;
+	const size_t startTicksIndex = 21;
 	for(size_t i = 0; iss.good(); i++) {
 		if(i == rssIndex) {
 			iss >> rss;
