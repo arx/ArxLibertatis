@@ -85,8 +85,6 @@ private:
 	
 	bool Initialize();
 
-	bool WriteReport(const fs::path& fileName);
-
 	bool getCrashInfo();
 	bool GetMiscCrashInfo();
 

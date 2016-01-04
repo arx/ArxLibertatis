@@ -233,6 +233,7 @@ void CrashHandlerImpl::processCrash() {
 				}
 			}
 			
+			addAttachedFile(crashinfo);
 		}
 		
 	}
