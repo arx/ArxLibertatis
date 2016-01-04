@@ -86,7 +86,6 @@ private:
 	bool Initialize();
 
 	bool getCrashInfo();
-	bool GetMiscCrashInfo();
 
 	void AddFile(const fs::path& fileName);
 	
@@ -94,20 +93,9 @@ private:
 	
 private:
 	
-	fs::path m_ReportFolder;
-	
 	FileList m_AttachedFiles;
 	
-	QDateTime m_CrashDateTime;
-	double m_RunningTimeSec;
-	
-	QString m_OSName;
-	QString m_OSArchitecture;
-	QString m_OSDistribution;
-		
-	fs::path m_ProcessPath;
-	quint64 m_ProcessMemoryUsage;
-	QString m_ProcessArchitecture;
+	int m_ProcessArchitecture;
 
 	QString m_SharedMemoryName;
 	boost::interprocess::shared_memory_object m_SharedMemory;

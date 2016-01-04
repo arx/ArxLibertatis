@@ -57,9 +57,7 @@
 #include "util/String.h"
 
 ErrorReport::ErrorReport(const QString& sharedMemoryName)
-	: m_RunningTimeSec(0)
-	, m_ProcessMemoryUsage(0)
-	, m_SharedMemoryName(sharedMemoryName)
+	: m_SharedMemoryName(sharedMemoryName)
 	, m_pCrashInfo()
 	, m_Username("CrashBot")
 	, m_Password("WbAtVjS9")
@@ -86,28 +84,13 @@ bool ErrorReport::Initialize()
 		m_DetailedError = "The size of the memory mapped region does not match the size of the CrashInfo structure.";
 		return false;
 	}
-
-	bool bMiscCrashInfo = GetMiscCrashInfo();
-	if(!bMiscCrashInfo)
-		return false;
 	
 	m_pCrashInfo->reporterStarted.post();
-
-	m_ReportFolder = fs::path(util::loadString(m_pCrashInfo->crashReportFolder));
-
-	if(!fs::create_directories(m_ReportFolder))
-	{
-		m_DetailedError = QString("Unable to create directory (%1) to store the crash report files.").arg(m_ReportFolder.string().c_str());
-		return false;
-	}
 
 	return true;
 }
 
 bool ErrorReport::getCrashInfo() {
-	
-	m_ProcessMemoryUsage = m_pCrashInfo->memoryUsage;
-	m_RunningTimeSec = m_pCrashInfo->runningTime;
 	
 	m_ReportDescription = util::loadString(m_pCrashInfo->description).c_str();
 	
@@ -117,6 +100,8 @@ bool ErrorReport::getCrashInfo() {
 	
 	std::string title = util::loadString(m_pCrashInfo->title);
 	m_ReportTitle = QString("%1 %2").arg(m_ReportUniqueID, title.c_str());
+
+	m_ProcessArchitecture = m_pCrashInfo->architecture;
 	
 	// Add attached files from the report
 	size_t nbFilesAttached = std::min(size_t(m_pCrashInfo->nbFilesAttached),
@@ -125,20 +110,6 @@ bool ErrorReport::getCrashInfo() {
 		AddFile(util::loadString(m_pCrashInfo->attachedFiles[i]));
 	}
 	
-	return true;
-}
-
-bool ErrorReport::GetMiscCrashInfo() {
-	
-	// Get crash time
-	m_CrashDateTime = QDateTime::currentDateTime();
-	
-	m_ProcessArchitecture = platform::getArchitectureName(m_pCrashInfo->architecture);
-	
-	m_OSName = QString::fromUtf8(platform::getOSName().c_str());
-	m_OSArchitecture = QString::fromUtf8(platform::getOSArchitecture().c_str());
-	m_OSDistribution = QString::fromUtf8(platform::getOSDistribution().c_str());
-
 	return true;
 }
 
@@ -262,9 +233,9 @@ bool ErrorReport::SendReport(ErrorReport::IProgressNotifier* pProgressNotifier)
 
 		// Set Architecture
 		int arch_id;
-		if(m_ProcessArchitecture == ARX_ARCH_NAME_X86_64)
+		if(m_ProcessArchitecture == ARX_ARCH_X86_64)
 			arch_id = TBG::Server::Arch_Amd64;
-		else if(m_ProcessArchitecture == ARX_ARCH_NAME_X86)
+		else if(m_ProcessArchitecture == ARX_ARCH_X86)
 			arch_id = TBG::Server::Arch_x86;
 		else
 			arch_id = TBG::Server::Arch_Other;
