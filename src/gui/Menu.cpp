@@ -90,7 +90,7 @@ ZeniMax Media Inc., Suite 120, Rockville, Maryland 20850 USA.
 
 extern TextManager * pTextManage;
 extern ARX_INTERFACE_BOOK_MODE g_guiBookCurrentTopTab;
-extern long START_NEW_QUEST;
+extern bool START_NEW_QUEST;
 extern long OLD_FLYING_OVER;
 extern long FLYING_OVER;
 extern bool bFadeInOut;
