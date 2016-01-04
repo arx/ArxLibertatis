@@ -326,7 +326,7 @@ void CrashHandlerPOSIX::processCrashTrace() {
 		std::string exe = fs::path(util::loadString(m_pCrashInfo->executablePath)).filename();
 		FrameType status = Handler;
 		u64 minOffset = std::numeric_limits<u64>::max();
-		for(size_t i = 0; i < boost::size(m_pCrashInfo->backtrace); i++) {
+		for(size_t i = 0; i < size_t(boost::size(m_pCrashInfo->backtrace)); i++) {
 			if(m_pCrashInfo->backtrace[i] == 0) {
 				break;
 			}
