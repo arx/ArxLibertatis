@@ -266,6 +266,12 @@ void CrashHandlerPOSIX::processCrashSignal() {
 	addText(description.str().c_str());
 }
 
+struct MemoryRegion {
+	intptr_t begin;
+	intptr_t offset;
+	std::string file;
+};
+
 void CrashHandlerPOSIX::processCrashTrace() {
 	
 	std::ostringstream description;
@@ -286,11 +292,6 @@ void CrashHandlerPOSIX::processCrashTrace() {
 	enum FrameType { Handler = 0, System = 1, Fault = 2, Done = 3 };
 	#if ARX_HAVE_BACKTRACE
 	if(m_pCrashInfo->backtrace[0] != 0) {
-		struct MemoryRegion {
-			intptr_t begin;
-			intptr_t offset;
-			std::string file;
-		};
 		std::map<intptr_t, MemoryRegion> regions;
 		if(!maps.empty()) {
 			std::istringstream iss(maps);
