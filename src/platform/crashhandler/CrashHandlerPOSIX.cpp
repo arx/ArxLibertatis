@@ -236,7 +236,7 @@ static fs::path getCoreDumpFile() {
 		pattern = util::loadString(pathname, size);
 	} else {
 	#endif
-		pattern = "%N.core"
+		pattern = "%N.core";
 	#if ARX_HAVE_SYSCTLBYNAME && defined(PATH_MAX)
 	}
 	#endif
@@ -451,6 +451,8 @@ void CrashHandlerPOSIX::handleCrash(int signal, void * info, void * context) {
 		m_pCrashInfo->hasStack = true;
 		#endif
 	}
+	#else
+	ARX_UNUSED(context);
 	#endif
 	
 	// Store the backtrace in the shared crash info
