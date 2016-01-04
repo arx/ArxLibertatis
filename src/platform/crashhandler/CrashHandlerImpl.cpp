@@ -188,7 +188,16 @@ bool CrashHandlerImpl::setNamedVariable(const std::string& name, const std::stri
 	return true;
 }
 
-bool CrashHandlerImpl::setReportLocation(const fs::path& location) {
+bool CrashHandlerImpl::setReportLocation(const fs::path & location) {
+	
+	if(location.is_relative()) {
+		fs::path absolute = fs::current_path() / location;
+		if(absolute.is_relative()) {
+			return false;
+		}
+		return setReportLocation(absolute);
+	}
+	
 	Autolock autoLock(&m_Lock);
 
 	if(location.string().size() >= CrashInfo::MaxFilenameLen) {
