@@ -223,20 +223,19 @@ static long ObjectAddFace(EERIE_3DOBJ * obj, const EERIE_FACE * face, const EERI
 	return obj->facelist.size() - 1;
 }
 
-static long ObjectAddAction(EERIE_3DOBJ * obj, const std::string & name, long act,
+static void ObjectAddAction(EERIE_3DOBJ * obj, const std::string & name, long act,
                             long sfx, const EERIE_VERTEX * vert) {
 	
 	long newvert = ObjectAddVertex(obj, vert);
 
-	if (newvert < 0) return -1;
+	if(newvert < 0)
+		return;
 	
-	long j = 0;
 	for(std::vector<EERIE_ACTIONLIST>::iterator i = obj->actionlist.begin();
 	    i != obj->actionlist.end(); ++i) {
 		if(i->name == name) {
-			return j;
+			return;
 		}
-		j++;
 	}
 	
 	obj->actionlist.push_back(EERIE_ACTIONLIST());
@@ -247,8 +246,6 @@ static long ObjectAddAction(EERIE_3DOBJ * obj, const std::string & name, long ac
 	action.act = act;
 	action.sfx = sfx;
 	action.idx = ActionPoint(newvert);
-	
-	return (obj->actionlist.size() - 1);
 }
 
 long ObjectAddMap(EERIE_3DOBJ * obj, TextureContainer * tc) {
