@@ -690,18 +690,18 @@ bool ARX_EQUIPMENT_Strike_Check(Entity * io_source, Entity * io_weapon, float ra
 		std::vector<EntityHandle> sphereContent;
 
 		if(CheckEverythingInSphere(sphere, source, targ, sphereContent)) {
-			for(size_t jj = 0; jj < sphereContent.size(); jj++) {
-				if(ValidIONum(sphereContent[jj])
-						&& !(entities[sphereContent[jj]]->ioflags & IO_BODY_CHUNK))
+			BOOST_FOREACH(const EntityHandle & content, sphereContent) {
+				if(ValidIONum(content)
+						&& !(entities[content]->ioflags & IO_BODY_CHUNK))
 				{
 					long HIT_SPARK = 0;
-					EXCEPTIONS_LIST[EXCEPTIONS_LIST_Pos] = sphereContent[jj];
+					EXCEPTIONS_LIST[EXCEPTIONS_LIST_Pos] = content;
 					EXCEPTIONS_LIST_Pos++;
 
 					if(EXCEPTIONS_LIST_Pos >= MAX_IN_SPHERE)
 						EXCEPTIONS_LIST_Pos--;
 
-					Entity * target = entities[sphereContent[jj]];
+					Entity * target = entities[content];
 			
 					Vec3f pos;
 					Color color = Color::white;
@@ -755,7 +755,7 @@ bool ARX_EQUIPMENT_Strike_Check(Entity * io_source, Entity * io_weapon, float ra
 							if(paralyse > 0.f) {
 								float ptime = std::min(dmgs * 1000.f, paralyse);
 								ARX_SPELLS_Launch(SPELL_PARALYSE, weapon, SPELLCAST_FLAG_NOMANA | SPELLCAST_FLAG_NOCHECKCANCAST
-												  , 5, sphereContent[jj], (long)(ptime));
+												  , 5, content, (long)(ptime));
 							}
 						}
 
