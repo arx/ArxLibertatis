@@ -50,6 +50,7 @@ ZeniMax Media Inc., Suite 120, Rockville, Maryland 20850 USA.
 
 #include <boost/algorithm/string/case_conv.hpp>
 #include <boost/algorithm/string/predicate.hpp>
+#include <boost/foreach.hpp>
 
 #include "core/Config.h"
 #include "core/Core.h"
@@ -91,9 +92,9 @@ long GetGroupOriginByName(const EERIE_3DOBJ * eobj, const std::string & text) {
 	if(!eobj)
 		return -1;
 	
-	for(size_t i = 0; i < eobj->grouplist.size(); i++) {
-		if(eobj->grouplist[i].name == text) {
-			return eobj->grouplist[i].origin;
+	BOOST_FOREACH(const VertexGroup & group, eobj->grouplist) {
+		if(group.name == text) {
+			return group.origin;
 		}
 	}
 	
