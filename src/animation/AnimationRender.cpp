@@ -1652,7 +1652,7 @@ void EERIEDrawAnimQuatRender(EERIE_3DOBJ *eobj, const Vec3f & pos, Entity *io, f
 						 (io->_npcdata->behavior & BEHAVIOUR_FIGHT) &&
 						 closerThan(io->pos, player.pos, 240.f);
 
-	if(!isFightingNpc && ARX_SCENE_PORTAL_ClipIO(io, pos))
+	if(!isFightingNpc && io && ARX_SCENE_PORTAL_ClipIO(io, pos))
 		return;
 
 	Cedric_AnimateDrawEntityRender(eobj, pos, io, invisibility);

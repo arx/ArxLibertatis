@@ -57,6 +57,7 @@ suboption(BUILD_CRASHREPORTER "Build the crash reporter" BOOL ${BUILD_CRASHHANDL
 if(NOT BUILD_CRASHHANDLER)
 	set(BUILD_CRASHREPORTER OFF)
 endif()
+option(BUILD_VIEWER "Build the Viewer" OFF)
 option(BUILD_PROFILER_INSTRUMENT "Enable instrumentation for the profiler" OFF)
 set(def_BUILD_PROFILER OFF)
 if(BUILD_PROFILER_INSTRUMENT OR BUILD_ALL)
@@ -479,9 +480,9 @@ endif()
 
 # Qt
 set(ARX_HAVE_CRASHREPORTER 0)
-if(BUILD_CRASHREPORTER OR BUILD_PROFILER)
+if(BUILD_CRASHREPORTER OR BUILD_PROFILER OR BUILD_VIEWER)
 	
-	find_package(Qt 4.7 COMPONENTS Core Concurrent Gui Widgets ${OPTIONAL_DEPENDENCY})
+	find_package(Qt 4.7 COMPONENTS Core Concurrent Gui Widgets OpenGL ${OPTIONAL_DEPENDENCY})
 	
 	if(HAVE_QT4 AND NOT MSVC)
 		check_link_library(QtCore QtCore_LIBRARIES)
@@ -510,6 +511,9 @@ if(BUILD_CRASHREPORTER OR BUILD_PROFILER)
 		set(ARX_HAVE_PROFILER 1)
 	endif()
 	
+	if(HAVE_QT AND BUILD_VIEWER)
+		set(ARX_HAVE_VIEWER 1)
+	endif()
 endif()
 
 find_package(Doxygen)
@@ -1570,6 +1574,93 @@ if(INSTALL_BLENDER_PLUGIN)
 	install(DIRECTORY plugins/blender/arx_addon/ DESTINATION "${INSTALL_BLENDER_PLUGINDIR}")
 endif()
 
+if(ARX_HAVE_VIEWER)
+	
+	set(arxviewer_Qt_SOURCES
+		tools/viewer/ViewerMain.cpp
+		tools/viewer/ui/ArxRenderWidget.h
+		tools/viewer/ui/ArxRenderWidget.cpp
+		tools/viewer/ui/ArxViewer.h
+		tools/viewer/ui/ArxViewer.cpp
+		tools/viewer/model/AnimationLayersModel.h
+		tools/viewer/model/AnimationLayersModel.cpp
+		tools/viewer/model/AssetsModel.h
+		tools/viewer/model/AssetsModel.cpp
+		tools/viewer/model/LightsModel.h
+		tools/viewer/model/LightsModel.cpp
+		${QtGui_SOURCES}
+	)
+	
+	set(arxviewer_SOURCES
+		${ARX_SOURCES}
+	)
+	list(REMOVE_ITEM arxviewer_SOURCES src/core/Startup.cpp)
+	
+	if(WIN32)
+		list(APPEND arxviewer_SOURCES
+			${ARX_ICON_RC}
+		)
+	endif()
+	
+	set(arxviewer_MANUAL_SOURCES
+		${arxviewer_SOURCES}
+		${arxviewer_Qt_SOURCES}
+	)
+	
+	set(SRC_DIR tools/viewer/)
+	
+	create_source_groups(arxviewer_SOURCES)
+	
+	list(APPEND arxviewer_Qt_SOURCES ${QtGui_SOURCES})
+	qt_wrap_ui(arxviewer_Qt_SOURCES
+		tools/viewer/ui/ArxViewer.ui
+	)
+	qt_wrap_cpp(arxviewer_Qt_SOURCES
+		tools/viewer/ui/ArxViewer.h
+		tools/viewer/ui/ArxRenderWidget.h
+		tools/viewer/model/AnimationLayersModel.h
+		tools/viewer/model/AssetsModel.h
+		tools/viewer/model/LightsModel.h
+	)
+	
+	list(APPEND arxviewer_SOURCES ${arxviewer_Qt_SOURCES})
+	
+	add_source_flags("${arxviewer_Qt_SOURCES}"
+		"${QtCore_EXECUTABLE_COMPILE_FLAGS}"
+	)
+	
+	add_source_definitions("${arxviewer_Qt_SOURCES}"
+		${QtCore_DEFINITIONS}
+		${QtGui_DEFINITIONS}
+		${QtWidgets_DEFINITIONS}
+		${QtOpenGL_DEFINITIONS}
+		-DQT_NO_DEBUG
+	)
+	
+	set(arxviewer_INCLUDES
+		${QtCore_INCLUDE_DIRS}
+		${QtGui_INCLUDE_DIRS}
+		${QtWidgets_INCLUDE_DIRS}
+		${QtOpenGL_INCLUDE_DIRS}
+		${ALL_INCLUDES}
+	)
+	
+	set(arxviewer_LIBRARIES
+		${BASE_LIBRARIES}
+		${CMAKE_THREAD_LIBS_INIT}
+		${QtCore_LIBRARIES}
+		${QtGui_LIBRARIES}
+		${QtWidgets_LIBRARIES}
+		${QtCore_QTMAIN_LIBRARIES}
+		${QtOpenGL_LIBRARIES}
+		${ARX_LIBRARIES}
+	)
+	
+	add_executable_shared(arxviewer "${arxviewer_SOURCES}" "${arxviewer_LIBRARIES}")
+	set_binary_type(arxviewer WIN32)
+	set_binary_installdir(arxviewer "${CMAKE_INSTALL_LIBEXECDIR}")
+	add_binary_includes(arxviewer ${arxviewer_INCLUDES})
+endif()
 
 # Build and link executables
 
@@ -1714,6 +1805,7 @@ print_configuration("Tools"
 	BUILD_TOOLS            "unpak"
 	ARX_HAVE_CRASHREPORTER "crash reporter"
 	ARX_HAVE_PROFILER      "profiler"
+	ARX_HAVE_VIEWER        "viewer"
 )
 message("")
 
