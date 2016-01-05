@@ -106,10 +106,9 @@ ActionPoint GetActionPointIdx(const EERIE_3DOBJ * eobj, const std::string & text
 	if(!eobj)
 		return ActionPoint();
 	
-	for(std::vector<EERIE_ACTIONLIST>::const_iterator i = eobj->actionlist.begin();
-	    i != eobj->actionlist.end(); ++i) {
-		if(i->name == text) {
-			return i->idx;
+	BOOST_FOREACH(const EERIE_ACTIONLIST & action, eobj->actionlist) {
+		if(action.name == text) {
+			return action.idx;
 		}
 	}
 	
