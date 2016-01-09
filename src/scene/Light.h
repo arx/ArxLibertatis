@@ -66,8 +66,6 @@ class Entity;
 const size_t MAX_LIGHTS = 1200;
 const size_t MAX_DYNLIGHTS = 500;
 
-extern long MAX_LLIGHTS;
-
 extern EERIE_LIGHT * PDL[MAX_DYNLIGHTS];
 extern EERIE_LIGHT * GLight[MAX_LIGHTS];
 extern EERIE_LIGHT DynLight[MAX_DYNLIGHTS];
@@ -156,6 +154,7 @@ void endLightDelayed(LightHandle & handle, long delay);
 void ClearDynLights();
 void PrecalcDynamicLighting(long x0,long x1,long z0,long z1);
 
+void setMaxLLights(int count);
 void UpdateLlights(const Vec3f pos, bool forPlayerColor);
 
 void InitTileLights();

@@ -505,6 +505,10 @@ static void Insertllight(EERIE_LIGHT * llights[32], float values[32], EERIE_LIGH
 	}
 }
 
+void setMaxLLights(int count) {
+	MAX_LLIGHTS = count;
+}
+
 void UpdateLlights(const Vec3f pos, bool forPlayerColor) {
 	
 	EERIE_LIGHT * llights[32];

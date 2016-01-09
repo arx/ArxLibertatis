@@ -132,15 +132,15 @@ void ARXMenu_Options_Video_SetDetailsQuality(int _iQuality) {
 	
 	switch(config.video.levelOfDetail) {
 		case 0: {
-			MAX_LLIGHTS = 6;
+			setMaxLLights(6);
 			break;
 		}
 		case 1: {
-			MAX_LLIGHTS = 10;
+			setMaxLLights(10);
 			break;
 		}
 		case 2: {
-			MAX_LLIGHTS = 15;
+			setMaxLLights(15);
 			break;
 		}
 	}
