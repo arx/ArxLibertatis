@@ -446,16 +446,21 @@ void ClearDynLights() {
 	TOTIOPDL = 0;
 }
 
+struct ShaderLight {
+	Vec3f pos;
+	float fallstart;
+	float fallend;
+	float falldiffmul;
+	float intensity;
+	Color3f rgb;
+	Color3f rgb255;
+};
+ShaderLight shaderLights[32];
+int shaderLightsCount = 0;
+
 long MAX_LLIGHTS = 18;
 EERIE_LIGHT * llights[32];
 float values[32];
-
-static void llightsInit() {
-	for(long i = 0; i < MAX_LLIGHTS; i++) {
-		llights[i] = NULL;
-		values[i] = 999999999.f;
-	}
-}
 
 // Inserts Light in the List of Nearest Lights
 static void Insertllight(EERIE_LIGHT * el, const Vec3f & pos, bool forPlayerColor) {
@@ -503,7 +508,11 @@ static void Insertllight(EERIE_LIGHT * el, const Vec3f & pos, bool forPlayerColo
 }
 
 void UpdateLlights(const Vec3f pos, bool forPlayerColor) {
-	llightsInit();
+	
+	for(long i = 0; i < MAX_LLIGHTS; i++) {
+		llights[i] = NULL;
+		values[i] = 999999999.f;
+	}
 
 	for(size_t i = 0; i < TOTIOPDL; i++) {
 		Insertllight(IO_PDL[i], pos, forPlayerColor);
@@ -511,6 +520,26 @@ void UpdateLlights(const Vec3f pos, bool forPlayerColor) {
 
 	for(size_t i = 0; i < TOTPDL; i++) {
 		Insertllight(PDL[i], pos, forPlayerColor);
+	}
+	
+	shaderLightsCount = 0;
+	for(long i = 0; i < MAX_LLIGHTS; i++) {
+		if(llights[i]) {
+			EERIE_LIGHT * el = llights[i];
+			ShaderLight & sl = shaderLights[i];
+			
+			sl.pos = el->pos;
+			sl.fallstart = el->fallstart;
+			sl.fallend = el->fallend;
+			sl.falldiffmul = el->falldiffmul;
+			sl.intensity = el->intensity;
+			sl.rgb = el->rgb;
+			sl.rgb255 = el->rgb255;
+			
+			shaderLightsCount = i + 1;
+		} else {
+			break;
+		}
 	}
 }
 
@@ -570,8 +599,8 @@ float GetColorz(const Vec3f &pos) {
 	
 	Color3f ff = Color3f(0.f, 0.f, 0.f);
 	
-	for(long k = 0; k < MAX_LLIGHTS; k++) {
-		EERIE_LIGHT * el = llights[k];
+	for(long k = 0; k < shaderLightsCount; k++) {
+		ShaderLight * el = &shaderLights[k];
 
 		if(el) {
 			float dd = fdist(el->pos, pos);
@@ -645,8 +674,8 @@ ColorRGBA ApplyLight(const glm::quat & quat,
 	glm::quat inv = glm::inverse(quat);
 	
 	// Dynamic lights
-	for(int l = 0; l != MAX_LLIGHTS; l++) {
-		EERIE_LIGHT * light = llights[l];
+	for(int l = 0; l != shaderLightsCount; l++) {
+		ShaderLight * light = &shaderLights[l];
 
 		if(!light)
 			break;
