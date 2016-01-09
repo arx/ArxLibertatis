@@ -710,19 +710,19 @@ static EERIE_3DSCENE * ScnToEerie(const char * adr, size_t size, const res::path
 		
 		EERIE_LIGHT light;
 		
-		light.rgb.r = (float)tsl3024->red * ( 1.0f / 255 );
-		light.rgb.g = (float)tsl3024->green * ( 1.0f / 255 );
-		light.rgb.b = (float)tsl3024->blue * ( 1.0f / 255 );
+		light.rgb.r = tsl3024->red * ( 1.0f / 255 );
+		light.rgb.g = tsl3024->green * ( 1.0f / 255 );
+		light.rgb.b = tsl3024->blue * ( 1.0f / 255 );
 		light.pos = tsl3024->pos.toVec3();
-		light.fallstart = (float)tsl3024->hotspot;
-		light.fallend = (float)tsl3024->falloff;
+		light.fallstart = tsl3024->hotspot;
+		light.fallend = tsl3024->falloff;
 		
 		float t = light.fallend - light.fallstart;
 		if(t < 150.f) {
 			light.fallend += 150.f - t;
 		}
 		
-		light.intensity = (float)tsl3024->intensity;
+		light.intensity = tsl3024->intensity;
 		light.exist = 1;
 		light.treat = 1;
 		light.m_isIgnitionLight = false;
