@@ -601,28 +601,28 @@ float GetColorz(const Vec3f &pos) {
 	
 	for(long k = 0; k < shaderLightsCount; k++) {
 		const ShaderLight & light = shaderLights[k];
-
-			float dd = fdist(light.pos, pos);
-
-			if(dd < light.fallend) {
-				float dc;
-
-				if(dd <= light.fallstart) {
-					dc = light.intensity * GLOBAL_LIGHT_FACTOR;
-				} else {
-					float p = ((light.fallend - dd) * light.falldiffmul);
-
-					if(p <= 0.f)
-						dc = 0.f;
-					else
-						dc = p * light.intensity * GLOBAL_LIGHT_FACTOR;
-				}
-
-				dc *= 0.4f * 255.f;
-				ff.r = std::max(ff.r, light.rgb.r * dc);
-				ff.g = std::max(ff.g, light.rgb.g * dc);
-				ff.b = std::max(ff.b, light.rgb.b * dc);
+		
+		float dd = fdist(light.pos, pos);
+		
+		if(dd < light.fallend) {
+			float dc;
+			
+			if(dd <= light.fallstart) {
+				dc = light.intensity * GLOBAL_LIGHT_FACTOR;
+			} else {
+				float p = ((light.fallend - dd) * light.falldiffmul);
+				
+				if(p <= 0.f)
+					dc = 0.f;
+				else
+					dc = p * light.intensity * GLOBAL_LIGHT_FACTOR;
 			}
+			
+			dc *= 0.4f * 255.f;
+			ff.r = std::max(ff.r, light.rgb.r * dc);
+			ff.g = std::max(ff.g, light.rgb.g * dc);
+			ff.b = std::max(ff.b, light.rgb.b * dc);
+		}
 	}
 
 
@@ -674,29 +674,29 @@ ColorRGBA ApplyLight(const glm::quat & quat,
 	// Dynamic lights
 	for(int l = 0; l != shaderLightsCount; l++) {
 		const ShaderLight & light = shaderLights[l];
-
+		
 		Vec3f vLight = glm::normalize(light.pos - position);
-
+		
 		Vec3f Cur_vLights = inv * vLight;
 		
 		float cosangle = glm::dot(normal, Cur_vLights);
-
+		
 		// If light visible
 		if(cosangle > 0.f) {
 			float distance = fdist(position, light.pos);
-
+			
 			// Evaluate its intensity depending on the distance Light<->Object
 			if(distance <= light.fallstart) {
 				cosangle *= light.intensity * GLOBAL_LIGHT_FACTOR;
 			} else {
 				float p = ((light.fallend - distance) * light.falldiffmul);
-
+				
 				if(p <= 0.f)
 					cosangle = 0.f;
 				else
 					cosangle *= p * (light.intensity * GLOBAL_LIGHT_FACTOR);
 			}
-
+			
 			cosangle *= materialDiffuse;
 
 			tempColor += light.rgb255 * cosangle;
