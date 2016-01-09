@@ -514,7 +514,7 @@ static void Cedric_ApplyLighting(EERIE_3DOBJ * eobj, Skeleton * obj, const Color
 	/* Apply light on all vertices */
 	for(size_t i = 0; i != obj->bones.size(); i++) {
 
-		glm::quat *quat = &obj->bones[i].anim.quat;
+		const glm::quat & quat = obj->bones[i].anim.quat;
 
 		/* Get light value for each vertex */
 		for(size_t v = 0; v != obj->bones[i].idxvertices.size(); v++) {
@@ -750,12 +750,12 @@ void DrawEERIEInter_Render(EERIE_3DOBJ *eobj, const TransformInfo &t, Entity *io
 				const Vec3f & position = eobj->vertexlist3[face.vid[n]].v;
 				const Vec3f & normal = face.norm;
 
-				eobj->vertexlist3[face.vid[n]].vert.color = ApplyLight(&t.rotation, position, normal, colorMod, 0.5f);
+				eobj->vertexlist3[face.vid[n]].vert.color = ApplyLight(t.rotation, position, normal, colorMod, 0.5f);
 			} else {
 				Vec3f & position = eobj->vertexlist3[face.vid[n]].v;
 				Vec3f & normal = eobj->vertexlist[face.vid[n]].norm;
 
-				eobj->vertexlist3[face.vid[n]].vert.color = ApplyLight(&t.rotation, position, normal, colorMod);
+				eobj->vertexlist3[face.vid[n]].vert.color = ApplyLight(t.rotation, position, normal, colorMod);
 			}
 
 			tvList[n] = eobj->vertexlist[face.vid[n]].vert;
