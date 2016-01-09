@@ -455,13 +455,16 @@ struct ShaderLight {
 	Color3f rgb;
 	Color3f rgb255;
 };
-ShaderLight shaderLights[32];
-int shaderLightsCount = 0;
 
-static int MAX_LLIGHTS = 16;
+static const int llightsSize = 16;
+
+static ShaderLight shaderLights[llightsSize];
+static int shaderLightsCount = 0;
+
+static int MAX_LLIGHTS = llightsSize;
 
 // Inserts Light in the List of Nearest Lights
-static void Insertllight(EERIE_LIGHT * llights[32], float values[32], EERIE_LIGHT * el, const Vec3f & pos, bool forPlayerColor) {
+static void Insertllight(EERIE_LIGHT * llights[], float values[], EERIE_LIGHT * el, const Vec3f & pos, bool forPlayerColor) {
 	
 	if(!el)
 		return;
@@ -506,13 +509,13 @@ static void Insertllight(EERIE_LIGHT * llights[32], float values[32], EERIE_LIGH
 }
 
 void setMaxLLights(int count) {
-	MAX_LLIGHTS = glm::clamp(count, 6, 16);
+	MAX_LLIGHTS = glm::clamp(count, 6, llightsSize);
 }
 
 void UpdateLlights(const Vec3f pos, bool forPlayerColor) {
 	
-	EERIE_LIGHT * llights[32];
-	float values[32];
+	EERIE_LIGHT * llights[llightsSize];
+	float values[llightsSize];
 	
 	for(int i = 0; i < MAX_LLIGHTS; i++) {
 		llights[i] = NULL;
