@@ -641,7 +641,9 @@ ColorRGBA ApplyLight(const glm::quat & quat,
                      float materialDiffuse
 ) {
 	Color3f tempColor = colorMod.ambientColor;
-
+	
+	glm::quat inv = glm::inverse(quat);
+	
 	// Dynamic lights
 	for(int l = 0; l != MAX_LLIGHTS; l++) {
 		EERIE_LIGHT * light = llights[l];
@@ -651,7 +653,7 @@ ColorRGBA ApplyLight(const glm::quat & quat,
 
 		Vec3f vLight = glm::normalize(light->pos - position);
 
-		Vec3f Cur_vLights = glm::inverse(quat) * vLight;
+		Vec3f Cur_vLights = inv * vLight;
 		
 		float cosangle = glm::dot(normal, Cur_vLights);
 
