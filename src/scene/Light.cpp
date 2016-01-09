@@ -602,7 +602,6 @@ float GetColorz(const Vec3f &pos) {
 	for(long k = 0; k < shaderLightsCount; k++) {
 		ShaderLight * el = &shaderLights[k];
 
-		if(el) {
 			float dd = fdist(el->pos, pos);
 
 			if(dd < el->fallend) {
@@ -624,7 +623,6 @@ float GetColorz(const Vec3f &pos) {
 				ff.g = std::max(ff.g, el->rgb.g * dc);
 				ff.b = std::max(ff.b, el->rgb.b * dc);
 			}
-		}
 	}
 
 
@@ -676,9 +674,6 @@ ColorRGBA ApplyLight(const glm::quat & quat,
 	// Dynamic lights
 	for(int l = 0; l != shaderLightsCount; l++) {
 		ShaderLight * light = &shaderLights[l];
-
-		if(!light)
-			break;
 
 		Vec3f vLight = glm::normalize(light->pos - position);
 
