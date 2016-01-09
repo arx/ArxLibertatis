@@ -437,8 +437,8 @@ void ClearDynLights() {
 	}
 
 	for(size_t i = 0; i < MAX_LIGHTS; i++) {
-		if(GLight[i] && GLight[i]->m_ignitionLightHandle.handleData() > 0) {
-			GLight[i]->m_ignitionLightHandle = LightHandle(0); // TODO is this correct ?
+		if(GLight[i]) {
+			GLight[i]->m_ignitionLightHandle = LightHandle();
 		}
 	}
 
