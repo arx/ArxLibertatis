@@ -459,11 +459,9 @@ ShaderLight shaderLights[32];
 int shaderLightsCount = 0;
 
 long MAX_LLIGHTS = 18;
-EERIE_LIGHT * llights[32];
-float values[32];
 
 // Inserts Light in the List of Nearest Lights
-static void Insertllight(EERIE_LIGHT * el, const Vec3f & pos, bool forPlayerColor) {
+static void Insertllight(EERIE_LIGHT * llights[32], float values[32], EERIE_LIGHT * el, const Vec3f & pos, bool forPlayerColor) {
 	
 	if(!el)
 		return;
@@ -509,17 +507,20 @@ static void Insertllight(EERIE_LIGHT * el, const Vec3f & pos, bool forPlayerColo
 
 void UpdateLlights(const Vec3f pos, bool forPlayerColor) {
 	
+	EERIE_LIGHT * llights[32];
+	float values[32];
+	
 	for(long i = 0; i < MAX_LLIGHTS; i++) {
 		llights[i] = NULL;
 		values[i] = 999999999.f;
 	}
 
 	for(size_t i = 0; i < TOTIOPDL; i++) {
-		Insertllight(IO_PDL[i], pos, forPlayerColor);
+		Insertllight(llights, values, IO_PDL[i], pos, forPlayerColor);
 	}
 
 	for(size_t i = 0; i < TOTPDL; i++) {
-		Insertllight(PDL[i], pos, forPlayerColor);
+		Insertllight(llights, values, PDL[i], pos, forPlayerColor);
 	}
 	
 	shaderLightsCount = 0;
