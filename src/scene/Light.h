@@ -154,8 +154,21 @@ void endLightDelayed(LightHandle & handle, long delay);
 void ClearDynLights();
 void PrecalcDynamicLighting(long x0,long x1,long z0,long z1);
 
+
+struct ShaderLight {
+	Vec3f pos;
+	float fallstart;
+	float fallend;
+	float falldiffmul;
+	float intensity;
+	Color3f rgb;
+	Color3f rgb255;
+};
+
+static const int llightsSize = 16;
+
 void setMaxLLights(int count);
-void UpdateLlights(const Vec3f pos, bool forPlayerColor);
+void UpdateLlights(ShaderLight lights[], int & lightsCount, const Vec3f pos, bool forPlayerColor);
 
 void InitTileLights();
 void ResetTileLights();
@@ -164,7 +177,9 @@ void ClearTileLights();
 
 float GetColorz(const Vec3f &pos);
 
-ColorRGBA ApplyLight(const glm::quat & quat,
+ColorRGBA ApplyLight(const ShaderLight lights[],
+                     const int lightsCount,
+                     const glm::quat & quat,
                      const Vec3f & position,
                      const Vec3f & normal,
                      const ColorMod & colorMod,

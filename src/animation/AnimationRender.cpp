@@ -509,7 +509,7 @@ static bool Cedric_IO_Visible(const Vec3f & pos) {
 }
 
 /* Object dynamic lighting */
-static void Cedric_ApplyLighting(EERIE_3DOBJ * eobj, Skeleton * obj, const ColorMod & colorMod) {
+static void Cedric_ApplyLighting(ShaderLight lights[], int lightsCount, EERIE_3DOBJ * eobj, Skeleton * obj, const ColorMod & colorMod) {
 
 	/* Apply light on all vertices */
 	for(size_t i = 0; i != obj->bones.size(); i++) {
@@ -523,7 +523,7 @@ static void Cedric_ApplyLighting(EERIE_3DOBJ * eobj, Skeleton * obj, const Color
 			Vec3f & position = eobj->vertexlist3[vertexIndex].v;
 			Vec3f & normal = eobj->vertexlist[vertexIndex].norm;
 
-			eobj->vertexlist3[vertexIndex].vert.color = ApplyLight(quat, position, normal, colorMod);
+			eobj->vertexlist3[vertexIndex].vert.color = ApplyLight(lights, lightsCount, quat, position, normal, colorMod);
 		}
 	}
 }
@@ -726,7 +726,9 @@ void DrawEERIEInter_Render(EERIE_3DOBJ *eobj, const TransformInfo &t, Entity *io
 	else
 		tv.y -= 90.f;
 
-	UpdateLlights(tv, false);
+	ShaderLight lights[llightsSize];
+	int lightsCount;
+	UpdateLlights(lights, lightsCount, tv, false);
 
 	for(size_t i = 0; i < eobj->facelist.size(); i++) {
 		const EERIE_FACE & face = eobj->facelist[i];
@@ -750,12 +752,12 @@ void DrawEERIEInter_Render(EERIE_3DOBJ *eobj, const TransformInfo &t, Entity *io
 				const Vec3f & position = eobj->vertexlist3[face.vid[n]].v;
 				const Vec3f & normal = face.norm;
 
-				eobj->vertexlist3[face.vid[n]].vert.color = ApplyLight(t.rotation, position, normal, colorMod, 0.5f);
+				eobj->vertexlist3[face.vid[n]].vert.color = ApplyLight(lights, lightsCount, t.rotation, position, normal, colorMod, 0.5f);
 			} else {
 				Vec3f & position = eobj->vertexlist3[face.vid[n]].v;
 				Vec3f & normal = eobj->vertexlist[face.vid[n]].norm;
 
-				eobj->vertexlist3[face.vid[n]].vert.color = ApplyLight(t.rotation, position, normal, colorMod);
+				eobj->vertexlist3[face.vid[n]].vert.color = ApplyLight(lights, lightsCount, t.rotation, position, normal, colorMod);
 			}
 
 			tvList[n] = eobj->vertexlist[face.vid[n]].vert;
@@ -1169,9 +1171,11 @@ static void Cedric_AnimateDrawEntityRender(EERIE_3DOBJ * eobj, const Vec3f & pos
 	else
 		tv.y -= 90.f;
 
-	UpdateLlights(tv, false);
+	ShaderLight lights[llightsSize];
+	int lightsCount;
+	UpdateLlights(lights, lightsCount, tv, false);
 
-	Cedric_ApplyLighting(eobj, obj, colorMod);
+	Cedric_ApplyLighting(lights, lightsCount, eobj, obj, colorMod);
 
 	Cedric_RenderObject(eobj, obj, io, pos, invisibility);
 

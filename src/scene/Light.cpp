@@ -446,20 +446,7 @@ void ClearDynLights() {
 	TOTIOPDL = 0;
 }
 
-struct ShaderLight {
-	Vec3f pos;
-	float fallstart;
-	float fallend;
-	float falldiffmul;
-	float intensity;
-	Color3f rgb;
-	Color3f rgb255;
-};
 
-static const int llightsSize = 16;
-
-static ShaderLight shaderLights[llightsSize];
-static int shaderLightsCount = 0;
 
 static int MAX_LLIGHTS = llightsSize;
 
@@ -512,7 +499,7 @@ void setMaxLLights(int count) {
 	MAX_LLIGHTS = glm::clamp(count, 6, llightsSize);
 }
 
-void UpdateLlights(const Vec3f pos, bool forPlayerColor) {
+void UpdateLlights(ShaderLight lights[], int & lightsCount, const Vec3f pos, bool forPlayerColor) {
 	
 	EERIE_LIGHT * llights[llightsSize];
 	float values[llightsSize];
@@ -530,11 +517,11 @@ void UpdateLlights(const Vec3f pos, bool forPlayerColor) {
 		Insertllight(llights, values, PDL[i], pos, forPlayerColor);
 	}
 	
-	shaderLightsCount = 0;
+	lightsCount = 0;
 	for(int i = 0; i < MAX_LLIGHTS; i++) {
 		if(llights[i]) {
 			EERIE_LIGHT * el = llights[i];
-			ShaderLight & sl = shaderLights[i];
+			ShaderLight & sl = lights[i];
 			
 			sl.pos = el->pos;
 			sl.fallstart = el->fallstart;
@@ -544,7 +531,7 @@ void UpdateLlights(const Vec3f pos, bool forPlayerColor) {
 			sl.rgb = el->rgb;
 			sl.rgb255 = el->rgb255;
 			
-			shaderLightsCount = i + 1;
+			lightsCount = i + 1;
 		} else {
 			break;
 		}
@@ -603,12 +590,14 @@ void ClearTileLights() {
 
 float GetColorz(const Vec3f &pos) {
 
-	UpdateLlights(pos, true);
+	ShaderLight lights[llightsSize];
+	int lightsCount;
+	UpdateLlights(lights, lightsCount, pos, true);
 	
 	Color3f ff = Color3f(0.f, 0.f, 0.f);
 	
-	for(long k = 0; k < shaderLightsCount; k++) {
-		const ShaderLight & light = shaderLights[k];
+	for(long k = 0; k < lightsCount; k++) {
+		const ShaderLight & light = lights[k];
 		
 		float dd = fdist(light.pos, pos);
 		
@@ -669,7 +658,9 @@ float GetColorz(const Vec3f &pos) {
 	return (std::min(ff.r, 255.f) + std::min(ff.g, 255.f) + std::min(ff.b, 255.f)) * (1.f/3);
 }
 
-ColorRGBA ApplyLight(const glm::quat & quat,
+ColorRGBA ApplyLight(const ShaderLight lights[],
+                     const int lightsCount,
+                     const glm::quat & quat,
                      const Vec3f & position,
                      const Vec3f & normal,
                      const ColorMod & colorMod,
@@ -680,8 +671,8 @@ ColorRGBA ApplyLight(const glm::quat & quat,
 	glm::quat inv = glm::inverse(quat);
 	
 	// Dynamic lights
-	for(int l = 0; l != shaderLightsCount; l++) {
-		const ShaderLight & light = shaderLights[l];
+	for(int l = 0; l != lightsCount; l++) {
+		const ShaderLight & light = lights[l];
 		
 		Vec3f vLight = glm::normalize(light.pos - position);
 		
