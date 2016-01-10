@@ -17,6 +17,9 @@
  * along with Arx Libertatis.  If not, see <http://www.gnu.org/licenses/>.
  */
 
+#ifndef ARX_PLATFORM_WINDOWSMAINCOMMON_H
+#define ARX_PLATFORM_WINDOWSMAINCOMMON_H
+
 #include <clocale>
 
 #include <windows.h>
@@ -60,3 +63,5 @@ public:
 	}
 	
 };
+
+#endif // ARX_PLATFORM_WINDOWSMAINCOMMON_H
