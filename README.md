@@ -59,7 +59,8 @@ While the crash reporter can be run without GDB, it's main usefulness comes from
 
 For Linux run:
 
-    $ mkdir build && cd build && cmake ..
+    $ mkdir build && cd build
+    $ cmake ..
     $ make
 
 To install the binaries system-wide, run as root:
