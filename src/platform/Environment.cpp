@@ -34,6 +34,7 @@
 #include <shlobj.h>
 #include <wchar.h>
 #include <shellapi.h>
+#include <objbase.h>
 #endif
 
 #if ARX_HAVE_WORDEXP

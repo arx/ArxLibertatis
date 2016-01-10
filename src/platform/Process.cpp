@@ -29,10 +29,9 @@
 #include "platform/Platform.h"
 
 #if ARX_PLATFORM == ARX_PLATFORM_WIN32
-
 #include <windows.h>
 #include <shellapi.h>
-
+#include <objbase.h>
 #else // ARX_PLATFORM != ARX_PLATFORM_WIN32
 
 #if ARX_HAVE_OPEN
