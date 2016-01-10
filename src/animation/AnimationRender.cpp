@@ -725,7 +725,9 @@ void DrawEERIEInter_Render(EERIE_3DOBJ *eobj, const TransformInfo &t, Entity *io
 		tv.y -= 60.f;
 	else
 		tv.y -= 90.f;
-
+	
+	bool useFaceNormal = io && (io->ioflags & IO_ANGULAR);
+	
 	ShaderLight lights[llightsSize];
 	int lightsCount;
 	UpdateLlights(lights, lightsCount, tv, false);
@@ -748,7 +750,7 @@ void DrawEERIEInter_Render(EERIE_3DOBJ *eobj, const TransformInfo &t, Entity *io
 
 		for(size_t n = 0; n < 3; n++) {
 
-			if(io && (io->ioflags & IO_ANGULAR)) {
+			if(useFaceNormal) {
 				const Vec3f & position = eobj->vertexlist3[face.vid[n]].v;
 				const Vec3f & normal = face.norm;
 
