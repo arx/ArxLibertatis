@@ -44,6 +44,7 @@ ZeniMax Media Inc., Suite 120, Rockville, Maryland 20850 USA.
 #ifndef ARX_GAME_ENTITY_H
 #define ARX_GAME_ENTITY_H
 
+#include <stddef.h>
 #include <set>
 #include <string>
 #include <vector>
@@ -76,7 +77,7 @@ struct IO_ITEMDATA;
 struct IO_NPCDATA;
 struct TWEAK_INFO;
 
-static const int MAX_ANIMS = 200; // max loadable anims per character
+static const size_t MAX_ANIMS = 200; // max loadable anims per character
 static const size_t MAX_ANIM_LAYERS = 4;
 static const float BASE_RUBBER = 1.5f;
 

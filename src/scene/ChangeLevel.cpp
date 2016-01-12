@@ -195,7 +195,7 @@ static long GetIOAnimIdx2(const Entity * io, ANIM_HANDLE * anim) {
 		return -1;
 	}
 	
-	for(long i = 0; i < MAX_ANIMS; i++) {
+	for(size_t i = 0; i < MAX_ANIMS; i++) {
 		if(io->anims[i] == anim) {
 			return i;
 		}
@@ -760,8 +760,7 @@ static long ARX_CHANGELEVEL_Push_Player(long level) {
 	
 	asp->LAST_VALID_POS = LastValidPlayerPos;
 	
-	for (int i = 0; i < MAX_ANIMS; i++)
-	{
+	for(size_t i = 0; i < MAX_ANIMS; i++) {
 		memset(&asp->anims[i], 0, 256);
 
 		if (entities.player()->anims[i] != NULL)
@@ -995,8 +994,7 @@ static long ARX_CHANGELEVEL_Push_IO(const Entity * io, long level) {
 	memset(&ais.linked_data, 0, sizeof(IO_LINKED_DATA)*MAX_LINKED_SAVE);
 
 	// Save Animations
-	for (long i = 0; i < MAX_ANIMS; i++)
-	{
+	for(size_t i = 0; i < MAX_ANIMS; i++) {
 		memset(&ais.anims[i], 0, 256);
 
 		if (io->anims[i] != NULL)
@@ -2054,7 +2052,7 @@ static Entity * ARX_CHANGELEVEL_Pop_IO(const std::string & idString, EntityInsta
 		io->weaponmaterial = boost::to_lower_copy(util::loadString(ais->weaponmaterial));
 		io->strikespeech = script::loadUnlocalized(boost::to_lower_copy(util::loadString(ais->strikespeech)));
 		
-		for(long i = 0; i < MAX_ANIMS; i++) {
+		for(size_t i = 0; i < MAX_ANIMS; i++) {
 			
 			if(io->anims[i] != NULL) {
 				ReleaseAnimFromIO(io, i);

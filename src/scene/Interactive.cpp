@@ -784,7 +784,7 @@ static void ARX_INTERACTIVE_ClearIODynData_II(Entity * io) {
 	
 	io->animBlend.m_active = false;
 	
-	for(long j = 0; j < MAX_ANIMS; j++) {
+	for(size_t j = 0; j < MAX_ANIMS; j++) {
 		EERIE_ANIMMANAGER_ReleaseHandle(io->anims[j]);
 		io->anims[j] = NULL;
 	}
