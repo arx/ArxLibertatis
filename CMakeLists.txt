@@ -1436,6 +1436,7 @@ set(STYLE_CHECKED_SOURCES
 	${arxsavetool_SOURCES}
 	${arxunpak_SOURCES}
 	${arxcrashreporter_MANUAL_SOURCES}
+	${arxprofiler_MANUAL_SOURCES}
 	${ArxIO_SOURCES}
 )
 
