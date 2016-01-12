@@ -1175,7 +1175,6 @@ if(ARX_HAVE_CRASHREPORTER)
 		tools/crashreporter/tbg/TBG.cpp
 		tools/crashreporter/ui/ErrorReportDialog.h
 		tools/crashreporter/ui/ErrorReportDialog.cpp
-		${QtGui_SOURCES}
 	)
 	
 	set(arxcrashreporter_SOURCES
@@ -1206,6 +1205,7 @@ if(ARX_HAVE_CRASHREPORTER)
 	
 	create_source_groups(arxcrashreporter_MANUAL_SOURCES)
 	
+	list(APPEND arxcrashreporter_Qt_SOURCES ${QtGui_SOURCES})
 	qt_wrap_ui(arxcrashreporter_Qt_SOURCES
 		tools/crashreporter/ui/ErrorReportDialog.ui
 	)
@@ -1273,7 +1273,6 @@ if(ARX_HAVE_PROFILER)
 		tools/profiler/ProfilerMain.cpp
 		tools/profiler/ui/ArxProfiler.h
 		tools/profiler/ui/ArxProfiler.cpp
-		${QtGui_SOURCES}
 	)
 	
 	set(arxprofiler_SOURCES
@@ -1297,6 +1296,7 @@ if(ARX_HAVE_PROFILER)
 	
 	create_source_groups(arxprofiler_SOURCES)
 	
+	list(APPEND arxprofiler_Qt_SOURCES ${QtGui_SOURCES})
 	qt_wrap_ui(arxprofiler_Qt_SOURCES
 		tools/profiler/ui/ArxProfiler.ui
 	)
