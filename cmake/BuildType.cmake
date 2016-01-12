@@ -123,6 +123,7 @@ else(MSVC)
 		add_cxxflag("-Wmissing-declarations")
 		add_cxxflag("-Wredundant-decls")
 		add_cxxflag("-Wdouble-promotion")
+		add_cxxflag("-Wvla")
 		
 		if(SET_NOISY_WARNING_FLAGS)
 			# TODO enable by default as soon as most are silenced

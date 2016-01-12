@@ -67,6 +67,9 @@ set(STYLE_FILTER ${STYLE_FILTER},-runtime/threadsafe_fn)
 # Very much known...
 set(STYLE_FILTER ${STYLE_FILTER},-readability/fn_size)
 
+# Has false positives and is already covered by -pedantic or -Wvla
+set(STYLE_FILTER ${STYLE_FILTER},-runtime/arrays)
+
 set(STYLE_CHECK_SCRIPT "${CMAKE_SOURCE_DIR}/scripts/cpplint.py")
 
 # Add a target that runs cpplint.py
