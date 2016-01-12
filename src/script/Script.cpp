@@ -911,7 +911,7 @@ ValueType getSystemVar(const EERIE_SCRIPT * es, Entity * entity, const std::stri
 						*lcontent = 1;
 						return TYPE_LONG;
 					}
-					for(long i = 0; i < MAX_EQUIPED; i++) {
+					for(size_t i = 0; i < MAX_EQUIPED; i++) {
 						if(ValidIONum(player.equiped[i]) && player.equiped[i] == t) {
 							*lcontent = 2;
 							return TYPE_LONG;

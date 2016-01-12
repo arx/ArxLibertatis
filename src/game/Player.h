@@ -47,6 +47,7 @@ ZeniMax Media Inc., Suite 120, Rockville, Maryland 20850 USA.
 #ifndef ARX_GAME_PLAYER_H
 #define ARX_GAME_PLAYER_H
 
+#include <stddef.h>
 #include <string>
 #include <vector>
 
@@ -60,7 +61,7 @@ ZeniMax Media Inc., Suite 120, Rockville, Maryland 20850 USA.
 struct EERIE_3DOBJ;
 class TextureContainer;
 
-static const int MAX_EQUIPED = 12;
+static const size_t MAX_EQUIPED = 12;
 
 struct ARX_INTERFACE_MEMORIZE_SPELL {
 	bool bSpell;

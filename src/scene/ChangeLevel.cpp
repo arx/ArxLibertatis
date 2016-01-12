@@ -410,7 +410,7 @@ static bool IsPlayerEquipedWith(Entity * io) {
 		return true;
 	}
 	
-	for(long i = 0; i < MAX_EQUIPED; i++) {
+	for(size_t i = 0; i < MAX_EQUIPED; i++) {
 		if(ValidIONum(player.equiped[i]) && player.equiped[i] == num) {
 			return true;
 		}
@@ -770,7 +770,7 @@ static long ARX_CHANGELEVEL_Push_Player(long level) {
 		}
 	}
 
-	for(long k = 0; k < MAX_EQUIPED; k++) {
+	for(size_t k = 0; k < MAX_EQUIPED; k++) {
 		if(ValidIONum(player.equiped[k]))
 			storeIdString(asp->equiped[k], entities[player.equiped[k]]);
 		else

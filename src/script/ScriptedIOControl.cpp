@@ -135,7 +135,7 @@ public:
 				// the init script already inserted the item into an inventory
 				reInsert = false;
 			}
-			for(int i = 0; i < MAX_EQUIPED; i++) {
+			for(size_t i = 0; i < MAX_EQUIPED; i++) {
 				if(ValidIONum(player.equiped[i])) {
 					if(entities[player.equiped[i]] == ioo) {
 						// the init script was sneaky and equiped the item
@@ -148,7 +148,7 @@ public:
 				if(oldPos) {
 					insertIntoInventory(ioo, oldPos);
 				} else {
-					for(int i = 0; i < MAX_EQUIPED; i++) {
+					for(size_t i = 0; i < MAX_EQUIPED; i++) {
 						if(ValidIONum(player.equiped[i])) {
 							if(entities[player.equiped[i]] == io) {
 								ARX_EQUIPMENT_UnEquip(entities.player(), io, 1);

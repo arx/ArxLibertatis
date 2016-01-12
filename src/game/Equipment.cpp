@@ -154,7 +154,7 @@ ItemType ARX_EQUIPMENT_GetObjectTypeFlag(const std::string & temp) {
 //! \brief Releases Equiped Id from player
 static void ARX_EQUIPMENT_Release(EntityHandle id) {
 	if(ValidIONum(id)) {
-		for(long i = 0; i < MAX_EQUIPED; i++) {
+		for(size_t i = 0; i < MAX_EQUIPED; i++) {
 			if(player.equiped[i] == id) {
 				player.equiped[i] = EntityHandle();
 			}
@@ -257,7 +257,7 @@ void ARX_EQUIPMENT_RecreatePlayerMesh() {
 	
 	Entity * target = entities.player();
 	
-	for(long i = 0; i < MAX_EQUIPED; i++) {
+	for(size_t i = 0; i < MAX_EQUIPED; i++) {
 		if(ValidIONum(player.equiped[i])) {
 			Entity *toequip = entities[player.equiped[i]];
 
@@ -294,7 +294,8 @@ void ARX_EQUIPMENT_RecreatePlayerMesh() {
 }
 
 void ARX_EQUIPMENT_UnEquipAllPlayer() {
-	for(long i = 0; i < MAX_EQUIPED; i++) {
+	
+	for(size_t i = 0; i < MAX_EQUIPED; i++) {
 		if(ValidIONum(player.equiped[i])) {
 			ARX_EQUIPMENT_UnEquip(entities.player(), entities[player.equiped[i]]);
 		}
@@ -306,7 +307,7 @@ void ARX_EQUIPMENT_UnEquipAllPlayer() {
 bool ARX_EQUIPMENT_IsPlayerEquip(Entity * _pIO) {
 	arx_assert(entities.player());
 	
-	for(long i = 0; i < MAX_EQUIPED; i++) {
+	for(size_t i = 0; i < MAX_EQUIPED; i++) {
 		if(ValidIONum(player.equiped[i])) {
 			Entity * toequip = entities[player.equiped[i]];
 
@@ -331,7 +332,7 @@ void ARX_EQUIPMENT_UnEquip(Entity * target, Entity * tounequip, long flags)
 	if(target != entities.player())
 		return;
 
-	for(long i = 0; i < MAX_EQUIPED; i++) {
+	for(size_t i = 0; i < MAX_EQUIPED; i++) {
 		if(ValidIONum(player.equiped[i]) && entities[player.equiped[i]] == tounequip) {
 			EERIE_LINKEDOBJ_UnLinkObjectFromObject(target->obj, tounequip->obj);
 			ARX_EQUIPMENT_Release(player.equiped[i]);
@@ -362,7 +363,7 @@ void ARX_EQUIPMENT_AttachPlayerWeaponToHand() {
 	arx_assert(entities.player());
 	Entity * target = entities.player();
 	
-	for(long i = 0; i < MAX_EQUIPED; i++) {
+	for(size_t i = 0; i < MAX_EQUIPED; i++) {
 		if(ValidIONum(player.equiped[i])) {
 			Entity *toequip = entities[player.equiped[i]];
 
@@ -381,7 +382,7 @@ void ARX_EQUIPMENT_AttachPlayerWeaponToBack() {
 	arx_assert(entities.player());
 	Entity * target = entities.player();
 	
-	for(long i = 0; i < MAX_EQUIPED; i++) {
+	for(size_t i = 0; i < MAX_EQUIPED; i++) {
 		if(ValidIONum(player.equiped[i])) {
 			Entity *toequip = entities[player.equiped[i]];
 
@@ -1110,7 +1111,7 @@ float getEquipmentBaseModifier(EquipmentModifierType modifier, bool getRelative)
 	
 	float sum = 0;
 	
-	for(long i = 0; i < MAX_EQUIPED; i++) {
+	for(size_t i = 0; i < MAX_EQUIPED; i++) {
 		if(ValidIONum(player.equiped[i])) {
 			Entity * toequip = entities[player.equiped[i]];
 			if(toequip && (toequip->ioflags & IO_ITEM) && toequip->_itemdata->equipitem) {
@@ -1192,7 +1193,7 @@ void ARX_EQUIPMENT_SetEquip(Entity * io, bool special,
 void ARX_EQUIPMENT_IdentifyAll() {
 	arx_assert(entities.player());
 	
-	for(long i = 0; i < MAX_EQUIPED; i++) {
+	for(size_t i = 0; i < MAX_EQUIPED; i++) {
 		if(ValidIONum(player.equiped[i])) {
 			Entity * toequip = entities[player.equiped[i]];
 			
