@@ -121,7 +121,9 @@ void ARX_SPELLS_UpdateSymbolDraw() {
 					}
 
 					io->spellcast_data.symb[3] = RUNE_NONE;
-					ARX_SPELLS_RequestSymbolDraw2(io, symb, (1000-(io->spellcast_data.spell_level*60))*std::max(io->speed_modif+io->basespeed,0.01f));
+					float speedFactor = std::max(io->speed_modif + io->basespeed, 0.01f);
+					float duration = (1000 - (io->spellcast_data.spell_level * 60)) * speedFactor;
+					ARX_SPELLS_RequestSymbolDraw2(io, symb, duration);
 					io->gameFlags &= ~GFLAG_INVISIBILITY;
 				} else if(tst) { // cast spell !!!
 					io->gameFlags &= ~GFLAG_INVISIBILITY;
