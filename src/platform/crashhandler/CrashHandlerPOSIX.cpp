@@ -165,7 +165,7 @@ static fs::path getCoreDumpFile() {
 	}
 	
 	
-	bool hasPID;
+	bool hasPID = false;
 	std::ostringstream oss;
 	size_t start = 0;
 	while(start < pattern.length()) {
