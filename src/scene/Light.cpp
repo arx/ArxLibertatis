@@ -44,6 +44,8 @@ ZeniMax Media Inc., Suite 120, Rockville, Maryland 20850 USA.
 
 #include "scene/Light.h"
 
+#include <boost/array.hpp>
+
 #include "core/Application.h"
 #include "core/GameTime.h"
 #include "core/Core.h"
@@ -451,8 +453,12 @@ void ClearDynLights() {
 static int MAX_LLIGHTS = llightsSize;
 
 // Inserts Light in the List of Nearest Lights
-static void Insertllight(EERIE_LIGHT * llights[], float values[], EERIE_LIGHT * el, const Vec3f & pos, bool forPlayerColor) {
-	
+static void Insertllight(boost::array<EERIE_LIGHT *, llightsSize> & llights,
+                         boost::array<float, llightsSize> & values,
+                         EERIE_LIGHT * el,
+                         const Vec3f & pos,
+                         bool forPlayerColor
+) {
 	if(!el)
 		return;
 	
@@ -501,14 +507,11 @@ void setMaxLLights(int count) {
 
 void UpdateLlights(ShaderLight lights[], int & lightsCount, const Vec3f pos, bool forPlayerColor) {
 	
-	EERIE_LIGHT * llights[llightsSize];
-	float values[llightsSize];
+	boost::array<EERIE_LIGHT *, llightsSize> llights;
+	llights.fill(NULL);
+	boost::array<float, llightsSize> values;
+	values.fill(999999999.f);
 	
-	for(int i = 0; i < MAX_LLIGHTS; i++) {
-		llights[i] = NULL;
-		values[i] = 999999999.f;
-	}
-
 	for(size_t i = 0; i < TOTIOPDL; i++) {
 		Insertllight(llights, values, IO_PDL[i], pos, forPlayerColor);
 	}
