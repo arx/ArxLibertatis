@@ -106,7 +106,8 @@ class Credits {
 public:
 	
 	Credits()
-		: m_scrollPosition(0.f)
+		: m_background(NULL)
+		, m_scrollPosition(0.f)
 		, m_lastUpdateTime(0.f)
 		, m_firstVisibleLine(0)
 		, m_lineHeight(-1)
