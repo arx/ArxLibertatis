@@ -510,8 +510,9 @@ ANIM_HANDLE * EERIE_ANIMMANAGER_Load_NoWarning(const res::path & path) {
 	}
 	
 	for(size_t i = 0; i < MAX_ANIMATIONS; i++) {
+		ANIM_HANDLE & animSlot = animations[i];
 		
-		if(!animations[i].path.empty()) {
+		if(!animSlot.path.empty()) {
 			continue;
 		}
 		
@@ -521,27 +522,27 @@ ANIM_HANDLE * EERIE_ANIMMANAGER_Load_NoWarning(const res::path & path) {
 			return NULL;
 		}
 		
-		animations[i].anims = (EERIE_ANIM **)malloc(sizeof(EERIE_ANIM *));
-		animations[i].anims[0] = TheaToEerie(adr, FileSize, path);
-		animations[i].alt_nb = 1;
+		animSlot.anims = (EERIE_ANIM **)malloc(sizeof(EERIE_ANIM *));
+		animSlot.anims[0] = TheaToEerie(adr, FileSize, path);
+		animSlot.alt_nb = 1;
 		
 		free(adr);
 		
-		if(!animations[i].anims[0]) {
+		if(!animSlot.anims[0]) {
 			return NULL;
 		}
 		
-		animations[i].path = path;
-		animations[i].locks = 1;
+		animSlot.path = path;
+		animSlot.locks = 1;
 		
 		int pathcount = 2;
 		res::path altpath;
 		do {
 			altpath = res::path(path);
 			altpath.append_basename(boost::lexical_cast<std::string>(pathcount++));
-		} while(EERIE_ANIMMANAGER_AddAltAnim(&animations[i], altpath));
+		} while(EERIE_ANIMMANAGER_AddAltAnim(&animSlot, altpath));
 		
-		return &animations[i];
+		return &animSlot;
 	}
 	
 	return NULL;
