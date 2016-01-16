@@ -606,13 +606,13 @@ void PrepareAnim(AnimLayer & layer, unsigned long time, Entity *io) {
 		) {
 				if(!layer.next_anim) {
 					long t = animTime;
-					layer.ctime= layer.ctime % t;
+					layer.ctime = layer.ctime % t;
 	
 					if(io)
-						FinishAnim(io,layer.cur_anim);
+						FinishAnim(io, layer.cur_anim);
 				} else {
 					if(io) {
-						FinishAnim(io,layer.cur_anim);
+						FinishAnim(io, layer.cur_anim);
 						
 						if(io->animBlend.lastanimtime != 0)
 							AcquireLastAnim(io);
@@ -620,30 +620,30 @@ void PrepareAnim(AnimLayer & layer, unsigned long time, Entity *io) {
 							io->animBlend.lastanimtime = 1;
 					}
 					
-					layer.cur_anim=layer.next_anim;
-					layer.altidx_cur=ANIM_GetAltIdx(layer.next_anim,layer.altidx_cur);
-					layer.next_anim=NULL;
+					layer.cur_anim = layer.next_anim;
+					layer.altidx_cur = ANIM_GetAltIdx(layer.next_anim, layer.altidx_cur);
+					layer.next_anim = NULL;
 					ResetAnim(layer);
 					layer.ctime = lost;
-					layer.flags=layer.nextflags;
-					layer.flags&=~EA_ANIMEND;
+					layer.flags = layer.nextflags;
+					layer.flags &= ~EA_ANIMEND;
 				}
 		} else {
 			if(io && layer.next_anim) {
-					FinishAnim(io,layer.cur_anim);
+					FinishAnim(io, layer.cur_anim);
 					
-					if (io->animBlend.lastanimtime!=0)
+					if (io->animBlend.lastanimtime != 0)
 						AcquireLastAnim(io);
 					else
-						io->animBlend.lastanimtime=1;
+						io->animBlend.lastanimtime = 1;
 					
-					layer.cur_anim=layer.next_anim;
-					layer.altidx_cur=ANIM_GetAltIdx(layer.next_anim,layer.altidx_cur);
-					layer.next_anim=NULL;
+					layer.cur_anim = layer.next_anim;
+					layer.altidx_cur = ANIM_GetAltIdx(layer.next_anim, layer.altidx_cur);
+					layer.next_anim = NULL;
 					ResetAnim(layer);
 					layer.ctime = lost;
-					layer.flags=layer.nextflags;
-					layer.flags&=~EA_ANIMEND;
+					layer.flags = layer.nextflags;
+					layer.flags &= ~EA_ANIMEND;
 			} else {
 				layer.flags |= EA_ANIMEND;
 				layer.ctime = layer.cur_anim->anims[layer.altidx_cur]->anim_time;
