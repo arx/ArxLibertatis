@@ -466,9 +466,9 @@ static EERIE_ANIM * TheaToEerie(const char * adr, size_t size, const res::path &
 
 
 
-static bool EERIE_ANIMMANAGER_AddAltAnim(ANIM_HANDLE * ah, const res::path & path) {
+static bool EERIE_ANIMMANAGER_AddAltAnim(ANIM_HANDLE & ah, const res::path & path) {
 	
-	if(!ah || ah->path.empty()) {
+	if(ah.path.empty()) {
 		return false;
 	}
 	
@@ -484,9 +484,9 @@ static bool EERIE_ANIMMANAGER_AddAltAnim(ANIM_HANDLE * ah, const res::path & pat
 		return false;
 	}
 	
-	ah->alt_nb++;
-	ah->anims = (EERIE_ANIM **)realloc(ah->anims, sizeof(EERIE_ANIM *) * ah->alt_nb);
-	ah->anims[ah->alt_nb - 1] = temp;
+	ah.alt_nb++;
+	ah.anims = (EERIE_ANIM **)realloc(ah.anims, sizeof(EERIE_ANIM *) * ah.alt_nb);
+	ah.anims[ah.alt_nb - 1] = temp;
 	
 	return true;
 }
@@ -540,7 +540,7 @@ ANIM_HANDLE * EERIE_ANIMMANAGER_Load_NoWarning(const res::path & path) {
 		do {
 			altpath = res::path(path);
 			altpath.append_basename(boost::lexical_cast<std::string>(pathcount++));
-		} while(EERIE_ANIMMANAGER_AddAltAnim(&animSlot, altpath));
+		} while(EERIE_ANIMMANAGER_AddAltAnim(animSlot, altpath));
 		
 		return &animSlot;
 	}
