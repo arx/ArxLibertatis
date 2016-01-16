@@ -730,24 +730,25 @@ void ResetAnim(AnimLayer & layer) {
 	layer.flags&=~EA_FORCEPLAY;
 }
 
-static void EERIE_ANIMMANAGER_Clear(long i) {
+static void EERIE_ANIMMANAGER_Clear(ANIM_HANDLE & slot) {
 	
-	for(long k = 0; k < animations[i].alt_nb; k++) {
-		ReleaseAnim(animations[i].anims[k]);
-		animations[i].anims[k] = NULL;
+	for(long k = 0; k < slot.alt_nb; k++) {
+		ReleaseAnim(slot.anims[k]);
+		slot.anims[k] = NULL;
 	}
 	
-	free(animations[i].anims);
-	animations[i].anims = NULL;
+	free(slot.anims);
+	slot.anims = NULL;
 	
-	animations[i].path.clear();
+	slot.path.clear();
 }
 
 void EERIE_ANIMMANAGER_ClearAll() {
 	
 	for(size_t i = 0; i < MAX_ANIMATIONS; i++) {
-		if(!animations[i].path.empty()) {
-			EERIE_ANIMMANAGER_Clear(i);
+		ANIM_HANDLE & slot = animations[i];
+		if(!slot.path.empty()) {
+			EERIE_ANIMMANAGER_Clear(slot);
 		}
 	}
 }
