@@ -676,7 +676,7 @@ void PrepareAnim(AnimLayer & layer, unsigned long time, Entity *io) {
 		if((tim < tnf && tim >= tcf) || (i == anim->nb_key_frames - 1 && tim == tnf)) {
 			long fr = i - 1;
 			tim -= tcf;
-			float pour = (float)((float)tim/((float)tnf-(float)tcf));
+			float pour = float(tim) / float(tnf - tcf);
 			
 			// Frame Sound Management
 			if(!(layer.flags & EA_ANIMEND) && time
