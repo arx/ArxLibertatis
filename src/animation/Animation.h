@@ -80,7 +80,6 @@ struct EERIE_GROUP
 struct EERIE_ANIM
 {
 	long		anim_time;
-	unsigned long	flag;
 	long		nb_groups;
 	long		nb_key_frames;
 	EERIE_FRAME *	frames;
