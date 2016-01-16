@@ -53,10 +53,9 @@ void RiseDeadSpell::GetTargetAndBeta(Vec3f & target, float & beta)
 }
 
 RiseDeadSpell::RiseDeadSpell()
-	: m_entity()
-{
-	
-}
+	: m_creationFailed(false)
+	, m_entity()
+{ }
 
 bool RiseDeadSpell::CanLaunch()
 {
