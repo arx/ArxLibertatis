@@ -144,6 +144,10 @@ struct IO_SPELLCAST_DATA {
 	
 	IO_SPELLCAST_DATA()
 		: castingspell(SPELL_NONE)
+		, spell_flags()
+		, spell_level(0)
+		, target()
+		, duration(0)
 	{
 		for(unsigned long j(0); j < 4; j++)
 			symb[j] = RUNE_NONE;
