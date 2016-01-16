@@ -663,7 +663,7 @@ void PrepareAnim(AnimLayer & layer, unsigned long time, Entity *io) {
 	
 	EERIE_ANIM * anim = layer.cur_anim->anims[layer.altidx_cur];
 	
-	layer.fr = anim->nb_key_frames - 2;
+	layer.currentFrame = anim->nb_key_frames - 2;
 	layer.pour = 1.f;
 	
 	for(long i = 1; i < anim->nb_key_frames; i++) {
@@ -712,7 +712,7 @@ void PrepareAnim(AnimLayer & layer, unsigned long time, Entity *io) {
 			
 			// Memorize this frame as lastframe.
 			layer.lastframe = fr;
-			layer.fr = fr;
+			layer.currentFrame = fr;
 			layer.pour = pour;
 			break;
 		}

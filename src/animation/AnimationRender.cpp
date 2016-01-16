@@ -1219,24 +1219,24 @@ static Vec3f CalcTranslation(AnimLayer & layer) {
 	}
 	
 	//Avoiding impossible cases
-	if(layer.fr < 0) {
-		layer.fr = 0;
+	if(layer.currentFrame < 0) {
+		layer.currentFrame = 0;
 		layer.pour = 0.f;
-	} else if(layer.fr >= eanim->nb_key_frames - 1) {
-		layer.fr = eanim->nb_key_frames - 2;
+	} else if(layer.currentFrame >= eanim->nb_key_frames - 1) {
+		layer.currentFrame = eanim->nb_key_frames - 2;
 		layer.pour = 1.f;
 	}
 	layer.pour = glm::clamp(layer.pour, 0.f, 1.f);
 	
 	// FIXME animation indices prevent invalid memory access, should be fixed properly
-	if(layer.fr < 0 || layer.fr + 1 >= eanim->nb_key_frames)
+	if(layer.currentFrame < 0 || layer.currentFrame + 1 >= eanim->nb_key_frames)
 		return Vec3f_ZERO;
 	
 	// FRAME TRANSLATE : Gives the Virtual pos of Main Object
-	if(eanim->frames[layer.fr].f_translate && !(layer.flags & EA_STATICANIM)) {
+	if(eanim->frames[layer.currentFrame].f_translate && !(layer.flags & EA_STATICANIM)) {
 		
-		EERIE_FRAME * sFrame = &eanim->frames[layer.fr];
-		EERIE_FRAME * eFrame = &eanim->frames[layer.fr+1];
+		EERIE_FRAME * sFrame = &eanim->frames[layer.currentFrame];
+		EERIE_FRAME * eFrame = &eanim->frames[layer.currentFrame+1];
 		// Linear interpolation of object translation (MOVE)
 		return sFrame->translate + (eFrame->translate - sFrame->translate) * layer.pour;
 	}
@@ -1300,18 +1300,18 @@ static void Cedric_AnimateObject(Skeleton * obj, AnimLayer * animlayer)
 		if(!eanim)
 			continue;
 
-		if(layer.fr < 0) {
-			layer.fr = 0;
+		if(layer.currentFrame < 0) {
+			layer.currentFrame = 0;
 			layer.pour = 0.f;
-		} else if(layer.fr >= eanim->nb_key_frames - 1) {
-			layer.fr = eanim->nb_key_frames - 2;
+		} else if(layer.currentFrame >= eanim->nb_key_frames - 1) {
+			layer.currentFrame = eanim->nb_key_frames - 2;
 			layer.pour = 1.f;
 		}
 		layer.pour = glm::clamp(layer.pour, 0.f, 1.f);
 		
 		// FIXME animation indices are sometimes negative
 		//arx_assert(animuse->fr >= 0 && animuse->fr < eanim->nb_key_frames);
-		layer.fr = glm::clamp(layer.fr, 0l, long(eanim->nb_key_frames - 1));
+		layer.currentFrame = glm::clamp(layer.currentFrame, 0l, long(eanim->nb_key_frames - 1));
 		
 		// Now go for groups rotation/translation/scaling, And transform Linked objects by the way
 		int l = std::min(long(obj->bones.size() - 1), eanim->nb_groups - 1);
@@ -1320,8 +1320,8 @@ static void Cedric_AnimateObject(Skeleton * obj, AnimLayer * animlayer)
 			if(grps[j])
 				continue;
 
-			const EERIE_GROUP & sGroup = eanim->groups[j+(layer.fr*eanim->nb_groups)];
-			const EERIE_GROUP & eGroup = eanim->groups[j+(layer.fr*eanim->nb_groups)+eanim->nb_groups];
+			const EERIE_GROUP & sGroup = eanim->groups[j+(layer.currentFrame*eanim->nb_groups)];
+			const EERIE_GROUP & eGroup = eanim->groups[j+(layer.currentFrame*eanim->nb_groups)+eanim->nb_groups];
 
 			if(!eanim->voidgroups[j])
 				grps[j] = 1;

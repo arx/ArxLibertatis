@@ -490,7 +490,7 @@ struct SavedAnimUse {
 		a.nextflags = AnimUseType::load(nextflags);
 		a.lastframe = lastframe;
 		a.pour = pour;
-		a.fr = fr;
+		a.currentFrame = fr;
 		return a;
 	}
 	
@@ -504,7 +504,7 @@ struct SavedAnimUse {
 		nextflags = b.nextflags;
 		lastframe = b.lastframe;
 		pour = b.pour;
-		fr = b.fr;
+		fr = b.currentFrame;
 		return *this;
 	}
 	

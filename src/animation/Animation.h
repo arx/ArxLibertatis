@@ -123,7 +123,7 @@ struct AnimLayer {
 		, nextflags(0)
 		, lastframe(-1)
 		, pour(0.f)
-		, fr(0)
+		, currentFrame(0)
 	{}
 
 	ANIM_HANDLE * next_anim;
@@ -135,7 +135,7 @@ struct AnimLayer {
 	AnimUseType nextflags;
 	long lastframe;
 	float pour;
-	long fr;
+	long currentFrame;
 };
 
 /*!
