@@ -64,6 +64,7 @@ struct Result {
 	
 	Result()
 		: m_totalTime(0)
+		, m_fractTime(0)
 		, m_frameCount(0)
 		, m_minTime(u64(-1))
 		, m_maxTime(0)
