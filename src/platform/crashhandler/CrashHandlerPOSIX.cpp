@@ -306,7 +306,7 @@ bool CrashHandlerPOSIX::initialize() {
 	m_pCrashInfo->coreDumpFile[0] = '\0';
 	fs::path core = getCoreDumpFile();
 	if(!core.empty() && core.string().length() < size_t(boost::size(m_pCrashInfo->coreDumpFile))) {
-		std::strcpy(m_pCrashInfo->coreDumpFile, core.string().c_str());
+		util::storeStringTerminated(m_pCrashInfo->coreDumpFile, core.string());
 		#if ARX_HAVE_SETRLIMIT
 		struct rlimit core_limit;
 		core_limit.rlim_cur = RLIM_INFINITY;
