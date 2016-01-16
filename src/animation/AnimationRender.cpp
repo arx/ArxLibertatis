@@ -1235,10 +1235,10 @@ static Vec3f CalcTranslation(AnimLayer & layer) {
 	// FRAME TRANSLATE : Gives the Virtual pos of Main Object
 	if(eanim->frames[layer.currentFrame].f_translate && !(layer.flags & EA_STATICANIM)) {
 		
-		EERIE_FRAME * sFrame = &eanim->frames[layer.currentFrame];
-		EERIE_FRAME * eFrame = &eanim->frames[layer.currentFrame+1];
+		const EERIE_FRAME & sFrame = eanim->frames[layer.currentFrame];
+		const EERIE_FRAME & eFrame = eanim->frames[layer.currentFrame + 1];
 		// Linear interpolation of object translation (MOVE)
-		return sFrame->translate + (eFrame->translate - sFrame->translate) * layer.pour;
+		return sFrame.translate + (eFrame.translate - sFrame.translate) * layer.pour;
 	}
 	
 	return Vec3f_ZERO;
