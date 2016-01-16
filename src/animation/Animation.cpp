@@ -745,8 +745,7 @@ static void EERIE_ANIMMANAGER_Clear(ANIM_HANDLE & slot) {
 
 void EERIE_ANIMMANAGER_ClearAll() {
 	
-	for(size_t i = 0; i < MAX_ANIMATIONS; i++) {
-		ANIM_HANDLE & slot = animations[i];
+	BOOST_FOREACH(ANIM_HANDLE & slot, animations) {
 		if(!slot.path.empty()) {
 			EERIE_ANIMMANAGER_Clear(slot);
 		}
