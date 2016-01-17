@@ -84,6 +84,15 @@ struct EERIE_ANIM
 	EERIE_FRAME *	frames;
 	EERIE_GROUP  *  groups;
 	unsigned char *	voidgroups;
+	
+	EERIE_ANIM()
+		: anim_time(0)
+		, nb_groups(0)
+		, nb_key_frames(0)
+		, frames(NULL)
+		, groups(NULL)
+		, voidgroups(NULL)
+	{ }
 };
 
 struct ANIM_HANDLE {

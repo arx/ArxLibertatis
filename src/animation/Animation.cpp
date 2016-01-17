@@ -181,7 +181,7 @@ static void ReleaseAnim(EERIE_ANIM * ea) {
 
 	free(ea->groups);
 	free(ea->voidgroups);
-	free(ea);
+	delete ea;
 }
 
 void EERIE_ANIMMANAGER_PurgeUnused() {
@@ -243,12 +243,12 @@ static EERIE_ANIM * TheaToEerie(const char * adr, size_t size, const res::path &
 
 	size_t pos = 0;
 
-	EERIE_ANIM * eerie = allocStructZero<EERIE_ANIM>();
+	EERIE_ANIM * eerie = new EERIE_ANIM();
 
 	const THEA_HEADER * th = reinterpret_cast<const THEA_HEADER *>(adr + pos);
 	if(th->version < 2014) {
 		LogError << "Invalid TEA Version " << th->version << " in " << file;
-		free(eerie);
+		delete eerie;
 		return NULL;
 	}
 	pos += sizeof(THEA_HEADER);
