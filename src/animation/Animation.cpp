@@ -293,7 +293,6 @@ static EERIE_ANIM * TheaToEerie(const char * adr, size_t size, const res::path &
 			tkf2015 = &kf2015;
 		}
 
-		eerie->frames[i].master_key_frame = tkf2015->master_key_frame;
 		eerie->frames[i].num_frame = tkf2015->num_frame;
 
 		eerie->frames[i].f_rotate = tkf2015->key_orient;

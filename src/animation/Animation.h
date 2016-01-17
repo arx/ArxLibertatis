@@ -60,7 +60,6 @@ struct EERIE_FRAME
 {
 	long		num_frame;
 	bool  stepSound;
-	int			master_key_frame;
 	bool  f_translate;
 	bool  f_rotate;
 	float		time;
