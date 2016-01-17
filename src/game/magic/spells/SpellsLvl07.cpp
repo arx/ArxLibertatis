@@ -21,6 +21,7 @@
 
 #include <glm/gtc/random.hpp>
 
+#include "animation/AnimationRender.h"
 #include "core/Application.h"
 #include "core/Config.h"
 #include "core/Core.h"
@@ -731,7 +732,7 @@ void ConfuseSpell::Launch() {
 	const char tex[] = "graph/obj3d/interactive/fix_inter/fx_papivolle/fx_papivolle.tea";
 	ANIM_HANDLE * anim_papii = EERIE_ANIMMANAGER_Load(tex);
 	
-	ANIM_Set(au, anim_papii);
+	AnimLayer & au = animlayer[0];
 	au.next_anim = NULL;
 	au.cur_anim = anim_papii;
 	au.ctime = 0;
@@ -775,7 +776,8 @@ void ConfuseSpell::Update(float timeDelta) {
 	mat.setTexture(tex_trail);
 	
 	Anglef stiteangle = Anglef(0.f, -glm::degrees(arxtime.get_updated() * ( 1.0f / 500 )), 0.f);
-	Draw3DObject(spapi, stiteangle, eCurPos, Vec3f_ONE, Color3f::white, mat);
+	
+	EERIEDrawAnimQuat(spapi, animlayer, stiteangle, eCurPos, framedelay, NULL, false);
 	
 	for(int i = 0; i < 6; i++) {
 		

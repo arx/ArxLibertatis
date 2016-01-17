@@ -1094,10 +1094,9 @@ static void Cedric_RenderObject(EERIE_3DOBJ * eobj, Skeleton * obj, Entity * io,
 	if(!io && IN_BOOK_DRAW && eobj == entities.player()->obj)
 		use_io = entities.player();
 
-	arx_assert(use_io);
-
 	HaloInfo haloInfo;
-	PrepareAnimatedObjectHalo(haloInfo, pos, obj, use_io, eobj);
+	if(use_io)
+		PrepareAnimatedObjectHalo(haloInfo, pos, obj, use_io, eobj);
 
 	bool glow = false;
 	ColorRGBA glowColor;
