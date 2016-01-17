@@ -59,7 +59,7 @@ class Entity;
 struct EERIE_FRAME
 {
 	long		num_frame;
-	long		flag;
+	bool  stepSound;
 	int			master_key_frame;
 	bool  f_translate;
 	bool  f_rotate;
