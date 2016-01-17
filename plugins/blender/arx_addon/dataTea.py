@@ -91,6 +91,9 @@ from ctypes import sizeof
 class SerializationException(Exception):
     pass
 
+class UnexpectedValueException(SerializationException):
+    pass
+
 class TeaSerializer(object):
     def __init__(self):
         self.log = logging.getLogger('TeaSerializer')
@@ -123,6 +126,17 @@ class TeaSerializer(object):
                     self.log.info("Keyframe str: " + kf.info_frame.decode('iso-8859-1'))
             else:
                 raise SerializationException("Unknown version: " + str(header.version))
+
+            if kf.master_key_frame not in (0, 1):
+                raise UnexpectedValueException("master_key_frame = " + str(kf.master_key_frame))
+            if kf.key_frame not in (0, 1):
+                raise UnexpectedValueException("key_frame = " + str(kf.key_frame))
+            if kf.key_move not in (0, 1):
+                raise UnexpectedValueException("key_move = " + str(kf.key_move))
+            if kf.key_orient not in (0, 1):
+                raise UnexpectedValueException("key_orient = " + str(kf.key_orient))
+            if kf.key_morph not in (0, 1):
+                raise UnexpectedValueException("key_morph = " + str(kf.key_morph))
 
             frame['duration'] = kf.num_frame
             frame['flags'] = kf.flag_frame
