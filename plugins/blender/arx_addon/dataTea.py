@@ -67,6 +67,15 @@ class THEA_KEYFRAME_2015(LittleEndianStructure):
         ("time_frame",       c_int32),
     ]
 
+class THEA_MORPH(LittleEndianStructure):
+    _pack_ = 1
+    _fields_ = [
+        ("unknown1", c_int32),
+        ("unknown2", c_int32),
+        ("unknown3", c_int32),
+        ("unknown4", c_int32),
+    ]
+
 class THEO_GROUPANIM(LittleEndianStructure):
     _pack_ = 1
     _fields_ = [
@@ -161,7 +170,16 @@ class TeaSerializer(object):
             
             # Global Morph
             if kf.key_morph != 0:
-                pos += 16; # skip THEA_MORPH
+                morph = THEA_MORPH.from_buffer_copy(data, pos)
+                pos += sizeof(THEA_MORPH)
+
+                if morph.unknown1 != -1:
+                    raise UnexpectedValueException("unknown1 = " + str(morph.unknown1))
+                if morph.unknown2 != -1:
+                    raise UnexpectedValueException("unknown2 = " + str(morph.unknown2))
+
+                self.log.debug("Frame {0} Morph: {1} {2}".format(i, morph.unknown3, morph.unknown4))
+                #pos += 16; # skip THEA_MORPH
             
             # Now go for Group Rotations/Translations/scaling for each GROUP
             groupsList = THEO_GROUPANIM * header.nb_groups
