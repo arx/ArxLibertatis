@@ -127,6 +127,9 @@ class TeaSerializer(object):
             else:
                 raise SerializationException("Unknown version: " + str(header.version))
 
+            if kf.flag_frame not in (-1, 9):
+                raise UnexpectedValueException("flag_frame = " + str(kf.flag_frame))
+
             if kf.master_key_frame not in (0, 1):
                 raise UnexpectedValueException("master_key_frame = " + str(kf.master_key_frame))
             if kf.key_frame not in (0, 1):
