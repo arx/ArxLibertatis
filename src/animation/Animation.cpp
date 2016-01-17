@@ -242,17 +242,16 @@ static EERIE_ANIM * TheaToEerie(const char * adr, size_t size, const res::path &
 	LogDebug("Loading animation file " << file);
 
 	size_t pos = 0;
-
-	EERIE_ANIM * eerie = new EERIE_ANIM();
-
+	
 	const THEA_HEADER * th = reinterpret_cast<const THEA_HEADER *>(adr + pos);
 	if(th->version < 2014) {
 		LogError << "Invalid TEA Version " << th->version << " in " << file;
-		delete eerie;
 		return NULL;
 	}
 	pos += sizeof(THEA_HEADER);
-
+	
+	EERIE_ANIM * eerie = new EERIE_ANIM();
+	
 	LogDebug("TEA header size: " << sizeof(THEA_HEADER));
 	LogDebug("Identity " << th->identity);
 	LogDebug("Version - " << th->version << "  Frames " << th->nb_frames
