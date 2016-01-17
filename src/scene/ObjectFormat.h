@@ -403,7 +403,7 @@ struct THEA_HEADER {
 	s32 nb_key_frames;
 };
 
-struct THEA_KEYFRAME {
+struct THEA_KEYFRAME_2014 {
 	s32 num_frame;
 	s32 flag_frame;
 	STBOOL master_key_frame;

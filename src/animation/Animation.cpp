@@ -278,9 +278,9 @@ static EERIE_ANIM * TheaToEerie(const char * adr, size_t size, const res::path &
 			tkf2015 = reinterpret_cast<const THEA_KEYFRAME_2015 *>(adr + pos);
 			pos += sizeof(THEA_KEYFRAME_2015);
 		} else {
-			LogDebug(" Old keyframe version THEA_KEYFRAME:" << sizeof(THEA_KEYFRAME));
-			const THEA_KEYFRAME * tkf = reinterpret_cast<const THEA_KEYFRAME *>(adr + pos);
-			pos += sizeof(THEA_KEYFRAME);
+			LogDebug(" Old keyframe version THEA_KEYFRAME_2014:" << sizeof(THEA_KEYFRAME_2014));
+			const THEA_KEYFRAME_2014 * tkf = reinterpret_cast<const THEA_KEYFRAME_2014 *>(adr + pos);
+			pos += sizeof(THEA_KEYFRAME_2014);
 			memset(&kf2015, 0, sizeof(THEA_KEYFRAME_2015));
 			kf2015.num_frame = tkf->num_frame;
 			kf2015.flag_frame = tkf->flag_frame;
@@ -307,7 +307,7 @@ static EERIE_ANIM * TheaToEerie(const char * adr, size_t size, const res::path &
 		eerie->frames[i].flag = tkf2015->flag_frame;
 
 		LogDebug(" pos " << pos << " - NumFr " << eerie->frames[i].num_frame
-				 << " MKF " << tkf2015->master_key_frame << " THEA_KEYFRAME " << sizeof(THEA_KEYFRAME)
+				 << " MKF " << tkf2015->master_key_frame << " THEA_KEYFRAME " << sizeof(THEA_KEYFRAME_2014)
 				 << " TIME " << (float)(eerie->frames[i].time / 1000.f) << "s -Move " << tkf2015->key_move
 				 << " Orient " << tkf2015->key_orient << " Morph " << tkf2015->key_morph);
 
