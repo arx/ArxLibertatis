@@ -738,7 +738,7 @@ void ConfuseSpell::Launch() {
 	au.flags = EA_LOOP;
 	au.nextflags = 0;
 	au.lastframe = 0;
-	au.pour = 0;
+	au.currentInterpolation = 0;
 	au.currentFrame = 0;
 	au.altidx_cur = 0;
 	au.altidx_next = 0;

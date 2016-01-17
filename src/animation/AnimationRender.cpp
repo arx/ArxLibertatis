@@ -1221,12 +1221,12 @@ static Vec3f CalcTranslation(AnimLayer & layer) {
 	//Avoiding impossible cases
 	if(layer.currentFrame < 0) {
 		layer.currentFrame = 0;
-		layer.pour = 0.f;
+		layer.currentInterpolation = 0.f;
 	} else if(layer.currentFrame >= eanim->nb_key_frames - 1) {
 		layer.currentFrame = eanim->nb_key_frames - 2;
-		layer.pour = 1.f;
+		layer.currentInterpolation = 1.f;
 	}
-	layer.pour = glm::clamp(layer.pour, 0.f, 1.f);
+	layer.currentInterpolation = glm::clamp(layer.currentInterpolation, 0.f, 1.f);
 	
 	// FIXME animation indices prevent invalid memory access, should be fixed properly
 	if(layer.currentFrame < 0 || layer.currentFrame + 1 >= eanim->nb_key_frames)
@@ -1238,7 +1238,7 @@ static Vec3f CalcTranslation(AnimLayer & layer) {
 		const EERIE_FRAME & sFrame = eanim->frames[layer.currentFrame];
 		const EERIE_FRAME & eFrame = eanim->frames[layer.currentFrame + 1];
 		// Linear interpolation of object translation (MOVE)
-		return sFrame.translate + (eFrame.translate - sFrame.translate) * layer.pour;
+		return sFrame.translate + (eFrame.translate - sFrame.translate) * layer.currentInterpolation;
 	}
 	
 	return Vec3f_ZERO;
@@ -1302,12 +1302,12 @@ static void Cedric_AnimateObject(Skeleton * obj, AnimLayer * animlayer)
 
 		if(layer.currentFrame < 0) {
 			layer.currentFrame = 0;
-			layer.pour = 0.f;
+			layer.currentInterpolation = 0.f;
 		} else if(layer.currentFrame >= eanim->nb_key_frames - 1) {
 			layer.currentFrame = eanim->nb_key_frames - 2;
-			layer.pour = 1.f;
+			layer.currentInterpolation = 1.f;
 		}
-		layer.pour = glm::clamp(layer.pour, 0.f, 1.f);
+		layer.currentInterpolation = glm::clamp(layer.currentInterpolation, 0.f, 1.f);
 		
 		// FIXME animation indices are sometimes negative
 		//arx_assert(animuse->fr >= 0 && animuse->fr < eanim->nb_key_frames);
@@ -1331,9 +1331,9 @@ static void Cedric_AnimateObject(Skeleton * obj, AnimLayer * animlayer)
 
 				BoneTransform temp;
 
-				temp.quat = Quat_Slerp(sGroup.quat, eGroup.quat, layer.pour);
-				temp.trans = sGroup.translate + (eGroup.translate - sGroup.translate) * layer.pour;
-				temp.scale = sGroup.zoom + (eGroup.zoom - sGroup.zoom) * layer.pour;
+				temp.quat = Quat_Slerp(sGroup.quat, eGroup.quat, layer.currentInterpolation);
+				temp.trans = sGroup.translate + (eGroup.translate - sGroup.translate) * layer.currentInterpolation;
+				temp.scale = sGroup.zoom + (eGroup.zoom - sGroup.zoom) * layer.currentInterpolation;
 
 				bone.init.quat = bone.init.quat * temp.quat;
 				bone.init.trans = temp.trans + bone.transinit_global;

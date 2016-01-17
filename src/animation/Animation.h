@@ -130,7 +130,7 @@ struct AnimLayer {
 		, flags(0)
 		, nextflags(0)
 		, lastframe(-1)
-		, pour(0.f)
+		, currentInterpolation(0.f)
 		, currentFrame(0)
 	{}
 
@@ -142,7 +142,7 @@ struct AnimLayer {
 	AnimUseType flags;
 	AnimUseType nextflags;
 	long lastframe;
-	float pour;
+	float currentInterpolation;
 	long currentFrame;
 };
 
