@@ -436,10 +436,7 @@ static EERIE_ANIM * TheaToEerie(const char * adr, size_t size, const res::path &
 		for(long j = 0; j < eerie->nb_key_frames; j++) {
 			long pos = i + (j * eerie->nb_groups);
 
-			if((eerie->groups[pos].quat.x != 0.f)
-			   || (eerie->groups[pos].quat.y != 0.f)
-			   || (eerie->groups[pos].quat.z != 0.f)
-			   || (eerie->groups[pos].quat.w != 1.f)
+			if(   eerie->groups[pos].quat != glm::quat()
 			   || eerie->groups[pos].translate != Vec3f_ZERO
 			   || eerie->groups[pos].zoom != Vec3f_ZERO) {
 				voidd = false;
