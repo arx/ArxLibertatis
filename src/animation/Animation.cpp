@@ -296,10 +296,8 @@ static EERIE_ANIM * TheaToEerie(const char * adr, size_t size, const res::path &
 		eerie->frames[i].master_key_frame = tkf2015->master_key_frame;
 		eerie->frames[i].num_frame = tkf2015->num_frame;
 
-		long lKeyOrient = tkf2015->key_orient;
-		long lKeyMove = tkf2015->key_move;
-		eerie->frames[i].f_rotate = checked_range_cast<short>(lKeyOrient);
-		eerie->frames[i].f_translate = checked_range_cast<short>(lKeyMove);
+		eerie->frames[i].f_rotate = tkf2015->key_orient;
+		eerie->frames[i].f_translate = tkf2015->key_move;
 
 		s32 time_frame = tkf2015->num_frame * 1000;
 		eerie->frames[i].time = time_frame * (1.f/24);

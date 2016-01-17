@@ -61,8 +61,8 @@ struct EERIE_FRAME
 	long		num_frame;
 	long		flag;
 	int			master_key_frame;
-	short		f_translate; //int
-	short		f_rotate; //int
+	bool  f_translate;
+	bool  f_rotate;
 	float		time;
 	Vec3f	translate;
 	glm::quat	quat;
