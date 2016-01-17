@@ -39,17 +39,31 @@ class THEA_HEADER(LittleEndianStructure):
         ("nb_key_frames", c_int32),
     ]
 
+class THEA_KEYFRAME_2014(LittleEndianStructure):
+    _pack_ = 1
+    _fields_ = [
+        ("num_frame",        c_int32),
+        ("flag_frame",       c_int32),
+        ("master_key_frame", c_int32), # bool
+        ("key_frame",        c_int32), # bool
+        ("key_move",         c_int32), # bool
+        ("key_orient",       c_int32), # bool
+        ("key_morph",        c_int32), # bool
+        ("time_frame",       c_int32),
+    ]
+
+
 class THEA_KEYFRAME_2015(LittleEndianStructure):
     _pack_ = 1
     _fields_ = [
         ("num_frame",        c_int32),
         ("flag_frame",       c_int32),
         ("info_frame",       c_char * 256), # SIZE_NAME
-        ("master_key_frame", c_int32),
-        ("key_frame",        c_int32),
-        ("key_move",         c_int32),
-        ("key_orient",       c_int32),
-        ("key_morph",        c_int32),
+        ("master_key_frame", c_int32), # bool
+        ("key_frame",        c_int32), # bool
+        ("key_move",         c_int32), # bool
+        ("key_orient",       c_int32), # bool
+        ("key_morph",        c_int32), # bool
         ("time_frame",       c_int32),
     ]
 
@@ -74,6 +88,9 @@ class THEA_SAMPLE(LittleEndianStructure):
 import logging
 from ctypes import sizeof
 
+class SerializationException(Exception):
+    pass
+
 class TeaSerializer(object):
     def __init__(self):
         self.log = logging.getLogger('TeaSerializer')
@@ -82,21 +99,31 @@ class TeaSerializer(object):
         f = open(fileName, "rb")
         data = f.read()
         f.close()
-        self.log.info("Loaded %i bytes from file %s" % (len(data), fileName))
+        self.log.info("Read %i bytes from file %s" % (len(data), fileName))
         
         pos = 0
         
         header = THEA_HEADER.from_buffer_copy(data, pos)
         pos += sizeof(THEA_HEADER)
         
-        self.log.info("Identity: {0}; Version: {1}; Frames: {2}; Groups {3}; KeyFrames {4}".format(header.identity, header.version, header.nb_frames, header.nb_groups, header.nb_key_frames))
+        self.log.info("Header - Identity: {0}; Version: {1}; Frames: {2}; Groups {3}; KeyFrames {4}".format(header.identity, header.version, header.nb_frames, header.nb_groups, header.nb_key_frames))
         
         results = []
         for i in range(header.nb_key_frames):
             frame = {}
             #self.log.debug("Reading Keyframe {0}".format(i))
-            kf = THEA_KEYFRAME_2015.from_buffer_copy(data, pos)
-            pos += sizeof(THEA_KEYFRAME_2015)
+            if header.version == 2014:
+                kf = THEA_KEYFRAME_2014.from_buffer_copy(data, pos)
+                pos += sizeof(THEA_KEYFRAME_2014)
+            elif header.version == 2015:
+                kf = THEA_KEYFRAME_2015.from_buffer_copy(data, pos)
+                pos += sizeof(THEA_KEYFRAME_2015)
+
+                if kf.info_frame:
+                    self.log.info("Keyframe str: " + kf.info_frame.decode('iso-8859-1'))
+            else:
+                raise SerializationException("Unknown version: " + str(header.version))
+
             frame['duration'] = kf.num_frame
             frame['flags'] = kf.flag_frame
             
@@ -138,5 +165,7 @@ class TeaSerializer(object):
             pos += 4 # skip num_sfx
             #self.log.debug("Pos: {0}".format(pos))
             results.append(frame)
-        
+
+        self.log.info("File loaded")
+
         return results
