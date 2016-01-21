@@ -268,7 +268,7 @@ void CRiseDead::RenderFissure() {
 	target.y = m_eSrc.y + 1.5f * sizeF; 
 	target.z = m_eSrc.z ;
 
-	EE_RTP(vt[1], &vr[0]);
+	EE_RTP(vt[1], vr[0]);
 	vr[0].color = vr[1].color = m_colorRays1.toRGB();
 	vr[2].color = vr[3].color = m_colorRays2.toRGB();
 
@@ -651,7 +651,7 @@ void CSummonCreature::RenderFissure() {
 	target.y = m_eSrc.y;
 	target.z = m_eSrc.z + fBetaRadCos * (1.5f * sizeF); 
 
-	EE_RTP(vt[1], &vr[0]);
+	EE_RTP(vt[1], vr[0]);
 	vr[0].color = vr[1].color = m_colorRays1.toRGB();
 	vr[2].color = vr[3].color = m_colorRays2.toRGB();
 

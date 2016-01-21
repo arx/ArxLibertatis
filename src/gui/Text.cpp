@@ -442,7 +442,7 @@ void drawTextAt(Font * font, const Vec3f & pos, const std::string & text, Color 
 	
 	// Project the 3d coordinates to get an on-screen position
 	TexturedVertex out;
-	EE_RTP(pos, &out);
+	EE_RTP(pos, out);
 	if(out.p.z < 0.f) {
 		// Don't draw text behind the camera!
 		return;

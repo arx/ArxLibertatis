@@ -457,19 +457,19 @@ static inline float clamp_and_invert(float z) {
 	return 1.f / std::max(z, near_clamp);
 }
 
-void EE_P(const Vec3f * in, TexturedVertex * out) {
+void EE_P(const Vec3f & in, TexturedVertex & out) {
 	
-	float fZTemp = clamp_and_invert(in->z);
+	float fZTemp = clamp_and_invert(in.z);
 	
-	out->p.z = fZTemp * ACTIVECAM->ProjectionMatrix[2][2] + ACTIVECAM->ProjectionMatrix[3][2]; //HYPERBOLIC
-	out->p.x = in->x * ACTIVECAM->ProjectionMatrix[0][0] * fZTemp + ACTIVECAM->orgTrans.mod.x;
-	out->p.y = in->y * ACTIVECAM->ProjectionMatrix[1][1] * fZTemp + ACTIVECAM->orgTrans.mod.y;
-	out->rhw = fZTemp;
+	out.p.z = fZTemp * ACTIVECAM->ProjectionMatrix[2][2] + ACTIVECAM->ProjectionMatrix[3][2]; //HYPERBOLIC
+	out.p.x = in.x * ACTIVECAM->ProjectionMatrix[0][0] * fZTemp + ACTIVECAM->orgTrans.mod.x;
+	out.p.y = in.y * ACTIVECAM->ProjectionMatrix[1][1] * fZTemp + ACTIVECAM->orgTrans.mod.y;
+	out.rhw = fZTemp;
 }
 
-void EE_RTP(const Vec3f & in, TexturedVertex * out) {
-	out->p = EE_RT(in);
-	EE_P(&out->p, out);
+void EE_RTP(const Vec3f & in, TexturedVertex & out) {
+	out.p = EE_RT(in);
+	EE_P(out.p, out);
 }
 
 //*************************************************************************************
@@ -1202,7 +1202,7 @@ void Draw3DObject(EERIE_3DOBJ *eobj, const Anglef & angle, const Vec3f & pos, co
 		eobj->vertexlist3[i].v = (rv.p += pos);
 
 		Vec3f tempWorld = EE_RT(rv.p);
-		EE_P(&tempWorld, &eobj->vertexlist[i].vert);
+		EE_P(tempWorld, eobj->vertexlist[i].vert);
 	}
 
 	for(size_t i = 0; i < eobj->facelist.size(); i++) {
@@ -2724,13 +2724,13 @@ void ComputePortalVertexBuffer() {
 
 long EERIERTPPoly(EERIEPOLY *ep)
 {
-	EE_RTP(ep->v[0].p, &ep->tv[0]);
-	EE_RTP(ep->v[1].p, &ep->tv[1]);
-	EE_RTP(ep->v[2].p, &ep->tv[2]);
+	EE_RTP(ep->v[0].p, ep->tv[0]);
+	EE_RTP(ep->v[1].p, ep->tv[1]);
+	EE_RTP(ep->v[2].p, ep->tv[2]);
 
 	if (ep->type & POLY_QUAD) 
 	{
-		EE_RTP(ep->v[3].p, &ep->tv[3]);
+		EE_RTP(ep->v[3].p, ep->tv[3]);
 
 		if ((ep->tv[0].p.z<=0.f) &&
 			(ep->tv[1].p.z<=0.f) &&

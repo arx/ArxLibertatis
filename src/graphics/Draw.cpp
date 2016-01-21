@@ -75,7 +75,7 @@ static bool EERIECreateSprite(TexturedQuad & sprite, const Vec3f & in, float siz
                               Color color, float Zpos, float rot = 0) {
 	
 	TexturedVertex out;
-	EE_RTP(in, &out);
+	EE_RTP(in, out);
 	out.rhw *= 3000.f;
 
 	if(   out.p.z > 0.f

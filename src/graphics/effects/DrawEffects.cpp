@@ -81,9 +81,9 @@ static void AddToShadowBatch(TexturedVertex * _pVertex1, TexturedVertex * _pVert
                              TexturedVertex * _pVertex3) {
 	
 	TexturedVertex pPointAdd[3];
-	EE_P(&_pVertex1->p, &pPointAdd[0]);
-	EE_P(&_pVertex2->p, &pPointAdd[1]);
-	EE_P(&_pVertex3->p, &pPointAdd[2]);
+	EE_P(_pVertex1->p, pPointAdd[0]);
+	EE_P(_pVertex2->p, pPointAdd[1]);
+	EE_P(_pVertex3->p, pPointAdd[2]);
 	pPointAdd[0].color = _pVertex1->color;
 	pPointAdd[0].uv = _pVertex1->uv;
 	pPointAdd[1].color = _pVertex2->color;

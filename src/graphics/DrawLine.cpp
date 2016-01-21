@@ -106,7 +106,7 @@ void drawLineSphere(const Sphere & sphere, Color color) {
 			
 			TexturedVertex out;
 			Vec3f temp = EE_RT(pos);
-			EE_P(&temp, &out);
+			EE_P(temp, out);
 
 			if(skip) {
 				skip = false;
@@ -154,12 +154,12 @@ void drawLine(const Vec3f & orgn, const Vec3f & dest, Color color1, Color color2
 	
 	TexturedVertex v[2];
 	
-	EE_RTP(orgn, &v[0]);
+	EE_RTP(orgn, v[0]);
 	if(v[0].p.z < 0.f) {
 		return;
 	}
 	
-	EE_RTP(dest, &v[1]);
+	EE_RTP(dest, v[1]);
 	if(v[1].p.z < 0.f) {
 		return;
 	}

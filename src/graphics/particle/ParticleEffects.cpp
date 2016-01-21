@@ -1191,7 +1191,7 @@ void ARX_PARTICLES_Update(EERIE_CAMERA * cam)  {
 			
 			Sphere sp;
 			sp.origin = in;
-			EE_RTP(inn, &out);
+			EE_RTP(inn, out);
 			if(out.rhw < 0 || out.p.z > cam->cdepth * fZFogEnd) {
 				continue;
 			}
@@ -1208,10 +1208,10 @@ void ARX_PARTICLES_Update(EERIE_CAMERA * cam)  {
 				tv[0].rhw = out.rhw;
 				Vec3f temp;
 				temp = in + Vec3f(Random::getf(0.f, 0.5f), 0.8f, Random::getf(0.f, 0.5f));
-				EE_RTP(temp, &tv[1]);
+				EE_RTP(temp, tv[1]);
 				temp = in + vect * part->fparam;
 				
-				EE_RTP(temp, &tv[2]);
+				EE_RTP(temp, tv[2]);
 				
 				RenderMaterial mat;
 				mat.setBlendType(RenderMaterial::Additive);

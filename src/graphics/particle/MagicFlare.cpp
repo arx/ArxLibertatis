@@ -199,7 +199,7 @@ void AddFlare(const Vec2s & pos, float sm, short typ, Entity * io, bool bookDraw
 		SetActiveCamera(&ka);
 		PrepareCamera(&ka, g_size);
 		flare.v.p += ka.orgTrans.pos;
-		EE_RTP(flare.tv.p, &flare.v);
+		EE_RTP(flare.tv.p, flare.v);
 		flare.v.p += ka.orgTrans.pos;
 
 		float vx = -(flare.pos.x - subj.center.x) * 0.2173913f;

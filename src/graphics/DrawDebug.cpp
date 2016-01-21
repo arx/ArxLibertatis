@@ -129,7 +129,7 @@ static void drawDebugLights() {
 		}
 		
 		TexturedVertex center;
-		EE_RTP(light->pos, &center);
+		EE_RTP(light->pos, center);
 		
 		const Rect mouseTestRect(
 		center.p.x - 20,
@@ -717,7 +717,7 @@ static void drawDebugMaterials() {
 				TexturedVertex tv;
 				tv.p = EE_RT(ep->v[i].p);
 				valid = valid && (tv.p.z > 0.000001f);
-				EE_P(&tv.p, &tv);
+				EE_P(tv.p, tv);
 				bvalid = bvalid || (tv.p.x >= g_size.left && tv.p.x < g_size.right
 				                 && tv.p.y >= g_size.top && tv.p.y < g_size.bottom);
 				p[i] = tv.p;

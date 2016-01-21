@@ -2258,7 +2258,7 @@ void ArxGame::update2DFX() {
 
 		if(el->extras & EXTRAS_FLARE) {
 			Vec3f lv = el->pos;
-			EE_RTP(lv, &ltvv);
+			EE_RTP(lv, ltvv);
 			el->m_flareFader -= temp_increase;
 
 			if(!(player.Interface & INTER_COMBATMODE) && (player.Interface & INTER_MAP))

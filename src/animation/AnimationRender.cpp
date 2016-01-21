@@ -457,10 +457,10 @@ static TexturedVertex * GetNewVertexList(TextureContainer * container,
 }
 
 void drawQuadRTP(const RenderMaterial & mat, TexturedQuad quat) {
-	EE_RTP(quat.v[0].p, &quat.v[0]);
-	EE_RTP(quat.v[1].p, &quat.v[1]);
-	EE_RTP(quat.v[2].p, &quat.v[2]);
-	EE_RTP(quat.v[3].p, &quat.v[3]);
+	EE_RTP(quat.v[0].p, quat.v[0]);
+	EE_RTP(quat.v[1].p, quat.v[1]);
+	EE_RTP(quat.v[2].p, quat.v[2]);
+	EE_RTP(quat.v[3].p, quat.v[3]);
 	
 	RenderBatcher::getInstance().add(mat, quat);
 }
@@ -468,9 +468,9 @@ void drawQuadRTP(const RenderMaterial & mat, TexturedQuad quat) {
 void drawTriangle(const RenderMaterial & mat, const TexturedVertex * vertices) {
 	
 	TexturedVertex projected[3];
-	EE_P(&vertices[0].p, &projected[0]);
-	EE_P(&vertices[1].p, &projected[1]);
-	EE_P(&vertices[2].p, &projected[2]);
+	EE_P(vertices[0].p, projected[0]);
+	EE_P(vertices[1].p, projected[1]);
+	EE_P(vertices[2].p, projected[2]);
 	projected[0].color = vertices[0].color;
 	projected[0].uv = vertices[0].uv;
 	projected[1].color = vertices[1].color;
@@ -574,7 +574,7 @@ void DrawEERIEInter_ViewProjectTransform(EERIE_3DOBJ *eobj) {
 	for(size_t i = 0 ; i < eobj->vertexlist.size(); i++) {
 
 		Vec3f tempWorld = EE_RT(eobj->vertexlist3[i].v);
-		EE_P(&tempWorld, &eobj->vertexlist[i].vert);
+		EE_P(tempWorld, eobj->vertexlist[i].vert);
 	}
 }
 
@@ -1460,7 +1460,7 @@ static void Cedric_ViewProjectTransform(EERIE_3DOBJ * eobj) {
 		EERIE_VERTEX * outVert = &eobj->vertexlist3[i];
 
 		Vec3f tempWorld = EE_RT(outVert->v);
-		EE_P(&tempWorld, &outVert->vert);
+		EE_P(tempWorld, outVert->vert);
 	}
 }
 
