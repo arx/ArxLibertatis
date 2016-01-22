@@ -797,17 +797,19 @@ static void CreateScreenFrustrum(EERIE_FRUSTRUM * frustrum) {
 	}
 	
 	{
+	Plane & plane = efpPlaneNear;
+	
 	a = matres[0][3] + matres[0][2];
 	b = matres[1][3] + matres[1][2];
 	c = matres[2][3] + matres[2][2];
 	d = matres[3][3] + matres[3][2];
 	b = -b;
 	
-	efpPlaneNear.a=a;
-	efpPlaneNear.b=b;
-	efpPlaneNear.c=c;
-	efpPlaneNear.d=d;
-	normalizePlane(efpPlaneNear);
+	plane.a=a;
+	plane.b=b;
+	plane.c=c;
+	plane.d=d;
+	normalizePlane(plane);
 	}
 }
 
