@@ -1066,8 +1066,6 @@ void ARX_PARTICLES_Update(EERIE_CAMERA * cam)  {
 		return;
 	}
 	
-	Vec3f in;
-	Vec3f inn;
 	TexturedVertex out;
 	
 	unsigned long tim = (unsigned long)arxtime;
@@ -1162,7 +1160,8 @@ void ARX_PARTICLES_Update(EERIE_CAMERA * cam)  {
 		
 		float val = (part->tolive - framediff) * 0.01f;
 		
-		inn = in = part->ov + part->move * val;
+		Vec3f in = part->ov + part->move * val;
+		Vec3f inn = in;
 		
 		if(part->special & GRAVITY) {
 			in.y = inn.y = inn.y + 1.47f * val * val;
