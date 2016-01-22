@@ -1055,10 +1055,10 @@ static void ARX_DAMAGES_UpdateDamage(DamageHandle j, float tim) {
 						continue;
 					
 					if(   (damage.params.flags & DAMAGE_FLAG_ADD_VISUAL_FX)
-					   && (entities[handle]->ioflags & IO_NPC)
-					   && (entities[handle]->_npcdata->lifePool.current > 0.f)
+					   && (io->ioflags & IO_NPC)
+					   && (io->_npcdata->lifePool.current > 0.f)
 					) {
-						ARX_DAMAGES_AddVisual(damage, sub, dmg, entities[handle]);
+						ARX_DAMAGES_AddVisual(damage, sub, dmg, io);
 					}
 					
 					if(damage.params.type & DAMAGE_TYPE_DRAIN_MANA) {
@@ -1114,32 +1114,32 @@ static void ARX_DAMAGES_UpdateDamage(DamageHandle j, float tim) {
 								damagesdone = ARX_DAMAGES_DamagePlayer(dmg, damage.params.type, damage.params.source);
 							}
 						} else {
-							if(   (entities[handle]->ioflags & IO_NPC)
+							if(   (io->ioflags & IO_NPC)
 							   && (damage.params.type & DAMAGE_TYPE_POISON)
 							) {
-								if(Random::getf(0.f, 100.f) > entities[handle]->_npcdata->resist_poison) {
+								if(Random::getf(0.f, 100.f) > io->_npcdata->resist_poison) {
 									// Failed Saving Throw
 									damagesdone = dmg; 
-									entities[handle]->_npcdata->poisonned += damagesdone;
+									io->_npcdata->poisonned += damagesdone;
 								} else {
 									damagesdone = 0;
 								}
 							} else {
 								if(damage.params.type & DAMAGE_TYPE_FIRE) {
-									dmg = ARX_SPELLS_ApplyFireProtection(entities[handle], dmg);
-									ARX_DAMAGES_IgnitIO(entities[handle], dmg);
+									dmg = ARX_SPELLS_ApplyFireProtection(io, dmg);
+									ARX_DAMAGES_IgnitIO(io, dmg);
 								}
 								if(   (damage.params.type & DAMAGE_TYPE_MAGICAL)
 								   && !(damage.params.type & DAMAGE_TYPE_FIRE)
 								   && !(damage.params.type & DAMAGE_TYPE_COLD)
 								) {
-									dmg -= entities[handle]->_npcdata->resist_magic * ( 1.0f / 100 ) * dmg;
+									dmg -= io->_npcdata->resist_magic * ( 1.0f / 100 ) * dmg;
 									dmg = std::max(0.0f, dmg);
 								}
 								if(damage.params.type & DAMAGE_TYPE_COLD) {
-									dmg = ARX_SPELLS_ApplyColdProtection(entities[handle], dmg);
+									dmg = ARX_SPELLS_ApplyColdProtection(io, dmg);
 								}
-								damagesdone = ARX_DAMAGES_DamageNPC(entities[handle], dmg, damage.params.source, true, &damage.params.pos);
+								damagesdone = ARX_DAMAGES_DamageNPC(io, dmg, damage.params.source, true, &damage.params.pos);
 							}
 							if(damagesdone > 0 && (damage.params.flags & DAMAGE_SPAWN_BLOOD)) {
 								ARX_PARTICLES_Spawn_Blood(damage.params.pos, damagesdone, damage.params.source);
