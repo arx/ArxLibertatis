@@ -1162,15 +1162,7 @@ void ARX_PARTICLES_Update(EERIE_CAMERA * cam)  {
 		
 		float val = (part->tolive - framediff) * 0.01f;
 		
-		if((part->special & FOLLOW_SOURCE) && part->sourceionum != EntityHandle()
-				&& entities[part->sourceionum]) {
-			inn = in = *part->source;
-		} else if((part->special & FOLLOW_SOURCE2) && part->sourceionum != EntityHandle()
-							&& entities[part->sourceionum]) {
-			inn = in = *part->source + part->move * val;
-		} else {
-			inn = in = part->ov + part->move * val;
-		}
+		inn = in = part->ov + part->move * val;
 		
 		if(part->special & GRAVITY) {
 			in.y = inn.y = inn.y + 1.47f * val * val;
