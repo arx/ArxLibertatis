@@ -746,7 +746,7 @@ static void CreateScreenFrustrum(EERIE_FRUSTRUM * frustrum) {
 	
 	glm::mat4x4 matres = matProj * matView;
 
-	float a,b,c,d,n;
+	float a,b,c,d;
 	
 	{
 	a = matres[0][3] - matres[0][0];
@@ -754,10 +754,10 @@ static void CreateScreenFrustrum(EERIE_FRUSTRUM * frustrum) {
 	c = matres[2][3] - matres[2][0];
 	d = matres[3][3] - matres[3][0];
 	b = -b;
-	n = 1.f / std::sqrt(a * a + b * b + c * c);
 	
 	Plane & plane = frustrum->plane[0];
-	Frustrum_Set(plane,a*n,b*n,c*n,d*n);
+	Frustrum_Set(plane,a,b,c,d);
+	normalizePlane(plane);
 	}
 	
 	{
@@ -766,10 +766,10 @@ static void CreateScreenFrustrum(EERIE_FRUSTRUM * frustrum) {
 	c = matres[2][3] + matres[2][0];
 	d = matres[3][3] + matres[3][0];
 	b = -b;
-	n = 1.f / std::sqrt(a * a + b * b + c * c);
 	
 	Plane & plane = frustrum->plane[1];
-	Frustrum_Set(plane,a*n,b*n,c*n,d*n);
+	Frustrum_Set(plane,a,b,c,d);
+	normalizePlane(plane);
 	}
 	
 	{
@@ -778,10 +778,10 @@ static void CreateScreenFrustrum(EERIE_FRUSTRUM * frustrum) {
 	c = matres[2][3] - matres[2][1];
 	d = matres[3][3] - matres[3][1];
 	b = -b;
-	n = 1.f / std::sqrt(a * a + b * b + c * c);
 	
 	Plane & plane = frustrum->plane[2];
-	Frustrum_Set(plane,a*n,b*n,c*n,d*n);
+	Frustrum_Set(plane,a,b,c,d);
+	normalizePlane(plane);
 	}
 	
 	{
@@ -790,10 +790,10 @@ static void CreateScreenFrustrum(EERIE_FRUSTRUM * frustrum) {
 	c = matres[2][3] + matres[2][1];
 	d = matres[3][3] + matres[3][1];
 	b = -b;
-	n = 1.f / std::sqrt(a * a + b * b + c * c);
 	
 	Plane & plane = frustrum->plane[3];
-	Frustrum_Set(plane,a*n,b*n,c*n,d*n);
+	Frustrum_Set(plane,a,b,c,d);
+	normalizePlane(plane);
 	}
 	
 	{
@@ -802,11 +802,12 @@ static void CreateScreenFrustrum(EERIE_FRUSTRUM * frustrum) {
 	c = matres[2][3] + matres[2][2];
 	d = matres[3][3] + matres[3][2];
 	b = -b;
-	n = 1.f / std::sqrt(a * a + b * b + c * c);
-	efpPlaneNear.a=a*n;
-	efpPlaneNear.b=b*n;
-	efpPlaneNear.c=c*n;
-	efpPlaneNear.d=d*n;
+	
+	efpPlaneNear.a=a;
+	efpPlaneNear.b=b;
+	efpPlaneNear.c=c;
+	efpPlaneNear.d=d;
+	normalizePlane(efpPlaneNear);
 	}
 }
 

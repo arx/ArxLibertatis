@@ -189,6 +189,16 @@ inline float distanceToPoint(const Plane & plane, const Vec3f & point) {
 	return point.x * plane.a + point.y * plane.b + point.z * plane.c + plane.d;
 }
 
+inline void normalizePlane(Plane & plane) {
+	
+	float n = 1.f / std::sqrt(plane.a * plane.a + plane.b * plane.b + plane.c * plane.c);
+	
+	plane.a = plane.a * n;
+	plane.b = plane.b * n;
+	plane.c = plane.c * n;
+	plane.d = plane.d * n;
+}
+
 struct EERIE_FRUSTRUM
 {
 	Plane plane[4];
