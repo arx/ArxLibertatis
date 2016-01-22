@@ -748,6 +748,7 @@ static void CreateScreenFrustrum(EERIE_FRUSTRUM * frustrum) {
 
 	float a,b,c,d,n;
 	
+	{
 	a = matres[0][3] - matres[0][0];
 	b = matres[1][3] - matres[1][0];
 	c = matres[2][3] - matres[2][0];
@@ -755,7 +756,9 @@ static void CreateScreenFrustrum(EERIE_FRUSTRUM * frustrum) {
 	b = -b;
 	n = 1.f / std::sqrt(a * a + b * b + c * c);
 	Frustrum_Set(frustrum,0,a*n,b*n,c*n,d*n);
+	}
 	
+	{
 	a = matres[0][3] + matres[0][0];
 	b = matres[1][3] + matres[1][0];
 	c = matres[2][3] + matres[2][0];
@@ -763,7 +766,9 @@ static void CreateScreenFrustrum(EERIE_FRUSTRUM * frustrum) {
 	b = -b;
 	n = 1.f / std::sqrt(a * a + b * b + c * c);
 	Frustrum_Set(frustrum,1,a*n,b*n,c*n,d*n);
+	}
 	
+	{
 	a = matres[0][3] - matres[0][1];
 	b = matres[1][3] - matres[1][1];
 	c = matres[2][3] - matres[2][1];
@@ -771,7 +776,9 @@ static void CreateScreenFrustrum(EERIE_FRUSTRUM * frustrum) {
 	b = -b;
 	n = 1.f / std::sqrt(a * a + b * b + c * c);
 	Frustrum_Set(frustrum,2,a*n,b*n,c*n,d*n);
+	}
 	
+	{
 	a = matres[0][3] + matres[0][1];
 	b = matres[1][3] + matres[1][1];
 	c = matres[2][3] + matres[2][1];
@@ -779,7 +786,9 @@ static void CreateScreenFrustrum(EERIE_FRUSTRUM * frustrum) {
 	b = -b;
 	n = 1.f / std::sqrt(a * a + b * b + c * c);
 	Frustrum_Set(frustrum,3,a*n,b*n,c*n,d*n);
-
+	}
+	
+	{
 	a = matres[0][3] + matres[0][2];
 	b = matres[1][3] + matres[1][2];
 	c = matres[2][3] + matres[2][2];
@@ -790,6 +799,7 @@ static void CreateScreenFrustrum(EERIE_FRUSTRUM * frustrum) {
 	efpPlaneNear.b=b*n;
 	efpPlaneNear.c=c*n;
 	efpPlaneNear.d=d*n;
+	}
 }
 
 void RoomDrawRelease() {
