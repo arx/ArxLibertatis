@@ -692,14 +692,6 @@ static bool FrustrumsClipPoly(const EERIE_FRUSTRUM_DATA & frustrums,
 	return true;
 }
 
-static void Frustrum_Set(Plane & plane,
-                         float a, float b, float c, float d) {
-	plane.a=a;
-	plane.b=b;
-	plane.c=c;
-	plane.d=d;
-}
-
 static void CreatePlane(EERIE_FRUSTRUM & frustrum, long numplane, const Vec3f & orgn,
                         const Vec3f & pt1, const Vec3f & pt2) {
 	
@@ -745,74 +737,64 @@ static void CreateScreenFrustrum(EERIE_FRUSTRUM * frustrum) {
 	GRenderer->GetViewMatrix(matView);
 	
 	glm::mat4x4 matres = matProj * matView;
-
-	float a,b,c,d;
 	
 	{
 	Plane & plane = frustrum->plane[0];
 	
-	a = matres[0][3] - matres[0][0];
-	b = matres[1][3] - matres[1][0];
-	c = matres[2][3] - matres[2][0];
-	d = matres[3][3] - matres[3][0];
-	b = -b;
+	plane.a = matres[0][3] - matres[0][0];
+	plane.b = matres[1][3] - matres[1][0];
+	plane.c = matres[2][3] - matres[2][0];
+	plane.d = matres[3][3] - matres[3][0];
+	plane.b = -plane.b;
 	
-	Frustrum_Set(plane,a,b,c,d);
 	normalizePlane(plane);
 	}
 	
 	{
 	Plane & plane = frustrum->plane[1];
 	
-	a = matres[0][3] + matres[0][0];
-	b = matres[1][3] + matres[1][0];
-	c = matres[2][3] + matres[2][0];
-	d = matres[3][3] + matres[3][0];
-	b = -b;
+	plane.a = matres[0][3] + matres[0][0];
+	plane.b = matres[1][3] + matres[1][0];
+	plane.c = matres[2][3] + matres[2][0];
+	plane.d = matres[3][3] + matres[3][0];
+	plane.b = -plane.b;
 	
-	Frustrum_Set(plane,a,b,c,d);
 	normalizePlane(plane);
 	}
 	
 	{
 	Plane & plane = frustrum->plane[2];
 	
-	a = matres[0][3] - matres[0][1];
-	b = matres[1][3] - matres[1][1];
-	c = matres[2][3] - matres[2][1];
-	d = matres[3][3] - matres[3][1];
-	b = -b;
+	plane.a = matres[0][3] - matres[0][1];
+	plane.b = matres[1][3] - matres[1][1];
+	plane.c = matres[2][3] - matres[2][1];
+	plane.d = matres[3][3] - matres[3][1];
+	plane.b = -plane.b;
 	
-	Frustrum_Set(plane,a,b,c,d);
 	normalizePlane(plane);
 	}
 	
 	{
 	Plane & plane = frustrum->plane[3];
 	
-	a = matres[0][3] + matres[0][1];
-	b = matres[1][3] + matres[1][1];
-	c = matres[2][3] + matres[2][1];
-	d = matres[3][3] + matres[3][1];
-	b = -b;
+	plane.a = matres[0][3] + matres[0][1];
+	plane.b = matres[1][3] + matres[1][1];
+	plane.c = matres[2][3] + matres[2][1];
+	plane.d = matres[3][3] + matres[3][1];
+	plane.b = -plane.b;
 	
-	Frustrum_Set(plane,a,b,c,d);
 	normalizePlane(plane);
 	}
 	
 	{
 	Plane & plane = efpPlaneNear;
 	
-	a = matres[0][3] + matres[0][2];
-	b = matres[1][3] + matres[1][2];
-	c = matres[2][3] + matres[2][2];
-	d = matres[3][3] + matres[3][2];
-	b = -b;
+	plane.a = matres[0][3] + matres[0][2];
+	plane.b = matres[1][3] + matres[1][2];
+	plane.c = matres[2][3] + matres[2][2];
+	plane.d = matres[3][3] + matres[3][2];
+	plane.b = -plane.b;
 	
-	plane.a=a;
-	plane.b=b;
-	plane.c=c;
-	plane.d=d;
 	normalizePlane(plane);
 	}
 }
