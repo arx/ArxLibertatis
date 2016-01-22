@@ -1066,8 +1066,6 @@ void ARX_PARTICLES_Update(EERIE_CAMERA * cam)  {
 		return;
 	}
 	
-	TexturedVertex out;
-	
 	unsigned long tim = (unsigned long)arxtime;
 	
 	long pcc = ParticleCount;
@@ -1182,7 +1180,10 @@ void ARX_PARTICLES_Update(EERIE_CAMERA * cam)  {
 			
 			Sphere sp;
 			sp.origin = in;
+			
+			TexturedVertex out;
 			EE_RTP(inn, out);
+			
 			if(out.rhw < 0 || out.p.z > cam->cdepth * fZFogEnd) {
 				continue;
 			}
@@ -1243,11 +1244,10 @@ void ARX_PARTICLES_Update(EERIE_CAMERA * cam)  {
 				}
 			}
 			
-		}
-		
-		if((part->special & DISSIPATING) && out.p.z < 0.05f) {
-			out.p.z *= 20.f;
-			r *= out.p.z;
+			if((part->special & DISSIPATING) && out.p.z < 0.05f) {
+				out.p.z *= 20.f;
+				r *= out.p.z;
+			}
 		}
 		
 		if(r <= 0.f) {
