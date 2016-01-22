@@ -66,26 +66,26 @@ class Entity;
 struct EERIE_3DOBJ;
 
 enum ParticlesTypeFlag {
-	FIRE_TO_SMOKE       = 0x00000001,
-	ROTATING            = 0x00000002,
-	FADE_IN_AND_OUT     = 0x00000004,
-	MODULATE_ROTATION   = 0x00000008,
-	DISSIPATING         = 0x00000010,
-	GRAVITY             = 0x00000020,
-	SUBSTRACT           = 0x00000040,
-	FIRE_TO_SMOKE2      = 0x00000080,
-	PARTICLE_SPARK2     = 0x00000100, //TODO unused
-	FOLLOW_SOURCE       = 0x00000200, // TODO unused
-	FOLLOW_SOURCE2      = 0x00000400, // TODO unused
-	DELAY_FOLLOW_SOURCE = 0x00000800,
-	NO_TRANS            = 0x00001000,
-	PARTICLE_ANIMATED   = 0x00002000,
-	PARTICLE_SPARK      = 0x00004000,
-	SPLAT_GROUND        = 0x00008000,
-	SPLAT_WATER         = 0x00010000,
-	PARTICLE_SUB2       = 0x00020000,
-	PARTICLE_GOLDRAIN   = 0x00040000,
-	PARTICLE_NOZBUFFER  = 0x80000000
+	FIRE_TO_SMOKE       = (1<<0),
+	ROTATING            = (1<<1),
+	FADE_IN_AND_OUT     = (1<<2),
+	MODULATE_ROTATION   = (1<<3),
+	DISSIPATING         = (1<<4),
+	GRAVITY             = (1<<5),
+	SUBSTRACT           = (1<<6),
+	FIRE_TO_SMOKE2      = (1<<7),
+	PARTICLE_SPARK2     = (1<<8), //TODO unused
+	FOLLOW_SOURCE       = (1<<9), // TODO unused
+	FOLLOW_SOURCE2      = (1<<10), // TODO unused
+	DELAY_FOLLOW_SOURCE = (1<<11),
+	NO_TRANS            = (1<<12),
+	PARTICLE_ANIMATED   = (1<<13),
+	PARTICLE_SPARK      = (1<<14),
+	SPLAT_GROUND        = (1<<15),
+	SPLAT_WATER         = (1<<16),
+	PARTICLE_SUB2       = (1<<17),
+	PARTICLE_GOLDRAIN   = (1<<18),
+	PARTICLE_NOZBUFFER  = (1<<19)
 };
 
 DECLARE_FLAGS(ParticlesTypeFlag, ParticlesTypeFlags)
