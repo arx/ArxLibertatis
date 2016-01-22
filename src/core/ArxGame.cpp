@@ -2317,16 +2317,16 @@ void ArxGame::goFor2DFX() {
 	GRenderer->SetFogColor(Color::none);
 
 	for(size_t i = 0; i < TOTPDL; i++) {
-		EERIE_LIGHT *el = PDL[i];
+		const EERIE_LIGHT & el = *PDL[i];
 
-		if(!el->exist || !el->treat)
+		if(!el.exist || !el.treat)
 			continue;
 
-		if(el->extras & EXTRAS_FLARE) {
-			if(el->m_flareFader > 0.f) {
-				Vec3f ltvv = EE_RT(el->pos);
+		if(el.extras & EXTRAS_FLARE) {
+			if(el.m_flareFader > 0.f) {
+				Vec3f ltvv = EE_RT(el.pos);
 				
-				float v = el->m_flareFader;
+				float v = el.m_flareFader;
 
 				if(FADEDIR) {
 					v *= 1.f - LAST_FADEVALUE;
@@ -2334,12 +2334,12 @@ void ArxGame::goFor2DFX() {
 
 				float siz;
 
-				if(el->extras & EXTRAS_FIXFLARESIZE)
-					siz = el->ex_flaresize;
+				if(el.extras & EXTRAS_FIXFLARESIZE)
+					siz = el.ex_flaresize;
 				else
-					siz = -el->ex_flaresize;
+					siz = -el.ex_flaresize;
 
-				EERIEDrawSprite(el->pos, siz, tflare, (el->rgb * v).to<u8>(), ltvv.z);
+				EERIEDrawSprite(el.pos, siz, tflare, (el.rgb * v).to<u8>(), ltvv.z);
 
 			}
 		}
