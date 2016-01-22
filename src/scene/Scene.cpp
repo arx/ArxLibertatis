@@ -182,7 +182,7 @@ public:
 
 }
 
-EERIE_FRUSTRUM_PLANE efpPlaneNear;
+Plane efpPlaneNear;
 
 static std::vector<EERIEPOLY*> vPolyWater;
 static std::vector<EERIEPOLY*> vPolyLava;
@@ -703,7 +703,7 @@ static void Frustrum_Set(EERIE_FRUSTRUM * fr, long plane,
 static void CreatePlane(EERIE_FRUSTRUM & frustrum, long numplane, const Vec3f & orgn,
                         const Vec3f & pt1, const Vec3f & pt2) {
 	
-	EERIE_FRUSTRUM_PLANE & plane = frustrum.plane[numplane];
+	Plane & plane = frustrum.plane[numplane];
 	
 	Vec3f A = pt1 - orgn;
 	Vec3f B = pt2 - orgn;

@@ -177,7 +177,7 @@ void EERIEPOLY_Compute_PolyIn();
 
 #define MAX_FRUSTRUMS 32
 
-struct EERIE_FRUSTRUM_PLANE
+struct Plane
 {
 	float	a;
 	float	b;
@@ -191,7 +191,7 @@ struct EERIE_FRUSTRUM_PLANE
 
 struct EERIE_FRUSTRUM
 {
-	EERIE_FRUSTRUM_PLANE plane[4];
+	Plane plane[4];
 };
 
 struct EERIE_FRUSTRUM_DATA
