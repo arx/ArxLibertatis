@@ -692,12 +692,12 @@ static bool FrustrumsClipPoly(const EERIE_FRUSTRUM_DATA & frustrums,
 	return true;
 }
 
-static void Frustrum_Set(EERIE_FRUSTRUM * fr, long plane,
+static void Frustrum_Set(Plane & plane,
                          float a, float b, float c, float d) {
-	fr->plane[plane].a=a;
-	fr->plane[plane].b=b;
-	fr->plane[plane].c=c;
-	fr->plane[plane].d=d;
+	plane.a=a;
+	plane.b=b;
+	plane.c=c;
+	plane.d=d;
 }
 
 static void CreatePlane(EERIE_FRUSTRUM & frustrum, long numplane, const Vec3f & orgn,
@@ -755,7 +755,9 @@ static void CreateScreenFrustrum(EERIE_FRUSTRUM * frustrum) {
 	d = matres[3][3] - matres[3][0];
 	b = -b;
 	n = 1.f / std::sqrt(a * a + b * b + c * c);
-	Frustrum_Set(frustrum,0,a*n,b*n,c*n,d*n);
+	
+	Plane & plane = frustrum->plane[0];
+	Frustrum_Set(plane,a*n,b*n,c*n,d*n);
 	}
 	
 	{
@@ -765,7 +767,9 @@ static void CreateScreenFrustrum(EERIE_FRUSTRUM * frustrum) {
 	d = matres[3][3] + matres[3][0];
 	b = -b;
 	n = 1.f / std::sqrt(a * a + b * b + c * c);
-	Frustrum_Set(frustrum,1,a*n,b*n,c*n,d*n);
+	
+	Plane & plane = frustrum->plane[1];
+	Frustrum_Set(plane,a*n,b*n,c*n,d*n);
 	}
 	
 	{
@@ -775,7 +779,9 @@ static void CreateScreenFrustrum(EERIE_FRUSTRUM * frustrum) {
 	d = matres[3][3] - matres[3][1];
 	b = -b;
 	n = 1.f / std::sqrt(a * a + b * b + c * c);
-	Frustrum_Set(frustrum,2,a*n,b*n,c*n,d*n);
+	
+	Plane & plane = frustrum->plane[2];
+	Frustrum_Set(plane,a*n,b*n,c*n,d*n);
 	}
 	
 	{
@@ -785,7 +791,9 @@ static void CreateScreenFrustrum(EERIE_FRUSTRUM * frustrum) {
 	d = matres[3][3] + matres[3][1];
 	b = -b;
 	n = 1.f / std::sqrt(a * a + b * b + c * c);
-	Frustrum_Set(frustrum,3,a*n,b*n,c*n,d*n);
+	
+	Plane & plane = frustrum->plane[3];
+	Frustrum_Set(plane,a*n,b*n,c*n,d*n);
 	}
 	
 	{
