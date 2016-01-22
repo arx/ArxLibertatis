@@ -749,49 +749,53 @@ static void CreateScreenFrustrum(EERIE_FRUSTRUM * frustrum) {
 	float a,b,c,d;
 	
 	{
+	Plane & plane = frustrum->plane[0];
+	
 	a = matres[0][3] - matres[0][0];
 	b = matres[1][3] - matres[1][0];
 	c = matres[2][3] - matres[2][0];
 	d = matres[3][3] - matres[3][0];
 	b = -b;
 	
-	Plane & plane = frustrum->plane[0];
 	Frustrum_Set(plane,a,b,c,d);
 	normalizePlane(plane);
 	}
 	
 	{
+	Plane & plane = frustrum->plane[1];
+	
 	a = matres[0][3] + matres[0][0];
 	b = matres[1][3] + matres[1][0];
 	c = matres[2][3] + matres[2][0];
 	d = matres[3][3] + matres[3][0];
 	b = -b;
 	
-	Plane & plane = frustrum->plane[1];
 	Frustrum_Set(plane,a,b,c,d);
 	normalizePlane(plane);
 	}
 	
 	{
+	Plane & plane = frustrum->plane[2];
+	
 	a = matres[0][3] - matres[0][1];
 	b = matres[1][3] - matres[1][1];
 	c = matres[2][3] - matres[2][1];
 	d = matres[3][3] - matres[3][1];
 	b = -b;
 	
-	Plane & plane = frustrum->plane[2];
 	Frustrum_Set(plane,a,b,c,d);
 	normalizePlane(plane);
 	}
 	
 	{
+	Plane & plane = frustrum->plane[3];
+	
 	a = matres[0][3] + matres[0][1];
 	b = matres[1][3] + matres[1][1];
 	c = matres[2][3] + matres[2][1];
 	d = matres[3][3] + matres[3][1];
 	b = -b;
 	
-	Plane & plane = frustrum->plane[3];
 	Frustrum_Set(plane,a,b,c,d);
 	normalizePlane(plane);
 	}
