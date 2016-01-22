@@ -1183,12 +1183,18 @@ static bool SphereInIO(Entity * io, const Sphere & sphere) {
 		return false;
 
 	long step;
-
-	if (io->obj->vertexlist.size() < 150) step = 1;
-	else if (io->obj->vertexlist.size() < 300) step = 2;
-	else if (io->obj->vertexlist.size() < 600) step = 4;
-	else if (io->obj->vertexlist.size() < 1200) step = 6;
-	else step = 7;
+	long nbv = io->obj->vertexlist.size();
+	
+	if(nbv < 150)
+		step = 1;
+	else if(nbv < 300)
+		step = 2;
+	else if(nbv < 600)
+		step = 4;
+	else if(nbv < 1200)
+		step = 6;
+	else
+		step = 7;
 
 	for(size_t i = 0; i < io->obj->vertexlist.size(); i += step) {
 		if(!fartherThan(sphere.origin, io->obj->vertexlist3[i].v, sphere.radius)) {

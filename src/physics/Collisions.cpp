@@ -1182,8 +1182,7 @@ bool CheckIOInSphere(const Sphere & sphere, const Entity & entity, bool ignoreNo
 					ii--;
 				}
 			}
-
-			long count=0;
+			
 			long step;
 			long nbv = entity.obj->vertexlist.size();
 
@@ -1197,7 +1196,9 @@ bool CheckIOInSphere(const Sphere & sphere, const Entity & entity, bool ignoreNo
 				step = 6;
 			else
 				step = 7;
-
+			
+			long count=0;
+			
 			for(size_t ii = 0; ii < vlist.size(); ii += step) {
 				if(closerThan(vlist[ii].v, sphere.origin, sr30)) {
 					count++;
