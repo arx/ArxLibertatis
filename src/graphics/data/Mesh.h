@@ -183,11 +183,11 @@ struct Plane
 	float	b;
 	float	c;
 	float	d; // dist to origin
-
-	inline float getDist(const Vec3f & point) const {
-		return point.x * a + point.y * b + point.z * c + d;
-	}
 };
+
+inline float distanceToPoint(const Plane & plane, const Vec3f & point) {
+	return point.x * plane.a + point.y * plane.b + point.z * plane.c + plane.d;
+}
 
 struct EERIE_FRUSTRUM
 {

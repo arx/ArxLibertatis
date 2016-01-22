@@ -266,7 +266,7 @@ bool IsSphereInFrustrum(const Vec3f & point, const EERIE_FRUSTRUM & frustrum, fl
 static bool FrustrumsClipSphere(const EERIE_FRUSTRUM_DATA & frustrums,
                                 const Sphere & sphere) {
 	
-	float dists = efpPlaneNear.getDist(sphere.origin);
+	float dists = distanceToPoint(efpPlaneNear, sphere.origin);
 
 	if(dists + sphere.radius > 0) {
 		for(long i = 0; i < frustrums.nb_frustrums; i++) {
@@ -667,10 +667,10 @@ static void ARX_PORTALS_InitDrawnRooms() {
 bool IsSphereInFrustrum(const Vec3f & point, const EERIE_FRUSTRUM & frustrum, float radius)
 {
 	float dists[4];
-	dists[0]=frustrum.plane[0].getDist(point);
-	dists[1]=frustrum.plane[1].getDist(point);
-	dists[2]=frustrum.plane[2].getDist(point);
-	dists[3]=frustrum.plane[3].getDist(point);
+	dists[0] = distanceToPoint(frustrum.plane[0], point);
+	dists[1] = distanceToPoint(frustrum.plane[1], point);
+	dists[2] = distanceToPoint(frustrum.plane[2], point);
+	dists[3] = distanceToPoint(frustrum.plane[3], point);
 
 	if (	(dists[0]+radius>0)
 		&&	(dists[1]+radius>0)
@@ -1110,7 +1110,7 @@ static void ARX_PORTALS_Frustrum_RenderRoomTCullSoft(long room_num, const EERIE_
 			continue;
 		}
 
-		if(ep->v[0].rhw < -efpPlaneNear.getDist(ep->center)) {
+		if(ep->v[0].rhw < -distanceToPoint(efpPlaneNear, ep->center)) {
 			continue;
 		}
 
@@ -1383,7 +1383,7 @@ static void ARX_PORTALS_Frustrum_ComputeRoom(size_t roomIndex,
 		unsigned char ucVisibilityFar=0;
 
 		for(size_t i=0; i<ARRAY_SIZE(epp.v); i++) {
-			float fDist0 = efpPlaneNear.getDist(epp.v[i].p);
+			float fDist0 = distanceToPoint(efpPlaneNear, epp.v[i].p);
 
 			if(fDist0 < 0.f)
 				ucVisibilityNear++;
