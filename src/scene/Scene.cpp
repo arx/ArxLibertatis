@@ -747,44 +747,44 @@ static void CreateScreenFrustrum(EERIE_FRUSTRUM * frustrum) {
 	glm::mat4x4 matres = matProj * matView;
 
 	float a,b,c,d,n;
-	a=matres[0][3]-matres[0][0];
-	b=matres[1][3]-matres[1][0];
-	c=matres[2][3]-matres[2][0];
-	d=matres[3][3]-matres[3][0];
- b=-b;
+	
+	a = matres[0][3] - matres[0][0];
+	b = matres[1][3] - matres[1][0];
+	c = matres[2][3] - matres[2][0];
+	d = matres[3][3] - matres[3][0];
+	b = -b;
 	n = 1.f / std::sqrt(a * a + b * b + c * c);
-
 	Frustrum_Set(frustrum,0,a*n,b*n,c*n,d*n);
-	a=matres[0][3]+matres[0][0];
-	b=matres[1][3]+matres[1][0];
-	c=matres[2][3]+matres[2][0];
-	d=matres[3][3]+matres[3][0];
- b=-b;
+	
+	a = matres[0][3] + matres[0][0];
+	b = matres[1][3] + matres[1][0];
+	c = matres[2][3] + matres[2][0];
+	d = matres[3][3] + matres[3][0];
+	b = -b;
 	n = 1.f / std::sqrt(a * a + b * b + c * c);
-
 	Frustrum_Set(frustrum,1,a*n,b*n,c*n,d*n);
-	a=matres[0][3]-matres[0][1];
-	b=matres[1][3]-matres[1][1];
-	c=matres[2][3]-matres[2][1];
-	d=matres[3][3]-matres[3][1];
- b=-b;
+	
+	a = matres[0][3] - matres[0][1];
+	b = matres[1][3] - matres[1][1];
+	c = matres[2][3] - matres[2][1];
+	d = matres[3][3] - matres[3][1];
+	b = -b;
 	n = 1.f / std::sqrt(a * a + b * b + c * c);
-
 	Frustrum_Set(frustrum,2,a*n,b*n,c*n,d*n);
-	a=matres[0][3]+matres[0][1];
-	b=matres[1][3]+matres[1][1];
-	c=matres[2][3]+matres[2][1];
-	d=matres[3][3]+matres[3][1];
- b=-b;
+	
+	a = matres[0][3] + matres[0][1];
+	b = matres[1][3] + matres[1][1];
+	c = matres[2][3] + matres[2][1];
+	d = matres[3][3] + matres[3][1];
+	b = -b;
 	n = 1.f / std::sqrt(a * a + b * b + c * c);
-
 	Frustrum_Set(frustrum,3,a*n,b*n,c*n,d*n);
 
-	a=matres[0][3]+matres[0][2];
-	b=matres[1][3]+matres[1][2];
-	c=matres[2][3]+matres[2][2];
-	d=matres[3][3]+matres[3][2];
- b=-b;
+	a = matres[0][3] + matres[0][2];
+	b = matres[1][3] + matres[1][2];
+	c = matres[2][3] + matres[2][2];
+	d = matres[3][3] + matres[3][2];
+	b = -b;
 	n = 1.f / std::sqrt(a * a + b * b + c * c);
 	efpPlaneNear.a=a*n;
 	efpPlaneNear.b=b*n;
