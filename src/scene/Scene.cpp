@@ -728,7 +728,7 @@ static void CreateFrustrum(EERIE_FRUSTRUM & frustrum, const Vec3f & pos,
 	}
 }
 
-static void CreateScreenFrustrum(EERIE_FRUSTRUM * frustrum) {
+static void CreateScreenFrustrum(EERIE_FRUSTRUM & frustrum) {
 	
 	glm::mat4x4 matProj;
 	GRenderer->GetProjectionMatrix(matProj);
@@ -739,7 +739,7 @@ static void CreateScreenFrustrum(EERIE_FRUSTRUM * frustrum) {
 	glm::mat4x4 matres = matProj * matView;
 	
 	{
-	Plane & plane = frustrum->plane[0];
+	Plane & plane = frustrum.plane[0];
 	
 	plane.a = matres[0][3] - matres[0][0];
 	plane.b = matres[1][3] - matres[1][0];
@@ -751,7 +751,7 @@ static void CreateScreenFrustrum(EERIE_FRUSTRUM * frustrum) {
 	}
 	
 	{
-	Plane & plane = frustrum->plane[1];
+	Plane & plane = frustrum.plane[1];
 	
 	plane.a = matres[0][3] + matres[0][0];
 	plane.b = matres[1][3] + matres[1][0];
@@ -763,7 +763,7 @@ static void CreateScreenFrustrum(EERIE_FRUSTRUM * frustrum) {
 	}
 	
 	{
-	Plane & plane = frustrum->plane[2];
+	Plane & plane = frustrum.plane[2];
 	
 	plane.a = matres[0][3] - matres[0][1];
 	plane.b = matres[1][3] - matres[1][1];
@@ -775,7 +775,7 @@ static void CreateScreenFrustrum(EERIE_FRUSTRUM * frustrum) {
 	}
 	
 	{
-	Plane & plane = frustrum->plane[3];
+	Plane & plane = frustrum.plane[3];
 	
 	plane.a = matres[0][3] + matres[0][1];
 	plane.b = matres[1][3] + matres[1][1];
@@ -1479,7 +1479,7 @@ void ARX_SCENE_Update() {
 		ARX_PORTALS_InitDrawnRooms();
 		size_t roomIndex = static_cast<size_t>(room_num);
 		EERIE_FRUSTRUM frustrum;
-		CreateScreenFrustrum(&frustrum);
+		CreateScreenFrustrum(frustrum);
 		ARX_PORTALS_Frustrum_ComputeRoom(roomIndex, frustrum);
 
 		for(size_t i = 0; i < RoomDrawList.size(); i++) {
