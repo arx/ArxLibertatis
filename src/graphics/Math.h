@@ -215,9 +215,10 @@ inline float square(float x) {
 	return x * x;
 }
 
+//! \return vertical angle in radians
 inline float focalToFov(float focal) {
 	static const float imagePlaneHeight = 480;
-	return 2 * glm::atan(imagePlaneHeight / (2 * focal)) * (180 / PI);
+	return 2 * glm::atan(imagePlaneHeight / (2 * focal));
 }
 
 /*!

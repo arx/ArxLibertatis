@@ -136,7 +136,7 @@ static void EERIE_CreateMatriceProj(float _fWidth, float _fHeight, EERIE_CAMERA 
 	const float frustumDepth = farDist - nearDist;
 	
 	float fAspect = _fHeight / _fWidth;
-	float fFOV = glm::radians(_fFOV);
+	float fFOV = _fFOV;
 	float w = fAspect * (glm::cos(fFOV / 2) / glm::sin(fFOV / 2));
 	float h =   1.0f  * (glm::cos(fFOV / 2) / glm::sin(fFOV / 2));
 	float Q = farDist / frustumDepth;
