@@ -880,7 +880,8 @@ void ARX_PARTICLES_FirstInit() {
 }
 
 void ARX_PARTICLES_ClearAll() {
-	memset(particle, 0, sizeof(PARTICLE_DEF) * MAX_PARTICLES);
+	
+	std::fill(particle, particle + MAX_PARTICLES, PARTICLE_DEF());
 	ParticleCount = 0;
 }
 

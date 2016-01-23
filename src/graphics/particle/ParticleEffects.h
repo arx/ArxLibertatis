@@ -127,6 +127,30 @@ struct PARTICLE_DEF {
 	short sval;
 	char cval1;
 	char cval2;
+	
+	PARTICLE_DEF()
+		: exist(false)
+		, is2D(false)
+		, ov(Vec3f_ZERO)
+		, move(Vec3f_ZERO)
+		, scale(Vec3f_ZERO)
+		, oldpos(Vec3f_ZERO)
+		, siz(0.f)
+		, zdec(false)
+		, timcreation(0)
+		, tolive(0)
+		, delay(0)
+		, tc(NULL)
+		, rgb(Color3f::black)
+		, special(0)
+		, fparam(0.f)
+		, mask(0)
+		, source(NULL)
+		, sourceionum()
+		, sval(0)
+		, cval1(0)
+		, cval2(0)
+	{ }
 };
 
 //-----------------------------------------------------------------------------
