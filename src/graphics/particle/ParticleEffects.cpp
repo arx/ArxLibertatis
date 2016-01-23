@@ -1114,17 +1114,14 @@ void ARX_PARTICLES_Update(EERIE_CAMERA * cam)  {
 			if((part->special & FIRE_TO_SMOKE) && Random::getf() > 0.7f) {
 				
 				part->ov += part->move;
-				part->tolive += (part->tolive / 4) + (part->tolive / 8);
+				part->tolive = part->tolive * 1.375f;
 				part->special &= ~FIRE_TO_SMOKE;
 				part->tc = smokeparticle;
-				part->scale *= 2.4f;
-				part->scale = glm::abs(part->scale);
+				part->scale = glm::abs(part->scale * 2.4f);
 				part->rgb = Color3f::gray(.45f);
 				part->move *= 0.5f;
 				part->siz *= 1.f / 3;
-				part->special &= ~FIRE_TO_SMOKE;
 				part->timcreation = tim;
-				part->tc = smokeparticle;
 				
 				framediff = part->tolive;
 				
