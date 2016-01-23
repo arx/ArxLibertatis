@@ -133,12 +133,13 @@ static void EERIE_CreateMatriceProj(float _fWidth, float _fHeight, EERIE_CAMERA 
 	
 	const float nearDist = 1.f;
 	const float farDist = cam->cdepth;
+	const float frustumDepth = farDist - nearDist;
 	
 	float fAspect = _fHeight / _fWidth;
 	float fFOV = glm::radians(_fFOV);
 	float w = fAspect * (glm::cos(fFOV / 2) / glm::sin(fFOV / 2));
 	float h =   1.0f  * (glm::cos(fFOV / 2) / glm::sin(fFOV / 2));
-	float Q = farDist / (farDist - nearDist);
+	float Q = farDist / frustumDepth;
 
 	cam->ProjectionMatrix = glm::mat4x4();
 	cam->ProjectionMatrix[0][0] = w;
@@ -154,7 +155,7 @@ static void EERIE_CreateMatriceProj(float _fWidth, float _fHeight, EERIE_CAMERA 
 
 	cam->ProjectionMatrix[0][0] *= _fWidth * .5f;
 	cam->ProjectionMatrix[1][1] *= _fHeight * .5f;
-	cam->ProjectionMatrix[2][2] = -(farDist * nearDist) / (farDist - nearDist);	//HYPERBOLIC
+	cam->ProjectionMatrix[2][2] = -(farDist * nearDist) / frustumDepth;	//HYPERBOLIC
 	cam->ProjectionMatrix[3][2] = Q;
 
 	GRenderer->SetViewport(Rect(static_cast<s32>(_fWidth), static_cast<s32>(_fHeight)));
