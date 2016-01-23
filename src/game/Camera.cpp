@@ -129,16 +129,15 @@ static glm::mat4 Util_SetViewMatrix(EERIE_TRANSFORM &transform) {
 
 static void EERIE_CreateMatriceProj(float _fWidth, float _fHeight, EERIE_CAMERA * cam) {
 
-	float _fFOV = focalToFov(cam->focal);
+	float fov = focalToFov(cam->focal);
 	
 	const float nearDist = 1.f;
 	const float farDist = cam->cdepth;
 	const float frustumDepth = farDist - nearDist;
 	
 	float fAspect = _fHeight / _fWidth;
-	float fFOV = _fFOV;
-	float w = fAspect * (glm::cos(fFOV / 2) / glm::sin(fFOV / 2));
-	float h =   1.0f  * (glm::cos(fFOV / 2) / glm::sin(fFOV / 2));
+	float w = fAspect * (glm::cos(fov / 2) / glm::sin(fov / 2));
+	float h =   1.0f  * (glm::cos(fov / 2) / glm::sin(fov / 2));
 	float Q = farDist / frustumDepth;
 
 	cam->ProjectionMatrix = glm::mat4x4();
