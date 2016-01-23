@@ -142,12 +142,13 @@ static void EERIE_CreateMatriceProj(float _fWidth, float _fHeight, EERIE_CAMERA 
 	float h =   1.0f  * (glm::cos(fFOV / 2) / glm::sin(fFOV / 2));
 	float Q = fFarPlane / (fFarPlane - fNearPlane);
 
-	memset(&cam->ProjectionMatrix, 0, sizeof(glm::mat4x4));
+	cam->ProjectionMatrix = glm::mat4x4();
 	cam->ProjectionMatrix[0][0] = w;
 	cam->ProjectionMatrix[1][1] = h;
 	cam->ProjectionMatrix[2][2] = Q;
 	cam->ProjectionMatrix[3][2] = (-Q * fNearPlane);
 	cam->ProjectionMatrix[2][3] = 1.f;
+	cam->ProjectionMatrix[3][3] = 0.f;
 	GRenderer->SetProjectionMatrix(cam->ProjectionMatrix);
 	
 	glm::mat4 tempViewMatrix = Util_SetViewMatrix(cam->orgTrans);
