@@ -76,6 +76,17 @@ struct CLightning::LIGHTNING {
 	int aParent;
 	Vec3f fAngleMin;
 	Vec3f fAngleMax;
+	
+	LIGHTNING()
+		: eStart(Vec3f_ZERO)
+		, eVect(Vec3f_ZERO)
+		, anb(0)
+		, anbrec(0)
+		, abFollow(false)
+		, aParent(0)
+		, fAngleMin(Vec3f_ZERO)
+		, fAngleMax(Vec3f_ZERO)
+	{ }
 };
 
 CLightning::CLightning()
@@ -228,9 +239,8 @@ void CLightning::ReCreate(float rootSize)
 	m_nbtotal = 0;
 
 	if(m_nbtotal == 0) {
-		LIGHTNING LInfo;
-		memset(&LInfo, 0, sizeof(LIGHTNING));
-
+		LIGHTNING LInfo = LIGHTNING();
+		
 		LInfo.eStart = m_eSrc;
 		LInfo.eVect = m_eDest - m_eSrc;
 		LInfo.anb = m_lNbSegments;
