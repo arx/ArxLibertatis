@@ -49,6 +49,7 @@ ZeniMax Media Inc., Suite 120, Rockville, Maryland 20850 USA.
 
 #include "math/Types.h"
 #include "math/Angle.h"
+#include "math/Vector.h"
 #include "graphics/Color.h"
 
 struct EERIE_3DOBJ;
@@ -68,6 +69,22 @@ struct FOG_DEF
 	long		tolive;
 	long		blend;
 	float		frequency;
+	
+	FOG_DEF()
+		: exist(false)
+		, pos(Vec3f_ZERO)
+		, rgb(Color3f::black)
+		, size(0.f)
+		, special(0)
+		, scale(0.f)
+		, move(Vec3f_ZERO)
+		, angle()
+		, speed(0.f)
+		, rotatespeed(0.f)
+		, tolive(0)
+		, blend(0)
+		, frequency(0.f)
+	{ }
 };
 
 #define FOG_DIRECTIONAL 1

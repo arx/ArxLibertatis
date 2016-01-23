@@ -63,7 +63,7 @@ FOG_DEF fogs[MAX_FOG];
 void ARX_FOGS_Clear()
 {
 	for(size_t i = 0; i < MAX_FOG; i++) {
-		memset(&fogs[i], 0, sizeof(FOG_DEF));
+		fogs[i] = FOG_DEF();
 	}
 }
 
