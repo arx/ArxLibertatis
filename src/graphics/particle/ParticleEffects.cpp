@@ -1132,27 +1132,6 @@ void ARX_PARTICLES_Update(EERIE_CAMERA * cam)  {
 			}
 		}
 		
-		if((part->special & FIRE_TO_SMOKE2)
-				&& framediff2 > long(part->tolive - (part->tolive / 4))) {
-			
-			part->special &= ~FIRE_TO_SMOKE2;
-		
-			PARTICLE_DEF * pd = createParticle(true);
-			if(pd) {
-				*pd = *part;
-				pd->timcreation = tim;
-				pd->zdec = false;
-				pd->special |= SUBSTRACT;
-				pd->ov = part->oldpos;
-				pd->tc = tzupouf;
-				pd->scale *= 4.f;
-				part->scale = glm::abs(part->scale);
-				pd->rgb = Color3f::white;
-				pd->move *= 0.5f;
-				pd->siz *= 1.f / 3;
-			}
-		}
-		
 		float val = (part->tolive - framediff) * 0.01f;
 		
 		Vec3f in = part->ov + part->move * val;

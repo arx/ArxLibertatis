@@ -73,9 +73,9 @@ enum ParticlesTypeFlag {
 	DISSIPATING         = (1<<4),
 	GRAVITY             = (1<<5),
 	SUBSTRACT           = (1<<6),
-	FIRE_TO_SMOKE2      = (1<<7),
-	PARTICLE_SPARK2     = (1<<8), //TODO unused
-	FOLLOW_SOURCE       = (1<<9), // TODO unused
+	FIRE_TO_SMOKE2      = (1<<7),  // TODO unused
+	PARTICLE_SPARK2     = (1<<8),  // TODO unused
+	FOLLOW_SOURCE       = (1<<9),  // TODO unused
 	FOLLOW_SOURCE2      = (1<<10), // TODO unused
 	DELAY_FOLLOW_SOURCE = (1<<11),
 	NO_TRANS            = (1<<12),
