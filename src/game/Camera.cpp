@@ -127,7 +127,7 @@ static glm::mat4 Util_SetViewMatrix(EERIE_TRANSFORM &transform) {
 	return Util_LookAt(vFrom, vView, vWorldUp);
 }
 
-static void EERIE_CreateMatriceProj(float _fWidth, float _fHeight, EERIE_CAMERA * cam) {
+static void EERIE_CreateMatriceProj(float width, float height, EERIE_CAMERA * cam) {
 
 	float fov = focalToFov(cam->focal);
 	
@@ -135,8 +135,8 @@ static void EERIE_CreateMatriceProj(float _fWidth, float _fHeight, EERIE_CAMERA 
 	const float farDist = cam->cdepth;
 	const float frustumDepth = farDist - nearDist;
 	
-	float fAspect = _fHeight / _fWidth;
-	float w = fAspect * (glm::cos(fov / 2) / glm::sin(fov / 2));
+	float aspect = height / width;
+	float w = aspect * (glm::cos(fov / 2) / glm::sin(fov / 2));
 	float h =   1.0f  * (glm::cos(fov / 2) / glm::sin(fov / 2));
 	float Q = farDist / frustumDepth;
 
@@ -152,12 +152,12 @@ static void EERIE_CreateMatriceProj(float _fWidth, float _fHeight, EERIE_CAMERA 
 	glm::mat4 tempViewMatrix = Util_SetViewMatrix(cam->orgTrans);
 	GRenderer->SetViewMatrix(tempViewMatrix);
 
-	cam->ProjectionMatrix[0][0] *= _fWidth * .5f;
-	cam->ProjectionMatrix[1][1] *= _fHeight * .5f;
+	cam->ProjectionMatrix[0][0] *= width * .5f;
+	cam->ProjectionMatrix[1][1] *= height * .5f;
 	cam->ProjectionMatrix[2][2] = -(farDist * nearDist) / frustumDepth;	//HYPERBOLIC
 	cam->ProjectionMatrix[3][2] = Q;
 
-	GRenderer->SetViewport(Rect(static_cast<s32>(_fWidth), static_cast<s32>(_fHeight)));
+	GRenderer->SetViewport(Rect(static_cast<s32>(width), static_cast<s32>(height)));
 }
 
 void SP_PrepareCamera(EERIE_CAMERA * cam) {
