@@ -96,14 +96,14 @@ CLightning::CLightning()
 	, m_caster()
 	, m_level(1.f)
 	, m_fDamage(1)
-	, m_isMassLightning(false),
-	m_nbtotal(0),
-	m_lNbSegments(40),
-	m_invNbSegments(1.0f / 40.0f),
-	m_fLengthMin(5.0f),  
-	m_fLengthMax(40.0f),  
-	m_fAngleMin(5.0f, 5.0f, 5.0f),
-	m_fAngleMax(32.0f, 32.0f, 32.0f)
+	, m_isMassLightning(false)
+	, m_nbtotal(0)
+	, m_lNbSegments(40)
+	, m_invNbSegments(1.0f / 40.0f)
+	, m_fLengthMin(5.0f)
+	, m_fLengthMax(40.0f)
+	, m_fAngleMin(5.0f, 5.0f, 5.0f)
+	, m_fAngleMax(32.0f, 32.0f, 32.0f)
 	, m_iTTL(0)
 {
 	SetDuration(2000);
