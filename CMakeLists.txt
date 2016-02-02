@@ -66,7 +66,7 @@ set(WITH_SDL CACHE STRING "The SDL version to use: 1 or 2 or empty (use any)")
 set(WITH_QT CACHE STRING "The Qt version to use: 4 or 5 or empty (use any)")
 
 # Build types
-option(UNITY_BUILD "Unity build" OFF)
+option(UNITY_BUILD "Unity build" ON)
 option(DEBUG_EXTRA "Expensive debug options" OFF)
 option(SET_WARNING_FLAGS "Adjust compiler warning flags" ON)
 option(SET_NOISY_WARNING_FLAGS "Enable noisy compiler warnings" OFF)
