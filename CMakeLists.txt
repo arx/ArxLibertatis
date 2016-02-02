@@ -47,7 +47,12 @@ endif()
 option(BUILD_PROFILER_INSTRUMENT "Enable instrumentation for the profiler" OFF)
 option(BUILD_PROFILER "Build the profiler GUI" ${BUILD_PROFILER_INSTRUMENT})
 option(BUILD_EDIT_LOADSAVE "Build save/load functions only used by the editor" ON)
-option(BUILD_IO_LIBRARY "Build shared library for reading and writing arx data" ON)
+option(INSTALL_BLENDER_PLUGIN "Install the Arx Libertatis blender plugin" ON)
+option(BUILD_IO_LIBRARY "Build shared library for reading and writing arx data"
+       ${INSTALL_BLENDER_PLUGIN})
+if(INSTALL_BLENDER_PLUGIN)
+	set(BUILD_IO_LIBRARY ON)
+endif()
 option(INSTALL_SCRIPTS "Install the data install script" ON)
 
 # Optional dependencies
@@ -136,6 +141,8 @@ set(SCRIPTDIR "${CMAKE_INSTALL_BINDIR}" CACHE
     STRING "Where to install the data install script (relative to prefix).")
 set(INSTALL_DATADIR "${CMAKE_INSTALL_DATAROOTDIR}/games/arx" CACHE
     STRING "Install location for Arx Libertatis data files (relative to prefix).")
+set(INSTALL_BLENDER_PLUGINDIR "${CMAKE_INSTALL_DATAROOTDIR}/blender/scripts/addons/arx" CACHE
+    STRING "Install location for the Arx Libertatis blender plugin (relative to prefix).")
 set(RUNTIME_LIBEXECDIR "${CMAKE_INSTALL_FULL_LIBEXECDIR}" CACHE
     STRING "Runtime search locations for helpers, relative to the game executable.")
 mark_as_advanced(
@@ -1403,6 +1410,10 @@ if(BUILD_IO_LIBRARY)
 	add_library_shared(ArxIO "${ArxIO_SOURCES}" "${ArxIO_LIBRARIES}")
 	set_binary_public_headers(ArxIO src/lib/ArxIO.h)
 	
+endif()
+
+if(INSTALL_BLENDER_PLUGIN)
+	install(DIRECTORY plugins/blender/arx_addon/ DESTINATION "${INSTALL_BLENDER_PLUGINDIR}")
 endif()
 
 

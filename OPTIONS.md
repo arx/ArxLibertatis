@@ -74,8 +74,10 @@ The following options can be used to customize where `make install` puts the var
 * `RUNTIME_DATADIR` (default: `.`): Paths relative to the game executable to search for data files
 * `SCRIPTDIR` (default: `${BINDIR}`): Where to install the data install script
 * `INSTALL_DATADIR` (default: `${DATAROOTDIR}/games/arx`): Where to install Arx Libertatis data files. This should be one of the directories found from DATA_DIR_PREFIXES + DATA_DIR combinations at runtime.
+* `INSTALL_BLENDER_PLUGINDIR` (default: `${DATAROOTDIR}/blender/scripts/addons/arx"`): Where to install the Arx Libertatis Blender plugin.
 
 * `INSTALL_SCRIPTS` (default: `ON`): Install the data install script. There is no data install script on Windows, so there this option does nothing.
+* `INSTALL_BLENDER_PLUGIN` (default: `ON`): Install the Arx Libertatis Blender plugin. Implies `BUILD_IO_LIBRARY`.
 
 ### Optional dependencies
 
