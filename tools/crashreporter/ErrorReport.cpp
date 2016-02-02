@@ -37,9 +37,7 @@
 #include <QByteArray>
 
 // Boost
-#include <boost/date_time/microsec_time_clock.hpp>
-#include <boost/date_time/time_duration.hpp>
-#include <boost/date_time/posix_time/ptime.hpp>
+#include <boost/date_time/posix_time/posix_time_types.hpp>
 
 #include "Configure.h"
 
