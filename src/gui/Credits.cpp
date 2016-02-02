@@ -190,7 +190,7 @@ bool Credits::load() {
 	m_text += "\n\n\n" + arx_copyright;
 	
 	if(!m_libraries.empty()) {
-		m_text += "\n\n\n" "~This build uses the following tools and libraries:\n\n";
+		m_text += "\n\n\n" "~This build was made using the following tools and libraries:\n\n";
 		Libraries::const_iterator compiler = m_libraries.find("compiler");
 		if(compiler != m_libraries.end()) {
 			m_text += "Compiler: ";
