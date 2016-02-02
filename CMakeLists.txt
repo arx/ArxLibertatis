@@ -1342,7 +1342,7 @@ if(ARX_HAVE_PROFILER)
 	add_executable_shared(arxprofiler
 	                      "${arxprofiler_SOURCES}" "${arxprofiler_LIBRARIES}")
 	set_binary_type(arxprofiler WIN32)
-	set_binary_installdir(arxprofiler "${CMAKE_INSTALL_LIBEXECDIR}")
+	set_binary_installdir(arxprofiler "${CMAKE_INSTALL_BINDIR}")
 	add_binary_includes(arxprofiler ${arxprofiler_INCLUDES})
 	
 endif()
