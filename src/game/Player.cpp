@@ -1714,6 +1714,8 @@ retry:
 			}
 		}
 		
+		request0_loop = false;
+		
 		goto makechanges;
 	} else {
 	makechanges:
