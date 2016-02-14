@@ -444,7 +444,7 @@ public:
 };
 
 // TODO remove this
-const std::string AUTO_RESOLUTION_STRING = "Automatic";
+const std::string AUTO_RESOLUTION_STRING = "Desktop";
 
 class VideoOptionsMenuPage : public MenuPage {
 public:
