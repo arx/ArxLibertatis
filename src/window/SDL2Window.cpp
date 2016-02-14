@@ -298,7 +298,7 @@ void SDL2Window::changeMode(DisplayMode mode, bool makeFullscreen) {
 	
 	bool wasFullscreen = m_fullscreen;
 	
-	m_renderer->beforeResize(wasFullscreen || makeFullscreen);
+	m_renderer->beforeResize(false);
 	
 	if(makeFullscreen) {
 		if(mode.resolution != Vec2i_ZERO) {
