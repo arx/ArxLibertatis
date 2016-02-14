@@ -19,6 +19,7 @@
 
 #include "graphics/opengl/OpenGLRenderer.h"
 
+#include <algorithm>
 #include <sstream>
 
 #include <glm/gtc/type_ptr.hpp>
@@ -152,8 +153,58 @@ void OpenGLRenderer::initialize() {
 	CrashHandler::setVariable("OpenGL vendor", glVendor);
 	
 	const GLubyte * glRenderer = glGetString(GL_RENDERER);
-	LogInfo << " └─ Device: " << glRenderer;
+	LogInfo << " ├─ Device: " << glRenderer;
 	CrashHandler::setVariable("OpenGL device", glRenderer);
+	
+	u64 totalVRAM = 0, freeVRAM = 0;
+	{
+		#ifdef GL_NVX_gpu_memory_info
+		if(GLEW_NVX_gpu_memory_info) {
+			// Implemented by the NVIDIA blob and radeon drivers in newer Mesa
+			GLint tmp = 0;
+			glGetIntegerv(GL_GPU_MEMORY_INFO_DEDICATED_VIDMEM_NVX, &tmp);
+			totalVRAM = u64(tmp) * 1024;
+			glGetIntegerv(GL_GPU_MEMORY_INFO_CURRENT_AVAILABLE_VIDMEM_NVX, &tmp);
+			freeVRAM = u64(tmp) * 1024;
+		}
+		#endif
+		#if defined(GL_NVX_gpu_memory_info) && defined(GL_ATI_meminfo)
+		else
+		#endif
+		#ifdef GL_ATI_meminfo
+		if(GLEW_ATI_meminfo) {
+			// Implemented by the AMD blob and radeon drivers in newer Mesa
+			GLint info[4];
+			glGetIntegerv(GL_VBO_FREE_MEMORY_ATI, info);
+			freeVRAM = u64(info[0]) * 1024;
+			glGetIntegerv(GL_TEXTURE_FREE_MEMORY_ATI, info);
+			freeVRAM = std::max(freeVRAM, u64(info[0]) * 1024);
+		}
+		#endif
+		/*
+		 * There is also GLX_MESA_query_renderer but being a GLX extension it's too
+		 * anoying to use here.
+		 */
+	}
+	{
+		std::ostringstream oss;
+		if(totalVRAM == 0 && freeVRAM == 0) {
+			oss << "(unknown)";
+		} else {
+			if(totalVRAM != 0) {
+				oss << (totalVRAM / 1024 / 1024) << " MiB";
+				CrashHandler::setVariable("VRAM size", totalVRAM);
+			}
+			if(totalVRAM != 0 && freeVRAM != 0) {
+				oss << ", ";
+			}
+			if(freeVRAM != 0) {
+				oss << (freeVRAM / 1024 / 1024) << " MiB free";
+				CrashHandler::setVariable("VRAM available", freeVRAM);
+			}
+		}
+		LogInfo << " └─ VRAM: " << oss.str();
+	}
 	
 	{
 		std::ostringstream oss;
