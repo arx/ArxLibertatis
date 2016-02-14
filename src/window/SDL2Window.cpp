@@ -26,6 +26,9 @@
 #include <signal.h>
 #endif
 
+#define SDL_PROTOTYPES_ONLY 1
+#include "SDL_syswm.h"
+
 #include "gui/Credits.h"
 #include "graphics/opengl/GLDebug.h"
 #include "graphics/opengl/OpenGLRenderer.h"
@@ -34,6 +37,26 @@
 #include "math/Rectangle.h"
 #include "platform/CrashHandler.h"
 #include "platform/Platform.h"
+
+// Avoid including SDL_syswm.h without SDL_PROTOTYPES_ONLY
+// it includes X11 stuff which pullutes the namespace global namespace.
+typedef enum {
+	ARX_SDL_SYSWM_UNKNOWN,
+	ARX_SDL_SYSWM_WINDOWS,
+	ARX_SDL_SYSWM_X11,
+	ARX_SDL_SYSWM_DIRECTFB,
+	ARX_SDL_SYSWM_COCOA,
+	ARX_SDL_SYSWM_UIKIT,
+	ARX_SDL_SYSWM_WAYLAND,
+	ARX_SDL_SYSWM_MIR,
+	ARX_SDL_SYSWM_WINRT,
+	ARX_SDL_SYSWM_ANDROID
+} ARX_SDL_SYSWM_TYPE;
+struct ARX_SDL_SysWMinfo {
+	SDL_version version;
+	ARX_SDL_SYSWM_TYPE subsystem;
+	char padding[1024];
+};
 
 SDL2Window * SDL2Window::s_mainWindow = NULL;
 
@@ -245,6 +268,34 @@ bool SDL2Window::initialize() {
 		}
 		
 		// All good
+		const char * system = "(unknown)";
+		{
+		  ARX_SDL_SysWMinfo info;
+			info.version.major = 2;
+			info.version.minor = 0;
+			info.version.patch = 4;
+			if(SDL_GetWindowWMInfo(m_window, reinterpret_cast<SDL_SysWMinfo *>(&info))) {
+				switch(info.subsystem) {
+					case ARX_SDL_SYSWM_UNKNOWN:   break;
+					case ARX_SDL_SYSWM_WINDOWS:   system = "Windows"; break;
+					case ARX_SDL_SYSWM_X11:       system = "X11"; break;
+					#if SDL_VERSION_ATLEAST(2, 0, 3)
+					case ARX_SDL_SYSWM_WINRT:     system = "WinRT"; break;
+					#endif
+					case ARX_SDL_SYSWM_DIRECTFB:  system = "DirectFB"; break;
+					case ARX_SDL_SYSWM_COCOA:     system = "Cocoa"; break;
+					case ARX_SDL_SYSWM_UIKIT:     system = "UIKit"; break;
+					#if SDL_VERSION_ATLEAST(2, 0, 2)
+					case ARX_SDL_SYSWM_WAYLAND:   system = "Wayland"; break;
+					case ARX_SDL_SYSWM_MIR:       system = "Mir"; break;
+					#endif
+					#if SDL_VERSION_ATLEAST(2, 0, 4)
+					case ARX_SDL_SYSWM_ANDROID:   system = "Android"; break;
+					#endif
+				}
+			}
+		}
+		
 		int red = 0, green = 0, blue = 0, alpha = 0, depth = 0, doublebuffer = 0;
 		SDL_GL_GetAttribute(SDL_GL_RED_SIZE, &red);
 		SDL_GL_GetAttribute(SDL_GL_GREEN_SIZE, &green);
@@ -252,8 +303,9 @@ bool SDL2Window::initialize() {
 		SDL_GL_GetAttribute(SDL_GL_ALPHA_SIZE, &alpha);
 		SDL_GL_GetAttribute(SDL_GL_DEPTH_SIZE, &depth);
 		SDL_GL_GetAttribute(SDL_GL_DOUBLEBUFFER, &doublebuffer);
-		LogInfo << "Window: r:" << red << " g:" << green << " b:" << blue << " a:" << alpha
-		        << " depth:" << depth << " aa:" << msaa << "x doublebuffer:" << doublebuffer;
+		LogInfo << "Window: " << system << " r:" << red << " g:" << green << " b:" << blue
+		        << " a:" << alpha << " depth:" << depth << " aa:" << msaa << "x"
+		        << " doublebuffer:" << doublebuffer;
 		break;
 	}
 	
