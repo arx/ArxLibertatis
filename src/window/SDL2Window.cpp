@@ -71,6 +71,11 @@ SDL2Window::~SDL2Window() {
 
 bool SDL2Window::initializeFramework() {
 	
+	#ifdef ARX_DEBUG
+	// SDL 2.0.4+
+	SDL_SetHint("SDL_HINT_NO_SIGNAL_HANDLERS", "1");
+	#endif
+	
 	arx_assert(s_mainWindow == NULL, "SDL only supports one window"); // TODO it supports multiple windows now!
 	arx_assert(m_displayModes.empty());
 	
@@ -83,16 +88,6 @@ bool SDL2Window::initializeFramework() {
 		return false;
 	}
 	
-	#ifdef ARX_DEBUG
-	// No SDL, this is more annoying than helpful!
-	#if defined(SIGINT)
-	signal(SIGINT, SIG_DFL);
-	#endif
-	#if defined(SIGTERM)
-	signal(SIGTERM, SIG_DFL);
-	#endif
-	#endif
-	
 	SDL_version ver;
 	SDL_GetVersion(&ver);
 	std::ostringstream runtimeVersion;
@@ -100,6 +95,19 @@ bool SDL2Window::initializeFramework() {
 	LogInfo << "Using SDL " << runtimeVersion.str();
 	CrashHandler::setVariable("SDL version (runtime)", runtimeVersion.str());
 	credits::setLibraryCredits("windowing", "SDL " + runtimeVersion.str());
+	
+	#ifdef ARX_DEBUG
+	// No SDL, this is more annoying than helpful!
+	if(ver.major == 2 && ver.minor == 0 && ver.patch < 4) {
+		// Earlier versions don't support SDL_HINT_NO_SIGNAL_HANDLERS
+		#if defined(SIGINT)
+		signal(SIGINT, SIG_DFL);
+		#endif
+		#if defined(SIGTERM)
+		signal(SIGTERM, SIG_DFL);
+		#endif
+	}
+	#endif
 	
 	int ndisplays = SDL_GetNumVideoDisplays();
 	for(int display = 0; display < ndisplays; display++) {
