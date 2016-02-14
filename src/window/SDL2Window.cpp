@@ -301,6 +301,10 @@ void SDL2Window::changeMode(DisplayMode mode, bool makeFullscreen) {
 	m_renderer->beforeResize(false);
 	
 	if(makeFullscreen) {
+		if(wasFullscreen) {
+			// SDL will not update the window size with the new mode if already fullscreen
+			SDL_SetWindowFullscreen(m_window, 0);
+		}
 		if(mode.resolution != Vec2i_ZERO) {
 			SDL_DisplayMode sdlmode;
 			SDL_DisplayMode requested;
