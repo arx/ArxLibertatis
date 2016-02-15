@@ -93,20 +93,20 @@ private:
 	
 public:
 	
-	inline Logger(const char * _file, int _line, LogLevel _level, bool _enabled)
-	       : file(_file), line(_line), level(_level), enabled(_enabled) { }
-	inline Logger(const char * _file, int _line, LogLevel _level)
-	       : file(_file), line(_line), level(_level), enabled(isEnabled(_file, _level)) { }
+	Logger(const char * _file, int _line, LogLevel _level, bool _enabled)
+		: file(_file), line(_line), level(_level), enabled(_enabled) { }
+	Logger(const char * _file, int _line, LogLevel _level)
+		: file(_file), line(_line), level(_level), enabled(isEnabled(_file, _level)) { }
 	
 	template <class T>
-	inline Logger & operator<<(const T & i) {
+	Logger & operator<<(const T & i) {
 		if(enabled) {
 			buffer << i;
 		}
 		return *this;
 	}
 	
-	inline ~Logger() {
+	~Logger() {
 		if(enabled) {
 			log(file, line, level, buffer.str());
 		}
