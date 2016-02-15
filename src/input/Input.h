@@ -119,6 +119,7 @@ private:
 	Mouse::Mode m_mouseMode;
 	Vec2s iMouseR;
 	Vec2s iMouseA;
+	Vec2s m_lastMousePosition;
 	bool  mouseInWindow;
 	
 	int   iSensibility;

@@ -65,8 +65,6 @@ private:
 	size_t currentClickCount[Mouse::ButtonCount];
 	size_t currentUnclickCount[Mouse::ButtonCount];
 	
-	Vec2i lastCursorAbs;
-	
 };
 
 #endif // ARX_INPUT_SDL2INPUTBACKEND_H

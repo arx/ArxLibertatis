@@ -172,7 +172,6 @@ SDL2InputBackend::SDL2InputBackend(SDL2Window * window) : m_window(window) {
 	
 	wheel = 0;
 	cursorAbs = Vec2i_ZERO;
-	lastCursorAbs = Vec2i_ZERO;
 	cursorInWindow = false;
 	cursorRel = Vec2i_ZERO;
 	std::fill_n(keyStates, ARRAY_SIZE(keyStates), false);
@@ -190,8 +189,6 @@ bool SDL2InputBackend::update() {
 	
 	wheel = 0;
 	
-	cursorRel = cursorAbs - lastCursorAbs;
-	lastCursorAbs = cursorAbs;
 	
 	std::fill_n(clickCount, ARRAY_SIZE(clickCount), 0);
 	std::fill_n(unclickCount, ARRAY_SIZE(unclickCount), 0);
@@ -205,7 +202,7 @@ bool SDL2InputBackend::getAbsoluteMouseCoords(int & absX, int & absY) const {
 }
 
 void SDL2InputBackend::setAbsoluteMouseCoords(int absX, int absY) {
-	lastCursorAbs = cursorAbs = Vec2i(absX, absY);
+	cursorAbs = Vec2i(absX, absY);
 	SDL_WarpMouseInWindow(m_window->m_window, absX, absY);
 }
 

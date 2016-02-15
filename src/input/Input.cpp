@@ -200,6 +200,7 @@ void ARX_INPUT_Release() {
 Input::Input()
 	: backend(NULL)
 	, m_mouseMode(Mouse::Absolute)
+	, m_lastMousePosition(Vec2s_ZERO)
 	, mouseInWindow(false)
 {
 	setMouseSensitivity(2);
@@ -210,6 +211,10 @@ bool Input::init(Window * window) {
 	arx_assert(backend == NULL);
 	
 	backend = window->getInputBackend();
+	
+	int x, y;
+	backend->getAbsoluteMouseCoords(x, y);
+	m_lastMousePosition = Vec2s(x, y);
 	
 	return (backend != NULL);
 }
@@ -259,7 +264,7 @@ void Input::setMousePosAbs(const Vec2s & mousePos) {
 		backend->setAbsoluteMouseCoords(mousePos.x, mousePos.y);
 	}
 	
-	iMouseA = mousePos;
+	m_lastMousePosition = iMouseA = mousePos;
 }
 
 void Input::update() {
@@ -403,13 +408,14 @@ void Input::update() {
 	// Get the new coordinates
 	int absX, absY;
 	mouseInWindow = backend->getAbsoluteMouseCoords(absX, absY);
+	Vec2s newMousePosition(absX, absY);
 	
 	Vec2i wndSize = mainApp->getWindow()->getSize();
 	if(absX >= 0 && absX < wndSize.x && absY >= 0 && absY < wndSize.y) {
 		
 		// Use the absolute mouse position reported by the backend, as is
 		if(m_mouseMode == Mouse::Absolute) {
-			iMouseA = Vec2s((short)absX, (short)absY);
+			iMouseA = newMousePosition;
 		} else {
 			iMouseA = mainApp->getWindow()->getSize() / 2;
 		}
@@ -423,20 +429,27 @@ void Input::update() {
 	
 	if(m_mouseMode == Mouse::Relative) {
 		
+		iMouseR = newMousePosition - m_lastMousePosition;
+		m_lastMousePosition = newMousePosition;
+		if(iMouseR != Vec2s_ZERO) {
+			centerMouse();
+		}
+		
 		// Use the sensitivity config value to adjust relative mouse mouvements
 		float fSensMax = 1.f / 6.f;
 		float fSensMin = 2.f;
 		float fSens = ( ( fSensMax - fSensMin ) * ( (float)iSensibility ) / 10.f ) + fSensMin;
 		fSens = std::pow(0.7f, fSens) * 2.f;
-		iMouseR.x = relX * fSens;
-		iMouseR.y = relY * fSens;
+		iMouseR *= fSens;
 		
-		if(!mouseInWindow || iMouseR != Vec2s_ZERO) {
-			GInput->setMousePosAbs(Vec2s(mainApp->getWindow()->getSize() / 2));
+		if(!mouseInWindow) {
+			LogWarning << "Cursor escaped the window while in relative input mode";
+			centerMouse();
 		}
 		
 	} else {
 		iMouseR = Vec2s_ZERO;
+		m_lastMousePosition = newMousePosition;
 	}
 	
 }
