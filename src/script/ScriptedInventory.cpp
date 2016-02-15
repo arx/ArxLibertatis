@@ -76,7 +76,7 @@ class InventoryCommand : public Command {
 		explicit SubCommand(const std::string & name)
 			: Command("inventory " + name, AnyEntity), command(name) { }
 		
-		inline const std::string & getCommand() { return command; }
+		const std::string & getCommand() { return command; }
 		
 	};
 	
