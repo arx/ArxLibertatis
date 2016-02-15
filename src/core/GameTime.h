@@ -51,126 +51,125 @@ ZeniMax Media Inc., Suite 120, Rockville, Maryland 20850 USA.
 
 #include "platform/Time.h"
 
-	class GameTime
-	{
-	public:
-
-		GameTime();
-		~GameTime() {}
-
-		void init();
-
-		void pause();
-		void resume();
-
-		void force_time_restore(const float &time);
-
-		// TODO probably the source of the need to clip frame_delay
-		void force_frame_time_restore(const float &v) {
-			frame_time_us = v * 1000;
-			last_frame_time_us = v * 1000;
+class GameTime {
+	
+public:
+	
+	GameTime();
+	~GameTime() {}
+	
+	void init();
+	
+	void pause();
+	void resume();
+	
+	void force_time_restore(const float &time);
+	
+	// TODO probably the source of the need to clip frame_delay
+	void force_frame_time_restore(const float &v) {
+		frame_time_us = v * 1000;
+		last_frame_time_us = v * 1000;
+	}
+	
+	bool operator>(const float &v) const { 
+		return delta_time_us > (v * 1000); 
+	}
+	
+	operator float() const {
+		return delta_time_us / 1000.0f;
+	}
+	
+	operator long() const {
+		//return static_cast<long>(delta_time);
+		return checked_range_cast<long>(delta_time_us / 1000);
+	}
+	
+	operator unsigned long() const {
+		return checked_range_cast<unsigned long>(delta_time_us / 1000);
+	}
+	
+	void setMs(const float &v) {
+		delta_time_us = v * 1000;
+	}
+	
+	void update(const bool & use_pause = true) {
+		if (is_paused() && use_pause) {
+			delta_time_us = platform::getElapsedUs(start_time, pause_time);
+		} else {
+			delta_time_us = platform::getElapsedUs(start_time);
 		}
-
-		bool operator>(const float &v) const { 
-			return delta_time_us > (v * 1000); 
-		}
-
-		operator float() const {
-			return delta_time_us / 1000.0f;
-		}
-
-		operator long() const {
-			//return static_cast<long>(delta_time);
-			return checked_range_cast<long>(delta_time_us / 1000);
-		}
-
-		operator unsigned long() const {
-			return checked_range_cast<unsigned long>(delta_time_us / 1000);
-		}
-
-		void setMs(const float &v) {
-			delta_time_us = v * 1000;
-		}
-
-		void update(const bool & use_pause = true) {
-
-			if (is_paused() && use_pause) {
-				delta_time_us = platform::getElapsedUs(start_time, pause_time);
-			} else {
-				delta_time_us = platform::getElapsedUs(start_time);
-			}
-		}
-
-		float get_updated(const bool & use_pause = true) {
-			
-			update(use_pause);
-			return delta_time_us / 1000.0f;
-		}
-
-		unsigned long get_updated_ul(const bool & use_pause = true) {
-
-			update(use_pause);
-			return checked_range_cast<unsigned long>(delta_time_us / 1000);
-		}
-
-		bool is_paused() const { 
-			return paused; 
-		}
-
-		// used only for "slow time" spell
-		void increment_start_time(const u64 & inc) {
-			start_time += inc;
-		}
-
-		float get_frame_time() const { 
-			return frame_time_us / 1000.0f; 
-		}
-
-		float get_last_frame_time() const {
-			return last_frame_time_us / 1000.0f;
-		}
-
-		float get_frame_delay() const {
-			return frame_delay_ms;
-		}
-
-		void update_frame_time() {
-			update();
-			frame_time_us = delta_time_us;
-			frame_delay_ms = (frame_time_us - last_frame_time_us) / 1000.0f;
-		}
-
-		void update_last_frame_time() {
-			last_frame_time_us = frame_time_us;
-		}
-
-	private:
-		bool paused;
-
-		// these values are expected to wrap
-		u64 pause_time;
-		u64 start_time;
-
-		// TODO this sometimes respects pause and sometimes not! [adejr]: is this TODO still valid?
-		// TODO an absolute time value stored in a floating point number will lose precision 
-		// when large numbers are stored.
-		u64 delta_time_us;
-		
-		u64 last_frame_time_us;
-		u64 frame_time_us;
-		float frame_delay_ms;
-
-		/* TODO RFC (adejr: safe to allow varied precision?)
-		** since these values and their accessors are isolated in this class, 
-		** last_frame_time and frame_time could be replaced with u64 values 
-		** and stored as int before cast to float. 
-		**
-		** this would eliminate the need for casting to int from the float value 
-		** in the operator "int" accessors and also increase precision.
-		** assuming that would be safe while the float value is still used.
-		** as frame_delay is a delta the issue of precision is less critical.
-		*/
-	};
+	}
+	
+	float get_updated(const bool & use_pause = true) {
+		update(use_pause);
+		return delta_time_us / 1000.0f;
+	}
+	
+	unsigned long get_updated_ul(const bool & use_pause = true) {
+		update(use_pause);
+		return checked_range_cast<unsigned long>(delta_time_us / 1000);
+	}
+	
+	bool is_paused() const { 
+		return paused; 
+	}
+	
+	// used only for "slow time" spell
+	void increment_start_time(const u64 & inc) {
+		start_time += inc;
+	}
+	
+	float get_frame_time() const { 
+		return frame_time_us / 1000.0f; 
+	}
+	
+	float get_last_frame_time() const {
+		return last_frame_time_us / 1000.0f;
+	}
+	
+	float get_frame_delay() const {
+		return frame_delay_ms;
+	}
+	
+	void update_frame_time() {
+		update();
+		frame_time_us = delta_time_us;
+		frame_delay_ms = (frame_time_us - last_frame_time_us) / 1000.0f;
+	}
+	
+	void update_last_frame_time() {
+		last_frame_time_us = frame_time_us;
+	}
+	
+private:
+	
+	bool paused;
+	
+	// these values are expected to wrap
+	u64 pause_time;
+	u64 start_time;
+	
+	// TODO this sometimes respects pause and sometimes not! [adejr]: is this TODO still valid?
+	// TODO an absolute time value stored in a floating point number will lose precision 
+	// when large numbers are stored.
+	u64 delta_time_us;
+	
+	u64 last_frame_time_us;
+	u64 frame_time_us;
+	float frame_delay_ms;
+	
+	/* TODO RFC (adejr: safe to allow varied precision?)
+	** since these values and their accessors are isolated in this class, 
+	** last_frame_time and frame_time could be replaced with u64 values 
+	** and stored as int before cast to float. 
+	**
+	** this would eliminate the need for casting to int from the float value 
+	** in the operator "int" accessors and also increase precision.
+	** assuming that would be safe while the float value is still used.
+	** as frame_delay is a delta the issue of precision is less critical.
+	*/
+	
+};
 
 extern GameTime arxtime;
 
