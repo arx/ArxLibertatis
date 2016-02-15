@@ -450,7 +450,7 @@ Vec3f EE_RT(const Vec3f & in) {
 }
 
 // TODO get rid of sw transform
-static inline float clamp_and_invert(float z) {
+static float clamp_and_invert(float z) {
 	
 	const float near_clamp = .000001f; // just a random small number
 	
