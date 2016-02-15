@@ -959,6 +959,19 @@ public:
 		}
 		
 		{
+			PanelWidget * panel = new PanelWidget;
+			std::string szMenuText = getLocalised("system_menus_options_input_mouse_acceleration", "Mouse acceleration");
+			TextWidget * txt = new TextWidget(BUTTON_INVALID, hFontMenu, szMenuText, Vec2f(20, 0));
+			txt->SetCheckOff();
+			panel->AddElement(txt);
+			SliderWidget * sld = new SliderWidget(Vec2f(200, 0));
+			sld->valueChanged = boost::bind(&InputOptionsMenuPage::onChangedMouseAcceleration, this, _1);
+			sld->setValue(config.input.mouseAcceleration);
+			panel->AddElement(sld);
+			addCenter(panel);
+		}
+		
+		{
 			std::string szMenuText = getLocalised("system_menus_options_raw_mouse_input", "Raw mouse input");
 			TextWidget * txt = new TextWidget(BUTTON_INVALID, hFontMenu, szMenuText, Vec2f(20, 0));
 			CheckboxWidget * cb = new CheckboxWidget(txt);
@@ -1021,6 +1034,10 @@ public:
 	
 	void onChangedMouseSensitivity(int value) {
 		ARXMenu_Options_Control_SetMouseSensitivity(value);
+	}
+	
+	void onChangedMouseAcceleration(int value) {
+		config.input.mouseAcceleration = glm::clamp(value, 0, 10);
 	}
 	
 	void onChangedRawMouseInput(int state) {
