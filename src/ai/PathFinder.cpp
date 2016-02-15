@@ -79,23 +79,12 @@ public:
 	Node(long _id, const Node * _parent, float _distance, float _remaining)
 		: id(_id), parent(_parent), cost(_distance + _remaining), distance(_distance) { }
 	
-	inline NodeId getId() const {
-		return id;
-	}
+	NodeId getId() const { return id; }
+	const Node * getParent() const { return parent; }
+	float getCost() const { return cost; }
+	float getDistance() const { return distance; }
 	
-	inline const Node * getParent() const {
-		return parent;
-	}
-	
-	inline float getCost() const {
-		return cost;
-	}
-	
-	inline float getDistance() const {
-		return distance;
-	}
-	
-	inline void newParent(const Node * _parent, float _distance) {
+	void newParent(const Node * _parent, float _distance) {
 		parent = _parent;
 		cost = cost - distance + _distance;
 		distance = _distance;
@@ -121,7 +110,7 @@ public:
 	 * Otherwise add a new node.
 	 * Assumes that remaining never changes for the same node id.
 	 */
-	inline void add(NodeId id, const Node * parent, float distance, float remaining) {
+	void add(NodeId id, const Node * parent, float distance, float remaining) {
 		
 		// Check if node is already in open list.
 		for(NodeList::iterator i = nodes.begin(); i != nodes.end(); ++i) {
