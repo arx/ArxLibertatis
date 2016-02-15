@@ -182,7 +182,6 @@ Vec2f				BOOKDEC = Vec2f(0.f, 0.f);
 
 bool				PLAYER_MOUSELOOK_ON = false;
 bool				TRUE_PLAYER_MOUSELOOK_ON = false;
-bool				LAST_PLAYER_MOUSELOOK_ON = false;
 static bool MEMO_PLAYER_MOUSELOOK_ON = false;
 
 bool				COMBINEGOLD = false;
@@ -1651,6 +1650,7 @@ void ArxGame::manageKeyMouse() {
 	// Checks For MouseGrabbing/Restoration after Grab
 	bool bRestoreCoordMouse=true;
 
+	static bool LAST_PLAYER_MOUSELOOK_ON = false;
 	if(PLAYER_MOUSELOOK_ON && !LAST_PLAYER_MOUSELOOK_ON) {
 		
 		MemoMouse = DANAEMouse;
