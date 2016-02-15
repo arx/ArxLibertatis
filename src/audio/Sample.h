@@ -62,10 +62,9 @@ public:
 	// File I/O
 	aalError load();
 	
-	inline const res::path & getName() const { return name; }
-	inline size_t getLength() const { return length; }
-	inline const PCMFormat & getFormat() const { return format; }
-	
+	const res::path & getName() const { return name; }
+	size_t getLength() const { return length; }
+	const PCMFormat & getFormat() const { return format; }
 	
 private:
 	
