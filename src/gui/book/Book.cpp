@@ -238,7 +238,7 @@ void ARX_INTERFACE_BookToggle() {
 }
 
 
-static inline Rectf scaleRectPosAndSize(const Rectf & r, const Vec2f & scale) {
+static Rectf scaleRectPosAndSize(const Rectf & r, const Vec2f & scale) {
 	
 	return Rectf(
 	r.left * scale.x,
