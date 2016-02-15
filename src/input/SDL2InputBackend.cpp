@@ -174,6 +174,7 @@ SDL2InputBackend::SDL2InputBackend(SDL2Window * window) : m_window(window) {
 	cursorAbs = Vec2i_ZERO;
 	cursorInWindow = false;
 	cursorRel = Vec2i_ZERO;
+	cursorRelAccum = Vec2i_ZERO;
 	std::fill_n(keyStates, ARRAY_SIZE(keyStates), false);
 	std::fill_n(buttonStates, ARRAY_SIZE(buttonStates), false);
 	std::fill_n(clickCount, ARRAY_SIZE(clickCount), 0);
@@ -189,6 +190,8 @@ bool SDL2InputBackend::update() {
 	
 	wheel = 0;
 	
+	cursorRel = cursorRelAccum;
+	cursorRelAccum = Vec2i_ZERO;
 	
 	std::fill_n(clickCount, ARRAY_SIZE(clickCount), 0);
 	std::fill_n(unclickCount, ARRAY_SIZE(unclickCount), 0);
@@ -197,9 +200,14 @@ bool SDL2InputBackend::update() {
 }
 
 bool SDL2InputBackend::setMouseMode(Mouse::Mode mode) {
-	ARX_UNUSED(mode);
-	// Raw mouse input is not supported!
-	return false;
+	
+	if(SDL_SetRelativeMouseMode(mode == Mouse::Relative ? SDL_TRUE : SDL_FALSE) == 0) {
+		return true;
+	} else {
+		LogWarning << "Could not enable relative mouse mode: " << SDL_GetError();
+		return false;
+	}
+	
 }
 
 bool SDL2InputBackend::getAbsoluteMouseCoords(int & absX, int & absY) const {
@@ -259,6 +267,7 @@ void SDL2InputBackend::onEvent(const SDL_Event & event) {
 		
 		case SDL_MOUSEMOTION: {
 			cursorAbs = Vec2i(event.motion.x, event.motion.y);
+			cursorRelAccum += Vec2i(event.motion.xrel, event.motion.yrel);
 			cursorInWindow = true;
 			break;
 		}

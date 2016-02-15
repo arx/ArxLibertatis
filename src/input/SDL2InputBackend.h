@@ -56,6 +56,7 @@ private:
 	int wheel;
 	Vec2i cursorAbs;
 	Vec2i cursorRel;
+	Vec2i cursorRelAccum;
 	bool cursorInWindow;
 	bool keyStates[Keyboard::KeyCount];
 	bool buttonStates[Mouse::ButtonCount];
