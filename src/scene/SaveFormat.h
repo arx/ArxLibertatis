@@ -104,7 +104,7 @@ struct SavedGlobalMods {
 	f32 zclip;
 	char padding[136];
 	
-	inline SavedGlobalMods & operator=(const GLOBAL_MODS & b) {
+	SavedGlobalMods & operator=(const GLOBAL_MODS & b) {
 		flags = b.flags;
 		depthcolor = b.depthcolor;
 		zclip = b.zclip;
@@ -112,7 +112,7 @@ struct SavedGlobalMods {
 		return *this;
 	}
 	
-	inline operator GLOBAL_MODS() const {
+	operator GLOBAL_MODS() const {
 		GLOBAL_MODS a;
 		a.flags = GMODFlags::load(flags); // TODO save/load flags
 		a.depthcolor = depthcolor;
@@ -186,13 +186,13 @@ struct SavedCylinder {
 	f32 radius;
 	f32 height;
 	
-	inline operator Cylinder() const {
+	operator Cylinder() const {
 		Cylinder a;
 		a.origin = origin.toVec3(), a.radius = radius, a.height = height;
 		return a;
 	}
 	
-	inline SavedCylinder & operator=(const Cylinder & b) {
+	SavedCylinder & operator=(const Cylinder & b) {
 		origin = b.origin, radius = b.radius, height = b.height;
 		return *this;
 	}
@@ -207,7 +207,7 @@ struct SavedIOPhysics {
 	SavedVec3 velocity;
 	SavedVec3 forces;
 	
-	inline operator IO_PHYSICS() const {
+	operator IO_PHYSICS() const {
 		IO_PHYSICS a;
 		a.cyl = cyl;
 		a.startpos = startpos.toVec3();
@@ -217,7 +217,7 @@ struct SavedIOPhysics {
 		return a;
 	}
 	
-	inline SavedIOPhysics & operator=(const IO_PHYSICS & b) {
+	SavedIOPhysics & operator=(const IO_PHYSICS & b) {
 		cyl = b.cyl;
 		startpos = b.startpos;
 		targetpos = b.targetpos;
@@ -245,7 +245,7 @@ struct SavedMiniMap {
 	f32 height;
 	u8 revealed[MAX_X][MAX_Z];
 	
-	inline operator MiniMap::MiniMapData() const {
+	operator MiniMap::MiniMapData() const {
 		MiniMap::MiniMapData a;
 		a.m_texContainer = NULL;
 		a.m_offset.x = offsetx;
@@ -260,7 +260,7 @@ struct SavedMiniMap {
 		return a;
 	}
 	
-	inline SavedMiniMap & operator=(const MiniMap::MiniMapData & b) {
+	SavedMiniMap & operator=(const MiniMap::MiniMapData & b) {
 		padding = 0;
 		offsetx = b.m_offset.x;
 		offsety = b.m_offset.y;
@@ -286,7 +286,7 @@ struct SavedPrecast {
 	s32 flags;
 	s32 duration;
 	
-	inline operator PRECAST_STRUCT() const {
+	operator PRECAST_STRUCT() const {
 		PRECAST_STRUCT a;
 		a.typ = (typ < 0) ? SPELL_NONE : (SpellType)typ; // TODO save/load enum
 		a.level = level;
@@ -296,7 +296,7 @@ struct SavedPrecast {
 		return a;
 	}
 	
-	inline SavedPrecast & operator=(const PRECAST_STRUCT & b) {
+	SavedPrecast & operator=(const PRECAST_STRUCT & b) {
 		typ = (b.typ == SPELL_NONE) ? -1 : b.typ;
 		level = b.level;
 		launch_time = b.launch_time;
@@ -479,7 +479,7 @@ struct SavedAnimUse {
 	f32 pour;
 	s32 fr;
 	
-	inline operator AnimLayer() const {
+	operator AnimLayer() const {
 		AnimLayer a;
 		a.next_anim = NULL;
 		a.cur_anim = NULL;
@@ -494,7 +494,7 @@ struct SavedAnimUse {
 		return a;
 	}
 	
-	inline SavedAnimUse & operator=(const AnimLayer & b) {
+	SavedAnimUse & operator=(const AnimLayer & b) {
 		next_anim = 0;
 		cur_anim = 0;
 		altidx_next = b.altidx_next;
@@ -519,7 +519,7 @@ struct SavedSpellcastData {
 	s32 target;
 	s32 duration;
 	
-	inline operator IO_SPELLCAST_DATA() const {
+	operator IO_SPELLCAST_DATA() const {
 		IO_SPELLCAST_DATA a;
 		a.castingspell = (castingspell < 0) ? SPELL_NONE : (SpellType)castingspell; // TODO save/load enum
 		ARX_STATIC_ASSERT(ARRAY_SIZE(a.symb) == 4, "array size mismatch");
@@ -534,7 +534,7 @@ struct SavedSpellcastData {
 		return a;
 	}
 	
-	inline SavedSpellcastData & operator=(const IO_SPELLCAST_DATA & b) {
+	SavedSpellcastData & operator=(const IO_SPELLCAST_DATA & b) {
 		castingspell = (b.castingspell == SPELL_NONE) ? -1 : b.castingspell;
 		ARX_STATIC_ASSERT(ARRAY_SIZE(b.symb) == 4, "array size mismatch");
 		std::copy(b.symb, b.symb + 4, symb);
@@ -555,7 +555,7 @@ struct SavedHalo {
 	s32 dynlight; // unused
 	SavedVec3 offset;
 	
-	inline operator IO_HALO() const {
+	operator IO_HALO() const {
 		IO_HALO a;
 		a.color = color;
 		a.radius = radius;
@@ -564,7 +564,7 @@ struct SavedHalo {
 		return a;
 	}
 	
-	inline SavedHalo & operator=(const IO_HALO & b) {
+	SavedHalo & operator=(const IO_HALO & b) {
 		color = b.color;
 		radius = b.radius;
 		flags = b.flags;
@@ -675,7 +675,7 @@ struct SavedBehaviour {
 	s32 movemode;
 	SavedAnimUse animlayer[SAVED_MAX_ANIM_LAYERS];
 	
-	inline operator IO_BEHAVIOR_DATA() const {
+	operator IO_BEHAVIOR_DATA() const {
 		IO_BEHAVIOR_DATA a;
 		a.exist = exist;
 		a.behavior = Behaviour::load(behavior); // TODO save/load flags
@@ -687,8 +687,8 @@ struct SavedBehaviour {
 		std::copy(animlayer, animlayer + SAVED_MAX_ANIM_LAYERS, a.animlayer);
 		return a;
 	}
-
-	inline SavedBehaviour & operator=(const IO_BEHAVIOR_DATA & b) {
+	
+	SavedBehaviour & operator=(const IO_BEHAVIOR_DATA & b) {
 		exist = b.exist;
 		behavior = b.behavior;
 		behavior_param = b.behavior_param;
@@ -707,7 +707,7 @@ struct SavedPathfindTarget {
 	u32 padding[4];
 	s32 truetarget;
 	
-	inline operator IO_PATHFIND() const {
+	operator IO_PATHFIND() const {
 		IO_PATHFIND a;
 		a.flags = 0;
 		a.listnb = a.listpos = a.pathwait = 0;
@@ -716,7 +716,7 @@ struct SavedPathfindTarget {
 		return a;
 	}
 	
-	inline SavedPathfindTarget & operator=(const IO_PATHFIND & b) {
+	SavedPathfindTarget & operator=(const IO_PATHFIND & b) {
 		padding[0] = padding[1] = padding[2] = padding[3] = 0;
 		truetarget = b.truetarget.handleData();
 		return *this;
@@ -740,7 +740,7 @@ struct SavedExtraRotate {
 	s16 group_number[SAVED_MAX_EXTRA_ROTATE];
 	SavedAnglef group_rotate[SAVED_MAX_EXTRA_ROTATE];
 	
-	inline operator EERIE_EXTRA_ROTATE() const {
+	operator EERIE_EXTRA_ROTATE() const {
 		EERIE_EXTRA_ROTATE a;
 		ARX_STATIC_ASSERT(SAVED_MAX_EXTRA_ROTATE == MAX_EXTRA_ROTATE, "array size mismatch");
 		std::transform(group_number, group_number + SAVED_MAX_EXTRA_ROTATE, a.group_number, saved_toObjGroup);
@@ -748,7 +748,7 @@ struct SavedExtraRotate {
 		return a;
 	}
 	
-	inline SavedExtraRotate & operator=(const EERIE_EXTRA_ROTATE & b) {
+	SavedExtraRotate & operator=(const EERIE_EXTRA_ROTATE & b) {
 		flags = 0;
 		ARX_STATIC_ASSERT(SAVED_MAX_EXTRA_ROTATE == MAX_EXTRA_ROTATE, "array size mismatch");
 		std::transform(b.group_number, b.group_number + SAVED_MAX_EXTRA_ROTATE, group_number, saved_fromObjGroup);
@@ -821,7 +821,7 @@ struct SavedEquipItemElement {
 	s16 flags;
 	s16 special;
 	
-	inline operator IO_EQUIPITEM_ELEMENT() const {
+	operator IO_EQUIPITEM_ELEMENT() const {
 		IO_EQUIPITEM_ELEMENT a;
 		a.value = value;
 		a.flags = EquipmentModifierFlags::load(flags); // TODO save/load flags
@@ -829,7 +829,7 @@ struct SavedEquipItemElement {
 		return a;
 	}
 	
-	inline SavedEquipItemElement & operator=(const IO_EQUIPITEM_ELEMENT & b) {
+	SavedEquipItemElement & operator=(const IO_EQUIPITEM_ELEMENT & b) {
 		value = b.value;
 		flags = b.flags;
 		special = b.special;
@@ -844,7 +844,7 @@ struct SavedEquipItem {
 	
 	SavedEquipItemElement elements[SAVED_IO_EQUIPITEM_ELEMENT_Number];
 	
-	inline operator IO_EQUIPITEM() const {
+	operator IO_EQUIPITEM() const {
 		IO_EQUIPITEM a;
 		ARX_STATIC_ASSERT(SAVED_IO_EQUIPITEM_ELEMENT_Number == IO_EQUIPITEM_ELEMENT_Number,
 		                  "array size mismatch");
@@ -852,7 +852,7 @@ struct SavedEquipItem {
 		return a;
 	}
 	
-	inline SavedEquipItem & operator=(const IO_EQUIPITEM & b) {
+	SavedEquipItem & operator=(const IO_EQUIPITEM & b) {
 		ARX_STATIC_ASSERT(SAVED_IO_EQUIPITEM_ELEMENT_Number == IO_EQUIPITEM_ELEMENT_Number,
 		                  "array size mismatch");
 		std::copy(b.elements, b.elements + SAVED_IO_EQUIPITEM_ELEMENT_Number, elements);
@@ -890,7 +890,7 @@ struct SavedRect {
 	s32 right;
 	s32 bottom;
 	
-	inline operator Rect() const {
+	operator Rect() const {
 		Rect a;
 		a.left = left;
 		a.top = top;
@@ -899,7 +899,7 @@ struct SavedRect {
 		return a;
 	}
 	
-	inline SavedRect & operator=(const Rect & b) {
+	SavedRect & operator=(const Rect & b) {
 		left = b.left;
 		top = b.top;
 		right = b.right;
@@ -961,7 +961,7 @@ struct SavedMatrix {
 	f32 _31, _32, _33, _34;
 	f32 _41, _42, _43, _44;
 	
-	inline operator glm::mat4x4() const {
+	operator glm::mat4x4() const {
 		glm::mat4x4 a;
 		a[0][0] = _11, a[0][1] = _12, a[0][2] = _13, a[0][3] = _14;
 		a[1][0] = _21, a[1][1] = _22, a[1][2] = _23, a[1][3] = _24;
@@ -970,7 +970,7 @@ struct SavedMatrix {
 		return a;
 	}
 	
-	inline SavedMatrix & operator=(const glm::mat4x4 & b) {
+	SavedMatrix & operator=(const glm::mat4x4 & b) {
 		_11 = b[0][0], _12 = b[0][1], _13 = b[0][2], _14 = b[0][3];
 		_21 = b[1][0], _22 = b[1][1], _23 = b[1][2], _24 = b[1][3];
 		_31 = b[2][0], _32 = b[2][1], _33 = b[2][2], _34 = b[2][3];
@@ -992,7 +992,7 @@ struct SavedTransform {
 	f32 ymod;
 	f32 zmod;
 	
-	inline operator EERIE_TRANSFORM() const {
+	operator EERIE_TRANSFORM() const {
 		EERIE_TRANSFORM a;
 		a.pos = pos.toVec3();
 		a.ycos = ycos, a.ysin = ysin, a.xsin = xsin, a.xcos = xcos;
@@ -1002,7 +1002,7 @@ struct SavedTransform {
 		return a;
 	}
 	
-	inline SavedTransform & operator=(const EERIE_TRANSFORM & b) {
+	SavedTransform & operator=(const EERIE_TRANSFORM & b) {
 		pos = b.pos;
 		ycos = b.ycos, ysin = b.ysin, xsin = b.xsin, xcos = b.xcos;
 		use_focal = 0.f;
@@ -1062,7 +1062,7 @@ struct SavedCamera {
 	
 	SavedAnglef size;
 	
-	inline operator EERIE_CAMERA() const {
+	operator EERIE_CAMERA() const {
 		
 		EERIE_CAMERA a;
 		
@@ -1090,7 +1090,7 @@ struct SavedCamera {
 		return a;
 	}
 	
-	inline SavedCamera & operator=(const EERIE_CAMERA & b) {
+	SavedCamera & operator=(const EERIE_CAMERA & b) {
 		
 		transform = b.orgTrans;
 
