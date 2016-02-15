@@ -219,15 +219,15 @@ bool ArxGame::initialize()
 		return false;
 	}
 	
-	init = initGameData();
-	if(!init) {
-		LogCritical << "Failed to initialize the game data.";
-		return false;
-	}
-	
 	init = initWindow();
 	if(!init) {
 		LogCritical << "Failed to initialize the windowing subsystem.";
+		return false;
+	}
+	
+	init = initGameData();
+	if(!init) {
+		LogCritical << "Failed to initialize the game data.";
 		return false;
 	}
 	
