@@ -48,8 +48,8 @@ public:
 	
 	Image::Format GetFormat() const { return mFormat; }
 	
-	inline bool hasMipmaps() const { return (flags & HasMipmaps) == HasMipmaps; }
-	inline bool hasColorKey() const { return (flags & HasColorKey) == HasColorKey; }
+	bool hasMipmaps() const { return (flags & HasMipmaps) == HasMipmaps; }
+	bool hasColorKey() const { return (flags & HasColorKey) == HasColorKey; }
 	
 protected:
 	
@@ -81,8 +81,8 @@ public:
 	
 	bool Restore();
 	
-	inline Image & GetImage() { return mImage; }
-	inline const res::path & getFileName() const { return mFileName; }
+	Image & GetImage() { return mImage; }
+	const res::path & getFileName() const { return mFileName; }
 	
 protected:
 	
