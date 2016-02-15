@@ -242,9 +242,18 @@ void Input::setMouseMode(Mouse::Mode mode) {
 	}
 	
 	m_mouseMode = mode;
+	
+	if(m_mouseMode == Mouse::Absolute) {
+		centerMouse();
+	}
+	
 }
 
-void Input::setMousePosAbs(const Vec2s& mousePos) {
+void Input::centerMouse() {
+	setMousePosAbs(Vec2s(mainApp->getWindow()->getSize() / 2));
+}
+
+void Input::setMousePosAbs(const Vec2s & mousePos) {
 	
 	if(backend) {
 		backend->setAbsoluteMouseCoords(mousePos.x, mousePos.y);

@@ -110,6 +110,8 @@ public:
 	
 private:
 	
+	void centerMouse();
+	
 	class InputBackend * backend;
 	
 	// Mouse
