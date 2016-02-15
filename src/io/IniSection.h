@@ -30,8 +30,8 @@ struct IniKey {
 		, value(_value)
 	{}
 	
-	inline const std::string & getName() const { return name; }
-	inline const std::string & getValue() const { return value; }
+	const std::string & getName() const { return name; }
+	const std::string & getValue() const { return value; }
 	
 	int getValue(int defaultValue) const;
 	
@@ -67,10 +67,10 @@ public:
 	
 	typedef Keys::const_iterator iterator;
 	
-	inline iterator begin() const { return keys.begin(); }
-	inline iterator end() const { return keys.end(); }
-	inline bool empty() const { return keys.empty(); }
-	inline size_t size() const { return keys.size(); }
+	iterator begin() const { return keys.begin(); }
+	iterator end() const { return keys.end(); }
+	bool empty() const { return keys.empty(); }
+	size_t size() const { return keys.size(); }
 	
 	const IniKey * getKey(const std::string & name) const;
 	
