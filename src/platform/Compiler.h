@@ -55,7 +55,7 @@
 #elif defined(_MSC_VER)
 	#define ARX_COMPILER_NAME           "MSVC"
 	struct arx_msvc_vername { };
-	std::ostream & operator<<(std::ostream & os, const arx_msvc_vername & /* tag */) {
+	inline std::ostream & operator<<(std::ostream & os, const arx_msvc_vername & /* tag */) {
 		#if _MSC_VER >= 1900
 		return os << ARX_COMPILER_NAME << ' ' << (_MSC_VER / 100 - 5) << '.' << (_MSC_VER % 100);
 		#else
