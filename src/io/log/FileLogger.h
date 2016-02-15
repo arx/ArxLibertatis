@@ -34,8 +34,8 @@ class File : public Backend {
 	
 public:
 	
-	inline File(const fs::path & path,
-	            std::ios_base::openmode mode = std::ios_base::out | std::ios_base::trunc)
+	explicit File(const fs::path & path,
+	     std::ios_base::openmode mode = std::ios_base::out | std::ios_base::trunc)
 		: ofs(path, mode) { }
 	
 	void quickShutdown();
