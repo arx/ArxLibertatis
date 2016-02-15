@@ -24,6 +24,18 @@
 #include "platform/WindowsMainCommon.h"
 
 
+#if ARX_COMPILER_MSVC
+#define ARX_EXPORT_SYMBOL __declspec(dllexport)
+#else
+#define ARX_EXPORT_SYMBOL __attribute__((dllexport))
+#endif
+
+// Request to use the more powerful GPU in multi-GPU setups
+extern "C" {
+	ARX_EXPORT_SYMBOL DWORD NvOptimusEnablement = 1;
+	ARX_EXPORT_SYMBOL int AmdPowerXpressRequestHighPerformance = 1;
+}
+
 INT WINAPI WinMain(HINSTANCE hInstance, HINSTANCE hPrevInstance, PSTR lpCmdLine,
                    INT nCmdShow) {
 	ARX_UNUSED(hInstance);
