@@ -357,7 +357,7 @@ static int tri_tri_intersect(const EERIE_TRI & VV, const EERIE_TRI & UU)  {
 #undef SUB
 
 // Computes Bounding Box for a triangle
-static inline EERIE_3D_BBOX Triangle_ComputeBoundingBox(const EERIE_TRI & v) {
+static EERIE_3D_BBOX Triangle_ComputeBoundingBox(const EERIE_TRI & v) {
 	EERIE_3D_BBOX bb;
 	
 	bb.min.x = std::min(v.v[0].x, v.v[1].x);
