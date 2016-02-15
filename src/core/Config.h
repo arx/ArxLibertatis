@@ -156,6 +156,7 @@ public:
 		bool mouseLookToggle;
 		bool autoDescription;
 		int mouseSensitivity;
+		int mouseAcceleration;
 		bool rawMouseInput;
 		bool borderTurning;
 		

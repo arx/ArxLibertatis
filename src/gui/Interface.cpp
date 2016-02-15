@@ -1673,6 +1673,15 @@ void ArxGame::manageKeyMouse() {
 
 	Vec2s mouseDiff = GInput->getMousePosRel();
 	
+	if(config.input.mouseAcceleration > 0) {
+		Vec2f speed = Vec2f(mouseDiff) / framedelay;
+		Vec2f sign(speed.x < 0 ? -1.f : 1.f, speed.y < 0 ? -1.f : 1.f);
+		float exponent = 1.f + config.input.mouseAcceleration * 0.05f;
+		speed.x = (std::pow(speed.x * sign.x + 1.f, exponent) - 1.f) * sign.x;
+		speed.y = (std::pow(speed.y * sign.y + 1.f, exponent) - 1.f) * sign.y;
+		mouseDiff = Vec2s(speed * framedelay);
+	}
+	
 	ARX_Menu_Manage();
 	
 	if(bRestoreCoordMouse) {
