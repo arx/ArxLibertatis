@@ -77,13 +77,13 @@ struct ArxQuat {
 	f32 y;
 	f32 z;
 	
-	inline operator glm::quat() const {
+	operator glm::quat() const {
 		glm::quat a;
 		a.x  = x, a.y = y, a.z = z, a.w = w;
 		return a;
 	}
 	
-	inline ArxQuat & operator=(const glm::quat & b) {
+	ArxQuat & operator=(const glm::quat & b) {
 		x = b.x, y = b.y, z = b.z, w = b.w;
 		return *this;
 	}
