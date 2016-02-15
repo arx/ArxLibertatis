@@ -26,7 +26,7 @@
 
 namespace script {
 
-static inline bool isWhitespace(char c) {
+static bool isWhitespace(char c) {
 	return (((unsigned char)c) <= 32 || c == '(' || c == ')');
 }
 
