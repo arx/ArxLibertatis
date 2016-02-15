@@ -199,6 +199,7 @@ void ARX_INPUT_Release() {
 
 Input::Input()
 	: backend(NULL)
+	, m_mouseMode(Mouse::Absolute)
 	, mouseInWindow(false)
 {
 	setMouseSensitivity(2);
@@ -232,6 +233,10 @@ void Input::reset() {
 	EERIEMouseButton = 0;
 
 	iWheelDir = 0;
+}
+
+void Input::setMouseMode(Mouse::Mode mode) {
+	m_mouseMode = mode;
 }
 
 void Input::setMousePosAbs(const Vec2s& mousePos) {
@@ -389,10 +394,20 @@ void Input::update() {
 	if(absX >= 0 && absX < wndSize.x && absY >= 0 && absY < wndSize.y) {
 		
 		// Use the absolute mouse position reported by the backend, as is
-		iMouseA = Vec2s((short)absX, (short)absY);
+		if(m_mouseMode == Mouse::Absolute) {
+			iMouseA = Vec2s((short)absX, (short)absY);
+		} else {
+			iMouseA = mainApp->getWindow()->getSize() / 2;
+		}
 		
-		int relX, relY;
-		backend->getRelativeMouseCoords(relX, relY, iWheelDir);
+	} else {
+		mouseInWindow = false;
+	}
+	
+	int relX, relY;
+	backend->getRelativeMouseCoords(relX, relY, iWheelDir);
+	
+	if(m_mouseMode == Mouse::Relative) {
 		
 		// Use the sensitivity config value to adjust relative mouse mouvements
 		float fSensMax = 1.f / 6.f;
@@ -403,8 +418,9 @@ void Input::update() {
 		iMouseR.y = relY * fSens;
 		
 	} else {
-		mouseInWindow = false;
+		iMouseR = Vec2s_ZERO;
 	}
+	
 }
 
 std::map<std::string, InputKeyId> keyNames;

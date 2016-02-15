@@ -48,6 +48,12 @@ public:
 		Wheel_Up = WheelBase,
 		Wheel_Down
 	};
+	
+	enum Mode {
+		Absolute,
+		Relative
+	};
+	
 };
 
 #endif // ARX_INPUT_MOUSE_H
