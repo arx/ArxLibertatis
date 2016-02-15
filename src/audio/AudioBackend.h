@@ -85,8 +85,8 @@ public:
 	virtual source_iterator sourcesEnd() = 0;
 	virtual source_iterator deleteSource(source_iterator it) = 0;
 	
-	static inline SampleId getSampleId(SourceId sourceId) { return sourceId & 0x0000ffff; }
-	static inline SourceId clearSource(SourceId sourceId) { return sourceId | 0xffff0000; }
+	static SampleId getSampleId(SourceId sourceId) { return sourceId & 0x0000ffff; }
+	static SourceId clearSource(SourceId sourceId) { return sourceId | 0xffff0000; }
 	
 };
 
