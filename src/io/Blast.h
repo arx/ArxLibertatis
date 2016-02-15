@@ -100,7 +100,7 @@ struct BlastMemOutBuffer {
 	
 	size_t size;
 	
-	inline BlastMemOutBuffer(char * b, size_t s) : buf(b), size(s) { }
+	BlastMemOutBuffer(char * b, size_t s) : buf(b), size(s) { }
 	
 };
 
@@ -110,7 +110,7 @@ struct BlastMemInBuffer {
 	
 	size_t size;
 	
-	inline BlastMemInBuffer(const char * b, size_t s) : buf(b), size(s) { }
+	BlastMemInBuffer(const char * b, size_t s) : buf(b), size(s) { }
 	
 };
 
@@ -121,8 +121,8 @@ struct BlastMemOutBufferRealloc {
 	size_t allocSize;
 	size_t fillSize;
 	
-	inline BlastMemOutBufferRealloc(char * b = NULL, size_t alloc = 0, size_t fill = 0)
-	       : buf(b), allocSize(alloc), fillSize(fill) { }
+	explicit BlastMemOutBufferRealloc(char * b = NULL, size_t alloc = 0, size_t fill = 0)
+		: buf(b), allocSize(alloc), fillSize(fill) { }
 	
 };
 
