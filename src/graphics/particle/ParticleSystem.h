@@ -54,7 +54,7 @@ ZeniMax Media Inc., Suite 120, Rockville, Maryland 20850 USA.
 #include "math/Vector.h"
 #include "math/Quantizer.h"
 #include "platform/Alignment.h"
-#include "platform/Flags.h"
+#include "util/Flags.h"
  
 class Particle;
 class ParticleParams;

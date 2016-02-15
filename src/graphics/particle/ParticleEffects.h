@@ -56,7 +56,7 @@ ZeniMax Media Inc., Suite 120, Rockville, Maryland 20850 USA.
 #include "math/Types.h"
 #include "math/Vector.h"
 #include "math/Angle.h"
-#include "platform/Flags.h"
+#include "util/Flags.h"
 
 struct EERIEPOLY;
 struct EERIE_CAMERA;

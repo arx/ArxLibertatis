@@ -52,7 +52,7 @@ ZeniMax Media Inc., Suite 120, Rockville, Maryland 20850 USA.
 #include "game/Entity.h"
 #include "game/GameTypes.h"
 #include "math/Types.h"
-#include "platform/Flags.h"
+#include "util/Flags.h"
 
 static const size_t MAX_STACKED_BEHAVIOR = 5;
 static const size_t MAX_EXTRA_ROTATE = 4;

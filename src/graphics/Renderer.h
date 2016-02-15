@@ -23,10 +23,10 @@
 #include <stddef.h>
 #include <vector>
 
-#include "platform/Flags.h"
-#include "platform/Platform.h"
-#include "math/Types.h"
 #include "graphics/Color.h"
+#include "math/Types.h"
+#include "platform/Platform.h"
+#include "util/Flags.h"
 
 struct TexturedVertex;
 struct SMY_VERTEX;

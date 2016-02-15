@@ -31,7 +31,6 @@
 #include "graphics/data/MeshManipulation.h"
 #include "physics/Box.h"
 #include "physics/CollisionShapes.h"
-#include "platform/Flags.h"
 #include "scene/GameSound.h"
 
 static bool IsNearSelection(EERIE_3DOBJ * obj, long vert, ObjSelection tw) {

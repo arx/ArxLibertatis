@@ -44,9 +44,9 @@ ZeniMax Media Inc., Suite 120, Rockville, Maryland 20850 USA.
 #ifndef ARX_AUDIO_AUDIOTYPES_H
 #define ARX_AUDIO_AUDIOTYPES_H
 
-#include "platform/Platform.h"
-#include "platform/Flags.h"
 #include "math/Vector.h"
+#include "platform/Platform.h"
+#include "util/Flags.h"
 #include "util/HandleType.h"
 
 namespace audio {

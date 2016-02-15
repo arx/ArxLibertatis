@@ -18,8 +18,8 @@
  */
 // Inspired by QFlags from Qt
 
-#ifndef ARX_PLATFORM_FLAGS_H
-#define ARX_PLATFORM_FLAGS_H
+#ifndef ARX_UTIL_FLAGS_H
+#define ARX_UTIL_FLAGS_H
 
 #include "platform/Platform.h"
 
@@ -207,4 +207,4 @@ public:
 		return ~Flagname(a); \
 	}
 
-#endif // ARX_PLATFORM_FLAGS_H
+#endif // ARX_UTIL_FLAGS_H

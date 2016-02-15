@@ -21,8 +21,6 @@
 
 #include <string>
 
-#include "platform/Flags.h"
-
 #include "core/GameTime.h"
 
 #include "game/Equipment.h"
@@ -37,12 +35,14 @@
 
 #include "animation/AnimationRender.h"
 
-#include "physics/Collisions.h"
-
 #include "graphics/Renderer.h"
 #include "graphics/data/TextureContainer.h"
 #include "graphics/particle/ParticleEffects.h"
 #include "graphics/effects/Trail.h"
+
+#include "physics/Collisions.h"
+
+#include "util/Flags.h"
 
 
 extern float framedelay;

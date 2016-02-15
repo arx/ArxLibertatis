@@ -61,7 +61,6 @@ ZeniMax Media Inc., Suite 120, Rockville, Maryland 20850 USA.
 #include "math/Random.h"
 #include "math/Vector.h"
 
-#include "platform/Flags.h"
 #include "platform/profiler/Profiler.h"
 
 #include "scene/Light.h"

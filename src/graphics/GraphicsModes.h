@@ -45,7 +45,7 @@ ZeniMax Media Inc., Suite 120, Rockville, Maryland 20850 USA.
 #define ARX_GRAPHICS_GRAPHICSMODES_H
 
 #include "graphics/Color.h"
-#include "platform/Flags.h"
+#include "util/Flags.h"
 
 const float fZFogStart = 0.3f;
 const float fZFogEnd = 0.5f;

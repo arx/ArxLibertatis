@@ -55,7 +55,7 @@ ZeniMax Media Inc., Suite 120, Rockville, Maryland 20850 USA.
 #include "graphics/Color.h"
 #include "math/Types.h"
 #include "math/Quantizer.h"
-#include "platform/Flags.h"
+#include "util/Flags.h"
 #include "util/HandleType.h"
 
 struct EERIE_LIGHT;

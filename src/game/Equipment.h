@@ -52,7 +52,7 @@ ZeniMax Media Inc., Suite 120, Rockville, Maryland 20850 USA.
 
 #include "game/Item.h"
 #include "math/Types.h"
-#include "platform/Flags.h"
+#include "util/Flags.h"
 
 class Entity;
 

@@ -61,9 +61,9 @@ ZeniMax Media Inc., Suite 120, Rockville, Maryland 20850 USA.
 #include "io/resource/ResourcePath.h"
 #include "math/Vector.h"
 #include "math/Angle.h"
-#include "platform/Flags.h"
 #include "scene/Light.h"
 #include "script/Script.h" // TODO remove this
+#include "util/Flags.h"
 
 class TextureContainer;
 struct ANIM_HANDLE;

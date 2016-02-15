@@ -45,8 +45,8 @@ ZeniMax Media Inc., Suite 120, Rockville, Maryland 20850 USA.
 #define ARX_GRAPHICS_DATA_MESHMANIPULATION_H
 
 #include "graphics/GraphicsTypes.h"
-#include "platform/Flags.h"
 #include "io/resource/ResourcePath.h"
+#include "util/Flags.h"
 
 struct EERIE_3DOBJ;
 class TextureContainer;

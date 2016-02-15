@@ -27,7 +27,7 @@
 
 #include "io/resource/PakEntry.h"
 #include "io/resource/ResourcePath.h"
-#include "platform/Flags.h"
+#include "util/Flags.h"
 
 namespace fs { class path; }
 

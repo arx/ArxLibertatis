@@ -52,7 +52,7 @@ ZeniMax Media Inc., Suite 120, Rockville, Maryland 20850 USA.
 #include <string>
 #include <vector>
 
-#include "platform/Flags.h"
+#include "util/Flags.h"
 
 class PakFile;
 class Entity;

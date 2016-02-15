@@ -26,7 +26,7 @@
 
 #include "graphics/Renderer.h"
 #include "platform/Platform.h"
-#include "platform/Flags.h"
+#include "util/Flags.h"
 
 enum BufferFlag {
 	DiscardBuffer = (1<<0),

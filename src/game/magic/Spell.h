@@ -26,8 +26,8 @@
 
 #include "graphics/effects/SpellEffects.h"
 #include "platform/Alignment.h"
-#include "platform/Flags.h"
 #include "scene/Light.h"
+#include "util/Flags.h"
 
 class TextureContainer;
 
