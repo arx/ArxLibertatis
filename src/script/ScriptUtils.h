@@ -92,8 +92,8 @@ private:
 	
 public:
 	
-	Context(EERIE_SCRIPT * script, size_t pos = 0, Entity * entity = NULL,
-	        ScriptMessage msg = SM_NULL);
+	explicit Context(EERIE_SCRIPT * script, size_t pos = 0, Entity * entity = NULL,
+	                 ScriptMessage msg = SM_NULL);
 	
 	std::string getStringVar(const std::string & var) const;
 	std::string getFlags();
@@ -151,7 +151,7 @@ public:
 	
 	static const long AnyEntity = -1;
 	
-	Command(const std::string & name, long entityFlags = 0)
+	explicit Command(const std::string & name, long entityFlags = 0)
 		: name(name), entityFlags(entityFlags) { }
 	
 	virtual Result execute(Context & context) = 0;
