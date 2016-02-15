@@ -39,7 +39,7 @@ private:
 	
 protected:
 	
-	explicit inline PakFile(size_t size) :  _size(size), _alternative(NULL) { }
+	explicit PakFile(size_t size) :  _size(size), _alternative(NULL) { }
 	
 	virtual ~PakFile();
 	
@@ -48,8 +48,8 @@ protected:
 	
 public:
 	
-	inline size_t size() const { return _size; }
-	inline PakFile * alternative() const { return _alternative; }
+	size_t size() const { return _size; }
+	PakFile * alternative() const { return _alternative; }
 	
 	virtual void read(void * buf) const = 0;
 	char * readAlloc() const;
@@ -88,15 +88,15 @@ public:
 	
 	PakFile * getFile(const res::path & path);
 	
-	inline bool hasFile(const res::path & path) {
+	bool hasFile(const res::path & path) {
 		return getFile(path) != NULL;
 	}
 	
-	inline dirs_iterator dirs_begin() { return dirs.begin(); }
-	inline dirs_iterator dirs_end() { return dirs.end(); }
+	dirs_iterator dirs_begin() { return dirs.begin(); }
+	dirs_iterator dirs_end() { return dirs.end(); }
 	
-	inline files_iterator files_begin() { return files.begin(); }
-	inline files_iterator files_end() { return files.end(); }
+	files_iterator files_begin() { return files.begin(); }
+	files_iterator files_end() { return files.end(); }
 	
 	bool has_files() { return files_begin() != files_end(); }
 	bool has_dirs() { return dirs_begin() != dirs_end(); }
