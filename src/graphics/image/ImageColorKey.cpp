@@ -45,7 +45,7 @@ class BlackWhiteAntialiaser {
 private:
 	
 	//! Test if pixel (x, y) is "covered".
-	inline static bool sample(u8 * d, size_t w, size_t h, int x, int y) {
+	static bool sample(u8 * d, size_t w, size_t h, int x, int y) {
 		
 		if(x < 0 || y < 0 || size_t(x) >= w || size_t(y) >= h) {
 			return false; // (x + ix, y + iy) is out of bounds → assume "transparent".
@@ -58,7 +58,7 @@ private:
 	}
 	
 	//! Ensure pixel (x + ix, y + iy) has a valid color. Copy from p == (x, y) if needed.
-	inline static void newPixel(u8 * p, int x, int y, int ix, int iy, size_t w, size_t h) {
+	static void newPixel(u8 * p, int x, int y, int ix, int iy, size_t w, size_t h) {
 		
 		if(Channels == 1) {
 			return; // No color to copy.
@@ -283,7 +283,7 @@ public:
 	
 };
 
-inline static bool sampleColorKey(const u8 * src, int w, int h, int x, int y, u8 * dst, Color key) {
+static bool sampleColorKey(const u8 * src, int w, int h, int x, int y, u8 * dst, Color key) {
 	if(x >= 0 && x < w && y >= 0 && y < h) {
 		const u8 * s = src + (y * w + x) * 3;
 		if(s[0] != key.r || s[1] != key.g || s[2] != key.b) {
