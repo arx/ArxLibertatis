@@ -37,6 +37,7 @@ public:
 	bool update();
 	
 	// Mouse
+	bool setMouseMode(Mouse::Mode mode);
 	bool getAbsoluteMouseCoords(int & absX, int & absY) const;
 	void setAbsoluteMouseCoords(int absX, int absY);
 	void getRelativeMouseCoords(int & relX, int & relY, int & wheelDir) const;

@@ -22,13 +22,16 @@
 
 class Window;
 
+#include "input/Mouse.h"
+
 class InputBackend {
 	
 public:
 	
 	virtual bool update() = 0;	
 	
-	// Mouse 
+	// Mouse
+	virtual bool setMouseMode(Mouse::Mode mode) = 0;
 	//! return true if the mouse position is currently being updated
 	virtual bool getAbsoluteMouseCoords(int & absX, int & absY) const = 0;
 	virtual void setAbsoluteMouseCoords(int absX, int absY) = 0;

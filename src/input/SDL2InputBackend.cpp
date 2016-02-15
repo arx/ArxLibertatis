@@ -196,6 +196,12 @@ bool SDL2InputBackend::update() {
 	return true;
 }
 
+bool SDL2InputBackend::setMouseMode(Mouse::Mode mode) {
+	ARX_UNUSED(mode);
+	// Raw mouse input is not supported!
+	return false;
+}
+
 bool SDL2InputBackend::getAbsoluteMouseCoords(int & absX, int & absY) const {
 	absX = cursorAbs.x, absY = cursorAbs.y;
 	return cursorInWindow;

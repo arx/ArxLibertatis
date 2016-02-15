@@ -199,6 +199,7 @@ void ARX_INPUT_Release() {
 
 Input::Input()
 	: backend(NULL)
+	, m_useRawMouseInput(true)
 	, m_mouseMode(Mouse::Absolute)
 	, m_lastMousePosition(Vec2s_ZERO)
 	, mouseInWindow(false)
@@ -248,8 +249,30 @@ void Input::setMouseMode(Mouse::Mode mode) {
 	
 	m_mouseMode = mode;
 	
+	if(backend && m_useRawMouseInput) {
+		if(!backend->setMouseMode(mode)) {
+			m_useRawMouseInput = false;
+		}
+	}
+	
 	if(m_mouseMode == Mouse::Absolute) {
 		centerMouse();
+	}
+	
+}
+
+void Input::setRawMouseInput(bool enabled) {
+	
+	if(m_useRawMouseInput == enabled) {
+		return;
+	}
+	
+	m_useRawMouseInput = enabled;
+	
+	if(backend && m_mouseMode == Mouse::Relative) {
+		if(!backend->setMouseMode(enabled ? Mouse::Relative : Mouse::Absolute)) {
+			m_useRawMouseInput = false;
+		}
 	}
 	
 }
@@ -429,10 +452,14 @@ void Input::update() {
 	
 	if(m_mouseMode == Mouse::Relative) {
 		
-		iMouseR = newMousePosition - m_lastMousePosition;
-		m_lastMousePosition = newMousePosition;
-		if(iMouseR != Vec2s_ZERO) {
-			centerMouse();
+		if(m_useRawMouseInput) {
+			iMouseR = Vec2s(relX * 2, relY * 2);
+		} else {
+			iMouseR = newMousePosition - m_lastMousePosition;
+			m_lastMousePosition = newMousePosition;
+			if(iMouseR != Vec2s_ZERO) {
+				centerMouse();
+			}
 		}
 		
 		// Use the sensitivity config value to adjust relative mouse mouvements

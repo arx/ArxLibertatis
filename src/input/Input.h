@@ -86,6 +86,8 @@ public:
 	bool isMouseInWindow() const { return mouseInWindow; }
 	void setMousePosAbs(const Vec2s & mousePos);
 	
+	void setRawMouseInput(bool enabled);
+	
 	void setMouseSensitivity(int sensitivity);
 	int getMouseSensitivity() const { return iSensibility; }
 	
@@ -116,6 +118,7 @@ private:
 	
 	// Mouse
 	
+	bool m_useRawMouseInput;
 	Mouse::Mode m_mouseMode;
 	Vec2s iMouseR;
 	Vec2s iMouseA;
