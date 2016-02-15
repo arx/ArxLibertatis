@@ -41,7 +41,7 @@ class IndexBuffer : private boost::noncopyable {
 	
 public:
 	
-	inline size_t capacity() const { return _capacity; }
+	size_t capacity() const { return _capacity; }
 	
 	virtual void setData(const Index * vertices, size_t count, size_t offset = 0, BufferFlags flags = 0) = 0;
 	
@@ -62,7 +62,7 @@ class VertexBuffer : private boost::noncopyable {
 	
 public:
 	
-	inline size_t capacity() const { return _capacity; }
+	size_t capacity() const { return _capacity; }
 	
 	virtual void setData(const Vertex * vertices, size_t count, size_t offset = 0, BufferFlags flags = 0) = 0;
 	
