@@ -70,7 +70,7 @@ inline u64 flags(const std::string & flags) {
  * implementation, but that will be much uglier and limited.
  */
 template <size_t N>
-inline u64 flags(const char (&flags)[N]) {
+u64 flags(const char (&flags)[N]) {
 	
 	u64 result = 0ul;
 	for(size_t i = (flags[0] == '-') ? 1 : 0; i < N - 1; i++) {
@@ -104,7 +104,7 @@ public:
 	
 	void skipWhitespace(bool skipNewlines = false);
 	
-	inline Entity * getEntity() const { return entity; }
+	Entity * getEntity() const { return entity; }
 	
 	bool getBool();
 	
@@ -123,12 +123,12 @@ public:
 	bool jumpToLabel(const std::string & target, bool substack = false);
 	bool returnToCaller();
 	
-	inline EERIE_SCRIPT * getScript() const { return script; }
-	inline EERIE_SCRIPT * getMaster() const { return script->master ? script->master : script; }
+	EERIE_SCRIPT * getScript() const { return script; }
+	EERIE_SCRIPT * getMaster() const { return script->master ? script->master : script; }
 	
-	inline size_t getPosition() const { return pos; }
+	size_t getPosition() const { return pos; }
 	
-	inline ScriptMessage getMessage() const { return message; }
+	ScriptMessage getMessage() const { return message; }
 	
 	friend class ::ScriptEvent;
 };
@@ -151,15 +151,15 @@ public:
 	
 	static const long AnyEntity = -1;
 	
-	inline Command(const std::string & name, long entityFlags = 0)
+	Command(const std::string & name, long entityFlags = 0)
 		: name(name), entityFlags(entityFlags) { }
 	
 	virtual Result execute(Context & context) = 0;
 	
 	virtual ~Command() { }
 	
-	inline const std::string & getName() const { return name; }
-	inline long getEntityFlags() const { return entityFlags; }
+	const std::string & getName() const { return name; }
+	long getEntityFlags() const { return entityFlags; }
 };
 
 bool isSuppressed(const Context & context, const std::string & command);
