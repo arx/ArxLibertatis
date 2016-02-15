@@ -1651,12 +1651,13 @@ void ArxGame::manageKeyMouse() {
 	bool bRestoreCoordMouse=true;
 
 	static bool LAST_PLAYER_MOUSELOOK_ON = false;
-	if(PLAYER_MOUSELOOK_ON && !LAST_PLAYER_MOUSELOOK_ON) {
+	bool mouselook = PLAYER_MOUSELOOK_ON && !BLOCK_PLAYER_CONTROLS;
+	if(mouselook && !LAST_PLAYER_MOUSELOOK_ON) {
 		
 		MemoMouse = DANAEMouse;
 		GInput->setMouseMode(Mouse::Relative);
 		
-	} else if(!PLAYER_MOUSELOOK_ON && LAST_PLAYER_MOUSELOOK_ON) {
+	} else if(!mouselook && LAST_PLAYER_MOUSELOOK_ON) {
 		
 		GInput->setMouseMode(Mouse::Absolute);
 		DANAEMouse = MemoMouse;
@@ -1668,7 +1669,7 @@ void ArxGame::manageKeyMouse() {
 		bRestoreCoordMouse=false;
 	}
 	
-	LAST_PLAYER_MOUSELOOK_ON=PLAYER_MOUSELOOK_ON;
+	LAST_PLAYER_MOUSELOOK_ON = mouselook;
 	PLAYER_ROTATION=0;
 
 	Vec2s mouseDiff = GInput->getMousePosRel();
