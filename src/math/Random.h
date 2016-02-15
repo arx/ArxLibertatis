@@ -37,26 +37,26 @@ class Random {
 public:
 	
 	//! Generates a random integer value in the range [intMin, intMax].
-	template <typename IntType> static inline IntType get();
-	template <typename IntType> static inline IntType get(IntType min, IntType max);
-	static inline int get(int min = 0, int max = std::numeric_limits<int>::max());
+	template <typename IntType> static IntType get();
+	template <typename IntType> static IntType get(IntType min, IntType max);
+	static int get(int min = 0, int max = std::numeric_limits<int>::max());
 	
 	//! Generates a random floating point value in the range [realMin, realMax).
-	template <class RealType> static inline RealType getf();
-	template <class RealType> static inline RealType getf(RealType realMin, RealType realMax);
-	static inline float getf(float realMin = 0.0f, float realMax = 1.0f);
+	template <class RealType> static RealType getf();
+	template <class RealType> static RealType getf(RealType realMin, RealType realMax);
+	static float getf(float realMin = 0.0f, float realMax = 1.0f);
 	
 	//! Return a random iterator pointing in the range [begin, end).
 	template <class Iterator>
-	static inline Iterator getIterator(Iterator begin, Iterator end);
+	static Iterator getIterator(Iterator begin, Iterator end);
 	
 	//! Return a random iterator in the given container.
 	template <class Container>
-	static inline typename Container::iterator getIterator(Container& container);
+	static typename Container::iterator getIterator(Container& container);
 	
 	//! Return a random const_iterator in the given container.
 	template <class Container>
-	static inline typename Container::const_iterator getIterator(const Container& container);
+	static typename Container::const_iterator getIterator(const Container& container);
 	
 	//! Seed the random number generator using the current time.
 	static void seed();
@@ -85,7 +85,7 @@ IntType Random::get() {
 	return Random::get<IntType>(0, std::numeric_limits<IntType>::max());
 }
 
-int Random::get(int min, int max) {
+inline int Random::get(int min, int max) {
 	return Random::get<int>(min, max);
 }
 
@@ -101,7 +101,7 @@ RealType Random::getf() {
 	return Random::getf<RealType>(RealType(0.0), RealType(1.0));
 }
 
-float Random::getf(float min, float max) {
+inline float Random::getf(float min, float max) {
 	return Random::getf<float>(min, max);
 }
 
