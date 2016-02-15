@@ -123,13 +123,13 @@ public:
 	
 	StoppableThread() : stopRequested(false) { }
 	
-	inline void stop(Priority priority = Highest) {
+	void stop(Priority priority = Highest) {
 		stopRequested = true;
 		setPriority(priority);
 		waitForCompletion();
 	}
 	
-	inline bool isStopRequested() {
+	bool isStopRequested() {
 		return stopRequested;
 	}
 	
