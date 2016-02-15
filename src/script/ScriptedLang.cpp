@@ -554,9 +554,9 @@ class IfCommand : public Command {
 			return false;
 		}
 		
-		inline std::string getName() { return "if"; }
-		inline const std::string & getOperator() { return name; }
-		inline ValueType getType() { return type; }
+		std::string getName() { return "if"; }
+		const std::string & getOperator() { return name; }
+		ValueType getType() { return type; }
 		
 	};
 	
