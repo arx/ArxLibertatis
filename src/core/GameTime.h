@@ -68,33 +68,33 @@ namespace arx
 		void force_time_restore(const float &time);
 
 		// TODO probably the source of the need to clip frame_delay
-		inline void force_frame_time_restore(const float &v) {
+		void force_frame_time_restore(const float &v) {
 			frame_time_us = v * 1000;
 			last_frame_time_us = v * 1000;
 		}
 
-		inline bool operator>(const float &v) const { 
+		bool operator>(const float &v) const { 
 			return delta_time_us > (v * 1000); 
 		}
 
-		inline operator float() const {
+		operator float() const {
 			return delta_time_us / 1000.0f;
 		}
 
-		inline operator long() const {
+		operator long() const {
 			//return static_cast<long>(delta_time);
 			return checked_range_cast<long>(delta_time_us / 1000);
 		}
 
-		inline operator unsigned long() const {
+		operator unsigned long() const {
 			return checked_range_cast<unsigned long>(delta_time_us / 1000);
 		}
 
-		inline void setMs(const float &v) {
+		void setMs(const float &v) {
 			delta_time_us = v * 1000;
 		}
 
-		inline void update(const bool & use_pause = true) {
+		void update(const bool & use_pause = true) {
 
 			if (is_paused() && use_pause) {
 				delta_time_us = platform::getElapsedUs(start_time, pause_time);
@@ -103,46 +103,46 @@ namespace arx
 			}
 		}
 
-		inline float get_updated(const bool & use_pause = true) {
+		float get_updated(const bool & use_pause = true) {
 			
 			update(use_pause);
 			return delta_time_us / 1000.0f;
 		}
 
-		inline unsigned long get_updated_ul(const bool & use_pause = true) {
+		unsigned long get_updated_ul(const bool & use_pause = true) {
 
 			update(use_pause);
 			return checked_range_cast<unsigned long>(delta_time_us / 1000);
 		}
 
-		inline bool is_paused() const { 
+		bool is_paused() const { 
 			return paused; 
 		}
 
 		// used only for "slow time" spell
-		inline void increment_start_time(const u64 & inc) {
+		void increment_start_time(const u64 & inc) {
 			start_time += inc;
 		}
 
-		inline float get_frame_time() const { 
+		float get_frame_time() const { 
 			return frame_time_us / 1000.0f; 
 		}
 
-		inline float get_last_frame_time() const {
+		float get_last_frame_time() const {
 			return last_frame_time_us / 1000.0f;
 		}
 
-		inline float get_frame_delay() const {
+		float get_frame_delay() const {
 			return frame_delay_ms;
 		}
 
-		inline void update_frame_time() {
+		void update_frame_time() {
 			update();
 			frame_time_us = delta_time_us;
 			frame_delay_ms = (frame_time_us - last_frame_time_us) / 1000.0f;
 		}
 
-		inline void update_last_frame_time() {
+		void update_last_frame_time() {
 			last_frame_time_us = frame_time_us;
 		}
 
