@@ -959,6 +959,15 @@ public:
 		}
 		
 		{
+			std::string szMenuText = getLocalised("system_menus_options_raw_mouse_input", "Raw mouse input");
+			TextWidget * txt = new TextWidget(BUTTON_INVALID, hFontMenu, szMenuText, Vec2f(20, 0));
+			CheckboxWidget * cb = new CheckboxWidget(txt);
+			cb->stateChanged = boost::bind(&InputOptionsMenuPage::onChangedRawMouseInput, this, _1);
+			cb->iState = config.input.rawMouseInput ? 1 : 0;
+			addCenter(cb);
+		}
+		
+		{
 			std::string szMenuText = getLocalised("system_menus_autodescription", "auto_description");
 			TextWidget * txt = new TextWidget(BUTTON_INVALID, hFontMenu, szMenuText, Vec2f(20, 0));
 			CheckboxWidget * cb = new CheckboxWidget(txt);
@@ -1012,6 +1021,11 @@ public:
 	
 	void onChangedMouseSensitivity(int value) {
 		ARXMenu_Options_Control_SetMouseSensitivity(value);
+	}
+	
+	void onChangedRawMouseInput(int state) {
+		config.input.rawMouseInput = (state) ? true : false;
+		GInput->setRawMouseInput(config.input.rawMouseInput);
 	}
 	
 	void onChangedAutoDescription(int state) {
