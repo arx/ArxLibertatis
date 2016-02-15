@@ -68,14 +68,14 @@ public:
 	}
 	virtual ~ResourceHandle() { }
 	
-	inline void reference() {
+	void reference() {
 		++reference_count_;
 	}
-	inline void dereference() {
+	void dereference() {
 		arx_assert(reference_count_ > 0);
 		--reference_count_;
 	}
-	inline s32 isReferenced() {
+	s32 isReferenced() {
 		return reference_count_;
 	}
 	
@@ -97,16 +97,16 @@ public:
 	ResourceList();
 	~ResourceList();
 	
-	inline bool isValid(s32 index) { return ((size_t)index < _size && list[index]); } 
-	inline T * operator[](s32 index) { return list[index]; }
-	inline size_t size() { return _size; }
-	inline s32 add(T * element);
-	inline void remove(s32 index);
-	inline void clear();
+	bool isValid(s32 index) { return ((size_t)index < _size && list[index]); } 
+	T * operator[](s32 index) { return list[index]; }
+	size_t size() { return _size; }
+	s32 add(T * element);
+	void remove(s32 index);
+	void clear();
 	
-	inline iterator begin() { return list; }
-	inline iterator end() { return list + _size; }
-	inline iterator remove(iterator i);
+	iterator begin() { return list; }
+	iterator end() { return list + _size; }
+	iterator remove(iterator i);
 	
 private:
 	
