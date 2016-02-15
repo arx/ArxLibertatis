@@ -150,6 +150,9 @@ void ARXMenu_Options_Audio_SetMasterVolume(int _iVolume) {
 	_iVolume = glm::clamp(_iVolume, 0, 10);
 	
 	float fVolume = ((float)_iVolume) * 0.1f;
+	if(config.audio.muteOnFocusLost && !mainApp->getWindow()->hasFocus()) {
+		fVolume = 0.f;
+	}
 	ARX_SOUND_MixerSetVolume(ARX_SOUND_MixerMenu, fVolume);
 	config.audio.volume = _iVolume;
 }
@@ -180,10 +183,20 @@ void ARXMenu_Options_Audio_SetAmbianceVolume(int _iVolume) {
 
 void ARXMenu_Options_Audio_ApplyGameVolumes() {
 	ARX_SOUND_MixerSwitch(ARX_SOUND_MixerMenu, ARX_SOUND_MixerGame);
-	ARX_SOUND_MixerSetVolume(ARX_SOUND_MixerGame, config.audio.volume * 0.1f);
+	float volume = config.audio.volume * 0.1f;
+	if(config.audio.muteOnFocusLost && !mainApp->getWindow()->hasFocus()) {
+		volume = 0.f;
+	}
+	ARX_SOUND_MixerSetVolume(ARX_SOUND_MixerGame, volume);
 	ARX_SOUND_MixerSetVolume(ARX_SOUND_MixerGameSample, config.audio.sfxVolume * 0.1f);
 	ARX_SOUND_MixerSetVolume(ARX_SOUND_MixerGameSpeech, config.audio.speechVolume * 0.1f);
 	ARX_SOUND_MixerSetVolume(ARX_SOUND_MixerGameAmbiance, config.audio.ambianceVolume * 0.1f);
+}
+
+void ARXMenu_Options_Audio_SetMuted(bool mute) {
+	float volume = mute ? 0.f : config.audio.volume * 0.1f;
+	ARX_SOUND_MixerSetVolume(ARX_SOUND_MixerMenu, volume);
+	ARX_SOUND_MixerSetVolume(ARX_SOUND_MixerGame, volume);
 }
 
 bool ARXMenu_Options_Audio_SetEAX(bool _bEnable) {

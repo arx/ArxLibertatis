@@ -1180,17 +1180,30 @@ void ArxGame::shutdownGame() {
 }
 
 void ArxGame::onWindowGotFocus(const Window &) {
+	
 	if(GInput) {
 		GInput->reset();
 	}
+	
+	if(config.audio.muteOnFocusLost) {
+		ARXMenu_Options_Audio_SetMuted(false);
+	}
+	
 }
 
 void ArxGame::onWindowLostFocus(const Window &) {
+	
 	// TODO(option-control) add a config option for this
 	ARX_INTERFACE_Combat_Mode(0);
 	TRUE_PLAYER_MOUSELOOK_ON = false;
 	PLAYER_MOUSELOOK_ON = false;
+	
 	// TODO(option-audio) add a config option to disable audio on focus loss
+	
+	if(config.audio.muteOnFocusLost) {
+		ARXMenu_Options_Audio_SetMuted(true);
+	}
+	
 }
 
 void ArxGame::onResizeWindow(const Window & window) {

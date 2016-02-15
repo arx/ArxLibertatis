@@ -80,6 +80,7 @@ const bool
 	colorkeyAntialiasing = true,
 	limitSpeechWidth = true,
 	eax = false,
+	muteOnFocusLost = false,
 	invertMouse = false,
 	autoReadyWeapon = false,
 	mouseLookToggle = true,
@@ -183,7 +184,8 @@ const std::string
 	sfxVolume = "effects_volume",
 	speechVolume = "speech_volume",
 	ambianceVolume = "ambiance_volume",
-	eax = "eax";
+	eax = "eax",
+	muteOnFocusLost = "mute_on_focus_lost";
 
 // Input options
 const std::string
@@ -416,6 +418,7 @@ bool Config::save() {
 	writer.writeKey(Key::speechVolume, audio.speechVolume);
 	writer.writeKey(Key::ambianceVolume, audio.ambianceVolume);
 	writer.writeKey(Key::eax, audio.eax);
+	writer.writeKey(Key::muteOnFocusLost, audio.muteOnFocusLost);
 	
 	// input
 	writer.beginSection(Section::Input);
@@ -513,6 +516,7 @@ bool Config::init(const fs::path & file) {
 	audio.speechVolume = reader.getKey(Section::Audio, Key::speechVolume, Default::speechVolume);
 	audio.ambianceVolume = reader.getKey(Section::Audio, Key::ambianceVolume, Default::ambianceVolume);
 	audio.eax = reader.getKey(Section::Audio, Key::eax, Default::eax);
+	audio.muteOnFocusLost = reader.getKey(Section::Audio, Key::muteOnFocusLost, Default::muteOnFocusLost);
 	
 	// Get input settings
 	input.invertMouse = reader.getKey(Section::Input, Key::invertMouse, Default::invertMouse);

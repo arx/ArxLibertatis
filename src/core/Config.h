@@ -145,6 +145,7 @@ public:
 		float ambianceVolume;
 		
 		bool eax;
+		bool muteOnFocusLost;
 	
 	} audio;
 	
