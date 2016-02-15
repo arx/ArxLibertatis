@@ -63,18 +63,18 @@ public:
 	
 	aalError load();
 	
-	inline void setUserData(void * _data) { data = _data; }
-	inline void * getUserData() const { return data; }
+	void setUserData(void * _data) { data = _data; }
+	void * getUserData() const { return data; }
 	
 	const Channel & getChannel() const { return channel; }
 	const res::path & getName() const { return name; }
 	
 	aalError setVolume(float volume);
 	
-	inline bool isPaused() const { return status == Paused; }
-	inline bool isPlaying() const { return status == Playing; }
-	inline bool isIdle() const { return status == Idle; }
-	inline bool isLooped() const { return loop; }
+	bool isPaused() const { return status == Paused; }
+	bool isPlaying() const { return status == Playing; }
+	bool isIdle() const { return status == Idle; }
+	bool isLooped() const { return loop; }
 	
 	aalError play(const Channel & channel, bool loop = true,
 	              size_t fade_interval = 0);
