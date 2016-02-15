@@ -51,14 +51,12 @@ ZeniMax Media Inc., Suite 120, Rockville, Maryland 20850 USA.
 
 #include "platform/Time.h"
 
-namespace arx
-{
-	class time
+	class GameTime
 	{
 	public:
 
-		time();
-		~time() {}
+		GameTime();
+		~GameTime() {}
 
 		void init();
 
@@ -173,8 +171,7 @@ namespace arx
 		** as frame_delay is a delta the issue of precision is less critical.
 		*/
 	};
-};
 
-extern arx::time arxtime;
+extern GameTime arxtime;
 
 #endif // ARX_CORE_GAMETIME_H

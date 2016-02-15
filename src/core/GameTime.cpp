@@ -48,10 +48,10 @@ ZeniMax Media Inc., Suite 120, Rockville, Maryland 20850 USA.
 
 #include "platform/Time.h"
 
-arx::time arxtime;
+GameTime arxtime;
 
-arx::time::time() {
-
+GameTime::GameTime() {
+	
 	// TODO can't call init from constructor platform::getTimeUs() requires init
 	// potential out-of-order construction resulting in a divide-by-zero
 	start_time         = 0;
@@ -63,7 +63,7 @@ arx::time::time() {
 	frame_delay_ms     = 0.0f;
 }
 
-void arx::time::init() {
+void GameTime::init() {
 	
 	start_time         = platform::getTimeUs();
 	pause_time         = 0;
@@ -74,14 +74,14 @@ void arx::time::init() {
 	frame_delay_ms     = 0.0f;
 }
 
-void arx::time::pause() {
+void GameTime::pause() {
 	if(!is_paused()) {
 		pause_time = platform::getTimeUs();
 		paused     = true;
 	}
 }
 
-void arx::time::resume() {
+void GameTime::resume() {
 	if(is_paused()) {
 		start_time += platform::getElapsedUs(pause_time);
 		pause_time = 0;
@@ -89,7 +89,7 @@ void arx::time::resume() {
 	}
 }
 
-void arx::time::force_time_restore(const float &time) {
+void GameTime::force_time_restore(const float &time) {
 	
 	u64 requested_time = u64(time * 1000.0f);
 	
