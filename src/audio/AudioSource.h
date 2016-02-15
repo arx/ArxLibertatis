@@ -102,12 +102,12 @@ public:
 	virtual aalError resume() = 0;
 	aalError update();
 	
-	inline SourceId getId() const { return id; }
-	inline Sample * getSample() const { return sample; }
-	inline const Channel & getChannel() const { return channel; }
-	inline Status getStatus() const { return status; }
-	inline bool isPlaying() const { return status == Playing; }
-	inline bool isIdle() const { return status == Idle; }
+	SourceId getId() const { return id; }
+	Sample * getSample() const { return sample; }
+	const Channel & getChannel() const { return channel; }
+	Status getStatus() const { return status; }
+	bool isPlaying() const { return status == Playing; }
+	bool isIdle() const { return status == Idle; }
 	
 	/*!
 	 * Re-calculate the final volume from the channel and mixer volumes.
@@ -130,7 +130,7 @@ protected:
 	
 	size_t time; // Elapsed 'time'
 	
-	inline void reset() { time = 0, callback_i = 0; }
+	void reset() { time = 0, callback_i = 0; }
 	
 	/*!
 	 * Check if this source is too far from the listener and play/pause it accordingly.
