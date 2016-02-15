@@ -57,7 +57,7 @@ public:
 	
 private:
 	
-	inline bool isEnabled() { return ((ops[Color] != OpDisable) || (ops[Alpha] != OpDisable)); }
+	bool isEnabled() { return ((ops[Color] != OpDisable) || (ops[Alpha] != OpDisable)); }
 	
 	OpenGLRenderer * renderer;
 	
