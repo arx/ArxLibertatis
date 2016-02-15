@@ -853,6 +853,15 @@ public:
 		}
 		
 		{
+			std::string szMenuText = getLocalised("system_menus_options_audio_mute_on_focus_lost", "Mute when not focused");
+			TextWidget * txt = new TextWidget(BUTTON_INVALID, hFontMenu, szMenuText, Vec2f(20, 0));
+			CheckboxWidget * cb = new CheckboxWidget(txt);
+			cb->stateChanged = boost::bind(&AudioOptionsMenuPage::onChangedMuteOnFocusLost, this, _1);
+			cb->iState = config.audio.muteOnFocusLost ? 1 : 0;
+			addCenter(cb);
+		}
+		
+		{
 			std::string szMenuText = getLocalised("system_menus_options_audio_eax", "EAX");
 			TextWidget * txt = new TextWidget(BUTTON_INVALID, hFontMenu, szMenuText, Vec2f(20, 0));
 			CheckboxWidget * cb = new CheckboxWidget(txt);
@@ -901,6 +910,14 @@ public:
 	void onChangedEax(int state) {
 		ARXMenu_Options_Audio_SetEAX(state != 0);
 	}
+	
+	void onChangedMuteOnFocusLost(int state) {
+		config.audio.muteOnFocusLost = (state != 0);
+		if(!mainApp->getWindow()->hasFocus()) {
+			ARXMenu_Options_Audio_SetMuted(config.audio.muteOnFocusLost);
+		}
+	}
+	
 };
 
 class InputOptionsMenuPage : public MenuPage {
