@@ -85,6 +85,7 @@ const bool
 	autoDescription = true,
 	forceToggle = false,
 	hudScale = false,
+	rawMouseInput = true,
 	borderTurning = true;
 
 ActionKey actions[NUM_ACTION_KEY] = {
@@ -189,6 +190,7 @@ const std::string
 	autoReadyWeapon = "auto_ready_weapon",
 	mouseLookToggle = "mouse_look_toggle",
 	mouseSensitivity = "mouse_sensitivity",
+	rawMouseInput = "raw_mouse_input",
 	autoDescription = "auto_description",
 	borderTurning = "border_turning";
 
@@ -419,6 +421,7 @@ bool Config::save() {
 	writer.writeKey(Key::autoReadyWeapon, input.autoReadyWeapon);
 	writer.writeKey(Key::mouseLookToggle, input.mouseLookToggle);
 	writer.writeKey(Key::mouseSensitivity, input.mouseSensitivity);
+	writer.writeKey(Key::rawMouseInput, input.rawMouseInput);
 	writer.writeKey(Key::autoDescription, input.autoDescription);
 	writer.writeKey(Key::borderTurning, input.borderTurning);
 	
@@ -513,6 +516,7 @@ bool Config::init(const fs::path & file) {
 	input.autoReadyWeapon = reader.getKey(Section::Input, Key::autoReadyWeapon, Default::autoReadyWeapon);
 	input.mouseLookToggle = reader.getKey(Section::Input, Key::mouseLookToggle, Default::mouseLookToggle);
 	input.mouseSensitivity = reader.getKey(Section::Input, Key::mouseSensitivity, Default::mouseSensitivity);
+	input.rawMouseInput = reader.getKey(Section::Input, Key::rawMouseInput, Default::rawMouseInput);
 	input.autoDescription = reader.getKey(Section::Input, Key::autoDescription, Default::autoDescription);
 	input.borderTurning = reader.getKey(Section::Input, Key::borderTurning, Default::borderTurning);
 	
