@@ -79,7 +79,7 @@ const bool
 	colorkeyAlphaToCoverage = true,
 	colorkeyAntialiasing = true,
 	limitSpeechWidth = true,
-	eax = false,
+	eax = true,
 	muteOnFocusLost = false,
 	invertMouse = false,
 	autoReadyWeapon = false,
