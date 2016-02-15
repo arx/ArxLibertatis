@@ -1943,8 +1943,8 @@ void ArxGame::manageEditorControls() {
 			dragThreshold = Vec2s_ZERO;
 		} else {
 			dragThreshold += GInput->getMousePosRel();
-			if((abs(DANAEMouse.x - STARTDRAG.x) > 2 && abs(DANAEMouse.y - STARTDRAG.y) > 2)
-			   || (abs(dragThreshold.x) > 2 || abs(dragThreshold.y) > 2)) {
+			if((std::abs(DANAEMouse.x - STARTDRAG.x) > 2 && std::abs(DANAEMouse.y - STARTDRAG.y) > 2)
+			   || (std::abs(dragThreshold.x) > 2 || std::abs(dragThreshold.y) > 2)) {
 				DRAGGING = true;
 			}
 		}
