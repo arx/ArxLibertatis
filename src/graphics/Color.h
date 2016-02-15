@@ -31,11 +31,11 @@ class Color4;
 
 template <class T>
 struct ColorLimits {
-	inline static T max() { return std::numeric_limits<T>::max(); }
+	static T max() { return std::numeric_limits<T>::max(); }
 };
 template <>
 struct ColorLimits<float> {
-	inline static float max() { return 1.f; }
+	static float max() { return 1.f; }
 };
 
 ARX_STRONG_TYPEDEF(u32, ColorBGR)
@@ -67,60 +67,60 @@ public:
 	static const Color3 cyan;
 	static const Color3 magenta;
 	
-	inline Color3() : b(T(0)), g(T(0)), r(T(0)) { }
-	inline Color3(T _r, T _g, T _b) : b(_b), g(_g), r(_r) { }
-	inline Color3(const Color3 & o) : b(o.b), g(o.g), r(o.r) { }
+	Color3() : b(T(0)), g(T(0)), r(T(0)) { }
+	Color3(T _r, T _g, T _b) : b(_b), g(_g), r(_r) { }
+	Color3(const Color3 & o) : b(o.b), g(o.g), r(o.r) { }
 	
-	inline Color3 & operator=(const Color3 & o) {
+	Color3 & operator=(const Color3 & o) {
 		r = o.r, g = o.g, b = o.b;
 		return *this;
 	}
 	
-	inline static Color3 fromRGB(ColorRGB rgb) {
+	static Color3 fromRGB(ColorRGB rgb) {
 		return Color3(value(rgb), value(rgb >> 8), value(rgb >> 16));
 	}
 	
-	inline static Color3 fromBGR(ColorBGR bgr) {
+	static Color3 fromBGR(ColorBGR bgr) {
 		return Color3(value(bgr >> 16), value(bgr >> 8), value(bgr));
 	}
 	
-	inline ColorRGBA toRGB(u8 _a = ColorLimits<u8>::max()) const {
+	ColorRGBA toRGB(u8 _a = ColorLimits<u8>::max()) const {
 		return ColorRGBA(byteval(r) | (byteval(g) << 8) | (byteval(b) << 16) | (u32(_a) << 24));
 	}
 	
-	inline ColorBGRA toBGR(u8 _a = ColorLimits<u8>::max()) const {
+	ColorBGRA toBGR(u8 _a = ColorLimits<u8>::max()) const {
 		return ColorBGRA(byteval(b) | (byteval(g) << 8) | (byteval(r) << 16) | (u32(_a) << 24));
 	}
 	
-	inline static u32 byteval(T val) {
+	static u32 byteval(T val) {
 		return u32(val * (ColorLimits<u8>::max() / Limits::max()));
 	}
 	
-	inline static T value(u32 val) {
+	static T value(u32 val) {
 		return T(val & 0xff) * (Limits::max() / ColorLimits<u8>::max());
 	}
 	
 	template <class O>
-	inline Color4<O> to(O a = ColorLimits<O>::max()) const {
+	Color4<O> to(O a = ColorLimits<O>::max()) const {
 		return Color4<O>(scale<O>(r), scale<O>(g), scale<O>(b), a);
 	}
 	
 	template <class O>
-	inline static O scale(T val) {
+	static O scale(T val) {
 		return O(val * (ColorLimits<O>::max() / Limits::max()));
 	}
 	
-	inline static Color3 grayb(u8 val) {
+	static Color3 grayb(u8 val) {
 		T v = T(val * T(Limits::max() / ColorLimits<u8>::max()));
 		return Color3(v, v, v);
 	}
 	
-	inline static Color3 gray(float val) {
+	static Color3 gray(float val) {
 		val *= (Limits::max() / ColorLimits<float>::max());
 		return Color3(T(val), T(val), T(val));
 	}
 	
-	inline Color3 operator*(float factor) const {
+	Color3 operator*(float factor) const {
 		return Color3(r * factor, g * factor, b * factor);
 	}
 
@@ -174,64 +174,64 @@ public:
 	//! A fully transparent, black color.
 	static const Color4 none;
 	
-	inline Color4() : C3(), a(T(0)) { }
-	inline Color4(T _r, T _g, T _b, T _a = Limits::max()) : C3(_r, _g, _b), a(_a) { }
-	inline Color4(const Color4 & o) : C3(o), a(o.a) { }
-	inline Color4(const C3 & o, T _a = Limits::max()) : C3(o), a(_a) { }
+	Color4() : C3(), a(T(0)) { }
+	Color4(T _r, T _g, T _b, T _a = Limits::max()) : C3(_r, _g, _b), a(_a) { }
+	Color4(const Color4 & o) : C3(o), a(o.a) { }
+	/* implicit */ Color4(const C3 & o, T _a = Limits::max()) : C3(o), a(_a) { }
 	
-	inline Color4 & operator=(const Color4 & o) {
+	Color4 & operator=(const Color4 & o) {
 		C3::operator=(o), a = o.a;
 		return *this;
 	}
 	
-	inline Color4 & operator=(const C3 & o) {
+	Color4 & operator=(const C3 & o) {
 		C3::operator=(o), a = Limits::max();
 		return *this;
 	}
 	
-	inline bool operator==(const Color4 & o) const {
+	bool operator==(const Color4 & o) const {
 		return (C3::r == o.r && C3::g == o.g && C3::b == o.b && a == o.a);
 	}
 	
-	inline bool operator!=(const Color4 & o) const {
+	bool operator!=(const Color4 & o) const {
 		return !(*this == o);
 	}
 	
-	inline ColorRGBA toRGBA() const {
+	ColorRGBA toRGBA() const {
 		return C3::toRGB((u8)C3::byteval(a));
 	}
 	
-	inline ColorBGRA toBGRA() const {
+	ColorBGRA toBGRA() const {
 		return C3::toBGR((u8)C3::byteval(a));
 	}
 	
-	inline static Color4 fromRGB(ColorRGB rgb, T a = Limits::max()) {
+	static Color4 fromRGB(ColorRGB rgb, T a = Limits::max()) {
 		return Color4(C3::fromRGB(rgb), a);
 	}
 	
-	inline static Color4 fromBGR(ColorBGR bgr, T a = Limits::max()) {
+	static Color4 fromBGR(ColorBGR bgr, T a = Limits::max()) {
 		return Color4(C3::fromBGR(bgr), a);
 	}
 	
-	inline static Color4 fromRGBA(ColorRGBA rgba) {
+	static Color4 fromRGBA(ColorRGBA rgba) {
 		return fromRGB(ColorRGB(rgba), C3::value(rgba >> 24));
 	}
 	
-	inline static Color4 fromBGRA(ColorBGRA bgra) {
+	static Color4 fromBGRA(ColorBGRA bgra) {
 		return fromBGR(ColorBGR(bgra), C3::value(bgra >> 24));
 	}
 	
 	template <class O>
-	inline Color4<O> to() const {
+	Color4<O> to() const {
 		return C3::to(scale<O>(a));
 	}
 	
 	template <class O>
-	inline static O scale(T val) {
+	static O scale(T val) {
 		return O(val * (ColorLimits<O>::max() / Limits::max()));
 	}
 	
-	inline Color4 operator*(float factor) const {
+	Color4 operator*(float factor) const {
 		return Color4(C3::operator*(factor), a);
 	}
 	
