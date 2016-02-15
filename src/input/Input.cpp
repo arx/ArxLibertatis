@@ -236,6 +236,11 @@ void Input::reset() {
 }
 
 void Input::setMouseMode(Mouse::Mode mode) {
+	
+	if(m_mouseMode == mode) {
+		return;
+	}
+	
 	m_mouseMode = mode;
 }
 
@@ -416,6 +421,10 @@ void Input::update() {
 		fSens = std::pow(0.7f, fSens) * 2.f;
 		iMouseR.x = relX * fSens;
 		iMouseR.y = relY * fSens;
+		
+		if(!mouseInWindow || iMouseR != Vec2s_ZERO) {
+			GInput->setMousePosAbs(Vec2s(mainApp->getWindow()->getSize() / 2));
+		}
 		
 	} else {
 		iMouseR = Vec2s_ZERO;

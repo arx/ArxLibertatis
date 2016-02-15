@@ -54,7 +54,6 @@ extern float FPS;
 
 extern long EERIEMouseButton;
 extern long LastMouseClick;
-extern bool EERIEMouseGrab;
 
 inline bool eeMouseDown1() {
 	return (EERIEMouseButton & 1) && !(LastMouseClick & 1);

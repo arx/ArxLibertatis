@@ -1675,13 +1675,6 @@ void ArxGame::updateInput() {
 		else
 			EERIEMouseButton &= ~2;
 	}
-	
-	
-	if(EERIEMouseGrab && GInput->hasMouseMoved()) {
-		if(!(ARXmenu.currentmode == AMCM_NEWQUEST || (player.Interface & INTER_MAP && (g_guiBookCurrentTopTab != BOOKMODE_MINIMAP)))) {
-			GInput->setMousePosAbs(Vec2s(g_size.center()));
-		}
-	}
 
 	if(GInput->actionNowPressed(CONTROLS_CUST_TOGGLE_FULLSCREEN)) {
 		setWindowSize(!getWindow()->isFullScreen());

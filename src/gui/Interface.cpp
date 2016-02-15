@@ -1654,12 +1654,10 @@ void ArxGame::manageKeyMouse() {
 	if(PLAYER_MOUSELOOK_ON && !LAST_PLAYER_MOUSELOOK_ON) {
 		
 		MemoMouse = DANAEMouse;
-		EERIEMouseGrab = true;
 		GInput->setMouseMode(Mouse::Relative);
 		
 	} else if(!PLAYER_MOUSELOOK_ON && LAST_PLAYER_MOUSELOOK_ON) {
 		
-		EERIEMouseGrab = false;
 		GInput->setMouseMode(Mouse::Absolute);
 		DANAEMouse = MemoMouse;
 		
