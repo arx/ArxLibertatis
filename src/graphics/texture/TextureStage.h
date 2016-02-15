@@ -69,13 +69,13 @@ public:
 	
 	virtual void setColorOp(TextureOp textureOp, TextureArg texArg1, TextureArg texArg2) = 0;
 	virtual void setColorOp(TextureOp textureOp) = 0;
-	inline void setColorOp(TextureArg texArg);
-	inline void disableColor();
+	void setColorOp(TextureArg texArg);
+	void disableColor();
 	
 	virtual void setAlphaOp(TextureOp textureOp, TextureArg texArg1, TextureArg texArg2) = 0;
 	virtual void setAlphaOp(TextureOp textureOp) = 0;
-	inline void setAlphaOp(TextureArg texArg);
-	inline void disableAlpha();
+	void setAlphaOp(TextureArg texArg);
+	void disableAlpha();
 	
 	virtual WrapMode getWrapMode() const = 0;
 	virtual void setWrapMode(WrapMode wrapMode) = 0;
