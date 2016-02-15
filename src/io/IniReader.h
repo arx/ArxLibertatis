@@ -96,8 +96,8 @@ public:
 	
 	size_t getKeyCount(const std::string & section) const;
 	
-	inline iterator begin() const { return sections.begin(); }
-	inline iterator end() const { return sections.end(); }
+	iterator begin() const { return sections.begin(); }
+	iterator end() const { return sections.end(); }
 	
 };
 
