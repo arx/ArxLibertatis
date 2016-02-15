@@ -66,7 +66,7 @@ public:
 	bool find(const char *);
 	//! \return true if next four bytes = chunk id;
 	bool check(const char *);
-	inline size_t size() { return offset; }
+	size_t size() { return offset; }
 	bool restart();
 	
 private:
