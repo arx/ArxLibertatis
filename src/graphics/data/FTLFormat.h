@@ -158,7 +158,7 @@ struct EERIE_ACTIONLIST_FTL {
 	s32 action;
 	s32 sfx;
 	
-	inline operator EERIE_ACTIONLIST() const {
+	operator EERIE_ACTIONLIST() const {
 		EERIE_ACTIONLIST a;
 		a.name = boost::to_lower_copy(util::loadString(name));
 		a.idx = ActionPoint(idx);
@@ -167,7 +167,7 @@ struct EERIE_ACTIONLIST_FTL {
 		return a;
 	}
 	
-	inline EERIE_ACTIONLIST_FTL & operator=(const EERIE_ACTIONLIST & b) {
+	EERIE_ACTIONLIST_FTL & operator=(const EERIE_ACTIONLIST & b) {
 		util::storeString(name, b.name.c_str());
 		idx = b.idx.handleData();
 		action = b.act;
@@ -183,7 +183,7 @@ struct EERIE_SELECTIONS_FTL {
 	s32 nb_selected;
 	s32 selected;
 	
-	inline EERIE_SELECTIONS_FTL & operator=(const EERIE_SELECTIONS & b) {
+	EERIE_SELECTIONS_FTL & operator=(const EERIE_SELECTIONS & b) {
 		util::storeString(name, b.name.c_str());
 		nb_selected = b.selected.size();
 		selected = 0;
@@ -198,7 +198,7 @@ struct COLLISION_SPHERE_FTL {
 	s16 flags;
 	f32 radius;
 	
-	inline operator COLLISION_SPHERE() const {
+	operator COLLISION_SPHERE() const {
 		COLLISION_SPHERE a;
 		a.idx = idx;
 		a.flags = flags;
@@ -206,7 +206,7 @@ struct COLLISION_SPHERE_FTL {
 		return a;
 	}
 	
-	inline COLLISION_SPHERE_FTL & operator=(const COLLISION_SPHERE & b) {
+	COLLISION_SPHERE_FTL & operator=(const COLLISION_SPHERE & b) {
 		idx = b.idx;
 		flags = b.flags;
 		radius = b.radius;
@@ -224,7 +224,7 @@ struct EERIE_SPRINGS_FTL {
 	f32 damping; // spring damping
 	s32 type;
 	
-	inline operator EERIE_SPRINGS() const {
+	operator EERIE_SPRINGS() const {
 		EERIE_SPRINGS a;
 		a.startidx = startidx;
 		a.endidx = endidx;
@@ -235,7 +235,7 @@ struct EERIE_SPRINGS_FTL {
 		return a;
 	}
 	
-	inline EERIE_SPRINGS_FTL & operator=(const EERIE_SPRINGS & b) {
+	EERIE_SPRINGS_FTL & operator=(const EERIE_SPRINGS & b) {
 		startidx = b.startidx;
 		endidx = b.endidx;
 		restlength = b.restlength;
@@ -253,13 +253,13 @@ struct EERIE_OLD_VERTEX {
 	SavedVec3 v;
 	SavedVec3 norm;
 	
-	inline operator EERIE_VERTEX() const {
+	operator EERIE_VERTEX() const {
 		EERIE_VERTEX a;
 		a.vert = vert, a.v = v.toVec3(), a.norm = norm.toVec3();
 		return a;
 	}
 	
-	inline EERIE_OLD_VERTEX & operator=(const EERIE_VERTEX & b) {
+	EERIE_OLD_VERTEX & operator=(const EERIE_VERTEX & b) {
 		vert = b.vert, v = b.v, norm = b.norm;
 		return *this;
 	}
@@ -282,7 +282,7 @@ struct CLOTHESVERTEX_FTL {
 	
 	SavedVec3 lastpos;
 	
-	inline operator CLOTHESVERTEX() const {
+	operator CLOTHESVERTEX() const {
 		CLOTHESVERTEX a;
 		a.idx = idx;
 		a.flags = flags;
@@ -298,7 +298,7 @@ struct CLOTHESVERTEX_FTL {
 		return a;
 	}
 	
-	inline CLOTHESVERTEX_FTL & operator=(const CLOTHESVERTEX & b) {
+	CLOTHESVERTEX_FTL & operator=(const CLOTHESVERTEX & b) {
 		idx = b.idx;
 		flags = b.flags;
 		coll = b.coll;
