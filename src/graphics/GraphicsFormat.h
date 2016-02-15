@@ -32,12 +32,12 @@ struct SavedColor {
 	f32 g;
 	f32 b;
 	
-	inline SavedColor & operator=(const Color3f & o) {
+	SavedColor & operator=(const Color3f & o) {
 		r = o.r, g = o.g, b = o.b;
 		return *this;
 	}
 	
-	inline operator Color3f() const {
+	operator Color3f() const {
 		Color3f a;
 		a.r = r, a.g = g, a.b = b;
 		return a;
@@ -51,13 +51,13 @@ struct SavedVec3 {
 	f32 y;
 	f32 z;
 	
-	inline Vec3f toVec3() const {
+	Vec3f toVec3() const {
 		Vec3f a;
 		a.x = x, a.y = y, a.z = z;
 		return a;
 	}
 	
-	inline SavedVec3 & operator=(const Vec3f & b) {
+	SavedVec3 & operator=(const Vec3f & b) {
 		x = b.x, y = b.y, z = b.z;
 		return *this;
 	}
@@ -70,11 +70,11 @@ struct SavedAnglef {
 	f32 b;
 	f32 g;
 	
-	inline operator Anglef() const {
+	operator Anglef() const {
 		return Anglef(a, b, g);
 	}
 	
-	inline SavedAnglef & operator=(const Anglef & o) {
+	SavedAnglef & operator=(const Anglef & o) {
 		a = o.getYaw(), b = o.getPitch(), g = o.getRoll();
 		return *this;
 	}
@@ -90,7 +90,7 @@ struct SavedTextureVertex {
 	f32 tu;
 	f32 tv;
 	
-	inline operator TexturedVertex() const {
+	operator TexturedVertex() const {
 		TexturedVertex a;
 		a.p.x = pos.x, a.p.y = pos.y, a.p.z = pos.z;
 		a.rhw = rhw;
@@ -100,7 +100,7 @@ struct SavedTextureVertex {
 		return a;
 	}
 	
-	inline SavedTextureVertex & operator=(const TexturedVertex & b) {
+	SavedTextureVertex & operator=(const TexturedVertex & b) {
 		pos.x = b.p.x, pos.y = b.p.y, pos.z = b.p.z;
 		rhw = b.rhw;
 		color = Color::fromRGBA(b.color).toBGRA();
