@@ -27,7 +27,7 @@
 #endif
 
 #define SDL_PROTOTYPES_ONLY 1
-#include "SDL_syswm.h"
+#include <SDL_syswm.h>
 
 #include "gui/Credits.h"
 #include "graphics/opengl/GLDebug.h"
