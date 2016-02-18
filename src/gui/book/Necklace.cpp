@@ -109,7 +109,6 @@ static void PlayerBookDrawRune(Rune rune) {
 }
 
 
-long LastRune = -1;
 
 void ARX_INTERFACE_ManageOpenedBook_Finish(const Vec2f & mousePos)
 {
@@ -222,20 +221,15 @@ void ARX_INTERFACE_ManageOpenedBook_Finish(const Vec2f & mousePos)
 					
 					SpecialCursor=CURSOR_INTERACTION_ON;
 					
-					if(eeMouseDown1())
-						if((size_t)LastRune != i) {
-							PlayerBookDrawRune((Rune)i);
-						}
-						
-						LastRune=i;
+					if(eeMouseDown1()) {
+						PlayerBookDrawRune((Rune)i);
+					}
 				}
 			}
 		}
 	}
 	
 	GRenderer->SetCulling(CullCCW);
-	
-	LastRune=-1;
 	
 	*light = tl;
 	
