@@ -858,7 +858,7 @@ stbi_inline static int extend_receive(jpeg *j, int n)
    // predict well. I tried to table accelerate it but failed.
    // maybe it's compiling as a conditional move?
    if (k < m)
-      return (-1 << n) + k + 1;
+      return -(1 << n) + k + 1;
    else
       return k;
 }
