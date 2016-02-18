@@ -24,11 +24,11 @@ static int writefv(FILE *f, const char *fmt, va_list v)
          case '1': { unsigned char x = (unsigned char) va_arg(v, int); fputc(x,f); break; }
          case '2': { int x = va_arg(v,int); unsigned char b[2];
                      b[0] = (unsigned char) x; b[1] = (unsigned char) (x>>8);
-                     if(!fwrite(b,2,1,f)) return 0; break; }
+                     if(!fwrite(b,2,1,f)) { return 0; } break; }
          case '4': { stbiw_uint32 x = va_arg(v,int); unsigned char b[4];
                      b[0]=(unsigned char)x; b[1]=(unsigned char)(x>>8);
                      b[2]=(unsigned char)(x>>16); b[3]=(unsigned char)(x>>24);
-                     if(!fwrite(b,4,1,f)) return 0; break; }
+                     if(!fwrite(b,4,1,f)) { return 0; } break; }
          default:
             assert(0);
             return 1;
