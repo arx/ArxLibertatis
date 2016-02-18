@@ -278,7 +278,7 @@ void Input::setRawMouseInput(bool enabled) {
 }
 
 void Input::centerMouse() {
-	setMousePosAbs(Vec2s(mainApp->getWindow()->getSize() / 2));
+	setMousePosAbs(Vec2s(mainApp->getWindow()->getSize() / s32(2)));
 }
 
 void Input::setMousePosAbs(const Vec2s & mousePos) {
@@ -440,7 +440,7 @@ void Input::update() {
 		if(m_mouseMode == Mouse::Absolute) {
 			iMouseA = newMousePosition;
 		} else {
-			iMouseA = mainApp->getWindow()->getSize() / 2;
+			iMouseA = wndSize / s32(2);
 		}
 		
 	} else {
