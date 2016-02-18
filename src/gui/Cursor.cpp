@@ -20,6 +20,7 @@
 #include "gui/Cursor.h"
 
 #include <iomanip>
+#include <sstream>
 
 #include "core/Core.h"
 #include "core/Application.h"
@@ -96,10 +97,11 @@ void cursorTexturesInit() {
 	arx_assert(cursorRedist);
 	arx_assert(cursorCrossHair);
 	
-	for(long i = 0; i < 8; i++) {
-		char temp[256];
-		sprintf(temp,"graph/interface/cursors/cursor%02ld", i);
-		scursor[i] = TextureContainer::LoadUI(temp);
+	std::ostringstream oss;
+	for(size_t i = 0; i < 8; i++) {
+		oss.str(std::string());
+		oss << "graph/interface/cursors/cursor" << std::setfill('0') << std::setw(2) << i;
+		scursor[i] = TextureContainer::LoadUI(oss.str());
 		arx_assert(scursor[i]);
 	}
 	
