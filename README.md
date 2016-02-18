@@ -83,8 +83,10 @@ Getting all the dependencies set up for Windows is more tricky. Pre-build depend
 * `CMAKE_BUILD_TYPE` (default=Release): Set to `Debug` for debug binaries
 * `DEBUG` (default=OFF^1): Enable debug output and runtime checks
 * `DEBUG_EXTRA` (default=OFF): Expensive debug options
+* `DEVELOPER` (default=OFF): Enable build options suitable for developers^2
 
 1. Enabled automatically if `CMAKE_BUILD_TYPE` is set to `Debug`.
+2. Currently this disables `UNITY_BUILD` for faster incremental builds and enables `DEBUG`. The `-DDEVELOPER=…` doesn't change options explicitly specified by the user.
 
 Install options:
 
