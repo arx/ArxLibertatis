@@ -26,7 +26,7 @@ endfunction()
 #  ...     Compile definitons to add
 function(add_source_definitions SOURCES)
 	foreach(def IN LISTS ARGN)
-		if("${def}" MATCHES "^([/-]D)?([a-zA-Z0-9_]+(=.*)?)$")
+		if(def MATCHES "^([/-]D)?([a-zA-Z0-9_]+(=.*)?)$")
 			set_property(SOURCE ${SOURCES} APPEND PROPERTY COMPILE_DEFINITIONS ${CMAKE_MATCH_2})
 		else()
 			add_source_flags("${SOURCES}" "${def}")
@@ -384,11 +384,11 @@ function(_shared_build_add_binary bin)
 	
 	target_link_libraries(${bin} ${SHARED_BUILD_${bin}_LIBS})
 	
-	if(NOT "${SHARED_BUILD_${bin}_HEADERS}" STREQUAL "")
+	if(NOT SHARED_BUILD_${bin}_HEADERS STREQUAL "")
 		set_target_properties(${bin} PROPERTIES PUBLIC_HEADER "${SHARED_BUILD_${bin}_HEADERS}")
 	endif()
 	
-	if(NOT "${SHARED_BUILD_${bin}_INCLUDES}" STREQUAL "")
+	if(NOT SHARED_BUILD_${bin}_INCLUDES STREQUAL "")
 		if(CMAKE_VERSION VERSION_LESS 2.8.12)
 			# Cannot set per-target (SYSTEM) includes
 			include_directories(SYSTEM ${SHARED_BUILD_${bin}_INCLUDES})
