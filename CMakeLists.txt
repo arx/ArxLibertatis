@@ -13,12 +13,10 @@ else()
 	cmake_minimum_required(VERSION 2.8.3)
 endif()
 
-# Eliminate a warning on Windows with CMake 2.8.11
-# CMP0020: Automatically link Qt executables to qtmain
-# CMake version 2.8.11.2 warns when the policy is not set
-# and uses OLD behavior.
-if(POLICY CMP0020)
-	cmake_policy(SET CMP0020 NEW)
+if(CMAKE_VERSION VERSION_GREATER 3.4)
+	cmake_policy(VERSION 3.4)
+else()
+	cmake_policy(VERSION ${CMAKE_VERSION})
 endif()
 
 
