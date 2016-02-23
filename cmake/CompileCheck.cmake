@@ -1,4 +1,8 @@
 
+# Note: In CMake before 3.0 set(var "" PARENT_SCOPE) *unsets* the variable in the
+# parent scope instead of setting it to the empty string.
+# This means if(var STREQUAL "") will be false since var is not defined and thus not expanded.
+
 function(check_compile RESULT FILE FLAG TYPE)
 	
 	string(REGEX REPLACE "[^a-zA-Z0-9_][^a-zA-Z0-9_]*" "-" cachevar "${TYPE}-${FLAG}")
@@ -153,7 +157,7 @@ function(add_cxxflag FLAG)
 	
 	set(CMAKE_CXX_FLAGS "${CMAKE_CXX_FLAGS} ${RESULT}" PARENT_SCOPE)
 	
-	if(RESULT STREQUAL "")
+	if(NOT DEFINED RESULT OR RESULT STREQUAL "")
 		set(FLAG_FOUND 0 PARENT_SCOPE)
 	else()
 		set(FLAG_FOUND 1 PARENT_SCOPE)
@@ -169,7 +173,7 @@ function(add_ldflag FLAG)
 	set(CMAKE_SHARED_LINKER_FLAGS "${CMAKE_SHARED_LINKER_FLAGS} ${RESULT}" PARENT_SCOPE)
 	set(CMAKE_MODULE_LINKER_FLAGS "${CMAKE_MODULE_LINKER_FLAGS} ${RESULT}" PARENT_SCOPE)
 	
-	if(RESULT STREQUAL "")
+	if(NOT DEFINED RESULT OR RESULT STREQUAL "")
 		set(FLAG_FOUND 0 PARENT_SCOPE)
 	else()
 		set(FLAG_FOUND 1 PARENT_SCOPE)
