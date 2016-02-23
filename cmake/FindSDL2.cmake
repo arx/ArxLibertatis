@@ -135,7 +135,7 @@ if(SDL2_INCLUDE_DIR AND EXISTS "${_sdl2_VERSION_HEADER}")
 	file(STRINGS "${_sdl2_VERSION_HEADER}" _sdl2_VERSION_DEFINES REGEX "#define.*")
 	foreach(component IN ITEMS "MAJOR_VERSION" "MINOR_VERSION" "PATCHLEVEL")
 		set(_sdl2_VERSION_PATTERN ".*#define SDL_${component}[ \t]+([0-9]+).*")
-		if("${_sdl2_VERSION_DEFINES}" MATCHES "${_sdl2_VERSION_PATTERN}")
+		if(_sdl2_VERSION_DEFINES MATCHES "${_sdl2_VERSION_PATTERN}")
 			string(REGEX REPLACE "${_sdl2_VERSION_PATTERN}" "\\1"
 			       _sdl2_${component} "${_sdl2_VERSION_DEFINES}")
 		endif()
