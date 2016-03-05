@@ -174,9 +174,9 @@ void ARX_SPELLS_UpdateSymbolDraw() {
 				continue;
 			}
 
-			long nbcomponents = sd->sequence.length();
+			const size_t nbcomponents = sd->sequence.length();
 
-			if(nbcomponents <= 0) {
+			if(nbcomponents == 0) {
 				delete io->symboldraw;
 				io->symboldraw = NULL;
 				continue;
@@ -206,7 +206,7 @@ void ARX_SPELLS_UpdateSymbolDraw() {
 				
 				Vec2s old_pos = pos1;
 
-				for(long j = 0; j < nbcomponents; j++) {
+				for(size_t j = 0; j < nbcomponents; j++) {
 					Vec2s vect = GetSymbVector(sd->sequence[j]);
 					vect *= symbolVecScale;
 					vect += vect / Vec2s(2);
@@ -221,7 +221,7 @@ void ARX_SPELLS_UpdateSymbolDraw() {
 					oldtime -= (long)ti;
 				}
 
-				for(int j = 0; j < nbcomponents; j++) {
+				for(size_t j = 0; j < nbcomponents; j++) {
 					Vec2s vect = GetSymbVector(sd->sequence[j]);
 					vect *= symbolVecScale;
 					vect += vect / Vec2s(2);
@@ -253,7 +253,7 @@ void ARX_SPELLS_UpdateSymbolDraw() {
 				pos1 += (lMaxSymbolDrawSize - iSize) / Vec2s(2);
 				pos1 -= iMin;
 
-				for(long j = 0; j < nbcomponents; j++) {
+				for(size_t j = 0; j < nbcomponents; j++) {
 
 					Vec2s vect = GetSymbVector(sd->sequence[j]);
 					vect *= symbolVecScale;
