@@ -114,7 +114,7 @@ void ARX_THROWN_OBJECT_KillAll() {
 
 static long ARX_THROWN_OBJECT_GetFree() {
 	
-	unsigned long latest_time = (unsigned long)(arxtime);
+	unsigned long latest_time = arxtime.now_ul();
 	long latest_obj = -1;
 
 	for(size_t i = 0; i < MAX_THROWN_OBJECTS; i++) {
@@ -163,7 +163,7 @@ void ARX_THROWN_OBJECT_Throw(EntityHandle source, const Vec3f & position, const 
 	thrownObj->pRuban->SetNextPosition(thrownObj->position);
 	thrownObj->pRuban->Update(framedelay);
 	
-	thrownObj->creation_time = (unsigned long)(arxtime);
+	thrownObj->creation_time = arxtime.now_ul();
 	thrownObj->flags |= ATO_EXIST | ATO_MOVING;
 	
 	if(source == PlayerEntityHandle

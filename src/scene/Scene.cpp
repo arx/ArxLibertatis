@@ -1440,7 +1440,7 @@ void ARX_SCENE_Update() {
 	
 	ARX_PROFILE_FUNC();
 	
-	unsigned long tim = (unsigned long)(arxtime);
+	unsigned long tim = arxtime.now_ul();
 
 	WATEREFFECT+=0.0005f*framedelay;
 

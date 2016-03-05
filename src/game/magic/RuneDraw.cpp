@@ -84,7 +84,7 @@ void ARX_SPELLS_Init_Rects() {
 
 void ARX_SPELLS_UpdateSymbolDraw() {
 	
-	unsigned long curtime = (unsigned long)(arxtime);
+	unsigned long curtime = arxtime.now_ul();
 	
 	for(size_t i = 0; i < entities.size(); i++) {
 		const EntityHandle handle = EntityHandle(i);
@@ -299,7 +299,7 @@ static void ARX_SPELLS_RequestSymbolDrawCommon(Entity * io, float duration,
 	sd->duration = (short)std::max(1l, long(duration));
 	sd->sequence = info.sequence;
 
-	sd->starttime = (unsigned long)(arxtime);
+	sd->starttime = arxtime.now_ul();
 	sd->lasttim = 0;
 	
 	float tmpAngle = io->angle.getPitch() - 45.0F + info.startOffset.x * 2;

@@ -294,7 +294,7 @@ void TreatBackgroundDynlights() {
 		EERIE_LIGHT * el = &DynLight[i];
 
 		if(el->exist && el->duration) {
-			float tim = (float)float(arxtime) - (float)el->time_creation;
+			float tim = arxtime.now_f() - (float)el->time_creation;
 			float duration = (float)el->duration;
 
 			if(tim >= duration) {
@@ -406,7 +406,7 @@ void endLightDelayed(LightHandle & handle, long delay) {
 		EERIE_LIGHT * light = lightHandleGet(handle);
 		
 		light->duration = delay;
-		light->time_creation = (unsigned long)(arxtime);
+		light->time_creation = arxtime.now_ul();
 	}
 }
 
@@ -419,7 +419,7 @@ LightHandle GetFreeDynLight() {
 			DynLight[i].m_isIgnitionLight = false;
 			DynLight[i].intensity = 1.3f;
 			DynLight[i].treat = 1;
-			DynLight[i].time_creation = (unsigned long)(arxtime);
+			DynLight[i].time_creation = arxtime.now_ul();
 			DynLight[i].duration = 0;
 			DynLight[i].extras = 0;
 			DynLight[i].m_storedFlameTime.reset();

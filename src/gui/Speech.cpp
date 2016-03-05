@@ -123,7 +123,7 @@ long ARX_SPEECH_Add(const std::string & text, long duration) {
 	if(text.empty())
 		return -1;
 	
-	unsigned long tim = (unsigned long)(arxtime);
+	unsigned long tim = arxtime.now_ul();
 	if(tim == 0) {
 		tim = 1;
 	}
@@ -217,7 +217,7 @@ void ARX_SPEECH_Check()
 		if(speech[i].timecreation == 0)
 			continue;
 
-		if(float(arxtime) > speech[i].timecreation + speech[i].duration) {
+		if(arxtime.now_f() > speech[i].timecreation + speech[i].duration) {
 			ARX_SPEECH_MoveUp();
 			i--;
 		} else {
@@ -425,7 +425,7 @@ long ARX_SPEECH_AddSpeech(Entity * io, const std::string & data, long mood,
 
 void ARX_SPEECH_Update() {
 	
-	unsigned long tim = (unsigned long)(arxtime);
+	unsigned long tim = arxtime.now_ul();
 
 	if(cinematicBorder.isActive() || BLOCK_PLAYER_CONTROLS)
 		ARX_CONVERSATION_CheckAcceleratedSpeech();

@@ -116,7 +116,7 @@ DamageHandle DamageCreate(const DamageParameters & params) {
 		if(!damages[i].exist) {
 			DAMAGE_INFO & damage = damages[i];
 			damage.params = params;
-			damage.start_time = (unsigned long)(arxtime);
+			damage.start_time = arxtime.now_ul();
 			damage.lastupd = 0;
 			damage.exist = true;
 			return DamageHandle(i);
@@ -233,7 +233,7 @@ float ARX_DAMAGES_DamagePlayer(float dmg, DamageType type, EntityHandle source) 
 
 	entities.player()->dmg_sum += dmg;
 
-	if(float(arxtime) > entities.player()->ouch_time + 500) {
+	if(arxtime.now_f() > entities.player()->ouch_time + 500) {
 		Entity * oes = EVENT_SENDER;
 
 		if(ValidIONum(source))
@@ -241,7 +241,7 @@ float ARX_DAMAGES_DamagePlayer(float dmg, DamageType type, EntityHandle source) 
 		else
 			EVENT_SENDER = NULL;
 
-		entities.player()->ouch_time = (unsigned long)(arxtime);
+		entities.player()->ouch_time = arxtime.now_ul();
 		char tex[32];
 		sprintf(tex, "%5.2f", double(entities.player()->dmg_sum));
 		SendIOScriptEvent( entities.player(), SM_OUCH, tex );
@@ -452,8 +452,8 @@ void ARX_DAMAGES_DamageFIX(Entity * io, float dmg, EntityHandle source, bool isS
 	else
 		EVENT_SENDER = NULL;
 
-	if(float(arxtime) > io->ouch_time + 500) {
-		io->ouch_time = (unsigned long)(arxtime);
+	if(arxtime.now_f() > io->ouch_time + 500) {
+		io->ouch_time = arxtime.now_ul();
 		char tex[32];
 		sprintf(tex, "%5.2f", double(io->dmg_sum));
 		SendIOScriptEvent(io, SM_OUCH, tex);
@@ -755,13 +755,13 @@ float ARX_DAMAGES_DamageNPC(Entity * io, float dmg, EntityHandle source, bool is
 
 	io->dmg_sum += dmg;
 
-	if(float(arxtime) > io->ouch_time + 500) {
+	if(arxtime.now_f() > io->ouch_time + 500) {
 		if(ValidIONum(source))
 			EVENT_SENDER = entities[source];
 		else
 			EVENT_SENDER = NULL;
 
-		io->ouch_time = (unsigned long)(arxtime);
+		io->ouch_time = arxtime.now_ul();
 		char tex[32];
 
 		if(EVENT_SENDER && EVENT_SENDER->summoner == PlayerEntityHandle) {
@@ -911,7 +911,7 @@ static void ARX_DAMAGES_AddVisual(DAMAGE_INFO & di, const Vec3f & pos, float dmg
 		num = Random::get(0, io->obj->vertexlist.size() / 4 - 1) * 4 + 1;
 	}
 	
-	unsigned long tim = (unsigned long)(arxtime);
+	unsigned long tim = arxtime.now_ul();
 	if(di.lastupd + 200 < tim) {
 		di.lastupd = tim;
 		if(di.params.type & DAMAGE_TYPE_MAGICAL) {
@@ -1018,9 +1018,9 @@ static void ARX_DAMAGES_UpdateDamage(DamageHandle j, float tim) {
 					float dist = fdist(damage.params.pos, sub);
 					
 					if(damage.params.type & DAMAGE_TYPE_FIELD) {
-						if(float(arxtime) > io->collide_door_time + 500) {
+						if(arxtime.now_f() > io->collide_door_time + 500) {
 							EVENT_SENDER = NULL;
-							io->collide_door_time = (unsigned long)(arxtime); 
+							io->collide_door_time = arxtime.now_ul(); 
 							char param[64];
 							param[0] = 0;
 							
@@ -1174,7 +1174,7 @@ void ARX_DAMAGES_UpdateAll() {
 	ARX_PROFILE_FUNC();
 	
 	for (size_t j = 0; j < MAX_DAMAGES; j++)
-		ARX_DAMAGES_UpdateDamage(DamageHandle(j), arxtime);
+		ARX_DAMAGES_UpdateDamage(DamageHandle(j), arxtime.now_f());
 }
 
 static bool SphereInIO(Entity * io, const Sphere & sphere) {

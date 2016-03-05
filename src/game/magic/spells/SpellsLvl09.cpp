@@ -154,7 +154,7 @@ void SummonCreatureSpell::Update(float timeDelta) {
 	if(arxtime.is_paused())
 		return;
 	
-	if(float(arxtime) - (float)m_timcreation <= 4000) {
+	if(arxtime.now_f() - (float)m_timcreation <= 4000) {
 		if(Random::getf() > 0.7f) {
 			Vec3f pos = m_fissure.m_eSrc;
 			MakeCoolFx(pos);
@@ -449,7 +449,7 @@ void IncinerateSpell::Launch()
 	m_duration = 20000;
 	
 	tio->sfx_flag |= SFX_TYPE_YLSIDE_DEATH | SFX_TYPE_INCINERATE;
-	tio->sfx_time = (unsigned long)(arxtime);
+	tio->sfx_time = arxtime.now_ul();
 	
 	m_targets.push_back(m_target);
 }

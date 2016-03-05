@@ -637,9 +637,9 @@ float CheckAnythingInCylinder(const Cylinder & cyl, Entity * ioo, long flags) {
 						anything = std::min(anything, io_cyl.origin.y + io_cyl.height);
 
 						if(!(flags & CFLAG_JUST_TEST) && ioo) {
-							if(float(arxtime) > io->collide_door_time + 500) {
+							if(arxtime.now_f() > io->collide_door_time + 500) {
 								EVENT_SENDER = ioo;
-								io->collide_door_time = (unsigned long)(arxtime); 	
+								io->collide_door_time = arxtime.now_ul(); 	
 
 								if(CollidedFromBack(io, ioo))
 									SendIOScriptEvent(io, SM_COLLIDE_NPC, "back");
@@ -647,7 +647,7 @@ float CheckAnythingInCylinder(const Cylinder & cyl, Entity * ioo, long flags) {
 									SendIOScriptEvent(io, SM_COLLIDE_NPC);
 
 								EVENT_SENDER = io;
-								io->collide_door_time = (unsigned long)(arxtime); 
+								io->collide_door_time = arxtime.now_ul(); 
 
 								if(CollidedFromBack(ioo, io))
 									SendIOScriptEvent(ioo, SM_COLLIDE_NPC, "back");
@@ -713,20 +713,20 @@ float CheckAnythingInCylinder(const Cylinder & cyl, Entity * ioo, long flags) {
 								if(SphereInCylinder(cyl, sp)) {
 									if(!(flags & CFLAG_JUST_TEST) && ioo) {
 										if(io->gameFlags & GFLAG_DOOR) {
-											if(float(arxtime) > io->collide_door_time + 500) {
+											if(arxtime.now_f() > io->collide_door_time + 500) {
 												EVENT_SENDER = ioo;
-												io->collide_door_time = (unsigned long)(arxtime); 	
+												io->collide_door_time = arxtime.now_ul(); 	
 												SendIOScriptEvent(io, SM_COLLIDE_DOOR);
 
 												EVENT_SENDER = io;
-												io->collide_door_time = (unsigned long)(arxtime); 	
+												io->collide_door_time = arxtime.now_ul(); 	
 												SendIOScriptEvent(ioo, SM_COLLIDE_DOOR);
 											}
 										}
 
 										if(io->ioflags & IO_FIELD) {
 											EVENT_SENDER = NULL;
-											io->collide_door_time = (unsigned long)(arxtime); 	
+											io->collide_door_time = arxtime.now_ul(); 	
 											SendIOScriptEvent(ioo, SM_COLLIDE_FIELD);
 										}
 
@@ -772,20 +772,20 @@ float CheckAnythingInCylinder(const Cylinder & cyl, Entity * ioo, long flags) {
 									if(SphereInCylinder(cyl, sp)) {
 										if(!(flags & CFLAG_JUST_TEST) && ioo) {
 											if(io->gameFlags & GFLAG_DOOR) {
-												if(float(arxtime) > io->collide_door_time + 500) {
+												if(arxtime.now_f() > io->collide_door_time + 500) {
 													EVENT_SENDER = ioo;
-													io->collide_door_time = (unsigned long)(arxtime); 	
+													io->collide_door_time = arxtime.now_ul(); 	
 													SendIOScriptEvent(io, SM_COLLIDE_DOOR);
 
 													EVENT_SENDER = io;
-													io->collide_door_time = (unsigned long)(arxtime); 	
+													io->collide_door_time = arxtime.now_ul(); 	
 													SendIOScriptEvent(ioo, SM_COLLIDE_DOOR);
 												}
 											}
 
 										if(io->ioflags & IO_FIELD) {
 											EVENT_SENDER = NULL;
-											io->collide_door_time = (unsigned long)(arxtime);
+											io->collide_door_time = arxtime.now_ul();
 											SendIOScriptEvent(ioo, SM_COLLIDE_FIELD);
 										}
 					

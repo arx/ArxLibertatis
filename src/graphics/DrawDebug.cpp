@@ -852,7 +852,7 @@ struct DebugRay {
 std::vector<DebugRay> debugRays;
 
 void debug::drawRay(Vec3f start, Vec3f dir, Color color, float duration) {
-	DebugRay ray = DebugRay(start, dir, color, float(arxtime) + duration * 1000);
+	DebugRay ray = DebugRay(start, dir, color, arxtime.now_f() + duration * 1000);
 	debugRays.push_back(ray);
 }
 
@@ -862,7 +862,7 @@ static void updateAndRenderDebugDrawables() {
 		drawLine(ray.start, ray.dir, ray.color);
 	}
 	
-	float currentTime = float(arxtime);
+	float currentTime = arxtime.now_f();
 	
 	for(size_t i = 0; i < debugRays.size(); i++) {
 		if(debugRays[i].expiration < currentTime) {

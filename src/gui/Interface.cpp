@@ -445,7 +445,7 @@ void InventoryOpenClose(unsigned long t) {
 
 		if(WILLRETURNTOFREELOOK) {
 			TRUE_PLAYER_MOUSELOOK_ON = true;
-			SLID_START=float(arxtime);
+			SLID_START = arxtime.now_f();
 			WILLRETURNTOFREELOOK = false;
 		}
 	} else {
@@ -551,7 +551,7 @@ void ResetPlayerInterface() {
 	player.Interface |= INTER_LIFE_MANA;
 	g_hudRoot.playerInterfaceFader.resetSlid();
 	lSLID_VALUE = 0;
-	SLID_START=float(arxtime);
+	SLID_START = arxtime.now_f();
 }
 
 static void ReleaseInfosCombine() {
@@ -899,7 +899,7 @@ void ARX_INTERFACE_Combat_Mode(long i) {
 
 			if(config.input.mouseLookToggle) {
 				TRUE_PLAYER_MOUSELOOK_ON = true;
-				SLID_START=float(arxtime);
+				SLID_START = arxtime.now_f();
 			}
 		}
 
@@ -1178,7 +1178,7 @@ void ArxGame::managePlayerControls() {
 	
 	// Checks JUMP Key Status.
 	if(player.jumpphase == NotJumping && GInput->actionNowPressed(CONTROLS_CUST_JUMP)) {
-		REQUEST_JUMP = (unsigned long)(arxtime);
+		REQUEST_JUMP = arxtime.now_ul();
 	}
 	
 	// MAGIC
@@ -1330,7 +1330,7 @@ void ArxGame::managePlayerControls() {
 				MEMO_PLAYER_MOUSELOOK_ON=TRUE_PLAYER_MOUSELOOK_ON;
 				SPECIAL_DRAW_WEAPON=1;
 				TRUE_PLAYER_MOUSELOOK_ON = true;
-				SLID_START=float(arxtime);
+				SLID_START = arxtime.now_f();
 				ARX_INTERFACE_Combat_Mode(2);
 			}
 		}
@@ -1348,7 +1348,7 @@ void ArxGame::managePlayerControls() {
 				if(GInput->actionPressed(CONTROLS_CUST_FREELOOK)) {
 					if(!TRUE_PLAYER_MOUSELOOK_ON) {
 						TRUE_PLAYER_MOUSELOOK_ON = true;
-						SLID_START=float(arxtime);
+						SLID_START = arxtime.now_f();
 					}
 				} else {
 					TRUE_PLAYER_MOUSELOOK_ON = false;
@@ -1358,7 +1358,7 @@ void ArxGame::managePlayerControls() {
 					if(!TRUE_PLAYER_MOUSELOOK_ON) {
 						ARX_INTERFACE_BookClose();
 						TRUE_PLAYER_MOUSELOOK_ON = true;
-						SLID_START=float(arxtime);
+						SLID_START = arxtime.now_f();
 					} else {
 						TRUE_PLAYER_MOUSELOOK_ON = false;
 
@@ -1403,9 +1403,9 @@ void ArxGame::managePlayerControls() {
 	   && config.input.autoReadyWeapon
 	) {
 		if(eeMouseDown1()) {
-			COMBAT_MODE_ON_START_TIME = (unsigned long)(arxtime);
+			COMBAT_MODE_ON_START_TIME = arxtime.now_ul();
 		} else {
-			if(float(arxtime) - COMBAT_MODE_ON_START_TIME > 10) {
+			if(arxtime.now_f() - COMBAT_MODE_ON_START_TIME > 10) {
 				ARX_INTERFACE_Combat_Mode(1);
 			}
 		}
@@ -1455,7 +1455,7 @@ void ArxGame::managePlayerControls() {
 
 				if(config.input.mouseLookToggle) {
 					TRUE_PLAYER_MOUSELOOK_ON = true;
-					SLID_START=float(arxtime);
+					SLID_START = arxtime.now_f();
 				}
 			}
 		}
@@ -1472,7 +1472,7 @@ void ArxGame::managePlayerControls() {
 
 				if(config.input.mouseLookToggle) {
 					TRUE_PLAYER_MOUSELOOK_ON = true;
-					SLID_START=float(arxtime);
+					SLID_START = arxtime.now_f();
 				}
 			}
 		} else {

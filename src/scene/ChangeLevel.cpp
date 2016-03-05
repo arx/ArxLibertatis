@@ -1112,7 +1112,7 @@ static long ARX_CHANGELEVEL_Push_IO(const Entity * io, long level) {
 	memcpy(dat, &ais, sizeof(ARX_CHANGELEVEL_IO_SAVE));
 	pos += sizeof(ARX_CHANGELEVEL_IO_SAVE);
 
-	long timm = (unsigned long)(arxtime); //treat warning C4244 conversion from 'float' to 'unsigned long''
+	long timm = arxtime.now_ul();
 
 	for (int i = 0; i < MAX_TIMER_SCRIPT; i++)
 	{

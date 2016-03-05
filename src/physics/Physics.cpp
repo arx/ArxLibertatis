@@ -472,7 +472,7 @@ long ARX_PHYSICS_BOX_ApplyModel(PHYSICS_BOX_DATA * pbox, float framediff, float 
 
 	if(ValidIONum(source)) {
 		entities[source]->soundcount = 0;
-		entities[source]->soundtime = (unsigned long)(arxtime) + 2000;
+		entities[source]->soundtime = arxtime.now_ul() + 2000;
 	}
 
 	return ret;

@@ -232,7 +232,7 @@ void ShowInfoText() {
 	frameInfo.add("Prims", EERIEDrawnPolys);
 	frameInfo.add("Particles", getParticleCount());
 	frameInfo.add("Polybooms", long(polyboom.size()));
-	frameInfo.add("TIME", static_cast<long>((unsigned long)(arxtime) / 1000));
+	frameInfo.add("TIME", static_cast<long>(arxtime.now_ul() / 1000));
 	frameInfo.print();
 	
 	DebugBox playerBox = DebugBox(Vec2i(10, frameInfo.size().y + 5), "Player");

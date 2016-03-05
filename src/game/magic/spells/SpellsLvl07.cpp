@@ -109,7 +109,7 @@ void FlyingEyeSpell::Launch()
 	}
 	
 	TRUE_PLAYER_MOUSELOOK_ON = true;
-	SLID_START = float(arxtime);
+	SLID_START = arxtime.now_f();
 	bOldLookToggle = config.input.mouseLookToggle;
 	config.input.mouseLookToggle = true;
 }
@@ -151,7 +151,7 @@ void FlyingEyeSpell::Update(float timeDelta)
 {
 	ARX_UNUSED(timeDelta);
 	
-	const unsigned long tim = (unsigned long)(arxtime);
+	const unsigned long tim = arxtime.now_ul();
 	
 	const long framediff3 = tim - m_lastupdate;
 	

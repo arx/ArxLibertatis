@@ -223,9 +223,9 @@ static void ARX_PARTICLES_Spawn_Blood3(const Vec3f & pos, float dmgs, Color col,
 	if(pd) {
 		
 		float power = (dmgs * (1.f/60)) + .9f;
-		pd->ov = pos + Vec3f(-glm::sin(float(arxtime) * 0.001f), glm::sin(float(arxtime) * 0.001f),
-		               glm::cos(float(arxtime) * 0.001f)) * 30.f;
-		pd->siz = 3.5f * power + glm::sin(float(arxtime) * (1.f/1000));
+		pd->ov = pos + Vec3f(-glm::sin(arxtime.now_f() * 0.001f), glm::sin(arxtime.now_f() * 0.001f),
+		               glm::cos(arxtime.now_f() * 0.001f)) * 30.f;
+		pd->siz = 3.5f * power + glm::sin(arxtime.now_f() * (1.f/1000));
 		pd->scale = Vec3f(-pd->siz * 0.5f);
 		pd->special = PARTICLE_SUB2 | SUBSTRACT | GRAVITY | ROTATING | MODULATE_ROTATION
 		              | flags;
@@ -331,7 +331,7 @@ void SpawnGroundSplat(const Sphere & sp, const Color3f & col, long flags) {
 	float hdiv,vdiv;
 	hdiv=vdiv=1.f/(size*2);
 
-	unsigned long tim = (unsigned long)(arxtime);
+	unsigned long tim = arxtime.now_ul();
 
 	std::vector<POLYBOOM>::iterator pb = polyboom.begin();
 	while(pb != polyboom.end()) {
@@ -794,7 +794,7 @@ void ARX_BOOMS_Add(const Vec3f & poss,long type) {
 			pb.ep = ep;
 			pb.tc = tc2;
 			pb.tolive = 10000;
-			pb.timecreation = long(arxtime);
+			pb.timecreation = arxtime.now_l();
 			pb.tx = x;
 			pb.tz = z;
 			pb.rgb = Color3f::black;
@@ -901,7 +901,7 @@ PARTICLE_DEF * createParticle(bool allocateWhilePaused) {
 		
 		ParticleCount++;
 		pd->exist = true;
-		pd->timcreation = long(arxtime);
+		pd->timcreation = arxtime.now_l();
 		
 		pd->is2D = false;
 		pd->rgb = Color3f::white;
@@ -1067,7 +1067,7 @@ void ARX_PARTICLES_Update(EERIE_CAMERA * cam)  {
 		return;
 	}
 	
-	unsigned long tim = (unsigned long)arxtime;
+	unsigned long tim = arxtime.now_ul();
 	
 	long pcc = ParticleCount;
 	

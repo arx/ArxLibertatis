@@ -1151,7 +1151,7 @@ void ARX_INTERACTIVE_TeleportBehindTarget(Entity * io)
 			scr_timer[num].msecs = Random::get(3000, 6000);
 			scr_timer[num].name = "_r_a_t_";
 			scr_timer[num].pos = -1; 
-			scr_timer[num].tim = (unsigned long)(arxtime);
+			scr_timer[num].tim = arxtime.now_ul();
 			scr_timer[num].times = 1;
 			entities[t]->show = SHOW_FLAG_TELEPORTING;
 			AddRandomSmoke(io, 10);
@@ -2080,7 +2080,7 @@ static bool IsCollidingInter(Entity * io, const Vec3f & pos) {
 
 void SetYlsideDeath(Entity * io) {
 	io->sfx_flag = SFX_TYPE_YLSIDE_DEATH;
-	io->sfx_time = (unsigned long)(arxtime);
+	io->sfx_time = arxtime.now_ul();
 }
 
 bool ARX_INTERACTIVE_CheckFULLCollision(PHYSICS_BOX_DATA * pbox, EntityHandle source) {
@@ -2191,12 +2191,12 @@ bool ARX_INTERACTIVE_CheckFULLCollision(PHYSICS_BOX_DATA * pbox, EntityHandle so
 					for(long kk = 0; kk < pbox->nb_physvert; kk++) {
 						if(sp.contains(pbox->vert[kk].pos)) {
 							if(io_source && (io->gameFlags & GFLAG_DOOR)) {
-								if(float(arxtime) > io->collide_door_time + 500) {
+								if(arxtime.now_f() > io->collide_door_time + 500) {
 									EVENT_SENDER = io_source;
-									io->collide_door_time = (unsigned long)(arxtime);
+									io->collide_door_time = arxtime.now_ul();
 									SendIOScriptEvent(io, SM_COLLIDE_DOOR);
 									EVENT_SENDER = io;
-									io->collide_door_time = (unsigned long)(arxtime);
+									io->collide_door_time = arxtime.now_ul();
 									SendIOScriptEvent(io_source, SM_COLLIDE_DOOR);
 								}
 							}
@@ -2227,7 +2227,7 @@ void UpdateCameras() {
 		// interpolate & send events
 		if(io->usepath) {
 			ARX_USE_PATH * aup = io->usepath;
-			float diff = float(arxtime) - aup->_curtime;
+			float diff = arxtime.now_f() - aup->_curtime;
 
 			if(aup->aupflags & ARX_USEPATH_FORWARD) {
 				if(aup->aupflags & ARX_USEPATH_FLAG_FINISHED) {

@@ -439,7 +439,7 @@ void MassIncinerateSpell::Launch()
 		}
 		
 		tio->sfx_flag |= SFX_TYPE_YLSIDE_DEATH | SFX_TYPE_INCINERATE;
-		tio->sfx_time = (unsigned long)(arxtime);
+		tio->sfx_time = arxtime.now_ul();
 		nb_targets++;
 		m_targets.push_back(tio->index());
 	}
@@ -496,7 +496,7 @@ void TeleportSpell::Update(float timeDelta)
 {
 	ARX_UNUSED(timeDelta);
 	
-	const unsigned long tim = (unsigned long)(arxtime);
+	const unsigned long tim = arxtime.now_ul();
 	
 	float TELEPORT = (float)(((float)tim-(float)m_timcreation)/(float)m_duration);
 

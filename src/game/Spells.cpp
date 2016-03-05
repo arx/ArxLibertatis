@@ -528,7 +528,7 @@ void ARX_SPELLS_ManageMagic() {
 					pos = MemoMouse;
 				}
 				
-				unsigned long time = (unsigned long)(arxtime);
+				unsigned long time = arxtime.now_ul();
 				
 				const unsigned long interval = 1000 / 60;
 				
@@ -935,7 +935,7 @@ bool ARX_SPELLS_Launch(SpellType typ, EntityHandle source, SpellcastFlags flags,
 		case SPELL_SLOW_DOWN:
 		case SPELL_CONFUSE:
 		{
-			LOOKING_FOR_SPELL_TARGET_TIME	= (unsigned long)(arxtime);
+			LOOKING_FOR_SPELL_TARGET_TIME	= arxtime.now_ul();
 			LOOKING_FOR_SPELL_TARGET		= 1;
 			t_spell.typ						= typ;
 			t_spell.flags					= flags;
@@ -946,7 +946,7 @@ bool ARX_SPELLS_Launch(SpellType typ, EntityHandle source, SpellcastFlags flags,
 		}			
 		case SPELL_ENCHANT_WEAPON:		
 		{
-			LOOKING_FOR_SPELL_TARGET_TIME	= (unsigned long)(arxtime);
+			LOOKING_FOR_SPELL_TARGET_TIME	= arxtime.now_ul();
 			LOOKING_FOR_SPELL_TARGET		= 2;
 			t_spell.typ						= typ;
 			t_spell.flags					= flags;
@@ -984,7 +984,7 @@ bool ARX_SPELLS_Launch(SpellType typ, EntityHandle source, SpellcastFlags flags,
 
 			ARX_SOUND_PlaySpeech("player_follower_attack");
 
-			LOOKING_FOR_SPELL_TARGET_TIME	= (unsigned long)(arxtime);
+			LOOKING_FOR_SPELL_TARGET_TIME	= arxtime.now_ul();
 			LOOKING_FOR_SPELL_TARGET		= 1;
 			t_spell.typ						= typ;
 			t_spell.flags					= flags;
@@ -1042,7 +1042,7 @@ bool ARX_SPELLS_Launch(SpellType typ, EntityHandle source, SpellcastFlags flags,
 	spell->m_level = spellLevel;
 	spell->m_flags = flags;
 	spell->m_type = typ;
-	spell->m_timcreation = (unsigned long)(arxtime);
+	spell->m_timcreation = arxtime.now_ul();
 	spell->m_fManaCostPerSecond = 0.f;
 	spell->m_launchDuration = duration;
 
@@ -1086,7 +1086,7 @@ void ARX_SPELLS_Update() {
 	
 	ucFlick++;
 	
-	const unsigned long tim = (unsigned long)(arxtime);
+	const unsigned long tim = arxtime.now_ul();
 	
 	for(size_t u = 0; u < MAX_SPELLS; u++) {
 		SpellBase * spell = spells[SpellHandle(u)];

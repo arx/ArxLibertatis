@@ -147,7 +147,7 @@ void HitStrengthGauge::update() {
 		if(BOW_FOCAL) {
 			j=(float)(BOW_FOCAL)/710.f;
 		} else {
-			float at=float(arxtime)-(float)AimTime;
+			float at=arxtime.now_f()-(float)AimTime;
 			
 			//TODO global
 			bIsAiming = at > 0.f;
@@ -786,7 +786,7 @@ void MemorizedRunesHud::draw() {
 			pos.x += 32 * m_scale;
 		}
 	}
-	if(float(arxtime) - player.SpellToMemorize.lTimeCreation > 30000) {
+	if(arxtime.now_f() - player.SpellToMemorize.lTimeCreation > 30000) {
 		player.SpellToMemorize.bSpell = false;
 	}
 }
@@ -1046,8 +1046,8 @@ void PrecastSpellsGui::update() {
 		
 		float val = intensity;
 		
-		if(precastSlot.launch_time > 0 && (float(arxtime) >= precastSlot.launch_time)) {
-			float tt = (float(arxtime) - precastSlot.launch_time) * (1.0f/1000);
+		if(precastSlot.launch_time > 0 && (arxtime.now_f() >= precastSlot.launch_time)) {
+			float tt = (arxtime.now_f() - precastSlot.launch_time) * (1.0f/1000);
 			
 			if(tt > 1.f)
 				tt = 1.f;
@@ -1206,7 +1206,7 @@ void ActiveSpellsGui::ManageSpellIcon(SpellBase & spell, float intensity, bool f
 	bool flicker = true;
 	
 	if(spell.m_hasDuration) {
-		if(player.manaPool.current < 20 || spell.m_timcreation + spell.m_duration - float(arxtime) < 2000) {
+		if(player.manaPool.current < 20 || spell.m_timcreation + spell.m_duration - arxtime.now_f() < 2000) {
 			if(ucFlick&1)
 				flicker = false;
 		}
@@ -1410,7 +1410,7 @@ void PlayerInterfaceFader::update() {
 			if(!(player.Interface & INTER_COMBATMODE) && player.doingmagic != 2 && !InInventoryPos(DANAEMouse)) {
 				bOk = false;
 				
-				float t=float(arxtime);
+				float t = arxtime.now_f();
 				
 				if(t-SLID_START > 10000.f) {
 					m_current += (float)Original_framedelay*( 1.0f / 10 );

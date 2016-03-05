@@ -785,7 +785,7 @@ void ARX_TEMPORARY_TrySound(float volume) {
 		if(PHYSICS_CURIO->ioflags & IO_BODY_CHUNK)
 			return;
 
-		unsigned long at = (unsigned long)(arxtime);
+		unsigned long at = arxtime.now_ul();
 
 		if(at > PHYSICS_CURIO->soundtime) {
 
@@ -956,7 +956,7 @@ void ARX_PHYSICS_Apply() {
 
 		if(   (io->ioflags & IO_ITEM)
 		   && (io->gameFlags & GFLAG_GOREEXPLODE)
-		   && float(arxtime) - io->animBlend.lastanimtime > 300
+		   && arxtime.now_f() - io->animBlend.lastanimtime > 300
 		   && io->obj
 		   && !io->obj->vertexlist.empty()
 		) {
@@ -1655,11 +1655,11 @@ static void ARX_NPC_Manage_Anims(Entity * io, float TOLERANCE) {
 				
 				io->ioflags &= ~IO_HIT;
 				changeAnimation(io, 1, cycle, EA_LOOP);
-				io->_npcdata->aiming_start = long(arxtime);
+				io->_npcdata->aiming_start = arxtime.now_l();
 				
 			} else if(isCurrentAnimation(io, 1, cycle)) {
 				
-				float elapsed = float(arxtime) - float(io->_npcdata->aiming_start);
+				float elapsed = arxtime.now_f() - float(io->_npcdata->aiming_start);
 				float aimtime = io->_npcdata->aimtime;
 				if((elapsed > aimtime || (elapsed > aimtime * 0.5f && Random::getf() > 0.9f))
 				    && tdist < square(STRIKE_DISTANCE)) {
@@ -1756,11 +1756,11 @@ static void ARX_NPC_Manage_Anims(Entity * io, float TOLERANCE) {
 				if(isCurrentAnimation(io, 1, start) && (layer1.flags & EA_ANIMEND)) {
 					
 					changeAnimation(io, 1, cycle, EA_LOOP);
-					io->_npcdata->aiming_start = long(arxtime);
+					io->_npcdata->aiming_start = arxtime.now_l();
 					
 				} else if(isCurrentAnimation(io, 1, cycle)) {
 					
-					float elapsed = float(arxtime) - float(io->_npcdata->aiming_start);
+					float elapsed = arxtime.now_f() - float(io->_npcdata->aiming_start);
 					float aimtime = io->_npcdata->aimtime;
 					if((elapsed > aimtime || (elapsed > aimtime * 0.5f && Random::getf() > 0.9f))
 					   && tdist < square(STRIKE_DISTANCE)) {
@@ -1977,7 +1977,7 @@ static void ManageNPCMovement(Entity * io)
 			if(!io->_npcdata->pathfind.pathwait) {
 				if(io->_npcdata->pathfind.flags & PATHFIND_NO_UPDATE) {
 					io->_npcdata->reachedtarget = 1;
-					io->_npcdata->reachedtime = (unsigned long)(arxtime);//treat warning C4244 conversion from 'float' to 'unsigned long'
+					io->_npcdata->reachedtime = arxtime.now_ul();
 
 					if(io->targetinfo != io->index())
 						SendIOScriptEvent(io, SM_REACHEDTARGET);
@@ -2225,7 +2225,7 @@ static void ManageNPCMovement(Entity * io)
 			} else if(layer0.cur_anim == alist[ANIM_WALK] || layer0.cur_anim == alist[ANIM_RUN]
 			          || layer0.cur_anim == alist[ANIM_WALK_SNEAK]) {
 				layer0.flags &= ~EA_LOOP;
-				if(io->_npcdata->reachedtime + 500 < float(arxtime)) {
+				if(io->_npcdata->reachedtime + 500 < arxtime.now_f()) {
 					changeAnimation(io, ANIM_DEFAULT, EA_LOOP, startAtBeginning);
 				}
 			}
@@ -2517,7 +2517,7 @@ static void ManageNPCMovement(Entity * io)
 						if(!io->_npcdata->reachedtarget) {
 							EntityHandle num = io->index();
 							io->_npcdata->reachedtarget = 1;
-							io->_npcdata->reachedtime = (unsigned long)(arxtime);
+							io->_npcdata->reachedtime = arxtime.now_ul();
 
 							if(io->targetinfo != num) {
 								SendIOScriptEvent(io, SM_REACHEDTARGET, "fake");
@@ -2540,7 +2540,7 @@ static void ManageNPCMovement(Entity * io)
 					EVENT_SENDER = NULL;
 
 				io->_npcdata->reachedtarget = 1;
-				io->_npcdata->reachedtime = (unsigned long)(arxtime);//treat warning C4244 conversion from 'float' to 'unsigned long'
+				io->_npcdata->reachedtime = arxtime.now_ul();
 
 				if(io->animlayer[1].flags & EA_ANIMEND)
 					io->animlayer[1].cur_anim = NULL;

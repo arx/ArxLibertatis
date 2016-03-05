@@ -279,7 +279,7 @@ static void ARX_NPC_SpawnMember(Entity * ioo, ObjSelection num) {
 	io->no_collide = ioo->index();
 	
 	io->gameFlags |= GFLAG_GOREEXPLODE;
-	io->animBlend.lastanimtime = (unsigned long)(arxtime);
+	io->animBlend.lastanimtime = arxtime.now_ul();
 	io->soundtime = 0;
 	io->soundcount = 0;
 

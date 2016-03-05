@@ -1077,9 +1077,9 @@ void ARX_PLAYER_FrameCheck(float Framedelay)
 
 			// Check for player hungry sample playing
 			if((player.hunger > 10.f && player.hunger - inc_hunger <= 10.f)
-					|| (player.hunger < 10.f && float(arxtime) > LastHungerSample + 180000))
+					|| (player.hunger < 10.f && arxtime.now_f() > LastHungerSample + 180000))
 			{
-				LastHungerSample = (unsigned long)(arxtime);
+				LastHungerSample = arxtime.now_ul();
 
 				if(!BLOCK_PLAYER_CONTROLS) {
 					bool bOk = true;
@@ -1325,7 +1325,7 @@ void ARX_PLAYER_Manage_Visual() {
 	
 	ARX_PROFILE_FUNC();
 	
-	unsigned long tim = (unsigned long)(arxtime);
+	unsigned long tim = arxtime.now_ul();
 	
 	if(player.Current_Movement & PLAYER_ROTATE) {
 		if(ROTATE_START == 0) {
@@ -1670,7 +1670,7 @@ retry:
 				FALLING_TIME = 0;
 				player.jumpphase = JumpAscending;
 				request0_anim = alist[ANIM_JUMP_UP];
-				player.jumpstarttime = (unsigned long)(arxtime);
+				player.jumpstarttime = arxtime.now_ul();
 				player.jumplastposition = -1.f;
 				break;
 			}
@@ -1684,7 +1684,7 @@ retry:
 				break;
 			}
 			case JumpDescending: { // Post-synch
-				LAST_JUMP_ENDTIME = (unsigned long)(arxtime);
+				LAST_JUMP_ENDTIME = arxtime.now_ul();
 				if((layer0.cur_anim == alist[ANIM_JUMP_END] && (layer0.flags & EA_ANIMEND))
 				   || player.onfirmground) {
 					player.jumpphase = JumpEnd;
@@ -1695,7 +1695,7 @@ retry:
 				break;
 			}
 			case JumpEnd: { // Post-synch
-				LAST_JUMP_ENDTIME = (unsigned long)(arxtime);
+				LAST_JUMP_ENDTIME = arxtime.now_ul();
 				if(layer0.cur_anim == alist[ANIM_JUMP_END_PART2] && (layer0.flags & EA_ANIMEND)) {
 					AcquireLastAnim(io);
 					player.jumpphase = NotJumping;
@@ -2037,7 +2037,7 @@ void PlayerMovementIterate(float DeltaTime) {
 		}
 		
 		if(REQUEST_JUMP) {
-			float t = (float)float(arxtime) - (float)REQUEST_JUMP;
+			float t = arxtime.now_f() - (float)REQUEST_JUMP;
 			if(t >= 0.f && t <= 350.f) {
 				REQUEST_JUMP = 0;
 				ARX_NPC_SpawnAudibleSound(player.pos, entities.player());
@@ -2177,10 +2177,10 @@ void PlayerMovementIterate(float DeltaTime) {
 		// Apply player impulse force
 		
 		float jump_mul = 1.f;
-		if(float(arxtime) - LAST_JUMP_ENDTIME < 600) {
+		if(arxtime.now_f() - LAST_JUMP_ENDTIME < 600) {
 			jump_mul = 0.5f;
-			if(float(arxtime) - LAST_JUMP_ENDTIME >= 300) {
-				jump_mul += (float)(LAST_JUMP_ENDTIME + 300 - float(arxtime)) * (1.f / 300);
+			if(arxtime.now_f() - LAST_JUMP_ENDTIME >= 300) {
+				jump_mul += (float)(LAST_JUMP_ENDTIME + 300 - arxtime.now_f()) * (1.f / 300);
 				if(jump_mul > 1.f) {
 					jump_mul = 1.f;
 				}
@@ -2340,12 +2340,12 @@ void PlayerMovementIterate(float DeltaTime) {
 				
 				if(player.jumplastposition == -1.f) {
 					player.jumplastposition = 0;
-					player.jumpstarttime = (unsigned long)(arxtime);
+					player.jumpstarttime = arxtime.now_ul();
 				}
 				
 				const float jump_up_time = 200.f;
 				const float jump_up_height = 130.f;
-				long timee = (long)arxtime;
+				long timee = arxtime.now_l();
 				float offset_time = (float)timee - (float)player.jumpstarttime;
 				float position = glm::clamp(offset_time / jump_up_time, 0.f, 1.f);
 				

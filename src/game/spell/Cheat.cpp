@@ -71,7 +71,7 @@ std::string sp_max_ch;
 
 void Manage_sp_max() {
 
-	float v = float(arxtime) - sp_max_start;
+	float v = arxtime.now_f() - sp_max_start;
 
 	if(sp_max_start != 0 && v < 20000) {
 		float modi = (20000 - v) * ( 1.0f / 2000 ) * ( 1.0f / 10 );
@@ -83,7 +83,7 @@ void Manage_sp_max() {
 		for(size_t i = 0; i < sp_max_ch.length(); i++) {
 			Vec2f d = p + Vec2f(sizX * (float)i, sp_max_y[i]);
 			
-			sp_max_y[i] = std::sin(d.x + (float)float(arxtime) * ( 1.0f / 100 )) * 30.f * modi;
+			sp_max_y[i] = std::sin(d.x + arxtime.now_f() * ( 1.0f / 100 )) * 30.f * modi;
 			std::string tex(1, sp_max_ch[i]);
 
 			UNICODE_ARXDrawTextCenter(hFontInBook, d + Vec2f(-1,-1), tex, Color::none);

@@ -247,7 +247,7 @@ void ARXDRAW_DrawPolyBoom() {
 	TexturedVertex ltv[4];
 
 	GRenderer->SetFogColor(Color::none); // TODO: not handled by RenderMaterial
-	unsigned long tim = (unsigned long)(arxtime);
+	unsigned long tim = arxtime.now_ul();
 	
 	for(size_t i = 0; i < polyboom.size(); i++) {
 		

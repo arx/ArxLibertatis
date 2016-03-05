@@ -75,16 +75,15 @@ public:
 		return delta_time_us > (v * 1000); 
 	}
 	
-	operator float() const {
+	float now_f() const {
 		return delta_time_us / 1000.0f;
 	}
 	
-	operator long() const {
-		//return static_cast<long>(delta_time);
+	long now_l() const {
 		return checked_range_cast<long>(delta_time_us / 1000);
 	}
 	
-	operator unsigned long() const {
+	unsigned long now_ul() const {
 		return checked_range_cast<unsigned long>(delta_time_us / 1000);
 	}
 	

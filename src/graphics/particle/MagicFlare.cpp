@@ -376,8 +376,8 @@ void ARX_MAGICAL_FLARES_Update() {
 		shinum = 1;
 	}
 
-	long TICKS = long(arxtime) - FRAMETICKS;
-	FRAMETICKS = (unsigned long)(arxtime);
+	long TICKS = arxtime.now_l() - FRAMETICKS;
+	FRAMETICKS = arxtime.now_ul();
 	if(TICKS < 0) {
 		return;
 	}
