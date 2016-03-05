@@ -369,7 +369,7 @@ void ARX_SPELLS_AnalyseSYMBOL() {
 		case 6248   :
 				SpellSymbol[CurrSpellSymbol++] = RUNE_COSUM;
 
-				if((size_t)CurrSpellSymbol >= MAX_SPELL_SYMBOLS) {
+				if(CurrSpellSymbol >= MAX_SPELL_SYMBOLS) {
 					CurrSpellSymbol = MAX_SPELL_SYMBOLS - 1;
 				}
 
@@ -384,7 +384,7 @@ void ARX_SPELLS_AnalyseSYMBOL() {
 		case 62426  :
 				SpellSymbol[CurrSpellSymbol++] = RUNE_COMUNICATUM;
 
-				if((size_t)CurrSpellSymbol >= MAX_SPELL_SYMBOLS) {
+				if(CurrSpellSymbol >= MAX_SPELL_SYMBOLS) {
 					CurrSpellSymbol = MAX_SPELL_SYMBOLS - 1;
 				}
 
@@ -401,7 +401,7 @@ void ARX_SPELLS_AnalyseSYMBOL() {
 		case 93     :
 				SpellSymbol[CurrSpellSymbol++] = RUNE_FOLGORA;
 
-				if((size_t)CurrSpellSymbol >= MAX_SPELL_SYMBOLS) {
+				if(CurrSpellSymbol >= MAX_SPELL_SYMBOLS) {
 					CurrSpellSymbol = MAX_SPELL_SYMBOLS - 1;
 				}
 
@@ -415,7 +415,7 @@ void ARX_SPELLS_AnalyseSYMBOL() {
 		case 4268   :
 				SpellSymbol[CurrSpellSymbol++] = RUNE_SPACIUM;
 
-				if((size_t)CurrSpellSymbol >= MAX_SPELL_SYMBOLS) {
+				if(CurrSpellSymbol >= MAX_SPELL_SYMBOLS) {
 					CurrSpellSymbol = MAX_SPELL_SYMBOLS - 1;
 				}
 
@@ -430,7 +430,7 @@ void ARX_SPELLS_AnalyseSYMBOL() {
 		case 926    :
 				SpellSymbol[CurrSpellSymbol++] = RUNE_TERA;
 
-				if((size_t)CurrSpellSymbol >= MAX_SPELL_SYMBOLS) {
+				if(CurrSpellSymbol >= MAX_SPELL_SYMBOLS) {
 					CurrSpellSymbol = MAX_SPELL_SYMBOLS - 1;
 				}
 
@@ -447,7 +447,7 @@ void ARX_SPELLS_AnalyseSYMBOL() {
 		case 386   :
 				SpellSymbol[CurrSpellSymbol++] = RUNE_CETRIUS;
 
-				if((size_t)CurrSpellSymbol >= MAX_SPELL_SYMBOLS) {
+				if(CurrSpellSymbol >= MAX_SPELL_SYMBOLS) {
 					CurrSpellSymbol = MAX_SPELL_SYMBOLS - 1;
 				}
 
@@ -459,7 +459,7 @@ void ARX_SPELLS_AnalyseSYMBOL() {
 		case 2     :
 				SpellSymbol[CurrSpellSymbol++] = RUNE_RHAA;
 
-				if((size_t)CurrSpellSymbol >= MAX_SPELL_SYMBOLS) {
+				if(CurrSpellSymbol >= MAX_SPELL_SYMBOLS) {
 					CurrSpellSymbol = MAX_SPELL_SYMBOLS - 1;
 				}
 
@@ -474,7 +474,7 @@ void ARX_SPELLS_AnalyseSYMBOL() {
 		case 862	:
 				SpellSymbol[CurrSpellSymbol++] = RUNE_FRIDD;
 
-				if((size_t)CurrSpellSymbol >= MAX_SPELL_SYMBOLS) {
+				if(CurrSpellSymbol >= MAX_SPELL_SYMBOLS) {
 					CurrSpellSymbol = MAX_SPELL_SYMBOLS - 1;
 				}
 
@@ -500,7 +500,7 @@ void ARX_SPELLS_AnalyseSYMBOL() {
 
 				SpellSymbol[CurrSpellSymbol++] = RUNE_KAOM;
 
-				if((size_t)CurrSpellSymbol >= MAX_SPELL_SYMBOLS) {
+				if(CurrSpellSymbol >= MAX_SPELL_SYMBOLS) {
 					CurrSpellSymbol = MAX_SPELL_SYMBOLS - 1;
 				}
 
