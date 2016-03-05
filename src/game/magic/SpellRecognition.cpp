@@ -670,12 +670,12 @@ void ARX_SPELLS_AnalyseSYMBOL() {
 		case 2398:
 		case 23898:
 		case 236987:
-		case 23698:	
+		case 23698: {
 			if(uw_mode_pos == 0)
 				uw_mode_pos++;
 		
 			goto failed; 
-		break;
+		}
 		case 2382398:
 		case 2829:
 		case 23982398:
