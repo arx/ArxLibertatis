@@ -1659,7 +1659,7 @@ static void ARX_NPC_Manage_Anims(Entity * io, float TOLERANCE) {
 				
 			} else if(isCurrentAnimation(io, 1, cycle)) {
 				
-				float elapsed = arxtime.now_f() - float(io->_npcdata->aiming_start);
+				unsigned long elapsed = arxtime.now_ul() - io->_npcdata->aiming_start;
 				unsigned int aimtime = io->_npcdata->aimtime;
 				if((elapsed > aimtime || (elapsed > aimtime * 0.5f && Random::getf() > 0.9f))
 				    && tdist < square(STRIKE_DISTANCE)) {
@@ -1760,7 +1760,7 @@ static void ARX_NPC_Manage_Anims(Entity * io, float TOLERANCE) {
 					
 				} else if(isCurrentAnimation(io, 1, cycle)) {
 					
-					float elapsed = arxtime.now_f() - float(io->_npcdata->aiming_start);
+					unsigned long elapsed = arxtime.now_ul() - io->_npcdata->aiming_start;
 					unsigned int aimtime = io->_npcdata->aimtime;
 					if((elapsed > aimtime || (elapsed > aimtime * 0.5f && Random::getf() > 0.9f))
 					   && tdist < square(STRIKE_DISTANCE)) {
