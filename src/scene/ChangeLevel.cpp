@@ -689,7 +689,7 @@ static long ARX_CHANGELEVEL_Push_Player(long level) {
 	asp->invisibility = entities.player()->invisibility;
 
 	asp->jumpphase = player.jumpphase;
-	asp->jumpstarttime = player.jumpstarttime;
+	asp->jumpstarttime = static_cast<u32>(player.jumpstarttime); // TODO save/load time
 	asp->Last_Movement = player.Last_Movement;
 	asp->level = player.level;
 	
@@ -1682,7 +1682,7 @@ static long ARX_CHANGELEVEL_Pop_Player() {
 	entities.player()->invisibility = asp->invisibility;
 	player.inzone = ARX_PATH_GetAddressByName(boost::to_lower_copy(util::loadString(asp->inzone)));
 	player.jumpphase = JumpPhase(asp->jumpphase); // TODO save/load enum
-	player.jumpstarttime = asp->jumpstarttime;
+	player.jumpstarttime = static_cast<unsigned long>(asp->jumpstarttime); // TODO save/load time
 	player.Last_Movement = PlayerMovement::load(asp->Last_Movement); // TODO save/load flags
 	
 	player.level = checked_range_cast<short>(asp->level);
