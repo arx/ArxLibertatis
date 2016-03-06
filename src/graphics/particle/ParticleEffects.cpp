@@ -518,11 +518,11 @@ void ARX_PARTICLES_Spawn_Blood(const Vec3f & pos, float dmgs, EntityHandle sourc
 	}
 	
 	// Decides number of blood particles...
-	long spawn_nb = glm::clamp(long(dmgs * 2.f), 5l, 26l);
+	const unsigned int spawn_nb = glm::clamp(long(dmgs * 2.f), 5l, 26l);
 	
-	long totdelay = 0;
+	unsigned long totdelay = 0;
 	
-	for(long k = 0; k < spawn_nb; k++) {
+	for(unsigned int k = 0; k < spawn_nb; k++) {
 		
 		PARTICLE_DEF * pd = createParticle();
 		if(!pd) {
