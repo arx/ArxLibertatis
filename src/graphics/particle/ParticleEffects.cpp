@@ -794,7 +794,7 @@ void ARX_BOOMS_Add(const Vec3f & poss,long type) {
 			pb.ep = ep;
 			pb.tc = tc2;
 			pb.tolive = 10000;
-			pb.timecreation = arxtime.now_l();
+			pb.timecreation = arxtime.now_ul();
 			pb.tx = x;
 			pb.tz = z;
 			pb.rgb = Color3f::black;
