@@ -568,8 +568,8 @@ void ARX_PARTICLES_Spawn_Spark(const Vec3f & pos, int count, long flags) {
 		pd->move = randomVec(-6.f, 6.f);
 		
 		pd->special = PARTICLE_SPARK;
-		float len = glm::clamp(count * (1.f / 3), 3.f, 8.f);
-		pd->tolive = (unsigned long)(len * 90.f + float(count));
+		unsigned long len = glm::clamp(static_cast<unsigned long>(count * (1.f / 3)), 3ul, 8ul);
+		pd->tolive = len * 90 + count;
 		
 		if(flags == 0) {
 			pd->rgb = Color3f(.3f, .3f, 0.f);
