@@ -375,13 +375,11 @@ void ARX_MAGICAL_FLARES_Update() {
 	if(shinum >= 10) {
 		shinum = 1;
 	}
-
-	long TICKS = arxtime.now_l() - FRAMETICKS;
-	FRAMETICKS = arxtime.now_ul();
-	if(TICKS < 0) {
-		return;
-	}
-
+	
+	const unsigned long now = arxtime.now_ul();
+	const unsigned long TICKS = now - FRAMETICKS;
+	FRAMETICKS = now;
+	
 	bool key = !GInput->actionPressed(CONTROLS_CUST_MAGICMODE);
 
 	RenderMaterial mat;
