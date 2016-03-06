@@ -807,7 +807,7 @@ bool ARX_EQUIPMENT_Strike_Check(Entity * io_source, Entity * io_weapon, float ra
 								HIT_SPARK = 1;
 						}
 					} else if((target->ioflags & IO_NPC) && (dmgs <= 0.f || target->spark_n_blood == SP_SPARKING)) {
-						int nb;
+						unsigned int nb;
 
 						if(target->spark_n_blood == SP_SPARKING)
 							nb = Random::get(0, 3);
@@ -824,7 +824,7 @@ bool ARX_EQUIPMENT_Strike_Check(Entity * io_source, Entity * io_weapon, float ra
 						if(!(target->ioflags & IO_NPC))
 							HIT_SPARK = 1;
 					} else if(dmgs <= 0.f && ((target->ioflags & IO_FIX) || (target->ioflags & IO_ITEM))) {
-						int nb;
+						unsigned int nb;
 
 						if(target->spark_n_blood == SP_SPARKING)
 							nb = Random::get(0, 3);

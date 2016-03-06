@@ -547,7 +547,7 @@ long SPARK_COUNT = 0;
 
 // flag & 1 punch failed
 // flag & 2 punch success
-void ARX_PARTICLES_Spawn_Spark(const Vec3f & pos, int count, long flags) {
+void ARX_PARTICLES_Spawn_Spark(const Vec3f & pos, unsigned int count, long flags) {
 	
 	if(SPARK_COUNT < 1000) {
 		SPARK_COUNT += count * 25;
@@ -556,7 +556,7 @@ void ARX_PARTICLES_Spawn_Spark(const Vec3f & pos, int count, long flags) {
 		return;
 	}
 	
-	for(int k = 0; k < count; k++) {
+	for(unsigned int k = 0; k < count; k++) {
 		
 		PARTICLE_DEF * pd = createParticle();
 		if(!pd) {
