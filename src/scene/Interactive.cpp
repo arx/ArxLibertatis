@@ -1615,7 +1615,7 @@ IO_NPCDATA::IO_NPCDATA() {
 	
 	strike_time = 0;
 	walk_start_time = 0;
-	aiming_start = 0l;
+	aiming_start = 0;
 	npcflags = 0l;
 	pathfind = IO_PATHFIND();
 	ex_rotate = 0;

@@ -201,7 +201,7 @@ struct IO_NPCDATA {
 	
 	short strike_time;
 	short walk_start_time;
-	long aiming_start;
+	unsigned long aiming_start;
 	NPCFlags npcflags;
 	IO_PATHFIND pathfind;
 	EERIE_EXTRA_ROTATE * ex_rotate;

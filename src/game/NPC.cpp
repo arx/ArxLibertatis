@@ -1655,7 +1655,7 @@ static void ARX_NPC_Manage_Anims(Entity * io, float TOLERANCE) {
 				
 				io->ioflags &= ~IO_HIT;
 				changeAnimation(io, 1, cycle, EA_LOOP);
-				io->_npcdata->aiming_start = arxtime.now_l();
+				io->_npcdata->aiming_start = arxtime.now_ul();
 				
 			} else if(isCurrentAnimation(io, 1, cycle)) {
 				
@@ -1756,7 +1756,7 @@ static void ARX_NPC_Manage_Anims(Entity * io, float TOLERANCE) {
 				if(isCurrentAnimation(io, 1, start) && (layer1.flags & EA_ANIMEND)) {
 					
 					changeAnimation(io, 1, cycle, EA_LOOP);
-					io->_npcdata->aiming_start = arxtime.now_l();
+					io->_npcdata->aiming_start = arxtime.now_ul();
 					
 				} else if(isCurrentAnimation(io, 1, cycle)) {
 					
