@@ -545,9 +545,7 @@ void ARX_PARTICLES_Spawn_Blood(const Vec3f & pos, float dmgs, EntityHandle sourc
 
 long SPARK_COUNT = 0;
 
-// flag & 1 punch failed
-// flag & 2 punch success
-void ARX_PARTICLES_Spawn_Spark(const Vec3f & pos, unsigned int count, long flags) {
+void ARX_PARTICLES_Spawn_Spark(const Vec3f & pos, unsigned int count, SpawnSparkType type) {
 	
 	if(SPARK_COUNT < 1000) {
 		SPARK_COUNT += count * 25;
@@ -571,12 +569,16 @@ void ARX_PARTICLES_Spawn_Spark(const Vec3f & pos, unsigned int count, long flags
 		unsigned long len = glm::clamp(static_cast<unsigned long>(count * (1.f / 3)), 3ul, 8ul);
 		pd->tolive = len * 90 + count;
 		
-		if(flags == 0) {
-			pd->rgb = Color3f(.3f, .3f, 0.f);
-		} else if(flags & 1) {
-			pd->rgb = Color3f(.2f, .2f, .1f);
-		} else if(flags & 2) {
-			pd->rgb = Color3f(.45f, .1f, 0.f);
+		switch(type) {
+			case SpawnSparkType_Default:
+				pd->rgb = Color3f(.3f, .3f, 0.f);
+				break;
+			case SpawnSparkType_Failed:
+				pd->rgb = Color3f(.2f, .2f, .1f);
+				break;
+			case SpawnSparkType_Success:
+				pd->rgb = Color3f(.45f, .1f, 0.f);
+				break;
 		}
 		
 		pd->fparam = len + Random::getf() * len; // Spark tail length

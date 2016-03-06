@@ -188,7 +188,15 @@ void ARX_PARTICLES_Spawn_Blood(const Vec3f & pos, float dmgs, EntityHandle sourc
 void ARX_PARTICLES_Spawn_Blood2(const Vec3f & pos, float dmgs, Color col, Entity * io);
 void ARX_PARTICLES_Spawn_Lava_Burn(Vec3f pos, Entity * io = NULL);
 void ARX_PARTICLES_Add_Smoke(const Vec3f & pos, long flags, long amount, Color3f * rgb = NULL); // flag 1 = randomize pos
-void ARX_PARTICLES_Spawn_Spark(const Vec3f & pos, unsigned int count, long flags);
+
+enum SpawnSparkType {
+	SpawnSparkType_Default = 0,
+	SpawnSparkType_Failed = 1,
+	SpawnSparkType_Success = 2
+};
+
+void ARX_PARTICLES_Spawn_Spark(const Vec3f & pos, unsigned int count, SpawnSparkType type);
+
 void ARX_PARTICLES_Spawn_Splat(const Vec3f & pos, float dmgs, Color col);
 void ARX_PARTICLES_SpawnWaterSplash(const Vec3f & pos);
 
