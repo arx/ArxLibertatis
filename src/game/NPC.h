@@ -170,7 +170,7 @@ struct IO_NPCDATA {
 	float absorb;
 	float damages;
 	float tohit;
-	float aimtime;
+	unsigned int aimtime;
 	float critical;
 	float reach;
 	float backstab_skill;

@@ -1583,7 +1583,7 @@ IO_NPCDATA::IO_NPCDATA() {
 	absorb = 0.f;
 	damages = 0.f;
 	tohit = 0.f;
-	aimtime = 0.f;
+	aimtime = 0;
 	critical = 0.f;
 	reach = 0.f;
 	backstab_skill = 0.f;

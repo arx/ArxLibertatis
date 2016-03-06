@@ -1290,7 +1290,7 @@ static long ARX_CHANGELEVEL_Push_IO(const Entity * io, long level) {
 			as = (ARX_CHANGELEVEL_NPC_IO_SAVE *)(dat + pos);
 			memset(as, 0, sizeof(ARX_CHANGELEVEL_NPC_IO_SAVE));
 			as->absorb = io->_npcdata->absorb;
-			as->aimtime = io->_npcdata->aimtime;
+			as->aimtime = static_cast<f32>(io->_npcdata->aimtime);
 			as->armor_class = io->_npcdata->armor_class;
 			as->behavior = io->_npcdata->behavior;
 			as->behavior_param = io->_npcdata->behavior_param;
@@ -2176,7 +2176,7 @@ static Entity * ARX_CHANGELEVEL_Pop_IO(const std::string & idString, EntityInsta
 				pos += sizeof(ARX_CHANGELEVEL_NPC_IO_SAVE);
 				
 				io->_npcdata->absorb = as->absorb;
-				io->_npcdata->aimtime = as->aimtime;
+				io->_npcdata->aimtime = static_cast<unsigned int>(as->aimtime);
 				io->_npcdata->armor_class = as->armor_class;
 				io->_npcdata->behavior = Behaviour::load(as->behavior); // TODO save/load flags
 				io->_npcdata->behavior_param = as->behavior_param;
