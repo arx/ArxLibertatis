@@ -2345,7 +2345,7 @@ void PlayerMovementIterate(float DeltaTime) {
 				
 				const float jump_up_time = 200.f;
 				const float jump_up_height = 130.f;
-				long timee = arxtime.now_l();
+				const unsigned long timee = arxtime.now_ul();
 				float offset_time = (float)timee - (float)player.jumpstarttime;
 				float position = glm::clamp(offset_time / jump_up_time, 0.f, 1.f);
 				
