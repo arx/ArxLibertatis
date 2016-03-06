@@ -938,6 +938,8 @@ void MagFX(const Vec3f & pos, float size) {
 
 void ARX_PARTICLES_Spawn_Splat(const Vec3f & pos, float dmgs, Color col) {
 	
+	const unsigned long tolive = 1000 + static_cast<unsigned long>(dmgs) * 3;
+	
 	float power = (dmgs * (1.f / 60)) + .9f;
 	
 	for(long kk = 0; kk < 20; kk++) {
@@ -950,7 +952,7 @@ void ARX_PARTICLES_Spawn_Splat(const Vec3f & pos, float dmgs, Color col) {
 		pd->special = PARTICLE_SUB2 | SUBSTRACT | GRAVITY;
 		pd->ov = pos;
 		pd->move = randomVec(-11.5f, 11.5f);
-		pd->tolive = (unsigned long)(1000 + dmgs*3);
+		pd->tolive = tolive;
 		pd->tc = blood_splat;
 		pd->siz = 0.3f + 0.01f * power;
 		pd->scale = Vec3f(0.2f + 0.3f * power);
