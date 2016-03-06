@@ -1067,7 +1067,7 @@ void ARX_PARTICLES_Update(EERIE_CAMERA * cam)  {
 		return;
 	}
 	
-	unsigned long tim = arxtime.now_ul();
+	const unsigned long now = arxtime.now_ul();
 	
 	long pcc = ParticleCount;
 	
@@ -1078,8 +1078,8 @@ void ARX_PARTICLES_Update(EERIE_CAMERA * cam)  {
 			continue;
 		}
 
-		long framediff = part->timcreation + part->tolive - tim;
-		long framediff2 = tim - part->timcreation;
+		long framediff = part->timcreation + part->tolive - now;
+		long framediff2 = now - part->timcreation;
 		
 		if(framediff2 < long(part->delay)) {
 			continue;
@@ -1122,7 +1122,7 @@ void ARX_PARTICLES_Update(EERIE_CAMERA * cam)  {
 				part->rgb = Color3f::gray(.45f);
 				part->move *= 0.5f;
 				part->siz *= 1.f / 3;
-				part->timcreation = tim;
+				part->timcreation = now;
 				
 				framediff = part->tolive;
 				
@@ -1280,9 +1280,9 @@ void ARX_PARTICLES_Update(EERIE_CAMERA * cam)  {
 				
 				float rott;
 				if(part->special & MODULATE_ROTATION) {
-					rott = MAKEANGLE(float(tim + framediff2) * part->fparam);
+					rott = MAKEANGLE(float(now + framediff2) * part->fparam);
 				} else {
-					rott = MAKEANGLE(float(tim + framediff2 * 2) * 0.25f);
+					rott = MAKEANGLE(float(now + framediff2 * 2) * 0.25f);
 				}
 				
 				float temp = (part->zdec) ? 0.0001f : 2.f;
