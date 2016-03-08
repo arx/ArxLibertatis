@@ -83,10 +83,6 @@ public:
 		return checked_range_cast<unsigned long>(delta_time_us / 1000);
 	}
 	
-	void setMs(const float &v) {
-		delta_time_us = v * 1000;
-	}
-	
 	void update(const bool & use_pause = true) {
 		if (is_paused() && use_pause) {
 			delta_time_us = platform::getElapsedUs(start_time, pause_time);
