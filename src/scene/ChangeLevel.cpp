@@ -1117,28 +1117,29 @@ static long ARX_CHANGELEVEL_Push_IO(const Entity * io, long level) {
 	const unsigned long timm = arxtime.now_ul();
 
 	for(int i = 0; i < MAX_TIMER_SCRIPT; i++) {
-		if(scr_timer[i].exist) {
-			if(scr_timer[i].io == io) {
+		SCR_TIMER & timer = scr_timer[i];
+		if(timer.exist) {
+			if(timer.io == io) {
 				ARX_CHANGELEVEL_TIMERS_SAVE * ats = (ARX_CHANGELEVEL_TIMERS_SAVE *)(dat + pos);
 				memset(ats, 0, sizeof(ARX_CHANGELEVEL_TIMERS_SAVE));
-				ats->longinfo = scr_timer[i].longinfo;
-				ats->msecs = scr_timer[i].msecs;
-				util::storeString(ats->name, scr_timer[i].name.c_str());
-				ats->pos = scr_timer[i].pos;
+				ats->longinfo = timer.longinfo;
+				ats->msecs = timer.msecs;
+				util::storeString(ats->name, timer.name.c_str());
+				ats->pos = timer.pos;
 
-				if (scr_timer[i].es == &io->script)
+				if (timer.es == &io->script)
 					ats->script = 0;
 				else
 					ats->script = 1;
 
-				ats->tim = (scr_timer[i].tim + scr_timer[i].msecs) - timm;
+				ats->tim = (timer.tim + timer.msecs) - timm;
 
 				if(ats->tim < 0)
 					ats->tim = 0;
 
 				//else ats->tim=-ats->tim;
-				ats->times = scr_timer[i].times;
-				ats->flags = scr_timer[i].flags;
+				ats->times = timer.times;
+				ats->flags = timer.flags;
 				pos += sizeof(ARX_CHANGELEVEL_TIMERS_SAVE);
 			}
 		}
