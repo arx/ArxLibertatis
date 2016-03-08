@@ -23,7 +23,7 @@
 #include "graphics/Draw.h"
 #include "graphics/Renderer.h"
 
-long FADEDURATION = 0;
+static unsigned long FADEDURATION = 0;
 long FADEDIR = 0;
 unsigned long FADESTART = 0;
 float LAST_FADEVALUE = 1.f;
@@ -42,7 +42,7 @@ void fadeSetColor(Color3f color) {
 	FADECOLOR = color;
 }
 
-void fadeRequestStart(FadeType type, float duration) {
+void fadeRequestStart(FadeType type, const unsigned long duration) {
 	switch(type) {
 		case FadeType_In:
 			FADEDIR = 1;

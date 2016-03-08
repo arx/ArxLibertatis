@@ -32,7 +32,7 @@ enum FadeType {
 void fadeReset();
 
 void fadeSetColor(Color3f color);
-void fadeRequestStart(FadeType type, float duration);
+void fadeRequestStart(FadeType type, const unsigned long duration);
 
 void ManageFade();
 
