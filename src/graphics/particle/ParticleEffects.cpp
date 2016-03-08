@@ -903,7 +903,7 @@ PARTICLE_DEF * createParticle(bool allocateWhilePaused) {
 		
 		ParticleCount++;
 		pd->exist = true;
-		pd->timcreation = arxtime.now_l();
+		pd->timcreation = arxtime.now_ul();
 		
 		pd->is2D = false;
 		pd->rgb = Color3f::white;

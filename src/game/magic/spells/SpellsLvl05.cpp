@@ -267,7 +267,7 @@ void LevitateSpell::createDustParticle() {
 	                 Random::getf(5.f, 10.f) * ((pd->ov.z - m_pos.z) / t));
 	pd->siz = Random::getf(30.f, 60.f);
 	pd->tolive = 3000;
-	pd->timcreation = -(arxtime.now_l() + 3000l); // TODO WTF
+	pd->timcreation = -(arxtime.now_ul() + 3000l); // TODO WTF
 	pd->special = FIRE_TO_SMOKE | FADE_IN_AND_OUT | ROTATING | MODULATE_ROTATION | DISSIPATING;
 	pd->fparam = 0.0000001f;
 }

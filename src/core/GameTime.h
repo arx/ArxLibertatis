@@ -79,10 +79,6 @@ public:
 		return delta_time_us / 1000.0f;
 	}
 	
-	long now_l() const {
-		return checked_range_cast<long>(delta_time_us / 1000);
-	}
-	
 	unsigned long now_ul() const {
 		return checked_range_cast<unsigned long>(delta_time_us / 1000);
 	}
