@@ -1699,12 +1699,11 @@ void ArxGame::manageKeyMouse() {
 		
 		if(!GInput->actionPressed(CONTROLS_CUST_STRAFE)) {
 			arxtime.update();
-			float fTime = arxtime.now_f();
-			int	iTime = checked_range_cast<int>(fTime);
+			const unsigned long now = arxtime.now_ul();
 
 			if(GInput->actionPressed(CONTROLS_CUST_TURNLEFT)) {
 				if(!pushTime[0].x)
-					pushTime[0].x = iTime;
+					pushTime[0].x = now;
 
 				bKeySpecialMove = true;
 			}
@@ -1713,7 +1712,7 @@ void ArxGame::manageKeyMouse() {
 
 			if(GInput->actionPressed(CONTROLS_CUST_TURNRIGHT)) {
 				if(!pushTime[1].x)
-					pushTime[1].x = iTime;
+					pushTime[1].x = now;
 
 				bKeySpecialMove = true;
 			}
@@ -1723,12 +1722,11 @@ void ArxGame::manageKeyMouse() {
 
 		if(USE_PLAYERCOLLISIONS) {
 			arxtime.update();
-			float fTime = arxtime.now_f();
-			int iTime = checked_range_cast<int>(fTime);
+			const unsigned long now = arxtime.now_ul();
 
 			if(GInput->actionPressed(CONTROLS_CUST_LOOKUP)) {
 				if(!pushTime[0].y)
-					pushTime[0].y = iTime;
+					pushTime[0].y = now;
 
 				bKeySpecialMove = true;
 			}
@@ -1737,7 +1735,7 @@ void ArxGame::manageKeyMouse() {
 
 			if(GInput->actionPressed(CONTROLS_CUST_LOOKDOWN)) {
 				if(!pushTime[1].y)
-					pushTime[1].y = iTime;
+					pushTime[1].y = now;
 
 				bKeySpecialMove = true;
 			}
