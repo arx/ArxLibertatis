@@ -325,15 +325,15 @@ void Cedric_ApplyLightingFirstPartRefactor(Entity *io) {
 			if (io->sfx_time >= arxtime.now_ul())
 				io->sfx_time = arxtime.now_ul();
 		} else {
-			float elapsed = arxtime.now_f() - io->sfx_time;
+			const unsigned long elapsed = arxtime.now_ul() - io->sfx_time;
 
-			if(elapsed > 0.f) {
-				if(elapsed < 3000.f) { // 5 seconds to red
+			if(elapsed > 0) {
+				if(elapsed < 3000) { // 5 seconds to red
 					float ratio = elapsed * (1.0f / 3000);
 					io->special_color = Color3f(1.f, 1.f - ratio, 1.f - ratio);
 					io->highlightColor += Color3f(std::max(ratio - 0.5f, 0.f), 0.f, 0.f) * 255;
 					AddRandomSmoke(io, 1);
-				} else if(elapsed < 6000.f) { // 5 seconds to White
+				} else if(elapsed < 6000) { // 5 seconds to White
 					float ratio = elapsed * (1.0f / 3000);
 					io->special_color = Color3f::red;
 					io->highlightColor += Color3f(std::max(ratio - 0.5f, 0.f), 0.f, 0.f) * 255;
