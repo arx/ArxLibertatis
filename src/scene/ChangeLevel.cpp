@@ -1116,12 +1116,9 @@ static long ARX_CHANGELEVEL_Push_IO(const Entity * io, long level) {
 
 	long timm = arxtime.now_ul();
 
-	for (int i = 0; i < MAX_TIMER_SCRIPT; i++)
-	{
-		if (scr_timer[i].exist)
-		{
-			if (scr_timer[i].io == io)
-			{
+	for(int i = 0; i < MAX_TIMER_SCRIPT; i++) {
+		if(scr_timer[i].exist) {
+			if(scr_timer[i].io == io) {
 				ARX_CHANGELEVEL_TIMERS_SAVE * ats = (ARX_CHANGELEVEL_TIMERS_SAVE *)(dat + pos);
 				memset(ats, 0, sizeof(ARX_CHANGELEVEL_TIMERS_SAVE));
 				ats->longinfo = scr_timer[i].longinfo;
@@ -1131,11 +1128,13 @@ static long ARX_CHANGELEVEL_Push_IO(const Entity * io, long level) {
 
 				if (scr_timer[i].es == &io->script)
 					ats->script = 0;
-				else	ats->script = 1;
+				else
+					ats->script = 1;
 
 				ats->tim = (scr_timer[i].tim + scr_timer[i].msecs) - timm;
 
-				if (ats->tim < 0) ats->tim = 0;
+				if(ats->tim < 0)
+					ats->tim = 0;
 
 				//else ats->tim=-ats->tim;
 				ats->times = scr_timer[i].times;
