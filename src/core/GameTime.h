@@ -71,10 +71,6 @@ public:
 		last_frame_time_us = v * 1000;
 	}
 	
-	bool operator>(const float &v) const { 
-		return delta_time_us > (v * 1000); 
-	}
-	
 	float now_f() const {
 		return delta_time_us / 1000.0f;
 	}
