@@ -1743,6 +1743,16 @@ void ArxGame::updateInput() {
 	if(GInput->isKeyPressedNowPressed(Keyboard::Key_ScrollLock)) {
 		drawDebugCycleViews();
 	}
+	
+#ifdef ARX_DEBUG
+	if(GInput->isKeyPressedNowPressed(Keyboard::Key_P)) {
+		if(!arxtime.is_paused()) {
+			arxtime.pause();
+		} else {
+			arxtime.resume();
+		}
+	}
+#endif
 }
 
 bool ArxGame::isInMenu() const {
