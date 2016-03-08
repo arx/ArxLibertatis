@@ -164,7 +164,7 @@ class TextManager;
 Image savegame_thumbnail;
 
 extern TextManager	*pTextManage;
-extern float FORCE_TIME_RESTORE;
+extern unsigned long FORCE_TIME_RESTORE;
 
 extern long		DONT_WANT_PLAYER_INZONE;
 extern size_t		TOTPDL;

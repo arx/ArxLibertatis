@@ -89,9 +89,9 @@ void GameTime::resume() {
 	}
 }
 
-void GameTime::force_time_restore(const float &time) {
+void GameTime::force_time_restore(const unsigned long time) {
 	
-	u64 requested_time = u64(time * 1000.0f);
+	u64 requested_time = u64(time * 1000);
 	
 	start_time = platform::getElapsedUs(requested_time);
 	delta_time_us = requested_time;

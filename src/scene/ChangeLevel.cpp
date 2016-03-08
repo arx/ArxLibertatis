@@ -99,7 +99,7 @@ ZeniMax Media Inc., Suite 120, Rockville, Maryland 20850 USA.
 
 
 extern bool GLOBAL_MAGIC_MODE;
-float FORCE_TIME_RESTORE = 0;
+unsigned long FORCE_TIME_RESTORE = 0;
 extern Vec3f WILL_RESTORE_PLAYER_POSITION;
 extern long WILL_RESTORE_PLAYER_POSITION_FLAG;
 extern bool GMOD_RESET;
@@ -125,7 +125,7 @@ static Entity * ARX_CHANGELEVEL_Pop_IO(const std::string & idString, EntityInsta
 
 static fs::path CURRENT_GAME_FILE;
 
-static float ARX_CHANGELEVEL_DesiredTime = 0;
+static unsigned long ARX_CHANGELEVEL_DesiredTime = 0;
 static long CONVERT_CREATED = 0;
 long DONT_WANT_PLAYER_INZONE = 0;
 static SaveBlock * g_currentSavedGame = NULL;
@@ -300,7 +300,7 @@ void ARX_CHANGELEVEL_Change(const std::string & level, const std::string & targe
 	progressBarReset();
 	
 	arxtime.update();
-	ARX_CHANGELEVEL_DesiredTime = arxtime.now_f();
+	ARX_CHANGELEVEL_DesiredTime = arxtime.now_ul();
 		
 	long num = GetLevelNumByName("level" + level);
 
@@ -2894,12 +2894,12 @@ long ARX_CHANGELEVEL_Load(const fs::path & savefile) {
 		progressBarAdvance(2.f);
 		LoadLevelScreen(pld.level);
 		
-		float fPldTime = static_cast<float>(pld.time); // TODO save/load time
+		const unsigned long fPldTime = static_cast<unsigned long>(pld.time); // TODO save/load time
 		DanaeClearLevel();
 		progressBarAdvance(2.f);
 		LoadLevelScreen(pld.level);
 		CURRENTLEVEL = pld.level;
-		ARX_CHANGELEVEL_DesiredTime	=	fPldTime;
+		ARX_CHANGELEVEL_DesiredTime = fPldTime;
 		ARX_CHANGELEVEL_PopLevel(pld.level, false);
 		arxtime.force_time_restore(fPldTime);
 		TIME_INIT = false;
