@@ -60,9 +60,10 @@ void fadeRequestStart(FadeType type, const unsigned long duration) {
 void ManageFade()
 {
 	arxtime.update();
-	float tim = arxtime.now_f() - (float)FADESTART;
-
-	if(tim <= 0.f)
+	
+	// TODO can this really become negative ?
+	long tim = long(arxtime.now_ul() - FADESTART);
+	if(tim <= 0)
 		return;
 
 	float Visibility = tim / (float)FADEDURATION;
