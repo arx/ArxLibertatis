@@ -1695,29 +1695,36 @@ void ArxGame::manageKeyMouse() {
 
 		bool bKeySpecialMove=false;
 		
-		static Vec2i pushTime[2] = {Vec2i_ZERO, Vec2i_ZERO};
+		struct PushTime {
+			unsigned long turnLeft;
+			unsigned long turnRight;
+			unsigned long lookUp;
+			unsigned long lookDown;
+		};
+		
+		static PushTime pushTime = {0, 0, 0, 0};
 		
 		if(!GInput->actionPressed(CONTROLS_CUST_STRAFE)) {
 			arxtime.update();
 			const unsigned long now = arxtime.now_ul();
 
 			if(GInput->actionPressed(CONTROLS_CUST_TURNLEFT)) {
-				if(!pushTime[0].x)
-					pushTime[0].x = now;
+				if(!pushTime.turnLeft)
+					pushTime.turnLeft = now;
 
 				bKeySpecialMove = true;
 			}
 			else
-				pushTime[0].x = 0;
+				pushTime.turnLeft = 0;
 
 			if(GInput->actionPressed(CONTROLS_CUST_TURNRIGHT)) {
-				if(!pushTime[1].x)
-					pushTime[1].x = now;
+				if(!pushTime.turnRight)
+					pushTime.turnRight = now;
 
 				bKeySpecialMove = true;
 			}
 			else
-				pushTime[1].x = 0;
+				pushTime.turnRight = 0;
 		}
 
 		if(USE_PLAYERCOLLISIONS) {
@@ -1725,27 +1732,27 @@ void ArxGame::manageKeyMouse() {
 			const unsigned long now = arxtime.now_ul();
 
 			if(GInput->actionPressed(CONTROLS_CUST_LOOKUP)) {
-				if(!pushTime[0].y)
-					pushTime[0].y = now;
+				if(!pushTime.lookUp)
+					pushTime.lookUp = now;
 
 				bKeySpecialMove = true;
 			}
 			else
-				pushTime[0].y = 0;
+				pushTime.lookUp = 0;
 
 			if(GInput->actionPressed(CONTROLS_CUST_LOOKDOWN)) {
-				if(!pushTime[1].y)
-					pushTime[1].y = now;
+				if(!pushTime.lookDown)
+					pushTime.lookDown = now;
 
 				bKeySpecialMove = true;
 			}
 			else
-				pushTime[1].y = 0;
+				pushTime.lookDown = 0;
 		}
 
 		if(bKeySpecialMove) {
-			if(pushTime[0].x || pushTime[1].x) {
-				if(pushTime[0].x < pushTime[1].x)
+			if(pushTime.turnLeft || pushTime.turnRight) {
+				if(pushTime.turnLeft < pushTime.turnRight)
 					mouseDiff.x = 10;
 				else
 					mouseDiff.x = -10;
@@ -1753,8 +1760,8 @@ void ArxGame::manageKeyMouse() {
 				mouseDiff.x = 0;
 			}
 
-			if(pushTime[0].y || pushTime[1].y) {
-				if(pushTime[0].y < pushTime[1].y)
+			if(pushTime.lookUp || pushTime.lookDown) {
+				if(pushTime.lookUp < pushTime.lookDown)
 					mouseDiff.y = 10;
 				else
 					mouseDiff.y = -10;
