@@ -66,7 +66,7 @@ public:
 	void force_time_restore(const unsigned long time);
 	
 	// TODO probably the source of the need to clip frame_delay
-	void force_frame_time_restore(const float &v) {
+	void force_frame_time_restore(const unsigned long v) {
 		frame_time_us = v * 1000;
 		last_frame_time_us = v * 1000;
 	}
