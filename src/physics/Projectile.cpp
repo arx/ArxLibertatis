@@ -422,7 +422,7 @@ void ARX_THROWN_OBJECT_Manage(unsigned long time_offset)
 				light->pos = thrownObj->position;
 				light->ex_flaresize = 40.f;
 				light->extras |= EXTRAS_FLARE;
-				light->duration = static_cast<long>(framedelay * 0.5f);
+				light->duration = static_cast<unsigned long>(framedelay * 0.5f);
 			}
 			
 			createObjFireParticles(thrownObj->obj, 6, 2, 180);

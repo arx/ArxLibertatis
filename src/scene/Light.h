@@ -117,7 +117,10 @@ struct EERIE_LIGHT {
 	float ex_flaresize;
 	LightHandle m_ignitionLightHandle;
 	unsigned long time_creation;
-	long duration; // will start to fade before the end of duration...
+	
+	// will start to fade before the end of duration...
+	unsigned long duration;
+	
 	audio::SourceId sample;
 	math::Quantizer m_storedFlameTime;
 };
@@ -148,7 +151,7 @@ EERIE_LIGHT * lightHandleGet(LightHandle lightHandle);
 bool lightHandleIsValid(LightHandle num);
 LightHandle GetFreeDynLight();
 void lightHandleDestroy(LightHandle & handle);
-void endLightDelayed(LightHandle & handle, long delay);
+void endLightDelayed(LightHandle & handle, unsigned long delay);
 
 
 void ClearDynLights();

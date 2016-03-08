@@ -279,7 +279,7 @@ void TreatBackgroundDynlights() {
 					dynamicLight->intensity    = light->intensity;
 					dynamicLight->ex_flaresize = light->ex_flaresize;
 					dynamicLight->extras       = light->extras;
-					dynamicLight->duration     = std::numeric_limits<long>::max();
+					dynamicLight->duration     = std::numeric_limits<unsigned long>::max();
 					
 					dynamicLight->rgb = light->rgb - light->rgb * light->ex_flicker * randomColor3f() * 0.5f;
 					
@@ -400,7 +400,7 @@ void lightHandleDestroy(LightHandle & handle) {
 	handle = LightHandle();
 }
 
-void endLightDelayed(LightHandle & handle, long delay) {
+void endLightDelayed(LightHandle & handle, unsigned long delay) {
 	
 	if(lightHandleIsValid(handle)) {
 		EERIE_LIGHT * light = lightHandleGet(handle);
