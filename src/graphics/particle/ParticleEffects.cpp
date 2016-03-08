@@ -223,9 +223,9 @@ static void ARX_PARTICLES_Spawn_Blood3(const Vec3f & pos, float dmgs, Color col,
 	if(pd) {
 		
 		float power = (dmgs * (1.f/60)) + .9f;
-		pd->ov = pos + Vec3f(-glm::sin(arxtime.now_f() * 0.001f), glm::sin(arxtime.now_f() * 0.001f),
-		               glm::cos(arxtime.now_f() * 0.001f)) * 30.f;
-		pd->siz = 3.5f * power + glm::sin(arxtime.now_f() * (1.f/1000));
+		const float nows = arxtime.now_f() * 0.001f;
+		pd->ov = pos + Vec3f(-glm::sin(nows), glm::sin(nows), glm::cos(nows)) * 30.f;
+		pd->siz = 3.5f * power + glm::sin(nows);
 		pd->scale = Vec3f(-pd->siz * 0.5f);
 		pd->special = PARTICLE_SUB2 | SUBSTRACT | GRAVITY | ROTATING | MODULATE_ROTATION
 		              | flags;
