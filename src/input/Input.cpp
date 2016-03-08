@@ -291,7 +291,6 @@ void Input::setMousePosAbs(const Vec2s & mousePos) {
 }
 
 void Input::update() {
-	int iDTime;
 
 	backend->update();
 
@@ -402,7 +401,8 @@ void Input::update() {
 
 		if(iOldNumClick[i]) 
 			iOldNumClick[i]--;
-
+		
+		int iDTime;
 		backend->isMouseButtonPressed(buttonId,iDTime);
 
 		if(iDTime) {
