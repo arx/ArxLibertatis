@@ -147,12 +147,12 @@ void HitStrengthGauge::update() {
 		if(BOW_FOCAL) {
 			j=(float)(BOW_FOCAL)/710.f;
 		} else {
-			float at=arxtime.now_f()-(float)AimTime;
+			const unsigned long delta = arxtime.now_ul() - AimTime;
 			
 			//TODO global
-			bIsAiming = at > 0.f;
+			bIsAiming = delta > 0;
 			
-			at=at*(1.f+(1.f-GLOBAL_SLOWDOWN));
+			float at = delta * (1.f+(1.f-GLOBAL_SLOWDOWN));
 			float aim = static_cast<float>(player.Full_AimTime);
 			j=at/aim;
 		}
