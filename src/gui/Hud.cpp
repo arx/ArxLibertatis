@@ -287,7 +287,7 @@ void BackpackIconGui::update(const Rectf & parent) {
 
 void BackpackIconGui::updateInput() {
 	
-	static float flDelay=0;
+	static unsigned long flDelay = 0;
 	
 	// Check for backpack Icon
 	if(m_rect.contains(Vec2f(DANAEMouse))) {
@@ -311,11 +311,11 @@ void BackpackIconGui::updateInput() {
 		} else if(eeMouseDown1() || flDelay) {
 			if(!flDelay) {
 				arxtime.update();
-				flDelay = arxtime.now_f();
+				flDelay = arxtime.now_ul();
 				return;
 			} else {
 				arxtime.update();
-				if(arxtime.now_f() - flDelay < 300) {
+				if(arxtime.now_ul() - flDelay < 300) {
 					return;
 				} else {
 					flDelay = 0;
