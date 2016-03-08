@@ -1101,9 +1101,9 @@ static void Cedric_RenderObject(EERIE_3DOBJ * eobj, Skeleton * obj, Entity * io,
 	bool glow = false;
 	ColorRGBA glowColor;
 	if(io && (io->sfx_flag & SFX_TYPE_YLSIDE_DEATH) && io->show != SHOW_FLAG_TELEPORTING) {
-		float elapsed = arxtime.now_f() - io->sfx_time;
-		if(elapsed >= 3000.f && elapsed < 6000.f) {
-			float ratio = (elapsed - 3000.f) * (1.0f / 3000);
+		const unsigned long elapsed = arxtime.now_ul() - io->sfx_time;
+		if(elapsed >= 3000 && elapsed < 6000) {
+			float ratio = (elapsed - 3000) * (1.0f / 3000);
 			glowColor = Color::gray(ratio).toRGB();
 			glow = true;
 		}
