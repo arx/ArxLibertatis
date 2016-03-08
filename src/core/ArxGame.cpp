@@ -681,13 +681,15 @@ static bool HandleGameFlowTransitions() {
 				GameFlow::setTransition(GameFlow::SecondLogo);
 				return true;
 			}
-
-			TRANSITION_START = arxtime.get_updated_ul();
+			
+			arxtime.update();
+			TRANSITION_START = arxtime.now_ul();
 		}
 
 		ARX_INTERFACE_ShowFISHTANK();
-
-		unsigned long tim = arxtime.get_updated_ul();
+		
+		arxtime.update();
+		unsigned long tim = arxtime.now_ul();
 		float pos = (float)tim - (float)TRANSITION_START;
 
 		if(pos > TRANSITION_DURATION) {
@@ -706,13 +708,15 @@ static bool HandleGameFlowTransitions() {
 				GameFlow::setTransition(GameFlow::LoadingScreen);
 				return true;
 			}
-
-			TRANSITION_START = arxtime.get_updated_ul();
+			
+			arxtime.update();
+			TRANSITION_START = arxtime.now_ul();
 			ARX_SOUND_PlayInterface(SND_PLAYER_HEART_BEAT);
 		}
 
 		ARX_INTERFACE_ShowARKANE();
-		unsigned long tim = arxtime.get_updated_ul();
+		arxtime.update();
+		unsigned long tim = arxtime.now_ul();
 		float pos = (float)tim - (float)TRANSITION_START;
 
 		if(pos > TRANSITION_DURATION) {

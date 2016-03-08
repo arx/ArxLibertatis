@@ -351,7 +351,8 @@ long ARX_SPEECH_AddSpeech(Entity * io, const std::string & data, long mood,
 	}
 	
 	aspeech[num].exist = 1;
-	aspeech[num].time_creation = arxtime.get_updated_ul();
+	arxtime.update();
+	aspeech[num].time_creation = arxtime.now_ul();
 	aspeech[num].io = io; // can be NULL
 	aspeech[num].duration = 2000; // Minimum value
 	aspeech[num].flags = flags;

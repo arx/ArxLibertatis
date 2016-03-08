@@ -178,7 +178,8 @@ void EERIE_OBJECT_SetBHMode()
 		MakeCoolFx(player.pos);
 		MakeSpCol();
 		sp_max_ch = "!!!_Super-Deformed_!!!";
-		sp_max_start = arxtime.get_updated_ul();
+		arxtime.update();
+		sp_max_start = arxtime.now_ul();
 			}
 }
 
@@ -202,7 +203,8 @@ void ApplySPWep() {
 
 			MakeSpCol();
 			sp_max_ch = "!!!_Grosbillite_!!!";
-			sp_max_start = arxtime.get_updated_ul();
+			arxtime.update();
+			sp_max_start = arxtime.now_ul();
 		}
 	}
 }
@@ -213,7 +215,8 @@ void ApplyCurSOS() {
 	MakeSpCol();
 	g_miniMap.reveal();
 	sp_max_ch = "!!!_Temple of Elemental Lavis_!!!";
-	sp_max_start = arxtime.get_updated_ul();
+	arxtime.update();
+	sp_max_start = arxtime.now_ul();
 }
 
 void ApplySPBow() {
@@ -234,7 +237,8 @@ void ApplySPBow() {
 
 		MakeSpCol();
 		sp_max_ch = "!!!_Bow to Samy & Anne_!!!";
-		sp_max_start = arxtime.get_updated_ul();
+		arxtime.update();
+		sp_max_start = arxtime.now_ul();
 	}
 }
 
@@ -287,7 +291,8 @@ void ApplySPArm() {
 		break;
 		}
 		
-		sp_max_start = arxtime.get_updated_ul();
+		arxtime.update();
+		sp_max_start = arxtime.now_ul();
 	}
 
 	sp_arm++;
@@ -304,13 +309,15 @@ void ApplyCurPNux() {
 	// TODO-RENDERING: Create a post-processing effect for that cheat... see original source...
 
 	cur_pnux=0;
-	sp_max_start = arxtime.get_updated_ul();
+	arxtime.update();
+	sp_max_start = arxtime.now_ul();
 }
 
 void ApplyPasswall() {
 	MakeSpCol();
 	sp_max_ch = "!!! PassWall !!!";
-	sp_max_start = arxtime.get_updated_ul();
+	arxtime.update();
+	sp_max_start = arxtime.now_ul();
 
 	if(USE_PLAYERCOLLISIONS)
 		USE_PLAYERCOLLISIONS = false;
@@ -322,7 +329,8 @@ void ApplySPRf() {
 	if(cur_rf == 3) {
 		MakeSpCol();
 		sp_max_ch = "!!! RaFMode !!!";
-		sp_max_start = arxtime.get_updated_ul();
+		arxtime.update();
+		sp_max_start = arxtime.now_ul();
 	}
 }
 
@@ -330,7 +338,8 @@ void ApplyCurMr() {
 	if(cur_mr == 3) {
 		MakeSpCol();
 		sp_max_ch = "!!! Marianna !!!";
-		sp_max_start = arxtime.get_updated_ul();
+		arxtime.update();
+		sp_max_start = arxtime.now_ul();
 	}
 }
 
@@ -342,7 +351,8 @@ void ApplySPuw() {
 	if(uw_mode) {
 		MakeSpCol();
 		sp_max_ch = "~-__-~~-__.U.W.__-~~-__-~";
-		sp_max_start = arxtime.get_updated_ul();
+		arxtime.update();
+		sp_max_start = arxtime.now_ul();
 	}
 }
 
@@ -355,7 +365,8 @@ void ApplySPMax() {
 	{
 		MakeSpCol();
 		sp_max_ch = "!!!_FaNt0mAc1e_!!!";
-		sp_max_start = arxtime.get_updated_ul();
+		arxtime.update();
+		sp_max_start = arxtime.now_ul();
 
 			player.skin=4;
 

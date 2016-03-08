@@ -429,7 +429,8 @@ static bool ARX_CHANGELEVEL_Push_Index(long num) {
 	asi.version       = ARX_GAMESAVE_VERSION;
 	asi.nb_inter      = 0;
 	asi.nb_paths      = nbARXpaths;
-	asi.time          = arxtime.get_updated_ul();
+	arxtime.update();
+	asi.time          = arxtime.now_ul();
 	asi.nb_lights     = 0;
 	asi.gmods_stacked = GLOBAL_MODS();
 	asi.gmods_stacked.zclip = 6400.f;
@@ -2809,7 +2810,8 @@ bool ARX_CHANGELEVEL_Save(const std::string & name, const fs::path & savefile) {
 	pld.level = CURRENTLEVEL;
 	util::storeString(pld.name, name.c_str());
 	pld.version = ARX_GAMESAVE_VERSION;
-	pld.time = arxtime.get_updated_ul();
+	arxtime.update();
+	pld.time = arxtime.now_ul();
 	
 	const char * dat = reinterpret_cast<const char *>(&pld);
 	g_currentSavedGame->save("pld", dat, sizeof(ARX_CHANGELEVEL_PLAYER_LEVEL_DATA));

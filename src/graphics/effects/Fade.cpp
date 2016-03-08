@@ -53,7 +53,8 @@ void fadeRequestStart(FadeType type, float duration) {
 	}
 	
 	FADEDURATION = duration;
-	FADESTART = arxtime.get_updated_ul();
+	arxtime.update();
+	FADESTART = arxtime.now_ul();
 }
 
 void ManageFade()

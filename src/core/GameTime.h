@@ -95,11 +95,6 @@ public:
 		}
 	}
 	
-	unsigned long get_updated_ul(const bool & use_pause = true) {
-		update(use_pause);
-		return checked_range_cast<unsigned long>(delta_time_us / 1000);
-	}
-	
 	bool is_paused() const { 
 		return paused; 
 	}
