@@ -57,7 +57,7 @@ GameTime::GameTime() {
 	start_time         = 0;
 	pause_time         = 0;
 	paused             = false;
-	delta_time_us      = 0;
+	m_now_us           = 0;
 	frame_time_us      = 0;
 	last_frame_time_us = 0;
 	frame_delay_ms     = 0.0f;
@@ -68,7 +68,7 @@ void GameTime::init() {
 	start_time         = platform::getTimeUs();
 	pause_time         = 0;
 	paused             = false;
-	delta_time_us      = 0;
+	m_now_us           = 0;
 	frame_time_us      = 0;
 	last_frame_time_us = 0;
 	frame_delay_ms     = 0.0f;
@@ -94,7 +94,7 @@ void GameTime::force_time_restore(const unsigned long time) {
 	u64 requested_time = u64(time * 1000);
 	
 	start_time = platform::getElapsedUs(requested_time);
-	delta_time_us = requested_time;
+	m_now_us = requested_time;
 	
 	pause_time = 0;
 	paused     = false;

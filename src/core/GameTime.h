@@ -72,18 +72,18 @@ public:
 	}
 	
 	float now_f() const {
-		return delta_time_us / 1000.0f;
+		return m_now_us / 1000.0f;
 	}
 	
 	unsigned long now_ul() const {
-		return checked_range_cast<unsigned long>(delta_time_us / 1000);
+		return checked_range_cast<unsigned long>(m_now_us / 1000);
 	}
 	
 	void update(const bool & use_pause = true) {
 		if (is_paused() && use_pause) {
-			delta_time_us = platform::getElapsedUs(start_time, pause_time);
+			m_now_us = platform::getElapsedUs(start_time, pause_time);
 		} else {
-			delta_time_us = platform::getElapsedUs(start_time);
+			m_now_us = platform::getElapsedUs(start_time);
 		}
 	}
 	
@@ -110,7 +110,7 @@ public:
 	
 	void update_frame_time() {
 		update();
-		frame_time_us = delta_time_us;
+		frame_time_us = m_now_us;
 		frame_delay_ms = (frame_time_us - last_frame_time_us) / 1000.0f;
 	}
 	
@@ -129,7 +129,7 @@ private:
 	// TODO this sometimes respects pause and sometimes not! [adejr]: is this TODO still valid?
 	// TODO an absolute time value stored in a floating point number will lose precision 
 	// when large numbers are stored.
-	u64 delta_time_us;
+	u64 m_now_us;
 	
 	u64 last_frame_time_us;
 	u64 frame_time_us;
