@@ -283,7 +283,8 @@ bool ProcessFadeInOut(bool _bFadeIn, float _fspeed) {
 
 bool Menu2_Render() {
 	
-	float time = arxtime.get_updated(false);
+	arxtime.update(false);
+	float time = arxtime.now_f();
 	ARXDiffTimeMenu = time - ARXTimeMenu;
 	ARXTimeMenu = time;
 	

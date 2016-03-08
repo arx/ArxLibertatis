@@ -299,7 +299,8 @@ void ARX_CHANGELEVEL_Change(const std::string & level, const std::string & targe
 	progressBarSetTotal(238);
 	progressBarReset();
 	
-	ARX_CHANGELEVEL_DesiredTime = arxtime.get_updated();
+	arxtime.update();
+	ARX_CHANGELEVEL_DesiredTime = arxtime.now_f();
 		
 	long num = GetLevelNumByName("level" + level);
 

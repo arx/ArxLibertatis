@@ -132,8 +132,9 @@ static float LastFrameTicks = 0;
 
 // Manages Currently playing 2D cinematic
 void cinematicRender() {
-
-	float FrameTicks = arxtime.get_updated(false);
+	
+	arxtime.update(false);
+	float FrameTicks = arxtime.now_f();
 
 	if(PLAY_LOADED_CINEMATIC == Cinematic_StartRequested) {
 		LogDebug("really starting cinematic now");

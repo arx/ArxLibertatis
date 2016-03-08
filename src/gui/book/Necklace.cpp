@@ -159,7 +159,8 @@ void ARX_INTERFACE_ManageOpenedBook_Finish(const Vec2f & mousePos)
 				if(rune->angle.getPitch() > 300.f)
 					rune->angle.setPitch(300.f);
 				
-				angle.setPitch(std::sin(arxtime.get_updated() * (1.0f / 200)) * rune->angle.getPitch() * (1.0f / 40));
+				arxtime.update();
+				angle.setPitch(std::sin(arxtime.now_f() * (1.0f / 200)) * rune->angle.getPitch() * (1.0f / 40));
 			}
 			
 			rune->angle.setPitch(rune->angle.getPitch() - framedelay * 0.2f);

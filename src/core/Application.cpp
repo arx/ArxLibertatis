@@ -92,7 +92,8 @@ void CalcFPS(bool reset)
 		float tmp;
 
 		// Keep track of the time lapse and frame count
-		float fTime = arxtime.get_updated(false) * 0.001f;   // Get current time in seconds
+		arxtime.update(false);
+		float fTime = arxtime.now_f() * 0.001f;   // Get current time in seconds
 		++dwFrames;
 
 		tmp = fTime - fLastTime;

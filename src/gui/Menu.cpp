@@ -229,7 +229,8 @@ void ARX_MENU_Clicked_QUIT_GAME() {
 
 void ARX_MENU_Launch(bool allowResume) {
 	
-	ARXTimeMenu = arxtime.get_updated();
+	arxtime.update();
+	ARXTimeMenu = arxtime.now_f();
 	
 	REFUSE_GAME_RETURN = !allowResume;
 

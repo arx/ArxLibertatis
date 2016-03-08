@@ -1698,7 +1698,8 @@ void ArxGame::manageKeyMouse() {
 		static Vec2i pushTime[2] = {Vec2i_ZERO, Vec2i_ZERO};
 		
 		if(!GInput->actionPressed(CONTROLS_CUST_STRAFE)) {
-			float fTime = arxtime.get_updated();
+			arxtime.update();
+			float fTime = arxtime.now_f();
 			int	iTime = checked_range_cast<int>(fTime);
 
 			if(GInput->actionPressed(CONTROLS_CUST_TURNLEFT)) {
@@ -1721,7 +1722,8 @@ void ArxGame::manageKeyMouse() {
 		}
 
 		if(USE_PLAYERCOLLISIONS) {
-			float fTime = arxtime.get_updated();
+			arxtime.update();
+			float fTime = arxtime.now_f();
 			int iTime = checked_range_cast<int>(fTime);
 
 			if(GInput->actionPressed(CONTROLS_CUST_LOOKUP)) {

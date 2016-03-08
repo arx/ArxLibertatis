@@ -669,7 +669,8 @@ consequences on light :
 	if(CKTrack->currframe > (float)CKTrack->endframe) {
 		CKTrack->currframe = (float)CKTrack->startframe;
 		c->key = NULL;
-		c->flTime = arxtime.get_updated();
+		arxtime.update();
+		c->flTime = arxtime.now_f();
 	}
 
 	return true;

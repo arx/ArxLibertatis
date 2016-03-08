@@ -371,8 +371,9 @@ void Input::update() {
 			}
 		}
 	}
-
-	const int iArxTime = checked_range_cast<int>(arxtime.get_updated(false));
+	
+	arxtime.update(false);
+	const unsigned long iArxTime = arxtime.now_ul();
 
 	for(int buttonId = Mouse::ButtonBase; buttonId < Mouse::ButtonMax; buttonId++) {
 		int i = buttonId - Mouse::ButtonBase;
@@ -408,7 +409,8 @@ void Input::update() {
 			iMouseTime[i]=iDTime;
 			iMouseTimeSet[i]=2;
 		} else {
-			if(iMouseTimeSet[i] > 0 && (arxtime.get_updated(false)-iMouseTime[i]) > 300) {
+			arxtime.update(false);
+			if(iMouseTimeSet[i] > 0 && (arxtime.now_f() - iMouseTime[i]) > 300) {
 				iMouseTime[i]=0;
 				iMouseTimeSet[i]=0;
 			}

@@ -465,7 +465,8 @@ void Credits::render() {
 	}
 	
 	// Use time passed between frame to create scroll effect
-	float time = arxtime.get_updated(false);
+	arxtime.update(false);
+	float time = arxtime.now_f();
 	float dtime = time - m_lastUpdateTime;
 	
 	static float lastKeyPressTime = 0.f;
@@ -567,7 +568,8 @@ void Credits::render() {
 
 void Credits::reset() {
 	LogDebug("Reset credits");
-	m_lastUpdateTime = arxtime.get_updated(false);
+	arxtime.update(false);
+	m_lastUpdateTime = arxtime.now_f();
 	m_scrollPosition = 0;
 	m_firstVisibleLine = 0;
 	m_lineHeight = -1;

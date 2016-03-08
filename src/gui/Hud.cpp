@@ -310,10 +310,12 @@ void BackpackIconGui::updateInput() {
 			flDelay = 0;
 		} else if(eeMouseDown1() || flDelay) {
 			if(!flDelay) {
-				flDelay = arxtime.get_updated();
+				arxtime.update();
+				flDelay = arxtime.now_f();
 				return;
 			} else {
-				if(arxtime.get_updated() - flDelay < 300) {
+				arxtime.update();
+				if(arxtime.now_f() - flDelay < 300) {
 					return;
 				} else {
 					flDelay = 0;
