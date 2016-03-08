@@ -683,8 +683,9 @@ float GLOBAL_SLOWDOWN=1.f;
 static bool StrikeAimtime() {
 	
 	ARX_PLAYER_Remove_Invisibility();
-	STRIKE_AIMTIME = arxtime.now_f() - (float)AimTime;
-	STRIKE_AIMTIME = STRIKE_AIMTIME * (1.f+(1.f-GLOBAL_SLOWDOWN));
+	
+	const unsigned long delta = arxtime.now_ul() - AimTime;
+	STRIKE_AIMTIME = delta * (1.f+(1.f-GLOBAL_SLOWDOWN));
 
 	if(STRIKE_AIMTIME > player.Full_AimTime)
 		STRIKE_AIMTIME=1.f;
