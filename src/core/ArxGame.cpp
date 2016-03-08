@@ -1627,8 +1627,9 @@ void ArxGame::updateTime() {
 
 	// TODO this code shouldn't exist. ARXStartTime should be constant.
 	if (GLOBAL_SLOWDOWN != 1.0f) {
-
-		arxtime.increment_start_time((u64)(Original_framedelay * (1.0f - GLOBAL_SLOWDOWN) * 1000.0f));
+		
+		float drift = Original_framedelay * (1.0f - GLOBAL_SLOWDOWN) * 1000.0f;
+		arxtime.increment_start_time(static_cast<u64>(drift));
 
 		// recalculate frame delta
 		arxtime.update_frame_time();
