@@ -2147,12 +2147,9 @@ static Entity * ARX_CHANGELEVEL_Pop_IO(const std::string & idString, EntityInsta
 			scr_timer[num].pos = ats->pos;
 			// TODO if the script has changed since the last save, this position may be invalid
 			
-			float tt = ARX_CHANGELEVEL_DesiredTime + ats->tim;
-			if(tt < 0) {
-				scr_timer[num].tim = 0;
-			} else {
-				scr_timer[num].tim = checked_range_cast<unsigned long>(tt);
-			}
+			const unsigned long tim = checked_range_cast<unsigned long>(ats->tim);
+			const unsigned long tt = ARX_CHANGELEVEL_DesiredTime + tim;
+			scr_timer[num].tim = tt;
 			
 			scr_timer[num].times = ats->times;
 		}
