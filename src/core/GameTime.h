@@ -132,18 +132,6 @@ private:
 	u64 last_frame_time_us;
 	u64 frame_time_us;
 	float frame_delay_ms;
-	
-	/* TODO RFC (adejr: safe to allow varied precision?)
-	** since these values and their accessors are isolated in this class, 
-	** last_frame_time and frame_time could be replaced with u64 values 
-	** and stored as int before cast to float. 
-	**
-	** this would eliminate the need for casting to int from the float value 
-	** in the operator "int" accessors and also increase precision.
-	** assuming that would be safe while the float value is still used.
-	** as frame_delay is a delta the issue of precision is less critical.
-	*/
-	
 };
 
 extern GameTime arxtime;
