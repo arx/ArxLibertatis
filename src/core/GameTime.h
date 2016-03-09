@@ -126,9 +126,7 @@ private:
 	u64 pause_time;
 	u64 start_time;
 	
-	// TODO this sometimes respects pause and sometimes not! [adejr]: is this TODO still valid?
-	// TODO an absolute time value stored in a floating point number will lose precision 
-	// when large numbers are stored.
+	// TODO this sometimes respects pause and sometimes not!
 	u64 m_now_us;
 	
 	u64 last_frame_time_us;
