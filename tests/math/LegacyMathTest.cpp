@@ -326,7 +326,7 @@ void LegacyMathTest::vectorRotateTest() {
 void LegacyMathTest::focalToFovTest() {
 	
 	for(float focal = 100; focal < 800; focal += 0.1f) {
-		float expected = focalToFovLegacy(focal);
+		float expected = glm::radians(focalToFovLegacy(focal));
 		float result = focalToFov(focal);
 		
 		std::string msg = "In: " + glm::to_string(focal) + " Expected: " + glm::to_string(expected) + ", Result: " + glm::to_string(result);
