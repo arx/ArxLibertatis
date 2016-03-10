@@ -104,7 +104,7 @@ void FloatingStones::DrawStone()
 				pd->move = Vec3f(0.f, Random::getf(0.f, 3.f), 0.f);
 				pd->siz = Random::getf(3.f, 6.f);
 				pd->tolive = 1000;
-				pd->timcreation = -(arxtime.now_ul() + 1000l); // TODO WTF
+				pd->timcreation = -(long(arxtime.now_ul()) + 1000l); // TODO WTF
 				pd->special = FIRE_TO_SMOKE | FADE_IN_AND_OUT | ROTATING | MODULATE_ROTATION
 				| DISSIPATING;
 				pd->fparam = 0.0000001f;
