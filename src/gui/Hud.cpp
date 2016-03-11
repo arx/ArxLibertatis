@@ -144,8 +144,8 @@ void HitStrengthGauge::update() {
 		m_intensity = 0.2f;
 	} else {
 		float j;
-		if(BOW_FOCAL) {
-			j=(float)(BOW_FOCAL)/710.f;
+		if(BOW_FOCAL > 0) {
+			j = BOW_FOCAL;
 		} else {
 			const unsigned long delta = arxtime.now_ul() - AimTime;
 			

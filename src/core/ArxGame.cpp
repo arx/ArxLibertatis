@@ -173,7 +173,6 @@ SavegameHandle LOADQUEST_SLOT = SavegameHandle(); // OH NO, ANOTHER GLOBAL! - TE
 extern long DeadTime;
 
 static const float CURRENT_BASE_FOCAL = 310.f;
-extern float BOW_FOCAL;
 
 extern float GLOBAL_SLOWDOWN;
 extern float LAST_FADEVALUE;
@@ -1349,7 +1348,7 @@ void ArxGame::updateFirstPersonCamera() {
 		&& (layer1.cur_anim!=alist[ANIM_MISSILE_STRIKE_PART_2])
 		&& (layer1.cur_anim!=alist[ANIM_MISSILE_STRIKE_CYCLE]))
 	{
-		BOW_FOCAL -= Original_framedelay;
+		BOW_FOCAL -= bowZoomFromDuration(Original_framedelay);
 
 		if(BOW_FOCAL < 0)
 			BOW_FOCAL = 0;
@@ -2142,7 +2141,7 @@ void ArxGame::render() {
 	subj.orgTrans.mod = Vec2f(subj.center);
 
 	// Finally computes current focal
-	BASE_FOCAL = CURRENT_BASE_FOCAL + (BOW_FOCAL * (1.f/4));
+	BASE_FOCAL = CURRENT_BASE_FOCAL + (BOW_FOCAL * 177.5f);
 
 	// SPECIFIC code for Snapshot MODE... to insure constant capture framerate
 
