@@ -1058,8 +1058,11 @@ static void RenderLava() {
 	vPolyLava.clear();
 }
 
-static void ARX_PORTALS_Frustrum_RenderRoomTCullSoft(long room_num, const EERIE_FRUSTRUM_DATA & frustrums, long tim) {
-	
+static void ARX_PORTALS_Frustrum_RenderRoomTCullSoft(long room_num,
+                                                     const EERIE_FRUSTRUM_DATA & frustrums,
+                                                     long tim,
+                                                     const Vec3f & camPos
+) {
 	ARX_PROFILE_FUNC();
 	
 	if(!RoomDraw[room_num].count)
@@ -1123,7 +1126,7 @@ static void ARX_PORTALS_Frustrum_RenderRoomTCullSoft(long room_num, const EERIE_
 			continue;
 		}
 
-		Vec3f nrm = ep->v[2].p - ACTIVECAM->orgTrans.pos;
+		Vec3f nrm = ep->v[2].p - camPos;
 		int to = (ep->type & POLY_QUAD) ? 4 : 3;
 
 		if(!(ep->type & POLY_DOUBLESIDED) && glm::dot(ep->norm , nrm) > 0.f) {
@@ -1489,7 +1492,7 @@ void ARX_SCENE_Update() {
 		ARX_PORTALS_Frustrum_ComputeRoom(roomIndex, frustrum, camPos, camDepth);
 
 		for(size_t i = 0; i < RoomDrawList.size(); i++) {
-			ARX_PORTALS_Frustrum_RenderRoomTCullSoft(RoomDrawList[i], RoomDraw[RoomDrawList[i]].frustrum, tim);
+			ARX_PORTALS_Frustrum_RenderRoomTCullSoft(RoomDrawList[i], RoomDraw[RoomDrawList[i]].frustrum, tim, camPos);
 		}
 	} else {
 		RoomDrawRelease();
