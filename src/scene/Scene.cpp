@@ -1443,14 +1443,16 @@ void ARX_SCENE_Update() {
 	unsigned long tim = arxtime.now_ul();
 
 	WATEREFFECT+=0.0005f*framedelay;
-
-	long l = ACTIVECAM->cdepth * 0.42f;
+	
+	const EERIE_CAMERA & activecam = *ACTIVECAM;
+	
+	long l = activecam.cdepth * 0.42f;
 	long clip3D = (l / (long)BKG_SIZX) + 1;
 	short radius = clip3D + 4;
 
 	// TODO copy-paste background tiles
-	int tilex = ACTIVECAM->orgTrans.pos.x * ACTIVEBKG->Xmul;
-	int tilez = ACTIVECAM->orgTrans.pos.z * ACTIVEBKG->Zmul;
+	int tilex = activecam.orgTrans.pos.x * ACTIVEBKG->Xmul;
+	int tilez = activecam.orgTrans.pos.z * ACTIVEBKG->Zmul;
 	tilex = glm::clamp(tilex, 0, ACTIVEBKG->Xsize - 1);
 	tilez = glm::clamp(tilez, 0, ACTIVEBKG->Zsize - 1);
 
@@ -1473,7 +1475,7 @@ void ARX_SCENE_Update() {
 
 	ResetTileLights();
 
-	long room_num = ARX_PORTALS_GetRoomNumForPosition(ACTIVECAM->orgTrans.pos, 1);
+	long room_num = ARX_PORTALS_GetRoomNumForPosition(activecam.orgTrans.pos, 1);
 	if(room_num>-1) {
 
 		ARX_PORTALS_InitDrawnRooms();
