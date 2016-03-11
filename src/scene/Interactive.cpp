@@ -476,23 +476,25 @@ void PrepareIOTreatZone(long flag) {
 	static long status = -1;
 	static Vec3f lastpos;
 
+	const Vec3f cameraPos = ACTIVECAM->orgTrans.pos;
+	
 	if(flag || status == -1) {
 		status = 0;
-		lastpos = ACTIVECAM->orgTrans.pos;
+		lastpos = cameraPos;
 	} else if(status == 3) {
 		status = 0;
 	}
 
-	if(fartherThan(ACTIVECAM->orgTrans.pos, lastpos, 100.f)) {
+	if(fartherThan(cameraPos, lastpos, 100.f)) {
 		status = 0;
-		lastpos = ACTIVECAM->orgTrans.pos;
+		lastpos = cameraPos;
 	}
 
 	if(status++)
 		return;
 
 	TREATZONE_Clear();
-	long Cam_Room = ARX_PORTALS_GetRoomNumForPosition(ACTIVECAM->orgTrans.pos, 1);
+	long Cam_Room = ARX_PORTALS_GetRoomNumForPosition(cameraPos, 1);
 	long PlayerRoom = ARX_PORTALS_GetRoomNumForPosition(player.pos, 1);
 	TREATZONE_AddIO(entities.player());
 
@@ -554,20 +556,20 @@ void PrepareIOTreatZone(long flag) {
 				if(Cam_Room >= 0) {
 					if(io->show == SHOW_FLAG_TELEPORTING) {
 						Vec3f pos = GetItemWorldPosition(io);
-						dists = glm::distance2(ACTIVECAM->orgTrans.pos, pos);
+						dists = glm::distance2(cameraPos, pos);
 					} else {
 						if(io->requestRoomUpdate)
 							UpdateIORoom(io);
 
-						dists = square(SP_GetRoomDist(io->pos, ACTIVECAM->orgTrans.pos, io->room, Cam_Room));
+						dists = square(SP_GetRoomDist(io->pos, cameraPos, io->room, Cam_Room));
 					}
 				} else {
 					if(io->show == SHOW_FLAG_TELEPORTING) {
 						Vec3f pos = GetItemWorldPosition(io);
-						dists = glm::distance2(ACTIVECAM->orgTrans.pos, pos); //&io->pos,&pos);
+						dists = glm::distance2(cameraPos, pos); //&io->pos,&pos);
 					}
 					else
-						dists = glm::distance2(io->pos, ACTIVECAM->orgTrans.pos);
+						dists = glm::distance2(io->pos, cameraPos);
 				}
 		
 				if(dists < square(TREATZONE_LIMIT))
