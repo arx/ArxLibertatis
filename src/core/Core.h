@@ -88,7 +88,6 @@ extern std::string TELEPORT_TO_POSITION;
 
 extern float PULSATE;
 extern float framedelay;
-extern float BASE_FOCAL;
 
 extern bool g_requestLevelInit;
 

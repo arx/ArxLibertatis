@@ -200,7 +200,6 @@ long TELEPORT_TO_ANGLE;
 // END -   Information for Player Teleport between/in Levels---------------------------------------
 res::path LastLoadedScene;
 
-float BASE_FOCAL=350.f;
 float STRIKE_AIMTIME=0.f;
 
 float framedelay=0.f;

@@ -173,6 +173,7 @@ SavegameHandle LOADQUEST_SLOT = SavegameHandle(); // OH NO, ANOTHER GLOBAL! - TE
 extern long DeadTime;
 
 static const float CURRENT_BASE_FOCAL = 310.f;
+static const float defaultCameraFocal = 350.f;
 
 extern float GLOBAL_SLOWDOWN;
 extern float LAST_FADEVALUE;
@@ -877,7 +878,7 @@ bool ArxGame::initGame()
 	subj.orgTrans.pos = Vec3f(900.f, player.baseHeight(), 4340.f);
 	subj.clip = Rect(0, 0, 640, 480);
 	subj.center = subj.clip.center();
-	subj.focal = BASE_FOCAL;
+	subj.focal = defaultCameraFocal;
 	subj.bkgcolor = Color::none;
 	subj.cdepth = 2100.f;
 	
@@ -888,7 +889,7 @@ bool ArxGame::initGame()
 	
 	bookcam.angle = Anglef::ZERO;
 	bookcam.orgTrans.pos = Vec3f_ZERO;
-	bookcam.focal = BASE_FOCAL;
+	bookcam.focal = defaultCameraFocal;
 	
 	LoadSysTextures();
 	cursorTexturesInit();
@@ -1922,6 +1923,8 @@ void ArxGame::updateLevel() {
 	ManageTorch();
 
 	if(!player.m_improve) {
+		float BASE_FOCAL = CURRENT_BASE_FOCAL + (BOW_FOCAL * 177.5f);
+		
 		if(subj.focal < BASE_FOCAL) {
 			static const float INC_FOCAL = 75.0f;
 			subj.focal += INC_FOCAL;
@@ -2139,10 +2142,7 @@ void ArxGame::render() {
 		
 	subj.center = Vec2i(g_size.center().x, g_size.center().y);
 	subj.orgTrans.mod = Vec2f(subj.center);
-
-	// Finally computes current focal
-	BASE_FOCAL = CURRENT_BASE_FOCAL + (BOW_FOCAL * 177.5f);
-
+	
 	// SPECIFIC code for Snapshot MODE... to insure constant capture framerate
 
 	PULSATE = std::sin(arxtime.get_frame_time() / 800);
