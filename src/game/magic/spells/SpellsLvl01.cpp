@@ -67,11 +67,6 @@ void MagicSightSpell::End()
 	ARX_SOUND_PlaySFX(SND_SPELL_VISION_START, &entities[m_caster]->pos);
 }
 
-static const float DEC_FOCAL = 50.0f;
-static const float IMPROVED_FOCAL = 320.0f;
-
-extern EERIE_CAMERA subj;
-
 void MagicSightSpell::Update(float timeDelta)
 {
 	ARX_UNUSED(timeDelta);
@@ -79,9 +74,6 @@ void MagicSightSpell::Update(float timeDelta)
 	if(m_caster == PlayerEntityHandle) {
 		Vec3f pos = ARX_PLAYER_FrontPos();
 		ARX_SOUND_RefreshPosition(m_snd_loop, pos);
-		
-		if(subj.focal > IMPROVED_FOCAL)
-			subj.focal -= DEC_FOCAL;
 	}	
 }
 

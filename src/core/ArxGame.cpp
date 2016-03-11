@@ -1922,8 +1922,18 @@ void ArxGame::updateLevel() {
 
 	ManageTorch();
 
-	if(!player.m_improve) {
-		float BASE_FOCAL = CURRENT_BASE_FOCAL + (BOW_FOCAL * 177.5f);
+	{
+		float magicSightZoom = 0.f;
+		
+		SpellBase * spell = spells.getSpellByCaster(PlayerEntityHandle, SPELL_MAGIC_SIGHT);
+		if(spell) {
+			long duration = long(arxtime.now_ul()) - long(spell->m_timcreation);
+			magicSightZoom = glm::clamp(float(duration) / 500.f, 0.f, 1.f);
+		}
+		
+		float BASE_FOCAL = CURRENT_BASE_FOCAL
+		                 + (magicSightZoom * -30.f)
+		                 + (BOW_FOCAL * 177.5f);
 		
 		if(subj.focal < BASE_FOCAL) {
 			static const float INC_FOCAL = 75.0f;

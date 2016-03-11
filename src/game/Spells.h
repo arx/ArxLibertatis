@@ -85,6 +85,7 @@ public:
 	
 	bool ExistAnyInstanceForThisCaster(SpellType typ, EntityHandle caster);
 	
+	SpellBase * getSpellByCaster(EntityHandle caster, SpellType type);
 	SpellBase * getSpellOnTarget(EntityHandle target, SpellType type);
 	
 	void replaceCaster(EntityHandle oldCaster, EntityHandle newCaster);

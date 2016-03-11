@@ -232,6 +232,26 @@ bool SpellManager::ExistAnyInstanceForThisCaster(SpellType typ, EntityHandle cas
 	return false;
 }
 
+SpellBase *SpellManager::getSpellByCaster(EntityHandle caster, SpellType type) {
+	
+	if(caster == EntityHandle())
+		return NULL;
+	
+	for(size_t i = 0; i < MAX_SPELLS; i++) {
+		SpellBase * spell = m_spells[i];
+		if(!spell)
+			continue;
+		
+		if(spell->m_type != type)
+			continue;
+		
+		if(spell->m_caster == caster)
+			return spell;
+	}
+	
+	return NULL;
+}
+
 SpellBase * SpellManager::getSpellOnTarget(EntityHandle target, SpellType type)
 {
 	if(target == EntityHandle())
