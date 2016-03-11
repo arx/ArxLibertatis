@@ -481,7 +481,7 @@ static ColorBGRA savedColorConversion(u32 bgra) {
 
 static long LastLoadedLightningNb = 0;
 static ColorBGRA * LastLoadedLightning = NULL;
-Vec3f loddpos;
+Vec3f g_loddpos;
 Vec3f MSP;
 
 extern long FASTmse;
@@ -536,10 +536,10 @@ bool DanaeLoadLevel(const res::path & file, bool loadEntities) {
 		}
 	}
 	
-	loddpos = dlh.pos_edit.toVec3();
+	g_loddpos = dlh.pos_edit.toVec3();
 	player.desiredangle = player.angle = dlh.angle_edit;
 	
-	subj.orgTrans.pos = loddpos;
+	subj.orgTrans.pos = g_loddpos;
 	subj.angle = player.angle;
 	
 	if(strcmp(dlh.ident, "DANAE_FILE")) {
@@ -579,7 +579,7 @@ bool DanaeLoadLevel(const res::path & file, bool loadEntities) {
 	Vec3f trans;
 	if(FASTmse) {
 		trans = Mscenepos;
-		player.pos = loddpos + trans;
+		player.pos = g_loddpos + trans;
 	}
 #if BUILD_EDIT_LOADSAVE
 	else if(mse != NULL) {

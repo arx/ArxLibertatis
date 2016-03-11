@@ -484,7 +484,7 @@ void levelInit() {
 		FASTmse = 0;
 		if(LOADEDD) {
 			Vec3f trans = Mscenepos;
-			player.pos = loddpos + trans;
+			player.pos = g_loddpos + trans;
 		} else {
 			player.pos.y += player.baseHeight();
 		}
@@ -529,7 +529,7 @@ void levelInit() {
 
 		if(PLAYER_POSITION_RESET) {
 			if(LOADEDD) {
-				player.pos = loddpos + trans;
+				player.pos = g_loddpos + trans;
 			} else {
 				player.pos.y += player.baseHeight();
 			}

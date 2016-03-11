@@ -56,7 +56,7 @@ class Entity;
 namespace res { class path; }
 struct EERIE_BACKGROUND;
 
-extern Vec3f loddpos;
+extern Vec3f g_loddpos;
 
 #if BUILD_EDIT_LOADSAVE
 namespace fs { class path; }
