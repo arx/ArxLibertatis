@@ -332,7 +332,10 @@ void PrecalcDynamicLighting(long x0, long z0, long x1, long z1) {
 	float fz0 = ACTIVEBKG->Zdiv * (float)z0;
 	float fx1 = ACTIVEBKG->Xdiv * (float)x1;
 	float fz1 = ACTIVEBKG->Zdiv * (float)z1;
-
+	
+	const Vec3f camPos = ACTIVECAM->orgTrans.pos;
+	const float camDepth = ACTIVECAM->cdepth;
+	
 	for(size_t i = 0; i < MAX_DYNLIGHTS; i++) {
 		EERIE_LIGHT * el = &DynLight[i];
 
@@ -341,7 +344,7 @@ void PrecalcDynamicLighting(long x0, long z0, long x1, long z1) {
 			   && el->pos.x <= fx1
 			   && el->pos.z >= fz0
 			   && el->pos.z <= fz1
-			   && closerThan(el->pos, ACTIVECAM->orgTrans.pos, ACTIVECAM->cdepth)
+			   && closerThan(el->pos, camPos, camDepth)
 			) {
 				el->treat = 1;
 				RecalcLight(el);
