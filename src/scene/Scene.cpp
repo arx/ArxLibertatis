@@ -1363,8 +1363,9 @@ static void ARX_PORTALS_Frustrum_RenderRoom_TransparencyTSoftCull(long room_num)
 }
 
 static void ARX_PORTALS_Frustrum_ComputeRoom(size_t roomIndex,
-                                             const EERIE_FRUSTRUM & frustrum) {
-	
+                                             const EERIE_FRUSTRUM & frustrum,
+                                             const Vec3f & camPos, float camDepth
+) {
 	arx_assert(roomIndex < portals->rooms.size());
 	
 	if(RoomDraw[roomIndex].count == 0) {
@@ -1373,8 +1374,8 @@ static void ARX_PORTALS_Frustrum_ComputeRoom(size_t roomIndex,
 	
 	RoomFrustrumAdd(roomIndex, frustrum);
 	RoomDraw[roomIndex].count++;
-
-	float fClippZFar = ACTIVECAM->cdepth * (fZFogEnd*1.1f);
+	
+	float fClippZFar = camDepth * (fZFogEnd*1.1f);
 	
 	EERIE_ROOM_DATA & room = portals->rooms[roomIndex];
 	
@@ -1405,7 +1406,7 @@ static void ARX_PORTALS_Frustrum_ComputeRoom(size_t roomIndex,
 			continue;
 		}
 
-		Vec3f pos = epp.center - ACTIVECAM->orgTrans.pos;
+		Vec3f pos = epp.center - camPos;
 		float fRes = glm::dot(pos, epp.norm);
 
 		EERIERTPPoly2(epp);
@@ -1417,7 +1418,7 @@ static void ARX_PORTALS_Frustrum_ComputeRoom(size_t roomIndex,
 		bool Cull = !(fRes<0.f);
 		
 		EERIE_FRUSTRUM fd;
-		CreateFrustrum(fd, ACTIVECAM->orgTrans.pos, epp, Cull);
+		CreateFrustrum(fd, camPos, epp, Cull);
 
 		size_t roomToCompute = 0;
 		bool computeRoom = false;
@@ -1432,7 +1433,7 @@ static void ARX_PORTALS_Frustrum_ComputeRoom(size_t roomIndex,
 
 		if(computeRoom) {
 			po->useportal=1;
-			ARX_PORTALS_Frustrum_ComputeRoom(roomToCompute, fd);
+			ARX_PORTALS_Frustrum_ComputeRoom(roomToCompute, fd, camPos, camDepth);
 		}
 	}
 }
@@ -1485,7 +1486,7 @@ void ARX_SCENE_Update() {
 		size_t roomIndex = static_cast<size_t>(room_num);
 		EERIE_FRUSTRUM frustrum;
 		CreateScreenFrustrum(frustrum);
-		ARX_PORTALS_Frustrum_ComputeRoom(roomIndex, frustrum);
+		ARX_PORTALS_Frustrum_ComputeRoom(roomIndex, frustrum, camPos, camDepth);
 
 		for(size_t i = 0; i < RoomDrawList.size(); i++) {
 			ARX_PORTALS_Frustrum_RenderRoomTCullSoft(RoomDrawList[i], RoomDraw[RoomDrawList[i]].frustrum, tim);
