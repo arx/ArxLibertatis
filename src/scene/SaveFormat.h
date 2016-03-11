@@ -1060,7 +1060,7 @@ struct SavedCamera {
 	s32 nbdrawn; //TODO Remove
 	f32 cdepth;
 	
-	SavedAnglef size;
+	SavedAnglef size; //TODO Remove
 	
 	operator EERIE_CAMERA() const {
 		
@@ -1084,8 +1084,6 @@ struct SavedCamera {
 		
 		a.bkgcolor = Color::fromBGRA(ColorBGRA(bkgcolor));
 		a.cdepth = cdepth;
-		
-		a.size = size;
 		
 		return a;
 	}
@@ -1134,7 +1132,7 @@ struct SavedCamera {
 		nbdrawn = 0;
 		cdepth = b.cdepth;
 		
-		size = b.size;
+		size = Anglef(0, 0, 0);
 		
 		return *this;
 	}

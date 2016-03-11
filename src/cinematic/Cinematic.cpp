@@ -121,7 +121,6 @@ Cinematic::~Cinematic() {
 /* Reinit */
 void Cinematic::OneTimeSceneReInit() {
 	
-	m_camera.size = Anglef(160.f, 60.f, 60.f);
 	m_camera.orgTrans.pos = Vec3f(900.f, -160.f, 4340.f);
 	m_camera.angle = Anglef(3.f, 268.f, 0.f);
 	m_camera.clip = Rect(cinRenderSize.x, cinRenderSize.y);

@@ -65,8 +65,6 @@ struct EERIE_CAMERA {
 
 	Color bkgcolor; // TODO was BGR!
 	float cdepth;
-
-	Anglef size;
 	
 	glm::mat4x4 ProjectionMatrix;
 

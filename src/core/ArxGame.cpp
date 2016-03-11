@@ -870,9 +870,6 @@ bool ArxGame::initGame()
 	player.size.y = -player.baseHeight();
 	player.size.x = player.baseRadius();
 	player.size.z = player.baseRadius();
-	subj.size.setYaw(player.size.y);
-	subj.size.setPitch(player.size.x);
-	subj.size.setRoll(player.size.z);
 	player.desiredangle = player.angle = subj.angle = Anglef(3.f, 268.f, 0.f);
 
 	subj.orgTrans.pos = Vec3f(900.f, player.baseHeight(), 4340.f);
