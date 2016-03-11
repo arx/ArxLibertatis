@@ -155,7 +155,7 @@ void endLightDelayed(LightHandle & handle, unsigned long delay);
 
 
 void ClearDynLights();
-void PrecalcDynamicLighting(long x0,long x1,long z0,long z1);
+void PrecalcDynamicLighting(long x0, long x1, long z0, long z1, const Vec3f & camPos, float camDepth);
 
 
 struct ShaderLight {

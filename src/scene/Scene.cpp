@@ -1466,7 +1466,7 @@ void ARX_SCENE_Update() {
 
 	ACTIVEBKG->fastdata[tilex][tilez].treat = true;
 	TreatBackgroundDynlights();
-	PrecalcDynamicLighting(minx, minz, maxx, maxz);
+	PrecalcDynamicLighting(minx, minz, maxx, maxz, camPos, camDepth);
 
 	// Go for a growing-square-spirallike-render around the camera position
 	// (To maximize Z-Buffer efficiency)

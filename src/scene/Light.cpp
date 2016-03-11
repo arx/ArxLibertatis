@@ -322,7 +322,7 @@ void TreatBackgroundDynlights() {
 	}
 }
 
-void PrecalcDynamicLighting(long x0, long z0, long x1, long z1) {
+void PrecalcDynamicLighting(long x0, long z0, long x1, long z1, const Vec3f & camPos, float camDepth) {
 	
 	ARX_PROFILE_FUNC();
 	
@@ -332,9 +332,6 @@ void PrecalcDynamicLighting(long x0, long z0, long x1, long z1) {
 	float fz0 = ACTIVEBKG->Zdiv * (float)z0;
 	float fx1 = ACTIVEBKG->Xdiv * (float)x1;
 	float fz1 = ACTIVEBKG->Zdiv * (float)z1;
-	
-	const Vec3f camPos = ACTIVECAM->orgTrans.pos;
-	const float camDepth = ACTIVECAM->cdepth;
 	
 	for(size_t i = 0; i < MAX_DYNLIGHTS; i++) {
 		EERIE_LIGHT * el = &DynLight[i];
