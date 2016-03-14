@@ -95,12 +95,32 @@ void DrawEERIEInter_ModelTransform(EERIE_3DOBJ *eobj, const TransformInfo &t);
 void DrawEERIEInter_ViewProjectTransform(EERIE_3DOBJ *eobj);
 
 void DrawEERIEInter_Render(EERIE_3DOBJ *eobj, const TransformInfo &t, Entity *io, float invisibility = 0.f);
-void DrawEERIEInter(EERIE_3DOBJ *eobj, const TransformInfo & t, Entity *io, bool forceDraw = false, float invisibility = 0.f);
 
-void EERIEDrawAnimQuatUpdate(EERIE_3DOBJ *eobj, AnimLayer * animlayer,const Anglef & angle, const Vec3f & pos, unsigned long time, Entity *io, bool update_movement);
+void DrawEERIEInter(EERIE_3DOBJ * eobj,
+                    const TransformInfo & t,
+                    Entity * io,
+                    bool forceDraw = false,
+                    float invisibility = 0.f);
+
+void EERIEDrawAnimQuatUpdate(EERIE_3DOBJ * eobj,
+                             AnimLayer * animlayer,
+                             const Anglef & angle,
+                             const Vec3f & pos,
+                             unsigned long time,
+                             Entity * io,
+                             bool update_movement);
+
 void EERIEDrawAnimQuatRender(EERIE_3DOBJ *eobj, const Vec3f & pos, Entity *io, float invisibility);
 
-void EERIEDrawAnimQuat(EERIE_3DOBJ *eobj, AnimLayer * animlayer, const Anglef & angle, const Vec3f & pos, unsigned long time, Entity *io, bool update_movement = true, float invisibility = 0.f);
+void EERIEDrawAnimQuat(EERIE_3DOBJ * eobj,
+                       AnimLayer * animlayer,
+                       const Anglef & angle,
+                       const Vec3f & pos,
+                       unsigned long time,
+                       Entity * io,
+                       bool update_movement = true,
+                       float invisibility = 0.f);
+
 void AnimatedEntityUpdate(Entity * entity, float time);
 void AnimatedEntityRender(Entity * entity, float invisibility);
 

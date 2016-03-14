@@ -821,8 +821,12 @@ void DrawEERIEInter_Render(EERIE_3DOBJ *eobj, const TransformInfo &t, Entity *io
 	}
 }
 
-void DrawEERIEInter(EERIE_3DOBJ *eobj, const TransformInfo &t, Entity *io, bool forceDraw, float invisibility) {
-	
+void DrawEERIEInter(EERIE_3DOBJ * eobj,
+                    const TransformInfo & t,
+                    Entity * io,
+                    bool forceDraw,
+                    float invisibility
+) {
 	ARX_PROFILE_FUNC();
 	
 	if(!eobj)
@@ -1529,7 +1533,14 @@ static void Cedric_AnimateDrawEntity(Skeleton & skeleton, AnimLayer * animlayer,
 	}
 }
 
-void EERIEDrawAnimQuatUpdate(EERIE_3DOBJ *eobj, AnimLayer * animlayer,const Anglef & angle, const Vec3f & pos, unsigned long time, Entity *io, bool update_movement) {
+void EERIEDrawAnimQuatUpdate(EERIE_3DOBJ * eobj,
+                             AnimLayer * animlayer,
+                             const Anglef & angle,
+                             const Vec3f & pos,
+                             unsigned long time,
+                             Entity * io,
+                             bool update_movement
+) {
 
 	ARX_PROFILE_FUNC();
 	
@@ -1643,8 +1654,15 @@ void EERIEDrawAnimQuatRender(EERIE_3DOBJ *eobj, const Vec3f & pos, Entity *io, f
 	Cedric_AnimateDrawEntityRender(eobj, pos, io, invisibility);
 }
 
-void EERIEDrawAnimQuat(EERIE_3DOBJ *eobj, AnimLayer * animlayer,const Anglef & angle, const Vec3f & pos, unsigned long time, Entity *io, bool update_movement, float invisibility) {
-
+void EERIEDrawAnimQuat(EERIE_3DOBJ * eobj,
+                       AnimLayer * animlayer,
+                       const Anglef & angle,
+                       const Vec3f & pos,
+                       unsigned long time,
+                       Entity * io,
+                       bool update_movement,
+                       float invisibility
+) {
 	EERIEDrawAnimQuatUpdate(eobj, animlayer,angle, pos, time, io, update_movement);
 	EERIEDrawAnimQuatRender(eobj, pos, io, invisibility);
 }
