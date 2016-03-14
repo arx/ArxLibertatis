@@ -194,7 +194,6 @@ std::vector<long> RoomDrawList;
 //*************************************************************************************
 Vec2f getWaterFxUvOffset(const Vec3f & odtv, float power)
 {
-	power = power * 0.05f;
 	return Vec2f(std::sin(WATEREFFECT + odtv.x) * power,
 				 std::cos(WATEREFFECT + odtv.z) * power);
 }
@@ -222,7 +221,7 @@ static void ManageWater_VertexBuffer(EERIEPOLY * ep, const long to,
 	for(long k = 0; k < to; k++) {
 		ep->tv[k].uv = ep->v[k].uv;
 		
-		ep->tv[k].uv += getWaterFxUvOffset(ep->v[k].p, 0.35f);
+		ep->tv[k].uv += getWaterFxUvOffset(ep->v[k].p, 0.35f * 0.05f);
 			
 		if(ep->type & POLY_FALL) {
 			ep->tv[k].uv.y -= (float)(tim) * (1.f/1000);
@@ -238,7 +237,7 @@ static void ManageLava_VertexBuffer(EERIEPOLY * ep, const long to,
 	for(long k = 0; k < to; k++) {
 		ep->tv[k].uv = ep->v[k].uv;
 		
-		ep->tv[k].uv += getWaterFxUvOffset(ep->v[k].p, 0.35f); //0.25f
+		ep->tv[k].uv += getWaterFxUvOffset(ep->v[k].p, 0.35f * 0.05f); //0.25f
 		ApplyLavaGlowToVertex(ep->v[k].p, &ep->tv[k], 0.6f);
 			
 		if(ep->type & POLY_FALL) {
