@@ -1445,8 +1445,8 @@ void ARX_SCENE_Update() {
 	ARX_PROFILE_FUNC();
 	
 	unsigned long tim = arxtime.now_ul();
-
-	WATEREFFECT+=0.0005f*framedelay;
+	
+	WATEREFFECT = float(tim) * 0.0005f;
 	
 	const Vec3f camPos = ACTIVECAM->orgTrans.pos;
 	const float camDepth = ACTIVECAM->cdepth;
