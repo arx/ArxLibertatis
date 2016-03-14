@@ -153,7 +153,7 @@ void ARX_INTERFACE_ManageOpenedBook_Finish(const Vec2f & mousePos)
 		if(player.hasRune((Rune)i)) {
 			
 			TransformInfo t1(pos, glm::toQuat(toRotationMatrix(angle)));
-			DrawEERIEInter(gui::necklace.lacet, t1, NULL);
+			DrawEERIEInter(gui::necklace.lacet, t1, NULL, false);
 			
 			if(rune->angle.getPitch() != 0.f) {
 				if(rune->angle.getPitch() > 300.f)
@@ -173,7 +173,7 @@ void ARX_INTERFACE_ManageOpenedBook_Finish(const Vec2f & mousePos)
 			
 			// Now draw the rune
 			TransformInfo t2(pos, glm::toQuat(toRotationMatrix(angle)));
-			DrawEERIEInter(rune, t2, NULL);
+			DrawEERIEInter(rune, t2, NULL, false);
 			
 			EERIE_2D_BBOX runeBox;
 			UpdateBbox2d(*rune, runeBox);
@@ -212,7 +212,7 @@ void ARX_INTERFACE_ManageOpenedBook_Finish(const Vec2f & mousePos)
 					GRenderer->SetBlendFunc(BlendOne, BlendOne);
 					
 					TransformInfo t(pos, glm::toQuat(toRotationMatrix(angle)));
-					DrawEERIEInter(rune, t, NULL);
+					DrawEERIEInter(rune, t, NULL, false);
 					
 					rune->angle.setPitch(rune->angle.getPitch() + framedelay*2.f);
 					
