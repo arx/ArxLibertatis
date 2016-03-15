@@ -100,7 +100,7 @@ void DrawEERIEInter(EERIE_3DOBJ * eobj,
                     const TransformInfo & t,
                     Entity * io,
                     bool forceDraw,
-                    float invisibility = 0.f);
+                    float invisibility);
 
 void EERIEDrawAnimQuatUpdate(EERIE_3DOBJ * eobj,
                              AnimLayer * animlayer,
