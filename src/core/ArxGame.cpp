@@ -758,7 +758,10 @@ static bool HandleGameFlowTransitions() {
 
 Vec3f PUSH_PLAYER_FORCE;
 static EERIE_BACKGROUND DefaultBkg;
-EERIE_CAMERA subj,bookcam,conversationcamera;
+
+EERIE_CAMERA subj;
+EERIE_CAMERA bookcam;
+EERIE_CAMERA conversationcamera;
 
 bool ArxGame::initGame()
 {
