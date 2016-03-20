@@ -25,7 +25,7 @@ CPPUNIT_TEST_SUITE_REGISTRATION(StringTest);
 
 struct OverflowTestStruct {
 	char data[4];
-	char canary[4];
+	unsigned char canary[4];
 	
 	OverflowTestStruct() {
 		std::fill_n(data, 4, 0xCC);
@@ -33,7 +33,7 @@ struct OverflowTestStruct {
 	}
 	
 	bool checkCanary() {
-		char expected[] = {0xDD, 0xDD, 0xDD, 0xDD};
+		unsigned char expected[] = {0xDD, 0xDD, 0xDD, 0xDD};
 		
 		return std::equal(expected, expected + 4, canary);
 	}
