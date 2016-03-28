@@ -847,11 +847,11 @@ static void AnchorData_Create_Links_Original_Method(EERIE_BACKGROUND * eb) {
 		}
 		
 		count++;
-		EERIE_BKG_INFO * eg = &eb->fastdata[i][j];
+		const EERIE_BKG_INFO & eg = eb->fastdata[i][j];
 		long precise = 0;
 		
-		for(long kkk = 0; kkk < eg->nbpolyin; kkk++) {
-			EERIEPOLY * ep = eg->polyin[kkk];
+		for(long kkk = 0; kkk < eg.nbpolyin; kkk++) {
+			EERIEPOLY * ep = eg.polyin[kkk];
 			
 			if(ep->type & POLY_PRECISE_PATH) {
 				precise = 1;
@@ -860,7 +860,7 @@ static void AnchorData_Create_Links_Original_Method(EERIE_BACKGROUND * eb) {
 		}
 		
 		
-		for(long k = 0; k < eg->nbianchors; k++) {
+		for(long k = 0; k < eg.nbianchors; k++) {
 			long ii = glm::clamp(i - 2, 0l, eb->Xsize - 1l);
 			long ia = glm::clamp(i + 2, 0l, eb->Xsize - 1l);
 			long ji = glm::clamp(j - 2, 0l, eb->Zsize - 1l);
@@ -882,10 +882,10 @@ static void AnchorData_Create_Links_Original_Method(EERIE_BACKGROUND * eb) {
 				
 				for(long k2 = 0; k2 < eg2.nbianchors; k2++) {
 					// don't treat currently treated anchor
-					if(eg->ianchors[k] == eg2.ianchors[k2])
+					if(eg.ianchors[k] == eg2.ianchors[k2])
 						continue;
 					
-					p1 = eb->anchors[eg->ianchors[k]].pos;
+					p1 = eb->anchors[eg.ianchors[k]].pos;
 					p2 = eb->anchors[eg2.ianchors[k2]].pos;
 					p1.y += 10.f;
 					p2.y += 10.f;
@@ -914,8 +914,8 @@ static void AnchorData_Create_Links_Original_Method(EERIE_BACKGROUND * eb) {
 					ip.startpos = ip.cyl.origin = p1;
 					ip.targetpos = p2;
 					
-					ip.cyl.height = eb->anchors[eg->ianchors[k]].height; 
-					ip.cyl.radius = eb->anchors[eg->ianchors[k]].radius;
+					ip.cyl.height = eb->anchors[eg.ianchors[k]].height;
+					ip.cyl.radius = eb->anchors[eg.ianchors[k]].radius;
 					
 					long t = 2;
 					
@@ -958,8 +958,8 @@ static void AnchorData_Create_Links_Original_Method(EERIE_BACKGROUND * eb) {
 					
 					if(treat) {
 						if(_onetwo) {
-							AddAnchorLink(eb, eg->ianchors[k], eg2.ianchors[k2]);
-							AddAnchorLink(eb, eg2.ianchors[k2], eg->ianchors[k]);
+							AddAnchorLink(eb, eg.ianchors[k], eg2.ianchors[k2]);
+							AddAnchorLink(eb, eg2.ianchors[k2], eg.ianchors[k]);
 						}
 					}
 				}
