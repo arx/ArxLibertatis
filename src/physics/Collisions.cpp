@@ -1688,8 +1688,8 @@ void ANCHOR_BLOCK_Clear() {
 		return;
 
 	for(long k = 0; k < eb->nbanchors; k++) {
-		ANCHOR_DATA * ad = &eb->anchors[k];
-		ad->flags &= ~ANCHOR_FLAG_BLOCKED;
+		ANCHOR_DATA & ad = eb->anchors[k];
+		ad.flags &= ~ANCHOR_FLAG_BLOCKED;
 	}
 }
 
