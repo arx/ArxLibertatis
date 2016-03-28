@@ -864,19 +864,15 @@ void UpdateIORoom(Entity * io)
 ROOM_DIST_DATA * RoomDistance = NULL;
 static long NbRoomDistance = 0;
 
-static void SetRoomDistance(long i, long j, float val, const Vec3f * p1, const Vec3f * p2) {
+static void SetRoomDistance(long i, long j, float val, const Vec3f & p1, const Vec3f & p2) {
 	
 	if(i < 0 || j < 0 || i >= NbRoomDistance || j >= NbRoomDistance || !RoomDistance)
 		return;
 	
 	long offs = i + j * NbRoomDistance;
 	
-	if(p1)
-		RoomDistance[offs].startpos = *p1;
-
-	if(p2)
-		RoomDistance[offs].endpos = *p2;
-
+	RoomDistance[offs].startpos = p1;
+	RoomDistance[offs].endpos = p2;
 	RoomDistance[offs].distance = val;
 }
 
@@ -1620,7 +1616,7 @@ static bool loadFastScene(const res::path & file, const char * data, const char 
 				rdds = fts_read<ROOM_DIST_DATA_SAVE>(data, end);
 				Vec3f start = rdds->startpos.toVec3();
 				Vec3f end = rdds->endpos.toVec3();
-				SetRoomDistance(m, n, rdds->distance, &start, &end);
+				SetRoomDistance(m, n, rdds->distance, start, end);
 			}
 		}
 	}
@@ -1709,7 +1705,7 @@ static void ComputeRoomDistance() {
 
 	for (long n = 0; n < NbRoomDistance; n++)
 		for (long m = 0; m < NbRoomDistance; m++)
-			SetRoomDistance(m, n, -1.f, NULL, NULL);
+			SetRoomDistance(m, n, -1, Vec3f_ZERO, Vec3f_ZERO);
 
 	long nb_anchors = NbRoomDistance + (portals->portals.size() * 9);
 	ANCHOR_DATA * ad = (ANCHOR_DATA *)malloc(sizeof(ANCHOR_DATA) * nb_anchors);
@@ -1795,7 +1791,7 @@ static void ComputeRoomDistance() {
 	for(int i = 0; i < NbRoomDistance; i++) {
 		for(long j = 0; j < NbRoomDistance; j++) {
 			if(i == j) {
-				SetRoomDistance(i, j, -1, NULL, NULL);
+				SetRoomDistance(i, j, -1, Vec3f_ZERO, Vec3f_ZERO);
 				continue;
 			}
 			
@@ -1818,15 +1814,15 @@ static void ComputeRoomDistance() {
 				float old = GetRoomDistance(i, j, startPos, endPos);
 
 				if((d < old || old < 0.f) && rl.size() >= 2)
-					SetRoomDistance(i, j, d, &ad[rl[1]].pos, &ad[rl[rl.size()-2]].pos);
+					SetRoomDistance(i, j, d, ad[rl[1]].pos, ad[rl[rl.size()-2]].pos);
 			}
 		}
 	}
 
 	// Don't use this for contiguous rooms !
 	for(size_t i = 0; i < portals->portals.size(); i++) {
-		SetRoomDistance(portals->portals[i].room_1, portals->portals[i].room_2, -1, NULL, NULL);
-		SetRoomDistance(portals->portals[i].room_2, portals->portals[i].room_1, -1, NULL, NULL);
+		SetRoomDistance(portals->portals[i].room_1, portals->portals[i].room_2, -1, Vec3f_ZERO, Vec3f_ZERO);
+		SetRoomDistance(portals->portals[i].room_2, portals->portals[i].room_1, -1, Vec3f_ZERO, Vec3f_ZERO);
 	}
 
 	// Release our temporary Pathfinder data
