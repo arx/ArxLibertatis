@@ -880,18 +880,15 @@ static void SetRoomDistance(long i, long j, float val, const Vec3f * p1, const V
 	RoomDistance[offs].distance = val;
 }
 
-static float GetRoomDistance(long i, long j, Vec3f * p1, Vec3f * p2)
+static float GetRoomDistance(long i, long j, Vec3f & p1, Vec3f & p2)
 {
 	if(i < 0 || j < 0 || i >= NbRoomDistance || j >= NbRoomDistance)
 		return -1.f;
 
 	long offs = i + j * NbRoomDistance;
 
-	if(p1)
-		*p1 = RoomDistance[offs].startpos;
-
-	if(p2)
-		*p2 = RoomDistance[offs].endpos;
+	p1 = RoomDistance[offs].startpos;
+	p2 = RoomDistance[offs].endpos;
 
 	return RoomDistance[offs].distance;
 }
@@ -910,7 +907,7 @@ float SP_GetRoomDist(const Vec3f & pos, const Vec3f & c_pos, long io_room, long 
 
 	if(Room >= 0) {
 		Vec3f p1, p2;
-		float v = GetRoomDistance(Cam_Room, Room, &p1, &p2);
+		float v = GetRoomDistance(Cam_Room, Room, p1, p2);
 
 		if(v > 0.f) {
 			v += fdist(pos, p2);
@@ -1815,8 +1812,10 @@ static void ComputeRoomDistance() {
 
 				if(d < 0.f)
 					d = 0.f;
-
-				float old = GetRoomDistance(i, j, NULL, NULL);
+				
+				Vec3f startPos;
+				Vec3f endPos;
+				float old = GetRoomDistance(i, j, startPos, endPos);
 
 				if((d < old || old < 0.f) && rl.size() >= 2)
 					SetRoomDistance(i, j, d, &ad[rl[1]].pos, &ad[rl[rl.size()-2]].pos);
@@ -2384,7 +2383,7 @@ static bool FastSceneSave(const fs::path & partial_path) {
 				pos += sizeof(ROOM_DIST_DATA_SAVE);
 				Vec3f start;
 				Vec3f end;
-				rdds->distance = GetRoomDistance(m, n, &start, &end);
+				rdds->distance = GetRoomDistance(m, n, start, end);
 				rdds->startpos = start;
 				rdds->endpos = end;
 			}
