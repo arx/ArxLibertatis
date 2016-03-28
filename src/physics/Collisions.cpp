@@ -1698,12 +1698,12 @@ void ANCHOR_BLOCK_By_IO(Entity * io, long status) {
 	EERIE_BACKGROUND * eb = ACTIVEBKG;
 
 	for(long k = 0; k < eb->nbanchors; k++) {
-		ANCHOR_DATA * ad = &eb->anchors[k];
+		ANCHOR_DATA & ad = eb->anchors[k];
 
-		if(fartherThan(ad->pos, io->pos, 600.f))
+		if(fartherThan(ad.pos, io->pos, 600.f))
 			continue;
 
-		if(closerThan(Vec2f(io->pos.x, io->pos.z), Vec2f(ad->pos.x, ad->pos.z), 440.f)) {
+		if(closerThan(Vec2f(io->pos.x, io->pos.z), Vec2f(ad.pos.x, ad.pos.z), 440.f)) {
 			
 			EERIEPOLY ep;
 			ep.type = 0;
@@ -1727,11 +1727,11 @@ void ANCHOR_BLOCK_By_IO(Entity * io, long status) {
 					ep.v[kk].p.z = (ep.v[kk].p.z - cz) * 3.5f + cz;
 				}
 
-				if(PointIn2DPolyXZ(&ep, ad->pos.x, ad->pos.z)) {
+				if(PointIn2DPolyXZ(&ep, ad.pos.x, ad.pos.z)) {
 					if(status)
-						ad->flags |= ANCHOR_FLAG_BLOCKED;
+						ad.flags |= ANCHOR_FLAG_BLOCKED;
 					else
-						ad->flags &= ~ANCHOR_FLAG_BLOCKED;
+						ad.flags &= ~ANCHOR_FLAG_BLOCKED;
 				}
 			}
 		}
