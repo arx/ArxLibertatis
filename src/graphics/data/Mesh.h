@@ -95,6 +95,18 @@ struct EERIE_BACKGROUND
 	float		Zmul;
 	long		  nbanchors;
 	ANCHOR_DATA * anchors;
+	
+	EERIE_BACKGROUND()
+		: exist(false)
+		, Xsize(0)
+		, Zsize(0)
+		, Xdiv(0)
+		, Zdiv(0)
+		, Xmul(0)
+		, Zmul(0)
+		, nbanchors(0)
+		, anchors(NULL)
+	{ }
 };
 
 extern long EERIEDrawnPolys;

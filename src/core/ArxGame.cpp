@@ -866,7 +866,6 @@ bool ArxGame::initGame()
 	LastLoadedScene.clear();
 	
 	DefaultBkg = EERIE_BACKGROUND();
-	memset(&DefaultBkg, 0, sizeof(DefaultBkg));
 	ACTIVEBKG=&DefaultBkg;
 	InitBkg(ACTIVEBKG,MAX_BKGX,MAX_BKGZ,BKG_SIZX,BKG_SIZZ);
 	
