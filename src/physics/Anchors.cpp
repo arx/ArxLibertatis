@@ -654,18 +654,18 @@ static bool DirectAddAnchor_Original_Method(EERIE_BACKGROUND * eb, EERIE_BKG_INF
 
 	for (long k = 0; k < eb->nbanchors; k++)
 	{
-		ANCHOR_DATA * ad = &eb->anchors[k];
+		const ANCHOR_DATA & ad = eb->anchors[k];
 
-		if(closerThan(ad->pos, bestcyl.origin, 50.f)) {
+		if(closerThan(ad.pos, bestcyl.origin, 50.f)) {
 			return false;
 		}
 
-		if(closerThan(Vec2f(ad->pos.x, ad->pos.z), Vec2f(bestcyl.origin.x, bestcyl.origin.z), 45.f)) {
+		if(closerThan(Vec2f(ad.pos.x, ad.pos.z), Vec2f(bestcyl.origin.x, bestcyl.origin.z), 45.f)) {
 			
-			if (glm::abs(ad->pos.y - bestcyl.origin.y) < 90.f) return false;
+			if (glm::abs(ad.pos.y - bestcyl.origin.y) < 90.f) return false;
 
-			EERIEPOLY * ep = ANCHOR_CheckInPolyPrecis(ad->pos);
-			EERIEPOLY * ep2 = ANCHOR_CheckInPolyPrecis(Vec3f(ad->pos.x, bestcyl.origin.y, ad->pos.z));
+			EERIEPOLY * ep = ANCHOR_CheckInPolyPrecis(ad.pos);
+			EERIEPOLY * ep2 = ANCHOR_CheckInPolyPrecis(Vec3f(ad.pos.x, bestcyl.origin.y, ad.pos.z));
 
 			if (ep2 == ep) return false;
 		}
