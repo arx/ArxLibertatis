@@ -868,11 +868,11 @@ static void AnchorData_Create_Links_Original_Method(EERIE_BACKGROUND * eb) {
 			
 			for(long j2 = ji; j2 <= ja; j2++)
 			for(long i2 = ii; i2 <= ia; i2++) {
-				EERIE_BKG_INFO * eg2 = &eb->fastdata[i2][j2];
+				const EERIE_BKG_INFO & eg2 = eb->fastdata[i2][j2];
 				long precise2 = 0;
 				
-				for(long kkk = 0; kkk < eg2->nbpolyin; kkk++) {
-					EERIEPOLY * ep2 = eg2->polyin[kkk];
+				for(long kkk = 0; kkk < eg2.nbpolyin; kkk++) {
+					EERIEPOLY * ep2 = eg2.polyin[kkk];
 					
 					if(ep2->type & POLY_PRECISE_PATH) {
 						precise2 = 1;
@@ -880,13 +880,13 @@ static void AnchorData_Create_Links_Original_Method(EERIE_BACKGROUND * eb) {
 					}
 				}
 				
-				for(long k2 = 0; k2 < eg2->nbianchors; k2++) {
+				for(long k2 = 0; k2 < eg2.nbianchors; k2++) {
 					// don't treat currently treated anchor
-					if(eg->ianchors[k] == eg2->ianchors[k2])
+					if(eg->ianchors[k] == eg2.ianchors[k2])
 						continue;
 					
 					p1 = eb->anchors[eg->ianchors[k]].pos;
-					p2 = eb->anchors[eg2->ianchors[k2]].pos;
+					p2 = eb->anchors[eg2.ianchors[k2]].pos;
 					p1.y += 10.f;
 					p2.y += 10.f;
 					long _onetwo = 0;
@@ -934,8 +934,8 @@ static void AnchorData_Create_Links_Original_Method(EERIE_BACKGROUND * eb) {
 						ip.startpos = ip.cyl.origin = p2;
 						ip.targetpos = p1;
 						
-						ip.cyl.height = eb->anchors[eg2->ianchors[k2]].height;
-						ip.cyl.radius = eb->anchors[eg2->ianchors[k2]].radius; 
+						ip.cyl.height = eb->anchors[eg2.ianchors[k2]].height;
+						ip.cyl.radius = eb->anchors[eg2.ianchors[k2]].radius;
 						
 						//CFLAG_SPECIAL
 						if(ANCHOR_ARX_COLLISION_Move_Cylinder(&ip, NULL, 20, CFLAG_CHECK_VALID_POS | CFLAG_NO_INTERCOL | CFLAG_EASY_SLIDING | CFLAG_NPC | CFLAG_JUST_TEST | CFLAG_EXTRA_PRECISION | CFLAG_RETURN_HEIGHT)) {
@@ -958,8 +958,8 @@ static void AnchorData_Create_Links_Original_Method(EERIE_BACKGROUND * eb) {
 					
 					if(treat) {
 						if(_onetwo) {
-							AddAnchorLink(eb, eg->ianchors[k], eg2->ianchors[k2]);
-							AddAnchorLink(eb, eg2->ianchors[k2], eg->ianchors[k]);
+							AddAnchorLink(eb, eg->ianchors[k], eg2.ianchors[k2]);
+							AddAnchorLink(eb, eg2.ianchors[k2], eg->ianchors[k]);
 						}
 					}
 				}
