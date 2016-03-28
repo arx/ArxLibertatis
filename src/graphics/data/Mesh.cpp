@@ -1708,9 +1708,9 @@ static void ComputeRoomDistance() {
 			SetRoomDistance(m, n, -1, Vec3f_ZERO, Vec3f_ZERO);
 
 	long nb_anchors = NbRoomDistance + (portals->portals.size() * 9);
-	ANCHOR_DATA * ad = (ANCHOR_DATA *)malloc(sizeof(ANCHOR_DATA) * nb_anchors);
-
-	memset(ad, 0, sizeof(ANCHOR_DATA)*nb_anchors);
+	
+	std::vector<ANCHOR_DATA> ad;
+	ad.resize(nb_anchors);
 
 	std::vector<EERIE_PORTALS *> ptr(nb_anchors, static_cast<EERIE_PORTALS *>(NULL));
 	
@@ -1786,7 +1786,7 @@ static void ComputeRoomDistance() {
 		}
 	}
 
-	PathFinder pathfinder(NbRoomDistance, ad, 0, NULL);
+	PathFinder pathfinder(NbRoomDistance, ad.data(), 0, NULL);
 
 	for(int i = 0; i < NbRoomDistance; i++) {
 		for(long j = 0; j < NbRoomDistance; j++) {
@@ -1831,8 +1831,6 @@ static void ComputeRoomDistance() {
 			free(ad[ii].linked);
 		}
 	}
-
-	free(ad);
 }
 
 static void EERIE_PORTAL_Room_Poly_Add(EERIEPOLY * ep, long nr, long px, long py, long idx) {

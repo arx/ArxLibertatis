@@ -66,6 +66,15 @@ struct ANCHOR_DATA {
 	long * linked;
 	float radius;
 	float height;
+	
+	ANCHOR_DATA()
+		: pos(Vec3f_ZERO)
+		, nblinked(0)
+		, flags(0)
+		, linked(NULL)
+		, radius(0)
+		, height(0)
+	{ }
 };
 
 /*!
