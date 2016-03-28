@@ -814,15 +814,18 @@ static bool AddAnchor_Original_Method(EERIE_BACKGROUND * eb, EERIE_BKG_INFO * eg
 //**********************************************************************************************
 static void AddAnchorLink(EERIE_BACKGROUND * eb, long anchor, long linked) {
 	
+	ANCHOR_DATA & a = eb->anchors[anchor];
+	
 	// Avoid to store Already existing Links
-	for (long i = 0; i < eb->anchors[anchor].nblinked; i++)
-		if (eb->anchors[anchor].linked[i] == linked) return;
+	for(long i = 0; i < a.nblinked; i++)
+		if(a.linked[i] == linked)
+			return;
 
 	// Realloc & fill data
-	eb->anchors[anchor].linked = (long *)realloc(eb->anchors[anchor].linked, sizeof(long) * (eb->anchors[anchor].nblinked + 1));
+	a.linked = (long *)realloc(a.linked, sizeof(long) * (a.nblinked + 1));
 
-	eb->anchors[anchor].linked[eb->anchors[anchor].nblinked] = linked;
-	eb->anchors[anchor].nblinked++;
+	a.linked[a.nblinked] = linked;
+	a.nblinked++;
 }
 
 //**********************************************************************************************
