@@ -187,8 +187,6 @@ void ARX_INTERFACE_BookToggle() {
 		Book_MapPage = glm::clamp(Book_MapPage, 0l, 7l);
 		
 		if(!ARXmenu.mda) {
-//			ARXmenu.mda = (MENU_DYNAMIC_DATA *)malloc(sizeof(MENU_DYNAMIC_DATA));
-//			memset(ARXmenu.mda,0,sizeof(MENU_DYNAMIC_DATA));
 			ARXmenu.mda = new MENU_DYNAMIC_DATA();
 			
 			ARXmenu.mda->flyover[BOOK_STRENGTH] = getLocalised("system_charsheet_strength");
