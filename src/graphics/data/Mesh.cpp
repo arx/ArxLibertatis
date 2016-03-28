@@ -2288,6 +2288,7 @@ static bool FastSceneSave(const fs::path & partial_path) {
 	}
 	
 	for(long i = 0; i < ACTIVEBKG->nbanchors; i++) {
+		const ANCHOR_DATA & anchor = ACTIVEBKG->anchors[i];
 		
 		FAST_ANCHOR_DATA * fad = reinterpret_cast<FAST_ANCHOR_DATA *>(dat + pos);
 		pos += sizeof(FAST_ANCHOR_DATA);
@@ -2297,11 +2298,11 @@ static bool FastSceneSave(const fs::path & partial_path) {
 			return false;
 		}
 		
-		fad->flags = ACTIVEBKG->anchors[i].flags;
-		fad->pos = ACTIVEBKG->anchors[i].pos;
-		fad->nb_linked = ACTIVEBKG->anchors[i].nblinked;
-		fad->radius = ACTIVEBKG->anchors[i].radius;
-		fad->height = ACTIVEBKG->anchors[i].height;
+		fad->flags = anchor.flags;
+		fad->pos = anchor.pos;
+		fad->nb_linked = anchor.nblinked;
+		fad->radius = anchor.radius;
+		fad->height = anchor.height;
 		
 		for(long kk = 0; kk < fad->nb_linked; kk++) {
 			s32 * lng = reinterpret_cast<s32 *>(dat + pos);
@@ -2310,7 +2311,7 @@ static bool FastSceneSave(const fs::path & partial_path) {
 				delete[] dat;
 				return false;
 			}
-			*lng = ACTIVEBKG->anchors[i].linked[kk];
+			*lng = anchor.linked[kk];
 		}
 	}
 	
