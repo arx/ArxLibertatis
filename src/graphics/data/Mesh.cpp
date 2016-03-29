@@ -1665,7 +1665,7 @@ static void AddAData(ANCHOR_DATA * ad, long linked) {
 	ad->nblinked++;
 }
 
-static bool GetRoomCenter(long room_num, Vec3f * center) {
+static Vec3f GetRoomCenter(long room_num) {
 	
 	EERIE_ROOM_DATA & room = portals->rooms[room_num];
 
@@ -1680,9 +1680,7 @@ static bool GetRoomCenter(long room_num, Vec3f * center) {
 		bbox.max = glm::max(bbox.max, ep.center);
 	}
 	
-	*center = (bbox.max + bbox.min) * .5f;
-	
-	return true;
+	return (bbox.max + bbox.min) * .5f;
 }
 
 static void ComputeRoomDistance() {
@@ -1712,7 +1710,7 @@ static void ComputeRoomDistance() {
 	for(long i = 0; i < NbRoomDistance; i++) {
 		
 		if(portals->rooms[i].nb_polys > 0) {
-			GetRoomCenter(i, &ad[i].pos);
+			ad[i].pos = GetRoomCenter(i);
 		}
 		
 		ptr[i] = (EERIE_PORTALS *)&portals->rooms[i]; // FIXME mixing of pointer types
