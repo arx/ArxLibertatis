@@ -1667,9 +1667,6 @@ static void AddAData(ANCHOR_DATA * ad, long linked) {
 
 static bool GetRoomCenter(long room_num, Vec3f * center) {
 	
-	if(!portals || (size_t)room_num >= portals->rooms.size() || portals->rooms[room_num].nb_polys <= 0)
-		return false;
-	
 	EERIE_ROOM_DATA & room = portals->rooms[room_num];
 
 	EERIE_3D_BBOX bbox;
@@ -1713,7 +1710,11 @@ static void ComputeRoomDistance() {
 	std::vector<EERIE_PORTALS *> ptr(nb_anchors, static_cast<EERIE_PORTALS *>(NULL));
 	
 	for(long i = 0; i < NbRoomDistance; i++) {
-		GetRoomCenter(i, &ad[i].pos);
+		
+		if(portals->rooms[i].nb_polys > 0) {
+			GetRoomCenter(i, &ad[i].pos);
+		}
+		
 		ptr[i] = (EERIE_PORTALS *)&portals->rooms[i]; // FIXME mixing of pointer types
 	}
 
