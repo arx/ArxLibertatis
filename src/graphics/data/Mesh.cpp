@@ -1685,8 +1685,6 @@ static bool GetRoomCenter(long room_num, Vec3f * center) {
 	
 	*center = (bbox.max + bbox.min) * .5f;
 	
-	room.center = *center;
-	room.radius = fdist(*center, bbox.max);
 	return true;
 }
 

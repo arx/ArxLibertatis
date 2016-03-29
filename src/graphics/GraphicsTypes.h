@@ -440,8 +440,6 @@ struct EERIE_ROOM_DATA {
 	long * portals;
 	long nb_polys;
 	EP_DATA * epdata;
-	Vec3f center;
-	float radius;
 	unsigned short * indexBuffer;
 	VertexBuffer<SMY_VERTEX> * pVertexBuffer;
 	std::vector<TextureContainer *> ppTextureContainer;
@@ -451,7 +449,6 @@ struct EERIE_ROOM_DATA {
 		, portals()
 		, nb_polys()
 		, epdata()
-		, radius()
 		, indexBuffer()
 		, pVertexBuffer()
 	{}
