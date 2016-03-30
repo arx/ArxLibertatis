@@ -390,7 +390,7 @@ bool GMOD_RESET = true;
 
 Vec3f LastValidPlayerPos;
 Vec3f	WILL_RESTORE_PLAYER_POSITION;
-long WILL_RESTORE_PLAYER_POSITION_FLAG=0;
+bool WILL_RESTORE_PLAYER_POSITION_FLAG = false;
 
 void levelInit() {
 	
@@ -616,7 +616,7 @@ void levelInit() {
 		for(size_t i = 0; i < io->obj->vertexlist.size(); i++) {
 			io->obj->vertexlist3[i].v = io->obj->vertexlist[i].v + io->pos;
 		}
-		WILL_RESTORE_PLAYER_POSITION_FLAG = 0;
+		WILL_RESTORE_PLAYER_POSITION_FLAG = false;
 	}
 	
 	ARX_NPC_RestoreCuts();

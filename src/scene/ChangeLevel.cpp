@@ -101,7 +101,7 @@ ZeniMax Media Inc., Suite 120, Rockville, Maryland 20850 USA.
 extern bool GLOBAL_MAGIC_MODE;
 unsigned long FORCE_TIME_RESTORE = 0;
 extern Vec3f WILL_RESTORE_PLAYER_POSITION;
-extern long WILL_RESTORE_PLAYER_POSITION_FLAG;
+extern bool WILL_RESTORE_PLAYER_POSITION_FLAG;
 extern bool GMOD_RESET;
 
 extern bool PLAYER_POSITION_RESET;
@@ -353,7 +353,7 @@ void ARX_CHANGELEVEL_Change(const std::string & level, const std::string & targe
 		g_moveto = player.pos = pos + player.baseOffset();
 		PLAYER_POSITION_RESET = false;
 		WILL_RESTORE_PLAYER_POSITION = g_moveto;
-		WILL_RESTORE_PLAYER_POSITION_FLAG = 1;
+		WILL_RESTORE_PLAYER_POSITION_FLAG = true;
 	}
 	
 	CURRENTLEVEL = num;
@@ -1735,7 +1735,7 @@ static long ARX_CHANGELEVEL_Pop_Player() {
 	entities.player()->pos = player.basePosition();
 	
 	WILL_RESTORE_PLAYER_POSITION = asp->pos.toVec3();
-	WILL_RESTORE_PLAYER_POSITION_FLAG = 1;
+	WILL_RESTORE_PLAYER_POSITION_FLAG = true;
 	
 	player.m_misc.resistMagic = checked_range_cast<unsigned char>(asp->resist_magic);
 	player.m_misc.resistPoison = checked_range_cast<unsigned char>(asp->resist_poison);
