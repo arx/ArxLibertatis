@@ -494,13 +494,14 @@ void ARX_PLAYER_ComputePlayerFullStats() {
 
 	//CAST
 	player.Full_AimTime = checked_range_cast<long>(fFullAimTime);
-
-	if (player.Full_AimTime <= 0) player.Full_AimTime = player.AimTime;
-
+	
+	if(player.Full_AimTime <= 0)
+		player.Full_AimTime = player.AimTime;
+	
 	player.Full_AimTime -= checked_range_cast<long>(fCalcHandicap);
-
-
-	if (player.Full_AimTime <= 1500) player.Full_AimTime = 1500;
+	
+	if(player.Full_AimTime <= 1500)
+		player.Full_AimTime = 1500;
 	
 	// TODO make these calculations moddable
 	
