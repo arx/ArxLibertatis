@@ -110,9 +110,6 @@ inline Vec2f RATIO_2(const Vec2f & in) {
 	return Vec2f(RATIO_X(in.x), RATIO_Y(in.y));
 }
 
-
-extern unsigned long AimTime;
-
 class Image;
 extern Image savegame_thumbnail;
 

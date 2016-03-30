@@ -140,14 +140,14 @@ void HitStrengthGauge::updateRect(const Rectf & parent) {
 
 void HitStrengthGauge::update() {
 	
-	if(AimTime == 0) {
+	if(player.m_aimTime == 0) {
 		m_intensity = 0.2f;
 	} else {
 		float j;
 		if(BOW_FOCAL > 0) {
 			j = BOW_FOCAL;
 		} else {
-			const unsigned long delta = arxtime.now_ul() - AimTime;
+			const unsigned long delta = arxtime.now_ul() - player.m_aimTime;
 			
 			//TODO global
 			bIsAiming = delta > 0;
