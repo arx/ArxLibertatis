@@ -678,17 +678,17 @@ static bool StrikeAimtime() {
 	ARX_PLAYER_Remove_Invisibility();
 	
 	const unsigned long delta = arxtime.now_ul() - player.m_aimTime;
-	player.m_strikeAimTime = delta * (1.f+(1.f-GLOBAL_SLOWDOWN));
+	player.m_strikeAimRatio = delta * (1.f+(1.f-GLOBAL_SLOWDOWN));
 
-	if(player.m_strikeAimTime > player.Full_AimTime)
-		player.m_strikeAimTime = 1.f;
+	if(player.m_strikeAimRatio > player.Full_AimTime)
+		player.m_strikeAimRatio = 1.f;
 	else
-		player.m_strikeAimTime = (float)player.m_strikeAimTime / (float)player.Full_AimTime;
+		player.m_strikeAimRatio = (float)player.m_strikeAimRatio / (float)player.Full_AimTime;
 
-	if(player.m_strikeAimTime < 0.1f)
-		player.m_strikeAimTime = 0.1f;
+	if(player.m_strikeAimRatio < 0.1f)
+		player.m_strikeAimRatio = 0.1f;
 
-	if(player.m_strikeAimTime > 0.8f)
+	if(player.m_strikeAimRatio > 0.8f)
 		return true;
 
 	return false;
@@ -779,7 +779,7 @@ void ManageCombatModeAnimations() {
 							EntityHandle num;
 							
 							if(CheckAnythingInSphere(sphere, PlayerEntityHandle, 0, &num)) {
-								float dmgs = (player.m_miscFull.damages + 1) * player.m_strikeAimTime;
+								float dmgs = (player.m_miscFull.damages + 1) * player.m_strikeAimRatio;
 								
 								if(ARX_DAMAGES_TryToDoDamage(actionPointPosition(io->obj, id), dmgs, 40, PlayerEntityHandle)) {
 									PlayerWeaponBlocked = layer1.ctime;
@@ -826,7 +826,7 @@ void ManageCombatModeAnimations() {
 						Entity * weapon = entities[player.equiped[EQUIP_SLOT_WEAPON]];
 						
 						if(PlayerWeaponBlocked == -1
-							&& ARX_EQUIPMENT_Strike_Check(io, weapon, player.m_strikeAimTime, 0))
+							&& ARX_EQUIPMENT_Strike_Check(io, weapon, player.m_strikeAimRatio, 0))
 						{
 							PlayerWeaponBlocked = layer1.ctime;
 						}
@@ -842,7 +842,7 @@ void ManageCombatModeAnimations() {
 
 					if(PlayerWeaponBlocked != -1 && layer1.ctime < layer1.cur_anim->anims[layer1.altidx_cur]->anim_time * 0.9f) {
 						Entity * weapon = entities[player.equiped[EQUIP_SLOT_WEAPON]];
-						ARX_EQUIPMENT_Strike_Check(io, weapon, player.m_strikeAimTime, 1);
+						ARX_EQUIPMENT_Strike_Check(io, weapon, player.m_strikeAimRatio, 1);
 					}
 				}
 			}
@@ -877,7 +877,7 @@ void ManageCombatModeAnimations() {
 						Entity * weapon = entities[player.equiped[EQUIP_SLOT_WEAPON]];
 						
 						if(PlayerWeaponBlocked == -1
-							&& ARX_EQUIPMENT_Strike_Check(io, weapon, player.m_strikeAimTime, 0))
+							&& ARX_EQUIPMENT_Strike_Check(io, weapon, player.m_strikeAimRatio, 0))
 						{
 							PlayerWeaponBlocked = layer1.ctime;
 						}
@@ -893,7 +893,7 @@ void ManageCombatModeAnimations() {
 
 					if(PlayerWeaponBlocked != -1 && layer1.ctime < layer1.cur_anim->anims[layer1.altidx_cur]->anim_time * 0.9f) {
 						Entity * weapon = entities[player.equiped[EQUIP_SLOT_WEAPON]];
-						ARX_EQUIPMENT_Strike_Check(io, weapon, player.m_strikeAimTime, 1);
+						ARX_EQUIPMENT_Strike_Check(io, weapon, player.m_strikeAimRatio, 1);
 					}
 				}
 			}
@@ -927,7 +927,7 @@ void ManageCombatModeAnimations() {
 						Entity * weapon = entities[player.equiped[EQUIP_SLOT_WEAPON]];
 						
 						if(PlayerWeaponBlocked == -1
-							&& ARX_EQUIPMENT_Strike_Check(io, weapon, player.m_strikeAimTime, 0))
+							&& ARX_EQUIPMENT_Strike_Check(io, weapon, player.m_strikeAimRatio, 0))
 						{
 							PlayerWeaponBlocked = layer1.ctime;
 						}
@@ -943,7 +943,7 @@ void ManageCombatModeAnimations() {
 
 					if(PlayerWeaponBlocked != -1 && layer1.ctime < layer1.cur_anim->anims[layer1.altidx_cur]->anim_time * 0.9f) {
 						Entity * weapon = entities[player.equiped[EQUIP_SLOT_WEAPON]];
-						ARX_EQUIPMENT_Strike_Check(io, weapon, player.m_strikeAimTime, 1);
+						ARX_EQUIPMENT_Strike_Check(io, weapon, player.m_strikeAimRatio, 1);
 					}
 				}
 			}
@@ -984,7 +984,7 @@ void ManageCombatModeAnimations() {
 				changeAnimation(io, 1, alist[ANIM_MISSILE_STRIKE]);
 				SendIOScriptEvent(io, SM_STRIKE, "bow");
 				StrikeAimtime();
-				player.m_strikeAimTime = player.m_bowAimRatio;
+				player.m_strikeAimRatio = player.m_bowAimRatio;
 				Entity * quiver = Player_Arrow_Count_Decrease();
 				float poisonous = 0.f;
 
@@ -1005,7 +1005,7 @@ void ManageCombatModeAnimations() {
 					}
 				}
 
-				float aimratio = player.m_strikeAimTime;
+				float aimratio = player.m_strikeAimRatio;
 
 				if(sp_max && poisonous < 3.f)
 					poisonous = 3.f;

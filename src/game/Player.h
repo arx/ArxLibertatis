@@ -283,7 +283,7 @@ struct ARXCHARACTER {
 	
 	float m_bowAimRatio;
 	
-	float m_strikeAimTime;
+	float m_strikeAimRatio;
 	long Full_AimTime;
 	
 	float Full_life;
@@ -333,7 +333,7 @@ struct ARXCHARACTER {
 	ARXCHARACTER()
 		: m_strikeDirection(0)
 		, m_bowAimRatio(0.f)
-		, m_strikeAimTime(0.f)
+		, m_strikeAimRatio(0.f)
 	{ }
 	
 	static float baseRadius() { return 52.f; }
