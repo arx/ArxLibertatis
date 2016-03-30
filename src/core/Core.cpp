@@ -210,8 +210,6 @@ Vec2f g_sizeRatio(1.f, 1.f);
 
 bool PLAYER_POSITION_RESET = true;
 
-long PlayerWeaponBlocked=-1;
-
 long REQUEST_SPEECH_SKIP= 0;
 long CURRENTLEVEL		= -1;
 long DONT_ERASE_PLAYER	= 0;
@@ -750,7 +748,7 @@ void ManageCombatModeAnimations() {
 					changeAnimation(io, 1, alist[ANIM_BARE_STRIKE_LEFT + j * 3]);
 					strikeSpeak(io);
 					SendIOScriptEvent(io, SM_STRIKE, "bare");
-					PlayerWeaponBlocked = -1;
+					player.m_weaponBlocked = -1;
 					player.m_strikeDirection = 0;
 					player.m_aimTime = 0;
 				} else if(layer1.cur_anim == alist[ANIM_BARE_STRIKE_LEFT+j*3]) {
@@ -758,10 +756,10 @@ void ManageCombatModeAnimations() {
 						changeAnimation(io, 1, alist[ANIM_BARE_WAIT], EA_LOOP);
 						player.m_strikeDirection = 0;
 						player.m_aimTime = arxtime.now_ul();
-						PlayerWeaponBlocked = -1;
+						player.m_weaponBlocked = -1;
 					} else if(layer1.ctime > layer1.cur_anim->anims[layer1.altidx_cur]->anim_time * 0.2f
 							&& layer1.ctime < layer1.cur_anim->anims[layer1.altidx_cur]->anim_time * 0.8f
-							&& PlayerWeaponBlocked == -1
+							&& player.m_weaponBlocked == -1
 					) {
 						ActionPoint id = ActionPoint();
 						
@@ -782,7 +780,7 @@ void ManageCombatModeAnimations() {
 								float dmgs = (player.m_miscFull.damages + 1) * player.m_strikeAimRatio;
 								
 								if(ARX_DAMAGES_TryToDoDamage(actionPointPosition(io->obj, id), dmgs, 40, PlayerEntityHandle)) {
-									PlayerWeaponBlocked = layer1.ctime;
+									player.m_weaponBlocked = layer1.ctime;
 								}
 								
 								ARX_PARTICLES_Spawn_Spark(sphere.origin, static_cast<unsigned int>(dmgs), SpawnSparkType_Success);
@@ -825,10 +823,10 @@ void ManageCombatModeAnimations() {
 					{
 						Entity * weapon = entities[player.equiped[EQUIP_SLOT_WEAPON]];
 						
-						if(PlayerWeaponBlocked == -1
+						if(player.m_weaponBlocked == -1
 							&& ARX_EQUIPMENT_Strike_Check(io, weapon, player.m_strikeAimRatio, 0))
 						{
-							PlayerWeaponBlocked = layer1.ctime;
+							player.m_weaponBlocked = layer1.ctime;
 						}
 					}
 
@@ -837,10 +835,10 @@ void ManageCombatModeAnimations() {
 						layer1.flags &= ~(EA_PAUSED | EA_REVERSE);
 						player.m_strikeDirection = 0;
 						player.m_aimTime = arxtime.now_ul();
-						PlayerWeaponBlocked = -1;
+						player.m_weaponBlocked = -1;
 					}
 
-					if(PlayerWeaponBlocked != -1 && layer1.ctime < layer1.cur_anim->anims[layer1.altidx_cur]->anim_time * 0.9f) {
+					if(player.m_weaponBlocked != -1 && layer1.ctime < layer1.cur_anim->anims[layer1.altidx_cur]->anim_time * 0.9f) {
 						Entity * weapon = entities[player.equiped[EQUIP_SLOT_WEAPON]];
 						ARX_EQUIPMENT_Strike_Check(io, weapon, player.m_strikeAimRatio, 1);
 					}
@@ -876,10 +874,10 @@ void ManageCombatModeAnimations() {
 					{
 						Entity * weapon = entities[player.equiped[EQUIP_SLOT_WEAPON]];
 						
-						if(PlayerWeaponBlocked == -1
+						if(player.m_weaponBlocked == -1
 							&& ARX_EQUIPMENT_Strike_Check(io, weapon, player.m_strikeAimRatio, 0))
 						{
-							PlayerWeaponBlocked = layer1.ctime;
+							player.m_weaponBlocked = layer1.ctime;
 						}
 					}
 
@@ -888,10 +886,10 @@ void ManageCombatModeAnimations() {
 						layer1.flags &= ~(EA_PAUSED | EA_REVERSE);
 						player.m_strikeDirection = 0;
 						player.m_aimTime = 0;
-						PlayerWeaponBlocked = -1;
+						player.m_weaponBlocked = -1;
 					}
 
-					if(PlayerWeaponBlocked != -1 && layer1.ctime < layer1.cur_anim->anims[layer1.altidx_cur]->anim_time * 0.9f) {
+					if(player.m_weaponBlocked != -1 && layer1.ctime < layer1.cur_anim->anims[layer1.altidx_cur]->anim_time * 0.9f) {
 						Entity * weapon = entities[player.equiped[EQUIP_SLOT_WEAPON]];
 						ARX_EQUIPMENT_Strike_Check(io, weapon, player.m_strikeAimRatio, 1);
 					}
@@ -926,10 +924,10 @@ void ManageCombatModeAnimations() {
 					{
 						Entity * weapon = entities[player.equiped[EQUIP_SLOT_WEAPON]];
 						
-						if(PlayerWeaponBlocked == -1
+						if(player.m_weaponBlocked == -1
 							&& ARX_EQUIPMENT_Strike_Check(io, weapon, player.m_strikeAimRatio, 0))
 						{
-							PlayerWeaponBlocked = layer1.ctime;
+							player.m_weaponBlocked = layer1.ctime;
 						}
 					}
 
@@ -938,10 +936,10 @@ void ManageCombatModeAnimations() {
 						layer1.flags &= ~(EA_PAUSED | EA_REVERSE);
 						player.m_strikeDirection = 0;
 						player.m_aimTime = 0;
-						PlayerWeaponBlocked = -1;
+						player.m_weaponBlocked = -1;
 					}
 
-					if(PlayerWeaponBlocked != -1 && layer1.ctime < layer1.cur_anim->anims[layer1.altidx_cur]->anim_time * 0.9f) {
+					if(player.m_weaponBlocked != -1 && layer1.ctime < layer1.cur_anim->anims[layer1.altidx_cur]->anim_time * 0.9f) {
 						Entity * weapon = entities[player.equiped[EQUIP_SLOT_WEAPON]];
 						ARX_EQUIPMENT_Strike_Check(io, weapon, player.m_strikeAimRatio, 1);
 					}
@@ -1050,7 +1048,7 @@ void ManageCombatModeAnimations() {
 					player.m_bowAimRatio = 0;
 					changeAnimation(io, 1, alist[ANIM_MISSILE_WAIT], EA_LOOP);
 					player.m_aimTime = 0;
-					PlayerWeaponBlocked = -1;
+					player.m_weaponBlocked = -1;
 					EERIE_LINKEDOBJ_UnLinkObjectFromObject(io->obj, arrowobj);
 				}
 			}

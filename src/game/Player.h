@@ -149,6 +149,7 @@ struct ARXCHARACTER {
 	AnimLayer bookAnimation[MAX_ANIM_LAYERS];
 	
 	long m_strikeDirection;
+	long m_weaponBlocked;
 	
 	// Jump Sub-data
 	unsigned long jumpstarttime;
@@ -332,6 +333,7 @@ struct ARXCHARACTER {
 	
 	ARXCHARACTER()
 		: m_strikeDirection(0)
+		, m_weaponBlocked(0)
 		, m_bowAimRatio(0.f)
 		, m_strikeAimRatio(0.f)
 	{ }
