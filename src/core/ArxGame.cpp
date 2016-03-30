@@ -1343,15 +1343,15 @@ void ArxGame::updateFirstPersonCamera() {
 	AnimLayer & layer1 = io->animlayer[1];
 	ANIM_HANDLE ** alist = io->anims;
 
-	if ( BOW_FOCAL
+	if ( player.m_bowAimRatio
 		&& (layer1.cur_anim!=alist[ANIM_MISSILE_STRIKE_PART_1])
 		&& (layer1.cur_anim!=alist[ANIM_MISSILE_STRIKE_PART_2])
 		&& (layer1.cur_anim!=alist[ANIM_MISSILE_STRIKE_CYCLE]))
 	{
-		BOW_FOCAL -= bowZoomFromDuration(Original_framedelay);
+		player.m_bowAimRatio -= bowZoomFromDuration(Original_framedelay);
 
-		if(BOW_FOCAL < 0)
-			BOW_FOCAL = 0;
+		if(player.m_bowAimRatio < 0)
+			player.m_bowAimRatio = 0;
 	}
 
 	if(eyeball.exist == 2) {
@@ -1932,7 +1932,7 @@ void ArxGame::updateLevel() {
 		
 		float BASE_FOCAL = CURRENT_BASE_FOCAL
 		                 + (magicSightZoom * -30.f)
-		                 + (BOW_FOCAL * 177.5f);
+		                 + (player.m_bowAimRatio * 177.5f);
 		
 		if(subj.focal < BASE_FOCAL) {
 			static const float INC_FOCAL = 75.0f;

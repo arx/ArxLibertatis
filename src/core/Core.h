@@ -94,7 +94,6 @@ extern bool g_requestLevelInit;
 extern long CURRENTLEVEL;
 extern long TELEPORT_TO_ANGLE;
 
-extern float BOW_FOCAL;
 inline float bowZoomFromDuration(float duration) {
 	return duration / 710.f;
 }

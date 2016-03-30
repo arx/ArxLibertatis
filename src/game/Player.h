@@ -281,6 +281,8 @@ struct ARXCHARACTER {
 	PlayerSkill m_skillFull;
 	PlayerMisc m_miscFull;
 	
+	float m_bowAimRatio;
+	
 	float m_strikeAimTime;
 	long Full_AimTime;
 	
@@ -330,6 +332,7 @@ struct ARXCHARACTER {
 	
 	ARXCHARACTER()
 		: m_strikeDirection(0)
+		, m_bowAimRatio(0.f)
 		, m_strikeAimTime(0.f)
 	{ }
 	

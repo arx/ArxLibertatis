@@ -210,7 +210,6 @@ Vec2f g_sizeRatio(1.f, 1.f);
 
 bool PLAYER_POSITION_RESET = true;
 
-float BOW_FOCAL = 0;
 long PlayerWeaponBlocked=-1;
 
 long REQUEST_SPEECH_SKIP= 0;
@@ -952,12 +951,12 @@ void ManageCombatModeAnimations() {
 		case WEAPON_BOW: // MISSILE PLAYER MANAGEMENT
 			if(layer1.cur_anim == alist[ANIM_MISSILE_STRIKE_CYCLE]) {
 				if(GLOBAL_SLOWDOWN != 1.f)
-					BOW_FOCAL += bowZoomFromDuration(Original_framedelay);
+					player.m_bowAimRatio += bowZoomFromDuration(Original_framedelay);
 				else
-					BOW_FOCAL += bowZoomFromDuration(framedelay);
+					player.m_bowAimRatio += bowZoomFromDuration(framedelay);
 
-				if(BOW_FOCAL > 1.f)
-					BOW_FOCAL = 1.f;
+				if(player.m_bowAimRatio > 1.f)
+					player.m_bowAimRatio = 1.f;
 			}
 
 			// Waiting and Receiving Strike Impulse
@@ -985,7 +984,7 @@ void ManageCombatModeAnimations() {
 				changeAnimation(io, 1, alist[ANIM_MISSILE_STRIKE]);
 				SendIOScriptEvent(io, SM_STRIKE, "bow");
 				StrikeAimtime();
-				player.m_strikeAimTime = BOW_FOCAL;
+				player.m_strikeAimTime = player.m_bowAimRatio;
 				Entity * quiver = Player_Arrow_Count_Decrease();
 				float poisonous = 0.f;
 
@@ -1042,13 +1041,13 @@ void ManageCombatModeAnimations() {
 
 				player.m_aimTime = 0;
 			} else if(layer1.cur_anim == alist[ANIM_MISSILE_STRIKE]) {
-				BOW_FOCAL -= bowZoomFromDuration(Original_framedelay);
+				player.m_bowAimRatio -= bowZoomFromDuration(Original_framedelay);
 
-				if(BOW_FOCAL < 0)
-					BOW_FOCAL = 0;
+				if(player.m_bowAimRatio < 0)
+					player.m_bowAimRatio = 0;
 
 				if(layer1.flags & EA_ANIMEND) {
-					BOW_FOCAL = 0;
+					player.m_bowAimRatio = 0;
 					changeAnimation(io, 1, alist[ANIM_MISSILE_WAIT], EA_LOOP);
 					player.m_aimTime = 0;
 					PlayerWeaponBlocked = -1;
