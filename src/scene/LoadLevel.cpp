@@ -484,7 +484,7 @@ static ColorBGRA * LastLoadedLightning = NULL;
 Vec3f g_loddpos;
 Vec3f MSP;
 
-extern long FASTmse;
+extern bool FASTmse;
 
 bool DanaeLoadLevel(const res::path & file, bool loadEntities) {
 	
@@ -559,7 +559,7 @@ bool DanaeLoadLevel(const res::path & file, bool loadEntities) {
 		
 		if(FastSceneLoad(scene)) {
 			LogDebug("done loading scene");
-			FASTmse = 1;
+			FASTmse = true;
 		} else {
 #if BUILD_EDIT_LOADSAVE
 			LogDebug("fast loading scene failed");
@@ -838,7 +838,7 @@ bool DanaeLoadLevel(const res::path & file, bool loadEntities) {
 	
 	if(!dat) {
 		LOADEDD = 1;
-		FASTmse = 0;
+		FASTmse = false;
 		USE_PLAYERCOLLISIONS = true;
 		LogInfo << "Done loading level";
 		return true;
@@ -936,7 +936,7 @@ bool DanaeLoadLevel(const res::path & file, bool loadEntities) {
 	LoadLevelScreen();
 	
 	LOADEDD = 1;
-	FASTmse = 0;
+	FASTmse = false;
 	USE_PLAYERCOLLISIONS = true;
 	
 	LogInfo << "Done loading level";

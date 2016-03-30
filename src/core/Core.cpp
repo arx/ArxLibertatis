@@ -213,7 +213,7 @@ bool PLAYER_POSITION_RESET = true;
 bool REQUEST_SPEECH_SKIP = false;
 long CURRENTLEVEL		= -1;
 bool DONT_ERASE_PLAYER = false;
-long FASTmse			= 0;
+bool FASTmse = false;
 
 //-----------------------------------------------------------------------------
 // EDITOR FLAGS/Vars
@@ -470,7 +470,7 @@ void levelInit() {
 	
 	
 	if(FASTmse) {
-		FASTmse = 0;
+		FASTmse = false;
 		if(LOADEDD) {
 			Vec3f trans = Mscenepos;
 			player.pos = g_loddpos + trans;
