@@ -363,18 +363,15 @@ void SetEditMode(long ed, const bool stop_sound) {
 	
 	RestoreAllLightsInitialStatus();
 
-	if (stop_sound) ARX_SOUND_MixerStop(ARX_SOUND_MixerGame);
+	if(stop_sound)
+		ARX_SOUND_MixerStop(ARX_SOUND_MixerGame);
 
 	RestoreInitialIOStatus();
 
-	if (ed)
-	{
+	if(ed) {
 		ARX_PATH_ComputeAllBoundingBoxes();
-
 		arxtime.pause();
-	}
-	else
-	{
+	} else {
 		ARX_SCRIPT_ResetAll(true);
 		EERIE_ANIMMANAGER_PurgeUnused();
 	}
