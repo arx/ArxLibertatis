@@ -83,7 +83,7 @@ ZeniMax Media Inc., Suite 120, Rockville, Maryland 20850 USA.
 extern TextureContainer *	arx_logo_tc;
 
 extern bool EXTERNALVIEW;
-extern long REQUEST_SPEECH_SKIP;
+extern bool REQUEST_SPEECH_SKIP;
 
 ARX_SPEECH aspeech[MAX_ASPEECH];
 Notification speech[MAX_SPEECH];
@@ -260,7 +260,7 @@ static void ARX_CONVERSATION_CheckAcceleratedSpeech() {
 				aspeech[i].duration = 0;
 			}
 		}
-		REQUEST_SPEECH_SKIP = 0;
+		REQUEST_SPEECH_SKIP = false;
 	}
 }
 

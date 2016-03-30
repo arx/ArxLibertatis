@@ -103,7 +103,7 @@ extern char QUICK_MOD;
 
 extern float ARXTimeMenu;
 
-extern long	REQUEST_SPEECH_SKIP;
+extern bool REQUEST_SPEECH_SKIP;
 
 extern TextureContainer * pTextureLoad;
 
@@ -258,7 +258,7 @@ void ARX_Menu_Manage() {
 					// Disabling ESC capture while fading in or out.
 					if(!FADEDIR) {
 						if(SendMsgToAllIO(SM_KEY_PRESSED, "") != REFUSE) {
-							REQUEST_SPEECH_SKIP=1;				
+							REQUEST_SPEECH_SKIP = true;
 						}
 					}
 				} else {

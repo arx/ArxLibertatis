@@ -210,7 +210,7 @@ Vec2f g_sizeRatio(1.f, 1.f);
 
 bool PLAYER_POSITION_RESET = true;
 
-long REQUEST_SPEECH_SKIP= 0;
+bool REQUEST_SPEECH_SKIP = false;
 long CURRENTLEVEL		= -1;
 bool DONT_ERASE_PLAYER = false;
 long FASTmse			= 0;
