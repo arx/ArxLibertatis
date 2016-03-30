@@ -1160,10 +1160,7 @@ void EERIE_CreateCedricData(EERIE_3DOBJ * eobj) {
 				Vec3f & outVert = eobj->vertexlocal[idx];
 				
 				Vec3f temp = inVert.v - vector;
-				temp = glm::inverse(obj->bones[i].anim.quat) * temp;
-				outVert.x = temp.x;
-				outVert.y = temp.y;
-				outVert.z = temp.z;
+				outVert = glm::inverse(obj->bones[i].anim.quat) * temp;
 			}
 		}
 	}
