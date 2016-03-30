@@ -729,7 +729,7 @@ void ManageCombatModeAnimations() {
 	}
 	
 	switch(weapontype) {
-		case WEAPON_BARE:	// BARE HANDS PLAYER MANAGEMENT
+		case WEAPON_BARE: { // BARE HANDS PLAYER MANAGEMENT
 
 			if(layer1.cur_anim == alist[ANIM_BARE_WAIT]) {
 				player.m_aimTime = 0;
@@ -793,9 +793,9 @@ void ManageCombatModeAnimations() {
 					}
 				}
 			}
-
 		break;
-		case WEAPON_DAGGER: // DAGGER PLAYER MANAGEMENT
+		}
+		case WEAPON_DAGGER: { // DAGGER PLAYER MANAGEMENT
 			
 			// Waiting and receiving Strike Impulse
 			if(layer1.cur_anim == alist[ANIM_DAGGER_WAIT]) {
@@ -844,9 +844,9 @@ void ManageCombatModeAnimations() {
 					}
 				}
 			}
-
 		break;
-		case WEAPON_1H: // 1HANDED PLAYER MANAGEMENT
+		}
+		case WEAPON_1H: { // 1HANDED PLAYER MANAGEMENT
 			
 			// Waiting and Received Strike Impulse
 			if(layer1.cur_anim == alist[ANIM_1H_WAIT]) {
@@ -896,7 +896,8 @@ void ManageCombatModeAnimations() {
 				}
 			}
 		break;
-		case WEAPON_2H: // 2HANDED PLAYER MANAGEMENT
+		}
+		case WEAPON_2H: { // 2HANDED PLAYER MANAGEMENT
 			
 			// Waiting and Receiving Strike Impulse
 			if(layer1.cur_anim == alist[ANIM_2H_WAIT]) {
@@ -946,7 +947,8 @@ void ManageCombatModeAnimations() {
 				}
 			}
 		break;
-		case WEAPON_BOW: // MISSILE PLAYER MANAGEMENT
+		}
+		case WEAPON_BOW: { // MISSILE PLAYER MANAGEMENT
 			if(layer1.cur_anim == alist[ANIM_MISSILE_STRIKE_CYCLE]) {
 				if(GLOBAL_SLOWDOWN != 1.f)
 					player.m_bowAimRatio += bowZoomFromDuration(Original_framedelay);
@@ -1053,6 +1055,7 @@ void ManageCombatModeAnimations() {
 				}
 			}
 		break;
+		}
 	}
 
 	LAST_WEAPON_TYPE = weapontype;
