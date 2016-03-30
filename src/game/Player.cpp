@@ -128,7 +128,7 @@ ZeniMax Media Inc., Suite 120, Rockville, Maryland 20850 USA.
 
 extern long		HERO_SHOW_1ST;
 extern long		REQUEST_SPEECH_SKIP;
-extern long		DONT_ERASE_PLAYER;
+extern bool		DONT_ERASE_PLAYER;
 extern bool		GLOBAL_MAGIC_MODE;
 
 extern ParticleManager * pParticleManager;

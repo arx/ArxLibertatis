@@ -212,7 +212,7 @@ bool PLAYER_POSITION_RESET = true;
 
 long REQUEST_SPEECH_SKIP= 0;
 long CURRENTLEVEL		= -1;
-long DONT_ERASE_PLAYER	= 0;
+bool DONT_ERASE_PLAYER = false;
 long FASTmse			= 0;
 
 //-----------------------------------------------------------------------------
@@ -559,7 +559,7 @@ void levelInit() {
 	LoadLevelScreen();
 
 	LOAD_N_ERASE = true;
-	DONT_ERASE_PLAYER=0;
+	DONT_ERASE_PLAYER = false;
 
 	progressBarAdvance();
 	LoadLevelScreen();
@@ -1257,7 +1257,7 @@ void DANAE_StartNewQuest()
 	progressBarSetTotal(108);
 	progressBarReset();
 	LoadLevelScreen(1);
-	DONT_ERASE_PLAYER=1;
+	DONT_ERASE_PLAYER = true;
 	DanaeClearLevel();
 	progressBarAdvance(2.f);
 	LoadLevelScreen();
