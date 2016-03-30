@@ -337,11 +337,12 @@ void ARX_INTERACTIVE_HideGore(Entity * io, long flag)
 
 	if(gorenum > -1) {
 		for(size_t nn = 0; nn < io->obj->facelist.size(); nn++) {
+			EERIE_FACE & face = io->obj->facelist[nn];
 			//Hide Gore Polys...
-			if(io->obj->facelist[nn].texid == gorenum)
-				io->obj->facelist[nn].facetype |= POLY_HIDE;
+			if(face.texid == gorenum)
+				face.facetype |= POLY_HIDE;
 			else if(!flag)
-				io->obj->facelist[nn].facetype &= ~POLY_HIDE;
+				face.facetype &= ~POLY_HIDE;
 		}
 	}
 }
