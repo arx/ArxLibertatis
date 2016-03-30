@@ -1073,7 +1073,7 @@ void ArxGame::managePlayerControls() {
 
 		// Checks WALK_BACKWARD Key Status.
 		if(GInput->actionPressed(CONTROLS_CUST_WALKBACKWARD) && !NOMOREMOVES) {
-			CurrFightPos=3;
+			player.m_strikeDirection=3;
 			float multi = 1;
 
 			if(left || right) {
@@ -1098,7 +1098,7 @@ void ArxGame::managePlayerControls() {
 
 		// Checks WALK_FORWARD Key Status.
 		if(GInput->actionPressed(CONTROLS_CUST_WALKFORWARD) && !NOMOREMOVES) {
-			CurrFightPos=2;
+			player.m_strikeDirection=2;
 			float multi = 1;
 
 			if(left || right) {
@@ -1123,7 +1123,7 @@ void ArxGame::managePlayerControls() {
 
 		// Checks STRAFE_LEFT Key Status.
 		if(left && !NOMOREMOVES) {
-			CurrFightPos=0;
+			player.m_strikeDirection=0;
 			float multi = 6.f * FD * MoveDiv;
 			tm += angleToVectorXZ(player.angle.getPitch() + 90.f) * multi;
 			
@@ -1137,7 +1137,7 @@ void ArxGame::managePlayerControls() {
 
 		// Checks STRAFE_RIGHT Key Status.
 		if(right && !NOMOREMOVES) {
-			CurrFightPos=1;
+			player.m_strikeDirection=1;
 			float multi = 6.f * FD * MoveDiv;
 			tm += angleToVectorXZ(player.angle.getPitch() - 90.f) * multi;
 			

@@ -147,7 +147,9 @@ struct ARXCHARACTER {
 	IO_PHYSICS physics;
 	
 	AnimLayer bookAnimation[MAX_ANIM_LAYERS];
-
+	
+	long m_strikeDirection;
+	
 	// Jump Sub-data
 	unsigned long jumpstarttime;
 	float jumplastposition;
@@ -327,7 +329,8 @@ struct ARXCHARACTER {
 	float TRAP_SECRET;
 	
 	ARXCHARACTER()
-		: m_strikeAimTime(0.f)
+		: m_strikeDirection(0)
+		, m_strikeAimTime(0.f)
 	{ }
 	
 	static float baseRadius() { return 52.f; }

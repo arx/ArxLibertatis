@@ -208,7 +208,6 @@ bool TIME_INIT = true;
 Rect g_size(640, 480);
 Vec2f g_sizeRatio(1.f, 1.f);
 
-long CurrFightPos=0;
 bool PLAYER_POSITION_RESET = true;
 
 float BOW_FOCAL = 0;
@@ -738,7 +737,7 @@ void ManageCombatModeAnimations() {
 			if(layer1.cur_anim == alist[ANIM_BARE_WAIT]) {
 				player.m_aimTime = 0;
 				if(eeMousePressed1()) {
-					changeAnimation(io, 1, alist[ANIM_BARE_STRIKE_LEFT_START + CurrFightPos * 3]);
+					changeAnimation(io, 1, alist[ANIM_BARE_STRIKE_LEFT_START + player.m_strikeDirection * 3]);
 					io->isHit = false;
 				}
 			}
@@ -753,12 +752,12 @@ void ManageCombatModeAnimations() {
 					strikeSpeak(io);
 					SendIOScriptEvent(io, SM_STRIKE, "bare");
 					PlayerWeaponBlocked = -1;
-					CurrFightPos = 0;
+					player.m_strikeDirection = 0;
 					player.m_aimTime = 0;
 				} else if(layer1.cur_anim == alist[ANIM_BARE_STRIKE_LEFT+j*3]) {
 					if(layer1.flags & EA_ANIMEND) {
 						changeAnimation(io, 1, alist[ANIM_BARE_WAIT], EA_LOOP);
-						CurrFightPos = 0;
+						player.m_strikeDirection = 0;
 						player.m_aimTime = arxtime.now_ul();
 						PlayerWeaponBlocked = -1;
 					} else if(layer1.ctime > layer1.cur_anim->anims[layer1.altidx_cur]->anim_time * 0.2f
@@ -805,7 +804,7 @@ void ManageCombatModeAnimations() {
 			if(layer1.cur_anim == alist[ANIM_DAGGER_WAIT]) {
 				player.m_aimTime = 0;
 				if(eeMousePressed1()) {
-					changeAnimation(io, 1, alist[ANIM_DAGGER_STRIKE_LEFT_START + CurrFightPos * 3]);
+					changeAnimation(io, 1, alist[ANIM_DAGGER_STRIKE_LEFT_START + player.m_strikeDirection * 3]);
 					io->isHit = false;
 				}
 			}
@@ -819,7 +818,7 @@ void ManageCombatModeAnimations() {
 					changeAnimation(io, 1, alist[ANIM_DAGGER_STRIKE_LEFT + j * 3]);
 					strikeSpeak(io);
 					SendIOScriptEvent(io, SM_STRIKE, "dagger");
-					CurrFightPos = 0;
+					player.m_strikeDirection = 0;
 					player.m_aimTime = 0;
 				} else if(layer1.cur_anim == alist[ANIM_DAGGER_STRIKE_LEFT+j*3]) {
 					if(layer1.ctime > layer1.cur_anim->anims[layer1.altidx_cur]->anim_time * 0.3f
@@ -837,7 +836,7 @@ void ManageCombatModeAnimations() {
 					if(layer1.flags & EA_ANIMEND) {
 						changeAnimation(io, 1, alist[ANIM_DAGGER_WAIT], EA_LOOP);
 						layer1.flags &= ~(EA_PAUSED | EA_REVERSE);
-						CurrFightPos = 0;
+						player.m_strikeDirection = 0;
 						player.m_aimTime = arxtime.now_ul();
 						PlayerWeaponBlocked = -1;
 					}
@@ -856,7 +855,7 @@ void ManageCombatModeAnimations() {
 			if(layer1.cur_anim == alist[ANIM_1H_WAIT]) {
 				player.m_aimTime = 0;
 				if(eeMousePressed1()) {
-					changeAnimation(io, 1, alist[ANIM_1H_STRIKE_LEFT_START + CurrFightPos * 3]);
+					changeAnimation(io, 1, alist[ANIM_1H_STRIKE_LEFT_START + player.m_strikeDirection * 3]);
 					io->isHit = false;
 				}
 			}
@@ -870,7 +869,7 @@ void ManageCombatModeAnimations() {
 					changeAnimation(io, 1, alist[ANIM_1H_STRIKE_LEFT + j * 3]);
 					strikeSpeak(io);
 					SendIOScriptEvent(io, SM_STRIKE, "1h");
-					CurrFightPos = 0;
+					player.m_strikeDirection = 0;
 					player.m_aimTime = 0;
 				} else if(layer1.cur_anim == alist[ANIM_1H_STRIKE_LEFT+j*3]) {
 					if(layer1.ctime > layer1.cur_anim->anims[layer1.altidx_cur]->anim_time * 0.3f
@@ -888,7 +887,7 @@ void ManageCombatModeAnimations() {
 					if(layer1.flags & EA_ANIMEND) {
 						changeAnimation(io, 1, alist[ANIM_1H_WAIT], EA_LOOP);
 						layer1.flags &= ~(EA_PAUSED | EA_REVERSE);
-						CurrFightPos = 0;
+						player.m_strikeDirection = 0;
 						player.m_aimTime = 0;
 						PlayerWeaponBlocked = -1;
 					}
@@ -906,7 +905,7 @@ void ManageCombatModeAnimations() {
 			if(layer1.cur_anim == alist[ANIM_2H_WAIT]) {
 				player.m_aimTime = 0;
 				if(eeMousePressed1()) {
-					changeAnimation(io, 1, alist[ANIM_2H_STRIKE_LEFT_START + CurrFightPos * 3]);
+					changeAnimation(io, 1, alist[ANIM_2H_STRIKE_LEFT_START + player.m_strikeDirection * 3]);
 					io->isHit = false;
 				}
 			}
@@ -920,7 +919,7 @@ void ManageCombatModeAnimations() {
 					changeAnimation(io, 1, alist[ANIM_2H_STRIKE_LEFT + j * 3]);
 					strikeSpeak(io);
 					SendIOScriptEvent(io, SM_STRIKE, "2h");
-					CurrFightPos = 0;
+					player.m_strikeDirection = 0;
 					player.m_aimTime = 0;
 				} else if(layer1.cur_anim == alist[ANIM_2H_STRIKE_LEFT+j*3]) {
 					if(layer1.ctime > layer1.cur_anim->anims[layer1.altidx_cur]->anim_time * 0.3f
@@ -938,7 +937,7 @@ void ManageCombatModeAnimations() {
 					if(layer1.flags & EA_ANIMEND) {
 						changeAnimation(io, 1, alist[ANIM_2H_WAIT], EA_LOOP);
 						layer1.flags &= ~(EA_PAUSED | EA_REVERSE);
-						CurrFightPos = 0;
+						player.m_strikeDirection = 0;
 						player.m_aimTime = 0;
 						PlayerWeaponBlocked = -1;
 					}
@@ -1107,7 +1106,7 @@ void ManageCombatModeAnimationsEND() {
 						player.Interface &= ~INTER_NO_STRIKE;
 						changeAnimation(io, 1, alist[ANIM_BARE_WAIT], EA_LOOP);
 					} else {
-						changeAnimation(io, 1, alist[ANIM_BARE_STRIKE_LEFT_START + CurrFightPos * 3]);
+						changeAnimation(io, 1, alist[ANIM_BARE_STRIKE_LEFT_START + player.m_strikeDirection * 3]);
 					}
 					player.m_aimTime = arxtime.now_ul();
 					io->isHit = false;
@@ -1125,7 +1124,7 @@ void ManageCombatModeAnimationsEND() {
 							player.Interface &= ~INTER_NO_STRIKE;
 							changeAnimation(io, 1, alist[ANIM_DAGGER_WAIT], EA_LOOP);
 						} else {
-							changeAnimation(io, 1, alist[ANIM_DAGGER_STRIKE_LEFT_START + CurrFightPos * 3]);
+							changeAnimation(io, 1, alist[ANIM_DAGGER_STRIKE_LEFT_START + player.m_strikeDirection * 3]);
 						}
 						player.m_aimTime = arxtime.now_ul();
 						io->isHit = false;
@@ -1147,7 +1146,7 @@ void ManageCombatModeAnimationsEND() {
 							player.Interface &= ~INTER_NO_STRIKE;
 							changeAnimation(io, 1, alist[ANIM_1H_WAIT], EA_LOOP);
 						} else {
-							changeAnimation(io, 1, alist[ANIM_1H_STRIKE_LEFT_START + CurrFightPos * 3]);
+							changeAnimation(io, 1, alist[ANIM_1H_STRIKE_LEFT_START + player.m_strikeDirection * 3]);
 						}
 						player.m_aimTime = arxtime.now_ul();
 						io->isHit = false;
@@ -1169,7 +1168,7 @@ void ManageCombatModeAnimationsEND() {
 							player.Interface &= ~INTER_NO_STRIKE;
 							changeAnimation(io, 1, alist[ANIM_2H_WAIT], EA_LOOP);
 						} else {
-							changeAnimation(io, 1, alist[ANIM_2H_STRIKE_LEFT_START + CurrFightPos * 3]);
+							changeAnimation(io, 1, alist[ANIM_2H_STRIKE_LEFT_START + player.m_strikeDirection * 3]);
 						}
 						player.m_aimTime = arxtime.now_ul();
 						io->isHit = false;

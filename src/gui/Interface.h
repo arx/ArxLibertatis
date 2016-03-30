@@ -201,7 +201,6 @@ extern Vec2s MemoMouse;
 
 extern long SpecialCursor;
 
-extern long CurrFightPos;
 extern long lSLID_VALUE;
 extern bool bInventoryClosing;
 extern E_ARX_STATE_MOUSE eMouseState;
