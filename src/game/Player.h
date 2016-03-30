@@ -279,7 +279,9 @@ struct ARXCHARACTER {
 	PlayerSkill m_skillFull;
 	PlayerMisc m_miscFull;
 	
+	float m_strikeAimTime;
 	long Full_AimTime;
+	
 	float Full_life;
 	float Full_maxlife;
 	float Full_maxmana;
@@ -321,6 +323,10 @@ struct ARXCHARACTER {
 
 	float TRAP_DETECT;
 	float TRAP_SECRET;
+	
+	ARXCHARACTER()
+		: m_strikeAimTime(0.f)
+	{ }
 	
 	static float baseRadius() { return 52.f; }
 	static float baseHeight() { return -170.f; }
