@@ -113,7 +113,7 @@ class Image;
 extern Image savegame_thumbnail;
 
 extern float Original_framedelay;
-extern long LOADEDD;
+extern bool LOADEDD;
 
 extern bool g_debugToggles[10];
 extern bool g_debugTriggers[10];

@@ -219,7 +219,7 @@ bool FASTmse = false;
 // EDITOR FLAGS/Vars
 //-----------------------------------------------------------------------------
 // Flag used to Launch Moulinex
-long LOADEDD = 0; // Is a Level Loaded ?
+bool LOADEDD = false; // Is a Level Loaded ?
 
 long CHANGE_LEVEL_ICON=-1;
 
