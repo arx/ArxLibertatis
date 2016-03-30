@@ -1109,7 +1109,7 @@ void ManageCombatModeAnimationsEND() {
 				}
 				break;
 			}
-			case WEAPON_DAGGER: // DAGGER ANIMS end
+			case WEAPON_DAGGER: { // DAGGER ANIMS end
 
 				if(alist[ANIM_DAGGER_READY_PART_1]) {
 					if(layer1.cur_anim == alist[ANIM_DAGGER_READY_PART_1]) {
@@ -1131,7 +1131,8 @@ void ManageCombatModeAnimationsEND() {
 				}
 
 			break;
-			case WEAPON_1H:	// 1H ANIMS end
+			}
+			case WEAPON_1H: { // 1H ANIMS end
 
 				if(alist[ANIM_1H_READY_PART_1]) {
 					if(layer1.cur_anim == alist[ANIM_1H_READY_PART_1]) {
@@ -1153,7 +1154,8 @@ void ManageCombatModeAnimationsEND() {
 				}
 
 			break;
-			case WEAPON_2H:	// 2H ANIMS end
+			}
+			case WEAPON_2H: { // 2H ANIMS end
 
 				if(alist[ANIM_2H_READY_PART_1]) {
 					if(layer1.cur_anim == alist[ANIM_2H_READY_PART_1]) {
@@ -1175,7 +1177,8 @@ void ManageCombatModeAnimationsEND() {
 				}
 
 			break;
-			case WEAPON_BOW:// MISSILE Weapon ANIMS end
+			}
+			case WEAPON_BOW: { // MISSILE Weapon ANIMS end
 
 				if(alist[ANIM_MISSILE_READY_PART_1]) {
 					if(layer1.cur_anim == alist[ANIM_MISSILE_READY_PART_1]) {
@@ -1207,6 +1210,7 @@ void ManageCombatModeAnimationsEND() {
 				}
 
 			break;
+			}
 		}
 
 		// Spell casting anims
