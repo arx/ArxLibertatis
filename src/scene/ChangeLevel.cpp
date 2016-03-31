@@ -665,7 +665,7 @@ static long ARX_CHANGELEVEL_Push_Player(long level) {
 	storeIdString(asp->equipsecondaryIO, player.equipsecondaryIO);
 	storeIdString(asp->equipshieldIO, player.equipshieldIO);
 	storeIdString(asp->leftIO, player.leftIO);
-	storeIdString(asp->rightIO, player.rightIO);
+	storeIdString(asp->rightIO, NULL);
 	storeIdString(asp->curtorch, player.torch);
 	
 	for(size_t i = 0; i < SAVED_MAX_PRECAST; i++) {
@@ -1832,7 +1832,6 @@ static long ARX_CHANGELEVEL_Pop_Player() {
 	player.equipsecondaryIO = ConvertToValidIO(asp->equipsecondaryIO);
 	player.equipshieldIO = ConvertToValidIO(asp->equipshieldIO);
 	player.leftIO = ConvertToValidIO(asp->leftIO);
-	player.rightIO = ConvertToValidIO(asp->rightIO);
 	player.torch = ConvertToValidIO(asp->curtorch);
 	progressBarAdvance();
 	LoadLevelScreen();

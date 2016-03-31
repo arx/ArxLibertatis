@@ -177,7 +177,6 @@ struct ARXCHARACTER {
 	PlayerMovement Last_Movement;
 	bool onfirmground;
 	
-	Entity * rightIO;
 	Entity * leftIO;
 	Entity * equipsecondaryIO;
 	Entity * equipshieldIO;

@@ -362,7 +362,7 @@ struct ARX_CHANGELEVEL_PLAYER {
 	SavedVec3 size;
 	
 	char inzone[SIZE_ID];
-	char rightIO[SIZE_ID];
+	char rightIO[SIZE_ID]; // TODO remove
 	char leftIO[SIZE_ID];
 	char equipsecondaryIO[SIZE_ID];
 	char equipshieldIO[SIZE_ID];
