@@ -298,13 +298,12 @@ void ApplySPArm() {
 	sp_arm++;
 }
 
-long SPECIAL_PNUX;
 void ApplyCurPNux() {
 
 	MakeSpCol();
 	sp_max_ch = "! PhilNux & Gluonne !";
 
-	SPECIAL_PNUX = (SPECIAL_PNUX + 1) % 3;
+	player.m_cheatPnuxActive = (player.m_cheatPnuxActive + 1) % 3;
 
 	// TODO-RENDERING: Create a post-processing effect for that cheat... see original source...
 

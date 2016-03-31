@@ -337,6 +337,7 @@ struct ARXCHARACTER {
 	
 	s8 m_cheatSkinButtonClickCount;
 	char m_cheatQuickGenButtonClickCount;
+	long m_cheatPnuxActive;
 	
 	ARXCHARACTER()
 		: m_strikeDirection(0)

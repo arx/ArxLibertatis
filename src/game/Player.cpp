@@ -469,8 +469,6 @@ static void ARX_PLAYER_ComputePlayerStats() {
 	                      + base_close_combat * ( 1.0f / 5 );
 }
 
-extern long SPECIAL_PNUX;
-
 /*!
  * \brief Compute FULL versions of player stats including Equiped Items and spells,
  *        and any other effect altering them.
@@ -598,7 +596,7 @@ void ARX_PLAYER_ComputePlayerFullStats() {
 		
 		player.Full_AimTime = 100;
 	}
-	if(SPECIAL_PNUX) {
+	if(player.m_cheatPnuxActive) {
 		PlayerAttribute attributeMod;
 		attributeMod.strength = Random::get(0, 5);
 		attributeMod.mind = Random::get(0, 5);
