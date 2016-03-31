@@ -365,7 +365,7 @@ struct ARX_CHANGELEVEL_PLAYER {
 	char rightIO[SIZE_ID]; // TODO remove
 	char leftIO[SIZE_ID]; // TODO remove
 	char equipsecondaryIO[SIZE_ID]; // TODO remove
-	char equipshieldIO[SIZE_ID];
+	char equipshieldIO[SIZE_ID]; // TODO remove
 	char curtorch[SIZE_ID];
 	s32 gold;
 	s32 falling;
