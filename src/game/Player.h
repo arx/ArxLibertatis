@@ -140,6 +140,91 @@ enum JumpPhase {
 	JumpEnd = 5
 };
 
+struct PlayerAttribute {
+	float strength;
+	float dexterity;
+	float constitution;
+	float mind;
+	
+	PlayerAttribute()
+		: strength(0)
+		, dexterity(0)
+		, constitution(0)
+		, mind(0)
+	{}
+	
+	void add(const PlayerAttribute & other) {
+		strength += other.strength;
+		dexterity += other.dexterity;
+		constitution += other.constitution;
+		mind += other.mind;
+	}
+};
+
+struct PlayerSkill {
+	float stealth;
+	float mecanism;
+	float intuition;
+	
+	float etheralLink;
+	float objectKnowledge;
+	float casting;
+	
+	float projectile;
+	float closeCombat;
+	float defense;
+	
+	PlayerSkill()
+		: stealth(0)
+		, mecanism(0)
+		, intuition(0)
+		, etheralLink(0)
+		, objectKnowledge(0)
+		, casting(0)
+		, projectile(0)
+		, closeCombat(0)
+		, defense(0)
+	{}
+	
+	void add(const PlayerSkill & other) {
+		stealth += other.stealth;
+		mecanism += other.mecanism;
+		intuition += other.intuition;
+		
+		etheralLink += other.etheralLink;
+		objectKnowledge += other.objectKnowledge;
+		casting += other.casting;
+		
+		projectile += other.projectile;
+		closeCombat += other.closeCombat;
+		defense += other.defense;
+	}
+};
+
+struct PlayerMisc {
+	float armorClass;
+	float resistMagic;
+	float resistPoison;
+	float criticalHit;
+	float damages;
+	
+	PlayerMisc()
+		: armorClass(0)
+		, resistMagic(0)
+		, resistPoison(0)
+		, criticalHit(0)
+		, damages(0)
+	{}
+	
+	void add(const PlayerMisc & other) {
+		armorClass += other.armorClass;
+		resistMagic += other.resistMagic;
+		resistPoison += other.resistPoison;
+		criticalHit += other.criticalHit;
+		damages += other.damages;
+	}
+};
+
 struct ARXCHARACTER {
 	
 	Vec3f pos;
@@ -181,91 +266,6 @@ struct ARXCHARACTER {
 	Entity * torch;
 	
 	EntityHandle equiped[MAX_EQUIPED]; 
-	
-	struct PlayerAttribute {
-		float strength;
-		float dexterity;
-		float constitution;
-		float mind;
-		
-		PlayerAttribute()
-			: strength(0)
-			, dexterity(0)
-			, constitution(0)
-			, mind(0)
-		{}
-		
-		void add(const PlayerAttribute & other) {
-			strength += other.strength;
-			dexterity += other.dexterity;
-			constitution += other.constitution;
-			mind += other.mind;
-		}
-	};
-	
-	struct PlayerSkill {
-		float stealth;
-		float mecanism;
-		float intuition;
-		
-		float etheralLink;
-		float objectKnowledge;
-		float casting;
-		
-		float projectile;
-		float closeCombat;
-		float defense;
-		
-		PlayerSkill()
-			: stealth(0)
-			, mecanism(0)
-			, intuition(0)
-			, etheralLink(0)
-			, objectKnowledge(0)
-			, casting(0)
-			, projectile(0)
-			, closeCombat(0)
-			, defense(0)
-		{}
-		
-		void add(const PlayerSkill & other) {
-			stealth += other.stealth;
-			mecanism += other.mecanism;
-			intuition += other.intuition;
-			
-			etheralLink += other.etheralLink;
-			objectKnowledge += other.objectKnowledge;
-			casting += other.casting;
-			
-			projectile += other.projectile;
-			closeCombat += other.closeCombat;
-			defense += other.defense;
-		}
-	};
-	
-	struct PlayerMisc {
-		float armorClass;
-		float resistMagic;
-		float resistPoison;
-		float criticalHit;
-		float damages;
-		
-		PlayerMisc()
-			: armorClass(0)
-			, resistMagic(0)
-			, resistPoison(0)
-			, criticalHit(0)
-			, damages(0)
-		{}
-		
-		void add(const PlayerMisc & other) {
-			armorClass += other.armorClass;
-			resistMagic += other.resistMagic;
-			resistPoison += other.resistPoison;
-			criticalHit += other.criticalHit;
-			damages += other.damages;
-		}
-	};
 	
 	// Modifier Values (Items, curses, etc...)
 	PlayerAttribute m_attributeMod;

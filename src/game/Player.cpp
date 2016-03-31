@@ -480,9 +480,9 @@ void ARX_PLAYER_ComputePlayerFullStats() {
 	ARX_PLAYER_ComputePlayerStats();
 	
 	// Reset modifier values
-	player.m_attributeMod = ARXCHARACTER::PlayerAttribute();
-	player.m_skillMod = ARXCHARACTER::PlayerSkill();
-	player.m_miscMod = ARXCHARACTER::PlayerMisc();
+	player.m_attributeMod = PlayerAttribute();
+	player.m_skillMod = PlayerSkill();
+	player.m_miscMod = PlayerMisc();
 	
 	// TODO why do this now and not after skills/stats have been calculated?
 	ARX_EQUIPMENT_IdentifyAll();
@@ -539,14 +539,14 @@ void ARX_PLAYER_ComputePlayerFullStats() {
 	
 	// Calculate for modifiers from cheats
 	if(cur_mr == 3) {
-		ARXCHARACTER::PlayerAttribute attributeMod;
+		PlayerAttribute attributeMod;
 		attributeMod.strength = 1;
 		attributeMod.mind = 10;
 		attributeMod.constitution = 1;
 		attributeMod.dexterity = 10;
 		player.m_attributeMod.add(attributeMod);
 		
-		ARXCHARACTER::PlayerSkill skillMod;
+		PlayerSkill skillMod;
 		skillMod.stealth = 5;
 		skillMod.mecanism = 5;
 		skillMod.intuition = 100;
@@ -558,7 +558,7 @@ void ARX_PLAYER_ComputePlayerFullStats() {
 		skillMod.defense = 100;
 		player.m_skillMod.add(skillMod);
 		
-		ARXCHARACTER::PlayerMisc miscMod;
+		PlayerMisc miscMod;
 		miscMod.resistMagic = 100;
 		miscMod.resistPoison = 100;
 		miscMod.criticalHit = 5;
@@ -569,14 +569,14 @@ void ARX_PLAYER_ComputePlayerFullStats() {
 		player.Full_AimTime = 100;
 	}
 	if(sp_max) {
-		ARXCHARACTER::PlayerAttribute attributeMod;
+		PlayerAttribute attributeMod;
 		attributeMod.strength = 5;
 		attributeMod.mind = 5;
 		attributeMod.constitution = 5;
 		attributeMod.dexterity = 5;
 		player.m_attributeMod.add(attributeMod);
 		
-		ARXCHARACTER::PlayerSkill skillMod;
+		PlayerSkill skillMod;
 		skillMod.stealth = 50;
 		skillMod.mecanism = 50;
 		skillMod.intuition = 50;
@@ -588,7 +588,7 @@ void ARX_PLAYER_ComputePlayerFullStats() {
 		skillMod.defense = 50;
 		player.m_skillMod.add(skillMod);
 		
-		ARXCHARACTER::PlayerMisc miscMod;
+		PlayerMisc miscMod;
 		miscMod.resistMagic = 10;
 		miscMod.resistPoison = 10;
 		miscMod.criticalHit = 50;
@@ -599,14 +599,14 @@ void ARX_PLAYER_ComputePlayerFullStats() {
 		player.Full_AimTime = 100;
 	}
 	if(SPECIAL_PNUX) {
-		ARXCHARACTER::PlayerAttribute attributeMod;
+		PlayerAttribute attributeMod;
 		attributeMod.strength = Random::get(0, 5);
 		attributeMod.mind = Random::get(0, 5);
 		attributeMod.constitution = Random::get(0, 5);
 		attributeMod.dexterity = Random::get(0, 5);
 		player.m_attributeMod.add(attributeMod);
 		
-		ARXCHARACTER::PlayerSkill skillMod;
+		PlayerSkill skillMod;
 		skillMod.stealth = Random::get(0, 20);
 		skillMod.mecanism = Random::get(0, 20);
 		skillMod.intuition = Random::get(0, 20);
@@ -618,7 +618,7 @@ void ARX_PLAYER_ComputePlayerFullStats() {
 		skillMod.defense = Random::get(0, 30);
 		player.m_skillMod.add(skillMod);
 		
-		ARXCHARACTER::PlayerMisc miscMod;
+		PlayerMisc miscMod;
 		miscMod.resistMagic = Random::get(0, 20);
 		miscMod.resistPoison = Random::get(0, 20);
 		miscMod.criticalHit = Random::get(0, 20);
@@ -627,17 +627,17 @@ void ARX_PLAYER_ComputePlayerFullStats() {
 		player.m_miscMod.add(miscMod);
 	}
 	if(cur_rf == 3) {
-		ARXCHARACTER::PlayerAttribute attributeMod;
+		PlayerAttribute attributeMod;
 		attributeMod.mind = 10;
 		player.m_attributeMod.add(attributeMod);
 		
-		ARXCHARACTER::PlayerSkill skillMod;
+		PlayerSkill skillMod;
 		skillMod.casting = 100;
 		skillMod.etheralLink = 100;
 		skillMod.objectKnowledge = 100;
 		player.m_skillMod.add(skillMod);
 		
-		ARXCHARACTER::PlayerMisc miscMod;
+		PlayerMisc miscMod;
 		miscMod.resistMagic = 20;
 		miscMod.resistPoison = 20;
 		miscMod.damages = 1;
@@ -650,7 +650,7 @@ void ARX_PLAYER_ComputePlayerFullStats() {
 	// Attributes
 	
 	// Calculate base attributes
-	ARXCHARACTER::PlayerAttribute attributeBase;
+	PlayerAttribute attributeBase;
 	attributeBase.strength     = player.m_attribute.strength;
 	attributeBase.dexterity    = player.m_attribute.dexterity;
 	attributeBase.constitution = player.m_attribute.constitution;
@@ -681,7 +681,7 @@ void ARX_PLAYER_ComputePlayerFullStats() {
 	// Skills
 	
 	// Calculate base skills
-	ARXCHARACTER::PlayerSkill skillBase;
+	PlayerSkill skillBase;
 	skillBase.stealth          = player.m_skill.stealth
 	                              + player.m_attributeFull.dexterity * 2.f;
 	skillBase.mecanism         = player.m_skill.mecanism
@@ -807,7 +807,7 @@ void ARX_PLAYER_MakeFreshHero()
 	player.m_attribute.dexterity = 6;
 	player.m_attribute.constitution = 6;
 
-	ARXCHARACTER::PlayerSkill skill;
+	PlayerSkill skill;
 	skill.stealth = 0;
 	skill.mecanism = 0;
 	skill.intuition = 0;
@@ -850,7 +850,7 @@ void ARX_PLAYER_MakeSpHero()
 	player.m_attribute.dexterity = 12;
 	player.m_attribute.constitution = 12;
 
-	ARXCHARACTER::PlayerSkill skill;
+	PlayerSkill skill;
 	skill.stealth = 5;
 	skill.mecanism = 5;
 	skill.intuition = 5;
