@@ -664,7 +664,7 @@ static long ARX_CHANGELEVEL_Push_Player(long level) {
 	asp->bag = player.bag;
 	storeIdString(asp->equipsecondaryIO, player.equipsecondaryIO);
 	storeIdString(asp->equipshieldIO, player.equipshieldIO);
-	storeIdString(asp->leftIO, player.leftIO);
+	storeIdString(asp->leftIO, NULL);
 	storeIdString(asp->rightIO, NULL);
 	storeIdString(asp->curtorch, player.torch);
 	
@@ -1831,7 +1831,6 @@ static long ARX_CHANGELEVEL_Pop_Player() {
 	// Restoring Player equipment...
 	player.equipsecondaryIO = ConvertToValidIO(asp->equipsecondaryIO);
 	player.equipshieldIO = ConvertToValidIO(asp->equipshieldIO);
-	player.leftIO = ConvertToValidIO(asp->leftIO);
 	player.torch = ConvertToValidIO(asp->curtorch);
 	progressBarAdvance();
 	LoadLevelScreen();

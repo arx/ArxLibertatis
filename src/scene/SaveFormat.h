@@ -363,7 +363,7 @@ struct ARX_CHANGELEVEL_PLAYER {
 	
 	char inzone[SIZE_ID];
 	char rightIO[SIZE_ID]; // TODO remove
-	char leftIO[SIZE_ID];
+	char leftIO[SIZE_ID]; // TODO remove
 	char equipsecondaryIO[SIZE_ID];
 	char equipshieldIO[SIZE_ID];
 	char curtorch[SIZE_ID];
