@@ -67,6 +67,15 @@ struct ARX_INTERFACE_MEMORIZE_SPELL {
 	bool bSpell;
 	unsigned long lTimeCreation;
 	Rune iSpellSymbols[6];
+	
+	ARX_INTERFACE_MEMORIZE_SPELL()
+		: bSpell(false)
+		, lTimeCreation(0)
+	{
+		for(size_t i = 0; i < ARRAY_SIZE(iSpellSymbols); i++) {
+			iSpellSymbols[i] = RUNE_NONE;
+		}
+	}
 };
 
 enum PlayerInterfaceFlag
@@ -329,9 +338,31 @@ struct ARXCHARACTER {
 	ARXCHARACTER()
 		: m_strikeDirection(0)
 		, m_weaponBlocked(0)
+		, torch(NULL)
 		, m_bowAimRatio(0.f)
 		, m_strikeAimRatio(0.f)
-	{ }
+		, Full_AimTime(0)
+		, Full_life(0)
+		, Full_maxlife(0)
+		, Full_maxmana(0)
+		, AimTime(0)
+		, m_aimTime(0)
+		, Attribute_Redistribute(0)
+		, Skill_Redistribute(0)
+		, level(0)
+		, xp(0)
+		, skin(0)
+		, poison(0)
+		, hunger(0)
+		, gold(0)
+		, bag(0)
+		, TRAP_DETECT(0)
+		, TRAP_SECRET(0)
+	{
+		for(size_t i = 0; i < ARRAY_SIZE(heads); i++) {
+			heads[i] = NULL;
+		}
+	}
 	
 	static float baseRadius() { return 52.f; }
 	static float baseHeight() { return -170.f; }

@@ -32,6 +32,11 @@ static const EntityHandle PlayerEntityHandle = EntityHandle(0);
 struct ResourcePool {
 	float current;
 	float max;
+	
+	ResourcePool()
+		: current(0.f)
+		, max(0.f)
+	{ }
 };
 
 #endif // ARX_GAME_GAMETYPES_H
