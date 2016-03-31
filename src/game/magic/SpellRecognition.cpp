@@ -360,6 +360,205 @@ static void handleRuneDetection(Rune rune) {
 	ARX_SOUND_PlaySFX(SND_SYMB[rune]);
 }
 
+enum CheatRune {
+	CheatRune_KAOM,
+	CheatRune_MEGA,
+	CheatRune_U,
+	CheatRune_W,
+	CheatRune_S,
+	CheatRune_P,
+	CheatRune_M,
+	CheatRune_A,
+	CheatRune_X,
+	CheatRune_26,
+	CheatRune_O,
+	CheatRune_R,
+	CheatRune_F,
+	CheatRune_Passwall,
+	CheatRune_ChangeSkin
+};
+
+static void handleCheatRuneDetection(CheatRune rune) {
+	switch(rune) {
+		case CheatRune_KAOM: {
+			if(cur_arm >= 0 && (cur_arm & 1)){
+				cur_arm++;
+
+				if(cur_arm > 20)
+					ApplySPArm();
+			}
+			else
+				cur_arm=-1;
+			
+			break;
+		}
+		case CheatRune_MEGA: {
+			if(cur_arm >= 0 && !(cur_arm & 1))
+				cur_arm++;
+			else
+				cur_arm=-1;
+			
+			break;
+		}
+		case CheatRune_U: {
+			if(uw_mode_pos == 0)
+				uw_mode_pos++;
+			
+			break;
+		}
+		case CheatRune_W: {
+			if(uw_mode_pos == 1)
+				ApplySPuw();
+			
+			break;
+		}
+		case CheatRune_S: {
+			if(cur_sm == 0)
+				cur_sm++;
+
+			if(cur_bh == 0)
+				cur_bh++;
+
+			if(cur_bh == 2)
+				cur_bh++;
+
+			if(cur_sos == 0)
+				cur_sos++;
+
+			if(cur_sos == 2) {
+				cur_sos = 0;
+				ApplyCurSOS();
+			}
+			break;
+		}
+		case CheatRune_P: {
+			if(cur_pom == 0)
+				cur_pom++;
+
+			if(cur_pnux == 0)
+				cur_pnux++;
+
+			if(cur_pnux == 2)
+				cur_pnux++;
+
+			if(cur_bh == 1)
+				cur_bh++;
+
+			if(cur_bh == 3) {
+				cur_bh = 0;
+				EERIE_OBJECT_SetBHMode();
+			}
+			break;
+		}
+		case CheatRune_M: {
+			if(cur_sm == 2) {
+				cur_sm++;
+				ApplySPBow();
+			}
+
+			if(cur_mx == 0)
+				cur_mx = 1;
+
+			if(cur_mr == 0)
+				cur_mr = 1;
+
+			if(cur_pom == 2) {
+				cur_pom++;
+				ApplySPWep();
+			}
+			break;
+		}
+		case CheatRune_A: {
+			if(cur_mr == 1) {
+				cur_mr = 2;
+				MakeCoolFx(player.pos);
+			}
+
+			if(cur_mx == 1) {
+				cur_mx = 2;
+				MakeCoolFx(player.pos);
+			}
+
+			if(cur_rf == 1) {
+				cur_rf = 2;
+				MakeCoolFx(player.pos);
+			}
+
+			if(cur_sm == 1)
+				cur_sm++;
+			
+			break;
+		}
+		case CheatRune_X: {
+			if(cur_mx == 2) {
+				cur_mx = 3;
+				ApplySPMax();
+			}
+			break;
+		}
+		case CheatRune_26: {
+			if(cur_pnux == 1)
+				cur_pnux++;
+
+			if(cur_pnux == 3) {
+				cur_pnux++;
+				ApplyCurPNux();
+			}
+			break;
+		}
+		case CheatRune_O: {
+			if(cur_pom == 1)
+				cur_pom++;
+
+			if(cur_sos == 1)
+				cur_sos++;
+			
+			break;
+		}
+		case CheatRune_R: {
+			if(cur_mr == 2) {
+				cur_mr = 3;
+				MakeCoolFx(player.pos);
+				ApplyCurMr();
+			}
+
+			if(cur_rf == 0)
+				cur_rf = 1;
+			
+			break;
+		}
+		case CheatRune_F: {
+			if(cur_rf == 2) {
+				cur_rf = 3;
+				MakeCoolFx(player.pos);
+				ApplySPRf();
+			}
+			break;
+		}
+		case CheatRune_Passwall: {
+			passwall++;
+
+			if(passwall == 3) {
+				passwall=0;
+				ApplyPasswall();
+			}
+			break;
+		}
+		case CheatRune_ChangeSkin: {
+			player.skin++;
+
+			if(player.skin == 4 && Random::getf() < 0.9f)
+				player.skin++;
+
+			if(player.skin > 5)
+				player.skin = 0;
+
+			ARX_EQUIPMENT_RecreatePlayerMesh();
+			break;
+		}
+	}
+}
+
 void ARX_SPELLS_AnalyseSYMBOL() {
 	
 	long sm = 0;
@@ -443,15 +642,7 @@ void ARX_SPELLS_AnalyseSYMBOL() {
 		case 136	:
 		case 12369	:
 		case 1236	:
-				if(cur_arm >= 0 && (cur_arm & 1)){
-					cur_arm++;					
-
-					if(cur_arm > 20)
-						ApplySPArm();
-				}
-				else
-					cur_arm=-1;
-			
+			handleCheatRuneDetection(CheatRune_KAOM);
 			handleRuneDetection(RUNE_KAOM);
 			break;
 		// STREGUM
@@ -519,11 +710,7 @@ void ARX_SPELLS_AnalyseSYMBOL() {
 		// MEGA
 		case 82:
 		case 8:
-				if(cur_arm >= 0 && !(cur_arm & 1))
-					cur_arm++;					
-				else
-					cur_arm=-1;
-			
+			handleCheatRuneDetection(CheatRune_MEGA);
 			handleRuneDetection(RUNE_MEGA);
 			break;
 		// VISTA
@@ -553,9 +740,7 @@ void ARX_SPELLS_AnalyseSYMBOL() {
 		case 23898:
 		case 236987:
 		case 23698: {
-			if(uw_mode_pos == 0)
-				uw_mode_pos++;
-		
+			handleCheatRuneDetection(CheatRune_U);
 			goto failed; 
 		}
 		case 2382398:
@@ -615,30 +800,12 @@ void ARX_SPELLS_AnalyseSYMBOL() {
 		case 2982398:
 		case 238298:
 		case 3939:
-			if(uw_mode_pos == 1)
-				ApplySPuw();
-
+			handleCheatRuneDetection(CheatRune_W);
 			goto failed; 
 		case 161:
 		case 1621:
 		case 1261: {
-			if(cur_sm == 0)
-				cur_sm++;
-
-			if(cur_bh == 0)
-				cur_bh++;
-
-			if(cur_bh == 2)
-				cur_bh++;
-
-			if(cur_sos == 0)
-				cur_sos++;
-
-			if(cur_sos == 2) {
-				cur_sos = 0;
-				ApplyCurSOS();
-			}
-
+			handleCheatRuneDetection(CheatRune_S);
 			goto failed;
 		}
 		case 83614:
@@ -655,23 +822,7 @@ void ARX_SPELLS_AnalyseSYMBOL() {
 		case 823:
 		case 8234:
 		case 8231: {
-			if(cur_pom == 0)
-				cur_pom++;
-
-			if(cur_pnux == 0)
-				cur_pnux++;
-
-			if(cur_pnux == 2)
-				cur_pnux++;
-
-			if(cur_bh == 1)
-				cur_bh++;
-
-			if(cur_bh == 3) {
-				cur_bh = 0;
-				EERIE_OBJECT_SetBHMode();
-			}
-
+			handleCheatRuneDetection(CheatRune_P);
 			goto failed;
 		}
 		case 83692:
@@ -682,22 +833,7 @@ void ARX_SPELLS_AnalyseSYMBOL() {
 		case 83892:
 		case 823282:
 		case 8392: {
-			if(cur_sm == 2) {
-				cur_sm++;
-				ApplySPBow();
-			}
-
-			if(cur_mx == 0)
-				cur_mx = 1;
-
-			if(cur_mr == 0)
-				cur_mr = 1;
-
-			if(cur_pom == 2) {
-				cur_pom++;
-				ApplySPWep();
-			}
-
+			handleCheatRuneDetection(CheatRune_M);
 			goto failed;
 		}
 		case 98324:
@@ -707,24 +843,7 @@ void ARX_SPELLS_AnalyseSYMBOL() {
 		case 9892324:
 		case 9234:
 		case 934: {
-			if(cur_mr == 1) {
-				cur_mr = 2;
-				MakeCoolFx(player.pos);
-			}
-
-			if(cur_mx == 1) {
-				cur_mx = 2;
-				MakeCoolFx(player.pos);
-			}
-
-			if(cur_rf == 1) {
-				cur_rf = 2;
-				MakeCoolFx(player.pos);
-			}
-
-			if(cur_sm == 1)
-				cur_sm++;
-
+			handleCheatRuneDetection(CheatRune_A);
 			goto failed;
 		}
 		case 3249:
@@ -734,22 +853,11 @@ void ARX_SPELLS_AnalyseSYMBOL() {
 		case 3489:
 		case 32498:
 		case 349: {
-			if(cur_mx == 2) {
-				cur_mx = 3;
-				ApplySPMax();
-			}
-
+			handleCheatRuneDetection(CheatRune_X);
 			goto failed;
 		}
 		case 26: {
-			if(cur_pnux == 1)
-				cur_pnux++;
-
-			if(cur_pnux == 3) {
-				cur_pnux++;
-				ApplyCurPNux();
-			}
-
+			handleCheatRuneDetection(CheatRune_26);
 			goto failed;
 		}
 		case 9232187:
@@ -760,12 +868,7 @@ void ARX_SPELLS_AnalyseSYMBOL() {
 		case 932187:
 		case 93217:
 		case 9317: {
-			if(cur_pom == 1)
-				cur_pom++;
-
-			if(cur_sos == 1)
-				cur_sos++;
-
+			handleCheatRuneDetection(CheatRune_O);
 			goto failed;
 		}
 		case 82313:
@@ -773,45 +876,19 @@ void ARX_SPELLS_AnalyseSYMBOL() {
 		case 82343:
 		case 83413:
 		case 8313: {
-			if(cur_mr == 2) {
-				cur_mr = 3;
-				MakeCoolFx(player.pos);
-				ApplyCurMr();
-			}
-
-			if(cur_rf == 0)
-				cur_rf = 1;
-
+			handleCheatRuneDetection(CheatRune_R);
 			goto failed;
 		}
 		case 86: {
-			if(cur_rf == 2) {
-				cur_rf = 3;
-				MakeCoolFx(player.pos);
-				ApplySPRf();
-			}
-
+			handleCheatRuneDetection(CheatRune_F);
 			goto failed;
 		}
 		case 626262: {
-			passwall++;
-
-			if(passwall == 3) {
-				passwall=0;
-				ApplyPasswall(); 
-			}
+			handleCheatRuneDetection(CheatRune_Passwall);
 		}
 		break;
 		case 828282: {
-			player.skin++;
-
-			if(player.skin == 4 && Random::getf() < 0.9f)
-				player.skin++;
-
-			if(player.skin > 5)
-				player.skin = 0;
-
-			ARX_EQUIPMENT_RecreatePlayerMesh();
+			handleCheatRuneDetection(CheatRune_ChangeSkin);
 			goto failed;
 		}
 		default: {
