@@ -1769,7 +1769,6 @@ void ARX_PLAYER_InitPlayer() {
 	player.lifePool.current = player.lifePool.max = player.Full_maxlife = 100.f;
 	player.manaPool.current = player.manaPool.max = player.Full_maxmana = 100.f;
 	player.falling = false;
-	player.equipsecondaryIO = NULL;
 	player.equipshieldIO = NULL;
 	player.torch = NULL;
 	player.gold = 0;

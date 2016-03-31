@@ -177,7 +177,6 @@ struct ARXCHARACTER {
 	PlayerMovement Last_Movement;
 	bool onfirmground;
 	
-	Entity * equipsecondaryIO;
 	Entity * equipshieldIO;
 	
 	Color3f m_torchColor;
