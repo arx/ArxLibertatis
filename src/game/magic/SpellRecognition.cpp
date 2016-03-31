@@ -350,6 +350,16 @@ void ARX_SPELLS_Analyse() {
 	}
 }
 
+static void handleRuneDetection(Rune rune) {
+	SpellSymbol[CurrSpellSymbol++] = rune;
+
+	if(CurrSpellSymbol >= MAX_SPELL_SYMBOLS) {
+		CurrSpellSymbol = MAX_SPELL_SYMBOLS - 1;
+	}
+
+	ARX_SOUND_PlaySFX(SND_SYMB[rune]);
+}
+
 void ARX_SPELLS_AnalyseSYMBOL() {
 	
 	long sm = 0;
@@ -367,30 +377,16 @@ void ARX_SPELLS_AnalyseSYMBOL() {
 		case 62498  :
 		case 62748  :
 		case 6248   :
-				SpellSymbol[CurrSpellSymbol++] = RUNE_COSUM;
-
-				if(CurrSpellSymbol >= MAX_SPELL_SYMBOLS) {
-					CurrSpellSymbol = MAX_SPELL_SYMBOLS - 1;
-				}
-
-				ARX_SOUND_PlaySFX(SND_SYMB[RUNE_COSUM]);
+			handleRuneDetection(RUNE_COSUM);
 			break;
-
 		// COMUNICATUM
 		case 632426 :
 		case 627426 :
 		case 634236 :
 		case 624326 :
 		case 62426  :
-				SpellSymbol[CurrSpellSymbol++] = RUNE_COMUNICATUM;
-
-				if(CurrSpellSymbol >= MAX_SPELL_SYMBOLS) {
-					CurrSpellSymbol = MAX_SPELL_SYMBOLS - 1;
-				}
-
-				ARX_SOUND_PlaySFX(SND_SYMB[RUNE_COMUNICATUM]);
+			handleRuneDetection(RUNE_COMUNICATUM);
 			break;
-
 		// FOLGORA
 		case 9823   :
 		case 9232   :
@@ -399,44 +395,23 @@ void ARX_SPELLS_AnalyseSYMBOL() {
 		case 923    :
 		case 932    :
 		case 93     :
-				SpellSymbol[CurrSpellSymbol++] = RUNE_FOLGORA;
-
-				if(CurrSpellSymbol >= MAX_SPELL_SYMBOLS) {
-					CurrSpellSymbol = MAX_SPELL_SYMBOLS - 1;
-				}
-
-				ARX_SOUND_PlaySFX(SND_SYMB[RUNE_FOLGORA]);
+			handleRuneDetection(RUNE_FOLGORA);
 			break;
-
 		// SPACIUM
 		case 42368  :
 		case 42678  :
 		case 42698  :
 		case 4268   :
-				SpellSymbol[CurrSpellSymbol++] = RUNE_SPACIUM;
-
-				if(CurrSpellSymbol >= MAX_SPELL_SYMBOLS) {
-					CurrSpellSymbol = MAX_SPELL_SYMBOLS - 1;
-				}
-
-				ARX_SOUND_PlaySFX(SND_SYMB[RUNE_SPACIUM]);
+			handleRuneDetection(RUNE_SPACIUM);
 			break;
-
 		// TERA
 		case 9826   :
 		case 92126  :
 		case 9264   :
 		case 9296   :
 		case 926    :
-				SpellSymbol[CurrSpellSymbol++] = RUNE_TERA;
-
-				if(CurrSpellSymbol >= MAX_SPELL_SYMBOLS) {
-					CurrSpellSymbol = MAX_SPELL_SYMBOLS - 1;
-				}
-
-				ARX_SOUND_PlaySFX(SND_SYMB[RUNE_TERA]);
+			handleRuneDetection(RUNE_TERA);
 			break;
-
 		// CETRIUS
 		case 286   :
 		case 3286  :
@@ -445,42 +420,21 @@ void ARX_SPELLS_AnalyseSYMBOL() {
 		case 2986  :
 		case 2386  :
 		case 386   :
-				SpellSymbol[CurrSpellSymbol++] = RUNE_CETRIUS;
-
-				if(CurrSpellSymbol >= MAX_SPELL_SYMBOLS) {
-					CurrSpellSymbol = MAX_SPELL_SYMBOLS - 1;
-				}
-
-				ARX_SOUND_PlaySFX(SND_SYMB[RUNE_CETRIUS]);
+			handleRuneDetection(RUNE_CETRIUS);
 			break;
-
 		// RHAA
 		case 28    :
 		case 2     :
-				SpellSymbol[CurrSpellSymbol++] = RUNE_RHAA;
-
-				if(CurrSpellSymbol >= MAX_SPELL_SYMBOLS) {
-					CurrSpellSymbol = MAX_SPELL_SYMBOLS - 1;
-				}
-
-				ARX_SOUND_PlaySFX(SND_SYMB[RUNE_RHAA]);
+			handleRuneDetection(RUNE_RHAA);
 			break;
-
 		// FRIDD
 		case 98362	:
 		case 8362	:
 		case 8632	:
 		case 8962	:
 		case 862	:
-				SpellSymbol[CurrSpellSymbol++] = RUNE_FRIDD;
-
-				if(CurrSpellSymbol >= MAX_SPELL_SYMBOLS) {
-					CurrSpellSymbol = MAX_SPELL_SYMBOLS - 1;
-				}
-
-				ARX_SOUND_PlaySFX(SND_SYMB[RUNE_FRIDD]);
+			handleRuneDetection(RUNE_FRIDD);
 			break;
-
 		// KAOM
 		case 41236	:
 		case 23		:
@@ -497,16 +451,9 @@ void ARX_SPELLS_AnalyseSYMBOL() {
 				}
 				else
 					cur_arm=-1;
-
-				SpellSymbol[CurrSpellSymbol++] = RUNE_KAOM;
-
-				if(CurrSpellSymbol >= MAX_SPELL_SYMBOLS) {
-					CurrSpellSymbol = MAX_SPELL_SYMBOLS - 1;
-				}
-
-				ARX_SOUND_PlaySFX(SND_SYMB[RUNE_KAOM]);
+			
+			handleRuneDetection(RUNE_KAOM);
 			break;
-
 		// STREGUM
 		case 82328 :
 		case 8328  :
@@ -514,38 +461,20 @@ void ARX_SPELLS_AnalyseSYMBOL() {
 		case 8938  :
 		case 8238  :
 		case 838   :
-				SpellSymbol[CurrSpellSymbol++] = RUNE_STREGUM;
-
-				if(CurrSpellSymbol >= MAX_SPELL_SYMBOLS)
-					CurrSpellSymbol = MAX_SPELL_SYMBOLS - 1;
-
-				ARX_SOUND_PlaySFX(SND_SYMB[RUNE_STREGUM]);
+			handleRuneDetection(RUNE_STREGUM);
 			break;
-
 		// MORTE
 		case 628   :
 		case 621   :
 		case 62    :
-				SpellSymbol[CurrSpellSymbol++] = RUNE_MORTE;
-
-				if(CurrSpellSymbol >= MAX_SPELL_SYMBOLS)
-					CurrSpellSymbol = MAX_SPELL_SYMBOLS - 1;
-
-				ARX_SOUND_PlaySFX(SND_SYMB[RUNE_MORTE]);
+			handleRuneDetection(RUNE_MORTE);
 			break;
-
 		// TEMPUS
 		case 962686  :
 		case 862686  :
 		case 8626862 : 
-				SpellSymbol[CurrSpellSymbol++] = RUNE_TEMPUS;
-
-				if(CurrSpellSymbol >= MAX_SPELL_SYMBOLS)
-					CurrSpellSymbol = MAX_SPELL_SYMBOLS - 1;
-
-				ARX_SOUND_PlaySFX(SND_SYMB[RUNE_TEMPUS]);
+			handleRuneDetection(RUNE_TEMPUS);
 			break;
-
 		// MOVIS
 		case 6316:
 		case 61236:
@@ -558,36 +487,18 @@ void ARX_SPELLS_AnalyseSYMBOL() {
 		case 6126:
 		case 6136:
 		case 616: 
-				SpellSymbol[CurrSpellSymbol++] = RUNE_MOVIS;
-
-				if(CurrSpellSymbol >= MAX_SPELL_SYMBOLS)
-					CurrSpellSymbol = MAX_SPELL_SYMBOLS - 1;
-
-				ARX_SOUND_PlaySFX(SND_SYMB[RUNE_MOVIS]);
+			handleRuneDetection(RUNE_MOVIS);
 			break;
-
 		// NHI
 		case 46:
 		case 4:
-				SpellSymbol[CurrSpellSymbol++] = RUNE_NHI;
-
-				if(CurrSpellSymbol >= MAX_SPELL_SYMBOLS)
-					CurrSpellSymbol = MAX_SPELL_SYMBOLS - 1;
-
-				ARX_SOUND_PlaySFX(SND_SYMB[RUNE_NHI]);
+			handleRuneDetection(RUNE_NHI);
 			break;
-
 		// AAM
 		case 64:
 		case 6:
-				SpellSymbol[CurrSpellSymbol++] = RUNE_AAM;
-
-				if(CurrSpellSymbol >= MAX_SPELL_SYMBOLS)
-					CurrSpellSymbol = MAX_SPELL_SYMBOLS - 1;
-
-				ARX_SOUND_PlaySFX(SND_SYMB[RUNE_AAM]);
+			handleRuneDetection(RUNE_AAM);
 			break;
-																		
 		// YOK
 		case 412369:
 		case 2687:
@@ -597,26 +508,14 @@ void ARX_SPELLS_AnalyseSYMBOL() {
 		case 2368:
 		case 2689:
 		case 268:
-				SpellSymbol[CurrSpellSymbol++] = RUNE_YOK;
-
-				if(CurrSpellSymbol >= MAX_SPELL_SYMBOLS)
-					CurrSpellSymbol = MAX_SPELL_SYMBOLS - 1;
-
-				ARX_SOUND_PlaySFX(SND_SYMB[RUNE_YOK]);
+			handleRuneDetection(RUNE_YOK);
 			break;
-
 		// TAAR
 		case 6236:
 		case 6264:
 		case 626:
-				SpellSymbol[CurrSpellSymbol++] = RUNE_TAAR;
-
-				if(CurrSpellSymbol >= MAX_SPELL_SYMBOLS)
-					CurrSpellSymbol = MAX_SPELL_SYMBOLS - 1;
-
-				ARX_SOUND_PlaySFX(SND_SYMB[RUNE_TAAR]);
+			handleRuneDetection(RUNE_TAAR);
 			break;
-
 		// MEGA
 		case 82:
 		case 8:
@@ -624,15 +523,9 @@ void ARX_SPELLS_AnalyseSYMBOL() {
 					cur_arm++;					
 				else
 					cur_arm=-1;
-
-				SpellSymbol[CurrSpellSymbol++] = RUNE_MEGA;
-
-				if(CurrSpellSymbol >= MAX_SPELL_SYMBOLS)
-					CurrSpellSymbol = MAX_SPELL_SYMBOLS - 1;
-
-				ARX_SOUND_PlaySFX(SND_SYMB[RUNE_MEGA]);
+			
+			handleRuneDetection(RUNE_MEGA);
 			break;
-
 		// VISTA
 		case 3614:
 		case 361:
@@ -643,23 +536,12 @@ void ARX_SPELLS_AnalyseSYMBOL() {
 		case 314:
 		case 321:
 		case 31:
-				SpellSymbol[CurrSpellSymbol++] = RUNE_VISTA;
-
-				if(CurrSpellSymbol >= MAX_SPELL_SYMBOLS)
-					CurrSpellSymbol = MAX_SPELL_SYMBOLS - 1;
-
-				ARX_SOUND_PlaySFX(SND_SYMB[RUNE_VISTA]);
+			handleRuneDetection(RUNE_VISTA);
 			break;
-
 		// VITAE
 		case 698:
 		case 68:
-			SpellSymbol[CurrSpellSymbol++] = RUNE_VITAE;
-
-			if(CurrSpellSymbol >= MAX_SPELL_SYMBOLS)
-				CurrSpellSymbol = MAX_SPELL_SYMBOLS - 1;
-
-			ARX_SOUND_PlaySFX(SND_SYMB[RUNE_VITAE]);
+			handleRuneDetection(RUNE_VITAE);
 			break;
 
 //--------------------------------------------------------------------------------------------------------------------
