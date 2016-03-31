@@ -98,9 +98,6 @@ extern bool bFade;
 extern int iFadeAction;
 extern float fFadeInOut;
 
-extern s8 SKIN_MOD;
-extern char QUICK_MOD;
-
 extern float ARXTimeMenu;
 
 extern bool REQUEST_SPEECH_SKIP;
@@ -410,7 +407,7 @@ bool ARX_Menu_Render() {
 				if(eeMousePressed1());
 				else if (eeMouseUp1())
 				{
-					QUICK_MOD++;
+					player.m_cheatQuickGenButtonClickCount++;
 					int iSkin = player.skin;
 					ARX_SOUND_PlayMenu(SND_MENU_CLICK);
 
@@ -446,7 +443,7 @@ bool ARX_Menu_Render() {
 				FLYING_OVER = BUTTON_SKIN;
 
 				if(eeMouseUp1()) {
-					SKIN_MOD++;
+					player.m_cheatSkinButtonClickCount++;
 					BOOKZOOM = 1;
 					ARX_SOUND_PlayMenu(SND_MENU_CLICK);
 					player.skin++;
@@ -481,13 +478,13 @@ bool ARX_Menu_Render() {
 				FLYING_OVER = BUTTON_DONE;
 
 				if(DONE && eeMouseUp1()) {
-					if(SKIN_MOD == 8 && QUICK_MOD == 10) {
-						SKIN_MOD = -2;
-					} else if(SKIN_MOD == -1) {
+					if(player.m_cheatSkinButtonClickCount == 8 && player.m_cheatQuickGenButtonClickCount == 10) {
+						player.m_cheatSkinButtonClickCount = -2;
+					} else if(player.m_cheatSkinButtonClickCount == -1) {
 						ARX_PLAYER_MakeSpHero();
 						player.skin = 4;
 						ARX_PLAYER_Restore_Skin();
-						SKIN_MOD = 0;
+						player.m_cheatSkinButtonClickCount = 0;
 						SP_HEAD = 1;
 					} else {
 						if(SP_HEAD) {
@@ -515,7 +512,7 @@ bool ARX_Menu_Render() {
 					color = Color(192, 192, 192);
 			}
 
-			if(SKIN_MOD < 0)
+			if(player.m_cheatSkinButtonClickCount < 0)
 				color = Color(255, 0, 255);
 
 			pTextManage->AddText(hFontMenu, ARXmenu.mda->str_button_done, static_cast<long>(pos.x), static_cast<long>(pos.y), color);

@@ -835,8 +835,6 @@ void ARX_PLAYER_MakeFreshHero()
 
 	player.SpellToMemorize.bSpell = false;
 }
-s8 SKIN_MOD = 0;
-char QUICK_MOD = 0;
 
 void ARX_SPSound() {
 	ARX_SOUND_PlayCinematic("kra_zoha_equip", false);
@@ -879,8 +877,8 @@ void ARX_PLAYER_MakeSpHero()
 	player.rune_flags = RuneFlags::all();
 	player.SpellToMemorize.bSpell = false;
 
-	SKIN_MOD = 0;
-	QUICK_MOD = 0;
+	player.m_cheatSkinButtonClickCount = 0;
+	player.m_cheatQuickGenButtonClickCount = 0;
 }
 
 /*!
@@ -2563,8 +2561,8 @@ void ARX_PLAYER_AddGold(Entity * gold) {
 
 void ARX_PLAYER_Start_New_Quest() {
 	
-	SKIN_MOD = 0;
-	QUICK_MOD = 0;
+	player.m_cheatSkinButtonClickCount = 0;
+	player.m_cheatQuickGenButtonClickCount = 0;
 	EERIE_PATHFINDER_Clear();
 	EERIE_PATHFINDER_Release();
 	ARX_PLAYER_MakeFreshHero();

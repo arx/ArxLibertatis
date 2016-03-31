@@ -335,6 +335,9 @@ struct ARXCHARACTER {
 	float TRAP_DETECT;
 	float TRAP_SECRET;
 	
+	s8 m_cheatSkinButtonClickCount;
+	char m_cheatQuickGenButtonClickCount;
+	
 	ARXCHARACTER()
 		: m_strikeDirection(0)
 		, m_weaponBlocked(0)
@@ -358,6 +361,8 @@ struct ARXCHARACTER {
 		, bag(0)
 		, TRAP_DETECT(0)
 		, TRAP_SECRET(0)
+		, m_cheatSkinButtonClickCount(0)
+		, m_cheatQuickGenButtonClickCount(0)
 	{
 		for(size_t i = 0; i < ARRAY_SIZE(heads); i++) {
 			heads[i] = NULL;
