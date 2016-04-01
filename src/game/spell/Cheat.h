@@ -20,25 +20,39 @@
 #ifndef ARX_GAME_SPELL_CHEAT_H
 #define ARX_GAME_SPELL_CHEAT_H
 
+enum CheatRune {
+	CheatRune_KAOM,
+	CheatRune_MEGA,
+	CheatRune_U,
+	CheatRune_W,
+	CheatRune_S,
+	CheatRune_P,
+	CheatRune_M,
+	CheatRune_A,
+	CheatRune_X,
+	CheatRune_26,
+	CheatRune_O,
+	CheatRune_R,
+	CheatRune_F,
+	CheatRune_Passwall,
+	CheatRune_ChangeSkin
+};
+
+void handleCheatRuneDetection(CheatRune rune);
+
+
 extern long passwall;
 extern long cur_mx;
-extern long cur_pnux;
 extern long cur_pom;
 extern long cur_rf;
 extern long cur_mr;
-extern long cur_sm;
-extern long cur_bh;
 
 extern long sp_arm;
-extern long cur_arm;
-extern long cur_sos;
 
 extern long cur_mega;
 extern unsigned long sp_max_start;
 extern long sp_wep;
 extern short uw_mode;
-
-extern short uw_mode_pos;
 
 extern long sp_max;
 
@@ -46,18 +60,6 @@ void Manage_sp_max();
 
 void CheatReset();
 void CheatDetectionReset();
-
-void ApplyPasswall();
-void ApplySPArm();
-void ApplySPuw();
-void ApplySPRf();
-void ApplySPMax();
-void ApplySPWep();
-void ApplySPBow();
-void ApplyCurPNux();
-void ApplyCurMr();
-void ApplyCurSOS();
-void EERIE_OBJECT_SetBHMode();
 
 void CheckMr();
 

@@ -168,7 +168,7 @@ void CheatDetectionReset() {
 
 
 long BH_MODE = 0;
-void EERIE_OBJECT_SetBHMode()
+static void EERIE_OBJECT_SetBHMode()
 {
 	if (BH_MODE)
 		BH_MODE=0;
@@ -183,7 +183,7 @@ void EERIE_OBJECT_SetBHMode()
 			}
 }
 
-void ApplySPWep() {
+static void ApplySPWep() {
 
 	if(!sp_wep) {
 
@@ -211,7 +211,7 @@ void ApplySPWep() {
 
 
 
-void ApplyCurSOS() {
+static void ApplyCurSOS() {
 	MakeSpCol();
 	g_miniMap.reveal();
 	sp_max_ch = "!!!_Temple of Elemental Lavis_!!!";
@@ -219,7 +219,7 @@ void ApplyCurSOS() {
 	sp_max_start = arxtime.now_ul();
 }
 
-void ApplySPBow() {
+static void ApplySPBow() {
 
 	ARX_SPSound();
 
@@ -242,7 +242,7 @@ void ApplySPBow() {
 	}
 }
 
-void ApplySPArm() {
+static void ApplySPArm() {
 	ARX_SPSound();
 
 	res::path cls;
@@ -298,7 +298,7 @@ void ApplySPArm() {
 	sp_arm++;
 }
 
-void ApplyCurPNux() {
+static void ApplyCurPNux() {
 
 	MakeSpCol();
 	sp_max_ch = "! PhilNux & Gluonne !";
@@ -312,7 +312,7 @@ void ApplyCurPNux() {
 	sp_max_start = arxtime.now_ul();
 }
 
-void ApplyPasswall() {
+static void ApplyPasswall() {
 	MakeSpCol();
 	sp_max_ch = "!!! PassWall !!!";
 	arxtime.update();
@@ -324,7 +324,7 @@ void ApplyPasswall() {
 		USE_PLAYERCOLLISIONS = true;
 }
 
-void ApplySPRf() {
+static void ApplySPRf() {
 	if(cur_rf == 3) {
 		MakeSpCol();
 		sp_max_ch = "!!! RaFMode !!!";
@@ -333,7 +333,7 @@ void ApplySPRf() {
 	}
 }
 
-void ApplyCurMr() {
+static void ApplyCurMr() {
 	if(cur_mr == 3) {
 		MakeSpCol();
 		sp_max_ch = "!!! Marianna !!!";
@@ -342,7 +342,7 @@ void ApplyCurMr() {
 	}
 }
 
-void ApplySPuw() {
+static void ApplySPuw() {
 	uw_mode_pos=0;
 	uw_mode=~uw_mode;
 	ARX_SOUND_PlayCinematic("menestrel_uw2", true);
@@ -355,7 +355,7 @@ void ApplySPuw() {
 	}
 }
 
-void ApplySPMax() {
+static void ApplySPMax() {
 
 	MakeCoolFx(player.pos);
 	sp_max=~sp_max;
@@ -415,6 +415,188 @@ void CheckMr() {
 			EERIEDrawBitmap(rect, 0.0001f, Mr_tc, color.to<u8>());
 		} else {
 			Mr_tc = TextureContainer::LoadUI("graph/particles/(fx)_mr");
+		}
+	}
+}
+
+
+void handleCheatRuneDetection(CheatRune rune) {
+	switch(rune) {
+		case CheatRune_KAOM: {
+			if(cur_arm >= 0 && (cur_arm & 1)){
+				cur_arm++;
+
+				if(cur_arm > 20)
+					ApplySPArm();
+			}
+			else
+				cur_arm=-1;
+			
+			break;
+		}
+		case CheatRune_MEGA: {
+			if(cur_arm >= 0 && !(cur_arm & 1))
+				cur_arm++;
+			else
+				cur_arm=-1;
+			
+			break;
+		}
+		case CheatRune_U: {
+			if(uw_mode_pos == 0)
+				uw_mode_pos++;
+			
+			break;
+		}
+		case CheatRune_W: {
+			if(uw_mode_pos == 1)
+				ApplySPuw();
+			
+			break;
+		}
+		case CheatRune_S: {
+			if(cur_sm == 0)
+				cur_sm++;
+
+			if(cur_bh == 0)
+				cur_bh++;
+
+			if(cur_bh == 2)
+				cur_bh++;
+
+			if(cur_sos == 0)
+				cur_sos++;
+
+			if(cur_sos == 2) {
+				cur_sos = 0;
+				ApplyCurSOS();
+			}
+			break;
+		}
+		case CheatRune_P: {
+			if(cur_pom == 0)
+				cur_pom++;
+
+			if(cur_pnux == 0)
+				cur_pnux++;
+
+			if(cur_pnux == 2)
+				cur_pnux++;
+
+			if(cur_bh == 1)
+				cur_bh++;
+
+			if(cur_bh == 3) {
+				cur_bh = 0;
+				EERIE_OBJECT_SetBHMode();
+			}
+			break;
+		}
+		case CheatRune_M: {
+			if(cur_sm == 2) {
+				cur_sm++;
+				ApplySPBow();
+			}
+
+			if(cur_mx == 0)
+				cur_mx = 1;
+
+			if(cur_mr == 0)
+				cur_mr = 1;
+
+			if(cur_pom == 2) {
+				cur_pom++;
+				ApplySPWep();
+			}
+			break;
+		}
+		case CheatRune_A: {
+			if(cur_mr == 1) {
+				cur_mr = 2;
+				MakeCoolFx(player.pos);
+			}
+
+			if(cur_mx == 1) {
+				cur_mx = 2;
+				MakeCoolFx(player.pos);
+			}
+
+			if(cur_rf == 1) {
+				cur_rf = 2;
+				MakeCoolFx(player.pos);
+			}
+
+			if(cur_sm == 1)
+				cur_sm++;
+			
+			break;
+		}
+		case CheatRune_X: {
+			if(cur_mx == 2) {
+				cur_mx = 3;
+				ApplySPMax();
+			}
+			break;
+		}
+		case CheatRune_26: {
+			if(cur_pnux == 1)
+				cur_pnux++;
+
+			if(cur_pnux == 3) {
+				cur_pnux++;
+				ApplyCurPNux();
+			}
+			break;
+		}
+		case CheatRune_O: {
+			if(cur_pom == 1)
+				cur_pom++;
+
+			if(cur_sos == 1)
+				cur_sos++;
+			
+			break;
+		}
+		case CheatRune_R: {
+			if(cur_mr == 2) {
+				cur_mr = 3;
+				MakeCoolFx(player.pos);
+				ApplyCurMr();
+			}
+
+			if(cur_rf == 0)
+				cur_rf = 1;
+			
+			break;
+		}
+		case CheatRune_F: {
+			if(cur_rf == 2) {
+				cur_rf = 3;
+				MakeCoolFx(player.pos);
+				ApplySPRf();
+			}
+			break;
+		}
+		case CheatRune_Passwall: {
+			passwall++;
+
+			if(passwall == 3) {
+				passwall=0;
+				ApplyPasswall();
+			}
+			break;
+		}
+		case CheatRune_ChangeSkin: {
+			player.skin++;
+
+			if(player.skin == 4 && Random::getf() < 0.9f)
+				player.skin++;
+
+			if(player.skin > 5)
+				player.skin = 0;
+
+			ARX_EQUIPMENT_RecreatePlayerMesh();
+			break;
 		}
 	}
 }
