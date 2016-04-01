@@ -531,19 +531,16 @@ void ARX_SPELLS_AnalyseSYMBOL() {
 		case 68:
 			handleRuneDetection(RUNE_VITAE);
 			break;
-
-//--------------------------------------------------------------------------------------------------------------------
+//-----------------------------------------------
 // Cheat spells
-
 		// Special UW mode
 		case 238:
 		case 2398:
 		case 23898:
 		case 236987:
-		case 23698: {
+		case 23698:
 			handleCheatRuneDetection(CheatRune_U);
 			goto failed; 
-		}
 		case 2382398:
 		case 2829:
 		case 23982398:
@@ -605,10 +602,9 @@ void ARX_SPELLS_AnalyseSYMBOL() {
 			goto failed; 
 		case 161:
 		case 1621:
-		case 1261: {
+		case 1261:
 			handleCheatRuneDetection(CheatRune_S);
 			goto failed;
-		}
 		case 83614:
 		case 8361:
 		case 8341:
@@ -622,10 +618,9 @@ void ARX_SPELLS_AnalyseSYMBOL() {
 		case 834:
 		case 823:
 		case 8234:
-		case 8231: {
+		case 8231:
 			handleCheatRuneDetection(CheatRune_P);
 			goto failed;
-		}
 		case 83692:
 		case 823982:
 		case 83982:
@@ -633,34 +628,30 @@ void ARX_SPELLS_AnalyseSYMBOL() {
 		case 82392:
 		case 83892:
 		case 823282:
-		case 8392: {
+		case 8392:
 			handleCheatRuneDetection(CheatRune_M);
 			goto failed;
-		}
 		case 98324:
 		case 92324:
 		case 89324:
 		case 9324:
 		case 9892324:
 		case 9234:
-		case 934: {
+		case 934:
 			handleCheatRuneDetection(CheatRune_A);
 			goto failed;
-		}
 		case 3249:
 		case 2349:
 		case 323489:
 		case 23249:
 		case 3489:
 		case 32498:
-		case 349: {
+		case 349:
 			handleCheatRuneDetection(CheatRune_X);
 			goto failed;
-		}
-		case 26: {
+		case 26:
 			handleCheatRuneDetection(CheatRune_26);
 			goto failed;
-		}
 		case 9232187:
 		case 93187:
 		case 9234187:
@@ -668,30 +659,25 @@ void ARX_SPELLS_AnalyseSYMBOL() {
 		case 923187:
 		case 932187:
 		case 93217:
-		case 9317: {
+		case 9317:
 			handleCheatRuneDetection(CheatRune_O);
 			goto failed;
-		}
 		case 82313:
 		case 8343:
 		case 82343:
 		case 83413:
-		case 8313: {
+		case 8313:
 			handleCheatRuneDetection(CheatRune_R);
 			goto failed;
-		}
-		case 86: {
+		case 86:
 			handleCheatRuneDetection(CheatRune_F);
 			goto failed;
-		}
-		case 626262: {
+		case 626262:
 			handleCheatRuneDetection(CheatRune_Passwall);
-		}
-		break;
-		case 828282: {
+			break;
+		case 828282:
 			handleCheatRuneDetection(CheatRune_ChangeSkin);
 			goto failed;
-		}
 		default: {
 		failed:
 			;
