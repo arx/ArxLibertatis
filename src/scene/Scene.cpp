@@ -198,18 +198,13 @@ Vec2f getWaterFxUvOffset(const Vec3f & odtv)
 }
 
 static void ApplyLavaGlowToVertex(const Vec3f & odtv,TexturedVertex * dtv, float power) {
-	float f;
-	long lr, lg, lb;
+	
 	power = 1.f - std::sin(WATEREFFECT + odtv.x + odtv.z) * 0.05f * power;
 	Color inColor = Color::fromRGBA(dtv->color);
-	f = inColor.r * power;
-	lr = clipByte(f);
-
-	f = inColor.g * power;
-	lg = clipByte(f);
-
-	f = inColor.b * power;
-	lb = clipByte(f);
+	
+	long lr = clipByte(inColor.r * power);
+	long lg = clipByte(inColor.g * power);
+	long lb = clipByte(inColor.b * power);
 
 	dtv->color = Color(lr, lg, lb, 255).toRGBA();
 }
