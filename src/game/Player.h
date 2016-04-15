@@ -342,6 +342,15 @@ struct ARXCHARACTER {
 	ARXCHARACTER()
 		: m_strikeDirection(0)
 		, m_weaponBlocked(0)
+		, jumpstarttime(0u)
+		, jumplastposition(0.f)
+		, jumpphase(NotJumping)
+		, climbing(false)
+		, levitate(false)
+		, m_telekinesis(false)
+		, m_improve(false)
+		, inzone(NULL)
+		, falling(false)
 		, torch(NULL)
 		, m_bowAimRatio(0.f)
 		, m_strikeAimRatio(0.f)
@@ -364,6 +373,7 @@ struct ARXCHARACTER {
 		, TRAP_SECRET(0)
 		, m_cheatSkinButtonClickCount(0)
 		, m_cheatQuickGenButtonClickCount(0)
+		, m_cheatPnuxActive(0)
 	{
 		for(size_t i = 0; i < ARRAY_SIZE(heads); i++) {
 			heads[i] = NULL;
