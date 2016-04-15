@@ -21,22 +21,22 @@
 ARX FATALIS GPL Source Code
 Copyright (C) 1999-2010 Arkane Studios SA, a ZeniMax Media company.
 
-This file is part of the Arx Fatalis GPL Source Code ('Arx Fatalis Source Code'). 
+This file is part of the Arx Fatalis GPL Source Code ('Arx Fatalis Source Code').
 
-Arx Fatalis Source Code is free software: you can redistribute it and/or modify it under the terms of the GNU General Public 
+Arx Fatalis Source Code is free software: you can redistribute it and/or modify it under the terms of the GNU General Public
 License as published by the Free Software Foundation, either version 3 of the License, or (at your option) any later version.
 
-Arx Fatalis Source Code is distributed in the hope that it will be useful, but WITHOUT ANY WARRANTY; without even the implied 
+Arx Fatalis Source Code is distributed in the hope that it will be useful, but WITHOUT ANY WARRANTY; without even the implied
 warranty of MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE. See the GNU General Public License for more details.
 
-You should have received a copy of the GNU General Public License along with Arx Fatalis Source Code.  If not, see 
+You should have received a copy of the GNU General Public License along with Arx Fatalis Source Code.  If not, see
 <http://www.gnu.org/licenses/>.
 
-In addition, the Arx Fatalis Source Code is also subject to certain additional terms. You should have received a copy of these 
-additional terms immediately following the terms and conditions of the GNU General Public License which accompanied the Arx 
+In addition, the Arx Fatalis Source Code is also subject to certain additional terms. You should have received a copy of these
+additional terms immediately following the terms and conditions of the GNU General Public License which accompanied the Arx
 Fatalis Source Code. If not, please request a copy in writing from Arkane Studios at the address below.
 
-If you have questions concerning this license or the applicable additional terms, you may contact in writing Arkane Studios, c/o 
+If you have questions concerning this license or the applicable additional terms, you may contact in writing Arkane Studios, c/o
 ZeniMax Media Inc., Suite 120, Rockville, Maryland 20850 USA.
 ===========================================================================
 */
@@ -67,7 +67,7 @@ struct ARX_INTERFACE_MEMORIZE_SPELL {
 	bool bSpell;
 	unsigned long lTimeCreation;
 	Rune iSpellSymbols[6];
-	
+
 	ARX_INTERFACE_MEMORIZE_SPELL()
 		: bSpell(false)
 		, lTimeCreation(0)
@@ -154,14 +154,14 @@ struct PlayerAttribute {
 	float dexterity;
 	float constitution;
 	float mind;
-	
+
 	PlayerAttribute()
 		: strength(0)
 		, dexterity(0)
 		, constitution(0)
 		, mind(0)
 	{}
-	
+
 	void add(const PlayerAttribute & other) {
 		strength += other.strength;
 		dexterity += other.dexterity;
@@ -174,15 +174,15 @@ struct PlayerSkill {
 	float stealth;
 	float mecanism;
 	float intuition;
-	
+
 	float etheralLink;
 	float objectKnowledge;
 	float casting;
-	
+
 	float projectile;
 	float closeCombat;
 	float defense;
-	
+
 	PlayerSkill()
 		: stealth(0)
 		, mecanism(0)
@@ -194,16 +194,16 @@ struct PlayerSkill {
 		, closeCombat(0)
 		, defense(0)
 	{}
-	
+
 	void add(const PlayerSkill & other) {
 		stealth += other.stealth;
 		mecanism += other.mecanism;
 		intuition += other.intuition;
-		
+
 		etheralLink += other.etheralLink;
 		objectKnowledge += other.objectKnowledge;
 		casting += other.casting;
-		
+
 		projectile += other.projectile;
 		closeCombat += other.closeCombat;
 		defense += other.defense;
@@ -216,7 +216,7 @@ struct PlayerMisc {
 	float resistPoison;
 	float criticalHit;
 	float damages;
-	
+
 	PlayerMisc()
 		: armorClass(0)
 		, resistMagic(0)
@@ -224,7 +224,7 @@ struct PlayerMisc {
 		, criticalHit(0)
 		, damages(0)
 	{}
-	
+
 	void add(const PlayerMisc & other) {
 		armorClass += other.armorClass;
 		resistMagic += other.resistMagic;
@@ -235,95 +235,95 @@ struct PlayerMisc {
 };
 
 struct ARXCHARACTER {
-	
+
 	Vec3f pos;
 	Anglef angle;
 	IO_PHYSICS physics;
-	
+
 	AnimLayer bookAnimation[MAX_ANIM_LAYERS];
-	
+
 	long m_strikeDirection;
 	long m_weaponBlocked;
-	
+
 	// Jump Sub-data
 	unsigned long jumpstarttime;
 	float jumplastposition;
 	JumpPhase jumpphase;
-	
+
 	bool climbing;
-	
+
 	bool m_paralysed;
-	
+
 	// Updated by spells
 	bool levitate;
 	bool m_telekinesis;
 	bool m_improve;
-	
+
 	Anglef desiredangle;
 	Vec3f size;
 	ARX_PATH * inzone;
-	
+
 	bool falling;
 	short doingmagic;
 	PlayerInterfaceFlags Interface;
-	
+
 	PlayerMovement Current_Movement;
 	PlayerMovement Last_Movement;
 	bool onfirmground;
-	
+
 	Color3f m_torchColor;
 	Entity * torch;
-	
-	EntityHandle equiped[MAX_EQUIPED]; 
-	
+
+	EntityHandle equiped[MAX_EQUIPED];
+
 	// Modifier Values (Items, curses, etc...)
 	PlayerAttribute m_attributeMod;
 	PlayerSkill m_skillMod;
 	PlayerMisc m_miscMod;
-	
+
 	// Full Frame values (including items)
 	PlayerAttribute m_attributeFull;
 	PlayerSkill m_skillFull;
 	PlayerMisc m_miscFull;
-	
+
 	float m_bowAimRatio;
-	
+
 	float m_strikeAimRatio;
 	long Full_AimTime;
-	
+
 	float Full_life;
 	float Full_maxlife;
 	float Full_maxmana;
-	
+
 	// true (naked) Player Values
 	PlayerAttribute m_attribute;
 	PlayerSkill m_skill;
 	PlayerMisc m_misc;
-	
+
 	long AimTime;
-	
+
 	unsigned long m_aimTime;
-	
+
 	ResourcePool lifePool;
 	ResourcePool manaPool;
-	
+
 	// Player Old Values
 	PlayerSkill m_skillOld;
-	
+
 	unsigned char Attribute_Redistribute;
 	unsigned char Skill_Redistribute;
-	
+
 	short level;
-	
+
 	long xp;
 	char skin;
-	
+
 	RuneFlags rune_flags;
 	bool hasRune(Rune rune) {
 		return (rune_flags & (RuneFlag)(1 << rune)) != 0;
 	}
-	
-	
+
+
 	TextureContainer * heads[5];
 	float poison;
 	float hunger;
@@ -334,11 +334,11 @@ struct ARXCHARACTER {
 
 	float TRAP_DETECT;
 	float TRAP_SECRET;
-	
+
 	s8 m_cheatSkinButtonClickCount;
 	char m_cheatQuickGenButtonClickCount;
 	long m_cheatPnuxActive;
-	
+
 	ARXCHARACTER()
 		: m_strikeDirection(0)
 		, m_weaponBlocked(0)
@@ -379,22 +379,22 @@ struct ARXCHARACTER {
 			heads[i] = NULL;
 		}
 	}
-	
+
 	static float baseRadius() { return 52.f; }
 	static float baseHeight() { return -170.f; }
 	static float crouchHeight() { return -120.f; }
 	static float levitateHeight() { return -220.f; }
-	
+
 	static Vec3f baseOffset() { return Vec3f(0.f, baseHeight(), 0.f); }
-	
+
 	Vec3f basePosition() {
 		return Vec3f(pos.x, pos.y - baseHeight(), pos.z);
 	}
-	
+
 	Cylinder baseCylinder() {
 		return Cylinder(basePosition(), baseRadius(), baseHeight());
 	}
-	
+
 };
 
 extern float CURRENT_PLAYER_COLOR;
@@ -458,7 +458,7 @@ void ARX_PLAYER_KillTorch();
 void ARX_PLAYER_PutPlayerInNormalStance();
 void ARX_PLAYER_Start_New_Quest();
 void ARX_PLAYER_Rune_Add_All();
- 
+
 void ARX_PLAYER_Restore_Skin();
 float GetPlayerStealth();
 
