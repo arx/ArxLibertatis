@@ -54,6 +54,7 @@ public:
 	static void registerCommand(script::Command * command);
 	
 	static void init();
+	static void shutdown();
 	
 private:
 	

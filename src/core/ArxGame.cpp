@@ -1179,6 +1179,9 @@ void ArxGame::shutdownGame() {
 		ARX_INPUT_Release();
 		ARX_SOUND_Release();
 	}
+	
+	ScriptEvent::shutdown();
+	
 }
 
 void ArxGame::onWindowGotFocus(const Window &) {

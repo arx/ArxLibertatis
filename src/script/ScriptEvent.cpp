@@ -510,6 +510,16 @@ void ScriptEvent::init() {
 	LogInfo << "Scripting system initialized with " << commands.size() << " commands and " << count << " suppressions";
 }
 
+void ScriptEvent::shutdown() {
+	// Delete all commands before clear
+	for(Commands::iterator i = commands.begin(); i != commands.end(); ++i) {
+		delete i->second;
+	}
+	// Remove all the commands
+	commands.clear();
+	LogInfo << "Scripting system shutdown";
+}
+
 std::string ScriptEvent::getName(ScriptMessage msg, const std::string & eventname) {
 	if(msg == SM_EXECUTELINE) {
 		return "executeline";
