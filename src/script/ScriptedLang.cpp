@@ -775,6 +775,14 @@ public:
 		addOperator(new GreaterOperator);
 	}
 	
+	~IfCommand() {
+		for (Operators::iterator opsItr =  operators.begin(); opsItr != operators.end(); opsItr++) {
+			Operator * const ops = opsItr->second;
+			delete ops;
+		}
+		operators.clear();
+	}
+
 	Result execute(Context & context) {
 		
 		std::string left = context.getWord();
