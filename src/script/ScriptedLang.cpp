@@ -775,6 +775,13 @@ public:
 		addOperator(new GreaterOperator);
 	}
 	
+	~IfCommand() {
+		for(Operators::iterator i = operators.begin(); i != operators.end(); ++i) {
+			delete i->second;
+		}
+		operators.clear();
+	}
+
 	Result execute(Context & context) {
 		
 		std::string left = context.getWord();
