@@ -31,6 +31,10 @@ PackedTexture::~PackedTexture() {
 }
 
 void PackedTexture::clear() {
+	for (std::vector<TextureTree *>::iterator textTreeItr = textures.begin(); textTreeItr != textures.end(); textTreeItr++) {
+		TextureTree * const textureTreePtr = *textTreeItr;
+		delete textureTreePtr;
+	}
 	textures.clear();
 }
 
