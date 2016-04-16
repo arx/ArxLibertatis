@@ -423,6 +423,13 @@ public:
 		addCommand(new CloseCommand);
 	}
 	
+	~InventoryCommand() {
+		for(Commands::iterator i = commands.begin(); i != commands.end(); ++i) {
+			delete i->second;
+		}
+		commands.clear();
+	}
+	
 	Result execute(Context & context) {
 		
 		std::string cmdname = context.getWord();
