@@ -422,7 +422,15 @@ public:
 		addCommand(new OpenCommand);
 		addCommand(new CloseCommand);
 	}
-	
+
+	~InventoryCommand() {
+		for (Commands::iterator cmdsItr = commands.begin(); cmdsItr != commands.end(); cmdsItr++) {
+			SubCommand * const cmdPtr = cmdsItr->second;
+			delete cmdPtr;
+		}
+		commands.clear();
+	}
+
 	Result execute(Context & context) {
 		
 		std::string cmdname = context.getWord();
