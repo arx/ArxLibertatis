@@ -31,6 +31,9 @@ PackedTexture::~PackedTexture() {
 }
 
 void PackedTexture::clear() {
+	for(texture_iterator i = textures.begin(); i != textures.end(); ++i) {
+		delete *i;
+	}
 	textures.clear();
 }
 
