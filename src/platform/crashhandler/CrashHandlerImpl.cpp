@@ -88,16 +88,16 @@ void CrashHandlerImpl::processCrashRegisters() {
 		description << '\n';
 	}
 	if(m_pCrashInfo->hasAddress) {
-		description << "Instruction address: 0x" << std::hex << m_pCrashInfo->address << '\n';
+		description << " Instruction address: 0x" << std::hex << m_pCrashInfo->address << '\n';
 	}
 	if(m_pCrashInfo->hasMemory) {
-		description << "Memory accessed: 0x" << std::hex << m_pCrashInfo->memory << '\n';
+		description << " Memory accessed: 0x" << std::hex << m_pCrashInfo->memory << '\n';
 	}
 	if(m_pCrashInfo->hasStack) {
-		description << "Stack pointer: 0x" << std::hex << m_pCrashInfo->stack << '\n';
+		description << " Stack pointer: 0x" << std::hex << m_pCrashInfo->stack << '\n';
 	}
 	if(m_pCrashInfo->hasFrame) {
-		description << "Frame pointer: 0x" << std::hex << m_pCrashInfo->frame << '\n';
+		description << " Frame pointer: 0x" << std::hex << m_pCrashInfo->frame << '\n';
 	}
 	description << std::dec;
 	
