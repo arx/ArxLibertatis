@@ -1830,7 +1830,8 @@ probe_steam_root() {
 		_steam_libraries="$(
 			sed -n '/BaseInstallFolder/s/^[^\"]*\"[^\"]*\"[^\"]*\"\([^\"]*\)\".*/\1/p' \
 			< "$_steam_config" \
-			| sed 's:[^a-zA-Z0-9/_.\n]:\\&:g'
+			| sed 's:[^a-zA-Z0-9/_.\n]:\\&:g' \
+			| lines_to_list
 		)"
 		_steam_library_call='probe_steam_library "$_steam_library" && return $true'
 		eval "for _steam_library in $_steam_libraries ; do $_steam_library_call ; done"
