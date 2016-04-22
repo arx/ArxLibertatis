@@ -297,7 +297,7 @@ void FireballSpell::Update(float timeDelta) {
 	sphere.radius=std::max(m_level*2.f,12.f);
 	
 		if(ulCurrentTime > m_createBallDuration) {
-			SpawnFireballTail(eCurPos, eMove, (float)m_level, 0);
+			SpawnFireballTail(eCurPos, eMove, m_level, 0);
 		} else {
 			if(Random::getf() < 0.9f) {
 				Vec3f move = Vec3f_ZERO;
@@ -312,7 +312,7 @@ void FireballSpell::Update(float timeDelta) {
 	if(!bExplo)
 	if(CheckAnythingInSphere(sphere, m_caster, CAS_NO_SAME_GROUP)) {
 		ARX_BOOMS_Add(eCurPos);
-		LaunchFireballBoom(eCurPos, (float)m_level);
+		LaunchFireballBoom(eCurPos, m_level);
 		
 		eMove *= 0.5f;
 		//SetTTL(1500);

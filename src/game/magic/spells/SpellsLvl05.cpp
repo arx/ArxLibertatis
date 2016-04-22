@@ -144,7 +144,7 @@ void RuneOfGuardingSpell::Update(float timeDelta) {
 	Sphere sphere = Sphere(m_pos, std::max(m_level * 15.f, 50.f));
 	if(CheckAnythingInSphere(sphere, m_caster, CAS_NO_SAME_GROUP | CAS_NO_BACKGROUND_COL | CAS_NO_ITEM_COL| CAS_NO_FIX_COL | CAS_NO_DEAD_COL)) {
 		ARX_BOOMS_Add(m_pos);
-		LaunchFireballBoom(m_pos, (float)m_level);
+		LaunchFireballBoom(m_pos, m_level);
 		DoSphericDamage(Sphere(m_pos, 30.f * m_level), 4.f * m_level, DAMAGE_AREA, DAMAGE_TYPE_FIRE | DAMAGE_TYPE_MAGICAL, m_caster);
 		ARX_SOUND_PlaySFX(SND_SPELL_RUNE_OF_GUARDING_END, &m_pos);
 		m_duration = 0;
