@@ -1182,7 +1182,13 @@ void TryToCastSpell(Entity * io, SpellType spellType, long level, EntityHandle t
 		||	(io->spellcast_data.spell_flags & SPELLCAST_FLAG_PRECAST))	
 	{
 		
-		ARX_SPELLS_Launch(io->spellcast_data.castingspell, io->index(), io->spellcast_data.spell_flags,io->spellcast_data.spell_level,io->spellcast_data.target,io->spellcast_data.duration);
+		ARX_SPELLS_Launch(io->spellcast_data.castingspell,
+		                  io->index(),
+		                  io->spellcast_data.spell_flags,
+		                  io->spellcast_data.spell_level,
+		                  io->spellcast_data.target,
+		                  io->spellcast_data.duration);
+		
 		io->spellcast_data.castingspell = SPELL_NONE;
 	}
 
