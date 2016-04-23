@@ -426,7 +426,7 @@ long ARX_SPEECH_AddSpeech(Entity * io, const std::string & data, long mood,
 
 void ARX_SPEECH_Update() {
 	
-	unsigned long tim = arxtime.now_ul();
+	unsigned long now = arxtime.now_ul();
 
 	if(cinematicBorder.isActive() || BLOCK_PLAYER_CONTROLS)
 		ARX_CONVERSATION_CheckAcceleratedSpeech();
@@ -460,7 +460,7 @@ void ARX_SPEECH_Update() {
 		}
 
 		// checks finished speech
-		if(tim >= aspeech[i].time_creation + aspeech[i].duration) {
+		if(now >= aspeech[i].time_creation + aspeech[i].duration) {
 			EERIE_SCRIPT *es = aspeech[i].es;
 			Entity *io = aspeech[i].ioscript;
 			long scrpos = aspeech[i].scrpos;
