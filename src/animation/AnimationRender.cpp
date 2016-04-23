@@ -280,13 +280,13 @@ void Cedric_ApplyLightingFirstPartRefactor(Entity *io) {
 	}
 
 	if((io->ioflags & IO_ITEM) && io->poisonous > 0.f && io->poisonous_count) {
-		poisonpercent = (float)io->poisonous * (1.0f / 20);
+		poisonpercent = io->poisonous * (1.0f / 20);
 		if(poisonpercent > 1.f)
 			poisonpercent = 1.f;
 	}
 
 	if((io->ioflags & IO_FIX) && io->_fixdata->trapvalue > -1) {
-		trappercent = player.TRAP_DETECT - (float)io->_fixdata->trapvalue;
+		trappercent = player.TRAP_DETECT - io->_fixdata->trapvalue;
 		if(trappercent > 0.f) {
 			trappercent = 0.6f + trappercent * ( 1.0f / 100 );
 			trappercent = glm::clamp(trappercent, 0.6f, 1.f);
@@ -294,7 +294,7 @@ void Cedric_ApplyLightingFirstPartRefactor(Entity *io) {
 	}
 
 	if((io->ioflags & IO_FIX) && io->secretvalue > -1) {
-		secretpercent = player.TRAP_SECRET - (float)io->secretvalue;
+		secretpercent = player.TRAP_SECRET - io->secretvalue;
 		if(secretpercent > 0.f) {
 			secretpercent = 0.6f + secretpercent * ( 1.0f / 100 );
 			secretpercent = glm::clamp(secretpercent, 0.6f, 1.f);
