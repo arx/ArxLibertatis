@@ -73,12 +73,12 @@ bool CursorTrail::ComputePer(const Vec2s & _psPoint1, const Vec2s & _psPoint2, T
 
 	fMag = _fSize / fMag;
 
-	_psd3dv1->p.x=(sTemp.x*fMag);
-	_psd3dv1->p.y=(sTemp.y*fMag);
-	_psd3dv2->p.x=((float)_psPoint1.x)-_psd3dv1->p.x;
-	_psd3dv2->p.y=((float)_psPoint1.y)-_psd3dv1->p.y;
-	_psd3dv1->p.x+=((float)_psPoint1.x);
-	_psd3dv1->p.y+=((float)_psPoint1.y);
+	_psd3dv1->p.x = sTemp.x * fMag;
+	_psd3dv1->p.y = sTemp.y * fMag;
+	_psd3dv2->p.x = ((float)_psPoint1.x) - _psd3dv1->p.x;
+	_psd3dv2->p.y = ((float)_psPoint1.y) - _psd3dv1->p.y;
+	_psd3dv1->p.x += (float)_psPoint1.x;
+	_psd3dv1->p.y += (float)_psPoint1.y;
 
 	return true;
 }
