@@ -149,7 +149,7 @@ void ARXMenu_Options_Video_SetDetailsQuality(int _iQuality) {
 void ARXMenu_Options_Audio_SetMasterVolume(int _iVolume) {
 	_iVolume = glm::clamp(_iVolume, 0, 10);
 	
-	float fVolume = ((float)_iVolume) * 0.1f;
+	float fVolume = _iVolume * 0.1f;
 	if(config.audio.muteOnFocusLost && !mainApp->getWindow()->hasFocus()) {
 		fVolume = 0.f;
 	}
@@ -160,7 +160,7 @@ void ARXMenu_Options_Audio_SetMasterVolume(int _iVolume) {
 void ARXMenu_Options_Audio_SetSfxVolume(int _iVolume) {
 	_iVolume = glm::clamp(_iVolume, 0, 10);
 	
-	float fVolume = ((float)_iVolume) * 0.1f;
+	float fVolume = _iVolume * 0.1f;
 	ARX_SOUND_MixerSetVolume(ARX_SOUND_MixerMenuSample, fVolume);
 	config.audio.sfxVolume = _iVolume;
 }
@@ -168,7 +168,7 @@ void ARXMenu_Options_Audio_SetSfxVolume(int _iVolume) {
 void ARXMenu_Options_Audio_SetSpeechVolume(int _iVolume) {
 	_iVolume = glm::clamp(_iVolume, 0, 10);
 	
-	float fVolume = ((float)_iVolume) * 0.1f;
+	float fVolume = _iVolume * 0.1f;
 	ARX_SOUND_MixerSetVolume(ARX_SOUND_MixerMenuSpeech, fVolume);
 	config.audio.speechVolume = _iVolume;
 }
@@ -176,7 +176,7 @@ void ARXMenu_Options_Audio_SetSpeechVolume(int _iVolume) {
 void ARXMenu_Options_Audio_SetAmbianceVolume(int _iVolume) {
 	_iVolume = glm::clamp(_iVolume, 0, 10);
 	
-	float fVolume = ((float)_iVolume) * 0.1f;
+	float fVolume = _iVolume * 0.1f;
 	ARX_SOUND_MixerSetVolume(ARX_SOUND_MixerMenuAmbiance, fVolume);
 	config.audio.ambianceVolume = _iVolume;
 }
