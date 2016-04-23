@@ -78,10 +78,10 @@ void Manage_sp_max() {
 		float sizX = 16;
 		
 		Vec2f p = Vec2f(g_size.center());
-		p.x -= (float)sp_max_ch.length() * ( 1.0f / 2 ) * sizX;
+		p.x -= sp_max_ch.length() * ( 1.0f / 2 ) * sizX;
 		
 		for(size_t i = 0; i < sp_max_ch.length(); i++) {
-			Vec2f d = p + Vec2f(sizX * (float)i, sp_max_y[i]);
+			Vec2f d = p + Vec2f(sizX * i, sp_max_y[i]);
 			
 			sp_max_y[i] = std::sin(d.x + arxtime.now_f() * ( 1.0f / 100 )) * 30.f * modi;
 			std::string tex(1, sp_max_ch[i]);
