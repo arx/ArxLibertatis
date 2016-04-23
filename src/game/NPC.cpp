@@ -856,7 +856,7 @@ void ARX_NPC_ChangeMoveMode(Entity * io, MoveMode MOVEMODE) {
 static void ARX_NPC_ManagePoison(Entity * io) {
 	
 	float cp = io->_npcdata->poisonned;
-	cp *= ( 1.0f / 2 ) * framedelay * ( 1.0f / 1000 ) * ( 1.0f / 2 );
+	cp *= ( 1.0f / 2 ) * g_framedelay * ( 1.0f / 1000 ) * ( 1.0f / 2 );
 	float faster = 10.f - io->_npcdata->poisonned;
 
 	if(faster < 0.f)
@@ -986,7 +986,7 @@ void ARX_PHYSICS_Apply() {
 
 			if(io->ioflags & IO_NPC) {
 				const float LAVA_DAMAGE = 10.f;
-				float dmg = LAVA_DAMAGE * framedelay * (1.f/100);
+				float dmg = LAVA_DAMAGE * g_framedelay * (1.f/100);
 				ARX_DAMAGES_DamageNPC(io, dmg, EntityHandle(), false, NULL);
 			}
 		}
@@ -999,7 +999,7 @@ void ARX_PHYSICS_Apply() {
 			if(io->obj->pbox->active == 1) {
 				PHYSICS_CURIO = io;
 
-				ARX_PHYSICS_BOX_ApplyModel(io->obj->pbox, (float)framedelay, io->rubber, treatio[i].num);
+				ARX_PHYSICS_BOX_ApplyModel(io->obj->pbox, (float)g_framedelay, io->rubber, treatio[i].num);
 				
 				if(io->soundcount > 12) {
 					io->soundtime = 0;
@@ -1044,8 +1044,8 @@ void ARX_PHYSICS_Apply() {
 
 		if(io->ioflags & IO_NPC) {
 			ARX_PROFILE(IO_NPC);
-			if(io->_npcdata->climb_count != 0.f && framedelay > 0) {
-				io->_npcdata->climb_count -= MAX_ALLOWED_PER_SECOND * (float)framedelay * ( 1.0f / 1000 );
+			if(io->_npcdata->climb_count != 0.f && g_framedelay > 0) {
+				io->_npcdata->climb_count -= MAX_ALLOWED_PER_SECOND * (float)g_framedelay * ( 1.0f / 1000 );
 
 				if(io->_npcdata->climb_count < 0)
 					io->_npcdata->climb_count = 0.f;
@@ -1113,7 +1113,7 @@ void FaceTarget2(Entity * io)
 	if(tt == 0)
 		return;
 
-	float rot = 0.33f * framedelay; 
+	float rot = 0.33f * g_framedelay; 
 
 	if(glm::abs(tt) < rot)
 		rot = glm::abs(tt);
@@ -1165,7 +1165,7 @@ void StareAtTarget(Entity * io)
 	if(io->target.x - tv.x == 0 && io->target.z - tv.z == 0)
 		return;
 
-	float rot = 0.27f * framedelay;
+	float rot = 0.27f * g_framedelay;
 	float alpha = MAKEANGLE(io->angle.getPitch());
 	float beta = -io->head_rot; 
 	float pouet = MAKEANGLE(180.f + glm::degrees(getAngle(io->target.x, io->target.z, tv.x, tv.z)));
@@ -1532,7 +1532,7 @@ static const int STRIKE_DISTANCE = 220;
  */
 static void ARX_NPC_Manage_Anims(Entity * io, float TOLERANCE) {
 	
-	io->_npcdata->strike_time += (short)framedelay;
+	io->_npcdata->strike_time += (short)g_framedelay;
 	
 	AnimLayer & layer0 = io->animlayer[0];
 	AnimLayer & layer1 = io->animlayer[1];
@@ -2072,7 +2072,7 @@ static void ManageNPCMovement(Entity * io)
 
 				for(long n = 0; n < 4; n++) {
 					float t = 1.5f - (float)n * ( 1.0f / 5 );
-					extraRotation->group_rotate[n].setPitch(extraRotation->group_rotate[n].getPitch() + io->_npcdata->look_around_inc * framedelay * t);
+					extraRotation->group_rotate[n].setPitch(extraRotation->group_rotate[n].getPitch() + io->_npcdata->look_around_inc * g_framedelay * t);
 				}
 
 				if(extraRotation->group_rotate[0].getPitch() > 30)
@@ -2294,7 +2294,7 @@ static void ManageNPCMovement(Entity * io)
 	if(io->forcedmove == Vec3f_ZERO) {
 		ForcedMove = Vec3f_ZERO;
 	} else {
-		float dd = std::min(1.f, (float)framedelay * (1.0f / 6) / glm::length(io->forcedmove));
+		float dd = std::min(1.f, (float)g_framedelay * (1.0f / 6) / glm::length(io->forcedmove));
 		ForcedMove = io->forcedmove * dd;
 	}
 
@@ -2315,7 +2315,7 @@ static void ManageNPCMovement(Entity * io)
 		float anything = CheckAnythingInCylinder(phys.cyl, io, CFLAG_JUST_TEST | CFLAG_NPC);
 
 		if(anything >= 0)
-			io->physics.targetpos.y = io->pos.y + (float)framedelay * 1.5f + ForcedMove.y;
+			io->physics.targetpos.y = io->pos.y + (float)g_framedelay * 1.5f + ForcedMove.y;
 		else
 			io->physics.targetpos.y = io->pos.y + ForcedMove.y;
 
@@ -2426,7 +2426,7 @@ static void ManageNPCMovement(Entity * io)
 				   && (io->_npcdata->behavior & BEHAVIOUR_FIGHT)
 				   && layer0.cur_anim != alist[ANIM_RUN]
 				) {
-					float fCalc = io->_npcdata->walk_start_time + framedelay ;
+					float fCalc = io->_npcdata->walk_start_time + g_framedelay ;
 
 					io->_npcdata->walk_start_time = checked_range_cast<short>(fCalc);
 
@@ -2941,7 +2941,7 @@ void ManageIgnition(Entity * io) {
 	} else if(io->obj && io->obj->fastaccess.fire != ActionPoint() && io->ignition > 0.f) {
 		
 		io->ignition = 25.f;
-		io->durability -= framedelay * ( 1.0f / 10000 );
+		io->durability -= g_framedelay * ( 1.0f / 10000 );
 		
 		if(io->durability <= 0.f) {
 			ARX_SOUND_PlaySFX(SND_TORCH_END, &io->pos);
@@ -2954,10 +2954,10 @@ void ManageIgnition(Entity * io) {
 			createFireParticles(pos, 2, 2);
 		}
 	} else {
-		io->ignition -= framedelay * 0.01f;
+		io->ignition -= g_framedelay * 0.01f;
 		
 		if(addParticles && io->obj && !io->obj->facelist.empty()) {
-			float p = io->ignition * framedelay * 0.001f * io->obj->facelist.size() * 0.001f * 2.f;
+			float p = io->ignition * g_framedelay * 0.001f * io->obj->facelist.size() * 0.001f * 2.f;
 			int positions = std::min(int(std::ceil(p)), 10);
 			
 			createObjFireParticles(io->obj, positions, 6, 180);

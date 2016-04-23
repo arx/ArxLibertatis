@@ -239,7 +239,7 @@ static void IncrementPolyWithNormalOutput(EERIEPOLY * _pPoly, TexturedVertex * _
 	}
 }
 
-extern float framedelay;
+extern float g_framedelay;
 void ARXDRAW_DrawPolyBoom() {
 	
 	ARX_PROFILE_FUNC();
@@ -254,13 +254,13 @@ void ARXDRAW_DrawPolyBoom() {
 		POLYBOOM & pb = polyboom[i];
 		
 		if(pb.type & 128) {
-			if(pb.timecreation - framedelay > 0) {
-				float fCalc = pb.timecreation - framedelay;
+			if(pb.timecreation - g_framedelay > 0) {
+				float fCalc = pb.timecreation - g_framedelay;
 				pb.timecreation = checked_range_cast<unsigned long>(fCalc);
 			}
 
-			if(pb.timecreation - framedelay > 0) {
-				float fCalc =  pb.timecreation - framedelay;
+			if(pb.timecreation - g_framedelay > 0) {
+				float fCalc =  pb.timecreation - g_framedelay;
 				pb.timecreation = checked_range_cast<unsigned long>(fCalc);
 			}
 		}

@@ -1550,7 +1550,7 @@ void ArxGame::speechControlledCinematic() {
 
 void ArxGame::handlePlayerDeath() {
 	if(player.lifePool.current <= 0) {
-		DeadTime += static_cast<long>(framedelay);
+		DeadTime += static_cast<long>(g_framedelay);
 		float mdist = glm::abs(player.physics.cyl.height)-60;
 
 		float startDistance = 40.f;
@@ -1637,12 +1637,12 @@ void ArxGame::updateTime() {
 		arxtime.update_frame_time();
 	}
 
-	framedelay = arxtime.get_frame_delay();
-	arx_assert(framedelay >= 0.0f);
+	g_framedelay = arxtime.get_frame_delay();
+	arx_assert(g_framedelay >= 0.0f);
 
 	// limit fps above 10fps
 	const float max_framedelay = 1000.0f / 10.0f;
-	framedelay = framedelay > max_framedelay ? max_framedelay : framedelay;
+	g_framedelay = g_framedelay > max_framedelay ? max_framedelay : g_framedelay;
 }
 
 void ArxGame::updateInput() {
@@ -1898,7 +1898,7 @@ void ArxGame::updateLevel() {
 	ARX_SCENE_Update();
 
 	arx_assert(pParticleManager);
-	pParticleManager->Update(static_cast<long>(framedelay));
+	pParticleManager->Update(static_cast<long>(g_framedelay));
 
 	ARX_FOGS_Render();
 
@@ -2092,7 +2092,7 @@ void ArxGame::renderLevel() {
 	GRenderer->GetTextureStage(0)->setWrapMode(TextureStage::WrapRepeat);
 
 	if(pTextManage && !pTextManage->Empty()) {
-		pTextManage->Update(framedelay);
+		pTextManage->Update(g_framedelay);
 		pTextManage->Render();
 	}
 
@@ -2275,7 +2275,7 @@ void ArxGame::update2DFX() {
 	Entity* pTableIO[256];
 	int nNbInTableIO = 0;
 
-	float temp_increase = framedelay * (1.0f/1000) * 4.f;
+	float temp_increase = g_framedelay * (1.0f/1000) * 4.f;
 
 	bool bComputeIO = false;
 

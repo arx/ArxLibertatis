@@ -206,12 +206,12 @@ void ARX_DAMAGE_Show_Hit_Blood()
 			}
 
 			if(duration > Blood_Duration)
-				Blood_Pos += framedelay * ( 1.0f / 300 );
+				Blood_Pos += g_framedelay * ( 1.0f / 300 );
 
-			duration += static_cast<long>(framedelay);
+			duration += static_cast<long>(g_framedelay);
 		}
 		else
-			Blood_Pos += framedelay * ( 1.0f / 40 );
+			Blood_Pos += g_framedelay * ( 1.0f / 40 );
 	}
 
 	Last_Blood_Pos = Blood_Pos;
@@ -644,7 +644,7 @@ float ARX_DAMAGES_DealDamages(EntityHandle target, float dmg, EntityHandle sourc
 	float damagesdone;
 
 	if(flags & DAMAGE_TYPE_PER_SECOND) {
-		dmg = dmg * framedelay * ( 1.0f / 1000 );
+		dmg = dmg * g_framedelay * ( 1.0f / 1000 );
 	}
 
 	if(target == PlayerEntityHandle) {
@@ -976,7 +976,7 @@ static void ARX_DAMAGES_UpdateDamage(DamageHandle j, float tim) {
 	} else if(damage.params.duration == -1) {
 		dmg = damage.params.damages;
 	} else {
-		float FD = (float)framedelay;
+		float FD = (float)g_framedelay;
 		
 		if(tim > damage.start_time + damage.params.duration) {
 			FD -= damage.start_time + damage.params.duration - tim;

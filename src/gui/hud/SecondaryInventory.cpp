@@ -583,10 +583,10 @@ void SecondaryInventoryHud::updateFader() {
 	if(InventoryDir != 0) {
 		if((player.Interface & INTER_COMBATMODE) || player.doingmagic >= 2 || InventoryDir == -1) {
 			if(InventoryX > -160)
-				InventoryX -= (framedelay * ( 1.0f / 3 )) * m_scale;
+				InventoryX -= (g_framedelay * ( 1.0f / 3 )) * m_scale;
 		} else {
 			if(InventoryX < 0)
-				InventoryX += InventoryDir * (framedelay * ( 1.0f / 3 )) * m_scale;
+				InventoryX += InventoryDir * (g_framedelay * ( 1.0f / 3 )) * m_scale;
 		}
 		
 		if(InventoryX <= -160) {

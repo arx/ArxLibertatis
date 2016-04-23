@@ -200,7 +200,7 @@ long TELEPORT_TO_ANGLE;
 // END -   Information for Player Teleport between/in Levels---------------------------------------
 res::path LastLoadedScene;
 
-float framedelay=0.f;
+float g_framedelay = 0.f;
 
 bool LOAD_N_ERASE = true;
 bool TIME_INIT = true;
@@ -946,7 +946,7 @@ void ManageCombatModeAnimations() {
 				if(GLOBAL_SLOWDOWN != 1.f)
 					player.m_bowAimRatio += bowZoomFromDuration(Original_framedelay);
 				else
-					player.m_bowAimRatio += bowZoomFromDuration(framedelay);
+					player.m_bowAimRatio += bowZoomFromDuration(g_framedelay);
 				
 				if(player.m_bowAimRatio > 1.f)
 					player.m_bowAimRatio = 1.f;

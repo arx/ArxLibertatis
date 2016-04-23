@@ -93,8 +93,8 @@ void ARX_GLOBALMODS_Apply() {
 	
 	ARX_PROFILE_FUNC();
 	
-	float baseinc = framedelay;
-	float incdiv1000 = framedelay * ( 1.0f / 1000 );
+	float baseinc = g_framedelay;
+	float incdiv1000 = g_framedelay * ( 1.0f / 1000 );
 
 	if (desired.flags & GMOD_ZCLIP) {
 		current.zclip = Approach(current.zclip, desired.zclip, baseinc * 2);

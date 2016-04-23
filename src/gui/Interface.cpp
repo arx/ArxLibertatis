@@ -1042,7 +1042,7 @@ void ArxGame::managePlayerControls() {
 				}
 
 				if(!npc) {
-					MagicSightFader+=framedelay*( 1.0f / 200 );
+					MagicSightFader+=g_framedelay*( 1.0f / 200 );
 
 					if(MagicSightFader > 1.f)
 						MagicSightFader = 1.f;
@@ -1675,12 +1675,12 @@ void ArxGame::manageKeyMouse() {
 	Vec2s mouseDiff = GInput->getMousePosRel();
 	
 	if(config.input.mouseAcceleration > 0) {
-		Vec2f speed = Vec2f(mouseDiff) / framedelay;
+		Vec2f speed = Vec2f(mouseDiff) / g_framedelay;
 		Vec2f sign(speed.x < 0 ? -1.f : 1.f, speed.y < 0 ? -1.f : 1.f);
 		float exponent = 1.f + config.input.mouseAcceleration * 0.05f;
 		speed.x = (std::pow(speed.x * sign.x + 1.f, exponent) - 1.f) * sign.x;
 		speed.y = (std::pow(speed.y * sign.y + 1.f, exponent) - 1.f) * sign.y;
-		mouseDiff = Vec2s(speed * framedelay);
+		mouseDiff = Vec2s(speed * g_framedelay);
 	}
 	
 	ARX_Menu_Manage();
@@ -1783,25 +1783,25 @@ void ArxGame::manageKeyMouse() {
 				
 				if(distLeft < borderSize) {
 					float speed = 1.f - float(distLeft) / float(borderSize);
-					mouseDiff.x -= speed * framedelay;
+					mouseDiff.x -= speed * g_framedelay;
 					bKeySpecialMove = true;
 				}
 				
 				if(distRight < borderSize) {
 					float speed = 1.f - float(distRight) / float(borderSize);
-					mouseDiff.x += speed * framedelay;
+					mouseDiff.x += speed * g_framedelay;
 					bKeySpecialMove = true;
 				}
 				
 				if(distTop < borderSize) {
 					float speed = 1.f - float(distTop) / float(borderSize);
-					mouseDiff.y -= speed * framedelay;
+					mouseDiff.y -= speed * g_framedelay;
 					bKeySpecialMove = true;
 				}
 				
 				if(distBottom < borderSize) {
 					float speed = 1.f - float(distBottom) / float(borderSize);
-					mouseDiff.y += speed * framedelay;
+					mouseDiff.y += speed * g_framedelay;
 					bKeySpecialMove = true;
 				}
 			}

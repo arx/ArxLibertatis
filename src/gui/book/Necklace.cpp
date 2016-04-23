@@ -163,7 +163,7 @@ void ARX_INTERFACE_ManageOpenedBook_Finish(const Vec2f & mousePos)
 				angle.setPitch(std::sin(arxtime.now_f() * (1.0f / 200)) * rune->angle.getPitch() * (1.0f / 40));
 			}
 			
-			rune->angle.setPitch(rune->angle.getPitch() - framedelay * 0.2f);
+			rune->angle.setPitch(rune->angle.getPitch() - g_framedelay * 0.2f);
 			
 			if(rune->angle.getPitch() < 0.f)
 				rune->angle.setPitch(0.f);
@@ -214,7 +214,7 @@ void ARX_INTERFACE_ManageOpenedBook_Finish(const Vec2f & mousePos)
 					TransformInfo t(pos, glm::toQuat(toRotationMatrix(angle)));
 					DrawEERIEInter(rune, t, NULL, false, 0.f);
 					
-					rune->angle.setPitch(rune->angle.getPitch() + framedelay*2.f);
+					rune->angle.setPitch(rune->angle.getPitch() + g_framedelay*2.f);
 					
 					PopAllTriangleList();
 					

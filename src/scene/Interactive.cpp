@@ -1198,7 +1198,7 @@ void ComputeVVPos(Entity * io)
 			float mul = ((fdiff * ( 1.0f / 120 )) * 0.9f + 0.6f);
 
 			if(eediff < 15.f) {
-				float val = (float)framedelay * ( 1.0f / 4 ) * mul;
+				float val = (float)g_framedelay * ( 1.0f / 4 ) * mul;
 
 				if(eediff < 10.f) {
 					val *= ( 1.0f / 10 );
@@ -1209,7 +1209,7 @@ void ComputeVVPos(Entity * io)
 
 				fdiff -= val;
 			} else {
-				fdiff -= (float)framedelay * ( 1.0f / 4 ) * mul;
+				fdiff -= (float)g_framedelay * ( 1.0f / 4 ) * mul;
 			}
 		}
 
@@ -2340,7 +2340,7 @@ void UpdateCameras() {
 
 					vv = (8000 - vv) * ( 1.0f / 4000 );
 
-					float f1 = framedelay * ( 1.0f / 1000 ) * vv;
+					float f1 = g_framedelay * ( 1.0f / 1000 ) * vv;
 
 					if(f1 > 1.f)
 						f1 = 1.f;
@@ -2379,9 +2379,9 @@ void UpdateIOInvisibility(Entity * io)
 {
 	if(io && io->invisibility <= 1.f) {
 		if((io->gameFlags & GFLAG_INVISIBILITY) && io->invisibility < 1.f) {
-			io->invisibility += framedelay * ( 1.0f / 1000 );
+			io->invisibility += g_framedelay * ( 1.0f / 1000 );
 		} else if(!(io->gameFlags & GFLAG_INVISIBILITY) && io->invisibility != 0.f) {
-			io->invisibility -= framedelay * ( 1.0f / 1000 );
+			io->invisibility -= g_framedelay * ( 1.0f / 1000 );
 		}
 		
 		io->invisibility = glm::clamp(io->invisibility, 0.f, 1.f);
@@ -2440,7 +2440,7 @@ void UpdateInter() {
 			if(io->animlayer[0].flags & EA_PAUSED)
 				diff = 0;
 			else
-				diff = static_cast<long>(framedelay);
+				diff = static_cast<long>(g_framedelay);
 
 			Vec3f pos = io->pos;
 

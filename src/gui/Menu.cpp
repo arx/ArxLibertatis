@@ -524,7 +524,7 @@ bool ARX_Menu_Render() {
 	light->pos.y = 0.f + GInput->getMousePosAbs().y - (g_size.height() >> 1);
 
 	if(pTextManage) {
-		pTextManage->Update(framedelay);
+		pTextManage->Update(g_framedelay);
 		pTextManage->Render();
 	}
 

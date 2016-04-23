@@ -87,7 +87,7 @@ extern std::string TELEPORT_TO_LEVEL;
 extern std::string TELEPORT_TO_POSITION;
 
 extern float PULSATE;
-extern float framedelay;
+extern float g_framedelay;
 
 extern bool g_requestLevelInit;
 

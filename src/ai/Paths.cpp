@@ -72,7 +72,7 @@ ZeniMax Media Inc., Suite 120, Rockville, Maryland 20850 USA.
 
 #include "script/Script.h"
 
-extern float framedelay;
+extern float g_framedelay;
 
 ARX_PATH ** ARXpaths = NULL;
 long nbARXpaths = 0;
@@ -179,7 +179,7 @@ void ARX_PATH_UpdateAllZoneInOutInside() {
 	
 	static size_t count = 1;
 	
-	long f = glm::clamp(static_cast<long>(framedelay), 10l, 50l);
+	long f = glm::clamp(static_cast<long>(g_framedelay), 10l, 50l);
 	
 	if(count >= entities.size()) {
 		count = 1;

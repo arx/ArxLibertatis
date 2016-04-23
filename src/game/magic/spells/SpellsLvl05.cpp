@@ -643,9 +643,9 @@ void PoisonProjectileSpell::Update(float timeDelta) {
 			damage.pos = projectile->eCurPos;
 			damage.radius = 120.f;
 			float v = 4.f + m_level * ( 1.0f / 10 ) * 6.f ;
-			damage.damages = v * ( 1.0f / 1000 ) * framedelay;
+			damage.damages = v * ( 1.0f / 1000 ) * g_framedelay;
 			damage.area = DAMAGE_FULL;
-			damage.duration = static_cast<long>(framedelay);
+			damage.duration = static_cast<long>(g_framedelay);
 			damage.source = m_caster;
 			damage.flags = 0;
 			damage.type = DAMAGE_TYPE_MAGICAL | DAMAGE_TYPE_POISON;
@@ -662,7 +662,7 @@ void PoisonProjectileSpell::AddPoisonFog(const Vec3f & pos, float power) {
 	
 	arxtime.update();
 	
-	long count = std::max(1l, checked_range_cast<long>(framedelay / flDiv));
+	long count = std::max(1l, checked_range_cast<long>(g_framedelay / flDiv));
 	while(count--) {
 		
 		if(Random::getf(0.f, 2000.f) >= power) {

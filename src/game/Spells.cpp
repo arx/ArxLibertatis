@@ -1122,7 +1122,7 @@ void ARX_SPELLS_Update() {
 		}
 		
 		if(   spell->m_hasDuration
-		   && !CanPayMana(spell, spell->m_fManaCostPerSecond * framedelay * (1.f/1000), false)
+		   && !CanPayMana(spell, spell->m_fManaCostPerSecond * g_framedelay * (1.f/1000), false)
 		) {
 			ARX_SPELLS_Fizzle(spell);
 		}
@@ -1138,7 +1138,7 @@ void ARX_SPELLS_Update() {
 		}
 
 		if(spell) {
-			spell->Update(framedelay);
+			spell->Update(g_framedelay);
 		}
 	}
 }

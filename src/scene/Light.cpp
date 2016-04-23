@@ -298,7 +298,7 @@ void TreatBackgroundDynlights() {
 			const unsigned long duration = el->duration;
 
 			if(tim >= duration) {
-				float sub = framedelay * 0.001f;
+				float sub = g_framedelay * 0.001f;
 
 				el->rgb.r -= sub;
 				el->rgb.g -= sub;

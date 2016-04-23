@@ -105,7 +105,7 @@ void ARX_FOGS_Render() {
 		if(!fog.exist)
 			continue;
 		
-		long count = std::max(1l, checked_range_cast<long>(framedelay / flDiv));
+		long count = std::max(1l, checked_range_cast<long>(g_framedelay / flDiv));
 		while(count--) {
 			
 			if(Random::getf(0.f, 2000.f) >= fog.frequency) {

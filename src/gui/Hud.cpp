@@ -691,8 +691,8 @@ void QuickSaveIconGui::hide() {
 
 void QuickSaveIconGui::update() {
 	if(m_remainingTime) {
-		if(m_remainingTime > unsigned(framedelay)) {
-			m_remainingTime -= unsigned(framedelay);
+		if(m_remainingTime > unsigned(g_framedelay)) {
+			m_remainingTime -= unsigned(g_framedelay);
 		} else {
 			m_remainingTime = 0;
 		}
@@ -914,7 +914,7 @@ void MecanismIcon::update() {
 			m_nbToDraw++;
 		}
 	}
-	m_timeToDraw += static_cast<long>(framedelay);
+	m_timeToDraw += static_cast<long>(g_framedelay);
 	
 	m_rect = createChild(Rectf(g_size), Anchor_TopLeft, m_iconSize * m_scale, Anchor_TopLeft);
 }
@@ -947,7 +947,7 @@ void ScreenArrows::update() {
 		return;
 	}
 	
-	fArrowMove += .5f * framedelay;
+	fArrowMove += .5f * g_framedelay;
 	if(fArrowMove > 180.f) {
 		fArrowMove=0.f;
 	}

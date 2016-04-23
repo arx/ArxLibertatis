@@ -550,7 +550,7 @@ void ARX_PARTICLES_Spawn_Spark(const Vec3f & pos, unsigned int count, SpawnSpark
 	if(SPARK_COUNT < 1000) {
 		SPARK_COUNT += count * 25;
 	} else {
-		SPARK_COUNT -= static_cast<long>(framedelay);
+		SPARK_COUNT -= static_cast<long>(g_framedelay);
 		return;
 	}
 	
@@ -1379,7 +1379,7 @@ void TreatBackgroundActions() {
 		}
 		const float targetFPS = 61.f;
 		const float targetDelay = 1000.f / targetFPS;
-		long count = gl->m_storedFlameTime.update(amount * framedelay * (1.f / targetDelay));
+		long count = gl->m_storedFlameTime.update(amount * g_framedelay * (1.f / targetDelay));
 		
 		for(long n = 0; n < count; n++) {
 			

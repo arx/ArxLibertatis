@@ -45,7 +45,7 @@
 #include "util/Flags.h"
 
 
-extern float framedelay;
+extern float g_framedelay;
 
 enum ThrownObjectFlag {
 	ATO_EXIST      = (1<<0),
@@ -161,7 +161,7 @@ void ARX_THROWN_OBJECT_Throw(EntityHandle source, const Vec3f & position, const 
 	
 	thrownObj->pRuban = new ArrowTrail();
 	thrownObj->pRuban->SetNextPosition(thrownObj->position);
-	thrownObj->pRuban->Update(framedelay);
+	thrownObj->pRuban->Update(g_framedelay);
 	
 	thrownObj->creation_time = arxtime.now_ul();
 	thrownObj->flags |= ATO_EXIST | ATO_MOVING;
@@ -349,7 +349,7 @@ static void CheckExp(long i) {
 		ARX_NPC_SpawnAudibleSound(pos, entities.player());
 		LightHandle id = GetFreeDynLight();
 
-		if(lightHandleIsValid(id) && framedelay > 0) {
+		if(lightHandleIsValid(id) && g_framedelay > 0) {
 			EERIE_LIGHT * light = lightHandleGet(id);
 			
 			light->intensity = 3.9f;
@@ -412,7 +412,7 @@ void ARX_THROWN_OBJECT_Manage(unsigned long time_offset)
 		   && !(thrownObj->flags & ATO_UNDERWATER)) {
 
 			LightHandle id = GetFreeDynLight();
-			if(lightHandleIsValid(id) && framedelay > 0) {
+			if(lightHandleIsValid(id) && g_framedelay > 0) {
 				EERIE_LIGHT * light = lightHandleGet(id);
 				
 				light->intensity = 1.f;
@@ -422,7 +422,7 @@ void ARX_THROWN_OBJECT_Manage(unsigned long time_offset)
 				light->pos = thrownObj->position;
 				light->ex_flaresize = 40.f;
 				light->extras |= EXTRAS_FLARE;
-				light->duration = static_cast<unsigned long>(framedelay * 0.5f);
+				light->duration = static_cast<unsigned long>(g_framedelay * 0.5f);
 			}
 			
 			createObjFireParticles(thrownObj->obj, 6, 2, 180);
