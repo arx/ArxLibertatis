@@ -123,9 +123,9 @@ long ARX_SPEECH_Add(const std::string & text, long duration) {
 	if(text.empty())
 		return -1;
 	
-	unsigned long tim = arxtime.now_ul();
-	if(tim == 0) {
-		tim = 1;
+	unsigned long now = arxtime.now_ul();
+	if(now == 0) {
+		now = 1;
 	}
 	
 	if(speech[MAX_SPEECH - 1].timecreation != 0) {
@@ -138,7 +138,7 @@ long ARX_SPEECH_Add(const std::string & text, long duration) {
 			continue;
 		
 		// Sets creation time
-		speech[i].timecreation = tim;
+		speech[i].timecreation = now;
 		
 		// Sets/computes speech duration
 		if(duration == -1) {
