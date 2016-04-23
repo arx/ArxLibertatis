@@ -62,11 +62,11 @@ void ManageFade()
 	arxtime.update();
 	
 	// TODO can this really become negative ?
-	long tim = long(arxtime.now_ul() - FADESTART);
-	if(tim <= 0)
+	long elapsed = long(arxtime.now_ul() - FADESTART);
+	if(elapsed <= 0)
 		return;
 
-	float Visibility = tim / (float)FADEDURATION;
+	float Visibility = elapsed / (float)FADEDURATION;
 
 	if(FADEDIR > 0)
 		Visibility = 1.f - Visibility;
