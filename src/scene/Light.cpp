@@ -328,10 +328,10 @@ void PrecalcDynamicLighting(long x0, long z0, long x1, long z1, const Vec3f & ca
 	
 	TOTPDL = 0;
 	
-	float fx0 = ACTIVEBKG->Xdiv * (float)x0;
-	float fz0 = ACTIVEBKG->Zdiv * (float)z0;
-	float fx1 = ACTIVEBKG->Xdiv * (float)x1;
-	float fz1 = ACTIVEBKG->Zdiv * (float)z1;
+	float fx0 = ACTIVEBKG->Xdiv * x0;
+	float fz0 = ACTIVEBKG->Zdiv * z0;
+	float fx1 = ACTIVEBKG->Xdiv * x1;
+	float fz1 = ACTIVEBKG->Zdiv * z1;
 	
 	for(size_t i = 0; i < MAX_DYNLIGHTS; i++) {
 		EERIE_LIGHT * el = &DynLight[i];
