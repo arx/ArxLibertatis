@@ -393,14 +393,19 @@ void NegateMagicSpell::Update(float timeDelta)
 	float now = arxtime.now_f();
 	
 	Anglef stiteangle(0.f, -now * 0.02f, 0.f);
-	Color3f stitecolor = Color3f::gray(.4f);
 	float scalediff = std::sin(now * 0.004f);
+	
+	{
+	Color3f stitecolor = Color3f::gray(.4f);
 	Vec3f stitescale = Vec3f(3.f + 0.5f * scalediff);
 	Draw3DObject(ssol, stiteangle, stitepos, stitescale, stitecolor, mat);
+	}
 	
-	stitecolor = Color3f(.5f, 0.f, .5f);
-	stitescale = Vec3f(3.1f + 0.2f * scalediff);
+	{
+	Color3f stitecolor = Color3f(.5f, 0.f, .5f);
+	Vec3f stitescale = Vec3f(3.1f + 0.2f * scalediff);
 	Draw3DObject(ssol, stiteangle, stitepos, stitescale, stitecolor, mat);
+	}
 }
 
 void NegateMagicSpell::LaunchAntiMagicField() {
