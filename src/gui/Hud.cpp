@@ -814,7 +814,7 @@ void HealthGauge::updateRect(const Rectf & parent) {
 
 void HealthGauge::update() {
 	
-	m_amount = (float)player.lifePool.current/(float)player.Full_maxlife;
+	m_amount = player.lifePool.current / player.Full_maxlife;
 	
 	if(player.poison > 0.f) {
 		float val = std::min(player.poison, 0.2f) * 255.f * 5.f;
