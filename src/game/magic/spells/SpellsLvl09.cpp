@@ -154,7 +154,9 @@ void SummonCreatureSpell::Update(float timeDelta) {
 	if(arxtime.is_paused())
 		return;
 	
-	if(arxtime.now_f() - (float)m_timcreation <= 4000) {
+	float elapsed = arxtime.now_f() - m_timcreation;
+	
+	if(elapsed <= 4000) {
 		if(Random::getf() > 0.7f) {
 			Vec3f pos = m_fissure.m_eSrc;
 			MakeCoolFx(pos);
