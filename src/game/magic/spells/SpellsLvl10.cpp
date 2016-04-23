@@ -74,15 +74,15 @@ void MassLightningStrikeSpell::Launch()
 	}
 	m_pos += angleToVectorXZ(beta) * 500.f;
 	
-	long minDuration = long(500 * m_level);
-	long maxDuration = 0;
+	unsigned long minDuration = static_cast<unsigned long>(500 * m_level);
+	unsigned long maxDuration = 0;
 	
 	int number = glm::clamp(int(m_level), 1, 10);
 	float ft = 360.0f / number;
 	
 	for(int i = 0; i < number; i++) {
 		Vec3f target = m_pos + angleToVectorXZ(i * ft) * 500.0f;
-		long duration = minDuration + Random::get(0, 5000);
+		unsigned long duration = minDuration + Random::getu(0, 5000);
 		maxDuration = std::max(maxDuration, duration);
 		
 		CLightning * lightning = new CLightning();
