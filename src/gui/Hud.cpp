@@ -1415,7 +1415,7 @@ void PlayerInterfaceFader::update() {
 				float t = arxtime.now_f();
 				
 				if(t-SLID_START > 10000.f) {
-					m_current += (float)Original_framedelay*( 1.0f / 10 );
+					m_current += Original_framedelay * (1.0f/10);
 					
 					if(m_current > 100.f)
 						m_current = 100.f;
@@ -1428,7 +1428,7 @@ void PlayerInterfaceFader::update() {
 		}
 		
 		if(bOk) {
-			m_current -= (float)Original_framedelay*( 1.0f / 10 );
+			m_current -= Original_framedelay * (1.0f/10);
 			
 			if(m_current < 0.f)
 				m_current = 0.f;
@@ -1438,7 +1438,7 @@ void PlayerInterfaceFader::update() {
 	}
 	
 	if(m_direction == 1) {
-		m_current += (float)Original_framedelay*( 1.0f / 10 );
+		m_current += Original_framedelay * (1.0f/10);
 		
 		if(m_current > 100.f) {
 			m_current = 100.f;
@@ -1446,7 +1446,7 @@ void PlayerInterfaceFader::update() {
 		}
 		lSLID_VALUE = m_current;
 	} else if(m_direction == -1) {
-		m_current -= (float)Original_framedelay*( 1.0f / 10 );
+		m_current -= Original_framedelay * (1.0f/10);
 		
 		if(m_current < 0.f) {
 			m_current = 0.f;
