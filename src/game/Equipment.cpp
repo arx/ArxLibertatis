@@ -752,13 +752,13 @@ bool ARX_EQUIPMENT_Strike_Check(Entity * io_source, Entity * io_weapon, float ra
 							}
 
 							if(paralyse > 0.f) {
-								float ptime = std::min(dmgs * 1000.f, paralyse);
+								long ptime = long(std::min(dmgs * 1000.f, paralyse));
 								ARX_SPELLS_Launch(SPELL_PARALYSE,
 								                  weapon,
 								                  SPELLCAST_FLAG_NOMANA | SPELLCAST_FLAG_NOCHECKCANCAST,
 								                  5,
 								                  content,
-								                  (long)(ptime));
+								                  ptime);
 							}
 						}
 
