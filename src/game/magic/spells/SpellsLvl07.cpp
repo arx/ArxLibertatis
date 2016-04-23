@@ -149,9 +149,9 @@ void FlyingEyeSpell::End()
 
 void FlyingEyeSpell::Update() {
 	
-	const unsigned long tim = arxtime.now_ul();
+	const unsigned long now = arxtime.now_ul();
 	
-	const long framediff3 = tim - m_lastupdate;
+	const long framediff3 = now - m_lastupdate;
 	
 	eyeball.floating = std::sin(m_lastupdate-m_timcreation * 0.001f);
 	eyeball.floating *= 10.f;
@@ -164,7 +164,7 @@ void FlyingEyeSpell::Update() {
 		eyeball.exist = 2;
 	}
 	
-	m_lastupdate=tim;
+	m_lastupdate=now;
 	
 	Entity * io = entities.player();
 	EERIE_3DOBJ * eobj = io->obj;
