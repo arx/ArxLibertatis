@@ -229,7 +229,7 @@ void LevitateSpell::Update(float timeDelta) {
 	int dustParticles = 0;
 	
 	if(ulCurrentTime < 1000) {
-		coneScale = (float) ulCurrentTime / 1000.f;
+		coneScale = ulCurrentTime / 1000.f;
 		dustParticles = 3;
 	} else {
 		coneScale = 1.f;
