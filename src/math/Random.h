@@ -40,6 +40,7 @@ public:
 	template <typename IntType> static IntType get();
 	template <typename IntType> static IntType get(IntType min, IntType max);
 	static int get(int min = 0, int max = std::numeric_limits<int>::max());
+	static unsigned int getu(unsigned int min, unsigned int max);
 	
 	//! Generates a random floating point value in the range [realMin, realMax).
 	template <class RealType> static RealType getf();
@@ -87,6 +88,10 @@ IntType Random::get() {
 
 inline int Random::get(int min, int max) {
 	return Random::get<int>(min, max);
+}
+
+inline unsigned int Random::getu(unsigned int min, unsigned int max) {
+	return Random::get<unsigned int>(min, max);
 }
 
 template <class RealType>

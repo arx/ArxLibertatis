@@ -133,7 +133,7 @@ void RuneOfGuardingSpell::Update(float timeDelta) {
 		pd->ov = pos + Vec3f(Random::getf(-40.f, 40.f), 0.f, Random::getf(-40.f, 40.f));
 		pd->move = Vec3f(Random::getf(-0.8f, 0.8f), Random::getf(-4.f, 0.f), Random::getf(-0.8f, 0.8f));
 		pd->scale = Vec3f(-0.1f);
-		pd->tolive = Random::get(2600, 3200);
+		pd->tolive = Random::getu(2600, 3200);
 		pd->tc = tex_p2;
 		pd->siz = 0.3f;
 		pd->rgb = Color3f(.4f, .4f, .6f);
@@ -483,7 +483,7 @@ void RepelUndeadSpell::Update(float timeDelta) {
 		pd->ov = m_pos + Vec3f(d.x, 0.f, d.y);
 		pd->move = Vec3f(Random::getf(-0.8f, 0.8f), Random::getf(-4.f, 0.f), Random::getf(-0.8f, 0.8f));
 		pd->scale = Vec3f(-0.1f);
-		pd->tolive = Random::get(2600, 3200);
+		pd->tolive = Random::getu(2600, 3200);
 		pd->tc = tex_p2;
 		pd->siz = 0.3f;
 		pd->rgb = Color3f(.4f, .4f, .6f);
@@ -681,7 +681,7 @@ void PoisonProjectileSpell::AddPoisonFog(const Vec3f & pos, float power) {
 		pd->scale = Vec3f(8.f, 8.f, 10.f);
 		pd->move = Vec3f((speed - Random::getf()) * fval, (speed - speed * Random::getf()) * (1.f / 15),
 		                 (speed - Random::getf()) * fval);
-		pd->tolive = Random::get(4500, 9000);
+		pd->tolive = Random::getu(4500, 9000);
 		pd->tc = TC_smoke;
 		pd->siz = (80.f + Random::getf(0.f, 160.f)) * (1.f / 3);
 		pd->rgb = Color3f(Random::getf(0.f, 1.f/3), 1.f, Random::getf(0.f, 0.1f));

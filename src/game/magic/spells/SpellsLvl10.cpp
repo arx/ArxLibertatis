@@ -358,7 +358,7 @@ void ControlTargetSpell::Update(float timeDelta) {
 				if(pd) {
 					pd->ov = lastpos;
 					pd->siz = 5 * c;
-					pd->tolive = Random::get(10, 110);
+					pd->tolive = Random::getu(10, 110);
 					pd->tc = tex_mm;
 					pd->special = FADE_IN_AND_OUT | ROTATING | MODULATE_ROTATION | DISSIPATING;
 					pd->fparam = 0.0000001f;
@@ -372,7 +372,7 @@ void ControlTargetSpell::Update(float timeDelta) {
 			if(pd) {
 				pd->ov = lastpos;
 				pd->siz = 5;
-				pd->tolive = Random::get(10, 110);
+				pd->tolive = Random::getu(10, 110);
 				pd->tc = tex_mm;
 				pd->special = FADE_IN_AND_OUT | ROTATING | MODULATE_ROTATION | DISSIPATING;
 				pd->fparam = 0.0000001f;

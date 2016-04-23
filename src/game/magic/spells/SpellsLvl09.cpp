@@ -381,7 +381,7 @@ void NegateMagicSpell::Update(float timeDelta)
 			pd->ov = stitepos + Vec3f(Random::getf(-150.f, 150.f), 0.f, Random::getf(-150.f, 150.f));
 			pd->move = Vec3f(0.f, Random::getf(-3.f, 0.f), 0.f);
 			pd->siz = 0.3f;
-			pd->tolive = Random::get(2000, 4000);
+			pd->tolive = Random::getu(2000, 4000);
 			pd->tc = tex_p2;
 			pd->special = FADE_IN_AND_OUT | ROTATING | MODULATE_ROTATION | DISSIPATING
 			              | SUBSTRACT;

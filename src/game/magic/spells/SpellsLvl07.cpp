@@ -100,7 +100,7 @@ void FlyingEyeSpell::Launch()
 		pd->ov = eyeball.pos + randomVec(-5.f, 5.f);
 		pd->move = randomVec(-2.f, 2.f);
 		pd->siz = 28.f;
-		pd->tolive = Random::get(2000, 6000);
+		pd->tolive = Random::getu(2000, 6000);
 		pd->scale = Vec3f(12.f);
 		pd->tc = tc4;
 		pd->special = FADE_IN_AND_OUT | ROTATING | MODULATE_ROTATION | DISSIPATING;
@@ -133,7 +133,7 @@ void FlyingEyeSpell::End()
 		pd->ov = eyeball.pos + randomVec(-5.f, 5.f);
 		pd->move = randomVec(-2.f, 2.f);
 		pd->siz = 28.f;
-		pd->tolive = Random::get(2000, 6000);
+		pd->tolive = Random::getu(2000, 6000);
 		pd->scale = Vec3f(12.f);
 		pd->tc = tc4;
 		pd->special = FADE_IN_AND_OUT | ROTATING | MODULATE_ROTATION | DISSIPATING;
@@ -205,7 +205,7 @@ void FlyingEyeSpell::Update(float timeDelta)
 				pd->ov = actionPointPosition(eobj, id) + randomVec(-1.f, 1.f);
 				pd->move = Vec3f(0.1f, 0.f, 0.1f) + Vec3f(-0.2f, -2.2f, -0.2f) * randomVec3f();
 				pd->siz = 5.f;
-				pd->tolive = Random::get(1500, 3500);
+				pd->tolive = Random::getu(1500, 3500);
 				pd->scale = Vec3f(0.2f);
 				pd->tc = TC_smoke;
 				pd->special = FADE_IN_AND_OUT | ROTATING | MODULATE_ROTATION | DISSIPATING;
@@ -402,7 +402,7 @@ void FireFieldSpell::Update(float timeDelta) {
 			pd->ov = m_pos + Vec3f(120.f * ts, 15.f * ts, 120.f * tc) * randomVec();
 			pd->move = Vec3f(2.f, 1.f, 2.f) + Vec3f(-4.f, -8.f, -4.f) * randomVec3f();
 			pd->siz = 7.f;
-			pd->tolive = Random::get(500, 1500);
+			pd->tolive = Random::getu(500, 1500);
 			pd->tc = fire2;
 			pd->special = ROTATING | MODULATE_ROTATION | FIRE_TO_SMOKE;
 			pd->fparam = Random::getf(-0.1f, 0.1f);
@@ -414,7 +414,7 @@ void FireFieldSpell::Update(float timeDelta) {
 			}
 			
 			*pd2 = *pd;
-			pd2->delay = Random::get(60, 210);
+			pd2->delay = Random::getu(60, 210);
 		}
 		
 	}
@@ -596,7 +596,7 @@ void IceFieldSpell::Update(float timeDelta) {
 				pd->ov = tPos[i] + randomVec(-5.f, 5.f);
 				pd->move = randomVec(-2.f, 2.f);
 				pd->siz = 20.f;
-				pd->tolive = Random::get(2000, 6000);
+				pd->tolive = Random::getu(2000, 6000);
 				pd->tc = tex_p2;
 				pd->special = FADE_IN_AND_OUT | ROTATING | MODULATE_ROTATION | DISSIPATING;
 				pd->fparam = 0.0000001f;
@@ -610,7 +610,7 @@ void IceFieldSpell::Update(float timeDelta) {
 				pd->ov = tPos[i] + randomVec(-5.f, 5.f) + Vec3f(0.f, 50.f, 0.f);
 				pd->move = Vec3f(0.f, Random::getf(-2.f, 2.f), 0.f);
 				pd->siz = 0.5f;
-				pd->tolive = Random::get(2000, 6000);
+				pd->tolive = Random::getu(2000, 6000);
 				pd->tc = tex_p1;
 				pd->special = FADE_IN_AND_OUT | ROTATING | MODULATE_ROTATION | DISSIPATING;
 				pd->fparam = 0.0000001f;
@@ -792,7 +792,7 @@ void ConfuseSpell::Update(float timeDelta) {
 		
 		pd->move = Vec3f(0.f, Random::getf(1.f, 4.f), 0.f);
 		pd->siz = 0.25f;
-		pd->tolive = Random::get(2300, 3300);
+		pd->tolive = Random::getu(2300, 3300);
 		pd->tc = tex_p1;
 		pd->special = PARTICLE_GOLDRAIN | FADE_IN_AND_OUT | ROTATING | MODULATE_ROTATION
 					  | DISSIPATING;

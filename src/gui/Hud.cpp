@@ -211,7 +211,7 @@ void BookIconGui::MakeBookFX() {
 		pd->ov = Vec3f(m_rect.topLeft() - Vec2f(s * 2, s * 2), z);
 		pd->move = Vec3f(s * -0.5f, s * -0.5f, 0.f);
 		pd->scale = Vec3f(s * 10, s * 10, 0.f);
-		pd->tolive = Random::get(1200, 1600);
+		pd->tolive = Random::getu(1200, 1600);
 		pd->tc = m_tex;
 		pd->rgb = Color3f(1.f - i * 0.1f, i * 0.1f, 0.5f - i * 0.1f);
 		pd->siz = m_rect.width() + s * 4.f;
@@ -622,7 +622,7 @@ void CurrentTorchIconGui::createFireParticle() {
 	pd->ov = Vec3f(pos, 0.0000001f);
 	pd->move = Vec3f(Random::getf(-1.5f, 1.5f), Random::getf(-6.f, -5.f), 0.f) * m_scale;
 	pd->scale = Vec3f(1.8f, 1.8f, 1.f);
-	pd->tolive = Random::get(500, 900);
+	pd->tolive = Random::getu(500, 900);
 	pd->tc = fire2;
 	pd->rgb = Color3f(1.f, .6f, .5f);
 	pd->siz = 14.f * m_scale;

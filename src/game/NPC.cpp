@@ -1638,7 +1638,7 @@ static void ARX_NPC_Manage_Anims(Entity * io, float TOLERANCE) {
 		if(isCurrentAnimation(io, 1, ANIM_BARE_WAIT)
 			 && (io->_npcdata->behavior & BEHAVIOUR_FIGHT)
 			 && tdist < square(STRIKE_DISTANCE) && io->_npcdata->strike_time > 0) {
-			size_t j = Random::get(0, 3); // Choose a random attack move
+			size_t j = Random::getu(0, 3); // Choose a random attack move
 			changeAnimation(io, 1, AnimationNumber(ANIM_BARE_STRIKE_LEFT_START + j * 3));
 		}
 		
@@ -1740,7 +1740,7 @@ static void ARX_NPC_Manage_Anims(Entity * io, float TOLERANCE) {
 			
 			if(isCurrentAnimation(io, 1, ready) && (io->_npcdata->behavior & BEHAVIOUR_FIGHT)
 				 && tdist < square(STRIKE_DISTANCE) && io->_npcdata->strike_time > 0) {
-				size_t j = Random::get(0, 3); // Choose a random attack move
+				size_t j = Random::getu(0, 3); // Choose a random attack move
 				changeAnimation(io, 1, AnimationNumber(ANIM_1H_STRIKE_LEFT_START + j * 3 + wtype));
 			}
 			
