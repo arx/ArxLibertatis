@@ -71,10 +71,10 @@ std::string sp_max_ch;
 
 void Manage_sp_max() {
 
-	float v = arxtime.now_f() - sp_max_start;
+	float elapsed = arxtime.now_f() - sp_max_start;
 
-	if(sp_max_start != 0 && v < 20000) {
-		float modi = (20000 - v) * ( 1.0f / 2000 ) * ( 1.0f / 10 );
+	if(sp_max_start != 0 && elapsed < 20000) {
+		float modi = (20000 - elapsed) * ( 1.0f / 2000 ) * ( 1.0f / 10 );
 		float sizX = 16;
 		
 		Vec2f p = Vec2f(g_size.center());
