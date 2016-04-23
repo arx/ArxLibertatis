@@ -689,10 +689,10 @@ static bool HandleGameFlowTransitions() {
 		ARX_INTERFACE_ShowFISHTANK();
 		
 		arxtime.update();
-		unsigned long tim = arxtime.now_ul();
-		float pos = (float)tim - (float)TRANSITION_START;
+		float tim = arxtime.now_f();
+		float elapsed = tim - TRANSITION_START;
 
-		if(pos > TRANSITION_DURATION) {
+		if(elapsed > TRANSITION_DURATION) {
 			TRANSITION_START = 0;
 			GameFlow::setTransition(GameFlow::SecondLogo);
 		}
