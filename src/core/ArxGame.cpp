@@ -1425,7 +1425,8 @@ void ArxGame::speechControlledCinematic() {
 		const Entity * io = aspeech[valid].io;
 		
 		arxtime.update();
-		float rtime=(float)(arxtime.now_f() - aspeech[valid].time_creation)/(float)aspeech[valid].duration;
+		float elapsed = arxtime.now_f() - aspeech[valid].time_creation;
+		float rtime = elapsed / aspeech[valid].duration;
 
 		rtime = glm::clamp(rtime, 0.f, 1.f);
 
