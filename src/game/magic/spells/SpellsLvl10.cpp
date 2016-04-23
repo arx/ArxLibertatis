@@ -307,7 +307,7 @@ void ControlTargetSpell::Update(float timeDelta) {
 	int n = BEZIERPrecision;
 	float delta = 1.0f / n;
 
-	float fOneOnDuration = 1.f / (float)(m_duration);
+	float fOneOnDuration = 1.f / m_duration;
 	fTrail = (ulCurrentTime * fOneOnDuration) * 9 * (n + 2);
 
 	Vec3f v;
