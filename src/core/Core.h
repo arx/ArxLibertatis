@@ -102,8 +102,9 @@ extern Rect g_size;
 
 extern Vec2f g_sizeRatio;
 inline float minSizeRatio() { return std::min(g_sizeRatio.x, g_sizeRatio.y); }
-#define RATIO_X(a)    (((float)a)*g_sizeRatio.x)
-#define RATIO_Y(a)    (((float)a)*g_sizeRatio.y)
+
+inline float RATIO_X(float a) { return a * g_sizeRatio.x; }
+inline float RATIO_Y(float a) { return a * g_sizeRatio.y; }
 
 inline Vec2f RATIO_2(const Vec2f & in) {
 	return Vec2f(RATIO_X(in.x), RATIO_Y(in.y));
