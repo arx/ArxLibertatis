@@ -229,8 +229,8 @@ void MiniMap::firstInit(ARXCHARACTER *pl, PakReader *pakRes, EntityManager *enti
 	m_playerLastPosX = -999999.f;
 	m_playerLastPosZ = -999999.f;
 	
-	m_modX = (float)MAX_BKGX / (float)MINIMAP_MAX_X;
-	m_modZ = (float)MAX_BKGZ / (float)MINIMAP_MAX_Z;
+	m_modX = float(MAX_BKGX) / MINIMAP_MAX_X;
+	m_modZ = float(MAX_BKGZ) / MINIMAP_MAX_Z;
 	
 	m_currentLevel = 0;
 	m_entities = entityMng;
