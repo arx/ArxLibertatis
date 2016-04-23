@@ -1439,9 +1439,9 @@ void ARX_SCENE_Update() {
 	
 	ARX_PROFILE_FUNC();
 	
-	unsigned long tim = arxtime.now_ul();
+	unsigned long now = arxtime.now_ul();
 	
-	WATEREFFECT = (tim % long(2 * PI / 0.0005f)) * 0.0005f;
+	WATEREFFECT = (now % long(2 * PI / 0.0005f)) * 0.0005f;
 	
 	const Vec3f camPos = ACTIVECAM->orgTrans.pos;
 	const float camDepth = ACTIVECAM->cdepth;
@@ -1485,7 +1485,7 @@ void ARX_SCENE_Update() {
 		ARX_PORTALS_Frustrum_ComputeRoom(roomIndex, frustrum, camPos, camDepth);
 
 		for(size_t i = 0; i < RoomDrawList.size(); i++) {
-			ARX_PORTALS_Frustrum_RenderRoomTCullSoft(RoomDrawList[i], RoomDraw[RoomDrawList[i]].frustrum, tim, camPos);
+			ARX_PORTALS_Frustrum_RenderRoomTCullSoft(RoomDrawList[i], RoomDraw[RoomDrawList[i]].frustrum, now, camPos);
 		}
 	} else {
 		RoomDrawRelease();
