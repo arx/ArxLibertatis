@@ -1329,8 +1329,8 @@ void ARX_PLAYER_Manage_Visual() {
 			ROTATE_START = now;
 		}
 	} else if (ROTATE_START) {
-		float diff = (float)now - (float)ROTATE_START;
-		if(diff > 100) {
+		float elapsed = (float)now - (float)ROTATE_START;
+		if(elapsed > 100) {
 			ROTATE_START = 0;
 		}
 	}
