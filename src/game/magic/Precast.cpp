@@ -119,12 +119,12 @@ void ARX_SPELLS_Precast_Check() {
 			if(layer1.cur_anim && layer1.cur_anim == entities.player()->anims[ANIM_CAST]) {
 				if(layer1.ctime > layer1.cur_anim->anims[layer1.altidx_cur]->anim_time - 550)
 				{
-					ARX_SPELLS_Launch(	Precast[i].typ,
-										PlayerEntityHandle,
-										Precast[i].flags | SPELLCAST_FLAG_LAUNCHPRECAST, 
-										Precast[i].level, 
-										EntityHandle(),
-										Precast[i].duration);
+					ARX_SPELLS_Launch(Precast[i].typ,
+					                  PlayerEntityHandle,
+					                  Precast[i].flags | SPELLCAST_FLAG_LAUNCHPRECAST,
+					                  Precast[i].level,
+					                  EntityHandle(),
+					                  Precast[i].duration);
 					
 					Precast.erase(Precast.begin() + i);
 				}
