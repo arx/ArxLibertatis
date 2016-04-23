@@ -497,7 +497,7 @@ void IgnitSpell::End() {
 void IgnitSpell::Update(float timeDelta)
 {
 	if(m_elapsed < m_duration) {
-		float a = (((float)m_elapsed)) / ((float)m_duration);
+		float a = float(m_elapsed) / float(m_duration);
 		
 		if(a >= 1.f)
 			a = 1.f;
