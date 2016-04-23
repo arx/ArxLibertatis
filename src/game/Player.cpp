@@ -2030,7 +2030,7 @@ void PlayerMovementIterate(float DeltaTime) {
 		}
 		
 		if(REQUEST_JUMP) {
-			float t = arxtime.now_f() - (float)REQUEST_JUMP;
+			float t = arxtime.now_f() - REQUEST_JUMP;
 			if(t >= 0.f && t <= 350.f) {
 				REQUEST_JUMP = 0;
 				ARX_NPC_SpawnAudibleSound(player.pos, entities.player());
