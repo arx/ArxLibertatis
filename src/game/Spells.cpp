@@ -1110,7 +1110,7 @@ void ARX_SPELLS_Update() {
 	
 	ucFlick++;
 	
-	const unsigned long tim = arxtime.now_ul();
+	const unsigned long now = arxtime.now_ul();
 	
 	for(size_t u = 0; u < MAX_SPELLS; u++) {
 		SpellBase * spell = spells[SpellHandle(u)];
@@ -1127,7 +1127,7 @@ void ARX_SPELLS_Update() {
 			ARX_SPELLS_Fizzle(spell);
 		}
 		
-		const long framediff = spell->m_timcreation + spell->m_duration - tim;
+		const long framediff = spell->m_timcreation + spell->m_duration - now;
 		
 		if(framediff < 0) {
 			SPELLEND_Notify(*spell);
