@@ -496,10 +496,9 @@ void TeleportSpell::Update(float timeDelta)
 {
 	ARX_UNUSED(timeDelta);
 	
-	const unsigned long tim = arxtime.now_ul();
+	float elapsed = arxtime.now_f() - m_timcreation;
+	float TELEPORT = elapsed / m_duration;
 	
-	float TELEPORT = (float)(((float)tim-(float)m_timcreation)/(float)m_duration);
-
 	if(LASTTELEPORT < 0.5f && TELEPORT >= 0.5f) {
 		Vec3f pos = lastteleport;
 		lastteleport = player.pos;
