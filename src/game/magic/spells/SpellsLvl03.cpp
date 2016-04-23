@@ -293,9 +293,7 @@ void FireballSpell::Update() {
 		light->rgb = Color3f(1.0f, 0.6f, 0.3f) - Color3f(0.3f, 0.1f, 0.1f) * randomColor3f();
 	}
 	
-	Sphere sphere;
-	sphere.origin = eCurPos;
-	sphere.radius=std::max(m_level*2.f,12.f);
+	Sphere sphere = Sphere(eCurPos, std::max(m_level * 2.f, 12.f));
 	
 	if(ulCurrentTime > m_createBallDuration) {
 		SpawnFireballTail(eCurPos, eMove, m_level, 0);
