@@ -1342,16 +1342,16 @@ void ARX_PLAYER_Manage_Visual() {
 		io->halo.color = Color3f::red;
 		io->halo.flags |= HALO_ACTIVE | HALO_DYNLIGHT;
 		io->halo.radius = 20.f;
-		player.lifePool.current += float(g_framedelay) * 0.1f;
+		player.lifePool.current += g_framedelay * 0.1f;
 		player.lifePool.current = std::min(player.lifePool.current, player.Full_maxlife);
-		player.manaPool.current += float(g_framedelay) * 0.1f;
+		player.manaPool.current += g_framedelay * 0.1f;
 		player.manaPool.current = std::min(player.manaPool.current, player.Full_maxmana);
 	}
 	
 	if(cur_mr == 3) {
-		player.lifePool.current += float(g_framedelay) * 0.05f;
+		player.lifePool.current += g_framedelay * 0.05f;
 		player.lifePool.current = std::min(player.lifePool.current, player.Full_maxlife);
-		player.manaPool.current += float(g_framedelay) * 0.05f;
+		player.manaPool.current += g_framedelay * 0.05f;
 		player.manaPool.current = std::min(player.manaPool.current, player.Full_maxmana);
 	}
 	
@@ -2432,7 +2432,7 @@ void PlayerMovementIterate(float DeltaTime) {
 		Vec3f vect = g_moveto - player.pos;
 		float divv = glm::length(vect);
 		if(divv > 0.f) {
-			float mul = (float)g_framedelay * 0.001f * 200.f;
+			float mul = g_framedelay * 0.001f * 200.f;
 			divv = mul / divv;
 			vect *= divv;
 			g_moveto = player.pos + vect;

@@ -976,7 +976,7 @@ static void ARX_DAMAGES_UpdateDamage(DamageHandle j, float tim) {
 	} else if(damage.params.duration == -1) {
 		dmg = damage.params.damages;
 	} else {
-		float FD = (float)g_framedelay;
+		float FD = g_framedelay;
 		
 		if(tim > damage.start_time + damage.params.duration) {
 			FD -= damage.start_time + damage.params.duration - tim;

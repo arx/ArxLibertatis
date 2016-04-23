@@ -999,7 +999,7 @@ void ARX_PHYSICS_Apply() {
 			if(io->obj->pbox->active == 1) {
 				PHYSICS_CURIO = io;
 
-				ARX_PHYSICS_BOX_ApplyModel(io->obj->pbox, (float)g_framedelay, io->rubber, treatio[i].num);
+				ARX_PHYSICS_BOX_ApplyModel(io->obj->pbox, g_framedelay, io->rubber, treatio[i].num);
 				
 				if(io->soundcount > 12) {
 					io->soundtime = 0;
@@ -1045,7 +1045,7 @@ void ARX_PHYSICS_Apply() {
 		if(io->ioflags & IO_NPC) {
 			ARX_PROFILE(IO_NPC);
 			if(io->_npcdata->climb_count != 0.f && g_framedelay > 0) {
-				io->_npcdata->climb_count -= MAX_ALLOWED_PER_SECOND * (float)g_framedelay * ( 1.0f / 1000 );
+				io->_npcdata->climb_count -= MAX_ALLOWED_PER_SECOND * g_framedelay * ( 1.0f / 1000 );
 
 				if(io->_npcdata->climb_count < 0)
 					io->_npcdata->climb_count = 0.f;
@@ -2294,7 +2294,7 @@ static void ManageNPCMovement(Entity * io)
 	if(io->forcedmove == Vec3f_ZERO) {
 		ForcedMove = Vec3f_ZERO;
 	} else {
-		float dd = std::min(1.f, (float)g_framedelay * (1.0f / 6) / glm::length(io->forcedmove));
+		float dd = std::min(1.f, g_framedelay * (1.0f / 6) / glm::length(io->forcedmove));
 		ForcedMove = io->forcedmove * dd;
 	}
 
@@ -2315,7 +2315,7 @@ static void ManageNPCMovement(Entity * io)
 		float anything = CheckAnythingInCylinder(phys.cyl, io, CFLAG_JUST_TEST | CFLAG_NPC);
 
 		if(anything >= 0)
-			io->physics.targetpos.y = io->pos.y + (float)g_framedelay * 1.5f + ForcedMove.y;
+			io->physics.targetpos.y = io->pos.y + g_framedelay * 1.5f + ForcedMove.y;
 		else
 			io->physics.targetpos.y = io->pos.y + ForcedMove.y;
 
