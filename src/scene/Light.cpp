@@ -570,8 +570,8 @@ void ResetTileLights() {
 void ComputeTileLights(short x,short z)
 {
 	tilelights[x][z].el.clear();
-	float xx=((float)x+0.5f)*ACTIVEBKG->Xdiv;
-	float zz=((float)z+0.5f)*ACTIVEBKG->Zdiv;
+	float xx = (x + 0.5f) * ACTIVEBKG->Xdiv;
+	float zz = (z + 0.5f) * ACTIVEBKG->Zdiv;
 
 	for(size_t i = 0; i < TOTPDL; i++) {
 		EERIE_LIGHT * light = PDL[i];
