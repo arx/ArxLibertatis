@@ -1885,11 +1885,11 @@ static void ComputeTolerance(Entity * io, EntityHandle targ, float * dst) {
 
 		// if target is a marker set to a minimal tolerance
 		if(entities[targ]->ioflags & IO_MARKER)
-			TOLERANCE = 21.f + (float)io->_npcdata->moveproblem * ( 1.0f / 10 );
+			TOLERANCE = 21.f + io->_npcdata->moveproblem * ( 1.0f / 10 );
 	}
 
 	// Tolerance is modified by current moveproblem status
-	TOLERANCE += (float)io->_npcdata->moveproblem * ( 1.0f / 10 );
+	TOLERANCE += io->_npcdata->moveproblem * ( 1.0f / 10 );
 	// Now fill our return value with TOLERANCE
 	*dst = TOLERANCE;
 }
