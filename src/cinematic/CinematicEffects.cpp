@@ -206,9 +206,7 @@ void FX_DreamPrecalc(CinematicBitmap * bi, float amp, float fps) {
 	n.x = (bi->m_count.x + 1) << 1;
 	n.y = (bi->m_count.y + 1) << 1;
 	
-	Vec2f nn;
-	nn.x = ((float)n.x) + s.x;
-	nn.y = ((float)n.y) + s.y;
+	Vec2f nn = Vec2f(n) + s;
 	
 	Vec2f o;
 	o.x = amp * ((2 * (std::sin(nn.x / 20) + std::sin(nn.x * nn.y / 2000)
