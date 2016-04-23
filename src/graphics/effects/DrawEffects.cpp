@@ -246,7 +246,7 @@ void ARXDRAW_DrawPolyBoom() {
 	TexturedVertex ltv[4];
 
 	GRenderer->SetFogColor(Color::none); // TODO: not handled by RenderMaterial
-	unsigned long tim = arxtime.now_ul();
+	unsigned long now = arxtime.now_ul();
 	
 	for(size_t i = 0; i < polyboom.size(); i++) {
 		
@@ -264,7 +264,7 @@ void ARXDRAW_DrawPolyBoom() {
 			}
 		}
 
-		float t = (float)pb.timecreation + (float)pb.tolive - (float)tim;
+		float t = (float)pb.timecreation + (float)pb.tolive - (float)now;
 
 		if(t <= 0) {
 			std::swap(polyboom[i], polyboom.back());
@@ -284,7 +284,7 @@ void ARXDRAW_DrawPolyBoom() {
 
 		POLYBOOM & pb = *itr;
 		
-		float t = (float)pb.timecreation + (float)pb.tolive - (float)tim;
+		float t = (float)pb.timecreation + (float)pb.tolive - (float)now;
 		
 		long typp = pb.type;
 		typp &= ~128;
