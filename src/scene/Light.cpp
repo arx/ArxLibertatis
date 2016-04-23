@@ -294,10 +294,10 @@ void TreatBackgroundDynlights() {
 		EERIE_LIGHT * el = &DynLight[i];
 
 		if(el->exist && el->duration) {
-			const unsigned long tim = arxtime.now_ul() - el->time_creation;
+			const unsigned long elapsed = arxtime.now_ul() - el->time_creation;
 			const unsigned long duration = el->duration;
 
-			if(tim >= duration) {
+			if(elapsed >= duration) {
 				float sub = g_framedelay * 0.001f;
 
 				el->rgb.r -= sub;
