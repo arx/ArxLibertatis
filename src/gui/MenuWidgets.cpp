@@ -480,8 +480,8 @@ CWindowMenu::CWindowMenu(const Vec2f & pos, const Vec2f & size)
 
 	m_pages.clear();
 
-	fPosXCalc=((float)-m_size.x);
-	fDist=((float)(m_size.x+m_pos.x));
+	fPosXCalc = -m_size.x;
+	fDist = m_size.x + m_pos.x;
 	fAngle=0.f;
 
 	m_currentPageId=NOP;
