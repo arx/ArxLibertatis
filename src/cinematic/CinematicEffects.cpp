@@ -68,7 +68,7 @@ Color FX_FadeIN(float a, Color color, Color colord)
 	float g = (color.g - colord.g) * a + colord.g;
 	float b = (color.b - colord.b) * a + colord.b;
 	
-	return Color((int)r, (int)g, (int)b, 0);
+	return Color(u8(r), u8(g), u8(b), 0);
 
 }
 /*---------------------------------------------------------------------------------*/
@@ -80,7 +80,7 @@ Color FX_FadeOUT(float a, Color color, Color colord)
 	float g = (color.g - colord.g) * a + colord.g;
 	float b = (color.b - colord.b) * a + colord.b;
 
-	return Color((int)r, (int)g, (int)b, 0);
+	return Color(u8(r), u8(g), u8(b), 0);
 }
 
 static float LastTime;
