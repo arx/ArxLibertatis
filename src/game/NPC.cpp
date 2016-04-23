@@ -785,9 +785,9 @@ void ARX_TEMPORARY_TrySound(float volume) {
 		if(PHYSICS_CURIO->ioflags & IO_BODY_CHUNK)
 			return;
 
-		unsigned long at = arxtime.now_ul();
+		unsigned long now = arxtime.now_ul();
 
-		if(at > PHYSICS_CURIO->soundtime) {
+		if(now > PHYSICS_CURIO->soundtime) {
 
 			PHYSICS_CURIO->soundcount++;
 
@@ -803,7 +803,7 @@ void ARX_TEMPORARY_TrySound(float volume) {
 				if(volume > 1.f)
 					volume = 1.f;
 
-				PHYSICS_CURIO->soundtime = at + (ARX_SOUND_PlayCollision(material, CUR_COLLISION_MATERIAL, volume, 1.f, PHYSICS_CURIO->pos, PHYSICS_CURIO) >> 4) + 50;
+				PHYSICS_CURIO->soundtime = now + (ARX_SOUND_PlayCollision(material, CUR_COLLISION_MATERIAL, volume, 1.f, PHYSICS_CURIO->pos, PHYSICS_CURIO) >> 4) + 50;
 			}
 		}
 	}
