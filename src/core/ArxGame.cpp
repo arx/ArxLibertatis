@@ -689,8 +689,7 @@ static bool HandleGameFlowTransitions() {
 		ARX_INTERFACE_ShowFISHTANK();
 		
 		arxtime.update();
-		float tim = arxtime.now_f();
-		float elapsed = tim - TRANSITION_START;
+		float elapsed = arxtime.now_f() - TRANSITION_START;
 
 		if(elapsed > TRANSITION_DURATION) {
 			TRANSITION_START = 0;
