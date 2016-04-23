@@ -297,18 +297,18 @@ void FireballSpell::Update() {
 	sphere.origin = eCurPos;
 	sphere.radius=std::max(m_level*2.f,12.f);
 	
-		if(ulCurrentTime > m_createBallDuration) {
-			SpawnFireballTail(eCurPos, eMove, m_level, 0);
-		} else {
-			if(Random::getf() < 0.9f) {
-				Vec3f move = Vec3f_ZERO;
-				float dd=(float)ulCurrentTime / (float)m_createBallDuration*10;
-				
-				dd = glm::clamp(dd, 1.f, m_level);
-				
-				SpawnFireballTail(eCurPos, move, (float)dd, 1);
-			}
+	if(ulCurrentTime > m_createBallDuration) {
+		SpawnFireballTail(eCurPos, eMove, m_level, 0);
+	} else {
+		if(Random::getf() < 0.9f) {
+			Vec3f move = Vec3f_ZERO;
+			float dd=(float)ulCurrentTime / (float)m_createBallDuration*10;
+			
+			dd = glm::clamp(dd, 1.f, m_level);
+			
+			SpawnFireballTail(eCurPos, move, (float)dd, 1);
 		}
+	}
 	
 	if(!bExplo)
 	if(CheckAnythingInSphere(sphere, m_caster, CAS_NO_SAME_GROUP)) {
