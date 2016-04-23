@@ -715,11 +715,11 @@ static bool HandleGameFlowTransitions() {
 		}
 
 		ARX_INTERFACE_ShowARKANE();
+		
 		arxtime.update();
-		unsigned long tim = arxtime.now_ul();
-		float pos = (float)tim - (float)TRANSITION_START;
+		float elapsed = arxtime.now_f() - TRANSITION_START;
 
-		if(pos > TRANSITION_DURATION) {
+		if(elapsed > TRANSITION_DURATION) {
 			TRANSITION_START = 0;
 			GameFlow::setTransition(GameFlow::LoadingScreen);
 		}
