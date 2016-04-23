@@ -239,7 +239,6 @@ static void IncrementPolyWithNormalOutput(EERIEPOLY * _pPoly, TexturedVertex * _
 	}
 }
 
-extern float g_framedelay;
 void ARXDRAW_DrawPolyBoom() {
 	
 	ARX_PROFILE_FUNC();

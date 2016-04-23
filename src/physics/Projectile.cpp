@@ -21,6 +21,7 @@
 
 #include <string>
 
+#include "core/Core.h"
 #include "core/GameTime.h"
 
 #include "game/Equipment.h"
@@ -44,8 +45,6 @@
 
 #include "util/Flags.h"
 
-
-extern float g_framedelay;
 
 enum ThrownObjectFlag {
 	ATO_EXIST      = (1<<0),

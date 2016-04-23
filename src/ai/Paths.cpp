@@ -72,8 +72,6 @@ ZeniMax Media Inc., Suite 120, Rockville, Maryland 20850 USA.
 
 #include "script/Script.h"
 
-extern float g_framedelay;
-
 ARX_PATH ** ARXpaths = NULL;
 long nbARXpaths = 0;
 
