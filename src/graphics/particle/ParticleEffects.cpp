@@ -331,7 +331,7 @@ void SpawnGroundSplat(const Sphere & sp, const Color3f & col, long flags) {
 	float hdiv,vdiv;
 	hdiv=vdiv=1.f/(size*2);
 
-	unsigned long tim = arxtime.now_ul();
+	unsigned long now = arxtime.now_ul();
 
 	std::vector<POLYBOOM>::iterator pb = polyboom.begin();
 	while(pb != polyboom.end()) {
@@ -410,7 +410,7 @@ void SpawnGroundSplat(const Sphere & sp, const Color3f & col, long flags) {
 
 					pb.ep=ep;
 					
-					pb.timecreation=tim;
+					pb.timecreation=now;
 
 					pb.tx = x;
 					pb.tz = z;
