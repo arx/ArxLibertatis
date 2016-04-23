@@ -30,7 +30,7 @@ public:
 	
 	void Launch();
 	void End();
-	void Update(float timeDelta);
+	void Update();
 	
 	Vec3f getPosition();
 	
@@ -48,7 +48,7 @@ public:
 	
 	void Launch();
 	void End();
-	void Update(float timeDelta);
+	void Update();
 	
 private:
 	unsigned long ulCurrentTime;
@@ -67,7 +67,7 @@ public:
 	
 	void Launch();
 	void End();
-	void Update(float timeDelta);
+	void Update();
 	
 private:
 	Vec3f m_pos;
@@ -82,7 +82,7 @@ public:
 	
 	void Launch();
 	void End();
-	void Update(float timeDelta);
+	void Update();
 	
 private:
 	LightHandle m_light;
@@ -97,7 +97,7 @@ public:
 	
 	void Launch();
 	void End();
-	void Update(float timeDelta);
+	void Update();
 	
 private:
 	LightHandle lLightId;

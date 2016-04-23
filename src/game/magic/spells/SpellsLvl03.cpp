@@ -19,6 +19,7 @@
 
 #include "game/magic/spells/SpellsLvl03.h"
 
+#include "core/Core.h"
 #include "core/GameTime.h"
 #include "game/Damage.h"
 #include "game/Entity.h"
@@ -103,7 +104,7 @@ void SpeedSpell::End() {
 	m_trails.clear();
 }
 
-void SpeedSpell::Update(float timeDelta) {
+void SpeedSpell::Update() {
 	
 	if(m_caster == PlayerEntityHandle)
 		ARX_SOUND_RefreshPosition(m_snd_loop, entities[m_target]->pos);
@@ -112,7 +113,7 @@ void SpeedSpell::Update(float timeDelta) {
 		Vec3f pos = entities[m_target]->obj->vertexlist3[m_trails[i].vertexIndex].v;
 		
 		m_trails[i].trail->SetNextPosition(pos);
-		m_trails[i].trail->Update(timeDelta);
+		m_trails[i].trail->Update(g_framedelay);
 	}
 	
 	for(size_t i = 0; i < m_trails.size(); i++) {
@@ -154,8 +155,8 @@ void DispellIllusionSpell::Launch()
 }
 
 
-void DispellIllusionSpell::Update(float timeDelta) {
-	ARX_UNUSED(timeDelta);
+void DispellIllusionSpell::Update() {
+	
 }
 
 
@@ -230,9 +231,9 @@ void FireballSpell::End() {
 	endLightDelayed(m_light, 500);
 }
 
-void FireballSpell::Update(float timeDelta) {
+void FireballSpell::Update() {
 	
-	ulCurrentTime += timeDelta;
+	ulCurrentTime += g_framedelay;
 	
 	if(ulCurrentTime <= m_createBallDuration) {
 		
@@ -276,7 +277,7 @@ void FireballSpell::Update(float timeDelta) {
 		eMove = angleToVector(Anglef(afAlpha, afBeta, 0.f)) * 100.f;
 	}
 	
-	eCurPos += eMove * (timeDelta * 0.0045f);
+	eCurPos += eMove * (g_framedelay * 0.0045f);
 	
 	
 	if(!lightHandleIsValid(m_light))
@@ -392,9 +393,9 @@ void CreateFoodSpell::End() {
 	
 }
 
-void CreateFoodSpell::Update(float timeDelta) {
+void CreateFoodSpell::Update() {
 	
-	m_currentTime += timeDelta;
+	m_currentTime += g_framedelay;
 	
 	m_pos = entities.player()->pos;
 	
@@ -420,7 +421,7 @@ void CreateFoodSpell::Update(float timeDelta) {
 	}
 
 	m_particles.SetPos(m_pos);
-	m_particles.Update(timeDelta);
+	m_particles.Update(g_framedelay);
 	
 	m_particles.Render();
 }
@@ -518,9 +519,9 @@ void IceProjectileSpell::End() {
 	
 }
 
-void IceProjectileSpell::Update(float timeDelta) {
+void IceProjectileSpell::Update() {
 
-	ulCurrentTime += timeDelta;
+	ulCurrentTime += g_framedelay;
 
 	if(m_duration - ulCurrentTime < 1000) {
 		fColor = (m_duration - ulCurrentTime) * ( 1.0f / 1000 );

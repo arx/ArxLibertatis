@@ -19,6 +19,7 @@
 
 #include "game/magic/spells/SpellsLvl02.h"
 
+#include "core/Core.h"
 #include "core/GameTime.h"
 #include "game/Damage.h"
 #include "game/Entity.h"
@@ -113,9 +114,9 @@ void HealSpell::End() {
 	
 }
 
-void HealSpell::Update(float timeDelta) {
+void HealSpell::Update() {
 	
-	m_currentTime += timeDelta;
+	m_currentTime += g_framedelay;
 	
 	if(m_caster == PlayerEntityHandle) {
 		m_pos = player.pos;
@@ -160,7 +161,7 @@ void HealSpell::Update(float timeDelta) {
 	}
 
 	m_particles.SetPos(m_pos);
-	m_particles.Update(timeDelta);
+	m_particles.Update(g_framedelay);
 	m_particles.Render();
 	
 	for(size_t ii = 0; ii < entities.size(); ii++) {
@@ -182,7 +183,7 @@ void HealSpell::Update(float timeDelta) {
 				dist=fdist(m_pos, e->pos);
 
 			if(dist<300.f) {
-				float gain = Random::getf(0.8f, 2.4f) * m_level * (300.f - dist) * (1.0f/300) * timeDelta * (1.0f/1000);
+				float gain = Random::getf(0.8f, 2.4f) * m_level * (300.f - dist) * (1.0f/300) * g_framedelay * (1.0f/1000);
 
 				if(handle == PlayerEntityHandle) {
 					if (!BLOCK_PLAYER_CONTROLS)
@@ -222,8 +223,7 @@ void DetectTrapSpell::End()
 	m_targets.clear();
 }
 
-void DetectTrapSpell::Update(float timeDelta) {
-	ARX_UNUSED(timeDelta);
+void DetectTrapSpell::Update() {
 	
 	if(m_caster == PlayerEntityHandle) {
 		Vec3f pos = ARX_PLAYER_FrontPos();
@@ -279,9 +279,7 @@ void ArmorSpell::End()
 	m_targets.clear();
 }
 
-void ArmorSpell::Update(float timeDelta)
-{
-	ARX_UNUSED(timeDelta);
+void ArmorSpell::Update() {
 	
 	if(ValidIONum(m_target)) {
 		Entity *io = entities[m_target];
@@ -352,9 +350,7 @@ void LowerArmorSpell::End()
 	m_targets.clear();
 }
 
-void LowerArmorSpell::Update(float timeDelta)
-{
-	ARX_UNUSED(timeDelta);
+void LowerArmorSpell::Update() {
 	
 	if(ValidIONum(m_target)) {
 		Entity *io = entities[m_target];
@@ -430,7 +426,7 @@ void HarmSpell::End()
 }
 
 // TODO copy-paste cabal
-void HarmSpell::Update(float timeDelta)
+void HarmSpell::Update()
 {
 	float refpos;
 	float scaley;
@@ -476,7 +472,7 @@ void HarmSpell::Update(float timeDelta)
 	mat.setBlendType(RenderMaterial::Additive);
 	
 	Anglef cabalangle(0.f, 0.f, 0.f);
-	cabalangle.setPitch(m_pitch + timeDelta * 0.1f);
+	cabalangle.setPitch(m_pitch + g_framedelay * 0.1f);
 	m_pitch = cabalangle.getPitch();
 	
 	Vec3f cabalscale = Vec3f(Es);

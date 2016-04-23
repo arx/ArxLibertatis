@@ -21,6 +21,7 @@
 
 #include "animation/AnimationRender.h"
 #include "core/Application.h"
+#include "core/Core.h"
 #include "core/GameTime.h"
 #include "game/Damage.h"
 #include "game/Entity.h"
@@ -74,9 +75,9 @@ void BlessSpell::End() {
 	m_targets.clear();
 }
 
-void BlessSpell::Update(float timeDelta) {
+void BlessSpell::Update() {
 	
-	fRot += timeDelta * 0.25f;
+	fRot += g_framedelay * 0.25f;
 	
 	if(ValidIONum(m_target)) {
 		m_pos = entities[m_target]->pos;
@@ -262,9 +263,7 @@ void FireProtectionSpell::End()
 		ARX_HALO_SetToNative(entities[m_target]);
 }
 
-void FireProtectionSpell::Update(float timeDelta)
-{
-	ARX_UNUSED(timeDelta);
+void FireProtectionSpell::Update() {
 	
 	if(ValidIONum(m_target)) {
 		Entity *io = entities[m_target];
@@ -323,9 +322,7 @@ void ColdProtectionSpell::End()
 		ARX_HALO_SetToNative(entities[m_target]);
 }
 
-void ColdProtectionSpell::Update(float timeDelta)
-{
-	ARX_UNUSED(timeDelta);
+void ColdProtectionSpell::Update() {
 	
 	if(ValidIONum(m_target)) {
 		Entity *io = entities[m_target];
@@ -404,9 +401,9 @@ void CurseSpell::End() {
 	m_targets.clear();
 }
 
-void CurseSpell::Update(float timeDelta) {
+void CurseSpell::Update() {
 	
-	fRot += timeDelta * 0.25f;
+	fRot += g_framedelay * 0.25f;
 	
 	Vec3f target = Vec3f_ZERO;
 	if(ValidIONum(m_target)) {

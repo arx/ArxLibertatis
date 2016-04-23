@@ -143,8 +143,8 @@ public:
 	virtual void End() {
 		
 	}
-	virtual void Update(float timeDelta) {
-		ARX_UNUSED(timeDelta);
+	
+	virtual void Update() {
 	}
 	
 	virtual Vec3f getPosition();

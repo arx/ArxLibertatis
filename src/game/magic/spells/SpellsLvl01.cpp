@@ -22,6 +22,7 @@
 #include <boost/foreach.hpp>
 
 #include "core/Application.h"
+#include "core/Core.h"
 #include "core/GameTime.h"
 
 #include "game/Damage.h"
@@ -67,9 +68,7 @@ void MagicSightSpell::End()
 	ARX_SOUND_PlaySFX(SND_SPELL_VISION_START, &entities[m_caster]->pos);
 }
 
-void MagicSightSpell::Update(float timeDelta)
-{
-	ARX_UNUSED(timeDelta);
+void MagicSightSpell::Update() {
 	
 	if(m_caster == PlayerEntityHandle) {
 		Vec3f pos = ARX_PLAYER_FrontPos();
@@ -315,7 +314,7 @@ void MagicMissileSpell::End() {
 	pTab.clear();
 }
 
-void MagicMissileSpell::Update(float timeDelta) {
+void MagicMissileSpell::Update() {
 	
 	
 	for(size_t i = 0; i < pTab.size(); i++) {
@@ -354,7 +353,7 @@ void MagicMissileSpell::Update(float timeDelta) {
 	}
 	
 	for(size_t i = 0 ; i < pTab.size() ; i++) {
-		pTab[i]->Update(timeDelta);
+		pTab[i]->Update(g_framedelay);
 	}
 	
 	{ // CheckAllDestroyed
@@ -494,7 +493,7 @@ void IgnitSpell::End() {
 	m_lights.clear();
 }
 
-void IgnitSpell::Update(float timeDelta)
+void IgnitSpell::Update()
 {
 	if(m_elapsed < m_duration) {
 		float a = float(m_elapsed) / float(m_duration);
@@ -521,7 +520,7 @@ void IgnitSpell::Update(float timeDelta)
 	}
 	
 	if(!arxtime.is_paused())
-		m_elapsed += timeDelta;
+		m_elapsed += g_framedelay;
 }
 
 void DouseSpell::Launch()
@@ -612,8 +611,8 @@ void DouseSpell::End() {
 	}
 }
 
-void DouseSpell::Update(float timeDelta) {
-	ARX_UNUSED(timeDelta);
+void DouseSpell::Update() {
+	
 }
 
 void ActivatePortalSpell::Launch()

@@ -147,9 +147,7 @@ void FlyingEyeSpell::End()
 	lightHandleDestroy(special[1]);
 }
 
-void FlyingEyeSpell::Update(float timeDelta)
-{
-	ARX_UNUSED(timeDelta);
+void FlyingEyeSpell::Update() {
 	
 	const unsigned long tim = arxtime.now_ul();
 	
@@ -360,10 +358,10 @@ void FireFieldSpell::End()
 	ARX_SOUND_PlaySFX(SND_SPELL_FIRE_FIELD_END);
 }
 
-void FireFieldSpell::Update(float timeDelta) {
+void FireFieldSpell::Update() {
 	
-	pPSStream.Update(timeDelta);
-	pPSStream1.Update(timeDelta);
+	pPSStream.Update(g_framedelay);
+	pPSStream1.Update(g_framedelay);
 	
 	
 	if(!lightHandleIsValid(m_light))
@@ -386,7 +384,7 @@ void FireFieldSpell::Update(float timeDelta) {
 		pPSStream.Render();
 		pPSStream1.Render();
 		
-		float fDiff = timeDelta / 8.f;
+		float fDiff = g_framedelay / 8.f;
 		int nTime = checked_range_cast<int>(fDiff);
 		
 		for(long nn=0;nn<=nTime+1;nn++) {
@@ -523,9 +521,7 @@ void IceFieldSpell::End() {
 	ARX_SOUND_PlaySFX(SND_SPELL_ICE_FIELD_END);
 }
 
-void IceFieldSpell::Update(float timeDelta) {
-	
-	ARX_UNUSED(timeDelta);
+void IceFieldSpell::Update() {
 	
 	if(!lightHandleIsValid(m_light))
 		m_light = GetFreeDynLight();
@@ -667,7 +663,7 @@ static Vec3f GetChestPos(EntityHandle num) {
 	}
 }
 
-void LightningStrikeSpell::Update(float timeDelta) {
+void LightningStrikeSpell::Update() {
 	
 	float fBeta = 0.f;
 	float falpha = 0.f;
@@ -703,7 +699,7 @@ void LightningStrikeSpell::Update(float timeDelta) {
 	m_lightning.m_caster = m_caster;
 	m_lightning.m_level = m_level;
 	
-	m_lightning.Update(timeDelta);
+	m_lightning.Update(g_framedelay);
 	m_lightning.Render();
 	
 	ARX_SOUND_RefreshPosition(m_snd_loop, entities[m_caster]->pos);
@@ -753,9 +749,7 @@ void ConfuseSpell::End() {
 	endLightDelayed(m_light, 500);
 }
 
-void ConfuseSpell::Update(float timeDelta) {
-	
-	ARX_UNUSED(timeDelta);
+void ConfuseSpell::Update() {
 	
 	Vec3f pos = entities[m_target]->pos;
 	if(m_target != PlayerEntityHandle) {

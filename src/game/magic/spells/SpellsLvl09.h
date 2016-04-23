@@ -31,7 +31,7 @@ public:
 	bool CanLaunch();
 	void Launch();
 	void End();
-	void Update(float timeDelta);
+	void Update();
 	
 private:
 	void GetTargetAndBeta(Vec3f & target, float & beta);
@@ -49,7 +49,7 @@ public:
 	bool CanLaunch();
 	void Launch();
 	void End();
-	void Update(float timeDelta);
+	void Update();
 	
 private:
 	LightHandle m_light;
@@ -61,7 +61,7 @@ class NegateMagicSpell : public SpellBase {
 public:
 	void Launch();
 	void End();
-	void Update(float timeDelta);
+	void Update();
 	
 private:
 	Vec3f m_pos;
@@ -76,7 +76,7 @@ public:
 	bool CanLaunch();
 	void Launch();
 	void End();
-	void Update(float timeDelta);
+	void Update();
 	
 	Vec3f getPosition();
 };

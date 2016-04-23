@@ -20,6 +20,7 @@
 #include "game/magic/spells/SpellsLvl06.h"
 
 #include "core/Application.h"
+#include "core/Core.h"
 #include "core/GameTime.h"
 #include "game/Damage.h"
 #include "game/Entity.h"
@@ -150,7 +151,7 @@ void RiseDeadSpell::End()
 	endLightDelayed(m_light, 500);
 }
 
-void RiseDeadSpell::Update(float timeDelta) {
+void RiseDeadSpell::Update() {
 	
 	if(m_creationFailed) {
 		m_light = LightHandle();
@@ -159,7 +160,7 @@ void RiseDeadSpell::Update(float timeDelta) {
 	
 	m_duration+=200;
 	
-	m_fissure.Update(timeDelta);
+	m_fissure.Update(g_framedelay);
 	m_fissure.Render();
 	
 	if(lightHandleIsValid(m_light)) {
@@ -350,7 +351,7 @@ void CreateFieldSpell::End() {
 	}
 }
 
-void CreateFieldSpell::Update(float timeDelta) {
+void CreateFieldSpell::Update() {
 	
 		if(ValidIONum(m_entity)) {
 			Entity * io = entities[m_entity];
@@ -362,7 +363,7 @@ void CreateFieldSpell::Update(float timeDelta) {
 				m_duration=0;
 			}
 		
-			m_field.Update(timeDelta);
+			m_field.Update(g_framedelay);
 			m_field.Render();
 		}
 }
@@ -434,9 +435,8 @@ void SlowDownSpell::End() {
 	m_targets.clear();
 }
 
-void SlowDownSpell::Update(float timeDelta) {
+void SlowDownSpell::Update() {
 	
-	ARX_UNUSED(timeDelta);
 }
 
 Vec3f SlowDownSpell::getPosition() {

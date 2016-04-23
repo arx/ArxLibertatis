@@ -31,7 +31,7 @@ public:
 	
 	void Launch();
 	void End();
-	void Update(float timeDelta);
+	void Update();
 	
 private:
 	Vec3f m_pos;
@@ -46,7 +46,7 @@ public:
 	bool CanLaunch();
 	void Launch();
 	void End();
-	void Update(float timeDelta);
+	void Update();
 	
 private:
 	Vec3f eSrc;
@@ -72,7 +72,7 @@ class MassIncinerateSpell : public SpellBase {
 public:
 	void Launch();
 	void End();
-	void Update(float timeDelta);
+	void Update();
 };
 
 class TeleportSpell : public SpellBase {
@@ -80,7 +80,7 @@ public:
 	bool CanLaunch();
 	void Launch();
 	void End();
-	void Update(float timeDelta);
+	void Update();
 };
 
 #endif // ARX_GAME_MAGIC_SPELLS_SPELLSLVL10_H

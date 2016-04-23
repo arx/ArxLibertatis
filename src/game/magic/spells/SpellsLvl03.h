@@ -32,7 +32,7 @@ public:
 	
 	void Launch();
 	void End();
-	void Update(float timeDelta);
+	void Update();
 	
 	Vec3f getPosition();
 	
@@ -48,7 +48,7 @@ private:
 class DispellIllusionSpell : public SpellBase {
 public:
 	void Launch();
-	void Update(float timeDelta);
+	void Update();
 };
 
 class FireballSpell : public SpellBase {
@@ -58,7 +58,7 @@ public:
 	
 	void Launch();
 	void End();
-	void Update(float timeDelta);
+	void Update();
 	
 	Vec3f getPosition();
 	
@@ -80,7 +80,7 @@ public:
 	
 	void Launch();
 	void End();
-	void Update(float timeDelta);
+	void Update();
 	
 private:
 	Vec3f m_pos;
@@ -93,7 +93,7 @@ class IceProjectileSpell : public SpellBase {
 public:
 	void Launch();
 	void End();
-	void Update(float timeDelta);
+	void Update();
 	
 private:
 	unsigned long ulCurrentTime;

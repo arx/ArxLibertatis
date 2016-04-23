@@ -22,6 +22,7 @@
 #include <glm/gtc/random.hpp>
 
 #include "core/Application.h"
+#include "core/Core.h"
 #include "core/Config.h"
 #include "core/GameTime.h"
 #include "game/Damage.h"
@@ -69,9 +70,7 @@ void InvisibilitySpell::End()
 	}
 }
 
-void InvisibilitySpell::Update(float timeDelta)
-{
-	ARX_UNUSED(timeDelta);
+void InvisibilitySpell::Update() {
 	
 	if(m_target != PlayerEntityHandle) {
 		if(!(entities[m_target]->gameFlags & GFLAG_INVISIBILITY)) {
@@ -143,8 +142,8 @@ void ManaDrainSpell::End()
 }
 
 // TODO copy-paste cabal
-void ManaDrainSpell::Update(float timeDelta)
-{
+void ManaDrainSpell::Update() {
+	
 	float refpos;
 	float scaley;
 	
@@ -188,7 +187,7 @@ void ManaDrainSpell::Update(float timeDelta)
 	mat.setBlendType(RenderMaterial::Additive);
 	
 	Anglef cabalangle(0.f, 0.f, 0.f);
-	cabalangle.setPitch(m_pitch + timeDelta * 0.1f);
+	cabalangle.setPitch(m_pitch + g_framedelay * 0.1f);
 	m_pitch = cabalangle.getPitch();
 	
 	Vec3f cabalscale = Vec3f(Es);
@@ -299,9 +298,7 @@ void ExplosionSpell::Launch()
 	ARX_SOUND_PlaySFX(SND_SPELL_FIRE_WIND);
 }
 
-void ExplosionSpell::Update(float timeDelta)
-{
-	ARX_UNUSED(timeDelta);
+void ExplosionSpell::Update() {
 	
 	if(!lightHandleIsValid(m_light))
 		m_light = GetFreeDynLight();
@@ -343,8 +340,7 @@ void EnchantWeaponSpell::End() {
 
 }
 
-void EnchantWeaponSpell::Update(float timeDelta) {
-	ARX_UNUSED(timeDelta);
+void EnchantWeaponSpell::Update() {
 }
 
 
@@ -404,8 +400,8 @@ void LifeDrainSpell::End()
 }
 
 // TODO copy-paste cabal
-void LifeDrainSpell::Update(float timeDelta)
-{
+void LifeDrainSpell::Update() {
+	
 	float refpos;
 	float scaley;
 	
@@ -449,7 +445,7 @@ void LifeDrainSpell::Update(float timeDelta)
 	mat.setBlendType(RenderMaterial::Additive);
 	
 	Anglef cabalangle(0.f, 0.f, 0.f);
-	cabalangle.setPitch(m_pitch + timeDelta * 0.1f);
+	cabalangle.setPitch(m_pitch + g_framedelay * 0.1f);
 	m_pitch = cabalangle.getPitch();
 	
 	Vec3f cabalscale = Vec3f(Es);

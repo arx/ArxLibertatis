@@ -22,6 +22,7 @@
 #include <boost/foreach.hpp>
 
 #include "core/Application.h"
+#include "core/Core.h"
 #include "core/Config.h"
 #include "core/GameTime.h"
 #include "game/Damage.h"
@@ -149,7 +150,7 @@ void SummonCreatureSpell::End() {
 	m_summonedEntity = EntityHandle();
 }
 
-void SummonCreatureSpell::Update(float timeDelta) {
+void SummonCreatureSpell::Update() {
 	
 	if(arxtime.is_paused())
 		return;
@@ -162,7 +163,7 @@ void SummonCreatureSpell::Update(float timeDelta) {
 			MakeCoolFx(pos);
 		}
 		
-		m_fissure.Update(timeDelta);
+		m_fissure.Update(g_framedelay);
 		m_fissure.Render();
 		
 		m_requestSummon = true;
@@ -312,8 +313,8 @@ void FakeSummonSpell::End()
 	lightHandleDestroy(m_light);
 }
 
-void FakeSummonSpell::Update(float timeDelta)
-{
+void FakeSummonSpell::Update() {
+	
 	if(!arxtime.is_paused()) {
 		if(Random::getf() > 0.7f) {
 			Vec3f pos = m_fissure.m_eSrc;
@@ -321,7 +322,7 @@ void FakeSummonSpell::Update(float timeDelta)
 		}
 	}
 	
-	m_fissure.Update(timeDelta);
+	m_fissure.Update(g_framedelay);
 	m_fissure.Render();
 }
 
@@ -350,9 +351,7 @@ void NegateMagicSpell::End() {
 	
 }
 
-void NegateMagicSpell::Update(float timeDelta)
-{
-	ARX_UNUSED(timeDelta);
+void NegateMagicSpell::Update() {
 	
 	LaunchAntiMagicField();
 	
@@ -469,9 +468,7 @@ void IncinerateSpell::End()
 	ARX_SOUND_PlaySFX(SND_SPELL_INCINERATE_END);
 }
 
-void IncinerateSpell::Update(float timeDelta)
-{
-	ARX_UNUSED(timeDelta);
+void IncinerateSpell::Update() {
 	
 	if(ValidIONum(m_target)) {
 		ARX_SOUND_RefreshPosition(m_snd_loop, entities[m_target]->pos);

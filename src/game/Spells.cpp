@@ -1138,7 +1138,7 @@ void ARX_SPELLS_Update() {
 		}
 
 		if(spell) {
-			spell->Update(g_framedelay);
+			spell->Update();
 		}
 	}
 }

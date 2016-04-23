@@ -27,7 +27,7 @@ public:
 	bool CanLaunch();
 	void Launch();
 	void End();
-	void Update(float timeDelta);
+	void Update();
 	
 	Vec3f getPosition();
 };
@@ -39,7 +39,7 @@ public:
 	bool CanLaunch();
 	void Launch();
 	void End();
-	void Update(float timeDelta);
+	void Update();
 	
 	Vec3f getPosition();
 	
@@ -54,7 +54,7 @@ public:
 	ExplosionSpell();
 	
 	void Launch();
-	void Update(float timeDelta);
+	void Update();
 	
 private:
 	LightHandle m_light;
@@ -65,7 +65,7 @@ class EnchantWeaponSpell : public SpellBase {
 public:
 	void Launch();
 	void End();
-	void Update(float timeDelta);
+	void Update();
 };
 
 class LifeDrainSpell : public SpellBase {
@@ -75,7 +75,7 @@ public:
 	bool CanLaunch();
 	void Launch();
 	void End();
-	void Update(float timeDelta);
+	void Update();
 	
 	Vec3f getPosition();
 	

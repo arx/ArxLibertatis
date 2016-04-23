@@ -31,7 +31,7 @@ public:
 	bool CanLaunch();
 	void Launch();
 	void End();
-	void Update(float framedelay);
+	void Update();
 	
 private:
 	Vec3f m_pos;
@@ -44,14 +44,14 @@ class DetectTrapSpell : public SpellBase {
 public:
 	void Launch();
 	void End();
-	void Update(float timeDelta);
+	void Update();
 };
 
 class ArmorSpell : public SpellBase {
 public:
 	void Launch();
 	void End();
-	void Update(float timeDelta);
+	void Update();
 	
 	Vec3f getPosition();
 };
@@ -62,7 +62,7 @@ public:
 	
 	void Launch();
 	void End();
-	void Update(float timeDelta);
+	void Update();
 	
 	Vec3f getPosition();
 	
@@ -76,7 +76,7 @@ public:
 	
 	void Launch();
 	void End();
-	void Update(float timeDelta);
+	void Update();
 	
 private:
 	LightHandle m_light;

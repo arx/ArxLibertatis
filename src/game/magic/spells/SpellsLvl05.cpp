@@ -76,9 +76,9 @@ void RuneOfGuardingSpell::End() {
 	endLightDelayed(m_light, 500);
 }
 
-void RuneOfGuardingSpell::Update(float timeDelta) {
+void RuneOfGuardingSpell::Update() {
 	
-	ulCurrentTime += timeDelta;
+	ulCurrentTime += g_framedelay;
 	
 	if(lightHandleIsValid(m_light)) {
 		EERIE_LIGHT * light = lightHandleGet(m_light);
@@ -210,9 +210,9 @@ void LevitateSpell::End()
 		player.levitate = false;
 }
 
-void LevitateSpell::Update(float timeDelta) {
+void LevitateSpell::Update() {
 	
-	ulCurrentTime += timeDelta;
+	ulCurrentTime += g_framedelay;
 	
 	Vec3f target;
 
@@ -236,10 +236,10 @@ void LevitateSpell::Update(float timeDelta) {
 		dustParticles = 10;
 	}
 	
-	cone1.Update(timeDelta, m_pos, coneScale);
-	cone2.Update(timeDelta, m_pos, coneScale);
+	cone1.Update(g_framedelay, m_pos, coneScale);
+	cone2.Update(g_framedelay, m_pos, coneScale);
 	
-	m_stones.Update(timeDelta, m_pos);
+	m_stones.Update(g_framedelay, m_pos);
 	
 	for(int i = 0; i < dustParticles; i++) {
 		createDustParticle();
@@ -348,9 +348,9 @@ void CurePoisonSpell::End() {
 	
 }
 
-void CurePoisonSpell::Update(float timeDelta) {
+void CurePoisonSpell::Update() {
 	
-	m_currentTime += timeDelta;
+	m_currentTime += g_framedelay;
 	
 	m_pos = entities[m_target]->pos;
 	
@@ -379,7 +379,7 @@ void CurePoisonSpell::Update(float timeDelta) {
 	}
 
 	m_particles.SetPos(m_pos);
-	m_particles.Update(timeDelta);
+	m_particles.Update(g_framedelay);
 
 	if(!lightHandleIsValid(m_light))
 		m_light = GetFreeDynLight();
@@ -435,9 +435,7 @@ void RepelUndeadSpell::End() {
 	endLightDelayed(m_light, 500);
 }
 
-void RepelUndeadSpell::Update(float timeDelta) {
-	
-	ARX_UNUSED(timeDelta);
+void RepelUndeadSpell::Update() {
 	
 	Vec3f pos = entities[m_target]->pos;
 	
@@ -609,12 +607,12 @@ void PoisonProjectileSpell::End() {
 	m_projectiles.clear();
 }
 
-void PoisonProjectileSpell::Update(float timeDelta) {
+void PoisonProjectileSpell::Update() {
 	
 	for(size_t i = 0; i < m_projectiles.size(); i++) {
 		CPoisonProjectile * projectile = m_projectiles[i];
 		
-		projectile->Update(timeDelta);
+		projectile->Update(g_framedelay);
 	}
 	
 	for(size_t i = 0; i < m_projectiles.size(); i++) {

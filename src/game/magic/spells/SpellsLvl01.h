@@ -29,7 +29,7 @@ public:
 	bool CanLaunch();
 	void Launch();
 	void End();
-	void Update(float timeDelta);
+	void Update();
 };
 
 class MagicMissileSpell : public SpellBase {
@@ -39,7 +39,7 @@ public:
 	
 	void Launch();
 	void End();
-	void Update(float timeDelta);
+	void Update();
 	
 private:
 	bool m_mrCheat;
@@ -52,7 +52,7 @@ public:
 	
 	void Launch();
 	void End();
-	void Update(float timeDelta);
+	void Update();
 	
 private:
 	Vec3f m_srcPos;
@@ -69,7 +69,7 @@ class DouseSpell : public SpellBase {
 public:
 	void Launch();
 	void End();
-	void Update(float timeDelta);
+	void Update();
 	
 private:
 	std::vector<size_t> m_lights;

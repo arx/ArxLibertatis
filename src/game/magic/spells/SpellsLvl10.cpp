@@ -20,6 +20,7 @@
 #include "game/magic/spells/SpellsLvl10.h"
 
 #include "core/Application.h"
+#include "core/Core.h"
 #include "core/Config.h"
 #include "core/GameTime.h"
 #include "game/Damage.h"
@@ -129,7 +130,7 @@ void MassLightningStrikeSpell::End() {
 	pTab.clear();
 }
 
-void MassLightningStrikeSpell::Update(float timeDelta) {
+void MassLightningStrikeSpell::Update() {
 	
 	for(size_t i = 0; i < pTab.size(); i++) {
 		CLightning * lightning = pTab[i];
@@ -137,7 +138,7 @@ void MassLightningStrikeSpell::Update(float timeDelta) {
 		lightning->m_caster = m_caster;
 		lightning->m_level = m_level;
 		
-		lightning->Update(timeDelta);
+		lightning->Update(g_framedelay);
 	}
 	
 	for(size_t i = 0; i < pTab.size(); i++) {
@@ -289,9 +290,7 @@ void ControlTargetSpell::End() {
 	
 }
 
-void ControlTargetSpell::Update(float timeDelta) {
-	
-	ARX_UNUSED(timeDelta);
+void ControlTargetSpell::Update() {
 	
 	GRenderer->SetCulling(CullNone);
 	GRenderer->SetRenderState(Renderer::DepthWrite, false);
@@ -460,9 +459,7 @@ void MassIncinerateSpell::End()
 	ARX_SOUND_PlaySFX(SND_SPELL_INCINERATE_END);
 }
 
-void MassIncinerateSpell::Update(float timeDelta)
-{
-	ARX_UNUSED(timeDelta);
+void MassIncinerateSpell::Update() {
 	
 	if(ValidIONum(m_caster)) {
 		ARX_SOUND_RefreshPosition(m_snd_loop, entities[m_caster]->pos);
@@ -494,9 +491,7 @@ void TeleportSpell::End()
 
 extern Vec3f lastteleport;
 
-void TeleportSpell::Update(float timeDelta)
-{
-	ARX_UNUSED(timeDelta);
+void TeleportSpell::Update() {
 	
 	float elapsed = arxtime.now_f() - m_timcreation;
 	float TELEPORT = elapsed / m_duration;
