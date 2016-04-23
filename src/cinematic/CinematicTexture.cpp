@@ -304,15 +304,12 @@ void CinematicGrid::ReajustUV() {
 
 		if(!tex)
 			return;
-
-		int w, h;
-
-		w = tex->getStoredSize().x;
-		h = tex->getStoredSize().y;
-
-		if((w != (int)mat->bitmap.x) || (h != (int)mat->bitmap.y)) {
-			float dx = (.999999f * (float)mat->bitmap.x) / ((float)w);
-			float dy = (.999999f * (float)mat->bitmap.y) / ((float)h);
+		
+		Vec2i size = tex->getStoredSize();
+		
+		if((size.x != (int)mat->bitmap.x) || (size.y != (int)mat->bitmap.y)) {
+			float dx = (.999999f * (float)mat->bitmap.x) / ((float)size.x);
+			float dy = (.999999f * (float)mat->bitmap.y) / ((float)size.y);
 
 			int nb2 = mat->nbvertexs;
 
