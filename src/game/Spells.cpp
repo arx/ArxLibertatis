@@ -548,16 +548,16 @@ void ARX_SPELLS_ManageMagic() {
 					pos = MemoMouse;
 				}
 				
-				unsigned long time = arxtime.now_ul();
+				unsigned long now = arxtime.now_ul();
 				
 				const unsigned long interval = 1000 / 60;
 				
 				if(ARX_FLARES_broken) {
 					g_LastFlarePosition = pos;
-					g_LastFlareTime = time - interval;
+					g_LastFlareTime = now - interval;
 				}
 				
-				if(time - g_LastFlareTime >= interval) {
+				if(now - g_LastFlareTime >= interval) {
 					
 					if(glm::distance(Vec2f(pos), Vec2f(g_LastFlarePosition)) > 14 * g_sizeRatio.y) {
 						FlareLine(g_LastFlarePosition, pos);
@@ -569,7 +569,7 @@ void ARX_SPELLS_ManageMagic() {
 					else
 						AddFlare(pos, 1.f, 3);
 					
-					g_LastFlareTime = time - std::min(time - g_LastFlareTime - interval, interval);
+					g_LastFlareTime = now - std::min(now - g_LastFlareTime - interval, interval);
 				}
 				
 				ARX_FLARES_broken=0;
