@@ -62,7 +62,7 @@ void DrawMagicSightInterface()
 		col = 1.f;
 
 	if(eyeball.exist < 0) {
-		col = (float)(-eyeball.exist) * (1.f/100);
+		col = -eyeball.exist * (1.f/100);
 	} else if(eyeball.exist > 2) {
 		col = 1.f - eyeball.size.x;
 	}
@@ -91,10 +91,10 @@ void ARXDRAW_DrawEyeBall() {
 	float d;
 
 	if(eyeball.exist < 0) {
-		d = (float)(-eyeball.exist)*( 1.0f / 100 );
+		d = -eyeball.exist * (1.0f/100);
 		eyeball.exist++;
 	} else if(eyeball.exist > 2) {
-		d = (float)(eyeball.exist)*( 1.0f / 100 );
+		d = eyeball.exist * (1.0f/100);
 	}
 	else
 		return;
