@@ -178,20 +178,20 @@ void ARX_MISSILES_Update() {
 	
 	TextureContainer * tc = TC_fire; 
 
-	unsigned long tim = arxtime.now_ul();
+	unsigned long now = arxtime.now_ul();
 
 	for(unsigned long i(0); i < MAX_MISSILES; i++) {
 		if(missiles[i].type == MISSILE_NONE)
 			continue;
 
-		long framediff = missiles[i].timecreation + missiles[i].tolive - tim;
+		long framediff = missiles[i].timecreation + missiles[i].tolive - now;
 
 		if(framediff < 0) {
 			ARX_MISSILES_Kill(i);
 			continue;
 		}
 
-		long framediff3 = tim - missiles[i].timecreation;
+		long framediff3 = now - missiles[i].timecreation;
 
 		switch(missiles[i].type) {
 			case MISSILE_NONE:
@@ -284,6 +284,6 @@ void ARX_MISSILES_Update() {
 			}
 		}
 
-		missiles[i].lastupdate = tim;
+		missiles[i].lastupdate = now;
 	}
 }
