@@ -151,26 +151,26 @@ void ManaDrainSpell::Update(float timeDelta)
 	if(m_caster == PlayerEntityHandle)
 		scaley = 90.f;
 	else
-		scaley = glm::abs(entities[m_caster]->physics.cyl.height*( 1.0f / 2 ))+30.f;
+		scaley = glm::abs(entities[m_caster]->physics.cyl.height * (1.0f/2)) + 30.f;
 	
 	const float frametime = float(arxtime.get_frame_time());
 	
-	float mov=std::sin(frametime * ( 1.0f / 800 ))*scaley;
+	float mov = std::sin(frametime * (1.0f/800)) * scaley;
 	
 	Vec3f cabalpos;
 	if(m_caster == PlayerEntityHandle) {
 		cabalpos.x = player.pos.x;
 		cabalpos.y = player.pos.y + 60.f - mov;
 		cabalpos.z = player.pos.z;
-		refpos=player.pos.y+60.f;
+		refpos = player.pos.y + 60.f;
 	} else {
 		cabalpos.x = entities[m_caster]->pos.x;
 		cabalpos.y = entities[m_caster]->pos.y - scaley - mov;
 		cabalpos.z = entities[m_caster]->pos.z;
-		refpos=entities[m_caster]->pos.y-scaley;
+		refpos = entities[m_caster]->pos.y - scaley;
 	}
 	
-	float Es=std::sin(frametime * ( 1.0f / 800 ) + glm::radians(scaley));
+	float Es = std::sin(frametime * (1.0f/800) + glm::radians(scaley));
 	
 	if(lightHandleIsValid(m_light)) {
 		EERIE_LIGHT * light = lightHandleGet(m_light);
@@ -195,39 +195,39 @@ void ManaDrainSpell::Update(float timeDelta)
 	Color3f cabalcolor = Color3f(0.4f, 0.4f, 0.8f);
 	Draw3DObject(cabal, cabalangle, cabalpos, cabalscale, cabalcolor, mat);
 	
-	mov=std::sin((frametime - 30.f)*( 1.0f / 800 ))*scaley;
+	mov = std::sin((frametime - 30.f) * (1.0f/800)) * scaley;
 	cabalpos.y = refpos - mov;
 	cabalcolor = Color3f(0.2f, 0.2f, 0.5f);
 	Draw3DObject(cabal, cabalangle, cabalpos, cabalscale, cabalcolor, mat);
 	
-	mov=std::sin((frametime - 60.f)*( 1.0f / 800 ))*scaley;
-	cabalpos.y=refpos-mov;
+	mov = std::sin((frametime - 60.f) * (1.0f/800)) * scaley;
+	cabalpos.y = refpos - mov;
 	cabalcolor = Color3f(0.1f, 0.1f, 0.25f);
 	Draw3DObject(cabal, cabalangle, cabalpos, cabalscale, cabalcolor, mat);
 	
-	mov=std::sin((frametime - 120.f)*( 1.0f / 800 ))*scaley;
-	cabalpos.y=refpos-mov;
+	mov = std::sin((frametime - 120.f) * (1.0f/800)) * scaley;
+	cabalpos.y = refpos - mov;
 	cabalcolor = Color3f(0.f, 0.f, 0.15f);
 	Draw3DObject(cabal, cabalangle, cabalpos, cabalscale, cabalcolor, mat);
 	
 	cabalangle.setPitch(-cabalangle.getPitch());
-	cabalpos.y=refpos-mov;
+	cabalpos.y = refpos - mov;
 	cabalscale = Vec3f(Es);
 	cabalcolor = Color3f(0.f, 0.f, 0.15f);
 	Draw3DObject(cabal, cabalangle, cabalpos, cabalscale, cabalcolor, mat);
 	
-	mov=std::sin((frametime + 30.f)*( 1.0f / 800 ))*scaley;
-	cabalpos.y=refpos+mov;
+	mov = std::sin((frametime + 30.f) * (1.0f/800)) * scaley;
+	cabalpos.y = refpos + mov;
 	cabalcolor = Color3f(0.1f, 0.1f, 0.25f);
 	Draw3DObject(cabal, cabalangle, cabalpos, cabalscale, cabalcolor, mat);
 	
-	mov=std::sin((frametime + 60.f)*( 1.0f / 800 ))*scaley;
-	cabalpos.y=refpos+mov;
+	mov = std::sin((frametime + 60.f) * (1.0f/800)) * scaley;
+	cabalpos.y = refpos + mov;
 	cabalcolor = Color3f(0.2f, 0.2f, 0.5f);
 	Draw3DObject(cabal, cabalangle, cabalpos, cabalscale, cabalcolor, mat);
 	
-	mov=std::sin((frametime + 120.f)*( 1.0f / 800 ))*scaley;
-	cabalpos.y=refpos+mov;
+	mov = std::sin((frametime + 120.f) * (1.0f/800)) * scaley;
+	cabalpos.y = refpos + mov;
 	cabalcolor = Color3f(0.4f, 0.4f, 0.8f);
 	Draw3DObject(cabal, cabalangle, cabalpos, cabalscale, cabalcolor, mat);
 	
@@ -412,26 +412,26 @@ void LifeDrainSpell::Update(float timeDelta)
 	if(m_caster == PlayerEntityHandle)
 		scaley = 90.f;
 	else
-		scaley = glm::abs(entities[m_caster]->physics.cyl.height*( 1.0f / 2 ))+30.f;
+		scaley = glm::abs(entities[m_caster]->physics.cyl.height * (1.0f/2)) + 30.f;
 	
 	const float frametime = float(arxtime.get_frame_time());
 	
-	float mov=std::sin(frametime*( 1.0f / 800 ))*scaley;
+	float mov = std::sin(frametime * (1.0f/800)) * scaley;
 	
 	Vec3f cabalpos;
 	if(m_caster == PlayerEntityHandle) {
 		cabalpos.x = player.pos.x;
 		cabalpos.y = player.pos.y + 60.f - mov;
 		cabalpos.z = player.pos.z;
-		refpos=player.pos.y+60.f;
+		refpos = player.pos.y + 60.f;
 	} else {
 		cabalpos.x = entities[m_caster]->pos.x;
 		cabalpos.y = entities[m_caster]->pos.y - scaley - mov;
 		cabalpos.z = entities[m_caster]->pos.z;
-		refpos=entities[m_caster]->pos.y-scaley;
+		refpos = entities[m_caster]->pos.y - scaley;
 	}
 	
-	float Es=std::sin(frametime*( 1.0f / 800 ) + glm::radians(scaley));
+	float Es = std::sin(frametime * (1.0f/800) + glm::radians(scaley));
 	
 	if(lightHandleIsValid(m_light)) {
 		EERIE_LIGHT * light = lightHandleGet(m_light);
@@ -456,39 +456,39 @@ void LifeDrainSpell::Update(float timeDelta)
 	Color3f cabalcolor = Color3f(0.8f, 0.f, 0.f);
 	Draw3DObject(cabal, cabalangle, cabalpos, cabalscale, cabalcolor, mat);
 	
-	mov=std::sin((frametime - 30.f)*( 1.0f / 800 ))*scaley;
+	mov = std::sin((frametime - 30.f) * (1.0f/800)) * scaley;
 	cabalpos.y = refpos - mov;
 	cabalcolor = Color3f(0.5f, 0.f, 0.f);
 	Draw3DObject(cabal, cabalangle, cabalpos, cabalscale, cabalcolor, mat);
 	
-	mov=std::sin((frametime - 60.f)*( 1.0f / 800 ))*scaley;
-	cabalpos.y=refpos-mov;
+	mov = std::sin((frametime - 60.f) * (1.0f/800)) * scaley;
+	cabalpos.y = refpos - mov;
 	cabalcolor = Color3f(0.25f, 0.f, 0.f);
 	Draw3DObject(cabal, cabalangle, cabalpos, cabalscale, cabalcolor, mat);
 	
-	mov=std::sin((frametime - 120.f)*( 1.0f / 800 ))*scaley;
-	cabalpos.y=refpos-mov;
+	mov = std::sin((frametime - 120.f) * (1.0f/800)) * scaley;
+	cabalpos.y = refpos - mov;
 	cabalcolor = Color3f(0.15f, 0.f, 0.f);
 	Draw3DObject(cabal, cabalangle, cabalpos, cabalscale, cabalcolor, mat);
 	
 	cabalangle.setPitch(-cabalangle.getPitch());
-	cabalpos.y=refpos-mov;
+	cabalpos.y = refpos - mov;
 	cabalscale = Vec3f(Es);
 	cabalcolor = Color3f(0.15f, 0.f, 0.f);
 	Draw3DObject(cabal, cabalangle, cabalpos, cabalscale, cabalcolor, mat);
 	
-	mov=std::sin((frametime + 30.f)*( 1.0f / 800 ))*scaley;
-	cabalpos.y=refpos+mov;
+	mov = std::sin((frametime + 30.f) * (1.0f/800)) * scaley;
+	cabalpos.y = refpos + mov;
 	cabalcolor = Color3f(0.25f, 0.f, 0.f);
 	Draw3DObject(cabal, cabalangle, cabalpos, cabalscale, cabalcolor, mat);
 	
-	mov=std::sin((frametime + 60.f)*( 1.0f / 800 ))*scaley;
-	cabalpos.y=refpos+mov;
+	mov = std::sin((frametime + 60.f) * (1.0f/800)) * scaley;
+	cabalpos.y = refpos + mov;
 	cabalcolor = Color3f(0.5f, 0.f, 0.f);
 	Draw3DObject(cabal, cabalangle, cabalpos, cabalscale, cabalcolor, mat);
 	
-	mov=std::sin((frametime + 120.f)*( 1.0f / 800 ))*scaley;
-	cabalpos.y=refpos+mov;
+	mov = std::sin((frametime + 120.f) * (1.0f/800)) * scaley;
+	cabalpos.y = refpos + mov;
 	cabalcolor = Color3f(0.8f, 0.f, 0.f);
 	Draw3DObject(cabal, cabalangle, cabalpos, cabalscale, cabalcolor, mat);
 	
