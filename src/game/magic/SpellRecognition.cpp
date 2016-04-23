@@ -732,6 +732,11 @@ bool ARX_SPELLS_AnalyseSPELL() {
 		return false;
 	}
 	
-	return ARX_SPELLS_Launch(spell, PlayerEntityHandle, flags);
+	return ARX_SPELLS_Launch(spell,
+	                         PlayerEntityHandle,
+	                         flags,
+	                         -1,
+	                         EntityHandle(),
+	                         -1);
 	
 }
