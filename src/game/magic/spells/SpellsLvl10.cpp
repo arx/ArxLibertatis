@@ -78,7 +78,7 @@ void MassLightningStrikeSpell::Launch()
 	long maxDuration = 0;
 	
 	int number = glm::clamp(int(m_level), 1, 10);
-	float ft = 360.0f / (float)number;
+	float ft = 360.0f / number;
 	
 	for(int i = 0; i < number; i++) {
 		Vec3f target = m_pos + angleToVectorXZ(i * ft) * 500.0f;
