@@ -372,7 +372,7 @@ void Input::update() {
 	}
 	
 	arxtime.update(false);
-	const unsigned long iArxTime = arxtime.now_ul();
+	const unsigned long now = arxtime.now_ul();
 
 	for(int buttonId = Mouse::ButtonBase; buttonId < Mouse::ButtonMax; buttonId++) {
 		int i = buttonId - Mouse::ButtonBase;
@@ -418,11 +418,11 @@ void Input::update() {
 			if(getMouseButtonNowPressed(buttonId)) {
 				switch(iMouseTimeSet[i]) {
 				case 0:
-					iMouseTime[i] = iArxTime;
+					iMouseTime[i] = now;
 					iMouseTimeSet[i]++;
 					break;
 				case 1:
-					iMouseTime[i] = iArxTime - iMouseTime[i];
+					iMouseTime[i] = now - iMouseTime[i];
 					iMouseTimeSet[i]++;
 					break;
 				}
