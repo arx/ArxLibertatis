@@ -64,20 +64,9 @@ static float OldAz[NBOLDPOS];
 /*---------------------------------------------------------------------------------*/
 Color FX_FadeIN(float a, Color color, Color colord)
 {
-	float	r, g, b;
-	float	rd, gd, bd;
-	
-	r = color.r;
-	g = color.g;
-	b = color.b;
-	
-	rd = colord.r;
-	gd = colord.g;
-	bd = colord.b;
-
-	r = (r - rd) * a + rd;
-	g = (g - gd) * a + gd;
-	b = (b - bd) * a + bd;
+	float r = (color.r - colord.r) * a + colord.r;
+	float g = (color.g - colord.g) * a + colord.g;
+	float b = (color.b - colord.b) * a + colord.b;
 	
 	return Color((int)r, (int)g, (int)b, 0);
 
