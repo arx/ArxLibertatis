@@ -352,6 +352,8 @@ void NegateMagicSpell::End() {
 
 void NegateMagicSpell::Update(float timeDelta)
 {
+	ARX_UNUSED(timeDelta);
+	
 	LaunchAntiMagicField();
 	
 	if(m_target == PlayerEntityHandle) {
@@ -359,9 +361,6 @@ void NegateMagicSpell::Update(float timeDelta)
 	} else {
 		m_pos = entities[m_target]->pos;
 	}
-	
-	ulCurrentTime += timeDelta;
-	
 	
 	Vec3f stitepos = m_pos - Vec3f(0.f, 10.f, 0.f);
 	
@@ -391,9 +390,11 @@ void NegateMagicSpell::Update(float timeDelta)
 		}
 	}
 	
-	Anglef stiteangle(0.f, -(float) ulCurrentTime * 0.02f, 0.f);
+	float now = arxtime.now_f();
+	
+	Anglef stiteangle(0.f, -now * 0.02f, 0.f);
 	Color3f stitecolor = Color3f::gray(.4f);
-	float scalediff = std::sin(ulCurrentTime * 0.004f);
+	float scalediff = std::sin(now * 0.004f);
 	Vec3f stitescale = Vec3f(3.f + 0.5f * scalediff);
 	Draw3DObject(ssol, stiteangle, stitepos, stitescale, stitecolor, mat);
 	

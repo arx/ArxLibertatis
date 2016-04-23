@@ -67,7 +67,6 @@ private:
 	Vec3f m_pos;
 	TextureContainer * tex_p2;
 	TextureContainer * tex_sol;
-	unsigned long ulCurrentTime;
 	
 	void LaunchAntiMagicField();
 };
