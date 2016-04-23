@@ -1198,7 +1198,7 @@ void ComputeVVPos(Entity * io)
 			float mul = ((fdiff * ( 1.0f / 120 )) * 0.9f + 0.6f);
 
 			if(eediff < 15.f) {
-				float val = (float)g_framedelay * ( 1.0f / 4 ) * mul;
+				float val = g_framedelay * ( 1.0f / 4 ) * mul;
 
 				if(eediff < 10.f) {
 					val *= ( 1.0f / 10 );
@@ -1209,7 +1209,7 @@ void ComputeVVPos(Entity * io)
 
 				fdiff -= val;
 			} else {
-				fdiff -= (float)g_framedelay * ( 1.0f / 4 ) * mul;
+				fdiff -= g_framedelay * ( 1.0f / 4 ) * mul;
 			}
 		}
 
