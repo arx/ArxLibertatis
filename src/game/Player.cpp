@@ -1322,14 +1322,14 @@ void ARX_PLAYER_Manage_Visual() {
 	
 	ARX_PROFILE_FUNC();
 	
-	unsigned long tim = arxtime.now_ul();
+	unsigned long now = arxtime.now_ul();
 	
 	if(player.Current_Movement & PLAYER_ROTATE) {
 		if(ROTATE_START == 0) {
-			ROTATE_START = tim;
+			ROTATE_START = now;
 		}
 	} else if (ROTATE_START) {
-		float diff = (float)tim - (float)ROTATE_START;
+		float diff = (float)now - (float)ROTATE_START;
 		if(diff > 100) {
 			ROTATE_START = 0;
 		}
