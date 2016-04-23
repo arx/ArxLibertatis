@@ -31,6 +31,7 @@ struct EYEBALL_DEF {
 	float floating;
 };
 
+extern float MagicSightFader;
 extern EYEBALL_DEF eyeball;
 
 void FlyingEye_Init();
