@@ -390,7 +390,7 @@ void MiniMap::showBookEntireMap(int showLevel) {
 		verts[k].p.z = 0.00001f;
 	}
 	
-	Vec2f casePos(zoom / ((float)MINIMAP_MAX_X), zoom / ((float)MINIMAP_MAX_Z));
+	Vec2f casePos(zoom / MINIMAP_MAX_X, zoom / MINIMAP_MAX_Z);
 	float ratio = 1.f;
 	
 	for(size_t i = 0; i < m_mapMarkers.size(); i++) {
@@ -463,8 +463,8 @@ void MiniMap::revealPlayerPos(int showLevel) {
 	float zoom = 250.f;
 	float startX = 140.f;
 	float startY = 120.f;
-	float caseX = zoom / ((float)MINIMAP_MAX_X);
-	float caseY = zoom / ((float)MINIMAP_MAX_Z);
+	float caseX = zoom / MINIMAP_MAX_X;
+	float caseY = zoom / MINIMAP_MAX_Z;
 	
 	Vec2f playerPos = computePlayerPos(zoom, showLevel);
 	playerPos.x += startX;
@@ -503,8 +503,8 @@ void MiniMap::revealPlayerPos(int showLevel) {
 
 Vec2f MiniMap::computePlayerPos(float zoom, int showLevel) {
 	
-	float caseX = zoom / ((float)MINIMAP_MAX_X);
-	float caseY = zoom / ((float)MINIMAP_MAX_Z);
+	float caseX = zoom / MINIMAP_MAX_X;
+	float caseY = zoom / MINIMAP_MAX_Z;
 	float ratio = zoom / 250.f;
 	
 	Vec2f pos(0.f, 0.f);
@@ -524,8 +524,8 @@ void MiniMap::drawBackground(int showLevel, Rect boundaries, float startX, float
 	
 	m_mapVertices.clear();
 
-	float caseX = zoom / ((float)MINIMAP_MAX_X);
-	float caseY = zoom / ((float)MINIMAP_MAX_Z);
+	float caseX = zoom / MINIMAP_MAX_X;
+	float caseY = zoom / MINIMAP_MAX_Z;
 	
 	GRenderer->SetTexture(0, m_levels[showLevel].m_texContainer);
 	
@@ -723,8 +723,8 @@ void MiniMap::drawPlayer(float playerSize, Vec2f playerPos, bool alphaBlending) 
 
 void MiniMap::drawDetectedEntities(int showLevel, Vec2f start, float zoom) {
 	
-	float caseX = zoom / ((float)MINIMAP_MAX_X);
-	float caseY = zoom / ((float)MINIMAP_MAX_Z);
+	float caseX = zoom / MINIMAP_MAX_X;
+	float caseY = zoom / MINIMAP_MAX_Z;
 	float ratio = zoom / 250.f;
 	
 	if(!m_pTexDetect) {
