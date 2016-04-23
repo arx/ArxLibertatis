@@ -707,8 +707,12 @@ void ARX_SPELLS_CancelSpellTarget() {
 
 void ARX_SPELLS_LaunchSpellTarget(Entity * io) {
 	if(io) {
-		ARX_SPELLS_Launch(t_spell.typ, PlayerEntityHandle, t_spell.flags, t_spell.level,
-		                  io->index(), t_spell.duration);
+		ARX_SPELLS_Launch(t_spell.typ,
+		                  PlayerEntityHandle,
+		                  t_spell.flags,
+		                  t_spell.level,
+		                  io->index(),
+		                  t_spell.duration);
 	}
 }
 
