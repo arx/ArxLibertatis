@@ -559,8 +559,7 @@ void PoisonProjectileSpell::Launch()
 	
 	srcPos += angleToVectorXZ(afBeta) * 90.f;
 	
-	long level = std::max(long(m_level), 1l);
-	size_t uiNumber = std::min(5L, level);
+	size_t uiNumber = glm::clamp(static_cast<unsigned int>(m_level), 1u, 5u);
 	
 	for(size_t i = 0; i < uiNumber; i++) {
 		CPoisonProjectile * projectile = new CPoisonProjectile();
