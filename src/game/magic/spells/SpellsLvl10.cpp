@@ -291,7 +291,7 @@ void ControlTargetSpell::End() {
 
 void ControlTargetSpell::Update(float timeDelta) {
 	
-	ulCurrentTime += timeDelta;
+	ARX_UNUSED(timeDelta);
 	
 	GRenderer->SetCulling(CullNone);
 	GRenderer->SetRenderState(Renderer::DepthWrite, false);
@@ -306,9 +306,11 @@ void ControlTargetSpell::Update(float timeDelta) {
 
 	int n = BEZIERPrecision;
 	float delta = 1.0f / n;
-
+	
+	float elapsed = arxtime.now_f() - m_timcreation;
 	float fOneOnDuration = 1.f / m_duration;
-	fTrail = (ulCurrentTime * fOneOnDuration) * 9 * (n + 2);
+	
+	fTrail = (elapsed * fOneOnDuration) * 9 * (n + 2);
 
 	Vec3f v;
 	

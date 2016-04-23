@@ -49,7 +49,6 @@ public:
 	void Update(float timeDelta);
 	
 private:
-	unsigned long ulCurrentTime;
 	Vec3f eSrc;
 	Vec3f eTarget;
 	TextureContainer * tex_mm;
