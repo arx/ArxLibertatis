@@ -41,6 +41,7 @@ enum CheatRune {
 void handleCheatRuneDetection(CheatRune rune);
 
 
+extern long BH_MODE;
 extern long passwall;
 extern long cur_mx;
 extern long cur_pom;

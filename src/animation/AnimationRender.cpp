@@ -60,6 +60,7 @@ ZeniMax Media Inc., Suite 120, Rockville, Maryland 20850 USA.
 #include "game/NPC.h"
 #include "game/Player.h"
 #include "game/Spells.h"
+#include "game/spell/Cheat.h"
 
 #include "graphics/BaseGraphicsTypes.h"
 #include "graphics/GraphicsTypes.h"
@@ -228,11 +229,6 @@ void PopAllTriangleListTransparency() {
 	GRenderer->SetAlphaFunc(Renderer::CmpNotEqual, 0.f);
 }
 
-
-
-
-
-extern long BH_MODE;
 
 extern bool EXTERNALVIEW;
 
