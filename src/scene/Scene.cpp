@@ -1053,7 +1053,7 @@ static void RenderLava() {
 
 static void ARX_PORTALS_Frustrum_RenderRoomTCullSoft(long room_num,
                                                      const EERIE_FRUSTRUM_DATA & frustrums,
-                                                     long tim,
+                                                     long now,
                                                      const Vec3f & camPos
 ) {
 	ARX_PROFILE_FUNC();
@@ -1186,10 +1186,10 @@ static void ARX_PORTALS_Frustrum_RenderRoomTCullSoft(long room_num,
 				}
 
 				if(ep->type & POLY_LAVA) {
-					ManageLava_VertexBuffer(ep, to, tim, pMyVertexCurr);
+					ManageLava_VertexBuffer(ep, to, now, pMyVertexCurr);
 					vPolyLava.push_back(ep);
 				} else if(ep->type & POLY_WATER) {
-					ManageWater_VertexBuffer(ep, to, tim, pMyVertexCurr);
+					ManageWater_VertexBuffer(ep, to, now, pMyVertexCurr);
 					vPolyWater.push_back(ep);
 				}
 			}
