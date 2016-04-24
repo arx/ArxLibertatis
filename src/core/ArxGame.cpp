@@ -2129,7 +2129,7 @@ void ArxGame::renderLevel() {
 	GRenderer->SetRenderState(Renderer::Fog, true);
 
 	if(sp_max_start)
-		Manage_sp_max();
+		CheatDrawText();
 
 	if(FADEDIR)
 		ManageFade();

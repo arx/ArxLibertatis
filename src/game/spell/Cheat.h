@@ -56,7 +56,7 @@ extern short uw_mode;
 
 extern long sp_max;
 
-void Manage_sp_max();
+void CheatDrawText();
 
 void CheatReset();
 void CheatDetectionReset();

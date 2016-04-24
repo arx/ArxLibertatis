@@ -69,7 +69,7 @@ float sp_max_y[64];
 Color sp_max_col[64];
 std::string sp_max_ch;
 
-void Manage_sp_max() {
+void CheatDrawText() {
 
 	float elapsed = arxtime.now_f() - sp_max_start;
 
