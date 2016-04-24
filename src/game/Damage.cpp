@@ -452,7 +452,8 @@ void ARX_DAMAGES_DamageFIX(Entity * io, float dmg, EntityHandle source, bool isS
 	else
 		EVENT_SENDER = NULL;
 
-	if(arxtime.now_f() > io->ouch_time + 500) {
+	float elapsed = arxtime.now_f() - io->ouch_time;
+	if(elapsed > 500) {
 		io->ouch_time = arxtime.now_ul();
 		char tex[32];
 		sprintf(tex, "%5.2f", double(io->dmg_sum));
