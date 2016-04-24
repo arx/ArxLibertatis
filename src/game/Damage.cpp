@@ -754,8 +754,9 @@ float ARX_DAMAGES_DamageNPC(Entity * io, float dmg, EntityHandle source, bool is
 	}
 
 	io->dmg_sum += dmg;
-
-	if(arxtime.now_f() > io->ouch_time + 500) {
+	
+	float elapsed = arxtime.now_f() - io->ouch_time;
+	if(elapsed > 500) {
 		if(ValidIONum(source))
 			EVENT_SENDER = entities[source];
 		else
