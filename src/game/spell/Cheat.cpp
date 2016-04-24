@@ -179,15 +179,14 @@ void CheatDetectionReset() {
 long BH_MODE = 0;
 static void EERIE_OBJECT_SetBHMode()
 {
-	if (BH_MODE)
+	if(BH_MODE) {
 		BH_MODE=0;
-	else
-	{
+	} else {
 		BH_MODE=1;
 		MakeCoolFx(player.pos);
 		MakeSpCol();
 		DisplayCheatText("!!!_Super-Deformed_!!!");
-			}
+	}
 }
 
 static void ApplySPWep() {
