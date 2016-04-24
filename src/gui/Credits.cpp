@@ -467,7 +467,7 @@ void Credits::render() {
 	// Use time passed between frame to create scroll effect
 	arxtime.update(false);
 	float now = arxtime.now_f();
-	float dtime = now - m_lastUpdateTime;
+	float elapsed = now - m_lastUpdateTime;
 	
 	static float lastKeyPressTime = 0.f;
 	static float lastUserScrollTime = 0.f;
@@ -479,14 +479,14 @@ void Credits::render() {
 	// Process user input
 	float userScroll = 20.f * GInput->getMouseWheelDir();
 	if(GInput->isKeyPressed(Keyboard::Key_UpArrow)) {
-		userScroll += 0.2f * dtime;
+		userScroll += 0.2f * elapsed;
 	}
 	if(GInput->isKeyPressedNowPressed(Keyboard::Key_PageUp)) {
 		userScroll += 150.f;
 		lastKeyPressTime = now;
 	} else if(GInput->isKeyPressed(Keyboard::Key_PageUp)) {
 		if(now - lastKeyPressTime > keyRepeatDelay) {
-			userScroll += 0.5f * dtime;
+			userScroll += 0.5f * elapsed;
 		}
 	}
 	if(GInput->isKeyPressedNowPressed(Keyboard::Key_PageDown)) {
@@ -494,11 +494,11 @@ void Credits::render() {
 		lastKeyPressTime = now;
 	} else if(GInput->isKeyPressed(Keyboard::Key_PageDown)) {
 		if(now - lastKeyPressTime > keyRepeatDelay) {
-			userScroll -= 0.5f * dtime;
+			userScroll -= 0.5f * elapsed;
 		}
 	}
 	if(GInput->isKeyPressed(Keyboard::Key_DownArrow)) {
-		userScroll -= 0.2f * dtime;
+		userScroll -= 0.2f * elapsed;
 	}
 	m_scrollPosition += g_sizeRatio.y * userScroll;
 	
@@ -512,7 +512,7 @@ void Credits::render() {
 		scrollDirection = 1.f;
 	}
 	
-	m_scrollPosition -= 0.03f * g_sizeRatio.y * dtime * scrollDirection;
+	m_scrollPosition -= 0.03f * g_sizeRatio.y * elapsed * scrollDirection;
 	m_lastUpdateTime = now;
 	
 	// Don't scroll past the credits start
