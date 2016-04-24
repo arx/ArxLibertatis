@@ -216,8 +216,9 @@ void ARX_SPEECH_Check()
 	for(size_t i = 0; i < MAX_SPEECH; i++) {
 		if(speech[i].timecreation == 0)
 			continue;
-
-		if(arxtime.now_f() > speech[i].timecreation + speech[i].duration) {
+		
+		float elapsed = arxtime.now_f() - speech[i].timecreation;
+		if(elapsed > speech[i].duration) {
 			ARX_SPEECH_MoveUp();
 			i--;
 		} else {
