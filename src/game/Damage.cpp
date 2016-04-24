@@ -1018,7 +1018,8 @@ static void ARX_DAMAGES_UpdateDamage(DamageHandle j, float tim) {
 					float dist = fdist(damage.params.pos, sub);
 					
 					if(damage.params.type & DAMAGE_TYPE_FIELD) {
-						if(arxtime.now_f() > io->collide_door_time + 500) {
+						float elapsed = arxtime.now_f() - io->collide_door_time;
+						if(elapsed > 500) {
 							EVENT_SENDER = NULL;
 							io->collide_door_time = arxtime.now_ul(); 
 							char param[64];
