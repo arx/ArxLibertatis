@@ -84,7 +84,7 @@ void ARX_SPELLS_Init_Rects() {
 
 void ARX_SPELLS_UpdateSymbolDraw() {
 	
-	unsigned long curtime = arxtime.now_ul();
+	unsigned long now = arxtime.now_ul();
 	
 	for(size_t i = 0; i < entities.size(); i++) {
 		const EntityHandle handle = EntityHandle(i);
@@ -169,7 +169,7 @@ void ARX_SPELLS_UpdateSymbolDraw() {
 
 		if(io->symboldraw) {
 			SYMBOL_DRAW * sd = entities[handle]->symboldraw;
-			long tim = curtime - sd->starttime;
+			long tim = now - sd->starttime;
 
 			if(tim > sd->duration) {
 				endLightDelayed(io->dynlight, 600);
