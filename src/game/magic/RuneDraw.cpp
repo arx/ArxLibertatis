@@ -169,9 +169,9 @@ void ARX_SPELLS_UpdateSymbolDraw() {
 
 		if(io->symboldraw) {
 			SYMBOL_DRAW * sd = entities[handle]->symboldraw;
-			long tim = now - sd->starttime;
+			long elapsed = now - sd->starttime;
 
-			if(tim > sd->duration) {
+			if(elapsed > sd->duration) {
 				endLightDelayed(io->dynlight, 600);
 				io->dynlight = LightHandle();
 				
@@ -193,7 +193,7 @@ void ARX_SPELLS_UpdateSymbolDraw() {
 			if(ti <= 0)
 				ti = 1;
 			
-			long newtime=tim;
+			long newtime=elapsed;
 			long oldtime=sd->lasttim;
 
 			if(oldtime>sd->duration)
@@ -202,7 +202,7 @@ void ARX_SPELLS_UpdateSymbolDraw() {
 			if(newtime>sd->duration)
 				newtime=sd->duration;
 
-			sd->lasttim=(short)tim;
+			sd->lasttim=(short)elapsed;
 			
 			float div_ti=1.f/ti;
 
