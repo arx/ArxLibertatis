@@ -952,7 +952,7 @@ static void ARX_DAMAGES_AddVisual(DAMAGE_INFO & di, const Vec3f & pos, float dmg
 // source = -1 no source but valid pos
 // source = 0  player
 // source > 0  IO
-static void ARX_DAMAGES_UpdateDamage(DamageHandle j, float tim) {
+static void ARX_DAMAGES_UpdateDamage(DamageHandle j, float now) {
 	
 	ARX_PROFILE_FUNC();
 	
@@ -978,8 +978,8 @@ static void ARX_DAMAGES_UpdateDamage(DamageHandle j, float tim) {
 	} else {
 		float FD = g_framedelay;
 		
-		if(tim > damage.start_time + damage.params.duration) {
-			FD -= damage.start_time + damage.params.duration - tim;
+		if(now > damage.start_time + damage.params.duration) {
+			FD -= damage.start_time + damage.params.duration - now;
 		}
 		
 		dmg = damage.params.damages * FD * ( 1.0f / 1000 );
@@ -1166,7 +1166,7 @@ static void ARX_DAMAGES_UpdateDamage(DamageHandle j, float tim) {
 	
 	if(damage.params.duration == -1)
 		damage.exist = false;
-	else if(tim > damage.start_time + damage.params.duration)
+	else if(now > damage.start_time + damage.params.duration)
 		damage.exist = false;
 }
 
