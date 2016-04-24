@@ -2600,7 +2600,6 @@ static float AngularDifference(float a1, float a2) {
 	return ret;
 
 }
-extern float CURRENT_PLAYER_COLOR;
 
 /*!
  * \brief ARX_NPC_GetFirstNPCInSight
@@ -2710,7 +2709,6 @@ Entity * ARX_NPC_GetFirstNPCInSight(Entity * ioo)
 
 	return found_io;
 }
-extern float CURRENT_PLAYER_COLOR;
 
 /*!
  * \brief Checks if a NPC is dead to prevent further Layers Animation

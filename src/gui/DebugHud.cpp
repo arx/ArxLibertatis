@@ -223,7 +223,6 @@ private:
 };
 
 std::string LAST_FAILED_SEQUENCE = "none";
-extern float CURRENT_PLAYER_COLOR;
 EntityHandle LastSelectedIONum = EntityHandle();
 
 void ShowInfoText() {

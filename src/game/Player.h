@@ -397,6 +397,8 @@ struct ARXCHARACTER {
 	
 };
 
+extern float CURRENT_PLAYER_COLOR;
+
 struct KEYRING_SLOT {
 	char slot[64];
 };

@@ -1311,8 +1311,6 @@ void DamagedEquipmentGui::draw() {
 }
 
 
-extern float CURRENT_PLAYER_COLOR;
-
 StealthGauge::StealthGauge()
 	: HudItem()
 	, m_texture(NULL)
