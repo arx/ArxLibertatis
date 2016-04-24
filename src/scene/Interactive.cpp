@@ -2231,26 +2231,26 @@ void UpdateCameras() {
 		// interpolate & send events
 		if(io->usepath) {
 			ARX_USE_PATH * aup = io->usepath;
-			float diff = arxtime.now_f() - aup->_curtime;
+			float elapsed = arxtime.now_f() - aup->_curtime;
 
 			if(aup->aupflags & ARX_USEPATH_FORWARD) {
 				if(aup->aupflags & ARX_USEPATH_FLAG_FINISHED) {
 				} else {
-					aup->_curtime += diff;
+					aup->_curtime += elapsed;
 				}
 			}
 
 			if(aup->aupflags & ARX_USEPATH_BACKWARD) {
-				aup->_starttime += diff * 2;
-				aup->_curtime += diff;
+				aup->_starttime += elapsed * 2;
+				aup->_curtime += elapsed;
 
 				if(aup->_starttime >= aup->_curtime)
 					aup->_curtime = aup->_starttime + 1;
 			}
 
 			if(aup->aupflags & ARX_USEPATH_PAUSE) {
-				aup->_starttime += diff;
-				aup->_curtime += diff;
+				aup->_starttime += elapsed;
+				aup->_curtime += elapsed;
 			}
 
 			long last = ARX_PATHS_Interpolate(aup, &io->pos);
