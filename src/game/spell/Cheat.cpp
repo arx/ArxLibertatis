@@ -45,29 +45,29 @@ extern Rect g_size;
 
 long passwall = 0;
 long cur_mx=0;
-long cur_pnux=0;
+static long cur_pnux = 0;
 long cur_pom=0;
 long cur_rf=0;
 long cur_mr=0;
-long cur_sm=0;
-long cur_bh=0;
+static long cur_sm = 0;
+static long cur_bh = 0;
 
 long sp_arm=0;
-long cur_arm=0;
-long cur_sos=0;
+static long cur_arm = 0;
+static long cur_sos = 0;
 
 long cur_mega=0;
 static unsigned long sp_max_start = 0;
 long sp_wep=0;
 short uw_mode=0;
 
-short uw_mode_pos=0;
+static short uw_mode_pos = 0;
 
 long sp_max = 0;
 
-float sp_max_y[64];
-Color sp_max_col[64];
-std::string sp_max_ch;
+static float sp_max_y[64];
+static Color sp_max_col[64];
+static std::string sp_max_ch;
 
 void CheatDrawText() {
 	
