@@ -466,8 +466,8 @@ void Credits::render() {
 	
 	// Use time passed between frame to create scroll effect
 	arxtime.update(false);
-	float time = arxtime.now_f();
-	float dtime = time - m_lastUpdateTime;
+	float now = arxtime.now_f();
+	float dtime = now - m_lastUpdateTime;
 	
 	static float lastKeyPressTime = 0.f;
 	static float lastUserScrollTime = 0.f;
@@ -483,17 +483,17 @@ void Credits::render() {
 	}
 	if(GInput->isKeyPressedNowPressed(Keyboard::Key_PageUp)) {
 		userScroll += 150.f;
-		lastKeyPressTime = time;
+		lastKeyPressTime = now;
 	} else if(GInput->isKeyPressed(Keyboard::Key_PageUp)) {
-		if(time - lastKeyPressTime > keyRepeatDelay) {
+		if(now - lastKeyPressTime > keyRepeatDelay) {
 			userScroll += 0.5f * dtime;
 		}
 	}
 	if(GInput->isKeyPressedNowPressed(Keyboard::Key_PageDown)) {
 		userScroll -= 150.f;
-		lastKeyPressTime = time;
+		lastKeyPressTime = now;
 	} else if(GInput->isKeyPressed(Keyboard::Key_PageDown)) {
-		if(time - lastKeyPressTime > keyRepeatDelay) {
+		if(now - lastKeyPressTime > keyRepeatDelay) {
 			userScroll -= 0.5f * dtime;
 		}
 	}
@@ -504,16 +504,16 @@ void Credits::render() {
 	
 	// If the user wants to scroll up, also change the automatic scroll direction …
 	if(userScroll > 0.f) {
-		lastUserScrollTime = time;
+		lastUserScrollTime = now;
 		scrollDirection = -1.f;
 	}
 	// … but restore normal scrolling after a short delay.
-	if(time - lastUserScrollTime > autoScrollDelay) {
+	if(now - lastUserScrollTime > autoScrollDelay) {
 		scrollDirection = 1.f;
 	}
 	
 	m_scrollPosition -= 0.03f * g_sizeRatio.y * dtime * scrollDirection;
-	m_lastUpdateTime = time;
+	m_lastUpdateTime = now;
 	
 	// Don't scroll past the credits start
 	m_scrollPosition = std::min(0.f, m_scrollPosition);
