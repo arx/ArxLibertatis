@@ -232,8 +232,9 @@ float ARX_DAMAGES_DamagePlayer(float dmg, DamageType type, EntityHandle source) 
 		damagesdone = player.lifePool.current;
 
 	entities.player()->dmg_sum += dmg;
-
-	if(arxtime.now_f() > entities.player()->ouch_time + 500) {
+	
+	float elapsed = arxtime.now_f() - entities.player()->ouch_time;
+	if(elapsed > 500) {
 		Entity * oes = EVENT_SENDER;
 
 		if(ValidIONum(source))
