@@ -29,7 +29,7 @@ class Entity;
 struct SYMBOL_DRAW {
 	unsigned long	starttime;
 	Vec3f		lastpos;
-	short			lasttim;
+	short lastElapsed;
 	short			duration;
 	std::string sequence;
 	Vec2s cPosStart;

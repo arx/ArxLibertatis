@@ -194,7 +194,7 @@ void ARX_SPELLS_UpdateSymbolDraw() {
 				ti = 1;
 			
 			long newtime=elapsed;
-			long oldtime=sd->lasttim;
+			long oldtime = sd->lastElapsed;
 
 			if(oldtime>sd->duration)
 				oldtime=sd->duration;
@@ -202,7 +202,7 @@ void ARX_SPELLS_UpdateSymbolDraw() {
 			if(newtime>sd->duration)
 				newtime=sd->duration;
 
-			sd->lasttim=(short)elapsed;
+			sd->lastElapsed = (short)elapsed;
 			
 			float div_ti=1.f/ti;
 
@@ -306,7 +306,7 @@ static void ARX_SPELLS_RequestSymbolDrawCommon(Entity * io, float duration,
 	sd->sequence = info.sequence;
 
 	sd->starttime = arxtime.now_ul();
-	sd->lasttim = 0;
+	sd->lastElapsed = 0;
 	
 	float tmpAngle = io->angle.getPitch() - 45.0F + info.startOffset.x * 2;
 	
