@@ -258,7 +258,6 @@ static void ApplySPArm() {
 		break;
 		default:
 			return;
-		break;
 	}
 
 	Entity * ioo = AddItem(cls);
@@ -289,7 +288,6 @@ static void ApplySPArm() {
 		break;
 		default:
 			return;
-		break;
 		}
 		DisplayCheatText(text);
 	}
