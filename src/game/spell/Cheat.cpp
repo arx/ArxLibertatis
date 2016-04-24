@@ -57,7 +57,7 @@ long cur_arm=0;
 long cur_sos=0;
 
 long cur_mega=0;
-unsigned long sp_max_start = 0;
+static unsigned long sp_max_start = 0;
 long sp_wep=0;
 short uw_mode=0;
 
@@ -70,7 +70,10 @@ Color sp_max_col[64];
 std::string sp_max_ch;
 
 void CheatDrawText() {
-
+	
+	if(!sp_max_start)
+		return;
+	
 	float elapsed = arxtime.now_f() - sp_max_start;
 
 	if(sp_max_start != 0 && elapsed < 20000) {
