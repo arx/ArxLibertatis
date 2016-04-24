@@ -112,7 +112,7 @@ void RiseDeadSpell::Launch()
 		light->rgb = Color3f::black;
 		light->pos = target - Vec3f(0.f, 100.f, 0.f);
 		light->duration = 200;
-		light->time_creation = arxtime.now_ul();
+		light->creationTime = arxtime.now_ul();
 	}
 	
 	m_duration = m_fissure.GetDuration();
@@ -171,7 +171,7 @@ void RiseDeadSpell::Update() {
 		light->fallstart = 400.f;
 		light->rgb = Color3f(0.8f, 0.2f, 0.2f);
 		light->duration=800;
-		light->time_creation = arxtime.now_ul();
+		light->creationTime = arxtime.now_ul();
 	}
 	
 	unsigned long tim = m_fissure.ulCurrentTime;

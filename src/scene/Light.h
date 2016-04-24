@@ -116,7 +116,7 @@ struct EERIE_LIGHT {
 	float ex_speed;
 	float ex_flaresize;
 	LightHandle m_ignitionLightHandle;
-	unsigned long time_creation;
+	unsigned long creationTime;
 	
 	// will start to fade before the end of duration...
 	unsigned long duration;

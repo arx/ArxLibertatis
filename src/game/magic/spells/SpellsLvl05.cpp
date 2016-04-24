@@ -66,7 +66,7 @@ void RuneOfGuardingSpell::Launch()
 		light->fallstart = 400.f;
 		light->rgb = Color3f(1.0f, 0.2f, 0.2f);
 		light->pos = m_pos - Vec3f(0.f, 50.f, 0.f);
-		light->time_creation = arxtime.now_ul();
+		light->creationTime = arxtime.now_ul();
 		light->duration = 200;
 	}
 }
@@ -88,7 +88,7 @@ void RuneOfGuardingSpell::Update() {
 		light->fallend = 350.f;
 		light->fallstart = 150.f;
 		light->rgb = Color3f(1.0f, 0.2f, 0.2f);
-		light->time_creation = arxtime.now_ul();
+		light->creationTime = arxtime.now_ul();
 		light->duration = 200;
 	}
 	
@@ -338,7 +338,7 @@ void CurePoisonSpell::Launch()
 		light->fallend   = 350.f;
 		light->rgb = Color3f(0.f, 1.f, 0.0f);
 		light->pos = m_pos + Vec3f(0.f, -50.f, 0.f);
-		light->time_creation = arxtime.now_ul();
+		light->creationTime = arxtime.now_ul();
 		light->duration = 200;
 		light->extras = 0;
 	}
@@ -393,7 +393,7 @@ void CurePoisonSpell::Update() {
 		light->rgb = Color3f(0.4f, 1.f, 0.4f);
 		light->pos = m_pos + Vec3f(0.f, -50.f, 0.f);
 		light->duration = 200;
-		light->time_creation = arxtime.now_ul();
+		light->creationTime = arxtime.now_ul();
 		light->extras = 0;
 	}
 	
@@ -500,7 +500,7 @@ void RepelUndeadSpell::Update() {
 		light->rgb = Color3f(0.8f, 0.8f, 1.f);
 		light->pos = m_pos + Vec3f(0.f, -50.f, 0.f);
 		light->duration = 200;
-		light->time_creation = arxtime.now_ul();
+		light->creationTime = arxtime.now_ul();
 	}
 	
 	if (m_target == PlayerEntityHandle)
@@ -587,7 +587,7 @@ void PoisonProjectileSpell::Launch()
 			light->fallstart		= 150.f;
 			light->rgb = Color3f::green;
 			light->pos = projectile->eSrc;
-			light->time_creation	= arxtime.now_ul();
+			light->creationTime	= arxtime.now_ul();
 			light->duration		= 200;
 		}
 	}
@@ -628,7 +628,7 @@ void PoisonProjectileSpell::Update() {
 			light->fallstart	= 150.f;
 			light->rgb = Color3f::green;
 			light->pos = projectile->eCurPos;
-			light->time_creation = arxtime.now_ul();
+			light->creationTime = arxtime.now_ul();
 			light->duration	= 200;
 		}
 
