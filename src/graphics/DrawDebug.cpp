@@ -862,10 +862,10 @@ static void updateAndRenderDebugDrawables() {
 		drawLine(ray.start, ray.dir, ray.color);
 	}
 	
-	float currentTime = arxtime.now_f();
+	float now = arxtime.now_f();
 	
 	for(size_t i = 0; i < debugRays.size(); i++) {
-		if(debugRays[i].expiration < currentTime) {
+		if(debugRays[i].expiration < now) {
 			std::swap(debugRays[i], debugRays.back());
 			debugRays.pop_back();
 			i--;
