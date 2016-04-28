@@ -2068,8 +2068,8 @@ static bool IsCollidingInter(Entity * io, const Vec3f & pos) {
 				}
 			}
 		} else {
-			long nbv = io->obj->vertexlist3.size();
-			for(long i = 0; i < nbv; i++) {
+			size_t nbv = io->obj->vertexlist3.size();
+			for(size_t i = 0; i < nbv; i++) {
 				if(i != io->obj->origin)
 					if(!fartherThan(pos, vlist[i].v, 30.f)) {
 						return true;
