@@ -234,7 +234,7 @@ class FtlSerializer(object):
             assert (face.nrmls[0].z == 0 and face.nrmls[1].z == 0 and face.nrmls[2].z == 0)
 
             if face.texid < 0:
-                print("Face negaive texture id %i" % i)
+                self.log.debug("Face negaive texture id %i" % i)
 
             oface = FtlFace((face.vid[0], face.vid[1], face.vid[2]),
                             list(zip(face.u, face.v)),
@@ -281,7 +281,7 @@ class FtlSerializer(object):
         #parenting
         for i,group in enumerate(groups):
             father = getFatherIndex(groups,i)
-            print("group %d with father %d" % (i,father))
+            self.log.debug("group %d with father %d" % (i,father))
             group[3] = father
 
         groups = [tuple(l) for l in groups] # converting stuff back to tuples so it doesnt break code
