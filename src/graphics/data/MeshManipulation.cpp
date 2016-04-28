@@ -149,7 +149,7 @@ static long GetEquivalentVertex(const EERIE_3DOBJ * obj, const EERIE_VERTEX * ve
 	return -1;
 }
 
-static long ObjectAddVertex(EERIE_3DOBJ * obj, const EERIE_VERTEX * vert) {
+static size_t ObjectAddVertex(EERIE_3DOBJ * obj, const EERIE_VERTEX * vert) {
 	
 	for(size_t i = 0; i < obj->vertexlist.size(); i++) {
 		if(obj->vertexlist[i].v.x == vert->v.x
@@ -196,13 +196,10 @@ static long ObjectAddFace(EERIE_3DOBJ * obj, const EERIE_FACE * face, const EERI
 		}
 	}
 
-	long f0 = ObjectAddVertex(obj, &srcobj->vertexlist[face->vid[0]]);
-	long f1 = ObjectAddVertex(obj, &srcobj->vertexlist[face->vid[1]]);
-	long f2 = ObjectAddVertex(obj, &srcobj->vertexlist[face->vid[2]]);
-
-	if(f1 == -1 || f2 == -1 || f0 == -1)
-		return -1;
-
+	size_t f0 = ObjectAddVertex(obj, &srcobj->vertexlist[face->vid[0]]);
+	size_t f1 = ObjectAddVertex(obj, &srcobj->vertexlist[face->vid[1]]);
+	size_t f2 = ObjectAddVertex(obj, &srcobj->vertexlist[face->vid[2]]);
+	
 	obj->facelist.push_back(*face);
 
 	obj->facelist.back().vid[0] = (unsigned short)f0;
@@ -226,10 +223,7 @@ static long ObjectAddFace(EERIE_3DOBJ * obj, const EERIE_FACE * face, const EERI
 static void ObjectAddAction(EERIE_3DOBJ * obj, const std::string & name, long act,
                             long sfx, const EERIE_VERTEX * vert) {
 	
-	long newvert = ObjectAddVertex(obj, vert);
-
-	if(newvert < 0)
-		return;
+	size_t newvert = ObjectAddVertex(obj, vert);
 	
 	for(std::vector<EERIE_ACTIONLIST>::iterator i = obj->actionlist.begin();
 	    i != obj->actionlist.end(); ++i) {
