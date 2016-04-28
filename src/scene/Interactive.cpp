@@ -2123,8 +2123,8 @@ bool ARX_INTERACTIVE_CheckFULLCollision(PHYSICS_BOX_DATA * pbox, EntityHandle so
 				if(PointInCylinder(io->physics.cyl, pbox->vert[kk].pos))
 					return true;
 		} else if(io->ioflags & IO_FIX) {
-			long step;
-			long nbv = io->obj->vertexlist.size();
+			size_t step;
+			const size_t nbv = io->obj->vertexlist.size();
 			Sphere sp;
 			sp.radius = 28.f;
 
@@ -2187,7 +2187,7 @@ bool ARX_INTERACTIVE_CheckFULLCollision(PHYSICS_BOX_DATA * pbox, EntityHandle so
 			}
 
 
-			for(long ii = 1; ii < nbv; ii += step) {
+			for(size_t ii = 1; ii < nbv; ii += step) {
 				if(ii != io->obj->origin) {
 					sp.origin = vlist[ii].v;
 
