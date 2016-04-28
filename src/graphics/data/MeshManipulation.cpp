@@ -120,9 +120,9 @@ void EERIE_MESH_TWEAK_Skin(EERIE_3DOBJ * obj, const res::path & s1, const res::p
 	}
 }
 
-bool IsInSelection(const EERIE_3DOBJ * obj, long vert, ObjSelection tw) {
+bool IsInSelection(const EERIE_3DOBJ * obj, size_t vert, ObjSelection tw) {
 	
-	if(!obj || tw == ObjSelection() || vert < 0)
+	if(!obj || tw == ObjSelection())
 		return false;
 	
 	const EERIE_SELECTIONS & sel = obj->selections[tw.handleData()];
