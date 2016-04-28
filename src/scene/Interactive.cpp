@@ -1836,7 +1836,7 @@ Entity * AddItem(const res::path & classPath_, EntityInstance instance, AddInter
  * \param _pnNbInTable
  * \return
  */
-Entity * GetFirstInterAtPos(const Vec2s & pos, long flag, Vec3f * _pRef, Entity ** _pTable, int * _pnNbInTable)
+Entity * GetFirstInterAtPos(const Vec2s & pos, long flag, Vec3f * _pRef, Entity ** _pTable, size_t * _pnNbInTable)
 {
 	float n;
  
@@ -1851,15 +1851,15 @@ Entity * GetFirstInterAtPos(const Vec2s & pos, long flag, Vec3f * _pRef, Entity 
 		fMaxDist = 850;
 	}
 
-	int nStart = 1;
-	int nEnd = entities.size();
+	size_t nStart = 1;
+	size_t nEnd = entities.size();
 
 	if(flag == 3 && _pTable && _pnNbInTable) {
 		nStart = 0;
 		nEnd = *_pnNbInTable;
 	}
 
-	for(long i = nStart; i < nEnd; i++) {
+	for(size_t i = nStart; i < nEnd; i++) {
 		const EntityHandle handle = EntityHandle(i);
 		
 		bool bPass = true;

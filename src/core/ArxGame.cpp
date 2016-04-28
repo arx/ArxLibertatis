@@ -2272,7 +2272,7 @@ void ArxGame::update2DFX() {
 	TexturedVertex ltvv;
 
 	Entity* pTableIO[256];
-	int nNbInTableIO = 0;
+	size_t nNbInTableIO = 0;
 
 	float temp_increase = g_framedelay * (1.0f/1000) * 4.f;
 
