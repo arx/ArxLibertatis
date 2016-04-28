@@ -249,7 +249,7 @@ void EERIE_PHYSICS_BOX_Create(EERIE_3DOBJ * obj)
 	Vec3f cubmax = Vec3f(-std::numeric_limits<float>::max());
 	
 	for(size_t k = 0; k < obj->vertexlist.size(); k++) {
-		if(long(k) != obj->origin) {
+		if(k != obj->origin) {
 			cubmin = glm::min(cubmin, obj->vertexlist[k].v);
 			cubmax = glm::max(cubmax, obj->vertexlist[k].v);
 		}
@@ -294,7 +294,7 @@ void EERIE_PHYSICS_BOX_Create(EERIE_3DOBJ * obj)
 
 		for (size_t k = 0; k < obj->vertexlist.size(); k++)
 		{
-			if (k == (size_t)obj->origin) continue;
+			if (k == obj->origin) continue;
 
 			Vec3f curr = obj->vertexlist[k].v;
 			long SEC = 1;
@@ -346,7 +346,7 @@ void EERIE_PHYSICS_BOX_Create(EERIE_3DOBJ * obj)
 
 		for (size_t k = 0; k < obj->vertexlist.size(); k++)
 		{
-			if (k == (size_t)obj->origin) continue;
+			if (k == obj->origin) continue;
 
 			Vec3f curr = obj->vertexlist[k].v;
 			long SEC;

@@ -511,6 +511,7 @@ EERIE_3DOBJ * ARX_FTL_Load(const res::path & file) {
 	obj->grouplist.resize(af3Ddh->nb_groups);
 	obj->actionlist.resize(af3Ddh->nb_action);
 	obj->selections.resize(af3Ddh->nb_selections);
+	arx_assert(af3Ddh->origin >= 0);
 	obj->origin = af3Ddh->origin;
 	obj->file = res::path::load(util::loadString(af3Ddh->name));
 	

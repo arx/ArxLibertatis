@@ -768,7 +768,7 @@ float CheckAnythingInCylinder(const Cylinder & cyl, Entity * ioo, long flags) {
 								step = 6;
 
 							for(size_t ii = 1; ii < nbv; ii += step) {
-								if(ii != (size_t)io->obj->origin) {
+								if(ii != io->obj->origin) {
 									sp.origin = vlist[ii].v;
 									
 									if(SphereInCylinder(cyl, sp)) {

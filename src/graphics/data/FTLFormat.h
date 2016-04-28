@@ -103,7 +103,7 @@ struct ARX_FTL_3D_DATA_HEADER {
 	s32 nb_groups;
 	s32 nb_action;
 	s32 nb_selections; // data will follow this order
-	s32 origin;
+	s32 origin; // TODO this is always >= 0 replace with u32
 	char name[256];
 };
 

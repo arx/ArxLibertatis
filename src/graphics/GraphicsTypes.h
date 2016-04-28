@@ -366,7 +366,7 @@ struct EERIE_3DOBJ
 	Vec3f pos;
 	Vec3f point0;
 	Anglef angle;
-	long origin;
+	size_t origin;
 	Vec3f * vertexlocal;
 	std::vector<EERIE_VERTEX> vertexlist;
 	std::vector<EERIE_VERTEX> vertexlist3;
