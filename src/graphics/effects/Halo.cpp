@@ -26,14 +26,14 @@
 
 const size_t HALOMAX = 2000;
 
-static long HALOCUR[2] = {};
+static size_t HALOCUR[2] = {};
 static TexturedVertex LATERDRAWHALO[2][HALOMAX * 6];
 
 void Halo_AddVertices(TexturedVertex (&inVerts)[4]) {
 	int blendType = inVerts[2].color == 0 ? 0 : 1;
 
 	TexturedVertex *vert = &LATERDRAWHALO[blendType][(HALOCUR[blendType] * 6)];
-	if(HALOCUR[blendType] < ((long)HALOMAX) - 1) {
+	if(HALOCUR[blendType] < HALOMAX - 1) {
 		HALOCUR[blendType]++;
 	}
 
