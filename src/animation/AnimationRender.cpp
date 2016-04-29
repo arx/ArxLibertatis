@@ -896,8 +896,6 @@ extern long IN_BOOK_DRAW;
 static void PrepareAnimatedObjectHalo(HaloInfo & haloInfo, const Vec3f & pos,
                                       Skeleton * obj, EERIE_3DOBJ * eobj) {
 	
-	if(haloInfo.halos.size() > 0) {
-
 		Vec3f ftrPos = pos;
 		//TODO copy-pase
 		float mdist = ACTIVECAM->cdepth;
@@ -917,9 +915,6 @@ static void PrepareAnimatedObjectHalo(HaloInfo & haloInfo, const Vec3f & pos,
 			if(eobj->vertexlist3[i].vert.rhw > 0.f)
 				haloInfo.MAX_ZEDE = std::max(eobj->vertexlist3[i].vert.p.z, haloInfo.MAX_ZEDE);
 		}
-
-		haloInfo.need_halo = true;
-	}
 }
 
 // TODO copy-paste halo
@@ -1092,7 +1087,10 @@ static void Cedric_RenderObject(EERIE_3DOBJ * eobj, Skeleton * obj, Entity * io,
 			haloInfo.halos.push_back(HaloRenderInfo(&use_io->halo));
 		}
 		
-		PrepareAnimatedObjectHalo(haloInfo, pos, obj, eobj);
+		if(haloInfo.halos.size() > 0) {
+			haloInfo.need_halo = true;
+			PrepareAnimatedObjectHalo(haloInfo, pos, obj, eobj);
+		}
 	}
 
 	bool glow = false;
