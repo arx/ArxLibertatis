@@ -90,8 +90,8 @@ struct CinematicGrid {
 	void ReajustUV();
 private:
 	void GetIndNumCube(int cx, int cy, int * i1, int * i2, int * i3, int * i4);
-	int AddMaterial(Texture2D* tex);
-	void AddPoly(int matIdx, int i0, int i1, int i2);
+	size_t AddMaterial(Texture2D* tex);
+	void AddPoly(size_t matIdx, int i0, int i1, int i2);
 };
 
 class CinematicBitmap {
