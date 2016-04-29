@@ -850,7 +850,12 @@ void DrawEERIEInter(EERIE_3DOBJ * eobj,
 
 
 struct HaloRenderInfo {
-
+	
+	HaloRenderInfo()
+		: halo(NULL)
+		, selection()
+	{ }
+	
 	HaloRenderInfo(IO_HALO * halo, ObjSelection selection)
 		: halo(halo)
 		, selection(selection)
@@ -866,17 +871,24 @@ struct HaloRenderInfo {
 };
 
 struct HaloInfo {
-	bool need_halo;
+	static const u32 maxSize = 6;
+	
+	u32 size;
+	HaloRenderInfo entries[maxSize];
 	float MAX_ZEDE;
 	float ddist;
 
 	HaloInfo()
-		: need_halo(0)
+		: size(0)
 		, MAX_ZEDE(0.f)
 		, ddist(0.f)
 	{}
-
-	std::vector<HaloRenderInfo> halos;
+	
+	void push(const HaloRenderInfo & entry) {
+		arx_assert(size < maxSize);
+		entries[size] = entry;
+		size++;
+	}
 };
 
 static void pushSlotHalo(HaloInfo & haloInfo, EquipmentSlot slot, ObjSelection selection) {
@@ -885,7 +897,7 @@ static void pushSlotHalo(HaloInfo & haloInfo, EquipmentSlot slot, ObjSelection s
 		Entity * tio = entities[player.equiped[slot]];
 
 		if(tio->halo.flags & HALO_ACTIVE) {
-			haloInfo.halos.push_back(HaloRenderInfo(&tio->halo, selection));
+			haloInfo.push(HaloRenderInfo(&tio->halo, selection));
 		}
 	}
 }
@@ -922,13 +934,12 @@ static void AddAnimatedObjectHalo(HaloInfo & haloInfo, const unsigned short * pa
                                   float invisibility, EERIE_3DOBJ * eobj, Entity * io,
                                   TexturedVertex * tvList) {
 	
-	std::vector<HaloRenderInfo> & halos = haloInfo.halos;
-
 	IO_HALO * curhalo = NULL;
 
-	for(size_t h = 0; h < halos.size(); h++) {
-		if(halos[h].selection == ObjSelection() || IsInSelection(eobj, paf[0], halos[h].selection)) {
-			curhalo = halos[h].halo;
+	for(size_t h = 0; h < haloInfo.size; h++) {
+		const HaloRenderInfo & entry = haloInfo.entries[h];
+		if(entry.selection == ObjSelection() || IsInSelection(eobj, paf[0], entry.selection)) {
+			curhalo = entry.halo;
 			break;
 		}
 	}
@@ -1084,11 +1095,10 @@ static void Cedric_RenderObject(EERIE_3DOBJ * eobj, Skeleton * obj, Entity * io,
 		}
 	
 		if(use_io->halo.flags & HALO_ACTIVE) {
-			haloInfo.halos.push_back(HaloRenderInfo(&use_io->halo));
+			haloInfo.push(HaloRenderInfo(&use_io->halo));
 		}
 		
-		if(haloInfo.halos.size() > 0) {
-			haloInfo.need_halo = true;
+		if(haloInfo.size > 0) {
 			PrepareAnimatedObjectHalo(haloInfo, pos, obj, eobj);
 		}
 	}
@@ -1136,7 +1146,7 @@ static void Cedric_RenderObject(EERIE_3DOBJ * eobj, Skeleton * obj, Entity * io,
 			tvList[0].color = tvList[1].color = tvList[2].color = Color::gray(fTransp).toRGB();
 		}
 
-		if(haloInfo.need_halo) {
+		if(haloInfo.size) {
 			AddAnimatedObjectHalo(haloInfo, face.vid, invisibility, eobj, io, tvList);
 		}
 		
