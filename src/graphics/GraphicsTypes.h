@@ -287,7 +287,7 @@ struct EERIE_LINKED {
 
 struct EERIE_SELECTIONS {
 	std::string name;
-	std::vector<long> selected;
+	std::vector<size_t> selected;
 };
 
 struct EERIE_FASTACCESS

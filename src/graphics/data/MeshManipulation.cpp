@@ -280,7 +280,7 @@ void AddVertexIdxToGroup(EERIE_3DOBJ * obj, long group, long val) {
 	obj->grouplist[group].indexes.push_back(val);
 }
 
-static void ObjectAddSelection(EERIE_3DOBJ * obj, long numsel, long vidx) {
+static void ObjectAddSelection(EERIE_3DOBJ * obj, size_t numsel, size_t vidx) {
 	
 	for(size_t i = 0; i < obj->selections[numsel].selected.size(); i++) {
 		if(obj->selections[numsel].selected[i] == vidx)
@@ -622,7 +622,7 @@ static EERIE_3DOBJ * CreateIntermediaryMesh(const EERIE_3DOBJ * obj1, const EERI
 	for(size_t i = 0; i < obj1->selections.size(); i++) {
 		
 		if(EERIE_OBJECT_GetSelection(work, obj1->selections[i].name) == ObjSelection()) {
-			long num = work->selections.size();
+			size_t num = work->selections.size();
 			work->selections.resize(num + 1);
 			work->selections[num].name = obj1->selections[i].name;
 
@@ -657,7 +657,7 @@ static EERIE_3DOBJ * CreateIntermediaryMesh(const EERIE_3DOBJ * obj1, const EERI
 
 	for(size_t i = 0; i < obj2->selections.size(); i++) {
 		if(EERIE_OBJECT_GetSelection(work, obj2->selections[i].name) == ObjSelection()) {
-			long num = work->selections.size();
+			size_t num = work->selections.size();
 			work->selections.resize(num + 1);
 			work->selections[num].name = obj2->selections[i].name;
 
