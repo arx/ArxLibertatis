@@ -894,22 +894,9 @@ static void pushSlotHalo(HaloInfo & haloInfo, EquipmentSlot slot, ObjSelection s
 extern long IN_BOOK_DRAW;
 
 static void PrepareAnimatedObjectHalo(HaloInfo & haloInfo, const Vec3f & pos,
-                                      Skeleton * obj, Entity * use_io,
-                                      EERIE_3DOBJ * eobj) {
+                                      Skeleton * obj, EERIE_3DOBJ * eobj) {
 	
-	std::vector<HaloRenderInfo> & halos = haloInfo.halos;
-
-	if(use_io == entities.player()) {
-		pushSlotHalo(haloInfo, EQUIP_SLOT_HELMET,   eobj->fastaccess.sel_head);
-		pushSlotHalo(haloInfo, EQUIP_SLOT_ARMOR,    eobj->fastaccess.sel_chest);
-		pushSlotHalo(haloInfo, EQUIP_SLOT_LEGGINGS, eobj->fastaccess.sel_leggings);
-	}
-
-	if(use_io->halo.flags & HALO_ACTIVE) {
-		halos.push_back(HaloRenderInfo(&use_io->halo));
-	}
-
-	if(halos.size() > 0) {
+	if(haloInfo.halos.size() > 0) {
 
 		Vec3f ftrPos = pos;
 		//TODO copy-pase
@@ -1094,8 +1081,19 @@ static void Cedric_RenderObject(EERIE_3DOBJ * eobj, Skeleton * obj, Entity * io,
 		use_io = entities.player();
 
 	HaloInfo haloInfo;
-	if(use_io)
-		PrepareAnimatedObjectHalo(haloInfo, pos, obj, use_io, eobj);
+	if(use_io) {
+		if(use_io == entities.player()) {
+			pushSlotHalo(haloInfo, EQUIP_SLOT_HELMET,   eobj->fastaccess.sel_head);
+			pushSlotHalo(haloInfo, EQUIP_SLOT_ARMOR,    eobj->fastaccess.sel_chest);
+			pushSlotHalo(haloInfo, EQUIP_SLOT_LEGGINGS, eobj->fastaccess.sel_leggings);
+		}
+	
+		if(use_io->halo.flags & HALO_ACTIVE) {
+			haloInfo.halos.push_back(HaloRenderInfo(&use_io->halo));
+		}
+		
+		PrepareAnimatedObjectHalo(haloInfo, pos, obj, eobj);
+	}
 
 	bool glow = false;
 	ColorRGBA glowColor;
