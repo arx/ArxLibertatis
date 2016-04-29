@@ -259,7 +259,7 @@ bool ARX_FTL_Save(const fs::path & file, const EERIE_3DOBJ * obj) {
 
 		if (pos > allocsize) LogError << ("Invalid Allocsize in ARX_FTL_Save");
 
-		for (int i = 0; i < af3Ddh->nb_selections; i++) {
+		for(size_t i = 0; i < size_t(af3Ddh->nb_selections); i++) {
 			std::copy(obj->selections[i].selected.begin(), obj->selections[i].selected.end(), (s32*)(dat + pos));
 			pos += sizeof(s32) * obj->selections[i].selected.size();
 
