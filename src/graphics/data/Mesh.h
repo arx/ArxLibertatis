@@ -132,7 +132,7 @@ EERIEPOLY * EEIsUnderWater(const Vec3f & pos);
 
 bool GetTruePolyY(const EERIEPOLY * ep, const Vec3f & pos, float * ret);
 bool IsAnyPolyThere(float x, float z);
-bool IsVertexIdxInGroup(EERIE_3DOBJ * eobj,long idx,long grs);
+bool IsVertexIdxInGroup(EERIE_3DOBJ * eobj, size_t idx, size_t grs);
 EERIEPOLY * GetMinPoly(const Vec3f & pos);
 EERIEPOLY * GetMaxPoly(const Vec3f & pos);
  

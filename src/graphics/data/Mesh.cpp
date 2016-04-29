@@ -1227,13 +1227,13 @@ void Draw3DObject(EERIE_3DOBJ *eobj, const Anglef & angle, const Vec3f & pos, co
 	}
 }
 
-bool IsVertexIdxInGroup(EERIE_3DOBJ *eobj, long idx, long grs) {
+bool IsVertexIdxInGroup(EERIE_3DOBJ *eobj, size_t idx, size_t grs) {
 
 	if(!eobj)
 		return false;
 
 	for(size_t i = 0; i < eobj->grouplist[grs].indexes.size(); i++) {
-		long ii = eobj->grouplist[grs].indexes[i];
+		size_t ii = eobj->grouplist[grs].indexes[i];
 
 		if(ii == idx)
 			return true;

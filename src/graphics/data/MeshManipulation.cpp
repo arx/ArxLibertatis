@@ -257,7 +257,7 @@ long ObjectAddMap(EERIE_3DOBJ * obj, TextureContainer * tc) {
 	return obj->texturecontainer.size() - 1;
 }
 
-static void AddVertexToGroup(EERIE_3DOBJ * obj, long group, const EERIE_VERTEX * vert) {
+static void AddVertexToGroup(EERIE_3DOBJ * obj, size_t group, const EERIE_VERTEX * vert) {
 
 	for(size_t i = 0; i < obj->vertexlist.size(); i++) {
 		if(obj->vertexlist[i].v.x == vert->v.x
@@ -269,7 +269,7 @@ static void AddVertexToGroup(EERIE_3DOBJ * obj, long group, const EERIE_VERTEX *
 	}
 }
 
-void AddVertexIdxToGroup(EERIE_3DOBJ * obj, long group, long val) {
+void AddVertexIdxToGroup(EERIE_3DOBJ * obj, size_t group, size_t val) {
 	
 	for(size_t i = 0; i < obj->grouplist[group].indexes.size(); i++) {
 		if(obj->grouplist[group].indexes[i] == val) {

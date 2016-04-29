@@ -151,7 +151,7 @@ static long GetFirstChildGroup(EERIE_3DOBJ * obj, size_t group) {
 	return -1;
 }
 
-static bool IsExclusiveGroupMember(EERIE_3DOBJ * obj, long idx, long group) {
+static bool IsExclusiveGroupMember(EERIE_3DOBJ * obj, size_t idx, size_t group) {
 	
 	for(size_t i = group + 1; i < obj->grouplist.size(); i++) {
 		for(size_t j = 0; j < obj->grouplist[i].indexes.size(); j++) {
@@ -165,7 +165,7 @@ static bool IsExclusiveGroupMember(EERIE_3DOBJ * obj, long idx, long group) {
 }
 
 static float GetSphereRadiusForGroup(EERIE_3DOBJ * obj, const Vec3f & center, const Vec3f & dirvect,
-                                     long group, float maxi) {
+                                     size_t group, float maxi) {
 	
 	float curradius = 0.f;
 	float maxf = 0.f;
@@ -215,7 +215,7 @@ static float GetSphereRadiusForGroup(EERIE_3DOBJ * obj, const Vec3f & center, co
 	return curradius;
 }
 
-static long AddVertexToVertexList(EERIE_3DOBJ * obj, Vec3f * center, long group) {
+static long AddVertexToVertexList(EERIE_3DOBJ * obj, Vec3f * center, size_t group) {
 	
 	if(obj->vertexlist.empty())
 		return -1;

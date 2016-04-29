@@ -135,7 +135,7 @@ struct EERIE_FACE_FTL {
 struct EERIE_GROUPLIST_FTL {
 	
 	char name[256];
-	s32 origin;
+	s32 origin; // TODO this is always positive use u32 ?
 	s32 nb_index;
 	s32 indexes;
 	f32 siz;

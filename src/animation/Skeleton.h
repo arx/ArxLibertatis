@@ -29,8 +29,8 @@
 
 struct VertexGroup {
 	std::string       name;
-	long              origin;
-	std::vector<long> indexes;
+	size_t            origin;
+	std::vector<size_t> indexes;
 	float             siz;
 	
 	VertexGroup()

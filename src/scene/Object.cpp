@@ -121,9 +121,9 @@ ObjVertGroup GetActionPointGroup(const EERIE_3DOBJ * eobj, ActionPoint idx) {
 		return ObjVertGroup();
 	
 	for(long i = eobj->grouplist.size() - 1; i >= 0; i--) {
-		const std::vector<long> & indices = eobj->grouplist[i].indexes;
+		const std::vector<size_t> & indices = eobj->grouplist[i].indexes;
 		for(size_t j = 0; j < indices.size(); j++){
-			if(indices[j] == idx.handleData()) {
+			if(long(indices[j]) == idx.handleData()) {
 				return ObjVertGroup(i);
 			}
 		}
@@ -1011,7 +1011,7 @@ ObjVertGroup EERIE_OBJECT_GetGroup(const EERIE_3DOBJ * obj, const std::string & 
 	return ObjVertGroup();
 }
 
-static long GetFather(EERIE_3DOBJ * eobj, long origin, long startgroup) {
+static long GetFather(EERIE_3DOBJ * eobj, size_t origin, long startgroup) {
 	
 	for(long i = startgroup; i >= 0; i--) {
 		for(size_t j = 0; j < eobj->grouplist[i].indexes.size(); j++) {
@@ -1097,7 +1097,7 @@ void EERIE_CreateCedricData(EERIE_3DOBJ * eobj) {
 
 			for(size_t j = 0; j < eobj->grouplist.size(); j++) {
 				for(size_t k = 0; k < eobj->grouplist[j].indexes.size(); k++) {
-					if((size_t)eobj->grouplist[j].indexes[k] == i) {
+					if(eobj->grouplist[j].indexes[k] == i) {
 						ok = 1;
 						break;
 					}
