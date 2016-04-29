@@ -1155,7 +1155,7 @@ void EERIE_CreateCedricData(EERIE_3DOBJ * eobj) {
 			
 			for(size_t v = 0; v != obj->bones[i].idxvertices.size(); v++) {
 				
-				long idx = obj->bones[i].idxvertices[v];
+				size_t idx = obj->bones[i].idxvertices[v];
 				const EERIE_VERTEX & inVert = eobj->vertexlist[idx];
 				Vec3f & outVert = eobj->vertexlocal[idx];
 				
