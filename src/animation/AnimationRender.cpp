@@ -865,18 +865,6 @@ struct HaloRenderInfo {
 	ObjSelection selection;
 };
 
-static void pushSlotHalo(std::vector<HaloRenderInfo> & halos, EquipmentSlot slot,
-                         ObjSelection selection) {
-
-	if(ValidIONum(player.equiped[slot])) {
-		Entity * tio = entities[player.equiped[slot]];
-
-		if(tio->halo.flags & HALO_ACTIVE) {
-			halos.push_back(HaloRenderInfo(&tio->halo, selection));
-		}
-	}
-}
-
 struct HaloInfo {
 	bool need_halo;
 	float MAX_ZEDE;
@@ -891,6 +879,17 @@ struct HaloInfo {
 	std::vector<HaloRenderInfo> halos;
 };
 
+static void pushSlotHalo(HaloInfo & haloInfo, EquipmentSlot slot, ObjSelection selection) {
+	
+	if(ValidIONum(player.equiped[slot])) {
+		Entity * tio = entities[player.equiped[slot]];
+
+		if(tio->halo.flags & HALO_ACTIVE) {
+			haloInfo.halos.push_back(HaloRenderInfo(&tio->halo, selection));
+		}
+	}
+}
+
 //-----------------------------------------------------------------------------
 extern long IN_BOOK_DRAW;
 
@@ -901,9 +900,9 @@ static void PrepareAnimatedObjectHalo(HaloInfo & haloInfo, const Vec3f & pos,
 	std::vector<HaloRenderInfo> & halos = haloInfo.halos;
 
 	if(use_io == entities.player()) {
-		pushSlotHalo(halos, EQUIP_SLOT_HELMET,   eobj->fastaccess.sel_head);
-		pushSlotHalo(halos, EQUIP_SLOT_ARMOR,    eobj->fastaccess.sel_chest);
-		pushSlotHalo(halos, EQUIP_SLOT_LEGGINGS, eobj->fastaccess.sel_leggings);
+		pushSlotHalo(haloInfo, EQUIP_SLOT_HELMET,   eobj->fastaccess.sel_head);
+		pushSlotHalo(haloInfo, EQUIP_SLOT_ARMOR,    eobj->fastaccess.sel_chest);
+		pushSlotHalo(haloInfo, EQUIP_SLOT_LEGGINGS, eobj->fastaccess.sel_leggings);
 	}
 
 	if(use_io->halo.flags & HALO_ACTIVE) {
