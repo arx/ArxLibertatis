@@ -97,7 +97,7 @@ static void ARX_NPC_SpawnMember(Entity * ioo, ObjSelection num) {
 	nouvo->vertexlist.resize(nvertex);
 	nouvo->vertexlist3.resize(nvertex);
 
-	long inpos = 0;
+	size_t inpos = 0;
 	long * equival = (long *)malloc(sizeof(long) * from->vertexlist.size());
 	if(!equival) {
 		delete nouvo;
