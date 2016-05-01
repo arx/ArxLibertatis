@@ -79,14 +79,14 @@ Getting all the dependencies set up for Windows is more tricky. Pre-build depend
 * `BUILD_IO_LIBRARY` (default=ON): Build helper library for the Blender plugin
 * `BUILD_CRASHHANDLER` (default=ON): Enable the built-in crash handler (default OFF for Mac)
 * `BUILD_CRASHREPORTER` (default=ON): Build the Qt crash reporter gui - requires `BUILD_CRASHHANDLER` (default OFF for Mac)
-* `UNITY_BUILD` (default=OFF): Unity build (faster build, better optimizations but no incremental build)
+* `UNITY_BUILD` (default=ON): Unity build (faster build, better optimizations but no incremental build)
 * `CMAKE_BUILD_TYPE` (default=Release): Set to `Debug` for debug binaries
 * `DEBUG` (default=OFF^1): Enable debug output and runtime checks
 * `DEBUG_EXTRA` (default=OFF): Expensive debug options
 * `DEVELOPER` (default=OFF): Enable build options suitable for developers^2
 
 1. Enabled automatically if `CMAKE_BUILD_TYPE` is set to `Debug`.
-2. Currently this disables `UNITY_BUILD` for faster incremental builds and enables `DEBUG`. The `-DDEVELOPER=…` doesn't change options explicitly specified by the user.
+2. Currently this disables `UNITY_BUILD` for faster incremental builds and enables `DEBUG`, unles those options have been explicitly specified by the user.
 
 Install options:
 
