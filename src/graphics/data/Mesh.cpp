@@ -511,17 +511,19 @@ float PtIn2DPolyProj(EERIE_3DOBJ * obj, EERIE_FACE * ef, float x, float z) {
 
 float CEDRIC_PtIn2DPolyProjV2(EERIE_3DOBJ * obj, EERIE_FACE * ef, float x, float z) {
 	
+	const std::vector<EERIE_VERTEX> & verts = obj->vertexlist3;
+	
 	int i, j, c = 0;
 
 	for (i = 0, j = 2; i < 3; j = i++)
 	{
-		if ((((obj->vertexlist3[ef->vid[i]].vert.p.y <= z) && (z < obj->vertexlist3[ef->vid[j]].vert.p.y)) ||
-				((obj->vertexlist3[ef->vid[j]].vert.p.y <= z) && (z < obj->vertexlist3[ef->vid[i]].vert.p.y))) &&
-				(x < (obj->vertexlist3[ef->vid[j]].vert.p.x - obj->vertexlist3[ef->vid[i]].vert.p.x) *(z - obj->vertexlist3[ef->vid[i]].vert.p.y) / (obj->vertexlist3[ef->vid[j]].vert.p.y - obj->vertexlist3[ef->vid[i]].vert.p.y) + obj->vertexlist3[ef->vid[i]].vert.p.x))
+		if ((((verts[ef->vid[i]].vert.p.y <= z) && (z < verts[ef->vid[j]].vert.p.y)) ||
+				((verts[ef->vid[j]].vert.p.y <= z) && (z < verts[ef->vid[i]].vert.p.y))) &&
+				(x < (verts[ef->vid[j]].vert.p.x - verts[ef->vid[i]].vert.p.x) *(z - verts[ef->vid[i]].vert.p.y) / (verts[ef->vid[j]].vert.p.y - verts[ef->vid[i]].vert.p.y) + verts[ef->vid[i]].vert.p.x))
 			c = !c;
 	}
 
-	if (c) return obj->vertexlist3[ef->vid[0]].vert.p.z;
+	if (c) return verts[ef->vid[0]].vert.p.z;
 	else return 0.f;
 }
 
