@@ -561,14 +561,15 @@ long ARX_PORTALS_GetRoomNumForPosition(const Vec3f & pos,long flag) {
 	
 	long num;
 	float height;
-
+	
 	if(flag & 1) {
 		Vec3f cameraPos = ACTIVECAM->orgTrans.pos;
 		Vec3f direction = angleToVectorXZ_180offset(ACTIVECAM->angle.getPitch());
 		num = ARX_PORTALS_GetRoomNumForCamera(&height, cameraPos, direction);
-	} else
-		num=ARX_PORTALS_GetRoomNumForPosition2(pos,flag,&height);
-
+	} else {
+		num = ARX_PORTALS_GetRoomNumForPosition2(pos, flag, &height);
+	}
+	
 	if(num > -1) {
 		long nearest = -1;
 		float nearest_dist = 99999.f;
