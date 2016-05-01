@@ -475,9 +475,9 @@ static Vec2i parseResolution(const std::string & resolution) {
 }
 
 static Vec2i parseThumbnailSize(const std::string & thumbnailSize) {
-
+	
 	Vec2i res;
-
+	
 	std::istringstream iss(thumbnailSize);
 	iss >> res.x;
 	char x = '\0';
@@ -486,8 +486,7 @@ static Vec2i parseThumbnailSize(const std::string & thumbnailSize) {
 	if (iss.fail() || x != 'x' || res.x <= 0 || res.y <= 0) {
 		LogWarning << "Bad thumbnail resolution string: " << thumbnailSize;
 		return Vec2i(THUMBNAIL_DEFAULT_WIDTH, THUMBNAIL_DEFAULT_HEIGHT);
-	}
-	else {
+	} else {
 		return res;
 	}
 }
