@@ -1838,8 +1838,6 @@ Entity * AddItem(const res::path & classPath_, EntityInstance instance, AddInter
  */
 Entity * GetFirstInterAtPos(const Vec2s & pos, long flag, Vec3f * _pRef, Entity ** _pTable, size_t * _pnNbInTable)
 {
-	float n;
- 
 	float _fdist = 9999999999.f;
 	float fdistBB = 9999999999.f;
 	float fMaxDist = flag ? 9999999999.f : 350;
@@ -1938,7 +1936,7 @@ Entity * GetFirstInterAtPos(const Vec2s & pos, long flag, Vec3f * _pRef, Entity 
 			}
 		} else {
 			for(size_t j = 0; j < io->obj->facelist.size(); j++) {
-
+				float n;
 				if(io->animlayer[0].cur_anim != NULL) {
 					n = CEDRIC_PtIn2DPolyProjV2(io->obj, &io->obj->facelist[j] , pos.x, pos.y);
 				} else {
