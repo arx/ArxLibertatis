@@ -1027,7 +1027,7 @@ bool ArxGame::addPaks() {
 			oss << " * " << dir.string() << fs::path::dir_sep << "\n";
 		}
 		oss << "See " << url::help_install_data << " or `arx --list-dirs` for details.";
-		LogError << oss.str();
+		LogInfo << oss.str();
 		
 		// Try to launch the data file installer on non-Windows systems
 		#if ARX_PLATFORM != ARX_PLATFORM_WIN32
