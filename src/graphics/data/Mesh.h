@@ -179,7 +179,6 @@ long EERIERTPPoly(EERIEPOLY *ep);
 
 float PtIn2DPolyProj(const std::vector<EERIE_VERTEX> & verts, EERIE_FACE * ef, float x, float z);
 
-Vec3f GetVertexPos(Entity * io, long id);
 long CountBkgVertex();
 
 bool RayCollidingPoly(const Vec3f & orgn, const Vec3f & dest, const EERIEPOLY & ep, Vec3f * hit);

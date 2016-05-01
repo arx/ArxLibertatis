@@ -2659,7 +2659,13 @@ Entity * ARX_NPC_GetFirstNPCInSight(Entity * ioo)
 			if(ioo == entities.player())
 				orgn.y = player.pos.y + 90.f;
 		} else {
-			orgn = GetVertexPos(ioo, grp);
+			arx_assert(ioo);
+		
+			if(grp != -1) {
+				orgn = ioo->obj->vertexlist3[grp].v;
+			} else {
+				orgn = ioo->pos + Vec3f(0.f, GetIOHeight(ioo), 0.f);
+			}
 		}
 		}
 		
@@ -2672,7 +2678,13 @@ Entity * ARX_NPC_GetFirstNPCInSight(Entity * ioo)
 			if(io == entities.player())
 				dest.y = player.pos.y + 90.f;
 		} else {
-			dest = GetVertexPos(io, grp);
+			arx_assert(io);
+		
+			if(grp != -1) {
+				dest = io->obj->vertexlist3[grp].v;
+			} else {
+				dest = io->pos + Vec3f(0.f, GetIOHeight(io), 0.f);
+			}
 		}
 		}
 

@@ -475,17 +475,6 @@ void EE_RTP(const Vec3f & in, TexturedVertex & out) {
 //*************************************************************************************
 //*************************************************************************************
 
-Vec3f GetVertexPos(Entity * io, long id) {
-	
-	arx_assert(io);
-
-	if(id != -1) {
-		return io->obj->vertexlist3[id].v;
-	} else {
-		return io->pos + Vec3f(0.f, GetIOHeight(io), 0.f);
-	}
-}
-
 long EERIEDrawnPolys = 0;
 
 //*************************************************************************************
