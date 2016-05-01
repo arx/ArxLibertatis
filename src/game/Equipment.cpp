@@ -21,22 +21,22 @@
 ARX FATALIS GPL Source Code
 Copyright (C) 1999-2010 Arkane Studios SA, a ZeniMax Media company.
 
-This file is part of the Arx Fatalis GPL Source Code ('Arx Fatalis Source Code'). 
+This file is part of the Arx Fatalis GPL Source Code ('Arx Fatalis Source Code').
 
-Arx Fatalis Source Code is free software: you can redistribute it and/or modify it under the terms of the GNU General Public 
+Arx Fatalis Source Code is free software: you can redistribute it and/or modify it under the terms of the GNU General Public
 License as published by the Free Software Foundation, either version 3 of the License, or (at your option) any later version.
 
-Arx Fatalis Source Code is distributed in the hope that it will be useful, but WITHOUT ANY WARRANTY; without even the implied 
+Arx Fatalis Source Code is distributed in the hope that it will be useful, but WITHOUT ANY WARRANTY; without even the implied
 warranty of MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE. See the GNU General Public License for more details.
 
-You should have received a copy of the GNU General Public License along with Arx Fatalis Source Code.  If not, see 
+You should have received a copy of the GNU General Public License along with Arx Fatalis Source Code.  If not, see
 <http://www.gnu.org/licenses/>.
 
-In addition, the Arx Fatalis Source Code is also subject to certain additional terms. You should have received a copy of these 
-additional terms immediately following the terms and conditions of the GNU General Public License which accompanied the Arx 
+In addition, the Arx Fatalis Source Code is also subject to certain additional terms. You should have received a copy of these
+additional terms immediately following the terms and conditions of the GNU General Public License which accompanied the Arx
 Fatalis Source Code. If not, please request a copy in writing from Arkane Studios at the address below.
 
-If you have questions concerning this license or the applicable additional terms, you may contact in writing Arkane Studios, c/o 
+If you have questions concerning this license or the applicable additional terms, you may contact in writing Arkane Studios, c/o
 ZeniMax Media Inc., Suite 120, Rockville, Maryland 20850 USA.
 ===========================================================================
 */
@@ -112,15 +112,15 @@ EQUIP_INFO equipinfo[IO_EQUIPITEM_ELEMENT_Number];
 
 //! \brief Returns the object type flag corresponding to a string
 ItemType ARX_EQUIPMENT_GetObjectTypeFlag(const std::string & temp) {
-	
+
 	if(temp.empty()) {
 		return 0;
 	}
-	
+
 	char c = temp[0];
-	
+
 	arx_assert(std::tolower(c) == c);
-	
+
 	switch(c) {
 		case 'w':
 			return OBJECT_TYPE_WEAPON;
@@ -147,7 +147,7 @@ ItemType ARX_EQUIPMENT_GetObjectTypeFlag(const std::string & temp) {
 		case 'l':
 			return OBJECT_TYPE_LEGGINGS;
 	}
-	
+
 	return 0;
 }
 
@@ -167,7 +167,7 @@ void ARX_EQUIPMENT_ReleaseAll(Entity * io) {
 	if(!io || !(io->ioflags & IO_ITEM)) {
 		return;
 	}
-	
+
 	free(io->_itemdata->equipitem);
 	io->_itemdata->equipitem = NULL;
 }
@@ -176,31 +176,31 @@ extern long EXITING;
 
 //! \brief Recreates player mesh from scratch
 static void applyTweak(EquipmentSlot equip, TweakType tw, const std::string & selection) {
-	
+
 	if(!ValidIONum(player.equiped[equip])) {
 		return;
 	}
-	
+
 	Entity * io = entities.player();
-	
+
 	arx_assert(entities[player.equiped[equip]]->tweakerinfo != NULL);
-	
+
 	const IO_TWEAKER_INFO & tweak = *entities[player.equiped[equip]]->tweakerinfo;
-	
+
 	if(!tweak.filename.empty()) {
 		res::path mesh = "graph/obj3d/interactive/npc/human_base/tweaks" / tweak.filename;
 		EERIE_MESH_TWEAK_Do(io, tw, mesh);
 	}
-	
+
 	if(tweak.skintochange.empty() || tweak.skinchangeto.empty()) {
 		return;
 	}
-	
+
 	res::path file = "graph/obj3d/textures" / tweak.skinchangeto;
 	TextureContainer * temp = TextureContainer::Load(file, TextureContainer::Level);
-	
+
 	long mapidx = ObjectAddMap(io->obj, temp);
-	
+
 	ObjSelection sel = ObjSelection();
 	for(size_t i = 0; i < io->obj->selections.size(); i++) {
 		if(io->obj->selections[i].name == selection) {
@@ -211,7 +211,7 @@ static void applyTweak(EquipmentSlot equip, TweakType tw, const std::string & se
 	if(sel == ObjSelection()) {
 		return;
 	}
-	
+
 	long textochange = -1;
 	for(size_t i = 0; i < io->obj->texturecontainer.size(); i++) {
 		if(tweak.skintochange == io->obj->texturecontainer[i]->m_texName.filename()) {
@@ -221,7 +221,7 @@ static void applyTweak(EquipmentSlot equip, TweakType tw, const std::string & se
 	if(textochange == -1) {
 		return;
 	}
-	
+
 	for(size_t i = 0; i < io->obj->facelist.size(); i++) {
 		EERIE_FACE & face = io->obj->facelist[i];
 
@@ -234,29 +234,29 @@ static void applyTweak(EquipmentSlot equip, TweakType tw, const std::string & se
 			}
 		}
 	}
-	
+
 }
 
 void ARX_EQUIPMENT_RecreatePlayerMesh() {
-	
+
 	if(EXITING)
 		return;
-	
+
 	arx_assert(entities.player());
-	
+
 	Entity * io = entities.player();
-	
+
 	if(io->obj != hero)
 		delete io->obj;
 
 	io->obj = loadObject("graph/obj3d/interactive/npc/human_base/human_base.teo", false);
-	
+
 	applyTweak(EQUIP_SLOT_HELMET, TWEAK_HEAD, "head");
 	applyTweak(EQUIP_SLOT_ARMOR, TWEAK_TORSO, "chest");
 	applyTweak(EQUIP_SLOT_LEGGINGS, TWEAK_LEGS, "leggings");
-	
+
 	Entity * target = entities.player();
-	
+
 	for(size_t i = 0; i < MAX_EQUIPED; i++) {
 		if(ValidIONum(player.equiped[i])) {
 			Entity *toequip = entities[player.equiped[i]];
@@ -290,11 +290,11 @@ void ARX_EQUIPMENT_RecreatePlayerMesh() {
 	EERIE_Object_Precompute_Fast_Access(hero);
 	EERIE_Object_Precompute_Fast_Access(entities.player()->obj);
 
-	ARX_INTERACTIVE_RemoveGoreOnIO(entities.player()); 
+	ARX_INTERACTIVE_RemoveGoreOnIO(entities.player());
 }
 
 void ARX_EQUIPMENT_UnEquipAllPlayer() {
-	
+
 	for(size_t i = 0; i < MAX_EQUIPED; i++) {
 		if(ValidIONum(player.equiped[i])) {
 			ARX_EQUIPMENT_UnEquip(entities.player(), entities[player.equiped[i]]);
@@ -306,7 +306,7 @@ void ARX_EQUIPMENT_UnEquipAllPlayer() {
 
 bool ARX_EQUIPMENT_IsPlayerEquip(Entity * _pIO) {
 	arx_assert(entities.player());
-	
+
 	for(size_t i = 0; i < MAX_EQUIPED; i++) {
 		if(ValidIONum(player.equiped[i])) {
 			Entity * toequip = entities[player.equiped[i]];
@@ -338,7 +338,7 @@ void ARX_EQUIPMENT_UnEquip(Entity * target, Entity * tounequip, long flags)
 			ARX_EQUIPMENT_Release(player.equiped[i]);
 			target->bbox2D.min.x = 9999;
 			target->bbox2D.max.x = -9999;
-			
+
 			if(!flags) {
 				if(!DRAGINTER) {
 					ARX_SOUND_PlayInterface(SND_INVSTD);
@@ -347,7 +347,7 @@ void ARX_EQUIPMENT_UnEquip(Entity * target, Entity * tounequip, long flags)
 					giveToPlayer(tounequip);
 				}
 			}
-			
+
 			EVENT_SENDER = tounequip;
 			SendIOScriptEvent(entities.player(), SM_EQUIPOUT);
 			EVENT_SENDER = entities.player();
@@ -362,7 +362,7 @@ void ARX_EQUIPMENT_UnEquip(Entity * target, Entity * tounequip, long flags)
 void ARX_EQUIPMENT_AttachPlayerWeaponToHand() {
 	arx_assert(entities.player());
 	Entity * target = entities.player();
-	
+
 	for(size_t i = 0; i < MAX_EQUIPED; i++) {
 		if(ValidIONum(player.equiped[i])) {
 			Entity *toequip = entities[player.equiped[i]];
@@ -381,7 +381,7 @@ void ARX_EQUIPMENT_AttachPlayerWeaponToHand() {
 void ARX_EQUIPMENT_AttachPlayerWeaponToBack() {
 	arx_assert(entities.player());
 	Entity * target = entities.player();
-	
+
 	for(size_t i = 0; i < MAX_EQUIPED; i++) {
 		if(ValidIONum(player.equiped[i])) {
 			Entity *toequip = entities[player.equiped[i]];
@@ -410,7 +410,7 @@ void ARX_EQUIPMENT_AttachPlayerWeaponToBack() {
 
 WeaponType ARX_EQUIPMENT_GetPlayerWeaponType() {
 	arx_assert(entities.player());
-	
+
 	if(ValidIONum(player.equiped[EQUIP_SLOT_WEAPON])) {
 		Entity * toequip = entities[player.equiped[EQUIP_SLOT_WEAPON]];
 
@@ -435,9 +435,9 @@ WeaponType ARX_EQUIPMENT_GetPlayerWeaponType() {
 void ARX_EQUIPMENT_LaunchPlayerUnReadyWeapon() {
 	arx_assert(entities.player());
 	arx_assert(arrowobj);
-	
+
 	Entity * io = entities.player();
-	
+
 	ANIM_HANDLE * anim;
 	WeaponType type = ARX_EQUIPMENT_GetPlayerWeaponType();
 
@@ -489,14 +489,14 @@ float ARX_EQUIPMENT_ComputeDamages(Entity * io_source, Entity * io_target, float
 
 	std::string _wmat = "bare";
 	const std::string * wmat = &_wmat;
-	
+
 	std::string _amat = "flesh";
 	const std::string * amat = &_amat;
 
 	bool critical = false;
 
 	if(io_source == entities.player()) {
-		
+
 		if(ValidIONum(player.equiped[EQUIP_SLOT_WEAPON])) {
 			Entity * io = entities[player.equiped[EQUIP_SLOT_WEAPON]];
 			if(io && !io->weaponmaterial.empty()) {
@@ -514,12 +514,12 @@ float ARX_EQUIPMENT_ComputeDamages(Entity * io_source, Entity * io_target, float
 		else
 			critical = false;
 
-		damages = attack * ratioaim; 
+		damages = attack * ratioaim;
 
 		if(io_target->_npcdata->npcflags & NPCFLAG_BACKSTAB) {
 			if(Random::getf(0.f, 100.f) <= player.m_skillFull.stealth * ( 1.0f / 2 )) {
 				if(SendIOScriptEvent(io_source, SM_BACKSTAB) != REFUSE)
-					backstab = 1.5f; 
+					backstab = 1.5f;
 			}
 		}
 	} else {
@@ -529,16 +529,16 @@ float ARX_EQUIPMENT_ComputeDamages(Entity * io_source, Entity * io_target, float
 		if(!io_source->weaponmaterial.empty()) {
 			wmat = &io_source->weaponmaterial;
 		}
-		
+
 		if(io_source->_npcdata->weapon) {
 			Entity * iow = io_source->_npcdata->weapon;
 			if(!iow->weaponmaterial.empty()) {
 				wmat = &iow->weaponmaterial;
 			}
 		}
-		
+
 		attack = io_source->_npcdata->tohit;
-		
+
 		damages = io_source->_npcdata->damages * ratioaim * Random::getf(0.5f, 1.0f);
 
 		SpellBase * spell = spells.getSpellOnTarget(io_source->index(), SPELL_CURSE);
@@ -555,7 +555,7 @@ float ARX_EQUIPMENT_ComputeDamages(Entity * io_source, Entity * io_target, float
 
 		if(Random::getf(0.f, 100.f) <= (float)io_source->_npcdata->backstab_skill) {
 			if(SendIOScriptEvent(io_source, SM_BACKSTAB) != REFUSE)
-				backstab = 1.5f; 
+				backstab = 1.5f;
 		}
 	}
 
@@ -567,7 +567,7 @@ float ARX_EQUIPMENT_ComputeDamages(Entity * io_source, Entity * io_target, float
 	} else {
 		ac = ARX_INTERACTIVE_GetArmorClass(io_target);
 		absorb = io_target->_npcdata->absorb;
-		
+
 		SpellBase * spell = spells.getSpellOnTarget(io_target->index(), SPELL_CURSE);
 		if(spell) {
 			float modif = (1 - spell->m_level * 0.05f);
@@ -575,11 +575,11 @@ float ARX_EQUIPMENT_ComputeDamages(Entity * io_source, Entity * io_target, float
 			absorb *= modif;
 		}
 	}
-	
+
 	if(!io_target->armormaterial.empty()) {
 		amat = &io_target->armormaterial;
 	}
-	
+
 	if(io_target == entities.player()) {
 		if(ValidIONum(player.equiped[EQUIP_SLOT_ARMOR])) {
 			Entity * io = entities[player.equiped[EQUIP_SLOT_ARMOR]];
@@ -588,58 +588,58 @@ float ARX_EQUIPMENT_ComputeDamages(Entity * io_source, Entity * io_target, float
 			}
 		}
 	}
-	
+
 	float dmgs = damages * backstab;
 	dmgs -= dmgs * absorb * 0.01f;
-	
+
 	Vec3f pos = io_target->pos;
 	float power = std::min(1.f, dmgs * 0.05f) * 0.1f + 0.9f;
-	
+
 	ARX_SOUND_PlayCollision(*amat, *wmat, power, 1.f, pos, io_source);
-	
-	float chance = 100.f - (ac - attack); 
+
+	float chance = 100.f - (ac - attack);
 	if(Random::getf(0.f, 100.f) > chance) {
 		return 0.f;
 	}
-	
+
 	ARX_SOUND_PlayCollision("flesh", *wmat, power, 1.f, pos, io_source);
-	
+
 	if(dmgs > 0.f) {
-		
+
 		if(critical) {
-			dmgs *= 1.5f; 
+			dmgs *= 1.5f;
 		}
-		
+
 		if(io_target == entities.player()) {
-			
+
 			// TODO should this be player.pos - player.baseOffset() = player.basePosition()?
 			Vec3f ppos = io_source->pos - (player.pos + player.baseOffset());
 			ppos = glm::normalize(ppos);
-			
+
 			// Push the player
 			PUSH_PLAYER_FORCE += ppos * -dmgs * Vec3f(1.0f / 11, 1.0f / 30, 1.0f / 11);
-			
+
 			ARX_DAMAGES_DamagePlayer(dmgs, 0, io_source->index());
 			ARX_DAMAGES_DamagePlayerEquipment(dmgs);
-			
+
 		} else {
-			
+
 			Vec3f ppos = io_source->pos - io_target->pos;
 			ppos = glm::normalize(ppos);
-			
+
 			// Push the NPC
 			io_target->forcedmove += ppos * -dmgs;
-			
+
 			Vec3f * pos = position ? position : &io_target->pos;
 			ARX_DAMAGES_DamageNPC(io_target, dmgs, io_source->index(), false, pos);
 		}
 	}
-	
+
 	return dmgs;
 }
 
 static float ARX_EQUIPMENT_GetSpecialValue(Entity * io, long val) {
-	
+
 	if(!io || !(io->ioflags & IO_ITEM) || !io->_itemdata->equipitem)
 		return -1;
 
@@ -657,12 +657,12 @@ static float ARX_EQUIPMENT_GetSpecialValue(Entity * io, long val) {
 //-----------------------------------------------------------------------------------------------
 //***********************************************************************************************
 bool ARX_EQUIPMENT_Strike_Check(Entity * io_source, Entity * io_weapon, float ratioaim, long flags, EntityHandle targ) {
-	
+
 	ARX_PROFILE_FUNC();
-	
+
 	arx_assert(io_source);
 	arx_assert(io_weapon);
-	
+
 	bool ret = false;
 	EntityHandle source = io_source->index();
 	EntityHandle weapon = io_weapon->index();
@@ -674,14 +674,14 @@ bool ARX_EQUIPMENT_Strike_Check(Entity * io_source, Entity * io_weapon, float ra
 	float paralyse = ARX_EQUIPMENT_GetSpecialValue(io_weapon, IO_SPECIAL_ELEM_PARALYZE);
 
 	BOOST_FOREACH(const EERIE_ACTIONLIST & action, io_weapon->obj->actionlist) {
-		
+
 		float rad = GetHitValue(action.name);
 
 		if(rad == -1)
 			continue;
-		
+
 		sphere.origin = actionPointPosition(io_weapon->obj, action.idx);
-		sphere.radius = rad; 
+		sphere.radius = rad;
 
 		if(source != PlayerEntityHandle)
 			sphere.radius += 15.f;
@@ -701,12 +701,12 @@ bool ARX_EQUIPMENT_Strike_Check(Entity * io_source, Entity * io_weapon, float ra
 						EXCEPTIONS_LIST_Pos--;
 
 					Entity * target = entities[content];
-			
+
 					Vec3f pos;
 					Color color = Color::white;
 					long hitpoint = -1;
 					float curdist = 999999.f;
-					
+
 					Vec3f vector = (sphere.origin - target->pos) * Vec3f(1.f, 0.5f, 1.f);
 					vector = glm::normalize(vector);
 
@@ -726,8 +726,8 @@ bool ARX_EQUIPMENT_Strike_Check(Entity * io_source, Entity * io_weapon, float ra
 						color = (target->ioflags & IO_NPC) ? target->_npcdata->blood_color : Color::white;
 						pos = target->obj->vertexlist3[hitpoint].v;
 					}
-					else ARX_DEAD_CODE(); 
-					
+					else ARX_DEAD_CODE();
+
 					float dmgs = 0.f;
 					if(!(flags & 1)) {
 						Vec3f posi;
@@ -788,7 +788,7 @@ bool ARX_EQUIPMENT_Strike_Check(Entity * io_source, Entity * io_weapon, float ra
 
 								if(CheckAnythingInSphere(sp, PlayerEntityHandle, CAS_NO_NPC_COL)) {
 									Color3f rgb = color.to<float>();
-									
+
 									Sphere splatSphere;
 									splatSphere.origin = sp.origin;
 									splatSphere.radius = 30.f;
@@ -848,7 +848,7 @@ bool ARX_EQUIPMENT_Strike_Check(Entity * io_source, Entity * io_weapon, float ra
 						if(!io_source->isHit) {
 							ARX_DAMAGES_DurabilityCheck(io_weapon, 1.f);
 							io_source->isHit = true;
-							
+
 								std::string _weapon_material = "metal";
 								const std::string * weapon_material = &_weapon_material;
 
@@ -872,7 +872,7 @@ bool ARX_EQUIPMENT_Strike_Check(Entity * io_source, Entity * io_weapon, float ra
 				if(!io_source->isHit) {
 					ARX_DAMAGES_DurabilityCheck(io_weapon, 1.f);
 					io_source->isHit = true;
-					
+
 						std::string _weapon_material = "metal";
 						const std::string * weapon_material = &_weapon_material;
 						if(!io_weapon->weaponmaterial.empty()) {
@@ -899,7 +899,7 @@ bool ARX_EQUIPMENT_Strike_Check(Entity * io_source, Entity * io_weapon, float ra
 void ARX_EQUIPMENT_LaunchPlayerReadyWeapon() {
 	arx_assert(entities.player());
 	Entity *io = entities.player();
-	
+
 	WeaponType type = ARX_EQUIPMENT_GetPlayerWeaponType();
 	ANIM_HANDLE * anim = NULL;
 
@@ -957,7 +957,7 @@ void ARX_EQUIPMENT_Equip(Entity * target, Entity * toequip)
 	for(size_t i = 0; i < entities.size(); i++) {
 		const EntityHandle handle = EntityHandle(i);
 		Entity * e = entities[handle];
-		
+
 		if(e == toequip) {
 			validid = handle;
 			break;
@@ -1050,15 +1050,15 @@ void ARX_EQUIPMENT_Equip(Entity * target, Entity * toequip)
 }
 
 bool ARX_EQUIPMENT_SetObjectType(Entity & io, const std::string & temp, bool set) {
-	
+
 	ItemType flag = ARX_EQUIPMENT_GetObjectTypeFlag(temp);
-	
+
 	if(set) {
 		io.type_flags |= flag;
 	} else {
 		io.type_flags &= ~flag;
 	}
-	
+
 	return (flag != 0);
 }
 
@@ -1110,9 +1110,9 @@ void ARX_EQUIPMENT_Remove_All_Special(Entity * io)
 }
 
 float getEquipmentBaseModifier(EquipmentModifierType modifier, bool getRelative) {
-	
+
 	float sum = 0;
-	
+
 	for(size_t i = 0; i < MAX_EQUIPED; i++) {
 		if(ValidIONum(player.equiped[i])) {
 			Entity * toequip = entities[player.equiped[i]];
@@ -1125,12 +1125,12 @@ float getEquipmentBaseModifier(EquipmentModifierType modifier, bool getRelative)
 			}
 		}
 	}
-	
+
 	if(getRelative) {
 		// Convert from percent to ratio
 		sum *= 0.01f;
 	}
-	
+
 	return sum;
 }
 
@@ -1143,7 +1143,7 @@ float getEquipmentModifier(EquipmentModifierType modifier, float baseval) {
 void ARX_EQUIPMENT_SetEquip(Entity * io, bool special,
                             const std::string & param2, float val,
                             EquipmentModifierFlags flags) {
-	
+
 	if (io == NULL) return;
 
 	if (!(io->ioflags & IO_ITEM)) return;
@@ -1179,7 +1179,7 @@ void ARX_EQUIPMENT_SetEquip(Entity * io, bool special,
 		}
 
 		return;
-		
+
 	} else {
 		for(long i = 0; i < IO_EQUIPITEM_ELEMENT_Number; i++) {
 			if(param2 == equipinfo[i].name) {
@@ -1194,24 +1194,24 @@ void ARX_EQUIPMENT_SetEquip(Entity * io, bool special,
 
 void ARX_EQUIPMENT_IdentifyAll() {
 	arx_assert(entities.player());
-	
+
 	for(size_t i = 0; i < MAX_EQUIPED; i++) {
 		if(ValidIONum(player.equiped[i])) {
 			Entity * toequip = entities[player.equiped[i]];
-			
+
 			ARX_INVENTORY_IdentifyIO(toequip);
 		}
 	}
 }
 
 float GetHitValue( const std::string & name) {
-	
+
 	if(boost::starts_with(name, "hit_")) {
 		// Get the number after the first 4 characters in the string
 		try {
 			return float(boost::lexical_cast<long>(name.substr(4)));
 		} catch(...) { /* ignore */ }
 	}
-	
+
 	return -1;
 }
