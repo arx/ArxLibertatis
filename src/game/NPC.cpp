@@ -21,22 +21,22 @@
 ARX FATALIS GPL Source Code
 Copyright (C) 1999-2010 Arkane Studios SA, a ZeniMax Media company.
 
-This file is part of the Arx Fatalis GPL Source Code ('Arx Fatalis Source Code'). 
+This file is part of the Arx Fatalis GPL Source Code ('Arx Fatalis Source Code').
 
-Arx Fatalis Source Code is free software: you can redistribute it and/or modify it under the terms of the GNU General Public 
+Arx Fatalis Source Code is free software: you can redistribute it and/or modify it under the terms of the GNU General Public
 License as published by the Free Software Foundation, either version 3 of the License, or (at your option) any later version.
 
-Arx Fatalis Source Code is distributed in the hope that it will be useful, but WITHOUT ANY WARRANTY; without even the implied 
+Arx Fatalis Source Code is distributed in the hope that it will be useful, but WITHOUT ANY WARRANTY; without even the implied
 warranty of MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE. See the GNU General Public License for more details.
 
-You should have received a copy of the GNU General Public License along with Arx Fatalis Source Code.  If not, see 
+You should have received a copy of the GNU General Public License along with Arx Fatalis Source Code.  If not, see
 <http://www.gnu.org/licenses/>.
 
-In addition, the Arx Fatalis Source Code is also subject to certain additional terms. You should have received a copy of these 
-additional terms immediately following the terms and conditions of the GNU General Public License which accompanied the Arx 
+In addition, the Arx Fatalis Source Code is also subject to certain additional terms. You should have received a copy of these
+additional terms immediately following the terms and conditions of the GNU General Public License which accompanied the Arx
 Fatalis Source Code. If not, please request a copy in writing from Arkane Studios at the address below.
 
-If you have questions concerning this license or the applicable additional terms, you may contact in writing Arkane Studios, c/o 
+If you have questions concerning this license or the applicable additional terms, you may contact in writing Arkane Studios, c/o
 ZeniMax Media Inc., Suite 120, Rockville, Maryland 20850 USA.
 ===========================================================================
 */
@@ -153,7 +153,7 @@ static void CheckHit(Entity * source, float ratioaim) {
 
 	if(!source)
 		return;
-	
+
 	Vec3f from(0.f, 0.f, -90.f);
 	Vec3f to = VRotateY(from, MAKEANGLE(180.f - source->angle.getPitch()));
 	Vec3f ppos = source->pos + Vec3f(0.f, -80.f, 0.f);
@@ -218,11 +218,11 @@ void ARX_NPC_Kill_Spell_Launch(Entity * io)
 {
 	if(!io)
 		return;
-	
+
 	if (io->flarecount) {
 		MagicFlareReleaseEntity(io);
 	}
-	
+
 	io->spellcast_data.castingspell = SPELL_NONE;
 }
 
@@ -231,10 +231,10 @@ void ARX_NPC_Kill_Spell_Launch(Entity * io)
  * \param io
  */
 static void ARX_NPC_ReleasePathFindInfo(Entity * io) {
-	
+
 	if(!io || !(io->ioflags & IO_NPC))
 		return;
-	
+
 	// Releases data & resets vars
 	free(io->_npcdata->pathfind.list);
 	io->_npcdata->pathfind.list = NULL;
@@ -248,22 +248,22 @@ static void ARX_NPC_ReleasePathFindInfo(Entity * io) {
  * \param io
  */
 static void ARX_NPC_CreateExRotateData(Entity * io) {
-	
+
 	if(!io || !(io->ioflags & IO_NPC) || io->_npcdata->ex_rotate)
 		return;
-	
+
 	io->_npcdata->ex_rotate = new EERIE_EXTRA_ROTATE();
 	io->head_rot = 0;
-	
+
 	io->_npcdata->ex_rotate->group_number[0] = EERIE_OBJECT_GetGroup(io->obj, "head");
 	io->_npcdata->ex_rotate->group_number[1] = EERIE_OBJECT_GetGroup(io->obj, "neck");
 	io->_npcdata->ex_rotate->group_number[2] = EERIE_OBJECT_GetGroup(io->obj, "chest");
 	io->_npcdata->ex_rotate->group_number[3] = EERIE_OBJECT_GetGroup(io->obj, "belt");
-	
+
 	for(size_t n = 0; n < MAX_EXTRA_ROTATE; n++) {
 		io->_npcdata->ex_rotate->group_rotate[n] = Anglef::ZERO;
 	}
-	
+
 	io->_npcdata->look_around_inc = 0.f;
 }
 
@@ -291,7 +291,7 @@ void ARX_NPC_Revive(Entity * io, bool init)
 		io->requestRoomUpdate = true;
 		io->pos = io->initpos;
 	}
-	
+
 	long goretex = -1;
 
 	for(size_t i = 0; i < io->obj->texturecontainer.size(); i++) {
@@ -303,7 +303,7 @@ void ARX_NPC_Revive(Entity * io, bool init)
 			break;
 		}
 	}
-	
+
 	BOOST_FOREACH(EERIE_FACE & face, io->obj->facelist) {
 		if(face.texid != goretex)
 			face.facetype &= ~POLY_HIDE;
@@ -322,15 +322,15 @@ void ARX_NPC_Revive(Entity * io, bool init)
  * \param behavior_param
  */
 void ARX_NPC_Behaviour_Change(Entity * io, Behaviour behavior, long behavior_param) {
-	
+
 	if(!io || !(io->ioflags & IO_NPC)) {
 		return;
 	}
-	
+
 	if((io->_npcdata->behavior & BEHAVIOUR_FIGHT) && !(behavior & BEHAVIOUR_FIGHT)) {
 		stopAnimation(io, 1);
 	}
-	
+
 	if((behavior & BEHAVIOUR_NONE) || (behavior == 0)) {
 		changeAnimation(io, 0, ANIM_DEFAULT);
 		io->animlayer[0].flags &= ~EA_LOOP;
@@ -339,11 +339,11 @@ void ARX_NPC_Behaviour_Change(Entity * io, Behaviour behavior, long behavior_par
 		stopAnimation(io, 2);
 		io->animlayer[2].flags &= ~EA_LOOP;
 	}
-	
+
 	if(behavior & BEHAVIOUR_FRIENDLY) {
 		changeAnimation(io, ANIM_DEFAULT, 0, true);
 	}
-	
+
 	io->_npcdata->behavior = behavior;
 	io->_npcdata->behavior_param = (float)behavior_param;
 }
@@ -370,7 +370,7 @@ void ARX_NPC_Behaviour_ResetAll() {
 	for(size_t i = 0; i < entities.size(); i++) {
 		const EntityHandle handle = EntityHandle(i);
 		Entity * e = entities[handle];
-		
+
 		if(e) {
 			ARX_NPC_Behaviour_Reset(e);
 		}
@@ -382,7 +382,7 @@ void ARX_NPC_Behaviour_ResetAll() {
  * \param io
  */
 void ARX_NPC_Behaviour_Stack(Entity * io) {
-	
+
 	if(!io || !(io->ioflags & IO_NPC))
 		return;
 
@@ -429,7 +429,7 @@ void ARX_NPC_Behaviour_UnStack(Entity * io)
 			ARX_NPC_LaunchPathfind(io, bd->target);
 
 			if(io->_npcdata->behavior & BEHAVIOUR_NONE) {
-				
+
 				for(size_t l = 0; l < MAX_ANIM_LAYERS; l++) {
 					io->animlayer[l] = bd->animlayer[l];
 				}
@@ -446,7 +446,7 @@ void ARX_NPC_Behaviour_UnStack(Entity * io)
  * \return
  */
 static long ARX_NPC_GetNextAttainableNodeIncrement(Entity * io) {
-	
+
 	arx_assert(io);
 	if(!(io->ioflags & IO_NPC) || (io->_npcdata->behavior & BEHAVIOUR_WANDER_AROUND))
 		return 0;
@@ -535,7 +535,7 @@ static long AnchorData_GetNearest(const Vec3f & pos, const Cylinder & cyl, long 
 }
 
 static long AnchorData_GetNearest_2(float beta, const Vec3f & pos, const Cylinder & cyl) {
-	
+
 	float d = glm::radians(beta);
 	Vec3f vect(-std::sin(d), 0, std::cos(d));
 	vect = glm::normalize(vect);
@@ -544,7 +544,7 @@ static long AnchorData_GetNearest_2(float beta, const Vec3f & pos, const Cylinde
 	posi.x += vect.x * 50.f;
 	// XXX should this really be vect.x ? copy-paste error ?
 	posi.z += vect.x * 50.f;
-	
+
 	return AnchorData_GetNearest(posi, cyl);
 }
 
@@ -569,7 +569,7 @@ bool ARX_NPC_LaunchPathfind(Entity * io, EntityHandle target)
 		io->_npcdata->pathfind.pathwait = 0;
 		return false;
 	}
-	
+
 	if(io->_npcdata->pathfind.listnb > 0) {
 		io->_npcdata->pathfind.listnb = -1;
 		io->_npcdata->pathfind.listpos = 0;
@@ -578,14 +578,14 @@ bool ARX_NPC_LaunchPathfind(Entity * io, EntityHandle target)
 		free(io->_npcdata->pathfind.list);
 		io->_npcdata->pathfind.list = NULL;
 	}
-	
+
 	Vec3f pos1, pos2;
 	if(io->_npcdata->behavior & BEHAVIOUR_WANDER_AROUND) {
 		pos1 = io->pos;
 		pos2 = io->pos + Vec3f(1000.f, 0.f, 1000.f);
 		goto wander;
 	}
-	
+
 	if(target.handleData() < 0 || (io->_npcdata->behavior & BEHAVIOUR_GO_HOME)) {
 		target = io->index();
 
@@ -594,7 +594,7 @@ bool ARX_NPC_LaunchPathfind(Entity * io, EntityHandle target)
 
 		io->_npcdata->pathfind.truetarget = target;
 		pos1 = io->pos;
-		
+
 		if(io->_npcdata->behavior & BEHAVIOUR_GO_HOME) {
 			pos2 = io->initpos;
 		} else {
@@ -613,9 +613,9 @@ bool ARX_NPC_LaunchPathfind(Entity * io, EntityHandle target)
 		io->_npcdata->reachedtarget = 0;
 
 	EVENT_SENDER = NULL;
-	
+
 	pos1 = io->pos;
-	
+
 	if(io->_npcdata->behavior & BEHAVIOUR_GO_HOME) {
 		pos2 = io->initpos;
 	} else if(ValidIONum(target)) {
@@ -623,9 +623,9 @@ bool ARX_NPC_LaunchPathfind(Entity * io, EntityHandle target)
 	} else {
 		pos2 = io->pos;
 	}
-	
+
 	io->_npcdata->pathfind.truetarget = target;
-	
+
 	if ((closerThan(pos1, ACTIVECAM->orgTrans.pos, ACTIVECAM->cdepth) * square(1.0f / 2))
 	        &&	(glm::abs(pos1.y - pos2.y) < 50.f)
 	        && (closerThan(pos1, pos2, 520)) && (io->_npcdata->behavior & BEHAVIOUR_MOVE_TO)
@@ -654,7 +654,7 @@ suite:
 	;
 wander:
 	;
-	io->targetinfo = target; 
+	io->targetinfo = target;
 	io->_npcdata->pathfind.truetarget = target;
 
 	long from;
@@ -699,14 +699,14 @@ wander:
 			if(io->_npcdata->behavior & BEHAVIOUR_WANDER_AROUND) {
 				io->_npcdata->pathfind.truetarget = EntityHandle(TARGET_NONE);
 			}
-			
+
 			io->_npcdata->pathfind.listnb = -1;
 			io->_npcdata->pathfind.listpos = 0;
 			io->_npcdata->pathfind.pathwait = 1;
 
 			free(io->_npcdata->pathfind.list);
 			io->_npcdata->pathfind.list = NULL;
-			
+
 			PATHFINDER_REQUEST tpr;
 			tpr.from = from;
 			tpr.to = to;
@@ -737,9 +737,9 @@ failure:
 }
 
 bool ARX_NPC_SetStat(Entity& io, const std::string & statname, float value) {
-	
+
 	arx_assert(io.ioflags & IO_NPC);
-	
+
 	if(statname == "armor_class") {
 		io._npcdata->armor_class = value < 0 ? 0 : value;
 	} else if(statname == "backstab_skill" || statname == "backstabskill") {
@@ -772,7 +772,7 @@ bool ARX_NPC_SetStat(Entity& io, const std::string & statname, float value) {
 	} else {
 		return false;
 	}
-	
+
 	return true;
 }
 
@@ -780,7 +780,7 @@ extern Material CUR_COLLISION_MATERIAL;
 static Entity * PHYSICS_CURIO = NULL;
 
 void ARX_TEMPORARY_TrySound(float volume) {
-	
+
 	if(PHYSICS_CURIO) {
 		if(PHYSICS_CURIO->ioflags & IO_BODY_CHUNK)
 			return;
@@ -813,11 +813,11 @@ void ARX_TEMPORARY_TrySound(float volume) {
  * \brief Sets a New MoveMode for a NPC
  */
 void ARX_NPC_ChangeMoveMode(Entity * io, MoveMode MOVEMODE) {
-	
+
 	if(!io || !(io->ioflags & IO_NPC)) {
 		return;
 	}
-	
+
 	switch(MOVEMODE) {
 		case RUNMODE: {
 			if(isCurrentAnimation(io, ANIM_WALK) || isCurrentAnimation(io, ANIM_WALK_SNEAK)) {
@@ -845,7 +845,7 @@ void ARX_NPC_ChangeMoveMode(Entity * io, MoveMode MOVEMODE) {
 			break;
 		}
 	}
-	
+
 	io->_npcdata->movemode = MOVEMODE;
 }
 
@@ -854,7 +854,7 @@ void ARX_NPC_ChangeMoveMode(Entity * io, MoveMode MOVEMODE) {
  * \param io
  */
 static void ARX_NPC_ManagePoison(Entity * io) {
-	
+
 	float cp = io->_npcdata->poisonned;
 	cp *= ( 1.0f / 2 ) * g_framedelay * ( 1.0f / 1000 ) * ( 1.0f / 2 );
 	float faster = 10.f - io->_npcdata->poisonned;
@@ -891,7 +891,7 @@ static void ARX_NPC_ManagePoison(Entity * io) {
  * Decrease/stops Ignition of this IO if necessary
  */
 static void CheckUnderWaterIO(Entity * io) {
-	
+
 	Vec3f ppos = io->pos;
 	EERIEPOLY * ep = EEIsUnderWater(ppos);
 
@@ -926,9 +926,9 @@ static void ManageNPCMovement(Entity * io);
 extern float MAX_ALLOWED_PER_SECOND;
 
 void ARX_PHYSICS_Apply() {
-	
+
 	ARX_PROFILE_FUNC();
-	
+
 	static long CURRENT_DETECT = 0;
 
 	CURRENT_DETECT++;
@@ -967,7 +967,7 @@ void ARX_PHYSICS_Apply() {
 
 			for(long nn = 0; nn < cnt; nn++) {
 				std::vector<EERIE_VERTEX>::iterator it = Random::getIterator(io->obj->vertexlist);
-				
+
 				ARX_PARTICLES_Spawn_Splat(it->v, 20.f, Color::red);
 				ARX_PARTICLES_Spawn_Blood(it->v, 20.f, io->index());
 			}
@@ -992,7 +992,7 @@ void ARX_PHYSICS_Apply() {
 		}
 
 		CheckUnderWaterIO(io);
-		
+
 		if(io->obj && io->obj->pbox) {
 			io->gameFlags &= ~GFLAG_NOCOMPUTATION;
 
@@ -1000,7 +1000,7 @@ void ARX_PHYSICS_Apply() {
 				PHYSICS_CURIO = io;
 
 				ARX_PHYSICS_BOX_ApplyModel(io->obj->pbox, g_framedelay, io->rubber, treatio[i].num);
-				
+
 				if(io->soundcount > 12) {
 					io->soundtime = 0;
 					io->soundcount = 0;
@@ -1010,10 +1010,10 @@ void ARX_PHYSICS_Apply() {
 					io->obj->pbox->active = 2;
 					io->obj->pbox->stopcount = 0;
 				}
-				
+
 				io->requestRoomUpdate = true;
 				io->pos = io->obj->pbox->vert[0].pos;
-				
+
 				continue;
 			}
 		}
@@ -1097,10 +1097,10 @@ void FaceTarget2(Entity * io)
 				&& (io->_npcdata->behavior & BEHAVIOUR_FLEE))
 			return;
 	}
-	
+
 	GetTargetPos(io);
 	tv = io->pos;
-	
+
 	if(!fartherThan(Vec2f(tv.x, tv.z), Vec2f(io->target.x, io->target.z), 5.f)) {
 		return;
 	}
@@ -1113,7 +1113,7 @@ void FaceTarget2(Entity * io)
 	if(tt == 0)
 		return;
 
-	float rot = 0.33f * g_framedelay; 
+	float rot = 0.33f * g_framedelay;
 
 	if(glm::abs(tt) < rot)
 		rot = glm::abs(tt);
@@ -1124,14 +1124,14 @@ void FaceTarget2(Entity * io)
 		rot = -rot;
 	else if(tt < -180.f)
 		rot = -rot;
-	
+
 	if(rot != 0) {
 		Vec3f temp = io->move;
 		io->move = VRotateY(temp, rot);
 		temp = io->lastmove;
 		io->lastmove = VRotateY(temp, rot);
 	}
-	
+
 	// Needed angle to turn toward target
 	io->angle.setPitch(MAKEANGLE(io->angle.getPitch() - rot)); // -tt
 }
@@ -1167,7 +1167,7 @@ void StareAtTarget(Entity * io)
 
 	float rot = 0.27f * g_framedelay;
 	float alpha = MAKEANGLE(io->angle.getPitch());
-	float beta = -io->head_rot; 
+	float beta = -io->head_rot;
 	float pouet = MAKEANGLE(180.f + glm::degrees(getAngle(io->target.x, io->target.z, tv.x, tv.z)));
 	float A = MAKEANGLE((MAKEANGLE(alpha + beta) - pouet));
 	float B = MAKEANGLE(alpha - pouet);
@@ -1222,21 +1222,21 @@ void StareAtTarget(Entity * io)
 }
 
 static float GetTRUETargetDist(Entity * io) {
-	
+
 	EntityHandle t;
 	if(io->ioflags & IO_NPC) {
 		t = io->_npcdata->pathfind.truetarget;
 	} else {
 		t = io->targetinfo;
 	}
-	
+
 	if(ValidIONum(t)) {
 		if(io->_npcdata->behavior & BEHAVIOUR_GO_HOME) {
 			return glm::distance(io->pos, io->initpos);
 		}
 		return glm::distance(io->pos, entities[t]->pos);
 	}
-	
+
 	return 99999999.f;
 }
 
@@ -1248,10 +1248,10 @@ extern Entity * EVENT_SENDER;
  * \return
  */
 bool IsDeadNPC(Entity * io) {
-	
+
 	if(!io || !(io->ioflags & IO_NPC))
 		return false;
-	
+
 	return (io->_npcdata->lifePool.current <= 0 || io->mainevent == "dead");
 }
 
@@ -1260,10 +1260,10 @@ bool IsDeadNPC(Entity * io) {
  * \return
  */
 static bool IsPlayerStriking() {
-	
+
 	arx_assert(entities.player());
 	Entity * io = entities.player();
-	
+
 	AnimLayer & layer1 = io->animlayer[1];
 	WeaponType weapontype = ARX_EQUIPMENT_GetPlayerWeaponType();
 
@@ -1311,7 +1311,7 @@ static bool IsPlayerStriking() {
 }
 
 static void ARX_NPC_Manage_NON_Fight(Entity * io) {
-	
+
 	AnimLayer & layer1 = io->animlayer[1];
 
 	if((layer1.flags & EA_ANIMEND) && (layer1.cur_anim != NULL)) {
@@ -1332,22 +1332,22 @@ static void Strike_StartTickCount(Entity * io) {
  * \param io
  */
 static void ARX_NPC_Manage_Fight(Entity * io) {
-	
+
 	if(!(io->ioflags & IO_NPC))
 		return;
-	
+
 	Entity * ioo = io->_npcdata->weapon;
-	
+
 	if (ioo)
 		io->_npcdata->weapontype = ioo->type_flags;
 	else
 		io->_npcdata->weapontype = 0;
-	
+
 	if(io->_npcdata->weapontype != 0 && io->_npcdata->weaponinhand != 1)
 		return;
-	
+
 	AnimLayer & layer1 = io->animlayer[1];
-	
+
 	// BARE HANDS fight !!! *******************************
 	if(io->_npcdata->weapontype == 0)
 	{
@@ -1466,33 +1466,33 @@ static void ARX_NPC_Manage_Fight(Entity * io) {
 }
 
 static void ARX_NPC_Manage_Anims_End(Entity * io) {
-	
+
 	AnimLayer & layer0 = io->animlayer[0];
 	if((layer0.flags & EA_ANIMEND) && layer0.cur_anim) {
-		
+
 		if(layer0.flags & EA_FORCEPLAY) {
 			bool startAtBeginning = (io->_npcdata->behavior & BEHAVIOUR_FRIENDLY) != 0;
 			changeAnimation(io, ANIM_DEFAULT, 0, startAtBeginning);
 		}
-		
+
 		// some specific code for combat animation end management
 		if(isCurrentAnimation(io, ANIM_FIGHT_STRAFE_LEFT)
 		   || isCurrentAnimation(io, ANIM_FIGHT_STRAFE_RIGHT)
 		   || isCurrentAnimation(io, ANIM_FIGHT_WALK_BACKWARD)) {
 			changeAnimation(io, ANIM_FIGHT_WAIT, EA_LOOP);
 		}
-		
+
 	}
 }
 
 static bool TryIOAnimMove(Entity * io, long animnum) {
-	
+
 	if(!io || !io->anims[animnum])
 		return false;
-	
+
 	Vec3f trans = GetAnimTotalTranslate(io->anims[animnum], 0);
 	Vec3f trans2 = VRotateY(trans, MAKEANGLE(180.f - io->angle.getPitch()));
-	
+
 	IO_PHYSICS phys = io->physics;
 	phys.cyl = GetIOCyl(io);
 
@@ -1507,11 +1507,11 @@ static bool TryIOAnimMove(Entity * io, long animnum) {
 }
 
 static void TryAndCheckAnim(Entity * io, long animnum, long layerIndex) {
-	
+
 	if(!io) {
 		return;
 	}
-	
+
 	AnimLayer & layer = io->animlayer[layerIndex];
 	if(layer.cur_anim != io->anims[animnum] && layer.cur_anim) {
 		if(TryIOAnimMove(io, animnum)) {
@@ -1531,33 +1531,33 @@ static const int STRIKE_DISTANCE = 220;
  * \param TOLERANCE
  */
 static void ARX_NPC_Manage_Anims(Entity * io, float TOLERANCE) {
-	
+
 	io->_npcdata->strike_time += (short)g_framedelay;
-	
+
 	AnimLayer & layer0 = io->animlayer[0];
 	AnimLayer & layer1 = io->animlayer[1];
-	
+
 	float tdist = std::numeric_limits<float>::max();
 	if(io->_npcdata->pathfind.listnb && ValidIONum(io->_npcdata->pathfind.truetarget)) {
 		tdist = glm::distance2(io->pos, entities[io->_npcdata->pathfind.truetarget]->pos);
 	} else if(ValidIONum(io->targetinfo)) {
 		tdist = glm::distance2(io->pos, entities[io->targetinfo]->pos);
 	}
-	
+
 	if(ValidIOAddress(io->_npcdata->weapon)) {
 		io->_npcdata->weapontype = io->_npcdata->weapon->type_flags;
 	} else {
 		io->_npcdata->weapontype = 0;
 	}
-	
-	
+
+
 	// Manage combat movement
-	
+
 	if((io->_npcdata->behavior & BEHAVIOUR_FIGHT) && tdist <= square(TOLERANCE + 10)
 	   && (tdist <= square(TOLERANCE - 20) || Random::getf() > 0.97f)
 	   && isCurrentAnimation(io, ANIM_FIGHT_WAIT)) {
 		// Evade during combat
-		
+
 		float r = (tdist < square(TOLERANCE - 20)) ? 0.f : Random::getf();
 		if(r < 0.1f) {
 			TryAndCheckAnim(io, ANIM_FIGHT_WALK_BACKWARD, 0);
@@ -1566,12 +1566,12 @@ static void ARX_NPC_Manage_Anims(Entity * io, float TOLERANCE) {
 		} else {
 			TryAndCheckAnim(io, ANIM_FIGHT_STRAFE_RIGHT, 0);
 		}
-		
+
 	} else if(((io->_npcdata->behavior & (BEHAVIOUR_MAGIC | BEHAVIOUR_DISTANT))
 	           || io->spellcast_data.castingspell != SPELL_NONE)
 	          && Random::getf() > 0.85f && isCurrentAnimation(io, ANIM_FIGHT_WAIT) ) {
 		// Evade while (not) casting
-		
+
 		AcquireLastAnim(io);
 		FinishAnim(io, layer0.cur_anim);
 		float r = (tdist < square(340)) ? 0.f : Random::getf();
@@ -1582,9 +1582,9 @@ static void ARX_NPC_Manage_Anims(Entity * io, float TOLERANCE) {
 		} else {
 			TryAndCheckAnim(io, ANIM_FIGHT_STRAFE_RIGHT, 0);
 		}
-		
+
 	}
-	
+
 	if(IsPlayerStriking() && isCurrentAnimation(io, ANIM_FIGHT_WAIT)) {
 		AcquireLastAnim(io);
 		FinishAnim(io, layer0.cur_anim);
@@ -1597,10 +1597,10 @@ static void ARX_NPC_Manage_Anims(Entity * io, float TOLERANCE) {
 			TryAndCheckAnim(io, ANIM_FIGHT_STRAFE_RIGHT, 0);
 		}
 	}
-	
-	
+
+
 	// Manage casting animation
-	
+
 	if(layer1.flags & EA_ANIMEND) {
 		if(isCurrentAnimation(io, 1, ANIM_CAST)) {
 			changeAnimation(io, 1, ANIM_CAST_END);
@@ -1608,54 +1608,54 @@ static void ARX_NPC_Manage_Anims(Entity * io, float TOLERANCE) {
 			stopAnimation(io, 1);
 		}
 	}
-	
+
 	if(io->spellcast_data.castingspell == SPELL_NONE
 	   && isCurrentAnimation(io, 1, ANIM_CAST_START)) {
 		changeAnimation(io, 1, ANIM_CAST);
 	}
-	
+
 	if(io->spellcast_data.castingspell != SPELL_NONE) {
 		return;
 	}
-	
+
 	if(isCurrentAnimation(io, 1, ANIM_CAST_CYCLE)
 	   || isCurrentAnimation(io, 1, ANIM_CAST)
 	   || isCurrentAnimation(io, 1, ANIM_CAST_END)
 	   || isCurrentAnimation(io, 1, ANIM_CAST_START)) {
 		return;
 	}
-	
-	
+
+
 	// Manage fighting animations
-	
+
 	if(io->_npcdata->weapontype == 0) {
 		// Hand to hand combat
-		
+
 		if(io->_npcdata->weaponinhand == -1) {
 			io->_npcdata->weaponinhand = 1;
 		}
-		
+
 		if(isCurrentAnimation(io, 1, ANIM_BARE_WAIT)
 			 && (io->_npcdata->behavior & BEHAVIOUR_FIGHT)
 			 && tdist < square(STRIKE_DISTANCE) && io->_npcdata->strike_time > 0) {
 			size_t j = Random::getu(0, 3); // Choose a random attack move
 			changeAnimation(io, 1, AnimationNumber(ANIM_BARE_STRIKE_LEFT_START + j * 3));
 		}
-		
+
 		for(size_t j = 0; j < 4; j++) {
-			
+
 			AnimationNumber start = AnimationNumber(ANIM_BARE_STRIKE_LEFT_START + j * 3);
 			AnimationNumber cycle = AnimationNumber(ANIM_BARE_STRIKE_LEFT_CYCLE + j * 3);
 			AnimationNumber strike = AnimationNumber(ANIM_BARE_STRIKE_LEFT + j * 3);
-			
+
 			if(isCurrentAnimation(io, 1, start) && (layer1.flags & EA_ANIMEND)) {
-				
+
 				io->ioflags &= ~IO_HIT;
 				changeAnimation(io, 1, cycle, EA_LOOP);
 				io->_npcdata->aiming_start = arxtime.now_ul();
-				
+
 			} else if(isCurrentAnimation(io, 1, cycle)) {
-				
+
 				unsigned long elapsed = arxtime.now_ul() - io->_npcdata->aiming_start;
 				unsigned int aimtime = io->_npcdata->aimtime;
 				if((elapsed > aimtime || (elapsed > aimtime * 0.5f && Random::getf() > 0.9f))
@@ -1663,9 +1663,9 @@ static void ARX_NPC_Manage_Anims(Entity * io, float TOLERANCE) {
 					changeAnimation(io, 1, strike);
 					SendIOScriptEvent(io, SM_STRIKE, "bare");
 				}
-				
+
 			} else if(isCurrentAnimation(io, 1, strike)) {
-				
+
 				if(layer1.flags & EA_ANIMEND) {
 					io->ioflags &= ~IO_HIT;
 					changeAnimation(io, 1, ANIM_BARE_WAIT);
@@ -1681,14 +1681,14 @@ static void ARX_NPC_Manage_Anims(Entity * io, float TOLERANCE) {
 						io->ioflags |= IO_HIT;
 					}
 				}
-				
+
 			}
-			
+
 		}
-		
+
 	} else if(io->_npcdata->weapontype & (OBJECT_TYPE_1H | OBJECT_TYPE_2H | OBJECT_TYPE_DAGGER)) {
 		// Melee combat
-		
+
 		long wtype = 0;
 		if(io->_npcdata->weapontype & OBJECT_TYPE_1H) {
 			wtype = 0;
@@ -1697,12 +1697,12 @@ static void ARX_NPC_Manage_Anims(Entity * io, float TOLERANCE) {
 		} else if(io->_npcdata->weapontype & OBJECT_TYPE_DAGGER) {
 			wtype = ANIM_DAGGER_READY_PART_1 - ANIM_1H_READY_PART_1;
 		}
-		
+
 		AnimationNumber ready = AnimationNumber(ANIM_1H_WAIT + wtype);
-		
+
 		if(io->_npcdata->weaponinhand == 2) {
 			// Unequipping weapon
-			
+
 			AnimationNumber part1 = AnimationNumber(ANIM_1H_UNREADY_PART_1 + wtype);
 			AnimationNumber part2 = AnimationNumber(ANIM_1H_UNREADY_PART_2 + wtype);
 			if(isCurrentAnimation(io, 1, part1) && (layer1.flags & EA_ANIMEND)) {
@@ -1714,10 +1714,10 @@ static void ARX_NPC_Manage_Anims(Entity * io, float TOLERANCE) {
 			} else if(!isCurrentAnimation(io, 1, part1) && isCurrentAnimation(io, 1, part2)) {
 				changeAnimation(io, 1, part1);
 			}
-			
+
 		} else if(io->_npcdata->weaponinhand == -1) {
 			// Equipping weapon
-			
+
 			AnimationNumber part1 = AnimationNumber(ANIM_1H_READY_PART_1 + wtype);
 			AnimationNumber part2 = AnimationNumber(ANIM_1H_READY_PART_2 + wtype);
 			if(isCurrentAnimation(io, 1, part1) && (layer1.flags & EA_ANIMEND)) {
@@ -1734,29 +1734,29 @@ static void ARX_NPC_Manage_Anims(Entity * io, float TOLERANCE) {
 			} else if(!layer1.cur_anim || (layer1.flags & EA_ANIMEND)) {
 				changeAnimation(io, 1, part1);
 			}
-			
+
 		} else if(io->_npcdata->weaponinhand > 0) {
 			// Weapon in hand... ready to strike
-			
+
 			if(isCurrentAnimation(io, 1, ready) && (io->_npcdata->behavior & BEHAVIOUR_FIGHT)
 				 && tdist < square(STRIKE_DISTANCE) && io->_npcdata->strike_time > 0) {
 				size_t j = Random::getu(0, 3); // Choose a random attack move
 				changeAnimation(io, 1, AnimationNumber(ANIM_1H_STRIKE_LEFT_START + j * 3 + wtype));
 			}
-			
+
 			for(size_t j = 0; j < 4; j++) {
-				
+
 				AnimationNumber start = AnimationNumber(ANIM_1H_STRIKE_LEFT_START + j * 3 + wtype);
 				AnimationNumber cycle = AnimationNumber(ANIM_1H_STRIKE_LEFT_CYCLE + j * 3 + wtype);
 				AnimationNumber strike = AnimationNumber(ANIM_1H_STRIKE_LEFT + j * 3 + wtype);
-				
+
 				if(isCurrentAnimation(io, 1, start) && (layer1.flags & EA_ANIMEND)) {
-					
+
 					changeAnimation(io, 1, cycle, EA_LOOP);
 					io->_npcdata->aiming_start = arxtime.now_ul();
-					
+
 				} else if(isCurrentAnimation(io, 1, cycle)) {
-					
+
 					unsigned long elapsed = arxtime.now_ul() - io->_npcdata->aiming_start;
 					unsigned int aimtime = io->_npcdata->aimtime;
 					if((elapsed > aimtime || (elapsed > aimtime * 0.5f && Random::getf() > 0.9f))
@@ -1772,9 +1772,9 @@ static void ARX_NPC_Manage_Anims(Entity * io, float TOLERANCE) {
 							SendIOScriptEvent(io, SM_STRIKE, "dagger");
 						}
 					}
-					
+
 				} else if(isCurrentAnimation(io, 1, strike)) {
-					
+
 					if(layer1.flags & EA_ANIMEND) {
 						io->ioflags &= ~IO_HIT;
 						changeAnimation(io, 1, ready);
@@ -1792,24 +1792,24 @@ static void ARX_NPC_Manage_Anims(Entity * io, float TOLERANCE) {
 							}
 						}
 					}
-					
+
 				}
-				
+
 			}
-			
+
 		}
-		
+
 	} else if(io->_npcdata->weapontype & OBJECT_TYPE_BOW) {
 		// TODO ranged combat
 	}
-	
+
 }
 
 float GetIOHeight(Entity * io) {
-	
+
 	if (io == entities.player())
 	{
-		return io->physics.cyl.height; 
+		return io->physics.cyl.height;
 	}
 
 	float v = (io->original_height * io->scale);
@@ -1821,11 +1821,11 @@ float GetIOHeight(Entity * io) {
 }
 
 float GetIORadius(Entity * io) {
-	
+
 	if(io == entities.player()) {
 		return player.baseRadius();
 	}
-	
+
 	return glm::clamp(io->original_radius * io->scale, 25.f, 60.f);
 }
 
@@ -1840,11 +1840,11 @@ Cylinder GetIOCyl(Entity * io) {
  * \param dst
  */
 static void ComputeTolerance(Entity * io, EntityHandle targ, float * dst) {
-	
+
 	float TOLERANCE = 30.f;
-	
+
 	if(ValidIONum(targ)) {
-		
+
 		float self_dist, targ_dist;
 
 		// Compute min target close-dist
@@ -1901,7 +1901,7 @@ static void ComputeTolerance(Entity * io, EntityHandle targ, float * dst) {
 static void ManageNPCMovement(Entity * io)
 {
 	ARX_PROFILE_FUNC();
-	
+
 	float dis = std::numeric_limits<float>::max();
 	IO_PHYSICS phys;
 	float TOLERANCE = 0.f;
@@ -2007,7 +2007,7 @@ static void ManageNPCMovement(Entity * io)
 	afterthat:
 		;
 	}
-	
+
 	if(io->_npcdata->behavior & BEHAVIOUR_NONE) {
 		ARX_NPC_Manage_Anims(io, 0);
 		if(!layer0.cur_anim || (layer0.flags & EA_ANIMEND)) {
@@ -2016,7 +2016,7 @@ static void ManageNPCMovement(Entity * io)
 		}
 		return;
 	}
-	
+
 	// First retrieves current position of target...
 	GetTargetPos(io);
 
@@ -2113,7 +2113,7 @@ static void ManageNPCMovement(Entity * io)
 	float _dist = std::numeric_limits<float>::max();
 
 	Vec3f ForcedMove;
-	
+
 	// GetTargetPos MUST be called before FaceTarget2
 	if(io->_npcdata->pathfind.listnb > 0
 	   && (io->_npcdata->behavior & BEHAVIOUR_WANDER_AROUND)
@@ -2129,7 +2129,7 @@ static void ManageNPCMovement(Entity * io)
 		}
 		return;
 	}
-	
+
 	{
 
 	// XS : Moved to top of func
@@ -2145,7 +2145,7 @@ static void ManageNPCMovement(Entity * io)
 	// Force to flee/wander again
 	if(!io->_npcdata->pathfind.pathwait && io->_npcdata->pathfind.listnb <= 0) {
 		if(io->_npcdata->behavior & BEHAVIOUR_WANDER_AROUND) {
-			ARX_NPC_LaunchPathfind(io, io->targetinfo); 
+			ARX_NPC_LaunchPathfind(io, io->targetinfo);
 		} else if(dis > STRIKE_DISTANCE
 		         &&	(io->_npcdata->behavior & BEHAVIOUR_MOVE_TO)
 				 &&	!(io->_npcdata->behavior & (BEHAVIOUR_FIGHT | BEHAVIOUR_MAGIC | BEHAVIOUR_SNEAK))
@@ -2158,11 +2158,11 @@ static void ManageNPCMovement(Entity * io)
 		bool startAtBeginning = (io->_npcdata->behavior & BEHAVIOUR_FRIENDLY) != 0;
 		setAnimation(io, ANIM_DEFAULT, 0, startAtBeginning);
 	} else { // Force object to walk if using pathfinder !!!
-		
+
 		if(io->_npcdata->behavior & (BEHAVIOUR_FRIENDLY | BEHAVIOUR_NONE)) {
 		} else if(!io->_npcdata->reachedtarget) {
 			// Walking/running towards target
-			
+
 			if((io->targetinfo != EntityHandle(TARGET_NONE)
 			     || (io->_npcdata->behavior & BEHAVIOUR_WANDER_AROUND)
 			     || (io->_npcdata->behavior & BEHAVIOUR_FLEE)
@@ -2174,7 +2174,7 @@ static void ManageNPCMovement(Entity * io)
 				&& layer0.cur_anim != alist[ANIM_WALK_SNEAK]
 				&& !(layer0.flags & EA_FORCEPLAY)
 			) {
-				
+
 				bool startAtBeginning = false;
 				AnimationNumber anim = ANIM_FIGHT_WALK_FORWARD;
 				if(dis > RUN_WALK_RADIUS || !(io->_npcdata->behavior & BEHAVIOUR_FIGHT)) {
@@ -2199,23 +2199,23 @@ static void ManageNPCMovement(Entity * io)
 				changeAnimation(io, anim, EA_LOOP, startAtBeginning);
 				io->_npcdata->walk_start_time = 0;
 			}
-			
+
 		} else if((io->_npcdata->behavior & (BEHAVIOUR_FIGHT | BEHAVIOUR_MAGIC | BEHAVIOUR_DISTANT))
 		          && io->anims[ANIM_FIGHT_WAIT]) {
 			// Reached target while fighting
-			
+
 			if(layer0.cur_anim != alist[ANIM_FIGHT_STRAFE_LEFT]
 			   && layer0.cur_anim != alist[ANIM_FIGHT_STRAFE_RIGHT]
 			   && layer0.cur_anim != alist[ANIM_FIGHT_WALK_BACKWARD]
 			   && layer0.cur_anim != alist[ANIM_FIGHT_WALK_FORWARD]) {
 				setAnimation(io, ANIM_FIGHT_WAIT, EA_LOOP);
 			}
-			
+
 		} else {
 			// Stop it and put it in Wait anim after finishing his walk anim...
-			
+
 			bool startAtBeginning = (io->_npcdata->behavior & BEHAVIOUR_FRIENDLY) != 0;
-			
+
 			if(layer0.cur_anim == alist[ANIM_FIGHT_WALK_FORWARD]) {
 				layer0.flags &= ~EA_LOOP;
 				changeAnimation(io, ANIM_DEFAULT, EA_LOOP, startAtBeginning);
@@ -2226,28 +2226,28 @@ static void ManageNPCMovement(Entity * io)
 					changeAnimation(io, ANIM_DEFAULT, EA_LOOP, startAtBeginning);
 				}
 			}
-			
+
 			if(!(layer0.flags & EA_FORCEPLAY) && layer0.cur_anim != alist[ANIM_DEFAULT]
 			   && layer0.cur_anim != alist[ANIM_FIGHT_WAIT] && (layer0.flags & EA_ANIMEND)
 			   && !(layer0.flags & EA_LOOP)) {
 				changeAnimation(io, ANIM_DEFAULT, 0, startAtBeginning);
 			}
-			
+
 		}
 	}
-	
+
 	// Force Run when far from target and using RUNMODE
 	if(dis > RUN_WALK_RADIUS && io->_npcdata->movemode == RUNMODE
 	   && layer0.cur_anim == alist[ANIM_FIGHT_WALK_FORWARD] && alist[ANIM_RUN]) {
 		changeAnimation(io, ANIM_RUN);
 	}
-	
+
 	// Reset WAIT Animation if reached end !
 	if(isCurrentAnimation(io, ANIM_DEFAULT) && (layer0.flags & EA_ANIMEND)) {
 		bool startAtBeginning = (io->_npcdata->behavior & BEHAVIOUR_FRIENDLY) != 0;
 		changeAnimation(io, ANIM_DEFAULT, 0, startAtBeginning);
 	}
-	
+
 	// Can only change direction during some specific animations
 	long CHANGE = 0;
 	if((layer0.cur_anim == alist[ANIM_DEFAULT] && layer0.altidx_cur == 0)
@@ -2263,7 +2263,7 @@ static void ManageNPCMovement(Entity * io)
 	) {
 		CHANGE = 1;
 	}
-	
+
 	// Tries to face/stare at target
 	if(!arxtime.is_paused() && CHANGE && !(layer0.flags & EA_FORCEPLAY)) {
 		if(io->_npcdata->behavior & BEHAVIOUR_STARE_AT)
@@ -2290,7 +2290,7 @@ static void ManageNPCMovement(Entity * io)
 	// For this frame we want to try a move from startpos (valid pos)
 	// to targetpos (potentially invalid pos)
 	io->physics.startpos = io->physics.cyl.origin = io->pos;
-	
+
 	if(io->forcedmove == Vec3f_ZERO) {
 		ForcedMove = Vec3f_ZERO;
 	} else {
@@ -2324,11 +2324,11 @@ static void ManageNPCMovement(Entity * io)
 
 	phys = io->physics;
 	phys.cyl = GetIOCyl(io);
-	
+
 	io->forcedmove -= ForcedMove;
-		
+
 	DIRECT_PATH = true;
-	
+
 	// Now we try the physical move for real
 	if(io->physics.startpos == io->physics.targetpos
 	   || ARX_COLLISION_Move_Cylinder(&phys, io, 40, levitate | CFLAG_NPC)
@@ -2349,7 +2349,7 @@ static void ManageNPCMovement(Entity * io)
 	io->physics.cyl.origin = io->pos = phys.cyl.origin;
 	io->physics.cyl.radius = GetIORadius(io);
 	io->physics.cyl.height = GetIOHeight(io);
-	
+
 	// Compute distance 2D to target.
 	_dist = glm::distance(Vec2f(io->pos.x, io->pos.z), Vec2f(io->target.x, io->target.z));
 	dis = _dist;
@@ -2454,11 +2454,11 @@ static void ManageNPCMovement(Entity * io)
 							break;
 					}
 				}
-				
+
 				if(io->targetinfo == EntityHandle(TARGET_NONE)) {
 					desiredanim = alist[ANIM_DEFAULT];
 				}
-				
+
 				if(desiredanim && !(layer0.flags & EA_FORCEPLAY)
 				   && (layer0.cur_anim == alist[ANIM_DEFAULT]
 				       || layer0.cur_anim == alist[ANIM_FIGHT_WAIT])) {
@@ -2468,7 +2468,7 @@ static void ManageNPCMovement(Entity * io)
 					}
 					setAnimation(io, desiredanim, EA_LOOP, startAtBeginning);
 				}
-				
+
 			}
 		} else { // Near target
 			if(dis <= TOLERANCE2) {
@@ -2502,7 +2502,7 @@ static void ManageNPCMovement(Entity * io)
 
 					free(io->_npcdata->pathfind.list);
 					io->_npcdata->pathfind.list = NULL;
-					
+
 					EVENT_SENDER = NULL;
 
 					if((io->_npcdata->behavior & BEHAVIOUR_FLEE) && !io->_npcdata->pathfind.pathwait)
@@ -2547,7 +2547,7 @@ static void ManageNPCMovement(Entity * io)
 			}
 		}
 	}
-	
+
 	if(dis < 280.f) {
 		if((io->_npcdata->behavior & BEHAVIOUR_FIGHT) && !(io->_npcdata->behavior & BEHAVIOUR_FLEE)) {
 			ARX_NPC_Manage_Fight(io);
@@ -2555,9 +2555,9 @@ static void ManageNPCMovement(Entity * io)
 			ARX_NPC_Manage_NON_Fight(io);
 		}
 	}
-	
+
 	ARX_NPC_Manage_Anims(io, TOLERANCE2);
-	
+
 	// Puts at least WAIT anim on NPC if he has no main animation...
 	if(layer0.cur_anim == NULL) {
 		if(io->_npcdata->behavior & (BEHAVIOUR_FIGHT | BEHAVIOUR_MAGIC | BEHAVIOUR_DISTANT)) {
@@ -2574,13 +2574,13 @@ static void ManageNPCMovement(Entity * io)
 			}
 		}
 	}
-	
+
 	// Now update lastpos values for next call use...
 	io->lastpos = io->pos;
 }
 
 static float AngularDifference(float a1, float a2) {
-	
+
 	a1 = MAKEANGLE(a1);
 	a2 = MAKEANGLE(a2);
 
@@ -2654,7 +2654,7 @@ Entity * ARX_NPC_GetFirstNPCInSight(Entity * ioo)
 
 		if(grp < 0) {
 			orgn = ioo->pos + Vec3f(0.f, -90.f, 0.f);
-			
+
 			if(ioo == entities.player())
 				orgn.y = player.pos.y + 90.f;
 		}
@@ -2665,7 +2665,7 @@ Entity * ARX_NPC_GetFirstNPCInSight(Entity * ioo)
 
 		if(grp < 0) {
 			dest = io->pos + Vec3f(0.f, -90.f, 0.f);
-			
+
 			if(io == entities.player())
 				dest.y = player.pos.y + 90.f;
 		}
@@ -2685,11 +2685,11 @@ Entity * ARX_NPC_GetFirstNPCInSight(Entity * ioo)
 				continue;
 			}
 
-			float grnd_color = CURRENT_PLAYER_COLOR - GetPlayerStealth(); 
+			float grnd_color = CURRENT_PLAYER_COLOR - GetPlayerStealth();
 
 			if(grnd_color > 0)  {
 				Vec3f ppos;
-				
+
 				if(IO_Visible(orgn, dest, &ppos)) {
 					if(found_dist > dist_io) {
 						found_io = io;
@@ -2740,27 +2740,27 @@ void CheckNPC(Entity * io)
  * \warning io and io->obj must be valid (no check !)
  */
 void CheckNPCEx(Entity * io) {
-	
+
 	ARX_PROFILE_FUNC();
 
 	// Distance Between Player and IO
 	float ds = glm::distance2(io->pos, player.basePosition());
-	
+
 	// Start as not visible
 	long Visible = 0;
-	
+
 	// Check visibility only if player is visible, not too far and not dead
 	if(entities.player()->invisibility <= 0.f && ds < square(2000.f) && player.lifePool.current > 0.f) {
-		
+
 		// checks for near contact +/- 15 cm --> force visibility
 		if(io->requestRoomUpdate) {
 			UpdateIORoom(io);
 		}
-		
+
 		long playerRoom = ARX_PORTALS_GetRoomNumForPosition(player.pos, 1);
-		
+
 		float fdist = SP_GetRoomDist(io->pos, player.pos, io->room, playerRoom);
-		
+
 		// Use Portal Room Distance for Extra Visibility Clipping.
 		if(playerRoom > -1 && io->room > -1 && fdist > 2000.f) {
 			// nothing to do
@@ -2768,7 +2768,7 @@ void CheckNPCEx(Entity * io) {
 		          && glm::abs(player.pos.y - io->pos.y) < 200.f) {
 			Visible = 1;
 		} else { // Make full visibility test
-			
+
 			// Retreives Head group position for "eye" pos.
 			long grp = io->obj->fastaccess.head_group_origin;
 			Vec3f orgn = io->pos - Vec3f(0.f, (grp < 0) ? 90.f : 120.f, 0.f);
@@ -2779,7 +2779,7 @@ void CheckNPCEx(Entity * io) {
 			aa = MAKEANGLE(glm::degrees(aa));
 			float ab = MAKEANGLE(io->angle.getPitch());
 			if(glm::abs(AngularDifference(aa, ab)) < 110.f) {
-				
+
 				// Check for Darkness/Stealth
 				if(CURRENT_PLAYER_COLOR > GetPlayerStealth() || player.torch
 				   || ds < square(200.f)) {
@@ -2792,7 +2792,7 @@ void CheckNPCEx(Entity * io) {
 				}
 			}
 		}
-		
+
 		if(Visible && !io->_npcdata->detect) {
 			// if visible but was NOT visible, sends an Detectplayer Event
 			EVENT_SENDER = NULL;
@@ -2800,7 +2800,7 @@ void CheckNPCEx(Entity * io) {
 			io->_npcdata->detect = 1;
 		}
 	}
-	
+
 	// if not visible but was visible, sends an Undetectplayer Event
 	if(!Visible && io->_npcdata->detect) {
 		EVENT_SENDER = NULL;
@@ -2810,7 +2810,7 @@ void CheckNPCEx(Entity * io) {
 }
 
 void ARX_NPC_NeedStepSound(Entity * io, const Vec3f & pos, const float volume, const float power) {
-	
+
 	std::string _step_material = "foot_bare";
 	const std::string * step_material = &_step_material;
 	std::string floor_material = "earth";
@@ -2823,11 +2823,11 @@ void ARX_NPC_NeedStepSound(Entity * io, const Vec3f & pos, const float volume, c
 		if(ep && ep->tex && !ep->tex->m_texName.empty())
 			floor_material = GetMaterialString(ep->tex->m_texName);
 	}
-	
+
 	if(io && !io->stepmaterial.empty()) {
 		step_material = &io->stepmaterial;
 	}
-	
+
 	if(io == entities.player()) {
 		if(ValidIONum(player.equiped[EQUIP_SLOT_LEGGINGS])) {
 			Entity * ioo = entities[player.equiped[EQUIP_SLOT_LEGGINGS]];
@@ -2836,7 +2836,7 @@ void ARX_NPC_NeedStepSound(Entity * io, const Vec3f & pos, const float volume, c
 			}
 		}
 	}
-	
+
 	ARX_SOUND_PlayCollision(*step_material, floor_material, volume, power, pos, io);
 }
 
@@ -2855,18 +2855,18 @@ void ARX_NPC_SpawnAudibleSound(const Vec3f & pos, Entity * source, const float f
 	} else {
 		return;
 	}
-	
+
 	max_distance *= presence;
 	max_distance /= factor;
-	
+
 	EVENT_SENDER = source;
-	
+
 	long Source_Room = ARX_PORTALS_GetRoomNumForPosition(pos, 1);
-	
+
 	for(size_t i = 0; i < entities.size(); i++) {
 		const EntityHandle handle = EntityHandle(i);
 		Entity * entity = entities[handle];
-		
+
 		if(   entity
 		   && (entity->ioflags & IO_NPC)
 		   && (entity->gameFlags & GFLAG_ISINTREATZONE)
@@ -2905,12 +2905,12 @@ void ARX_NPC_SpawnAudibleSound(const Vec3f & pos, Entity * source, const float f
 }
 
 void ManageIgnition(Entity * io) {
-	
+
 	arx_assert(io);
-	
+
 	if(player.torch == io) {
 		lightHandleDestroy(io->ignit_light);
-		
+
 		if (io->ignit_sound != audio::INVALID_ID)
 		{
 			ARX_SOUND_Stop(io->ignit_sound);
@@ -2919,57 +2919,57 @@ void ManageIgnition(Entity * io) {
 
 		return;
 	}
-	
+
 	bool addParticles = !(io == DRAGINTER && CANNOT_PUT_IT_HERE != EntityMoveCursor_Ok);
-	
+
 	// Torch Management
 	Entity * plw = NULL;
 
 	if(ValidIONum(player.equiped[EQUIP_SLOT_WEAPON]))
 		plw = entities[player.equiped[EQUIP_SLOT_WEAPON]];
-	
+
 	if((io->ioflags & IO_FIERY) && (!(io->type_flags & OBJECT_TYPE_BOW))
 	   && (io->show == SHOW_FLAG_IN_SCENE || io == plw)) {
-		
+
 		io->ignition = 25.f;
-		
+
 		if(addParticles && io->obj && !io->obj->facelist.empty()) {
 			createObjFireParticles(io->obj, 4, 1, 1);
 		}
 	} else if(io->obj && io->obj->fastaccess.fire != ActionPoint() && io->ignition > 0.f) {
-		
+
 		io->ignition = 25.f;
 		io->durability -= g_framedelay * ( 1.0f / 10000 );
-		
+
 		if(io->durability <= 0.f) {
 			ARX_SOUND_PlaySFX(SND_TORCH_END, &io->pos);
 			ARX_INTERACTIVE_DestroyIOdelayed(io);
 			return;
 		}
-		
+
 		if(addParticles) {
 			Vec3f pos = actionPointPosition(io->obj, io->obj->fastaccess.fire);
 			createFireParticles(pos, 2, 2);
 		}
 	} else {
 		io->ignition -= g_framedelay * 0.01f;
-		
+
 		if(addParticles && io->obj && !io->obj->facelist.empty()) {
 			float p = io->ignition * g_framedelay * 0.001f * io->obj->facelist.size() * 0.001f * 2.f;
 			int positions = std::min(int(std::ceil(p)), 10);
-			
+
 			createObjFireParticles(io->obj, positions, 6, 180);
 		}
 	}
-	
+
 	ManageIgnition_2(io);
 }
 
 
 void ManageIgnition_2(Entity * io) {
-	
+
 	arx_assert(io);
-	
+
 	if(io->ignition > 0.f) {
 		if(io->ignition > 100.f)
 			io->ignition = 100.f;
@@ -2989,7 +2989,7 @@ void ManageIgnition_2(Entity * io) {
 
 		if(lightHandleIsValid(io->ignit_light)) {
 			EERIE_LIGHT * light = lightHandleGet(io->ignit_light);
-			
+
 			light->intensity = std::max(io->ignition * ( 1.0f / 10 ), 1.f);
 			light->fallstart = std::max(io->ignition * 10.f, 100.f);
 			light->fallend   = std::max(io->ignition * 25.f, 240.f);
@@ -3011,7 +3011,7 @@ void ManageIgnition_2(Entity * io) {
 			CheckForIgnition(Sphere(position, io->ignition), 1, 0);
 	} else {
 		lightHandleDestroy(io->ignit_light);
-		
+
 		if(io->ignit_sound != audio::INVALID_ID) {
 			ARX_SOUND_Stop(io->ignit_sound);
 			io->ignit_sound = audio::INVALID_ID;
@@ -3022,19 +3022,19 @@ void ManageIgnition_2(Entity * io) {
 extern EERIE_BACKGROUND * ACTIVEBKG;
 
 void GetTargetPos(Entity * io, unsigned long smoothing) {
-	
+
 	if(!io)
 		return;
-	
+
 	if(io->ioflags & IO_NPC) {
 		IO_NPCDATA * npcData = io->_npcdata;
 		arx_assert(npcData);
-		
+
 		if(npcData->behavior & BEHAVIOUR_NONE) {
 			io->target = io->pos;
 			return;
 		}
-		
+
 		if(npcData->behavior & BEHAVIOUR_GO_HOME) {
 			if(npcData->pathfind.listpos < npcData->pathfind.listnb) {
 				long pos = npcData->pathfind.list[npcData->pathfind.listpos];
@@ -3044,7 +3044,7 @@ void GetTargetPos(Entity * io, unsigned long smoothing) {
 			}
 			return;
 		}
-		
+
 		if(npcData->pathfind.listnb != -1 && npcData->pathfind.list
 		   && !(npcData->behavior & BEHAVIOUR_FRIENDLY)) { // Targeting Anchors !
 			if(npcData->pathfind.listpos < npcData->pathfind.listnb) {
@@ -3056,14 +3056,14 @@ void GetTargetPos(Entity * io, unsigned long smoothing) {
 			return;
 		}
 	}
-	
+
 	if(io->targetinfo == EntityHandle(TARGET_PATH)) {
-		
+
 		if(!io->usepath) {
 			io->target = io->pos;
 			return;
 		}
-		
+
 		ARX_USE_PATH * aup = io->usepath;
 		aup->_curtime += smoothing + 100;
 
@@ -3074,15 +3074,15 @@ void GetTargetPos(Entity * io, unsigned long smoothing) {
 		} else if(io->ioflags & IO_CAMERA) {
 			io->_camdata->cam.lastinfovalid = false;
 		}
-		
+
 		return;
 	}
-	
+
 	if(io->targetinfo == EntityHandle(TARGET_NONE)) {
 		io->target = io->pos;
 		return;
 	}
-	
+
 	if(io->targetinfo == EntityHandle(TARGET_PLAYER) || io->targetinfo == EntityHandle()) {
 		io->target = player.pos + Vec3f(0.f, player.size.y, 0.f);
 		return;
@@ -3090,6 +3090,6 @@ void GetTargetPos(Entity * io, unsigned long smoothing) {
 		io->target = GetItemWorldPosition(entities[io->targetinfo]);
 		return;
 	}
-	
+
 	io->target = io->pos;
 }

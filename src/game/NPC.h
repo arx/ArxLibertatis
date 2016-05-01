@@ -21,22 +21,22 @@
 ARX FATALIS GPL Source Code
 Copyright (C) 1999-2010 Arkane Studios SA, a ZeniMax Media company.
 
-This file is part of the Arx Fatalis GPL Source Code ('Arx Fatalis Source Code'). 
+This file is part of the Arx Fatalis GPL Source Code ('Arx Fatalis Source Code').
 
-Arx Fatalis Source Code is free software: you can redistribute it and/or modify it under the terms of the GNU General Public 
+Arx Fatalis Source Code is free software: you can redistribute it and/or modify it under the terms of the GNU General Public
 License as published by the Free Software Foundation, either version 3 of the License, or (at your option) any later version.
 
-Arx Fatalis Source Code is distributed in the hope that it will be useful, but WITHOUT ANY WARRANTY; without even the implied 
+Arx Fatalis Source Code is distributed in the hope that it will be useful, but WITHOUT ANY WARRANTY; without even the implied
 warranty of MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE. See the GNU General Public License for more details.
 
-You should have received a copy of the GNU General Public License along with Arx Fatalis Source Code.  If not, see 
+You should have received a copy of the GNU General Public License along with Arx Fatalis Source Code.  If not, see
 <http://www.gnu.org/licenses/>.
 
-In addition, the Arx Fatalis Source Code is also subject to certain additional terms. You should have received a copy of these 
-additional terms immediately following the terms and conditions of the GNU General Public License which accompanied the Arx 
+In addition, the Arx Fatalis Source Code is also subject to certain additional terms. You should have received a copy of these
+additional terms immediately following the terms and conditions of the GNU General Public License which accompanied the Arx
 Fatalis Source Code. If not, please request a copy in writing from Arkane Studios at the address below.
 
-If you have questions concerning this license or the applicable additional terms, you may contact in writing Arkane Studios, c/o 
+If you have questions concerning this license or the applicable additional terms, you may contact in writing Arkane Studios, c/o
 ZeniMax Media Inc., Suite 120, Rockville, Maryland 20850 USA.
 ===========================================================================
 */
@@ -109,7 +109,7 @@ struct IO_PATHFIND {
 	unsigned short listpos;
 	short pathwait;
 	EntityHandle truetarget;
-	
+
 	IO_PATHFIND()
 		: flags(0)
 		, listnb(0)
@@ -154,13 +154,13 @@ DECLARE_FLAGS(DismembermentFlag, DismembermentFlags)
 DECLARE_FLAGS_OPERATORS(DismembermentFlags)
 
 struct IO_NPCDATA {
-	
+
 	IO_NPCDATA();
 	~IO_NPCDATA();
-	
+
 	ResourcePool lifePool;
 	ResourcePool manaPool;
-	
+
 	unsigned long reachedtime;
 	long reachedtarget;	//Is target in REACHZONE ?
 	Entity * weapon; // Linked Weapon (r-hand)
@@ -174,31 +174,31 @@ struct IO_NPCDATA {
 	float critical;
 	float reach;
 	float backstab_skill;
-	
+
 	Behaviour behavior;
 	float behavior_param;
 	long tactics; // 0=none ; 1=side ; 2=side+back
 	long xpvalue;
 	long cut;
-	
+
 	float moveproblem;
 	ItemType weapontype;
 	long weaponinhand;
 	long fightdecision;
-	
+
 	float look_around_inc;
 	unsigned long collid_time;
 	long collid_state;
 	float speakpitch;
 	float lastmouth;
 	long ltemp;
-	
+
 	IO_BEHAVIOR_DATA stacked[MAX_STACKED_BEHAVIOR];
 	float poisonned;
 	unsigned char resist_poison;
 	unsigned char resist_magic;
 	unsigned char resist_fire;
-	
+
 	short strike_time;
 	short walk_start_time;
 	unsigned long aiming_start;
@@ -206,18 +206,18 @@ struct IO_NPCDATA {
 	IO_PATHFIND pathfind;
 	EERIE_EXTRA_ROTATE * ex_rotate;
 	Color blood_color;
-	
+
 	short SPLAT_DAMAGES;
 	short SPLAT_TOT_NB;
 	Vec3f last_splat_pos;
 	float vvpos;
-	
+
 	float climb_count;
 	float stare_factor;
 	float fDetect;
 	DismembermentFlags cuts;
 	short unused;
-	
+
 };
 
 const float ARX_NPC_AUDIBLE_VOLUME_MIN(0.94F);
