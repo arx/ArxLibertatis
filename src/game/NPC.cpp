@@ -2659,7 +2659,7 @@ Entity * ARX_NPC_GetFirstNPCInSight(Entity * ioo)
 			if(ioo == entities.player())
 				orgn.y = player.pos.y + 90.f;
 		} else {
-			orgn = GetVertexPos(ioo, ioo->obj->fastaccess.head_group_origin);
+			orgn = GetVertexPos(ioo, grp);
 		}
 		}
 		
@@ -2672,7 +2672,7 @@ Entity * ARX_NPC_GetFirstNPCInSight(Entity * ioo)
 			if(io == entities.player())
 				dest.y = player.pos.y + 90.f;
 		} else {
-			dest = GetVertexPos(io, io->obj->fastaccess.head_group_origin);
+			dest = GetVertexPos(io, grp);
 		}
 		}
 
