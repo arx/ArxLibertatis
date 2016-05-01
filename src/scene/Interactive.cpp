@@ -1938,9 +1938,9 @@ Entity * GetFirstInterAtPos(const Vec2s & pos, long flag, Vec3f * _pRef, Entity 
 			for(size_t j = 0; j < io->obj->facelist.size(); j++) {
 				float n;
 				if(io->animlayer[0].cur_anim != NULL) {
-					n = CEDRIC_PtIn2DPolyProjV2(io->obj, &io->obj->facelist[j] , pos.x, pos.y);
+					n = PtIn2DPolyProj(io->obj->vertexlist3, &io->obj->facelist[j] , pos.x, pos.y);
 				} else {
-					n = PtIn2DPolyProj(io->obj, &io->obj->facelist[j] , pos.x, pos.y);
+					n = PtIn2DPolyProj(io->obj->vertexlist, &io->obj->facelist[j] , pos.x, pos.y);
 				}
 
 				if(n > 0.f) {

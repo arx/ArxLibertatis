@@ -177,7 +177,7 @@ Vec2f getWaterFxUvOffset(const Vec3f & odtv);
 
 long EERIERTPPoly(EERIEPOLY *ep);
 
-float PtIn2DPolyProj(EERIE_3DOBJ * obj,EERIE_FACE * ef, float x, float z);
+float PtIn2DPolyProj(const std::vector<EERIE_VERTEX> & verts, EERIE_FACE * ef, float x, float z);
 
 Vec3f GetVertexPos(Entity * io, long id);
 long CountBkgVertex();
@@ -241,7 +241,6 @@ extern ROOM_DIST_DATA * RoomDistance;
 
 void UpdateIORoom(Entity * io);
 float SP_GetRoomDist(const Vec3f & pos, const Vec3f & c_pos, long io_room, long Cam_Room);
-float CEDRIC_PtIn2DPolyProjV2(EERIE_3DOBJ * obj,EERIE_FACE * ef, float x, float z);
 void EERIE_PORTAL_ReleaseOnlyVertexBuffer();
 void ComputePortalVertexBuffer();
 bool GetNameInfo( const std::string& name1,long& type,long& val1,long& val2);
