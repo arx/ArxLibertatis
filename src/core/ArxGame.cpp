@@ -268,7 +268,7 @@ static bool migrateFilenames(fs::path path, bool is_dir) {
 		
 		fs::path dst = path.parent() / lowercase;
 		
-		LogInfo << "Renaming " << path << " to " << dst.filename() << "";
+		LogInfo << "Renaming " << path << " to " << dst.filename();
 		
 		if(fs::rename(path, dst)) {
 			path = dst;
@@ -347,7 +347,7 @@ bool ArxGame::initConfig() {
 		fs::path file = fs::paths.find("cfg_default.ini");
 		if(!config.init(file)) {
 			LogWarning << "Could not read config files cfg.ini and cfg_default.ini,"
-			           << " using defaults.";
+			           << " using defaults";
 		}
 		
 		// Save a default config file so users have a chance to edit it even if we crash.
@@ -489,7 +489,7 @@ bool ArxGame::initWindow() {
 	}
 	
 	if(!m_MainWindow) {
-		LogCritical << "Graphics initialization failed.";
+		LogCritical << "Graphics initialization failed";
 		return false;
 	}
 	
@@ -501,7 +501,7 @@ bool ArxGame::initInput() {
 	LogDebug("Input init");
 	bool init = ARX_INPUT_Init(m_MainWindow);
 	if(!init) {
-		LogCritical << "Input initialization failed.";
+		LogCritical << "Input initialization failed";
 	}
 	
 	return init;
@@ -512,7 +512,7 @@ bool ArxGame::initSound() {
 	LogDebug("Sound init");
 	bool init = ARX_SOUND_Init();
 	if(!init) {
-		LogWarning << "Sound initialization failed.";
+		LogWarning << "Sound initialization failed";
 	}
 	
 	return true;
@@ -892,14 +892,14 @@ bool ArxGame::initGame()
 	LoadSysTextures();
 	cursorTexturesInit();
 	
-	LogInfo << "Launching splash screens.";
+	LogInfo << "Launching splash screens";
 	if(GameFlow::getTransition() == GameFlow::NoTransition) {
 		GameFlow::setTransition(GameFlow::FirstLogo);
 	}
 	
 	switch(resources->getReleaseType()) {
 		
-		case 0: LogWarning << "Neither demo nor full game data files loaded."; break;
+		case 0: LogWarning << "Neither demo nor full game data files loaded!"; break;
 		
 		case PakReader::Demo: {
 			LogInfo << "Initialized Arx Fatalis (demo)";
