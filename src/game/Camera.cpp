@@ -36,7 +36,7 @@ void EERIE_TRANSFORM::updateFromAngle(const Anglef &angle) {
 	roll = glm::radians(angle.getRoll());
 	zcos = std::cos(roll);
 	zsin = std::sin(roll);
-	
+
 	glm::mat4 translation = glm::translate(-pos);
 	worldToView = toRotationMatrix(angle) * translation;
 }
@@ -54,9 +54,9 @@ static void rotPoint(Vec3f *in, Vec3f *out, EERIE_TRANSFORM &transform) {
 }
 
 static glm::mat4 Util_LookAt(Vec3f vFrom, Vec3f vView, Vec3f vWorldUp) {
-	
+
 	glm::mat4x4 mat;
-	
+
 	// Normalize the z basis vector
 	float fLength = glm::length(vView);
 	if (fLength < 1e-6f)
@@ -108,7 +108,7 @@ static glm::mat4 Util_LookAt(Vec3f vFrom, Vec3f vView, Vec3f vWorldUp) {
 	mat[3][1] = -glm::dot(vFrom, vUp);
 	mat[3][2] = -glm::dot(vFrom, vView);
 	mat[3][3] = 1.0f;
-	
+
 	return mat;
 }
 
@@ -119,7 +119,7 @@ static glm::mat4 Util_SetViewMatrix(EERIE_TRANSFORM &transform) {
 
 	Vec3f vView;
 	rotPoint(&vTout, &vView, transform);
-	
+
 	Vec3f up(0.f, 1.f, 0.f);
 	Vec3f vWorldUp;
 	rotPoint(&up, &vWorldUp, transform);
@@ -130,11 +130,11 @@ static glm::mat4 Util_SetViewMatrix(EERIE_TRANSFORM &transform) {
 static void EERIE_CreateMatriceProj(float width, float height, EERIE_CAMERA * cam) {
 
 	float fov = focalToFov(cam->focal);
-	
+
 	const float nearDist = 1.f;
 	const float farDist = cam->cdepth;
 	const float frustumDepth = farDist - nearDist;
-	
+
 	float aspect = height / width;
 	float w = aspect * (glm::cos(fov / 2) / glm::sin(fov / 2));
 	float h =   1.0f  * (glm::cos(fov / 2) / glm::sin(fov / 2));
@@ -148,7 +148,7 @@ static void EERIE_CreateMatriceProj(float width, float height, EERIE_CAMERA * ca
 	cam->ProjectionMatrix[2][3] = 1.f;
 	cam->ProjectionMatrix[3][3] = 0.f;
 	GRenderer->SetProjectionMatrix(cam->ProjectionMatrix);
-	
+
 	glm::mat4 tempViewMatrix = Util_SetViewMatrix(cam->orgTrans);
 	GRenderer->SetViewMatrix(tempViewMatrix);
 
@@ -166,7 +166,7 @@ void SP_PrepareCamera(EERIE_CAMERA * cam) {
 }
 
 void PrepareCamera(EERIE_CAMERA * cam, const Rect & size) {
-	
+
 	SP_PrepareCamera(cam);
 	EERIE_CreateMatriceProj(static_cast<float>(size.width()),
 	                        static_cast<float>(size.height()),
