@@ -493,18 +493,20 @@ long EERIEDrawnPolys = 0;
 
 float PtIn2DPolyProj(EERIE_3DOBJ * obj, EERIE_FACE * ef, float x, float z) {
 	
+	const std::vector<EERIE_VERTEX> & verts = obj->vertexlist;
+	
 	int i, j, c = 0;
 
 	for (i = 0, j = 2; i < 3; j = i++)
 	{
-		if ((((obj->vertexlist[ef->vid[i]].vert.p.y <= z) && (z < obj->vertexlist[ef->vid[j]].vert.p.y)) ||
-				((obj->vertexlist[ef->vid[j]].vert.p.y <= z) && (z < obj->vertexlist[ef->vid[i]].vert.p.y))) &&
-				(x < (obj->vertexlist[ef->vid[j]].vert.p.x - obj->vertexlist[ef->vid[i]].vert.p.x) *(z - obj->vertexlist[ef->vid[i]].vert.p.y) / (obj->vertexlist[ef->vid[j]].vert.p.y - obj->vertexlist[ef->vid[i]].vert.p.y) + obj->vertexlist[ef->vid[i]].vert.p.x))
+		if ((((verts[ef->vid[i]].vert.p.y <= z) && (z < verts[ef->vid[j]].vert.p.y)) ||
+				((verts[ef->vid[j]].vert.p.y <= z) && (z < verts[ef->vid[i]].vert.p.y))) &&
+				(x < (verts[ef->vid[j]].vert.p.x - verts[ef->vid[i]].vert.p.x) *(z - verts[ef->vid[i]].vert.p.y) / (verts[ef->vid[j]].vert.p.y - verts[ef->vid[i]].vert.p.y) + verts[ef->vid[i]].vert.p.x))
 			c = !c;
 	}
 
 	if (c)
-		return obj->vertexlist[ef->vid[0]].vert.p.z;
+		return verts[ef->vid[0]].vert.p.z;
 	else
 		return 0.f;
 }
