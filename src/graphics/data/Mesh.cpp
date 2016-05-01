@@ -525,8 +525,10 @@ float CEDRIC_PtIn2DPolyProjV2(EERIE_3DOBJ * obj, EERIE_FACE * ef, float x, float
 			c = !c;
 	}
 
-	if (c) return verts[ef->vid[0]].vert.p.z;
-	else return 0.f;
+	if (c)
+		return verts[ef->vid[0]].vert.p.z;
+	else
+		return 0.f;
 }
 
 int PointIn2DPolyXZ(const EERIEPOLY * ep, float x, float z) {
