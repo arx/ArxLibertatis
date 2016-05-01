@@ -21,22 +21,22 @@
 ARX FATALIS GPL Source Code
 Copyright (C) 1999-2010 Arkane Studios SA, a ZeniMax Media company.
 
-This file is part of the Arx Fatalis GPL Source Code ('Arx Fatalis Source Code'). 
+This file is part of the Arx Fatalis GPL Source Code ('Arx Fatalis Source Code').
 
-Arx Fatalis Source Code is free software: you can redistribute it and/or modify it under the terms of the GNU General Public 
+Arx Fatalis Source Code is free software: you can redistribute it and/or modify it under the terms of the GNU General Public
 License as published by the Free Software Foundation, either version 3 of the License, or (at your option) any later version.
 
-Arx Fatalis Source Code is distributed in the hope that it will be useful, but WITHOUT ANY WARRANTY; without even the implied 
+Arx Fatalis Source Code is distributed in the hope that it will be useful, but WITHOUT ANY WARRANTY; without even the implied
 warranty of MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE. See the GNU General Public License for more details.
 
-You should have received a copy of the GNU General Public License along with Arx Fatalis Source Code.  If not, see 
+You should have received a copy of the GNU General Public License along with Arx Fatalis Source Code.  If not, see
 <http://www.gnu.org/licenses/>.
 
-In addition, the Arx Fatalis Source Code is also subject to certain additional terms. You should have received a copy of these 
-additional terms immediately following the terms and conditions of the GNU General Public License which accompanied the Arx 
+In addition, the Arx Fatalis Source Code is also subject to certain additional terms. You should have received a copy of these
+additional terms immediately following the terms and conditions of the GNU General Public License which accompanied the Arx
 Fatalis Source Code. If not, please request a copy in writing from Arkane Studios at the address below.
 
-If you have questions concerning this license or the applicable additional terms, you may contact in writing Arkane Studios, c/o 
+If you have questions concerning this license or the applicable additional terms, you may contact in writing Arkane Studios, c/o
 ZeniMax Media Inc., Suite 120, Rockville, Maryland 20850 USA.
 ===========================================================================
 */
@@ -104,7 +104,7 @@ struct DAMAGE_INFO {
 	short exist;
 	unsigned long start_time;
 	unsigned long lastupd;
-	
+
 	DamageParameters params;
 };
 
@@ -154,7 +154,7 @@ static void ARX_DAMAGES_IgnitIO(Entity * io, float dmg)
 	else if(io->ioflags & IO_NPC)
 		io->ignition += dmg * ( 1.0f / 4 );
 }
- 
+
 void ARX_DAMAGE_Reset_Blood_Info()
 {
 	Blood_Pos = 0.f;
@@ -232,7 +232,7 @@ float ARX_DAMAGES_DamagePlayer(float dmg, DamageType type, EntityHandle source) 
 		damagesdone = player.lifePool.current;
 
 	entities.player()->dmg_sum += dmg;
-	
+
 	float elapsed = arxtime.now_f() - entities.player()->ouch_time;
 	if(elapsed > 500) {
 		Entity * oes = EVENT_SENDER;
@@ -302,7 +302,7 @@ float ARX_DAMAGES_DamagePlayer(float dmg, DamageType type, EntityHandle source) 
 				for(size_t i = 1; i < entities.size(); i++) {
 					const EntityHandle handle = EntityHandle(i);
 					Entity * ioo = entities[handle];
-					
+
 					if(ioo && (ioo->ioflags & IO_NPC)) {
 						if(ioo->targetinfo == EntityHandle(TARGET_PLAYER)) {
 							EVENT_SENDER = entities.player();
@@ -342,7 +342,7 @@ float ARX_DAMAGES_DamagePlayer(float dmg, DamageType type, EntityHandle source) 
 }
 
 static void ARX_DAMAGES_HealPlayer(float dmg) {
-	
+
 	if(player.lifePool.current == 0.f)
 		return;
 
@@ -375,7 +375,7 @@ void ARX_DAMAGES_HealInter(Entity * io, float dmg)
 }
 
 static void ARX_DAMAGES_HealManaPlayer(float dmg) {
-	
+
 	if(player.lifePool.current == 0.f)
 		return;
 
@@ -388,7 +388,7 @@ static void ARX_DAMAGES_HealManaPlayer(float dmg) {
 }
 
 static void ARX_DAMAGES_HealManaInter(Entity * io, float dmg) {
-	
+
 	if(!io || !(io->ioflags & IO_NPC))
 		return;
 
@@ -407,7 +407,7 @@ static void ARX_DAMAGES_HealManaInter(Entity * io, float dmg) {
 }
 
 static float ARX_DAMAGES_DrainMana(Entity * io, float dmg) {
-	
+
 	if(!io || !(io->ioflags & IO_NPC))
 		return 0;
 
@@ -510,7 +510,7 @@ extern Entity * FlyingOverIO;
 extern MASTER_CAMERA_STRUCT MasterCamera;
 
 void ARX_DAMAGES_ForceDeath(Entity * io_dead, Entity * io_killer) {
-	
+
 	if(io_dead->mainevent == "dead") {
 		return;
 	}
@@ -531,7 +531,7 @@ void ARX_DAMAGES_ForceDeath(Entity * io_dead, Entity * io_killer) {
 		MasterCamera.exist = 0;
 
 	lightHandleDestroy(io_dead->dynlight);
-	
+
 	//Kill all speeches
 
 	ARX_NPC_Behaviour_Reset(io_dead);
@@ -546,7 +546,7 @@ void ARX_DAMAGES_ForceDeath(Entity * io_dead, Entity * io_killer) {
 			io_dead->infracolor = Color3f::blue;
 		}
 	}
-	
+
 	if (!ValidIOAddress(io_dead))
 		return;
 
@@ -581,7 +581,7 @@ void ARX_DAMAGES_ForceDeath(Entity * io_dead, Entity * io_killer) {
 		if(ioo && (ioo->ioflags & IO_NPC)) {
 			if(ValidIONum(ioo->targetinfo))
 				if(entities[ioo->targetinfo] == io_dead) {
-					EVENT_SENDER = io_dead; 
+					EVENT_SENDER = io_dead;
 					Stack_SendIOScriptEvent(entities[handle], SM_NULL, killer, "target_death");
 					ioo->targetinfo = EntityHandle(TARGET_NONE);
 					ioo->_npcdata->reachedtarget = 0;
@@ -589,7 +589,7 @@ void ARX_DAMAGES_ForceDeath(Entity * io_dead, Entity * io_killer) {
 
 			if(ValidIONum(ioo->_npcdata->pathfind.truetarget))
 				if(entities[ioo->_npcdata->pathfind.truetarget] == io_dead) {
-					EVENT_SENDER = io_dead; 
+					EVENT_SENDER = io_dead;
 					Stack_SendIOScriptEvent(entities[handle], SM_NULL, killer, "target_death");
 					ioo->_npcdata->pathfind.truetarget = EntityHandle(TARGET_NONE);
 					ioo->_npcdata->reachedtarget = 0;
@@ -627,7 +627,7 @@ static void ARX_DAMAGES_PushIO(Entity * io_target, EntityHandle source, float po
 		vect = glm::normalize(vect);
 		vect *= power;
 		arx_assert(isallfinite(vect));
-		
+
 		if(io_target == entities.player()) {
 			PUSH_PLAYER_FORCE = vect; // TODO why not +=?
 		} else {
@@ -733,7 +733,7 @@ float ARX_DAMAGES_DealDamages(EntityHandle target, float dmg, EntityHandle sourc
 // flags & 1 == spell damage
 //*************************************************************************************
 float ARX_DAMAGES_DamageNPC(Entity * io, float dmg, EntityHandle source, bool isSpellHit, const Vec3f * pos) {
-	
+
 	if(   !io
 	   || !io->show
 	   || !(io->ioflags & IO_NPC)
@@ -756,7 +756,7 @@ float ARX_DAMAGES_DamageNPC(Entity * io, float dmg, EntityHandle source, bool is
 	}
 
 	io->dmg_sum += dmg;
-	
+
 	float elapsed = arxtime.now_f() - io->ouch_time;
 	if(elapsed > 500) {
 		if(ValidIONum(source))
@@ -776,7 +776,7 @@ float ARX_DAMAGES_DamageNPC(Entity * io, float dmg, EntityHandle source, bool is
 
 		SendIOScriptEvent(io, SM_OUCH, tex);
 		io->dmg_sum = 0.f;
-		
+
 		spells.endByTarget(io->index(), SPELL_CONFUSE);
 	}
 
@@ -817,7 +817,7 @@ float ARX_DAMAGES_DamageNPC(Entity * io, float dmg, EntityHandle source, bool is
 		if(io->script.data != NULL) {
 			if(source.handleData() >= PlayerEntityHandle.handleData()) {
 				if(ValidIONum(source))
-					EVENT_SENDER = entities[source]; 
+					EVENT_SENDER = entities[source];
 				else
 					EVENT_SENDER = NULL;
 
@@ -864,7 +864,7 @@ float ARX_DAMAGES_DamageNPC(Entity * io, float dmg, EntityHandle source, bool is
 
 		damagesdone = std::min(dmg, io->_npcdata->lifePool.current);
 		io->_npcdata->lifePool.current -= dmg;
-		
+
 		float fHitFlash = 0;
 		if(io->_npcdata->lifePool.current <= 0) {
 			fHitFlash = 0;
@@ -872,8 +872,8 @@ float ARX_DAMAGES_DamageNPC(Entity * io, float dmg, EntityHandle source, bool is
 			fHitFlash = io->_npcdata->lifePool.current / io->_npcdata->lifePool.max;
 		}
 		g_hudRoot.hitStrengthGauge.requestFlash(fHitFlash);
-		
-		
+
+
 		if(io->_npcdata->lifePool.current <= 0.f) {
 			io->_npcdata->lifePool.current = 0.f;
 
@@ -904,16 +904,16 @@ void ARX_DAMAGES_Reset()
 extern TextureContainer * TC_fire2;
 
 static void ARX_DAMAGES_AddVisual(DAMAGE_INFO & di, const Vec3f & pos, float dmg, Entity * io) {
-	
+
 	if(!(di.params.type & DAMAGE_TYPE_FAKEFIRE)) {
 		return;
 	}
-	
+
 	long num = -1;
 	if(io) {
 		num = Random::get(0, io->obj->vertexlist.size() / 4 - 1) * 4 + 1;
 	}
-	
+
 	unsigned long now = arxtime.now_ul();
 	if(di.lastupd + 200 < now) {
 		di.lastupd = now;
@@ -923,14 +923,14 @@ static void ARX_DAMAGES_AddVisual(DAMAGE_INFO & di, const Vec3f & pos, float dmg
 			ARX_SOUND_PlaySFX(SND_SPELL_FIRE_HIT, &pos, Random::getf(0.8f, 1.2f));
 		}
 	}
-	
+
 	for(long k = 0 ; k < 14 ; k++) {
-		
+
 		PARTICLE_DEF * pd = createParticle();
 		if(!pd) {
 			break;
 		}
-		
+
 		if(io) {
 			arx_assert(num >= 0);
 			pd->ov = io->obj->vertexlist3[num].v + randomVec(-5.f, 5.f);
@@ -956,15 +956,15 @@ static void ARX_DAMAGES_AddVisual(DAMAGE_INFO & di, const Vec3f & pos, float dmg
 // source = 0  player
 // source > 0  IO
 static void ARX_DAMAGES_UpdateDamage(DamageHandle j, float now) {
-	
+
 	ARX_PROFILE_FUNC();
-	
+
 	DAMAGE_INFO & damage = damages[j.handleData()];
-	
+
 	if(!damage.exist) {
 		return;
 	}
-		
+
 	if(damage.params.flags & DAMAGE_FLAG_FOLLOW_SOURCE) {
 		if(damage.params.source == PlayerEntityHandle) {
 			damage.params.pos = player.pos;
@@ -972,7 +972,7 @@ static void ARX_DAMAGES_UpdateDamage(DamageHandle j, float now) {
 			damage.params.pos = entities[damage.params.source]->pos;
 		}
 	}
-	
+
 	float dmg;
 	if(damage.params.flags & DAMAGE_NOT_FRAME_DEPENDANT) {
 		dmg = damage.params.damages;
@@ -980,22 +980,22 @@ static void ARX_DAMAGES_UpdateDamage(DamageHandle j, float now) {
 		dmg = damage.params.damages;
 	} else {
 		float FD = g_framedelay;
-		
+
 		if(now > damage.start_time + damage.params.duration) {
 			FD -= damage.start_time + damage.params.duration - now;
 		}
-		
+
 		dmg = damage.params.damages * FD * ( 1.0f / 1000 );
 	}
-	
+
 	bool validsource = ValidIONum(damage.params.source);
 	float divradius = 1.f / damage.params.radius;
-	
+
 	// checking for IO damages
 	for(size_t i = 0; i < entities.size(); i++) {
 		const EntityHandle handle = EntityHandle(i);
 		Entity * io = entities[handle];
-		
+
 		if(io
 		   && (io->gameFlags & GFLAG_ISINTREATZONE)
 		   && (io->show == SHOW_FLAG_IN_SCENE)
@@ -1010,34 +1010,34 @@ static void ARX_DAMAGES_UpdateDamage(DamageHandle j, float now) {
 				) {
 					continue;
 				}
-				
+
 				Sphere sphere;
 				sphere.origin = damage.params.pos;
 				sphere.radius = damage.params.radius - 10.f;
-				
+
 				if(CheckIOInSphere(sphere, *io, true)) {
 					Vec3f sub = io->pos + Vec3f(0.f, -60.f, 0.f);
-					
+
 					float dist = fdist(damage.params.pos, sub);
-					
+
 					if(damage.params.type & DAMAGE_TYPE_FIELD) {
 						float elapsed = arxtime.now_f() - io->collide_door_time;
 						if(elapsed > 500) {
 							EVENT_SENDER = NULL;
-							io->collide_door_time = arxtime.now_ul(); 
+							io->collide_door_time = arxtime.now_ul();
 							char param[64];
 							param[0] = 0;
-							
+
 							if(damage.params.type & DAMAGE_TYPE_FIRE)
 								strcpy(param, "fire");
-							
+
 							if(damage.params.type & DAMAGE_TYPE_COLD)
 								strcpy(param, "cold");
-							
+
 							SendIOScriptEvent(io, SM_COLLIDE_FIELD, param);
 						}
 					}
-					
+
 					switch(damage.params.area) {
 						case DAMAGE_AREA: {
 							float ratio = (damage.params.radius - dist) * divradius;
@@ -1054,32 +1054,32 @@ static void ARX_DAMAGES_UpdateDamage(DamageHandle j, float now) {
 						case DAMAGE_FULL:
 						break;
 					}
-					
+
 					if(dmg <= 0.f)
 						continue;
-					
+
 					if(   (damage.params.flags & DAMAGE_FLAG_ADD_VISUAL_FX)
 					   && (io->ioflags & IO_NPC)
 					   && (io->_npcdata->lifePool.current > 0.f)
 					) {
 						ARX_DAMAGES_AddVisual(damage, sub, dmg, io);
 					}
-					
+
 					if(damage.params.type & DAMAGE_TYPE_DRAIN_MANA) {
 						float manadrained;
-						
+
 						if(handle == PlayerEntityHandle) {
 							manadrained = std::min(dmg, player.manaPool.current);
 							player.manaPool.current -= manadrained;
 						} else {
 							manadrained = dmg;
-							
+
 							if(io && io->_npcdata) {
 								manadrained = std::min(dmg, io->_npcdata->manaPool.current);
 								io->_npcdata->manaPool.current -= manadrained;
 							}
 						}
-						
+
 						if (damage.params.source == PlayerEntityHandle) {
 							player.manaPool.current = std::min(player.manaPool.current + manadrained, player.Full_maxmana);
 						} else {
@@ -1089,13 +1089,13 @@ static void ARX_DAMAGES_UpdateDamage(DamageHandle j, float now) {
 						}
 					} else {
 						float damagesdone;
-						
+
 						// TODO copy-paste
 						if(handle == PlayerEntityHandle) {
 							if(damage.params.type & DAMAGE_TYPE_POISON) {
 								if(Random::getf(0.f, 100.f) > player.m_misc.resistPoison) {
 									// Failed Saving Throw
-									damagesdone = dmg; 
+									damagesdone = dmg;
 									player.poison += damagesdone;
 								} else {
 									damagesdone = 0;
@@ -1123,7 +1123,7 @@ static void ARX_DAMAGES_UpdateDamage(DamageHandle j, float now) {
 							) {
 								if(Random::getf(0.f, 100.f) > io->_npcdata->resist_poison) {
 									// Failed Saving Throw
-									damagesdone = dmg; 
+									damagesdone = dmg;
 									io->_npcdata->poisonned += damagesdone;
 								} else {
 									damagesdone = 0;
@@ -1159,14 +1159,14 @@ static void ARX_DAMAGES_UpdateDamage(DamageHandle j, float now) {
 				Sphere sphere;
 				sphere.origin = damage.params.pos;
 				sphere.radius = damage.params.radius + 15.f;
-				
+
 				if(CheckIOInSphere(sphere, *io)) {
 					ARX_DAMAGES_DamageFIX(io, dmg, damage.params.source, true);
 				}
 			}
 		}
 	}
-	
+
 	if(damage.params.duration == -1)
 		damage.exist = false;
 	else if(now > damage.start_time + damage.params.duration)
@@ -1174,21 +1174,21 @@ static void ARX_DAMAGES_UpdateDamage(DamageHandle j, float now) {
 }
 
 void ARX_DAMAGES_UpdateAll() {
-	
+
 	ARX_PROFILE_FUNC();
-	
+
 	for (size_t j = 0; j < MAX_DAMAGES; j++)
 		ARX_DAMAGES_UpdateDamage(DamageHandle(j), arxtime.now_f());
 }
 
 static bool SphereInIO(Entity * io, const Sphere & sphere) {
-	
+
 	if(!io || !io->obj)
 		return false;
 
 	long step;
 	long nbv = io->obj->vertexlist.size();
-	
+
 	if(nbv < 150)
 		step = 1;
 	else if(nbv < 300)
@@ -1205,7 +1205,7 @@ static bool SphereInIO(Entity * io, const Sphere & sphere) {
 			return true;
 		}
 	}
-	
+
 	return false;
 }
 
@@ -1254,7 +1254,7 @@ bool ARX_DAMAGES_TryToDoDamage(const Vec3f & pos, float dmg, float radius, Entit
 }
 
 void CheckForIgnition(const Sphere & sphere, bool mode, long flag) {
-	
+
 	if(!(flag & 1))
 		for(size_t i = 0; i < MAX_LIGHTS; i++) {
 			EERIE_LIGHT * el = GLight[i];
@@ -1296,7 +1296,7 @@ void CheckForIgnition(const Sphere & sphere, bool mode, long flag) {
 				} else if(!mode && io->ignition > 0) {
 					io->ignition = 0;
 					lightHandleDestroy(io->ignit_light);
-					
+
 					if(io->ignit_sound != audio::INVALID_ID) {
 						ARX_SOUND_Stop(io->ignit_sound);
 						io->ignit_sound = audio::INVALID_ID;
@@ -1308,20 +1308,20 @@ void CheckForIgnition(const Sphere & sphere, bool mode, long flag) {
 }
 
 void DoSphericDamage(const Sphere & sphere, float dmg, DamageArea flags, DamageType typ, EntityHandle numsource) {
-	
+
 	if(sphere.radius <= 0.f)
 		return;
-	
+
 	float rad = 1.f / sphere.radius;
 	bool validsource = ValidIONum(numsource);
-	
+
 	for(size_t i = 0; i < entities.size(); i++) {
 		const EntityHandle handle = EntityHandle(i);
 		Entity * ioo = entities[handle];
-		
+
 		if(!ioo || handle == numsource || !ioo->obj)
 			continue;
-			
+
 		if(   handle != PlayerEntityHandle
 		   && numsource != PlayerEntityHandle
 		   && validsource
@@ -1329,14 +1329,14 @@ void DoSphericDamage(const Sphere & sphere, float dmg, DamageArea flags, DamageT
 		) {
 			continue;
 		}
-		
+
 		if((ioo->ioflags & IO_CAMERA) || (ioo->ioflags & IO_MARKER))
 			continue;
-		
+
 		long count = 0;
 		long count2 = 0;
 		float mindist = std::numeric_limits<float>::max();
-		
+
 		for(size_t k = 0; k < ioo->obj->vertexlist.size(); k += 1) {
 			if(ioo->obj->vertexlist.size() < 120) {
 				for(size_t kk = 0; kk < ioo->obj->vertexlist.size(); kk += 1) {
@@ -1352,27 +1352,27 @@ void DoSphericDamage(const Sphere & sphere, float dmg, DamageArea flags, DamageT
 					}
 				}
 			}
-			
+
 			{
 			float dist = fdist(sphere.origin, entities[handle]->obj->vertexlist3[k].v);
-			
+
 			if(dist <= sphere.radius) {
 				count++;
-				
+
 				if(dist < mindist)
 					mindist = dist;
 			}
 			}
 		}
-		
+
 		float ratio = ((float)count / ((float)ioo->obj->vertexlist.size() * ( 1.0f / 2 )));
-		
+
 		if(count2 > count)
 			ratio = ((float)count2 / ((float)ioo->obj->vertexlist.size() * ( 1.0f / 2 )));
-		
+
 		if(ratio > 2.f)
 			ratio = 2.f;
-		
+
 		if(ioo->ioflags & IO_NPC) {
 			if(mindist <= sphere.radius + 30.f) {
 				switch (flags) {
@@ -1384,17 +1384,17 @@ void DoSphericDamage(const Sphere & sphere, float dmg, DamageArea flags, DamageT
 						break;
 					case DAMAGE_FULL: break;
 				}
-				
+
 				if(handle == PlayerEntityHandle) {
 					if(typ & DAMAGE_TYPE_FIRE) {
 						dmg = ARX_SPELLS_ApplyFireProtection(ioo, dmg);
 						ARX_DAMAGES_IgnitIO(entities.player(), dmg);
 					}
-					
+
 					if(typ & DAMAGE_TYPE_COLD) {
 						dmg = ARX_SPELLS_ApplyColdProtection(ioo, dmg);
 					}
-					
+
 					ARX_DAMAGES_DamagePlayer(dmg, typ, numsource);
 					ARX_DAMAGES_DamagePlayerEquipment(dmg);
 				} else {
@@ -1402,11 +1402,11 @@ void DoSphericDamage(const Sphere & sphere, float dmg, DamageArea flags, DamageT
 						dmg = ARX_SPELLS_ApplyFireProtection(ioo, dmg * ratio);
 						ARX_DAMAGES_IgnitIO(ioo, dmg);
 					}
-					
+
 					if(typ & DAMAGE_TYPE_COLD) {
 						dmg = ARX_SPELLS_ApplyColdProtection(ioo, dmg * ratio);
 					}
-					
+
 					ARX_DAMAGES_DamageNPC(ioo, dmg * ratio, numsource, true, &sphere.origin);
 				}
 			}
@@ -1416,17 +1416,17 @@ void DoSphericDamage(const Sphere & sphere, float dmg, DamageArea flags, DamageT
 					dmg = ARX_SPELLS_ApplyFireProtection(ioo, dmg * ratio);
 					ARX_DAMAGES_IgnitIO(entities[handle], dmg);
 				}
-				
+
 				if(typ & DAMAGE_TYPE_COLD) {
 					dmg = ARX_SPELLS_ApplyColdProtection(ioo, dmg * ratio);
 				}
-				
+
 				if(entities[handle]->ioflags & IO_FIX)
 					ARX_DAMAGES_DamageFIX(entities[handle], dmg * ratio, numsource, true);
 			}
 		}
 	}
-	
+
 	if (typ & DAMAGE_TYPE_FIRE)
 		CheckForIgnition(sphere, 1, 0);
 }
@@ -1508,7 +1508,7 @@ void ARX_DAMAGES_DamagePlayerEquipment(float damages)
 
 	if(ratio > 1.f)
 		ratio = 1.f;
-	
+
 	for(size_t i = 0; i < MAX_EQUIPED; i++) {
 		if(ValidIONum(player.equiped[i])) {
 			Entity * todamage = entities[player.equiped[i]];
@@ -1540,13 +1540,13 @@ float ARX_DAMAGES_ComputeRepairPrice(Entity * torepair, Entity * blacksmith)
 }
 
 void ARX_DAMAGES_DrawDebug() {
-	
+
 	for(size_t i = 0; i < MAX_DAMAGES; i++) {
 		if(!damages[i].exist)
 			continue;
-		
+
 		DAMAGE_INFO & d = damages[i];
-		
+
 		drawLineSphere(Sphere(d.params.pos, d.params.radius), Color::red);
 	}
 }

@@ -21,22 +21,22 @@
 ARX FATALIS GPL Source Code
 Copyright (C) 1999-2010 Arkane Studios SA, a ZeniMax Media company.
 
-This file is part of the Arx Fatalis GPL Source Code ('Arx Fatalis Source Code'). 
+This file is part of the Arx Fatalis GPL Source Code ('Arx Fatalis Source Code').
 
-Arx Fatalis Source Code is free software: you can redistribute it and/or modify it under the terms of the GNU General Public 
+Arx Fatalis Source Code is free software: you can redistribute it and/or modify it under the terms of the GNU General Public
 License as published by the Free Software Foundation, either version 3 of the License, or (at your option) any later version.
 
-Arx Fatalis Source Code is distributed in the hope that it will be useful, but WITHOUT ANY WARRANTY; without even the implied 
+Arx Fatalis Source Code is distributed in the hope that it will be useful, but WITHOUT ANY WARRANTY; without even the implied
 warranty of MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE. See the GNU General Public License for more details.
 
-You should have received a copy of the GNU General Public License along with Arx Fatalis Source Code.  If not, see 
+You should have received a copy of the GNU General Public License along with Arx Fatalis Source Code.  If not, see
 <http://www.gnu.org/licenses/>.
 
-In addition, the Arx Fatalis Source Code is also subject to certain additional terms. You should have received a copy of these 
-additional terms immediately following the terms and conditions of the GNU General Public License which accompanied the Arx 
+In addition, the Arx Fatalis Source Code is also subject to certain additional terms. You should have received a copy of these
+additional terms immediately following the terms and conditions of the GNU General Public License which accompanied the Arx
 Fatalis Source Code. If not, please request a copy in writing from Arkane Studios at the address below.
 
-If you have questions concerning this license or the applicable additional terms, you may contact in writing Arkane Studios, c/o 
+If you have questions concerning this license or the applicable additional terms, you may contact in writing Arkane Studios, c/o
 ZeniMax Media Inc., Suite 120, Rockville, Maryland 20850 USA.
 ===========================================================================
 */
@@ -145,26 +145,26 @@ unsigned char ucFlick=0;
 SpellManager spells;
 
 void SpellManager::init() {
-	
+
 	for(size_t i = 0; i < MAX_SPELLS; i++) {
 		m_spells[i] = NULL;
 	}
-	
+
 	spellRecognitionInit();
-	
+
 	RuneInfosFill();
 	ARX_SPELLS_Init_Rects();
 }
 
 void SpellManager::clearAll() {
-	
+
 	for(size_t i = 0; i < MAX_SPELLS; i++) {
 		SpellBase * spell = m_spells[i];
-		
+
 		if(spell) {
 			delete spell;
 		}
-		
+
 		m_spells[i] = NULL;
 	}
 }
@@ -179,10 +179,10 @@ void SpellManager::endSpell(SpellBase * spell)
 }
 
 void SpellManager::endByCaster(EntityHandle caster) {
-	
+
 	for(size_t i = 0; i < MAX_SPELLS; i++) {
 		SpellBase * spell = m_spells[i];
-		
+
 		if(spell && spell->m_caster == caster) {
 			spells.endSpell(spell);
 		}
@@ -200,7 +200,7 @@ void SpellManager::endByType(SpellType type)
 {
 	for(size_t i = 0; i < MAX_SPELLS; i++) {
 		SpellBase * spell = m_spells[i];
-		
+
 		if(spell && spell->m_type == type) {
 			spells.endSpell(spell);
 		}
@@ -208,10 +208,10 @@ void SpellManager::endByType(SpellType type)
 }
 
 void SpellManager::endByCaster(EntityHandle caster, SpellType type) {
-	
+
 	for(size_t i = 0; i < MAX_SPELLS; i++) {
 		SpellBase * spell = m_spells[i];
-		
+
 		if(spell && spell->m_type == type && spell->m_caster == caster) {
 			spells.endSpell(spell);
 			return;
@@ -220,35 +220,35 @@ void SpellManager::endByCaster(EntityHandle caster, SpellType type) {
 }
 
 bool SpellManager::ExistAnyInstanceForThisCaster(SpellType typ, EntityHandle caster) {
-	
+
 	for(size_t i = 0; i < MAX_SPELLS; i++) {
 		const SpellBase * spell = m_spells[i];
-		
+
 		if(spell && spell->m_type == typ && spell->m_caster == caster) {
 			return true;
 		}
 	}
-	
+
 	return false;
 }
 
 SpellBase *SpellManager::getSpellByCaster(EntityHandle caster, SpellType type) {
-	
+
 	if(caster == EntityHandle())
 		return NULL;
-	
+
 	for(size_t i = 0; i < MAX_SPELLS; i++) {
 		SpellBase * spell = m_spells[i];
 		if(!spell)
 			continue;
-		
+
 		if(spell->m_type != type)
 			continue;
-		
+
 		if(spell->m_caster == caster)
 			return spell;
 	}
-	
+
 	return NULL;
 }
 
@@ -256,27 +256,27 @@ SpellBase * SpellManager::getSpellOnTarget(EntityHandle target, SpellType type)
 {
 	if(target == EntityHandle())
 		return NULL;
-	
+
 	for(size_t i = 0; i < MAX_SPELLS; i++) {
 		SpellBase * spell = m_spells[i];
 		if(!spell)
 			continue;
-		
+
 		if(spell->m_type != type)
 			continue;
-		
+
 		if(std::find(spell->m_targets.begin(), spell->m_targets.end(), target) != spell->m_targets.end()) {
 			return spell;
 		}
 	}
-	
+
 	return NULL;
 }
 
 void SpellManager::replaceCaster(EntityHandle oldCaster, EntityHandle newCaster) {
 	for(size_t i = 0; i < MAX_SPELLS; i++) {
 		SpellBase * spell = m_spells[i];
-		
+
 		if(spell && spell->m_caster == oldCaster) {
 			spell->m_caster = newCaster;
 		}
@@ -284,12 +284,12 @@ void SpellManager::replaceCaster(EntityHandle oldCaster, EntityHandle newCaster)
 }
 
 void SpellManager::removeTarget(Entity *io) {
-	
+
 	for(size_t i = 0; i < MAX_SPELLS; i++) {
 		SpellBase * spell = m_spells[i];
 		if(!spell)
 			continue;
-		
+
 		spell->m_targets.erase(std::remove(spell->m_targets.begin(), spell->m_targets.end(), io->index()), spell->m_targets.end());
 	}
 }
@@ -298,7 +298,7 @@ bool SpellManager::hasFreeSlot()
 {
 	for(size_t i = 0; i < MAX_SPELLS; i++) {
 		SpellBase * spell = m_spells[i];
-		
+
 		if(!spell) {
 			return true;
 		}
@@ -329,7 +329,7 @@ void SpellManager::freeSlot(SpellBase * spell)
 }
 
 static const char * MakeSpellName(SpellType num) {
-	
+
 	switch(num) {
 		// Level 1
 		case SPELL_MAGIC_SIGHT           : return "magic_sight";
@@ -349,26 +349,26 @@ static const char * MakeSpellName(SpellType num) {
 		case SPELL_FIREBALL              : return "fireball";
 		case SPELL_CREATE_FOOD           : return "create_food";
 		case SPELL_ICE_PROJECTILE        : return "ice_projectile";
-		// Level 4 
+		// Level 4
 		case SPELL_BLESS                 : return "bless";
 		case SPELL_DISPELL_FIELD         : return "dispell_field";
 		case SPELL_FIRE_PROTECTION       : return "fire_protection";
 		case SPELL_TELEKINESIS           : return "telekinesis";
 		case SPELL_CURSE                 : return "curse";
 		case SPELL_COLD_PROTECTION       : return "cold_protection";
-		// Level 5 
+		// Level 5
 		case SPELL_RUNE_OF_GUARDING      : return "rune_of_guarding";
 		case SPELL_LEVITATE              : return "levitate";
 		case SPELL_CURE_POISON           : return "cure_poison";
 		case SPELL_REPEL_UNDEAD          : return "repel_undead";
 		case SPELL_POISON_PROJECTILE     : return "poison_projectile";
-		// Level 6 
+		// Level 6
 		case SPELL_RISE_DEAD             : return "raise_dead";
 		case SPELL_PARALYSE              : return "paralyse";
 		case SPELL_CREATE_FIELD          : return "create_field";
 		case SPELL_DISARM_TRAP           : return "disarm_trap";
 		case SPELL_SLOW_DOWN             : return "slowdown";
-		// Level 7  
+		// Level 7
 		case SPELL_FLYING_EYE            : return "flying_eye";
 		case SPELL_FIRE_FIELD            : return "fire_field";
 		case SPELL_ICE_FIELD             : return "ice_field";
@@ -397,16 +397,16 @@ static const char * MakeSpellName(SpellType num) {
 }
 
 static void SPELLCAST_Notify(const SpellBase & spell) {
-	
+
 	EntityHandle source = spell.m_caster;
-	
+
 	const char * spellName = MakeSpellName(spell.m_type);
 	if(!spellName)
 		return;
-	
+
 	for(size_t i = 0; i < entities.size(); i++) {
 		const EntityHandle handle = EntityHandle(i);
-		
+
 		if(entities[handle] != NULL) {
 			EVENT_SENDER = (source != EntityHandle()) ? entities[source] : NULL;
 			char param[256];
@@ -417,13 +417,13 @@ static void SPELLCAST_Notify(const SpellBase & spell) {
 }
 
 static void SPELLCAST_NotifyOnlyTarget(const SpellBase & spell) {
-	
+
 	if(!ValidIONum(spell.m_target))
 		return;
-	
+
 	EntityHandle source = spell.m_caster;
 	const char * spellName = MakeSpellName(spell.m_type);
-	
+
 	if(spellName) {
 		if(source != EntityHandle())
 			EVENT_SENDER = entities[source];
@@ -437,13 +437,13 @@ static void SPELLCAST_NotifyOnlyTarget(const SpellBase & spell) {
 }
 
 static void SPELLEND_Notify(const SpellBase & spell) {
-	
+
 	EntityHandle source = spell.m_caster;
 	const char * spellName = MakeSpellName(spell.m_type);
 
 	if(spell.m_type == SPELL_CONFUSE) {
 		EVENT_SENDER = ValidIONum(source) ? entities[source] : NULL;
-		
+
 		if(ValidIONum(spell.m_target)) {
 			if(spellName) {
 				Entity * targ = entities[spell.m_target];
@@ -454,18 +454,18 @@ static void SPELLEND_Notify(const SpellBase & spell) {
 		}
 		return;
 	}
-	
+
 	// we only notify player spells end.
 	if(!spellName) {
 		return;
 	}
-	
+
 	for(size_t i = 0; i < entities.size(); i++) {
 		const EntityHandle handle = EntityHandle(i);
-		
+
 		if(entities[handle]) {
 			EVENT_SENDER = ValidIONum(source) ? entities[source] : NULL;
-			
+
 			char param[128];
 			sprintf(param, "%s %ld", spellName, (long)spell.m_level);
 			SendIOScriptEvent(entities[handle], SM_SPELLEND, param);
@@ -475,9 +475,9 @@ static void SPELLEND_Notify(const SpellBase & spell) {
 
 //! Plays the sound of Fizzling spell
 void ARX_SPELLS_Fizzle(SpellBase * spell) {
-	
+
 	spells.endSpell(spell);
-	
+
 	if(ValidIONum(spell->m_caster)) {
 		ARX_SOUND_PlaySFX(SND_MAGIC_FIZZLE, &spell->m_caster_pos);
 	}
@@ -486,14 +486,14 @@ void ARX_SPELLS_Fizzle(SpellBase * spell) {
 
 void ARX_SPELLS_ManageMagic() {
 	arx_assert(entities.player());
-	
+
 	if(ARXmenu.currentmode!=AMCM_OFF)
 		return;
 
 	Entity *io = entities.player();
-	
+
 	const ANIM_HANDLE * anim = io->animlayer[1].cur_anim;
-	
+
 	if(   anim == io->anims[ANIM_BARE_UNREADY]
 	   || anim == io->anims[ANIM_DAGGER_UNREADY_PART_1]
 	   || anim == io->anims[ANIM_1H_UNREADY_PART_1]
@@ -535,57 +535,57 @@ void ARX_SPELLS_ManageMagic() {
 				MAGICMODE = true;
 			}
 		}
-		
+
 		if(snip >= 2) {
 			if(!eeMousePressed1() && ARX_FLARES_broken == 0) {
 				ARX_FLARES_broken = 2;
 				MagicFlareChangeColor();
 			}
-			
+
 			if(eeMousePressed1()) {
 				Vec2s pos = DANAEMouse;
 				if(TRUE_PLAYER_MOUSELOOK_ON) {
 					pos = MemoMouse;
 				}
-				
+
 				unsigned long now = arxtime.now_ul();
-				
+
 				const unsigned long interval = 1000 / 60;
-				
+
 				if(ARX_FLARES_broken) {
 					g_LastFlarePosition = pos;
 					g_LastFlareTime = now - interval;
 				}
-				
+
 				if(now - g_LastFlareTime >= interval) {
-					
+
 					if(glm::distance(Vec2f(pos), Vec2f(g_LastFlarePosition)) > 14 * g_sizeRatio.y) {
 						FlareLine(g_LastFlarePosition, pos);
 						g_LastFlarePosition = pos;
 					}
-					
+
 					if(Random::getf() > 0.6f)
 						AddFlare(pos, 1.f, -1);
 					else
 						AddFlare(pos, 1.f, 3);
-					
+
 					g_LastFlareTime = now - std::min(now - g_LastFlareTime - interval, interval);
 				}
-				
+
 				ARX_FLARES_broken=0;
-				
+
 				if(!ARX_SOUND_IsPlaying(SND_MAGIC_DRAW))
 					ARX_SOUND_PlaySFX(SND_MAGIC_DRAW, NULL, 1.0F, ARX_SOUND_PLAY_LOOPED);
 			} else {
-				ARX_SOUND_Stop(SND_MAGIC_DRAW);				
+				ARX_SOUND_Stop(SND_MAGIC_DRAW);
 			}
-			
+
 			snip = 0;
 		}
 	} else {
 		ARX_FLARES_broken = 1;
 		MagicFlareChangeColor();
-		
+
 		if(player.doingmagic != 0) { //==2)
 			player.doingmagic = 0;//1
 			if(io->anims[ANIM_CAST_END]) {
@@ -594,10 +594,10 @@ void ARX_SPELLS_ManageMagic() {
 			ARX_FLARES_broken = 3;
 		}
 	}
-	
+
 	if(ARX_FLARES_broken == 3) {
 		CheatDetectionReset();
-		
+
 		if(CurrSpellSymbol != 0) {
 			if(!ARX_SPELLS_AnalyseSPELL()) {
 				if(io->anims[ANIM_CAST]) {
@@ -631,13 +631,13 @@ void ARX_SPELLS_ManageMagic() {
 
 		if(!SpellMoves.empty())
 			ARX_SPELLS_AnalyseSYMBOL();
-	
+
 		ARX_FLARES_broken = 1;
 	}
 }
 
 static bool CanPayMana(SpellBase * spell, float cost, bool _bSound = true) {
-	
+
 	if(spell->m_flags & SPELLCAST_FLAG_NOMANA)
 		return true;
 
@@ -669,13 +669,13 @@ static bool CanPayMana(SpellBase * spell, float cost, bool _bSound = true) {
 }
 
 static EntityHandle TemporaryGetSpellTarget(const Vec3f & from) {
-	
+
 	float mindist = std::numeric_limits<float>::max();
 	EntityHandle found = PlayerEntityHandle;
 	for(size_t i = 1; i < entities.size(); i++) {
 		const EntityHandle handle = EntityHandle(i);
 		Entity * e = entities[handle];
-		
+
 		if(e && e->ioflags & IO_NPC) {
 			float dist = glm::distance2(from, e->pos);
 			if(dist < mindist) {
@@ -684,7 +684,7 @@ static EntityHandle TemporaryGetSpellTarget(const Vec3f & from) {
 			}
 		}
 	}
-	
+
 	return found;
 }
 
@@ -754,13 +754,13 @@ float ARX_SPELLS_ApplyColdProtection(Entity * io,float damages)
 }
 
 float ARX_SPELLS_GetManaCost(SpellType spell, float casterLevel) {
-	
+
 	// TODO this data should not be hardcoded
-	
+
 	switch(spell)  {
-		
+
 		default:                          return   0.f;
-		
+
 		case SPELL_TELEKINESIS:           return   0.001f;
 		case SPELL_CURSE:                 return   0.001f;
 		case SPELL_ARMOR:                 return   0.01f;
@@ -801,7 +801,7 @@ float ARX_SPELLS_GetManaCost(SpellType spell, float casterLevel) {
 		case SPELL_EXPLOSION:             return  45.f;
 		case SPELL_FREEZE_TIME:           return  60.f;
 		case SPELL_MASS_INCINERATE:       return 160.f;
-		
+
 		case SPELL_CONFUSE:               return casterLevel * 0.1f;
 		case SPELL_MAGIC_MISSILE:         return casterLevel * 1.f;
 		case SPELL_ICE_PROJECTILE:        return casterLevel * 1.5f;
@@ -811,10 +811,10 @@ float ARX_SPELLS_GetManaCost(SpellType spell, float casterLevel) {
 		case SPELL_MASS_PARALYSE:         return casterLevel * 3.f;
 		case SPELL_LIGHTNING_STRIKE:      return casterLevel * 6.f;
 		case SPELL_MASS_LIGHTNING_STRIKE: return casterLevel * 8.f;
-		
+
 		case SPELL_SUMMON_CREATURE:       return (casterLevel < 9) ? 20.f : 80.f;
 		case SPELL_FAKE_SUMMON:           return (casterLevel < 9) ? 20.f : 80.f;
-		
+
 	}
 }
 
@@ -883,22 +883,22 @@ static SpellBase * createSpellInstance(SpellType type) {
 		case SPELL_MASS_INCINERATE: return new MassIncinerateSpell();
 		case SPELL_TELEPORT: return new TeleportSpell();
 	}
-	
+
 	return NULL;
 }
 
 
 
 bool ARX_SPELLS_Launch(SpellType typ, EntityHandle source, SpellcastFlags flags, long level, EntityHandle target, long duration) {
-	
+
 	if(cur_rf == 3) {
-		flags |= SPELLCAST_FLAG_NOCHECKCANCAST | SPELLCAST_FLAG_NOMANA;	
+		flags |= SPELLCAST_FLAG_NOCHECKCANCAST | SPELLCAST_FLAG_NOMANA;
 	}
 
 	if(sp_max) {
 		level = std::max(level, 15L);
 	}
-	
+
 	if(   source == PlayerEntityHandle
 	   && !(flags & SPELLCAST_FLAG_NOCHECKCANCAST)
 	) {
@@ -913,9 +913,9 @@ bool ARX_SPELLS_Launch(SpellType typ, EntityHandle source, SpellcastFlags flags,
 			}
 		}
 	}
-	
+
 	float playerSpellLevel = 0;
-	
+
 	if(source == PlayerEntityHandle) {
 		ARX_SPELLS_ResetRecognition();
 
@@ -933,7 +933,7 @@ bool ARX_SPELLS_Launch(SpellType typ, EntityHandle source, SpellcastFlags flags,
 			playerSpellLevel = static_cast<float>(level);
 		}
 	}
-	
+
 	// Todo what was this assert supposed to do ?
 	// arx_assert(!(source && (flags & SPELLCAST_FLAG_PRECAST)));
 
@@ -949,7 +949,7 @@ bool ARX_SPELLS_Launch(SpellType typ, EntityHandle source, SpellcastFlags flags,
 		ARX_SPELLS_Precast_Add(typ, l, flgs, duration);
 		return true;
 	}
-	
+
 	if(target == EntityHandle() && source == PlayerEntityHandle)
 	switch(typ) {
 		case SPELL_LOWER_ARMOR:
@@ -967,8 +967,8 @@ bool ARX_SPELLS_Launch(SpellType typ, EntityHandle source, SpellcastFlags flags,
 			t_spell.target					= target;
 			t_spell.duration				= duration;
 			return false;
-		}			
-		case SPELL_ENCHANT_WEAPON:		
+		}
+		case SPELL_ENCHANT_WEAPON:
 		{
 			LOOKING_FOR_SPELL_TARGET_TIME	= arxtime.now_ul();
 			LOOKING_FOR_SPELL_TARGET		= 2;
@@ -978,7 +978,7 @@ bool ARX_SPELLS_Launch(SpellType typ, EntityHandle source, SpellcastFlags flags,
 			t_spell.target					= target;
 			t_spell.duration				= duration;
 			return false;
-		}	
+		}
 		break;
 		case SPELL_CONTROL_TARGET:
 		{
@@ -992,7 +992,7 @@ bool ARX_SPELLS_Launch(SpellType typ, EntityHandle source, SpellcastFlags flags,
 			for(size_t ii = 1 ; ii < entities.size(); ii++) {
 				const EntityHandle handle = EntityHandle(ii);
 				Entity * ioo = entities[handle];
-				
+
 				if(ioo && (ioo->ioflags & IO_NPC) && ioo->_npcdata->lifePool.current > 0.f
 				   && ioo->show == SHOW_FLAG_IN_SCENE
 				   && ioo->groups.find("demon") != ioo->groups.end()
@@ -1027,26 +1027,26 @@ bool ARX_SPELLS_Launch(SpellType typ, EntityHandle source, SpellcastFlags flags,
 
 	if(!spells.hasFreeSlot())
 		return false;
-	
+
 	SpellBase * spell = createSpellInstance(typ);
 	if(!spell)
 		return false;
-	
+
 	if(ValidIONum(source) && spellicons[typ].bAudibleAtStart) {
 		ARX_NPC_SpawnAudibleSound(entities[source]->pos, entities[source]);
 	}
-	
+
 	spell->m_caster = source; // Caster...
 	spell->m_target = target;
-	
+
 	if(target == EntityHandle())
 		spell->m_target = TemporaryGetSpellTarget(entities[spell->m_caster]->pos);
-	
+
 	spell->updateCasterHand();
 	spell->updateCasterPosition();
-	
+
 	float spellLevel;
-	
+
 	if(source == PlayerEntityHandle) {
 		// Player source
 		spellLevel = playerSpellLevel; // Level of caster
@@ -1058,11 +1058,11 @@ bool ARX_SPELLS_Launch(SpellType typ, EntityHandle source, SpellcastFlags flags,
 	if(flags & SPELLCAST_FLAG_LAUNCHPRECAST) {
 		spellLevel = static_cast<float>(level);
 	}
-	
+
 	if(cur_rf == 3) {
 		spellLevel += 2;
 	}
-	
+
 	spell->m_level = spellLevel;
 	spell->m_flags = flags;
 	spell->m_type = typ;
@@ -1074,29 +1074,29 @@ bool ARX_SPELLS_Launch(SpellType typ, EntityHandle source, SpellcastFlags flags,
 		delete spell;
 		return false;
 	}
-	
+
 	if(!GLOBAL_MAGIC_MODE) {
 		ARX_SOUND_PlaySFX(SND_MAGIC_FIZZLE);
 		delete spell;
 		return false;
 	}
-	
+
 	if(!spell->CanLaunch()) {
 		delete spell;
 		return false;
 	}
-	
+
 	spell->Launch();
-	
+
 	spells.addSpell(spell);
-	
+
 	// TODO inconsistent use of the SM_SPELLCAST event
 	if(typ == SPELL_CONFUSE || typ == SPELL_ENCHANT_WEAPON) {
 		SPELLCAST_NotifyOnlyTarget(*spell);
 	} else {
 		SPELLCAST_Notify(*spell);
 	}
-	
+
 	return true;
 }
 
@@ -1105,33 +1105,33 @@ bool ARX_SPELLS_Launch(SpellType typ, EntityHandle source, SpellcastFlags flags,
  * \brief Updates all currently working spells.
  */
 void ARX_SPELLS_Update() {
-	
+
 	ARX_PROFILE_FUNC();
-	
+
 	ucFlick++;
-	
+
 	const unsigned long now = arxtime.now_ul();
-	
+
 	for(size_t u = 0; u < MAX_SPELLS; u++) {
 		SpellBase * spell = spells[SpellHandle(u)];
 		if(!spell)
 			continue;
-		
+
 		if(!GLOBAL_MAGIC_MODE) {
 			spells.endSpell(spell);
 		}
-		
+
 		if(   spell->m_hasDuration
 		   && !CanPayMana(spell, spell->m_fManaCostPerSecond * g_framedelay * (1.f/1000), false)
 		) {
 			ARX_SPELLS_Fizzle(spell);
 		}
-		
+
 		const long framediff = spell->m_timcreation + spell->m_duration - now;
-		
+
 		if(framediff < 0) {
 			SPELLEND_Notify(*spell);
-			
+
 			spell->End();
 			spells.freeSlot(spell);
 			continue;
@@ -1178,21 +1178,21 @@ void TryToCastSpell(Entity * io, SpellType spellType, long level, EntityHandle t
 
 	io->spellcast_data.duration = duration;
 	io->spellcast_data.target = target;
-	
+
 	io->gameFlags &=~GFLAG_INVISIBILITY;
-	
+
 	if (	((io->spellcast_data.spell_flags & SPELLCAST_FLAG_NOANIM)
 		&&	(io->spellcast_data.spell_flags & SPELLCAST_FLAG_NODRAW) )
-		||	(io->spellcast_data.spell_flags & SPELLCAST_FLAG_PRECAST))	
+		||	(io->spellcast_data.spell_flags & SPELLCAST_FLAG_PRECAST))
 	{
-		
+
 		ARX_SPELLS_Launch(io->spellcast_data.castingspell,
 		                  io->index(),
 		                  io->spellcast_data.spell_flags,
 		                  io->spellcast_data.spell_level,
 		                  io->spellcast_data.target,
 		                  io->spellcast_data.duration);
-		
+
 		io->spellcast_data.castingspell = SPELL_NONE;
 	}
 

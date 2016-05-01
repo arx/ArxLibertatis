@@ -21,22 +21,22 @@
 ARX FATALIS GPL Source Code
 Copyright (C) 1999-2010 Arkane Studios SA, a ZeniMax Media company.
 
-This file is part of the Arx Fatalis GPL Source Code ('Arx Fatalis Source Code'). 
+This file is part of the Arx Fatalis GPL Source Code ('Arx Fatalis Source Code').
 
-Arx Fatalis Source Code is free software: you can redistribute it and/or modify it under the terms of the GNU General Public 
+Arx Fatalis Source Code is free software: you can redistribute it and/or modify it under the terms of the GNU General Public
 License as published by the Free Software Foundation, either version 3 of the License, or (at your option) any later version.
 
-Arx Fatalis Source Code is distributed in the hope that it will be useful, but WITHOUT ANY WARRANTY; without even the implied 
+Arx Fatalis Source Code is distributed in the hope that it will be useful, but WITHOUT ANY WARRANTY; without even the implied
 warranty of MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE. See the GNU General Public License for more details.
 
-You should have received a copy of the GNU General Public License along with Arx Fatalis Source Code.  If not, see 
+You should have received a copy of the GNU General Public License along with Arx Fatalis Source Code.  If not, see
 <http://www.gnu.org/licenses/>.
 
-In addition, the Arx Fatalis Source Code is also subject to certain additional terms. You should have received a copy of these 
-additional terms immediately following the terms and conditions of the GNU General Public License which accompanied the Arx 
+In addition, the Arx Fatalis Source Code is also subject to certain additional terms. You should have received a copy of these
+additional terms immediately following the terms and conditions of the GNU General Public License which accompanied the Arx
 Fatalis Source Code. If not, please request a copy in writing from Arkane Studios at the address below.
 
-If you have questions concerning this license or the applicable additional terms, you may contact in writing Arkane Studios, c/o 
+If you have questions concerning this license or the applicable additional terms, you may contact in writing Arkane Studios, c/o
 ZeniMax Media Inc., Suite 120, Rockville, Maryland 20850 USA.
 ===========================================================================
 */
@@ -113,21 +113,21 @@ Vec2s sInventoryPos = Vec2s(-1, -1);
 void ARX_INVENTORY_Declare_InventoryIn(Entity * io) {
 	if(!io)
 		return;
-	
+
 	io->show = SHOW_FLAG_IN_INVENTORY;
-	
+
 	if(io->ignition > 0) {
-		
+
 		lightHandleDestroy(io->ignit_light);
-		
+
 		if (io->ignit_sound != audio::INVALID_ID) {
 			ARX_SOUND_Stop(io->ignit_sound);
 			io->ignit_sound = audio::INVALID_ID;
 		}
-		
+
 		io->ignition = 0;
 	}
-	
+
 	EVENT_SENDER = io;
 	SendIOScriptEvent(entities.player(), SM_INVENTORYIN);
 	EVENT_SENDER = entities.player();
@@ -139,16 +139,16 @@ void ARX_INVENTORY_Declare_InventoryIn(Entity * io) {
  * \brief Cleans Player inventory
  */
 void CleanInventory() {
-	
+
 	for(size_t bag = 0; bag < INVENTORY_BAGS; bag++)
 	for(size_t y = 0; y < INVENTORY_Y; y++)
 	for(size_t x = 0; x < INVENTORY_X; x++) {
 		INVENTORY_SLOT & slot = inventory[bag][x][y];
-		
+
 		slot.io	 = NULL;
 		slot.show = true;
 	}
-	
+
 	g_currentInventoryBag = 0;
 }
 
@@ -185,14 +185,14 @@ void PutInFrontOfPlayer(Entity * io)
 {
 	if(!io)
 		return;
-	
+
 	io->pos = player.pos;
 	io->pos += angleToVectorXZ(player.angle.getPitch()) * 80.f;
 	io->pos += Vec3f(0.f, 20.f, 0.f);
-	
+
 	io->velocity.y = 0.3f;
-	io->velocity.x = 0; 
-	io->velocity.z = 0; 
+	io->velocity.x = 0;
+	io->velocity.z = 0;
 	io->angle = Anglef::ZERO;
 	io->stopped = 0;
 	io->show = SHOW_FLAG_IN_SCENE;
@@ -264,38 +264,38 @@ struct ItemSizeComaparator {
 // TODO this class should probably be used directly in player and IO objects
 template <size_t MaxBags, size_t MaxWidth, size_t MaxHeight>
 class Inventory {
-	
+
 	typedef InventoryPos Pos;
-	
+
 public:
-	
+
 	typedef InventoryArray<MaxBags, MaxWidth, MaxHeight> Array;
 	typedef typename Array::type array_type;
 	typedef unsigned short size_type;
 	typedef InventoryPos::index_type index_type;
-	
+
 private:
-	
+
 	long io;
 	array_type & data;
 	size_type bags;
 	size_type width;
 	size_type height;
-	
+
 	INVENTORY_SLOT & index(index_type bag, index_type x, index_type y) {
 		return Array::index(data, bag, x, y);
 	}
 	const INVENTORY_SLOT & index(index_type bag, index_type x, index_type y) const {
 		return Array::index(data, bag, x, y);
 	}
-	
+
 	INVENTORY_SLOT & index(const InventoryPos & pos) {
 		return index(pos.bag, pos.x, pos.y);
 	}
 	const INVENTORY_SLOT & index(const InventoryPos & pos) const {
 		return index(pos.bag, pos.x, pos.y);
 	}
-	
+
 	Pos insertImpl(Entity * item) {
 		arx_assert(item != NULL && (item->ioflags & IO_ITEM));
 		if(Pos pos = insertIntoStack(item)) {
@@ -303,7 +303,7 @@ private:
 		}
 		return insertIntoNewSlot(item);
 	}
-	
+
 	Pos insertImpl(Entity * item, const Pos & pos) {
 		arx_assert(item != NULL && (item->ioflags & IO_ITEM));
 		if(insertIntoStackAt(item, pos)) {
@@ -317,19 +317,19 @@ private:
 		}
 		return insertIntoNewSlot(item);
 	}
-	
+
 	void removeAt(const Entity * item, const Pos & pos) {
-		
+
 		arx_assert(item != NULL && (item->ioflags & IO_ITEM));
 		arx_assert(pos.x + item->m_inventorySize.x <= width);
 		arx_assert(pos.y + item->m_inventorySize.y <= height);
 		arx_assert(index(pos).io == item);
-		
+
 		LogDebug(" - " << pos << " remove " << item->idString()
 		         << " [" << item->_itemdata->count << '/'
 		         << item->_itemdata->playerstacksize << "]: "
 		         << int(item->m_inventorySize.x) << 'x' << int(item->m_inventorySize.y));
-		
+
 		for(index_type j = pos.y; j < (pos.y + size_type(item->m_inventorySize.y)); j++) {
 			for(index_type i = pos.x; i < (pos.x + size_type(item->m_inventorySize.x)); i++) {
 				index(pos.bag, i, j).io = NULL;
@@ -337,19 +337,19 @@ private:
 			}
 		}
 	}
-	
+
 	bool insertIntoNewSlotAt(Entity * item, const Pos & pos) {
-		
+
 		if(!pos || pos.bag >= bags) {
 			return false;
 		}
-		
+
 		if(pos.x + item->m_inventorySize.x > width || pos.y + item->m_inventorySize.y > height) {
 			return false;
 		}
-		
+
 		arx_assert(item != NULL && (item->ioflags & IO_ITEM));
-		
+
 		// Check if the whole area required by this item is empty
 		for(index_type j = pos.y; j < pos.y + item->m_inventorySize.y; j++) {
 			for(index_type i = pos.x; i < pos.x + item->m_inventorySize.x; i++) {
@@ -358,12 +358,12 @@ private:
 				}
 			}
 		}
-		
+
 		LogDebug(" - " << pos << " := " << item->idString()
 		         << " [" << item->_itemdata->count << '/'
 		         << item->_itemdata->playerstacksize << "]: "
 		         << int(item->m_inventorySize.x) << 'x' << int(item->m_inventorySize.y));
-		
+
 		// Insert the item at the found position
 		for(index_type j = pos.y; j < (pos.y + item->m_inventorySize.y); j++) {
 			for (index_type i = pos.x; i < (pos.x + item->m_inventorySize.x); i++) {
@@ -372,23 +372,23 @@ private:
 			}
 		}
 		index(pos).show = true;
-		
+
 		return true;
 	}
-	
+
 	Pos insertIntoNewSlot(Entity * item) {
-		
+
 		arx_assert(item != NULL && (item->ioflags & IO_ITEM));
-		
+
 		for(index_type bag = 0; bag < bags; bag++) {
 			for(index_type i = 0; i < width + 1 - item->m_inventorySize.x; i++) {
 				for(index_type j = 0; j < height + 1 - item->m_inventorySize.y; j++) {
-					
+
 					// Ignore already used inventory slots
 					if(index(bag, i, j).io != NULL) {
 						continue;
 					}
-					
+
 					Pos pos(io, bag, i, j);
 					if(insertIntoNewSlotAt(item, pos)) {
 						return pos;
@@ -396,60 +396,60 @@ private:
 				}
 			}
 		}
-		
+
 		return Pos();
 	}
-	
+
 	bool insertIntoStackAt(Entity * item, const Pos & pos) {
-		
+
 		if(!pos || pos.bag >= bags) {
 			return false;
 		}
-		
+
 		if(pos.x + item->m_inventorySize.x > width || pos.y + item->m_inventorySize.y > height) {
 			return false;
 		}
-		
+
 		arx_assert(item != NULL && (item->ioflags & IO_ITEM));
-		
+
 		Entity * io = index(pos).io;
-		
+
 		// Ignore empty slots and different or non-stackeable items
 		if(!io || io->_itemdata->playerstacksize <= 1 || !IsSameObject(item, io)) {
 			return false;
 		}
-		
+
 		// Ignore full stacks
 		if(io->_itemdata->count >= io->_itemdata->playerstacksize) {
 			return false;
 		}
-		
+
 		// Get the number of items to add to the stack
 		short int remainingSpace = io->_itemdata->playerstacksize - io->_itemdata->count;
 		short int count = std::min(item->_itemdata->count, remainingSpace);
-		
+
 		LogDebug(" - " << pos << " " << io->idString()
 		         << " [" << io->_itemdata->count << '/'
 		         << io->_itemdata->playerstacksize << "] += "
 		         << item->idString() << " x" << count << '/' << item->_itemdata->count);
-		
+
 		io->_itemdata->count += count, item->_itemdata->count -= count;
-		
+
 		if(item->_itemdata->count != 0) {
 			// We inserted some of the items into the stack, but there was not enough
 			// space for all of them.
 			return false;
 		}
-		
+
 		// Delete the old item
 		item->destroy();
 		return true;
 	}
-	
+
 	Pos insertIntoStack(Entity * item) {
-		
+
 		arx_assert(item != NULL && (item->ioflags & IO_ITEM));
-		
+
 		// Try to add the items to an existing stack
 		for(index_type bag = 0; bag < bags; bag++) {
 			for(index_type i = 0; i < width + 1 - size_type(item->m_inventorySize.x); i++) {
@@ -461,18 +461,18 @@ private:
 				}
 			}
 		}
-		
+
 		return Pos();
 	}
-	
+
 public:
-	
+
 	Inventory(long io, array_type & data, size_type bags, size_type width, size_type height)
 		: io(io), data(data), bags(bags), width(width), height(height) { }
-		
+
 	Inventory(const Inventory & o)
 		: io(o.io), data(o.data), bags(o.bags), width(o.width), height(o.height) { }
-	
+
 	/*!
 	 * Insert an item into the inventory
 	 * The item will be added to existing stacks if possible.
@@ -493,7 +493,7 @@ public:
 		}
 		return false;
 	}
-	
+
 	/*!
 	 * Insert an item into the inventory
 	 * The item will be added to existing stacks if possible.
@@ -515,12 +515,12 @@ public:
 		}
 		return false;
 	}
-	
+
 	//! Sort the inventory and stack duplicate items
 	void optimize() {
-		
+
 		LogDebug("collecting items");
-		
+
 		// Collect all inventory items
 		std::vector<Entity *> items;
 		for(size_t bag = 0; bag < bags; bag++) {
@@ -536,10 +536,10 @@ public:
 				}
 			}
 		}
-		
+
 		// Sort the items by their size and name
 		std::sort(items.begin(), items.end(), ItemSizeComaparator());
-		
+
 		LogDebug("sorting");
 	#ifdef ARX_DEBUG
 		BOOST_FOREACH(const Entity * item, items) {
@@ -547,9 +547,9 @@ public:
 							<< int(item->m_inventorySize.x) << 'x' << int(item->m_inventorySize.y));
 		}
 	#endif
-		
+
 		LogDebug("putting back items");
-		
+
 		// Now put the items back into the inventory
 		BOOST_FOREACH(Entity * item, items) {
 			if(!insertImpl(item)) {
@@ -561,7 +561,7 @@ public:
 			}
 		}
 	}
-	
+
 	/*!
 	 * Get the position of an item in the inventory.
 	 *
@@ -579,7 +579,7 @@ public:
 		}
 		return Pos();
 	}
-	
+
 	/*!
 	 * Remove an item from the inventory.
 	 * The item is not deleted.
@@ -606,11 +606,11 @@ public:
 		}
 		return pos;
 	}
-	
+
 	Entity * get(const Pos & pos) const {
 		return pos ? index(pos).io : NULL;
 	}
-	
+
 };
 
 Inventory<INVENTORY_BAGS, INVENTORY_X, INVENTORY_Y> getPlayerInventory() {
@@ -675,18 +675,18 @@ bool giveToPlayer(Entity * item, const InventoryPos & pos) {
 }
 
 InventoryPos removeFromInventories(Entity * item) {
-	
+
 	// TODO the item should know the inventory it is in and position
-	
+
 	InventoryPos oldPos = playerInventory.remove(item);
 	if(oldPos) {
 		return oldPos;
 	}
-	
+
 	for(size_t i = 1; i < entities.size(); i++) {
 		const EntityHandle handle = EntityHandle(i);
 		Entity * e = entities[handle];
-		
+
 		if(e && e->inventory) {
 			oldPos = getIoInventory(e).remove(item);
 			if(oldPos) {
@@ -694,21 +694,21 @@ InventoryPos removeFromInventories(Entity * item) {
 			}
 		}
 	}
-	
+
 	return InventoryPos();
 }
 
 InventoryPos locateInInventories(const Entity * item) {
-	
+
 	InventoryPos pos = playerInventory.locate(item);
 	if(pos) {
 		return pos;
 	}
-	
+
 	for(size_t i = 1; i < entities.size(); i++) {
 		const EntityHandle handle = EntityHandle(i);
 		Entity * e = entities[handle];
-		
+
 		if(e && e->inventory) {
 			pos = getIoInventory(e).locate(item);
 			if(pos) {
@@ -716,22 +716,22 @@ InventoryPos locateInInventories(const Entity * item) {
 			}
 		}
 	}
-	
+
 	return InventoryPos();
 }
 
 bool insertIntoInventory(Entity * item, const InventoryPos & pos) {
-	
+
 	if(pos.io == PlayerEntityHandle) {
 		return giveToPlayer(item, pos);
 	}
-	
+
 	if(ValidIONum(pos.io) && entities[pos.io]->inventory) {
 		if(getIoInventory(entities[pos.io]).insert(item, pos)) {
 			return true;
 		}
 	}
-	
+
 	PutInFrontOfPlayer(item);
 	return false;
 }
@@ -743,12 +743,12 @@ bool CanBePutInSecondaryInventory(INVENTORY_DATA * id, Entity * io)
 {
 	if(!id || !io)
 		return false;
-	
+
 	if(io->ioflags & IO_MOVABLE)
 		return false;
-	
+
 	const Vec2s s = io->m_inventorySize;
-	
+
 	// on essaie de le remettre à son ancienne place
 	if(   sInventory == 2
 	   && sInventoryPos.x >= 0
@@ -758,9 +758,9 @@ bool CanBePutInSecondaryInventory(INVENTORY_DATA * id, Entity * io)
 	) {
 		Vec2s pos = sInventoryPos;
 		// first try to stack
-		
+
 		Entity * ioo = id->slot[pos.x][pos.y].io;
-		
+
 		if(   ioo
 		   && ioo->_itemdata->playerstacksize > 1
 		   && IsSameObject(io, ioo)
@@ -773,21 +773,21 @@ bool CanBePutInSecondaryInventory(INVENTORY_DATA * id, Entity * io)
 				ioo->_itemdata->count += io->_itemdata->count;
 				ioo->scale = 1.f;
 			}
-			
+
 			io->destroy();
-			
+
 			sInventory = -1;
 			return true;
 		}
-		
+
 		ioo = id->slot[pos.x][pos.y].io;
-		
+
 		if(!ioo) {
 			long valid = 1;
-			
+
 			if(s.x == 0 || s.y == 0)
 				valid = 0;
-			
+
 			for(long y2 = pos.y; y2 < pos.y + s.y; y2++)
 			for(long x2 = pos.x; x2 < pos.x + s.x; x2++) {
 				if(id->slot[x2][y2].io != NULL) {
@@ -795,25 +795,25 @@ bool CanBePutInSecondaryInventory(INVENTORY_DATA * id, Entity * io)
 					break;
 				}
 			}
-			
+
 			if(valid) {
 				for(long y2 = pos.y; y2 < pos.y + s.y; y2++)
 				for(long x2 = pos.x; x2 < pos.x + s.x; x2++) {
 					id->slot[x2][y2].io = io;
 					id->slot[x2][y2].show = false;
 				}
-				
+
 				id->slot[pos.x][pos.y].show = true;
 				sInventory = -1;
 				return true;
 			}
 		}
 	}
-	
+
 	for(long y = 0; y <= id->m_size.y - s.y; y++)
 	for(long x = 0; x <= id->m_size.x - s.x; x++) {
 		Entity * ioo = id->slot[x][y].io;
-		
+
 		if(   ioo
 		   && ioo->_itemdata->playerstacksize > 1
 		   && IsSameObject(io, ioo)
@@ -826,23 +826,23 @@ bool CanBePutInSecondaryInventory(INVENTORY_DATA * id, Entity * io)
 				ioo->_itemdata->count += io->_itemdata->count;
 				ioo->scale = 1.f;
 			}
-			
+
 			io->destroy();
-			
+
 			return true;
 		}
 	}
-	
+
 	for(long y = 0; y <= id->m_size.y - s.y; y++)
 	for(long x = 0; x <= id->m_size.x - s.x; x++) {
 		Entity * ioo = id->slot[x][y].io;
-		
+
 		if(!ioo) {
 			long valid = 1;
-			
+
 			if(s.x == 0 || s.y == 0)
 				valid = 0;
-			
+
 			for(long y2 = y; y2 < y + s.y; y2++)
 			for(long x2 = x; x2 < x + s.x; x2++) {
 				if (id->slot[x2][y2].io != NULL) {
@@ -850,20 +850,20 @@ bool CanBePutInSecondaryInventory(INVENTORY_DATA * id, Entity * io)
 					break;
 				}
 			}
-			
+
 			if(valid) {
 				for(long y2 = y; y2 < y + s.y; y2++)
 				for(long x2 = x; x2 < x + s.x; x2++) {
 					id->slot[x2][y2].io = io;
 					id->slot[x2][y2].show = false;
 				}
-				
+
 				id->slot[x][y].show = true;
 				return true;
 			}
 		}
 	}
-	
+
 	return false;
 }
 
@@ -878,9 +878,9 @@ void PutInInventory() {
 	// Check Validity
 	if(!DRAGINTER || (DRAGINTER->ioflags & IO_MOVABLE))
 		return;
-	
+
 	g_secondaryInventoryHud.dropEntity();
-	
+
 	g_playerInventoryHud.dropEntity();
 }
 
@@ -902,7 +902,7 @@ Entity * GetFromInventory(const Vec2s & pos) {
 
 	if(!InInventoryPos(pos))
 		return NULL;
-	
+
 	Entity * result = g_secondaryInventoryHud.getObj(pos);
 	if(result)
 		return result;
@@ -919,7 +919,7 @@ Entity * GetFromInventory(const Vec2s & pos) {
  */
 Vec3f GetItemWorldPosition(Entity * io) {
 	arx_assert(io);
-	
+
 	// Is this object being Dragged by player ?
 	if(DRAGINTER == io) {
 		// Set position to approximate center of player.
@@ -933,16 +933,16 @@ Vec3f GetItemWorldPosition(Entity * io) {
 			// in player inventory
 			return player.pos + Vec3f(0.f, 80.f, 0.f);
 		}
-		
+
 		arx_assert(player.bag >= 0);
 		arx_assert(player.bag <= 3);
-		
+
 		// Is it in any player inventory ?
 		for(size_t bag = 0; bag < size_t(player.bag); bag++)
 		for(size_t y = 0; y < INVENTORY_Y; y++)
 		for(size_t x = 0; x < INVENTORY_X; x++) {
 			const INVENTORY_SLOT & slot = inventory[bag][x][y];
-			
+
 			if(slot.io == io) {
 				return player.pos + Vec3f(0.f, 80.f, 0.f);
 			}
@@ -952,10 +952,10 @@ Vec3f GetItemWorldPosition(Entity * io) {
 		for(size_t i = 0; i < entities.size(); i++) {
 			const EntityHandle handle = EntityHandle(i);
 			Entity * ioo = entities[handle];
-			
+
 			if(!ioo || !ioo->inventory)
 				continue;
-			
+
 			INVENTORY_DATA * id = ioo->inventory;
 			for(long j = 0; j < id->m_size.y; j++) {
 			for(long k = 0; k < id->m_size.x; k++) {
@@ -975,41 +975,41 @@ Vec3f GetItemWorldPosition(Entity * io) {
  * \brief Gets real world position for an IO to spawn a sound
  */
 Vec3f GetItemWorldPositionSound(const Entity * io) {
-	
+
 	arx_assert(io);
-	
+
 	if(DRAGINTER == io) {
 		return ARX_PLAYER_FrontPos();
 	}
-	
+
 	if(io->show != SHOW_FLAG_IN_SCENE) {
-		
+
 		if(IsEquipedByPlayer(io)) {
 			// in player inventory
 			return ARX_PLAYER_FrontPos();
 		}
-		
+
 		arx_assert(player.bag >= 0);
 		arx_assert(player.bag <= 3);
-		
+
 		for(size_t bag = 0; bag < size_t(player.bag); bag++)
 		for(size_t y = 0; y < INVENTORY_Y; y++)
 		for(size_t x = 0; x < INVENTORY_X; x++) {
 			const INVENTORY_SLOT & slot = inventory[bag][x][y];
-			
+
 			if(slot.io == io) {
 				// in player inventory
 				return ARX_PLAYER_FrontPos();
 			}
 		}
-		
+
 		for(size_t i = 0; i < entities.size(); i++) {
 			const EntityHandle handle = EntityHandle(i);
 			Entity * ioo = entities[handle];
-			
+
 			if(!ioo || !ioo->inventory)
 				continue;
-			
+
 			INVENTORY_DATA * id = ioo->inventory;
 			for(long j = 0; j < id->m_size.y; j++) {
 			for(long k = 0; k < id->m_size.x; k++) {
@@ -1020,7 +1020,7 @@ Vec3f GetItemWorldPositionSound(const Entity * io) {
 			}
 		}
 	}
-	
+
 	return io->pos;
 }
 
@@ -1028,22 +1028,22 @@ Vec3f GetItemWorldPositionSound(const Entity * io) {
  * \brief Seeks an IO in all Inventories to remove it
  */
 void RemoveFromAllInventories(const Entity * io) {
-	
+
 	if(!io) {
 		return;
 	}
-	
+
 	// Seek IO in Player Inventory/ies
 	playerInventory.remove(io);
-	
+
 	// Seek IO in Other IO's Inventories
 	for(size_t i = 0; i < entities.size(); i++) {
 		const EntityHandle handle = EntityHandle(i);
 		Entity * e = entities[handle];
-		
+
 		if(!e || !e->inventory)
 			continue;
-		
+
 		INVENTORY_DATA * id = e->inventory;
 		for(long j = 0; j < id->m_size.y; j++) {
 		for(long k = 0; k < id->m_size.x; k++) {
@@ -1060,23 +1060,23 @@ void RemoveFromAllInventories(const Entity * io) {
  * \brief Seeks an IO in all Inventories to replace it by another IO
  */
 void CheckForInventoryReplaceMe(Entity * io, Entity * old) {
-	
+
 	for(size_t i = 0; i < entities.size(); i++) {
 		const EntityHandle handle = EntityHandle(i);
 		Entity * e = entities[handle];
-		
+
 		if(!e || !e->inventory)
 			continue;
-		
+
 		INVENTORY_DATA * id = e->inventory;
-		
+
 		for(long j = 0; j < id->m_size.y; j++) {
 		for(long k = 0; k < id->m_size.x; k++) {
 			if(id->slot[k][j].io == old) {
 				if(CanBePutInSecondaryInventory(id, io)) {
 					return;
 				}
-				PutInFrontOfPlayer(io); 
+				PutInFrontOfPlayer(io);
 				return;
 			}
 		}
@@ -1093,65 +1093,65 @@ void CheckForInventoryReplaceMe(Entity * io, Entity * old) {
  */
 bool TakeFromInventory(const Vec2s & pos) {
 	Entity * io = GetFromInventory(pos);
-	
+
 	if(io == NULL)
 		return false;
-	
+
 	if(g_secondaryInventoryHud.dragEntity(io, pos))
 		return true;
-	
+
 	g_playerInventoryHud.dragEntity(io, pos);
 
 	return true;
 }
 
 bool IsInPlayerInventory(Entity * io) {
-	
+
 	arx_assert(player.bag >= 0);
 	arx_assert(player.bag <= 3);
-	
+
 	for(size_t bag = 0; bag < size_t(player.bag); bag++)
 	for(size_t y = 0; y < INVENTORY_Y; y++)
 	for(size_t x = 0; x < INVENTORY_X; x++) {
 		const INVENTORY_SLOT & slot = inventory[bag][x][y];
-		
+
 		if(slot.io == io) {
 			return true;
 		}
 	}
-	
+
 	return false;
 }
 
 bool IsInSecondaryInventory(Entity * io) {
-	
+
 	if(!SecondaryInventory)
 		return false;
-	
+
 	for(long y = 0; y < SecondaryInventory->m_size.y; y++)
 	for(long x = 0; x < SecondaryInventory->m_size.x; x++) {
 		if(SecondaryInventory->slot[x][y].io == io) {
 			return true;
 		}
 	}
-	
+
 	return false;
 }
 
 // TODO don't use texture name to find entity
 void SendInventoryObjectCommand(const std::string & _lpszText, ScriptMessage _lCommand) {
-	
+
 	arx_assert(player.bag >= 0);
 	arx_assert(player.bag <= 3);
-	
+
 	for(size_t bag = 0; bag < size_t(player.bag); bag++)
 	for(size_t y = 0; y < INVENTORY_Y; y++)
 	for(size_t x = 0; x < INVENTORY_X; x++) {
 		const INVENTORY_SLOT & slot = inventory[bag][x][y];
-		
+
 		if(!slot.io || !slot.io->obj)
 			continue;
-		
+
 		for(size_t lTex = 0; lTex < slot.io->obj->texturecontainer.size(); lTex++) {
 			if(   !slot.io->obj->texturecontainer.empty()
 			   && slot.io->obj->texturecontainer[lTex]
@@ -1167,63 +1167,63 @@ void SendInventoryObjectCommand(const std::string & _lpszText, ScriptMessage _lC
 }
 
 Entity * ARX_INVENTORY_GetTorchLowestDurability() {
-	
+
 	Entity * io = NULL;
-	
+
 	arx_assert(player.bag >= 0);
 	arx_assert(player.bag <= 3);
-	
+
 	for(size_t bag = 0; bag < size_t(player.bag); bag++)
 	for(size_t y = 0; y < INVENTORY_Y; y++)
 	for(size_t x = 0; x < INVENTORY_X; x++) {
 		const INVENTORY_SLOT & slot = inventory[bag][x][y];
-		
+
 		if(!slot.io || slot.io->locname != "description_torch")
 			continue;
-		
+
 		if(!io || slot.io->durability < io->durability) {
 			io = slot.io;
 		}
 	}
-	
+
 	return io;
 }
 
 long Player_Arrow_Count() {
-	
+
 	long count = 0;
-	
+
 	arx_assert(player.bag >= 0);
 	arx_assert(player.bag <= 3);
-	
+
 	for(size_t bag = 0; bag < size_t(player.bag); bag++)
 	for(size_t y = 0; y < INVENTORY_Y; y++)
 	for(size_t x = 0; x < INVENTORY_X; x++) {
 		INVENTORY_SLOT & slot = inventory[bag][x][y];
-		
+
 		if(slot.io && slot.io->className() == "arrows" && slot.io->durability >= 1.f) {
 			count += checked_range_cast<long>(slot.io->durability);
 		}
 	}
-	
+
 	return count;
 }
 
 Entity * Player_Arrow_Count_Decrease() {
-	
+
 	Entity * io = NULL;
-	
+
 	for(size_t bag = 0; bag < size_t(player.bag); bag++)
 	for(size_t y = 0; y < INVENTORY_Y; y++)
 	for(size_t x = 0; x < INVENTORY_X; x++) {
 		INVENTORY_SLOT & slot = inventory[bag][x][y];
-		
+
 		if(slot.io && slot.io->className() == "arrows" && slot.io->durability >= 1.f) {
 			if(!io || io->durability > slot.io->durability)
 				io = slot.io;
 		}
 	}
-	
+
 	return io;
 }
 
@@ -1237,15 +1237,15 @@ void ARX_INVENTORY_IdentifyIO(Entity * _pIO) {
 }
 
 void ARX_INVENTORY_IdentifyAll() {
-	
+
 	arx_assert(player.bag >= 0);
 	arx_assert(player.bag <= 3);
-	
+
 	for(size_t bag = 0; bag < size_t(player.bag); bag++)
 	for(size_t y = 0; y < INVENTORY_Y; y++)
 	for(size_t x = 0; x < INVENTORY_X; x++) {
 		Entity * io = inventory[bag][x][y].io;
-		
+
 		ARX_INVENTORY_IdentifyIO(io);
 	}
 }
@@ -1287,7 +1287,7 @@ void ARX_INVENTORY_OpenClose(Entity * _io)
 
 		if(SecondaryInventory && SecondaryInventory->io && (SecondaryInventory->io->ioflags & IO_SHOP))
 			ARX_INVENTORY_ReOrder();
-		
+
 		DRAGGING = false;
 	}
 
@@ -1305,21 +1305,21 @@ void ARX_INVENTORY_TakeAllFromSecondaryInventory() {
 		for(long j = 0; j < TSecondaryInventory->m_size.y; j++)
 		for(long i = 0; i < TSecondaryInventory->m_size.x; i++) {
 			INVENTORY_SLOT & slot = TSecondaryInventory->slot[i][j];
-			
+
 			if(!slot.io || !slot.show)
 				continue;
-			
+
 			Entity * io = slot.io;
-			
+
 			if(!(io->ioflags & IO_GOLD))
 				RemoveFromAllInventories(io);
-			
+
 			if(playerInventory.insert(io)) {
 				bSound = true;
 			} else {
 				sInventory = 2;
 				sInventoryPos = Vec2s(i, j);
-				
+
 				CanBePutInSecondaryInventory(TSecondaryInventory, io);
 			}
 		}
@@ -1333,29 +1333,29 @@ void ARX_INVENTORY_TakeAllFromSecondaryInventory() {
 
 //-----------------------------------------------------------------------------
 void ARX_INVENTORY_ReOrder() {
-	
+
 	if(!TSecondaryInventory)
 		return;
-	
+
 	for(long j = 0; j < TSecondaryInventory->m_size.y; j++)
 	for(long i = 0; i < TSecondaryInventory->m_size.x; i++) {
 		INVENTORY_SLOT & slot = TSecondaryInventory->slot[i][j];
-		
+
 		if(!slot.io || !slot.show)
 			continue;
-		
+
 		Entity * io = slot.io;
-		
+
 		RemoveFromAllInventories(io);
 		sInventory = 2;
 		sInventoryPos = Vec2s_ZERO;
-		
+
 		if(CanBePutInSecondaryInventory(TSecondaryInventory, io)) {
 		} else{
 			sInventory = 2;
-			
+
 			sInventoryPos = Vec2s(i, j);
-			
+
 			CanBePutInSecondaryInventory(TSecondaryInventory, io);
 		}
 	}

@@ -65,7 +65,7 @@ struct EERIE_CAMERA {
 
 	Color bkgcolor; // TODO was BGR!
 	float cdepth;
-	
+
 	glm::mat4x4 ProjectionMatrix;
 
 	void setTargetCamera(const Vec3f &target) {
@@ -81,7 +81,7 @@ struct EERIE_CAMERA {
 		angle.setPitch((180.f + glm::degrees(getAngle(orgTrans.pos.x, orgTrans.pos.z, x, z)))); //beta entre orgn et dest;
 		angle.setRoll(0.f);
 	}
-	
+
 	ARX_USE_ALIGNED_NEW(EERIE_CAMERA) // for ProjectionMatrix
 };
 

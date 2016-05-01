@@ -33,16 +33,16 @@ namespace res { class path; }
  * An ID that can be used to identify \class Entity instances
  */
 struct EntityId {
-	
+
 	EntityId() : m_instance(-1) { }
-	
+
 	EntityId(const std::string & className, EntityInstance instance)
 		: m_className(className), m_instance(instance) { }
 	EntityId(const char * className, EntityInstance instance)
 		: m_className(className), m_instance(instance) { }
-	
+
 	EntityId(const res::path & classPath, EntityInstance instance);
-	
+
 	/*!
 	 * Construct an entity id by parsing an id string as used in save files
 	 * and scripts.
@@ -61,16 +61,16 @@ struct EntityId {
 	 * \ref string() member or operator<< overload.
 	 */
 	explicit EntityId(const std::string & idString);
-	
+
 	const std::string & className() const { return m_className; }
 	EntityInstance instance() const { return m_instance; }
-	
+
 private:
-	
+
 	typedef void(*unspecified_bool)();
-	
+
 public:
-	
+
 	/*!
 	 * \return true if this id is valid
 	 * \note Currently the player Entity always has instance -1 and is thus considered invalid by this function.
@@ -78,23 +78,23 @@ public:
 	operator unspecified_bool() const {
 		return unspecified_bool(m_instance >= 0);
 	}
-	
+
 	//! Static instance of the "self" id
 	static const EntityId self;
-	
+
 	//! \return true if this id doesn't have an instance number (self, player)
 	bool isSpecial() const {
 		return m_instance <= 0;
 	}
-	
+
 	//! \return a string representation of this id
 	std::string string() const;
-	
+
 private:
-	
+
 	std::string m_className;
 	EntityInstance m_instance;
-	
+
 };
 
 std::ostream & operator<<(std::ostream & os, const EntityId & id);

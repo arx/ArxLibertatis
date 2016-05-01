@@ -30,35 +30,35 @@
 class Entity;
 
 class EntityManager {
-	
+
 	typedef std::vector<Entity *> Entries;
 	typedef Entries::iterator miterator;
-	
+
 public:
-	
+
 	EntityManager();
 	~EntityManager();
-	
+
 	//! Reserve at least one entry for the player entity
 	void init();
-	
+
 	//! Free all entities except for the player
 	void clear();
-	
+
 	EntityHandle getById(const std::string & idString) const;
 	EntityHandle getById(const EntityId & id) const;
-	
+
 	Entity * getById(const std::string & idString, Entity * self) const;
-	
+
 	Entity * operator[](EntityHandle index) const {
 		return entries[index.handleData()];
 	}
-	
+
 	//! Get the player entity
 	Entity * player() const {
 		return entries[0];
 	}
-	
+
 	/*!
 	 * Get the total number of valid indices in this entity manager.
 	 *
@@ -67,24 +67,24 @@ public:
 	 * entities in existence may be less.
 	 */
 	size_t size() const { return entries.size(); }
-	
+
 	typedef Entries::const_iterator iterator;
 	typedef Entries::const_iterator const_iterator;
-	
+
 	iterator begin() const { return entries.begin(); }
 	iterator end() const { return entries.end(); }
-	
+
 private:
-	
+
 	Entries entries;
-	
+
 	struct Impl;
 	Impl * m_impl;
-	
+
 	size_t add(Entity * entity);
-	
+
 	void remove(size_t index);
-	
+
 	friend class Entity;
 };
 

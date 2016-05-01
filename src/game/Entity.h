@@ -21,22 +21,22 @@
 ARX FATALIS GPL Source Code
 Copyright (C) 1999-2010 Arkane Studios SA, a ZeniMax Media company.
 
-This file is part of the Arx Fatalis GPL Source Code ('Arx Fatalis Source Code'). 
+This file is part of the Arx Fatalis GPL Source Code ('Arx Fatalis Source Code').
 
-Arx Fatalis Source Code is free software: you can redistribute it and/or modify it under the terms of the GNU General Public 
+Arx Fatalis Source Code is free software: you can redistribute it and/or modify it under the terms of the GNU General Public
 License as published by the Free Software Foundation, either version 3 of the License, or (at your option) any later version.
 
-Arx Fatalis Source Code is distributed in the hope that it will be useful, but WITHOUT ANY WARRANTY; without even the implied 
+Arx Fatalis Source Code is distributed in the hope that it will be useful, but WITHOUT ANY WARRANTY; without even the implied
 warranty of MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE. See the GNU General Public License for more details.
 
-You should have received a copy of the GNU General Public License along with Arx Fatalis Source Code.  If not, see 
+You should have received a copy of the GNU General Public License along with Arx Fatalis Source Code.  If not, see
 <http://www.gnu.org/licenses/>.
 
-In addition, the Arx Fatalis Source Code is also subject to certain additional terms. You should have received a copy of these 
-additional terms immediately following the terms and conditions of the GNU General Public License which accompanied the Arx 
+In addition, the Arx Fatalis Source Code is also subject to certain additional terms. You should have received a copy of these
+additional terms immediately following the terms and conditions of the GNU General Public License which accompanied the Arx
 Fatalis Source Code. If not, please request a copy in writing from Arkane Studios at the address below.
 
-If you have questions concerning this license or the applicable additional terms, you may contact in writing Arkane Studios, c/o 
+If you have questions concerning this license or the applicable additional terms, you may contact in writing Arkane Studios, c/o
 ZeniMax Media Inc., Suite 120, Rockville, Maryland 20850 USA.
 ===========================================================================
 */
@@ -141,7 +141,7 @@ struct IO_SPELLCAST_DATA {
 	short spell_level;
 	EntityHandle target;
 	long duration;
-	
+
 	IO_SPELLCAST_DATA()
 		: castingspell(SPELL_NONE)
 		, spell_flags()
@@ -239,19 +239,19 @@ struct AnimationBlendStatus {
 };
 
 class Entity {
-	
+
 public:
-	
+
 	explicit Entity(const res::path & classPath, EntityInstance instance);
 	~Entity();
-	
+
 	EntityFlags ioflags; // IO type
 	Vec3f lastpos; // IO last position
 	Vec3f pos; // IO position
 	Vec3f move;
 	Vec3f lastmove;
 	Vec3f forcedmove;
-	
+
 	Anglef angle; // IO angle
 	IO_PHYSICS physics;	// Movement Collision Data
 	short room;
@@ -264,7 +264,7 @@ public:
 	AnimLayer animlayer[MAX_ANIM_LAYERS];
 
 	AnimationBlendStatus animBlend;
-	
+
 	EERIE_3D_BBOX bbox3D;
 	EERIE_2D_BBOX bbox2D;
 
@@ -275,7 +275,7 @@ public:
 	long scriptload; // Is This object Loaded by Script ?
 	Vec3f target; // Target position
 	EntityHandle targetinfo; // Target Type/Ident
-	
+
 	// TODO remove and use inheritance instead
 	union {
 		IO_ITEMDATA * _itemdata; // ITEM Datas
@@ -283,14 +283,14 @@ public:
 		IO_NPCDATA * _npcdata; // NPC Datas
 		IO_CAMDATA * _camdata; // Camera Datas
 	};
-	
+
 	INVENTORY_DATA * inventory; // Inventory Data
 	EntityVisilibity show; // Show status (in scene, in inventory...)
 	IOCollisionFlags collision; // collision type
 	std::string mainevent;
 	Color3f infracolor; // Improve Vision Color (Heat)
 	long changeanim;
-	
+
 	float weight;
 	std::string locname; //localisation
 	GameFlags gameFlags;
@@ -301,7 +301,7 @@ public:
 	Vec3f initpos; // Initial Position
 	Anglef initangle; // Initial Angle
 	float scale;
-	
+
 	ARX_USE_PATH * usepath;
 	SYMBOL_DRAW * symboldraw;
 	LightHandle dynlight;
@@ -309,55 +309,55 @@ public:
 	ARX_PATH * inzone;
 	IO_HALO halo;
 	IO_HALO halo_native;
-	
+
 	EERIE_SCRIPT script; // Primary Script
 	EERIE_SCRIPT over_script; // Overriding Script
 	short stat_count;
 	short stat_sent;
 	IO_TWEAKER_INFO * tweakerinfo; // optional tweaker infos
 	Material material;
-	
+
 	std::set<std::string> groups;
 	Vec2s m_inventorySize;// Inventory Icon size
 	unsigned long soundtime;
 	unsigned long soundcount;
-	
+
 	unsigned long sfx_time;
 	unsigned long collide_door_time;
 	unsigned long ouch_time;
 	float dmg_sum;
-	
+
 	IO_SPELLCAST_DATA spellcast_data;
 	short flarecount;
 	EntityHandle no_collide;
 	float invisibility;
 	float frameloss;
 	float basespeed;
-	
+
 	float speed_modif;
-	
+
 	float rubber;
 	float max_durability;
 	float durability;
 	short poisonous;
 	short poisonous_count;
-	
+
 	float ignition;
 	LightHandle ignit_light;
 	audio::SampleId ignit_sound;
 	float head_rot;
-	
+
 	short damager_damages;
 	DamageType damager_type;
 	std::string stepmaterial;
 	std::string armormaterial;
 	std::string weaponmaterial;
 	std::string strikespeech;
-	
+
 	EntitySfxFlags sfx_flag;
 	std::vector<TWEAK_INFO> tweaks;
 	s8 secretvalue;
-	
+
 	std::string shop_category;
 	float shop_multiply;
 	res::path inventory_skin;
@@ -368,28 +368,28 @@ public:
 
 	Color3f special_color;
 	Color3f highlightColor;
-	
+
 	const EntityId & id() const { return m_id; }
-	
+
 	/*!
 	 * Get the class name for this entity
 	 *
 	 * This is equal to the last component of the class path
-	 * 
+	 *
 	 * \return the entity's class name
 	 */
 	std::string className() const { return id().className(); }
-	
+
 	/*!
 	 * Get the instance number of this entity
-	 * 
+	 *
 	 * This is a unique number for this entity amongst all entities of the
 	 * same class (name) in the entire game.
-	 * 
+	 *
 	 * \return the entity's instance number
 	 */
 	EntityInstance instance() const { return id().instance(); }
-	
+
 	/*!
 	 *  Returns the long name for this entity where the short name
 	 * is combined with the identifying number
@@ -397,7 +397,7 @@ public:
 	 * \return The short name combined with a 4 digit ident, padded with 0
 	 */
 	std::string idString() const { return id().string(); }
-	
+
 	/*!
 	 *  Returns the full name for this entity where the
 	 * directory portion of the filename member is combined
@@ -405,41 +405,41 @@ public:
 	 * \return The directory of filename + idString()
 	 */
 	res::path instancePath() const;
-	
+
 	//! \return the index of this Entity in the EntityManager
 	EntityHandle index() const { return EntityHandle(m_index); }
-	
+
 	/*!
 	 * Marks the entity as destroyed.
-	 * 
+	 *
 	 * If the entity was loaded by a script, the entity is deleted.
 	 * Otherwise the entity is kept so that the id won't be reused.
 	 */
 	void destroy();
-	
+
 	/*!
 	 * If the entity is an item, decrease the stack count.
 	 * If the count reaches zero or if the entity is not an item, call destroy().
 	 */
 	void destroyOne();
-	
+
 	/*!
 	 * Get the class path for this entity.
 	 *
 	 * \return the full path to this entity's class
 	 */
 	const res::path & classPath() const { return m_classPath; }
-	
+
 private:
-	
+
 	//! Remove any remaining references to this entity.
 	void cleanReferences();
-	
+
 	size_t m_index; //!< index of this Entity in the EntityManager
-	
+
 	const EntityId m_id; //!< unique ID for this entity
 	const res::path m_classPath; //!< the full path to this entity's class
-	
+
 };
 
 inline Vec3f actionPointPosition(const EERIE_3DOBJ * obj, ActionPoint ap) {
