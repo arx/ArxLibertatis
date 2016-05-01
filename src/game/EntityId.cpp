@@ -35,15 +35,15 @@ EntityId::EntityId(const res::path & classPath, EntityInstance instance)
 { }
 
 EntityId::EntityId(const std::string & id) : m_instance(-1) {
-	
+
 	if(id.empty() || id == "none") {
-		
+
 		// empty className, instance = -1
-		
+
 	} else {
-		
+
 		size_t sep = id.find_last_of('_');
-		
+
 		m_instance = 0;
 		if(sep != std::string::npos) {
 			try {
@@ -54,7 +54,7 @@ EntityId::EntityId(const std::string & id) : m_instance(-1) {
 				return;
 			}
 		}
-		
+
 		m_className = id.substr(0, sep);
 	}
 }
