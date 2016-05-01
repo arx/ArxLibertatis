@@ -2649,7 +2649,8 @@ Entity * ARX_NPC_GetFirstNPCInSight(Entity * ioo)
 		Vec3f orgn, dest;
 
 		float ab = MAKEANGLE(ioo->angle.getPitch());
-
+		
+		{
 		long grp = ioo->obj->fastaccess.head_group_origin;
 
 		if(grp < 0) {
@@ -2660,8 +2661,10 @@ Entity * ARX_NPC_GetFirstNPCInSight(Entity * ioo)
 		} else {
 			orgn = GetVertexPos(ioo, ioo->obj->fastaccess.head_group_origin);
 		}
-
-		grp = io->obj->fastaccess.head_group_origin;
+		}
+		
+		{
+		long grp = io->obj->fastaccess.head_group_origin;
 
 		if(grp < 0) {
 			dest = io->pos + Vec3f(0.f, -90.f, 0.f);
@@ -2670,6 +2673,7 @@ Entity * ARX_NPC_GetFirstNPCInSight(Entity * ioo)
 				dest.y = player.pos.y + 90.f;
 		} else {
 			dest = GetVertexPos(io, io->obj->fastaccess.head_group_origin);
+		}
 		}
 
 
