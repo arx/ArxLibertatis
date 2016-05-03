@@ -2086,7 +2086,6 @@ void SetYlsideDeath(Entity * io) {
 
 bool ARX_INTERACTIVE_CheckFULLCollision(PHYSICS_BOX_DATA * pbox, EntityHandle source) {
 	
-	bool col = false;
 	EntityHandle avoid = EntityHandle();
 	Entity * io_source = NULL;
 
@@ -2210,7 +2209,7 @@ bool ARX_INTERACTIVE_CheckFULLCollision(PHYSICS_BOX_DATA * pbox, EntityHandle so
 		}
 	}
 
-	return col;
+	return false;
 }
 
 void UpdateCameras() {
