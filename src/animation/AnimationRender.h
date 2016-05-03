@@ -112,15 +112,6 @@ void EERIEDrawAnimQuatUpdate(EERIE_3DOBJ * eobj,
 
 void EERIEDrawAnimQuatRender(EERIE_3DOBJ *eobj, const Vec3f & pos, Entity *io, float invisibility);
 
-void EERIEDrawAnimQuat(EERIE_3DOBJ * eobj,
-                       AnimLayer * animlayer,
-                       const Anglef & angle,
-                       const Vec3f & pos,
-                       unsigned long time,
-                       Entity * io,
-                       bool update_movement = true,
-                       float invisibility = 0.f);
-
 void AnimatedEntityUpdate(Entity * entity, float time);
 void AnimatedEntityRender(Entity * entity, float invisibility);
 

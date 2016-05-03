@@ -383,8 +383,13 @@ static void RenderBookPlayerCharacter() {
 	
 	arx_assert(player.bookAnimation[0].cur_anim);
 	
-	EERIEDrawAnimQuat(entities.player()->obj, player.bookAnimation, ePlayerAngle, pos,
-					  checked_range_cast<unsigned long>(Original_framedelay), NULL, true, invisibility);
+	{
+		EERIE_3DOBJ * eobj = entities.player()->obj;
+		unsigned long time = checked_range_cast<unsigned long>(Original_framedelay);
+
+		EERIEDrawAnimQuatUpdate(eobj, player.bookAnimation, ePlayerAngle, pos, time, NULL, true);
+		EERIEDrawAnimQuatRender(eobj, pos, NULL, invisibility);
+	}
 	
 	IN_BOOK_DRAW = 0;
 	
