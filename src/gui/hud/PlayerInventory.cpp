@@ -483,18 +483,13 @@ void PlayerInventoryHud::dropEntity() {
 	int bag = 0;
 	
 	Vec2f anchorPos = g_playerInventoryHud.anchorPosition();
-	
-	float fCenterX	= anchorPos.x;
-	float fSizY		= anchorPos.y;
-	
-	short iPosX = checked_range_cast<short>(fCenterX);
-	short iPosY = checked_range_cast<short>(fSizY);
+	Vec2s iPos = Vec2s(anchorPos);
 	
 	Vec2s t = Vec2s_ZERO;
 	
 	if(player.Interface & INTER_INVENTORY) {
-		t.x = DANAEMouse.x - iPosX;
-		t.y = DANAEMouse.y - iPosY;
+		t.x = DANAEMouse.x - iPos.x;
+		t.y = DANAEMouse.y - iPos.y;
 		t.x = t.x / (32 * m_scale); 
 		t.y = t.y / (32 * m_scale); 
 		
@@ -514,8 +509,8 @@ void PlayerInventoryHud::dropEntity() {
 		arx_assert(0 < player.bag);
 		
 		for(int i = 0; i < player.bag; i++) {
-			t.x = DANAEMouse.x - iPosX;
-			t.y = DANAEMouse.y - iPosY - iY; 
+			t.x = DANAEMouse.x - iPos.x;
+			t.y = DANAEMouse.y - iPos.y - iY;
 			
 			if((t.x >= 0) && (t.y >= 0)) {
 				t.x = t.x / (32 * m_scale); 
