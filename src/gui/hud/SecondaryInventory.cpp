@@ -37,7 +37,6 @@
 #include "scene/Interactive.h"
 
 
-float InventoryDir = 0; // 0 stable, 1 to right, -1 to left
 float InventoryX = -60.f;
 
 SecondaryInventoryHud g_secondaryInventoryHud;
@@ -106,7 +105,7 @@ void SecondaryInventoryCloseHudIcon::updateInput() {
 			
 			if(io) {
 				ARX_SOUND_PlayInterface(SND_BACKPACK, Random::getf(0.9f, 1.1f));
-				InventoryDir=-1;
+				g_secondaryInventoryHud.InventoryDir = -1;
 				SendIOScriptEvent(io,SM_INVENTORY2_CLOSE);
 				TSecondaryInventory=SecondaryInventory;
 				SecondaryInventory=NULL;
@@ -129,6 +128,8 @@ void SecondaryInventoryHud::init() {
 	
 	m_pickAllButton.init();
 	m_closeButton.init();
+	
+	InventoryDir = 0;
 }
 
 static Entity * getSecondaryOrStealInvEntity() {

@@ -54,14 +54,13 @@ ZeniMax Media Inc., Suite 120, Rockville, Maryland 20850 USA.
 
 #include "gui/Hud.h"
 #include "gui/Interface.h"
+#include "gui/hud/SecondaryInventory.h"
 #include "io/resource/ResourcePath.h"
 #include "scene/Interactive.h"
 #include "scene/GameSound.h"
 #include "script/ScriptEvent.h"
 #include "script/ScriptUtils.h"
 
-
-extern float InventoryDir;
 
 namespace script {
 
@@ -376,7 +375,7 @@ public:
 		}
 		
 		player.Interface |= INTER_STEAL;
-		InventoryDir = 1;
+		g_secondaryInventoryHud.InventoryDir = 1;
 		ioSteal = context.getEntity();
 		
 		return Success;

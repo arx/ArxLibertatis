@@ -78,6 +78,9 @@ public:
 	void close();
 	
 	void updateFader();
+	
+	// 0 stable, 1 to right, -1 to left
+	float InventoryDir;
 };
 
 extern SecondaryInventoryHud g_secondaryInventoryHud;

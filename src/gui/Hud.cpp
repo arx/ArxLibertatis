@@ -58,7 +58,6 @@
 #include "scene/Interactive.h"
 
 extern float GLOBAL_SLOWDOWN;
-extern float InventoryDir;
 extern bool WILLRETURNTOFREELOOK;
 
 bool bIsAiming = false;
