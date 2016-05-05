@@ -1256,7 +1256,7 @@ void ARX_INVENTORY_OpenClose(Entity * _io)
 		if(SecondaryInventory && SecondaryInventory->io)
 			SendIOScriptEvent(SecondaryInventory->io, SM_INVENTORY2_CLOSE);
 
-		g_secondaryInventoryHud.InventoryDir = -1;
+		g_secondaryInventoryHud.InventoryDir = SecondaryInventoryHud::Fade_left;
 		TSecondaryInventory = SecondaryInventory;
 		SecondaryInventory = NULL;
 		DRAGGING = false;
@@ -1264,12 +1264,12 @@ void ARX_INVENTORY_OpenClose(Entity * _io)
 		if(TSecondaryInventory && TSecondaryInventory->io)
 			SendIOScriptEvent(TSecondaryInventory->io, SM_INVENTORY2_CLOSE);
 
-		g_secondaryInventoryHud.InventoryDir = 1;
+		g_secondaryInventoryHud.InventoryDir = SecondaryInventoryHud::Fade_right;
 		TSecondaryInventory = SecondaryInventory = _io->inventory;
 
 		if(SecondaryInventory && SecondaryInventory->io != NULL) {
 			if(SendIOScriptEvent(SecondaryInventory->io, SM_INVENTORY2_OPEN) == REFUSE) {
-				g_secondaryInventoryHud.InventoryDir = -1;
+				g_secondaryInventoryHud.InventoryDir = SecondaryInventoryHud::Fade_left;
 				TSecondaryInventory = SecondaryInventory = NULL;
 				return;
 			}

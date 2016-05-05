@@ -78,8 +78,13 @@ public:
 	
 	void updateFader();
 	
-	// 0 stable, 1 to right, -1 to left
-	float InventoryDir;
+	enum Fade {
+		Fade_left = -1,
+		Fade_stable = 0,
+		Fade_right = 1
+	};
+	
+	Fade InventoryDir;
 	float InventoryX;
 };
 

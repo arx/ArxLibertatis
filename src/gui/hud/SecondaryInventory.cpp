@@ -103,7 +103,7 @@ void SecondaryInventoryCloseHudIcon::updateInput() {
 			
 			if(io) {
 				ARX_SOUND_PlayInterface(SND_BACKPACK, Random::getf(0.9f, 1.1f));
-				g_secondaryInventoryHud.InventoryDir = -1;
+				g_secondaryInventoryHud.InventoryDir = SecondaryInventoryHud::Fade_left;
 				SendIOScriptEvent(io,SM_INVENTORY2_CLOSE);
 				TSecondaryInventory=SecondaryInventory;
 				SecondaryInventory=NULL;
@@ -127,7 +127,7 @@ void SecondaryInventoryHud::init() {
 	m_pickAllButton.init();
 	m_closeButton.init();
 	
-	InventoryDir = 0;
+	InventoryDir = Fade_stable;
 	InventoryX = -60.f;
 }
 
@@ -148,10 +148,10 @@ void SecondaryInventoryHud::update() {
 		float maxDist = player.m_telekinesis ? 900.f : 350.f;
 		
 		if(dist > maxDist) {
-			if(InventoryDir != -1) {
+			if(InventoryDir != Fade_left) {
 				ARX_SOUND_PlayInterface(SND_BACKPACK, Random::getf(0.9f, 1.1f));
 				
-				InventoryDir=-1;
+				InventoryDir = Fade_left;
 				SendIOScriptEvent(io,SM_INVENTORY2_CLOSE);
 				TSecondaryInventory=SecondaryInventory;
 				SecondaryInventory=NULL;
@@ -161,8 +161,8 @@ void SecondaryInventoryHud::update() {
 				}
 			}
 		}
-	} else if(InventoryDir != -1) {
-		InventoryDir = -1;
+	} else if(InventoryDir != Fade_left) {
+		InventoryDir = Fade_left;
 	}
 	
 	
@@ -571,7 +571,7 @@ void SecondaryInventoryHud::close() {
 		io = ioSteal;
 	
 	if(io) {
-		InventoryDir = -1;
+		InventoryDir = Fade_left;
 		SendIOScriptEvent(io, SM_INVENTORY2_CLOSE);
 		TSecondaryInventory = SecondaryInventory;
 		SecondaryInventory = NULL;
@@ -580,8 +580,8 @@ void SecondaryInventoryHud::close() {
 
 void SecondaryInventoryHud::updateFader() {
 	
-	if(InventoryDir != 0) {
-		if((player.Interface & INTER_COMBATMODE) || player.doingmagic >= 2 || InventoryDir == -1) {
+	if(InventoryDir != Fade_stable) {
+		if((player.Interface & INTER_COMBATMODE) || player.doingmagic >= 2 || InventoryDir == Fade_left) {
 			if(InventoryX > -160)
 				InventoryX -= (g_framedelay * ( 1.0f / 3 )) * m_scale;
 		} else {
@@ -591,7 +591,7 @@ void SecondaryInventoryHud::updateFader() {
 		
 		if(InventoryX <= -160) {
 			InventoryX = -160;
-			InventoryDir = 0;
+			InventoryDir = Fade_stable;
 			
 			if(player.Interface & INTER_STEAL || ioSteal) {
 				SendIOScriptEvent(ioSteal, SM_STEAL, "off");
@@ -601,10 +601,10 @@ void SecondaryInventoryHud::updateFader() {
 			
 			SecondaryInventory = NULL;
 			TSecondaryInventory = NULL;
-			InventoryDir = 0;
+			InventoryDir = Fade_stable;
 		} else if(InventoryX >= 0) {
 			InventoryX = 0;
-			InventoryDir = 0;
+			InventoryDir = Fade_stable;
 		}
 	}
 }
