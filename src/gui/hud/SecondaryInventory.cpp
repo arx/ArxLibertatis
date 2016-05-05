@@ -37,8 +37,6 @@
 #include "scene/Interactive.h"
 
 
-float InventoryX = -60.f;
-
 SecondaryInventoryHud g_secondaryInventoryHud;
 
 
@@ -130,6 +128,7 @@ void SecondaryInventoryHud::init() {
 	m_closeButton.init();
 	
 	InventoryDir = 0;
+	InventoryX = -60.f;
 }
 
 static Entity * getSecondaryOrStealInvEntity() {

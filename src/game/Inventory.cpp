@@ -88,7 +88,6 @@ ZeniMax Media Inc., Suite 120, Rockville, Maryland 20850 USA.
 
 #include "script/Script.h"
 
-extern float InventoryX;
 
 void ARX_INVENTORY_ReOrder();
 

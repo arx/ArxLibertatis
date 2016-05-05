@@ -26,7 +26,6 @@
 class Entity;
 class TextureContainer;
 
-extern float InventoryX;
 
 class SecondaryInventoryPickAllHudIcon : public HudIconBase {
 private:
@@ -81,6 +80,7 @@ public:
 	
 	// 0 stable, 1 to right, -1 to left
 	float InventoryDir;
+	float InventoryX;
 };
 
 extern SecondaryInventoryHud g_secondaryInventoryHud;
