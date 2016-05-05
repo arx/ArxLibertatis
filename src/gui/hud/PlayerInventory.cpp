@@ -538,9 +538,9 @@ void PlayerInventoryHud::dropEntity() {
 		return;
 	}
 	
-	for(long j = 0; j < s.y; j++)
-	for(long i = 0; i < s.x; i++) {
-		Entity * ioo = inventory[bag][t.x+i][t.y+j].io;
+	for(long y = 0; y < s.y; y++)
+	for(long x = 0; x < s.x; x++) {
+		Entity * ioo = inventory[bag][t.x + x][t.y + y].io;
 		
 		if(!ioo)
 			continue;
@@ -574,10 +574,10 @@ void PlayerInventoryHud::dropEntity() {
 		return;
 	}
 	
-	for(long j = 0; j < s.y; j++) {
-	for(long i = 0; i < s.x; i++) {
-		inventory[bag][t.x+i][t.y+j].io = DRAGINTER;
-		inventory[bag][t.x+i][t.y+j].show = false;
+	for(long y = 0; y < s.y; y++) {
+	for(long x = 0; x < s.x; x++) {
+		inventory[bag][t.x + x][t.y + y].io = DRAGINTER;
+		inventory[bag][t.x + x][t.y + y].show = false;
 	}
 	}
 	
