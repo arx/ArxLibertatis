@@ -539,46 +539,46 @@ void PlayerInventoryHud::dropEntity() {
 	}
 	
 	for(long j = 0; j < s.y; j++)
-		for(long i = 0; i < s.x; i++) {
-			Entity * ioo = inventory[bag][t.x+i][t.y+j].io;
+	for(long i = 0; i < s.x; i++) {
+		Entity * ioo = inventory[bag][t.x+i][t.y+j].io;
+		
+		if(!ioo)
+			continue;
+		
+		ARX_INVENTORY_IdentifyIO(ioo);
+		
+		if(   ioo->_itemdata->playerstacksize > 1
+		&& IsSameObject(DRAGINTER, ioo)
+		&& ioo->_itemdata->count < ioo->_itemdata->playerstacksize
+		) {
+			ioo->_itemdata->count += DRAGINTER->_itemdata->count;
 			
-			if(!ioo)
-				continue;
-			
-			ARX_INVENTORY_IdentifyIO(ioo);
-			
-			if(   ioo->_itemdata->playerstacksize > 1
-			&& IsSameObject(DRAGINTER, ioo)
-			&& ioo->_itemdata->count < ioo->_itemdata->playerstacksize
-			) {
-				ioo->_itemdata->count += DRAGINTER->_itemdata->count;
-				
-				if(ioo->_itemdata->count > ioo->_itemdata->playerstacksize) {
-					DRAGINTER->_itemdata->count = ioo->_itemdata->count - ioo->_itemdata->playerstacksize;
-					ioo->_itemdata->count = ioo->_itemdata->playerstacksize;
-				} else {
-					DRAGINTER->_itemdata->count = 0;
-				}
-				
-				ioo->scale = 1.f;
-				ARX_INVENTORY_Declare_InventoryIn(DRAGINTER);
-				
-				if(!DRAGINTER->_itemdata->count) {
-					DRAGINTER->destroy();
-				}
-				
-				ARX_SOUND_PlayInterface(SND_INVSTD);
-				return;
+			if(ioo->_itemdata->count > ioo->_itemdata->playerstacksize) {
+				DRAGINTER->_itemdata->count = ioo->_itemdata->count - ioo->_itemdata->playerstacksize;
+				ioo->_itemdata->count = ioo->_itemdata->playerstacksize;
+			} else {
+				DRAGINTER->_itemdata->count = 0;
 			}
 			
+			ioo->scale = 1.f;
+			ARX_INVENTORY_Declare_InventoryIn(DRAGINTER);
+			
+			if(!DRAGINTER->_itemdata->count) {
+				DRAGINTER->destroy();
+			}
+			
+			ARX_SOUND_PlayInterface(SND_INVSTD);
 			return;
 		}
+		
+		return;
+	}
 	
 	for(long j = 0; j < s.y; j++) {
-		for(long i = 0; i < s.x; i++) {
-			inventory[bag][t.x+i][t.y+j].io = DRAGINTER;
-			inventory[bag][t.x+i][t.y+j].show = false;
-		}
+	for(long i = 0; i < s.x; i++) {
+		inventory[bag][t.x+i][t.y+j].io = DRAGINTER;
+		inventory[bag][t.x+i][t.y+j].show = false;
+	}
 	}
 	
 	inventory[bag][t.x][t.y].show = true;
