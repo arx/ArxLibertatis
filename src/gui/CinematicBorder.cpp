@@ -25,12 +25,11 @@
 #include "graphics/Renderer.h"
 #include "gui/Interface.h"
 
-float				CINEMA_DECAL=0.f;
-
 CinematicBorder cinematicBorder = CinematicBorder();
 
 CinematicBorder::CinematicBorder()
-	: m_active(false)
+	: CINEMA_DECAL(0)
+	, m_active(false)
 	, m_direction(0)
 	, m_startTime(0)
 {}

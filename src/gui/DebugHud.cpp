@@ -277,7 +277,7 @@ void ShowInfoText() {
 	miscBox.add("Level", LastLoadedScene.string().c_str());
 	miscBox.add("Spell failed seq", LAST_FAILED_SEQUENCE.c_str());
 	miscBox.add("Camera focal", ACTIVECAM->focal);
-	miscBox.add("Cinema", CINEMA_DECAL);
+	miscBox.add("Cinema", cinematicBorder.CINEMA_DECAL);
 	miscBox.add("Mouse", Vec2i(DANAEMouse));
 	miscBox.add("Pathfind queue", EERIE_PATHFINDER_Get_Queued_Number());
 	miscBox.add("Pathfind status", (PATHFINDER_WORKING ? "Working" : "Idled"));

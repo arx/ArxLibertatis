@@ -20,8 +20,6 @@
 #ifndef ARX_GUI_CINEMATICBORDER_H
 #define ARX_GUI_CINEMATICBORDER_H
 
-extern float CINEMA_DECAL;
-
 class CinematicBorder {
 public:
 	CinematicBorder();
@@ -35,6 +33,8 @@ public:
 	void set(bool status, bool smooth);
 	
 	void render();
+	
+	float CINEMA_DECAL;
 	
 private:
 	bool m_active;

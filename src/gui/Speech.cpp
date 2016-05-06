@@ -484,7 +484,7 @@ void ARX_SPEECH_Update() {
 		if(!cinematicBorder.isActive())
 			continue;
 
-		if(CINEMA_DECAL < 100.f)
+		if(cinematicBorder.CINEMA_DECAL < 100.f)
 			continue;
 
 		Vec2i sSize = hFontInBook->getTextSize(speech->text);

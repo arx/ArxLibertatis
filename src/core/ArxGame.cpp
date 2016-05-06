@@ -2215,7 +2215,7 @@ void ArxGame::render() {
 		benchmark::begin(benchmark::Cinematic);
 		cinematicRender();
 	} else {
-		benchmark::begin(CINEMA_DECAL ? benchmark::Cutscene : benchmark::Scene);
+		benchmark::begin(cinematicBorder.CINEMA_DECAL ? benchmark::Cutscene : benchmark::Scene);
 		updateLevel();
 		
 		renderLevel();
@@ -2298,9 +2298,9 @@ void ArxGame::update2DFX() {
 
 			if(ltvv.rhw > 0.f &&
 				ltvv.p.x > 0.f &&
-				ltvv.p.y > (CINEMA_DECAL*g_sizeRatio.y) &&
+				ltvv.p.y > (cinematicBorder.CINEMA_DECAL * g_sizeRatio.y) &&
 				ltvv.p.x < g_size.width() &&
-				ltvv.p.y < (g_size.height()-(CINEMA_DECAL*g_sizeRatio.y))
+				ltvv.p.y < (g_size.height()-(cinematicBorder.CINEMA_DECAL * g_sizeRatio.y))
 				)
 			{
 				Vec3f vector = lv - ACTIVECAM->orgTrans.pos;
