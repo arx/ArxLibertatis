@@ -175,7 +175,7 @@ void ARX_INTERFACE_ManageOpenedBook_Finish(const Vec2f & mousePos)
 			TransformInfo t2(pos, glm::toQuat(toRotationMatrix(angle)));
 			DrawEERIEInter(rune, t2, NULL, false, 0.f);
 			
-			EERIE_2D_BBOX runeBox = UpdateBbox2d(*rune);
+			Rectf runeBox = UpdateBbox2d(*rune).toRect();
 			
 			PopAllTriangleList();
 			
@@ -186,15 +186,8 @@ void ARX_INTERFACE_ManageOpenedBook_Finish(const Vec2f & mousePos)
 				tmpPos.y++;
 			}
 			
-			const Rect runeMouseTestRect(
-			runeBox.min.x,
-			runeBox.min.y,
-			runeBox.max.x,
-			runeBox.max.y
-			);
-			
 			// Checks for Mouse floating over a rune...
-			if(runeMouseTestRect.contains(Vec2i(mousePos))) {
+			if(runeBox.contains(mousePos)) {
 				long r=0;
 				
 				for(size_t j = 0; j < rune->facelist.size(); j++) {
