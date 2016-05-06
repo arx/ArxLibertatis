@@ -187,8 +187,8 @@ Plane efpPlaneNear;
 static std::vector<EERIEPOLY*> vPolyWater;
 static std::vector<EERIEPOLY*> vPolyLava;
 
-std::vector<PORTAL_ROOM_DRAW> RoomDraw;
-std::vector<long> RoomDrawList;
+static std::vector<PORTAL_ROOM_DRAW> RoomDraw;
+static std::vector<long> RoomDrawList;
 
 //*************************************************************************************
 //*************************************************************************************
