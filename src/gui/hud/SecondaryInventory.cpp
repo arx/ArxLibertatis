@@ -187,7 +187,7 @@ void SecondaryInventoryHud::draw() {
 	if(!inventory)
 		return;
 	
-	bool _bSteal = (bool)((player.Interface & INTER_STEAL) != 0);
+	bool _bSteal = (player.Interface & INTER_STEAL) != 0;
 	
 	arx_assert(m_defaultBackground);
 	ingame_inventory = m_defaultBackground;
