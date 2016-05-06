@@ -375,7 +375,7 @@ public:
 		}
 		
 		player.Interface |= INTER_STEAL;
-		g_secondaryInventoryHud.InventoryDir = SecondaryInventoryHud::Fade_right;
+		g_secondaryInventoryHud.m_fadeDirection = SecondaryInventoryHud::Fade_right;
 		ioSteal = context.getEntity();
 		
 		return Success;

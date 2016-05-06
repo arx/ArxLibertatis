@@ -84,7 +84,7 @@ public:
 		Fade_right = 1
 	};
 	
-	Fade InventoryDir;
+	Fade m_fadeDirection;
 	float m_fadePosition;
 };
 
