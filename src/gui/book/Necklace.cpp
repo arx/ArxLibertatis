@@ -175,8 +175,7 @@ void ARX_INTERFACE_ManageOpenedBook_Finish(const Vec2f & mousePos)
 			TransformInfo t2(pos, glm::toQuat(toRotationMatrix(angle)));
 			DrawEERIEInter(rune, t2, NULL, false, 0.f);
 			
-			EERIE_2D_BBOX runeBox;
-			UpdateBbox2d(*rune, runeBox);
+			EERIE_2D_BBOX runeBox = UpdateBbox2d(*rune);
 			
 			PopAllTriangleList();
 			

@@ -533,8 +533,9 @@ static void UpdateBbox3d(EERIE_3DOBJ *eobj, EERIE_3D_BBOX & box3D) {
 	}
 }
 
-void UpdateBbox2d(const EERIE_3DOBJ & eobj, EERIE_2D_BBOX & box2D) {
-
+EERIE_2D_BBOX UpdateBbox2d(const EERIE_3DOBJ & eobj) {
+	
+	EERIE_2D_BBOX box2D;
 	box2D.reset();
 
 	for(size_t i = 0; i < eobj.vertexlist.size(); i++) {
@@ -549,6 +550,7 @@ void UpdateBbox2d(const EERIE_3DOBJ & eobj, EERIE_2D_BBOX & box2D) {
 			box2D.add(vertex.vert.p);
 		}
 	}
+	return box2D;
 }
 
 void DrawEERIEInter_ModelTransform(EERIE_3DOBJ *eobj, const TransformInfo &t) {
@@ -839,7 +841,7 @@ void DrawEERIEInter(EERIE_3DOBJ * eobj,
 
 	DrawEERIEInter_ViewProjectTransform(eobj);
 	if(io) {
-		UpdateBbox2d(*eobj, io->bbox2D);
+		io->bbox2D = UpdateBbox2d(*eobj);
 	}
 
 	if(!forceDraw && ARX_SCENE_PORTAL_ClipIO(io, t.pos))
