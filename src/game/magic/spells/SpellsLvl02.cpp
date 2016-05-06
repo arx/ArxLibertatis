@@ -186,8 +186,9 @@ void HealSpell::Update() {
 				float gain = Random::getf(0.8f, 2.4f) * m_level * (300.f - dist) * (1.0f/300) * g_framedelay * (1.0f/1000);
 
 				if(handle == PlayerEntityHandle) {
-					if (!BLOCK_PLAYER_CONTROLS)
-						player.lifePool.current=std::min(player.lifePool.current+gain,player.Full_maxlife);									
+					if(!BLOCK_PLAYER_CONTROLS) {
+						player.lifePool.current = std::min(player.lifePool.current + gain, player.Full_maxlife);
+					}
 				}
 				else
 					e->_npcdata->lifePool.current = std::min(e->_npcdata->lifePool.current+gain, e->_npcdata->lifePool.max);
