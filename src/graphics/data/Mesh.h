@@ -224,8 +224,6 @@ struct EERIE_FRUSTRUM_DATA
 struct PORTAL_ROOM_DRAW
 {
 	short			count;
-	short			flags;
-	EERIE_2D_BBOX	bbox;
 	EERIE_FRUSTRUM_DATA	frustrum;
 };
 

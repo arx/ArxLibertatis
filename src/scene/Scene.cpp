@@ -645,7 +645,6 @@ static void ARX_PORTALS_InitDrawnRooms() {
 
 	for(size_t i = 0; i < RoomDraw.size(); i++) {
 		RoomDraw[i].count=0;
-		RoomDraw[i].flags=0;
 		RoomDraw[i].frustrum.nb_frustrums=0;
 	}
 
