@@ -105,12 +105,9 @@ void drawDebugCycleViews() {
 	}
 }
 
-static void drawDebugBoundingBox(const EERIE_2D_BBOX & box, Color color = Color::white) {
+static void drawDebugBoundingBox(const Rectf & box, Color color = Color::white) {
 	if(box.valid()) {
-		drawLine2D(box.min.x, box.min.y, box.max.x, box.min.y, 0.01f, color);
-		drawLine2D(box.max.x, box.min.y, box.max.x, box.max.y, 0.01f, color);
-		drawLine2D(box.max.x, box.max.y, box.min.x, box.max.y, 0.01f, color);
-		drawLine2D(box.min.x, box.max.y, box.min.x, box.min.y, 0.01f, color);
+		drawLineRectangle(box, 0.01f, color);
 	}
 }
 
@@ -483,7 +480,7 @@ static void drawDebugEntities() {
 		}
 		
 		if(visible) {
-			drawDebugBoundingBox(entity->bbox2D, Color::blue);
+			drawDebugBoundingBox(entity->bbox2D.toRect(), Color::blue);
 		}
 		
 		if(closerThan(entity->pos, player.pos, DebugTextMaxDistance)) {

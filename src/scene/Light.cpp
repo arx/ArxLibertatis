@@ -208,10 +208,7 @@ static void ComputeLight2DPos(EERIE_LIGHT * _pL) {
 		
 		float t = siz * (1.0f - 1.0f / (out.rhw * fMaxdist)) + 10;
 
-		_pL->m_screenRect.max.x = out.p.x + t;
-		_pL->m_screenRect.min.x = out.p.x - t;
-		_pL->m_screenRect.max.y = out.p.y + t;
-		_pL->m_screenRect.min.y = out.p.y - t;
+		_pL->m_screenRect = Rectf(out.p.x - t, out.p.y - t, out.p.x + t, out.p.y + t);
 	}
 }
 
@@ -229,8 +226,7 @@ void TreatBackgroundDynlights() {
 			if(!fartherThan(light->pos, ACTIVECAM->orgTrans.pos, fMaxdist)) {
 				ComputeLight2DPos(light);
 			} else {
-				light->m_screenRect.max.x = -1;
-				light->m_screenRect.min.x = 1;
+				light->m_screenRect = Rectf(1, 0, -1, 0); // Intentionally invalid
 			}
 
 			if(!light->m_ignitionStatus) {

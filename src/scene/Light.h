@@ -106,7 +106,7 @@ struct EERIE_LIGHT {
 	float intensity;
 	Color3f rgb;
 	
-	EERIE_2D_BBOX m_screenRect;
+	Rectf m_screenRect;
 	
 	float m_flareFader;
 	Color3f ex_flicker;
