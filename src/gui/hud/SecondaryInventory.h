@@ -85,7 +85,7 @@ public:
 	};
 	
 	Fade InventoryDir;
-	float InventoryX;
+	float m_fadePosition;
 };
 
 extern SecondaryInventoryHud g_secondaryInventoryHud;

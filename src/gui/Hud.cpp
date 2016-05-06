@@ -547,7 +547,7 @@ bool CurrentTorchIconGui::isVisible() {
 
 void CurrentTorchIconGui::updateRect(const Rectf & parent) {
 	
-	float secondaryInventoryX = g_secondaryInventoryHud.InventoryX + 110.f;
+	float secondaryInventoryX = g_secondaryInventoryHud.m_fadePosition + 110.f;
 	
 	m_rect = createChild(parent, Anchor_TopLeft, m_size * m_scale, Anchor_BottomLeft);
 	
@@ -1485,7 +1485,7 @@ void HudRoot::draw() {
 	Vec2f anchorPos = g_playerInventoryHud.anchorPosition();
 	
 	Rectf spacer;
-	spacer.left = std::max(g_secondaryInventoryHud.InventoryX + 160, healthGauge.rect().right);
+	spacer.left = std::max(g_secondaryInventoryHud.m_fadePosition + 160, healthGauge.rect().right);
 	spacer.bottom = anchorPos.y;
 	spacer.top = spacer.bottom - 30;
 	spacer.right = spacer.left + 20;
