@@ -105,7 +105,7 @@ void CinematicBorder::render() {
 		rectz[0].left = rectz[1].left = 0;
 		rectz[0].right = rectz[1].right = g_size.width();
 		rectz[0].top = 0;
-		long lMulResult = checked_range_cast<long>(CINEMA_DECAL * g_sizeRatio.y);
+		s32 lMulResult = checked_range_cast<s32>(CINEMA_DECAL * g_sizeRatio.y);
 		rectz[0].bottom = lMulResult;
 		rectz[1].top = g_size.height() - lMulResult;
 		rectz[1].bottom = g_size.height();
