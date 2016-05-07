@@ -461,22 +461,20 @@ void MiniMap::showBookEntireMap(int showLevel) {
 void MiniMap::revealPlayerPos(int showLevel) {
 	
 	float zoom = 250.f;
-	float startX = 140.f;
-	float startY = 120.f;
+	Vec2f start = Vec2f(140.f, 120.f);
 	float caseX = zoom / MINIMAP_MAX_X;
 	float caseY = zoom / MINIMAP_MAX_Z;
 	
 	Vec2f playerPos = computePlayerPos(zoom, showLevel);
-	playerPos.x += startX;
-	playerPos.y += startY;
+	playerPos += start;
 	
 	// TODO this is inefficient - we don't really need to iterate over the whole minimap!
 	// only the area around the player will be modified
 	for(size_t j = 0; j < MINIMAP_MAX_Z; j++) {
 		for(size_t i = 0; i < MINIMAP_MAX_X; i++) {
 			
-			float posx = startX + i * caseX;
-			float posy = startY + j * caseY;
+			float posx = start.x + i * caseX;
+			float posy = start.y + j * caseY;
 			
 			float d = fdist(Vec2f(posx + caseX * 0.5f, posy), playerPos);
 			if(d > 6.f) {
