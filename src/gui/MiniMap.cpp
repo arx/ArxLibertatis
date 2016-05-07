@@ -523,9 +523,10 @@ Vec2f MiniMap::computePlayerPos(float zoom, int showLevel) {
 void MiniMap::drawBackground(int showLevel, Rect boundaries, float startX, float startY, float zoom, float fadeBorder, float decalX, float decalY, bool invColor, float alpha) {
 	
 	m_mapVertices.clear();
-
-	float caseX = zoom / MINIMAP_MAX_X;
-	float caseY = zoom / MINIMAP_MAX_Z;
+	
+	Vec2f cas;
+	cas.x = zoom / MINIMAP_MAX_X;
+	cas.y = zoom / MINIMAP_MAX_Z;
 	
 	GRenderer->SetTexture(0, m_levels[showLevel].m_texContainer);
 	
@@ -566,8 +567,8 @@ void MiniMap::drawBackground(int showLevel, Rect boundaries, float startX, float
 			float vx = (vxx * div) * dw;
 			float vy = (vyy * div) * dh;
 			
-			float posx = (startX + x * caseX) * g_sizeRatio.x;
-			float posy = (startY + z * caseY) * g_sizeRatio.y;
+			float posx = (startX + x * cas.x) * g_sizeRatio.x;
+			float posy = (startY + z * cas.y) * g_sizeRatio.y;
 			
 			if((posx < boundaries.left * g_sizeRatio.x)
 			   || (posx > boundaries.right * g_sizeRatio.x)
@@ -580,8 +581,8 @@ void MiniMap::drawBackground(int showLevel, Rect boundaries, float startX, float
 			
 			verts[3].p.x = verts[0].p.x = (posx);
 			verts[1].p.y = verts[0].p.y = (posy);
-			verts[2].p.x = verts[1].p.x = posx + (caseX * g_sizeRatio.x);
-			verts[3].p.y = verts[2].p.y = posy + (caseY * g_sizeRatio.y);
+			verts[2].p.x = verts[1].p.x = posx + (cas.x * g_sizeRatio.x);
+			verts[3].p.y = verts[2].p.y = posy + (cas.y * g_sizeRatio.y);
 			
 			verts[3].uv.x = verts[0].uv.x = vx;
 			verts[1].uv.y = verts[0].uv.y = vy;
