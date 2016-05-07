@@ -532,11 +532,12 @@ void MiniMap::drawBackground(int showLevel, Rect boundaries, float startX, float
 	
 	float div = (1.0f / 25);
 	TextureContainer * tc = m_levels[showLevel].m_texContainer;
-	float dw = 1.f / tc->m_pTexture->getStoredSize().x; 
-	float dh = 1.f / tc->m_pTexture->getStoredSize().y;
+	Vec2f d;
+	d.x = 1.f / tc->m_pTexture->getStoredSize().x;
+	d.y = 1.f / tc->m_pTexture->getStoredSize().y;
 	
-	float vx2 = 4.f * dw * m_mod.x;
-	float vy2 = 4.f * dh * m_mod.y;
+	float vx2 = 4.f * d.x * m_mod.x;
+	float vy2 = 4.f * d.y * m_mod.y;
 	
 	float fadeDiv = 0.f;
 	Rect fadeBounds(0, 0, 0, 0);
@@ -564,8 +565,8 @@ void MiniMap::drawBackground(int showLevel, Rect boundaries, float startX, float
 			
 			float vxx = float(x) * float(m_activeBkg->Xdiv) * m_mod.x;
 			float vyy = float(z) * float(m_activeBkg->Zdiv) * m_mod.y;
-			float vx = (vxx * div) * dw;
-			float vy = (vyy * div) * dh;
+			float vx = (vxx * div) * d.x;
+			float vy = (vyy * div) * d.y;
 			
 			float posx = (startX + x * cas.x) * g_sizeRatio.x;
 			float posy = (startY + z * cas.y) * g_sizeRatio.y;
