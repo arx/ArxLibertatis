@@ -303,7 +303,7 @@ void MiniMap::showPlayerMiniMap(int showLevel) {
 		}
 		
 		// Draw the background
-		drawBackground(showLevel, Rect(390, 135, 590, 295), start.x, start.y, miniMapZoom, 20.f, decal.x, decal.y, true, 0.5f);
+		drawBackground(showLevel, Rect(390, 135, 590, 295), start, miniMapZoom, 20.f, decal.x, decal.y, true, 0.5f);
 		
 		GRenderer->GetTextureStage(0)->setWrapMode(TextureStage::WrapRepeat);
 		
@@ -338,7 +338,7 @@ void MiniMap::showBookMiniMap(int showLevel) {
 			playerPos += start;
 		}
 		
-		drawBackground(showLevel, Rect(360, 85, 555, 355), start.x, start.y, zoom, 20.f);
+		drawBackground(showLevel, Rect(360, 85, 555, 355), start, zoom, 20.f);
 		
 		GRenderer->GetTextureStage(0)->setWrapMode(TextureStage::WrapRepeat);
 		
@@ -374,7 +374,7 @@ void MiniMap::showBookEntireMap(int showLevel) {
 		playerPos += start;
 	}
 	
-	drawBackground(showLevel, Rect(0, 0, 345, 290), start.x, start.y, zoom);
+	drawBackground(showLevel, Rect(0, 0, 345, 290), start, zoom);
 	
 	GRenderer->GetTextureStage(0)->setWrapMode(TextureStage::WrapRepeat);
 	
@@ -520,7 +520,7 @@ Vec2f MiniMap::computePlayerPos(float zoom, int showLevel) {
 	return pos;
 }
 
-void MiniMap::drawBackground(int showLevel, Rect boundaries, float startX, float startY, float zoom, float fadeBorder, float decalX, float decalY, bool invColor, float alpha) {
+void MiniMap::drawBackground(int showLevel, Rect boundaries, Vec2f start, float zoom, float fadeBorder, float decalX, float decalY, bool invColor, float alpha) {
 	
 	m_mapVertices.clear();
 	
@@ -573,8 +573,8 @@ void MiniMap::drawBackground(int showLevel, Rect boundaries, float startX, float
 			v4.y = (v3.y * div) * d.y;
 			
 			Vec2f pos;
-			pos.x = (startX + x * cas.x) * g_sizeRatio.x;
-			pos.y = (startY + z * cas.y) * g_sizeRatio.y;
+			pos.x = (start.x + x * cas.x) * g_sizeRatio.x;
+			pos.y = (start.y + z * cas.y) * g_sizeRatio.y;
 			
 			if((pos.x < boundaries.left * g_sizeRatio.x)
 			   || (pos.x > boundaries.right * g_sizeRatio.x)
