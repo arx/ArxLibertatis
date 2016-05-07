@@ -474,32 +474,32 @@ void MiniMap::revealPlayerPos(int showLevel) {
 	// TODO this is inefficient - we don't really need to iterate over the whole minimap!
 	// only the area around the player will be modified
 	for(size_t j = 0; j < MINIMAP_MAX_Z; j++) {
-		for(size_t i = 0; i < MINIMAP_MAX_X; i++) {
-			
-			Vec2f pos;
-			pos.x = start.x + i * cas.x;
-			pos.y = start.y + j * cas.y;
-			
-			float d = fdist(Vec2f(pos.x + cas.x * 0.5f, pos.y), playerPos);
-			if(d > 6.f) {
-				continue;
-			}
-			
-			float vv = (6 - d) * (1.f / 6);
-			
-			if(vv >= 0.5f) {
-				vv = 1.f;
-			} else if(vv > 0.f) {
-				vv = vv * 2.f;
-			} else {
-				vv = 0.f;
-			}
-			
-			int r = vv * 255.f;
-			
-			int ucLevel = std::max(r, (int)m_levels[showLevel].m_revealed[i][j]);
-			m_levels[showLevel].m_revealed[i][j] = checked_range_cast<unsigned char>(ucLevel);
+	for(size_t i = 0; i < MINIMAP_MAX_X; i++) {
+		
+		Vec2f pos;
+		pos.x = start.x + i * cas.x;
+		pos.y = start.y + j * cas.y;
+		
+		float d = fdist(Vec2f(pos.x + cas.x * 0.5f, pos.y), playerPos);
+		if(d > 6.f) {
+			continue;
 		}
+		
+		float vv = (6 - d) * (1.f / 6);
+		
+		if(vv >= 0.5f) {
+			vv = 1.f;
+		} else if(vv > 0.f) {
+			vv = vv * 2.f;
+		} else {
+			vv = 0.f;
+		}
+		
+		int r = vv * 255.f;
+		
+		int ucLevel = std::max(r, (int)m_levels[showLevel].m_revealed[i][j]);
+		m_levels[showLevel].m_revealed[i][j] = checked_range_cast<unsigned char>(ucLevel);
+	}
 	}
 }
 
