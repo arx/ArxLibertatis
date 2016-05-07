@@ -848,12 +848,11 @@ static unsigned int uiOneHandedMagicMode = 0;
 static unsigned int uiOneHandedStealth = 0;
 
 bool Input::actionPressed(ControlAction actionId) const {
-	switch(actionId) {
-		case CONTROLS_CUST_USE:
-		case CONTROLS_CUST_ACTION:
-			break;
-		default:
-		{
+	
+	if(actionId == CONTROLS_CUST_USE || actionId == CONTROLS_CUST_ACTION) {
+		return false;
+	}
+	
 			if(config.misc.forceToggle) {
 				for(int j = 0; j < 2; j++) {
 					if(config.actions[actionId].key[j] != -1) {
@@ -978,9 +977,7 @@ bool Input::actionPressed(ControlAction actionId) const {
 					}
 				}
 			}
-		}
-	}
-
+	
 	return false;
 }
 
