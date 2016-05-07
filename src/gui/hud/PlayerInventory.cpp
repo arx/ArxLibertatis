@@ -613,11 +613,12 @@ void PlayerInventoryHud::dragEntity(Entity * io, const Vec2s &pos) {
 					RemoveFromAllInventories(ioo);
 					sInventory = 1;
 					
-					float fX = (pos.x - iPos.x) / (32 * m_scale);
-					float fY = (pos.y - iPos.y) / (32 * m_scale);
+					Vec2f f;
+					f.x = (pos.x - iPos.x) / (32 * m_scale);
+					f.y = (pos.y - iPos.y) / (32 * m_scale);
 					
-					sInventoryPos.x = checked_range_cast<short>(fX);
-					sInventoryPos.y = checked_range_cast<short>(fY);
+					sInventoryPos.x = checked_range_cast<short>(f.x);
+					sInventoryPos.y = checked_range_cast<short>(f.y);
 					
 					SendInitScriptEvent(ioo);
 					ARX_INVENTORY_IdentifyIO(ioo);
