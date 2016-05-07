@@ -918,37 +918,30 @@ bool Input::actionPressed(ControlAction actionId) const {
 									break;
 								}
 							} else {
-								switch(actionId) {
-									case CONTROLS_CUST_MAGICMODE: {
-										if(!j && isKeyPressed(config.actions[actionId].key[1] & 0xFFFF)) {
-											continue;
-										}
+								if(actionId == CONTROLS_CUST_MAGICMODE) {
+									if(!j && isKeyPressed(config.actions[actionId].key[1] & 0xFFFF)) {
+										continue;
+									}
 
-										if(uiOneHandedMagicMode == 1) {
-											uiOneHandedMagicMode = 2;
-										} else {
-											if(uiOneHandedMagicMode == 3) {
-												uiOneHandedMagicMode = 0;
-											}
+									if(uiOneHandedMagicMode == 1) {
+										uiOneHandedMagicMode = 2;
+									} else {
+										if(uiOneHandedMagicMode == 3) {
+											uiOneHandedMagicMode = 0;
 										}
 									}
-									break;
-									case CONTROLS_CUST_STEALTHMODE: {
-										if(!j && isKeyPressed(config.actions[actionId].key[1] & 0xFFFF)) {
-											continue;
-										}
+								} else if(actionId == CONTROLS_CUST_STEALTHMODE) {
+									if(!j && isKeyPressed(config.actions[actionId].key[1] & 0xFFFF)) {
+										continue;
+									}
 
-										if(uiOneHandedStealth == 1) {
-											uiOneHandedStealth = 2;
-										} else {
-											if(uiOneHandedStealth == 3) {
-												uiOneHandedStealth = 0;
-											}
+									if(uiOneHandedStealth == 1) {
+										uiOneHandedStealth = 2;
+									} else {
+										if(uiOneHandedStealth == 3) {
+											uiOneHandedStealth = 0;
 										}
 									}
-									break;
-									default:
-										break;
 								}
 							}
 						}
