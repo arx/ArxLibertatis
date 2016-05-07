@@ -699,8 +699,9 @@ void MiniMap::drawPlayer(float playerSize, Vec2f playerPos, bool alphaBlending) 
 	Vec2f r2;
 	r2.x = -playerSize * (1.0f / 2);
 	r2.y = playerSize;
-	float rx3 = playerSize * (1.0f / 2);
-	float ry3 = playerSize;
+	Vec2f r3;
+	r3.x = playerSize * (1.0f / 2);
+	r3.y = playerSize;
 	
 	float angle = glm::radians(m_player->angle.getPitch());
 	float ca = std::cos(angle);
@@ -710,8 +711,8 @@ void MiniMap::drawPlayer(float playerSize, Vec2f playerPos, bool alphaBlending) 
 	verts[0].p.y = (playerPos.y + r2.y * ca - r2.x * sa) * g_sizeRatio.y;
 	verts[1].p.x = (playerPos.x + r.x * ca + r.y * sa) * g_sizeRatio.x;
 	verts[1].p.y = (playerPos.y + r.y * ca - r.x * sa) * g_sizeRatio.y;
-	verts[2].p.x = (playerPos.x + rx3 * ca + ry3 * sa) * g_sizeRatio.x;
-	verts[2].p.y = (playerPos.y + ry3 * ca - rx3 * sa) * g_sizeRatio.y;
+	verts[2].p.x = (playerPos.x + r3.x * ca + r3.y * sa) * g_sizeRatio.x;
+	verts[2].p.y = (playerPos.y + r3.y * ca - r3.x * sa) * g_sizeRatio.y;
 	
 	GRenderer->ResetTexture(0);
 	GRenderer->SetRenderState(Renderer::AlphaBlending, alphaBlending);
