@@ -837,7 +837,7 @@ bool Input::actionNowPressed(ControlAction actionId) const {
 		}
 		
 		if(isKeyPressedNowPressed(config.actions[actionId].key[j] & INPUT_KEYBOARD_MASK)) {
-			return true && bCombine;
+			return bCombine;
 		}
 	}
 	
@@ -909,7 +909,7 @@ bool Input::actionPressed(ControlAction actionId) const {
 									}
 									break;
 									default: {
-										return true & bCombine;
+										return bCombine;
 									}
 									break;
 								}
@@ -992,7 +992,7 @@ bool Input::actionPressed(ControlAction actionId) const {
 							}
 
 							if(isKeyPressed(config.actions[actionId].key[j] & 0xFFFF))
-								return true & bCombine;
+								return bCombine;
 						}
 					}
 				}
@@ -1031,7 +1031,7 @@ bool Input::actionNowReleased(ControlAction actionId) const {
 		}
 		
 		if(isKeyPressedNowUnPressed(key & INPUT_KEYBOARD_MASK)) {
-			return true && bCombine;
+			return bCombine;
 		}
 	}
 	
