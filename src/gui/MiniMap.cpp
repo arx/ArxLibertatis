@@ -399,21 +399,23 @@ void MiniMap::showBookEntireMap(int showLevel) {
 			continue;
 		}
 		
-		float pos_x = m_mapMarkers[i].m_pos.x * 8 * ratio * m_activeBkg->Xmul * casePos.x + start.x;
-		float pos_y = m_mapMarkers[i].m_pos.y * 8 * ratio * m_activeBkg->Zmul * casePos.y + start.y;
+		Vec2f pos;
+		pos.x = m_mapMarkers[i].m_pos.x * 8 * ratio * m_activeBkg->Xmul * casePos.x + start.x;
+		pos.y = m_mapMarkers[i].m_pos.y * 8 * ratio * m_activeBkg->Zmul * casePos.y + start.y;
+		
 		float size = 5.f * ratio;
 		verts[0].color = Color(255, 0, 0, 255).toRGBA();
 		verts[1].color = Color(255, 0, 0, 255).toRGBA();
 		verts[2].color = Color(255, 0, 0, 255).toRGBA();
 		verts[3].color = Color(255, 0, 0, 255).toRGBA();
-		verts[0].p.x = (pos_x - size) * g_sizeRatio.x;
-		verts[0].p.y = (pos_y - size) * g_sizeRatio.y;
-		verts[1].p.x = (pos_x + size) * g_sizeRatio.x;
-		verts[1].p.y = (pos_y - size) * g_sizeRatio.y;
-		verts[2].p.x = (pos_x + size) * g_sizeRatio.x;
-		verts[2].p.y = (pos_y + size) * g_sizeRatio.y;
-		verts[3].p.x = (pos_x - size) * g_sizeRatio.x;
-		verts[3].p.y = (pos_y + size) * g_sizeRatio.y;
+		verts[0].p.x = (pos.x - size) * g_sizeRatio.x;
+		verts[0].p.y = (pos.y - size) * g_sizeRatio.y;
+		verts[1].p.x = (pos.x + size) * g_sizeRatio.x;
+		verts[1].p.y = (pos.y - size) * g_sizeRatio.y;
+		verts[2].p.x = (pos.x + size) * g_sizeRatio.x;
+		verts[2].p.y = (pos.y + size) * g_sizeRatio.y;
+		verts[3].p.x = (pos.x - size) * g_sizeRatio.x;
+		verts[3].p.y = (pos.y + size) * g_sizeRatio.y;
 		verts[0].uv = Vec2f_ZERO;
 		verts[1].uv = Vec2f_X_AXIS;
 		verts[2].uv = Vec2f_ONE;
