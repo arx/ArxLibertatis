@@ -462,8 +462,9 @@ void MiniMap::revealPlayerPos(int showLevel) {
 	
 	float zoom = 250.f;
 	Vec2f start = Vec2f(140.f, 120.f);
-	float caseX = zoom / MINIMAP_MAX_X;
-	float caseY = zoom / MINIMAP_MAX_Z;
+	Vec2f cas;
+	cas.x = zoom / MINIMAP_MAX_X;
+	cas.y = zoom / MINIMAP_MAX_Z;
 	
 	Vec2f playerPos = computePlayerPos(zoom, showLevel);
 	playerPos += start;
@@ -473,10 +474,10 @@ void MiniMap::revealPlayerPos(int showLevel) {
 	for(size_t j = 0; j < MINIMAP_MAX_Z; j++) {
 		for(size_t i = 0; i < MINIMAP_MAX_X; i++) {
 			
-			float posx = start.x + i * caseX;
-			float posy = start.y + j * caseY;
+			float posx = start.x + i * cas.x;
+			float posy = start.y + j * cas.y;
 			
-			float d = fdist(Vec2f(posx + caseX * 0.5f, posy), playerPos);
+			float d = fdist(Vec2f(posx + cas.x * 0.5f, posy), playerPos);
 			if(d > 6.f) {
 				continue;
 			}
