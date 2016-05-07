@@ -536,8 +536,9 @@ void MiniMap::drawBackground(int showLevel, Rect boundaries, float startX, float
 	d.x = 1.f / tc->m_pTexture->getStoredSize().x;
 	d.y = 1.f / tc->m_pTexture->getStoredSize().y;
 	
-	float vx2 = 4.f * d.x * m_mod.x;
-	float vy2 = 4.f * d.y * m_mod.y;
+	Vec2f v2;
+	v2.x = 4.f * d.x * m_mod.x;
+	v2.y = 4.f * d.y * m_mod.y;
 	
 	float fadeDiv = 0.f;
 	Rect fadeBounds(0, 0, 0, 0);
@@ -587,8 +588,8 @@ void MiniMap::drawBackground(int showLevel, Rect boundaries, float startX, float
 			
 			verts[3].uv.x = verts[0].uv.x = vx;
 			verts[1].uv.y = verts[0].uv.y = vy;
-			verts[2].uv.x = verts[1].uv.x = vx + vx2;
-			verts[3].uv.y = verts[2].uv.y = vy + vy2;
+			verts[2].uv.x = verts[1].uv.x = vx + v2.x;
+			verts[3].uv.y = verts[2].uv.y = vy + v2.y;
 			
 			float v;
 			float oo = 0.f;
