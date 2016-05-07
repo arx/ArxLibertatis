@@ -724,8 +724,10 @@ void MiniMap::drawPlayer(float playerSize, Vec2f playerPos, bool alphaBlending) 
 
 void MiniMap::drawDetectedEntities(int showLevel, Vec2f start, float zoom) {
 	
-	float caseX = zoom / MINIMAP_MAX_X;
-	float caseY = zoom / MINIMAP_MAX_Z;
+	Vec2f cas;
+	cas.x = zoom / MINIMAP_MAX_X;
+	cas.y = zoom / MINIMAP_MAX_Z;
+	
 	float ratio = zoom / 250.f;
 	
 	if(!m_pTexDetect) {
@@ -764,10 +766,10 @@ void MiniMap::drawDetectedEntities(int showLevel, Vec2f start, float zoom) {
 			continue; // the player doesn't have enough skill to detect this NPC
 		}
 		
-		float fpx = start.x + ((npc->pos.x - 100 + of.x - of2.x) * ( 1.0f / 100 ) * caseX
+		float fpx = start.x + ((npc->pos.x - 100 + of.x - of2.x) * ( 1.0f / 100 ) * cas.x
 		+ of.x * ratio * m_mod.x) / m_mod.x;
-		float fpy = start.y + ((m_mapMaxY[showLevel] - of.y - of2.y) * ( 1.0f / 100 ) * caseY
-		- (npc->pos.z + 200 + of.y - of2.y) * ( 1.0f / 100 ) * caseY + of.y * ratio * m_mod.y) / m_mod.y;
+		float fpy = start.y + ((m_mapMaxY[showLevel] - of.y - of2.y) * ( 1.0f / 100 ) * cas.y
+		- (npc->pos.z + 200 + of.y - of2.y) * ( 1.0f / 100 ) * cas.y + of.y * ratio * m_mod.y) / m_mod.y;
 		
 		float d = fdist(Vec2f(m_player->pos.x, m_player->pos.z), Vec2f(npc->pos.x, npc->pos.z));
 		if(d > 800 || glm::abs(ents.player()->pos.y - npc->pos.y) > 250.f) {
