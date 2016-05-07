@@ -878,42 +878,35 @@ bool Input::actionPressed(ControlAction actionId) const {
 
 							if(isKeyPressed(config.actions[actionId].key[j] & 0xFFFF)) {
 								bool bQuit = false;
-
-								switch (actionId) {
-									case CONTROLS_CUST_MAGICMODE: {
-										if(bCombine) {
-											if(!uiOneHandedMagicMode) {
-												uiOneHandedMagicMode = 1;
-											} else {
-												if(uiOneHandedMagicMode == 2) {
-													uiOneHandedMagicMode = 3;
-												}
+								
+								if(actionId == CONTROLS_CUST_MAGICMODE) {
+									if(bCombine) {
+										if(!uiOneHandedMagicMode) {
+											uiOneHandedMagicMode = 1;
+										} else {
+											if(uiOneHandedMagicMode == 2) {
+												uiOneHandedMagicMode = 3;
 											}
-
-											bQuit = true;
 										}
+										
+										bQuit = true;
 									}
-									break;
-									case CONTROLS_CUST_STEALTHMODE: {
-										if(bCombine) {
-											if(!uiOneHandedStealth) {
-												uiOneHandedStealth = 1;
-											} else {
-												if(uiOneHandedStealth == 2) {
-													uiOneHandedStealth = 3;
-												}
+								} else if(actionId == CONTROLS_CUST_STEALTHMODE) {
+									if(bCombine) {
+										if(!uiOneHandedStealth) {
+											uiOneHandedStealth = 1;
+										} else {
+											if(uiOneHandedStealth == 2) {
+												uiOneHandedStealth = 3;
 											}
-
-											bQuit = true;
 										}
+										
+										bQuit = true;
 									}
-									break;
-									default: {
-										return bCombine;
-									}
-									break;
+								} else {
+									return bCombine;
 								}
-
+								
 								if(bQuit) {
 									break;
 								}
