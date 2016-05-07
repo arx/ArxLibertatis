@@ -830,13 +830,13 @@ bool Input::actionNowPressed(ControlAction actionId) const {
 		}
 		
 		bool bCombine = true;
-		if(config.actions[actionId].key[j] & INPUT_COMBINATION_MASK) {
-			if(!isKeyPressed((config.actions[actionId].key[j] >> 16) & INPUT_KEYBOARD_MASK)) {
+		if(key & INPUT_COMBINATION_MASK) {
+			if(!isKeyPressed((key >> 16) & INPUT_KEYBOARD_MASK)) {
 				bCombine = false;
 			}
 		}
 		
-		if(isKeyPressedNowPressed(config.actions[actionId].key[j] & INPUT_KEYBOARD_MASK)) {
+		if(isKeyPressedNowPressed(key & INPUT_KEYBOARD_MASK)) {
 			return bCombine;
 		}
 	}
