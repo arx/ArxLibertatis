@@ -303,7 +303,7 @@ void MiniMap::showPlayerMiniMap(int showLevel) {
 		}
 		
 		// Draw the background
-		drawBackground(showLevel, Rect(390, 135, 590, 295), start, miniMapZoom, 20.f, decal.x, decal.y, true, 0.5f);
+		drawBackground(showLevel, Rect(390, 135, 590, 295), start, miniMapZoom, 20.f, decal, true, 0.5f);
 		
 		GRenderer->GetTextureStage(0)->setWrapMode(TextureStage::WrapRepeat);
 		
@@ -520,7 +520,7 @@ Vec2f MiniMap::computePlayerPos(float zoom, int showLevel) {
 	return pos;
 }
 
-void MiniMap::drawBackground(int showLevel, Rect boundaries, Vec2f start, float zoom, float fadeBorder, float decalX, float decalY, bool invColor, float alpha) {
+void MiniMap::drawBackground(int showLevel, Rect boundaries, Vec2f start, float zoom, float fadeBorder, Vec2f decal, bool invColor, float alpha) {
 	
 	m_mapVertices.clear();
 	
@@ -662,14 +662,14 @@ void MiniMap::drawBackground(int showLevel, Rect boundaries, Vec2f start, float 
 			
 			if(oo > 0.f) {
 				
-				verts[0].p.x += decalX * g_sizeRatio.x;
-				verts[0].p.y += decalY * g_sizeRatio.y;
-				verts[1].p.x += decalX * g_sizeRatio.x;
-				verts[1].p.y += decalY * g_sizeRatio.y;
-				verts[2].p.x += decalX * g_sizeRatio.x;
-				verts[2].p.y += decalY * g_sizeRatio.y;
-				verts[3].p.x += decalX * g_sizeRatio.x;
-				verts[3].p.y += decalY * g_sizeRatio.y;
+				verts[0].p.x += decal.x * g_sizeRatio.x;
+				verts[0].p.y += decal.y * g_sizeRatio.y;
+				verts[1].p.x += decal.x * g_sizeRatio.x;
+				verts[1].p.y += decal.y * g_sizeRatio.y;
+				verts[2].p.x += decal.x * g_sizeRatio.x;
+				verts[2].p.y += decal.y * g_sizeRatio.y;
+				verts[3].p.x += decal.x * g_sizeRatio.x;
+				verts[3].p.y += decal.y * g_sizeRatio.y;
 				
 				m_mapVertices.push_back(verts[0]);
 				m_mapVertices.push_back(verts[1]);
