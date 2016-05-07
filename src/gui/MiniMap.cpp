@@ -567,8 +567,10 @@ void MiniMap::drawBackground(int showLevel, Rect boundaries, float startX, float
 			Vec2f v3;
 			v3.x = float(x) * float(m_activeBkg->Xdiv) * m_mod.x;
 			v3.y = float(z) * float(m_activeBkg->Zdiv) * m_mod.y;
-			float vx = (v3.x * div) * d.x;
-			float vy = (v3.y * div) * d.y;
+			
+			Vec2f v4;
+			v4.x = (v3.x * div) * d.x;
+			v4.y = (v3.y * div) * d.y;
 			
 			float posx = (startX + x * cas.x) * g_sizeRatio.x;
 			float posy = (startY + z * cas.y) * g_sizeRatio.y;
@@ -587,10 +589,10 @@ void MiniMap::drawBackground(int showLevel, Rect boundaries, float startX, float
 			verts[2].p.x = verts[1].p.x = posx + (cas.x * g_sizeRatio.x);
 			verts[3].p.y = verts[2].p.y = posy + (cas.y * g_sizeRatio.y);
 			
-			verts[3].uv.x = verts[0].uv.x = vx;
-			verts[1].uv.y = verts[0].uv.y = vy;
-			verts[2].uv.x = verts[1].uv.x = vx + v2.x;
-			verts[3].uv.y = verts[2].uv.y = vy + v2.y;
+			verts[3].uv.x = verts[0].uv.x = v4.x;
+			verts[1].uv.y = verts[0].uv.y = v4.y;
+			verts[2].uv.x = verts[1].uv.x = v4.x + v2.x;
+			verts[3].uv.y = verts[2].uv.y = v4.y + v2.y;
 			
 			float v;
 			float oo = 0.f;
