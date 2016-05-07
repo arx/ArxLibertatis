@@ -568,6 +568,7 @@ else(MSVC)
 	
 	check_symbol_exists(getexecname "stdlib.h" ARX_HAVE_GETEXECNAME)
 	check_symbol_exists(setenv "stdlib.h" ARX_HAVE_SETENV)
+	check_symbol_exists(unsetenv "stdlib.h" ARX_HAVE_UNSETENV)
 	
 	find_library(LIBRT_LIBRARY rt)
 	

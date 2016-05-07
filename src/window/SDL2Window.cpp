@@ -21,6 +21,13 @@
 
 #include <algorithm>
 #include <sstream>
+#include <cstdlib>
+
+#include "Configure.h"
+
+#if ARX_HAVE_SETENV || ARX_HAVE_UNSETENV
+#include <stdlib.h>
+#endif
 
 #ifdef ARX_DEBUG
 #include <signal.h>
@@ -28,6 +35,8 @@
 
 #define SDL_PROTOTYPES_ONLY 1
 #include <SDL_syswm.h>
+
+#include <boost/scope_exit.hpp>
 
 #include "gui/Credits.h"
 #include "graphics/opengl/GLDebug.h"
@@ -105,6 +114,23 @@ bool SDL2Window::initializeFramework() {
 	const char * headerVersion = ARX_STR(SDL_MAJOR_VERSION) "." ARX_STR(SDL_MINOR_VERSION)
 	                             "." ARX_STR(SDL_PATCHLEVEL);
 	CrashHandler::setVariable("SDL version (headers)", headerVersion);
+	
+	#if ARX_PLATFORM != ARX_PLATFORM_WIN32 && ARX_HAVE_SETENV && ARX_HAVE_UNSETENV
+	/*
+	 * We want the X11 WM_CLASS to be "arx-libertatis" to match the .desktop file,
+	 * but SDL does not let us set it directly.
+	 */
+	const char * oldClass = std::getenv("SDL_VIDEO_X11_WMCLASS");
+	if(!oldClass) {
+		setenv("SDL_VIDEO_X11_WMCLASS", "arx-libertatis", 1);
+	}
+	BOOST_SCOPE_EXIT((oldClass)) {
+		if(!oldClass) {
+			// Don't overrride WM_CLASS for SDL child processes
+			unsetenv("SDL_VIDEO_X11_WMCLASS");
+		}
+	} BOOST_SCOPE_EXIT_END
+	#endif
 	
 	if(SDL_Init(SDL_INIT_VIDEO | SDL_INIT_EVENTS) < 0) {
 		LogError << "Failed to initialize SDL: " << SDL_GetError();
