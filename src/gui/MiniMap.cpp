@@ -566,124 +566,124 @@ void MiniMap::drawBackground(int showLevel, Rect boundaries, Vec2f start, float 
 	GRenderer->GetTextureStage(0)->setMagFilter(TextureStage::FilterLinear);
 
 	for(int z = -2; z < int(MINIMAP_MAX_Z) + 2; z++) {
-		for(int x = -2; x < int(MINIMAP_MAX_X) + 2; x++) {
-			
-			Vec2f v3;
-			v3.x = float(x) * float(m_activeBkg->Xdiv) * m_mod.x;
-			v3.y = float(z) * float(m_activeBkg->Zdiv) * m_mod.y;
-			
-			Vec2f v4;
-			v4.x = (v3.x * div) * d.x;
-			v4.y = (v3.y * div) * d.y;
-			
-			Vec2f pos;
-			pos.x = (start.x + x * cas.x) * g_sizeRatio.x;
-			pos.y = (start.y + z * cas.y) * g_sizeRatio.y;
-			
-			if((pos.x < boundaries.left * g_sizeRatio.x)
-			   || (pos.x > boundaries.right * g_sizeRatio.x)
-			   || (pos.y < boundaries.top * g_sizeRatio.y)
-			   || (pos.y > boundaries.bottom * g_sizeRatio.y)) {
-				continue; // out of bounds
-			}
-
-			TexturedVertex verts[4];
-			
-			verts[3].p.x = verts[0].p.x = pos.x;
-			verts[1].p.y = verts[0].p.y = pos.y;
-			verts[2].p.x = verts[1].p.x = pos.x + (cas.x * g_sizeRatio.x);
-			verts[3].p.y = verts[2].p.y = pos.y + (cas.y * g_sizeRatio.y);
-			
-			verts[3].uv.x = verts[0].uv.x = v4.x;
-			verts[1].uv.y = verts[0].uv.y = v4.y;
-			verts[2].uv.x = verts[1].uv.x = v4.x + v2.x;
-			verts[3].uv.y = verts[2].uv.y = v4.y + v2.y;
-			
-			float v;
-			float oo = 0.f;
-			
-			for(int vert = 0; vert < 4; vert++) {
-				verts[vert].color = Color(255, 255, 255, 255).toRGBA();
-				verts[vert].rhw = 1;
-				verts[vert].p.z = 0.00001f;
-
-				// Array offset according to "vert"
-				int iOffset = 0;
-				int jOffset = 0;
-				
-				if(vert == 1 || vert == 2)
-					iOffset = 1;
-				if(vert == 2 || vert == 3)
-					jOffset = 1;
-				
-				if((x + iOffset < 0) || (x + iOffset >= int(MINIMAP_MAX_X)) || (z + jOffset < 0) || (z + jOffset >= int(MINIMAP_MAX_Z))) {
-					v = 0;
-				} else {
-					int minx = std::min(x + iOffset, int(MINIMAP_MAX_X) - iOffset);
-					int minz = std::min(z + jOffset, int(MINIMAP_MAX_Z) - jOffset);
-					v = float(m_levels[showLevel].m_revealed[minx][minz]) * (1.0f / 255);
-				}
-				
-				if(fadeBorder > 0.f) {
-					
-					float _px = verts[vert].p.x - fadeBounds.left;
-					
-					if(_px < 0.f) {
-						v = 0.f;
-					} else if(_px < fadeBorder) {
-						v *= _px * fadeDiv;
-					}
-					
-					_px = fadeBounds.right - verts[vert].p.x;
-					
-					if(_px < 0.f) {
-						v = 0.f;
-					} else if(_px < fadeBorder) {
-						v *= _px * fadeDiv;
-					}
-					
-					_px = verts[vert].p.y - fadeBounds.top;
-					
-					if(_px < 0.f) {
-						v = 0.f;
-					} else if(_px < fadeBorder) {
-						v *= _px * fadeDiv;
-					}
-					
-					_px = fadeBounds.bottom - verts[vert].p.y;
-					
-					if(_px < 0.f) {
-						v = 0.f;
-					} else if(_px < fadeBorder) {
-						v *= _px * fadeDiv;
-					}
-				}
-				
-				verts[vert].color = Color::gray(v * alpha).toRGB();
-				
-				oo += v;
-			}
-			
-			if(oo > 0.f) {
-				
-				verts[0].p.x += decal.x * g_sizeRatio.x;
-				verts[0].p.y += decal.y * g_sizeRatio.y;
-				verts[1].p.x += decal.x * g_sizeRatio.x;
-				verts[1].p.y += decal.y * g_sizeRatio.y;
-				verts[2].p.x += decal.x * g_sizeRatio.x;
-				verts[2].p.y += decal.y * g_sizeRatio.y;
-				verts[3].p.x += decal.x * g_sizeRatio.x;
-				verts[3].p.y += decal.y * g_sizeRatio.y;
-				
-				m_mapVertices.push_back(verts[0]);
-				m_mapVertices.push_back(verts[1]);
-				m_mapVertices.push_back(verts[2]);
-
-				m_mapVertices.push_back(verts[0]);
-				m_mapVertices.push_back(verts[2]);
-				m_mapVertices.push_back(verts[3]);
-			}
+	for(int x = -2; x < int(MINIMAP_MAX_X) + 2; x++) {
+		
+		Vec2f v3;
+		v3.x = float(x) * float(m_activeBkg->Xdiv) * m_mod.x;
+		v3.y = float(z) * float(m_activeBkg->Zdiv) * m_mod.y;
+		
+		Vec2f v4;
+		v4.x = (v3.x * div) * d.x;
+		v4.y = (v3.y * div) * d.y;
+		
+		Vec2f pos;
+		pos.x = (start.x + x * cas.x) * g_sizeRatio.x;
+		pos.y = (start.y + z * cas.y) * g_sizeRatio.y;
+		
+		if((pos.x < boundaries.left * g_sizeRatio.x)
+		   || (pos.x > boundaries.right * g_sizeRatio.x)
+		   || (pos.y < boundaries.top * g_sizeRatio.y)
+		   || (pos.y > boundaries.bottom * g_sizeRatio.y)) {
+			continue; // out of bounds
 		}
+		
+		TexturedVertex verts[4];
+		
+		verts[3].p.x = verts[0].p.x = pos.x;
+		verts[1].p.y = verts[0].p.y = pos.y;
+		verts[2].p.x = verts[1].p.x = pos.x + (cas.x * g_sizeRatio.x);
+		verts[3].p.y = verts[2].p.y = pos.y + (cas.y * g_sizeRatio.y);
+		
+		verts[3].uv.x = verts[0].uv.x = v4.x;
+		verts[1].uv.y = verts[0].uv.y = v4.y;
+		verts[2].uv.x = verts[1].uv.x = v4.x + v2.x;
+		verts[3].uv.y = verts[2].uv.y = v4.y + v2.y;
+		
+		float v;
+		float oo = 0.f;
+		
+		for(int vert = 0; vert < 4; vert++) {
+			verts[vert].color = Color(255, 255, 255, 255).toRGBA();
+			verts[vert].rhw = 1;
+			verts[vert].p.z = 0.00001f;
+
+			// Array offset according to "vert"
+			int iOffset = 0;
+			int jOffset = 0;
+			
+			if(vert == 1 || vert == 2)
+				iOffset = 1;
+			if(vert == 2 || vert == 3)
+				jOffset = 1;
+			
+			if((x + iOffset < 0) || (x + iOffset >= int(MINIMAP_MAX_X)) || (z + jOffset < 0) || (z + jOffset >= int(MINIMAP_MAX_Z))) {
+				v = 0;
+			} else {
+				int minx = std::min(x + iOffset, int(MINIMAP_MAX_X) - iOffset);
+				int minz = std::min(z + jOffset, int(MINIMAP_MAX_Z) - jOffset);
+				v = float(m_levels[showLevel].m_revealed[minx][minz]) * (1.0f / 255);
+			}
+			
+			if(fadeBorder > 0.f) {
+				
+				float _px = verts[vert].p.x - fadeBounds.left;
+				
+				if(_px < 0.f) {
+					v = 0.f;
+				} else if(_px < fadeBorder) {
+					v *= _px * fadeDiv;
+				}
+				
+				_px = fadeBounds.right - verts[vert].p.x;
+				
+				if(_px < 0.f) {
+					v = 0.f;
+				} else if(_px < fadeBorder) {
+					v *= _px * fadeDiv;
+				}
+				
+				_px = verts[vert].p.y - fadeBounds.top;
+				
+				if(_px < 0.f) {
+					v = 0.f;
+				} else if(_px < fadeBorder) {
+					v *= _px * fadeDiv;
+				}
+				
+				_px = fadeBounds.bottom - verts[vert].p.y;
+				
+				if(_px < 0.f) {
+					v = 0.f;
+				} else if(_px < fadeBorder) {
+					v *= _px * fadeDiv;
+				}
+			}
+			
+			verts[vert].color = Color::gray(v * alpha).toRGB();
+			
+			oo += v;
+		}
+		
+		if(oo > 0.f) {
+			
+			verts[0].p.x += decal.x * g_sizeRatio.x;
+			verts[0].p.y += decal.y * g_sizeRatio.y;
+			verts[1].p.x += decal.x * g_sizeRatio.x;
+			verts[1].p.y += decal.y * g_sizeRatio.y;
+			verts[2].p.x += decal.x * g_sizeRatio.x;
+			verts[2].p.y += decal.y * g_sizeRatio.y;
+			verts[3].p.x += decal.x * g_sizeRatio.x;
+			verts[3].p.y += decal.y * g_sizeRatio.y;
+			
+			m_mapVertices.push_back(verts[0]);
+			m_mapVertices.push_back(verts[1]);
+			m_mapVertices.push_back(verts[2]);
+			
+			m_mapVertices.push_back(verts[0]);
+			m_mapVertices.push_back(verts[2]);
+			m_mapVertices.push_back(verts[3]);
+		}
+	}
 	}
 
 	if(!m_mapVertices.empty()) {
