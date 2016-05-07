@@ -766,9 +766,11 @@ void MiniMap::drawDetectedEntities(int showLevel, Vec2f start, float zoom) {
 			continue; // the player doesn't have enough skill to detect this NPC
 		}
 		
-		float fpx = start.x + ((npc->pos.x - 100 + of.x - of2.x) * ( 1.0f / 100 ) * cas.x
+		Vec2f fp;
+		
+		fp.x = start.x + ((npc->pos.x - 100 + of.x - of2.x) * ( 1.0f / 100 ) * cas.x
 		+ of.x * ratio * m_mod.x) / m_mod.x;
-		float fpy = start.y + ((m_mapMaxY[showLevel] - of.y - of2.y) * ( 1.0f / 100 ) * cas.y
+		fp.y = start.y + ((m_mapMaxY[showLevel] - of.y - of2.y) * ( 1.0f / 100 ) * cas.y
 		- (npc->pos.z + 200 + of.y - of2.y) * ( 1.0f / 100 ) * cas.y + of.y * ratio * m_mod.y) / m_mod.y;
 		
 		float d = fdist(Vec2f(m_player->pos.x, m_player->pos.z), Vec2f(npc->pos.x, npc->pos.z));
@@ -782,11 +784,10 @@ void MiniMap::drawDetectedEntities(int showLevel, Vec2f start, float zoom) {
 			col = 1.f - (d - 600.f) * ( 1.0f / 200 );
 		}
 		
-		fpx *= g_sizeRatio.x;
-		fpy *= g_sizeRatio.y;
+		fp *= g_sizeRatio;
 		
 		Rectf rect(
-			Vec2f(fpx, fpy),
+			fp,
 			5.f * ratio,
 			5.f * ratio
 		);
