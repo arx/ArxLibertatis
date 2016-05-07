@@ -33,10 +33,18 @@
 #include <signal.h>
 #endif
 
-#define SDL_PROTOTYPES_ONLY 1
-#include <SDL_syswm.h>
-
 #include <boost/scope_exit.hpp>
+
+#include "platform/Platform.h"
+
+#if ARX_PLATFORM == ARX_PLATFORM_WIN32
+#include <windows.h>
+#endif
+
+#if ARX_PLATFORM != ARX_PLATFORM_WIN32
+#define SDL_PROTOTYPES_ONLY 1
+#endif
+#include <SDL_syswm.h>
 
 #include "gui/Credits.h"
 #include "graphics/opengl/GLDebug.h"
@@ -45,9 +53,8 @@
 #include "io/log/Logger.h"
 #include "math/Rectangle.h"
 #include "platform/CrashHandler.h"
-#include "platform/Platform.h"
 
-// Avoid including SDL_syswm.h without SDL_PROTOTYPES_ONLY
+// Avoid including SDL_syswm.h without SDL_PROTOTYPES_ONLY on non-Windows systems
 // it includes X11 stuff which pullutes the namespace global namespace.
 typedef enum {
 	ARX_SDL_SYSWM_UNKNOWN,
@@ -334,6 +341,21 @@ bool SDL2Window::initialize() {
 		        << " doublebuffer:" << doublebuffer;
 		break;
 	}
+	
+	// Use the executable icon for the window
+	#if ARX_PLATFORM == ARX_PLATFORM_WIN32
+	{
+		SDL_SysWMinfo info;
+		SDL_VERSION(&info.version);
+		if(SDL_GetWindowWMInfo(m_window, &info) && info.subsystem == SDL_SYSWM_WINDOWS) {
+			HICON icon = LoadIcon(GetModuleHandle(NULL), MAKEINTRESOURCE(1));
+			if(icon) {
+				SendMessage(info.info.win.window, WM_SETICON, ICON_SMALL, LPARAM(icon));
+				SendMessage(info.info.win.window, WM_SETICON, ICON_BIG, LPARAM(icon));
+			}
+		}
+	}
+	#endif
 	
 	setVSync(m_vsync);
 	
