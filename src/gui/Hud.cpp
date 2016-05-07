@@ -1461,6 +1461,10 @@ static void setHudTextureState() {
 
 void HudRoot::draw() {
 	
+	if(player.lifePool.current <= 0) {
+		return;
+	}
+	
 	const Vec2f mousePos = Vec2f(DANAEMouse);
 	
 	Rectf hudSlider = Rectf(g_size);
