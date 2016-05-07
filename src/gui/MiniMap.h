@@ -162,8 +162,8 @@ private:
 	float m_playerLastPosX;
 	float m_playerLastPosZ;
 	
-	/*const */float m_modX; // used everywhere, calculate it once
-	/*const */float m_modZ; // should and will be const
+	// should be const
+	Vec2f m_mod;
 	
 	std::vector<MapMarkerData> m_mapMarkers;
 	MiniMapData m_levels[MAX_MINIMAP_LEVELS];

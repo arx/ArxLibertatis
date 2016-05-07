@@ -229,8 +229,8 @@ void MiniMap::firstInit(ARXCHARACTER *pl, PakReader *pakRes, EntityManager *enti
 	m_playerLastPosX = -999999.f;
 	m_playerLastPosZ = -999999.f;
 	
-	m_modX = float(MAX_BKGX) / MINIMAP_MAX_X;
-	m_modZ = float(MAX_BKGZ) / MINIMAP_MAX_Z;
+	m_mod.x = float(MAX_BKGX) / MINIMAP_MAX_X;
+	m_mod.y = float(MAX_BKGZ) / MINIMAP_MAX_Z;
 	
 	m_currentLevel = 0;
 	m_entities = entityMng;
@@ -513,9 +513,9 @@ Vec2f MiniMap::computePlayerPos(float zoom, int showLevel) {
 	const Vec2f of2 = m_levels[showLevel].m_ratio;
 	
 	pos.x = ((m_player->pos.x + of.x - of2.x) * ( 1.0f / 100 ) * caseX
-	+ of.x * ratio * m_modX) / m_modX;
+	+ of.x * ratio * m_mod.x) / m_mod.x;
 	pos.y = ((m_mapMaxY[showLevel] - of.y - of2.y) * ( 1.0f / 100 ) * caseY
-	- (m_player->pos.z + of.y - of2.y) * ( 1.0f / 100 ) * caseY + of.y * ratio * m_modZ) / m_modZ;
+	- (m_player->pos.z + of.y - of2.y) * ( 1.0f / 100 ) * caseY + of.y * ratio * m_mod.y) / m_mod.y;
 	
 	return pos;
 }
@@ -534,8 +534,8 @@ void MiniMap::drawBackground(int showLevel, Rect boundaries, float startX, float
 	float dw = 1.f / tc->m_pTexture->getStoredSize().x; 
 	float dh = 1.f / tc->m_pTexture->getStoredSize().y;
 	
-	float vx2 = 4.f * dw * m_modX;
-	float vy2 = 4.f * dh * m_modZ;
+	float vx2 = 4.f * dw * m_mod.x;
+	float vy2 = 4.f * dh * m_mod.y;
 	
 	float fadeDiv = 0.f;
 	Rect fadeBounds(0, 0, 0, 0);
@@ -561,8 +561,8 @@ void MiniMap::drawBackground(int showLevel, Rect boundaries, float startX, float
 	for(int z = -2; z < int(MINIMAP_MAX_Z) + 2; z++) {
 		for(int x = -2; x < int(MINIMAP_MAX_X) + 2; x++) {
 			
-			float vxx = float(x) * float(m_activeBkg->Xdiv) * m_modX;
-			float vyy = float(z) * float(m_activeBkg->Zdiv) * m_modZ;
+			float vxx = float(x) * float(m_activeBkg->Xdiv) * m_mod.x;
+			float vyy = float(z) * float(m_activeBkg->Zdiv) * m_mod.y;
 			float vx = (vxx * div) * dw;
 			float vy = (vyy * div) * dh;
 			
@@ -764,9 +764,9 @@ void MiniMap::drawDetectedEntities(int showLevel, Vec2f start, float zoom) {
 		}
 		
 		float fpx = start.x + ((npc->pos.x - 100 + of.x - of2.x) * ( 1.0f / 100 ) * caseX
-		+ of.x * ratio * m_modX) / m_modX;
+		+ of.x * ratio * m_mod.x) / m_mod.x;
 		float fpy = start.y + ((m_mapMaxY[showLevel] - of.y - of2.y) * ( 1.0f / 100 ) * caseY
-		- (npc->pos.z + 200 + of.y - of2.y) * ( 1.0f / 100 ) * caseY + of.y * ratio * m_modZ) / m_modZ;
+		- (npc->pos.z + 200 + of.y - of2.y) * ( 1.0f / 100 ) * caseY + of.y * ratio * m_mod.y) / m_mod.y;
 		
 		float d = fdist(Vec2f(m_player->pos.x, m_player->pos.z), Vec2f(npc->pos.x, npc->pos.z));
 		if(d > 800 || glm::abs(ents.player()->pos.y - npc->pos.y) > 250.f) {
