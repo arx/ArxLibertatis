@@ -207,7 +207,7 @@ bool SDL2Window::initialize() {
 	SDL_GL_SetAttribute(SDL_GL_DOUBLEBUFFER, 1);
 	SDL_GL_SetAttribute(SDL_GL_DEPTH_SIZE, 24);
 	
-#if ARX_PLATFORM == ARX_PLATFORM_WIN32
+	#if ARX_PLATFORM == ARX_PLATFORM_WIN32
 	// Used on Windows to prevent software opengl fallback.
 	// The linux situation:
 	// Causes SDL to require visuals without caveats.
@@ -215,7 +215,7 @@ bool SDL2Window::initialize() {
 	// with a GLX_NON_CONFORMANT_VISUAL_EXT caveat.
 	// see: https://www.opengl.org/registry/specs/EXT/visual_rating.txt
 	SDL_GL_SetAttribute(SDL_GL_ACCELERATED_VISUAL, 1);
-#endif
+	#endif
 	
 	// TODO EGL and core profile are not supported yet
 	SDL_GL_SetAttribute(SDL_GL_CONTEXT_PROFILE_MASK, SDL_GL_CONTEXT_PROFILE_COMPATIBILITY);
