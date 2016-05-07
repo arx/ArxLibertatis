@@ -572,22 +572,23 @@ void MiniMap::drawBackground(int showLevel, Rect boundaries, float startX, float
 			v4.x = (v3.x * div) * d.x;
 			v4.y = (v3.y * div) * d.y;
 			
-			float posx = (startX + x * cas.x) * g_sizeRatio.x;
-			float posy = (startY + z * cas.y) * g_sizeRatio.y;
+			Vec2f pos;
+			pos.x = (startX + x * cas.x) * g_sizeRatio.x;
+			pos.y = (startY + z * cas.y) * g_sizeRatio.y;
 			
-			if((posx < boundaries.left * g_sizeRatio.x)
-			   || (posx > boundaries.right * g_sizeRatio.x)
-			   || (posy < boundaries.top * g_sizeRatio.y)
-			   || (posy > boundaries.bottom * g_sizeRatio.y)) {
+			if((pos.x < boundaries.left * g_sizeRatio.x)
+			   || (pos.x > boundaries.right * g_sizeRatio.x)
+			   || (pos.y < boundaries.top * g_sizeRatio.y)
+			   || (pos.y > boundaries.bottom * g_sizeRatio.y)) {
 				continue; // out of bounds
 			}
 
 			TexturedVertex verts[4];
 			
-			verts[3].p.x = verts[0].p.x = (posx);
-			verts[1].p.y = verts[0].p.y = (posy);
-			verts[2].p.x = verts[1].p.x = posx + (cas.x * g_sizeRatio.x);
-			verts[3].p.y = verts[2].p.y = posy + (cas.y * g_sizeRatio.y);
+			verts[3].p.x = verts[0].p.x = pos.x;
+			verts[1].p.y = verts[0].p.y = pos.y;
+			verts[2].p.x = verts[1].p.x = pos.x + (cas.x * g_sizeRatio.x);
+			verts[3].p.y = verts[2].p.y = pos.y + (cas.y * g_sizeRatio.y);
 			
 			verts[3].uv.x = verts[0].uv.x = v4.x;
 			verts[1].uv.y = verts[0].uv.y = v4.y;
