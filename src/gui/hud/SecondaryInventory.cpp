@@ -524,12 +524,12 @@ bool SecondaryInventoryHud::dragEntity(Entity * io, const Vec2s & pos) {
 					Set_DragInter(ioo);
 					sInventory = 2;
 					
+					Vec2f calc;
+					calc.x = (pos.x + m_fadePosition - (2 * m_scale)) / (32 * m_scale);
+					calc.y = (pos.y - (13 * m_scale)) / (32 * m_scale);
 					
-					float fCalcX = (pos.x + m_fadePosition - (2 * m_scale)) / (32 * m_scale);
-					float fCalcY = (pos.y - (13 * m_scale)) / (32 * m_scale);
-					
-					sInventoryPos.x = checked_range_cast<short>(fCalcX);
-					sInventoryPos.y = checked_range_cast<short>(fCalcY);
+					sInventoryPos.x = checked_range_cast<short>(calc.x);
+					sInventoryPos.y = checked_range_cast<short>(calc.y);
 					
 					//ARX_INVENTORY_Object_Out(SecondaryInventory->io, ioo);
 					
