@@ -696,8 +696,9 @@ void MiniMap::drawPlayer(float playerSize, Vec2f playerPos, bool alphaBlending) 
 	Vec2f r;
 	r.x = 0.f;
 	r.y = -playerSize * 1.8f;
-	float rx2 = -playerSize * (1.0f / 2);
-	float ry2 = playerSize;
+	Vec2f r2;
+	r2.x = -playerSize * (1.0f / 2);
+	r2.y = playerSize;
 	float rx3 = playerSize * (1.0f / 2);
 	float ry3 = playerSize;
 	
@@ -705,8 +706,8 @@ void MiniMap::drawPlayer(float playerSize, Vec2f playerPos, bool alphaBlending) 
 	float ca = std::cos(angle);
 	float sa = std::sin(angle);
 	
-	verts[0].p.x = (playerPos.x + rx2 * ca + ry2 * sa) * g_sizeRatio.x;
-	verts[0].p.y = (playerPos.y + ry2 * ca - rx2 * sa) * g_sizeRatio.y;
+	verts[0].p.x = (playerPos.x + r2.x * ca + r2.y * sa) * g_sizeRatio.x;
+	verts[0].p.y = (playerPos.y + r2.y * ca - r2.x * sa) * g_sizeRatio.y;
 	verts[1].p.x = (playerPos.x + r.x * ca + r.y * sa) * g_sizeRatio.x;
 	verts[1].p.y = (playerPos.y + r.y * ca - r.x * sa) * g_sizeRatio.y;
 	verts[2].p.x = (playerPos.x + rx3 * ca + ry3 * sa) * g_sizeRatio.x;
