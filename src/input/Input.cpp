@@ -954,20 +954,15 @@ bool Input::actionPressed(ControlAction actionId) const {
 						}
 					}
 				}
-
-				switch(actionId) {
-					case CONTROLS_CUST_MAGICMODE:
-						if(uiOneHandedMagicMode == 1 || uiOneHandedMagicMode == 2) {
-							return true;
-						}
-						break;
-					case CONTROLS_CUST_STEALTHMODE:
-						if(uiOneHandedStealth == 1 || uiOneHandedStealth == 2) {
-							return true;
-						}
-						break;
-					default:
-						break;
+				
+				if(actionId == CONTROLS_CUST_MAGICMODE) {
+					if(uiOneHandedMagicMode == 1 || uiOneHandedMagicMode == 2) {
+						return true;
+					}
+				} else if(actionId == CONTROLS_CUST_STEALTHMODE) {
+					if(uiOneHandedStealth == 1 || uiOneHandedStealth == 2) {
+						return true;
+					}
 				}
 			} else {
 				for(int j = 0; j < 2; j++) {
