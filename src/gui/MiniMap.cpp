@@ -343,7 +343,7 @@ void MiniMap::showBookMiniMap(int showLevel) {
 		GRenderer->GetTextureStage(0)->setWrapMode(TextureStage::WrapRepeat);
 		
 		if(showLevel == ARX_LEVELS_GetRealNum(m_currentLevel)) {
-			drawPlayer(6.f, playerPos);
+			drawPlayer(6.f, playerPos, false);
 			drawDetectedEntities(showLevel, start, zoom);
 		}
 		
@@ -379,7 +379,7 @@ void MiniMap::showBookEntireMap(int showLevel) {
 	GRenderer->GetTextureStage(0)->setWrapMode(TextureStage::WrapRepeat);
 	
 	if(showLevel == ARX_LEVELS_GetRealNum(m_currentLevel)) {
-		drawPlayer(3.f, playerPos);
+		drawPlayer(3.f, playerPos, false);
 		drawDetectedEntities(showLevel, start, zoom);
 	}
 	
