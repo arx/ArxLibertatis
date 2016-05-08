@@ -1090,11 +1090,12 @@ void ArxGame::managePlayerControls() {
 
 			player.m_currentMovement |= PLAYER_MOVE_WALK_BACKWARD;
 
-			if (GInput->actionNowPressed(CONTROLS_CUST_WALKBACKWARD) )
+			if(GInput->actionNowPressed(CONTROLS_CUST_WALKBACKWARD)) {
 				MOVE_PRECEDENCE=PLAYER_MOVE_WALK_BACKWARD;
-		}
-		else if(MOVE_PRECEDENCE == PLAYER_MOVE_WALK_BACKWARD)
+			}
+		} else if(MOVE_PRECEDENCE == PLAYER_MOVE_WALK_BACKWARD) {
 			MOVE_PRECEDENCE = 0;
+		}
 
 		// Checks WALK_FORWARD Key Status.
 		if(GInput->actionPressed(CONTROLS_CUST_WALKFORWARD) && !NOMOREMOVES) {
@@ -1115,11 +1116,12 @@ void ArxGame::managePlayerControls() {
 
 			player.m_currentMovement |= PLAYER_MOVE_WALK_FORWARD;
 
-			if(GInput->actionNowPressed(CONTROLS_CUST_WALKFORWARD))
+			if(GInput->actionNowPressed(CONTROLS_CUST_WALKFORWARD)) {
 				MOVE_PRECEDENCE=PLAYER_MOVE_WALK_FORWARD;
-		}
-		else if(MOVE_PRECEDENCE == PLAYER_MOVE_WALK_FORWARD)
+			}
+		} else if(MOVE_PRECEDENCE == PLAYER_MOVE_WALK_FORWARD) {
 			MOVE_PRECEDENCE = 0;
+		}
 
 		// Checks STRAFE_LEFT Key Status.
 		if(left && !NOMOREMOVES) {
@@ -1129,11 +1131,12 @@ void ArxGame::managePlayerControls() {
 			
 			player.m_currentMovement |= PLAYER_MOVE_STRAFE_LEFT;
 
-			if (GInput->actionNowPressed(CONTROLS_CUST_STRAFELEFT) )
+			if(GInput->actionNowPressed(CONTROLS_CUST_STRAFELEFT)) {
 				MOVE_PRECEDENCE=PLAYER_MOVE_STRAFE_LEFT;
-		}
-		else if(MOVE_PRECEDENCE == PLAYER_MOVE_STRAFE_LEFT)
+			}
+		} else if(MOVE_PRECEDENCE == PLAYER_MOVE_STRAFE_LEFT) {
 			MOVE_PRECEDENCE = 0;
+		}
 
 		// Checks STRAFE_RIGHT Key Status.
 		if(right && !NOMOREMOVES) {
@@ -1143,11 +1146,12 @@ void ArxGame::managePlayerControls() {
 			
 			player.m_currentMovement |= PLAYER_MOVE_STRAFE_RIGHT;
 
-			if(GInput->actionNowPressed(CONTROLS_CUST_STRAFERIGHT))
+			if(GInput->actionNowPressed(CONTROLS_CUST_STRAFERIGHT)) {
 				MOVE_PRECEDENCE=PLAYER_MOVE_STRAFE_RIGHT;
-		}
-		else if(MOVE_PRECEDENCE == PLAYER_MOVE_STRAFE_RIGHT)
+			}
+		} else if(MOVE_PRECEDENCE == PLAYER_MOVE_STRAFE_RIGHT) {
 			MOVE_PRECEDENCE = 0;
+		}
 
 		g_moveto = player.pos + tm;
 	}
