@@ -514,46 +514,46 @@ static long ARX_PORTALS_GetRoomNumForPosition2(const Vec3f & pos, long flag,
 static long ARX_PORTALS_GetRoomNumForCamera(float * height, const Vec3f & pos, const Vec3f & direction) {
 	
 	{
-	EERIEPOLY * ep = CheckInPoly(pos);
-
-	if(ep && ep->room > -1) {
-		if(height)
-			*height=ep->center.y;
-
-		return ep->room;
-	}
+		EERIEPOLY * ep = CheckInPoly(pos);
+		
+		if(ep && ep->room > -1) {
+			if(height)
+				*height=ep->center.y;
+			
+			return ep->room;
+		}
 	}
 	
 	{
-	EERIEPOLY * ep = GetMinPoly(pos);
-
-	if(ep && ep->room > -1) {
-		if(height)
-			*height=ep->center.y;
-
-		return ep->room;
+		EERIEPOLY * ep = GetMinPoly(pos);
+		
+		if(ep && ep->room > -1) {
+			if(height)
+				*height=ep->center.y;
+			
+			return ep->room;
+		}
 	}
-	}
-
+	
 	float dist=0.f;
-
+	
 	while(dist<=20.f) {
 		
 		Vec3f tmpPos = pos;
 		tmpPos += direction * dist;
 		
 		EERIEPOLY * ep = CheckInPoly(tmpPos);
-
+		
 		if(ep && ep->room > -1) {
 			if(height)
 				*height=ep->center.y;
-
+			
 			return ep->room;
 		}
-
+		
 		dist += 5.f;
 	}
-
+	
 	return -1;
 }
 
