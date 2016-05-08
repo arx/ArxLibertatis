@@ -279,17 +279,14 @@ bool IsCollidingIO(Entity * io,Entity * ioo) {
 	   && ioo->obj
 	) {
 		if(ioo->ioflags & IO_NPC) {
-			float old = ioo->physics.cyl.radius;
-			ioo->physics.cyl.radius += 25.f;
-
+			Cylinder cyl = ioo->physics.cyl;
+			cyl.radius += 25.f;
+			
 			for(size_t j = 0; j < io->obj->vertexlist3.size(); j++) {
-				if(PointInCylinder(ioo->physics.cyl, io->obj->vertexlist3[j].v)) {
-					ioo->physics.cyl.radius = old;
+				if(PointInCylinder(cyl, io->obj->vertexlist3[j].v)) {
 					return true;
 				}
 			}
-
-			ioo->physics.cyl.radius = old;
 		}
 	}
 	
