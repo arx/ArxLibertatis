@@ -977,8 +977,6 @@ void ArxGame::managePlayerControls() {
 
 	float MoveDiv;
 	
-	Vec3f tm = Vec3f_ZERO;
-	
 	// Checks STEALTH Key Status.
 	if(GInput->actionPressed(CONTROLS_CUST_STEALTHMODE)) {
 		MoveDiv=0.02f;
@@ -1070,7 +1068,9 @@ void ArxGame::managePlayerControls() {
 				right = true;
 			}
 		}
-
+		
+		Vec3f tm = Vec3f_ZERO;
+		
 		// Checks WALK_BACKWARD Key Status.
 		if(GInput->actionPressed(CONTROLS_CUST_WALKBACKWARD) && !NOMOREMOVES) {
 			player.m_strikeDirection=3;
