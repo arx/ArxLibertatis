@@ -156,12 +156,9 @@ static float ANCHOR_IsPolyInCylinder(const EERIEPOLY & ep, const Cylinder & cyl,
 	Vec3f center;
 	long n;
 
-	for (n = 0; n < to; n++)
-	{
-		if (flags & CFLAG_EXTRA_PRECISION)
-		{
-			for (long o = 0; o < 5; o++)
-			{
+	for(n = 0; n < to; n++) {
+		if(flags & CFLAG_EXTRA_PRECISION) {
+			for(long o = 0; o < 5; o++) {
 				float p = (float)o * ( 1.0f / 5 );
 				center = ep.v[n].p * p + ep.center * (1.f - p);
 				if(PointInCylinder(cyl, center)) {
@@ -171,19 +168,14 @@ static float ANCHOR_IsPolyInCylinder(const EERIEPOLY & ep, const Cylinder & cyl,
 			}
 		}
 
-
-		if ((ep.area > 2000.f)
-		        || (flags & CFLAG_EXTRA_PRECISION)
-		   )
-		{
+		if(ep.area > 2000.f || (flags & CFLAG_EXTRA_PRECISION)) {
 			center = (ep.v[n].p + ep.v[r].p) * 0.5f;
 			if(PointInCylinder(cyl, center)) {
 				anything = std::min(anything, center.y);
 				return anything;
 			}
 
-			if ((ep.area > 4000.f) || (flags & CFLAG_EXTRA_PRECISION))
-			{
+			if(ep.area > 4000.f || (flags & CFLAG_EXTRA_PRECISION)) {
 				center = (ep.v[n].p + ep.center) * 0.5f;
 				if(PointInCylinder(cyl, center)) {
 					anything = std::min(anything, center.y);
@@ -191,8 +183,7 @@ static float ANCHOR_IsPolyInCylinder(const EERIEPOLY & ep, const Cylinder & cyl,
 				}
 			}
 
-			if ((ep.area > 6000.f) || (flags & CFLAG_EXTRA_PRECISION))
-			{
+			if(ep.area > 6000.f || (flags & CFLAG_EXTRA_PRECISION)) {
 				center = (center + ep.v[n].p) * 0.5f;
 				if(PointInCylinder(cyl, center)) {
 					anything = std::min(anything, center.y);
@@ -208,8 +199,9 @@ static float ANCHOR_IsPolyInCylinder(const EERIEPOLY & ep, const Cylinder & cyl,
 
 		r++;
 
-		if (r >= to) r = 0;
-
+		if(r >= to) {
+			r = 0;
+		}
 	}
 
 	if ((anything != 999999.f) && (ep.norm.y < 0.1f) && (ep.norm.y > -0.1f))
