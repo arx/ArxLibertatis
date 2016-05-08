@@ -81,15 +81,32 @@ public:
 	Rectangle_() { }
 	
 	Rectangle_(T _left, T _top, T _right, T _bottom)
-		: left(_left), top(_top), right(_right), bottom(_bottom) { }
+		: left(_left)
+		, top(_top)
+		, right(_right)
+		, bottom(_bottom)
+	{ }
 	
 	Rectangle_(const typename vec2_traits<T>::type & _origin, T width = T(0), T height = T(0))
-		: left(_origin.x), top(_origin.y), right(_origin.x + width), bottom(_origin.y + height) { }
+		: left(_origin.x)
+		, top(_origin.y)
+		, right(_origin.x + width)
+		, bottom(_origin.y + height)
+	{ }
 	
 	Rectangle_(const typename vec2_traits<T>::type & _origin, const typename vec2_traits<T>::type & _end)
-		: left(_origin.x), top(_origin.y), right(_end.x), bottom(_end.y) {}
+		: left(_origin.x)
+		, top(_origin.y)
+		, right(_end.x)
+		, bottom(_end.y)
+	{ }
 	
-	Rectangle_(T width, T height) : left(T(0)), top(T(0)), right(width), bottom(height) { }
+	Rectangle_(T width, T height)
+		: left(T(0))
+		, top(T(0))
+		, right(width)
+		, bottom(height)
+	{ }
 	
 	bool operator==(const Rectangle_ & o) const {
 		return (origin == o.origin && end == o.end);
