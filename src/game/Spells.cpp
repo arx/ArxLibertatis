@@ -509,7 +509,7 @@ void ARX_SPELLS_ManageMagic() {
 
 	snip++;
 
-	if(   !(player.Current_Movement & PLAYER_CROUCH)
+	if(   !(player.m_currentMovement & PLAYER_CROUCH)
 	   && !BLOCK_PLAYER_CONTROLS
 	   && GInput->actionPressed(CONTROLS_CUST_MAGICMODE)
 	   && !player.m_paralysed

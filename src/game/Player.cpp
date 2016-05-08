@@ -1324,7 +1324,7 @@ void ARX_PLAYER_Manage_Visual() {
 	
 	unsigned long now = arxtime.now_ul();
 	
-	if(player.Current_Movement & PLAYER_ROTATE) {
+	if(player.m_currentMovement & PLAYER_ROTATE) {
 		if(ROTATE_START == 0) {
 			ROTATE_START = now;
 		}
@@ -1368,13 +1368,13 @@ void ARX_PLAYER_Manage_Visual() {
 	ComputeVVPos(io);
 	io->pos.y = io->_npcdata->vvpos;
 	
-	if(!(player.Current_Movement & PLAYER_CROUCH) && player.physics.cyl.height > -150.f) {
+	if(!(player.m_currentMovement & PLAYER_CROUCH) && player.physics.cyl.height > -150.f) {
 		float old = player.physics.cyl.height;
 		player.physics.cyl.height = player.baseHeight();
 		player.physics.cyl.origin = player.basePosition();
 		float anything = CheckAnythingInCylinder(player.physics.cyl, entities.player());
 		if(anything < 0.f) {
-			player.Current_Movement |= PLAYER_CROUCH;
+			player.m_currentMovement |= PLAYER_CROUCH;
 			player.physics.cyl.height = old;
 		}
 	}
@@ -1428,9 +1428,9 @@ void ARX_PLAYER_Manage_Visual() {
 		goto makechanges;
 	}
 	
-	if(   player.Current_Movement == 0
-	   || player.Current_Movement == PLAYER_MOVE_STEALTH
-	   || (player.Current_Movement & PLAYER_ROTATE)
+	if(   player.m_currentMovement == 0
+	   || player.m_currentMovement == PLAYER_MOVE_STEALTH
+	   || (player.m_currentMovement & PLAYER_ROTATE)
 	) {
 		if(player.Interface & INTER_COMBATMODE) {
 			request0_anim = alist[ANIM_FIGHT_WAIT];
@@ -1496,7 +1496,7 @@ void ARX_PLAYER_Manage_Visual() {
 	LASTPLAYERA = player.angle.getYaw();
 	
 	{
-	long tmove = player.Current_Movement;
+	long tmove = player.m_currentMovement;
 	
 	if((tmove & PLAYER_MOVE_STRAFE_LEFT) && (tmove & PLAYER_MOVE_STRAFE_RIGHT)) {
 		tmove &= ~PLAYER_MOVE_STRAFE_LEFT;
@@ -1512,13 +1512,13 @@ void ARX_PLAYER_Manage_Visual() {
 	if(MOVE_PRECEDENCE == PLAYER_MOVE_WALK_FORWARD)
 		tmove &= ~PLAYER_MOVE_WALK_BACKWARD;
 	
-	if(player.Current_Movement & PLAYER_MOVE_WALK_FORWARD)
+	if(player.m_currentMovement & PLAYER_MOVE_WALK_FORWARD)
 		tmove = PLAYER_MOVE_WALK_FORWARD;
 	
 	if(tmove & PLAYER_MOVE_STRAFE_LEFT) {
 		if(player.Interface & INTER_COMBATMODE)
 			request0_anim = alist[ANIM_FIGHT_STRAFE_LEFT];
-		else if(player.Current_Movement & PLAYER_MOVE_STEALTH)
+		else if(player.m_currentMovement & PLAYER_MOVE_STEALTH)
 			request0_anim = alist[ANIM_STRAFE_LEFT];
 		else
 			request0_anim = alist[ANIM_STRAFE_RUN_LEFT];
@@ -1527,7 +1527,7 @@ void ARX_PLAYER_Manage_Visual() {
 	if(tmove & PLAYER_MOVE_STRAFE_RIGHT) {
 		if(player.Interface & INTER_COMBATMODE)
 			request0_anim = alist[ANIM_FIGHT_STRAFE_RIGHT];
-		else if(player.Current_Movement & PLAYER_MOVE_STEALTH)
+		else if(player.m_currentMovement & PLAYER_MOVE_STEALTH)
 			request0_anim = alist[ANIM_STRAFE_RIGHT];
 		else
 			request0_anim = alist[ANIM_STRAFE_RUN_RIGHT];
@@ -1536,9 +1536,9 @@ void ARX_PLAYER_Manage_Visual() {
 	if(tmove & PLAYER_MOVE_WALK_BACKWARD) {
 		if(player.Interface & INTER_COMBATMODE)
 			request0_anim = alist[ANIM_FIGHT_WALK_BACKWARD];
-		else if(player.Current_Movement & PLAYER_MOVE_STEALTH)
+		else if(player.m_currentMovement & PLAYER_MOVE_STEALTH)
 			request0_anim = alist[ANIM_WALK_BACKWARD];
-		else if(player.Current_Movement & PLAYER_CROUCH)
+		else if(player.m_currentMovement & PLAYER_CROUCH)
 			request0_anim = alist[ANIM_WALK_BACKWARD];
 		else
 			request0_anim = alist[ANIM_RUN_BACKWARD];
@@ -1547,7 +1547,7 @@ void ARX_PLAYER_Manage_Visual() {
 	if(tmove & PLAYER_MOVE_WALK_FORWARD) {
 		if(player.Interface & INTER_COMBATMODE)
 			request0_anim = alist[ANIM_FIGHT_WALK_FORWARD];
-		else if(player.Current_Movement & PLAYER_MOVE_STEALTH)
+		else if(player.m_currentMovement & PLAYER_MOVE_STEALTH)
 			request0_anim = alist[ANIM_WALK];
 		else
 			request0_anim = alist[ANIM_RUN];
@@ -1566,18 +1566,18 @@ void ARX_PLAYER_Manage_Visual() {
 	// Finally update anim
 	if(layer1.cur_anim == NULL
 	   && (layer0.cur_anim == alist[ANIM_WAIT] || layer0.cur_anim == alist[ANIM_WAIT_SHORT])
-	   && !(player.Current_Movement & PLAYER_CROUCH)
+	   && !(player.m_currentMovement & PLAYER_CROUCH)
 	) {
-		if ((player.Current_Movement & PLAYER_LEAN_LEFT)
-				&&	(player.Current_Movement & PLAYER_LEAN_RIGHT))
+		if ((player.m_currentMovement & PLAYER_LEAN_LEFT)
+				&&	(player.m_currentMovement & PLAYER_LEAN_RIGHT))
 		{
 		} else {
-			if(player.Current_Movement & PLAYER_LEAN_LEFT) {
+			if(player.m_currentMovement & PLAYER_LEAN_LEFT) {
 				request3_anim = alist[ANIM_LEAN_LEFT];
 				//ChangeMA_Loop=0;
 			}
 			
-			if(player.Current_Movement & PLAYER_LEAN_RIGHT) {
+			if(player.m_currentMovement & PLAYER_LEAN_RIGHT) {
 				request3_anim = alist[ANIM_LEAN_RIGHT];
 			}
 		}
@@ -1591,17 +1591,17 @@ void ARX_PLAYER_Manage_Visual() {
 		layer3.cur_anim = NULL;
 	}
 	
-	if((player.Current_Movement & PLAYER_CROUCH) && !(player.Last_Movement & PLAYER_CROUCH)
+	if((player.m_currentMovement & PLAYER_CROUCH) && !(player.Last_Movement & PLAYER_CROUCH)
 			&& !player.levitate)
 	{
 		request0_anim = alist[ANIM_CROUCH_START];
 		request0_loop = false;
 	}
-	else if(!(player.Current_Movement & PLAYER_CROUCH) && (player.Last_Movement & PLAYER_CROUCH))
+	else if(!(player.m_currentMovement & PLAYER_CROUCH) && (player.Last_Movement & PLAYER_CROUCH))
 	{
 		request0_anim = alist[ANIM_CROUCH_END];
 		request0_loop = false;
-	} else if(player.Current_Movement & PLAYER_CROUCH) {
+	} else if(player.m_currentMovement & PLAYER_CROUCH) {
 		if(layer0.cur_anim == alist[ANIM_CROUCH_START]) {
 			if(!(layer0.flags & EA_ANIMEND)) {
 				request0_anim = alist[ANIM_CROUCH_START];
@@ -1752,7 +1752,7 @@ retry:
 	
 nochanges:
 	;
-	player.Last_Movement = player.Current_Movement;
+	player.Last_Movement = player.m_currentMovement;
 }
 
 /*!
@@ -1830,7 +1830,7 @@ void ARX_PLAYER_Frame_Update()
 	g_moveto = player.pos;
 
 	// Reset current movement flags
-	player.Current_Movement = 0;
+	player.m_currentMovement = 0;
 
 	// Updates player angles to desired angles
 	player.angle = player.desiredangle;
@@ -1892,7 +1892,7 @@ static void ARX_PLAYER_MakeStepNoise() {
 		float volume = ARX_NPC_AUDIBLE_VOLUME_DEFAULT;
 		float factor = ARX_NPC_AUDIBLE_FACTOR_DEFAULT;
 		
-		if(player.Current_Movement & PLAYER_MOVE_STEALTH) {
+		if(player.m_currentMovement & PLAYER_MOVE_STEALTH) {
 			float skill_stealth = player.m_skillFull.stealth / ARX_PLAYER_SKILL_STEALTH_MAX;
 			volume -= ARX_NPC_AUDIBLE_VOLUME_RANGE * skill_stealth;
 			factor += ARX_NPC_AUDIBLE_FACTOR_RANGE * skill_stealth;
@@ -2007,7 +2007,7 @@ void PlayerMovementIterate(float DeltaTime) {
 	
 	// A jump is requested so let's go !
 	if(REQUEST_JUMP) {
-		if((player.Current_Movement & PLAYER_CROUCH)
+		if((player.m_currentMovement & PLAYER_CROUCH)
 		   || player.physics.cyl.height > player.baseHeight()) {
 			float old = player.physics.cyl.height;
 			player.physics.cyl.height = player.baseHeight();
@@ -2015,12 +2015,12 @@ void PlayerMovementIterate(float DeltaTime) {
 			float anything = CheckAnythingInCylinder(player.physics.cyl, entities.player(),
 			                                         CFLAG_JUST_TEST);
 			if(anything < 0.f) {
-				player.Current_Movement |= PLAYER_CROUCH;
+				player.m_currentMovement |= PLAYER_CROUCH;
 				player.physics.cyl.height = old;
 				REQUEST_JUMP = 0;
 			} else {
 				bGCroucheToggle = false;
-				player.Current_Movement &= ~PLAYER_CROUCH;
+				player.m_currentMovement &= ~PLAYER_CROUCH;
 				player.physics.cyl.height = player.baseHeight();
 			}
 		}
@@ -2073,7 +2073,7 @@ void PlayerMovementIterate(float DeltaTime) {
 				levitate = CFLAG_LEVITATE;
 				player.climbing = false;
 				bGCroucheToggle = false;
-				player.Current_Movement &= ~PLAYER_CROUCH;
+				player.m_currentMovement &= ~PLAYER_CROUCH;
 			}
 			
 		} else if(player.physics.cyl.height == player.levitateHeight()) {
@@ -2187,13 +2187,13 @@ void PlayerMovementIterate(float DeltaTime) {
 			float scale = 1.25f / 1000;
 			if(layer0.cur_anim) {
 				if(player.jumpphase != NotJumping) {
-					if(player.Current_Movement & PLAYER_MOVE_WALK_BACKWARD) {
+					if(player.m_currentMovement & PLAYER_MOVE_WALK_BACKWARD) {
 						scale = 0.8f / 1000;
-					} else if(player.Current_Movement & PLAYER_MOVE_WALK_FORWARD) {
+					} else if(player.m_currentMovement & PLAYER_MOVE_WALK_FORWARD) {
 						scale = 7.9f / 1000;
-					} else if(player.Current_Movement & PLAYER_MOVE_STRAFE_LEFT) {
+					} else if(player.m_currentMovement & PLAYER_MOVE_STRAFE_LEFT) {
 						scale = 2.6f / 1000;
-					} else if(player.Current_Movement & PLAYER_MOVE_STRAFE_RIGHT) {
+					} else if(player.m_currentMovement & PLAYER_MOVE_STRAFE_RIGHT) {
 						scale = 2.6f / 1000;
 					} else {
 						scale = 0.2f / 1000;
@@ -2224,11 +2224,11 @@ void PlayerMovementIterate(float DeltaTime) {
 			player.physics.velocity.x = 0.f;
 			player.physics.velocity.y *= 0.5f;
 			player.physics.velocity.z = 0.f;
-			if(player.Current_Movement & PLAYER_MOVE_WALK_FORWARD) {
+			if(player.m_currentMovement & PLAYER_MOVE_WALK_FORWARD) {
 				g_moveto.x = player.pos.x;
 				g_moveto.z = player.pos.z;
 			}
-			if(player.Current_Movement & PLAYER_MOVE_WALK_BACKWARD) {
+			if(player.m_currentMovement & PLAYER_MOVE_WALK_BACKWARD) {
 				impulse.x = 0;
 				impulse.z = 0;
 				g_moveto.x = player.pos.x;
@@ -2289,10 +2289,10 @@ void PlayerMovementIterate(float DeltaTime) {
 		
 		// Apply climbing velocity
 		if(player.climbing) {
-			if(player.Current_Movement & PLAYER_MOVE_WALK_FORWARD) {
+			if(player.m_currentMovement & PLAYER_MOVE_WALK_FORWARD) {
 				player.physics.velocity.y = -0.2f;
 			}
-			if(player.Current_Movement & PLAYER_MOVE_WALK_BACKWARD) {
+			if(player.m_currentMovement & PLAYER_MOVE_WALK_BACKWARD) {
 				player.physics.velocity.y = 0.2f;
 			}
 		}
@@ -2401,15 +2401,15 @@ void PlayerMovementIterate(float DeltaTime) {
 			}
 			
 			if(player.climbing) {
-				if(player.Current_Movement
-				   && player.Current_Movement != PLAYER_ROTATE
-				   && !(player.Current_Movement & PLAYER_MOVE_WALK_FORWARD)
-				   && !(player.Current_Movement & PLAYER_MOVE_WALK_BACKWARD)
+				if(player.m_currentMovement
+				   && player.m_currentMovement != PLAYER_ROTATE
+				   && !(player.m_currentMovement & PLAYER_MOVE_WALK_FORWARD)
+				   && !(player.m_currentMovement & PLAYER_MOVE_WALK_BACKWARD)
 				) {
 					player.climbing = false;
 				}
 				
-				if((player.Current_Movement & PLAYER_MOVE_WALK_BACKWARD) && !test) {
+				if((player.m_currentMovement & PLAYER_MOVE_WALK_BACKWARD) && !test) {
 					player.climbing = false;
 				}
 				
@@ -2447,7 +2447,7 @@ void PlayerMovementIterate(float DeltaTime) {
 	
 	// Emit Stepsound
 	if(USE_PLAYERCOLLISIONS) {
-		if(player.Current_Movement & PLAYER_CROUCH) {
+		if(player.m_currentMovement & PLAYER_CROUCH) {
 			d *= 2.f;
 		}
 		currentdistance += d;
@@ -2511,11 +2511,11 @@ float GetPlayerStealth() {
  */
 void ARX_PLAYER_PutPlayerInNormalStance() {
 	
-	if(player.Current_Movement & PLAYER_CROUCH) {
-		player.Current_Movement &= ~PLAYER_CROUCH;
+	if(player.m_currentMovement & PLAYER_CROUCH) {
+		player.m_currentMovement &= ~PLAYER_CROUCH;
 	}
 	
-	player.Current_Movement = 0;
+	player.m_currentMovement = 0;
 	ARX_PLAYER_RectifyPosition();
 	
 	if(player.jumpphase != NotJumping || player.falling) {

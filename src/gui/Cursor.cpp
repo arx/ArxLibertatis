@@ -589,7 +589,7 @@ static void ARX_INTERFACE_RenderCursorInternal(bool flag) {
 			
 			SpecialCursor = 0;
 		} else {
-			if(   !(player.Current_Movement & PLAYER_CROUCH)
+			if(   !(player.m_currentMovement & PLAYER_CROUCH)
 			   && !BLOCK_PLAYER_CONTROLS
 			   && GInput->actionPressed(CONTROLS_CUST_MAGICMODE)
 			   && ARXmenu.currentmode == AMCM_OFF

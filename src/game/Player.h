@@ -267,7 +267,7 @@ struct ARXCHARACTER {
 	short doingmagic;
 	PlayerInterfaceFlags Interface;
 	
-	PlayerMovement Current_Movement;
+	PlayerMovement m_currentMovement;
 	PlayerMovement Last_Movement;
 	bool onfirmground;
 	

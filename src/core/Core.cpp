@@ -644,7 +644,7 @@ void ManageNONCombatModeAnimations() {
 	AnimLayer & layer3 = io->animlayer[3];
 	ANIM_HANDLE ** alist=io->anims;
 
-	if(player.Current_Movement & (PLAYER_LEAN_LEFT | PLAYER_LEAN_RIGHT))
+	if(player.m_currentMovement & (PLAYER_LEAN_LEFT | PLAYER_LEAN_RIGHT))
 		return;
 
 	if(ValidIONum(player.equiped[EQUIP_SLOT_SHIELD]) && !BLOCK_PLAYER_CONTROLS) {

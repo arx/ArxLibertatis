@@ -650,7 +650,7 @@ static long ARX_CHANGELEVEL_Push_Player(long level) {
 	asp->Attribute_Mind = player.m_attribute.mind;
 	asp->Attribute_Strength = player.m_attribute.strength;
 	asp->Critical_Hit = player.m_misc.criticalHit;
-	asp->Current_Movement = player.Current_Movement;
+	asp->Current_Movement = player.m_currentMovement;
 	asp->damages = player.m_misc.damages;
 	asp->doingmagic = player.doingmagic;
 	asp->Interface = player.Interface;
@@ -1647,7 +1647,7 @@ static long ARX_CHANGELEVEL_Pop_Player() {
 	player.m_attribute.mind = asp->Attribute_Mind;
 	player.m_attribute.strength = asp->Attribute_Strength;
 	player.m_misc.criticalHit = asp->Critical_Hit;
-	player.Current_Movement = PlayerMovement::load(asp->Current_Movement); // TODO save/load flags
+	player.m_currentMovement = PlayerMovement::load(asp->Current_Movement); // TODO save/load flags
 	player.m_misc.damages = asp->damages;
 	player.doingmagic = asp->doingmagic;
 	player.playerflags = PlayerFlags::load(asp->playerflags); // TODO save/load flags

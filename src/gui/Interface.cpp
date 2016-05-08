@@ -982,7 +982,7 @@ void ArxGame::managePlayerControls() {
 	// Checks STEALTH Key Status.
 	if(GInput->actionPressed(CONTROLS_CUST_STEALTHMODE)) {
 		MoveDiv=0.02f;
-		player.Current_Movement|=PLAYER_MOVE_STEALTH;
+		player.m_currentMovement |= PLAYER_MOVE_STEALTH;
 	} else {
 		MoveDiv=0.0333333f;
 	}
@@ -1088,7 +1088,7 @@ void ArxGame::managePlayerControls() {
 				tm.y -= std::sin(t) * multi;
 			}
 
-			player.Current_Movement|=PLAYER_MOVE_WALK_BACKWARD;
+			player.m_currentMovement |= PLAYER_MOVE_WALK_BACKWARD;
 
 			if (GInput->actionNowPressed(CONTROLS_CUST_WALKBACKWARD) )
 				MOVE_PRECEDENCE=PLAYER_MOVE_WALK_BACKWARD;
@@ -1113,7 +1113,7 @@ void ArxGame::managePlayerControls() {
 				tm.y += std::sin(t) * multi;
 			}
 
-			player.Current_Movement|=PLAYER_MOVE_WALK_FORWARD;
+			player.m_currentMovement |= PLAYER_MOVE_WALK_FORWARD;
 
 			if(GInput->actionNowPressed(CONTROLS_CUST_WALKFORWARD))
 				MOVE_PRECEDENCE=PLAYER_MOVE_WALK_FORWARD;
@@ -1127,7 +1127,7 @@ void ArxGame::managePlayerControls() {
 			float multi = 6.f * FD * MoveDiv;
 			tm += angleToVectorXZ(player.angle.getPitch() + 90.f) * multi;
 			
-			player.Current_Movement|=PLAYER_MOVE_STRAFE_LEFT;
+			player.m_currentMovement |= PLAYER_MOVE_STRAFE_LEFT;
 
 			if (GInput->actionNowPressed(CONTROLS_CUST_STRAFELEFT) )
 				MOVE_PRECEDENCE=PLAYER_MOVE_STRAFE_LEFT;
@@ -1141,7 +1141,7 @@ void ArxGame::managePlayerControls() {
 			float multi = 6.f * FD * MoveDiv;
 			tm += angleToVectorXZ(player.angle.getPitch() - 90.f) * multi;
 			
-			player.Current_Movement|=PLAYER_MOVE_STRAFE_RIGHT;
+			player.m_currentMovement |= PLAYER_MOVE_STRAFE_RIGHT;
 
 			if(GInput->actionNowPressed(CONTROLS_CUST_STRAFERIGHT))
 				MOVE_PRECEDENCE=PLAYER_MOVE_STRAFE_RIGHT;
@@ -1158,7 +1158,7 @@ void ArxGame::managePlayerControls() {
 	}
 
 	if(GInput->actionPressed(CONTROLS_CUST_CROUCH) || bGCroucheToggle) {
-		player.Current_Movement |= PLAYER_CROUCH;
+		player.m_currentMovement |= PLAYER_CROUCH;
 	}
 
 	if(GInput->actionNowPressed(CONTROLS_CUST_UNEQUIPWEAPON)) {
@@ -1169,11 +1169,11 @@ void ArxGame::managePlayerControls() {
 	if(!(player.Interface & INTER_COMBATMODE)) {
 		// Checks LEAN_LEFT Key Status.
 		if(GInput->actionPressed(CONTROLS_CUST_LEANLEFT))
-			player.Current_Movement |= PLAYER_LEAN_LEFT;
+			player.m_currentMovement |= PLAYER_LEAN_LEFT;
 
 		// Checks LEAN_RIGHT Key Status.
 		if(GInput->actionPressed(CONTROLS_CUST_LEANRIGHT))
-			player.Current_Movement |= PLAYER_LEAN_RIGHT;
+			player.m_currentMovement |= PLAYER_LEAN_RIGHT;
 	}
 	
 	// Checks JUMP Key Status.
@@ -1183,7 +1183,7 @@ void ArxGame::managePlayerControls() {
 	
 	// MAGIC
 	if(GInput->actionPressed(CONTROLS_CUST_MAGICMODE)) {
-		if(!(player.Current_Movement & PLAYER_CROUCH) && !BLOCK_PLAYER_CONTROLS && ARXmenu.currentmode == AMCM_OFF) {
+		if(!(player.m_currentMovement & PLAYER_CROUCH) && !BLOCK_PLAYER_CONTROLS && ARXmenu.currentmode == AMCM_OFF) {
 			if(!ARX_SOUND_IsPlaying(SND_MAGIC_AMBIENT))
 				ARX_SOUND_PlaySFX(SND_MAGIC_AMBIENT, NULL, 1.0F, ARX_SOUND_PLAY_LOOPED);
 		}
@@ -1861,7 +1861,7 @@ void ArxGame::manageKeyMouse() {
 					entities.player()->animBlend.lastanimtime = 0;
 
 				if(rotation.x != 0.f)
-					player.Current_Movement|=PLAYER_ROTATE;
+					player.m_currentMovement |= PLAYER_ROTATE;
 
 				PLAYER_ROTATION = rotation.x;
 
