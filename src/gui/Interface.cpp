@@ -2113,11 +2113,12 @@ void ArxGame::manageEditorControls() {
 						io->velocity = Vec3f_ZERO;
 						io->stopped = 1;
 						
-						float y_ratio=(float)((float)DANAEMouse.y-(float)g_size.center().y)/(float)g_size.height()*2;
-						float x_ratio=-(float)((float)DANAEMouse.x-(float)g_size.center().x)/(float)g_size.center().x;
+						Vec2f ratio;
+						ratio.y=(float)((float)DANAEMouse.y-(float)g_size.center().y)/(float)g_size.height()*2;
+						ratio.x=-(float)((float)DANAEMouse.x-(float)g_size.center().x)/(float)g_size.center().x;
 						
-						Vec3f viewvector = angleToVector(player.angle + Anglef(0.f, x_ratio * 30.f, 0.f));
-						viewvector.y += y_ratio;
+						Vec3f viewvector = angleToVector(player.angle + Anglef(0.f, ratio.x * 30.f, 0.f));
+						viewvector.y += ratio.y;
 						
 						io->soundtime=0;
 						io->soundcount=0;
