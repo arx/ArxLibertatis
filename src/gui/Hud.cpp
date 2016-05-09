@@ -1637,7 +1637,7 @@ void HudRoot::recalcScale() {
 	if(config.interface.hudScaleInteger && maxScale > 1.f) {
 		if(scale < 1.3f || maxScale < 1.5f) {
 			scale = 1.f;
-		} else if(scale < 1.75f) {
+		} else if(scale < 1.75f || maxScale < 2.f) {
 			scale = 1.5f;
 		} else {
 			scale = std::floor(std::min(scale + 0.5f, maxScale));
