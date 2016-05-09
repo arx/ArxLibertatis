@@ -1455,8 +1455,12 @@ void PlayerInterfaceFader::update() {
 }
 
 static void setHudTextureState() {
-	GRenderer->GetTextureStage(0)->setMinFilter(TextureStage::FilterLinear);
-	GRenderer->GetTextureStage(0)->setMagFilter(TextureStage::FilterLinear);
+	TextureStage::FilterMode filter = TextureStage::FilterLinear;
+	if(config.video.hudScaleFilter == UIFilterNearest) {
+		filter = TextureStage::FilterNearest;
+	}
+	GRenderer->GetTextureStage(0)->setMinFilter(filter);
+	GRenderer->GetTextureStage(0)->setMagFilter(filter);
 	GRenderer->GetTextureStage(0)->setWrapMode(TextureStage::WrapClamp);
 }
 

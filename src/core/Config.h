@@ -81,6 +81,11 @@ enum CinematicWidescreenMode {
 	CinematicFadeEdges = 2
 };
 
+enum UIScaleFilter {
+	UIFilterNearest = 0,
+	UIFilterBilinear = 1
+};
+
 struct ActionKey {
 	
 	ActionKey(InputKeyId key_0 = -1, InputKeyId key_1 = -1) {
@@ -119,6 +124,7 @@ public:
 		
 		float hudScale;
 		bool hudScaleInteger;
+		UIScaleFilter hudScaleFilter;
 		
 		int bufferSize;
 		std::string bufferUpload;

@@ -660,6 +660,28 @@ public:
 		}
 		
 		{
+			PanelWidget * panel = new PanelWidget;
+			std::string szMenuText = getLocalised("system_menus_options_video_hud_scale_filter", "HUD scale filter");
+			szMenuText += " ";
+			TextWidget * txt = new TextWidget(BUTTON_INVALID, hFontMenu, szMenuText, Vec2f(20, 0));
+			txt->SetCheckOff();
+			panel->AddElement(txt);
+			
+			CycleTextWidget * cb = new CycleTextWidget;
+			cb->valueChanged = boost::bind(&VideoOptionsMenuPage::onChangedHudScaleFilter, this, _1, _2);
+			szMenuText = getLocalised("system_menus_options_video_filter_nearest", "Nearest");
+			cb->AddText(new TextWidget(BUTTON_INVALID, hFontMenu, szMenuText));
+			szMenuText = getLocalised("system_menus_options_video_filter_bilinear", "Bilinear");
+			cb->AddText(new TextWidget(BUTTON_INVALID, hFontMenu, szMenuText));
+			cb->setValue(config.video.hudScaleFilter);
+			
+			cb->Move(Vec2f(RATIO_X(m_size.x-9) - cb->m_rect.width(), 0));
+			panel->AddElement(cb);
+			
+			addCenter(panel);
+		}
+		
+		{
 			std::string szMenuText = getLocalised("system_menus_video_apply");
 			szMenuText += "   ";
 			TextWidget * txt = new TextWidget(BUTTON_INVALID, hFontMenu, szMenuText, Vec2f(240, 0));
@@ -747,6 +769,12 @@ public:
 		g_hudRoot.recalcScale();
 	}
 	
+	void onChangedHudScaleFilter(int pos, const std::string & str) {
+		ARX_UNUSED(str);
+		
+		config.video.hudScaleFilter = UIScaleFilter(pos);
+	}
+	
 	void onClickedBack() {
 		if(pMenuSliderResol && pMenuSliderResol->getOldValue() >= 0) {
 			pMenuSliderResol->setValue(pMenuSliderResol->getOldValue());
@@ -774,6 +802,7 @@ public:
 		mainMenu->bReInitAll=true;
 	}
 };
+
 
 class AudioOptionsMenuPage : public MenuPage {
 public:

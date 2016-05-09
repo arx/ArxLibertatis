@@ -66,6 +66,7 @@ const int
 	fogDistance = 10,
 	maxAnisotropicFiltering = 9001,
 	cinematicWidescreenMode = CinematicFadeEdges,
+	hudScaleFilter = UIFilterBilinear,
 	volume = 10,
 	sfxVolume = 10,
 	speechVolume = 10,
@@ -177,6 +178,7 @@ const std::string
 	cinematicWidescreenMode = "cinematic_widescreen_mode",
 	hudScale = "hud_scale",
 	hudScaleInteger = "hud_scale_integer",
+	hudScaleFilter = "hud_scale_filter",
 	bufferSize = "buffer_size",
 	bufferUpload = "buffer_upload",
 	thumbnailSize = "save_thumbnail_size";
@@ -410,6 +412,7 @@ bool Config::save() {
 	writer.writeKey(Key::cinematicWidescreenMode, int(video.cinematicWidescreenMode));
 	writer.writeKey(Key::hudScale, video.hudScale);
 	writer.writeKey(Key::hudScaleInteger, video.hudScaleInteger);
+	writer.writeKey(Key::hudScaleFilter, video.hudScaleFilter);
 	writer.writeKey(Key::bufferSize, video.bufferSize);
 	writer.writeKey(Key::bufferUpload, video.bufferUpload);
 	
@@ -534,6 +537,8 @@ bool Config::init(const fs::path & file) {
 	float hudScale = reader.getKey(Section::Video, Key::hudScale, Default::hudScale);
 	video.hudScale = glm::clamp(hudScale, 0.f, 1.f);
 	video.hudScaleInteger = reader.getKey(Section::Video, Key::hudScaleInteger, Default::hudScaleInteger);
+	int hudScaleFilter = reader.getKey(Section::Video, Key::hudScaleFilter, Default::hudScaleFilter);
+	video.hudScaleFilter = UIScaleFilter(glm::clamp(hudScaleFilter, 0, 1));
 	video.bufferSize = std::max(reader.getKey(Section::Video, Key::bufferSize, Default::bufferSize), 0);
 	video.bufferUpload = reader.getKey(Section::Video, Key::bufferUpload, Default::bufferUpload);
 	
