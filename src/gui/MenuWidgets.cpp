@@ -412,17 +412,16 @@ bool Menu2_Render() {
 	pMenuCursor->DrawCursor();
 
 	if(pTextureLoadRender) {
-		Vec2f size = Vec2f(pTextureLoad->size());
 		
 		Vec2f offset = Vec2f(0, 0);
 		
-		if(DANAEMouse.y + size.y > g_size.height()) {
-			offset.y -= size.y;
+		if(DANAEMouse.y + config.video.thumbnailSize.y > g_size.height()) {
+			offset.y -= config.video.thumbnailSize.y;
 		}
 		
 		Vec2f pos = Vec2f(DANAEMouse) + offset;
 		
-		Rectf rect = Rectf(pos, size.x, size.y);
+		Rectf rect = Rectf(pos, config.video.thumbnailSize.x, config.video.thumbnailSize.y);
 		
 		EERIEDrawBitmap(rect, 0.001f, pTextureLoad, Color::white);
 		drawLineRectangle(rect, 0.01f, Color::white);
