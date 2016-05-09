@@ -1624,10 +1624,9 @@ void HudRoot::draw() {
 }
 
 void HudRoot::recalcScale() {
-	if(config.video.hudScale)
-		setScale(minSizeRatio());
-	else
-		setScale(1);
+	float maxScale = minSizeRatio();
+	float scale = glm::clamp(1.f, maxScale * config.video.hudScale, maxScale);
+	setScale(scale);
 }
 
 

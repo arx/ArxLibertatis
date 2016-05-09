@@ -91,9 +91,11 @@ const bool
 	mouseLookToggle = true,
 	autoDescription = true,
 	forceToggle = false,
-	hudScale = false,
 	rawMouseInput = true,
 	borderTurning = true;
+
+const float
+	hudScale = 0.f;
 
 ActionKey actions[NUM_ACTION_KEY] = {
 	ActionKey(Keyboard::Key_Spacebar), // JUMP
@@ -526,7 +528,8 @@ bool Config::init(const fs::path & file) {
 	video.limitSpeechWidth = reader.getKey(Section::Video, Key::limitSpeechWidth, Default::limitSpeechWidth);
 	int cinematicMode = reader.getKey(Section::Video, Key::cinematicWidescreenMode, Default::cinematicWidescreenMode);
 	video.cinematicWidescreenMode = CinematicWidescreenMode(glm::clamp(cinematicMode, 0, 2));
-	video.hudScale = reader.getKey(Section::Video, Key::hudScale, Default::hudScale);
+	float hudScale = reader.getKey(Section::Video, Key::hudScale, Default::hudScale);
+	video.hudScale = glm::clamp(hudScale, 0.f, 1.f);
 	video.bufferSize = std::max(reader.getKey(Section::Video, Key::bufferSize, Default::bufferSize), 0);
 	video.bufferUpload = reader.getKey(Section::Video, Key::bufferUpload, Default::bufferUpload);
 	

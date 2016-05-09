@@ -117,7 +117,7 @@ public:
 		bool limitSpeechWidth;
 		CinematicWidescreenMode cinematicWidescreenMode;
 		
-		bool hudScale;
+		float hudScale;
 		
 		int bufferSize;
 		std::string bufferUpload;

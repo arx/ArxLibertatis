@@ -637,13 +637,16 @@ public:
 		}
 		
 		{
-			std::string szMenuText = getLocalised("system_menus_options_video_hud_scale", "Scale Hud");
+			PanelWidget * panel = new PanelWidget;
+			std::string szMenuText = getLocalised("system_menus_options_video_hud_scale", "HUD size");
 			TextWidget * txt = new TextWidget(BUTTON_INVALID, hFontMenu, szMenuText, Vec2f(20, 0));
 			txt->SetCheckOff();
-			CheckboxWidget * cb = new CheckboxWidget(txt);
-			cb->stateChanged = boost::bind(&VideoOptionsMenuPage::onChangedHudScale, this, _1);
-			cb->iState = config.video.hudScale ? 1 : 0;
-			addCenter(cb);
+			panel->AddElement(txt);
+			SliderWidget * sld = new SliderWidget(Vec2f(200, 0));
+			sld->valueChanged = boost::bind(&VideoOptionsMenuPage::onChangedHudScale, this, _1);
+			sld->setValue(config.video.hudScale * 10.f);
+			panel->AddElement(sld);
+			addCenter(panel);
 		}
 		
 		{
@@ -725,7 +728,7 @@ public:
 	}
 	
 	void onChangedHudScale(int state) {
-		config.video.hudScale = state ? true : false;
+		config.video.hudScale = float(state) * 0.1f;
 		g_hudRoot.recalcScale();
 	}
 	
