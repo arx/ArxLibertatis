@@ -96,7 +96,7 @@ const bool
 	borderTurning = true;
 
 const float
-	hudScale = 0.f;
+	hudScale = 0.5f;
 
 ActionKey actions[NUM_ACTION_KEY] = {
 	ActionKey(Keyboard::Key_Spacebar), // JUMP
