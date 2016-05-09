@@ -57,7 +57,6 @@
 #include "scene/GameSound.h"
 #include "scene/Interactive.h"
 
-extern float GLOBAL_SLOWDOWN;
 extern bool WILLRETURNTOFREELOOK;
 
 bool bIsAiming = false;

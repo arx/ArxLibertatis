@@ -1914,7 +1914,6 @@ static long LAST_FIRM_GROUND = 1;
 static long TRUE_FIRM_GROUND = 1;
 float lastposy = -9999999.f;
 unsigned long REQUEST_JUMP = 0;
-extern float GLOBAL_SLOWDOWN;
 extern float Original_framedelay;
 
 unsigned long LAST_JUMP_ENDTIME = 0;

@@ -94,6 +94,8 @@ extern bool g_requestLevelInit;
 extern long CURRENTLEVEL;
 extern long TELEPORT_TO_ANGLE;
 
+extern float GLOBAL_SLOWDOWN;
+
 inline float bowZoomFromDuration(float duration) {
 	return duration / 710.f;
 }

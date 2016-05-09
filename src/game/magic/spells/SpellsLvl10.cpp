@@ -384,8 +384,6 @@ void ControlTargetSpell::Update() {
 }
 
 
-extern float GLOBAL_SLOWDOWN;
-
 FreezeTimeSpell::FreezeTimeSpell()
 	: m_slowdown(0.f)
 {

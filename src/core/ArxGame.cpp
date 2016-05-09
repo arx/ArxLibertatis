@@ -175,7 +175,6 @@ extern long DeadTime;
 static const float CURRENT_BASE_FOCAL = 310.f;
 static const float defaultCameraFocal = 350.f;
 
-extern float GLOBAL_SLOWDOWN;
 extern float LAST_FADEVALUE;
 
 extern Cinematic* ControlCinematique;
