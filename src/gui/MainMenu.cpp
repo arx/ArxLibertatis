@@ -415,6 +415,14 @@ public:
 		}
 		
 		{
+			std::string szMenuText = getLocalised("system_menus_options_interface",
+			                                      "Interface settings");
+			TextWidget * txt = new TextWidget(BUTTON_INVALID, hFontMenu, szMenuText, Vec2f_ZERO);
+			txt->m_targetMenu = OPTIONS_INTERFACE;
+			addCenter(txt, true);
+		}
+		
+		{
 			std::string szMenuText = getLocalised("system_menus_options_audio");
 			TextWidget * txt = new TextWidget(BUTTON_INVALID, hFontMenu, szMenuText, Vec2f_ZERO);
 			txt->m_targetMenu = OPTIONS_AUDIO;
@@ -605,16 +613,6 @@ public:
 		}
 		
 		{
-			std::string szMenuText = getLocalised("system_menus_options_video_crosshair", "Show Crosshair");
-			TextWidget * txt = new TextWidget(BUTTON_INVALID, hFontMenu, szMenuText, Vec2f(20, 0));
-			txt->SetCheckOff();
-			CheckboxWidget * cb = new CheckboxWidget(txt);
-			cb->stateChanged = boost::bind(&VideoOptionsMenuPage::onChangedCrosshair, this, _1);
-			cb->iState = config.interface.showCrosshair ? 1 : 0;
-			addCenter(cb);
-		}
-		
-		{
 			std::string szMenuText = getLocalised("system_menus_options_video_antialiasing", "antialiasing");
 			TextWidget * txt = new TextWidget(BUTTON_INVALID, hFontMenu, szMenuText, Vec2f(20, 0));
 			txt->SetCheckOff();
@@ -634,51 +632,6 @@ public:
 			cb->stateChanged = boost::bind(&VideoOptionsMenuPage::onChangedVsync, this, _1);
 			cb->iState = config.video.vsync ? 1 : 0;
 			addCenter(cb);
-		}
-		
-		{
-			PanelWidget * panel = new PanelWidget;
-			std::string szMenuText = getLocalised("system_menus_options_video_hud_scale", "HUD size");
-			TextWidget * txt = new TextWidget(BUTTON_INVALID, hFontMenu, szMenuText, Vec2f(20, 0));
-			txt->SetCheckOff();
-			panel->AddElement(txt);
-			SliderWidget * sld = new SliderWidget(Vec2f(200, 0));
-			sld->valueChanged = boost::bind(&VideoOptionsMenuPage::onChangedHudScale, this, _1);
-			sld->setValue(config.interface.hudScale * 10.f);
-			panel->AddElement(sld);
-			addCenter(panel);
-		}
-		
-		{
-			std::string szMenuText = getLocalised("system_menus_options_video_hud_scale_integer", "Round HUD scale factor");
-			TextWidget * txt = new TextWidget(BUTTON_INVALID, hFontMenu, szMenuText, Vec2f(20, 0));
-			txt->SetCheckOff();
-			CheckboxWidget * cb = new CheckboxWidget(txt);
-			cb->stateChanged = boost::bind(&VideoOptionsMenuPage::onChangedHudScaleInteger, this, _1);
-			cb->iState = config.interface.hudScaleInteger ? 1 : 0;
-			addCenter(cb);
-		}
-		
-		{
-			PanelWidget * panel = new PanelWidget;
-			std::string szMenuText = getLocalised("system_menus_options_video_hud_scale_filter", "HUD scale filter");
-			szMenuText += " ";
-			TextWidget * txt = new TextWidget(BUTTON_INVALID, hFontMenu, szMenuText, Vec2f(20, 0));
-			txt->SetCheckOff();
-			panel->AddElement(txt);
-			
-			CycleTextWidget * cb = new CycleTextWidget;
-			cb->valueChanged = boost::bind(&VideoOptionsMenuPage::onChangedHudScaleFilter, this, _1, _2);
-			szMenuText = getLocalised("system_menus_options_video_filter_nearest", "Nearest");
-			cb->AddText(new TextWidget(BUTTON_INVALID, hFontMenu, szMenuText));
-			szMenuText = getLocalised("system_menus_options_video_filter_bilinear", "Bilinear");
-			cb->AddText(new TextWidget(BUTTON_INVALID, hFontMenu, szMenuText));
-			cb->setValue(config.interface.hudScaleFilter);
-			
-			cb->Move(Vec2f(RATIO_X(m_size.x-9) - cb->m_rect.width(), 0));
-			panel->AddElement(cb);
-			
-			addCenter(panel);
 		}
 		
 		{
@@ -746,10 +699,6 @@ public:
 		ARXMenu_Options_Video_SetFogDistance(value);
 	}
 	
-	void onChangedCrosshair(int state) {
-		config.interface.showCrosshair = state ? true : false;
-	}
-	
 	void onChangedAntialiasing(int state) {
 		config.video.antialiasing = state ? true : false;
 		ARX_SetAntiAliasing();
@@ -757,22 +706,6 @@ public:
 	
 	void onChangedVsync(int state) {
 		config.video.vsync = state ? true : false;
-	}
-	
-	void onChangedHudScale(int state) {
-		config.interface.hudScale = float(state) * 0.1f;
-		g_hudRoot.recalcScale();
-	}
-	
-	void onChangedHudScaleInteger(int state) {
-		config.interface.hudScaleInteger = state ? true : false;
-		g_hudRoot.recalcScale();
-	}
-	
-	void onChangedHudScaleFilter(int pos, const std::string & str) {
-		ARX_UNUSED(str);
-		
-		config.interface.hudScaleFilter = UIScaleFilter(pos);
 	}
 	
 	void onClickedBack() {
@@ -801,6 +734,105 @@ public:
 		}
 		mainMenu->bReInitAll=true;
 	}
+};
+
+class InterfaceOptionsMenuPage : public MenuPage {
+public:
+	InterfaceOptionsMenuPage(const Vec2f & pos, const Vec2f & size)
+		: MenuPage(pos, size, OPTIONS_INTERFACE)
+	{ }
+	
+	void init() {
+		
+		{
+			std::string szMenuText = getLocalised("system_menus_options_video_crosshair",
+			                         "Cross hair cursor");
+			szMenuText = getLocalised("system_menus_options_interface_crosshair", szMenuText);
+			TextWidget * txt = new TextWidget(BUTTON_INVALID, hFontMenu, szMenuText, Vec2f(20, 0));
+			txt->SetCheckOff();
+			CheckboxWidget * cb = new CheckboxWidget(txt);
+			cb->stateChanged = boost::bind(&InterfaceOptionsMenuPage::onChangedCrosshair, this, _1);
+			cb->iState = config.interface.showCrosshair ? 1 : 0;
+			addCenter(cb);
+		}
+		
+		{
+			PanelWidget * panel = new PanelWidget;
+			std::string szMenuText = getLocalised("system_menus_options_interface_hud_scale",
+			                                      "HUD size");
+			TextWidget * txt = new TextWidget(BUTTON_INVALID, hFontMenu, szMenuText, Vec2f(20, 0));
+			txt->SetCheckOff();
+			panel->AddElement(txt);
+			SliderWidget * sld = new SliderWidget(Vec2f(200, 0));
+			sld->valueChanged = boost::bind(&InterfaceOptionsMenuPage::onChangedHudScale, this, _1);
+			sld->setValue(config.interface.hudScale * 10.f);
+			panel->AddElement(sld);
+			addCenter(panel);
+		}
+		
+		{
+			std::string szMenuText = getLocalised("system_menus_options_interface_hud_scale_integer",
+			                                      "Round HUD scale factor");
+			TextWidget * txt = new TextWidget(BUTTON_INVALID, hFontMenu, szMenuText, Vec2f(20, 0));
+			txt->SetCheckOff();
+			CheckboxWidget * cb = new CheckboxWidget(txt);
+			cb->stateChanged = boost::bind(&InterfaceOptionsMenuPage::onChangedHudScaleInteger, this, _1);
+			cb->iState = config.interface.hudScaleInteger ? 1 : 0;
+			addCenter(cb);
+		}
+		
+		{
+			PanelWidget * panel = new PanelWidget;
+			std::string szMenuText = getLocalised("system_menus_options_interface_hud_scale_filter",
+			                                      "HUD scale filter");
+			szMenuText += " ";
+			TextWidget * txt = new TextWidget(BUTTON_INVALID, hFontMenu, szMenuText, Vec2f(20, 0));
+			txt->SetCheckOff();
+			panel->AddElement(txt);
+			
+			CycleTextWidget * cb = new CycleTextWidget;
+			cb->valueChanged = boost::bind(&InterfaceOptionsMenuPage::onChangedHudScaleFilter, this, _1, _2);
+			szMenuText = getLocalised("system_menus_options_video_filter_nearest", "Nearest");
+			cb->AddText(new TextWidget(BUTTON_INVALID, hFontMenu, szMenuText));
+			szMenuText = getLocalised("system_menus_options_video_filter_bilinear", "Bilinear");
+			cb->AddText(new TextWidget(BUTTON_INVALID, hFontMenu, szMenuText));
+			cb->setValue(config.interface.hudScaleFilter);
+			
+			cb->Move(Vec2f(RATIO_X(m_size.x-9) - cb->m_rect.width(), 0));
+			panel->AddElement(cb);
+			
+			addCenter(panel);
+		}
+		
+		{
+			ButtonWidget * cb = new ButtonWidget(Vec2f(20, 420), Vec2f(16, 16), "graph/interface/menus/back");
+			cb->m_targetMenu = OPTIONS;
+			cb->SetShortCut(Keyboard::Key_Escape);
+			add(cb);
+		}
+	}
+	
+	
+	void onChangedCrosshair(int state) {
+		config.interface.showCrosshair = state ? true : false;
+	}
+	
+	void onChangedHudScale(int state) {
+		config.interface.hudScale = float(state) * 0.1f;
+		g_hudRoot.recalcScale();
+	}
+	
+	void onChangedHudScaleInteger(int state) {
+		config.interface.hudScaleInteger = state ? true : false;
+		g_hudRoot.recalcScale();
+	}
+	
+	void onChangedHudScaleFilter(int pos, const std::string & str) {
+		ARX_UNUSED(str);
+		
+		config.interface.hudScaleFilter = UIScaleFilter(pos);
+	}
+	
 };
 
 
@@ -1374,6 +1406,12 @@ void MainMenuLeftCreate(MENUSTATE eMenuState)
 	
 	{
 	VideoOptionsMenuPage * page = new VideoOptionsMenuPage(offset + Vec2f(0, -35), size);
+	page->init();
+	pWindowMenu->add(page);
+	}
+	
+	{
+	InterfaceOptionsMenuPage * page = new InterfaceOptionsMenuPage(offset + Vec2f(0, -35), size);
 	page->init();
 	pWindowMenu->add(page);
 	}
