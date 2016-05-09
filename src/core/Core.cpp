@@ -290,7 +290,7 @@ void runGame() {
 		mainApp->run();
 	} else {
 		// Fallback to a generic critical error in case none was set yet...
-		LogCritical << "Application failed to initialize properly.";
+		LogCritical << "Initialization failed";
 	}
 	
 	if(mainApp) {

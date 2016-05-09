@@ -213,7 +213,7 @@ bool ArxGame::initialize()
 	
 	init = initConfig();
 	if(!init) {
-		LogCritical << "Failed to initialize the config subsystem.";
+		LogCritical << "Failed to initialize the config subsystem";
 		return false;
 	}
 	
@@ -239,13 +239,13 @@ bool ArxGame::initialize()
 	
 	init = initLocalisation();
 	if(!init) {
-		LogCritical << "Failed to initialize the localisation subsystem.";
+		LogCritical << "Failed to initialize the localisation subsystem";
 		return false;
 	}
 	
 	init = initGame();
 	if(!init) {
-		LogCritical << "Failed to initialize game.";
+		LogCritical << "Failed to initialize game";
 		return false;
 	}
 	
@@ -517,7 +517,7 @@ bool ArxGame::initGameData() {
 	
 	bool init = addPaks();
 	if(!init) {
-		LogCritical << "Error loading pak files";
+		LogCritical << "Failed to initialize the game data";
 		return false;
 	}
 	
@@ -761,7 +761,7 @@ bool ArxGame::initGame()
 {
 	// Check if the game will be able to use the current game directory.
 	if(!ARX_Changelevel_CurGame_Clear()) {
-		LogCritical << "Error accessing current game directory.";
+		LogCritical << "Error accessing current game directory";
 		return false;
 	}
 	
@@ -1032,7 +1032,7 @@ bool ArxGame::addPaks() {
 		
 		// Construct an informative error message about missing files
 		oss.str(std::string());
-		oss << "Could not load required data files.\n";
+		oss << "Could not load required data files!\n";
 		oss << "\nSee " << url::help_get_data << " for help.\n";
 		LogCritical << oss.str();
 		
