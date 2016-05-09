@@ -219,25 +219,21 @@ bool ArxGame::initialize()
 	
 	init = initWindow();
 	if(!init) {
-		LogCritical << "Failed to initialize the windowing subsystem.";
 		return false;
 	}
 	
 	init = initGameData();
 	if(!init) {
-		LogCritical << "Failed to initialize the game data.";
 		return false;
 	}
 	
 	init = initInput();
 	if(!init) {
-		LogCritical << "Failed to initialize the input subsystem.";
 		return false;
 	}
 	
 	init = initSound();
 	if(!init) {
-		LogCritical << "Failed to initialize the sound subsystem.";
 		return false;
 	}
 	
