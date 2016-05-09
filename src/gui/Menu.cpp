@@ -259,7 +259,7 @@ void ARX_Menu_Manage() {
 						}
 					}
 				} else {
-					GRenderer->getSnapshot(savegame_thumbnail, config.video.thumbnailSize.x, config.video.thumbnailSize.y);
+					GRenderer->getSnapshot(savegame_thumbnail, config.interface.thumbnailSize.x, config.interface.thumbnailSize.y);
 
 					arxtime.pause();
 

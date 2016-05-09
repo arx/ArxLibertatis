@@ -416,7 +416,7 @@ static CinematicFadeOut getFadeOut(Cinematic * c, C_KEY * key, C_KEY * pos) {
 static void updateFadeOut(Cinematic * c, CinematicTrack * track, int num, float a,
                           bool keyChanged) {
 	
-	if(config.video.cinematicWidescreenMode != CinematicFadeEdges) {
+	if(config.interface.cinematicWidescreenMode != CinematicFadeEdges) {
 		return;
 	}
 	

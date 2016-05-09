@@ -501,7 +501,7 @@ void ARX_SPEECH_Update() {
 		Rect::Num h = checked_range_cast<Rect::Num>(fAdd);
 		
 		Rect clippingRect(0, y+1, g_size.width(), h);
-		if(config.video.limitSpeechWidth) {
+		if(config.interface.limitSpeechWidth) {
 			s32 w = std::min(g_size.width(), s32(640 * g_sizeRatio.y));
 			clippingRect.left = (g_size.width() - w) / 2;
 			clippingRect.right = (g_size.width() + w) / 2;

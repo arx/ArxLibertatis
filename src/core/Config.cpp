@@ -150,6 +150,7 @@ namespace Section {
 const std::string
 	Language = "language",
 	Video = "video",
+	Interface = "interface",
 	Window = "window",
 	Audio = "audio",
 	Input = "input",
@@ -168,19 +169,22 @@ const std::string
 	fullscreen = "full_screen",
 	levelOfDetail = "others_details",
 	fogDistance = "fog",
-	showCrosshair = "show_crosshair",
 	antialiasing = "antialiasing",
 	vsync = "vsync",
 	maxAnisotropicFiltering = "max_anisotropic_filtering",
 	colorkeyAlphaToCoverage = "colorkey_alpha_to_coverage",
 	colorkeyAntialiasing = "colorkey_antialiasing",
+	bufferSize = "buffer_size",
+	bufferUpload = "buffer_upload";
+
+// Interface options
+const std::string
+	showCrosshair = "show_crosshair",
 	limitSpeechWidth = "limit_speech_width",
 	cinematicWidescreenMode = "cinematic_widescreen_mode",
 	hudScale = "hud_scale",
 	hudScaleInteger = "hud_scale_integer",
 	hudScaleFilter = "hud_scale_filter",
-	bufferSize = "buffer_size",
-	bufferUpload = "buffer_upload",
 	thumbnailSize = "save_thumbnail_size";
 
 // Window options
@@ -402,22 +406,24 @@ bool Config::save() {
 	writer.writeKey(Key::fullscreen, video.fullscreen);
 	writer.writeKey(Key::levelOfDetail, video.levelOfDetail);
 	writer.writeKey(Key::fogDistance, video.fogDistance);
-	writer.writeKey(Key::showCrosshair, video.showCrosshair);
 	writer.writeKey(Key::antialiasing, video.antialiasing);
 	writer.writeKey(Key::vsync, video.vsync);
 	writer.writeKey(Key::maxAnisotropicFiltering, video.maxAnisotropicFiltering);
 	writer.writeKey(Key::colorkeyAlphaToCoverage, video.colorkeyAlphaToCoverage);
 	writer.writeKey(Key::colorkeyAntialiasing, video.colorkeyAntialiasing);
-	writer.writeKey(Key::limitSpeechWidth, video.limitSpeechWidth);
-	writer.writeKey(Key::cinematicWidescreenMode, int(video.cinematicWidescreenMode));
-	writer.writeKey(Key::hudScale, video.hudScale);
-	writer.writeKey(Key::hudScaleInteger, video.hudScaleInteger);
-	writer.writeKey(Key::hudScaleFilter, video.hudScaleFilter);
 	writer.writeKey(Key::bufferSize, video.bufferSize);
 	writer.writeKey(Key::bufferUpload, video.bufferUpload);
 	
+	// interface
+	writer.beginSection(Section::Interface);
+	writer.writeKey(Key::showCrosshair, interface.showCrosshair);
+	writer.writeKey(Key::limitSpeechWidth, interface.limitSpeechWidth);
+	writer.writeKey(Key::cinematicWidescreenMode, int(interface.cinematicWidescreenMode));
+	writer.writeKey(Key::hudScale, interface.hudScale);
+	writer.writeKey(Key::hudScaleInteger, interface.hudScaleInteger);
+	writer.writeKey(Key::hudScaleFilter, interface.hudScaleFilter);
 	std::ostringstream osst;
-	osst << video.thumbnailSize.x << 'x' << video.thumbnailSize.y;
+	osst << interface.thumbnailSize.x << 'x' << interface.thumbnailSize.y;
 	writer.writeKey(Key::thumbnailSize, osst.str());
 	
 	// window
@@ -523,27 +529,29 @@ bool Config::init(const fs::path & file) {
 	}
 	video.fullscreen = reader.getKey(Section::Video, Key::fullscreen, Default::fullscreen);
 	video.levelOfDetail = reader.getKey(Section::Video, Key::levelOfDetail, Default::levelOfDetail);
-	video.fogDistance = reader.getKey(Section::Video, Key::fogDistance, Default::fogDistance);
-	video.showCrosshair = reader.getKey(Section::Video, Key::showCrosshair, Default::showCrosshair);
+	video.fogDistance = reader.getKey(Section::Video, Key::fogDistance, Default::fogDistance);;
 	video.antialiasing = reader.getKey(Section::Video, Key::antialiasing, Default::antialiasing);
 	video.vsync = reader.getKey(Section::Video, Key::vsync, Default::vsync);
 	video.maxAnisotropicFiltering = reader.getKey(Section::Video, Key::maxAnisotropicFiltering, Default::maxAnisotropicFiltering);
 	video.maxAnisotropicFiltering = std::max(0, video.maxAnisotropicFiltering);
 	video.colorkeyAlphaToCoverage = reader.getKey(Section::Video, Key::colorkeyAlphaToCoverage, Default::colorkeyAlphaToCoverage);
 	video.colorkeyAntialiasing = reader.getKey(Section::Video, Key::colorkeyAntialiasing, Default::colorkeyAntialiasing);
-	video.limitSpeechWidth = reader.getKey(Section::Video, Key::limitSpeechWidth, Default::limitSpeechWidth);
-	int cinematicMode = reader.getKey(Section::Video, Key::cinematicWidescreenMode, Default::cinematicWidescreenMode);
-	video.cinematicWidescreenMode = CinematicWidescreenMode(glm::clamp(cinematicMode, 0, 2));
-	float hudScale = reader.getKey(Section::Video, Key::hudScale, Default::hudScale);
-	video.hudScale = glm::clamp(hudScale, 0.f, 1.f);
-	video.hudScaleInteger = reader.getKey(Section::Video, Key::hudScaleInteger, Default::hudScaleInteger);
-	int hudScaleFilter = reader.getKey(Section::Video, Key::hudScaleFilter, Default::hudScaleFilter);
-	video.hudScaleFilter = UIScaleFilter(glm::clamp(hudScaleFilter, 0, 1));
 	video.bufferSize = std::max(reader.getKey(Section::Video, Key::bufferSize, Default::bufferSize), 0);
 	video.bufferUpload = reader.getKey(Section::Video, Key::bufferUpload, Default::bufferUpload);
 	
-	std::string thumbnailSize = reader.getKey(Section::Video, Key::thumbnailSize, Default::thumbnailSize);
-	video.thumbnailSize = parseThumbnailSize(thumbnailSize);
+	// Get interface settings
+	bool oldCrosshair = reader.getKey(Section::Video, Key::showCrosshair, Default::showCrosshair);
+	interface.showCrosshair = reader.getKey(Section::Interface, Key::showCrosshair, oldCrosshair);
+	interface.limitSpeechWidth = reader.getKey(Section::Interface, Key::limitSpeechWidth, Default::limitSpeechWidth);
+	int cinematicMode = reader.getKey(Section::Interface, Key::cinematicWidescreenMode, Default::cinematicWidescreenMode);
+	interface.cinematicWidescreenMode = CinematicWidescreenMode(glm::clamp(cinematicMode, 0, 2));
+	float hudScale = reader.getKey(Section::Interface, Key::hudScale, Default::hudScale);
+	interface.hudScale = glm::clamp(hudScale, 0.f, 1.f);
+	interface.hudScaleInteger = reader.getKey(Section::Interface, Key::hudScaleInteger, Default::hudScaleInteger);
+	int hudScaleFilter = reader.getKey(Section::Interface, Key::hudScaleFilter, Default::hudScaleFilter);
+	interface.hudScaleFilter = UIScaleFilter(glm::clamp(hudScaleFilter, 0, 1));
+	std::string thumbnailSize = reader.getKey(Section::Interface, Key::thumbnailSize, Default::thumbnailSize);
+	interface.thumbnailSize = parseThumbnailSize(thumbnailSize);
 	
 	// Get window settings
 	window.framework = reader.getKey(Section::Window, Key::windowFramework, Default::windowFramework);

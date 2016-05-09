@@ -415,13 +415,13 @@ bool Menu2_Render() {
 		
 		Vec2f offset = Vec2f(0, 0);
 		
-		if(DANAEMouse.y + config.video.thumbnailSize.y > g_size.height()) {
-			offset.y -= config.video.thumbnailSize.y;
+		if(DANAEMouse.y + config.interface.thumbnailSize.y > g_size.height()) {
+			offset.y -= config.interface.thumbnailSize.y;
 		}
 		
 		Vec2f pos = Vec2f(DANAEMouse) + offset;
 		
-		Rectf rect = Rectf(pos, config.video.thumbnailSize.x, config.video.thumbnailSize.y);
+		Rectf rect = Rectf(pos, config.interface.thumbnailSize.x, config.interface.thumbnailSize.y);
 		
 		EERIEDrawBitmap(rect, 0.001f, pTextureLoad, Color::white);
 		drawLineRectangle(rect, 0.01f, Color::white);

@@ -1456,7 +1456,7 @@ void PlayerInterfaceFader::update() {
 
 static void setHudTextureState() {
 	TextureStage::FilterMode filter = TextureStage::FilterLinear;
-	if(config.video.hudScaleFilter == UIFilterNearest) {
+	if(config.interface.hudScaleFilter == UIFilterNearest) {
 		filter = TextureStage::FilterNearest;
 	}
 	GRenderer->GetTextureStage(0)->setMinFilter(filter);
@@ -1632,9 +1632,9 @@ void HudRoot::draw() {
 void HudRoot::recalcScale() {
 	
 	float maxScale = minSizeRatio();
-	float scale = glm::clamp(1.f, maxScale * config.video.hudScale, maxScale);
+	float scale = glm::clamp(1.f, maxScale * config.interface.hudScale, maxScale);
 	
-	if(config.video.hudScaleInteger && maxScale > 1.f) {
+	if(config.interface.hudScaleInteger && maxScale > 1.f) {
 		if(scale < 1.3f || maxScale < 1.5f) {
 			scale = 1.f;
 		} else if(scale < 1.75f) {

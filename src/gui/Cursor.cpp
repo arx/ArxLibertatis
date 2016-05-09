@@ -683,7 +683,7 @@ static void ARX_INTERFACE_RenderCursorInternal(bool flag) {
 			return;
 		
 		if(   TRUE_PLAYER_MOUSELOOK_ON
-		   && config.video.showCrosshair
+		   && config.interface.showCrosshair
 		   && !(player.Interface & (INTER_COMBATMODE | INTER_NOTE | INTER_MAP))) {
 			
 			cursorAnimatedHand.reset();

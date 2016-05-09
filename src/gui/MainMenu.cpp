@@ -610,7 +610,7 @@ public:
 			txt->SetCheckOff();
 			CheckboxWidget * cb = new CheckboxWidget(txt);
 			cb->stateChanged = boost::bind(&VideoOptionsMenuPage::onChangedCrosshair, this, _1);
-			cb->iState = config.video.showCrosshair ? 1 : 0;
+			cb->iState = config.interface.showCrosshair ? 1 : 0;
 			addCenter(cb);
 		}
 		
@@ -644,7 +644,7 @@ public:
 			panel->AddElement(txt);
 			SliderWidget * sld = new SliderWidget(Vec2f(200, 0));
 			sld->valueChanged = boost::bind(&VideoOptionsMenuPage::onChangedHudScale, this, _1);
-			sld->setValue(config.video.hudScale * 10.f);
+			sld->setValue(config.interface.hudScale * 10.f);
 			panel->AddElement(sld);
 			addCenter(panel);
 		}
@@ -655,7 +655,7 @@ public:
 			txt->SetCheckOff();
 			CheckboxWidget * cb = new CheckboxWidget(txt);
 			cb->stateChanged = boost::bind(&VideoOptionsMenuPage::onChangedHudScaleInteger, this, _1);
-			cb->iState = config.video.hudScaleInteger ? 1 : 0;
+			cb->iState = config.interface.hudScaleInteger ? 1 : 0;
 			addCenter(cb);
 		}
 		
@@ -673,7 +673,7 @@ public:
 			cb->AddText(new TextWidget(BUTTON_INVALID, hFontMenu, szMenuText));
 			szMenuText = getLocalised("system_menus_options_video_filter_bilinear", "Bilinear");
 			cb->AddText(new TextWidget(BUTTON_INVALID, hFontMenu, szMenuText));
-			cb->setValue(config.video.hudScaleFilter);
+			cb->setValue(config.interface.hudScaleFilter);
 			
 			cb->Move(Vec2f(RATIO_X(m_size.x-9) - cb->m_rect.width(), 0));
 			panel->AddElement(cb);
@@ -747,7 +747,7 @@ public:
 	}
 	
 	void onChangedCrosshair(int state) {
-		config.video.showCrosshair = state ? true : false;
+		config.interface.showCrosshair = state ? true : false;
 	}
 	
 	void onChangedAntialiasing(int state) {
@@ -760,19 +760,19 @@ public:
 	}
 	
 	void onChangedHudScale(int state) {
-		config.video.hudScale = float(state) * 0.1f;
+		config.interface.hudScale = float(state) * 0.1f;
 		g_hudRoot.recalcScale();
 	}
 	
 	void onChangedHudScaleInteger(int state) {
-		config.video.hudScaleInteger = state ? true : false;
+		config.interface.hudScaleInteger = state ? true : false;
 		g_hudRoot.recalcScale();
 	}
 	
 	void onChangedHudScaleFilter(int pos, const std::string & str) {
 		ARX_UNUSED(str);
 		
-		config.video.hudScaleFilter = UIScaleFilter(pos);
+		config.interface.hudScaleFilter = UIScaleFilter(pos);
 	}
 	
 	void onClickedBack() {

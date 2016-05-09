@@ -343,7 +343,7 @@ void DrawGrille(CinematicBitmap * bitmap, Color col, int fx, CinematicLight * li
 	}
 	
 	CinematicFadeOut fo;
-	bool fadeEdges = (config.video.cinematicWidescreenMode == CinematicFadeEdges)
+	bool fadeEdges = (config.interface.cinematicWidescreenMode == CinematicFadeEdges)
 		&& (fade.left != 0.f || fade.right != 0.f || fade.top != 0.f || fade.bottom != 0.f);
 	if(fadeEdges) {
 		fo = fade;
@@ -429,7 +429,7 @@ void Cinematic::Render(float FDIFF) {
 
 		GRenderer->GetTextureStage(1)->disableAlpha();
 		
-		if(config.video.cinematicWidescreenMode == CinematicLetterbox) {
+		if(config.interface.cinematicWidescreenMode == CinematicLetterbox) {
 			float w = 640 * g_sizeRatio.y;
 			GRenderer->SetScissor(Rect(Vec2i((g_size.width() - w) / 2, 0), w, g_size.height()));
 		}
@@ -582,7 +582,7 @@ void Cinematic::Render(float FDIFF) {
 		
 		CalcFPS();
 		
-		if(config.video.cinematicWidescreenMode == CinematicLetterbox) {
+		if(config.interface.cinematicWidescreenMode == CinematicLetterbox) {
 			GRenderer->SetScissor(Rect::ZERO);
 		}
 		

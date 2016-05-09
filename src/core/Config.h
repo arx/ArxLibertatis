@@ -112,12 +112,21 @@ public:
 		bool fullscreen;
 		int levelOfDetail;
 		float fogDistance;
-		bool showCrosshair;
 		bool antialiasing;
 		bool vsync;
 		int maxAnisotropicFiltering;
 		bool colorkeyAlphaToCoverage;
 		bool colorkeyAntialiasing;
+		
+		int bufferSize;
+		std::string bufferUpload;
+		
+	} video;
+	
+	// section 'interface'
+	struct {
+		
+		bool showCrosshair;
 		
 		bool limitSpeechWidth;
 		CinematicWidescreenMode cinematicWidescreenMode;
@@ -126,11 +135,9 @@ public:
 		bool hudScaleInteger;
 		UIScaleFilter hudScaleFilter;
 		
-		int bufferSize;
-		std::string bufferUpload;
-		
 		Vec2i thumbnailSize;
-	} video;
+		
+	} interface;
 	
 	// section 'window'
 	struct {
