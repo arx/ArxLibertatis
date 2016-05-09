@@ -543,10 +543,10 @@ void ARX_SPEECH_Update() {
 				}
 
 				fDTime = (height * g_framedelay) / duration; //speech->duration;
-				float fTimeOneLine = ((float)sSize.y) * fDTime;
+				float fTimeOneLine = sSize.y * fDTime;
 
-				if(((float)speech->iTimeScroll) >= fTimeOneLine) {
-					float fResteLine = (float)sSize.y - speech->fPixelScroll;
+				if(speech->iTimeScroll >= fTimeOneLine) {
+					float fResteLine = sSize.y - speech->fPixelScroll;
 					float fTimePlus = (fResteLine * g_framedelay) / duration;
 					fDTime -= fTimePlus;
 					speech->fPixelScroll = 0.f;
