@@ -769,6 +769,31 @@ public:
 		
 		{
 			PanelWidget * panel = new PanelWidget;
+			std::string szMenuText = getLocalised("system_menus_options_interface_cinematic_widescreen_mode",
+			                                      "Cinematic mode");
+			szMenuText += " ";
+			TextWidget * txt = new TextWidget(BUTTON_INVALID, hFontMenu, szMenuText, Vec2f(20, 0));
+			txt->SetCheckOff();
+			panel->AddElement(txt);
+			
+			CycleTextWidget * cb = new CycleTextWidget;
+			cb->valueChanged = boost::bind(&InterfaceOptionsMenuPage::onChangedCinematicMode, this, _1, _2);
+			szMenuText = getLocalised("system_menus_options_interface_letterbox", "Letterbox");
+			cb->AddText(new TextWidget(BUTTON_INVALID, hFontMenu, szMenuText));
+			szMenuText = getLocalised("system_menus_options_interface_widescreen", "Widescreen");
+			cb->AddText(new TextWidget(BUTTON_INVALID, hFontMenu, szMenuText));
+			szMenuText = getLocalised("system_menus_options_interface_fade_edges", "Fade Edges");
+			cb->AddText(new TextWidget(BUTTON_INVALID, hFontMenu, szMenuText));
+			cb->setValue(config.interface.cinematicWidescreenMode);
+			
+			cb->Move(Vec2f(RATIO_X(m_size.x-9) - cb->m_rect.width(), 0));
+			panel->AddElement(cb);
+			
+			addCenter(panel);
+		}
+		
+		{
+			PanelWidget * panel = new PanelWidget;
 			std::string szMenuText = getLocalised("system_menus_options_interface_hud_scale",
 			                                      "HUD size");
 			TextWidget * txt = new TextWidget(BUTTON_INVALID, hFontMenu, szMenuText, Vec2f(20, 0));
@@ -830,6 +855,12 @@ public:
 	
 	void onChangedSpeechWidth(int state) {
 		config.interface.limitSpeechWidth = state ? true : false;
+	}
+	
+	void onChangedCinematicMode(int pos, const std::string & str) {
+		ARX_UNUSED(str);
+		
+		config.interface.cinematicWidescreenMode = CinematicWidescreenMode(pos);
 	}
 	
 	void onChangedHudScale(int state) {
