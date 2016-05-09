@@ -118,6 +118,7 @@ public:
 		CinematicWidescreenMode cinematicWidescreenMode;
 		
 		float hudScale;
+		bool hudScaleInteger;
 		
 		int bufferSize;
 		std::string bufferUpload;

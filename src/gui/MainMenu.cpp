@@ -650,6 +650,16 @@ public:
 		}
 		
 		{
+			std::string szMenuText = getLocalised("system_menus_options_video_hud_scale_integer", "Round HUD scale factor");
+			TextWidget * txt = new TextWidget(BUTTON_INVALID, hFontMenu, szMenuText, Vec2f(20, 0));
+			txt->SetCheckOff();
+			CheckboxWidget * cb = new CheckboxWidget(txt);
+			cb->stateChanged = boost::bind(&VideoOptionsMenuPage::onChangedHudScaleInteger, this, _1);
+			cb->iState = config.video.hudScaleInteger ? 1 : 0;
+			addCenter(cb);
+		}
+		
+		{
 			std::string szMenuText = getLocalised("system_menus_video_apply");
 			szMenuText += "   ";
 			TextWidget * txt = new TextWidget(BUTTON_INVALID, hFontMenu, szMenuText, Vec2f(240, 0));
@@ -729,6 +739,11 @@ public:
 	
 	void onChangedHudScale(int state) {
 		config.video.hudScale = float(state) * 0.1f;
+		g_hudRoot.recalcScale();
+	}
+	
+	void onChangedHudScaleInteger(int state) {
+		config.video.hudScaleInteger = state ? true : false;
 		g_hudRoot.recalcScale();
 	}
 	

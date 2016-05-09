@@ -84,6 +84,7 @@ const bool
 	colorkeyAlphaToCoverage = true,
 	colorkeyAntialiasing = true,
 	limitSpeechWidth = true,
+	hudScaleInteger = true,
 	eax = true,
 	muteOnFocusLost = false,
 	invertMouse = false,
@@ -175,6 +176,7 @@ const std::string
 	limitSpeechWidth = "limit_speech_width",
 	cinematicWidescreenMode = "cinematic_widescreen_mode",
 	hudScale = "hud_scale",
+	hudScaleInteger = "hud_scale_integer",
 	bufferSize = "buffer_size",
 	bufferUpload = "buffer_upload",
 	thumbnailSize = "save_thumbnail_size";
@@ -407,6 +409,7 @@ bool Config::save() {
 	writer.writeKey(Key::limitSpeechWidth, video.limitSpeechWidth);
 	writer.writeKey(Key::cinematicWidescreenMode, int(video.cinematicWidescreenMode));
 	writer.writeKey(Key::hudScale, video.hudScale);
+	writer.writeKey(Key::hudScaleInteger, video.hudScaleInteger);
 	writer.writeKey(Key::bufferSize, video.bufferSize);
 	writer.writeKey(Key::bufferUpload, video.bufferUpload);
 	
@@ -530,6 +533,7 @@ bool Config::init(const fs::path & file) {
 	video.cinematicWidescreenMode = CinematicWidescreenMode(glm::clamp(cinematicMode, 0, 2));
 	float hudScale = reader.getKey(Section::Video, Key::hudScale, Default::hudScale);
 	video.hudScale = glm::clamp(hudScale, 0.f, 1.f);
+	video.hudScaleInteger = reader.getKey(Section::Video, Key::hudScaleInteger, Default::hudScaleInteger);
 	video.bufferSize = std::max(reader.getKey(Section::Video, Key::bufferSize, Default::bufferSize), 0);
 	video.bufferUpload = reader.getKey(Section::Video, Key::bufferUpload, Default::bufferUpload);
 	

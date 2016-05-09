@@ -19,6 +19,8 @@
 
 #include "gui/Hud.h"
 
+#include <algorithm>
+#include <cmath>
 #include <iomanip>
 #include <sstream>
 
@@ -1624,8 +1626,20 @@ void HudRoot::draw() {
 }
 
 void HudRoot::recalcScale() {
+	
 	float maxScale = minSizeRatio();
 	float scale = glm::clamp(1.f, maxScale * config.video.hudScale, maxScale);
+	
+	if(config.video.hudScaleInteger && maxScale > 1.f) {
+		if(scale < 1.3f || maxScale < 1.5f) {
+			scale = 1.f;
+		} else if(scale < 1.75f) {
+			scale = 1.5f;
+		} else {
+			scale = std::floor(std::min(scale + 0.5f, maxScale));
+		}
+	}
+	
 	setScale(scale);
 }
 
