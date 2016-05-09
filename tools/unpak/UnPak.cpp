@@ -51,11 +51,8 @@ static void dump(PakDirectory & dir, const fs::path & dirname = fs::path()) {
 		
 		PakFile * file = i->second;
 		
-#if ARX_PLATFORM == ARX_PLATFORM_WIN32
-		std::string filename = filenameISO.string();
-#else
+		// TODO this should really be done when loading the pak file
 		std::string filename = util::convert<util::ISO_8859_1, util::UTF8>(filenameISO.string().c_str());
-#endif
 		
 		printf("%s\n", filename.c_str());
 		
