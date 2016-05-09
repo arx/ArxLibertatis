@@ -678,7 +678,7 @@ static bool StrikeAimtime() {
 	if(player.m_strikeAimRatio > player.Full_AimTime)
 		player.m_strikeAimRatio = 1.f;
 	else
-		player.m_strikeAimRatio = (float)player.m_strikeAimRatio / (float)player.Full_AimTime;
+		player.m_strikeAimRatio = player.m_strikeAimRatio / player.Full_AimTime;
 
 	if(player.m_strikeAimRatio < 0.1f)
 		player.m_strikeAimRatio = 0.1f;
