@@ -635,6 +635,63 @@ public:
 		}
 		
 		{
+			PanelWidget * panel = new PanelWidget;
+			std::string szMenuText = getLocalised("system_menus_options_video_texture_filter_anisotropic",
+			                                      "Anisotropic filtering");
+			szMenuText += " ";
+			TextWidget * txt = new TextWidget(BUTTON_INVALID, hFontMenu, szMenuText, Vec2f(20, 0));
+			txt->SetCheckOff();
+			panel->AddElement(txt);
+			
+			CycleTextWidget * cb = new CycleTextWidget;
+			cb->valueChanged = boost::bind(&VideoOptionsMenuPage::onChangedMaxAnisotropy, this, _1, _2);
+			szMenuText = getLocalised("system_menus_options_video_filter_anisotropic_off", "Off");
+			cb->AddText(new TextWidget(BUTTON_INVALID, hFontMenu, szMenuText));
+			int maxAnisotropy = int(GRenderer->getMaxSupportedAnisotropy());
+			int selected = 0;
+			if(maxAnisotropy > 1) {
+				int i = 1;
+				std::ostringstream oss;
+				for(int anisotropy = 2; ; anisotropy *= 2, i++) {
+					if(anisotropy > maxAnisotropy) {
+						anisotropy = maxAnisotropy;
+					}
+					oss.str(std::string());
+					oss << 'x' << anisotropy;
+					cb->AddText(new TextWidget(BUTTON_INVALID, hFontMenu, oss.str()));
+					if(config.video.maxAnisotropicFiltering == anisotropy) {
+						selected = i;
+					}
+					if(config.video.maxAnisotropicFiltering > anisotropy
+					   && config.video.maxAnisotropicFiltering < anisotropy * 2
+					   && config.video.maxAnisotropicFiltering <= maxAnisotropy) {
+						oss.str(std::string());
+						oss << 'x' << config.video.maxAnisotropicFiltering;
+						cb->AddText(new TextWidget(BUTTON_INVALID, hFontMenu, oss.str()));
+						selected = ++i;
+					}
+					if(anisotropy == maxAnisotropy) {
+						i++;
+						break;
+					}
+				}
+				szMenuText = getLocalised("system_menus_options_video_filter_anisotropic_max", "Unlimited");
+				cb->AddText(new TextWidget(BUTTON_INVALID, hFontMenu, szMenuText));
+				if(config.video.maxAnisotropicFiltering > maxAnisotropy) {
+					selected = i;
+				}
+			}
+			cb->setValue(selected);
+			cb->Move(Vec2f(RATIO_X(m_size.x-9) - cb->m_rect.width(), 0));
+			if(maxAnisotropy <= 1) {
+				cb->setEnabled(false);
+			}
+			panel->AddElement(cb);
+			
+			addCenter(panel);
+		}
+		
+		{
 			std::string szMenuText = getLocalised("system_menus_video_apply");
 			szMenuText += "   ";
 			TextWidget * txt = new TextWidget(BUTTON_INVALID, hFontMenu, szMenuText, Vec2f(240, 0));
@@ -706,6 +763,23 @@ public:
 	
 	void onChangedVsync(int state) {
 		config.video.vsync = state ? true : false;
+	}
+	
+	void onChangedMaxAnisotropy(int pos, const std::string & str) {
+		ARX_UNUSED(str);
+		
+		int anisotropy = 1;
+		if(pos > 0) {
+			if(!str.empty() && str[0] == 'x') {
+				std::stringstream ss(str.substr(1));
+				ss >> anisotropy;
+			} else {
+				anisotropy = 9001;
+			}
+		}
+		
+		config.video.maxAnisotropicFiltering = anisotropy;
+		GRenderer->setMaxAnisotropy(anisotropy);
 	}
 	
 	void onClickedBack() {
