@@ -757,6 +757,17 @@ public:
 		}
 		
 		{
+			std::string szMenuText = getLocalised("system_menus_options_interface_limit_speech_width",
+			                         "Limit speech text width");
+			TextWidget * txt = new TextWidget(BUTTON_INVALID, hFontMenu, szMenuText, Vec2f(20, 0));
+			txt->SetCheckOff();
+			CheckboxWidget * cb = new CheckboxWidget(txt);
+			cb->stateChanged = boost::bind(&InterfaceOptionsMenuPage::onChangedSpeechWidth, this, _1);
+			cb->iState = config.interface.limitSpeechWidth ? 1 : 0;
+			addCenter(cb);
+		}
+		
+		{
 			PanelWidget * panel = new PanelWidget;
 			std::string szMenuText = getLocalised("system_menus_options_interface_hud_scale",
 			                                      "HUD size");
@@ -815,6 +826,10 @@ public:
 	
 	void onChangedCrosshair(int state) {
 		config.interface.showCrosshair = state ? true : false;
+	}
+	
+	void onChangedSpeechWidth(int state) {
+		config.interface.limitSpeechWidth = state ? true : false;
 	}
 	
 	void onChangedHudScale(int state) {
