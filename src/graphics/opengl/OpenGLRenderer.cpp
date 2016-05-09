@@ -54,7 +54,8 @@ OpenGLRenderer::OpenGLRenderer()
 	, useVBOs(false)
 	, maxTextureStage(0)
 	, shader(0)
-	, m_maximumAnisotropy(0.f)
+	, m_maximumAnisotropy(1.f)
+	, m_maximumSupportedAnisotropy(1.f)
 	, m_glcull(GL_NONE)
 	, m_hasMSAA(false)
 	, m_hasTextureNPOT(false)
@@ -340,7 +341,8 @@ void OpenGLRenderer::reinit() {
 	if(GLEW_EXT_texture_filter_anisotropic) {
 		GLfloat limit;
 		glGetFloatv(GL_MAX_TEXTURE_MAX_ANISOTROPY_EXT, &limit);
-		m_maximumAnisotropy = std::min(float(config.video.maxAnisotropicFiltering), limit);
+		m_maximumSupportedAnisotropy = limit;
+		setMaxAnisotropy(float(config.video.maxAnisotropicFiltering));
 	}
 	
 	onRendererInit();
@@ -362,7 +364,8 @@ void OpenGLRenderer::shutdown() {
 	}
 	m_TextureStages.clear();
 	
-	m_maximumAnisotropy = 0.f;
+	m_maximumAnisotropy = 1.f;
+	m_maximumSupportedAnisotropy = 1.f;
 	
 }
 
@@ -596,6 +599,20 @@ static const GLenum arxToGlFillMode[] = {
 
 void OpenGLRenderer::SetFillMode(FillMode mode) {
 	glPolygonMode(GL_FRONT_AND_BACK, arxToGlFillMode[mode]);
+}
+
+void OpenGLRenderer::setMaxAnisotropy(float value) {
+	
+	float maxAnisotropy = glm::clamp(value, 1.f, m_maximumSupportedAnisotropy);
+	if(m_maximumAnisotropy == maxAnisotropy) {
+		return;
+	}
+	
+	m_maximumAnisotropy = maxAnisotropy;
+	
+	for(TextureList::iterator it = textures.begin(); it != textures.end(); ++it) {
+		it->updateMaxAnisotropy();
+	}
 }
 
 template <typename Vertex>

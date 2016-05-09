@@ -44,6 +44,8 @@ public:
 	
 	void apply(GLTextureStage * stage);
 	
+	void updateMaxAnisotropy();
+	
 private:
 	
 	OpenGLRenderer * renderer;
