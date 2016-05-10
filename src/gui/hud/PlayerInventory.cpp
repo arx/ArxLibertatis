@@ -71,12 +71,7 @@ bool PlayerInventoryHud::updateInput() {
 	bool bQuitCombine = true;
 	
 	if(g_currentInventoryBag > 0) {
-		const Rect mouseTestRect(
-		pos.x,
-		pos.y,
-		pos.x + (32 * m_scale),
-		pos.y + (32 * m_scale)
-		);
+		const Rect mouseTestRect(Vec2i(pos), int(32 * m_scale), int(32 * m_scale));
 		
 		if(mouseTestRect.contains(Vec2i(DANAEMouse)))
 			bQuitCombine = false;
@@ -87,12 +82,7 @@ bool PlayerInventoryHud::updateInput() {
 
 		pos.y += checked_range_cast<int>(fRatio);
 		
-		const Rect mouseTestRect(
-		pos.x,
-		pos.y,
-		pos.x + (32 * m_scale),
-		pos.y + (32 * m_scale)
-		);
+		const Rect mouseTestRect(Vec2i(pos), int(32 * m_scale), int(32 * m_scale));
 		
 		if(mouseTestRect.contains(Vec2i(DANAEMouse)))
 			bQuitCombine = false;
