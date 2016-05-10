@@ -1874,7 +1874,12 @@ void ArxGame::manageKeyMouse() {
 			}
 		}
 	}
+	
+	manageEntityDescription();
+}
 
+void ArxGame::manageEntityDescription() {
+	
 	if(   !BLOCK_PLAYER_CONTROLS
 	   && !(player.Interface & INTER_COMBATMODE)
 	   && !DRAGINTER

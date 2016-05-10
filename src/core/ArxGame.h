@@ -71,6 +71,7 @@ protected:
 	void render();
 
 	void manageKeyMouse();
+	void manageEntityDescription();
 	void manageEditorControls();
 	void managePlayerControls();
 	void updateAllInterface();
