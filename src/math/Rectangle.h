@@ -87,7 +87,7 @@ public:
 		, bottom(_bottom)
 	{ }
 	
-	Rectangle_(const typename vec2_traits<T>::type & _origin, T width = T(0), T height = T(0))
+	Rectangle_(const typename vec2_traits<T>::type & _origin, T width, T height)
 		: left(_origin.x)
 		, top(_origin.y)
 		, right(_origin.x + width)
