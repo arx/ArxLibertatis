@@ -426,7 +426,7 @@ bool ARX_Menu_Render() {
 			else
 				color = Color(232, 204, 143);
 
-			pTextManage->AddText(hFontMenu, ARXmenu.mda->str_button_quickgen, static_cast<long>(pos.x), static_cast<long>(pos.y), color);
+			pTextManage->AddText(hFontMenu, ARXmenu.mda->str_button_quickgen, Vec2i(pos), color);
 
 			//---------------------------------------------------------------------
 			// Button SKIN
@@ -459,7 +459,7 @@ bool ARX_Menu_Render() {
 			else
 				color = Color(232, 204, 143);
 
-			pTextManage->AddText(hFontMenu, ARXmenu.mda->str_button_skin, static_cast<long>(pos.x), static_cast<long>(pos.y), color);
+			pTextManage->AddText(hFontMenu, ARXmenu.mda->str_button_skin, Vec2i(pos), color);
 
 			//---------------------------------------------------------------------
 			// Button DONE
@@ -515,7 +515,7 @@ bool ARX_Menu_Render() {
 			if(player.m_cheatSkinButtonClickCount < 0)
 				color = Color(255, 0, 255);
 
-			pTextManage->AddText(hFontMenu, ARXmenu.mda->str_button_done, static_cast<long>(pos.x), static_cast<long>(pos.y), color);
+			pTextManage->AddText(hFontMenu, ARXmenu.mda->str_button_done, Vec2i(pos), color);
 		}
 	}
 

@@ -108,10 +108,10 @@ bool TextManager::AddText(Font* _pFont, const std::string & _lpszUText, const Re
 	return true;
 }
 
-bool TextManager::AddText(Font * font, const std::string & str, long x, long y, Color fgcolor) {
+bool TextManager::AddText(Font * font, const std::string & str, Vec2i pos, Color fgcolor) {
 	Rect r;
-	r.left = x;
-	r.top = y;
+	r.left = pos.x;
+	r.top = pos.y;
 	r.right = Rect::Limits::max();
 	r.bottom = Rect::Limits::max();
 	return AddText(font, str, r, fgcolor);

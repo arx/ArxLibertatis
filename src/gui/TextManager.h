@@ -63,7 +63,7 @@ public:
 	             Color color = Color::white, long displayTime = 0, long scrollTime = 0,
 	             float scrollSpeed = 0.f, int nLineClipp = 0);
 	
-	bool AddText(Font * font, const std::string & str, long x, long y, Color color);
+	bool AddText(Font * font, const std::string & str, Vec2i pos, Color color);
 	void Update(float time);
 	void Render();
 	void Clear();
