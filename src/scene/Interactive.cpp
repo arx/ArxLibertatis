@@ -453,7 +453,6 @@ void TREATZONE_AddIO(Entity * io, bool justCollide)
 		treatio[TREATZONE_CUR].ioflags |= IO_JUST_COLLIDE;
 
 	treatio[TREATZONE_CUR].show = io->show;
-	treatio[TREATZONE_CUR].num = io->index();
 	TREATZONE_CUR++;
 }
 
@@ -2105,7 +2104,7 @@ bool ARX_INTERACTIVE_CheckFULLCollision(PHYSICS_BOX_DATA * pbox, EntityHandle so
 		   || io == io_source
 		   || !io->obj
 		   || io == entities.player()
-		   || treatio[i].num == avoid
+		   || treatio[i].io->index() == avoid
 		   || (io->ioflags & (IO_CAMERA | IO_MARKER | IO_ITEM))
 		   || io->usepath
 		   || ((io->ioflags & IO_NPC) && io_source && (io_source->ioflags & IO_NO_NPC_COLLIDE))

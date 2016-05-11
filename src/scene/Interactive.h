@@ -158,7 +158,6 @@ long  ARX_INTERACTIVE_GetPrice(Entity * io, Entity * shop);
 void IO_UnlinkAllLinkedObjects(Entity * io);
 
 struct TREATZONE_IO {
-	EntityHandle num;
 	Entity * io;
 	EntityFlags ioflags;
 	long show;

@@ -861,14 +861,14 @@ bool CheckEverythingInSphere(const Sphere & sphere, EntityHandle source, EntityH
 		} else {
 			if(treatio[i].show != 1
 			   || treatio[i].io == NULL
-			   || treatio[i].num == source
-			   || InExceptionList(treatio[i].num)
+			   || treatio[i].io->index() == source
+			   || InExceptionList(treatio[i].io->index())
 			) {
 				continue;
 			}
 
 			io = treatio[i].io;
-			ret_idx = treatio[i].num;
+			ret_idx = treatio[i].io->index();
 		}
 
 		if(!(io->ioflags & IO_NPC) && (io->ioflags & IO_NO_COLLISIONS))
@@ -1049,7 +1049,7 @@ bool CheckAnythingInSphere(const Sphere & sphere, EntityHandle source, CASFlags 
 
 	for(long i = 0; i < TREATZONE_CUR; i++) {
 		
-		if(treatio[i].show != 1 || !treatio[i].io || treatio[i].num == source)
+		if(treatio[i].show != 1 || !treatio[i].io || treatio[i].io->index() == source)
 			continue;
 
 		Entity * io = treatio[i].io;
@@ -1069,7 +1069,7 @@ bool CheckAnythingInSphere(const Sphere & sphere, EntityHandle source, CASFlags 
 		if((io->ioflags & IO_ITEM) && (flags & CAS_NO_ITEM_COL))
 			continue;
 
-		if(treatio[i].num != PlayerEntityHandle && source != PlayerEntityHandle && validsource && HaveCommonGroup(io,entities[source]))
+		if(treatio[i].io->index() != PlayerEntityHandle && source != PlayerEntityHandle && validsource && HaveCommonGroup(io,entities[source]))
 			continue;
 
 		if(io->gameFlags & GFLAG_PLATFORM) {
@@ -1105,7 +1105,7 @@ bool CheckAnythingInSphere(const Sphere & sphere, EntityHandle source, CASFlags 
 
 						if(PointIn2DPolyXZ(&ep, sphere.origin.x, sphere.origin.z)) {
 							if(num)
-								*num=treatio[i].num;
+								*num=treatio[i].io->index();
 
 							return true;
 						}
@@ -1122,7 +1122,7 @@ bool CheckAnythingInSphere(const Sphere & sphere, EntityHandle source, CASFlags 
 				for(size_t ii = 0; ii < io->obj->grouplist.size(); ii++) {
 					if(closerThan(vlist[io->obj->grouplist[ii].origin].v, sphere.origin, sr40)) {
 						if(num)
-							*num = treatio[i].num;
+							*num = treatio[i].io->index();
 
 						return true;
 					}
@@ -1139,7 +1139,7 @@ bool CheckAnythingInSphere(const Sphere & sphere, EntityHandle source, CASFlags 
 				if(closerThan(vlist[io->obj->facelist[ii].vid[0]].v, sphere.origin, sr30)
 				   || closerThan(vlist[io->obj->facelist[ii].vid[1]].v, sphere.origin, sr30)) {
 					if(num)
-						*num = treatio[i].num;
+						*num = treatio[i].io->index();
 
 					return true;
 				}
