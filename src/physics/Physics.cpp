@@ -346,7 +346,7 @@ static bool IsFULLObjectVertexInValidPosition(PHYSICS_BOX_DATA * pbox, EERIEPOLY
 	return true;
 }
 
-static bool ARX_EERIE_PHYSICS_BOX_Compute(PHYSICS_BOX_DATA * pbox, float framediff, EntityHandle source) {
+static bool ARX_EERIE_PHYSICS_BOX_Compute(PHYSICS_BOX_DATA * pbox, float framediff, Entity * source) {
 
 	Vec3f oldpos[32];
 	long COUNT = 0;
@@ -384,7 +384,7 @@ static bool ARX_EERIE_PHYSICS_BOX_Compute(PHYSICS_BOX_DATA * pbox, float framedi
 					   + glm::abs(pbox->vert[0].velocity.z)) * .01f;
 
 
-		if(!(ValidIONum(source) && (entities[source]->ioflags & IO_BODY_CHUNK)))
+		if(!(source->ioflags & IO_BODY_CHUNK))
 			ARX_TEMPORARY_TrySound(0.4f + power);
 
 		if(!collisionPoly) {
@@ -425,7 +425,7 @@ static bool ARX_EERIE_PHYSICS_BOX_Compute(PHYSICS_BOX_DATA * pbox, float framedi
 	return true;
 }
 
-long ARX_PHYSICS_BOX_ApplyModel(PHYSICS_BOX_DATA * pbox, float framediff, float rubber, EntityHandle source) {
+long ARX_PHYSICS_BOX_ApplyModel(PHYSICS_BOX_DATA * pbox, float framediff, float rubber, Entity * source) {
 
 	long ret = 0;
 
@@ -469,10 +469,8 @@ long ARX_PHYSICS_BOX_ApplyModel(PHYSICS_BOX_DATA * pbox, float framediff, float 
 	pbox->active = 2;
 	pbox->stopcount = 0;
 
-	if(ValidIONum(source)) {
-		entities[source]->soundcount = 0;
-		entities[source]->soundtime = arxtime.now_ul() + 2000;
-	}
+	source->soundcount = 0;
+	source->soundtime = arxtime.now_ul() + 2000;
 
 	return ret;
 }

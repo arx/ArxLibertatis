@@ -2083,15 +2083,10 @@ void SetYlsideDeath(Entity * io) {
 	io->sfx_time = arxtime.now_ul();
 }
 
-bool ARX_INTERACTIVE_CheckFULLCollision(PHYSICS_BOX_DATA * pbox, EntityHandle source) {
+bool ARX_INTERACTIVE_CheckFULLCollision(PHYSICS_BOX_DATA * pbox, Entity * source) {
 	
-	EntityHandle avoid = EntityHandle();
-	Entity * io_source = NULL;
-
-	if(ValidIONum(source)) {
-		io_source = entities[source];
-		avoid = io_source->no_collide;
-	}
+	Entity * io_source = source;
+	EntityHandle avoid = io_source->no_collide;
 
 	for(long i = 0; i < TREATZONE_CUR; i++) {
 
