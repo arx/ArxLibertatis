@@ -251,14 +251,14 @@ static bool IsObjectVertexCollidingPoly(PHYSICS_BOX_DATA * pbox, const EERIEPOLY
 	return false;
 }
 
-static void polyTypeToCollisionMaterial(const EERIEPOLY & ep) {
-	if (ep.type & POLY_METAL) CUR_COLLISION_MATERIAL = MATERIAL_METAL;
-	else if (ep.type & POLY_WOOD) CUR_COLLISION_MATERIAL = MATERIAL_WOOD;
-	else if (ep.type & POLY_STONE) CUR_COLLISION_MATERIAL = MATERIAL_STONE;
-	else if (ep.type & POLY_GRAVEL) CUR_COLLISION_MATERIAL = MATERIAL_GRAVEL;
-	else if (ep.type & POLY_WATER) CUR_COLLISION_MATERIAL = MATERIAL_WATER;
-	else if (ep.type & POLY_EARTH) CUR_COLLISION_MATERIAL = MATERIAL_EARTH;
-	else CUR_COLLISION_MATERIAL = MATERIAL_STONE;
+static Material polyTypeToCollisionMaterial(const EERIEPOLY & ep) {
+	if (ep.type & POLY_METAL) return MATERIAL_METAL;
+	else if (ep.type & POLY_WOOD) return MATERIAL_WOOD;
+	else if (ep.type & POLY_STONE) return MATERIAL_STONE;
+	else if (ep.type & POLY_GRAVEL) return MATERIAL_GRAVEL;
+	else if (ep.type & POLY_WATER) return MATERIAL_WATER;
+	else if (ep.type & POLY_EARTH) return MATERIAL_EARTH;
+	else return MATERIAL_STONE;
 }
 
 static bool IsFULLObjectVertexInValidPosition(PHYSICS_BOX_DATA * pbox, EERIEPOLY *& collisionPoly) {
@@ -303,7 +303,7 @@ static bool IsFULLObjectVertexInValidPosition(PHYSICS_BOX_DATA * pbox, EERIEPOLY
 					) {
 						collisionPoly = &ep;
 						
-						polyTypeToCollisionMaterial(ep);
+						CUR_COLLISION_MATERIAL = polyTypeToCollisionMaterial(ep);
 						
 						return false;
 					}
@@ -323,7 +323,7 @@ static bool IsFULLObjectVertexInValidPosition(PHYSICS_BOX_DATA * pbox, EERIEPOLY
 							) {
 								collisionPoly = &ep;
 
-								polyTypeToCollisionMaterial(ep);
+								CUR_COLLISION_MATERIAL = polyTypeToCollisionMaterial(ep);
 								
 								return false;
 							}
@@ -335,7 +335,7 @@ static bool IsFULLObjectVertexInValidPosition(PHYSICS_BOX_DATA * pbox, EERIEPOLY
 					
 					collisionPoly = &ep;
 					
-					polyTypeToCollisionMaterial(ep);
+					CUR_COLLISION_MATERIAL = polyTypeToCollisionMaterial(ep);
 					
 					return false;
 				}
