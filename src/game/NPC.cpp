@@ -778,31 +778,31 @@ bool ARX_NPC_SetStat(Entity& io, const std::string & statname, float value) {
 
 extern Material CUR_COLLISION_MATERIAL;
 
-void ARX_TEMPORARY_TrySound(Entity * PHYSICS_CURIO, float volume) {
+void ARX_TEMPORARY_TrySound(Entity * source, float volume) {
 	
-	if(PHYSICS_CURIO) {
-		if(PHYSICS_CURIO->ioflags & IO_BODY_CHUNK)
+	if(source) {
+		if(source->ioflags & IO_BODY_CHUNK)
 			return;
 
 		unsigned long now = arxtime.now_ul();
 
-		if(now > PHYSICS_CURIO->soundtime) {
+		if(now > source->soundtime) {
 
-			PHYSICS_CURIO->soundcount++;
+			source->soundcount++;
 
-			if(PHYSICS_CURIO->soundcount < 5) {
+			if(source->soundcount < 5) {
 				long material;
-				if(EEIsUnderWater(PHYSICS_CURIO->pos))
+				if(EEIsUnderWater(source->pos))
 					material = MATERIAL_WATER;
-				else if(PHYSICS_CURIO->material)
-					material = PHYSICS_CURIO->material;
+				else if(source->material)
+					material = source->material;
 				else
 					material = MATERIAL_STONE;
 
 				if(volume > 1.f)
 					volume = 1.f;
 
-				PHYSICS_CURIO->soundtime = now + (ARX_SOUND_PlayCollision(material, CUR_COLLISION_MATERIAL, volume, 1.f, PHYSICS_CURIO->pos, PHYSICS_CURIO) >> 4) + 50;
+				source->soundtime = now + (ARX_SOUND_PlayCollision(material, CUR_COLLISION_MATERIAL, volume, 1.f, source->pos, source) >> 4) + 50;
 			}
 		}
 	}
