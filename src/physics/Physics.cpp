@@ -263,7 +263,6 @@ static void polyTypeToCollisionMaterial(const EERIEPOLY & ep) {
 
 static bool IsFULLObjectVertexInValidPosition(PHYSICS_BOX_DATA * pbox, EERIEPOLY *& collisionPoly) {
 
-	bool ret = true;
 	float rad = pbox->radius;
 	
 	// TODO copy-paste background tiles
@@ -344,7 +343,7 @@ static bool IsFULLObjectVertexInValidPosition(PHYSICS_BOX_DATA * pbox, EERIEPOLY
 		}
 	}
 
-	return ret;
+	return true;
 }
 
 static bool ARX_EERIE_PHYSICS_BOX_Compute(PHYSICS_BOX_DATA * pbox, float framediff, EntityHandle source) {
