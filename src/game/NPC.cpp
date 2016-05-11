@@ -801,8 +801,10 @@ void ARX_TEMPORARY_TrySound(Entity * source, float volume) {
 
 				if(volume > 1.f)
 					volume = 1.f;
-
-				source->soundtime = now + (ARX_SOUND_PlayCollision(material, CUR_COLLISION_MATERIAL, volume, 1.f, source->pos, source) >> 4) + 50;
+				
+				long soundLength = ARX_SOUND_PlayCollision(material, CUR_COLLISION_MATERIAL, volume, 1.f, source->pos, source);
+				
+				source->soundtime = now + (soundLength >> 4) + 50;
 			}
 		}
 	}
