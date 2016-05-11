@@ -777,9 +777,8 @@ bool ARX_NPC_SetStat(Entity& io, const std::string & statname, float value) {
 }
 
 extern Material CUR_COLLISION_MATERIAL;
-static Entity * PHYSICS_CURIO = NULL;
 
-void ARX_TEMPORARY_TrySound(float volume) {
+void ARX_TEMPORARY_TrySound(Entity * PHYSICS_CURIO, float volume) {
 	
 	if(PHYSICS_CURIO) {
 		if(PHYSICS_CURIO->ioflags & IO_BODY_CHUNK)
@@ -997,8 +996,6 @@ void ARX_PHYSICS_Apply() {
 			io->gameFlags &= ~GFLAG_NOCOMPUTATION;
 
 			if(io->obj->pbox->active == 1) {
-				PHYSICS_CURIO = io;
-
 				ARX_PHYSICS_BOX_ApplyModel(io->obj->pbox, g_framedelay, io->rubber, io);
 				
 				if(io->soundcount > 12) {

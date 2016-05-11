@@ -236,7 +236,7 @@ bool ARX_NPC_LaunchPathfind(Entity * io, EntityHandle target);
 bool IsDeadNPC(Entity * io);
 
 void FaceTarget2(Entity * io);
-void ARX_TEMPORARY_TrySound(float power);
+void ARX_TEMPORARY_TrySound(Entity * source, float power);
 void ARX_NPC_Behaviour_Stack(Entity * io);
 void ARX_NPC_Behaviour_UnStack(Entity * io);
 void ARX_NPC_Behaviour_Reset(Entity * io);

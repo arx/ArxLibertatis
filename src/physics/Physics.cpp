@@ -385,7 +385,7 @@ static bool ARX_EERIE_PHYSICS_BOX_Compute(PHYSICS_BOX_DATA * pbox, float framedi
 
 
 		if(!(source->ioflags & IO_BODY_CHUNK))
-			ARX_TEMPORARY_TrySound(0.4f + power);
+			ARX_TEMPORARY_TrySound(source, 0.4f + power);
 
 		if(!collisionPoly) {
 			for(long k = 0; k < pbox->nb_physvert; k++) {
