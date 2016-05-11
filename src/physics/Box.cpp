@@ -48,7 +48,6 @@ ZeniMax Media Inc., Suite 120, Rockville, Maryland 20850 USA.
 
 #include "graphics/Math.h"
 
-Material CUR_COLLISION_MATERIAL = MATERIAL_NONE;
 
 // Used to launch an object into the physical world...
 void EERIE_PHYSICS_BOX_Launch(EERIE_3DOBJ * obj, const Vec3f & pos, const Anglef & angle, const Vec3f & vect)

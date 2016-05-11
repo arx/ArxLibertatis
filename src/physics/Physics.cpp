@@ -63,7 +63,6 @@ ZeniMax Media Inc., Suite 120, Rockville, Maryland 20850 USA.
 #include "physics/Box.h"
 #include "physics/Collisions.h"
 
-extern Material CUR_COLLISION_MATERIAL;
 
 static const float VELOCITY_THRESHOLD = 400.f;
 
@@ -302,9 +301,6 @@ static bool IsFULLObjectVertexInValidPosition(PHYSICS_BOX_DATA * pbox, EERIEPOLY
 					   || !fartherThan(pbox->vert[kk].pos, (ep.v[0].p + ep.v[2].p) * .5f, radd)
 					) {
 						collisionPoly = &ep;
-						
-						CUR_COLLISION_MATERIAL = polyTypeToCollisionMaterial(ep);
-						
 						return false;
 					}
 					
@@ -322,9 +318,6 @@ static bool IsFULLObjectVertexInValidPosition(PHYSICS_BOX_DATA * pbox, EERIEPOLY
 							   || !fartherThan(pos, (ep.v[0].p + ep.v[2].p) * .5f, radd)
 							) {
 								collisionPoly = &ep;
-
-								CUR_COLLISION_MATERIAL = polyTypeToCollisionMaterial(ep);
-								
 								return false;
 							}
 						}
@@ -332,11 +325,7 @@ static bool IsFULLObjectVertexInValidPosition(PHYSICS_BOX_DATA * pbox, EERIEPOLY
 				}
 				
 				if(IsObjectVertexCollidingPoly(pbox, ep)) {
-					
 					collisionPoly = &ep;
-					
-					CUR_COLLISION_MATERIAL = polyTypeToCollisionMaterial(ep);
-					
 					return false;
 				}
 			}
@@ -362,8 +351,6 @@ static bool ARX_EERIE_PHYSICS_BOX_Compute(PHYSICS_BOX_DATA * pbox, float framedi
 		pv->velocity.z = glm::clamp(pv->velocity.z, -VELOCITY_THRESHOLD, VELOCITY_THRESHOLD);
 	}
 
-	CUR_COLLISION_MATERIAL = MATERIAL_STONE;
-
 	RK4Integrate(pbox, framediff);
 
 	Sphere sphere;
@@ -384,8 +371,14 @@ static bool ARX_EERIE_PHYSICS_BOX_Compute(PHYSICS_BOX_DATA * pbox, float framedi
 					   + glm::abs(pbox->vert[0].velocity.z)) * .01f;
 
 
-		if(!(source->ioflags & IO_BODY_CHUNK))
-			ARX_TEMPORARY_TrySound(source, 0.4f + power);
+		if(!(source->ioflags & IO_BODY_CHUNK)) {
+			Material collisionMat = MATERIAL_STONE;
+			if(collisionPoly) {
+				collisionMat = polyTypeToCollisionMaterial(*collisionPoly);
+			}
+			
+			ARX_TEMPORARY_TrySound(source, collisionMat, 0.4f + power);
+		}
 
 		if(!collisionPoly) {
 			for(long k = 0; k < pbox->nb_physvert; k++) {

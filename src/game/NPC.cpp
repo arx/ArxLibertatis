@@ -776,9 +776,7 @@ bool ARX_NPC_SetStat(Entity& io, const std::string & statname, float value) {
 	return true;
 }
 
-extern Material CUR_COLLISION_MATERIAL;
-
-void ARX_TEMPORARY_TrySound(Entity * source, float volume) {
+void ARX_TEMPORARY_TrySound(Entity * source, Material collisionMaterial, float volume) {
 	
 	if(source) {
 		if(source->ioflags & IO_BODY_CHUNK)
@@ -802,7 +800,7 @@ void ARX_TEMPORARY_TrySound(Entity * source, float volume) {
 				if(volume > 1.f)
 					volume = 1.f;
 				
-				long soundLength = ARX_SOUND_PlayCollision(material, CUR_COLLISION_MATERIAL, volume, 1.f, source->pos, source);
+				long soundLength = ARX_SOUND_PlayCollision(material, collisionMaterial, volume, 1.f, source->pos, source);
 				
 				source->soundtime = now + (soundLength >> 4) + 50;
 			}
