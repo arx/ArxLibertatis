@@ -373,9 +373,9 @@ static bool ARX_EERIE_PHYSICS_BOX_Compute(PHYSICS_BOX_DATA * pbox, float framedi
 				collisionMat = polyTypeToCollisionMaterial(*collisionPoly);
 			}
 			
-			float power = (glm::abs(pbox->vert[0].velocity.x)
-						   + glm::abs(pbox->vert[0].velocity.y)
-						   + glm::abs(pbox->vert[0].velocity.z)) * .01f;
+			Vec3f velocity = pbox->vert[0].velocity;
+			
+			float power = (glm::abs(velocity.x) + glm::abs(velocity.y) + glm::abs(velocity.z)) * .01f;
 			
 			ARX_TEMPORARY_TrySound(source, collisionMat, 0.4f + power);
 		}
