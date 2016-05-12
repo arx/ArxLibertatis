@@ -366,16 +366,16 @@ static bool ARX_EERIE_PHYSICS_BOX_Compute(PHYSICS_BOX_DATA * pbox, float framedi
 	   || IsObjectInField(pbox)
 	) {
 		colidd = 1;
-		float power = (glm::abs(pbox->vert[0].velocity.x)
-					   + glm::abs(pbox->vert[0].velocity.y)
-					   + glm::abs(pbox->vert[0].velocity.z)) * .01f;
-
-
+		
 		if(!(source->ioflags & IO_BODY_CHUNK)) {
 			Material collisionMat = MATERIAL_STONE;
 			if(collisionPoly) {
 				collisionMat = polyTypeToCollisionMaterial(*collisionPoly);
 			}
+			
+			float power = (glm::abs(pbox->vert[0].velocity.x)
+						   + glm::abs(pbox->vert[0].velocity.y)
+						   + glm::abs(pbox->vert[0].velocity.z)) * .01f;
 			
 			ARX_TEMPORARY_TrySound(source, collisionMat, 0.4f + power);
 		}
