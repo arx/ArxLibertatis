@@ -2085,9 +2085,6 @@ void SetYlsideDeath(Entity * io) {
 
 bool ARX_INTERACTIVE_CheckFULLCollision(PHYSICS_BOX_DATA * pbox, Entity * source) {
 	
-	Entity * io_source = source;
-	EntityHandle avoid = io_source->no_collide;
-
 	for(long i = 0; i < TREATZONE_CUR; i++) {
 
 		if(treatio[i].show != SHOW_FLAG_IN_SCENE || (treatio[i].ioflags & IO_NO_COLLISIONS))
@@ -2096,13 +2093,13 @@ bool ARX_INTERACTIVE_CheckFULLCollision(PHYSICS_BOX_DATA * pbox, Entity * source
 		Entity * io = treatio[i].io;
 
 		if(!io
-		   || io == io_source
+		   || io == source
 		   || !io->obj
 		   || io == entities.player()
-		   || treatio[i].io->index() == avoid
+		   || treatio[i].io->index() == source->no_collide
 		   || (io->ioflags & (IO_CAMERA | IO_MARKER | IO_ITEM))
 		   || io->usepath
-		   || ((io->ioflags & IO_NPC) && io_source && (io_source->ioflags & IO_NO_NPC_COLLIDE))
+		   || ((io->ioflags & IO_NPC) && source && (source->ioflags & IO_NO_NPC_COLLIDE))
 		   || !closerThan(io->pos, pbox->vert[0].pos, 600.f)
 		   || !In3DBBoxTolerance(pbox->vert[0].pos, io->bbox3D, pbox->radius)
 		) {
@@ -2184,15 +2181,15 @@ bool ARX_INTERACTIVE_CheckFULLCollision(PHYSICS_BOX_DATA * pbox, Entity * source
 
 					for(long kk = 0; kk < pbox->nb_physvert; kk++) {
 						if(sp.contains(pbox->vert[kk].pos)) {
-							if(io_source && (io->gameFlags & GFLAG_DOOR)) {
+							if(source && (io->gameFlags & GFLAG_DOOR)) {
 								float elapsed = arxtime.now_f() - io->collide_door_time;
 								if(elapsed > 500) {
-									EVENT_SENDER = io_source;
+									EVENT_SENDER = source;
 									io->collide_door_time = arxtime.now_ul();
 									SendIOScriptEvent(io, SM_COLLIDE_DOOR);
 									EVENT_SENDER = io;
 									io->collide_door_time = arxtime.now_ul();
-									SendIOScriptEvent(io_source, SM_COLLIDE_DOOR);
+									SendIOScriptEvent(source, SM_COLLIDE_DOOR);
 								}
 							}
 							return true;
