@@ -1676,10 +1676,10 @@ void ArxGame::manageKeyMouse() {
 	LAST_PLAYER_MOUSELOOK_ON = mouselook;
 	PLAYER_ROTATION=0;
 
-	Vec2f mouseDiff = GInput->getMousePosRel();
+	Vec2f mouseDiff = Vec2f(GInput->getMousePosRel());
 	
 	if(config.input.mouseAcceleration > 0) {
-		Vec2f speed = Vec2f(mouseDiff) / g_framedelay;
+		Vec2f speed = mouseDiff / g_framedelay;
 		Vec2f sign(speed.x < 0 ? -1.f : 1.f, speed.y < 0 ? -1.f : 1.f);
 		float exponent = 1.f + config.input.mouseAcceleration * 0.05f;
 		speed.x = (std::pow(speed.x * sign.x + 1.f, exponent) - 1.f) * sign.x;
