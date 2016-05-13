@@ -616,6 +616,11 @@ public:
 		}
 		
 		{
+			// Add spacing
+			addCenter(new TextWidget(BUTTON_INVALID, hFontMenu, std::string(), Vec2f(20, 0)));
+		}
+		
+		{
 			PanelWidget * panel = new PanelWidget;
 			std::string szMenuText = getLocalised("system_menus_options_detail");
 			szMenuText += " ";
