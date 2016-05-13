@@ -1785,6 +1785,10 @@ void ArxGame::manageKeyMouse() {
 				
 				int borderSize = 10;
 				unsigned long borderDelay = 100;
+				if(!dragging && !mainApp->getWindow()->isFullScreen()) {
+					borderSize = 50;
+					borderDelay = 200;
+				}
 				
 				int distLeft = DANAEMouse.x - g_size.left;
 				int distRight = g_size.right - DANAEMouse.x;
