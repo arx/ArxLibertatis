@@ -344,12 +344,12 @@ bool PlayerInventoryHud::InPlayerInventoryBag(const Vec2s & pos) {
 	if(pos.x >= 0 && pos.y >= 0) {
 		Vec2s t;
 		t.x = pos.x / (32 * m_scale);
-		t.y = pos.y / (32 * m_scale);
+		t.y = (pos.y + 5 * m_scale) / (32 * m_scale);
 
 		if(   t.x >= 0
 		   && (size_t)t.x <= INVENTORY_X
 		   && t.y >= 0
-		   && (size_t)t.y < INVENTORY_Y
+		   && (size_t)t.y <= INVENTORY_Y
 		) {
 			return true;
 		}
@@ -412,8 +412,8 @@ Entity * PlayerInventoryHud::getObj(const Vec2s & pos) {
 		long ty = pos.y - iPos.y; //-2
 
 		if(tx >= 0 && ty >= 0) {
-			tx = checked_range_cast<long>(tx / (32 * m_scale));
-			ty = checked_range_cast<long>(ty / (32 * m_scale));
+			tx = checked_range_cast<long>((tx - 6 * m_scale) / (32 * m_scale));
+			ty = checked_range_cast<long>((ty - 5 * m_scale) / (32 * m_scale));
 
 			if((tx >= 0) && ((size_t)tx < INVENTORY_X) && (ty >= 0) && ((size_t)ty < INVENTORY_Y)) {
 				Entity *result = inventory[g_currentInventoryBag][tx][ty].io;
@@ -436,8 +436,8 @@ Entity * PlayerInventoryHud::getObj(const Vec2s & pos) {
 			long tx = pos.x - iPos.x;
 			long ty = pos.y - iPos.y - iY;
 
-			tx = checked_range_cast<long>(tx / (32 * m_scale));
-			ty = checked_range_cast<long>(ty / (32 * m_scale));
+			tx = checked_range_cast<long>((tx - 6 * m_scale) / (32 * m_scale));
+			ty = checked_range_cast<long>((ty - 5 * m_scale) / (32 * m_scale));
 
 			if(tx >= 0 && (size_t)tx < INVENTORY_X && ty >= 0 && (size_t)ty < INVENTORY_Y) {
 				Entity *result = inventory[bag][tx][ty].io;
