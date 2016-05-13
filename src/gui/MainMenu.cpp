@@ -926,7 +926,7 @@ public:
 			cb->valueChanged = boost::bind(&InterfaceOptionsMenuPage::onChangedCinematicMode, this, _1, _2);
 			szMenuText = getLocalised("system_menus_options_interface_letterbox", "Letterbox");
 			cb->AddText(new TextWidget(BUTTON_INVALID, hFontMenu, szMenuText));
-			szMenuText = getLocalised("system_menus_options_interface_widescreen", "Widescreen");
+			szMenuText = getLocalised("system_menus_options_interface_hard_edges", "Hard Edges");
 			cb->AddText(new TextWidget(BUTTON_INVALID, hFontMenu, szMenuText));
 			szMenuText = getLocalised("system_menus_options_interface_fade_edges", "Fade Edges");
 			cb->AddText(new TextWidget(BUTTON_INVALID, hFontMenu, szMenuText));
