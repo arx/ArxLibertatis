@@ -657,6 +657,20 @@ void MenuPage::AlignElementCenter(Widget * widget) {
 	widget->Move(Vec2f(std::max(dx, 0.f), 0.f));
 }
 
+void MenuPage::updateTextRect(TextWidget * widget) {
+	float iDx = widget->m_rect.right - widget->m_rect.left;
+	
+	if(widget->ePlace) {
+		widget->m_rect.left = m_pos.x + ((m_rect.width() - iDx) / 2.f);
+		
+		if(widget->m_rect.left < 0) {
+			widget->m_rect.left = 0;
+		}
+	}
+	
+	widget->m_rect.right = widget->m_rect.left+iDx;
+}
+
 void MenuPage::UpdateText() {
 	
 	TextWidget *pZoneText = (TextWidget*)m_selected;
@@ -676,17 +690,7 @@ void MenuPage::UpdateText() {
 				
 				pZoneText->SetText(szMenuText);
 				
-				float iDx = m_selected->m_rect.right - m_selected->m_rect.left;
-				
-				if(m_selected->ePlace) {
-					m_selected->m_rect.left = m_pos.x + ((m_rect.width() - iDx) / 2.f);
-					
-					if(m_selected->m_rect.left < 0) {
-						m_selected->m_rect.left = 0;
-					}
-				}
-				
-				m_selected->m_rect.right = m_selected->m_rect.left+iDx;
+				updateTextRect(pZoneText);
 			}
 			
 			m_selected = NULL;
@@ -733,17 +737,7 @@ void MenuPage::UpdateText() {
 				}
 			}
 			
-			float iDx = m_selected->m_rect.right - m_selected->m_rect.left;
-			
-			if(m_selected->ePlace) {
-				m_selected->m_rect.left = m_pos.x + ((m_rect.width() - iDx) / 2.f);
-				
-				if(m_selected->m_rect.left < 0) {
-					m_selected->m_rect.left = 0;
-				}
-			}
-			
-			m_selected->m_rect.right = m_selected->m_rect.left+iDx;
+			updateTextRect(pZoneText);
 		}
 	}
 	

@@ -87,6 +87,7 @@ protected:
 	Vec2f m_size;
 	
 private:
+	void updateTextRect(TextWidget * widget);
 	void UpdateText();
 	
 	Widget		*	m_selected;
