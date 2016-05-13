@@ -89,8 +89,6 @@ protected:
 private:
 	void UpdateText();
 	
-	bool					bFrameOdd;
-	
 	Widget		*	m_selected;
 	bool					bEdit;
 	
@@ -98,6 +96,7 @@ private:
 	
 	static const int m_blinkDuration = 300;
 	float m_blinkTime;
+	bool m_blink;
 };
 
 class CWindowMenu {

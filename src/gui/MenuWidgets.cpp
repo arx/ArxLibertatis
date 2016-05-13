@@ -580,6 +580,7 @@ MenuPage::MenuPage(const Vec2f & pos, const Vec2f & size, MENUSTATE _eMenuState)
 	, bEdit(false)
 	, bMouseAttack(false)
 	, m_blinkTime(0.f)
+	, m_blink(true)
 {
 	m_size = size;
 	
@@ -587,8 +588,6 @@ MenuPage::MenuPage(const Vec2f & pos, const Vec2f & size, MENUSTATE _eMenuState)
 	m_rect = Rectf(RATIO_2(pos), scaledSize.x, scaledSize.y);
 	
 	eMenuState=_eMenuState;
-
-	bFrameOdd=false;
 }
 
 void MenuPage::add(Widget * widget) {
@@ -753,13 +752,7 @@ void MenuPage::UpdateText() {
 		m_selected->m_rect.bottom += textSize.y;
 	}
 	
-	m_blinkTime += ARXDiffTimeMenu;
-	if(m_blinkTime > m_blinkDuration * 2)
-		m_blinkTime = 0;
-	
-	bool showTextCursor = m_blinkTime > m_blinkDuration;
-	
-	if(showTextCursor) {
+	if(m_blink) {
 	//DRAW CURSOR
 	TexturedVertex v[4];
 	GRenderer->ResetTexture(0);
@@ -860,8 +853,6 @@ Widget * MenuPage::GetTouch(bool keyTouched, int keyId, InputKeyId* pInputKeyId,
 
 MENUSTATE MenuPage::Update(Vec2f pos) {
 
-	bFrameOdd=!bFrameOdd;
-	
 	m_children.Move(m_pos - m_oldPos);
 	
 	m_oldPos.x=m_pos.x;
@@ -1131,13 +1122,21 @@ void MenuPage::Render() {
 		bool bReInit=false;
 
 		m_selected->RenderMouseOver();
-
+		
+		{
+			m_blinkTime += ARXDiffTimeMenu;
+			if(m_blinkTime > m_blinkDuration * 2)
+				m_blinkTime = 0;
+			
+			m_blink = m_blinkTime > m_blinkDuration;
+		}
+		
 		switch(m_selected->eState) {
 			case EDIT_TIME:
 				UpdateText();
 				break;
 			case GETTOUCH_TIME: {
-				if(bFrameOdd)
+				if(m_blink)
 					((TextWidget*)m_selected)->lColorHighlight = Color(255, 0, 0);
 				else
 					((TextWidget*)m_selected)->lColorHighlight = Color(50, 0, 0);
