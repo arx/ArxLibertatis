@@ -1783,13 +1783,21 @@ void ArxGame::manageKeyMouse() {
 				mouseInBorder = false;
 			} else {
 				
-				static const int borderSize = 10;
-				static const unsigned long borderDelay = 100;
+				int borderSize = 10;
+				unsigned long borderDelay = 100;
 				
 				int distLeft = DANAEMouse.x - g_size.left;
 				int distRight = g_size.right - DANAEMouse.x;
 				int distTop = DANAEMouse.y - g_size.top;
 				int distBottom = g_size.bottom - DANAEMouse.y;
+				
+				if(g_secondaryInventoryHud.containsPos(DANAEMouse)
+				   || g_playerInventoryHud.containsPos(DANAEMouse)
+				   || (distBottom < g_size.height() / 4 && distRight <= borderSize)
+				   || (distTop <= 4 * borderSize && distRight <= 4 * borderSize)) {
+					borderSize = 2;
+					borderDelay = 600;
+				}
 				
 				mouseDiff = Vec2f_ZERO;
 				
