@@ -1772,11 +1772,19 @@ void ArxGame::manageKeyMouse() {
 			} else {
 				mouseDiff.y = 0.f;
 			}
-		} else {
+		} else if(config.input.borderTurning) {
+			
 			// Turn the player if the curser is close to the edges
-			if(config.input.borderTurning && bRenderInCursorMode && GInput->isMouseInWindow()) {
+			
+			static bool mouseInBorder = false;
+			static unsigned long mouseInBorderTime = 0;
+			
+			if(!bRenderInCursorMode || !GInput->isMouseInWindow()) {
+				mouseInBorder = false;
+			} else {
 				
 				static const int borderSize = 10;
+				static const unsigned long borderDelay = 100;
 				
 				int distLeft = DANAEMouse.x - g_size.left;
 				int distRight = g_size.right - DANAEMouse.x;
@@ -1788,26 +1796,37 @@ void ArxGame::manageKeyMouse() {
 				if(distLeft < borderSize) {
 					float speed = 1.f - float(distLeft) / float(borderSize);
 					mouseDiff.x -= speed * g_framedelay;
-					bKeySpecialMove = true;
 				}
 				
 				if(distRight < borderSize) {
 					float speed = 1.f - float(distRight) / float(borderSize);
 					mouseDiff.x += speed * g_framedelay;
-					bKeySpecialMove = true;
 				}
 				
 				if(distTop < borderSize) {
 					float speed = 1.f - float(distTop) / float(borderSize);
 					mouseDiff.y -= speed * g_framedelay;
-					bKeySpecialMove = true;
 				}
 				
 				if(distBottom < borderSize) {
 					float speed = 1.f - float(distBottom) / float(borderSize);
 					mouseDiff.y += speed * g_framedelay;
+				}
+				
+				if(distLeft >= 3 * borderSize && distRight >= 3 * borderSize
+				   && distTop >= 3 * borderSize && distBottom >= 3 * borderSize) {
+					mouseInBorder = false;
+				} else if(!mouseInBorder) {
+					mouseInBorderTime = arxtime.now_ul();
+					mouseInBorder = true;
+				}
+				
+				if(borderDelay > 0 && arxtime.now_ul() - mouseInBorderTime < borderDelay) {
+					mouseDiff = Vec2f_ZERO;
+				} else {
 					bKeySpecialMove = true;
 				}
+				
 			}
 		}
 
