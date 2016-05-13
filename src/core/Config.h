@@ -77,7 +77,7 @@ enum ControlAction {
 
 enum CinematicWidescreenMode {
 	CinematicLetterbox = 0,
-	CinematicWidescreen = 1,
+	CinematicHardEdges = 1,
 	CinematicFadeEdges = 2
 };
 
