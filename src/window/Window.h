@@ -75,6 +75,25 @@ public:
 	virtual void tick() = 0;
 	
 	virtual void hide() = 0;
+	
+	/*!
+	 * Minimize the fullscreen windows if they lose focus.
+	 * This setting may be overrriden by the environment,
+	 * see \ref willMinimizeOnFocusLost().
+	 */
+	virtual void setMinimizeOnFocusLost(bool enabled) = 0;
+	
+	enum MinimizeSetting {
+		Disabled,
+		Enabled,
+		AlwaysDisabled,
+		AlwaysEnabled
+	};
+	
+	/*!
+	 * Return if fullscreen windows if they lose focus.
+	 */
+	virtual MinimizeSetting willMinimizeOnFocusLost() = 0;
 
 	class Listener {
 		

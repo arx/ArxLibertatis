@@ -80,6 +80,7 @@ SDL2Window::SDL2Window()
 	: m_window(NULL)
 	, m_glcontext(NULL)
 	, m_input(NULL)
+	, m_minimizeOnFocusLost(AlwaysEnabled)
 	{
 	m_renderer = new OpenGLRenderer;
 }
@@ -114,6 +115,17 @@ bool SDL2Window::initializeFramework() {
 	// SDL 2.0.4+
 	SDL_SetHint(SDL_HINT_NO_SIGNAL_HANDLERS, "1");
 	#endif
+	
+	const char * minimize = SDL_GetHint(SDL_HINT_VIDEO_MINIMIZE_ON_FOCUS_LOSS);
+	if(minimize) {
+		if(*minimize == '0') {
+			m_minimizeOnFocusLost = AlwaysDisabled;
+		} else {
+			m_minimizeOnFocusLost = AlwaysEnabled;
+		}
+	} else {
+		m_minimizeOnFocusLost = Enabled;
+	}
 	
 	arx_assert(s_mainWindow == NULL, "SDL only supports one window"); // TODO it supports multiple windows now!
 	arx_assert(m_displayModes.empty());
@@ -568,6 +580,17 @@ void SDL2Window::showFrame() {
 void SDL2Window::hide() {
 	SDL_HideWindow(m_window);
 	onShow(false);
+}
+
+void SDL2Window::setMinimizeOnFocusLost(bool enabled) {
+	if(m_minimizeOnFocusLost != AlwaysDisabled && m_minimizeOnFocusLost != AlwaysEnabled) {
+		SDL_SetHint(SDL_HINT_VIDEO_MINIMIZE_ON_FOCUS_LOSS, enabled ? "1" : "0");
+		m_minimizeOnFocusLost = enabled ? Enabled : Disabled;
+	}
+}
+
+Window::MinimizeSetting SDL2Window::willMinimizeOnFocusLost() {
+	return m_minimizeOnFocusLost;
 }
 
 InputBackend * SDL2Window::getInputBackend() {

@@ -45,6 +45,9 @@ public:
 	
 	void hide();
 	
+	void setMinimizeOnFocusLost(bool enabled);
+	MinimizeSetting willMinimizeOnFocusLost();
+	
 	InputBackend * getInputBackend();
 	
 private:

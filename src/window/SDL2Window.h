@@ -45,6 +45,9 @@ public:
 	
 	void hide();
 	
+	void setMinimizeOnFocusLost(bool enabled);
+	MinimizeSetting willMinimizeOnFocusLost();
+	
 	InputBackend * getInputBackend();
 	
 private:
@@ -58,6 +61,8 @@ private:
 	SDL_GLContext m_glcontext;
 	
 	SDL2InputBackend * m_input;
+	
+	MinimizeSetting m_minimizeOnFocusLost;
 	
 	static SDL2Window * s_mainWindow;
 	

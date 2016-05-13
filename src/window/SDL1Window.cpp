@@ -442,6 +442,15 @@ void SDL1Window::hide() {
 	onShow(false);
 }
 
+void SDL1Window::setMinimizeOnFocusLost(bool enabled) {
+	ARX_UNUSED(enabled);
+	// Not supported
+}
+
+Window::MinimizeSetting SDL1Window::willMinimizeOnFocusLost() {
+	return AlwaysEnabled;
+}
+
 InputBackend * SDL1Window::getInputBackend() {
 	if(!m_input) {
 		m_input = new SDL1InputBackend();
