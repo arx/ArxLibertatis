@@ -1776,10 +1776,12 @@ void ArxGame::manageKeyMouse() {
 			
 			// Turn the player if the curser is close to the edges
 			
+			bool dragging = GInput->getMouseButtonRepeat(Mouse::Button_0);
+			
 			static bool mouseInBorder = false;
 			static unsigned long mouseInBorderTime = 0;
 			
-			if(!bRenderInCursorMode || !GInput->isMouseInWindow()) {
+			if(!bRenderInCursorMode || (!dragging && !GInput->isMouseInWindow())) {
 				mouseInBorder = false;
 			} else {
 				
@@ -1797,8 +1799,8 @@ void ArxGame::manageKeyMouse() {
 				
 				if(g_secondaryInventoryHud.containsPos(DANAEMouse)
 				   || g_playerInventoryHud.containsPos(DANAEMouse)
-				   || (distBottom < g_size.height() / 4 && distRight <= borderSize)
-				   || (distTop <= 4 * borderSize && distRight <= 4 * borderSize)) {
+				   || (!dragging && distBottom < g_size.height() / 4 && distRight <= borderSize)
+				   || (!dragging && distTop <= 4 * borderSize && distRight <= 4 * borderSize)) {
 					borderSize = 2;
 					borderDelay = 600;
 				}
