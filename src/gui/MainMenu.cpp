@@ -484,6 +484,7 @@ public:
 	
 	VideoOptionsMenuPage(const Vec2f & pos, const Vec2f & size)
 		: MenuPage(pos, size, OPTIONS_VIDEO)
+		, m_minimizeOnFocusLostCheckbox(NULL)
 	{
 		fullscreenCheckbox = NULL;
 		pMenuSliderResol = NULL;
@@ -491,6 +492,7 @@ public:
 	
 	CheckboxWidget * fullscreenCheckbox;
 	CycleTextWidget * pMenuSliderResol;
+	CheckboxWidget * m_minimizeOnFocusLostCheckbox;
 	
 	void init() {
 		
@@ -599,6 +601,18 @@ public:
 			
 			panel->AddElement(pMenuSliderResol);
 			addCenter(panel);
+		}
+		
+		{
+			std::string szMenuText = getLocalised("system_menus_options_videos_minimize_on_focus_lost",
+			                                      "Minimize on focus loss");
+			TextWidget * txt = new TextWidget(BUTTON_INVALID, hFontMenu, szMenuText, Vec2f(20, 0));
+			txt->SetCheckOff();
+			CheckboxWidget * cb = new CheckboxWidget(txt);
+			cb->stateChanged = boost::bind(&VideoOptionsMenuPage::onChangedMinimizeOnFocusLost, this, _1);
+			setMinimizeOnFocusLostState(cb, config.video.fullscreen);
+			addCenter(cb);
+			m_minimizeOnFocusLostCheckbox = cb;
 		}
 		
 		{
@@ -739,6 +753,24 @@ public:
 	
 private:
 	
+	void setMinimizeOnFocusLostState(CheckboxWidget * cb, bool fullscreen) {
+		
+		if(!fullscreen) {
+			cb->iState = 0;
+			cb->SetCheckOff();
+			return;
+		}
+		
+		Window::MinimizeSetting minimize = mainApp->getWindow()->willMinimizeOnFocusLost();
+		cb->iState = (minimize == Window::Enabled || minimize == Window::AlwaysEnabled) ? 1 : 0;
+		if(minimize != Window::AlwaysDisabled && minimize != Window::AlwaysEnabled) {
+			cb->SetCheckOn();
+		} else {
+			cb->SetCheckOff();
+		}
+		
+	}
+	
 	void onChangedRenderer(int pos, const std::string & str) {
 		ARX_UNUSED(str);
 		
@@ -754,6 +786,7 @@ private:
 		
 		if(pMenuSliderResol) {
 			pMenuSliderResol->setEnabled(newFullscreen);
+			setMinimizeOnFocusLostState(m_minimizeOnFocusLostCheckbox, newFullscreen);
 		}
 	}
 	
@@ -771,6 +804,11 @@ private:
 			newWidth = iX;
 			newHeight = iY;
 		}
+	}
+	
+	void onChangedMinimizeOnFocusLost(int state) {
+		config.window.minimizeOnFocusLost = state ? true : false;
+		mainApp->getWindow()->setMinimizeOnFocusLost(config.window.minimizeOnFocusLost);
 	}
 	
 	void onChangedQuality(int pos, const std::string & str) {
