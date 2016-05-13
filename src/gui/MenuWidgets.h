@@ -96,8 +96,8 @@ private:
 	
 	bool				bMouseAttack;
 	
-	static const int m_textCursorFlashDuration = 300;
-	float m_textCursorCurrentTime;
+	static const int m_blinkDuration = 300;
+	float m_blinkTime;
 };
 
 class CWindowMenu {

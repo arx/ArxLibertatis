@@ -579,7 +579,7 @@ MenuPage::MenuPage(const Vec2f & pos, const Vec2f & size, MENUSTATE _eMenuState)
 	, m_selected(NULL)
 	, bEdit(false)
 	, bMouseAttack(false)
-	, m_textCursorCurrentTime(0.f)
+	, m_blinkTime(0.f)
 {
 	m_size = size;
 	
@@ -753,11 +753,11 @@ void MenuPage::UpdateText() {
 		m_selected->m_rect.bottom += textSize.y;
 	}
 	
-	m_textCursorCurrentTime += ARXDiffTimeMenu;
-	if(m_textCursorCurrentTime > m_textCursorFlashDuration * 2)
-		m_textCursorCurrentTime = 0;
+	m_blinkTime += ARXDiffTimeMenu;
+	if(m_blinkTime > m_blinkDuration * 2)
+		m_blinkTime = 0;
 	
-	bool showTextCursor = m_textCursorCurrentTime > m_textCursorFlashDuration;
+	bool showTextCursor = m_blinkTime > m_blinkDuration;
 	
 	if(showTextCursor) {
 	//DRAW CURSOR
