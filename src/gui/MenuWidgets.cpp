@@ -658,48 +658,48 @@ void MenuPage::AlignElementCenter(Widget * widget) {
 }
 
 void MenuPage::UpdateText() {
-
+	
 	if(GInput->isAnyKeyPressed()) {
-
+		
 		if(GInput->isKeyPressed(Keyboard::Key_Enter)
 		   || GInput->isKeyPressed(Keyboard::Key_NumPadEnter)
 		   || GInput->isKeyPressed(Keyboard::Key_Escape)
 		) {
 			ARX_SOUND_PlayMenu(SND_MENU_CLICK);
 			((TextWidget*)m_selected)->eState = EDIT;
-
+			
 			if(((TextWidget*)m_selected)->m_text.empty()) {
 				std::string szMenuText;
 				szMenuText = getLocalised("system_menu_editquest_newsavegame");
-
+				
 				((TextWidget*)m_selected)->SetText(szMenuText);
-
+				
 				float iDx = m_selected->m_rect.right - m_selected->m_rect.left;
-
+				
 				if(m_selected->ePlace) {
 					m_selected->m_rect.left = m_pos.x + ((m_rect.width() - iDx) / 2.f);
-
+					
 					if(m_selected->m_rect.left < 0) {
 						m_selected->m_rect.left = 0;
 					}
 				}
-
+				
 				m_selected->m_rect.right = m_selected->m_rect.left+iDx;
 			}
-
+			
 			m_selected = NULL;
 			bEdit = false;
 			return;
 		}
-
+		
 		bool bKey = false;
 		std::string tText;
 		
 		TextWidget *pZoneText = (TextWidget*)m_selected;
-
+		
 		if(GInput->isKeyPressedNowPressed(Keyboard::Key_Backspace)) {
 			tText = pZoneText->m_text;
-
+			
 			if(!tText.empty()) {
 				tText.resize(tText.size() - 1);
 				bKey = true;
@@ -707,14 +707,14 @@ void MenuPage::UpdateText() {
 		} else {
 			int iKey = GInput->getKeyPressed();
 			iKey &= 0xFFFF;
-
+			
 			if(GInput->isKeyPressedNowPressed(iKey)) {
 				tText = pZoneText->m_text;
-
+				
 				char tCat;
 				
 				bKey = GInput->getKeyAsText(iKey, tCat);
-
+				
 				if(bKey) {
 					int iChar = tCat & 0x000000FF; // To prevent ascii chars between [128, 255] from causing an assertion in the functions below...
 					if((isalnum(iChar) || isspace(iChar) || ispunct(iChar)) && (tCat != '\t') && (tCat != '*'))
@@ -722,54 +722,54 @@ void MenuPage::UpdateText() {
 				}
 			}
 		}
-
+		
 		if(bKey) {
 			pZoneText->SetText(tText);
-
+			
 			if(pZoneText->m_rect.right - pZoneText->m_rect.left > m_rect.width() - RATIO_X(64)) {
 				if(!tText.empty()) {
 					tText.resize(tText.size() - 1);
 					pZoneText->SetText(tText);
 				}
 			}
-
+			
 			float iDx = m_selected->m_rect.right - m_selected->m_rect.left;
-
+			
 			if(m_selected->ePlace) {
 				m_selected->m_rect.left = m_pos.x + ((m_rect.width() - iDx) / 2.f);
-
+				
 				if(m_selected->m_rect.left < 0) {
 					m_selected->m_rect.left = 0;
 				}
 			}
-
+			
 			m_selected->m_rect.right = m_selected->m_rect.left+iDx;
 		}
 	}
-
+	
 	if(m_selected->m_rect.top == m_selected->m_rect.bottom) {
 		Vec2i textSize = ((TextWidget*)m_selected)->m_font->getTextSize("|");
 		m_selected->m_rect.bottom += textSize.y;
 	}
 	
 	if(m_blink) {
-	//DRAW CURSOR
-	TexturedVertex v[4];
-	GRenderer->ResetTexture(0);
-	v[0].color = v[1].color = v[2].color = v[3].color = Color::white.toRGB();
-	v[0].p.z=v[1].p.z=v[2].p.z=v[3].p.z=0.f;    
-	v[0].rhw=v[1].rhw=v[2].rhw=v[3].rhw=1.f;
-
-	v[0].p.x = m_selected->m_rect.right;
-	v[0].p.y = m_selected->m_rect.top;
-	v[1].p.x = v[0].p.x+2.f;
-	v[1].p.y = v[0].p.y;
-	v[2].p.x = v[0].p.x;
-	v[2].p.y = m_selected->m_rect.bottom;
-	v[3].p.x = v[1].p.x;
-	v[3].p.y = v[2].p.y;
-
-	EERIEDRAWPRIM(Renderer::TriangleStrip, v, 4);
+		//DRAW CURSOR
+		TexturedVertex v[4];
+		GRenderer->ResetTexture(0);
+		v[0].color = v[1].color = v[2].color = v[3].color = Color::white.toRGB();
+		v[0].p.z=v[1].p.z=v[2].p.z=v[3].p.z=0.f;
+		v[0].rhw=v[1].rhw=v[2].rhw=v[3].rhw=1.f;
+		
+		v[0].p.x = m_selected->m_rect.right;
+		v[0].p.y = m_selected->m_rect.top;
+		v[1].p.x = v[0].p.x+2.f;
+		v[1].p.y = v[0].p.y;
+		v[2].p.x = v[0].p.x;
+		v[2].p.y = m_selected->m_rect.bottom;
+		v[3].p.x = v[1].p.x;
+		v[3].p.y = v[2].p.y;
+		
+		EERIEDRAWPRIM(Renderer::TriangleStrip, v, 4);
 	}
 }
 
