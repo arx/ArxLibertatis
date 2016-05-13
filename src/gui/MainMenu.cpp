@@ -58,11 +58,13 @@ TextWidget * pMenuElementApply = NULL;
 extern MainMenu *mainMenu;
 
 class NewQuestMenuPage : public MenuPage {
+	
 public:
+	
 	NewQuestMenuPage(const Vec2f & pos, const Vec2f & size)
 		: MenuPage(pos, size, NEW_QUEST)
 	{}
-
+	
 	void init() {
 		
 		{
@@ -94,10 +96,13 @@ public:
 			add(txt);
 		}
 	}
+	
 };
 
 class ChooseLoadOrSaveMenuPage : public MenuPage {
+	
 public:
+	
 	ChooseLoadOrSaveMenuPage(const Vec2f & pos, const Vec2f & size)
 		: MenuPage(pos, size, EDIT_QUEST)
 	{}
@@ -133,6 +138,8 @@ public:
 		}
 	}
 	
+private:
+	
 	void onClickLoad() {
 		if(pWindowMenu)
 		for(size_t i = 0; i < pWindowMenu->m_pages.size(); i++) {
@@ -151,14 +158,17 @@ public:
 			}
 		}
 	}
+	
 };
 
 class LoadMenuPage : public MenuPage {
+	
 public:
+	
 	LoadMenuPage(const Vec2f & pos, const Vec2f & size)
 		: MenuPage(pos, size, EDIT_QUEST_LOAD)
 	{}
-
+	
 	void init() {
 		
 		{
@@ -253,16 +263,21 @@ public:
 		}
 	}
 	
+private:
+	
 	void onClickBack() {
 		pLoadConfirm->SetCheckOff();
 		pLoadConfirm->lColor = Color::grayb(127);
 		pDeleteConfirm->SetCheckOff();
 		pDeleteConfirm->lColor = Color::grayb(127);
 	}
+	
 };
 
 class SaveMenuPage : public MenuPage {
+	
 public:
+	
 	SaveMenuPage(const Vec2f & pos, const Vec2f & size)
 		: MenuPage(pos, size, EDIT_QUEST_SAVE)
 	{}
@@ -339,10 +354,13 @@ public:
 			add(cb);
 		}
 	}
+	
 };
 
 class SaveConfirmMenuPage : public MenuPage {
+	
 public:
+	
 	SaveConfirmMenuPage(const Vec2f & pos, const Vec2f & size)
 		: MenuPage(pos, size, EDIT_QUEST_SAVE_CONFIRM)
 	{}
@@ -392,6 +410,7 @@ public:
 			add(cb);
 		}
 	}
+	
 };
 
 int newWidth;
@@ -399,7 +418,9 @@ int newHeight;
 bool newFullscreen;
 
 class OptionsMenuPage : public MenuPage {
+	
 public:
+	
 	OptionsMenuPage(const Vec2f & pos, const Vec2f & size)
 		: MenuPage(pos, size, OPTIONS)
 	{}
@@ -444,18 +465,23 @@ public:
 		}
 	}
 	
+private:
+	
 	void onClickedVideo() {
 		newWidth = config.video.resolution.x;
 		newHeight = config.video.resolution.y;
 		newFullscreen = config.video.fullscreen;
 	}
+	
 };
 
 // TODO remove this
 const std::string AUTO_RESOLUTION_STRING = "Desktop";
 
 class VideoOptionsMenuPage : public MenuPage {
+	
 public:
+	
 	VideoOptionsMenuPage(const Vec2f & pos, const Vec2f & size)
 		: MenuPage(pos, size, OPTIONS_VIDEO)
 	{
@@ -711,6 +737,7 @@ public:
 		}
 	}
 	
+private:
 	
 	void onChangedRenderer(int pos, const std::string & str) {
 		ARX_UNUSED(str);
@@ -811,7 +838,9 @@ public:
 };
 
 class InterfaceOptionsMenuPage : public MenuPage {
+	
 public:
+	
 	InterfaceOptionsMenuPage(const Vec2f & pos, const Vec2f & size)
 		: MenuPage(pos, size, OPTIONS_INTERFACE)
 	{ }
@@ -922,6 +951,7 @@ public:
 		}
 	}
 	
+private:
 	
 	void onChangedCrosshair(int state) {
 		config.interface.showCrosshair = state ? true : false;
@@ -957,7 +987,9 @@ public:
 
 
 class AudioOptionsMenuPage : public MenuPage {
+	
 public:
+	
 	AudioOptionsMenuPage(const Vec2f & pos, const Vec2f & size)
 		: MenuPage(pos, size, OPTIONS_AUDIO)
 	{}
@@ -1081,6 +1113,7 @@ public:
 		}
 	}
 	
+private:
 	
 	void onChangedDevice(int pos, const std::string & str) {
 		if(pos == 0) {
@@ -1120,7 +1153,9 @@ public:
 };
 
 class InputOptionsMenuPage : public MenuPage {
+	
 public:
+	
 	InputOptionsMenuPage(const Vec2f & pos, const Vec2f & size)
 		: MenuPage(pos, size, OPTIONS_INPUT)
 	{}
@@ -1236,6 +1271,8 @@ public:
 		}
 	}
 	
+private:
+	
 	void onChangedInvertMouse(int state) {
 		ARXMenu_Options_Control_SetInvertMouse((state)?true:false);
 	}
@@ -1272,14 +1309,19 @@ public:
 	void onChangedBorderTurning(int value) {
 		config.input.borderTurning = (value) ? true : false;
 	}
+	
 };
 
 
 class ControlOptionsPage : public MenuPage {
+	
 public:
+	
 	ControlOptionsPage(const Vec2f & pos, const Vec2f & size, MENUSTATE state)
 		: MenuPage(pos, size, state)
 	{}
+	
+protected:
 	
 	void addControlRow(long & y,
 	                             const std::string & a, MenuButton c, MenuButton d,
@@ -1306,11 +1348,14 @@ public:
 		add(panel);
 		y += panel->m_rect.height() + RATIO_Y(3.f);
 	}
+	
 };
 
 
 class ControlOptionsMenuPage1 : public ControlOptionsPage {
+	
 public:
+	
 	ControlOptionsMenuPage1(const Vec2f & pos, const Vec2f & size)
 		: ControlOptionsPage(pos, size, OPTIONS_INPUT_CUSTOMIZE_KEYS_1)
 	{}
@@ -1368,13 +1413,18 @@ public:
 		ReInitActionKey();
 	}
 	
+private:
+	
 	void onClickedBack(){
 		config.save();
 	}
+	
 };
 
 class ControlOptionsMenuPage2 : public ControlOptionsPage {
+	
 public:
+	
 	ControlOptionsMenuPage2(const Vec2f & pos, const Vec2f & size)
 		: ControlOptionsPage(pos, size, OPTIONS_INPUT_CUSTOMIZE_KEYS_2)
 	{}
@@ -1427,10 +1477,13 @@ public:
 		
 		ReInitActionKey();
 	}
+	
 };
 
 class QuitConfirmMenuPage : public MenuPage {
+	
 public:
+	
 	QuitConfirmMenuPage(const Vec2f & pos, const Vec2f & size)
 		: MenuPage(pos, size, QUIT)
 	{}
@@ -1462,6 +1515,7 @@ public:
 			add(no);
 		}
 	}
+	
 };
 
 
