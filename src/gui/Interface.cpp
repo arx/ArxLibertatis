@@ -1676,7 +1676,7 @@ void ArxGame::manageKeyMouse() {
 	LAST_PLAYER_MOUSELOOK_ON = mouselook;
 	PLAYER_ROTATION=0;
 
-	Vec2s mouseDiff = GInput->getMousePosRel();
+	Vec2f mouseDiff = GInput->getMousePosRel();
 	
 	if(config.input.mouseAcceleration > 0) {
 		Vec2f speed = Vec2f(mouseDiff) / g_framedelay;
@@ -1684,7 +1684,7 @@ void ArxGame::manageKeyMouse() {
 		float exponent = 1.f + config.input.mouseAcceleration * 0.05f;
 		speed.x = (std::pow(speed.x * sign.x + 1.f, exponent) - 1.f) * sign.x;
 		speed.y = (std::pow(speed.y * sign.y + 1.f, exponent) - 1.f) * sign.y;
-		mouseDiff = Vec2s(speed * g_framedelay);
+		mouseDiff = speed * g_framedelay;
 	}
 	
 	ARX_Menu_Manage();
@@ -1757,20 +1757,20 @@ void ArxGame::manageKeyMouse() {
 		if(bKeySpecialMove) {
 			if(pushTime.turnLeft || pushTime.turnRight) {
 				if(pushTime.turnLeft < pushTime.turnRight)
-					mouseDiff.x = 10;
+					mouseDiff.x = 10.f;
 				else
-					mouseDiff.x = -10;
+					mouseDiff.x = -10.f;
 			} else {
-				mouseDiff.x = 0;
+				mouseDiff.x = 0.f;
 			}
 
 			if(pushTime.lookUp || pushTime.lookDown) {
 				if(pushTime.lookUp < pushTime.lookDown)
-					mouseDiff.y = 10;
+					mouseDiff.y = 10.f;
 				else
-					mouseDiff.y = -10;
+					mouseDiff.y = -10.f;
 			} else {
-				mouseDiff.y = 0;
+				mouseDiff.y = 0.f;
 			}
 		} else {
 			// Turn the player if the curser is close to the edges
@@ -1783,7 +1783,7 @@ void ArxGame::manageKeyMouse() {
 				int distTop = DANAEMouse.y - g_size.top;
 				int distBottom = g_size.bottom - DANAEMouse.y;
 				
-				mouseDiff = Vec2s_ZERO;
+				mouseDiff = Vec2f_ZERO;
 				
 				if(distLeft < borderSize) {
 					float speed = 1.f - float(distLeft) / float(borderSize);
@@ -1828,7 +1828,7 @@ void ArxGame::manageKeyMouse() {
 		mouseSensitivity *= (float)g_size.width() * ( 1.0f / 640 );
 		mouseSensitivity *= (1.0f / 5);
 		
-		Vec2f rotation = Vec2f(mouseDiff) * mouseSensitivity;
+		Vec2f rotation = mouseDiff * mouseSensitivity;
 		
 		if(config.input.invertMouse)
 			rotation.y *= -1.f;
