@@ -1,0 +1,35 @@
+<?xml version="1.0" encoding="UTF-8" standalone="no"?>
+<svg xmlns="http://www.w3.org/2000/svg" version="1.1" width="512" height="512" viewBox="0 0 512 512">
+	<defs>
+		<filter id="filter" style="color-interpolation-filters:sRGB;">
+			<!-- metal texture -->
+			<feTurbulence type="turbulence" baseFrequency="0.057" numOctaves="4" stdDeviation="5.5" seed="2" result="turbulence" />
+			<feGaussianBlur in="SourceGraphic" stdDeviation="2.1" />
+			<feComposite in2="turbulence" operator="out" />
+			<feComposite in="SourceAlpha" operator="arithmetic" k1="0.1" k3="1.3" k4="-0.05" />
+			<feBlend mode="multiply" result="texture" />
+			<!-- heightmap -->
+			<feGaussianBlur in="SourceGraphic" stdDeviation="16" result="bevel" />
+			<feGaussianBlur in="turbulence" stdDeviation="2.5" result="damage" />
+			<feTurbulence type="fractalNoise" baseFrequency="0.758" result="noise" />
+			<feComposite in="bevel" in2="damage" operator="arithmetic" k1="-0.27" k2="1.07" />
+			<feComposite in2="noise" operator="arithmetic" k1="0.04" k2="1" />
+			<!-- lighting -->
+			<feSpecularLighting lighting-color="rgb(250,221,140)" specularConstant="0.52" specularExponent="10.2" surfaceScale="4.46">
+				<fePointLight x="-5000" y="-10000" z="20000" />
+			</feSpecularLighting>
+			<feComposite in2="texture" operator="in" />
+			<feComposite in="texture" operator="arithmetic" k1="-1" k2="2.5" k3="3.5" />
+			<feBlend mode="multiply" result="render" />
+			<!-- drop shadow -->
+			<feFlood in="render" flood-color="rgb(0,0,0)" flood-opacity="0.65" />
+			<feComposite in2="render" operator="in" />
+			<feGaussianBlur stdDeviation="5" />
+			<feOffset dx="16" dy="16" />
+			<feComposite in="render" operator="over" />
+		</filter>
+	</defs>
+	<g transform="translate(0,-540.36229)">
+		<path d="M 116.0845,593.05098 C -32.603186,800.60381 83.614264,970.37244 163.49521,1034.3011 58.066644,880.30099 81.173804,670.41733 234.25414,597.97063 c 11.0416,-5.22554 22.76541,2.99318 22.76541,15.33343 l 0,90.96765 c 0,10.02929 -10.07302,14.06213 -17.65866,13.41719 l -75.95342,-4.4576 -17.57589,38.42734 c 12.23506,-4.35765 20.32132,-7.24866 36.24098,-7.24866 l 74.94699,0 0,189.89682 c 0,22.00113 -13.74675,42.34763 -32.27433,55.2634 l 182.21428,0 c 21.33681,0 24.9033,8.28274 35.17857,21.9877 22.91158,-43.85679 36.05361,-66.67202 49.64286,-110.11405 -39.39142,45.96777 -85.26658,67.80678 -111.67857,67.82142 -28.55062,0.0158 -58.05723,-9.51697 -58.05723,-44.91014 l 0,-296.34739 c 0,-22.20841 2.74871,-33.06708 28.71568,-60.59975 l -259.775446,0 c 18.809936,9.45023 30.903056,17.54131 25.099136,25.64299 z" style="fill:#6c5448;filter:url(#filter)" />
+	</g>
+</svg>
