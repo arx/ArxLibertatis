@@ -146,6 +146,8 @@ public:
 		
 		Vec2i size;
 		
+		bool minimizeOnFocusLost;
+		
 	} window;
 	
 	// section 'audio'

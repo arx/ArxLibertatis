@@ -86,6 +86,7 @@ const bool
 	colorkeyAntialiasing = true,
 	limitSpeechWidth = true,
 	hudScaleInteger = true,
+	minimizeOnFocusLost = true,
 	eax = true,
 	muteOnFocusLost = false,
 	invertMouse = false,
@@ -190,7 +191,8 @@ const std::string
 // Window options
 const std::string
 	windowFramework = "framework",
-	windowSize = "size";
+	windowSize = "size",
+	minimizeOnFocusLost = "minimize_on_focus_lost";
 
 // Audio options
 const std::string
@@ -432,6 +434,7 @@ bool Config::save() {
 	std::ostringstream oss;
 	oss << window.size.x << 'x' << window.size.y;
 	writer.writeKey(Key::windowSize, oss.str());
+	writer.writeKey(Key::minimizeOnFocusLost, window.minimizeOnFocusLost);
 	
 	// audio
 	writer.beginSection(Section::Audio);
@@ -558,6 +561,8 @@ bool Config::init(const fs::path & file) {
 	window.framework = reader.getKey(Section::Window, Key::windowFramework, Default::windowFramework);
 	std::string windowSize = reader.getKey(Section::Window, Key::windowSize, Default::windowSize);
 	window.size = parseResolution(windowSize);
+	window.minimizeOnFocusLost = reader.getKey(Section::Window, Key::minimizeOnFocusLost,
+	                                           Default::minimizeOnFocusLost);
 	
 	// Get audio settings
 	audio.backend = reader.getKey(Section::Audio, Key::audioBackend, Default::audioBackend);
