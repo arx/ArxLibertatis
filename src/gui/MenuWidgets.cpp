@@ -659,6 +659,8 @@ void MenuPage::AlignElementCenter(Widget * widget) {
 
 void MenuPage::UpdateText() {
 	
+	TextWidget *pZoneText = (TextWidget*)m_selected;
+	
 	if(GInput->isAnyKeyPressed()) {
 		
 		if(GInput->isKeyPressed(Keyboard::Key_Enter)
@@ -666,13 +668,13 @@ void MenuPage::UpdateText() {
 		   || GInput->isKeyPressed(Keyboard::Key_Escape)
 		) {
 			ARX_SOUND_PlayMenu(SND_MENU_CLICK);
-			((TextWidget*)m_selected)->eState = EDIT;
+			pZoneText->eState = EDIT;
 			
-			if(((TextWidget*)m_selected)->m_text.empty()) {
+			if(pZoneText->m_text.empty()) {
 				std::string szMenuText;
 				szMenuText = getLocalised("system_menu_editquest_newsavegame");
 				
-				((TextWidget*)m_selected)->SetText(szMenuText);
+				pZoneText->SetText(szMenuText);
 				
 				float iDx = m_selected->m_rect.right - m_selected->m_rect.left;
 				
@@ -694,8 +696,6 @@ void MenuPage::UpdateText() {
 		
 		bool bKey = false;
 		std::string tText;
-		
-		TextWidget *pZoneText = (TextWidget*)m_selected;
 		
 		if(GInput->isKeyPressedNowPressed(Keyboard::Key_Backspace)) {
 			tText = pZoneText->m_text;
