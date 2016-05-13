@@ -110,9 +110,9 @@ SDL2Window::~SDL2Window() {
 
 bool SDL2Window::initializeFramework() {
 	
-	#ifdef ARX_DEBUG
+	#if defined(ARX_DEBUG) && defined(SDL_HINT_NO_SIGNAL_HANDLERS)
 	// SDL 2.0.4+
-	SDL_SetHint("SDL_HINT_NO_SIGNAL_HANDLERS", "1");
+	SDL_SetHint(SDL_HINT_NO_SIGNAL_HANDLERS, "1");
 	#endif
 	
 	arx_assert(s_mainWindow == NULL, "SDL only supports one window"); // TODO it supports multiple windows now!
