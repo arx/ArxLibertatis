@@ -613,13 +613,13 @@ void MenuPage::addCenter(Widget * widget, bool centerX) {
 		dx = 0;
 	}
 	
-	int iDy = widget->m_rect.bottom - widget->m_rect.top;
+	int iDy = widget->m_rect.height();
 
 	for(size_t iJ = 0; iJ < m_children.GetNbZone(); iJ++) {
 		Widget * widget = m_children.GetZoneNum(iJ);
 
 		iDy += m_rowSpacing;
-		iDy += widget->m_rect.bottom - widget->m_rect.top;
+		iDy += widget->m_rect.height();
 	}
 
 	int iDepY = m_rect.left;
@@ -636,7 +636,7 @@ void MenuPage::addCenter(Widget * widget, bool centerX) {
 	
 	for(size_t iJ = 0; iJ < m_children.GetNbZone(); iJ++) {
 		Widget * widget = m_children.GetZoneNum(iJ);
-		iDepY += (widget->m_rect.bottom - widget->m_rect.top) + m_rowSpacing;
+		iDepY += (widget->m_rect.height()) + m_rowSpacing;
 		
 		widget->Move(Vec2f(0, dy));
 	}
