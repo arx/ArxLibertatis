@@ -780,7 +780,7 @@ Widget * MenuPage::GetTouch(bool keyTouched, int keyId, InputKeyId* pInputKeyId,
 			return NULL;
 		}
 
-		TextWidget * textWidget = (TextWidget*)m_selected;
+		TextWidget * textWidget = static_cast<TextWidget *>(m_selected);
 
 		if(_bValidateTest) {
 			if(m_selected->m_id == BUTTON_MENUOPTIONS_CONTROLS_CUST_ACTIONCOMBINE1 ||
