@@ -72,7 +72,7 @@ public:
 	void Render();
 	void drawDebug();
 	
-	Widget * GetTouch(bool keyTouched, int keyId, InputKeyId* pInputKeyId = NULL, bool _bValidateTest = false);
+	Widget * GetTouch(bool keyTouched, int keyId, InputKeyId* pInputKeyId, bool _bValidateTest);
 	void ReInitActionKey();
 	
 	Vec2f m_pos;

@@ -1229,14 +1229,14 @@ void MenuPage::ReInitActionKey()
 		if(widget) {
 			if(widget) {
 				m_selected = widget;
-				GetTouch(true, config.actions[iTab].key[0]);
+				GetTouch(true, config.actions[iTab].key[0], NULL, false);
 			}
 
 			widget = m_children.GetZoneWithID(MenuButton(iID + 1));
 
 			if(widget) {
 				m_selected = widget;
-				GetTouch(true, config.actions[iTab].key[1]);
+				GetTouch(true, config.actions[iTab].key[1], NULL, false);
 			}
 		}
 
