@@ -673,7 +673,7 @@ void MenuPage::updateTextRect(TextWidget * widget) {
 
 void MenuPage::UpdateText() {
 	
-	TextWidget *pZoneText = (TextWidget*)m_selected;
+	TextWidget * textWidget = (TextWidget*)m_selected;
 	
 	if(GInput->isAnyKeyPressed()) {
 		
@@ -682,15 +682,15 @@ void MenuPage::UpdateText() {
 		   || GInput->isKeyPressed(Keyboard::Key_Escape)
 		) {
 			ARX_SOUND_PlayMenu(SND_MENU_CLICK);
-			pZoneText->eState = EDIT;
+			textWidget->eState = EDIT;
 			
-			if(pZoneText->m_text.empty()) {
+			if(textWidget->m_text.empty()) {
 				std::string szMenuText;
 				szMenuText = getLocalised("system_menu_editquest_newsavegame");
 				
-				pZoneText->SetText(szMenuText);
+				textWidget->SetText(szMenuText);
 				
-				updateTextRect(pZoneText);
+				updateTextRect(textWidget);
 			}
 			
 			m_selected = NULL;
@@ -702,7 +702,7 @@ void MenuPage::UpdateText() {
 		std::string tText;
 		
 		if(GInput->isKeyPressedNowPressed(Keyboard::Key_Backspace)) {
-			tText = pZoneText->m_text;
+			tText = textWidget->m_text;
 			
 			if(!tText.empty()) {
 				tText.resize(tText.size() - 1);
@@ -713,7 +713,7 @@ void MenuPage::UpdateText() {
 			iKey &= 0xFFFF;
 			
 			if(GInput->isKeyPressedNowPressed(iKey)) {
-				tText = pZoneText->m_text;
+				tText = textWidget->m_text;
 				
 				char tCat;
 				
@@ -728,16 +728,16 @@ void MenuPage::UpdateText() {
 		}
 		
 		if(bKey) {
-			pZoneText->SetText(tText);
+			textWidget->SetText(tText);
 			
-			if(pZoneText->m_rect.right - pZoneText->m_rect.left > m_rect.width() - RATIO_X(64)) {
+			if(textWidget->m_rect.right - textWidget->m_rect.left > m_rect.width() - RATIO_X(64)) {
 				if(!tText.empty()) {
 					tText.resize(tText.size() - 1);
-					pZoneText->SetText(tText);
+					textWidget->SetText(tText);
 				}
 			}
 			
-			updateTextRect(pZoneText);
+			updateTextRect(textWidget);
 		}
 	}
 	
