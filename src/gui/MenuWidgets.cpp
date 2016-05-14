@@ -603,7 +603,7 @@ void MenuPage::addCenter(Widget * widget, bool centerX) {
 	if(centerX) {
 		widget->ePlace = CENTER;
 		
-		int iDx = widget->m_rect.right - widget->m_rect.left;
+		int iDx = widget->m_rect.width();
 		dx  = ((m_rect.width() - iDx) / 2) - widget->m_rect.left;
 	
 		if(dx < 0) {
@@ -651,14 +651,14 @@ void MenuPage::AlignElementCenter(Widget * widget) {
 	widget->Move(Vec2f(-widget->m_rect.left, 0));
 	widget->ePlace = CENTER;
 	
-	float iDx = widget->m_rect.right - widget->m_rect.left;
+	float iDx = widget->m_rect.width();
 	float dx = (m_rect.width() - iDx) / 2 - widget->m_rect.left;
 	
 	widget->Move(Vec2f(std::max(dx, 0.f), 0.f));
 }
 
 void MenuPage::updateTextRect(TextWidget * widget) {
-	float iDx = widget->m_rect.right - widget->m_rect.left;
+	float iDx = widget->m_rect.width();
 	
 	if(widget->ePlace) {
 		widget->m_rect.left = m_pos.x + ((m_rect.width() - iDx) / 2.f);
@@ -730,7 +730,7 @@ void MenuPage::UpdateText() {
 		if(bKey) {
 			textWidget->SetText(tText);
 			
-			if(textWidget->m_rect.right - textWidget->m_rect.left > m_rect.width() - RATIO_X(64)) {
+			if(textWidget->m_rect.width() > m_rect.width() - RATIO_X(64)) {
 				if(!tText.empty()) {
 					tText.resize(tText.size() - 1);
 					textWidget->SetText(tText);
@@ -816,7 +816,7 @@ Widget * MenuPage::GetTouch(bool keyTouched, int keyId, InputKeyId* pInputKeyId,
 			textWidget->eState = GETTOUCH;
 			textWidget->SetText(pText);
 			
-			float iDx = m_selected->m_rect.right - m_selected->m_rect.left;
+			float iDx = m_selected->m_rect.width();
 
 			if(m_selected->ePlace) {
 				m_selected->m_rect.left = (m_rect.width() - iDx) / 2.f;
