@@ -780,7 +780,7 @@ Widget * MenuPage::GetTouch(bool keyTouched, int keyId, InputKeyId* pInputKeyId,
 			return NULL;
 		}
 
-		TextWidget *pZoneText=(TextWidget*)m_selected;
+		TextWidget * textWidget = (TextWidget*)m_selected;
 
 		if(_bValidateTest) {
 			if(m_selected->m_id == BUTTON_MENUOPTIONS_CONTROLS_CUST_ACTIONCOMBINE1 ||
@@ -811,10 +811,10 @@ Widget * MenuPage::GetTouch(bool keyTouched, int keyId, InputKeyId* pInputKeyId,
 			pText = GInput->getKeyName(keyId, true);
 
 		if(!pText.empty()) {
-			pZoneText->lColorHighlight=pZoneText->lOldColor;
+			textWidget->lColorHighlight = textWidget->lOldColor;
 
-			pZoneText->eState=GETTOUCH;
-			pZoneText->SetText(pText);
+			textWidget->eState = GETTOUCH;
+			textWidget->SetText(pText);
 			
 			float iDx = m_selected->m_rect.right - m_selected->m_rect.left;
 
@@ -838,7 +838,7 @@ Widget * MenuPage::GetTouch(bool keyTouched, int keyId, InputKeyId* pInputKeyId,
 
 			bMouseAttack=false;
 
-			return pZoneText;
+			return textWidget;
 		}
 	}
 
