@@ -383,11 +383,7 @@ static bool ARX_EERIE_PHYSICS_BOX_Compute(PHYSICS_BOX_DATA * pbox, float framedi
 		if(!collisionPoly) {
 			for(long k = 0; k < pbox->nb_physvert; k++) {
 				pv = &pbox->vert[k];
-
-				pv->velocity.x *= -0.3f;
-				pv->velocity.z *= -0.3f;
-				pv->velocity.y *= -0.4f;
-
+				pv->velocity *= Vec3f(-0.3f, -0.4f, -0.3f);
 				pv->pos = oldpos[k];
 			}
 		} else {
@@ -397,10 +393,7 @@ static bool ARX_EERIE_PHYSICS_BOX_Compute(PHYSICS_BOX_DATA * pbox, float framedi
 				float t = glm::dot(collisionPoly->norm, pv->velocity);
 				pv->velocity -= collisionPoly->norm * (2.f * t);
 
-				pv->velocity.x *= 0.3f;
-				pv->velocity.z *= 0.3f;
-				pv->velocity.y *= 0.4f;
-
+				pv->velocity *= Vec3f(0.3f, 0.4f, 0.3f);
 				pv->pos = oldpos[k];
 			}
 		}
