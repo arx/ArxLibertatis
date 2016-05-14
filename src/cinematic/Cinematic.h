@@ -129,7 +129,7 @@ public:
 	CinematicFadeOut fadeprev;
 	CinematicFadeOut fadenext;
 	
-	Cinematic(int, int);
+	Cinematic(Vec2i size);
 	~Cinematic();
 
 	void InitDeviceObjects();

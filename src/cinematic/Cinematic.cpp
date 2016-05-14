@@ -81,7 +81,7 @@ static Color OldColorFlashBlanc;
 
 extern float	FlashAlpha;
 
-Cinematic::Cinematic(int _w, int _h)
+Cinematic::Cinematic(Vec2i size)
 	: pos()
 	, angz()
 	, possuiv()
@@ -110,8 +110,7 @@ Cinematic::Cinematic(int _w, int _h)
 	, speedtrack()
 	, flTime()
 {
-	cinRenderSize.x = _w;
-	cinRenderSize.y = _h;
+	cinRenderSize = size;
 }
 
 Cinematic::~Cinematic() {
