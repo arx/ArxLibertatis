@@ -353,15 +353,12 @@ static bool ARX_EERIE_PHYSICS_BOX_Compute(PHYSICS_BOX_DATA * pbox, float framedi
 
 	RK4Integrate(pbox, framediff);
 
-	long colidd = 0;
 	EERIEPOLY * collisionPoly = NULL;
 	
 	if(   !IsFULLObjectVertexInValidPosition(pbox, collisionPoly)
 	   || ARX_INTERACTIVE_CheckFULLCollision(pbox, source)
-	   || colidd
 	   || IsObjectInField(pbox)
 	) {
-		colidd = 1;
 		
 		if(!(source->ioflags & IO_BODY_CHUNK)) {
 			Material collisionMat = MATERIAL_STONE;
@@ -393,9 +390,7 @@ static bool ARX_EERIE_PHYSICS_BOX_Compute(PHYSICS_BOX_DATA * pbox, float framedi
 				pv->pos = oldpos[k];
 			}
 		}
-	}
-
-	if(colidd) {
+		
 		pbox->stopcount += 1;
 	} else {
 		pbox->stopcount -= 2;
