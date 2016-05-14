@@ -353,10 +353,6 @@ static bool ARX_EERIE_PHYSICS_BOX_Compute(PHYSICS_BOX_DATA * pbox, float framedi
 
 	RK4Integrate(pbox, framediff);
 
-	Sphere sphere;
-	PHYSVERT *pv = &pbox->vert[0];
-	sphere.origin = pv->pos;
-	sphere.radius = pbox->radius;
 	long colidd = 0;
 	EERIEPOLY * collisionPoly = NULL;
 	
@@ -382,13 +378,13 @@ static bool ARX_EERIE_PHYSICS_BOX_Compute(PHYSICS_BOX_DATA * pbox, float framedi
 
 		if(!collisionPoly) {
 			for(long k = 0; k < pbox->nb_physvert; k++) {
-				pv = &pbox->vert[k];
+				PHYSVERT * pv = &pbox->vert[k];
 				pv->velocity *= Vec3f(-0.3f, -0.4f, -0.3f);
 				pv->pos = oldpos[k];
 			}
 		} else {
 			for(long k = 0; k < pbox->nb_physvert; k++) {
-				pv = &pbox->vert[k];
+				PHYSVERT * pv = &pbox->vert[k];
 
 				float t = glm::dot(collisionPoly->norm, pv->velocity);
 				pv->velocity -= collisionPoly->norm * (2.f * t);
