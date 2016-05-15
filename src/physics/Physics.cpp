@@ -402,9 +402,6 @@ static void ARX_EERIE_PHYSICS_BOX_Compute(PHYSICS_BOX_DATA * pbox, float framedi
 
 void ARX_PHYSICS_BOX_ApplyModel(PHYSICS_BOX_DATA * pbox, float framediff, float rubber, Entity * source) {
 	
-	if(!pbox)
-		return;
-
 	if(pbox->active == 2)
 		return;
 
