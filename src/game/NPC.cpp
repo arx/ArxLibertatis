@@ -776,36 +776,6 @@ bool ARX_NPC_SetStat(Entity& io, const std::string & statname, float value) {
 	return true;
 }
 
-void ARX_TEMPORARY_TrySound(Entity * source, Material collisionMaterial, float volume) {
-	
-	if(source->ioflags & IO_BODY_CHUNK)
-		return;
-	
-	unsigned long now = arxtime.now_ul();
-	
-	if(now > source->soundtime) {
-		
-		source->soundcount++;
-		
-		if(source->soundcount < 5) {
-			long material;
-			if(EEIsUnderWater(source->pos))
-				material = MATERIAL_WATER;
-			else if(source->material)
-				material = source->material;
-			else
-				material = MATERIAL_STONE;
-			
-			if(volume > 1.f)
-				volume = 1.f;
-			
-			long soundLength = ARX_SOUND_PlayCollision(material, collisionMaterial, volume, 1.f, source->pos, source);
-			
-			source->soundtime = now + (soundLength >> 4) + 50;
-		}
-	}
-}
-
 /*!
  * \brief Sets a New MoveMode for a NPC
  */

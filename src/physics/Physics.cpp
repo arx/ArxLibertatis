@@ -58,6 +58,7 @@ ZeniMax Media Inc., Suite 120, Rockville, Maryland 20850 USA.
 #include "game/EntityManager.h"
 #include "game/magic/spells/SpellsLvl06.h"
 
+#include "scene/GameSound.h"
 #include "scene/Interactive.h"
 
 #include "physics/Box.h"
@@ -333,6 +334,36 @@ static bool IsFULLObjectVertexInValidPosition(PHYSICS_BOX_DATA * pbox, EERIEPOLY
 	}
 
 	return true;
+}
+
+static void ARX_TEMPORARY_TrySound(Entity * source, Material collisionMaterial, float volume) {
+	
+	if(source->ioflags & IO_BODY_CHUNK)
+		return;
+	
+	unsigned long now = arxtime.now_ul();
+	
+	if(now > source->soundtime) {
+		
+		source->soundcount++;
+		
+		if(source->soundcount < 5) {
+			long material;
+			if(EEIsUnderWater(source->pos))
+				material = MATERIAL_WATER;
+			else if(source->material)
+				material = source->material;
+			else
+				material = MATERIAL_STONE;
+			
+			if(volume > 1.f)
+				volume = 1.f;
+			
+			long soundLength = ARX_SOUND_PlayCollision(material, collisionMaterial, volume, 1.f, source->pos, source);
+			
+			source->soundtime = now + (soundLength >> 4) + 50;
+		}
+	}
 }
 
 static void ARX_EERIE_PHYSICS_BOX_Compute(PHYSICS_BOX_DATA * pbox, float framediff, Entity * source) {
