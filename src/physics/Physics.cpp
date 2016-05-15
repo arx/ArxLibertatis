@@ -400,18 +400,16 @@ static void ARX_EERIE_PHYSICS_BOX_Compute(PHYSICS_BOX_DATA * pbox, float framedi
 	}
 }
 
-long ARX_PHYSICS_BOX_ApplyModel(PHYSICS_BOX_DATA * pbox, float framediff, float rubber, Entity * source) {
-
-	long ret = 0;
-
+void ARX_PHYSICS_BOX_ApplyModel(PHYSICS_BOX_DATA * pbox, float framediff, float rubber, Entity * source) {
+	
 	if(!pbox)
-		return ret;
+		return;
 
 	if(pbox->active == 2)
-		return ret;
+		return;
 
 	if(framediff == 0.f)
-		return ret;
+		return;
 	
 	// Memorizes initpos
 	for(long k = 0; k < pbox->nb_physvert; k++) {
@@ -424,7 +422,7 @@ long ARX_PHYSICS_BOX_ApplyModel(PHYSICS_BOX_DATA * pbox, float framediff, float 
 
 	if(timing < t_threshold) {
 		pbox->storedtiming = timing;
-		return 1;
+		return;
 	} else {
 		while(timing >= t_threshold) {
 			ComputeForces(pbox->vert, pbox->nb_physvert);
@@ -438,14 +436,12 @@ long ARX_PHYSICS_BOX_ApplyModel(PHYSICS_BOX_DATA * pbox, float framediff, float 
 	}
 
 	if(pbox->stopcount < 16)
-		return ret;
+		return;
 
 	pbox->active = 2;
 	pbox->stopcount = 0;
 
 	source->soundcount = 0;
 	source->soundtime = arxtime.now_ul() + 2000;
-
-	return ret;
 }
 
