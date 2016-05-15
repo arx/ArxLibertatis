@@ -30,7 +30,7 @@
 #include "graphics/data/Mesh.h"
 
 
-void drawLine2D(const Vec2f & from, const Vec2f & to, float z, Color col) {
+void drawLine(const Vec2f & from, const Vec2f & to, float z, Color col) {
 	
 	TexturedVertex v[2];
 	v[0].p.x = from.x;

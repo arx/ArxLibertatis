@@ -748,13 +748,13 @@ static void drawDebugMaterials() {
 		
 		GRenderer->SetRenderState(Renderer::DepthTest, false);
 		
-		drawLine2D(pp[0], pp[1], 0.1f, Color::magenta);
-		drawLine2D(pp[2], pp[0], 0.1f, Color::magenta);
+		drawLine(pp[0], pp[1], 0.1f, Color::magenta);
+		drawLine(pp[2], pp[0], 0.1f, Color::magenta);
 		if(count == 4) {
-			drawLine2D(pp[2], pp[3], 0.1f, Color::magenta);
-			drawLine2D(pp[3], pp[1], 0.1f, Color::magenta);
+			drawLine(pp[2], pp[3], 0.1f, Color::magenta);
+			drawLine(pp[3], pp[1], 0.1f, Color::magenta);
 		} else {
-			drawLine2D(pp[1], pp[2], 0.1f, Color::magenta);
+			drawLine(pp[1], pp[2], 0.1f, Color::magenta);
 		}
 		
 		Vec2f c = Vec2f(0.f);
