@@ -37,6 +37,8 @@
 
 #include "graphics/particle/ParticleEffects.h"
 #include "graphics/font/Font.h"
+
+#include "gui/DebugUtils.h"
 #include "gui/Text.h"
 #include "gui/Interface.h"
 
@@ -52,11 +54,6 @@
 #include "window/RenderWindow.h"
 #include "platform/profiler/Profiler.h"
 
-template <typename T>
-struct FlagName {
-	T flag;
-	const char * name;
-};
 
 const FlagName<EntityFlags> EntityFlagNames[] = {
 	{IO_UNDERWATER          , "UNDERWATER"},
@@ -110,17 +107,6 @@ const FlagName<Behaviour> BehaviourFlagNames[] = {
 	{BEHAVIOUR_STARE_AT      , "STARE_AT"}
 };
 
-template <typename T, size_t N>
-std::string flagNames(const FlagName<T> (&names)[N], const T flags) {
-	std::stringstream ss;
-	for(size_t i = 0; i < N; i++) {
-		if(names[i].flag & flags) {
-			ss << names[i].name << " ";
-		}
-	}
-	return ss.str();
-}
-
 
 static const char * entityVisilibityToString(EntityVisilibity value) {
 	switch (value) {
@@ -137,90 +123,6 @@ static const char * entityVisilibityToString(EntityVisilibity value) {
 	}
 }
 
-
-class DebugBox {
-public:
-	DebugBox(const Vec2i & pos, const std::string & title)
-		: m_pos(pos)
-		, m_title(title)
-		, m_maxKeyLen(0)
-	{}
-	
-	void add(std::string key, const std::string value) {
-		m_maxKeyLen = std::max(m_maxKeyLen, key.length());
-		m_elements.push_back(std::pair<std::string, std::string>(key, value));
-	}
-	
-	void add(std::string key, const long value) {
-		m_maxKeyLen = std::max(m_maxKeyLen, key.length());
-		std::string valueStr = boost::str(boost::format("%ld") % value);
-		m_elements.push_back(std::pair<std::string, std::string>(key, valueStr));
-	}
-	
-	void add(std::string key, const float value) {
-		m_maxKeyLen = std::max(m_maxKeyLen, key.length());
-		std::string valueStr = boost::str(boost::format("%4.2f") % value);
-		m_elements.push_back(std::pair<std::string, std::string>(key, valueStr));
-	}
-	
-	void add(std::string key, const Vec2i value) {
-		m_maxKeyLen = std::max(m_maxKeyLen, key.length());
-		std::string valueStr = boost::str(boost::format("(%d, %d)") % value.x % value.y);
-		m_elements.push_back(std::pair<std::string, std::string>(key, valueStr));
-	}
-	
-	void add(std::string key, const Vec3f value) {
-		m_maxKeyLen = std::max(m_maxKeyLen, key.length());
-		std::string valueStr = boost::str(boost::format("%4.2f %4.2f %4.2f") % value.x % value.y % value.z);
-		m_elements.push_back(std::pair<std::string, std::string>(key, valueStr));
-	}
-	
-	void add(std::string key, const Anglef value) {
-		m_maxKeyLen = std::max(m_maxKeyLen, key.length());
-		std::string valueStr = boost::str(boost::format("%4.2f %4.2f %4.2f") % value.getYaw() % value.getPitch() % value.getRoll());
-		m_elements.push_back(std::pair<std::string, std::string>(key, valueStr));
-	}
-	
-	void add(std::string key, const ResourcePool value) {
-		m_maxKeyLen = std::max(m_maxKeyLen, key.length());
-		std::string valueStr = boost::str(boost::format("%4.2f/%4.2f") % value.current % value.max);
-		m_elements.push_back(std::pair<std::string, std::string>(key, valueStr));
-	}
-	
-	void print() {
-		int lineHeight = hFontDebug->getLineHeight();
-		Vec2i lineOffset = m_pos;
-		
-		hFontDebug->draw(lineOffset, std::string("╭─ ") + m_title, Color::white);
-		lineOffset.y += lineHeight;
-		
-		std::vector<std::pair<std::string, std::string> >::const_iterator itr;
-		for(itr = m_elements.begin(); itr != m_elements.end(); ++itr) {
-			std::stringstream out;
-			out << "│ " << std::left << std::setw(m_maxKeyLen) << std::setfill(' ') << itr->first << " " << itr->second;
-			hFontDebug->draw(lineOffset, out.str(), Color::white);
-			lineOffset.y += lineHeight;
-		}
-		
-		hFontDebug->draw(lineOffset, std::string("╰─ "), Color::white);
-		lineOffset.y += lineHeight;
-		
-		m_size = lineOffset;
-	}
-	
-	Vec2i size() {
-		return m_size;
-	}
-	
-private:
-	Vec2i m_pos;
-	std::string m_title;
-	size_t m_maxKeyLen;
-	Vec2i m_size;
-	
-	
-	std::vector<std::pair<std::string, std::string> > m_elements;
-};
 
 std::string LAST_FAILED_SEQUENCE = "none";
 EntityHandle LastSelectedIONum = EntityHandle();
