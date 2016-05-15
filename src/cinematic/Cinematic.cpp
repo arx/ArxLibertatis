@@ -589,8 +589,8 @@ void Cinematic::Render(float FDIFF) {
 			GRenderer->SetFillMode(Renderer::FillWireframe);
 			float x = 640.f / 2 * g_sizeRatio.y;
 			float c = g_size.center().x;
-			drawLine2D(c - x, 0.f, c - x, g_size.height(), 1.f, Color::red);
-			drawLine2D(c + x, 0.f, c + x, g_size.height(), 1.f, Color::red);
+			drawLine2D(Vec2f(c - x, 0.f), Vec2f(c - x, g_size.height()), 1.f, Color::red);
+			drawLine2D(Vec2f(c + x, 0.f), Vec2f(c + x, g_size.height()), 1.f, Color::red);
 			GRenderer->SetFillMode(Renderer::FillSolid);
 		}
 		

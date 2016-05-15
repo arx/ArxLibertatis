@@ -29,14 +29,15 @@
 #include "graphics/Vertex.h"
 #include "graphics/data/Mesh.h"
 
-void drawLine2D(float x0, float y0, float x1, float y1, float z, Color col) {
 
+void drawLine2D(const Vec2f & from, const Vec2f & to, float z, Color col) {
+	
 	TexturedVertex v[2];
-	v[0].p.x = x0;
-	v[0].p.y = y0;
+	v[0].p.x = from.x;
+	v[0].p.y = from.y;
 	v[0].p.z = v[1].p.z = z;
-	v[1].p.x = x1;
-	v[1].p.y = y1;
+	v[1].p.x = to.x;
+	v[1].p.y = to.y;
 	v[1].color = v[0].color = col.toRGBA();
 	v[1].rhw = v[0].rhw = 1.f;
 
