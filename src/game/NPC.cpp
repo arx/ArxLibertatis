@@ -778,7 +778,6 @@ bool ARX_NPC_SetStat(Entity& io, const std::string & statname, float value) {
 
 void ARX_TEMPORARY_TrySound(Entity * source, Material collisionMaterial, float volume) {
 	
-	if(source) {
 		if(source->ioflags & IO_BODY_CHUNK)
 			return;
 
@@ -805,7 +804,6 @@ void ARX_TEMPORARY_TrySound(Entity * source, Material collisionMaterial, float v
 				source->soundtime = now + (soundLength >> 4) + 50;
 			}
 		}
-	}
 }
 
 /*!
