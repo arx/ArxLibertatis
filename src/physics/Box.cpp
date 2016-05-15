@@ -52,7 +52,8 @@ ZeniMax Media Inc., Suite 120, Rockville, Maryland 20850 USA.
 // Used to launch an object into the physical world...
 void EERIE_PHYSICS_BOX_Launch(EERIE_3DOBJ * obj, const Vec3f & pos, const Anglef & angle, const Vec3f & vect)
 {
-	if ((!obj) || !(obj->pbox)) return;
+	arx_assert(obj);
+	arx_assert(obj->pbox);
 	
 	obj->pbox->storedtiming = 0;
 	
