@@ -338,9 +338,7 @@ static bool IsFULLObjectVertexInValidPosition(PHYSICS_BOX_DATA * pbox, EERIEPOLY
 static void ARX_EERIE_PHYSICS_BOX_Compute(PHYSICS_BOX_DATA * pbox, float framediff, Entity * source) {
 
 	Vec3f oldpos[32];
-	long COUNT = 0;
-	COUNT++;
-
+	
 	for(long kk = 0; kk < pbox->nb_physvert; kk++) {
 		PHYSVERT *pv = &pbox->vert[kk];
 		oldpos[kk] = pv->pos;
