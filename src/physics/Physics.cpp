@@ -335,7 +335,7 @@ static bool IsFULLObjectVertexInValidPosition(PHYSICS_BOX_DATA * pbox, EERIEPOLY
 	return true;
 }
 
-static bool ARX_EERIE_PHYSICS_BOX_Compute(PHYSICS_BOX_DATA * pbox, float framediff, Entity * source) {
+static void ARX_EERIE_PHYSICS_BOX_Compute(PHYSICS_BOX_DATA * pbox, float framediff, Entity * source) {
 
 	Vec3f oldpos[32];
 	long COUNT = 0;
@@ -398,8 +398,6 @@ static bool ARX_EERIE_PHYSICS_BOX_Compute(PHYSICS_BOX_DATA * pbox, float framedi
 		if(pbox->stopcount < 0)
 			pbox->stopcount = 0;
 	}
-
-	return true;
 }
 
 long ARX_PHYSICS_BOX_ApplyModel(PHYSICS_BOX_DATA * pbox, float framediff, float rubber, Entity * source) {
@@ -431,8 +429,7 @@ long ARX_PHYSICS_BOX_ApplyModel(PHYSICS_BOX_DATA * pbox, float framediff, float 
 		while(timing >= t_threshold) {
 			ComputeForces(pbox->vert, pbox->nb_physvert);
 
-			if(!ARX_EERIE_PHYSICS_BOX_Compute(pbox, std::min(0.11f, timing * 10), source))
-				ret = 1;
+			ARX_EERIE_PHYSICS_BOX_Compute(pbox, std::min(0.11f, timing * 10), source);
 
 			timing -= t_threshold;
 		}
