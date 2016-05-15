@@ -962,22 +962,24 @@ void ARX_PHYSICS_Apply() {
 		
 		if(io->obj && io->obj->pbox) {
 			io->gameFlags &= ~GFLAG_NOCOMPUTATION;
-
-			if(io->obj->pbox->active == 1) {
-				ARX_PHYSICS_BOX_ApplyModel(io->obj->pbox, g_framedelay, io->rubber, io);
+			
+			PHYSICS_BOX_DATA * pbox = io->obj->pbox;
+			
+			if(pbox->active == 1) {
+				ARX_PHYSICS_BOX_ApplyModel(pbox, g_framedelay, io->rubber, io);
 				
 				if(io->soundcount > 12) {
 					io->soundtime = 0;
 					io->soundcount = 0;
-					for(long k = 0; k < io->obj->pbox->nb_physvert; k++) {
-						io->obj->pbox->vert[k].velocity = Vec3f_ZERO;
+					for(long k = 0; k < pbox->nb_physvert; k++) {
+						pbox->vert[k].velocity = Vec3f_ZERO;
 					}
-					io->obj->pbox->active = 2;
-					io->obj->pbox->stopcount = 0;
+					pbox->active = 2;
+					pbox->stopcount = 0;
 				}
 				
 				io->requestRoomUpdate = true;
-				io->pos = io->obj->pbox->vert[0].pos;
+				io->pos = pbox->vert[0].pos;
 				
 				continue;
 			}
