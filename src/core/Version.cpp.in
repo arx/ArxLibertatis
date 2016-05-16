@@ -26,7 +26,7 @@
  */
 
 #if ${VERSION_COUNT} != 4 && ${VERSION_COUNT} != 5
-#error "Configure error - the VERSION file should specify three or five non-empty lines!"
+#error "Configure error - the VERSION file should specify 4 or 5 non-empty lines!"
 #endif
 
 const std::string arx_version = "${VERSION_0}${GIT_SUFFIX_5}";
@@ -38,4 +38,4 @@ const std::string arx_copyright = "${COPYING}";
 
 const std::string cmake_version = "${CMAKE_VERSION}";
 
-const int tbg_version_id = ${VERSION_2};
+const int tbg_version_id = ${VERSION_2_NUMBER};
