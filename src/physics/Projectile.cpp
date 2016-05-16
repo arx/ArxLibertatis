@@ -336,10 +336,10 @@ static EERIEPOLY * CheckArrowPolyCollision(const Vec3f & start, const Vec3f & en
 	return NULL;
 }
 
-static void CheckExp(long i) {
+static void CheckExp(const Projectile & projectile) {
 	
-	if((g_projectiles[i].flags & ATO_FIERY) && !(g_projectiles[i].flags & ATO_UNDERWATER)) {
-		const Vec3f & pos = g_projectiles[i].position;
+	if((projectile.flags & ATO_FIERY) && !(projectile.flags & ATO_UNDERWATER)) {
+		const Vec3f & pos = projectile.position;
 
 		ARX_BOOMS_Add(pos);
 		LaunchFireballBoom(pos, 10);
@@ -480,7 +480,7 @@ void ARX_THROWN_OBJECT_Manage(unsigned long time_offset)
 
 				if(ep) {
 					ARX_PARTICLES_Spawn_Spark(v0, 14, SpawnSparkType_Default);
-					CheckExp(i);
+					CheckExp(projectile);
 
 					if(ValidIONum(projectile.source))
 						ARX_NPC_SpawnAudibleSound(v0, entities[projectile.source]);
@@ -503,7 +503,7 @@ void ARX_THROWN_OBJECT_Manage(unsigned long time_offset)
 					j = 200;
 				} else if(IsPointInField(v0)) {
 					ARX_PARTICLES_Spawn_Spark(v0, 24, SpawnSparkType_Default);
-					CheckExp(i);
+					CheckExp(projectile);
 
 					if (ValidIONum(projectile.source))
 						ARX_NPC_SpawnAudibleSound(v0, entities[projectile.source]);
@@ -580,7 +580,7 @@ void ARX_THROWN_OBJECT_Manage(unsigned long time_offset)
 													target->_npcdata->poisonned += projectile.poisonous;
 												}
 
-												CheckExp(i);
+												CheckExp(projectile);
 											} else {
 												ARX_PARTICLES_Spawn_Spark(v0, 14, SpawnSparkType_Default);
 												ARX_NPC_SpawnAudibleSound(v0, entities[projectile.source]);
@@ -598,7 +598,7 @@ void ARX_THROWN_OBJECT_Manage(unsigned long time_offset)
 										if(ValidIONum(projectile.source))
 											ARX_NPC_SpawnAudibleSound(v0, entities[projectile.source]);
 
-										CheckExp(i);
+										CheckExp(projectile);
 									}
 
 									// Need to deal damages !
