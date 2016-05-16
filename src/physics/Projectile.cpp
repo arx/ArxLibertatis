@@ -387,28 +387,28 @@ void ARX_THROWN_OBJECT_Render() {
 void ARX_THROWN_OBJECT_Manage(unsigned long time_offset)
 {
 	for(size_t i = 0; i < MAX_THROWN_OBJECTS; i++) {
-		Projectile *thrownObj = &g_projectiles[i];
-		if(!(thrownObj->flags & ATO_EXIST))
+		Projectile & thrownObj = g_projectiles[i];
+		if(!(thrownObj.flags & ATO_EXIST))
 			continue;
 
 		{
 		// Is Object Visible & Near ?
 
-		EERIE_BKG_INFO * bkgData = getFastBackgroundData(thrownObj->position.x, thrownObj->position.z);
+		EERIE_BKG_INFO * bkgData = getFastBackgroundData(thrownObj.position.x, thrownObj.position.z);
 
 		if(!bkgData || !bkgData->treat) {
 			continue;
 		}
 
 		// Now render object !
-		if(!thrownObj->obj)
+		if(!thrownObj.obj)
 			continue;
 
-		TransformInfo t(thrownObj->position, thrownObj->quat);
-		DrawEERIEInter_ModelTransform(thrownObj->obj, t);
+		TransformInfo t(thrownObj.position, thrownObj.quat);
+		DrawEERIEInter_ModelTransform(thrownObj.obj, t);
 
-		if((thrownObj->flags & ATO_FIERY) && (thrownObj->flags & ATO_MOVING)
-		   && !(thrownObj->flags & ATO_UNDERWATER)) {
+		if((thrownObj.flags & ATO_FIERY) && (thrownObj.flags & ATO_MOVING)
+		   && !(thrownObj.flags & ATO_UNDERWATER)) {
 
 			LightHandle id = GetFreeDynLight();
 			if(lightHandleIsValid(id) && g_framedelay > 0) {
@@ -418,122 +418,122 @@ void ARX_THROWN_OBJECT_Manage(unsigned long time_offset)
 				light->fallstart = 100.f;
 				light->fallend   = 240.f;
 				light->rgb = Color3f(1.f, .8f, .6f) - randomColor3f() * Color3f(.2f, .2f, .2f);
-				light->pos = thrownObj->position;
+				light->pos = thrownObj.position;
 				light->ex_flaresize = 40.f;
 				light->extras |= EXTRAS_FLARE;
 				light->duration = static_cast<unsigned long>(g_framedelay * 0.5f);
 			}
 			
-			createObjFireParticles(thrownObj->obj, 6, 2, 180);
+			createObjFireParticles(thrownObj.obj, 6, 2, 180);
 		}
 
-		if(thrownObj->m_trail) {
-			thrownObj->m_trail->SetNextPosition(thrownObj->position);
-			thrownObj->m_trail->Update(time_offset);
+		if(thrownObj.m_trail) {
+			thrownObj.m_trail->SetNextPosition(thrownObj.position);
+			thrownObj.m_trail->Update(time_offset);
 		}
 
 		Vec3f original_pos;
 
-		if(thrownObj->flags & ATO_MOVING) {
+		if(thrownObj.flags & ATO_MOVING) {
 			long need_kill = 0;
-			float mod = (float)time_offset * thrownObj->velocity;
-			original_pos = thrownObj->position;
-			thrownObj->position.x += thrownObj->vector.x * mod;
-			float gmod = 1.f - thrownObj->velocity;
+			float mod = (float)time_offset * thrownObj.velocity;
+			original_pos = thrownObj.position;
+			thrownObj.position.x += thrownObj.vector.x * mod;
+			float gmod = 1.f - thrownObj.velocity;
 
 			gmod = glm::clamp(gmod, 0.f, 1.f);
 
-			thrownObj->position.y += thrownObj->vector.y * mod + (time_offset * gmod);
-			thrownObj->position.z += thrownObj->vector.z * mod;
+			thrownObj.position.y += thrownObj.vector.y * mod + (time_offset * gmod);
+			thrownObj.position.z += thrownObj.vector.z * mod;
 
 			CheckForIgnition(Sphere(original_pos, 10.f), 0, 2);
 
-			Vec3f wpos = thrownObj->position;
+			Vec3f wpos = thrownObj.position;
 			wpos.y += 20.f;
 			EERIEPOLY * ep = EEIsUnderWater(wpos);
 
-			if(thrownObj->flags & ATO_UNDERWATER) {
+			if(thrownObj.flags & ATO_UNDERWATER) {
 				if(!ep) {
-					thrownObj->flags &= ~ATO_UNDERWATER;
-					ARX_SOUND_PlaySFX(SND_PLOUF, &thrownObj->position);
+					thrownObj.flags &= ~ATO_UNDERWATER;
+					ARX_SOUND_PlaySFX(SND_PLOUF, &thrownObj.position);
 				}
 			} else if(ep) {
-				thrownObj->flags |= ATO_UNDERWATER;
-				ARX_SOUND_PlaySFX(SND_PLOUF, &thrownObj->position);
+				thrownObj.flags |= ATO_UNDERWATER;
+				ARX_SOUND_PlaySFX(SND_PLOUF, &thrownObj.position);
 			}
 
 			// Check for collision MUST be done after DRAWING !!!!
-			long nbact = thrownObj->obj->actionlist.size();
+			long nbact = thrownObj.obj->actionlist.size();
 
 			for(long j = 0; j < nbact; j++) {
-				float rad = GetHitValue(thrownObj->obj->actionlist[j].name);
+				float rad = GetHitValue(thrownObj.obj->actionlist[j].name);
 
 				if(rad == -1)
 					continue;
 
 				rad *= .5f;
 
-				const Vec3f v0 = actionPointPosition(thrownObj->obj, thrownObj->obj->actionlist[j].idx);
-				Vec3f dest = original_pos + thrownObj->vector * 95.f;
-				Vec3f orgn = original_pos - thrownObj->vector * 25.f;
+				const Vec3f v0 = actionPointPosition(thrownObj.obj, thrownObj.obj->actionlist[j].idx);
+				Vec3f dest = original_pos + thrownObj.vector * 95.f;
+				Vec3f orgn = original_pos - thrownObj.vector * 25.f;
 				EERIEPOLY * ep = CheckArrowPolyCollision(orgn, dest);
 
 				if(ep) {
 					ARX_PARTICLES_Spawn_Spark(v0, 14, SpawnSparkType_Default);
 					CheckExp(i);
 
-					if(ValidIONum(thrownObj->source))
-						ARX_NPC_SpawnAudibleSound(v0, entities[thrownObj->source]);
+					if(ValidIONum(thrownObj.source))
+						ARX_NPC_SpawnAudibleSound(v0, entities[thrownObj.source]);
 
-					thrownObj->flags &= ~ATO_MOVING;
-					thrownObj->velocity = 0.f;
+					thrownObj.flags &= ~ATO_MOVING;
+					thrownObj.velocity = 0.f;
 					
 					std::string bkg_material = "earth";
 
 					if(ep && ep->tex && !ep->tex->m_texName.empty())
 						bkg_material = GetMaterialString(ep->tex->m_texName);
 
-					if(ValidIONum(thrownObj->source)) {
+					if(ValidIONum(thrownObj.source)) {
 						char weapon_material[64] = "dagger";
 						
-						ARX_SOUND_PlayCollision(weapon_material, bkg_material, 1.f, 1.f, v0, entities[thrownObj->source]);
+						ARX_SOUND_PlayCollision(weapon_material, bkg_material, 1.f, 1.f, v0, entities[thrownObj.source]);
 					}
 
-					thrownObj->position = original_pos;
+					thrownObj.position = original_pos;
 					j = 200;
 				} else if(IsPointInField(v0)) {
 					ARX_PARTICLES_Spawn_Spark(v0, 24, SpawnSparkType_Default);
 					CheckExp(i);
 
-					if (ValidIONum(thrownObj->source))
-						ARX_NPC_SpawnAudibleSound(v0, entities[thrownObj->source]);
+					if (ValidIONum(thrownObj.source))
+						ARX_NPC_SpawnAudibleSound(v0, entities[thrownObj.source]);
 
-					thrownObj->flags &= ~ATO_MOVING;
-					thrownObj->velocity = 0.f;
+					thrownObj.flags &= ~ATO_MOVING;
+					thrownObj.velocity = 0.f;
 					
-					if(ValidIONum(thrownObj->source)) {
+					if(ValidIONum(thrownObj.source)) {
 						char weapon_material[64] = "dagger";
 						char bkg_material[64] = "earth";
 						
-						ARX_SOUND_PlayCollision(weapon_material, bkg_material, 1.f, 1.f, v0, entities[thrownObj->source]);
+						ARX_SOUND_PlayCollision(weapon_material, bkg_material, 1.f, 1.f, v0, entities[thrownObj.source]);
 					}
 
-					thrownObj->position = original_pos;
+					thrownObj.position = original_pos;
 					j = 200;
 					need_kill = 1;
 				} else {
 					for(float precision = 0.5f; precision <= 6.f; precision += 0.5f) {
 						Sphere sphere;
-						sphere.origin = v0 + thrownObj->vector * precision * 4.5f;
+						sphere.origin = v0 + thrownObj.vector * precision * 4.5f;
 						sphere.radius = rad + 3.f;
 
 						std::vector<EntityHandle> sphereContent;
 
-						if(CheckEverythingInSphere(sphere, thrownObj->source, EntityHandle(), sphereContent)) {
+						if(CheckEverythingInSphere(sphere, thrownObj.source, EntityHandle(), sphereContent)) {
 							for(size_t jj = 0; jj < sphereContent.size(); jj++) {
 
 								if(ValidIONum(sphereContent[jj])
-										&& sphereContent[jj] != thrownObj->source)
+										&& sphereContent[jj] != thrownObj.source)
 								{
 
 									Entity * target = entities[sphereContent[jj]];
@@ -562,8 +562,8 @@ void ARX_THROWN_OBJECT_Manage(unsigned long time_offset)
 											pos = target->obj->vertexlist3[hitpoint].v;
 										}
 
-										if(thrownObj->source == PlayerEntityHandle) {
-											float damages = ARX_THROWN_ComputeDamages(i, thrownObj->source, sphereContent[jj]);
+										if(thrownObj.source == PlayerEntityHandle) {
+											float damages = ARX_THROWN_ComputeDamages(i, thrownObj.source, sphereContent[jj]);
 
 											if(damages > 0.f) {
 												arx_assert(hitpoint >= 0);
@@ -574,36 +574,36 @@ void ARX_THROWN_OBJECT_Manage(unsigned long time_offset)
 												}
 
 												ARX_PARTICLES_Spawn_Blood2(pos, damages, color, target);
-												ARX_DAMAGES_DamageNPC(target, damages, thrownObj->source, false, &pos);
+												ARX_DAMAGES_DamageNPC(target, damages, thrownObj.source, false, &pos);
 
 												if(Random::getf(0.f, 100.f) > target->_npcdata->resist_poison) {
-													target->_npcdata->poisonned += thrownObj->poisonous;
+													target->_npcdata->poisonned += thrownObj.poisonous;
 												}
 
 												CheckExp(i);
 											} else {
 												ARX_PARTICLES_Spawn_Spark(v0, 14, SpawnSparkType_Default);
-												ARX_NPC_SpawnAudibleSound(v0, entities[thrownObj->source]);
+												ARX_NPC_SpawnAudibleSound(v0, entities[thrownObj.source]);
 											}
 										}
 									} else {
 										// not NPC
 										if(target->ioflags & IO_FIX) {
-											if(ValidIONum(thrownObj->source))
-												ARX_DAMAGES_DamageFIX(target, 0.1f, thrownObj->source, false);
+											if(ValidIONum(thrownObj.source))
+												ARX_DAMAGES_DamageFIX(target, 0.1f, thrownObj.source, false);
 										}
 
 										ARX_PARTICLES_Spawn_Spark(v0, 14, SpawnSparkType_Default);
 
-										if(ValidIONum(thrownObj->source))
-											ARX_NPC_SpawnAudibleSound(v0, entities[thrownObj->source]);
+										if(ValidIONum(thrownObj.source))
+											ARX_NPC_SpawnAudibleSound(v0, entities[thrownObj.source]);
 
 										CheckExp(i);
 									}
 
 									// Need to deal damages !
-									thrownObj->flags &= ~ATO_MOVING;
-									thrownObj->velocity = 0.f;
+									thrownObj.flags &= ~ATO_MOVING;
+									thrownObj.velocity = 0.f;
 									need_kill = 1;
 									precision = 500.f;
 									j = 200;
