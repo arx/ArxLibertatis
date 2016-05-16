@@ -368,18 +368,18 @@ void ARX_THROWN_OBJECT_Render() {
 	GRenderer->SetRenderState(Renderer::DepthTest, true);
 
 	for(size_t i = 0; i < MAX_THROWN_OBJECTS; i++) {
-		Projectile *thrownObj = &g_projectiles[i];
-		if(!(thrownObj->flags & ATO_EXIST))
+		Projectile *projectile = &g_projectiles[i];
+		if(!(projectile->flags & ATO_EXIST))
 			continue;
 
-		TransformInfo t(thrownObj->position, thrownObj->quat);
+		TransformInfo t(projectile->position, projectile->quat);
 		// Object has to be retransformed because arrows share the same object
-		DrawEERIEInter_ModelTransform(thrownObj->obj, t);
-		DrawEERIEInter_ViewProjectTransform(thrownObj->obj);
-		DrawEERIEInter_Render(thrownObj->obj, t, NULL);
+		DrawEERIEInter_ModelTransform(projectile->obj, t);
+		DrawEERIEInter_ViewProjectTransform(projectile->obj);
+		DrawEERIEInter_Render(projectile->obj, t, NULL);
 
-		if(thrownObj->m_trail) {
-			thrownObj->m_trail->Render();
+		if(projectile->m_trail) {
+			projectile->m_trail->Render();
 		}
 	}
 }
