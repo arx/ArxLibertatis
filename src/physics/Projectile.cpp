@@ -67,7 +67,7 @@ struct ARX_THROWN_OBJECT {
 	EntityHandle source;
 	unsigned long creation_time;
 	float poisonous;
-	Trail * pRuban;
+	Trail * m_trail;
 };
 
 const size_t MAX_THROWN_OBJECTS = 100;
@@ -100,8 +100,8 @@ static bool IsPointInField(const Vec3f & pos) {
 static void ARX_THROWN_OBJECT_Kill(long num) {
 	if(num >= 0 && size_t(num) < MAX_THROWN_OBJECTS) {
 		Thrown[num].flags = 0;
-		delete Thrown[num].pRuban;
-		Thrown[num].pRuban = NULL;
+		delete Thrown[num].m_trail;
+		Thrown[num].m_trail = NULL;
 	}
 }
 
@@ -158,9 +158,9 @@ void ARX_THROWN_OBJECT_Throw(EntityHandle source, const Vec3f & position, const 
 	thrownObj->velocity = velocity;
 	thrownObj->poisonous = poison;
 	
-	thrownObj->pRuban = new ArrowTrail();
-	thrownObj->pRuban->SetNextPosition(thrownObj->position);
-	thrownObj->pRuban->Update(g_framedelay);
+	thrownObj->m_trail = new ArrowTrail();
+	thrownObj->m_trail->SetNextPosition(thrownObj->position);
+	thrownObj->m_trail->Update(g_framedelay);
 	
 	thrownObj->creation_time = arxtime.now_ul();
 	thrownObj->flags |= ATO_EXIST | ATO_MOVING;
@@ -378,8 +378,8 @@ void ARX_THROWN_OBJECT_Render() {
 		DrawEERIEInter_ViewProjectTransform(thrownObj->obj);
 		DrawEERIEInter_Render(thrownObj->obj, t, NULL);
 
-		if(thrownObj->pRuban) {
-			thrownObj->pRuban->Render();
+		if(thrownObj->m_trail) {
+			thrownObj->m_trail->Render();
 		}
 	}
 }
@@ -427,9 +427,9 @@ void ARX_THROWN_OBJECT_Manage(unsigned long time_offset)
 			createObjFireParticles(thrownObj->obj, 6, 2, 180);
 		}
 
-		if(thrownObj->pRuban) {
-			thrownObj->pRuban->SetNextPosition(thrownObj->position);
-			thrownObj->pRuban->Update(time_offset);
+		if(thrownObj->m_trail) {
+			thrownObj->m_trail->SetNextPosition(thrownObj->position);
+			thrownObj->m_trail->Update(time_offset);
 		}
 
 		Vec3f original_pos;
