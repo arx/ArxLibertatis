@@ -556,10 +556,9 @@ void ResetTileLights() {
 	
 	ARX_PROFILE_FUNC();
 	
-	for(long z=0; z<ACTIVEBKG->Zsize; z++) {
-		for(long x=0; x<ACTIVEBKG->Xsize; x++) {
-			tilelights[x][z].el.clear();
-		}
+	for(long z = 0; z < ACTIVEBKG->Zsize; z++)
+	for(long x = 0; x < ACTIVEBKG->Xsize; x++) {
+		tilelights[x][z].el.clear();
 	}
 }
 
