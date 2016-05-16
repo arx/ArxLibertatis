@@ -175,7 +175,7 @@ void ARX_THROWN_OBJECT_Throw(EntityHandle source, const Vec3f & position, const 
 	}
 }
 
-static float ARX_THROWN_ComputeDamages(long thrownum, EntityHandle source,
+static float ARX_THROWN_ComputeDamages(const Projectile & projectile, EntityHandle source,
                                        EntityHandle target) {
 	
 	float distance_limit = 1000.f;
@@ -184,7 +184,7 @@ static float ARX_THROWN_ComputeDamages(long thrownum, EntityHandle source,
 
 	SendIOScriptEvent(io_target, SM_AGGRESSION);
 
-	float distance = fdist(g_projectiles[thrownum].position, g_projectiles[thrownum].initial_position);
+	float distance = fdist(projectile.position, projectile.initial_position);
 	float distance_modifier = 1.f;
 
 	if(distance < distance_limit * 2.f) {
@@ -202,7 +202,7 @@ static float ARX_THROWN_ComputeDamages(long thrownum, EntityHandle source,
 	bool critical = false;
 
 	if(source == PlayerEntityHandle) {
-		attack = g_projectiles[thrownum].damages;
+		attack = projectile.damages;
 
 		if(Random::getf(0.f, 100.f) <= float(player.m_attributeFull.dexterity - 9) * 2.f
 						   + float(player.m_skillFull.projectile * 0.2f)) {
@@ -264,7 +264,7 @@ static float ARX_THROWN_ComputeDamages(long thrownum, EntityHandle source,
 
 	power = power * 0.15f + 0.85f;
 
-	ARX_SOUND_PlayCollision(*amat, wmat, power, 1.f, g_projectiles[thrownum].position, io_source);
+	ARX_SOUND_PlayCollision(*amat, wmat, power, 1.f, projectile.position, io_source);
 
 	dmgs *= backstab;
 	dmgs -= dmgs * (absorb * ( 1.0f / 100 ));
@@ -563,7 +563,7 @@ void ARX_THROWN_OBJECT_Manage(unsigned long time_offset)
 										}
 
 										if(projectile.source == PlayerEntityHandle) {
-											float damages = ARX_THROWN_ComputeDamages(i, projectile.source, sphereContent[jj]);
+											float damages = ARX_THROWN_ComputeDamages(projectile, projectile.source, sphereContent[jj]);
 
 											if(damages > 0.f) {
 												arx_assert(hitpoint >= 0);
