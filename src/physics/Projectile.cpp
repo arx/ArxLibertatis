@@ -55,7 +55,7 @@ enum ThrownObjectFlag {
 DECLARE_FLAGS(ThrownObjectFlag, ThrownObjectFlags)
 DECLARE_FLAGS_OPERATORS(ThrownObjectFlags)
 
-struct ARX_THROWN_OBJECT {
+struct Projectile {
 	ThrownObjectFlags flags;
 	Vec3f vector;
 	glm::quat quat;
@@ -72,7 +72,7 @@ struct ARX_THROWN_OBJECT {
 
 const size_t MAX_THROWN_OBJECTS = 100;
 
-ARX_THROWN_OBJECT Thrown[MAX_THROWN_OBJECTS];
+Projectile Thrown[MAX_THROWN_OBJECTS];
 
 static bool IsPointInField(const Vec3f & pos) {
 
@@ -146,7 +146,7 @@ void ARX_THROWN_OBJECT_Throw(EntityHandle source, const Vec3f & position, const 
 	if(num < 0)
 		return;
 		
-	ARX_THROWN_OBJECT *thrownObj = &Thrown[num];
+	Projectile *thrownObj = &Thrown[num];
 	
 	thrownObj->damages = damages;
 	thrownObj->position = position;
@@ -368,7 +368,7 @@ void ARX_THROWN_OBJECT_Render() {
 	GRenderer->SetRenderState(Renderer::DepthTest, true);
 
 	for(size_t i = 0; i < MAX_THROWN_OBJECTS; i++) {
-		ARX_THROWN_OBJECT *thrownObj = &Thrown[i];
+		Projectile *thrownObj = &Thrown[i];
 		if(!(thrownObj->flags & ATO_EXIST))
 			continue;
 
@@ -387,7 +387,7 @@ void ARX_THROWN_OBJECT_Render() {
 void ARX_THROWN_OBJECT_Manage(unsigned long time_offset)
 {
 	for(size_t i = 0; i < MAX_THROWN_OBJECTS; i++) {
-		ARX_THROWN_OBJECT *thrownObj = &Thrown[i];
+		Projectile *thrownObj = &Thrown[i];
 		if(!(thrownObj->flags & ATO_EXIST))
 			continue;
 
