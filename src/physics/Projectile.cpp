@@ -432,12 +432,10 @@ void ARX_THROWN_OBJECT_Manage(unsigned long time_offset)
 			projectile.m_trail->Update(time_offset);
 		}
 
-		Vec3f original_pos;
-
 		if(projectile.flags & ATO_MOVING) {
 			long need_kill = 0;
 			float mod = (float)time_offset * projectile.velocity;
-			original_pos = projectile.position;
+			Vec3f original_pos = projectile.position;
 			projectile.position.x += projectile.vector.x * mod;
 			float gmod = 1.f - projectile.velocity;
 
