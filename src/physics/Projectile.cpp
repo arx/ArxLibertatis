@@ -146,24 +146,24 @@ void ARX_THROWN_OBJECT_Throw(EntityHandle source, const Vec3f & position, const 
 	if(num < 0)
 		return;
 		
-	Projectile *thrownObj = &g_projectiles[num];
+	Projectile *projectile = &g_projectiles[num];
 	
-	thrownObj->damages = damages;
-	thrownObj->position = position;
-	thrownObj->initial_position = position;
-	thrownObj->vector = vect;
-	thrownObj->quat = quat;
-	thrownObj->source = source;
-	thrownObj->obj = arrowobj;
-	thrownObj->velocity = velocity;
-	thrownObj->poisonous = poison;
+	projectile->damages = damages;
+	projectile->position = position;
+	projectile->initial_position = position;
+	projectile->vector = vect;
+	projectile->quat = quat;
+	projectile->source = source;
+	projectile->obj = arrowobj;
+	projectile->velocity = velocity;
+	projectile->poisonous = poison;
 	
-	thrownObj->m_trail = new ArrowTrail();
-	thrownObj->m_trail->SetNextPosition(thrownObj->position);
-	thrownObj->m_trail->Update(g_framedelay);
+	projectile->m_trail = new ArrowTrail();
+	projectile->m_trail->SetNextPosition(projectile->position);
+	projectile->m_trail->Update(g_framedelay);
 	
-	thrownObj->creation_time = arxtime.now_ul();
-	thrownObj->flags |= ATO_EXIST | ATO_MOVING;
+	projectile->creation_time = arxtime.now_ul();
+	projectile->flags |= ATO_EXIST | ATO_MOVING;
 	
 	if(source == PlayerEntityHandle
 	   && ValidIONum(player.equiped[EQUIP_SLOT_WEAPON])
@@ -171,7 +171,7 @@ void ARX_THROWN_OBJECT_Throw(EntityHandle source, const Vec3f & position, const 
 		Entity * tio = entities[player.equiped[EQUIP_SLOT_WEAPON]];
 		
 		if(tio->ioflags & IO_FIERY)
-			thrownObj->flags |= ATO_FIERY;
+			projectile->flags |= ATO_FIERY;
 	}
 }
 
