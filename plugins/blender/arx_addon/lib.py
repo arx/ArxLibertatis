@@ -27,11 +27,21 @@ class ArxIO(object):
 
     def __init__(self):
         if platform.system() == "Windows":
-            libPath = os.path.realpath(__file__ + "\..\ArxIO.dll")
+            libPaths = [ os.path.realpath(__file__ + "\..\ArxIO.dll") ]
         else:
-            libPath = os.path.realpath(__file__ + "/../ArxIO.so")
+            libPaths = [
+                os.path.realpath(__file__ + "/../libArxIO.so.0"),
+                os.path.realpath(__file__ + "/../libArxIO.so")
+            ]
         
-        self.lib = ctypes.cdll.LoadLibrary(libPath)
+        for libPath in libPaths:
+            try:
+                self.lib = ctypes.cdll.LoadLibrary(libPath)
+                break
+            except:
+                continue
+        if self.lib is None:
+            raise Exception('could not load the ArxIO library from ' + ', '.join(libPaths))
         self.lib.ArxIO_init()
 
     def getError(self):
