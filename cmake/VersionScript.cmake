@@ -20,16 +20,12 @@ endmacro()
 
 set(var "")
 foreach(arg IN LISTS VERSION_SOURCES)
-	
 	if(var STREQUAL "")
 		set(var ${arg})
-		continue()
+	else()
+		parse_version_file(${var} "${arg}" ON)
+		set(var "")
 	endif()
-	
-	parse_version_file(${var} "${arg}" ON)
-	
-	set(var "")
-	
 endforeach()
 
 # Check for a git directory and fill in the git commit hash if one exists.
