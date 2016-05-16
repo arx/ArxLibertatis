@@ -1657,11 +1657,6 @@ void EERIEDrawAnimQuatRender(EERIE_3DOBJ *eobj, const Vec3f & pos, Entity *io, f
 	Cedric_AnimateDrawEntityRender(eobj, pos, io, invisibility);
 }
 
-void AnimatedEntityUpdate(Entity * entity, float time) {
-	EERIEDrawAnimQuatUpdate(entity->obj, entity->animlayer, entity->angle,
-							entity->pos, time, entity, true);
-}
-
 void AnimatedEntityRender(Entity * entity, float invisibility) {
 
 	Cedric_ViewProjectTransform(entity->obj);

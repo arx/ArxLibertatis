@@ -112,7 +112,6 @@ void EERIEDrawAnimQuatUpdate(EERIE_3DOBJ * eobj,
 
 void EERIEDrawAnimQuatRender(EERIE_3DOBJ *eobj, const Vec3f & pos, Entity *io, float invisibility);
 
-void AnimatedEntityUpdate(Entity * entity, float time);
 void AnimatedEntityRender(Entity * entity, float invisibility);
 
 #endif // ARX_ANIMATION_ANIMATIONRENDER_H
