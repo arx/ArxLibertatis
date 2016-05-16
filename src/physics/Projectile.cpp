@@ -72,7 +72,7 @@ struct Projectile {
 
 const size_t MAX_THROWN_OBJECTS = 100;
 
-Projectile Thrown[MAX_THROWN_OBJECTS];
+Projectile g_projectiles[MAX_THROWN_OBJECTS];
 
 static bool IsPointInField(const Vec3f & pos) {
 
@@ -99,9 +99,9 @@ static bool IsPointInField(const Vec3f & pos) {
 
 static void ARX_THROWN_OBJECT_Kill(long num) {
 	if(num >= 0 && size_t(num) < MAX_THROWN_OBJECTS) {
-		Thrown[num].flags = 0;
-		delete Thrown[num].m_trail;
-		Thrown[num].m_trail = NULL;
+		g_projectiles[num].flags = 0;
+		delete g_projectiles[num].m_trail;
+		g_projectiles[num].m_trail = NULL;
 	}
 }
 
@@ -117,10 +117,10 @@ static long ARX_THROWN_OBJECT_GetFree() {
 	long latest_obj = -1;
 
 	for(size_t i = 0; i < MAX_THROWN_OBJECTS; i++) {
-		if(Thrown[i].flags & ATO_EXIST) {
-			if(Thrown[i].creation_time < latest_time) {
+		if(g_projectiles[i].flags & ATO_EXIST) {
+			if(g_projectiles[i].creation_time < latest_time) {
 				latest_obj = i;
-				latest_time = Thrown[i].creation_time;
+				latest_time = g_projectiles[i].creation_time;
 			}
 		} else {
 			return i;
@@ -146,7 +146,7 @@ void ARX_THROWN_OBJECT_Throw(EntityHandle source, const Vec3f & position, const 
 	if(num < 0)
 		return;
 		
-	Projectile *thrownObj = &Thrown[num];
+	Projectile *thrownObj = &g_projectiles[num];
 	
 	thrownObj->damages = damages;
 	thrownObj->position = position;
@@ -184,7 +184,7 @@ static float ARX_THROWN_ComputeDamages(long thrownum, EntityHandle source,
 
 	SendIOScriptEvent(io_target, SM_AGGRESSION);
 
-	float distance = fdist(Thrown[thrownum].position, Thrown[thrownum].initial_position);
+	float distance = fdist(g_projectiles[thrownum].position, g_projectiles[thrownum].initial_position);
 	float distance_modifier = 1.f;
 
 	if(distance < distance_limit * 2.f) {
@@ -202,7 +202,7 @@ static float ARX_THROWN_ComputeDamages(long thrownum, EntityHandle source,
 	bool critical = false;
 
 	if(source == PlayerEntityHandle) {
-		attack = Thrown[thrownum].damages;
+		attack = g_projectiles[thrownum].damages;
 
 		if(Random::getf(0.f, 100.f) <= float(player.m_attributeFull.dexterity - 9) * 2.f
 						   + float(player.m_skillFull.projectile * 0.2f)) {
@@ -264,7 +264,7 @@ static float ARX_THROWN_ComputeDamages(long thrownum, EntityHandle source,
 
 	power = power * 0.15f + 0.85f;
 
-	ARX_SOUND_PlayCollision(*amat, wmat, power, 1.f, Thrown[thrownum].position, io_source);
+	ARX_SOUND_PlayCollision(*amat, wmat, power, 1.f, g_projectiles[thrownum].position, io_source);
 
 	dmgs *= backstab;
 	dmgs -= dmgs * (absorb * ( 1.0f / 100 ));
@@ -338,8 +338,8 @@ static EERIEPOLY * CheckArrowPolyCollision(const Vec3f & start, const Vec3f & en
 
 static void CheckExp(long i) {
 	
-	if((Thrown[i].flags & ATO_FIERY) && !(Thrown[i].flags & ATO_UNDERWATER)) {
-		const Vec3f & pos = Thrown[i].position;
+	if((g_projectiles[i].flags & ATO_FIERY) && !(g_projectiles[i].flags & ATO_UNDERWATER)) {
+		const Vec3f & pos = g_projectiles[i].position;
 
 		ARX_BOOMS_Add(pos);
 		LaunchFireballBoom(pos, 10);
@@ -368,7 +368,7 @@ void ARX_THROWN_OBJECT_Render() {
 	GRenderer->SetRenderState(Renderer::DepthTest, true);
 
 	for(size_t i = 0; i < MAX_THROWN_OBJECTS; i++) {
-		Projectile *thrownObj = &Thrown[i];
+		Projectile *thrownObj = &g_projectiles[i];
 		if(!(thrownObj->flags & ATO_EXIST))
 			continue;
 
@@ -387,7 +387,7 @@ void ARX_THROWN_OBJECT_Render() {
 void ARX_THROWN_OBJECT_Manage(unsigned long time_offset)
 {
 	for(size_t i = 0; i < MAX_THROWN_OBJECTS; i++) {
-		Projectile *thrownObj = &Thrown[i];
+		Projectile *thrownObj = &g_projectiles[i];
 		if(!(thrownObj->flags & ATO_EXIST))
 			continue;
 
