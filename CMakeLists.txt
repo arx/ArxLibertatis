@@ -1180,6 +1180,26 @@ file(MAKE_DIRECTORY "${CMAKE_BINARY_DIR}/core")
 version_file("${VERSION_TEMPLATE}" "${VERSION_FILE}" "${VERSION_SOURCES}" ".git")
 list(APPEND ARX_SOURCES ${VERSION_FILE})
 
+if(WIN32)
+	set(VERSION_RC_TEMPLATE "${SRC_DIR}/core/Version.rc.in")
+	function(create_version_resource exe name)
+		set(rc_file "${CMAKE_BINARY_DIR}/${exe}-version.rc")
+		set(rc_sources VERSION "VERSION")
+		if(ARGC GREATER 2)
+			list(APPEND rc_sources ${ARGV2} "${ARGV2}")
+		endif()
+		set(rc_defines
+			"-DEXE=${exe}"
+			"-DNAME=${name}"
+		)
+		set(${exe}-version.rc "${rc_file}" PARENT_SCOPE)
+		version_file("${VERSION_RC_TEMPLATE}"
+		             "${rc_file}" "${rc_sources}" ".git" "${rc_defines}")
+	endfunction()
+	create_version_resource(arx "Arx Libertatis" COPYING)
+	list(APPEND ARX_SOURCES ${arx-version.rc})
+endif()
+
 
 # Add executables
 
@@ -1224,6 +1244,8 @@ if(ARX_HAVE_CRASHREPORTER)
 	
 	if(WIN32)
 		list(APPEND arxcrashreporter_SOURCES ${ARX_ICON_RC})
+		create_version_resource(arxcrashreporter "Arx Libertatis Crash Reporter")
+		list(APPEND arxcrashreporter_SOURCES ${arxcrashreporter-version.rc})
 	endif()
 	
 	set(arxcrashreporter_MANUAL_SOURCES
@@ -1315,6 +1337,8 @@ if(ARX_HAVE_PROFILER)
 		list(APPEND arxprofiler_SOURCES
 			${ARX_ICON_RC}
 		)
+		create_version_resource(arxprofiler "Arx Libertatis Profiler")
+		list(APPEND arxprofiler_SOURCES ${arxprofiler-version.rc})
 	endif()
 	
 	set(arxprofiler_MANUAL_SOURCES
@@ -1391,6 +1415,11 @@ if(BUILD_TOOLS)
 		tools/savetool/SaveView.cpp
 	)
 	
+	if(WIN32)
+		create_version_resource(arxsavetool "Arx Libertatis Save File Tool")
+		list(APPEND arxsavetool_SOURCES ${arxsavetool-version.rc})
+	endif()
+	
 	set(arxsavetool_LIBRARIES ${BASE_LIBRARIES} ${ZLIB_LIBRARIES})
 	
 	add_executable_shared(arxsavetool "${arxsavetool_SOURCES}" "${arxsavetool_LIBRARIES}")
@@ -1404,6 +1433,11 @@ if(BUILD_TOOLS)
 		${UTIL_SOURCES}
 		tools/unpak/UnPak.cpp
 	)
+	
+	if(WIN32)
+		create_version_resource(arxunpak "Arx Libertatis PAK File Unpacker")
+		list(APPEND arxunpak_SOURCES ${arxunpak-version.rc})
+	endif()
 	
 	set(arxunpak_LIBRARIES ${BASE_LIBRARIES})
 	
