@@ -228,6 +228,14 @@ include(CheckSymbolExists)
 include(CheckTypeSize)
 
 set(CMAKE_MODULE_PATH "${CMAKE_SOURCE_DIR}/cmake") # For custom cmake modules
+
+include(VersionString)
+set(version_names VERSION IO_LIBRARY_ABI_VERSION)
+parse_version_file("${version_names}" "VERSION")
+if(VERSION_ERROR OR IO_LIBRARY_ABI_VERSION_ERROR)
+	message(WARNING "Error parsing version file!")
+endif()
+
 include(BuildSystem)
 include(BuildType)
 include(CompileCheck)
@@ -236,7 +244,6 @@ include(CreateSourceGroups)
 include(PrintConfiguration)
 include(StyleCheck)
 include(UseStaticLibs)
-include(VersionString)
 
 
 # Find required libraries
@@ -1426,6 +1433,7 @@ if(BUILD_IO_LIBRARY)
 	
 	add_library_shared(ArxIO "${ArxIO_SOURCES}" "${ArxIO_LIBRARIES}")
 	set_binary_public_headers(ArxIO src/lib/ArxIO.h)
+	set_binary_version(ArxIO "${VERSION_NUMBER}" "${IO_LIBRARY_ABI_VERSION}")
 	
 endif()
 
