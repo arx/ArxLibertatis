@@ -31,7 +31,8 @@ class ArxIO(object):
         else:
             libPaths = [
                 os.path.realpath(__file__ + "/../libArxIO.so.0"),
-                os.path.realpath(__file__ + "/../libArxIO.so")
+                os.path.realpath(__file__ + "/../libArxIO.so"),
+                "libArxIO.so.0"
             ]
         
         for libPath in libPaths:
