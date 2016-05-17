@@ -1282,8 +1282,14 @@ if(ARX_HAVE_CRASHREPORTER)
 		tools/crashreporter/qhexedit/QHexEdit.h
 		tools/crashreporter/qhexedit/QHexEditPrivate.h
 	)
+	
+	file(MAKE_DIRECTORY "${CMAKE_BINARY_DIR}/tools/crashreporter/resources")
+	configure_file(
+		tools/crashreporter/resources/CrashReporter.qrc.in
+		${CMAKE_BINARY_DIR}/tools/crashreporter/resources/CrashReporter.qrc
+	)
 	qt_add_resources(arxcrashreporter_Qt_SOURCES
-		tools/crashreporter/resources/CrashReporter.qrc
+		${CMAKE_BINARY_DIR}/tools/crashreporter/resources/CrashReporter.qrc
 	)
 	
 	list(APPEND arxcrashreporter_SOURCES ${arxcrashreporter_Qt_SOURCES})

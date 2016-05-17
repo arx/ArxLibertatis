@@ -1,7 +1,0 @@
-<RCC>
-	<qresource prefix="/">
-		<file>failure.png</file>
-		<file>success.png</file>
-		<file>logo.png</file>
-	</qresource>
-</RCC>
