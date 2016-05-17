@@ -110,6 +110,8 @@ suboption(ZLIB_USE_STATIC_LIBS     "Statically link ZLIB"     BOOL ${USE_STATIC_
 # Icons
 if(WIN32)
 	set(default_ICON_TYPE "ico")
+elseif(MACOSX)
+	set(default_ICON_TYPE "icns")
 else()
 	set(default_ICON_TYPE "iconset")
 endif()
