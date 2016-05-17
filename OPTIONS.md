@@ -94,3 +94,10 @@ By default, optional components will be automatically disabled if their dependen
 1. There is currently no other rendering backend, disabling this will make the build fail.
 2. There is currently no other audo backend, there will be no audio when disabling this. Additionally, builds without audio are not well tested and there may be other problems.
 3. Existing options can be unset by passing `-U<option>` to cmake.
+
+### Icons
+
+* `ICON_TYPE` (default: *platform specific*): Type(s) of icons to generate and install. Valid options are:
+ * `png` Portable .png  icons (installed under `ICONDIR`)
+ * `all` Generate all possible icon types
+ * `none` Don't generate any icons
