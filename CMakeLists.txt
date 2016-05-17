@@ -108,7 +108,11 @@ suboption(Freetype_USE_STATIC_LIBS "Statically link FreeType" BOOL ${USE_STATIC_
 suboption(ZLIB_USE_STATIC_LIBS     "Statically link ZLIB"     BOOL ${USE_STATIC_LIBS})
 
 # Icons
-set(default_ICON_TYPE "none")
+if(WIN32)
+	set(default_ICON_TYPE "none")
+else()
+	set(default_ICON_TYPE "png")
+endif()
 suboption(ICON_TYPE "Icon type" STRING ${default_ICON_TYPE})
 suboption(DATA_FILES "Location of prebuilt data files" STRING "")
 option(OPTIMIZE_ICONS "Optimize PNG compression for generated icons" ON)
@@ -1562,7 +1566,6 @@ if(NOT WIN32 AND NOT MACOSX)
 		)
 	endif()
 	
-	install(FILES data/icons/arx-libertatis.png DESTINATION "${ICONDIR}" OPTIONAL)
 	install(FILES data/icons/arx-libertatis.desktop DESTINATION "${APPDIR}" OPTIONAL)
 	
 endif()

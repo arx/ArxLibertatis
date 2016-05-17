@@ -44,6 +44,7 @@ add_icon(arx-libertatis
 	arx-libertatis-32.svg 32@2x 512
 	arx-libertatis-16.svg 16@2x
 	PNG ${png_sizes}
+	INSTALL
 )
 
 add_custom_target(data DEPENDS
