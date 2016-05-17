@@ -23,6 +23,32 @@
 #include "game/GameTypes.h"
 #include "graphics/GraphicsTypes.h"
 
+class Trail;
+
+enum ProjectileFlag {
+	ATO_EXIST      = (1<<0),
+	ATO_MOVING     = (1<<1),
+	ATO_UNDERWATER = (1<<2),
+	ATO_FIERY      = (1<<3)
+};
+DECLARE_FLAGS(ProjectileFlag, ProjectileFlags)
+DECLARE_FLAGS_OPERATORS(ProjectileFlags)
+
+struct Projectile {
+	ProjectileFlags flags;
+	Vec3f vector;
+	glm::quat quat;
+	Vec3f initial_position;
+	float velocity;
+	Vec3f position;
+	float damages;
+	EERIE_3DOBJ * obj;
+	EntityHandle source;
+	unsigned long creation_time;
+	float poisonous;
+	Trail * m_trail;
+};
+
 void ARX_THROWN_OBJECT_Throw(EntityHandle source, const Vec3f & position, const Vec3f & vect, const glm::quat & quat, float velocity, float damages, float poisonous);
 
 void ARX_THROWN_OBJECT_KillAll();
