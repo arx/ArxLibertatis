@@ -111,9 +111,9 @@ suboption(ZLIB_USE_STATIC_LIBS     "Statically link ZLIB"     BOOL ${USE_STATIC_
 if(WIN32)
 	set(default_ICON_TYPE "none")
 else()
-	set(default_ICON_TYPE "png")
+	set(default_ICON_TYPE "iconset")
 endif()
-suboption(ICON_TYPE "Icon type" STRING ${default_ICON_TYPE})
+suboption(ICON_TYPE "Icon type (iconset/png)" STRING ${default_ICON_TYPE})
 suboption(DATA_FILES "Location of prebuilt data files" STRING "")
 option(OPTIMIZE_ICONS "Optimize PNG compression for generated icons" ON)
 
@@ -158,6 +158,8 @@ else()
 endif()
 set(ICONDIR "${CMAKE_INSTALL_DATAROOTDIR}/pixmaps" CACHE
     STRING "Install location for icons (relative to prefix).")
+set(ICONTHEMEDIR "${CMAKE_INSTALL_DATAROOTDIR}/icons/hicolor" CACHE
+    STRING "Install location for themable icons (relative to prefix).")
 set(APPDIR "${CMAKE_INSTALL_DATAROOTDIR}/applications" CACHE
     STRING "Install location for .desktop files (relative to prefix).")
 set(GAMESBINDIR "${CMAKE_INSTALL_BINDIR}" CACHE

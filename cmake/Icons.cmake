@@ -13,6 +13,7 @@ set(OptiPNG_OPTIONS -quiet)
 #
 # Usage: add_icon([TARGET] name
 #   source.svg source_size_spec [source_render_size] [source2.svg …]
+#   [ICONSET overview_size_specs]
 #   [PNG png_size_specs]
 #   [OVERVIEW overview_size_specs]
 #   [ALL]
@@ -29,6 +30,8 @@ set(OptiPNG_OPTIONS -quiet)
 # source_render_size  The resulution to rasterize the .svg at
 #                     If this differs from the source_size_spec the result will be scaled.
 #
+# ICONSET             Generate a set of .png icons for use with the icon theme spec
+#                     The path to the icon files will be stored in ${${name}-iconset}.
 # PNG                 Generate a set of portable .png icons
 #                     The path to the icon files will be stored in ${${name}-png}.
 #                     The path to the first icon will be stored in ${${name}.png}.
@@ -53,6 +56,7 @@ set(OptiPNG_OPTIONS -quiet)
 #                     When using this option, all icon types with defined sizes are built.
 #
 # INSTALL             Install the generated icons to standard system locations.
+#                     ICONSET icons are installed to ${ICONTHEMEDIR}/${size}x${size}/apps
 #                     PNG icons are installed to ${ICONDIR}
 #                     OVERVIEWs are never installed
 #
@@ -64,7 +68,7 @@ set(OptiPNG_OPTIONS -quiet)
 #                      those files.
 #
 # ICON_TYPE            The icon type(s) to generate. Can be "none", "all" or a list of one
-#                      or more of "png" and "overview".
+#                      or more of "iconset", "png" and "overview".
 #                      Ignored if only sizes for the PNG type are specified or if the
 #                      ALL option is used.
 #
@@ -79,9 +83,10 @@ function(add_icon name)
 	
 	set(MODE_DEFAULT  0)
 	set(MODE_SOURCE   1)
-	set(MODE_PNG      2)
-	set(MODE_OVERVIEW 3)
-	set(MODE_NAME     4)
+	set(MODE_ICONSET  2)
+	set(MODE_PNG      3)
+	set(MODE_OVERVIEW 4)
+	set(MODE_NAME     5)
 	
 	set(mode ${MODE_DEFAULT})
 	
@@ -94,6 +99,7 @@ function(add_icon name)
 	
 	set(current_source)
 	
+	set(iconset_sizes)
 	set(png_sizes)
 	set(overview_sizes)
 	
@@ -114,6 +120,9 @@ function(add_icon name)
 			set(current_source_size)
 			set(current_source_render_size)
 			set(mode ${MODE_SOURCE})
+		elseif(arg STREQUAL "ICONSET")
+			_add_icon_source()
+			set(mode ${MODE_ICONSET})
 		elseif(arg STREQUAL "PNG")
 			_add_icon_source()
 			set(mode ${MODE_PNG})
@@ -136,6 +145,8 @@ function(add_icon name)
 			else()
 				message(FATAL_ERROR "Unexpected icon argument: ${arg}")
 			endif()
+		elseif(mode EQUAL MODE_ICONSET)
+			list(APPEND iconset_sizes ${arg})
 		elseif(mode EQUAL MODE_PNG)
 			list(APPEND png_sizes ${arg})
 		elseif(mode EQUAL MODE_OVERVIEW)
@@ -148,31 +159,85 @@ function(add_icon name)
 	
 	# Clean output variables
 	
-	foreach(size IN LISTS source_sizes png_sizes)
+	foreach(size IN LISTS source_sizes ico_sizes icns_sizes iconset_sizes ico_sizes
+	                      png_sizes overview_sizes)
+		_remove_icon_bits(size ${size})
 		unset(${name}-${size}.png CACHE)
 	endforeach()
+	if(ico_sizes)
+		unset(${name}.ico CACHE)
+		unset(${target}.rc CACHE)
+	endif()
+	if(icns_sizes)
+		unset(${name}.icns CACHE)
+	endif()
+	if(iconset_sizes)
+		unset(${name}-iconset CACHE)
+	endif()
 	if(png_sizes)
 		unset(${name}.png CACHE)
 		unset(${name}-png CACHE)
+	endif()
+	if(overview_sizes)
+		unset(${target}-overview ${overview_file} CACHE)
 	endif()
 	
 	# Generate icons
 	
 	set(generated_sizes)
 	
-	if(NOT png_sizes)
-		set(png_sizes ${source_sizes})
+	if(NOT ico_sizes AND NOT icns_sizes AND NOT iconset_sizes AND NOT overview_sizes)
+		if(NOT png_sizes)
+			set(png_sizes ${source_sizes})
+		endif()
+		set(all_types 1)
 	endif()
-	set(all_types 1)
 	if((all_types AND NOT ICON_TYPE STREQUAL "none") OR ICON_TYPE STREQUAL "all")
-		set(ICON_TYPE "png")
+		set(ICON_TYPE "ico" "icns" "iconset" "png" "overview")
 	endif()
 	
 	set(outputs)
 	
 	foreach(type IN LISTS ICON_TYPE)
 		
-		if(type STREQUAL "png")
+		if(type STREQUAL "iconset")
+			
+			# Linux icon
+			# https://specifications.freedesktop.org/icon-theme-spec/icon-theme-spec-latest.html
+			
+			if(iconset_sizes)
+				
+				set(iconset_files)
+				
+				foreach(size IN LISTS iconset_sizes)
+					
+					_add_icon_size(source ${size})
+					if(source)
+						
+						list(APPEND iconset_files ${source})
+						
+						if(install)
+							_get_icon_size(ssize ${size})
+							install(
+								FILES ${source}
+								DESTINATION "${ICONTHEMEDIR}/${ssize}x${size}/apps"
+								COMPONENT icons
+								RENAME "${name}.png"
+								OPTIONAL
+							)
+						endif()
+						
+					endif()
+					
+				endforeach()
+				
+				list(APPEND outputs ${iconset_files})
+				
+				set(${name}-iconset ${iconset_files} CACHE INTERNAL "")
+				
+			endif()
+			
+		elseif(type STREQUAL "png")
 			
 			# Portable icon
 			

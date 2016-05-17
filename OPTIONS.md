@@ -62,7 +62,8 @@ Arx Libertatis adjust the compiler flags to provide an optimal configuration for
 The following options can be used to customize where `make install` puts the various components. All of the following paths can either be absolute or relative to the `CMAKE_INSTALL_PREFIX`.
 
 * `CMAKE_INSTALL_DATAROOTDIR` (default: `share`): Where to install data files
-* `ICONDIR` (default: `${DATAROOTDIR}/pixmaps`): Where to install icons
+* `ICONDIR` (default: `${DATAROOTDIR}/pixmaps`): Where to install standalone icons
+* `ICONTHEMEDIR` (default: `${DATAROOTDIR}/icons/hicolor`): Where to install themable icon sets
 * `APPDIR` (default: `${DATAROOTDIR}/applications`): Where to install .desktop files
 * `CMAKE_INSTALL_INCLUDEDIR` (default: `include`): Where to install C include files
 * `CMAKE_INSTALL_MANDIR` (default: `${DATAROOTDIR}/man`): Where to install man pages
@@ -98,6 +99,7 @@ By default, optional components will be automatically disabled if their dependen
 ### Icons
 
 * `ICON_TYPE` (default: *platform specific*): Type(s) of icons to generate and install. Valid options are:
+ * `iconset` Themable .png icon sets (installed in a `${size}x${size}/apps/${name}.png` hierarchy under `ICONTHEMEDIR`) [default on Linux and other systems]
  * `png` Portable .png  icons (installed under `ICONDIR`)
  * `overview` Icon size comparison montage (not installed)
  * `all` Generate all possible icon types

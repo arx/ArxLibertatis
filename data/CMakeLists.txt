@@ -30,6 +30,21 @@ foreach(dir IN LISTS data_sources)
 	endif()
 endforeach()
 
+# Sizes in the Linux themable icon set
+set(iconset_sizes
+	16
+	22
+	24
+	32
+	48
+	64
+	96
+	128
+	192
+	256
+	512
+)
+
 # Sizes for the portable PNG icon - first is the default size
 set(png_sizes
 	128
@@ -60,6 +75,7 @@ add_icon(arx-libertatis
 	arx-libertatis.svg    1024
 	arx-libertatis-32.svg 32@2x 512
 	arx-libertatis-16.svg 16@2x
+	ICONSET ${iconset_sizes}
 	PNG ${png_sizes}
 	OVERVIEW ${overview_sizes}
 	INSTALL
