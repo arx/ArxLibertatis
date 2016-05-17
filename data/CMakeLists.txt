@@ -50,6 +50,20 @@ set(ico_sizes
 	256
 )
 
+# Sizes in the Mac OS X .icns file
+set(icns_sizes
+	16
+	16@2x
+	32
+	32@2x
+	128
+	128@2x
+	256
+	256@2x
+	512
+	512@2x
+)
+
 # Sizes in the Linux themable icon set
 set(iconset_sizes
 	16
@@ -96,6 +110,7 @@ add_icon(arx-libertatis
 	arx-libertatis-32.svg 32@2x 512
 	arx-libertatis-16.svg 16@2x
 	ICO ${ico_sizes}
+	ICNS ${icns_sizes}
 	ICONSET ${iconset_sizes}
 	PNG ${png_sizes}
 	OVERVIEW ${overview_sizes}

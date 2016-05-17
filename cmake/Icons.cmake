@@ -8,12 +8,14 @@ set(ICON_RESOURCE_SCRIPT "${CMAKE_CURRENT_LIST_DIR}/ConfigureFileScript.cmake")
 set(Inkscape_OPTIONS)
 set(ImageMagick_OPTIONS -filter lanczos -colorspace sRGB)
 set(OptiPNG_OPTIONS -quiet)
+set(iconutil_OPTIONS)
 
 # Add an icon generated from source icons
 #
 # Usage: add_icon([TARGET] name
 #   source.svg source_size_spec [source_render_size] [source2.svg …]
 #   [ICO ico_size_specs]
+#   [ICNS icns_size_specs]
 #   [ICONSET overview_size_specs]
 #   [PNG png_size_specs]
 #   [OVERVIEW overview_size_specs]
@@ -34,6 +36,8 @@ set(OptiPNG_OPTIONS -quiet)
 # ICO                 Generate a Windows .ico file containing the following sizes
 #                     The path to the .ico file will be stored in ${${name}.ico}.
 #                     The path to a resource script will be stored in ${${name}-icon.rc}.
+# ICNS                Generate a Mac OS X .icns file containing the following sizes
+#                     The path to the .icns file will be stored in ${${name}.icns}.
 # ICONSET             Generate a set of .png icons for use with the icon theme spec
 #                     The path to the icon files will be stored in ${${name}-iconset}.
 # PNG                 Generate a set of portable .png icons
@@ -68,6 +72,7 @@ set(OptiPNG_OPTIONS -quiet)
 #
 # INSTALL             Install the generated icons to standard system locations.
 #                     ICO icons are never installed
+#                     ICNS icons are installed to ${ICONDIR}
 #                     ICONSET icons are installed to ${ICONTHEMEDIR}/${size}x${size}/apps
 #                     PNG icons are installed to ${ICONDIR}
 #                     OVERVIEWs are never installed
@@ -80,7 +85,7 @@ set(OptiPNG_OPTIONS -quiet)
 #                      those files.
 #
 # ICON_TYPE            The icon type(s) to generate. Can be "none", "all" or a list of one
-#                      or more of "ico", "iconset", "png" and "overview".
+#                      or more of "ico", "icns", "iconset", "png" and "overview".
 #                      Ignored if only sizes for the PNG type are specified or if the
 #                      ALL option is used.
 #
@@ -91,15 +96,18 @@ set(OptiPNG_OPTIONS -quiet)
 #
 # OptiPNG_OPTIONS      Additional command-line options to pass to optipng.
 #
+# iconutil_OPTIONS     Additional command-line options to pass to iconutil / icnsutil.
+#
 function(add_icon name)
 	
 	set(MODE_DEFAULT  0)
 	set(MODE_SOURCE   1)
 	set(MODE_ICO      2)
-	set(MODE_ICONSET  3)
-	set(MODE_PNG      4)
-	set(MODE_OVERVIEW 5)
-	set(MODE_NAME     6)
+	set(MODE_ICNS     3)
+	set(MODE_ICONSET  4)
+	set(MODE_PNG      5)
+	set(MODE_OVERVIEW 6)
+	set(MODE_NAME     7)
 	
 	set(mode ${MODE_DEFAULT})
 	
@@ -113,6 +121,7 @@ function(add_icon name)
 	set(current_source)
 	
 	set(ico_sizes)
+	set(icns_sizes)
 	set(iconset_sizes)
 	set(png_sizes)
 	set(overview_sizes)
@@ -137,6 +146,9 @@ function(add_icon name)
 		elseif(arg STREQUAL "ICO")
 			_add_icon_source()
 			set(mode ${MODE_ICO})
+		elseif(arg STREQUAL "ICNS")
+			_add_icon_source()
+			set(mode ${MODE_ICNS})
 		elseif(arg STREQUAL "ICONSET")
 			_add_icon_source()
 			set(mode ${MODE_ICONSET})
@@ -164,6 +176,8 @@ function(add_icon name)
 			endif()
 		elseif(mode EQUAL MODE_ICO)
 			list(APPEND ico_sizes ${arg})
+		elseif(mode EQUAL MODE_ICNS)
+			list(APPEND icns_sizes ${arg})
 		elseif(mode EQUAL MODE_ICONSET)
 			list(APPEND iconset_sizes ${arg})
 		elseif(mode EQUAL MODE_PNG)
@@ -294,6 +308,72 @@ function(add_icon name)
 				
 				set(${name}.ico ${ico_file} CACHE INTERNAL "")
 				set(${target}.rc ${rc_file} CACHE INTERNAL "")
+				
+			endif()
+			
+		elseif(type STREQUAL "icns")
+			
+			# Mac OS X icon
+			
+			if(icns_sizes)
+				
+				_find_icon(icns_file "${name}.icns")
+				
+				if(NOT icns_file AND icns_sizes)
+					
+					find_package(iconutil REQUIRED)
+					
+					set(icns_file "${ICON_BINARY_DIR}/${name}.icns")
+					set(iconset_dir "${CMAKE_CURRENT_BINARY_DIR}/${name}.iconset")
+					set(iconset_commands)
+					set(icns_depends "${iconutil_EXECUTABLE}" )
+					
+					foreach(size IN LISTS icns_sizes)
+						
+						_add_icon_size(source ${size})
+						if(source)
+							
+							_get_icon_size(ssize ${size})
+							list(APPEND iconset_commands
+								COMMAND "${CMAKE_COMMAND}" -E copy
+									"${source}" "${iconset_dir}/icon_${ssize}x${size}.png"
+							)
+							
+							list(APPEND icns_depends "${source}")
+							
+						endif()
+						
+					endforeach()
+					
+					list(APPEND icns_command "${icns_file}")
+					
+					add_custom_command(
+						OUTPUT "${icns_file}"
+						COMMAND "${CMAKE_COMMAND}" -E remove_directory "${iconset_dir}"
+						COMMAND "${CMAKE_COMMAND}" -E make_directory "${iconset_dir}"
+						${iconset_commands}
+						COMMAND "${CMAKE_COMMAND}" -E make_directory "${ICON_BINARY_DIR}"
+						COMMAND "${iconutil_EXECUTABLE}" ${iconutil_OPTIONS}
+							-c icns -o "${icns_file}" "${iconset_dir}"
+						DEPENDS ${icns_depends}
+						COMMENT "Generating ${name}.icns"
+						VERBATIM
+					)
+					
+				endif()
+				
+				if(install)
+					install(
+						FILES ${icns_file}
+						DESTINATION "${ICONDIR}"
+						COMPONENT icons
+						OPTIONAL
+					)
+				endif()
+				
+				list(APPEND outputs ${icns_file})
+				
+				set(${name}.icns ${icns_file} CACHE INTERNAL "")
 				
 			endif()
 			

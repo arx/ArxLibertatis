@@ -113,7 +113,7 @@ if(WIN32)
 else()
 	set(default_ICON_TYPE "iconset")
 endif()
-suboption(ICON_TYPE "Icon type (ico/iconset/png)" STRING ${default_ICON_TYPE})
+suboption(ICON_TYPE "Icon type (ico/icns/iconset/png)" STRING ${default_ICON_TYPE})
 suboption(DATA_FILES "Location of prebuilt data files" STRING "")
 option(OPTIMIZE_ICONS "Optimize PNG compression for generated icons" ON)
 

@@ -31,6 +31,7 @@ Reddit: [http://www.reddit.com/r/ArxFatalis/](http://www.reddit.com/r/ArxFatalis
 * **[GLM](http://glm.g-truc.net/) 0.9.5.0**+
 * **[FreeType](http://www.freetype.org/) 2.3.0**+
 * **OpenAL 1.1**+ ([OpenAL Soft](http://kcat.strangesoft.net/openal.html) strongly recommended!)
+* **iconutil** (form Xcode) or **[icnsutil](https://github.com/pornel/libicns)** (Mac OS X only)
 
 Systems without Win32 or POSIX filesystem support will also the `filesystem` and `system` libraries from Boost.
 
