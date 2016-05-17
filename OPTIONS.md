@@ -99,6 +99,7 @@ By default, optional components will be automatically disabled if their dependen
 
 * `ICON_TYPE` (default: *platform specific*): Type(s) of icons to generate and install. Valid options are:
  * `png` Portable .png  icons (installed under `ICONDIR`)
+ * `overview` Icon size comparison montage (not installed)
  * `all` Generate all possible icon types
  * `none` Don't generate any icons
 

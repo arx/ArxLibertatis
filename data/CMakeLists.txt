@@ -39,11 +39,29 @@ set(png_sizes
 	16
 )
 
+# Montage for comparing different icon sizes
+set(overview_sizes
+	16
+	20
+	22
+	24
+	32
+	40
+	48
+	64
+	96
+	128
+	192
+	256
+	512
+)
+
 add_icon(arx-libertatis
 	arx-libertatis.svg    1024
 	arx-libertatis-32.svg 32@2x 512
 	arx-libertatis-16.svg 16@2x
 	PNG ${png_sizes}
+	OVERVIEW ${overview_sizes}
 	INSTALL
 )
 

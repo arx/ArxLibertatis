@@ -14,6 +14,7 @@ set(OptiPNG_OPTIONS -quiet)
 # Usage: add_icon([TARGET] name
 #   source.svg source_size_spec [source_render_size] [source2.svg …]
 #   [PNG png_size_specs]
+#   [OVERVIEW overview_size_specs]
 #   [ALL]
 #   [INSTALL]
 # )
@@ -31,6 +32,8 @@ set(OptiPNG_OPTIONS -quiet)
 # PNG                 Generate a set of portable .png icons
 #                     The path to the icon files will be stored in ${${name}-png}.
 #                     The path to the first icon will be stored in ${${name}.png}.
+# OVERVIEW            Generate a montage of different icon sizes
+#                     The path to the file will be stored in ${${name}-icon-overview}.
 #
 # The icon size specs for both the source files and the generated files
 # can be on of the following:
@@ -38,9 +41,11 @@ set(OptiPNG_OPTIONS -quiet)
 #  ${height}@${multiplier}  Generate an icon with display resolution ${height} and
 #                           pixel resolution ${height} * ${multiplier}.
 #
-# The order of the sizes matters for PNG icons
+# The order of the sizes matters for PNG and OVERVIEW icons
 #  For PNG icons the first size is used as the default size.
 #    The remaining order is ignored.
+#  For OVERVIEWs the order determines the order of the icons in the overview
+#  For all other icon types the order is ignored.
 #
 # ALL                 By default only those icon types listed in ICON_TYPE will be built,
 #                     unless ICON_TYPE is "all" or only sizes for the PNG type have been
@@ -58,7 +63,8 @@ set(OptiPNG_OPTIONS -quiet)
 #                      in the paths in this list, they are used instead of re-generating
 #                      those files.
 #
-# ICON_TYPE            The icon type(s) to generate. Can be "none", "all" or "png".
+# ICON_TYPE            The icon type(s) to generate. Can be "none", "all" or a list of one
+#                      or more of "png" and "overview".
 #                      Ignored if only sizes for the PNG type are specified or if the
 #                      ALL option is used.
 #
@@ -74,7 +80,8 @@ function(add_icon name)
 	set(MODE_DEFAULT  0)
 	set(MODE_SOURCE   1)
 	set(MODE_PNG      2)
-	set(MODE_NAME     3)
+	set(MODE_OVERVIEW 3)
+	set(MODE_NAME     4)
 	
 	set(mode ${MODE_DEFAULT})
 	
@@ -88,6 +95,7 @@ function(add_icon name)
 	set(current_source)
 	
 	set(png_sizes)
+	set(overview_sizes)
 	
 	set(install 0)
 	set(all_types 0)
@@ -109,6 +117,9 @@ function(add_icon name)
 		elseif(arg STREQUAL "PNG")
 			_add_icon_source()
 			set(mode ${MODE_PNG})
+		elseif(arg STREQUAL "OVERVIEW")
+			_add_icon_source()
+			set(mode ${MODE_OVERVIEW})
 		elseif(arg STREQUAL "INSTALL")
 			_add_icon_source()
 			set(install 1)
@@ -127,6 +138,8 @@ function(add_icon name)
 			endif()
 		elseif(mode EQUAL MODE_PNG)
 			list(APPEND png_sizes ${arg})
+		elseif(mode EQUAL MODE_OVERVIEW)
+			list(APPEND overview_sizes ${arg})
 		else()
 			message(FATAL_ERROR "Unexpected icon argument: ${arg}")
 		endif()
@@ -199,6 +212,74 @@ function(add_icon name)
 				
 				set(${name}.png ${png_file} CACHE INTERNAL "")
 				set(${name}-png ${png_files} CACHE INTERNAL "")
+				
+			endif()
+			
+		elseif(type STREQUAL "overview")
+			
+			# Icon size comparison chart
+			
+			if(overview_sizes)
+				
+				_find_icon(overview_file "${name}-overview.png")
+				
+				if(NOT overview_file)
+					
+					find_package(ImageMagick COMPONENTS montage REQUIRED)
+					
+					set(overview_file "${ICON_BINARY_DIR}/${name}-overview.png")
+					set(overview_command "${ImageMagick_montage_EXECUTABLE}" ${ImageMagick_OPTIONS})
+					set(overview_depends "${ImageMagick_montage_EXECUTABLE}")
+					
+					foreach(size IN LISTS overview_sizes)
+						
+						_add_icon_size(source ${size})
+						if(source)
+							
+							list(APPEND overview_command
+								"("
+									-bordercolor black -border 20x20
+									-background black -alpha remove
+									"${source}"
+								")"
+								"("
+									-bordercolor gray -border 20x20
+									-background gray -alpha remove
+									"${source}"
+								")"
+								"("
+									-bordercolor white -border 20x20
+									-background white -alpha remove
+									"${source}"
+								")"
+							)
+							list(APPEND overview_depends "${source}")
+							
+						endif()
+						
+					endforeach()
+					
+					list(APPEND overview_command
+						-tile 3x
+						-geometry +0+0
+						-background gray
+						"${overview_file}"
+					)
+					
+					add_custom_command(
+						OUTPUT "${overview_file}"
+						COMMAND "${CMAKE_COMMAND}" -E make_directory "${ICON_BINARY_DIR}"
+						COMMAND ${overview_command}
+						DEPENDS ${overview_depends}
+						COMMENT "Generating ${name}-overview.png"
+						VERBATIM
+					)
+					
+				endif()
+				
+				list(APPEND outputs ${overview_file})
+				
+				set(${target}-overview ${overview_file} CACHE INTERNAL "")
 				
 			endif()
 			
