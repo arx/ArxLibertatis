@@ -30,6 +30,26 @@ foreach(dir IN LISTS data_sources)
 	endif()
 endforeach()
 
+# Sizes in the Windows .ico file - sorted smaller → larger, high bits → low bits
+set(ico_sizes
+	16
+	16@8bit
+	16@4bit
+	20
+	24
+	24@8bit
+	24@4bit
+	32
+	32@8bit
+	32@4bit
+	40
+	48
+	48@8bit
+	64
+	128
+	256
+)
+
 # Sizes in the Linux themable icon set
 set(iconset_sizes
 	16
@@ -75,6 +95,7 @@ add_icon(arx-libertatis
 	arx-libertatis.svg    1024
 	arx-libertatis-32.svg 32@2x 512
 	arx-libertatis-16.svg 16@2x
+	ICO ${ico_sizes}
 	ICONSET ${iconset_sizes}
 	PNG ${png_sizes}
 	OVERVIEW ${overview_sizes}

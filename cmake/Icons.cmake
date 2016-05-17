@@ -13,6 +13,7 @@ set(OptiPNG_OPTIONS -quiet)
 #
 # Usage: add_icon([TARGET] name
 #   source.svg source_size_spec [source_render_size] [source2.svg …]
+#   [ICO ico_size_specs]
 #   [ICONSET overview_size_specs]
 #   [PNG png_size_specs]
 #   [OVERVIEW overview_size_specs]
@@ -30,6 +31,9 @@ set(OptiPNG_OPTIONS -quiet)
 # source_render_size  The resulution to rasterize the .svg at
 #                     If this differs from the source_size_spec the result will be scaled.
 #
+# ICO                 Generate a Windows .ico file containing the following sizes
+#                     The path to the .ico file will be stored in ${${name}.ico}.
+#                     The path to a resource script will be stored in ${${name}-icon.rc}.
 # ICONSET             Generate a set of .png icons for use with the icon theme spec
 #                     The path to the icon files will be stored in ${${name}-iconset}.
 # PNG                 Generate a set of portable .png icons
@@ -43,8 +47,15 @@ set(OptiPNG_OPTIONS -quiet)
 #  ${height}                Generate an icon with display and pixel resolution ${height}.
 #  ${height}@${multiplier}  Generate an icon with display resolution ${height} and
 #                           pixel resolution ${height} * ${multiplier}.
+#  ${height}@${bits}bit     Generate an icon with display and pixel resolution ${height},
+#                           but with only ${bits} bits used for the color/alpha channels.
+#                           The bit depths is only used for ICO icons and ignored
+#                           everywhere else.
 #
-# The order of the sizes matters for PNG and OVERVIEW icons
+# The order of the sizes only matters for ICO, PNG and OVERVIEW icons
+#  For ICO icons it determines the order in the .ico file and should be sorted from
+#    smallest to largest. For each dimension the size specs with higher bit depths
+#    should be listed first.
 #  For PNG icons the first size is used as the default size.
 #    The remaining order is ignored.
 #  For OVERVIEWs the order determines the order of the icons in the overview
@@ -56,6 +67,7 @@ set(OptiPNG_OPTIONS -quiet)
 #                     When using this option, all icon types with defined sizes are built.
 #
 # INSTALL             Install the generated icons to standard system locations.
+#                     ICO icons are never installed
 #                     ICONSET icons are installed to ${ICONTHEMEDIR}/${size}x${size}/apps
 #                     PNG icons are installed to ${ICONDIR}
 #                     OVERVIEWs are never installed
@@ -68,7 +80,7 @@ set(OptiPNG_OPTIONS -quiet)
 #                      those files.
 #
 # ICON_TYPE            The icon type(s) to generate. Can be "none", "all" or a list of one
-#                      or more of "iconset", "png" and "overview".
+#                      or more of "ico", "iconset", "png" and "overview".
 #                      Ignored if only sizes for the PNG type are specified or if the
 #                      ALL option is used.
 #
@@ -83,10 +95,11 @@ function(add_icon name)
 	
 	set(MODE_DEFAULT  0)
 	set(MODE_SOURCE   1)
-	set(MODE_ICONSET  2)
-	set(MODE_PNG      3)
-	set(MODE_OVERVIEW 4)
-	set(MODE_NAME     5)
+	set(MODE_ICO      2)
+	set(MODE_ICONSET  3)
+	set(MODE_PNG      4)
+	set(MODE_OVERVIEW 5)
+	set(MODE_NAME     6)
 	
 	set(mode ${MODE_DEFAULT})
 	
@@ -99,6 +112,7 @@ function(add_icon name)
 	
 	set(current_source)
 	
+	set(ico_sizes)
 	set(iconset_sizes)
 	set(png_sizes)
 	set(overview_sizes)
@@ -120,6 +134,9 @@ function(add_icon name)
 			set(current_source_size)
 			set(current_source_render_size)
 			set(mode ${MODE_SOURCE})
+		elseif(arg STREQUAL "ICO")
+			_add_icon_source()
+			set(mode ${MODE_ICO})
 		elseif(arg STREQUAL "ICONSET")
 			_add_icon_source()
 			set(mode ${MODE_ICONSET})
@@ -145,6 +162,8 @@ function(add_icon name)
 			else()
 				message(FATAL_ERROR "Unexpected icon argument: ${arg}")
 			endif()
+		elseif(mode EQUAL MODE_ICO)
+			list(APPEND ico_sizes ${arg})
 		elseif(mode EQUAL MODE_ICONSET)
 			list(APPEND iconset_sizes ${arg})
 		elseif(mode EQUAL MODE_PNG)
@@ -200,7 +219,85 @@ function(add_icon name)
 	
 	foreach(type IN LISTS ICON_TYPE)
 		
-		if(type STREQUAL "iconset")
+		if(type STREQUAL "ico")
+			
+			# Windows icon
+			
+			if(ico_sizes)
+				
+				_find_icon(ico_file "${name}.ico")
+				
+				if(NOT ico_file)
+					
+					find_package(ImageMagick COMPONENTS convert REQUIRED)
+					
+					set(ico_file "${ICON_BINARY_DIR}/${name}.ico")
+					set(ico_command "${ImageMagick_convert_EXECUTABLE}" ${ImageMagick_OPTIONS})
+					set(ico_depends "${ImageMagick_convert_EXECUTABLE}")
+					
+					foreach(size IN LISTS ico_sizes)
+						
+						_add_icon_size(source ${size})
+						if(source)
+							
+							_get_icon_bits(bits ${size})
+							if(bits EQUAL 32)
+								list(APPEND ico_command "${source}")
+							else()
+								math(EXPR colors "2 << ${bits}")
+								list(APPEND ico_command
+									"("
+										"${source}"
+										-channel alpha
+										-threshold "50%"
+										+channel
+										-colors "${colors}"
+									")"
+								)
+							endif()
+							
+							list(APPEND ico_depends "${source}")
+							
+						endif()
+						
+					endforeach()
+					
+					list(APPEND ico_command "${ico_file}")
+					
+					add_custom_command(
+						OUTPUT "${ico_file}"
+						COMMAND "${CMAKE_COMMAND}" -E make_directory "${ICON_BINARY_DIR}"
+						COMMAND ${ico_command}
+						DEPENDS ${ico_depends}
+						COMMENT "Generating ${name}.ico"
+						VERBATIM
+					)
+					
+				endif()
+				
+				# No need to install the .ico as it is typically linked into the executable
+				# Provide a resource script to do just that
+				set(rc_file "${CMAKE_CURRENT_BINARY_DIR}/${target}.rc")
+				add_custom_command(
+					OUTPUT "${rc_file}"
+					COMMAND ${CMAKE_COMMAND}
+						"-Dname=${name}" "-Dicon=${ico_file}"
+						"-Dtemplate=${ICON_RESOURCE_TEMPLATE}" "-Doutput=${rc_file}"
+						-P "${ICON_RESOURCE_SCRIPT}"
+					DEPENDS "${ICON_RESOURCE_TEMPLATE}" "${ICON_RESOURCE_SCRIPT}"
+					MAIN_DEPENDENCY ${ico_file}
+					COMMENT ""
+					VERBATIM
+				)
+				
+				list(APPEND outputs ${ico_file} ${rc_file})
+				
+				set(${name}.ico ${ico_file} CACHE INTERNAL "")
+				set(${target}.rc ${rc_file} CACHE INTERNAL "")
+				
+			endif()
+			
+		elseif(type STREQUAL "iconset")
 			
 			# Linux icon
 			# https://specifications.freedesktop.org/icon-theme-spec/icon-theme-spec-latest.html
@@ -422,7 +519,7 @@ endfunction()
 #  spec  Icon size spec
 function(_get_icon_size var spec)
 	
-	if(spec MATCHES "^([0-9]+)(\\@[0-9]+x)?$")
+	if(spec MATCHES "^([0-9]+)(\\@[0-9]+(bit|x))?$")
 		set(${var} ${CMAKE_MATCH_1} PARENT_SCOPE)
 	else()
 		message(FATAL_ERROR "Unknown icon size spec: ${spec}")
@@ -440,8 +537,42 @@ function(_get_icon_resolution var spec)
 	if(spec MATCHES "^([0-9]+)\\@([0-9]+)x$")
 		math(EXPR size "${CMAKE_MATCH_1} * ${CMAKE_MATCH_2}")
 		set(${var} ${size} PARENT_SCOPE)
-	elseif(spec MATCHES "^([0-9]+)$")
+	elseif(spec MATCHES "^([0-9]+)(\\@[0-9]+bit)?$")
 		set(${var} ${CMAKE_MATCH_1} PARENT_SCOPE)
+	else()
+		message(FATAL_ERROR "Unknown icon size spec: ${spec}")
+	endif()
+	
+endfunction()
+
+# Get the bit depth from an icon size spec
+#
+# Params:
+#  var   Variable to receive the bit depth
+#  spec  Icon size spec
+function(_get_icon_bits var spec)
+	
+	if(spec MATCHES "^([0-9]+)\\@([0-9])+bit$")
+		set(${var} ${CMAKE_MATCH_2} PARENT_SCOPE)
+	elseif(spec MATCHES "^([0-9]+)(\\@[0-9]+x)?$")
+		set(${var} 32 PARENT_SCOPE)
+	else()
+		message(FATAL_ERROR "Unknown icon size spec: ${spec}")
+	endif()
+	
+endfunction()
+
+# Remove bit depth iformation from an icon size spec
+#
+# Params:
+#  var   Variable to receive the modified size spec
+#  spec  Icon size spec
+function(_remove_icon_bits var spec)
+	
+	if(spec MATCHES "^([0-9]+)(\\@[0-9]+bit)$")
+		set(${var} ${CMAKE_MATCH_1} PARENT_SCOPE)
+	elseif(spec MATCHES "^([0-9]+)(\\@([0-9]+)x)?$")
+		set(${var} ${spec} PARENT_SCOPE)
 	else()
 		message(FATAL_ERROR "Unknown icon size spec: ${spec}")
 	endif()
@@ -488,6 +619,8 @@ endfunction()
 #  var   Variable to receive the .png file name or null
 #  spec  Icon size to get or create
 function(_add_icon_size var size)
+	
+	_remove_icon_bits(size ${size})
 	
 	set(filename "${name}-${size}.png")
 	set(file "${ICON_BINARY_DIR}/${filename}")
