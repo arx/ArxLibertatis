@@ -1494,7 +1494,7 @@ void ARX_SCENE_Update() {
 		RoomDrawRelease();
 	}
 
-	ARX_THROWN_OBJECT_Manage(checked_range_cast<unsigned long>(g_framedelay));
+	ARX_THROWN_OBJECT_Manage(g_framedelay);
 
 	UpdateInter();
 }

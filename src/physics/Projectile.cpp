@@ -360,7 +360,7 @@ void ARX_THROWN_OBJECT_Render() {
 	}
 }
 
-void ARX_THROWN_OBJECT_Manage(unsigned long time_offset)
+void ARX_THROWN_OBJECT_Manage(float time_offset)
 {
 	for(size_t i = 0; i < MAX_THROWN_OBJECTS; i++) {
 		Projectile & projectile = g_projectiles[i];
@@ -410,7 +410,7 @@ void ARX_THROWN_OBJECT_Manage(unsigned long time_offset)
 
 		if(projectile.flags & ATO_MOVING) {
 			long need_kill = 0;
-			float mod = (float)time_offset * projectile.velocity;
+			float mod = time_offset * projectile.velocity;
 			Vec3f original_pos = projectile.position;
 			projectile.position.x += projectile.vector.x * mod;
 			float gmod = 1.f - projectile.velocity;
