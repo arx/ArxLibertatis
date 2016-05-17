@@ -29,3 +29,23 @@ foreach(dir IN LISTS data_sources)
 		endif()
 	endif()
 endforeach()
+
+# Sizes for the portable PNG icon - first is the default size
+set(png_sizes
+	128
+	32
+	24
+	22
+	16
+)
+
+add_icon(arx-libertatis
+	arx-libertatis.svg    1024
+	arx-libertatis-32.svg 32@2x 512
+	arx-libertatis-16.svg 16@2x
+	PNG ${png_sizes}
+)
+
+add_custom_target(data DEPENDS
+	arx-libertatis-icon
+)
