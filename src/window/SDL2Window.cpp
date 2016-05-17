@@ -53,6 +53,7 @@
 #include "io/log/Logger.h"
 #include "math/Rectangle.h"
 #include "platform/CrashHandler.h"
+#include "platform/WindowsUtils.h"
 
 // Avoid including SDL_syswm.h without SDL_PROTOTYPES_ONLY on non-Windows systems
 // it includes X11 stuff which pullutes the namespace global namespace.
@@ -360,10 +361,24 @@ bool SDL2Window::initialize() {
 		SDL_SysWMinfo info;
 		SDL_VERSION(&info.version);
 		if(SDL_GetWindowWMInfo(m_window, &info) && info.subsystem == SDL_SYSWM_WINDOWS) {
-			HICON icon = LoadIcon(GetModuleHandle(NULL), MAKEINTRESOURCE(1));
-			if(icon) {
-				SendMessage(info.info.win.window, WM_SETICON, ICON_SMALL, LPARAM(icon));
-				SendMessage(info.info.win.window, WM_SETICON, ICON_BIG, LPARAM(icon));
+			platform::WideString filename;
+			filename.allocate(filename.capacity());
+			while(true) {
+				DWORD size = GetModuleFileNameW(NULL, filename.data(), filename.size());
+				if(size < filename.size()) {
+					filename.resize(size);
+					break;
+				}
+				filename.allocate(filename.size() * 2);
+			}
+			HICON largeIcon = 0;
+			HICON smallIcon = 0;
+			ExtractIconExW(filename, 0, &largeIcon, &smallIcon, 1);
+			if(smallIcon) {
+				SendMessage(info.info.win.window, WM_SETICON, ICON_SMALL, LPARAM(smallIcon));
+			}
+			if(largeIcon) {
+				SendMessage(info.info.win.window, WM_SETICON, ICON_BIG, LPARAM(largeIcon));
 			}
 		}
 	}
