@@ -38,7 +38,7 @@ BEGIN
 			VALUE "FileVersion",      "${VERSION_STRING}${VERSION_SUFFIX}${GIT_SUFFIX_5}"
 			VALUE "InternalName",     "${EXE}"
 			#if COPYING
-			VALUE "LegalCopyright",   "${COPYING}"
+			VALUE "LegalCopyright",   "${COPYING_2} ${COPYING_4}"
 			#endif
 			VALUE "OriginalFilename", "${EXE}.exe"
 			VALUE "ProductName",      "Arx Libertatis"
