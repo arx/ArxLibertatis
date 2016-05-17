@@ -60,6 +60,7 @@ While the crash reporter can be run without GDB, it's main usefulness comes from
 Building checkouts from git on their own requires additional dependencies:
 * **[Inkscape](https://inkscape.org/)**
 * **[ImageMagick](http://www.imagemagick.org/script/index.php)**
+* **[OptiPNG](http://optipng.sourceforge.net/)**
 
 These are needed to render and scale the svg icons, which currently only render correctly in in Inkscape. Release and development snapshot source tarballs include the pre-built icon files and do not need these dependencies to build.
 

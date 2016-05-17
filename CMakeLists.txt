@@ -111,6 +111,7 @@ suboption(ZLIB_USE_STATIC_LIBS     "Statically link ZLIB"     BOOL ${USE_STATIC_
 set(default_ICON_TYPE "none")
 suboption(ICON_TYPE "Icon type" STRING ${default_ICON_TYPE})
 suboption(DATA_FILES "Location of prebuilt data files" STRING "")
+option(OPTIMIZE_ICONS "Optimize PNG compression for generated icons" ON)
 
 # Make optional dependencies required
 option(STRICT_USE "Abort if there are missing optional dependencies"  OFF)

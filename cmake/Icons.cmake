@@ -7,6 +7,7 @@ set(ICON_RESOURCE_SCRIPT "${CMAKE_CURRENT_LIST_DIR}/ConfigureFileScript.cmake")
 
 set(Inkscape_OPTIONS)
 set(ImageMagick_OPTIONS -filter lanczos -colorspace sRGB)
+set(OptiPNG_OPTIONS -quiet)
 
 # Add an icon generated from source icons
 #
@@ -65,6 +66,8 @@ set(ImageMagick_OPTIONS -filter lanczos -colorspace sRGB)
 #
 # ImageMagick_OPTIONS  Additional command-line options to pass to the Image Magick
 #                      convert, mogrify and montage commands.
+#
+# OptiPNG_OPTIONS      Additional command-line options to pass to optipng.
 #
 function(add_icon name)
 	
@@ -299,6 +302,38 @@ function(_get_icon_resolution var spec)
 	
 endfunction()
 
+#  Add an optional OptiPNG step to a generated .png file
+#
+# Params:
+#  file  The file to add the optimization step to
+function(_optimize_icon file)
+	
+	if(NOT OPTIMIZE_ICONS)
+		return()
+	endif()
+	
+	if(STRICT_USE)
+		set(OPTIONAL_DEPENDENCY REQUIRED)
+	else()
+		set(OPTIONAL_DEPENDENCY)
+	endif()
+	
+	find_package(OptiPNG ${OPTIONAL_DEPENDENCY})
+	
+	if(OptiPNG_FOUND)
+		
+		add_custom_command(
+			OUTPUT "${file}"
+			COMMAND "${OptiPNG_EXECUTABLE}" ${OptiPNG_OPTIONS} "${file}"
+			DEPENDS "${OptiPNG_EXECUTABLE}"
+			VERBATIM
+			APPEND
+		)
+		
+	endif()
+	
+endfunction()
+
 # Get a .png file for a specific icon size
 #
 # Creates the file from scalable or larger versions if needed.
@@ -433,6 +468,8 @@ function(_add_icon_size var size)
 			
 		endif()
 		
+		_optimize_icon(${source_file})
+		
 		list(APPEND generated_sizes ${match})
 		set(${name}-${match}.png "${source_file}" CACHE INTERNAL "")
 		
@@ -456,6 +493,8 @@ function(_add_icon_size var size)
 			COMMENT "Scaling ${source_filename} to ${filename}"
 			VERBATIM
 		)
+		
+		_optimize_icon(${file})
 		
 		list(APPEND generated_sizes ${size})
 		set(${name}-${size}.png "${file}" CACHE INTERNAL "")

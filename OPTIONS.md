@@ -103,3 +103,4 @@ By default, optional components will be automatically disabled if their dependen
  * `none` Don't generate any icons
 
 * `DATA_FILES` (default: *not set*): Locations to search for pre-built data files. This is only useful when building git checkouts as release and development snaptshot tarballs already include those files in the source tree. See the *Git Build Dependencies* section in README.md.
+* `OPTIMIZE_ICONS` (default: ON): Optimize the compression of generated PNG files using OptiPNG. This is only useful when building git checkouts as release and development snaptshot tarballs already include pre-built images that this option doesn't apply to.
