@@ -109,7 +109,7 @@ suboption(ZLIB_USE_STATIC_LIBS     "Statically link ZLIB"     BOOL ${USE_STATIC_
 
 # Icons
 if(WIN32)
-	set(default_ICON_TYPE "none")
+	set(default_ICON_TYPE "ico")
 else()
 	set(default_ICON_TYPE "iconset")
 endif()
@@ -1168,8 +1168,7 @@ include(data/CMakeLists.txt)
 
 # Set the icon for the Windows executable by adding this resource file to the sources
 if(WIN32)
-	set(ARX_ICON_RC data/icons/arx-libertatis.rc)
-	list(APPEND ARX_SOURCES ${ARX_ICON_RC})
+	list(APPEND ARX_SOURCES ${arx-libertatis-icon.rc})
 endif()
 
 
@@ -1258,7 +1257,7 @@ if(ARX_HAVE_CRASHREPORTER)
 	endif()
 	
 	if(WIN32)
-		list(APPEND arxcrashreporter_SOURCES ${ARX_ICON_RC})
+		list(APPEND arxcrashreporter_SOURCES ${arx-libertatis-icon.rc})
 		create_version_resource(arxcrashreporter "Arx Libertatis Crash Reporter")
 		list(APPEND arxcrashreporter_SOURCES ${arxcrashreporter-version.rc})
 	endif()
@@ -1349,9 +1348,7 @@ if(ARX_HAVE_PROFILER)
 	)
 	
 	if(WIN32)
-		list(APPEND arxprofiler_SOURCES
-			${ARX_ICON_RC}
-		)
+		list(APPEND arxprofiler_SOURCES ${arx-libertatis-icon.rc})
 		create_version_resource(arxprofiler "Arx Libertatis Profiler")
 		list(APPEND arxprofiler_SOURCES ${arxprofiler-version.rc})
 	endif()
