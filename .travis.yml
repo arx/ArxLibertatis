@@ -6,7 +6,7 @@ before_install:
  - travis_retry sudo apt-get install build-essential cmake zlib1g-dev libfreetype6-dev libopenal1 libopenal-dev mesa-common-dev libgl1-mesa-dev libboost1.48-dev libsdl1.2-dev libglew-dev qt-sdk
  - wget http://de.archive.ubuntu.com/ubuntu/pool/main/g/glm/libglm-dev_0.9.5.1-1_all.deb
  - sudo dpkg -i libglm-dev_0.9.5.1-1_all.deb
-script: mkdir build && cd build && cmake --version && cmake .. && make -j1
+script: mkdir build && cd build && cmake --version && cmake .. -DICON_TYPE=none && make -j1
 branches:
   only:
     - master
