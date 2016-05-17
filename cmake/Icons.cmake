@@ -53,6 +53,9 @@ set(ImageMagick_OPTIONS -filter lanczos -colorspace sRGB)
 # Variables used by this function:
 #
 # ICON_SOURCE_DIRS     Relative .svg sources are resolved to paths in this list.
+#                      Additionally, needed output or intermediate icon files are found
+#                      in the paths in this list, they are used instead of re-generating
+#                      those files.
 #
 # ICON_TYPE            The icon type(s) to generate. Can be "none", "all" or "png".
 #                      Ignored if only sizes for the PNG type are specified or if the
@@ -312,6 +315,14 @@ function(_add_icon_size var size)
 	list(FIND generated_sizes ${size} already_generated)
 	if(already_generated GREATER -1)
 		set(${var} ${file} PARENT_SCOPE)
+		return()
+	endif()
+	
+	# Use prebuilt files if available
+	_find_icon(prebuilt_file ${filename})
+	if(prebuilt_file)
+		set(${var} ${prebuilt_file} PARENT_SCOPE)
+		set(${name}-${size}.png "${prebuilt_file}" CACHE INTERNAL "")
 		return()
 	endif()
 	

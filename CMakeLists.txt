@@ -107,6 +107,11 @@ suboption(Boost_USE_STATIC_LIBS    "Statically link Boost"    BOOL ${USE_STATIC_
 suboption(Freetype_USE_STATIC_LIBS "Statically link FreeType" BOOL ${USE_STATIC_LIBS})
 suboption(ZLIB_USE_STATIC_LIBS     "Statically link ZLIB"     BOOL ${USE_STATIC_LIBS})
 
+# Icons
+set(default_ICON_TYPE "none")
+suboption(ICON_TYPE "Icon type" STRING ${default_ICON_TYPE})
+suboption(DATA_FILES "Location of prebuilt data files" STRING "")
+
 # Make optional dependencies required
 option(STRICT_USE "Abort if there are missing optional dependencies"  OFF)
 if(STRICT_USE)
@@ -230,9 +235,9 @@ include(CheckTypeSize)
 set(CMAKE_MODULE_PATH "${CMAKE_SOURCE_DIR}/cmake") # For custom cmake modules
 
 include(VersionString)
-set(version_names VERSION IO_LIBRARY_ABI_VERSION)
+set(version_names VERSION DATA_VERSION IO_LIBRARY_ABI_VERSION)
 parse_version_file("${version_names}" "VERSION")
-if(VERSION_ERROR OR IO_LIBRARY_ABI_VERSION_ERROR)
+if(VERSION_ERROR OR DATA_VERSION_ERROR OR IO_LIBRARY_ABI_VERSION_ERROR)
 	message(WARNING "Error parsing version file!")
 endif()
 
@@ -1150,6 +1155,9 @@ set(ARX_SOURCES
 	${UTIL_SOURCES}
 	${WINDOW_SOURCES}
 )
+
+# Using include() for now as add_subdirectory causes problems with uses in qrc files
+include(data/CMakeLists.txt)
 
 # Set the icon for the Windows executable by adding this resource file to the sources
 if(WIN32)

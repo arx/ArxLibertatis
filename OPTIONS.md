@@ -101,3 +101,5 @@ By default, optional components will be automatically disabled if their dependen
  * `png` Portable .png  icons (installed under `ICONDIR`)
  * `all` Generate all possible icon types
  * `none` Don't generate any icons
+
+* `DATA_FILES` (default: *not set*): Locations to search for pre-built data files. This is only useful when building git checkouts as release and development snaptshot tarballs already include those files in the source tree. See the *Git Build Dependencies* section in README.md.

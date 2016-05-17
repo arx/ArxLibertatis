@@ -55,6 +55,16 @@ Arx Libertatis comes with an optional gui crash reporter which has additional de
 
 While the crash reporter can be run without GDB, it's main usefulness comes from generating and submitting detailed back-traces in the event of a crash. On non-window systems we use GDB, the GNU Debugger, to accomplish that. If you want to help out the arx project, please install GDB before running arx. GDB is however purely a run-time dependency and is not needed when building the crash reporter.
 
+### Git Build Dependencies
+
+Building checkouts from git on their own requires additional dependencies:
+* **[Inkscape](https://inkscape.org/)**
+* **[ImageMagick](http://www.imagemagick.org/script/index.php)**
+
+These are needed to render and scale the svg icons, which currently only render correctly in in Inkscape. Release and development snapshot source tarballs include the pre-built icon files and do not need these dependencies to build.
+
+To avoid the Inkscape (and ImageMagick) dependency for git builds, pre-build icons can be downloaded from http://arx-libertatis.org/files/data/ or the [ArxLibertatisData](https://github.com/arx/ArxLibertatisData/) repository. The required data version is listed in the VERSION file. Place `arx-libertatis-data-$version` directory into the build directory or tell the build system about it's location using the `DATA_FILES` cmake option.
+
 ## Compile and install
 
 For Linux run:
