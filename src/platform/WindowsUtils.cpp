@@ -80,15 +80,15 @@ void WideString::compact() {
 
 std::string WideString::toUTF8(const WCHAR * string, size_t length) {
 	std::string utf8(length, '\0');
-	// Optimistically assume that the uutf8 length is not longer than the wide length
-	INT utf8_length = WideCharToMultiByte(CP_ACP, 0, string, length, &utf8[0], length, 0, 0);
+	// Optimistically assume that the utf8 length is not longer than the wide length
+	INT utf8_length = WideCharToMultiByte(CP_UTF8, 0, string, length, &utf8[0], length, 0, 0);
 	if(utf8_length || !length) {
 		utf8.resize(utf8_length);
 	} else {
 		// Our assumption failed - /
-		utf8_length = WideCharToMultiByte(CP_ACP, 0, string, length, 0, 0, 0, 0);
+		utf8_length = WideCharToMultiByte(CP_UTF8, 0, string, length, 0, 0, 0, 0);
 		utf8.resize(utf8_length, '\0');
-		WideCharToMultiByte(CP_ACP, 0, string, length, &utf8[0], utf8_length, 0, 0);
+		WideCharToMultiByte(CP_UTF8, 0, string, length, &utf8[0], utf8_length, 0, 0);
 	}
 	return utf8;
 }
