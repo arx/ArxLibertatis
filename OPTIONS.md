@@ -5,7 +5,7 @@ This file describes additional build options that are recognized by the CMakeLis
 
 | Option                | Windows default                                        |
 |---------------------- | ------------------------------------------------------ |
-| `USER_DIR_PREFIXES`   | `%FOLDERID_SavedGames%`                                |
+| `USER_DIR_PREFIXES`   | ^1                                                     |
 | `USER_DIR`            | `Arx Libertatis`                                       |
 | `CONFIG_DIR_PREFIXES` |                                                        |
 | `CONFIG_DIR`          |                                                        |
@@ -23,7 +23,7 @@ This file describes additional build options that are recognized by the CMakeLis
 
 | Option                |  Linux / BSD / other default                           |
 |---------------------- | ------------------------------------------------------ |
-| `USER_DIR_PREFIXES`   | `${XDG_DATA_HOME:-$HOME/.local/share}` ^1              |
+| `USER_DIR_PREFIXES`   | `${XDG_DATA_HOME:-$HOME/.local/share}` ^2              |
 | `USER_DIR`            | `arx`                                                  |
 | `CONFIG_DIR_PREFIXES` | `${XDG_CONFIG_HOME:-$HOME/.config}`                    |
 | `CONFIG_DIR`          | `arx`                                                  |
@@ -32,12 +32,13 @@ This file describes additional build options that are recognized by the CMakeLis
 
 These pairs define prefixes and suffixes that are combined to form searched paths for the user, config and data directories respectively.
 
-1. This matches the [XDG Base Directory Specification](http://standards.freedesktop.org/basedir-spec/basedir-spec-latest.html).
+1. Arx Libertatis uses the default `Saved Games` directory (FOLDERID_SavedGames) on Windows Vista and newer, and `My Documents\My Games` on Windows XP.
+2. This matches the [XDG Base Directory Specification](http://standards.freedesktop.org/basedir-spec/basedir-spec-latest.html).
 
 To avoid possible performance issues, there is `IGNORE_EXE_DIR` to list directories to *not* search for data files even if they contain the game executable. By default, this is only set for Linux: `/usr/bin:/usr/games:/usr/games/bin:/usr/local/bin:/usr/local/games:/usr/local/games/bin`
 To completely disable searching for data locations relative to the executable, set `RUNTIME_DATADIR` to an empty string.
 
-All the configuration options above can reference environment variables in operating-system specific shell syntax which will be expanded at run-time. For Windows `%FOLDERID_SavedGames%` is defined to the Windows saved games directory for the current user.
+All the configuration options above can reference environment variables in operating-system specific shell syntax which will be expanded at run-time.
 
 After environment variable expansion the variables are interpreted as colon-separated (Windows: semicolon-separated) lists of paths.
 

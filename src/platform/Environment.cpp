@@ -21,9 +21,8 @@
 
 #include <sstream>
 #include <algorithm>
-#include <vector>
 
-#include <stdlib.h> // needed for setenv, realpath and more
+#include <stdlib.h> // needed for realpath and more
 
 #include <boost/scoped_array.hpp>
 
@@ -195,22 +194,15 @@ bool getSystemConfiguration(const std::string & name, std::string & result) {
 	return false;
 }
 
-#if ARX_PLATFORM == ARX_PLATFORM_MACOSX
+#if ARX_PLATFORM == ARX_PLATFORM_WIN32
 
-void initializeEnvironment(const char * argv0) {
-	ARX_UNUSED(argv0);
-}
-
-#elif ARX_PLATFORM == ARX_PLATFORM_WIN32
-
-// Obtain the right savegame paths for the platform
-// XP is "%USERPROFILE%\My Documents\My Games"
-// Vista and up : "%USERPROFILE%\Saved Games"
-void initializeEnvironment(const char * argv0) {
+std::vector<fs::path> getSystemPaths(SystemPathId id) {
 	
-	ARX_UNUSED(argv0);
+	std::vector<fs::path> result;
 	
-	std::basic_string<WCHAR> path;
+	if(id != UserDirPrefixes) {
+		return result;
+	}
 	
 	// Vista and up
 	{
@@ -237,7 +229,7 @@ void initializeEnvironment(const char * argv0) {
 				HRESULT hr = GetKnownFolderPath(FOLDERID_SavedGames, kfFlagCreate | kfFlagNoAlias,
 				                                NULL, &savedgames);
 				if(SUCCEEDED(hr)) {
-					path = savedgames;
+					result.push_back(platform::WideString::toUTF8(savedgames));
 				}
 				CoTaskMemFree(savedgames);
 				
@@ -255,18 +247,26 @@ void initializeEnvironment(const char * argv0) {
 		HRESULT hr = SHGetFolderPathW(NULL, CSIDL_PERSONAL | CSIDL_FLAG_CREATE, NULL,
 		                              SHGFP_TYPE_CURRENT, mydocuments);
 		if(SUCCEEDED(hr)) {
-			if(!path.empty()) {
-				path += L';';
-			}
-			path += mydocuments;
-			path += L"\\My Games";
+			result.push_back(fs::path(platform::WideString::toUTF8(mydocuments)) / "My Games");
 		}
 	}
 	
-	if(!path.empty()) {
-		SetEnvironmentVariableW(L"FOLDERID_SavedGames", path.c_str());
-	}
-	
+	return result;
+}
+
+#else
+
+std::vector<fs::path> getSystemPaths(SystemPathId id) {
+	ARX_UNUSED(id);
+	return std::vector<fs::path>();
+}
+
+#endif
+
+#if ARX_PLATFORM == ARX_PLATFORM_WIN32 || ARX_PLATFORM == ARX_PLATFORM_MACOSX
+
+void initializeEnvironment(const char * argv0) {
+	ARX_UNUSED(argv0);
 }
 
 #else

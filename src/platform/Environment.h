@@ -21,6 +21,7 @@
 #define ARX_PLATFORM_ENVIRONMENT_H
 
 #include <string>
+#include <vector>
 
 #include "platform/Platform.h"
 
@@ -30,9 +31,6 @@ namespace platform {
 
 /*!
  * \brief Initialize envirenment functions
- *
- * On Windows, this sets the %FOLDERID_SavedGames% environment variable to the
- * standard "Saved Games" directory.
  *
  * \param argv0 a path to use for \ref getExecutablePath if no OS-specific function is
  *              available to determine the executable path. Will be ignored if it doesn't
@@ -48,6 +46,20 @@ void initializeEnvironment(const char * argv0);
  * \param in the string to expand.
  */
 std::string expandEnvironmentVariables(const std::string & in);
+
+enum SystemPathId {
+	NoPath,
+	UserDirPrefixes //!< Directories under which to store per-user data.
+};
+
+/*!
+ * \brief Get a standard system path
+ *
+ * This currently does nothing on non-Windows systems.
+ *
+ * \return the path(s) or an empty string if the path is not known.
+ */
+std::vector<fs::path> getSystemPaths(SystemPathId path);
 
 /*!
  * \brief Get a Windows registry entry
