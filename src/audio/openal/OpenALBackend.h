@@ -71,6 +71,8 @@ public:
 	
 private:
 	
+	static const char * shortenDeviceName(const char * deviceName);
+	
 	ALCdevice * device;
 	ALCcontext * context;
 	

@@ -24,6 +24,7 @@
 #include <cmath>
 #include <sstream>
 
+#include <boost/algorithm/string/predicate.hpp>
 #include <boost/math/special_functions/fpclassify.hpp>
 
 #include "audio/openal/OpenALSource.h"
@@ -96,6 +97,18 @@ public:
 } // anonymous namespace
 #endif
 
+static const char * const deviceNamePrefixOpenALSoft = "OpenAL Soft on ";
+
+const char * OpenALBackend::shortenDeviceName(const char * deviceName) {
+	
+	if(deviceName && boost::starts_with(deviceName, deviceNamePrefixOpenALSoft)) {
+		// TODO do this for the name displayed in the menu as well?
+		deviceName += std::strlen(deviceNamePrefixOpenALSoft);
+	}
+	
+	return deviceName;
+}
+
 aalError OpenALBackend::init(const char * requestedDeviceName) {
 	
 	if(device) {
@@ -108,6 +121,11 @@ aalError OpenALBackend::init(const char * requestedDeviceName) {
 	
 	// Create OpenAL interface
 	device = alcOpenDevice(requestedDeviceName);
+	if(!device && requestedDeviceName) {
+		std::string fullDeviceName = deviceNamePrefixOpenALSoft;
+		fullDeviceName += requestedDeviceName;
+		device = alcOpenDevice(fullDeviceName.c_str());
+	}
 	if(!device) {
 		ALenum error = alcGetError(NULL);
 		if(error != ALC_INVALID_VALUE) {
@@ -214,11 +232,12 @@ aalError OpenALBackend::init(const char * requestedDeviceName) {
 		 *  [1] http://icculus.org/alextreg/wiki/ALC_ENUMERATE_ALL_EXT
 		 */
 		deviceName = alcGetString(device, ALC_ALL_DEVICES_SPECIFIER);
-		if(!deviceName || *deviceName == '\0') {
-			deviceName = "(unknown)";
-		}
 	}
 	#endif
+	deviceName = shortenDeviceName(deviceName);
+	if(!deviceName || *deviceName == '\0') {
+		deviceName = "(unknown)";
+	}
 	LogInfo << " └─ Device: " << deviceName;
 	CrashHandler::setVariable("OpenAL device", deviceName);
 	
@@ -246,6 +265,7 @@ std::vector<std::string> OpenALBackend::getDevices() {
 	}
 	
 	while(devices && *devices) {
+		devices = shortenDeviceName(devices);
 		result.push_back(devices);
 		devices += result.back().length() + 1;
 	}
