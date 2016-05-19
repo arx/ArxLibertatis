@@ -258,6 +258,10 @@ Entity::~Entity() {
 		delete _camdata;
 	}
 	
+	if(SecondaryInventory && SecondaryInventory->io == this) {
+		SecondaryInventory = NULL;
+	}
+	
 	if(TSecondaryInventory && TSecondaryInventory->io == this) {
 		TSecondaryInventory = NULL;
 	}
