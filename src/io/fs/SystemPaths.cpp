@@ -55,8 +55,6 @@ static std::vector<path> getSearchPaths(const char * input) {
 		boost::char_separator<char> sep(platform::env_list_seperators);
 		tokenizer tokens(decoded, sep);
 		std::copy(tokens.begin(), tokens.end(), std::back_inserter(result));
-	} else {
-		result.push_back(".");
 	}
 	
 	return result;
@@ -99,26 +97,24 @@ static path findUserPath(const char * name, const path & force,
 	path to_create;
 	std::vector<path> prefixes = getSearchPaths(prefix);
 	std::vector<path> suffixes = getSearchPaths(suffix);
-	if(prefix || suffix) {
-		bool create_exists = false;
-		BOOST_FOREACH(const path & prefix, prefixes) {
-			BOOST_FOREACH(const path & suffix, suffixes) {
-				
-				path dir = canonical(prefix / suffix);
-				
-				if(is_directory(dir)) {
-					LogDebug("got " << name << " dir from search: " << prefix
-					         << " + " << suffix << " = " << dir);
-					return dir;
-				} else {
-					LogDebug("ignoring " << name << " dir from search: " << prefix
-					         << " + " << suffix << " = " << dir);
-				}
-				
-				if(to_create.empty() || (!create_exists && is_directory(prefix))) {
-					to_create = dir;
-					create_exists = is_directory(prefix);
-				}
+	bool create_exists = false;
+	BOOST_FOREACH(const path & prefix, prefixes) {
+		BOOST_FOREACH(const path & suffix, suffixes) {
+			
+			path dir = canonical(prefix / suffix);
+			
+			if(is_directory(dir)) {
+				LogDebug("got " << name << " dir from search: " << prefix
+				         << " + " << suffix << " = " << dir);
+				return dir;
+			} else {
+				LogDebug("ignoring " << name << " dir from search: " << prefix
+				         << " + " << suffix << " = " << dir);
+			}
+			
+			if(to_create.empty() || (!create_exists && is_directory(prefix))) {
+				to_create = dir;
+				create_exists = is_directory(prefix);
 			}
 		}
 	}
@@ -258,17 +254,15 @@ std::vector<path> SystemPaths::getSearchPaths(bool filter) const {
 	// Search standard locations
 	std::vector<path> prefixes = fs::getSearchPaths(data_dir_prefixes);
 	std::vector<path> suffixes = fs::getSearchPaths(data_dir);
-	if(data_dir_prefixes || data_dir) {
-		BOOST_FOREACH(const path & prefix, prefixes) {
-			BOOST_FOREACH(const path & suffix, suffixes) {
-				path dir = canonical(prefix / suffix);
-				if(addSearchRoot(result, dir, filter)) {
-					LogDebug("got data dir from search: " << prefix
-					         << " + " << suffix << " = " << dir);
-				} else {
-					LogDebug("ignoring data dir from search: " << prefix
-					         << " + " << suffix << " = " << dir);
-				}
+	BOOST_FOREACH(const path & prefix, prefixes) {
+		BOOST_FOREACH(const path & suffix, suffixes) {
+			path dir = canonical(prefix / suffix);
+			if(addSearchRoot(result, dir, filter)) {
+				LogDebug("got data dir from search: " << prefix
+				         << " + " << suffix << " = " << dir);
+			} else {
+				LogDebug("ignoring data dir from search: " << prefix
+				         << " + " << suffix << " = " << dir);
 			}
 		}
 	}
@@ -351,15 +345,13 @@ static void listDirectoriesFor(std::ostream & os, const std::string & regKey,
 	
 	std::vector<path> prefixes = getSearchPaths(prefixVar);
 	std::vector<path> suffixes = getSearchPaths(suffixVar);
-	if(prefixVar || suffixVar) {
+	if(prefixVar && suffixVar) {
 		
 		os << " - ";
 		if(prefixVar) {
 			os << '"' << prefixVar << '"';
 		}
-		if(prefixVar && suffixVar) {
-			os << " / ";
-		}
+		os << " / ";
 		if(suffixVar) {
 			os << '"' << suffixVar << '"';
 		}
