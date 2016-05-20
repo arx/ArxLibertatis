@@ -119,7 +119,7 @@ public:
 	Vec3f posgrille;
 	float angzgrille;
 	CinematicFadeOut fadegrille;
-	Vec3f posgrillesuiv;
+	Vec3f m_nextPosgrille;
 	float angzgrillesuiv;
 	CinematicFadeOut fadegrillesuiv;
 	float speedtrack;

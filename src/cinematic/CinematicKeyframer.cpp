@@ -545,7 +545,7 @@ consequences on light :
 
 	c->posgrille = k->posgrille;
 	c->angzgrille = k->angzgrille;
-	c->posgrillesuiv = ksuiv->posgrille;
+	c->m_nextPosgrille = ksuiv->posgrille;
 	c->angzgrillesuiv = ksuiv->angzgrille;
 
 	switch(k->typeinterp) {
@@ -764,7 +764,7 @@ bool GereTrackNoPlay(Cinematic * c) {
 
 	c->posgrille = k->posgrille;
 	c->angzgrille = k->angzgrille;
-	c->posgrillesuiv = ksuiv->posgrille;
+	c->m_nextPosgrille = ksuiv->posgrille;
 	c->angzgrillesuiv = ksuiv->angzgrille;
 
 	if(k->numbitmap < 0 || ksuiv->numbitmap < 0)
