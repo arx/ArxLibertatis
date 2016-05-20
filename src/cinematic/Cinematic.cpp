@@ -371,21 +371,20 @@ void DrawGrille(CinematicBitmap * bitmap, Color col, int fx, CinematicLight * li
 				Vec2f pos = Vec2f(mat->bitmapdep) + uvs->uv * Vec2f(mat->tex->getStoredSize());
 				
 				// Roughen up the lines
-				float fx = 0.75f + std::sin(pos.x) * 0.25f;
-				float fy = 0.75f + std::sin(pos.y) * 0.25f;
+				Vec2f f = 0.75f + glm::sin(pos) * 0.25f;
 				
 				float interp = 1.f;
-				if(pos.x < fo.left * fy) {
-					interp *= glm::clamp(pos.x / (fo.left * fy), 0.f, 1.f);
+				if(pos.x < fo.left * f.y) {
+					interp *= glm::clamp(pos.x / (fo.left * f.y), 0.f, 1.f);
 				}
-				if(float(bitmap->m_size.x) - pos.x < fo.right * fy) {
-					interp *= glm::clamp((float(bitmap->m_size.x) - pos.x) / (fo.right * fy), 0.f, 1.f);
+				if(float(bitmap->m_size.x) - pos.x < fo.right * f.y) {
+					interp *= glm::clamp((float(bitmap->m_size.x) - pos.x) / (fo.right * f.y), 0.f, 1.f);
 				}
-				if(pos.y < fo.top * fx) {
-					interp *= glm::clamp(pos.y / (fo.top * fx), 0.f, 1.f);
+				if(pos.y < fo.top * f.x) {
+					interp *= glm::clamp(pos.y / (fo.top * f.x), 0.f, 1.f);
 				}
-				if(float(bitmap->m_size.y) - pos.y < fo.bottom * fx) {
-					interp *= glm::clamp((float(bitmap->m_size.y) - pos.y) / (fo.bottom * fx), 0.f, 1.f);
+				if(float(bitmap->m_size.y) - pos.y < fo.bottom * f.x) {
+					interp *= glm::clamp((float(bitmap->m_size.y) - pos.y) / (fo.bottom * f.x), 0.f, 1.f);
 				}
 				
 				if(interp != 1.f) {
