@@ -106,7 +106,7 @@ Cinematic::Cinematic(Vec2i size)
 	, posgrille()
 	, angzgrille()
 	, m_nextPosgrille()
-	, angzgrillesuiv()
+	, m_nextAngzgrille()
 	, speedtrack()
 	, flTime()
 {
@@ -539,7 +539,7 @@ void Cinematic::Render(float FDIFF) {
 			}
 
 			if(tb->grid.m_nbvertexs)
-				DrawGrille(tb, col, fx, l, &m_nextPosgrille, angzgrillesuiv, fadegrillesuiv);
+				DrawGrille(tb, col, fx, l, &m_nextPosgrille, m_nextAngzgrille, fadegrillesuiv);
 		}
 
 		//effets qui continuent avec le temps
