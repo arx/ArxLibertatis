@@ -90,7 +90,7 @@ Cinematic::Cinematic(Vec2i size)
 	, m_nextNumbitmap(-1)
 	, a()
 	, fx(-1)
-	, m_fxsuiv()
+	, m_nextFx()
 	, changekey(true)
 	, key(NULL)
 	, projectload(false)
@@ -456,7 +456,7 @@ void Cinematic::Render(float FDIFF) {
 		switch(fx & CinematicFxPreMask) {
 			case FX_DREAM:
 
-				if ((m_fxsuiv & CinematicFxPreMask) == FX_DREAM)
+				if ((m_nextFx & CinematicFxPreMask) == FX_DREAM)
 					FX_DreamPrecalc(tb, 15.f, (FPS > 1.f) ? GetTrackFPS() / FPS : 0.f);
 				else
 					FX_DreamPrecalc(tb, 15.f * a, (FPS > 1.f) ? GetTrackFPS() / FPS : 0.f);

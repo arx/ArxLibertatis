@@ -101,7 +101,7 @@ public:
 	int m_nextNumbitmap;
 	float a;
 	int fx;
-	int m_fxsuiv;
+	int m_nextFx;
 	bool changekey;
 	C_KEY * key;
 	bool projectload;
