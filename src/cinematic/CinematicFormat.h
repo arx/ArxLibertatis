@@ -99,7 +99,8 @@ struct C_KEY_1_75 {
 	s32 frame;
 	s32 numbitmap;
 	s32 fx; // associated fx
-	s16 typeinterp, force;
+	s16 typeinterp;
+	s16 force;
 	SavedVec3 pos;
 	f32 angz;
 	s32 color;
@@ -119,7 +120,8 @@ struct C_KEY_1_76 {
 	s32 frame;
 	s32 numbitmap;
 	s32 fx; // associated fx
-	s16 typeinterp, force;
+	s16 typeinterp;
+	s16 force;
 	SavedVec3 pos;
 	f32 angz;
 	s32 color;
