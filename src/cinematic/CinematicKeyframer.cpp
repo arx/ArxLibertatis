@@ -552,7 +552,7 @@ consequences on light :
 		case INTERP_NO:
 			c->pos = k->pos;
 			c->angz = k->angz;
-			c->possuiv = ksuiv->pos;
+			c->m_nextPos = ksuiv->pos;
 			c->angzsuiv = ksuiv->angz;
 			c->m_light = lightprec->light;
 			c->speedtrack = k->speedtrack;
@@ -774,7 +774,7 @@ bool GereTrackNoPlay(Cinematic * c) {
 		case INTERP_NO:
 			c->pos = k->pos;
 			c->angz = k->angz;
-			c->possuiv = ksuiv->pos;
+			c->m_nextPos = ksuiv->pos;
 			c->angzsuiv = ksuiv->angz;
 			c->m_light = lightprec->light;
 			c->speedtrack = k->speedtrack;

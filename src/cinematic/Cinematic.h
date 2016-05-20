@@ -95,7 +95,7 @@ class Cinematic {
 public:
 	Vec3f pos;
 	float angz;
-	Vec3f possuiv; // in the case of a non-fade interpolation
+	Vec3f m_nextPos; // in the case of a non-fade interpolation
 	float angzsuiv;
 	int numbitmap;
 	int numbitmapsuiv;

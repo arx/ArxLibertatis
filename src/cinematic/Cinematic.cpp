@@ -84,7 +84,7 @@ extern float	FlashAlpha;
 Cinematic::Cinematic(Vec2i size)
 	: pos()
 	, angz()
-	, possuiv()
+	, m_nextPos()
 	, angzsuiv()
 	, numbitmap(-1)
 	, numbitmapsuiv(-1)
@@ -506,7 +506,7 @@ void Cinematic::Render(float FDIFF) {
 		if(force & 1) {
 			switch(ti) {
 				case INTERP_NO:
-					m_camera.orgTrans.pos = possuiv;
+					m_camera.orgTrans.pos = m_nextPos;
 					m_camera.angle.setYaw(0);
 					m_camera.angle.setPitch(0);
 					m_camera.angle.setRoll(angzsuiv);
