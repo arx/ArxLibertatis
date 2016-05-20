@@ -439,7 +439,7 @@ void Cinematic::Render(float FDIFF) {
 		//fx
 		Color col = Color(255, 255, 255, 0);
 
-		switch(fx & 0x000000FF) {
+		switch(fx & CinematicFxMask) {
 			case FX_FADEIN:
 				col = FX_FadeIN(a, color, colord);
 				break;

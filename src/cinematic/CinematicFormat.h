@@ -83,6 +83,7 @@ struct CinematicLight_1_71 {
 
 // TODO macros
 //fx
+const u32 CinematicFxMask = 0x000000ff;
 #define FX_FADEIN  1
 #define FX_FADEOUT 2
 #define FX_BLUR    3
