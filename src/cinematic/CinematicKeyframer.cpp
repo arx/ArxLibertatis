@@ -424,7 +424,7 @@ static void updateFadeOut(Cinematic * c, CinematicTrack * track, int num, float 
 	   <= 4.f / 3.f + 10 * std::numeric_limits<float>::epsilon()) {
 		// No need to fade anything for narrow screens.
 		c->fadegrille = c->fadeprev = c->fadenext = CinematicFadeOut(0.f);
-		c->fadegrillesuiv = CinematicFadeOut(0.f);
+		c->m_nextFadegrille = CinematicFadeOut(0.f);
 		return;
 	}
 	
@@ -442,12 +442,12 @@ static void updateFadeOut(Cinematic * c, CinematicTrack * track, int num, float 
 			int next = (num == track->nbkey) ? num - 1 : num;
 			const C_KEY & key = track->key[next];
 			if(next > 0 && track->key[next - 1].typeinterp != INTERP_NO) {
-				c->fadegrillesuiv  = getFadeOut(*c, key, track->key[next - 1]);
+				c->m_nextFadegrille  = getFadeOut(*c, key, track->key[next - 1]);
 			} else {
-				c->fadegrillesuiv  = getFadeOut(*c, key, key);
+				c->m_nextFadegrille  = getFadeOut(*c, key, key);
 			}
 		} else {
-			c->fadegrillesuiv = CinematicFadeOut(0.f);
+			c->m_nextFadegrille = CinematicFadeOut(0.f);
 		}
 	}
 	

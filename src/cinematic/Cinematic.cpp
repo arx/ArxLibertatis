@@ -539,7 +539,7 @@ void Cinematic::Render(float FDIFF) {
 			}
 
 			if(tb->grid.m_nbvertexs)
-				DrawGrille(tb, col, fx, l, &m_nextPosgrille, m_nextAngzgrille, fadegrillesuiv);
+				DrawGrille(tb, col, fx, l, &m_nextPosgrille, m_nextAngzgrille, m_nextFadegrille);
 		}
 
 		//effets qui continuent avec le temps

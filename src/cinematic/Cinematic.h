@@ -121,7 +121,7 @@ public:
 	CinematicFadeOut fadegrille;
 	Vec3f m_nextPosgrille;
 	float m_nextAngzgrille;
-	CinematicFadeOut fadegrillesuiv;
+	CinematicFadeOut m_nextFadegrille;
 	float speedtrack;
 	float flTime;
 	std::vector<CinematicBitmap*>	m_bitmaps;
