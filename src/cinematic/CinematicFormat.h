@@ -96,6 +96,7 @@ const u32 CinematicFxPostMask = 0x00ff0000;
 #define FX_APPEAR  (2<<16)
 #define FX_APPEAR2 (3<<16)
 //all time
+const u32 CinematicFxAllMask = 0xff000000;
 #define FX_LIGHT   (1<<24)
 
 struct C_KEY_1_75 {

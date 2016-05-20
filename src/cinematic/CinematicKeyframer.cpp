@@ -155,7 +155,7 @@ static void UpDateKeyLight(int frame) {
 	while(num2) {
 		k--;
 
-		if((k->fx & 0xFF000000) == FX_LIGHT) {
+		if((k->fx & CinematicFxAllMask) == FX_LIGHT) {
 			klightprev = k;
 			break;
 		}
@@ -170,7 +170,7 @@ static void UpDateKeyLight(int frame) {
 	while(num2 < (CKTrack->nbkey - 1)) {
 		k++;
 
-		if((k->fx & 0xFF000000) == FX_LIGHT) {
+		if((k->fx & CinematicFxAllMask) == FX_LIGHT) {
 			klightnext = k;
 			break;
 		}
@@ -182,7 +182,7 @@ static void UpDateKeyLight(int frame) {
 	kbase->light.prev = klightprev;
 	kbase->light.next = klightnext;
 
-	if((kbase->fx & 0xFF000000) == FX_LIGHT) {
+	if((kbase->fx & CinematicFxAllMask) == FX_LIGHT) {
 		klightprev2 = klightnext2 = kbase;
 	} else {
 		kbase->light.intensity = -1.f;
@@ -200,7 +200,7 @@ static void UpDateKeyLight(int frame) {
 
 		k->light.next = klightnext2;
 
-		if((k->fx & 0xFF000000) == FX_LIGHT)
+		if((k->fx & CinematicFxAllMask) == FX_LIGHT)
 			break;
 
 		k->light.prev = klightprev;
@@ -217,7 +217,7 @@ static void UpDateKeyLight(int frame) {
 
 		k->light.prev = klightprev2;
 
-		if((k->fx & 0xFF000000) == FX_LIGHT)
+		if((k->fx & CinematicFxAllMask) == FX_LIGHT)
 			break;
 
 		k->light.next = klightnext;
@@ -501,7 +501,7 @@ bool GereTrack(Cinematic * c, float fpscurr, bool resized) {
 	
 	C_KEY * lightprec;
 	
-	if((k->fx & 0xFF000000) == FX_LIGHT) {
+	if((k->fx & CinematicFxAllMask) == FX_LIGHT) {
 		lightprec = k;
 	} else {
 		lightprec = k->light.prev;
@@ -719,7 +719,7 @@ bool GereTrackNoPlay(Cinematic * c) {
 	
 	C_KEY * lightprec;
 	
-	if((k->fx & 0xFF000000) == FX_LIGHT) {
+	if((k->fx & CinematicFxAllMask) == FX_LIGHT) {
 		lightprec = k;
 	} else {
 		lightprec = k->light.prev;
