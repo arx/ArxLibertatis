@@ -39,6 +39,7 @@
 
 #if ARX_PLATFORM == ARX_PLATFORM_WIN32
 #include <windows.h>
+#include <shellapi.h>
 #endif
 
 #if ARX_PLATFORM != ARX_PLATFORM_WIN32
