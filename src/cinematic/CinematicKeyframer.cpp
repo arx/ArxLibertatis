@@ -440,11 +440,11 @@ static void updateFadeOut(Cinematic * c, CinematicTrack * track, int num, float 
 		}
 		if(k->force) {
 			int next = (num == track->nbkey) ? num - 1 : num;
-			C_KEY * key = &track->key[next];
+			const C_KEY & key = track->key[next];
 			if(next > 0 && track->key[next - 1].typeinterp != INTERP_NO) {
-				c->fadegrillesuiv  = getFadeOut(*c, *key, track->key[next - 1]);
+				c->fadegrillesuiv  = getFadeOut(*c, key, track->key[next - 1]);
 			} else {
-				c->fadegrillesuiv  = getFadeOut(*c, *key, *key);
+				c->fadegrillesuiv  = getFadeOut(*c, key, key);
 			}
 		} else {
 			c->fadegrillesuiv = CinematicFadeOut(0.f);
