@@ -313,13 +313,12 @@ void DrawGrille(CinematicBitmap * bitmap, Color col, int fx, CinematicLight * li
 		float * dream = DreamTable;
 
 		while(nb--) {
-			TexturedVertex vtemp;
 			Vec3f t;
 			t.x = v->x + *dream++;
 			t.y = v->y + *dream++;
 			t.z = v->z;
-			vtemp.p = TransformLocalVertex(&t);
-			EE_RTP(vtemp.p, *d3dv);
+			Vec3f vtemp = TransformLocalVertex(&t);
+			EE_RTP(vtemp, *d3dv);
 			if(light) {
 				d3dv->color = CalculLight(light, Vec2f(d3dv->p.x, d3dv->p.y), col).toRGBA();
 			} else {
@@ -330,9 +329,8 @@ void DrawGrille(CinematicBitmap * bitmap, Color col, int fx, CinematicLight * li
 		}
 	} else {
 		while(nb--) {
-			TexturedVertex vtemp;
-			vtemp.p = TransformLocalVertex(v);
-			EE_RTP(vtemp.p, *d3dv);
+			Vec3f vtemp = TransformLocalVertex(v);
+			EE_RTP(vtemp, *d3dv);
 			if(light) {
 				d3dv->color = CalculLight(light, Vec2f(d3dv->p.x, d3dv->p.y), col).toRGBA();
 			} else {
