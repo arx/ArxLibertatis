@@ -544,7 +544,7 @@ void Cinematic::Render(float FDIFF) {
 		}
 
 		//effets qui continuent avec le temps
-		if(FlashBlancEnCours && (fx & 0x00ff0000) != FX_FLASH) {
+		if(FlashBlancEnCours && (fx & CinematicFxPostMask) != FX_FLASH) {
 			speed = OldSpeedFlashBlanc;
 			colorflash = OldColorFlashBlanc;
 			if(fx < 0) {
@@ -565,7 +565,7 @@ void Cinematic::Render(float FDIFF) {
 		}
 		
 		//post fx
-		switch(fx & 0x00ff0000) {
+		switch(fx & CinematicFxPostMask) {
 			case FX_FLASH:
 				FlashBlancEnCours = FX_FlashBlanc(Vec2f(cinRenderSize), speed, colorflash, GetTrackFPS(), FPS);
 				break;

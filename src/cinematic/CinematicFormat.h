@@ -91,6 +91,7 @@ const u32 CinematicFxMask = 0x000000ff;
 const u32 CinematicFxPreMask = 0x0000ff00;
 #define FX_DREAM   (1<<8)
 //post fx
+const u32 CinematicFxPostMask = 0x00ff0000;
 #define FX_FLASH   (1<<16)
 #define FX_APPEAR  (2<<16)
 #define FX_APPEAR2 (3<<16)
