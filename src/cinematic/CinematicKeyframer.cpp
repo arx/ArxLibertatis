@@ -368,7 +368,7 @@ static float GetAngleInterpolation(float d, float e) {
 }
 
 
-static CinematicFadeOut getFadeOut(const Cinematic & c, const C_KEY & key, C_KEY * pos) {
+static CinematicFadeOut getFadeOut(const Cinematic & c, const C_KEY & key, const C_KEY & pos) {
 	
 	if(key.numbitmap < 0 || size_t(key.numbitmap) >= c.m_bitmaps.size()) {
 		return CinematicFadeOut(0.f);
@@ -379,7 +379,7 @@ static CinematicFadeOut getFadeOut(const Cinematic & c, const C_KEY & key, C_KEY
 		return CinematicFadeOut(0.f);
 	}
 	
-	if(key.angzgrille != 0.f || pos->angz != 0.f) {
+	if(key.angzgrille != 0.f || pos.angz != 0.f) {
 		return CinematicFadeOut(1.f);
 	}
 	
@@ -432,19 +432,19 @@ static void updateFadeOut(Cinematic * c, CinematicTrack * track, int num, float 
 	C_KEY * ksuiv = (num == track->nbkey) ? k : k + 1;
 	
 	if(keyChanged) {
-		c->fadeprev = getFadeOut(*c, *k, k);
+		c->fadeprev = getFadeOut(*c, *k, *k);
 		if(num == track->nbkey || ksuiv->numbitmap != k->numbitmap) {
 			c->fadenext = c->fadeprev;
 		} else {
-			c->fadenext = getFadeOut(*c, *ksuiv, ksuiv);
+			c->fadenext = getFadeOut(*c, *ksuiv, *ksuiv);
 		}
 		if(k->force) {
 			int next = (num == track->nbkey) ? num - 1 : num;
 			C_KEY * key = &track->key[next];
 			if(next > 0 && track->key[next - 1].typeinterp != INTERP_NO) {
-				c->fadegrillesuiv  = getFadeOut(*c, *key, &track->key[next - 1]);
+				c->fadegrillesuiv  = getFadeOut(*c, *key, track->key[next - 1]);
 			} else {
-				c->fadegrillesuiv  = getFadeOut(*c, *key, key);
+				c->fadegrillesuiv  = getFadeOut(*c, *key, *key);
 			}
 		} else {
 			c->fadegrillesuiv = CinematicFadeOut(0.f);
