@@ -87,6 +87,7 @@ struct CinematicLight_1_71 {
 #define FX_FADEOUT 2
 #define FX_BLUR    3
 //prefx
+const u32 CinematicFxPreMask = 0x0000ff00;
 #define FX_DREAM   (1<<8)
 //post fx
 #define FX_FLASH   (1<<16)

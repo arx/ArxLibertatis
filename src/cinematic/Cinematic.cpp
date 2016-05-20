@@ -307,7 +307,7 @@ void DrawGrille(CinematicBitmap * bitmap, Color col, int fx, CinematicLight * li
 	LocalSin = glm::sin(glm::radians(angzgrille));
 	LocalCos = glm::cos(glm::radians(angzgrille));
 
-	if((fx & 0x0000FF00) == FX_DREAM) {
+	if((fx & CinematicFxPreMask) == FX_DREAM) {
 		float * dream = DreamTable;
 
 		while(nb--) {
@@ -454,10 +454,10 @@ void Cinematic::Render(float FDIFF) {
 		}
 
 		//fx precalculation
-		switch(fx & 0x0000ff00) {
+		switch(fx & CinematicFxPreMask) {
 			case FX_DREAM:
 
-				if ((m_fxsuiv & 0x0000ff00) == FX_DREAM)
+				if ((m_fxsuiv & CinematicFxPreMask) == FX_DREAM)
 					FX_DreamPrecalc(tb, 15.f, (FPS > 1.f) ? GetTrackFPS() / FPS : 0.f);
 				else
 					FX_DreamPrecalc(tb, 15.f * a, (FPS > 1.f) ? GetTrackFPS() / FPS : 0.f);
