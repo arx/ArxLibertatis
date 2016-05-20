@@ -2014,7 +2014,7 @@ static void SceneAddObjToBackground(EERIE_3DOBJ * eobj) {
 
 			for(size_t i = 0; i < eobj->facelist.size(); i++) {
 				for(long kk = 0; kk < 3; kk++) {
-					memcpy(&ep.v[kk], &eobj->vertexlist[eobj->facelist[i].vid[kk]].vert, sizeof(TexturedVertex));
+					ep.v[kk] = eobj->vertexlist[eobj->facelist[i].vid[kk]].vert;
 				}
 
 				if(i == 0) {
