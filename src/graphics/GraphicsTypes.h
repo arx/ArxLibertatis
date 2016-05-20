@@ -124,6 +124,15 @@ struct EERIEPOLY {
 	short			room;
 	short			misc;
 	unsigned short	uslInd[4];
+	
+	EERIEPOLY()
+		: type(0)
+		, tex(NULL)
+		, transval(0)
+		, area(0)
+		, room(0)
+		, misc(0)
+	{ }
 };
 
 #define IOPOLYVERT 3
