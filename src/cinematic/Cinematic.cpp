@@ -289,11 +289,11 @@ static Color CalculLight(CinematicLight * light, Vec2f pos, Color col) {
 static Vec3f LocalPos;
 static float LocalSin, LocalCos;
 
-static Vec3f TransformLocalVertex(Vec3f * vbase) {
+static Vec3f TransformLocalVertex(const Vec3f & vbase) {
 	Vec3f p;
-	p.x = vbase->x * LocalCos + vbase->y * LocalSin + LocalPos.x;
-	p.y = vbase->x * -LocalSin + vbase->y * LocalCos + LocalPos.y;
-	p.z = vbase->z + LocalPos.z;
+	p.x = vbase.x * LocalCos + vbase.y * LocalSin + LocalPos.x;
+	p.y = vbase.x * -LocalSin + vbase.y * LocalCos + LocalPos.y;
+	p.z = vbase.z + LocalPos.z;
 	return p;
 }
 
@@ -317,7 +317,7 @@ void DrawGrille(CinematicBitmap * bitmap, Color col, int fx, CinematicLight * li
 			t.x = v->x + *dream++;
 			t.y = v->y + *dream++;
 			t.z = v->z;
-			Vec3f vtemp = TransformLocalVertex(&t);
+			Vec3f vtemp = TransformLocalVertex(t);
 			EE_RTP(vtemp, *d3dv);
 			if(light) {
 				d3dv->color = CalculLight(light, Vec2f(d3dv->p.x, d3dv->p.y), col).toRGBA();
@@ -329,7 +329,7 @@ void DrawGrille(CinematicBitmap * bitmap, Color col, int fx, CinematicLight * li
 		}
 	} else {
 		while(nb--) {
-			Vec3f vtemp = TransformLocalVertex(v);
+			Vec3f vtemp = TransformLocalVertex(*v);
 			EE_RTP(vtemp, *d3dv);
 			if(light) {
 				d3dv->color = CalculLight(light, Vec2f(d3dv->p.x, d3dv->p.y), col).toRGBA();
