@@ -488,7 +488,7 @@ bool GereTrack(Cinematic * c, float fpscurr, bool resized) {
 	c->a = unmoinsa = 1.0f - a;
 
 	c->numbitmap		= k->numbitmap;
-	c->numbitmapsuiv	= ksuiv->numbitmap;
+	c->m_nextNumbitmap	= ksuiv->numbitmap;
 	c->ti				= k->typeinterp;
 	c->fx				= k->fx;
 	c->m_fxsuiv			= ksuiv->fx;
@@ -706,7 +706,7 @@ bool GereTrackNoPlay(Cinematic * c) {
 	c->a = unmoinsa = 1.0f - a;
 
 	c->numbitmap		= k->numbitmap;
-	c->numbitmapsuiv	= ksuiv->numbitmap;
+	c->m_nextNumbitmap	= ksuiv->numbitmap;
 	c->ti				= k->typeinterp;
 	c->fx				= k->fx;
 	c->m_fxsuiv			= ksuiv->fx;

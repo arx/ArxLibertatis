@@ -87,7 +87,7 @@ Cinematic::Cinematic(Vec2i size)
 	, m_nextPos()
 	, m_nextAngz()
 	, numbitmap(-1)
-	, numbitmapsuiv(-1)
+	, m_nextNumbitmap(-1)
 	, a()
 	, fx(-1)
 	, m_fxsuiv()
@@ -129,7 +129,7 @@ void Cinematic::OneTimeSceneReInit() {
 	m_camera.cdepth = 2500.f;
 	
 	numbitmap = -1;
-	numbitmapsuiv = -1;
+	m_nextNumbitmap = -1;
 	fx = -1;
 	changekey = true;
 	idsound = -1;
@@ -154,7 +154,7 @@ void Cinematic::New() {
 	projectload = false;
 	
 	numbitmap = -1;
-	numbitmapsuiv = -1;
+	m_nextNumbitmap = -1;
 	fx = -1;
 	key = NULL;
 	
@@ -518,7 +518,7 @@ void Cinematic::Render(float FDIFF) {
 					break;
 			}
 
-			tb = m_bitmaps[numbitmapsuiv];
+			tb = m_bitmaps[m_nextNumbitmap];
 
 			alpha = 255 - alpha;
 			col.a = alpha;

@@ -98,7 +98,7 @@ public:
 	Vec3f m_nextPos; // in the case of a non-fade interpolation
 	float m_nextAngz;
 	int numbitmap;
-	int numbitmapsuiv;
+	int m_nextNumbitmap;
 	float a;
 	int fx;
 	int m_fxsuiv;
