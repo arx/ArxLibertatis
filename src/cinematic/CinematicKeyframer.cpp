@@ -368,36 +368,36 @@ static float GetAngleInterpolation(float d, float e) {
 }
 
 
-static CinematicFadeOut getFadeOut(const Cinematic & c, C_KEY * key, C_KEY * pos) {
+static CinematicFadeOut getFadeOut(const Cinematic & c, const C_KEY & key, C_KEY * pos) {
 	
-	if(key->numbitmap < 0 || size_t(key->numbitmap) >= c.m_bitmaps.size()) {
+	if(key.numbitmap < 0 || size_t(key.numbitmap) >= c.m_bitmaps.size()) {
 		return CinematicFadeOut(0.f);
 	}
 	
-	CinematicBitmap * bitmap = c.m_bitmaps[key->numbitmap];
+	CinematicBitmap * bitmap = c.m_bitmaps[key.numbitmap];
 	if(!bitmap) {
 		return CinematicFadeOut(0.f);
 	}
 	
-	if(key->angzgrille != 0.f || pos->angz != 0.f) {
+	if(key.angzgrille != 0.f || pos->angz != 0.f) {
 		return CinematicFadeOut(1.f);
 	}
 	
 	// The dream effect distorts the bitmap edges, add some buffer room.
 	float add = 2.f;
-	if(key->fx & FX_DREAM) {
+	if(key.fx & FX_DREAM) {
 		add = 20.f;
 	}
 	
 	// Project the bitmap corners onto a 640x480 screen.
-	Vec3f s = key->posgrille - Vec3f(bitmap->m_size.x, bitmap->m_size.y, 0) * 0.5f;
-	Vec3f e = key->posgrille + Vec3f(bitmap->m_size.x, bitmap->m_size.y, 0) * 0.5f;
+	Vec3f s = key.posgrille - Vec3f(bitmap->m_size.x, bitmap->m_size.y, 0) * 0.5f;
+	Vec3f e = key.posgrille + Vec3f(bitmap->m_size.x, bitmap->m_size.y, 0) * 0.5f;
 	float fFOV = glm::radians(69.75);
 	float k = glm::cos(fFOV / 2) / glm::sin(fFOV / 2) * 0.5f;
-	s -= key->pos;
+	s -= key.pos;
 	s.x = s.x * 0.75f * k * 640 / s.z;
 	s.y = s.y * 1.0f  * k * 480 / s.z;
-	e -= key->pos;
+	e -= key.pos;
 	e.x = e.x * 0.75f * k * 640 / e.z;
 	e.y = e.y * 1.0f  * k * 480 / e.z;
 	
@@ -432,19 +432,19 @@ static void updateFadeOut(Cinematic * c, CinematicTrack * track, int num, float 
 	C_KEY * ksuiv = (num == track->nbkey) ? k : k + 1;
 	
 	if(keyChanged) {
-		c->fadeprev = getFadeOut(*c, k, k);
+		c->fadeprev = getFadeOut(*c, *k, k);
 		if(num == track->nbkey || ksuiv->numbitmap != k->numbitmap) {
 			c->fadenext = c->fadeprev;
 		} else {
-			c->fadenext = getFadeOut(*c, ksuiv, ksuiv);
+			c->fadenext = getFadeOut(*c, *ksuiv, ksuiv);
 		}
 		if(k->force) {
 			int next = (num == track->nbkey) ? num - 1 : num;
 			C_KEY * key = &track->key[next];
 			if(next > 0 && track->key[next - 1].typeinterp != INTERP_NO) {
-				c->fadegrillesuiv  = getFadeOut(*c, key, &track->key[next - 1]);
+				c->fadegrillesuiv  = getFadeOut(*c, *key, &track->key[next - 1]);
 			} else {
-				c->fadegrillesuiv  = getFadeOut(*c, key, key);
+				c->fadegrillesuiv  = getFadeOut(*c, *key, key);
 			}
 		} else {
 			c->fadegrillesuiv = CinematicFadeOut(0.f);
