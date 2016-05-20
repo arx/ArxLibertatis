@@ -296,14 +296,14 @@ static void TransformLocalVertex(Vec3f * vbase, TexturedVertex * d3dv) {
 }
 
 void DrawGrille(CinematicBitmap * bitmap, Color col, int fx, CinematicLight * light,
-                Vec3f * posgrille, float angzgrille, const CinematicFadeOut & fade) {
+                const Vec3f & posgrille, float angzgrille, const CinematicFadeOut & fade) {
 	
 	CinematicGrid * grille = &bitmap->grid;
 	int nb = grille->m_nbvertexs;
 	Vec3f * v = grille->m_vertexs.data();
 	TexturedVertex * d3dv = AllTLVertex;
 
-	LocalPos = *posgrille;
+	LocalPos = posgrille;
 	LocalSin = glm::sin(glm::radians(angzgrille));
 	LocalCos = glm::cos(glm::radians(angzgrille));
 
@@ -500,7 +500,7 @@ void Cinematic::Render(float FDIFF) {
 		}
 
 		if(tb->grid.m_nbvertexs)
-			DrawGrille(tb, col, fx, l, &posgrille, angzgrille, fadegrille);
+			DrawGrille(tb, col, fx, l, posgrille, angzgrille, fadegrille);
 
 		//PASS #2
 		if(force & 1) {
@@ -539,7 +539,7 @@ void Cinematic::Render(float FDIFF) {
 			}
 
 			if(tb->grid.m_nbvertexs)
-				DrawGrille(tb, col, fx, l, &m_nextPosgrille, m_nextAngzgrille, m_nextFadegrille);
+				DrawGrille(tb, col, fx, l, m_nextPosgrille, m_nextAngzgrille, m_nextFadegrille);
 		}
 
 		//effets qui continuent avec le temps

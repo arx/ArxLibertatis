@@ -119,7 +119,7 @@ bool FX_Blur(Cinematic *c, CinematicBitmap *tb, EERIE_CAMERA &camera)
 		PrepareCamera(&camera, g_size);
 		
 		Color col = Color(255, 255, 255, int(alpha));
-		DrawGrille(tb, col, 0, NULL, &c->posgrille, c->angzgrille, c->fadegrille);
+		DrawGrille(tb, col, 0, NULL, c->posgrille, c->angzgrille, c->fadegrille);
 
 		alpha += dalpha;
 		pos++;
