@@ -50,6 +50,8 @@ ZeniMax Media Inc., Suite 120, Rockville, Maryland 20850 USA.
 #include <map>
 #include <cmath>
 
+#include <boost/lexical_cast.hpp>
+
 #include "core/Application.h"
 #include "core/Config.h"
 #include "core/GameTime.h"
@@ -548,21 +550,19 @@ InputKeyId Input::getKeyId(const std::string & name) {
 	}
 	
 	if(!name.compare(0, PREFIX_KEY.length(), PREFIX_KEY)) {
-		std::istringstream iss(name.substr(PREFIX_KEY.length()));
-		int key;
-		iss >> key;
-		if(!iss.bad()) {
+		try {
+			int key = boost::lexical_cast<int>(name.substr(PREFIX_KEY.length()));
 			return key;
-		}
+		} catch(const boost::bad_lexical_cast &) { }
 	}
 	
 	if(!name.compare(0, PREFIX_BUTTON.length(), PREFIX_BUTTON)) {
-		std::istringstream iss(name.substr(PREFIX_BUTTON.length()));
-		int key;
-		iss >> key;
-		if(!iss.bad() && key >= 0 && key < Mouse::ButtonCount) {
-			return Mouse::ButtonBase + key - 1;
-		}
+		try {
+			int key = boost::lexical_cast<int>(name.substr(PREFIX_BUTTON.length()));
+			if(key >= 0 && key < Mouse::ButtonCount) {
+				return Mouse::ButtonBase + key - 1;
+			}
+		} catch(const boost::bad_lexical_cast &) { }
 	}
 	
 	if(keyNames.empty()) {
