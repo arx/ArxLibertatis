@@ -553,7 +553,7 @@ consequences on light :
 			c->pos = k->pos;
 			c->angz = k->angz;
 			c->m_nextPos = ksuiv->pos;
-			c->angzsuiv = ksuiv->angz;
+			c->m_nextAngz = ksuiv->angz;
 			c->m_light = lightprec->light;
 			c->speedtrack = k->speedtrack;
 			break;
@@ -775,7 +775,7 @@ bool GereTrackNoPlay(Cinematic * c) {
 			c->pos = k->pos;
 			c->angz = k->angz;
 			c->m_nextPos = ksuiv->pos;
-			c->angzsuiv = ksuiv->angz;
+			c->m_nextAngz = ksuiv->angz;
 			c->m_light = lightprec->light;
 			c->speedtrack = k->speedtrack;
 			break;

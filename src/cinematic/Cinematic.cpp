@@ -85,7 +85,7 @@ Cinematic::Cinematic(Vec2i size)
 	: pos()
 	, angz()
 	, m_nextPos()
-	, angzsuiv()
+	, m_nextAngz()
 	, numbitmap(-1)
 	, numbitmapsuiv(-1)
 	, a()
@@ -509,7 +509,7 @@ void Cinematic::Render(float FDIFF) {
 					m_camera.orgTrans.pos = m_nextPos;
 					m_camera.angle.setYaw(0);
 					m_camera.angle.setPitch(0);
-					m_camera.angle.setRoll(angzsuiv);
+					m_camera.angle.setRoll(m_nextAngz);
 					PrepareCamera(&m_camera, g_size);
 					break;
 				case INTERP_LINEAR:
