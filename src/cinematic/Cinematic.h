@@ -53,7 +53,7 @@ ZeniMax Media Inc., Suite 120, Rockville, Maryland 20850 USA.
 #include "math/Vector.h"
 #include "platform/Alignment.h"
 
-struct C_KEY;
+struct CinematicKeyframe;
 struct CinematicGrid;
 class CinematicBitmap;
 
@@ -67,8 +67,8 @@ public:
 	Color3f color;
 	float intensity;
 	float intensiternd;
-	C_KEY * prev;
-	C_KEY * next;
+	CinematicKeyframe * prev;
+	CinematicKeyframe * next;
 	
 	CinematicLight()
 		: pos(Vec3f_ZERO)
@@ -103,7 +103,7 @@ public:
 	int fx;
 	int m_nextFx;
 	bool changekey;
-	C_KEY * key;
+	CinematicKeyframe * key;
 	bool projectload;
 	short ti;
 	short force;

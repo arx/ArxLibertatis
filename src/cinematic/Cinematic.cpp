@@ -165,7 +165,7 @@ void Cinematic::New() {
 	AllocTrack(0, 100, 30.f);
 	
 	{
-	C_KEY key;
+	CinematicKeyframe key;
 	key.frame = 0;
 	key.numbitmap = -1;
 	key.fx = -1;
@@ -186,7 +186,7 @@ void Cinematic::New() {
 	}
 	
 	{
-	C_KEY key;
+	CinematicKeyframe key;
 	key.frame = 100;
 	key.numbitmap = -1;
 	key.fx = -1;
