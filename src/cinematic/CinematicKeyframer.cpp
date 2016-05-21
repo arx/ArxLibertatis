@@ -608,10 +608,8 @@ consequences on light :
 			const Vec3f p0 = 0.5f * (temp - kprec->pos);
 			const Vec3f p1 = 0.5f * (ksuivsuiv->pos - current->pos);
 			
-			c->pos.x = f0 * current->pos.x + f1 * temp.x + f2 * p0.x + f3 * p1.x;
-			c->pos.y = f0 * current->pos.y + f1 * temp.y + f2 * p0.y + f3 * p1.y;
-			c->pos.z = f0 * current->pos.z + f1 * temp.z + f2 * p0.z + f3 * p1.z;
-
+			c->pos = f0 * current->pos + f1 * temp + f2 * p0 + f3 * p1;
+			
 			c->angz = current->angz + a * GetAngleInterpolation(current->angz, next->angz);
 
 			const float tempsp = next->speedtrack;
@@ -821,10 +819,8 @@ bool GereTrackNoPlay(Cinematic * c) {
 			const Vec3f p0 = 0.5f * (temp - kprec->pos);
 			const Vec3f p1 = 0.5f * (ksuivsuiv->pos - current->pos);
 			
-			c->pos.x = f0 * current->pos.x + f1 * temp.x + f2 * p0.x + f3 * p1.x;
-			c->pos.y = f0 * current->pos.y + f1 * temp.y + f2 * p0.y + f3 * p1.y;
-			c->pos.z = f0 * current->pos.z + f1 * temp.z + f2 * p0.z + f3 * p1.z;
-
+			c->pos = f0 * current->pos + f1 * temp + f2 * p0 + f3 * p1;
+			
 			c->angz = current->angz + a * GetAngleInterpolation(current->angz, next->angz);
 
 			const float tempsp = next->speedtrack;

@@ -319,9 +319,7 @@ void CPoisonProjectile::Render() {
 			const Vec3f p0 = 0.5f * (temp - pathways[kpprec]);
 			const Vec3f p1 = 0.5f * (pathways[kpsuivsuiv] - pathways[i]);
 			
-			lastpos.x = f0 * pathways[i].x + f1 * temp.x + f2 * p0.x + f3 * p1.x;
-			lastpos.y = f0 * pathways[i].y + f1 * temp.y + f2 * p0.y + f3 * p1.y;
-			lastpos.z = f0 * pathways[i].z + f1 * temp.z + f2 * p0.z + f3 * p1.z;
+			lastpos = f0 * pathways[i] + f1 * temp + f2 * p0 + f3 * p1;
 		}
 	}
 	

@@ -340,9 +340,7 @@ void ControlTargetSpell::Update() {
 			const Vec3f p0 = 0.5f * (temp - pathways[kpprec]);
 			const Vec3f p1 = 0.5f * (pathways[kpsuivsuiv] - pathways[kp]);
 			
-			v.x = f0 * pathways[kp].x + f1 * temp.x + f2 * p0.x + f3 * p1.x ;
-			v.y = f0 * pathways[kp].y + f1 * temp.y + f2 * p0.y + f3 * p1.y ;
-			v.z = f0 * pathways[kp].z + f1 * temp.z + f2 * p0.z + f3 * p1.z ;
+			v = f0 * pathways[kp] + f1 * temp + f2 * p0 + f3 * p1;
 			
 			newpos = v;
 			
