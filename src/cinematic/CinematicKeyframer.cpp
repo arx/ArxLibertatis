@@ -821,15 +821,13 @@ bool GereTrackNoPlay(Cinematic * c) {
 			
 			const Vec3f temp = next->pos;
 			
-			const float p0x = 0.5f * (temp.x - kprec->pos.x);
-			const float p0y = 0.5f * (temp.y - kprec->pos.y);
-			const float p0z = 0.5f * (temp.z - kprec->pos.z);
+			const Vec3f p0 = 0.5f * (temp - kprec->pos);
 			
 			const Vec3f p1 = 0.5f * (ksuivsuiv->pos - current->pos);
 			
-			c->pos.x = f0 * current->pos.x + f1 * temp.x + f2 * p0x + f3 * p1.x;
-			c->pos.y = f0 * current->pos.y + f1 * temp.y + f2 * p0y + f3 * p1.y;
-			c->pos.z = f0 * current->pos.z + f1 * temp.z + f2 * p0z + f3 * p1.z;
+			c->pos.x = f0 * current->pos.x + f1 * temp.x + f2 * p0.x + f3 * p1.x;
+			c->pos.y = f0 * current->pos.y + f1 * temp.y + f2 * p0.y + f3 * p1.y;
+			c->pos.z = f0 * current->pos.z + f1 * temp.z + f2 * p0.z + f3 * p1.z;
 
 			c->angz = current->angz + a * GetAngleInterpolation(current->angz, next->angz);
 
