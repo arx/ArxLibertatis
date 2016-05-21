@@ -187,7 +187,9 @@ void CMagicMissile::Render()
 				break;
 
 			float t = toto * fOneOnBezierPrecision;
-
+			
+			const Vec3f currentPos = pathways[kp];
+			
 			const float t1 = t;
 			const float t2 = t1 * t1;
 			const float t3 = t2 * t1;
@@ -198,9 +200,9 @@ void CMagicMissile::Render()
 			
 			const Vec3f temp = pathways[kpsuiv];
 			const Vec3f p0 = 0.5f * (temp - pathways[kpprec]);
-			const Vec3f p1 = 0.5f * (pathways[kpsuivsuiv] - pathways[kp]);
+			const Vec3f p1 = 0.5f * (pathways[kpsuivsuiv] - currentPos);
 			
-			v = f0 * pathways[kp] + f1 * temp + f2 * p0 + f3 * p1;
+			v = f0 * currentPos + f1 * temp + f2 * p0 + f3 * p1;
 			
 			newpos = v;
 

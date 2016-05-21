@@ -308,6 +308,8 @@ void CPoisonProjectile::Render() {
 			
 			float t = toto * delta;
 			
+			const Vec3f currentPos = pathways[i];
+			
 			const float t2 = t * t;
 			const float t3 = t2 * t;
 			const float f0 = 2.f * t3 - 3.f * t2 + 1.f;
@@ -317,9 +319,9 @@ void CPoisonProjectile::Render() {
 			
 			const Vec3f temp = pathways[kpsuiv];
 			const Vec3f p0 = 0.5f * (temp - pathways[kpprec]);
-			const Vec3f p1 = 0.5f * (pathways[kpsuivsuiv] - pathways[i]);
+			const Vec3f p1 = 0.5f * (pathways[kpsuivsuiv] - currentPos);
 			
-			lastpos = f0 * pathways[i] + f1 * temp + f2 * p0 + f3 * p1;
+			lastpos = f0 * currentPos + f1 * temp + f2 * p0 + f3 * p1;
 		}
 	}
 	

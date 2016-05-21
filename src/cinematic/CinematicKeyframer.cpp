@@ -595,7 +595,9 @@ consequences on light :
 			
 			CinematicKeyframe * ksuivsuiv = ((num + 1) < CKTrack->nbkey) ? next + 1 : next;
 			CinematicKeyframe * kprec = (num > 1) ? current - 1 : current;
-
+			
+			const Vec3f currentPos = current->pos;
+			
 			const float t1 = a;
 			const float t2 = t1 * t1;
 			const float t3 = t2 * t1;
@@ -606,9 +608,9 @@ consequences on light :
 			
 			const Vec3f temp = next->pos;
 			const Vec3f p0 = 0.5f * (temp - kprec->pos);
-			const Vec3f p1 = 0.5f * (ksuivsuiv->pos - current->pos);
+			const Vec3f p1 = 0.5f * (ksuivsuiv->pos - currentPos);
 			
-			c->pos = f0 * current->pos + f1 * temp + f2 * p0 + f3 * p1;
+			c->pos = f0 * currentPos + f1 * temp + f2 * p0 + f3 * p1;
 			
 			c->angz = current->angz + a * GetAngleInterpolation(current->angz, next->angz);
 
@@ -806,7 +808,9 @@ bool GereTrackNoPlay(Cinematic * c) {
 			
 			CinematicKeyframe * ksuivsuiv = ((num + 1) < CKTrack->nbkey) ? next + 1 : next;
 			CinematicKeyframe * kprec = (num > 1) ? current - 1 : current;
-
+			
+			const Vec3f currentPos = current->pos;
+			
 			const float t1 = a;
 			const float t2 = t1 * t1;
 			const float t3 = t2 * t1;
@@ -817,9 +821,9 @@ bool GereTrackNoPlay(Cinematic * c) {
 			
 			const Vec3f temp = next->pos;
 			const Vec3f p0 = 0.5f * (temp - kprec->pos);
-			const Vec3f p1 = 0.5f * (ksuivsuiv->pos - current->pos);
+			const Vec3f p1 = 0.5f * (ksuivsuiv->pos - currentPos);
 			
-			c->pos = f0 * current->pos + f1 * temp + f2 * p0 + f3 * p1;
+			c->pos = f0 * currentPos + f1 * temp + f2 * p0 + f3 * p1;
 			
 			c->angz = current->angz + a * GetAngleInterpolation(current->angz, next->angz);
 
