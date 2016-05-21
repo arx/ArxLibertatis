@@ -592,18 +592,17 @@ consequences on light :
 			c->m_light = current->light;
 			
 			// TODO copy-paste bezier
-			float	t1, t2, t3, f0, f1, f2, f3;
 			
 			CinematicKeyframe * ksuivsuiv = ((num + 1) < CKTrack->nbkey) ? next + 1 : next;
 			CinematicKeyframe * kprec = (num > 1) ? current - 1 : current;
 
-			t1 = a;
-			t2 = t1 * t1;
-			t3 = t2 * t1;
-			f0 = 2.f * t3 - 3.f * t2 + 1.f;
-			f1 = -2.f * t3 + 3.f * t2;
-			f2 = t3 - 2.f * t2 + t1;
-			f3 = t3 - t2;
+			float t1 = a;
+			float t2 = t1 * t1;
+			float t3 = t2 * t1;
+			float f0 = 2.f * t3 - 3.f * t2 + 1.f;
+			float f1 = -2.f * t3 + 3.f * t2;
+			float f2 = t3 - 2.f * t2 + t1;
+			float f3 = t3 - t2;
 
 			float tempx = next->pos.x;
 			float p0x = 0.5f * (tempx - kprec->pos.x);
@@ -813,18 +812,17 @@ bool GereTrackNoPlay(Cinematic * c) {
 			
 		case INTERP_BEZIER: {
 			// TODO copy-paste bezier
-			float	t1, t2, t3, f0, f1, f2, f3;
 			
 			CinematicKeyframe * ksuivsuiv = ((num + 1) < CKTrack->nbkey) ? next + 1 : next;
 			CinematicKeyframe * kprec = (num > 1) ? current - 1 : current;
 
-			t1 = a;
-			t2 = t1 * t1;
-			t3 = t2 * t1;
-			f0 = 2.f * t3 - 3.f * t2 + 1.f;
-			f1 = -2.f * t3 + 3.f * t2;
-			f2 = t3 - 2.f * t2 + t1;
-			f3 = t3 - t2;
+			float t1 = a;
+			float t2 = t1 * t1;
+			float t3 = t2 * t1;
+			float f0 = 2.f * t3 - 3.f * t2 + 1.f;
+			float f1 = -2.f * t3 + 3.f * t2;
+			float f2 = t3 - 2.f * t2 + t1;
+			float f3 = t3 - t2;
 
 			float tempx = next->pos.x;
 			float p0x = 0.5f * (tempx - kprec->pos.x);
