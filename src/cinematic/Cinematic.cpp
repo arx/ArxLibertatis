@@ -295,16 +295,16 @@ static Vec3f TransformLocalVertex(const Vec3f & vbase, const Vec3f & LocalPos, f
 }
 
 void DrawGrille(CinematicBitmap * bitmap, Color col, int fx, CinematicLight * light,
-                const Vec3f & posgrille, float angzgrille, const CinematicFadeOut & fade) {
+                const Vec3f & pos, float angle, const CinematicFadeOut & fade) {
 	
 	CinematicGrid * grille = &bitmap->grid;
 	int nb = grille->m_nbvertexs;
 	Vec3f * v = grille->m_vertexs.data();
 	TexturedVertex * d3dv = AllTLVertex;
 
-	Vec3f LocalPos = posgrille;
-	float LocalSin = glm::sin(glm::radians(angzgrille));
-	float LocalCos = glm::cos(glm::radians(angzgrille));
+	Vec3f LocalPos = pos;
+	float LocalSin = glm::sin(glm::radians(angle));
+	float LocalCos = glm::cos(glm::radians(angle));
 
 	if((fx & CinematicFxPreMask) == FX_DREAM) {
 		float * dream = DreamTable;

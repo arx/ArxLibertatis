@@ -148,7 +148,7 @@ public:
 };
 
 void DrawGrille(CinematicBitmap * bitmap, Color col, int fx, CinematicLight * light,
-                const Vec3f & posgrillesuiv, float angzgrillesuiv, const CinematicFadeOut & fade);
+                const Vec3f & pos, float angle, const CinematicFadeOut & fade);
 
 ARX_USE_ALIGNED_ALLOCATOR(Cinematic) // for m_camera
 
