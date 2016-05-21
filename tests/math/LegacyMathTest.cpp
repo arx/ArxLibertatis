@@ -333,3 +333,22 @@ void LegacyMathTest::focalToFovTest() {
 		CPPUNIT_ASSERT_MESSAGE(msg, glm::epsilonEqual(expected, result, 2.f));
 	}
 }
+
+void LegacyMathTest::pointInerpolationTest() {
+	
+	for(int i = 0; i < 500; i++) {
+		Vec3f v0 = glm::linearRand(Vec3f(-10), Vec3f(10));
+		Vec3f v1 = glm::linearRand(Vec3f(-10), Vec3f(10));
+		Vec3f v2 = glm::linearRand(Vec3f(-10), Vec3f(10));
+		Vec3f v3 = glm::linearRand(Vec3f(-10), Vec3f(10));
+		
+		for(int u = 0; u < 1000; u++) {
+			float f = u / 1000.f;
+			
+			Vec3f res1 = interpolatePos(f, v0, v1, v2, v3);
+			Vec3f res2 = glm::catmullRom(v0, v1, v2, v3, f);
+			
+			CPPUNIT_ASSERT_EQUAL(res1, res2);
+		}
+	}
+}

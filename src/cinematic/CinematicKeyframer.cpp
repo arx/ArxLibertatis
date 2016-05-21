@@ -816,7 +816,7 @@ bool GereTrackNoPlay(Cinematic * c) {
 			const Vec3f nextPos = next->pos;
 			const Vec3f next2Pos = ksuivsuiv->pos;
 			
-			c->pos = interpolatePos(a, prevPos, currentPos, nextPos, next2Pos);
+			c->pos = glm::catmullRom(prevPos, currentPos, nextPos, next2Pos, a);
 			
 			c->angz = current->angz + a * GetAngleInterpolation(current->angz, next->angz);
 			

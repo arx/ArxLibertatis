@@ -314,4 +314,20 @@ float focalToFovLegacy(float focal) {
 		return 33.5f;
 }
 
+inline Vec3f interpolatePos(float t, const Vec3f prevPos, const Vec3f currentPos, const Vec3f nextPos, const Vec3f next2Pos)
+{
+	const float t1 = t;
+	const float t2 = t1 * t1;
+	const float t3 = t2 * t1;
+	const float f0 = 2.f * t3 - 3.f * t2 + 1.f;
+	const float f1 = -2.f * t3 + 3.f * t2;
+	const float f2 = t3 - 2.f * t2 + t1;
+	const float f3 = t3 - t2;
+	
+	const Vec3f p0 = 0.5f * (nextPos - prevPos);
+	const Vec3f p1 = 0.5f * (next2Pos - currentPos);
+	
+	return f0 * currentPos + f1 * nextPos + f2 * p0 + f3 * p1;
+}
+
 #endif // ARX_TESTS_GRAPHICS_LEGACYMATH_H

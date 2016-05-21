@@ -333,7 +333,7 @@ void ControlTargetSpell::Update() {
 			const Vec3f nextPos = pathways[kpsuiv];
 			const Vec3f next2Pos = pathways[kpsuivsuiv];
 			
-			v = interpolatePos(t, prevPos, currentPos, nextPos, next2Pos);
+			v = glm::catmullRom(prevPos, currentPos, nextPos, next2Pos, t);
 			
 			newpos = v;
 			
