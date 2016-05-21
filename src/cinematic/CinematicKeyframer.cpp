@@ -599,6 +599,7 @@ consequences on light :
 			const Vec3f prevPos = kprec->pos;
 			const Vec3f currentPos = current->pos;
 			const Vec3f nextPos = next->pos;
+			const Vec3f next2Pos = ksuivsuiv->pos;
 			
 			const float t1 = a;
 			const float t2 = t1 * t1;
@@ -609,7 +610,7 @@ consequences on light :
 			const float f3 = t3 - t2;
 			
 			const Vec3f p0 = 0.5f * (nextPos - prevPos);
-			const Vec3f p1 = 0.5f * (ksuivsuiv->pos - currentPos);
+			const Vec3f p1 = 0.5f * (next2Pos - currentPos);
 			
 			c->pos = f0 * currentPos + f1 * nextPos + f2 * p0 + f3 * p1;
 			
@@ -813,6 +814,7 @@ bool GereTrackNoPlay(Cinematic * c) {
 			const Vec3f prevPos = kprec->pos;
 			const Vec3f currentPos = current->pos;
 			const Vec3f nextPos = next->pos;
+			const Vec3f next2Pos = ksuivsuiv->pos;
 			
 			const float t1 = a;
 			const float t2 = t1 * t1;
@@ -823,7 +825,7 @@ bool GereTrackNoPlay(Cinematic * c) {
 			const float f3 = t3 - t2;
 			
 			const Vec3f p0 = 0.5f * (nextPos - prevPos);
-			const Vec3f p1 = 0.5f * (ksuivsuiv->pos - currentPos);
+			const Vec3f p1 = 0.5f * (next2Pos - currentPos);
 			
 			c->pos = f0 * currentPos + f1 * nextPos + f2 * p0 + f3 * p1;
 			
