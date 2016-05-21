@@ -820,6 +820,7 @@ bool GereTrackNoPlay(Cinematic * c) {
 			
 			c->angz = current->angz + a * GetAngleInterpolation(current->angz, next->angz);
 			
+			{ // TODO use glm::catmullRom
 			const float t1 = a;
 			const float t2 = t1 * t1;
 			const float t3 = t2 * t1;
@@ -832,6 +833,7 @@ bool GereTrackNoPlay(Cinematic * c) {
 			const float p0sp = 0.5f * (tempsp - kprec->speedtrack);
 			const float p1sp = 0.5f * (ksuivsuiv->speedtrack - current->speedtrack);
 			c->speedtrack = f0 * current->speedtrack + f1 * tempsp + f2 * p0sp + f3 * p1sp;
+			}
 
 			{
 				CinematicLight ldep;
