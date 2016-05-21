@@ -428,17 +428,17 @@ static void updateFadeOut(Cinematic * c, CinematicTrack * track, int num, float 
 		return;
 	}
 	
-	CinematicKeyframe * k = &track->key[num - 1];
-	CinematicKeyframe * ksuiv = (num == track->nbkey) ? k : k + 1;
+	CinematicKeyframe * current = &track->key[num - 1];
+	CinematicKeyframe * ksuiv = (num == track->nbkey) ? current : current + 1;
 	
 	if(keyChanged) {
-		c->fadeprev = getFadeOut(*c, *k, *k);
-		if(num == track->nbkey || ksuiv->numbitmap != k->numbitmap) {
+		c->fadeprev = getFadeOut(*c, *current, *current);
+		if(num == track->nbkey || ksuiv->numbitmap != current->numbitmap) {
 			c->fadenext = c->fadeprev;
 		} else {
 			c->fadenext = getFadeOut(*c, *ksuiv, *ksuiv);
 		}
-		if(k->force) {
+		if(current->force) {
 			int next = (num == track->nbkey) ? num - 1 : num;
 			const CinematicKeyframe & key = track->key[next];
 			if(next > 0 && track->key[next - 1].typeinterp != INTERP_NO) {
@@ -451,7 +451,7 @@ static void updateFadeOut(Cinematic * c, CinematicTrack * track, int num, float 
 		}
 	}
 	
-	if(k->typeinterp == INTERP_NO) {
+	if(current->typeinterp == INTERP_NO) {
 		c->fadegrille = c->fadeprev;
 	} else {
 		c->fadegrille.left   = c->fadenext.left * a   + c->fadeprev.left * (1.f - a);
