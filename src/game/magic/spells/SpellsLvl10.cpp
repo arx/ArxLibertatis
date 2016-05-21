@@ -175,6 +175,11 @@ void MassLightningStrikeSpell::Update() {
 }
 
 
+ControlTargetSpell::ControlTargetSpell()
+	: tex_mm(NULL)
+	, fTrail(0)
+{ }
+
 bool ControlTargetSpell::CanLaunch()
 {
 	if(!ValidIONum(m_target)) {

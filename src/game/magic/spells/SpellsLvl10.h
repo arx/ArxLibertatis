@@ -43,6 +43,8 @@ private:
 
 class ControlTargetSpell : public SpellBase {
 public:
+	ControlTargetSpell();
+	
 	bool CanLaunch();
 	void Launch();
 	void End();
