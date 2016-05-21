@@ -321,13 +321,11 @@ void CPoisonProjectile::Render() {
 			const float p0y = 0.5f * (temp.y - pathways[kpprec].y);
 			const float p0z = 0.5f * (temp.z - pathways[kpprec].z);
 			
-			const float p1 = 0.5f * (pathways[kpsuivsuiv].x - pathways[i].x);
-			const float p1y = 0.5f * (pathways[kpsuivsuiv].y - pathways[i].y);
-			const float p1z = 0.5f * (pathways[kpsuivsuiv].z - pathways[i].z);
+			const Vec3f p1 = 0.5f * (pathways[kpsuivsuiv] - pathways[i]);
 			
-			lastpos.x = f0 * pathways[i].x + f1 * temp.x + f2 * p0 + f3 * p1;
-			lastpos.y = f0 * pathways[i].y + f1 * temp.y + f2 * p0y + f3 * p1y;
-			lastpos.z = f0 * pathways[i].z + f1 * temp.z + f2 * p0z + f3 * p1z;
+			lastpos.x = f0 * pathways[i].x + f1 * temp.x + f2 * p0 + f3 * p1.x;
+			lastpos.y = f0 * pathways[i].y + f1 * temp.y + f2 * p0y + f3 * p1.y;
+			lastpos.z = f0 * pathways[i].z + f1 * temp.z + f2 * p0z + f3 * p1.z;
 		}
 	}
 	
