@@ -59,6 +59,8 @@ private:
 
 class NegateMagicSpell : public SpellBase {
 public:
+	NegateMagicSpell();
+	
 	void Launch();
 	void End();
 	void Update();

@@ -327,6 +327,11 @@ void FakeSummonSpell::Update() {
 }
 
 
+NegateMagicSpell::NegateMagicSpell()
+	: tex_p2(NULL)
+	, tex_sol(NULL)
+{ }
+
 void NegateMagicSpell::Launch()
 {
 	if(m_caster == PlayerEntityHandle) {
