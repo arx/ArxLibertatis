@@ -174,14 +174,11 @@ void CMagicMissile::Render()
 	newpos = lastpos = pathways[0];
 	
 	for(int i = 0; i < 5; i++) {
-		int kpprec = (i > 0) ? i - 1 : i ;
-		int kpsuiv = i + 1 ;
-		int kpsuivsuiv = (i < (5 - 2)) ? kpsuiv + 1 : kpsuiv;
 		
-		const Vec3f v1 = pathways[kpprec];
+		const Vec3f v1 = pathways[std::max(0, i - 1)];
 		const Vec3f v2 = pathways[i];
-		const Vec3f v3 = pathways[kpsuiv];
-		const Vec3f v4 = pathways[kpsuivsuiv];
+		const Vec3f v3 = pathways[i + 1];
+		const Vec3f v4 = pathways[std::min(5, i + 2)];
 		
 		for(int toto = 1; toto < iBezierPrecision; toto++) {
 			if(fTrail < i * iBezierPrecision + toto)
