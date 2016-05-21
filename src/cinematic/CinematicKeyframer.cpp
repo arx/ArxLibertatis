@@ -906,8 +906,8 @@ float GetTimeKeyFramer()
 	int nb = CKTrack->nbkey - 1;
 
 	while(nb--) {
-		CinematicKeyframe * ksuiv = k + 1;
-		t += ((float)(ksuiv->frame - k->frame)) / (CKTrack->fps * k->speedtrack);
+		CinematicKeyframe * next = k + 1;
+		t += ((float)(next->frame - k->frame)) / (CKTrack->fps * k->speedtrack);
 		k++;
 	}
 
