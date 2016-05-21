@@ -329,6 +329,7 @@ void ControlTargetSpell::Update() {
 			float t = toto * delta;
 			
 			const Vec3f currentPos = pathways[kp];
+			const Vec3f nextPos = pathways[kpsuiv];
 			
 			const float t1 = t;
 			const float t2 = t1 * t1;
@@ -338,7 +339,6 @@ void ControlTargetSpell::Update() {
 			const float f2 = t3 - 2.f * t2 + t1;
 			const float f3 = t3 - t2;
 			
-			const Vec3f nextPos = pathways[kpsuiv];
 			const Vec3f p0 = 0.5f * (nextPos - pathways[kpprec]);
 			const Vec3f p1 = 0.5f * (pathways[kpsuivsuiv] - currentPos);
 			
