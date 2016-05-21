@@ -322,15 +322,11 @@ void ControlTargetSpell::Update() {
 	Vec3f lastpos = pathways[0];
 	
 	for(int i = 0; i < 9; i++) {
-		int kp		= i;
-		int kpprec	= (i > 0) ? kp - 1 : kp ;
-		int kpsuiv	= kp + 1 ;
-		int kpsuivsuiv = (i < (9 - 2)) ? kpsuiv + 1 : kpsuiv;
 		
-		const Vec3f v1 = pathways[kpprec];
-		const Vec3f v2 = pathways[kp];
-		const Vec3f v3 = pathways[kpsuiv];
-		const Vec3f v4 = pathways[kpsuivsuiv];
+		const Vec3f v1 = pathways[std::max(0, i - 1)];
+		const Vec3f v2 = pathways[i];
+		const Vec3f v3 = pathways[i + 1];
+		const Vec3f v4 = pathways[std::min(9, i + 2)];
 		
 		for(int toto = 1; toto < n; toto++) {
 			if(fTrail < i * n + toto)
