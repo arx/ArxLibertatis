@@ -463,15 +463,15 @@ static void updateFadeOut(Cinematic * c, CinematicTrack * track, int num, float 
 }
 
 // TODO copy-paste GereTrack
-bool GereTrack(Cinematic * c, float fpscurr, bool resized) {
+void GereTrack(Cinematic * c, float fpscurr, bool resized) {
 	
 	if(!CKTrack || !CKTrack->nbkey)
-		return false;
+		return;
 	
 	int num;
 	
 	if(CKTrack->pause)
-		return true;
+		return;
 	
 	CinematicKeyframe * current = GetKey((int) CKTrack->currframe, &num);
 	CinematicKeyframe * next = (num == CKTrack->nbkey) ? current : current + 1;
@@ -666,22 +666,20 @@ consequences on light :
 		arxtime.update();
 		c->flTime = arxtime.now_f();
 	}
-
-	return true;
 }
 
 // TODO copy-paste GereTrack
-bool GereTrackNoPlay(Cinematic * c) {
+void GereTrackNoPlay(Cinematic * c) {
 	
 	if(!CKTrack || !CKTrack->nbkey || !CKTrack->pause)
-		return false;
+		return;
 	
 	int num;
 	
 	CinematicKeyframe * current = GetKey((int) CKTrack->currframe, &num);
 
 	if(!current)
-		return false;
+		return;
 
 	CinematicKeyframe * next = (num == CKTrack->nbkey) ? current : current + 1;
 	
@@ -759,7 +757,7 @@ bool GereTrackNoPlay(Cinematic * c) {
 	c->m_nextAngzgrille = next->angzgrille;
 
 	if(current->numbitmap < 0 || next->numbitmap < 0)
-		return false;
+		return;
 
 	switch(current->typeinterp) {
 		case INTERP_NO:
@@ -865,8 +863,6 @@ bool GereTrackNoPlay(Cinematic * c) {
 		c->key = current;
 		c->changekey = true;
 	}
-
-	return true;
 }
 
 void PlayTrack(Cinematic * c)
