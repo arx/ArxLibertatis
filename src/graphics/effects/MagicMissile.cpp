@@ -198,15 +198,13 @@ void CMagicMissile::Render()
 			
 			const Vec3f temp = pathways[kpsuiv];
 			
-			const float p0 = 0.5f * (temp.x - pathways[kpprec].x) ;
-			const float p0y = 0.5f * (temp.y - pathways[kpprec].y) ;
-			const float p0z = 0.5f * (temp.z - pathways[kpprec].z) ;
+			const Vec3f p0 = 0.5f * (temp - pathways[kpprec]);
 			
 			const Vec3f p1 = 0.5f * (pathways[kpsuivsuiv] - pathways[kp]);
 			
-			v.x = f0 * pathways[kp].x + f1 * temp.x + f2 * p0 + f3 * p1.x ;
-			v.y = f0 * pathways[kp].y + f1 * temp.y + f2 * p0y + f3 * p1.y ;
-			v.z = f0 * pathways[kp].z + f1 * temp.z + f2 * p0z + f3 * p1.z ;
+			v.x = f0 * pathways[kp].x + f1 * temp.x + f2 * p0.x + f3 * p1.x ;
+			v.y = f0 * pathways[kp].y + f1 * temp.y + f2 * p0.y + f3 * p1.y ;
+			v.z = f0 * pathways[kp].z + f1 * temp.z + f2 * p0.z + f3 * p1.z ;
 
 			newpos = v;
 
