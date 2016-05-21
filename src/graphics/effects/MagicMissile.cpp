@@ -78,7 +78,6 @@ CMagicMissile::CMagicMissile()
 	, iLength()
 	, iBezierPrecision()
 	, fTrail()
-	, fOneOnBezierPrecision()
 	, snd_loop()
 {
 	SetDuration(2000);
@@ -121,7 +120,6 @@ void CMagicMissile::Create(const Vec3f & startPos, const Anglef & angles)
 
 	iLength = 50;
 	iBezierPrecision = BEZIERPrecision;
-	fOneOnBezierPrecision = 1.0f / (float) iBezierPrecision;
 	bExplo = false;
 	bMove = true;
 
@@ -185,7 +183,7 @@ void CMagicMissile::Render()
 			if(fTrail < i * iBezierPrecision + toto)
 				break;
 
-			float t = toto * fOneOnBezierPrecision;
+			float t = toto * (1.0f / iBezierPrecision);
 			
 			const Vec3f prevPos = pathways[kpprec];
 			const Vec3f currentPos = pathways[kp];

@@ -76,7 +76,6 @@ private:
 	int iLength;
 	int	iBezierPrecision;
 	float fTrail;
-	float fOneOnBezierPrecision;
 	Vec3f pathways[6];
 	audio::SourceId snd_loop;
 };
