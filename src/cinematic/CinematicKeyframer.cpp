@@ -596,34 +596,34 @@ consequences on light :
 			CinematicKeyframe * ksuivsuiv = ((num + 1) < CKTrack->nbkey) ? next + 1 : next;
 			CinematicKeyframe * kprec = (num > 1) ? current - 1 : current;
 
-			float t1 = a;
-			float t2 = t1 * t1;
-			float t3 = t2 * t1;
-			float f0 = 2.f * t3 - 3.f * t2 + 1.f;
-			float f1 = -2.f * t3 + 3.f * t2;
-			float f2 = t3 - 2.f * t2 + t1;
-			float f3 = t3 - t2;
+			const float t1 = a;
+			const float t2 = t1 * t1;
+			const float t3 = t2 * t1;
+			const float f0 = 2.f * t3 - 3.f * t2 + 1.f;
+			const float f1 = -2.f * t3 + 3.f * t2;
+			const float f2 = t3 - 2.f * t2 + t1;
+			const float f3 = t3 - t2;
 
-			float tempx = next->pos.x;
-			float p0x = 0.5f * (tempx - kprec->pos.x);
-			float p1x = 0.5f * (ksuivsuiv->pos.x - current->pos.x);
+			const float tempx = next->pos.x;
+			const float p0x = 0.5f * (tempx - kprec->pos.x);
+			const float p1x = 0.5f * (ksuivsuiv->pos.x - current->pos.x);
 			c->pos.x = f0 * current->pos.x + f1 * tempx + f2 * p0x + f3 * p1x;
 
-			float tempy = next->pos.y;
-			float p0y = 0.5f * (tempy - kprec->pos.y);
-			float p1y = 0.5f * (ksuivsuiv->pos.y - current->pos.y);
+			const float tempy = next->pos.y;
+			const float p0y = 0.5f * (tempy - kprec->pos.y);
+			const float p1y = 0.5f * (ksuivsuiv->pos.y - current->pos.y);
 			c->pos.y = f0 * current->pos.y + f1 * tempy + f2 * p0y + f3 * p1y;
 
-			float tempz = next->pos.z;
-			float p0z = 0.5f * (tempz - kprec->pos.z);
-			float p1z = 0.5f * (ksuivsuiv->pos.z - current->pos.z);
+			const float tempz = next->pos.z;
+			const float p0z = 0.5f * (tempz - kprec->pos.z);
+			const float p1z = 0.5f * (ksuivsuiv->pos.z - current->pos.z);
 			c->pos.z = f0 * current->pos.z + f1 * tempz + f2 * p0z + f3 * p1z;
 
 			c->angz = current->angz + a * GetAngleInterpolation(current->angz, next->angz);
 
-			float tempsp = next->speedtrack;
-			float p0sp = 0.5f * (tempsp - kprec->speedtrack);
-			float p1sp = 0.5f * (ksuivsuiv->speedtrack - current->speedtrack);
+			const float tempsp = next->speedtrack;
+			const float p0sp = 0.5f * (tempsp - kprec->speedtrack);
+			const float p1sp = 0.5f * (ksuivsuiv->speedtrack - current->speedtrack);
 			c->speedtrack = f0 * current->speedtrack + f1 * tempsp + f2 * p0sp + f3 * p1sp;
 
 			{
@@ -816,34 +816,34 @@ bool GereTrackNoPlay(Cinematic * c) {
 			CinematicKeyframe * ksuivsuiv = ((num + 1) < CKTrack->nbkey) ? next + 1 : next;
 			CinematicKeyframe * kprec = (num > 1) ? current - 1 : current;
 
-			float t1 = a;
-			float t2 = t1 * t1;
-			float t3 = t2 * t1;
-			float f0 = 2.f * t3 - 3.f * t2 + 1.f;
-			float f1 = -2.f * t3 + 3.f * t2;
-			float f2 = t3 - 2.f * t2 + t1;
-			float f3 = t3 - t2;
+			const float t1 = a;
+			const float t2 = t1 * t1;
+			const float t3 = t2 * t1;
+			const float f0 = 2.f * t3 - 3.f * t2 + 1.f;
+			const float f1 = -2.f * t3 + 3.f * t2;
+			const float f2 = t3 - 2.f * t2 + t1;
+			const float f3 = t3 - t2;
 
-			float tempx = next->pos.x;
-			float p0x = 0.5f * (tempx - kprec->pos.x);
-			float p1x = 0.5f * (ksuivsuiv->pos.x - current->pos.x);
+			const float tempx = next->pos.x;
+			const float p0x = 0.5f * (tempx - kprec->pos.x);
+			const float p1x = 0.5f * (ksuivsuiv->pos.x - current->pos.x);
 			c->pos.x = f0 * current->pos.x + f1 * tempx + f2 * p0x + f3 * p1x;
 
-			float tempy = next->pos.y;
-			float p0y = 0.5f * (tempy - kprec->pos.y);
-			float p1y = 0.5f * (ksuivsuiv->pos.y - current->pos.y);
+			const float tempy = next->pos.y;
+			const float p0y = 0.5f * (tempy - kprec->pos.y);
+			const float p1y = 0.5f * (ksuivsuiv->pos.y - current->pos.y);
 			c->pos.y = f0 * current->pos.y + f1 * tempy + f2 * p0y + f3 * p1y;
 
-			float tempz = next->pos.z;
-			float p0z = 0.5f * (tempz - kprec->pos.z);
-			float p1z = 0.5f * (ksuivsuiv->pos.z - current->pos.z);
+			const float tempz = next->pos.z;
+			const float p0z = 0.5f * (tempz - kprec->pos.z);
+			const float p1z = 0.5f * (ksuivsuiv->pos.z - current->pos.z);
 			c->pos.z = f0 * current->pos.z + f1 * tempz + f2 * p0z + f3 * p1z;
 
 			c->angz = current->angz + a * GetAngleInterpolation(current->angz, next->angz);
 
-			float tempsp = next->speedtrack;
-			float p0sp = 0.5f * (tempsp - kprec->speedtrack);
-			float p1sp = 0.5f * (ksuivsuiv->speedtrack - current->speedtrack);
+			const float tempsp = next->speedtrack;
+			const float p0sp = 0.5f * (tempsp - kprec->speedtrack);
+			const float p1sp = 0.5f * (ksuivsuiv->speedtrack - current->speedtrack);
 			c->speedtrack = f0 * current->speedtrack + f1 * tempsp + f2 * p0sp + f3 * p1sp;
 
 			{
