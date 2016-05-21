@@ -178,17 +178,17 @@ void CMagicMissile::Render()
 		int kpprec = (i > 0) ? kp - 1 : kp ;
 		int kpsuiv = kp + 1 ;
 		int kpsuivsuiv = (i < (5 - 2)) ? kpsuiv + 1 : kpsuiv;
-
+		
+		const Vec3f prevPos = pathways[kpprec];
+		const Vec3f currentPos = pathways[kp];
+		const Vec3f nextPos = pathways[kpsuiv];
+		const Vec3f next2Pos = pathways[kpsuivsuiv];
+		
 		for(int toto = 1; toto < iBezierPrecision; toto++) {
 			if(fTrail < i * iBezierPrecision + toto)
 				break;
 
 			float t = toto * (1.0f / iBezierPrecision);
-			
-			const Vec3f prevPos = pathways[kpprec];
-			const Vec3f currentPos = pathways[kp];
-			const Vec3f nextPos = pathways[kpsuiv];
-			const Vec3f next2Pos = pathways[kpsuivsuiv];
 			
 			v = glm::catmullRom(prevPos, currentPos, nextPos, next2Pos, t);
 			
