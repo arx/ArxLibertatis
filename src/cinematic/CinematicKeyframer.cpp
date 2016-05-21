@@ -474,12 +474,12 @@ bool GereTrack(Cinematic * c, float fpscurr, bool resized) {
 		return true;
 	
 	CinematicKeyframe * current = GetKey((int) CKTrack->currframe, &num);
-	CinematicKeyframe * ksuiv = (num == CKTrack->nbkey) ? current : current + 1;
+	CinematicKeyframe * next = (num == CKTrack->nbkey) ? current : current + 1;
 	
 	float a;
 	
-	if(ksuiv->frame != current->frame)
-		a = (CKTrack->currframe - (float)current->frame) / ((float)(ksuiv->frame - current->frame));
+	if(next->frame != current->frame)
+		a = (CKTrack->currframe - (float)current->frame) / ((float)(next->frame - current->frame));
 	else
 		a = 1.f;
 	
@@ -488,10 +488,10 @@ bool GereTrack(Cinematic * c, float fpscurr, bool resized) {
 	c->a = unmoinsa = 1.0f - a;
 
 	c->numbitmap		= current->numbitmap;
-	c->m_nextNumbitmap	= ksuiv->numbitmap;
+	c->m_nextNumbitmap	= next->numbitmap;
 	c->ti				= current->typeinterp;
 	c->fx				= current->fx;
-	c->m_nextFx			= ksuiv->fx;
+	c->m_nextFx			= next->fx;
 	c->color			= current->color;
 	c->colord			= current->colord;
 	c->colorflash		= current->colorf;
@@ -545,22 +545,22 @@ consequences on light :
 
 	c->posgrille = current->posgrille;
 	c->angzgrille = current->angzgrille;
-	c->m_nextPosgrille = ksuiv->posgrille;
-	c->m_nextAngzgrille = ksuiv->angzgrille;
+	c->m_nextPosgrille = next->posgrille;
+	c->m_nextAngzgrille = next->angzgrille;
 
 	switch(current->typeinterp) {
 		case INTERP_NO:
 			c->pos = current->pos;
 			c->angz = current->angz;
-			c->m_nextPos = ksuiv->pos;
-			c->m_nextAngz = ksuiv->angz;
+			c->m_nextPos = next->pos;
+			c->m_nextAngz = next->angz;
 			c->m_light = lightprec->light;
 			c->speedtrack = current->speedtrack;
 			break;
 		case INTERP_LINEAR:
-			c->pos = ksuiv->pos * a + current->pos * unmoinsa;
-			c->angz = current->angz + a * GetAngleInterpolation(current->angz, ksuiv->angz);
-			c->speedtrack = a * ksuiv->speedtrack + unmoinsa * current->speedtrack;
+			c->pos = next->pos * a + current->pos * unmoinsa;
+			c->angz = current->angz + a * GetAngleInterpolation(current->angz, next->angz);
+			c->speedtrack = a * next->speedtrack + unmoinsa * current->speedtrack;
 
 			{
 				CinematicLight ldep;
@@ -594,7 +594,7 @@ consequences on light :
 			// TODO copy-paste bezier
 			float	t1, t2, t3, f0, f1, f2, f3, p0, p1, temp;
 			
-			CinematicKeyframe * ksuivsuiv = ((num + 1) < CKTrack->nbkey) ? ksuiv + 1 : ksuiv;
+			CinematicKeyframe * ksuivsuiv = ((num + 1) < CKTrack->nbkey) ? next + 1 : next;
 			CinematicKeyframe * kprec = (num > 1) ? current - 1 : current;
 
 			t1 = a;
@@ -605,24 +605,24 @@ consequences on light :
 			f2 = t3 - 2.f * t2 + t1;
 			f3 = t3 - t2;
 
-			temp = ksuiv->pos.x;
+			temp = next->pos.x;
 			p0 = 0.5f * (temp - kprec->pos.x);
 			p1 = 0.5f * (ksuivsuiv->pos.x - current->pos.x);
 			c->pos.x = f0 * current->pos.x + f1 * temp + f2 * p0 + f3 * p1;
 
-			temp = ksuiv->pos.y;
+			temp = next->pos.y;
 			p0 = 0.5f * (temp - kprec->pos.y);
 			p1 = 0.5f * (ksuivsuiv->pos.y - current->pos.y);
 			c->pos.y = f0 * current->pos.y + f1 * temp + f2 * p0 + f3 * p1;
 
-			temp = ksuiv->pos.z;
+			temp = next->pos.z;
 			p0 = 0.5f * (temp - kprec->pos.z);
 			p1 = 0.5f * (ksuivsuiv->pos.z - current->pos.z);
 			c->pos.z = f0 * current->pos.z + f1 * temp + f2 * p0 + f3 * p1;
 
-			c->angz = current->angz + a * GetAngleInterpolation(current->angz, ksuiv->angz);
+			c->angz = current->angz + a * GetAngleInterpolation(current->angz, next->angz);
 
-			temp = ksuiv->speedtrack;
+			temp = next->speedtrack;
 			p0 = 0.5f * (temp - kprec->speedtrack);
 			p1 = 0.5f * (ksuivsuiv->speedtrack - current->speedtrack);
 			c->speedtrack = f0 * current->speedtrack + f1 * temp + f2 * p0 + f3 * p1;
