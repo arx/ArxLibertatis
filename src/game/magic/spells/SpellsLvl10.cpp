@@ -327,10 +327,10 @@ void ControlTargetSpell::Update() {
 		int kpsuiv	= kp + 1 ;
 		int kpsuivsuiv = (i < (9 - 2)) ? kpsuiv + 1 : kpsuiv;
 		
-		const Vec3f prevPos = pathways[kpprec];
-		const Vec3f currentPos = pathways[kp];
-		const Vec3f nextPos = pathways[kpsuiv];
-		const Vec3f next2Pos = pathways[kpsuivsuiv];
+		const Vec3f v1 = pathways[kpprec];
+		const Vec3f v2 = pathways[kp];
+		const Vec3f v3 = pathways[kpsuiv];
+		const Vec3f v4 = pathways[kpsuivsuiv];
 		
 		for(int toto = 1; toto < n; toto++) {
 			if(fTrail < i * n + toto)
@@ -338,7 +338,7 @@ void ControlTargetSpell::Update() {
 
 			float t = toto * delta;
 			
-			v = glm::catmullRom(prevPos, currentPos, nextPos, next2Pos, t);
+			v = glm::catmullRom(v1, v2, v3, v4, t);
 			
 			newpos = v;
 			
