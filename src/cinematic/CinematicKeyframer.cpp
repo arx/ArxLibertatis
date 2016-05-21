@@ -261,6 +261,9 @@ bool AddKey(const CinematicKeyframe & key) {
 		k->numbitmap = key.numbitmap;
 
 	if(key.fx > -2) {
+		k->fx = key.fx;
+		
+		/* TODO what was this code suppesed to achieve
 		if((key.fx > 255) && (k->fx > 0)) {
 			k->fx |= key.fx;
 		} else {
@@ -270,6 +273,7 @@ bool AddKey(const CinematicKeyframe & key) {
 				k->fx = key.fx;
 			}
 		}
+		*/
 	}
 
 	if(key.speed > -1.f) {
