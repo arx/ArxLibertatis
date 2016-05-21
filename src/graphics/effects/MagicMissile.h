@@ -61,7 +61,6 @@ public:
 	
 	bool bExplo;
 	bool bMove;
-	Vec3f eSrc;
 	Vec3f eCurPos;
 	
 	float lightIntensityFactor;

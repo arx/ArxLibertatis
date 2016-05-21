@@ -298,7 +298,7 @@ void MagicMissileSpell::Launch() {
 				el->rgb = Color3f(0.f, 0.f, 1.f);
 			}
 			
-			el->pos	 = missile->eSrc;
+			el->pos = startPos;
 			el->duration = 300;
 		}
 	}

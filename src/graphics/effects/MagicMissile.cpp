@@ -73,7 +73,6 @@ CMagicMissile::CMagicMissile()
 	: CSpellFx()
 	, bExplo(false)
 	, bMove(true)
-	, eSrc(Vec3f_ZERO)
 	, eCurPos()
 	, lightIntensityFactor()
 	, iLength()
@@ -101,20 +100,20 @@ void CMagicMissile::Create(const Vec3f & startPos, const Anglef & angles)
 {
 	SetDuration(ulDuration);
 	
-	eCurPos = eSrc = startPos;
+	eCurPos = startPos;
 	
 	short i = 40.f;
-	Vec3f endPos = eSrc;
+	Vec3f endPos = startPos;
 	endPos += angleToVectorXZ(angles.getPitch()) * (50.f * i);
 	endPos.y += std::sin(glm::radians(MAKEANGLE(angles.getYaw()))) * (50.f * i);
 	
-	pathways[0] = eSrc;
+	pathways[0] = startPos;
 	pathways[5] = endPos;
 	Split(pathways, 0, 5, 50, 0.5f);
 
 	for(i = 0; i < 6; i++) {
-		if(pathways[i].y >= eSrc.y + 150) {
-			pathways[i].y = eSrc.y + 150;
+		if(pathways[i].y >= startPos.y + 150) {
+			pathways[i].y = startPos.y + 150;
 		}
 	}
 
