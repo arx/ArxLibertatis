@@ -605,9 +605,7 @@ consequences on light :
 			const float f3 = t3 - t2;
 			
 			const Vec3f temp = next->pos;
-			
 			const Vec3f p0 = 0.5f * (temp - kprec->pos);
-			
 			const Vec3f p1 = 0.5f * (ksuivsuiv->pos - current->pos);
 			
 			c->pos.x = f0 * current->pos.x + f1 * temp.x + f2 * p0.x + f3 * p1.x;
@@ -820,9 +818,7 @@ bool GereTrackNoPlay(Cinematic * c) {
 			const float f3 = t3 - t2;
 			
 			const Vec3f temp = next->pos;
-			
 			const Vec3f p0 = 0.5f * (temp - kprec->pos);
-			
 			const Vec3f p1 = 0.5f * (ksuivsuiv->pos - current->pos);
 			
 			c->pos.x = f0 * current->pos.x + f1 * temp.x + f2 * p0.x + f3 * p1.x;
