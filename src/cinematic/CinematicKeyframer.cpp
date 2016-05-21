@@ -429,14 +429,14 @@ static void updateFadeOut(Cinematic * c, CinematicTrack * track, int num, float 
 	}
 	
 	CinematicKeyframe * current = &track->key[num - 1];
-	CinematicKeyframe * ksuiv = (num == track->nbkey) ? current : current + 1;
+	CinematicKeyframe * next = (num == track->nbkey) ? current : current + 1;
 	
 	if(keyChanged) {
 		c->fadeprev = getFadeOut(*c, *current, *current);
-		if(num == track->nbkey || ksuiv->numbitmap != current->numbitmap) {
+		if(num == track->nbkey || next->numbitmap != current->numbitmap) {
 			c->fadenext = c->fadeprev;
 		} else {
-			c->fadenext = getFadeOut(*c, *ksuiv, *ksuiv);
+			c->fadenext = getFadeOut(*c, *next, *next);
 		}
 		if(current->force) {
 			int next = (num == track->nbkey) ? num - 1 : num;
