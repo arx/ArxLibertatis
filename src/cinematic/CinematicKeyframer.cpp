@@ -592,7 +592,7 @@ consequences on light :
 			c->m_light = current->light;
 			
 			// TODO copy-paste bezier
-			float	t1, t2, t3, f0, f1, f2, f3, p0, p1, temp;
+			float	t1, t2, t3, f0, f1, f2, f3;
 			
 			CinematicKeyframe * ksuivsuiv = ((num + 1) < CKTrack->nbkey) ? next + 1 : next;
 			CinematicKeyframe * kprec = (num > 1) ? current - 1 : current;
@@ -605,27 +605,27 @@ consequences on light :
 			f2 = t3 - 2.f * t2 + t1;
 			f3 = t3 - t2;
 
-			temp = next->pos.x;
-			p0 = 0.5f * (temp - kprec->pos.x);
-			p1 = 0.5f * (ksuivsuiv->pos.x - current->pos.x);
-			c->pos.x = f0 * current->pos.x + f1 * temp + f2 * p0 + f3 * p1;
+			float tempx = next->pos.x;
+			float p0x = 0.5f * (tempx - kprec->pos.x);
+			float p1x = 0.5f * (ksuivsuiv->pos.x - current->pos.x);
+			c->pos.x = f0 * current->pos.x + f1 * tempx + f2 * p0x + f3 * p1x;
 
-			temp = next->pos.y;
-			p0 = 0.5f * (temp - kprec->pos.y);
-			p1 = 0.5f * (ksuivsuiv->pos.y - current->pos.y);
-			c->pos.y = f0 * current->pos.y + f1 * temp + f2 * p0 + f3 * p1;
+			float tempy = next->pos.y;
+			float p0y = 0.5f * (tempy - kprec->pos.y);
+			float p1y = 0.5f * (ksuivsuiv->pos.y - current->pos.y);
+			c->pos.y = f0 * current->pos.y + f1 * tempy + f2 * p0y + f3 * p1y;
 
-			temp = next->pos.z;
-			p0 = 0.5f * (temp - kprec->pos.z);
-			p1 = 0.5f * (ksuivsuiv->pos.z - current->pos.z);
-			c->pos.z = f0 * current->pos.z + f1 * temp + f2 * p0 + f3 * p1;
+			float tempz = next->pos.z;
+			float p0z = 0.5f * (tempz - kprec->pos.z);
+			float p1z = 0.5f * (ksuivsuiv->pos.z - current->pos.z);
+			c->pos.z = f0 * current->pos.z + f1 * tempz + f2 * p0z + f3 * p1z;
 
 			c->angz = current->angz + a * GetAngleInterpolation(current->angz, next->angz);
 
-			temp = next->speedtrack;
-			p0 = 0.5f * (temp - kprec->speedtrack);
-			p1 = 0.5f * (ksuivsuiv->speedtrack - current->speedtrack);
-			c->speedtrack = f0 * current->speedtrack + f1 * temp + f2 * p0 + f3 * p1;
+			float tempsp = next->speedtrack;
+			float p0sp = 0.5f * (tempsp - kprec->speedtrack);
+			float p1sp = 0.5f * (ksuivsuiv->speedtrack - current->speedtrack);
+			c->speedtrack = f0 * current->speedtrack + f1 * tempsp + f2 * p0sp + f3 * p1sp;
 
 			{
 				CinematicLight ldep;
