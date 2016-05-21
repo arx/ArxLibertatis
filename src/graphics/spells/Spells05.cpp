@@ -310,11 +310,12 @@ void CPoisonProjectile::Render() {
 			
 			const Vec3f currentPos = pathways[i];
 			
-			const float t2 = t * t;
-			const float t3 = t2 * t;
+			const float t1 = t;
+			const float t2 = t1 * t1;
+			const float t3 = t2 * t1;
 			const float f0 = 2.f * t3 - 3.f * t2 + 1.f;
 			const float f1 = -2.f * t3 + 3.f * t2;
-			const float f2 = t3 - 2.f * t2 + t;
+			const float f2 = t3 - 2.f * t2 + t1;
 			const float f3 = t3 - t2;
 			
 			const Vec3f temp = pathways[kpsuiv];
