@@ -55,7 +55,7 @@ public:
 	
 	void SetTTL(unsigned long);
 	
-	void Create(const Vec3f &, const Anglef &);
+	void Create(const Vec3f & startPos, const Anglef &);
 	void Update(float timeDelta);
 	void Render();
 	

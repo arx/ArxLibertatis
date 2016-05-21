@@ -97,11 +97,11 @@ CMagicMissile::~CMagicMissile() {
 	ARX_SOUND_Stop(snd_loop);
 }
 
-void CMagicMissile::Create(const Vec3f & aeSrc, const Anglef & angles)
+void CMagicMissile::Create(const Vec3f & startPos, const Anglef & angles)
 {
 	SetDuration(ulDuration);
 	
-	eCurPos = eSrc = aeSrc;
+	eCurPos = eSrc = startPos;
 	
 	short i = 40.f;
 	Vec3f endPos = eSrc;
