@@ -337,18 +337,19 @@ void ControlTargetSpell::Update() {
 			const float f3 = t3 - t2 ;
 
 			const float val = pathways[kpsuiv].x;
-			const float p0 = 0.5f * (val - pathways[kpprec].x) ;
-			const float p1 = 0.5f * (pathways[kpsuivsuiv].x - pathways[kp].x) ;
-			v.x = f0 * pathways[kp].x + f1 * val + f2 * p0 + f3 * p1 ;
-
 			const float valy = pathways[kpsuiv].y ;
-			const float p0y = 0.5f * (valy - pathways[kpprec].y) ;
-			const float p1y = 0.5f * (pathways[kpsuivsuiv].y - pathways[kp].y) ;
-			v.y = f0 * pathways[kp].y + f1 * valy + f2 * p0y + f3 * p1y ;
-
 			const float valz = pathways[kpsuiv].z ;
+			
+			const float p0 = 0.5f * (val - pathways[kpprec].x) ;
+			const float p0y = 0.5f * (valy - pathways[kpprec].y) ;
 			const float p0z = 0.5f * (valz - pathways[kpprec].z) ;
+			
+			const float p1 = 0.5f * (pathways[kpsuivsuiv].x - pathways[kp].x) ;
+			const float p1y = 0.5f * (pathways[kpsuivsuiv].y - pathways[kp].y) ;
 			const float p1z = 0.5f * (pathways[kpsuivsuiv].z - pathways[kp].z) ;
+			
+			v.x = f0 * pathways[kp].x + f1 * val + f2 * p0 + f3 * p1 ;
+			v.y = f0 * pathways[kp].y + f1 * valy + f2 * p0y + f3 * p1y ;
 			v.z = f0 * pathways[kp].z + f1 * valz + f2 * p0z + f3 * p1z ;
 			
 			newpos = v;
