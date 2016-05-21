@@ -591,8 +591,6 @@ consequences on light :
 		case INTERP_BEZIER: {
 			c->m_light = current->light;
 			
-			// TODO copy-paste bezier
-			
 			CinematicKeyframe * ksuivsuiv = ((num + 1) < CKTrack->nbkey) ? next + 1 : next;
 			CinematicKeyframe * kprec = (num > 1) ? current - 1 : current;
 			
@@ -601,6 +599,11 @@ consequences on light :
 			const Vec3f nextPos = next->pos;
 			const Vec3f next2Pos = ksuivsuiv->pos;
 			
+			c->pos = glm::catmullRom(prevPos, currentPos, nextPos, next2Pos, a);
+			
+			c->angz = current->angz + a * GetAngleInterpolation(current->angz, next->angz);
+			
+			{ // TODO use glm::catmullRom
 			const float t1 = a;
 			const float t2 = t1 * t1;
 			const float t3 = t2 * t1;
@@ -609,17 +612,11 @@ consequences on light :
 			const float f2 = t3 - 2.f * t2 + t1;
 			const float f3 = t3 - t2;
 			
-			const Vec3f p0 = 0.5f * (nextPos - prevPos);
-			const Vec3f p1 = 0.5f * (next2Pos - currentPos);
-			
-			c->pos = f0 * currentPos + f1 * nextPos + f2 * p0 + f3 * p1;
-			
-			c->angz = current->angz + a * GetAngleInterpolation(current->angz, next->angz);
-
 			const float tempsp = next->speedtrack;
 			const float p0sp = 0.5f * (tempsp - kprec->speedtrack);
 			const float p1sp = 0.5f * (ksuivsuiv->speedtrack - current->speedtrack);
 			c->speedtrack = f0 * current->speedtrack + f1 * tempsp + f2 * p0sp + f3 * p1sp;
+			}
 
 			{
 				CinematicLight ldep;
@@ -806,8 +803,6 @@ bool GereTrackNoPlay(Cinematic * c) {
 			break;
 			
 		case INTERP_BEZIER: {
-			// TODO copy-paste bezier
-			
 			CinematicKeyframe * ksuivsuiv = ((num + 1) < CKTrack->nbkey) ? next + 1 : next;
 			CinematicKeyframe * kprec = (num > 1) ? current - 1 : current;
 			
