@@ -200,7 +200,7 @@ void MagicMissileSpell::Launch() {
 		m_hand_pos = actionPointPosition(caster->obj, group);
 	}
 	
-	Vec3f aePos;
+	Vec3f startPos;
 	float afAlpha, afBeta;
 	if(m_caster == PlayerEntityHandle) {
 		afBeta = player.angle.getPitch();
@@ -209,13 +209,13 @@ void MagicMissileSpell::Launch() {
 		Vec3f vector = angleToVector(Anglef(afAlpha, afBeta, 0.f)) * 60.f;
 		
 		if(m_hand_group != ActionPoint()) {
-			aePos = m_hand_pos;
+			startPos = m_hand_pos;
 		} else {
-			aePos = player.pos;
-			aePos += angleToVectorXZ(afBeta);
+			startPos = player.pos;
+			startPos += angleToVectorXZ(afBeta);
 		}
 		
-		aePos += vector;
+		startPos += vector;
 		
 	} else {
 		afAlpha = 0;
@@ -224,12 +224,12 @@ void MagicMissileSpell::Launch() {
 		Vec3f vector = angleToVector(Anglef(afAlpha, afBeta, 0.f)) * 60.f;
 		
 		if(m_hand_group != ActionPoint()) {
-			aePos = m_hand_pos;
+			startPos = m_hand_pos;
 		} else {
-			aePos = entities[m_caster]->pos;
+			startPos = entities[m_caster]->pos;
 		}
 		
-		aePos += vector;
+		startPos += vector;
 		
 		Entity * io = entities[m_caster];
 		
@@ -274,7 +274,7 @@ void MagicMissileSpell::Launch() {
 			angles.setPitch(angles.getPitch() + Random::getf(-6.0f, 6.0f));
 		}
 		
-		missile->Create(aePos, angles);
+		missile->Create(startPos, angles);
 		
 		long lTime = m_duration + Random::get(-1000, 1000);
 		
