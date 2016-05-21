@@ -692,12 +692,12 @@ bool GereTrackNoPlay(Cinematic * c) {
 	if(!k)
 		return false;
 
-	CinematicKeyframe * ksuiv = (num == CKTrack->nbkey) ? k : k + 1;
+	CinematicKeyframe * next = (num == CKTrack->nbkey) ? k : k + 1;
 	
 	float a;
 	
-	if(ksuiv->frame != k->frame)
-		a = (CKTrack->currframe - (float)k->frame) / ((float)(ksuiv->frame - k->frame));
+	if(next->frame != k->frame)
+		a = (CKTrack->currframe - (float)k->frame) / ((float)(next->frame - k->frame));
 	else
 		a = 1.f;
 	
@@ -706,10 +706,10 @@ bool GereTrackNoPlay(Cinematic * c) {
 	c->a = unmoinsa = 1.0f - a;
 
 	c->numbitmap		= k->numbitmap;
-	c->m_nextNumbitmap	= ksuiv->numbitmap;
+	c->m_nextNumbitmap	= next->numbitmap;
 	c->ti				= k->typeinterp;
 	c->fx				= k->fx;
-	c->m_nextFx			= ksuiv->fx;
+	c->m_nextFx			= next->fx;
 	c->color			= k->color;
 	c->colord			= k->colord;
 	c->colorflash		= k->colorf;
@@ -764,25 +764,25 @@ bool GereTrackNoPlay(Cinematic * c) {
 
 	c->posgrille = k->posgrille;
 	c->angzgrille = k->angzgrille;
-	c->m_nextPosgrille = ksuiv->posgrille;
-	c->m_nextAngzgrille = ksuiv->angzgrille;
+	c->m_nextPosgrille = next->posgrille;
+	c->m_nextAngzgrille = next->angzgrille;
 
-	if(k->numbitmap < 0 || ksuiv->numbitmap < 0)
+	if(k->numbitmap < 0 || next->numbitmap < 0)
 		return false;
 
 	switch(k->typeinterp) {
 		case INTERP_NO:
 			c->pos = k->pos;
 			c->angz = k->angz;
-			c->m_nextPos = ksuiv->pos;
-			c->m_nextAngz = ksuiv->angz;
+			c->m_nextPos = next->pos;
+			c->m_nextAngz = next->angz;
 			c->m_light = lightprec->light;
 			c->speedtrack = k->speedtrack;
 			break;
 		case INTERP_LINEAR:
-			c->pos = ksuiv->pos * a + k->pos * unmoinsa;
-			c->angz = k->angz + a * GetAngleInterpolation(k->angz, ksuiv->angz);
-			c->speedtrack = a * ksuiv->speedtrack + unmoinsa * k->speedtrack;
+			c->pos = next->pos * a + k->pos * unmoinsa;
+			c->angz = k->angz + a * GetAngleInterpolation(k->angz, next->angz);
+			c->speedtrack = a * next->speedtrack + unmoinsa * k->speedtrack;
 
 			{
 				CinematicLight ldep;
@@ -815,7 +815,7 @@ bool GereTrackNoPlay(Cinematic * c) {
 			// TODO copy-paste bezier
 			float	t1, t2, t3, f0, f1, f2, f3, p0, p1, temp;
 			
-			CinematicKeyframe * ksuivsuiv = ((num + 1) < CKTrack->nbkey) ? ksuiv + 1 : ksuiv;
+			CinematicKeyframe * ksuivsuiv = ((num + 1) < CKTrack->nbkey) ? next + 1 : next;
 			CinematicKeyframe * kprec = (num > 1) ? k - 1 : k;
 
 			t1 = a;
@@ -826,24 +826,24 @@ bool GereTrackNoPlay(Cinematic * c) {
 			f2 = t3 - 2.f * t2 + t1;
 			f3 = t3 - t2;
 
-			temp = ksuiv->pos.x;
+			temp = next->pos.x;
 			p0 = 0.5f * (temp - kprec->pos.x);
 			p1 = 0.5f * (ksuivsuiv->pos.x - k->pos.x);
 			c->pos.x = f0 * k->pos.x + f1 * temp + f2 * p0 + f3 * p1;
 
-			temp = ksuiv->pos.y;
+			temp = next->pos.y;
 			p0 = 0.5f * (temp - kprec->pos.y);
 			p1 = 0.5f * (ksuivsuiv->pos.y - k->pos.y);
 			c->pos.y = f0 * k->pos.y + f1 * temp + f2 * p0 + f3 * p1;
 
-			temp = ksuiv->pos.z;
+			temp = next->pos.z;
 			p0 = 0.5f * (temp - kprec->pos.z);
 			p1 = 0.5f * (ksuivsuiv->pos.z - k->pos.z);
 			c->pos.z = f0 * k->pos.z + f1 * temp + f2 * p0 + f3 * p1;
 
-			c->angz = k->angz + a * GetAngleInterpolation(k->angz, ksuiv->angz);
+			c->angz = k->angz + a * GetAngleInterpolation(k->angz, next->angz);
 
-			temp = ksuiv->speedtrack;
+			temp = next->speedtrack;
 			p0 = 0.5f * (temp - kprec->speedtrack);
 			p1 = 0.5f * (ksuivsuiv->speedtrack - k->speedtrack);
 			c->speedtrack = f0 * k->speedtrack + f1 * temp + f2 * p0 + f3 * p1;
