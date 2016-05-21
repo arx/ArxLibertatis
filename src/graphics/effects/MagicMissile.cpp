@@ -201,15 +201,15 @@ void CMagicMissile::Render()
 			float p1 = 0.5f * (pathways[kpsuivsuiv].x - pathways[kp].x) ;
 			v.x = f0 * pathways[kp].x + f1 * val + f2 * p0 + f3 * p1 ;
 
-			val = pathways[kpsuiv].y ;
-			p0 = 0.5f * (val - pathways[kpprec].y) ;
-			p1 = 0.5f * (pathways[kpsuivsuiv].y - pathways[kp].y) ;
-			v.y = f0 * pathways[kp].y + f1 * val + f2 * p0 + f3 * p1 ;
+			float valy = pathways[kpsuiv].y ;
+			float p0y = 0.5f * (valy - pathways[kpprec].y) ;
+			float p1y = 0.5f * (pathways[kpsuivsuiv].y - pathways[kp].y) ;
+			v.y = f0 * pathways[kp].y + f1 * valy + f2 * p0y + f3 * p1y ;
 
-			val = pathways[kpsuiv].z ;
-			p0 = 0.5f * (val - pathways[kpprec].z) ;
-			p1 = 0.5f * (pathways[kpsuivsuiv].z - pathways[kp].z) ;
-			v.z = f0 * pathways[kp].z + f1 * val + f2 * p0 + f3 * p1 ;
+			float valz = pathways[kpsuiv].z ;
+			float p0z = 0.5f * (valz - pathways[kpprec].z) ;
+			float p1z = 0.5f * (pathways[kpsuivsuiv].z - pathways[kp].z) ;
+			v.z = f0 * pathways[kp].z + f1 * valz + f2 * p0z + f3 * p1z ;
 
 			newpos = v;
 
