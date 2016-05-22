@@ -404,7 +404,10 @@ void Cinematic::Render(float FDIFF) {
 	bool resized = (cinRenderSize != g_size.size());
 	cinRenderSize = g_size.size();
 	
-	if(projectload) {
+	if(!projectload) {
+		return;
+	}
+	
 		GRenderer->Clear(Renderer::ColorBuffer);
 		
 		GereTrack(this, FDIFF, resized, true);
@@ -586,7 +589,4 @@ void Cinematic::Render(float FDIFF) {
 			drawLine(Vec2f(c + x, 0.f), Vec2f(c + x, g_size.height()), 1.f, Color::red);
 			GRenderer->SetFillMode(Renderer::FillSolid);
 		}
-		
-	}
-	
 }
