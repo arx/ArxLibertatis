@@ -466,6 +466,33 @@ static void updateFadeOut(Cinematic * c, CinematicTrack * track, int num, float 
 	
 }
 
+static void interpolateLight(float unmoinsalight, float alight, CinematicKeyframe* lightprec, Cinematic* c) {
+	
+	CinematicLight ldep;
+	CinematicLight lend;
+
+	if(lightprec->light.intensity < 0.f) {
+		c->m_light.intensity = -1.f;
+		return;
+	} else {
+		ldep = lightprec->light;
+	}
+
+	if(c->m_lightd.intensity < 0.f) {
+		return;
+	} else {
+		lend = c->m_lightd;
+	}
+
+	c->m_light.pos = lend.pos * alight + ldep.pos * unmoinsalight;
+	c->m_light.fallin = alight * lend.fallin + unmoinsalight * ldep.fallin;
+	c->m_light.fallout = alight * lend.fallout + unmoinsalight * ldep.fallout;
+	c->m_light.color = lend.color * alight + ldep.color * unmoinsalight;
+	c->m_light.intensity = alight * lend.intensity + unmoinsalight * ldep.intensity;
+	c->m_light.intensiternd = alight * lend.intensiternd
+							+ unmoinsalight * ldep.intensiternd;
+}
+
 void GereTrack(Cinematic * c, float fpscurr, bool resized, bool play) {
 	
 	if(!CKTrack || !CKTrack->nbkey)
@@ -576,31 +603,7 @@ consequences on light :
 			c->angz = current->angz + a * GetAngleInterpolation(current->angz, next->angz);
 			c->speedtrack = a * next->speedtrack + unmoinsa * current->speedtrack;
 
-			{
-				CinematicLight ldep;
-				CinematicLight lend;
-
-				if(lightprec->light.intensity < 0.f) {
-					c->m_light.intensity = -1.f;
-					break;
-				} else {
-					ldep = lightprec->light;
-				}
-
-				if(c->m_lightd.intensity < 0.f) {
-					break;
-				} else {
-					lend = c->m_lightd;
-				}
-
-				c->m_light.pos = lend.pos * alight + ldep.pos * unmoinsalight;
-				c->m_light.fallin = alight * lend.fallin + unmoinsalight * ldep.fallin;
-				c->m_light.fallout = alight * lend.fallout + unmoinsalight * ldep.fallout;
-				c->m_light.color = lend.color * alight + ldep.color * unmoinsalight;
-				c->m_light.intensity = alight * lend.intensity + unmoinsalight * ldep.intensity;
-				c->m_light.intensiternd = alight * lend.intensiternd
-				                        + unmoinsalight * ldep.intensiternd;
-			}
+			interpolateLight(unmoinsalight, alight, lightprec, c);
 			break;
 		case INTERP_BEZIER: {
 			if(play)
@@ -633,31 +636,7 @@ consequences on light :
 			c->speedtrack = f0 * current->speedtrack + f1 * tempsp + f2 * p0sp + f3 * p1sp;
 			}
 
-			{
-				CinematicLight ldep;
-				CinematicLight lend;
-
-				if(lightprec->light.intensity < 0.f) {
-					c->m_light.intensity = -1;
-					break;
-				} else {
-					ldep = lightprec->light;
-				}
-
-				if(c->m_lightd.intensity < 0.f) {
-					break;
-				} else {
-					lend = c->m_lightd;
-				}
-
-				c->m_light.pos = lend.pos * alight + ldep.pos * unmoinsalight;
-				c->m_light.fallin = alight * lend.fallin + unmoinsalight * ldep.fallin;
-				c->m_light.fallout = alight * lend.fallout + unmoinsalight * ldep.fallout;
-				c->m_light.color = lend.color * alight + ldep.color * unmoinsalight;
-				c->m_light.intensity = alight * lend.intensity + unmoinsalight * ldep.intensity;
-				c->m_light.intensiternd = alight * lend.intensiternd
-				                        + unmoinsalight * ldep.intensiternd;
-			}
+			interpolateLight(unmoinsalight, alight, lightprec, c);
 			break;
 		}
 	}
