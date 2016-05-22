@@ -371,7 +371,7 @@ bool parseCinematic(Cinematic * c, const char * data, size_t size) {
 	
 	SetCurrFrame(0);
 	
-	GereTrackNoPlay(c);
+	GereTrack(c, 0, false, false);
 	c->projectload = true;
 	
 	LogDebug("loaded cinematic");

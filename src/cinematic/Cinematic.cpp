@@ -407,7 +407,7 @@ void Cinematic::Render(float FDIFF) {
 	if(projectload) {
 		GRenderer->Clear(Renderer::ColorBuffer);
 		
-		GereTrack(this, FDIFF, resized);
+		GereTrack(this, FDIFF, resized, true);
 		
 		//sound
 		if(changekey && idsound >= 0)
