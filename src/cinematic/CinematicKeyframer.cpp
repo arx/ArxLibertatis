@@ -466,7 +466,9 @@ static void updateFadeOut(Cinematic * c, CinematicTrack * track, int num, float 
 	
 }
 
-static void interpolateLight(float unmoinsalight, float alight, CinematicKeyframe* lightprec, Cinematic* c) {
+static void interpolateLight(float alight, CinematicKeyframe* lightprec, Cinematic* c) {
+	
+	float unmoinsalight = 1.0f - alight;
 	
 	CinematicLight ldep;
 	CinematicLight lend;
@@ -548,19 +550,15 @@ void GereTrack(Cinematic * c, float fpscurr, bool resized, bool play) {
 	c->m_lightd = lightnext->light;
 	
 	float alight = 0;
-	float unmoinsalight = 0;
 	
 	if(lightprec != lightnext) {
 		alight = (CKTrack->currframe - (float)lightprec->frame) / ((float)(lightnext->frame - lightprec->frame));
 
 		if(alight > 1.f)
 			alight = 1.f;
-
-		unmoinsalight = 1.0f - alight;
 	} else {
 		if(current == (CKTrack->key + CKTrack->nbkey - 1)) {
 			alight			= 1.f;
-			unmoinsalight	= 0.f;
 		} else {
 			//alight can't be used because it is not initialized
 //ARX_BEGIN: jycorbel (2010-07-19) - Set light coeff to 0 to keep null all possibly light created from uninitialyzed var.
@@ -603,7 +601,7 @@ consequences on light :
 			c->angz = current->angz + a * GetAngleInterpolation(current->angz, next->angz);
 			c->speedtrack = a * next->speedtrack + unmoinsa * current->speedtrack;
 
-			interpolateLight(unmoinsalight, alight, lightprec, c);
+			interpolateLight(alight, lightprec, c);
 			break;
 		case INTERP_BEZIER: {
 			if(play)
@@ -636,7 +634,7 @@ consequences on light :
 			c->speedtrack = f0 * current->speedtrack + f1 * tempsp + f2 * p0sp + f3 * p1sp;
 			}
 
-			interpolateLight(unmoinsalight, alight, lightprec, c);
+			interpolateLight(alight, lightprec, c);
 			break;
 		}
 	}
