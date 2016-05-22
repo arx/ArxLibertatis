@@ -69,8 +69,6 @@ ZeniMax Media Inc., Suite 120, Rockville, Maryland 20850 USA.
 
 #include "cinematic/CinematicSound.h"
 
-static Vec2i cinRenderSize;
-
 TexturedVertex AllTLVertex[40000];
 
 extern float DreamTable[];
@@ -109,9 +107,8 @@ Cinematic::Cinematic(Vec2i size)
 	, m_nextAngzgrille()
 	, speedtrack()
 	, flTime()
-{
-	cinRenderSize = size;
-}
+	, cinRenderSize(size)
+{ }
 
 Cinematic::~Cinematic() {
 	DeleteAllBitmap();

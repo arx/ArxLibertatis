@@ -129,6 +129,8 @@ public:
 	CinematicFadeOut fadeprev;
 	CinematicFadeOut fadenext;
 	
+	Vec2i cinRenderSize;
+	
 	Cinematic(Vec2i size);
 	~Cinematic();
 
