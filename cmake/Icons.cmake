@@ -190,6 +190,8 @@ function(add_icon name)
 		
 	endforeach()
 	
+	_add_icon_source()
+	
 	# Clean output variables
 	
 	foreach(size IN LISTS source_sizes ico_sizes icns_sizes iconset_sizes ico_sizes
