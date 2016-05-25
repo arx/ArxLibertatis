@@ -274,15 +274,24 @@ void CrashHandlerImpl::processCrash() {
 	// The crash reporter is not available or failed to start - provide our own dialog
 	{
 		std::ostringstream oss;
-		oss <<"Arx Libertatis crashed!\n\n";
-		oss << "Please install arxcrashreporter or manually report the crash to "
-		    << url::bug_report << "\n\n";
-		oss << "Include the files contained in the following directory in your report:\n";
-		oss << " " << m_crashReportDir;
+		oss << "Arx Libertatis crashed!\n\n";
+		if(m_pCrashInfo) {
+			oss << "Please install arxcrashreporter or manually report the crash to "
+			    << url::bug_report << "\n\n";
+			oss << "Include the files contained in the following directory in your report:\n";
+			oss << " " << m_crashReportDir;
+		} else {
+			oss << "Additionally, we encountered an unexpected error while collecting"
+			       " crash information!\n\n";
+		}
 		std::cout << "\n\n" << oss.str() << '\n';
-		oss << "\n\nClick OK to open that directory now.";
+		if(m_pCrashInfo) {
+			oss << "\n\nClick OK to open that directory now.";
+		}
 		platform::showErrorDialog(oss.str(), "Fatal Error - " + arx_version);
-		platform::launchDefaultProgram(m_crashReportDir.string());
+		if(m_pCrashInfo) {
+			platform::launchDefaultProgram(m_crashReportDir.string());
+		}
 	}
 	
 }
