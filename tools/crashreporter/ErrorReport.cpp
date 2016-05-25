@@ -66,25 +66,32 @@ ErrorReport::ErrorReport(const QString& sharedMemoryName)
 #endif
 }
 
-bool ErrorReport::Initialize()
-{	
-	// Create a shared memory object.
-	m_SharedMemory = boost::interprocess::shared_memory_object(boost::interprocess::open_only, m_SharedMemoryName.toStdString().c_str(), boost::interprocess::read_write);
-
-	// Map the whole shared memory in this process
-	m_MemoryMappedRegion = boost::interprocess::mapped_region(m_SharedMemory, boost::interprocess::read_write);
-
-	// Our SharedCrashInfo will be stored in this shared memory.
-	m_pCrashInfo = (CrashInfo*)m_MemoryMappedRegion.get_address();
-
-	if(m_MemoryMappedRegion.get_size() != sizeof(CrashInfo))
-	{
+bool ErrorReport::Initialize() {
+	
+	try {
+		
+		// Create a shared memory object.
+		m_SharedMemory = boost::interprocess::shared_memory_object(boost::interprocess::open_only, m_SharedMemoryName.toStdString().c_str(), boost::interprocess::read_write);
+		
+		// Map the whole shared memory in this process
+		m_MemoryMappedRegion = boost::interprocess::mapped_region(m_SharedMemory, boost::interprocess::read_write);
+		
+		// Our SharedCrashInfo will be stored in this shared memory.
+		m_pCrashInfo = (CrashInfo*)m_MemoryMappedRegion.get_address();
+		
+	} catch(...) {
+		m_pCrashInfo = NULL;
+		m_DetailedError = "We encountered an unexpected error while collecting crash information!";
+		return false;
+	}
+	
+	if(!m_pCrashInfo || m_MemoryMappedRegion.get_size() != sizeof(CrashInfo)) {
 		m_DetailedError = "The size of the memory mapped region does not match the size of the CrashInfo structure.";
 		return false;
 	}
 	
 	m_pCrashInfo->reporterStarted.post();
-
+	
 	return true;
 }
 
@@ -288,10 +295,12 @@ bool ErrorReport::SendReport(ErrorReport::IProgressNotifier* pProgressNotifier)
 }
 
 void ErrorReport::ReleaseApplicationLock() {
-	// Kill the original, busy-waiting process.
-	platform::killProcess(m_pCrashInfo->processorProcessId);
-	m_pCrashInfo->exitLock.post();
-	platform::killProcess(m_pCrashInfo->processId);
+	if(m_pCrashInfo) {
+		// Kill the original, busy-waiting process.
+		platform::killProcess(m_pCrashInfo->processorProcessId);
+		m_pCrashInfo->exitLock.post();
+		platform::killProcess(m_pCrashInfo->processId);
+	}
 }
 
 void ErrorReport::AddFile(const fs::path& fileName)
