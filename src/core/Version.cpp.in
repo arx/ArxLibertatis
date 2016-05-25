@@ -30,7 +30,7 @@
 #endif
 
 const std::string arx_version = "${VERSION_0}${GIT_SUFFIX_5}";
-const std::string arx_release_codename = "${VERSION_4}";
+const std::string arx_release_codename = "${VERSION_5}";
 
 // TODO move this to an external file once we ship our own resources
 const std::string arx_credits = "${AUTHORS}";
