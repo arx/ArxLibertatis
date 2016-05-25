@@ -1283,6 +1283,11 @@ if(ARX_HAVE_CRASHREPORTER)
 	)
 	
 	file(MAKE_DIRECTORY "${CMAKE_BINARY_DIR}/tools/crashreporter/resources")
+	if(HAVE_QT4 AND "${arx-libertatis-logo-58.png}" STREQUAL "")
+		# Create a dummy file to prevent a RCC warning
+		set(arx-libertatis-logo-58.png "${CMAKE_BINARY_DIR}/arx-libertatis-logo-58.png")
+		file(WRITE ${arx-libertatis-logo-58.png} "")
+	endif()
 	configure_file(
 		tools/crashreporter/resources/CrashReporter.qrc.in
 		${CMAKE_BINARY_DIR}/tools/crashreporter/resources/CrashReporter.qrc
