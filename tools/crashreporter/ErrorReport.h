@@ -85,7 +85,7 @@ private:
 	
 	bool Initialize();
 
-	bool getCrashInfo();
+	void getCrashInfo();
 
 	void AddFile(const fs::path& fileName);
 	

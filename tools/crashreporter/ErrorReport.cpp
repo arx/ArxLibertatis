@@ -95,7 +95,7 @@ bool ErrorReport::Initialize() {
 	return true;
 }
 
-bool ErrorReport::getCrashInfo() {
+void ErrorReport::getCrashInfo() {
 	
 	m_ReportDescription = util::loadString(m_pCrashInfo->description).c_str();
 	if(m_ReportDescription.isEmpty()) {
@@ -118,7 +118,6 @@ bool ErrorReport::getCrashInfo() {
 		AddFile(util::loadString(m_pCrashInfo->attachedFiles[i]));
 	}
 	
-	return true;
 }
 
 bool ErrorReport::GenerateReport(ErrorReport::IProgressNotifier* pProgressNotifier)
@@ -157,15 +156,9 @@ bool ErrorReport::GenerateReport(ErrorReport::IProgressNotifier* pProgressNotifi
 	
 	// Generate minidump
 	pProgressNotifier->taskStepStarted("Retrieving crash information");
-	bool bCrashInfo = getCrashInfo();
+	getCrashInfo();
 	pProgressNotifier->taskStepEnded();
-	if(!bCrashInfo)
-	{
-		pProgressNotifier->setError("Could not retrieve crash information.");
-		pProgressNotifier->setDetailedError(m_DetailedError);
-		return false;
-	}
-
+	
 	return true;
 }
 
