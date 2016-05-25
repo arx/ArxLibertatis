@@ -98,6 +98,9 @@ bool ErrorReport::Initialize() {
 bool ErrorReport::getCrashInfo() {
 	
 	m_ReportDescription = util::loadString(m_pCrashInfo->description).c_str();
+	if(m_ReportDescription.isEmpty()) {
+		m_ReportDescription = "Could not collect crash information!";
+	}
 	
 	if(m_pCrashInfo->crashId != 0) {
 		m_ReportUniqueID = QString("[%1]").arg(QString::number(m_pCrashInfo->crashId, 16).toUpper());
