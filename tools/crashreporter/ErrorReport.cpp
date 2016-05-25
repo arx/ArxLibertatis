@@ -135,7 +135,7 @@ bool ErrorReport::GenerateReport(ErrorReport::IProgressNotifier* pProgressNotifi
 	pProgressNotifier->taskStepEnded();
 	if(!bInit)
 	{
-		pProgressNotifier->setError("Could not generate the crash dump.");
+		pProgressNotifier->setError("Could not prepare the crash report.");
 		pProgressNotifier->setDetailedError(m_DetailedError);
 		return false;
 	}
