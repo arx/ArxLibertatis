@@ -59,20 +59,29 @@ CrashHandlerImpl::~CrashHandlerImpl() {
 
 void CrashHandlerImpl::processCrash(const std::string & sharedMemoryName) {
 	
-	m_SharedMemoryName = sharedMemoryName;
-	
-	// Create a shared memory object.
-	m_SharedMemory = bip::shared_memory_object(bip::open_only, m_SharedMemoryName.c_str(),
-	                                           bip::read_write);
-	
-	// Map the whole shared memory in this process
-	m_MemoryMappedRegion = bip::mapped_region(m_SharedMemory, bip::read_write);
-	
-	// Our SharedCrashInfo will be stored in this shared memory.
-	m_pCrashInfo = reinterpret_cast<CrashInfo *>(m_MemoryMappedRegion.get_address());
-	m_textLength = std::find(m_pCrashInfo->description, m_pCrashInfo->description
-	                         + boost::size(m_pCrashInfo->description), '\0')
-	               - m_pCrashInfo->description;
+	try {
+		
+		m_SharedMemoryName = sharedMemoryName;
+		
+		// Create a shared memory object.
+		m_SharedMemory = bip::shared_memory_object(bip::open_only, m_SharedMemoryName.c_str(),
+		                                           bip::read_write);
+		
+		// Map the whole shared memory in this process
+		m_MemoryMappedRegion = bip::mapped_region(m_SharedMemory, bip::read_write);
+		
+		// Our SharedCrashInfo will be stored in this shared memory.
+		m_pCrashInfo = reinterpret_cast<CrashInfo *>(m_MemoryMappedRegion.get_address());
+		if(m_pCrashInfo) {
+			m_textLength = std::find(m_pCrashInfo->description, m_pCrashInfo->description
+			                         + boost::size(m_pCrashInfo->description), '\0')
+			               - m_pCrashInfo->description;
+		}
+		
+	} catch(...) {
+		// Unexpected error
+		m_pCrashInfo = NULL;
+	}
 	
 	processCrash();
 	
