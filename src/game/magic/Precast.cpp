@@ -118,7 +118,7 @@ void ARX_SPELLS_Precast_Check() {
 			}
 
 			if(layer1.cur_anim && layer1.cur_anim == entities.player()->anims[ANIM_CAST]) {
-				if(layer1.ctime > layer1.cur_anim->anims[layer1.altidx_cur]->anim_time - 550)
+				if(layer1.ctime + 550 > layer1.cur_anim->anims[layer1.altidx_cur]->anim_time)
 				{
 					ARX_SPELLS_Launch(Precast[i].typ,
 					                  PlayerEntityHandle,
