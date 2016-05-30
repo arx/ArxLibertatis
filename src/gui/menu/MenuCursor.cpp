@@ -89,8 +89,8 @@ void CursorTrail::DrawLine2D(float _fSize, Color3f color) {
 		return;
 	}
 	
-	float fSize = _fSize / iNbOldCoord;
-	float currentSize = fSize;
+	float incSize = _fSize / iNbOldCoord;
+	float currentSize = incSize;
 	
 	Color3f incColor = Color3f(color.r / iNbOldCoord, color.g / iNbOldCoord, color.b / iNbOldCoord);
 	
@@ -113,7 +113,7 @@ void CursorTrail::DrawLine2D(float _fSize, Color3f color) {
 	
 	for(int i = 1; i < iNbOldCoord - 1; i++) {
 		
-		currentSize += fSize;
+		currentSize += incSize;
 		currentColor += incColor;
 		
 		if(ComputePer(iOldCoord[i], iOldCoord[i + 1], &v[1], &v[3], currentSize)) {
