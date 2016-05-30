@@ -1248,8 +1248,9 @@ bool AttemptValidCylinderPos(Cylinder & cyl, Entity * io, CollisionFlags flags) 
 	
 	float anything = CheckAnythingInCylinder(cyl, io, flags); 
 
-	if((flags & CFLAG_LEVITATE) && anything == 0.f)
+	if((flags & CFLAG_LEVITATE) && anything == 0.f) {
 		return true;
+	}
 
 	// Falling Cylinder but valid pos !
 	if(anything >= 0.f) {
@@ -1327,7 +1328,7 @@ bool AttemptValidCylinderPos(Cylinder & cyl, Entity * io, CollisionFlags flags) 
 				}
 
 				float dist = std::max(glm::length(vector2D), 1.f);
-				float pente = glm::abs(anything) / dist * ( 1.0f / 2 ); 
+				float pente = glm::abs(anything) / dist * ( 1.0f / 2 );
 				io->_npcdata->climb_count += pente;
 
 				if(io->_npcdata->climb_count > MAX_ALLOWED_PER_SECOND) {
