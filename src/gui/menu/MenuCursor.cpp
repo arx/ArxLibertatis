@@ -92,14 +92,9 @@ void CursorTrail::DrawLine2D(float _fSize, Color3f color) {
 	float fSize = _fSize / iNbOldCoord;
 	float fTaille = fSize;
 	
-	float fDColorRed = color.r / iNbOldCoord;
-	float fDColorGreen = color.g / iNbOldCoord;
-	float fDColorBlue = color.b / iNbOldCoord;
+	Color3f incColor = Color3f(color.r / iNbOldCoord, color.g / iNbOldCoord, color.b / iNbOldCoord);
 	
-	Color3f currentColor;
-	currentColor.r = fDColorRed;
-	currentColor.g = fDColorGreen;
-	currentColor.b = fDColorBlue;
+	Color3f currentColor = incColor;
 	
 	GRenderer->SetBlendFunc(BlendDstColor, BlendInvDstColor);
 	GRenderer->ResetTexture(0);
@@ -119,9 +114,7 @@ void CursorTrail::DrawLine2D(float _fSize, Color3f color) {
 	for(int i = 1; i < iNbOldCoord - 1; i++) {
 		
 		fTaille += fSize;
-		currentColor.r += fDColorRed;
-		currentColor.g += fDColorGreen;
-		currentColor.b += fDColorBlue;
+		currentColor += incColor;
 		
 		if(ComputePer(iOldCoord[i], iOldCoord[i + 1], &v[1], &v[3], fTaille)) {
 			
