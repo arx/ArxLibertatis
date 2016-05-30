@@ -60,7 +60,7 @@ void CursorTrail::draw() {
 	DrawLine2D(10.f, Color3f(.725f, .619f, 0.56f));
 }
 
-bool CursorTrail::ComputePer(const Vec2s & p1, const Vec2s & p2, TexturedVertex * _psd3dv1, TexturedVertex * _psd3dv2, float _fSize) {
+bool CursorTrail::ComputePer(const Vec2s & p1, const Vec2s & p2, TexturedVertex * v1, TexturedVertex * _psd3dv2, float _fSize) {
 	
 	Vec2f sTemp((float)(p2.x - p1.x), (float)(p2.y - p1.y));
 	float fTemp = sTemp.x;
@@ -73,12 +73,12 @@ bool CursorTrail::ComputePer(const Vec2s & p1, const Vec2s & p2, TexturedVertex 
 
 	fMag = _fSize / fMag;
 
-	_psd3dv1->p.x = sTemp.x * fMag;
-	_psd3dv1->p.y = sTemp.y * fMag;
-	_psd3dv2->p.x = ((float)p1.x) - _psd3dv1->p.x;
-	_psd3dv2->p.y = ((float)p1.y) - _psd3dv1->p.y;
-	_psd3dv1->p.x += (float)p1.x;
-	_psd3dv1->p.y += (float)p1.y;
+	v1->p.x = sTemp.x * fMag;
+	v1->p.y = sTemp.y * fMag;
+	_psd3dv2->p.x = ((float)p1.x) - v1->p.x;
+	_psd3dv2->p.y = ((float)p1.y) - v1->p.y;
+	v1->p.x += (float)p1.x;
+	v1->p.y += (float)p1.y;
 
 	return true;
 }
