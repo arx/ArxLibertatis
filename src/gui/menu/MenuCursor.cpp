@@ -90,7 +90,7 @@ void CursorTrail::DrawLine2D(float _fSize, Color3f color) {
 	}
 	
 	float fSize = _fSize / iNbOldCoord;
-	float fTaille = fSize;
+	float currentSize = fSize;
 	
 	Color3f incColor = Color3f(color.r / iNbOldCoord, color.g / iNbOldCoord, color.b / iNbOldCoord);
 	
@@ -106,17 +106,17 @@ void CursorTrail::DrawLine2D(float _fSize, Color3f color) {
 	
 	v[0].color = v[2].color = currentColor.toRGB();
 	
-	if(!ComputePer(iOldCoord[0], iOldCoord[1], &v[0], &v[2], fTaille)) {
+	if(!ComputePer(iOldCoord[0], iOldCoord[1], &v[0], &v[2], currentSize)) {
 		v[0].p.x = v[2].p.x = iOldCoord[0].x;
 		v[0].p.y = v[2].p.y = iOldCoord[1].y;
 	}
 	
 	for(int i = 1; i < iNbOldCoord - 1; i++) {
 		
-		fTaille += fSize;
+		currentSize += fSize;
 		currentColor += incColor;
 		
-		if(ComputePer(iOldCoord[i], iOldCoord[i + 1], &v[1], &v[3], fTaille)) {
+		if(ComputePer(iOldCoord[i], iOldCoord[i + 1], &v[1], &v[3], currentSize)) {
 			
 			v[1].color = v[3].color = currentColor.toRGB();
 			EERIEDRAWPRIM(Renderer::TriangleStrip, v, 4);
