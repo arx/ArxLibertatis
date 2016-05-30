@@ -39,7 +39,7 @@ private:
 	int   iMaxOldCoord;
 	Vec2s iOldCoord[256];
 	
-	bool ComputePer(const Vec2s & p1, const Vec2s & p2, TexturedVertex * v1, TexturedVertex * v2, float _fSize);
+	bool ComputePer(const Vec2s & p1, const Vec2s & p2, TexturedVertex * v1, TexturedVertex * v2, float size);
 	void DrawLine2D(float _fSize, Color3f color);
 };
 

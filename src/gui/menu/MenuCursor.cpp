@@ -60,7 +60,7 @@ void CursorTrail::draw() {
 	DrawLine2D(10.f, Color3f(.725f, .619f, 0.56f));
 }
 
-bool CursorTrail::ComputePer(const Vec2s & p1, const Vec2s & p2, TexturedVertex * v1, TexturedVertex * v2, float _fSize) {
+bool CursorTrail::ComputePer(const Vec2s & p1, const Vec2s & p2, TexturedVertex * v1, TexturedVertex * v2, float size) {
 	
 	Vec2f sTemp((float)(p2.x - p1.x), (float)(p2.y - p1.y));
 	float fTemp = sTemp.x;
@@ -71,7 +71,7 @@ bool CursorTrail::ComputePer(const Vec2s & p1, const Vec2s & p2, TexturedVertex 
 		return false;
 	}
 
-	fMag = _fSize / fMag;
+	fMag = size / fMag;
 
 	v1->p.x = sTemp.x * fMag;
 	v1->p.y = sTemp.y * fMag;
