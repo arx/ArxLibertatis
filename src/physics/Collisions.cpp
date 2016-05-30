@@ -1384,15 +1384,7 @@ bool AttemptValidCylinderPos(Cylinder & cyl, Entity * io, CollisionFlags flags) 
 	return true;
 }
 
-//----------------------------------------------------------------------------------------------
-//flags & 1 levitate
-//flags & 2 no inter col
-//flags & 4 special
-//flags & 8	easier sliding.
-//flags & 16 climbing !!!
-//flags & 32 Just Test !!!
-//flags & 64 NPC mode
-//----------------------------------------------------------------------------------------------
+// TODO copy-paste Move_Cylinder
 bool ARX_COLLISION_Move_Cylinder(IO_PHYSICS * ip, Entity * io, float MOVE_CYLINDER_STEP, CollisionFlags flags)
 {
 //	HERMESPerf script(HPERF_PHYSICS);

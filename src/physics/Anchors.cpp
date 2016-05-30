@@ -372,7 +372,7 @@ static bool ANCHOR_AttemptValidCylinderPos(Cylinder & cyl, Entity * io,
 	return true;
 }
 
-
+// TODO copy-paste Move_Cylinder
 static bool ANCHOR_ARX_COLLISION_Move_Cylinder(IO_PHYSICS * ip, Entity * io,
                                                float MOVE_CYLINDER_STEP,
                                                CollisionFlags flags) {
