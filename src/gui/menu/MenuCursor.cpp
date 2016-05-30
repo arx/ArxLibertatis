@@ -93,11 +93,13 @@ void CursorTrail::DrawLine2D(float _fSize, Color3f color) {
 	float fTaille = fSize;
 	
 	float fDColorRed = color.r / iNbOldCoord;
-	float fColorRed = fDColorRed;
 	float fDColorGreen = color.g / iNbOldCoord;
-	float fColorGreen = fDColorGreen;
 	float fDColorBlue = color.b / iNbOldCoord;
-	float fColorBlue = fDColorBlue;
+	
+	Color3f currentColor;
+	currentColor.r = fDColorRed;
+	currentColor.g = fDColorGreen;
+	currentColor.b = fDColorBlue;
 	
 	GRenderer->SetBlendFunc(BlendDstColor, BlendInvDstColor);
 	GRenderer->ResetTexture(0);
@@ -107,7 +109,7 @@ void CursorTrail::DrawLine2D(float _fSize, Color3f color) {
 	v[0].p.z = v[1].p.z = v[2].p.z = v[3].p.z = 0.f;
 	v[0].rhw = v[1].rhw = v[2].rhw = v[3].rhw = 1.f;
 	
-	v[0].color = v[2].color = Color3f(fColorRed, fColorGreen, fColorBlue).toRGB();
+	v[0].color = v[2].color = currentColor.toRGB();
 	
 	if(!ComputePer(iOldCoord[0], iOldCoord[1], &v[0], &v[2], fTaille)) {
 		v[0].p.x = v[2].p.x = iOldCoord[0].x;
@@ -117,13 +119,13 @@ void CursorTrail::DrawLine2D(float _fSize, Color3f color) {
 	for(int i = 1; i < iNbOldCoord - 1; i++) {
 		
 		fTaille += fSize;
-		fColorRed += fDColorRed;
-		fColorGreen += fDColorGreen;
-		fColorBlue += fDColorBlue;
+		currentColor.r += fDColorRed;
+		currentColor.g += fDColorGreen;
+		currentColor.b += fDColorBlue;
 		
 		if(ComputePer(iOldCoord[i], iOldCoord[i + 1], &v[1], &v[3], fTaille)) {
 			
-			v[1].color = v[3].color = Color3f(fColorRed, fColorGreen, fColorBlue).toRGB();
+			v[1].color = v[3].color = currentColor.toRGB();
 			EERIEDRAWPRIM(Renderer::TriangleStrip, v, 4);
 			
 			v[0].p.x = v[1].p.x;
