@@ -270,6 +270,8 @@ static float ANCHOR_CheckAnythingInCylinder(const Cylinder & cyl, CollisionFlags
 }
 
 extern long MOVING_CYLINDER;
+
+// TODO copy-paste AttemptValidCylinderPos
 static bool ANCHOR_AttemptValidCylinderPos(Cylinder & cyl, Entity * io,
 	                                         CollisionFlags flags) {
 	
