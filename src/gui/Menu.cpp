@@ -71,6 +71,7 @@ ZeniMax Media Inc., Suite 120, Rockville, Maryland 20850 USA.
 #include "gui/TextManager.h"
 #include "gui/Cursor.h"
 #include "gui/book/Book.h"
+#include "gui/menu/MenuCursor.h"
 
 #include "graphics/Draw.h"
 #include "graphics/Math.h"
@@ -101,8 +102,6 @@ extern float fFadeInOut;
 extern float ARXTimeMenu;
 
 extern bool REQUEST_SPEECH_SKIP;
-
-extern TextureContainer * pTextureLoad;
 
 //-----------------------------------------------------------------------------
 // Exported global variables
@@ -177,7 +176,7 @@ void ARX_Menu_Resources_Release(bool _bNoSound) {
 		ARXMenu_Options_Audio_ApplyGameVolumes();
 	}
 	
-	delete pTextureLoad, pTextureLoad = NULL;
+	delete g_thumbnailCursor.m_loadTexture, g_thumbnailCursor.m_loadTexture = NULL;
 }
 
 extern bool TIME_INIT;

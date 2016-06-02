@@ -313,7 +313,6 @@ void TextWidget::Render() {
 }
 
 extern MenuCursor * pMenuCursor;
-extern TextureContainer *pTextureLoad;
 
 void TextWidget::RenderMouseOver() {
 
@@ -338,11 +337,11 @@ void TextWidget::RenderMouseOver() {
 			const res::path & image = savegames[m_savegame.handleData()].thumbnail;
 			if(!image.empty()) {
 				TextureContainer * t = TextureContainer::LoadUI(image, TextureContainer::NoColorKey);
-				if(t != pTextureLoad) {
-					delete pTextureLoad;
-					pTextureLoad = t;
+				if(t != g_thumbnailCursor.m_loadTexture) {
+					delete g_thumbnailCursor.m_loadTexture;
+					g_thumbnailCursor.m_loadTexture = t;
 				}
-				g_thumbnailCursor.m_renderTexture = pTextureLoad;
+				g_thumbnailCursor.m_renderTexture = g_thumbnailCursor.m_loadTexture;
 			}
 			
 			break;

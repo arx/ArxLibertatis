@@ -122,8 +122,6 @@ bool bFadeInOut=false;
 int iFadeAction=-1;
 float fFadeInOut=0.f;
 
-TextureContainer *pTextureLoad=NULL;
-
 void ARX_QuickSave() {
 	
 	if(REFUSE_GAME_RETURN) {
@@ -422,10 +420,10 @@ bool Menu2_Render() {
 		
 		Rectf rect = Rectf(pos, config.interface.thumbnailSize.x, config.interface.thumbnailSize.y);
 		
-		EERIEDrawBitmap(rect, 0.001f, pTextureLoad, Color::white);
+		EERIEDrawBitmap(rect, 0.001f, g_thumbnailCursor.m_loadTexture, Color::white);
 		drawLineRectangle(rect, 0.01f, Color::white);
 
-		g_thumbnailCursor.m_renderTexture=NULL;
+		g_thumbnailCursor.m_renderTexture = NULL;
 	}
 
 	if(ProcessFadeInOut(bFadeInOut,0.1f)) {

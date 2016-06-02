@@ -71,9 +71,11 @@ class ThumbnailCursor {
 public:
 	ThumbnailCursor()
 		: m_renderTexture(NULL)
+		, m_loadTexture(NULL)
 	{ }
 	
 	TextureContainer * m_renderTexture;
+	TextureContainer * m_loadTexture;
 };
 
 extern ThumbnailCursor g_thumbnailCursor;
