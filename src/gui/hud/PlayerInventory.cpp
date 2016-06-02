@@ -335,9 +335,6 @@ void PlayerInventoryHud::previousBag() {
 
 PlayerInventoryHud g_playerInventoryHud;
 
-extern Rect g_size;
-
-
 bool PlayerInventoryHud::InPlayerInventoryBag(const Vec2s & pos) {
 	if(pos.x >= 0 && pos.y >= 0) {
 		Vec2s t;

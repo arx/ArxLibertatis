@@ -41,7 +41,6 @@
 #include "graphics/data/TextureContainer.h"
 #include "graphics/particle/ParticleEffects.h"
 
-extern Rect g_size;
 
 long passwall = 0;
 long cur_mx=0;

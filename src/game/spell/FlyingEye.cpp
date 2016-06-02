@@ -19,6 +19,8 @@
 
 #include "game/spell/FlyingEye.h"
 
+#include "core/Core.h"
+
 #include "scene/Object.h"
 
 #include "graphics/Renderer.h"
@@ -32,8 +34,6 @@ float MagicSightFader=0.f;
 
 static TextureContainer * Flying_Eye = NULL;
 static EERIE_3DOBJ * eyeballobj = NULL;			// EyeBall 3D Object	// NEEDTO: Load dynamically
-
-extern Rect g_size;
 
 extern float Original_framedelay;
 extern float PULSATE;
