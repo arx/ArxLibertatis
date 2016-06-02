@@ -65,4 +65,17 @@ private:
 	CursorTrail trail;
 };
 
+class TextureContainer;
+
+class ThumbnailCursor {
+public:
+	ThumbnailCursor()
+		: m_renderTexture(NULL)
+	{ }
+	
+	TextureContainer * m_renderTexture;
+};
+
+extern ThumbnailCursor g_thumbnailCursor;
+
 #endif // ARX_GUI_MENU_MENUCURSOR_H

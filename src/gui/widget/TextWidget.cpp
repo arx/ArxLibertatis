@@ -314,7 +314,6 @@ void TextWidget::Render() {
 
 extern MenuCursor * pMenuCursor;
 extern TextureContainer *pTextureLoad;
-extern TextureContainer *pTextureLoadRender;
 
 void TextWidget::RenderMouseOver() {
 
@@ -332,7 +331,7 @@ void TextWidget::RenderMouseOver() {
 		case BUTTON_MENUEDITQUEST_SAVEINFO: {
 			
 			if(m_savegame == SavegameHandle()) {
-				pTextureLoadRender = NULL;
+				g_thumbnailCursor.m_renderTexture = NULL;
 				break;
 			}
 			
@@ -343,14 +342,14 @@ void TextWidget::RenderMouseOver() {
 					delete pTextureLoad;
 					pTextureLoad = t;
 				}
-				pTextureLoadRender = pTextureLoad;
+				g_thumbnailCursor.m_renderTexture = pTextureLoad;
 			}
 			
 			break;
 		}
 		
 		default: {
-			pTextureLoadRender = NULL;
+			g_thumbnailCursor.m_renderTexture = NULL;
 			break;
 		}
 	}

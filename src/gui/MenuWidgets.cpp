@@ -123,7 +123,6 @@ int iFadeAction=-1;
 float fFadeInOut=0.f;
 
 TextureContainer *pTextureLoad=NULL;
-TextureContainer *pTextureLoadRender=NULL;
 
 void ARX_QuickSave() {
 	
@@ -411,7 +410,7 @@ bool Menu2_Render() {
 	GRenderer->SetCulling(CullNone);
 	pMenuCursor->DrawCursor();
 
-	if(pTextureLoadRender) {
+	if(g_thumbnailCursor.m_renderTexture) {
 		
 		Vec2f offset = Vec2f(0, 0);
 		
@@ -426,7 +425,7 @@ bool Menu2_Render() {
 		EERIEDrawBitmap(rect, 0.001f, pTextureLoad, Color::white);
 		drawLineRectangle(rect, 0.01f, Color::white);
 
-		pTextureLoadRender=NULL;
+		g_thumbnailCursor.m_renderTexture=NULL;
 	}
 
 	if(ProcessFadeInOut(bFadeInOut,0.1f)) {

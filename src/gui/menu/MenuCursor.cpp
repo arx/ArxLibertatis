@@ -225,3 +225,5 @@ void MenuCursor::DrawCursor() {
 
 	GRenderer->SetRenderState(Renderer::AlphaBlending, false);
 }
+
+ThumbnailCursor g_thumbnailCursor;
