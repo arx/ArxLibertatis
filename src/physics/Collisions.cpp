@@ -1243,12 +1243,14 @@ float MAX_ALLOWED_PER_SECOND=12.f;
 // Checks if a position is valid, Modify it for height if necessary
 // Returns true or false
 
+// TODO copy-paste AttemptValidCylinderPos
 bool AttemptValidCylinderPos(Cylinder & cyl, Entity * io, CollisionFlags flags) {
 	
 	float anything = CheckAnythingInCylinder(cyl, io, flags); 
 
-	if((flags & CFLAG_LEVITATE) && anything == 0.f)
+	if((flags & CFLAG_LEVITATE) && anything == 0.f) {
 		return true;
+	}
 
 	// Falling Cylinder but valid pos !
 	if(anything >= 0.f) {
@@ -1326,7 +1328,7 @@ bool AttemptValidCylinderPos(Cylinder & cyl, Entity * io, CollisionFlags flags) 
 				}
 
 				float dist = std::max(glm::length(vector2D), 1.f);
-				float pente = glm::abs(anything) / dist * ( 1.0f / 2 ); 
+				float pente = glm::abs(anything) / dist * ( 1.0f / 2 );
 				io->_npcdata->climb_count += pente;
 
 				if(io->_npcdata->climb_count > MAX_ALLOWED_PER_SECOND) {
@@ -1384,15 +1386,7 @@ bool AttemptValidCylinderPos(Cylinder & cyl, Entity * io, CollisionFlags flags) 
 	return true;
 }
 
-//----------------------------------------------------------------------------------------------
-//flags & 1 levitate
-//flags & 2 no inter col
-//flags & 4 special
-//flags & 8	easier sliding.
-//flags & 16 climbing !!!
-//flags & 32 Just Test !!!
-//flags & 64 NPC mode
-//----------------------------------------------------------------------------------------------
+// TODO copy-paste Move_Cylinder
 bool ARX_COLLISION_Move_Cylinder(IO_PHYSICS * ip, Entity * io, float MOVE_CYLINDER_STEP, CollisionFlags flags)
 {
 //	HERMESPerf script(HPERF_PHYSICS);

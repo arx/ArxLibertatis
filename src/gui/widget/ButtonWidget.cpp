@@ -67,8 +67,7 @@ bool ButtonWidget::OnMouseClick() {
 	return false;
 }
 
-void ButtonWidget::Update(int _iDTime) {
-	(void)_iDTime;
+void ButtonWidget::Update() {
 }
 
 void ButtonWidget::Render() {

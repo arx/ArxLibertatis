@@ -19,7 +19,10 @@
 
 #include "gui/menu/MenuCursor.h"
 
+#include "core/Core.h"
+
 #include "graphics/Draw.h"
+#include "graphics/DrawLine.h"
 #include "graphics/Renderer.h"
 #include "graphics/texture/TextureStage.h"
 
@@ -60,9 +63,9 @@ void CursorTrail::draw() {
 	DrawLine2D(10.f, Color3f(.725f, .619f, 0.56f));
 }
 
-bool CursorTrail::ComputePer(const Vec2s & _psPoint1, const Vec2s & _psPoint2, TexturedVertex * _psd3dv1, TexturedVertex * _psd3dv2, float _fSize) {
+bool CursorTrail::ComputePer(const Vec2s & p1, const Vec2s & p2, TexturedVertex * v1, TexturedVertex * v2, float size) {
 	
-	Vec2f sTemp((float)(_psPoint2.x - _psPoint1.x), (float)(_psPoint2.y - _psPoint1.y));
+	Vec2f sTemp((float)(p2.x - p1.x), (float)(p2.y - p1.y));
 	float fTemp = sTemp.x;
 	sTemp.x = -sTemp.y;
 	sTemp.y = fTemp;
@@ -71,14 +74,14 @@ bool CursorTrail::ComputePer(const Vec2s & _psPoint1, const Vec2s & _psPoint2, T
 		return false;
 	}
 
-	fMag = _fSize / fMag;
+	fMag = size / fMag;
 
-	_psd3dv1->p.x = sTemp.x * fMag;
-	_psd3dv1->p.y = sTemp.y * fMag;
-	_psd3dv2->p.x = ((float)_psPoint1.x) - _psd3dv1->p.x;
-	_psd3dv2->p.y = ((float)_psPoint1.y) - _psd3dv1->p.y;
-	_psd3dv1->p.x += (float)_psPoint1.x;
-	_psd3dv1->p.y += (float)_psPoint1.y;
+	v1->p.x = sTemp.x * fMag;
+	v1->p.y = sTemp.y * fMag;
+	v2->p.x = ((float)p1.x) - v1->p.x;
+	v2->p.y = ((float)p1.y) - v1->p.y;
+	v1->p.x += (float)p1.x;
+	v1->p.y += (float)p1.y;
 
 	return true;
 }
@@ -89,15 +92,12 @@ void CursorTrail::DrawLine2D(float _fSize, Color3f color) {
 		return;
 	}
 	
-	float fSize = _fSize / iNbOldCoord;
-	float fTaille = fSize;
+	float incSize = _fSize / iNbOldCoord;
+	float currentSize = incSize;
 	
-	float fDColorRed = color.r / iNbOldCoord;
-	float fColorRed = fDColorRed;
-	float fDColorGreen = color.g / iNbOldCoord;
-	float fColorGreen = fDColorGreen;
-	float fDColorBlue = color.b / iNbOldCoord;
-	float fColorBlue = fDColorBlue;
+	Color3f incColor = Color3f(color.r / iNbOldCoord, color.g / iNbOldCoord, color.b / iNbOldCoord);
+	
+	Color3f currentColor = incColor;
 	
 	GRenderer->SetBlendFunc(BlendDstColor, BlendInvDstColor);
 	GRenderer->ResetTexture(0);
@@ -107,23 +107,21 @@ void CursorTrail::DrawLine2D(float _fSize, Color3f color) {
 	v[0].p.z = v[1].p.z = v[2].p.z = v[3].p.z = 0.f;
 	v[0].rhw = v[1].rhw = v[2].rhw = v[3].rhw = 1.f;
 	
-	v[0].color = v[2].color = Color3f(fColorRed, fColorGreen, fColorBlue).toRGB();
+	v[0].color = v[2].color = currentColor.toRGB();
 	
-	if(!ComputePer(iOldCoord[0], iOldCoord[1], &v[0], &v[2], fTaille)) {
+	if(!ComputePer(iOldCoord[0], iOldCoord[1], &v[0], &v[2], currentSize)) {
 		v[0].p.x = v[2].p.x = iOldCoord[0].x;
 		v[0].p.y = v[2].p.y = iOldCoord[1].y;
 	}
 	
 	for(int i = 1; i < iNbOldCoord - 1; i++) {
 		
-		fTaille += fSize;
-		fColorRed += fDColorRed;
-		fColorGreen += fDColorGreen;
-		fColorBlue += fDColorBlue;
+		currentSize += incSize;
+		currentColor += incColor;
 		
-		if(ComputePer(iOldCoord[i], iOldCoord[i + 1], &v[1], &v[3], fTaille)) {
+		if(ComputePer(iOldCoord[i], iOldCoord[i + 1], &v[1], &v[3], currentSize)) {
 			
-			v[1].color = v[3].color = Color3f(fColorRed, fColorGreen, fColorBlue).toRGB();
+			v[1].color = v[3].color = currentColor.toRGB();
 			EERIEDRAWPRIM(Renderer::TriangleStrip, v, 4);
 			
 			v[0].p.x = v[1].p.x;
@@ -229,4 +227,31 @@ void MenuCursor::DrawCursor() {
 	}
 
 	GRenderer->SetRenderState(Renderer::AlphaBlending, false);
+}
+
+ThumbnailCursor g_thumbnailCursor;
+
+void ThumbnailCursor::render() {
+	
+	if(m_renderTexture) {
+		
+		Vec2f offset = Vec2f(0, 0);
+		
+		if(DANAEMouse.y + config.interface.thumbnailSize.y > g_size.height()) {
+			offset.y -= config.interface.thumbnailSize.y;
+		}
+		
+		Vec2f pos = Vec2f(DANAEMouse) + offset;
+		
+		Rectf rect = Rectf(pos, config.interface.thumbnailSize.x, config.interface.thumbnailSize.y);
+		
+		EERIEDrawBitmap(rect, 0.001f, m_loadTexture, Color::white);
+		drawLineRectangle(rect, 0.01f, Color::white);
+
+		m_renderTexture = NULL;
+	}
+}
+
+void ThumbnailCursor::clear() {
+	m_renderTexture = NULL;
 }

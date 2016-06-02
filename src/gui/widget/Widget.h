@@ -183,7 +183,7 @@ public:
 	virtual ~Widget();
 	
 	virtual bool OnMouseClick() = 0;
-	virtual void Update(int time) = 0;
+	virtual void Update() = 0;
 	virtual void Render() = 0;
 	virtual void RenderMouseOver() { }
 	virtual void EmptyFunction() { }

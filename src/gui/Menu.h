@@ -62,10 +62,7 @@ struct MENU_DYNAMIC_DATA {
 	std::string str_button_skin;
 	std::string str_button_done;
 	
-	MENU_DYNAMIC_DATA()
-		: BookBackground(NULL)
-	{}
-	
+	MENU_DYNAMIC_DATA();
 };
 
 // Possible values for ARXmenu.currentmode

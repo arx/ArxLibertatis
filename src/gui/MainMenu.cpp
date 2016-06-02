@@ -1796,11 +1796,8 @@ void MainMenu::Render() {
 	if(m_background)
 		EERIEDrawBitmap2(Rectf(Vec2f(0, 0), g_size.width(), g_size.height()), 0.999f, m_background, Color::white);
 	
-	int iARXDiffTimeMenu = checked_range_cast<int>(ARXDiffTimeMenu);
-
-	for(size_t i = 0; i < m_widgets->GetNbZone(); ++i) {
-		Widget * widget = m_widgets->GetZoneNum(i);
-		widget->Update(iARXDiffTimeMenu);
+	BOOST_FOREACH(Widget * widget, m_widgets->m_widgets) {
+		widget->Update();
 		widget->Render();
 	}
 

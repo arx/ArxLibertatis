@@ -1480,8 +1480,8 @@ void ARX_PLAYER_Manage_Visual() {
 		else if(layer0.cur_anim == alist[ANIM_U_TURN_RIGHT]
 				 ||	layer0.cur_anim == alist[ANIM_U_TURN_RIGHT_FIGHT])
 		{
-			long vv = PLAYER_ROTATION * 5;
 			float fv = PLAYER_ROTATION * 5;
+			long vv = fv;
 			io->frameloss += fv - (float)vv;
 			
 			if (io->frameloss < 0) io->frameloss = 0;

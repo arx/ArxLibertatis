@@ -67,8 +67,6 @@ ZeniMax Media Inc., Suite 120, Rockville, Maryland 20850 USA.
 #include "scene/Light.h"
 #include "scene/Interactive.h"
 
-// Some external defs needing to be cleaned...
-extern Rect g_size;
 
 extern TextureContainer * Boom;
 

@@ -865,9 +865,6 @@ bool CanBePutInSecondaryInventory(INVENTORY_DATA * id, Entity * io)
 	return false;
 }
 
-extern Vec2s DANAEMouse;
-
-
 /*!
  * \brief Try to put DRAGINTER object in an inventory
  * \return

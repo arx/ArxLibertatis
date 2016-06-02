@@ -84,8 +84,6 @@ ZeniMax Media Inc., Suite 120, Rockville, Maryland 20850 USA.
 
 extern bool bQuickGenFirstClick;
 
-extern Rect g_size;
-
 extern SavegameHandle LOADQUEST_SLOT;
 
 extern bool REFUSE_GAME_RETURN;

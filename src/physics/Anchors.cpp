@@ -270,16 +270,20 @@ static float ANCHOR_CheckAnythingInCylinder(const Cylinder & cyl, CollisionFlags
 }
 
 extern long MOVING_CYLINDER;
+
+// TODO copy-paste AttemptValidCylinderPos
 static bool ANCHOR_AttemptValidCylinderPos(Cylinder & cyl, Entity * io,
 	                                         CollisionFlags flags) {
 	
 	float anything = ANCHOR_CheckAnythingInCylinder(cyl, flags);
 
-	if ((flags & CFLAG_LEVITATE) && (anything == 0.f)) return true;
-
-	if (anything >= 0.f) // Falling Cylinder but valid pos !
-	{
-		if (flags & CFLAG_RETURN_HEIGHT)
+	if((flags & CFLAG_LEVITATE) && anything == 0.f) {
+		return true;
+	}
+	
+	// Falling Cylinder but valid pos !
+	if(anything >= 0.f) {
+		if(flags & CFLAG_RETURN_HEIGHT)
 			cyl.origin.y += anything;
 
 		return true;
@@ -319,14 +323,14 @@ static bool ANCHOR_AttemptValidCylinderPos(Cylinder & cyl, Entity * io,
 
 		if(io && !(flags & CFLAG_JUST_TEST)) {
 			if((flags & CFLAG_PLAYER) && anything < 0.f) {
+				
 				if(player.jumpphase != NotJumping) {
 					io->_npcdata->climb_count = MAX_ALLOWED_PER_SECOND;
 					return false;
 				}
 
 				float dist = std::max(glm::length(vector2D), 1.f);
-				float pente;
-				pente = glm::abs(anything) / dist * ( 1.0f / 2 ); 
+				float pente = glm::abs(anything) / dist * ( 1.0f / 2 );
 				io->_npcdata->climb_count += pente;
 
 				if(io->_npcdata->climb_count > MAX_ALLOWED_PER_SECOND) {
@@ -372,7 +376,7 @@ static bool ANCHOR_AttemptValidCylinderPos(Cylinder & cyl, Entity * io,
 	return true;
 }
 
-
+// TODO copy-paste Move_Cylinder
 static bool ANCHOR_ARX_COLLISION_Move_Cylinder(IO_PHYSICS * ip, Entity * io,
                                                float MOVE_CYLINDER_STEP,
                                                CollisionFlags flags) {

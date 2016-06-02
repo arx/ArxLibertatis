@@ -40,7 +40,6 @@
 #include "scene/GameSound.h"
 #include "scene/Interactive.h"
 
-extern Rect g_size;
 
 MassLightningStrikeSpell::MassLightningStrikeSpell()
 	: m_pos(Vec3f_ZERO)

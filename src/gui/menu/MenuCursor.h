@@ -39,7 +39,7 @@ private:
 	int   iMaxOldCoord;
 	Vec2s iOldCoord[256];
 	
-	bool ComputePer(const Vec2s & _psPoint1, const Vec2s & _psPoint2, TexturedVertex * _psd3dv1, TexturedVertex * _psd3dv2, float _fSize);
+	bool ComputePer(const Vec2s & p1, const Vec2s & p2, TexturedVertex * v1, TexturedVertex * v2, float size);
 	void DrawLine2D(float _fSize, Color3f color);
 };
 
@@ -64,5 +64,24 @@ private:
 	bool				bMouseOver;
 	CursorTrail trail;
 };
+
+class TextureContainer;
+
+class ThumbnailCursor {
+public:
+	ThumbnailCursor()
+		: m_renderTexture(NULL)
+		, m_loadTexture(NULL)
+	{ }
+	
+	void render();
+	
+	void clear();
+	
+	TextureContainer * m_renderTexture;
+	TextureContainer * m_loadTexture;
+};
+
+extern ThumbnailCursor g_thumbnailCursor;
 
 #endif // ARX_GUI_MENU_MENUCURSOR_H

@@ -19,7 +19,9 @@
 
 #include "graphics/effects/Fade.h"
 
+#include "core/Core.h"
 #include "core/GameTime.h"
+
 #include "graphics/Draw.h"
 #include "graphics/Renderer.h"
 
@@ -29,7 +31,6 @@ unsigned long FADESTART = 0;
 float LAST_FADEVALUE = 1.f;
 Color3f FADECOLOR;
 
-extern Rect g_size;
 
 void fadeReset() {
 	FADEDIR = 0;

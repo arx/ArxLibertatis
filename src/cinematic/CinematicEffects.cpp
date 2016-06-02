@@ -48,6 +48,8 @@ ZeniMax Media Inc., Suite 120, Rockville, Maryland 20850 USA.
 #include "cinematic/Cinematic.h"
 #include "cinematic/CinematicKeyframer.h"
 
+#include "core/Core.h"
+
 #include "graphics/Math.h"
 #include "graphics/Draw.h"
 #include "cinematic/CinematicTexture.h"
@@ -84,8 +86,6 @@ Color FX_FadeOUT(float a, Color color, Color colord)
 }
 
 static float LastTime;
-
-extern Rect g_size;
 
 bool FX_Blur(Cinematic *c, CinematicBitmap *tb, EERIE_CAMERA &camera)
 {

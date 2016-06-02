@@ -86,8 +86,7 @@ bool CheckboxWidget::OnMouseClick() {
 	return false;
 }
 
-void CheckboxWidget::Update(int /*_iDTime*/)
-{
+void CheckboxWidget::Update() {
 }
 
 void CheckboxWidget::renderCommon() {

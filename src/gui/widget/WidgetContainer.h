@@ -35,11 +35,9 @@ public:
 	void add(Widget * widget);
 	Widget * getAtPos(const Vec2f & mousePos) const;
 	
-	Widget * GetZoneNum(size_t index);
 	Widget * GetZoneWithID(MenuButton zoneId);
 	void Move(const Vec2f & offset);
 	void drawDebug();
-	size_t GetNbZone();
 };
 
 #endif // ARX_GUI_WIDGET_WIDGETCONTAINER_H

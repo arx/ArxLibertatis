@@ -101,8 +101,6 @@ extern bool newFullscreen;
 // Imported global variables and functions
 extern ARX_MENU_DATA ARXmenu;
 
-extern Rect g_size;
-
 extern bool REFUSE_GAME_RETURN;
 
 bool bNoMenu=false;
@@ -121,9 +119,6 @@ bool bFade=false;
 bool bFadeInOut=false;
 int iFadeAction=-1;
 float fFadeInOut=0.f;
-
-TextureContainer *pTextureLoad=NULL;
-TextureContainer *pTextureLoadRender=NULL;
 
 void ARX_QuickSave() {
 	
@@ -410,25 +405,9 @@ bool Menu2_Render() {
 	GRenderer->SetRenderState(Renderer::DepthWrite, false);
 	GRenderer->SetCulling(CullNone);
 	pMenuCursor->DrawCursor();
-
-	if(pTextureLoadRender) {
-		
-		Vec2f offset = Vec2f(0, 0);
-		
-		if(DANAEMouse.y + config.interface.thumbnailSize.y > g_size.height()) {
-			offset.y -= config.interface.thumbnailSize.y;
-		}
-		
-		Vec2f pos = Vec2f(DANAEMouse) + offset;
-		
-		Rectf rect = Rectf(pos, config.interface.thumbnailSize.x, config.interface.thumbnailSize.y);
-		
-		EERIEDrawBitmap(rect, 0.001f, pTextureLoad, Color::white);
-		drawLineRectangle(rect, 0.01f, Color::white);
-
-		pTextureLoadRender=NULL;
-	}
-
+	
+	g_thumbnailCursor.render();
+	
 	if(ProcessFadeInOut(bFadeInOut,0.1f)) {
 		switch(iFadeAction) {
 			case AMCM_CREDITS:
@@ -615,9 +594,7 @@ void MenuPage::addCenter(Widget * widget, bool centerX) {
 	
 	int iDy = widget->m_rect.height();
 
-	for(size_t iJ = 0; iJ < m_children.GetNbZone(); iJ++) {
-		Widget * widget = m_children.GetZoneNum(iJ);
-
+	BOOST_FOREACH(Widget * widget, m_children.m_widgets) {
 		iDy += m_rowSpacing;
 		iDy += widget->m_rect.height();
 	}
@@ -630,12 +607,11 @@ void MenuPage::addCenter(Widget * widget, bool centerX) {
 
 	int dy = 0;
 
-	if(m_children.GetNbZone()) {
-		dy = iDepY - m_children.GetZoneNum(0)->m_rect.top;
+	if(!m_children.m_widgets.empty()) {
+		dy = iDepY - m_children.m_widgets[0]->m_rect.top;
 	}
 	
-	for(size_t iJ = 0; iJ < m_children.GetNbZone(); iJ++) {
-		Widget * widget = m_children.GetZoneNum(iJ);
+	BOOST_FOREACH(Widget * widget, m_children.m_widgets) {
 		iDepY += (widget->m_rect.height()) + m_rowSpacing;
 		
 		widget->Move(Vec2f(0, dy));
@@ -901,9 +877,7 @@ MENUSTATE MenuPage::Update(Vec2f pos) {
 	
 	//check les shortcuts
 	if(!bEdit) {
-		for(size_t iJ = 0; iJ < m_children.GetNbZone(); ++iJ) {
-			Widget * widget = m_children.GetZoneNum(iJ);
-			
+		BOOST_FOREACH(Widget * widget, m_children.m_widgets) {
 			arx_assert(widget);
 			
 			if(widget->m_shortcut != -1) {
@@ -1098,19 +1072,11 @@ void MenuPage::Render() {
 	if(bNoMenu)
 		return;
 	
-
-
-	//------------------------------------------------------------------------
-
-	int iARXDiffTimeMenu  = checked_range_cast<int>(ARXDiffTimeMenu);
-
-	for(size_t i = 0; i < m_children.GetNbZone(); ++i) {
-		Widget * widget = m_children.GetZoneNum(i);
-		
-		widget->Update(iARXDiffTimeMenu);
+	BOOST_FOREACH(Widget * widget, m_children.m_widgets) {
+		widget->Update();
 		widget->Render();
 	}
-
+	
 	//HIGHLIGHT
 	if(m_selected) {
 		bool bReInit=false;

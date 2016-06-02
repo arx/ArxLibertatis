@@ -71,6 +71,7 @@ ZeniMax Media Inc., Suite 120, Rockville, Maryland 20850 USA.
 #include "gui/TextManager.h"
 #include "gui/Cursor.h"
 #include "gui/book/Book.h"
+#include "gui/menu/MenuCursor.h"
 
 #include "graphics/Draw.h"
 #include "graphics/Math.h"
@@ -102,8 +103,6 @@ extern float ARXTimeMenu;
 
 extern bool REQUEST_SPEECH_SKIP;
 
-extern TextureContainer * pTextureLoad;
-
 //-----------------------------------------------------------------------------
 // Exported global variables
 
@@ -117,6 +116,38 @@ static long SP_HEAD = 0;
 // Menu Sounds
 //-----------------------------------------------------------------------------
 
+MENU_DYNAMIC_DATA::MENU_DYNAMIC_DATA()
+	: BookBackground(NULL)
+{
+	flyover[BOOK_STRENGTH] = getLocalised("system_charsheet_strength");
+	flyover[BOOK_MIND] = getLocalised("system_charsheet_intel");
+	flyover[BOOK_DEXTERITY] = getLocalised("system_charsheet_dex");
+	flyover[BOOK_CONSTITUTION] = getLocalised("system_charsheet_consti");
+	flyover[BOOK_STEALTH] = getLocalised("system_charsheet_stealth");
+	flyover[BOOK_MECANISM] = getLocalised("system_charsheet_mecanism");
+	flyover[BOOK_INTUITION] = getLocalised("system_charsheet_intuition");
+	flyover[BOOK_ETHERAL_LINK] = getLocalised("system_charsheet_etheral_link");
+	flyover[BOOK_OBJECT_KNOWLEDGE] = getLocalised("system_charsheet_objknoledge");
+	flyover[BOOK_CASTING] = getLocalised("system_charsheet_casting");
+	flyover[BOOK_PROJECTILE] = getLocalised("system_charsheet_projectile");
+	flyover[BOOK_CLOSE_COMBAT] = getLocalised("system_charsheet_closecombat");
+	flyover[BOOK_DEFENSE] = getLocalised("system_charsheet_defense");
+	flyover[BUTTON_QUICK_GENERATION] = getLocalised("system_charsheet_quickgenerate");
+	flyover[BUTTON_DONE] = getLocalised("system_charsheet_done");
+	flyover[BUTTON_SKIN] = getLocalised("system_charsheet_skin");
+	flyover[WND_ATTRIBUTES] = getLocalised("system_charsheet_atributes");
+	flyover[WND_SKILLS] = getLocalised("system_charsheet_skills");
+	flyover[WND_STATUS] = getLocalised("system_charsheet_status");
+	flyover[WND_LEVEL] = getLocalised("system_charsheet_level");
+	flyover[WND_XP] = getLocalised("system_charsheet_xpoints");
+	flyover[WND_HP] = getLocalised("system_charsheet_hp");
+	flyover[WND_MANA] = getLocalised("system_charsheet_mana");
+	flyover[WND_AC] = getLocalised("system_charsheet_ac");
+	flyover[WND_RESIST_MAGIC] = getLocalised("system_charsheet_res_magic");
+	flyover[WND_RESIST_POISON] = getLocalised("system_charsheet_res_poison");
+	flyover[WND_DAMAGE] = getLocalised("system_charsheet_damage");
+}
+
 void ARX_MENU_LaunchAmb(const std::string & _lpszAmb) {
 	ARX_SOUND_PlayMenuAmbiance(_lpszAmb);
 }
@@ -126,35 +157,7 @@ void ARX_Menu_Resources_Create() {
 	delete ARXmenu.mda;
 	ARXmenu.mda = new MENU_DYNAMIC_DATA();
 	ARXmenu.mda->BookBackground = TextureContainer::LoadUI("graph/interface/book/character_sheet/char_creation_bg", TextureContainer::NoColorKey);
-
-	ARXmenu.mda->flyover[BOOK_STRENGTH] = getLocalised("system_charsheet_strength");
-	ARXmenu.mda->flyover[BOOK_MIND] = getLocalised("system_charsheet_intel");
-	ARXmenu.mda->flyover[BOOK_DEXTERITY] = getLocalised("system_charsheet_dex");
-	ARXmenu.mda->flyover[BOOK_CONSTITUTION] = getLocalised("system_charsheet_consti");
-	ARXmenu.mda->flyover[BOOK_STEALTH] = getLocalised("system_charsheet_stealth");
-	ARXmenu.mda->flyover[BOOK_MECANISM] = getLocalised("system_charsheet_mecanism");
-	ARXmenu.mda->flyover[BOOK_INTUITION] = getLocalised("system_charsheet_intuition");
-	ARXmenu.mda->flyover[BOOK_ETHERAL_LINK] = getLocalised("system_charsheet_etheral_link");
-	ARXmenu.mda->flyover[BOOK_OBJECT_KNOWLEDGE] = getLocalised("system_charsheet_objknoledge");
-	ARXmenu.mda->flyover[BOOK_CASTING] = getLocalised("system_charsheet_casting");
-	ARXmenu.mda->flyover[BOOK_PROJECTILE] = getLocalised("system_charsheet_projectile");
-	ARXmenu.mda->flyover[BOOK_CLOSE_COMBAT] = getLocalised("system_charsheet_closecombat");
-	ARXmenu.mda->flyover[BOOK_DEFENSE] = getLocalised("system_charsheet_defense");
-	ARXmenu.mda->flyover[BUTTON_QUICK_GENERATION] = getLocalised("system_charsheet_quickgenerate");
-	ARXmenu.mda->flyover[BUTTON_DONE] = getLocalised("system_charsheet_done");
-	ARXmenu.mda->flyover[BUTTON_SKIN] = getLocalised("system_charsheet_skin");
-	ARXmenu.mda->flyover[WND_ATTRIBUTES] = getLocalised("system_charsheet_atributes");
-	ARXmenu.mda->flyover[WND_SKILLS] = getLocalised("system_charsheet_skills");
-	ARXmenu.mda->flyover[WND_STATUS] = getLocalised("system_charsheet_status");
-	ARXmenu.mda->flyover[WND_LEVEL] = getLocalised("system_charsheet_level");
-	ARXmenu.mda->flyover[WND_XP] = getLocalised("system_charsheet_xpoints");
-	ARXmenu.mda->flyover[WND_HP] = getLocalised("system_charsheet_hp");
-	ARXmenu.mda->flyover[WND_MANA] = getLocalised("system_charsheet_mana");
-	ARXmenu.mda->flyover[WND_AC] = getLocalised("system_charsheet_ac");
-	ARXmenu.mda->flyover[WND_RESIST_MAGIC] = getLocalised("system_charsheet_res_magic");
-	ARXmenu.mda->flyover[WND_RESIST_POISON] = getLocalised("system_charsheet_res_poison");
-	ARXmenu.mda->flyover[WND_DAMAGE] = getLocalised("system_charsheet_damage");
-
+	
 	ARXmenu.mda->str_button_quickgen = getLocalised("system_charsheet_button_quickgen");
 	ARXmenu.mda->str_button_skin = getLocalised("system_charsheet_button_skin");
 	ARXmenu.mda->str_button_done = getLocalised("system_charsheet_button_done");
@@ -177,7 +180,7 @@ void ARX_Menu_Resources_Release(bool _bNoSound) {
 		ARXMenu_Options_Audio_ApplyGameVolumes();
 	}
 	
-	delete pTextureLoad, pTextureLoad = NULL;
+	delete g_thumbnailCursor.m_loadTexture, g_thumbnailCursor.m_loadTexture = NULL;
 }
 
 extern bool TIME_INIT;

@@ -188,34 +188,6 @@ void ARX_INTERFACE_BookToggle() {
 		
 		if(!ARXmenu.mda) {
 			ARXmenu.mda = new MENU_DYNAMIC_DATA();
-			
-			ARXmenu.mda->flyover[BOOK_STRENGTH] = getLocalised("system_charsheet_strength");
-			ARXmenu.mda->flyover[BOOK_MIND] = getLocalised("system_charsheet_intel");
-			ARXmenu.mda->flyover[BOOK_DEXTERITY] = getLocalised("system_charsheet_dex");
-			ARXmenu.mda->flyover[BOOK_CONSTITUTION] = getLocalised("system_charsheet_consti");
-			ARXmenu.mda->flyover[BOOK_STEALTH] = getLocalised("system_charsheet_stealth");
-			ARXmenu.mda->flyover[BOOK_MECANISM] = getLocalised("system_charsheet_mecanism");
-			ARXmenu.mda->flyover[BOOK_INTUITION] = getLocalised("system_charsheet_intuition");
-			ARXmenu.mda->flyover[BOOK_ETHERAL_LINK] = getLocalised("system_charsheet_etheral_link");
-			ARXmenu.mda->flyover[BOOK_OBJECT_KNOWLEDGE] = getLocalised("system_charsheet_objknoledge");
-			ARXmenu.mda->flyover[BOOK_CASTING] = getLocalised("system_charsheet_casting");
-			ARXmenu.mda->flyover[BOOK_PROJECTILE] = getLocalised("system_charsheet_projectile");
-			ARXmenu.mda->flyover[BOOK_CLOSE_COMBAT] = getLocalised("system_charsheet_closecombat");
-			ARXmenu.mda->flyover[BOOK_DEFENSE] = getLocalised("system_charsheet_defense");
-			ARXmenu.mda->flyover[BUTTON_QUICK_GENERATION] = getLocalised("system_charsheet_quickgenerate");
-			ARXmenu.mda->flyover[BUTTON_DONE] = getLocalised("system_charsheet_done");
-			ARXmenu.mda->flyover[BUTTON_SKIN] = getLocalised("system_charsheet_skin");
-			ARXmenu.mda->flyover[WND_ATTRIBUTES] = getLocalised("system_charsheet_atributes");
-			ARXmenu.mda->flyover[WND_SKILLS] = getLocalised("system_charsheet_skills");
-			ARXmenu.mda->flyover[WND_STATUS] = getLocalised("system_charsheet_status");
-			ARXmenu.mda->flyover[WND_LEVEL] = getLocalised("system_charsheet_level");
-			ARXmenu.mda->flyover[WND_XP] = getLocalised("system_charsheet_xpoints");
-			ARXmenu.mda->flyover[WND_HP] = getLocalised("system_charsheet_hp");
-			ARXmenu.mda->flyover[WND_MANA] = getLocalised("system_charsheet_mana");
-			ARXmenu.mda->flyover[WND_AC] = getLocalised("system_charsheet_ac");
-			ARXmenu.mda->flyover[WND_RESIST_MAGIC] = getLocalised("system_charsheet_res_magic");
-			ARXmenu.mda->flyover[WND_RESIST_POISON] = getLocalised("system_charsheet_res_poison");
-			ARXmenu.mda->flyover[WND_DAMAGE] = getLocalised("system_charsheet_damage");
 		}
 	}
 
