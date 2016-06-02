@@ -251,3 +251,7 @@ void ThumbnailCursor::render() {
 		m_renderTexture = NULL;
 	}
 }
+
+void ThumbnailCursor::clear() {
+	m_renderTexture = NULL;
+}

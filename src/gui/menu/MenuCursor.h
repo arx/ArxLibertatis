@@ -76,6 +76,8 @@ public:
 	
 	void render();
 	
+	void clear();
+	
 	TextureContainer * m_renderTexture;
 	TextureContainer * m_loadTexture;
 };

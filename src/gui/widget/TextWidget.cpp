@@ -330,7 +330,7 @@ void TextWidget::RenderMouseOver() {
 		case BUTTON_MENUEDITQUEST_SAVEINFO: {
 			
 			if(m_savegame == SavegameHandle()) {
-				g_thumbnailCursor.m_renderTexture = NULL;
+				g_thumbnailCursor.clear();
 				break;
 			}
 			
@@ -348,7 +348,7 @@ void TextWidget::RenderMouseOver() {
 		}
 		
 		default: {
-			g_thumbnailCursor.m_renderTexture = NULL;
+			g_thumbnailCursor.clear();
 			break;
 		}
 	}
