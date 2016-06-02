@@ -74,6 +74,8 @@ public:
 		, m_loadTexture(NULL)
 	{ }
 	
+	void render();
+	
 	TextureContainer * m_renderTexture;
 	TextureContainer * m_loadTexture;
 };

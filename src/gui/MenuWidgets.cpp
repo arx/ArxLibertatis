@@ -407,25 +407,9 @@ bool Menu2_Render() {
 	GRenderer->SetRenderState(Renderer::DepthWrite, false);
 	GRenderer->SetCulling(CullNone);
 	pMenuCursor->DrawCursor();
-
-	if(g_thumbnailCursor.m_renderTexture) {
-		
-		Vec2f offset = Vec2f(0, 0);
-		
-		if(DANAEMouse.y + config.interface.thumbnailSize.y > g_size.height()) {
-			offset.y -= config.interface.thumbnailSize.y;
-		}
-		
-		Vec2f pos = Vec2f(DANAEMouse) + offset;
-		
-		Rectf rect = Rectf(pos, config.interface.thumbnailSize.x, config.interface.thumbnailSize.y);
-		
-		EERIEDrawBitmap(rect, 0.001f, g_thumbnailCursor.m_loadTexture, Color::white);
-		drawLineRectangle(rect, 0.01f, Color::white);
-
-		g_thumbnailCursor.m_renderTexture = NULL;
-	}
-
+	
+	g_thumbnailCursor.render();
+	
 	if(ProcessFadeInOut(bFadeInOut,0.1f)) {
 		switch(iFadeAction) {
 			case AMCM_CREDITS:

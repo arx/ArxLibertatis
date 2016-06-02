@@ -19,7 +19,10 @@
 
 #include "gui/menu/MenuCursor.h"
 
+#include "core/Core.h"
+
 #include "graphics/Draw.h"
+#include "graphics/DrawLine.h"
 #include "graphics/Renderer.h"
 #include "graphics/texture/TextureStage.h"
 
@@ -227,3 +230,24 @@ void MenuCursor::DrawCursor() {
 }
 
 ThumbnailCursor g_thumbnailCursor;
+
+void ThumbnailCursor::render() {
+	
+	if(m_renderTexture) {
+		
+		Vec2f offset = Vec2f(0, 0);
+		
+		if(DANAEMouse.y + config.interface.thumbnailSize.y > g_size.height()) {
+			offset.y -= config.interface.thumbnailSize.y;
+		}
+		
+		Vec2f pos = Vec2f(DANAEMouse) + offset;
+		
+		Rectf rect = Rectf(pos, config.interface.thumbnailSize.x, config.interface.thumbnailSize.y);
+		
+		EERIEDrawBitmap(rect, 0.001f, m_loadTexture, Color::white);
+		drawLineRectangle(rect, 0.01f, Color::white);
+
+		m_renderTexture = NULL;
+	}
+}
