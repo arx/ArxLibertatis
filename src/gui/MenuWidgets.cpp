@@ -607,8 +607,8 @@ void MenuPage::addCenter(Widget * widget, bool centerX) {
 
 	int dy = 0;
 
-	if(m_children.GetNbZone()) {
-		dy = iDepY - m_children.GetZoneNum(0)->m_rect.top;
+	if(!m_children.m_widgets.empty()) {
+		dy = iDepY - m_children.m_widgets[0]->m_rect.top;
 	}
 	
 	BOOST_FOREACH(Widget * widget, m_children.m_widgets) {
