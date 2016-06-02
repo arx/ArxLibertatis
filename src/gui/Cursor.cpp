@@ -57,7 +57,6 @@
 #include "gui/hud/SecondaryInventory.h"
 
 extern Rect g_size;
-extern Vec2s DANAEMouse;
 
 extern float STARTED_ANGLE;
 long SPECIAL_DRAGINTER_RENDER=0;

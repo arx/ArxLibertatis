@@ -155,8 +155,6 @@ extern long DeadTime;
 
 extern bool WILLRETURNTOFREELOOK;
 
-extern Vec2s DANAEMouse;
-
 extern bool SHOW_INGAME_MINIMAP;
 
 //-----------------------------------------------------------------------------

@@ -335,8 +335,6 @@ void PlayerInventoryHud::previousBag() {
 
 PlayerInventoryHud g_playerInventoryHud;
 
-extern Vec2s DANAEMouse;
-
 extern Rect g_size;
 
 
