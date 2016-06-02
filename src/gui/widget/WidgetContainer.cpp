@@ -27,19 +27,17 @@
 WidgetContainer::WidgetContainer() {
 
 	m_widgets.clear();
-
-	std::vector<Widget*>::iterator i;
-
-	for(i = m_widgets.begin(); i != m_widgets.end(); ++i) {
-		Widget *widget = *i;
-		delete widget;
+	
+	BOOST_FOREACH(Widget * w, m_widgets) {
+		delete w;
 	}
 }
 
 WidgetContainer::~WidgetContainer() {
-
-	for(std::vector<Widget*>::iterator it = m_widgets.begin(), it_end = m_widgets.end(); it != it_end; ++it)
-		delete *it;
+	
+	BOOST_FOREACH(Widget * w, m_widgets) {
+		delete w;
+	}
 }
 
 void WidgetContainer::add(Widget *widget) {
@@ -48,11 +46,8 @@ void WidgetContainer::add(Widget *widget) {
 }
 
 Widget * WidgetContainer::getAtPos(const Vec2f & mousePos) const {
-
-	std::vector<Widget*>::const_iterator i;
-
-	for(i = m_widgets.begin(); i != m_widgets.end(); ++i) {
-		Widget * widget = *i;
+	
+	BOOST_FOREACH(Widget * widget, m_widgets) {
 		
 		if(!widget->getCheck())
 			continue;
@@ -67,9 +62,9 @@ Widget * WidgetContainer::getAtPos(const Vec2f & mousePos) const {
 }
 
 Widget * WidgetContainer::GetZoneWithID(MenuButton _iID) {
-
-	for(std::vector<Widget*>::iterator i = m_widgets.begin(), i_end = m_widgets.end(); i != i_end; ++i) {
-		if(Widget * widget = (*i)->GetZoneWithID(_iID))
+	
+	BOOST_FOREACH(Widget * w, m_widgets) {
+		if(Widget * widget = w->GetZoneWithID(_iID))
 			return widget;
 	}
 
@@ -77,9 +72,9 @@ Widget * WidgetContainer::GetZoneWithID(MenuButton _iID) {
 }
 
 void WidgetContainer::Move(const Vec2f & offset) {
-
-	for(std::vector<Widget*>::iterator i = m_widgets.begin(), i_end = m_widgets.end(); i != i_end; ++i) {
-		(*i)->Move(offset);
+	
+	BOOST_FOREACH(Widget * w, m_widgets) {
+		w->Move(offset);
 	}
 }
 
