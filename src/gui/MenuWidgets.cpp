@@ -594,9 +594,7 @@ void MenuPage::addCenter(Widget * widget, bool centerX) {
 	
 	int iDy = widget->m_rect.height();
 
-	for(size_t iJ = 0; iJ < m_children.GetNbZone(); iJ++) {
-		Widget * widget = m_children.GetZoneNum(iJ);
-
+	BOOST_FOREACH(Widget * widget, m_children.m_widgets) {
 		iDy += m_rowSpacing;
 		iDy += widget->m_rect.height();
 	}
@@ -613,8 +611,7 @@ void MenuPage::addCenter(Widget * widget, bool centerX) {
 		dy = iDepY - m_children.GetZoneNum(0)->m_rect.top;
 	}
 	
-	for(size_t iJ = 0; iJ < m_children.GetNbZone(); iJ++) {
-		Widget * widget = m_children.GetZoneNum(iJ);
+	BOOST_FOREACH(Widget * widget, m_children.m_widgets) {
 		iDepY += (widget->m_rect.height()) + m_rowSpacing;
 		
 		widget->Move(Vec2f(0, dy));
@@ -880,9 +877,7 @@ MENUSTATE MenuPage::Update(Vec2f pos) {
 	
 	//check les shortcuts
 	if(!bEdit) {
-		for(size_t iJ = 0; iJ < m_children.GetNbZone(); ++iJ) {
-			Widget * widget = m_children.GetZoneNum(iJ);
-			
+		BOOST_FOREACH(Widget * widget, m_children.m_widgets) {
 			arx_assert(widget);
 			
 			if(widget->m_shortcut != -1) {
@@ -1077,13 +1072,11 @@ void MenuPage::Render() {
 	if(bNoMenu)
 		return;
 	
-	for(size_t i = 0; i < m_children.GetNbZone(); ++i) {
-		Widget * widget = m_children.GetZoneNum(i);
-		
+	BOOST_FOREACH(Widget * widget, m_children.m_widgets) {
 		widget->Update();
 		widget->Render();
 	}
-
+	
 	//HIGHLIGHT
 	if(m_selected) {
 		bool bReInit=false;
