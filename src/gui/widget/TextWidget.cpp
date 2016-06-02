@@ -73,8 +73,7 @@ void TextWidget::SetText(const std::string & _pText)
 	m_rect.bottom = textSize.y + m_rect.top + 1;
 }
 
-void TextWidget::Update(int _iDTime) {
-	(void)_iDTime;
+void TextWidget::Update() {
 }
 
 // TODO remove this

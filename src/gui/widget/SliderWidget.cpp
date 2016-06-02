@@ -118,10 +118,10 @@ bool SliderWidget::OnMouseClick() {
 	return false;
 }
 
-void SliderWidget::Update(int _iTime) {
+void SliderWidget::Update() {
 	
-	pLeftButton->Update(_iTime);
-	pRightButton->Update(_iTime);
+	pLeftButton->Update();
+	pRightButton->Update();
 	pRightButton->SetPos(m_rect.topLeft());
 
 

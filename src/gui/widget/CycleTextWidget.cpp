@@ -164,10 +164,10 @@ bool CycleTextWidget::OnMouseClick() {
 	return false;
 }
 
-void CycleTextWidget::Update(int _iTime) {
+void CycleTextWidget::Update() {
 
-	pLeftButton->Update(_iTime);
-	pRightButton->Update(_iTime);
+	pLeftButton->Update();
+	pRightButton->Update();
 }
 
 void CycleTextWidget::Render() {

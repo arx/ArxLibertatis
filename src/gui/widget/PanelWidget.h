@@ -33,7 +33,7 @@ public:
 	void Move(const Vec2f & offset);
 	void AddElement(Widget * widget);
 	
-	void Update(int time);
+	void Update();
 	void Render();
 	bool OnMouseClick() { return false; }
 	void RenderMouseOver() { }

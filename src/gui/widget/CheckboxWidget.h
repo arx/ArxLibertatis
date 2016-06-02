@@ -35,7 +35,7 @@ public:
 	
 	void Move(const Vec2f & offset);
 	bool OnMouseClick();
-	void Update(int time);
+	void Update();
 	
 	void renderCommon();
 	void Render();

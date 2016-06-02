@@ -46,7 +46,7 @@ public:
 	void setColor(Color color) { lColor = color; }
 	
 	bool OnMouseClick();
-	void Update(int time);
+	void Update();
 	void Render();
 	void SetText(const std::string & _pText);
 	void RenderMouseOver();

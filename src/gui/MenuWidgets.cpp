@@ -1077,16 +1077,10 @@ void MenuPage::Render() {
 	if(bNoMenu)
 		return;
 	
-
-
-	//------------------------------------------------------------------------
-
-	int iARXDiffTimeMenu  = checked_range_cast<int>(ARXDiffTimeMenu);
-
 	for(size_t i = 0; i < m_children.GetNbZone(); ++i) {
 		Widget * widget = m_children.GetZoneNum(i);
 		
-		widget->Update(iARXDiffTimeMenu);
+		widget->Update();
 		widget->Render();
 	}
 

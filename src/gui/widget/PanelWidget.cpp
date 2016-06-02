@@ -63,13 +63,13 @@ void PanelWidget::AddElement(Widget* widget)
 	widget->Move(Vec2f(0, ((m_rect.height() - widget->m_rect.bottom) / 2)));
 }
 
-void PanelWidget::Update(int _iTime)
+void PanelWidget::Update()
 {
 	m_rect.right = m_rect.left;
 	m_rect.bottom = m_rect.top;
 
 	BOOST_FOREACH(Widget * widget, vElement) {
-		widget->Update(_iTime);
+		widget->Update();
 		m_rect.right = std::max(m_rect.right, widget->m_rect.right);
 		m_rect.bottom = std::max(m_rect.bottom, widget->m_rect.bottom);
 	}
