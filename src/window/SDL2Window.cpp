@@ -47,6 +47,7 @@
 #endif
 #include <SDL_syswm.h>
 
+#include "core/Version.h"
 #include "gui/Credits.h"
 #include "graphics/opengl/GLDebug.h"
 #include "graphics/opengl/OpenGLRenderer.h"
@@ -138,12 +139,12 @@ bool SDL2Window::initializeFramework() {
 	
 	#if ARX_PLATFORM != ARX_PLATFORM_WIN32 && ARX_HAVE_SETENV && ARX_HAVE_UNSETENV
 	/*
-	 * We want the X11 WM_CLASS to be "arx-libertatis" to match the .desktop file,
+	 * We want the X11 WM_CLASS to match the .desktop file and icon name,
 	 * but SDL does not let us set it directly.
 	 */
 	const char * oldClass = std::getenv("SDL_VIDEO_X11_WMCLASS");
 	if(!oldClass) {
-		setenv("SDL_VIDEO_X11_WMCLASS", "arx-libertatis", 1);
+		setenv("SDL_VIDEO_X11_WMCLASS", arx_icon_name.c_str(), 1);
 	}
 	BOOST_SCOPE_EXIT((oldClass)) {
 		if(!oldClass) {

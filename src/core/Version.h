@@ -23,6 +23,7 @@
 #include <string>
 
 extern const std::string arx_name;
+extern const std::string arx_icon_name;
 extern const std::string arx_version;
 extern const std::string arx_release_codename;
 

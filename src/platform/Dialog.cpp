@@ -39,6 +39,7 @@
 
 #include <boost/foreach.hpp>
 
+#include "core/Version.h"
 #include "platform/Process.h"
 #include "platform/WindowsUtils.h"
 
@@ -258,7 +259,7 @@ static int kdialogCommand(DialogType type, const std::string & message,
 	command.push_back("--title");
 	command.push_back(title.c_str());
 	command.push_back("--icon");
-	command.push_back("arx-libertatis");
+	command.push_back(arx_icon_name.c_str());
 	command.push_back(NULL);
 	
 	return platform::run(&command[0]);

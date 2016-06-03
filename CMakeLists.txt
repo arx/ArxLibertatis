@@ -243,7 +243,7 @@ include(CheckTypeSize)
 set(CMAKE_MODULE_PATH "${CMAKE_SOURCE_DIR}/cmake") # For custom cmake modules
 
 include(VersionString)
-set(version_names VERSION DATA_VERSION IO_LIBRARY_ABI_VERSION)
+set(version_names VERSION ICON_NAME DATA_VERSION IO_LIBRARY_ABI_VERSION)
 parse_version_file("${version_names}" "VERSION")
 if(VERSION_ERROR OR DATA_VERSION_ERROR OR IO_LIBRARY_ABI_VERSION_ERROR)
 	message(WARNING "Error parsing version file!")
@@ -1569,7 +1569,7 @@ if(NOT WIN32 AND NOT MACOSX)
 	find_program(DESKTOP_FILE_VALIDATE desktop-file-validate)
 	
 	if(DESKTOP_FILE_VALIDATE)
-		get_filename_component(ABS_DESKTOP_FILE data/icons/arx-libertatis.desktop ABSOLUTE)
+		get_filename_component(ABS_DESKTOP_FILE "data/icons/${ICON_NAME}.desktop" ABSOLUTE)
 		add_custom_target(
 			validate_desktop_file ALL
 			"${DESKTOP_FILE_VALIDATE}" "${ABS_DESKTOP_FILE}" VERBATIM
@@ -1577,7 +1577,7 @@ if(NOT WIN32 AND NOT MACOSX)
 		)
 	endif()
 	
-	install(FILES data/icons/arx-libertatis.desktop DESTINATION "${APPDIR}" OPTIONAL)
+	install(FILES "data/icons/${ICON_NAME}.desktop" DESTINATION "${APPDIR}" OPTIONAL)
 	
 endif()
 
