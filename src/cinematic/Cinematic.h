@@ -131,7 +131,7 @@ public:
 	
 	Vec2i cinRenderSize;
 	
-	Cinematic(Vec2i size);
+	explicit Cinematic(Vec2i size);
 	~Cinematic();
 
 	void InitDeviceObjects();
