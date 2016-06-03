@@ -20,10 +20,16 @@
 #include "audio/openal/OpenALBackend.h"
 
 #include <stddef.h>
+#include <cstdlib>
 #include <cstring>
 #include <cmath>
 #include <sstream>
 
+#if ARX_HAVE_SETENV || ARX_HAVE_UNSETENV
+#include <stdlib.h>
+#endif
+
+#include <boost/scope_exit.hpp>
 #include <boost/algorithm/string/predicate.hpp>
 #include <boost/math/special_functions/fpclassify.hpp>
 
@@ -32,6 +38,7 @@
 #include "audio/AudioEnvironment.h"
 #include "audio/AudioGlobal.h"
 #include "audio/AudioSource.h"
+#include "core/Version.h"
 #include "gui/Credits.h"
 #include "io/log/Logger.h"
 #include "math/Vector.h"
@@ -114,6 +121,31 @@ aalError OpenALBackend::init(const char * requestedDeviceName) {
 	if(device) {
 		return AAL_ERROR_INIT;
 	}
+	
+	#if ARX_PLATFORM != ARX_PLATFORM_WIN32 && ARX_HAVE_SETENV && ARX_HAVE_UNSETENV
+	/*
+	 * OpenAL Soft does not provide a way to pass through these properties, so use
+	 * environment variables.
+	 * Unfortunately it also always clears out PA_PROP_MEDIA_ROLE :(
+	 */
+	const char * oldClass = std::getenv("PULSE_PROP_application.icon_name");
+	if(!oldClass) {
+		setenv("PULSE_PROP_application.icon_name", arx_icon_name.c_str(), 1);
+	}
+	const char * oldName = std::getenv("PULSE_PROP_application.name");
+	if(!oldName) {
+		setenv("PULSE_PROP_application.name", arx_name.c_str(), 1);
+	}
+	BOOST_SCOPE_EXIT((oldClass)(oldName)) {
+		// Don't the properties of pulse child processes
+		if(!oldClass) {
+			unsetenv("PULSE_PROP_application.icon_name");
+		}
+		if(!oldName) {
+			unsetenv("PULSE_PROP_application.name");
+		}
+	} BOOST_SCOPE_EXIT_END
+	#endif
 	
 	// Clear error
 	ALenum error = alGetError();
