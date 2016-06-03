@@ -256,7 +256,7 @@ void CrashHandlerImpl::processCrash() {
 		boost::posix_time::ptime timeout
 		 = boost::posix_time::microsec_clock::universal_time()
 		 + boost::posix_time::milliseconds(100);
-		if(m_pCrashInfo->reporterStarted.timed_wait(timeout)) {
+		if(m_pCrashInfo && m_pCrashInfo->reporterStarted.timed_wait(timeout)) {
 			break;
 		}
 	}
