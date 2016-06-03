@@ -1211,7 +1211,7 @@ if(WIN32)
 		version_file("${VERSION_RC_TEMPLATE}"
 		             "${rc_file}" "${rc_sources}" ".git" "${rc_defines}")
 	endfunction()
-	create_version_resource(arx "Arx Libertatis")
+	create_version_resource(arx "${VERSION_NAME}")
 	list(APPEND ARX_SOURCES ${arx-version.rc})
 endif()
 
@@ -1259,7 +1259,7 @@ if(ARX_HAVE_CRASHREPORTER)
 	
 	if(WIN32)
 		list(APPEND arxcrashreporter_SOURCES ${arx-libertatis-icon.rc})
-		create_version_resource(arxcrashreporter "Arx Libertatis Crash Reporter")
+		create_version_resource(arxcrashreporter "${VERSION_NAME} Crash Reporter")
 		list(APPEND arxcrashreporter_SOURCES ${arxcrashreporter-version.rc})
 	endif()
 	
@@ -1361,7 +1361,7 @@ if(ARX_HAVE_PROFILER)
 	
 	if(WIN32)
 		list(APPEND arxprofiler_SOURCES ${arx-libertatis-icon.rc})
-		create_version_resource(arxprofiler "Arx Libertatis Profiler")
+		create_version_resource(arxprofiler "${VERSION_NAME} Profiler")
 		list(APPEND arxprofiler_SOURCES ${arxprofiler-version.rc})
 	endif()
 	
@@ -1440,7 +1440,7 @@ if(BUILD_TOOLS)
 	)
 	
 	if(WIN32)
-		create_version_resource(arxsavetool "Arx Libertatis Save File Tool")
+		create_version_resource(arxsavetool "${VERSION_NAME} Save File Tool")
 		list(APPEND arxsavetool_SOURCES ${arxsavetool-version.rc})
 	endif()
 	
@@ -1459,7 +1459,7 @@ if(BUILD_TOOLS)
 	)
 	
 	if(WIN32)
-		create_version_resource(arxunpak "Arx Libertatis PAK File Unpacker")
+		create_version_resource(arxunpak "${VERSION_NAME} PAK File Unpacker")
 		list(APPEND arxunpak_SOURCES ${arxunpak-version.rc})
 	endif()
 	

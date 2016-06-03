@@ -33,7 +33,7 @@ BEGIN
 	BEGIN
 		BLOCK "040904E4"
 		BEGIN
-			VALUE "CompanyName",      "Arx Libertatis Team"
+			VALUE "CompanyName",      "${VERSION_NAME} Team"
 			VALUE "FileDescription",  "${NAME}"
 			VALUE "FileVersion",      "${VERSION_STRING}${VERSION_SUFFIX}${GIT_SUFFIX_5}"
 			VALUE "InternalName",     "${EXE}"
@@ -41,7 +41,7 @@ BEGIN
 			VALUE "LegalCopyright",   "${COPYING_2} ${COPYING_4}"
 			#endif
 			VALUE "OriginalFilename", "${EXE}.exe"
-			VALUE "ProductName",      "Arx Libertatis"
+			VALUE "ProductName",      "${VERSION_NAME}"
 			VALUE "ProductVersion",   "${VERSION_STRING}${VERSION_SUFFIX}${GIT_SUFFIX_5}"
 		END
 	END
