@@ -34,8 +34,6 @@ public:
 	
 	WindowsMain() {
 		
-		std::setlocale(LC_ALL, "");
-		
 		// Convert the UTF-16 command-line parameters to UTF-8
 		
 		wchar_t ** wargv = CommandLineToArgvW(GetCommandLineW(), &argc);
