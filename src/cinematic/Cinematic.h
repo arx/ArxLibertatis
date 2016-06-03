@@ -133,15 +133,15 @@ public:
 	
 	explicit Cinematic(Vec2i size);
 	~Cinematic();
-
+	
 	void InitDeviceObjects();
 	void OneTimeSceneReInit();
 	void Render(float framediff);
 	void New();
 	void DeleteDeviceObjects();
-
+	
 	void DeleteAllBitmap();
-
+	
 private:
 	EERIE_CAMERA	m_camera;
 public:
