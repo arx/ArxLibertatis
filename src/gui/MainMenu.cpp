@@ -916,7 +916,7 @@ public:
 		{
 			PanelWidget * panel = new PanelWidget;
 			std::string szMenuText = getLocalised("system_menus_options_interface_cinematic_widescreen_mode",
-			                                      "Cinematic mode");
+			                                      "Cinematics mode");
 			szMenuText += " ";
 			TextWidget * txt = new TextWidget(BUTTON_INVALID, hFontMenu, szMenuText, Vec2f(20, 0));
 			txt->SetCheckOff();
