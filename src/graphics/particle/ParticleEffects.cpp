@@ -1386,7 +1386,7 @@ void TreatBackgroundActions() {
 			if(Random::getf() < gl->ex_frequency) {
 				PARTICLE_DEF * pd = createParticle();
 				if(pd) {
-					float t = Random::getf() * PI;
+					float t = Random::getf() * glm::pi<float>();
 					Vec3f s = Vec3f(std::sin(t), std::sin(t), std::cos(t)) * randomVec();
 					pd->ov = gl->pos + s * gl->ex_radius;
 					pd->move = Vec3f(2.f, 2.f, 2.f) - Vec3f(4.f, 22.f, 4.f) * randomVec3f();
@@ -1411,7 +1411,7 @@ void TreatBackgroundActions() {
 			if(Random::getf() < gl->ex_frequency) {
 				PARTICLE_DEF * pd = createParticle();
 				if(pd) {
-					float t = Random::getf() * (PI * 2.f) - PI;
+					float t = Random::getf() * (glm::pi<float>() * 2.f) - glm::pi<float>();
 					Vec3f s = Vec3f(std::sin(t), std::sin(t), std::cos(t)) * randomVec();
 					pd->ov = gl->pos + s * gl->ex_radius;
 					Vec3f vect = glm::normalize(pd->ov - gl->pos);

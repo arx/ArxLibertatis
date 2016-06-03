@@ -394,7 +394,7 @@ void FireFieldSpell::Update() {
 				break;
 			}
 			
-			float t = Random::getf() * (PI * 2.f) - PI;
+			float t = Random::getf() * (glm::pi<float>() * 2.f) - glm::pi<float>();
 			float ts = std::sin(t);
 			float tc = std::cos(t);
 			pd->ov = m_pos + Vec3f(120.f * ts, 15.f * ts, 120.f * tc) * randomVec();

@@ -1444,7 +1444,7 @@ void ARX_SCENE_Update() {
 	
 	unsigned long now = arxtime.now_ul();
 	
-	WATEREFFECT = (now % long(2 * PI / 0.0005f)) * 0.0005f;
+	WATEREFFECT = (now % long(2 * glm::pi<float>() / 0.0005f)) * 0.0005f;
 	
 	const Vec3f camPos = ACTIVECAM->orgTrans.pos;
 	const float camDepth = ACTIVECAM->cdepth;

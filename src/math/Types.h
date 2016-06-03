@@ -74,7 +74,4 @@ typedef vec_traits<s32, 4>::type Vec4i;
 typedef vec_traits<f32, 4>::type Vec4f;
 typedef vec_traits<f64, 4>::type Vec4d;
 
-// Math constants
-#define PI 3.14159265358979323846f
-
 #endif // ARX_MATH_TYPES_H

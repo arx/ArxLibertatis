@@ -706,7 +706,7 @@ void QuickSaveIconGui::draw() {
 	
 	// Flash the icon twice, starting at about 0.7 opacity
 	float step = 1.f - float(m_remainingTime) * (1.f / m_duration);
-	float alpha = std::min(1.f, 0.6f * (std::sin(step * (7.f / 2.f * PI)) + 1.f));
+	float alpha = std::min(1.f, 0.6f * (std::sin(step * (7.f / 2.f * glm::pi<float>())) + 1.f));
 	
 	TextureContainer * tex = TextureContainer::LoadUI("graph/interface/icons/menu_main_save");
 	arx_assert(tex);
