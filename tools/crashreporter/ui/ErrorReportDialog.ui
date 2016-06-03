@@ -13,10 +13,6 @@
   <property name="windowTitle">
    <string>Fatal Error</string>
   </property>
-  <property name="windowIcon">
-   <iconset>
-    <normaloff>../../../data/icons/arx-libertatis.ico</normaloff>../../../data/icons/arx-libertatis.ico</iconset>
-  </property>
   <property name="locale">
    <locale language="English" country="UnitedStates"/>
   </property>
