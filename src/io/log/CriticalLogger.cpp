@@ -51,13 +51,13 @@ CriticalErrorDialog::~CriticalErrorDialog() {
 		
 		if(g_exitQuestion && g_exitCommand) {
 			message << "\n\n-> " << g_exitQuestion;
-			runExitCommand = platform::askYesNoWarning(message.str(), "Error - " + arx_version);
+			runExitCommand = platform::askYesNoWarning(message.str(), "Error - " + arx_name);
 		} else {
-			platform::showErrorDialog(message.str(), "Critical Error - " + arx_version);
+			platform::showErrorDialog(message.str(), "Critical Error - " + arx_name);
 		}
 		
 	} else if(g_exitQuestion && g_exitCommand) {
-		runExitCommand = platform::askYesNo(g_exitQuestion, arx_version);
+		runExitCommand = platform::askYesNo(g_exitQuestion, arx_name);
 	}
 	
 	if(runExitCommand) {

@@ -173,7 +173,7 @@ bool ErrorReport::SendReport(ErrorReport::IProgressNotifier* pProgressNotifier)
 
 	pProgressNotifier->taskStarted("Sending crash report", 3 + nbFilesToSend);
 	
-	std::string userAgent = "Arx Libertatis Crash Reporter (" + arx_version + ")";
+	std::string userAgent = arx_name + " Crash Reporter " + arx_version;
 	TBG::Server server("https://bugs.arx-libertatis.org", userAgent);
 	
 	// Login to TBG server

@@ -29,7 +29,8 @@
 #error "Configure error - the VERSION file should specify 5 or 6 non-empty lines!"
 #endif
 
-const std::string arx_version = "${VERSION_0}${GIT_SUFFIX_5}";
+const std::string arx_name = "${VERSION_0_NAME}";
+const std::string arx_version = "${VERSION_0_STRING}${VERSION_SUFFIX}${GIT_SUFFIX_5}";
 const std::string arx_release_codename = "${VERSION_5}";
 
 // TODO move this to an external file once we ship our own resources

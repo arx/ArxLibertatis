@@ -25,8 +25,8 @@
 #include "crashreporter/ui/ErrorReportDialog.h"
 #include "crashreporter/ErrorReport.h"
 
+#include "core/Version.h"
 #include "io/log/Logger.h"
-
 #include "platform/Platform.h"
 
 int main(int argc, char * argv[]) {
@@ -42,7 +42,7 @@ int main(int argc, char * argv[]) {
 	
 	Logger::initialize();
 	
-	LogWarning << "Arx Crash Reporter starting!";
+	LogWarning << arx_name + " Crash Reporter starting!";
 	
 	QString sharedMemoryName;
 	const QStringList args = app.arguments();

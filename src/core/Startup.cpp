@@ -85,7 +85,7 @@ static void showCommandLineHelp(const util::cmdline::interpreter<std::string> & 
 	
 	os << "Usage: arx [options]\n\n";
 	
-	os << "Arx Libertatis Options:\n";
+	os << arx_name << " Options:\n";
 	os << options << std::endl;
 	
 }
@@ -199,7 +199,7 @@ int utf8_main(int argc, char ** argv) {
 		profiler::initialize();
 		
 		// 14: Start the game already!
-		LogInfo << "Starting " << arx_version;
+		LogInfo << "Starting " << arx_name << ' ' << arx_version;
 		runGame();
 		
 	}

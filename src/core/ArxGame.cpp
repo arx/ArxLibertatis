@@ -426,7 +426,7 @@ bool ArxGame::initWindow(RenderWindow * window) {
 		}
 	}
 	
-	m_MainWindow->setTitle(arx_version);
+	m_MainWindow->setTitle(arx_name + " " + arx_version);
 	m_MainWindow->setMinimizeOnFocusLost(config.window.minimizeOnFocusLost);
 	m_MainWindow->setMinTextureUnits(3);
 	m_MainWindow->setMaxMSAALevel(config.video.antialiasing ? 8 : 1);
@@ -984,7 +984,7 @@ static void runDataFilesInstaller() {
 	if(platform::runHelper(command, true) < 0) {
 		std::ostringstream error;
 		error << "Could not run `" << command[0] << "`.";
-		platform::showErrorDialog(error.str(), "Critical Error - " + arx_version);
+		platform::showErrorDialog(error.str(), "Critical Error - " + arx_name);
 	}
 }
 #endif

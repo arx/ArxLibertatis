@@ -175,7 +175,7 @@ void ShowInfoText() {
 	playerBox.print();
 	
 	DebugBox miscBox = DebugBox(Vec2i(10, playerBox.size().y + 5), "Misc");
-	miscBox.add("Arx version", arx_version);
+	miscBox.add(arx_name + " version", arx_version);
 	miscBox.add("Level", LastLoadedScene.string().c_str());
 	miscBox.add("Spell failed seq", LAST_FAILED_SEQUENCE.c_str());
 	miscBox.add("Camera focal", ACTIVECAM->focal);

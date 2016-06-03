@@ -1735,7 +1735,7 @@ void MainMenu::init()
 	}
 	pos.y += yOffset;
 	
-	std::string version = arx_version;
+	std::string version = arx_name + " " + arx_version;
 	if(!arx_release_codename.empty()) {
 		version += " \"";
 		version += arx_release_codename;
