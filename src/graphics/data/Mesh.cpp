@@ -428,7 +428,7 @@ bool GetTruePolyY(const EERIEPOLY * ep, const Vec3f & pos, float * ret) {
 	n.x = (s21.y * s31.z) - (s21.z * s31.y);
 	n.z = (s21.x * s31.y) - (s21.y * s31.x);
 	
-	float y = ep->v[0].p.x * n.x + ep->v[0].p.y * n.y + ep->v[0].p.z * n.z;
+	float y = glm::dot(ep->v[0].p, n);
 	
 	y = (y - (n.x * pos.x) - (n.z * pos.z)) / n.y;
 	
