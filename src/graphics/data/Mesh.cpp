@@ -418,15 +418,8 @@ EERIEPOLY * EEIsUnderWater(const Vec3f & pos) {
 
 bool GetTruePolyY(const EERIEPOLY * ep, const Vec3f & pos, float * ret) {
 	
-	
-	Vec3f s21 = ep->v[1].p - ep->v[0].p;
-	Vec3f s31 = ep->v[2].p - ep->v[0].p;
-	
-	Vec3f n;
-	n.y = (s21.z * s31.x) - (s21.x * s31.z);
-	if (n.y == 0.f) return false; 
-	n.x = (s21.y * s31.z) - (s21.z * s31.y);
-	n.z = (s21.x * s31.y) - (s21.y * s31.x);
+	Vec3f n = glm::cross(ep->v[1].p - ep->v[0].p, ep->v[2].p - ep->v[0].p);
+	if (n.y == 0.f) return false;
 	
 	float y = glm::dot(ep->v[0].p, n);
 	
