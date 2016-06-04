@@ -573,9 +573,7 @@ bool CylinderAboveInvalidZone(const Cylinder & cyl) {
 
 			count += 1.f;
 			float vy;
-			GetTruePolyY(ep, pos, &vy);
-
-			if(glm::abs(vy - cyl.origin.y) > 160.f)
+			if(GetTruePolyY(ep, pos, &vy) && glm::abs(vy - cyl.origin.y) > 160.f)
 				failcount++;
 		}
 	}
