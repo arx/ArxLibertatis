@@ -130,7 +130,16 @@ EERIEPOLY * CheckInPoly(const Vec3f & poss, float * needY = NULL);
  */
 EERIEPOLY * EEIsUnderWater(const Vec3f & pos);
 
+/*!
+ * Get the height a polygon as at a specific position
+ *
+ * \param pos the (x, z) postion where to query the height. The y component is ignored.
+ *
+ * \return false if no height could be calculated because the the polygon's normal lies
+ *         on the xz plane, true otherwise.
+ */
 bool GetTruePolyY(const EERIEPOLY * ep, const Vec3f & pos, float * ret);
+
 bool IsAnyPolyThere(float x, float z);
 bool IsVertexIdxInGroup(EERIE_3DOBJ * eobj, size_t idx, size_t grs);
 EERIEPOLY * GetMinPoly(const Vec3f & pos);
