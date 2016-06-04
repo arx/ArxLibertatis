@@ -432,11 +432,9 @@ bool GetTruePolyY(const EERIEPOLY * ep, const Vec3f & pos, float * ret) {
 	
 	y = (y - (n.x * pos.x) - (n.z * pos.z)) / n.y;
 	
-	// Perhaps we can remove the two following lines... (need to test)
-	if (y < ep->min.y) y = ep->min.y;
-	else if (y > ep->max.y) y = ep->max.y;
+	// Perhaps we can remove the clamp... (need to test)
+	*ret = glm::clamp(y, ep->min.y, ep->max.y);
 	
-	*ret = y;
 	return true;
 }
 
