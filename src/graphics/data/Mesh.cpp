@@ -425,7 +425,7 @@ bool GetTruePolyY(const EERIEPOLY * ep, const Vec3f & pos, float * ret) {
 	
 	float y = glm::dot(ep->v[0].p, n);
 	
-	y = (y - (n.x * pos.x) - (n.z * pos.z)) / n.y;
+	y = (y - glm::dot(n, Vec3f(pos.x, 0.f, pos.z))) / n.y;
 	
 	// Perhaps we can remove the clamp... (need to test)
 	*ret = glm::clamp(y, ep->min.y, ep->max.y);
