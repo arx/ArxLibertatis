@@ -1089,14 +1089,22 @@ void CheckForInventoryReplaceMe(Entity * io, Entity * old) {
 bool TakeFromInventory(const Vec2s & pos) {
 	Entity * io = GetFromInventory(pos);
 	
-	if(io == NULL)
+	if(io == NULL) {
 		return false;
+	}
 	
-	if(g_secondaryInventoryHud.dragEntity(io, pos))
-		return true;
+	switch(HERO_OR_SECONDARY) {
+		case 1: //player inventory
+			g_playerInventoryHud.dragEntity(io, pos);
+			break;
+		case 2: //secondary inventory
+			g_secondaryInventoryHud.dragEntity(io, pos);
+			break;
+		default:
+			ARX_DEAD_CODE();
+			return false;
+	}
 	
-	g_playerInventoryHud.dragEntity(io, pos);
-
 	return true;
 }
 

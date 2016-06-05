@@ -558,7 +558,10 @@ bool SecondaryInventoryHud::dragEntity(Entity * io, const Vec2s & pos) {
 		}
 	}
 	
-	return false;
+	Set_DragInter(io);
+	RemoveFromAllInventories(io);
+	ARX_INVENTORY_IdentifyIO(io);
+	return true;
 }
 
 void SecondaryInventoryHud::close() {
