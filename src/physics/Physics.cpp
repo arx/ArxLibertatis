@@ -348,7 +348,7 @@ static void ARX_TEMPORARY_TrySound(Entity * source, Material collisionMaterial, 
 		source->soundcount++;
 		
 		if(source->soundcount < 5) {
-			long material;
+			Material material;
 			if(EEIsUnderWater(source->pos))
 				material = MATERIAL_WATER;
 			else if(source->material)

@@ -620,7 +620,7 @@ long ARX_SOUND_PlaySpeech(const res::path & name, const Entity * io)
 	return sample_id;
 }
 
-long ARX_SOUND_PlayCollision(long mat1, long mat2, float volume, float power, const Vec3f & position, Entity * source) {
+long ARX_SOUND_PlayCollision(Material mat1, Material mat2, float volume, float power, const Vec3f & position, Entity * source) {
 	
 	if(!bIsActive)
 		return 0;
