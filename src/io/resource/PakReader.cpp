@@ -227,7 +227,7 @@ struct BlastFileInBuffer : private boost::noncopyable {
 
 size_t blastInFile(void * Param, const unsigned char ** buf) {
 	
-	BlastFileInBuffer * p = (BlastFileInBuffer *)Param;
+	BlastFileInBuffer * p = static_cast<BlastFileInBuffer *>(Param);
 	
 	*buf = p->readbuf;
 	
@@ -269,7 +269,7 @@ struct BlastMemOutBufferOffset {
 
 int blastOutMemOffset(void * Param, unsigned char * buf, size_t len) {
 	
-	BlastMemOutBufferOffset * p = (BlastMemOutBufferOffset *)Param;
+	BlastMemOutBufferOffset * p = static_cast<BlastMemOutBufferOffset *>(Param);
 	
 	arx_assert(p->currentOffset <= p->endOffset);
 	
