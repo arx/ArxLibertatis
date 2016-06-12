@@ -1006,24 +1006,23 @@ static long ARX_CHANGELEVEL_Push_IO(const Entity * io, long level) {
 	}
 
 	// Save Linked Objects
-	if (io->obj)
-	{
+	if(io->obj) {
 		ais.nb_linked = 0;
 
-		for (size_t n = 0; n < io->obj->linked.size(); n++)
-		{
-			if (GetObjIOSource(io->obj->linked[n].obj))
+		for(size_t n = 0; n < io->obj->linked.size(); n++) {
+			if(GetObjIOSource(io->obj->linked[n].obj)) {
 				ais.nb_linked++;
+			}
 		}
 
-		if ((size_t)ais.nb_linked > MAX_LINKED_SAVE) ais.nb_linked = MAX_LINKED_SAVE;
+		if((size_t)ais.nb_linked > MAX_LINKED_SAVE) {
+			ais.nb_linked = MAX_LINKED_SAVE;
+		}
 
 		long count = 0;
 
-		for (size_t n = 0; n < io->obj->linked.size(); n++)
-		{
-			if (GetObjIOSource(io->obj->linked[n].obj))
-			{
+		for(size_t n = 0; n < io->obj->linked.size(); n++) {
+			if(GetObjIOSource(io->obj->linked[n].obj)) {
 				ais.linked_data[count].lgroup = io->obj->linked[count].lgroup.handleData();
 				ais.linked_data[count].lidx = io->obj->linked[count].lidx.handleData();
 				ais.linked_data[count].lidx2 = io->obj->linked[count].lidx2.handleData();
@@ -1035,27 +1034,25 @@ static long ARX_CHANGELEVEL_Push_IO(const Entity * io, long level) {
 	}
 
 
-	if (io->tweakerinfo)
-	{
-		ais.system_flags	= SYSTEM_FLAG_TWEAKER_INFO;
+	if(io->tweakerinfo) {
+		ais.system_flags = SYSTEM_FLAG_TWEAKER_INFO;
+	} else {
+		ais.system_flags = 0;
 	}
-	else ais.system_flags = 0;
 
-	if (io->inventory)
-	{
+	if(io->inventory) {
 		ais.system_flags |= SYSTEM_FLAG_INVENTORY;
 	}
 
-	if (type == TYPE_ITEM)
-	{
-		if (io->_itemdata->equipitem)
-		{
+	if(type == TYPE_ITEM) {
+		if(io->_itemdata->equipitem) {
 			ais.system_flags |= SYSTEM_FLAG_EQUIPITEMDATA;
 		}
 	}
 
-	if (io->usepath)
+	if(io->usepath) {
 		ais.system_flags |= SYSTEM_FLAG_USEPATH;
+	}
 
 	ais.physics = io->physics;
 	ais.spellcast_data = io->spellcast_data;
