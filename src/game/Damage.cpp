@@ -999,8 +999,7 @@ static void ARX_DAMAGES_UpdateDamage(DamageHandle j, float now) {
 		if(io
 		   && (io->gameFlags & GFLAG_ISINTREATZONE)
 		   && (io->show == SHOW_FLAG_IN_SCENE)
-		   && (damage.params.source != handle
-		   || (damage.params.source == handle && !(damage.params.flags & DAMAGE_FLAG_DONT_HURT_SOURCE)))
+		   && (damage.params.source != handle || !(damage.params.flags & DAMAGE_FLAG_DONT_HURT_SOURCE))
 		){
 			if(io->ioflags & IO_NPC) {
 				if(   handle != PlayerEntityHandle
