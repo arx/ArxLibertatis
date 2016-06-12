@@ -1310,10 +1310,10 @@ void SetWeapon_Back(Entity * io) {
 	if(!io || !(io->ioflags & IO_NPC))
 		return;
 	
-	Entity * ioo = io->_npcdata->weapon;
+	Entity * weapon = io->_npcdata->weapon;
 	
-	if(ioo && ioo->obj) {
-		EERIE_LINKEDOBJ_UnLinkObjectFromObject(io->obj, ioo->obj);
+	if(weapon && weapon->obj) {
+		EERIE_LINKEDOBJ_UnLinkObjectFromObject(io->obj, weapon->obj);
 
 		if(io->gameFlags & GFLAG_HIDEWEAPON)
 			return;
@@ -1321,12 +1321,12 @@ void SetWeapon_Back(Entity * io) {
 		ActionPoint ni = io->obj->fastaccess.weapon_attach;
 
 		if(ni != ActionPoint()) {
-			EERIE_LINKEDOBJ_LinkObjectToObject(io->obj, ioo->obj, "weapon_attach", "primary_attach", ioo);
+			EERIE_LINKEDOBJ_LinkObjectToObject(io->obj, weapon->obj, "weapon_attach", "primary_attach", weapon);
 		} else {
 			ni = io->obj->fastaccess.secondary_attach;
 
 			if(ni != ActionPoint())
-				EERIE_LINKEDOBJ_LinkObjectToObject(io->obj, ioo->obj, "secondary_attach", "primary_attach", ioo);
+				EERIE_LINKEDOBJ_LinkObjectToObject(io->obj, weapon->obj, "secondary_attach", "primary_attach", weapon);
 		}
 	}
 }
