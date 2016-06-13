@@ -647,7 +647,7 @@ static VertexBuffer<Vertex> * createVertexBufferImpl(OpenGLRenderer * renderer,
 				}
 				matched = true;
 			}
-			if(setting.empty() || setting == "persistent-nosync") {
+			if(setting == "persistent-nosync") {
 				if(usage != Renderer::Static) {
 					return new GLPersistentUnsynchronizedVertexBuffer<Vertex>(renderer, capacity);
 				}
