@@ -94,7 +94,7 @@ void GLTexture2D::Upload() {
 	
 	if(hasMipmaps()) {
 		glTexParameteri(GL_TEXTURE_2D, GL_GENERATE_MIPMAP, GL_TRUE);
-		if(renderer->getMaxAnisotropy() >= 1.f) {
+		if(renderer->getMaxAnisotropy() > 1.f) {
 			glTexParameterf(GL_TEXTURE_2D, GL_TEXTURE_MAX_ANISOTROPY_EXT, renderer->getMaxAnisotropy());
 		}
 	} else {
