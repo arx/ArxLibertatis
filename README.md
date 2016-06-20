@@ -65,7 +65,9 @@ Building checkouts from git on their own requires additional dependencies:
 
 These are needed to render and scale the svg icons, which currently only render correctly in in Inkscape. Release and development snapshot source tarballs include the pre-built icon files and do not need these dependencies to build.
 
-To avoid the Inkscape (and ImageMagick) dependency for git builds, pre-build icons can be downloaded from http://arx-libertatis.org/files/data/ or the [ArxLibertatisData](https://github.com/arx/ArxLibertatisData/) repository. The required data version is listed in the VERSION file. Place `arx-libertatis-data-$version` directory into the build directory or tell the build system about it's location using the `DATA_FILES` cmake option.
+To avoid the Inkscape (and ImageMagick) dependency for git builds, pre-build icons can be downloaded from http://arx-libertatis.org/files/data/ or the [ArxLibertatisData](https://github.com/arx/ArxLibertatisData/) repository. The required data version is listed in the VERSION file. Place `arx-libertatis-data-$version` directory into the build directory or tell the build system about it's location using the `-DDATA_FILES=…` cmake option.
+
+Alternatively, icons can be disabled using the `-DICON_TYPE=none` cmake option. See **OPTIONS.md** for other supported icon type values.
 
 ## Compile and install
 
