@@ -1373,19 +1373,25 @@ protected:
 		
 		PanelWidget * panel = new PanelWidget;
 		
+		{
 		std::string szMenuText = getLocalised(a, defaultText);
 		szMenuText += specialSuffix;
 		TextWidget * txt = new TextWidget(BUTTON_INVALID, hFontControls, szMenuText, Vec2f(20, 0));
 		txt->SetCheckOff();
 		panel->AddElement(txt);
+		}
 		
-		txt = new TextWidget(c, hFontControls, "---", Vec2f(150, 0));
+		{
+		TextWidget * txt = new TextWidget(c, hFontControls, "---", Vec2f(150, 0));
 		txt->eState=GETTOUCH;
 		panel->AddElement(txt);
+		}
 		
-		txt = new TextWidget(d, hFontControls, "---", Vec2f(245, 0));
+		{
+		TextWidget * txt = new TextWidget(d, hFontControls, "---", Vec2f(245, 0));
 		txt->eState=GETTOUCH;
 		panel->AddElement(txt);
+		}
 		
 		panel->Move(Vec2f(0, y));
 		add(panel);
