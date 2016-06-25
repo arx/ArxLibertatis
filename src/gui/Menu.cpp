@@ -313,41 +313,41 @@ void ARX_Menu_Render() {
 	
 	if(ARXmenu.currentmode == AMCM_OFF)
 		return;
-
+	
 	bool br = Menu2_Render();
-
+	
 	if(br)
 		return;
-
+	
 	if(ARXmenu.currentmode == AMCM_OFF)
 		return;
-
-
+	
+	
 	GRenderer->Clear(Renderer::ColorBuffer | Renderer::DepthBuffer);
 	
 	FLYING_OVER = 0;
-
+	
 	//-------------------------------------------------------------------------
-
+	
 	if(ARXmenu.currentmode == AMCM_NEWQUEST && ARXmenu.mda) {
 		
 		GRenderer->SetRenderState(Renderer::Fog, false);
 		GRenderer->SetRenderState(Renderer::AlphaBlending, false);
-
+		
 		if(ARXmenu.mda->BookBackground != NULL) {
 			GRenderer->SetRenderState(Renderer::AlphaBlending, false);
 			GRenderer->SetRenderState(Renderer::Fog, false);
 			GRenderer->SetRenderState(Renderer::DepthWrite, false);
 			GRenderer->SetRenderState(Renderer::DepthTest, false);
-
+			
 			EERIEDrawBitmap2(Rectf(Vec2f(0, 0), g_size.width(), g_size.height()), 0.9f, ARXmenu.mda->BookBackground, Color::white);
 		}
-
+		
 		BOOKZOOM = 1;
-
+		
 		ARX_INTERFACE_ManageOpenedBook();
-
-
+		
+		
 		if(ARXmenu.mda) {
 			bool DONE = (player.Skill_Redistribute == 0 && player.Attribute_Redistribute == 0);
 			
@@ -356,7 +356,7 @@ void ARX_Menu_Render() {
 				if(FLYING_OVER != OLD_FLYING_OVER) {
 					
 					int t = Random::get(0, 2);
-
+					
 					pTextManage->Clear();
 					OLD_FLYING_OVER = FLYING_OVER;
 					UNICODE_ARXDrawTextCenteredScroll(hFontInGame,
@@ -381,7 +381,7 @@ void ARX_Menu_Render() {
 			size *= 100;
 			
 			Color color = Color::none;
-
+			
 			//---------------------------------------------------------------------
 			// Button QUICK GENERATION
 			pos.x = (g_size.width() - (513 * g_sizeRatio.x)) * 0.5f;
@@ -395,31 +395,31 @@ void ARX_Menu_Render() {
 			if(quickGenerateButtonMouseTestRect.contains(Vec2f(DANAEMouse))) {
 				SpecialCursor = CURSOR_INTERACTION_ON;
 				FLYING_OVER = BUTTON_QUICK_GENERATION;
-
+				
 				if(eeMousePressed1());
 				else if (eeMouseUp1())
 				{
 					player.m_cheatQuickGenButtonClickCount++;
 					int iSkin = player.skin;
 					ARX_SOUND_PlayMenu(SND_MENU_CLICK);
-
+					
 					if(bQuickGenFirstClick) {
 						ARX_PLAYER_MakeAverageHero();
 						bQuickGenFirstClick = false;
 					} else {
 						ARX_PLAYER_QuickGeneration();
 					}
-
+					
 					player.skin = checked_range_cast<char>(iSkin);
 				}
-
+				
 				color = Color(255, 255, 255);
 			}
 			else
 				color = Color(232, 204, 143);
-
+			
 			pTextManage->AddText(hFontMenu, ARXmenu.mda->str_button_quickgen, Vec2i(pos), color);
-
+			
 			//---------------------------------------------------------------------
 			// Button SKIN
 			pos.x = g_size.width() * 0.5f;
@@ -433,26 +433,26 @@ void ARX_Menu_Render() {
 			if(skinButtonMouseTestRect.contains(Vec2f(DANAEMouse))) {
 				SpecialCursor = CURSOR_INTERACTION_ON;
 				FLYING_OVER = BUTTON_SKIN;
-
+				
 				if(eeMouseUp1()) {
 					player.m_cheatSkinButtonClickCount++;
 					BOOKZOOM = 1;
 					ARX_SOUND_PlayMenu(SND_MENU_CLICK);
 					player.skin++;
-
+					
 					if(player.skin > 3)
 						player.skin = 0;
-
+					
 					ARX_PLAYER_Restore_Skin();
 				}
-
+				
 				color = Color(255, 255, 255);
 			}
 			else
 				color = Color(232, 204, 143);
-
+			
 			pTextManage->AddText(hFontMenu, ARXmenu.mda->str_button_skin, Vec2i(pos), color);
-
+			
 			//---------------------------------------------------------------------
 			// Button DONE
 			pos.x = g_size.width() - (g_size.width() - 513 * g_sizeRatio.x) * 0.5f - 40 * g_sizeRatio.x;
@@ -466,9 +466,9 @@ void ARX_Menu_Render() {
 			if(doneButtonMouseTestRect.contains(Vec2f(DANAEMouse))) {
 				if(DONE)
 					SpecialCursor = CURSOR_INTERACTION_ON;
-
+				
 				FLYING_OVER = BUTTON_DONE;
-
+				
 				if(DONE && eeMouseUp1()) {
 					if(player.m_cheatSkinButtonClickCount == 8 && player.m_cheatQuickGenButtonClickCount == 10) {
 						player.m_cheatSkinButtonClickCount = -2;
@@ -484,7 +484,7 @@ void ARX_Menu_Render() {
 							ARX_PLAYER_Restore_Skin();
 							SP_HEAD = 0;
 						}
-
+						
 						ARX_SOUND_PlayMenu(SND_MENU_CLICK);
 						
 						MenuFader_start(true, true, AMCM_OFF);
@@ -501,26 +501,26 @@ void ARX_Menu_Render() {
 				else
 					color = Color(192, 192, 192);
 			}
-
+			
 			if(player.m_cheatSkinButtonClickCount < 0)
 				color = Color(255, 0, 255);
-
+			
 			pTextManage->AddText(hFontMenu, ARXmenu.mda->str_button_done, Vec2i(pos), color);
 		}
 	}
-
+	
 	EERIE_LIGHT * light = lightHandleGet(torchLightHandle);
 	light->pos.x = 0.f + GInput->getMousePosAbs().x - (g_size.width() >> 1);
 	light->pos.y = 0.f + GInput->getMousePosAbs().y - (g_size.height() >> 1);
-
+	
 	if(pTextManage) {
 		pTextManage->Update(g_framedelay);
 		pTextManage->Render();
 	}
-
+	
 	if(ARXmenu.currentmode != AMCM_CREDITS)
 		ARX_INTERFACE_RenderCursor(true);
-
+	
 	if(ARXmenu.currentmode == AMCM_NEWQUEST) {
 		if(ProcessFadeInOut(bFadeInOut)) {
 			switch(iFadeAction) {
@@ -530,10 +530,10 @@ void ARX_Menu_Render() {
 					iFadeAction = -1;
 					g_menuFadeActive = false;
 					fFadeInOut = 0.f;
-
+					
 					if(pTextManage)
 						pTextManage->Clear();
-
+					
 					break;
 			}
 		}
