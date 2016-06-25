@@ -51,6 +51,10 @@ public:
 	
 	boost::function<void(int, const std::string &)> valueChanged;
 	
+	virtual WidgetType type() const {
+		return WidgetType_CycleText;
+	};
+	
 private:
 	ButtonWidget		*	pLeftButton;
 	ButtonWidget		*	pRightButton;

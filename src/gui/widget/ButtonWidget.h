@@ -43,6 +43,10 @@ public:
 	
 	boost::function<void()> clicked;
 	
+	virtual WidgetType type() const {
+		return WidgetType_Button;
+	};
+	
 private:
 	Vec2f m_pos;
 	Vec2f m_size;

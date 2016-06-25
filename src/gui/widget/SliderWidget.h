@@ -46,6 +46,10 @@ public:
 	
 	boost::function<void(int)> valueChanged;	// NOLINT
 	
+	virtual WidgetType type() const {
+		return WidgetType_Slider;
+	};
+	
 private:
 	ButtonWidget		*	pLeftButton;
 	ButtonWidget		*	pRightButton;

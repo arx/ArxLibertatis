@@ -162,6 +162,14 @@ enum MENUSTATE
 	NOP
 };
 
+enum WidgetType {
+	WidgetType_Button,
+	WidgetType_Checkbox,
+	WidgetType_CycleText,
+	WidgetType_Panel,
+	WidgetType_Slider,
+	WidgetType_Text
+};
 
 class Widget : private boost::noncopyable {
 	
@@ -203,6 +211,8 @@ public:
 	bool getCheck();
 	
 	virtual Widget * IsMouseOver(const Vec2f & mousePos) const;
+	
+	virtual WidgetType type() const = 0;
 	
 protected:
 	bool enabled;
