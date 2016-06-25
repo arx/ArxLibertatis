@@ -194,16 +194,6 @@ void ARXMenu_Options_Audio_SetMuted(bool mute) {
 	ARX_SOUND_MixerSetVolume(ARX_SOUND_MixerGame, volume);
 }
 
-bool ARXMenu_Options_Audio_SetEAX(bool _bEnable) {
-	
-	config.audio.eax = _bEnable;
-	
-	ARX_SOUND_SetReverb(config.audio.eax);
-	
-	return config.audio.eax;
-}
-
-
 void ARXMenu_Options_Audio_SetDevice(std::string device) {
 	
 	config.audio.device = device;

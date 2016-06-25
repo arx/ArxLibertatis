@@ -50,6 +50,7 @@
 #include "graphics/data/TextureContainer.h"
 #include "input/Input.h"
 #include "input/Keyboard.h"
+#include "scene/GameSound.h"
 #include "window/RenderWindow.h"
 
 CWindowMenu * pWindowMenu = NULL;
@@ -1186,7 +1187,8 @@ private:
 	}
 	
 	void onChangedEax(int state) {
-		ARXMenu_Options_Audio_SetEAX(state != 0);
+		config.audio.eax = (state != 0);
+		ARX_SOUND_SetReverb(config.audio.eax);
 	}
 	
 	void onChangedMuteOnFocusLost(int state) {
