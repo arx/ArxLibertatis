@@ -100,3 +100,9 @@ bool ProcessFadeInOut(bool _bFadeIn, float _fspeed) {
 
 	return false;
 }
+
+void MenuFader_start(bool fade, bool fadeInOut, int fadeAction) {
+	bFade = fade;
+	bFadeInOut = fadeInOut;
+	iFadeAction = fadeAction;
+}

@@ -257,9 +257,7 @@ void ARXMenu_ResumeGame() {
 }
 
 void ARXMenu_NewQuest() {
-	bFadeInOut = true;	//fade out
-	bFade = true;			//active le fade
-	iFadeAction = AMCM_NEWQUEST;	//action a la fin du fade
+	MenuFader_start(true, true, AMCM_NEWQUEST);
 	bQuickGenFirstClick = true;
 	player.gold = 0;
 	ARX_PLAYER_MakeFreshHero();
@@ -284,13 +282,9 @@ void ARXMenu_SaveQuest(const std::string & name, SavegameHandle num) {
 }
 
 void ARXMenu_Credits() {
-	bFadeInOut = true;	//fade out
-	bFade = true;			//active le fade
-	iFadeAction = AMCM_CREDITS;	//action a la fin du fade
+	MenuFader_start(true, true, AMCM_CREDITS);
 }
 
 void ARXMenu_Quit() {
-	bFadeInOut = true;		//fade out
-	bFade = true;				//active le fade
-	iFadeAction = AMCM_OFF;	//action a la fin du fade
+	MenuFader_start(true, true, AMCM_OFF);
 }

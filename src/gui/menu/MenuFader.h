@@ -27,4 +27,6 @@ extern float fFadeInOut;
 
 bool ProcessFadeInOut(bool _bFadeIn, float _fspeed);
 
+void MenuFader_start(bool fade, bool fadeInOut, int fadeAction);
+
 #endif // ARX_GUI_MENU_MENUFADER_H

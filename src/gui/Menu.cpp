@@ -299,10 +299,7 @@ void ARX_Menu_Manage() {
 			   || GInput->isKeyPressedNowUnPressed(Keyboard::Key_Spacebar)
 			) {
 				ARX_SOUND_PlayMenu(SND_MENU_CLICK);
-				bFadeInOut = true;	//fade out
-				bFade = true;			//active le fade
-				iFadeAction = AMCM_MAIN;
-
+				MenuFader_start(true, true, AMCM_MAIN);
 				ARX_MENU_LaunchAmb(AMB_MENU);
 			}
 			break;
@@ -496,10 +493,8 @@ bool ARX_Menu_Render() {
 						}
 
 						ARX_SOUND_PlayMenu(SND_MENU_CLICK);
-
-						bFadeInOut = true;		//fade out
-						bFade = true;			//active le fade
-						iFadeAction = AMCM_OFF;
+						
+						MenuFader_start(true, true, AMCM_OFF);
 					}
 				} else {
 					if(DONE)
