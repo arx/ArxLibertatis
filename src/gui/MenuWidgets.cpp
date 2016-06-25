@@ -77,6 +77,7 @@ ZeniMax Media Inc., Suite 120, Rockville, Maryland 20850 USA.
 #include "gui/TextManager.h"
 #include "gui/menu/MenuCursor.h"
 #include "gui/widget/CycleTextWidget.h"
+#include "gui/widget/PanelWidget.h"
 
 #include "graphics/Draw.h"
 #include "graphics/DrawLine.h"
@@ -1019,31 +1020,22 @@ void MenuPage::drawDebug() {
 	m_children.drawDebug();
 }
 
-void MenuPage::ReInitActionKey()
-{
-	int iID=BUTTON_MENUOPTIONS_CONTROLS_CUST_JUMP1;
-	int iI=NUM_ACTION_KEY;
-	
-	while(iI--) {
-		int iTab=(iID-BUTTON_MENUOPTIONS_CONTROLS_CUST_JUMP1)>>1;
-
-		Widget * widget = m_children.GetZoneWithID(MenuButton(iID));
-
-		if(widget) {
-			if(widget) {
-				m_selected = widget;
-				GetTouch(true, config.actions[iTab].key[0], NULL, false);
-			}
-
-			widget = m_children.GetZoneWithID(MenuButton(iID + 1));
-
-			if(widget) {
-				m_selected = widget;
-				GetTouch(true, config.actions[iTab].key[1], NULL, false);
+void MenuPage::ReInitActionKey() {
+	BOOST_FOREACH(Widget * w, m_children.m_widgets) {
+		if(w->type() == WidgetType_Panel) {
+			PanelWidget * p = static_cast<PanelWidget *>(w);
+			
+			BOOST_FOREACH(Widget * c, p->m_children) {
+				if(c->type() == WidgetType_Text) {
+					TextWidget * t = static_cast<TextWidget *>(c);
+					
+					if(t->m_isKeybind) {
+						m_selected = t;
+						GetTouch(true, config.actions[t->m_keybindAction].key[t->m_keybindIndex], NULL, false);
+					}
+				}
 			}
 		}
-
-		iID+=2;
 	}
 }
 
