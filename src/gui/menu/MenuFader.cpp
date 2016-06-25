@@ -75,8 +75,10 @@ static void FadeInOut(float _fVal) {
 	GRenderer->SetCulling(CullCCW);
 }
 
-bool ProcessFadeInOut(bool _bFadeIn, float _fspeed) {
-
+bool ProcessFadeInOut(bool _bFadeIn) {
+	
+	static const float _fspeed = 0.1f;
+	
 	FadeInOut(fFadeInOut);
 
 	if(!bFade)

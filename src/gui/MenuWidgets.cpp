@@ -340,7 +340,7 @@ bool Menu2_Render() {
 	
 	g_thumbnailCursor.render();
 	
-	if(ProcessFadeInOut(bFadeInOut,0.1f)) {
+	if(ProcessFadeInOut(bFadeInOut)) {
 		switch(iFadeAction) {
 			case AMCM_CREDITS:
 				ARX_MENU_Clicked_CREDITS();

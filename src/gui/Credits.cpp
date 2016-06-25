@@ -547,7 +547,7 @@ void Credits::render() {
 		ARX_MENU_LaunchAmb(AMB_MENU);
 	}
 
-	if(ProcessFadeInOut(bFadeInOut,0.1f) && iFadeAction == AMCM_MAIN) {
+	if(ProcessFadeInOut(bFadeInOut) && iFadeAction == AMCM_MAIN) {
 		reset();
 		ARXmenu.currentmode = AMCM_MAIN;
 		MenuFader_start(true, false, -1);
