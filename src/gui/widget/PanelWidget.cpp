@@ -24,13 +24,13 @@
 PanelWidget::PanelWidget()
 	: Widget()
 {
-	vElement.clear();
+	m_children.clear();
 	pRef = this;
 }
 
 PanelWidget::~PanelWidget()
 {
-	BOOST_FOREACH(Widget * widget, vElement) {
+	BOOST_FOREACH(Widget * widget, m_children) {
 		delete widget;
 	}
 }
@@ -39,7 +39,7 @@ void PanelWidget::Move(const Vec2f & offset)
 {
 	m_rect.move(offset.x, offset.y);
 	
-	BOOST_FOREACH(Widget * widget, vElement) {
+	BOOST_FOREACH(Widget * widget, m_children) {
 		widget->Move(offset);
 	}
 }
@@ -47,9 +47,9 @@ void PanelWidget::Move(const Vec2f & offset)
 // patch on ajoute à droite en ligne
 void PanelWidget::AddElement(Widget* widget)
 {
-	vElement.push_back(widget);
+	m_children.push_back(widget);
 
-	if(vElement.size() == 1) {
+	if(m_children.size() == 1) {
 		m_rect = widget->m_rect;
 	} else {
 		m_rect.left = std::min(m_rect.left, widget->m_rect.left);
@@ -68,7 +68,7 @@ void PanelWidget::Update()
 	m_rect.right = m_rect.left;
 	m_rect.bottom = m_rect.top;
 
-	BOOST_FOREACH(Widget * widget, vElement) {
+	BOOST_FOREACH(Widget * widget, m_children) {
 		widget->Update();
 		m_rect.right = std::max(m_rect.right, widget->m_rect.right);
 		m_rect.bottom = std::max(m_rect.bottom, widget->m_rect.bottom);
@@ -77,14 +77,14 @@ void PanelWidget::Update()
 
 void PanelWidget::Render() {
 
-	BOOST_FOREACH(Widget * widget, vElement) {
+	BOOST_FOREACH(Widget * widget, m_children) {
 		widget->Render();
 	}
 }
 
 Widget * PanelWidget::GetZoneWithID(MenuButton _iID)
 {
-	BOOST_FOREACH(Widget * widget, vElement) {
+	BOOST_FOREACH(Widget * widget, m_children) {
 		if(Widget * pZone = widget->GetZoneWithID(_iID))
 			return pZone;
 	}
@@ -95,7 +95,7 @@ Widget * PanelWidget::GetZoneWithID(MenuButton _iID)
 Widget * PanelWidget::IsMouseOver(const Vec2f & mousePos) const {
 
 	if(m_rect.contains(mousePos)) {
-		BOOST_FOREACH(Widget * widget, vElement) {
+		BOOST_FOREACH(Widget * widget, m_children) {
 			if(widget->getCheck() && widget->m_rect.contains(mousePos)) {
 				return widget->pRef;
 			}

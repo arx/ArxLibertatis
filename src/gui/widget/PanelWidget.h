@@ -45,7 +45,7 @@ public:
 	};
 	
 private:
-	std::vector<Widget *>	vElement;
+	std::vector<Widget *> m_children;
 };
 
 #endif // ARX_GUI_WIDGET_PANELWIDGET_H
