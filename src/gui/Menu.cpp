@@ -222,10 +222,6 @@ void ARX_MENU_Clicked_CREDITS() {
 	ARX_MENU_LaunchAmb(AMB_CREDITS);
 }
 
-void ARX_MENU_Clicked_QUIT_GAME() {
-	mainApp->quit();
-}
-
 void ARX_MENU_Launch(bool allowResume) {
 	
 	arxtime.update();

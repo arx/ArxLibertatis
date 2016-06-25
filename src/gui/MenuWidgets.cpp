@@ -352,7 +352,7 @@ bool Menu2_Render() {
 				cinematicBorder.reset();
 				break;
 			case AMCM_OFF:
-				ARX_MENU_Clicked_QUIT_GAME();
+				mainApp->quit();
 				MenuFader_start(true, false, -1);
 				break;
 		}
