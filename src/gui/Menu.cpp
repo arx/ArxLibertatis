@@ -349,10 +349,7 @@ void ARX_Menu_Render() {
 
 
 		if(ARXmenu.mda) {
-			long DONE = 0;
-
-			if(player.Skill_Redistribute == 0 && player.Attribute_Redistribute == 0)
-				DONE = 1;
+			bool DONE = (player.Skill_Redistribute == 0 && player.Attribute_Redistribute == 0);
 			
 			if(!ARXmenu.mda->flyover[FLYING_OVER].empty() ) //=ARXmenu.mda->flyover[FLYING_OVER];
 			{
