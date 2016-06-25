@@ -61,6 +61,7 @@ ZeniMax Media Inc., Suite 120, Rockville, Maryland 20850 USA.
 #include "gui/Menu.h"
 #include "gui/Text.h"
 #include "gui/MenuWidgets.h"
+#include "gui/menu/MenuFader.h"
 
 #include "graphics/Draw.h"
 #include "graphics/data/TextureContainer.h"
@@ -76,11 +77,6 @@ ZeniMax Media Inc., Suite 120, Rockville, Maryland 20850 USA.
 #include "scene/GameSound.h"
 
 #include "util/Unicode.h"
-
-// TODO extern globals
-extern bool bFadeInOut;
-extern bool bFade;
-extern int iFadeAction;
 
 namespace credits {
 

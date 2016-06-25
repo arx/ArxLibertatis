@@ -72,6 +72,7 @@ ZeniMax Media Inc., Suite 120, Rockville, Maryland 20850 USA.
 #include "gui/Cursor.h"
 #include "gui/book/Book.h"
 #include "gui/menu/MenuCursor.h"
+#include "gui/menu/MenuFader.h"
 
 #include "graphics/Draw.h"
 #include "graphics/Math.h"
@@ -94,10 +95,8 @@ extern ARX_INTERFACE_BOOK_MODE g_guiBookCurrentTopTab;
 extern bool START_NEW_QUEST;
 extern long OLD_FLYING_OVER;
 extern long FLYING_OVER;
-extern bool bFadeInOut;
-extern bool bFade;
-extern int iFadeAction;
-extern float fFadeInOut;
+
+
 
 extern float ARXTimeMenu;
 

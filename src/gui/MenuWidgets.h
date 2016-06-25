@@ -127,7 +127,7 @@ private:
 
 struct TexturedVertex;
 
-
+extern float ARXDiffTimeMenu;
 
 void MenuReInitAll();
 
@@ -135,7 +135,7 @@ void Menu2_Open();
 bool Menu2_Render();
 void Menu2_Close();
 
-bool ProcessFadeInOut(bool _bFadeIn, float _fspeed);
+
 
 void ARX_MENU_Clicked_QUIT();
 

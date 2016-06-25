@@ -63,6 +63,7 @@ ZeniMax Media Inc., Suite 120, Rockville, Maryland 20850 USA.
 #include "gui/Interface.h"
 #include "gui/Menu.h"
 #include "gui/MenuWidgets.h"
+#include "gui/menu/MenuFader.h"
 
 #include "graphics/Math.h"
 #include "graphics/Renderer.h"
@@ -87,10 +88,6 @@ extern bool bQuickGenFirstClick;
 extern SavegameHandle LOADQUEST_SLOT;
 
 extern bool REFUSE_GAME_RETURN;
-
-extern bool bFade;
-extern bool	bFadeInOut;
-extern int iFadeAction;
 
 void ARXMenu_Private_Options_Video_SetResolution(bool fullscreen, int _iWidth, int _iHeight) {
 	

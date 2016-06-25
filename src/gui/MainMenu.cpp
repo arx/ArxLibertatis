@@ -1801,7 +1801,6 @@ MENUSTATE MainMenu::Update() {
 
 // TODO remove this
 extern bool bNoMenu;
-extern float ARXDiffTimeMenu;
 
 void MainMenu::Render() {
 
