@@ -22,6 +22,7 @@
 
 #include <boost/function.hpp>
 
+#include "core/Config.h"
 #include "graphics/Color.h"
 #include "gui/widget/Widget.h"
 
@@ -38,6 +39,11 @@ public:
 	bool	bSelected;
 	
 	boost::function<void(TextWidget *)> clicked;	// NOLINT
+	
+	// TODO followind fields only used for keybinds
+	bool m_isKeybind;
+	ControlAction m_keybindAction;
+	int m_keybindIndex;
 	
 public:
 	TextWidget(MenuButton id, Font * font, const std::string & text, Vec2f pos = Vec2f_ZERO);
