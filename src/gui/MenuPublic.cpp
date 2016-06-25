@@ -234,10 +234,6 @@ void ARXMenu_Options_Control_SetMouseSensitivity(int sensitivity) {
 	GInput->setMouseSensitivity(config.input.mouseSensitivity);
 }
 
-bool ARXMenu_CanResumeGame() {
-	return g_canResumeGame;
-}
-
 void ARXMenu_ResumeGame() {
 	ARX_Menu_Resources_Release();
 	arxtime.resume();

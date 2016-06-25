@@ -127,7 +127,7 @@ public:
 			TextWidget * txt = new TextWidget(BUTTON_INVALID, hFontMenu, szMenuText, Vec2f_ZERO);
 			txt->m_targetMenu = EDIT_QUEST_SAVE;
 			
-			if(!ARXMenu_CanResumeGame()) {
+			if(!g_canResumeGame) {
 				txt->SetCheckOff();
 				txt->lColor = Color(127, 127, 127);
 			}
@@ -1781,7 +1781,7 @@ void MainMenu::onClickedResumeGame(){
 }
 
 void MainMenu::onClickedNewQuest() {
-	if(!ARXMenu_CanResumeGame()) {
+	if(!g_canResumeGame) {
 		ARXMenu_NewQuest();
 	}
 }
@@ -1794,7 +1794,7 @@ void MainMenu::onClickedCredits() {
 MENUSTATE MainMenu::Update() {
 	
 	if(m_resumeGame) {
-		if(ARXMenu_CanResumeGame()) {
+		if(g_canResumeGame) {
 			m_resumeGame->SetCheckOn();
 			m_resumeGame->lColor = Color(232, 204, 142);
 		} else {

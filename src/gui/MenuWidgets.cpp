@@ -305,7 +305,7 @@ bool Menu2_Render() {
 	
 	if(pWindowMenu)
 	if(   (pWindowMenu->m_currentPageId != MAIN && pWindowMenu->m_currentPageId != NEW_QUEST && pWindowMenu->m_currentPageId != CREDITS)
-	   || (pWindowMenu->m_currentPageId == NEW_QUEST && ARXMenu_CanResumeGame())
+	   || (pWindowMenu->m_currentPageId == NEW_QUEST && g_canResumeGame)
 	) {
 		if(!bScroll) {
 			pWindowMenu->fAngle=90.f;

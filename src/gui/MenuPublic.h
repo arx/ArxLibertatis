@@ -71,7 +71,6 @@ void ARXMenu_Options_Control_SetMouseSensitivity(int sensitivity);
 
 // Resume game
 
-bool ARXMenu_CanResumeGame();
 void ARXMenu_ResumeGame();
 
 // New quest
