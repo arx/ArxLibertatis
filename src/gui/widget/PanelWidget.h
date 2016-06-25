@@ -44,7 +44,6 @@ public:
 		return WidgetType_Panel;
 	};
 	
-private:
 	std::vector<Widget *> m_children;
 };
 
