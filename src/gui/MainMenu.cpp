@@ -31,11 +31,14 @@
 #include "core/Localisation.h"
 #include "core/SaveGame.h"
 #include "core/Version.h"
+
+#include "gui/Menu.h"
 #include "gui/MenuWidgets.h"
 #include "gui/MenuPublic.h"
 #include "gui/Hud.h"
 #include "gui/Text.h"
 #include "gui/TextManager.h"
+#include "gui/menu/MenuFader.h"
 #include "gui/widget/CheckboxWidget.h"
 #include "gui/widget/CycleTextWidget.h"
 #include "gui/widget/PanelWidget.h"
@@ -1562,7 +1565,7 @@ public:
 		
 		{
 			TextWidget * yes = new TextWidget(BUTTON_INVALID, hFontMenu, getLocalised("system_yes"), Vec2f(m_size.x - 40, 380));
-			yes->clicked = boost::bind(ARXMenu_Quit);
+			yes->clicked = boost::bind(&QuitConfirmMenuPage::onClickedYes, this);
 			add(yes);
 		}
 		
@@ -1574,6 +1577,11 @@ public:
 		}
 	}
 	
+private:
+	
+	void onClickedYes() {
+		MenuFader_start(true, true, AMCM_OFF);
+	}
 };
 
 

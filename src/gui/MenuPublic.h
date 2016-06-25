@@ -88,10 +88,6 @@ void ARXMenu_SaveQuest(const std::string & name, SavegameHandle num = SavegameHa
 
 void ARXMenu_Credits();
 
-// Quit
-
-void ARXMenu_Quit();
-
 void ARXMenu_Private_Options_Video_SetResolution(bool fullscreen, int _iWidth, int _iHeight);
 
 #endif // ARX_GUI_MENUPUBLIC_H

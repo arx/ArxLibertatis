@@ -285,6 +285,3 @@ void ARXMenu_Credits() {
 	MenuFader_start(true, true, AMCM_CREDITS);
 }
 
-void ARXMenu_Quit() {
-	MenuFader_start(true, true, AMCM_OFF);
-}
