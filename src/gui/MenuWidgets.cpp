@@ -892,15 +892,6 @@ MENUSTATE MenuPage::Update(Vec2f pos) {
 	return NOP;
 }
 
-static void UpdateGameKey(TextWidget * widget, InputKeyId inputKeyId) {
-	
-	arx_assert(widget);
-	
-	if(widget->m_isKeybind) {
-		config.setActionKey(widget->m_keybindAction, widget->m_keybindIndex, inputKeyId);
-	}
-}
-
 void MenuPage::Render() {
 
 	if(bNoMenu)
@@ -984,7 +975,9 @@ void MenuPage::Render() {
 				
 				if(widget) {
 					if(!bEdit) {
-						UpdateGameKey(widget, inputKeyId);
+						if(widget->m_isKeybind) {
+							config.setActionKey(widget->m_keybindAction, widget->m_keybindIndex, inputKeyId);
+						}
 					}
 					bReInit = true;
 				}
