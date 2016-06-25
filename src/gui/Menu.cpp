@@ -267,7 +267,7 @@ void ARX_Menu_Manage() {
 
 					ARX_MENU_Launch(true);
 					bFadeInOut=false;	//fade out
-					bFade=true;			//active le fade
+					g_menuFadeActive = true; //active le fade
 					TRUE_PLAYER_MOUSELOOK_ON = false;
 
 					ARX_PLAYER_PutPlayerInNormalStance();
@@ -535,7 +535,7 @@ bool ARX_Menu_Render() {
 					arxtime.resume();
 					ARX_MENU_NEW_QUEST_Clicked_QUIT();
 					iFadeAction = -1;
-					bFade = false;
+					g_menuFadeActive = false;
 					fFadeInOut = 0.f;
 
 					if(pTextManage)

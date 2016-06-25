@@ -24,7 +24,7 @@
 #include "graphics/Renderer.h"
 #include "gui/MenuWidgets.h"
 
-bool bFade=false;
+bool g_menuFadeActive=false;
 bool bFadeInOut=false;
 int iFadeAction=-1;
 
@@ -81,7 +81,7 @@ bool ProcessFadeInOut(bool _bFadeIn) {
 	
 	FadeInOut(fFadeInOut);
 
-	if(!bFade)
+	if(!g_menuFadeActive)
 		return true;
 
 	if(_bFadeIn) {
@@ -89,14 +89,14 @@ bool ProcessFadeInOut(bool _bFadeIn) {
 
 		if(fFadeInOut > 1.f) {
 			fFadeInOut = 1.f;
-			bFade = false;
+			g_menuFadeActive = false;
 		}
 	} else {
 		fFadeInOut -= _fspeed * ARXDiffTimeMenu * (1.f/100);
 
 		if(fFadeInOut < 0.f) {
 			fFadeInOut = 0.f;
-			bFade = false;
+			g_menuFadeActive = false;
 		}
 	}
 
@@ -104,7 +104,7 @@ bool ProcessFadeInOut(bool _bFadeIn) {
 }
 
 void MenuFader_start(bool fade, bool fadeInOut, int fadeAction) {
-	bFade = fade;
+	g_menuFadeActive = fade;
 	bFadeInOut = fadeInOut;
 	iFadeAction = fadeAction;
 }

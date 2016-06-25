@@ -20,7 +20,7 @@
 #ifndef ARX_GUI_MENU_MENUFADER_H
 #define ARX_GUI_MENU_MENUFADER_H
 
-extern bool bFade;
+extern bool g_menuFadeActive;
 extern bool bFadeInOut;
 extern int iFadeAction;
 extern float fFadeInOut;
