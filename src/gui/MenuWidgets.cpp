@@ -760,9 +760,7 @@ TextWidget * MenuPage::GetTouch(bool keyTouched, int keyId, InputKeyId* pInputKe
 		TextWidget * textWidget = static_cast<TextWidget *>(m_selected);
 
 		if(_bValidateTest) {
-			if(m_selected->m_id == BUTTON_MENUOPTIONS_CONTROLS_CUST_ACTIONCOMBINE1 ||
-			   m_selected->m_id == BUTTON_MENUOPTIONS_CONTROLS_CUST_ACTIONCOMBINE2)
-			{
+			if(textWidget->m_isKeybind && textWidget->m_keybindAction == CONTROLS_CUST_ACTION) {
 				bool bOk=true;
 
 				if((iMouseButton & Mouse::ButtonBase) && !(iMouseButton & Mouse::WheelBase)) {
