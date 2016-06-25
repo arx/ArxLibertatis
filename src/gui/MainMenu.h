@@ -43,6 +43,7 @@ public:
 	void init();
 	void onClickedResumeGame();
 	void onClickedNewQuest();
+	void onClickedCredits();
 	
 	MENUSTATE Update();
 	void Render();

@@ -84,10 +84,6 @@ void ARXMenu_NewQuest();
 void ARXMenu_LoadQuest(SavegameHandle num);
 void ARXMenu_SaveQuest(const std::string & name, SavegameHandle num = SavegameHandle());
 
-// Credits
-
-void ARXMenu_Credits();
-
 void ARXMenu_Private_Options_Video_SetResolution(bool fullscreen, int _iWidth, int _iHeight);
 
 #endif // ARX_GUI_MENUPUBLIC_H

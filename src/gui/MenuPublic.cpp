@@ -280,8 +280,3 @@ void ARXMenu_SaveQuest(const std::string & name, SavegameHandle num) {
 	
 	ARX_SOUND_MixerResume(ARX_SOUND_MixerMenu);
 }
-
-void ARXMenu_Credits() {
-	MenuFader_start(true, true, AMCM_CREDITS);
-}
-

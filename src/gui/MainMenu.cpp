@@ -1745,7 +1745,7 @@ void MainMenu::init()
 	{
 	std::string szMenuText = getLocalised("system_menus_main_credits");
 	TextWidget * txt = new TextWidget(BUTTON_INVALID, hFontMainMenu, szMenuText, pos);
-	txt->clicked = boost::bind(ARXMenu_Credits);
+	txt->clicked = boost::bind(&MainMenu::onClickedCredits, this);
 	txt->m_targetMenu = CREDITS;
 	m_widgets->add(txt);
 	}
@@ -1782,6 +1782,10 @@ void MainMenu::onClickedNewQuest() {
 	if(!ARXMenu_CanResumeGame()) {
 		ARXMenu_NewQuest();
 	}
+}
+
+void MainMenu::onClickedCredits() {
+	MenuFader_start(true, true, AMCM_CREDITS);
 }
 
 
