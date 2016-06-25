@@ -103,8 +103,6 @@ extern bool newFullscreen;
 // Imported global variables and functions
 extern ARX_MENU_DATA ARXmenu;
 
-extern bool REFUSE_GAME_RETURN;
-
 bool bNoMenu=false;
 
 MenuCursor * pMenuCursor = NULL;

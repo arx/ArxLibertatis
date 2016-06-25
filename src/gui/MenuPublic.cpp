@@ -87,8 +87,6 @@ extern bool bQuickGenFirstClick;
 
 extern SavegameHandle LOADQUEST_SLOT;
 
-extern bool REFUSE_GAME_RETURN;
-
 void ARXMenu_Private_Options_Video_SetResolution(bool fullscreen, int _iWidth, int _iHeight) {
 	
 	if(!GRenderer) {

@@ -98,8 +98,6 @@ ZeniMax Media Inc., Suite 120, Rockville, Maryland 20850 USA.
 
 class TextureContainer;
 
-extern bool REFUSE_GAME_RETURN;
-
 struct DAMAGE_INFO {
 	short exist;
 	unsigned long start_time;
