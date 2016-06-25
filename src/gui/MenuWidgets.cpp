@@ -893,9 +893,10 @@ MENUSTATE MenuPage::Update(Vec2f pos) {
 	return NOP;
 }
 
-static void UpdateGameKey(bool bEdit, Widget * widget, InputKeyId inputKeyId) {
-
-	if(!bEdit && widget) {
+static void UpdateGameKey(Widget * widget, InputKeyId inputKeyId) {
+	
+	arx_assert(widget);
+	
 		switch(widget->m_id) {
 		case BUTTON_MENUOPTIONS_CONTROLS_CUST_JUMP1:
 		case BUTTON_MENUOPTIONS_CONTROLS_CUST_JUMP2:
@@ -1064,7 +1065,6 @@ static void UpdateGameKey(bool bEdit, Widget * widget, InputKeyId inputKeyId) {
 		default:
 			break;
 		}
-	}
 }
 
 void MenuPage::Render() {
@@ -1149,7 +1149,9 @@ void MenuPage::Render() {
 				Widget * widget = GetTouch(keyTouched, keyId, &inputKeyId, true);
 				
 				if(widget) {
-					UpdateGameKey(bEdit,widget, inputKeyId);
+					if(!bEdit) {
+						UpdateGameKey(widget, inputKeyId);
+					}
 					bReInit = true;
 				}
 			}
