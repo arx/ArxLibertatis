@@ -1465,7 +1465,6 @@ public:
 		{
 			ButtonWidget * cb = new ButtonWidget(Vec2f(280, 380), Vec2f(16, 16), "graph/interface/menus/next");
 			cb->m_targetMenu = OPTIONS_INPUT_CUSTOMIZE_KEYS_2;
-			cb->SetShortCut(Keyboard::Key_Escape);
 			add(cb);
 		}
 	
