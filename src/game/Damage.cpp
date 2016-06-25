@@ -288,7 +288,7 @@ float ARX_DAMAGES_DamagePlayer(float dmg, DamageType type, EntityHandle source) 
 			player.lifePool.current = 0.f;
 
 			if(alive) {
-				//REFUSE_GAME_RETURN = 1;
+				//g_canResumeGame = false;
 				ARX_PLAYER_BecomesDead();
 
 				if((type & DAMAGE_TYPE_FIRE) || (type & DAMAGE_TYPE_FAKEFIRE)) {

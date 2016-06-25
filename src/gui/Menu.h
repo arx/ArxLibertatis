@@ -80,7 +80,7 @@ struct ARX_MENU_DATA {
 };
 
 extern ARX_MENU_DATA ARXmenu;
-extern bool REFUSE_GAME_RETURN;
+extern bool g_canResumeGame;
 
 void ARX_Menu_Manage();
 bool ARX_Menu_Render();

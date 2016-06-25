@@ -107,7 +107,7 @@ extern bool REQUEST_SPEECH_SKIP;
 
 bool bQuickGenFirstClick = true;
 ARX_MENU_DATA ARXmenu;
-bool REFUSE_GAME_RETURN = false;
+bool g_canResumeGame = true;
 
 static long SP_HEAD = 0;
 
@@ -186,7 +186,7 @@ extern bool TIME_INIT;
 
 void ARX_MENU_Clicked_QUIT() {
 	
-	if(REFUSE_GAME_RETURN) {
+	if(!g_canResumeGame) {
 		return;
 	}
 	
@@ -201,7 +201,7 @@ void ARX_MENU_Clicked_NEWQUEST() {
 	
 	arxtime.resume();
 	
-	REFUSE_GAME_RETURN = true;
+	g_canResumeGame = false;
 	
 	ARX_PLAYER_Start_New_Quest();
 	g_guiBookCurrentTopTab = BOOKMODE_STATS;
@@ -212,7 +212,7 @@ void ARX_MENU_Clicked_NEWQUEST() {
 
 static void ARX_MENU_NEW_QUEST_Clicked_QUIT() {
 	START_NEW_QUEST = true;
-	REFUSE_GAME_RETURN = false;
+	g_canResumeGame = true;
 	ARX_MENU_Clicked_QUIT();
 }
 
@@ -227,7 +227,7 @@ void ARX_MENU_Launch(bool allowResume) {
 	arxtime.update();
 	ARXTimeMenu = arxtime.now_f();
 	
-	REFUSE_GAME_RETURN = !allowResume;
+	g_canResumeGame = allowResume;
 
 	arxtime.pause();
 
@@ -283,7 +283,7 @@ void ARX_Menu_Manage() {
 		case AMCM_MAIN: {
 			if(   GInput->isKeyPressedNowUnPressed(Keyboard::Key_Escape)
 			   && MENU_NoActiveWindow()
-			   && !REFUSE_GAME_RETURN
+			   && g_canResumeGame
 			) {
 				arxtime.resume();
 				ARX_MENU_Clicked_QUIT();

@@ -235,7 +235,7 @@ void ARXMenu_Options_Control_SetMouseSensitivity(int sensitivity) {
 }
 
 bool ARXMenu_CanResumeGame() {
-	return !REFUSE_GAME_RETURN;
+	return g_canResumeGame;
 }
 
 void ARXMenu_ResumeGame() {
@@ -256,7 +256,7 @@ void ARXMenu_LoadQuest(SavegameHandle num) {
 	LOADQUEST_SLOT = num;
 
 	ARX_SOUND_PlayMenu(SND_MENU_CLICK);
-	REFUSE_GAME_RETURN = false;
+	g_canResumeGame = true;
 	ARX_MENU_Clicked_QUIT();
 }
 

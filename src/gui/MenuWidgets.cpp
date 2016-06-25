@@ -121,7 +121,7 @@ float ARXDiffTimeMenu;
 
 void ARX_QuickSave() {
 	
-	if(REFUSE_GAME_RETURN) {
+	if(!g_canResumeGame) {
 		return;
 	}
 	
@@ -146,7 +146,7 @@ static bool ARX_LoadGame(const SaveGame & save) {
 	
 	long ret = ARX_CHANGELEVEL_Load(save.savefile);
 	
-	REFUSE_GAME_RETURN = false;
+	g_canResumeGame = true;
 
 	return ret != -1;
 }
