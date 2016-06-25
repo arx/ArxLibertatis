@@ -309,18 +309,18 @@ void ARX_Menu_Manage() {
 // ARX Menu Rendering Func
 // returns false if no menu needs to be displayed
 //-----------------------------------------------------------------------------
-bool ARX_Menu_Render() {
+void ARX_Menu_Render() {
 	
 	if(ARXmenu.currentmode == AMCM_OFF)
-		return false;
+		return;
 
 	bool br = Menu2_Render();
 
 	if(br)
-		return br;
+		return;
 
 	if(ARXmenu.currentmode == AMCM_OFF)
-		return false;
+		return;
 
 
 	GRenderer->Clear(Renderer::ColorBuffer | Renderer::DepthBuffer);
@@ -541,6 +541,4 @@ bool ARX_Menu_Render() {
 			}
 		}
 	}
-
-	return true;
 }
