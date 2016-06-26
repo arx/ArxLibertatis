@@ -47,12 +47,12 @@ void WidgetContainer::add(Widget *widget) {
 
 Widget * WidgetContainer::getAtPos(const Vec2f & mousePos) const {
 	
-	BOOST_FOREACH(Widget * widget, m_widgets) {
+	BOOST_FOREACH(Widget * w, m_widgets) {
 		
-		if(!widget->getCheck())
+		if(!w->getCheck())
 			continue;
 		
-		Widget * mouseOverWidget = widget->IsMouseOver(mousePos);
+		Widget * mouseOverWidget = w->IsMouseOver(mousePos);
 		
 		if(mouseOverWidget)
 			return mouseOverWidget;
@@ -83,7 +83,7 @@ void WidgetContainer::drawDebug()
 	if(g_debugInfo != InfoPanelGuiDebug)
 		return;
 
-	BOOST_FOREACH(Widget * zone, m_widgets) {
-		drawLineRectangle(Rectf(zone->m_rect), 0.f, Color::red);
+	BOOST_FOREACH(Widget * w, m_widgets) {
+		drawLineRectangle(Rectf(w->m_rect), 0.f, Color::red);
 	}
 }

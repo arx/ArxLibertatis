@@ -518,9 +518,9 @@ void MenuPage::addCenter(Widget * widget, bool centerX) {
 	
 	int iDy = widget->m_rect.height();
 
-	BOOST_FOREACH(Widget * widget, m_children.m_widgets) {
+	BOOST_FOREACH(Widget * w, m_children.m_widgets) {
 		iDy += m_rowSpacing;
-		iDy += widget->m_rect.height();
+		iDy += w->m_rect.height();
 	}
 
 	int iDepY = m_rect.left;
@@ -535,10 +535,10 @@ void MenuPage::addCenter(Widget * widget, bool centerX) {
 		dy = iDepY - m_children.m_widgets[0]->m_rect.top;
 	}
 	
-	BOOST_FOREACH(Widget * widget, m_children.m_widgets) {
-		iDepY += (widget->m_rect.height()) + m_rowSpacing;
+	BOOST_FOREACH(Widget * w, m_children.m_widgets) {
+		iDepY += (w->m_rect.height()) + m_rowSpacing;
 		
-		widget->Move(Vec2f(0, dy));
+		w->Move(Vec2f(0, dy));
 	}
 
 	widget->Move(Vec2f(dx, iDepY));
@@ -799,14 +799,14 @@ MENUSTATE MenuPage::Update(Vec2f pos) {
 	
 	//check les shortcuts
 	if(!bEdit) {
-		BOOST_FOREACH(Widget * widget, m_children.m_widgets) {
-			arx_assert(widget);
+		BOOST_FOREACH(Widget * w, m_children.m_widgets) {
+			arx_assert(w);
 			
-			if(widget->m_shortcut != -1) {
-				if(GInput->isKeyPressedNowUnPressed(widget->m_shortcut)) {
-					bEdit = widget->OnMouseClick();
-					m_selected = widget;
-					return widget->m_targetMenu;
+			if(w->m_shortcut != -1) {
+				if(GInput->isKeyPressedNowUnPressed(w->m_shortcut)) {
+					bEdit = w->OnMouseClick();
+					m_selected = w;
+					return w->m_targetMenu;
 				}
 			}
 		}
@@ -820,9 +820,9 @@ void MenuPage::Render() {
 	if(bNoMenu)
 		return;
 	
-	BOOST_FOREACH(Widget * widget, m_children.m_widgets) {
-		widget->Update();
-		widget->Render();
+	BOOST_FOREACH(Widget * w, m_children.m_widgets) {
+		w->Update();
+		w->Render();
 	}
 	
 	//HIGHLIGHT

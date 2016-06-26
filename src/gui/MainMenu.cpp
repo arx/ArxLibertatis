@@ -1824,9 +1824,9 @@ void MainMenu::Render() {
 	if(m_background)
 		EERIEDrawBitmap2(Rectf(Vec2f(0, 0), g_size.width(), g_size.height()), 0.999f, m_background, Color::white);
 	
-	BOOST_FOREACH(Widget * widget, m_widgets->m_widgets) {
-		widget->Update();
-		widget->Render();
+	BOOST_FOREACH(Widget * w, m_widgets->m_widgets) {
+		w->Update();
+		w->Render();
 	}
 
 	//HIGHLIGHT
