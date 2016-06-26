@@ -1824,10 +1824,10 @@ void MainMenu::Render() {
 	if(m_background)
 		EERIEDrawBitmap2(Rectf(Vec2f(0, 0), g_size.width(), g_size.height()), 0.999f, m_background, Color::white);
 	
-	BOOST_FOREACH(Widget * w, m_widgets->m_widgets) {
+	{Widget * w; BOOST_FOREACH(w, m_widgets->m_widgets) {
 		w->Update();
 		w->Render();
-	}
+	}}
 
 	//HIGHLIGHT
 	if(m_selected) {

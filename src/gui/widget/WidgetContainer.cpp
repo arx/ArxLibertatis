@@ -28,16 +28,16 @@ WidgetContainer::WidgetContainer() {
 
 	m_widgets.clear();
 	
-	BOOST_FOREACH(Widget * w, m_widgets) {
+	{Widget * w; BOOST_FOREACH(w, m_widgets) {
 		delete w;
-	}
+	}}
 }
 
 WidgetContainer::~WidgetContainer() {
 	
-	BOOST_FOREACH(Widget * w, m_widgets) {
+	{Widget * w; BOOST_FOREACH(w, m_widgets) {
 		delete w;
-	}
+	}}
 }
 
 void WidgetContainer::add(Widget *widget) {
@@ -47,7 +47,7 @@ void WidgetContainer::add(Widget *widget) {
 
 Widget * WidgetContainer::getAtPos(const Vec2f & mousePos) const {
 	
-	BOOST_FOREACH(Widget * w, m_widgets) {
+	{Widget * w; BOOST_FOREACH(w, m_widgets) {
 		
 		if(!w->getCheck())
 			continue;
@@ -56,34 +56,34 @@ Widget * WidgetContainer::getAtPos(const Vec2f & mousePos) const {
 		
 		if(mouseOverWidget)
 			return mouseOverWidget;
-	}
+	}}
 
 	return NULL;
 }
 
 Widget * WidgetContainer::GetZoneWithID(MenuButton _iID) {
 	
-	BOOST_FOREACH(Widget * w, m_widgets) {
+	{Widget * w; BOOST_FOREACH(w, m_widgets) {
 		if(Widget * widget = w->GetZoneWithID(_iID))
 			return widget;
-	}
+	}}
 
 	return NULL;
 }
 
 void WidgetContainer::Move(const Vec2f & offset) {
 	
-	BOOST_FOREACH(Widget * w, m_widgets) {
+	{Widget * w; BOOST_FOREACH(w, m_widgets) {
 		w->Move(offset);
-	}
+	}}
 }
 
 void WidgetContainer::drawDebug()
 {
 	if(g_debugInfo != InfoPanelGuiDebug)
 		return;
-
-	BOOST_FOREACH(Widget * w, m_widgets) {
+	
+	{Widget * w; BOOST_FOREACH(w, m_widgets) {
 		drawLineRectangle(Rectf(w->m_rect), 0.f, Color::red);
-	}
+	}}
 }

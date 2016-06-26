@@ -432,14 +432,14 @@ MENUSTATE CWindowMenu::Render() {
 	
 	MENUSTATE eMS=NOP;
 	
-	BOOST_FOREACH(MenuPage * page, m_pages) {
+	{MenuPage * page; BOOST_FOREACH(page, m_pages) {
 		if(m_currentPageId == page->eMenuState) {
 			eMS = page->Update(m_pos);
 			
 			if(eMS != NOP)
 				break;
 		}
-	}
+	}}
 	
 	// Draw backgound and border
 	GRenderer->SetRenderState(Renderer::AlphaBlending, true);
@@ -456,7 +456,7 @@ MENUSTATE CWindowMenu::Render() {
 	                 RATIO_X(m_border->m_size.x), RATIO_Y(m_border->m_size.y)),
 	                 0, m_border, Color::white);
 	
-	BOOST_FOREACH(MenuPage * page, m_pages) {
+	{MenuPage * page; BOOST_FOREACH(page, m_pages) {
 		if(m_currentPageId == page->eMenuState) {
 			page->Render();
 			
@@ -465,7 +465,7 @@ MENUSTATE CWindowMenu::Render() {
 			
 			break;
 		}
-	}
+	}}
 	
 	GRenderer->SetRenderState(Renderer::AlphaBlending, false);
 	
@@ -517,11 +517,11 @@ void MenuPage::addCenter(Widget * widget, bool centerX) {
 	}
 	
 	int iDy = widget->m_rect.height();
-
-	BOOST_FOREACH(Widget * w, m_children.m_widgets) {
+	
+	{Widget * w; BOOST_FOREACH(w, m_children.m_widgets) {
 		iDy += m_rowSpacing;
 		iDy += w->m_rect.height();
-	}
+	}}
 
 	int iDepY = m_rect.left;
 
@@ -535,11 +535,11 @@ void MenuPage::addCenter(Widget * widget, bool centerX) {
 		dy = iDepY - m_children.m_widgets[0]->m_rect.top;
 	}
 	
-	BOOST_FOREACH(Widget * w, m_children.m_widgets) {
+	{Widget * w; BOOST_FOREACH(w, m_children.m_widgets) {
 		iDepY += (w->m_rect.height()) + m_rowSpacing;
 		
 		w->Move(Vec2f(0, dy));
-	}
+	}}
 
 	widget->Move(Vec2f(dx, iDepY));
 
@@ -799,7 +799,8 @@ MENUSTATE MenuPage::Update(Vec2f pos) {
 	
 	//check les shortcuts
 	if(!bEdit) {
-		BOOST_FOREACH(Widget * w, m_children.m_widgets) {
+		
+		{Widget * w; BOOST_FOREACH(w, m_children.m_widgets) {
 			arx_assert(w);
 			
 			if(w->m_shortcut != -1) {
@@ -809,7 +810,7 @@ MENUSTATE MenuPage::Update(Vec2f pos) {
 					return w->m_targetMenu;
 				}
 			}
-		}
+		}}
 	}
 	
 	return NOP;
@@ -820,10 +821,10 @@ void MenuPage::Render() {
 	if(bNoMenu)
 		return;
 	
-	BOOST_FOREACH(Widget * w, m_children.m_widgets) {
+	{Widget * w; BOOST_FOREACH(w, m_children.m_widgets) {
 		w->Update();
 		w->Render();
-	}
+	}}
 	
 	//HIGHLIGHT
 	if(m_selected) {
@@ -935,11 +936,12 @@ void MenuPage::drawDebug() {
 }
 
 void MenuPage::ReInitActionKey() {
-	BOOST_FOREACH(Widget * w, m_children.m_widgets) {
+	
+	{Widget * w; BOOST_FOREACH(w, m_children.m_widgets) {
 		if(w->type() == WidgetType_Panel) {
 			PanelWidget * p = static_cast<PanelWidget *>(w);
 			
-			BOOST_FOREACH(Widget * c, p->m_children) {
+			{Widget * c; BOOST_FOREACH(c, p->m_children) {
 				if(c->type() == WidgetType_Text) {
 					TextWidget * t = static_cast<TextWidget *>(c);
 					
@@ -948,9 +950,9 @@ void MenuPage::ReInitActionKey() {
 						GetTouch(true, config.actions[t->m_keybindAction].key[t->m_keybindIndex], NULL, false);
 					}
 				}
-			}
+			}}
 		}
-	}
+	}}
 }
 
 
