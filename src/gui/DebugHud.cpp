@@ -89,6 +89,25 @@ const FlagName<EntityFlags> EntityFlagNames[] = {
 	{IO_CAN_COMBINE         , "CAN_COMBINE"}
 };
 
+const FlagName<GameFlags> GameFlagNames[] = {
+	{GFLAG_INTERACTIVITY     , "INTERACTIVITY"},
+	{GFLAG_ISINTREATZONE     , "ISINTREATZONE"},
+	{GFLAG_WASINTREATZONE    , "WASINTREATZONE"},
+	{GFLAG_NEEDINIT          , "NEEDINIT"},
+	{GFLAG_INTERACTIVITYHIDE , "INTERACTIVITYHIDE"},
+	{GFLAG_DOOR              , "DOOR"},
+	{GFLAG_INVISIBILITY      , "INVISIBILITY"},
+	{GFLAG_NO_PHYS_IO_COL    , "NO_PHYS_IO_COL"},
+	{GFLAG_VIEW_BLOCKER      , "VIEW_BLOCKER"},
+	{GFLAG_PLATFORM          , "PLATFORM"},
+	{GFLAG_ELEVATOR          , "ELEVATOR"},
+	{GFLAG_MEGAHIDE          , "MEGAHIDE"},
+	{GFLAG_HIDEWEAPON        , "HIDEWEAPON"},
+	{GFLAG_NOGORE            , "NOGORE"},
+	{GFLAG_GOREEXPLODE       , "GOREEXPLODE"},
+	{GFLAG_NOCOMPUTATION     , "NOCOMPUTATION"}
+};
+
 const FlagName<Behaviour> BehaviourFlagNames[] = {
 	{BEHAVIOUR_NONE          , "NONE"},
 	{BEHAVIOUR_FRIENDLY      , "FRIENDLY"},
@@ -232,6 +251,7 @@ void ShowInfoText() {
 			entityBox.add("Room", static_cast<long>(io->room));
 			entityBox.add("Move", io->move);
 			entityBox.add("Flags", flagNames(EntityFlagNames, io->ioflags));
+			entityBox.add("GFlags", flagNames(GameFlagNames, io->gameFlags));
 			entityBox.add("Show", entityVisilibityToString(io->show));
 			entityBox.print();
 			
