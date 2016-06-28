@@ -203,18 +203,27 @@ path current_path() {
 #define DIR_HANDLE(h)         reinterpret_cast<DIR *>(h)
 #define DIR_HANDLE_FREE(h)
 
-static mode_t dirstat(void * handle, void * entry) {
+static mode_t dirstat(void * handle, void * buf) {
 	
+	dirent * entry = reinterpret_cast<dirent *>(buf);
 	arx_assert(entry != NULL);
+	#if defined(DT_UNKNOWN) && defined(DT_DIR) && defined(DT_FILE)
+	if(entry->d_type == DT_FILE) {
+		return S_IFREG;
+	} else if(entry->d_type == DT_DIR) {
+		return S_IFDIR;
+	}
+	#endif
+	
 	int fd = dirfd(DIR_HANDLE(handle));
 	arx_assert(fd != -1);
 	
-	const char * name = reinterpret_cast<dirent *>(entry)->d_name;
-	struct stat buf;
-	int ret = fstatat(fd, name, &buf, 0);
+	const char * name = entry->d_name;
+	struct stat result;
+	int ret = fstatat(fd, name, &result, 0);
 	arx_assert(ret == 0, "fstatat failed: %d", ret); ARX_UNUSED(ret);
 	
-	return buf.st_mode;
+	return result.st_mode;
 }
 
 #else
@@ -231,16 +240,24 @@ struct iterator_handle {
 #define DIR_HANDLE(h)           ITERATOR_HANDLE(h)->handle
 #define DIR_HANDLE_FREE(h)      delete ITERATOR_HANDLE(h)
 
-static mode_t dirstat(void * handle, void * entry) {
+static mode_t dirstat(void * handle, void * buf) {
 	
+	dirent * entry = reinterpret_cast<dirent *>(buf);
 	arx_assert(entry != NULL);
-	fs::path file = ITERATOR_HANDLE(handle)->path / reinterpret_cast<dirent *>(entry)->d_name;
+	#if defined(DT_UNKNOWN) && defined(DT_DIR) && defined(DT_FILE)
+	if(entry->d_type == DT_FILE) {
+		return S_IFREG;
+	} else if(entry->d_type == DT_DIR) {
+		return S_IFDIR;
+	}
+	#endif
 	
-	struct stat buf;
-	int ret = stat(file.string().c_str(), &buf);
+	fs::path file = ITERATOR_HANDLE(handle)->path / entry->d_name;
+	struct stat result;
+	int ret = stat(file.string().c_str(), &result);
 	arx_assert(ret == 0, "stat failed: %d", ret); ARX_UNUSED(ret);
 	
-	return buf.st_mode;
+	return result.st_mode;
 }
 
 #endif
