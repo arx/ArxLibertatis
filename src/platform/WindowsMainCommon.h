@@ -62,4 +62,14 @@ public:
 	
 };
 
+// Disable telemetry added in Visual Studio 2015
+#if defined(_MSC_VER) && _MSC_VER >= 1900
+extern "C" {
+	void _cdecl __vcrt_initialize_telemetry_provider() { }
+	void _cdecl __telemetry_main_invoke_trigger() { }
+	void _cdecl __telemetry_main_return_trigger() { }
+	void _cdecl __vcrt_uninitialize_telemetry_provider() { }
+};
+#endif
+
 #endif // ARX_PLATFORM_WINDOWSMAINCOMMON_H
