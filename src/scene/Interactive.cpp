@@ -2160,7 +2160,7 @@ bool ARX_INTERACTIVE_CheckFULLCollision(PHYSICS_BOX_DATA * pbox, Entity * source
 									cx *= ( 1.0f / 3 );
 									cz *= ( 1.0f / 3 );
 
-									for(kk = 0; kk < 3; kk++) {
+									for(int kk = 0; kk < 3; kk++) {
 										ep.v[kk].p.x = (ep.v[kk].p.x - cx) * 3.5f + cx;
 										ep.v[kk].p.z = (ep.v[kk].p.z - cz) * 3.5f + cz;
 									}
