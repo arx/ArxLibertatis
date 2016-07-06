@@ -553,6 +553,27 @@ EERIE_2D_BBOX UpdateBbox2d(const EERIE_3DOBJ & eobj) {
 	return box2D;
 }
 
+static EERIE_2D_BBOX Cedric_UpdateBbox2d(const EERIE_3DOBJ & eobj) {
+	
+	EERIE_2D_BBOX box2D;
+	box2D.reset();
+
+	for(size_t i = 0; i < eobj.vertexlist.size(); i++) {
+		const EERIE_VERTEX & vertex = eobj.vertexlist3[i];
+		
+		if(   vertex.vert.rhw > 0.f
+		   && vertex.vert.p.x >= -32000
+		   && vertex.vert.p.x <=  32000
+		   && vertex.vert.p.y >= -32000
+		   && vertex.vert.p.y <=  32000
+		) {
+			box2D.add(vertex.vert.p);
+		}
+	}
+	
+	return box2D;
+}
+
 void DrawEERIEInter_ModelTransform(EERIE_3DOBJ *eobj, const TransformInfo &t) {
 
 	for(size_t i = 0 ; i < eobj->vertexlist.size(); i++) {
@@ -1469,27 +1490,6 @@ static void Cedric_ViewProjectTransform(EERIE_3DOBJ * eobj) {
 		Vec3f tempWorld = EE_RT(outVert->v);
 		EE_P(tempWorld, outVert->vert);
 	}
-}
-
-static EERIE_2D_BBOX Cedric_UpdateBbox2d(const EERIE_3DOBJ & eobj) {
-	
-	EERIE_2D_BBOX box2D;
-	box2D.reset();
-
-	for(size_t i = 0; i < eobj.vertexlist.size(); i++) {
-		const EERIE_VERTEX & vertex = eobj.vertexlist3[i];
-		
-		if(   vertex.vert.rhw > 0.f
-		   && vertex.vert.p.x >= -32000
-		   && vertex.vert.p.x <=  32000
-		   && vertex.vert.p.y >= -32000
-		   && vertex.vert.p.y <=  32000
-		) {
-			box2D.add(vertex.vert.p);
-		}
-	}
-	
-	return box2D;
 }
 
 /*!
