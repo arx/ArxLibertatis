@@ -1471,8 +1471,9 @@ static void Cedric_ViewProjectTransform(EERIE_3DOBJ * eobj) {
 	}
 }
 
-static void Cedric_UpdateBbox2d(const EERIE_3DOBJ & eobj, EERIE_2D_BBOX & box2D) {
+static EERIE_2D_BBOX Cedric_UpdateBbox2d(const EERIE_3DOBJ & eobj) {
 	
+	EERIE_2D_BBOX box2D;
 	box2D.reset();
 
 	for(size_t i = 0; i < eobj.vertexlist.size(); i++) {
@@ -1487,6 +1488,8 @@ static void Cedric_UpdateBbox2d(const EERIE_3DOBJ & eobj, EERIE_2D_BBOX & box2D)
 			box2D.add(vertex.vert.p);
 		}
 	}
+	
+	return box2D;
 }
 
 /*!
@@ -1635,7 +1638,7 @@ void EERIEDrawAnimQuatUpdate(EERIE_3DOBJ * eobj,
 
 	Cedric_ViewProjectTransform(eobj);
 	if(io) {
-		Cedric_UpdateBbox2d(*eobj, io->bbox2D);
+		io->bbox2D = Cedric_UpdateBbox2d(*eobj);
 	}
 }
 
@@ -1660,7 +1663,7 @@ void EERIEDrawAnimQuatRender(EERIE_3DOBJ *eobj, const Vec3f & pos, Entity *io, f
 void AnimatedEntityRender(Entity * entity, float invisibility) {
 
 	Cedric_ViewProjectTransform(entity->obj);
-	Cedric_UpdateBbox2d(*entity->obj, entity->bbox2D);
+	entity->bbox2D = Cedric_UpdateBbox2d(*entity->obj);
 
 	EERIEDrawAnimQuatRender(entity->obj, entity->pos, entity, invisibility);
 }
