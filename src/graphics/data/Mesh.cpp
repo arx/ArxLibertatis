@@ -975,9 +975,9 @@ void EERIEPOLY_Compute_PolyIn() {
 		bb.max.x = (float)bb.min.x + ACTIVEBKG->Xdiv + 20;
 		bb.min.y = (float)z * ACTIVEBKG->Zdiv - 10;
 		bb.max.y = (float)bb.min.y + ACTIVEBKG->Zdiv + 20;
-		Vec3f bbcenter;
+		Vec2f bbcenter;
 		bbcenter.x = (bb.min.x + bb.max.x) * .5f;
-		bbcenter.z = (bb.min.y + bb.max.y) * .5f;
+		bbcenter.y = (bb.min.y + bb.max.y) * .5f;
 		
 		for(long z2 = minz; z2 < maxz; z2++)
 		for(long x2 = minx; x2 < maxx; x2++) {
@@ -986,7 +986,7 @@ void EERIEPOLY_Compute_PolyIn() {
 			for(long l = 0; l < eg2->nbpoly; l++) {
 				EERIEPOLY *ep2 = &eg2->polydata[l];
 				
-				if(fartherThan(Vec2f(bbcenter.x, bbcenter.z), Vec2f(ep2->center.x, ep2->center.z), 120.f))
+				if(fartherThan(bbcenter, Vec2f(ep2->center.x, ep2->center.z), 120.f))
 					continue;
 				
 				long nbvert = (ep2->type & POLY_QUAD) ? 4 : 3;
