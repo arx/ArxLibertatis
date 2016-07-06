@@ -524,13 +524,15 @@ static void Cedric_ApplyLighting(ShaderLight lights[], int lightsCount, EERIE_3D
 	}
 }
 
-static void UpdateBbox3d(EERIE_3DOBJ *eobj, EERIE_3D_BBOX & box3D) {
-
+static EERIE_3D_BBOX UpdateBbox3d(EERIE_3DOBJ *eobj) {
+	
+	EERIE_3D_BBOX box3D;
 	box3D.reset();
 
 	for(size_t i = 0 ; i < eobj->vertexlist.size(); i++) {
 		box3D.add(eobj->vertexlist3[i].v);
 	}
+	return box3D;
 }
 
 EERIE_2D_BBOX UpdateBbox2d(const EERIE_3DOBJ & eobj) {
@@ -857,7 +859,7 @@ void DrawEERIEInter(EERIE_3DOBJ * eobj,
 
 	DrawEERIEInter_ModelTransform(eobj, t);
 	if(io) {
-		UpdateBbox3d(eobj, io->bbox3D);
+		io->bbox3D = UpdateBbox3d(eobj);
 	}
 
 	DrawEERIEInter_ViewProjectTransform(eobj);
@@ -1633,7 +1635,7 @@ void EERIEDrawAnimQuatUpdate(EERIE_3DOBJ * eobj,
 
 	Cedric_TransformVerts(eobj, pos);
 	if(io) {
-		UpdateBbox3d(eobj, io->bbox3D);
+		io->bbox3D = UpdateBbox3d(eobj);
 	}
 
 	Cedric_ViewProjectTransform(eobj);
