@@ -1647,7 +1647,7 @@ void ArxGame::updateInput() {
 	GInput->update();
 	
 	// Handle double clicks.
-	const ActionKey & button = config.actions[CONTROLS_CUST_ACTION].key[0];
+	const ActionKey & button = config.actions[CONTROLS_CUST_ACTION];
 	if((button.key[0] != -1 && (button.key[0] & Mouse::ButtonBase)
 	    && GInput->getMouseButtonDoubleClick(button.key[0], 300))
 	   || (button.key[1] != -1 && (button.key[1] & Mouse::ButtonBase)

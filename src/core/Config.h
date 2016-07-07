@@ -88,7 +88,7 @@ enum UIScaleFilter {
 
 struct ActionKey {
 	
-	ActionKey(InputKeyId key_0 = -1, InputKeyId key_1 = -1) {
+	explicit ActionKey(InputKeyId key_0 = -1, InputKeyId key_1 = -1) {
 		key[0] = key_0;
 		key[1] = key_1;
 	}
