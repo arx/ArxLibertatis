@@ -634,10 +634,10 @@ static void ARX_DAMAGES_PushIO(Entity * io_target, EntityHandle source, float po
 	}
 }
 
-float ARX_DAMAGES_DealDamages(EntityHandle target, float dmg, EntityHandle source, DamageType flags, Vec3f * pos)
+void ARX_DAMAGES_DealDamages(EntityHandle target, float dmg, EntityHandle source, DamageType flags, Vec3f * pos)
 {
 	if(!ValidIONum(target) || !ValidIONum(source))
-		return 0;
+		return;
 
 	Entity * io_target = entities[target];
 	Entity * io_source = entities[source];
@@ -675,13 +675,12 @@ float ARX_DAMAGES_DealDamages(EntityHandle target, float dmg, EntityHandle sourc
 
 		if(flags & DAMAGE_TYPE_PUSH)
 			ARX_DAMAGES_PushIO(io_target, source, damagesdone * ( 1.0f / 2 ));
-
+		
+		// TODO what is this code supposed to do ?
 		if((flags & DAMAGE_TYPE_MAGICAL) && !(flags & (DAMAGE_TYPE_FIRE | DAMAGE_TYPE_COLD))) {
 			damagesdone -= player.m_miscFull.resistMagic * ( 1.0f / 100 ) * damagesdone;
 			damagesdone = std::max(0.0f, damagesdone);
 		}
-
-		return damagesdone;
 	} else {
 		if(io_target->ioflags & IO_NPC) {
 			if(flags & DAMAGE_TYPE_POISON) {
@@ -714,17 +713,14 @@ float ARX_DAMAGES_DealDamages(EntityHandle target, float dmg, EntityHandle sourc
 
 			if(flags & DAMAGE_TYPE_PUSH)
 				ARX_DAMAGES_PushIO(io_target, source, damagesdone * ( 1.0f / 2 ));
-
+			
+			// TODO what is this code supposed to do ?
 			if((flags & DAMAGE_TYPE_MAGICAL) && !(flags & (DAMAGE_TYPE_FIRE | DAMAGE_TYPE_COLD))) {
 				damagesdone -= io_target->_npcdata->resist_magic * ( 1.0f / 100 ) * damagesdone;
 				damagesdone = std::max(0.0f, damagesdone);
 			}
-
-			return damagesdone;
 		}
 	}
-
-	return 0;
 }
 
 //*************************************************************************************
