@@ -241,8 +241,6 @@ void ARXDRAW_DrawPolyBoom() {
 	
 	ARX_PROFILE_FUNC();
 	
-	TexturedVertex ltv[4];
-
 	GRenderer->SetFogColor(Color::none); // TODO: not handled by RenderMaterial
 	unsigned long now = arxtime.now_ul();
 	
@@ -293,6 +291,7 @@ void ARXDRAW_DrawPolyBoom() {
 			
 			float tt = t / (float)pb.tolive * 0.8f;
 			
+			TexturedVertex ltv[4];
 			IncrementPolyWithNormalOutput(pb.ep,ltv);
 			
 			for(long k = 0; k < pb.nbvert; k++) {
@@ -324,6 +323,7 @@ void ARXDRAW_DrawPolyBoom() {
 			float tr = std::max(1.f, tt * 2 - 0.5f);
 			ColorRGBA col = (pb.rgb * tt).toRGB(glm::clamp(tt * 1.5f, 0.f, 1.f) * 255);
 			
+			TexturedVertex ltv[4];
 			IncrementPolyWithNormalOutput(pb.ep, ltv);
 			
 			for(long k = 0; k < pb.nbvert; k++) {
@@ -352,6 +352,7 @@ void ARXDRAW_DrawPolyBoom() {
 			float ttt = tt * 0.5f;
 			ColorRGBA col = (pb.rgb * ttt).toRGB();
 			
+			TexturedVertex ltv[4];
 			IncrementPolyWithNormalOutput(pb.ep,ltv);
 			
 			for(long k = 0; k < pb.nbvert; k++) {
