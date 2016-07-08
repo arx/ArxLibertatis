@@ -290,6 +290,7 @@ void ARXDRAW_DrawPolyBoom() {
 		case 0: { // Scorch mark
 			
 			float tt = t / (float)pb.tolive * 0.8f;
+			ColorRGBA col = (player.m_improve ? (Color3f::red * (tt*.5f)) : Color3f::gray(tt)).toRGB();
 			
 			TexturedVertex ltv[4];
 			IncrementPolyWithNormalOutput(pb.ep,ltv);
@@ -298,7 +299,7 @@ void ARXDRAW_DrawPolyBoom() {
 				ltv[k].p = EE_RT(ltv[k].p);
 				ltv[k].uv.x=pb.u[k];
 				ltv[k].uv.y=pb.v[k];
-				ltv[k].color = (player.m_improve ? (Color3f::red * (tt*.5f)) : Color3f::gray(tt)).toRGB();
+				ltv[k].color = col;
 			}
 			
 			if(player.m_improve) {
