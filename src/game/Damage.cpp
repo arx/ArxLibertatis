@@ -1487,10 +1487,9 @@ void ARX_DAMAGES_DurabilityCheck(Entity * io, float ratio)
 	}
 }
 
-void ARX_DAMAGES_DurabilityLoss(Entity * io, float loss)
-{
-	if(!io)
-		return;
+void ARX_DAMAGES_DurabilityLoss(Entity * io, float loss) {
+	
+	arx_assert(io);
 
 	io->durability -= loss;
 
