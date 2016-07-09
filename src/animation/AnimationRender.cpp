@@ -593,9 +593,7 @@ void DrawEERIEInter_ModelTransform(EERIE_3DOBJ *eobj, const TransformInfo &t) {
 
 void DrawEERIEInter_ViewProjectTransform(EERIE_3DOBJ *eobj) {
 	for(size_t i = 0 ; i < eobj->vertexlist.size(); i++) {
-
-		Vec3f tempWorld = EE_RT(eobj->vertexlist3[i].v);
-		EE_P(tempWorld, eobj->vertexlist[i].vert);
+		EE_RTP(eobj->vertexlist3[i].v, eobj->vertexlist[i].vert);
 	}
 }
 
@@ -1488,9 +1486,7 @@ static void Cedric_ViewProjectTransform(EERIE_3DOBJ * eobj) {
 
 	for(size_t i = 0; i < eobj->vertexlist.size(); i++) {
 		EERIE_VERTEX * outVert = &eobj->vertexlist3[i];
-
-		Vec3f tempWorld = EE_RT(outVert->v);
-		EE_P(tempWorld, outVert->vert);
+		EE_RTP(outVert->v, outVert->vert);
 	}
 }
 
