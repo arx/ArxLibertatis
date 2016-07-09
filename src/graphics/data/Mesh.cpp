@@ -1153,8 +1153,7 @@ void Draw3DObject(EERIE_3DOBJ *eobj, const Anglef & angle, const Vec3f & pos, co
 		
 		eobj->vertexlist3[i].v = (rotated += pos);
 
-		Vec3f tempWorld = EE_RT(rotated);
-		EE_P(tempWorld, eobj->vertexlist[i].vert);
+		EE_RTP(rotated, eobj->vertexlist[i].vert);
 	}
 
 	for(size_t i = 0; i < eobj->facelist.size(); i++) {
