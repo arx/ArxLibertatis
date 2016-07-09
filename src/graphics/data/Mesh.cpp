@@ -447,7 +447,7 @@ static float clamp_and_invert(float z) {
 	return 1.f / std::max(z, near_clamp);
 }
 
-void EE_P(const Vec3f & in, TexturedVertex & out) {
+static void EE_P(const Vec3f & in, TexturedVertex & out) {
 	
 	float fZTemp = clamp_and_invert(in.z);
 	

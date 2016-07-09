@@ -150,7 +150,6 @@ int PointIn2DPolyXZ(const EERIEPOLY * ep, float x, float z);
 int EERIELaunchRay3(const Vec3f & orgn, const Vec3f & dest, Vec3f & hit, long flag);
 
 Vec3f EE_RT(const Vec3f & in);
-void EE_P(const Vec3f & in, TexturedVertex & out);
 void EE_RTP(const Vec3f & in, TexturedVertex & out);
 
 
