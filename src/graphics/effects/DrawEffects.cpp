@@ -75,13 +75,13 @@ std::vector<TexturedVertex> g_shadowBatch;
 
 extern Color ulBKGColor;
 
-static void AddToShadowBatch(TexturedVertex * _pVertex1, TexturedVertex * _pVertex2,
-                             TexturedVertex * _pVertex3) {
+static void AddToShadowBatch(TexturedVertexUntransformed * _pVertex1, TexturedVertexUntransformed * _pVertex2,
+                             TexturedVertexUntransformed * _pVertex3) {
 	
 	TexturedVertex pPointAdd[3];
-	EE_P(_pVertex1->p, pPointAdd[0]);
-	EE_P(_pVertex2->p, pPointAdd[1]);
-	EE_P(_pVertex3->p, pPointAdd[2]);
+	EE_RTP(_pVertex1->p, pPointAdd[0]);
+	EE_RTP(_pVertex2->p, pPointAdd[1]);
+	EE_RTP(_pVertex3->p, pPointAdd[2]);
 	pPointAdd[0].color = _pVertex1->color;
 	pPointAdd[0].uv = _pVertex1->uv;
 	pPointAdd[1].color = _pVertex2->color;
@@ -124,11 +124,11 @@ void ARXDRAW_DrawInterShadows() {
 			continue;
 		}
 		
-		TexturedVertex ltv[4];
-		ltv[0] = TexturedVertex(Vec3f(0, 0, 0.001f), 1.f, ColorRGBA(0), Vec2f(0.3f, 0.3f));
-		ltv[1] = TexturedVertex(Vec3f(0, 0, 0.001f), 1.f, ColorRGBA(0), Vec2f(0.7f, 0.3f));
-		ltv[2] = TexturedVertex(Vec3f(0, 0, 0.001f), 1.f, ColorRGBA(0), Vec2f(0.7f, 0.7f));
-		ltv[3] = TexturedVertex(Vec3f(0, 0, 0.001f), 1.f, ColorRGBA(0), Vec2f(0.3f, 0.7f));
+		TexturedVertexUntransformed ltv[4];
+		ltv[0] = TexturedVertexUntransformed(Vec3f(0, 0, 0.001f), ColorRGBA(0), Vec2f(0.3f, 0.3f));
+		ltv[1] = TexturedVertexUntransformed(Vec3f(0, 0, 0.001f), ColorRGBA(0), Vec2f(0.7f, 0.3f));
+		ltv[2] = TexturedVertexUntransformed(Vec3f(0, 0, 0.001f), ColorRGBA(0), Vec2f(0.7f, 0.7f));
+		ltv[3] = TexturedVertexUntransformed(Vec3f(0, 0, 0.001f), ColorRGBA(0), Vec2f(0.3f, 0.7f));
 		
 		if(io->obj->grouplist.size() <= 1) {
 			for(size_t k = 0; k < io->obj->vertexlist.size(); k += 9) {
@@ -155,10 +155,10 @@ void ARXDRAW_DrawInterShadows() {
 				long lv = r;
 				ltv[0].color = ltv[1].color = ltv[2].color = ltv[3].color = Color(lv, lv, lv, 255).toRGBA();
 				
-				ltv[0].p = EE_RT(in);
-				ltv[1].p = EE_RT(in + Vec3f(s1, 0, 0));
-				ltv[2].p = EE_RT(in + Vec3f(s1, 0, s1));
-				ltv[3].p = EE_RT(in + Vec3f(0, 0, s1));
+				ltv[0].p = in;
+				ltv[1].p = in + Vec3f(s1, 0, 0);
+				ltv[2].p = in + Vec3f(s1, 0, s1);
+				ltv[3].p = in + Vec3f(0, 0, s1);
 				
 				if(ltv[0].p.z > 0.f && ltv[1].p.z > 0.f && ltv[2].p.z > 0.f) {
 					AddToShadowBatch(&ltv[0], &ltv[1], &ltv[2]);
@@ -191,10 +191,10 @@ void ARXDRAW_DrawInterShadows() {
 				long lv = r;
 				ltv[0].color = ltv[1].color = ltv[2].color = ltv[3].color = Color(lv, lv, lv, 255).toRGBA();
 				
-				ltv[0].p = EE_RT(in);
-				ltv[1].p = EE_RT(in + Vec3f(s1, 0, 0));
-				ltv[2].p = EE_RT(in + Vec3f(s1, 0, s1));
-				ltv[3].p = EE_RT(in + Vec3f(0, 0, s1));
+				ltv[0].p = in;
+				ltv[1].p = in + Vec3f(s1, 0, 0);
+				ltv[2].p = in + Vec3f(s1, 0, s1);
+				ltv[3].p = in + Vec3f(0, 0, s1);
 				
 				AddToShadowBatch(&ltv[0], &ltv[1], &ltv[2]);
 				AddToShadowBatch(&ltv[0], &ltv[2], &ltv[3]);
