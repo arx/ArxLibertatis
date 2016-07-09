@@ -156,12 +156,9 @@ void ARXDRAW_DrawInterShadows() {
 				ltv[0].color = ltv[1].color = ltv[2].color = ltv[3].color = Color(lv, lv, lv, 255).toRGBA();
 				
 				ltv[0].p = EE_RT(in);
-				in.x += s1;
-				ltv[1].p = EE_RT(in);
-				in.z += s1;
-				ltv[2].p = EE_RT(in);
-				in.x -= s1;
-				ltv[3].p = EE_RT(in);
+				ltv[1].p = EE_RT(in + Vec3f(s1, 0, 0));
+				ltv[2].p = EE_RT(in + Vec3f(s1, 0, s1));
+				ltv[3].p = EE_RT(in + Vec3f(0, 0, s1));
 				
 				if(ltv[0].p.z > 0.f && ltv[1].p.z > 0.f && ltv[2].p.z > 0.f) {
 					AddToShadowBatch(&ltv[0], &ltv[1], &ltv[2]);
@@ -195,12 +192,9 @@ void ARXDRAW_DrawInterShadows() {
 				ltv[0].color = ltv[1].color = ltv[2].color = ltv[3].color = Color(lv, lv, lv, 255).toRGBA();
 				
 				ltv[0].p = EE_RT(in);
-				in.x += s1;
-				ltv[1].p = EE_RT(in);
-				in.z += s1;
-				ltv[2].p = EE_RT(in);
-				in.x -= s1;
-				ltv[3].p = EE_RT(in);
+				ltv[1].p = EE_RT(in + Vec3f(s1, 0, 0));
+				ltv[2].p = EE_RT(in + Vec3f(s1, 0, s1));
+				ltv[3].p = EE_RT(in + Vec3f(0, 0, s1));
 				
 				AddToShadowBatch(&ltv[0], &ltv[1], &ltv[2]);
 				AddToShadowBatch(&ltv[0], &ltv[2], &ltv[3]);
