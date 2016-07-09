@@ -64,7 +64,7 @@ void PopAllTriangleList(bool clear = true);
 void PopAllTriangleListTransparency();
 
 void drawQuadRTP(const RenderMaterial & mat, TexturedQuad quat);
-void drawTriangle(const RenderMaterial & mat, const TexturedVertex * vertices);
+void drawTriangle(const RenderMaterial & mat, const TexturedVertexUntransformed *vertices);
 
 struct TransformInfo {
 

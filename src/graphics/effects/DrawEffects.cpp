@@ -226,7 +226,7 @@ void ARXDRAW_DrawInterShadows() {
 
 // This used to add a bias when the "forceZbias" config option was activated, but it
 // was off by default and we removed it.
-static void IncrementPolyWithNormalOutput(EERIEPOLY * _pPoly, TexturedVertex * _pOut) {
+static void IncrementPolyWithNormalOutput(EERIEPOLY * _pPoly, TexturedVertexUntransformed * _pOut) {
 	
 	_pOut[0].p = _pPoly->v[0].p;
 	_pOut[1].p = _pPoly->v[1].p;
@@ -292,11 +292,11 @@ void ARXDRAW_DrawPolyBoom() {
 			float tt = t / (float)pb.tolive * 0.8f;
 			ColorRGBA col = (player.m_improve ? (Color3f::red * (tt*.5f)) : Color3f::gray(tt)).toRGB();
 			
-			TexturedVertex ltv[4];
+			TexturedVertexUntransformed ltv[4];
 			IncrementPolyWithNormalOutput(pb.ep,ltv);
 			
 			for(long k = 0; k < pb.nbvert; k++) {
-				ltv[k].p = EE_RT(ltv[k].p);
+				ltv[k].p = ltv[k].p;
 				ltv[k].uv.x=pb.u[k];
 				ltv[k].uv.y=pb.v[k];
 				ltv[k].color = col;
@@ -324,11 +324,11 @@ void ARXDRAW_DrawPolyBoom() {
 			float tr = std::max(1.f, tt * 2 - 0.5f);
 			ColorRGBA col = (pb.rgb * tt).toRGB(glm::clamp(tt * 1.5f, 0.f, 1.f) * 255);
 			
-			TexturedVertex ltv[4];
+			TexturedVertexUntransformed ltv[4];
 			IncrementPolyWithNormalOutput(pb.ep, ltv);
 			
 			for(long k = 0; k < pb.nbvert; k++) {
-				ltv[k].p = EE_RT(ltv[k].p);
+				ltv[k].p = ltv[k].p;
 				ltv[k].uv.x=(pb.u[k]-0.5f)*(tr)+0.5f;
 				ltv[k].uv.y=(pb.v[k]-0.5f)*(tr)+0.5f;
 				ltv[k].color = col;
@@ -353,11 +353,11 @@ void ARXDRAW_DrawPolyBoom() {
 			float ttt = tt * 0.5f;
 			ColorRGBA col = (pb.rgb * ttt).toRGB();
 			
-			TexturedVertex ltv[4];
+			TexturedVertexUntransformed ltv[4];
 			IncrementPolyWithNormalOutput(pb.ep,ltv);
 			
 			for(long k = 0; k < pb.nbvert; k++) {
-				ltv[k].p = EE_RT(ltv[k].p);
+				ltv[k].p = ltv[k].p;
 				ltv[k].uv.x=(pb.u[k]-0.5f)*(tr)+0.5f;
 				ltv[k].uv.y=(pb.v[k]-0.5f)*(tr)+0.5f;
 				ltv[k].color=col;

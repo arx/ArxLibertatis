@@ -461,12 +461,12 @@ void drawQuadRTP(const RenderMaterial & mat, TexturedQuad quat) {
 	RenderBatcher::getInstance().add(mat, quat);
 }
 
-void drawTriangle(const RenderMaterial & mat, const TexturedVertex * vertices) {
+void drawTriangle(const RenderMaterial & mat, const TexturedVertexUntransformed * vertices) {
 	
 	TexturedVertex projected[3];
-	EE_P(vertices[0].p, projected[0]);
-	EE_P(vertices[1].p, projected[1]);
-	EE_P(vertices[2].p, projected[2]);
+	EE_RTP(vertices[0].p, projected[0]);
+	EE_RTP(vertices[1].p, projected[1]);
+	EE_RTP(vertices[2].p, projected[2]);
 	projected[0].color = vertices[0].color;
 	projected[0].uv = vertices[0].uv;
 	projected[1].color = vertices[1].color;

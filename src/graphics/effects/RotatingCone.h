@@ -43,7 +43,7 @@ private:
 	int conenbvertex;
 	int conenbfaces;
 	Vec3f * conevertex;
-	TexturedVertex * coned3d;
+	TexturedVertexUntransformed * coned3d;
 	unsigned short * coneind;
 };
 

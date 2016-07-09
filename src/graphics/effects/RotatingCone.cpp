@@ -34,7 +34,7 @@ RotatingCone::RotatingCone()
 {
 	conenbvertex = m_def * 2 + 2;
 	conenbfaces = m_def * 2 + 2;
-	coned3d = (TexturedVertex *)malloc(conenbvertex * sizeof(TexturedVertex));
+	coned3d = (TexturedVertexUntransformed *)malloc(conenbvertex * sizeof(TexturedVertexUntransformed));
 	conevertex = (Vec3f *)malloc(conenbvertex * sizeof(Vec3f));
 	coneind = (unsigned short *)malloc(conenbvertex * sizeof(unsigned short));
 }
@@ -90,7 +90,7 @@ void RotatingCone::Render() {
 	float du = .99999999f / (float)m_def;
 	
 	Vec3f * vertex = conevertex;
-	TexturedVertex * d3dv = coned3d;
+	TexturedVertexUntransformed * d3dv = coned3d;
 	int nb = (conenbvertex) >> 1;
 	
 	while(nb) {
@@ -99,7 +99,7 @@ void RotatingCone::Render() {
 		d3dvs.y = m_pos.y + (vertex + 1)->y + ((vertex->y - (vertex + 1)->y) * m_coneScale);
 		d3dvs.z = m_pos.z + (vertex + 1)->z + ((vertex->z - (vertex + 1)->z) * m_coneScale);
 		
-		d3dv->p = EE_RT(d3dvs);
+		d3dv->p = d3dvs;
 		int col = Random::get(0, 80);
 		
 		if(!arxtime.is_paused())
@@ -114,7 +114,7 @@ void RotatingCone::Render() {
 		d3dvs.y = m_pos.y;
 		d3dvs.z = m_pos.z + vertex->z;
 		
-		d3dv->p = EE_RT(d3dvs);
+		d3dv->p = d3dvs;
 		col = Random::get(0, 80);
 		
 		if(!arxtime.is_paused())
