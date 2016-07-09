@@ -1142,20 +1142,18 @@ void Draw3DObject(EERIE_3DOBJ *eobj, const Anglef & angle, const Vec3f & pos, co
 	if(!eobj)
 		return;
 	
-	TexturedVertex v;
-	TexturedVertex rv;
 	TexturedVertex vert_list[3];
 	
 	glm::mat4 rotation = toRotationMatrix(angle);
 	
 	for(size_t i = 0; i < eobj->vertexlist.size(); i++) {
-		v.p = eobj->vertexlist[i].v * scale;
+		Vec3f scaled = eobj->vertexlist[i].v * scale;
 		
-		rv.p = Vec3f(rotation * Vec4f(v.p, 1.f));
+		Vec3f rotated = Vec3f(rotation * Vec4f(scaled, 1.f));
 		
-		eobj->vertexlist3[i].v = (rv.p += pos);
+		eobj->vertexlist3[i].v = (rotated += pos);
 
-		Vec3f tempWorld = EE_RT(rv.p);
+		Vec3f tempWorld = EE_RT(rotated);
 		EE_P(tempWorld, eobj->vertexlist[i].vert);
 	}
 
