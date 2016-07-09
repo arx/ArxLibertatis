@@ -795,6 +795,7 @@ set(GRAPHICS_SOURCES
 	src/graphics/data/BackgroundEdit.cpp
 	src/graphics/data/Progressive.cpp
 	src/graphics/data/TextureContainer.cpp
+	src/graphics/effects/BlobShadow.cpp
 	src/graphics/effects/DrawEffects.cpp
 	src/graphics/effects/Fade.cpp
 	src/graphics/effects/Field.cpp
