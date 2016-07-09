@@ -63,7 +63,7 @@ static bool IsPointInField(const Vec3f & pos) {
 				
 				Cylinder cyl = Cylinder(pos + Vec3f(0.f, 17.5f, 0.f), 35.f, -35.f);
 				
-				if(CylinderPlatformCollide(cyl, pfrm) != 0.f) {
+				if(CylinderPlatformCollide(cyl, pfrm)) {
 					return true;
 				}
 			}

@@ -396,28 +396,29 @@ bool IsAnyNPCInPlatform(Entity * pfrm) {
 		) {
 			Cylinder cyl = GetIOCyl(io);
 
-			if(CylinderPlatformCollide(cyl, pfrm) != 0.f)
+			if(CylinderPlatformCollide(cyl, pfrm)) {
 				return true;
+			}
 		}
 	}
 
 	return false;
 }
 
-float CylinderPlatformCollide(const Cylinder & cyl, Entity * io) {
+bool CylinderPlatformCollide(const Cylinder & cyl, Entity * io) {
  
 	float miny = io->bbox3D.min.y;
 	float maxy = io->bbox3D.max.y;
 	
 	if(maxy <= cyl.origin.y + cyl.height || miny >= cyl.origin.y) {
-		return 0.f;
+		return false;
 	}
 	
 	if(In3DBBoxTolerance(cyl.origin, io->bbox3D, cyl.radius)) {
-		return 1.f;
+		return true;
 	}
 	
-	return 0.f;
+	return false;
 }
 
 static long NPC_IN_CYLINDER = 0;
