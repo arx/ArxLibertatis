@@ -124,7 +124,7 @@ void ARXDRAW_DrawInterShadows() {
 			}
 		} else {
 			for(size_t k = 0; k < io->obj->grouplist.size(); k++) {
-				long origin = io->obj->grouplist[k].origin;
+				size_t origin = io->obj->grouplist[k].origin;
 				EERIEPOLY *ep = CheckInPoly(io->obj->vertexlist3[origin].v);
 				
 				if(!ep)
