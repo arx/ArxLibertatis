@@ -125,14 +125,16 @@ void ARXDRAW_DrawInterShadows() {
 		} else {
 			for(size_t k = 0; k < io->obj->grouplist.size(); k++) {
 				size_t origin = io->obj->grouplist[k].origin;
-				EERIEPOLY *ep = CheckInPoly(io->obj->vertexlist3[origin].v);
+				Vec3f pos = io->obj->vertexlist3[origin].v;
+				
+				EERIEPOLY *ep = CheckInPoly(pos);
 				
 				if(!ep)
 					continue;
 				
 				Vec3f in;
 				in.y = ep->min.y - 3.f;
-				float r = 0.8f - ((float)glm::abs(io->obj->vertexlist3[origin].v.y - in.y)) * (1.f/500);
+				float r = 0.8f - ((float)glm::abs(pos.y - in.y)) * (1.f/500);
 				r *= io->obj->grouplist[k].siz;
 				r -= io->invisibility;
 				
@@ -141,8 +143,8 @@ void ARXDRAW_DrawInterShadows() {
 				
 				float s1 = io->obj->grouplist[k].siz * 44.f;
 				float s2 = s1 * (1.f/2);
-				in.x = io->obj->vertexlist3[origin].v.x - s2;
-				in.z = io->obj->vertexlist3[origin].v.z - s2;
+				in.x = pos.x - s2;
+				in.z = pos.z - s2;
 				
 				r *= 255.f;
 				long lv = r;
