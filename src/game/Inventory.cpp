@@ -912,7 +912,7 @@ Entity * GetFromInventory(const Vec2s & pos) {
  * Put the position in "pos". returns true if position was found
  * or false if object is invalid, or position not defined.
  */
-Vec3f GetItemWorldPosition(Entity * io) {
+Vec3f GetItemWorldPosition(const Entity * io) {
 	arx_assert(io);
 	
 	// Is this object being Dragged by player ?
