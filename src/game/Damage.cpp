@@ -1509,7 +1509,7 @@ void ARX_DAMAGES_DamagePlayerEquipment(float damages)
 	}
 }
 
-float ARX_DAMAGES_ComputeRepairPrice(Entity * torepair, Entity * blacksmith)
+float ARX_DAMAGES_ComputeRepairPrice(const Entity * torepair, const Entity * blacksmith)
 {
 	if(!torepair || !blacksmith) return -1.f;
 

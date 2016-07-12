@@ -149,7 +149,7 @@ void ARX_DAMAGES_DurabilityCheck(Entity * io, float ratio);
 void ARX_DAMAGES_DurabilityLoss(Entity * io, float loss);
 void ARX_DAMAGES_DurabilityRestore(Entity * io, float ratio);
 void ARX_DAMAGES_DamagePlayerEquipment(float damages);
-float ARX_DAMAGES_ComputeRepairPrice(Entity * torepair, Entity * blacksmith);
+float ARX_DAMAGES_ComputeRepairPrice(const Entity * torepair, const Entity * blacksmith);
 
 void ARX_DAMAGES_DrawDebug();
 
