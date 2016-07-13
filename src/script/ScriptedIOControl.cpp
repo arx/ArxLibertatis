@@ -660,10 +660,13 @@ public:
 		ARX_INTERACTIVE_DestroyIOdelayed(entity);
 		
 		// Prevent further script events as the object has been destroyed!
-		entity->show = SHOW_FLAG_MEGAHIDE;
-		entity->ioflags |= IO_FREEZESCRIPT;
-		if(entity == context.getEntity()) {
-			return AbortAccept;
+		// Object is destroyed only if its count is 1 or less
+		if(entity->_itemdata->count <= 1) {
+			entity->show = SHOW_FLAG_MEGAHIDE;
+			entity->ioflags |= IO_FREEZESCRIPT;
+			if(entity == context.getEntity()) {
+				return AbortAccept;
+			}
 		}
 		
 		return Success;
