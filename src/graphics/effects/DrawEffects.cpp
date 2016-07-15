@@ -400,7 +400,7 @@ void ARXDRAW_DrawPolyBoom() {
 			}
 		}
 		
-		float t = (float)pb.timecreation + (float)pb.tolive - (float)now;
+		ArxDuration t = pb.timecreation + pb.tolive - now;
 		
 		if(t <= 0) {
 			std::swap(polyboom[i], polyboom.back());
