@@ -927,7 +927,11 @@ void drawDebugRender() {
 			ARX_DAMAGES_DrawDebug();
 			break;
 		}
-		default: return;
+		case DebugView_None:
+		case DebugViewCount: {
+			arx_assert(false);
+			return;
+		}
 	}
 	
 	s32 width = hFontDebug->getTextSize(ss.str()).x;
