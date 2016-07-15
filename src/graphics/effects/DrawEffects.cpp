@@ -352,7 +352,7 @@ void SpawnGroundSplat(const Sphere & sp, const Color3f & col, long flags) {
 							pb.v[k]+=vdiff*vdiv;
 					}
 					
-					pb.nbvert=(short)nbvert;
+					pb.nbvert = short(nbvert);
 					
 					polyboom.push_back(pb);
 				}
