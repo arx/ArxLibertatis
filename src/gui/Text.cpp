@@ -219,13 +219,10 @@ long ARX_UNICODE_DrawTextInRect(Font* font,
 
 
 long UNICODE_ARXDrawTextCenter(Font* font, const Vec2f & pos, const std::string& str, Color col) {
-
+	
 	Vec2i size = font->getTextSize(str);
-	int drawX = ((int)pos.x) - (size.x / 2);
-	int drawY = (int)pos.y;
-
-	font->draw(drawX, drawY, str, col);
-
+	font->draw(Vec2i(pos.x - (size.x / 2), pos.y), str, col);
+	
 	return size.x;
 }
 
