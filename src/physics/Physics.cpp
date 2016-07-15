@@ -266,8 +266,8 @@ static bool IsFULLObjectVertexInValidPosition(PHYSICS_BOX_DATA * pbox, EERIEPOLY
 	float rad = pbox->radius;
 	
 	// TODO copy-paste background tiles
-	int tilex = pbox->vert[0].pos.x * ACTIVEBKG->Xmul;
-	int tilez = pbox->vert[0].pos.z * ACTIVEBKG->Zmul;
+	int tilex = int(pbox->vert[0].pos.x * ACTIVEBKG->Xmul);
+	int tilez = int(pbox->vert[0].pos.z * ACTIVEBKG->Zmul);
 	int radius = std::min(1, short(rad * (1.0f/100)) + 1);
 	
 	int minx = std::max(tilex - radius, 0);

@@ -477,10 +477,9 @@ float CheckAnythingInCylinder(const Cylinder & cyl, Entity * ioo, long flags) {
 	float anything = 999999.f;
 	
 	// TODO copy-paste background tiles
-	int tilex = cyl.origin.x * ACTIVEBKG->Xmul;
-	int tilez = cyl.origin.z * ACTIVEBKG->Zmul;
-	
-	int radius = (cyl.radius + 100) * ACTIVEBKG->Xmul;
+	int tilex = int(cyl.origin.x * ACTIVEBKG->Xmul);
+	int tilez = int(cyl.origin.z * ACTIVEBKG->Zmul);
+	int radius = int((cyl.radius + 100) * ACTIVEBKG->Xmul);
 	
 	int minx = std::max(tilex - radius, 0);
 	int maxx = std::min(tilex + radius, ACTIVEBKG->Xsize - 1);
@@ -973,9 +972,9 @@ bool CheckEverythingInSphere(const Sphere & sphere, EntityHandle source, EntityH
 const EERIEPOLY * CheckBackgroundInSphere(const Sphere & sphere) {
 	
 	// TODO copy-paste background tiles
-	int tilex = sphere.origin.x * ACTIVEBKG->Xmul;
-	int tilez = sphere.origin.z * ACTIVEBKG->Zmul;
-	int radius = (sphere.radius * ACTIVEBKG->Xmul) + 2;
+	int tilex = int(sphere.origin.x * ACTIVEBKG->Xmul);
+	int tilez = int(sphere.origin.z * ACTIVEBKG->Zmul);
+	int radius = int(sphere.radius * ACTIVEBKG->Xmul) + 2;
 
 	int minx = std::max(tilex - radius, 0);
 	int maxx = std::min(tilex + radius, ACTIVEBKG->Xsize - 1);
@@ -1012,9 +1011,9 @@ bool CheckAnythingInSphere(const Sphere & sphere, EntityHandle source, CASFlags 
 		ARX_PROFILE("Background Collision");
 		
 		// TODO copy-paste background tiles
-		int tilex = sphere.origin.x * ACTIVEBKG->Xmul;
-		int tilez = sphere.origin.z * ACTIVEBKG->Zmul;
-		int radius = (sphere.radius * ACTIVEBKG->Xmul) + 2;
+		int tilex = int(sphere.origin.x * ACTIVEBKG->Xmul);
+		int tilez = int(sphere.origin.z * ACTIVEBKG->Zmul);
+		int radius = int(sphere.radius * ACTIVEBKG->Xmul) + 2;
 		
 		int minx = std::max(tilex - radius, 0);
 		int maxx = std::min(tilex + radius, ACTIVEBKG->Xsize - 1);

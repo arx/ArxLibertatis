@@ -101,8 +101,8 @@ void ARX_BOOMS_Add(const Vec3f & poss) {
 	static TextureContainer * tc2 = TextureContainer::Load("graph/particles/boom");
 	
 	// TODO copy-paste background tiles
-	int tilex = poss.x * ACTIVEBKG->Xmul;
-	int tilez = poss.z * ACTIVEBKG->Zmul;
+	int tilex = int(poss.x * ACTIVEBKG->Xmul);
+	int tilez = int(poss.z * ACTIVEBKG->Zmul);
 	int radius = 3;
 	
 	int minx = std::max(tilex - radius, 0);
@@ -264,8 +264,8 @@ void SpawnGroundSplat(const Sphere & sp, const Color3f & col, long flags) {
 	}
 	
 	// TODO copy-paste background tiles
-	int tilex = poss.x * ACTIVEBKG->Xmul;
-	int tilez = poss.z * ACTIVEBKG->Zmul;
+	int tilex = int(poss.x * ACTIVEBKG->Xmul);
+	int tilez = int(poss.z * ACTIVEBKG->Zmul);
 	int radius = 3;
 	
 	int minx = std::max(tilex - radius, 0);
