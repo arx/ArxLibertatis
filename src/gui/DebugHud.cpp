@@ -140,8 +140,9 @@ static const char * entityVisilibityToString(EntityVisilibity value) {
 		case SHOW_FLAG_KILLED:       return "KILLED";
 		case SHOW_FLAG_MEGAHIDE:     return "MEGAHIDE";
 		case SHOW_FLAG_ON_PLAYER:    return "ON_PLAYER";
-		default:                     return "Unknown";
+		case SHOW_FLAG_DESTROYED:    return "DESTROYED";
 	}
+	return "Unknown";
 }
 
 void ShowInfoText() {
