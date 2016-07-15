@@ -107,12 +107,12 @@ void ARX_BOOMS_Add(const Vec3f & poss) {
 	short tilex = poss.x * ACTIVEBKG->Xmul;
 	short tilez = poss.z * ACTIVEBKG->Zmul;
 	short radius = 3;
-
+	
 	short minx = std::max(tilex - radius, 0);
 	short maxx = std::min(tilex + radius, ACTIVEBKG->Xsize - 1);
 	short minz = std::max(tilez - radius, 0);
 	short maxz = std::min(tilez + radius, ACTIVEBKG->Zsize - 1);
-
+	
 	for(short z = minz; z <= maxz; z++)
 	for(short x = minx; x <= maxx; x++) {
 		EERIE_BKG_INFO & eg = ACTIVEBKG->fastdata[x][z];
@@ -159,7 +159,7 @@ void ARX_BOOMS_Add(const Vec3f & poss) {
 				pb.v[k] = pb.u[k] = temp_uv1[k];
 			}
 			pb.nbvert = short(nbvert);
-
+			
 			polyboom.push_back(pb);
 		}
 	}
