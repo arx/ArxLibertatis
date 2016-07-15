@@ -108,9 +108,8 @@ void ARXDRAW_DrawInterShadows() {
 				in.x = io->obj->vertexlist3[k].v.x - s2;
 				in.z = io->obj->vertexlist3[k].v.z - s2;
 				
-				r *= 255.f;
-				long lv = r;
-				ltv[0].color = ltv[1].color = ltv[2].color = ltv[3].color = Color(lv, lv, lv, 255).toRGBA();
+				ColorRGBA rgba = Color3f::gray(r).toRGB(255);
+				ltv[0].color = ltv[1].color = ltv[2].color = ltv[3].color = rgba;
 				
 				ltv[0].p = in;
 				ltv[1].p = in + Vec3f(s1, 0, 0);
@@ -146,9 +145,8 @@ void ARXDRAW_DrawInterShadows() {
 				in.x = pos.x - s2;
 				in.z = pos.z - s2;
 				
-				r *= 255.f;
-				long lv = r;
-				ltv[0].color = ltv[1].color = ltv[2].color = ltv[3].color = Color(lv, lv, lv, 255).toRGBA();
+				ColorRGBA rgba = Color3f::gray(r).toRGB(255);
+				ltv[0].color = ltv[1].color = ltv[2].color = ltv[3].color = rgba;
 				
 				ltv[0].p = in;
 				ltv[1].p = in + Vec3f(s1, 0, 0);
