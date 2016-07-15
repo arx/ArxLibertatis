@@ -843,7 +843,7 @@ struct DebugRay {
 	{}
 };
 
-std::vector<DebugRay> debugRays;
+static std::vector<DebugRay> debugRays;
 
 void debug::drawRay(Vec3f start, Vec3f dir, Color color, float duration) {
 	DebugRay ray = DebugRay(start, dir, color, arxtime.now_f() + duration * 1000);
