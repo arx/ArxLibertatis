@@ -144,8 +144,6 @@ static const char * entityVisilibityToString(EntityVisilibity value) {
 	}
 }
 
-EntityHandle LastSelectedIONum = EntityHandle();
-
 void ShowInfoText() {
 	
 	DebugBox frameInfo = DebugBox(Vec2i(10, 10), "FrameInfo");

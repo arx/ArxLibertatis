@@ -131,9 +131,6 @@ ZeniMax Media Inc., Suite 120, Rockville, Maryland 20850 USA.
 extern float Original_framedelay;
 extern EERIE_3DOBJ *arrowobj;
 
-extern EntityHandle LastSelectedIONum;
-
-//-----------------------------------------------------------------------------
 struct ARX_INTERFACE_HALO_STRUCT
 {
 	Entity  * io;
@@ -1965,8 +1962,8 @@ void ArxGame::manageEntityDescription() {
 	}
 }
 
+EntityHandle LastSelectedIONum = EntityHandle();
 
-//-----------------------------------------------------------------------------
 void ArxGame::manageEditorControls() {
 	
 	ARX_PROFILE_FUNC();

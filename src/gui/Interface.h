@@ -216,6 +216,7 @@ extern bool MAGICMODE;
 
 extern gui::Note openNote;
 
+extern EntityHandle LastSelectedIONum;
 
 void ARX_INTERFACE_Combat_Mode(long i);
 
