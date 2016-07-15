@@ -272,7 +272,7 @@ CreateFieldSpell::CreateFieldSpell()
 
 void CreateFieldSpell::Launch()
 {
-	unsigned long start = arxtime.now_ul();
+	ArxInstant start = arxtime.now_ul();
 	if(m_flags & SPELLCAST_FLAG_RESTORE) {
 		start -= std::min(start, 4000ul);
 	}

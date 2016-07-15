@@ -826,7 +826,7 @@ void ARX_PARTICLES_Update(EERIE_CAMERA * cam)  {
 		return;
 	}
 	
-	const unsigned long now = arxtime.now_ul();
+	const ArxInstant now = arxtime.now_ul();
 	
 	long pcc = ParticleCount;
 	

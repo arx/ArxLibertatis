@@ -49,6 +49,7 @@ ZeniMax Media Inc., Suite 120, Rockville, Maryland 20850 USA.
 
 #include <string>
 
+#include "core/TimeTypes.h"
 #include "game/GameTypes.h"
 #include "audio/AudioTypes.h"
 #include "math/Angle.h"
@@ -143,7 +144,7 @@ struct ARX_SPEECH {
 	audio::SampleId sample;
 	long mood;
 	SpeechFlags flags;
-	unsigned long time_creation;
+	ArxInstant time_creation;
 	unsigned long duration;
 	float fDeltaY;
 	int iTimeScroll;

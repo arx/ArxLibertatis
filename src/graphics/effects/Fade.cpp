@@ -27,7 +27,7 @@
 
 static unsigned long FADEDURATION = 0;
 long FADEDIR = 0;
-unsigned long FADESTART = 0;
+ArxInstant FADESTART = 0;
 float LAST_FADEVALUE = 1.f;
 Color3f FADECOLOR;
 

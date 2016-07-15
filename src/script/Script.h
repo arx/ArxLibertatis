@@ -52,6 +52,7 @@ ZeniMax Media Inc., Suite 120, Rockville, Maryland 20850 USA.
 #include <string>
 #include <vector>
 
+#include "core/TimeTypes.h"
 #include "util/Flags.h"
 
 class PakFile;
@@ -115,7 +116,7 @@ struct EERIE_SCRIPT {
 	char * data;
 	SCRIPT_VARIABLES lvar;
 	unsigned long lastcall;
-	unsigned long timers[MAX_SCRIPTTIMERS];
+	ArxInstant timers[MAX_SCRIPTTIMERS];
 	DisabledEvents allowevents;
 	EERIE_SCRIPT * master;
 	long shortcut[MAX_SHORTCUT];
@@ -137,7 +138,7 @@ struct SCR_TIMER {
 	long msecs;
 	long pos;
 	long longinfo;
-	unsigned long tim;
+	ArxInstant tim;
 	Entity * io;
 	EERIE_SCRIPT * es;
 	

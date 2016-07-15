@@ -149,7 +149,7 @@ void FlyingEyeSpell::End()
 
 void FlyingEyeSpell::Update() {
 	
-	const unsigned long now = arxtime.now_ul();
+	const ArxInstant now = arxtime.now_ul();
 	
 	const long framediff3 = now - m_lastupdate;
 	

@@ -123,7 +123,7 @@ long ARX_SPEECH_Add(const std::string & text, long duration) {
 	if(text.empty())
 		return -1;
 	
-	unsigned long now = arxtime.now_ul();
+	ArxInstant now = arxtime.now_ul();
 	if(now == 0) {
 		now = 1;
 	}
@@ -427,7 +427,7 @@ long ARX_SPEECH_AddSpeech(Entity * io, const std::string & data, long mood,
 
 void ARX_SPEECH_Update() {
 	
-	unsigned long now = arxtime.now_ul();
+	ArxInstant now = arxtime.now_ul();
 
 	if(cinematicBorder.isActive() || BLOCK_PLAYER_CONTROLS)
 		ARX_CONVERSATION_CheckAcceleratedSpeech();

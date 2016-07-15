@@ -548,7 +548,7 @@ void ARX_SPELLS_ManageMagic() {
 					pos = MemoMouse;
 				}
 				
-				unsigned long now = arxtime.now_ul();
+				ArxInstant now = arxtime.now_ul();
 				
 				const unsigned long interval = 1000 / 60;
 				
@@ -699,7 +699,7 @@ struct TARGETING_SPELL {
 static TARGETING_SPELL t_spell;
 
 long LOOKING_FOR_SPELL_TARGET=0;
-unsigned long LOOKING_FOR_SPELL_TARGET_TIME=0;
+ArxInstant LOOKING_FOR_SPELL_TARGET_TIME=0;
 void ARX_SPELLS_CancelSpellTarget() {
 	t_spell.typ = SPELL_NONE;
 	LOOKING_FOR_SPELL_TARGET=0;
@@ -1110,7 +1110,7 @@ void ARX_SPELLS_Update() {
 	
 	ucFlick++;
 	
-	const unsigned long now = arxtime.now_ul();
+	const ArxInstant now = arxtime.now_ul();
 	
 	for(size_t u = 0; u < MAX_SPELLS; u++) {
 		SpellBase * spell = spells[SpellHandle(u)];

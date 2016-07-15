@@ -76,7 +76,7 @@ struct POLYBOOM {
 	short type;
 	short nbvert;
 	TextureContainer * tc;
-	unsigned long timecreation;
+	ArxInstant timecreation;
 	unsigned long tolive;
 };
 
@@ -253,7 +253,7 @@ void SpawnGroundSplat(const Sphere & sp, const Color3f & col, long flags) {
 	float hdiv,vdiv;
 	hdiv=vdiv=1.f/(size*2);
 	
-	unsigned long now = arxtime.now_ul();
+	ArxInstant now = arxtime.now_ul();
 	
 	std::vector<POLYBOOM>::iterator pb = polyboom.begin();
 	while(pb != polyboom.end()) {
@@ -382,7 +382,7 @@ void ARXDRAW_DrawPolyBoom() {
 	ARX_PROFILE_FUNC();
 	
 	GRenderer->SetFogColor(Color::none); // TODO: not handled by RenderMaterial
-	unsigned long now = arxtime.now_ul();
+	ArxInstant now = arxtime.now_ul();
 	
 	for(size_t i = 0; i < polyboom.size(); i++) {
 		

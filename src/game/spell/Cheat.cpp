@@ -56,7 +56,7 @@ static long cur_arm = 0;
 static long cur_sos = 0;
 
 long cur_mega=0;
-static unsigned long sp_max_start = 0;
+static ArxInstant sp_max_start = 0;
 long sp_wep=0;
 short uw_mode=0;
 

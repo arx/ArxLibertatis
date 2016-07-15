@@ -32,7 +32,7 @@
 
 const size_t MAX_PRECAST = 3;
 
-unsigned long LAST_PRECAST_TIME = 0;
+ArxInstant LAST_PRECAST_TIME = 0;
 
 std::vector<PRECAST_STRUCT> Precast;
 

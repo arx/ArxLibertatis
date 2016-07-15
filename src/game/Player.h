@@ -65,7 +65,7 @@ static const size_t MAX_EQUIPED = 12;
 
 struct ARX_INTERFACE_MEMORIZE_SPELL {
 	bool bSpell;
-	unsigned long lTimeCreation;
+	ArxInstant lTimeCreation;
 	Rune iSpellSymbols[6];
 	
 	ARX_INTERFACE_MEMORIZE_SPELL()
@@ -246,7 +246,7 @@ struct ARXCHARACTER {
 	long m_weaponBlocked;
 	
 	// Jump Sub-data
-	unsigned long jumpstarttime;
+	ArxInstant jumpstarttime;
 	float jumplastposition;
 	JumpPhase jumpphase;
 	

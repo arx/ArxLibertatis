@@ -1443,7 +1443,7 @@ void ARX_SCENE_Update() {
 	
 	ARX_PROFILE_FUNC();
 	
-	unsigned long now = arxtime.now_ul();
+	ArxInstant now = arxtime.now_ul();
 	
 	WATEREFFECT = (now % long(2 * glm::pi<float>() / 0.0005f)) * 0.0005f;
 	

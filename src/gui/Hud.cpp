@@ -287,7 +287,7 @@ void BackpackIconGui::update(const Rectf & parent) {
 
 void BackpackIconGui::updateInput() {
 	
-	static unsigned long flDelay = 0;
+	static ArxInstant flDelay = 0;
 	
 	// Check for backpack Icon
 	if(m_rect.contains(Vec2f(DANAEMouse))) {

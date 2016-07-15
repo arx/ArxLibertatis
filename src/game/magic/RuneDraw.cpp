@@ -84,7 +84,7 @@ void ARX_SPELLS_Init_Rects() {
 
 void ARX_SPELLS_UpdateSymbolDraw() {
 	
-	unsigned long now = arxtime.now_ul();
+	ArxInstant now = arxtime.now_ul();
 	
 	for(size_t i = 0; i < entities.size(); i++) {
 		const EntityHandle handle = EntityHandle(i);

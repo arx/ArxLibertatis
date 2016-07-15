@@ -1836,7 +1836,7 @@ void ARX_SCRIPT_Timer_Check() {
 			continue;
 		}
 		
-		unsigned long now = arxtime.now_ul();
+		ArxInstant now = arxtime.now_ul();
 		unsigned long fire_time = st->tim + st->msecs;
 		if(fire_time > now) {
 			// Timer not ready to fire yet

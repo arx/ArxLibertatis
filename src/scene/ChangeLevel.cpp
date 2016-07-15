@@ -125,7 +125,7 @@ static Entity * ARX_CHANGELEVEL_Pop_IO(const std::string & idString, EntityInsta
 
 static fs::path CURRENT_GAME_FILE;
 
-static unsigned long ARX_CHANGELEVEL_DesiredTime = 0;
+static ArxInstant ARX_CHANGELEVEL_DesiredTime = 0;
 static long CONVERT_CREATED = 0;
 long DONT_WANT_PLAYER_INZONE = 0;
 static SaveBlock * g_currentSavedGame = NULL;
@@ -1111,7 +1111,7 @@ static long ARX_CHANGELEVEL_Push_IO(const Entity * io, long level) {
 	memcpy(dat, &ais, sizeof(ARX_CHANGELEVEL_IO_SAVE));
 	pos += sizeof(ARX_CHANGELEVEL_IO_SAVE);
 
-	const unsigned long timm = arxtime.now_ul();
+	const ArxInstant timm = arxtime.now_ul();
 
 	for(int i = 0; i < MAX_TIMER_SCRIPT; i++) {
 		SCR_TIMER & timer = scr_timer[i];

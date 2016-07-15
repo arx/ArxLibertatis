@@ -90,7 +90,7 @@ void ARX_THROWN_OBJECT_KillAll() {
 
 static long ARX_THROWN_OBJECT_GetFree() {
 	
-	unsigned long latest_time = arxtime.now_ul();
+	ArxInstant latest_time = arxtime.now_ul();
 	long latest_obj = -1;
 
 	for(size_t i = 0; i < MAX_THROWN_OBJECTS; i++) {
