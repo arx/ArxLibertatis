@@ -47,6 +47,7 @@
 #include "scene/Interactive.h"
 #include "game/EntityManager.h"
 #include "game/NPC.h"
+#include "game/magic/SpellRecognition.h"
 
 #include "graphics/Renderer.h"
 #include "graphics/DrawLine.h"
@@ -143,8 +144,6 @@ static const char * entityVisilibityToString(EntityVisilibity value) {
 	}
 }
 
-
-std::string LAST_FAILED_SEQUENCE = "none";
 EntityHandle LastSelectedIONum = EntityHandle();
 
 void ShowInfoText() {

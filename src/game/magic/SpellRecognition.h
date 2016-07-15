@@ -29,6 +29,7 @@ extern Rune SpellSymbol[MAX_SPELL_SYMBOLS];
 
 extern size_t CurrSpellSymbol;
 extern std::string SpellMoves;
+extern std::string LAST_FAILED_SEQUENCE;
 
 void spellRecognitionInit();
 

@@ -44,6 +44,8 @@ Rune SpellSymbol[MAX_SPELL_SYMBOLS];
 size_t CurrSpellSymbol = 0;
 std::string SpellMoves;
 
+std::string LAST_FAILED_SEQUENCE = "none";
+
 bool bPrecastSpell = false;
 
 struct SpellDefinition {
@@ -203,7 +205,6 @@ SpellType GetSpellId(const std::string & spell) {
 	return (it == spellNames.end()) ? SPELL_NONE : it->second;
 }
 
-extern std::string LAST_FAILED_SEQUENCE;
 enum ARX_SPELLS_RuneDirection
 {
 	AUP,
