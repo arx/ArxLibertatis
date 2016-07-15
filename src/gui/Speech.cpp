@@ -118,7 +118,7 @@ void ARX_SPEECH_ClearAll()
 	}
 }
 
-void ARX_SPEECH_Add(const std::string & text, long duration) {
+void ARX_SPEECH_Add(const std::string & text) {
 	
 	if(text.empty())
 		return;
@@ -139,14 +139,7 @@ void ARX_SPEECH_Add(const std::string & text, long duration) {
 		
 		// Sets creation time
 		speech[i].timecreation = now;
-		
-		// Sets/computes speech duration
-		if(duration == -1) {
-			speech[i].duration = 2000 + text.length() * 60;
-		} else {
-			speech[i].duration = duration;
-		}
-		
+		speech[i].duration = 2000 + text.length() * 60;
 		speech[i].text = text;
 		return;
 	}
