@@ -68,13 +68,337 @@ ZeniMax Media Inc., Suite 120, Rockville, Maryland 20850 USA.
 #include "scene/Interactive.h"
 
 
-extern TextureContainer * Boom;
+struct POLYBOOM {
+	short tx;
+	short tz;
+	EERIEPOLY * ep;
+	float u[4];
+	float v[4];
+	Color3f rgb;
+	TextureContainer * tc;
+	unsigned long timecreation;
+	unsigned long tolive;
+	short type;
+	short nbvert;
+};
 
+static const size_t MAX_POLYBOOM = 4000;
 std::vector<POLYBOOM> polyboom(MAX_POLYBOOM);
 
+static const float BOOM_RADIUS = 420.f;
+static const float BOOM_RADIUS2 = 250.f;
 
+extern TextureContainer * Boom;
 extern Color ulBKGColor;
 
+size_t PolyBoom_count() {
+	return polyboom.size();
+}
+
+void ARX_BOOMS_ClearAllPolyBooms() {
+	polyboom.clear();
+}
+
+void ARX_BOOMS_Add(const Vec3f & poss,long type) {
+	
+	PARTICLE_DEF * pd = createParticle(true);
+	if(pd) {
+		
+		static TextureContainer * tc1 = TextureContainer::Load("graph/particles/fire_hit");
+		
+		pd->ov = poss;
+		pd->move = Vec3f(3.f, 4.f, 3.f) - Vec3f(6.f, 12.f, 6.f) * randomVec3f();
+		pd->tolive = Random::getu(600, 700);
+		pd->tc = tc1;
+		pd->siz = Random::getf(100.f, 110.f) * ((type == 1) ? 2.f : 1.f);
+		pd->zdec = true;
+		if(type == 1) {
+			pd->rgb = Color3f(.4f, .4f, 1.f);
+		}
+		
+		pd = createParticle(true);
+		if(pd) {
+			pd->ov = poss;
+			pd->move = Vec3f(3.f , 4.f, 3.f) - Vec3f(6.f, 12.f, 6.f) * randomVec3f();
+			pd->tolive = Random::getu(600, 700);
+			pd->tc = tc1;
+			pd->siz = Random::getf(40.f, 70.f) * ((type == 1) ? 2.f : 1.f);
+			pd->zdec = true;
+			if(type == 1) {
+				pd->rgb = Color3f(.4f, .4f, 1.f);
+			}
+		}
+		
+	}
+	
+	static TextureContainer * tc2 = TextureContainer::Load("graph/particles/boom");
+	
+	// TODO copy-paste background tiles
+	short tilex = poss.x * ACTIVEBKG->Xmul;
+	short tilez = poss.z * ACTIVEBKG->Zmul;
+	short radius = 3;
+
+	short minx = std::max(tilex - radius, 0);
+	short maxx = std::min(tilex + radius, ACTIVEBKG->Xsize - 1);
+	short minz = std::max(tilez - radius, 0);
+	short maxz = std::min(tilez + radius, ACTIVEBKG->Zsize - 1);
+
+	for(short z = minz; z <= maxz; z++)
+	for(short x = minx; x <= maxx; x++) {
+		EERIE_BKG_INFO & eg = ACTIVEBKG->fastdata[x][z];
+		for(long l = 0; l < eg.nbpoly; l++) {
+			EERIEPOLY * ep = &eg.polydata[l];
+			
+			if((ep->type & POLY_TRANS) && !(ep->type & POLY_WATER)) {
+				continue;
+			}
+			
+			long nbvert = (ep->type & POLY_QUAD) ? 4 : 3;
+			
+			float temp_uv1[4];
+			
+			bool dod = true;
+			for(long k = 0; k < nbvert; k++) {
+				float ddd = fdist(ep->v[k].p, poss);
+				if(ddd > BOOM_RADIUS) {
+					dod = false;
+					break;
+				} else {
+					temp_uv1[k] = 0.5f - ddd * (0.5f / BOOM_RADIUS);
+				}
+			}
+			if(!dod) {
+				continue;
+			}
+			
+			if(polyboom.size() >= MAX_POLYBOOM) {
+				continue;
+			}
+			
+			POLYBOOM pb;
+			
+			pb.type = 0;
+			pb.ep = ep;
+			pb.tc = tc2;
+			pb.tolive = 10000;
+			pb.timecreation = arxtime.now_ul();
+			pb.tx = x;
+			pb.tz = z;
+			pb.rgb = Color3f::black;
+			for(int k = 0; k < nbvert; k++) {
+				pb.v[k] = pb.u[k] = temp_uv1[k];
+			}
+			pb.nbvert = short(nbvert);
+
+			polyboom.push_back(pb);
+		}
+	}
+}
+
+extern TextureContainer * bloodsplat[6];
+extern TextureContainer * water_splat[3];
+
+void SpawnGroundSplat(const Sphere & sp, const Color3f & col, long flags) {
+	
+	Vec3f poss = sp.origin;
+	float size = sp.radius;
+	
+	if(polyboom.size() > (MAX_POLYBOOM >> 2) - 30)
+		return;
+
+	if(polyboom.size() > 250 && size < 10)
+		return;
+
+	float splatsize=90;
+
+	if(size > 40.f)
+		size = 40.f;
+
+	size *= 0.75f;
+
+	switch(config.video.levelOfDetail) {
+		case 2:
+			if(polyboom.size() > 160)
+				return;
+
+			splatsize = 90;
+			size *= 1.f;
+		break;
+		case 1:
+			if(polyboom.size() > 60)
+				return;
+
+			splatsize = 60;
+			size *= 0.5f;
+		break;
+		default:
+			if(polyboom.size() > 10)
+				return;
+
+			splatsize = 30;
+			size *= 0.25f;
+		break;
+	}
+
+
+	float py;
+	EERIEPOLY *ep = CheckInPoly(poss + Vec3f(0.f, -40, 0.f), &py);
+
+	if(!ep)
+		return;
+	
+	if(flags & 1)
+		py = poss.y;
+
+	EERIEPOLY TheoricalSplat; // clockwise
+	TheoricalSplat.v[0].p.x=-splatsize;
+	TheoricalSplat.v[0].p.y = py; 
+	TheoricalSplat.v[0].p.z=-splatsize;
+
+	TheoricalSplat.v[1].p.x=-splatsize;
+	TheoricalSplat.v[1].p.y = py; 
+	TheoricalSplat.v[1].p.z=+splatsize;
+
+	TheoricalSplat.v[2].p.x=+splatsize;
+	TheoricalSplat.v[2].p.y = py; 
+	TheoricalSplat.v[2].p.z=+splatsize;
+
+	TheoricalSplat.v[3].p.x=+splatsize;
+	TheoricalSplat.v[3].p.y = py; 
+	TheoricalSplat.v[3].p.z=-splatsize;
+	TheoricalSplat.type=POLY_QUAD;
+
+	Vec3f RealSplatStart(-size, py, -size);
+
+	TheoricalSplat.v[0].p.x += poss.x;
+	TheoricalSplat.v[0].p.z += poss.z;
+
+	TheoricalSplat.v[1].p.x += poss.x;
+	TheoricalSplat.v[1].p.z += poss.z;
+
+	TheoricalSplat.v[2].p.x += poss.x;
+	TheoricalSplat.v[2].p.z += poss.z;
+
+	TheoricalSplat.v[3].p.x += poss.x;
+	TheoricalSplat.v[3].p.z += poss.z;
+	
+	RealSplatStart.x += poss.x;
+	RealSplatStart.z += poss.z;
+
+	float hdiv,vdiv;
+	hdiv=vdiv=1.f/(size*2);
+
+	unsigned long now = arxtime.now_ul();
+
+	std::vector<POLYBOOM>::iterator pb = polyboom.begin();
+	while(pb != polyboom.end()) {
+
+		//TODO what does this do ?
+		pb->type |= 128;
+		++ pb;
+	}
+
+	// TODO copy-paste background tiles
+	short tilex = poss.x * ACTIVEBKG->Xmul;
+	short tilez = poss.z * ACTIVEBKG->Zmul;
+	short radius = 3;
+
+	short minx = std::max(tilex - radius, 0);
+	short maxx = std::min(tilex + radius, ACTIVEBKG->Xsize - 1);
+	short minz = std::max(tilez - radius, 0);
+	short maxz = std::min(tilez + radius, ACTIVEBKG->Zsize - 1);
+
+	for(short z = minz; z <= maxz; z++)
+	for(short x = minx; x <= maxx; x++) {
+		EERIE_BKG_INFO *eg = &ACTIVEBKG->fastdata[x][z];
+
+		for(long l = 0; l < eg->nbpolyin; l++) {
+			EERIEPOLY *ep = eg->polyin[l];
+
+			if((flags & 2) && !(ep->type & POLY_WATER))
+				continue;
+
+			if((ep->type & POLY_TRANS) && !(ep->type & POLY_WATER))
+				continue;
+
+			long nbvert = (ep->type & POLY_QUAD) ? 4 : 3;
+
+			bool oki = false;
+
+			for(long k = 0; k < nbvert; k++) {
+				if(PointIn2DPolyXZ(&TheoricalSplat, ep->v[k].p.x, ep->v[k].p.z)
+					&& glm::abs(ep->v[k].p.y-py) < 100.f)
+				{
+					oki = true;
+					break;
+				}
+
+				if(PointIn2DPolyXZ(&TheoricalSplat, (ep->v[k].p.x+ep->center.x) * 0.5f, (ep->v[k].p.z+ep->center.z) * 0.5f)
+					&& glm::abs(ep->v[k].p.y-py) < 100.f)
+				{
+					oki = true;
+					break;
+				}
+			}
+
+			if(!oki && PointIn2DPolyXZ(&TheoricalSplat, ep->center.x, ep->center.z) && glm::abs(ep->center.y-py) < 100.f)
+				oki = true;
+
+			if(oki) {
+
+				if(polyboom.size() < MAX_POLYBOOM) {
+					POLYBOOM pb;
+
+					if(flags & 2) {
+						pb.type = 2;
+
+						long num = Random::get(0, 2);
+						pb.tc = water_splat[num];
+
+						pb.tolive=1500;
+					} else {
+						pb.type = 1;
+
+						long num = Random::get(0, 5);
+						pb.tc = bloodsplat[num];
+
+						pb.tolive=(long)(float)(16000 * size * (1.0f/40));
+					}
+
+					pb.ep=ep;
+					
+					pb.timecreation=now;
+
+					pb.tx = x;
+					pb.tz = z;
+
+					pb.rgb = col;
+
+					for(int k = 0; k < nbvert; k++) {
+						float vdiff=glm::abs(ep->v[k].p.y-RealSplatStart.y);
+						pb.u[k]=(ep->v[k].p.x-RealSplatStart.x)*hdiv;
+
+						if(pb.u[k]<0.5f)
+							pb.u[k]-=vdiff*hdiv;
+						else
+							pb.u[k]+=vdiff*hdiv;
+
+						pb.v[k]=(ep->v[k].p.z-RealSplatStart.z)*vdiv;
+
+						if(pb.v[k]<0.5f)
+							pb.v[k]-=vdiff*vdiv;
+						else
+							pb.v[k]+=vdiff*vdiv;
+					}
+
+					pb.nbvert=(short)nbvert;
+
+					polyboom.push_back(pb);
+				}
+			}
+		}			
+	}	
+}
 
 
 

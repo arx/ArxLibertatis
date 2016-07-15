@@ -91,20 +91,6 @@ enum ParticlesTypeFlag {
 DECLARE_FLAGS(ParticlesTypeFlag, ParticlesTypeFlags)
 DECLARE_FLAGS_OPERATORS(ParticlesTypeFlags)
 
-struct POLYBOOM {
-	short tx;
-	short tz;
-	EERIEPOLY * ep;
-	float u[4];
-	float v[4];
-	Color3f rgb;
-	TextureContainer * tc;
-	unsigned long timecreation;
-	unsigned long tolive;
-	short type;
-	short nbvert;
-};
-
 struct PARTICLE_DEF {
 	bool exist;
 	bool is2D;
@@ -155,13 +141,9 @@ struct PARTICLE_DEF {
 
 //-----------------------------------------------------------------------------
 
-static const size_t MAX_POLYBOOM = 4000;
+
 static const float FLARE_MUL = 2.f;
 
-static const float BOOM_RADIUS = 420.f;
-static const float BOOM_RADIUS2 = 250.f;
-
-extern std::vector<POLYBOOM> polyboom;
 extern TextureContainer * fire2;
 extern long NewSpell;
 
@@ -199,9 +181,6 @@ void ARX_PARTICLES_Spawn_Spark(const Vec3f & pos, unsigned int count, SpawnSpark
 
 void ARX_PARTICLES_Spawn_Splat(const Vec3f & pos, float dmgs, Color col);
 void ARX_PARTICLES_SpawnWaterSplash(const Vec3f & pos);
-
-void ARX_BOOMS_ClearAllPolyBooms();
-void ARX_BOOMS_Add(const Vec3f & pos, long type = 0);
 
 void createFireParticles(Vec3f & pos, int perPos, int delay);
 
