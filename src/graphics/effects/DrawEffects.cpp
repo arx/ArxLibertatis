@@ -175,126 +175,126 @@ void SpawnGroundSplat(const Sphere & sp, const Color3f & col, long flags) {
 	
 	if(polyboom.size() > (MAX_POLYBOOM >> 2) - 30)
 		return;
-
+	
 	if(polyboom.size() > 250 && size < 10)
 		return;
-
+	
 	float splatsize=90;
-
+	
 	if(size > 40.f)
 		size = 40.f;
-
+	
 	size *= 0.75f;
-
+	
 	switch(config.video.levelOfDetail) {
 		case 2:
 			if(polyboom.size() > 160)
 				return;
-
+			
 			splatsize = 90;
 			size *= 1.f;
 		break;
 		case 1:
 			if(polyboom.size() > 60)
 				return;
-
+			
 			splatsize = 60;
 			size *= 0.5f;
 		break;
 		default:
 			if(polyboom.size() > 10)
 				return;
-
+			
 			splatsize = 30;
 			size *= 0.25f;
 		break;
 	}
-
-
+	
+	
 	float py;
 	EERIEPOLY *ep = CheckInPoly(poss + Vec3f(0.f, -40, 0.f), &py);
-
+	
 	if(!ep)
 		return;
 	
 	if(flags & 1)
 		py = poss.y;
-
+	
 	EERIEPOLY TheoricalSplat; // clockwise
 	TheoricalSplat.v[0].p.x=-splatsize;
 	TheoricalSplat.v[0].p.y = py; 
 	TheoricalSplat.v[0].p.z=-splatsize;
-
+	
 	TheoricalSplat.v[1].p.x=-splatsize;
 	TheoricalSplat.v[1].p.y = py; 
 	TheoricalSplat.v[1].p.z=+splatsize;
-
+	
 	TheoricalSplat.v[2].p.x=+splatsize;
 	TheoricalSplat.v[2].p.y = py; 
 	TheoricalSplat.v[2].p.z=+splatsize;
-
+	
 	TheoricalSplat.v[3].p.x=+splatsize;
 	TheoricalSplat.v[3].p.y = py; 
 	TheoricalSplat.v[3].p.z=-splatsize;
 	TheoricalSplat.type=POLY_QUAD;
-
+	
 	Vec3f RealSplatStart(-size, py, -size);
-
+	
 	TheoricalSplat.v[0].p.x += poss.x;
 	TheoricalSplat.v[0].p.z += poss.z;
-
+	
 	TheoricalSplat.v[1].p.x += poss.x;
 	TheoricalSplat.v[1].p.z += poss.z;
-
+	
 	TheoricalSplat.v[2].p.x += poss.x;
 	TheoricalSplat.v[2].p.z += poss.z;
-
+	
 	TheoricalSplat.v[3].p.x += poss.x;
 	TheoricalSplat.v[3].p.z += poss.z;
 	
 	RealSplatStart.x += poss.x;
 	RealSplatStart.z += poss.z;
-
+	
 	float hdiv,vdiv;
 	hdiv=vdiv=1.f/(size*2);
-
+	
 	unsigned long now = arxtime.now_ul();
-
+	
 	std::vector<POLYBOOM>::iterator pb = polyboom.begin();
 	while(pb != polyboom.end()) {
-
+	
 		//TODO what does this do ?
 		pb->type |= 128;
 		++ pb;
 	}
-
+	
 	// TODO copy-paste background tiles
 	short tilex = poss.x * ACTIVEBKG->Xmul;
 	short tilez = poss.z * ACTIVEBKG->Zmul;
 	short radius = 3;
-
+	
 	short minx = std::max(tilex - radius, 0);
 	short maxx = std::min(tilex + radius, ACTIVEBKG->Xsize - 1);
 	short minz = std::max(tilez - radius, 0);
 	short maxz = std::min(tilez + radius, ACTIVEBKG->Zsize - 1);
-
+	
 	for(short z = minz; z <= maxz; z++)
 	for(short x = minx; x <= maxx; x++) {
 		EERIE_BKG_INFO *eg = &ACTIVEBKG->fastdata[x][z];
-
+		
 		for(long l = 0; l < eg->nbpolyin; l++) {
 			EERIEPOLY *ep = eg->polyin[l];
-
+			
 			if((flags & 2) && !(ep->type & POLY_WATER))
 				continue;
-
+			
 			if((ep->type & POLY_TRANS) && !(ep->type & POLY_WATER))
 				continue;
-
+			
 			long nbvert = (ep->type & POLY_QUAD) ? 4 : 3;
-
+			
 			bool oki = false;
-
+			
 			for(long k = 0; k < nbvert; k++) {
 				if(PointIn2DPolyXZ(&TheoricalSplat, ep->v[k].p.x, ep->v[k].p.z)
 					&& glm::abs(ep->v[k].p.y-py) < 100.f)
@@ -302,7 +302,7 @@ void SpawnGroundSplat(const Sphere & sp, const Color3f & col, long flags) {
 					oki = true;
 					break;
 				}
-
+				
 				if(PointIn2DPolyXZ(&TheoricalSplat, (ep->v[k].p.x+ep->center.x) * 0.5f, (ep->v[k].p.z+ep->center.z) * 0.5f)
 					&& glm::abs(ep->v[k].p.y-py) < 100.f)
 				{
@@ -310,64 +310,64 @@ void SpawnGroundSplat(const Sphere & sp, const Color3f & col, long flags) {
 					break;
 				}
 			}
-
+			
 			if(!oki && PointIn2DPolyXZ(&TheoricalSplat, ep->center.x, ep->center.z) && glm::abs(ep->center.y-py) < 100.f)
 				oki = true;
-
+			
 			if(oki) {
-
+				
 				if(polyboom.size() < MAX_POLYBOOM) {
 					POLYBOOM pb;
-
+					
 					if(flags & 2) {
 						pb.type = 2;
-
+						
 						long num = Random::get(0, 2);
 						pb.tc = water_splat[num];
-
+						
 						pb.tolive=1500;
 					} else {
 						pb.type = 1;
-
+						
 						long num = Random::get(0, 5);
 						pb.tc = bloodsplat[num];
-
+						
 						pb.tolive=(long)(float)(16000 * size * (1.0f/40));
 					}
-
+					
 					pb.ep=ep;
 					
 					pb.timecreation=now;
-
+					
 					pb.tx = x;
 					pb.tz = z;
-
+					
 					pb.rgb = col;
-
+					
 					for(int k = 0; k < nbvert; k++) {
 						float vdiff=glm::abs(ep->v[k].p.y-RealSplatStart.y);
 						pb.u[k]=(ep->v[k].p.x-RealSplatStart.x)*hdiv;
-
+						
 						if(pb.u[k]<0.5f)
 							pb.u[k]-=vdiff*hdiv;
 						else
 							pb.u[k]+=vdiff*hdiv;
-
+						
 						pb.v[k]=(ep->v[k].p.z-RealSplatStart.z)*vdiv;
-
+						
 						if(pb.v[k]<0.5f)
 							pb.v[k]-=vdiff*vdiv;
 						else
 							pb.v[k]+=vdiff*vdiv;
 					}
-
+					
 					pb.nbvert=(short)nbvert;
-
+					
 					polyboom.push_back(pb);
 				}
 			}
-		}			
-	}	
+		}
+	}
 }
 
 
