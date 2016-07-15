@@ -274,7 +274,7 @@ void CreateFieldSpell::Launch()
 {
 	ArxInstant start = arxtime.now_ul();
 	if(m_flags & SPELLCAST_FLAG_RESTORE) {
-		start -= std::min(start, 4000ul);
+		start -= std::min(start, 4000l);
 	}
 	m_timcreation = start;
 	

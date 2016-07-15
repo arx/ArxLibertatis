@@ -134,7 +134,7 @@ extern bool		GLOBAL_MAGIC_MODE;
 
 extern ParticleManager * pParticleManager;
 
-extern unsigned long LAST_JUMP_ENDTIME;
+extern ArxInstant LAST_JUMP_ENDTIME;
 
 static const float WORLD_GRAVITY = 0.1f;
 static const float JUMP_GRAVITY = 0.02f;

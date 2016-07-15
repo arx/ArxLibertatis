@@ -20,6 +20,8 @@
 #ifndef ARX_CORE_TIMETYPES_H
 #define ARX_CORE_TIMETYPES_H
 
-typedef unsigned long ArxInstant;
+#include "platform/Platform.h"
+
+typedef s64 ArxInstant;
 
 #endif // ARX_CORE_TIMETYPES_H
