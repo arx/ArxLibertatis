@@ -609,24 +609,28 @@ void CurrentTorchIconGui::update() {
 	createFireParticle();
 }
 
-void CurrentTorchIconGui::createFireParticle() {
+void spawn2DFireParticle(const Vec2f & pos, float scale) {
 	
 	PARTICLE_DEF * pd = createParticle();
 	if(!pd) {
 		return;
 	}
 	
-	Vec2f pos = m_rect.topLeft() + Vec2f(Random::getf(9.f, 12.f), Random::getf(0.f, 6.f)) * m_scale;
-	
 	pd->special = FIRE_TO_SMOKE;
 	pd->ov = Vec3f(pos, 0.0000001f);
-	pd->move = Vec3f(Random::getf(-1.5f, 1.5f), Random::getf(-6.f, -5.f), 0.f) * m_scale;
+	pd->move = Vec3f(Random::getf(-1.5f, 1.5f), Random::getf(-6.f, -5.f), 0.f) * scale;
 	pd->scale = Vec3f(1.8f, 1.8f, 1.f);
 	pd->tolive = Random::getu(500, 900);
 	pd->tc = fire2;
 	pd->rgb = Color3f(1.f, .6f, .5f);
-	pd->siz = 14.f * m_scale;
+	pd->siz = 14.f * scale;
 	pd->is2D = true;
+}
+
+void CurrentTorchIconGui::createFireParticle() {
+	
+	Vec2f pos = m_rect.topLeft() + Vec2f(Random::getf(9.f, 12.f), Random::getf(0.f, 6.f)) * m_scale;
+	spawn2DFireParticle(pos, m_scale);
 }
 
 void CurrentTorchIconGui::draw() {
