@@ -809,7 +809,7 @@ static void drawDebugMaterials() {
 			oss << '(' << puv[i].x << ',' << puv[i].y << ')';
 			std::string text = oss.str();
 			
-			Vec2f textpos = pp[i];
+			Vec2i textpos = Vec2i(pp[i]);
 			if(pp[i].y < c.y) {
 				textpos.y -= hFontDebug->getLineHeight();
 			}
