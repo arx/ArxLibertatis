@@ -85,8 +85,11 @@ struct SCRIPT_VAR {
 	std::string text;
 	std::string name;
 
-	SCRIPT_VAR() : type(TYPE_UNKNOWN), ival(), fval() {
-	}
+	SCRIPT_VAR()
+		: type(TYPE_UNKNOWN)
+		, ival()
+		, fval()
+	{ }
 };
 
 struct LABEL_INFO {
