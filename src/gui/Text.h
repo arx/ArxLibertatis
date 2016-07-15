@@ -66,7 +66,7 @@ extern Font * hFontDebug;
 
 void UNICODE_ARXDrawTextCenter(Font * font, const Vec2f & pos, const std::string & str, Color col);
  
-long UNICODE_ARXDrawTextCenteredScroll(Font * font, float x, float y, float x2, const std::string & str, Color col, int iTimeScroll, float fSpeed, int iNbLigne, int iTimeOut = INT_MAX);
+void UNICODE_ARXDrawTextCenteredScroll(Font * font, float x, float y, float x2, const std::string & str, Color col, int iTimeScroll, float fSpeed, int iNbLigne, int iTimeOut = INT_MAX);
 long ARX_UNICODE_ForceFormattingInRect(Font * font, const std::string & text, const Rect & _rRect);
 long ARX_UNICODE_DrawTextInRect(Font * font, const Vec2f & pos, float maxx, const std::string & text, Color col, const Rect * pClipRect = NULL);
 
