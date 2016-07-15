@@ -266,17 +266,17 @@ static bool IsFULLObjectVertexInValidPosition(PHYSICS_BOX_DATA * pbox, EERIEPOLY
 	float rad = pbox->radius;
 	
 	// TODO copy-paste background tiles
-	short tilex = pbox->vert[0].pos.x * ACTIVEBKG->Xmul;
-	short tilez = pbox->vert[0].pos.z * ACTIVEBKG->Zmul;
-	short radius = std::min(1, short(rad * (1.0f/100)) + 1);
+	int tilex = pbox->vert[0].pos.x * ACTIVEBKG->Xmul;
+	int tilez = pbox->vert[0].pos.z * ACTIVEBKG->Zmul;
+	int radius = std::min(1, short(rad * (1.0f/100)) + 1);
 	
-	short minx = std::max(tilex - radius, 0);
-	short maxx = std::min(tilex + radius, ACTIVEBKG->Xsize - 1);
-	short minz = std::max(tilez - radius, 0);
-	short maxz = std::min(tilez + radius, ACTIVEBKG->Zsize - 1);
+	int minx = std::max(tilex - radius, 0);
+	int maxx = std::min(tilex + radius, ACTIVEBKG->Xsize - 1);
+	int minz = std::max(tilez - radius, 0);
+	int maxz = std::min(tilez + radius, ACTIVEBKG->Zsize - 1);
 	
-	for(short z = minz; z <= maxz; z++)
-	for(short x = minx; x <= maxx; x++) {
+	for(int z = minz; z <= maxz; z++)
+	for(int x = minx; x <= maxx; x++) {
 		EERIE_BKG_INFO & eg = ACTIVEBKG->fastdata[x][z];
 		
 		for(long k = 0; k < eg.nbpoly; k++) {

@@ -270,17 +270,17 @@ static EERIEPOLY * CheckArrowPolyCollision(const Vec3f & start, const Vec3f & en
 	pol.v[1] = end;
 
 	// TODO copy-paste background tiles
-	short tilex = end.x * ACTIVEBKG->Xmul;
-	short tilez = end.z * ACTIVEBKG->Zmul;
-	short radius = 2;
+	int tilex = end.x * ACTIVEBKG->Xmul;
+	int tilez = end.z * ACTIVEBKG->Zmul;
+	int radius = 2;
 	
-	short minx = std::max(tilex - radius, 0);
-	short maxx = std::min(tilex + radius, ACTIVEBKG->Xsize - 1);
-	short minz = std::max(tilez - radius, 0);
-	short maxz = std::min(tilez + radius, ACTIVEBKG->Zsize - 1);
+	int minx = std::max(tilex - radius, 0);
+	int maxx = std::min(tilex + radius, ACTIVEBKG->Xsize - 1);
+	int minz = std::max(tilez - radius, 0);
+	int maxz = std::min(tilez + radius, ACTIVEBKG->Zsize - 1);
 	
-	for(short z = minz; z <= maxz; z++)
-	for(short x = minx; x <= maxx; x++) {
+	for(int z = minz; z <= maxz; z++)
+	for(int x = minx; x <= maxx; x++) {
 		const EERIE_BKG_INFO & feg = ACTIVEBKG->fastdata[x][z];
 		for(long l = 0; l < feg.nbpolyin; l++) {
 			EERIEPOLY * ep = feg.polyin[l];

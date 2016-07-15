@@ -482,13 +482,13 @@ float CheckAnythingInCylinder(const Cylinder & cyl, Entity * ioo, long flags) {
 	
 	int radius = (cyl.radius + 100) * ACTIVEBKG->Xmul;
 	
-	short minx = std::max(tilex - radius, 0);
-	short maxx = std::min(tilex + radius, ACTIVEBKG->Xsize - 1);
-	short minz = std::max(tilez - radius, 0);
-	short maxz = std::min(tilez + radius, ACTIVEBKG->Zsize - 1);
+	int minx = std::max(tilex - radius, 0);
+	int maxx = std::min(tilex + radius, ACTIVEBKG->Xsize - 1);
+	int minz = std::max(tilez - radius, 0);
+	int maxz = std::min(tilez + radius, ACTIVEBKG->Zsize - 1);
 	
-	for(short z = minz; z <= maxz; z++)
-	for(short x = minx; x <= maxx; x++) {
+	for(int z = minz; z <= maxz; z++)
+	for(int x = minx; x <= maxx; x++) {
 		float nearest = 99999999.f;
 
 		for(long num = 0; num < 4; num++) {
@@ -973,17 +973,17 @@ bool CheckEverythingInSphere(const Sphere & sphere, EntityHandle source, EntityH
 const EERIEPOLY * CheckBackgroundInSphere(const Sphere & sphere) {
 	
 	// TODO copy-paste background tiles
-	short tilex = sphere.origin.x * ACTIVEBKG->Xmul;
-	short tilez = sphere.origin.z * ACTIVEBKG->Zmul;
-	short radius = (sphere.radius * ACTIVEBKG->Xmul) + 2;
+	int tilex = sphere.origin.x * ACTIVEBKG->Xmul;
+	int tilez = sphere.origin.z * ACTIVEBKG->Zmul;
+	int radius = (sphere.radius * ACTIVEBKG->Xmul) + 2;
 
-	short minx = std::max(tilex - radius, 0);
-	short maxx = std::min(tilex + radius, ACTIVEBKG->Xsize - 1);
-	short minz = std::max(tilez - radius, 0);
-	short maxz = std::min(tilez + radius, ACTIVEBKG->Zsize - 1);
+	int minx = std::max(tilex - radius, 0);
+	int maxx = std::min(tilex + radius, ACTIVEBKG->Xsize - 1);
+	int minz = std::max(tilez - radius, 0);
+	int maxz = std::min(tilez + radius, ACTIVEBKG->Zsize - 1);
 
-	for(short z = minz; z <= maxz; z++)
-	for(short x = minx; x <= maxx; x++) {
+	for(int z = minz; z <= maxz; z++)
+	for(int x = minx; x <= maxx; x++) {
 		const EERIE_BKG_INFO & feg = ACTIVEBKG->fastdata[x][z];
 
 		for(long k = 0; k < feg.nbpoly; k++) {
@@ -1012,17 +1012,17 @@ bool CheckAnythingInSphere(const Sphere & sphere, EntityHandle source, CASFlags 
 		ARX_PROFILE("Background Collision");
 		
 		// TODO copy-paste background tiles
-		short tilex = sphere.origin.x * ACTIVEBKG->Xmul;
-		short tilez = sphere.origin.z * ACTIVEBKG->Zmul;
-		short radius = (sphere.radius * ACTIVEBKG->Xmul) + 2;
+		int tilex = sphere.origin.x * ACTIVEBKG->Xmul;
+		int tilez = sphere.origin.z * ACTIVEBKG->Zmul;
+		int radius = (sphere.radius * ACTIVEBKG->Xmul) + 2;
 		
-		short minx = std::max(tilex - radius, 0);
-		short maxx = std::min(tilex + radius, ACTIVEBKG->Xsize - 1);
-		short minz = std::max(tilez - radius, 0);
-		short maxz = std::min(tilez + radius, ACTIVEBKG->Zsize - 1);
+		int minx = std::max(tilex - radius, 0);
+		int maxx = std::min(tilex + radius, ACTIVEBKG->Xsize - 1);
+		int minz = std::max(tilez - radius, 0);
+		int maxz = std::min(tilez + radius, ACTIVEBKG->Zsize - 1);
 
-		for(short z = minz; z <= maxz; z++)
-		for(short x = minx; x <= maxx; x++) {
+		for(int z = minz; z <= maxz; z++)
+		for(int x = minx; x <= maxx; x++) {
 			const EERIE_BKG_INFO & feg = ACTIVEBKG->fastdata[x][z];
 			for(long k = 0; k < feg.nbpoly; k++) {
 				const EERIEPOLY & ep = feg.polydata[k];

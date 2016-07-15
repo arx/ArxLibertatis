@@ -1085,17 +1085,17 @@ static void ARX_PORTALS_Frustrum_RenderRoomTCullSoft(long room_num,
 
 		if(!feg->treat) {
 			// TODO copy-paste background tiles
-			short tilex = pEPDATA->p.x;
-			short tilez = pEPDATA->p.y;
-			short radius = 1;
+			int tilex = pEPDATA->p.x;
+			int tilez = pEPDATA->p.y;
+			int radius = 1;
 			
-			short minx = std::max(tilex - radius, 0);
-			short maxx = std::min(tilex + radius, ACTIVEBKG->Xsize - 1);
-			short minz = std::max(tilez - radius, 0);
-			short maxz = std::min(tilez + radius, ACTIVEBKG->Zsize - 1);
+			int minx = std::max(tilex - radius, 0);
+			int maxx = std::min(tilex + radius, ACTIVEBKG->Xsize - 1);
+			int minz = std::max(tilez - radius, 0);
+			int maxz = std::min(tilez + radius, ACTIVEBKG->Zsize - 1);
 
-			for(short z = minz; z <= maxz; z++)
-			for(short x = minx; x <= maxx; x++) {
+			for(int z = minz; z <= maxz; z++)
+			for(int x = minx; x <= maxx; x++) {
 				EERIE_BKG_INFO & feg2 = ACTIVEBKG->fastdata[x][z];
 
 				if(!feg2.treat) {
@@ -1460,10 +1460,10 @@ void ARX_SCENE_Update() {
 	tilex = glm::clamp(tilex, 0, ACTIVEBKG->Xsize - 1);
 	tilez = glm::clamp(tilez, 0, ACTIVEBKG->Zsize - 1);
 
-	short minx = std::max(tilex - radius, 0);
-	short maxx = std::min(tilex + radius, ACTIVEBKG->Xsize - 1);
-	short minz = std::max(tilez - radius, 0);
-	short maxz = std::min(tilez + radius, ACTIVEBKG->Zsize - 1);
+	int minx = std::max(tilex - radius, 0);
+	int maxx = std::min(tilex + radius, ACTIVEBKG->Xsize - 1);
+	int minz = std::max(tilez - radius, 0);
+	int maxz = std::min(tilez + radius, ACTIVEBKG->Zsize - 1);
 
 	ACTIVEBKG->fastdata[tilex][tilez].treat = true;
 	TreatBackgroundDynlights();

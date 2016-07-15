@@ -101,17 +101,17 @@ void ARX_BOOMS_Add(const Vec3f & poss) {
 	static TextureContainer * tc2 = TextureContainer::Load("graph/particles/boom");
 	
 	// TODO copy-paste background tiles
-	short tilex = poss.x * ACTIVEBKG->Xmul;
-	short tilez = poss.z * ACTIVEBKG->Zmul;
-	short radius = 3;
+	int tilex = poss.x * ACTIVEBKG->Xmul;
+	int tilez = poss.z * ACTIVEBKG->Zmul;
+	int radius = 3;
 	
-	short minx = std::max(tilex - radius, 0);
-	short maxx = std::min(tilex + radius, ACTIVEBKG->Xsize - 1);
-	short minz = std::max(tilez - radius, 0);
-	short maxz = std::min(tilez + radius, ACTIVEBKG->Zsize - 1);
+	int minx = std::max(tilex - radius, 0);
+	int maxx = std::min(tilex + radius, ACTIVEBKG->Xsize - 1);
+	int minz = std::max(tilez - radius, 0);
+	int maxz = std::min(tilez + radius, ACTIVEBKG->Zsize - 1);
 	
-	for(short z = minz; z <= maxz; z++)
-	for(short x = minx; x <= maxx; x++) {
+	for(int z = minz; z <= maxz; z++)
+	for(int x = minx; x <= maxx; x++) {
 		EERIE_BKG_INFO & eg = ACTIVEBKG->fastdata[x][z];
 		for(long l = 0; l < eg.nbpoly; l++) {
 			EERIEPOLY * ep = &eg.polydata[l];
@@ -264,17 +264,17 @@ void SpawnGroundSplat(const Sphere & sp, const Color3f & col, long flags) {
 	}
 	
 	// TODO copy-paste background tiles
-	short tilex = poss.x * ACTIVEBKG->Xmul;
-	short tilez = poss.z * ACTIVEBKG->Zmul;
-	short radius = 3;
+	int tilex = poss.x * ACTIVEBKG->Xmul;
+	int tilez = poss.z * ACTIVEBKG->Zmul;
+	int radius = 3;
 	
-	short minx = std::max(tilex - radius, 0);
-	short maxx = std::min(tilex + radius, ACTIVEBKG->Xsize - 1);
-	short minz = std::max(tilez - radius, 0);
-	short maxz = std::min(tilez + radius, ACTIVEBKG->Zsize - 1);
+	int minx = std::max(tilex - radius, 0);
+	int maxx = std::min(tilex + radius, ACTIVEBKG->Xsize - 1);
+	int minz = std::max(tilez - radius, 0);
+	int maxz = std::min(tilez + radius, ACTIVEBKG->Zsize - 1);
 	
-	for(short z = minz; z <= maxz; z++)
-	for(short x = minx; x <= maxx; x++) {
+	for(int z = minz; z <= maxz; z++)
+	for(int x = minx; x <= maxx; x++) {
 		EERIE_BKG_INFO *eg = &ACTIVEBKG->fastdata[x][z];
 		
 		for(long l = 0; l < eg->nbpolyin; l++) {
