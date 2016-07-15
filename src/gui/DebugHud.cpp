@@ -130,15 +130,15 @@ const FlagName<Behaviour> BehaviourFlagNames[] = {
 
 static const char * entityVisilibityToString(EntityVisilibity value) {
 	switch (value) {
-		case SHOW_FLAG_NOT_DRAWN:    return "NOT_DRAWN"; break;
-		case SHOW_FLAG_IN_SCENE:     return "IN_SCENE"; break;
-		case SHOW_FLAG_LINKED:       return "LINKED"; break;
-		case SHOW_FLAG_IN_INVENTORY: return "IN_INVENTORY"; break;
-		case SHOW_FLAG_HIDDEN:       return "HIDDEN"; break;
-		case SHOW_FLAG_TELEPORTING:  return "TELEPORTING"; break;
-		case SHOW_FLAG_KILLED:       return "KILLED"; break;
-		case SHOW_FLAG_MEGAHIDE:     return "MEGAHIDE"; break;
-		case SHOW_FLAG_ON_PLAYER:    return "ON_PLAYER"; break;
+		case SHOW_FLAG_NOT_DRAWN:    return "NOT_DRAWN";
+		case SHOW_FLAG_IN_SCENE:     return "IN_SCENE";
+		case SHOW_FLAG_LINKED:       return "LINKED";
+		case SHOW_FLAG_IN_INVENTORY: return "IN_INVENTORY";
+		case SHOW_FLAG_HIDDEN:       return "HIDDEN";
+		case SHOW_FLAG_TELEPORTING:  return "TELEPORTING";
+		case SHOW_FLAG_KILLED:       return "KILLED";
+		case SHOW_FLAG_MEGAHIDE:     return "MEGAHIDE";
+		case SHOW_FLAG_ON_PLAYER:    return "ON_PLAYER";
 		default:                     return "Unknown";
 	}
 }
