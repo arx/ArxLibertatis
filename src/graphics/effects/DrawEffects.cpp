@@ -69,8 +69,6 @@ ZeniMax Media Inc., Suite 120, Rockville, Maryland 20850 USA.
 
 
 struct POLYBOOM {
-	short tx;
-	short tz;
 	EERIEPOLY * ep;
 	float u[4];
 	float v[4];
@@ -152,8 +150,6 @@ void ARX_BOOMS_Add(const Vec3f & poss) {
 			pb.tc = tc2;
 			pb.tolive = 10000;
 			pb.timecreation = arxtime.now_ul();
-			pb.tx = x;
-			pb.tz = z;
 			pb.rgb = Color3f::black;
 			for(int k = 0; k < nbvert; k++) {
 				pb.v[k] = pb.u[k] = temp_uv1[k];
@@ -338,10 +334,6 @@ void SpawnGroundSplat(const Sphere & sp, const Color3f & col, long flags) {
 					pb.ep=ep;
 					
 					pb.timecreation=now;
-					
-					pb.tx = x;
-					pb.tz = z;
-					
 					pb.rgb = col;
 					
 					for(int k = 0; k < nbvert; k++) {
