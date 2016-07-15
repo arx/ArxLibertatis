@@ -24,6 +24,7 @@
 #include "graphics/Color.h"
 
 extern long	FADEDIR;
+extern float LAST_FADEVALUE;
 
 enum FadeType {
     FadeType_In,
