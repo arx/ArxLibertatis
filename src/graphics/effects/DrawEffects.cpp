@@ -73,11 +73,11 @@ struct POLYBOOM {
 	float u[4];
 	float v[4];
 	Color3f rgb;
+	short type;
+	short nbvert;
 	TextureContainer * tc;
 	unsigned long timecreation;
 	unsigned long tolive;
-	short type;
-	short nbvert;
 };
 
 static const size_t MAX_POLYBOOM = 4000;
