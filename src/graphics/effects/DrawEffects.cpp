@@ -388,6 +388,7 @@ void ARXDRAW_DrawPolyBoom() {
 		
 		POLYBOOM & pb = polyboom[i];
 		
+		// TODO what exactly does pb.type do ?
 		if(pb.type & 128) {
 			if(pb.timecreation - g_framedelay > 0) {
 				float fCalc = pb.timecreation - g_framedelay;
