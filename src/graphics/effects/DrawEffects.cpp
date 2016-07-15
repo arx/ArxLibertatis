@@ -429,7 +429,7 @@ void ARXDRAW_DrawPolyBoom() {
 			
 			case 0: { // Scorch mark
 				
-				float tt = t / (float)pb.tolive * 0.8f;
+				float tt = t / float(pb.tolive) * 0.8f;
 				ColorRGBA col = (player.m_improve ? (Color3f::red * (tt*.5f)) : Color3f::gray(tt)).toRGB();
 				
 				TexturedVertexUntransformed ltv[4];
@@ -459,7 +459,7 @@ void ARXDRAW_DrawPolyBoom() {
 			
 			case 1: { // Blood
 				
-				float div = 1.f / (float)pb.tolive;
+				float div = 1.f / float(pb.tolive);
 				float tt = t * div;
 				float tr = std::max(1.f, tt * 2 - 0.5f);
 				ColorRGBA col = (pb.rgb * tt).toRGB(glm::clamp(tt * 1.5f, 0.f, 1.f) * 255);
@@ -487,7 +487,7 @@ void ARXDRAW_DrawPolyBoom() {
 			
 			case 2: { // Water
 				
-				float div = 1.f / (float)pb.tolive;
+				float div = 1.f / float(pb.tolive);
 				float tt = t * div;
 				float tr = std::max(1.f, tt * 2 - 0.5f);
 				float ttt = tt * 0.5f;
