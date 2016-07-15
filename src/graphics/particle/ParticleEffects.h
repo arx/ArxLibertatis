@@ -188,6 +188,8 @@ void createObjFireParticles(const EERIE_3DOBJ * obj, int particlePositions, int 
 
 void LaunchFireballBoom(const Vec3f & poss, float level, Vec3f * direction = NULL, Color3f * rgb = NULL);
 void spawnFireHitParticle(const Vec3f & poss, long type);
+void spawn2DFireParticle(const Vec2f & pos, float scale);
+
 void SpawnFireballTail(const Vec3f &, const Vec3f &, float, long);
 
 #endif // ARX_GRAPHICS_PARTICLE_PARTICLEEFFECTS_H
