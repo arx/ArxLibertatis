@@ -84,7 +84,6 @@ static const size_t MAX_POLYBOOM = 4000;
 std::vector<POLYBOOM> polyboom(MAX_POLYBOOM);
 
 static const float BOOM_RADIUS = 420.f;
-static const float BOOM_RADIUS2 = 250.f;
 
 extern TextureContainer * Boom;
 extern Color ulBKGColor;
