@@ -84,7 +84,7 @@ void DebugBox::print() {
 	std::vector<std::pair<std::string, std::string> >::const_iterator itr;
 	for(itr = m_elements.begin(); itr != m_elements.end(); ++itr) {
 		std::stringstream out;
-		out << "│ " << std::left << std::setw(m_maxKeyLen) << std::setfill(' ') << itr->first << " " << itr->second;
+		out << "│ " << std::left << std::setw(int(m_maxKeyLen)) << std::setfill(' ') << itr->first << " " << itr->second;
 		hFontDebug->draw(lineOffset, out.str(), Color::white);
 		lineOffset.y += lineHeight;
 	}
