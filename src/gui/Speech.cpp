@@ -391,7 +391,7 @@ long ARX_SPEECH_AddSpeech(Entity * io, const std::string & data, long mood,
 		io->lastspeechflag = 0;
 		aspeech[num].text.clear();
 		aspeech[num].text = _output;
-		aspeech[num].duration = std::max(aspeech[num].duration, (unsigned long)(strlen(_output.c_str()) + 1) * 100);
+		aspeech[num].duration = std::max(aspeech[num].duration, ArxDuration((strlen(_output.c_str()) + 1) * 100));
 		
 		sample = data;
 	}

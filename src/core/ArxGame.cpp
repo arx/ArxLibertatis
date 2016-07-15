@@ -657,7 +657,7 @@ ARX_PROGRAM_OPTION("skiplogo", "", "Skip logos at startup", &skipLogo);
 static bool HandleGameFlowTransitions() {
 	
 	const int TRANSITION_DURATION = 3600;
-	static unsigned long TRANSITION_START = 0;
+	static ArxInstant TRANSITION_START = 0;
 
 	if(GameFlow::getTransition() == GameFlow::NoTransition) {
 		return false;
@@ -1935,7 +1935,7 @@ void ArxGame::updateLevel() {
 		
 		SpellBase * spell = spells.getSpellByCaster(PlayerEntityHandle, SPELL_MAGIC_SIGHT);
 		if(spell) {
-			long duration = long(arxtime.now_ul()) - long(spell->m_timcreation);
+			ArxDuration duration = arxtime.now_ul() - spell->m_timcreation;
 			magicSightZoom = glm::clamp(float(duration) / 500.f, 0.f, 1.f);
 		}
 		

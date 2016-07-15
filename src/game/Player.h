@@ -302,7 +302,7 @@ struct ARXCHARACTER {
 	
 	long AimTime;
 	
-	unsigned long m_aimTime;
+	ArxInstant m_aimTime;
 	
 	ResourcePool lifePool;
 	ResourcePool manaPool;

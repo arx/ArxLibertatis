@@ -120,7 +120,7 @@ struct EERIE_LIGHT {
 	ArxInstant creationTime;
 	
 	// will start to fade before the end of duration...
-	unsigned long duration;
+	ArxDuration duration;
 	
 	audio::SourceId sample;
 	math::Quantizer m_storedFlameTime;

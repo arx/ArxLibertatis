@@ -20,6 +20,7 @@
 #ifndef ARX_GRAPHICS_EFFECTS_FADE_H
 #define ARX_GRAPHICS_EFFECTS_FADE_H
 
+#include "core/TimeTypes.h"
 #include "graphics/Color.h"
 
 extern long	FADEDIR;
@@ -32,7 +33,9 @@ enum FadeType {
 void fadeReset();
 
 void fadeSetColor(Color3f color);
-void fadeRequestStart(FadeType type, const unsigned long duration);
+
+// TODO should this really be in ingame time ?
+void fadeRequestStart(FadeType type, const ArxDuration duration);
 
 void ManageFade();
 

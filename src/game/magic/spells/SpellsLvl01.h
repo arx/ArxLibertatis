@@ -56,7 +56,7 @@ public:
 	
 private:
 	Vec3f m_srcPos;
-	unsigned int m_elapsed;
+	ArxDuration m_elapsed;
 	
 	struct T_LINKLIGHTTOFX {
 		LightHandle m_effectLight;

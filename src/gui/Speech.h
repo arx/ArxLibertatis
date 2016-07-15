@@ -145,7 +145,7 @@ struct ARX_SPEECH {
 	long mood;
 	SpeechFlags flags;
 	ArxInstant time_creation;
-	unsigned long duration;
+	ArxDuration duration;
 	float fDeltaY;
 	int iTimeScroll;
 	float fPixelScroll;

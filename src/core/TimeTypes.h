@@ -23,5 +23,6 @@
 #include "platform/Platform.h"
 
 typedef s64 ArxInstant;
+typedef s64 ArxDuration;
 
 #endif // ARX_CORE_TIMETYPES_H

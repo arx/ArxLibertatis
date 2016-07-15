@@ -187,7 +187,7 @@ public:
 	Result execute(Context & context) {
 		
 		std::string inout = context.getWord();
-		const unsigned long duration = checked_range_cast<unsigned long>(context.getFloat());
+		const ArxDuration duration = checked_range_cast<ArxDuration>(context.getFloat());
 		
 		if(inout == "out") {
 			

@@ -100,8 +100,8 @@ class TextureContainer;
 
 struct DAMAGE_INFO {
 	short exist;
-	unsigned long start_time;
-	unsigned long lastupd;
+	ArxInstant start_time;
+	ArxInstant lastupd;
 	
 	DamageParameters params;
 };
@@ -908,7 +908,7 @@ static void ARX_DAMAGES_AddVisual(DAMAGE_INFO & di, const Vec3f & pos, float dmg
 		num = Random::get(0, io->obj->vertexlist.size() / 4 - 1) * 4 + 1;
 	}
 	
-	unsigned long now = arxtime.now_ul();
+	ArxInstant now = arxtime.now_ul();
 	if(di.lastupd + 200 < now) {
 		di.lastupd = now;
 		if(di.params.type & DAMAGE_TYPE_MAGICAL) {

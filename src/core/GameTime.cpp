@@ -89,7 +89,7 @@ void GameTime::resume() {
 	}
 }
 
-void GameTime::force_time_restore(const unsigned long time) {
+void GameTime::force_time_restore(const ArxInstant time) {
 	
 	u64 requested_time = u64(time * 1000);
 	

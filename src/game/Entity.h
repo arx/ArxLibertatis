@@ -324,7 +324,7 @@ public:
 	
 	ArxInstant sfx_time;
 	ArxInstant collide_door_time;
-	unsigned long ouch_time;
+	ArxInstant ouch_time;
 	float dmg_sum;
 	
 	IO_SPELLCAST_DATA spellcast_data;

@@ -77,7 +77,7 @@ struct POLYBOOM {
 	short nbvert;
 	TextureContainer * tc;
 	ArxInstant timecreation;
-	unsigned long tolive;
+	ArxDuration tolive;
 };
 
 static const size_t MAX_POLYBOOM = 4000;
@@ -327,7 +327,7 @@ void SpawnGroundSplat(const Sphere & sp, const Color3f & col, long flags) {
 						long num = Random::get(0, 5);
 						pb.tc = bloodsplat[num];
 						
-						pb.tolive=(long)(float)(16000 * size * (1.0f/40));
+						pb.tolive = ArxDuration(16000 * size * (1.0f/40));
 					}
 					
 					pb.ep=ep;
@@ -420,7 +420,7 @@ void ARXDRAW_DrawPolyBoom() {
 		
 		POLYBOOM & pb = *itr;
 		
-		float t = (float)pb.timecreation + (float)pb.tolive - (float)now;
+		ArxDuration t = pb.timecreation + pb.tolive - now;
 		
 		long typp = pb.type;
 		typp &= ~128;

@@ -147,7 +147,7 @@ void HitStrengthGauge::update() {
 		if(player.m_bowAimRatio > 0) {
 			j = player.m_bowAimRatio;
 		} else {
-			const unsigned long delta = arxtime.now_ul() - player.m_aimTime;
+			const ArxDuration delta = arxtime.now_ul() - player.m_aimTime;
 			
 			//TODO global
 			bIsAiming = delta > 0;

@@ -78,7 +78,7 @@ struct ARX_MISSILE
 	Vec3f lastpos;
 	ArxInstant timecreation;
 	ArxInstant lastupdate;
-	unsigned long tolive;
+	ArxDuration tolive;
 	LightHandle	longinfo;
 	EntityHandle owner;
 };
@@ -185,14 +185,14 @@ void ARX_MISSILES_Update() {
 		if(missiles[i].type == MISSILE_NONE)
 			continue;
 
-		long framediff = missiles[i].timecreation + missiles[i].tolive - now;
+		ArxDuration framediff = missiles[i].timecreation + missiles[i].tolive - now;
 
 		if(framediff < 0) {
 			ARX_MISSILES_Kill(i);
 			continue;
 		}
 
-		long framediff3 = now - missiles[i].timecreation;
+		ArxDuration framediff3 = now - missiles[i].timecreation;
 
 		switch(missiles[i].type) {
 			case MISSILE_NONE:

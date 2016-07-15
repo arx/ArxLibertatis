@@ -1781,7 +1781,7 @@ void ArxGame::manageKeyMouse() {
 			} else {
 				
 				int borderSize = 10;
-				unsigned long borderDelay = 100;
+				ArxDuration borderDelay = 100;
 				if(!dragging && !mainApp->getWindow()->isFullScreen()) {
 					borderSize = 50;
 					borderDelay = 200;

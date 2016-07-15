@@ -673,7 +673,7 @@ static bool StrikeAimtime() {
 	
 	ARX_PLAYER_Remove_Invisibility();
 	
-	const unsigned long delta = arxtime.now_ul() - player.m_aimTime;
+	const ArxDuration delta = arxtime.now_ul() - player.m_aimTime;
 	player.m_strikeAimRatio = delta * (1.f+(1.f-GLOBAL_SLOWDOWN));
 
 	if(player.m_strikeAimRatio > player.Full_AimTime)
