@@ -99,7 +99,7 @@ void ARX_BOOMS_ClearAllPolyBooms() {
 	polyboom.clear();
 }
 
-void ARX_BOOMS_Add(const Vec3f & poss,long type) {
+void spawnFireHitParticle(const Vec3f & poss, long type) {
 	
 	PARTICLE_DEF * pd = createParticle(true);
 	if(pd) {
@@ -130,6 +130,9 @@ void ARX_BOOMS_Add(const Vec3f & poss,long type) {
 		}
 		
 	}
+}
+
+void ARX_BOOMS_Add(const Vec3f & poss) {
 	
 	static TextureContainer * tc2 = TextureContainer::Load("graph/particles/boom");
 	

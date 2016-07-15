@@ -387,7 +387,8 @@ void ARX_PARTICLES_Spawn_Spark(const Vec3f & pos, unsigned int count, SpawnSpark
 }
 
 void MakeCoolFx(const Vec3f & pos) {
-	ARX_BOOMS_Add(pos, 1);
+	spawnFireHitParticle(pos, 1);
+	ARX_BOOMS_Add(pos);
 }
 
 void MakePlayerAppearsFX(Entity * io) {
