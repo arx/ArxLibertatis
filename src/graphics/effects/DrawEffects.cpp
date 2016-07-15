@@ -99,39 +99,6 @@ void ARX_BOOMS_ClearAllPolyBooms() {
 	polyboom.clear();
 }
 
-void spawnFireHitParticle(const Vec3f & poss, long type) {
-	
-	PARTICLE_DEF * pd = createParticle(true);
-	if(pd) {
-		
-		static TextureContainer * tc1 = TextureContainer::Load("graph/particles/fire_hit");
-		
-		pd->ov = poss;
-		pd->move = Vec3f(3.f, 4.f, 3.f) - Vec3f(6.f, 12.f, 6.f) * randomVec3f();
-		pd->tolive = Random::getu(600, 700);
-		pd->tc = tc1;
-		pd->siz = Random::getf(100.f, 110.f) * ((type == 1) ? 2.f : 1.f);
-		pd->zdec = true;
-		if(type == 1) {
-			pd->rgb = Color3f(.4f, .4f, 1.f);
-		}
-		
-		pd = createParticle(true);
-		if(pd) {
-			pd->ov = poss;
-			pd->move = Vec3f(3.f , 4.f, 3.f) - Vec3f(6.f, 12.f, 6.f) * randomVec3f();
-			pd->tolive = Random::getu(600, 700);
-			pd->tc = tc1;
-			pd->siz = Random::getf(40.f, 70.f) * ((type == 1) ? 2.f : 1.f);
-			pd->zdec = true;
-			if(type == 1) {
-				pd->rgb = Color3f(.4f, .4f, 1.f);
-			}
-		}
-		
-	}
-}
-
 void ARX_BOOMS_Add(const Vec3f & poss) {
 	
 	static TextureContainer * tc2 = TextureContainer::Load("graph/particles/boom");

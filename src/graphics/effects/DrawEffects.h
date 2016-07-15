@@ -51,7 +51,6 @@ ZeniMax Media Inc., Suite 120, Rockville, Maryland 20850 USA.
 
 size_t PolyBoom_count();
 void ARX_BOOMS_ClearAllPolyBooms();
-void spawnFireHitParticle(const Vec3f & poss, long type);
 void ARX_BOOMS_Add(const Vec3f & pos);
 void ARXDRAW_DrawPolyBoom();
 
