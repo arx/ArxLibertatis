@@ -118,10 +118,10 @@ void ARX_SPEECH_ClearAll()
 	}
 }
 
-long ARX_SPEECH_Add(const std::string & text, long duration) {
+void ARX_SPEECH_Add(const std::string & text, long duration) {
 	
 	if(text.empty())
-		return -1;
+		return;
 	
 	ArxInstant now = arxtime.now_ul();
 	if(now == 0) {
@@ -148,12 +148,10 @@ long ARX_SPEECH_Add(const std::string & text, long duration) {
 		}
 		
 		speech[i].text = text;
-		
-		// Successfull allocation
-		return speech[i].duration;
+		return;
 	}
 	
-	return -1;
+	LogInfo << "Failed to add speech: " << text;
 }
 
 static bool isLastSpeech(size_t index) {

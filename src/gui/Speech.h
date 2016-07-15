@@ -191,7 +191,7 @@ void ARX_SPEECH_Check();
  * Add a raw text message to the "system" log (top of the screen).
  * This message will be displayed as-is.
  */
-long ARX_SPEECH_Add(const std::string & text, long duration = -1);
+void ARX_SPEECH_Add(const std::string & text, long duration = -1);
 void ARX_SPEECH_ClearAll();
 
 /*!
