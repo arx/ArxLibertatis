@@ -165,7 +165,7 @@ class TextManager;
 Image savegame_thumbnail;
 
 extern TextManager	*pTextManage;
-extern unsigned long FORCE_TIME_RESTORE;
+extern ArxInstant FORCE_TIME_RESTORE;
 
 extern long		DONT_WANT_PLAYER_INZONE;
 extern size_t		TOTPDL;
@@ -348,8 +348,6 @@ static void PlayerLaunchArrow_Test(float aimratio, float poisonous, const Vec3f 
 
 	ARX_THROWN_OBJECT_Throw(PlayerEntityHandle, position, vect, quat, velocity, damages, poisonous);
 }
-
-extern unsigned long LAST_JUMP_ENDTIME;
 
 //*************************************************************************************
 // Switches from/to Game Mode/Editor Mode
