@@ -89,7 +89,7 @@ public:
 		io->angle.setPitch(io->angle.getPitch() + t2);
 		io->angle.setRoll(io->angle.getRoll() + t3);
 		
-		io->animBlend.lastanimtime = 0;
+		io->animBlend.lastanimtime = ArxInstant_ZERO;
 		
 		return Success;
 	}
@@ -279,7 +279,7 @@ public:
 			scr_timer[num2].es = context.getScript();
 			scr_timer[num2].exist = 1;
 			scr_timer[num2].io = context.getEntity();
-			scr_timer[num2].interval = 1000.f;
+			scr_timer[num2].interval = ArxDurationMs(1000);
 			// Don't assume that we successfully set the animation - use the current animation
 			if(layer.cur_anim) {
 				arx_assert(layer.altidx_cur >= 0 && layer.altidx_cur < layer.cur_anim->alt_nb);

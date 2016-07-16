@@ -147,7 +147,7 @@ void ARX_BOOMS_Add(const Vec3f & poss) {
 			pb.type = 0;
 			pb.ep = ep;
 			pb.tc = tc2;
-			pb.tolive = 10000;
+			pb.tolive = ArxDurationMs(10000);
 			pb.timecreation = arxtime.now_ul();
 			pb.rgb = Color3f::black;
 			for(int k = 0; k < nbvert; k++) {
@@ -320,14 +320,14 @@ void SpawnGroundSplat(const Sphere & sp, const Color3f & col, long flags) {
 						long num = Random::get(0, 2);
 						pb.tc = water_splat[num];
 						
-						pb.tolive=1500;
+						pb.tolive = ArxDurationMs(1500);
 					} else {
 						pb.type = 1;
 						
 						long num = Random::get(0, 5);
 						pb.tc = bloodsplat[num];
 						
-						pb.tolive = ArxDuration(16000 * size * (1.0f/40));
+						pb.tolive = ArxDurationMs(16000 * size * (1.0f/40));
 					}
 					
 					pb.ep=ep;
@@ -388,22 +388,22 @@ void ARXDRAW_DrawPolyBoom() {
 		
 		POLYBOOM & pb = polyboom[i];
 		
-		// TODO what exactly does pb.type do ?
+		// FIXME what exactly does pb.type do ?
 		if(pb.type & 128) {
 			if(pb.timecreation - g_framedelay > 0) {
 				float fCalc = pb.timecreation - g_framedelay;
-				pb.timecreation = checked_range_cast<unsigned long>(fCalc);
+				pb.timecreation = ArxInstant(fCalc);
 			}
 			
 			if(pb.timecreation - g_framedelay > 0) {
 				float fCalc =  pb.timecreation - g_framedelay;
-				pb.timecreation = checked_range_cast<unsigned long>(fCalc);
+				pb.timecreation = ArxInstant(fCalc);
 			}
 		}
 		
 		ArxDuration t = pb.timecreation + pb.tolive - now;
 		
-		if(t <= 0) {
+		if(t <= ArxDuration_ZERO) {
 			std::swap(polyboom[i], polyboom.back());
 			polyboom.pop_back();
 			i--;

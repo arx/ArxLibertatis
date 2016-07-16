@@ -80,8 +80,8 @@ CMagicMissile::CMagicMissile()
 	, fTrail()
 	, snd_loop()
 {
-	SetDuration(2000);
-	m_elapsed = m_duration + 1;
+	SetDuration(ArxDurationMs(2000));
+	m_elapsed = m_duration + ArxDurationMs(1);
 	
 	m_trailColor = Color3f(0.9f, 0.9f, 0.7f) + Color3f(0.1f, 0.1f, 0.3f) * randomColor3f();
 	m_projectileColor = Color3f(0.3f, 0.3f, 0.5f);

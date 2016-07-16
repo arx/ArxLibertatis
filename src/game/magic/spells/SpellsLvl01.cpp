@@ -49,7 +49,7 @@ void MagicSightSpell::Launch()
 {
 	m_fManaCostPerSecond = 0.36f;
 	m_hasDuration = true;
-	m_duration = (m_launchDuration > -1) ? m_launchDuration : 6000000l;
+	m_duration = (m_launchDuration > ArxDurationMs(-1)) ? m_launchDuration : ArxDurationMs(6000000);
 	
 	ARX_SOUND_PlaySFX(SND_SPELL_VISION_START, &m_caster_pos);
 	
@@ -164,7 +164,7 @@ static void LaunchMagicMissileExplosion(const Vec3f & _ePos, bool mrCheat) {
 		}
 
 		light->pos = _ePos;
-		light->duration = 1500;
+		light->duration = ArxDurationMs(1500);
 	}
 
 	arx_assert(pParticleManager);
@@ -190,7 +190,7 @@ MagicMissileSpell::~MagicMissileSpell() {
 
 void MagicMissileSpell::Launch() {
 	
-	m_duration = 6000ul;
+	m_duration = ArxDurationMs(6000);
 	
 	m_hand_group = GetActionPointIdx(entities[m_caster]->obj, "primary_attach");
 	
@@ -246,7 +246,7 @@ void MagicMissileSpell::Launch() {
 	
 	m_mrCheat = (m_caster == PlayerEntityHandle && cur_mr == 3);
 	
-	long lMax = 0;
+	ArxDuration lMax = ArxDuration_ZERO;
 	
 	long number;
 	if(sp_max || cur_rf == 3) {
@@ -276,9 +276,9 @@ void MagicMissileSpell::Launch() {
 		
 		missile->Create(startPos, angles);
 		
-		ArxDuration lTime = m_duration + Random::get(-1000, 1000);
+		ArxDuration lTime = m_duration + ArxDurationMs(Random::get(-1000, 1000));
 		
-		lTime		= std::max(1000L, lTime);
+		lTime		= std::max(ArxDurationMs(1000), lTime);
 		lMax		= std::max(lMax, lTime);
 		
 		missile->SetDuration(lTime);
@@ -299,11 +299,11 @@ void MagicMissileSpell::Launch() {
 			}
 			
 			el->pos = startPos;
-			el->duration = 300;
+			el->duration = ArxDurationMs(300);
 		}
 	}
 	
-	m_duration = lMax + 1000;
+	m_duration = lMax + ArxDurationMs(1000);
 }
 
 void MagicMissileSpell::End() {
@@ -330,7 +330,7 @@ void MagicMissileSpell::Update() {
 			LaunchMagicMissileExplosion(missile->eCurPos, m_mrCheat);
 			ARX_NPC_SpawnAudibleSound(missile->eCurPos, entities[m_caster]);
 			
-			missile->SetTTL(1000);
+			missile->SetTTL(ArxDurationMs(1000));
 			missile->bExplo = true;
 			missile->bMove  = false;
 			
@@ -353,7 +353,7 @@ void MagicMissileSpell::Update() {
 	}
 	
 	for(size_t i = 0 ; i < pTab.size() ; i++) {
-		pTab[i]->Update(g_framedelay);
+		pTab[i]->Update(ArxDurationMs(g_framedelay));
 	}
 	
 	{ // CheckAllDestroyed
@@ -366,7 +366,7 @@ void MagicMissileSpell::Update() {
 		}
 		
 		if(nbmissiles == 0)
-			m_duration = 0;
+			m_duration = ArxDuration_ZERO;
 	}
 	
 	for(size_t i = 0; i < pTab.size(); i++) {
@@ -393,7 +393,7 @@ IgnitSpell::IgnitSpell()
 
 void IgnitSpell::Launch()
 {
-	m_duration = 500;
+	m_duration = ArxDurationMs(500);
 	
 	if(m_hand_group != ActionPoint()) {
 		m_srcPos = m_hand_pos;
@@ -410,13 +410,13 @@ void IgnitSpell::Launch()
 		light->fallstart = 380.f;
 		light->rgb       = Color3f(1.f, 0.75f, 0.5f);
 		light->pos       = m_srcPos;
-		light->duration  = 300;
+		light->duration  = ArxDurationMs(300);
 	}
 	
 	float fPerimeter = 400.f + m_level * 30.f;
 	
 	m_lights.clear();
-	m_elapsed = 0;
+	m_elapsed = ArxDuration_ZERO;
 	
 	CheckForIgnition(Sphere(m_srcPos, fPerimeter), 1, 1);
 	
@@ -525,7 +525,7 @@ void IgnitSpell::Update()
 
 void DouseSpell::Launch()
 {
-	m_duration = 500;
+	m_duration = ArxDurationMs(500);
 	
 	Vec3f target;
 	if(m_hand_group != ActionPoint()) {
@@ -619,5 +619,5 @@ void ActivatePortalSpell::Launch()
 {
 	ARX_SOUND_PlayInterface(SND_SPELL_ACTIVATE_PORTAL);
 	
-	m_duration = 20;
+	m_duration = ArxDurationMs(20);
 }

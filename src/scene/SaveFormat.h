@@ -292,7 +292,7 @@ struct SavedPrecast {
 		a.level = level;
 		a.launch_time = launch_time;
 		a.flags = SpellcastFlags::load(flags); // TODO save/load flags
-		a.duration = duration;
+		a.duration = ArxDurationMs(duration); // TODO save/load time
 		return a;
 	}
 	
@@ -301,7 +301,7 @@ struct SavedPrecast {
 		level = b.level;
 		launch_time = b.launch_time;
 		flags = b.flags;
-		duration = b.duration;
+		duration = toMs(b.duration); // TODO save/load time
 		return *this;
 	}
 	
@@ -530,7 +530,7 @@ struct SavedSpellcastData {
 		a.spell_flags = SpellcastFlags::load(spell_flags); // TODO save/load flags
 		a.spell_level = spell_level;
 		a.target = EntityHandle(target); // TODO saved internum not valid after loading
-		a.duration = duration;
+		a.duration = ArxDurationMs(duration); // TODO save/load time
 		return a;
 	}
 	
@@ -541,7 +541,7 @@ struct SavedSpellcastData {
 		spell_flags = b.spell_flags;
 		spell_level = b.spell_level;
 		target = b.target.handleData();
-		duration = b.duration;
+		duration = toMs(b.duration); // TODO save/load time
 		return *this;
 	}
 	

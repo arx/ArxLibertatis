@@ -161,8 +161,8 @@ struct ARX_SPEECH {
 		sample = 0;
 		mood = 0;
 		flags = 0;
-		time_creation = 0;
-		duration = 0;
+		time_creation = ArxInstant_ZERO;
+		duration = ArxDuration_ZERO;
 		fDeltaY = 0;
 		iTimeScroll = 0;
 		fPixelScroll = 0;

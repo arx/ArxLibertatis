@@ -281,7 +281,7 @@ bool Manage3DCursor(Entity * io, bool simulate) {
 				Vec3f viewvector = movev;
 
 				Anglef angle = temp;
-				io->soundtime = 0;
+				io->soundtime = ArxInstant_ZERO;
 				io->soundcount = 0;
 				EERIE_PHYSICS_BOX_Launch(io->obj, io->pos, angle, viewvector);
 				ARX_SOUND_PlaySFX(SND_WHOOSH, &pos);

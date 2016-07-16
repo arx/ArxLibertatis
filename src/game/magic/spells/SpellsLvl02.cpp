@@ -55,7 +55,7 @@ void HealSpell::Launch()
 	
 	m_hasDuration = true;
 	m_fManaCostPerSecond = 0.4f * m_level;
-	m_duration = (m_launchDuration > -1) ? m_launchDuration : 3500;
+	m_duration = (m_launchDuration > ArxDuration(-1)) ? m_launchDuration : ArxDurationMs(3500);
 	m_currentTime = 0;
 	
 	if(m_caster == PlayerEntityHandle) {
@@ -105,7 +105,7 @@ void HealSpell::Launch()
 		light->fallend   = 350.f;
 		light->rgb = Color3f(0.4f, 0.4f, 1.0f);
 		light->pos = m_pos + Vec3f(0.f, -50.f, 0.f);
-		light->duration = 200;
+		light->duration = ArxDurationMs(200);
 		light->extras = 0;
 	}
 }
@@ -135,7 +135,7 @@ void HealSpell::Update() {
 		light->fallend   = 350.f;
 		light->rgb = Color3f(0.4f, 0.4f, 1.0f);
 		light->pos = m_pos + Vec3f(0.f, -50.f, 0.f);
-		light->duration = 200;
+		light->duration = ArxDurationMs(200);
 		light->extras = 0;
 	}
 
@@ -209,7 +209,7 @@ void DetectTrapSpell::Launch()
 		}
 	}
 	
-	m_duration = 60000;
+	m_duration = ArxDurationMs(60000);
 	m_fManaCostPerSecond = 0.4f;
 	m_hasDuration = true;
 	
@@ -250,10 +250,10 @@ void ArmorSpell::Launch()
 	
 	m_snd_loop = ARX_SOUND_PlaySFX(SND_SPELL_ARMOR_LOOP, &entities[m_target]->pos, 1.f, ARX_SOUND_PLAY_LOOPED);
 	
-	m_duration = (m_launchDuration > -1) ? m_launchDuration : 20000;
+	m_duration = (m_launchDuration > ArxDuration(-1)) ? m_launchDuration : ArxDurationMs(20000);
 	
 	if(m_caster == PlayerEntityHandle)
-		m_duration = 20000000;
+		m_duration = ArxDurationMs(20000000);
 	
 	m_hasDuration = true;
 	m_fManaCostPerSecond = 0.2f * m_level;
@@ -313,10 +313,10 @@ void LowerArmorSpell::Launch()
 		ARX_SOUND_PlaySFX(SND_SPELL_LOWER_ARMOR, &entities[m_target]->pos);
 	}
 	
-	m_duration = (m_launchDuration > -1) ? m_launchDuration : 20000;
+	m_duration = (m_launchDuration > ArxDuration(-1)) ? m_launchDuration : ArxDurationMs(20000);
 	
 	if(m_caster == PlayerEntityHandle)
-		m_duration = 20000000;
+		m_duration = ArxDurationMs(20000000);
 	
 	m_hasDuration = true;
 	m_fManaCostPerSecond = 0.2f * m_level;
@@ -391,7 +391,7 @@ void HarmSpell::Launch()
 	spells.endByCaster(m_caster, SPELL_LIFE_DRAIN);
 	spells.endByCaster(m_caster, SPELL_MANA_DRAIN);
 	
-	m_duration = (m_launchDuration >-1) ? m_launchDuration : 6000000;
+	m_duration = (m_launchDuration > ArxDuration(-1)) ? m_launchDuration : ArxDurationMs(6000000);
 	m_hasDuration = true;
 	m_fManaCostPerSecond = 0.4f;
 
@@ -421,7 +421,7 @@ void HarmSpell::End()
 {
 	DamageRequestEnd(m_damage);
 	
-	endLightDelayed(m_light, 600);
+	endLightDelayed(m_light, ArxDurationMs(600));
 	
 	ARX_SOUND_Stop(m_snd_loop);
 }

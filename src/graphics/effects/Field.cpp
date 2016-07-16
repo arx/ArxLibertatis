@@ -74,8 +74,8 @@ CCreateField::CCreateField()
 	, fglow(0.f)
 	, falpha(0.f)
 {
-	SetDuration(2000);
-	m_elapsed = m_duration + 1;
+	SetDuration(ArxDurationMs(2000));
+	m_elapsed = m_duration + ArxDurationMs(1);
 	
 	tex_jelly = TextureContainer::Load("graph/obj3d/textures/(fx)_tsu3");
 }
@@ -253,7 +253,7 @@ void CCreateField::Render()
 		light->fallstart = 400.f;
 		light->rgb = Color3f(0.8f, 0.0f, 1.0f);
 		light->pos = eSrc + Vec3f(0.f, -150.f, 0.f);
-		light->duration = 800;
+		light->duration = ArxDurationMs(800);
 	}
 
 	//return falpha;

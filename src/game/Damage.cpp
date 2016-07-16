@@ -115,7 +115,7 @@ DamageHandle DamageCreate(const DamageParameters & params) {
 			DAMAGE_INFO & damage = damages[i];
 			damage.params = params;
 			damage.start_time = arxtime.now_ul();
-			damage.lastupd = 0;
+			damage.lastupd = ArxInstant_ZERO;
 			damage.exist = true;
 			return DamageHandle(i);
 		}
@@ -552,7 +552,7 @@ void ARX_DAMAGES_ForceDeath(Entity * io_dead, Entity * io_killer) {
 
 	if(fartherThan(io_dead->pos, ACTIVECAM->orgTrans.pos, 3200.f)) {
 		io_dead->animlayer[0].ctime = 9999999;
-		io_dead->animBlend.lastanimtime = 0;
+		io_dead->animBlend.lastanimtime = ArxInstant_ZERO;
 	}
 
 	std::string killer;

@@ -738,6 +738,6 @@ bool ARX_SPELLS_AnalyseSPELL() {
 	                         flags,
 	                         -1,
 	                         EntityHandle(),
-	                         -1);
+	                         ArxDuration(-1));
 	
 }

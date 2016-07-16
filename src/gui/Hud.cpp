@@ -287,7 +287,7 @@ void BackpackIconGui::update(const Rectf & parent) {
 
 void BackpackIconGui::updateInput() {
 	
-	static ArxInstant flDelay = 0;
+	static ArxInstant flDelay = ArxInstant_ZERO;
 	
 	// Check for backpack Icon
 	if(m_rect.contains(Vec2f(DANAEMouse))) {
@@ -307,7 +307,7 @@ void BackpackIconGui::updateInput() {
 			
 			playerInventory.optimize();
 			
-			flDelay = 0;
+			flDelay = ArxInstant_ZERO;
 		} else if(eeMouseDown1() || flDelay) {
 			if(!flDelay) {
 				arxtime.update();
@@ -318,7 +318,7 @@ void BackpackIconGui::updateInput() {
 				if(arxtime.now_ul() - flDelay < 300) {
 					return;
 				} else {
-					flDelay = 0;
+					flDelay = ArxInstant_ZERO;
 				}
 			}
 			

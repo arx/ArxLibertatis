@@ -32,16 +32,16 @@
 
 const size_t MAX_PRECAST = 3;
 
-ArxInstant LAST_PRECAST_TIME = 0;
+ArxInstant LAST_PRECAST_TIME = ArxInstant_ZERO;
 
 std::vector<PRECAST_STRUCT> Precast;
 
 void ARX_SPELLS_Precast_Reset() {
-	LAST_PRECAST_TIME = 0;
+	LAST_PRECAST_TIME = ArxInstant_ZERO;
 	Precast.clear();
 }
 
-void ARX_SPELLS_Precast_Add(SpellType typ, long _level, SpellcastFlags flags, long duration) {
+void ARX_SPELLS_Precast_Add(SpellType typ, long _level, SpellcastFlags flags, ArxDuration duration) {
 	
 	if(Precast.size() >= MAX_PRECAST) {
 		Precast.erase(Precast.begin());

@@ -56,7 +56,7 @@ static long cur_arm = 0;
 static long cur_sos = 0;
 
 long cur_mega=0;
-static ArxInstant sp_max_start = 0;
+static ArxInstant sp_max_start = ArxInstant_ZERO;
 long sp_wep=0;
 short uw_mode=0;
 
@@ -75,7 +75,7 @@ void CheatDrawText() {
 	
 	ArxDuration elapsed = arxtime.now_ul() - sp_max_start;
 
-	if(sp_max_start != 0 && elapsed < 20000) {
+	if(sp_max_start != ArxInstant_ZERO && elapsed < ArxDurationMs(20000)) {
 		float modi = (20000 - elapsed) * ( 1.0f / 2000 ) * ( 1.0f / 10 );
 		float sizX = 16;
 		
@@ -134,7 +134,7 @@ static void MakeSpCol() {
 
 void CheatReset() {
 
-	sp_max_start = 0;
+	sp_max_start = ArxInstant_ZERO;
 
 	sp_arm = 0;
 	cur_arm = 0;

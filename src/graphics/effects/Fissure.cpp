@@ -45,11 +45,11 @@ FissureFx::FissureFx()
 
 void FissureFx::SetDuration(ArxDuration alDurationIntro, ArxDuration alDurationRender, ArxDuration alDurationOuttro)
 {
-	ulDurationIntro = glm::clamp(alDurationIntro, 100l, 100000l);
-	ulDurationRender = glm::clamp(alDurationRender, 100l, 100000l);
-	ulDurationOuttro = glm::clamp(alDurationOuttro, 100l, 100000l);
+	ulDurationIntro  = arx::clamp(alDurationIntro,  ArxDurationMs(100), ArxDurationMs(100000));
+	ulDurationRender = arx::clamp(alDurationRender, ArxDurationMs(100), ArxDurationMs(100000));
+	ulDurationOuttro = arx::clamp(alDurationOuttro, ArxDurationMs(100), ArxDurationMs(100000));
 	
-	m_elapsed = 0;
+	m_elapsed = ArxDuration_ZERO;
 }
 
 void FissureFx::SetColorBorder(Color3f color)
@@ -85,7 +85,7 @@ CRiseDead::CRiseDead()
 	, sizeF(0)
 	, fSizeIntro(0.f)
 {
-	m_elapsed = ulDurationIntro + ulDurationRender + ulDurationOuttro + 1;
+	m_elapsed = ulDurationIntro + ulDurationRender + ulDurationOuttro + ArxDurationMs(1);
 	
 	tex_light = TextureContainer::Load("graph/obj3d/textures/(fx)_tsu4");
 }
@@ -445,7 +445,7 @@ CSummonCreature::CSummonCreature()
 	
 	m_eSrc = Vec3f_ZERO;
 	
-	m_elapsed = ulDurationIntro + ulDurationRender + ulDurationOuttro + 1;
+	m_elapsed = ulDurationIntro + ulDurationRender + ulDurationOuttro + ArxDurationMs(1);
 	
 	iSize = 100;
 	fOneOniSize = 1.0f / ((float) iSize);

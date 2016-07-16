@@ -473,7 +473,7 @@ void ManageTorch() {
 		el->fallend = el->fallstart + 280.f;
 		el->exist = 1;
 		el->rgb = player.m_torchColor - Color3f(rr, rr, rr) * Color3f(0.1f, 0.1f, 0.1f);
-		el->duration = 0;
+		el->duration = ArxDuration_ZERO;
 		el->extras = 0;
 		
 	} else if(cur_mr == 3) {
@@ -484,7 +484,7 @@ void ManageTorch() {
 		el->fallend = el->fallstart + 480.f; 
 		el->exist = 1;
 		el->rgb = Color3f(1.f, .5f, .8f);
-		el->duration = 0;
+		el->duration = ArxDuration_ZERO;
 		el->extras = 0;
 		
 	} else {

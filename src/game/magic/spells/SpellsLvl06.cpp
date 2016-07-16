@@ -87,7 +87,7 @@ void RiseDeadSpell::Launch()
 	ARX_SOUND_PlaySFX(SND_SPELL_RAISE_DEAD, &m_targetPos);
 	
 	// TODO this tolive value is probably never read
-	m_duration = (m_launchDuration > -1) ? m_launchDuration : 2000000;
+	m_duration = (m_launchDuration > ArxDuration(-1)) ? m_launchDuration : ArxDurationMs(2000000);
 	m_hasDuration = true;
 	m_fManaCostPerSecond = 1.2f;
 	
@@ -95,7 +95,7 @@ void RiseDeadSpell::Launch()
 	m_entity = EntityHandle();
 	
 	m_fissure.Create(target, beta);
-	m_fissure.SetDuration(2000, 500, 1800);
+	m_fissure.SetDuration(ArxDurationMs(2000), ArxDurationMs(500), ArxDurationMs(1800));
 	m_fissure.SetColorBorder(Color3f(0.5, 0.5, 0.5));
 	m_fissure.SetColorRays1(Color3f(0.5, 0.5, 0.5));
 	m_fissure.SetColorRays2(Color3f(1.f, 0.f, 0.f));
@@ -111,7 +111,7 @@ void RiseDeadSpell::Launch()
 		light->fallstart = 380.f;
 		light->rgb = Color3f::black;
 		light->pos = target - Vec3f(0.f, 100.f, 0.f);
-		light->duration = 200;
+		light->duration = ArxDurationMs(200);
 		light->creationTime = arxtime.now_ul();
 	}
 	
@@ -141,14 +141,14 @@ void RiseDeadSpell::End()
 				light->fallstart = 400.f;
 				light->rgb = Color3f(1.0f, 0.8f, 0.f);
 				light->pos = posi;
-				light->duration = 600;
+				light->duration = ArxDurationMs(600);
 			}
 
 			entity->destroyOne();
 		}
 	}
 	
-	endLightDelayed(m_light, 500);
+	endLightDelayed(m_light, ArxDurationMs(500));
 }
 
 void RiseDeadSpell::Update() {
@@ -170,7 +170,7 @@ void RiseDeadSpell::Update() {
 		light->fallend = 500.f;
 		light->fallstart = 400.f;
 		light->rgb = Color3f(0.8f, 0.2f, 0.2f);
-		light->duration=800;
+		light->duration = ArxDurationMs(800);
 		light->creationTime = arxtime.now_ul();
 	}
 	
@@ -220,7 +220,7 @@ void RiseDeadSpell::Update() {
 		} else {
 			ARX_SOUND_PlaySFX(SND_MAGIC_FIZZLE);
 			m_creationFailed = true;
-			m_duration=0;
+			m_duration = ArxDuration_ZERO;
 		}
 	} else if(!arxtime.is_paused() && tim < 4000) {
 	  if(Random::getf() > 0.95f) {
@@ -233,7 +233,7 @@ void ParalyseSpell::Launch()
 {
 	ARX_SOUND_PlaySFX(SND_SPELL_PARALYSE, &entities[m_target]->pos);
 	
-	m_duration = (m_launchDuration > -1) ? m_launchDuration : 5000;
+	m_duration = (m_launchDuration > ArxDuration(-1)) ? m_launchDuration : ArxDurationMs(5000);
 	
 	float resist_magic = 0.f;
 	if(m_target == PlayerEntityHandle && m_level <= player.level) {
@@ -243,7 +243,7 @@ void ParalyseSpell::Launch()
 	}
 	if(Random::getf(0.f, 100.f) < resist_magic) {
 		float mul = std::max(0.5f, 1.f - (resist_magic * 0.005f));
-		m_duration = long(m_duration * mul);
+		m_duration = ArxDurationMs(m_duration * mul);
 	}
 	
 	entities[m_target]->ioflags |= IO_FREEZESCRIPT;
@@ -274,11 +274,12 @@ void CreateFieldSpell::Launch()
 {
 	ArxInstant start = arxtime.now_ul();
 	if(m_flags & SPELLCAST_FLAG_RESTORE) {
-		start -= std::min(start, ArxInstant(4000l));
+		// FIXME what is going on here ?
+		start -= std::min(start, ArxInstantMs(4000l));
 	}
 	m_timcreation = start;
 	
-	m_duration = (m_launchDuration > -1) ? m_launchDuration : 800000;
+	m_duration = (m_launchDuration > ArxDuration(-1)) ? m_launchDuration : ArxDurationMs(800000);
 	m_hasDuration = true;
 	m_fManaCostPerSecond = 1.2f;
 	
@@ -334,17 +335,17 @@ void CreateFieldSpell::Launch()
 		m_duration = m_field.m_duration;
 		
 		if(m_flags & SPELLCAST_FLAG_RESTORE) {
-			m_field.Update(4000);
+			m_field.Update(ArxDurationMs(4000));
 		}
 		
 	} else {
-		m_duration = 0;
+		m_duration = ArxDuration_ZERO;
 	}
 }
 
 void CreateFieldSpell::End() {
 	
-	endLightDelayed(m_field.lLightId, 800);
+	endLightDelayed(m_field.lLightId, ArxDurationMs(800));
 	
 	if(ValidIONum(m_entity)) {
 		delete entities[m_entity];
@@ -360,10 +361,10 @@ void CreateFieldSpell::Update() {
 		
 		if (IsAnyNPCInPlatform(io))
 		{
-			m_duration=0;
+			m_duration=ArxDuration_ZERO;
 		}
 		
-		m_field.Update(g_framedelay);
+		m_field.Update(ArxDurationMs(g_framedelay));
 		m_field.Render();
 	}
 }
@@ -377,7 +378,7 @@ void DisarmTrapSpell::Launch()
 {
 	ARX_SOUND_PlaySFX(SND_SPELL_DISARM_TRAP);
 	
-	m_duration = 1;
+	m_duration = ArxDurationMs(1);
 	
 	Sphere sphere;
 	sphere.origin = player.pos;
@@ -418,10 +419,10 @@ void SlowDownSpell::Launch()
 {
 	ARX_SOUND_PlaySFX(SND_SPELL_SLOW_DOWN, &entities[m_target]->pos);
 	
-	m_duration = (m_launchDuration > -1) ? m_launchDuration : 10000;
+	m_duration = (m_launchDuration > ArxDuration(-1)) ? m_launchDuration : ArxDurationMs(10000);
 	
 	if(m_caster == PlayerEntityHandle)
-		m_duration = 10000000;
+		m_duration = ArxDurationMs(10000000);
 	
 	m_hasDuration = true;
 	m_fManaCostPerSecond = 1.2f;

@@ -50,6 +50,7 @@ ZeniMax Media Inc., Suite 120, Rockville, Maryland 20850 USA.
 #include <stddef.h>
 #include <string>
 
+#include "core/TimeTypes.h"
 #include "math/Types.h"
 #include "graphics/BaseGraphicsTypes.h"
 #include "graphics/GraphicsTypes.h"
@@ -78,7 +79,7 @@ struct EERIE_GROUP
 
 struct EERIE_ANIM
 {
-	long		anim_time;
+	ArxDuration anim_time;
 	long		nb_groups;
 	long		nb_key_frames;
 	EERIE_FRAME *	frames;

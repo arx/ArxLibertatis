@@ -108,7 +108,7 @@ static void ARX_MISSILES_Kill(long i) {
 			if(lightHandleIsValid(missiles[i].longinfo)) {
 				EERIE_LIGHT * light = lightHandleGet(missiles[i].longinfo);
 				
-				light->duration = 150;
+				light->duration = ArxDurationMs(150);
 			}
 
 			break;
@@ -149,7 +149,7 @@ void ARX_MISSILES_Spawn(Entity * io, ARX_SPELLS_MISSILE_TYPE type, const Vec3f &
 		case MISSILE_NONE: break;
 		case MISSILE_FIREBALL:
 		{
-			missiles[i].tolive = 6000;
+			missiles[i].tolive = ArxDurationMs(6000);
 			missiles[i].velocity *= 0.8f;
 			missiles[i].longinfo = GetFreeDynLight();
 

@@ -138,8 +138,8 @@ CPoisonProjectile::CPoisonProjectile()
 	, bOk(false)
 	, fTrail(-1.f)
 {
-	SetDuration(2000);
-	m_elapsed = m_duration + 1;
+	SetDuration(ArxDurationMs(2000));
+	m_elapsed = m_duration + ArxDurationMs(1);
 }
 
 void CPoisonProjectile::Create(Vec3f _eSrc, float _fBeta)
@@ -215,7 +215,7 @@ void CPoisonProjectile::Create(Vec3f _eSrc, float _fBeta)
 
 void CPoisonProjectile::Update(ArxDuration timeDelta)
 {
-	if(m_elapsed <= 2000) {
+	if(m_elapsed <= ArxDurationMs(2000)) {
 		m_elapsed += timeDelta;
 	}
 

@@ -315,8 +315,7 @@ void Cedric_ApplyLightingFirstPartRefactor(Entity *io) {
 
 	if(io->sfx_flag & SFX_TYPE_YLSIDE_DEATH) {
 		if(io->show == SHOW_FLAG_TELEPORTING) {
-			float fTime = io->sfx_time + g_framedelay;
-			io->sfx_time = checked_range_cast<unsigned long>(fTime);
+			io->sfx_time = io->sfx_time + ArxDurationMs(g_framedelay);
 
 			if (io->sfx_time >= arxtime.now_ul())
 				io->sfx_time = arxtime.now_ul();
@@ -335,7 +334,7 @@ void Cedric_ApplyLightingFirstPartRefactor(Entity *io) {
 					io->highlightColor += Color3f(std::max(ratio - 0.5f, 0.f), 0.f, 0.f) * 255;
 					AddRandomSmoke(io, 2);
 				} else { // SFX finish
-					io->sfx_time = 0;
+					io->sfx_time = ArxInstant_ZERO;
 
 					if(io->ioflags & IO_NPC) {
 						MakePlayerAppearsFX(io);
@@ -364,7 +363,7 @@ void Cedric_ApplyLightingFirstPartRefactor(Entity *io) {
 							light->fallstart = 400.f;
 							light->rgb = Color3f(1.0f, 0.8f, 0.f);
 							light->pos = io->pos + Vec3f(0.f, -80.f, 0.f);
-							light->duration = 600;
+							light->duration = ArxDurationMs(600);
 						}
 
 						if(io->sfx_flag & SFX_TYPE_INCINERATE) {
@@ -1130,7 +1129,7 @@ static void Cedric_RenderObject(EERIE_3DOBJ * eobj, Skeleton * obj, Entity * io,
 	ColorRGBA glowColor;
 	if(io && (io->sfx_flag & SFX_TYPE_YLSIDE_DEATH) && io->show != SHOW_FLAG_TELEPORTING) {
 		const ArxDuration elapsed = arxtime.now_ul() - io->sfx_time;
-		if(elapsed >= 3000 && elapsed < 6000) {
+		if(elapsed >= ArxDurationMs(3000) && elapsed < ArxDurationMs(6000)) {
 			float ratio = (elapsed - 3000) * (1.0f / 3000);
 			glowColor = Color::gray(ratio).toRGB();
 			glow = true;

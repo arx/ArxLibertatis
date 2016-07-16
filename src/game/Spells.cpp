@@ -138,7 +138,7 @@ short ARX_FLARES_broken(1);
 
 long snip=0;
 static Vec2s g_LastFlarePosition;
-static unsigned long g_LastFlareTime;
+static ArxInstant g_LastFlareTime;
 
 unsigned char ucFlick=0;
 
@@ -175,7 +175,7 @@ SpellBase * SpellManager::operator[](const SpellHandle handle) {
 
 void SpellManager::endSpell(SpellBase * spell)
 {
-	spell->m_duration = 0;
+	spell->m_duration = ArxDuration_ZERO;
 }
 
 void SpellManager::endByCaster(EntityHandle caster) {
@@ -550,14 +550,14 @@ void ARX_SPELLS_ManageMagic() {
 				
 				ArxInstant now = arxtime.now_ul();
 				
-				const ArxDuration interval = 1000 / 60;
+				const ArxDuration interval = ArxDurationMs(1000 / 60);
 				
 				if(ARX_FLARES_broken) {
 					g_LastFlarePosition = pos;
 					g_LastFlareTime = now - interval;
 				}
 				
-				if(now - ArxInstant(g_LastFlareTime) >= interval) {
+				if(now - g_LastFlareTime >= interval) {
 					
 					if(glm::distance(Vec2f(pos), Vec2f(g_LastFlarePosition)) > 14 * g_sizeRatio.y) {
 						FlareLine(g_LastFlarePosition, pos);
@@ -569,7 +569,7 @@ void ARX_SPELLS_ManageMagic() {
 					else
 						AddFlare(pos, 1.f, 3);
 					
-					g_LastFlareTime = now - std::min(ArxDuration(now - g_LastFlareTime - interval), interval);
+					g_LastFlareTime = now - std::min(now - g_LastFlareTime - interval, interval);
 				}
 				
 				ARX_FLARES_broken=0;
@@ -693,13 +693,14 @@ struct TARGETING_SPELL {
 	SpellcastFlags flags;
 	long level;
 	EntityHandle target;
-	long duration;
+	ArxDuration duration;
 };
 
 static TARGETING_SPELL t_spell;
 
 long LOOKING_FOR_SPELL_TARGET=0;
-ArxInstant LOOKING_FOR_SPELL_TARGET_TIME=0;
+ArxInstant LOOKING_FOR_SPELL_TARGET_TIME = ArxInstant_ZERO;
+
 void ARX_SPELLS_CancelSpellTarget() {
 	t_spell.typ = SPELL_NONE;
 	LOOKING_FOR_SPELL_TARGET=0;
@@ -889,7 +890,7 @@ static SpellBase * createSpellInstance(SpellType type) {
 
 
 
-bool ARX_SPELLS_Launch(SpellType typ, EntityHandle source, SpellcastFlags flags, long level, EntityHandle target, long duration) {
+bool ARX_SPELLS_Launch(SpellType typ, EntityHandle source, SpellcastFlags flags, long level, EntityHandle target, ArxDuration duration) {
 	
 	if(cur_rf == 3) {
 		flags |= SPELLCAST_FLAG_NOCHECKCANCAST | SPELLCAST_FLAG_NOMANA;	
@@ -1143,7 +1144,7 @@ void ARX_SPELLS_Update() {
 	}
 }
 
-void TryToCastSpell(Entity * io, SpellType spellType, long level, EntityHandle target, SpellcastFlags flags, long duration)
+void TryToCastSpell(Entity * io, SpellType spellType, long level, EntityHandle target, SpellcastFlags flags, ArxDuration duration)
 {
 	if(!io || io->spellcast_data.castingspell != SPELL_NONE)
 		return;

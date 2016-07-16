@@ -47,6 +47,7 @@ ZeniMax Media Inc., Suite 120, Rockville, Maryland 20850 USA.
 
 #include <string>
 
+#include "core/TimeTypes.h"
 #include "audio/AudioTypes.h"
 #include "game/GameTypes.h"
 #include "game/magic/Rune.h"
@@ -231,7 +232,7 @@ long ARX_SOUND_PlayAnim(audio::SourceId & sample_id, const Vec3f * position = NU
 long ARX_SOUND_PlayCinematic(const res::path & name, bool isSpeech);
 long ARX_SOUND_PlayMenu(audio::SourceId & sample_id, float pitch = 1.0F, SoundLoopMode loop = ARX_SOUND_PLAY_ONCE);
 long ARX_SOUND_IsPlaying(audio::SourceId & sample_id);
-float ARX_SOUND_GetDuration(audio::SampleId & sample_id);
+ArxDuration ARX_SOUND_GetDuration(audio::SampleId & sample_id);
 
 void ARX_SOUND_RefreshVolume(audio::SourceId & sample_id, float volume);
 void ARX_SOUND_RefreshPosition(audio::SourceId & sample_id, const Vec3f & position);

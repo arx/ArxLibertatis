@@ -264,7 +264,7 @@ static EERIE_ANIM * TheaToEerie(const char * adr, size_t size, const res::path &
 	eerie->groups = allocStructZero<EERIE_GROUP>(th->nb_key_frames * th->nb_groups);
 	eerie->voidgroups = allocStructZero<unsigned char>(th->nb_groups);
 
-	eerie->anim_time = 0;
+	eerie->anim_time = ArxDuration_ZERO;
 
 	// Go For Keyframes read
 	for(long i = 0; i < th->nb_key_frames; i++) {
@@ -449,9 +449,9 @@ static EERIE_ANIM * TheaToEerie(const char * adr, size_t size, const res::path &
 		}
 	}
 
-	eerie->anim_time = th->nb_frames * 1000.f * (1.f/24);
-	if(eerie->anim_time < 1) {
-		eerie->anim_time = 1;
+	eerie->anim_time = ArxDurationMs(th->nb_frames * 1000.f * (1.f/24));
+	if(eerie->anim_time < ArxDurationMs(1)) {
+		eerie->anim_time = ArxDurationMs(1);
 	}
 
 	LogDebug("Finished Conversion TEA -> EERIE - " << (eerie->anim_time / 1000) << " seconds");
@@ -609,10 +609,10 @@ void PrepareAnim(AnimLayer & layer, unsigned long time, Entity *io) {
 					if(io) {
 						FinishAnim(io, layer.cur_anim);
 						
-						if(io->animBlend.lastanimtime != 0)
+						if(io->animBlend.lastanimtime != ArxInstant_ZERO)
 							AcquireLastAnim(io);
 						else
-							io->animBlend.lastanimtime = 1;
+							io->animBlend.lastanimtime = ArxInstantMs(1);
 					}
 					
 					layer.cur_anim = layer.next_anim;
@@ -627,10 +627,10 @@ void PrepareAnim(AnimLayer & layer, unsigned long time, Entity *io) {
 			if(io && layer.next_anim) {
 					FinishAnim(io, layer.cur_anim);
 					
-					if (io->animBlend.lastanimtime != 0)
+					if (io->animBlend.lastanimtime != ArxInstant_ZERO)
 						AcquireLastAnim(io);
 					else
-						io->animBlend.lastanimtime = 1;
+						io->animBlend.lastanimtime = ArxInstant(1);
 					
 					layer.cur_anim = layer.next_anim;
 					layer.altidx_cur = ANIM_GetAltIdx(layer.next_anim, layer.altidx_cur);
@@ -760,7 +760,8 @@ void AcquireLastAnim(Entity * io)
 		return;
 
 	// Stores Frametime and number of vertex for later interpolation
-	io->animBlend.lastanimtime = checked_range_cast<unsigned long>(arxtime.get_frame_time());
+	// TODO Mixing of now() and get_frame_time()
+	io->animBlend.lastanimtime = ArxInstant(arxtime.get_frame_time());
 	io->animBlend.m_active = true;
 }
 

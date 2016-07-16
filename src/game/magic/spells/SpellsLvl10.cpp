@@ -60,7 +60,7 @@ void MassLightningStrikeSpell::Launch()
 {
 	spells.endByType(SPELL_MASS_LIGHTNING_STRIKE);
 	
-	m_duration = 5000; // TODO probably never read
+	m_duration = ArxDurationMs(5000); // TODO probably never read
 	m_soundEffectPlayed = false;
 	
 	float beta;
@@ -74,15 +74,15 @@ void MassLightningStrikeSpell::Launch()
 	}
 	m_pos += angleToVectorXZ(beta) * 500.f;
 	
-	ArxDuration minDuration = static_cast<ArxDuration>(500 * m_level);
-	ArxDuration maxDuration = 0;
+	ArxDuration minDuration = ArxDurationMs(500 * m_level);
+	ArxDuration maxDuration = ArxDuration_ZERO;
 	
 	int number = glm::clamp(int(m_level), 1, 10);
 	float ft = 360.0f / number;
 	
 	for(int i = 0; i < number; i++) {
 		Vec3f target = m_pos + angleToVectorXZ(i * ft) * 500.0f;
-		ArxDuration duration = minDuration + Random::getu(0, 5000);
+		ArxDuration duration = minDuration + ArxDurationMs(Random::getu(0, 5000));
 		maxDuration = std::max(maxDuration, duration);
 		
 		CLightning * lightning = new CLightning();
@@ -93,7 +93,7 @@ void MassLightningStrikeSpell::Launch()
 		pTab.push_back(lightning);
 	}
 	
-	m_duration = maxDuration + 1000;
+	m_duration = maxDuration + ArxDurationMs(1000);
 	
 	m_light = GetFreeDynLight();
 	if(lightHandleIsValid(m_light)) {
@@ -118,7 +118,7 @@ void MassLightningStrikeSpell::Launch()
 
 void MassLightningStrikeSpell::End() {
 	
-	endLightDelayed(m_light, 200);
+	endLightDelayed(m_light, ArxDurationMs(200));
 	
 	ARX_SOUND_Stop(m_snd_loop);
 	ARX_SOUND_PlaySFX(SND_SPELL_LIGHTNING_END);
@@ -137,7 +137,7 @@ void MassLightningStrikeSpell::Update() {
 		lightning->m_caster = m_caster;
 		lightning->m_level = m_level;
 		
-		lightning->Update(g_framedelay);
+		lightning->Update(ArxDurationMs(g_framedelay));
 	}
 	
 	for(size_t i = 0; i < pTab.size(); i++) {
@@ -242,7 +242,7 @@ void ControlTargetSpell::Launch()
 	
 	ARX_SOUND_PlaySFX(SND_SPELL_CONTROL_TARGET);
 	
-	m_duration = 1000;
+	m_duration = ArxDurationMs(1000);
 	
 	eSrc = Vec3f_ZERO;
 	eTarget = Vec3f_ZERO;
@@ -387,7 +387,7 @@ void FreezeTimeSpell::Launch()
 	m_slowdown = glm::clamp(m_level * 0.08f, 0.f, max_slowdown);
 	GLOBAL_SLOWDOWN -= m_slowdown;
 	
-	m_duration = (m_launchDuration > -1) ? m_launchDuration : 200000;
+	m_duration = (m_launchDuration > ArxDuration(-1)) ? m_launchDuration : ArxDurationMs(200000);
 	m_hasDuration = true;
 	m_fManaCostPerSecond = 30.f * m_slowdown;
 }
@@ -402,7 +402,7 @@ void MassIncinerateSpell::Launch()
 {
 	ARX_SOUND_PlaySFX(SND_SPELL_MASS_INCINERATE);
 	
-	m_duration = 20000;
+	m_duration = ArxDurationMs(20000);
 	
 	long nb_targets=0;
 	for(size_t ii = 0; ii < entities.size(); ii++) {
@@ -457,7 +457,7 @@ bool TeleportSpell::CanLaunch()
 
 void TeleportSpell::Launch()
 {
-	m_duration = 7000;
+	m_duration = ArxDurationMs(7000);
 	
 	ARX_SOUND_PlaySFX(SND_SPELL_TELEPORT, &m_caster_pos);
 	

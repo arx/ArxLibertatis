@@ -152,7 +152,7 @@ EERIE_LIGHT * lightHandleGet(LightHandle lightHandle);
 bool lightHandleIsValid(LightHandle num);
 LightHandle GetFreeDynLight();
 void lightHandleDestroy(LightHandle & handle);
-void endLightDelayed(LightHandle & handle, unsigned long delay);
+void endLightDelayed(LightHandle & handle, ArxDuration delay);
 
 
 void ClearDynLights();

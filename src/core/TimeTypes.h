@@ -21,8 +21,51 @@
 #define ARX_CORE_TIMETYPES_H
 
 #include "platform/Platform.h"
+#include "util/StrongType.h"
 
-typedef s64 ArxInstant;
-typedef s64 ArxDuration;
+ARX_STRONG_TYPEDEF(s64, ArxInstant)
+ARX_STRONG_TYPEDEF(s64, ArxDuration)
+
+const ArxInstant  ArxInstant_ZERO  = ArxInstant(0);
+const ArxDuration ArxDuration_ZERO = ArxDuration(0);
+
+inline ArxInstant ArxInstantMs(s64 val) {
+	return ArxInstant(val);
+}
+inline ArxDuration ArxDurationMs(s64 val) {
+	return ArxDuration(val);
+}
+
+inline s64 toMs(ArxInstant val) {
+	return val.t;
+}
+inline s64 toMs(ArxDuration val) {
+	return val.t;
+}
+
+inline ArxDuration operator -(ArxInstant a, ArxInstant b) {
+	return ArxDuration(a.t - b.t);
+}
+inline ArxInstant operator +(ArxInstant a, ArxDuration b) {
+	return ArxInstant(a.t + b.t);
+}
+inline ArxInstant operator -(ArxInstant a, ArxDuration b) {
+	return ArxInstant(a.t - b.t);
+}
+
+inline ArxDuration operator +(ArxDuration a, ArxDuration b) {
+	return ArxDuration(a.t + b.t);
+}
+inline ArxDuration operator -(ArxDuration a, ArxDuration b) {
+	return ArxDuration(a.t - b.t);
+}
+
+
+namespace arx {
+template <typename T>
+T clamp(T const & x, T const & minVal, T const & maxVal) {
+	return std::min(maxVal, std::max(minVal, x));
+}
+} // namespace arx
 
 #endif // ARX_CORE_TIMETYPES_H

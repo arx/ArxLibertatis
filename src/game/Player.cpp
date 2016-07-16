@@ -155,7 +155,7 @@ bool USE_PLAYERCOLLISIONS = true;
 bool BLOCK_PLAYER_CONTROLS = false;
 bool WILLRETURNTOCOMBATMODE = false;
 long DeadTime = 0;
-static ArxInstant LastHungerSample = 0;
+static ArxInstant LastHungerSample = ArxInstant_ZERO;
 static unsigned long ROTATE_START = 0;
 
 // Player Anims FLAGS/Vars
@@ -1912,10 +1912,10 @@ extern float MAX_ALLOWED_PER_SECOND;
 static long LAST_FIRM_GROUND = 1;
 static long TRUE_FIRM_GROUND = 1;
 float lastposy = -9999999.f;
-ArxInstant REQUEST_JUMP = 0;
+ArxInstant REQUEST_JUMP = ArxInstant_ZERO;
 extern float Original_framedelay;
 
-ArxInstant LAST_JUMP_ENDTIME = 0;
+ArxInstant LAST_JUMP_ENDTIME = ArxInstant_ZERO;
 
 static bool Valid_Jump_Pos() {
 	
@@ -2015,7 +2015,7 @@ void PlayerMovementIterate(float DeltaTime) {
 			if(anything < 0.f) {
 				player.m_currentMovement |= PLAYER_CROUCH;
 				player.physics.cyl.height = old;
-				REQUEST_JUMP = 0;
+				REQUEST_JUMP = ArxInstant_ZERO;
 			} else {
 				bGCroucheToggle = false;
 				player.m_currentMovement &= ~PLAYER_CROUCH;
@@ -2024,13 +2024,13 @@ void PlayerMovementIterate(float DeltaTime) {
 		}
 		
 		if(!Valid_Jump_Pos()) {
-			REQUEST_JUMP = 0;
+			REQUEST_JUMP = ArxInstant_ZERO;
 		}
 		
 		if(REQUEST_JUMP) {
 			float t = arxtime.now_f() - REQUEST_JUMP;
 			if(t >= 0.f && t <= 350.f) {
-				REQUEST_JUMP = 0;
+				REQUEST_JUMP = ArxInstant_ZERO;
 				ARX_NPC_SpawnAudibleSound(player.pos, entities.player());
 				ARX_SPEECH_Launch_No_Unicode_Seek("player_jump", entities.player());
 				player.onfirmground = false;
@@ -2636,7 +2636,7 @@ void ARX_GAME_Reset(long type) {
 	
 	entities.player()->speed_modif = 0;
 	
-	LAST_JUMP_ENDTIME = 0;
+	LAST_JUMP_ENDTIME = ArxInstant_ZERO;
 	FlyingOverIO = NULL;
 	g_miniMap.mapMarkerInit();
 	ClearDynLights();
@@ -2778,7 +2778,7 @@ void ARX_GAME_Reset(long type) {
 	HERO_SHOW_1ST = -1;
 	PUSH_PLAYER_FORCE = Vec3f_ZERO;
 	player.jumplastposition = 0;
-	player.jumpstarttime = 0;
+	player.jumpstarttime = ArxInstant_ZERO;
 	player.jumpphase = NotJumping;
 	player.inzone = NULL;
 
@@ -2789,7 +2789,7 @@ void ARX_GAME_Reset(long type) {
 		eyeball.exist = -100;
 	}
 	
-	entities.player()->ouch_time = 0;
+	entities.player()->ouch_time = ArxInstant_ZERO;
 	entities.player()->invisibility = 0.f;
 	
 	fadeReset();

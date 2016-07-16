@@ -1811,9 +1811,9 @@ static bool Manage_Specific_RAT_Timer(SCR_TIMER * st) {
 		st->count = 1;
 	} else {
 		st->count++;
-		st->interval = static_cast<long>(st->interval * ( 1.0f / 2 ));
-		if(st->interval < 100)
-			st->interval = 100;
+		st->interval = ArxDuration(st->interval * ( 1.0f / 2 ));
+		if(st->interval < ArxDurationMs(100))
+			st->interval = ArxDurationMs(100);
 		
 		return true;
 	}
@@ -1850,7 +1850,7 @@ void ARX_SCRIPT_Timer_Check() {
 			st->start += st->interval * increment;
 			// TODO print full 64-bit time
 			arx_assert(st->start <= now && st->start + st->interval > now,
-			           "start=%lu wait=%ld now=%lu", (long)st->start, (long)st->interval, (long)now);
+			           "start=%lu wait=%ld now=%lu", toMs(st->start), toMs(st->interval), toMs(now));
 			continue;
 		}
 		
@@ -2032,7 +2032,7 @@ void loadScript(EERIE_SCRIPT & script, PakFile * file) {
 	script.master = NULL;
 	
 	for(size_t j = 0; j < MAX_SCRIPTTIMERS; j++) {
-		script.timers[j] = 0;
+		script.timers[j] = ArxInstant_ZERO;
 	}
 	
 	ARX_SCRIPT_ComputeShortcuts(script);

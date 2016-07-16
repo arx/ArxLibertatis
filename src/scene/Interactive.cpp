@@ -386,7 +386,7 @@ void IO_UnlinkAllLinkedObjects(Entity * io) {
 		}
 		
 		linked->angle = Anglef(Random::getf(340.f, 380.f), Random::getf(0.f, 360.f), 0.f);
-		linked->soundtime = 0;
+		linked->soundtime = ArxInstant_ZERO;
 		linked->soundcount = 0;
 		linked->gameFlags |= GFLAG_NO_PHYS_IO_COL;
 		linked->show = SHOW_FLAG_IN_SCENE;
@@ -917,11 +917,11 @@ void RestoreInitialIOStatusOfIO(Entity * io)
 		io->move = Vec3f_ZERO;
 		io->type_flags = 0;
 		io->sound = -1;
-		io->soundtime = 0;
+		io->soundtime = ArxInstant_ZERO;
 		io->soundcount = 0;
 		io->material = MATERIAL_STONE;
-		io->collide_door_time = 0;
-		io->ouch_time = 0;
+		io->collide_door_time = ArxInstant_ZERO;
+		io->ouch_time = ArxInstant_ZERO;
 		io->dmg_sum = 0;
 		io->ignition = 0.f;
 		io->ignit_light = LightHandle();
@@ -934,7 +934,7 @@ void RestoreInitialIOStatusOfIO(Entity * io)
 		io->requestRoomUpdate = 1;
 		RestoreIOInitPos(io);
 		ARX_INTERACTIVE_Teleport(io, io->initpos);
-		io->animBlend.lastanimtime = 1;
+		io->animBlend.lastanimtime = ArxInstantMs(1);
 		io->secretvalue = -1;
 		
 		io->poisonous = 0;
@@ -994,8 +994,8 @@ void RestoreInitialIOStatusOfIO(Entity * io)
 			io->_npcdata->absorb = 0;
 			io->_npcdata->damages = 20;
 			io->_npcdata->tohit = 50;
-			io->_npcdata->aimtime = 0;
-			io->_npcdata->aiming_start = 0;
+			io->_npcdata->aimtime = ArxDuration_ZERO;
+			io->_npcdata->aiming_start = ArxInstant_ZERO;
 			io->_npcdata->npcflags = 0;
 			io->_npcdata->backstab_skill = 0;
 			io->_npcdata->fDetect = -1;
@@ -1150,7 +1150,7 @@ void ARX_INTERACTIVE_TeleportBehindTarget(Entity * io)
 			scr_timer[num].es = NULL;
 			scr_timer[num].exist = 1;
 			scr_timer[num].io = io;
-			scr_timer[num].interval = Random::get(3000, 6000);
+			scr_timer[num].interval = ArxDurationMs(Random::get(3000, 6000));
 			scr_timer[num].name = "_r_a_t_";
 			scr_timer[num].pos = -1; 
 			scr_timer[num].start = arxtime.now_ul();
@@ -1576,7 +1576,7 @@ IO_NPCDATA::IO_NPCDATA() {
 	lifePool.current = lifePool.max = 20.f;
 	manaPool.current = manaPool.max = 0.f;
 	
-	reachedtime = 0ul;
+	reachedtime = ArxInstant_ZERO;
 	reachedtarget = 0l;
 	weapon = NULL;
 	detect = 0;
@@ -1585,7 +1585,7 @@ IO_NPCDATA::IO_NPCDATA() {
 	absorb = 0.f;
 	damages = 0.f;
 	tohit = 0.f;
-	aimtime = 0;
+	aimtime = ArxDuration_ZERO;
 	critical = 0.f;
 	reach = 0.f;
 	backstab_skill = 0.f;
@@ -1617,7 +1617,7 @@ IO_NPCDATA::IO_NPCDATA() {
 	
 	strike_time = 0;
 	walk_start_time = 0;
-	aiming_start = 0;
+	aiming_start = ArxInstant_ZERO;
 	npcflags = 0l;
 	pathfind = IO_PATHFIND();
 	ex_rotate = 0;
@@ -2645,7 +2645,7 @@ void ARX_INTERACTIVE_ActivatePhysics(EntityHandle t)
 		io->stopped = 1;
 		Vec3f fallvector = Vec3f(0.0f, 0.000001f, 0.f);
 		io->show = SHOW_FLAG_IN_SCENE;
-		io->soundtime = 0;
+		io->soundtime = ArxInstant_ZERO;
 		io->soundcount = 0;
 		EERIE_PHYSICS_BOX_Launch(io->obj, io->pos, io->angle, fallvector);
 	}

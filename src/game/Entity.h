@@ -140,7 +140,7 @@ struct IO_SPELLCAST_DATA {
 	SpellcastFlags spell_flags;
 	short spell_level;
 	EntityHandle target;
-	long duration;
+	ArxDuration duration;
 	
 	IO_SPELLCAST_DATA()
 		: castingspell(SPELL_NONE)

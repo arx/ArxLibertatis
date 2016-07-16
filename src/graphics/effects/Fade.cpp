@@ -25,17 +25,17 @@
 #include "graphics/Draw.h"
 #include "graphics/Renderer.h"
 
-static ArxDuration FADEDURATION = 0;
+static ArxDuration FADEDURATION = ArxDuration_ZERO;
 long FADEDIR = 0;
-static ArxInstant FADESTART = 0;
+static ArxInstant FADESTART = ArxInstant_ZERO;
 float LAST_FADEVALUE = 1.f;
 static Color3f FADECOLOR;
 
 
 void fadeReset() {
 	FADEDIR = 0;
-	FADEDURATION = 0;
-	FADESTART = 0;
+	FADEDURATION = ArxDuration_ZERO;
+	FADESTART = ArxInstant_ZERO;
 	FADECOLOR = Color3f::black;
 }
 
@@ -64,7 +64,7 @@ void ManageFade()
 	
 	// TODO can this really become negative ?
 	ArxDuration elapsed = arxtime.now_ul() - FADESTART;
-	if(elapsed <= 0)
+	if(elapsed <= ArxDuration_ZERO)
 		return;
 
 	float Visibility = elapsed / float(FADEDURATION);

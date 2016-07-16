@@ -655,7 +655,7 @@ ARX_PROGRAM_OPTION("skiplogo", "", "Skip logos at startup", &skipLogo);
 static bool HandleGameFlowTransitions() {
 	
 	const int TRANSITION_DURATION = 3600;
-	static ArxInstant TRANSITION_START = 0;
+	static ArxInstant TRANSITION_START = ArxInstant_ZERO;
 
 	if(GameFlow::getTransition() == GameFlow::NoTransition) {
 		return false;
@@ -686,7 +686,7 @@ static bool HandleGameFlowTransitions() {
 		float elapsed = arxtime.now_f() - TRANSITION_START;
 
 		if(elapsed > TRANSITION_DURATION) {
-			TRANSITION_START = 0;
+			TRANSITION_START = ArxInstant_ZERO;
 			GameFlow::setTransition(GameFlow::SecondLogo);
 		}
 
@@ -713,7 +713,7 @@ static bool HandleGameFlowTransitions() {
 		float elapsed = arxtime.now_f() - TRANSITION_START;
 
 		if(elapsed > TRANSITION_DURATION) {
-			TRANSITION_START = 0;
+			TRANSITION_START = ArxInstant_ZERO;
 			GameFlow::setTransition(GameFlow::LoadingScreen);
 		}
 

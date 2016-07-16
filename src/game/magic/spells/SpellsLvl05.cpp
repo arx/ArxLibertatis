@@ -52,7 +52,7 @@ void RuneOfGuardingSpell::Launch()
 	
 	ARX_SOUND_PlaySFX(SND_SPELL_RUNE_OF_GUARDING);
 	
-	m_duration = (m_launchDuration > -1) ? m_launchDuration : 99999999;
+	m_duration = (m_launchDuration > ArxDuration(-1)) ? m_launchDuration : ArxDurationMs(99999999);
 	
 	m_pos = entities[m_caster]->pos;
 	
@@ -68,13 +68,13 @@ void RuneOfGuardingSpell::Launch()
 		light->rgb = Color3f(1.0f, 0.2f, 0.2f);
 		light->pos = m_pos - Vec3f(0.f, 50.f, 0.f);
 		light->creationTime = arxtime.now_ul();
-		light->duration = 200;
+		light->duration = ArxDurationMs(200);
 	}
 }
 
 void RuneOfGuardingSpell::End() {
 	
-	endLightDelayed(m_light, 500);
+	endLightDelayed(m_light, ArxDurationMs(500));
 }
 
 void RuneOfGuardingSpell::Update() {
@@ -90,7 +90,7 @@ void RuneOfGuardingSpell::Update() {
 		light->fallstart = 150.f;
 		light->rgb = Color3f(1.0f, 0.2f, 0.2f);
 		light->creationTime = arxtime.now_ul();
-		light->duration = 200;
+		light->duration = ArxDurationMs(200);
 	}
 	
 	Vec3f pos = m_pos + Vec3f(0.f, -20.f, 0.f);
@@ -149,7 +149,7 @@ void RuneOfGuardingSpell::Update() {
 		LaunchFireballBoom(m_pos, m_level);
 		DoSphericDamage(Sphere(m_pos, 30.f * m_level), 4.f * m_level, DAMAGE_AREA, DAMAGE_TYPE_FIRE | DAMAGE_TYPE_MAGICAL, m_caster);
 		ARX_SOUND_PlaySFX(SND_SPELL_RUNE_OF_GUARDING_END, &m_pos);
-		m_duration = 0;
+		m_duration = ArxDuration_ZERO;
 	}
 }
 
@@ -175,14 +175,14 @@ void LevitateSpell::Launch()
 	
 	ARX_SOUND_PlaySFX(SND_SPELL_LEVITATE_START, &entities[m_target]->pos);
 	
-	m_duration = (m_launchDuration > -1) ? m_launchDuration : 2000000000;
+	m_duration = (m_launchDuration > ArxDuration(-1)) ? m_launchDuration : ArxDurationMs(2000000000);
 	m_hasDuration = true;
 	m_fManaCostPerSecond = 1.f;
 	
 	Vec3f target;
 	if(m_target == PlayerEntityHandle) {
 		target = player.pos + Vec3f(0.f, 150.f, 0.f);
-		m_duration = 200000000;
+		m_duration = ArxDurationMs(200000000);
 		player.levitate = true;
 	} else {
 		target = entities[m_target]->pos;
@@ -299,7 +299,7 @@ void CurePoisonSpell::Launch()
 		ARX_SOUND_PlaySFX(SND_SPELL_CURE_POISON, &io->pos);
 	}
 	
-	m_duration = 3500;
+	m_duration = ArxDurationMs(3500);
 	
 	{
 	ParticleParams cp;
@@ -341,7 +341,7 @@ void CurePoisonSpell::Launch()
 		light->rgb = Color3f(0.f, 1.f, 0.0f);
 		light->pos = m_pos + Vec3f(0.f, -50.f, 0.f);
 		light->creationTime = arxtime.now_ul();
-		light->duration = 200;
+		light->duration = ArxDurationMs(200);
 		light->extras = 0;
 	}
 }
@@ -394,7 +394,7 @@ void CurePoisonSpell::Update() {
 		light->fallend   = 350.f;
 		light->rgb = Color3f(0.4f, 1.f, 0.4f);
 		light->pos = m_pos + Vec3f(0.f, -50.f, 0.f);
-		light->duration = 200;
+		light->duration = ArxDurationMs(200);
 		light->creationTime = arxtime.now_ul();
 		light->extras = 0;
 	}
@@ -422,7 +422,7 @@ void RepelUndeadSpell::Launch()
 		m_snd_loop = ARX_SOUND_PlaySFX(SND_SPELL_REPEL_UNDEAD_LOOP, &entities[m_target]->pos, 1.f, ARX_SOUND_PLAY_LOOPED);
 	}
 	
-	m_duration = (m_launchDuration > -1) ? m_launchDuration : 20000000;
+	m_duration = (m_launchDuration > ArxDuration(-1)) ? m_launchDuration : ArxDurationMs(20000000);
 	m_hasDuration = true;
 	m_fManaCostPerSecond = 1.f;
 	
@@ -434,7 +434,7 @@ void RepelUndeadSpell::Launch()
 void RepelUndeadSpell::End() {
 	ARX_SOUND_Stop(m_snd_loop);
 	
-	endLightDelayed(m_light, 500);
+	endLightDelayed(m_light, ArxDurationMs(500));
 }
 
 void RepelUndeadSpell::Update() {
@@ -501,7 +501,7 @@ void RepelUndeadSpell::Update() {
 		light->fallstart = 150.f;
 		light->rgb = Color3f(0.8f, 0.8f, 1.f);
 		light->pos = m_pos + Vec3f(0.f, -50.f, 0.f);
-		light->duration = 200;
+		light->duration = ArxDurationMs(200);
 		light->creationTime = arxtime.now_ul();
 	}
 	
@@ -515,7 +515,7 @@ PoisonProjectileSpell::~PoisonProjectileSpell() {
 	for(size_t i = 0; i < m_projectiles.size(); i++) {
 		CPoisonProjectile * projectile = m_projectiles[i];
 		
-		endLightDelayed(projectile->lLightId, 2000);
+		endLightDelayed(projectile->lLightId, ArxDurationMs(2000));
 		
 		delete projectile;
 	}
@@ -567,15 +567,15 @@ void PoisonProjectileSpell::Launch()
 		m_projectiles.push_back(projectile);
 	}
 	
-	m_duration = 8000ul;
+	m_duration = ArxDurationMs(8000);
 	
-	ArxDuration lMax = 0;
+	ArxDuration lMax = ArxDuration_ZERO;
 	
 	for(size_t i = 0; i < m_projectiles.size(); i++) {
 		CPoisonProjectile * projectile = m_projectiles[i];
 		
 		projectile->Create(srcPos, afBeta + Random::getf(-10.f, 10.f));
-		ArxDuration lTime = m_duration + Random::getu(0, 5000);
+		ArxDuration lTime = m_duration + ArxDurationMs(Random::getu(0, 5000));
 		projectile->SetDuration(lTime);
 		lMax = std::max(lMax, lTime);
 
@@ -590,11 +590,11 @@ void PoisonProjectileSpell::Launch()
 			light->rgb = Color3f::green;
 			light->pos = projectile->eSrc;
 			light->creationTime	= arxtime.now_ul();
-			light->duration		= 200;
+			light->duration		= ArxDurationMs(200);
 		}
 	}
 	
-	m_duration = lMax + 1000;
+	m_duration = lMax + ArxDurationMs(1000);
 }
 
 void PoisonProjectileSpell::End() {
@@ -602,7 +602,7 @@ void PoisonProjectileSpell::End() {
 	for(size_t i = 0; i < m_projectiles.size(); i++) {
 		CPoisonProjectile * projectile = m_projectiles[i];
 		
-		endLightDelayed(projectile->lLightId, 2000);
+		endLightDelayed(projectile->lLightId, ArxDurationMs(2000));
 		
 		delete projectile;
 	}
@@ -614,7 +614,7 @@ void PoisonProjectileSpell::Update() {
 	for(size_t i = 0; i < m_projectiles.size(); i++) {
 		CPoisonProjectile * projectile = m_projectiles[i];
 		
-		projectile->Update(g_framedelay);
+		projectile->Update(ArxDurationMs(g_framedelay));
 	}
 	
 	for(size_t i = 0; i < m_projectiles.size(); i++) {
@@ -631,7 +631,7 @@ void PoisonProjectileSpell::Update() {
 			light->rgb = Color3f::green;
 			light->pos = projectile->eCurPos;
 			light->creationTime = arxtime.now_ul();
-			light->duration	= 200;
+			light->duration	= ArxDurationMs(200);
 		}
 
 		AddPoisonFog(projectile->eCurPos, m_level + 7);

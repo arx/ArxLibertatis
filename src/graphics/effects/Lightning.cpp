@@ -106,8 +106,8 @@ CLightning::CLightning()
 	, m_fAngleMax(32.0f, 32.0f, 32.0f)
 	, m_iTTL(0)
 {
-	SetDuration(2000);
-	m_elapsed = m_duration + 1;
+	SetDuration(ArxDurationMs(2000));
+	m_elapsed = m_duration + ArxDurationMs(1);
 	
 	m_tex_light = NULL;
 	fTotoro = 0;

@@ -220,11 +220,11 @@ public:
 		EERIE_SCRIPT * script = context.getMaster();
 		if(start) {
 			script->timers[t] = arxtime.now_ul();
-			if(script->timers[t] == 0) {
-				script->timers[t] = 1;
+			if(script->timers[t] == ArxInstant_ZERO) {
+				script->timers[t] = ArxInstantMs(1);
 			}
 		} else {
-			script->timers[t] = 0;
+			script->timers[t] = ArxInstant_ZERO;
 		}
 		
 		return Success;
@@ -897,7 +897,7 @@ void timerCommand(const std::string & timer, Context & context) {
 	scr_timer[num].es = context.getScript();
 	scr_timer[num].exist = 1;
 	scr_timer[num].io = io;
-	scr_timer[num].interval = interval;
+	scr_timer[num].interval = ArxDurationMs(interval);
 	scr_timer[num].name = timername;
 	scr_timer[num].pos = pos;
 	scr_timer[num].start = arxtime.now_ul();

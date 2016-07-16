@@ -106,9 +106,9 @@ extern SpellManager spells;
 extern unsigned char ucFlick;
 
 SpellType GetSpellId(const std::string & spell);
-void TryToCastSpell(Entity * io, SpellType spellid, long level, EntityHandle target, SpellcastFlags flags, long duration);
+void TryToCastSpell(Entity * io, SpellType spellid, long level, EntityHandle target, SpellcastFlags flags, ArxDuration duration);
 
-bool ARX_SPELLS_Launch(SpellType typ, EntityHandle source, SpellcastFlags flags, long level, EntityHandle target, long duration);
+bool ARX_SPELLS_Launch(SpellType typ, EntityHandle source, SpellcastFlags flags, long level, EntityHandle target, ArxDuration duration);
 void ARX_SPELLS_Update();
 
 void ARX_SPELLS_Fizzle(SpellBase * spell);

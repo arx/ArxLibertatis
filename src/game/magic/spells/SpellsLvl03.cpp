@@ -60,10 +60,10 @@ void SpeedSpell::Launch()
 		m_snd_loop = ARX_SOUND_PlaySFX(SND_SPELL_SPEED_LOOP, &entities[m_target]->pos, 1.f, ARX_SOUND_PLAY_LOOPED);
 	}
 	
-	m_duration = (m_launchDuration > -1) ? m_launchDuration : 20000;
+	m_duration = (m_launchDuration > ArxDuration(-1)) ? m_launchDuration : ArxDurationMs(20000);
 	
 	if(m_caster == PlayerEntityHandle)
-		m_duration = 200000000;
+		m_duration = ArxDurationMs(200000000);
 	
 	std::vector<VertexGroup> & grouplist = entities[m_target]->obj->grouplist;
 	
@@ -131,7 +131,7 @@ void DispellIllusionSpell::Launch()
 {
 	ARX_SOUND_PlaySFX(SND_SPELL_DISPELL_ILLUSION);
 	
-	m_duration = 1000;
+	m_duration = ArxDurationMs(1000);
 	
 	for(size_t n = 0; n < MAX_SPELLS; n++) {
 		SpellBase * spell = spells[SpellHandle(n)];
@@ -175,7 +175,7 @@ FireballSpell::~FireballSpell() {
 
 void FireballSpell::Launch() {
 	
-	m_duration = 6000ul;
+	m_duration = ArxDurationMs(6000);
 	
 	if(m_caster != PlayerEntityHandle) {
 		m_hand_group = ActionPoint();
@@ -229,7 +229,7 @@ void FireballSpell::Launch() {
 void FireballSpell::End() {
 	
 	ARX_SOUND_Stop(m_snd_loop);
-	endLightDelayed(m_light, 500);
+	endLightDelayed(m_light, ArxDurationMs(500));
 }
 
 void FireballSpell::Update() {
@@ -322,7 +322,7 @@ void FireballSpell::Update() {
 		//m_duration = std::min(ulCurrentTime + 1500, m_duration);
 		
 		DoSphericDamage(Sphere(eCurPos, 30.f * m_level), 3.f * m_level, DAMAGE_AREA, DAMAGE_TYPE_FIRE | DAMAGE_TYPE_MAGICAL, m_caster);
-		m_duration=0;
+		m_duration = ArxDuration_ZERO;
 		ARX_SOUND_PlaySFX(SND_SPELL_FIRE_HIT, &sphere.origin);
 		ARX_NPC_SpawnAudibleSound(sphere.origin, entities[m_caster]);
 	}
@@ -346,7 +346,7 @@ void CreateFoodSpell::Launch()
 {
 	ARX_SOUND_PlaySFX(SND_SPELL_CREATE_FOOD, &m_caster_pos);
 	
-	m_duration = (m_launchDuration > -1) ? m_launchDuration : 3500;
+	m_duration = (m_launchDuration > ArxDuration(-1)) ? m_launchDuration : ArxDurationMs(3500);
 	m_currentTime = 0;
 	
 	if(m_caster == PlayerEntityHandle || m_target == PlayerEntityHandle) {
@@ -431,7 +431,7 @@ void IceProjectileSpell::Launch()
 {
 	ARX_SOUND_PlaySFX(SND_SPELL_ICE_PROJECTILE_LAUNCH, &m_caster_pos);
 	
-	m_duration = 4200;
+	m_duration = ArxDurationMs(4200);
 	
 	Vec3f target;
 	float angleb;
@@ -463,7 +463,7 @@ void IceProjectileSpell::Launch()
 	float fd = fdist(s, e);
 
 	float fCalc = m_duration * (fd / fspelldist);
-	m_duration = checked_range_cast<unsigned long>(fCalc);
+	m_duration = ArxDurationMs(checked_range_cast<unsigned long>(fCalc));
 
 	float fDist = (fd / fspelldist) * iMax ;
 

@@ -758,7 +758,7 @@ bool ARX_NPC_SetStat(Entity& io, const std::string & statname, float value) {
 	} else if(statname == "tohit") {
 		io._npcdata->tohit = value < 0 ? 0 : value;
 	} else if(statname == "aimtime") {
-		io._npcdata->aimtime = value < 0 ? 0 : static_cast<unsigned int>(value);
+		io._npcdata->aimtime = ArxDurationMs(value < 0 ? 0 : value);
 	} else if(statname == "life") {
 		io._npcdata->lifePool.max = io._npcdata->lifePool.current = value < 0 ? 0.0000001f : value;
 	} else if(statname == "mana") {
@@ -969,7 +969,7 @@ void ARX_PHYSICS_Apply() {
 				ARX_PHYSICS_BOX_ApplyModel(pbox, g_framedelay, io->rubber, io);
 				
 				if(io->soundcount > 12) {
-					io->soundtime = 0;
+					io->soundtime = ArxInstant_ZERO;
 					io->soundcount = 0;
 					for(long k = 0; k < pbox->nb_physvert; k++) {
 						pbox->vert[k].velocity = Vec3f_ZERO;

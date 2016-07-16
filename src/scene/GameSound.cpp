@@ -826,15 +826,15 @@ long ARX_SOUND_IsPlaying(SourceId & sample_id) {
 }
 
 
-float ARX_SOUND_GetDuration(SampleId & sample_id) {
+ArxDuration ARX_SOUND_GetDuration(SampleId & sample_id) {
 	
 	if(bIsActive && sample_id != INVALID_ID) {
 		size_t length;
 		audio::getSampleLength(sample_id, length);
-		return static_cast<float>(length);
+		return ArxDurationMs(length);
 	}
 
-	return 0.f;
+	return ArxDuration_ZERO;
 }
 
 void ARX_SOUND_RefreshVolume(SourceId & sample_id, float volume) {

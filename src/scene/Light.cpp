@@ -275,7 +275,7 @@ void TreatBackgroundDynlights() {
 					dynamicLight->intensity    = light->intensity;
 					dynamicLight->ex_flaresize = light->ex_flaresize;
 					dynamicLight->extras       = light->extras;
-					dynamicLight->duration     = std::numeric_limits<unsigned long>::max();
+					dynamicLight->duration     = ArxDurationMs(std::numeric_limits<long>::max());
 					
 					dynamicLight->rgb = light->rgb - light->rgb * light->ex_flicker * randomColor3f() * 0.5f;
 					
@@ -311,7 +311,7 @@ void TreatBackgroundDynlights() {
 
 				if(el->rgb.r + el->rgb.g + el->rgb.b == 0) {
 					el->exist = 0;
-					el->duration = 0;
+					el->duration = ArxDuration_ZERO;
 				}
 			}
 		}
@@ -396,7 +396,7 @@ void lightHandleDestroy(LightHandle & handle) {
 	handle = LightHandle();
 }
 
-void endLightDelayed(LightHandle & handle, unsigned long delay) {
+void endLightDelayed(LightHandle & handle, ArxDuration delay) {
 	
 	if(lightHandleIsValid(handle)) {
 		EERIE_LIGHT * light = lightHandleGet(handle);
@@ -416,7 +416,7 @@ LightHandle GetFreeDynLight() {
 			DynLight[i].intensity = 1.3f;
 			DynLight[i].treat = 1;
 			DynLight[i].creationTime = arxtime.now_ul();
-			DynLight[i].duration = 0;
+			DynLight[i].duration = ArxDuration_ZERO;
 			DynLight[i].extras = 0;
 			DynLight[i].m_storedFlameTime.reset();
 			return LightHandle(i);

@@ -53,16 +53,16 @@ ZeniMax Media Inc., Suite 120, Rockville, Maryland 20850 USA.
 
 CSpellFx::CSpellFx()
 {
-	SetDuration(1000);
+	SetDuration(ArxDurationMs(1000));
 }
 
 void CSpellFx::SetDuration(ArxDuration ulaDuration) {
 	m_duration = ulaDuration;
 
-	if(m_duration <= 0)
-		m_duration = 100;
+	if(m_duration <= ArxDuration_ZERO)
+		m_duration = ArxDurationMs(100);
 	
-	m_elapsed = 0;
+	m_elapsed = ArxDuration_ZERO;
 }
 
 void Draw3DLineTexNew(const RenderMaterial & mat, Vec3f startPos, Vec3f endPos, Color startColor, Color endColor, float startSize, float endSize) {

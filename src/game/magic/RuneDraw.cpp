@@ -172,7 +172,7 @@ void ARX_SPELLS_UpdateSymbolDraw() {
 			long elapsed = now - sd->starttime;
 
 			if(elapsed > sd->duration) {
-				endLightDelayed(io->dynlight, 600);
+				endLightDelayed(io->dynlight, ArxDurationMs(600));
 				io->dynlight = LightHandle();
 				
 				delete io->symboldraw;

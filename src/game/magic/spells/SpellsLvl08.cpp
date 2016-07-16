@@ -45,7 +45,7 @@ bool InvisibilitySpell::CanLaunch()
 
 void InvisibilitySpell::Launch()
 {
-	m_duration = (m_launchDuration > -1) ? m_launchDuration : 6000000;
+	m_duration = (m_launchDuration > ArxDuration(-1)) ? m_launchDuration : ArxDurationMs(6000000);
 	m_hasDuration = true;
 	m_fManaCostPerSecond = 3.f;
 	
@@ -103,7 +103,7 @@ void ManaDrainSpell::Launch()
 	spells.endByCaster(m_caster, SPELL_LIFE_DRAIN);
 	spells.endByCaster(m_caster, SPELL_HARM);
 	
-	m_duration = (m_launchDuration > -1) ? m_launchDuration : 6000000;
+	m_duration = (m_launchDuration > ArxDuration(-1)) ? m_launchDuration : ArxDurationMs(6000000);
 	m_hasDuration = true;
 	m_fManaCostPerSecond = 2.f;
 	
@@ -128,7 +128,7 @@ void ManaDrainSpell::Launch()
 		light->fallstart = 500.f;
 		light->rgb = Color3f::blue;
 		light->pos = m_caster_pos;
-		light->duration=900;
+		light->duration = ArxDurationMs(900);
 	}
 }
 
@@ -136,7 +136,7 @@ void ManaDrainSpell::End()
 {
 	DamageRequestEnd(m_damage);
 	
-	endLightDelayed(m_light, 600);
+	endLightDelayed(m_light, ArxDurationMs(600));
 	
 	ARX_SOUND_Stop(m_snd_loop);
 }
@@ -250,7 +250,7 @@ void ExplosionSpell::Launch()
 {
 	ARX_SOUND_PlaySFX(SND_SPELL_EXPLOSION);
 	
-	m_duration = 2000;
+	m_duration = ArxDurationMs(2000);
 	
 	Vec3f target = entities[m_caster]->pos;
 	if(m_caster == PlayerEntityHandle) {
@@ -279,7 +279,7 @@ void ExplosionSpell::Launch()
 		light->fallstart = 500.f;
 		light->rgb = Color3f(0.1f, 0.1f, 0.8f) + Color3f(1.f/3, 1.f/3, 1.f/5) * randomColor3f();
 		light->pos = target;
-		light->duration = 200;
+		light->duration = ArxDurationMs(200);
 	}
 	
 	AddQuakeFX(300, 2000, 400, true);
@@ -307,7 +307,7 @@ void ExplosionSpell::Update() {
 		EERIE_LIGHT * light = lightHandleGet(m_light);
 		
 		light->rgb = Color3f(0.1f, 0.1f, 0.8f) + randomColor3f() * Color3f(1.f/3, 1.f/3, 1.f/5);
-		light->duration = 200;
+		light->duration = ArxDurationMs(200);
 		
 		float choice = Random::getf();
 		if(choice > .8f) {
@@ -333,7 +333,7 @@ void ExplosionSpell::Update() {
 
 void EnchantWeaponSpell::Launch()
 {
-	m_duration = 20;
+	m_duration = ArxDurationMs(20);
 }
 
 void EnchantWeaponSpell::End() {
@@ -361,7 +361,7 @@ void LifeDrainSpell::Launch()
 	spells.endByCaster(m_caster, SPELL_HARM);
 	spells.endByCaster(m_caster, SPELL_MANA_DRAIN);
 	
-	m_duration = (m_launchDuration > -1) ? m_launchDuration : 6000000;
+	m_duration = (m_launchDuration > ArxDuration(-1)) ? m_launchDuration : ArxDurationMs(6000000);
 	m_hasDuration = true;
 	m_fManaCostPerSecond = 12.f;
 	
@@ -386,7 +386,7 @@ void LifeDrainSpell::Launch()
 		light->fallstart = 500.f;
 		light->rgb = Color3f::red;
 		light->pos = m_caster_pos;
-		light->duration = 900;
+		light->duration = ArxDurationMs(900);
 	}
 }
 
@@ -394,7 +394,7 @@ void LifeDrainSpell::End()
 {
 	DamageRequestEnd(m_damage);
 	
-	endLightDelayed(m_light, 600);
+	endLightDelayed(m_light, ArxDurationMs(600));
 	
 	ARX_SOUND_Stop(m_snd_loop);
 }

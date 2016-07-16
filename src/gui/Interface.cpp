@@ -185,7 +185,7 @@ bool				DRAGGING = false;
 bool				MAGICMODE = false;
 long				SpecialCursor=0;
 
-ArxInstant COMBAT_MODE_ON_START_TIME = 0;
+ArxInstant COMBAT_MODE_ON_START_TIME = ArxInstant_ZERO;
 static long SPECIAL_DRAW_WEAPON = 0;
 bool bGCroucheToggle=false;
 
@@ -1774,17 +1774,17 @@ void ArxGame::manageKeyMouse() {
 			bool dragging = GInput->getMouseButtonRepeat(Mouse::Button_0);
 			
 			static bool mouseInBorder = false;
-			static ArxInstant mouseInBorderTime = 0;
+			static ArxInstant mouseInBorderTime = ArxInstant_ZERO;
 			
 			if(!bRenderInCursorMode || (!dragging && !GInput->isMouseInWindow())) {
 				mouseInBorder = false;
 			} else {
 				
 				int borderSize = 10;
-				ArxDuration borderDelay = 100;
+				ArxDuration borderDelay = ArxDurationMs(100);
 				if(!dragging && !mainApp->getWindow()->isFullScreen()) {
 					borderSize = 50;
-					borderDelay = 200;
+					borderDelay = ArxDurationMs(200);
 				}
 				
 				int distLeft = DANAEMouse.x - g_size.left;
@@ -1797,7 +1797,7 @@ void ArxGame::manageKeyMouse() {
 				   || (!dragging && distBottom < g_size.height() / 4 && distRight <= borderSize)
 				   || (!dragging && distTop <= 4 * borderSize && distRight <= 4 * borderSize)) {
 					borderSize = 2;
-					borderDelay = 600;
+					borderDelay = ArxDurationMs(600);
 				}
 				
 				mouseDiff = Vec2f_ZERO;
@@ -1890,7 +1890,7 @@ void ArxGame::manageKeyMouse() {
 				}
 
 				if(glm::abs(rotation.y) > 2.f)
-					entities.player()->animBlend.lastanimtime = 0;
+					entities.player()->animBlend.lastanimtime = ArxInstant_ZERO;
 
 				if(rotation.x != 0.f)
 					player.m_currentMovement |= PLAYER_ROTATE;
@@ -2154,7 +2154,7 @@ void ArxGame::manageEditorControls() {
 						Vec3f viewvector = angleToVector(player.angle + Anglef(0.f, ratio.x * 30.f, 0.f));
 						viewvector.y += ratio.y;
 						
-						io->soundtime=0;
+						io->soundtime = ArxInstant_ZERO;
 						io->soundcount=0;
 						
 						EERIE_PHYSICS_BOX_Launch(io->obj, io->pos, io->angle, viewvector);

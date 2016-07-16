@@ -280,7 +280,7 @@ static void ARX_NPC_SpawnMember(Entity * ioo, ObjSelection num) {
 	
 	io->gameFlags |= GFLAG_GOREEXPLODE;
 	io->animBlend.lastanimtime = arxtime.now_ul();
-	io->soundtime = 0;
+	io->soundtime = ArxInstant_ZERO;
 	io->soundcount = 0;
 
 	EERIE_PHYSICS_BOX_Launch(io->obj, io->pos, io->angle, vector);

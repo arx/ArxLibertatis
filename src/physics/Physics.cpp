@@ -361,7 +361,7 @@ static void ARX_TEMPORARY_TrySound(Entity * source, Material collisionMaterial, 
 			
 			long soundLength = ARX_SOUND_PlayCollision(material, collisionMaterial, volume, 1.f, source->pos, source);
 			
-			source->soundtime = now + (soundLength >> 4) + 50;
+			source->soundtime = now + ArxDurationMs(soundLength >> 4) + ArxDurationMs(50);
 		}
 	}
 }
@@ -468,6 +468,6 @@ void ARX_PHYSICS_BOX_ApplyModel(PHYSICS_BOX_DATA * pbox, float framediff, float 
 	pbox->stopcount = 0;
 
 	source->soundcount = 0;
-	source->soundtime = arxtime.now_ul() + 2000;
+	source->soundtime = arxtime.now_ul() + ArxDurationMs(2000);
 }
 
