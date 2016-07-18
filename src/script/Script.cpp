@@ -1847,8 +1847,9 @@ void ARX_SCRIPT_Timer_Check() {
 		if((st->flags & 1) && !(st->io->gameFlags & GFLAG_ISINTREATZONE)) {
 			long increment = (now - st->tim) / st->msecs;
 			st->tim += st->msecs * increment;
+			// TODO print full 64-bit time
 			arx_assert(st->tim <= now && st->tim + st->msecs > now,
-			           "start=%lu wait=%ld now=%lu", st->tim, st->msecs, now);
+			           "start=%lu wait=%ld now=%lu", (long)st->tim, (long)st->msecs, (long)now);
 			continue;
 		}
 		

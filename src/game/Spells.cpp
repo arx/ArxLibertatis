@@ -550,7 +550,7 @@ void ARX_SPELLS_ManageMagic() {
 				
 				ArxInstant now = arxtime.now_ul();
 				
-				const unsigned long interval = 1000 / 60;
+				const ArxDuration interval = 1000 / 60;
 				
 				if(ARX_FLARES_broken) {
 					g_LastFlarePosition = pos;
@@ -569,7 +569,7 @@ void ARX_SPELLS_ManageMagic() {
 					else
 						AddFlare(pos, 1.f, 3);
 					
-					g_LastFlareTime = now - std::min(now - g_LastFlareTime - interval, interval);
+					g_LastFlareTime = now - std::min(ArxDuration(now - g_LastFlareTime - interval), interval);
 				}
 				
 				ARX_FLARES_broken=0;
