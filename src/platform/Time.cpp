@@ -29,7 +29,7 @@ namespace platform {
 
 #include <time.h>
 
-static clock_t g_clockId = CLOCK_REALTIME;
+static clockid_t g_clockId = CLOCK_REALTIME;
 
 void initializeTime() {
 	
