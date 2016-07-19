@@ -1135,7 +1135,7 @@ static long ARX_CHANGELEVEL_Push_IO(const Entity * io, long level) {
 					ats->remaining = 0;
 
 				//else ats->tim=-ats->tim;
-				ats->times = timer.times;
+				ats->count = timer.times;
 				ats->flags = timer.flags;
 				pos += sizeof(ARX_CHANGELEVEL_TIMERS_SAVE);
 			}
@@ -2145,7 +2145,7 @@ static Entity * ARX_CHANGELEVEL_Pop_IO(const std::string & idString, EntityInsta
 			const ArxInstant tt = (ARX_CHANGELEVEL_DesiredTime + remaining) - ats->interval;
 			scr_timer[num].tim = tt;
 			
-			scr_timer[num].times = ats->times;
+			scr_timer[num].times = ats->count;
 		}
 		
 		if(!loadScriptData(io->script, dat, pos) || !loadScriptData(io->over_script, dat, pos)) {

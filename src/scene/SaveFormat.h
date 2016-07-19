@@ -419,7 +419,7 @@ struct ARX_CHANGELEVEL_INVENTORY_DATA_SAVE {
 struct ARX_CHANGELEVEL_TIMERS_SAVE {
 	
 	char name[SIZE_ID];
-	s32 times;
+	s32 count;
 	s32 interval;
 	s32 pos;
 	s32 remaining;
