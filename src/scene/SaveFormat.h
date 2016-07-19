@@ -420,7 +420,7 @@ struct ARX_CHANGELEVEL_TIMERS_SAVE {
 	
 	char name[SIZE_ID];
 	s32 times;
-	s32 msecs;
+	s32 interval;
 	s32 pos;
 	s32 tim;
 	s32 script; // 0 = global ** 1 = local

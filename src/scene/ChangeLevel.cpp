@@ -1120,7 +1120,7 @@ static long ARX_CHANGELEVEL_Push_IO(const Entity * io, long level) {
 				ARX_CHANGELEVEL_TIMERS_SAVE * ats = (ARX_CHANGELEVEL_TIMERS_SAVE *)(dat + pos);
 				memset(ats, 0, sizeof(ARX_CHANGELEVEL_TIMERS_SAVE));
 				ats->longinfo = timer.longinfo;
-				ats->msecs = timer.msecs;
+				ats->interval = timer.msecs;
 				util::storeString(ats->name, timer.name.c_str());
 				ats->pos = timer.pos;
 
@@ -2136,13 +2136,13 @@ static Entity * ARX_CHANGELEVEL_Pop_IO(const std::string & idString, EntityInsta
 			scr_timer[num].flags = sFlags;
 			scr_timer[num].exist = 1;
 			scr_timer[num].io = io;
-			scr_timer[num].msecs = ats->msecs;
+			scr_timer[num].msecs = ats->interval;
 			scr_timer[num].name = boost::to_lower_copy(util::loadString(ats->name));
 			scr_timer[num].pos = ats->pos;
 			// TODO if the script has changed since the last save, this position may be invalid
 			
 			const unsigned long tim = checked_range_cast<unsigned long>(ats->tim);
-			const ArxInstant tt = (ARX_CHANGELEVEL_DesiredTime + tim) - ats->msecs;
+			const ArxInstant tt = (ARX_CHANGELEVEL_DesiredTime + tim) - ats->interval;
 			scr_timer[num].tim = tt;
 			
 			scr_timer[num].times = ats->times;
