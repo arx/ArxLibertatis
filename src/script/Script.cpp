@@ -1838,6 +1838,7 @@ void ARX_SCRIPT_Timer_Check() {
 		
 		ArxInstant now = arxtime.now_ul();
 		ArxInstant fire_time = st->start + st->interval;
+		arx_assert(st->start <= now);
 		if(fire_time > now) {
 			// Timer not ready to fire yet
 			continue;

@@ -1130,6 +1130,7 @@ static long ARX_CHANGELEVEL_Push_IO(const Entity * io, long level) {
 					ats->script = 1;
 
 				ats->remaining = (timer.start + timer.interval) - timm;
+				arx_assert(ats->remaining <= timer.interval);
 
 				if(ats->remaining < 0)
 					ats->remaining = 0;
