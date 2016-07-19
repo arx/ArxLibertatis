@@ -1129,12 +1129,11 @@ static long ARX_CHANGELEVEL_Push_IO(const Entity * io, long level) {
 				else
 					ats->script = 1;
 
-				ats->remaining = (timer.tim + timer.interval) - timm;
+				ats->remaining = (timer.start + timer.interval) - timm;
 
 				if(ats->remaining < 0)
 					ats->remaining = 0;
 
-				//else ats->tim=-ats->tim;
 				ats->count = timer.times;
 				ats->flags = timer.flags;
 				pos += sizeof(ARX_CHANGELEVEL_TIMERS_SAVE);
@@ -2143,7 +2142,7 @@ static Entity * ARX_CHANGELEVEL_Pop_IO(const std::string & idString, EntityInsta
 			
 			const unsigned long remaining = checked_range_cast<unsigned long>(ats->remaining);
 			const ArxInstant tt = (ARX_CHANGELEVEL_DesiredTime + remaining) - ats->interval;
-			scr_timer[num].tim = tt;
+			scr_timer[num].start = tt;
 			
 			scr_timer[num].times = ats->count;
 		}
@@ -2686,7 +2685,7 @@ static bool ARX_CHANGELEVEL_PopLevel(long instance, bool reloadflag) {
 		ArxInstant ulDTime = ARX_CHANGELEVEL_DesiredTime;
 		for(long i = 0; i < MAX_TIMER_SCRIPT; i++) {
 			if(scr_timer[i].exist) {
-				scr_timer[i].tim = ulDTime;
+				scr_timer[i].start = ulDTime;
 			}
 		}
 	} else {

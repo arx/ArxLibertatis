@@ -149,7 +149,7 @@ struct SCR_TIMER {
 	ArxDuration interval;
 	long pos;
 	long longinfo;
-	ArxInstant tim;
+	ArxInstant start;
 	Entity * io;
 	EERIE_SCRIPT * es;
 	
@@ -161,7 +161,7 @@ struct SCR_TIMER {
 		, interval(0)
 		, pos(0)
 		, longinfo(0)
-		, tim(0)
+		, start(0)
 		, io(NULL)
 		, es(NULL)
 	{ }
@@ -174,7 +174,7 @@ struct SCR_TIMER {
 		interval = 0;
 		pos = 0;
 		longinfo = 0;
-		tim = 0;
+		start = 0;
 		io = NULL;
 		es = NULL;
 	}

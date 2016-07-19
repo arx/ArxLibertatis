@@ -900,7 +900,7 @@ void timerCommand(const std::string & timer, Context & context) {
 	scr_timer[num].interval = interval;
 	scr_timer[num].name = timername;
 	scr_timer[num].pos = pos;
-	scr_timer[num].tim = arxtime.now_ul();
+	scr_timer[num].start = arxtime.now_ul();
 	scr_timer[num].times = count;
 	
 	scr_timer[num].flags = (idle && io) ? 1 : 0;
