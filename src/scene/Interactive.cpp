@@ -1154,7 +1154,7 @@ void ARX_INTERACTIVE_TeleportBehindTarget(Entity * io)
 			scr_timer[num].name = "_r_a_t_";
 			scr_timer[num].pos = -1; 
 			scr_timer[num].start = arxtime.now_ul();
-			scr_timer[num].times = 1;
+			scr_timer[num].count = 1;
 			entities[t]->show = SHOW_FLAG_TELEPORTING;
 			AddRandomSmoke(io, 10);
 			ARX_PARTICLES_Add_Smoke(io->pos, 3, 20);

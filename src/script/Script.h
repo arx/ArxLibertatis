@@ -145,7 +145,7 @@ struct SCR_TIMER {
 	std::string name;
 	short exist;
 	short flags;
-	long times;
+	long count;
 	ArxDuration interval;
 	long pos;
 	long longinfo;
@@ -157,7 +157,7 @@ struct SCR_TIMER {
 		: name()
 		, exist(0)
 		, flags(0)
-		, times(0)
+		, count(0)
 		, interval(0)
 		, pos(0)
 		, longinfo(0)
@@ -170,7 +170,7 @@ struct SCR_TIMER {
 		name.clear();
 		exist = 0;
 		flags = 0;
-		times = 0;
+		count = 0;
 		interval = 0;
 		pos = 0;
 		longinfo = 0;

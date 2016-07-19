@@ -1808,9 +1808,9 @@ static bool Manage_Specific_RAT_Timer(SCR_TIMER * st) {
 		}
 		
 		io->gameFlags &= ~GFLAG_INVISIBILITY;
-		st->times = 1;
+		st->count = 1;
 	} else {
-		st->times++;
+		st->count++;
 		st->interval = static_cast<long>(st->interval * ( 1.0f / 2 ));
 		if(st->interval < 100)
 			st->interval = 100;
@@ -1867,11 +1867,11 @@ void ARX_SCRIPT_Timer_Check() {
 		std::string name = st->name;
 		#endif
 		
-		if(st->times == 1) {
+		if(st->count == 1) {
 			ARX_SCRIPT_Timer_ClearByNum(i);
 		} else {
-			if(st->times != 0) {
-				st->times--;
+			if(st->count != 0) {
+				st->count--;
 			}
 			st->start += st->interval;
 		}
