@@ -557,7 +557,7 @@ void ARX_SPELLS_ManageMagic() {
 					g_LastFlareTime = now - interval;
 				}
 				
-				if(now - g_LastFlareTime >= interval) {
+				if(now - ArxInstant(g_LastFlareTime) >= interval) {
 					
 					if(glm::distance(Vec2f(pos), Vec2f(g_LastFlarePosition)) > 14 * g_sizeRatio.y) {
 						FlareLine(g_LastFlarePosition, pos);
