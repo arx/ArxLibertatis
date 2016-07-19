@@ -422,7 +422,7 @@ struct ARX_CHANGELEVEL_TIMERS_SAVE {
 	s32 times;
 	s32 interval;
 	s32 pos;
-	s32 tim;
+	s32 remaining;
 	s32 script; // 0 = global ** 1 = local
 	s32 longinfo;
 	s32 flags;

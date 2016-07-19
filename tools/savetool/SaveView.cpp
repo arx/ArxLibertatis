@@ -1411,7 +1411,7 @@ static int view_io(SaveBlock & save, const char * dat, size_t size) {
 		cout << "  Milliseconds: " << ats->interval << endl;
 		cout << "  Name: " << boost::to_lower_copy(util::loadString(ats->name)) << endl;
 		cout << "  Position: " << ats->pos << endl;
-		cout << "  Time: " << ats->tim << endl;
+		cout << "  Time: " << ats->remaining << endl;
 		if(ats->times) cout << "  Count: " << ats->times << endl;
 	}
 	
