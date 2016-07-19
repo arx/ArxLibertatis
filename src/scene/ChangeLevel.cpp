@@ -2140,7 +2140,14 @@ static Entity * ARX_CHANGELEVEL_Pop_IO(const std::string & idString, EntityInsta
 			scr_timer[num].pos = ats->pos;
 			// TODO if the script has changed since the last save, this position may be invalid
 			
-			const unsigned long remaining = checked_range_cast<unsigned long>(ats->remaining);
+			unsigned long remaining = checked_range_cast<unsigned long>(ats->remaining);
+			if(remaining > (unsigned long)ats->interval) {
+				LogWarning << "Found bad script timer " << scr_timer[num].name
+				           << " for entity " << io->idString() << " in save file: remaining time ("
+				           << remaining << "ms) > interval (" << ats->interval << "ms) " << ats->flags;
+				remaining = ats->interval;
+			}
+			
 			const ArxInstant tt = (ARX_CHANGELEVEL_DesiredTime + remaining) - ats->interval;
 			scr_timer[num].start = tt;
 			
