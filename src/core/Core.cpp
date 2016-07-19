@@ -589,16 +589,16 @@ void levelInit() {
 
 	entities.player()->_npcdata->vvpos = -99999;
 
-	SendGameReadyMsg();
-	PLAYER_MOUSELOOK_ON = false;
-	player.Interface &= ~INTER_NOTE;
-
 	if(!TIME_INIT) {
 		arxtime.force_time_restore(FORCE_TIME_RESTORE);
 		arxtime.force_frame_time_restore(FORCE_TIME_RESTORE);
 	} else {
 		arxtime.resume();
 	}
+
+	SendGameReadyMsg();
+	PLAYER_MOUSELOOK_ON = false;
+	player.Interface &= ~INTER_NOTE;
 
 	EntityHandle t = entities.getById("seat_stool1_0012");
 	if(ValidIONum(t)) {
