@@ -437,7 +437,6 @@ void ARXDRAW_DrawPolyBoom() {
 				IncrementPolyWithNormalOutput(pb.ep,ltv);
 				
 				for(long k = 0; k < pb.nbvert; k++) {
-					ltv[k].p = ltv[k].p;
 					ltv[k].uv.x=pb.u[k];
 					ltv[k].uv.y=pb.v[k];
 					ltv[k].color = col;
@@ -469,7 +468,6 @@ void ARXDRAW_DrawPolyBoom() {
 				IncrementPolyWithNormalOutput(pb.ep, ltv);
 				
 				for(long k = 0; k < pb.nbvert; k++) {
-					ltv[k].p = ltv[k].p;
 					ltv[k].uv.x=(pb.u[k]-0.5f)*(tr)+0.5f;
 					ltv[k].uv.y=(pb.v[k]-0.5f)*(tr)+0.5f;
 					ltv[k].color = col;
@@ -498,7 +496,6 @@ void ARXDRAW_DrawPolyBoom() {
 				IncrementPolyWithNormalOutput(pb.ep,ltv);
 				
 				for(long k = 0; k < pb.nbvert; k++) {
-					ltv[k].p = ltv[k].p;
 					ltv[k].uv.x=(pb.u[k]-0.5f)*(tr)+0.5f;
 					ltv[k].uv.y=(pb.v[k]-0.5f)*(tr)+0.5f;
 					ltv[k].color=col;
