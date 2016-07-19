@@ -676,11 +676,6 @@ void ARX_DAMAGES_DealDamages(EntityHandle target, float dmg, EntityHandle source
 		if(flags & DAMAGE_TYPE_PUSH)
 			ARX_DAMAGES_PushIO(io_target, source, damagesdone * ( 1.0f / 2 ));
 		
-		// TODO what is this code supposed to do ?
-		if((flags & DAMAGE_TYPE_MAGICAL) && !(flags & (DAMAGE_TYPE_FIRE | DAMAGE_TYPE_COLD))) {
-			damagesdone -= player.m_miscFull.resistMagic * ( 1.0f / 100 ) * damagesdone;
-			damagesdone = std::max(0.0f, damagesdone);
-		}
 	} else {
 		if(io_target->ioflags & IO_NPC) {
 			if(flags & DAMAGE_TYPE_POISON) {
@@ -714,11 +709,6 @@ void ARX_DAMAGES_DealDamages(EntityHandle target, float dmg, EntityHandle source
 			if(flags & DAMAGE_TYPE_PUSH)
 				ARX_DAMAGES_PushIO(io_target, source, damagesdone * ( 1.0f / 2 ));
 			
-			// TODO what is this code supposed to do ?
-			if((flags & DAMAGE_TYPE_MAGICAL) && !(flags & (DAMAGE_TYPE_FIRE | DAMAGE_TYPE_COLD))) {
-				damagesdone -= io_target->_npcdata->resist_magic * ( 1.0f / 100 ) * damagesdone;
-				damagesdone = std::max(0.0f, damagesdone);
-			}
 		}
 	}
 }
