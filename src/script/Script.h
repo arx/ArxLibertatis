@@ -146,7 +146,7 @@ struct SCR_TIMER {
 	short exist;
 	short flags;
 	long times;
-	ArxDuration msecs;
+	ArxDuration interval;
 	long pos;
 	long longinfo;
 	ArxInstant tim;
@@ -158,7 +158,7 @@ struct SCR_TIMER {
 		, exist(0)
 		, flags(0)
 		, times(0)
-		, msecs(0)
+		, interval(0)
 		, pos(0)
 		, longinfo(0)
 		, tim(0)
@@ -171,7 +171,7 @@ struct SCR_TIMER {
 		exist = 0;
 		flags = 0;
 		times = 0;
-		msecs = 0;
+		interval = 0;
 		pos = 0;
 		longinfo = 0;
 		tim = 0;

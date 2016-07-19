@@ -1811,9 +1811,9 @@ static bool Manage_Specific_RAT_Timer(SCR_TIMER * st) {
 		st->times = 1;
 	} else {
 		st->times++;
-		st->msecs = static_cast<long>(st->msecs * ( 1.0f / 2 ));
-		if(st->msecs < 100)
-			st->msecs = 100;
+		st->interval = static_cast<long>(st->interval * ( 1.0f / 2 ));
+		if(st->interval < 100)
+			st->interval = 100;
 		
 		return true;
 	}
@@ -1837,7 +1837,7 @@ void ARX_SCRIPT_Timer_Check() {
 		}
 		
 		ArxInstant now = arxtime.now_ul();
-		ArxInstant fire_time = st->tim + st->msecs;
+		ArxInstant fire_time = st->tim + st->interval;
 		if(fire_time > now) {
 			// Timer not ready to fire yet
 			continue;
@@ -1845,11 +1845,11 @@ void ARX_SCRIPT_Timer_Check() {
 		
 		// Skip heartbeat timer events for far away objects
 		if((st->flags & 1) && !(st->io->gameFlags & GFLAG_ISINTREATZONE)) {
-			long increment = (now - st->tim) / st->msecs;
-			st->tim += st->msecs * increment;
+			long increment = (now - st->tim) / st->interval;
+			st->tim += st->interval * increment;
 			// TODO print full 64-bit time
-			arx_assert(st->tim <= now && st->tim + st->msecs > now,
-			           "start=%lu wait=%ld now=%lu", (long)st->tim, (long)st->msecs, (long)now);
+			arx_assert(st->tim <= now && st->tim + st->interval > now,
+			           "start=%lu wait=%ld now=%lu", (long)st->tim, (long)st->interval, (long)now);
 			continue;
 		}
 		
@@ -1873,7 +1873,7 @@ void ARX_SCRIPT_Timer_Check() {
 			if(st->times != 0) {
 				st->times--;
 			}
-			st->tim += st->msecs;
+			st->tim += st->interval;
 		}
 		
 		if(es && ValidIOAddress(io)) {

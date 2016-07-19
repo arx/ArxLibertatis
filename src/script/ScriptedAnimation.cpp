@@ -279,12 +279,12 @@ public:
 			scr_timer[num2].es = context.getScript();
 			scr_timer[num2].exist = 1;
 			scr_timer[num2].io = context.getEntity();
-			scr_timer[num2].msecs = 1000.f;
+			scr_timer[num2].interval = 1000.f;
 			// Don't assume that we successfully set the animation - use the current animation
 			if(layer.cur_anim) {
 				arx_assert(layer.altidx_cur >= 0 && layer.altidx_cur < layer.cur_anim->alt_nb);
-				if(layer.cur_anim->anims[layer.altidx_cur]->anim_time > scr_timer[num2].msecs) {
-					scr_timer[num2].msecs = layer.cur_anim->anims[layer.altidx_cur]->anim_time;
+				if(layer.cur_anim->anims[layer.altidx_cur]->anim_time > scr_timer[num2].interval) {
+					scr_timer[num2].interval = layer.cur_anim->anims[layer.altidx_cur]->anim_time;
 				}
 			}
 			scr_timer[num2].name = timername;
@@ -294,7 +294,7 @@ public:
 			scr_timer[num2].longinfo = 0;
 			
 			DebugScript(": scheduled timer #" << num2 << ' ' << timername << " in "
-			            << scr_timer[num2].msecs << "ms");
+			            << scr_timer[num2].interval << "ms");
 			
 		}
 		

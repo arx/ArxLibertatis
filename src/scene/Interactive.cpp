@@ -1150,7 +1150,7 @@ void ARX_INTERACTIVE_TeleportBehindTarget(Entity * io)
 			scr_timer[num].es = NULL;
 			scr_timer[num].exist = 1;
 			scr_timer[num].io = io;
-			scr_timer[num].msecs = Random::get(3000, 6000);
+			scr_timer[num].interval = Random::get(3000, 6000);
 			scr_timer[num].name = "_r_a_t_";
 			scr_timer[num].pos = -1; 
 			scr_timer[num].tim = arxtime.now_ul();

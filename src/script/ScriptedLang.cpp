@@ -876,13 +876,14 @@ void timerCommand(const std::string & timer, Context & context) {
 	}
 	
 	long count = (long)context.getFloatVar(command);
-	long millisecons = (long)context.getFloat();
+	long interval = (long)context.getFloat();
 	
 	if(!mili) {
-		millisecons *= 1000;
+		// Seconds → millisecons
+		interval *= 1000;
 	}
 	
-	DebugScript(timername << ' ' << options << ' ' << count << ' ' << millisecons);
+	DebugScript(timername << ' ' << options << ' ' << count << ' ' << interval);
 	
 	size_t pos = context.skipCommand();
 	
@@ -896,7 +897,7 @@ void timerCommand(const std::string & timer, Context & context) {
 	scr_timer[num].es = context.getScript();
 	scr_timer[num].exist = 1;
 	scr_timer[num].io = io;
-	scr_timer[num].msecs = millisecons;
+	scr_timer[num].interval = interval;
 	scr_timer[num].name = timername;
 	scr_timer[num].pos = pos;
 	scr_timer[num].tim = arxtime.now_ul();
