@@ -213,7 +213,7 @@ void CPoisonProjectile::Create(Vec3f _eSrc, float _fBeta)
 	pPS.Update(0);
 }
 
-void CPoisonProjectile::Update(float timeDelta)
+void CPoisonProjectile::Update(ArxDuration timeDelta)
 {
 	if(m_elapsed <= 2000) {
 		m_elapsed += timeDelta;

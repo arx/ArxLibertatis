@@ -138,7 +138,7 @@ void CMagicMissile::SetTTL(ArxDuration aulTTL)
 	lLightId = LightHandle();
 }
 
-void CMagicMissile::Update(float timeDelta)
+void CMagicMissile::Update(ArxDuration timeDelta)
 {
 	ARX_SOUND_RefreshPosition(snd_loop, eCurPos);
 

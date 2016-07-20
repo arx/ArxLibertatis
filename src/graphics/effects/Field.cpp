@@ -163,7 +163,7 @@ void CCreateField::RenderSubDivFace(Vec3f * b, Vec3f * t, int b1, int b2, int t1
 	RenderQuad(b[b1], b[b2], t[t1], t[t2], 1, norm, mat);
 }
 
-void CCreateField::Update(float timeDelta)
+void CCreateField::Update(ArxDuration timeDelta)
 {
 	m_elapsed += timeDelta;
 }

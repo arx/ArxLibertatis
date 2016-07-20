@@ -76,7 +76,7 @@ public:
 		virtual void SetDuration(ArxDuration ulaDuration);
 		virtual ArxDuration GetDuration();
 		
-		virtual void Update(float timeDelta) = 0;
+		virtual void Update(ArxDuration timeDelta) = 0;
 		virtual void Render() = 0;
 	
 	ARX_USE_ALIGNED_NEW(CSpellFx)

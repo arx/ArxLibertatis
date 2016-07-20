@@ -260,7 +260,7 @@ void CLightning::ReCreate(float rootSize)
 	m_iTTL = Random::get(500, 1500);
 }
 
-void CLightning::Update(float timeDelta)
+void CLightning::Update(ArxDuration timeDelta)
 {
 	m_elapsed += timeDelta;
 	m_iTTL -= timeDelta;

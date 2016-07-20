@@ -56,7 +56,7 @@ public:
 	void SetTTL(ArxDuration);
 	
 	void Create(const Vec3f & startPos, const Anglef &);
-	void Update(float timeDelta);
+	void Update(ArxDuration timeDelta);
 	void Render();
 	
 	bool bExplo;
