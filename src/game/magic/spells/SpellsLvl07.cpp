@@ -628,7 +628,7 @@ void LightningStrikeSpell::Launch() {
 	m_lightning.Create(Vec3f_ZERO, target);
 	m_lightning.SetDuration(long(500 * m_level));
 	m_lightning.m_isMassLightning = false;
-	m_duration = m_lightning.GetDuration();
+	m_duration = m_lightning.m_duration;
 	
 	ARX_SOUND_PlaySFX(SND_SPELL_LIGHTNING_START, &m_caster_pos);
 	

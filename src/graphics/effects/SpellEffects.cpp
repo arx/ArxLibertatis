@@ -65,10 +65,6 @@ void CSpellFx::SetDuration(ArxDuration ulaDuration) {
 	m_elapsed = 0;
 }
 
-ArxDuration CSpellFx::GetDuration() {
-	return m_duration;
-}
-
 void Draw3DLineTexNew(const RenderMaterial & mat, Vec3f startPos, Vec3f endPos, Color startColor, Color endColor, float startSize, float endSize) {
 	
 	float fBeta = MAKEANGLE(player.angle.getPitch());

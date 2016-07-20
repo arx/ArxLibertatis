@@ -74,7 +74,6 @@ public:
 		virtual ~CSpellFx() { }
 		
 		virtual void SetDuration(ArxDuration ulaDuration);
-		virtual ArxDuration GetDuration();
 		
 		virtual void Update(ArxDuration timeDelta) = 0;
 		virtual void Render() = 0;

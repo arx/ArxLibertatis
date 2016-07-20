@@ -331,7 +331,7 @@ void CreateFieldSpell::Launch()
 			light->pos = m_field.eSrc - Vec3f(0.f, 150.f, 0.f);
 		}
 		
-		m_duration = m_field.GetDuration();
+		m_duration = m_field.m_duration;
 		
 		if(m_flags & SPELLCAST_FLAG_RESTORE) {
 			m_field.Update(4000);
