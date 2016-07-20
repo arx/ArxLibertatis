@@ -973,7 +973,7 @@ static int view_player(SaveBlock & save, const char * dat, size_t size) {
 		cout << endl << "Precast #" << i << ':' << endl;
 		
 		cout << "  Spell: "; print_spell(p.typ); cout << endl;
-		cout << "  Level: " << p.launch_time << endl;
+		cout << "  Level: " << p.level << endl;
 		cout << "  Launch time: " << p.launch_time << endl;
 		cout << "  Duration: " << p.duration << endl;
 		cout << "  Flags:"; print_spellcast_flags(p.flags); cout << endl;
