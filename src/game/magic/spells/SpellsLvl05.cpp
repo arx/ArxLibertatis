@@ -67,7 +67,7 @@ void RuneOfGuardingSpell::Launch()
 		light->fallstart = 400.f;
 		light->rgb = Color3f(1.0f, 0.2f, 0.2f);
 		light->pos = m_pos - Vec3f(0.f, 50.f, 0.f);
-		light->creationTime = arxtime.now_ul();
+		light->creationTime = arxtime.now();
 		light->duration = ArxDurationMs(200);
 	}
 }
@@ -89,7 +89,7 @@ void RuneOfGuardingSpell::Update() {
 		light->fallend = 350.f;
 		light->fallstart = 150.f;
 		light->rgb = Color3f(1.0f, 0.2f, 0.2f);
-		light->creationTime = arxtime.now_ul();
+		light->creationTime = arxtime.now();
 		light->duration = ArxDurationMs(200);
 	}
 	
@@ -269,7 +269,7 @@ void LevitateSpell::createDustParticle() {
 	                 Random::getf(5.f, 10.f) * ((pd->ov.z - m_pos.z) / t));
 	pd->siz = Random::getf(30.f, 60.f);
 	pd->tolive = 3000;
-	pd->timcreation = -(long(arxtime.now_ul()) + 3000l); // TODO WTF
+	pd->timcreation = -(long(arxtime.now()) + 3000l); // TODO WTF
 	pd->special = FIRE_TO_SMOKE | FADE_IN_AND_OUT | ROTATING | MODULATE_ROTATION | DISSIPATING;
 	pd->fparam = 0.0000001f;
 }
@@ -340,7 +340,7 @@ void CurePoisonSpell::Launch()
 		light->fallend   = 350.f;
 		light->rgb = Color3f(0.f, 1.f, 0.0f);
 		light->pos = m_pos + Vec3f(0.f, -50.f, 0.f);
-		light->creationTime = arxtime.now_ul();
+		light->creationTime = arxtime.now();
 		light->duration = ArxDurationMs(200);
 		light->extras = 0;
 	}
@@ -395,7 +395,7 @@ void CurePoisonSpell::Update() {
 		light->rgb = Color3f(0.4f, 1.f, 0.4f);
 		light->pos = m_pos + Vec3f(0.f, -50.f, 0.f);
 		light->duration = ArxDurationMs(200);
-		light->creationTime = arxtime.now_ul();
+		light->creationTime = arxtime.now();
 		light->extras = 0;
 	}
 	
@@ -502,7 +502,7 @@ void RepelUndeadSpell::Update() {
 		light->rgb = Color3f(0.8f, 0.8f, 1.f);
 		light->pos = m_pos + Vec3f(0.f, -50.f, 0.f);
 		light->duration = ArxDurationMs(200);
-		light->creationTime = arxtime.now_ul();
+		light->creationTime = arxtime.now();
 	}
 	
 	if (m_target == PlayerEntityHandle)
@@ -589,7 +589,7 @@ void PoisonProjectileSpell::Launch()
 			light->fallstart		= 150.f;
 			light->rgb = Color3f::green;
 			light->pos = projectile->eSrc;
-			light->creationTime	= arxtime.now_ul();
+			light->creationTime	= arxtime.now();
 			light->duration		= ArxDurationMs(200);
 		}
 	}
@@ -630,13 +630,13 @@ void PoisonProjectileSpell::Update() {
 			light->fallstart	= 150.f;
 			light->rgb = Color3f::green;
 			light->pos = projectile->eCurPos;
-			light->creationTime = arxtime.now_ul();
+			light->creationTime = arxtime.now();
 			light->duration	= ArxDurationMs(200);
 		}
 
 		AddPoisonFog(projectile->eCurPos, m_level + 7);
 
-		if(m_timcreation + 1600 < arxtime.now_ul()) {
+		if(m_timcreation + 1600 < arxtime.now()) {
 			
 			DamageParameters damage;
 			damage.pos = projectile->eCurPos;

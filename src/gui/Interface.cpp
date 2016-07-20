@@ -1177,7 +1177,7 @@ void ArxGame::managePlayerControls() {
 	
 	// Checks JUMP Key Status.
 	if(player.jumpphase == NotJumping && GInput->actionNowPressed(CONTROLS_CUST_JUMP)) {
-		REQUEST_JUMP = arxtime.now_ul();
+		REQUEST_JUMP = arxtime.now();
 	}
 	
 	// MAGIC
@@ -1402,7 +1402,7 @@ void ArxGame::managePlayerControls() {
 	   && config.input.autoReadyWeapon
 	) {
 		if(eeMouseDown1()) {
-			COMBAT_MODE_ON_START_TIME = arxtime.now_ul();
+			COMBAT_MODE_ON_START_TIME = arxtime.now();
 		} else {
 			if(arxtime.now_f() - COMBAT_MODE_ON_START_TIME > 10) {
 				ARX_INTERFACE_Combat_Mode(1);
@@ -1705,7 +1705,7 @@ void ArxGame::manageKeyMouse() {
 		
 		if(!GInput->actionPressed(CONTROLS_CUST_STRAFE)) {
 			arxtime.update();
-			const ArxInstant now = arxtime.now_ul();
+			const ArxInstant now = arxtime.now();
 
 			if(GInput->actionPressed(CONTROLS_CUST_TURNLEFT)) {
 				if(!pushTime.turnLeft)
@@ -1728,7 +1728,7 @@ void ArxGame::manageKeyMouse() {
 
 		if(USE_PLAYERCOLLISIONS) {
 			arxtime.update();
-			const ArxInstant now = arxtime.now_ul();
+			const ArxInstant now = arxtime.now();
 
 			if(GInput->actionPressed(CONTROLS_CUST_LOOKUP)) {
 				if(!pushTime.lookUp)
@@ -1826,11 +1826,11 @@ void ArxGame::manageKeyMouse() {
 				   && distTop >= 3 * borderSize && distBottom >= 3 * borderSize) {
 					mouseInBorder = false;
 				} else if(!mouseInBorder) {
-					mouseInBorderTime = arxtime.now_ul();
+					mouseInBorderTime = arxtime.now();
 					mouseInBorder = true;
 				}
 				
-				if(borderDelay > 0 && arxtime.now_ul() - mouseInBorderTime < borderDelay) {
+				if(borderDelay > 0 && arxtime.now() - mouseInBorderTime < borderDelay) {
 					mouseDiff = Vec2f_ZERO;
 				} else {
 					bKeySpecialMove = true;

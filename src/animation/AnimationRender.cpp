@@ -317,10 +317,10 @@ void Cedric_ApplyLightingFirstPartRefactor(Entity *io) {
 		if(io->show == SHOW_FLAG_TELEPORTING) {
 			io->sfx_time = io->sfx_time + ArxDurationMs(g_framedelay);
 
-			if (io->sfx_time >= arxtime.now_ul())
-				io->sfx_time = arxtime.now_ul();
+			if (io->sfx_time >= arxtime.now())
+				io->sfx_time = arxtime.now();
 		} else {
-			const ArxDuration elapsed = arxtime.now_ul() - io->sfx_time;
+			const ArxDuration elapsed = arxtime.now() - io->sfx_time;
 
 			if(elapsed > 0) {
 				if(elapsed < 3000) { // 5 seconds to red
@@ -1128,7 +1128,7 @@ static void Cedric_RenderObject(EERIE_3DOBJ * eobj, Skeleton * obj, Entity * io,
 	bool glow = false;
 	ColorRGBA glowColor;
 	if(io && (io->sfx_flag & SFX_TYPE_YLSIDE_DEATH) && io->show != SHOW_FLAG_TELEPORTING) {
-		const ArxDuration elapsed = arxtime.now_ul() - io->sfx_time;
+		const ArxDuration elapsed = arxtime.now() - io->sfx_time;
 		if(elapsed >= ArxDurationMs(3000) && elapsed < ArxDurationMs(6000)) {
 			float ratio = (elapsed - 3000) * (1.0f / 3000);
 			glowColor = Color::gray(ratio).toRGB();

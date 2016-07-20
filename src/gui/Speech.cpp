@@ -123,7 +123,7 @@ void ARX_SPEECH_Add(const std::string & text) {
 	if(text.empty())
 		return;
 	
-	ArxInstant now = arxtime.now_ul();
+	ArxInstant now = arxtime.now();
 	if(now == ArxInstant_ZERO) {
 		now = ArxInstantMs(1);
 	}
@@ -344,7 +344,7 @@ long ARX_SPEECH_AddSpeech(Entity * io, const std::string & data, long mood,
 	
 	aspeech[num].exist = 1;
 	arxtime.update();
-	aspeech[num].time_creation = arxtime.now_ul();
+	aspeech[num].time_creation = arxtime.now();
 	aspeech[num].io = io; // can be NULL
 	aspeech[num].duration = ArxDurationMs(2000); // Minimum value
 	aspeech[num].flags = flags;
@@ -419,7 +419,7 @@ long ARX_SPEECH_AddSpeech(Entity * io, const std::string & data, long mood,
 
 void ARX_SPEECH_Update() {
 	
-	ArxInstant now = arxtime.now_ul();
+	ArxInstant now = arxtime.now();
 
 	if(cinematicBorder.isActive() || BLOCK_PLAYER_CONTROLS)
 		ARX_CONVERSATION_CheckAcceleratedSpeech();

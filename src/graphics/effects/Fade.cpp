@@ -55,7 +55,7 @@ void fadeRequestStart(FadeType type, const ArxDuration duration) {
 	
 	FADEDURATION = duration;
 	arxtime.update();
-	FADESTART = arxtime.now_ul();
+	FADESTART = arxtime.now();
 }
 
 void ManageFade()
@@ -63,7 +63,7 @@ void ManageFade()
 	arxtime.update();
 	
 	// TODO can this really become negative ?
-	ArxDuration elapsed = arxtime.now_ul() - FADESTART;
+	ArxDuration elapsed = arxtime.now() - FADESTART;
 	if(elapsed <= ArxDuration_ZERO)
 		return;
 

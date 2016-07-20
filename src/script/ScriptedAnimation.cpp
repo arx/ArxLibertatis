@@ -289,7 +289,7 @@ public:
 			}
 			scr_timer[num2].name = timername;
 			scr_timer[num2].pos = pos;
-			scr_timer[num2].start = arxtime.now_ul();
+			scr_timer[num2].start = arxtime.now();
 			scr_timer[num2].count = 1;
 			scr_timer[num2].longinfo = 0;
 			

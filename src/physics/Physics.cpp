@@ -341,7 +341,7 @@ static void ARX_TEMPORARY_TrySound(Entity * source, Material collisionMaterial, 
 	if(source->ioflags & IO_BODY_CHUNK)
 		return;
 	
-	ArxInstant now = arxtime.now_ul();
+	ArxInstant now = arxtime.now();
 	
 	if(now > source->soundtime) {
 		
@@ -468,6 +468,6 @@ void ARX_PHYSICS_BOX_ApplyModel(PHYSICS_BOX_DATA * pbox, float framediff, float 
 	pbox->stopcount = 0;
 
 	source->soundcount = 0;
-	source->soundtime = arxtime.now_ul() + ArxDurationMs(2000);
+	source->soundtime = arxtime.now() + ArxDurationMs(2000);
 }
 

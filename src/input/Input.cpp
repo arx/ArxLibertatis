@@ -374,7 +374,7 @@ void Input::update() {
 	}
 	
 	arxtime.update(false);
-	const ArxInstant now = arxtime.now_ul();
+	const ArxInstant now = arxtime.now();
 
 	for(int buttonId = Mouse::ButtonBase; buttonId < Mouse::ButtonMax; buttonId++) {
 		int i = buttonId - Mouse::ButtonBase;

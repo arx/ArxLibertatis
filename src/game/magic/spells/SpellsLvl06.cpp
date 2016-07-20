@@ -112,7 +112,7 @@ void RiseDeadSpell::Launch()
 		light->rgb = Color3f::black;
 		light->pos = target - Vec3f(0.f, 100.f, 0.f);
 		light->duration = ArxDurationMs(200);
-		light->creationTime = arxtime.now_ul();
+		light->creationTime = arxtime.now();
 	}
 	
 	m_duration = m_fissure.GetDuration();
@@ -171,7 +171,7 @@ void RiseDeadSpell::Update() {
 		light->fallstart = 400.f;
 		light->rgb = Color3f(0.8f, 0.2f, 0.2f);
 		light->duration = ArxDurationMs(800);
-		light->creationTime = arxtime.now_ul();
+		light->creationTime = arxtime.now();
 	}
 	
 	unsigned long tim = m_fissure.m_elapsed;
@@ -272,7 +272,7 @@ CreateFieldSpell::CreateFieldSpell()
 
 void CreateFieldSpell::Launch()
 {
-	ArxInstant start = arxtime.now_ul();
+	ArxInstant start = arxtime.now();
 	if(m_flags & SPELLCAST_FLAG_RESTORE) {
 		// FIXME what is going on here ?
 		start -= std::min(start, ArxInstantMs(4000l));

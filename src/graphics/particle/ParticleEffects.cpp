@@ -605,7 +605,7 @@ PARTICLE_DEF * createParticle(bool allocateWhilePaused) {
 		
 		ParticleCount++;
 		pd->exist = true;
-		pd->timcreation = arxtime.now_ul();
+		pd->timcreation = arxtime.now();
 		
 		pd->is2D = false;
 		pd->rgb = Color3f::white;
@@ -826,7 +826,7 @@ void ARX_PARTICLES_Update(EERIE_CAMERA * cam)  {
 		return;
 	}
 	
-	const ArxInstant now = arxtime.now_ul();
+	const ArxInstant now = arxtime.now();
 	
 	long pcc = ParticleCount;
 	

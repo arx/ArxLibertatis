@@ -1153,7 +1153,7 @@ void ARX_INTERACTIVE_TeleportBehindTarget(Entity * io)
 			scr_timer[num].interval = ArxDurationMs(Random::get(3000, 6000));
 			scr_timer[num].name = "_r_a_t_";
 			scr_timer[num].pos = -1; 
-			scr_timer[num].start = arxtime.now_ul();
+			scr_timer[num].start = arxtime.now();
 			scr_timer[num].count = 1;
 			entities[t]->show = SHOW_FLAG_TELEPORTING;
 			AddRandomSmoke(io, 10);
@@ -2080,7 +2080,7 @@ static bool IsCollidingInter(Entity * io, const Vec3f & pos) {
 
 void SetYlsideDeath(Entity * io) {
 	io->sfx_flag = SFX_TYPE_YLSIDE_DEATH;
-	io->sfx_time = arxtime.now_ul();
+	io->sfx_time = arxtime.now();
 }
 
 bool ARX_INTERACTIVE_CheckFULLCollision(PHYSICS_BOX_DATA * pbox, Entity * source) {
@@ -2185,10 +2185,10 @@ bool ARX_INTERACTIVE_CheckFULLCollision(PHYSICS_BOX_DATA * pbox, Entity * source
 								float elapsed = arxtime.now_f() - io->collide_door_time;
 								if(elapsed > 500) {
 									EVENT_SENDER = source;
-									io->collide_door_time = arxtime.now_ul();
+									io->collide_door_time = arxtime.now();
 									SendIOScriptEvent(io, SM_COLLIDE_DOOR);
 									EVENT_SENDER = io;
-									io->collide_door_time = arxtime.now_ul();
+									io->collide_door_time = arxtime.now();
 									SendIOScriptEvent(source, SM_COLLIDE_DOOR);
 								}
 							}

@@ -114,7 +114,7 @@ DamageHandle DamageCreate(const DamageParameters & params) {
 		if(!damages[i].exist) {
 			DAMAGE_INFO & damage = damages[i];
 			damage.params = params;
-			damage.start_time = arxtime.now_ul();
+			damage.start_time = arxtime.now();
 			damage.lastupd = ArxInstant_ZERO;
 			damage.exist = true;
 			return DamageHandle(i);
@@ -240,7 +240,7 @@ float ARX_DAMAGES_DamagePlayer(float dmg, DamageType type, EntityHandle source) 
 		else
 			EVENT_SENDER = NULL;
 
-		entities.player()->ouch_time = arxtime.now_ul();
+		entities.player()->ouch_time = arxtime.now();
 		char tex[32];
 		sprintf(tex, "%5.2f", double(entities.player()->dmg_sum));
 		SendIOScriptEvent( entities.player(), SM_OUCH, tex );
@@ -453,7 +453,7 @@ void ARX_DAMAGES_DamageFIX(Entity * io, float dmg, EntityHandle source, bool isS
 
 	float elapsed = arxtime.now_f() - io->ouch_time;
 	if(elapsed > 500) {
-		io->ouch_time = arxtime.now_ul();
+		io->ouch_time = arxtime.now();
 		char tex[32];
 		sprintf(tex, "%5.2f", double(io->dmg_sum));
 		SendIOScriptEvent(io, SM_OUCH, tex);
@@ -748,7 +748,7 @@ float ARX_DAMAGES_DamageNPC(Entity * io, float dmg, EntityHandle source, bool is
 		else
 			EVENT_SENDER = NULL;
 
-		io->ouch_time = arxtime.now_ul();
+		io->ouch_time = arxtime.now();
 		char tex[32];
 
 		if(EVENT_SENDER && EVENT_SENDER->summoner == PlayerEntityHandle) {
@@ -898,7 +898,7 @@ static void ARX_DAMAGES_AddVisual(DAMAGE_INFO & di, const Vec3f & pos, float dmg
 		num = Random::get(0, io->obj->vertexlist.size() / 4 - 1) * 4 + 1;
 	}
 	
-	ArxInstant now = arxtime.now_ul();
+	ArxInstant now = arxtime.now();
 	if(di.lastupd + 200 < now) {
 		di.lastupd = now;
 		if(di.params.type & DAMAGE_TYPE_MAGICAL) {
@@ -1007,7 +1007,7 @@ static void ARX_DAMAGES_UpdateDamage(DamageHandle j, float now) {
 						float elapsed = arxtime.now_f() - io->collide_door_time;
 						if(elapsed > 500) {
 							EVENT_SENDER = NULL;
-							io->collide_door_time = arxtime.now_ul(); 
+							io->collide_door_time = arxtime.now();
 							char param[64];
 							param[0] = 0;
 							

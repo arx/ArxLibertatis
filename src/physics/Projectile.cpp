@@ -90,7 +90,7 @@ void ARX_THROWN_OBJECT_KillAll() {
 
 static long ARX_THROWN_OBJECT_GetFree() {
 	
-	ArxInstant latest_time = arxtime.now_ul();
+	ArxInstant latest_time = arxtime.now();
 	long latest_obj = -1;
 
 	for(size_t i = 0; i < MAX_THROWN_OBJECTS; i++) {
@@ -139,7 +139,7 @@ void ARX_THROWN_OBJECT_Throw(EntityHandle source, const Vec3f & position, const 
 	projectile.m_trail->SetNextPosition(projectile.position);
 	projectile.m_trail->Update(g_framedelay);
 	
-	projectile.creation_time = arxtime.now_ul();
+	projectile.creation_time = arxtime.now();
 	projectile.flags |= ATO_EXIST | ATO_MOVING;
 	
 	if(source == PlayerEntityHandle

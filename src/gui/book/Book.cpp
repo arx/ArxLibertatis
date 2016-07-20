@@ -1560,7 +1560,7 @@ void ARX_INTERFACE_ManageOpenedBook_SpellsDraw() {
 						player.SpellToMemorize.iSpellSymbols[j] = spellInfo.symbols[j];
 					}
 					
-					player.SpellToMemorize.lTimeCreation = arxtime.now_ul();
+					player.SpellToMemorize.lTimeCreation = arxtime.now();
 				}
 			} else {
 				color = Color(168, 208, 223, 255);

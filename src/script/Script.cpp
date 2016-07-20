@@ -386,7 +386,7 @@ ValueType getSystemVar(const EERIE_SCRIPT * es, Entity * entity, const std::stri
 				if(!entity || entity->script.timers[0] == 0) {
 					*lcontent = 0;
 				} else {
-					*lcontent = long(arxtime.now_ul() - es->timers[0]);
+					*lcontent = long(arxtime.now() - es->timers[0]);
 				}
 				return TYPE_LONG;
 			}
@@ -395,7 +395,7 @@ ValueType getSystemVar(const EERIE_SCRIPT * es, Entity * entity, const std::stri
 				if(!entity || entity->script.timers[1] == 0) {
 					*lcontent = 0;
 				} else {
-					*lcontent = long(arxtime.now_ul() - es->timers[1]);
+					*lcontent = long(arxtime.now() - es->timers[1]);
 				}
 				return TYPE_LONG;
 			}
@@ -404,7 +404,7 @@ ValueType getSystemVar(const EERIE_SCRIPT * es, Entity * entity, const std::stri
 				if(!entity || entity->script.timers[2] == 0) {
 					*lcontent = 0;
 				} else {
-					*lcontent = long(arxtime.now_ul() - es->timers[2]);
+					*lcontent = long(arxtime.now() - es->timers[2]);
 				}
 				return TYPE_LONG;
 			}
@@ -413,7 +413,7 @@ ValueType getSystemVar(const EERIE_SCRIPT * es, Entity * entity, const std::stri
 				if(!entity || entity->script.timers[3] == 0) {
 					*lcontent = 0;
 				} else {
-					*lcontent = long(arxtime.now_ul() - es->timers[3]);
+					*lcontent = long(arxtime.now() - es->timers[3]);
 				}
 				return TYPE_LONG;
 			}
@@ -1836,7 +1836,7 @@ void ARX_SCRIPT_Timer_Check() {
 			continue;
 		}
 		
-		ArxInstant now = arxtime.now_ul();
+		ArxInstant now = arxtime.now();
 		ArxInstant fire_time = st->start + st->interval;
 		arx_assert(st->start <= now);
 		if(fire_time > now) {

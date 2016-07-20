@@ -76,7 +76,7 @@ public:
 		return m_now_us / 1000.0f;
 	}
 	
-	ArxInstant now_ul() const {
+	ArxInstant now() const {
 		return checked_range_cast<ArxInstant>(m_now_us / 1000);
 	}
 	

@@ -677,7 +677,7 @@ static bool HandleGameFlowTransitions() {
 			}
 			
 			arxtime.update();
-			TRANSITION_START = arxtime.now_ul();
+			TRANSITION_START = arxtime.now();
 		}
 
 		ARX_INTERFACE_ShowFISHTANK();
@@ -703,7 +703,7 @@ static bool HandleGameFlowTransitions() {
 			}
 			
 			arxtime.update();
-			TRANSITION_START = arxtime.now_ul();
+			TRANSITION_START = arxtime.now();
 			ARX_SOUND_PlayInterface(SND_PLAYER_HEART_BEAT);
 		}
 
@@ -1933,7 +1933,7 @@ void ArxGame::updateLevel() {
 		
 		SpellBase * spell = spells.getSpellByCaster(PlayerEntityHandle, SPELL_MAGIC_SIGHT);
 		if(spell) {
-			ArxDuration duration = arxtime.now_ul() - spell->m_timcreation;
+			ArxDuration duration = arxtime.now() - spell->m_timcreation;
 			magicSightZoom = glm::clamp(float(duration) / 500.f, 0.f, 1.f);
 		}
 		

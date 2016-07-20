@@ -147,7 +147,7 @@ void HitStrengthGauge::update() {
 		if(player.m_bowAimRatio > 0) {
 			j = player.m_bowAimRatio;
 		} else {
-			const ArxDuration delta = arxtime.now_ul() - player.m_aimTime;
+			const ArxDuration delta = arxtime.now() - player.m_aimTime;
 			
 			//TODO global
 			bIsAiming = delta > 0;
@@ -311,11 +311,11 @@ void BackpackIconGui::updateInput() {
 		} else if(eeMouseDown1() || flDelay) {
 			if(!flDelay) {
 				arxtime.update();
-				flDelay = arxtime.now_ul();
+				flDelay = arxtime.now();
 				return;
 			} else {
 				arxtime.update();
-				if(arxtime.now_ul() - flDelay < 300) {
+				if(arxtime.now() - flDelay < 300) {
 					return;
 				} else {
 					flDelay = ArxInstant_ZERO;

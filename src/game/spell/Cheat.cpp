@@ -73,7 +73,7 @@ void CheatDrawText() {
 	if(!sp_max_start)
 		return;
 	
-	ArxDuration elapsed = arxtime.now_ul() - sp_max_start;
+	ArxDuration elapsed = arxtime.now() - sp_max_start;
 
 	if(sp_max_start != ArxInstant_ZERO && elapsed < ArxDurationMs(20000)) {
 		float modi = (20000 - elapsed) * ( 1.0f / 2000 ) * ( 1.0f / 10 );
@@ -98,7 +98,7 @@ void CheatDrawText() {
 static void DisplayCheatText(const char * text) {
 	sp_max_ch = text;
 	arxtime.update();
-	sp_max_start = arxtime.now_ul();
+	sp_max_start = arxtime.now();
 }
 
 static void MakeSpCol() {

@@ -376,7 +376,7 @@ void ARX_MAGICAL_FLARES_Update() {
 		shinum = 1;
 	}
 	
-	const ArxInstant now = arxtime.now_ul();
+	const ArxInstant now = arxtime.now();
 	const unsigned long TICKS = now - FRAMETICKS;
 	FRAMETICKS = now;
 	

@@ -378,7 +378,7 @@ void MagicMissileSpell::Update() {
 			EERIE_LIGHT * el	= lightHandleGet(pMM->lLightId);
 			el->intensity		= 0.7f + 2.3f * pMM->lightIntensityFactor;
 			el->pos = pMM->eCurPos;
-			el->creationTime	= arxtime.now_ul();
+			el->creationTime	= arxtime.now();
 		}
 	}
 }

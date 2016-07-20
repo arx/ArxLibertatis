@@ -1075,7 +1075,7 @@ void ARX_PLAYER_FrameCheck(float Framedelay)
 			if((player.hunger > 10.f && player.hunger - inc_hunger <= 10.f)
 					|| (player.hunger < 10.f && arxtime.now_f() > LastHungerSample + 180000))
 			{
-				LastHungerSample = arxtime.now_ul();
+				LastHungerSample = arxtime.now();
 
 				if(!BLOCK_PLAYER_CONTROLS) {
 					bool bOk = true;
@@ -1321,7 +1321,7 @@ void ARX_PLAYER_Manage_Visual() {
 	
 	ARX_PROFILE_FUNC();
 	
-	ArxInstant now = arxtime.now_ul();
+	ArxInstant now = arxtime.now();
 	
 	if(player.m_currentMovement & PLAYER_ROTATE) {
 		if(ROTATE_START == 0) {
@@ -1666,7 +1666,7 @@ retry:
 				FALLING_TIME = 0;
 				player.jumpphase = JumpAscending;
 				request0_anim = alist[ANIM_JUMP_UP];
-				player.jumpstarttime = arxtime.now_ul();
+				player.jumpstarttime = arxtime.now();
 				player.jumplastposition = -1.f;
 				break;
 			}
@@ -1680,7 +1680,7 @@ retry:
 				break;
 			}
 			case JumpDescending: { // Post-synch
-				LAST_JUMP_ENDTIME = arxtime.now_ul();
+				LAST_JUMP_ENDTIME = arxtime.now();
 				if((layer0.cur_anim == alist[ANIM_JUMP_END] && (layer0.flags & EA_ANIMEND))
 				   || player.onfirmground) {
 					player.jumpphase = JumpEnd;
@@ -1691,7 +1691,7 @@ retry:
 				break;
 			}
 			case JumpEnd: { // Post-synch
-				LAST_JUMP_ENDTIME = arxtime.now_ul();
+				LAST_JUMP_ENDTIME = arxtime.now();
 				if(layer0.cur_anim == alist[ANIM_JUMP_END_PART2] && (layer0.flags & EA_ANIMEND)) {
 					AcquireLastAnim(io);
 					player.jumpphase = NotJumping;
@@ -2331,12 +2331,12 @@ void PlayerMovementIterate(float DeltaTime) {
 				
 				if(player.jumplastposition == -1.f) {
 					player.jumplastposition = 0;
-					player.jumpstarttime = arxtime.now_ul();
+					player.jumpstarttime = arxtime.now();
 				}
 				
 				const float jump_up_time = 200.f;
 				const float jump_up_height = 130.f;
-				const ArxInstant now = arxtime.now_ul();
+				const ArxInstant now = arxtime.now();
 				const unsigned long elapsed = now - player.jumpstarttime;
 				float position = glm::clamp(float(elapsed) / jump_up_time, 0.f, 1.f);
 				

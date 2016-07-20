@@ -91,10 +91,10 @@ void ARX_SPELLS_Precast_Launch(PrecastHandle num) {
 	if(   (precast.flags & SPELLCAST_FLAG_NOMANA)
 	   || player.manaPool.current >= cost
 	) {
-		LAST_PRECAST_TIME = arxtime.now_ul();
+		LAST_PRECAST_TIME = arxtime.now();
 		
 		if(precast.launch_time == 0) {
-			precast.launch_time = arxtime.now_ul();
+			precast.launch_time = arxtime.now();
 			ARX_SOUND_PlaySFX(SND_SPELL_CREATE_FIELD);
 		}
 	} else {
