@@ -2004,7 +2004,7 @@ void ARX_PLAYER_Manage_Movement() {
 void PlayerMovementIterate(float DeltaTime) {
 	
 	// A jump is requested so let's go !
-	if(REQUEST_JUMP) {
+	if(REQUEST_JUMP != ArxInstant_ZERO) {
 		if((player.m_currentMovement & PLAYER_CROUCH)
 		   || player.physics.cyl.height > player.baseHeight()) {
 			float old = player.physics.cyl.height;
@@ -2027,9 +2027,9 @@ void PlayerMovementIterate(float DeltaTime) {
 			REQUEST_JUMP = ArxInstant_ZERO;
 		}
 		
-		if(REQUEST_JUMP) {
-			float t = arxtime.now_f() - REQUEST_JUMP;
-			if(t >= 0.f && t <= 350.f) {
+		if(REQUEST_JUMP != ArxInstant_ZERO) {
+			ArxDuration t = arxtime.now() - REQUEST_JUMP;
+			if(t >= ArxDuration_ZERO && t <= ArxDurationMs(350)) {
 				REQUEST_JUMP = ArxInstant_ZERO;
 				ARX_NPC_SpawnAudibleSound(player.pos, entities.player());
 				ARX_SPEECH_Launch_No_Unicode_Seek("player_jump", entities.player());
