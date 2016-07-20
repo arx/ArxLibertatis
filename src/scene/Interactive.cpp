@@ -2182,8 +2182,8 @@ bool ARX_INTERACTIVE_CheckFULLCollision(PHYSICS_BOX_DATA * pbox, Entity * source
 					for(long kk = 0; kk < pbox->nb_physvert; kk++) {
 						if(sp.contains(pbox->vert[kk].pos)) {
 							if(source && (io->gameFlags & GFLAG_DOOR)) {
-								float elapsed = arxtime.now_f() - io->collide_door_time;
-								if(elapsed > 500) {
+								ArxDuration elapsed = arxtime.now() - io->collide_door_time;
+								if(elapsed > ArxDurationMs(500)) {
 									EVENT_SENDER = source;
 									io->collide_door_time = arxtime.now();
 									SendIOScriptEvent(io, SM_COLLIDE_DOOR);
