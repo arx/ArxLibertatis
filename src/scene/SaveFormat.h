@@ -290,7 +290,7 @@ struct SavedPrecast {
 		PRECAST_STRUCT a;
 		a.typ = (typ < 0) ? SPELL_NONE : (SpellType)typ; // TODO save/load enum
 		a.level = level;
-		a.launch_time = launch_time;
+		a.launch_time = ArxInstantMs(launch_time); // TODO save/load time
 		a.flags = SpellcastFlags::load(flags); // TODO save/load flags
 		a.duration = ArxDurationMs(duration); // TODO save/load time
 		return a;
@@ -299,7 +299,7 @@ struct SavedPrecast {
 	SavedPrecast & operator=(const PRECAST_STRUCT & b) {
 		typ = (b.typ == SPELL_NONE) ? -1 : b.typ;
 		level = b.level;
-		launch_time = b.launch_time;
+		launch_time = toMs(b.launch_time); // TODO save/load time
 		flags = b.flags;
 		duration = toMs(b.duration); // TODO save/load time
 		return *this;
