@@ -37,7 +37,7 @@ public:
 	Vec3f getPosition();
 	
 private:
-	unsigned long m_lastupdate;
+	ArxInstant m_lastupdate;
 };
 
 class FireFieldSpell : public SpellBase {
