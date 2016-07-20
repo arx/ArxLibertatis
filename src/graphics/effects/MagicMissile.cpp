@@ -128,9 +128,9 @@ void CMagicMissile::Create(const Vec3f & startPos, const Anglef & angles)
 	snd_loop = ARX_SOUND_PlaySFX(SND_SPELL_MM_LOOP, &eCurPos, 1.0F, ARX_SOUND_PLAY_LOOPED);
 }
 
-void CMagicMissile::SetTTL(unsigned long aulTTL)
+void CMagicMissile::SetTTL(ArxDuration aulTTL)
 {
-	unsigned long t = ulCurrentTime;
+	ArxDuration t = ulCurrentTime;
 	ulDuration = std::min(ulCurrentTime + aulTTL, ulDuration);
 	SetDuration(ulDuration);
 	ulCurrentTime = t;

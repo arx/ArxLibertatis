@@ -276,7 +276,7 @@ void MagicMissileSpell::Launch() {
 		
 		missile->Create(startPos, angles);
 		
-		long lTime = m_duration + Random::get(-1000, 1000);
+		ArxDuration lTime = m_duration + Random::get(-1000, 1000);
 		
 		lTime		= std::max(1000L, lTime);
 		lMax		= std::max(lMax, lTime);

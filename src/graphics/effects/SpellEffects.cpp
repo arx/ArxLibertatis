@@ -56,7 +56,7 @@ CSpellFx::CSpellFx()
 	SetDuration(1000);
 }
 
-void CSpellFx::SetDuration(const unsigned long ulaDuration) {
+void CSpellFx::SetDuration(ArxDuration ulaDuration) {
 	ulDuration = ulaDuration;
 
 	if(ulDuration <= 0)
@@ -65,7 +65,7 @@ void CSpellFx::SetDuration(const unsigned long ulaDuration) {
 	ulCurrentTime = 0;
 }
 
-unsigned long CSpellFx::GetDuration() {
+ArxDuration CSpellFx::GetDuration() {
 	return ulDuration;
 }
 
