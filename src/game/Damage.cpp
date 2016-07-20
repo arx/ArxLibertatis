@@ -231,8 +231,8 @@ float ARX_DAMAGES_DamagePlayer(float dmg, DamageType type, EntityHandle source) 
 
 	entities.player()->dmg_sum += dmg;
 	
-	float elapsed = arxtime.now_f() - entities.player()->ouch_time;
-	if(elapsed > 500) {
+	ArxDuration elapsed = arxtime.now() - entities.player()->ouch_time;
+	if(elapsed > ArxDurationMs(500)) {
 		Entity * oes = EVENT_SENDER;
 
 		if(ValidIONum(source))
@@ -451,8 +451,8 @@ void ARX_DAMAGES_DamageFIX(Entity * io, float dmg, EntityHandle source, bool isS
 	else
 		EVENT_SENDER = NULL;
 
-	float elapsed = arxtime.now_f() - io->ouch_time;
-	if(elapsed > 500) {
+	ArxDuration elapsed = arxtime.now() - io->ouch_time;
+	if(elapsed > ArxDurationMs(500)) {
 		io->ouch_time = arxtime.now();
 		char tex[32];
 		sprintf(tex, "%5.2f", double(io->dmg_sum));
@@ -741,8 +741,8 @@ float ARX_DAMAGES_DamageNPC(Entity * io, float dmg, EntityHandle source, bool is
 
 	io->dmg_sum += dmg;
 	
-	float elapsed = arxtime.now_f() - io->ouch_time;
-	if(elapsed > 500) {
+	ArxDuration elapsed = arxtime.now() - io->ouch_time;
+	if(elapsed > ArxDurationMs(500)) {
 		if(ValidIONum(source))
 			EVENT_SENDER = entities[source];
 		else
