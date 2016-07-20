@@ -153,10 +153,10 @@ void FlyingEyeSpell::Update() {
 	
 	const long framediff3 = now - m_lastupdate;
 	
-	eyeball.floating = std::sin(m_lastupdate-m_timcreation * 0.001f);
+	eyeball.floating = std::sin(m_lastupdate - m_timcreation * 0.001f);
 	eyeball.floating *= 10.f;
 	
-	if(m_lastupdate-m_timcreation <= 3000) {
+	if(m_lastupdate - m_timcreation <= 3000) {
 		eyeball.exist = m_lastupdate - m_timcreation * (1.0f / 30);
 		eyeball.size = Vec3f(1.f - float(eyeball.exist) * 0.01f);
 		eyeball.angle.setPitch(eyeball.angle.getPitch() + framediff3 * 0.6f);
@@ -164,7 +164,7 @@ void FlyingEyeSpell::Update() {
 		eyeball.exist = 2;
 	}
 	
-	m_lastupdate=now;
+	m_lastupdate = now;
 	
 	Entity * io = entities.player();
 	EERIE_3DOBJ * eobj = io->obj;
