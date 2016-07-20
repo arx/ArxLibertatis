@@ -43,11 +43,11 @@ FissureFx::FissureFx()
 	
 }
 
-void FissureFx::SetDuration(unsigned long alDurationIntro, unsigned long alDurationRender, unsigned long alDurationOuttro)
+void FissureFx::SetDuration(ArxDuration alDurationIntro, ArxDuration alDurationRender, ArxDuration alDurationOuttro)
 {
-	ulDurationIntro = glm::clamp(alDurationIntro, 100ul, 100000ul);
-	ulDurationRender = glm::clamp(alDurationRender, 100ul, 100000ul);
-	ulDurationOuttro = glm::clamp(alDurationOuttro, 100ul, 100000ul);
+	ulDurationIntro = glm::clamp(alDurationIntro, 100l, 100000l);
+	ulDurationRender = glm::clamp(alDurationRender, 100l, 100000l);
+	ulDurationOuttro = glm::clamp(alDurationOuttro, 100l, 100000l);
 	
 	ulCurrentTime = 0;
 }
@@ -139,7 +139,7 @@ void CRiseDead::Create(Vec3f aeSrc, float afBeta)
 	m_stones.Init(80.f);
 }
 
-unsigned long CRiseDead::GetDuration()
+ArxDuration CRiseDead::GetDuration()
 {
 	return (ulDurationIntro + ulDurationRender + ulDurationOuttro);
 }
