@@ -107,7 +107,7 @@ CLightning::CLightning()
 	, m_iTTL(0)
 {
 	SetDuration(2000);
-	m_elapsed = ulDuration + 1;
+	m_elapsed = m_duration + 1;
 	
 	m_tex_light = NULL;
 	fTotoro = 0;
@@ -226,7 +226,7 @@ void CLightning::BuildS(LIGHTNING * pLInfo)
 
 void CLightning::Create(Vec3f aeFrom, Vec3f aeTo) {
 	
-	SetDuration(ulDuration);
+	SetDuration(m_duration);
 	
 	m_eSrc = aeFrom;
 	m_eDest = aeTo;
@@ -272,7 +272,7 @@ void CLightning::Update(float timeDelta)
 
 void CLightning::Render()
 {
-	if(m_elapsed >= ulDuration)
+	if(m_elapsed >= m_duration)
 		return;
 	
 	if(m_iTTL <= 0) {

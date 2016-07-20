@@ -81,7 +81,7 @@ CMagicMissile::CMagicMissile()
 	, snd_loop()
 {
 	SetDuration(2000);
-	m_elapsed = ulDuration + 1;
+	m_elapsed = m_duration + 1;
 	
 	m_trailColor = Color3f(0.9f, 0.9f, 0.7f) + Color3f(0.1f, 0.1f, 0.3f) * randomColor3f();
 	m_projectileColor = Color3f(0.3f, 0.3f, 0.5f);
@@ -97,7 +97,7 @@ CMagicMissile::~CMagicMissile() {
 
 void CMagicMissile::Create(const Vec3f & startPos, const Anglef & angles)
 {
-	SetDuration(ulDuration);
+	SetDuration(m_duration);
 	
 	eCurPos = startPos;
 	
@@ -131,8 +131,8 @@ void CMagicMissile::Create(const Vec3f & startPos, const Anglef & angles)
 void CMagicMissile::SetTTL(ArxDuration aulTTL)
 {
 	ArxDuration t = m_elapsed;
-	ulDuration = std::min(m_elapsed + aulTTL, ulDuration);
-	SetDuration(ulDuration);
+	m_duration = std::min(m_elapsed + aulTTL, m_duration);
+	SetDuration(m_duration);
 	m_elapsed = t;
 	
 	lLightId = LightHandle();
@@ -144,7 +144,7 @@ void CMagicMissile::Update(float timeDelta)
 
 	m_elapsed += timeDelta;
 
-	if(m_elapsed >= ulDuration)
+	if(m_elapsed >= m_duration)
 		lightIntensityFactor = 0.f;
 	else
 		lightIntensityFactor = Random::getf(0.5f, 1.0f);
@@ -155,7 +155,7 @@ void CMagicMissile::Render()
 	Vec3f lastpos, newpos;
 	Vec3f v;
 
-	if(m_elapsed >= ulDuration)
+	if(m_elapsed >= m_duration)
 		return;
 	
 	RenderMaterial mat;
@@ -167,7 +167,7 @@ void CMagicMissile::Render()
 		mat.setTexture(tex_mm);
 	
 	if(bMove) {
-		float fOneOnDuration = 1.f / (float)(ulDuration);
+		float fOneOnDuration = 1.f / (float)(m_duration);
 		fTrail = (m_elapsed * fOneOnDuration) * (iBezierPrecision + 2) * 5;
 	}
 	

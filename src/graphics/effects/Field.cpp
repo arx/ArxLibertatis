@@ -75,14 +75,14 @@ CCreateField::CCreateField()
 	, falpha(0.f)
 {
 	SetDuration(2000);
-	m_elapsed = ulDuration + 1;
+	m_elapsed = m_duration + 1;
 	
 	tex_jelly = TextureContainer::Load("graph/obj3d/textures/(fx)_tsu3");
 }
 
 void CCreateField::Create(Vec3f aeSrc) {
 	
-	SetDuration(ulDuration);
+	SetDuration(m_duration);
 	
 	eSrc = aeSrc;
 	ysize = 0.1f;
@@ -173,10 +173,10 @@ void CCreateField::Render()
 	if(!VisibleSphere(Sphere(eSrc - Vec3f(0.f, 120.f, 0.f), 400.f)))
 		return;
 
-	if(m_elapsed >= ulDuration)
+	if(m_elapsed >= m_duration)
 		return;
 
-	float fOneOnDuration = 1.f / (float)(ulDuration);
+	float fOneOnDuration = 1.f / (float)(m_duration);
 	falpha = 1.f - (((float)(m_elapsed)) * fOneOnDuration);
 
 	if (falpha > 1.f) falpha = 1.f;

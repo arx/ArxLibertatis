@@ -139,12 +139,12 @@ CPoisonProjectile::CPoisonProjectile()
 	, fTrail(-1.f)
 {
 	SetDuration(2000);
-	m_elapsed = ulDuration + 1;
+	m_elapsed = m_duration + 1;
 }
 
 void CPoisonProjectile::Create(Vec3f _eSrc, float _fBeta)
 {
-	SetDuration(ulDuration);
+	SetDuration(m_duration);
 	
 	float fBetaRad = glm::radians(_fBeta);
 	fBetaRadCos = glm::cos(fBetaRad);
@@ -269,10 +269,10 @@ void CPoisonProjectile::Update(float timeDelta)
 		pPS.Update(timeDelta);
 		pPS.SetPos(eCurPos);
 
-		fTrail = ((m_elapsed - 750) * (1.0f / (ulDuration - 750.0f))) * 9 * (BEZIERPrecision + 2);
+		fTrail = ((m_elapsed - 750) * (1.0f / (m_duration - 750.0f))) * 9 * (BEZIERPrecision + 2);
 	}
 
-	if(m_elapsed >= ulDuration)
+	if(m_elapsed >= m_duration)
 		lightIntensityFactor = 0.f;
 	else
 		lightIntensityFactor = 1.f;
@@ -280,7 +280,7 @@ void CPoisonProjectile::Update(float timeDelta)
 
 void CPoisonProjectile::Render() {
 	
-	if(m_elapsed >= ulDuration)
+	if(m_elapsed >= m_duration)
 		return;
 	
 	GRenderer->SetCulling(CullNone);
