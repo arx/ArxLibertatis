@@ -33,7 +33,7 @@ public:
 	void SetColorRays1(Color3f color);
 	void SetColorRays2(Color3f color);
 	
-	ArxDuration ulCurrentTime;
+	ArxDuration m_elapsed;
 	ArxDuration ulDurationIntro;
 	ArxDuration ulDurationRender;
 	ArxDuration ulDurationOuttro;

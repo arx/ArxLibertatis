@@ -32,7 +32,7 @@
 
 
 FissureFx::FissureFx()
-	: ulCurrentTime(0)
+	: m_elapsed(0)
 	, ulDurationIntro(1000)
 	, ulDurationRender(1000)
 	, ulDurationOuttro(1000)
@@ -49,7 +49,7 @@ void FissureFx::SetDuration(ArxDuration alDurationIntro, ArxDuration alDurationR
 	ulDurationRender = glm::clamp(alDurationRender, 100l, 100000l);
 	ulDurationOuttro = glm::clamp(alDurationOuttro, 100l, 100000l);
 	
-	ulCurrentTime = 0;
+	m_elapsed = 0;
 }
 
 void FissureFx::SetColorBorder(Color3f color)
@@ -85,7 +85,7 @@ CRiseDead::CRiseDead()
 	, sizeF(0)
 	, fSizeIntro(0.f)
 {
-	ulCurrentTime = ulDurationIntro + ulDurationRender + ulDurationOuttro + 1;
+	m_elapsed = ulDurationIntro + ulDurationRender + ulDurationOuttro + 1;
 	
 	tex_light = TextureContainer::Load("graph/obj3d/textures/(fx)_tsu4");
 }
@@ -391,7 +391,7 @@ void CRiseDead::RenderFissure() {
 
 void CRiseDead::Update(float timeDelta)
 {
-	ulCurrentTime += timeDelta;
+	m_elapsed += timeDelta;
 	
 	m_stones.Update(timeDelta, m_eSrc);
 }
@@ -400,34 +400,34 @@ void CRiseDead::Update(float timeDelta)
 // render the space time tearing
 void CRiseDead::Render()
 {
-	if(ulCurrentTime >= (ulDurationIntro + ulDurationRender + ulDurationOuttro))
+	if(m_elapsed >= (ulDurationIntro + ulDurationRender + ulDurationOuttro))
 		return;
 	
 	//-------------------------------------------------------------------------
 	// render intro (opening + rays)
-	if(ulCurrentTime < ulDurationIntro) {
+	if(m_elapsed < ulDurationIntro) {
 		float fOneOnDurationIntro = 1.f / (float)(ulDurationIntro);
 		
-		if(ulCurrentTime < ulDurationIntro * 0.666f) {
-			fSizeIntro = (end + 2) * fOneOnDurationIntro * (1.5f) * ulCurrentTime;
+		if(m_elapsed < ulDurationIntro * 0.666f) {
+			fSizeIntro = (end + 2) * fOneOnDurationIntro * (1.5f) * m_elapsed;
 			sizeF = 1;
 		} else {
 			if(bIntro != false)
 				bIntro = false;
 
-			sizeF = (iSize) * (fOneOnDurationIntro * 3) * (ulCurrentTime - ulDurationIntro * 0.666f);
+			sizeF = (iSize) * (fOneOnDurationIntro * 3) * (m_elapsed - ulDurationIntro * 0.666f);
 		}
 	}
 	// do nothing just render
-	else if (ulCurrentTime < (ulDurationIntro + ulDurationRender))
+	else if (m_elapsed < (ulDurationIntro + ulDurationRender))
 	{
 	}
 	// close it all
-	else if (ulCurrentTime < (ulDurationIntro + ulDurationRender + ulDurationOuttro))
+	else if (m_elapsed < (ulDurationIntro + ulDurationRender + ulDurationOuttro))
 	{
 		float fOneOnDurationOuttro = 1.f / (float)(ulDurationOuttro);
 		
-		sizeF = iSize - (iSize) * fOneOnDurationOuttro * (ulCurrentTime - (ulDurationIntro + ulDurationRender));
+		sizeF = iSize - (iSize) * fOneOnDurationOuttro * (m_elapsed - (ulDurationIntro + ulDurationRender));
 	}
 	
 	RenderFissure();
@@ -449,7 +449,7 @@ CSummonCreature::CSummonCreature()
 	
 	m_eSrc = Vec3f_ZERO;
 	
-	ulCurrentTime = ulDurationIntro + ulDurationRender + ulDurationOuttro + 1;
+	m_elapsed = ulDurationIntro + ulDurationRender + ulDurationOuttro + 1;
 	
 	iSize = 100;
 	fOneOniSize = 1.0f / ((float) iSize);
@@ -706,41 +706,41 @@ void CSummonCreature::RenderFissure() {
 
 void CSummonCreature::Update(float timeDelta)
 {
-	ulCurrentTime += timeDelta;
+	m_elapsed += timeDelta;
 }
 
 //-----------------------------------------------------------------------------
 // rendu de la déchirure spatio temporelle
 void CSummonCreature::Render()
 {
-	if(ulCurrentTime >= (ulDurationIntro + ulDurationRender + ulDurationOuttro))
+	if(m_elapsed >= (ulDurationIntro + ulDurationRender + ulDurationOuttro))
 		return;
 	
 	//-------------------------------------------------------------------------
 	// render intro (opening + rays)
-	if(ulCurrentTime < ulDurationIntro) {
+	if(m_elapsed < ulDurationIntro) {
 		float fOneOnDurationIntro = 1.f / (float)(ulDurationIntro);
 		
-		if(ulCurrentTime < ulDurationIntro * 0.666f) {
-			fSizeIntro = (end + 2) * fOneOnDurationIntro * (1.5f) * ulCurrentTime;
+		if(m_elapsed < ulDurationIntro * 0.666f) {
+			fSizeIntro = (end + 2) * fOneOnDurationIntro * (1.5f) * m_elapsed;
 			sizeF = 1;
 		} else {
 			if(bIntro != false)
 				bIntro = false;
 
-			sizeF = (iSize) * (fOneOnDurationIntro * 3) * (ulCurrentTime - ulDurationIntro * 0.666f);
+			sizeF = (iSize) * (fOneOnDurationIntro * 3) * (m_elapsed - ulDurationIntro * 0.666f);
 		}
 	}
 	// do nothing just render
-	else if (ulCurrentTime < (ulDurationIntro + ulDurationRender))
+	else if (m_elapsed < (ulDurationIntro + ulDurationRender))
 	{
 	}
 	// close it all
-	else if (ulCurrentTime < (ulDurationIntro + ulDurationRender + ulDurationOuttro))
+	else if (m_elapsed < (ulDurationIntro + ulDurationRender + ulDurationOuttro))
 	{
 		float fOneOnDurationOuttro = 1.f / (float)(ulDurationOuttro);
 		
-		sizeF = iSize - (iSize) * fOneOnDurationOuttro * (ulCurrentTime - (ulDurationIntro + ulDurationRender));
+		sizeF = iSize - (iSize) * fOneOnDurationOuttro * (m_elapsed - (ulDurationIntro + ulDurationRender));
 	}
 	
 	RenderFissure();

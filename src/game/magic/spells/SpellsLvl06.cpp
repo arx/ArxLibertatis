@@ -174,7 +174,7 @@ void RiseDeadSpell::Update() {
 		light->creationTime = arxtime.now_ul();
 	}
 	
-	unsigned long tim = m_fissure.ulCurrentTime;
+	unsigned long tim = m_fissure.m_elapsed;
 	
 	if(tim > 3000 && m_entity == EntityHandle() && !m_creationFailed) {
 		ARX_SOUND_PlaySFX(SND_SPELL_ELECTRIC, &m_targetPos);
