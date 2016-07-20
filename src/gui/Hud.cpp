@@ -774,7 +774,7 @@ void MemorizedRunesHud::draw() {
 			pos.x += 32 * m_scale;
 		}
 	}
-	if(arxtime.now_f() - player.SpellToMemorize.lTimeCreation > 30000) {
+	if(arxtime.now() - player.SpellToMemorize.lTimeCreation > ArxDurationMs(30000)) {
 		player.SpellToMemorize.bSpell = false;
 	}
 }
