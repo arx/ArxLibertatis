@@ -97,7 +97,7 @@ void ARX_SPEECH_Init() {
 
 static void ARX_SPEECH_MoveUp() {
 
-	if(speech[0].timecreation != 0)
+	if(speech[0].timecreation != ArxInstant_ZERO)
 		speech[0].text.clear();
 
 	for(size_t j = 0; j < MAX_SPEECH - 1; j++) {
@@ -111,7 +111,7 @@ void ARX_SPEECH_ClearAll()
 {
 	for(size_t i = 0; i < MAX_SPEECH; i++) {
 
-		if(speech[i].timecreation == 0)
+		if(speech[i].timecreation == ArxInstant_ZERO)
 			continue;
 
 		speech[i].clear();
@@ -128,18 +128,18 @@ void ARX_SPEECH_Add(const std::string & text) {
 		now = ArxInstantMs(1);
 	}
 	
-	if(speech[MAX_SPEECH - 1].timecreation != 0) {
+	if(speech[MAX_SPEECH - 1].timecreation != ArxInstant_ZERO) {
 		ARX_SPEECH_MoveUp();
 	}
 	
 	for(size_t i = 0; i < MAX_SPEECH; i++) {
 
-		if(speech[i].timecreation != 0)
+		if(speech[i].timecreation != ArxInstant_ZERO)
 			continue;
 		
 		// Sets creation time
 		speech[i].timecreation = now;
-		speech[i].duration = 2000 + text.length() * 60;
+		speech[i].duration = ArxDurationMs(2000 + text.length() * 60);
 		speech[i].text = text;
 		return;
 	}
@@ -151,7 +151,7 @@ static bool isLastSpeech(size_t index) {
 	
 	for(size_t i = index + 1; i < MAX_SPEECH; i++) {
 
-		if(speech[i].timecreation == 0)
+		if(speech[i].timecreation == ArxInstant_ZERO)
 			continue;
 
 		if(!speech[i].text.empty())
@@ -172,7 +172,7 @@ static void ARX_SPEECH_Render() {
 	
 	for(size_t i = 0; i < MAX_SPEECH; i++) {
 		
-		if(speech[i].timecreation == 0 || speech[i].text.empty()) {
+		if(speech[i].timecreation == ArxInstant_ZERO || speech[i].text.empty()) {
 			continue;
 		}
 		
@@ -205,10 +205,10 @@ void ARX_SPEECH_Check()
 	long exist = 0;
 
 	for(size_t i = 0; i < MAX_SPEECH; i++) {
-		if(speech[i].timecreation == 0)
+		if(speech[i].timecreation == ArxInstant_ZERO)
 			continue;
 		
-		float elapsed = arxtime.now_f() - speech[i].timecreation;
+		ArxDuration elapsed = arxtime.now() - speech[i].timecreation;
 		if(elapsed > speech[i].duration) {
 			ARX_SPEECH_MoveUp();
 			i--;

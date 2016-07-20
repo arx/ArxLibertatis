@@ -117,13 +117,13 @@ struct CinematicSpeech {
 
 struct Notification {
 	
-	unsigned long timecreation;
-	unsigned long duration;
+	ArxInstant timecreation;
+	ArxDuration duration;
 	std::string text;
 	
 	void clear() {
-		timecreation = 0;
-		duration = 0;
+		timecreation = ArxInstant_ZERO;
+		duration = ArxDuration_ZERO;
 		text.clear();
 	}
 	
