@@ -271,14 +271,10 @@ void CRiseDead::RenderFissure() {
 	vr[0].color = vr[1].color = m_colorRays1.toRGB();
 	vr[2].color = vr[3].color = m_colorRays2.toRGB();
 
-	vr[0].uv.x = 0.f;
-	vr[0].uv.y = 1;
-	vr[1].uv.x = 1.0f;
-	vr[1].uv.y = 1;
-	vr[2].uv.x = 0.f;
-	vr[2].uv.y = 0;
-	vr[3].uv.x = 1.0f;
-	vr[3].uv.y = 0;
+	vr[0].uv = Vec2f(0, 1);
+	vr[1].uv = Vec2f(1, 1);
+	vr[2].uv = Vec2f(0, 0);
+	vr[3].uv = Vec2f(1, 0);
 
 	for(int i = 0; i < end - 1; i++) {
 		float t = Random::getf();
