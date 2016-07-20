@@ -569,13 +569,13 @@ void PoisonProjectileSpell::Launch()
 	
 	m_duration = 8000ul;
 	
-	unsigned long lMax = 0;
-
+	ArxDuration lMax = 0;
+	
 	for(size_t i = 0; i < m_projectiles.size(); i++) {
 		CPoisonProjectile * projectile = m_projectiles[i];
 		
 		projectile->Create(srcPos, afBeta + Random::getf(-10.f, 10.f));
-		unsigned long lTime = m_duration + Random::getu(0, 5000);
+		ArxDuration lTime = m_duration + Random::getu(0, 5000);
 		projectile->SetDuration(lTime);
 		lMax = std::max(lMax, lTime);
 
