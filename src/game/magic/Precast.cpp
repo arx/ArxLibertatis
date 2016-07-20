@@ -71,8 +71,8 @@ void ARX_SPELLS_Precast_Launch(PrecastHandle num) {
 		return;
 	}
 	
-	float elapsed = arxtime.now_f() - LAST_PRECAST_TIME;
-	if(elapsed < 1000) {
+	ArxDuration elapsed = arxtime.now() - LAST_PRECAST_TIME;
+	if(elapsed < ArxDurationMs(1000)) {
 		return;
 	}
 	
