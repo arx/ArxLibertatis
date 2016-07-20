@@ -353,19 +353,19 @@ void CreateFieldSpell::End() {
 
 void CreateFieldSpell::Update() {
 	
-		if(ValidIONum(m_entity)) {
-			Entity * io = entities[m_entity];
-			
-			io->pos = m_field.eSrc;
-
-			if (IsAnyNPCInPlatform(io))
-			{
-				m_duration=0;
-			}
+	if(ValidIONum(m_entity)) {
+		Entity * io = entities[m_entity];
 		
-			m_field.Update(g_framedelay);
-			m_field.Render();
+		io->pos = m_field.eSrc;
+		
+		if (IsAnyNPCInPlatform(io))
+		{
+			m_duration=0;
 		}
+		
+		m_field.Update(g_framedelay);
+		m_field.Render();
+	}
 }
 
 Vec3f CreateFieldSpell::getPosition() {
