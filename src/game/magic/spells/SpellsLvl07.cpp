@@ -151,7 +151,7 @@ void FlyingEyeSpell::Update() {
 	
 	const ArxInstant now = arxtime.now_ul();
 	
-	const long framediff3 = now - m_lastupdate;
+	const ArxDuration framediff3 = now - m_lastupdate;
 	
 	eyeball.floating = std::sin(m_lastupdate - m_timcreation * 0.001f);
 	eyeball.floating *= 10.f;
