@@ -1402,9 +1402,10 @@ void ArxGame::managePlayerControls() {
 	   && config.input.autoReadyWeapon
 	) {
 		if(eeMouseDown1()) {
+			// TODO use os time
 			COMBAT_MODE_ON_START_TIME = arxtime.now();
 		} else {
-			if(arxtime.now_f() - COMBAT_MODE_ON_START_TIME > 10) {
+			if(arxtime.now() - COMBAT_MODE_ON_START_TIME > ArxDurationMs(10)) {
 				ARX_INTERFACE_Combat_Mode(1);
 			}
 		}
