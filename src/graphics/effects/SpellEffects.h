@@ -68,7 +68,7 @@ public:
 	ARX_STATIC_ASSERT(ARX_ALIGNOF(glm::mat4x4) <= 16, "need to increase alignment");
 	
 		ArxDuration ulDuration;
-		ArxDuration ulCurrentTime;
+		ArxDuration m_elapsed;
 
 		CSpellFx();
 		virtual ~CSpellFx() { }

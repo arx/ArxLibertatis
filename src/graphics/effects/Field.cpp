@@ -75,7 +75,7 @@ CCreateField::CCreateField()
 	, falpha(0.f)
 {
 	SetDuration(2000);
-	ulCurrentTime = ulDuration + 1;
+	m_elapsed = ulDuration + 1;
 	
 	tex_jelly = TextureContainer::Load("graph/obj3d/textures/(fx)_tsu3");
 }
@@ -165,7 +165,7 @@ void CCreateField::RenderSubDivFace(Vec3f * b, Vec3f * t, int b1, int b2, int t1
 
 void CCreateField::Update(float timeDelta)
 {
-	ulCurrentTime += timeDelta;
+	m_elapsed += timeDelta;
 }
 
 void CCreateField::Render()
@@ -173,11 +173,11 @@ void CCreateField::Render()
 	if(!VisibleSphere(Sphere(eSrc - Vec3f(0.f, 120.f, 0.f), 400.f)))
 		return;
 
-	if(ulCurrentTime >= ulDuration)
+	if(m_elapsed >= ulDuration)
 		return;
 
 	float fOneOnDuration = 1.f / (float)(ulDuration);
-	falpha = 1.f - (((float)(ulCurrentTime)) * fOneOnDuration);
+	falpha = 1.f - (((float)(m_elapsed)) * fOneOnDuration);
 
 	if (falpha > 1.f) falpha = 1.f;
 	
@@ -197,10 +197,10 @@ void CCreateField::Render()
 		}
 	}
 
-	ysize = std::min(1.0f, ulCurrentTime * 0.001f);
+	ysize = std::min(1.0f, m_elapsed * 0.001f);
 
 	if(ysize >= 1.0f) {
-		size = std::min(1.0f, (ulCurrentTime - 1000) * 0.001f);
+		size = std::min(1.0f, (m_elapsed - 1000) * 0.001f);
 		size = std::max(size, 0.1f);
 	}
 

@@ -62,7 +62,7 @@ void CSpellFx::SetDuration(ArxDuration ulaDuration) {
 	if(ulDuration <= 0)
 		ulDuration = 100;
 	
-	ulCurrentTime = 0;
+	m_elapsed = 0;
 }
 
 ArxDuration CSpellFx::GetDuration() {

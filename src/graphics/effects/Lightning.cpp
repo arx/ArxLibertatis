@@ -107,7 +107,7 @@ CLightning::CLightning()
 	, m_iTTL(0)
 {
 	SetDuration(2000);
-	ulCurrentTime = ulDuration + 1;
+	m_elapsed = ulDuration + 1;
 	
 	m_tex_light = NULL;
 	fTotoro = 0;
@@ -262,7 +262,7 @@ void CLightning::ReCreate(float rootSize)
 
 void CLightning::Update(float timeDelta)
 {
-	ulCurrentTime += timeDelta;
+	m_elapsed += timeDelta;
 	m_iTTL -= timeDelta;
 	fTotoro += 8;
 
@@ -272,7 +272,7 @@ void CLightning::Update(float timeDelta)
 
 void CLightning::Render()
 {
-	if(ulCurrentTime >= ulDuration)
+	if(m_elapsed >= ulDuration)
 		return;
 	
 	if(m_iTTL <= 0) {

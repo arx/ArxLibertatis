@@ -139,7 +139,7 @@ CPoisonProjectile::CPoisonProjectile()
 	, fTrail(-1.f)
 {
 	SetDuration(2000);
-	ulCurrentTime = ulDuration + 1;
+	m_elapsed = ulDuration + 1;
 }
 
 void CPoisonProjectile::Create(Vec3f _eSrc, float _fBeta)
@@ -215,12 +215,12 @@ void CPoisonProjectile::Create(Vec3f _eSrc, float _fBeta)
 
 void CPoisonProjectile::Update(float timeDelta)
 {
-	if(ulCurrentTime <= 2000) {
-		ulCurrentTime += timeDelta;
+	if(m_elapsed <= 2000) {
+		m_elapsed += timeDelta;
 	}
 
 	// on passe de 5 à 100 partoches en 1.5secs
-	if(ulCurrentTime < 750) {
+	if(m_elapsed < 750) {
 		pPS.m_parameters.m_nbMax = 2;
 		pPS.Update(timeDelta);
 	} else {
@@ -269,10 +269,10 @@ void CPoisonProjectile::Update(float timeDelta)
 		pPS.Update(timeDelta);
 		pPS.SetPos(eCurPos);
 
-		fTrail = ((ulCurrentTime - 750) * (1.0f / (ulDuration - 750.0f))) * 9 * (BEZIERPrecision + 2);
+		fTrail = ((m_elapsed - 750) * (1.0f / (ulDuration - 750.0f))) * 9 * (BEZIERPrecision + 2);
 	}
 
-	if(ulCurrentTime >= ulDuration)
+	if(m_elapsed >= ulDuration)
 		lightIntensityFactor = 0.f;
 	else
 		lightIntensityFactor = 1.f;
@@ -280,7 +280,7 @@ void CPoisonProjectile::Update(float timeDelta)
 
 void CPoisonProjectile::Render() {
 	
-	if(ulCurrentTime >= ulDuration)
+	if(m_elapsed >= ulDuration)
 		return;
 	
 	GRenderer->SetCulling(CullNone);
