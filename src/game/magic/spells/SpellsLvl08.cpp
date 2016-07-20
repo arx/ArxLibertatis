@@ -113,7 +113,7 @@ void ManaDrainSpell::Launch()
 	damage.radius = 150.f;
 	damage.damages = 8.f;
 	damage.area = DAMAGE_FULL;
-	damage.duration = 100000000;
+	damage.duration = ArxDurationMs(100000000);
 	damage.source = m_caster;
 	damage.flags = DAMAGE_FLAG_DONT_HURT_SOURCE | DAMAGE_FLAG_FOLLOW_SOURCE | DAMAGE_FLAG_ADD_VISUAL_FX;
 	damage.type = DAMAGE_TYPE_FAKEFIRE | DAMAGE_TYPE_MAGICAL | DAMAGE_TYPE_DRAIN_MANA;
@@ -371,7 +371,7 @@ void LifeDrainSpell::Launch()
 	damage.radius = 150.f;
 	damage.damages = m_level * 0.08f;
 	damage.area = DAMAGE_AREA;
-	damage.duration = 100000000;
+	damage.duration = ArxDurationMs(100000000);
 	damage.source = m_caster;
 	damage.flags = DAMAGE_FLAG_DONT_HURT_SOURCE | DAMAGE_FLAG_FOLLOW_SOURCE | DAMAGE_FLAG_ADD_VISUAL_FX;
 	damage.type = DAMAGE_TYPE_FAKEFIRE | DAMAGE_TYPE_MAGICAL | DAMAGE_TYPE_DRAIN_LIFE;

@@ -264,7 +264,7 @@ void FireFieldSpell::Launch() {
 	damage.radius = 150.f;
 	damage.damages = 10.f;
 	damage.area = DAMAGE_FULL;
-	damage.duration = 100000000;
+	damage.duration = ArxDurationMs(100000000);
 	damage.source = m_caster;
 	damage.flags = 0;
 	damage.type = DAMAGE_TYPE_MAGICAL | DAMAGE_TYPE_FIRE | DAMAGE_TYPE_FIELD;
@@ -469,7 +469,7 @@ void IceFieldSpell::Launch()
 	damage.radius = 150.f;
 	damage.damages = 10.f;
 	damage.area = DAMAGE_FULL;
-	damage.duration = 100000000;
+	damage.duration = ArxDurationMs(100000000);
 	damage.source = m_caster;
 	damage.flags = 0;
 	damage.type = DAMAGE_TYPE_MAGICAL | DAMAGE_TYPE_COLD | DAMAGE_TYPE_FIELD;

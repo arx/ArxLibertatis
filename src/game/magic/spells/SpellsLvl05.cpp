@@ -644,7 +644,7 @@ void PoisonProjectileSpell::Update() {
 			float v = 4.f + m_level * ( 1.0f / 10 ) * 6.f ;
 			damage.damages = v * ( 1.0f / 1000 ) * g_framedelay;
 			damage.area = DAMAGE_FULL;
-			damage.duration = static_cast<long>(g_framedelay);
+			damage.duration = ArxDurationMs(g_framedelay);
 			damage.source = m_caster;
 			damage.flags = 0;
 			damage.type = DAMAGE_TYPE_MAGICAL | DAMAGE_TYPE_POISON;

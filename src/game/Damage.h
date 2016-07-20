@@ -49,6 +49,7 @@ ZeniMax Media Inc., Suite 120, Rockville, Maryland 20850 USA.
 
 #include <stddef.h>
 
+#include "core/TimeTypes.h"
 #include "game/GameTypes.h"
 #include "graphics/BaseGraphicsTypes.h"
 #include "math/Types.h"
@@ -102,7 +103,7 @@ struct DamageParameters {
 	Vec3f pos;
 	float damages;
 	float radius;
-	long duration;	// in milliseconds -1 for apply once else damage *=framediff
+	ArxDuration duration;	// in milliseconds -1 for apply once else damage *=framediff
 	DamageArea area; // damage area type
 	DamageFlags flags; // damages flags
 	DamageType type; // damages type
@@ -111,7 +112,7 @@ struct DamageParameters {
 	DamageParameters() {
 		damages = 0.f;
 		radius = 100.f;
-		duration = 1000;
+		duration = ArxDurationMs(1000);
 		area = DAMAGE_AREA;
 		flags = 0;
 		type = 0;

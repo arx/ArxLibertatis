@@ -939,7 +939,7 @@ static void ARX_DAMAGES_AddVisual(DAMAGE_INFO & di, const Vec3f & pos, float dmg
 // source = -1 no source but valid pos
 // source = 0  player
 // source > 0  IO
-static void ARX_DAMAGES_UpdateDamage(DamageHandle j, float now) {
+static void ARX_DAMAGES_UpdateDamage(DamageHandle j, ArxInstant now) {
 	
 	ARX_PROFILE_FUNC();
 	
@@ -960,7 +960,7 @@ static void ARX_DAMAGES_UpdateDamage(DamageHandle j, float now) {
 	float dmg;
 	if(damage.params.flags & DAMAGE_NOT_FRAME_DEPENDANT) {
 		dmg = damage.params.damages;
-	} else if(damage.params.duration == -1) {
+	} else if(damage.params.duration == ArxDuration(-1)) {
 		dmg = damage.params.damages;
 	} else {
 		float FD = g_framedelay;
@@ -1150,7 +1150,7 @@ static void ARX_DAMAGES_UpdateDamage(DamageHandle j, float now) {
 		}
 	}
 	
-	if(damage.params.duration == -1)
+	if(damage.params.duration == ArxDuration(-1))
 		damage.exist = false;
 	else if(now > damage.start_time + damage.params.duration)
 		damage.exist = false;
@@ -1161,7 +1161,7 @@ void ARX_DAMAGES_UpdateAll() {
 	ARX_PROFILE_FUNC();
 	
 	for (size_t j = 0; j < MAX_DAMAGES; j++)
-		ARX_DAMAGES_UpdateDamage(DamageHandle(j), arxtime.now_f());
+		ARX_DAMAGES_UpdateDamage(DamageHandle(j), arxtime.now());
 }
 
 static bool SphereInIO(Entity * io, const Sphere & sphere) {

@@ -1103,7 +1103,7 @@ void TreatBackgroundActions() {
 			damage.radius = gl->ex_radius;
 			damage.damages = gl->ex_radius * (1.0f / 7);
 			damage.area = DAMAGE_FULL;
-			damage.duration = 1;
+			damage.duration = ArxDurationMs(1);
 			damage.source = EntityHandle();
 			damage.flags = 0;
 			damage.type = DAMAGE_TYPE_MAGICAL | DAMAGE_TYPE_FIRE | DAMAGE_TYPE_NO_FIX;
