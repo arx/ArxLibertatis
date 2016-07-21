@@ -20,6 +20,8 @@
 #ifndef ARX_CORE_TIMETYPES_H
 #define ARX_CORE_TIMETYPES_H
 
+#include <algorithm>
+
 #include "platform/Platform.h"
 #include "util/StrongType.h"
 
