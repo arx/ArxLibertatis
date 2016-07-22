@@ -90,6 +90,8 @@ SparkParticle * createSparkParticle() {
 
 void ARX_PARTICLES_Spawn_Spark(const Vec3f & pos, unsigned int count, SpawnSparkType type) {
 	
+	u32 len = glm::clamp(count / 3, 3u, 8u);
+	
 	for(unsigned int k = 0; k < count; k++) {
 		
 		SparkParticle * pd = createSparkParticle();
@@ -99,8 +101,6 @@ void ARX_PARTICLES_Spawn_Spark(const Vec3f & pos, unsigned int count, SpawnSpark
 		
 		pd->oldpos = pd->ov = pos + randomVec(-5.f, 5.f);
 		pd->move = randomVec(-6.f, 6.f);
-		
-		unsigned long len = glm::clamp(static_cast<unsigned long>(count * (1.f / 3)), 3ul, 8ul);
 		pd->tolive = len * 90 + count;
 		
 		switch(type) {
