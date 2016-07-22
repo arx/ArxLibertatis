@@ -157,10 +157,9 @@ void ParticleSparkUpdate() {
 		float val = (part->tolive - framediff) * 0.01f;
 		
 		Vec3f in = part->ov + part->move * val;
-		Vec3f inn = in;
 		
 		TexturedVertex out;
-		EE_RTP(inn, out);
+		EE_RTP(in, out);
 		
 		if(out.rhw < 0 || out.p.z > cam->cdepth * fZFogEnd) {
 			continue;
