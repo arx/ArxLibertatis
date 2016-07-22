@@ -94,42 +94,42 @@ DECLARE_FLAGS_OPERATORS(ParticlesTypeFlags)
 struct PARTICLE_DEF {
 	bool exist;
 	bool is2D;
+	bool zdec;
 	Vec3f ov;
 	Vec3f move;
 	Vec3f scale;
 	Vec3f oldpos;
 	float siz;
-	bool zdec;
 	long timcreation;
 	u32 tolive;
 	u32 delay;
 	TextureContainer * tc;
 	Color3f rgb;
 	ParticlesTypeFlags m_flags;
-	float fparam;
 	Vec3f * source;
 	EntityHandle sourceionum;
+	float fparam;
 	char cval1;
 	char cval2;
 	
 	PARTICLE_DEF()
 		: exist(false)
 		, is2D(false)
+		, zdec(false)
 		, ov(Vec3f_ZERO)
 		, move(Vec3f_ZERO)
 		, scale(Vec3f_ZERO)
 		, oldpos(Vec3f_ZERO)
 		, siz(0.f)
-		, zdec(false)
 		, timcreation(0)
 		, tolive(0)
 		, delay(0)
 		, tc(NULL)
 		, rgb(Color3f::black)
 		, m_flags(0)
-		, fparam(0.f)
 		, source(NULL)
 		, sourceionum()
+		, fparam(0.f)
 		, cval1(0)
 		, cval2(0)
 	{ }
