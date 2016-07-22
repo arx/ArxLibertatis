@@ -101,8 +101,8 @@ struct PARTICLE_DEF {
 	float siz;
 	bool zdec;
 	long timcreation;
-	unsigned long tolive;
-	unsigned long delay;
+	u32 tolive;
+	u32 delay;
 	TextureContainer * tc;
 	Color3f rgb;
 	ParticlesTypeFlags special;
