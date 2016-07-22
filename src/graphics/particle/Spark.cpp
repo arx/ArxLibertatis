@@ -33,7 +33,7 @@ struct SparkParticle {
 	Vec3f move;
 	Vec3f oldpos;
 	long timcreation;
-	u32 tolive;
+	u32 m_duration;
 	ColorRGBA rgb;
 	float m_tailLength;
 	
@@ -42,7 +42,7 @@ struct SparkParticle {
 		, ov(Vec3f_ZERO)
 		, move(Vec3f_ZERO)
 		, timcreation(0)
-		, tolive(0)
+		, m_duration(0)
 		, rgb(Color::black.toRGB())
 		, m_tailLength(0.f)
 	{ }
@@ -101,7 +101,7 @@ void ParticleSparkSpawn(const Vec3f & pos, unsigned int count, SpawnSparkType ty
 		
 		pd->oldpos = pd->ov = pos + randomVec(-5.f, 5.f);
 		pd->move = randomVec(-6.f, 6.f);
-		pd->tolive = len * 90 + count;
+		pd->m_duration = len * 90 + count;
 		
 		switch(type) {
 			case SpawnSparkType_Default:
@@ -141,7 +141,7 @@ void ParticleSparkUpdate() {
 			continue;
 		}
 
-		long framediff = part->timcreation + part->tolive - now;
+		long framediff = part->timcreation + part->m_duration - now;
 		long framediff2 = now - part->timcreation;
 		
 		if(framediff2 < 0) {
@@ -154,7 +154,7 @@ void ParticleSparkUpdate() {
 			continue;
 		}
 		
-		float val = (part->tolive - framediff) * 0.01f;
+		float val = (part->m_duration - framediff) * 0.01f;
 		
 		Vec3f in = part->ov + part->move * val;
 		
