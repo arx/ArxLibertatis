@@ -123,10 +123,6 @@ void ParticleSparkUpdate() {
 	
 	ARX_PROFILE_FUNC();
 	
-	if(!ACTIVEBKG) {
-		return;
-	}
-	
 	if(g_sparkParticlesCount == 0) {
 		return;
 	}
@@ -148,15 +144,6 @@ void ParticleSparkUpdate() {
 		long framediff2 = now - part->timcreation;
 		
 		if(framediff2 < 0) {
-			continue;
-		}
-		
-
-		EERIE_BKG_INFO * bkgData = getFastBackgroundData(part->ov.x, part->ov.z);
-
-		if(!bkgData || !bkgData->treat) {
-			part->exist = false;
-			g_sparkParticlesCount--;
 			continue;
 		}
 		
