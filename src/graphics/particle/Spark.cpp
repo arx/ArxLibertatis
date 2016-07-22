@@ -131,9 +131,7 @@ void ParticleSparkUpdate() {
 	
 	const ArxInstant now = arxtime.now();
 	
-	long pcc = g_sparkParticlesCount;
-	
-	for(size_t i = 0; i < g_sparkParticlesMax && pcc > 0; i++) {
+	for(size_t i = 0; i < g_sparkParticlesMax; i++) {
 
 		SparkParticle * part = &g_sparkParticles[i];
 		if(!part->exist) {
