@@ -61,26 +61,14 @@ long ParticleSparkCount() {
 	return g_sparkParticlesCount;
 }
 
-SparkParticle * createSparkParticle() {
+static SparkParticle * createSparkParticle() {
 	
 	for(size_t i = 0; i < g_sparkParticlesMax; i++) {
-		
 		SparkParticle * pd = &g_sparkParticles[i];
-		
-		if(pd->exist) {
-			continue;
+		if(!pd->exist) {
+			return pd;
 		}
-		
-		g_sparkParticlesCount++;
-		pd->exist = true;
-		pd->timcreation = arxtime.now();
-		
-		pd->rgb = Color::white.toRGB();
-		pd->move = Vec3f_ZERO;
-		
-		return pd;
 	}
-	
 	return NULL;
 }
 
@@ -99,6 +87,10 @@ void ParticleSparkSpawn(const Vec3f & pos, unsigned int count, SpawnSparkType ty
 			return;
 		}
 		
+		g_sparkParticlesCount++;
+		
+		pd->exist = true;
+		pd->timcreation = arxtime.now();
 		pd->oldpos = pd->ov = pos + randomVec(-5.f, 5.f);
 		pd->move = randomVec(-6.f, 6.f);
 		pd->m_duration = len * 90 + count;
