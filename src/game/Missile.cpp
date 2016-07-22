@@ -282,7 +282,7 @@ void ARX_MISSILES_Update() {
 					pd->tc = tc;
 					pd->siz = 12.f * float(missiles[i].tolive - framediff3) * (1.f / 4000);
 					pd->scale = randomVec(15.f, 20.f);
-					pd->special = FIRE_TO_SMOKE;
+					pd->m_flags = FIRE_TO_SMOKE;
 				}
 				
 				missiles[i].lastpos = pos;

@@ -105,7 +105,7 @@ struct PARTICLE_DEF {
 	u32 delay;
 	TextureContainer * tc;
 	Color3f rgb;
-	ParticlesTypeFlags special;
+	ParticlesTypeFlags m_flags;
 	float fparam;
 	Vec3f * source;
 	EntityHandle sourceionum;
@@ -126,7 +126,7 @@ struct PARTICLE_DEF {
 		, delay(0)
 		, tc(NULL)
 		, rgb(Color3f::black)
-		, special(0)
+		, m_flags(0)
 		, fparam(0.f)
 		, source(NULL)
 		, sourceionum()

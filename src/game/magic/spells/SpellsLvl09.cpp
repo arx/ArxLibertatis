@@ -388,7 +388,7 @@ void NegateMagicSpell::Update() {
 			pd->siz = 0.3f;
 			pd->tolive = Random::getu(2000, 4000);
 			pd->tc = tex_p2;
-			pd->special = FADE_IN_AND_OUT | ROTATING | MODULATE_ROTATION | DISSIPATING
+			pd->m_flags = FADE_IN_AND_OUT | ROTATING | MODULATE_ROTATION | DISSIPATING
 			              | SUBSTRACT;
 			pd->fparam = 0.0000001f;
 		}

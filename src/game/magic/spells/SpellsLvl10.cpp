@@ -345,7 +345,7 @@ void ControlTargetSpell::Update() {
 					pd->siz = 5 * c;
 					pd->tolive = Random::getu(10, 110);
 					pd->tc = tex_mm;
-					pd->special = FADE_IN_AND_OUT | ROTATING | MODULATE_ROTATION | DISSIPATING;
+					pd->m_flags = FADE_IN_AND_OUT | ROTATING | MODULATE_ROTATION | DISSIPATING;
 					pd->fparam = 0.0000001f;
 					pd->rgb = Color3f::gray(c);
 				}
@@ -359,7 +359,7 @@ void ControlTargetSpell::Update() {
 				pd->siz = 5;
 				pd->tolive = Random::getu(10, 110);
 				pd->tc = tex_mm;
-				pd->special = FADE_IN_AND_OUT | ROTATING | MODULATE_ROTATION | DISSIPATING;
+				pd->m_flags = FADE_IN_AND_OUT | ROTATING | MODULATE_ROTATION | DISSIPATING;
 				pd->fparam = 0.0000001f;
 				pd->rgb = Color3f::gray(0.1f);
 			}

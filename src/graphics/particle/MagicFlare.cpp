@@ -278,12 +278,12 @@ void AddFlare(const Vec2s & pos, float sm, short typ, Entity * io, bool bookDraw
 		}
 
 		if(!bookDraw) {
-			pd->special = FADE_IN_AND_OUT | ROTATING | MODULATE_ROTATION | DISSIPATING;
+			pd->m_flags = FADE_IN_AND_OUT | ROTATING | MODULATE_ROTATION | DISSIPATING;
 			if(!io) {
-				pd->special |= PARTICLE_NOZBUFFER;
+				pd->m_flags |= PARTICLE_NOZBUFFER;
 			}
 		} else {
-			pd->special = FADE_IN_AND_OUT;
+			pd->m_flags = FADE_IN_AND_OUT;
 		}
 
 		pd->ov = flare.v.p + randomVec(-5.f, 5.f);
