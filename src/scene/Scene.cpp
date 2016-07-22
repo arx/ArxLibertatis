@@ -713,8 +713,10 @@ static Plane CreatePlane(const Vec3f & orgn, const Vec3f & pt1, const Vec3f & pt
 	return plane;
 }
 
-static void CreateFrustrum(EERIE_FRUSTRUM & frustrum, const Vec3f & pos,
-                           const EERIEPOLY & ep, bool cull) {
+static EERIE_FRUSTRUM CreateFrustrum(const Vec3f & pos, const EERIEPOLY & ep, bool cull) {
+	
+	EERIE_FRUSTRUM frustrum;
+	
 	if(cull) {
 		frustrum.plane[0] = CreatePlane(pos, ep.v[0].p, ep.v[1].p);
 		frustrum.plane[1] = CreatePlane(pos, ep.v[3].p, ep.v[2].p);
@@ -726,6 +728,8 @@ static void CreateFrustrum(EERIE_FRUSTRUM & frustrum, const Vec3f & pos,
 		frustrum.plane[2] = CreatePlane(pos, ep.v[3].p, ep.v[1].p);
 		frustrum.plane[3] = CreatePlane(pos, ep.v[0].p, ep.v[2].p);
 	}
+	
+	return frustrum;
 }
 
 static void CreateScreenFrustrum(EERIE_FRUSTRUM & frustrum) {
@@ -1418,8 +1422,7 @@ static void ARX_PORTALS_Frustrum_ComputeRoom(size_t roomIndex,
 
 		bool Cull = !(fRes<0.f);
 		
-		EERIE_FRUSTRUM fd;
-		CreateFrustrum(fd, camPos, epp, Cull);
+		EERIE_FRUSTRUM fd = CreateFrustrum(camPos, epp, Cull);
 
 		size_t roomToCompute = 0;
 		bool computeRoom = false;
