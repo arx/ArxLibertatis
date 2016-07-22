@@ -173,12 +173,12 @@ void ParticleSparkUpdate() {
 		tv[2].color = Color(0, 0, 0, 255).toRGBA();
 		tv[0].p = out.p;
 		tv[0].rhw = out.rhw;
-		Vec3f temp;
-		temp = in + Vec3f(Random::getf(0.f, 0.5f), 0.8f, Random::getf(0.f, 0.5f));
-		EE_RTP(temp, tv[1]);
-		temp = in + vect * part->m_tailLength;
 		
-		EE_RTP(temp, tv[2]);
+		Vec3f temp1 = in + Vec3f(Random::getf(0.f, 0.5f), 0.8f, Random::getf(0.f, 0.5f));
+		Vec3f temp2 = in + vect * part->m_tailLength;
+		
+		EE_RTP(temp1, tv[1]);
+		EE_RTP(temp2, tv[2]);
 		
 		RenderBatcher::getInstance().add(sparkMaterial, tv);
 		
