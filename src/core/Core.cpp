@@ -118,6 +118,7 @@ ZeniMax Media Inc., Suite 120, Rockville, Maryland 20850 USA.
 #include "graphics/particle/ParticleEffects.h"
 #include "graphics/particle/ParticleManager.h"
 #include "graphics/particle/MagicFlare.h"
+#include "graphics/particle/Spark.h"
 #include "graphics/texture/TextureStage.h"
 
 #include "gui/Cursor.h"
@@ -421,7 +422,9 @@ void levelInit() {
 	ARX_MISSILES_ClearAll();
 	spells.clearAll();
 	ARX_SPELLS_ClearAllSymbolDraw();
+	
 	ARX_PARTICLES_ClearAll();
+	ParticleSparkClear();
 
 	if(LOAD_N_ERASE) {
 		CleanScriptLoadedIO();

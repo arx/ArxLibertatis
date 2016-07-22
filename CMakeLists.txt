@@ -819,6 +819,7 @@ set(GRAPHICS_SOURCES
 	src/graphics/particle/ParticleManager.cpp
 	src/graphics/particle/ParticleSystem.cpp
 	src/graphics/particle/MagicFlare.cpp
+	src/graphics/particle/Spark.cpp
 	src/graphics/spells/Spells05.cpp
 	src/graphics/texture/PackedTexture.cpp
 	src/graphics/texture/Texture.cpp

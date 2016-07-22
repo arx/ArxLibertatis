@@ -101,6 +101,7 @@ ZeniMax Media Inc., Suite 120, Rockville, Maryland 20850 USA.
 #include "graphics/particle/ParticleManager.h"
 #include "graphics/particle/ParticleEffects.h"
 #include "graphics/particle/MagicFlare.h"
+#include "graphics/particle/Spark.h"
 
 #include "io/resource/ResourcePath.h"
 #include "io/resource/PakReader.h"
@@ -2716,6 +2717,7 @@ void ARX_GAME_Reset(long type) {
 
 	// Particles
 	ARX_PARTICLES_ClearAll();
+	ParticleSparkClear();
 	if(pParticleManager)
 		pParticleManager->Clear();
 

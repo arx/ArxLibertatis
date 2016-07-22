@@ -344,47 +344,6 @@ void ARX_PARTICLES_Spawn_Blood(const Vec3f & pos, float dmgs, EntityHandle sourc
 	}
 }
 
-long SPARK_COUNT = 0;
-
-void ARX_PARTICLES_Spawn_Spark(const Vec3f & pos, unsigned int count, SpawnSparkType type) {
-	
-	if(SPARK_COUNT < 1000) {
-		SPARK_COUNT += count * 25;
-	} else {
-		SPARK_COUNT -= static_cast<long>(g_framedelay);
-		return;
-	}
-	
-	for(unsigned int k = 0; k < count; k++) {
-		
-		PARTICLE_DEF * pd = createParticle();
-		if(!pd) {
-			return;
-		}
-		
-		pd->oldpos = pd->ov = pos + randomVec(-5.f, 5.f);
-		pd->siz = 2.f;
-		pd->move = randomVec(-6.f, 6.f);
-		
-		pd->m_flags = PARTICLE_SPARK;
-		unsigned long len = glm::clamp(static_cast<unsigned long>(count * (1.f / 3)), 3ul, 8ul);
-		pd->tolive = len * 90 + count;
-		
-		switch(type) {
-			case SpawnSparkType_Default:
-				pd->rgb = Color3f(.3f, .3f, 0.f);
-				break;
-			case SpawnSparkType_Failed:
-				pd->rgb = Color3f(.2f, .2f, .1f);
-				break;
-			case SpawnSparkType_Success:
-				pd->rgb = Color3f(.45f, .1f, 0.f);
-				break;
-		}
-		
-		pd->fparam = len + Random::getf() * len; // Spark tail length
-	}
-}
 
 void MakeCoolFx(const Vec3f & pos) {
 	spawnFireHitParticle(pos, 1);
@@ -921,34 +880,6 @@ void ARX_PARTICLES_Update(EERIE_CAMERA * cam)  {
 			EE_RTP(inn, out);
 			
 			if(out.rhw < 0 || out.p.z > cam->cdepth * fZFogEnd) {
-				continue;
-			}
-			
-			if(part->m_flags & PARTICLE_SPARK) {
-				
-				Vec3f vect = part->oldpos - in;
-				vect = glm::normalize(vect);
-				TexturedVertex tv[3];
-				tv[0].color = part->rgb.toRGB();
-				tv[1].color = Color(102, 102, 102, 255).toRGBA();
-				tv[2].color = Color(0, 0, 0, 255).toRGBA();
-				tv[0].p = out.p;
-				tv[0].rhw = out.rhw;
-				Vec3f temp;
-				temp = in + Vec3f(Random::getf(0.f, 0.5f), 0.8f, Random::getf(0.f, 0.5f));
-				EE_RTP(temp, tv[1]);
-				temp = in + vect * part->fparam;
-				
-				EE_RTP(temp, tv[2]);
-				
-				RenderMaterial mat;
-				mat.setBlendType(RenderMaterial::Additive);
-				RenderBatcher::getInstance().add(mat, tv);
-				
-				if(!arxtime.is_paused()) {
-					part->oldpos = in;
-				}
-				
 				continue;
 			}
 			

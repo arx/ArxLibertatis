@@ -105,6 +105,7 @@ ZeniMax Media Inc., Suite 120, Rockville, Maryland 20850 USA.
 #include "graphics/particle/ParticleEffects.h"
 #include "graphics/particle/ParticleManager.h"
 #include "graphics/particle/MagicFlare.h"
+#include "graphics/particle/Spark.h"
 #include "graphics/texture/TextureStage.h"
 
 #include "gui/Cursor.h"
@@ -854,6 +855,7 @@ bool ArxGame::initGame()
 
 	ARX_SPELLS_ClearAllSymbolDraw();
 	ARX_PARTICLES_ClearAll();
+	ParticleSparkClear();
 	ARX_MAGICAL_FLARES_FirstInit();
 	
 	LastLoadedScene.clear();
@@ -1990,6 +1992,7 @@ void ArxGame::renderLevel() {
 	pParticleManager->Render();
 	
 	ARX_PARTICLES_Update(&subj);
+	ParticleSparkUpdate();
 	
 	GRenderer->SetFogColor(ulBKGColor);
 	GRenderer->SetRenderState(Renderer::DepthTest, true);

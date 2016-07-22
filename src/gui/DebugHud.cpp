@@ -52,6 +52,7 @@
 #include "graphics/Renderer.h"
 #include "graphics/DrawLine.h"
 #include "graphics/effects/DrawEffects.h"
+#include "graphics/particle/Spark.h"
 
 #include "window/RenderWindow.h"
 #include "platform/profiler/Profiler.h"
@@ -150,6 +151,7 @@ void ShowInfoText() {
 	DebugBox frameInfo = DebugBox(Vec2i(10, 10), "FrameInfo");
 	frameInfo.add("Prims", EERIEDrawnPolys);
 	frameInfo.add("Particles", getParticleCount());
+	frameInfo.add("Sparks", ParticleSparkCount());
 	frameInfo.add("Polybooms", long(PolyBoom_count()));
 	frameInfo.add("TIME", static_cast<long>(arxtime.now() / 1000));
 	frameInfo.print();
