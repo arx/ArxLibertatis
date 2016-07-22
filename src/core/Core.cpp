@@ -781,7 +781,7 @@ void ManageCombatModeAnimations() {
 									player.m_weaponBlocked = layer1.ctime;
 								}
 								
-								ARX_PARTICLES_Spawn_Spark(sphere.origin, static_cast<unsigned int>(dmgs), SpawnSparkType_Success);
+								ParticleSparkSpawn(sphere.origin, static_cast<unsigned int>(dmgs), SpawnSparkType_Success);
 								
 								if(ValidIONum(num)) {
 									ARX_SOUND_PlayCollision(entities[num]->material, MATERIAL_FLESH, 1.f, 1.f, sphere.origin, NULL);

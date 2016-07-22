@@ -31,7 +31,7 @@ enum SpawnSparkType {
 void ParticleSparkClear();
 long ParticleSparkCount();
 
-void ARX_PARTICLES_Spawn_Spark(const Vec3f & pos, unsigned int count, SpawnSparkType type);
+void ParticleSparkSpawn(const Vec3f & pos, unsigned int count, SpawnSparkType type);
 
 void ParticleSparkUpdate();
 

@@ -456,7 +456,7 @@ void ARX_THROWN_OBJECT_Manage(float time_offset)
 				EERIEPOLY * ep = CheckArrowPolyCollision(orgn, dest);
 
 				if(ep) {
-					ARX_PARTICLES_Spawn_Spark(v0, 14, SpawnSparkType_Default);
+					ParticleSparkSpawn(v0, 14, SpawnSparkType_Default);
 					CheckExp(projectile);
 
 					if(ValidIONum(projectile.source))
@@ -479,7 +479,7 @@ void ARX_THROWN_OBJECT_Manage(float time_offset)
 					projectile.position = original_pos;
 					j = 200;
 				} else if(IsPointInField(v0)) {
-					ARX_PARTICLES_Spawn_Spark(v0, 24, SpawnSparkType_Default);
+					ParticleSparkSpawn(v0, 24, SpawnSparkType_Default);
 					CheckExp(projectile);
 
 					if (ValidIONum(projectile.source))
@@ -559,7 +559,7 @@ void ARX_THROWN_OBJECT_Manage(float time_offset)
 
 												CheckExp(projectile);
 											} else {
-												ARX_PARTICLES_Spawn_Spark(v0, 14, SpawnSparkType_Default);
+												ParticleSparkSpawn(v0, 14, SpawnSparkType_Default);
 												ARX_NPC_SpawnAudibleSound(v0, entities[projectile.source]);
 											}
 										}
@@ -570,7 +570,7 @@ void ARX_THROWN_OBJECT_Manage(float time_offset)
 												ARX_DAMAGES_DamageFIX(target, 0.1f, projectile.source, false);
 										}
 
-										ARX_PARTICLES_Spawn_Spark(v0, 14, SpawnSparkType_Default);
+										ParticleSparkSpawn(v0, 14, SpawnSparkType_Default);
 
 										if(ValidIONum(projectile.source))
 											ARX_NPC_SpawnAudibleSound(v0, entities[projectile.source]);

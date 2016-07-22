@@ -88,7 +88,7 @@ SparkParticle * createSparkParticle() {
 	return NULL;
 }
 
-void ARX_PARTICLES_Spawn_Spark(const Vec3f & pos, unsigned int count, SpawnSparkType type) {
+void ParticleSparkSpawn(const Vec3f & pos, unsigned int count, SpawnSparkType type) {
 	
 	u32 len = glm::clamp(count / 3, 3u, 8u);
 	

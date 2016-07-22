@@ -800,9 +800,9 @@ bool ARX_EQUIPMENT_Strike_Check(Entity * io_source, Entity * io_weapon, float ra
 							ARX_PARTICLES_Spawn_Blood2(pos, dmgs, color, target);
 						} else {
 							if(target->ioflags & IO_ITEM)
-								ARX_PARTICLES_Spawn_Spark(pos, Random::getu(0, 3), SpawnSparkType_Default);
+								ParticleSparkSpawn(pos, Random::getu(0, 3), SpawnSparkType_Default);
 							else
-								ARX_PARTICLES_Spawn_Spark(pos, Random::getu(0, 30), SpawnSparkType_Default);
+								ParticleSparkSpawn(pos, Random::getu(0, 30), SpawnSparkType_Default);
 
 							ARX_NPC_SpawnAudibleSound(pos, io_source);
 
@@ -820,7 +820,7 @@ bool ARX_EQUIPMENT_Strike_Check(Entity * io_source, Entity * io_weapon, float ra
 						if(target->ioflags & IO_ITEM)
 							nb = 1;
 
-						ARX_PARTICLES_Spawn_Spark(pos, nb, SpawnSparkType_Default);
+						ParticleSparkSpawn(pos, nb, SpawnSparkType_Default);
 						ARX_NPC_SpawnAudibleSound(pos, io_source);
 						target->spark_n_blood = SP_SPARKING;
 
@@ -837,7 +837,7 @@ bool ARX_EQUIPMENT_Strike_Check(Entity * io_source, Entity * io_weapon, float ra
 						if(target->ioflags & IO_ITEM)
 							nb = 1;
 
-						ARX_PARTICLES_Spawn_Spark(pos, nb, SpawnSparkType_Default);
+						ParticleSparkSpawn(pos, nb, SpawnSparkType_Default);
 						ARX_NPC_SpawnAudibleSound(pos, io_source);
 						target->spark_n_blood = SP_SPARKING;
 
@@ -889,7 +889,7 @@ bool ARX_EQUIPMENT_Strike_Check(Entity * io_source, Entity * io_weapon, float ra
 				}
 			}
 
-			ARX_PARTICLES_Spawn_Spark(sphere.origin, Random::getu(0, 10), SpawnSparkType_Default);
+			ParticleSparkSpawn(sphere.origin, Random::getu(0, 10), SpawnSparkType_Default);
 			ARX_NPC_SpawnAudibleSound(sphere.origin, io_source);
 		}
 	}
