@@ -63,10 +63,6 @@ long ParticleSparkCount() {
 
 SparkParticle * createSparkParticle() {
 	
-	if(arxtime.is_paused()) {
-		return NULL;
-	}
-	
 	for(size_t i = 0; i < g_sparkParticlesMax; i++) {
 		
 		SparkParticle * pd = &g_sparkParticles[i];
@@ -89,6 +85,10 @@ SparkParticle * createSparkParticle() {
 }
 
 void ParticleSparkSpawn(const Vec3f & pos, unsigned int count, SpawnSparkType type) {
+	
+	if(arxtime.is_paused()) {
+		return;
+	}
 	
 	u32 len = glm::clamp(count / 3, 3u, 8u);
 	
