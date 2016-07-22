@@ -48,7 +48,7 @@ struct SparkParticle {
 	{ }
 };
 
-static const size_t g_sparkParticlesMax = 2200;
+static const size_t g_sparkParticlesMax = 500;
 static SparkParticle g_sparkParticles[g_sparkParticlesMax];
 static long g_sparkParticlesCount = 0;
 
@@ -88,16 +88,7 @@ SparkParticle * createSparkParticle() {
 	return NULL;
 }
 
-static long SPARK_COUNT = 0;
-
 void ARX_PARTICLES_Spawn_Spark(const Vec3f & pos, unsigned int count, SpawnSparkType type) {
-	
-	if(SPARK_COUNT < 1000) {
-		SPARK_COUNT += count * 25;
-	} else {
-		SPARK_COUNT -= static_cast<long>(g_framedelay);
-		return;
-	}
 	
 	for(unsigned int k = 0; k < count; k++) {
 		
