@@ -34,7 +34,7 @@ struct SparkParticle {
 	Vec3f oldpos;
 	long timcreation;
 	u32 tolive;
-	Color3f rgb;
+	ColorRGBA rgb;
 	float m_tailLength;
 	
 	SparkParticle()
@@ -43,7 +43,7 @@ struct SparkParticle {
 		, move(Vec3f_ZERO)
 		, timcreation(0)
 		, tolive(0)
-		, rgb(Color3f::black)
+		, rgb(Color::black.toRGB())
 		, m_tailLength(0.f)
 	{ }
 };
@@ -79,7 +79,7 @@ SparkParticle * createSparkParticle() {
 		pd->exist = true;
 		pd->timcreation = arxtime.now();
 		
-		pd->rgb = Color3f::white;
+		pd->rgb = Color::white.toRGB();
 		pd->move = Vec3f_ZERO;
 		
 		return pd;
@@ -105,13 +105,13 @@ void ParticleSparkSpawn(const Vec3f & pos, unsigned int count, SpawnSparkType ty
 		
 		switch(type) {
 			case SpawnSparkType_Default:
-				pd->rgb = Color3f(.3f, .3f, 0.f);
+				pd->rgb = Color3f(.3f, .3f, 0.f).toRGB();
 				break;
 			case SpawnSparkType_Failed:
-				pd->rgb = Color3f(.2f, .2f, .1f);
+				pd->rgb = Color3f(.2f, .2f, .1f).toRGB();
 				break;
 			case SpawnSparkType_Success:
-				pd->rgb = Color3f(.45f, .1f, 0.f);
+				pd->rgb = Color3f(.45f, .1f, 0.f).toRGB();
 				break;
 		}
 		
@@ -168,7 +168,7 @@ void ParticleSparkUpdate() {
 		Vec3f vect = part->oldpos - in;
 		vect = glm::normalize(vect);
 		TexturedVertex tv[3];
-		tv[0].color = part->rgb.toRGB();
+		tv[0].color = part->rgb;
 		tv[1].color = Color(102, 102, 102, 255).toRGBA();
 		tv[2].color = Color(0, 0, 0, 255).toRGBA();
 		tv[0].p = out.p;
