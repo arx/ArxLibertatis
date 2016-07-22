@@ -691,10 +691,9 @@ static bool FrustrumsClipPoly(const EERIE_FRUSTRUM_DATA & frustrums,
 	return true;
 }
 
-static void CreatePlane(EERIE_FRUSTRUM & frustrum, long numplane, const Vec3f & orgn,
-                        const Vec3f & pt1, const Vec3f & pt2) {
+static Plane CreatePlane(const Vec3f & orgn, const Vec3f & pt1, const Vec3f & pt2) {
 	
-	Plane & plane = frustrum.plane[numplane];
+	Plane plane;
 	
 	Vec3f A = pt1 - orgn;
 	Vec3f B = pt2 - orgn;
@@ -710,20 +709,22 @@ static void CreatePlane(EERIE_FRUSTRUM & frustrum, long numplane, const Vec3f & 
 	plane.b *= epnlen;
 	plane.c *= epnlen;
 	plane.d = -(orgn.x * plane.a + orgn.y * plane.b + orgn.z * plane.c);
+	
+	return plane;
 }
 
 static void CreateFrustrum(EERIE_FRUSTRUM & frustrum, const Vec3f & pos,
                            const EERIEPOLY & ep, bool cull) {
 	if(cull) {
-		CreatePlane(frustrum, 0, pos, ep.v[0].p, ep.v[1].p);
-		CreatePlane(frustrum, 1, pos, ep.v[3].p, ep.v[2].p);
-		CreatePlane(frustrum, 2, pos, ep.v[1].p, ep.v[3].p);
-		CreatePlane(frustrum, 3, pos, ep.v[2].p, ep.v[0].p);
+		frustrum.plane[0] = CreatePlane(pos, ep.v[0].p, ep.v[1].p);
+		frustrum.plane[1] = CreatePlane(pos, ep.v[3].p, ep.v[2].p);
+		frustrum.plane[2] = CreatePlane(pos, ep.v[1].p, ep.v[3].p);
+		frustrum.plane[3] = CreatePlane(pos, ep.v[2].p, ep.v[0].p);
 	} else {
-		CreatePlane(frustrum, 0, pos, ep.v[1].p, ep.v[0].p);
-		CreatePlane(frustrum, 1, pos, ep.v[2].p, ep.v[3].p);
-		CreatePlane(frustrum, 2, pos, ep.v[3].p, ep.v[1].p);
-		CreatePlane(frustrum, 3, pos, ep.v[0].p, ep.v[2].p);
+		frustrum.plane[0] = CreatePlane(pos, ep.v[1].p, ep.v[0].p);
+		frustrum.plane[1] = CreatePlane(pos, ep.v[2].p, ep.v[3].p);
+		frustrum.plane[2] = CreatePlane(pos, ep.v[3].p, ep.v[1].p);
+		frustrum.plane[3] = CreatePlane(pos, ep.v[0].p, ep.v[2].p);
 	}
 }
 
