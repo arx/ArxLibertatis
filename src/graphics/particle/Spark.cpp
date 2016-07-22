@@ -131,6 +131,9 @@ void ParticleSparkUpdate() {
 	
 	const ArxInstant now = arxtime.now();
 	
+	RenderMaterial sparkMaterial;
+	sparkMaterial.setBlendType(RenderMaterial::Additive);
+	
 	for(size_t i = 0; i < g_sparkParticlesMax; i++) {
 
 		SparkParticle * part = &g_sparkParticles[i];
@@ -178,9 +181,7 @@ void ParticleSparkUpdate() {
 		
 		EE_RTP(temp, tv[2]);
 		
-		RenderMaterial mat;
-		mat.setBlendType(RenderMaterial::Additive);
-		RenderBatcher::getInstance().add(mat, tv);
+		RenderBatcher::getInstance().add(sparkMaterial, tv);
 		
 		if(!arxtime.is_paused()) {
 			part->oldpos = in;
