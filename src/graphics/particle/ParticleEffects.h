@@ -95,7 +95,6 @@ struct PARTICLE_DEF {
 	Vec3f ov;
 	Vec3f move;
 	Vec3f scale;
-	Vec3f oldpos;
 	float siz;
 	long timcreation;
 	u32 tolive;
@@ -116,7 +115,6 @@ struct PARTICLE_DEF {
 		, ov(Vec3f_ZERO)
 		, move(Vec3f_ZERO)
 		, scale(Vec3f_ZERO)
-		, oldpos(Vec3f_ZERO)
 		, siz(0.f)
 		, timcreation(0)
 		, tolive(0)

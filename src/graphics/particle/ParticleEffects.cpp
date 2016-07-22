@@ -922,10 +922,6 @@ void ARX_PARTICLES_Update(EERIE_CAMERA * cam)  {
 			continue;
 		}
 		
-		if(!arxtime.is_paused()) {
-			part->oldpos = in;
-		}
-		
 		if(part->m_flags & PARTICLE_GOLDRAIN) {
 			float v = Random::getf(-0.1f, 0.1f);
 			if(part->rgb.r + v <= 1.f && part->rgb.r + v > 0.f
