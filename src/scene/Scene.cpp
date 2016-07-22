@@ -732,7 +732,9 @@ static EERIE_FRUSTRUM CreateFrustrum(const Vec3f & pos, const EERIEPOLY & ep, bo
 	return frustrum;
 }
 
-static void CreateScreenFrustrum(EERIE_FRUSTRUM & frustrum) {
+static EERIE_FRUSTRUM CreateScreenFrustrum() {
+	
+	EERIE_FRUSTRUM frustrum;
 	
 	glm::mat4x4 matProj;
 	GRenderer->GetProjectionMatrix(matProj);
@@ -801,6 +803,8 @@ static void CreateScreenFrustrum(EERIE_FRUSTRUM & frustrum) {
 	
 	normalizePlane(plane);
 	}
+	
+	return frustrum;
 }
 
 void RoomDrawRelease() {
@@ -1488,8 +1492,7 @@ void ARX_SCENE_Update() {
 
 		ARX_PORTALS_InitDrawnRooms();
 		size_t roomIndex = static_cast<size_t>(room_num);
-		EERIE_FRUSTRUM frustrum;
-		CreateScreenFrustrum(frustrum);
+		EERIE_FRUSTRUM frustrum = CreateScreenFrustrum();
 		ARX_PORTALS_Frustrum_ComputeRoom(roomIndex, frustrum, camPos, camDepth);
 
 		for(size_t i = 0; i < RoomDrawList.size(); i++) {
