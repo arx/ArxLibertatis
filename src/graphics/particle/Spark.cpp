@@ -35,7 +35,7 @@ struct SparkParticle {
 	long timcreation;
 	u32 tolive;
 	Color3f rgb;
-	float fparam;
+	float m_tailLength;
 	
 	SparkParticle()
 		: exist(false)
@@ -44,7 +44,7 @@ struct SparkParticle {
 		, timcreation(0)
 		, tolive(0)
 		, rgb(Color3f::black)
-		, fparam(0.f)
+		, m_tailLength(0.f)
 	{ }
 };
 
@@ -115,7 +115,7 @@ void ARX_PARTICLES_Spawn_Spark(const Vec3f & pos, unsigned int count, SpawnSpark
 				break;
 		}
 		
-		pd->fparam = len + Random::getf() * len; // Spark tail length
+		pd->m_tailLength = len + Random::getf() * len;
 	}
 }
 
@@ -174,7 +174,7 @@ void ParticleSparkUpdate() {
 		Vec3f temp;
 		temp = in + Vec3f(Random::getf(0.f, 0.5f), 0.8f, Random::getf(0.f, 0.5f));
 		EE_RTP(temp, tv[1]);
-		temp = in + vect * part->fparam;
+		temp = in + vect * part->m_tailLength;
 		
 		EE_RTP(temp, tv[2]);
 		
