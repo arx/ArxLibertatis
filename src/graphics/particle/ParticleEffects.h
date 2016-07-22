@@ -107,10 +107,8 @@ struct PARTICLE_DEF {
 	Color3f rgb;
 	ParticlesTypeFlags special;
 	float fparam;
-	long mask;
 	Vec3f * source;
 	EntityHandle sourceionum;
-	short sval;
 	char cval1;
 	char cval2;
 	
@@ -130,10 +128,8 @@ struct PARTICLE_DEF {
 		, rgb(Color3f::black)
 		, special(0)
 		, fparam(0.f)
-		, mask(0)
 		, source(NULL)
 		, sourceionum()
-		, sval(0)
 		, cval1(0)
 		, cval2(0)
 	{ }
