@@ -1263,7 +1263,7 @@ static void BackgroundRenderOpaque(long room_num) {
 	ARX_PROFILE_FUNC();
 	
 	EERIE_ROOM_DATA & room = portals->rooms[room_num];
-
+	
 	//render opaque
 	GRenderer->SetCulling(CullNone);
 	GRenderer->SetAlphaFunc(Renderer::CmpGreater, .5f);
@@ -1273,24 +1273,22 @@ static void BackgroundRenderOpaque(long room_num) {
 		
 		TextureContainer *pTexCurr = *itr;
 		const SMY_ARXMAT & roomMat = pTexCurr->tMatRoom[room_num];
-
+		
 		GRenderer->SetTexture(0, pTexCurr);
-
+		
 		if(roomMat.count[SMY_ARXMAT::Opaque]) {
 			if (pTexCurr->userflags & POLY_METAL)
 				GRenderer->GetTextureStage(0)->setColorOp(TextureStage::OpModulate2X);
 			else
 				GRenderer->GetTextureStage(0)->setColorOp(TextureStage::OpModulate);
-
 			
-
 			room.pVertexBuffer->drawIndexed(
 				Renderer::TriangleList,
 				roomMat.uslNbVertex,
 				roomMat.uslStartVertex,
 				&room.indexBuffer[roomMat.offset[SMY_ARXMAT::Opaque]],
 				roomMat.count[SMY_ARXMAT::Opaque]);
-
+			
 			EERIEDrawnPolys += roomMat.count[SMY_ARXMAT::Opaque];
 		}
 	}
