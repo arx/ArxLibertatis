@@ -774,18 +774,20 @@ bool ARX_EQUIPMENT_Strike_Check(Entity * io_source, Entity * io_weapon, float ra
 
 							if(!(flags & 1)) {
 								ARX_PARTICLES_Spawn_Splat(pos, dmgs, color);
-
+								
+								Vec3f vertPos = target->obj->vertexlist3[hitpoint].v;
+								
 								Sphere sp;
 								float power;
 								power = (dmgs * ( 1.0f / 40 )) + 0.7f;
 								Vec3f vect;
-								vect.x = target->obj->vertexlist3[hitpoint].v.x - io_source->pos.x;
+								vect.x = vertPos.x - io_source->pos.x;
 								vect.y = 0;
-								vect.z = target->obj->vertexlist3[hitpoint].v.z - io_source->pos.z;
+								vect.z = vertPos.z - io_source->pos.z;
 								vect = glm::normalize(vect);
-								sp.origin.x = target->obj->vertexlist3[hitpoint].v.x + vect.x * 30.f;
-								sp.origin.y = target->obj->vertexlist3[hitpoint].v.y;
-								sp.origin.z = target->obj->vertexlist3[hitpoint].v.z + vect.z * 30.f;
+								sp.origin.x = vertPos.x + vect.x * 30.f;
+								sp.origin.y = vertPos.y;
+								sp.origin.z = vertPos.z + vect.z * 30.f;
 								sp.radius = 3.5f * power * 20;
 
 								if(CheckAnythingInSphere(sp, PlayerEntityHandle, CAS_NO_NPC_COL)) {
