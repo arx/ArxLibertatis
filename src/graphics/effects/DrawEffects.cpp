@@ -92,7 +92,7 @@ size_t PolyBoom_count() {
 	return polyboom.size();
 }
 
-void ARX_BOOMS_ClearAllPolyBooms() {
+void PolyBoomClear() {
 	polyboom.clear();
 }
 

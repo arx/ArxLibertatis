@@ -50,7 +50,7 @@ ZeniMax Media Inc., Suite 120, Rockville, Maryland 20850 USA.
 #include "math/Types.h"
 
 size_t PolyBoom_count();
-void ARX_BOOMS_ClearAllPolyBooms();
+void PolyBoomClear();
 void ARX_BOOMS_Add(const Vec3f & pos);
 void ARXDRAW_DrawPolyBoom();
 

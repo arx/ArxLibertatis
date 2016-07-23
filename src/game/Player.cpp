@@ -2675,7 +2675,7 @@ void ARX_GAME_Reset(long type) {
 	ARX_INTERACTIVE_ClearAllDynData();
 
 	// PolyBooms
-	ARX_BOOMS_ClearAllPolyBooms();
+	PolyBoomClear();
 
 	// Magical Flares
 	ARX_MAGICAL_FLARES_KillAll();

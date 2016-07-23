@@ -417,7 +417,7 @@ void levelInit() {
 	if(LOAD_N_ERASE)
 		arxtime.init();
 
-	ARX_BOOMS_ClearAllPolyBooms();
+	PolyBoomClear();
 	ARX_DAMAGES_Reset();
 	ARX_MISSILES_ClearAll();
 	spells.clearAll();
