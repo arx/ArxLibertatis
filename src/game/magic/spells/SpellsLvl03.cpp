@@ -312,7 +312,7 @@ void FireballSpell::Update() {
 	if(!bExplo)
 	if(CheckAnythingInSphere(sphere, m_caster, CAS_NO_SAME_GROUP)) {
 		spawnFireHitParticle(eCurPos, 0);
-		ARX_BOOMS_Add(eCurPos);
+		PolyBoomAddScorch(eCurPos);
 		LaunchFireballBoom(eCurPos, m_level);
 		
 		eMove *= 0.5f;

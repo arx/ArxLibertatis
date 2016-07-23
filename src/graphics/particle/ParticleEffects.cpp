@@ -345,7 +345,7 @@ void ARX_PARTICLES_Spawn_Blood(const Vec3f & pos, float dmgs, EntityHandle sourc
 
 void MakeCoolFx(const Vec3f & pos) {
 	spawnFireHitParticle(pos, 1);
-	ARX_BOOMS_Add(pos);
+	PolyBoomAddScorch(pos);
 }
 
 void MakePlayerAppearsFX(Entity * io) {

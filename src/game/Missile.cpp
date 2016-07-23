@@ -219,7 +219,7 @@ void ARX_MISSILES_Update() {
 				if(closerThan(player.pos, pos, 200.f)) {
 					ARX_MISSILES_Kill(i);
 					spawnFireHitParticle(pos, 0);
-					ARX_BOOMS_Add(pos);
+					PolyBoomAddScorch(pos);
 					Add3DBoom(pos);
 					DoSphericDamage(Sphere(dest, 200.0F), 180.0F, DAMAGE_AREAHALF, DAMAGE_TYPE_FIRE | DAMAGE_TYPE_MAGICAL);
 					break;
@@ -228,7 +228,7 @@ void ARX_MISSILES_Update() {
 				if(ep && ep->center.y < dest.y) {
 					ARX_MISSILES_Kill(i);
 					spawnFireHitParticle(dest, 0);
-					ARX_BOOMS_Add(dest);
+					PolyBoomAddScorch(dest);
 					Add3DBoom(dest);
 					DoSphericDamage(Sphere(dest, 200.0F), 180.0F, DAMAGE_AREAHALF, DAMAGE_TYPE_FIRE | DAMAGE_TYPE_MAGICAL);
 					break;
@@ -237,7 +237,7 @@ void ARX_MISSILES_Update() {
 				if(epp && epp->center.y > dest.y) {
 					ARX_MISSILES_Kill(i);
 					spawnFireHitParticle(dest, 0);
-					ARX_BOOMS_Add(dest);
+					PolyBoomAddScorch(dest);
 					Add3DBoom(dest);
 					DoSphericDamage(Sphere(dest, 200.0F), 180.0F, DAMAGE_AREAHALF, DAMAGE_TYPE_FIRE | DAMAGE_TYPE_MAGICAL);
 					break;
@@ -247,7 +247,7 @@ void ARX_MISSILES_Update() {
 				if(EERIELaunchRay3(orgn, dest, hit, 1)) {
 					ARX_MISSILES_Kill(i);
 					spawnFireHitParticle(hit, 0);
-					ARX_BOOMS_Add(hit);
+					PolyBoomAddScorch(hit);
 					Add3DBoom(hit);
 					DoSphericDamage(Sphere(dest, 200.0F), 180.0F, DAMAGE_AREAHALF, DAMAGE_TYPE_FIRE | DAMAGE_TYPE_MAGICAL);
 					break;
@@ -256,7 +256,7 @@ void ARX_MISSILES_Update() {
 				if(!CheckInPoly(dest) || EEIsUnderWater(dest)) {
 					ARX_MISSILES_Kill(i);
 					spawnFireHitParticle(dest, 0);
-					ARX_BOOMS_Add(dest);
+					PolyBoomAddScorch(dest);
 					Add3DBoom(dest);
 					DoSphericDamage(Sphere(dest, 200.0F), 180.0F, DAMAGE_AREAHALF, DAMAGE_TYPE_FIRE | DAMAGE_TYPE_MAGICAL);
 					break;
@@ -267,7 +267,7 @@ void ARX_MISSILES_Update() {
 				if(ici != EntityHandle() && ici != missiles[i].owner) {
 					ARX_MISSILES_Kill(i);
 					spawnFireHitParticle(dest, 0);
-					ARX_BOOMS_Add(dest);
+					PolyBoomAddScorch(dest);
 					Add3DBoom(dest);
 					DoSphericDamage(Sphere(dest, 200.0F), 180.0F, DAMAGE_AREAHALF, DAMAGE_TYPE_FIRE | DAMAGE_TYPE_MAGICAL);
 					break;

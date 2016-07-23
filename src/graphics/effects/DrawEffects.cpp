@@ -96,7 +96,7 @@ void PolyBoomClear() {
 	polyboom.clear();
 }
 
-void ARX_BOOMS_Add(const Vec3f & poss) {
+void PolyBoomAddScorch(const Vec3f & poss) {
 	
 	static TextureContainer * tc2 = TextureContainer::Load("graph/particles/boom");
 	
