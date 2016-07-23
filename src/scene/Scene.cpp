@@ -1258,7 +1258,7 @@ static void ARX_PORTALS_Frustrum_RenderRoomTCullSoft(long room_num,
 }
 
 
-static void ARX_PORTALS_Frustrum_RenderRoomTCullSoftRender(long room_num) {
+static void BackgroundRenderOpaque(long room_num) {
 	
 	ARX_PROFILE_FUNC();
 	
@@ -1525,7 +1525,7 @@ void ARX_SCENE_Render() {
 	GRenderer->SetBlendFunc(BlendZero, BlendInvSrcColor);
 	for(size_t i = 0; i < RoomDrawList.size(); i++) {
 
-		ARX_PORTALS_Frustrum_RenderRoomTCullSoftRender(RoomDrawList[i]);
+		BackgroundRenderOpaque(RoomDrawList[i]);
 	}
 
 	if(!player.m_improve) {
