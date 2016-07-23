@@ -125,7 +125,7 @@ void createFireParticles(Vec3f & pos, int perPos, int delay) {
 		pd->move = Vec3f(2.f, 2.f, 2.f) - Vec3f(4.f, 22.f, 4.f) * randomVec3f();
 		pd->siz = 7.f;
 		pd->tolive = Random::getu(500, 1500);
-		pd->m_flags = FIRE_TO_SMOKE | ROTATING | MODULATE_ROTATION;
+		pd->m_flags = FIRE_TO_SMOKE | ROTATING;
 		pd->tc = fire2;
 		pd->m_rotation = Random::getf(-0.1f, 0.1f);
 		pd->scale = Vec3f(-8.f);
@@ -206,8 +206,7 @@ static void ARX_PARTICLES_Spawn_Rogue_Blood(const Vec3f & pos, float dmgs, Color
 	pd->ov = pos;
 	pd->siz = 3.1f * (dmgs * (1.f / 60) + .9f);
 	pd->scale = Vec3f(-pd->siz * 0.25f);
-	pd->m_flags = PARTICLE_SUB2 | SUBSTRACT | GRAVITY | ROTATING | MODULATE_ROTATION
-	              | SPLAT_GROUND;
+	pd->m_flags = PARTICLE_SUB2 | SUBSTRACT | GRAVITY | ROTATING | SPLAT_GROUND;
 	pd->tolive = 1600;
 	pd->move = randomVec3f() * Vec3f(60.f, -10.f, 60.f) - Vec3f(30.f, 15.f, 30.f);
 	pd->rgb = col.to<float>();
@@ -228,8 +227,7 @@ static void ARX_PARTICLES_Spawn_Blood3(const Vec3f & pos, float dmgs, Color col,
 		pd->ov = pos + Vec3f(-glm::sin(nows), glm::sin(nows), glm::cos(nows)) * 30.f;
 		pd->siz = 3.5f * power + glm::sin(nows);
 		pd->scale = Vec3f(-pd->siz * 0.5f);
-		pd->m_flags = PARTICLE_SUB2 | SUBSTRACT | GRAVITY | ROTATING | MODULATE_ROTATION
-		              | flags;
+		pd->m_flags = PARTICLE_SUB2 | SUBSTRACT | GRAVITY | ROTATING | flags;
 		pd->tolive = 1100;
 		pd->rgb = col.to<float>();
 		pd->tc = bloodsplat[0];
@@ -332,7 +330,7 @@ void ARX_PARTICLES_Spawn_Blood(const Vec3f & pos, float dmgs, EntityHandle sourc
 		
 		pd->siz = 0.f;
 		pd->scale = Vec3f(float(spawn_nb));
-		pd->m_flags = GRAVITY | ROTATING | MODULATE_ROTATION | DELAY_FOLLOW_SOURCE;
+		pd->m_flags = GRAVITY | ROTATING | DELAY_FOLLOW_SOURCE;
 		pd->source = &entities[source]->obj->vertexlist3[nearest].v;
 		pd->sourceionum = source;
 		pd->tolive = 1200 + spawn_nb * 5;
@@ -377,7 +375,7 @@ void AddRandomSmoke(Entity * io, long amount) {
 			pd->siz = 4.f;
 		}
 		pd->scale = Vec3f(10.f);
-		pd->m_flags = ROTATING | MODULATE_ROTATION | FADE_IN_AND_OUT;
+		pd->m_flags = ROTATING | FADE_IN_AND_OUT;
 		pd->tolive = Random::getu(900, 1300);
 		pd->move = Vec3f(Random::getf(-0.25f, 0.25f), Random::getf(-0.7f, 0.3f), Random::getf(-0.25f, 0.25f));
 		pd->rgb = Color3f(0.3f, 0.3f, 0.34f);
@@ -406,7 +404,7 @@ void ARX_PARTICLES_Add_Smoke(const Vec3f & pos, long flags, long amount, Color3f
 			pd->siz = Random::getf(5.f, 13.f);
 			pd->scale = randomVec(10.f, 15.f);
 		}
-		pd->m_flags = ROTATING | MODULATE_ROTATION | FADE_IN_AND_OUT;
+		pd->m_flags = ROTATING | FADE_IN_AND_OUT;
 		pd->tolive = Random::getu(1100, 1500);
 		pd->delay = amount * 120 + Random::getu(0, 100);
 		pd->move = Vec3f(Random::getf(-0.25f, 0.25f), Random::getf(-0.7f, 0.3f), Random::getf(-0.25f, 0.25f));
@@ -634,8 +632,8 @@ void ARX_PARTICLES_SpawnWaterSplash(const Vec3f & _ePos) {
 			return;
 		}
 		
-		pd->m_flags = FADE_IN_AND_OUT | ROTATING | MODULATE_ROTATION | DISSIPATING
-		              | GRAVITY | SPLAT_WATER;
+		pd->m_flags = FADE_IN_AND_OUT | ROTATING | DISSIPATING | GRAVITY | SPLAT_WATER;
+		pd->m_rotation = 0.f; // TODO maybe remove ROTATING
 		pd->ov = _ePos + Vec3f(30.f, -20.f, 30.f) * randomVec3f();
 		pd->move = Vec3f(Random::getf(-6.5f, 6.5f), Random::getf(-11.5f, 0.f), Random::getf(-6.5f, 6.5f));
 		pd->tolive = Random::getu(1000, 1300);
@@ -662,8 +660,7 @@ void SpawnFireballTail(const Vec3f & poss, const Vec3f & vecto, float level, lon
 			return;
 		}
 		
-		pd->m_flags = FIRE_TO_SMOKE | FADE_IN_AND_OUT | PARTICLE_ANIMATED | ROTATING
-		              | MODULATE_ROTATION;
+		pd->m_flags = FIRE_TO_SMOKE | FADE_IN_AND_OUT | PARTICLE_ANIMATED | ROTATING;
 		pd->m_rotation = Random::getf(0.f, 0.02f);
 		pd->move = Vec3f(0.f, Random::getf(-3.f, 0.f), 0.f);
 		pd->tc = explo[0];
@@ -963,13 +960,7 @@ void ARX_PARTICLES_Update(EERIE_CAMERA * cam)  {
 		
 		if(part->m_flags & ROTATING) {
 			if(!part->is2D) {
-				
-				float rott;
-				if(part->m_flags & MODULATE_ROTATION) {
-					rott = MAKEANGLE(float(now + framediff2) * part->m_rotation);
-				} else {
-					rott = MAKEANGLE(float(now + framediff2 * 2) * 0.25f);
-				}
+				float rott = MAKEANGLE(float(now + framediff2) * part->m_rotation);
 				
 				float temp = (part->zdec) ? 0.0001f : 2.f;
 				float size = std::max(siz, 0.f);
@@ -1079,7 +1070,7 @@ void TreatBackgroundActions() {
 						pd->m_flags = FIRE_TO_SMOKE;
 					}
 					pd->tc = (gl->extras & EXTRAS_SPAWNFIRE) ? fire2 : smokeparticle;
-					pd->m_flags |= ROTATING | MODULATE_ROTATION;
+					pd->m_flags |= ROTATING;
 					pd->m_rotation = 0.1f - Random::getf(0.f, 0.2f) * gl->ex_speed;
 					pd->scale = Vec3f(-8.f);
 					pd->rgb = (gl->extras & EXTRAS_COLORLEGACY) ? gl->rgb : Color3f::white;
@@ -1102,7 +1093,7 @@ void TreatBackgroundActions() {
 					pd->siz = 4.f * gl->ex_size * 0.3f;
 					pd->tolive = 1200 + Random::getu(0, 500 * gl->ex_speed);
 					pd->tc = fire2;
-					pd->m_flags |= ROTATING | MODULATE_ROTATION | GRAVITY;
+					pd->m_flags |= ROTATING | GRAVITY;
 					pd->m_rotation = 0.1f - Random::getf(0.f, 0.2f) * gl->ex_speed;
 					pd->scale = Vec3f(-3.f);
 					pd->rgb = (gl->extras & EXTRAS_COLORLEGACY) ? gl->rgb : Color3f::white;

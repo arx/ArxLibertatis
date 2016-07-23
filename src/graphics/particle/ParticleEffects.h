@@ -69,7 +69,7 @@ enum ParticlesTypeFlag {
 	FIRE_TO_SMOKE       = (1<<0),
 	ROTATING            = (1<<1),
 	FADE_IN_AND_OUT     = (1<<2),
-	MODULATE_ROTATION   = (1<<3),
+	
 	DISSIPATING         = (1<<4),
 	GRAVITY             = (1<<5),
 	SUBSTRACT           = (1<<6),

@@ -105,8 +105,7 @@ void FloatingStones::DrawStone()
 				pd->siz = Random::getf(3.f, 6.f);
 				pd->tolive = 1000;
 				pd->timcreation = -(long(arxtime.now()) + 1000l); // TODO WTF
-				pd->m_flags = FIRE_TO_SMOKE | FADE_IN_AND_OUT | ROTATING | MODULATE_ROTATION
-				| DISSIPATING;
+				pd->m_flags = FIRE_TO_SMOKE | FADE_IN_AND_OUT | ROTATING | DISSIPATING;
 				pd->m_rotation = 0.0000001f;
 			}
 			

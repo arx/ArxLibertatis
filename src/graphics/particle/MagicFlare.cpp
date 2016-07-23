@@ -278,7 +278,7 @@ void AddFlare(const Vec2s & pos, float sm, short typ, Entity * io, bool bookDraw
 		}
 
 		if(!bookDraw) {
-			pd->m_flags = FADE_IN_AND_OUT | ROTATING | MODULATE_ROTATION | DISSIPATING;
+			pd->m_flags = FADE_IN_AND_OUT | ROTATING | DISSIPATING;
 			if(!io) {
 				pd->m_flags |= PARTICLE_NOZBUFFER;
 			}

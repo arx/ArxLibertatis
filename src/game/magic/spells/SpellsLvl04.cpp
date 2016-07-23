@@ -145,7 +145,7 @@ void BlessSpell::Update() {
 		pd->siz = 0.005f;
 		pd->tolive = Random::getu(1000, 2000);
 		pd->tc = tex_p1;
-		pd->m_flags = FADE_IN_AND_OUT | ROTATING | MODULATE_ROTATION | DISSIPATING;
+		pd->m_flags = FADE_IN_AND_OUT | ROTATING | DISSIPATING;
 		pd->m_rotation = 0.0000001f;
 		pd->rgb = Color3f(0.7f, 0.6f, 0.2f);
 	}
@@ -435,7 +435,7 @@ void CurseSpell::Update() {
 		pd->siz = 0.015f;
 		pd->tolive = Random::getu(1000, 1600);
 		pd->tc = tex_p1;
-		pd->m_flags = ROTATING | MODULATE_ROTATION | DISSIPATING | SUBSTRACT | GRAVITY;
+		pd->m_flags = ROTATING | DISSIPATING | SUBSTRACT | GRAVITY;
 		pd->m_rotation = 0.0000001f;
 	}
 }

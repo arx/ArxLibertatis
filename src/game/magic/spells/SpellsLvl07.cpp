@@ -103,7 +103,7 @@ void FlyingEyeSpell::Launch()
 		pd->tolive = Random::getu(2000, 6000);
 		pd->scale = Vec3f(12.f);
 		pd->tc = tc4;
-		pd->m_flags = FADE_IN_AND_OUT | ROTATING | MODULATE_ROTATION | DISSIPATING;
+		pd->m_flags = FADE_IN_AND_OUT | ROTATING | DISSIPATING;
 		pd->m_rotation = 0.0000001f;
 		pd->rgb = Color3f(0.7f, 0.7f, 1.f);
 	}
@@ -136,7 +136,7 @@ void FlyingEyeSpell::End()
 		pd->tolive = Random::getu(2000, 6000);
 		pd->scale = Vec3f(12.f);
 		pd->tc = tc4;
-		pd->m_flags = FADE_IN_AND_OUT | ROTATING | MODULATE_ROTATION | DISSIPATING;
+		pd->m_flags = FADE_IN_AND_OUT | ROTATING | DISSIPATING;
 		pd->m_rotation = 0.0000001f;
 		pd->rgb = Color3f(0.7f, 0.7f, 1.f);
 	}
@@ -206,7 +206,7 @@ void FlyingEyeSpell::Update() {
 				pd->tolive = Random::getu(1500, 3500);
 				pd->scale = Vec3f(0.2f);
 				pd->tc = TC_smoke;
-				pd->m_flags = FADE_IN_AND_OUT | ROTATING | MODULATE_ROTATION | DISSIPATING;
+				pd->m_flags = FADE_IN_AND_OUT | ROTATING | DISSIPATING;
 				pd->sourceionum = PlayerEntityHandle;
 				pd->source = &eobj->vertexlist3[id.handleData()].v; // FIXME passing of pointer to vertex position
 				pd->m_rotation = 0.0000001f;
@@ -402,7 +402,7 @@ void FireFieldSpell::Update() {
 			pd->siz = 7.f;
 			pd->tolive = Random::getu(500, 1500);
 			pd->tc = fire2;
-			pd->m_flags = ROTATING | MODULATE_ROTATION | FIRE_TO_SMOKE;
+			pd->m_flags = ROTATING | FIRE_TO_SMOKE;
 			pd->m_rotation = Random::getf(-0.1f, 0.1f);
 			pd->scale = Vec3f(-8.f);
 			
@@ -594,7 +594,7 @@ void IceFieldSpell::Update() {
 				pd->siz = 20.f;
 				pd->tolive = Random::getu(2000, 6000);
 				pd->tc = tex_p2;
-				pd->m_flags = FADE_IN_AND_OUT | ROTATING | MODULATE_ROTATION | DISSIPATING;
+				pd->m_flags = FADE_IN_AND_OUT | ROTATING | DISSIPATING;
 				pd->m_rotation = 0.0000001f;
 				pd->rgb = Color3f(0.7f, 0.7f, 1.f);
 			}
@@ -608,7 +608,7 @@ void IceFieldSpell::Update() {
 				pd->siz = 0.5f;
 				pd->tolive = Random::getu(2000, 6000);
 				pd->tc = tex_p1;
-				pd->m_flags = FADE_IN_AND_OUT | ROTATING | MODULATE_ROTATION | DISSIPATING;
+				pd->m_flags = FADE_IN_AND_OUT | ROTATING | DISSIPATING;
 				pd->m_rotation = 0.0000001f;
 				pd->rgb = Color3f(0.7f, 0.7f, 1.f);
 			}
@@ -791,8 +791,7 @@ void ConfuseSpell::Update() {
 		pd->siz = 0.25f;
 		pd->tolive = Random::getu(2300, 3300);
 		pd->tc = tex_p1;
-		pd->m_flags = PARTICLE_GOLDRAIN | FADE_IN_AND_OUT | ROTATING | MODULATE_ROTATION
-					  | DISSIPATING;
+		pd->m_flags = PARTICLE_GOLDRAIN | FADE_IN_AND_OUT | ROTATING | DISSIPATING;
 		pd->m_rotation = 0.0000001f;
 		
 		Color3f baseColor = Color3f(0.4f, 0.2f, 0.4f);
