@@ -75,7 +75,7 @@ enum ParticlesTypeFlag {
 	SUBSTRACT           = (1<<6),
 	
 	DELAY_FOLLOW_SOURCE = (1<<11),
-	NO_TRANS            = (1<<12),
+	
 	PARTICLE_ANIMATED   = (1<<13),
 	
 	SPLAT_GROUND        = (1<<15),
