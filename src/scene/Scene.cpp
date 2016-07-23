@@ -1086,10 +1086,10 @@ static void ARX_PORTALS_Frustrum_RenderRoomTCullSoft(long room_num,
 	SMY_VERTEX * pMyVertex = room.pVertexBuffer->lock(NoOverwrite);
 
 	unsigned short *pIndices=room.indexBuffer;
-
-	EP_DATA *pEPDATA = &room.epdata[0];
-
-	for(long lll=0; lll<room.nb_polys; lll++, pEPDATA++) {
+	
+	for(long lll=0; lll<room.nb_polys; lll++) {
+		const EP_DATA *pEPDATA = &room.epdata[lll];
+		
 		EERIE_BKG_INFO *feg = &ACTIVEBKG->fastdata[pEPDATA->p.x][pEPDATA->p.y];
 
 		if(!feg->treat) {
