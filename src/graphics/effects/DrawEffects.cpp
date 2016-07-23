@@ -88,7 +88,7 @@ static const float BOOM_RADIUS = 420.f;
 extern TextureContainer * Boom;
 extern Color ulBKGColor;
 
-size_t PolyBoom_count() {
+size_t PolyBoomCount() {
 	return polyboom.size();
 }
 

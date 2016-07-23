@@ -152,7 +152,7 @@ void ShowInfoText() {
 	frameInfo.add("Prims", EERIEDrawnPolys);
 	frameInfo.add("Particles", getParticleCount());
 	frameInfo.add("Sparks", ParticleSparkCount());
-	frameInfo.add("Polybooms", long(PolyBoom_count()));
+	frameInfo.add("Polybooms", long(PolyBoomCount()));
 	frameInfo.add("TIME", static_cast<long>(arxtime.now() / 1000));
 	frameInfo.print();
 	
