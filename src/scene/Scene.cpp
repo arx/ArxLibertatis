@@ -1521,35 +1521,35 @@ void ARX_SCENE_Render() {
 	
 	if(uw_mode)
 		GRenderer->GetTextureStage(0)->setMipMapLODBias(10.f);
-
+	
 	GRenderer->SetBlendFunc(BlendZero, BlendInvSrcColor);
 	for(size_t i = 0; i < RoomDrawList.size(); i++) {
-
+		
 		BackgroundRenderOpaque(RoomDrawList[i]);
 	}
-
+	
 	if(!player.m_improve) {
 		ARXDRAW_DrawInterShadows();
 	}
-
+	
 	ARX_THROWN_OBJECT_Render();
-		
+	
 	GRenderer->GetTextureStage(0)->setWrapMode(TextureStage::WrapClamp);
 	GRenderer->GetTextureStage(0)->setMipMapLODBias(-0.6f);
-
+	
 	RenderInter();
-
+	
 	GRenderer->GetTextureStage(0)->setWrapMode(TextureStage::WrapRepeat);
 	GRenderer->GetTextureStage(0)->setMipMapLODBias(-0.3f);
-		
+	
 	// To render Dragged objs
 	if(DRAGINTER) {
 		SPECIAL_DRAGINTER_RENDER=1;
 		ARX_INTERFACE_RenderCursor();
-
+		
 		SPECIAL_DRAGINTER_RENDER=0;
 	}
-
+	
 	PopAllTriangleList();
 	
 	// *Now* draw the player
@@ -1567,39 +1567,39 @@ void ARX_SCENE_Render() {
 	}
 	
 	ARXDRAW_DrawEyeBall();
-
+	
 	GRenderer->SetRenderState(Renderer::DepthWrite, false);
-
+	
 	PolyBoomDraw();
-
+	
 	PopAllTriangleListTransparency();
-
+	
 	GRenderer->SetFogColor(Color::none);
 	GRenderer->SetRenderState(Renderer::AlphaBlending, true);
 	GRenderer->SetCulling(CullNone);
 	GRenderer->SetRenderState(Renderer::DepthWrite, false);
 	GRenderer->SetAlphaFunc(Renderer::CmpGreater, .5f);
-
+	
 	for(size_t i = 0; i < RoomDrawList.size(); i++) {
-
+		
 		BackgroundRenderTransparent(RoomDrawList[i]);
 	}
-
+	
 	GRenderer->SetDepthBias(8);
 	GRenderer->SetRenderState(Renderer::DepthWrite, false);
 	GRenderer->SetCulling(CullCW);
 	GRenderer->SetAlphaFunc(Renderer::CmpNotEqual, 0.f);
-
+	
 	RenderWater();
 	RenderLava();
-
+	
 	GRenderer->SetDepthBias(0);
 	GRenderer->SetFogColor(ulBKGColor);
 	GRenderer->GetTextureStage(0)->setColorOp(TextureStage::OpModulate);
 	GRenderer->SetRenderState(Renderer::AlphaBlending, false);
-
+	
 	Halo_Render();
-
+	
 	GRenderer->SetCulling(CullCCW);
 	GRenderer->SetRenderState(Renderer::AlphaBlending, false);	
 	GRenderer->SetRenderState(Renderer::DepthWrite, true);
