@@ -1570,7 +1570,7 @@ void ARX_SCENE_Render() {
 
 	GRenderer->SetRenderState(Renderer::DepthWrite, false);
 
-	ARXDRAW_DrawPolyBoom();
+	PolyBoomDraw();
 
 	PopAllTriangleListTransparency();
 

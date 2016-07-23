@@ -362,7 +362,7 @@ void PolyBoomAddSplat(const Sphere & sp, const Color3f & col, long flags) {
 }
 
 
-void ARXDRAW_DrawPolyBoom() {
+void PolyBoomDraw() {
 	
 	ARX_PROFILE_FUNC();
 	

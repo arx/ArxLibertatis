@@ -57,6 +57,6 @@ size_t PolyBoomCount();
 void PolyBoomAddScorch(const Vec3f & pos);
 void PolyBoomAddSplat(const Sphere & sp, const Color3f & col, long flags);
 
-void ARXDRAW_DrawPolyBoom();
+void PolyBoomDraw();
 
 #endif // ARX_GRAPHICS_EFFECTS_DRAWEFFECTS_H
