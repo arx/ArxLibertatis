@@ -44,7 +44,7 @@ ZeniMax Media Inc., Suite 120, Rockville, Maryland 20850 USA.
 //
 // Copyright (c) 1999-2001 ARKANE Studios SA. All rights reserved
 
-#include "graphics/effects/DrawEffects.h"
+#include "graphics/effects/PolyBoom.h"
 
 #include "animation/AnimationRender.h"
 

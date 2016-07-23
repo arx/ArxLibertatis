@@ -40,7 +40,7 @@
 #include "graphics/data/TextureContainer.h"
 #include "graphics/particle/ParticleEffects.h"
 #include "graphics/particle/Spark.h"
-#include "graphics/effects/DrawEffects.h"
+#include "graphics/effects/PolyBoom.h"
 #include "graphics/effects/Trail.h"
 
 #include "physics/Collisions.h"

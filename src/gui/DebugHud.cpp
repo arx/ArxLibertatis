@@ -51,7 +51,7 @@
 
 #include "graphics/Renderer.h"
 #include "graphics/DrawLine.h"
-#include "graphics/effects/DrawEffects.h"
+#include "graphics/effects/PolyBoom.h"
 #include "graphics/particle/Spark.h"
 
 #include "window/RenderWindow.h"
