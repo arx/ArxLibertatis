@@ -362,21 +362,6 @@ void SpawnGroundSplat(const Sphere & sp, const Color3f & col, long flags) {
 }
 
 
-
-
-// This used to add a bias when the "forceZbias" config option was activated, but it
-// was off by default and we removed it.
-static void IncrementPolyWithNormalOutput(EERIEPOLY * _pPoly, TexturedVertexUntransformed * _pOut) {
-	
-	_pOut[0].p = _pPoly->v[0].p;
-	_pOut[1].p = _pPoly->v[1].p;
-	_pOut[2].p = _pPoly->v[2].p;
-	
-	if(_pPoly->type&POLY_QUAD) {
-		_pOut[3].p = _pPoly->v[3].p;
-	}
-}
-
 void ARXDRAW_DrawPolyBoom() {
 	
 	ARX_PROFILE_FUNC();
@@ -434,9 +419,9 @@ void ARXDRAW_DrawPolyBoom() {
 				ColorRGBA col = (player.m_improve ? (Color3f::red * (tt*.5f)) : Color3f::gray(tt)).toRGB();
 				
 				TexturedVertexUntransformed ltv[4];
-				IncrementPolyWithNormalOutput(pb.ep,ltv);
 				
 				for(long k = 0; k < pb.nbvert; k++) {
+					ltv[k].p = pb.ep->v[k].p;
 					ltv[k].uv.x=pb.u[k];
 					ltv[k].uv.y=pb.v[k];
 					ltv[k].color = col;
@@ -465,9 +450,9 @@ void ARXDRAW_DrawPolyBoom() {
 				ColorRGBA col = Color4f(pb.rgb * tt, glm::clamp(tt * 1.5f, 0.f, 1.f)).toRGBA();
 				
 				TexturedVertexUntransformed ltv[4];
-				IncrementPolyWithNormalOutput(pb.ep, ltv);
 				
 				for(long k = 0; k < pb.nbvert; k++) {
+					ltv[k].p = pb.ep->v[k].p;
 					ltv[k].uv.x=(pb.u[k]-0.5f)*(tr)+0.5f;
 					ltv[k].uv.y=(pb.v[k]-0.5f)*(tr)+0.5f;
 					ltv[k].color = col;
@@ -493,9 +478,9 @@ void ARXDRAW_DrawPolyBoom() {
 				ColorRGBA col = (pb.rgb * ttt).toRGB();
 				
 				TexturedVertexUntransformed ltv[4];
-				IncrementPolyWithNormalOutput(pb.ep,ltv);
 				
 				for(long k = 0; k < pb.nbvert; k++) {
+					ltv[k].p = pb.ep->v[k].p;
 					ltv[k].uv.x=(pb.u[k]-0.5f)*(tr)+0.5f;
 					ltv[k].uv.y=(pb.v[k]-0.5f)*(tr)+0.5f;
 					ltv[k].color=col;
