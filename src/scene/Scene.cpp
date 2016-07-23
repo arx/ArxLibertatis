@@ -1310,7 +1310,7 @@ static const SMY_ARXMAT::TransparencyType transRenderOrder[] = {
 };
 
 
-static void ARX_PORTALS_Frustrum_RenderRoom_TransparencyTSoftCull(long room_num) {
+static void BackgroundRenderTransparent(long room_num) {
 	
 	ARX_PROFILE_FUNC();
 	
@@ -1582,7 +1582,7 @@ void ARX_SCENE_Render() {
 
 	for(size_t i = 0; i < RoomDrawList.size(); i++) {
 
-		ARX_PORTALS_Frustrum_RenderRoom_TransparencyTSoftCull(RoomDrawList[i]);
+		BackgroundRenderTransparent(RoomDrawList[i]);
 	}
 
 	GRenderer->SetDepthBias(8);
