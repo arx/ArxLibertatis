@@ -1088,14 +1088,14 @@ static void ARX_PORTALS_Frustrum_RenderRoomTCullSoft(long room_num,
 	unsigned short *pIndices=room.indexBuffer;
 	
 	for(long lll=0; lll<room.nb_polys; lll++) {
-		const EP_DATA *pEPDATA = &room.epdata[lll];
+		const EP_DATA & pEPDATA = room.epdata[lll];
 		
-		EERIE_BKG_INFO *feg = &ACTIVEBKG->fastdata[pEPDATA->p.x][pEPDATA->p.y];
+		EERIE_BKG_INFO *feg = &ACTIVEBKG->fastdata[pEPDATA.p.x][pEPDATA.p.y];
 
 		if(!feg->treat) {
 			// TODO copy-paste background tiles
-			int tilex = pEPDATA->p.x;
-			int tilez = pEPDATA->p.y;
+			int tilex = pEPDATA.p.x;
+			int tilez = pEPDATA.p.y;
 			int radius = 1;
 			
 			int minx = std::max(tilex - radius, 0);
@@ -1114,7 +1114,7 @@ static void ARX_PORTALS_Frustrum_RenderRoomTCullSoft(long room_num,
 			}
 		}
 
-		EERIEPOLY *ep = &feg->polydata[pEPDATA->idx];
+		EERIEPOLY *ep = &feg->polydata[pEPDATA.idx];
 
 		if(!ep->tex) {
 			continue;
@@ -1187,7 +1187,7 @@ static void ARX_PORTALS_Frustrum_RenderRoomTCullSoft(long room_num,
 				}
 			} else {
 				if(!(ep->type & POLY_TRANS)) {
-					ApplyTileLights(ep, pEPDATA->p);
+					ApplyTileLights(ep, pEPDATA.p);
 
 					pMyVertexCurr[ep->uslInd[0]].color = ep->tv[0].color;
 					pMyVertexCurr[ep->uslInd[1]].color = ep->tv[1].color;
@@ -1213,7 +1213,7 @@ static void ARX_PORTALS_Frustrum_RenderRoomTCullSoft(long room_num,
 					continue;
 				}
 
-				ApplyTileLights(ep, pEPDATA->p);
+				ApplyTileLights(ep, pEPDATA.p);
 
 				for(int k = 0; k < to; k++) {
 					long lr = Color::fromRGBA(ep->tv[k].color).r;
