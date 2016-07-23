@@ -149,7 +149,6 @@ void ManageTorch();
 
 void MakePlayerAppearsFX(Entity * io);
 void MakeCoolFx(const Vec3f & pos);
-void SpawnGroundSplat(const Sphere & sp, const Color3f & col, long flags);
 
 PARTICLE_DEF * createParticle(bool allocateWhilePaused = false);
 long getParticleCount();
