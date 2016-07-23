@@ -2082,7 +2082,7 @@ void ArxGame::renderLevel() {
 		GRenderer->GetTextureStage(0)->setWrapMode(TextureStage::WrapRepeat);
 	
 		GRenderer->SetRenderState(Renderer::AlphaBlending, false);
-		PopAllTriangleList();
+		PopAllTriangleListOpaque();
 		GRenderer->SetRenderState(Renderer::AlphaBlending, true);
 		PopAllTriangleListTransparency();
 		GRenderer->SetRenderState(Renderer::AlphaBlending, false);
@@ -2122,7 +2122,7 @@ void ArxGame::renderLevel() {
 		ARX_INTERFACE_RenderCursor();
 
 		GRenderer->SetRenderState(Renderer::AlphaBlending, false);
-		PopAllTriangleList();
+		PopAllTriangleListOpaque();
 		GRenderer->SetRenderState(Renderer::AlphaBlending, true);
 		PopAllTriangleListTransparency();
 		GRenderer->SetRenderState(Renderer::AlphaBlending, false);

@@ -60,7 +60,7 @@ float Cedric_GetInvisibility(Entity *io);
 
 void Cedric_ApplyLightingFirstPartRefactor(Entity *io);
 
-void PopAllTriangleList(bool clear = true);
+void PopAllTriangleListOpaque(bool clear = true);
 void PopAllTriangleListTransparency();
 
 void drawQuadRTP(const RenderMaterial & mat, TexturedQuad quat);

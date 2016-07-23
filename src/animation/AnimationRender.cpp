@@ -189,7 +189,7 @@ static void PopOneTriangleListTransparency(TextureContainer *_pTex) {
 	}
 }
 
-void PopAllTriangleList(bool clear) {
+void PopAllTriangleListOpaque(bool clear) {
 	
 	ARX_PROFILE_FUNC();
 	

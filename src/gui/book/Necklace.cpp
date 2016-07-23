@@ -177,7 +177,7 @@ void ARX_INTERFACE_ManageOpenedBook_Finish(const Vec2f & mousePos)
 			
 			Rectf runeBox = UpdateBbox2d(*rune).toRect();
 			
-			PopAllTriangleList();
+			PopAllTriangleListOpaque();
 			
 			tmpPos.x++;
 			
@@ -208,7 +208,7 @@ void ARX_INTERFACE_ManageOpenedBook_Finish(const Vec2f & mousePos)
 					
 					rune->angle.setPitch(rune->angle.getPitch() + g_framedelay*2.f);
 					
-					PopAllTriangleList();
+					PopAllTriangleListOpaque();
 					
 					GRenderer->SetRenderState(Renderer::AlphaBlending, false);
 					

@@ -369,7 +369,7 @@ static void RenderBookPlayerCharacter() {
 		GRenderer->SetRenderState(Renderer::DepthTest, true);
 		GRenderer->GetTextureStage(0)->setMipFilter(TextureStage::FilterNone);
 		GRenderer->SetRenderState(Renderer::AlphaBlending, false);
-		PopAllTriangleList();
+		PopAllTriangleListOpaque();
 		GRenderer->SetRenderState(Renderer::AlphaBlending, true);
 		PopAllTriangleListTransparency();
 		GRenderer->SetRenderState(Renderer::AlphaBlending, false);
