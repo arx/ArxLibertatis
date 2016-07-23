@@ -55,7 +55,7 @@ void PolyBoomClear();
 size_t PolyBoomCount();
 
 void PolyBoomAddScorch(const Vec3f & pos);
-void SpawnGroundSplat(const Sphere & sp, const Color3f & col, long flags);
+void PolyBoomAddSplat(const Sphere & sp, const Color3f & col, long flags);
 
 void ARXDRAW_DrawPolyBoom();
 

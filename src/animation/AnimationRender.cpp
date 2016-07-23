@@ -346,7 +346,7 @@ void Cedric_ApplyLightingFirstPartRefactor(Entity *io) {
 						long count = 6;
 						while(count--) {
 							Sphere splatSphere = Sphere(sp.origin, Random::getf(30.f, 60.f));
-							SpawnGroundSplat(splatSphere, rgb, 1);
+							PolyBoomAddSplat(splatSphere, rgb, 1);
 							sp.origin.y -= Random::getf(0.f, 150.f);
 
 							ARX_PARTICLES_Spawn_Splat(sp.origin, 200.f, io->_npcdata->blood_color);

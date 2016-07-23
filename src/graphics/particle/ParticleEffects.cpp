@@ -886,7 +886,7 @@ void ARX_PARTICLES_Update(EERIE_CAMERA * cam)  {
 				if(CheckAnythingInSphere(sp, PlayerEntityHandle, CAS_NO_NPC_COL)) {
 					if(Random::getf() < 0.9f) {
 						Color3f rgb = part->rgb;
-						SpawnGroundSplat(sp, rgb, 0);
+						PolyBoomAddSplat(sp, rgb, 0);
 					}
 					part->exist = false;
 					ParticleCount--;
@@ -900,7 +900,7 @@ void ARX_PARTICLES_Update(EERIE_CAMERA * cam)  {
 				if(CheckAnythingInSphere(sp, PlayerEntityHandle, CAS_NO_NPC_COL)) {
 					if(Random::getf() < 0.9f) {
 						Color3f rgb = part->rgb * 0.5f;
-						SpawnGroundSplat(sp, rgb, 2);
+						PolyBoomAddSplat(sp, rgb, 2);
 					}
 					part->exist = false;
 					ParticleCount--;

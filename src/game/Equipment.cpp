@@ -794,7 +794,7 @@ bool ARX_EQUIPMENT_Strike_Check(Entity * io_source, Entity * io_weapon, float ra
 									Sphere splatSphere;
 									splatSphere.origin = sp.origin;
 									splatSphere.radius = 30.f;
-									SpawnGroundSplat(splatSphere, rgb, 1);
+									PolyBoomAddSplat(splatSphere, rgb, 1);
 								}
 							}
 

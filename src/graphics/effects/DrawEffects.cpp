@@ -163,7 +163,7 @@ void PolyBoomAddScorch(const Vec3f & poss) {
 extern TextureContainer * bloodsplat[6];
 extern TextureContainer * water_splat[3];
 
-void SpawnGroundSplat(const Sphere & sp, const Color3f & col, long flags) {
+void PolyBoomAddSplat(const Sphere & sp, const Color3f & col, long flags) {
 	
 	Vec3f poss = sp.origin;
 	float size = sp.radius;
