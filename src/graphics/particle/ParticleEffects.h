@@ -104,7 +104,7 @@ struct PARTICLE_DEF {
 	ParticlesTypeFlags m_flags;
 	Vec3f * source;
 	EntityHandle sourceionum;
-	float fparam;
+	float m_rotation;
 	char cval1;
 	char cval2;
 	
@@ -124,7 +124,7 @@ struct PARTICLE_DEF {
 		, m_flags(0)
 		, source(NULL)
 		, sourceionum()
-		, fparam(0.f)
+		, m_rotation(0.f)
 		, cval1(0)
 		, cval2(0)
 	{ }

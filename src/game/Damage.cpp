@@ -932,7 +932,7 @@ static void ARX_DAMAGES_AddVisual(DAMAGE_INFO & di, const Vec3f & pos, float dmg
 			pd->rgb = Color3f::gray(0.5f);
 		}
 		pd->tc = TC_fire2;
-		pd->fparam = Random::getf(-0.1f, 0.1f);
+		pd->m_rotation = Random::getf(-0.1f, 0.1f);
 	}
 }
 

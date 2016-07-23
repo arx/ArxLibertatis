@@ -346,7 +346,7 @@ void ControlTargetSpell::Update() {
 					pd->tolive = Random::getu(10, 110);
 					pd->tc = tex_mm;
 					pd->m_flags = FADE_IN_AND_OUT | ROTATING | MODULATE_ROTATION | DISSIPATING;
-					pd->fparam = 0.0000001f;
+					pd->m_rotation = 0.0000001f;
 					pd->rgb = Color3f::gray(c);
 				}
 			}
@@ -360,7 +360,7 @@ void ControlTargetSpell::Update() {
 				pd->tolive = Random::getu(10, 110);
 				pd->tc = tex_mm;
 				pd->m_flags = FADE_IN_AND_OUT | ROTATING | MODULATE_ROTATION | DISSIPATING;
-				pd->fparam = 0.0000001f;
+				pd->m_rotation = 0.0000001f;
 				pd->rgb = Color3f::gray(0.1f);
 			}
 		}

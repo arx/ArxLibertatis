@@ -131,7 +131,7 @@ void ARX_FOGS_Render() {
 			pd->tc = TC_smoke;
 			pd->siz = (fog.size + Random::getf(0.f, 2.f) * fog.size) * (1.0f / 3);
 			pd->rgb = fog.rgb;
-			pd->fparam = fog.rotatespeed;
+			pd->m_rotation = fog.rotatespeed;
 		}
 	}
 }

@@ -271,7 +271,7 @@ void LevitateSpell::createDustParticle() {
 	pd->tolive = 3000;
 	pd->timcreation = -(long(arxtime.now()) + 3000l); // TODO WTF
 	pd->m_flags = FIRE_TO_SMOKE | FADE_IN_AND_OUT | ROTATING | MODULATE_ROTATION | DISSIPATING;
-	pd->fparam = 0.0000001f;
+	pd->m_rotation = 0.0000001f;
 }
 
 
@@ -684,6 +684,6 @@ void PoisonProjectileSpell::AddPoisonFog(const Vec3f & pos, float power) {
 		pd->tc = TC_smoke;
 		pd->siz = (80.f + Random::getf(0.f, 160.f)) * (1.f / 3);
 		pd->rgb = Color3f(Random::getf(0.f, 1.f/3), 1.f, Random::getf(0.f, 0.1f));
-		pd->fparam = 0.001f;
+		pd->m_rotation = 0.001f;
 	}
 }

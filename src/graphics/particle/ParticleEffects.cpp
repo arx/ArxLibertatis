@@ -127,7 +127,7 @@ void createFireParticles(Vec3f & pos, int perPos, int delay) {
 		pd->tolive = Random::getu(500, 1500);
 		pd->m_flags = FIRE_TO_SMOKE | ROTATING | MODULATE_ROTATION;
 		pd->tc = fire2;
-		pd->fparam = Random::getf(-0.1f, 0.1f);
+		pd->m_rotation = Random::getf(-0.1f, 0.1f);
 		pd->scale = Vec3f(-8.f);
 		pd->rgb = Color3f(0.71f, 0.43f, 0.29f);
 		pd->delay = nn * delay;
@@ -213,7 +213,7 @@ static void ARX_PARTICLES_Spawn_Rogue_Blood(const Vec3f & pos, float dmgs, Color
 	pd->rgb = col.to<float>();
 	long num = Random::get(0, 5);
 	pd->tc = bloodsplat[num];
-	pd->fparam = Random::getf(-0.05f, 0.05f);
+	pd->m_rotation = Random::getf(-0.05f, 0.05f);
 	
 }
 
@@ -233,7 +233,7 @@ static void ARX_PARTICLES_Spawn_Blood3(const Vec3f & pos, float dmgs, Color col,
 		pd->tolive = 1100;
 		pd->rgb = col.to<float>();
 		pd->tc = bloodsplat[0];
-		pd->fparam = Random::getf(-0.05f, 0.05f);
+		pd->m_rotation = Random::getf(-0.05f, 0.05f);
 	}
 	
 	if(Random::getf() > .90f) {
@@ -340,7 +340,7 @@ void ARX_PARTICLES_Spawn_Blood(const Vec3f & pos, float dmgs, EntityHandle sourc
 		pd->delay = totdelay;
 		pd->rgb = Color3f(.9f, 0.f, 0.f);
 		pd->tc = bloodsplat[0];
-		pd->fparam = Random::getf(-0.05f, 0.05f);
+		pd->m_rotation = Random::getf(-0.05f, 0.05f);
 	}
 }
 
@@ -382,7 +382,7 @@ void AddRandomSmoke(Entity * io, long amount) {
 		pd->move = Vec3f(Random::getf(-0.25f, 0.25f), Random::getf(-0.7f, 0.3f), Random::getf(-0.25f, 0.25f));
 		pd->rgb = Color3f(0.3f, 0.3f, 0.34f);
 		pd->tc = smokeparticle;
-		pd->fparam = 0.001f;
+		pd->m_rotation = 0.001f;
 	}
 }
 
@@ -412,7 +412,7 @@ void ARX_PARTICLES_Add_Smoke(const Vec3f & pos, long flags, long amount, Color3f
 		pd->move = Vec3f(Random::getf(-0.25f, 0.25f), Random::getf(-0.7f, 0.3f), Random::getf(-0.25f, 0.25f));
 		pd->rgb = (rgb) ? *rgb : Color3f(0.3f, 0.3f, 0.34f);
 		pd->tc = smokeparticle;
-		pd->fparam = 0.01f;
+		pd->m_rotation = 0.01f;
 	}
 }
 
@@ -664,7 +664,7 @@ void SpawnFireballTail(const Vec3f & poss, const Vec3f & vecto, float level, lon
 		
 		pd->m_flags = FIRE_TO_SMOKE | FADE_IN_AND_OUT | PARTICLE_ANIMATED | ROTATING
 		              | MODULATE_ROTATION;
-		pd->fparam = Random::getf(0.f, 0.02f);
+		pd->m_rotation = Random::getf(0.f, 0.02f);
 		pd->move = Vec3f(0.f, Random::getf(-3.f, 0.f), 0.f);
 		pd->tc = explo[0];
 		pd->rgb = Color3f::gray(.7f);
@@ -966,7 +966,7 @@ void ARX_PARTICLES_Update(EERIE_CAMERA * cam)  {
 				
 				float rott;
 				if(part->m_flags & MODULATE_ROTATION) {
-					rott = MAKEANGLE(float(now + framediff2) * part->fparam);
+					rott = MAKEANGLE(float(now + framediff2) * part->m_rotation);
 				} else {
 					rott = MAKEANGLE(float(now + framediff2 * 2) * 0.25f);
 				}
@@ -1080,7 +1080,7 @@ void TreatBackgroundActions() {
 					}
 					pd->tc = (gl->extras & EXTRAS_SPAWNFIRE) ? fire2 : smokeparticle;
 					pd->m_flags |= ROTATING | MODULATE_ROTATION;
-					pd->fparam = 0.1f - Random::getf(0.f, 0.2f) * gl->ex_speed;
+					pd->m_rotation = 0.1f - Random::getf(0.f, 0.2f) * gl->ex_speed;
 					pd->scale = Vec3f(-8.f);
 					pd->rgb = (gl->extras & EXTRAS_COLORLEGACY) ? gl->rgb : Color3f::white;
 				}
@@ -1103,7 +1103,7 @@ void TreatBackgroundActions() {
 					pd->tolive = 1200 + Random::getu(0, 500 * gl->ex_speed);
 					pd->tc = fire2;
 					pd->m_flags |= ROTATING | MODULATE_ROTATION | GRAVITY;
-					pd->fparam = 0.1f - Random::getf(0.f, 0.2f) * gl->ex_speed;
+					pd->m_rotation = 0.1f - Random::getf(0.f, 0.2f) * gl->ex_speed;
 					pd->scale = Vec3f(-3.f);
 					pd->rgb = (gl->extras & EXTRAS_COLORLEGACY) ? gl->rgb : Color3f::white;
 				}

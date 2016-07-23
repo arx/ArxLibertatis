@@ -104,7 +104,7 @@ void FlyingEyeSpell::Launch()
 		pd->scale = Vec3f(12.f);
 		pd->tc = tc4;
 		pd->m_flags = FADE_IN_AND_OUT | ROTATING | MODULATE_ROTATION | DISSIPATING;
-		pd->fparam = 0.0000001f;
+		pd->m_rotation = 0.0000001f;
 		pd->rgb = Color3f(0.7f, 0.7f, 1.f);
 	}
 	
@@ -137,7 +137,7 @@ void FlyingEyeSpell::End()
 		pd->scale = Vec3f(12.f);
 		pd->tc = tc4;
 		pd->m_flags = FADE_IN_AND_OUT | ROTATING | MODULATE_ROTATION | DISSIPATING;
-		pd->fparam = 0.0000001f;
+		pd->m_rotation = 0.0000001f;
 		pd->rgb = Color3f(0.7f, 0.7f, 1.f);
 	}
 	
@@ -209,7 +209,7 @@ void FlyingEyeSpell::Update() {
 				pd->m_flags = FADE_IN_AND_OUT | ROTATING | MODULATE_ROTATION | DISSIPATING;
 				pd->sourceionum = PlayerEntityHandle;
 				pd->source = &eobj->vertexlist3[id.handleData()].v; // FIXME passing of pointer to vertex position
-				pd->fparam = 0.0000001f;
+				pd->m_rotation = 0.0000001f;
 				pd->rgb = Color3f(.7f, .3f, 1.f) + Color3f(-.1f, -.1f, -.1f) * randomColor3f();
 			}
 		}
@@ -403,7 +403,7 @@ void FireFieldSpell::Update() {
 			pd->tolive = Random::getu(500, 1500);
 			pd->tc = fire2;
 			pd->m_flags = ROTATING | MODULATE_ROTATION | FIRE_TO_SMOKE;
-			pd->fparam = Random::getf(-0.1f, 0.1f);
+			pd->m_rotation = Random::getf(-0.1f, 0.1f);
 			pd->scale = Vec3f(-8.f);
 			
 			PARTICLE_DEF * pd2 = createParticle();
@@ -595,7 +595,7 @@ void IceFieldSpell::Update() {
 				pd->tolive = Random::getu(2000, 6000);
 				pd->tc = tex_p2;
 				pd->m_flags = FADE_IN_AND_OUT | ROTATING | MODULATE_ROTATION | DISSIPATING;
-				pd->fparam = 0.0000001f;
+				pd->m_rotation = 0.0000001f;
 				pd->rgb = Color3f(0.7f, 0.7f, 1.f);
 			}
 			
@@ -609,7 +609,7 @@ void IceFieldSpell::Update() {
 				pd->tolive = Random::getu(2000, 6000);
 				pd->tc = tex_p1;
 				pd->m_flags = FADE_IN_AND_OUT | ROTATING | MODULATE_ROTATION | DISSIPATING;
-				pd->fparam = 0.0000001f;
+				pd->m_rotation = 0.0000001f;
 				pd->rgb = Color3f(0.7f, 0.7f, 1.f);
 			}
 			
@@ -793,7 +793,7 @@ void ConfuseSpell::Update() {
 		pd->tc = tex_p1;
 		pd->m_flags = PARTICLE_GOLDRAIN | FADE_IN_AND_OUT | ROTATING | MODULATE_ROTATION
 					  | DISSIPATING;
-		pd->fparam = 0.0000001f;
+		pd->m_rotation = 0.0000001f;
 		
 		Color3f baseColor = Color3f(0.4f, 0.2f, 0.4f);
 		Color3f randomFactor = Color3f(0.4f, 0.6f, 0.4f);

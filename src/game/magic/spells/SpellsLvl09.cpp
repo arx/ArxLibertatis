@@ -390,7 +390,7 @@ void NegateMagicSpell::Update() {
 			pd->tc = tex_p2;
 			pd->m_flags = FADE_IN_AND_OUT | ROTATING | MODULATE_ROTATION | DISSIPATING
 			              | SUBSTRACT;
-			pd->fparam = 0.0000001f;
+			pd->m_rotation = 0.0000001f;
 		}
 	}
 	

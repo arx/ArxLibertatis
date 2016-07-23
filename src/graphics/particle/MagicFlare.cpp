@@ -298,7 +298,7 @@ void AddFlare(const Vec2s & pos, float sm, short typ, Entity * io, bool bookDraw
 			pd->siz = Random::getf(1.f, 2.f);
 		}
 		pd->rgb = Color3f(flare.rgb.r * (2.f/3), flare.rgb.g * (2.f/3), flare.rgb.b * (2.f/3));
-		pd->fparam = 1.2f;
+		pd->m_rotation = 1.2f;
 
 		if(bookDraw)
 			pd->is2D = true;
