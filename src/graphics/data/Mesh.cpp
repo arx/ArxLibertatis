@@ -2642,18 +2642,18 @@ void ComputePortalVertexBuffer() {
 			m.uslStartVertex = startIndex;
 			m.uslNbVertex = index;
 			
-			m.offset[SMY_ARXMAT::Opaque]         =  startIndexCull;
-			m.offset[SMY_ARXMAT::Blended]        = (startIndexCull += info.opaque);
-			m.offset[SMY_ARXMAT::Multiplicative] = (startIndexCull += info.blended);
-			m.offset[SMY_ARXMAT::Additive]       = (startIndexCull += info.multiplicative);
-			m.offset[SMY_ARXMAT::Subtractive]    = (startIndexCull += info.additive);
+			m.offset[BatchBucket_Opaque]         =  startIndexCull;
+			m.offset[BatchBucket_Blended]        = (startIndexCull += info.opaque);
+			m.offset[BatchBucket_Multiplicative] = (startIndexCull += info.blended);
+			m.offset[BatchBucket_Additive]       = (startIndexCull += info.multiplicative);
+			m.offset[BatchBucket_Subtractive]    = (startIndexCull += info.additive);
 												   (startIndexCull += info.subtractive);
 			
-			m.count[SMY_ARXMAT::Opaque] = 0;
-			m.count[SMY_ARXMAT::Blended] = 0;
-			m.count[SMY_ARXMAT::Multiplicative] = 0;
-			m.count[SMY_ARXMAT::Additive] = 0;
-			m.count[SMY_ARXMAT::Subtractive] = 0;
+			m.count[BatchBucket_Opaque] = 0;
+			m.count[BatchBucket_Blended] = 0;
+			m.count[BatchBucket_Multiplicative] = 0;
+			m.count[BatchBucket_Additive] = 0;
+			m.count[BatchBucket_Subtractive] = 0;
 			
 			if(   info.opaque > 65535
 			   || info.blended > 65535

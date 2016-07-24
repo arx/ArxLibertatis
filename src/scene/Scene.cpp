@@ -621,11 +621,11 @@ static void ARX_PORTALS_Frustrum_ClearIndexCount(long room_num) {
 
 		SMY_ARXMAT & roomMat = pTexCurr->m_roomBatches.tMatRoom[room_num];
 
-		roomMat.count[SMY_ARXMAT::Opaque] = 0;
-		roomMat.count[SMY_ARXMAT::Blended] = 0;
-		roomMat.count[SMY_ARXMAT::Multiplicative] = 0;
-		roomMat.count[SMY_ARXMAT::Additive] = 0;
-		roomMat.count[SMY_ARXMAT::Subtractive] = 0;
+		roomMat.count[BatchBucket_Opaque] = 0;
+		roomMat.count[BatchBucket_Blended] = 0;
+		roomMat.count[BatchBucket_Multiplicative] = 0;
+		roomMat.count[BatchBucket_Additive] = 0;
+		roomMat.count[BatchBucket_Subtractive] = 0;
 	}
 }
 
@@ -1141,20 +1141,20 @@ static void ARX_PORTALS_Frustrum_RenderRoomTCullSoft(long room_num,
 			}
 		}
 
-		SMY_ARXMAT::TransparencyType transparencyType;
+		BatchBucket transparencyType;
 
 		if(ep->type & POLY_TRANS) {
 			if(ep->transval >= 2.f) {
-				transparencyType = SMY_ARXMAT::Multiplicative;
+				transparencyType = BatchBucket_Multiplicative;
 			} else if(ep->transval >= 1.f) {
-				transparencyType = SMY_ARXMAT::Additive;
+				transparencyType = BatchBucket_Additive;
 			} else if(ep->transval > 0.f) {
-				transparencyType = SMY_ARXMAT::Blended;
+				transparencyType = BatchBucket_Blended;
 			} else {
-				transparencyType = SMY_ARXMAT::Subtractive;
+				transparencyType = BatchBucket_Subtractive;
 			}
 		} else {
-			transparencyType = SMY_ARXMAT::Opaque;
+			transparencyType = BatchBucket_Opaque;
 		}
 
 		SMY_ARXMAT & roomMat = ep->tex->m_roomBatches.tMatRoom[room_num];
@@ -1276,7 +1276,7 @@ static void BackgroundRenderOpaque(long room_num) {
 		
 		GRenderer->SetTexture(0, pTexCurr);
 		
-		if(roomMat.count[SMY_ARXMAT::Opaque]) {
+		if(roomMat.count[BatchBucket_Opaque]) {
 			if (pTexCurr->userflags & POLY_METAL)
 				GRenderer->GetTextureStage(0)->setColorOp(TextureStage::OpModulate2X);
 			else
@@ -1286,10 +1286,10 @@ static void BackgroundRenderOpaque(long room_num) {
 				Renderer::TriangleList,
 				roomMat.uslNbVertex,
 				roomMat.uslStartVertex,
-				&room.indexBuffer[roomMat.offset[SMY_ARXMAT::Opaque]],
-				roomMat.count[SMY_ARXMAT::Opaque]);
+				&room.indexBuffer[roomMat.offset[BatchBucket_Opaque]],
+				roomMat.count[BatchBucket_Opaque]);
 			
-			EERIEDrawnPolys += roomMat.count[SMY_ARXMAT::Opaque];
+			EERIEDrawnPolys += roomMat.count[BatchBucket_Opaque];
 		}
 	}
 	
@@ -1300,11 +1300,11 @@ static void BackgroundRenderOpaque(long room_num) {
 
 //-----------------------------------------------------------------------------
 
-static const SMY_ARXMAT::TransparencyType transRenderOrder[] = {
-	SMY_ARXMAT::Blended,
-	SMY_ARXMAT::Multiplicative,
-	SMY_ARXMAT::Additive,
-	SMY_ARXMAT::Subtractive
+static const BatchBucket transRenderOrder[] = {
+	BatchBucket_Blended,
+	BatchBucket_Multiplicative,
+	BatchBucket_Additive,
+	BatchBucket_Subtractive
 };
 
 
@@ -1324,33 +1324,33 @@ static void BackgroundRenderTransparent(long room_num) {
 		SMY_ARXMAT & roomMat = pTexCurr->m_roomBatches.tMatRoom[room_num];
 
 		for(size_t i = 0; i < ARRAY_SIZE(transRenderOrder); i++) {
-			SMY_ARXMAT::TransparencyType transType = transRenderOrder[i];
+			BatchBucket transType = transRenderOrder[i];
 
 			if(!roomMat.count[transType])
 				continue;
 
 			switch(transType) {
-			case SMY_ARXMAT::Opaque: {
+			case BatchBucket_Opaque: {
 				// This should currently not happen
 				arx_assert(false);
 				continue;
 			}
-			case SMY_ARXMAT::Blended: {
+			case BatchBucket_Blended: {
 				GRenderer->SetDepthBias(2);
 				GRenderer->SetBlendFunc(BlendSrcColor, BlendDstColor);
 				break;
 			}
-			case SMY_ARXMAT::Multiplicative: {
+			case BatchBucket_Multiplicative: {
 				GRenderer->SetDepthBias(2);
 				GRenderer->SetBlendFunc(BlendOne, BlendOne);
 				break;
 			}
-			case SMY_ARXMAT::Additive: {
+			case BatchBucket_Additive: {
 				GRenderer->SetDepthBias(2);
 				GRenderer->SetBlendFunc(BlendOne, BlendOne);
 				break;
 			}
-			case SMY_ARXMAT::Subtractive: {
+			case BatchBucket_Subtractive: {
 				GRenderer->SetDepthBias(8);
 				GRenderer->SetBlendFunc(BlendZero, BlendInvSrcColor);
 				break;

@@ -86,14 +86,6 @@ struct SMY_ARXMAT
 	unsigned long uslStartVertex;
 	unsigned long uslNbVertex;
 
-	enum TransparencyType {
-		Opaque = 0,
-		Blended,
-		Multiplicative,
-		Additive,
-		Subtractive
-	};
-
 	unsigned long offset[5];
 	unsigned long count[5];
 };
