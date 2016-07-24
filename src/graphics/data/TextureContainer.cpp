@@ -119,14 +119,9 @@ static void ResetRoomBatches(RoomBatches & roomBatches) {
 	roomBatches.tMatRoom = NULL;
 }
 
-
-
-//-----------------------------------------------------------------------------
-// Name: TextureContainer()
-// Desc: Constructor for a texture object
-//-----------------------------------------------------------------------------
-TextureContainer::TextureContainer(const res::path & strName, TCFlags flags) : m_texName(strName) {
-	
+TextureContainer::TextureContainer(const res::path & strName, TCFlags flags)
+	: m_texName(strName)
+{
 	arx_assert(!strName.has_ext("bmp") && !strName.has_ext("tga"),
 	           "bad texture name: \"%s\"", strName.string().c_str());
 	
