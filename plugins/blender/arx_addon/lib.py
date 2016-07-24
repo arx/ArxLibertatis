@@ -35,6 +35,7 @@ class ArxIO(object):
                 "libArxIO.so.0"
             ]
         
+        self.lib = None
         for libPath in libPaths:
             try:
                 self.lib = ctypes.cdll.LoadLibrary(libPath)
