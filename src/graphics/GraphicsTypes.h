@@ -469,23 +469,6 @@ struct EERIE_PORTAL_DATA
 	std::vector<EERIE_PORTALS> portals;
 };
 
-struct SMY_ARXMAT
-{
-	unsigned long uslStartVertex;
-	unsigned long uslNbVertex;
-
-	enum TransparencyType {
-		Opaque = 0,
-		Blended,
-		Multiplicative,
-		Additive,
-		Subtractive
-	};
-
-	unsigned long offset[5];
-	unsigned long count[5];
-};
-
 extern EERIE_PORTAL_DATA * portals;
 
 #endif // ARX_GRAPHICS_GRAPHICSTYPES_H
