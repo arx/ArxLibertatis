@@ -208,9 +208,9 @@ bool TextureContainer::LoadFile(const res::path & strPathname) {
 	
 	m_size = m_pTexture->getSize();
 	
-	Vec2i storedSize = m_pTexture->getStoredSize();
-	uv = Vec2f(float(m_size.x) / storedSize.x, float(m_size.y) / storedSize.y);
-	hd = Vec2f(.5f / storedSize.x, .5f / storedSize.y);
+	Vec2f storedSize = Vec2f(m_pTexture->getStoredSize());
+	uv = Vec2f(m_size) / storedSize;
+	hd = Vec2f(.5f, .5f) / storedSize;
 	
 	return true;
 }
