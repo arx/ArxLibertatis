@@ -133,7 +133,6 @@ TextureContainer::TextureContainer(const res::path & strName, TCFlags flags) : m
 	m_pTexture = NULL;
 
 	userflags = 0;
-	TextureRefinement = NULL;
 	TextureHalo = NULL;
 	
 	m_pNext = NULL;
