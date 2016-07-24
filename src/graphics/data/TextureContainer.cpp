@@ -83,7 +83,7 @@ TextureContainer * GetAnyTexture() {
 	return g_ptcTextureList;
 }
 
-static void ResetVertexLists(TextureContainer * tex) {
+static void ResetModelBatch(ModelBatch * tex) {
 	
 	if(!tex) {
 		return;
@@ -149,27 +149,8 @@ TextureContainer::TextureContainer(const res::path & strName, TCFlags flags) : m
 
 	systemflags = 0;
 
-	max[TextureContainer::Opaque] = 0;
-	count[TextureContainer::Opaque] = 0;
-	list[TextureContainer::Opaque] = NULL;
-
-	max[TextureContainer::Blended] = 0;
-	count[TextureContainer::Blended] = 0;
-	list[TextureContainer::Blended] = NULL;
-
-	max[TextureContainer::Additive] = 0;
-	count[TextureContainer::Additive] = 0;
-	list[TextureContainer::Additive] = NULL;
-
-	max[TextureContainer::Subtractive] = 0;
-	count[TextureContainer::Subtractive] = 0;
-	list[TextureContainer::Subtractive] = NULL;
-
-	max[TextureContainer::Multiplicative] = 0;
-	count[TextureContainer::Multiplicative] = 0;
-	list[TextureContainer::Multiplicative] = NULL;
-	
 	m_roomBatches = RoomBatches();
+	m_modelBatch = ModelBatch();
 }
 
 TextureContainer::~TextureContainer() {
@@ -188,7 +169,7 @@ TextureContainer::~TextureContainer() {
 		}
 	}
 	
-	ResetVertexLists(this);
+	ResetModelBatch(&m_modelBatch);
 	ResetRoomBatches(m_roomBatches);
 }
 

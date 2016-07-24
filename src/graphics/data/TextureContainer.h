@@ -84,6 +84,21 @@ struct RoomBatches {
 	{ }
 };
 
+// TODO This RenderBatch class should contain a pointer to the TextureContainer used by the batch
+struct ModelBatch {
+	unsigned long max[5];
+	unsigned long count[5];
+	TexturedVertex * list[5];
+	
+	ModelBatch() {
+		for(size_t i = 0; i < ARRAY_SIZE(max); i++) {
+			max[i] = 0;
+			count[i] = 0;
+			list[i] = NULL;
+		}
+	}
+};
+
 /*!
  * Linked list structure to hold info per texture.
  * TODO This class is currently an hybrid between a texture class and a render batch...
@@ -172,8 +187,7 @@ public:
 	TCFlags systemflags;
 	
 	RoomBatches m_roomBatches;
-	
-	// BEGIN TODO: Move to a RenderBatch class... This RenderBatch class should contain a pointer to the TextureContainer used by the batch
+	ModelBatch m_modelBatch;
 	
 	enum TransparencyType {
 		Opaque = 0,
@@ -182,12 +196,6 @@ public:
 		Additive,
 		Subtractive
 	};
-
-	unsigned long max[5];
-	unsigned long count[5];
-	TexturedVertex * list[5];
-
-	// END TODO
 	
 	bool hasColorKey();
 	
