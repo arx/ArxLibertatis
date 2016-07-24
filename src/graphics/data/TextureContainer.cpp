@@ -125,8 +125,7 @@ TextureContainer::TextureContainer(const res::path & strName, TCFlags flags)
 	arx_assert(!strName.has_ext("bmp") && !strName.has_ext("tga"),
 	           "bad texture name: \"%s\"", strName.string().c_str());
 	
-	m_size.x = 0;
-	m_size.y = 0;
+	m_size = Vec2i_ZERO;
 	m_dwFlags = flags;
 
 	m_pTexture = NULL;
@@ -207,8 +206,7 @@ bool TextureContainer::LoadFile(const res::path & strPathname) {
 		return false;
 	}
 	
-	m_size.x = m_pTexture->getSize().x;
-	m_size.y = m_pTexture->getSize().y;
+	m_size = m_pTexture->getSize();
 	
 	Vec2i storedSize = m_pTexture->getStoredSize();
 	uv = Vec2f(float(m_size.x) / storedSize.x, float(m_size.y) / storedSize.y);
