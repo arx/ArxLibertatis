@@ -659,6 +659,11 @@ void ARX_DAMAGES_DealDamages(EntityHandle target, float dmg, EntityHandle source
 			if(flags & DAMAGE_TYPE_DRAIN_MANA) {
 				damagesdone = ARX_DAMAGES_DrainMana(io_target, dmg);
 			} else {
+				if((flags & DAMAGE_TYPE_MAGICAL) && !(flags & (DAMAGE_TYPE_FIRE | DAMAGE_TYPE_COLD))) {
+					dmg -= player.m_miscFull.resistMagic * ( 1.0f / 100 ) * dmg;
+					dmg = std::max(0.0f, dmg);
+				}
+				
 				ARX_DAMAGES_DamagePlayerEquipment(dmg);
 				damagesdone = ARX_DAMAGES_DamagePlayer(dmg, flags, source);
 			}
@@ -696,6 +701,10 @@ void ARX_DAMAGES_DealDamages(EntityHandle target, float dmg, EntityHandle source
 				if(flags & DAMAGE_TYPE_DRAIN_MANA) {
 					damagesdone = ARX_DAMAGES_DrainMana(io_target, dmg);
 				} else {
+					if((flags & DAMAGE_TYPE_MAGICAL) && !(flags & (DAMAGE_TYPE_FIRE | DAMAGE_TYPE_COLD))) {
+						dmg -= io_target->_npcdata->resist_magic * ( 1.0f / 100 ) * dmg;
+						dmg = std::max(0.0f, dmg);
+					}
 					damagesdone = ARX_DAMAGES_DamageNPC(io_target, dmg, source, true, pos);
 				}
 			}
