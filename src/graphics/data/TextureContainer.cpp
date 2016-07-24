@@ -89,28 +89,28 @@ static void ResetModelBatch(ModelBatch * tex) {
 		return;
 	}
 	
-	tex->count[TextureContainer::Opaque] = 0;
-	tex->count[TextureContainer::Blended] = 0;
-	tex->count[TextureContainer::Additive] = 0;
-	tex->count[TextureContainer::Subtractive] = 0;
-	tex->count[TextureContainer::Multiplicative] = 0;
+	tex->count[BatchBucket_Opaque] = 0;
+	tex->count[BatchBucket_Blended] = 0;
+	tex->count[BatchBucket_Additive] = 0;
+	tex->count[BatchBucket_Subtractive] = 0;
+	tex->count[BatchBucket_Multiplicative] = 0;
 	
-	tex->max[TextureContainer::Opaque] = 0;
-	tex->max[TextureContainer::Blended] = 0;
-	tex->max[TextureContainer::Additive] = 0;
-	tex->max[TextureContainer::Subtractive] = 0;
-	tex->max[TextureContainer::Multiplicative] = 0;
+	tex->max[BatchBucket_Opaque] = 0;
+	tex->max[BatchBucket_Blended] = 0;
+	tex->max[BatchBucket_Additive] = 0;
+	tex->max[BatchBucket_Subtractive] = 0;
+	tex->max[BatchBucket_Multiplicative] = 0;
 	
-	free(tex->list[TextureContainer::Opaque]);
-	tex->list[TextureContainer::Opaque] = NULL;
-	free(tex->list[TextureContainer::Blended]);
-	tex->list[TextureContainer::Blended] = NULL;
-	free(tex->list[TextureContainer::Additive]);
-	tex->list[TextureContainer::Additive] = NULL;
-	free(tex->list[TextureContainer::Subtractive]);
-	tex->list[TextureContainer::Subtractive] = NULL;
-	free(tex->list[TextureContainer::Multiplicative]);
-	tex->list[TextureContainer::Multiplicative] = NULL;
+	free(tex->list[BatchBucket_Opaque]);
+	tex->list[BatchBucket_Opaque] = NULL;
+	free(tex->list[BatchBucket_Blended]);
+	tex->list[BatchBucket_Blended] = NULL;
+	free(tex->list[BatchBucket_Additive]);
+	tex->list[BatchBucket_Additive] = NULL;
+	free(tex->list[BatchBucket_Subtractive]);
+	tex->list[BatchBucket_Subtractive] = NULL;
+	free(tex->list[BatchBucket_Multiplicative]);
+	tex->list[BatchBucket_Multiplicative] = NULL;
 }
 
 static void ResetRoomBatches(RoomBatches & roomBatches) {

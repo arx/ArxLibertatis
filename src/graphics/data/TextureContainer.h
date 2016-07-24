@@ -74,6 +74,14 @@ class Texture2D;
 
 extern long GLOBAL_EERIETEXTUREFLAG_LOADSCENE_RELEASE;
 
+enum BatchBucket {
+	BatchBucket_Opaque = 0,
+	BatchBucket_Blended,
+	BatchBucket_Multiplicative,
+	BatchBucket_Additive,
+	BatchBucket_Subtractive
+};
+
 struct RoomBatches {
 	size_t tMatRoomSize;
 	SMY_ARXMAT * tMatRoom;
@@ -188,14 +196,6 @@ public:
 	
 	RoomBatches m_roomBatches;
 	ModelBatch m_modelBatch;
-	
-	enum TransparencyType {
-		Opaque = 0,
-		Blended,
-		Multiplicative,
-		Additive,
-		Subtractive
-	};
 	
 	bool hasColorKey();
 	

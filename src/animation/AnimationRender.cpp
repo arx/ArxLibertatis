@@ -96,8 +96,7 @@ extern Color ulBKGColor;
 // TODO: Convert to a RenderBatch & make TextureContainer constructor private
 static TextureContainer TexSpecialColor("specialcolor_list", TextureContainer::NoInsert);
 
-static TexturedVertex * PushVertexInTable(ModelBatch * pTex,
-                                          TextureContainer::TransparencyType type) {
+static TexturedVertex * PushVertexInTable(ModelBatch * pTex, BatchBucket type) {
 	
 	if(pTex->count[type] + 3 > pTex->max[type]) {
 		pTex->max[type] += 20 * 3;
@@ -118,7 +117,7 @@ static void PopOneTriangleList(TextureContainer * _pTex, bool clear) {
 	
 	ModelBatch & batch = _pTex->m_modelBatch;
 	
-	if(!batch.count[TextureContainer::Opaque]) {
+	if(!batch.count[BatchBucket_Opaque]) {
 		return;
 	}
 
@@ -130,10 +129,10 @@ static void PopOneTriangleList(TextureContainer * _pTex, bool clear) {
 	}
 
 
-	EERIEDRAWPRIM(Renderer::TriangleList, batch.list[TextureContainer::Opaque], batch.count[TextureContainer::Opaque]);
+	EERIEDRAWPRIM(Renderer::TriangleList, batch.list[BatchBucket_Opaque], batch.count[BatchBucket_Opaque]);
 	
 	if(clear) {
-		batch.count[TextureContainer::Opaque] = 0;
+		batch.count[BatchBucket_Opaque] = 0;
 	}
 
 	if(_pTex->userflags & POLY_LATE_MIP) {
@@ -147,48 +146,48 @@ static void PopOneTriangleListTransparency(TextureContainer *_pTex) {
 	
 	ModelBatch & batch = _pTex->m_modelBatch;
 	
-	if(!batch.count[TextureContainer::Blended]
-	   && !batch.count[TextureContainer::Additive]
-	   && !batch.count[TextureContainer::Subtractive]
-	   && !batch.count[TextureContainer::Multiplicative]) {
+	if(!batch.count[BatchBucket_Blended]
+	   && !batch.count[BatchBucket_Additive]
+	   && !batch.count[BatchBucket_Subtractive]
+	   && !batch.count[BatchBucket_Multiplicative]) {
 		return;
 	}
 
 	GRenderer->SetTexture(0, _pTex);
 
-	if(batch.count[TextureContainer::Blended]) {
+	if(batch.count[BatchBucket_Blended]) {
 		GRenderer->SetBlendFunc(BlendDstColor, BlendSrcColor);
-		if(batch.count[TextureContainer::Blended]) {
-			EERIEDRAWPRIM(Renderer::TriangleList, batch.list[TextureContainer::Blended],
-						  batch.count[TextureContainer::Blended]);
-			batch.count[TextureContainer::Blended]=0;
+		if(batch.count[BatchBucket_Blended]) {
+			EERIEDRAWPRIM(Renderer::TriangleList, batch.list[BatchBucket_Blended],
+						  batch.count[BatchBucket_Blended]);
+			batch.count[BatchBucket_Blended]=0;
 		}
 	}
 
-	if(batch.count[TextureContainer::Additive]) {
+	if(batch.count[BatchBucket_Additive]) {
 		GRenderer->SetBlendFunc(BlendOne, BlendOne);
-		if(batch.count[TextureContainer::Additive]) {
-			EERIEDRAWPRIM(Renderer::TriangleList, batch.list[TextureContainer::Additive],
-						  batch.count[TextureContainer::Additive]);
-			batch.count[TextureContainer::Additive]=0;
+		if(batch.count[BatchBucket_Additive]) {
+			EERIEDRAWPRIM(Renderer::TriangleList, batch.list[BatchBucket_Additive],
+						  batch.count[BatchBucket_Additive]);
+			batch.count[BatchBucket_Additive]=0;
 		}
 	}
 
-	if(batch.count[TextureContainer::Subtractive]) {
+	if(batch.count[BatchBucket_Subtractive]) {
 		GRenderer->SetBlendFunc(BlendZero, BlendInvSrcColor);
-		if(batch.count[TextureContainer::Subtractive]) {
-			EERIEDRAWPRIM(Renderer::TriangleList, batch.list[TextureContainer::Subtractive],
-						  batch.count[TextureContainer::Subtractive]);
-			batch.count[TextureContainer::Subtractive]=0;
+		if(batch.count[BatchBucket_Subtractive]) {
+			EERIEDRAWPRIM(Renderer::TriangleList, batch.list[BatchBucket_Subtractive],
+						  batch.count[BatchBucket_Subtractive]);
+			batch.count[BatchBucket_Subtractive]=0;
 		}
 	}
 
-	if(batch.count[TextureContainer::Multiplicative]) {
+	if(batch.count[BatchBucket_Multiplicative]) {
 		GRenderer->SetBlendFunc(BlendOne, BlendOne);
-		if(batch.count[TextureContainer::Multiplicative]) {
-			EERIEDRAWPRIM(Renderer::TriangleList, batch.list[TextureContainer::Multiplicative],
-						  batch.count[TextureContainer::Multiplicative]);
-			batch.count[TextureContainer::Multiplicative] = 0;
+		if(batch.count[BatchBucket_Multiplicative]) {
+			EERIEDRAWPRIM(Renderer::TriangleList, batch.list[BatchBucket_Multiplicative],
+						  batch.count[BatchBucket_Multiplicative]);
+			batch.count[BatchBucket_Multiplicative] = 0;
 		}
 	}
 }
@@ -440,19 +439,19 @@ static TexturedVertex * GetNewVertexList(ModelBatch * container,
 		if(fTransp >= 2.f) { //MULTIPLICATIVE
 			fTransp *= (1.f / 2);
 			fTransp += 0.5f;
-			return PushVertexInTable(container, TextureContainer::Multiplicative);
+			return PushVertexInTable(container, BatchBucket_Multiplicative);
 		} else if(fTransp >= 1.f) { //ADDITIVE
 			fTransp -= 1.f;
-			return PushVertexInTable(container, TextureContainer::Additive);
+			return PushVertexInTable(container, BatchBucket_Additive);
 		} else if(fTransp > 0.f) { //NORMAL TRANS
 			fTransp = 1.f - fTransp;
-			return PushVertexInTable(container, TextureContainer::Blended);
+			return PushVertexInTable(container, BatchBucket_Blended);
 		} else { //SUBTRACTIVE
 			fTransp = 1.f - fTransp;
-			return PushVertexInTable(container, TextureContainer::Subtractive);
+			return PushVertexInTable(container, BatchBucket_Subtractive);
 		}
 	} else {
-		return PushVertexInTable(container, TextureContainer::Opaque);
+		return PushVertexInTable(container, BatchBucket_Opaque);
 	}
 }
 
@@ -1178,7 +1177,7 @@ static void Cedric_RenderObject(EERIE_3DOBJ * eobj, Skeleton * obj, Entity * io,
 		}
 		
 		if(glow) {
-			TexturedVertex * tv2 = PushVertexInTable(&TexSpecialColor.m_modelBatch, TextureContainer::Opaque);
+			TexturedVertex * tv2 = PushVertexInTable(&TexSpecialColor.m_modelBatch, BatchBucket_Opaque);
 			std::copy(tvList, tvList + 3, tv2);
 			tv2[0].color = tv2[1].color = tv2[2].color = glowColor;
 		}
