@@ -74,6 +74,16 @@ class Texture2D;
 
 extern long GLOBAL_EERIETEXTUREFLAG_LOADSCENE_RELEASE;
 
+struct RoomBatches {
+	size_t tMatRoomSize;
+	SMY_ARXMAT * tMatRoom;
+	
+	RoomBatches()
+		: tMatRoomSize(0)
+		, tMatRoom(NULL)
+	{ }
+};
+
 /*!
  * Linked list structure to hold info per texture.
  * TODO This class is currently an hybrid between a texture class and a render batch...
@@ -161,10 +171,9 @@ public:
 	TextureContainer * m_pNext; // Linked list ptr
 	TCFlags systemflags;
 	
-	// BEGIN TODO: Move to a RenderBatch class... This RenderBatch class should contain a pointer to the TextureContainer used by the batch
+	RoomBatches m_roomBatches;
 	
-	size_t tMatRoomSize;
-	SMY_ARXMAT * tMatRoom;
+	// BEGIN TODO: Move to a RenderBatch class... This RenderBatch class should contain a pointer to the TextureContainer used by the batch
 	
 	enum TransparencyType {
 		Opaque = 0,

@@ -111,11 +111,15 @@ static void ResetVertexLists(TextureContainer * tex) {
 	tex->list[TextureContainer::Subtractive] = NULL;
 	free(tex->list[TextureContainer::Multiplicative]);
 	tex->list[TextureContainer::Multiplicative] = NULL;
-
-	tex->tMatRoomSize = 0;
-	free(tex->tMatRoom);
-	tex->tMatRoom = NULL;
 }
+
+static void ResetRoomBatches(RoomBatches & roomBatches) {
+	roomBatches.tMatRoomSize = 0;
+	free(roomBatches.tMatRoom);
+	roomBatches.tMatRoom = NULL;
+}
+
+
 
 //-----------------------------------------------------------------------------
 // Name: TextureContainer()
@@ -164,10 +168,8 @@ TextureContainer::TextureContainer(const res::path & strName, TCFlags flags) : m
 	max[TextureContainer::Multiplicative] = 0;
 	count[TextureContainer::Multiplicative] = 0;
 	list[TextureContainer::Multiplicative] = NULL;
-
-	tMatRoomSize = 0;
-	tMatRoom = NULL;
-
+	
+	m_roomBatches = RoomBatches();
 }
 
 TextureContainer::~TextureContainer() {
@@ -187,6 +189,7 @@ TextureContainer::~TextureContainer() {
 	}
 	
 	ResetVertexLists(this);
+	ResetRoomBatches(m_roomBatches);
 }
 
 bool TextureContainer::LoadFile(const res::path & strPathname) {

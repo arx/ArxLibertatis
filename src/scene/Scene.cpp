@@ -619,7 +619,7 @@ static void ARX_PORTALS_Frustrum_ClearIndexCount(long room_num) {
 		TextureContainer * pTexCurr = *itr;
 		GRenderer->SetTexture(0, pTexCurr);
 
-		SMY_ARXMAT & roomMat = pTexCurr->tMatRoom[room_num];
+		SMY_ARXMAT & roomMat = pTexCurr->m_roomBatches.tMatRoom[room_num];
 
 		roomMat.count[SMY_ARXMAT::Opaque] = 0;
 		roomMat.count[SMY_ARXMAT::Blended] = 0;
@@ -1157,7 +1157,7 @@ static void ARX_PORTALS_Frustrum_RenderRoomTCullSoft(long room_num,
 			transparencyType = SMY_ARXMAT::Opaque;
 		}
 
-		SMY_ARXMAT & roomMat = ep->tex->tMatRoom[room_num];
+		SMY_ARXMAT & roomMat = ep->tex->m_roomBatches.tMatRoom[room_num];
 
 		unsigned short * pIndicesCurr = pIndices + roomMat.offset[transparencyType] + roomMat.count[transparencyType];
 		unsigned long * pNumIndices = &roomMat.count[transparencyType];
@@ -1272,7 +1272,7 @@ static void BackgroundRenderOpaque(long room_num) {
 	for(itr = room.ppTextureContainer.begin(); itr != room.ppTextureContainer.end(); ++itr) {
 		
 		TextureContainer *pTexCurr = *itr;
-		const SMY_ARXMAT & roomMat = pTexCurr->tMatRoom[room_num];
+		const SMY_ARXMAT & roomMat = pTexCurr->m_roomBatches.tMatRoom[room_num];
 		
 		GRenderer->SetTexture(0, pTexCurr);
 		
@@ -1321,7 +1321,7 @@ static void BackgroundRenderTransparent(long room_num) {
 		TextureContainer * pTexCurr = *itr;
 		GRenderer->SetTexture(0, pTexCurr);
 
-		SMY_ARXMAT & roomMat = pTexCurr->tMatRoom[room_num];
+		SMY_ARXMAT & roomMat = pTexCurr->m_roomBatches.tMatRoom[room_num];
 
 		for(size_t i = 0; i < ARRAY_SIZE(transRenderOrder); i++) {
 			SMY_ARXMAT::TransparencyType transType = transRenderOrder[i];
