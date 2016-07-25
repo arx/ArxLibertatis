@@ -341,7 +341,7 @@ struct ARXCHARACTER {
 	
 	ARXCHARACTER()
 		: m_strikeDirection(0)
-		, m_weaponBlocked(0)
+		, m_weaponBlocked(-1)
 		, jumpstarttime(0u)
 		, jumplastposition(0.f)
 		, jumpphase(NotJumping)
