@@ -237,6 +237,7 @@ mark_as_advanced(
 # Helper scrips
 
 include(CheckCXXSourceCompiles)
+include(CheckIncludeFiles)
 include(CheckSymbolExists)
 include(CheckTypeSize)
 
