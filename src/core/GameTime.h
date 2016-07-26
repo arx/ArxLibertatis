@@ -93,7 +93,7 @@ public:
 	}
 	
 	// used only for "slow time" spell
-	void increment_start_time(const u64 & inc) {
+	void increment_start_time(u64 inc) {
 		start_time += inc;
 	}
 	
