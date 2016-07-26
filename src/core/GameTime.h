@@ -64,10 +64,10 @@ public:
 	void pause();
 	void resume();
 	
-	void force_time_restore(const ArxInstant time);
+	void force_time_restore(ArxInstant time);
 	
 	// TODO probably the source of the need to clip frame_delay
-	void force_frame_time_restore(const unsigned long v) {
+	void force_frame_time_restore(const ArxInstant v) {
 		frame_time_us = v * 1000;
 		last_frame_time_us = v * 1000;
 	}
