@@ -59,17 +59,6 @@ long ParticleSparkCount() {
 	return g_sparkParticlesCount;
 }
 
-static SparkParticle * createSparkParticle() {
-	
-	for(size_t i = 0; i < g_sparkParticlesMax; i++) {
-		SparkParticle * pd = &g_sparkParticles[i];
-		if(pd->m_duration == 0) {
-			return pd;
-		}
-	}
-	return NULL;
-}
-
 void ParticleSparkSpawn(const Vec3f & pos, unsigned int count, SpawnSparkType type) {
 	
 	if(arxtime.is_paused()) {
@@ -80,10 +69,19 @@ void ParticleSparkSpawn(const Vec3f & pos, unsigned int count, SpawnSparkType ty
 	
 	for(unsigned int k = 0; k < count; k++) {
 		
-		SparkParticle * pd = createSparkParticle();
-		if(!pd) {
+		int sparkSlot = -1;
+		for(size_t i = 0; i < g_sparkParticlesMax; i++) {
+			if(g_sparkParticles[i].m_duration == 0) {
+				sparkSlot = int(i);
+				break;
+			}
+		}
+		
+		if(sparkSlot == -1) {
 			return;
 		}
+		
+		SparkParticle * pd = &g_sparkParticles[sparkSlot];
 		
 		g_sparkParticlesCount++;
 		
