@@ -101,10 +101,6 @@ public:
 		return frame_time_us / 1000.0f; 
 	}
 	
-	float get_last_frame_time() const {
-		return last_frame_time_us / 1000.0f;
-	}
-	
 	float get_frame_delay() const {
 		return frame_delay_ms;
 	}
