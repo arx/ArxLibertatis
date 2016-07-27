@@ -125,27 +125,27 @@ void ParticleSparkUpdate() {
 	
 	for(size_t i = 0; i < g_sparkParticlesMax; i++) {
 
-		SparkParticle * part = &g_sparkParticles[i];
-		if(part->m_duration == 0) {
+		SparkParticle & spark = g_sparkParticles[i];
+		if(spark.m_duration == 0) {
 			continue;
 		}
 
-		long framediff = part->timcreation + part->m_duration - now;
-		long framediff2 = now - part->timcreation;
+		long framediff = spark.timcreation + spark.m_duration - now;
+		long framediff2 = now - spark.timcreation;
 		
 		if(framediff2 < 0) {
 			continue;
 		}
 		
 		if(framediff <= 0) {
-			part->m_duration = 0;
+			spark.m_duration = 0;
 			g_sparkParticlesCount--;
 			continue;
 		}
 		
-		float val = (part->m_duration - framediff) * 0.01f;
+		float val = (spark.m_duration - framediff) * 0.01f;
 		
-		Vec3f in = part->ov + part->move * val;
+		Vec3f in = spark.ov + spark.move * val;
 		
 		TexturedVertex out;
 		EE_RTP(in, out);
@@ -154,17 +154,17 @@ void ParticleSparkUpdate() {
 			continue;
 		}
 		
-		Vec3f vect = part->oldpos - in;
+		Vec3f vect = spark.oldpos - in;
 		vect = glm::normalize(vect);
 		TexturedVertex tv[3];
-		tv[0].color = part->rgb;
+		tv[0].color = spark.rgb;
 		tv[1].color = Color(102, 102, 102, 255).toRGBA();
 		tv[2].color = Color(0, 0, 0, 255).toRGBA();
 		tv[0].p = out.p;
 		tv[0].rhw = out.rhw;
 		
 		Vec3f temp1 = in + Vec3f(Random::getf(0.f, 0.5f), 0.8f, Random::getf(0.f, 0.5f));
-		Vec3f temp2 = in + vect * part->m_tailLength;
+		Vec3f temp2 = in + vect * spark.m_tailLength;
 		
 		EE_RTP(temp1, tv[1]);
 		EE_RTP(temp2, tv[2]);
@@ -172,7 +172,7 @@ void ParticleSparkUpdate() {
 		RenderBatcher::getInstance().add(sparkMaterial, tv);
 		
 		if(!arxtime.is_paused()) {
-			part->oldpos = in;
+			spark.oldpos = in;
 		}
 	}
 }
