@@ -81,28 +81,28 @@ void ParticleSparkSpawn(const Vec3f & pos, unsigned int count, SpawnSparkType ty
 			return;
 		}
 		
-		SparkParticle * pd = &g_sparkParticles[sparkSlot];
+		SparkParticle & pd = g_sparkParticles[sparkSlot];
 		
 		g_sparkParticlesCount++;
 		
-		pd->timcreation = arxtime.now();
-		pd->oldpos = pd->ov = pos + randomVec(-5.f, 5.f);
-		pd->move = randomVec(-6.f, 6.f);
-		pd->m_duration = len * 90 + count;
+		pd.timcreation = arxtime.now();
+		pd.oldpos = pd.ov = pos + randomVec(-5.f, 5.f);
+		pd.move = randomVec(-6.f, 6.f);
+		pd.m_duration = len * 90 + count;
 		
 		switch(type) {
 			case SpawnSparkType_Default:
-				pd->rgb = Color3f(.3f, .3f, 0.f).toRGB();
+				pd.rgb = Color3f(.3f, .3f, 0.f).toRGB();
 				break;
 			case SpawnSparkType_Failed:
-				pd->rgb = Color3f(.2f, .2f, .1f).toRGB();
+				pd.rgb = Color3f(.2f, .2f, .1f).toRGB();
 				break;
 			case SpawnSparkType_Success:
-				pd->rgb = Color3f(.45f, .1f, 0.f).toRGB();
+				pd.rgb = Color3f(.45f, .1f, 0.f).toRGB();
 				break;
 		}
 		
-		pd->m_tailLength = len + Random::getf() * len;
+		pd.m_tailLength = len + Random::getf() * len;
 	}
 }
 
