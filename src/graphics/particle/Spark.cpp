@@ -28,21 +28,19 @@
 #include "platform/profiler/Profiler.h"
 
 struct SparkParticle {
-	bool exist;
+	u32 m_duration;
 	Vec3f ov;
 	Vec3f move;
 	Vec3f oldpos;
 	long timcreation;
-	u32 m_duration;
 	ColorRGBA rgb;
 	float m_tailLength;
 	
 	SparkParticle()
-		: exist(false)
+		: m_duration(0)
 		, ov(Vec3f_ZERO)
 		, move(Vec3f_ZERO)
 		, timcreation(0)
-		, m_duration(0)
 		, rgb(Color::black.toRGB())
 		, m_tailLength(0.f)
 	{ }
@@ -65,7 +63,7 @@ static SparkParticle * createSparkParticle() {
 	
 	for(size_t i = 0; i < g_sparkParticlesMax; i++) {
 		SparkParticle * pd = &g_sparkParticles[i];
-		if(!pd->exist) {
+		if(pd->m_duration == 0) {
 			return pd;
 		}
 	}
@@ -89,7 +87,6 @@ void ParticleSparkSpawn(const Vec3f & pos, unsigned int count, SpawnSparkType ty
 		
 		g_sparkParticlesCount++;
 		
-		pd->exist = true;
 		pd->timcreation = arxtime.now();
 		pd->oldpos = pd->ov = pos + randomVec(-5.f, 5.f);
 		pd->move = randomVec(-6.f, 6.f);
@@ -129,7 +126,7 @@ void ParticleSparkUpdate() {
 	for(size_t i = 0; i < g_sparkParticlesMax; i++) {
 
 		SparkParticle * part = &g_sparkParticles[i];
-		if(!part->exist) {
+		if(part->m_duration == 0) {
 			continue;
 		}
 
@@ -141,7 +138,7 @@ void ParticleSparkUpdate() {
 		}
 		
 		if(framediff <= 0) {
-			part->exist = false;
+			part->m_duration = 0;
 			g_sparkParticlesCount--;
 			continue;
 		}
