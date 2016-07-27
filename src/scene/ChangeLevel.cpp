@@ -100,8 +100,7 @@ ZeniMax Media Inc., Suite 120, Rockville, Maryland 20850 USA.
 
 extern bool GLOBAL_MAGIC_MODE;
 ArxInstant FORCE_TIME_RESTORE = ArxInstant_ZERO;
-extern Vec3f WILL_RESTORE_PLAYER_POSITION;
-extern bool WILL_RESTORE_PLAYER_POSITION_FLAG;
+
 extern bool GMOD_RESET;
 
 extern bool PLAYER_POSITION_RESET;
