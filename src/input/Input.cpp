@@ -63,7 +63,8 @@ ZeniMax Media Inc., Suite 120, Rockville, Maryland 20850 USA.
 Input * GInput = NULL;
 
 // TODO-input: Clean me!
-extern long EERIEMouseButton;
+long EERIEMouseButton = 0;
+long LastMouseClick = 0;
 
 // All standard keys
 // "+" should not appear in names as it is used as a separator

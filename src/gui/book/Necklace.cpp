@@ -29,6 +29,7 @@
 #include "gui/Interface.h"
 #include "graphics/data/TextureContainer.h"
 #include "graphics/Renderer.h"
+#include "input/Input.h"
 #include "scene/GameSound.h"
 #include "scene/Light.h"
 #include "scene/Object.h"

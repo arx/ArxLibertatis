@@ -55,6 +55,38 @@ ZeniMax Media Inc., Suite 120, Rockville, Maryland 20850 USA.
 
 class Window;
 
+extern long EERIEMouseButton;
+extern long LastMouseClick;
+
+inline bool eeMouseDown1() {
+	return (EERIEMouseButton & 1) && !(LastMouseClick & 1);
+}
+
+inline bool eeMouseUp1() {
+	return !(EERIEMouseButton & 1) && (LastMouseClick & 1);
+}
+
+inline bool eeMousePressed1() {
+	return (EERIEMouseButton & 1) != 0;
+}
+
+inline bool eeMouseDoubleClick1() {
+	return (EERIEMouseButton & 4) && !(LastMouseClick & 4);
+}
+
+inline bool eeMouseDown2() {
+	return (EERIEMouseButton & 2) && !(LastMouseClick & 2);
+}
+
+inline bool eeMouseUp2() {
+	return !(EERIEMouseButton & 2) && (LastMouseClick & 2);
+}
+
+inline bool eeMousePressed2() {
+	return (EERIEMouseButton & 2) != 0;
+}
+
+
 class Input {
 	
 public:

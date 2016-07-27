@@ -40,6 +40,7 @@
 #include "gui/MiniMap.h"
 #include "gui/Speech.h"
 #include "gui/TextManager.h"
+#include "input/Input.h"
 #include "scene/GameSound.h"
 #include "scene/Interactive.h"
 #include "script/Script.h"

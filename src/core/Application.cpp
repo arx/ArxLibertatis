@@ -52,9 +52,6 @@ ZeniMax Media Inc., Suite 120, Rockville, Maryland 20850 USA.
 
 #include "window/RenderWindow.h"
 
-long EERIEMouseButton = 0;
-long LastMouseClick = 0;
-
 Application * mainApp = 0;
 float FPS;
 
