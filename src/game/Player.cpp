@@ -2626,7 +2626,6 @@ void ARX_PLAYER_Invulnerability(long flag) {
 }
 
 extern Entity * FlyingOverIO;
-extern Vec3f LastValidPlayerPos;
 
 void ARX_GAME_Reset(long type) {
 	arx_assert(entities.player());

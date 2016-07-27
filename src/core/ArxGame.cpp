@@ -180,7 +180,6 @@ extern Cinematic* ControlCinematique;
 extern EERIE_3DOBJ * arrowobj;
 
 extern Entity * FlyingOverIO;
-extern Vec3f LastValidPlayerPos;
 extern Color ulBKGColor;
 extern EERIE_CAMERA conversationcamera;
 extern ParticleManager * pParticleManager;

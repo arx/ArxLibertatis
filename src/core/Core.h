@@ -126,6 +126,8 @@ extern float g_debugValues[10];
 
 extern long		CHANGE_LEVEL_ICON;
 
+extern Vec3f LastValidPlayerPos;
+
 void SetEditMode(long ed, const bool stop_sound = true);
 
 void SendGameReadyMsg();

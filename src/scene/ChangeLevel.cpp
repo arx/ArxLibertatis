@@ -110,7 +110,7 @@ extern bool EXTERNALVIEW;
 extern bool LOAD_N_ERASE;
 extern long FORBID_SCRIPT_IO_CREATION;
 extern bool TIME_INIT;
-extern Vec3f LastValidPlayerPos;
+
 #define MAX_IO_SAVELOAD 1500
 
 static bool ARX_CHANGELEVEL_Push_Index(long num);
