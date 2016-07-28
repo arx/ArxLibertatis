@@ -31,7 +31,6 @@ struct SparkParticle {
 	u32 m_duration;
 	Vec3f ov;
 	Vec3f move;
-	Vec3f oldpos;
 	long timcreation;
 	ColorRGBA rgb;
 	float m_tailLength;
@@ -86,7 +85,7 @@ void ParticleSparkSpawn(const Vec3f & pos, unsigned int count, SpawnSparkType ty
 		g_sparkParticlesCount++;
 		
 		spark.timcreation = arxtime.now();
-		spark.oldpos = spark.ov = pos + randomVec(-5.f, 5.f);
+		spark.ov = pos + randomVec(-5.f, 5.f);
 		spark.move = randomVec(-6.f, 6.f);
 		spark.m_duration = len * 90 + count;
 		
@@ -152,8 +151,8 @@ void ParticleSparkUpdate() {
 			continue;
 		}
 		
-		Vec3f vect = spark.oldpos - in;
-		vect = glm::normalize(vect);
+		Vec3f tailDirection = glm::normalize(-spark.move);
+		
 		TexturedVertex tv[3];
 		tv[0].color = spark.rgb;
 		tv[1].color = Color(102, 102, 102, 255).toRGBA();
@@ -162,15 +161,11 @@ void ParticleSparkUpdate() {
 		tv[0].rhw = out.rhw;
 		
 		Vec3f temp1 = in + Vec3f(Random::getf(0.f, 0.5f), 0.8f, Random::getf(0.f, 0.5f));
-		Vec3f temp2 = in + vect * spark.m_tailLength;
+		Vec3f temp2 = in + tailDirection * spark.m_tailLength;
 		
 		EE_RTP(temp1, tv[1]);
 		EE_RTP(temp2, tv[2]);
 		
 		RenderBatcher::getInstance().add(sparkMaterial, tv);
-		
-		if(!arxtime.is_paused()) {
-			spark.oldpos = in;
-		}
 	}
 }
