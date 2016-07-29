@@ -96,11 +96,13 @@ Getting all the dependencies set up for Windows is more tricky. Pre-build depend
 * `UNITY_BUILD` (default=ON): Unity build (faster build, better optimizations but no incremental build)
 * `CMAKE_BUILD_TYPE` (default=Release): Set to `Debug` for debug binaries
 * `DEBUG` (default=OFF^1): Enable debug output and runtime checks
+* `DEBUG_GL` (default=OFF^2): Enable OpenGL debug output by default
 * `DEBUG_EXTRA` (default=OFF): Expensive debug options
-* `DEVELOPER` (default=OFF): Enable build options suitable for developers^2
+* `DEVELOPER` (default=OFF): Enable build options suitable for developers^3
 
-1. Enabled automatically if `CMAKE_BUILD_TYPE` is set to `Debug`.
-2. Currently this disables `UNITY_BUILD` for faster incremental builds and enables `DEBUG`, unles those options have been explicitly specified by the user.
+1. Enabled automatically if `CMAKE_BUILD_TYPE` is set to `Debug` or if `DEVELOPER` is enabled.
+1. Enabled automatically if `DEBUG` is enabled. If disabled, OpenGL debug output can be enabled at run-time using the `--debug-gl` command-line option.
+3. Currently this disables `UNITY_BUILD` for faster incremental builds and enables `DEBUG`, unles those options have been explicitly specified by the user.
 
 Install options:
 

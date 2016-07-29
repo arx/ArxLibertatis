@@ -84,4 +84,7 @@
 // Build system
 #cmakedefine01 UNITY_BUILD
 
+// Defaults
+#cmakedefine01 ARX_DEBUG_GL
+
 #endif // ARX_CONFIGURE_H

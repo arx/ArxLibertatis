@@ -29,6 +29,8 @@
 
 #include "util/cmdline/Optional.h"
 
+#include "Configure.h"
+
 namespace gldebug {
 
 #if defined(GL_ARB_debug_output)
@@ -161,7 +163,7 @@ void initialize() {
 
 #endif
 
-#ifdef ARX_DEBUG
+#if ARX_DEBUG_GL
 static bool g_enable = true;
 #else
 static bool g_enable = false;

@@ -94,6 +94,8 @@ suboption(DEBUG "Build with debug output" BOOL ${default_DEBUG})
 if(DEBUG)
 	add_definitions(-DARX_DEBUG=1)
 endif()
+suboption(DEBUG_GL "Enable OpenGL debug output by default" BOOL ${DEBUG})
+set(ARX_DEBUG_GL ${DEBUG_GL})
 
 # Static libs
 set(default_USE_STATIC_LIBS OFF)
