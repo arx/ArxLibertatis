@@ -24,6 +24,8 @@
 
 class BlessSpell : public SpellBase {
 public:
+	BlessSpell();
+	
 	bool CanLaunch();
 	void Launch();
 	void End();

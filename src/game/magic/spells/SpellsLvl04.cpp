@@ -37,6 +37,16 @@
 #include "scene/Interactive.h"
 
 
+BlessSpell::BlessSpell()
+	: SpellBase()
+	, m_pos(Vec3f_ZERO)
+	, m_yaw(0)
+	, m_scale(0)
+	, tex_p1(NULL)
+	, tex_sol(NULL)
+	, fRot(0)
+{ }
+
 bool BlessSpell::CanLaunch()
 {
 	return !spells.ExistAnyInstanceForThisCaster(m_type, m_caster);
