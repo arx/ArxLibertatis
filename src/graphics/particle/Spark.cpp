@@ -29,7 +29,7 @@
 
 struct SparkParticle {
 	u32 m_duration;
-	Vec3f ov;
+	Vec3f m_pos;
 	Vec3f move;
 	long timcreation;
 	ColorRGBA rgb;
@@ -37,7 +37,7 @@ struct SparkParticle {
 	
 	SparkParticle()
 		: m_duration(0)
-		, ov(Vec3f_ZERO)
+		, m_pos(Vec3f_ZERO)
 		, move(Vec3f_ZERO)
 		, timcreation(0)
 		, rgb(Color::black.toRGB())
@@ -85,7 +85,7 @@ void ParticleSparkSpawn(const Vec3f & pos, unsigned int count, SpawnSparkType ty
 		g_sparkParticlesCount++;
 		
 		spark.timcreation = arxtime.now();
-		spark.ov = pos + randomVec(-5.f, 5.f);
+		spark.m_pos = pos + randomVec(-5.f, 5.f);
 		spark.move = randomVec(-6.f, 6.f);
 		spark.m_duration = len * 90 + count;
 		
@@ -142,7 +142,7 @@ void ParticleSparkUpdate() {
 		
 		float val = (spark.m_duration - framediff) * 0.01f;
 		
-		Vec3f in = spark.ov + spark.move * val;
+		Vec3f in = spark.m_pos + spark.move * val;
 		
 		TexturedVertex out;
 		EE_RTP(in, out);
