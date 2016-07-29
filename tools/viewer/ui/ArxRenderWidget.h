@@ -51,6 +51,9 @@ public:
 	
 	void openFile2(QString name);
 	
+	void particleSystemReset();
+	void particleSystemLoad(int id);
+	
 	bool m_showVertexNormals;
 	bool m_showFaceNormals;
 	bool m_play;

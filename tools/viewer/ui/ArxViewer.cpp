@@ -28,8 +28,11 @@
 #include <QVBoxLayout>
 #include <QWheelEvent>
 #include <QLabel>
+#include <QString>
 
 #include <limits>
+
+#include "game/effect/ParticleSystems.h"
 
 #include "io/fs/FilePath.h"
 #include "io/log/Logger.h"
@@ -41,6 +44,20 @@
 
 #include "viewer/ui/ArxRenderWidget.h"
 
+const char * ParticleParamToStr(ParticleParam pp) {
+	switch(pp) {
+		case ParticleParam_MagicMissileExplosion:    return "MagicMissileExplosion";
+		case ParticleParam_MagicMissileExplosionMar: return "MagicMissileExplosionMar";
+		case ParticleParam_Heal: return "Heal";
+		case ParticleParam_CreateFood:return "CreateFood";
+		case ParticleParam_CurePoison:return "CurePoison";
+		case ParticleParam_FireFieldBase:return "FireFieldBase";
+		case ParticleParam_FireFieldFlame:return "FireFieldFlame";
+		case ParticleParam_Poison1:return "Poison1";
+		case ParticleParam_Poison2:return "Poison2";
+		case ParticleParam_Poison3:return "Poison3";
+	}
+}
 
 ArxViewer::ArxViewer(QWidget *parent, Qt::WindowFlags flags)
 : QMainWindow(parent, flags)
@@ -69,6 +86,13 @@ ArxViewer::ArxViewer(QWidget *parent, Qt::WindowFlags flags)
 	
 	m_renderWidget = new ArxRenderWidget(m_animationLayersModel, m_lightsModel, this);
 	ui->verticalLayout->addWidget(m_renderWidget);
+	
+	
+	ui->particlesComboBox->insertItem(0, "NONE", -1);
+	for(int i=0;i<ParticleParam_MAX; i++) {
+		QString name = QString(ParticleParamToStr((ParticleParam)i));
+		ui->particlesComboBox->insertItem(0, name, i);
+	}
 }
 
 ArxViewer::~ArxViewer() {
@@ -151,3 +175,15 @@ void ArxViewer::on_debug1CheckBox_toggled(bool checked) {
 	extern bool g_debugToggles[10];
 	g_debugToggles[0] = checked;
 }
+
+void ArxViewer::on_particlesComboBox_currentIndexChanged(int index)
+{
+	QVariant data = ui->particlesComboBox->itemData(index);
+	m_renderWidget->particleSystemLoad(data.toInt());
+}
+void ArxViewer::on_pushButton_3_clicked()
+{
+    m_renderWidget->particleSystemReset();
+}
+
+

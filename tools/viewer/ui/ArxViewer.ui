@@ -6,8 +6,8 @@
    <rect>
     <x>0</x>
     <y>0</y>
-    <width>1127</width>
-    <height>514</height>
+    <width>1146</width>
+    <height>678</height>
    </rect>
   </property>
   <property name="windowTitle">
@@ -31,7 +31,7 @@
     <rect>
      <x>0</x>
      <y>0</y>
-     <width>1127</width>
+     <width>1146</width>
      <height>20</height>
     </rect>
    </property>
@@ -256,7 +256,7 @@
   </widget>
   <widget class="QDockWidget" name="dockWidget">
    <property name="windowTitle">
-    <string>Debug Dock</string>
+    <string>Debug</string>
    </property>
    <attribute name="dockWidgetArea">
     <number>2</number>
@@ -267,6 +267,31 @@
       <widget class="QCheckBox" name="debug1CheckBox">
        <property name="text">
         <string>Debug 1</string>
+       </property>
+      </widget>
+     </item>
+    </layout>
+   </widget>
+  </widget>
+  <widget class="QDockWidget" name="particleDock">
+   <property name="floating">
+    <bool>false</bool>
+   </property>
+   <property name="windowTitle">
+    <string>Particles</string>
+   </property>
+   <attribute name="dockWidgetArea">
+    <number>2</number>
+   </attribute>
+   <widget class="QWidget" name="dockWidgetContents_2">
+    <layout class="QVBoxLayout" name="verticalLayout_4">
+     <item>
+      <widget class="QComboBox" name="particlesComboBox"/>
+     </item>
+     <item>
+      <widget class="QPushButton" name="pushButton_3">
+       <property name="text">
+        <string>Restart</string>
        </property>
       </widget>
      </item>

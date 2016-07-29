@@ -39,12 +39,15 @@
 #include "core/Application.h"
 #include "core/GameTime.h"
 #include "game/Entity.h"
+#include "game/effect/ParticleSystems.h"
+
 #include "graphics/DrawLine.h"
 #include "graphics/Renderer.h"
 #include "graphics/VertexBuffer.h"
 #include "graphics/data/FTL.h"
 #include "graphics/font/Font.h"
 #include "graphics/font/FontCache.h"
+#include "graphics/particle/ParticleSystem.h"
 #include "graphics/opengl/OpenGLRenderer.h"
 #include "input/Input.h"
 #include "io/fs/FilePath.h"
@@ -201,6 +204,8 @@ ArxRenderWidget::ArxRenderWidget(AnimationLayersModel * animationLayersModel, Li
 	m_currentObject = NULL;
 	
 	m_playbackSpeed = 1.f;
+	
+	particleParametersInit();
 }
 
 ArxRenderWidget::~ArxRenderWidget() {
@@ -213,6 +218,29 @@ void ArxRenderWidget::openFile2(QString name) {
 	}
 	
 	m_currentObject = ARX_FTL_Load(name.toStdString());
+}
+
+bool m_particleSystemVisible = false;
+ParticleParams m_particleParameters = ParticleParams();
+ParticleSystem * m_particleSystem = nullptr;
+
+void ArxRenderWidget::particleSystemReset()
+{
+	delete m_particleSystem;
+	m_particleSystem = nullptr;
+}
+
+void ArxRenderWidget::particleSystemLoad(int id)
+{
+	if(id == -1) {
+		m_particleSystemVisible = false;
+	} else {
+		m_particleSystemVisible = true;
+		m_particleParameters = g_particleParameters[id];
+	}
+	
+	delete m_particleSystem;
+	m_particleSystem = NULL;
 }
 
 void ArxRenderWidget::initializeGL() {
@@ -248,11 +276,33 @@ void ArxRenderWidget::paintGL() {
 	
 	frameTime *= m_playbackSpeed;
 	
+	if(m_particleSystemVisible) {
+		if(m_particleSystem) {
+			if(!m_particleSystem->IsAlive()) {
+				delete m_particleSystem;
+				m_particleSystem = NULL;
+			}
+		}
+		
+		if(!m_particleSystem) {
+			m_particleSystem = new ParticleSystem();
+			m_particleSystem->SetParams(m_particleParameters);
+		}
+	} else {
+		delete m_particleSystem;
+		m_particleSystem = NULL;
+	}
+	
 	// TODO for some reason the frametime gets larger every frame, find out why !
 	//arxtime.update_frame_time();
 	//frameTime = arxtime.get_frame_delay();
 	
 	cam->updateCamera();
+	
+	if(m_particleSystem) {
+		m_particleSystem->SetPos(Vec3f_ZERO);
+		m_particleSystem->Update(frameTime);
+	}
 	
 	GRenderer->SetScissor(Rect::ZERO);
 	GRenderer->Clear(Renderer::ColorBuffer | Renderer::DepthBuffer, toColor(m_backgroundColor));
@@ -269,6 +319,16 @@ void ArxRenderWidget::paintGL() {
 	PopAllTriangleListOpaque();
 	GRenderer->SetRenderState(Renderer::AlphaBlending, true);
 	PopAllTriangleListTransparency();
+	
+	if(m_particleSystem) {
+		RenderBatcher::getInstance().clear();
+		m_particleSystem->Render();
+		
+		GRenderer->SetFogColor(Color::none);
+		GRenderer->SetRenderState(Renderer::DepthWrite, false);
+		RenderBatcher::getInstance().render();
+		GRenderer->SetRenderState(Renderer::DepthWrite, true);
+	}
 }
 
 void ArxRenderWidget::drawModel(qint64 frameTime) {

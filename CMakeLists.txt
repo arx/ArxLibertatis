@@ -1596,12 +1596,6 @@ if(ARX_HAVE_VIEWER)
 	)
 	list(REMOVE_ITEM arxviewer_SOURCES src/core/Startup.cpp)
 	
-	if(WIN32)
-		list(APPEND arxviewer_SOURCES
-			${ARX_ICON_RC}
-		)
-	endif()
-	
 	set(arxviewer_MANUAL_SOURCES
 		${arxviewer_SOURCES}
 		${arxviewer_Qt_SOURCES}
