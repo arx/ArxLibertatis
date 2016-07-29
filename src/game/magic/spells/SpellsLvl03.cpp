@@ -427,6 +427,16 @@ void CreateFoodSpell::Update() {
 }
 
 
+IceProjectileSpell::IceProjectileSpell()
+	: SpellBase()
+	, ulCurrentTime(0)
+	, iNumber(0)
+	, iMax(0)
+	, fColor(0)
+	, tex_p1(NULL)
+	, tex_p2(NULL)
+{ }
+
 void IceProjectileSpell::Launch()
 {
 	ARX_SOUND_PlaySFX(SND_SPELL_ICE_PROJECTILE_LAUNCH, &m_caster_pos);

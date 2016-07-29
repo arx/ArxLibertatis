@@ -91,6 +91,8 @@ private:
 
 class IceProjectileSpell : public SpellBase {
 public:
+	IceProjectileSpell();
+	
 	void Launch();
 	void End();
 	void Update();
