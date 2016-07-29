@@ -44,8 +44,8 @@ ZeniMax Media Inc., Suite 120, Rockville, Maryland 20850 USA.
 //
 // Copyright (c) 1999 ARKANE Studios SA. All rights reserved
 
-#ifndef ARX_GRAPHICS_EFFECTS_DRAWEFFECTS_H
-#define ARX_GRAPHICS_EFFECTS_DRAWEFFECTS_H
+#ifndef ARX_GRAPHICS_EFFECTS_POLYBOOM_H
+#define ARX_GRAPHICS_EFFECTS_POLYBOOM_H
 
 #include "graphics/BaseGraphicsTypes.h"
 #include "graphics/Color.h"
@@ -59,4 +59,4 @@ void PolyBoomAddSplat(const Sphere & sp, const Color3f & col, long flags);
 
 void PolyBoomDraw();
 
-#endif // ARX_GRAPHICS_EFFECTS_DRAWEFFECTS_H
+#endif // ARX_GRAPHICS_EFFECTS_POLYBOOM_H
