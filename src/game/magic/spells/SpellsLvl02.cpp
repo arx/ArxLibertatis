@@ -27,6 +27,7 @@
 #include "game/NPC.h"
 #include "game/Player.h"
 #include "game/Spells.h"
+#include "game/effect/ParticleSystems.h"
 #include "graphics/RenderBatcher.h"
 #include "graphics/Renderer.h"
 #include "graphics/particle/Particle.h"
@@ -66,35 +67,7 @@ void HealSpell::Launch()
 	
 	m_particles.SetPos(m_pos);
 	
-	{
-	ParticleParams cp;
-	cp.m_nbMax = 350;
-	cp.m_life = 800;
-	cp.m_lifeRandom = 2000;
-	cp.m_pos = Vec3f(100, 200, 100);
-	cp.m_direction = Vec3f(0.f, -1.f, 0.f);
-	cp.m_angle = glm::radians(5.f);
-	cp.m_speed = 120;
-	cp.m_speedRandom = 84;
-	cp.m_gravity = Vec3f(0, -10, 0);
-	cp.m_flash = 0;
-	cp.m_rotation = 1.0f / (101 - 80);
-
-	cp.m_startSegment.m_size = 8;
-	cp.m_startSegment.m_sizeRandom = 8;
-	cp.m_startSegment.m_color = Color(205, 205, 255, 245).to<float>();
-	cp.m_startSegment.m_colorRandom = Color(50, 50, 0, 10).to<float>();
-
-	cp.m_endSegment.m_size = 6;
-	cp.m_endSegment.m_sizeRandom = 4;
-	cp.m_endSegment.m_color = Color(20, 20, 30, 0).to<float>();
-	cp.m_endSegment.m_colorRandom = Color(0, 0, 40, 0).to<float>();
-	
-	cp.m_blendMode = RenderMaterial::Additive;
-	cp.m_texture.set("graph/particles/heal_0005", 0, 100);
-	cp.m_spawnFlags = PARTICLE_CIRCULAR | PARTICLE_BORDER;
-	m_particles.SetParams(cp);
-	}
+	m_particles.SetParams(g_particleParameters[ParticleParam_Heal]);
 	
 	m_light = GetFreeDynLight();
 	if(lightHandleIsValid(m_light)) {

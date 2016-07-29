@@ -32,6 +32,7 @@
 #include "game/Spells.h"
 #include "game/spell/Cheat.h"
 #include "game/NPC.h"
+#include "game/effect/ParticleSystems.h"
 #include "game/magic/spells/SpellsLvl03.h"
 #include "graphics/particle/ParticleEffects.h"
 #include "graphics/particle/ParticleManager.h"
@@ -76,71 +77,14 @@ void MagicSightSpell::Update() {
 	}	
 }
 
-
-
-class MagicMissileExplosionParticle : public ParticleParams {
-public:
-	MagicMissileExplosionParticle() {
-		load();
-	}
-	
-	void load() {
-		m_nbMax = 100;
-		m_life = 1500;
-		m_lifeRandom = 0;
-		m_pos = Vec3f(10.f);
-		m_direction = Vec3f(0.f, -1.f, 0.f);
-		m_angle = glm::radians(360.f);
-		m_speed = 130;
-		m_speedRandom = 100;
-		m_gravity = Vec3f(0.f, 10.f, 0.f);
-		m_flash = 0;
-		m_rotation = 1.0f / (101 - 16);
-	
-		m_startSegment.m_size = 5;
-		m_startSegment.m_sizeRandom = 10;
-		m_startSegment.m_color = Color(110, 110, 110, 110).to<float>();
-		m_startSegment.m_colorRandom = Color(100, 100, 100, 100).to<float>();
-		m_endSegment.m_size = 0;
-		m_endSegment.m_sizeRandom = 2;
-		m_endSegment.m_color = Color(0, 0, 120, 10).to<float>();
-		m_endSegment.m_colorRandom = Color(50, 50, 50, 50).to<float>();
-		
-		m_texture.set("graph/particles/magicexplosion", 0, 500);
-		
-		m_blendMode = RenderMaterial::Additive;
-		m_spawnFlags = 0;
-		m_looping = false;
-	}
-};
-
-class MagicMissileExplosionMrCheatParticle : public MagicMissileExplosionParticle {
-public:
-	MagicMissileExplosionMrCheatParticle() {
-		load();
-	}
-	
-	void load() {
-		MagicMissileExplosionParticle::load();
-		
-		m_speed = 13;
-		m_speedRandom = 10;
-		m_startSegment.m_size = 20;
-		m_startSegment.m_color = Color(0, 0, 0, 0).to<float>();
-		m_startSegment.m_colorRandom = Color(0, 0, 0, 0).to<float>();
-		m_endSegment.m_color = Color(255, 40, 120, 10).to<float>();
-		m_texture.set("graph/particles/(fx)_mr", 0, 500);
-	}
-};
-
 extern ParticleManager * pParticleManager;
 
 static void LaunchMagicMissileExplosion(const Vec3f & _ePos, bool mrCheat) {
 	
-	ParticleParams cp = MagicMissileExplosionParticle();
+	ParticleParams cp = g_particleParameters[ParticleParam_MagicMissileExplosion];
 	
 	if(mrCheat) {
-		cp = MagicMissileExplosionMrCheatParticle();
+		cp = g_particleParameters[ParticleParam_MagicMissileExplosionMar];
 	}
 	
 	ParticleSystem * pPS = new ParticleSystem();

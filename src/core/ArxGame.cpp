@@ -84,6 +84,7 @@ ZeniMax Media Inc., Suite 120, Rockville, Maryland 20850 USA.
 #include "game/Spells.h"
 #include "game/spell/FlyingEye.h"
 #include "game/spell/Cheat.h"
+#include "game/effect/ParticleSystems.h"
 #include "game/effect/Quake.h"
 
 #include "graphics/BaseGraphicsTypes.h"
@@ -932,6 +933,7 @@ bool ArxGame::initGame()
 
 	FlyingEye_Init();
 	LoadSpellModels();
+	particleParametersInit();
 	
 	cameraobj = loadObject("graph/obj3d/interactive/system/camera/camera.teo");
 	markerobj = loadObject("graph/obj3d/interactive/system/marker/marker.teo");
