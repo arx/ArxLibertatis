@@ -27,6 +27,7 @@ enum ParticleParam {
 	ParticleParam_MagicMissileExplosionMar,
 	ParticleParam_Heal,
 	ParticleParam_CreateFood,
+	ParticleParam_CurePoison,
 	ParticleParam_MAX
 };
 

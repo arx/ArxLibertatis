@@ -31,6 +31,7 @@
 #include "game/EntityManager.h"
 #include "game/Player.h"
 #include "game/Spells.h"
+#include "game/effect/ParticleSystems.h"
 #include "game/spell/FlyingEye.h"
 
 #include "graphics/particle/ParticleEffects.h"
