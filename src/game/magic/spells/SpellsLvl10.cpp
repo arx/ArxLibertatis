@@ -315,7 +315,6 @@ void ControlTargetSpell::Update() {
 	
 	fTrail = (elapsed * fOneOnDuration) * 9 * (n + 2);
 
-	Vec3f newpos = Vec3f_ZERO;
 	Vec3f lastpos = pathways[0];
 	
 	for(int i = 0; i < 9; i++) {
@@ -331,7 +330,7 @@ void ControlTargetSpell::Update() {
 
 			float t = toto * delta;
 			
-			newpos = glm::catmullRom(v1, v2, v3, v4, t);
+			Vec3f newpos = glm::catmullRom(v1, v2, v3, v4, t);
 			
 			if(fTrail - (i * n + toto) <= 70) {
 				float c = 1.0f - (fTrail - (i * n + toto)) / 70.0f;
@@ -347,7 +346,7 @@ void ControlTargetSpell::Update() {
 				}
 			}
 			
-			std::swap(lastpos, newpos);
+			lastpos = newpos;
 			
 			PARTICLE_DEF * pd = createParticle();
 			if(pd) {
