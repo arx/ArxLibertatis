@@ -56,6 +56,7 @@ ZeniMax Media Inc., Suite 120, Rockville, Maryland 20850 USA.
 #include "game/EntityManager.h"
 #include "game/Player.h"
 #include "game/Spells.h"
+#include "game/effect/ParticleSystems.h"
 
 #include "graphics/Math.h"
 #include "graphics/data/TextureContainer.h"
@@ -80,38 +81,8 @@ static void LaunchPoisonExplosion(const Vec3f & aePos) {
 	
 	// système de partoches pour l'explosion
 	ParticleSystem * pPS = new ParticleSystem();
-	ParticleParams cp = ParticleParams();
-	cp.m_nbMax = 80; 
-	cp.m_life = 1500;
-	cp.m_lifeRandom = 500;
-	cp.m_pos = Vec3f(5);
-	cp.m_direction = Vec3f(0.f, 1.f, 0.f);
-	cp.m_angle = glm::radians(360.f);
-	cp.m_speed = 200;
-	cp.m_speedRandom = 0;
-	cp.m_gravity = Vec3f(0, 17, 0);
-	cp.m_flash = 0;
-	cp.m_rotation = 1.0f / (101 - 80);
-	cp.m_rotationRandomDirection = true;
-	cp.m_rotationRandomStart = true;
-
-	cp.m_startSegment.m_size = 5;
-	cp.m_startSegment.m_sizeRandom = 3;
-	cp.m_startSegment.m_color = Color(0, 76, 0, 0).to<float>();
-	cp.m_startSegment.m_colorRandom = Color(0, 0, 0, 150).to<float>();
-
-	cp.m_endSegment.m_size = 30;
-	cp.m_endSegment.m_sizeRandom = 5;
-	cp.m_endSegment.m_color = Color(0, 0, 0, 0).to<float>();
-	cp.m_endSegment.m_colorRandom = Color(0, 25, 0, 20).to<float>();
-
-	cp.m_blendMode = RenderMaterial::AlphaAdditive;
-	cp.m_freq = -1;
-	cp.m_texture.set("graph/particles/big_greypouf", 0, 200);
-	cp.m_spawnFlags = 0;
-	cp.m_looping = false;
 	
-	pPS->SetParams(cp);
+	pPS->SetParams(g_particleParameters[ParticleParam_Poison1]);
 	pPS->SetPos(aePos);
 	pPS->Update(0);
 
