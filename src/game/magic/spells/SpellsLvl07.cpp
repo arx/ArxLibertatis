@@ -274,79 +274,10 @@ void FireFieldSpell::Launch() {
 	
 	m_snd_loop = ARX_SOUND_PlaySFX(SND_SPELL_FIRE_FIELD_LOOP, &target, 1.f, ARX_SOUND_PLAY_LOOPED);
 	
-	{
-	ParticleParams cp = ParticleParams();
-	cp.m_nbMax = 100;
-	cp.m_life = 2000;
-	cp.m_lifeRandom = 1000;
-	cp.m_pos = Vec3f(80, 10, 80);
-	cp.m_direction = Vec3f(0.f, 1.f, 0.f);
-	cp.m_angle = 0;
-	cp.m_speed = 0;
-	cp.m_speedRandom = 0;
-	cp.m_gravity = Vec3f_ZERO;
-	cp.m_flash = 0;
-	cp.m_rotation = 0;
-	cp.m_rotationRandomDirection = false;
-	cp.m_rotationRandomStart = false;
-
-	cp.m_startSegment.m_size = 10;
-	cp.m_startSegment.m_sizeRandom = 3;
-	cp.m_startSegment.m_color = Color(25, 25, 25, 50).to<float>();
-	cp.m_startSegment.m_colorRandom = Color(51, 51, 51, 101).to<float>();
-
-	cp.m_endSegment.m_size = 10;
-	cp.m_endSegment.m_sizeRandom = 3;
-	cp.m_endSegment.m_color = Color(25, 25, 25, 50).to<float>();
-	cp.m_endSegment.m_colorRandom = Color(0, 0, 0, 100).to<float>();
-	cp.m_texture.m_texLoop = true;
-
-	cp.m_blendMode = RenderMaterial::AlphaAdditive;
-	cp.m_freq = 150.0f;
-	cp.m_texture.set("graph/particles/firebase", 4, 100);
-	cp.m_spawnFlags = 0;
-	
-	pPSStream.SetParams(cp);
-	}
+	pPSStream.SetParams(g_particleParameters[ParticleParam_FireFieldBase]);
 	pPSStream.SetPos(m_pos);
-	pPSStream.Update(0);
-
-	//-------------------------------------------------------------------------
-
-	{
-	ParticleParams cp = ParticleParams();
-	cp.m_nbMax = 50;
-	cp.m_life = 1000;
-	cp.m_lifeRandom = 500;
-	cp.m_pos = Vec3f(100, 10, 100);
-	cp.m_direction = Vec3f(0.f, -1.f, 0.f);
-	cp.m_angle = glm::radians(10.f);
-	cp.m_speed = 0;
-	cp.m_speedRandom = 0;
-	cp.m_gravity = Vec3f_ZERO;
-	cp.m_flash = 0;
-	cp.m_rotation = 0;
-	cp.m_rotationRandomDirection = false;
-	cp.m_rotationRandomStart = false;
-
-	cp.m_startSegment.m_size = 10;
-	cp.m_startSegment.m_sizeRandom = 10;
-	cp.m_startSegment.m_color = Color(40, 40, 40, 50).to<float>();
-	cp.m_startSegment.m_colorRandom = Color(51, 51, 51, 100).to<float>();
-
-	cp.m_endSegment.m_size = 10;
-	cp.m_endSegment.m_sizeRandom = 10;
-	cp.m_endSegment.m_color = Color(0, 0, 0, 50).to<float>();
-	cp.m_endSegment.m_colorRandom = Color(0, 0, 0, 100).to<float>();
-	cp.m_texture.m_texLoop = false;
-
-	cp.m_blendMode = RenderMaterial::Additive;
-	cp.m_freq = 150.0f;
-	cp.m_texture.set("graph/particles/fire", 0, 500);
-	cp.m_spawnFlags = 0;
 	
-	pPSStream1.SetParams(cp);
-	}
+	pPSStream1.SetParams(g_particleParameters[ParticleParam_FireFieldFlame]);
 	pPSStream1.SetPos(m_pos + Vec3f(0, 10, 0));
 	pPSStream1.Update(0);
 }
