@@ -146,40 +146,11 @@ void CPoisonProjectile::Create(Vec3f _eSrc, float _fBeta)
 	Split(pathways, 0, 9, Vec3f(10 * fBetaRadCos, 10, 10 * fBetaRadSin));
 	
 	fTrail = -1;
-
-	//-------------------------------------------------------------------------
-	// système de partoches
-	ParticleParams cp = ParticleParams();
-	cp.m_nbMax = 5;
-	cp.m_life = 2000;
-	cp.m_lifeRandom = 1000;
-	cp.m_pos = Vec3f_ZERO;
-	cp.m_direction = -eMove * 0.1f;
-	cp.m_angle = 0;
-	cp.m_speed = 10;
-	cp.m_speedRandom = 10;
-	cp.m_gravity = Vec3f_ZERO;
-	cp.m_flash = 21 * (1.f/100);
-	cp.m_rotation = 1.0f / (101 - 80);
-	cp.m_rotationRandomDirection = true;
-	cp.m_rotationRandomStart = true;
-
-	cp.m_startSegment.m_size = 5;
-	cp.m_startSegment.m_sizeRandom = 3;
-	cp.m_startSegment.m_color = Color(0, 50, 0, 40).to<float>();
-	cp.m_startSegment.m_colorRandom = Color(0, 100, 0, 50).to<float>();
-
-	cp.m_endSegment.m_size = 8;
-	cp.m_endSegment.m_sizeRandom = 13;
-	cp.m_endSegment.m_color = Color(0, 60, 0, 40).to<float>();
-	cp.m_endSegment.m_colorRandom = Color(0, 100, 0, 50).to<float>();
-
-	cp.m_blendMode = RenderMaterial::Screen;
-	cp.m_freq = -1;
-	cp.m_texture.set("graph/particles/big_greypouf", 0, 200);
-	cp.m_spawnFlags = 0;
 	
-	pPS.SetParams(cp);
+	ParticleParams pp = g_particleParameters[ParticleParam_Poison2];
+	pp.m_direction *= -eMove;
+	
+	pPS.SetParams(pp);
 	pPS.SetPos(eSrc);
 	pPS.Update(0);
 }
