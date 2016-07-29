@@ -315,8 +315,6 @@ void ControlTargetSpell::Update() {
 	
 	fTrail = (elapsed * fOneOnDuration) * 9 * (n + 2);
 
-	Vec3f v;
-	
 	Vec3f newpos = Vec3f_ZERO;
 	Vec3f lastpos = pathways[0];
 	
@@ -333,9 +331,7 @@ void ControlTargetSpell::Update() {
 
 			float t = toto * delta;
 			
-			v = glm::catmullRom(v1, v2, v3, v4, t);
-			
-			newpos = v;
+			newpos = glm::catmullRom(v1, v2, v3, v4, t);
 			
 			if(fTrail - (i * n + toto) <= 70) {
 				float c = 1.0f - (fTrail - (i * n + toto)) / 70.0f;
