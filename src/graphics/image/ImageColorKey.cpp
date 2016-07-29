@@ -70,8 +70,8 @@ private:
 			return; // (x + ix, y + iy) is out of bounds.
 		}
 		
-		const size_t sx = Channels;
-		size_t sy = w * sx;
+		const int sx = Channels;
+		int sy = w * sx;
 		
 		u8 * n = p + sx * ix + sy * iy;
 		if(*n == 0) {
