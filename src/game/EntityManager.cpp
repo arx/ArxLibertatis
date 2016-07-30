@@ -131,8 +131,15 @@ EntityHandle EntityManager::getById(const EntityId & id) const {
 }
 
 Entity * EntityManager::getById(const std::string & name, Entity * self) const {
-	long index = getById(name).handleData();
-	return (index == -1) ? NULL : (index == -2) ? self : entries[index]; 
+	
+	EntityHandle handle = getById(name);
+	if(handle == EntityHandle()) {
+		return NULL;
+	} else if(handle == EntityHandle_Self) {
+		return self;
+	} else {
+		return entries[handle.handleData()];
+	}
 }
 
 size_t EntityManager::add(Entity * entity) {
