@@ -377,7 +377,7 @@ void ARX_MAGICAL_FLARES_Update() {
 	}
 	
 	const ArxInstant now = arxtime.now();
-	const unsigned long TICKS = now - FRAMETICKS;
+	const ArxDuration TICKS = now - FRAMETICKS;
 	FRAMETICKS = now;
 	
 	bool key = !GInput->actionPressed(CONTROLS_CUST_MAGICMODE);
@@ -407,11 +407,11 @@ void ARX_MAGICAL_FLARES_Update() {
 				continue;
 			}
 
-			flare.tolive -= float(TICKS * 2);
+			flare.tolive -= float(toMs(TICKS) * 2);
 			if(flare.flags & 1) {
-				flare.tolive -= float(TICKS * 4);
+				flare.tolive -= float(toMs(TICKS) * 4);
 			} else if (key) {
-				flare.tolive -= float(TICKS * 6);
+				flare.tolive -= float(toMs(TICKS) * 6);
 			}
 
 			float z = (flare.tolive * 0.00025f);
