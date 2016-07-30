@@ -179,7 +179,7 @@ static EntityHandle ReadTargetInfo(const char (&str)[N]) {
 	if(idString == "none") {
 		return EntityHandle();
 	} else if(idString == "self") {
-		return EntityHandle(-2);
+		return EntityHandle_Self;
 	} else if(idString == "player") {
 		return EntityHandle_Player;
 	} else {
@@ -856,7 +856,7 @@ static Entity * GetObjIOSource(const EERIE_3DOBJ * obj) {
 template <size_t N>
 void FillTargetInfo(char (&info)[N], EntityHandle numtarget) {
 	ARX_STATIC_ASSERT(N >= 6, "id string too short");
-	if(numtarget == EntityHandle(-2)) {
+	if(numtarget == EntityHandle_Self) {
 		strcpy(info, "self");
 	} else if(numtarget == EntityHandle()) {
 		strcpy(info, "none");

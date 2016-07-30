@@ -28,6 +28,7 @@ typedef HandleType<struct PrecastHandleTag, long, -1> PrecastHandle;
 typedef HandleType<struct DamageHandleTag,  long, -1> DamageHandle;
 
 static const EntityHandle EntityHandle_Player = EntityHandle(0);
+static const EntityHandle EntityHandle_Self   = EntityHandle(-2);
 
 struct ResourcePool {
 	float current;

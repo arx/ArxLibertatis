@@ -107,7 +107,7 @@ EntityHandle EntityManager::getById(const std::string & idString) const {
 	if(idString.empty() || idString == "none") {
 		return EntityHandle();
 	} else if(idString == "self" || idString == "me") {
-		return EntityHandle(-2);
+		return EntityHandle_Self;
 	} else if(idString == "player") {
 		return EntityHandle_Player;
 	}
@@ -121,7 +121,7 @@ EntityHandle EntityManager::getById(const EntityId & id) const {
 		if(id.className().empty()) {
 			return EntityHandle();
 		} else if(id.className() == "self" || id.className() == "me") {
-			return EntityHandle(-2);
+			return EntityHandle_Self;
 		} else if(id.className() == "player") {
 			return EntityHandle_Player;
 		}
