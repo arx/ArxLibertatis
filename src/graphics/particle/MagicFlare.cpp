@@ -364,7 +364,7 @@ void FlareLine(const Vec2s & pos0, const Vec2s & pos1, Entity * io)
 	}
 }
 
-static unsigned long FRAMETICKS=0;
+static ArxInstant FRAMETICKS = ArxInstant_ZERO;
 
 void ARX_MAGICAL_FLARES_Update() {
 
