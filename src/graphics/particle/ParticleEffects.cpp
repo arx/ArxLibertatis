@@ -462,9 +462,9 @@ void ManageTorch() {
 	}
 	
 	if(   entities.player()->obj
-	   && entities.player()->obj->fastaccess.head_group_origin > -1
+	   && entities.player()->obj->fastaccess.head_group_origin != ObjVertIndex()
 	) {
-		short vertex = entities.player()->obj->fastaccess.head_group_origin;
+		s32 vertex = entities.player()->obj->fastaccess.head_group_origin.handleData();
 		el->pos.y = entities.player()->obj->vertexlist3[vertex].v.y;
 	}
 }

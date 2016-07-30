@@ -152,12 +152,9 @@ void EERIE_Object_Precompute_Fast_Access(EERIE_3DOBJ * eerie) {
 	
 	eerie->fastaccess.head_group = EERIE_OBJECT_GetGroup(eerie, "head");
 
-	if(eerie->fastaccess.head_group == ObjVertGroup())
-		eerie->fastaccess.head_group_origin = -1;
-	else
-	{
-		long lHeadOrigin  = eerie->grouplist[eerie->fastaccess.head_group.handleData()].origin;
-		eerie->fastaccess.head_group_origin = checked_range_cast<short>(lHeadOrigin);
+	if(eerie->fastaccess.head_group != ObjVertGroup()) {
+		ObjVertIndex lHeadOrigin = ObjVertIndex(eerie->grouplist[eerie->fastaccess.head_group.handleData()].origin);
+		eerie->fastaccess.head_group_origin = lHeadOrigin;
 	}
 	
 	eerie->fastaccess.sel_head     = EERIE_OBJECT_GetSelection(eerie, "head");

@@ -688,9 +688,9 @@ void ConfuseSpell::Update() {
 		pos.y += entities[m_target]->physics.cyl.height - 30.f;
 	}
 	
-	long idx = entities[m_target]->obj->fastaccess.head_group_origin;
-	if(idx >= 0) {
-		pos = entities[m_target]->obj->vertexlist3[idx].v;
+	ObjVertIndex idx = entities[m_target]->obj->fastaccess.head_group_origin;
+	if(idx != ObjVertIndex()) {
+		pos = entities[m_target]->obj->vertexlist3[idx.handleData()].v;
 		pos.y -= 50.f;
 	}
 	
