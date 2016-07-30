@@ -156,7 +156,7 @@ void MagicFlareChangeColor() {
 
 void AddFlare(const Vec2f & pos, float sm, short typ, Entity * io, bool bookDraw) {
 	
-	int oldest = 0;
+	size_t oldest = 0;
 	size_t i;
 	for(i = 0; i < MAX_FLARES; i++) {
 		if(!magicFlares[i].exist) {
