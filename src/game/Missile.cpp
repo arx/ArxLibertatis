@@ -221,7 +221,7 @@ void ARX_MISSILES_Update() {
 					spawnFireHitParticle(pos, 0);
 					PolyBoomAddScorch(pos);
 					Add3DBoom(pos);
-					DoSphericDamage(Sphere(dest, 200.0F), 180.0F, DAMAGE_AREAHALF, DAMAGE_TYPE_FIRE | DAMAGE_TYPE_MAGICAL);
+					DoSphericDamage(Sphere(dest, 200.0F), 180.0F, DAMAGE_AREAHALF, DAMAGE_TYPE_FIRE | DAMAGE_TYPE_MAGICAL, EntityHandle());
 					break;
 				}
 
@@ -230,7 +230,7 @@ void ARX_MISSILES_Update() {
 					spawnFireHitParticle(dest, 0);
 					PolyBoomAddScorch(dest);
 					Add3DBoom(dest);
-					DoSphericDamage(Sphere(dest, 200.0F), 180.0F, DAMAGE_AREAHALF, DAMAGE_TYPE_FIRE | DAMAGE_TYPE_MAGICAL);
+					DoSphericDamage(Sphere(dest, 200.0F), 180.0F, DAMAGE_AREAHALF, DAMAGE_TYPE_FIRE | DAMAGE_TYPE_MAGICAL, EntityHandle());
 					break;
 				}
 
@@ -239,7 +239,7 @@ void ARX_MISSILES_Update() {
 					spawnFireHitParticle(dest, 0);
 					PolyBoomAddScorch(dest);
 					Add3DBoom(dest);
-					DoSphericDamage(Sphere(dest, 200.0F), 180.0F, DAMAGE_AREAHALF, DAMAGE_TYPE_FIRE | DAMAGE_TYPE_MAGICAL);
+					DoSphericDamage(Sphere(dest, 200.0F), 180.0F, DAMAGE_AREAHALF, DAMAGE_TYPE_FIRE | DAMAGE_TYPE_MAGICAL, EntityHandle());
 					break;
 				}
 
@@ -249,7 +249,7 @@ void ARX_MISSILES_Update() {
 					spawnFireHitParticle(hit, 0);
 					PolyBoomAddScorch(hit);
 					Add3DBoom(hit);
-					DoSphericDamage(Sphere(dest, 200.0F), 180.0F, DAMAGE_AREAHALF, DAMAGE_TYPE_FIRE | DAMAGE_TYPE_MAGICAL);
+					DoSphericDamage(Sphere(dest, 200.0F), 180.0F, DAMAGE_AREAHALF, DAMAGE_TYPE_FIRE | DAMAGE_TYPE_MAGICAL, EntityHandle());
 					break;
 				}
 
@@ -258,7 +258,7 @@ void ARX_MISSILES_Update() {
 					spawnFireHitParticle(dest, 0);
 					PolyBoomAddScorch(dest);
 					Add3DBoom(dest);
-					DoSphericDamage(Sphere(dest, 200.0F), 180.0F, DAMAGE_AREAHALF, DAMAGE_TYPE_FIRE | DAMAGE_TYPE_MAGICAL);
+					DoSphericDamage(Sphere(dest, 200.0F), 180.0F, DAMAGE_AREAHALF, DAMAGE_TYPE_FIRE | DAMAGE_TYPE_MAGICAL, EntityHandle());
 					break;
 				}
 
@@ -269,7 +269,7 @@ void ARX_MISSILES_Update() {
 					spawnFireHitParticle(dest, 0);
 					PolyBoomAddScorch(dest);
 					Add3DBoom(dest);
-					DoSphericDamage(Sphere(dest, 200.0F), 180.0F, DAMAGE_AREAHALF, DAMAGE_TYPE_FIRE | DAMAGE_TYPE_MAGICAL);
+					DoSphericDamage(Sphere(dest, 200.0F), 180.0F, DAMAGE_AREAHALF, DAMAGE_TYPE_FIRE | DAMAGE_TYPE_MAGICAL, EntityHandle());
 					break;
 				}
 				

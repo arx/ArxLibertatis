@@ -130,7 +130,7 @@ void DamageRequestEnd(DamageHandle handle);
  */
 void CheckForIgnition(const Sphere & sphere, bool mode, long flag);
 
-void DoSphericDamage(const Sphere & sphere, float dmg, DamageArea flags, DamageType typ = 0, EntityHandle numsource = EntityHandle());
+void DoSphericDamage(const Sphere & sphere, float dmg, DamageArea flags, DamageType typ, EntityHandle numsource);
 
 void ARX_DAMAGE_Reset_Blood_Info();
 void ARX_DAMAGE_Show_Hit_Blood();
