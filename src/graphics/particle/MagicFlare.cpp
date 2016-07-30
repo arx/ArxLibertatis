@@ -145,13 +145,13 @@ void ARX_MAGICAL_FLARES_KillAll() {
 	flarenum=0;
 }
 
-static short PIPOrgb = 0;
+static short g_magicFlareCurrentColor = 0;
 
 void MagicFlareChangeColor() {
-	PIPOrgb++;
+	g_magicFlareCurrentColor++;
 
-	if(PIPOrgb > 2)
-		PIPOrgb = 0;
+	if(g_magicFlareCurrentColor > 2)
+		g_magicFlareCurrentColor = 0;
 }
 
 void AddFlare(const Vec2f & pos, float sm, short typ, Entity * io, bool bookDraw) {
@@ -228,7 +228,7 @@ void AddFlare(const Vec2f & pos, float sm, short typ, Entity * io, bool bookDraw
 		flare.tv.p = Vec3f(flare.pos.x, flare.pos.y, 0.001f);
 	}
 
-	switch(PIPOrgb) {
+	switch(g_magicFlareCurrentColor) {
 		case 0: {
 			flare.rgb = Color3f(.4f, 0.f, .4f) + Color3f(2.f/3, 2.f/3, 2.f/3) * randomColor3f();
 			break;
