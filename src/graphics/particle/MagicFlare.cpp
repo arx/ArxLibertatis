@@ -66,19 +66,19 @@ struct FLARETC
 	TextureContainer * shine[11];
 };
 
-FLARETC flaretc;
+FLARETC g_magicFlareTextures;
 
 void MagicFlareLoadTextures() {
 
-	flaretc.lumignon=	TextureContainer::LoadUI("graph/particles/lumignon");
-	flaretc.lumignon2=	TextureContainer::LoadUI("graph/particles/lumignon2");
-	flaretc.plasm=		TextureContainer::LoadUI("graph/particles/plasm");
+	g_magicFlareTextures.lumignon=	TextureContainer::LoadUI("graph/particles/lumignon");
+	g_magicFlareTextures.lumignon2=	TextureContainer::LoadUI("graph/particles/lumignon2");
+	g_magicFlareTextures.plasm=		TextureContainer::LoadUI("graph/particles/plasm");
 
 	char temp[256];
 
 	for(long i = 1; i < 10; i++) {
 		sprintf(temp,"graph/particles/shine%ld", i);
-		flaretc.shine[i]=TextureContainer::LoadUI(temp);
+		g_magicFlareTextures.shine[i]=TextureContainer::LoadUI(temp);
 	}
 }
 
@@ -388,10 +388,10 @@ void ARX_MAGICAL_FLARES_Update() {
 
 		TextureContainer * surf;
 		switch(j) {
-			case 2:  surf = flaretc.lumignon; break;
-			case 3:  surf = flaretc.lumignon2; break;
-			case 4:  surf = flaretc.plasm; break;
-			default: surf = flaretc.shine[shinum]; break;
+			case 2:  surf = g_magicFlareTextures.lumignon; break;
+			case 3:  surf = g_magicFlareTextures.lumignon2; break;
+			case 4:  surf = g_magicFlareTextures.plasm; break;
+			default: surf = g_magicFlareTextures.shine[shinum]; break;
 		}
 
 		mat.setTexture(surf);
