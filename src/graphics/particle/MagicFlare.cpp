@@ -38,8 +38,6 @@
 #include "graphics/Renderer.h"
 #include "graphics/data/TextureContainer.h"
 
-static long flarenum = 0;
-
 struct MagicFlare {
 	unsigned char exist;
 	char type;
@@ -57,6 +55,7 @@ struct MagicFlare {
 
 static const size_t MAX_FLARES = 500;
 static MagicFlare magicFlares[MAX_FLARES];
+static long g_magicFlaresCount = 0;
 
 struct FLARETC
 {
@@ -99,7 +98,7 @@ void MagicFlareReleaseEntity(Entity * io) {
 
 long MagicFlareCountNonFlagged() {
 	
-	if(!flarenum)
+	if(!g_magicFlaresCount)
 		return 0;
 	
 	long count = 0;
@@ -113,7 +112,7 @@ long MagicFlareCountNonFlagged() {
 }
 
 void ARX_MAGICAL_FLARES_FirstInit() {
-	flarenum = 0;
+	g_magicFlaresCount = 0;
 	for(size_t i = 0; i < MAX_FLARES; i++) {
 		magicFlares[i].exist = 0;
 	}
@@ -129,7 +128,7 @@ static void removeFlare(MagicFlare & flare) {
 	
 	flare.tolive = 0;
 	flare.exist = 0;
-	flarenum--;
+	g_magicFlaresCount--;
 	
 }
 
@@ -142,7 +141,7 @@ void ARX_MAGICAL_FLARES_KillAll() {
 		}
 	}
 	
-	flarenum=0;
+	g_magicFlaresCount = 0;
 }
 
 static short g_magicFlareCurrentColor = 0;
@@ -173,7 +172,7 @@ void AddFlare(const Vec2f & pos, float sm, short typ, Entity * io, bool bookDraw
 
 	MagicFlare & flare = magicFlares[i];
 	flare.exist = 1;
-	flarenum++;
+	g_magicFlaresCount++;
 
 	if(!bookDraw)
 		flare.bDrawBitmap = 0;
@@ -365,7 +364,7 @@ static ArxInstant FRAMETICKS = ArxInstant_ZERO;
 
 void ARX_MAGICAL_FLARES_Update() {
 
-	if(!flarenum)
+	if(!g_magicFlaresCount)
 		return;
 
 	shinum++;
