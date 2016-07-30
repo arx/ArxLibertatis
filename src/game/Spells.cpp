@@ -137,7 +137,7 @@ bool GLOBAL_MAGIC_MODE = true;
 short ARX_FLARES_broken(1);
 
 long snip=0;
-static Vec2s g_LastFlarePosition;
+static Vec2f g_LastFlarePosition;
 static ArxInstant g_LastFlareTime;
 
 unsigned char ucFlick=0;
@@ -543,9 +543,9 @@ void ARX_SPELLS_ManageMagic() {
 			}
 			
 			if(eeMousePressed1()) {
-				Vec2s pos = DANAEMouse;
+				Vec2f pos = Vec2f(DANAEMouse);
 				if(TRUE_PLAYER_MOUSELOOK_ON) {
-					pos = MemoMouse;
+					pos = Vec2f(MemoMouse);
 				}
 				
 				ArxInstant now = arxtime.now();
@@ -559,7 +559,7 @@ void ARX_SPELLS_ManageMagic() {
 				
 				if(now - g_LastFlareTime >= interval) {
 					
-					if(glm::distance(Vec2f(pos), Vec2f(g_LastFlarePosition)) > 14 * g_sizeRatio.y) {
+					if(glm::distance(pos, g_LastFlarePosition) > 14 * g_sizeRatio.y) {
 						FlareLine(g_LastFlarePosition, pos);
 						g_LastFlarePosition = pos;
 					}

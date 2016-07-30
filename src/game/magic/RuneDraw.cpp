@@ -235,8 +235,8 @@ void ARX_SPELLS_UpdateSymbolDraw() {
 					if(newtime <= ti) {
 						float ratio = float(newtime) * div_ti;
 						pos1 += Vec2s(Vec2f(vect) * ratio);
-						AddFlare(pos1, 0.1f, 1, entities[handle]);
-						FlareLine(old_pos, pos1, entities[handle]);
+						AddFlare(Vec2f(pos1), 0.1f, 1, entities[handle]);
+						FlareLine(Vec2f(old_pos), Vec2f(pos1), entities[handle]);
 						break;
 					}
 
@@ -269,7 +269,7 @@ void ARX_SPELLS_UpdateSymbolDraw() {
 						
 						pos1 += Vec2s(Vec2f(ratio) * Vec2f(vect) * 0.5f);
 						
-						Vec2s pos = Vec2s(Vec2f(pos1) * g_sizeRatio);
+						Vec2f pos = Vec2f(pos1) * g_sizeRatio;
 						AddFlare(pos, 0.1f, 1, entities[handle], true);
 
 						break;

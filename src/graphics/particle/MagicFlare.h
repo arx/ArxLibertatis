@@ -32,8 +32,8 @@ long MagicFlareCountNonFlagged();
 void ARX_MAGICAL_FLARES_FirstInit();
 void ARX_MAGICAL_FLARES_KillAll();
 void MagicFlareChangeColor();
-void AddFlare(const Vec2s & pos, float sm, short typ, Entity * io = NULL, bool bookDraw = false);
-void FlareLine(const Vec2s &pos0, const Vec2s &pos1, Entity * io = NULL);
+void AddFlare(const Vec2f & pos, float sm, short typ, Entity * io = NULL, bool bookDraw = false);
+void FlareLine(const Vec2f &pos0, const Vec2f &pos1, Entity * io = NULL);
 void ARX_MAGICAL_FLARES_Update();
 
 #endif // ARX_GRAPHICS_PARTICLE_MAGICFLARE_H

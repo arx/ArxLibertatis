@@ -154,7 +154,7 @@ void MagicFlareChangeColor() {
 		PIPOrgb = 0;
 }
 
-void AddFlare(const Vec2s & pos, float sm, short typ, Entity * io, bool bookDraw) {
+void AddFlare(const Vec2f & pos, float sm, short typ, Entity * io, bool bookDraw) {
 	
 	int oldest = 0;
 	size_t i;
@@ -188,8 +188,8 @@ void AddFlare(const Vec2s & pos, float sm, short typ, Entity * io, bool bookDraw
 		flare.flags = 0;
 	}
 
-	flare.pos.x = float(pos.x) - Random::getf(0.f, 4.f);
-	flare.pos.y = float(pos.y) - Random::getf(0.f, 4.f) - 50.f;
+	flare.pos.x = pos.x - Random::getf(0.f, 4.f);
+	flare.pos.y = pos.y - Random::getf(0.f, 4.f) - 50.f;
 	flare.tv.rhw = flare.v.rhw = 1.f;
 
 	if(!bookDraw) {
@@ -306,14 +306,14 @@ void AddFlare(const Vec2s & pos, float sm, short typ, Entity * io, bool bookDraw
 }
 
 //! Helper for FlareLine
-static void AddLFlare(const Vec2s & pos, Entity * io) {
+static void AddLFlare(const Vec2f & pos, Entity * io) {
 	AddFlare(pos, 0.45f, 1, io);
 }
 
 static const int FLARELINESTEP = 7;
 static const int FLARELINERND = 6;
 
-void FlareLine(const Vec2s & pos0, const Vec2s & pos1, Entity * io)
+void FlareLine(const Vec2f & pos0, const Vec2f & pos1, Entity * io)
 {
 	Vec2f tmpPos0 = Vec2f(pos0);
 	Vec2f tmpPos1 = Vec2f(pos1);
@@ -338,7 +338,7 @@ void FlareLine(const Vec2s & pos0, const Vec2s & pos1, Entity * io)
 			}
 			i += z;
 			tmpPos0.y += m * z;
-			AddLFlare(Vec2s(i, tmpPos0.y), io);
+			AddLFlare(Vec2f(i, tmpPos0.y), io);
 		}
 		
 	} else {
@@ -358,7 +358,7 @@ void FlareLine(const Vec2s & pos0, const Vec2s & pos1, Entity * io)
 			}
 			i += z;
 			tmpPos0.x += m * z;
-			AddLFlare(Vec2s(tmpPos0.x, i), io);
+			AddLFlare(Vec2f(tmpPos0.x, i), io);
 		}
 		
 	}
