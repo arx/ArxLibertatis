@@ -413,16 +413,16 @@ void ARX_MAGICAL_FLARES_Update() {
 			}
 
 			float z = (flare.tolive * 0.00025f);
-			float s;
+			float size;
 			if(flare.type == 1) {
-				s = flare.size * 2 * z;
+				size = flare.size * 2 * z;
 			} else if(flare.type == 4) {
-				s = flare.size * 2.f * z + 10.f;
+				size = flare.size * 2.f * z + 10.f;
 			} else {
-				s = flare.size;
+				size = flare.size;
 			}
 
-			if(flare.tolive <= 0.f || flare.pos.y < -64.f || s < 3.f) {
+			if(flare.tolive <= 0.f || flare.pos.y < -64.f || size < 3.f) {
 				removeFlare(flare);
 				continue;
 			}
@@ -446,10 +446,10 @@ void ARX_MAGICAL_FLARES_Update() {
 			mat.setDepthTest(flare.io != NULL);
 			
 			if(flare.bDrawBitmap) {
-				s *= 2.f * minSizeRatio();
-				EERIEAddBitmap(mat, flare.v.p, s, s, surf, Color::fromRGBA(flare.tv.color));
+				size *= 2.f * minSizeRatio();
+				EERIEAddBitmap(mat, flare.v.p, size, size, surf, Color::fromRGBA(flare.tv.color));
 			} else {
-				EERIEAddSprite(mat, flare.v.p, s * 0.025f + 1.f,
+				EERIEAddSprite(mat, flare.v.p, size * 0.025f + 1.f,
 				               Color::fromRGBA(flare.tv.color), 2.f);
 			}
 
