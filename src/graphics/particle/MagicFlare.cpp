@@ -309,10 +309,10 @@ static void AddLFlare(const Vec2f & pos, Entity * io) {
 	AddFlare(pos, 0.45f, 1, io);
 }
 
-static const int FLARELINESTEP = 7;
-static const int FLARELINERND = 6;
-
 void FlareLine(Vec2f tmpPos0, Vec2f tmpPos1, Entity * io) {
+	
+	static const int FLARELINESTEP = 7;
+	static const int FLARELINERND = 6;
 	
 	Vec2f d = tmpPos1 - tmpPos0;
 	Vec2f ad = glm::abs(d);
