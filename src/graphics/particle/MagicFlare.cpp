@@ -40,7 +40,7 @@
 
 static long flarenum = 0;
 
-struct FLARES {
+struct MagicFlare {
 	unsigned char exist;
 	char type;
 	short flags;
@@ -56,7 +56,7 @@ struct FLARES {
 };
 
 static const size_t MAX_FLARES = 500;
-static FLARES magicFlares[MAX_FLARES];
+static MagicFlare magicFlares[MAX_FLARES];
 
 struct FLARETC
 {
@@ -119,7 +119,7 @@ void ARX_MAGICAL_FLARES_FirstInit() {
 	}
 }
 
-static void removeFlare(FLARES & flare) {
+static void removeFlare(MagicFlare & flare) {
 	
 	if(flare.io && ValidIOAddress(flare.io)) {
 		flare.io->flarecount--;
@@ -136,7 +136,7 @@ static void removeFlare(FLARES & flare) {
 void ARX_MAGICAL_FLARES_KillAll() {
 	
 	for(size_t i = 0; i < MAX_FLARES; i++) {
-		FLARES & flare = magicFlares[i];
+		MagicFlare & flare = magicFlares[i];
 		if(flare.exist) {
 			removeFlare(flare);
 		}
@@ -171,7 +171,7 @@ void AddFlare(const Vec2f & pos, float sm, short typ, Entity * io, bool bookDraw
 		i = oldest;
 	}
 
-	FLARES & flare = magicFlares[i];
+	MagicFlare & flare = magicFlares[i];
 	flare.exist = 1;
 	flarenum++;
 
@@ -398,7 +398,7 @@ void ARX_MAGICAL_FLARES_Update() {
 
 		for(size_t i = 0; i < MAX_FLARES; i++) {
 
-			FLARES & flare = magicFlares[i];
+			MagicFlare & flare = magicFlares[i];
 
 			if(!flare.exist || flare.type != j) {
 				continue;
