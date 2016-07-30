@@ -38,7 +38,7 @@
 #include "graphics/Renderer.h"
 #include "graphics/data/TextureContainer.h"
 
-long			flarenum=0;
+static long flarenum = 0;
 
 struct FLARES {
 	unsigned char exist;
@@ -56,7 +56,7 @@ struct FLARES {
 };
 
 static const size_t MAX_FLARES = 500;
-FLARES magicFlares[MAX_FLARES];
+static FLARES magicFlares[MAX_FLARES];
 
 struct FLARETC
 {
@@ -66,7 +66,7 @@ struct FLARETC
 	TextureContainer * shine[11];
 };
 
-FLARETC g_magicFlareTextures;
+static FLARETC g_magicFlareTextures;
 
 void MagicFlareLoadTextures() {
 
@@ -82,7 +82,7 @@ void MagicFlareLoadTextures() {
 	}
 }
 
-EERIE_CAMERA * g_magicFlareCamera;
+static EERIE_CAMERA * g_magicFlareCamera;
 
 static short shinum = 1;
 
