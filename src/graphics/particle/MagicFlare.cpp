@@ -53,8 +53,8 @@ struct MagicFlare {
 	bool bDrawBitmap;
 };
 
-static const size_t MAX_FLARES = 500;
-static MagicFlare magicFlares[MAX_FLARES];
+static const size_t g_magicFlaresMax = 500;
+static MagicFlare magicFlares[g_magicFlaresMax];
 static long g_magicFlaresCount = 0;
 
 struct FLARETC
@@ -90,7 +90,7 @@ void MagicFlareSetCamera(EERIE_CAMERA * camera) {
 }
 
 void MagicFlareReleaseEntity(Entity * io) {
-	for(size_t i = 0; i < MAX_FLARES; i++) {
+	for(size_t i = 0; i < g_magicFlaresMax; i++) {
 		if(magicFlares[i].exist && magicFlares[i].io == io)
 			magicFlares[i].io = NULL;
 	}
@@ -102,7 +102,7 @@ long MagicFlareCountNonFlagged() {
 		return 0;
 	
 	long count = 0;
-	for(size_t i = 0; i < MAX_FLARES; i++) {
+	for(size_t i = 0; i < g_magicFlaresMax; i++) {
 		if(magicFlares[i].exist && magicFlares[i].flags == 0) {
 			count++;
 		}
@@ -113,7 +113,7 @@ long MagicFlareCountNonFlagged() {
 
 void ARX_MAGICAL_FLARES_FirstInit() {
 	g_magicFlaresCount = 0;
-	for(size_t i = 0; i < MAX_FLARES; i++) {
+	for(size_t i = 0; i < g_magicFlaresMax; i++) {
 		magicFlares[i].exist = 0;
 	}
 }
@@ -134,7 +134,7 @@ static void removeFlare(MagicFlare & flare) {
 
 void ARX_MAGICAL_FLARES_KillAll() {
 	
-	for(size_t i = 0; i < MAX_FLARES; i++) {
+	for(size_t i = 0; i < g_magicFlaresMax; i++) {
 		MagicFlare & flare = magicFlares[i];
 		if(flare.exist) {
 			removeFlare(flare);
@@ -157,7 +157,7 @@ void AddFlare(const Vec2f & pos, float sm, short typ, Entity * io, bool bookDraw
 	
 	size_t oldest = 0;
 	size_t i;
-	for(i = 0; i < MAX_FLARES; i++) {
+	for(i = 0; i < g_magicFlaresMax; i++) {
 		if(!magicFlares[i].exist) {
 			break;
 		}
@@ -165,7 +165,7 @@ void AddFlare(const Vec2f & pos, float sm, short typ, Entity * io, bool bookDraw
 			oldest = i;
 		}
 	}
-	if(i >= MAX_FLARES) {
+	if(i >= g_magicFlaresMax) {
 		removeFlare(magicFlares[oldest]);
 		i = oldest;
 	}
@@ -395,7 +395,7 @@ void ARX_MAGICAL_FLARES_Update() {
 
 		mat.setTexture(surf);
 
-		for(size_t i = 0; i < MAX_FLARES; i++) {
+		for(size_t i = 0; i < g_magicFlaresMax; i++) {
 
 			MagicFlare & flare = magicFlares[i];
 
