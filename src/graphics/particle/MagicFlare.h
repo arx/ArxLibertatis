@@ -20,8 +20,10 @@
 #ifndef ARX_GRAPHICS_PARTICLE_MAGICFLARE_H
 #define ARX_GRAPHICS_PARTICLE_MAGICFLARE_H
 
-#include "game/Entity.h"
-#include "game/Camera.h"
+#include "math/Types.h"
+
+struct EERIE_CAMERA;
+class Entity;
 
 void MagicFlareLoadTextures();
 void MagicFlareSetCamera(EERIE_CAMERA * camera);
