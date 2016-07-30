@@ -132,9 +132,6 @@ struct PARTICLE_DEF {
 
 //-----------------------------------------------------------------------------
 
-
-static const float FLARE_MUL = 2.f;
-
 extern TextureContainer * fire2;
 extern long NewSpell;
 

@@ -241,7 +241,9 @@ void AddFlare(const Vec2f & pos, float sm, short typ, Entity * io, bool bookDraw
 			break;
 		}
 	}
-
+	
+	static const float FLARE_MUL = 2.f;
+	
 	if(typ == -1) {
 		float zz = eeMousePressed1() ? 0.29f : ((sm > 0.5f) ? Random::getf() : 1.f);
 		if(zz < 0.2f) {
