@@ -34,8 +34,9 @@
 #define ARX_UTIL_HANDLETYPE_H
 
 template <typename TAG, typename T, int INVALID_VALUE>
-struct HandleType {
+class HandleType {
 	T t;
+public:
 	explicit HandleType(const T t_) : t(t_) {}
 	HandleType() : t(INVALID_VALUE) {}
 	HandleType(const HandleType & t_) : t(t_.t){}
