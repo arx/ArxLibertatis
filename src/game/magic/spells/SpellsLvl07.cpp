@@ -582,9 +582,9 @@ static Vec3f GetChestPos(EntityHandle num) {
 	}
 
 	if(ValidIONum(num)) {
-		ObjVertIndex idx = GetGroupOriginByName(entities[num]->obj, "chest");
+		ObjVertHandle idx = GetGroupOriginByName(entities[num]->obj, "chest");
 
-		if(idx != ObjVertIndex()) {
+		if(idx != ObjVertHandle()) {
 			return entities[num]->obj->vertexlist3[idx.handleData()].v;
 		} else {
 			return entities[num]->pos + Vec3f(0.f, -120.f, 0.f);
@@ -601,8 +601,8 @@ void LightningStrikeSpell::Update() {
 	float falpha = 0.f;
 	
 	Entity * caster = entities[m_caster];
-	ObjVertIndex idx = GetGroupOriginByName(caster->obj, "chest");
-	if(idx != ObjVertIndex()) {
+	ObjVertHandle idx = GetGroupOriginByName(caster->obj, "chest");
+	if(idx != ObjVertHandle()) {
 		m_caster_pos = caster->obj->vertexlist3[idx.handleData()].v;
 	} else {
 		m_caster_pos = caster->pos;
@@ -688,8 +688,8 @@ void ConfuseSpell::Update() {
 		pos.y += entities[m_target]->physics.cyl.height - 30.f;
 	}
 	
-	ObjVertIndex idx = entities[m_target]->obj->fastaccess.head_group_origin;
-	if(idx != ObjVertIndex()) {
+	ObjVertHandle idx = entities[m_target]->obj->fastaccess.head_group_origin;
+	if(idx != ObjVertHandle()) {
 		pos = entities[m_target]->obj->vertexlist3[idx.handleData()].v;
 		pos.y -= 50.f;
 	}

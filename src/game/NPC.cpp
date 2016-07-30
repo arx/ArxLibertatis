@@ -2618,9 +2618,9 @@ Entity * ARX_NPC_GetFirstNPCInSight(Entity * ioo)
 		float ab = MAKEANGLE(ioo->angle.getPitch());
 		
 		{
-		ObjVertIndex grp = ioo->obj->fastaccess.head_group_origin;
+		ObjVertHandle grp = ioo->obj->fastaccess.head_group_origin;
 
-		if(grp == ObjVertIndex()) {
+		if(grp == ObjVertHandle()) {
 			orgn = ioo->pos + Vec3f(0.f, -90.f, 0.f);
 			
 			if(ioo == entities.player())
@@ -2631,9 +2631,9 @@ Entity * ARX_NPC_GetFirstNPCInSight(Entity * ioo)
 		}
 		
 		{
-		ObjVertIndex grp = io->obj->fastaccess.head_group_origin;
+		ObjVertHandle grp = io->obj->fastaccess.head_group_origin;
 
-		if(grp == ObjVertIndex()) {
+		if(grp == ObjVertHandle()) {
 			dest = io->pos + Vec3f(0.f, -90.f, 0.f);
 			
 			if(io == entities.player())
@@ -2741,8 +2741,8 @@ void CheckNPCEx(Entity * io) {
 		} else { // Make full visibility test
 			
 			// Retreives Head group position for "eye" pos.
-			ObjVertIndex grp = io->obj->fastaccess.head_group_origin;
-			Vec3f orgn = io->pos - Vec3f(0.f, (grp == ObjVertIndex()) ? 90.f : 120.f, 0.f);
+			ObjVertHandle grp = io->obj->fastaccess.head_group_origin;
+			Vec3f orgn = io->pos - Vec3f(0.f, (grp == ObjVertHandle()) ? 90.f : 120.f, 0.f);
 			Vec3f dest = player.pos + Vec3f(0.f, 90.f, 0.f);
 
 			// Check for Field of vision angle

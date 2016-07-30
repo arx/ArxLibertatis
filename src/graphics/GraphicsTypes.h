@@ -70,7 +70,7 @@ struct EERIE_LIGHT;
 typedef HandleType<struct ActionPointTag,  long,  -1> ActionPoint;
 typedef HandleType<struct ObjSelectionTag, long,  -1> ObjSelection;
 typedef HandleType<struct ObjVertGroupTag, short, -1> ObjVertGroup;
-typedef HandleType<struct ObjVertIndexTag, s32,   -1> ObjVertIndex;
+typedef HandleType<struct ObjVertHandleTag, s32,  -1> ObjVertHandle;
 
 struct EERIE_TRI {
 	Vec3f v[3];
@@ -321,7 +321,7 @@ struct EERIE_FASTACCESS
 	ActionPoint left_attach;
 	ActionPoint weapon_attach;
 	ActionPoint secondary_attach;
-	ObjVertIndex head_group_origin;
+	ObjVertHandle head_group_origin;
 	ObjVertGroup head_group;
 	ActionPoint fire;
 	ObjSelection sel_head;

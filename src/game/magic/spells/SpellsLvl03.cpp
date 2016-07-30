@@ -245,9 +245,9 @@ void FireballSpell::Update() {
 		if(m_caster == EntityHandle_Player) {
 			afBeta = player.angle.getPitch();
 			afAlpha = player.angle.getYaw();
-			ObjVertIndex idx = GetGroupOriginByName(entities[m_caster]->obj, "chest");
+			ObjVertHandle idx = GetGroupOriginByName(entities[m_caster]->obj, "chest");
 
-			if(idx != ObjVertIndex()) {
+			if(idx != ObjVertHandle()) {
 				eCurPos = entities[m_caster]->obj->vertexlist3[idx.handleData()].v;
 			} else {
 				eCurPos = player.pos;
