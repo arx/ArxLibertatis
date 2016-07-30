@@ -54,7 +54,7 @@ struct MagicFlare {
 };
 
 static const size_t g_magicFlaresMax = 500;
-static MagicFlare magicFlares[g_magicFlaresMax];
+static MagicFlare g_magicFlares[g_magicFlaresMax];
 static long g_magicFlaresCount = 0;
 
 struct FLARETC
@@ -91,8 +91,8 @@ void MagicFlareSetCamera(EERIE_CAMERA * camera) {
 
 void MagicFlareReleaseEntity(Entity * io) {
 	for(size_t i = 0; i < g_magicFlaresMax; i++) {
-		if(magicFlares[i].exist && magicFlares[i].io == io)
-			magicFlares[i].io = NULL;
+		if(g_magicFlares[i].exist && g_magicFlares[i].io == io)
+			g_magicFlares[i].io = NULL;
 	}
 }
 
@@ -103,7 +103,7 @@ long MagicFlareCountNonFlagged() {
 	
 	long count = 0;
 	for(size_t i = 0; i < g_magicFlaresMax; i++) {
-		if(magicFlares[i].exist && magicFlares[i].flags == 0) {
+		if(g_magicFlares[i].exist && g_magicFlares[i].flags == 0) {
 			count++;
 		}
 	}
@@ -114,7 +114,7 @@ long MagicFlareCountNonFlagged() {
 void ARX_MAGICAL_FLARES_FirstInit() {
 	g_magicFlaresCount = 0;
 	for(size_t i = 0; i < g_magicFlaresMax; i++) {
-		magicFlares[i].exist = 0;
+		g_magicFlares[i].exist = 0;
 	}
 }
 
@@ -135,7 +135,7 @@ static void removeFlare(MagicFlare & flare) {
 void ARX_MAGICAL_FLARES_KillAll() {
 	
 	for(size_t i = 0; i < g_magicFlaresMax; i++) {
-		MagicFlare & flare = magicFlares[i];
+		MagicFlare & flare = g_magicFlares[i];
 		if(flare.exist) {
 			removeFlare(flare);
 		}
@@ -158,19 +158,19 @@ void AddFlare(const Vec2f & pos, float sm, short typ, Entity * io, bool bookDraw
 	size_t oldest = 0;
 	size_t i;
 	for(i = 0; i < g_magicFlaresMax; i++) {
-		if(!magicFlares[i].exist) {
+		if(!g_magicFlares[i].exist) {
 			break;
 		}
-		if(magicFlares[i].tolive < magicFlares[oldest].tolive) {
+		if(g_magicFlares[i].tolive < g_magicFlares[oldest].tolive) {
 			oldest = i;
 		}
 	}
 	if(i >= g_magicFlaresMax) {
-		removeFlare(magicFlares[oldest]);
+		removeFlare(g_magicFlares[oldest]);
 		i = oldest;
 	}
 
-	MagicFlare & flare = magicFlares[i];
+	MagicFlare & flare = g_magicFlares[i];
 	flare.exist = 1;
 	g_magicFlaresCount++;
 
@@ -397,7 +397,7 @@ void ARX_MAGICAL_FLARES_Update() {
 
 		for(size_t i = 0; i < g_magicFlaresMax; i++) {
 
-			MagicFlare & flare = magicFlares[i];
+			MagicFlare & flare = g_magicFlares[i];
 
 			if(!flare.exist || flare.type != j) {
 				continue;
