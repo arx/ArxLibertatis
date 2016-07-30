@@ -734,7 +734,7 @@ bool ARX_SPELLS_AnalyseSPELL() {
 	}
 	
 	return ARX_SPELLS_Launch(spell,
-	                         PlayerEntityHandle,
+	                         EntityHandle_Player,
 	                         flags,
 	                         -1,
 	                         EntityHandle(),

@@ -54,7 +54,7 @@ void MagicSightSpell::Launch()
 	
 	ARX_SOUND_PlaySFX(SND_SPELL_VISION_START, &m_caster_pos);
 	
-	if(m_caster == PlayerEntityHandle) {
+	if(m_caster == EntityHandle_Player) {
 		player.m_improve = true;
 		m_snd_loop = ARX_SOUND_PlaySFX(SND_SPELL_VISION_LOOP, &m_caster_pos, 1.f, ARX_SOUND_PLAY_LOOPED);
 	}
@@ -62,7 +62,7 @@ void MagicSightSpell::Launch()
 
 void MagicSightSpell::End()
 {
-	if(m_caster == PlayerEntityHandle) {
+	if(m_caster == EntityHandle_Player) {
 		player.m_improve = false;
 		ARX_SOUND_Stop(m_snd_loop);
 	}
@@ -71,7 +71,7 @@ void MagicSightSpell::End()
 
 void MagicSightSpell::Update() {
 	
-	if(m_caster == PlayerEntityHandle) {
+	if(m_caster == EntityHandle_Player) {
 		Vec3f pos = ARX_PLAYER_FrontPos();
 		ARX_SOUND_RefreshPosition(m_snd_loop, pos);
 	}	
@@ -146,7 +146,7 @@ void MagicMissileSpell::Launch() {
 	
 	Vec3f startPos;
 	float afAlpha, afBeta;
-	if(m_caster == PlayerEntityHandle) {
+	if(m_caster == EntityHandle_Player) {
 		afBeta = player.angle.getPitch();
 		afAlpha = player.angle.getYaw();
 		
@@ -188,7 +188,7 @@ void MagicMissileSpell::Launch() {
 		}
 	}
 	
-	m_mrCheat = (m_caster == PlayerEntityHandle && cur_mr == 3);
+	m_mrCheat = (m_caster == EntityHandle_Player && cur_mr == 3);
 	
 	ArxDuration lMax = ArxDuration_ZERO;
 	
@@ -371,7 +371,7 @@ void IgnitSpell::Launch()
 			continue;
 		}
 		
-		if(m_caster == PlayerEntityHandle && (light->extras & EXTRAS_NO_IGNIT)) {
+		if(m_caster == EntityHandle_Player && (light->extras & EXTRAS_NO_IGNIT)) {
 			continue;
 		}
 		

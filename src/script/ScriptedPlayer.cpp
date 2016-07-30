@@ -333,7 +333,7 @@ public:
 				for(size_t i = 0; i < MAX_SPELLS; i++) {
 					SpellBase * spell = spells[SpellHandle(i)];
 					
-					if(spell && (spell->m_caster == PlayerEntityHandle || spell->m_target == PlayerEntityHandle)) {
+					if(spell && (spell->m_caster == EntityHandle_Player || spell->m_target == EntityHandle_Player)) {
 						switch(spell->m_type) {
 							case SPELL_MAGIC_SIGHT:
 							case SPELL_LEVITATE:
@@ -347,7 +347,7 @@ public:
 				}
 				
 				Stack_SendMsgToAllNPC_IO(SM_CONTROLS_OFF, "");
-				spells.endByCaster(PlayerEntityHandle);
+				spells.endByCaster(EntityHandle_Player);
 			}
 			BLOCK_PLAYER_CONTROLS = true;
 			player.Interface &= ~INTER_COMBATMODE;

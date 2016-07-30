@@ -143,7 +143,7 @@ void ARX_THROWN_OBJECT_Throw(EntityHandle source, const Vec3f & position, const 
 	projectile.creation_time = arxtime.now();
 	projectile.flags |= ATO_EXIST | ATO_MOVING;
 	
-	if(source == PlayerEntityHandle
+	if(source == EntityHandle_Player
 	   && ValidIONum(player.equiped[EQUIP_SLOT_WEAPON])
 	) {
 		Entity * tio = entities[player.equiped[EQUIP_SLOT_WEAPON]];
@@ -179,7 +179,7 @@ static float ARX_THROWN_ComputeDamages(const Projectile & projectile, EntityHand
 	backstab = 1.f;
 	bool critical = false;
 
-	if(source == PlayerEntityHandle) {
+	if(source == EntityHandle_Player) {
 		attack = projectile.damages;
 
 		if(Random::getf(0.f, 100.f) <= float(player.m_attributeFull.dexterity - 9) * 2.f
@@ -206,7 +206,7 @@ static float ARX_THROWN_ComputeDamages(const Projectile & projectile, EntityHand
 
 	float absorb;
 
-	if(target == PlayerEntityHandle) {
+	if(target == EntityHandle_Player) {
 		ac = player.m_miscFull.armorClass;
 		absorb = player.m_skillFull.defense * .5f;
 	} else {
@@ -322,7 +322,7 @@ static void CheckExp(const Projectile & projectile) {
 		spawnFireHitParticle(pos, 0);
 		PolyBoomAddScorch(pos);
 		LaunchFireballBoom(pos, 10);
-		DoSphericDamage(Sphere(pos, 50.f), 4.f * 2, DAMAGE_AREA, DAMAGE_TYPE_FIRE | DAMAGE_TYPE_MAGICAL, PlayerEntityHandle);
+		DoSphericDamage(Sphere(pos, 50.f), 4.f * 2, DAMAGE_AREA, DAMAGE_TYPE_FIRE | DAMAGE_TYPE_MAGICAL, EntityHandle_Player);
 		ARX_SOUND_PlaySFX(SND_SPELL_FIRE_HIT, &pos);
 		ARX_NPC_SpawnAudibleSound(pos, entities.player());
 		LightHandle id = GetFreeDynLight();
@@ -539,7 +539,7 @@ void ARX_THROWN_OBJECT_Manage(float time_offset)
 											pos = target->obj->vertexlist3[hitpoint].v;
 										}
 
-										if(projectile.source == PlayerEntityHandle) {
+										if(projectile.source == EntityHandle_Player) {
 											float damages = ARX_THROWN_ComputeDamages(projectile, projectile.source, sphereContent[jj]);
 
 											if(damages > 0.f) {

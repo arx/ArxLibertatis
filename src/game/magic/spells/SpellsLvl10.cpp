@@ -64,7 +64,7 @@ void MassLightningStrikeSpell::Launch()
 	m_soundEffectPlayed = false;
 	
 	float beta;
-	if(m_caster == PlayerEntityHandle) {
+	if(m_caster == EntityHandle_Player) {
 		m_pos = player.pos + Vec3f(0.f, 150.f, 0.f);
 		beta = player.angle.getPitch();
 	} else {
@@ -456,7 +456,7 @@ void TeleportSpell::Launch()
 	
 	ARX_SOUND_PlaySFX(SND_SPELL_TELEPORT, &m_caster_pos);
 	
-	if(m_caster == PlayerEntityHandle) {
+	if(m_caster == EntityHandle_Player) {
 		LASTTELEPORT = 0.f;
 	}
 }

@@ -49,8 +49,8 @@ void InvisibilitySpell::Launch()
 	m_hasDuration = true;
 	m_fManaCostPerSecond = 3.f;
 	
-	if(m_caster == PlayerEntityHandle) {
-		m_target = PlayerEntityHandle;
+	if(m_caster == EntityHandle_Player) {
+		m_target = EntityHandle_Player;
 	}
 
 	entities[m_target]->gameFlags |= GFLAG_INVISIBILITY;
@@ -72,7 +72,7 @@ void InvisibilitySpell::End()
 
 void InvisibilitySpell::Update() {
 	
-	if(m_target != PlayerEntityHandle) {
+	if(m_target != EntityHandle_Player) {
 		if(!(entities[m_target]->gameFlags & GFLAG_INVISIBILITY)) {
 			m_targets.clear();
 			ARX_SPELLS_Fizzle(this);
@@ -147,7 +147,7 @@ void ManaDrainSpell::Update() {
 	float refpos;
 	float scaley;
 	
-	if(m_caster == PlayerEntityHandle)
+	if(m_caster == EntityHandle_Player)
 		scaley = 90.f;
 	else
 		scaley = glm::abs(entities[m_caster]->physics.cyl.height * (1.0f/2)) + 30.f;
@@ -157,7 +157,7 @@ void ManaDrainSpell::Update() {
 	float mov = std::sin(frametime * (1.0f/800)) * scaley;
 	
 	Vec3f cabalpos;
-	if(m_caster == PlayerEntityHandle) {
+	if(m_caster == EntityHandle_Player) {
 		cabalpos.x = player.pos.x;
 		cabalpos.y = player.pos.y + 60.f - mov;
 		cabalpos.z = player.pos.z;
@@ -253,7 +253,7 @@ void ExplosionSpell::Launch()
 	m_duration = ArxDurationMs(2000);
 	
 	Vec3f target = entities[m_caster]->pos;
-	if(m_caster == PlayerEntityHandle) {
+	if(m_caster == EntityHandle_Player) {
 		target.y += 60.f;
 	} else {
 		target.y -= 60.f;
@@ -405,7 +405,7 @@ void LifeDrainSpell::Update() {
 	float refpos;
 	float scaley;
 	
-	if(m_caster == PlayerEntityHandle)
+	if(m_caster == EntityHandle_Player)
 		scaley = 90.f;
 	else
 		scaley = glm::abs(entities[m_caster]->physics.cyl.height * (1.0f/2)) + 30.f;
@@ -415,7 +415,7 @@ void LifeDrainSpell::Update() {
 	float mov = std::sin(frametime * (1.0f/800)) * scaley;
 	
 	Vec3f cabalpos;
-	if(m_caster == PlayerEntityHandle) {
+	if(m_caster == EntityHandle_Player) {
 		cabalpos.x = player.pos.x;
 		cabalpos.y = player.pos.y + 60.f - mov;
 		cabalpos.z = player.pos.z;

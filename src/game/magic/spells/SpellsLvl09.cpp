@@ -42,7 +42,7 @@
 void SummonCreatureSpell::GetTargetAndBeta(Vec3f & target, float & beta)
 {
 	bool displace = false;
-	if(m_caster == PlayerEntityHandle) {
+	if(m_caster == EntityHandle_Player) {
 		target = player.basePosition();
 		beta = player.angle.getPitch();
 		displace = true;
@@ -92,7 +92,7 @@ void SummonCreatureSpell::Launch()
 	float beta;
 	GetTargetAndBeta(target, beta);
 	
-	m_megaCheat = (m_caster == PlayerEntityHandle && cur_mega == 10);
+	m_megaCheat = (m_caster == EntityHandle_Player && cur_mega == 10);
 	m_targetPos = target;
 	ARX_SOUND_PlaySFX(SND_SPELL_SUMMON_CREATURE, &m_targetPos);
 	
@@ -267,7 +267,7 @@ void SummonCreatureSpell::Update() {
 
 bool FakeSummonSpell::CanLaunch()
 {
-	if(m_caster.handleData() <= PlayerEntityHandle.handleData() || !ValidIONum(m_target)) {
+	if(m_caster.handleData() <= EntityHandle_Player.handleData() || !ValidIONum(m_target)) {
 		return false;
 	}
 	
@@ -281,7 +281,7 @@ void FakeSummonSpell::Launch()
 	m_duration = ArxDurationMs(4000);
 	
 	Vec3f target = entities[m_target]->pos;
-	if(m_target != PlayerEntityHandle) {
+	if(m_target != EntityHandle_Player) {
 		target.y += player.baseHeight();
 	}
 	m_targetPos = target;
@@ -334,8 +334,8 @@ NegateMagicSpell::NegateMagicSpell()
 
 void NegateMagicSpell::Launch()
 {
-	if(m_caster == PlayerEntityHandle) {
-		m_target = PlayerEntityHandle;
+	if(m_caster == EntityHandle_Player) {
+		m_target = EntityHandle_Player;
 	}
 	
 	ARX_SOUND_PlaySFX(SND_SPELL_NEGATE_MAGIC, &entities[m_target]->pos);
@@ -360,7 +360,7 @@ void NegateMagicSpell::Update() {
 	
 	LaunchAntiMagicField();
 	
-	if(m_target == PlayerEntityHandle) {
+	if(m_target == EntityHandle_Player) {
 		m_pos = player.basePosition();
 	} else {
 		m_pos = entities[m_target]->pos;
@@ -432,7 +432,7 @@ void NegateMagicSpell::LaunchAntiMagicField() {
 		if(closerThan(pos, entities[m_target]->pos, 600.f)) {
 			if(spell->m_type != SPELL_CREATE_FIELD) {
 				spells.endSpell(spell);
-			} else if(m_target == PlayerEntityHandle && spell->m_caster == PlayerEntityHandle) {
+			} else if(m_target == EntityHandle_Player && spell->m_caster == EntityHandle_Player) {
 				spells.endSpell(spell);
 			}
 		}

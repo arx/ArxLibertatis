@@ -121,7 +121,7 @@ void ARX_SPELLS_Precast_Check() {
 				if(ArxDurationMs(layer1.ctime) + ArxDurationMs(550) > layer1.cur_anim->anims[layer1.altidx_cur]->anim_time)
 				{
 					ARX_SPELLS_Launch(Precast[i].typ,
-					                  PlayerEntityHandle,
+					                  EntityHandle_Player,
 					                  Precast[i].flags | SPELLCAST_FLAG_LAUNCHPRECAST,
 					                  Precast[i].level,
 					                  EntityHandle(),

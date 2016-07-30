@@ -64,7 +64,7 @@ Vec3f SpellBase::getTargetPosition() {
 void SpellBase::updateCasterHand() {
 	
 	// Create hand position if a hand is defined
-	if(m_caster == PlayerEntityHandle) {
+	if(m_caster == EntityHandle_Player) {
 		m_hand_group = entities[m_caster]->obj->fastaccess.primary_attach;
 	} else {
 		m_hand_group = entities[m_caster]->obj->fastaccess.left_attach;
@@ -77,7 +77,7 @@ void SpellBase::updateCasterHand() {
 
 void SpellBase::updateCasterPosition() {
 	
-	if(m_caster == PlayerEntityHandle) {
+	if(m_caster == EntityHandle_Player) {
 		m_caster_pos = player.pos;
 	} else {
 		m_caster_pos = entities[m_caster]->pos;
@@ -89,7 +89,7 @@ Vec3f SpellBase::getTargetPos(EntityHandle source, EntityHandle target)
 	Vec3f targetPos;
 	if(target == EntityHandle()) {
 		// no target... targeted by sight
-		if(source == PlayerEntityHandle) {
+		if(source == EntityHandle_Player) {
 			// no target... player spell targeted by sight
 			targetPos = player.pos;
 			targetPos += angleToVectorXZ(player.angle.getPitch()) * 60.f;
@@ -100,7 +100,7 @@ Vec3f SpellBase::getTargetPos(EntityHandle source, EntityHandle target)
 			targetPos += angleToVectorXZ(entities[target]->angle.getPitch()) * 60.f;
 			targetPos += Vec3f(0.f, -120.f, 0.f);
 		}
-	} else if(target == PlayerEntityHandle) {
+	} else if(target == EntityHandle_Player) {
 		// player target
 		targetPos = player.pos;
 	} else {

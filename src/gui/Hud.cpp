@@ -1162,7 +1162,7 @@ void ActiveSpellsGui::spellsByPlayerUpdate(float intensity) {
 		SpellBase * spell = spells[SpellHandle(i)];
 		
 		if(   spell
-		   && spell->m_caster == PlayerEntityHandle
+		   && spell->m_caster == EntityHandle_Player
 		   && spellicons[spell->m_type].m_hasDuration
 		) {
 			ManageSpellIcon(*spell, intensity, false);
@@ -1176,11 +1176,11 @@ void ActiveSpellsGui::spellsOnPlayerUpdate(float intensity) {
 		if(!spell)
 			continue;
 		
-		if(std::find(spell->m_targets.begin(), spell->m_targets.end(), PlayerEntityHandle) == spell->m_targets.end()) {
+		if(std::find(spell->m_targets.begin(), spell->m_targets.end(), EntityHandle_Player) == spell->m_targets.end()) {
 			continue;
 		}
 		
-		if(spell->m_caster != PlayerEntityHandle && spellicons[spell->m_type].m_hasDuration) {
+		if(spell->m_caster != EntityHandle_Player && spellicons[spell->m_type].m_hasDuration) {
 			ManageSpellIcon(*spell, intensity, true);
 		}
 	}

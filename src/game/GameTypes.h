@@ -27,7 +27,7 @@ typedef HandleType<struct SpellHandleTag,   long, -1> SpellHandle;
 typedef HandleType<struct PrecastHandleTag, long, -1> PrecastHandle;
 typedef HandleType<struct DamageHandleTag,  long, -1> DamageHandle;
 
-static const EntityHandle PlayerEntityHandle = EntityHandle(0);
+static const EntityHandle EntityHandle_Player = EntityHandle(0);
 
 struct ResourcePool {
 	float current;

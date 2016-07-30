@@ -476,7 +476,7 @@ float ARX_EQUIPMENT_ComputeDamages(Entity * io_source, Entity * io_target, float
 	if(!(io_target->ioflags & IO_NPC)) {
 		if(io_target->ioflags & IO_FIX) {
 			if (io_source == entities.player())
-				ARX_DAMAGES_DamageFIX(io_target, player.m_miscFull.damages, PlayerEntityHandle, false);
+				ARX_DAMAGES_DamageFIX(io_target, player.m_miscFull.damages, EntityHandle_Player, false);
 			else if (io_source->ioflags & IO_NPC)
 				ARX_DAMAGES_DamageFIX(io_target, io_source->_npcdata->damages, io_source->index(), false);
 			else
@@ -685,7 +685,7 @@ bool ARX_EQUIPMENT_Strike_Check(Entity * io_source, Entity * io_weapon, float ra
 		sphere.origin = actionPointPosition(io_weapon->obj, action.idx);
 		sphere.radius = rad; 
 
-		if(source != PlayerEntityHandle)
+		if(source != EntityHandle_Player)
 			sphere.radius += 15.f;
 
 		std::vector<EntityHandle> sphereContent;
@@ -790,7 +790,7 @@ bool ARX_EQUIPMENT_Strike_Check(Entity * io_source, Entity * io_weapon, float ra
 								sp.origin.z = vertPos.z + vect.z * 30.f;
 								sp.radius = 3.5f * power * 20;
 
-								if(CheckAnythingInSphere(sp, PlayerEntityHandle, CAS_NO_NPC_COL)) {
+								if(CheckAnythingInSphere(sp, EntityHandle_Player, CAS_NO_NPC_COL)) {
 									Color3f rgb = color.to<float>();
 									
 									Sphere splatSphere;

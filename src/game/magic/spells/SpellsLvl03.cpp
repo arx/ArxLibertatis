@@ -51,19 +51,19 @@ void SpeedSpell::Launch()
 	m_hasDuration = true;
 	m_fManaCostPerSecond = 2.f;
 	
-	if(m_caster == PlayerEntityHandle) {
+	if(m_caster == EntityHandle_Player) {
 		m_target = m_caster;
 	}
 	
 	ARX_SOUND_PlaySFX(SND_SPELL_SPEED_START, &entities[m_target]->pos);
 	
-	if(m_target == PlayerEntityHandle) {
+	if(m_target == EntityHandle_Player) {
 		m_snd_loop = ARX_SOUND_PlaySFX(SND_SPELL_SPEED_LOOP, &entities[m_target]->pos, 1.f, ARX_SOUND_PLAY_LOOPED);
 	}
 	
 	m_duration = (m_launchDuration > ArxDuration(-1)) ? m_launchDuration : ArxDurationMs(20000);
 	
-	if(m_caster == PlayerEntityHandle)
+	if(m_caster == EntityHandle_Player)
 		m_duration = ArxDurationMs(200000000);
 	
 	std::vector<VertexGroup> & grouplist = entities[m_target]->obj->grouplist;
@@ -95,7 +95,7 @@ void SpeedSpell::End() {
 	
 	m_targets.clear();
 	
-	if(m_caster == PlayerEntityHandle)
+	if(m_caster == EntityHandle_Player)
 		ARX_SOUND_Stop(m_snd_loop);
 	
 	ARX_SOUND_PlaySFX(SND_SPELL_SPEED_END, &entities[m_target]->pos);
@@ -108,7 +108,7 @@ void SpeedSpell::End() {
 
 void SpeedSpell::Update() {
 	
-	if(m_caster == PlayerEntityHandle)
+	if(m_caster == EntityHandle_Player)
 		ARX_SOUND_RefreshPosition(m_snd_loop, entities[m_target]->pos);
 	
 	for(size_t i = 0; i < m_trails.size(); i++) {
@@ -178,7 +178,7 @@ void FireballSpell::Launch() {
 	
 	m_duration = ArxDurationMs(6000);
 	
-	if(m_caster != PlayerEntityHandle) {
+	if(m_caster != EntityHandle_Player) {
 		m_hand_group = ActionPoint();
 	}
 	
@@ -197,7 +197,7 @@ void FireballSpell::Launch() {
 	}
 	
 	float anglea = 0, angleb;
-	if(m_caster == PlayerEntityHandle) {
+	if(m_caster == EntityHandle_Player) {
 		anglea = player.angle.getYaw(), angleb = player.angle.getPitch();
 	} else {
 		
@@ -242,7 +242,7 @@ void FireballSpell::Update() {
 		float afAlpha = 0.f;
 		float afBeta = 0.f;
 		
-		if(m_caster == PlayerEntityHandle) {
+		if(m_caster == EntityHandle_Player) {
 			afBeta = player.angle.getPitch();
 			afAlpha = player.angle.getYaw();
 			long idx = GetGroupOriginByName(entities[m_caster]->obj, "chest");
@@ -350,7 +350,7 @@ void CreateFoodSpell::Launch()
 	m_duration = (m_launchDuration > ArxDuration(-1)) ? m_launchDuration : ArxDurationMs(3500);
 	m_currentTime = 0;
 	
-	if(m_caster == PlayerEntityHandle || m_target == PlayerEntityHandle) {
+	if(m_caster == EntityHandle_Player || m_target == EntityHandle_Player) {
 		player.hunger = 100;
 	}
 	
@@ -417,7 +417,7 @@ void IceProjectileSpell::Launch()
 	
 	Vec3f target;
 	float angleb;
-	if(m_caster == PlayerEntityHandle) {
+	if(m_caster == EntityHandle_Player) {
 		target = player.pos + Vec3f(0.f, 160.f, 0.f);
 		angleb = player.angle.getPitch();
 	} else {

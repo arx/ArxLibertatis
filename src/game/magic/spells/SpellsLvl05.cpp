@@ -170,8 +170,8 @@ void LevitateSpell::Launch()
 {
 	spells.endByCaster(m_caster, SPELL_LEVITATE);
 	
-	if(m_caster == PlayerEntityHandle) {
-		m_target = PlayerEntityHandle;
+	if(m_caster == EntityHandle_Player) {
+		m_target = EntityHandle_Player;
 	}
 	
 	ARX_SOUND_PlaySFX(SND_SPELL_LEVITATE_START, &entities[m_target]->pos);
@@ -181,7 +181,7 @@ void LevitateSpell::Launch()
 	m_fManaCostPerSecond = 1.f;
 	
 	Vec3f target;
-	if(m_target == PlayerEntityHandle) {
+	if(m_target == EntityHandle_Player) {
 		target = player.pos + Vec3f(0.f, 150.f, 0.f);
 		m_duration = ArxDurationMs(200000000);
 		player.levitate = true;
@@ -209,7 +209,7 @@ void LevitateSpell::End()
 	ARX_SOUND_PlaySFX(SND_SPELL_LEVITATE_END, &entities[m_target]->pos);
 	m_targets.clear();
 	
-	if(m_target == PlayerEntityHandle)
+	if(m_target == EntityHandle_Player)
 		player.levitate = false;
 }
 
@@ -219,7 +219,7 @@ void LevitateSpell::Update() {
 	
 	Vec3f target;
 
-	if(m_target == PlayerEntityHandle) {
+	if(m_target == EntityHandle_Player) {
 		target = player.pos + Vec3f(0.f, 150.f, 0.f);
 		player.levitate = true;
 	} else {
@@ -284,12 +284,12 @@ CurePoisonSpell::CurePoisonSpell()
 
 void CurePoisonSpell::Launch()
 {
-	if(m_caster == PlayerEntityHandle) {
-		m_target = PlayerEntityHandle;
+	if(m_caster == EntityHandle_Player) {
+		m_target = EntityHandle_Player;
 	}
 	
 	float cure = m_level * 10;
-	if(m_target == PlayerEntityHandle) {
+	if(m_target == EntityHandle_Player) {
 		player.poison -= std::min(player.poison, cure);
 		ARX_SOUND_PlaySFX(SND_SPELL_CURE_POISON);
 	} else if (ValidIONum(m_target)) {
@@ -330,7 +330,7 @@ void CurePoisonSpell::Update() {
 	
 	m_pos = entities[m_target]->pos;
 	
-	if(m_target == PlayerEntityHandle)
+	if(m_target == EntityHandle_Player)
 		m_pos.y += 200;
 	
 	long ff = m_duration - m_currentTime;
@@ -387,12 +387,12 @@ void RepelUndeadSpell::Launch()
 {
 	spells.endByCaster(m_caster, SPELL_REPEL_UNDEAD);
 	
-	if(m_caster == PlayerEntityHandle) {
-		m_target = PlayerEntityHandle;
+	if(m_caster == EntityHandle_Player) {
+		m_target = EntityHandle_Player;
 	}
 	
 	ARX_SOUND_PlaySFX(SND_SPELL_REPEL_UNDEAD, &entities[m_target]->pos);
-	if(m_target == PlayerEntityHandle) {
+	if(m_target == EntityHandle_Player) {
 		m_snd_loop = ARX_SOUND_PlaySFX(SND_SPELL_REPEL_UNDEAD_LOOP, &entities[m_target]->pos, 1.f, ARX_SOUND_PLAY_LOOPED);
 	}
 	
@@ -416,7 +416,7 @@ void RepelUndeadSpell::Update() {
 	Vec3f pos = entities[m_target]->pos;
 	
 	float rot;
-	if(m_target == PlayerEntityHandle) {
+	if(m_target == EntityHandle_Player) {
 		rot = player.angle.getPitch();
 	} else {
 		rot = entities[m_target]->angle.getPitch();
@@ -479,7 +479,7 @@ void RepelUndeadSpell::Update() {
 		light->creationTime = arxtime.now();
 	}
 	
-	if (m_target == PlayerEntityHandle)
+	if (m_target == EntityHandle_Player)
 		ARX_SOUND_RefreshPosition(m_snd_loop, entities[m_target]->pos);
 }
 
@@ -512,7 +512,7 @@ void PoisonProjectileSpell::Launch()
 		m_hand_pos = actionPointPosition(caster->obj, group);
 	}
 	
-	if(m_caster == PlayerEntityHandle) {
+	if(m_caster == EntityHandle_Player) {
 
 		afBeta = player.angle.getPitch();
 

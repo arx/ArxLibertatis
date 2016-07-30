@@ -40,7 +40,7 @@ void RiseDeadSpell::GetTargetAndBeta(Vec3f & target, float & beta)
 {
 	bool displace = true;
 	
-	if(m_caster == PlayerEntityHandle) {
+	if(m_caster == EntityHandle_Player) {
 		target = player.basePosition();
 		beta = player.angle.getPitch();
 	} else {
@@ -236,7 +236,7 @@ void ParalyseSpell::Launch()
 	m_duration = (m_launchDuration > ArxDuration(-1)) ? m_launchDuration : ArxDurationMs(5000);
 	
 	float resist_magic = 0.f;
-	if(m_target == PlayerEntityHandle && m_level <= player.level) {
+	if(m_target == EntityHandle_Player && m_level <= player.level) {
 		resist_magic = player.m_misc.resistMagic;
 	} else if(entities[m_target]->ioflags & IO_NPC) {
 		resist_magic = entities[m_target]->_npcdata->resist_magic;
@@ -286,7 +286,7 @@ void CreateFieldSpell::Launch()
 	Vec3f target;
 	float beta = 0.f;
 	bool displace = false;
-	if(m_caster == PlayerEntityHandle) {
+	if(m_caster == EntityHandle_Player) {
 		target = entities.player()->pos;
 		beta = player.angle.getPitch();
 		displace = true;
@@ -421,7 +421,7 @@ void SlowDownSpell::Launch()
 	
 	m_duration = (m_launchDuration > ArxDuration(-1)) ? m_launchDuration : ArxDurationMs(10000);
 	
-	if(m_caster == PlayerEntityHandle)
+	if(m_caster == EntityHandle_Player)
 		m_duration = ArxDurationMs(10000000);
 	
 	m_hasDuration = true;

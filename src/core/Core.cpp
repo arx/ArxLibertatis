@@ -347,7 +347,7 @@ static void PlayerLaunchArrow_Test(float aimratio, float poisonous, const Vec3f 
 	
 	float damages = wd * (1.f + (player.m_skillFull.projectile + player.m_attributeFull.dexterity) * (1.f/50));
 
-	ARX_THROWN_OBJECT_Throw(PlayerEntityHandle, position, vect, quat, velocity, damages, poisonous);
+	ARX_THROWN_OBJECT_Throw(EntityHandle_Player, position, vect, quat, velocity, damages, poisonous);
 }
 
 //*************************************************************************************
@@ -774,10 +774,10 @@ void ManageCombatModeAnimations() {
 							
 							EntityHandle num;
 							
-							if(CheckAnythingInSphere(sphere, PlayerEntityHandle, 0, &num)) {
+							if(CheckAnythingInSphere(sphere, EntityHandle_Player, 0, &num)) {
 								float dmgs = (player.m_miscFull.damages + 1) * player.m_strikeAimRatio;
 								
-								if(ARX_DAMAGES_TryToDoDamage(actionPointPosition(io->obj, id), dmgs, 40, PlayerEntityHandle)) {
+								if(ARX_DAMAGES_TryToDoDamage(actionPointPosition(io->obj, id), dmgs, 40, EntityHandle_Player)) {
 									player.m_weaponBlocked = layer1.ctime;
 								}
 								

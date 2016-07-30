@@ -1273,7 +1273,7 @@ void ArxGame::managePlayerControls() {
 		for(long i = MAX_SPELLS - 1; i >= 0; i--) {
 			SpellBase * spell = spells[SpellHandle(i)];
 			
-			if(spell && spell->m_caster == PlayerEntityHandle)
+			if(spell && spell->m_caster == EntityHandle_Player)
 				if(spellicons[spell->m_type].m_hasDuration) {
 					ARX_SOUND_PlaySFX(SND_MAGIC_FIZZLE);
 					spells.endSpell(spell);
@@ -1496,7 +1496,7 @@ void ArxGame::managePlayerControls() {
 
 		if(bRenderInCursorMode) {
 			if(eyeball.exist != 0) {
-				spells.endByCaster(PlayerEntityHandle, SPELL_FLYING_EYE);
+				spells.endByCaster(EntityHandle_Player, SPELL_FLYING_EYE);
 			}
 		}
 	}
@@ -2338,7 +2338,7 @@ void ArxGame::manageEditorControls() {
 				LastSelectedIONum = io->index();
 			} else {
 				if(LastSelectedIONum == EntityHandle())
-					LastSelectedIONum = PlayerEntityHandle;
+					LastSelectedIONum = EntityHandle_Player;
 				else
 					LastSelectedIONum = EntityHandle();
 			}

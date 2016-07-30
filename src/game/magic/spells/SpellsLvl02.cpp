@@ -59,7 +59,7 @@ void HealSpell::Launch()
 	m_duration = (m_launchDuration > ArxDuration(-1)) ? m_launchDuration : ArxDurationMs(3500);
 	m_currentTime = 0;
 	
-	if(m_caster == PlayerEntityHandle) {
+	if(m_caster == EntityHandle_Player) {
 		m_pos = player.pos;
 	} else {
 		m_pos = entities[m_caster]->pos;
@@ -91,7 +91,7 @@ void HealSpell::Update() {
 	
 	m_currentTime += g_framedelay;
 	
-	if(m_caster == PlayerEntityHandle) {
+	if(m_caster == EntityHandle_Player) {
 		m_pos = player.pos;
 	} else if(ValidIONum(m_target)) {
 		m_pos = entities[m_target]->pos;
@@ -158,7 +158,7 @@ void HealSpell::Update() {
 			if(dist<300.f) {
 				float gain = Random::getf(0.8f, 2.4f) * m_level * (300.f - dist) * (1.0f/300) * g_framedelay * (1.0f/1000);
 
-				if(handle == PlayerEntityHandle) {
+				if(handle == EntityHandle_Player) {
 					if(!BLOCK_PLAYER_CONTROLS) {
 						player.lifePool.current = std::min(player.lifePool.current + gain, player.Full_maxlife);
 					}
@@ -174,7 +174,7 @@ void DetectTrapSpell::Launch()
 {
 	spells.endByCaster(m_caster, SPELL_DETECT_TRAP);
 	
-	if(m_caster == PlayerEntityHandle) {
+	if(m_caster == EntityHandle_Player) {
 		m_target = m_caster;
 		if(!(m_flags & SPELLCAST_FLAG_NOSOUND)) {
 			ARX_SOUND_PlayInterface(SND_SPELL_DETECT_TRAP);
@@ -191,7 +191,7 @@ void DetectTrapSpell::Launch()
 
 void DetectTrapSpell::End()
 {
-	if(m_caster == PlayerEntityHandle) {
+	if(m_caster == EntityHandle_Player) {
 		ARX_SOUND_Stop(m_snd_loop);
 	}
 	m_targets.clear();
@@ -199,7 +199,7 @@ void DetectTrapSpell::End()
 
 void DetectTrapSpell::Update() {
 	
-	if(m_caster == PlayerEntityHandle) {
+	if(m_caster == EntityHandle_Player) {
 		Vec3f pos = ARX_PLAYER_FrontPos();
 		ARX_SOUND_RefreshPosition(m_snd_loop, pos);
 	}
@@ -213,7 +213,7 @@ void ArmorSpell::Launch()
 	spells.endByCaster(m_caster, SPELL_FIRE_PROTECTION);
 	spells.endByCaster(m_caster, SPELL_COLD_PROTECTION);
 	
-	if(m_caster == PlayerEntityHandle) {
+	if(m_caster == EntityHandle_Player) {
 		m_target = m_caster;
 	}
 	
@@ -225,7 +225,7 @@ void ArmorSpell::Launch()
 	
 	m_duration = (m_launchDuration > ArxDuration(-1)) ? m_launchDuration : ArxDurationMs(20000);
 	
-	if(m_caster == PlayerEntityHandle)
+	if(m_caster == EntityHandle_Player)
 		m_duration = ArxDurationMs(20000000);
 	
 	m_hasDuration = true;
@@ -288,7 +288,7 @@ void LowerArmorSpell::Launch()
 	
 	m_duration = (m_launchDuration > ArxDuration(-1)) ? m_launchDuration : ArxDurationMs(20000);
 	
-	if(m_caster == PlayerEntityHandle)
+	if(m_caster == EntityHandle_Player)
 		m_duration = ArxDurationMs(20000000);
 	
 	m_hasDuration = true;
@@ -405,7 +405,7 @@ void HarmSpell::Update()
 	float refpos;
 	float scaley;
 	
-	if(m_caster == PlayerEntityHandle)
+	if(m_caster == EntityHandle_Player)
 		scaley = 90.f;
 	else
 		scaley = glm::abs(entities[m_caster]->physics.cyl.height * (1.0f/2)) + 30.f;
@@ -415,7 +415,7 @@ void HarmSpell::Update()
 	float mov = std::sin(frametime * (1.0f/800)) * scaley;
 	
 	Vec3f cabalpos;
-	if(m_caster == PlayerEntityHandle) {
+	if(m_caster == EntityHandle_Player) {
 		cabalpos.x = player.pos.x;
 		cabalpos.y = player.pos.y + 60.f - mov;
 		cabalpos.z = player.pos.z;

@@ -1840,7 +1840,7 @@ static void ComputeTolerance(Entity * io, EntityHandle targ, float * dst) {
 			TOLERANCE += 20.f;
 
 		// If target is the player improve again tolerance
-		if(io->targetinfo == PlayerEntityHandle)
+		if(io->targetinfo == EntityHandle_Player)
 			TOLERANCE += 10.f;
 
 		if(io->_npcdata->behavior & BEHAVIOUR_FIGHT)

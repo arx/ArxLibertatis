@@ -95,7 +95,7 @@ struct CinematicSpeech {
 		, m_startdist(0.f)
 		, m_enddist(0.f)
 		, m_heightModifier(0.f)
-		, ionum(PlayerEntityHandle) // TODO is this correct?
+		, ionum(EntityHandle_Player) // TODO is this correct?
 		, pos1(Vec3f_ZERO)
 		, pos2(Vec3f_ZERO)
 	{}
@@ -108,7 +108,7 @@ struct CinematicSpeech {
 		endpos = 0;
 		m_startdist = 0;
 		m_enddist = 0;
-		ionum = PlayerEntityHandle; // TODO is this correct?
+		ionum = EntityHandle_Player; // TODO is this correct?
 		pos1 = Vec3f_ZERO;
 		pos2 = Vec3f_ZERO;
 	}

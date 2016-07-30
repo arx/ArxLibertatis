@@ -413,7 +413,7 @@ void ARX_PLAYER_Quest_Add(const std::string & quest, bool _bLoad) {
  * \brief Removes player invisibility by killing Invisibility spells on him
  */
 void ARX_PLAYER_Remove_Invisibility() {
-	spells.endByCaster(PlayerEntityHandle, SPELL_INVISIBILITY);
+	spells.endByCaster(EntityHandle_Player, SPELL_INVISIBILITY);
 }
 
 /* TODO use this table instead of the copied functions below!
@@ -509,17 +509,17 @@ void ARX_PLAYER_ComputePlayerFullStats() {
 	// Calculate for modifiers from spells
 		SpellBase * spell;
 		
-		spell = spells.getSpellOnTarget(PlayerEntityHandle, SPELL_ARMOR);
+		spell = spells.getSpellOnTarget(EntityHandle_Player, SPELL_ARMOR);
 		if(spell) {
 			player.m_miscMod.armorClass += spell->m_level;
 		}
 		
-		spell = spells.getSpellOnTarget(PlayerEntityHandle, SPELL_LOWER_ARMOR);
+		spell = spells.getSpellOnTarget(EntityHandle_Player, SPELL_LOWER_ARMOR);
 		if(spell) {
 			player.m_miscMod.armorClass -= spell->m_level;
 		}
 		
-		spell = spells.getSpellOnTarget(PlayerEntityHandle, SPELL_CURSE);
+		spell = spells.getSpellOnTarget(EntityHandle_Player, SPELL_CURSE);
 		if(spell) {
 			player.m_attributeMod.strength -= spell->m_level;
 			player.m_attributeMod.constitution -= spell->m_level;
@@ -527,7 +527,7 @@ void ARX_PLAYER_ComputePlayerFullStats() {
 			player.m_attributeMod.mind -= spell->m_level;
 		}
 	
-		spell = spells.getSpellOnTarget(PlayerEntityHandle, SPELL_BLESS);
+		spell = spells.getSpellOnTarget(EntityHandle_Player, SPELL_BLESS);
 		if(spell) {
 			player.m_attributeMod.strength += spell->m_level;
 			player.m_attributeMod.dexterity += spell->m_level;
@@ -1305,7 +1305,7 @@ void ARX_PLAYER_BecomesDead() {
 	player.Interface = 0;
 	DeadTime = 0;
 	
-	spells.endByCaster(PlayerEntityHandle);
+	spells.endByCaster(EntityHandle_Player);
 }
 
 float LASTPLAYERA = 0;
@@ -1650,7 +1650,7 @@ void ARX_PLAYER_Manage_Visual() {
 retry:
 	;
 	
-	if(spells.ExistAnyInstanceForThisCaster(SPELL_FLYING_EYE, PlayerEntityHandle)) {
+	if(spells.ExistAnyInstanceForThisCaster(SPELL_FLYING_EYE, EntityHandle_Player)) {
 		request0_anim = alist[ANIM_MEDITATION];
 		request0_loop = true;
 		goto makechanges;
@@ -1819,7 +1819,7 @@ void ARX_PLAYER_Frame_Update()
 {
 	ARX_PROFILE_FUNC();
 	
-	if(spells.getSpellOnTarget(PlayerEntityHandle, SPELL_PARALYSE)) {
+	if(spells.getSpellOnTarget(EntityHandle_Player, SPELL_PARALYSE)) {
 		player.m_paralysed = true;
 	} else {
 		entities.player()->ioflags &= ~IO_FREEZESCRIPT;
@@ -1873,7 +1873,7 @@ void ARX_PLAYER_Frame_Update()
 	player.TRAP_DETECT = player.m_skillFull.mecanism;
 	player.TRAP_SECRET = player.m_skillFull.intuition;
 
-	if(spells.getSpellOnTarget(PlayerEntityHandle, SPELL_DETECT_TRAP))
+	if(spells.getSpellOnTarget(EntityHandle_Player, SPELL_DETECT_TRAP))
 		player.TRAP_DETECT = 100.f;
 
 	ARX_PLAYER_ManageTorch();
@@ -1884,7 +1884,7 @@ void ARX_PLAYER_Frame_Update()
  */
 static void ARX_PLAYER_MakeStepNoise() {
 	
-	if(spells.getSpellOnTarget(PlayerEntityHandle, SPELL_LEVITATE)) {
+	if(spells.getSpellOnTarget(EntityHandle_Player, SPELL_LEVITATE)) {
 		return;
 	}
 	
@@ -2064,7 +2064,7 @@ void PlayerMovementIterate(float DeltaTime) {
 				if(anything < 0.f) {
 					player.physics.cyl.height = old;
 					
-					spells.endByTarget(PlayerEntityHandle, SPELL_LEVITATE);
+					spells.endByTarget(EntityHandle_Player, SPELL_LEVITATE);
 				}
 			}
 			
@@ -2251,7 +2251,7 @@ void PlayerMovementIterate(float DeltaTime) {
 					const float LAVA_DAMAGE = 10.f;
 					float damages = LAVA_DAMAGE * g_framedelay * 0.01f * mul;
 					damages = ARX_SPELLS_ApplyFireProtection(entities.player(), damages);
-					ARX_DAMAGES_DamagePlayer(damages, DAMAGE_TYPE_FIRE, PlayerEntityHandle);
+					ARX_DAMAGES_DamagePlayer(damages, DAMAGE_TYPE_FIRE, EntityHandle_Player);
 					ARX_DAMAGES_DamagePlayerEquipment(damages);
 
 					Vec3f pos = player.basePosition();

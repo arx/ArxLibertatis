@@ -720,7 +720,7 @@ InventoryPos locateInInventories(const Entity * item) {
 
 bool insertIntoInventory(Entity * item, const InventoryPos & pos) {
 	
-	if(pos.io == PlayerEntityHandle) {
+	if(pos.io == EntityHandle_Player) {
 		return giveToPlayer(item, pos);
 	}
 	

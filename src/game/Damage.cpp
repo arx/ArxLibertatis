@@ -305,7 +305,7 @@ float ARX_DAMAGES_DamagePlayer(float dmg, DamageType type, EntityHandle source) 
 						if(ioo->targetinfo == EntityHandle(TARGET_PLAYER)) {
 							EVENT_SENDER = entities.player();
 							std::string killer;
-							if(source == PlayerEntityHandle) {
+							if(source == EntityHandle_Player) {
 								killer = "player";
 							} else if(source.handleData() <= EntityHandle().handleData()) {
 								killer = "none";
@@ -647,7 +647,7 @@ void ARX_DAMAGES_DealDamages(EntityHandle target, float dmg, EntityHandle source
 		dmg = dmg * g_framedelay * ( 1.0f / 1000 );
 	}
 
-	if(target == PlayerEntityHandle) {
+	if(target == EntityHandle_Player) {
 		if(flags & DAMAGE_TYPE_POISON) {
 			if(Random::getf(0.f, 100.f) > player.m_misc.resistPoison) {
 				damagesdone = dmg;
@@ -729,7 +729,7 @@ float ARX_DAMAGES_DamageNPC(Entity * io, float dmg, EntityHandle source, bool is
 	float damagesdone = 0.f;
 
 	if(io->_npcdata->lifePool.current <= 0.f) {
-		if(source != PlayerEntityHandle || ValidIONum(player.equiped[EQUIP_SLOT_WEAPON])) {
+		if(source != EntityHandle_Player || ValidIONum(player.equiped[EQUIP_SLOT_WEAPON])) {
 			if(dmg >= io->_npcdata->lifePool.max * 0.4f && pos)
 				ARX_NPC_TryToCutSomething(io, pos);
 
@@ -751,7 +751,7 @@ float ARX_DAMAGES_DamageNPC(Entity * io, float dmg, EntityHandle source, bool is
 		io->ouch_time = arxtime.now();
 		char tex[32];
 
-		if(EVENT_SENDER && EVENT_SENDER->summoner == PlayerEntityHandle) {
+		if(EVENT_SENDER && EVENT_SENDER->summoner == EntityHandle_Player) {
 			EVENT_SENDER = entities.player();
 			sprintf(tex, "%5.2f summoned", double(io->dmg_sum));
 		} else {
@@ -768,7 +768,7 @@ float ARX_DAMAGES_DamageNPC(Entity * io, float dmg, EntityHandle source, bool is
 		if(ValidIONum(source)) {
 			Entity * pio = NULL;
 
-			if(source == PlayerEntityHandle) {
+			if(source == EntityHandle_Player) {
 				if(ValidIONum(player.equiped[EQUIP_SLOT_WEAPON])) {
 					pio = entities[player.equiped[EQUIP_SLOT_WEAPON]];
 
@@ -799,7 +799,7 @@ float ARX_DAMAGES_DamageNPC(Entity * io, float dmg, EntityHandle source, bool is
 		}
 
 		if(io->script.data != NULL) {
-			if(source.handleData() >= PlayerEntityHandle.handleData()) {
+			if(source.handleData() >= EntityHandle_Player.handleData()) {
 				if(ValidIONum(source))
 					EVENT_SENDER = entities[source]; 
 				else
@@ -836,7 +836,7 @@ float ARX_DAMAGES_DamageNPC(Entity * io, float dmg, EntityHandle source, bool is
 				else
 					sprintf(dmm, "%f", double(dmg));
 
-				if(EVENT_SENDER && EVENT_SENDER->summoner == PlayerEntityHandle) {
+				if(EVENT_SENDER && EVENT_SENDER->summoner == EntityHandle_Player) {
 					EVENT_SENDER = entities.player();
 					sprintf(dmm, "%f summoned", double(dmg));
 				}
@@ -861,7 +861,7 @@ float ARX_DAMAGES_DamageNPC(Entity * io, float dmg, EntityHandle source, bool is
 		if(io->_npcdata->lifePool.current <= 0.f) {
 			io->_npcdata->lifePool.current = 0.f;
 
-			if(source != PlayerEntityHandle || ValidIONum(player.equiped[EQUIP_SLOT_WEAPON])) {
+			if(source != EntityHandle_Player || ValidIONum(player.equiped[EQUIP_SLOT_WEAPON])) {
 				if((dmg >= io->_npcdata->lifePool.max * ( 1.0f / 2 )) && pos)
 					ARX_NPC_TryToCutSomething(io, pos);
 			}
@@ -870,7 +870,7 @@ float ARX_DAMAGES_DamageNPC(Entity * io, float dmg, EntityHandle source, bool is
 				long xp = io->_npcdata->xpvalue;
 				ARX_DAMAGES_ForceDeath(io, entities[source]);
 
-				if(source == PlayerEntityHandle || entities[source]->summoner == PlayerEntityHandle)
+				if(source == EntityHandle_Player || entities[source]->summoner == EntityHandle_Player)
 					ARX_PLAYER_Modify_XP(xp);
 			}
 			else ARX_DAMAGES_ForceDeath(io, NULL);
@@ -946,7 +946,7 @@ static void ARX_DAMAGES_UpdateDamage(DamageHandle j, ArxInstant now) {
 	}
 		
 	if(damage.params.flags & DAMAGE_FLAG_FOLLOW_SOURCE) {
-		if(damage.params.source == PlayerEntityHandle) {
+		if(damage.params.source == EntityHandle_Player) {
 			damage.params.pos = player.pos;
 		} else if (ValidIONum(damage.params.source)) {
 			damage.params.pos = entities[damage.params.source]->pos;
@@ -982,8 +982,8 @@ static void ARX_DAMAGES_UpdateDamage(DamageHandle j, ArxInstant now) {
 		   && (damage.params.source != handle || !(damage.params.flags & DAMAGE_FLAG_DONT_HURT_SOURCE))
 		){
 			if(io->ioflags & IO_NPC) {
-				if(   handle != PlayerEntityHandle
-				   && damage.params.source != PlayerEntityHandle
+				if(   handle != EntityHandle_Player
+				   && damage.params.source != EntityHandle_Player
 				   && validsource
 				   && HaveCommonGroup(io, entities[damage.params.source])
 				) {
@@ -1047,7 +1047,7 @@ static void ARX_DAMAGES_UpdateDamage(DamageHandle j, ArxInstant now) {
 					if(damage.params.type & DAMAGE_TYPE_DRAIN_MANA) {
 						float manadrained;
 						
-						if(handle == PlayerEntityHandle) {
+						if(handle == EntityHandle_Player) {
 							manadrained = std::min(dmg, player.manaPool.current);
 							player.manaPool.current -= manadrained;
 						} else {
@@ -1059,7 +1059,7 @@ static void ARX_DAMAGES_UpdateDamage(DamageHandle j, ArxInstant now) {
 							}
 						}
 						
-						if (damage.params.source == PlayerEntityHandle) {
+						if (damage.params.source == EntityHandle_Player) {
 							player.manaPool.current = std::min(player.manaPool.current + manadrained, player.Full_maxmana);
 						} else {
 							if(ValidIONum(damage.params.source) && (entities[damage.params.source]->_npcdata)) {
@@ -1070,7 +1070,7 @@ static void ARX_DAMAGES_UpdateDamage(DamageHandle j, ArxInstant now) {
 						float damagesdone;
 						
 						// TODO copy-paste
-						if(handle == PlayerEntityHandle) {
+						if(handle == EntityHandle_Player) {
 							if(damage.params.type & DAMAGE_TYPE_POISON) {
 								if(Random::getf(0.f, 100.f) > player.m_misc.resistPoison) {
 									// Failed Saving Throw
@@ -1301,8 +1301,8 @@ void DoSphericDamage(const Sphere & sphere, float dmg, DamageArea flags, DamageT
 		if(!ioo || handle == numsource || !ioo->obj)
 			continue;
 			
-		if(   handle != PlayerEntityHandle
-		   && numsource != PlayerEntityHandle
+		if(   handle != EntityHandle_Player
+		   && numsource != EntityHandle_Player
 		   && validsource
 		   && HaveCommonGroup(ioo, entities[numsource])
 		) {
@@ -1364,7 +1364,7 @@ void DoSphericDamage(const Sphere & sphere, float dmg, DamageArea flags, DamageT
 					case DAMAGE_FULL: break;
 				}
 				
-				if(handle == PlayerEntityHandle) {
+				if(handle == EntityHandle_Player) {
 					if(typ & DAMAGE_TYPE_FIRE) {
 						dmg = ARX_SPELLS_ApplyFireProtection(ioo, dmg);
 						ARX_DAMAGES_IgnitIO(entities.player(), dmg);

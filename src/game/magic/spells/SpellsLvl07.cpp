@@ -62,11 +62,11 @@ bool FlyingEyeSpell::CanLaunch()
 	if(spells.ExistAnyInstanceForThisCaster(m_type, m_caster))
 		return false;
 	
-	if(m_caster == PlayerEntityHandle) {
-		m_target = PlayerEntityHandle;
+	if(m_caster == EntityHandle_Player) {
+		m_target = EntityHandle_Player;
 	}
 	
-	if(m_target != PlayerEntityHandle) {
+	if(m_target != EntityHandle_Player) {
 		return false;
 	}
 	
@@ -208,7 +208,7 @@ void FlyingEyeSpell::Update() {
 				pd->scale = Vec3f(0.2f);
 				pd->tc = TC_smoke;
 				pd->m_flags = FADE_IN_AND_OUT | ROTATING | DISSIPATING;
-				pd->sourceionum = PlayerEntityHandle;
+				pd->sourceionum = EntityHandle_Player;
 				pd->source = &eobj->vertexlist3[id.handleData()].v; // FIXME passing of pointer to vertex position
 				pd->m_rotation = 0.0000001f;
 				pd->rgb = Color3f(.7f, .3f, 1.f) + Color3f(-.1f, -.1f, -.1f) * randomColor3f();
@@ -241,7 +241,7 @@ void FireFieldSpell::Launch() {
 	Vec3f target;
 	float beta = 0.f;
 	bool displace = false;
-	if(m_caster == PlayerEntityHandle) {
+	if(m_caster == EntityHandle_Player) {
 		target = player.basePosition();
 		beta = player.angle.getPitch();
 		displace = true;
@@ -377,7 +377,7 @@ void IceFieldSpell::Launch()
 	Vec3f target;
 	float beta = 0.f;
 	bool displace = false;
-	if(m_caster == PlayerEntityHandle) {
+	if(m_caster == EntityHandle_Player) {
 		target = player.basePosition();
 		beta = player.angle.getPitch();
 		displace = true;
@@ -577,7 +577,7 @@ void LightningStrikeSpell::End()
 
 static Vec3f GetChestPos(EntityHandle num) {
 	
-	if(num == PlayerEntityHandle) {
+	if(num == EntityHandle_Player) {
 		return player.pos + Vec3f(0.f, 70.f, 0.f);
 	}
 
@@ -608,7 +608,7 @@ void LightningStrikeSpell::Update() {
 		m_caster_pos = caster->pos;
 	}
 	
-	if(m_caster == PlayerEntityHandle) {
+	if(m_caster == EntityHandle_Player) {
 		falpha = -player.angle.getYaw();
 		fBeta = player.angle.getPitch();
 	} else {
@@ -684,7 +684,7 @@ void ConfuseSpell::End() {
 void ConfuseSpell::Update() {
 	
 	Vec3f pos = entities[m_target]->pos;
-	if(m_target != PlayerEntityHandle) {
+	if(m_target != EntityHandle_Player) {
 		pos.y += entities[m_target]->physics.cyl.height - 30.f;
 	}
 	

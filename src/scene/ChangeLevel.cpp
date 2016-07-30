@@ -181,7 +181,7 @@ static EntityHandle ReadTargetInfo(const char (&str)[N]) {
 	} else if(idString == "self") {
 		return EntityHandle(-2);
 	} else if(idString == "player") {
-		return PlayerEntityHandle;
+		return EntityHandle_Player;
 	} else {
 		Entity * e = convertToValidIO(idString);
 		return (e == NULL) ? EntityHandle() : e->index();
@@ -860,7 +860,7 @@ void FillTargetInfo(char (&info)[N], EntityHandle numtarget) {
 		strcpy(info, "self");
 	} else if(numtarget == EntityHandle()) {
 		strcpy(info, "none");
-	} else if(numtarget == PlayerEntityHandle) {
+	} else if(numtarget == EntityHandle_Player) {
 		strcpy(info, "player");
 	} else if(ValidIONum(numtarget)) {
 		storeIdString(info, entities[numtarget]);

@@ -54,8 +54,8 @@ bool BlessSpell::CanLaunch()
 
 void BlessSpell::Launch()
 {
-	if(m_caster == PlayerEntityHandle) {
-		m_target = PlayerEntityHandle;
+	if(m_caster == EntityHandle_Player) {
+		m_target = EntityHandle_Player;
 	}
 	
 	spells.endByCaster(m_target, SPELL_BLESS);
@@ -92,7 +92,7 @@ void BlessSpell::Update() {
 	if(ValidIONum(m_target)) {
 		m_pos = entities[m_target]->pos;
 		
-		if(m_target == PlayerEntityHandle)
+		if(m_target == EntityHandle_Player)
 			m_yaw = player.angle.getPitch();
 		else 
 			m_yaw = entities[m_target]->angle.getPitch();
@@ -184,7 +184,7 @@ void DispellFieldSpell::Launch()
 		switch(spell->m_type) {
 			
 			case SPELL_CREATE_FIELD: {
-				if(m_caster != PlayerEntityHandle || spell->m_caster == PlayerEntityHandle) {
+				if(m_caster != EntityHandle_Player || spell->m_caster == EntityHandle_Player) {
 					pos = static_cast<CreateFieldSpell *>(spell)->getPosition();
 					cancel = true;
 				}
@@ -239,11 +239,11 @@ void FireProtectionSpell::Launch()
 	
 	m_duration = (m_launchDuration > ArxDuration(-1)) ? m_launchDuration : ArxDurationMs(20000);
 	
-	if(m_caster == PlayerEntityHandle)
+	if(m_caster == EntityHandle_Player)
 		m_duration = ArxDurationMs(2000000);
 	
-	if(m_caster == PlayerEntityHandle) {
-		m_target = PlayerEntityHandle;
+	if(m_caster == EntityHandle_Player) {
+		m_target = EntityHandle_Player;
 	}
 	
 	ARX_SOUND_PlaySFX(SND_SPELL_FIRE_PROTECTION, &entities[m_target]->pos);
@@ -296,15 +296,15 @@ void ColdProtectionSpell::Launch()
 	spells.endByCaster(m_caster, SPELL_LOWER_ARMOR);
 	spells.endByCaster(m_caster, SPELL_FIRE_PROTECTION);
 	
-	if(m_caster == PlayerEntityHandle) {
-		m_target = PlayerEntityHandle;
+	if(m_caster == EntityHandle_Player) {
+		m_target = EntityHandle_Player;
 	}
 	
 	ARX_SOUND_PlaySFX(SND_SPELL_COLD_PROTECTION_START, &entities[m_target]->pos);
 	
 	m_duration = (m_launchDuration > ArxDuration(-1)) ? m_launchDuration : ArxDurationMs(20000);
 	
-	if(m_caster == PlayerEntityHandle)
+	if(m_caster == EntityHandle_Player)
 		m_duration = ArxDurationMs(2000000);
 	
 	m_hasDuration = true;
@@ -359,7 +359,7 @@ void TelekinesisSpell::Launch()
 	m_hasDuration = true;
 	m_fManaCostPerSecond = 0.9f;
 	
-	if(m_caster == PlayerEntityHandle) {
+	if(m_caster == EntityHandle_Player) {
 		player.m_telekinesis = true;
 	}
 	
@@ -368,7 +368,7 @@ void TelekinesisSpell::Launch()
 
 void TelekinesisSpell::End()
 {
-	if(m_caster == PlayerEntityHandle)
+	if(m_caster == EntityHandle_Player)
 		player.m_telekinesis = false;
 	
 	ARX_SOUND_PlaySFX(SND_SPELL_TELEKINESIS_END, &entities[m_caster]->pos);
@@ -393,7 +393,7 @@ void CurseSpell::Launch()
 	m_fManaCostPerSecond = 0.5f * m_level;
 	
 	Vec3f target = getTargetPos(m_caster, m_target);
-	if(m_target == PlayerEntityHandle) {
+	if(m_target == EntityHandle_Player) {
 		target.y -= 200.f;
 	} else if(ValidIONum(m_target)) {
 		target.y += entities[m_target]->physics.cyl.height - 50.f;
@@ -419,7 +419,7 @@ void CurseSpell::Update() {
 	if(ValidIONum(m_target)) {
 		target = entities[m_target]->pos;
 
-		if(m_target == PlayerEntityHandle)
+		if(m_target == EntityHandle_Player)
 			target.y -= 200.f;
 		else
 			target.y += entities[m_target]->physics.cyl.height - 30.f;
