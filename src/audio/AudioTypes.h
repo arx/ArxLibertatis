@@ -128,9 +128,10 @@ const s32 INVALID_ID = -1;
 
 typedef s32 SourceId;
 typedef s32 SampleId;
-ARX_HANDLE_TYPEDEF(s32, MixerId, -1)
-ARX_HANDLE_TYPEDEF(s32, EnvId, -1)
-ARX_HANDLE_TYPEDEF(s32, AmbianceId, -1)
+
+typedef HandleType<struct MixerIdTag,    s32, -1> MixerId;
+typedef HandleType<struct EnvIdTag,      s32, -1> EnvId;
+typedef HandleType<struct AmbianceIdTag, s32, -1> AmbianceId;
 
 // Play channel initialization parameters
 struct Channel {

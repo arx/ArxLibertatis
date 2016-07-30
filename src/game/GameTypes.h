@@ -22,10 +22,10 @@
 
 #include "util/HandleType.h"
 
-ARX_HANDLE_TYPEDEF(long, EntityHandle,  -1)
-ARX_HANDLE_TYPEDEF(long, SpellHandle,   -1)
-ARX_HANDLE_TYPEDEF(long, PrecastHandle, -1)
-ARX_HANDLE_TYPEDEF(long, DamageHandle,  -1)
+typedef HandleType<struct EntityHandleTag,  long, -1> EntityHandle;
+typedef HandleType<struct SpellHandleTag,   long, -1> SpellHandle;
+typedef HandleType<struct PrecastHandleTag, long, -1> PrecastHandle;
+typedef HandleType<struct DamageHandleTag,  long, -1> DamageHandle;
 
 static const EntityHandle PlayerEntityHandle = EntityHandle(0);
 

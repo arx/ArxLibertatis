@@ -67,10 +67,10 @@ class TextureContainer;
 class Entity;
 struct EERIE_LIGHT;
 
-ARX_HANDLE_TYPEDEF(long, ActionPoint, -1)
-ARX_HANDLE_TYPEDEF(long, ObjSelection, -1)
-ARX_HANDLE_TYPEDEF(short, ObjVertGroup, -1)
-ARX_HANDLE_TYPEDEF(s32, ObjVertIndex, -1)
+typedef HandleType<struct ActionPointTag,  long,  -1> ActionPoint;
+typedef HandleType<struct ObjSelectionTag, long,  -1> ObjSelection;
+typedef HandleType<struct ObjVertGroupTag, short, -1> ObjVertGroup;
+typedef HandleType<struct ObjVertIndexTag, s32,   -1> ObjVertIndex;
 
 struct EERIE_TRI {
 	Vec3f v[3];

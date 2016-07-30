@@ -73,7 +73,7 @@ extern EERIE_LIGHT DynLight[MAX_DYNLIGHTS];
 extern size_t TOTPDL;
 extern size_t TOTIOPDL;
 
-ARX_HANDLE_TYPEDEF(long, LightHandle, -1)
+typedef HandleType<struct LightHandleTag, long, -1> LightHandle;
 
 enum EERIE_TYPES_EXTRAS_MODE
 {
