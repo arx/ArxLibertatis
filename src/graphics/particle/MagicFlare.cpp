@@ -325,7 +325,7 @@ void FlareLine(Vec2f tmpPos0, Vec2f tmpPos1, Entity * io) {
 		}
 		
 		float m = d.y / d.x;
-		long i = tmpPos0.x;
+		float i = tmpPos0.x;
 		
 		while(i < tmpPos1.x) {
 			long z = Random::get(0, FLARELINERND);
@@ -345,7 +345,7 @@ void FlareLine(Vec2f tmpPos0, Vec2f tmpPos1, Entity * io) {
 		}
 		
 		float m = d.x / d.y;
-		long i = tmpPos0.y;
+		float i = tmpPos0.y;
 		
 		while(i < tmpPos1.y) {
 			long z = Random::get(0, FLARELINERND);
