@@ -87,18 +87,18 @@ void EERIE_RemoveCedricData(EERIE_3DOBJ * eobj);
 
 void Clear3DScene(EERIE_3DSCENE	* eerie);
 
-long GetGroupOriginByName(const EERIE_3DOBJ * eobj, const std::string & text) {
+ObjVertIndex GetGroupOriginByName(const EERIE_3DOBJ * eobj, const std::string & text) {
 	
 	if(!eobj)
-		return -1;
+		return ObjVertIndex();
 	
 	BOOST_FOREACH(const VertexGroup & group, eobj->grouplist) {
 		if(group.name == text) {
-			return group.origin;
+			return ObjVertIndex(group.origin);
 		}
 	}
 	
-	return -1;
+	return ObjVertIndex();
 }
 
 ActionPoint GetActionPointIdx(const EERIE_3DOBJ * eobj, const std::string & text) {
@@ -1285,14 +1285,14 @@ static EERIE_3DOBJ * TheoToEerie(const char * adr, long size, const res::path & 
 	}
 
 	// Apply Normals Spherical correction for NPC head
-	long neck_orgn = GetGroupOriginByName(eerie, "neck");
+	ObjVertIndex neck_orgn = GetGroupOriginByName(eerie, "neck");
 	ObjVertGroup head_idx = EERIE_OBJECT_GetGroup(eerie, "head");
 
-	if(head_idx != ObjVertGroup() && neck_orgn >= 0) {
+	if(head_idx != ObjVertGroup() && neck_orgn != ObjVertIndex()) {
 		VertexGroup & headGroup = eerie->grouplist[head_idx.handleData()];
 		
 		Vec3f center = Vec3f_ZERO;
-		Vec3f origin = eerie->vertexlist[neck_orgn].v;
+		Vec3f origin = eerie->vertexlist[neck_orgn.handleData()].v;
 		float count = (float)headGroup.indexes.size();
 
 		if(count > 0.f) {
