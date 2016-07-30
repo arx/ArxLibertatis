@@ -266,7 +266,7 @@ void AddFlare(const Vec2f & pos, float sm, short typ, Entity * io, bool bookDraw
 
 	flare.dynlight = LightHandle();
 
-	for(long kk = 0; kk < 3; kk++) {
+	for(unsigned int kk = 0; kk < 3; kk++) {
 
 		if(Random::getf() < 0.5f) {
 			continue;
@@ -289,7 +289,7 @@ void AddFlare(const Vec2f & pos, float sm, short typ, Entity * io, bool bookDraw
 		pd->ov = flare.v.p + randomVec(-5.f, 5.f);
 		pd->move = Vec3f(0.f, 5.f, 0.f);
 		pd->scale = Vec3f(-2.f);
-		pd->tolive = 1300 + kk * 100 + Random::get(0, 800);
+		pd->tolive = 1300 + kk * 100 + Random::getu(0, 800);
 		pd->tc = fire2;
 		if(kk == 1) {
 			pd->move.y = 4.f;
