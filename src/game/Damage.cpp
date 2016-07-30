@@ -889,13 +889,10 @@ extern TextureContainer * TC_fire2;
 
 static void ARX_DAMAGES_AddVisual(DAMAGE_INFO & di, const Vec3f & pos, float dmg, Entity * io) {
 	
+	arx_assert(io);
+	
 	if(!(di.params.type & DAMAGE_TYPE_FAKEFIRE)) {
 		return;
-	}
-	
-	long num = -1;
-	if(io) {
-		num = Random::get(0, io->obj->vertexlist.size() / 4 - 1) * 4 + 1;
 	}
 	
 	ArxInstant now = arxtime.now();
@@ -908,6 +905,10 @@ static void ARX_DAMAGES_AddVisual(DAMAGE_INFO & di, const Vec3f & pos, float dmg
 		}
 	}
 	
+	long num = Random::get(0, io->obj->vertexlist.size() / 4 - 1) * 4 + 1;
+	arx_assert(num >= 0);
+	Vec3f vertPos = io->obj->vertexlist3[num].v;
+	
 	for(long k = 0 ; k < 14 ; k++) {
 		
 		PARTICLE_DEF * pd = createParticle();
@@ -915,12 +916,7 @@ static void ARX_DAMAGES_AddVisual(DAMAGE_INFO & di, const Vec3f & pos, float dmg
 			break;
 		}
 		
-		if(io) {
-			arx_assert(num >= 0);
-			pd->ov = io->obj->vertexlist3[num].v + randomVec(-5.f, 5.f);
-		} else {
-			pd->ov = pos + randomVec(-50.f, 50.f);
-		}
+		pd->ov = vertPos + randomVec(-5.f, 5.f);
 		pd->siz = glm::clamp(dmg, 5.f, 15.f);
 		pd->scale = Vec3f(-10.f);
 		pd->m_flags = ROTATING | FIRE_TO_SMOKE;
