@@ -145,7 +145,7 @@ void ARX_MAGICAL_FLARES_KillAll() {
 	flarenum=0;
 }
 
-short PIPOrgb = 0;
+static short PIPOrgb = 0;
 
 void MagicFlareChangeColor() {
 	PIPOrgb++;
