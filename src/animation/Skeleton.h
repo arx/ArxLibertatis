@@ -30,7 +30,7 @@
 struct VertexGroup {
 	std::string       name;
 	size_t            origin;
-	std::vector<size_t> indexes;
+	std::vector<u32> indexes; // TODO use u16 here ?
 	float             siz;
 	
 	VertexGroup()

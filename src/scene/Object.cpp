@@ -121,7 +121,7 @@ ObjVertGroup GetActionPointGroup(const EERIE_3DOBJ * eobj, ActionPoint idx) {
 		return ObjVertGroup();
 	
 	for(long i = eobj->grouplist.size() - 1; i >= 0; i--) {
-		const std::vector<size_t> & indices = eobj->grouplist[i].indexes;
+		const std::vector<u32> & indices = eobj->grouplist[i].indexes;
 		for(size_t j = 0; j < indices.size(); j++){
 			if(long(indices[j]) == idx.handleData()) {
 				return ObjVertGroup(i);
