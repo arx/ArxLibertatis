@@ -22,12 +22,13 @@
 
 #include <string>
 
+#include "core/TimeTypes.h"
 #include "game/magic/Rune.h"
 
 class Entity;
 
 struct SYMBOL_DRAW {
-	unsigned long	starttime;
+	ArxInstant starttime;
 	Vec3f		lastpos;
 	short lastElapsed;
 	short			duration;
