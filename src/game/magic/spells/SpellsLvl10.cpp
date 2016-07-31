@@ -95,9 +95,7 @@ void MassLightningStrikeSpell::Launch()
 	
 	m_duration = maxDuration + ArxDurationMs(1000);
 	
-	m_light = GetFreeDynLight();
-	
-	EERIE_LIGHT * light = lightHandleGet(m_light);
+	EERIE_LIGHT * light = dynLightCreate(m_light);
 	if(light) {
 		light->intensity = 1.8f;
 		light->fallend = 850.f;

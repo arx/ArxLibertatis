@@ -2955,10 +2955,7 @@ void ManageIgnition_2(Entity * io) {
 		else
 			position = io->pos;
 
-		if(!lightHandleGet(io->ignit_light))
-			io->ignit_light = GetFreeDynLight();
-		
-		EERIE_LIGHT * light = lightHandleGet(io->ignit_light);
+		EERIE_LIGHT * light = dynLightCreate(io->ignit_light);
 		if(light) {
 			light->intensity = std::max(io->ignition * ( 1.0f / 10 ), 1.f);
 			light->fallstart = std::max(io->ignition * 10.f, 100.f);

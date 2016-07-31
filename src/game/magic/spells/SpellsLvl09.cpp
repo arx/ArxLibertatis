@@ -102,9 +102,7 @@ void SummonCreatureSpell::Launch()
 	m_fissure.SetColorRays1(Color3f::red);
 	m_fissure.SetColorRays2(Color3f::yellow * .5f);
 	
-	m_light = GetFreeDynLight();
-	
-	EERIE_LIGHT * light = lightHandleGet(m_light);
+	EERIE_LIGHT * light = dynLightCreate(m_light);
 	if(light) {
 		light->intensity = 0.3f;
 		light->fallend = 500.f;
@@ -293,9 +291,7 @@ void FakeSummonSpell::Launch()
 	m_fissure.SetColorRays1(Color3f::red);
 	m_fissure.SetColorRays2(Color3f::yellow * .5f);
 	
-	m_light = GetFreeDynLight();
-	
-	EERIE_LIGHT * light = lightHandleGet(m_light);
+	EERIE_LIGHT * light = dynLightCreate(m_light);
 	if(light) {
 		light->intensity = 0.3f;
 		light->fallend = 500.f;

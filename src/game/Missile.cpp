@@ -151,9 +151,8 @@ void ARX_MISSILES_Spawn(Entity * io, ARX_SPELLS_MISSILE_TYPE type, const Vec3f &
 		{
 			missiles[i].tolive = ArxDurationMs(6000);
 			missiles[i].velocity *= 0.8f;
-			missiles[i].longinfo = GetFreeDynLight();
 			
-			EERIE_LIGHT * light = lightHandleGet(missiles[i].longinfo);
+			EERIE_LIGHT * light = dynLightCreate(missiles[i].longinfo);
 			if(light) {
 				light->intensity = 1.3f;
 				light->fallend = 420.f;

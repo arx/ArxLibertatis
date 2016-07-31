@@ -59,9 +59,7 @@ void RuneOfGuardingSpell::Launch()
 	
 	tex_p2 = TextureContainer::Load("graph/obj3d/textures/(fx)_tsu_blueting");
 	
-	m_light = GetFreeDynLight();
-	
-	EERIE_LIGHT * light = lightHandleGet(m_light);
+	EERIE_LIGHT * light = dynLightCreate(m_light);
 	if(light) {
 		light->intensity = 0.7f + 2.3f;
 		light->fallend = 500.f;
@@ -303,9 +301,7 @@ void CurePoisonSpell::Launch()
 	
 	m_particles.SetParams(g_particleParameters[ParticleParam_CurePoison]);
 	
-	m_light = GetFreeDynLight();
-	
-	EERIE_LIGHT * light = lightHandleGet(m_light);
+	EERIE_LIGHT * light = dynLightCreate(m_light);
 	if(light) {
 		light->intensity = 1.5f;
 		light->fallstart = 200.f;
@@ -354,11 +350,8 @@ void CurePoisonSpell::Update() {
 
 	m_particles.SetPos(m_pos);
 	m_particles.Update(g_framedelay);
-
-	if(!lightHandleGet(m_light))
-		m_light = GetFreeDynLight();
 	
-	EERIE_LIGHT * light = lightHandleGet(m_light);
+	EERIE_LIGHT * light = dynLightCreate(m_light);
 	if(light) {
 		light->intensity = 2.3f;
 		light->fallstart = 200.f;
@@ -460,11 +453,7 @@ void RepelUndeadSpell::Update() {
 		pd->rgb = Color3f(.4f, .4f, .6f);
 	}
 	
-	if(!lightHandleGet(m_light)) {
-		m_light = GetFreeDynLight();
-	}
-	
-	EERIE_LIGHT * light = lightHandleGet(m_light);
+	EERIE_LIGHT * light = dynLightCreate(m_light);
 	if(light) {
 		light->intensity = 2.3f;
 		light->fallend = 350.f;
@@ -548,10 +537,8 @@ void PoisonProjectileSpell::Launch()
 		ArxDuration lTime = m_duration + ArxDurationMs(Random::getu(0, 5000));
 		projectile->SetDuration(lTime);
 		lMax = std::max(lMax, lTime);
-
-		projectile->lLightId = GetFreeDynLight();
 		
-		EERIE_LIGHT * light = lightHandleGet(projectile->lLightId);
+		EERIE_LIGHT * light = dynLightCreate(projectile->lLightId);
 		if(light) {
 			light->intensity		= 2.3f;
 			light->fallend		= 250.f;

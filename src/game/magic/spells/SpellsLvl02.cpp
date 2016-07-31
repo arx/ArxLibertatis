@@ -69,9 +69,7 @@ void HealSpell::Launch()
 	
 	m_particles.SetParams(g_particleParameters[ParticleParam_Heal]);
 	
-	m_light = GetFreeDynLight();
-	
-	EERIE_LIGHT * light = lightHandleGet(m_light);
+	EERIE_LIGHT * light = dynLightCreate(m_light);
 	if(light) {
 		light->intensity = 2.3f;
 		light->fallstart = 200.f;
@@ -97,10 +95,7 @@ void HealSpell::Update() {
 		m_pos = entities[m_target]->pos;
 	}
 	
-	if(!lightHandleGet(m_light))
-		m_light = GetFreeDynLight();
-	
-	EERIE_LIGHT * light = lightHandleGet(m_light);
+	EERIE_LIGHT * light = dynLightCreate(m_light);
 	if(light) {
 		light->intensity = 2.3f;
 		light->fallstart = 200.f;
@@ -377,9 +372,7 @@ void HarmSpell::Launch()
 	damage.type = DAMAGE_TYPE_FAKEFIRE | DAMAGE_TYPE_MAGICAL;
 	m_damage = DamageCreate(damage);
 	
-	m_light = GetFreeDynLight();
-	
-	EERIE_LIGHT * light = lightHandleGet(m_light);
+	EERIE_LIGHT * light = dynLightCreate(m_light);
 	if(light) {
 		light->intensity = 2.3f;
 		light->fallend = 700.f;

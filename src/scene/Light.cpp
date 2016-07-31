@@ -440,6 +440,15 @@ LightHandle GetFreeDynLight() {
 	return LightHandle();
 }
 
+EERIE_LIGHT * dynLightCreate(LightHandle & handle) {
+	if(!lightHandleGet(handle)) {
+		handle = GetFreeDynLight();
+	}
+	
+	return lightHandleGet(handle);
+}
+
+
 void ClearDynLights() {
 
 	for(size_t i = 0; i < MAX_DYNLIGHTS; i++) {

@@ -144,10 +144,8 @@ void ARX_SPELLS_UpdateSymbolDraw() {
 		}
 
 		if(io->flarecount) {
-			if(!lightHandleGet(io->dynlight))
-				io->dynlight = GetFreeDynLight();
 			
-			EERIE_LIGHT * light = lightHandleGet(io->dynlight);
+			EERIE_LIGHT * light = dynLightCreate(io->dynlight);
 			if(light) {
 				light->pos = io->pos;
 				light->pos += angleToVectorXZ(io->angle.getPitch() - 45.f) * 60.f;

@@ -100,11 +100,7 @@ void RiseDeadSpell::Launch()
 	m_fissure.SetColorRays1(Color3f(0.5, 0.5, 0.5));
 	m_fissure.SetColorRays2(Color3f(1.f, 0.f, 0.f));
 	
-	if(!lightHandleGet(m_light)) {
-		m_light = GetFreeDynLight();
-	}
-	
-	EERIE_LIGHT * light = lightHandleGet(m_light);
+	EERIE_LIGHT * light = dynLightCreate(m_light);
 	if(light) {
 		light->intensity = 1.3f;
 		light->fallend = 450.f;
@@ -318,9 +314,8 @@ void CreateFieldSpell::Launch()
 		
 		m_field.Create(target);
 		m_field.SetDuration(m_duration);
-		m_field.lLightId = GetFreeDynLight();
 		
-		EERIE_LIGHT * light = lightHandleGet(m_field.lLightId);
+		EERIE_LIGHT * light = dynLightCreate(m_field.lLightId);
 		if(light) {
 			light->intensity = 0.7f + 2.3f;
 			light->fallend = 500.f;

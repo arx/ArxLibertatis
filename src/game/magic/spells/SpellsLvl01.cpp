@@ -226,9 +226,7 @@ void MagicMissileSpell::Launch() {
 		
 		missile->SetDuration(lTime);
 		
-		missile->lLightId = GetFreeDynLight();
-		
-		EERIE_LIGHT * el = lightHandleGet(missile->lLightId);
+		EERIE_LIGHT * el = dynLightCreate(missile->lLightId);
 		if(el) {
 			el->intensity	= 0.7f + 2.3f;
 			el->fallend		= 190.f;
@@ -389,9 +387,7 @@ void IgnitSpell::Launch()
 			
 			entry.m_targetLight = ii;
 			
-			entry.m_effectLight = GetFreeDynLight();
-			
-			EERIE_LIGHT * light = lightHandleGet(entry.m_effectLight);
+			EERIE_LIGHT * light = dynLightCreate(entry.m_effectLight);
 			if(light) {
 				light->intensity = Random::getf(0.7f, 2.7f);
 				light->fallend = 400.f;

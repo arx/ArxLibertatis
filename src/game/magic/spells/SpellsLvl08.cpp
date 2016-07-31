@@ -119,9 +119,7 @@ void ManaDrainSpell::Launch()
 	damage.type = DAMAGE_TYPE_FAKEFIRE | DAMAGE_TYPE_MAGICAL | DAMAGE_TYPE_DRAIN_MANA;
 	m_damage = DamageCreate(damage);
 	
-	m_light = GetFreeDynLight();
-	
-	EERIE_LIGHT * light = lightHandleGet(m_light);
+	EERIE_LIGHT * light = dynLightCreate(m_light);
 	if(light) {
 		light->intensity = 2.3f;
 		light->fallend = 700.f;
@@ -269,9 +267,7 @@ void ExplosionSpell::Launch()
 	damage.pos = target;
 	m_damage = DamageCreate(damage);
 	
-	m_light = GetFreeDynLight();
-	
-	EERIE_LIGHT * light = lightHandleGet(m_light);
+	EERIE_LIGHT * light = dynLightCreate(m_light);
 	if(light) {
 		light->intensity = 2.3f;
 		light->fallend = 700.f;
@@ -299,10 +295,7 @@ void ExplosionSpell::Launch()
 
 void ExplosionSpell::Update() {
 	
-	if(!lightHandleGet(m_light))
-		m_light = GetFreeDynLight();
-	
-	EERIE_LIGHT * light = lightHandleGet(m_light);
+	EERIE_LIGHT * light = dynLightCreate(m_light);
 	if(light) {
 		light->rgb = Color3f(0.1f, 0.1f, 0.8f) + randomColor3f() * Color3f(1.f/3, 1.f/3, 1.f/5);
 		light->duration = ArxDurationMs(200);
@@ -375,9 +368,7 @@ void LifeDrainSpell::Launch()
 	damage.type = DAMAGE_TYPE_FAKEFIRE | DAMAGE_TYPE_MAGICAL | DAMAGE_TYPE_DRAIN_LIFE;
 	m_damage = DamageCreate(damage);
 	
-	m_light = GetFreeDynLight();
-	
-	EERIE_LIGHT * light = lightHandleGet(m_light);
+	EERIE_LIGHT * light = dynLightCreate(m_light);
 	if(light) {
 		light->intensity = 2.3f;
 		light->fallend = 700.f;
