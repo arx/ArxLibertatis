@@ -75,9 +75,6 @@ protected:
 	void manageEditorControls();
 	void managePlayerControls();
 	void updateAllInterface();
-
-	void update2DFX();
-	void goFor2DFX();
 	
 public:
 	

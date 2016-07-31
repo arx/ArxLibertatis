@@ -807,6 +807,7 @@ set(GRAPHICS_SOURCES
 	src/graphics/effects/Fog.cpp
 	src/graphics/effects/SpellEffects.cpp
 	src/graphics/effects/Halo.cpp
+	src/graphics/effects/LightFlare.cpp
 	src/graphics/effects/Lightning.cpp
 	src/graphics/effects/MagicMissile.cpp
 	src/graphics/effects/PolyBoom.cpp
