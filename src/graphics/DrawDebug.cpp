@@ -120,7 +120,7 @@ static void drawDebugLights() {
 	
 	for(size_t i = 0; i < MAX_LIGHTS; i++) {
 		
-		EERIE_LIGHT * light = GLight[i];
+		EERIE_LIGHT * light = g_staticLights[i];
 		if(!light) {
 			continue;
 		}
@@ -153,7 +153,7 @@ static void drawDebugLights() {
 	
 	for(size_t i = 0; i < MAX_LIGHTS; i++) {
 		
-		EERIE_LIGHT * light = GLight[i];
+		EERIE_LIGHT * light = g_staticLights[i];
 		if(!light) {
 			continue;
 		}

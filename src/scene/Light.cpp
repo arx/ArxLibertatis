@@ -70,7 +70,7 @@ static const float GLOBAL_LIGHT_FACTOR=0.85f;
 static const Color3f defaultAmbient = Color3f(0.09f, 0.09f, 0.09f);
 static const int NPC_ITEMS_AMBIENT_VALUE_255 = 35;
 
-EERIE_LIGHT * GLight[MAX_LIGHTS];
+EERIE_LIGHT * g_staticLights[MAX_LIGHTS];
 EERIE_LIGHT DynLight[MAX_DYNLIGHTS];
 
 EERIE_LIGHT * PDL[MAX_DYNLIGHTS];
@@ -116,19 +116,19 @@ void EERIE_LIGHT_GlobalInit() {
 	static long init = 0;
 	
 	if(!init) {
-		memset(GLight, 0, sizeof(*GLight) * MAX_LIGHTS);
+		memset(g_staticLights, 0, sizeof(*g_staticLights) * MAX_LIGHTS);
 		init = 1;
 		return;
 	}
 	
 	for(size_t i = 0; i < MAX_LIGHTS; i++) {
-		if(GLight[i]) {
-			EERIE_LIGHT * dynLight = lightHandleGet(GLight[i]->m_ignitionLightHandle);
+		if(g_staticLights[i]) {
+			EERIE_LIGHT * dynLight = lightHandleGet(g_staticLights[i]->m_ignitionLightHandle);
 			if(dynLight) {
 				dynLight->exist = 0;
 			}
-			free(GLight[i]);
-			GLight[i] = NULL;
+			free(g_staticLights[i]);
+			g_staticLights[i] = NULL;
 		}
 	}
 }
@@ -136,7 +136,7 @@ void EERIE_LIGHT_GlobalInit() {
 long EERIE_LIGHT_GetFree() {
 	
 	for(size_t i = 0; i < MAX_LIGHTS; i++) {
-		if(!GLight[i]) {
+		if(!g_staticLights[i]) {
 			return i;
 		}
 	}
@@ -147,16 +147,16 @@ long EERIE_LIGHT_GetFree() {
 long EERIE_LIGHT_Create() {
 	
 	for (size_t i = 0; i < MAX_LIGHTS; i++) {
-		if(!GLight[i]) {
+		if(!g_staticLights[i]) {
 			
-			GLight[i] = (EERIE_LIGHT *)malloc(sizeof(EERIE_LIGHT));
-			if(!GLight[i]) {
+			g_staticLights[i] = (EERIE_LIGHT *)malloc(sizeof(EERIE_LIGHT));
+			if(!g_staticLights[i]) {
 				return -1;
 			}
 			
-			memset(GLight[i], 0, sizeof(EERIE_LIGHT));
-			GLight[i]->sample = audio::INVALID_ID;
-			GLight[i]->m_ignitionLightHandle = LightHandle();
+			memset(g_staticLights[i], 0, sizeof(EERIE_LIGHT));
+			g_staticLights[i]->sample = audio::INVALID_ID;
+			g_staticLights[i]->m_ignitionLightHandle = LightHandle();
 			return i;
 		}
 	}
@@ -169,7 +169,7 @@ long EERIE_LIGHT_Count() {
 	
 	long count = 0;
 	for(size_t i = 0; i < MAX_LIGHTS; i++) {
-		if(GLight[i] && !GLight[i]->m_isIgnitionLight) {
+		if(g_staticLights[i] && !g_staticLights[i]->m_isIgnitionLight) {
 			count++;
 		}
 	}
@@ -183,17 +183,17 @@ void EERIE_LIGHT_GlobalAdd(const EERIE_LIGHT * el)
 
 	if (num > -1)
 	{
-		GLight[num] = (EERIE_LIGHT *)malloc(sizeof(EERIE_LIGHT));
-		memcpy(GLight[num], el, sizeof(EERIE_LIGHT));
-		GLight[num]->m_ignitionLightHandle = LightHandle();
-		GLight[num]->sample = audio::INVALID_ID;
+		g_staticLights[num] = (EERIE_LIGHT *)malloc(sizeof(EERIE_LIGHT));
+		memcpy(g_staticLights[num], el, sizeof(EERIE_LIGHT));
+		g_staticLights[num]->m_ignitionLightHandle = LightHandle();
+		g_staticLights[num]->sample = audio::INVALID_ID;
 	}
 }
 
 void EERIE_LIGHT_MoveAll(const Vec3f & trans) {
 	for(size_t i = 0; i < MAX_LIGHTS; i++) {
-		if(GLight[i]) {
-			GLight[i]->pos += trans;
+		if(g_staticLights[i]) {
+			g_staticLights[i]->pos += trans;
 		}
 	}
 }
@@ -218,7 +218,7 @@ void TreatBackgroundDynlights() {
 	ARX_PROFILE_FUNC();
 	
 	for(size_t i = 0; i < MAX_LIGHTS; i++) {
-		EERIE_LIGHT *light = GLight[i];
+		EERIE_LIGHT *light = g_staticLights[i];
 
 		if(light && (light->extras & EXTRAS_SEMIDYNAMIC)) {
 			
@@ -359,7 +359,7 @@ void PrecalcIOLighting(const Vec3f & pos, float radius) {
 	TOTIOPDL = 0;
 
 	for(size_t i = 0; i < MAX_LIGHTS; i++) {
-		EERIE_LIGHT * el = GLight[i];
+		EERIE_LIGHT * el = g_staticLights[i];
 
 		if(   el
 		   && el->exist
@@ -463,8 +463,8 @@ void ClearDynLights() {
 	}
 
 	for(size_t i = 0; i < MAX_LIGHTS; i++) {
-		if(GLight[i]) {
-			GLight[i]->m_ignitionLightHandle = LightHandle();
+		if(g_staticLights[i]) {
+			g_staticLights[i]->m_ignitionLightHandle = LightHandle();
 		}
 	}
 
@@ -807,8 +807,8 @@ void ApplyTileLights(EERIEPOLY * ep, const Vec2s & pos)
 void EERIERemovePrecalcLights() {
 
 	for(size_t i = 0; i < MAX_LIGHTS; i++) {
-		if(GLight[i] != NULL)
-			GLight[i]->treat = 1;
+		if(g_staticLights[i] != NULL)
+			g_staticLights[i]->treat = 1;
 	}
 	
 	// TODO copy-paste poly iteration

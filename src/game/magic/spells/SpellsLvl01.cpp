@@ -357,7 +357,7 @@ void IgnitSpell::Launch()
 	CheckForIgnition(Sphere(m_srcPos, fPerimeter), 1, 1);
 	
 	for(size_t ii = 0; ii < MAX_LIGHTS; ii++) {
-		EERIE_LIGHT * light = GLight[ii];
+		EERIE_LIGHT * light = g_staticLights[ii];
 		
 		if(!light || !(light->extras & EXTRAS_EXTINGUISHABLE)) {
 			continue;
@@ -417,7 +417,7 @@ void IgnitSpell::End() {
 	
 	std::vector<T_LINKLIGHTTOFX>::iterator itr;
 	for(itr = m_lights.begin(); itr != m_lights.end(); ++itr) {
-		EERIE_LIGHT * light = GLight[itr->m_targetLight];
+		EERIE_LIGHT * light = g_staticLights[itr->m_targetLight];
 		light->m_ignitionStatus = true;
 		ARX_SOUND_PlaySFX(SND_SPELL_IGNITE, &light->pos);
 		lightHandleDestroy(itr->m_effectLight);
@@ -437,7 +437,7 @@ void IgnitSpell::Update()
 		std::vector<T_LINKLIGHTTOFX>::iterator itr;
 		for(itr = m_lights.begin(); itr != m_lights.end(); ++itr) {
 			
-			EERIE_LIGHT * targetLight = GLight[itr->m_targetLight];
+			EERIE_LIGHT * targetLight = g_staticLights[itr->m_targetLight];
 			
 			Vec3f pos = glm::mix(m_srcPos, targetLight->pos, a);
 			
@@ -472,7 +472,7 @@ void DouseSpell::Launch()
 	CheckForIgnition(Sphere(target, fPerimeter), 0, 1);
 	
 	for(size_t ii = 0; ii < MAX_LIGHTS; ii++) {
-		EERIE_LIGHT * light = GLight[ii];
+		EERIE_LIGHT * light = g_staticLights[ii];
 		
 		if(!light || !(light->extras & EXTRAS_EXTINGUISHABLE)) {
 			continue;
@@ -537,7 +537,7 @@ void DouseSpell::Launch()
 void DouseSpell::End() {
 	
 	BOOST_FOREACH(size_t index, m_lights) {
-		EERIE_LIGHT * light = GLight[index];
+		EERIE_LIGHT * light = g_staticLights[index];
 		light->m_ignitionStatus = false;
 		ARX_SOUND_PlaySFX(SND_SPELL_DOUSE, &light->pos);
 	}

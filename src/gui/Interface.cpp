@@ -2199,7 +2199,7 @@ void ArxGame::manageEditorControls() {
 				float fMaxdist = player.m_telekinesis ? 850 : 300;
 				
 				for(size_t i = 0; i < MAX_LIGHTS; i++) {
-					EERIE_LIGHT * light = GLight[i];
+					EERIE_LIGHT * light = g_staticLights[i];
 					
 					if(   light
 					   && light->exist
@@ -2245,7 +2245,7 @@ void ArxGame::manageEditorControls() {
 			float fMaxdist = player.m_telekinesis ? 850 : 300;
 			
 			for(size_t i = 0; i < MAX_LIGHTS; i++) {
-				EERIE_LIGHT * light = GLight[i];
+				EERIE_LIGHT * light = g_staticLights[i];
 				
 				if(   light
 				   && light->exist

@@ -346,7 +346,7 @@ long DanaeSaveLevel(const fs::path & _fic) {
 	
 	for(size_t i = 0; i < MAX_LIGHTS; i++) {
 		
-		EERIE_LIGHT * el = GLight[i];
+		EERIE_LIGHT * el = g_staticLights[i];
 		
 		if(!el || el->m_isIgnitionLight) {
 			continue;
@@ -688,7 +688,7 @@ bool DanaeLoadLevel(const res::path & file, bool loadEntities) {
 			
 			long j = EERIE_LIGHT_Create();
 			if(j >= 0) {
-				EERIE_LIGHT * el = GLight[j];
+				EERIE_LIGHT * el = g_staticLights[j];
 				
 				el->exist = 1;
 				el->treat = 1;
@@ -861,7 +861,7 @@ bool DanaeLoadLevel(const res::path & file, bool loadEntities) {
 		
 		long j = EERIE_LIGHT_Create();
 		if(j >= 0) {
-			EERIE_LIGHT * el = GLight[j];
+			EERIE_LIGHT * el = g_staticLights[j];
 			
 			el->exist = 1;
 			el->treat = 1;

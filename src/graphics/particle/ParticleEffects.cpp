@@ -983,10 +983,10 @@ void ARX_PARTICLES_Update(EERIE_CAMERA * cam)  {
 
 void RestoreAllLightsInitialStatus() {
 	for(size_t i = 0; i < MAX_LIGHTS; i++) {
-		if(GLight[i]) {
-			GLight[i]->m_ignitionStatus = !(GLight[i]->extras & EXTRAS_STARTEXTINGUISHED);
-			if(!GLight[i]->m_ignitionStatus) {
-				lightHandleDestroy(GLight[i]->m_ignitionLightHandle);
+		if(g_staticLights[i]) {
+			g_staticLights[i]->m_ignitionStatus = !(g_staticLights[i]->extras & EXTRAS_STARTEXTINGUISHED);
+			if(!g_staticLights[i]->m_ignitionStatus) {
+				lightHandleDestroy(g_staticLights[i]->m_ignitionLightHandle);
 			}
 		}
 	}
@@ -1001,7 +1001,7 @@ void TreatBackgroundActions() {
 	
 	for(size_t i = 0; i < MAX_LIGHTS; i++) {
 		
-		EERIE_LIGHT * gl = GLight[i];
+		EERIE_LIGHT * gl = g_staticLights[i];
 		if(!gl) {
 			continue;
 		}

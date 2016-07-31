@@ -1236,7 +1236,7 @@ void CheckForIgnition(const Sphere & sphere, bool mode, long flag) {
 	
 	if(!(flag & 1))
 		for(size_t i = 0; i < MAX_LIGHTS; i++) {
-			EERIE_LIGHT * el = GLight[i];
+			EERIE_LIGHT * el = g_staticLights[i];
 
 			if(el == NULL)
 				continue;
