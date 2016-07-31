@@ -207,7 +207,6 @@ void FlyingEyeSpell::Update() {
 				pd->tc = TC_smoke;
 				pd->m_flags = FADE_IN_AND_OUT | ROTATING | DISSIPATING;
 				pd->sourceionum = EntityHandle_Player;
-				pd->source = &eobj->vertexlist3[id.handleData()].v; // FIXME passing of pointer to vertex position
 				pd->m_rotation = 0.0000001f;
 				pd->rgb = Color3f(.7f, .3f, 1.f) + Color3f(-.1f, -.1f, -.1f) * randomColor3f();
 			}
