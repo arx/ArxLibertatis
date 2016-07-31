@@ -91,10 +91,8 @@ static void LaunchMagicMissileExplosion(const Vec3f & _ePos, bool mrCheat) {
 	pPS->SetParams(cp);
 	pPS->SetPos(_ePos);
 	pPS->Update(0);
-
-	LightHandle id = GetFreeDynLight();
 	
-	EERIE_LIGHT * light = lightHandleGet(id);
+	EERIE_LIGHT * light = dynLightCreate();
 	if(light) {
 		light->intensity = 2.3f;
 		light->fallstart = 250.f;
@@ -341,9 +339,7 @@ void IgnitSpell::Launch()
 		m_srcPos = m_caster_pos - Vec3f(0.f, 50.f, 0.f);
 	}
 	
-	LightHandle id = GetFreeDynLight();
-	
-	EERIE_LIGHT * light = lightHandleGet(id);
+	EERIE_LIGHT * light = dynLightCreate();
 	if(light) {
 		light->intensity = 1.8f;
 		light->fallend   = 450.f;

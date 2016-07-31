@@ -129,9 +129,7 @@ void SummonCreatureSpell::End() {
 			posi.y -= 100.f;
 			MakeCoolFx(posi);
 		
-			LightHandle nn = GetFreeDynLight();
-			
-			EERIE_LIGHT * light = lightHandleGet(nn);
+			EERIE_LIGHT * light = dynLightCreate();
 			if(light) {
 				light->intensity = Random::getf(0.7f, 2.7f);
 				light->fallend = 600.f;

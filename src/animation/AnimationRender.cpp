@@ -357,10 +357,8 @@ void Cedric_ApplyLightingFirstPartRefactor(Entity *io) {
 							sp.origin = io->pos + randomVec3f() * Vec3f(200.f, 20.f,200.f) - Vec3f(100.f, 10.f, 100.f);
 							sp.radius = Random::getf(100.f, 200.f);
 						}
-
-						LightHandle nn = GetFreeDynLight();
 						
-						EERIE_LIGHT * light = lightHandleGet(nn);
+						EERIE_LIGHT * light = dynLightCreate();
 						if(light) {
 							light->intensity = Random::getf(0.7f, 2.7f);
 							light->fallend = 600.f;

@@ -448,6 +448,11 @@ EERIE_LIGHT * dynLightCreate(LightHandle & handle) {
 	return lightHandleGet(handle);
 }
 
+EERIE_LIGHT * dynLightCreate() {
+	LightHandle handle = GetFreeDynLight();
+	return lightHandleGet(handle);
+}
+
 
 void ClearDynLights() {
 

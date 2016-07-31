@@ -150,7 +150,9 @@ const LightHandle torchLightHandle = LightHandle(0);
 EERIE_LIGHT * lightHandleGet(LightHandle lightHandle);
 
 LightHandle GetFreeDynLight();
+
 EERIE_LIGHT * dynLightCreate(LightHandle & handle);
+EERIE_LIGHT * dynLightCreate();
 
 void lightHandleDestroy(LightHandle & handle);
 void endLightDelayed(LightHandle & handle, ArxDuration delay);

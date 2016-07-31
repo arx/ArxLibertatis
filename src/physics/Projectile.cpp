@@ -325,9 +325,8 @@ static void CheckExp(const Projectile & projectile) {
 		DoSphericDamage(Sphere(pos, 50.f), 4.f * 2, DAMAGE_AREA, DAMAGE_TYPE_FIRE | DAMAGE_TYPE_MAGICAL, EntityHandle_Player);
 		ARX_SOUND_PlaySFX(SND_SPELL_FIRE_HIT, &pos);
 		ARX_NPC_SpawnAudibleSound(pos, entities.player());
-		LightHandle id = GetFreeDynLight();
 		
-		EERIE_LIGHT * light = lightHandleGet(id);
+		EERIE_LIGHT * light = dynLightCreate();
 		if(light && g_framedelay > 0) {
 			light->intensity = 3.9f;
 			light->fallstart = 400.f;
@@ -388,8 +387,7 @@ void ARX_THROWN_OBJECT_Manage(float time_offset)
 		if((projectile.flags & ATO_FIERY) && (projectile.flags & ATO_MOVING)
 		   && !(projectile.flags & ATO_UNDERWATER)) {
 
-			LightHandle id = GetFreeDynLight();
-			EERIE_LIGHT * light = lightHandleGet(id);
+			EERIE_LIGHT * light = dynLightCreate();
 			if(light && g_framedelay > 0) {
 				light->intensity = 1.f;
 				light->fallstart = 100.f;
