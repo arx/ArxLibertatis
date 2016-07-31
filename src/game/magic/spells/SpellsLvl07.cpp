@@ -46,8 +46,6 @@
 extern float SLID_START;
 bool bOldLookToggle;
 
-static LightHandle special[3];
-
 FlyingEyeSpell::FlyingEyeSpell()
 	: m_lastupdate(0)
 {

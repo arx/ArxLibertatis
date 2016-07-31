@@ -38,6 +38,7 @@ public:
 	
 private:
 	ArxInstant m_lastupdate;
+	LightHandle special[3];
 };
 
 class FireFieldSpell : public SpellBase {
