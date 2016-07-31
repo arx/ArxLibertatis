@@ -142,8 +142,8 @@ void FlyingEyeSpell::End()
 	
 	config.input.mouseLookToggle = bOldLookToggle;
 	
-	lightHandleDestroy(special[2]);
-	lightHandleDestroy(special[1]);
+	lightHandleDestroy(m_light1);
+	lightHandleDestroy(m_light2);
 }
 
 static void FlyingEyeSpellUpdateHand(const Vec3f & pos, LightHandle & light) {
@@ -197,22 +197,15 @@ void FlyingEyeSpell::Update() {
 	m_lastupdate = now;
 	
 	Entity * io = entities.player();
-	EERIE_3DOBJ * eobj = io->obj;
-	long pouet = 2;
-
-	while(pouet) {
-		ActionPoint id;
-
-		if(pouet == 2)
-			id = io->obj->fastaccess.primary_attach;
-		else
-			id = io->obj->fastaccess.left_attach;
-
-		pouet--;
-
-		if(id != ActionPoint()) {
-			FlyingEyeSpellUpdateHand(actionPointPosition(eobj, id), special[pouet]);
-		}
+	
+	if(io->obj->fastaccess.primary_attach != ActionPoint()) {
+		Vec3f pos = actionPointPosition(io->obj, io->obj->fastaccess.primary_attach);
+		FlyingEyeSpellUpdateHand(pos, m_light1);
+	}
+	
+	if(io->obj->fastaccess.left_attach != ActionPoint()) {
+		Vec3f pos = actionPointPosition(io->obj, io->obj->fastaccess.left_attach);
+		FlyingEyeSpellUpdateHand(pos, m_light2);
 	}
 }
 
