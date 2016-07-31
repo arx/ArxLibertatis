@@ -76,7 +76,7 @@ EERIE_LIGHT g_dynamicLights[g_dynamicLightsMax];
 EERIE_LIGHT * g_culledDynamicLights[g_dynamicLightsMax];
 size_t g_culledDynamicLightsCount = 0;
 
-static EERIE_LIGHT * IO_PDL[g_dynamicLightsMax];
+static EERIE_LIGHT * g_culledStaticLights[g_dynamicLightsMax];
 size_t TOTIOPDL = 0;
 
 void ColorMod::updateFromEntity(Entity *io, bool inBook) {
@@ -371,7 +371,7 @@ void PrecalcIOLighting(const Vec3f & pos, float radius) {
 		   && (el->pos.z <= pos.z + radius)
 		) {
 			RecalcLight(el);
-			IO_PDL[TOTIOPDL] = el;
+			g_culledStaticLights[TOTIOPDL] = el;
 			
 			TOTIOPDL++;
 			
@@ -537,7 +537,7 @@ void UpdateLlights(ShaderLight lights[], int & lightsCount, const Vec3f pos, boo
 	values.fill(999999999.f);
 	
 	for(size_t i = 0; i < TOTIOPDL; i++) {
-		Insertllight(llights, values, IO_PDL[i], pos, forPlayerColor);
+		Insertllight(llights, values, g_culledStaticLights[i], pos, forPlayerColor);
 	}
 
 	for(size_t i = 0; i < g_culledDynamicLightsCount; i++) {
