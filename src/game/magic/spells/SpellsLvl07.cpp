@@ -148,6 +148,37 @@ void FlyingEyeSpell::End()
 	lightHandleDestroy(special[1]);
 }
 
+static void FlyingEyeSpellUpdateHand(const Vec3f & pos, LightHandle & light) {
+	
+	EERIE_LIGHT * el = dynLightCreate(light);
+	if(el) {
+		el->intensity = 1.3f;
+		el->fallend = 180.f;
+		el->fallstart = 50.f;
+		el->rgb = Color3f(0.7f, 0.3f, 1.f);
+		el->pos = pos;
+	}
+	
+	for(long kk = 0; kk < 2; kk++) {
+		
+		PARTICLE_DEF * pd = createParticle();
+		if(!pd) {
+			break;
+		}
+		
+		pd->ov = pos + randomVec(-1.f, 1.f);
+		pd->move = Vec3f(0.1f, 0.f, 0.1f) + Vec3f(-0.2f, -2.2f, -0.2f) * randomVec3f();
+		pd->siz = 5.f;
+		pd->tolive = Random::getu(1500, 3500);
+		pd->scale = Vec3f(0.2f);
+		pd->tc = TC_smoke;
+		pd->m_flags = FADE_IN_AND_OUT | ROTATING | DISSIPATING;
+		pd->sourceionum = EntityHandle_Player;
+		pd->m_rotation = 0.0000001f;
+		pd->rgb = Color3f(.7f, .3f, 1.f) + Color3f(-.1f, -.1f, -.1f) * randomColor3f();
+	}
+}
+
 void FlyingEyeSpell::Update() {
 	
 	const ArxInstant now = arxtime.now();
@@ -182,34 +213,7 @@ void FlyingEyeSpell::Update() {
 		pouet--;
 
 		if(id != ActionPoint()) {
-			
-			EERIE_LIGHT * el = dynLightCreate(special[pouet]);
-			if(el) {
-				el->intensity = 1.3f;
-				el->fallend = 180.f;
-				el->fallstart = 50.f;
-				el->rgb = Color3f(0.7f, 0.3f, 1.f);
-				el->pos = actionPointPosition(eobj, id);
-			}
-			
-			for(long kk = 0; kk < 2; kk++) {
-				
-				PARTICLE_DEF * pd = createParticle();
-				if(!pd) {
-					break;
-				}
-				
-				pd->ov = actionPointPosition(eobj, id) + randomVec(-1.f, 1.f);
-				pd->move = Vec3f(0.1f, 0.f, 0.1f) + Vec3f(-0.2f, -2.2f, -0.2f) * randomVec3f();
-				pd->siz = 5.f;
-				pd->tolive = Random::getu(1500, 3500);
-				pd->scale = Vec3f(0.2f);
-				pd->tc = TC_smoke;
-				pd->m_flags = FADE_IN_AND_OUT | ROTATING | DISSIPATING;
-				pd->sourceionum = EntityHandle_Player;
-				pd->m_rotation = 0.0000001f;
-				pd->rgb = Color3f(.7f, .3f, 1.f) + Color3f(-.1f, -.1f, -.1f) * randomColor3f();
-			}
+			FlyingEyeSpellUpdateHand(actionPointPosition(eobj, id), special[pouet]);
 		}
 	}
 }
