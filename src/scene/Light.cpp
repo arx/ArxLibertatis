@@ -410,15 +410,16 @@ void endLightDelayed(LightHandle & handle, ArxDuration delay) {
 LightHandle GetFreeDynLight() {
 
 	for(size_t i = 1; i < MAX_DYNLIGHTS; i++) {
-		if(!(DynLight[i].exist)) {
-			DynLight[i].exist = 1;
-			DynLight[i].m_isIgnitionLight = false;
-			DynLight[i].intensity = 1.3f;
-			DynLight[i].treat = 1;
-			DynLight[i].creationTime = arxtime.now();
-			DynLight[i].duration = ArxDuration_ZERO;
-			DynLight[i].extras = 0;
-			DynLight[i].m_storedFlameTime.reset();
+		EERIE_LIGHT & light = DynLight[i];
+		if(!(light.exist)) {
+			light.exist = 1;
+			light.m_isIgnitionLight = false;
+			light.intensity = 1.3f;
+			light.treat = 1;
+			light.creationTime = arxtime.now();
+			light.duration = ArxDuration_ZERO;
+			light.extras = 0;
+			light.m_storedFlameTime.reset();
 			return LightHandle(i);
 		}
 	}
