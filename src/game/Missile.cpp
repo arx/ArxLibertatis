@@ -79,7 +79,7 @@ struct ARX_MISSILE
 	ArxInstant timecreation;
 	ArxInstant lastupdate;
 	ArxDuration tolive;
-	LightHandle	longinfo;
+	LightHandle	m_light;
 	EntityHandle owner;
 };
 
@@ -105,7 +105,7 @@ static void ARX_MISSILES_Kill(long i) {
 	{
 		case MISSILE_FIREBALL : {
 			
-			EERIE_LIGHT * light = lightHandleGet(missiles[i].longinfo);
+			EERIE_LIGHT * light = lightHandleGet(missiles[i].m_light);
 			if(light) {
 				light->duration = ArxDurationMs(150);
 			}
@@ -152,7 +152,7 @@ void ARX_MISSILES_Spawn(Entity * io, ARX_SPELLS_MISSILE_TYPE type, const Vec3f &
 			missiles[i].tolive = ArxDurationMs(6000);
 			missiles[i].velocity *= 0.8f;
 			
-			EERIE_LIGHT * light = dynLightCreate(missiles[i].longinfo);
+			EERIE_LIGHT * light = dynLightCreate(missiles[i].m_light);
 			if(light) {
 				light->intensity = 1.3f;
 				light->fallend = 420.f;
@@ -200,7 +200,7 @@ void ARX_MISSILES_Update() {
 
 				pos = missiles[i].startpos + missiles[i].velocity * Vec3f(framediff3);
 				
-				EERIE_LIGHT * light = lightHandleGet(missiles[i].longinfo);
+				EERIE_LIGHT * light = lightHandleGet(missiles[i].m_light);
 				if(light) {
 					light->pos = pos;
 				}
