@@ -74,7 +74,7 @@ EERIE_LIGHT * g_staticLights[g_staticLightsMax];
 EERIE_LIGHT g_dynamicLights[g_dynamicLightsMax];
 
 EERIE_LIGHT * g_culledDynamicLights[g_dynamicLightsMax];
-size_t TOTPDL = 0;
+size_t g_culledDynamicLightsCount = 0;
 
 static EERIE_LIGHT * IO_PDL[g_dynamicLightsMax];
 size_t TOTIOPDL = 0;
@@ -323,7 +323,7 @@ void PrecalcDynamicLighting(long x0, long z0, long x1, long z1, const Vec3f & ca
 	
 	ARX_PROFILE_FUNC();
 	
-	TOTPDL = 0;
+	g_culledDynamicLightsCount = 0;
 	
 	float fx0 = ACTIVEBKG->Xdiv * x0;
 	float fz0 = ACTIVEBKG->Zdiv * z0;
@@ -342,11 +342,11 @@ void PrecalcDynamicLighting(long x0, long z0, long x1, long z1, const Vec3f & ca
 			) {
 				el->treat = 1;
 				RecalcLight(el);
-				g_culledDynamicLights[TOTPDL] = el;
-				TOTPDL++;
+				g_culledDynamicLights[g_culledDynamicLightsCount] = el;
+				g_culledDynamicLightsCount++;
 
-				if(TOTPDL >= g_dynamicLightsMax)
-					TOTPDL--;
+				if(g_culledDynamicLightsCount >= g_dynamicLightsMax)
+					g_culledDynamicLightsCount--;
 			}
 			else if(el->treat)
 				el->treat = 0;
@@ -468,7 +468,7 @@ void ClearDynLights() {
 		}
 	}
 
-	TOTPDL = 0;
+	g_culledDynamicLightsCount = 0;
 	TOTIOPDL = 0;
 }
 
@@ -540,7 +540,7 @@ void UpdateLlights(ShaderLight lights[], int & lightsCount, const Vec3f pos, boo
 		Insertllight(llights, values, IO_PDL[i], pos, forPlayerColor);
 	}
 
-	for(size_t i = 0; i < TOTPDL; i++) {
+	for(size_t i = 0; i < g_culledDynamicLightsCount; i++) {
 		Insertllight(llights, values, g_culledDynamicLights[i], pos, forPlayerColor);
 	}
 	
@@ -596,7 +596,7 @@ void ComputeTileLights(short x,short z)
 	float xx = (x + 0.5f) * ACTIVEBKG->Xdiv;
 	float zz = (z + 0.5f) * ACTIVEBKG->Zdiv;
 
-	for(size_t i = 0; i < TOTPDL; i++) {
+	for(size_t i = 0; i < g_culledDynamicLightsCount; i++) {
 		EERIE_LIGHT * light = g_culledDynamicLights[i];
 		
 		if(closerThan(Vec2f(xx, zz), Vec2f(light->pos.x, light->pos.z), light->fallend + 60.f)) {

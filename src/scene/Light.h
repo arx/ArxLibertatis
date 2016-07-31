@@ -70,7 +70,7 @@ const size_t g_dynamicLightsMax = 500;
 extern EERIE_LIGHT * g_culledDynamicLights[g_dynamicLightsMax];
 extern EERIE_LIGHT * g_staticLights[g_staticLightsMax];
 extern EERIE_LIGHT g_dynamicLights[g_dynamicLightsMax];
-extern size_t TOTPDL;
+extern size_t g_culledDynamicLightsCount;
 extern size_t TOTIOPDL;
 
 typedef HandleType<struct LightHandleTag, long, -1> LightHandle;

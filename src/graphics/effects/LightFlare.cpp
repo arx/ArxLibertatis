@@ -43,7 +43,7 @@ void update2DFX() {
 
 	bool bComputeIO = false;
 
-	for(size_t i = 0; i < TOTPDL; i++) {
+	for(size_t i = 0; i < g_culledDynamicLightsCount; i++) {
 		EERIE_LIGHT *el = g_culledDynamicLights[i];
 
 		EERIE_BKG_INFO * bkgData = getFastBackgroundData(el->pos.x, el->pos.z);
@@ -115,7 +115,7 @@ void goFor2DFX() {
 	GRenderer->SetRenderState(Renderer::DepthTest, false);
 	GRenderer->SetFogColor(Color::none);
 
-	for(size_t i = 0; i < TOTPDL; i++) {
+	for(size_t i = 0; i < g_culledDynamicLightsCount; i++) {
 		const EERIE_LIGHT & el = *g_culledDynamicLights[i];
 
 		if(!el.exist || !el.treat)

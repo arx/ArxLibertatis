@@ -295,11 +295,11 @@ static void RenderBookPlayerCharacter() {
 	EERIE_LIGHT * SavePDL[2];
 	SavePDL[0] = g_culledDynamicLights[0];
 	SavePDL[1] = g_culledDynamicLights[1];
-	size_t iSavePDL = TOTPDL;
+	size_t iSavePDL = g_culledDynamicLightsCount;
 	
 	g_culledDynamicLights[0] = &eLight1;
 	g_culledDynamicLights[1] = &eLight2;
-	TOTPDL = 2;
+	g_culledDynamicLightsCount = 2;
 	
 	EERIE_CAMERA * oldcam = ACTIVECAM;
 	bookcam.center = rec.center();
@@ -380,7 +380,7 @@ static void RenderBookPlayerCharacter() {
 	
 	g_culledDynamicLights[0] = SavePDL[0];
 	g_culledDynamicLights[1] = SavePDL[1];
-	TOTPDL = iSavePDL;
+	g_culledDynamicLightsCount = iSavePDL;
 	
 	entities.player()->obj->vertexlist3 = vertexlist;
 	vertexlist.clear();

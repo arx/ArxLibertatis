@@ -132,7 +132,7 @@ void ARX_INTERFACE_ManageOpenedBook_Finish(const Vec2f & mousePos)
 	EERIE_CAMERA * oldcam = ACTIVECAM;
 	
 	g_culledDynamicLights[0] = light;
-	TOTPDL=1;
+	g_culledDynamicLightsCount = 1;
 	
 	Vec2i tmpPos = Vec2i_ZERO;
 	
