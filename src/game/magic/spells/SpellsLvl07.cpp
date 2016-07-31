@@ -208,7 +208,7 @@ void FlyingEyeSpell::Update() {
 		if(pouet == 2)
 			id = io->obj->fastaccess.primary_attach;
 		else
-			id = GetActionPointIdx(io->obj, "left_attach");
+			id = io->obj->fastaccess.left_attach;
 
 		pouet--;
 
