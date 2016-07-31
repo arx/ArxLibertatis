@@ -2802,7 +2802,7 @@ void ARX_GAME_Reset(long type) {
 	ARX_MISSILES_ClearAll();
 
 	// IO PDL
-	TOTIOPDL = 0;
+	g_culledStaticLightsCount = 0;
 	
 	// Interface
 	ARX_INTERFACE_Reset();
