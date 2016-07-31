@@ -79,6 +79,10 @@ size_t g_culledDynamicLightsCount = 0;
 static EERIE_LIGHT * g_culledStaticLights[g_dynamicLightsMax];
 size_t g_culledStaticLightsCount = 0;
 
+void culledStaticLightsReset() {
+	g_culledStaticLightsCount = 0;
+}
+
 void ColorMod::updateFromEntity(Entity *io, bool inBook) {
 	factor = Color3f::white;
 	term = Color3f::black;

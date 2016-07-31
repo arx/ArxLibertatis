@@ -71,7 +71,8 @@ extern EERIE_LIGHT * g_culledDynamicLights[g_dynamicLightsMax];
 extern EERIE_LIGHT * g_staticLights[g_staticLightsMax];
 extern EERIE_LIGHT g_dynamicLights[g_dynamicLightsMax];
 extern size_t g_culledDynamicLightsCount;
-extern size_t g_culledStaticLightsCount;
+
+void culledStaticLightsReset();
 
 typedef HandleType<struct LightHandleTag, long, -1> LightHandle;
 

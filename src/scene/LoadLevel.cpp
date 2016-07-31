@@ -975,7 +975,8 @@ void DanaeClearLevel(long flag)
 	
 	EERIE_LIGHT_GlobalInit();
 	ARX_FOGS_Clear();
-	g_culledStaticLightsCount = 0;
+	
+	culledStaticLightsReset();
 	
 	UnlinkAllLinkedObjects();
 	

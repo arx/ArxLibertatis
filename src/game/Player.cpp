@@ -2800,9 +2800,8 @@ void ARX_GAME_Reset(long type) {
 
 	// Missiles
 	ARX_MISSILES_ClearAll();
-
-	// IO PDL
-	g_culledStaticLightsCount = 0;
+	
+	culledStaticLightsReset();
 	
 	// Interface
 	ARX_INTERFACE_Reset();
