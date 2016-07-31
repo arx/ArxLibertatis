@@ -293,12 +293,12 @@ static void RenderBookPlayerCharacter() {
 	RecalcLight(&eLight2);
 	
 	EERIE_LIGHT * SavePDL[2];
-	SavePDL[0] = PDL[0];
-	SavePDL[1] = PDL[1];
+	SavePDL[0] = g_culledDynamicLights[0];
+	SavePDL[1] = g_culledDynamicLights[1];
 	size_t iSavePDL = TOTPDL;
 	
-	PDL[0] = &eLight1;
-	PDL[1] = &eLight2;
+	g_culledDynamicLights[0] = &eLight1;
+	g_culledDynamicLights[1] = &eLight2;
 	TOTPDL = 2;
 	
 	EERIE_CAMERA * oldcam = ACTIVECAM;
@@ -378,8 +378,8 @@ static void RenderBookPlayerCharacter() {
 		GRenderer->SetRenderState(Renderer::DepthTest, false);
 	}
 	
-	PDL[0] = SavePDL[0];
-	PDL[1] = SavePDL[1];
+	g_culledDynamicLights[0] = SavePDL[0];
+	g_culledDynamicLights[1] = SavePDL[1];
 	TOTPDL = iSavePDL;
 	
 	entities.player()->obj->vertexlist3 = vertexlist;

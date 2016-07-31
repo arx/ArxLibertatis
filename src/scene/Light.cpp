@@ -73,7 +73,7 @@ static const int NPC_ITEMS_AMBIENT_VALUE_255 = 35;
 EERIE_LIGHT * g_staticLights[g_staticLightsMax];
 EERIE_LIGHT g_dynamicLights[g_dynamicLightsMax];
 
-EERIE_LIGHT * PDL[g_dynamicLightsMax];
+EERIE_LIGHT * g_culledDynamicLights[g_dynamicLightsMax];
 size_t TOTPDL = 0;
 
 static EERIE_LIGHT * IO_PDL[g_dynamicLightsMax];
@@ -342,7 +342,7 @@ void PrecalcDynamicLighting(long x0, long z0, long x1, long z1, const Vec3f & ca
 			) {
 				el->treat = 1;
 				RecalcLight(el);
-				PDL[TOTPDL] = el;
+				g_culledDynamicLights[TOTPDL] = el;
 				TOTPDL++;
 
 				if(TOTPDL >= g_dynamicLightsMax)
@@ -541,7 +541,7 @@ void UpdateLlights(ShaderLight lights[], int & lightsCount, const Vec3f pos, boo
 	}
 
 	for(size_t i = 0; i < TOTPDL; i++) {
-		Insertllight(llights, values, PDL[i], pos, forPlayerColor);
+		Insertllight(llights, values, g_culledDynamicLights[i], pos, forPlayerColor);
 	}
 	
 	lightsCount = 0;
@@ -597,7 +597,7 @@ void ComputeTileLights(short x,short z)
 	float zz = (z + 0.5f) * ACTIVEBKG->Zdiv;
 
 	for(size_t i = 0; i < TOTPDL; i++) {
-		EERIE_LIGHT * light = PDL[i];
+		EERIE_LIGHT * light = g_culledDynamicLights[i];
 		
 		if(closerThan(Vec2f(xx, zz), Vec2f(light->pos.x, light->pos.z), light->fallend + 60.f)) {
 

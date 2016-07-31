@@ -67,7 +67,7 @@ class Entity;
 const size_t g_staticLightsMax = 1200;
 const size_t g_dynamicLightsMax = 500;
 
-extern EERIE_LIGHT * PDL[g_dynamicLightsMax];
+extern EERIE_LIGHT * g_culledDynamicLights[g_dynamicLightsMax];
 extern EERIE_LIGHT * g_staticLights[g_staticLightsMax];
 extern EERIE_LIGHT g_dynamicLights[g_dynamicLightsMax];
 extern size_t TOTPDL;
