@@ -988,9 +988,7 @@ void DanaeClearLevel(long flag)
 	
 	bGCroucheToggle = false;
 	
-	for(size_t i = 0; i < MAX_DYNLIGHTS; i++) {
-		DynLight[i].exist = 0;
-	}
+	resetDynLights();
 	
 	TREATZONE_Release();
 	TREATZONE_Clear();
