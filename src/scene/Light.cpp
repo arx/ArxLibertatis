@@ -71,7 +71,7 @@ static const Color3f defaultAmbient = Color3f(0.09f, 0.09f, 0.09f);
 static const int NPC_ITEMS_AMBIENT_VALUE_255 = 35;
 
 EERIE_LIGHT * g_staticLights[g_staticLightsMax];
-EERIE_LIGHT DynLight[MAX_DYNLIGHTS];
+EERIE_LIGHT g_dynamicLights[MAX_DYNLIGHTS];
 
 EERIE_LIGHT * PDL[MAX_DYNLIGHTS];
 size_t TOTPDL = 0;
@@ -288,7 +288,7 @@ void TreatBackgroundDynlights() {
 	}
 
 	for(size_t i = 0; i < MAX_DYNLIGHTS; i++) {
-		EERIE_LIGHT * el = &DynLight[i];
+		EERIE_LIGHT * el = &g_dynamicLights[i];
 
 		if(el->exist && el->duration) {
 			const ArxDuration elapsed = arxtime.now() - el->creationTime;
@@ -331,7 +331,7 @@ void PrecalcDynamicLighting(long x0, long z0, long x1, long z1, const Vec3f & ca
 	float fz1 = ACTIVEBKG->Zdiv * z1;
 	
 	for(size_t i = 0; i < MAX_DYNLIGHTS; i++) {
-		EERIE_LIGHT * el = &DynLight[i];
+		EERIE_LIGHT * el = &g_dynamicLights[i];
 
 		if(el->exist && el->rgb.r >= 0.f) {
 			if(   el->pos.x >= fx0
@@ -383,12 +383,12 @@ void PrecalcIOLighting(const Vec3f & pos, float radius) {
 
 static bool lightHandleIsValid(LightHandle num)
 {
-	return (long)num.handleData() >= 0 && ((size_t)num.handleData() < MAX_DYNLIGHTS) && DynLight[num.handleData()].exist;
+	return (long)num.handleData() >= 0 && ((size_t)num.handleData() < MAX_DYNLIGHTS) && g_dynamicLights[num.handleData()].exist;
 }
 
 EERIE_LIGHT * lightHandleGet(LightHandle lightHandle) {
 	if(lightHandleIsValid(lightHandle) || lightHandle == torchLightHandle) {
-		return &DynLight[lightHandle.handleData()];
+		return &g_dynamicLights[lightHandle.handleData()];
 	} else {
 		return NULL;
 	}
@@ -415,7 +415,7 @@ void endLightDelayed(LightHandle & handle, ArxDuration delay) {
 
 void resetDynLights() {
 	for(size_t i = 0; i < MAX_DYNLIGHTS; i++) {
-		DynLight[i].exist = 0;
+		g_dynamicLights[i].exist = 0;
 	}
 }
 
@@ -423,7 +423,7 @@ void resetDynLights() {
 LightHandle GetFreeDynLight() {
 
 	for(size_t i = 1; i < MAX_DYNLIGHTS; i++) {
-		EERIE_LIGHT & light = DynLight[i];
+		EERIE_LIGHT & light = g_dynamicLights[i];
 		if(!(light.exist)) {
 			light.exist = 1;
 			light.m_isIgnitionLight = false;
@@ -457,8 +457,8 @@ EERIE_LIGHT * dynLightCreate() {
 void ClearDynLights() {
 
 	for(size_t i = 0; i < MAX_DYNLIGHTS; i++) {
-		if(DynLight[i].exist) {
-			DynLight[i].exist = 0;
+		if(g_dynamicLights[i].exist) {
+			g_dynamicLights[i].exist = 0;
 		}
 	}
 

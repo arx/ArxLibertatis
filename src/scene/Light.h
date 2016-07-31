@@ -69,7 +69,7 @@ const size_t MAX_DYNLIGHTS = 500;
 
 extern EERIE_LIGHT * PDL[MAX_DYNLIGHTS];
 extern EERIE_LIGHT * g_staticLights[g_staticLightsMax];
-extern EERIE_LIGHT DynLight[MAX_DYNLIGHTS];
+extern EERIE_LIGHT g_dynamicLights[MAX_DYNLIGHTS];
 extern size_t TOTPDL;
 extern size_t TOTIOPDL;
 
