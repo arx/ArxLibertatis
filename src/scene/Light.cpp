@@ -71,12 +71,12 @@ static const Color3f defaultAmbient = Color3f(0.09f, 0.09f, 0.09f);
 static const int NPC_ITEMS_AMBIENT_VALUE_255 = 35;
 
 EERIE_LIGHT * g_staticLights[g_staticLightsMax];
-EERIE_LIGHT g_dynamicLights[MAX_DYNLIGHTS];
+EERIE_LIGHT g_dynamicLights[g_dynamicLightsMax];
 
-EERIE_LIGHT * PDL[MAX_DYNLIGHTS];
+EERIE_LIGHT * PDL[g_dynamicLightsMax];
 size_t TOTPDL = 0;
 
-static EERIE_LIGHT * IO_PDL[MAX_DYNLIGHTS];
+static EERIE_LIGHT * IO_PDL[g_dynamicLightsMax];
 size_t TOTIOPDL = 0;
 
 void ColorMod::updateFromEntity(Entity *io, bool inBook) {
@@ -287,7 +287,7 @@ void TreatBackgroundDynlights() {
 		}
 	}
 
-	for(size_t i = 0; i < MAX_DYNLIGHTS; i++) {
+	for(size_t i = 0; i < g_dynamicLightsMax; i++) {
 		EERIE_LIGHT * el = &g_dynamicLights[i];
 
 		if(el->exist && el->duration) {
@@ -330,7 +330,7 @@ void PrecalcDynamicLighting(long x0, long z0, long x1, long z1, const Vec3f & ca
 	float fx1 = ACTIVEBKG->Xdiv * x1;
 	float fz1 = ACTIVEBKG->Zdiv * z1;
 	
-	for(size_t i = 0; i < MAX_DYNLIGHTS; i++) {
+	for(size_t i = 0; i < g_dynamicLightsMax; i++) {
 		EERIE_LIGHT * el = &g_dynamicLights[i];
 
 		if(el->exist && el->rgb.r >= 0.f) {
@@ -345,7 +345,7 @@ void PrecalcDynamicLighting(long x0, long z0, long x1, long z1, const Vec3f & ca
 				PDL[TOTPDL] = el;
 				TOTPDL++;
 
-				if(TOTPDL >= MAX_DYNLIGHTS)
+				if(TOTPDL >= g_dynamicLightsMax)
 					TOTPDL--;
 			}
 			else if(el->treat)
@@ -375,7 +375,7 @@ void PrecalcIOLighting(const Vec3f & pos, float radius) {
 			
 			TOTIOPDL++;
 			
-			if(TOTIOPDL >= MAX_DYNLIGHTS)
+			if(TOTIOPDL >= g_dynamicLightsMax)
 				TOTIOPDL--;
 		}
 	}
@@ -383,7 +383,7 @@ void PrecalcIOLighting(const Vec3f & pos, float radius) {
 
 static bool lightHandleIsValid(LightHandle num)
 {
-	return (long)num.handleData() >= 0 && ((size_t)num.handleData() < MAX_DYNLIGHTS) && g_dynamicLights[num.handleData()].exist;
+	return (long)num.handleData() >= 0 && ((size_t)num.handleData() < g_dynamicLightsMax) && g_dynamicLights[num.handleData()].exist;
 }
 
 EERIE_LIGHT * lightHandleGet(LightHandle lightHandle) {
@@ -414,7 +414,7 @@ void endLightDelayed(LightHandle & handle, ArxDuration delay) {
 }
 
 void resetDynLights() {
-	for(size_t i = 0; i < MAX_DYNLIGHTS; i++) {
+	for(size_t i = 0; i < g_dynamicLightsMax; i++) {
 		g_dynamicLights[i].exist = 0;
 	}
 }
@@ -422,7 +422,7 @@ void resetDynLights() {
 
 LightHandle GetFreeDynLight() {
 
-	for(size_t i = 1; i < MAX_DYNLIGHTS; i++) {
+	for(size_t i = 1; i < g_dynamicLightsMax; i++) {
 		EERIE_LIGHT & light = g_dynamicLights[i];
 		if(!(light.exist)) {
 			light.exist = 1;
@@ -456,7 +456,7 @@ EERIE_LIGHT * dynLightCreate() {
 
 void ClearDynLights() {
 
-	for(size_t i = 0; i < MAX_DYNLIGHTS; i++) {
+	for(size_t i = 0; i < g_dynamicLightsMax; i++) {
 		if(g_dynamicLights[i].exist) {
 			g_dynamicLights[i].exist = 0;
 		}
