@@ -982,7 +982,7 @@ void ARX_PARTICLES_Update(EERIE_CAMERA * cam)  {
 }
 
 void RestoreAllLightsInitialStatus() {
-	for(size_t i = 0; i < MAX_LIGHTS; i++) {
+	for(size_t i = 0; i < g_staticLightsMax; i++) {
 		if(g_staticLights[i]) {
 			g_staticLights[i]->m_ignitionStatus = !(g_staticLights[i]->extras & EXTRAS_STARTEXTINGUISHED);
 			if(!g_staticLights[i]->m_ignitionStatus) {
@@ -999,7 +999,7 @@ void TreatBackgroundActions() {
 	
 	float fZFar = square(ACTIVECAM->cdepth * fZFogEnd * 1.3f);
 	
-	for(size_t i = 0; i < MAX_LIGHTS; i++) {
+	for(size_t i = 0; i < g_staticLightsMax; i++) {
 		
 		EERIE_LIGHT * gl = g_staticLights[i];
 		if(!gl) {

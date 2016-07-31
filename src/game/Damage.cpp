@@ -1235,7 +1235,7 @@ bool ARX_DAMAGES_TryToDoDamage(const Vec3f & pos, float dmg, float radius, Entit
 void CheckForIgnition(const Sphere & sphere, bool mode, long flag) {
 	
 	if(!(flag & 1))
-		for(size_t i = 0; i < MAX_LIGHTS; i++) {
+		for(size_t i = 0; i < g_staticLightsMax; i++) {
 			EERIE_LIGHT * el = g_staticLights[i];
 
 			if(el == NULL)

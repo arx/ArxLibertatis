@@ -344,7 +344,7 @@ long DanaeSaveLevel(const fs::path & _fic) {
 	memcpy(dat, &llh, sizeof(DANAE_LLF_HEADER));
 	pos += sizeof(DANAE_LLF_HEADER);
 	
-	for(size_t i = 0; i < MAX_LIGHTS; i++) {
+	for(size_t i = 0; i < g_staticLightsMax; i++) {
 		
 		EERIE_LIGHT * el = g_staticLights[i];
 		

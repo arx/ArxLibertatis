@@ -448,7 +448,7 @@ static bool ARX_CHANGELEVEL_Push_Index(long num) {
 		}
 	}
 	
-	for(size_t i = 0; i < MAX_LIGHTS; i++) {
+	for(size_t i = 0; i < g_staticLightsMax; i++) {
 		EERIE_LIGHT * el = g_staticLights[i];
 		if(el && !el->m_isIgnitionLight) {
 			asi.nb_lights++;
@@ -504,7 +504,7 @@ static bool ARX_CHANGELEVEL_Push_Index(long num) {
 		free(playlist);
 	}
 	
-	for(size_t i = 0; i < MAX_LIGHTS; i++) {
+	for(size_t i = 0; i < g_staticLightsMax; i++) {
 		EERIE_LIGHT * el = g_staticLights[i];
 		if(el != NULL && !el->m_isIgnitionLight) {
 			ARX_CHANGELEVEL_LIGHT * acl = (ARX_CHANGELEVEL_LIGHT *)(dat + pos);
@@ -1544,7 +1544,7 @@ static long ARX_CHANGELEVEL_Pop_Zones_n_Lights(ARX_CHANGELEVEL_INDEX * asi, long
 		
 		long count = 0;
 
-		for(size_t j = 0; j < MAX_LIGHTS; j++) {
+		for(size_t j = 0; j < g_staticLightsMax; j++) {
 			EERIE_LIGHT * el = g_staticLights[j];
 			if(el && !el->m_isIgnitionLight) {
 				if(count == i) {

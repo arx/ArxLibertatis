@@ -356,7 +356,7 @@ void IgnitSpell::Launch()
 	
 	CheckForIgnition(Sphere(m_srcPos, fPerimeter), 1, 1);
 	
-	for(size_t ii = 0; ii < MAX_LIGHTS; ii++) {
+	for(size_t ii = 0; ii < g_staticLightsMax; ii++) {
 		EERIE_LIGHT * light = g_staticLights[ii];
 		
 		if(!light || !(light->extras & EXTRAS_EXTINGUISHABLE)) {
@@ -471,7 +471,7 @@ void DouseSpell::Launch()
 	
 	CheckForIgnition(Sphere(target, fPerimeter), 0, 1);
 	
-	for(size_t ii = 0; ii < MAX_LIGHTS; ii++) {
+	for(size_t ii = 0; ii < g_staticLightsMax; ii++) {
 		EERIE_LIGHT * light = g_staticLights[ii];
 		
 		if(!light || !(light->extras & EXTRAS_EXTINGUISHABLE)) {

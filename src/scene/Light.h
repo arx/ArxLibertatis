@@ -64,11 +64,11 @@ struct EERIEPOLY;
 struct SMY_VERTEX;
 class Entity;
 
-const size_t MAX_LIGHTS = 1200;
+const size_t g_staticLightsMax = 1200;
 const size_t MAX_DYNLIGHTS = 500;
 
 extern EERIE_LIGHT * PDL[MAX_DYNLIGHTS];
-extern EERIE_LIGHT * g_staticLights[MAX_LIGHTS];
+extern EERIE_LIGHT * g_staticLights[g_staticLightsMax];
 extern EERIE_LIGHT DynLight[MAX_DYNLIGHTS];
 extern size_t TOTPDL;
 extern size_t TOTIOPDL;

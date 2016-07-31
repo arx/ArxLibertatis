@@ -118,7 +118,7 @@ static void drawDebugLights() {
 	
 	GRenderer->SetBlendFunc(BlendOne, BlendOne);
 	
-	for(size_t i = 0; i < MAX_LIGHTS; i++) {
+	for(size_t i = 0; i < g_staticLightsMax; i++) {
 		
 		EERIE_LIGHT * light = g_staticLights[i];
 		if(!light) {
@@ -151,7 +151,7 @@ static void drawDebugLights() {
 			drawDebugBoundingBox(light->m_screenRect);
 	}
 	
-	for(size_t i = 0; i < MAX_LIGHTS; i++) {
+	for(size_t i = 0; i < g_staticLightsMax; i++) {
 		
 		EERIE_LIGHT * light = g_staticLights[i];
 		if(!light) {

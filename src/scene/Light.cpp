@@ -70,7 +70,7 @@ static const float GLOBAL_LIGHT_FACTOR=0.85f;
 static const Color3f defaultAmbient = Color3f(0.09f, 0.09f, 0.09f);
 static const int NPC_ITEMS_AMBIENT_VALUE_255 = 35;
 
-EERIE_LIGHT * g_staticLights[MAX_LIGHTS];
+EERIE_LIGHT * g_staticLights[g_staticLightsMax];
 EERIE_LIGHT DynLight[MAX_DYNLIGHTS];
 
 EERIE_LIGHT * PDL[MAX_DYNLIGHTS];
@@ -116,12 +116,12 @@ void EERIE_LIGHT_GlobalInit() {
 	static long init = 0;
 	
 	if(!init) {
-		memset(g_staticLights, 0, sizeof(*g_staticLights) * MAX_LIGHTS);
+		memset(g_staticLights, 0, sizeof(*g_staticLights) * g_staticLightsMax);
 		init = 1;
 		return;
 	}
 	
-	for(size_t i = 0; i < MAX_LIGHTS; i++) {
+	for(size_t i = 0; i < g_staticLightsMax; i++) {
 		if(g_staticLights[i]) {
 			EERIE_LIGHT * dynLight = lightHandleGet(g_staticLights[i]->m_ignitionLightHandle);
 			if(dynLight) {
@@ -135,7 +135,7 @@ void EERIE_LIGHT_GlobalInit() {
 
 long EERIE_LIGHT_GetFree() {
 	
-	for(size_t i = 0; i < MAX_LIGHTS; i++) {
+	for(size_t i = 0; i < g_staticLightsMax; i++) {
 		if(!g_staticLights[i]) {
 			return i;
 		}
@@ -146,7 +146,7 @@ long EERIE_LIGHT_GetFree() {
 
 long EERIE_LIGHT_Create() {
 	
-	for (size_t i = 0; i < MAX_LIGHTS; i++) {
+	for (size_t i = 0; i < g_staticLightsMax; i++) {
 		if(!g_staticLights[i]) {
 			
 			g_staticLights[i] = (EERIE_LIGHT *)malloc(sizeof(EERIE_LIGHT));
@@ -168,7 +168,7 @@ long EERIE_LIGHT_Create() {
 long EERIE_LIGHT_Count() {
 	
 	long count = 0;
-	for(size_t i = 0; i < MAX_LIGHTS; i++) {
+	for(size_t i = 0; i < g_staticLightsMax; i++) {
 		if(g_staticLights[i] && !g_staticLights[i]->m_isIgnitionLight) {
 			count++;
 		}
@@ -191,7 +191,7 @@ void EERIE_LIGHT_GlobalAdd(const EERIE_LIGHT * el)
 }
 
 void EERIE_LIGHT_MoveAll(const Vec3f & trans) {
-	for(size_t i = 0; i < MAX_LIGHTS; i++) {
+	for(size_t i = 0; i < g_staticLightsMax; i++) {
 		if(g_staticLights[i]) {
 			g_staticLights[i]->pos += trans;
 		}
@@ -217,7 +217,7 @@ void TreatBackgroundDynlights() {
 	
 	ARX_PROFILE_FUNC();
 	
-	for(size_t i = 0; i < MAX_LIGHTS; i++) {
+	for(size_t i = 0; i < g_staticLightsMax; i++) {
 		EERIE_LIGHT *light = g_staticLights[i];
 
 		if(light && (light->extras & EXTRAS_SEMIDYNAMIC)) {
@@ -358,7 +358,7 @@ void PrecalcIOLighting(const Vec3f & pos, float radius) {
 
 	TOTIOPDL = 0;
 
-	for(size_t i = 0; i < MAX_LIGHTS; i++) {
+	for(size_t i = 0; i < g_staticLightsMax; i++) {
 		EERIE_LIGHT * el = g_staticLights[i];
 
 		if(   el
@@ -462,7 +462,7 @@ void ClearDynLights() {
 		}
 	}
 
-	for(size_t i = 0; i < MAX_LIGHTS; i++) {
+	for(size_t i = 0; i < g_staticLightsMax; i++) {
 		if(g_staticLights[i]) {
 			g_staticLights[i]->m_ignitionLightHandle = LightHandle();
 		}
@@ -806,7 +806,7 @@ void ApplyTileLights(EERIEPOLY * ep, const Vec2s & pos)
 
 void EERIERemovePrecalcLights() {
 
-	for(size_t i = 0; i < MAX_LIGHTS; i++) {
+	for(size_t i = 0; i < g_staticLightsMax; i++) {
 		if(g_staticLights[i] != NULL)
 			g_staticLights[i]->treat = 1;
 	}
