@@ -281,13 +281,11 @@ void FireballSpell::Update() {
 	
 	eCurPos += eMove * (g_framedelay * 0.0045f);
 	
-	
-	if(!lightHandleIsValid(m_light))
+	if(!lightHandleGet(m_light))
 		m_light = GetFreeDynLight();
 	
-	if(lightHandleIsValid(m_light)) {
-		EERIE_LIGHT * light = lightHandleGet(m_light);
-		
+	EERIE_LIGHT * light = lightHandleGet(m_light);
+	if(light) {
 		light->pos = eCurPos;
 		light->intensity = 2.2f;
 		light->fallend = 500.f;

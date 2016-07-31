@@ -326,10 +326,9 @@ static void CheckExp(const Projectile & projectile) {
 		ARX_SOUND_PlaySFX(SND_SPELL_FIRE_HIT, &pos);
 		ARX_NPC_SpawnAudibleSound(pos, entities.player());
 		LightHandle id = GetFreeDynLight();
-
-		if(lightHandleIsValid(id) && g_framedelay > 0) {
-			EERIE_LIGHT * light = lightHandleGet(id);
-			
+		
+		EERIE_LIGHT * light = lightHandleGet(id);
+		if(light && g_framedelay > 0) {
 			light->intensity = 3.9f;
 			light->fallstart = 400.f;
 			light->fallend   = 440.f;
@@ -390,9 +389,8 @@ void ARX_THROWN_OBJECT_Manage(float time_offset)
 		   && !(projectile.flags & ATO_UNDERWATER)) {
 
 			LightHandle id = GetFreeDynLight();
-			if(lightHandleIsValid(id) && g_framedelay > 0) {
-				EERIE_LIGHT * light = lightHandleGet(id);
-				
+			EERIE_LIGHT * light = lightHandleGet(id);
+			if(light && g_framedelay > 0) {
 				light->intensity = 1.f;
 				light->fallstart = 100.f;
 				light->fallend   = 240.f;

@@ -359,9 +359,9 @@ void Cedric_ApplyLightingFirstPartRefactor(Entity *io) {
 						}
 
 						LightHandle nn = GetFreeDynLight();
-						if(lightHandleIsValid(nn)) {
-							EERIE_LIGHT * light = lightHandleGet(nn);
-							
+						
+						EERIE_LIGHT * light = lightHandleGet(nn);
+						if(light) {
 							light->intensity = Random::getf(0.7f, 2.7f);
 							light->fallend = 600.f;
 							light->fallstart = 400.f;

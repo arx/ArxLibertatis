@@ -436,9 +436,9 @@ void ARX_MAGICAL_FLARES_Update() {
 			flare.v.p = flare.tv.p;
 
 			light->rgb = componentwise_max(light->rgb, c);
-
-			if(lightHandleIsValid(flare.dynlight)) {
-				EERIE_LIGHT * el = lightHandleGet(flare.dynlight);
+			
+			EERIE_LIGHT * el = lightHandleGet(flare.dynlight);
+			if(el) {
 				el->pos = flare.v.p;
 				el->rgb = c;
 			}

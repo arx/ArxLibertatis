@@ -120,9 +120,9 @@ void ManaDrainSpell::Launch()
 	m_damage = DamageCreate(damage);
 	
 	m_light = GetFreeDynLight();
-	if(lightHandleIsValid(m_light)) {
-		EERIE_LIGHT * light = lightHandleGet(m_light);
-		
+	
+	EERIE_LIGHT * light = lightHandleGet(m_light);
+	if(light) {
 		light->intensity = 2.3f;
 		light->fallend = 700.f;
 		light->fallstart = 500.f;
@@ -171,9 +171,8 @@ void ManaDrainSpell::Update() {
 	
 	float Es = std::sin(frametime * (1.0f/800) + glm::radians(scaley));
 	
-	if(lightHandleIsValid(m_light)) {
-		EERIE_LIGHT * light = lightHandleGet(m_light);
-		
+	EERIE_LIGHT * light = lightHandleGet(m_light);
+	if(light) {
 		light->pos.x = cabalpos.x;
 		light->pos.y = refpos;
 		light->pos.z = cabalpos.z;
@@ -271,9 +270,9 @@ void ExplosionSpell::Launch()
 	m_damage = DamageCreate(damage);
 	
 	m_light = GetFreeDynLight();
-	if(lightHandleIsValid(m_light)) {
-		EERIE_LIGHT * light = lightHandleGet(m_light);
-		
+	
+	EERIE_LIGHT * light = lightHandleGet(m_light);
+	if(light) {
 		light->intensity = 2.3f;
 		light->fallend = 700.f;
 		light->fallstart = 500.f;
@@ -300,12 +299,11 @@ void ExplosionSpell::Launch()
 
 void ExplosionSpell::Update() {
 	
-	if(!lightHandleIsValid(m_light))
+	if(!lightHandleGet(m_light))
 		m_light = GetFreeDynLight();
-
-	if(lightHandleIsValid(m_light)) {
-		EERIE_LIGHT * light = lightHandleGet(m_light);
-		
+	
+	EERIE_LIGHT * light = lightHandleGet(m_light);
+	if(light) {
 		light->rgb = Color3f(0.1f, 0.1f, 0.8f) + randomColor3f() * Color3f(1.f/3, 1.f/3, 1.f/5);
 		light->duration = ArxDurationMs(200);
 		
@@ -378,9 +376,9 @@ void LifeDrainSpell::Launch()
 	m_damage = DamageCreate(damage);
 	
 	m_light = GetFreeDynLight();
-	if(lightHandleIsValid(m_light)) {
-		EERIE_LIGHT * light = lightHandleGet(m_light);
-		
+	
+	EERIE_LIGHT * light = lightHandleGet(m_light);
+	if(light) {
 		light->intensity = 2.3f;
 		light->fallend = 700.f;
 		light->fallstart = 500.f;
@@ -429,9 +427,8 @@ void LifeDrainSpell::Update() {
 	
 	float Es = std::sin(frametime * (1.0f/800) + glm::radians(scaley));
 	
-	if(lightHandleIsValid(m_light)) {
-		EERIE_LIGHT * light = lightHandleGet(m_light);
-		
+	EERIE_LIGHT * light = lightHandleGet(m_light);
+	if(light) {
 		light->pos.x = cabalpos.x;
 		light->pos.y = refpos;
 		light->pos.z = cabalpos.z;

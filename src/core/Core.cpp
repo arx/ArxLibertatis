@@ -436,9 +436,7 @@ void levelInit() {
 	
 	eyeball.exist=0;
 	
-	for(size_t i = 0; i < MAX_DYNLIGHTS; i++) {
-		lightHandleGet(LightHandle(i))->exist = 0;
-	}
+	resetDynLights();
 	
 	arxtime.update_last_frame_time();
 	

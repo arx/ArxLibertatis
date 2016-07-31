@@ -96,9 +96,9 @@ void MassLightningStrikeSpell::Launch()
 	m_duration = maxDuration + ArxDurationMs(1000);
 	
 	m_light = GetFreeDynLight();
-	if(lightHandleIsValid(m_light)) {
-		EERIE_LIGHT * light = lightHandleGet(m_light);
-		
+	
+	EERIE_LIGHT * light = lightHandleGet(m_light);
+	if(light) {
 		light->intensity = 1.8f;
 		light->fallend = 850.f;
 		light->fallstart = 500.f;
@@ -165,10 +165,9 @@ void MassLightningStrikeSpell::Update() {
 		m_soundEffectPlayed = true;
 		ARX_SOUND_PlaySFX(SND_SPELL_ELECTRIC, NULL, Random::getf(0.8f, 1.2f));
 	}
-
-	if(lightHandleIsValid(m_light)) {
-		EERIE_LIGHT * light = lightHandleGet(m_light);
-		
+	
+	EERIE_LIGHT * light = lightHandleGet(m_light);
+	if(light) {
 		light->intensity = Random::getf(1.3f, 2.3f);
 	}	
 }

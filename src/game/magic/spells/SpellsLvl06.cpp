@@ -100,12 +100,12 @@ void RiseDeadSpell::Launch()
 	m_fissure.SetColorRays1(Color3f(0.5, 0.5, 0.5));
 	m_fissure.SetColorRays2(Color3f(1.f, 0.f, 0.f));
 	
-	if(!lightHandleIsValid(m_light)) {
+	if(!lightHandleGet(m_light)) {
 		m_light = GetFreeDynLight();
 	}
-	if(lightHandleIsValid(m_light)) {
-		EERIE_LIGHT * light = lightHandleGet(m_light);
-		
+	
+	EERIE_LIGHT * light = lightHandleGet(m_light);
+	if(light) {
 		light->intensity = 1.3f;
 		light->fallend = 450.f;
 		light->fallstart = 380.f;
@@ -132,10 +132,9 @@ void RiseDeadSpell::End()
 			MakeCoolFx(posi);
 			
 			LightHandle nn = GetFreeDynLight();
-
-			if(lightHandleIsValid(nn)) {
-				EERIE_LIGHT * light = lightHandleGet(nn);
-				
+			
+			EERIE_LIGHT * light = lightHandleGet(nn);
+			if(light) {
 				light->intensity = Random::getf(0.7f, 2.7f);
 				light->fallend = 600.f;
 				light->fallstart = 400.f;
@@ -163,9 +162,8 @@ void RiseDeadSpell::Update() {
 	m_fissure.Update(g_framedelay);
 	m_fissure.Render();
 	
-	if(lightHandleIsValid(m_light)) {
-		EERIE_LIGHT * light = lightHandleGet(m_light);
-		
+	EERIE_LIGHT * light = lightHandleGet(m_light);
+	if(light) {
 		light->intensity = 0.7f + 2.3f;
 		light->fallend = 500.f;
 		light->fallstart = 400.f;
@@ -322,9 +320,8 @@ void CreateFieldSpell::Launch()
 		m_field.SetDuration(m_duration);
 		m_field.lLightId = GetFreeDynLight();
 		
-		if(lightHandleIsValid(m_field.lLightId)) {
-			EERIE_LIGHT * light = lightHandleGet(m_field.lLightId);
-			
+		EERIE_LIGHT * light = lightHandleGet(m_field.lLightId);
+		if(light) {
 			light->intensity = 0.7f + 2.3f;
 			light->fallend = 500.f;
 			light->fallstart = 400.f;

@@ -60,9 +60,9 @@ void RuneOfGuardingSpell::Launch()
 	tex_p2 = TextureContainer::Load("graph/obj3d/textures/(fx)_tsu_blueting");
 	
 	m_light = GetFreeDynLight();
-	if(lightHandleIsValid(m_light)) {
-		EERIE_LIGHT * light = lightHandleGet(m_light);
-		
+	
+	EERIE_LIGHT * light = lightHandleGet(m_light);
+	if(light) {
 		light->intensity = 0.7f + 2.3f;
 		light->fallend = 500.f;
 		light->fallstart = 400.f;
@@ -82,9 +82,8 @@ void RuneOfGuardingSpell::Update() {
 	
 	ulCurrentTime += g_framedelay;
 	
-	if(lightHandleIsValid(m_light)) {
-		EERIE_LIGHT * light = lightHandleGet(m_light);
-		
+	EERIE_LIGHT * light = lightHandleGet(m_light);
+	if(light) {
 		float fa = Random::getf(0.85f, 1.0f);
 		light->intensity = 0.7f + 2.3f * fa;
 		light->fallend = 350.f;
@@ -305,10 +304,9 @@ void CurePoisonSpell::Launch()
 	m_particles.SetParams(g_particleParameters[ParticleParam_CurePoison]);
 	
 	m_light = GetFreeDynLight();
-
-	if(lightHandleIsValid(m_light)) {
-		EERIE_LIGHT * light = lightHandleGet(m_light);
-		
+	
+	EERIE_LIGHT * light = lightHandleGet(m_light);
+	if(light) {
 		light->intensity = 1.5f;
 		light->fallstart = 200.f;
 		light->fallend   = 350.f;
@@ -357,12 +355,11 @@ void CurePoisonSpell::Update() {
 	m_particles.SetPos(m_pos);
 	m_particles.Update(g_framedelay);
 
-	if(!lightHandleIsValid(m_light))
+	if(!lightHandleGet(m_light))
 		m_light = GetFreeDynLight();
-
-	if(lightHandleIsValid(m_light)) {
-		EERIE_LIGHT * light = lightHandleGet(m_light);
-		
+	
+	EERIE_LIGHT * light = lightHandleGet(m_light);
+	if(light) {
 		light->intensity = 2.3f;
 		light->fallstart = 200.f;
 		light->fallend   = 350.f;
@@ -463,13 +460,12 @@ void RepelUndeadSpell::Update() {
 		pd->rgb = Color3f(.4f, .4f, .6f);
 	}
 	
-	if(!lightHandleIsValid(m_light)) {
+	if(!lightHandleGet(m_light)) {
 		m_light = GetFreeDynLight();
 	}
 	
-	if(lightHandleIsValid(m_light)) {
-		EERIE_LIGHT * light = lightHandleGet(m_light);
-		
+	EERIE_LIGHT * light = lightHandleGet(m_light);
+	if(light) {
 		light->intensity = 2.3f;
 		light->fallend = 350.f;
 		light->fallstart = 150.f;
@@ -554,10 +550,9 @@ void PoisonProjectileSpell::Launch()
 		lMax = std::max(lMax, lTime);
 
 		projectile->lLightId = GetFreeDynLight();
-
-		if(lightHandleIsValid(projectile->lLightId)) {
-			EERIE_LIGHT * light = lightHandleGet(projectile->lLightId);
-			
+		
+		EERIE_LIGHT * light = lightHandleGet(projectile->lLightId);
+		if(light) {
 			light->intensity		= 2.3f;
 			light->fallend		= 250.f;
 			light->fallstart		= 150.f;
@@ -596,9 +591,8 @@ void PoisonProjectileSpell::Update() {
 		
 		projectile->Render();
 		
-		if(lightHandleIsValid(projectile->lLightId)) {
-			EERIE_LIGHT * light = lightHandleGet(projectile->lLightId);
-			
+		EERIE_LIGHT * light = lightHandleGet(projectile->lLightId);
+		if(light) {
 			light->intensity	= 2.3f * projectile->lightIntensityFactor;
 			light->fallend	= 250.f;
 			light->fallstart	= 150.f;

@@ -245,9 +245,8 @@ void CCreateField::Render()
 	RenderSubDivFace(b, t, 0, 3, 3, 0, mat);
 	RenderSubDivFace(b, t, 2, 1, 1, 2, mat);
 	
-	if(lightHandleIsValid(lLightId)) {
-		EERIE_LIGHT * light = lightHandleGet(lLightId);
-		
+	EERIE_LIGHT * light = lightHandleGet(lLightId);
+	if(light) {
 		light->intensity = 0.7f + 2.3f * falpha;
 		light->fallend = 500.f;
 		light->fallstart = 400.f;

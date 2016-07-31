@@ -93,10 +93,9 @@ static void LaunchMagicMissileExplosion(const Vec3f & _ePos, bool mrCheat) {
 	pPS->Update(0);
 
 	LightHandle id = GetFreeDynLight();
-
-	if(lightHandleIsValid(id)) {
-		EERIE_LIGHT * light = lightHandleGet(id);
-		
+	
+	EERIE_LIGHT * light = lightHandleGet(id);
+	if(light) {
 		light->intensity = 2.3f;
 		light->fallstart = 250.f;
 		light->fallend   = 420.f;
@@ -229,9 +228,8 @@ void MagicMissileSpell::Launch() {
 		
 		missile->lLightId = GetFreeDynLight();
 		
-		if(lightHandleIsValid(missile->lLightId)) {
-			EERIE_LIGHT * el = lightHandleGet(missile->lLightId);
-			
+		EERIE_LIGHT * el = lightHandleGet(missile->lLightId);
+		if(el) {
 			el->intensity	= 0.7f + 2.3f;
 			el->fallend		= 190.f;
 			el->fallstart	= 80.f;
@@ -318,8 +316,8 @@ void MagicMissileSpell::Update() {
 		
 		CMagicMissile * pMM = pTab[i];
 		
-		if(lightHandleIsValid(pMM->lLightId)) {
-			EERIE_LIGHT * el	= lightHandleGet(pMM->lLightId);
+		EERIE_LIGHT * el = lightHandleGet(pMM->lLightId);
+		if(el) {
 			el->intensity		= 0.7f + 2.3f * pMM->lightIntensityFactor;
 			el->pos = pMM->eCurPos;
 			el->creationTime	= arxtime.now();
@@ -346,9 +344,9 @@ void IgnitSpell::Launch()
 	}
 	
 	LightHandle id = GetFreeDynLight();
-	if(lightHandleIsValid(id)) {
-		EERIE_LIGHT * light = lightHandleGet(id);
-		
+	
+	EERIE_LIGHT * light = lightHandleGet(id);
+	if(light) {
 		light->intensity = 1.8f;
 		light->fallend   = 450.f;
 		light->fallstart = 380.f;
@@ -392,10 +390,9 @@ void IgnitSpell::Launch()
 			entry.m_targetLight = ii;
 			
 			entry.m_effectLight = GetFreeDynLight();
-		
-			if(lightHandleIsValid(entry.m_effectLight)) {
-				EERIE_LIGHT * light = lightHandleGet(entry.m_effectLight);
-				
+			
+			EERIE_LIGHT * light = lightHandleGet(entry.m_effectLight);
+			if(light) {
 				light->intensity = Random::getf(0.7f, 2.7f);
 				light->fallend = 400.f;
 				light->fallstart = 300.f;
@@ -454,9 +451,8 @@ void IgnitSpell::Update()
 			
 			LightHandle id = itr->m_effectLight;
 			
-			if(lightHandleIsValid(id)) {
-				EERIE_LIGHT * light = lightHandleGet(id);
-				
+			EERIE_LIGHT * light = lightHandleGet(id);
+			if(light) {
 				light->intensity = Random::getf(0.7f, 2.7f);
 				light->pos = pos;
 			}

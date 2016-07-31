@@ -123,8 +123,9 @@ void EERIE_LIGHT_GlobalInit() {
 	
 	for(size_t i = 0; i < MAX_LIGHTS; i++) {
 		if(GLight[i]) {
-			if(lightHandleIsValid(GLight[i]->m_ignitionLightHandle)) {
-				lightHandleGet(GLight[i]->m_ignitionLightHandle)->exist = 0;
+			EERIE_LIGHT * dynLight = lightHandleGet(GLight[i]->m_ignitionLightHandle);
+			if(dynLight) {
+				dynLight->exist = 0;
 			}
 			free(GLight[i]);
 			GLight[i] = NULL;
@@ -231,8 +232,9 @@ void TreatBackgroundDynlights() {
 
 			if(!light->m_ignitionStatus) {
 				// just extinguished
-				if(lightHandleIsValid(light->m_ignitionLightHandle)) {
-					lightHandleGet(light->m_ignitionLightHandle)->exist = 0;
+				EERIE_LIGHT * dynLight = lightHandleGet(light->m_ignitionLightHandle);
+				if(dynLight) {
+					dynLight->exist = 0;
 					light->m_ignitionLightHandle = LightHandle();
 					
 					for(size_t l = 0; l < entities.size(); l++) {
@@ -249,7 +251,7 @@ void TreatBackgroundDynlights() {
 				}
 			} else {
 				// just light up
-				if(!lightHandleIsValid(light->m_ignitionLightHandle)) {
+				if(!lightHandleGet(light->m_ignitionLightHandle)) {
 					for(size_t l = 0; l < entities.size(); l++) {
 						const EntityHandle handle = EntityHandle(l);
 						Entity * e = entities[handle];
@@ -265,9 +267,8 @@ void TreatBackgroundDynlights() {
 					light->m_ignitionLightHandle = GetFreeDynLight();
 				}
 				
-				if(lightHandleIsValid(light->m_ignitionLightHandle)) {
-					EERIE_LIGHT *dynamicLight = lightHandleGet(light->m_ignitionLightHandle);
-
+				EERIE_LIGHT * dynamicLight = lightHandleGet(light->m_ignitionLightHandle);
+				if(dynamicLight) {
 					dynamicLight->pos          = light->pos;
 					dynamicLight->fallstart    = light->fallstart;
 					dynamicLight->fallend      = light->fallend;
@@ -380,29 +381,41 @@ void PrecalcIOLighting(const Vec3f & pos, float radius) {
 	}
 }
 
-EERIE_LIGHT * lightHandleGet(LightHandle lightHandle) {
-	return &DynLight[lightHandle.handleData()];
-}
-
-bool lightHandleIsValid(LightHandle num)
+static bool lightHandleIsValid(LightHandle num)
 {
 	return (long)num.handleData() >= 0 && ((size_t)num.handleData() < MAX_DYNLIGHTS) && DynLight[num.handleData()].exist;
 }
 
-void lightHandleDestroy(LightHandle & handle) {
-	if(lightHandleIsValid(handle)) {
-		lightHandleGet(handle)->exist = 0;
+EERIE_LIGHT * lightHandleGet(LightHandle lightHandle) {
+	if(lightHandleIsValid(lightHandle) || lightHandle == torchLightHandle) {
+		return &DynLight[lightHandle.handleData()];
+	} else {
+		return NULL;
 	}
+}
+
+void lightHandleDestroy(LightHandle & handle) {
+	
+	EERIE_LIGHT * light = lightHandleGet(handle);
+	if(light) {
+		light->exist = 0;
+	}
+	
 	handle = LightHandle();
 }
 
 void endLightDelayed(LightHandle & handle, ArxDuration delay) {
 	
-	if(lightHandleIsValid(handle)) {
-		EERIE_LIGHT * light = lightHandleGet(handle);
-		
+	EERIE_LIGHT * light = lightHandleGet(handle);
+	if(light) {
 		light->duration = delay;
 		light->creationTime = arxtime.now();
+	}
+}
+
+void resetDynLights() {
+	for(size_t i = 0; i < MAX_DYNLIGHTS; i++) {
+		DynLight[i].exist = 0;
 	}
 }
 

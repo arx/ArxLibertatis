@@ -182,11 +182,12 @@ void FlyingEyeSpell::Update() {
 		pouet--;
 
 		if(id != ActionPoint()) {
-			if(!lightHandleIsValid(special[pouet])) {
+			if(!lightHandleGet(special[pouet])) {
 				special[pouet] = GetFreeDynLight();
 			}
-			if(lightHandleIsValid(special[pouet])) {
-				EERIE_LIGHT * el = lightHandleGet(special[pouet]);
+			
+			EERIE_LIGHT * el = lightHandleGet(special[pouet]);
+			if(el) {
 				el->intensity = 1.3f;
 				el->fallend = 180.f;
 				el->fallstart = 50.f;
@@ -296,12 +297,11 @@ void FireFieldSpell::Update() {
 	pPSStream1.Update(g_framedelay);
 	
 	
-	if(!lightHandleIsValid(m_light))
+	if(!lightHandleGet(m_light))
 		m_light = GetFreeDynLight();
 	
-	if(lightHandleIsValid(m_light)) {
-		EERIE_LIGHT * el = lightHandleGet(m_light);
-		
+	EERIE_LIGHT * el = lightHandleGet(m_light);
+	if(el) {
 		el->pos = m_pos + Vec3f(0.f, -120.f, 0.f);
 		el->intensity = 4.6f;
 		el->fallstart = Random::getf(150.f, 180.f);
@@ -455,12 +455,11 @@ void IceFieldSpell::End() {
 
 void IceFieldSpell::Update() {
 	
-	if(!lightHandleIsValid(m_light))
+	if(!lightHandleGet(m_light))
 		m_light = GetFreeDynLight();
-
-	if(lightHandleIsValid(m_light)) {
-		EERIE_LIGHT * el = lightHandleGet(m_light);
-		
+	
+	EERIE_LIGHT * el = lightHandleGet(m_light);
+	if(el) {
 		el->pos = m_pos + Vec3f(0.f, -120.f, 0.f);
 		el->intensity = 4.6f;
 		el->fallstart = Random::getf(150.f, 180.f);
@@ -735,12 +734,11 @@ void ConfuseSpell::Update() {
 		pd->rgb = c * Color3f(0.8f, 0.8f, 0.8f);
 	}
 	
-	if(!lightHandleIsValid(m_light))
+	if(!lightHandleGet(m_light))
 		m_light = GetFreeDynLight();
-
-	if(lightHandleIsValid(m_light)) {
-		EERIE_LIGHT * light = lightHandleGet(m_light);
-		
+	
+	EERIE_LIGHT * light = lightHandleGet(m_light);
+	if(light) {
 		light->intensity = 1.3f;
 		light->fallstart = 180.f;
 		light->fallend   = 420.f;

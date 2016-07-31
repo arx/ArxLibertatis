@@ -149,11 +149,11 @@ const LightHandle torchLightHandle = LightHandle(0);
 
 EERIE_LIGHT * lightHandleGet(LightHandle lightHandle);
 
-bool lightHandleIsValid(LightHandle num);
 LightHandle GetFreeDynLight();
 void lightHandleDestroy(LightHandle & handle);
 void endLightDelayed(LightHandle & handle, ArxDuration delay);
 
+void resetDynLights();
 
 void ClearDynLights();
 void PrecalcDynamicLighting(long x0, long x1, long z0, long z1, const Vec3f & camPos, float camDepth);

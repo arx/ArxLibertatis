@@ -144,12 +144,11 @@ void ARX_SPELLS_UpdateSymbolDraw() {
 		}
 
 		if(io->flarecount) {
-			if(!lightHandleIsValid(io->dynlight))
+			if(!lightHandleGet(io->dynlight))
 				io->dynlight = GetFreeDynLight();
-
-			if(lightHandleIsValid(io->dynlight)) {
-				EERIE_LIGHT * light = lightHandleGet(io->dynlight);
-				
+			
+			EERIE_LIGHT * light = lightHandleGet(io->dynlight);
+			if(light) {
 				light->pos = io->pos;
 				light->pos += angleToVectorXZ(io->angle.getPitch() - 45.f) * 60.f;
 				light->pos += Vec3f(0.f, -120.f, 0.f);
@@ -162,7 +161,7 @@ void ARX_SPELLS_UpdateSymbolDraw() {
 				light->rgb.g=0.009f*io->flarecount*2;
 				light->rgb.b=0.008f*io->flarecount*2;
 			}
-		} else if(lightHandleIsValid(io->dynlight)) {
+		} else if(lightHandleGet(io->dynlight)) {
 			lightHandleGet(io->dynlight)->exist = 0;
 			io->dynlight = LightHandle();
 		}
