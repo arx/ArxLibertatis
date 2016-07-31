@@ -159,9 +159,8 @@ void ARX_SPELLS_UpdateSymbolDraw() {
 				light->rgb.g=0.009f*io->flarecount*2;
 				light->rgb.b=0.008f*io->flarecount*2;
 			}
-		} else if(lightHandleGet(io->dynlight)) {
-			lightHandleGet(io->dynlight)->exist = 0;
-			io->dynlight = LightHandle();
+		} else {
+			lightHandleDestroy(io->dynlight);
 		}
 
 		if(io->symboldraw) {
