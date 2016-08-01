@@ -88,7 +88,7 @@ Vec3f InvisibilitySpell::getPosition() {
 ManaDrainSpell::ManaDrainSpell()
 	: m_light()
 	, m_damage()
-	, m_pitch(0.f)
+	, m_yaw(0.f)
 {
 	
 }
@@ -184,8 +184,8 @@ void ManaDrainSpell::Update() {
 	mat.setBlendType(RenderMaterial::Additive);
 	
 	Anglef cabalangle(0.f, 0.f, 0.f);
-	cabalangle.setYaw(m_pitch + g_framedelay * 0.1f);
-	m_pitch = cabalangle.getYaw();
+	cabalangle.setYaw(m_yaw + g_framedelay * 0.1f);
+	m_yaw = cabalangle.getYaw();
 	
 	Vec3f cabalscale = Vec3f(Es);
 	Color3f cabalcolor = Color3f(0.4f, 0.4f, 0.8f);

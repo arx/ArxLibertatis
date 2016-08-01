@@ -46,7 +46,7 @@ public:
 private:
 	LightHandle m_light;
 	DamageHandle m_damage;
-	float m_pitch;
+	float m_yaw;
 };
 
 class ExplosionSpell : public SpellBase {
