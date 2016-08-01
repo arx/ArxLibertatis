@@ -53,9 +53,9 @@ public:
 	/*!
 	 * Constructor accepting initial values.
 	 */
-	Angle(T yaw, T pitch, T roll)
-		: m_pitch(yaw)
-		, m_yaw(pitch)
+	Angle(T pitch, T yaw, T roll)
+		: m_pitch(pitch)
+		, m_yaw(yaw)
 		, m_roll(roll)
 	{ }
 	
