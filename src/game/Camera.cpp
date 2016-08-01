@@ -26,14 +26,13 @@
 #include <glm/gtx/transform.hpp>
 
 void EERIE_TRANSFORM::updateFromAngle(const Anglef &angle) {
-	float yaw, pitch, roll;
-	yaw = glm::radians(angle.getPitch());
-	xcos = std::cos(yaw);
-	xsin = std::sin(yaw);
-	pitch = glm::radians(angle.getYaw());
-	ycos = std::cos(pitch);
-	ysin = std::sin(pitch);
-	roll = glm::radians(angle.getRoll());
+	float pitch = glm::radians(angle.getPitch());
+	xcos = std::cos(pitch);
+	xsin = std::sin(pitch);
+	float yaw = glm::radians(angle.getYaw());
+	ycos = std::cos(yaw);
+	ysin = std::sin(yaw);
+	float roll = glm::radians(angle.getRoll());
 	zcos = std::cos(roll);
 	zsin = std::sin(roll);
 	
