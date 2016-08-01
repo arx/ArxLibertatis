@@ -82,7 +82,7 @@ public:
 private:
 	LightHandle m_light;
 	DamageHandle m_damage;
-	float m_pitch;
+	float m_yaw;
 };
 
 #endif // ARX_GAME_MAGIC_SPELLS_SPELLSLVL08_H

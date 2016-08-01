@@ -338,7 +338,7 @@ void EnchantWeaponSpell::Update() {
 LifeDrainSpell::LifeDrainSpell()
 	: m_light()
 	, m_damage()
-	, m_pitch(0.f)
+	, m_yaw(0.f)
 {
 }
 
@@ -433,8 +433,8 @@ void LifeDrainSpell::Update() {
 	mat.setBlendType(RenderMaterial::Additive);
 	
 	Anglef cabalangle(0.f, 0.f, 0.f);
-	cabalangle.setYaw(m_pitch + g_framedelay * 0.1f);
-	m_pitch = cabalangle.getYaw();
+	cabalangle.setYaw(m_yaw + g_framedelay * 0.1f);
+	m_yaw = cabalangle.getYaw();
 	
 	Vec3f cabalscale = Vec3f(Es);
 	Color3f cabalcolor = Color3f(0.8f, 0.f, 0.f);
