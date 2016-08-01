@@ -66,11 +66,11 @@ void MassLightningStrikeSpell::Launch()
 	float beta;
 	if(m_caster == EntityHandle_Player) {
 		m_pos = player.pos + Vec3f(0.f, 150.f, 0.f);
-		beta = player.angle.getPitchYAW();
+		beta = player.angle.getYaw();
 	} else {
 		Entity * io = entities[m_caster];
 		m_pos = io->pos + Vec3f(0.f, -20.f, 0.f);
-		beta = io->angle.getPitchYAW();
+		beta = io->angle.getYaw();
 	}
 	m_pos += angleToVectorXZ(beta) * 500.f;
 	
@@ -249,7 +249,7 @@ void ControlTargetSpell::Launch()
 	
 	eSrc = player.pos;
 	
-	float fBetaRad = glm::radians(player.angle.getPitchYAW());
+	float fBetaRad = glm::radians(player.angle.getYaw());
 	float fBetaRadCos = glm::cos(fBetaRad);
 	float fBetaRadSin = glm::sin(fBetaRad);
 	

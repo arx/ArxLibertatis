@@ -75,7 +75,7 @@ struct SavedAnglef {
 	}
 	
 	SavedAnglef & operator=(const Anglef & o) {
-		a = o.getYawPITCH(), b = o.getPitchYAW(), g = o.getRoll();
+		a = o.getPitch(), b = o.getYaw(), g = o.getRoll();
 		return *this;
 	}
 	

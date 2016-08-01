@@ -148,7 +148,7 @@ void ARX_SPELLS_UpdateSymbolDraw() {
 			EERIE_LIGHT * light = dynLightCreate(io->dynlight);
 			if(light) {
 				light->pos = io->pos;
-				light->pos += angleToVectorXZ(io->angle.getPitchYAW() - 45.f) * 60.f;
+				light->pos += angleToVectorXZ(io->angle.getYaw() - 45.f) * 60.f;
 				light->pos += Vec3f(0.f, -120.f, 0.f);
 				
 				float rr = Random::getf();
@@ -304,7 +304,7 @@ static void ARX_SPELLS_RequestSymbolDrawCommon(Entity * io, float duration,
 	sd->starttime = arxtime.now();
 	sd->lastElapsed = 0;
 	
-	float tmpAngle = io->angle.getPitchYAW() - 45.0F + info.startOffset.x * 2;
+	float tmpAngle = io->angle.getYaw() - 45.0F + info.startOffset.x * 2;
 	
 	sd->lastpos = io->pos;
 	sd->lastpos += angleToVectorXZ(tmpAngle) * 60.f;

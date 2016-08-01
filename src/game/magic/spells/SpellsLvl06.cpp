@@ -42,10 +42,10 @@ void RiseDeadSpell::GetTargetAndBeta(Vec3f & target, float & beta)
 	
 	if(m_caster == EntityHandle_Player) {
 		target = player.basePosition();
-		beta = player.angle.getPitchYAW();
+		beta = player.angle.getYaw();
 	} else {
 		target = entities[m_caster]->pos;
-		beta = entities[m_caster]->angle.getPitchYAW();
+		beta = entities[m_caster]->angle.getYaw();
 		displace = (entities[m_caster]->ioflags & IO_NPC) == IO_NPC;
 	}
 	if(displace) {
@@ -280,13 +280,13 @@ void CreateFieldSpell::Launch()
 	bool displace = false;
 	if(m_caster == EntityHandle_Player) {
 		target = entities.player()->pos;
-		beta = player.angle.getPitchYAW();
+		beta = player.angle.getYaw();
 		displace = true;
 	} else {
 		if(ValidIONum(m_caster)) {
 			Entity * io = entities[m_caster];
 			target = io->pos;
-			beta = io->angle.getPitchYAW();
+			beta = io->angle.getYaw();
 			displace = (io->ioflags & IO_NPC) == IO_NPC;
 		} else {
 			ARX_DEAD_CODE();

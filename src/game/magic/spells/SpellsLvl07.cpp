@@ -84,7 +84,7 @@ void FlyingEyeSpell::Launch()
 	eyeball.exist = 1;
 	
 	eyeball.pos = player.pos;
-	eyeball.pos += angleToVectorXZ(player.angle.getPitchYAW()) * 200.f;
+	eyeball.pos += angleToVectorXZ(player.angle.getYaw()) * 200.f;
 	eyeball.pos += Vec3f(0.f, 50.f, 0.f);
 	
 	eyeball.angle = player.angle;
@@ -189,7 +189,7 @@ void FlyingEyeSpell::Update() {
 	if(m_lastupdate - m_timcreation <= ArxDurationMs(3000)) {
 		eyeball.exist = m_lastupdate - m_timcreation * (1.0f / 30);
 		eyeball.size = Vec3f(1.f - float(eyeball.exist) * 0.01f);
-		eyeball.angle.setPitchYAW(eyeball.angle.getPitchYAW() + framediff3 * 0.6f);
+		eyeball.angle.setYaw(eyeball.angle.getYaw() + framediff3 * 0.6f);
 	} else {
 		eyeball.exist = 2;
 	}
@@ -235,13 +235,13 @@ void FireFieldSpell::Launch() {
 	bool displace = false;
 	if(m_caster == EntityHandle_Player) {
 		target = player.basePosition();
-		beta = player.angle.getPitchYAW();
+		beta = player.angle.getYaw();
 		displace = true;
 	} else {
 		if(ValidIONum(m_caster)) {
 			Entity * io = entities[m_caster];
 			target = io->pos;
-			beta = io->angle.getPitchYAW();
+			beta = io->angle.getYaw();
 			displace = (io->ioflags & IO_NPC) == IO_NPC;
 		} else {
 			ARX_DEAD_CODE();
@@ -366,13 +366,13 @@ void IceFieldSpell::Launch()
 	bool displace = false;
 	if(m_caster == EntityHandle_Player) {
 		target = player.basePosition();
-		beta = player.angle.getPitchYAW();
+		beta = player.angle.getYaw();
 		displace = true;
 	} else {
 		if(ValidIONum(m_caster)) {
 			Entity * io = entities[m_caster];
 			target = io->pos;
-			beta = io->angle.getPitchYAW();
+			beta = io->angle.getYaw();
 			displace = (io->ioflags & IO_NPC) == IO_NPC;
 		} else {
 			ARX_DEAD_CODE();
@@ -470,7 +470,7 @@ void IceFieldSpell::Update() {
 		Vec3f stitescale;
 		Color3f stitecolor;
 
-		stiteangle.setPitchYAW(glm::cos(glm::radians(tPos[i].x)) * 360);
+		stiteangle.setYaw(glm::cos(glm::radians(tPos[i].x)) * 360);
 		stitepos.x = tPos[i].x;
 		stitepos.y = m_pos.y;
 		stitepos.z = tPos[i].z;
@@ -592,10 +592,10 @@ void LightningStrikeSpell::Update() {
 	}
 	
 	if(m_caster == EntityHandle_Player) {
-		falpha = -player.angle.getYawPITCH();
-		fBeta = player.angle.getPitchYAW();
+		falpha = -player.angle.getPitch();
+		fBeta = player.angle.getYaw();
 	} else {
-		fBeta = caster->angle.getPitchYAW();
+		fBeta = caster->angle.getYaw();
 		if(ValidIONum(caster->targetinfo) && caster->targetinfo != m_caster) {
 			const Vec3f & p1 = m_caster_pos;
 			Vec3f p2 = GetChestPos(caster->targetinfo);

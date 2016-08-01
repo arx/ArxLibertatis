@@ -92,12 +92,12 @@ Vec3f SpellBase::getTargetPos(EntityHandle source, EntityHandle target)
 		if(source == EntityHandle_Player) {
 			// no target... player spell targeted by sight
 			targetPos = player.pos;
-			targetPos += angleToVectorXZ(player.angle.getPitchYAW()) * 60.f;
-			targetPos.y += std::sin(glm::radians(player.angle.getYawPITCH())) * 60.f;
+			targetPos += angleToVectorXZ(player.angle.getYaw()) * 60.f;
+			targetPos.y += std::sin(glm::radians(player.angle.getPitch())) * 60.f;
 		} else {
 			// TODO entities[target] with target < 0 ??? - uh oh!
 			targetPos = entities[target]->pos;
-			targetPos += angleToVectorXZ(entities[target]->angle.getPitchYAW()) * 60.f;
+			targetPos += angleToVectorXZ(entities[target]->angle.getYaw()) * 60.f;
 			targetPos += Vec3f(0.f, -120.f, 0.f);
 		}
 	} else if(target == EntityHandle_Player) {

@@ -990,13 +990,13 @@ void ArxGame::managePlayerControls() {
 
 			// Checks WALK_FORWARD Key Status.
 			if(GInput->actionPressed(CONTROLS_CUST_WALKFORWARD)) {
-				eyeball.pos += angleToVectorXZ(eyeball.angle.getPitchYAW()) * 20.f * FD * 0.033f;
+				eyeball.pos += angleToVectorXZ(eyeball.angle.getYaw()) * 20.f * FD * 0.033f;
 				NOMOREMOVES=1;
 			}
 
 			// Checks WALK_BACKWARD Key Status.
 			if(GInput->actionPressed(CONTROLS_CUST_WALKBACKWARD)) {
-				eyeball.pos += angleToVectorXZ_180offset(eyeball.angle.getPitchYAW()) * 20.f * FD * 0.033f;
+				eyeball.pos += angleToVectorXZ_180offset(eyeball.angle.getYaw()) * 20.f * FD * 0.033f;
 				NOMOREMOVES=1;
 			}
 
@@ -1005,7 +1005,7 @@ void ArxGame::managePlayerControls() {
 				(GInput->actionPressed(CONTROLS_CUST_STRAFE)&&GInput->actionPressed(CONTROLS_CUST_TURNLEFT)))
 				&& !NOMOREMOVES)
 			{
-				eyeball.pos += angleToVectorXZ(eyeball.angle.getPitchYAW() + 90.f) * 10.f * FD * 0.033f;
+				eyeball.pos += angleToVectorXZ(eyeball.angle.getYaw() + 90.f) * 10.f * FD * 0.033f;
 				NOMOREMOVES=1;			
 			}
 
@@ -1014,7 +1014,7 @@ void ArxGame::managePlayerControls() {
 				(GInput->actionPressed(CONTROLS_CUST_STRAFE)&&GInput->actionPressed(CONTROLS_CUST_TURNRIGHT)))
 				&& !NOMOREMOVES)
 			{
-				eyeball.pos += angleToVectorXZ(eyeball.angle.getPitchYAW() - 90.f) * 10.f * FD * 0.033f;
+				eyeball.pos += angleToVectorXZ(eyeball.angle.getYaw() - 90.f) * 10.f * FD * 0.033f;
 				//eyeball.pos.y+=FD*0.33f;
 				NOMOREMOVES=1;
 			}
@@ -1076,10 +1076,10 @@ void ArxGame::managePlayerControls() {
 			}
 			
 			multi = 5.f * FD * MoveDiv * multi;
-			tm += angleToVectorXZ_180offset(player.angle.getPitchYAW()) * multi;
+			tm += angleToVectorXZ_180offset(player.angle.getYaw()) * multi;
 
 			if(!USE_PLAYERCOLLISIONS) {
-				float t = glm::radians(player.angle.getYawPITCH());
+				float t = glm::radians(player.angle.getPitch());
 				tm.y -= std::sin(t) * multi;
 			}
 
@@ -1102,10 +1102,10 @@ void ArxGame::managePlayerControls() {
 			}
 			
 			multi = 10.f * FD * MoveDiv * multi;
-			tm += angleToVectorXZ(player.angle.getPitchYAW()) * multi;
+			tm += angleToVectorXZ(player.angle.getYaw()) * multi;
 
 			if(!USE_PLAYERCOLLISIONS) {
-				float t = glm::radians(player.angle.getYawPITCH());
+				float t = glm::radians(player.angle.getPitch());
 				tm.y += std::sin(t) * multi;
 			}
 
@@ -1122,7 +1122,7 @@ void ArxGame::managePlayerControls() {
 		if(left && !NOMOREMOVES) {
 			player.m_strikeDirection=0;
 			float multi = 6.f * FD * MoveDiv;
-			tm += angleToVectorXZ(player.angle.getPitchYAW() + 90.f) * multi;
+			tm += angleToVectorXZ(player.angle.getYaw() + 90.f) * multi;
 			
 			player.m_currentMovement |= PLAYER_MOVE_STRAFE_LEFT;
 
@@ -1137,7 +1137,7 @@ void ArxGame::managePlayerControls() {
 		if(right && !NOMOREMOVES) {
 			player.m_strikeDirection=1;
 			float multi = 6.f * FD * MoveDiv;
-			tm += angleToVectorXZ(player.angle.getPitchYAW() - 90.f) * multi;
+			tm += angleToVectorXZ(player.angle.getYaw() - 90.f) * multi;
 			
 			player.m_currentMovement |= PLAYER_MOVE_STRAFE_RIGHT;
 
@@ -1841,10 +1841,10 @@ void ArxGame::manageKeyMouse() {
 		}
 
 		if(GInput->actionPressed(CONTROLS_CUST_CENTERVIEW)) {
-			eyeball.angle.setYawPITCH(0);
+			eyeball.angle.setPitch(0);
 			eyeball.angle.setRoll(0);
-			player.desiredangle.setYawPITCH(0);
-			player.angle.setYawPITCH(0);
+			player.desiredangle.setPitch(0);
+			player.angle.setPitch(0);
 			player.desiredangle.setRoll(0);
 			player.angle.setRoll(0);
 		}
@@ -1865,29 +1865,29 @@ void ArxGame::manageKeyMouse() {
 		if(PLAYER_MOUSELOOK_ON || bKeySpecialMove) {
 
 			if(eyeball.exist == 2) {
-				if(eyeball.angle.getYawPITCH() < 70.f) {
-					if(eyeball.angle.getYawPITCH() + rotation.y < 70.f)
-						eyeball.angle.setYawPITCH(eyeball.angle.getYawPITCH() + rotation.y);
-				} else if(eyeball.angle.getYawPITCH() > 300.f) {
-					if(eyeball.angle.getYawPITCH() + rotation.y > 300.f)
-						eyeball.angle.setYawPITCH(eyeball.angle.getYawPITCH() + rotation.y);
+				if(eyeball.angle.getPitch() < 70.f) {
+					if(eyeball.angle.getPitch() + rotation.y < 70.f)
+						eyeball.angle.setPitch(eyeball.angle.getPitch() + rotation.y);
+				} else if(eyeball.angle.getPitch() > 300.f) {
+					if(eyeball.angle.getPitch() + rotation.y > 300.f)
+						eyeball.angle.setPitch(eyeball.angle.getPitch() + rotation.y);
 				}
 
-				eyeball.angle.setYawPITCH(MAKEANGLE(eyeball.angle.getYawPITCH()));
-				eyeball.angle.setPitchYAW(MAKEANGLE(eyeball.angle.getPitchYAW() - rotation.x));
+				eyeball.angle.setPitch(MAKEANGLE(eyeball.angle.getPitch()));
+				eyeball.angle.setYaw(MAKEANGLE(eyeball.angle.getYaw() - rotation.x));
 			} else if(ARXmenu.currentmode != AMCM_NEWQUEST) {
 
-				float iangle = player.angle.getYawPITCH();
+				float iangle = player.angle.getPitch();
 
-				player.desiredangle.setYawPITCH(player.angle.getYawPITCH());
-				player.desiredangle.setYawPITCH(player.desiredangle.getYawPITCH() + rotation.y);
-				player.desiredangle.setYawPITCH(MAKEANGLE(player.desiredangle.getYawPITCH()));
+				player.desiredangle.setPitch(player.angle.getPitch());
+				player.desiredangle.setPitch(player.desiredangle.getPitch() + rotation.y);
+				player.desiredangle.setPitch(MAKEANGLE(player.desiredangle.getPitch()));
 
-				if(player.desiredangle.getYawPITCH() >= 74.9f && player.desiredangle.getYawPITCH() <= 301.f) {
+				if(player.desiredangle.getPitch() >= 74.9f && player.desiredangle.getPitch() <= 301.f) {
 					if(iangle < 75.f)
-						player.desiredangle.setYawPITCH(74.9f); //69
+						player.desiredangle.setPitch(74.9f); //69
 					else
-						player.desiredangle.setYawPITCH(301.f);
+						player.desiredangle.setPitch(301.f);
 				}
 
 				if(glm::abs(rotation.y) > 2.f)
@@ -1898,8 +1898,8 @@ void ArxGame::manageKeyMouse() {
 
 				PLAYER_ROTATION = rotation.x;
 
-				player.desiredangle.setPitchYAW(player.angle.getPitchYAW());
-				player.desiredangle.setPitchYAW(MAKEANGLE(player.desiredangle.getPitchYAW() - rotation.x));
+				player.desiredangle.setYaw(player.angle.getYaw());
+				player.desiredangle.setYaw(MAKEANGLE(player.desiredangle.getYaw() - rotation.x));
 			}
 		}
 	}

@@ -93,9 +93,9 @@ void BlessSpell::Update() {
 		m_pos = entities[m_target]->pos;
 		
 		if(m_target == EntityHandle_Player)
-			m_yaw = player.angle.getPitchYAW();
+			m_yaw = player.angle.getYaw();
 		else 
-			m_yaw = entities[m_target]->angle.getPitchYAW();
+			m_yaw = entities[m_target]->angle.getYaw();
 	}
 	
 	m_scale = (m_level + 10) * 6.f;

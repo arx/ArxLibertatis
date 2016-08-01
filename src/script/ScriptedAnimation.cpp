@@ -85,8 +85,8 @@ public:
 		
 		DebugScript(' ' << t1 << ' ' << t2 << ' ' << t3);
 		
-		io->angle.setYawPITCH(io->angle.getYawPITCH() + t1);
-		io->angle.setPitchYAW(io->angle.getPitchYAW() + t2);
+		io->angle.setPitch(io->angle.getPitch() + t1);
+		io->angle.setYaw(io->angle.getYaw() + t2);
 		io->angle.setRoll(io->angle.getRoll() + t3);
 		
 		io->animBlend.lastanimtime = ArxInstant_ZERO;
@@ -158,7 +158,7 @@ public:
 		
 		DebugScript(' ' << angle);
 		
-		context.getEntity()->angle.setPitchYAW(angle);
+		context.getEntity()->angle.setYaw(angle);
 		
 		return Success;
 	}

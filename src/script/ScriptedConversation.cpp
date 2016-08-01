@@ -302,16 +302,16 @@ public:
 				if(command == "keep") {
 					acs.type = ARX_CINE_SPEECH_KEEP;
 					acs.pos1 = LASTCAMPOS;
-					acs.pos2.x = LASTCAMANGLE.getYawPITCH();
-					acs.pos2.y = LASTCAMANGLE.getPitchYAW();
+					acs.pos2.x = LASTCAMANGLE.getPitch();
+					acs.pos2.y = LASTCAMANGLE.getYaw();
 					acs.pos2.z = LASTCAMANGLE.getRoll();
 					
 				} else if(command == "zoom") {
 					acs.type = ARX_CINE_SPEECH_ZOOM;
-					acs.startangle.setYawPITCH(context.getFloat());
-					acs.startangle.setPitchYAW(context.getFloat());
-					acs.endangle.setYawPITCH(context.getFloat());
-					acs.endangle.setPitchYAW(context.getFloat());
+					acs.startangle.setPitch(context.getFloat());
+					acs.startangle.setYaw(context.getFloat());
+					acs.endangle.setPitch(context.getFloat());
+					acs.endangle.setYaw(context.getFloat());
 					acs.startpos = context.getFloat();
 					acs.endpos = context.getFloat();
 					acs.ionum = (io == NULL) ? EntityHandle() : io->index();

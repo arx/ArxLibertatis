@@ -27,10 +27,10 @@
 
 void EERIE_TRANSFORM::updateFromAngle(const Anglef &angle) {
 	float yaw, pitch, roll;
-	yaw = glm::radians(angle.getYawPITCH());
+	yaw = glm::radians(angle.getPitch());
 	xcos = std::cos(yaw);
 	xsin = std::sin(yaw);
-	pitch = glm::radians(angle.getPitchYAW());
+	pitch = glm::radians(angle.getYaw());
 	ycos = std::cos(pitch);
 	ysin = std::sin(pitch);
 	roll = glm::radians(angle.getRoll());

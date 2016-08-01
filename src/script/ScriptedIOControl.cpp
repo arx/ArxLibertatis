@@ -271,7 +271,7 @@ public:
 				if(t->ioflags & IO_NPC) {
 					float dist = t->physics.cyl.radius + ioo->physics.cyl.radius + 10;
 					
-					ioo->pos += angleToVectorXZ(t->angle.getPitchYAW()) * dist;
+					ioo->pos += angleToVectorXZ(t->angle.getYaw()) * dist;
 				}
 				
 				TREATZONE_AddIO(ioo);
@@ -425,7 +425,7 @@ class IfVisibleCommand : public Command {
 			return false;
 		}
 		
-		float ab = MAKEANGLE(io->angle.getPitchYAW());
+		float ab = MAKEANGLE(io->angle.getYaw());
 		float aa = getAngle(io->pos.x, io->pos.z, ioo->pos.x, ioo->pos.z);
 		aa = MAKEANGLE(glm::degrees(aa));
 		
@@ -524,8 +524,8 @@ public:
 				float fangle = context.getFloat();
 				angle = static_cast<long>(fangle);
 				if(!(flg & flag('l'))) {
-					player.desiredangle.setPitchYAW(fangle);
-					player.angle.setPitchYAW(fangle);
+					player.desiredangle.setYaw(fangle);
+					player.angle.setYaw(fangle);
 				}
 			}
 			
@@ -542,7 +542,7 @@ public:
 				TELEPORT_TO_POSITION = target;
 				
 				if(angle == -1) {
-					TELEPORT_TO_ANGLE	=	static_cast<long>(player.angle.getPitchYAW());
+					TELEPORT_TO_ANGLE	=	static_cast<long>(player.angle.getYaw());
 				} else {
 					TELEPORT_TO_ANGLE = angle;
 				}
@@ -563,7 +563,7 @@ public:
 			target = context.getWord();
 		}
 		
-		DebugScript(' ' << options << ' ' << player.angle.getPitchYAW() << ' ' << target);
+		DebugScript(' ' << options << ' ' << player.angle.getYaw() << ' ' << target);
 		
 		if(target == "behind") {
 			ARX_INTERACTIVE_TeleportBehindTarget(context.getEntity());

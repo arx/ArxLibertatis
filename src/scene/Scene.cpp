@@ -568,7 +568,7 @@ long ARX_PORTALS_GetRoomNumForPosition(const Vec3f & pos,long flag) {
 	
 	if(flag & 1) {
 		Vec3f cameraPos = ACTIVECAM->orgTrans.pos;
-		Vec3f direction = angleToVectorXZ_180offset(ACTIVECAM->angle.getPitchYAW());
+		Vec3f direction = angleToVectorXZ_180offset(ACTIVECAM->angle.getYaw());
 		num = ARX_PORTALS_GetRoomNumForCamera(&height, cameraPos, direction);
 	} else {
 		num = ARX_PORTALS_GetRoomNumForPosition2(pos, flag, &height);

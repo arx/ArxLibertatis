@@ -101,17 +101,17 @@ void RuneOfGuardingSpell::Update() {
 	Color3f stitecolor;
 	
 	float stiteangleb = float(ulCurrentTime) * 0.01f;
-	stiteangle.setYawPITCH(0);
+	stiteangle.setPitch(0);
 	stiteangle.setRoll(0);
 	
-	stiteangle.setPitchYAW(stiteangleb * 0.1f);
+	stiteangle.setYaw(stiteangleb * 0.1f);
 	stitecolor = Color3f(0.4f, 0.4f, 0.6f);
 	float scale = std::sin(ulCurrentTime * 0.015f);
 	Vec3f stitescale = Vec3f(1.f, -0.1f, 1.f);
 	
 	Draw3DObject(slight, stiteangle, pos, stitescale, stitecolor, mat);
 	
-	stiteangle.setPitchYAW(stiteangleb);
+	stiteangle.setYaw(stiteangleb);
 	stitecolor = Color3f(0.6f, 0.f, 0.f);
 	stitescale = Vec3f(2.f) * (1.f + 0.01f * scale);
 	
@@ -407,9 +407,9 @@ void RepelUndeadSpell::Update() {
 	
 	float rot;
 	if(m_target == EntityHandle_Player) {
-		rot = player.angle.getPitchYAW();
+		rot = player.angle.getYaw();
 	} else {
-		rot = entities[m_target]->angle.getPitchYAW();
+		rot = entities[m_target]->angle.getYaw();
 	}
 	
 	m_pos = pos;
@@ -421,8 +421,8 @@ void RepelUndeadSpell::Update() {
 	
 	Anglef  eObjAngle;
 
-	eObjAngle.setPitchYAW(m_yaw);
-	eObjAngle.setYawPITCH(0);
+	eObjAngle.setYaw(m_yaw);
+	eObjAngle.setPitch(0);
 	eObjAngle.setRoll(0);
 	
 	arxtime.update();
@@ -499,7 +499,7 @@ void PoisonProjectileSpell::Launch()
 	
 	if(m_caster == EntityHandle_Player) {
 
-		afBeta = player.angle.getPitchYAW();
+		afBeta = player.angle.getYaw();
 
 		if(m_hand_group != ActionPoint()) {
 			srcPos = m_hand_pos;
@@ -507,7 +507,7 @@ void PoisonProjectileSpell::Launch()
 			srcPos = player.pos;
 		}
 	} else {
-		afBeta = entities[m_caster]->angle.getPitchYAW();
+		afBeta = entities[m_caster]->angle.getYaw();
 
 		if(m_hand_group != ActionPoint()) {
 			srcPos = m_hand_pos;

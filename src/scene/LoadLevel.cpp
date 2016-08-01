@@ -752,9 +752,9 @@ bool DanaeLoadLevel(const res::path & file, bool loadEntities) {
 			fd->move.y = 0.f;
 			fd->move.z = 0.f;
 			Vec3f out;
-			out = VRotateY(fd->move, MAKEANGLE(fd->angle.getPitchYAW()));
+			out = VRotateY(fd->move, MAKEANGLE(fd->angle.getYaw()));
 			
-			fd->move = VRotateX(out, MAKEANGLE(fd->angle.getYawPITCH()));
+			fd->move = VRotateX(out, MAKEANGLE(fd->angle.getPitch()));
 		}
 	}
 	

@@ -155,7 +155,7 @@ static void CheckHit(Entity * source, float ratioaim) {
 		return;
 	
 	Vec3f from(0.f, 0.f, -90.f);
-	Vec3f to = VRotateY(from, MAKEANGLE(180.f - source->angle.getPitchYAW()));
+	Vec3f to = VRotateY(from, MAKEANGLE(180.f - source->angle.getYaw()));
 	Vec3f ppos = source->pos + Vec3f(0.f, -80.f, 0.f);
 	Vec3f pos = ppos + to;
 
@@ -665,7 +665,7 @@ wander:
 		        ||	(io->_npcdata->behavior & BEHAVIOUR_FLEE))
 			from = AnchorData_GetNearest(pos1, io->physics.cyl);
 		else
-			from = AnchorData_GetNearest_2(io->angle.getPitchYAW(), pos1, io->physics.cyl);
+			from = AnchorData_GetNearest_2(io->angle.getYaw(), pos1, io->physics.cyl);
 	}
 	else from = MUST_SELECT_Start_Anchor;
 
@@ -1073,7 +1073,7 @@ void FaceTarget2(Entity * io)
 	}
 
 	float tangle = MAKEANGLE(180.f + glm::degrees(getAngle(io->target.x, io->target.z, tv.x, tv.z)));
-	float cangle = io->angle.getPitchYAW();
+	float cangle = io->angle.getYaw();
 
 	float tt = (cangle - tangle);
 
@@ -1100,7 +1100,7 @@ void FaceTarget2(Entity * io)
 	}
 	
 	// Needed angle to turn toward target
-	io->angle.setPitchYAW(MAKEANGLE(io->angle.getPitchYAW() - rot)); // -tt
+	io->angle.setYaw(MAKEANGLE(io->angle.getYaw() - rot)); // -tt
 }
 
 void StareAtTarget(Entity * io)
@@ -1133,7 +1133,7 @@ void StareAtTarget(Entity * io)
 		return;
 
 	float rot = 0.27f * g_framedelay;
-	float alpha = MAKEANGLE(io->angle.getPitchYAW());
+	float alpha = MAKEANGLE(io->angle.getYaw());
 	float beta = -io->head_rot; 
 	float pouet = MAKEANGLE(180.f + glm::degrees(getAngle(io->target.x, io->target.z, tv.x, tv.z)));
 	float A = MAKEANGLE((MAKEANGLE(alpha + beta) - pouet));
@@ -1181,8 +1181,8 @@ void StareAtTarget(Entity * io)
 	groupRotation[0] = glm::clamp(groupRotation[0], -HEAD_ANGLE_THRESHOLD, HEAD_ANGLE_THRESHOLD);
 	groupRotation[1] = glm::clamp(groupRotation[1], -HEAD_ANGLE_THRESHOLD, HEAD_ANGLE_THRESHOLD);
 
-	io->_npcdata->ex_rotate->group_rotate[0].setPitchYAW(groupRotation[0]);
-	io->_npcdata->ex_rotate->group_rotate[1].setPitchYAW(groupRotation[1]);
+	io->_npcdata->ex_rotate->group_rotate[0].setYaw(groupRotation[0]);
+	io->_npcdata->ex_rotate->group_rotate[1].setYaw(groupRotation[1]);
 
 	//MAKEANGLE(io->angle.b-rot); // -tt
 	return;
@@ -1458,7 +1458,7 @@ static bool TryIOAnimMove(Entity * io, long animnum) {
 		return false;
 	
 	Vec3f trans = GetAnimTotalTranslate(io->anims[animnum], 0);
-	Vec3f trans2 = VRotateY(trans, MAKEANGLE(180.f - io->angle.getPitchYAW()));
+	Vec3f trans2 = VRotateY(trans, MAKEANGLE(180.f - io->angle.getYaw()));
 	
 	IO_PHYSICS phys = io->physics;
 	phys.cyl = GetIOCyl(io);
@@ -1890,12 +1890,12 @@ static void ManageNPCMovement(Entity * io)
 			aup->_curtime -= 500;
 			ARX_PATHS_Interpolate(aup, &tv);
 			aup->_curtime += 500;
-			io->angle.setPitchYAW(MAKEANGLE(glm::degrees(getAngle(tv.x, tv.z, io->pos.x, io->pos.z))));
+			io->angle.setYaw(MAKEANGLE(glm::degrees(getAngle(tv.x, tv.z, io->pos.x, io->pos.z))));
 		} else {
 			aup->_curtime += 500;
 			ARX_PATHS_Interpolate(aup, &tv);
 			aup->_curtime -= 500;
-			io->angle.setPitchYAW(MAKEANGLE(180.f + glm::degrees(getAngle(tv.x, tv.z, io->pos.x, io->pos.z))));
+			io->angle.setYaw(MAKEANGLE(180.f + glm::degrees(getAngle(tv.x, tv.z, io->pos.x, io->pos.z))));
 		}
 		return;
 	}
@@ -2027,10 +2027,10 @@ static void ManageNPCMovement(Entity * io)
 				io->_npcdata->look_around_inc = 0.f;
 
 				for(long n = 0; n < 4; n++) {
-					extraRotation->group_rotate[n].setPitchYAW(extraRotation->group_rotate[n].getPitchYAW() - extraRotation->group_rotate[n].getPitchYAW() * (1.0f / 3));
+					extraRotation->group_rotate[n].setYaw(extraRotation->group_rotate[n].getYaw() - extraRotation->group_rotate[n].getYaw() * (1.0f / 3));
 
-					if(glm::abs(extraRotation->group_rotate[n].getPitchYAW()) < 0.01f)
-						extraRotation->group_rotate[n].setPitchYAW(0.f);
+					if(glm::abs(extraRotation->group_rotate[n].getYaw()) < 0.01f)
+						extraRotation->group_rotate[n].setYaw(0.f);
 				}
 			} else {
 				if(io->_npcdata->look_around_inc == 0.f) {
@@ -2039,13 +2039,13 @@ static void ManageNPCMovement(Entity * io)
 
 				for(long n = 0; n < 4; n++) {
 					float t = 1.5f - (float)n * ( 1.0f / 5 );
-					extraRotation->group_rotate[n].setPitchYAW(extraRotation->group_rotate[n].getPitchYAW() + io->_npcdata->look_around_inc * g_framedelay * t);
+					extraRotation->group_rotate[n].setYaw(extraRotation->group_rotate[n].getYaw() + io->_npcdata->look_around_inc * g_framedelay * t);
 				}
 
-				if(extraRotation->group_rotate[0].getPitchYAW() > 30)
+				if(extraRotation->group_rotate[0].getYaw() > 30)
 					io->_npcdata->look_around_inc = -io->_npcdata->look_around_inc;
 
-				if(extraRotation->group_rotate[0].getPitchYAW() < -30)
+				if(extraRotation->group_rotate[0].getYaw() < -30)
 					io->_npcdata->look_around_inc = -io->_npcdata->look_around_inc;
 			}
 		}
@@ -2054,10 +2054,10 @@ static void ManageNPCMovement(Entity * io)
 			io->_npcdata->look_around_inc = 0.f;
 
 			for(long n = 0; n < 4; n++) {
-				io->_npcdata->ex_rotate->group_rotate[n].setPitchYAW(io->_npcdata->ex_rotate->group_rotate[n].getPitchYAW() - io->_npcdata->ex_rotate->group_rotate[n].getPitchYAW() * (1.0f / 3));
+				io->_npcdata->ex_rotate->group_rotate[n].setYaw(io->_npcdata->ex_rotate->group_rotate[n].getYaw() - io->_npcdata->ex_rotate->group_rotate[n].getYaw() * (1.0f / 3));
 
-				if(glm::abs(io->_npcdata->ex_rotate->group_rotate[n].getPitchYAW()) < 0.01f)
-					io->_npcdata->ex_rotate->group_rotate[n].setPitchYAW(0.f);
+				if(glm::abs(io->_npcdata->ex_rotate->group_rotate[n].getYaw()) < 0.01f)
+					io->_npcdata->ex_rotate->group_rotate[n].setYaw(0.f);
 			}
 		}
 	}
@@ -2615,7 +2615,7 @@ Entity * ARX_NPC_GetFirstNPCInSight(Entity * ioo)
 
 		Vec3f orgn, dest;
 
-		float ab = MAKEANGLE(ioo->angle.getPitchYAW());
+		float ab = MAKEANGLE(ioo->angle.getYaw());
 		
 		{
 		ObjVertHandle grp = ioo->obj->fastaccess.head_group_origin;
@@ -2748,7 +2748,7 @@ void CheckNPCEx(Entity * io) {
 			// Check for Field of vision angle
 			float aa = getAngle(orgn.x, orgn.z, dest.x, dest.z);
 			aa = MAKEANGLE(glm::degrees(aa));
-			float ab = MAKEANGLE(io->angle.getPitchYAW());
+			float ab = MAKEANGLE(io->angle.getYaw());
 			if(glm::abs(AngularDifference(aa, ab)) < 110.f) {
 				
 				// Check for Darkness/Stealth

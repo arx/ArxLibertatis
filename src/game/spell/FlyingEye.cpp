@@ -100,7 +100,7 @@ void ARXDRAW_DrawEyeBall() {
 		return;
 
 	Anglef angle = eyeball.angle;
-	angle.setPitchYAW(MAKEANGLE(180.f - angle.getPitchYAW()));
+	angle.setYaw(MAKEANGLE(180.f - angle.getYaw()));
 
 	Vec3f pos = eyeball.pos;
 	pos.y += eyeball.floating;

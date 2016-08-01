@@ -239,7 +239,7 @@ void ARX_KEYRING_Combine(Entity * io) {
  */
 Vec3f ARX_PLAYER_FrontPos() {
 	Vec3f pos = player.pos;
-	pos += angleToVectorXZ(player.angle.getPitchYAW()) * 100.f;
+	pos += angleToVectorXZ(player.angle.getYaw()) * 100.f;
 	pos += Vec3f(0.f, 100.f, 0.f); // XXX use -100 here ?
 	return pos;
 }
@@ -1380,7 +1380,7 @@ void ARX_PLAYER_Manage_Visual() {
 	}
 	
 	if(player.lifePool.current > 0) {
-		io->angle = Anglef(0.f, 180.f - player.angle.getPitchYAW(), 0.f);
+		io->angle = Anglef(0.f, 180.f - player.angle.getYaw(), 0.f);
 	}
 	
 	io->gameFlags |= GFLAG_ISINTREATZONE;
@@ -1444,8 +1444,8 @@ void ARX_PLAYER_Manage_Visual() {
 	}
 	
 	if(ROTATE_START
-	   && player.angle.getYawPITCH() > 60.f
-	   && player.angle.getYawPITCH() < 180.f
+	   && player.angle.getPitch() > 60.f
+	   && player.angle.getPitch() < 180.f
 	   && LASTPLAYERA > 60.f
 	   && LASTPLAYERA < 180.f
 	) {
@@ -1493,7 +1493,7 @@ void ARX_PLAYER_Manage_Visual() {
 		}
 	}
 	
-	LASTPLAYERA = player.angle.getYawPITCH();
+	LASTPLAYERA = player.angle.getPitch();
 	
 	{
 	long tmove = player.m_currentMovement;
@@ -1806,8 +1806,8 @@ void ForcePlayerLookAtIO(Entity * io) {
 	}
 
 	tcam.setTargetCamera(target);
-	player.angle.setYawPITCH(MAKEANGLE(-tcam.angle.getYawPITCH()));
-	player.angle.setPitchYAW(MAKEANGLE(tcam.angle.getPitchYAW() - 180.f));
+	player.angle.setPitch(MAKEANGLE(-tcam.angle.getPitch()));
+	player.angle.setYaw(MAKEANGLE(tcam.angle.getYaw() - 180.f));
 	player.angle.setRoll(0);
 	player.desiredangle = player.angle;
 }
@@ -1841,30 +1841,30 @@ void ARX_PLAYER_Frame_Update()
 	if(io && io->_npcdata->ex_rotate) {
 		EERIE_EXTRA_ROTATE * extraRotation = io->_npcdata->ex_rotate;
 
-		float v = player.angle.getYawPITCH();
+		float v = player.angle.getPitch();
 
 		if(v > 160)
 			v = -(360 - v);
 
 		if(player.Interface & INTER_COMBATMODE) {
 			if (ARX_EQUIPMENT_GetPlayerWeaponType() == WEAPON_BOW) {
-				extraRotation->group_rotate[0].setYawPITCH(0); //head
-				extraRotation->group_rotate[1].setYawPITCH(0); //neck
-				extraRotation->group_rotate[2].setYawPITCH(0); //chest
-				extraRotation->group_rotate[3].setYawPITCH(v); //belt
+				extraRotation->group_rotate[0].setPitch(0); //head
+				extraRotation->group_rotate[1].setPitch(0); //neck
+				extraRotation->group_rotate[2].setPitch(0); //chest
+				extraRotation->group_rotate[3].setPitch(v); //belt
 			} else {
 				v *= ( 1.0f / 10 ); 
-				extraRotation->group_rotate[0].setYawPITCH(v); //head
-				extraRotation->group_rotate[1].setYawPITCH(v); //neck
-				extraRotation->group_rotate[2].setYawPITCH(v * 4); //chest
-				extraRotation->group_rotate[3].setYawPITCH(v * 4); //belt
+				extraRotation->group_rotate[0].setPitch(v); //head
+				extraRotation->group_rotate[1].setPitch(v); //neck
+				extraRotation->group_rotate[2].setPitch(v * 4); //chest
+				extraRotation->group_rotate[3].setPitch(v * 4); //belt
 			}
 		} else {
 			v *= ( 1.0f / 4 ); 
-			extraRotation->group_rotate[0].setYawPITCH(v); //head
-			extraRotation->group_rotate[1].setYawPITCH(v); //neck
-			extraRotation->group_rotate[2].setYawPITCH(v); //chest
-			extraRotation->group_rotate[3].setYawPITCH(v); //belt*/
+			extraRotation->group_rotate[0].setPitch(v); //head
+			extraRotation->group_rotate[1].setPitch(v); //neck
+			extraRotation->group_rotate[2].setPitch(v); //chest
+			extraRotation->group_rotate[3].setPitch(v); //belt*/
 		}
 	}
 

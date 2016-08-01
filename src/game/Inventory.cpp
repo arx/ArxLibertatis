@@ -185,7 +185,7 @@ void PutInFrontOfPlayer(Entity * io)
 		return;
 	
 	io->pos = player.pos;
-	io->pos += angleToVectorXZ(player.angle.getPitchYAW()) * 80.f;
+	io->pos += angleToVectorXZ(player.angle.getYaw()) * 80.f;
 	io->pos += Vec3f(0.f, 20.f, 0.f);
 	
 	io->velocity.y = 0.3f;

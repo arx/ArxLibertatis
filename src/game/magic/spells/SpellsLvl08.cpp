@@ -184,8 +184,8 @@ void ManaDrainSpell::Update() {
 	mat.setBlendType(RenderMaterial::Additive);
 	
 	Anglef cabalangle(0.f, 0.f, 0.f);
-	cabalangle.setPitchYAW(m_pitch + g_framedelay * 0.1f);
-	m_pitch = cabalangle.getPitchYAW();
+	cabalangle.setYaw(m_pitch + g_framedelay * 0.1f);
+	m_pitch = cabalangle.getYaw();
 	
 	Vec3f cabalscale = Vec3f(Es);
 	Color3f cabalcolor = Color3f(0.4f, 0.4f, 0.8f);
@@ -206,7 +206,7 @@ void ManaDrainSpell::Update() {
 	cabalcolor = Color3f(0.f, 0.f, 0.15f);
 	Draw3DObject(cabal, cabalangle, cabalpos, cabalscale, cabalcolor, mat);
 	
-	cabalangle.setPitchYAW(-cabalangle.getPitchYAW());
+	cabalangle.setYaw(-cabalangle.getYaw());
 	cabalpos.y = refpos - mov;
 	cabalscale = Vec3f(Es);
 	cabalcolor = Color3f(0.f, 0.f, 0.15f);
@@ -227,7 +227,7 @@ void ManaDrainSpell::Update() {
 	cabalcolor = Color3f(0.4f, 0.4f, 0.8f);
 	Draw3DObject(cabal, cabalangle, cabalpos, cabalscale, cabalcolor, mat);
 	
-	cabalangle.setPitchYAW(-cabalangle.getPitchYAW());
+	cabalangle.setYaw(-cabalangle.getYaw());
 	
 	ARX_SOUND_RefreshPosition(m_snd_loop, cabalpos);
 }
@@ -433,8 +433,8 @@ void LifeDrainSpell::Update() {
 	mat.setBlendType(RenderMaterial::Additive);
 	
 	Anglef cabalangle(0.f, 0.f, 0.f);
-	cabalangle.setPitchYAW(m_pitch + g_framedelay * 0.1f);
-	m_pitch = cabalangle.getPitchYAW();
+	cabalangle.setYaw(m_pitch + g_framedelay * 0.1f);
+	m_pitch = cabalangle.getYaw();
 	
 	Vec3f cabalscale = Vec3f(Es);
 	Color3f cabalcolor = Color3f(0.8f, 0.f, 0.f);
@@ -455,7 +455,7 @@ void LifeDrainSpell::Update() {
 	cabalcolor = Color3f(0.15f, 0.f, 0.f);
 	Draw3DObject(cabal, cabalangle, cabalpos, cabalscale, cabalcolor, mat);
 	
-	cabalangle.setPitchYAW(-cabalangle.getPitchYAW());
+	cabalangle.setYaw(-cabalangle.getYaw());
 	cabalpos.y = refpos - mov;
 	cabalscale = Vec3f(Es);
 	cabalcolor = Color3f(0.15f, 0.f, 0.f);
@@ -476,7 +476,7 @@ void LifeDrainSpell::Update() {
 	cabalcolor = Color3f(0.8f, 0.f, 0.f);
 	Draw3DObject(cabal, cabalangle, cabalpos, cabalscale, cabalcolor, mat);
 	
-	cabalangle.setPitchYAW(-cabalangle.getPitchYAW());
+	cabalangle.setYaw(-cabalangle.getYaw());
 	
 	ARX_SOUND_RefreshPosition(m_snd_loop, cabalpos);
 }

@@ -68,11 +68,11 @@ public:
 		m_roll = glm::degrees(v.z);
 	}
 
-	T getYawPITCH() const {
+	T getPitch() const {
 		return m_yaw;
 	}
 
-	T getPitchYAW() const {
+	T getYaw() const {
 		return m_pitch;
 	}
 
@@ -80,11 +80,11 @@ public:
 		return m_roll;
 	}
 	
-	void setYawPITCH(T yaw) {
+	void setPitch(T yaw) {
 		m_yaw = yaw;
 	}
 
-	void setPitchYAW(T pitch) {
+	void setYaw(T pitch) {
 		m_pitch = pitch;
 	}
 
@@ -205,7 +205,7 @@ float AngleDifference(float d, float e);
 float InterpolateAngle(float a1, float a2, float p);
 
 inline Anglef interpolate(const Anglef & a1, const Anglef & a2, float p) {
-	return Anglef(InterpolateAngle(a1.getYawPITCH(), a2.getYawPITCH(), p), InterpolateAngle(a1.getPitchYAW(), a2.getPitchYAW(), p), InterpolateAngle(a1.getRoll(), a2.getRoll(), p));
+	return Anglef(InterpolateAngle(a1.getPitch(), a2.getPitch(), p), InterpolateAngle(a1.getYaw(), a2.getYaw(), p), InterpolateAngle(a1.getRoll(), a2.getRoll(), p));
 }
 
 //! Get the angle of the 2D vector (0,0)--(x,y), in radians.
