@@ -1361,7 +1361,7 @@ void ArxGame::updateFirstPersonCamera() {
 	} else if(EXTERNALVIEW) {
 		for(long l=0; l < 250; l += 10) {
 			Vec3f tt = player.pos;
-			tt += angleToVectorXZ_180offset(player.angle.getPitch()) * float(l);
+			tt += angleToVectorXZ_180offset(player.angle.getPitchYAW()) * float(l);
 			tt += Vec3f(0.f, -50.f, 0.f);
 			
 			EERIEPOLY * ep = CheckInPoly(tt);
@@ -1372,7 +1372,7 @@ void ArxGame::updateFirstPersonCamera() {
 		}
 
 		subj.d_angle = player.angle;
-		subj.d_angle.setYaw(subj.d_angle.getYaw() + 30.f);
+		subj.d_angle.setYawPITCH(subj.d_angle.getYawPITCH() + 30.f);
 	} else {
 		subj.angle = player.angle;
 		
@@ -1434,27 +1434,27 @@ void ArxGame::speechControlledCinematic() {
 			switch(acs.type) {
 			case ARX_CINE_SPEECH_KEEP: {
 				subj.orgTrans.pos = acs.pos1;
-				subj.angle.setYaw(acs.pos2.x);
-				subj.angle.setPitch(acs.pos2.y);
+				subj.angle.setYawPITCH(acs.pos2.x);
+				subj.angle.setPitchYAW(acs.pos2.y);
 				subj.angle.setRoll(acs.pos2.z);
 				EXTERNALVIEW = true;
 				break;
 									   }
 			case ARX_CINE_SPEECH_ZOOM: {
 				//need to compute current values
-				float alpha = acs.startangle.getYaw() * itime + acs.endangle.getYaw() * rtime;
-				float beta = acs.startangle.getPitch() * itime + acs.endangle.getPitch() * rtime;
+				float alpha = acs.startangle.getYawPITCH() * itime + acs.endangle.getYawPITCH() * rtime;
+				float beta = acs.startangle.getPitchYAW() * itime + acs.endangle.getPitchYAW() * rtime;
 				float distance = acs.startpos * itime + acs.endpos * rtime;
 				Vec3f targetpos = acs.pos1;
 				
-				conversationcamera.orgTrans.pos = angleToVectorXZ(io->angle.getPitch() + beta) * distance;
-				conversationcamera.orgTrans.pos.y = std::sin(glm::radians(MAKEANGLE(io->angle.getYaw() + alpha))) * distance;
+				conversationcamera.orgTrans.pos = angleToVectorXZ(io->angle.getPitchYAW() + beta) * distance;
+				conversationcamera.orgTrans.pos.y = std::sin(glm::radians(MAKEANGLE(io->angle.getYawPITCH() + alpha))) * distance;
 				conversationcamera.orgTrans.pos += targetpos;
 
 				conversationcamera.setTargetCamera(targetpos);
 				subj.orgTrans.pos = conversationcamera.orgTrans.pos;
-				subj.angle.setYaw(MAKEANGLE(-conversationcamera.angle.getYaw()));
-				subj.angle.setPitch(MAKEANGLE(conversationcamera.angle.getPitch()-180.f));
+				subj.angle.setYawPITCH(MAKEANGLE(-conversationcamera.angle.getYawPITCH()));
+				subj.angle.setPitchYAW(MAKEANGLE(conversationcamera.angle.getPitchYAW()-180.f));
 				subj.angle.setRoll(0.f);
 				EXTERNALVIEW = true;
 				break;
@@ -1485,8 +1485,8 @@ void ArxGame::speechControlledCinematic() {
 					conversationcamera.orgTrans.pos = targetpos + vect2 + Vec3f(0.f, acs.m_heightModifier, 0.f);
 					conversationcamera.setTargetCamera(targetpos);
 					subj.orgTrans.pos = conversationcamera.orgTrans.pos;
-					subj.angle.setYaw(MAKEANGLE(-conversationcamera.angle.getYaw()));
-					subj.angle.setPitch(MAKEANGLE(conversationcamera.angle.getPitch()-180.f));
+					subj.angle.setYawPITCH(MAKEANGLE(-conversationcamera.angle.getYawPITCH()));
+					subj.angle.setPitchYAW(MAKEANGLE(conversationcamera.angle.getPitchYAW()-180.f));
 					subj.angle.setRoll(0.f);
 					EXTERNALVIEW = true;
 				}
@@ -1529,8 +1529,8 @@ void ArxGame::speechControlledCinematic() {
 					conversationcamera.orgTrans.pos = vect + targetpos + vect2;
 					conversationcamera.setTargetCamera(targetpos);
 					subj.orgTrans.pos = conversationcamera.orgTrans.pos;
-					subj.angle.setYaw(MAKEANGLE(-conversationcamera.angle.getYaw()));
-					subj.angle.setPitch(MAKEANGLE(conversationcamera.angle.getPitch()-180.f));
+					subj.angle.setYawPITCH(MAKEANGLE(-conversationcamera.angle.getYawPITCH()));
+					subj.angle.setPitchYAW(MAKEANGLE(conversationcamera.angle.getPitchYAW()-180.f));
 					subj.angle.setRoll(0.f);
 					EXTERNALVIEW = true;
 				}
@@ -1577,8 +1577,8 @@ void ArxGame::handlePlayerDeath() {
 
 		conversationcamera.setTargetCamera(targetpos);
 		subj.orgTrans.pos=conversationcamera.orgTrans.pos;
-		subj.angle.setYaw(MAKEANGLE(-conversationcamera.angle.getYaw()));
-		subj.angle.setPitch(MAKEANGLE(conversationcamera.angle.getPitch()-180.f));
+		subj.angle.setYawPITCH(MAKEANGLE(-conversationcamera.angle.getYawPITCH()));
+		subj.angle.setPitchYAW(MAKEANGLE(conversationcamera.angle.getPitchYAW()-180.f));
 		subj.angle.setRoll(0);
 		EXTERNALVIEW = true;
 		BLOCK_PLAYER_CONTROLS = true;

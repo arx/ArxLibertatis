@@ -260,8 +260,8 @@ static void ARX_NPC_SpawnMember(Entity * ioo, ObjSelection num) {
 	io->gameFlags = ioo->gameFlags;
 	io->halo = ioo->halo;
 	
-	io->angle.setYaw(Random::getf(340.f, 380.f));
-	io->angle.setPitch(Random::getf(0.f, 360.f));
+	io->angle.setYawPITCH(Random::getf(340.f, 380.f));
+	io->angle.setPitchYAW(Random::getf(0.f, 360.f));
 	io->angle.setRoll(0);
 	io->obj->pbox->active = 1;
 	io->obj->pbox->stopcount = 0;
@@ -270,9 +270,9 @@ static void ARX_NPC_SpawnMember(Entity * ioo, ObjSelection num) {
 	io->stopped = 1;
 	
 	Vec3f vector;
-	vector.x = -std::sin(glm::radians(io->angle.getPitch()));
-	vector.y = std::sin(glm::radians(io->angle.getYaw())) * 2.f;
-	vector.z = std::cos(glm::radians(io->angle.getPitch()));
+	vector.x = -std::sin(glm::radians(io->angle.getPitchYAW()));
+	vector.y = std::sin(glm::radians(io->angle.getYawPITCH())) * 2.f;
+	vector.z = std::cos(glm::radians(io->angle.getPitchYAW()));
 	vector = glm::normalize(vector);
 	io->rubber = 0.6f;
 	

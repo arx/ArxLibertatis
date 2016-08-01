@@ -318,16 +318,16 @@ static void RenderBookPlayerCharacter() {
 		
 		switch(player.skin) {
 			case 0:
-				ePlayerAngle.setPitch(-25.f);
+				ePlayerAngle.setPitchYAW(-25.f);
 				break;
 			case 1:
-				ePlayerAngle.setPitch(-10.f);
+				ePlayerAngle.setPitchYAW(-10.f);
 				break;
 			case 2:
-				ePlayerAngle.setPitch(20.f);
+				ePlayerAngle.setPitchYAW(20.f);
 				break;
 			case 3:
-				ePlayerAngle.setPitch(35.f);
+				ePlayerAngle.setPitchYAW(35.f);
 				break;
 		}
 		
@@ -336,7 +336,7 @@ static void RenderBookPlayerCharacter() {
 	} else {
 		GRenderer->SetScissor(rec);
 		
-		ePlayerAngle.setPitch(-20.f);
+		ePlayerAngle.setPitchYAW(-20.f);
 		pos = Vec3f(20.f, 96.f, 260.f);
 		
 		ARX_EQUIPMENT_AttachPlayerWeaponToHand();

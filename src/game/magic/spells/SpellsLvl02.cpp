@@ -437,8 +437,8 @@ void HarmSpell::Update()
 	mat.setBlendType(RenderMaterial::Additive);
 	
 	Anglef cabalangle(0.f, 0.f, 0.f);
-	cabalangle.setPitch(m_pitch + g_framedelay * 0.1f);
-	m_pitch = cabalangle.getPitch();
+	cabalangle.setPitchYAW(m_pitch + g_framedelay * 0.1f);
+	m_pitch = cabalangle.getPitchYAW();
 	
 	Vec3f cabalscale = Vec3f(Es);
 	Color3f cabalcolor = Color3f(0.8f, 0.4f, 0.f);

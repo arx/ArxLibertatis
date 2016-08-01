@@ -464,8 +464,8 @@ void Cinematic::Render(float FDIFF) {
 	}
 	
 	m_camera.orgTrans.pos = pos;
-	m_camera.angle.setYaw(0);
-	m_camera.angle.setPitch(0);
+	m_camera.angle.setYawPITCH(0);
+	m_camera.angle.setPitchYAW(0);
 	m_camera.angle.setRoll(angz);
 	m_camera.clip = g_size;
 	m_camera.center = g_size.center();
@@ -504,8 +504,8 @@ void Cinematic::Render(float FDIFF) {
 		switch(ti) {
 			case INTERP_NO:
 				m_camera.orgTrans.pos = m_nextPos;
-				m_camera.angle.setYaw(0);
-				m_camera.angle.setPitch(0);
+				m_camera.angle.setYawPITCH(0);
+				m_camera.angle.setPitchYAW(0);
 				m_camera.angle.setRoll(m_nextAngz);
 				PrepareCamera(&m_camera, g_size);
 				break;

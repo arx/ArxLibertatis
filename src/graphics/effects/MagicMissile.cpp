@@ -103,8 +103,8 @@ void CMagicMissile::Create(const Vec3f & startPos, const Anglef & angles)
 	
 	short i = 40.f;
 	Vec3f endPos = startPos;
-	endPos += angleToVectorXZ(angles.getPitch()) * (50.f * i);
-	endPos.y += std::sin(glm::radians(MAKEANGLE(angles.getYaw()))) * (50.f * i);
+	endPos += angleToVectorXZ(angles.getPitchYAW()) * (50.f * i);
+	endPos.y += std::sin(glm::radians(MAKEANGLE(angles.getYawPITCH()))) * (50.f * i);
 	
 	pathways[0] = startPos;
 	pathways[5] = endPos;
@@ -235,8 +235,8 @@ void CMagicMissile::Render()
 	eCurPos = lastpos;
 	
 	Anglef stiteangle;
-	stiteangle.setPitch(-glm::degrees(bubu));
-	stiteangle.setYaw(0);
+	stiteangle.setPitchYAW(-glm::degrees(bubu));
+	stiteangle.setYawPITCH(0);
 	stiteangle.setRoll(-(glm::degrees(bubu1)));
 
 	if(av.x < 0)

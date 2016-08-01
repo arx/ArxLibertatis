@@ -583,8 +583,8 @@ void levelInit() {
 	progressBarAdvance();
 	LoadLevelScreen();
 
-	player.desiredangle.setYaw(0.f);
-	player.angle.setYaw(0.f);
+	player.desiredangle.setYawPITCH(0.f);
+	player.angle.setYawPITCH(0.f);
 	ARX_PLAYER_RectifyPosition();
 
 	entities.player()->_npcdata->vvpos = -99999;
@@ -1016,18 +1016,18 @@ void ManageCombatModeAnimations() {
 					Anglef angle;
 					Vec3f pos = player.pos + Vec3f(0.f, 40.f, 0.f);
 					
-					angle.setYaw(player.angle.getYaw());
-					angle.setPitch(player.angle.getPitch() + 8);
+					angle.setYawPITCH(player.angle.getYawPITCH());
+					angle.setPitchYAW(player.angle.getPitchYAW() + 8);
 					angle.setRoll(player.angle.getRoll());
 					PlayerLaunchArrow_Test(aimratio, poisonous, pos, angle);
-					angle.setYaw(player.angle.getYaw());
-					angle.setPitch(player.angle.getPitch() - 8);
+					angle.setYawPITCH(player.angle.getYawPITCH());
+					angle.setPitchYAW(player.angle.getPitchYAW() - 8);
 					PlayerLaunchArrow_Test(aimratio, poisonous, pos, angle);
-					angle.setYaw(player.angle.getYaw());
-					angle.setPitch(player.angle.getPitch() + 4.f);
+					angle.setYawPITCH(player.angle.getYawPITCH());
+					angle.setPitchYAW(player.angle.getPitchYAW() + 4.f);
 					PlayerLaunchArrow_Test(aimratio, poisonous, pos, angle);
-					angle.setYaw(player.angle.getYaw());
-					angle.setPitch(player.angle.getPitch() - 4.f);
+					angle.setYawPITCH(player.angle.getYawPITCH());
+					angle.setPitchYAW(player.angle.getPitchYAW() - 4.f);
 					PlayerLaunchArrow_Test(aimratio, poisonous, pos, angle);
 				}
 				

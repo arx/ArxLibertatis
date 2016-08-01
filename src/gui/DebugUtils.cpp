@@ -64,7 +64,7 @@ void DebugBox::add(std::string key, const Vec3f value) {
 
 void DebugBox::add(std::string key, const Anglef value) {
 	m_maxKeyLen = std::max(m_maxKeyLen, key.length());
-	std::string valueStr = boost::str(boost::format("%4.2f %4.2f %4.2f") % value.getYaw() % value.getPitch() % value.getRoll());
+	std::string valueStr = boost::str(boost::format("%4.2f %4.2f %4.2f") % value.getYawPITCH() % value.getPitchYAW() % value.getRoll());
 	m_elements.push_back(std::pair<std::string, std::string>(key, valueStr));
 }
 

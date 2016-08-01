@@ -319,8 +319,8 @@ void ARX_CHANGELEVEL_Change(const std::string & level, const std::string & targe
 			g_moveto = player.pos = pos + player.baseOffset();
 			PLAYER_POSITION_RESET = false;
 		}
-		player.desiredangle.setPitch(angle);
-		player.angle.setPitch(angle);
+		player.desiredangle.setPitchYAW(angle);
+		player.angle.setPitchYAW(angle);
 		return; // nothing more to do :)
 	}
 	
@@ -356,8 +356,8 @@ void ARX_CHANGELEVEL_Change(const std::string & level, const std::string & targe
 	}
 	
 	CURRENTLEVEL = num;
-	player.desiredangle.setPitch(angle);
-	player.angle.setPitch(angle);
+	player.desiredangle.setPitchYAW(angle);
+	player.angle.setPitchYAW(angle);
 	DONT_WANT_PLAYER_INZONE = 1;
 	ARX_PLAYER_RectifyPosition();
 	JUST_RELOADED = 1;

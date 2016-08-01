@@ -713,7 +713,7 @@ void MiniMap::drawPlayer(float playerSize, Vec2f playerPos, bool alphaBlending) 
 	r3.x = playerSize * (1.0f / 2);
 	r3.y = playerSize;
 	
-	float angle = glm::radians(m_player->angle.getPitch());
+	float angle = glm::radians(m_player->angle.getPitchYAW());
 	float ca = std::cos(angle);
 	float sa = std::sin(angle);
 	

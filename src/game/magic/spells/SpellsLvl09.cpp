@@ -44,11 +44,11 @@ void SummonCreatureSpell::GetTargetAndBeta(Vec3f & target, float & beta)
 	bool displace = false;
 	if(m_caster == EntityHandle_Player) {
 		target = player.basePosition();
-		beta = player.angle.getPitch();
+		beta = player.angle.getPitchYAW();
 		displace = true;
 	} else {
 		target = entities[m_caster]->pos;
-		beta = entities[m_caster]->angle.getPitch();
+		beta = entities[m_caster]->angle.getPitchYAW();
 		displace = (entities[m_caster]->ioflags & IO_NPC) == IO_NPC;
 	}
 	if(displace) {
@@ -96,7 +96,7 @@ void SummonCreatureSpell::Launch()
 	m_targetPos = target;
 	ARX_SOUND_PlaySFX(SND_SPELL_SUMMON_CREATURE, &m_targetPos);
 	
-	m_fissure.Create(target, MAKEANGLE(player.angle.getPitch()));
+	m_fissure.Create(target, MAKEANGLE(player.angle.getPitchYAW()));
 	m_fissure.SetDuration(ArxDurationMs(2000), ArxDurationMs(500), ArxDurationMs(1500));
 	m_fissure.SetColorBorder(Color3f::red);
 	m_fissure.SetColorRays1(Color3f::red);
@@ -283,7 +283,7 @@ void FakeSummonSpell::Launch()
 	m_targetPos = target;
 	ARX_SOUND_PlaySFX(SND_SPELL_SUMMON_CREATURE, &m_targetPos);
 	
-	m_fissure.Create(target, MAKEANGLE(player.angle.getPitch()));
+	m_fissure.Create(target, MAKEANGLE(player.angle.getPitchYAW()));
 	m_fissure.SetDuration(ArxDurationMs(2000), ArxDurationMs(500), ArxDurationMs(1500));
 	m_fissure.SetColorBorder(Color3f::red);
 	m_fissure.SetColorRays1(Color3f::red);

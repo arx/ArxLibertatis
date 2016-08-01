@@ -205,8 +205,8 @@ void AddFlare(const Vec2f & pos, float sm, short typ, Entity * io, bool bookDraw
 		float vy = (flare.pos.y - subj.center.y) * 0.1515151515151515f;
 		if(io) {
 			flare.v.p = io->pos;
-			flare.v.p += angleToVectorXZ(io->angle.getPitch() + vx) * 100.f;
-			flare.v.p.y += std::sin(glm::radians(MAKEANGLE(io->angle.getYaw() + vy))) * 100.f - 150.f;
+			flare.v.p += angleToVectorXZ(io->angle.getPitchYAW() + vx) * 100.f;
+			flare.v.p.y += std::sin(glm::radians(MAKEANGLE(io->angle.getYawPITCH() + vy))) * 100.f - 150.f;
 		} else {
 			flare.v.p.x = 1.0f  * float(pos.x - (g_size.width()  / 2)) * 156.f / (640.f * g_sizeRatio.y);
 			flare.v.p.y = 0.75f * float(pos.y - (g_size.height() / 2)) * 156.f / (480.f * g_sizeRatio.y);

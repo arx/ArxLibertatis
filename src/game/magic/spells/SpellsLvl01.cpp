@@ -144,8 +144,8 @@ void MagicMissileSpell::Launch() {
 	Vec3f startPos;
 	float afAlpha, afBeta;
 	if(m_caster == EntityHandle_Player) {
-		afBeta = player.angle.getPitch();
-		afAlpha = player.angle.getYaw();
+		afBeta = player.angle.getPitchYAW();
+		afAlpha = player.angle.getYawPITCH();
 		
 		Vec3f vector = angleToVector(Anglef(afAlpha, afBeta, 0.f)) * 60.f;
 		
@@ -160,7 +160,7 @@ void MagicMissileSpell::Launch() {
 		
 	} else {
 		afAlpha = 0;
-		afBeta = entities[m_caster]->angle.getPitch();
+		afBeta = entities[m_caster]->angle.getPitchYAW();
 		
 		Vec3f vector = angleToVector(Anglef(afAlpha, afBeta, 0.f)) * 60.f;
 		
@@ -211,8 +211,8 @@ void MagicMissileSpell::Launch() {
 		Anglef angles(afAlpha, afBeta, 0.f);
 		
 		if(i > 0) {
-			angles.setYaw(angles.getYaw() + Random::getf(-4.0f, 4.0f));
-			angles.setPitch(angles.getPitch() + Random::getf(-6.0f, 6.0f));
+			angles.setYawPITCH(angles.getYawPITCH() + Random::getf(-4.0f, 4.0f));
+			angles.setPitchYAW(angles.getPitchYAW() + Random::getf(-6.0f, 6.0f));
 		}
 		
 		missile->Create(startPos, angles);

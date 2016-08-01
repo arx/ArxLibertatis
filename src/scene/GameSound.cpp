@@ -563,11 +563,11 @@ static void ARX_SOUND_IOFrontPos(const Entity * io, Vec3f & pos) {
 		pos = ARX_PLAYER_FrontPos();
 	} else if(io) {
 		pos = io->pos;
-		pos += angleToVectorXZ(io->angle.getPitch()) * 100.f;
+		pos += angleToVectorXZ(io->angle.getPitchYAW()) * 100.f;
 		pos += Vec3f(0.f, -100.f, 0.f);
 	} else if(ACTIVECAM) {
 		pos = ACTIVECAM->orgTrans.pos;
-		pos += angleToVectorXZ(ACTIVECAM->angle.getPitch()) * 100.f;
+		pos += angleToVectorXZ(ACTIVECAM->angle.getPitchYAW()) * 100.f;
 		pos += Vec3f(0.f, -100.f, 0.f);
 	} else {
 		pos = Vec3f_ZERO;

@@ -447,7 +447,7 @@ static bool CollidedFromBack(Entity * io,Entity * ioo) {
 	ep.v[2].p.z = -std::cos(ft) * 180.f;
 
 	{
-	float angle = 270.f - io->angle.getPitch();
+	float angle = 270.f - io->angle.getPitchYAW();
 	ep.tv[1].p = VRotateY(ep.v[1].p, angle);
 	ep.tv[2].p = VRotateY(ep.v[2].p, angle);
 	}

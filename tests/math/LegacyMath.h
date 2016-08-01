@@ -215,16 +215,16 @@ void QuatFromMatrix(glm::quat & quat, const glm::mat4x4 & mat) {
 
 glm::quat toNonNpcRotation(const Anglef & src) {
 	Anglef ang = src;
-	ang.setYaw(360 - ang.getYaw());
+	ang.setYawPITCH(360 - ang.getYawPITCH());
 	
 	glm::mat4x4 mat;
 	Vec3f vect(0, 0, 1);
 	Vec3f up(0, 1, 0);
-	vect = VRotateY(vect, ang.getPitch());
-	vect = VRotateX(vect, ang.getYaw());
+	vect = VRotateY(vect, ang.getPitchYAW());
+	vect = VRotateX(vect, ang.getYawPITCH());
 	vect = VRotateZ(vect, ang.getRoll());
-	up = VRotateY(up, ang.getPitch());
-	up = VRotateX(up, ang.getYaw());
+	up = VRotateY(up, ang.getPitchYAW());
+	up = VRotateX(up, ang.getYawPITCH());
 	up = VRotateZ(up, ang.getRoll());
 	MatrixSetByVectors(mat, vect, up);
 	return glm::toQuat(mat);

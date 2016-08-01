@@ -190,7 +190,7 @@ void FireballSpell::Launch() {
 		if(ValidIONum(m_caster)) {
 			Entity * c = entities[m_caster];
 			if(c->ioflags & IO_NPC) {
-				target += angleToVectorXZ(c->angle.getPitch()) * 30.f;
+				target += angleToVectorXZ(c->angle.getPitchYAW()) * 30.f;
 				target += Vec3f(0.f, -80.f, 0.f);
 			}
 		}
@@ -198,7 +198,7 @@ void FireballSpell::Launch() {
 	
 	float anglea = 0, angleb;
 	if(m_caster == EntityHandle_Player) {
-		anglea = player.angle.getYaw(), angleb = player.angle.getPitch();
+		anglea = player.angle.getYawPITCH(), angleb = player.angle.getPitchYAW();
 	} else {
 		
 		Vec3f start = entities[m_caster]->pos;
@@ -214,7 +214,7 @@ void FireballSpell::Launch() {
 			anglea = glm::degrees(getAngle(start.y, start.z, end.y, end.z + d));
 		}
 		
-		angleb = entities[m_caster]->angle.getPitch();
+		angleb = entities[m_caster]->angle.getPitchYAW();
 	}
 	
 	Vec3f eSrc = target;
@@ -243,8 +243,8 @@ void FireballSpell::Update() {
 		float afBeta = 0.f;
 		
 		if(m_caster == EntityHandle_Player) {
-			afBeta = player.angle.getPitch();
-			afAlpha = player.angle.getYaw();
+			afBeta = player.angle.getPitchYAW();
+			afAlpha = player.angle.getYawPITCH();
 			ObjVertHandle idx = GetGroupOriginByName(entities[m_caster]->obj, "chest");
 
 			if(idx != ObjVertHandle()) {
@@ -255,14 +255,14 @@ void FireballSpell::Update() {
 			
 			eCurPos += angleToVectorXZ(afBeta) * 60.f;
 		} else {
-			afBeta = entities[m_caster]->angle.getPitch();
+			afBeta = entities[m_caster]->angle.getPitchYAW();
 			
 			eCurPos = entities[m_caster]->pos;
 			eCurPos += angleToVectorXZ(afBeta) * 60.f;
 			
 			if(ValidIONum(m_caster) && (entities[m_caster]->ioflags & IO_NPC)) {
 				
-				eCurPos += angleToVectorXZ(entities[m_caster]->angle.getPitch()) * 30.f;
+				eCurPos += angleToVectorXZ(entities[m_caster]->angle.getPitchYAW()) * 30.f;
 				eCurPos += Vec3f(0.f, -80.f, 0.f);
 			}
 			
@@ -414,10 +414,10 @@ void IceProjectileSpell::Launch()
 	float angleb;
 	if(m_caster == EntityHandle_Player) {
 		target = player.pos + Vec3f(0.f, 160.f, 0.f);
-		angleb = player.angle.getPitch();
+		angleb = player.angle.getPitchYAW();
 	} else {
 		target = entities[m_caster]->pos;
-		angleb = entities[m_caster]->angle.getPitch();
+		angleb = entities[m_caster]->angle.getPitchYAW();
 	}
 	target += angleToVectorXZ(angleb) * 150.0f;
 	
@@ -526,8 +526,8 @@ void IceProjectileSpell::Update() {
 		icicle.size = glm::clamp(icicle.size, Vec3f(0.f), icicle.sizeMax);
 		
 		Anglef stiteangle;
-		stiteangle.setPitch(glm::cos(glm::radians(icicle.pos.x)) * 360);
-		stiteangle.setYaw(0);
+		stiteangle.setPitchYAW(glm::cos(glm::radians(icicle.pos.x)) * 360);
+		stiteangle.setYawPITCH(0);
 		stiteangle.setRoll(0);
 		
 		float tt = icicle.sizeMax.y * fColor;

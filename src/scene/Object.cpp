@@ -503,8 +503,8 @@ static void loadObjectData(EERIE_3DOBJ * eerie, const char * adr, size_t * poss,
 		
 		eerie->pos = pted3005->pos.toVec3();
 		
-		eerie->angle.setYaw((float)(pted3005->angle.alpha & 0xfff) * THEO_ROTCONVERT);
-		eerie->angle.setPitch((float)(pted3005->angle.beta & 0xfff) * THEO_ROTCONVERT);
+		eerie->angle.setYawPITCH((float)(pted3005->angle.alpha & 0xfff) * THEO_ROTCONVERT);
+		eerie->angle.setPitchYAW((float)(pted3005->angle.beta & 0xfff) * THEO_ROTCONVERT);
 		eerie->angle.setRoll((float)(pted3005->angle.gamma & 0xfff) * THEO_ROTCONVERT);
 		
 		eerie->point0 = eerie->vertexlist[pted3005->origin_index].v;
@@ -519,8 +519,8 @@ static void loadObjectData(EERIE_3DOBJ * eerie, const char * adr, size_t * poss,
 		
 		eerie->pos = pted->pos.toVec3();
 		
-		eerie->angle.setYaw((float)(pted->angle.alpha & 0xfff) * THEO_ROTCONVERT);
-		eerie->angle.setPitch((float)(pted->angle.beta & 0xfff) * THEO_ROTCONVERT);
+		eerie->angle.setYawPITCH((float)(pted->angle.alpha & 0xfff) * THEO_ROTCONVERT);
+		eerie->angle.setPitchYAW((float)(pted->angle.beta & 0xfff) * THEO_ROTCONVERT);
 		eerie->angle.setRoll((float)(pted->angle.gamma & 0xfff) * THEO_ROTCONVERT);
 		
 		eerie->point0 = eerie->vertexlist[pted->origin_index].v;
