@@ -577,11 +577,11 @@ glm::quat QuatFromAngles(const Anglef & angle) {
 }
 
 glm::mat4 toRotationMatrix(const Anglef & angle) {
-	float yaw = glm::radians(angle.getPitch());
-	float pitch = glm::radians(angle.getYaw());
+	float pitch = glm::radians(angle.getPitch());
+	float yaw = glm::radians(angle.getYaw());
 	float roll = glm::radians(angle.getRoll());
-	glm::mat4 rotateX = glm::eulerAngleX(yaw);
-	glm::mat4 rotateY = glm::eulerAngleY(pitch);
+	glm::mat4 rotateX = glm::eulerAngleX(pitch);
+	glm::mat4 rotateY = glm::eulerAngleY(yaw);
 	glm::mat4 rotateZ = glm::eulerAngleZ(-roll);
 	return rotateZ * rotateX * rotateY;
 }
