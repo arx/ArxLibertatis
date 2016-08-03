@@ -1279,8 +1279,6 @@ static void StoreEntityMovement(Entity * io, Vec3f & ftr, float scale) {
 	
 	arx_assert(isallfinite(ftr));
 	
-	Vec3f ftr2 = Vec3f_ZERO;
-
 	ftr *= scale;
 
 	float temp;
@@ -1290,7 +1288,7 @@ static void StoreEntityMovement(Entity * io, Vec3f & ftr, float scale) {
 		temp = MAKEANGLE(180.f - io->angle.getYaw());
 	}
 
-	ftr2 = VRotateY(ftr, temp);
+	Vec3f ftr2 = VRotateY(ftr, temp);
 
 	// stores Translations for a later use
 	io->move = ftr2;
