@@ -156,7 +156,14 @@ void ShowInfoText() {
 	frameInfo.add("TIME", static_cast<long>(arxtime.now() / 1000));
 	frameInfo.print();
 	
-	DebugBox playerBox = DebugBox(Vec2i(10, frameInfo.size().y + 5), "Player");
+	DebugBox camBox = DebugBox(Vec2i(10, frameInfo.size().y + 5), "Camera");
+	if(ACTIVECAM) {
+		camBox.add("Position", ACTIVECAM->orgTrans.pos);
+		camBox.add("Rotation", ACTIVECAM->angle);
+	}
+	camBox.print();
+	
+	DebugBox playerBox = DebugBox(Vec2i(10, camBox.size().y + 5), "Player");
 	playerBox.add("Position", player.pos);
 	playerBox.add("AnchorPos", player.pos - Mscenepos);
 	playerBox.add("Rotation", player.angle);
