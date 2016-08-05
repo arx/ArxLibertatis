@@ -61,7 +61,7 @@ void cinematicRequestStart() {
 	PLAY_LOADED_CINEMATIC = Cinematic_StartRequested;
 }
 
-void DANAE_KillCinematic() {
+void cinematicKill() {
 	if(ControlCinematique && ControlCinematique->projectload) {
 		ControlCinematique->projectload = false;
 		ControlCinematique->OneTimeSceneReInit();
@@ -86,7 +86,7 @@ void cinematicLaunchWaiting() {
 		ePos = ACTIVECAM->orgTrans.pos;
 	}
 
-	DANAE_KillCinematic();
+	cinematicKill();
 
 	res::path cinematic = res::path("graph/interface/illustrations") / WILL_LAUNCH_CINE;
 

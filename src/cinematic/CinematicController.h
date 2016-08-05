@@ -26,7 +26,7 @@ void cinematicPrepare(std::string name, bool preload);
 
 void cinematicRequestStart();
 
-void DANAE_KillCinematic();
+void cinematicKill();
 
 void cinematicLaunchWaiting();
 

@@ -2730,7 +2730,7 @@ void ARX_GAME_Reset(long type) {
 	ARX_SPECIAL_ATTRACTORS_Reset();
 
 	// Cinematics
-	DANAE_KillCinematic();
+	cinematicKill();
 
 	// Paths
 	ARX_PATH_ClearAllControled();

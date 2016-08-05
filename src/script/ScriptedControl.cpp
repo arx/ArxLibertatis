@@ -226,7 +226,7 @@ public:
 		DebugScript(' ' << options << " \"" << name << '"');
 		
 		if(name == "kill") {
-			DANAE_KillCinematic();
+			cinematicKill();
 		} else if(name == "play") {
 			cinematicRequestStart();
 			arxtime.pause();
