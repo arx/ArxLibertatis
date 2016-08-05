@@ -1330,7 +1330,7 @@ void ArxGame::doFrame() {
 	if(g_requestLevelInit) {
 		levelInit();
 	} else {
-		update();
+		LaunchWaitingCine();
 		render();
 	}
 }
@@ -2146,11 +2146,6 @@ void ArxGame::renderLevel() {
 	
 	ARX_SPEECH_Update();
 	
-}
-
-void ArxGame::update() {	
-
-	LaunchWaitingCine();
 }
 
 void ArxGame::render() {
