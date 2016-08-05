@@ -268,7 +268,7 @@ ScriptResult ScriptEvent::send(EERIE_SCRIPT * es, ScriptMessage msg, const std::
 	}
 	
 	// Retrieves in esss script pointer to script holding variables.
-	EERIE_SCRIPT * esss = (EERIE_SCRIPT *)es->master;
+	EERIE_SCRIPT * esss = es->master;
 	if(esss == NULL) {
 		esss = es;
 	}
