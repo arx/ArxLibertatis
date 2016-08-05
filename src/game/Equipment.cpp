@@ -935,8 +935,7 @@ void ARX_EQUIPMENT_LaunchPlayerReadyWeapon() {
 void ARX_EQUIPMENT_UnEquipPlayerWeapon()
 {
 	if(ValidIONum(player.equiped[EQUIP_SLOT_WEAPON])) {
-		Entity * pioOldDragInter;
-		pioOldDragInter = DRAGINTER;
+		Entity * pioOldDragInter = DRAGINTER;
 		DRAGINTER = entities[player.equiped[EQUIP_SLOT_WEAPON]];
 
 		if(DRAGINTER)
