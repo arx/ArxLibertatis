@@ -189,7 +189,12 @@ public:
 	}
 	
 	bool equalEps(const Angle & other, T pEps = std::numeric_limits<T>::epsilon()) const {
-		return m_pitch > (other.m_pitch - pEps) && m_pitch < (other.m_pitch + pEps) && m_yaw >(other.m_yaw - pEps) && m_yaw < (other.m_yaw + pEps) && m_roll >(other.m_roll - pEps) && m_roll < (other.m_roll + pEps);
+		return m_pitch > (other.m_pitch - pEps)
+		    && m_pitch < (other.m_pitch + pEps)
+		    && m_yaw   > (other.m_yaw   - pEps)
+		    && m_yaw   < (other.m_yaw   + pEps)
+		    && m_roll  > (other.m_roll  - pEps)
+		    && m_roll  < (other.m_roll  + pEps);
 	}
 	
 	void normalize() {
