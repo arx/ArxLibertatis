@@ -28,7 +28,7 @@ void cinematicRequestStart();
 
 void DANAE_KillCinematic();
 
-void LaunchWaitingCine();
+void cinematicLaunchWaiting();
 
 bool cinematicIsStopped();
 
