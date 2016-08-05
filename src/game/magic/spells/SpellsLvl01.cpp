@@ -142,12 +142,12 @@ void MagicMissileSpell::Launch() {
 	}
 	
 	Vec3f startPos;
-	float afAlpha, yaw;
+	float pitch, yaw;
 	if(m_caster == EntityHandle_Player) {
 		yaw = player.angle.getYaw();
-		afAlpha = player.angle.getPitch();
+		pitch = player.angle.getPitch();
 		
-		Vec3f vector = angleToVector(Anglef(afAlpha, yaw, 0.f)) * 60.f;
+		Vec3f vector = angleToVector(Anglef(pitch, yaw, 0.f)) * 60.f;
 		
 		if(m_hand_group != ActionPoint()) {
 			startPos = m_hand_pos;
@@ -159,10 +159,10 @@ void MagicMissileSpell::Launch() {
 		startPos += vector;
 		
 	} else {
-		afAlpha = 0;
+		pitch = 0;
 		yaw = entities[m_caster]->angle.getYaw();
 		
-		Vec3f vector = angleToVector(Anglef(afAlpha, yaw, 0.f)) * 60.f;
+		Vec3f vector = angleToVector(Anglef(pitch, yaw, 0.f)) * 60.f;
 		
 		if(m_hand_group != ActionPoint()) {
 			startPos = m_hand_pos;
@@ -177,11 +177,11 @@ void MagicMissileSpell::Launch() {
 		if(ValidIONum(io->targetinfo)) {
 			const Vec3f & p1 = m_caster_pos;
 			const Vec3f & p2 = entities[io->targetinfo]->pos;
-			afAlpha = -(glm::degrees(getAngle(p1.y, p1.z, p2.y, p2.z + glm::distance(Vec2f(p2.x, p2.z), Vec2f(p1.x, p1.z))))); //alpha entre orgn et dest;
+			pitch = -(glm::degrees(getAngle(p1.y, p1.z, p2.y, p2.z + glm::distance(Vec2f(p2.x, p2.z), Vec2f(p1.x, p1.z))))); //alpha entre orgn et dest;
 		} else if (ValidIONum(m_target)) {
 			const Vec3f & p1 = m_caster_pos;
 			const Vec3f & p2 = entities[m_target]->pos;
-			afAlpha = -(glm::degrees(getAngle(p1.y, p1.z, p2.y, p2.z + glm::distance(Vec2f(p2.x, p2.z), Vec2f(p1.x, p1.z))))); //alpha entre orgn et dest;
+			pitch = -(glm::degrees(getAngle(p1.y, p1.z, p2.y, p2.z + glm::distance(Vec2f(p2.x, p2.z), Vec2f(p1.x, p1.z))))); //alpha entre orgn et dest;
 		}
 	}
 	
@@ -208,7 +208,7 @@ void MagicMissileSpell::Launch() {
 		
 		pTab.push_back(missile);
 		
-		Anglef angles(afAlpha, yaw, 0.f);
+		Anglef angles(pitch, yaw, 0.f);
 		
 		if(i > 0) {
 			angles.setPitch(angles.getPitch() + Random::getf(-4.0f, 4.0f));
