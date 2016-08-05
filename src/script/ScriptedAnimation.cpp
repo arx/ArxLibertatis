@@ -79,15 +79,15 @@ public:
 		
 		Entity * io = context.getEntity();
 		
-		float t1 = context.getFloat();
-		float t2 = context.getFloat();
-		float t3 = context.getFloat();
+		float pitch = context.getFloat();
+		float yaw   = context.getFloat();
+		float roll  = context.getFloat();
 		
-		DebugScript(' ' << t1 << ' ' << t2 << ' ' << t3);
+		DebugScript(' ' << pitch << ' ' << yaw << ' ' << roll);
 		
-		io->angle.setPitch(io->angle.getPitch() + t1);
-		io->angle.setYaw(io->angle.getYaw() + t2);
-		io->angle.setRoll(io->angle.getRoll() + t3);
+		io->angle.setPitch(io->angle.getPitch() + pitch);
+		io->angle.setYaw(io->angle.getYaw() + yaw);
+		io->angle.setRoll(io->angle.getRoll() + roll);
 		
 		io->animBlend.lastanimtime = ArxInstant_ZERO;
 		
