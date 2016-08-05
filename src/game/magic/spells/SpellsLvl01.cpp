@@ -142,27 +142,27 @@ void MagicMissileSpell::Launch() {
 	}
 	
 	Vec3f startPos;
-	float afAlpha, afBeta;
+	float afAlpha, yaw;
 	if(m_caster == EntityHandle_Player) {
-		afBeta = player.angle.getYaw();
+		yaw = player.angle.getYaw();
 		afAlpha = player.angle.getPitch();
 		
-		Vec3f vector = angleToVector(Anglef(afAlpha, afBeta, 0.f)) * 60.f;
+		Vec3f vector = angleToVector(Anglef(afAlpha, yaw, 0.f)) * 60.f;
 		
 		if(m_hand_group != ActionPoint()) {
 			startPos = m_hand_pos;
 		} else {
 			startPos = player.pos;
-			startPos += angleToVectorXZ(afBeta);
+			startPos += angleToVectorXZ(yaw);
 		}
 		
 		startPos += vector;
 		
 	} else {
 		afAlpha = 0;
-		afBeta = entities[m_caster]->angle.getYaw();
+		yaw = entities[m_caster]->angle.getYaw();
 		
-		Vec3f vector = angleToVector(Anglef(afAlpha, afBeta, 0.f)) * 60.f;
+		Vec3f vector = angleToVector(Anglef(afAlpha, yaw, 0.f)) * 60.f;
 		
 		if(m_hand_group != ActionPoint()) {
 			startPos = m_hand_pos;
@@ -208,7 +208,7 @@ void MagicMissileSpell::Launch() {
 		
 		pTab.push_back(missile);
 		
-		Anglef angles(afAlpha, afBeta, 0.f);
+		Anglef angles(afAlpha, yaw, 0.f);
 		
 		if(i > 0) {
 			angles.setPitch(angles.getPitch() + Random::getf(-4.0f, 4.0f));
