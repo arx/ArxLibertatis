@@ -126,13 +126,13 @@ bool Manage3DCursor(Entity * io, bool simulate) {
 	if(DANAEMouse.y < drop_miny)
 		return false;
 	
-	Anglef temp = Anglef::ZERO;
+	Anglef angle = Anglef::ZERO;
 
 	if(io->ioflags & IO_INVERTED) {
-		temp.setPitch(180.f);
-		temp.setYaw(-MAKEANGLE(270.f - io->angle.getYaw() - (player.angle.getYaw() - STARTED_ANGLE)));
+		angle.setPitch(180.f);
+		angle.setYaw(-MAKEANGLE(270.f - io->angle.getYaw() - (player.angle.getYaw() - STARTED_ANGLE)));
 	} else {
-		temp.setYaw(MAKEANGLE(270.f - io->angle.getYaw() - (player.angle.getYaw() - STARTED_ANGLE)));
+		angle.setYaw(MAKEANGLE(270.f - io->angle.getYaw() - (player.angle.getYaw() - STARTED_ANGLE)));
 	}
 	
 	EERIE_3D_BBOX bbox;
@@ -228,7 +228,7 @@ bool Manage3DCursor(Entity * io, bool simulate) {
 	
 	}
 	
-	objcenter = VRotateY(objcenter, temp.getYaw());
+	objcenter = VRotateY(objcenter, angle.getYaw());
 	
 	collidpos.x -= objcenter.x;
 	collidpos.z -= objcenter.z;
@@ -247,7 +247,7 @@ bool Manage3DCursor(Entity * io, bool simulate) {
 
 			io->gameFlags &= ~GFLAG_NOCOMPUTATION;
 			
-			glm::quat rotation = glm::toQuat(toRotationMatrix(temp));
+			glm::quat rotation = glm::toQuat(toRotationMatrix(angle));
 			
 			if(SPECIAL_DRAGINTER_RENDER) {
 			if(glm::abs(lastanything) > glm::abs(height)) {
@@ -280,7 +280,7 @@ bool Manage3DCursor(Entity * io, bool simulate) {
 				movev.z *= 0.0001f;
 				Vec3f viewvector = movev;
 
-				Anglef angle = temp;
+				Anglef angle = angle;
 				io->soundtime = ArxInstant_ZERO;
 				io->soundcount = 0;
 				EERIE_PHYSICS_BOX_Launch(io->obj, io->pos, angle, viewvector);
@@ -292,9 +292,9 @@ bool Manage3DCursor(Entity * io, bool simulate) {
 				ARX_SOUND_PlayInterface(SND_INVSTD);
 				ARX_INTERACTIVE_Teleport(io, pos, true);
 
-				io->angle.setPitch(temp.getPitch());
-				io->angle.setYaw(270.f - temp.getYaw());
-				io->angle.setRoll(temp.getRoll());
+				io->angle.setPitch(angle.getPitch());
+				io->angle.setYaw(270.f - angle.getYaw());
+				io->angle.setRoll(angle.getRoll());
 
 				io->stopped = 0;
 				io->show = SHOW_FLAG_IN_SCENE;
