@@ -286,7 +286,7 @@ void MagicMissileSpell::Update() {
 			DamageCreate(damage);
 			
 			Color3f rgb(.3f, .3f, .45f);
-			ARX_PARTICLES_Add_Smoke(missile->eCurPos, 0, 6, &rgb);
+			ARX_PARTICLES_Add_Smoke(missile->eCurPos, 0, 6, rgb);
 		}
 	}
 	

@@ -385,7 +385,7 @@ void AddRandomSmoke(Entity * io, long amount) {
 }
 
 // flag 1 = randomize pos
-void ARX_PARTICLES_Add_Smoke(const Vec3f & pos, long flags, long amount, Color3f * rgb) {
+void ARX_PARTICLES_Add_Smoke(const Vec3f & pos, long flags, long amount, const Color3f & rgb) {
 	
 	Vec3f mod = (flags & 1) ? randomVec(-50.f, 50.f) : Vec3f_ZERO;
 	
@@ -408,7 +408,7 @@ void ARX_PARTICLES_Add_Smoke(const Vec3f & pos, long flags, long amount, Color3f
 		pd->tolive = Random::getu(1100, 1500);
 		pd->delay = amount * 120 + Random::getu(0, 100);
 		pd->move = Vec3f(Random::getf(-0.25f, 0.25f), Random::getf(-0.7f, 0.3f), Random::getf(-0.25f, 0.25f));
-		pd->rgb = (rgb) ? *rgb : Color3f(0.3f, 0.3f, 0.34f);
+		pd->rgb = rgb;
 		pd->tc = smokeparticle;
 		pd->m_rotation = 0.01f;
 	}
