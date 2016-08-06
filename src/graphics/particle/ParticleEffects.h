@@ -140,7 +140,7 @@ void RestoreAllLightsInitialStatus();
 void TreatBackgroundActions();
 
 void Add3DBoom(const Vec3f & position);
-void AddRandomSmoke(Entity * io, long amount = 1);
+void AddRandomSmoke(Entity * io, long amount);
 
 void ManageTorch();
 
