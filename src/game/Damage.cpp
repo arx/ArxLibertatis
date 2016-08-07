@@ -1004,14 +1004,14 @@ static void ARX_DAMAGES_UpdateDamage(DamageHandle j, ArxInstant now) {
 						if(elapsed > ArxDurationMs(500)) {
 							EVENT_SENDER = NULL;
 							io->collide_door_time = arxtime.now();
-							char param[64];
-							param[0] = 0;
+							
+							const char * param = "";
 							
 							if(damage.params.type & DAMAGE_TYPE_FIRE)
-								strcpy(param, "fire");
+								param = "fire";
 							
 							if(damage.params.type & DAMAGE_TYPE_COLD)
-								strcpy(param, "cold");
+								param = "cold";
 							
 							SendIOScriptEvent(io, SM_COLLIDE_FIELD, param);
 						}
