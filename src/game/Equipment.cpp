@@ -1143,7 +1143,7 @@ float getEquipmentModifier(EquipmentModifierType modifier, float baseval) {
 }
 
 void ARX_EQUIPMENT_SetEquip(Entity * io, bool special,
-                            const std::string & param2, float val,
+                            const std::string & modifierName, float val,
                             EquipmentModifierFlags flags) {
 	
 	if (io == NULL) return;
@@ -1168,9 +1168,9 @@ void ARX_EQUIPMENT_SetEquip(Entity * io, bool special,
 		{
 			if (io->_itemdata->equipitem->elements[i].special == IO_SPECIAL_ELEM_NONE)
 			{
-				if(param2 == "paralyse") {
+				if(modifierName == "paralyse") {
 					io->_itemdata->equipitem->elements[i].special = IO_SPECIAL_ELEM_PARALYZE;
-				} else if(param2 == "drainlife") {
+				} else if(modifierName == "drainlife") {
 					io->_itemdata->equipitem->elements[i].special = IO_SPECIAL_ELEM_DRAIN_LIFE;
 				}
 
@@ -1184,7 +1184,7 @@ void ARX_EQUIPMENT_SetEquip(Entity * io, bool special,
 		
 	} else {
 		for(long i = 0; i < IO_EQUIPITEM_ELEMENT_Number; i++) {
-			if(param2 == equipinfo[i].name) {
+			if(modifierName == equipinfo[i].name) {
 				io->_itemdata->equipitem->elements[i].value = val;
 				io->_itemdata->equipitem->elements[i].special = IO_SPECIAL_ELEM_NONE;
 				io->_itemdata->equipitem->elements[i].flags = flags;
