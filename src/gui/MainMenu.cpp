@@ -1777,7 +1777,11 @@ void MainMenu::init()
 
 void MainMenu::onClickedResumeGame(){
 	pTextManage->Clear();
-	ARXMenu_ResumeGame();
+	if(!g_canResumeGame) {
+		ARX_QuickLoad();
+	} else {
+		ARXMenu_ResumeGame();
+	}
 }
 
 void MainMenu::onClickedNewQuest() {
@@ -1797,7 +1801,7 @@ MENUSTATE MainMenu::Update() {
 		if(g_canResumeGame) {
 			m_resumeGame->SetCheckOn();
 			m_resumeGame->lColor = Color(232, 204, 142);
-		} else {
+		} else if(savegames.size() == 0) {
 			m_resumeGame->SetCheckOff();
 			m_resumeGame->lColor = Color(127, 127, 127);
 		}
