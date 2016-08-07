@@ -78,9 +78,8 @@ void MiniMap::getData(int showLevel) {
 	
 	if(m_levels[showLevel].m_texContainer == NULL) {
 		
-		char name[256];
 		char levelMap[256];
-		GetLevelNameByNum(showLevel, name);
+		const char * name = GetLevelNameByNum(showLevel);
 		
 		sprintf(levelMap, "graph/levels/level%s/map", name);
 		m_levels[showLevel].m_texContainer = TextureContainer::Load(levelMap, TextureContainer::NoColorKey);

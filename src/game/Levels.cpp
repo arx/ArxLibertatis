@@ -133,43 +133,41 @@ long GetLevelNumByName(const std::string& name)
 	return -1;
 }
 
-void GetLevelNameByNum(long num, char * name)
-{
-	if (name)
-	{
-		strcpy(name, "none");
-
-		if (num == 0) strcpy(name, "0");
-		if (num == 1) strcpy(name, "1");
-		if (num == 2) strcpy(name, "2");
-		if (num == 3) strcpy(name, "3");
-		if (num == 4) strcpy(name, "4");
-		if (num == 5) strcpy(name, "5");
-		if (num == 6) strcpy(name, "6");
-		if (num == 7) strcpy(name, "7");
-		if (num == 8) strcpy(name, "8");
-		if (num == 9) strcpy(name, "9");
-		if (num == 10) strcpy(name, "10");
-		if (num == 11) strcpy(name, "11");
-		if (num == 12) strcpy(name, "12");
-		if (num == 13) strcpy(name, "13");
-		if (num == 14) strcpy(name, "14");
-		if (num == 15) strcpy(name, "15");
-		if (num == 16) strcpy(name, "16");
-		if (num == 17) strcpy(name, "17");
-		if (num == 18) strcpy(name, "18");
-		if (num == 19) strcpy(name, "19");
-		if (num == 20) strcpy(name, "20");
-		if (num == 21) strcpy(name, "21");
-		if (num == 22) strcpy(name, "22");
-		if (num == 23) strcpy(name, "23");
-		if (num == 24) strcpy(name, "24");
-		if (num == 25) strcpy(name, "25");
-		if (num == 26) strcpy(name, "26");
-		if (num == 27) strcpy(name, "27");
-		if (num == 28) strcpy(name, "demo");
-		if (num == 29) strcpy(name, "demo2");
-		if (num == 30) strcpy(name, "demo3");
-		if (num == 31) strcpy(name, "demo4");
+const char * GetLevelNameByNum(long num) {
+	
+	switch(num) {
+		case 0: return "0";
+		case 1: return "1";
+		case 2: return "2";
+		case 3: return "3";
+		case 4: return "4";
+		case 5: return "5";
+		case 6: return "6";
+		case 7: return "7";
+		case 8: return "8";
+		case 9: return "9";
+		case 10: return "10";
+		case 11: return "11";
+		case 12: return "12";
+		case 13: return "13";
+		case 14: return "14";
+		case 15: return "15";
+		case 16: return "16";
+		case 17: return "17";
+		case 18: return "18";
+		case 19: return "19";
+		case 20: return "20";
+		case 21: return "21";
+		case 22: return "22";
+		case 23: return "23";
+		case 24: return "24";
+		case 25: return "25";
+		case 26: return "26";
+		case 27: return "27";
+		case 28: return "demo";
+		case 29: return "demo2";
+		case 30: return "demo3";
+		case 31: return "demo4";
+		default: return "none";
 	}
 }

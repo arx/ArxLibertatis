@@ -1564,8 +1564,7 @@ static long ARX_CHANGELEVEL_Pop_Zones_n_Lights(ARX_CHANGELEVEL_INDEX * asi, long
 static long ARX_CHANGELEVEL_Pop_Level(ARX_CHANGELEVEL_INDEX * asi, long num,
                                       bool firstTime) {
 	
-	char levelId[256];
-	GetLevelNameByNum(num, levelId);
+	const char * levelId = GetLevelNameByNum(num);
 	std::string levelFile = std::string("graph/levels/level") + levelId + "/level" + levelId + ".dlf";
 	
 	LOAD_N_ERASE = false;

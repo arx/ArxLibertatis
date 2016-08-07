@@ -104,8 +104,7 @@ void LoadLevelScreen(long num) {
 			delete tc, tc = NULL;
 			lastloadednum = num;
 			char temp[256];
-			char tx[256];
-			GetLevelNameByNum(num, tx);
+			const char * tx = GetLevelNameByNum(num);
 			sprintf(temp, "graph/levels/level%s/loading", tx);
 			tc = TextureContainer::LoadUI(temp, TextureContainer::NoColorKey);
 		}
