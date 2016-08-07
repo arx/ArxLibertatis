@@ -668,8 +668,7 @@ bool ARX_EQUIPMENT_Strike_Check(Entity * io_source, Entity * io_weapon, float ra
 	bool ret = false;
 	EntityHandle source = io_source->index();
 	EntityHandle weapon = io_weapon->index();
-	Sphere sphere;
-
+	
 	EXCEPTIONS_LIST_Pos = 0;
 
 	float drain_life = ARX_EQUIPMENT_GetSpecialValue(io_weapon, IO_SPECIAL_ELEM_DRAIN_LIFE);
@@ -682,6 +681,7 @@ bool ARX_EQUIPMENT_Strike_Check(Entity * io_source, Entity * io_weapon, float ra
 		if(rad == -1)
 			continue;
 		
+		Sphere sphere;
 		sphere.origin = actionPointPosition(io_weapon->obj, action.idx);
 		sphere.radius = rad; 
 
