@@ -141,7 +141,7 @@ static bool bIsActive(false);
 static AmbianceId ambiance_zone = AmbianceId();
 static AmbianceId ambiance_menu = AmbianceId();
 
-static long Inter_Materials[MAX_MATERIALS][MAX_MATERIALS][MAX_VARIANTS];
+static SampleId Inter_Materials[MAX_MATERIALS][MAX_MATERIALS][MAX_VARIANTS];
 
 namespace {
 
@@ -1537,7 +1537,7 @@ static void ARX_SOUND_CreateCollisionMaps() {
 
 static void ARX_SOUND_CreateMaterials()
 {
-	memset(Inter_Materials, -1, sizeof(long) * MAX_MATERIALS * MAX_MATERIALS * MAX_VARIANTS);
+	memset(Inter_Materials, -1, sizeof(SampleId) * MAX_MATERIALS * MAX_MATERIALS * MAX_VARIANTS);
 
 	ARX_SOUND_LoadCollision(MATERIAL_WEAPON, MATERIAL_WEAPON,       "weapon_on_weapon");
 	ARX_SOUND_LoadCollision(MATERIAL_WEAPON, MATERIAL_FLESH,        "weapon_on_flesh");
