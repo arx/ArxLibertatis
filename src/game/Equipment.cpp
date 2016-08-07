@@ -861,10 +861,10 @@ bool ARX_EQUIPMENT_Strike_Check(Entity * io_source, Entity * io_weapon, float ra
 								weapon_material = &io_weapon->weaponmaterial;
 							}
 							
-							char bkg_material[128];
-							
-							if(ARX_MATERIAL_GetNameById(target->material, bkg_material))
-								ARX_SOUND_PlayCollision(*weapon_material, bkg_material, 1.f, 1.f, sphere.origin, NULL);
+							if(target->material != MATERIAL_NONE) {
+								const char * matStr = ARX_MATERIAL_GetNameById(target->material);
+								ARX_SOUND_PlayCollision(*weapon_material, matStr, 1.f, 1.f, sphere.origin, NULL);
+							}
 						}
 					}
 				}

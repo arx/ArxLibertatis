@@ -206,7 +206,7 @@ extern audio::SampleId SND_SPELL_VISION_START;
 extern audio::SampleId SND_SPELL_VISION_LOOP;
 
 // inter-material sounds
-bool ARX_MATERIAL_GetNameById(Material id, char * name);
+const char * ARX_MATERIAL_GetNameById(Material id);
 
 bool ARX_SOUND_Init();
 void ARX_SOUND_Release();

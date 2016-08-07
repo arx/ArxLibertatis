@@ -1393,62 +1393,27 @@ static void ARX_SOUND_ReleaseStaticSamples() {
 	SND_SPELL_VISION_LOOP = INVALID_ID;
 }
 
-bool ARX_MATERIAL_GetNameById(Material id, char * name)
-{
-	switch (id)
-	{
-		case MATERIAL_WEAPON:
-			strcpy(name, "weapon");
-			return true;
-		case MATERIAL_FLESH:
-			strcpy(name, "flesh");
-			return true;
-		case MATERIAL_METAL:
-			strcpy(name, "metal");
-			return true;
-		case MATERIAL_GLASS:
-			strcpy(name, "glass");
-			return true;
-		case MATERIAL_CLOTH:
-			strcpy(name, "cloth");
-			return true;
-		case MATERIAL_WOOD:
-			strcpy(name, "wood");
-			return true;
-		case MATERIAL_EARTH:
-			strcpy(name, "earth");
-			return true;
-		case MATERIAL_WATER:
-			strcpy(name, "water");
-			return true;
-		case MATERIAL_ICE:
-			strcpy(name, "ice");
-			return true;
-		case MATERIAL_GRAVEL:
-			strcpy(name, "gravel");
-			return true;
-		case MATERIAL_STONE:
-			strcpy(name, "stone");
-			return true;
-		case MATERIAL_FOOT_LARGE:
-			strcpy(name, "foot_large");
-			return true;
-		case MATERIAL_FOOT_BARE:
-			strcpy(name, "foot_bare");
-			return true;
-		case MATERIAL_FOOT_SHOE:
-			strcpy(name, "foot_shoe");
-			return true;
-		case MATERIAL_FOOT_METAL:
-			strcpy(name, "foot_metal");
-			return true;
-		case MATERIAL_FOOT_STEALTH:
-			strcpy(name, "foot_stealth");
-			return true;
+const char * ARX_MATERIAL_GetNameById(Material id) {
+	
+	switch(id) {
+		case MATERIAL_WEAPON: return "weapon";
+		case MATERIAL_FLESH:  return "flesh";
+		case MATERIAL_METAL:  return "metal";
+		case MATERIAL_GLASS:  return "glass";
+		case MATERIAL_CLOTH:  return "cloth";
+		case MATERIAL_WOOD:   return "wood";
+		case MATERIAL_EARTH:  return "earth";
+		case MATERIAL_WATER:  return "water";
+		case MATERIAL_ICE:    return "ice";
+		case MATERIAL_GRAVEL: return "gravel";
+		case MATERIAL_STONE:  return "stone";
+		case MATERIAL_FOOT_LARGE:   return "foot_large";
+		case MATERIAL_FOOT_BARE:    return "foot_bare";
+		case MATERIAL_FOOT_SHOE:    return "foot_shoe";
+		case MATERIAL_FOOT_METAL:   return "foot_metal";
+		case MATERIAL_FOOT_STEALTH: return "foot_stealth";
 	}
-
-	strcpy(name, "none");
-	return false;
+	return "none";
 }
 static void ARX_SOUND_LoadCollision(const long & mat1, const long & mat2, const char * name)
 {
