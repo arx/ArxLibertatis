@@ -127,7 +127,6 @@ static const res::path ARX_SOUND_PRESENCE_NAME = "presence";
 static const std::string ARX_SOUND_FILE_EXTENSION_WAV = ".wav";
 static const std::string ARX_SOUND_FILE_EXTENSION_INI = ".ini";
 
-static const unsigned long ARX_SOUND_COLLISION_MAP_COUNT = 3;
 static const res::path ARX_SOUND_COLLISION_MAP_NAMES[] = {
 	"snd_armor",
 	"snd_step",
@@ -1469,7 +1468,7 @@ static void ARX_SOUND_CreateCollisionMaps() {
 	
 	collisionMaps.clear();
 	
-	for(size_t i = 0; i < ARX_SOUND_COLLISION_MAP_COUNT; i++) {
+	for(size_t i = 0; i < ARRAY_SIZE(ARX_SOUND_COLLISION_MAP_NAMES); i++) {
 		
 		res::path file = ARX_SOUND_PATH_INI / ARX_SOUND_COLLISION_MAP_NAMES[i];
 		file.set_ext(ARX_SOUND_FILE_EXTENSION_INI);
