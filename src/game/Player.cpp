@@ -157,7 +157,7 @@ bool BLOCK_PLAYER_CONTROLS = false;
 bool WILLRETURNTOCOMBATMODE = false;
 long DeadTime = 0;
 static ArxInstant LastHungerSample = ArxInstant_ZERO;
-static unsigned long ROTATE_START = 0;
+static ArxInstant ROTATE_START = ArxInstant_ZERO;
 
 // Player Anims FLAGS/Vars
 ANIM_HANDLE * herowaitbook = NULL;
@@ -1325,13 +1325,13 @@ void ARX_PLAYER_Manage_Visual() {
 	ArxInstant now = arxtime.now();
 	
 	if(player.m_currentMovement & PLAYER_ROTATE) {
-		if(ROTATE_START == 0) {
+		if(ROTATE_START == ArxInstant_ZERO) {
 			ROTATE_START = now;
 		}
 	} else if (ROTATE_START) {
-		float elapsed = float(now) - ROTATE_START;
-		if(elapsed > 100) {
-			ROTATE_START = 0;
+		ArxDuration elapsed = now - ROTATE_START;
+		if(elapsed > ArxDurationMs(100)) {
+			ROTATE_START = ArxInstant_ZERO;
 		}
 	}
 	
@@ -2774,7 +2774,7 @@ void ARX_GAME_Reset(long type) {
 	}
 
 	// Misc Player Vars.
-	ROTATE_START = 0;
+	ROTATE_START = ArxInstant_ZERO;
 	BLOCK_PLAYER_CONTROLS = false;
 	HERO_SHOW_1ST = -1;
 	PUSH_PLAYER_FORCE = Vec3f_ZERO;
