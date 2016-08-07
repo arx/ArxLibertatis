@@ -278,7 +278,12 @@ SaveGameList::iterator SaveGameList::quickload() {
 		return end();
 	}
 	
-	// update() already sorts the savegame list so we can just return the first one.
-	
-	return begin();
+	// update() already sorts the savegame list so we can just return the first quicksave
+	for(unsigned int i=0; i < savelist.size(); i++) {
+		if(savelist[i].quicksave) {
+			return savelist.begin() + i;
+		}
+	}
+	//no quicksave found, results in no game loaded in ARX_QuickLoad()
+	return end();
 }
