@@ -1591,13 +1591,13 @@ void ARX_PLAYER_Manage_Visual() {
 		layer3.cur_anim = NULL;
 	}
 	
-	if((player.m_currentMovement & PLAYER_CROUCH) && !(player.Last_Movement & PLAYER_CROUCH)
+	if((player.m_currentMovement & PLAYER_CROUCH) && !(player.m_lastMovement & PLAYER_CROUCH)
 			&& !player.levitate)
 	{
 		request0_anim = alist[ANIM_CROUCH_START];
 		request0_loop = false;
 	}
-	else if(!(player.m_currentMovement & PLAYER_CROUCH) && (player.Last_Movement & PLAYER_CROUCH))
+	else if(!(player.m_currentMovement & PLAYER_CROUCH) && (player.m_lastMovement & PLAYER_CROUCH))
 	{
 		request0_anim = alist[ANIM_CROUCH_END];
 		request0_loop = false;
@@ -1752,7 +1752,7 @@ retry:
 	
 nochanges:
 	;
-	player.Last_Movement = player.m_currentMovement;
+	player.m_lastMovement = player.m_currentMovement;
 }
 
 /*!

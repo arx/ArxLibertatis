@@ -691,7 +691,7 @@ static long ARX_CHANGELEVEL_Push_Player(long level) {
 
 	asp->jumpphase = player.jumpphase;
 	asp->jumpstarttime = static_cast<u32>(player.jumpstarttime); // TODO save/load time
-	asp->Last_Movement = player.Last_Movement;
+	asp->Last_Movement = player.m_lastMovement;
 	asp->level = player.level;
 	
 	asp->life = player.lifePool.current;
@@ -1680,7 +1680,7 @@ static long ARX_CHANGELEVEL_Pop_Player() {
 	player.inzone = ARX_PATH_GetAddressByName(boost::to_lower_copy(util::loadString(asp->inzone)));
 	player.jumpphase = JumpPhase(asp->jumpphase); // TODO save/load enum
 	player.jumpstarttime = ArxInstantMs(asp->jumpstarttime); // TODO save/load time
-	player.Last_Movement = PlayerMovement::load(asp->Last_Movement); // TODO save/load flags
+	player.m_lastMovement = PlayerMovement::load(asp->Last_Movement); // TODO save/load flags
 	
 	player.level = checked_range_cast<short>(asp->level);
 	

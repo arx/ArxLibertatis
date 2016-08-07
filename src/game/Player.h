@@ -268,7 +268,7 @@ struct ARXCHARACTER {
 	PlayerInterfaceFlags Interface;
 	
 	PlayerMovement m_currentMovement;
-	PlayerMovement Last_Movement;
+	PlayerMovement m_lastMovement;
 	bool onfirmground;
 	
 	Color3f m_torchColor;
