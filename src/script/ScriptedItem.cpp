@@ -222,7 +222,7 @@ public:
 			}
 		}
 		
-		std::string param2 = context.getWord();
+		std::string modifierName = context.getWord();
 		std::string val = context.getWord();
 		
 		EquipmentModifierFlags flag = 0;
@@ -231,9 +231,9 @@ public:
 		}
 		float fval = context.getFloatVar(val);
 		
-		DebugScript(' ' << options << ' ' << param2 << ' ' << fval << ' ' << flag);
+		DebugScript(' ' << options << ' ' << modifierName << ' ' << fval << ' ' << flag);
 		
-		ARX_EQUIPMENT_SetEquip(context.getEntity(), special, param2, fval, flag);
+		ARX_EQUIPMENT_SetEquip(context.getEntity(), special, modifierName, fval, flag);
 		
 		return Success;
 	}
