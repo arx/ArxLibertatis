@@ -695,7 +695,7 @@ bool ARX_EQUIPMENT_Strike_Check(Entity * io_source, Entity * io_weapon, float ra
 				if(ValidIONum(content)
 						&& !(entities[content]->ioflags & IO_BODY_CHUNK))
 				{
-					long HIT_SPARK = 0;
+					bool HIT_SPARK = false;
 					EXCEPTIONS_LIST[EXCEPTIONS_LIST_Pos] = content;
 					EXCEPTIONS_LIST_Pos++;
 
@@ -810,7 +810,7 @@ bool ARX_EQUIPMENT_Strike_Check(Entity * io_source, Entity * io_weapon, float ra
 							ARX_NPC_SpawnAudibleSound(pos, io_source);
 
 							if(io_source == entities.player())
-								HIT_SPARK = 1;
+								HIT_SPARK = true;
 						}
 					} else if((target->ioflags & IO_NPC) && (dmgs <= 0.f || target->spark_n_blood == SP_SPARKING)) {
 						unsigned int nb;
@@ -828,7 +828,7 @@ bool ARX_EQUIPMENT_Strike_Check(Entity * io_source, Entity * io_weapon, float ra
 						target->spark_n_blood = SP_SPARKING;
 
 						if(!(target->ioflags & IO_NPC))
-							HIT_SPARK = 1;
+							HIT_SPARK = true;
 					} else if(dmgs <= 0.f && ((target->ioflags & IO_FIX) || (target->ioflags & IO_ITEM))) {
 						unsigned int nb;
 
@@ -845,7 +845,7 @@ bool ARX_EQUIPMENT_Strike_Check(Entity * io_source, Entity * io_weapon, float ra
 						target->spark_n_blood = SP_SPARKING;
 
 						if (!(target->ioflags & IO_NPC))
-							HIT_SPARK = 1;
+							HIT_SPARK = true;
 					}
 
 					if(HIT_SPARK) {
