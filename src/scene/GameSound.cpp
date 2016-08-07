@@ -1395,7 +1395,7 @@ static void ARX_SOUND_ReleaseStaticSamples() {
 	SND_SPELL_VISION_LOOP = INVALID_ID;
 }
 
-bool ARX_MATERIAL_GetNameById(long id, char * name)
+bool ARX_MATERIAL_GetNameById(Material id, char * name)
 {
 	switch (id)
 	{
