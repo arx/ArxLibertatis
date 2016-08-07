@@ -1308,14 +1308,14 @@ void ArxGame::doFrame() {
 	if(cinematicIsStopped()
 	   && !cinematicBorder.isActive()
 	   && !BLOCK_PLAYER_CONTROLS
-	   && ARXmenu.currentmode == AMCM_OFF
 	) {
 		
-		if(GInput->actionNowPressed(CONTROLS_CUST_QUICKLOAD)) {
+		if(GInput->actionNowPressed(CONTROLS_CUST_QUICKLOAD) && savegames.size() > 0) {
+			ARXmenu.currentmode = AMCM_OFF;
 			ARX_QuickLoad();
 		}
 		
-		if(GInput->actionNowPressed(CONTROLS_CUST_QUICKSAVE)) {
+		if(GInput->actionNowPressed(CONTROLS_CUST_QUICKSAVE) && ARXmenu.currentmode == AMCM_OFF) {
 			g_hudRoot.quickSaveIconGui.show();
 			GRenderer->getSnapshot(savegame_thumbnail, config.interface.thumbnailSize.x, config.interface.thumbnailSize.y);
 			ARX_QuickSave();
