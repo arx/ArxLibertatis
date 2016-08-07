@@ -96,9 +96,8 @@ ZeniMax Media Inc., Suite 120, Rockville, Maryland 20850 USA.
 
 #include "script/Script.h"
 
-struct EQUIP_INFO
-{
-	char name[64];
+struct EQUIP_INFO {
+	const char * name;
 };
 
 #define SP_SPARKING 1
@@ -1069,36 +1068,35 @@ bool ARX_EQUIPMENT_SetObjectType(Entity & io, const std::string & temp, bool set
 //! \brief Initializes Equipment infos
 void ARX_EQUIPMENT_Init()
 {
-	// IO_EQUIPITEM_ELEMENT_... are Defined in EERIEPOLY.h
-	strcpy(equipinfo[IO_EQUIPITEM_ELEMENT_STRENGTH].name, "strength");
-	strcpy(equipinfo[IO_EQUIPITEM_ELEMENT_DEXTERITY].name, "dexterity");
-	strcpy(equipinfo[IO_EQUIPITEM_ELEMENT_CONSTITUTION].name, "constitution");
-	strcpy(equipinfo[IO_EQUIPITEM_ELEMENT_MIND].name, "intelligence");
-	strcpy(equipinfo[IO_EQUIPITEM_ELEMENT_Stealth].name, "stealth");
-	strcpy(equipinfo[IO_EQUIPITEM_ELEMENT_Mecanism].name, "mecanism");
-	strcpy(equipinfo[IO_EQUIPITEM_ELEMENT_Intuition].name, "intuition");
-	strcpy(equipinfo[IO_EQUIPITEM_ELEMENT_Etheral_Link].name, "etheral_link");
-	strcpy(equipinfo[IO_EQUIPITEM_ELEMENT_Object_Knowledge].name, "object_knowledge");
-	strcpy(equipinfo[IO_EQUIPITEM_ELEMENT_Casting].name, "casting");
-	strcpy(equipinfo[IO_EQUIPITEM_ELEMENT_Projectile].name, "projectile");
-	strcpy(equipinfo[IO_EQUIPITEM_ELEMENT_Close_Combat].name, "close_combat");
-	strcpy(equipinfo[IO_EQUIPITEM_ELEMENT_Defense].name, "defense");
-	strcpy(equipinfo[IO_EQUIPITEM_ELEMENT_Armor_Class].name, "armor_class");
-	strcpy(equipinfo[IO_EQUIPITEM_ELEMENT_Resist_Magic].name, "resist_magic");
-	strcpy(equipinfo[IO_EQUIPITEM_ELEMENT_Resist_Poison].name, "resist_poison");
-	strcpy(equipinfo[IO_EQUIPITEM_ELEMENT_Critical_Hit].name, "critical_hit");
-	strcpy(equipinfo[IO_EQUIPITEM_ELEMENT_Damages].name, "damages");
-	strcpy(equipinfo[IO_EQUIPITEM_ELEMENT_Duration].name, "duration");
-	strcpy(equipinfo[IO_EQUIPITEM_ELEMENT_AimTime].name, "aim_time");
-	strcpy(equipinfo[IO_EQUIPITEM_ELEMENT_Identify_Value].name, "identify_value");
-	strcpy(equipinfo[IO_EQUIPITEM_ELEMENT_Life].name, "life");
-	strcpy(equipinfo[IO_EQUIPITEM_ELEMENT_Mana].name, "mana");
-	strcpy(equipinfo[IO_EQUIPITEM_ELEMENT_MaxLife].name, "maxlife");
-	strcpy(equipinfo[IO_EQUIPITEM_ELEMENT_MaxMana].name, "maxmana");
-	strcpy(equipinfo[IO_EQUIPITEM_ELEMENT_SPECIAL_1].name, "special1");
-	strcpy(equipinfo[IO_EQUIPITEM_ELEMENT_SPECIAL_2].name, "special2");
-	strcpy(equipinfo[IO_EQUIPITEM_ELEMENT_SPECIAL_3].name, "special3");
-	strcpy(equipinfo[IO_EQUIPITEM_ELEMENT_SPECIAL_4].name, "special4");
+	equipinfo[IO_EQUIPITEM_ELEMENT_STRENGTH].name = "strength";
+	equipinfo[IO_EQUIPITEM_ELEMENT_DEXTERITY].name = "dexterity";
+	equipinfo[IO_EQUIPITEM_ELEMENT_CONSTITUTION].name = "constitution";
+	equipinfo[IO_EQUIPITEM_ELEMENT_MIND].name = "intelligence";
+	equipinfo[IO_EQUIPITEM_ELEMENT_Stealth].name = "stealth";
+	equipinfo[IO_EQUIPITEM_ELEMENT_Mecanism].name = "mecanism";
+	equipinfo[IO_EQUIPITEM_ELEMENT_Intuition].name = "intuition";
+	equipinfo[IO_EQUIPITEM_ELEMENT_Etheral_Link].name = "etheral_link";
+	equipinfo[IO_EQUIPITEM_ELEMENT_Object_Knowledge].name = "object_knowledge";
+	equipinfo[IO_EQUIPITEM_ELEMENT_Casting].name = "casting";
+	equipinfo[IO_EQUIPITEM_ELEMENT_Projectile].name = "projectile";
+	equipinfo[IO_EQUIPITEM_ELEMENT_Close_Combat].name = "close_combat";
+	equipinfo[IO_EQUIPITEM_ELEMENT_Defense].name = "defense";
+	equipinfo[IO_EQUIPITEM_ELEMENT_Armor_Class].name = "armor_class";
+	equipinfo[IO_EQUIPITEM_ELEMENT_Resist_Magic].name = "resist_magic";
+	equipinfo[IO_EQUIPITEM_ELEMENT_Resist_Poison].name = "resist_poison";
+	equipinfo[IO_EQUIPITEM_ELEMENT_Critical_Hit].name = "critical_hit";
+	equipinfo[IO_EQUIPITEM_ELEMENT_Damages].name = "damages";
+	equipinfo[IO_EQUIPITEM_ELEMENT_Duration].name = "duration";
+	equipinfo[IO_EQUIPITEM_ELEMENT_AimTime].name = "aim_time";
+	equipinfo[IO_EQUIPITEM_ELEMENT_Identify_Value].name = "identify_value";
+	equipinfo[IO_EQUIPITEM_ELEMENT_Life].name = "life";
+	equipinfo[IO_EQUIPITEM_ELEMENT_Mana].name = "mana";
+	equipinfo[IO_EQUIPITEM_ELEMENT_MaxLife].name = "maxlife";
+	equipinfo[IO_EQUIPITEM_ELEMENT_MaxMana].name = "maxmana";
+	equipinfo[IO_EQUIPITEM_ELEMENT_SPECIAL_1].name = "special1";
+	equipinfo[IO_EQUIPITEM_ELEMENT_SPECIAL_2].name = "special2";
+	equipinfo[IO_EQUIPITEM_ELEMENT_SPECIAL_3].name = "special3";
+	equipinfo[IO_EQUIPITEM_ELEMENT_SPECIAL_4].name = "special4";
 }
 
 //! \brief Removes All special equipement properties
