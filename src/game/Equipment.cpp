@@ -777,14 +777,15 @@ bool ARX_EQUIPMENT_Strike_Check(Entity * io_source, Entity * io_weapon, float ra
 								
 								Vec3f vertPos = target->obj->vertexlist3[hitpoint].v;
 								
-								Sphere sp;
-								float power;
-								power = (dmgs * ( 1.0f / 40 )) + 0.7f;
+								float power = (dmgs * ( 1.0f / 40 )) + 0.7f;
+								
 								Vec3f vect;
 								vect.x = vertPos.x - io_source->pos.x;
 								vect.y = 0;
 								vect.z = vertPos.z - io_source->pos.z;
 								vect = glm::normalize(vect);
+								
+								Sphere sp;
 								sp.origin.x = vertPos.x + vect.x * 30.f;
 								sp.origin.y = vertPos.y;
 								sp.origin.z = vertPos.z + vect.z * 30.f;
