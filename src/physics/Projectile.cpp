@@ -214,12 +214,10 @@ static float ARX_THROWN_ComputeDamages(const Projectile & projectile, EntityHand
 		absorb = io_target->_npcdata->absorb;
 	}
 
-	char wmat[64];
-
 	std::string _amat = "flesh";
 	const std::string * amat = &_amat;
 
-	strcpy(wmat, "dagger");
+	const char * wmat = "dagger";
 
 	if(!io_target->armormaterial.empty()) {
 		amat = &io_target->armormaterial;
