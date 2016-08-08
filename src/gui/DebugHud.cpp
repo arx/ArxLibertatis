@@ -157,10 +157,9 @@ void ShowInfoText() {
 	frameInfo.print();
 	
 	DebugBox camBox = DebugBox(Vec2i(10, frameInfo.size().y + 5), "Camera");
-	if(ACTIVECAM) {
-		camBox.add("Position", ACTIVECAM->orgTrans.pos);
-		camBox.add("Rotation", ACTIVECAM->angle);
-	}
+	camBox.add("Position", ACTIVECAM->orgTrans.pos);
+	camBox.add("Rotation", ACTIVECAM->angle);
+	camBox.add("Focal", ACTIVECAM->focal);
 	camBox.print();
 	
 	DebugBox playerBox = DebugBox(Vec2i(10, camBox.size().y + 5), "Player");
@@ -205,7 +204,6 @@ void ShowInfoText() {
 	miscBox.add(arx_name + " version", arx_version);
 	miscBox.add("Level", LastLoadedScene.string().c_str());
 	miscBox.add("Spell failed seq", LAST_FAILED_SEQUENCE.c_str());
-	miscBox.add("Camera focal", ACTIVECAM->focal);
 	miscBox.add("Cinema", cinematicBorder.CINEMA_DECAL);
 	miscBox.add("Mouse", Vec2i(DANAEMouse));
 	miscBox.add("Pathfind queue", EERIE_PATHFINDER_Get_Queued_Number());
