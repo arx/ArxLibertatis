@@ -62,6 +62,48 @@ inline ArxDuration operator -(ArxDuration a, ArxDuration b) {
 	return ArxDuration(a.t - b.t);
 }
 
+// FIXME copy-paste
+
+// in microseconds
+typedef StrongType<struct PlatformInstant_TAG,  s64> PlatformInstant;
+typedef StrongType<struct PlatformDuration_TAG, s64> PlatformDuration;
+
+const PlatformInstant  PlatformInstant_ZERO  = PlatformInstant(0);
+const PlatformDuration PlatformDuration_ZERO = PlatformDuration(0);
+
+inline PlatformInstant PlatformInstantMs(s64 val) {
+	return PlatformInstant(val * 1000);
+}
+inline PlatformDuration PlatformDurationMs(s64 val) {
+	return PlatformDuration(val * 1000);
+}
+
+inline double toMs(PlatformDuration val) {
+	return val.t / (1000.0);
+}
+inline double toS(PlatformDuration val) {
+	return val.t / (1000.0 * 1000.0);
+}
+
+inline PlatformDuration operator -(PlatformInstant a, PlatformInstant b) {
+	return PlatformDuration(a.t - b.t);
+}
+inline PlatformInstant operator +(PlatformInstant a, PlatformDuration b) {
+	return PlatformInstant(a.t + b.t);
+}
+inline PlatformInstant operator -(PlatformInstant a, PlatformDuration b) {
+	return PlatformInstant(a.t - b.t);
+}
+
+inline PlatformDuration operator +(PlatformDuration a, PlatformDuration b) {
+	return PlatformDuration(a.t + b.t);
+}
+inline PlatformDuration operator -(PlatformDuration a, PlatformDuration b) {
+	return PlatformDuration(a.t - b.t);
+}
+
+// copy-paste end
+
 
 namespace arx {
 template <typename T>

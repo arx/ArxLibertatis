@@ -52,6 +52,46 @@ ZeniMax Media Inc., Suite 120, Rockville, Maryland 20850 USA.
 
 #include "platform/Time.h"
 
+
+class PlatformTime {
+	
+	u64 m_frameStartTime;
+	u64 m_lastFrameStartTime;
+	u64 m_lastFrameDuration;
+	
+public:
+	PlatformTime()
+		: m_frameStartTime(0)
+		, m_lastFrameStartTime(0)
+		, m_lastFrameDuration(0)
+	{ }
+	
+	inline void updateFrame() {
+		u64 currentTime = platform::getTimeUs();
+		
+		m_frameStartTime = currentTime;
+		if(m_lastFrameStartTime == 0) {
+			m_lastFrameStartTime = currentTime;
+		}
+		arx_assert(m_frameStartTime >= m_lastFrameStartTime);
+		
+		m_lastFrameDuration = m_frameStartTime - m_lastFrameStartTime;
+		
+		m_lastFrameStartTime = currentTime;
+	}
+	
+	inline PlatformInstant frameStart() {
+		return PlatformInstant(m_frameStartTime);
+	}
+
+	inline PlatformDuration lastFrameDuration() {
+		return PlatformDuration(m_lastFrameDuration);
+	}
+};
+
+extern PlatformTime g_platformTime;
+
+
 class GameTime {
 	
 public:

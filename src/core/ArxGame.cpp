@@ -656,8 +656,8 @@ ARX_PROGRAM_OPTION("skiplogo", "", "Skip logos at startup", &skipLogo);
 
 static bool HandleGameFlowTransitions() {
 	
-	const int TRANSITION_DURATION = 3600;
-	static ArxInstant TRANSITION_START = ArxInstant_ZERO;
+	const PlatformDuration TRANSITION_DURATION = PlatformDurationMs(3600);
+	static PlatformInstant TRANSITION_START = PlatformInstant_ZERO;
 
 	if(GameFlow::getTransition() == GameFlow::NoTransition) {
 		return false;
@@ -672,23 +672,21 @@ static bool HandleGameFlowTransitions() {
 	if(GameFlow::getTransition() == GameFlow::FirstLogo) {
 		benchmark::begin(benchmark::Splash);
 		//firsttime
-		if(TRANSITION_START == 0) {
+		if(TRANSITION_START == PlatformInstant_ZERO) {
 			if(!ARX_INTERFACE_InitFISHTANK()) {
 				GameFlow::setTransition(GameFlow::SecondLogo);
 				return true;
 			}
 			
-			arxtime.update();
-			TRANSITION_START = arxtime.now();
+			TRANSITION_START = g_platformTime.frameStart();
 		}
 
 		ARX_INTERFACE_ShowFISHTANK();
 		
-		arxtime.update();
-		float elapsed = arxtime.now_f() - TRANSITION_START;
+		PlatformDuration elapsed = g_platformTime.frameStart() - TRANSITION_START;
 
 		if(elapsed > TRANSITION_DURATION) {
-			TRANSITION_START = ArxInstant_ZERO;
+			TRANSITION_START = PlatformInstant_ZERO;
 			GameFlow::setTransition(GameFlow::SecondLogo);
 		}
 
@@ -698,24 +696,22 @@ static bool HandleGameFlowTransitions() {
 	if(GameFlow::getTransition() == GameFlow::SecondLogo) {
 		benchmark::begin(benchmark::Splash);
 		//firsttime
-		if(TRANSITION_START == 0) {
+		if(TRANSITION_START == PlatformInstant_ZERO) {
 			if(!ARX_INTERFACE_InitARKANE()) {
 				GameFlow::setTransition(GameFlow::LoadingScreen);
 				return true;
 			}
 			
-			arxtime.update();
-			TRANSITION_START = arxtime.now();
+			TRANSITION_START = g_platformTime.frameStart();
 			ARX_SOUND_PlayInterface(SND_PLAYER_HEART_BEAT);
 		}
 
 		ARX_INTERFACE_ShowARKANE();
 		
-		arxtime.update();
-		float elapsed = arxtime.now_f() - TRANSITION_START;
+		PlatformDuration elapsed = g_platformTime.frameStart() - TRANSITION_START;
 
 		if(elapsed > TRANSITION_DURATION) {
-			TRANSITION_START = ArxInstant_ZERO;
+			TRANSITION_START = PlatformInstant_ZERO;
 			GameFlow::setTransition(GameFlow::LoadingScreen);
 		}
 
@@ -1272,6 +1268,8 @@ void ArxGame::run() {
 void ArxGame::doFrame() {
 	
 	ARX_PROFILE_FUNC();
+	
+	g_platformTime.updateFrame();
 	
 	updateTime();
 

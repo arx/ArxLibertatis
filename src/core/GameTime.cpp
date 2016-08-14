@@ -48,6 +48,8 @@ ZeniMax Media Inc., Suite 120, Rockville, Maryland 20850 USA.
 
 #include "platform/Time.h"
 
+PlatformTime g_platformTime;
+
 GameTime arxtime;
 
 GameTime::GameTime() {

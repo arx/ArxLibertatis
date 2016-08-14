@@ -53,4 +53,22 @@ struct D                                                        \
     bool operator<(const D & rhs) const { return t < rhs.t; }   \
 };
 
+
+template <typename TAG, typename T>
+struct StrongType
+	: boost::totally_ordered1<StrongType<TAG, T>
+	, boost::totally_ordered2<StrongType<TAG, T>, T
+	> >
+{
+	T t;
+	explicit StrongType(const T t_) : t(t_) {}
+	StrongType() : t() {}
+	StrongType(const StrongType & t_) : t(t_.t) {}
+	StrongType & operator=(const StrongType & rhs) { t = rhs.t; return *this;}
+	bool operator==(const StrongType & rhs) const { return t == rhs.t; }
+	bool operator!=(const StrongType & rhs) const { return t != rhs.t; }
+	bool operator<(const StrongType & rhs) const { return t < rhs.t; }
+};
+
+
 #endif // ARX_UTIL_STRONGTYPE_H
