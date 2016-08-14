@@ -75,20 +75,19 @@ void Application::quit() {
 
 void CalcFPS(bool reset) {
 	
-	static float fLastTime = 0.0f;
+	static PlatformInstant fLastTime = PlatformInstant_ZERO;
 	static u32 dwFrames  = 0L;
 
 	if(reset) {
 		dwFrames = 0;
-		fLastTime = 0.f;
+		fLastTime = PlatformInstant_ZERO;
 		FPS = 7.f * FPS;
 	} else {
 		// Keep track of the time lapse and frame count
-		arxtime.update(false);
-		float fTime = arxtime.now_f() * 0.001f;   // Get current time in seconds
+		PlatformInstant fTime = g_platformTime.frameStart();
 		++dwFrames;
 
-		float tmp = fTime - fLastTime;
+		float tmp = float(toS(fTime - fLastTime));
 
 		// Update the frame rate once per second
 		if(tmp > 1.f) {
