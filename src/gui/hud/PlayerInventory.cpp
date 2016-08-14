@@ -22,6 +22,7 @@
 #include "core/Application.h"
 #include "core/Config.h"
 #include "core/Core.h"
+#include "core/GameTime.h"
 #include "game/Inventory.h"
 #include "game/Item.h"
 #include "game/Player.h"
@@ -92,9 +93,12 @@ bool PlayerInventoryHud::updateInput() {
 }
 
 void PlayerInventoryHud::update() {
+	
+	const float framedelay = float(toMs(g_platformTime.lastFrameDuration()));
+	
 	if(player.Interface & INTER_INVENTORY) {
 		if((player.Interface & INTER_COMBATMODE) || player.doingmagic >= 2) {
-			long t = Original_framedelay * (1.f/5) + 2;
+			long t = framedelay * (1.f/5) + 2;
 			InventoryY += t;
 
 			if(InventoryY > 110) {
@@ -102,7 +106,7 @@ void PlayerInventoryHud::update() {
 			}
 		} else {
 			if(bInventoryClosing) {
-				long t = Original_framedelay * (1.f/5) + 2;
+				long t = framedelay * (1.f/5) + 2;
 				InventoryY += t;
 
 				if(InventoryY > 110) {
@@ -121,7 +125,7 @@ void PlayerInventoryHud::update() {
 					}
 				}
 			} else if(InventoryY > 0) {
-				InventoryY -= long((Original_framedelay * (1.f/5)) + 2.f);
+				InventoryY -= long((framedelay * (1.f/5)) + 2.f);
 
 				if(InventoryY < 0) {
 					InventoryY = 0;
@@ -132,11 +136,11 @@ void PlayerInventoryHud::update() {
 		float fSpeed = (1.f/3);
 		if((player.Interface & INTER_COMBATMODE) || player.doingmagic >= 2) {
 			if(InventoryY < 121 * player.bag) {
-				InventoryY += long((Original_framedelay * fSpeed) + 2.f);
+				InventoryY += long((framedelay * fSpeed) + 2.f);
 			}
 		} else {
 			if(bInventoryClosing) {
-				InventoryY += long((Original_framedelay * fSpeed) + 2.f);
+				InventoryY += long((framedelay * fSpeed) + 2.f);
 				if(InventoryY > 121 * player.bag) {
 					bInventoryClosing = false;
 					if(player.Interface & INTER_INVENTORYALL) {
@@ -145,7 +149,7 @@ void PlayerInventoryHud::update() {
 					lOldInterface=0;
 				}
 			} else if(InventoryY > 0) {
-				InventoryY -= long((Original_framedelay * fSpeed) + 2.f);
+				InventoryY -= long((framedelay * fSpeed) + 2.f);
 				if(InventoryY < 0) {
 					InventoryY = 0;
 				}
