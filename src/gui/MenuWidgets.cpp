@@ -112,13 +112,6 @@ MainMenu *mainMenu;
 
 extern TextWidget * pMenuElementApply;
 
-float ARXTimeMenu;
-float ARXDiffTimeMenu;
-
-
-
-
-
 void ARX_QuickSave() {
 	
 	if(!g_canResumeGame) {
@@ -208,20 +201,10 @@ static void Check_Apply() {
 
 bool Menu2_Render() {
 	
-	arxtime.update(false);
-	float time = arxtime.now_f();
-	ARXDiffTimeMenu = time - ARXTimeMenu;
-	ARXTimeMenu = time;
-	
-	// this means ArxTimeMenu is reset
-	if(ARXDiffTimeMenu < 0) {
-		ARXDiffTimeMenu = 0;
-	}
-	
 	if(pMenuCursor == NULL) {
 		pMenuCursor = new MenuCursor();
 	}
-	pMenuCursor->update(ARXDiffTimeMenu);
+	pMenuCursor->update(toMs(g_platformTime.lastFrameDuration()));
 	
 	GRenderer->GetTextureStage(0)->setMinFilter(TextureStage::FilterLinear);
 	GRenderer->GetTextureStage(0)->setMagFilter(TextureStage::FilterLinear);
@@ -312,7 +295,7 @@ bool Menu2_Render() {
 			pWindowMenu->m_currentPageId=mainMenu->eOldMenuWindowState;
 		}
 
-		pWindowMenu->Update(ARXDiffTimeMenu);
+		pWindowMenu->Update(toMs(g_platformTime.lastFrameDuration()));
 		MENUSTATE eMS = pWindowMenu->Render();
 		if(eMS != NOP) {
 			mainMenu->eOldMenuWindowState=eMS;
@@ -325,7 +308,7 @@ bool Menu2_Render() {
 	// If the menu needs to be reinitialized, then the text in the TextManager is probably using bad fonts that were deleted already
 	// Skip one update in this case
 	if(pTextManage && !mainMenu->bReInitAll) {
-		pTextManage->Update(ARXDiffTimeMenu);
+		pTextManage->Update(toMs(g_platformTime.lastFrameDuration()));
 		pTextManage->Render();
 	}
 
@@ -833,7 +816,7 @@ void MenuPage::Render() {
 		m_selected->RenderMouseOver();
 		
 		{
-			m_blinkTime += ARXDiffTimeMenu;
+			m_blinkTime += float(toMs(g_platformTime.lastFrameDuration()));
 			if(m_blinkTime > m_blinkDuration * 2)
 				m_blinkTime = 0;
 			

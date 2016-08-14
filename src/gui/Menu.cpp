@@ -96,10 +96,6 @@ extern bool START_NEW_QUEST;
 extern long OLD_FLYING_OVER;
 extern long FLYING_OVER;
 
-
-
-extern float ARXTimeMenu;
-
 extern bool REQUEST_SPEECH_SKIP;
 
 //-----------------------------------------------------------------------------
@@ -223,9 +219,6 @@ void ARX_MENU_Clicked_CREDITS() {
 }
 
 void ARX_MENU_Launch(bool allowResume) {
-	
-	arxtime.update();
-	ARXTimeMenu = arxtime.now_f();
 	
 	g_canResumeGame = allowResume;
 

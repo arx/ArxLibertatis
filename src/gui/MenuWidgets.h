@@ -127,8 +127,6 @@ private:
 
 struct TexturedVertex;
 
-extern float ARXDiffTimeMenu;
-
 void MenuReInitAll();
 
 void Menu2_Open();

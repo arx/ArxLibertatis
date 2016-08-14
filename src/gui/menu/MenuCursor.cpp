@@ -20,6 +20,7 @@
 #include "gui/menu/MenuCursor.h"
 
 #include "core/Core.h"
+#include "core/GameTime.h"
 
 #include "graphics/Draw.h"
 #include "graphics/DrawLine.h"
@@ -194,15 +195,13 @@ void MenuCursor::update(float time) {
 }
 
 
-extern float ARXDiffTimeMenu;
-
 void MenuCursor::DrawCursor() {
 	
 	trail.draw();
 	
 	DrawOneCursor(GInput->getMousePosAbs());
 
-	lFrameDiff += ARXDiffTimeMenu;
+	lFrameDiff += toMs(g_platformTime.lastFrameDuration());
 
 	if(lFrameDiff > 70.f) {
 		if(bMouseOver) {

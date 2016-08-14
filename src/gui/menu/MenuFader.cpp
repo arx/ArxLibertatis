@@ -20,6 +20,7 @@
 #include "gui/menu/MenuFader.h"
 
 #include "core/Core.h"
+#include "core/GameTime.h"
 #include "graphics/Draw.h"
 #include "graphics/Renderer.h"
 #include "gui/MenuWidgets.h"
@@ -85,14 +86,14 @@ bool ProcessFadeInOut(bool _bFadeIn) {
 		return true;
 
 	if(_bFadeIn) {
-		fFadeInOut += _fspeed * ARXDiffTimeMenu * (1.f/100);
+		fFadeInOut += _fspeed * float(toMs(g_platformTime.lastFrameDuration())) * (1.f/100);
 
 		if(fFadeInOut > 1.f) {
 			fFadeInOut = 1.f;
 			g_menuFadeActive = false;
 		}
 	} else {
-		fFadeInOut -= _fspeed * ARXDiffTimeMenu * (1.f/100);
+		fFadeInOut -= _fspeed * float(toMs(g_platformTime.lastFrameDuration())) * (1.f/100);
 
 		if(fFadeInOut < 0.f) {
 			fFadeInOut = 0.f;
