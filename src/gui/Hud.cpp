@@ -1399,7 +1399,7 @@ void PlayerInterfaceFader::update() {
 				PlatformInstant t = g_platformTime.frameStart();
 				
 				if(t - SLID_START > PlatformDurationMs(10000)) {
-					m_current += Original_framedelay * (1.0f/10);
+					m_current += float(toMs(g_platformTime.lastFrameDuration()) * (1.0/10));
 					
 					if(m_current > 100.f)
 						m_current = 100.f;
@@ -1412,7 +1412,7 @@ void PlayerInterfaceFader::update() {
 		}
 		
 		if(bOk) {
-			m_current -= Original_framedelay * (1.0f/10);
+			m_current -= float(toMs(g_platformTime.lastFrameDuration()) * (1.0/10));
 			
 			if(m_current < 0.f)
 				m_current = 0.f;
@@ -1422,7 +1422,7 @@ void PlayerInterfaceFader::update() {
 	}
 	
 	if(m_direction == 1) {
-		m_current += Original_framedelay * (1.0f/10);
+		m_current += float(toMs(g_platformTime.lastFrameDuration()) * (1.0/10));
 		
 		if(m_current > 100.f) {
 			m_current = 100.f;
@@ -1430,7 +1430,7 @@ void PlayerInterfaceFader::update() {
 		}
 		lSLID_VALUE = m_current;
 	} else if(m_direction == -1) {
-		m_current -= Original_framedelay * (1.0f/10);
+		m_current -= float(toMs(g_platformTime.lastFrameDuration()) * (1.0/10));
 		
 		if(m_current < 0.f) {
 			m_current = 0.f;
