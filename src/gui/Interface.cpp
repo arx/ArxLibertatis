@@ -171,7 +171,7 @@ gui::Note openNote;
 
 bool				bInventoryClosing = false;
 
-extern float SLID_START;
+extern PlatformInstant SLID_START;
 
 Vec2f				BOOKDEC = Vec2f(0.f, 0.f);
 
@@ -440,7 +440,7 @@ void InventoryOpenClose(unsigned long t) {
 
 		if(WILLRETURNTOFREELOOK) {
 			TRUE_PLAYER_MOUSELOOK_ON = true;
-			SLID_START = arxtime.now_f();
+			SLID_START = g_platformTime.frameStart();
 			WILLRETURNTOFREELOOK = false;
 		}
 	} else {
@@ -546,7 +546,7 @@ void ResetPlayerInterface() {
 	player.Interface |= INTER_LIFE_MANA;
 	g_hudRoot.playerInterfaceFader.resetSlid();
 	lSLID_VALUE = 0;
-	SLID_START = arxtime.now_f();
+	SLID_START = g_platformTime.frameStart();
 }
 
 static void ReleaseInfosCombine() {
@@ -894,7 +894,7 @@ void ARX_INTERFACE_Combat_Mode(long i) {
 
 			if(config.input.mouseLookToggle) {
 				TRUE_PLAYER_MOUSELOOK_ON = true;
-				SLID_START = arxtime.now_f();
+				SLID_START = g_platformTime.frameStart();
 			}
 		}
 
@@ -1329,7 +1329,7 @@ void ArxGame::managePlayerControls() {
 				MEMO_PLAYER_MOUSELOOK_ON=TRUE_PLAYER_MOUSELOOK_ON;
 				SPECIAL_DRAW_WEAPON=1;
 				TRUE_PLAYER_MOUSELOOK_ON = true;
-				SLID_START = arxtime.now_f();
+				SLID_START = g_platformTime.frameStart();
 				ARX_INTERFACE_Combat_Mode(2);
 			}
 		}
@@ -1347,7 +1347,7 @@ void ArxGame::managePlayerControls() {
 				if(GInput->actionPressed(CONTROLS_CUST_FREELOOK)) {
 					if(!TRUE_PLAYER_MOUSELOOK_ON) {
 						TRUE_PLAYER_MOUSELOOK_ON = true;
-						SLID_START = arxtime.now_f();
+						SLID_START = g_platformTime.frameStart();
 					}
 				} else {
 					TRUE_PLAYER_MOUSELOOK_ON = false;
@@ -1357,7 +1357,7 @@ void ArxGame::managePlayerControls() {
 					if(!TRUE_PLAYER_MOUSELOOK_ON) {
 						ARX_INTERFACE_BookClose();
 						TRUE_PLAYER_MOUSELOOK_ON = true;
-						SLID_START = arxtime.now_f();
+						SLID_START = g_platformTime.frameStart();
 					} else {
 						TRUE_PLAYER_MOUSELOOK_ON = false;
 
@@ -1455,7 +1455,7 @@ void ArxGame::managePlayerControls() {
 
 				if(config.input.mouseLookToggle) {
 					TRUE_PLAYER_MOUSELOOK_ON = true;
-					SLID_START = arxtime.now_f();
+					SLID_START = g_platformTime.frameStart();
 				}
 			}
 		}
@@ -1472,7 +1472,7 @@ void ArxGame::managePlayerControls() {
 
 				if(config.input.mouseLookToggle) {
 					TRUE_PLAYER_MOUSELOOK_ON = true;
-					SLID_START = arxtime.now_f();
+					SLID_START = g_platformTime.frameStart();
 				}
 			}
 		} else {

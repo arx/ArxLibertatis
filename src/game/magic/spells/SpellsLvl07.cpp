@@ -43,7 +43,7 @@
 #include "scene/Object.h"
 #include "scene/Scene.h"
 
-extern float SLID_START;
+extern PlatformInstant SLID_START;
 bool bOldLookToggle;
 
 FlyingEyeSpell::FlyingEyeSpell()
@@ -108,7 +108,7 @@ void FlyingEyeSpell::Launch()
 	}
 	
 	TRUE_PLAYER_MOUSELOOK_ON = true;
-	SLID_START = arxtime.now_f();
+	SLID_START = g_platformTime.frameStart();
 	bOldLookToggle = config.input.mouseLookToggle;
 	config.input.mouseLookToggle = true;
 }
