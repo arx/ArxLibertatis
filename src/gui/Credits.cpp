@@ -126,7 +126,7 @@ private:
 	std::string m_text;
 	
 	float m_scrollPosition;
-	float m_lastUpdateTime;
+	PlatformInstant m_lastUpdateTime;
 	
 	size_t m_firstVisibleLine;
 	int m_lineHeight;
@@ -459,16 +459,15 @@ void Credits::render() {
 	}
 	
 	// Use time passed between frame to create scroll effect
-	arxtime.update(false);
-	float now = arxtime.now_f();
-	float elapsed = now - m_lastUpdateTime;
+	PlatformInstant now = g_platformTime.frameStart();
+	float elapsed = float(toMs(now - m_lastUpdateTime));
 	
-	static float lastKeyPressTime = 0.f;
-	static float lastUserScrollTime = 0.f;
+	static PlatformInstant lastKeyPressTime   = PlatformInstant_ZERO;
+	static PlatformInstant lastUserScrollTime = PlatformInstant_ZERO;
 	static float scrollDirection = 1.f;
 	
-	float keyRepeatDelay = 256.f; // delay after key press before continuous scrolling
-	float autoScrollDelay = 250.f; // ms after user input before resuming normal scrolling
+	PlatformDuration keyRepeatDelay  = PlatformDurationMs(256); // delay after key press before continuous scrolling
+	PlatformDuration autoScrollDelay = PlatformDurationMs(250); // ms after user input before resuming normal scrolling
 	
 	// Process user input
 	float userScroll = 20.f * GInput->getMouseWheelDir();
@@ -557,8 +556,7 @@ void Credits::render() {
 
 void Credits::reset() {
 	LogDebug("Reset credits");
-	arxtime.update(false);
-	m_lastUpdateTime = arxtime.now_f();
+	m_lastUpdateTime = g_platformTime.frameStart();
 	m_scrollPosition = 0;
 	m_firstVisibleLine = 0;
 	m_lineHeight = -1;
