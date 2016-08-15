@@ -26,7 +26,7 @@ extern int iFadeAction;
 
 void MenuFader_reset();
 
-bool ProcessFadeInOut(bool _bFadeIn);
+bool MenuFader_process(bool _bFadeIn);
 
 void MenuFader_start(bool fade, bool fadeInOut, int fadeAction);
 
