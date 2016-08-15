@@ -473,22 +473,20 @@ void PurseIconGui::init() {
 	m_haloColor = Color3f(0.9f, 0.9f, 0.1f);
 	
 	m_haloActive = false;
-	m_haloTime = 0;
+	m_haloTime = PlatformDuration_ZERO;
 }
 
 void PurseIconGui::requestHalo() {
 	m_haloActive = true;
-	m_haloTime = 0;
+	m_haloTime = PlatformDuration_ZERO;
 }
 
 void PurseIconGui::update(const Rectf & parent) {
 	m_rect = createChild(parent, Anchor_TopRight, m_size * m_scale, Anchor_BottomRight);
 	
-	//A halo is drawn on the character's stats icon (book) when leveling up, for example.
 	if(m_haloActive) {
-		float fCalc = m_haloTime + Original_framedelay;
-		m_haloTime = checked_range_cast<unsigned long>(fCalc);
-		if(m_haloTime >= 1000) { // ms
+		m_haloTime += g_platformTime.lastFrameDuration();
+		if(m_haloTime >= PlatformDurationMs(1000)) {
 			m_haloActive = false;
 		}
 	}

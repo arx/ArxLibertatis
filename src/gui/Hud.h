@@ -22,6 +22,7 @@
 
 #include <vector>
 
+#include "core/TimeTypes.h"
 #include "game/GameTypes.h"
 #include "gui/hud/HudCommon.h"
 #include "math/Types.h"
@@ -117,7 +118,7 @@ private:
 	Vec2f m_pos;
 	Vec2f m_size;
 	
-	long m_haloTime;
+	PlatformDuration m_haloTime;
 	
 public:
 	PurseIconGui();
