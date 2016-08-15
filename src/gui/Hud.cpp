@@ -1346,7 +1346,7 @@ bool PLAYER_INTERFACE_HIDE_COUNT = true;
 
 PlayerInterfaceFader::PlayerInterfaceFader()
 	: m_direction(0)
-	, m_current(0.f)
+	, m_current(PlatformDuration_ZERO)
 {}
 
 void PlayerInterfaceFader::reset() {
@@ -1355,7 +1355,7 @@ void PlayerInterfaceFader::reset() {
 }
 
 void PlayerInterfaceFader::resetSlid() {
-	m_current = 0.f;
+	m_current = PlatformDuration_ZERO;
 }
 
 void PlayerInterfaceFader::requestFade(FadeDirection showhide, long smooth) {
@@ -1377,11 +1377,11 @@ void PlayerInterfaceFader::requestFade(FadeDirection showhide, long smooth) {
 			m_direction = 1;
 	} else {
 		if(showhide == FadeDirection_In)
-			m_current = 0.f;
+			m_current = PlatformDuration_ZERO;
 		else
-			m_current = 1000.f;
+			m_current = PlatformDurationMs(1000);
 		
-		lSLID_VALUE = m_current / 10.f;
+		lSLID_VALUE = float(toMs(m_current)) / 10.f;
 	}
 }
 
@@ -1399,12 +1399,12 @@ void PlayerInterfaceFader::update() {
 				PlatformInstant t = g_platformTime.frameStart();
 				
 				if(t - SLID_START > PlatformDurationMs(10000)) {
-					m_current += float(toMs(g_platformTime.lastFrameDuration()));
+					m_current += g_platformTime.lastFrameDuration();
 					
-					if(m_current > 1000.f)
-						m_current = 1000.f;
+					if(m_current > PlatformDurationMs(1000))
+						m_current = PlatformDurationMs(1000);
 					
-					lSLID_VALUE = m_current / 10.f;
+					lSLID_VALUE = float(toMs(m_current)) / 10.f;
 				} else {
 					bOk = true;
 				}
@@ -1412,31 +1412,31 @@ void PlayerInterfaceFader::update() {
 		}
 		
 		if(bOk) {
-			m_current -= float(toMs(g_platformTime.lastFrameDuration()));
+			m_current -= g_platformTime.lastFrameDuration();
 			
-			if(m_current < 0.f)
-				m_current = 0.f;
+			if(m_current < PlatformDuration_ZERO)
+				m_current = PlatformDuration_ZERO;
 			
-			lSLID_VALUE = m_current / 10.f;
+			lSLID_VALUE = float(toMs(m_current)) / 10.f;
 		}
 	}
 	
 	if(m_direction == 1) {
-		m_current += float(toMs(g_platformTime.lastFrameDuration()));
+		m_current += g_platformTime.lastFrameDuration();
 		
-		if(m_current > 1000.f) {
-			m_current = 1000.f;
+		if(m_current > PlatformDurationMs(1000)) {
+			m_current = PlatformDurationMs(1000);
 			m_direction = 0;
 		}
-		lSLID_VALUE = m_current / 10.f;
+		lSLID_VALUE = float(toMs(m_current)) / 10.f;
 	} else if(m_direction == -1) {
-		m_current -= float(toMs(g_platformTime.lastFrameDuration()));
+		m_current -= g_platformTime.lastFrameDuration();
 		
-		if(m_current < 0.f) {
-			m_current = 0.f;
+		if(m_current < PlatformDuration_ZERO) {
+			m_current = PlatformDuration_ZERO;
 			m_direction = 0;
 		}
-		lSLID_VALUE = m_current / 10.f;
+		lSLID_VALUE = float(toMs(m_current)) / 10.f;
 	}
 }
 

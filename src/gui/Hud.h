@@ -377,7 +377,7 @@ enum FadeDirection {
 class PlayerInterfaceFader {
 private:
 	long m_direction;
-	float m_current;
+	PlatformDuration m_current;
 	
 public:
 	PlayerInterfaceFader();
