@@ -917,8 +917,7 @@ bool ArxGame::initGame()
 	
 	LogDebug("Before Run...");
 	
-	const Vec2i & size = getWindow()->getSize();
-	ControlCinematique = new Cinematic(size);
+	cinematicInit();
 	
 	long old = GLOBAL_EERIETEXTUREFLAG_LOADSCENE_RELEASE;
 	GLOBAL_EERIETEXTUREFLAG_LOADSCENE_RELEASE = -1;

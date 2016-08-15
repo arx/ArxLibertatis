@@ -22,6 +22,8 @@
 
 #include <string>
 
+void cinematicInit();
+
 void cinematicPrepare(std::string name, bool preload);
 
 void cinematicRequestStart();

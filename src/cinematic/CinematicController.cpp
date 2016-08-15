@@ -19,6 +19,7 @@
 
 #include "cinematic/CinematicController.h"
 
+#include "core/Application.h"
 #include "core/GameTime.h"
 
 #include "io/log/Logger.h"
@@ -37,6 +38,8 @@
 #include "graphics/Renderer.h"
 #include "input/Input.h"
 
+#include "window/RenderWindow.h"
+
 enum CinematicState {
 	Cinematic_Stopped,
 	Cinematic_StartRequested,
@@ -49,6 +52,11 @@ static std::string WILL_LAUNCH_CINE;
 static std::string LAST_LAUNCHED_CINE;
 
 Cinematic			*ControlCinematique=NULL;	// 2D Cinematic Controller
+
+void cinematicInit() {
+	const Vec2i & size = mainApp->getWindow()->getSize();
+	ControlCinematique = new Cinematic(size);
+}
 
 void cinematicPrepare(std::string name, bool preload) {
 
