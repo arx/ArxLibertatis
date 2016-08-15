@@ -82,14 +82,14 @@ void CinematicBorder::set(bool status, bool smooth)
 void CinematicBorder::update() {
 	
 	if(m_direction == 1) {
-		CINEMA_DECAL += Original_framedelay * (1.0f/10);
+		CINEMA_DECAL += float(toMs(g_platformTime.lastFrameDuration())) * (1.0f/10);
 
 		if(CINEMA_DECAL > 100.f) {
 			CINEMA_DECAL = 100.f;
 			m_direction = 0;
 		}
 	} else if(m_direction == -1) {
-		CINEMA_DECAL -= Original_framedelay * (1.0f/10);
+		CINEMA_DECAL -= float(toMs(g_platformTime.lastFrameDuration())) * (1.0f/10);
 
 		if(CINEMA_DECAL < 0.f) {
 			CINEMA_DECAL = 0.f;
