@@ -63,6 +63,47 @@ struct DurationType
 	}
 };
 
+template <typename TAG, typename T>
+struct InstantType
+	: boost::totally_ordered1<InstantType<TAG, T>
+	>
+{
+	T t;
+	
+	InstantType()
+		: t()
+	{ }
+	explicit InstantType(const T t_)
+		: t(t_)
+	{ }
+	InstantType(const InstantType<TAG, T> & t_)
+		: t(t_.t)
+	{ }
+	bool operator==(const InstantType<TAG, T> & rhs) const {
+		return t == rhs.t;
+	}
+	bool operator<(const InstantType<TAG, T> & rhs) const {
+		return t < rhs.t;
+	}
+	InstantType<TAG, T> & operator=(const InstantType<TAG, T> & rhs) {
+		t = rhs.t;
+		return *this;
+	}
+};
+template <typename TAG, typename T>
+inline DurationType<TAG, T> operator -(InstantType<TAG, T> a, InstantType<TAG, T> b) {
+	return DurationType<TAG, T>(a.t - b.t);
+}
+template <typename TAG, typename T>
+inline InstantType<TAG, T> operator +(InstantType<TAG, T> a, DurationType<TAG, T> b) {
+	return InstantType<TAG, T>(a.t + b.t);
+}
+template <typename TAG, typename T>
+inline InstantType<TAG, T> operator -(InstantType<TAG, T> a, DurationType<TAG, T> b) {
+	return InstantType<TAG, T>(a.t - b.t);
+}
+
+
 ARX_STRONG_TYPEDEF(s64, ArxInstant)
 ARX_STRONG_TYPEDEF(s64, ArxDuration)
 
@@ -103,8 +144,8 @@ inline ArxDuration operator -(ArxDuration a, ArxDuration b) {
 // FIXME copy-paste
 
 // in microseconds
-typedef StrongType<struct PlatformInstant_TAG,  s64> PlatformInstant;
-typedef DurationType<struct PlatformDuration_TAG, s64> PlatformDuration;
+typedef InstantType <struct PlatformTime_TAG, s64> PlatformInstant;
+typedef DurationType<struct PlatformTime_TAG, s64> PlatformDuration;
 
 const PlatformInstant  PlatformInstant_ZERO  = PlatformInstant(0);
 const PlatformDuration PlatformDuration_ZERO = PlatformDuration(0);
@@ -121,16 +162,6 @@ inline double toMs(PlatformDuration val) {
 }
 inline double toS(PlatformDuration val) {
 	return val.t / (1000.0 * 1000.0);
-}
-
-inline PlatformDuration operator -(PlatformInstant a, PlatformInstant b) {
-	return PlatformDuration(a.t - b.t);
-}
-inline PlatformInstant operator +(PlatformInstant a, PlatformDuration b) {
-	return PlatformInstant(a.t + b.t);
-}
-inline PlatformInstant operator -(PlatformInstant a, PlatformDuration b) {
-	return PlatformInstant(a.t - b.t);
 }
 
 // copy-paste end
