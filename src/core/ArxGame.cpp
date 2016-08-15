@@ -1870,7 +1870,7 @@ void ArxGame::updateLevel() {
 	
 	UpdateCameras();
 
-	ARX_PLAYER_FrameCheck(Original_framedelay);
+	ARX_PLAYER_FrameCheck(g_platformTime.lastFrameDuration());
 
 	updateActiveCamera();
 

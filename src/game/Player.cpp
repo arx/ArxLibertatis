@@ -1059,12 +1059,14 @@ void ARX_PLAYER_Poison(float val) {
  *
  * Updates: life/mana recovery, poison evolution, hunger, invisibility
  */
-void ARX_PLAYER_FrameCheck(float Framedelay)
+void ARX_PLAYER_FrameCheck(PlatformDuration delta)
 {
 	ARX_PROFILE_FUNC();
 	
 	//	ARX_PLAYER_QuickGeneration();
-	if(Framedelay > 0) {
+	if(delta > PlatformDuration_ZERO) {
+		float Framedelay = float(toMs(delta));
+		
 		UpdateIOInvisibility(entities.player());
 		// Natural LIFE recovery
 		float inc = 0.00008f * Framedelay * (player.m_attributeFull.constitution + player.m_attributeFull.strength * ( 1.0f / 2 ) + player.m_skillFull.defense) * ( 1.0f / 50 );
