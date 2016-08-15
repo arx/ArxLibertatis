@@ -818,7 +818,7 @@ void MenuPage::Render() {
 		{
 			static const PlatformDuration m_blinkDuration = PlatformDurationMs(300);
 			
-			m_blinkTime = m_blinkTime + g_platformTime.lastFrameDuration();
+			m_blinkTime += g_platformTime.lastFrameDuration();
 			if(m_blinkTime > (m_blinkDuration + m_blinkDuration))
 				m_blinkTime = PlatformDuration_ZERO;
 			
