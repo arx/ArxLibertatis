@@ -1035,7 +1035,7 @@ void ArxGame::managePlayerControls() {
 				}
 
 				if(!npc) {
-					MagicSightFader+=g_framedelay*( 1.0f / 200 );
+					MagicSightFader += float(toMs(g_platformTime.lastFrameDuration())) * ( 1.0f / 200 );
 
 					if(MagicSightFader > 1.f)
 						MagicSightFader = 1.f;

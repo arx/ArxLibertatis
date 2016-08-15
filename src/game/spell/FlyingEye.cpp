@@ -20,6 +20,7 @@
 #include "game/spell/FlyingEye.h"
 
 #include "core/Core.h"
+#include "core/GameTime.h"
 
 #include "scene/Object.h"
 
@@ -74,7 +75,7 @@ void DrawMagicSightInterface()
 
 		EERIEDrawBitmap(Rectf(g_size), 0.0001f, NULL, Color3f::gray(col).to<u8>());
 
-		MagicSightFader -= Original_framedelay * (1.f/400);
+		MagicSightFader -= float(toMs(g_platformTime.lastFrameDuration())) * (1.f/400);
 
 		if(MagicSightFader < 0.f)
 			MagicSightFader = 0.f;
