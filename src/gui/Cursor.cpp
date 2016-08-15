@@ -369,15 +369,15 @@ static bool SelectSpellTargetCursorRender() {
 
 class CursorAnimatedHand {
 private:
-	long m_time;
+	PlatformDuration m_time;
 	long m_frame;
-	long m_delay;
+	PlatformDuration m_delay;
 	
 public:
 	CursorAnimatedHand()
-		: m_time(0)
+		: m_time(PlatformDuration_ZERO)
 		, m_frame(0)
-		, m_delay(70)
+		, m_delay(PlatformDurationMs(70))
 	{}
 	
 	void reset() {
@@ -385,7 +385,7 @@ public:
 	}
 	
 	void update1() {
-		m_time += checked_range_cast<long>(Original_framedelay);
+		m_time += g_platformTime.lastFrameDuration();
 		
 		if(m_frame!=3) {
 			while(m_time > m_delay) {
@@ -400,7 +400,7 @@ public:
 	
 	void update2() {
 		if(m_frame) {
-			m_time += checked_range_cast<long>(Original_framedelay);
+			m_time += g_platformTime.lastFrameDuration();
 
 			while(m_time > m_delay) {
 				m_time -= m_delay;
