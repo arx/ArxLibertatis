@@ -29,12 +29,12 @@ bool g_menuFadeActive=false;
 bool bFadeInOut=false;
 int iFadeAction=-1;
 
-float fFadeInOut=0.f;
+static PlatformDuration menuFadeElapsed = PlatformDuration_ZERO;
 
 void MenuFader_reset() {
 	iFadeAction = -1;
 	g_menuFadeActive = false;
-	fFadeInOut = 0.f;
+	menuFadeElapsed = PlatformDuration_ZERO;
 }
 
 static void FadeInOut(float _fVal) {
@@ -84,25 +84,26 @@ static void FadeInOut(float _fVal) {
 
 bool MenuFader_process(bool _bFadeIn) {
 	
-	static const float _fspeed = 0.1f;
+	const PlatformDuration fadeDuration = PlatformDurationMs(1000);
 	
-	FadeInOut(fFadeInOut);
+	float alpha = toMs(menuFadeElapsed) / toMs(fadeDuration);
+	FadeInOut(alpha);
 
 	if(!g_menuFadeActive)
 		return true;
 
 	if(_bFadeIn) {
-		fFadeInOut += _fspeed * float(toMs(g_platformTime.lastFrameDuration())) * (1.f/100);
-
-		if(fFadeInOut > 1.f) {
-			fFadeInOut = 1.f;
+		menuFadeElapsed = menuFadeElapsed + g_platformTime.lastFrameDuration();
+		
+		if(menuFadeElapsed > fadeDuration) {
+			menuFadeElapsed = fadeDuration;
 			g_menuFadeActive = false;
 		}
 	} else {
-		fFadeInOut -= _fspeed * float(toMs(g_platformTime.lastFrameDuration())) * (1.f/100);
-
-		if(fFadeInOut < 0.f) {
-			fFadeInOut = 0.f;
+		menuFadeElapsed = menuFadeElapsed - g_platformTime.lastFrameDuration();
+		
+		if(menuFadeElapsed < PlatformDuration_ZERO) {
+			menuFadeElapsed = PlatformDuration_ZERO;
 			g_menuFadeActive = false;
 		}
 	}
