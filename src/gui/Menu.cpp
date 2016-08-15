@@ -520,9 +520,7 @@ void ARX_Menu_Render() {
 				case AMCM_OFF:
 					arxtime.resume();
 					ARX_MENU_NEW_QUEST_Clicked_QUIT();
-					iFadeAction = -1;
-					g_menuFadeActive = false;
-					fFadeInOut = 0.f;
+					MenuFader_reset();
 					
 					if(pTextManage)
 						pTextManage->Clear();

@@ -31,6 +31,12 @@ int iFadeAction=-1;
 
 float fFadeInOut=0.f;
 
+void MenuFader_reset() {
+	iFadeAction = -1;
+	g_menuFadeActive = false;
+	fFadeInOut = 0.f;
+}
+
 static void FadeInOut(float _fVal) {
 
 	TexturedVertex d3dvertex[4];
