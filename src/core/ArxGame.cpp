@@ -178,7 +178,6 @@ extern long DeadTime;
 static const float CURRENT_BASE_FOCAL = 310.f;
 static const float defaultCameraFocal = 350.f;
 
-extern Cinematic* ControlCinematique;
 extern EERIE_3DOBJ * arrowobj;
 
 extern Entity * FlyingOverIO;
@@ -1110,7 +1109,7 @@ void ArxGame::shutdownGame() {
 	DanaeClearLevel(2);
 	TextureContainer::DeleteAll();
 	
-	delete ControlCinematique, ControlCinematique = NULL;
+	cinematicDestroy();
 	
 	config.save();
 	

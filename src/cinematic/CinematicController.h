@@ -23,6 +23,7 @@
 #include <string>
 
 void cinematicInit();
+void cinematicDestroy();
 
 void cinematicPrepare(std::string name, bool preload);
 

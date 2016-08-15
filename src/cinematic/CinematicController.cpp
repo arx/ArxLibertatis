@@ -58,6 +58,10 @@ void cinematicInit() {
 	ControlCinematique = new Cinematic(size);
 }
 
+void cinematicDestroy() {
+	delete ControlCinematique, ControlCinematique = NULL;
+}
+
 void cinematicPrepare(std::string name, bool preload) {
 
 	WILL_LAUNCH_CINE = name;
