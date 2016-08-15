@@ -47,6 +47,7 @@ ZeniMax Media Inc., Suite 120, Rockville, Maryland 20850 USA.
 #include <stddef.h>
 #include <vector>
 
+#include "core/TimeTypes.h"
 #include "game/Camera.h"
 #include "graphics/Color.h"
 #include "math/RandomFlicker.h"
@@ -123,7 +124,7 @@ public:
 	float m_nextAngzgrille;
 	CinematicFadeOut m_nextFadegrille;
 	float speedtrack;
-	float flTime;
+	PlatformDuration flTime;
 	std::vector<CinematicBitmap*>	m_bitmaps;
 	
 	CinematicFadeOut fadeprev;
@@ -136,7 +137,7 @@ public:
 	
 	void InitDeviceObjects();
 	void OneTimeSceneReInit();
-	void Render(float framediff);
+	void Render(PlatformDuration frameDuration);
 	void New();
 	void DeleteDeviceObjects();
 	

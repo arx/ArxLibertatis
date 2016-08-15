@@ -140,7 +140,7 @@ void cinematicRender() {
 	ControlCinematique->InitDeviceObjects();
 	GRenderer->SetRenderState(Renderer::AlphaBlending, true);
 
-	ControlCinematique->Render(float(toMs(g_platformTime.lastFrameDuration())));
+	ControlCinematique->Render(g_platformTime.lastFrameDuration());
 
 	// end the animation
 	if(   !ControlCinematique->key

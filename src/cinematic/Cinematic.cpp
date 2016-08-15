@@ -106,7 +106,7 @@ Cinematic::Cinematic(Vec2i size)
 	, m_nextPosgrille()
 	, m_nextAngzgrille()
 	, speedtrack()
-	, flTime()
+	, flTime(PlatformDuration_ZERO)
 	, cinRenderSize(size)
 { }
 
@@ -399,7 +399,7 @@ void DrawGrille(CinematicBitmap * bitmap, Color col, int fx, CinematicLight * li
 	
 }
 /*---------------------------------------------------------------*/
-void Cinematic::Render(float FDIFF) {
+void Cinematic::Render(PlatformDuration frameDuration) {
 	
 	bool resized = (cinRenderSize != g_size.size());
 	cinRenderSize = g_size.size();
@@ -410,7 +410,7 @@ void Cinematic::Render(float FDIFF) {
 	
 	GRenderer->Clear(Renderer::ColorBuffer);
 	
-	GereTrack(this, FDIFF, resized, true);
+	GereTrack(this, frameDuration, resized, true);
 	
 	//sound
 	if(changekey && idsound >= 0)
@@ -482,6 +482,7 @@ void Cinematic::Render(float FDIFF) {
 	CinematicLight lightt, *l = NULL;
 	
 	static const float SPEEDINTENSITYRND = 60.f / 1000.f;
+	float FDIFF = float(toMs(frameDuration));
 	
 	if(m_light.intensity >= 0.f && m_lightd.intensity >= 0.f) {
 		lightt = m_light;
