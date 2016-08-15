@@ -358,7 +358,7 @@ void ARX_Menu_Render() {
 						(g_size.center().x) * 0.82f,
 						ARXmenu.mda->flyover[FLYING_OVER],
 						Color(232 + t, 204 + t, 143 + t),
-						1000,
+						PlatformDurationMs(1000),
 						0.01f,
 						2);
 				}
@@ -507,7 +507,7 @@ void ARX_Menu_Render() {
 	light->pos.y = 0.f + GInput->getMousePosAbs().y - (g_size.height() >> 1);
 	
 	if(pTextManage) {
-		pTextManage->Update(g_framedelay);
+		pTextManage->Update(g_platformTime.lastFrameDuration());
 		pTextManage->Render();
 	}
 	

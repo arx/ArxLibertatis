@@ -1109,10 +1109,10 @@ static void ARX_INTERFACE_ManageOpenedBook_Stats()
 			(g_size.center().x)*0.82f,
 			toDisplay,
 			Color(232+t,204+t,143+t),
-			1000,
+			PlatformDurationMs(1000),
 			0.01f,
 			3,
-			0);
+			PlatformDuration_ZERO);
 	} else {
 		OLD_FLYING_OVER=-1;
 	}
@@ -1523,10 +1523,10 @@ void ARX_INTERFACE_ManageOpenedBook_SpellsDraw() {
 				(g_size.center().x)*0.82f,
 				spellInfo.description,
 				Color(232,204,143),
-				1000,
+				PlatformDurationMs(1000),
 				0.01f,
 				2,
-				0);
+				PlatformDuration_ZERO);
 			
 			long count = 0;
 			

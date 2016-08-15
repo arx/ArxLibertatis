@@ -2097,7 +2097,7 @@ void ArxGame::renderLevel() {
 	GRenderer->GetTextureStage(0)->setWrapMode(TextureStage::WrapRepeat);
 
 	if(pTextManage && !pTextManage->Empty()) {
-		pTextManage->Update(g_framedelay);
+		pTextManage->Update(g_platformTime.lastFrameDuration());
 		pTextManage->Render();
 	}
 

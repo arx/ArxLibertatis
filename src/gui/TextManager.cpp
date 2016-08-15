@@ -56,8 +56,8 @@ struct TextManager::ManagedText {
 	float fDeltaY;
 	float fSpeedScrollY;
 	Color lCol;
-	long lTimeScroll;
-	long lTimeOut;
+	PlatformDuration lTimeScroll;
+	PlatformDuration lTimeOut;
 };
 
 TextManager::TextManager() {
@@ -67,8 +67,11 @@ TextManager::~TextManager() {
 	Clear();
 }
 
-bool TextManager::AddText(Font* _pFont, const std::string & _lpszUText, const Rect & _rRect, Color _lCol, long _lTimeOut, long _lTimeScroll, float _fSpeedScroll, int iNbLigneClipp) {
-	
+bool TextManager::AddText(Font* _pFont, const std::string & _lpszUText,
+                          const Rect & _rRect, Color _lCol,
+                          PlatformDuration _lTimeOut, PlatformDuration _lTimeScroll,
+                          float _fSpeedScroll, int iNbLigneClipp
+) {
 	if(_lpszUText.empty()) {
 		return false;
 	}
@@ -117,20 +120,14 @@ bool TextManager::AddText(Font * font, const std::string & str, Vec2i pos, Color
 	return AddText(font, str, r, fgcolor);
 }
 
-void TextManager::Update(float _fDiffFrame) {
-	
-	int _iDiffFrame = checked_range_cast<int>(_fDiffFrame);
-	
-	// TODO-slussier: Until we fix the arxtime.get_updated() mess, it's easy to have a FrameDiff of 0...
-	if(_iDiffFrame == 0)
-		_iDiffFrame = 1;
+void TextManager::Update(PlatformDuration _iDiffFrame) {
 	
 	std::vector<ManagedText *>::iterator itManage;
 	for(itManage = entries.begin(); itManage != entries.end();) {
 		
 		ManagedText * pArxText = *itManage;
 		
-		if(pArxText->lTimeOut < 0) {
+		if(pArxText->lTimeOut < PlatformDuration_ZERO) {
 			delete pArxText;
 			itManage = entries.erase(itManage);
 			continue;
@@ -138,9 +135,9 @@ void TextManager::Update(float _fDiffFrame) {
 		
 		pArxText->lTimeOut -= _iDiffFrame;
 		
-		if(pArxText->lTimeScroll < 0 &&
+		if(pArxText->lTimeScroll < PlatformDuration_ZERO &&
 		   pArxText->fDeltaY < (pArxText->rRect.bottom - pArxText->rRectClipp.bottom)) {
-			pArxText->fDeltaY += pArxText->fSpeedScrollY * (float)_iDiffFrame;
+			pArxText->fDeltaY += pArxText->fSpeedScrollY * float(toMs(_iDiffFrame));
 			
 			if(pArxText->fDeltaY >= (pArxText->rRect.bottom - pArxText->rRectClipp.bottom)) {
 				pArxText->fDeltaY = static_cast<float>(pArxText->rRect.bottom - pArxText->rRectClipp.bottom);

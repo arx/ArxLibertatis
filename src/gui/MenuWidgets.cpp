@@ -308,7 +308,7 @@ bool Menu2_Render() {
 	// If the menu needs to be reinitialized, then the text in the TextManager is probably using bad fonts that were deleted already
 	// Skip one update in this case
 	if(pTextManage && !mainMenu->bReInitAll) {
-		pTextManage->Update(toMs(g_platformTime.lastFrameDuration()));
+		pTextManage->Update(g_platformTime.lastFrameDuration());
 		pTextManage->Render();
 	}
 
