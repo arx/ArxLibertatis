@@ -25,6 +25,44 @@
 #include "platform/Platform.h"
 #include "util/StrongType.h"
 
+
+template <typename TAG, typename T>
+struct DurationType
+	: boost::totally_ordered1<DurationType<TAG, T>
+	, boost::additive1<DurationType<TAG, T>
+	> >
+{
+	T t;
+	
+	DurationType()
+		: t()
+	{ }
+	explicit DurationType(const T t_)
+		: t(t_)
+	{ }
+	DurationType(const DurationType<TAG, T> & t_)
+		: t(t_.t)
+	{ }
+	bool operator==(const DurationType<TAG, T> & rhs) const {
+		return t == rhs.t;
+	}
+	bool operator<(const DurationType<TAG, T> & rhs) const {
+		return t < rhs.t;
+	}
+	DurationType<TAG, T> & operator=(const DurationType<TAG, T> & rhs) {
+		t = rhs.t;
+		return *this;
+	}
+	DurationType<TAG, T> & operator+=(const DurationType<TAG, T> & rhs) {
+		this->t += rhs.t;
+		return *this;
+	}
+	DurationType<TAG, T> & operator-=(const DurationType<TAG, T> & rhs) {
+		this->t -= rhs.t;
+		return *this;
+	}
+};
+
 ARX_STRONG_TYPEDEF(s64, ArxInstant)
 ARX_STRONG_TYPEDEF(s64, ArxDuration)
 
@@ -66,7 +104,7 @@ inline ArxDuration operator -(ArxDuration a, ArxDuration b) {
 
 // in microseconds
 typedef StrongType<struct PlatformInstant_TAG,  s64> PlatformInstant;
-typedef StrongType<struct PlatformDuration_TAG, s64> PlatformDuration;
+typedef DurationType<struct PlatformDuration_TAG, s64> PlatformDuration;
 
 const PlatformInstant  PlatformInstant_ZERO  = PlatformInstant(0);
 const PlatformDuration PlatformDuration_ZERO = PlatformDuration(0);
@@ -93,13 +131,6 @@ inline PlatformInstant operator +(PlatformInstant a, PlatformDuration b) {
 }
 inline PlatformInstant operator -(PlatformInstant a, PlatformDuration b) {
 	return PlatformInstant(a.t - b.t);
-}
-
-inline PlatformDuration operator +(PlatformDuration a, PlatformDuration b) {
-	return PlatformDuration(a.t + b.t);
-}
-inline PlatformDuration operator -(PlatformDuration a, PlatformDuration b) {
-	return PlatformDuration(a.t - b.t);
 }
 
 // copy-paste end
