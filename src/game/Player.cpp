@@ -1916,7 +1916,6 @@ static long LAST_FIRM_GROUND = 1;
 static long TRUE_FIRM_GROUND = 1;
 float lastposy = -9999999.f;
 ArxInstant REQUEST_JUMP = ArxInstant_ZERO;
-extern float Original_framedelay;
 
 ArxInstant LAST_JUMP_ENDTIME = ArxInstant_ZERO;
 

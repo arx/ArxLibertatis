@@ -128,7 +128,6 @@ ZeniMax Media Inc., Suite 120, Rockville, Maryland 20850 USA.
 #include "window/RenderWindow.h"
 
 
-extern float Original_framedelay;
 extern EERIE_3DOBJ *arrowobj;
 
 struct ARX_INTERFACE_HALO_STRUCT

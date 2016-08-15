@@ -115,7 +115,6 @@ inline Vec2f RATIO_2(const Vec2f & in) {
 class Image;
 extern Image savegame_thumbnail;
 
-extern float Original_framedelay;
 extern bool LOADEDD;
 
 extern bool g_debugToggles[10];

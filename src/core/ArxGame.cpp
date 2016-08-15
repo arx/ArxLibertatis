@@ -1618,7 +1618,7 @@ void ArxGame::updateTime() {
 	arxtime.update_frame_time();
 
 	// before modulation by "GLOBAL_SLOWDOWN"
-	Original_framedelay = arxtime.get_frame_delay();
+	float Original_framedelay = arxtime.get_frame_delay();
 	arx_assert(Original_framedelay >= 0.0f);
 
 	// TODO this code shouldn't exist. ARXStartTime should be constant.

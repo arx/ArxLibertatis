@@ -233,8 +233,6 @@ bool g_requestLevelInit = true;
 bool START_NEW_QUEST = false;
 static long LAST_WEAPON_TYPE = -1;
 
-float Original_framedelay=0.f;
-
 float PULSATE;
 
 extern EERIE_CAMERA * ACTIVECAM;
