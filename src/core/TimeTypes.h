@@ -153,6 +153,10 @@ const PlatformDuration PlatformDuration_ZERO = PlatformDuration(0);
 inline PlatformInstant PlatformInstantMs(s64 val) {
 	return PlatformInstant(val * 1000);
 }
+
+inline PlatformDuration PlatformDurationUs(s64 val) {
+	return PlatformDuration(val);
+}
 inline PlatformDuration PlatformDurationMs(s64 val) {
 	return PlatformDuration(val * 1000);
 }

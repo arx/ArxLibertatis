@@ -31,11 +31,11 @@ public:
 	CursorTrail();
 	
 	void reset();
-	void add(float time, const Vec2s & pos);
+	void add(PlatformDuration time, const Vec2s & pos);
 	void draw();
 	
 private:
-	float m_storedTime;
+	PlatformDuration m_storedTime;
 	int   iNbOldCoord;
 	int   iMaxOldCoord;
 	Vec2s iOldCoord[256];
@@ -51,7 +51,7 @@ public:
 	virtual ~MenuCursor();
 	
 	void reset();
-	void update(float time);
+	void update(PlatformDuration time);
 	void SetMouseOver();
 	void DrawCursor();
 	

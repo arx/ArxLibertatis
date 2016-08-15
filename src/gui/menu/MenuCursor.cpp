@@ -32,7 +32,7 @@
 extern TextureContainer * scursor[];
 
 CursorTrail::CursorTrail() {
-	m_storedTime = 0;
+	m_storedTime = PlatformDuration_ZERO;
 	iNbOldCoord = 0;
 	iMaxOldCoord = 40;
 }
@@ -41,12 +41,13 @@ void CursorTrail::reset() {
 	iNbOldCoord = 0;
 }
 
-void CursorTrail::add(float time, const Vec2s & pos)
+void CursorTrail::add(PlatformDuration time, const Vec2s & pos)
 {
 	iOldCoord[iNbOldCoord] = pos;
 	
-	const float targetFPS = 61.f;
-	const float targetDelay = 1000.f / targetFPS;
+	const s64 targetFPS = 61.0;
+	const PlatformDuration targetDelay = PlatformDurationUs((1000 * 1000) / targetFPS);
+	
 	m_storedTime += time;
 	if(m_storedTime > targetDelay) {
 		m_storedTime = std::min(targetDelay, m_storedTime - targetDelay);
@@ -180,7 +181,7 @@ void MenuCursor::reset() {
 	trail.reset();
 }
 
-void MenuCursor::update(float time) {
+void MenuCursor::update(PlatformDuration time) {
 	
 	bool inWindow = GInput->isMouseInWindow();
 	if(inWindow && exited) {

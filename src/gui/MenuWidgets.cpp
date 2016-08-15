@@ -204,7 +204,7 @@ bool Menu2_Render() {
 	if(pMenuCursor == NULL) {
 		pMenuCursor = new MenuCursor();
 	}
-	pMenuCursor->update(toMs(g_platformTime.lastFrameDuration()));
+	pMenuCursor->update(g_platformTime.lastFrameDuration());
 	
 	GRenderer->GetTextureStage(0)->setMinFilter(TextureStage::FilterLinear);
 	GRenderer->GetTextureStage(0)->setMagFilter(TextureStage::FilterLinear);
