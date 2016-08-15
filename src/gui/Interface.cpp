@@ -145,7 +145,7 @@ extern TextureContainer * inventory_font;
 extern float PLAYER_ROTATION;
 extern float SLID_VALUE;
 
-long lSLID_VALUE = 0;
+float lSLID_VALUE = 0;
 
 extern bool BLOCK_PLAYER_CONTROLS;
 extern long DeadTime;
@@ -545,7 +545,7 @@ void ARX_INTERFACE_NoteManage() {
 void ResetPlayerInterface() {
 	player.Interface |= INTER_LIFE_MANA;
 	g_hudRoot.playerInterfaceFader.resetSlid();
-	lSLID_VALUE = 0;
+	lSLID_VALUE = 0.f;
 	SLID_START = g_platformTime.frameStart();
 }
 
