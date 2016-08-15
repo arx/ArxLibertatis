@@ -113,7 +113,7 @@ public:
 	virtual ~CWindowMenu();
 	
 	void add(MenuPage * page);
-	void Update(float time);
+	void Update(PlatformDuration time);
 	MENUSTATE Render();
 	
 	std::vector<MenuPage *>	m_pages;

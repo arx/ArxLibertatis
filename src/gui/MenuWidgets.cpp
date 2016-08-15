@@ -295,7 +295,7 @@ bool Menu2_Render() {
 			pWindowMenu->m_currentPageId=mainMenu->eOldMenuWindowState;
 		}
 
-		pWindowMenu->Update(toMs(g_platformTime.lastFrameDuration()));
+		pWindowMenu->Update(g_platformTime.lastFrameDuration());
 		MENUSTATE eMS = pWindowMenu->Render();
 		if(eMS != NOP) {
 			mainMenu->eOldMenuWindowState=eMS;
@@ -394,12 +394,12 @@ void CWindowMenu::add(MenuPage *page) {
 	page->m_pos = m_pos;
 }
 
-void CWindowMenu::Update(float _fDTime) {
+void CWindowMenu::Update(PlatformDuration _fDTime) {
 
 	float fCalc	= fPosXCalc + (fDist * glm::sin(glm::radians(fAngle)));
 
 	m_pos.x = checked_range_cast<int>(fCalc);
-	fAngle += _fDTime * 0.08f;
+	fAngle += float(toMs(_fDTime)) * 0.08f;
 
 	if(fAngle > 90.f)
 		fAngle = 90.f;
