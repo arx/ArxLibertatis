@@ -20,6 +20,7 @@
 #ifndef ARX_GUI_MENU_MENUCURSOR_H
 #define ARX_GUI_MENU_MENUCURSOR_H
 
+#include "core/TimeTypes.h"
 #include "graphics/Color.h"
 #include "math/Vector.h"
 
@@ -59,7 +60,7 @@ private:
 	
 	Vec2s m_size;
 	bool exited; //! Has the mouse exited the window
-	float				lFrameDiff;
+	PlatformDuration lFrameDiff;
 	int					m_currentFrame;
 	bool				bMouseOver;
 	CursorTrail trail;

@@ -147,7 +147,7 @@ MenuCursor::MenuCursor()
 	bMouseOver=false;
 	
 	m_currentFrame=0;
-	lFrameDiff = 0.f;
+	lFrameDiff = PlatformDuration_ZERO;
 }
 
 MenuCursor::~MenuCursor()
@@ -201,9 +201,9 @@ void MenuCursor::DrawCursor() {
 	
 	DrawOneCursor(GInput->getMousePosAbs());
 
-	lFrameDiff += toMs(g_platformTime.lastFrameDuration());
+	lFrameDiff += g_platformTime.lastFrameDuration();
 
-	if(lFrameDiff > 70.f) {
+	if(lFrameDiff > PlatformDurationMs(70)) {
 		if(bMouseOver) {
 			if(m_currentFrame < 4) {
 				m_currentFrame++;
@@ -222,7 +222,7 @@ void MenuCursor::DrawCursor() {
 			}
 		}
 
-		lFrameDiff = 0.f;
+		lFrameDiff = PlatformDuration_ZERO;
 	}
 
 	GRenderer->SetRenderState(Renderer::AlphaBlending, false);
