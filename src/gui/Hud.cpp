@@ -127,7 +127,7 @@ void HitStrengthGauge::init() {
 
 void HitStrengthGauge::requestFlash(float flashIntensity) {
 	m_flashActive = true;
-	m_flashTime = 0;
+	m_flashTime = PlatformDuration_ZERO;
 	m_flashIntensity = flashIntensity;
 }
 
@@ -160,11 +160,10 @@ void HitStrengthGauge::update() {
 	}
 	
 	if(m_flashActive) {
-		float fCalc = m_flashTime + Original_framedelay;
-		m_flashTime = checked_range_cast<unsigned long>(fCalc);
-		if(m_flashTime >= 500) {
+		m_flashTime += g_platformTime.lastFrameDuration();
+		if(m_flashTime >= PlatformDurationMs(500)) {
 			m_flashActive = false;
-			m_flashTime = 0;
+			m_flashTime = PlatformDuration_ZERO;
 		}
 	}
 }

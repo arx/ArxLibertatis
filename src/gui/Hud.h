@@ -45,7 +45,7 @@ private:
 	
 	float m_intensity;
 	bool m_flashActive;
-	unsigned long m_flashTime;
+	PlatformDuration m_flashTime;
 	float m_flashIntensity;
 	
 public:
