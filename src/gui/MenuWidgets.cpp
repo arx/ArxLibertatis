@@ -465,7 +465,7 @@ MenuPage::MenuPage(const Vec2f & pos, const Vec2f & size, MENUSTATE _eMenuState)
 	, m_selected(NULL)
 	, bEdit(false)
 	, bMouseAttack(false)
-	, m_blinkTime(0.f)
+	, m_blinkTime(PlatformDuration_ZERO)
 	, m_blink(true)
 {
 	m_size = size;
@@ -816,9 +816,11 @@ void MenuPage::Render() {
 		m_selected->RenderMouseOver();
 		
 		{
-			m_blinkTime += float(toMs(g_platformTime.lastFrameDuration()));
-			if(m_blinkTime > m_blinkDuration * 2)
-				m_blinkTime = 0;
+			static const PlatformDuration m_blinkDuration = PlatformDurationMs(300);
+			
+			m_blinkTime = m_blinkTime + g_platformTime.lastFrameDuration();
+			if(m_blinkTime > (m_blinkDuration + m_blinkDuration))
+				m_blinkTime = PlatformDuration_ZERO;
 			
 			m_blink = m_blinkTime > m_blinkDuration;
 		}
