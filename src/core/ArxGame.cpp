@@ -1842,13 +1842,14 @@ void ArxGame::updateLevel() {
 		ManageNONCombatModeAnimations();
 		
 		{
+			float framedelay = float(toMs(g_platformTime.lastFrameDuration()));
 			Entity * entity = entities.player();
 			
 			EERIEDrawAnimQuatUpdate(entity->obj,
 			                        entity->animlayer,
 			                        entity->angle,
 			                        entity->pos,
-			                        Original_framedelay,
+			                        framedelay,
 			                        entity,
 			                        true);
 		}
