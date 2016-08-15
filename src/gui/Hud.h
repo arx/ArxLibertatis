@@ -62,7 +62,7 @@ public:
 class BookIconGui : public HudIconBase {
 private:
 	Vec2f m_size;
-	unsigned long ulBookHaloTime;
+	PlatformDuration ulBookHaloTime;
 	
 public:
 	BookIconGui();

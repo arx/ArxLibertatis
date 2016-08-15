@@ -236,12 +236,12 @@ void BookIconGui::init() {
 	m_haloColor = Color3f(0.2f, 0.4f, 0.8f);
 	
 	m_haloActive = false;
-	ulBookHaloTime = 0;
+	ulBookHaloTime = PlatformDuration_ZERO;
 }
 
 void BookIconGui::requestHalo() {
 	m_haloActive = true;
-	ulBookHaloTime = 0;
+	ulBookHaloTime = PlatformDuration_ZERO;
 }
 
 void BookIconGui::requestFX() {
@@ -253,9 +253,8 @@ void BookIconGui::update(const Rectf & parent) {
 	m_rect = createChild(parent, Anchor_TopRight, m_size * m_scale, Anchor_BottomRight);
 	
 	if(m_haloActive) {
-		float fCalc = ulBookHaloTime + Original_framedelay;
-		ulBookHaloTime = checked_range_cast<unsigned long>(fCalc);
-		if(ulBookHaloTime >= 3000) { // ms
+		ulBookHaloTime += g_platformTime.lastFrameDuration();
+		if(ulBookHaloTime >= PlatformDurationMs(3000)) { // ms
 			m_haloActive = false;
 		}
 	}
