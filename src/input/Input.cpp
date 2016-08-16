@@ -779,9 +779,11 @@ bool Input::getMouseButtonNowUnPressed(int buttonId) const {
 	return !bMouseButton[buttonIdx] && bOldMouseButton[buttonIdx];
 }
 
-bool Input::getMouseButtonDoubleClick(int buttonId, int timeMs) const {
+bool Input::getMouseButtonDoubleClick(int buttonId) const {
 	arx_assert(buttonId >= Mouse::ButtonBase && buttonId < Mouse::ButtonMax);
-
+	
+	int timeMs = 300;
+	
 	int buttonIdx = buttonId - Mouse::ButtonBase;
 	return (iMouseTimeSet[buttonIdx] == 2) && (iMouseTime[buttonIdx] < timeMs);
 }

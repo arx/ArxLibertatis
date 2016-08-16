@@ -129,7 +129,7 @@ public:
 	bool getMouseButtonRepeat(int buttonId) const;
 	bool getMouseButtonNowPressed(int buttonId) const;
 	bool getMouseButtonNowUnPressed(int buttonId) const;
-	bool getMouseButtonDoubleClick(int buttonId, int timeMs) const;
+	bool getMouseButtonDoubleClick(int buttonId) const;
 	
 	int getMouseWheelDir() const { return iWheelDir; }
 	

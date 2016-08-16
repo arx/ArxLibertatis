@@ -742,7 +742,7 @@ MENUSTATE MenuPage::Update(Vec2f pos) {
 		if(widget) {
 			m_selected = widget;
 			
-			if(GInput->getMouseButtonDoubleClick(Mouse::Button_0, 300)) {
+			if(GInput->getMouseButtonDoubleClick(Mouse::Button_0)) {
 				MENUSTATE e = m_selected->m_targetMenu;
 				bEdit = m_selected->OnMouseDoubleClick();
 				
@@ -770,7 +770,7 @@ MENUSTATE MenuPage::Update(Vec2f pos) {
 			if(widget) {
 				m_selected = widget;
 				
-				if(GInput->getMouseButtonDoubleClick(Mouse::Button_0, 300)) {
+				if(GInput->getMouseButtonDoubleClick(Mouse::Button_0)) {
 					bEdit = m_selected->OnMouseDoubleClick();
 					
 					if(bEdit)
