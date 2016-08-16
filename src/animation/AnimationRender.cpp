@@ -1132,7 +1132,7 @@ static void Cedric_RenderObject(EERIE_3DOBJ * eobj, Skeleton * obj, Entity * io,
 	if(io && (io->sfx_flag & SFX_TYPE_YLSIDE_DEATH) && io->show != SHOW_FLAG_TELEPORTING) {
 		const ArxDuration elapsed = arxtime.now() - io->sfx_time;
 		if(elapsed >= ArxDurationMs(3000) && elapsed < ArxDurationMs(6000)) {
-			float ratio = (elapsed - 3000) * (1.0f / 3000);
+			float ratio = toMs(elapsed - ArxDurationMs(3000)) * (1.0f / 3000);
 			glowColor = Color::gray(ratio).toRGB();
 			glow = true;
 		}

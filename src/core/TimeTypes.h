@@ -140,12 +140,14 @@ inline ArxInstant operator -(ArxInstant a, ArxDuration b) {
 	return ArxInstant(a.t - b.t);
 }
 
+#ifndef ARX_REFACTOR_TIMETYPES
 inline ArxDuration operator +(ArxDuration a, ArxDuration b) {
 	return ArxDuration(a.t + b.t);
 }
 inline ArxDuration operator -(ArxDuration a, ArxDuration b) {
 	return ArxDuration(a.t - b.t);
 }
+#endif
 
 // FIXME copy-paste
 
