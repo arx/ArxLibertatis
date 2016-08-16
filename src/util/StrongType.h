@@ -36,22 +36,21 @@
 #include <boost/config.hpp>
 #include <boost/operators.hpp>
 
-#define ARX_STRONG_TYPEDEF(T, D)                              \
-struct D                                                        \
-    : boost::totally_ordered1< D                                \
-    , boost::totally_ordered2< D, T                             \
-    > >                                                         \
-{                                                               \
-    T t;                                                        \
-    explicit D(const T t_) : t(t_) {}                           \
-    D(): t() {}                                                 \
-    D(const D & t_) : t(t_.t){}                                 \
-    D & operator=(const D & rhs) { t = rhs.t; return *this;}    \
-    operator const T & () const {return t; }                    \
-    operator T & () { return t; }                               \
-    bool operator==(const D & rhs) const { return t == rhs.t; } \
-    bool operator<(const D & rhs) const { return t < rhs.t; }   \
+template <typename TAG, typename T>
+struct StrongType
+	: boost::totally_ordered1<StrongType<TAG, T>
+	, boost::totally_ordered2<StrongType<TAG, T>, T
+	> >
+{
+	T t;
+	explicit StrongType(const T t_) : t(t_) {}
+	StrongType(): t() {}
+	StrongType(const StrongType<TAG, T>  & t_) : t(t_.t){}
+	StrongType<TAG, T> & operator=(const StrongType<TAG, T> & rhs) { t = rhs.t; return *this;}
+	operator const T & () const {return t; }
+	operator T & () { return t; }
+	bool operator==(const StrongType<TAG, T> & rhs) const { return t == rhs.t; }
+	bool operator<(const StrongType<TAG, T> & rhs) const { return t < rhs.t; }
 };
-
 
 #endif // ARX_UTIL_STRONGTYPE_H
