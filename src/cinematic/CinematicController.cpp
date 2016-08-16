@@ -142,9 +142,12 @@ bool isInCinematic() {
 
 // Manages Currently playing 2D cinematic
 void cinematicRender() {
-	
+
+	PlatformDuration diff = g_platformTime.lastFrameDuration();
+
 	if(PLAY_LOADED_CINEMATIC == Cinematic_StartRequested) {
 		LogDebug("really starting cinematic now");
+		diff = PlatformDuration_ZERO;
 		PLAY_LOADED_CINEMATIC = Cinematic_Started;
 	}
 
@@ -152,7 +155,7 @@ void cinematicRender() {
 	ControlCinematique->InitDeviceObjects();
 	GRenderer->SetRenderState(Renderer::AlphaBlending, true);
 
-	ControlCinematique->Render(g_platformTime.lastFrameDuration());
+	ControlCinematique->Render(diff);
 
 	// end the animation
 	if(   !ControlCinematique->key
