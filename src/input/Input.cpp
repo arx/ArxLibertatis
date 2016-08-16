@@ -376,22 +376,22 @@ void Input::update() {
 	
 	arxtime.update(false);
 	const ArxInstant now = arxtime.now();
-
+	
 	for(int buttonId = Mouse::ButtonBase; buttonId < Mouse::ButtonMax; buttonId++) {
 		int i = buttonId - Mouse::ButtonBase;
-
+		
 		int iNumClick;
 		int iNumUnClick;
 		backend->getMouseButtonClickCount(buttonId, iNumClick, iNumUnClick);
-
+		
 		iOldNumClick[i]+=iNumClick+iNumUnClick;
-
+		
 		if(!bMouseButton[i] && iOldNumClick[i] == iNumUnClick) {
 			iOldNumClick[i]=0;
 		}
-
+		
 		bOldMouseButton[i]=bMouseButton[i];
-
+		
 		if(bMouseButton[i]) {
 			if(iOldNumClick[i]) {
 				bMouseButton[i]=false;
@@ -401,13 +401,13 @@ void Input::update() {
 				bMouseButton[i]=true;
 			}
 		}
-
+		
 		if(iOldNumClick[i]) 
 			iOldNumClick[i]--;
 		
 		int iDTime;
 		backend->isMouseButtonPressed(buttonId,iDTime);
-
+		
 		if(iDTime) {
 			iMouseTime[i]=iDTime;
 			iMouseTimeSet[i]=2;
@@ -417,7 +417,7 @@ void Input::update() {
 				iMouseTime[i]=0;
 				iMouseTimeSet[i]=0;
 			}
-
+			
 			if(getMouseButtonNowPressed(buttonId)) {
 				switch(iMouseTimeSet[i]) {
 				case 0:
