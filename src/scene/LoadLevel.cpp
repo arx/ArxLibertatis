@@ -390,7 +390,7 @@ long DanaeSaveLevel(const fs::path & _fic) {
 			
 			long nbvert = (ep.type & POLY_QUAD) ? 4 : 3;
 			for(long k = 0; k < nbvert; k++) {
-				u32 tmp = (u32)ep.v[k].color;
+				u32 tmp = (u32)ep.v[k].color.t;
 				memcpy(dat + pos, &tmp, sizeof(u32));
 				pos += sizeof(u32);
 			}

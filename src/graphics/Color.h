@@ -24,7 +24,42 @@
 #include <algorithm>
 
 #include "platform/Platform.h"
-#include "util/StrongType.h"
+
+template <typename TAG, typename T>
+struct IntegerColorType
+{
+	T t;
+	
+	explicit IntegerColorType(const T t_)
+		: t(t_)
+	{ }
+	IntegerColorType()
+		: t()
+	{ }
+	IntegerColorType(const IntegerColorType<TAG, T> & t_)
+		: t(t_.t)
+	{ }
+	bool operator==(const IntegerColorType<TAG, T> & rhs) const {
+		return t == rhs.t;
+	}
+	IntegerColorType<TAG, T> & operator=(const IntegerColorType<TAG, T> & rhs) {
+		t = rhs.t;
+		return *this;
+	}
+};
+
+typedef IntegerColorType<struct ColorBGR_TAG,  u32> ColorBGR;
+typedef IntegerColorType<struct ColorRGB_TAG,  u32> ColorRGB;
+typedef IntegerColorType<struct ColorRGBA_TAG, u32> ColorRGBA;
+typedef IntegerColorType<struct ColorBGRA_TAG, u32> ColorBGRA;
+
+ARX_STATIC_ASSERT(sizeof(ColorBGR) == sizeof(u32), "");
+ARX_STATIC_ASSERT(sizeof(ColorRGB) == sizeof(u32), "");
+ARX_STATIC_ASSERT(sizeof(ColorRGBA) == sizeof(u32), "");
+ARX_STATIC_ASSERT(sizeof(ColorBGRA) == sizeof(u32), "");
+
+const ColorRGBA ColorRGBA_ZERO = ColorRGBA(0);
+
 
 template <class T>
 class Color4;
@@ -37,11 +72,6 @@ template <>
 struct ColorLimits<float> {
 	static float max() { return 1.f; }
 };
-
-ARX_STRONG_TYPEDEF(u32, ColorBGR)
-ARX_STRONG_TYPEDEF(u32, ColorRGB)
-ARX_STRONG_TYPEDEF(u32, ColorRGBA)
-ARX_STRONG_TYPEDEF(u32, ColorBGRA)
 
 /*!
  * A color with red, blue and green components.
@@ -77,11 +107,11 @@ public:
 	}
 	
 	static Color3 fromRGB(ColorRGB rgb) {
-		return Color3(value(rgb), value(rgb >> 8), value(rgb >> 16));
+		return Color3(value(rgb.t), value(rgb.t >> 8), value(rgb.t >> 16));
 	}
 	
 	static Color3 fromBGR(ColorBGR bgr) {
-		return Color3(value(bgr >> 16), value(bgr >> 8), value(bgr));
+		return Color3(value(bgr.t >> 16), value(bgr.t >> 8), value(bgr.t));
 	}
 	
 	ColorRGBA toRGB(u8 _a = ColorLimits<u8>::max()) const {
@@ -214,11 +244,11 @@ public:
 	}
 	
 	static Color4 fromRGBA(ColorRGBA rgba) {
-		return fromRGB(ColorRGB(rgba), C3::value(rgba >> 24));
+		return fromRGB(ColorRGB(rgba.t), C3::value(rgba.t >> 24));
 	}
 	
 	static Color4 fromBGRA(ColorBGRA bgra) {
-		return fromBGR(ColorBGR(bgra), C3::value(bgra >> 24));
+		return fromBGR(ColorBGR(bgra.t), C3::value(bgra.t >> 24));
 	}
 	
 	template <class O>

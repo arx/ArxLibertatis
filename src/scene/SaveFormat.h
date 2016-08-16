@@ -1128,7 +1128,7 @@ struct SavedCamera {
 		
 		clip3D = 0;
 		type = CAM_SUBJVIEW;
-		bkgcolor = b.bkgcolor.toBGRA();
+		bkgcolor = b.bkgcolor.toBGRA().t;
 		nbdrawn = 0;
 		cdepth = b.cdepth;
 		

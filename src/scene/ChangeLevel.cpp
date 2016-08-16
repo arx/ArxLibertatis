@@ -1356,7 +1356,7 @@ static long ARX_CHANGELEVEL_Push_IO(const Entity * io, long level) {
 				as->ex_rotate = *io->_npcdata->ex_rotate;
 			}
 
-			as->blood_color = io->_npcdata->blood_color.toBGRA();
+			as->blood_color = io->_npcdata->blood_color.toBGRA().t;
 			as->fDetect = io->_npcdata->fDetect;
 			as->cuts = io->_npcdata->cuts;
 			pos += struct_size;
