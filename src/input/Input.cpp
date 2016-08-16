@@ -384,21 +384,21 @@ void Input::update() {
 		int iNumUnClick;
 		backend->getMouseButtonClickCount(buttonId, iNumClick, iNumUnClick);
 		
-		iOldNumClick[i]+=iNumClick+iNumUnClick;
+		iOldNumClick[i] += iNumClick + iNumUnClick;
 		
 		if(!bMouseButton[i] && iOldNumClick[i] == iNumUnClick) {
-			iOldNumClick[i]=0;
+			iOldNumClick[i] = 0;
 		}
 		
-		bOldMouseButton[i]=bMouseButton[i];
+		bOldMouseButton[i] = bMouseButton[i];
 		
 		if(bMouseButton[i]) {
 			if(iOldNumClick[i]) {
-				bMouseButton[i]=false;
+				bMouseButton[i] = false;
 			}
 		} else {
 			if(iOldNumClick[i]) {
-				bMouseButton[i]=true;
+				bMouseButton[i] = true;
 			}
 		}
 		
@@ -406,16 +406,16 @@ void Input::update() {
 			iOldNumClick[i]--;
 		
 		int iDTime;
-		backend->isMouseButtonPressed(buttonId,iDTime);
+		backend->isMouseButtonPressed(buttonId, iDTime);
 		
 		if(iDTime) {
-			iMouseTime[i]=iDTime;
-			iMouseTimeSet[i]=2;
+			iMouseTime[i] = iDTime;
+			iMouseTimeSet[i] = 2;
 		} else {
 			arxtime.update(false);
 			if(iMouseTimeSet[i] > 0 && (arxtime.now_f() - iMouseTime[i]) > 300) {
-				iMouseTime[i]=0;
-				iMouseTimeSet[i]=0;
+				iMouseTime[i] = 0;
+				iMouseTimeSet[i] = 0;
 			}
 			
 			if(getMouseButtonNowPressed(buttonId)) {
