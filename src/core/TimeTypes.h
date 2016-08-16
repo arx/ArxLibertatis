@@ -105,7 +105,13 @@ inline InstantType<TAG, T> operator -(InstantType<TAG, T> a, DurationType<TAG, T
 
 
 typedef StrongType<struct ArxInstant_TAG,  s64> ArxInstant;
+
+//#define ARX_REFACTOR_TIMETYPES 1
+#ifdef ARX_REFACTOR_TIMETYPES
+typedef DurationType<struct ArxTime_TAG, s64> ArxDuration;
+#else
 typedef StrongType<struct ArxDuration_TAG, s64> ArxDuration;
+#endif
 
 const ArxInstant  ArxInstant_ZERO  = ArxInstant(0);
 const ArxDuration ArxDuration_ZERO = ArxDuration(0);
