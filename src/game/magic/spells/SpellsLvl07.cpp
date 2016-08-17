@@ -684,7 +684,6 @@ void ConfuseSpell::Update() {
 	mat.setBlendType(RenderMaterial::Additive);
 	mat.setTexture(tex_trail);
 	
-	arxtime.update();
 	Anglef stiteangle = Anglef(0.f, -glm::degrees(arxtime.now_f() * ( 1.0f / 500 )), 0.f);
 	
 	{
