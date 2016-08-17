@@ -40,7 +40,6 @@ bool CinematicBorder::isActive()
 }
 
 float CinematicBorder::elapsedTime() {
-	arxtime.update();
 	return arxtime.now_f() - m_startTime;
 }
 
@@ -53,7 +52,6 @@ void CinematicBorder::set(bool status, bool smooth)
 {
 	if(status) {
 		m_active = true;//++;
-		arxtime.update();
 		m_startTime = arxtime.now_f();
 	} else {
 		m_active = false;//--;
