@@ -374,8 +374,7 @@ void Input::update() {
 		}
 	}
 	
-	arxtime.update(false);
-	const ArxInstant now = arxtime.now();
+	const s64 now = platform::getTimeMs();
 	
 	for(int buttonId = Mouse::ButtonBase; buttonId < Mouse::ButtonMax; buttonId++) {
 		int i = buttonId - Mouse::ButtonBase;
@@ -412,8 +411,7 @@ void Input::update() {
 			iMouseTime[i] = iDTime;
 			iMouseTimeSet[i] = 2;
 		} else {
-			arxtime.update(false);
-			if(iMouseTimeSet[i] > 0 && (arxtime.now_f() - iMouseTime[i]) > 300) {
+			if(iMouseTimeSet[i] > 0 && (now - iMouseTime[i]) > 300) {
 				iMouseTime[i] = 0;
 				iMouseTimeSet[i] = 0;
 			}
