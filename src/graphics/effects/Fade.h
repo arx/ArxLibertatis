@@ -36,7 +36,7 @@ void fadeReset();
 void fadeSetColor(Color3f color);
 
 // TODO should this really be in ingame time ?
-void fadeRequestStart(FadeType type, const ArxDuration duration);
+void fadeRequestStart(FadeType type, const PlatformDuration duration);
 
 void ManageFade();
 

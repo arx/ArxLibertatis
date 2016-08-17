@@ -187,7 +187,7 @@ public:
 	Result execute(Context & context) {
 		
 		std::string inout = context.getWord();
-		const ArxDuration duration = checked_range_cast<ArxDuration>(context.getFloat());
+		const PlatformDuration duration = PlatformDurationMs(context.getFloat());
 		
 		if(inout == "out") {
 			
@@ -199,12 +199,12 @@ public:
 			
 			fadeRequestStart(FadeType_Out, duration);
 			
-			DebugScript(" out " << duration << ' ' << color.r << ' ' << color.g << ' ' << color.b);
+			DebugScript(" out " << toMs(duration) << ' ' << color.r << ' ' << color.g << ' ' << color.b);
 		} else if(inout == "in") {
 			
 			fadeRequestStart(FadeType_In, duration);
 			
-			DebugScript(" in " << duration);
+			DebugScript(" in " << toMs(duration));
 		} else {
 			ScriptWarning << "unexpected fade direction: " << inout;
 			return Failed;

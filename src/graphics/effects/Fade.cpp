@@ -25,17 +25,17 @@
 #include "graphics/Draw.h"
 #include "graphics/Renderer.h"
 
-static ArxDuration FADEDURATION = ArxDuration_ZERO;
+static PlatformDuration FADEDURATION = PlatformDuration_ZERO;
 long FADEDIR = 0;
-static ArxInstant FADESTART = ArxInstant_ZERO;
+static PlatformInstant FADESTART = PlatformInstant_ZERO;
 float LAST_FADEVALUE = 1.f;
 static Color3f FADECOLOR;
 
 
 void fadeReset() {
 	FADEDIR = 0;
-	FADEDURATION = ArxDuration_ZERO;
-	FADESTART = ArxInstant_ZERO;
+	FADEDURATION = PlatformDuration_ZERO;
+	FADESTART = PlatformInstant_ZERO;
 	FADECOLOR = Color3f::black;
 }
 
@@ -43,7 +43,7 @@ void fadeSetColor(Color3f color) {
 	FADECOLOR = color;
 }
 
-void fadeRequestStart(FadeType type, const ArxDuration duration) {
+void fadeRequestStart(FadeType type, const PlatformDuration duration) {
 	switch(type) {
 		case FadeType_In:
 			FADEDIR = 1;
@@ -54,20 +54,16 @@ void fadeRequestStart(FadeType type, const ArxDuration duration) {
 	}
 	
 	FADEDURATION = duration;
-	arxtime.update();
-	FADESTART = arxtime.now();
+	FADESTART = g_platformTime.frameStart();
 }
 
-void ManageFade()
-{
-	arxtime.update();
+void ManageFade() {
 	
-	// TODO can this really become negative ?
-	ArxDuration elapsed = arxtime.now() - FADESTART;
-	if(elapsed <= ArxDuration_ZERO)
+	PlatformDuration elapsed = g_platformTime.frameStart() - FADESTART;
+	if(elapsed < PlatformDuration_ZERO)
 		return;
 
-	float Visibility = elapsed / float(FADEDURATION);
+	float Visibility = float(toMs(elapsed) / toMs(FADEDURATION));
 
 	if(FADEDIR > 0)
 		Visibility = 1.f - Visibility;
