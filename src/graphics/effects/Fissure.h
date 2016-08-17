@@ -34,6 +34,8 @@ public:
 	void SetColorRays2(Color3f color);
 	
 	ArxDuration m_elapsed;
+	ArxDuration m_duration;
+	
 	ArxDuration ulDurationIntro;
 	ArxDuration ulDurationRender;
 	ArxDuration ulDurationOuttro;

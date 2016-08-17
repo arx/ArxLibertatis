@@ -32,7 +32,8 @@
 
 
 FissureFx::FissureFx()
-	: m_elapsed(0)
+	: m_elapsed(ArxDuration_ZERO)
+	, m_duration(ArxDuration_ZERO)
 	, ulDurationIntro(1000)
 	, ulDurationRender(1000)
 	, ulDurationOuttro(1000)
@@ -40,7 +41,7 @@ FissureFx::FissureFx()
 	, m_colorRays1(Color3f::white)
 	, m_colorRays2(Color3f::black)
 {
-	
+	m_duration = ulDurationIntro + ulDurationRender + ulDurationOuttro;
 }
 
 void FissureFx::SetDuration(ArxDuration alDurationIntro, ArxDuration alDurationRender, ArxDuration alDurationOuttro)
@@ -50,6 +51,7 @@ void FissureFx::SetDuration(ArxDuration alDurationIntro, ArxDuration alDurationR
 	ulDurationOuttro = arx::clamp(alDurationOuttro, ArxDurationMs(100), ArxDurationMs(100000));
 	
 	m_elapsed = ArxDuration_ZERO;
+	m_duration = ulDurationIntro + ulDurationRender + ulDurationOuttro;
 }
 
 void FissureFx::SetColorBorder(Color3f color)
@@ -85,7 +87,7 @@ CRiseDead::CRiseDead()
 	, sizeF(0)
 	, fSizeIntro(0.f)
 {
-	m_elapsed = ulDurationIntro + ulDurationRender + ulDurationOuttro + ArxDurationMs(1);
+	m_elapsed = m_duration + ArxDurationMs(1);
 	
 	tex_light = TextureContainer::Load("graph/obj3d/textures/(fx)_tsu4");
 }
@@ -141,7 +143,7 @@ void CRiseDead::Create(Vec3f aeSrc, float afBeta)
 
 ArxDuration CRiseDead::GetDuration()
 {
-	return (ulDurationIntro + ulDurationRender + ulDurationOuttro);
+	return m_duration;
 }
 
 
@@ -396,7 +398,7 @@ void CRiseDead::Update(float timeDelta)
 // render the space time tearing
 void CRiseDead::Render()
 {
-	if(m_elapsed >= (ulDurationIntro + ulDurationRender + ulDurationOuttro))
+	if(m_elapsed >= m_duration)
 		return;
 	
 	//-------------------------------------------------------------------------
@@ -419,7 +421,7 @@ void CRiseDead::Render()
 	{
 	}
 	// close it all
-	else if (m_elapsed < (ulDurationIntro + ulDurationRender + ulDurationOuttro))
+	else if (m_elapsed < m_duration)
 	{
 		float fOneOnDurationOuttro = 1.f / (float)(ulDurationOuttro);
 		
@@ -445,7 +447,7 @@ CSummonCreature::CSummonCreature()
 	
 	m_eSrc = Vec3f_ZERO;
 	
-	m_elapsed = ulDurationIntro + ulDurationRender + ulDurationOuttro + ArxDurationMs(1);
+	m_elapsed = m_duration + ArxDurationMs(1);
 	
 	iSize = 100;
 	fOneOniSize = 1.0f / ((float) iSize);
@@ -709,7 +711,7 @@ void CSummonCreature::Update(float timeDelta)
 // rendu de la déchirure spatio temporelle
 void CSummonCreature::Render()
 {
-	if(m_elapsed >= (ulDurationIntro + ulDurationRender + ulDurationOuttro))
+	if(m_elapsed >= m_duration)
 		return;
 	
 	//-------------------------------------------------------------------------
@@ -732,7 +734,7 @@ void CSummonCreature::Render()
 	{
 	}
 	// close it all
-	else if (m_elapsed < (ulDurationIntro + ulDurationRender + ulDurationOuttro))
+	else if (m_elapsed < m_duration)
 	{
 		float fOneOnDurationOuttro = 1.f / (float)(ulDurationOuttro);
 		
