@@ -425,7 +425,6 @@ void RepelUndeadSpell::Update() {
 	eObjAngle.setPitch(0);
 	eObjAngle.setRoll(0);
 	
-	arxtime.update();
 	float vv = 1.f + (std::sin(arxtime.now_f() * ( 1.0f / 1000 )));
 	vv *= ( 1.0f / 2 );
 	vv += 1.1f;
