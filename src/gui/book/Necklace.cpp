@@ -160,7 +160,6 @@ void ARX_INTERFACE_ManageOpenedBook_Finish(const Vec2f & mousePos)
 				if(rune->angle.getYaw() > 300.f)
 					rune->angle.setYaw(300.f);
 				
-				arxtime.update();
 				angle.setYaw(std::sin(arxtime.now_f() * (1.0f / 200)) * rune->angle.getYaw() * (1.0f / 40));
 			}
 			
