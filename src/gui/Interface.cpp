@@ -1781,17 +1781,17 @@ void ArxGame::manageKeyMouse() {
 			bool dragging = GInput->getMouseButtonRepeat(Mouse::Button_0);
 			
 			static bool mouseInBorder = false;
-			static ArxInstant mouseInBorderTime = ArxInstant_ZERO;
+			static PlatformInstant mouseInBorderTime = PlatformInstant_ZERO;
 			
 			if(!bRenderInCursorMode || (!dragging && !GInput->isMouseInWindow())) {
 				mouseInBorder = false;
 			} else {
 				
 				int borderSize = 10;
-				ArxDuration borderDelay = ArxDurationMs(100);
+				PlatformDuration borderDelay = PlatformDurationMs(100);
 				if(!dragging && !mainApp->getWindow()->isFullScreen()) {
 					borderSize = 50;
-					borderDelay = ArxDurationMs(200);
+					borderDelay = PlatformDurationMs(200);
 				}
 				
 				int distLeft = DANAEMouse.x - g_size.left;
@@ -1804,7 +1804,7 @@ void ArxGame::manageKeyMouse() {
 				   || (!dragging && distBottom < g_size.height() / 4 && distRight <= borderSize)
 				   || (!dragging && distTop <= 4 * borderSize && distRight <= 4 * borderSize)) {
 					borderSize = 2;
-					borderDelay = ArxDurationMs(600);
+					borderDelay = PlatformDurationMs(600);
 				}
 				
 				mouseDiff = Vec2f_ZERO;
@@ -1833,11 +1833,13 @@ void ArxGame::manageKeyMouse() {
 				   && distTop >= 3 * borderSize && distBottom >= 3 * borderSize) {
 					mouseInBorder = false;
 				} else if(!mouseInBorder) {
-					mouseInBorderTime = arxtime.now();
+					mouseInBorderTime = g_platformTime.frameStart();
 					mouseInBorder = true;
 				}
 				
-				if(borderDelay > 0 && arxtime.now() - mouseInBorderTime < borderDelay) {
+				if(   borderDelay > PlatformDuration_ZERO
+				   && g_platformTime.frameStart() - mouseInBorderTime < borderDelay
+				) {
 					mouseDiff = Vec2f_ZERO;
 				} else {
 					bKeySpecialMove = true;
