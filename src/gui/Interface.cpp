@@ -1695,62 +1695,67 @@ void ArxGame::manageKeyMouse() {
 		bool bKeySpecialMove=false;
 		
 		struct PushTime {
-			unsigned long turnLeft;
-			unsigned long turnRight;
-			unsigned long lookUp;
-			unsigned long lookDown;
+			PlatformInstant turnLeft;
+			PlatformInstant turnRight;
+			PlatformInstant lookUp;
+			PlatformInstant lookDown;
 		};
 		
-		static PushTime pushTime = {0, 0, 0, 0};
+		static PushTime pushTime = {
+			PlatformInstant_ZERO,
+			PlatformInstant_ZERO,
+			PlatformInstant_ZERO,
+			PlatformInstant_ZERO
+		};
 		
 		if(!GInput->actionPressed(CONTROLS_CUST_STRAFE)) {
-			arxtime.update();
-			const ArxInstant now = arxtime.now();
+			const PlatformInstant now = g_platformTime.frameStart();
 
 			if(GInput->actionPressed(CONTROLS_CUST_TURNLEFT)) {
-				if(!pushTime.turnLeft)
+				if(pushTime.turnLeft == PlatformInstant_ZERO)
 					pushTime.turnLeft = now;
 
 				bKeySpecialMove = true;
 			}
 			else
-				pushTime.turnLeft = 0;
+				pushTime.turnLeft = PlatformInstant_ZERO;
 
 			if(GInput->actionPressed(CONTROLS_CUST_TURNRIGHT)) {
-				if(!pushTime.turnRight)
+				if(pushTime.turnRight == PlatformInstant_ZERO)
 					pushTime.turnRight = now;
 
 				bKeySpecialMove = true;
 			}
 			else
-				pushTime.turnRight = 0;
+				pushTime.turnRight = PlatformInstant_ZERO;
 		}
 
 		if(USE_PLAYERCOLLISIONS) {
-			arxtime.update();
-			const ArxInstant now = arxtime.now();
+			const PlatformInstant now = g_platformTime.frameStart();
 
 			if(GInput->actionPressed(CONTROLS_CUST_LOOKUP)) {
-				if(!pushTime.lookUp)
+				if(pushTime.lookUp == PlatformInstant_ZERO)
 					pushTime.lookUp = now;
 
 				bKeySpecialMove = true;
 			}
 			else
-				pushTime.lookUp = 0;
+				pushTime.lookUp = PlatformInstant_ZERO;
 
 			if(GInput->actionPressed(CONTROLS_CUST_LOOKDOWN)) {
-				if(!pushTime.lookDown)
+				if(pushTime.lookDown == PlatformInstant_ZERO)
 					pushTime.lookDown = now;
 
 				bKeySpecialMove = true;
 			}
 			else
-				pushTime.lookDown = 0;
+				pushTime.lookDown = PlatformInstant_ZERO;
 		}
 
 		if(bKeySpecialMove) {
-			if(pushTime.turnLeft || pushTime.turnRight) {
+			if(   pushTime.turnLeft  != PlatformInstant_ZERO
+			   || pushTime.turnRight != PlatformInstant_ZERO
+			) {
 				if(pushTime.turnLeft < pushTime.turnRight)
 					mouseDiff.x = 10.f;
 				else
@@ -1759,7 +1764,9 @@ void ArxGame::manageKeyMouse() {
 				mouseDiff.x = 0.f;
 			}
 
-			if(pushTime.lookUp || pushTime.lookDown) {
+			if(   pushTime.lookUp   != PlatformInstant_ZERO
+			   || pushTime.lookDown != PlatformInstant_ZERO
+			) {
 				if(pushTime.lookUp < pushTime.lookDown)
 					mouseDiff.y = 10.f;
 				else
