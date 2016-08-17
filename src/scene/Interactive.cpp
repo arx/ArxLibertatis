@@ -2207,8 +2207,6 @@ void UpdateCameras() {
 	
 	ARX_PROFILE_FUNC();
 	
-	arxtime.update();
-	
 	for(size_t i = 1; i < entities.size(); i++) {
 		const EntityHandle handle = EntityHandle(i);
 		Entity * io = entities[handle];
