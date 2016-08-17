@@ -613,8 +613,6 @@ void PoisonProjectileSpell::AddPoisonFog(const Vec3f & pos, float power) {
 	
 	float flDiv = static_cast<float>(1 << iDiv);
 	
-	arxtime.update();
-	
 	long count = std::max(1l, checked_range_cast<long>(g_framedelay / flDiv));
 	while(count--) {
 		
