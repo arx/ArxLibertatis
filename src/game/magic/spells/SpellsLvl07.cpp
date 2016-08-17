@@ -646,7 +646,7 @@ void ConfuseSpell::Launch() {
 	AnimLayer & au = animlayer[0];
 	au.next_anim = NULL;
 	au.cur_anim = anim_papii;
-	au.ctime = 0;
+	au.ctime = AnimationDuration_ZERO;
 	au.flags = EA_LOOP;
 	au.nextflags = 0;
 	au.lastframe = 0;
@@ -687,7 +687,8 @@ void ConfuseSpell::Update() {
 	Anglef stiteangle = Anglef(0.f, -glm::degrees(arxtime.now_f() * ( 1.0f / 500 )), 0.f);
 	
 	{
-		EERIEDrawAnimQuatUpdate(spapi, animlayer, stiteangle, eCurPos, g_framedelay, NULL, false);
+		AnimationDuration delta = toAnimationDuration(ArxDurationMs(g_framedelay));
+		EERIEDrawAnimQuatUpdate(spapi, animlayer, stiteangle, eCurPos, delta, NULL, false);
 		EERIEDrawAnimQuatRender(spapi, eCurPos, NULL, 0.f);
 	}
 	

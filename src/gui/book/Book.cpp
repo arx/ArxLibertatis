@@ -358,7 +358,7 @@ static void RenderBookPlayerCharacter() {
 	
 	{
 		EERIE_3DOBJ * eobj = entities.player()->obj;
-		unsigned long time = checked_range_cast<unsigned long>(toMs(g_platformTime.lastFrameDuration()));
+		AnimationDuration time = toAnimationDuration(g_platformTime.lastFrameDuration());
 
 		EERIEDrawAnimQuatUpdate(eobj, player.bookAnimation, ePlayerAngle, pos, time, NULL, true);
 		EERIEDrawAnimQuatRender(eobj, pos, NULL, invisibility);

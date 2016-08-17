@@ -1540,7 +1540,7 @@ void EERIEDrawAnimQuatUpdate(EERIE_3DOBJ * eobj,
                              AnimLayer * animlayer,
                              const Anglef & angle,
                              const Vec3f & pos,
-                             unsigned long time,
+                             AnimationDuration time,
                              Entity * io,
                              bool update_movement
 ) {
@@ -1553,23 +1553,23 @@ void EERIEDrawAnimQuatUpdate(EERIE_3DOBJ * eobj,
 		if(speedfactor < 0)
 			speedfactor = 0;
 
-		float tim = (float)time * speedfactor;
+		float tim = float(toMs(time)) * speedfactor;
 
 		if(tim<=0.f)
-			time=0;
+			time = AnimationDuration_ZERO;
 		else
-			time=(unsigned long)tim;
+			time = AnimationDurationMs(tim);
 
-		io->frameloss += tim - time;
+		io->frameloss += tim - toMs(time);
 
 		if(io->frameloss > 1.f) { // recover lost time...
-			long tt = io->frameloss;
-			io->frameloss -= tt;
+			AnimationDuration tt = AnimationDurationMs(io->frameloss);
+			io->frameloss -= toMs(tt);
 			time += tt;
 		}
 	}
 
-	if(time > 0) {
+	if(time > AnimationDuration_ZERO) {
 		for(size_t count = 0; count < MAX_ANIM_LAYERS; count++) {
 			AnimLayer & layer = animlayer[count];
 			if(layer.cur_anim)

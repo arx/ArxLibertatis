@@ -44,6 +44,7 @@ ZeniMax Media Inc., Suite 120, Rockville, Maryland 20850 USA.
 #ifndef ARX_ANIMATION_ANIMATIONRENDER_H
 #define ARX_ANIMATION_ANIMATIONRENDER_H
 
+#include "core/TimeTypes.h"
 #include "graphics/BaseGraphicsTypes.h"
 #include "graphics/Color.h"
 #include "graphics/Math.h"
@@ -106,7 +107,7 @@ void EERIEDrawAnimQuatUpdate(EERIE_3DOBJ * eobj,
                              AnimLayer * animlayer,
                              const Anglef & angle,
                              const Vec3f & pos,
-                             unsigned long time,
+                             AnimationDuration time,
                              Entity * io,
                              bool update_movement);
 

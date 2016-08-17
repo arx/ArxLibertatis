@@ -103,7 +103,8 @@ inline InstantType<TAG, T> operator -(InstantType<TAG, T> a, DurationType<TAG, T
 	return InstantType<TAG, T>(a.t - b.t);
 }
 
-
+// ArxTime
+// in ms
 typedef StrongType<struct ArxInstant_TAG,  s64> ArxInstant;
 
 //#define ARX_REFACTOR_TIMETYPES 1
@@ -149,8 +150,7 @@ inline ArxDuration operator -(ArxDuration a, ArxDuration b) {
 }
 #endif
 
-// FIXME copy-paste
-
+// PlatformTime
 // in microseconds
 typedef InstantType <struct PlatformTime_TAG, s64> PlatformInstant;
 typedef DurationType<struct PlatformTime_TAG, s64> PlatformDuration;
@@ -176,7 +176,32 @@ inline double toS(PlatformDuration val) {
 	return val.t / (1000.0 * 1000.0);
 }
 
-// copy-paste end
+// AnimationTime
+// in ms
+typedef DurationType<struct AnimationTime_TAG, s64> AnimationDuration;
+const AnimationDuration AnimationDuration_ZERO = AnimationDuration(0);
+
+inline AnimationDuration AnimationDurationMs(s64 val) {
+	return AnimationDuration(val);
+}
+inline s64 toMs(AnimationDuration val) {
+	return val.t;
+}
+
+inline AnimationDuration toAnimationDuration(PlatformDuration val) {
+	return AnimationDurationMs(val.t / 1000);
+}
+inline AnimationDuration toAnimationDuration(ArxDuration val) {
+	return AnimationDurationMs(val.t);
+}
+inline ArxDuration toArxDuration(AnimationDuration val) {
+	return ArxDuration(val.t);
+}
+
+
+
+
+
 
 
 namespace arx {

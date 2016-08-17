@@ -283,8 +283,8 @@ public:
 			// Don't assume that we successfully set the animation - use the current animation
 			if(layer.cur_anim) {
 				arx_assert(layer.altidx_cur >= 0 && layer.altidx_cur < layer.cur_anim->alt_nb);
-				if(layer.cur_anim->anims[layer.altidx_cur]->anim_time > scr_timer[num2].interval) {
-					scr_timer[num2].interval = layer.cur_anim->anims[layer.altidx_cur]->anim_time;
+				if(layer.cur_anim->anims[layer.altidx_cur]->anim_time > toAnimationDuration(scr_timer[num2].interval)) {
+					scr_timer[num2].interval = toArxDuration(layer.cur_anim->anims[layer.altidx_cur]->anim_time);
 				}
 			}
 			scr_timer[num2].name = timername;

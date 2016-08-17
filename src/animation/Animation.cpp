@@ -120,7 +120,7 @@ void ANIM_Set(AnimLayer & layer, ANIM_HANDLE *anim)
 	if(layer.altidx_cur > layer.cur_anim->alt_nb)
 		layer.altidx_cur = 0;
 
-	layer.ctime = 0;
+	layer.ctime = AnimationDuration_ZERO;
 	layer.lastframe = -1;
 	layer.flags &= ~EA_PAUSED;
 	layer.flags &= ~EA_ANIMEND;
@@ -264,7 +264,7 @@ static EERIE_ANIM * TheaToEerie(const char * adr, size_t size, const res::path &
 	eerie->groups = allocStructZero<EERIE_GROUP>(th->nb_key_frames * th->nb_groups);
 	eerie->voidgroups = allocStructZero<unsigned char>(th->nb_groups);
 
-	eerie->anim_time = ArxDuration_ZERO;
+	eerie->anim_time = AnimationDuration_ZERO;
 
 	// Go For Keyframes read
 	for(long i = 0; i < th->nb_key_frames; i++) {
@@ -299,7 +299,7 @@ static EERIE_ANIM * TheaToEerie(const char * adr, size_t size, const res::path &
 
 		s32 time_frame = tkf2015->num_frame * 1000;
 		eerie->frames[i].time = time_frame * (1.f/24);
-		eerie->anim_time += time_frame;
+		eerie->anim_time += AnimationDurationMs(time_frame);
 		
 		arx_assert(tkf2015->flag_frame == -1 || tkf2015->flag_frame == 9);
 		eerie->frames[i].stepSound = (tkf2015->flag_frame == 9);
@@ -449,12 +449,12 @@ static EERIE_ANIM * TheaToEerie(const char * adr, size_t size, const res::path &
 		}
 	}
 
-	eerie->anim_time = ArxDurationMs(th->nb_frames * 1000.f * (1.f/24));
-	if(eerie->anim_time < ArxDurationMs(1)) {
-		eerie->anim_time = ArxDurationMs(1);
+	eerie->anim_time = AnimationDurationMs(th->nb_frames * 1000.f * (1.f/24));
+	if(eerie->anim_time < AnimationDurationMs(1)) {
+		eerie->anim_time = AnimationDurationMs(1);
 	}
 
-	LogDebug("Finished Conversion TEA -> EERIE - " << (eerie->anim_time / 1000) << " seconds");
+	LogDebug("Finished Conversion TEA -> EERIE - " << (toMs(eerie->anim_time) / 1000) << " seconds");
 
 	return eerie;
 }
@@ -565,13 +565,13 @@ Vec3f GetAnimTotalTranslate(ANIM_HANDLE * eanim, long alt_idx) {
  * \param time Time increment to current animation in Ms
  * \param io Referrence to Interactive Object (NULL if no IO)
  */
-void PrepareAnim(AnimLayer & layer, unsigned long time, Entity *io) {
+void PrepareAnim(AnimLayer & layer, AnimationDuration time, Entity *io) {
 
 	if(layer.flags & EA_PAUSED)
-		time = 0;
+		time = AnimationDuration_ZERO;
 
 	if(io && (io->ioflags & IO_FREEZESCRIPT))
-		time = 0;
+		time = AnimationDuration_ZERO;
 
 	if(layer.altidx_cur >= layer.cur_anim->alt_nb)
 		layer.altidx_cur = 0;
@@ -581,7 +581,7 @@ void PrepareAnim(AnimLayer & layer, unsigned long time, Entity *io) {
 
 	layer.flags &= ~EA_ANIMEND;
 
-	const long animTime = layer.cur_anim->anims[layer.altidx_cur]->anim_time;
+	AnimationDuration animTime = layer.cur_anim->anims[layer.altidx_cur]->anim_time;
 	
 	if(layer.ctime > animTime) {
 	
@@ -589,7 +589,7 @@ void PrepareAnim(AnimLayer & layer, unsigned long time, Entity *io) {
 			layer.ctime = animTime;
 		}
 		
-		long lost = layer.ctime - animTime;
+		AnimationDuration lost = layer.ctime - animTime;
 		
 		if((layer.flags & EA_LOOP)
 		   || (io && ((layer.cur_anim == io->anims[ANIM_WALK])
@@ -600,8 +600,8 @@ void PrepareAnim(AnimLayer & layer, unsigned long time, Entity *io) {
 					  || (layer.cur_anim == io->anims[ANIM_RUN3])))
 		) {
 				if(!layer.next_anim) {
-					long t = animTime;
-					layer.ctime = layer.ctime % t;
+					long t = toMs(animTime);
+					layer.ctime = AnimationDurationMs(toMs(layer.ctime) % t);
 	
 					if(io)
 						FinishAnim(io, layer.cur_anim);
@@ -650,7 +650,7 @@ void PrepareAnim(AnimLayer & layer, unsigned long time, Entity *io) {
 	if (!layer.cur_anim)
 		return;
 
-	long tim;
+	AnimationDuration tim;
 	if(layer.flags & EA_REVERSE)
 		tim = animTime - layer.ctime;
 	else
@@ -662,8 +662,8 @@ void PrepareAnim(AnimLayer & layer, unsigned long time, Entity *io) {
 	layer.currentInterpolation = 1.f;
 	
 	for(long i = 1; i < anim->nb_key_frames; i++) {
-		long tcf = (long)anim->frames[i - 1].time;
-		long tnf = (long)anim->frames[i].time;
+		AnimationDuration tcf = AnimationDurationMs(anim->frames[i - 1].time);
+		AnimationDuration tnf = AnimationDurationMs(anim->frames[i].time);
 
 		if(tcf == tnf)
 			return;
@@ -671,10 +671,11 @@ void PrepareAnim(AnimLayer & layer, unsigned long time, Entity *io) {
 		if((tim < tnf && tim >= tcf) || (i == anim->nb_key_frames - 1 && tim == tnf)) {
 			long fr = i - 1;
 			tim -= tcf;
-			float pour = float(tim) / float(tnf - tcf);
+			float pour = float(toMs(tim)) / float(toMs(tnf - tcf));
 			
 			// Frame Sound Management
-			if(!(layer.flags & EA_ANIMEND) && time
+			if(!(layer.flags & EA_ANIMEND)
+			   && time != AnimationDuration_ZERO
 			   && (anim->frames[fr].sample != -1)
 			   && (layer.lastframe != fr)) {
 
@@ -689,7 +690,8 @@ void PrepareAnim(AnimLayer & layer, unsigned long time, Entity *io) {
 			}
 
 			// Frame Flags Management
-			if(!(layer.flags & EA_ANIMEND) && time
+			if(!(layer.flags & EA_ANIMEND)
+			   && time != AnimationDuration_ZERO
 			   && (anim->frames[fr].stepSound)
 			   && (layer.lastframe != fr)) {
 				
@@ -717,7 +719,7 @@ void PrepareAnim(AnimLayer & layer, unsigned long time, Entity *io) {
 
 void ResetAnim(AnimLayer & layer) {
 	
-	layer.ctime=0;
+	layer.ctime = AnimationDuration_ZERO;
 	layer.lastframe=-1;
 	layer.flags&=~EA_PAUSED;
 	layer.flags&=~EA_ANIMEND;

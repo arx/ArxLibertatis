@@ -496,7 +496,7 @@ public:
 				t->animlayer[0].cur_anim = t->anims[ANIM_DIE];
 				t->animlayer[1].cur_anim = NULL;
 				t->animlayer[2].cur_anim = NULL;
-				t->animlayer[0].ctime = 9999999;
+				t->animlayer[0].ctime = AnimationDurationMs(9999999);
 			}
 		}
 		

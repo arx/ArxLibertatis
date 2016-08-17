@@ -465,7 +465,7 @@ void CheckSetAnimOutOfTreatZone(Entity * io, AnimLayer & layer) {
 		fartherThan(io->pos, ACTIVECAM->orgTrans.pos, 2500.f))
 	{
 
-		layer.ctime = layer.cur_anim->anims[layer.altidx_cur]->anim_time - 1;
+		layer.ctime = layer.cur_anim->anims[layer.altidx_cur]->anim_time - AnimationDurationMs(1);
 	}
 }
 
@@ -2423,11 +2423,11 @@ void UpdateInter() {
 			io->bbox2D.min.x = 9999;
 			io->bbox2D.max.x = -1;
 
-			long diff;
+			AnimationDuration diff;
 			if(io->animlayer[0].flags & EA_PAUSED)
-				diff = 0;
+				diff = AnimationDuration_ZERO;
 			else
-				diff = static_cast<long>(g_framedelay);
+				diff = toAnimationDuration(ArxDurationMs(g_framedelay));
 
 			Vec3f pos = io->pos;
 

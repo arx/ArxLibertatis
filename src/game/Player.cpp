@@ -1469,29 +1469,29 @@ void ARX_PLAYER_Manage_Visual() {
 		   || layer0.cur_anim == alist[ANIM_U_TURN_LEFT_FIGHT])
 		{
 			float fv = PLAYER_ROTATION * 5;
-			long vv = fv;
-			io->frameloss -= fv - (float)vv;
+			AnimationDuration vv = AnimationDurationMs(fv);
+			io->frameloss -= fv - float(toMs(vv));
 			
 			if (io->frameloss < 0) io->frameloss = 0;
 			
 			layer0.ctime -= vv;
 			
-			if(layer0.ctime < 0)
-				layer0.ctime = 0;
+			if(layer0.ctime < AnimationDuration_ZERO)
+				layer0.ctime = AnimationDuration_ZERO;
 		}
 		else if(layer0.cur_anim == alist[ANIM_U_TURN_RIGHT]
 				 ||	layer0.cur_anim == alist[ANIM_U_TURN_RIGHT_FIGHT])
 		{
 			float fv = PLAYER_ROTATION * 5;
-			long vv = fv;
-			io->frameloss += fv - (float)vv;
+			AnimationDuration vv = AnimationDurationMs(fv);
+			io->frameloss += fv - float(toMs(vv));
 			
 			if (io->frameloss < 0) io->frameloss = 0;
 			
 			layer0.ctime += vv;
 			
-			if(layer0.ctime < 0)
-				layer0.ctime = 0;
+			if(layer0.ctime < AnimationDuration_ZERO)
+				layer0.ctime = AnimationDuration_ZERO;
 		}
 	}
 	
@@ -1702,7 +1702,7 @@ retry:
 				} else if(layer0.cur_anim == alist[ANIM_JUMP_END_PART2]
 						 && glm::abs(player.physics.velocity.x)
 							 + glm::abs(player.physics.velocity.z) > (4.f/TARGET_DT)
-						 && layer0.ctime > 1) {
+						 && layer0.ctime > AnimationDurationMs(1)) {
 					AcquireLastAnim(io);
 					player.jumpphase = NotJumping;
 					goto retry;
@@ -2203,7 +2203,7 @@ void PlayerMovementIterate(float DeltaTime) {
 				} else {
 					short idx = layer0.altidx_cur;
 					Vec3f mv = GetAnimTotalTranslate(layer0.cur_anim, idx);
-					float time = layer0.cur_anim->anims[idx]->anim_time;
+					float time = toMs(layer0.cur_anim->anims[idx]->anim_time);
 					scale = glm::length(mv) / time * 0.0125f;
 				}
 			}
