@@ -285,7 +285,7 @@ void BackpackIconGui::update(const Rectf & parent) {
 
 void BackpackIconGui::updateInput() {
 	
-	static ArxInstant flDelay = ArxInstant_ZERO;
+	static PlatformInstant flDelay = PlatformInstant_ZERO;
 	
 	// Check for backpack Icon
 	if(m_rect.contains(Vec2f(DANAEMouse))) {
@@ -295,7 +295,7 @@ void BackpackIconGui::updateInput() {
 		}
 	}
 	
-	if(m_rect.contains(Vec2f(DANAEMouse)) || flDelay) {
+	if(m_rect.contains(Vec2f(DANAEMouse)) || flDelay != PlatformInstant_ZERO) {
 		eMouseState = MOUSE_IN_INVENTORY_ICON;
 		SpecialCursor = CURSOR_INTERACTION_ON;
 		
@@ -305,18 +305,16 @@ void BackpackIconGui::updateInput() {
 			
 			playerInventory.optimize();
 			
-			flDelay = ArxInstant_ZERO;
-		} else if(eeMouseDown1() || flDelay) {
-			if(!flDelay) {
-				arxtime.update();
-				flDelay = arxtime.now();
+			flDelay = PlatformInstant_ZERO;
+		} else if(eeMouseDown1() || flDelay != PlatformInstant_ZERO) {
+			if(flDelay == PlatformInstant_ZERO) {
+				flDelay = g_platformTime.frameStart();
 				return;
 			} else {
-				arxtime.update();
-				if(arxtime.now() - flDelay < 300) {
+				if(g_platformTime.frameStart() - flDelay < PlatformDurationMs(300)) {
 					return;
 				} else {
-					flDelay = ArxInstant_ZERO;
+					flDelay = PlatformInstant_ZERO;
 				}
 			}
 			
