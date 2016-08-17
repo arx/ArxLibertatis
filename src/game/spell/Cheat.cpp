@@ -56,7 +56,7 @@ static long cur_arm = 0;
 static long cur_sos = 0;
 
 long cur_mega=0;
-static ArxInstant sp_max_start = ArxInstant_ZERO;
+static PlatformInstant sp_max_start = PlatformInstant_ZERO;
 long sp_wep=0;
 short uw_mode=0;
 
@@ -70,13 +70,13 @@ static std::string sp_max_ch;
 
 void CheatDrawText() {
 	
-	if(!sp_max_start)
+	if(sp_max_start == PlatformInstant_ZERO)
 		return;
 	
-	ArxDuration elapsed = arxtime.now() - sp_max_start;
+	PlatformDuration elapsed = g_platformTime.frameStart() - sp_max_start;
 
-	if(sp_max_start != ArxInstant_ZERO && elapsed < ArxDurationMs(20000)) {
-		float modi = (20000 - elapsed) * ( 1.0f / 2000 ) * ( 1.0f / 10 );
+	if(sp_max_start != PlatformInstant_ZERO && elapsed < PlatformDurationMs(20000)) {
+		float modi = float(toMs(PlatformDurationMs(20000) - elapsed)) * ( 1.0f / 2000 ) * ( 1.0f / 10 );
 		float sizX = 16;
 		
 		Vec2f p = Vec2f(g_size.center());
@@ -97,8 +97,7 @@ void CheatDrawText() {
 
 static void DisplayCheatText(const char * text) {
 	sp_max_ch = text;
-	arxtime.update();
-	sp_max_start = arxtime.now();
+	sp_max_start = g_platformTime.frameStart();
 }
 
 static void MakeSpCol() {
@@ -134,7 +133,7 @@ static void MakeSpCol() {
 
 void CheatReset() {
 
-	sp_max_start = ArxInstant_ZERO;
+	sp_max_start = PlatformInstant_ZERO;
 
 	sp_arm = 0;
 	cur_arm = 0;
