@@ -980,6 +980,7 @@ void ARX_PHYSICS_Apply() {
 				
 				io->requestRoomUpdate = true;
 				io->pos = pbox->vert[0].pos;
+				arx_assert(isallfinite(io->pos));
 				
 				continue;
 			}
@@ -2546,6 +2547,7 @@ static void ManageNPCMovement(Entity * io)
 	}
 	
 	// Now update lastpos values for next call use...
+	arx_assert(isallfinite(io->pos));
 	io->lastpos = io->pos;
 }
 

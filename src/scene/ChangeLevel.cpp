@@ -1982,11 +1982,24 @@ static Entity * ARX_CHANGELEVEL_Pop_IO(const std::string & idString, EntityInsta
 		io->ioflags = EntityFlags::load(ais->ioflags); // TODO save/load flags
 		
 		io->ioflags &= ~IO_FREEZESCRIPT;
+		
+		io->initpos = ais->initpos.toVec3();
+		arx_assert(isallfinite(io->initpos));
+		
 		io->pos = ais->pos.toVec3();
+		if(!isallfinite(io->pos)) {
+			LogWarning << "Found bad entity pos in " << io->idString();
+			io->pos = io->initpos;
+		}
+		
 		io->lastpos = ais->lastpos.toVec3();
+		if(!isallfinite(io->lastpos)) {
+			LogWarning << "Found bad entity lastpos in " << io->idString();
+			io->lastpos = io->initpos;
+		}
+		
 		io->move = ais->move.toVec3();
 		io->lastmove = ais->lastmove.toVec3();
-		io->initpos = ais->initpos.toVec3();
 		io->initangle = ais->initangle;
 		io->angle = ais->angle;
 		io->scale = ais->scale;
@@ -2076,6 +2089,12 @@ static Entity * ARX_CHANGELEVEL_Pop_IO(const std::string & idString, EntityInsta
 		
 		io->spellcast_data = ais->spellcast_data;
 		io->physics = ais->physics;
+		
+		if(!isallfinite(io->physics.cyl.origin)) {
+			LogWarning << "Found bad entity physics.cyl.origin in " << io->idString();
+			io->physics.cyl.origin = io->initpos;
+		}
+		
 		assert(SAVED_MAX_ANIM_LAYERS == MAX_ANIM_LAYERS);
 		std::copy(ais->animlayer, ais->animlayer + SAVED_MAX_ANIM_LAYERS, io->animlayer);
 		
