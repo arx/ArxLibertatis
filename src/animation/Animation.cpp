@@ -299,7 +299,6 @@ static EERIE_ANIM * TheaToEerie(const char * adr, size_t size, const res::path &
 
 		s32 time_frame = tkf2015->num_frame * 1000;
 		eerie->frames[i].time = time_frame * (1.f/24);
-		eerie->anim_time += AnimationDurationMs(time_frame);
 		
 		arx_assert(tkf2015->flag_frame == -1 || tkf2015->flag_frame == 9);
 		eerie->frames[i].stepSound = (tkf2015->flag_frame == 9);
