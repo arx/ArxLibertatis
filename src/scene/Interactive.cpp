@@ -1230,6 +1230,8 @@ void ARX_INTERACTIVE_Teleport(Entity * io, const Vec3f & target, bool flag) {
 	if(!io)
 		return;
 	
+	arx_assert(isallfinite(target));
+	
 	io->gameFlags &= ~GFLAG_NOCOMPUTATION;
 	io->requestRoomUpdate = true;
 	io->room = -1;
