@@ -296,9 +296,8 @@ static EERIE_ANIM * TheaToEerie(const char * adr, size_t size, const res::path &
 
 		eerie->frames[i].f_rotate = (tkf2015->key_orient != 0);
 		eerie->frames[i].f_translate = (tkf2015->key_move != 0);
-
-		s32 time_frame = tkf2015->num_frame * 1000;
-		eerie->frames[i].time = time_frame * (1.f/24);
+		
+		eerie->frames[i].time = tkf2015->num_frame * 1000 * (1.f/24);
 		
 		arx_assert(tkf2015->flag_frame == -1 || tkf2015->flag_frame == 9);
 		eerie->frames[i].stepSound = (tkf2015->flag_frame == 9);
