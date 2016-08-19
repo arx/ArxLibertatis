@@ -167,7 +167,6 @@ Entity::Entity(const res::path & classPath, EntityInstance instance)
 	flarecount = 0;
 	no_collide = EntityHandle();
 	invisibility = 0.f;
-	frameloss = 0.f;
 	basespeed = 1.f;
 	
 	speed_modif = 0.f;

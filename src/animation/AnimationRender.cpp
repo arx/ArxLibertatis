@@ -1553,20 +1553,12 @@ void EERIEDrawAnimQuatUpdate(EERIE_3DOBJ * eobj,
 		if(speedfactor < 0)
 			speedfactor = 0;
 
-		float tim = float(toMs(time)) * speedfactor;
+		AnimationDuration tim = time * speedfactor;
 
-		if(tim<=0.f)
+		if(tim <= AnimationDuration_ZERO)
 			time = AnimationDuration_ZERO;
 		else
-			time = AnimationDurationMs(tim);
-
-		io->frameloss += tim - toMs(time);
-
-		if(io->frameloss > 1.f) { // recover lost time...
-			AnimationDuration tt = AnimationDurationMs(io->frameloss);
-			io->frameloss -= toMs(tt);
-			time += tt;
-		}
+			time = tim;
 	}
 
 	if(time > AnimationDuration_ZERO) {

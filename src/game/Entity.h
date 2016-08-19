@@ -331,7 +331,6 @@ public:
 	short flarecount;
 	EntityHandle no_collide;
 	float invisibility;
-	float frameloss;
 	float basespeed;
 	
 	float speed_modif;

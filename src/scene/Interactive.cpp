@@ -897,7 +897,6 @@ void RestoreInitialIOStatusOfIO(Entity * io)
 		io->inzone = NULL;
 		io->speed_modif = 0.f;
 		io->basespeed = 1.f;
-		io->frameloss = 0.f;
 		io->sfx_flag = 0;
 		io->max_durability = io->durability = 100;
 		io->gameFlags &= ~GFLAG_INVISIBILITY;
@@ -2429,7 +2428,7 @@ void UpdateInter() {
 			if(io->animlayer[0].flags & EA_PAUSED)
 				diff = AnimationDuration_ZERO;
 			else
-				diff = toAnimationDuration(ArxDurationMs(g_framedelay));
+				diff = AnimationDurationUs(s64(g_framedelay * 1000.f));
 
 			Vec3f pos = io->pos;
 

@@ -177,30 +177,40 @@ inline double toS(PlatformDuration val) {
 }
 
 // AnimationTime
-// in ms
+// in microseconds
 typedef DurationType<struct AnimationTime_TAG, s64> AnimationDuration;
 const AnimationDuration AnimationDuration_ZERO = AnimationDuration(0);
 
-inline AnimationDuration AnimationDurationMs(s64 val) {
+inline AnimationDuration operator*(AnimationDuration v, float scalar) {
+	return AnimationDuration(s64(float(v.t) * scalar));
+}
+
+inline AnimationDuration AnimationDurationUs(s64 val) {
 	return AnimationDuration(val);
 }
-inline s64 toMs(AnimationDuration val) {
-	return val.t;
+inline AnimationDuration AnimationDurationMs(s64 val) {
+	return AnimationDuration(val * 1000);
+}
+
+inline s64 toMsi(AnimationDuration val) {
+	return val.t / (1000);
+}
+inline float toMsf(AnimationDuration val) {
+	return val.t / (1000.f);
+}
+inline float toS(AnimationDuration val) {
+	return val.t / (1000.f * 1000.f);
 }
 
 inline AnimationDuration toAnimationDuration(PlatformDuration val) {
-	return AnimationDurationMs(val.t / 1000);
+	return AnimationDuration(val.t);
 }
 inline AnimationDuration toAnimationDuration(ArxDuration val) {
-	return AnimationDurationMs(val.t);
+	return AnimationDuration(val.t * 1000);
 }
 inline ArxDuration toArxDuration(AnimationDuration val) {
-	return ArxDuration(val.t);
+	return ArxDuration(val.t / 1000);
 }
-
-
-
-
 
 
 

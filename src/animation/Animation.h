@@ -63,7 +63,7 @@ struct EERIE_FRAME
 	bool  stepSound;
 	bool  f_translate;
 	bool  f_rotate;
-	float		time;
+	AnimationDuration time;
 	Vec3f	translate;
 	glm::quat	quat;
 	audio::SampleId	sample;

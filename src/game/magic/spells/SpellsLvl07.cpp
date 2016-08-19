@@ -687,7 +687,7 @@ void ConfuseSpell::Update() {
 	Anglef stiteangle = Anglef(0.f, -glm::degrees(arxtime.now_f() * ( 1.0f / 500 )), 0.f);
 	
 	{
-		AnimationDuration delta = toAnimationDuration(ArxDurationMs(g_framedelay));
+		AnimationDuration delta = AnimationDurationUs(s64(g_framedelay * 1000.f));
 		EERIEDrawAnimQuatUpdate(spapi, animlayer, stiteangle, eCurPos, delta, NULL, false);
 		EERIEDrawAnimQuatRender(spapi, eCurPos, NULL, 0.f);
 	}

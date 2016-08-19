@@ -226,13 +226,13 @@ static float GetTimeBetweenKeyFrames(EERIE_ANIM * ea, long f1, long f2) {
 	if(!ea || f1 < 0 || f1 > ea->nb_key_frames - 1 || f2 < 0 || f2 > ea->nb_key_frames - 1)
 		return 0;
 
-	float time = 0;
+	AnimationDuration time = AnimationDuration_ZERO;
 
 	for(long kk = f1 + 1; kk <= f2; kk++) {
 		time += ea->frames[kk].time;
 	}
 
-	return time;
+	return toMsf(time);
 }
 
 static EERIE_ANIM * TheaToEerie(const char * adr, size_t size, const res::path & file) {
@@ -297,14 +297,14 @@ static EERIE_ANIM * TheaToEerie(const char * adr, size_t size, const res::path &
 		eerie->frames[i].f_rotate = (tkf2015->key_orient != 0);
 		eerie->frames[i].f_translate = (tkf2015->key_move != 0);
 		
-		eerie->frames[i].time = tkf2015->num_frame * 1000 * (1.f/24);
+		eerie->frames[i].time = AnimationDurationUs(tkf2015->num_frame * 1000 * 1000 * (1.f/24));
 		
 		arx_assert(tkf2015->flag_frame == -1 || tkf2015->flag_frame == 9);
 		eerie->frames[i].stepSound = (tkf2015->flag_frame == 9);
 
 		LogDebug(" pos " << pos << " - NumFr " << eerie->frames[i].num_frame
 				 << " MKF " << tkf2015->master_key_frame << " THEA_KEYFRAME " << sizeof(THEA_KEYFRAME_2014)
-				 << " TIME " << (float)(eerie->frames[i].time / 1000.f) << "s -Move " << tkf2015->key_move
+				 << " TIME " << toS(eerie->frames[i].time) << "s -Move " << tkf2015->key_move
 				 << " Orient " << tkf2015->key_orient << " Morph " << tkf2015->key_morph);
 
 		// Is There a Global translation ?
@@ -446,13 +446,13 @@ static EERIE_ANIM * TheaToEerie(const char * adr, size_t size, const res::path &
 			eerie->voidgroups[i] = 1;
 		}
 	}
-
+	
 	eerie->anim_time = AnimationDurationMs(th->nb_frames * 1000.f * (1.f/24));
 	if(eerie->anim_time < AnimationDurationMs(1)) {
 		eerie->anim_time = AnimationDurationMs(1);
 	}
 
-	LogDebug("Finished Conversion TEA -> EERIE - " << (toMs(eerie->anim_time) / 1000) << " seconds");
+	LogDebug("Finished Conversion TEA -> EERIE - " << toS(eerie->anim_time) << " seconds");
 
 	return eerie;
 }
@@ -598,8 +598,7 @@ void PrepareAnim(AnimLayer & layer, AnimationDuration time, Entity *io) {
 					  || (layer.cur_anim == io->anims[ANIM_RUN3])))
 		) {
 				if(!layer.next_anim) {
-					long t = toMs(animTime);
-					layer.ctime = AnimationDurationMs(toMs(layer.ctime) % t);
+					layer.ctime = AnimationDuration(layer.ctime.t % animTime.t);
 	
 					if(io)
 						FinishAnim(io, layer.cur_anim);
@@ -660,8 +659,8 @@ void PrepareAnim(AnimLayer & layer, AnimationDuration time, Entity *io) {
 	layer.currentInterpolation = 1.f;
 	
 	for(long i = 1; i < anim->nb_key_frames; i++) {
-		AnimationDuration tcf = AnimationDurationMs(anim->frames[i - 1].time);
-		AnimationDuration tnf = AnimationDurationMs(anim->frames[i].time);
+		AnimationDuration tcf = anim->frames[i - 1].time;
+		AnimationDuration tnf = anim->frames[i].time;
 
 		if(tcf == tnf)
 			return;
@@ -669,7 +668,7 @@ void PrepareAnim(AnimLayer & layer, AnimationDuration time, Entity *io) {
 		if((tim < tnf && tim >= tcf) || (i == anim->nb_key_frames - 1 && tim == tnf)) {
 			long fr = i - 1;
 			tim -= tcf;
-			float pour = float(toMs(tim)) / float(toMs(tnf - tcf));
+			float pour = toMsf(tim) / toMsf(tnf - tcf);
 			
 			// Frame Sound Management
 			if(!(layer.flags & EA_ANIMEND)

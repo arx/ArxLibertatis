@@ -141,7 +141,7 @@ struct ARX_INTERFACE_HALO_STRUCT
 
 extern TextureContainer * inventory_font;
 
-extern float PLAYER_ROTATION;
+extern AnimationDuration PLAYER_ROTATION;
 extern float SLID_VALUE;
 
 float lSLID_VALUE = 0;
@@ -1669,7 +1669,7 @@ void ArxGame::manageKeyMouse() {
 	}
 	
 	LAST_PLAYER_MOUSELOOK_ON = mouselook;
-	PLAYER_ROTATION=0;
+	PLAYER_ROTATION = AnimationDuration_ZERO;
 
 	Vec2f mouseDiff = Vec2f(GInput->getMousePosRel());
 	
@@ -1904,7 +1904,7 @@ void ArxGame::manageKeyMouse() {
 				if(rotation.x != 0.f)
 					player.m_currentMovement |= PLAYER_ROTATE;
 
-				PLAYER_ROTATION = rotation.x;
+				PLAYER_ROTATION = AnimationDurationUs(s64(rotation.x * 5.f * 1000.f));
 
 				player.desiredangle.setYaw(player.angle.getYaw());
 				player.desiredangle.setYaw(MAKEANGLE(player.desiredangle.getYaw() - rotation.x));

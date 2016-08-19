@@ -499,7 +499,7 @@ struct SavedAnimUse {
 		cur_anim = 0;
 		altidx_next = b.altidx_next;
 		altidx_cur = b.altidx_cur;
-		ctime = toMs(b.ctime);
+		ctime = toMsi(b.ctime);
 		flags = b.flags;
 		nextflags = b.nextflags;
 		lastframe = b.lastframe;

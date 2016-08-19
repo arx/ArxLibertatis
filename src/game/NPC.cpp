@@ -1642,8 +1642,8 @@ static void ARX_NPC_Manage_Anims(Entity * io, float TOLERANCE) {
 						layer1.cur_anim = NULL;
 					}
 				} else if(!(io->ioflags & IO_HIT)) {
-					long ctime = toMs(layer1.ctime);
-					long animtime = toMs(layer1.cur_anim->anims[0]->anim_time);
+					AnimationDuration ctime = layer1.ctime;
+					AnimationDuration animtime = layer1.cur_anim->anims[0]->anim_time;
 					if(ctime > animtime * STRIKE_MUL && ctime <= animtime * STRIKE_MUL2) {
 						CheckHit(io, 1.f);
 						io->ioflags |= IO_HIT;
@@ -1751,8 +1751,8 @@ static void ARX_NPC_Manage_Anims(Entity * io, float TOLERANCE) {
 						AnimationDuration ctime = layer1.ctime;
 						AnimationDuration animtime = layer1.cur_anim->anims[0]->anim_time;
 						
-						if(   ctime > AnimationDurationMs(toMs(animtime) * STRIKE_MUL)
-						   && ctime <= AnimationDurationMs(toMs(animtime) * STRIKE_MUL2)
+						if(   ctime > animtime * STRIKE_MUL
+						   && ctime <= animtime * STRIKE_MUL2
 						) {
 							if(!(io->ioflags & IO_HIT)) {
 								if(ARX_EQUIPMENT_Strike_Check(io, io->_npcdata->weapon, 1, 0, io->targetinfo)) {
