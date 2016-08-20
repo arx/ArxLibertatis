@@ -129,6 +129,16 @@ const FlagName<Behaviour> BehaviourFlagNames[] = {
 	{BEHAVIOUR_STARE_AT      , "STARE_AT"}
 };
 
+const FlagName<AnimUseType> AnimUseFlagNames[] = {
+	{EA_LOOP       , "LOOP"},
+	{EA_REVERSE    , "REVERSE"},
+	{EA_PAUSED     , "PAUSED"},
+	{EA_ANIMEND    , "ANIMEND"},
+	{EA_STATICANIM , "STATICANIM"},
+	{EA_STOPEND    , "STOPEND"},
+	{EA_FORCEPLAY  , "FORCEPLAY"},
+	{EA_EXCONTROL  , "EXCONTROL"}
+};
 
 static const char * entityVisilibityToString(EntityVisilibity value) {
 	switch (value) {
@@ -296,6 +306,26 @@ void ShowInfoText() {
 				itemBox.add("Poisonous", static_cast<long>(io->poisonous));
 				itemBox.add("Poisonous count", static_cast<long>(io->poisonous_count));
 				itemBox.print();
+			}
+			
+			long column2y = 400;
+			
+			for(size_t i = 0; i < MAX_ANIM_LAYERS; i++) {
+				AnimLayer & layer = io->animlayer[i];
+				
+				DebugBox animLayerBox = DebugBox(Vec2i(500, column2y), str(boost::format("Anim Layer %1%") % i));
+				animLayerBox.add("ctime", long(layer.ctime.t));
+				animLayerBox.add("flags", flagNames(AnimUseFlagNames, layer.flags));
+				
+				animLayerBox.add("currentFrame", long(layer.currentFrame));
+				if(layer.cur_anim) {
+					animLayerBox.add("cur_anim", layer.cur_anim->path.string());
+				} else {
+					animLayerBox.add("cur_anim", "none");
+				}
+				
+				animLayerBox.print();
+				column2y = animLayerBox.size().y + 5;
 			}
 		}
 	}
