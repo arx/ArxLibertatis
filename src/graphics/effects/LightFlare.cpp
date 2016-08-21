@@ -20,6 +20,7 @@
 #include "graphics/effects/LightFlare.h"
 
 #include "core/Core.h"
+#include "core/GameTime.h"
 #include "game/Player.h"
 #include "graphics/Draw.h"
 #include "graphics/GraphicsModes.h"
@@ -39,7 +40,7 @@ void update2DFX() {
 	Entity* pTableIO[256];
 	size_t nNbInTableIO = 0;
 
-	float temp_increase = g_framedelay * (1.0f/1000) * 4.f;
+	float temp_increase = toMs(g_platformTime.lastFrameDuration()) * (1.0f/1000) * 4.f;
 
 	bool bComputeIO = false;
 
