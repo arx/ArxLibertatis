@@ -45,6 +45,7 @@ ZeniMax Media Inc., Suite 120, Rockville, Maryland 20850 USA.
 
 #include <limits>
 #include <algorithm>
+#include <boost/unordered_map.hpp>
 
 #include "graphics/GraphicsTypes.h"
 #include "graphics/Math.h"
@@ -151,29 +152,23 @@ public:
 
 class PathFinder::ClosedNodeList {
 	
-	typedef std::vector<Node*> NodeList;
+	typedef boost::unordered_map<NodeId, Node *> NodeList;
 	NodeList nodes;
 	
 public:
 	
 	~ClosedNodeList() {
-		for(NodeList::iterator i = nodes.begin(); i != nodes.end(); ++i) {
-			delete *i;
+		for(boost::unordered_map<NodeId, Node *>::iterator it=nodes.begin(); it != nodes.end(); it++) {
+			delete (*it).second;
 		}
 	}
 	
 	void add(Node * node) {
-		nodes.push_back(node);
+		nodes.insert(NodeList::value_type(node->getId(), node));
 	}
 	
 	bool contains(NodeId id) const {
-		// TODO better datastructure: set of closed node ids
-		for(NodeList::const_iterator i = nodes.begin(); i != nodes.end(); ++i) {
-			if((*i)->getId() == id) {
-				return true;
-			}
-		}
-		return false;
+		return nodes.find(id) != nodes.end();
 	}
 	
 };
@@ -213,10 +208,10 @@ bool PathFinder::move(NodeId from, NodeId to, Result & rlist, bool stealth) cons
 	ClosedNodeList close;
 	do {
 		
+		NodeId nid = node->getId();
+		
 		// Put node onto close list as we have now examined this node.
 		close.add(node);
-		
-		NodeId nid = node->getId();
 		
 		// If it's the goal node then we're done.
 		if(nid == to) {
@@ -280,6 +275,8 @@ bool PathFinder::flee(NodeId from, const Vec3f & danger, float safeDist, Result 
 	ClosedNodeList close;
 	do {
 		
+		NodeId nid = node->getId();
+		
 		// Put node onto close list as we have now examined this node.
 		close.add(node);
 		
@@ -288,8 +285,6 @@ bool PathFinder::flee(NodeId from, const Vec3f & danger, float safeDist, Result 
 			buildPath(*node, rlist);
 			return true;
 		}
-		
-		NodeId nid = node->getId();
 		
 		// Otherwise, generate child from current node.
 		for(short i(0); i < map_d[nid].nblinked; i++) {
