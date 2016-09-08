@@ -383,7 +383,7 @@ PathFinder::NodeId PathFinder::getNearestNode(const Vec3f & pos) const {
 	
 	for(size_t i = 0; i < map_s; i++) {
 		float dist = arx::distance2(map_d[i].pos, pos);
-		if(dist < distance && map_d[i].nblinked) {
+		if(dist < distance && map_d[i].nblinked && !(map_d[i].flags & ANCHOR_FLAG_BLOCKED)) {
 			best = i;
 			distance = dist;
 		}
