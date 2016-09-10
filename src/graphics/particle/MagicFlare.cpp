@@ -362,7 +362,6 @@ void FlareLine(Vec2f tmpPos0, Vec2f tmpPos1, Entity * io) {
 	}
 }
 
-static ArxInstant FRAMETICKS = ArxInstant_ZERO;
 
 void ARX_MAGICAL_FLARES_Update() {
 
@@ -374,9 +373,7 @@ void ARX_MAGICAL_FLARES_Update() {
 		shinum = 1;
 	}
 	
-	const ArxInstant now = arxtime.now();
-	const ArxDuration TICKS = now - FRAMETICKS;
-	FRAMETICKS = now;
+	double diff = arxtime.get_frame_delay();
 	
 	bool key = !GInput->actionPressed(CONTROLS_CUST_MAGICMODE);
 
@@ -405,11 +402,11 @@ void ARX_MAGICAL_FLARES_Update() {
 				continue;
 			}
 
-			flare.tolive -= float(toMs(TICKS) * 2);
+			flare.tolive -= float(diff * 2);
 			if(flare.flags & 1) {
-				flare.tolive -= float(toMs(TICKS) * 4);
+				flare.tolive -= float(diff * 4);
 			} else if (key) {
-				flare.tolive -= float(toMs(TICKS) * 6);
+				flare.tolive -= float(diff * 6);
 			}
 
 			float z = (flare.tolive * 0.00025f);
