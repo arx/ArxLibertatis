@@ -1614,7 +1614,8 @@ void ArxGame::updateActiveCamera() {
 }
 
 void ArxGame::updateTime() {
-	arxtime.update_frame_time();
+	
+	arxtime.update();
 
 	// before modulation by "GLOBAL_SLOWDOWN"
 	float Original_framedelay = arxtime.get_frame_delay();
@@ -1627,7 +1628,7 @@ void ArxGame::updateTime() {
 		arxtime.increment_start_time(static_cast<u64>(drift));
 
 		// recalculate frame delta
-		arxtime.update_frame_time();
+		arxtime.update();
 	}
 
 	g_framedelay = arxtime.get_frame_delay();
