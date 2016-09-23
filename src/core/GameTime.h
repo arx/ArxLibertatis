@@ -126,6 +126,8 @@ public:
 		} else {
 			m_now_us = platform::getElapsedUs(start_time);
 		}
+		frame_time_us = m_now_us;
+		frame_delay_ms = (frame_time_us - last_frame_time_us) / 1000.f;
 	}
 	
 	bool is_paused() const { 
@@ -143,12 +145,6 @@ public:
 	
 	float get_frame_delay() const {
 		return frame_delay_ms;
-	}
-	
-	void update_frame_time() {
-		update();
-		frame_time_us = m_now_us;
-		frame_delay_ms = (frame_time_us - last_frame_time_us) / 1000.f;
 	}
 	
 	void update_last_frame_time() {
