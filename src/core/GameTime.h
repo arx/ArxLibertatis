@@ -120,8 +120,8 @@ public:
 		return checked_range_cast<ArxInstant>(m_now_us / 1000);
 	}
 	
-	void update(bool use_pause = true) {
-		if (is_paused() && use_pause) {
+	void update() {
+		if (is_paused()) {
 			m_now_us = platform::getElapsedUs(start_time, pause_time);
 		} else {
 			m_now_us = platform::getElapsedUs(start_time);
