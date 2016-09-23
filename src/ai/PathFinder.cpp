@@ -207,9 +207,6 @@ bool PathFinder::move(NodeId from, NodeId to, Result & rlist, bool stealth) cons
 	
 	// Create start node and put it on open list
 	Node * node = new Node(from, NULL, 0.0f, 0.0f);
-	if(!node) {
-		return false;
-	}
 	
 	// A* main loop
 	OpenNodeList open;
