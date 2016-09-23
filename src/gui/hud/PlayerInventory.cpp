@@ -94,7 +94,7 @@ bool PlayerInventoryHud::updateInput() {
 
 void PlayerInventoryHud::update() {
 	
-	const float framedelay = float(toMs(g_platformTime.lastFrameDuration()));
+	const float framedelay = toMs(g_platformTime.lastFrameDuration());
 	
 	if(player.Interface & INTER_INVENTORY) {
 		if((player.Interface & INTER_COMBATMODE) || player.doingmagic >= 2) {

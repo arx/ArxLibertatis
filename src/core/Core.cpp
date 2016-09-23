@@ -947,7 +947,7 @@ void ManageCombatModeAnimations() {
 		case WEAPON_BOW: { // MISSILE PLAYER MANAGEMENT
 			if(layer1.cur_anim == alist[ANIM_MISSILE_STRIKE_CYCLE]) {
 				if(GLOBAL_SLOWDOWN != 1.f)
-					player.m_bowAimRatio += bowZoomFromDuration(float(toMs(g_platformTime.lastFrameDuration())));
+					player.m_bowAimRatio += bowZoomFromDuration(toMs(g_platformTime.lastFrameDuration()));
 				else
 					player.m_bowAimRatio += bowZoomFromDuration(g_framedelay);
 				
@@ -1037,7 +1037,7 @@ void ManageCombatModeAnimations() {
 				
 				player.m_aimTime = ArxInstant_ZERO;
 			} else if(layer1.cur_anim == alist[ANIM_MISSILE_STRIKE]) {
-				player.m_bowAimRatio -= bowZoomFromDuration(float(toMs(g_platformTime.lastFrameDuration())));
+				player.m_bowAimRatio -= bowZoomFromDuration(toMs(g_platformTime.lastFrameDuration()));
 				
 				if(player.m_bowAimRatio < 0)
 					player.m_bowAimRatio = 0;
