@@ -62,7 +62,7 @@ GameTime::GameTime() {
 	m_now_us           = 0;
 	frame_time_us      = 0;
 	last_frame_time_us = 0;
-	frame_delay_ms     = 0.0f;
+	frame_delay_ms     = 0.f;
 }
 
 void GameTime::init() {
@@ -73,7 +73,7 @@ void GameTime::init() {
 	m_now_us           = 0;
 	frame_time_us      = 0;
 	last_frame_time_us = 0;
-	frame_delay_ms     = 0.0f;
+	frame_delay_ms     = 0.f;
 }
 
 void GameTime::pause() {

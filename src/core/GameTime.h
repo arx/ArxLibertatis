@@ -141,14 +141,14 @@ public:
 		return frame_time_us / 1000.0f; 
 	}
 	
-	double get_frame_delay() const {
+	float get_frame_delay() const {
 		return frame_delay_ms;
 	}
 	
 	void update_frame_time() {
 		update();
 		frame_time_us = m_now_us;
-		frame_delay_ms = (frame_time_us - last_frame_time_us) / 1000.0;
+		frame_delay_ms = (frame_time_us - last_frame_time_us) / 1000.f;
 	}
 	
 	void update_last_frame_time() {
@@ -168,7 +168,7 @@ private:
 	
 	u64 last_frame_time_us;
 	u64 frame_time_us;
-	double frame_delay_ms;
+	float frame_delay_ms;
 };
 
 extern GameTime arxtime;
