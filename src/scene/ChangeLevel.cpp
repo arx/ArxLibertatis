@@ -298,7 +298,6 @@ void ARX_CHANGELEVEL_Change(const std::string & level, const std::string & targe
 	progressBarSetTotal(238);
 	progressBarReset();
 	
-	arxtime.update();
 	ARX_CHANGELEVEL_DesiredTime = arxtime.now();
 		
 	long num = GetLevelNumByName("level" + level);
@@ -428,7 +427,6 @@ static bool ARX_CHANGELEVEL_Push_Index(long num) {
 	asi.version       = ARX_GAMESAVE_VERSION;
 	asi.nb_inter      = 0;
 	asi.nb_paths      = nbARXpaths;
-	arxtime.update();
 	asi.time          = arxtime.now();
 	asi.nb_lights     = 0;
 	asi.gmods_stacked = GLOBAL_MODS();
@@ -2823,7 +2821,6 @@ bool ARX_CHANGELEVEL_Save(const std::string & name, const fs::path & savefile) {
 	pld.level = CURRENTLEVEL;
 	util::storeString(pld.name, name.c_str());
 	pld.version = ARX_GAMESAVE_VERSION;
-	arxtime.update();
 	pld.time = static_cast<u32>(arxtime.now()); // TODO save/load time
 	
 	const char * dat = reinterpret_cast<const char *>(&pld);
