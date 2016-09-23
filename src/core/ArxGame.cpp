@@ -1418,7 +1418,6 @@ void ArxGame::speechControlledCinematic() {
 		const CinematicSpeech & acs = aspeech[valid].cine;
 		const Entity * io = aspeech[valid].io;
 		
-		arxtime.update();
 		float elapsed = arxtime.now_f() - aspeech[valid].time_creation;
 		float rtime = elapsed / aspeech[valid].duration;
 
