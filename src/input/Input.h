@@ -163,7 +163,7 @@ private:
 	bool  bMouseButton[Mouse::ButtonCount];
 	bool  bOldMouseButton[Mouse::ButtonCount];
 	
-	int   iMouseTime[Mouse::ButtonCount];
+	s64   iMouseTime[Mouse::ButtonCount];
 	int   iMouseTimeSet[Mouse::ButtonCount];
 	int   iOldNumClick[Mouse::ButtonCount];
 	
