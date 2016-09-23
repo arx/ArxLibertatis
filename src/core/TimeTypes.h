@@ -169,8 +169,8 @@ inline PlatformDuration PlatformDurationMs(s64 val) {
 	return PlatformDuration(val * 1000);
 }
 
-inline double toMs(PlatformDuration val) {
-	return val.t / (1000.0);
+inline float toMs(PlatformDuration val) {
+	return val.t / (1000.f);
 }
 inline double toS(PlatformDuration val) {
 	return val.t / (1000.0 * 1000.0);

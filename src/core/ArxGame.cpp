@@ -1344,7 +1344,7 @@ void ArxGame::updateFirstPersonCamera() {
 		&& (layer1.cur_anim!=alist[ANIM_MISSILE_STRIKE_PART_2])
 		&& (layer1.cur_anim!=alist[ANIM_MISSILE_STRIKE_CYCLE]))
 	{
-		player.m_bowAimRatio -= bowZoomFromDuration(float(toMs(g_platformTime.lastFrameDuration())));
+		player.m_bowAimRatio -= bowZoomFromDuration(toMs(g_platformTime.lastFrameDuration()));
 
 		if(player.m_bowAimRatio < 0)
 			player.m_bowAimRatio = 0;

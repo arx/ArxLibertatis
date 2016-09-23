@@ -1967,7 +1967,7 @@ void ARX_PLAYER_Manage_Movement() {
 
 	static float StoredTime = 0;
 
-	float DeltaTime = std::min(float(toMs(g_platformTime.lastFrameDuration())), MAX_FRAME_TIME);
+	float DeltaTime = std::min(toMs(g_platformTime.lastFrameDuration()), MAX_FRAME_TIME);
 	DeltaTime = StoredTime + DeltaTime * speedfactor;
 	
 	if(player.jumpphase != NotJumping) {
