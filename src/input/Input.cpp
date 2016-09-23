@@ -484,7 +484,7 @@ void Input::update() {
 	
 }
 
-std::map<std::string, InputKeyId> keyNames;
+static std::map<std::string, InputKeyId> keyNames;
 
 std::string Input::getKeyName(InputKeyId key, bool localizedName) {
 	
