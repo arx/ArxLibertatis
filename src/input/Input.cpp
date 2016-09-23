@@ -501,20 +501,20 @@ std::string Input::getKeyName(InputKeyId key, bool localizedName) {
 		key &= INPUT_MASK;
 	}
 	
-	if(key >= (InputKeyId)Mouse::ButtonBase && key < (InputKeyId)Mouse::ButtonMax) {
+	if(key >= InputKeyId(Mouse::ButtonBase) && key < InputKeyId(Mouse::ButtonMax)) {
 		
 		std::ostringstream oss;
-		oss << PREFIX_BUTTON << (int)(key - Mouse::ButtonBase + 1);
+		oss << PREFIX_BUTTON << int(key - Mouse::ButtonBase + 1);
 		name = oss.str();
 	
-	} else if(key == (InputKeyId)Mouse::Wheel_Up) {
+	} else if(key == InputKeyId(Mouse::Wheel_Up)) {
 		name = "WheelUp";
 
-	} else if(key == (InputKeyId)Mouse::Wheel_Down) {
+	} else if(key == InputKeyId(Mouse::Wheel_Down)) {
 		name = "WheelDown";
 
 	} else {
-		arx_assert(key >= 0 && key < (int)ARRAY_SIZE(keysDescriptions));
+		arx_assert(key >= 0 && key < int(ARRAY_SIZE(keysDescriptions)));
 		const KeyDescription & entity = keysDescriptions[key];
 		
 		arx_assert(entity.id == key);
@@ -523,7 +523,7 @@ std::string Input::getKeyName(InputKeyId key, bool localizedName) {
 	
 	if(name.empty()) {
 		std::ostringstream oss;
-		oss << PREFIX_KEY << (int)key;
+		oss << PREFIX_KEY << int(key);
 		name = oss.str();
 	}
 	
@@ -569,8 +569,8 @@ InputKeyId Input::getKeyId(const std::string & name) {
 		for(size_t i = 0; i < ARRAY_SIZE(keysDescriptions); i++) {
 			keyNames[keysDescriptions[i].name] = keysDescriptions[i].id;
 		}
-		keyNames["WheelUp"] = (InputKeyId)Mouse::Wheel_Up;
-		keyNames["WheelDown"] = (InputKeyId)Mouse::Wheel_Down;
+		keyNames["WheelUp"] = InputKeyId(Mouse::Wheel_Up);
+		keyNames["WheelDown"] = InputKeyId(Mouse::Wheel_Down);
 	}
 	
 	std::map<std::string, InputKeyId>::const_iterator it = keyNames.find(name);
