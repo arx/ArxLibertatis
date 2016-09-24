@@ -172,8 +172,8 @@ inline PlatformDuration PlatformDurationMs(s64 val) {
 inline float toMs(PlatformDuration val) {
 	return val.t / (1000.f);
 }
-inline double toS(PlatformDuration val) {
-	return val.t / (1000.0 * 1000.0);
+inline float toS(PlatformDuration val) {
+	return val.t / (1000.f * 1000.f);
 }
 
 // AnimationTime

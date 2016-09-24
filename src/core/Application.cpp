@@ -87,7 +87,7 @@ void CalcFPS(bool reset) {
 		PlatformInstant fTime = g_platformTime.frameStart();
 		++dwFrames;
 
-		float tmp = float(toS(fTime - fLastTime));
+		float tmp = toS(fTime - fLastTime);
 
 		// Update the frame rate once per second
 		if(tmp > 1.f) {

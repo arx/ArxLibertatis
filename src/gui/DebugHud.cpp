@@ -380,7 +380,7 @@ void ShowFpsGraph() {
 	GRenderer->ResetTexture(0);
 
 	static std::deque<float> lastFPSArray;
-	lastFPSArray.push_front(float(1.0 / toS(g_platformTime.lastFrameDuration())));
+	lastFPSArray.push_front(1.f / toS(g_platformTime.lastFrameDuration()));
 
 	Vec2i windowSize = mainApp->getWindow()->getSize();
 	if(lastFPSArray.size() == size_t(windowSize.x))
