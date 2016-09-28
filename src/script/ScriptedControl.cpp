@@ -227,6 +227,7 @@ public:
 		
 		if(name == "kill") {
 			cinematicKill();
+			arxtime.resume();
 		} else if(name == "play") {
 			cinematicRequestStart();
 			arxtime.pause();
