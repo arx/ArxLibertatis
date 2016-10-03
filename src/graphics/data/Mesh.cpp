@@ -839,7 +839,7 @@ static void SetRoomDistance(size_t i, size_t j, float val, const Vec3f & p1, con
 	RoomDistance[offs].distance = val;
 }
 
-static float GetRoomDistance(long i, long j, Vec3f & p1, Vec3f & p2)
+static float GetRoomDistance(size_t i, size_t j, Vec3f & p1, Vec3f & p2)
 {
 	if(i >= NbRoomDistance || j >= NbRoomDistance)
 		return -1.f;
@@ -871,7 +871,7 @@ float SP_GetRoomDist(const Vec3f & pos, const Vec3f & c_pos, long io_room, long 
 		if(Cam_Room < 0 || Room < 0) {
 			v = -1.f;
 		} else {
-			v = GetRoomDistance(Cam_Room, Room, p1, p2);
+			v = GetRoomDistance(size_t(Cam_Room), size_t(Room), p1, p2);
 		}
 		
 		if(v > 0.f) {
