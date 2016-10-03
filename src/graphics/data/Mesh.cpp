@@ -832,7 +832,7 @@ static void SetRoomDistance(size_t i, size_t j, float val, const Vec3f & p1, con
 	if(i >= NbRoomDistance || j >= NbRoomDistance || !RoomDistance)
 		return;
 	
-	long offs = i + j * NbRoomDistance;
+	size_t offs = i + j * NbRoomDistance;
 	
 	RoomDistance[offs].startpos = p1;
 	RoomDistance[offs].endpos = p2;
@@ -844,7 +844,7 @@ static float GetRoomDistance(size_t i, size_t j, Vec3f & p1, Vec3f & p2)
 	if(i >= NbRoomDistance || j >= NbRoomDistance)
 		return -1.f;
 
-	long offs = i + j * NbRoomDistance;
+	size_t offs = i + j * NbRoomDistance;
 
 	p1 = RoomDistance[offs].startpos;
 	p2 = RoomDistance[offs].endpos;
