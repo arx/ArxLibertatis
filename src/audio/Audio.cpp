@@ -776,7 +776,7 @@ bool isAmbianceLooped(AmbianceId a_id) {
 	AAL_ENTRY_V(false)
 	
 	if(a_id == AmbianceId()) {
-		return AAL_ERROR_HANDLE;
+		return false;
 	}
 	
 	if(!_amb.isValid(a_id.handleData())) {
