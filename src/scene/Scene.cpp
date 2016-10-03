@@ -580,8 +580,8 @@ long ARX_PORTALS_GetRoomNumForPosition(const Vec3f & pos,long flag) {
 
 		for(size_t n = 0; n < portals->rooms.size(); n++) {
 			for(long lll = 0; lll < portals->rooms[n].nb_portals; lll++) {
-				EERIE_PORTALS *po = &portals->portals[portals->rooms[n].portals[lll]];
-				EERIEPOLY *epp = &po->poly;
+				const EERIE_PORTALS & po = portals->portals[portals->rooms[n].portals[lll]];
+				const EERIEPOLY *epp = &po.poly;
 
 				if(PointIn2DPolyXZ(epp, pos.x, pos.z)) {
 					float yy;
@@ -590,9 +590,9 @@ long ARX_PORTALS_GetRoomNumForPosition(const Vec3f & pos,long flag) {
 						if(height > yy) {
 							if(yy >= pos.y && yy-pos.y < nearest_dist) {
 								if(epp->norm.y>0)
-									nearest = po->room_2;
+									nearest = po.room_2;
 								else
-									nearest = po->room_1;
+									nearest = po.room_1;
 
 								nearest_dist = yy - pos.y;
 							}
