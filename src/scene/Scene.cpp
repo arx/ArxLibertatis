@@ -609,7 +609,7 @@ long ARX_PORTALS_GetRoomNumForPosition(const Vec3f & pos,long flag) {
 	return num;
 }
 
-static void ARX_PORTALS_Frustrum_ClearIndexCount(long room_num) {
+static void ARX_PORTALS_Frustrum_ClearIndexCount(size_t room_num) {
 	
 	EERIE_ROOM_DATA & room = portals->rooms[room_num];
 	
