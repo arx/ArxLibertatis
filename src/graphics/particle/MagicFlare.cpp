@@ -373,7 +373,7 @@ void ARX_MAGICAL_FLARES_Update() {
 		shinum = 1;
 	}
 	
-	double diff = arxtime.get_frame_delay();
+	float diff = arxtime.get_frame_delay();
 	
 	bool key = !GInput->actionPressed(CONTROLS_CUST_MAGICMODE);
 
@@ -402,11 +402,11 @@ void ARX_MAGICAL_FLARES_Update() {
 				continue;
 			}
 
-			flare.tolive -= float(diff * 2);
+			flare.tolive -= diff * 2.f;
 			if(flare.flags & 1) {
-				flare.tolive -= float(diff * 4);
+				flare.tolive -= diff * 4.f;
 			} else if (key) {
-				flare.tolive -= float(diff * 6);
+				flare.tolive -= diff * 6.f;
 			}
 
 			float z = (flare.tolive * 0.00025f);
