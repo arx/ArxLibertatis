@@ -827,9 +827,9 @@ void UpdateIORoom(Entity * io)
 ROOM_DIST_DATA * RoomDistance = NULL;
 static size_t NbRoomDistance = 0;
 
-static void SetRoomDistance(long i, long j, float val, const Vec3f & p1, const Vec3f & p2) {
+static void SetRoomDistance(size_t i, size_t j, float val, const Vec3f & p1, const Vec3f & p2) {
 	
-	if(i < 0 || j < 0 || i >= NbRoomDistance || j >= NbRoomDistance || !RoomDistance)
+	if(i >= NbRoomDistance || j >= NbRoomDistance || !RoomDistance)
 		return;
 	
 	long offs = i + j * NbRoomDistance;
