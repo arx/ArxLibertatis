@@ -189,7 +189,7 @@ static std::vector<EERIEPOLY*> vPolyWater;
 static std::vector<EERIEPOLY*> vPolyLava;
 
 static std::vector<PORTAL_ROOM_DRAW> RoomDraw;
-static std::vector<long> RoomDrawList;
+static std::vector<size_t> RoomDrawList;
 
 //*************************************************************************************
 //*************************************************************************************
@@ -1065,7 +1065,7 @@ static void RenderLava() {
 	vPolyLava.clear();
 }
 
-static void ARX_PORTALS_Frustrum_RenderRoomTCullSoft(long room_num,
+static void ARX_PORTALS_Frustrum_RenderRoomTCullSoft(size_t room_num,
                                                      const EERIE_FRUSTRUM_DATA & frustrums,
                                                      long now,
                                                      const Vec3f & camPos
@@ -1259,7 +1259,7 @@ static void ARX_PORTALS_Frustrum_RenderRoomTCullSoft(long room_num,
 }
 
 
-static void BackgroundRenderOpaque(long room_num) {
+static void BackgroundRenderOpaque(size_t room_num) {
 	
 	ARX_PROFILE_FUNC();
 	
@@ -1309,7 +1309,7 @@ static const BatchBucket transRenderOrder[] = {
 };
 
 
-static void BackgroundRenderTransparent(long room_num) {
+static void BackgroundRenderTransparent(size_t room_num) {
 	
 	ARX_PROFILE_FUNC();
 	
