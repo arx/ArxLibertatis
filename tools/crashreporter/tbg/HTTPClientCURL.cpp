@@ -47,7 +47,7 @@ class CURLSession : public Session {
 	
 public:
 	
-	explicit CURLSession(std::string userAgent)
+	explicit CURLSession(const std::string & userAgent)
 		: m_userAgent(userAgent)
 		, m_curl(curl_easy_init())
 	{
