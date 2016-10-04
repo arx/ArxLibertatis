@@ -373,7 +373,7 @@ void ARX_MAGICAL_FLARES_Update() {
 		shinum = 1;
 	}
 	
-	float diff = arxtime.get_frame_delay();
+	float diff = toMs(g_platformTime.lastFrameDuration());
 	
 	bool key = !GInput->actionPressed(CONTROLS_CUST_MAGICMODE);
 
