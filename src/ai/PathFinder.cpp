@@ -45,6 +45,7 @@ ZeniMax Media Inc., Suite 120, Rockville, Maryland 20850 USA.
 
 #include <limits>
 #include <algorithm>
+#include <boost/heap/fibonacci_heap.hpp>
 #include <boost/unordered_map.hpp>
 
 #include "graphics/GraphicsTypes.h"
@@ -95,14 +96,26 @@ public:
 
 class PathFinder::OpenNodeList {
 	
-	typedef std::vector<Node*> NodeList;
+	struct heapComparator
+	{
+		bool operator() (const Node *n1, const Node *n2) const
+		{
+			return n1->getDistance() > n2->getDistance();
+		}
+	};
+
+	typedef boost::heap::fibonacci_heap<Node *, boost::heap::compare<heapComparator>> NodeList;
+	typedef boost::unordered_map<NodeId, NodeList::handle_type> NodeTable;
+
 	NodeList nodes;
+	NodeTable hashes;
 	
 public:
 	
 	~OpenNodeList() {
-		for(NodeList::iterator i = nodes.begin(); i != nodes.end(); ++i) {
-			delete *i;
+		hashes.clear();
+		for(NodeList::iterator it=nodes.begin(); it != nodes.end(); it++) {
+			delete *it;
 		}
 	}
 	
@@ -114,38 +127,31 @@ public:
 	void add(NodeId id, const Node * parent, float distance, float remaining) {
 		
 		// Check if node is already in open list.
-		for(NodeList::iterator i = nodes.begin(); i != nodes.end(); ++i) {
-			if((*i)->getId() == id) {
-				if((*i)->getDistance() > distance) {
-					(*i)->newParent(parent, distance);
-				}
-				return;
+		NodeTable::iterator it;
+		if((it = hashes.find(id)) != hashes.end()) {
+			NodeList::handle_type handle = (*it).second;
+			if((*handle)->getDistance() > distance) {
+				(*handle)->newParent(parent, distance);
+				nodes.update(handle);
 			}
+			return;
 		}
 		
-		nodes.push_back(new Node(id, parent, distance, remaining));
+		Node *newNode = new Node(id, parent, distance, remaining);
+		hashes.emplace(newNode->getId(), nodes.push(newNode));
 	}
 	
 	Node * extractBestNode() {
-		// TODO use a better datastructure
 		
 		if(nodes.empty()) {
 			return NULL;
 		}
 		
-		NodeList::iterator best = nodes.begin();
-		float cost = std::numeric_limits<float>::max();
-		for(NodeList::iterator i = nodes.begin(); i != nodes.end(); ++i) {
-			if((*i)->getCost() < cost) {
-				cost = (*i)->getCost();
-				best = i;
-			}
-		}
+		Node *best = nodes.top();
 		
-		Node * node = *best;
-		nodes.erase(best);
-		
-		return node;
+		nodes.pop();
+		hashes.erase(best->getId());
+		return best;
 	}
 	
 };
@@ -153,12 +159,13 @@ public:
 class PathFinder::ClosedNodeList {
 	
 	typedef boost::unordered_map<NodeId, Node *> NodeList;
+
 	NodeList nodes;
 	
 public:
 	
 	~ClosedNodeList() {
-		for(boost::unordered_map<NodeId, Node *>::iterator it=nodes.begin(); it != nodes.end(); it++) {
+		for(NodeList::iterator it=nodes.begin(); it != nodes.end(); it++) {
 			delete (*it).second;
 		}
 	}
