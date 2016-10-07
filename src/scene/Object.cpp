@@ -1150,16 +1150,17 @@ void EERIE_CreateCedricData(EERIE_3DOBJ * eobj) {
 		memset(eobj->vertexlocal, 0, sizeof(Vec3f)*eobj->vertexlist.size());
 
 		for(size_t i = 0; i != obj->bones.size(); i++) {
-			Vec3f vector = obj->bones[i].anim.trans;
+			const Bone & bone = obj->bones[i];
+			Vec3f vector = bone.anim.trans;
 			
-			for(size_t v = 0; v != obj->bones[i].idxvertices.size(); v++) {
+			for(size_t v = 0; v != bone.idxvertices.size(); v++) {
 				
-				size_t idx = obj->bones[i].idxvertices[v];
+				size_t idx = bone.idxvertices[v];
 				const EERIE_VERTEX & inVert = eobj->vertexlist[idx];
 				Vec3f & outVert = eobj->vertexlocal[idx];
 				
 				Vec3f temp = inVert.v - vector;
-				outVert = glm::inverse(obj->bones[i].anim.quat) * temp;
+				outVert = glm::inverse(bone.anim.quat) * temp;
 			}
 		}
 	}
