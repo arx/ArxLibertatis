@@ -939,7 +939,7 @@ static void PrepareAnimatedObjectHalo(HaloInfo & haloInfo, const Vec3f & pos,
 
 		float ddist = mdist-fdist(ftrPos, ACTIVECAM->orgTrans.pos);
 		ddist = ddist/mdist;
-		ddist = std::pow(ddist, 6);
+		ddist = glm::pow(ddist, 6.f);
 		ddist = glm::clamp(ddist, 0.25f, 0.9f);
 
 		haloInfo.ddist = ddist;
