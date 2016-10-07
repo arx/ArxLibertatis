@@ -1129,11 +1129,12 @@ void EERIE_CreateCedricData(EERIE_3DOBJ * eobj) {
 			Bone & bone = obj->bones[i];
 
 			if(bone.father >= 0) {
+				Bone & parent = obj->bones[bone.father];
 				/* Rotation*/
-				bone.anim.quat = obj->bones[bone.father].anim.quat * bone.init.quat;
+				bone.anim.quat = parent.anim.quat * bone.init.quat;
 				/* Translation */
-				bone.anim.trans = obj->bones[bone.father].anim.quat * bone.init.trans;
-				bone.anim.trans = obj->bones[bone.father].anim.trans + bone.anim.trans;
+				bone.anim.trans = parent.anim.quat * bone.init.trans;
+				bone.anim.trans = parent.anim.trans + bone.anim.trans;
 			} else {
 				/* Rotation*/
 				bone.anim.quat = bone.init.quat;
