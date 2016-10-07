@@ -1196,10 +1196,11 @@ static void Cedric_AnimateDrawEntityRender(EERIE_3DOBJ * eobj, const Vec3f & pos
 	/* Get nearest lights */
 	Vec3f tv = pos;
 	
-	if(io && io->obj->fastaccess.head_group_origin != ObjVertHandle())
+	if(io && io->obj->fastaccess.head_group_origin != ObjVertHandle()) {
 		tv.y = io->obj->vertexlist3[io->obj->fastaccess.head_group_origin.handleData()].v.y + 10;
-	else
+	} else {
 		tv.y -= 90.f;
+	}
 	
 	ShaderLight lights[llightsSize];
 	int lightsCount;
@@ -1220,9 +1221,9 @@ static void Cedric_AnimateDrawEntityRender(EERIE_3DOBJ * eobj, const Vec3f & pos
 		if(io == entities.player() &&
 			link.lidx == entities.player()->obj->fastaccess.weapon_attach &&
 			!EXTERNALVIEW
-		)
+		) {
 			continue;
-		
+		}
 		
 		TransformInfo t(
 			actionPointPosition(eobj, link.lidx),
