@@ -1389,12 +1389,12 @@ static void Cedric_BlendAnimation(Skeleton & rig, AnimationBlendStatus * animBle
 	}
 
 	for(size_t i = 0; i < rig.bones.size(); i++) {
-		Bone * bone = &rig.bones[i];
+		Bone & bone = rig.bones[i];
 
-		bone->init.quat = Quat_Slerp(bone->last.quat, bone->init.quat, timm);
+		bone.init.quat = Quat_Slerp(bone.last.quat, bone.init.quat, timm);
 
-		bone->init.trans = bone->last.trans + (bone->init.trans - bone->last.trans) * timm;
-		bone->init.scale = bone->last.scale + (bone->init.scale - bone->last.scale) * timm;
+		bone.init.trans = bone.last.trans + (bone.init.trans - bone.last.trans) * timm;
+		bone.init.scale = bone.last.scale + (bone.init.scale - bone.last.scale) * timm;
 	}
 }
 
