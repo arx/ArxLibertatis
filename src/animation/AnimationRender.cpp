@@ -1520,7 +1520,8 @@ static void Cedric_AnimateDrawEntity(Skeleton & skeleton, AnimLayer * animlayer,
 	Cedric_AnimateObject(&skeleton, animlayer);
 
 	if(extraScale.groupIndex != ObjVertGroup()) {
-		Bone & bone = skeleton.bones[extraScale.groupIndex.handleData()];
+		size_t boneIndex = size_t(extraScale.groupIndex.handleData());
+		Bone & bone = skeleton.bones[boneIndex];
 
 		bone.init.scale += extraScale.scale;
 	}
