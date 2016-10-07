@@ -1404,33 +1404,33 @@ static void Cedric_BlendAnimation(Skeleton & rig, AnimationBlendStatus * animBle
 static void Cedric_ConcatenateTM(Skeleton & rig, const TransformInfo & t) {
 
 	for(size_t i = 0; i != rig.bones.size(); i++) {
-		Bone * bone = &rig.bones[i];
+		Bone & bone = rig.bones[i];
 
-		if(bone->father >= 0) { // Child Bones
-			size_t parentIndex = size_t(bone->father);
+		if(bone.father >= 0) { // Child Bones
+			size_t parentIndex = size_t(bone.father);
 			Bone & parent = rig.bones[parentIndex];
 			// Rotation
-			bone->anim.quat = parent.anim.quat * bone->init.quat;
+			bone.anim.quat = parent.anim.quat * bone.init.quat;
 
 			// Translation
-			bone->anim.trans = bone->init.trans * parent.anim.scale;
-			bone->anim.trans = parent.anim.quat * bone->anim.trans;
-			bone->anim.trans = parent.anim.trans + bone->anim.trans;
+			bone.anim.trans = bone.init.trans * parent.anim.scale;
+			bone.anim.trans = parent.anim.quat * bone.anim.trans;
+			bone.anim.trans = parent.anim.trans + bone.anim.trans;
 
 			// Scale
-			bone->anim.scale = (bone->init.scale + Vec3f_ONE) * parent.anim.scale;
+			bone.anim.scale = (bone.init.scale + Vec3f_ONE) * parent.anim.scale;
 		} else { // Root Bone
 			// Rotation
-			bone->anim.quat = t.rotation * bone->init.quat;
+			bone.anim.quat = t.rotation * bone.init.quat;
 
 			// Translation
-			Vec3f vt1 = bone->init.trans + t.offset;
-			bone->anim.trans = t.rotation * vt1;
-			bone->anim.trans *= t.scale;
-			bone->anim.trans += t.pos;
+			Vec3f vt1 = bone.init.trans + t.offset;
+			bone.anim.trans = t.rotation * vt1;
+			bone.anim.trans *= t.scale;
+			bone.anim.trans += t.pos;
 
 			// Compute Global Object Scale AND Global Animation Scale
-			bone->anim.scale = (bone->init.scale + Vec3f_ONE) * t.scale;
+			bone.anim.scale = (bone.init.scale + Vec3f_ONE) * t.scale;
 		}
 	}
 }
