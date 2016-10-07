@@ -1406,7 +1406,8 @@ static void Cedric_ConcatenateTM(Skeleton & rig, const TransformInfo & t) {
 		Bone * bone = &rig.bones[i];
 
 		if(bone->father >= 0) { // Child Bones
-			Bone * parent = &rig.bones[bone->father];
+			size_t parentIndex = size_t(bone->father);
+			Bone * parent = &rig.bones[parentIndex];
 			// Rotation
 			bone->anim.quat = parent->anim.quat * bone->init.quat;
 
