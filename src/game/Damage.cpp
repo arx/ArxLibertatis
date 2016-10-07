@@ -134,8 +134,8 @@ void DamageRequestEnd(DamageHandle handle) {
 
 extern Vec3f PUSH_PLAYER_FORCE;
 
-float Blood_Pos = 0.f;
-long Blood_Duration = 0;
+static float Blood_Pos = 0.f;
+static long Blood_Duration = 0;
 
 static void ARX_DAMAGES_IgnitIO(Entity * io, float dmg)
 {
