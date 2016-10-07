@@ -1186,50 +1186,50 @@ static void Cedric_AnimateDrawEntityRender(EERIE_3DOBJ * eobj, const Vec3f & pos
                                            Entity * io, float invisibility) {
 	
 	Skeleton *obj = eobj->m_skeleton;
-
+	
 	if(!obj)
 		return;
-
+	
 	ColorMod colorMod;
 	colorMod.updateFromEntity(io);
-
+	
 	/* Get nearest lights */
 	Vec3f tv = pos;
-
+	
 	if(io && io->obj->fastaccess.head_group_origin != ObjVertHandle())
 		tv.y = io->obj->vertexlist3[io->obj->fastaccess.head_group_origin.handleData()].v.y + 10;
 	else
 		tv.y -= 90.f;
-
+	
 	ShaderLight lights[llightsSize];
 	int lightsCount;
 	UpdateLlights(lights, lightsCount, tv, false);
-
+	
 	Cedric_ApplyLighting(lights, lightsCount, eobj, obj, colorMod);
-
+	
 	Cedric_RenderObject(eobj, obj, io, pos, invisibility);
-
+	
 	// Now we can render Linked Objects
 	for(size_t k = 0; k < eobj->linked.size(); k++) {
 		const EERIE_LINKED & link = eobj->linked[k];
-
+		
 		if(link.lgroup == ObjVertGroup() || !link.obj)
 			continue;
-
+		
 		// specific check to avoid drawing player weapon on its back when in subjective view
 		if(io == entities.player() &&
 			link.lidx == entities.player()->obj->fastaccess.weapon_attach &&
 			!EXTERNALVIEW
 		)
 			continue;
-
-
+		
+		
 		TransformInfo t(
 			actionPointPosition(eobj, link.lidx),
 			eobj->m_skeleton->bones[link.lgroup.handleData()].anim.quat,
 			link.io ? link.io->scale : 1.f,
 			link.obj->vertexlist[link.lidx2.handleData()].v - link.obj->vertexlist[link.obj->origin].v);
-
+		
 		DrawEERIEInter(link.obj, t, link.io, true, invisibility);
 	}
 }
