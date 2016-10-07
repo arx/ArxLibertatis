@@ -1511,7 +1511,8 @@ static void Cedric_AnimateDrawEntity(Skeleton & skeleton, AnimLayer * animlayer,
 			ObjVertGroup i = extraRotation->group_number[k];
 
 			if(i != ObjVertGroup()) {
-				skeleton.bones[i.handleData()].init.quat = angleToQuatForExtraRotation(extraRotation->group_rotate[k]);
+				size_t boneIndex = size_t(i.handleData());
+				skeleton.bones[boneIndex].init.quat = angleToQuatForExtraRotation(extraRotation->group_rotate[k]);
 			}
 		}
 	}
