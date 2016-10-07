@@ -977,7 +977,7 @@ static void AddAnimatedObjectHalo(HaloInfo & haloInfo, const unsigned short * pa
 
 	for(size_t o = 0; o < 3; o++) {
 		float tttz	= glm::abs(eobj->vertexlist3[paf[o]].norm.z) * ( 1.0f / 2 );
-		float power = 255.f - (float)(255.f * tttz);
+		float power = 255.f - (255.f * tttz);
 		power *= (1.f - invisibility);
 
 		power = glm::clamp(power, 0.f, 255.f);
