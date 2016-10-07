@@ -625,7 +625,7 @@ static void AddFixedObjectHalo(const EERIE_FACE & face, const TransformInfo & t,
 	float mdist=ACTIVECAM->cdepth;
 	float ddist = mdist-fdist(t.pos, ACTIVECAM->orgTrans.pos);
 	ddist = ddist/mdist;
-	ddist = std::pow(ddist, 6);
+	ddist = glm::pow(ddist, 6.f);
 
 	ddist = glm::clamp(ddist, 0.25f, 0.9f);
 
