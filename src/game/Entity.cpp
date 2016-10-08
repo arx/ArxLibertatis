@@ -279,6 +279,8 @@ res::path Entity::instancePath() const {
 
 void Entity::cleanReferences() {
 	
+	ARX_INTERACTIVE_DestroyIOdelayedRemove(this);
+	
 	if(DRAGINTER == this) {
 		Set_DragInter(NULL);
 	}

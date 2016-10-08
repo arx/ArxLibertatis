@@ -103,6 +103,7 @@ void PrepareIOTreatZone(long flag = 0);
 void LinkObjToMe(Entity * io, Entity * io2, const std::string & attach);
 
 void ARX_INTERACTIVE_DestroyIOdelayed(Entity * entity);
+void ARX_INTERACTIVE_DestroyIOdelayedRemove(Entity * entity);
 void ARX_INTERACTIVE_DestroyIOdelayedExecute();
 
 /* TODO remove

@@ -2534,6 +2534,12 @@ void ARX_INTERACTIVE_DestroyIOdelayed(Entity * entity) {
 	
 }
 
+void ARX_INTERACTIVE_DestroyIOdelayedRemove(Entity * entity) {
+	Entity * null = NULL;
+	// Remove the entity from the list but don't invalidate iterators
+	std::replace(toDestroy.begin(), toDestroy.end(), entity, null);
+}
+
 void ARX_INTERACTIVE_DestroyIOdelayedExecute() {
 	if(!toDestroy.empty()) {
 		LogDebug("executing delayed entity destruction");
