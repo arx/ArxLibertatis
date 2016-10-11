@@ -2420,7 +2420,7 @@ void PlayerMovementIterate(float DeltaTime) {
 		Vec3f vect = g_moveto - player.pos;
 		float divv = glm::length(vect);
 		if(divv > 0.f) {
-			float mul = g_framedelay * 0.001f * 200.f;
+			float mul = toMs(g_platformTime.lastFrameDuration()) * 0.001f * 200.f;
 			divv = mul / divv;
 			vect *= divv;
 			g_moveto = player.pos + vect;
