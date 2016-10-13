@@ -30,8 +30,6 @@
 
 #include "io/fs/FilePath.h"
 
-using std::string;
-
 namespace fs {
 
 namespace fs_boost = boost::filesystem;
@@ -142,7 +140,7 @@ bool directory_iterator::end() {
 	return (*reinterpret_cast<fs_boost::directory_iterator *>(m_handle) == fs_boost::directory_iterator());
 }
 
-string directory_iterator::name() {
+std::string directory_iterator::name() {
 	arx_assert(!end());
 	return (*reinterpret_cast<fs_boost::directory_iterator *>(m_handle))->path().filename().string();
 }
