@@ -39,8 +39,6 @@
 #include "scene/Interactive.h"
 #include "util/String.h"
 
-using std::cerr;
-
 static std::ostream & operator<<(std::ostream & strm, const SavedVec3 & vec) {
 	return strm << '(' << vec.x << ", " << vec.y << ", " << vec.z << ')';
 }
@@ -921,7 +919,7 @@ static int view_player(SaveBlock & save, const char * dat, size_t size) {
 	if(asp.nb_PlayerQuest) {
 		std::cout << "\nQuests:\n";
 		if(size < pos + (asp.nb_PlayerQuest * 80)) {
-			cerr << "truncated data\n";
+			std::cerr << "truncated data\n";
 			return -1;
 		}
 		for(int i = 0; i < asp.nb_PlayerQuest; i++) {
@@ -934,7 +932,7 @@ static int view_player(SaveBlock & save, const char * dat, size_t size) {
 	if(asp.keyring_nb) {
 		std::cout << "\nKeys:\n";
 		if(size < pos + (asp.keyring_nb * SAVED_KEYRING_SLOT_SIZE)) {
-			cerr << "truncated data\n";
+			std::cerr << "truncated data\n";
 			return -1;
 		}
 		for(int i = 0; i < asp.keyring_nb; i++) {
@@ -947,7 +945,7 @@ static int view_player(SaveBlock & save, const char * dat, size_t size) {
 	if(asp.Nb_Mapmarkers) {
 		std::cout << "\nMap markers:\n";
 		if(size < pos + (asp.Nb_Mapmarkers * sizeof(SavedMapMarkerData))) {
-			cerr << "truncated data\n";
+			std::cerr << "truncated data\n";
 			return -1;
 		}
 		for(int i = 0; i < asp.Nb_Mapmarkers; i++) {
@@ -1828,14 +1826,14 @@ int main_view(SaveBlock & save, int argc, char ** argv) {
 	resources = new PakReader();
 	
 	if(!resources->addArchive("loc.pak")) {
-		cerr << "could not open loc.pak, run 'savetool view' from the game directory\n";
+		std::cerr << "could not open loc.pak, run 'savetool view' from the game directory\n";
 		return 3;
 	}
 	
 	initLocalisation();
 	
 	if(!save.open()) {
-		cerr << "failed to open savefile\n";
+		std::cerr << "failed to open savefile\n";
 		return 2;
 	}
 	
@@ -1865,7 +1863,7 @@ int main_view(SaveBlock & save, int argc, char ** argv) {
 	size_t size;
 	char * dat = save.load(name, size);
 	if(!dat) {
-		cerr << name << " not found\n";
+		std::cerr << name << " not found\n";
 		return 3;
 	}
 	
