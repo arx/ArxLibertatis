@@ -29,7 +29,6 @@
 #include "savetool/SaveRename.h"
 #include "savetool/SaveView.h"
 
-using std::string;
 using std::cout;
 using std::endl;
 using std::cerr;
@@ -56,9 +55,9 @@ static int main_extract(SaveBlock & save, int argc, char ** argv) {
 		return 2;
 	}
 	
-	std::vector<string> files = save.getFiles();
+	std::vector<std::string> files = save.getFiles();
 	
-	for(std::vector<string>::iterator file = files.begin(); file != files.end(); ++file) {
+	for(std::vector<std::string>::iterator file = files.begin(); file != files.end(); ++file) {
 		
 		size_t size;
 		char * data = save.load(*file, size);
@@ -99,9 +98,9 @@ static int main_add(SaveBlock & save, int argc, char ** argv) {
 			cerr << "error loading " << argv[i];
 		} else {
 			
-			string name = argv[i];
+			std::string name = argv[i];
 			size_t pos = name.find_last_of("/\\");
-			if(pos != string::npos) {
+			if(pos != std::string::npos) {
 				name = name.substr(pos + 1);
 			}
 			
@@ -128,7 +127,7 @@ int utf8_main(int argc, char ** argv) {
 		return 1;
 	}
 	
-	string command = argv[1];
+	std::string command = argv[1];
 	
 	fs::path savefile = argv[2];
 	
