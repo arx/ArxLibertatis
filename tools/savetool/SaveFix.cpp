@@ -36,7 +36,6 @@
 #include "scene/SaveFormat.h"
 #include "util/String.h"
 
-using std::setw;
 using std::map;
 using std::string;
 using std::cout;
@@ -49,7 +48,7 @@ typedef map<string, long> Remap; // ident -> newIdent
 
 static string makeIdent(const string & file, long ident) {
 	std::stringstream name;
-	name << file << "_" << setw(4) << std::setfill('0') << ident;
+	name << file << "_" << std::setw(4) << std::setfill('0') << ident;
 	return name.str();
 }
 
@@ -356,7 +355,7 @@ static void fix_player(SaveBlock & save, Idents & idents) {
 static void fix_level(SaveBlock & save, long num, Idents & idents) {
 	
 	std::stringstream ss;
-	ss << "lvl" << std::setfill('0') << setw(3) << num;
+	ss << "lvl" << std::setfill('0') << std::setw(3) << num;
 	
 	if(!save.hasFile(ss.str())) {
 		return;
