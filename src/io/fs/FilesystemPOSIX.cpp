@@ -354,10 +354,12 @@ std::string directory_iterator::name() {
 }
 
 bool directory_iterator::is_directory() {
+	arx_assert(buf != NULL);
 	return ((dirstat(handle, buf) & S_IFMT) == S_IFDIR);
 }
 
 bool directory_iterator::is_regular_file() {
+	arx_assert(buf != NULL);
 	return ((dirstat(handle, buf) & S_IFMT) == S_IFREG);
 }
 
