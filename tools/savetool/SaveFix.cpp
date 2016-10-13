@@ -36,15 +36,14 @@
 #include "scene/SaveFormat.h"
 #include "util/String.h"
 
-using std::map;
 using std::string;
 using std::cout;
 using std::cerr;
 using std::endl;
 using std::hex;
 
-typedef map<string, string> Idents; // ident -> where
-typedef map<string, long> Remap; // ident -> newIdent
+typedef std::map<string, string> Idents; // ident -> where
+typedef std::map<string, long> Remap; // ident -> newIdent
 
 static string makeIdent(const string & file, long ident) {
 	std::stringstream name;
