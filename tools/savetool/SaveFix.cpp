@@ -36,7 +36,6 @@
 #include "scene/SaveFormat.h"
 #include "util/String.h"
 
-using std::stringstream;
 using std::setfill;
 using std::setw;
 using std::map;
@@ -50,7 +49,7 @@ typedef map<string, string> Idents; // ident -> where
 typedef map<string, long> Remap; // ident -> newIdent
 
 static string makeIdent(const string & file, long ident) {
-	stringstream name;
+	std::stringstream name;
 	name << file << "_" << setw(4) << setfill('0') << ident;
 	return name.str();
 }
@@ -81,7 +80,7 @@ static bool fix_iodata(SaveBlock & save, Idents & idents, char * dat, const stri
 	
 	ioChanged |= fix_ident(save, ais.id_targetinfo, idents, where + ".id_targetinfo", remap);
 	for(long i = 0; i < ais.nb_linked; i++) {
-		stringstream where2;
+		std::stringstream where2;
 		where2 << where << ".linked_data[" << i << "].linked_id";
 		ioChanged |= fix_ident(save, ais.linked_data[i].linked_id, idents, where2.str(), remap);
 	}
@@ -102,7 +101,7 @@ static bool fix_iodata(SaveBlock & save, Idents & idents, char * dat, const stri
 			specificsChanged |= fix_ident(save, anis.id_weapon, idents, where + ".npc.id_weapon", remap);
 			specificsChanged |= fix_ident(save, anis.weapon, idents, where + ".npc.weapon", remap);
 			for(size_t i = 0; i < SAVED_MAX_STACKED_BEHAVIOR; i++) {
-				stringstream where2;
+				std::stringstream where2;
 				where2 << where << ".npc.stackedtarget[" << i << "]";
 				specificsChanged |= fix_ident(save, anis.stackedtarget[i], idents, where2.str(), remap);
 			}
@@ -135,7 +134,7 @@ static bool fix_iodata(SaveBlock & save, Idents & idents, char * dat, const stri
 		invChanged |= fix_ident(save, aids.io, idents, where + ".inventory.io", remap);
 		for(long m = 0; m < aids.sizex; m++) {
 			for(long n = 0; n < aids.sizey; n++) {
-				stringstream where2;
+				std::stringstream where2;
 				where2 << where << ".inventory[" << m << "][" << n << "]";
 				invChanged |= fix_ident(save, aids.slot_io[m][n], idents, where2.str(), remap);
 			}
@@ -143,12 +142,12 @@ static bool fix_iodata(SaveBlock & save, Idents & idents, char * dat, const stri
 		invChanged |= fix_ident(save, aids.weapon, idents, where + ".inventory.weapon", remap);
 		invChanged |= fix_ident(save, aids.targetinfo, idents, where + ".inventory.targetinfo", remap);
 		for(long i = 0; i < ais.nb_linked; i++) {
-			stringstream where2;
+			std::stringstream where2;
 			where2 << where << ".inventory.linked_id[" << i << "]";
 			invChanged |= fix_ident(save, aids.linked_id[i], idents, where2.str(), remap);
 		}
 		for(size_t i = 0; i < SAVED_MAX_STACKED_BEHAVIOR; i++) {
-			stringstream where2;
+			std::stringstream where2;
 			where2 << where << ".inventory.stackedtarget[" << i << "]";
 			invChanged |= fix_ident(save, aids.stackedtarget[i], idents, where2.str(), remap);
 		}
@@ -326,7 +325,7 @@ static void fix_player(SaveBlock & save, Idents & idents) {
 	for(size_t iNbBag = 0; iNbBag < SAVED_INVENTORY_BAGS; iNbBag++) {
 		for(size_t m = 0; m < SAVED_INVENTORY_Y; m++) {
 			for(size_t n = 0; n < SAVED_INVENTORY_X; n++) {
-				stringstream where;
+				std::stringstream where;
 				where << "player.inventory[" << iNbBag << "][" << n << "][" << m << "]"; 
 				changed |= fix_ident(save, asp.id_inventory[iNbBag][n][m], idents, where.str(), remap);
 			}
@@ -341,7 +340,7 @@ static void fix_player(SaveBlock & save, Idents & idents) {
 	changed |= fix_ident(save, asp.curtorch, idents, "player.torch", remap);
 	
 	for(size_t k = 0; k < SAVED_MAX_EQUIPED; k++) {
-		stringstream where;
+		std::stringstream where;
 		where << "player.equiped[" << k << "]"; 
 		changed |= fix_ident(save, asp.equiped[k], idents, where.str(), remap);
 	}
@@ -357,7 +356,7 @@ static void fix_player(SaveBlock & save, Idents & idents) {
 
 static void fix_level(SaveBlock & save, long num, Idents & idents) {
 	
-	stringstream ss;
+	std::stringstream ss;
 	ss << "lvl" << setfill('0') << setw(3) << num;
 	
 	if(!save.hasFile(ss.str())) {
@@ -387,7 +386,7 @@ static void fix_level(SaveBlock & save, long num, Idents & idents) {
 		long res;
 		string ident = makeIdent(res::path::load(util::loadString(idx_io[i].filename)).basename(), idx_io[i].ident);
 		Remap::const_iterator it = remap.find(ident);
-		stringstream where;
+		std::stringstream where;
 		where << "level" << num << "[" << i << "]";
 		if(it != remap.end()) {
 			res = it->second;
