@@ -264,7 +264,9 @@ directory_iterator::directory_iterator(const path & p) : handle(INVALID_HANDLE_V
 	handle = FindFirstFileW(platform::WideString(searchPath), data);
 	if(handle != INVALID_HANDLE_VALUE) {
 		buf = data;
-		operator++();
+		if(!wcscmp(data->cFileName, L".") || !wcscmp(data->cFileName, L"..")) {
+			operator++();
+		}
 	} else {
 		delete data;
 	}
