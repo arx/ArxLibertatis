@@ -256,13 +256,13 @@ path current_path() {
 	return path(buffer.toUTF8());
 }
 
-directory_iterator::directory_iterator(const path & p) : handle(INVALID_HANDLE_VALUE), buf(NULL) {
+directory_iterator::directory_iterator(const path & p) : m_handle(INVALID_HANDLE_VALUE), buf(NULL) {
 	
 	std::string searchPath = (p.empty() ? "." : p.string()) + "\\*";
 	
 	WIN32_FIND_DATAW * data = new WIN32_FIND_DATAW;
-	handle = FindFirstFileW(platform::WideString(searchPath), data);
-	if(handle != INVALID_HANDLE_VALUE) {
+	m_handle = FindFirstFileW(platform::WideString(searchPath), data);
+	if(m_handle != INVALID_HANDLE_VALUE) {
 		buf = data;
 		if(!wcscmp(data->cFileName, L".") || !wcscmp(data->cFileName, L"..")) {
 			operator++();
@@ -275,8 +275,8 @@ directory_iterator::directory_iterator(const path & p) : handle(INVALID_HANDLE_V
 
 directory_iterator::~directory_iterator() {
 	
-	if(handle != INVALID_HANDLE_VALUE) {
-		FindClose(handle);
+	if(m_handle != INVALID_HANDLE_VALUE) {
+		FindClose(m_handle);
 	}
 	
 	delete reinterpret_cast<WIN32_FIND_DATAW *>(buf);
@@ -285,13 +285,13 @@ directory_iterator::~directory_iterator() {
 directory_iterator & directory_iterator::operator++() {
 	
 	arx_assert(buf != NULL);
-	arx_assert(handle != INVALID_HANDLE_VALUE);
+	arx_assert(m_handle != INVALID_HANDLE_VALUE);
 	
 	WIN32_FIND_DATAW * data = reinterpret_cast<WIN32_FIND_DATAW *>(buf);
 	
 	do {
 		
-		if(!FindNextFileW(handle, data)) {
+		if(!FindNextFileW(m_handle, data)) {
 			delete data;
 			buf = NULL;
 			break;

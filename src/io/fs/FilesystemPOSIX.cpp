@@ -290,9 +290,9 @@ static void do_readdir(void * _handle, void * & _buf) {
 
 directory_iterator::directory_iterator(const path & p) : buf(NULL) {
 	
-	handle = DIR_HANDLE_INIT(p, opendir(p.empty() ? "./" : p.string().c_str()));
+	m_handle = DIR_HANDLE_INIT(p, opendir(p.empty() ? "./" : p.string().c_str()));
 	
-	if(DIR_HANDLE(handle)) {
+	if(DIR_HANDLE(m_handle)) {
 		
 		#if !ARX_HAVE_THREADSAFE_READDIR
 		// Allocate a large enough buffer for readdir_r.
@@ -322,13 +322,13 @@ directory_iterator::directory_iterator(const path & p) : buf(NULL) {
 		buf = std::malloc(size);
 		#endif //!ARX_HAVE_THREADSAFE_READDIR
 		
-		do_readdir(handle, buf);
+		do_readdir(m_handle, buf);
 	}
 };
 
 directory_iterator::~directory_iterator() {
-	if(handle) {
-		closedir(DIR_HANDLE(handle));
+	if(m_handle) {
+		closedir(DIR_HANDLE(m_handle));
 		DIR_HANDLE_FREE(handle);
 	}
 	#if !ARX_HAVE_THREADSAFE_READDIR
@@ -339,7 +339,7 @@ directory_iterator::~directory_iterator() {
 directory_iterator & directory_iterator::operator++() {
 	arx_assert(buf != NULL);
 	
-	do_readdir(handle, buf);
+	do_readdir(m_handle, buf);
 	
 	return *this;
 }
@@ -355,12 +355,12 @@ std::string directory_iterator::name() {
 
 bool directory_iterator::is_directory() {
 	arx_assert(buf != NULL);
-	return ((dirstat(handle, buf) & S_IFMT) == S_IFDIR);
+	return ((dirstat(m_handle, buf) & S_IFMT) == S_IFDIR);
 }
 
 bool directory_iterator::is_regular_file() {
 	arx_assert(buf != NULL);
-	return ((dirstat(handle, buf) & S_IFMT) == S_IFREG);
+	return ((dirstat(m_handle, buf) & S_IFMT) == S_IFREG);
 }
 
 #undef ITERATOR_HANDLE

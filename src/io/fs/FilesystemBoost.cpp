@@ -116,47 +116,47 @@ path current_path() {
 
 directory_iterator::directory_iterator(const path & p) {
 	error_code ec;
-	handle = new fs_boost::directory_iterator(p.empty() ? "./" : p.string(), ec);
+	m_handle = new fs_boost::directory_iterator(p.empty() ? "./" : p.string(), ec);
 	if(ec) {
-		delete reinterpret_cast<fs_boost::directory_iterator *>(handle);
-		handle = new fs_boost::directory_iterator();
+		delete reinterpret_cast<fs_boost::directory_iterator *>(m_handle);
+		m_handle = new fs_boost::directory_iterator();
 	}
 };
 
 directory_iterator::~directory_iterator() {
-	delete reinterpret_cast<fs_boost::directory_iterator *>(handle);
+	delete reinterpret_cast<fs_boost::directory_iterator *>(m_handle);
 }
 
 directory_iterator & directory_iterator::operator++() {
 	arx_assert(!end());
 	error_code ec;
-	(*reinterpret_cast<fs_boost::directory_iterator *>(handle)).increment(ec);
+	(*reinterpret_cast<fs_boost::directory_iterator *>(m_handle)).increment(ec);
 	if(ec) {
-		delete reinterpret_cast<fs_boost::directory_iterator *>(handle);
-		handle = new fs_boost::directory_iterator();
+		delete reinterpret_cast<fs_boost::directory_iterator *>(m_handle);
+		m_handle = new fs_boost::directory_iterator();
 	}
 	return *this;
 }
 
 bool directory_iterator::end() {
-	return (*reinterpret_cast<fs_boost::directory_iterator *>(handle) == fs_boost::directory_iterator());
+	return (*reinterpret_cast<fs_boost::directory_iterator *>(m_handle) == fs_boost::directory_iterator());
 }
 
 string directory_iterator::name() {
 	arx_assert(!end());
-	return (*reinterpret_cast<fs_boost::directory_iterator *>(handle))->path().filename().string();
+	return (*reinterpret_cast<fs_boost::directory_iterator *>(m_handle))->path().filename().string();
 }
 
 bool directory_iterator::is_directory() {
 	arx_assert(!end());
 	error_code ec;
-	return fs_boost::is_directory((*reinterpret_cast<fs_boost::directory_iterator *>(handle))->status(ec)) && !ec;
+	return fs_boost::is_directory((*reinterpret_cast<fs_boost::directory_iterator *>(m_handle))->status(ec)) && !ec;
 }
 
 bool directory_iterator::is_regular_file() {
 	arx_assert(!end());
 	error_code ec;
-	return fs_boost::is_regular_file((*reinterpret_cast<fs_boost::directory_iterator *>(handle))->status(ec)) && !ec;
+	return fs_boost::is_regular_file((*reinterpret_cast<fs_boost::directory_iterator *>(m_handle))->status(ec)) && !ec;
 }
 
 } // namespace fs
