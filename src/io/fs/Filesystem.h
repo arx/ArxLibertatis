@@ -176,7 +176,7 @@ class directory_iterator {
 	directory_iterator(const directory_iterator &);
 	
 	void * m_handle;
-	void * buf;
+	void * m_buffer;
 	
 public:
 	
