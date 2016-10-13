@@ -299,7 +299,7 @@ directory_iterator::directory_iterator(const path & p) : m_buffer(NULL) {
 		long name_max;
 		#if ((ARX_HAVE_DIRFD && ARX_HAVE_FPATHCONF) || ARX_HAVE_PATHCONF) && ARX_HAVE_PC_NAME_MAX
 		#  if ARX_HAVE_DIRFD && ARX_HAVE_FPATHCONF
-		name_max = fpathconf(dirfd(DIR_HANDLE(handle)), _PC_NAME_MAX);
+		name_max = fpathconf(dirfd(DIR_HANDLE(m_handle)), _PC_NAME_MAX);
 		#  else
 		name_max = pathconf(p.string().c_str(), _PC_NAME_MAX);
 		#  endif
