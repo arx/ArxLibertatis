@@ -329,7 +329,7 @@ directory_iterator::directory_iterator(const path & p) : m_buffer(NULL) {
 directory_iterator::~directory_iterator() {
 	if(m_handle) {
 		closedir(DIR_HANDLE(m_handle));
-		DIR_HANDLE_FREE(handle);
+		DIR_HANDLE_FREE(m_handle);
 	}
 	#if !ARX_HAVE_THREADSAFE_READDIR
 	std::free(m_buffer);
