@@ -659,28 +659,60 @@ else(MSVC)
 	
 	if(USE_NATIVE_FS)
 		
+		# Whether multiple cuncurrent readdir calls with *different* directory streams are threadsafe
+		set(READDIR_IS_THREADSAFE 0)
+		if(HAVE_GLIBC)
+			# TODO Find a more portable check for this - from the glibc documentation:
+			# POSIX-1.2008 does not guarantee that readdir is thread-safe, even when access to the same
+			# dirstream is serialized. But in current implementations (including the GNU C Library),
+			# it is safe to call readdir concurrently on different dirstreams, so there is no need to
+			# use readdir_r in most multi-threaded programs.
+			# It is expected that future versions of POSIX will obsolete readdir_r and mandate the level
+			# of thread safety for readdir which is provided by the GNU C Library and other
+			# implementations today.
+			set(READDIR_IS_THREADSAFE 1)
+		endif()
+		
 		check_include_file("sys/stat.h" ARX_HAVE_SYS_STAT_H)
 		check_include_file("sys/errno.h" ARX_HAVE_SYS_ERRNO_H)
 		check_include_file("dirent.h" ARX_HAVE_DIRENT_H)
 		
-		check_symbol_exists(readdir_r "dirent.h" ARX_HAVE_READDIR_R)
+		check_symbol_exists(dirfd "dirent.h" ARX_HAVE_DIRFD)
+		if(ARX_HAVE_DIRFD)
+			check_symbol_exists(fstatat "sys/stat.h" ARX_HAVE_FSTATAT)
+		endif()
+		
+		# readdir_r is complicated to use and is deprecated in glibc 2.24
+		# Prefer readdir if it is know to be threadsafe
+		if(READDIR_IS_THREADSAFE)
+			check_symbol_exists(readdir "dirent.h" ARX_HAVE_THREADSAFE_READDIR)
+		endif()
+		if(NOT ARX_HAVE_THREADSAFE_READDIR)
+			check_symbol_exists(readdir_r "dirent.h" ARX_HAVE_READDIR_R)
+			check_symbol_exists(_PC_NAME_MAX "unistd.h" ARX_HAVE_PC_NAME_MAX)
+			check_symbol_exists(NAME_MAX "dirent.h" ARX_HAVE_NAME_MAX)
+			if(ARX_HAVE_DIRFD AND ARX_HAVE_PC_NAME_MAX)
+				check_symbol_exists(fpathconf "unistd.h" ARX_HAVE_FPATHCONF)
+			endif()
+		endif()
+		
+		check_symbol_exists(_PC_CASE_SENSITIVE "unistd.h" ARX_HAVE_PC_CASE_SENSITIVE)
+		if(ARX_HAVE_PC_NAME_MAX OR ARX_HAVE_PC_CASE_SENSITIVE)
+			check_symbol_exists(pathconf "unistd.h" ARX_HAVE_PATHCONF)
+		endif()
 		
 		check_symbol_exists(getcwd "unistd.h" ARX_HAVE_GETCWD)
-		check_symbol_exists(fpathconf "unistd.h" ARX_HAVE_FPATHCONF)
-		check_symbol_exists(pathconf "unistd.h" ARX_HAVE_PATHCONF)
-		check_symbol_exists(_PC_NAME_MAX "unistd.h" ARX_HAVE_PC_NAME_MAX)
-		check_symbol_exists(_PC_CASE_SENSITIVE "unistd.h" ARX_HAVE_PC_CASE_SENSITIVE)
-		
-		check_symbol_exists(dirfd "dirent.h" ARX_HAVE_DIRFD)
-		
-		check_symbol_exists(fstatat "sys/stat.h" ARX_HAVE_FSTATAT)
-		
-		check_symbol_exists(NAME_MAX "dirent.h" ARX_HAVE_NAME_MAX)
 		
 		if(ARX_HAVE_SYS_STAT_H AND ARX_HAVE_SYS_ERRNO_H AND ARX_HAVE_DIRENT_H
-		   AND ARX_HAVE_READDIR_R AND ARX_HAVE_GETCWD
-			 AND ((((ARX_HAVE_DIRFD AND ARX_HAVE_FPATHCONF) OR ARX_HAVE_PATHCONF)
-			       AND ARX_HAVE_PC_NAME_MAX) OR ARX_HAVE_NAME_MAX))
+		   AND ARX_HAVE_GETCWD
+		   AND (ARX_HAVE_THREADSAFE_READDIR
+		        OR (ARX_HAVE_READDIR_R
+		            AND (ARX_HAVE_PC_NAME_MAX
+		                   AND ((ARX_HAVE_DIRFD AND ARX_HAVE_FPATHCONF) OR ARX_HAVE_PATHCONF)
+			               OR ARX_HAVE_NAME_MAX)
+		           )
+		       )
+		  )
 			set(ARX_HAVE_POSIX_FILESYSTEM 1)
 		elseif(STRICT_USE)
 			message(FATAL_ERROR "Missing dependencies for native filesystem backend.")
