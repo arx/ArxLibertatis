@@ -35,10 +35,6 @@
 
 #include "util/Unicode.h"
 
-using std::transform;
-using std::ostringstream;
-using std::string;
-
 static void dump(PakDirectory & dir, const fs::path & dirname = fs::path()) {
 	
 	if(!fs::create_directories(dirname)) {
