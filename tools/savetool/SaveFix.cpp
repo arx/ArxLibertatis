@@ -36,7 +36,6 @@
 #include "scene/SaveFormat.h"
 #include "util/String.h"
 
-using std::cout;
 using std::cerr;
 using std::endl;
 using std::hex;
@@ -212,10 +211,10 @@ static long fix_io(SaveBlock & save, const std::string & name, Idents & idents, 
 	
 	Idents::iterator it = idents.find(name);
 	if(it != idents.end()) {
-		cout << "duplicate ident " << name << " detected: in " << it->second << " and " << where << endl;
+		std::cout << "duplicate ident " << name << " detected: in " << it->second << " and " << where << endl;
 		// we already fixed this!
 		long newIdent = copy_io(save, name, idents, where, dat, size);
-		cout << " -> copied " << name << " as " << newIdent << " for " << where << endl;
+		std::cout << " -> copied " << name << " as " << newIdent << " for " << where << endl;
 		free(dat);
 		remap[name] = newIdent;
 		return newIdent;
@@ -244,7 +243,7 @@ static long fix_io(SaveBlock & save, const std::string & name, Idents & idents, 
 		}
 		
 		if(flags != ais.ioflags) {
-			cout << " - fixing " << name << ": ioflags 0x" << hex << ais.ioflags << " -> 0x" << hex << flags << endl;
+			std::cout << " - fixing " << name << ": ioflags 0x" << hex << ais.ioflags << " -> 0x" << hex << flags << endl;
 			ais.ioflags = flags;
 			changed = true;
 		}
@@ -271,7 +270,7 @@ static bool patch_ident(char (&name)[SIZE_ID], long newIdent, const std::string 
 		return false;
 	}
 	
-	cout << "fixing ident in " << where << ": " << name << " -> " << newIdent << endl;
+	std::cout << "fixing ident in " << where << ": " << name << " -> " << newIdent << endl;
 	
 	std::string namestr = boost::to_lower_copy(util::loadString(name, SIZE_ID));
 	
@@ -302,7 +301,7 @@ static bool fix_ident(SaveBlock & save, char (&name)[SIZE_ID], Idents & idents, 
 
 static void fix_player(SaveBlock & save, Idents & idents) {
 	
-	cout << "player" << endl;
+	std::cout << "player" << endl;
 	
 	const std::string loadfile = "player";
 	
@@ -365,7 +364,7 @@ static void fix_level(SaveBlock & save, long num, Idents & idents) {
 		return;
 	}
 	
-	cout << "level " << num << endl;
+	std::cout << "level " << num << endl;
 	
 	size_t pos = 0;
 	
@@ -390,7 +389,7 @@ static void fix_level(SaveBlock & save, long num, Idents & idents) {
 			res = fix_io(save, ident, idents, where.str(), remap);
 		}
 		if(res != 0) {
-			cout << "fixing ident in " << where.str() << ": " << ident << " -> " << res << endl;
+			std::cout << "fixing ident in " << where.str() << ": " << ident << " -> " << res << endl;
 			idx_io[i].ident = res;
 			changed = true;
 		}
