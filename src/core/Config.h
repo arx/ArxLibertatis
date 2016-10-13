@@ -86,15 +86,24 @@ enum UIScaleFilter {
 	UIFilterBilinear = 1
 };
 
+
+namespace {
+
+const uint32_t NUM_OF_KEYS_PER_ACTION = 2;
+const uint32_t DEFAULT_ACTION = 0;
+const uint32_t ALT_ACTION = 1;
+const int32_t UNASSIGNED_KEY = -1;
+}
+
 struct ActionKey {
 	
-	explicit ActionKey(InputKeyId key_0 = -1, InputKeyId key_1 = -1) {
-		key[0] = key_0;
-		key[1] = key_1;
+	explicit ActionKey(InputKeyId key_0 = UNASSIGNED_KEY,
+	                   InputKeyId key_1 = UNASSIGNED_KEY) {
+		key[DEFAULT_ACTION] = key_0;
+		key[ALT_ACTION] = key_1;
 	}
 	
-	InputKeyId key[2];
-	
+	InputKeyId key[NUM_OF_KEYS_PER_ACTION];
 };
 
 class Config {
@@ -203,7 +212,7 @@ public:
 	
 public:
 	
-	void setActionKey(ControlAction action, int index, InputKeyId key);
+	void setActionKey(const ControlAction action, uint32_t index, InputKeyId newKey);
 	void setDefaultActionKeys();
 	
 	/*!
@@ -219,6 +228,13 @@ public:
 private:
 	
 	fs::path file;
+
+    void moveOldKeyToOtherIndexIfEmpty(uint32_t otherIndex,
+            InputKeyId& oldKey, ActionKey& action);
+    void clearOtherIndexIfDuplicate(uint32_t otherIndex, InputKeyId key,
+            ActionKey& action);
+    void removeDuplicateKeyAssignments(const ControlAction currentAction,
+            InputKeyId key, InputKeyId oldKey);
 };
 
 extern Config config;
