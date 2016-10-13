@@ -24,6 +24,7 @@
 #include <vector>
 
 #include <windows.h>
+#include <wchar.h>
 
 #include "io/fs/FilePath.h"
 #include "io/log/Logger.h"
@@ -294,7 +295,7 @@ directory_iterator & directory_iterator::operator++() {
 			break;
 		}
 		
-	} while(data->cFileName[0] == L'.');
+	} while(!wcscmp(data->cFileName, L".") || !wcscmp(data->cFileName, L".."));
 	
 	return *this;
 }
