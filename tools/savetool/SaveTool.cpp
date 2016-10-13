@@ -29,7 +29,6 @@
 #include "savetool/SaveRename.h"
 #include "savetool/SaveView.h"
 
-using std::vector;
 using std::string;
 using std::cout;
 using std::endl;
@@ -57,9 +56,9 @@ static int main_extract(SaveBlock & save, int argc, char ** argv) {
 		return 2;
 	}
 	
-	vector<string> files = save.getFiles();
+	std::vector<string> files = save.getFiles();
 	
-	for(vector<string>::iterator file = files.begin(); file != files.end(); ++file) {
+	for(std::vector<string>::iterator file = files.begin(); file != files.end(); ++file) {
 		
 		size_t size;
 		char * data = save.load(*file, size);
