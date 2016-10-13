@@ -197,11 +197,18 @@ path current_path() {
 
 #if ARX_HAVE_DIRFD && ARX_HAVE_FSTATAT
 
-#define ITERATOR_HANDLE(handle)
+static void * iterator_handle_init(const fs::path & dir, DIR * handle) {
+	ARX_UNUSED(dir);
+	return handle;
+}
 
-#define DIR_HANDLE_INIT(p, h) h
-#define DIR_HANDLE(h)         reinterpret_cast<DIR *>(h)
-#define DIR_HANDLE_FREE(h)
+static DIR * iterator_handle_get(void * handle) {
+	return reinterpret_cast<DIR *>(handle);
+}
+
+static void iterator_handle_free(void * handle) {
+	ARX_UNUSED(handle);
+}
 
 static mode_t dirstat(void * handle, const void * buf) {
 	
@@ -215,7 +222,7 @@ static mode_t dirstat(void * handle, const void * buf) {
 	}
 	#endif
 	
-	int fd = dirfd(DIR_HANDLE(handle));
+	int fd = dirfd(iterator_handle_get(handle));
 	arx_assert(fd != -1);
 	
 	const char * name = entry->d_name;
@@ -234,11 +241,17 @@ struct iterator_handle {
 	iterator_handle(const fs::path & p, DIR * h) : path(p), handle(h) { }
 };
 
-#define ITERATOR_HANDLE(handle) reinterpret_cast<iterator_handle *>(handle)
+static void * iterator_handle_init(const fs::path & dir, DIR * handle) {
+	return new iterator_handle(dir, handle);
+}
 
-#define DIR_HANDLE_INIT(p, h)   new iterator_handle(p, h)
-#define DIR_HANDLE(h)           ITERATOR_HANDLE(h)->handle
-#define DIR_HANDLE_FREE(h)      delete ITERATOR_HANDLE(h)
+static DIR * iterator_handle_get(void * handle) {
+	return reinterpret_cast<iterator_handle *>(h)->handle;
+}
+
+static void iterator_handle_free(void * handle) {
+	delete reinterpret_cast<iterator_handle *>(h);
+}
 
 static mode_t dirstat(void * handle, const void * buf) {
 	
@@ -252,7 +265,7 @@ static mode_t dirstat(void * handle, const void * buf) {
 	}
 	#endif
 	
-	fs::path file = ITERATOR_HANDLE(handle)->path / entry->d_name;
+	fs::path file = reinterpret_cast<iterator_handle *>(h)->path / entry->d_name;
 	struct stat result;
 	int ret = stat(file.string().c_str(), &result);
 	arx_assert(ret == 0, "stat failed: %d", ret); ARX_UNUSED(ret);
@@ -264,7 +277,7 @@ static mode_t dirstat(void * handle, const void * buf) {
 
 static void do_readdir(void * _handle, void * & _buffer) {
 	
-	DIR * handle = DIR_HANDLE(_handle);
+	DIR * handle = iterator_handle_get(_handle);
 	
 	dirent * & buffer = reinterpret_cast<dirent * &>(_buffer);
 	
@@ -290,16 +303,16 @@ static void do_readdir(void * _handle, void * & _buffer) {
 
 directory_iterator::directory_iterator(const path & p) : m_buffer(NULL) {
 	
-	m_handle = DIR_HANDLE_INIT(p, opendir(p.empty() ? "./" : p.string().c_str()));
+	m_handle = iterator_handle_init(p, opendir(p.empty() ? "./" : p.string().c_str()));
 	
-	if(DIR_HANDLE(m_handle)) {
+	if(iterator_handle_get(m_handle)) {
 		
 		#if !ARX_HAVE_THREADSAFE_READDIR
 		// Allocate a large enough buffer for readdir_r.
 		long name_max;
 		#if ((ARX_HAVE_DIRFD && ARX_HAVE_FPATHCONF) || ARX_HAVE_PATHCONF) && ARX_HAVE_PC_NAME_MAX
 		#  if ARX_HAVE_DIRFD && ARX_HAVE_FPATHCONF
-		name_max = fpathconf(dirfd(DIR_HANDLE(m_handle)), _PC_NAME_MAX);
+		name_max = fpathconf(dirfd(iterator_handle_get(m_handle)), _PC_NAME_MAX);
 		#  else
 		name_max = pathconf(p.string().c_str(), _PC_NAME_MAX);
 		#  endif
@@ -328,8 +341,8 @@ directory_iterator::directory_iterator(const path & p) : m_buffer(NULL) {
 
 directory_iterator::~directory_iterator() {
 	if(m_handle) {
-		closedir(DIR_HANDLE(m_handle));
-		DIR_HANDLE_FREE(m_handle);
+		closedir(iterator_handle_get(m_handle));
+		iterator_handle_free(m_handle);
 	}
 	#if !ARX_HAVE_THREADSAFE_READDIR
 	std::free(m_buffer);
@@ -362,10 +375,5 @@ bool directory_iterator::is_regular_file() {
 	arx_assert(m_buffer != NULL);
 	return ((dirstat(m_handle, m_buffer) & S_IFMT) == S_IFREG);
 }
-
-#undef ITERATOR_HANDLE
-#undef DIR_HANDLE_INIT
-#undef DIR_HANDLE
-#undef DIR_HANDLE_FREE
 
 } // namespace fs
