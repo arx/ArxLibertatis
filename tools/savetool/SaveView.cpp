@@ -39,7 +39,6 @@
 #include "scene/Interactive.h"
 #include "util/String.h"
 
-using std::endl;
 using std::cerr;
 
 static std::ostream & operator<<(std::ostream & strm, const SavedVec3 & vec) {
@@ -465,7 +464,7 @@ static int print_variables(size_t n, const char * dat, size_t & pos, const std::
 			
 			name = name.substr(1);
 			
-			std::cout << endl;
+			std::cout << '\n';
 			if(type == s) {
 				std::string value = boost::to_lower_copy(util::loadString(dat + pos, (long)avs->fval));
 				pos += (long)avs->fval;
@@ -477,7 +476,7 @@ static int print_variables(size_t n, const char * dat, size_t & pos, const std::
 			}
 			
 		}
-		std::cout << endl;
+		std::cout << '\n';
 	}
 	
 	return 0;
@@ -485,7 +484,7 @@ static int print_variables(size_t n, const char * dat, size_t & pos, const std::
 
 static void print_animations(const char (&anims)[SAVED_MAX_ANIMS][256]) {
 	
-	std::cout << endl << "Animations:";
+	std::cout << "\nAnimations:";
 	bool hasAnims = false;
 	for(size_t i = 0; i < SAVED_MAX_ANIMS; i++) {
 		
@@ -495,7 +494,7 @@ static void print_animations(const char (&anims)[SAVED_MAX_ANIMS][256]) {
 		}
 		
 		hasAnims = true;
-		std::cout << endl;
+		std::cout << '\n';
 		
 		if(i < ARRAY_SIZE(animationNames)) {
 			std::cout << "  - " << animationNames[i] << ": " << anim;
@@ -506,7 +505,7 @@ static void print_animations(const char (&anims)[SAVED_MAX_ANIMS][256]) {
 	if(!hasAnims) {
 		std::cout << " (none)";
 	}
-	std::cout << endl;
+	std::cout << '\n';
 }
 
 static void print_anim_layers(const SavedAnimUse animlayer[SAVED_MAX_ANIM_LAYERS],
@@ -519,35 +518,35 @@ static void print_anim_layers(const SavedAnimUse animlayer[SAVED_MAX_ANIM_LAYERS
 			continue;
 		}
 		
-		std::cout << endl << pf << "Animation layer #" << i << ':' << endl;
+		std::cout << '\n' << pf << "Animation layer #" << i << ":\n";
 		
 		if(layer.next_anim != ANIM_NONE) {
 			if((size_t)layer.next_anim < ARRAY_SIZE(animationNames)) {
-				std::cout << pf << "  Next animation: " << animationNames[layer.next_anim] << endl;
+				std::cout << pf << "  Next animation: " << animationNames[layer.next_anim] << '\n';
 			} else {
-				std::cout << pf << "  Next animation: animation #" << layer.next_anim << endl;
+				std::cout << pf << "  Next animation: animation #" << layer.next_anim << '\n';
 			}
 		}
 		
 		if(layer.cur_anim != ANIM_NONE) {
 			if((size_t)layer.cur_anim < ARRAY_SIZE(animationNames)) {
-				std::cout << pf << "  Current animation: " << animationNames[layer.cur_anim] << endl;
+				std::cout << pf << "  Current animation: " << animationNames[layer.cur_anim] << '\n';
 			} else {
-				std::cout << pf << "  Current animation: animation #" << layer.cur_anim << endl;
+				std::cout << pf << "  Current animation: animation #" << layer.cur_anim << '\n';
 			}
 		}
 		
-		if(layer.altidx_next) std::cout << pf << "  Next alternative: " << layer.altidx_next << endl;
-		if(layer.altidx_cur) std::cout << pf << "  Current alternative: " << layer.altidx_cur << endl;
+		if(layer.altidx_next) std::cout << pf << "  Next alternative: " << layer.altidx_next << '\n';
+		if(layer.altidx_cur) std::cout << pf << "  Current alternative: " << layer.altidx_cur << '\n';
 		
-		//std::cout << pf << "  ctim: " << layer.ctime << endl;
+		//std::cout << pf << "  ctim: " << layer.ctime << '\n';
 		
-		if(layer.flags) print_anim_flags(std::cout << pf << "  Flags:", layer.flags) << endl;
-		if(layer.nextflags) print_anim_flags(std::cout << pf << "  Next flags:", layer.nextflags) << endl;
+		if(layer.flags) print_anim_flags(std::cout << pf << "  Flags:", layer.flags) << '\n';
+		if(layer.nextflags) print_anim_flags(std::cout << pf << "  Next flags:", layer.nextflags) << '\n';
 		
-		//std::cout << pf << "  Last frame: " << layer.lastframe << endl;
-		//std::cout << pf << "  pour: " << layer.pour << endl;
-		//std::cout << pf << "  fr: " << layer.fr << endl;
+		//std::cout << pf << "  Last frame: " << layer.lastframe << '\n';
+		//std::cout << pf << "  pour: " << layer.pour << '\n';
+		//std::cout << pf << "  fr: " << layer.fr << '\n';
 	}
 	
 }
@@ -585,11 +584,11 @@ static void print_spellcast_flags(s32 flags) {
 }
 
 static void print_physics(const SavedIOPhysics & physics) {
-	if(physics.cyl.origin.toVec3() != Vec3f_ZERO || physics.cyl.radius || physics.cyl.height) std::cout << "  Cylinder: origin=" << physics.cyl.origin << " radius=" << physics.cyl.radius << " height=" << physics.cyl.height << endl;
-	if(physics.startpos.toVec3() != Vec3f_ZERO) std::cout << "  Start position: " << physics.startpos << endl;
-	if(physics.targetpos.toVec3() != Vec3f_ZERO) std::cout << "  Target position: " << physics.targetpos << endl;
-	if(physics.velocity.toVec3() != Vec3f_ZERO) std::cout << "  Velocity: " << physics.velocity << endl;
-	if(physics.forces.toVec3() != Vec3f_ZERO) std::cout << "  Forces: " << physics.forces << endl;
+	if(physics.cyl.origin.toVec3() != Vec3f_ZERO || physics.cyl.radius || physics.cyl.height) std::cout << "  Cylinder: origin=" << physics.cyl.origin << " radius=" << physics.cyl.radius << " height=" << physics.cyl.height << '\n';
+	if(physics.startpos.toVec3() != Vec3f_ZERO) std::cout << "  Start position: " << physics.startpos << '\n';
+	if(physics.targetpos.toVec3() != Vec3f_ZERO) std::cout << "  Target position: " << physics.targetpos << '\n';
+	if(physics.velocity.toVec3() != Vec3f_ZERO) std::cout << "  Velocity: " << physics.velocity << '\n';
+	if(physics.forces.toVec3() != Vec3f_ZERO) std::cout << "  Forces: " << physics.forces << '\n';
 }
 
 static void print_ident(SaveBlock & save, const std::string & ident) {
@@ -657,11 +656,11 @@ static void print_inventory(SaveBlock & save, const char (&slot_io)[M][N][SIZE_I
 			
 			hasItems = true;
 			
-			std::cout << "  - (" << m << ", " << n << "): "; print_ident(save, name); std::cout << endl;
+			std::cout << "  - (" << m << ", " << n << "): "; print_ident(save, name); std::cout << '\n';
 		}
 	}
 	if(!hasItems) {
-		std::cout << "  (empty)" << endl;
+		std::cout << "  (empty)\n";
 	}
 	
 }
@@ -688,7 +687,7 @@ static void print_item(SaveBlock & save, const char (&ident)[64],  const std::st
 		return;
 	}
 	
-	std::cout << "  " << name << ": "; print_ident(save, i); std::cout << endl;
+	std::cout << "  " << name << ": "; print_ident(save, i); std::cout << '\n';
 }
 
 static int view_pld(const char * dat, size_t size) {
@@ -698,20 +697,20 @@ static int view_pld(const char * dat, size_t size) {
 	pos += sizeof(ARX_CHANGELEVEL_PLAYER_LEVEL_DATA);
 	
 	if(pld.version != ARX_GAMESAVE_VERSION) {
-		std::cout << "bad version: " << pld.version << endl;
+		std::cout << "bad version: " << pld.version << '\n';
 		return 3;
 	}
 	
 	std::string name = util::loadString(pld.name);
 	if(name == "ARX_QUICK_ARX" || name == "ARX_QUICK_ARX1") {
-		std::cout << "Type: quicksave" << endl;
+		std::cout << "Type: quicksave\n";
 	} else {
-		std::cout << "Name: \"" << name << '"' << endl;
+		std::cout << "Name: \"" << name << "\"\n";
 	}
 	
-	std::cout << "Current level: "; print_level(pld.level); std::cout << endl;
+	std::cout << "Current level: "; print_level(pld.level); std::cout << '\n';
 	
-	std::cout << "Game time: " << pld.time << endl;
+	std::cout << "Game time: " << pld.time << '\n';
 	
 	arx_assert(size >= pos); ARX_UNUSED(size), ARX_UNUSED(pos);
 	
@@ -725,7 +724,7 @@ static int view_globals(const char * dat, size_t size) {
 	pos += sizeof(ARX_CHANGELEVEL_SAVE_GLOBALS);
 	
 	if(pld.version != ARX_GAMESAVE_VERSION) {
-		std::cout << "bad version: " << pld.version << endl;
+		std::cout << "bad version: " << pld.version << '\n';
 		return 3;
 	}
 	
@@ -761,45 +760,45 @@ static int view_player(SaveBlock & save, const char * dat, size_t size) {
 	pos += sizeof(ARX_CHANGELEVEL_PLAYER);
 	
 	if(asp.version != 0) {
-		std::cout << "bad player save version: " << asp.version << endl;
+		std::cout << "bad player save version: " << asp.version << '\n';
 		//return 3;
 	}
 	
-	std::cout << "Aim time: " << asp.AimTime << endl;
-	std::cout << "Angle: " << asp.angle << endl;
-	std::cout << "Armor class: " << asp.armor_class << endl;
-	std::cout << "Critical hit: " << asp.Critical_Hit << endl;
+	std::cout << "Aim time: " << asp.AimTime << '\n';
+	std::cout << "Angle: " << asp.angle << '\n';
+	std::cout << "Armor class: " << asp.armor_class << '\n';
+	std::cout << "Critical hit: " << asp.Critical_Hit << '\n';
 	
 	if(asp.Current_Movement) {
-		std::cout << "Current movement:"; print_player_movement(asp.Current_Movement); std::cout << endl;
+		std::cout << "Current movement:"; print_player_movement(asp.Current_Movement); std::cout << '\n';
 	}
 	
-	if(asp.damages) std::cout << "Damages: " << asp.damages << endl;
-	if(asp.doingmagic) std::cout << "Doing magic: " << asp.doingmagic << endl;
+	if(asp.damages) std::cout << "Damages: " << asp.damages << '\n';
+	if(asp.doingmagic) std::cout << "Doing magic: " << asp.doingmagic << '\n';
 	
 	if(asp.playerflags) {
 		std::cout << "Flags: ";
 		s32 flags = asp.playerflags;
 		print_flag(flags, PLAYERFLAGS_NO_MANA_DRAIN, "no_mana_drain");
 		print_flag(flags, PLAYERFLAGS_INVULNERABILITY, "invulnerable");
-		std::cout << endl;
+		std::cout << '\n';
 	}
 	
-	if(!asp.Global_Magic_Mode) std::cout << "Magic disabled!" << endl;
+	if(!asp.Global_Magic_Mode) std::cout << "Magic disabled!\n";
 	
 	std::string teleportToLevel = boost::to_lower_copy(util::loadString(asp.TELEPORT_TO_LEVEL));
-	if(!teleportToLevel.empty()) std::cout << "Teleporting to level: " << teleportToLevel << endl;
+	if(!teleportToLevel.empty()) std::cout << "Teleporting to level: " << teleportToLevel << '\n';
 	
 	std::string teleportToPosition = boost::to_lower_copy(util::loadString(asp.TELEPORT_TO_POSITION));
 	if(!teleportToPosition.empty()) {
-		std::cout << "Teleporting to: "; print_ident(save, teleportToPosition); std::cout << endl;
+		std::cout << "Teleporting to: "; print_ident(save, teleportToPosition); std::cout << '\n';
 	}
 	
 	if(!teleportToLevel.empty() || !teleportToPosition.empty()) {
-		std::cout << "Teleporting to angle: " << asp.TELEPORT_TO_ANGLE << endl;
+		std::cout << "Teleporting to angle: " << asp.TELEPORT_TO_ANGLE << '\n';
 	}
 	
-	if(asp.CHANGE_LEVEL_ICON != -1) std::cout << "Change level icon: " << asp.CHANGE_LEVEL_ICON << endl;
+	if(asp.CHANGE_LEVEL_ICON != -1) std::cout << "Change level icon: " << asp.CHANGE_LEVEL_ICON << '\n';
 	
 	if(asp.Interface) {
 		std::cout << "Interface:";
@@ -815,14 +814,14 @@ static int view_player(SaveBlock & save, const char * dat, size_t size) {
 		print_flag(interface_flags, INTER_STEAL, "steal");
 		print_flag(interface_flags, INTER_NO_STRIKE, "no_strike");
 		print_unknown_flags(interface_flags);
-		std::cout << endl;
+		std::cout << '\n';
 	}
 	
-	if(asp.falling) std::cout << "Falling: " << asp.falling << endl;
-	std::cout << "Gold: " << asp.gold << endl;
-	if(asp.invisibility) std::cout << "Invisibility: " << asp.invisibility << endl;
+	if(asp.falling) std::cout << "Falling: " << asp.falling << '\n';
+	std::cout << "Gold: " << asp.gold << '\n';
+	if(asp.invisibility) std::cout << "Invisibility: " << asp.invisibility << '\n';
 	std::string inzone = boost::to_lower_copy(util::loadString(asp.inzone));
-	if(!inzone.empty()) std::cout << "In zone: " << inzone << endl;
+	if(!inzone.empty()) std::cout << "In zone: " << inzone << '\n';
 	
 	if(asp.jumpphase) {
 		std::cout << "Jump phase: ";
@@ -833,19 +832,19 @@ static int view_player(SaveBlock & save, const char * dat, size_t size) {
 			case 4: std::cout << "finishing"; break;
 			default: std::cout << "(unknown: " << asp.jumpphase << ')';
 		}
-		std::cout << endl;
+		std::cout << '\n';
 	}
 	
 	if(asp.Last_Movement != asp.Current_Movement) {
-		std::cout << "Last movement:"; print_player_movement(asp.Last_Movement); std::cout << endl;
+		std::cout << "Last movement:"; print_player_movement(asp.Last_Movement); std::cout << '\n';
 	}
 	
-	std::cout << "Level: " << asp.level << endl;
-	std::cout << "Life: " << asp.life << " / " << asp.maxlife << endl;
-	std::cout << "Mana: " << asp.mana << " / " << asp.maxmana << endl;
-	if(asp.poison) std::cout << "Poison: " << asp.poison << endl;
-	if(asp.hunger) std::cout << "Hunger: " << asp.hunger << endl;
-	std::cout << "Number of bags: " << asp.bag << endl;
+	std::cout << "Level: " << asp.level << '\n';
+	std::cout << "Life: " << asp.life << " / " << asp.maxlife << '\n';
+	std::cout << "Mana: " << asp.mana << " / " << asp.maxmana << '\n';
+	if(asp.poison) std::cout << "Poison: " << asp.poison << '\n';
+	if(asp.hunger) std::cout << "Hunger: " << asp.hunger << '\n';
+	std::cout << "Number of bags: " << asp.bag << '\n';
 	
 	if(asp.misc_flags) {
 		std::cout << "Misc flags:";
@@ -853,14 +852,14 @@ static int view_player(SaveBlock & save, const char * dat, size_t size) {
 		print_flag(interface_flags, 1, "on_firm_ground");
 		print_flag(interface_flags, 2, "will_return_to_combat_mode");
 		print_unknown_flags(interface_flags);
-		std::cout << endl;
+		std::cout << '\n';
 	}
 	
-	std::cout << "Position: " << asp.pos << endl;
-	std::cout << "Magic resistance: " << asp.resist_magic << endl;
-	std::cout << "Poison resistance: " << asp.resist_poison << endl;
-	if(asp.Attribute_Redistribute) std::cout << "Available attribute points: " << asp.Attribute_Redistribute << endl;
-	if(asp.Skill_Redistribute) std::cout << "Availbale skill points: " << asp.Skill_Redistribute << endl;
+	std::cout << "Position: " << asp.pos << '\n';
+	std::cout << "Magic resistance: " << asp.resist_magic << '\n';
+	std::cout << "Poison resistance: " << asp.resist_poison << '\n';
+	if(asp.Attribute_Redistribute) std::cout << "Available attribute points: " << asp.Attribute_Redistribute << '\n';
+	if(asp.Skill_Redistribute) std::cout << "Availbale skill points: " << asp.Skill_Redistribute << '\n';
 	
 	if(asp.rune_flags) {
 		std::cout << "Runes:";
@@ -886,69 +885,69 @@ static int view_player(SaveBlock & save, const char * dat, size_t size) {
 		print_flag(runes, FLAG_VITAE, "vitae");
 		print_flag(runes, FLAG_YOK, "yok");
 		print_unknown_flags(runes);
-		std::cout << endl;
+		std::cout << '\n';
 	}
-	std::cout << "Size: " << asp.size << endl;
+	std::cout << "Size: " << asp.size << '\n';
 	
-	std::cout << endl << "Attributes:" << endl;
-	std::cout << "  Constitution: " << asp.Attribute_Constitution << endl;
-	std::cout << "  Dexterity: " << asp.Attribute_Dexterity << endl;
-	std::cout << "  Mind: " << asp.Attribute_Mind << endl;
-	std::cout << "  Strength: " << asp.Attribute_Strength << endl;
+	std::cout << "\nAttributes:\n";
+	std::cout << "  Constitution: " << asp.Attribute_Constitution << '\n';
+	std::cout << "  Dexterity: " << asp.Attribute_Dexterity << '\n';
+	std::cout << "  Mind: " << asp.Attribute_Mind << '\n';
+	std::cout << "  Strength: " << asp.Attribute_Strength << '\n';
 	
-	std::cout << endl << "Skills:" << endl;
-	std::cout << "  Stealth: " << asp.Skill_Stealth << endl;
-	std::cout << "  Mecanism: " << asp.Skill_Mecanism << endl;
-	std::cout << "  Intuition: " << asp.Skill_Intuition << endl;
-	std::cout << "  Etheral link: " << asp.Skill_Etheral_Link << endl;
-	std::cout << "  Object knowledge: " << asp.Skill_Object_Knowledge << endl;
-	std::cout << "  Casting: " << asp.Skill_Casting << endl;
-	std::cout << "  Projectile: " << asp.Skill_Projectile << endl;
-	std::cout << "  Close combat: " << asp.Skill_Close_Combat << endl;
-	std::cout << "  Defense: " << asp.Skill_Defense << endl;
+	std::cout << "\nSkills:\n";
+	std::cout << "  Stealth: " << asp.Skill_Stealth << '\n';
+	std::cout << "  Mecanism: " << asp.Skill_Mecanism << '\n';
+	std::cout << "  Intuition: " << asp.Skill_Intuition << '\n';
+	std::cout << "  Etheral link: " << asp.Skill_Etheral_Link << '\n';
+	std::cout << "  Object knowledge: " << asp.Skill_Object_Knowledge << '\n';
+	std::cout << "  Casting: " << asp.Skill_Casting << '\n';
+	std::cout << "  Projectile: " << asp.Skill_Projectile << '\n';
+	std::cout << "  Close combat: " << asp.Skill_Close_Combat << '\n';
+	std::cout << "  Defense: " << asp.Skill_Defense << '\n';
 	
 	// TODO asp.minimap
 	
 	print_animations(asp.anims);
 	
-	std::cout << endl << "Physics:" << endl;
+	std::cout << "\nPhysics:\n";
 	print_physics(asp.physics);
 	
 	for(s16 i = 0; i < asp.bag; i++) {
-		std::cout << endl << "Bag #" << i << ':' << endl;
+		std::cout << "\nBag #" << i << ":\n";
 		print_inventory(save, asp.id_inventory[i], asp.inventory_show[i]);
 	}
 	
 	if(asp.nb_PlayerQuest) {
-		std::cout << endl << "Quests:" << endl;
+		std::cout << "\nQuests:\n";
 		if(size < pos + (asp.nb_PlayerQuest * 80)) {
-			cerr << "truncated data" << endl;
+			cerr << "truncated data\n";
 			return -1;
 		}
 		for(int i = 0; i < asp.nb_PlayerQuest; i++) {
 			std::string quest = loadUnlocalized(boost::to_lower_copy(util::loadString(dat + pos, 80)));
-			std::cout << "  - " << quest << " = \"" << getLocalised(quest) << '"' << endl;
+			std::cout << "  - " << quest << " = \"" << getLocalised(quest) << "\"\n";
 			pos += 80;
 		}
 	}
 	
 	if(asp.keyring_nb) {
-		std::cout << endl << "Keys:" << endl;
+		std::cout << "\nKeys:\n";
 		if(size < pos + (asp.keyring_nb * SAVED_KEYRING_SLOT_SIZE)) {
-			cerr << "truncated data" << endl;
+			cerr << "truncated data\n";
 			return -1;
 		}
 		for(int i = 0; i < asp.keyring_nb; i++) {
 			std::string key = boost::to_lower_copy(util::loadString(dat + pos, SAVED_KEYRING_SLOT_SIZE));
-			std::cout << " - " << key << endl;
+			std::cout << " - " << key << '\n';
 			pos += SAVED_KEYRING_SLOT_SIZE;
 		}
 	}
 	
 	if(asp.Nb_Mapmarkers) {
-		std::cout << endl << "Map markers:" << endl;
+		std::cout << "\nMap markers:\n";
 		if(size < pos + (asp.Nb_Mapmarkers * sizeof(SavedMapMarkerData))) {
-			cerr << "truncated data" << endl;
+			cerr << "truncated data\n";
 			return -1;
 		}
 		for(int i = 0; i < asp.Nb_Mapmarkers; i++) {
@@ -956,7 +955,7 @@ static int view_player(SaveBlock & save, const char * dat, size_t size) {
 			pos += sizeof(SavedMapMarkerData);
 			std::string name = loadUnlocalized(boost::to_lower_copy(util::loadString(acmd->name)));
 			
-			std::cout << " - (" << acmd->x << ", " << acmd->y << " @lvl" << std::setw(3) << std::setfill('0') << acmd->lvl << ") " << name << " =\"" << getLocalised(name) << '"' << endl;
+			std::cout << " - (" << acmd->x << ", " << acmd->y << " @lvl" << std::setw(3) << std::setfill('0') << acmd->lvl << ") " << name << " =\"" << getLocalised(name) << "\"\n";
 		}
 	}
 	
@@ -968,17 +967,17 @@ static int view_player(SaveBlock & save, const char * dat, size_t size) {
 			continue;
 		}
 		
-		std::cout << endl << "Precast #" << i << ':' << endl;
+		std::cout << "\nPrecast #" << i << ":\n";
 		
-		std::cout << "  Spell: "; print_spell(p.typ); std::cout << endl;
-		std::cout << "  Level: " << p.level << endl;
-		std::cout << "  Launch time: " << p.launch_time << endl;
-		std::cout << "  Duration: " << p.duration << endl;
-		std::cout << "  Flags:"; print_spellcast_flags(p.flags); std::cout << endl;
+		std::cout << "  Spell: "; print_spell(p.typ); std::cout << '\n';
+		std::cout << "  Level: " << p.level << '\n';
+		std::cout << "  Launch time: " << p.launch_time << '\n';
+		std::cout << "  Duration: " << p.duration << '\n';
+		std::cout << "  Flags:"; print_spellcast_flags(p.flags); std::cout << '\n';
 		
 	}
 	
-	std::cout << endl << "Equipment:" << endl;
+	std::cout << "\nEquipment:\n";
 	
 	print_item(save, asp.equipsecondaryIO, "Secondary");
 	print_item(save, asp.equipshieldIO, "Shield");
@@ -1010,16 +1009,16 @@ static int view_level(SaveBlock & save, const char * dat, size_t size) {
 	pos += sizeof(ARX_CHANGELEVEL_INDEX);
 	
 	if(asi.version != ARX_GAMESAVE_VERSION) {
-		std::cout << "bad version: " << asi.version << endl;
+		std::cout << "bad version: " << asi.version << '\n';
 		return 3;
 	}
 	
-	std::cout << "Game time: " << asi.time << endl;
-	std::cout << "Dynamic lights: " << asi.nb_lights << endl;
+	std::cout << "Game time: " << asi.time << '\n';
+	std::cout << "Dynamic lights: " << asi.nb_lights << '\n';
 	
 	if(asi.nb_inter) {
 		
-		std::cout << endl << "Interactive objects:" << endl;
+		std::cout << "\nInteractive objects:\n";
 		
 		for(s32 i = 0; i < asi.nb_inter; i++) {
 			
@@ -1029,14 +1028,14 @@ static int view_level(SaveBlock & save, const char * dat, size_t size) {
 			std::ostringstream oss;
 			oss << res::path::load(util::loadString(io.filename)).basename() << '_' << std::setfill('0') << std::setw(4) << io.ident;
 			
-			std::cout << "  - "; print_ident(save, oss.str()); std::cout << endl;
+			std::cout << "  - "; print_ident(save, oss.str()); std::cout << '\n';
 		}
 		
 	}
 	
 	if(asi.nb_paths) {
 		
-		std::cout << endl << "Paths:" << endl;
+		std::cout << "\nPaths:\n";
 		
 		for(s32 i = 0; i < asi.nb_paths; i++) {
 			
@@ -1048,7 +1047,7 @@ static int view_level(SaveBlock & save, const char * dat, size_t size) {
 			if(!controller.empty() && controller != "none") {
 				std::cout << ": controlled by "; print_ident(save, controller);
 			}
-			std::cout << endl;
+			std::cout << '\n';
 		}
 		
 	}
@@ -1061,16 +1060,16 @@ static int view_level(SaveBlock & save, const char * dat, size_t size) {
 		const PlayingAmbiance & a = *reinterpret_cast<const PlayingAmbiance *>(dat + pos);
 		pos += sizeof(PlayingAmbiance);
 		
-		std::cout << endl << "Ambiance #" << i << ':' << endl;
-		std::cout << "  Name: " << res::path::load(a.name) << endl;
-		if(a.volume != 1) std::cout << "  Volume: " << a.volume << endl;
+		std::cout << "\nAmbiance #" << i << ":\n";
+		std::cout << "  Name: " << res::path::load(a.name) << '\n';
+		if(a.volume != 1) std::cout << "  Volume: " << a.volume << '\n';
 		if(a.loop) {
 			std::cout << "  Loop mode: ";
 			switch(a.loop) {
 				case 1: std::cout << "play once"; break;
 				default: std::cout << "(unknown: " << a.loop << ')';
 			}
-			std::cout << endl;
+			std::cout << '\n';
 		}
 		std::cout << "  Type: ";
 		switch(a.type) {
@@ -1079,7 +1078,7 @@ static int view_level(SaveBlock & save, const char * dat, size_t size) {
 			case 2: std::cout << "zone"; break;
 			default: std::cout << "(unknown: " << a.type << ')';
 		}
-		std::cout << endl;
+		std::cout << '\n';
 	}
 	
 	arx_assert(size >= pos); ARX_UNUSED(size), ARX_UNUSED(save);
@@ -1094,14 +1093,14 @@ static int view_io(SaveBlock & save, const char * dat, size_t size) {
 	pos += sizeof(ARX_CHANGELEVEL_IO_SAVE);
 	
 	if(ais.version != ARX_GAMESAVE_VERSION) {
-		std::cout << "bad version: " << ais.version << endl;
+		std::cout << "bad version: " << ais.version << '\n';
 		return 3;
 	}
 	
-	std::cout << "Type: "; print_type(ais.savesystem_type); std::cout << endl;
+	std::cout << "Type: "; print_type(ais.savesystem_type); std::cout << '\n';
 	
-	std::cout << "Filename: " << res::path::load(util::loadString(ais.filename)) << endl;
-	std::cout << "Instance: " << ais.ident << endl;
+	std::cout << "Filename: " << res::path::load(util::loadString(ais.filename)) << '\n';
+	std::cout << "Instance: " << ais.ident << '\n';
 	
 	std::cout << "Flags:";
 	if(!ais.ioflags) std::cout << " (none)";
@@ -1137,30 +1136,30 @@ static int view_io(SaveBlock & save, const char * dat, size_t size) {
 	if(ais.ioflags & IO_NO_NPC_COLLIDE) std::cout << " no_npc_collide";
 	if(ais.ioflags & IO_CAN_COMBINE) std::cout << " can_combine";
 	if(ais.ioflags & (1<<31)) std::cout << " (unknown)";
-	std::cout << endl;
+	std::cout << '\n';
 	
 	if(ais.pos.toVec3() != Vec3f_ZERO || ais.initpos.toVec3() != Vec3f_ZERO) {
 		std::cout << "Position: " << ais.pos;
 		if(ais.pos.toVec3() != ais.initpos.toVec3()) {
 			std::cout << " initial: " << ais.initpos;
 		}
-		std::cout << endl;
+		std::cout << '\n';
 	}
-	if(ais.lastpos.toVec3() != ais.pos.toVec3()) std::cout << "Last position: " << ais.lastpos << endl;
-	if(ais.move.toVec3() != Vec3f_ZERO) std::cout << "Movement: " << ais.move << endl;
-	if(ais.lastmove.toVec3() != ais.move.toVec3()) std::cout << "Last movement: " << ais.lastmove << endl;
+	if(ais.lastpos.toVec3() != ais.pos.toVec3()) std::cout << "Last position: " << ais.lastpos << '\n';
+	if(ais.move.toVec3() != Vec3f_ZERO) std::cout << "Movement: " << ais.move << '\n';
+	if(ais.lastmove.toVec3() != ais.move.toVec3()) std::cout << "Last movement: " << ais.lastmove << '\n';
 	if((Anglef)ais.angle != Anglef::ZERO || (Anglef)ais.initangle != Anglef::ZERO) {
 		std::cout << "Angle: " << ais.angle;
 		if((Anglef)ais.angle != (Anglef)ais.initangle) {
 			std::cout << " initial: " << ais.initangle;
 		}
-		std::cout << endl;
+		std::cout << '\n';
 	}
-	if(ais.scale != 1) std::cout << "Scale: " << ais.scale << endl;
-	if(ais.weight) std::cout << "Weight: " << ais.weight << endl;
+	if(ais.scale != 1) std::cout << "Scale: " << ais.scale << '\n';
+	if(ais.weight) std::cout << "Weight: " << ais.weight << '\n';
 	
 	std::string locname = loadUnlocalized(boost::to_lower_copy(util::loadString(ais.locname)));
-	if(!locname.empty()) std::cout << "Name: " << locname << " = \"" << getLocalised(locname) << '"' << endl;
+	if(!locname.empty()) std::cout << "Name: " << locname << " = \"" << getLocalised(locname) << "\"\n";
 	
 	if(ais.gameFlags) {
 		std::cout << "Game flags:";
@@ -1180,7 +1179,7 @@ static int view_io(SaveBlock & save, const char * dat, size_t size) {
 		if(ais.gameFlags & GFLAG_NOGORE) std::cout << " nogore";
 		if(ais.gameFlags & GFLAG_GOREEXPLODE) std::cout << " goreexplode";
 		if(ais.gameFlags & GFLAG_NOCOMPUTATION) std::cout << " nocomputation";
-		std::cout << endl;
+		std::cout << '\n';
 	}
 	
 	if(ais.material != MATERIAL_NONE) {
@@ -1205,11 +1204,11 @@ static int view_io(SaveBlock & save, const char * dat, size_t size) {
 			case MATERIAL_FOOT_STEALTH: std::cout << "Stealth foot"; break;
 			default: std::cout << "(unknown)";
 		}
-		std::cout << endl;
+		std::cout << '\n';
 	}
 	
-	std::cout << "Level: " << ais.level << " true level: " << ais.truelevel << endl;
-	if(ais.scriptload) std::cout << "Loaded by a script: " << ais.scriptload << endl;
+	std::cout << "Level: " << ais.level << " true level: " << ais.truelevel << '\n';
+	if(ais.scriptload) std::cout << "Loaded by a script: " << ais.scriptload << '\n';
 	
 	std::cout << "Show: ";
 	switch(ais.show) {
@@ -1225,7 +1224,7 @@ static int view_io(SaveBlock & save, const char * dat, size_t size) {
 		case SHOW_FLAG_DESTROYED: std::cout << "destroyed"; break;
 		default: std::cout << "(unknown)";
 	}
-	std::cout << endl;
+	std::cout << '\n';
 	
 	if(ais.collision) {
 		std::cout << "Collision:";
@@ -1233,24 +1232,24 @@ static int view_io(SaveBlock & save, const char * dat, size_t size) {
 		print_flag(iocf, COLLIDE_WITH_PLAYER, "player");
 		print_flag(iocf, COLLIDE_WITH_WORLD, "world");
 		print_unknown_flags(iocf);
-		std::cout << endl;
+		std::cout << '\n';
 	}
 	
 	std::string mainevent = boost::to_lower_copy(util::loadString(ais.mainevent));
-	if(!mainevent.empty()) std::cout << "Main script event: " << mainevent << endl;
+	if(!mainevent.empty()) std::cout << "Main script event: " << mainevent << '\n';
 	
 	std::string target = boost::to_lower_copy(util::loadString(ais.id_targetinfo));
 	if(target != "self") {
-		std::cout << "Target: "; print_ident(save, target); std::cout << endl;
+		std::cout << "Target: "; print_ident(save, target); std::cout << '\n';
 	}
-	if(ais.basespeed != 1) std::cout << "Base speed: " << ais.basespeed << endl;
-	if(ais.speed_modif) std::cout << "Speed modifier: " << ais.speed_modif << endl;
-	if(ais.frameloss) std::cout << "Frame loss: " << ais.frameloss << endl;
+	if(ais.basespeed != 1) std::cout << "Base speed: " << ais.basespeed << '\n';
+	if(ais.speed_modif) std::cout << "Speed modifier: " << ais.speed_modif << '\n';
+	if(ais.frameloss) std::cout << "Frame loss: " << ais.frameloss << '\n';
 	
 	if(ais.spellcast_data.castingspell >= 0 || ais.spellcast_data.spell_flags) {
 	
 		if(ais.spellcast_data.castingspell >= 0) {
-			std::cout << "Casting spell: "; print_spell(ais.spellcast_data.castingspell); std::cout << endl;
+			std::cout << "Casting spell: "; print_spell(ais.spellcast_data.castingspell); std::cout << '\n';
 		}
 		
 		std::cout << "Runes to draw:";
@@ -1263,23 +1262,23 @@ static int view_io(SaveBlock & save, const char * dat, size_t size) {
 				std::cout << " (unknown)";
 			}
 		}
-		std::cout << endl;
+		std::cout << '\n';
 		
 		if(ais.spellcast_data.spell_flags) {
-			std::cout << "Spell flags:"; print_spellcast_flags(ais.spellcast_data.spell_flags); std::cout << endl;
+			std::cout << "Spell flags:"; print_spellcast_flags(ais.spellcast_data.spell_flags); std::cout << '\n';
 		}
 	}
 	
-	if(ais.spellcast_data.spell_level) std::cout << "Spell level: " << ais.spellcast_data.spell_level << endl;
-	if(ais.spellcast_data.duration) std::cout << "Spell duration: " << ais.spellcast_data.duration << endl;
+	if(ais.spellcast_data.spell_level) std::cout << "Spell level: " << ais.spellcast_data.spell_level << '\n';
+	if(ais.spellcast_data.duration) std::cout << "Spell duration: " << ais.spellcast_data.duration << '\n';
 	
-	if(ais.rubber != 1.5f) std::cout << "Rubber: " << ais.rubber << endl;
-	if(ais.max_durability != 100) std::cout << "Max durability: " << ais.max_durability << endl;
-	if(ais.poisonous) std::cout << "Poisonous: " << ais.poisonous << endl;
-	if(ais.poisonous_count) std::cout << "Poisonous count: " << ais.poisonous_count << endl;
+	if(ais.rubber != 1.5f) std::cout << "Rubber: " << ais.rubber << '\n';
+	if(ais.max_durability != 100) std::cout << "Max durability: " << ais.max_durability << '\n';
+	if(ais.poisonous) std::cout << "Poisonous: " << ais.poisonous << '\n';
+	if(ais.poisonous_count) std::cout << "Poisonous count: " << ais.poisonous_count << '\n';
 	
-	if(ais.head_rot) std::cout << "Head rotation: " << ais.head_rot << endl;
-	if(ais.damager_damages) std::cout << "Damage dealt: " << ais.damager_damages << endl;
+	if(ais.head_rot) std::cout << "Head rotation: " << ais.head_rot << '\n';
+	if(ais.damager_damages) std::cout << "Damage dealt: " << ais.damager_damages << '\n';
 	
 	if(ais.damager_type) {
 		std::cout << "Damage type:";
@@ -1301,80 +1300,80 @@ static int view_io(SaveBlock & save, const char * dat, size_t size) {
 		if(ais.damager_type & DAMAGE_TYPE_FAKEFIRE) std::cout << " fakefire";
 		if(ais.damager_type & DAMAGE_TYPE_FIELD) std::cout << " field";
 		if(ais.damager_type & DAMAGE_TYPE_NO_FIX) std::cout << " no_fix";
-		std::cout << endl;
+		std::cout << '\n';
 	}
 	
-	if(ais.type_flags) print_item_type(std::cout << "Item type:", ais.type_flags) << endl;
+	if(ais.type_flags) print_item_type(std::cout << "Item type:", ais.type_flags) << '\n';
 	
 	std::string stepmat = boost::to_lower_copy(util::loadString(ais.stepmaterial));
-	if(!stepmat.empty()) std::cout << "Step material: " << stepmat << endl;
+	if(!stepmat.empty()) std::cout << "Step material: " << stepmat << '\n';
 	
 	std::string armormat = boost::to_lower_copy(util::loadString(ais.armormaterial));
-	if(!armormat.empty()) std::cout << "Armor material: " << armormat << endl;
+	if(!armormat.empty()) std::cout << "Armor material: " << armormat << '\n';
 	
 	std::string weaponmat = boost::to_lower_copy(util::loadString(ais.weaponmaterial));
-	if(!weaponmat.empty()) std::cout << "Weapon material: " << weaponmat << endl;
+	if(!weaponmat.empty()) std::cout << "Weapon material: " << weaponmat << '\n';
 	
 	std::string strikespeech = loadUnlocalized(util::loadString(ais.strikespeech));
-	if(!strikespeech.empty()) std::cout << "Strike speech: " << strikespeech << " = \"" << getLocalised(strikespeech) << '"' << endl;
+	if(!strikespeech.empty()) std::cout << "Strike speech: " << strikespeech << " = \"" << getLocalised(strikespeech) << "\"\n";
 	
-	if(ais.secretvalue != -1) std::cout << "Secret value: " << (int)ais.secretvalue << endl;
+	if(ais.secretvalue != -1) std::cout << "Secret value: " << (int)ais.secretvalue << '\n';
 	std::string shop = boost::to_lower_copy(util::loadString(ais.shop_category));
-	if(!shop.empty()) std::cout << "Shop category: " << shop << endl;
-	if(ais.shop_multiply != 1) std::cout << "Shop multiply: " << ais.shop_multiply << endl;
+	if(!shop.empty()) std::cout << "Shop category: " << shop << '\n';
+	if(ais.shop_multiply != 1) std::cout << "Shop multiply: " << ais.shop_multiply << '\n';
 	
 	if(ais.aflags) {
 		std::cout << "Additional flags:";
 		if(ais.aflags & 1) std::cout << " hit";
 		if(ais.aflags & ~1) std::cout << " (unknown)";
-		std::cout << endl;
+		std::cout << '\n';
 	}
 	
-	if(ais.ignition) std::cout << "Ignition: " << ais.ignition << endl;
+	if(ais.ignition) std::cout << "Ignition: " << ais.ignition << '\n';
 	
 	res::path invskin = res::path::load(util::loadString(ais.inventory_skin));
-	if(!invskin.empty()) std::cout << "Inventory skin: " << invskin << endl;
+	if(!invskin.empty()) std::cout << "Inventory skin: " << invskin << '\n';
 	
 	print_animations(ais.anims);
 	
 	print_anim_layers(ais.animlayer);
 	
-	std::cout << endl << "Physics:" << endl;
-	if(ais.velocity.toVec3() != Vec3f_ZERO) std::cout << "  Velocity: " << ais.velocity << endl;
-	if(ais.stopped) std::cout << "  Stopped: " << ais.stopped << endl;
+	std::cout << "\nPhysics:\n";
+	if(ais.velocity.toVec3() != Vec3f_ZERO) std::cout << "  Velocity: " << ais.velocity << '\n';
+	if(ais.stopped) std::cout << "  Stopped: " << ais.stopped << '\n';
 	print_physics(ais.physics);
-	if(ais.original_radius) std::cout << "  Original radius: " << ais.original_radius << endl;
-	if(ais.original_height) std::cout << "  Original height: " << ais.original_height << endl;
+	if(ais.original_radius) std::cout << "  Original radius: " << ais.original_radius << '\n';
+	if(ais.original_height) std::cout << "  Original height: " << ais.original_height << '\n';
 	
 	for(size_t i = 0; (s32)i < ais.nb_linked; i++) {
-		std::cout << endl << "Linked object #" << i << ':' << endl;
-		std::cout << "  Group: " << ais.linked_data[i].lgroup << endl;
-		std::cout << "  Indices: " << ais.linked_data[i].lidx << ", " << ais.linked_data[i].lidx2 << endl;
-		std::cout << "  Origin: " << ais.linked_data[i].modinfo.link_origin << endl;
-		std::cout << "  Position: " << ais.linked_data[i].modinfo.link_position << endl;
-		std::cout << "  Scale: " << ais.linked_data[i].modinfo.scale << endl;
-		std::cout << "  Rotation: " << ais.linked_data[i].modinfo.rot << endl;
-		std::cout << "  Flags: " << ais.linked_data[i].modinfo.flags << endl;
-		std::cout << "  Ident: "; print_ident(save, boost::to_lower_copy(util::loadString(ais.linked_data[i].linked_id))); std::cout << endl;
+		std::cout << "\nLinked object #" << i << ":\n";
+		std::cout << "  Group: " << ais.linked_data[i].lgroup << '\n';
+		std::cout << "  Indices: " << ais.linked_data[i].lidx << ", " << ais.linked_data[i].lidx2 << '\n';
+		std::cout << "  Origin: " << ais.linked_data[i].modinfo.link_origin << '\n';
+		std::cout << "  Position: " << ais.linked_data[i].modinfo.link_position << '\n';
+		std::cout << "  Scale: " << ais.linked_data[i].modinfo.scale << '\n';
+		std::cout << "  Rotation: " << ais.linked_data[i].modinfo.rot << '\n';
+		std::cout << "  Flags: " << ais.linked_data[i].modinfo.flags << '\n';
+		std::cout << "  Ident: "; print_ident(save, boost::to_lower_copy(util::loadString(ais.linked_data[i].linked_id))); std::cout << '\n';
 	}
 	
 	if(ais.halo.flags) {
-		std::cout << endl;
-		std::cout << "Halo color: " << ais.halo.color << endl;
-		std::cout << "Halo radius: " << ais.halo.radius << endl;
+		std::cout << '\n';
+		std::cout << "Halo color: " << ais.halo.color << '\n';
+		std::cout << "Halo radius: " << ais.halo.radius << '\n';
 		std::cout << "Halo flags:";
 		if(ais.halo.flags & HALO_ACTIVE) std::cout << " active";
 		if(ais.halo.flags & HALO_NEGATIVE) std::cout << " negative";
 		if(ais.halo.flags & HALO_DYNLIGHT) std::cout << " dynlight";
 		if(ais.halo.flags & ~7) std::cout << " (unknown)";
-		std::cout << endl;
-		std::cout << "Halo offset: " << ais.halo.offset << endl;
-		std::cout << endl;
+		std::cout << '\n';
+		std::cout << "Halo offset: " << ais.halo.offset << '\n';
+		std::cout << '\n';
 	}
 	
 	std::string pathname = boost::to_lower_copy(util::loadString(ais.usepath_name));
 	if(!pathname.empty() || ais.usepath_aupflags) {
-		std::cout << endl << "Use path: " << pathname;
+		std::cout << "\nUse path: " << pathname;
 		std::cout << "  start time: " << ais.usepath_starttime;
 		std::cout << "  time: " << ais.usepath_curtime;
 		std::cout << "  flags:";
@@ -1386,13 +1385,13 @@ static int view_io(SaveBlock & save, const char * dat, size_t size) {
 		if(ais.usepath_aupflags & ARX_USEPATH_BACKWARD) std::cout << " backward";
 		if(ais.usepath_aupflags & ARX_USEPATH_PAUSE) std::cout << " pause";
 		if(ais.usepath_aupflags & ARX_USEPATH_FLAG_ADDSTARTPOS) std::cout << " addstartpos";
-		std::cout << endl;
-		std::cout << "  initial position: " << ais.usepath_initpos << endl;
-		std::cout << "  last waypoint: " << ais.usepath_lastWP << endl;
+		std::cout << '\n';
+		std::cout << "  initial position: " << ais.usepath_initpos << '\n';
+		std::cout << "  last waypoint: " << ais.usepath_lastWP << '\n';
 	}
 	
 	for(int i = 0; i < ais.nbtimers; i++) {
-		std::cout << endl << "Timer #" << i << ':' << endl;
+		std::cout << "\nTimer #" << i << ":\n";
 		
 		const ARX_CHANGELEVEL_TIMERS_SAVE * ats;
 		ats = reinterpret_cast<const ARX_CHANGELEVEL_TIMERS_SAVE *>(dat + pos);
@@ -1402,18 +1401,18 @@ static int view_io(SaveBlock & save, const char * dat, size_t size) {
 			std::cout << "  Flags:";
 			if(ats->flags & 1) std::cout << " idle";
 			if(ats->flags & ~1) std::cout << " (unknown)";
-			std::cout << endl;
+			std::cout << '\n';
 		}
 		
-		std::cout << "  Script: " << (ats->script ? "overriding" : "base") << endl;
-		std::cout << "  Interval: " << ats->interval << "ms" << endl;
-		std::cout << "  Name: " << boost::to_lower_copy(util::loadString(ats->name)) << endl;
-		std::cout << "  Position: " << ats->pos << endl;
-		std::cout << "  Remaining: " << ats->remaining << "ms" << endl;
+		std::cout << "  Script: " << (ats->script ? "overriding" : "base") << '\n';
+		std::cout << "  Interval: " << ats->interval << "ms\n";
+		std::cout << "  Name: " << boost::to_lower_copy(util::loadString(ats->name)) << '\n';
+		std::cout << "  Position: " << ats->pos << '\n';
+		std::cout << "  Remaining: " << ats->remaining << "ms\n";
 		if(ats->count == 0) {
-			std::cout << "  Count: ∞" << endl;
+			std::cout << "  Count: ∞\n";
 		} else {
-			std::cout << "  Count: " << ats->count << endl;
+			std::cout << "  Count: " << ats->count << '\n';
 		}
 	}
 	
@@ -1428,9 +1427,9 @@ static int view_io(SaveBlock & save, const char * dat, size_t size) {
 		}
 		
 		if(i) {
-			std::cout << endl << "Overriding script:" << endl;
+			std::cout << "\nOverriding script:\n";
 		} else {
-			std::cout << endl << "Base script:" << endl;
+			std::cout << "\nBase script:\n";
 		}
 		
 		if(ass->allowevents) {
@@ -1445,7 +1444,7 @@ static int view_io(SaveBlock & save, const char * dat, size_t size) {
 			if(ass->allowevents & DISABLE_COLLIDE_NPC) std::cout << " collide_npc";
 			if(ass->allowevents & DISABLE_CURSORMODE) std::cout << " cursormode";
 			if(ass->allowevents & DISABLE_EXPLORATIONMODE) std::cout << " explorationmode";
-			std::cout << endl;
+			std::cout << '\n';
 		}
 		
 		if(print_variables(ass->nblvar, dat, pos, "  ", TYPE_L_TEXT, TYPE_L_FLOAT, TYPE_L_LONG)) {
@@ -1457,45 +1456,45 @@ static int view_io(SaveBlock & save, const char * dat, size_t size) {
 		
 		case TYPE_NPC: {
 			
-			std::cout << endl << "NPC Data:" << endl;
+			std::cout << "\nNPC Data:\n";
 			
 			const ARX_CHANGELEVEL_NPC_IO_SAVE * as;
 			as = reinterpret_cast<const ARX_CHANGELEVEL_NPC_IO_SAVE *>(dat + pos);
 			pos += sizeof(ARX_CHANGELEVEL_NPC_IO_SAVE);
 			
-			if(as->absorb) std::cout << "  Absorption: " << as->absorb << endl;
-			if(as->aimtime) std::cout << "  Aim time: " << as->aimtime << endl;
-			std::cout << "  Armor class: " << as->armor_class << endl;
+			if(as->absorb) std::cout << "  Absorption: " << as->absorb << '\n';
+			if(as->aimtime) std::cout << "  Aim time: " << as->aimtime << '\n';
+			std::cout << "  Armor class: " << as->armor_class << '\n';
 			
-			if(as->behavior != BEHAVIOUR_NONE) print_behavior(std::cout << "  Behavior:", as->behavior) << endl;
-			if(as->behavior_param) std::cout << "  Behavior parameter: " << as->behavior_param << endl;
+			if(as->behavior != BEHAVIOUR_NONE) print_behavior(std::cout << "  Behavior:", as->behavior) << '\n';
+			if(as->behavior_param) std::cout << "  Behavior parameter: " << as->behavior_param << '\n';
 			
-			if(as->collid_state) std::cout << "  Collision state: " << as->collid_state << endl;
-			if(as->collid_time) std::cout << "  Collision time: " << as->collid_time << endl;
-			if(as->cut) std::cout << "  Cut: " << as->cut << endl;
-			if(as->damages) std::cout << "  Damages: " << as->damages << endl;
-			if(as->detect) std::cout << "  Detect: " << as->detect << endl;
-			if(as->fightdecision) std::cout << "  Fight decision: " << as->fightdecision << endl;
+			if(as->collid_state) std::cout << "  Collision state: " << as->collid_state << '\n';
+			if(as->collid_time) std::cout << "  Collision time: " << as->collid_time << '\n';
+			if(as->cut) std::cout << "  Cut: " << as->cut << '\n';
+			if(as->damages) std::cout << "  Damages: " << as->damages << '\n';
+			if(as->detect) std::cout << "  Detect: " << as->detect << '\n';
+			if(as->fightdecision) std::cout << "  Fight decision: " << as->fightdecision << '\n';
 			
 			print_item(save, as->id_weapon, "Weapon");
 			
-			if(as->lastmouth) std::cout << "  Last mouth: " << as->lastmouth << endl;
-			if(as->look_around_inc) std::cout << "  Look around status: " << as->look_around_inc << endl;
-			std::cout << "  Life: " << as->life << " / " << as->maxlife << endl;
-			std::cout << "  Mana: " << as->mana << " / " << as->maxmana << endl;
+			if(as->lastmouth) std::cout << "  Last mouth: " << as->lastmouth << '\n';
+			if(as->look_around_inc) std::cout << "  Look around status: " << as->look_around_inc << '\n';
+			std::cout << "  Life: " << as->life << " / " << as->maxlife << '\n';
+			std::cout << "  Mana: " << as->mana << " / " << as->maxmana << '\n';
 			
-			print_movemode(std::cout << "  Movement mode: ", as->movemode) << endl;
+			print_movemode(std::cout << "  Movement mode: ", as->movemode) << '\n';
 			
-			if(as->moveproblem) std::cout << "  Movement problem: " << as->moveproblem << endl;
-			if(as->reachedtarget) std::cout << "  Reached target: " << as->reachedtarget << endl;
-			if(as->speakpitch != 1) std::cout << "  Speak pitch: " << as->speakpitch << endl;
+			if(as->moveproblem) std::cout << "  Movement problem: " << as->moveproblem << '\n';
+			if(as->reachedtarget) std::cout << "  Reached target: " << as->reachedtarget << '\n';
+			if(as->speakpitch != 1) std::cout << "  Speak pitch: " << as->speakpitch << '\n';
 			
-			if(as->tactics) print_tactics(std::cout << "  Tactics: ", as->tactics) << endl;
+			if(as->tactics) print_tactics(std::cout << "  Tactics: ", as->tactics) << '\n';
 			
-			std::cout << "  To hit: " << as->tohit << endl;
-			if(as->weaponinhand) std::cout << "  Weapon in hand: " << as->weaponinhand << endl;
-			if(as->weapontype) print_item_type(std::cout << "  Weapon type:", as->weapontype) << endl;
-			std::cout << "  XP: " << as->xpvalue << endl;
+			std::cout << "  To hit: " << as->tohit << '\n';
+			if(as->weaponinhand) std::cout << "  Weapon in hand: " << as->weaponinhand << '\n';
+			if(as->weapontype) print_item_type(std::cout << "  Weapon type:", as->weapontype) << '\n';
+			std::cout << "  XP: " << as->xpvalue << '\n';
 			
 			bool s = false;
 			for(size_t i = 0; i < MAX_STACKED_BEHAVIOR; i++) {
@@ -1507,49 +1506,49 @@ static int view_io(SaveBlock & save, const char * dat, size_t size) {
 				}
 				s = true;
 				
-				std::cout << endl << "  Stacked behavior #" << i << ':' << endl;
+				std::cout << "\n  Stacked behavior #" << i << ":\n";
 				
-				print_behavior(std::cout << "    Behavior:", b.behavior) << endl;
-				std::cout << "    Behavior parameter: " << b.behavior_param << endl;
-				print_tactics(std::cout << "    Tactics: ", b.tactics) << endl;
-				print_movemode(std::cout << "    Movement mode: ", b.movemode) << endl;
+				print_behavior(std::cout << "    Behavior:", b.behavior) << '\n';
+				std::cout << "    Behavior parameter: " << b.behavior_param << '\n';
+				print_tactics(std::cout << "    Tactics: ", b.tactics) << '\n';
+				print_movemode(std::cout << "    Movement mode: ", b.movemode) << '\n';
 				
 				print_anim_layers(b.animlayer, "    ");
 				
 			}
 			
 			if(s) {
-				std::cout << endl;
+				std::cout << '\n';
 			}
 			
 			for(size_t i = 0; i < MAX_STACKED_BEHAVIOR; i++) {
 				std::string target = boost::to_lower_copy(util::loadString(as->stackedtarget[i]));
 				if(target != "none" && !target.empty()) {
-					std::cout << "  Stacked target #" << i << ": "; print_ident(save, target); std::cout << endl;
+					std::cout << "  Stacked target #" << i << ": "; print_ident(save, target); std::cout << '\n';
 				}
 			}
 			
-			std::cout << "  Critical: " << as->critical << endl;
-			std::cout << "  Reach: " << as->reach << endl;
-			if(as->backstab_skill) std::cout << "  Backstab skill: " << as->backstab_skill << endl;
-			if(as->poisonned) std::cout << "  Poisoned: " << as->poisonned << endl;
-			std::cout << "  Resist poison: " << (int)as->resist_poison << endl;
-			std::cout << "  Resist magic: " << (int)as->resist_magic << endl;
-			std::cout << "  Resist fire: " << (int)as->resist_fire << endl;
-			if(as->strike_time) std::cout << "  Strike time: " << as->strike_time << endl;
-			if(as->walk_start_time) std::cout << "  Walk start time: " << as->walk_start_time << endl;
-			if(as->aiming_start) std::cout << "  Aiming time: " << as->aiming_start << endl;
+			std::cout << "  Critical: " << as->critical << '\n';
+			std::cout << "  Reach: " << as->reach << '\n';
+			if(as->backstab_skill) std::cout << "  Backstab skill: " << as->backstab_skill << '\n';
+			if(as->poisonned) std::cout << "  Poisoned: " << as->poisonned << '\n';
+			std::cout << "  Resist poison: " << (int)as->resist_poison << '\n';
+			std::cout << "  Resist magic: " << (int)as->resist_magic << '\n';
+			std::cout << "  Resist fire: " << (int)as->resist_fire << '\n';
+			if(as->strike_time) std::cout << "  Strike time: " << as->strike_time << '\n';
+			if(as->walk_start_time) std::cout << "  Walk start time: " << as->walk_start_time << '\n';
+			if(as->aiming_start) std::cout << "  Aiming time: " << as->aiming_start << '\n';
 			
 			NPCFlags npcflags = NPCFlags::load(as->npcflags);
 			if(npcflags) {
 				std::cout << "  NPC flags:";
 				if(npcflags & NPCFLAG_BACKSTAB) std::cout << " backstab";
 				if(npcflags & ~NPCFLAG_BACKSTAB) std::cout << " (unknown)";
-				std::cout << endl;
+				std::cout << '\n';
 			}
 			
-			std::cout << "  Detect: " << as->fDetect << endl;
-			if(as->cuts) std::cout << "  Cuts: " << as->cuts << endl;
+			std::cout << "  Detect: " << as->fDetect << '\n';
+			if(as->cuts) std::cout << "  Cuts: " << as->cuts << '\n';
 			
 			if(as->pathfind.truetarget != TARGET_NONE) {
 				std::cout << "  True target: ";
@@ -1558,21 +1557,21 @@ static int view_io(SaveBlock & save, const char * dat, size_t size) {
 					case TARGET_PLAYER: std::cout << "player"; break;
 					default: std::cout << "(unknown)";
 				}
-				std::cout << endl;
+				std::cout << '\n';
 			}
 			
 			if(ais.saveflags & SAVEFLAGS_EXTRA_ROTATE) {
 				
-				std::cout << endl << "  Extra rotate flags (unused): " << as->ex_rotate.flags << endl;
+				std::cout << "\n  Extra rotate flags (unused): " << as->ex_rotate.flags << '\n';
 				
 				for(size_t i = 0; i < SAVED_MAX_EXTRA_ROTATE; i++) {
-					std::cout << "    Extra rotate #" << i << ": group=" << as->ex_rotate.group_number[i] << " rotation=" << as->ex_rotate.group_rotate[i] << endl;
+					std::cout << "    Extra rotate #" << i << ": group=" << as->ex_rotate.group_number[i] << " rotation=" << as->ex_rotate.group_rotate[i] << '\n';
 				}
 			}
 			
 			Color c = Color::fromBGRA(ColorBGRA(as->blood_color));
 			if(c != Color::red) {
-				std::cout << "  Blood color: (" << (int)c.r << ", " << (int)c.g << ", " << (int)c.b << ')' << endl;
+				std::cout << "  Blood color: (" << (int)c.r << ", " << (int)c.g << ", " << (int)c.b << ")\n";
 			}
 			
 			break;
@@ -1580,25 +1579,25 @@ static int view_io(SaveBlock & save, const char * dat, size_t size) {
 		
 		case TYPE_ITEM: {
 			
-			std::cout << endl << "Item Data:" << endl;
+			std::cout << "\nItem Data:\n";
 			
 			const ARX_CHANGELEVEL_ITEM_IO_SAVE * ai;
 			ai = reinterpret_cast<const ARX_CHANGELEVEL_ITEM_IO_SAVE *>(dat + pos);
 			pos += sizeof(ARX_CHANGELEVEL_ITEM_IO_SAVE);
 			
-			std::cout << "  Price: " << ai->price << endl;
+			std::cout << "  Price: " << ai->price << '\n';
 			if(ai->count != 1 || ai->maxcount != 1) {
-				std::cout << "  Count: " << ai->count << " / " << ai->maxcount << endl;
+				std::cout << "  Count: " << ai->count << " / " << ai->maxcount << '\n';
 			}
 			if(ai->food_value != 0) {
-				std::cout << "  Food value: " << (int)ai->food_value << endl;
+				std::cout << "  Food value: " << (int)ai->food_value << '\n';
 			}
-			std::cout << "  Steal value: " << (int)ai->stealvalue << endl;
+			std::cout << "  Steal value: " << (int)ai->stealvalue << '\n';
 			if(ai->playerstacksize != 1) {
-				std::cout << "  Player stack size: " << ai->playerstacksize << endl;
+				std::cout << "  Player stack size: " << ai->playerstacksize << '\n';
 			}
 			if(ai->LightValue != -1) {
-				std::cout << "  Light value: " << ai->LightValue << endl;
+				std::cout << "  Light value: " << ai->LightValue << '\n';
 			}
 			
 			if(ais.system_flags & SYSTEM_FLAG_EQUIPITEMDATA) {
@@ -1612,23 +1611,23 @@ static int view_io(SaveBlock & save, const char * dat, size_t size) {
 					}
 					
 					if(i < ARRAY_SIZE(equipitemNames)) {
-						std::cout << endl << "  " << equipitemNames[i] << " modifier:";
+						std::cout << "\n  " << equipitemNames[i] << " modifier:";
 					} else {
-						std::cout << endl << "  EquipItem #" << i << ':';
+						std::cout << "\n  EquipItem #" << i << ':';
 					}
 					
 					if(e.flags || e.special) {
-						std::cout << endl << "    Value: ";
+						std::cout << "\n    Value: ";
 					} else {
 						std::cout << ' ';
 					}
 					
-					std::cout << e.value << endl;
+					std::cout << e.value << '\n';
 					if(e.flags) {
 						std::cout << "    Flags:";
 						if(e.flags & 1) std::cout << " percentile";
 						if(e.flags & ~1) std::cout << " (unknown)";
-						std::cout << endl;
+						std::cout << '\n';
 					}
 					if(e.special) {
 						std::cout << "    Special: ";
@@ -1639,7 +1638,7 @@ static int view_io(SaveBlock & save, const char * dat, size_t size) {
 						} else {
 							std::cout << e.special;
 						}
-						std::cout << endl;
+						std::cout << '\n';
 					}
 					
 				}
@@ -1650,70 +1649,70 @@ static int view_io(SaveBlock & save, const char * dat, size_t size) {
 		
 		case TYPE_FIX: {
 			
-			std::cout << endl << "Fixed Data:" << endl;
+			std::cout << "\nFixed Data:\n";
 			
 			const ARX_CHANGELEVEL_FIX_IO_SAVE * af;
 			af = reinterpret_cast<const ARX_CHANGELEVEL_FIX_IO_SAVE *>(dat + pos);
 			pos += sizeof(ARX_CHANGELEVEL_FIX_IO_SAVE);
 			
-			if(af->trapvalue != -1) std::cout << "  Trap value: " << (int)af->trapvalue << endl;
+			if(af->trapvalue != -1) std::cout << "  Trap value: " << (int)af->trapvalue << '\n';
 			
 			break;
 		}
 		
 		case TYPE_CAMERA: {
 			
-			std::cout << endl << "Camera Data:" << endl;
+			std::cout << "\nCamera Data:\n";
 			
 			const ARX_CHANGELEVEL_CAMERA_IO_SAVE * ac;
 			ac = reinterpret_cast<const ARX_CHANGELEVEL_CAMERA_IO_SAVE *>(dat + pos);
 			pos += sizeof(ARX_CHANGELEVEL_CAMERA_IO_SAVE);
 			
 			const SavedTransform & t = ac->cam.transform;
-			std::cout << "  Transform:" << endl;
-			std::cout << "    pos=(" << t.pos.x << ", " << t.pos.y << ", " << t.pos.z << ')' << endl;
-			std::cout << "    ycos=" << t.ycos << " ysin=" << t.ysin << " xsin=" << t.xsin << " xcos=" << t.xcos << endl;
-			std::cout << "    use_focal=" << t.use_focal << endl;
-			std::cout << "    mod=(" << t.xmod << ", " << t.ymod << ", " << t.zmod << ')' << endl;
+			std::cout << "  Transform:\n";
+			std::cout << "    pos=(" << t.pos.x << ", " << t.pos.y << ", " << t.pos.z << ")\n";
+			std::cout << "    ycos=" << t.ycos << " ysin=" << t.ysin << " xsin=" << t.xsin << " xcos=" << t.xcos << '\n';
+			std::cout << "    use_focal=" << t.use_focal << '\n';
+			std::cout << "    mod=(" << t.xmod << ", " << t.ymod << ", " << t.zmod << ")\n";
 			
 			std::cout << "  Position: " << ac->cam.pos;
-			std::cout << "  cos=(" << ac->cam.Xcos << ", " << ac->cam.Ycos << ", " << ac->cam.Zcos << ')' << endl;
-			std::cout << "  sin=(" << ac->cam.Xsin << ", " << ac->cam.Ysin << ", " << ac->cam.Zsin << ')' << endl;
-			std::cout << "  focal=" << ac->cam.focal << " use_focal=" << ac->cam.use_focal << endl;
-			std::cout << "  Zmul=" << ac->cam.Zmul << endl;
-			std::cout << "  posleft=" << ac->cam.posleft << " postop=" << ac->cam.postop << endl;
-			std::cout << "  xmod=" << ac->cam.xmod << " ymod=" << ac->cam.ymod << endl;
+			std::cout << "  cos=(" << ac->cam.Xcos << ", " << ac->cam.Ycos << ", " << ac->cam.Zcos << ")\n";
+			std::cout << "  sin=(" << ac->cam.Xsin << ", " << ac->cam.Ysin << ", " << ac->cam.Zsin << ")\n";
+			std::cout << "  focal=" << ac->cam.focal << " use_focal=" << ac->cam.use_focal << '\n';
+			std::cout << "  Zmul=" << ac->cam.Zmul << '\n';
+			std::cout << "  posleft=" << ac->cam.posleft << " postop=" << ac->cam.postop << '\n';
+			std::cout << "  xmod=" << ac->cam.xmod << " ymod=" << ac->cam.ymod << '\n';
 			
 			const SavedMatrix & m = ac->cam.matrix;
-			std::cout << "  Matrix:" << endl;
-			std::cout << "    " << m._11 << ", " << m._12 << ", " << m._13 << ", " << m._14 << endl;
-			std::cout << "    " << m._21 << ", " << m._22 << ", " << m._23 << ", " << m._24 << endl;
-			std::cout << "    " << m._31 << ", " << m._32 << ", " << m._33 << ", " << m._34 << endl;
-			std::cout << "    " << m._41 << ", " << m._42 << ", " << m._43 << ", " << m._44 << endl;
+			std::cout << "  Matrix:\n";
+			std::cout << "    " << m._11 << ", " << m._12 << ", " << m._13 << ", " << m._14 << '\n';
+			std::cout << "    " << m._21 << ", " << m._22 << ", " << m._23 << ", " << m._24 << '\n';
+			std::cout << "    " << m._31 << ", " << m._32 << ", " << m._33 << ", " << m._34 << '\n';
+			std::cout << "    " << m._41 << ", " << m._42 << ", " << m._43 << ", " << m._44 << '\n';
 			
-			std::cout << "  Angle: " << ac->cam.angle << endl;
-			std::cout << "  Destination position: " << ac->cam.d_pos << endl;
-			std::cout << "  Destination angle: " << ac->cam.d_angle << endl;
-			std::cout << "  Last target: " << ac->cam.lasttarget << endl;
-			std::cout << "  Last position: " << ac->cam.lastpos << endl;
-			std::cout << "  Last translate target: " << ac->cam.translatetarget << endl;
-			std::cout << "  Last info valid: " << ac->cam.lastinfovalid << endl;
-			std::cout << "  Norm: " << ac->cam.norm << endl;
-			std::cout << "  Fade color: " << ac->cam.fadecolor << endl;
+			std::cout << "  Angle: " << ac->cam.angle << '\n';
+			std::cout << "  Destination position: " << ac->cam.d_pos << '\n';
+			std::cout << "  Destination angle: " << ac->cam.d_angle << '\n';
+			std::cout << "  Last target: " << ac->cam.lasttarget << '\n';
+			std::cout << "  Last position: " << ac->cam.lastpos << '\n';
+			std::cout << "  Last translate target: " << ac->cam.translatetarget << '\n';
+			std::cout << "  Last info valid: " << ac->cam.lastinfovalid << '\n';
+			std::cout << "  Norm: " << ac->cam.norm << '\n';
+			std::cout << "  Fade color: " << ac->cam.fadecolor << '\n';
 			
-			std::cout << "  Clip: (" << ac->cam.clip.left << ", " << ac->cam.clip.top << ") -- (" << ac->cam.clip.right << ", " << ac->cam.clip.bottom << ')' << endl;
+			std::cout << "  Clip: (" << ac->cam.clip.left << ", " << ac->cam.clip.top << ") -- (" << ac->cam.clip.right << ", " << ac->cam.clip.bottom << ")\n";
 			
-			std::cout << "  clipz0: " << ac->cam.clipz0 << endl;
-			std::cout << "  clipz1: " << ac->cam.clipz1 << endl;
-			std::cout << "  centerx: " << ac->cam.centerx << endl;
-			std::cout << "  centery: " << ac->cam.centery << endl;
-			std::cout << "  smoothing: " << ac->cam.smoothing << endl;
-			std::cout << "  AddX: " << ac->cam.AddX << endl;
-			std::cout << "  AddY: " << ac->cam.AddY << endl;
-			std::cout << "  Xsnap: " << ac->cam.Xsnap << endl;
-			std::cout << "  Zsnap: " << ac->cam.Zsnap << endl;
-			std::cout << "  Zdiv: " << ac->cam.Zdiv << endl;
-			std::cout << "  clip3D: " << ac->cam.clip3D << endl;
+			std::cout << "  clipz0: " << ac->cam.clipz0 << '\n';
+			std::cout << "  clipz1: " << ac->cam.clipz1 << '\n';
+			std::cout << "  centerx: " << ac->cam.centerx << '\n';
+			std::cout << "  centery: " << ac->cam.centery << '\n';
+			std::cout << "  smoothing: " << ac->cam.smoothing << '\n';
+			std::cout << "  AddX: " << ac->cam.AddX << '\n';
+			std::cout << "  AddY: " << ac->cam.AddY << '\n';
+			std::cout << "  Xsnap: " << ac->cam.Xsnap << '\n';
+			std::cout << "  Zsnap: " << ac->cam.Zsnap << '\n';
+			std::cout << "  Zdiv: " << ac->cam.Zdiv << '\n';
+			std::cout << "  clip3D: " << ac->cam.clip3D << '\n';
 			
 			std::cout << "  Type: ";
 			switch(ac->cam.type) {
@@ -1721,12 +1720,12 @@ static int view_io(SaveBlock & save, const char * dat, size_t size) {
 				case CAM_TOPVIEW: std::cout << "top down view"; break;
 				default: std::cout << "(unknown)";
 			}
-			std::cout << endl;
+			std::cout << '\n';
 			
-			std::cout << "  bkgcolor: " << ac->cam.bkgcolor << endl;
-			std::cout << "  nbdrawn: " << ac->cam.nbdrawn << endl;
-			std::cout << "  cdepth: " << ac->cam.cdepth << endl;
-			std::cout << "  size: " << ac->cam.size << endl;
+			std::cout << "  bkgcolor: " << ac->cam.bkgcolor << '\n';
+			std::cout << "  nbdrawn: " << ac->cam.nbdrawn << '\n';
+			std::cout << "  cdepth: " << ac->cam.cdepth << '\n';
+			std::cout << "  size: " << ac->cam.size << '\n';
 			
 			break;
 		}
@@ -1739,12 +1738,12 @@ static int view_io(SaveBlock & save, const char * dat, size_t size) {
 	
 	if(ais.system_flags & SYSTEM_FLAG_INVENTORY) {
 		
-		std::cout << endl << "Inventory:" << endl;
+		std::cout << "\nInventory:\n";
 		
 		const ARX_CHANGELEVEL_INVENTORY_DATA_SAVE & i = *reinterpret_cast<const ARX_CHANGELEVEL_INVENTORY_DATA_SAVE *>(dat + pos);
 		pos += sizeof(ARX_CHANGELEVEL_INVENTORY_DATA_SAVE);
 		
-		std::cout << "  Size: " << i.sizex << 'x' << i.sizey << endl;
+		std::cout << "  Size: " << i.sizex << 'x' << i.sizey << '\n';
 		
 		print_inventory(save, i.slot_io, i.slot_show);
 		
@@ -1752,31 +1751,31 @@ static int view_io(SaveBlock & save, const char * dat, size_t size) {
 	
 	if(ais.system_flags & SYSTEM_FLAG_TWEAKER_INFO) {
 		
-		std::cout << endl << "Tweaker Data:" << endl;
+		std::cout << "\nTweaker Data:\n";
 		
 		const SavedTweakerInfo * sti = reinterpret_cast<const SavedTweakerInfo *>(dat + pos);
 		pos += sizeof(SavedTweakerInfo);
 		
-		std::cout << "  Filename: " << res::path::load(util::loadString(sti->filename)) << endl;
-		std::cout << "  Old skin: \"" << boost::to_lower_copy(util::loadString(sti->skintochange)) << '"' << endl;
-		std::cout << "  New skin: " << res::path::load(util::loadString(sti->skinchangeto)) << endl;
+		std::cout << "  Filename: " << res::path::load(util::loadString(sti->filename)) << '\n';
+		std::cout << "  Old skin: \"" << boost::to_lower_copy(util::loadString(sti->skintochange)) << "\"\n";
+		std::cout << "  New skin: " << res::path::load(util::loadString(sti->skinchangeto)) << '\n';
 	}
 	
 	if(ais.nb_iogroups) {
-		std::cout << endl << "IO groups:";
+		std::cout << "\nIO groups:";
 		for(s16 i = 0; i < ais.nb_iogroups; i++) {
 			const SavedGroupData * sgd = reinterpret_cast<const SavedGroupData *>(dat + pos);
 			pos += sizeof(SavedGroupData);
 			std::cout << ' ' << boost::to_lower_copy(util::loadString(sgd->name));
 		}
-		std::cout << endl;
+		std::cout << '\n';
 	}
 	
 	for(s16 i = 0; i < ais.Tweak_nb; i++) {
 		const SavedTweakInfo * sti = reinterpret_cast<const SavedTweakInfo *>(dat + pos);
 		pos += sizeof(SavedTweakInfo);
 		
-		std::cout << endl << "Tweak #" << i << ':' << endl;
+		std::cout << "\nTweak #" << i << ":\n";
 		
 		std::cout << "  Type:";
 		if(!sti->type) std::cout << " (none)";
@@ -1787,16 +1786,16 @@ static int view_io(SaveBlock & save, const char * dat, size_t size) {
 		if(sti->type & TWEAK_TYPE_SKIN) std::cout << " skin";
 		if(sti->type & TWEAK_TYPE_ICON) std::cout << " icon";
 		if(sti->type & TWEAK_TYPE_MESH) std::cout << " mesh";
-		std::cout << endl;
+		std::cout << '\n';
 		
 		res::path param1 = res::path::load(util::loadString(sti->param1));
 		if(!param1.empty()) {
-			std::cout << "  Parameter 1: " << param1 << endl;
+			std::cout << "  Parameter 1: " << param1 << '\n';
 		}
 		
 		res::path param2 = res::path::load(util::loadString(sti->param2));
 		if(!param2.empty()) {
-			std::cout << "  Parameter 2: " << param2 << endl;
+			std::cout << "  Parameter 2: " << param2 << '\n';
 		}
 	}
 	
@@ -1829,23 +1828,23 @@ int main_view(SaveBlock & save, int argc, char ** argv) {
 	resources = new PakReader();
 	
 	if(!resources->addArchive("loc.pak")) {
-		cerr << "could not open loc.pak, run 'savetool view' from the game directory" << endl;
+		cerr << "could not open loc.pak, run 'savetool view' from the game directory\n";
 		return 3;
 	}
 	
 	initLocalisation();
 	
 	if(!save.open()) {
-		cerr << "failed to open savefile" << endl;
+		cerr << "failed to open savefile\n";
 		return 2;
 	}
 	
 	if(argc == 0) {
 		
-		std::cout << endl << "Info: pld" << endl;
-		std::cout << endl << "Player: player" << endl;
+		std::cout << "\nInfo: pld\n";
+		std::cout << "\nPlayer: player\n";
 		
-		std::cout << endl << "Levels: " << endl;
+		std::cout << "\nLevels: \n";
 		
 		const long MAX_LEVEL = 24;
 		for(long i = 0; i <= MAX_LEVEL; i++) {
@@ -1854,7 +1853,7 @@ int main_view(SaveBlock & save, int argc, char ** argv) {
 			ss << "lvl" << std::setfill('0') << std::setw(3) << i;
 			
 			if(save.hasFile(ss.str())) {
-				std::cout << " - " << ss.str() << endl;
+				std::cout << " - " << ss.str() << '\n';
 			}
 		}
 		
@@ -1866,11 +1865,11 @@ int main_view(SaveBlock & save, int argc, char ** argv) {
 	size_t size;
 	char * dat = save.load(name, size);
 	if(!dat) {
-		cerr << name << " not found" << endl;
+		cerr << name << " not found\n";
 		return 3;
 	}
 	
-	std::cout << endl;
+	std::cout << '\n';
 	
 	int ret;
 	if(name == "pld") {
