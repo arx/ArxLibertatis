@@ -36,8 +36,6 @@
 #include "scene/SaveFormat.h"
 #include "util/String.h"
 
-using std::hex;
-
 typedef std::map<std::string, std::string> Idents; // ident -> where
 typedef std::map<std::string, long> Remap; // ident -> newIdent
 
@@ -241,7 +239,7 @@ static long fix_io(SaveBlock & save, const std::string & name, Idents & idents, 
 		}
 		
 		if(flags != ais.ioflags) {
-			std::cout << " - fixing " << name << ": ioflags 0x" << hex << ais.ioflags << " -> 0x" << hex << flags << '\n';
+			std::cout << " - fixing " << name << ": ioflags 0x" << std::hex << ais.ioflags << " -> 0x" << std::hex << flags << '\n';
 			ais.ioflags = flags;
 			changed = true;
 		}
