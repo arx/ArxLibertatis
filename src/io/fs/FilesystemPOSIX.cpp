@@ -262,20 +262,27 @@ static mode_t dirstat(void * handle, const void * buf) {
 
 #endif
 
-static void readdir(void * _handle, void * & _buf) {
+static void do_readdir(void * _handle, void * & _buf) {
 	
 	DIR * handle = DIR_HANDLE(_handle);
 	
-	dirent * buf = reinterpret_cast<dirent *>(_buf);
+	dirent * & buf = reinterpret_cast<dirent * &>(_buf);
 	
 	do {
 		
+		#if ARX_HAVE_THREADSAFE_READDIR
+		buf = readdir(handle);
+		if(!buf) {
+			return;
+		}
+		#else
 		dirent * entry;
 		if(readdir_r(handle, buf, &entry) || !entry) {
 			std::free(_buf);
 			_buf = NULL;
 			return;
 		}
+		#endif
 		
 	} while(!strcmp(buf->d_name, ".") || !strcmp(buf->d_name, ".."));
 	
@@ -287,6 +294,7 @@ directory_iterator::directory_iterator(const path & p) : buf(NULL) {
 	
 	if(DIR_HANDLE(handle)) {
 		
+		#if !ARX_HAVE_THREADSAFE_READDIR
 		// Allocate a large enough buffer for readdir_r.
 		long name_max;
 		#if ((ARX_HAVE_DIRFD && ARX_HAVE_FPATHCONF) || ARX_HAVE_PATHCONF) && ARX_HAVE_PC_NAME_MAX
@@ -312,8 +320,9 @@ directory_iterator::directory_iterator(const path & p) : buf(NULL) {
 			size = sizeof(dirent);
 		}
 		buf = std::malloc(size);
+		#endif //!ARX_HAVE_THREADSAFE_READDIR
 		
-		readdir(handle, buf);
+		do_readdir(handle, buf);
 	}
 };
 
@@ -322,13 +331,15 @@ directory_iterator::~directory_iterator() {
 		closedir(DIR_HANDLE(handle));
 		DIR_HANDLE_FREE(handle);
 	}
+	#if !ARX_HAVE_THREADSAFE_READDIR
 	std::free(buf);
+	#endif
 }
 
 directory_iterator & directory_iterator::operator++() {
 	arx_assert(buf != NULL);
 	
-	readdir(handle, buf);
+	do_readdir(handle, buf);
 	
 	return *this;
 }
