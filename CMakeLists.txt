@@ -548,7 +548,7 @@ else(MSVC)
 			list(APPEND libc_features -D_BSD_SOURCE)
 		endif()
 	endif()
-	if(USE_NATIVE_FS)
+	if(USE_NATIVE_FS AND NOT WIN32)
 		list(APPEND libc_features -D_FILE_OFFSET_BITS=64)
 	endif()
 	string(REPLACE ";" " " CMAKE_REQUIRED_DEFINITIONS "${libc_features}")
@@ -657,7 +657,7 @@ else(MSVC)
 	check_symbol_exists(sysctl "sys/sysctl.h" ARX_HAVE_SYSCTL)
 	check_symbol_exists(sysctlbyname "sys/sysctl.h" ARX_HAVE_SYSCTLBYNAME)
 	
-	if(USE_NATIVE_FS)
+	if(USE_NATIVE_FS AND NOT WIN32)
 		
 		# Whether multiple cuncurrent readdir calls with *different* directory streams are threadsafe
 		set(READDIR_IS_THREADSAFE 0)
@@ -718,7 +718,7 @@ else(MSVC)
 			message(FATAL_ERROR "Missing dependencies for native filesystem backend.")
 		endif()
 		
-	endif(USE_NATIVE_FS)
+	endif()
 	
 endif(MSVC)
 
