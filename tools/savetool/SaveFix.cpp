@@ -36,22 +36,21 @@
 #include "scene/SaveFormat.h"
 #include "util/String.h"
 
-using std::string;
 using std::cout;
 using std::cerr;
 using std::endl;
 using std::hex;
 
-typedef std::map<string, string> Idents; // ident -> where
-typedef std::map<string, long> Remap; // ident -> newIdent
+typedef std::map<std::string, std::string> Idents; // ident -> where
+typedef std::map<std::string, long> Remap; // ident -> newIdent
 
-static string makeIdent(const string & file, long ident) {
+static std::string makeIdent(const std::string & file, long ident) {
 	std::stringstream name;
 	name << file << "_" << std::setw(4) << std::setfill('0') << ident;
 	return name.str();
 }
 
-static bool fix_ident(SaveBlock & save, char (&name)[SIZE_ID], Idents & idents, const string & where, Remap & remap);
+static bool fix_ident(SaveBlock & save, char (&name)[SIZE_ID], Idents & idents, const std::string & where, Remap & remap);
 
 static void skip_script_save(const char * dat, size_t & pos) {
 	const ARX_CHANGELEVEL_SCRIPT_SAVE * ass;
@@ -67,7 +66,7 @@ static void skip_script_save(const char * dat, size_t & pos) {
 	}
 }
 
-static bool fix_iodata(SaveBlock & save, Idents & idents, char * dat, const string & where, Remap & remap) {
+static bool fix_iodata(SaveBlock & save, Idents & idents, char * dat, const std::string & where, Remap & remap) {
 	
 	size_t pos = 0;
 	ARX_CHANGELEVEL_IO_SAVE & ais = *reinterpret_cast<ARX_CHANGELEVEL_IO_SAVE *>(dat + pos);
@@ -154,18 +153,18 @@ static bool fix_iodata(SaveBlock & save, Idents & idents, char * dat, const stri
 	return ioChanged || specificsChanged || invChanged;
 }
 
-static long copy_io(SaveBlock & save, const string & name, Idents & idents, const string & where, char * dat, size_t size) {
+static long copy_io(SaveBlock & save, const std::string & name, Idents & idents, const std::string & where, char * dat, size_t size) {
 	
 	ARX_CHANGELEVEL_IO_SAVE & ais = *reinterpret_cast<ARX_CHANGELEVEL_IO_SAVE *>(dat);
 	
 	size_t pos = name.find_last_of('_');
 	
-	string fname = name.substr(0, pos);
+	std::string fname = name.substr(0, pos);
 	
 	res::path dir = res::path::load(util::loadString(ais.filename)).parent();
 	
 	long i = 1;
-	string ident;
+	std::string ident;
 	for(; i < 10000; i++) {
 		
 		ident = makeIdent(fname, i);
@@ -195,14 +194,14 @@ static long copy_io(SaveBlock & save, const string & name, Idents & idents, cons
 	return i;
 }
 
-static long fix_io(SaveBlock & save, const string & name, Idents & idents, const string & where, Remap & remap) {
+static long fix_io(SaveBlock & save, const std::string & name, Idents & idents, const std::string & where, Remap & remap) {
 	
 	if(name == "none" || name.empty()) {
 		remap[name] = 0;
 		return 0;
 	}
 	
-	string savefile = name;
+	std::string savefile = name;
 	
 	size_t size = 0;
 	char * dat = save.load(savefile, size);
@@ -266,7 +265,7 @@ static long fix_io(SaveBlock & save, const string & name, Idents & idents, const
 	return 0;
 }
 
-static bool patch_ident(char (&name)[SIZE_ID], long newIdent, const string & where) {
+static bool patch_ident(char (&name)[SIZE_ID], long newIdent, const std::string & where) {
 	
 	if(newIdent <= 0) {
 		return false;
@@ -274,7 +273,7 @@ static bool patch_ident(char (&name)[SIZE_ID], long newIdent, const string & whe
 	
 	cout << "fixing ident in " << where << ": " << name << " -> " << newIdent << endl;
 	
-	string namestr = boost::to_lower_copy(util::loadString(name, SIZE_ID));
+	std::string namestr = boost::to_lower_copy(util::loadString(name, SIZE_ID));
 	
 	size_t pos = namestr.find_last_of('_');
 	
@@ -283,9 +282,9 @@ static bool patch_ident(char (&name)[SIZE_ID], long newIdent, const string & whe
 	return true;
 }
 
-static bool fix_ident(SaveBlock & save, char (&name)[SIZE_ID], Idents & idents, const string & where, Remap & remap) {
+static bool fix_ident(SaveBlock & save, char (&name)[SIZE_ID], Idents & idents, const std::string & where, Remap & remap) {
 	
-	string lname = boost::to_lower_copy(util::loadString(name, SIZE_ID));
+	std::string lname = boost::to_lower_copy(util::loadString(name, SIZE_ID));
 	
 	if(lname.empty() || lname == "none" || lname == "player" || lname == "self") {
 		return false;
@@ -381,7 +380,7 @@ static void fix_level(SaveBlock & save, long num, Idents & idents) {
 	
 	for(long i = 0; i < asi.nb_inter; i++) {
 		long res;
-		string ident = makeIdent(res::path::load(util::loadString(idx_io[i].filename)).basename(), idx_io[i].ident);
+		std::string ident = makeIdent(res::path::load(util::loadString(idx_io[i].filename)).basename(), idx_io[i].ident);
 		Remap::const_iterator it = remap.find(ident);
 		std::stringstream where;
 		where << "level" << num << "[" << i << "]";
