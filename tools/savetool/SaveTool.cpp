@@ -29,18 +29,17 @@
 #include "savetool/SaveRename.h"
 #include "savetool/SaveView.h"
 
-using std::cout;
 using std::endl;
 using std::cerr;
 
 static void print_help() {
-	cout << "usage: savetool <command> <savefile> [<options>...]" << endl;
-	cout << "commands are:" << endl;
-	cout << " - extract <savefile>" << endl;
-	cout << " - add <savefile> [<files>...]" << endl;
-	cout << " - fix <savefile>" << endl;
-	cout << " - rename <savefile> <newname>" << endl;
-	cout << " - view <savefile> [<ident>]" << endl;
+	std::cout << "usage: savetool <command> <savefile> [<options>...]" << endl;
+	std::cout << "commands are:" << endl;
+	std::cout << " - extract <savefile>" << endl;
+	std::cout << " - add <savefile> [<files>...]" << endl;
+	std::cout << " - fix <savefile>" << endl;
+	std::cout << " - rename <savefile> <newname>" << endl;
+	std::cout << " - view <savefile> [<ident>]" << endl;
 }
 
 static int main_extract(SaveBlock & save, int argc, char ** argv) {
