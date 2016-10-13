@@ -256,14 +256,14 @@ path current_path() {
 	return path(buffer.toUTF8());
 }
 
-directory_iterator::directory_iterator(const path & p) : m_handle(INVALID_HANDLE_VALUE), buf(NULL) {
+directory_iterator::directory_iterator(const path & p) : m_handle(INVALID_HANDLE_VALUE), m_buffer(NULL) {
 	
 	std::string searchPath = (p.empty() ? "." : p.string()) + "\\*";
 	
 	WIN32_FIND_DATAW * data = new WIN32_FIND_DATAW;
 	m_handle = FindFirstFileW(platform::WideString(searchPath), data);
 	if(m_handle != INVALID_HANDLE_VALUE) {
-		buf = data;
+		m_buffer = data;
 		if(!wcscmp(data->cFileName, L".") || !wcscmp(data->cFileName, L"..")) {
 			operator++();
 		}
@@ -279,21 +279,21 @@ directory_iterator::~directory_iterator() {
 		FindClose(m_handle);
 	}
 	
-	delete reinterpret_cast<WIN32_FIND_DATAW *>(buf);
+	delete reinterpret_cast<WIN32_FIND_DATAW *>(m_buffer);
 }
 
 directory_iterator & directory_iterator::operator++() {
 	
-	arx_assert(buf != NULL);
+	arx_assert(m_buffer != NULL);
 	arx_assert(m_handle != INVALID_HANDLE_VALUE);
 	
-	WIN32_FIND_DATAW * data = reinterpret_cast<WIN32_FIND_DATAW *>(buf);
+	WIN32_FIND_DATAW * data = reinterpret_cast<WIN32_FIND_DATAW *>(m_buffer);
 	
 	do {
 		
 		if(!FindNextFileW(m_handle, data)) {
 			delete data;
-			buf = NULL;
+			m_buffer = NULL;
 			break;
 		}
 		
@@ -303,32 +303,32 @@ directory_iterator & directory_iterator::operator++() {
 }
 
 bool directory_iterator::end() {
-	return !buf;
+	return !m_buffer;
 }
 
 std::string directory_iterator::name() {
 	
-	arx_assert(buf != NULL);
+	arx_assert(m_buffer != NULL);
 	
-	const WIN32_FIND_DATAW * data = reinterpret_cast<const WIN32_FIND_DATAW *>(buf);
+	const WIN32_FIND_DATAW * data = reinterpret_cast<const WIN32_FIND_DATAW *>(m_buffer);
 	
 	return platform::WideString::toUTF8(data->cFileName);
 }
 
 bool directory_iterator::is_directory() {
 	
-	arx_assert(buf != NULL);
+	arx_assert(m_buffer != NULL);
 	
-	const WIN32_FIND_DATAW * data = reinterpret_cast<const WIN32_FIND_DATAW *>(buf);
+	const WIN32_FIND_DATAW * data = reinterpret_cast<const WIN32_FIND_DATAW *>(m_buffer);
 	
 	return (data->dwFileAttributes & FILE_ATTRIBUTE_DIRECTORY) != 0;
 }
 
 bool directory_iterator::is_regular_file() {
 	
-	arx_assert(buf != NULL);
+	arx_assert(m_buffer != NULL);
 	
-	const WIN32_FIND_DATAW * data = reinterpret_cast<const WIN32_FIND_DATAW *>(buf);
+	const WIN32_FIND_DATAW * data = reinterpret_cast<const WIN32_FIND_DATAW *>(m_buffer);
 	
 	return (data->dwFileAttributes & FILE_ATTRIBUTE_DIRECTORY) == 0;
 }

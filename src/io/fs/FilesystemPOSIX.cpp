@@ -262,33 +262,33 @@ static mode_t dirstat(void * handle, const void * buf) {
 
 #endif
 
-static void do_readdir(void * _handle, void * & _buf) {
+static void do_readdir(void * _handle, void * & _buffer) {
 	
 	DIR * handle = DIR_HANDLE(_handle);
 	
-	dirent * & buf = reinterpret_cast<dirent * &>(_buf);
+	dirent * & buffer = reinterpret_cast<dirent * &>(_buffer);
 	
 	do {
 		
 		#if ARX_HAVE_THREADSAFE_READDIR
-		buf = readdir(handle);
-		if(!buf) {
+		buffer = readdir(handle);
+		if(!buffer) {
 			return;
 		}
 		#else
 		dirent * entry;
-		if(readdir_r(handle, buf, &entry) || !entry) {
-			std::free(_buf);
-			_buf = NULL;
+		if(readdir_r(handle, buffer, &entry) || !entry) {
+			std::free(buffer);
+			buffer = NULL;
 			return;
 		}
 		#endif
 		
-	} while(!strcmp(buf->d_name, ".") || !strcmp(buf->d_name, ".."));
+	} while(!strcmp(buffer->d_name, ".") || !strcmp(buffer->d_name, ".."));
 	
 }
 
-directory_iterator::directory_iterator(const path & p) : buf(NULL) {
+directory_iterator::directory_iterator(const path & p) : m_buffer(NULL) {
 	
 	m_handle = DIR_HANDLE_INIT(p, opendir(p.empty() ? "./" : p.string().c_str()));
 	
@@ -319,10 +319,10 @@ directory_iterator::directory_iterator(const path & p) : buf(NULL) {
 		if(size < sizeof(dirent)) {
 			size = sizeof(dirent);
 		}
-		buf = std::malloc(size);
+		m_buffer = std::malloc(size);
 		#endif //!ARX_HAVE_THREADSAFE_READDIR
 		
-		do_readdir(m_handle, buf);
+		do_readdir(m_handle, m_buffer);
 	}
 };
 
@@ -332,35 +332,35 @@ directory_iterator::~directory_iterator() {
 		DIR_HANDLE_FREE(handle);
 	}
 	#if !ARX_HAVE_THREADSAFE_READDIR
-	std::free(buf);
+	std::free(m_buffer);
 	#endif
 }
 
 directory_iterator & directory_iterator::operator++() {
-	arx_assert(buf != NULL);
+	arx_assert(m_buffer != NULL);
 	
-	do_readdir(m_handle, buf);
+	do_readdir(m_handle, m_buffer);
 	
 	return *this;
 }
 
 bool directory_iterator::end() {
-	return !buf;
+	return !m_buffer;
 }
 
 std::string directory_iterator::name() {
-	arx_assert(buf != NULL);
-	return reinterpret_cast<dirent *>(buf)->d_name;
+	arx_assert(m_buffer != NULL);
+	return reinterpret_cast<dirent *>(m_buffer)->d_name;
 }
 
 bool directory_iterator::is_directory() {
-	arx_assert(buf != NULL);
-	return ((dirstat(m_handle, buf) & S_IFMT) == S_IFDIR);
+	arx_assert(m_buffer != NULL);
+	return ((dirstat(m_handle, m_buffer) & S_IFMT) == S_IFDIR);
 }
 
 bool directory_iterator::is_regular_file() {
-	arx_assert(buf != NULL);
-	return ((dirstat(m_handle, buf) & S_IFMT) == S_IFREG);
+	arx_assert(m_buffer != NULL);
+	return ((dirstat(m_handle, m_buffer) & S_IFMT) == S_IFREG);
 }
 
 #undef ITERATOR_HANDLE
