@@ -36,7 +36,6 @@
 #include "scene/SaveFormat.h"
 #include "util/String.h"
 
-using std::cerr;
 using std::endl;
 using std::hex;
 
@@ -255,7 +254,7 @@ static long fix_io(SaveBlock & save, const std::string & name, Idents & idents, 
 	if(changed) {
 		LogDebug("#saving fixed io " << savefile);
 		if(!save.save(savefile, dat, size)) {
-			cerr << "error saving " << savefile;
+			std::cerr << "error saving " << savefile;
 		}
 	}
 	
@@ -415,7 +414,7 @@ int main_fix(SaveBlock & save, int argc, char ** argv) {
 	resources = new PakReader();
 	
 	if(!resources->addArchive("data.pak") || !resources->addArchive("data2.pak")) {
-		cerr << "could not open pak files, run 'savetool fix' from the game directory" << endl;
+		std::cerr << "could not open pak files, run 'savetool fix' from the game directory" << endl;
 		return 3;
 	}
 	
