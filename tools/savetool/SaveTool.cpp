@@ -29,17 +29,16 @@
 #include "savetool/SaveRename.h"
 #include "savetool/SaveView.h"
 
-using std::endl;
 using std::cerr;
 
 static void print_help() {
-	std::cout << "usage: savetool <command> <savefile> [<options>...]" << endl;
-	std::cout << "commands are:" << endl;
-	std::cout << " - extract <savefile>" << endl;
-	std::cout << " - add <savefile> [<files>...]" << endl;
-	std::cout << " - fix <savefile>" << endl;
-	std::cout << " - rename <savefile> <newname>" << endl;
-	std::cout << " - view <savefile> [<ident>]" << endl;
+	std::cout << "usage: savetool <command> <savefile> [<options>...]\n"
+	             "commands are:\n"
+	             " - extract <savefile>\n"
+	             " - add <savefile> [<files>...]\n"
+	             " - fix <savefile>\n"
+	             " - rename <savefile> <newname>\n"
+	             " - view <savefile> [<ident>]\n";
 }
 
 static int main_extract(SaveBlock & save, int argc, char ** argv) {
@@ -61,19 +60,19 @@ static int main_extract(SaveBlock & save, int argc, char ** argv) {
 		size_t size;
 		char * data = save.load(*file, size);
 		if(!data) {
-			cerr << "error loading " << *file << " from save" << endl;
+			cerr << "error loading " << *file << " from save\n";
 			continue;
 		}
 		
 		fs::ofstream h(*file, std::ios_base::out | std::ios_base::binary);
 		if(!h.is_open()) {
-			cerr << "error opening " << *file << " for writing" << endl;
+			cerr << "error opening " << *file << " for writing\n";
 			free(data);
 			continue;
 		}
 		
 		if(h.write(data, size).fail()) {
-			cerr << "error writing to " << *file << endl;
+			cerr << "error writing to " << *file << '\n';
 		}
 		
 		free(data);
