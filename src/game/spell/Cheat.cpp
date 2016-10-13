@@ -75,7 +75,7 @@ void CheatDrawText() {
 	
 	PlatformDuration elapsed = g_platformTime.frameStart() - sp_max_start;
 
-	if(sp_max_start != PlatformInstant_ZERO && elapsed < PlatformDurationMs(20000)) {
+	if(elapsed < PlatformDurationMs(20000)) {
 		float modi = float(toMs(PlatformDurationMs(20000) - elapsed)) * ( 1.0f / 2000 ) * ( 1.0f / 10 );
 		float sizX = 16;
 		
