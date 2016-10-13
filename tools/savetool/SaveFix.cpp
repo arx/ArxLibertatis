@@ -36,7 +36,6 @@
 #include "scene/SaveFormat.h"
 #include "util/String.h"
 
-using std::endl;
 using std::hex;
 
 typedef std::map<std::string, std::string> Idents; // ident -> where
@@ -210,10 +209,10 @@ static long fix_io(SaveBlock & save, const std::string & name, Idents & idents, 
 	
 	Idents::iterator it = idents.find(name);
 	if(it != idents.end()) {
-		std::cout << "duplicate ident " << name << " detected: in " << it->second << " and " << where << endl;
+		std::cout << "duplicate ident " << name << " detected: in " << it->second << " and " << where << '\n';
 		// we already fixed this!
 		long newIdent = copy_io(save, name, idents, where, dat, size);
-		std::cout << " -> copied " << name << " as " << newIdent << " for " << where << endl;
+		std::cout << " -> copied " << name << " as " << newIdent << " for " << where << '\n';
 		free(dat);
 		remap[name] = newIdent;
 		return newIdent;
@@ -242,7 +241,7 @@ static long fix_io(SaveBlock & save, const std::string & name, Idents & idents, 
 		}
 		
 		if(flags != ais.ioflags) {
-			std::cout << " - fixing " << name << ": ioflags 0x" << hex << ais.ioflags << " -> 0x" << hex << flags << endl;
+			std::cout << " - fixing " << name << ": ioflags 0x" << hex << ais.ioflags << " -> 0x" << hex << flags << '\n';
 			ais.ioflags = flags;
 			changed = true;
 		}
@@ -269,7 +268,7 @@ static bool patch_ident(char (&name)[SIZE_ID], long newIdent, const std::string 
 		return false;
 	}
 	
-	std::cout << "fixing ident in " << where << ": " << name << " -> " << newIdent << endl;
+	std::cout << "fixing ident in " << where << ": " << name << " -> " << newIdent << '\n';
 	
 	std::string namestr = boost::to_lower_copy(util::loadString(name, SIZE_ID));
 	
@@ -300,7 +299,7 @@ static bool fix_ident(SaveBlock & save, char (&name)[SIZE_ID], Idents & idents, 
 
 static void fix_player(SaveBlock & save, Idents & idents) {
 	
-	std::cout << "player" << endl;
+	std::cout << "player\n";
 	
 	const std::string loadfile = "player";
 	
@@ -363,7 +362,7 @@ static void fix_level(SaveBlock & save, long num, Idents & idents) {
 		return;
 	}
 	
-	std::cout << "level " << num << endl;
+	std::cout << "level " << num << '\n';
 	
 	size_t pos = 0;
 	
@@ -388,7 +387,7 @@ static void fix_level(SaveBlock & save, long num, Idents & idents) {
 			res = fix_io(save, ident, idents, where.str(), remap);
 		}
 		if(res != 0) {
-			std::cout << "fixing ident in " << where.str() << ": " << ident << " -> " << res << endl;
+			std::cout << "fixing ident in " << where.str() << ": " << ident << " -> " << res << '\n';
 			idx_io[i].ident = res;
 			changed = true;
 		}
@@ -414,7 +413,7 @@ int main_fix(SaveBlock & save, int argc, char ** argv) {
 	resources = new PakReader();
 	
 	if(!resources->addArchive("data.pak") || !resources->addArchive("data2.pak")) {
-		std::cerr << "could not open pak files, run 'savetool fix' from the game directory" << endl;
+		std::cerr << "could not open pak files, run 'savetool fix' from the game directory\n";
 		return 3;
 	}
 	
