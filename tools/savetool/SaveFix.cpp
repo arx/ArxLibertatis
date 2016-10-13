@@ -27,6 +27,7 @@
 
 #include <boost/algorithm/string/case_conv.hpp>
 #include <boost/algorithm/string/predicate.hpp>
+#include <boost/io/ios_state.hpp>
 
 #include "Configure.h"
 
@@ -239,7 +240,9 @@ static long fix_io(SaveBlock & save, const std::string & name, Idents & idents, 
 		}
 		
 		if(flags != ais.ioflags) {
+			boost::io::ios_all_saver coutFlags(std::cout);
 			std::cout << " - fixing " << name << ": ioflags 0x" << std::hex << ais.ioflags << " -> 0x" << std::hex << flags << '\n';
+			coutFlags.restore();
 			ais.ioflags = flags;
 			changed = true;
 		}
