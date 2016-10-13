@@ -30,8 +30,6 @@
 
 #include "platform/WindowsUtils.h"
 
-using std::string;
-
 namespace fs {
 
 bool exists(const path & p) {
@@ -259,7 +257,7 @@ path current_path() {
 
 directory_iterator::directory_iterator(const path & p) : handle(INVALID_HANDLE_VALUE), buf(NULL) {
 	
-	string searchPath = (p.empty() ? "." : p.string()) + "\\*";
+	std::string searchPath = (p.empty() ? "." : p.string()) + "\\*";
 	
 	WIN32_FIND_DATAW * data = new WIN32_FIND_DATAW;
 	handle = FindFirstFileW(platform::WideString(searchPath), data);
@@ -305,7 +303,7 @@ bool directory_iterator::end() {
 	return !buf;
 }
 
-string directory_iterator::name() {
+std::string directory_iterator::name() {
 	
 	arx_assert(buf != NULL);
 	
