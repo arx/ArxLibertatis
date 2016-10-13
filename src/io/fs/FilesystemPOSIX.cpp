@@ -203,9 +203,9 @@ path current_path() {
 #define DIR_HANDLE(h)         reinterpret_cast<DIR *>(h)
 #define DIR_HANDLE_FREE(h)
 
-static mode_t dirstat(void * handle, void * buf) {
+static mode_t dirstat(void * handle, const void * buf) {
 	
-	dirent * entry = reinterpret_cast<dirent *>(buf);
+	const dirent * entry = reinterpret_cast<const dirent *>(buf);
 	arx_assert(entry != NULL);
 	#if defined(DT_UNKNOWN) && defined(DT_DIR) && defined(DT_FILE)
 	if(entry->d_type == DT_FILE) {
@@ -240,9 +240,9 @@ struct iterator_handle {
 #define DIR_HANDLE(h)           ITERATOR_HANDLE(h)->handle
 #define DIR_HANDLE_FREE(h)      delete ITERATOR_HANDLE(h)
 
-static mode_t dirstat(void * handle, void * buf) {
+static mode_t dirstat(void * handle, const void * buf) {
 	
-	dirent * entry = reinterpret_cast<dirent *>(buf);
+	const dirent * entry = reinterpret_cast<const dirent *>(buf);
 	arx_assert(entry != NULL);
 	#if defined(DT_UNKNOWN) && defined(DT_DIR) && defined(DT_FILE)
 	if(entry->d_type == DT_FILE) {
