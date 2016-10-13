@@ -34,61 +34,59 @@ namespace fs {
 
 namespace fs_boost = boost::filesystem;
 
-using boost::system::error_code;
-
 bool exists(const path & p) {
-	error_code ec;
+	boost::system::error_code ec;
 	return fs_boost::exists(p.string(), ec) && !ec;
 }
 
 bool is_directory(const path & p) {
-	error_code ec;
+	boost::system::error_code ec;
 	return fs_boost::is_directory(p.string(), ec) && !ec;
 }
 
 bool is_regular_file(const path & p) {
-	error_code ec;
+	boost::system::error_code ec;
 	return fs_boost::is_regular_file(p.string(), ec) && !ec;
 }
 
 std::time_t last_write_time(const path & p) {
-	error_code ec;
+	boost::system::error_code ec;
 	std::time_t time = fs_boost::last_write_time(p.string(), ec);
 	return ec ? 0 : time;
 }
 
 u64 file_size(const path & p) {
-	error_code ec;
+	boost::system::error_code ec;
 	uintmax_t size = fs_boost::file_size(p.string(), ec);
 	return ec ? (u64)-1 : (u64)size;
 }
 
 bool remove(const path & p) {
-	error_code ec;
+	boost::system::error_code ec;
 	fs_boost::remove(p.string(), ec);
 	return !ec;
 }
 
 bool remove_all(const path & p) {
-	error_code ec;
+	boost::system::error_code ec;
 	fs_boost::remove_all(p.string(), ec);
 	return !ec;
 }
 
 bool create_directory(const path & p) {
-	error_code ec;
+	boost::system::error_code ec;
 	fs_boost::create_directory(p.string(), ec);
 	return !ec;
 }
 
 bool create_directories(const path & p) {
-	error_code ec;
+	boost::system::error_code ec;
 	fs_boost::create_directories(p.string(), ec);
 	return !ec;
 }
 
 bool copy_file(const path & from_p, const path & to_p, bool overwrite) {
-	error_code ec;
+	boost::system::error_code ec;
 	BOOST_SCOPED_ENUM(fs_boost::copy_option) o;
 	if(overwrite) {
 		o = fs_boost::copy_option::overwrite_if_exists;
@@ -103,7 +101,7 @@ bool rename(const path & old_p, const path & new_p, bool overwrite) {
 	if(!overwrite && exists(new_p)) {
 		return false;
 	}
-	error_code ec;
+	boost::system::error_code ec;
 	fs_boost::rename(old_p.string(), new_p.string(), ec);
 	return !ec;
 }
@@ -113,7 +111,7 @@ path current_path() {
 }
 
 directory_iterator::directory_iterator(const path & p) {
-	error_code ec;
+	boost::system::error_code ec;
 	m_handle = new fs_boost::directory_iterator(p.empty() ? "./" : p.string(), ec);
 	if(ec) {
 		delete reinterpret_cast<fs_boost::directory_iterator *>(m_handle);
@@ -127,7 +125,7 @@ directory_iterator::~directory_iterator() {
 
 directory_iterator & directory_iterator::operator++() {
 	arx_assert(!end());
-	error_code ec;
+	boost::system::error_code ec;
 	(*reinterpret_cast<fs_boost::directory_iterator *>(m_handle)).increment(ec);
 	if(ec) {
 		delete reinterpret_cast<fs_boost::directory_iterator *>(m_handle);
@@ -147,13 +145,13 @@ std::string directory_iterator::name() {
 
 bool directory_iterator::is_directory() {
 	arx_assert(!end());
-	error_code ec;
+	boost::system::error_code ec;
 	return fs_boost::is_directory((*reinterpret_cast<fs_boost::directory_iterator *>(m_handle))->status(ec)) && !ec;
 }
 
 bool directory_iterator::is_regular_file() {
 	arx_assert(!end());
-	error_code ec;
+	boost::system::error_code ec;
 	return fs_boost::is_regular_file((*reinterpret_cast<fs_boost::directory_iterator *>(m_handle))->status(ec)) && !ec;
 }
 
