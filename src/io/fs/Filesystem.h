@@ -175,7 +175,7 @@ class directory_iterator {
 	//! Prevent copy construction
 	directory_iterator(const directory_iterator &);
 	
-	void * handle;
+	void * m_handle;
 	void * buf;
 	
 public:
