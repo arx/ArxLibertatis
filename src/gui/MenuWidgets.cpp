@@ -686,14 +686,17 @@ TextWidget * MenuPage::GetTouch(bool keyTouched, int keyId, InputKeyId* pInputKe
 		}
 
 		std::string pText;
-		if(iMouseButton & (Mouse::ButtonBase | Mouse::WheelBase))
-			pText = GInput->getKeyName(iMouseButton, true); 
-		else
+		if(iMouseButton & (Mouse::ButtonBase | Mouse::WheelBase)) {
+			pText = GInput->getKeyName(iMouseButton, true);
+		} else {
 			pText = GInput->getKeyName(keyId, true);
+		}
 
-		if(!pText.empty()) {
+		if(pText.empty()) {
+			pText = "---";
+		}
+
 			textWidget->lColorHighlight = textWidget->lOldColor;
-
 			textWidget->eState = GETTOUCH;
 			textWidget->SetText(pText);
 			
@@ -720,7 +723,6 @@ TextWidget * MenuPage::GetTouch(bool keyTouched, int keyId, InputKeyId* pInputKe
 			bMouseAttack=false;
 
 			return textWidget;
-		}
 	}
 
 	return NULL;
