@@ -541,18 +541,18 @@ else(MSVC)
 	
 	# Define _POSIX_C_SOURCE and _XOPEN_SOURCE for GNU systems
 	check_symbol_exists(__GLIBC__ "features.h" HAVE_GLIBC)
+	set(libc_features)
 	if(HAVE_GLIBC)
-		set(CMAKE_REQUIRED_DEFINITIONS "-D_ISOC11_SOURCE -D_POSIX_C_SOURCE=200809L -D_XOPEN_SOURCE=600")
-		add_definitions(-D_ISOC11_SOURCE -D_POSIX_C_SOURCE=200809L -D_XOPEN_SOURCE=600)
+		list(APPEND libc_features -D_ISOC11_SOURCE -D_POSIX_C_SOURCE=200809L -D_XOPEN_SOURCE=600)
 		if(CMAKE_SYSTEM_NAME MATCHES "kFreeBSD")
-			set(CMAKE_REQUIRED_DEFINITIONS "${CMAKE_REQUIRED_DEFINITIONS} -D_BSD_SOURCE")
-			add_definitions(-D_BSD_SOURCE)
+			list(APPEND libc_features -D_BSD_SOURCE)
 		endif()
 	endif()
 	if(USE_NATIVE_FS)
-		set(CMAKE_REQUIRED_DEFINITIONS "${CMAKE_REQUIRED_DEFINITIONS} -D_FILE_OFFSET_BITS=64")
-		add_definitions(-D_FILE_OFFSET_BITS=64)
+		list(APPEND libc_features -D_FILE_OFFSET_BITS=64)
 	endif()
+	string(REPLACE ";" " " CMAKE_REQUIRED_DEFINITIONS "${libc_features}")
+	add_definitions(${libc_features})
 	
 	# Check compiler builtins & language extensions
 	# These are a symbols, so we can't use check_symbol_exists
