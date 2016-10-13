@@ -39,7 +39,6 @@
 #include "scene/Interactive.h"
 #include "util/String.h"
 
-using std::string;
 using std::cout;
 using std::endl;
 using std::cerr;
@@ -67,7 +66,7 @@ static std::string loadUnlocalized(const std::string & str) {
 }
 
 template <class F, class E>
-inline void print_flag(F & flags, E flag, const string & name) {
+inline void print_flag(F & flags, E flag, const std::string & name) {
 	if(flags & flag) {
 		cout << ' ' << name;
 		flags &= (int)~flag;
@@ -438,7 +437,7 @@ static void print_spell(s32 spell) {
 	
 }
 
-static int print_variables(size_t n, const char * dat, size_t & pos, const string & p,
+static int print_variables(size_t n, const char * dat, size_t & pos, const std::string & p,
                            VariableType s, VariableType f, VariableType l) {
 	
 	if(n) {
@@ -449,7 +448,7 @@ static int print_variables(size_t n, const char * dat, size_t & pos, const strin
 			avs = reinterpret_cast<const ARX_CHANGELEVEL_VARIABLE_SAVE *>(dat + pos);
 			pos += sizeof(ARX_CHANGELEVEL_VARIABLE_SAVE);
 			
-			string name = boost::to_lower_copy(util::loadString(avs->name));
+			std::string name = boost::to_lower_copy(util::loadString(avs->name));
 			
 			VariableType type;
 			if(avs->type == s || avs->type == f || avs->type == l) {
@@ -469,7 +468,7 @@ static int print_variables(size_t n, const char * dat, size_t & pos, const strin
 			
 			cout << endl;
 			if(type == s) {
-				string value = boost::to_lower_copy(util::loadString(dat + pos, (long)avs->fval));
+				std::string value = boost::to_lower_copy(util::loadString(dat + pos, (long)avs->fval));
 				pos += (long)avs->fval;
 				cout << p << "  s " << name << " = \"" << value << '"';
 			} else if(type == f) {
@@ -512,7 +511,7 @@ static void print_animations(const char (&anims)[SAVED_MAX_ANIMS][256]) {
 }
 
 static void print_anim_layers(const SavedAnimUse animlayer[SAVED_MAX_ANIM_LAYERS],
-                              const std::string & pf = string()) {
+                              const std::string & pf = std::string()) {
 	
 	for(size_t i = 0; i < SAVED_MAX_ANIM_LAYERS; i++) {
 		const SavedAnimUse & layer = animlayer[i];
@@ -594,7 +593,7 @@ static void print_physics(const SavedIOPhysics & physics) {
 	if(physics.forces.toVec3() != Vec3f_ZERO) cout << "  Forces: " << physics.forces << endl;
 }
 
-static void print_ident(SaveBlock & save, const string & ident) {
+static void print_ident(SaveBlock & save, const std::string & ident) {
 	
 	if(ident.empty()) {
 		cout << "(none)";
@@ -627,9 +626,9 @@ static void print_ident(SaveBlock & save, const string & ident) {
 		return;
 	}
 	
-	string locname = loadUnlocalized(boost::to_lower_copy(util::loadString(ais.locname)));
+	std::string locname = loadUnlocalized(boost::to_lower_copy(util::loadString(ais.locname)));
 	if(!locname.empty()) {
-		string name = getLocalised(locname);
+		std::string name = getLocalised(locname);
 		if(name.empty()) {
 			cout << " = " << locname;
 		} else {
@@ -652,7 +651,7 @@ static void print_inventory(SaveBlock & save, const char (&slot_io)[M][N][SIZE_I
 	for(size_t m = 0; m < M; m++) {
 		for(size_t n = 0; n < N; n++) {
 			
-			string name = boost::to_lower_copy(util::loadString(slot_io[m][n]));
+			std::string name = boost::to_lower_copy(util::loadString(slot_io[m][n]));
 			if((name.empty() || name == "none") || !slot_show[m][n]) {
 				continue;
 			}
@@ -683,9 +682,9 @@ static void print_player_movement(s32 movement) {
 	print_unknown_flags(movement);
 }
 
-static void print_item(SaveBlock & save, const char (&ident)[64],  const string & name) {
+static void print_item(SaveBlock & save, const char (&ident)[64],  const std::string & name) {
 	
-	string i = boost::to_lower_copy(util::loadString(ident));
+	std::string i = boost::to_lower_copy(util::loadString(ident));
 	if(i.empty() || i == "none") {
 		return;
 	}
@@ -704,7 +703,7 @@ static int view_pld(const char * dat, size_t size) {
 		return 3;
 	}
 	
-	string name = util::loadString(pld.name);
+	std::string name = util::loadString(pld.name);
 	if(name == "ARX_QUICK_ARX" || name == "ARX_QUICK_ARX1") {
 		cout << "Type: quicksave" << endl;
 	} else {
@@ -789,10 +788,10 @@ static int view_player(SaveBlock & save, const char * dat, size_t size) {
 	
 	if(!asp.Global_Magic_Mode) cout << "Magic disabled!" << endl;
 	
-	string teleportToLevel = boost::to_lower_copy(util::loadString(asp.TELEPORT_TO_LEVEL));
+	std::string teleportToLevel = boost::to_lower_copy(util::loadString(asp.TELEPORT_TO_LEVEL));
 	if(!teleportToLevel.empty()) cout << "Teleporting to level: " << teleportToLevel << endl;
 	
-	string teleportToPosition = boost::to_lower_copy(util::loadString(asp.TELEPORT_TO_POSITION));
+	std::string teleportToPosition = boost::to_lower_copy(util::loadString(asp.TELEPORT_TO_POSITION));
 	if(!teleportToPosition.empty()) {
 		cout << "Teleporting to: "; print_ident(save, teleportToPosition); cout << endl;
 	}
@@ -823,7 +822,7 @@ static int view_player(SaveBlock & save, const char * dat, size_t size) {
 	if(asp.falling) cout << "Falling: " << asp.falling << endl;
 	cout << "Gold: " << asp.gold << endl;
 	if(asp.invisibility) cout << "Invisibility: " << asp.invisibility << endl;
-	string inzone = boost::to_lower_copy(util::loadString(asp.inzone));
+	std::string inzone = boost::to_lower_copy(util::loadString(asp.inzone));
 	if(!inzone.empty()) cout << "In zone: " << inzone << endl;
 	
 	if(asp.jumpphase) {
@@ -928,7 +927,7 @@ static int view_player(SaveBlock & save, const char * dat, size_t size) {
 			return -1;
 		}
 		for(int i = 0; i < asp.nb_PlayerQuest; i++) {
-			string quest = loadUnlocalized(boost::to_lower_copy(util::loadString(dat + pos, 80)));
+			std::string quest = loadUnlocalized(boost::to_lower_copy(util::loadString(dat + pos, 80)));
 			cout << "  - " << quest << " = \"" << getLocalised(quest) << '"' << endl;
 			pos += 80;
 		}
@@ -941,7 +940,7 @@ static int view_player(SaveBlock & save, const char * dat, size_t size) {
 			return -1;
 		}
 		for(int i = 0; i < asp.keyring_nb; i++) {
-			string key = boost::to_lower_copy(util::loadString(dat + pos, SAVED_KEYRING_SLOT_SIZE));
+			std::string key = boost::to_lower_copy(util::loadString(dat + pos, SAVED_KEYRING_SLOT_SIZE));
 			cout << " - " << key << endl;
 			pos += SAVED_KEYRING_SLOT_SIZE;
 		}
@@ -956,7 +955,7 @@ static int view_player(SaveBlock & save, const char * dat, size_t size) {
 		for(int i = 0; i < asp.Nb_Mapmarkers; i++) {
 			const SavedMapMarkerData * acmd = reinterpret_cast<const SavedMapMarkerData *>(dat + pos);
 			pos += sizeof(SavedMapMarkerData);
-			string name = loadUnlocalized(boost::to_lower_copy(util::loadString(acmd->name)));
+			std::string name = loadUnlocalized(boost::to_lower_copy(util::loadString(acmd->name)));
 			
 			cout << " - (" << acmd->x << ", " << acmd->y << " @lvl" << std::setw(3) << std::setfill('0') << acmd->lvl << ") " << name << " =\"" << getLocalised(name) << '"' << endl;
 		}
@@ -1046,7 +1045,7 @@ static int view_level(SaveBlock & save, const char * dat, size_t size) {
 			pos += sizeof(ARX_CHANGELEVEL_PATH);
 			
 			cout << "  - " << boost::to_lower_copy(util::loadString(p.name));
-			string controller = boost::to_lower_copy(util::loadString(p.controled));
+			std::string controller = boost::to_lower_copy(util::loadString(p.controled));
 			if(!controller.empty() && controller != "none") {
 				cout << ": controlled by "; print_ident(save, controller);
 			}
@@ -1161,7 +1160,7 @@ static int view_io(SaveBlock & save, const char * dat, size_t size) {
 	if(ais.scale != 1) cout << "Scale: " << ais.scale << endl;
 	if(ais.weight) cout << "Weight: " << ais.weight << endl;
 	
-	string locname = loadUnlocalized(boost::to_lower_copy(util::loadString(ais.locname)));
+	std::string locname = loadUnlocalized(boost::to_lower_copy(util::loadString(ais.locname)));
 	if(!locname.empty()) cout << "Name: " << locname << " = \"" << getLocalised(locname) << '"' << endl;
 	
 	if(ais.gameFlags) {
@@ -1238,10 +1237,10 @@ static int view_io(SaveBlock & save, const char * dat, size_t size) {
 		cout << endl;
 	}
 	
-	string mainevent = boost::to_lower_copy(util::loadString(ais.mainevent));
+	std::string mainevent = boost::to_lower_copy(util::loadString(ais.mainevent));
 	if(!mainevent.empty()) cout << "Main script event: " << mainevent << endl;
 	
-	string target = boost::to_lower_copy(util::loadString(ais.id_targetinfo));
+	std::string target = boost::to_lower_copy(util::loadString(ais.id_targetinfo));
 	if(target != "self") {
 		cout << "Target: "; print_ident(save, target); cout << endl;
 	}
@@ -1308,20 +1307,20 @@ static int view_io(SaveBlock & save, const char * dat, size_t size) {
 	
 	if(ais.type_flags) print_item_type(cout << "Item type:", ais.type_flags) << endl;
 	
-	string stepmat = boost::to_lower_copy(util::loadString(ais.stepmaterial));
+	std::string stepmat = boost::to_lower_copy(util::loadString(ais.stepmaterial));
 	if(!stepmat.empty()) cout << "Step material: " << stepmat << endl;
 	
-	string armormat = boost::to_lower_copy(util::loadString(ais.armormaterial));
+	std::string armormat = boost::to_lower_copy(util::loadString(ais.armormaterial));
 	if(!armormat.empty()) cout << "Armor material: " << armormat << endl;
 	
-	string weaponmat = boost::to_lower_copy(util::loadString(ais.weaponmaterial));
+	std::string weaponmat = boost::to_lower_copy(util::loadString(ais.weaponmaterial));
 	if(!weaponmat.empty()) cout << "Weapon material: " << weaponmat << endl;
 	
-	string strikespeech = loadUnlocalized(util::loadString(ais.strikespeech));
+	std::string strikespeech = loadUnlocalized(util::loadString(ais.strikespeech));
 	if(!strikespeech.empty()) cout << "Strike speech: " << strikespeech << " = \"" << getLocalised(strikespeech) << '"' << endl;
 	
 	if(ais.secretvalue != -1) cout << "Secret value: " << (int)ais.secretvalue << endl;
-	string shop = boost::to_lower_copy(util::loadString(ais.shop_category));
+	std::string shop = boost::to_lower_copy(util::loadString(ais.shop_category));
 	if(!shop.empty()) cout << "Shop category: " << shop << endl;
 	if(ais.shop_multiply != 1) cout << "Shop multiply: " << ais.shop_multiply << endl;
 	
@@ -1374,7 +1373,7 @@ static int view_io(SaveBlock & save, const char * dat, size_t size) {
 		cout << endl;
 	}
 	
-	string pathname = boost::to_lower_copy(util::loadString(ais.usepath_name));
+	std::string pathname = boost::to_lower_copy(util::loadString(ais.usepath_name));
 	if(!pathname.empty() || ais.usepath_aupflags) {
 		cout << endl << "Use path: " << pathname;
 		cout << "  start time: " << ais.usepath_starttime;
@@ -1525,7 +1524,7 @@ static int view_io(SaveBlock & save, const char * dat, size_t size) {
 			}
 			
 			for(size_t i = 0; i < MAX_STACKED_BEHAVIOR; i++) {
-				string target = boost::to_lower_copy(util::loadString(as->stackedtarget[i]));
+				std::string target = boost::to_lower_copy(util::loadString(as->stackedtarget[i]));
 				if(target != "none" && !target.empty()) {
 					cout << "  Stacked target #" << i << ": "; print_ident(save, target); cout << endl;
 				}
@@ -1807,7 +1806,7 @@ static int view_io(SaveBlock & save, const char * dat, size_t size) {
 	return 0;
 }
 
-static bool is_level(const string & name) {
+static bool is_level(const std::string & name) {
 	
 	if(name.length() != 6) {
 		return false;
@@ -1863,7 +1862,7 @@ int main_view(SaveBlock & save, int argc, char ** argv) {
 		return 0;
 	}
 	
-	string name = argv[0];
+	std::string name = argv[0];
 	
 	size_t size;
 	char * dat = save.load(name, size);
