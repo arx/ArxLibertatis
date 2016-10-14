@@ -543,10 +543,13 @@ else(MSVC)
 	check_symbol_exists(__GLIBC__ "features.h" HAVE_GLIBC)
 	set(libc_features)
 	if(HAVE_GLIBC)
-		list(APPEND libc_features -D_ISOC11_SOURCE -D_POSIX_C_SOURCE=200809L -D_XOPEN_SOURCE=600)
-		if(CMAKE_SYSTEM_NAME MATCHES "kFreeBSD")
-			list(APPEND libc_features -D_BSD_SOURCE)
-		endif()
+		list(APPEND libc_features
+			-D_ISOC11_SOURCE
+			-D_POSIX_C_SOURCE=200809L
+			-D_XOPEN_SOURCE=600
+			-D_BSD_SOURCE # Required for dirfd with glibc <= 2.19
+			-D_DEFAULT_SOURCE # Required not to warn on _BSD_SOURCE with glibc >= 2.20
+		)
 	endif()
 	if(USE_NATIVE_FS AND NOT WIN32)
 		list(APPEND libc_features -D_FILE_OFFSET_BITS=64)
