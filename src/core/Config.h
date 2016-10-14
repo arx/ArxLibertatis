@@ -90,8 +90,8 @@ enum UIScaleFilter {
 namespace {
 
 const uint32_t NUM_OF_KEYS_PER_ACTION = 2;
-const uint32_t DEFAULT_ACTION = 0;
-const uint32_t ALT_ACTION = 1;
+const uint32_t DEFAULT_KEY = 0;
+const uint32_t ALT_KEY = 1;
 const int32_t UNASSIGNED_KEY = -1;
 }
 
@@ -99,8 +99,8 @@ struct ActionKey {
 	
 	explicit ActionKey(InputKeyId key_0 = UNASSIGNED_KEY,
 	                   InputKeyId key_1 = UNASSIGNED_KEY) {
-		key[DEFAULT_ACTION] = key_0;
-		key[ALT_ACTION] = key_1;
+		key[DEFAULT_KEY] = key_0;
+		key[ALT_KEY] = key_1;
 	}
 	
 	InputKeyId key[NUM_OF_KEYS_PER_ACTION];

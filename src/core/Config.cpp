@@ -348,7 +348,7 @@ void Config::setActionKey(const ControlAction actionId, uint32_t index, InputKey
 	InputKeyId oldKey = action.key[index];
 	action.key[index] = newKey;
 	
-	uint32_t otherIndex = ALT_ACTION - index;
+	uint32_t otherIndex = ALT_KEY - index;
 	
 	moveOldKeyToOtherIndexIfEmpty(otherIndex, oldKey, action);
 	clearOtherIndexIfDuplicate(otherIndex, newKey, action);
