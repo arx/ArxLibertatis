@@ -654,8 +654,10 @@ else(MSVC)
 	
 	check_symbol_exists(setrlimit "sys/resource.h" ARX_HAVE_SETRLIMIT)
 	
-	check_symbol_exists(sysctl "sys/sysctl.h" ARX_HAVE_SYSCTL)
-	check_symbol_exists(sysctlbyname "sys/sysctl.h" ARX_HAVE_SYSCTLBYNAME)
+	if(CMAKE_SYSTEM_NAME MATCHES "BSD")
+		check_symbol_exists(sysctl "sys/types.h;sys/sysctl.h" ARX_HAVE_SYSCTL)
+		check_symbol_exists(sysctlbyname "sys/types.h;sys/sysctl.h" ARX_HAVE_SYSCTLBYNAME)
+	endif()
 	
 	if(USE_NATIVE_FS AND NOT WIN32)
 		
