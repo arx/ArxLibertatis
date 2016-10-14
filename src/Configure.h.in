@@ -70,8 +70,6 @@
 #cmakedefine01 ARX_HAVE_WORDEXP
 #cmakedefine01 ARX_HAVE_UNAME
 #cmakedefine01 ARX_HAVE_GETRUSAGE
-#cmakedefine01 ARX_HAVE_POPEN
-#cmakedefine01 ARX_HAVE_PCLOSE
 #cmakedefine01 ARX_HAVE_SYSCONF
 #cmakedefine01 ARX_HAVE_GETEXECNAME
 #cmakedefine01 ARX_HAVE_SYSCTL

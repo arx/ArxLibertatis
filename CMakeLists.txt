@@ -593,9 +593,6 @@ else(MSVC)
 	check_symbol_exists(uname "sys/utsname.h" ARX_HAVE_UNAME)
 	check_symbol_exists(getrusage "sys/resource.h" ARX_HAVE_GETRUSAGE)
 	
-	check_symbol_exists(popen "stdio.h" ARX_HAVE_POPEN)
-	check_symbol_exists(pclose "stdio.h" ARX_HAVE_PCLOSE)
-	
 	check_symbol_exists(getexecname "stdlib.h" ARX_HAVE_GETEXECNAME)
 	check_symbol_exists(setenv "stdlib.h" ARX_HAVE_SETENV)
 	check_symbol_exists(unsetenv "stdlib.h" ARX_HAVE_UNSETENV)
