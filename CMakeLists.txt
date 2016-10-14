@@ -549,6 +549,7 @@ else(MSVC)
 			-D_XOPEN_SOURCE=600
 			-D_BSD_SOURCE # Required for dirfd with glibc <= 2.19
 			-D_DEFAULT_SOURCE # Required not to warn on _BSD_SOURCE with glibc >= 2.20
+			-D_ATFILE_SOURCE # Required for fstatat with glibc <= 2.9
 		)
 	endif()
 	if(USE_NATIVE_FS AND NOT WIN32)
