@@ -36,11 +36,6 @@
 #include <sys/utsname.h>
 #endif
 
-// yes, we need stdio.h, POSIX doesn't know about cstdio
-#if ARX_HAVE_POPEN
-#include <stdio.h>
-#endif
-
 #include "io/fs/FilePath.h"
 #include "io/fs/Filesystem.h"
 #include "io/fs/FileStream.h"
@@ -326,7 +321,6 @@ std::string getOSDistribution() {
 	// Get distribution information from `lsb_release -a` output.
 	// Don't parse /etc/lsb-release ourselves unless there is no other way
 	// because lsb_release may have distro-specific patches
-	#if ARX_HAVE_POPEN && ARX_HAVE_PCLOSE
 	{
 		const char * args[] = { "lsb_release", "-a", NULL };
 		std::istringstream iss(getOutputOf(args));
@@ -336,7 +330,6 @@ std::string getOSDistribution() {
 			return distro;
 		}
 	}
-	#endif
 	
 	// Fallback for older / non-LSB-compliant distros.
 	// Release file list taken from http://linuxmafia.com/faq/Admin/release-files.html
