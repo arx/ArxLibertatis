@@ -363,8 +363,12 @@ fs::path getExecutablePath() {
 	if(try_readlink(buffer, "/proc/self/exe")) {
 		return fs::path(&*buffer.begin(), &*buffer.end());
 	}
-	// BSD
+	// FreeBSD, DragonFly BSD
 	if(try_readlink(buffer, "/proc/curproc/file")) {
+		return fs::path(&*buffer.begin(), &*buffer.end());
+	}
+	// NetBSD
+	if(try_readlink(buffer, "/proc/curproc/exe")) {
 		return fs::path(&*buffer.begin(), &*buffer.end());
 	}
 	// Solaris
