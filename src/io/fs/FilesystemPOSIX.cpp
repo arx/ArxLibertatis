@@ -246,11 +246,11 @@ static void * iterator_handle_init(const fs::path & dir, DIR * handle) {
 }
 
 static DIR * iterator_handle_get(void * handle) {
-	return reinterpret_cast<iterator_handle *>(h)->handle;
+	return reinterpret_cast<iterator_handle *>(handle)->handle;
 }
 
 static void iterator_handle_free(void * handle) {
-	delete reinterpret_cast<iterator_handle *>(h);
+	delete reinterpret_cast<iterator_handle *>(handle);
 }
 
 static mode_t dirstat(void * handle, const void * buf) {
@@ -265,7 +265,7 @@ static mode_t dirstat(void * handle, const void * buf) {
 	}
 	#endif
 	
-	fs::path file = reinterpret_cast<iterator_handle *>(h)->path / entry->d_name;
+	fs::path file = reinterpret_cast<iterator_handle *>(handle)->path / entry->d_name;
 	struct stat result;
 	int ret = stat(file.string().c_str(), &result);
 	arx_assert(ret == 0, "stat failed: %d", ret); ARX_UNUSED(ret);
