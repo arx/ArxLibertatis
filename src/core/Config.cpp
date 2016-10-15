@@ -355,37 +355,37 @@ void Config::setActionKey(const ControlAction actionId, uint32_t index, InputKey
 	removeDuplicateKeyAssignments(actionId, newKey, oldKey);
 }
 
-void Config::moveOldKeyToOtherIndexIfEmpty(uint32_t otherIndex,
-        InputKeyId& oldKey, ActionKey& action)
+void Config::moveOldKeyToOtherIndexIfEmpty(uint32_t otherIndex, InputKeyId& oldKey,
+                                           ActionKey& action)
 {
-    if(action.key[otherIndex] == UNASSIGNED_KEY) {
-        action.key[otherIndex] = oldKey;
-        oldKey = UNASSIGNED_KEY;
-    }
+	if(action.key[otherIndex] == UNASSIGNED_KEY) {
+		action.key[otherIndex] = oldKey;
+		oldKey = UNASSIGNED_KEY;
+	}
 }
 
 void Config::clearOtherIndexIfDuplicate(uint32_t otherIndex, InputKeyId key,
-        ActionKey& action)
+                                        ActionKey& action)
 {
-    if(action.key[otherIndex] == key) {
-        action.key[otherIndex] = UNASSIGNED_KEY;
-    }
+	if(action.key[otherIndex] == key) {
+		action.key[otherIndex] = UNASSIGNED_KEY;
+	}
 }
 
 void Config::removeDuplicateKeyAssignments(const ControlAction currentAction,
-        InputKeyId newKey, InputKeyId oldKey)
+                                           InputKeyId newKey, InputKeyId oldKey)
 {
-    for(size_t i=0; i<NUM_ACTION_KEY; i++) {
-        if(i == (size_t)currentAction) {
-            continue;
-        }
-        for(int k=0; k<2; k++) {
-            if (actions[i].key[k] == newKey) {
-                actions[i].key[k] = oldKey;
-                oldKey = UNASSIGNED_KEY;
-            }
-        }
-    }
+	for(size_t i=0; i<NUM_ACTION_KEY; i++) {
+		if(i == (size_t)currentAction) {
+			continue;
+		}
+		for(int k=0; k<2; k++) {
+			if(actions[i].key[k] == newKey) {
+				actions[i].key[k] = oldKey;
+				oldKey = UNASSIGNED_KEY;
+			}
+		}
+	}
 }
 
 void Config::setOutputFile(const fs::path & _file) {

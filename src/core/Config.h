@@ -229,12 +229,12 @@ private:
 	
 	fs::path file;
 
-    void moveOldKeyToOtherIndexIfEmpty(uint32_t otherIndex,
-            InputKeyId& oldKey, ActionKey& action);
-    void clearOtherIndexIfDuplicate(uint32_t otherIndex, InputKeyId key,
-            ActionKey& action);
-    void removeDuplicateKeyAssignments(const ControlAction currentAction,
-            InputKeyId key, InputKeyId oldKey);
+	void moveOldKeyToOtherIndexIfEmpty(uint32_t otherIndex, InputKeyId& oldKey,
+	                                   ActionKey& action);
+	void clearOtherIndexIfDuplicate(uint32_t otherIndex, InputKeyId key,
+	                                ActionKey& action);
+	void removeDuplicateKeyAssignments(const ControlAction currentAction,
+	                                   InputKeyId key, InputKeyId oldKey);
 };
 
 extern Config config;
