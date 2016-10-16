@@ -182,6 +182,7 @@ public:
 		int mouseAcceleration;
 		bool rawMouseInput;
 		bool borderTurning;
+		bool useAltRuneRecognition;
 		
 	} input;
 	

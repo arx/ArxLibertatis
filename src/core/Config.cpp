@@ -95,7 +95,8 @@ const bool
 	autoDescription = true,
 	forceToggle = false,
 	rawMouseInput = true,
-	borderTurning = true;
+	borderTurning = true,
+	useAltRuneRecognition = false;
 
 const float
 	hudScale = 0.5f;
@@ -215,7 +216,8 @@ const std::string
 	mouseAcceleration = "mouse_acceleration",
 	rawMouseInput = "raw_mouse_input",
 	autoDescription = "auto_description",
-	borderTurning = "border_turning";
+	borderTurning = "border_turning",
+	useAltRuneRecognition = "use_alt_rune_recognition";
 
 // Input key options
 const std::string actions[NUM_ACTION_KEY] = {
@@ -439,6 +441,7 @@ bool Config::save() {
 	writer.writeKey(Key::rawMouseInput, input.rawMouseInput);
 	writer.writeKey(Key::autoDescription, input.autoDescription);
 	writer.writeKey(Key::borderTurning, input.borderTurning);
+	writer.writeKey(Key::useAltRuneRecognition, input.useAltRuneRecognition);
 	
 	// key
 	writer.beginSection(Section::Key);
@@ -565,6 +568,7 @@ bool Config::init(const fs::path & file) {
 	input.rawMouseInput = reader.getKey(Section::Input, Key::rawMouseInput, Default::rawMouseInput);
 	input.autoDescription = reader.getKey(Section::Input, Key::autoDescription, Default::autoDescription);
 	input.borderTurning = reader.getKey(Section::Input, Key::borderTurning, Default::borderTurning);
+	input.useAltRuneRecognition = reader.getKey(Section::Input, Key::useAltRuneRecognition, Default::useAltRuneRecognition);
 	
 	// Get action key settings
 	for(size_t i = 0; i < NUM_ACTION_KEY; i++) {
