@@ -23,7 +23,14 @@
 #include <string>
 #include <vector>
 
-struct IniKey {
+class IniKey {
+	
+	std::string name;
+	std::string value;
+	
+	friend class IniSection;
+	
+public:
 	
 	IniKey(const std::string & _name, const std::string & _value)
 		: name(_name)
@@ -40,12 +47,6 @@ struct IniKey {
 	//! Support either boolean specified as strings (true, false) or 0, 1
 	bool getValue(bool defaultValue) const;
 	
-private:
-	
-	std::string name;
-	std::string value;
-	
-	friend class IniSection;
 };
 
 class IniSection {
