@@ -50,8 +50,6 @@ private:
 
 class IniSection {
 	
-private:
-	
 	typedef std::vector<IniKey> Keys;
 	Keys keys;
 	
