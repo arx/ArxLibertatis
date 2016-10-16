@@ -31,8 +31,6 @@
  */
 class IniReader {
 	
-private:
-	
 	typedef std::map<std::string, IniSection> Sections;
 	Sections sections;
 	
