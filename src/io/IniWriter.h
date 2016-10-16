@@ -30,8 +30,6 @@
  */
 class IniWriter : private boost::noncopyable {
 	
-private:
-	
 	std::ostream & output;
 	
 public:
