@@ -625,10 +625,12 @@ void ARX_SPELLS_ManageMagic() {
 
 		ARX_SPELLS_ResetRecognition();
 	} else if(ARX_FLARES_broken == 2) {
-		ARX_SPELLS_Analyse();
 
-		if(!SpellMoves.empty())
-			ARX_SPELLS_AnalyseSYMBOL();
+		if(!config.input.useAltRuneRecognition) {
+			ARX_SPELLS_Analyse();
+			if(!SpellMoves.empty())
+				ARX_SPELLS_AnalyseSYMBOL();
+		}
 	
 		ARX_FLARES_broken = 1;
 	}
