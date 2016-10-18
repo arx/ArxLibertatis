@@ -37,7 +37,7 @@
 
 
 static const long MAX_POINTS(200);
-static Vec2s plist[MAX_POINTS];
+static std::vector<Vec2f> plist;
 
 Rune SpellSymbol[MAX_SPELL_SYMBOLS];
 
@@ -163,6 +163,8 @@ void spellRecognitionInit() {
 	for(size_t i = 0; i < ARRAY_SIZE(allSpells); i++) {
 		addSpell(allSpells[i].symbols, allSpells[i].spell, allSpells[i].name);
 	}
+
+	plist.reserve(MAX_POINTS);
 }
 
 //-----------------------------------------------------------------------------
@@ -180,19 +182,18 @@ void ARX_SPELLS_ResetRecognition() {
 	CurrSpellSymbol = 0;
 }
 
-static long CurrPoint = 0;
 
 void spellRecognitionPointsReset() {
-	CurrPoint = 0;
+	plist.clear();
 }
 
 // Adds a 2D point to currently drawn spell symbol
 void ARX_SPELLS_AddPoint(const Vec2s & pos) {
-	plist[CurrPoint] = pos;
-	CurrPoint++;
-	if(CurrPoint >= MAX_POINTS) {
-		CurrPoint = MAX_POINTS - 1;
+	if(plist.size() == MAX_POINTS) {
+		plist.pop_back();
 	}
+
+	plist.push_back(Vec2f(pos));
 }
 
 
@@ -247,7 +248,7 @@ void ARX_SPELLS_Analyse() {
 	unsigned char lastdir = 255;
 	long cdir = 0;
 
-	for(long i = 1; i < CurrPoint ; i++) {
+	for(size_t i = 1; i < plist.size() ; i++) {
 		
 		Vec2f d = Vec2f(plist[i-1] - plist[i]);
 		
