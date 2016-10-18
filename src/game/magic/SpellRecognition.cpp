@@ -189,6 +189,11 @@ void spellRecognitionPointsReset() {
 
 // Adds a 2D point to currently drawn spell symbol
 void ARX_SPELLS_AddPoint(const Vec2s & pos) {
+	
+	if(plist.size() && Vec2f(pos) == plist.back()) {
+		return;
+	}
+
 	if(plist.size() == MAX_POINTS) {
 		plist.pop_back();
 	}
