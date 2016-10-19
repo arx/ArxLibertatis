@@ -630,6 +630,8 @@ void ARX_SPELLS_ManageMagic() {
 			ARX_SPELLS_Analyse();
 			if(!SpellMoves.empty())
 				ARX_SPELLS_AnalyseSYMBOL();
+		} else {
+			ARX_SPELLS_Analyse_Alt();
 		}
 	
 		ARX_FLARES_broken = 1;

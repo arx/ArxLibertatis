@@ -42,4 +42,6 @@ void ARX_SPELLS_Analyse();
 void ARX_SPELLS_AnalyseSYMBOL();
 bool ARX_SPELLS_AnalyseSPELL();
 
+void ARX_SPELLS_Analyse_Alt();
+
 #endif // ARX_GAME_MAGIC_SPELLRECOGNITION_H
