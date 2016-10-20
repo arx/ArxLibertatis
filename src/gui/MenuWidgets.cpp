@@ -686,41 +686,39 @@ TextWidget * MenuPage::GetTouch(bool keyTouched, int keyId, InputKeyId* pInputKe
 		}
 
 		std::string pText;
-		if(iMouseButton & (Mouse::ButtonBase | Mouse::WheelBase))
-			pText = GInput->getKeyName(iMouseButton, true); 
-		else
+		if(iMouseButton & (Mouse::ButtonBase | Mouse::WheelBase)) {
+			if(pInputKeyId)
+				*pInputKeyId = iMouseButton;
+			pText = GInput->getKeyName(iMouseButton, true);
+		} else {
 			pText = GInput->getKeyName(keyId, true);
-
-		if(!pText.empty()) {
-			textWidget->lColorHighlight = textWidget->lOldColor;
-
-			textWidget->eState = GETTOUCH;
-			textWidget->SetText(pText);
-			
-			float iDx = m_selected->m_rect.width();
-
-			if(m_selected->ePlace) {
-				m_selected->m_rect.left = (m_rect.width() - iDx) / 2.f;
-
-				if(m_selected->m_rect.left < 0) {
-					m_selected->m_rect.left=0;
-				}
-			}
-
-			m_selected->m_rect.right=m_selected->m_rect.left+iDx;
-
-			m_selected=NULL;
-			bEdit=false;
-
-			if(iMouseButton & (Mouse::ButtonBase | Mouse::WheelBase)) {
-				if(pInputKeyId)
-					*pInputKeyId = iMouseButton;
-			}
-
-			bMouseAttack=false;
-
-			return textWidget;
 		}
+
+		if(pText.empty()) {
+			pText = "---";
+		}
+
+		textWidget->lColorHighlight = textWidget->lOldColor;
+		textWidget->eState = GETTOUCH;
+		textWidget->SetText(pText);
+		
+		float iDx = m_selected->m_rect.width();
+
+		if(m_selected->ePlace) {
+			m_selected->m_rect.left = (m_rect.width() - iDx) / 2.f;
+
+			if(m_selected->m_rect.left < 0) {
+				m_selected->m_rect.left=0;
+			}
+		}
+
+		m_selected->m_rect.right=m_selected->m_rect.left+iDx;
+
+		m_selected=NULL;
+		bEdit=false;
+		bMouseAttack=false;
+
+		return textWidget;
 	}
 
 	return NULL;
