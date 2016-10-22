@@ -687,6 +687,8 @@ TextWidget * MenuPage::GetTouch(bool keyTouched, int keyId, InputKeyId* pInputKe
 
 		std::string pText;
 		if(iMouseButton & (Mouse::ButtonBase | Mouse::WheelBase)) {
+			if(pInputKeyId)
+				*pInputKeyId = iMouseButton;
 			pText = GInput->getKeyName(iMouseButton, true);
 		} else {
 			pText = GInput->getKeyName(keyId, true);
@@ -714,12 +716,6 @@ TextWidget * MenuPage::GetTouch(bool keyTouched, int keyId, InputKeyId* pInputKe
 
 			m_selected=NULL;
 			bEdit=false;
-
-			if(iMouseButton & (Mouse::ButtonBase | Mouse::WheelBase)) {
-				if(pInputKeyId)
-					*pInputKeyId = iMouseButton;
-			}
-
 			bMouseAttack=false;
 
 			return textWidget;
