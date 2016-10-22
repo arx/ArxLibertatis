@@ -691,9 +691,11 @@ TextWidget * MenuPage::GetTouch(bool keyTouched, int keyId, InputKeyId* pInputKe
 		else
 			pText = GInput->getKeyName(keyId, true);
 
-		if(!pText.empty()) {
-			textWidget->lColorHighlight = textWidget->lOldColor;
+		if(pText.empty()) {
+			pText = "---";
+		}
 
+			textWidget->lColorHighlight = textWidget->lOldColor;
 			textWidget->eState = GETTOUCH;
 			textWidget->SetText(pText);
 			
@@ -720,7 +722,6 @@ TextWidget * MenuPage::GetTouch(bool keyTouched, int keyId, InputKeyId* pInputKe
 			bMouseAttack=false;
 
 			return textWidget;
-		}
 	}
 
 	return NULL;
