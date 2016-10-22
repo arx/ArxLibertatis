@@ -698,27 +698,27 @@ TextWidget * MenuPage::GetTouch(bool keyTouched, int keyId, InputKeyId* pInputKe
 			pText = "---";
 		}
 
-			textWidget->lColorHighlight = textWidget->lOldColor;
-			textWidget->eState = GETTOUCH;
-			textWidget->SetText(pText);
-			
-			float iDx = m_selected->m_rect.width();
+		textWidget->lColorHighlight = textWidget->lOldColor;
+		textWidget->eState = GETTOUCH;
+		textWidget->SetText(pText);
 
-			if(m_selected->ePlace) {
-				m_selected->m_rect.left = (m_rect.width() - iDx) / 2.f;
+		float iDx = m_selected->m_rect.width();
 
-				if(m_selected->m_rect.left < 0) {
-					m_selected->m_rect.left=0;
-				}
+		if(m_selected->ePlace) {
+			m_selected->m_rect.left = (m_rect.width() - iDx) / 2.f;
+
+			if(m_selected->m_rect.left < 0) {
+				m_selected->m_rect.left=0;
 			}
+		}
 
-			m_selected->m_rect.right=m_selected->m_rect.left+iDx;
+		m_selected->m_rect.right=m_selected->m_rect.left+iDx;
 
-			m_selected=NULL;
-			bEdit=false;
-			bMouseAttack=false;
+		m_selected=NULL;
+		bEdit=false;
+		bMouseAttack=false;
 
-			return textWidget;
+		return textWidget;
 	}
 
 	return NULL;
