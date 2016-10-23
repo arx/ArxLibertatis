@@ -337,9 +337,9 @@ void Config::setDefaultActionKeys() {
 	}
 }
 
-void Config::setActionKey(ControlAction actionId, int index, InputKeyId key) {
+void Config::setActionKey(ControlAction actionId, size_t index, InputKeyId key) {
 	
-	if(actionId < 0 || (size_t)actionId >= NUM_ACTION_KEY || index > 1 || index < 0) {
+	if(actionId < 0 || (size_t)actionId >= NUM_ACTION_KEY || index > 1) {
 		arx_assert(false);
 		return;
 	}
