@@ -94,7 +94,7 @@ struct ActionKey {
 	}
 	
 	InputKeyId key[2];
-	
+	static const InputKeyId UNUSED = -1;
 };
 
 class Config {
