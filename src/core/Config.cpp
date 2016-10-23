@@ -100,7 +100,7 @@ const bool
 const float
 	hudScale = 0.5f;
 
-ActionKey actions[NUM_ACTION_KEY] = {
+const ActionKey actions[NUM_ACTION_KEY] = {
 	ActionKey(Keyboard::Key_Spacebar), // JUMP
 	ActionKey(Keyboard::Key_LeftCtrl, Keyboard::Key_RightCtrl), // MAGICMODE
 	ActionKey(Keyboard::Key_LeftShift, Keyboard::Key_RightShift), // STEALTHMODE
