@@ -345,15 +345,9 @@ void Config::setActionKey(ControlAction actionId, size_t index, InputKeyId key) 
 	}
 	
 	ActionKey & action = actions[actionId];
-	
-	InputKeyId oldKey = action.key[index];
 	action.key[index] = key;
 	
 	int otherIndex = 1 - index;
-	
-	if(action.key[otherIndex] == ActionKey::UNUSED) {
-		action.key[otherIndex] = oldKey;
-	}
 	
 	if(action.key[otherIndex] == key) {
 		action.key[otherIndex] = ActionKey::UNUSED;
