@@ -90,6 +90,9 @@ struct ActionKey {
 	
 	explicit ActionKey(InputKeyId key_0 = UNUSED,
 	                   InputKeyId key_1 = UNUSED) {
+		if(key_0 != UNUSED && key_0 == key_1) {
+			key_1 = UNUSED;
+		}
 		key[0] = key_0;
 		key[1] = key_1;
 	}
