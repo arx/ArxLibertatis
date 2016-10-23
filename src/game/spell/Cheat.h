@@ -35,7 +35,9 @@ enum CheatRune {
 	CheatRune_R,
 	CheatRune_F,
 	CheatRune_Passwall,
-	CheatRune_ChangeSkin
+	CheatRune_ChangeSkin,
+
+	CheatRune_None = 255
 };
 
 void handleCheatRuneDetection(CheatRune rune);
