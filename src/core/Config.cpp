@@ -353,7 +353,6 @@ void Config::setActionKey(ControlAction actionId, size_t index, InputKeyId key) 
 	
 	if(action.key[otherIndex] == ActionKey::UNUSED) {
 		action.key[otherIndex] = oldKey;
-		oldKey = ActionKey::UNUSED;
 	}
 	
 	if(action.key[otherIndex] == key) {
@@ -369,8 +368,7 @@ void Config::setActionKey(ControlAction actionId, size_t index, InputKeyId key) 
 		
 		for(int k = 0; k < 2; k++) {
 			if(actions[i].key[k] == key) {
-				actions[i].key[k] = oldKey;
-				oldKey = ActionKey::UNUSED;
+				actions[i].key[k] = ActionKey::UNUSED;
 			}
 		}
 		
