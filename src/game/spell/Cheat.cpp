@@ -581,5 +581,7 @@ void handleCheatRuneDetection(CheatRune rune) {
 			ARX_EQUIPMENT_RecreatePlayerMesh();
 			break;
 		}
+		default:
+			break;
 	}
 }
