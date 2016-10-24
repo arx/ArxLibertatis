@@ -470,7 +470,7 @@ bool SaveBlock::defragment() {
 	bool renamed = fs::rename(tempFileName, savefile, true);
 	if(!renamed) {
 		fs::remove(tempFileName);
-		LogWarning << "Failed to move defragmented savegame " << tempFileName << " to " << savefile;
+		LogWarning << "Failed to move defragmented save file " << tempFileName << " to " << savefile;
 	} else {
 		
 		size_t newTotalSize = 0;
