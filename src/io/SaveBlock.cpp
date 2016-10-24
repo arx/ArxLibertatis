@@ -45,7 +45,9 @@ ZeniMax Media Inc., Suite 120, Rockville, Maryland 20850 USA.
 
 #include <cstdlib>
 
+#include <boost/foreach.hpp>
 #include <boost/algorithm/string/case_conv.hpp>
+#include <boost/range/adaptor/map.hpp>
 
 #include <zlib.h>
 
@@ -427,33 +429,32 @@ bool SaveBlock::defragment() {
 	totalSize = 0;
 	tempFile.seekp(4);
 	
-	for(Files::iterator file = files.begin(); file != files.end(); ++file) {
+	BOOST_FOREACH(File & file, files | boost::adaptors::map_values) {
 		
-		if(file->second.storedSize == 0) {
+		if(file.storedSize == 0) {
 			continue;
 		}
 		
-		char * buf = new char[file->second.storedSize];
+		char * buf = new char[file.storedSize];
 		char * p = buf;
 		
-		for(File::ChunkList::iterator chunk = file->second.chunks.begin();
-		    chunk != file->second.chunks.end(); ++chunk) {
+		for(File::ChunkList::iterator chunk = file.chunks.begin(); chunk != file.chunks.end(); ++chunk) {
 			handle.seekg(chunk->offset + 4);
 			handle.read(p, chunk->size);
 			p += chunk->size;
 		}
 		
-		arx_assert(p == buf + file->second.storedSize);
+		arx_assert(p == buf + file.storedSize);
 		
-		tempFile.write(buf, file->second.storedSize);
+		tempFile.write(buf, file.storedSize);
 		
-		file->second.chunks.resize(1);
-		file->second.chunks.front().offset = totalSize;
-		file->second.chunks.front().size = file->second.storedSize;
+		file.chunks.resize(1);
+		file.chunks.front().offset = totalSize;
+		file.chunks.front().size = file.storedSize;
 		
 		delete[] buf;
 		
-		totalSize += file->second.storedSize;
+		totalSize += file.storedSize;
 	}
 	
 	usedSize = totalSize, chunkCount = files.size();
