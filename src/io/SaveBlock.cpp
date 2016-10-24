@@ -472,10 +472,17 @@ bool SaveBlock::defragment() {
 		return false;
 	}
 	
-	handle.open(savefile, fs::fstream::in | fs::fstream::out | fs::fstream::binary);
+	handle.open(savefile, fs::fstream::in | fs::fstream::out | fs::fstream::binary | fs::fstream::ate);
 	if(!handle.is_open()) {
 		files.clear();
 		LogError << "Failed to open defragmented save file: " << savefile;
+		return false;
+	}
+	
+	if(handle.tellg() < fs::fstream::pos_type(totalSize + 4)) {
+		files.clear();
+		handle.close();
+		LogError << "Save file corrupted after defragmenting: " << savefile;
 		return false;
 	}
 	
