@@ -429,14 +429,15 @@ bool SaveBlock::defragment() {
 	totalSize = 0;
 	tempFile.seekp(4);
 	
+	std::vector<char> buffer;
 	BOOST_FOREACH(File & file, files | boost::adaptors::map_values) {
 		
 		if(file.storedSize == 0) {
 			continue;
 		}
 		
-		char * buf = new char[file.storedSize];
-		char * p = buf;
+		buffer.resize(file.storedSize);
+		char * p = &buffer.front();
 		
 		BOOST_FOREACH(const File::Chunk & chunk, file.chunks) {
 			handle.seekg(chunk.offset + 4);
@@ -444,15 +445,13 @@ bool SaveBlock::defragment() {
 			p += chunk.size;
 		}
 		
-		arx_assert(p == buf + file.storedSize);
+		arx_assert(p == &buffer.front() + file.storedSize);
 		
-		tempFile.write(buf, file.storedSize);
+		tempFile.write(&buffer.front(), file.storedSize);
 		
 		file.chunks.resize(1);
 		file.chunks.front().offset = totalSize;
 		file.chunks.front().size = file.storedSize;
-		
-		delete[] buf;
 		
 		totalSize += file.storedSize;
 	}
