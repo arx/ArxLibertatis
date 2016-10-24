@@ -348,11 +348,6 @@ void Config::setActionKey(ControlAction actionId, size_t index, InputKeyId key) 
 	
 	// remove existing key assignments
 	for(size_t i = 0; i < NUM_ACTION_KEY; i++) {
-		
-		if(i == (size_t)actionId) {
-			continue;
-		}
-		
 		for(int k = 0; k < 2; k++) {
 			if(actions[i].key[k] == key) {
 				actions[i].key[k] = ActionKey::UNUSED;
@@ -362,12 +357,6 @@ void Config::setActionKey(ControlAction actionId, size_t index, InputKeyId key) 
 
 	ActionKey & action = actions[actionId];
 	action.key[index] = key;
-
-	int otherIndex = 1 - index;
-
-	if(action.key[otherIndex] == key) {
-		action.key[otherIndex] = ActionKey::UNUSED;
-	}
 }
 
 void Config::setOutputFile(const fs::path & _file) {
