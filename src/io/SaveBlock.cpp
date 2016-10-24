@@ -473,7 +473,13 @@ bool SaveBlock::defragment() {
 	}
 	
 	handle.open(savefile, fs::fstream::in | fs::fstream::out | fs::fstream::binary);
-	return handle.is_open();
+	if(!handle.is_open()) {
+		files.clear();
+		LogError << "Failed to open defragmented save file: " << savefile;
+		return false;
+	}
+	
+	return true;
 }
 
 bool SaveBlock::save(const std::string & name, const char * data, size_t size) {
