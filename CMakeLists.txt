@@ -243,7 +243,7 @@ include(CheckIncludeFiles)
 include(CheckSymbolExists)
 include(CheckTypeSize)
 
-set(CMAKE_MODULE_PATH "${CMAKE_SOURCE_DIR}/cmake") # For custom cmake modules
+set(CMAKE_MODULE_PATH "${PROJECT_SOURCE_DIR}/cmake") # For custom cmake modules
 
 include(VersionString)
 set(version_names VERSION ICON_NAME DATA_VERSION IO_LIBRARY_ABI_VERSION)
@@ -1054,9 +1054,9 @@ set(WINDOW_SDL1_SOURCES src/window/SDL1Window.cpp)
 set(WINDOW_SDL2_SOURCES src/window/SDL2Window.cpp)
 
 # TODO manually specify theese like we do for the tools
-file(GLOB_RECURSE ALL_INCLUDES RELATIVE ${CMAKE_SOURCE_DIR} ${SRC_DIR}/*.h)
+file(GLOB_RECURSE ALL_INCLUDES RELATIVE ${PROJECT_SOURCE_DIR} ${SRC_DIR}/*.h)
 
-include_directories(${SRC_DIR} ${CMAKE_CURRENT_BINARY_DIR} ${CMAKE_SOURCE_DIR}/tools)
+include_directories(${SRC_DIR} ${CMAKE_CURRENT_BINARY_DIR} ${PROJECT_SOURCE_DIR}/tools)
 
 
 # Check for optional / alternative subsystem implementations
@@ -1231,21 +1231,21 @@ configure_file("${SRC_DIR}/Configure.h.in" "Configure.h" ESCAPE_QUOTES)
 configure_file("${SRC_DIR}/io/fs/PathConstants.h.in" "io/fs/PathConstants.h"
                ESCAPE_QUOTES)
 
-file(MAKE_DIRECTORY "${CMAKE_BINARY_DIR}/platform")
+file(MAKE_DIRECTORY "${PROJECT_BINARY_DIR}/platform")
 set(PLATFORM_CONFIG_H "platform/PlatformConfig.h")
 configure_file("${SRC_DIR}/${PLATFORM_CONFIG_H}.in" "${PLATFORM_CONFIG_H}" ESCAPE_QUOTES)
 
 set(VERSION_TEMPLATE "${SRC_DIR}/core/Version.cpp.in")
-set(VERSION_FILE     "${CMAKE_BINARY_DIR}/core/Version.cpp")
+set(VERSION_FILE     "${PROJECT_BINARY_DIR}/core/Version.cpp")
 set(VERSION_SOURCES  VERSION "VERSION" AUTHORS "AUTHORS" COPYING "COPYING")
-file(MAKE_DIRECTORY "${CMAKE_BINARY_DIR}/core")
+file(MAKE_DIRECTORY "${PROJECT_BINARY_DIR}/core")
 version_file("${VERSION_TEMPLATE}" "${VERSION_FILE}" "${VERSION_SOURCES}" ".git")
 list(APPEND ARX_SOURCES ${VERSION_FILE})
 
 if(WIN32)
 	set(VERSION_RC_TEMPLATE "${SRC_DIR}/core/Version.rc.in")
 	function(create_version_resource exe name)
-		set(rc_file "${CMAKE_BINARY_DIR}/${exe}-version.rc")
+		set(rc_file "${PROJECT_BINARY_DIR}/${exe}-version.rc")
 		set(rc_sources VERSION "VERSION" COPYING "COPYING")
 		if(ARGC GREATER 2)
 			list(APPEND rc_sources ${ARGV2} "${ARGV2}")
@@ -1329,18 +1329,18 @@ if(ARX_HAVE_CRASHREPORTER)
 		tools/crashreporter/qhexedit/QHexEditPrivate.h
 	)
 	
-	file(MAKE_DIRECTORY "${CMAKE_BINARY_DIR}/tools/crashreporter/resources")
+	file(MAKE_DIRECTORY "${PROJECT_BINARY_DIR}/tools/crashreporter/resources")
 	if(HAVE_QT4 AND "${arx-libertatis-logo-58.png}" STREQUAL "")
 		# Create a dummy file to prevent a RCC warning
-		set(arx-libertatis-logo-58.png "${CMAKE_BINARY_DIR}/arx-libertatis-logo-58.png")
+		set(arx-libertatis-logo-58.png "${PROJECT_BINARY_DIR}/arx-libertatis-logo-58.png")
 		file(WRITE ${arx-libertatis-logo-58.png} "")
 	endif()
 	configure_file(
 		tools/crashreporter/resources/CrashReporter.qrc.in
-		${CMAKE_BINARY_DIR}/tools/crashreporter/resources/CrashReporter.qrc
+		${PROJECT_BINARY_DIR}/tools/crashreporter/resources/CrashReporter.qrc
 	)
 	qt_add_resources(arxcrashreporter_Qt_SOURCES
-		${CMAKE_BINARY_DIR}/tools/crashreporter/resources/CrashReporter.qrc
+		${PROJECT_BINARY_DIR}/tools/crashreporter/resources/CrashReporter.qrc
 	)
 	
 	list(APPEND arxcrashreporter_SOURCES ${arxcrashreporter_Qt_SOURCES})
@@ -1558,12 +1558,12 @@ endif()
 # Custom make targets
 
 if(DOXYGEN_EXECUTABLE)
-	set(DOXYGEN_OUTPUT_DIR "${CMAKE_BINARY_DIR}/doc")
+	set(DOXYGEN_OUTPUT_DIR "${PROJECT_BINARY_DIR}/doc")
 	configure_file("scripts/Doxyfile" "Doxyfile" ESCAPE_QUOTES)
 	add_custom_target(doc
 		#build the documentation
 		COMMAND "${CMAKE_COMMAND}" -E make_directory "${DOXYGEN_OUTPUT_DIR}"
-		COMMAND "${CMAKE_COMMAND}" -E chdir ${CMAKE_SOURCE_DIR}
+		COMMAND "${CMAKE_COMMAND}" -E chdir ${PROJECT_SOURCE_DIR}
 			${DOXYGEN_EXECUTABLE} "${CMAKE_CURRENT_BINARY_DIR}/Doxyfile"
 		COMMENT "Building doxygen documentation."
 		VERBATIM
@@ -1583,7 +1583,7 @@ set(STYLE_CHECKED_SOURCES
 add_style_check_target(style "${STYLE_CHECKED_SOURCES}" ARX)
 
 if(BUILD_TESTS)
-	add_subdirectory(tests ${CMAKE_SOURCE_DIR}/bin/tests)
+	add_subdirectory(tests ${PROJECT_SOURCE_DIR}/bin/tests)
 endif()
 
 
@@ -1592,7 +1592,7 @@ endif()
 install(DIRECTORY data/core/ DESTINATION "${INSTALL_DATADIR}")
 # Also tell arx where to find the not yet installed data
 # This is required to run arx from the build directory without installing
-set(arx_core_dir "${CMAKE_SOURCE_DIR}/data/core")
+set(arx_core_dir "${PROJECT_SOURCE_DIR}/data/core")
 get_filename_component(arx_core_dir "${arx_core_dir}" ABSOLUTE)
 file(TO_NATIVE_PATH "${arx_core_dir}" arx_core_dir)
 if(CMAKE_VERSION VERSION_LESS 2.8.12)
