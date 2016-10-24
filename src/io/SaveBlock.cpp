@@ -428,7 +428,7 @@ bool SaveBlock::defragment() {
 	
 	tempFile.seekp(4);
 	
-	#if ARX_DEBUG
+	#ifdef ARX_DEBUG
 	size_t checkTotalSize = 0;
 	#endif
 	std::vector<char> buffer;
@@ -453,7 +453,7 @@ bool SaveBlock::defragment() {
 			break;
 		}
 		
-		#if ARX_DEBUG
+		#ifdef ARX_DEBUG
 		checkTotalSize += file.storedSize;
 		#endif
 	}
