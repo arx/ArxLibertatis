@@ -449,14 +449,16 @@ bool SaveBlock::defragment() {
 		
 		arx_assert(p == &buffer.front() + file.storedSize);
 		
-		tempFile.write(&buffer.front(), file.storedSize);
+		if(!tempFile.write(&buffer.front(), file.storedSize)) {
+			break;
+		}
 		
 		#if ARX_DEBUG
 		checkTotalSize += file.storedSize;
 		#endif
 	}
 	
-	if(tempFile.fail()) {
+	if(!tempFile) {
 		fs::remove(tempFileName);
 		LogWarning << "Failed to write defragmented save file: " << tempFileName;
 		return false;
