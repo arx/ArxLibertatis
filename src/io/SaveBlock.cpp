@@ -438,10 +438,10 @@ bool SaveBlock::defragment() {
 		char * buf = new char[file.storedSize];
 		char * p = buf;
 		
-		for(File::ChunkList::iterator chunk = file.chunks.begin(); chunk != file.chunks.end(); ++chunk) {
-			handle.seekg(chunk->offset + 4);
-			handle.read(p, chunk->size);
-			p += chunk->size;
+		BOOST_FOREACH(const File::Chunk & chunk, file.chunks) {
+			handle.seekg(chunk.offset + 4);
+			handle.read(p, chunk.size);
+			p += chunk.size;
 		}
 		
 		arx_assert(p == buf + file.storedSize);
