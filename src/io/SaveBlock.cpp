@@ -459,6 +459,7 @@ bool SaveBlock::defragment() {
 	}
 	
 	if(!tempFile) {
+		tempFile.close();
 		fs::remove(tempFileName);
 		LogWarning << "Failed to write defragmented save file: " << tempFileName;
 		return false;
