@@ -426,11 +426,13 @@ bool SaveBlock::defragment() {
 		return false;
 	}
 	
-	totalSize = 0;
 	tempFile.seekp(4);
 	
+	#if ARX_DEBUG
+	size_t checkTotalSize = 0;
+	#endif
 	std::vector<char> buffer;
-	BOOST_FOREACH(File & file, files | boost::adaptors::map_values) {
+	BOOST_FOREACH(const File & file, files | boost::adaptors::map_values) {
 		
 		if(file.storedSize == 0) {
 			continue;
@@ -449,27 +451,39 @@ bool SaveBlock::defragment() {
 		
 		tempFile.write(&buffer.front(), file.storedSize);
 		
-		file.chunks.resize(1);
-		file.chunks.front().offset = totalSize;
-		file.chunks.front().size = file.storedSize;
-		
-		totalSize += file.storedSize;
+		#if ARX_DEBUG
+		checkTotalSize += file.storedSize;
+		#endif
 	}
-	
-	usedSize = totalSize, chunkCount = files.size();
 	
 	if(tempFile.fail()) {
 		fs::remove(tempFileName);
-		handle.close(), files.clear();
-		LogWarning << "Defragmenting failed: " << tempFileName;
+		LogWarning << "Failed to write defragmented save file: " << tempFileName;
 		return false;
 	}
 	
 	tempFile.flush(), tempFile.close(), handle.close();
 	
-	if(!fs::rename(tempFileName, savefile, true)) {
+	bool renamed = fs::rename(tempFileName, savefile, true);
+	if(!renamed) {
 		LogWarning << "Failed to move defragmented savegame " << tempFileName << " to " << savefile;
-		return false;
+	} else {
+		
+		size_t newTotalSize = 0;
+		for(Files::iterator i = files.begin(); i != files.end(); ++i) {
+			File & file = i->second;
+			if(file.storedSize != 0) {
+				file.chunks.resize(1);
+				file.chunks.front().offset = newTotalSize;
+				file.chunks.front().size = file.storedSize;
+				newTotalSize += file.storedSize;
+			}
+		}
+		arx_assert(checkTotalSize == newTotalSize);
+		
+		usedSize = totalSize = newTotalSize;
+		chunkCount = files.size();
+		
 	}
 	
 	handle.open(savefile, fs::fstream::in | fs::fstream::out | fs::fstream::binary | fs::fstream::ate);
@@ -486,7 +500,7 @@ bool SaveBlock::defragment() {
 		return false;
 	}
 	
-	return true;
+	return renamed;
 }
 
 bool SaveBlock::save(const std::string & name, const char * data, size_t size) {
