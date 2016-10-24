@@ -1,6 +1,6 @@
 
 # Where to look for source dirs
-set(ICON_SOURCE_DIRS "${CMAKE_SOURCE_DIR}")
+set(ICON_SOURCE_DIRS "${PROJECT_SOURCE_DIR}")
 
 set(ICON_RESOURCE_TEMPLATE "${CMAKE_CURRENT_LIST_DIR}/Icon.rc.in")
 set(ICON_RESOURCE_SCRIPT "${CMAKE_CURRENT_LIST_DIR}/ConfigureFileScript.cmake")

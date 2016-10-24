@@ -115,7 +115,7 @@ if(NOT HAVE_QT AND (NOT WITH_QT OR WITH_QT EQUAL 5))
 								list(APPEND _Qt_extra_libs Qt5::QWindowsIntegrationPlugin)
 							endif()
 							# Just statically linking the plugin is not enough
-							set(_Qt_usewinplugin "${CMAKE_BINARY_DIR}/QtUseWindowsIntegration.cpp")
+							set(_Qt_usewinplugin "${PROJECT_BINARY_DIR}/QtUseWindowsIntegration.cpp")
 							file(WRITE ${_Qt_usewinplugin} "#include <QtPlugin>\n")
 							file(APPEND ${_Qt_usewinplugin} "Q_IMPORT_PLUGIN(QWindowsIntegrationPlugin)\n")
 							list(APPEND QtGui_SOURCES ${_Qt_usewinplugin})

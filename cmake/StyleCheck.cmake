@@ -70,7 +70,7 @@ set(STYLE_FILTER ${STYLE_FILTER},-readability/fn_size)
 # Has false positives and is already covered by -pedantic or -Wvla
 set(STYLE_FILTER ${STYLE_FILTER},-runtime/arrays)
 
-set(STYLE_CHECK_SCRIPT "${CMAKE_SOURCE_DIR}/scripts/cpplint.py")
+set(STYLE_CHECK_SCRIPT "${PROJECT_SOURCE_DIR}/scripts/cpplint.py")
 
 # Add a target that runs cpplint.py
 #
@@ -88,7 +88,7 @@ function(add_style_check_target TARGET_NAME SOURCES_LIST PROJECT)
 	
 	add_custom_target(${TARGET_NAME}
 		COMMAND "${CMAKE_COMMAND}" -E chdir
-			"${CMAKE_SOURCE_DIR}"
+			"${PROJECT_SOURCE_DIR}"
 			"${PYTHON_EXECUTABLE}"
 			"${STYLE_CHECK_SCRIPT}"
 			"--filter=${STYLE_FILTER}"

@@ -1,7 +1,7 @@
 <RCC>
 	<qresource prefix="/">
-		<file alias="failure.png">${CMAKE_SOURCE_DIR}/tools/crashreporter/resources/failure.png</file>
-		<file alias="success.png">${CMAKE_SOURCE_DIR}/tools/crashreporter/resources/success.png</file>
+		<file alias="failure.png">${PROJECT_SOURCE_DIR}/tools/crashreporter/resources/failure.png</file>
+		<file alias="success.png">${PROJECT_SOURCE_DIR}/tools/crashreporter/resources/success.png</file>
 		<file alias="logo.png">${arx-libertatis-logo-58.png}</file>
 	</qresource>
 </RCC>
