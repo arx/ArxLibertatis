@@ -420,6 +420,7 @@ bool SaveBlock::defragment() {
 	
 	fs::ofstream tempFile(tempFileName, fs::fstream::out | fs::fstream::binary | fs::fstream::trunc);
 	if(!tempFile.is_open()) {
+		LogWarning << "Could not open temporary save file for defragmenting: " << tempFileName;
 		return false;
 	}
 	
