@@ -346,16 +346,7 @@ void Config::setActionKey(ControlAction actionId, size_t index, InputKeyId key) 
 		return;
 	}
 	
-	ActionKey & action = actions[actionId];
-	action.key[index] = key;
-	
-	int otherIndex = 1 - index;
-	
-	if(action.key[otherIndex] == key) {
-		action.key[otherIndex] = ActionKey::UNUSED;
-	}
-	
-	// remove double key assignments
+	// remove existing key assignments
 	for(size_t i = 0; i < NUM_ACTION_KEY; i++) {
 		
 		if(i == (size_t)actionId) {
@@ -367,7 +358,15 @@ void Config::setActionKey(ControlAction actionId, size_t index, InputKeyId key) 
 				actions[i].key[k] = ActionKey::UNUSED;
 			}
 		}
-		
+	}
+
+	ActionKey & action = actions[actionId];
+	action.key[index] = key;
+
+	int otherIndex = 1 - index;
+
+	if(action.key[otherIndex] == key) {
+		action.key[otherIndex] = ActionKey::UNUSED;
 	}
 }
 
