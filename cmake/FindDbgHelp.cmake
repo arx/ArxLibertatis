@@ -6,12 +6,18 @@
 # DBGHELP_INCLUDE_DIR
 # DBGHELP_LIBRARIES
 
-find_path(DBGHELP_INCLUDE_DIR dbghelp.h)
+
 find_library(DBGHELP_LIBRARY dbghelp.lib)
+if(DBGHELP_LIBRARY)
+	find_path(DBGHELP_INCLUDE_DIR dbghelp.h)
+elseif(MSVC)
+	set(DBGHELP_LIBRARY dbghelp)
+	set(DBGHELP_INCLUDE_DIR)
+endif()
 
 # Handle the REQUIRED argument and set DBGHELP_FOUND
 include(FindPackageHandleStandardArgs)
-find_package_handle_standard_args(DbgHelp DEFAULT_MSG DBGHELP_LIBRARY DBGHELP_INCLUDE_DIR)
+find_package_handle_standard_args(DbgHelp DEFAULT_MSG DBGHELP_LIBRARY)
 
 mark_as_advanced(DBGHELP_INCLUDE_DIR)
 mark_as_advanced(DBGHELP_LIBRARY)
