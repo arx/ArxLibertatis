@@ -36,7 +36,7 @@
 #include "io/log/Logger.h"
 
 
-static const long MAX_POINTS(200);
+static const size_t MAX_POINTS(200);
 static std::vector<Vec2f> plist;
 
 Rune SpellSymbol[MAX_SPELL_SYMBOLS];
