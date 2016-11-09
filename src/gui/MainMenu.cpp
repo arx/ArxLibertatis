@@ -1506,6 +1506,7 @@ public:
 		addControlRow(y, CONTROLS_CUST_BOOKQUEST,         "system_menus_options_input_customize_controls_bookquest");
 		addControlRow(y, CONTROLS_CUST_DRINKPOTIONLIFE,   "system_menus_options_input_customize_controls_drink_potion_life");
 		addControlRow(y, CONTROLS_CUST_DRINKPOTIONMANA,   "system_menus_options_input_customize_controls_drink_potion_mana");
+		addControlRow(y, CONTROLS_CUST_DRINKPOTIONCURE,   "system_menus_options_input_customize_controls_drink_potion_cure", "Antidote potion");
 		addControlRow(y, CONTROLS_CUST_TORCH,             "system_menus_options_input_customize_controls_torch");
 		
 		addControlRow(y, CONTROLS_CUST_CANCELCURSPELL,    "system_menus_options_input_customize_controls_cancelcurrentspell");
