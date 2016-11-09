@@ -35,7 +35,7 @@ Widget::Widget()
 	ePlace=NOCENTER;
 	eState=TNOP;
 	m_targetMenu = NOP;
-	m_shortcut = -1;
+	m_shortcut = ActionKey::UNUSED;
 }
 
 extern TextWidget * pMenuElementApply;

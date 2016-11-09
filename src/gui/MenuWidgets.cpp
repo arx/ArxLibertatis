@@ -784,7 +784,7 @@ MENUSTATE MenuPage::Update(Vec2f pos) {
 		{Widget * w; BOOST_FOREACH(w, m_children.m_widgets) {
 			arx_assert(w);
 			
-			if(w->m_shortcut != -1) {
+			if(w->m_shortcut != ActionKey::UNUSED) {
 				if(GInput->isKeyPressedNowUnPressed(w->m_shortcut)) {
 					bEdit = w->OnMouseClick();
 					m_selected = w;
