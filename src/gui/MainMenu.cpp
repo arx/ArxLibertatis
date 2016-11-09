@@ -1510,8 +1510,8 @@ public:
 		addControlRow(y, CONTROLS_CUST_PRECAST1,          "system_menus_options_input_customize_controls_precast1");
 		addControlRow(y, CONTROLS_CUST_PRECAST2,          "system_menus_options_input_customize_controls_precast2");
 		addControlRow(y, CONTROLS_CUST_PRECAST3,          "system_menus_options_input_customize_controls_precast3");
-		addControlRow(y, CONTROLS_CUST_WEAPON,            "system_menus_options_input_customize_controls_weapon");
 		
+		addControlRow(y, CONTROLS_CUST_WEAPON,            "system_menus_options_input_customize_controls_weapon");
 		addControlRow(y, CONTROLS_CUST_UNEQUIPWEAPON,     "system_menus_options_input_customize_controls_unequipweapon");
 		
 		addControlRow(y, CONTROLS_CUST_PREVIOUS,          "system_menus_options_input_customize_controls_previous");
