@@ -121,6 +121,7 @@ const ActionKey actions[NUM_ACTION_KEY] = {
 	ActionKey(Keyboard::Key_F4), // BOOKQUEST
 	ActionKey(Keyboard::Key_H), // DRINKPOTIONLIFE
 	ActionKey(Keyboard::Key_G), // DRINKPOTIONMANA
+	ActionKey(),                // DRINKPOTIONCURE
 	ActionKey(Keyboard::Key_T), // TORCH
 	ActionKey(Keyboard::Key_1), // PRECAST1
 	ActionKey(Keyboard::Key_2), // PRECAST2
@@ -238,6 +239,7 @@ const std::string actions[NUM_ACTION_KEY] = {
 	"quest_book",
 	"drink_potion_life",
 	"drink_potion_mana",
+	"drink_potion_cure",
 	"torch",
 	"precast_1",
 	"precast_2",
