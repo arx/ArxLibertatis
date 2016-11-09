@@ -23,6 +23,7 @@
 #include <boost/noncopyable.hpp>
 
 #include "core/SaveGame.h"
+#include "input/InputKey.h"
 #include "math/Rectangle.h"
 #include "util/HandleType.h"
 
@@ -101,7 +102,7 @@ public:
 	ELEMPOS     ePlace;			//placement de la zone
 	ELEMSTATE   eState;			//etat de l'element en cours
 	MENUSTATE   m_targetMenu;		//etat de retour de l'element
-	int         m_shortcut;
+	InputKeyId  m_shortcut;
 	
 public:
 	explicit Widget();
