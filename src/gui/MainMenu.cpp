@@ -1452,6 +1452,8 @@ public:
 		addControlRow(y, CONTROLS_CUST_LOOKUP,       "system_menus_options_input_customize_controls_look_up");
 		addControlRow(y, CONTROLS_CUST_LOOKDOWN,     "system_menus_options_input_customize_controls_look_down");
 		
+		addControlRow(y, CONTROLS_CUST_MINIMAP,      "system_menus_options_input_customize_controls_bookmap", "?", "2");
+
 		{
 			ButtonWidget * cb = new ButtonWidget(Vec2f(20, 380), Vec2f(16, 16), "graph/interface/menus/back");
 			cb->m_targetMenu = OPTIONS_INPUT;
@@ -1519,8 +1521,6 @@ public:
 		
 		addControlRow(y, CONTROLS_CUST_QUICKLOAD,         "system_menus_options_input_customize_controls_quickload");
 		addControlRow(y, CONTROLS_CUST_QUICKSAVE,         "system_menus_options_input_customize_controls_quicksave");
-		
-		addControlRow(y, CONTROLS_CUST_MINIMAP,           "system_menus_options_input_customize_controls_bookmap", "?", "2");
 		
 		addControlRow(y, CONTROLS_CUST_TOGGLE_FULLSCREEN, "system_menus_options_input_customize_controls_toggle_fullscreen", "Toggle fullscreen");
 		
