@@ -1198,6 +1198,10 @@ void ArxGame::managePlayerControls() {
 		SendInventoryObjectCommand("graph/obj3d/textures/item_potion_mana", SM_INVENTORYUSE);
 	}
 
+	if(GInput->actionNowPressed(CONTROLS_CUST_DRINKPOTIONCURE)) {
+		SendInventoryObjectCommand("graph/obj3d/textures/item_potion_purple", SM_INVENTORYUSE);
+	}
+
 	if(GInput->actionNowPressed(CONTROLS_CUST_TORCH)) {
 		if(player.torch) {
 			ARX_PLAYER_KillTorch();
