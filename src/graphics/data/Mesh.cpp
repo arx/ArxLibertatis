@@ -2678,34 +2678,3 @@ void ComputePortalVertexBuffer() {
 		room->pVertexBuffer->unlock();
 	}
 }
-
-long EERIERTPPoly(EERIEPOLY *ep)
-{
-	EE_RTP(ep->v[0].p, ep->tv[0]);
-	EE_RTP(ep->v[1].p, ep->tv[1]);
-	EE_RTP(ep->v[2].p, ep->tv[2]);
-
-	if (ep->type & POLY_QUAD) 
-	{
-		EE_RTP(ep->v[3].p, ep->tv[3]);
-
-		if ((ep->tv[0].p.z<=0.f) &&
-			(ep->tv[1].p.z<=0.f) &&
-			(ep->tv[2].p.z<=0.f) &&
-			(ep->tv[3].p.z<=0.f) ) 
-		{
-			return 0;
-		}
-	}
-	else
-	{
-		if ((ep->tv[0].p.z<=0.f) &&
-			(ep->tv[1].p.z<=0.f) &&
-			(ep->tv[2].p.z<=0.f)  ) 
-		{
-			return 0;
-		}
-	}
-
-	return 1;
-}
