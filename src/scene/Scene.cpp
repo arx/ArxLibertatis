@@ -526,8 +526,8 @@ long ARX_PORTALS_GetRoomNumForPosition(const Vec3f & pos,long flag) {
 	
 	ARX_PROFILE_FUNC();
 	
-	long num;
-	float height;
+	long num = -1;
+	float height = 0.f;
 	
 	if(flag & 1) {
 		Vec3f cameraPos = ACTIVECAM->orgTrans.pos;
