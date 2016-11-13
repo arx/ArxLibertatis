@@ -512,16 +512,13 @@ static long ARX_PORTALS_GetRoomNumForPosition2(const Vec3f & pos, long flag,
 	return -1;
 }
 
-static long ARX_PORTALS_GetRoomNumForCamera(float * height, const Vec3f & pos, const Vec3f & direction) {
+static EERIEPOLY * ARX_PORTALS_GetRoomNumForCamera(const Vec3f & pos, const Vec3f & direction) {
 	
 	{
 		EERIEPOLY * ep = CheckInPoly(pos);
 		
 		if(ep && ep->room > -1) {
-			if(height)
-				*height=ep->center.y;
-			
-			return ep->room;
+			return ep;
 		}
 	}
 	
@@ -529,10 +526,7 @@ static long ARX_PORTALS_GetRoomNumForCamera(float * height, const Vec3f & pos, c
 		EERIEPOLY * ep = GetMinPoly(pos);
 		
 		if(ep && ep->room > -1) {
-			if(height)
-				*height=ep->center.y;
-			
-			return ep->room;
+			return ep;
 		}
 	}
 	
@@ -546,16 +540,13 @@ static long ARX_PORTALS_GetRoomNumForCamera(float * height, const Vec3f & pos, c
 		EERIEPOLY * ep = CheckInPoly(tmpPos);
 		
 		if(ep && ep->room > -1) {
-			if(height)
-				*height=ep->center.y;
-			
-			return ep->room;
+			return ep;
 		}
 		
 		dist += 5.f;
 	}
 	
-	return -1;
+	return NULL;
 }
 
 // flag==1 for player
@@ -569,7 +560,14 @@ long ARX_PORTALS_GetRoomNumForPosition(const Vec3f & pos,long flag) {
 	if(flag & 1) {
 		Vec3f cameraPos = ACTIVECAM->orgTrans.pos;
 		Vec3f direction = angleToVectorXZ_180offset(ACTIVECAM->angle.getYaw());
-		num = ARX_PORTALS_GetRoomNumForCamera(&height, cameraPos, direction);
+		
+		EERIEPOLY * ep = ARX_PORTALS_GetRoomNumForCamera(cameraPos, direction);
+		if(ep) {
+			num = ep->room;
+			height = ep->center.y;
+		} else {
+			num = -1;
+		}
 	} else {
 		num = ARX_PORTALS_GetRoomNumForPosition2(pos, flag, &height);
 	}
