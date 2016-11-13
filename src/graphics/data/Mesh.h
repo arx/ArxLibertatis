@@ -183,8 +183,6 @@ Vec2f getWaterFxUvOffset(const Vec3f & odtv);
 //*************************************************************************************
 //*************************************************************************************
 
-long EERIERTPPoly(EERIEPOLY *ep);
-
 float PtIn2DPolyProj(const std::vector<EERIE_VERTEX> & verts, EERIE_FACE * ef, float x, float z);
 
 long CountBkgVertex();
