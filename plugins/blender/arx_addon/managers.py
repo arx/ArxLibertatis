@@ -653,8 +653,26 @@ class ArxSceneManager(object):
 
 
 class ArxAddon(object):
-    def __init__(self, dataPath):
-        ioLib = ArxIO()
+    def __init__(self, dataPath, allowLibFallback):
+        self.log = logging.getLogger('Arx Addon')
+        
+        try:
+            ioLib = ArxIO()
+        except Exception as e:
+            if not allowLibFallback:
+                raise e
+            else:
+                self.log.error("Failed to load native io library, using slow fallback. Exception: " + str(e));
+                
+                from .naivePkware import decompress_ftl
+                class ArxIOFallback(object):
+                    def __init__(self):
+                        pass
+                    def unpack(self, data):
+                        return decompress_ftl(data)
+                        
+                ioLib = ArxIOFallback()
+            
         self.objectManager = ArxObjectManager(ioLib, dataPath)
         self.sceneManager = ArxSceneManager(ioLib, dataPath, self.objectManager)
         self.animationManager = ArxAnimationManager()
