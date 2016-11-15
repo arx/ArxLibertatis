@@ -778,7 +778,11 @@ MENUSTATE MenuPage::Update(Vec2f pos) {
 		}
 	}
 	
-	//check les shortcuts
+	return checkShortcuts();
+}
+
+MENUSTATE MenuPage::checkShortcuts() {
+
 	if(!bEdit) {
 		
 		{Widget * w; BOOST_FOREACH(w, m_children.m_widgets) {
@@ -793,7 +797,6 @@ MENUSTATE MenuPage::Update(Vec2f pos) {
 			}
 		}}
 	}
-	
 	return NOP;
 }
 
