@@ -445,7 +445,9 @@ MENUSTATE CWindowMenu::Render() {
 			
 			if(g_debugInfo == InfoPanelGuiDebug)
 				page->drawDebug();
-			
+
+			if(eMS == NOP)
+				eMS = page->checkShortcuts();
 			break;
 		}
 	}}
@@ -778,7 +780,7 @@ MENUSTATE MenuPage::Update(Vec2f pos) {
 		}
 	}
 	
-	return checkShortcuts();
+	return NOP;
 }
 
 MENUSTATE MenuPage::checkShortcuts() {
