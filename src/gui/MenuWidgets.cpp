@@ -883,6 +883,9 @@ void MenuPage::Render() {
 				if(widget) {
 					if(!bEdit) {
 						if(widget->m_isKeybind) {
+							if(inputKeyId == Keyboard::Key_Escape) {
+								inputKeyId = ActionKey::UNUSED;
+							}
 							config.setActionKey(widget->m_keybindAction, widget->m_keybindIndex, inputKeyId);
 						}
 					}
