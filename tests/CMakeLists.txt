@@ -1,6 +1,8 @@
 cmake_minimum_required(VERSION 2.8)
 # compile tests tool
 
+find_package(CppUnit REQUIRED)
+
 # CppUnit requires RTTI
 string(REGEX REPLACE "-fno-rtti" " " CMAKE_CXX_FLAGS ${CMAKE_CXX_FLAGS})
 
@@ -10,6 +12,7 @@ add_definitions(-UARX_DEBUG)
 include_directories(
 	../src
 	../
+	${CppUnit_INCLUDE_DIR}
 )
 
 add_executable(arxtest
@@ -47,7 +50,7 @@ add_executable(arxtest
 	util/StringTest.cpp
 )
 
-target_link_libraries(arxtest cppunit)
+target_link_libraries(arxtest ${CppUnit_LIBRARIES})
 
 add_custom_target(check
 	COMMAND "$<TARGET_FILE:arxtest>"
