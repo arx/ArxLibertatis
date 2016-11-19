@@ -1588,7 +1588,7 @@ set(STYLE_CHECKED_SOURCES
 add_style_check_target(style "${STYLE_CHECKED_SOURCES}" ARX)
 
 if(BUILD_TESTS)
-	add_subdirectory(tests ${PROJECT_SOURCE_DIR}/bin/tests)
+	add_subdirectory(tests "${PROJECT_BINARY_DIR}/test")
 endif()
 
 
