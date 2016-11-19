@@ -29,6 +29,8 @@
 #include <glm/gtx/string_cast.hpp>
 #include <glm/ext.hpp>
 
+#include <cppunit/TestAssert.h>
+
 #include "graphics/Math.h"
 
 namespace CppUnit {

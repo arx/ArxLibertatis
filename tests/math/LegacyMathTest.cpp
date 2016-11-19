@@ -19,6 +19,8 @@
 
 #include "LegacyMathTest.h"
 
+#include <sstream>
+
 #include <glm/gtx/euler_angles.hpp>
 
 #include "graphics/Math.h"
@@ -329,8 +331,11 @@ void LegacyMathTest::focalToFovTest() {
 		float expected = glm::radians(focalToFovLegacy(focal));
 		float result = focalToFov(focal);
 		
-		std::string msg = "In: " + glm::to_string(focal) + " Expected: " + glm::to_string(expected) + ", Result: " + glm::to_string(result);
-		CPPUNIT_ASSERT_MESSAGE(msg, glm::epsilonEqual(expected, result, 2.f));
+		std::ostringstream ss;
+		ss << "In: " << focal;
+		ss << " Expected: " << expected;
+		ss << ", Result: " << result;
+		CPPUNIT_ASSERT_MESSAGE(ss.str(), glm::epsilonEqual(expected, result, 2.f));
 	}
 }
 
