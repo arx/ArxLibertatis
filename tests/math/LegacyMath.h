@@ -198,7 +198,7 @@ inline void QuatFromMatrix(glm::quat & quat, const glm::mat4x4 & mat) {
 
 		q[i] = s * 0.5f;
 
-		if (s != 0.0) s = 0.5f / s;
+		if (s != 0.0f) s = 0.5f / s;
 
 		q[3] = (m[j][k] - m[k][j]) * s;
 		q[j] = (m[i][j] + m[j][i]) * s;

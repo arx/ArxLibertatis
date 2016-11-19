@@ -285,7 +285,7 @@ void LegacyMathTest::inventorySizeTest() {
 
 void LegacyMathTest::angleToVectorXZ_Test() {
 	
-	for(float angle = -1000; angle < 1000; angle += 0.01) {
+	for(float angle = -1000; angle < 1000; angle += 0.01f) {
 		Vec3f expected = angleToVectorXZ(angle);
 		Vec3f result = angleToVectorXZ_180offset(angle + 180);
 		
