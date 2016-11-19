@@ -19,6 +19,7 @@
 
 #include "StringTest.h"
 
+#include "../src/platform/Platform.h"
 #include "../src/util/String.h"
 
 CPPUNIT_TEST_SUITE_REGISTRATION(StringTest);
@@ -115,4 +116,32 @@ void StringTest::stringStoreTerminatedOverflowTest() {
 	
 	CPPUNIT_ASSERT(std::equal(expected, expected + 4, target.data));
 	CPPUNIT_ASSERT(target.checkCanary());
+}
+
+void StringTest::safeGetExactTest() {
+	
+	u8 data[] = {0xAA, 0xAA, 0xAA, 0xAA};
+	u32 remaining = sizeof(data);
+	u8 * dataPtr = &data[0];
+	
+	s32 resultValue;
+	bool resultOk = util::safeGet(resultValue, dataPtr, remaining);
+	
+	CPPUNIT_ASSERT_EQUAL(true, resultOk);
+	CPPUNIT_ASSERT_EQUAL(0u, remaining);
+	CPPUNIT_ASSERT_EQUAL(-1431655766, resultValue);
+}
+
+void StringTest::safeGetTooSmallTest() {
+	
+	u8 data[] = {0xAA, 0xAA, 0xAA};
+	u32 remaining = sizeof(data);
+	u8 * dataPtr = &data[0];
+	
+	s32 resultValue = -1;
+	bool resultOk = util::safeGet(resultValue, dataPtr, remaining);
+	
+	CPPUNIT_ASSERT_EQUAL(false, resultOk);
+	CPPUNIT_ASSERT_EQUAL(3u, remaining);
+	CPPUNIT_ASSERT_EQUAL(-1, resultValue);
 }
