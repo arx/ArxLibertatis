@@ -91,6 +91,6 @@ include(FindPackageHandleStandardArgs)
 find_package_handle_standard_args(CppUnit REQUIRED_VARS CppUnit_LIBRARY CppUnit_INCLUDE_DIR
                                   VERSION_VAR CppUnit_VERSION_STRING)
 
-if(CppUnit_FOUND)
+if(CPPUNIT_FOUND)
 	set(CppUnit_LIBRARIES ${CppUnit_LIBRARY})
-endif(CppUnit_FOUND)
+endif()
