@@ -102,7 +102,7 @@ find_library(SDL2_LIBRARY
 		${_PC_SDL2_LIBRARY_DIRS}
 		"${_SDL2_BASE_DIR}/lib"
 	PATH_SUFFIXES lib64 lib
-	PATHS ${SDL2_SEARCH_PATHS}
+	PATHS ${_SDL2_SEARCH_PATHS}
 	DOC "The SDL2 library"
 )
 mark_as_advanced(SDL2_LIBRARY)
