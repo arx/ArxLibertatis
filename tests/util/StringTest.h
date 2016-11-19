@@ -35,6 +35,9 @@ class StringTest : public CppUnit::TestFixture {
 	CPPUNIT_TEST(stringStoreTerminatedFittingTest);
 	CPPUNIT_TEST(stringStoreTerminatedOverflowTest);
 	
+	CPPUNIT_TEST(safeGetExactTest);
+	CPPUNIT_TEST(safeGetTooSmallTest);
+	
 	CPPUNIT_TEST_SUITE_END();
 	
 public:
@@ -50,6 +53,9 @@ public:
 	void stringStoreTerminatedEmptyTest();
 	void stringStoreTerminatedFittingTest();
 	void stringStoreTerminatedOverflowTest();
+	
+	void safeGetExactTest();
+	void safeGetTooSmallTest();
 };
 
 #endif // ARX_TESTS_UTIL_STRINGTEST_H
