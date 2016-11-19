@@ -1,11 +1,8 @@
 cmake_minimum_required(VERSION 2.8)
 # compile tests tool
 
-set(CMAKE_CXX_COMPILER g++)
-set(CMAKE_C_COMPILER gcc)
-set(CMAKE_CXX_FLAGS "-m64 -std=c++11")
-set(ENABLE_TESTING TRUE)
-#set(CMAKE_CXX_FLAGS "-Wall -Werror -Wextra -Woverloaded-virtual")
+# CppUnit requires RTTI
+string(REGEX REPLACE "-fno-rtti" " " CMAKE_CXX_FLAGS ${CMAKE_CXX_FLAGS})
 
 # TODO this is required because the debug log has too many dependencies
 add_definitions(-UARX_DEBUG)
