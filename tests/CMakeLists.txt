@@ -51,3 +51,10 @@ add_executable(arxtest
 )
 
 target_link_libraries(arxtest cppunit)
+
+add_custom_target(check
+	COMMAND "$<TARGET_FILE:arxtest>"
+	DEPENDS arxtest
+	WORKING_DIRECTORY "${PROJECT_BINARY_DIR}"
+	COMMENT "Running tests" VERBATIM
+)
