@@ -1,6 +1,8 @@
 cmake_minimum_required(VERSION 2.8)
 # compile tests tool
 
+suboption(CppUnit_USE_STATIC_LIBS "Statically link CppUnit" BOOL ${USE_STATIC_LIBS})
+
 find_package(CppUnit REQUIRED)
 
 # CppUnit requires RTTI
