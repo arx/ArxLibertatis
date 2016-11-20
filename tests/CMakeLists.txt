@@ -8,13 +8,14 @@ find_package(CppUnit REQUIRED)
 # CppUnit requires RTTI
 string(REGEX REPLACE "-fno-rtti" " " CMAKE_CXX_FLAGS ${CMAKE_CXX_FLAGS})
 
+include_directories(SYSTEM ${CppUnit_INCLUDE_DIR})
+
 # TODO this is required because the debug log has too many dependencies
 add_definitions(-UARX_DEBUG)
 
 include_directories(
 	../src
 	../
-	${CppUnit_INCLUDE_DIR}
 )
 
 add_executable(arxtest
