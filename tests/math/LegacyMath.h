@@ -20,6 +20,8 @@
 #ifndef ARX_TESTS_GRAPHICS_LEGACYMATH_H
 #define ARX_TESTS_GRAPHICS_LEGACYMATH_H
 
+#include <cmath>
+
 #include "graphics/Math.h"
 
 //! Transforms a Vertex by a quaternion
@@ -175,7 +177,7 @@ inline void QuatFromMatrix(glm::quat & quat, const glm::mat4x4 & mat) {
 	// check the diagonal
 	if (tr > 0.0f)
 	{
-		s = sqrt(tr + 1.0f);
+		s = std::sqrt(tr + 1.0f);
 		quat.w = s * ( 1.0f / 2 );
 		s = 0.5f / s;
 		quat.x = (m[1][2] - m[2][1]) * s;
@@ -194,7 +196,7 @@ inline void QuatFromMatrix(glm::quat & quat, const glm::mat4x4 & mat) {
 		int j = nxt[i];
 		int k = nxt[j];
 
-		s = sqrt((m[i][i] - (m[j][j] + m[k][k])) + 1.0f);
+		s = std::sqrt((m[i][i] - (m[j][j] + m[k][k])) + 1.0f);
 
 		q[i] = s * 0.5f;
 
