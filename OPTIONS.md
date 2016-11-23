@@ -1,5 +1,5 @@
 
-This file describes additional build options that are recognized by the CMakeLists.txt but will probably not need to be modifed:
+This file describes additional build options that are recognized by the CMakeLists.txt but will probably not need to be modified:
 
 ### Default data directories
 
@@ -87,7 +87,7 @@ The following options can be used to customize where `make install` puts the var
 
 By default, optional components will be automatically disabled if their dependencies could not be found. This might be undesirable in some situations, so the following option can be used to change this behavior:
 
-* `STRICT_USE` (default: OFF): Abort the configure step if one of the dependencies enabled with a `USE_*` configuration variable could not be found or if one of the components enabled with a `BUILD_*`configuration variable has missing dependencies. As most dependencies are enabled by default, you may need to explicitly disable some of them. Windows-specifc dependencies are still automatically disabled on non-Windows systems.
+* `STRICT_USE` (default: OFF): Abort the configure step if one of the dependencies enabled with a `USE_*` configuration variable could not be found or if one of the components enabled with a `BUILD_*`configuration variable has missing dependencies. As most dependencies are enabled by default, you may need to explicitly disable some of them. Windows-specific dependencies are still automatically disabled on non-Windows systems.
 * `USE_OPENGL` (default: ON): Build the OpenGL renderer backend^1
 * `USE_OPENAL` (default: ON): Build the OpenAL audio backend^2
 * `WITH_SDL` (default: *not set*): Select the SDL version to use: 1 or 2. If not set, we will try to use either version, preferring SDL 2. ^3
@@ -96,7 +96,7 @@ By default, optional components will be automatically disabled if their dependen
 * `USE_NATIVE_FS` (default: ON): Use the native filesystem backend (POSIX / Win32) if available and not boost::filesystem.
 
 1. There is currently no other rendering backend, disabling this will make the build fail.
-2. There is currently no other audo backend, there will be no audio when disabling this. Additionally, builds without audio are not well tested and there may be other problems.
+2. There is currently no other audio backend, there will be no audio when disabling this. Additionally, builds without audio are not well tested and there may be other problems.
 3. Existing options can be unset by passing `-U<option>` to cmake.
 
 ### Icons
@@ -110,5 +110,5 @@ By default, optional components will be automatically disabled if their dependen
  * `all` Generate all possible icon types
  * `none` Don't generate any icons
 
-* `DATA_FILES` (default: *not set*): Locations to search for pre-built data files. This is only useful when building git checkouts as release and development snaptshot tarballs already include those files in the source tree. See the *Git Build Dependencies* section in README.md.
-* `OPTIMIZE_ICONS` (default: ON): Optimize the compression of generated PNG files using OptiPNG. This is only useful when building git checkouts as release and development snaptshot tarballs already include pre-built images that this option doesn't apply to.
+* `DATA_FILES` (default: *not set*): Locations to search for pre-built data files. This is only useful when building git checkouts as release and development snapshot tarballs already include those files in the source tree. See the *Git Build Dependencies* section in README.md.
+* `OPTIMIZE_ICONS` (default: ON): Optimize the compression of generated PNG files using OptiPNG. This is only useful when building git checkouts as release and development snapshot tarballs already include pre-built images that this option doesn't apply to.

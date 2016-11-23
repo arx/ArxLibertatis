@@ -9,7 +9,7 @@
 Cross-platform port of Arx Fatalis
 
 Arx Libertatis is based on the publicly released [Arx Fatalis source code](http://www.arkane-studios.com/uk/arx_downloads.php).
-The source code is availbale under the GPLv3+ license with some additonal terms - see the COPYING and LICENSE files for details.
+The source code is available under the GPLv3+ license with some additional terms - see the COPYING and LICENSE files for details.
 
 ## Contact
 
@@ -71,7 +71,7 @@ Building checkouts from git on their own requires additional dependencies:
 
 These are needed to render and scale the svg icons, which currently only render correctly in in Inkscape. Release and development snapshot source tarballs include the pre-built icon files and do not need these dependencies to build.
 
-To avoid the Inkscape (and ImageMagick) dependency for git builds, pre-build icons can be downloaded from http://arx-libertatis.org/files/data/ or the [ArxLibertatisData](https://github.com/arx/ArxLibertatisData/) repository. The required data version is listed in the VERSION file. Place `arx-libertatis-data-$version` directory into the build directory or tell the build system about it's location using the `DATA_FILES` cmake variable (`-DDATA_FILES=…` on the command-line).
+To avoid the Inkscape (and ImageMagick) dependency for git builds, pre-built icons can be downloaded from http://arx-libertatis.org/files/data/ or the [ArxLibertatisData](https://github.com/arx/ArxLibertatisData/) repository. The required data version is listed in the VERSION file. Place `arx-libertatis-data-$version` directory into the build directory or tell the build system about it's location using the `DATA_FILES` cmake variable (`-DDATA_FILES=…` on the command-line).
 
 Alternatively, icons can be disabled by setting the `ICON_TYPE` cmake variable to `none`. See **OPTIONS.md** for other supported icon type values.
 
@@ -91,7 +91,7 @@ Alternatively you can run the game by specifying the full path to the `arx` bina
 
 The wiki has more detailed instructions on [compiling under Linux](http://wiki.arx-libertatis.org/Downloading_and_Compiling_under_Linux).
 
-Getting all the dependencies set up for Windows is more tricky. Pre-build dependencies are available in the [ArxWindows repository](https://github.com/arx/ArxWindows) and [instructions on how to use them](http://wiki.arx-libertatis.org/Downloading_and_Compiling_under_Windows) are available on the wiki.
+Getting all the dependencies set up for Windows is more tricky. Pre-built dependencies are available in the [ArxWindows repository](https://github.com/arx/ArxWindows) and [instructions on how to use them](http://wiki.arx-libertatis.org/Downloading_and_Compiling_under_Windows) are available on the wiki.
 
 ### Build options:
 
@@ -112,7 +112,7 @@ Getting all the dependencies set up for Windows is more tricky. Pre-build depend
 
 1. Enabled automatically if `CMAKE_BUILD_TYPE` is set to `Debug` or if `DEVELOPER` is enabled.
 1. Enabled automatically if `DEBUG` is enabled. If disabled, OpenGL debug output can be enabled at run-time using the `--debug-gl` command-line option.
-3. Currently this disables `UNITY_BUILD` for faster incremental builds and enables `DEBUG`, unles those options have been explicitly specified by the user.
+3. Currently this disables `UNITY_BUILD` for faster incremental builds and enables `DEBUG`, unless those options have been explicitly specified by the user.
 
 Install options:
 
