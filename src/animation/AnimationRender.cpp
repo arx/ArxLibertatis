@@ -1446,7 +1446,7 @@ static void Cedric_TransformVerts(EERIE_3DOBJ * eobj, const Vec3f & pos) {
 	for(size_t i = 0; i != rig.bones.size(); i++) {
 		Bone & bone = rig.bones[i];
 
-		glm::mat4x4 matrix = glm::toMat4(bone.anim.quat);
+		glm::mat4x4 matrix = glm::mat4_cast(bone.anim.quat);
 		
 		// Apply Scale
 		matrix[0][0] *= bone.anim.scale.x;
@@ -1592,7 +1592,7 @@ void EERIEDrawAnimQuatUpdate(EERIE_3DOBJ * eobj,
 	bool isNpc = io && (io->ioflags & IO_NPC);
 	if(!isNpc) {
 		// To correct invalid angle in Animated FIX/ITEMS
-		rotation = glm::toQuat(toRotationMatrix(angle));
+		rotation = glm::quat_cast(toRotationMatrix(angle));
 	} else {
 		rotation = QuatFromAngles(angle);
 	}

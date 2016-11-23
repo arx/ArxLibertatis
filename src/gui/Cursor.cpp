@@ -247,7 +247,7 @@ bool Manage3DCursor(Entity * io, bool simulate) {
 
 			io->gameFlags &= ~GFLAG_NOCOMPUTATION;
 			
-			glm::quat rotation = glm::toQuat(toRotationMatrix(angle));
+			glm::quat rotation = glm::quat_cast(toRotationMatrix(angle));
 			
 			if(SPECIAL_DRAGINTER_RENDER) {
 			if(glm::abs(lastanything) > glm::abs(height)) {

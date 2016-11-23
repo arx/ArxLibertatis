@@ -229,7 +229,7 @@ inline glm::quat toNonNpcRotation(const Anglef & src) {
 	up = VRotateX(up, ang.getPitch());
 	up = VRotateZ(up, ang.getRoll());
 	MatrixSetByVectors(mat, vect, up);
-	return glm::toQuat(mat);
+	return glm::quat_cast(mat);
 }
 
 inline Vec3f camEE_RT(const Vec3f & in, const EERIE_TRANSFORM & trans) {

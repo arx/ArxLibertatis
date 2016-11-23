@@ -153,7 +153,7 @@ void ARX_INTERFACE_ManageOpenedBook_Finish(const Vec2f & mousePos)
 		
 		if(player.hasRune((Rune)i)) {
 			
-			TransformInfo t1(pos, glm::toQuat(toRotationMatrix(angle)));
+			TransformInfo t1(pos, glm::quat_cast(toRotationMatrix(angle)));
 			DrawEERIEInter(gui::necklace.lacet, t1, NULL, false, 0.f);
 			
 			if(rune->angle.getYaw() != 0.f) {
@@ -172,7 +172,7 @@ void ARX_INTERFACE_ManageOpenedBook_Finish(const Vec2f & mousePos)
 			GRenderer->SetRenderState(Renderer::AlphaBlending, false);
 			
 			// Now draw the rune
-			TransformInfo t2(pos, glm::toQuat(toRotationMatrix(angle)));
+			TransformInfo t2(pos, glm::quat_cast(toRotationMatrix(angle)));
 			DrawEERIEInter(rune, t2, NULL, false, 0.f);
 			
 			Rectf runeBox = UpdateBbox2d(*rune).toRect();
@@ -203,7 +203,7 @@ void ARX_INTERFACE_ManageOpenedBook_Finish(const Vec2f & mousePos)
 					GRenderer->SetRenderState(Renderer::AlphaBlending, true);
 					GRenderer->SetBlendFunc(BlendOne, BlendOne);
 					
-					TransformInfo t(pos, glm::toQuat(toRotationMatrix(angle)));
+					TransformInfo t(pos, glm::quat_cast(toRotationMatrix(angle)));
 					DrawEERIEInter(rune, t, NULL, false, 0.f);
 					
 					rune->angle.setYaw(rune->angle.getYaw() + g_framedelay*2.f);

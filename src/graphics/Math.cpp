@@ -601,7 +601,7 @@ glm::quat angleToQuatForArrow(const Anglef & angle) {
 	
 	glm::mat4x4 tmat;
 	MatrixSetByVectors(tmat, front, up);
-	return glm::toQuat(tmat);
+	return glm::quat_cast(tmat);
 }
 
 glm::quat angleToQuatForExtraRotation(const Anglef & angle) {
