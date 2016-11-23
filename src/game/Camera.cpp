@@ -22,8 +22,8 @@
 #include "graphics/Math.h"
 #include "graphics/Renderer.h"
 
+#include <glm/gtc/matrix_transform.hpp>
 #include <glm/gtx/euler_angles.hpp>
-#include <glm/gtx/transform.hpp>
 
 void EERIE_TRANSFORM::updateFromAngle(const Anglef &angle) {
 	float pitch = glm::radians(angle.getPitch());
@@ -36,7 +36,7 @@ void EERIE_TRANSFORM::updateFromAngle(const Anglef &angle) {
 	zcos = std::cos(roll);
 	zsin = std::sin(roll);
 	
-	glm::mat4 translation = glm::translate(-pos);
+	glm::mat4 translation = glm::translate(glm::mat4(1), -pos);
 	worldToView = toRotationMatrix(angle) * translation;
 }
 
