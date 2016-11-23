@@ -59,8 +59,6 @@ ZeniMax Media Inc., Suite 120, Rockville, Maryland 20850 USA.
 #include <boost/foreach.hpp>
 #include <boost/lexical_cast.hpp>
 
-#include <glm/gtx/norm.hpp>
-
 #include "animation/Animation.h"
 
 #include "core/Application.h"
@@ -677,7 +675,7 @@ static EntityHandle TemporaryGetSpellTarget(const Vec3f & from) {
 		Entity * e = entities[handle];
 		
 		if(e && e->ioflags & IO_NPC) {
-			float dist = glm::distance2(from, e->pos);
+			float dist = arx::distance2(from, e->pos);
 			if(dist < mindist) {
 				found = handle;
 				mindist = dist;

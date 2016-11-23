@@ -1,0 +1,185 @@
+// Based on:
+/*
+Copyright (c) 2005 - 2016 G-Truc Creation
+
+Permission is hereby granted, free of charge, to any person obtaining a
+copy of this software and associated documentation files (the
+"Software"), to deal in the Software without restriction, including
+without limitation the rights to use, copy, modify, merge, publish,
+distribute, sublicense, and/or sell copies of the Software, and to
+permit persons to whom the Software is furnished to do so, subject to
+the following conditions:
+
+The above copyright notice and this permission notice shall be included
+in all copies or substantial portions of the Software.
+
+THE SOFTWARE IS PROVIDED "AS IS", WITHOUT WARRANTY OF ANY KIND, EXPRESS
+OR IMPLIED, INCLUDING BUT NOT LIMITED TO THE WARRANTIES OF
+MERCHANTABILITY, FITNESS FOR A PARTICULAR PURPOSE AND NONINFRINGEMENT.
+IN NO EVENT SHALL THE AUTHORS OR COPYRIGHT HOLDERS BE LIABLE FOR ANY
+CLAIM, DAMAGES OR OTHER LIABILITY, WHETHER IN AN ACTION OF CONTRACT,
+TORT OR OTHERWISE, ARISING FROM, OUT OF OR IN CONNECTION WITH THE
+SOFTWARE OR THE USE OR OTHER DEALINGS IN THE SOFTWARE.
+*/
+
+#ifndef ARX_MATH_GTXFUNCTIONS_H
+#define ARX_MATH_GTXFUNCTIONS_H
+
+#include "math/Types.h"
+
+namespace arx
+{
+
+inline float length2(float x)
+{
+	return x * x;
+}
+
+inline float length2(Vec2f const & v)
+{
+	return glm::dot(v, v);
+}
+
+inline float length2(Vec3f const & v)
+{
+	return glm::dot(v, v);
+}
+
+inline float distance2(float p0, float p1)
+{
+	return arx::length2(p1 - p0);
+}
+
+inline float distance2(Vec2f const & p0, Vec2f const & p1)
+{
+	return arx::length2(p1 - p0);
+}
+
+inline float distance2(Vec3f const & p0, Vec3f const & p1)
+{
+	return arx::length2(p1 - p0);
+}
+
+inline glm::mat4 eulerAngleX
+(
+	float const & angleX
+)
+{
+	float cosX = glm::cos(angleX);
+	float sinX = glm::sin(angleX);
+
+	return glm::mat4(
+		float(1), float(0), float(0), float(0),
+		float(0), cosX, sinX, float(0),
+		float(0),-sinX, cosX, float(0),
+		float(0), float(0), float(0), float(1));
+}
+
+inline glm::mat4 eulerAngleY
+(
+	float const & angleY
+)
+{
+	float cosY = glm::cos(angleY);
+	float sinY = glm::sin(angleY);
+
+	return glm::mat4(
+		cosY,	float(0),	-sinY,	float(0),
+		float(0),	float(1),	float(0),	float(0),
+		sinY,	float(0),	cosY,	float(0),
+		float(0),	float(0),	float(0),	float(1));
+}
+
+inline glm::mat4 eulerAngleZ
+(
+	float const & angleZ
+)
+{
+	float cosZ = glm::cos(angleZ);
+	float sinZ = glm::sin(angleZ);
+
+	return glm::mat4(
+		cosZ,	sinZ,	float(0), float(0),
+		-sinZ,	cosZ,	float(0), float(0),
+		float(0),	float(0),	float(1), float(0),
+		float(0),	float(0),	float(0), float(1));
+}
+
+template <typename genType>
+GLM_FUNC_QUALIFIER genType pow2(genType const & x)
+{
+	return x * x;
+}
+
+template <typename genType>
+GLM_FUNC_QUALIFIER genType pow3(genType const & x)
+{
+	return x * x * x;
+}
+
+template <typename genType>
+GLM_FUNC_QUALIFIER genType catmullRom
+(
+	genType const & v1, 
+	genType const & v2, 
+	genType const & v3, 
+	genType const & v4, 
+	typename genType::value_type const & s
+)
+{
+	//typename genType::value_type s1 = s; ARX CHANGE !
+	typename genType::value_type s2 = pow2(s);
+	typename genType::value_type s3 = pow3(s);
+
+	typename genType::value_type f1 = -s3 + typename genType::value_type(2) * s2 - s;
+	typename genType::value_type f2 = typename genType::value_type(3) * s3 - typename genType::value_type(5) * s2 + typename genType::value_type(2);
+	typename genType::value_type f3 = typename genType::value_type(-3) * s3 + typename genType::value_type(4) * s2 + s;
+	typename genType::value_type f4 = s3 - s2;
+
+	return (f1 * v1 + f2 * v2 + f3 * v3 + f4 * v4) / typename genType::value_type(2);
+
+}
+
+// from glm/gtx/intersect.inl
+
+template <typename genType>
+GLM_FUNC_QUALIFIER bool intersectLineTriangle
+(
+	genType const & orig, genType const & dir,
+	genType const & vert0, genType const & vert1, genType const & vert2,
+	genType & position
+)
+{
+	typename genType::value_type Epsilon = std::numeric_limits<typename genType::value_type>::epsilon();
+
+	genType edge1 = vert1 - vert0;
+	genType edge2 = vert2 - vert0;
+
+	genType pvec = glm::cross(dir, edge2);
+
+	float det = glm::dot(edge1, pvec);
+
+	if (det > -Epsilon && det < Epsilon)
+		return false;
+	float inv_det = typename genType::value_type(1) / det;
+
+	genType tvec = orig - vert0;
+
+	position.y = glm::dot(tvec, pvec) * inv_det;
+	if (position.y < typename genType::value_type(0) || position.y > typename genType::value_type(1))
+		return false;
+
+	genType qvec = glm::cross(tvec, edge1);
+
+	position.z = glm::dot(dir, qvec) * inv_det;
+	if (position.z < typename genType::value_type(0) || position.y + position.z > typename genType::value_type(1))
+		return false;
+
+	position.x = glm::dot(edge2, qvec) * inv_det;
+
+	return true;
+}
+
+}
+
+#endif // ARX_MATH_GTXFUNCTIONS_H

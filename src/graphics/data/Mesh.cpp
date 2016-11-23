@@ -53,8 +53,6 @@ ZeniMax Media Inc., Suite 120, Rockville, Maryland 20850 USA.
 #include <boost/scoped_array.hpp>
 #include <boost/unordered_map.hpp>
 
-#include <glm/gtx/intersect.hpp>
-
 #include "ai/PathFinder.h"
 #include "ai/PathFinderManager.h"
 
@@ -517,10 +515,10 @@ static bool RayIn3DPolyNoCull(const Vec3f & orgn, const Vec3f & dest, const EERI
 	Vec3f dir = dest - orgn;
 	
 	Vec3f hitPos;
-	bool hit = glm::intersectLineTriangle(orgn, dir, epp.v[0].p, epp.v[1].p, epp.v[2].p, hitPos);
+	bool hit = arx::intersectLineTriangle(orgn, dir, epp.v[0].p, epp.v[1].p, epp.v[2].p, hitPos);
 	
 	if(!hit && (epp.type & POLY_QUAD)) {
-		hit = glm::intersectLineTriangle(orgn, dir, epp.v[1].p, epp.v[3].p, epp.v[2].p, hitPos);
+		hit = arx::intersectLineTriangle(orgn, dir, epp.v[1].p, epp.v[3].p, epp.v[2].p, hitPos);
 	}
 	
 	return hit;

@@ -21,7 +21,7 @@
 
 #include <sstream>
 
-#include <glm/gtx/euler_angles.hpp>
+#include "src/math/GtxFunctions.h"
 
 #include "graphics/Math.h"
 
@@ -278,8 +278,8 @@ void LegacyMathTest::inventorySizeTest() {
 		Vec2s result1 = inventorySizeFromTextureSize_1(i, j);
 		Vec2s result2 = inventorySizeFromTextureSize_2(i, j);
 		
-		CPPUNIT_ASSERT_EQUAL_MESSAGE(glm::to_string(Vec2i(i, j)), expected, result1);
-		CPPUNIT_ASSERT_EQUAL_MESSAGE(glm::to_string(Vec2i(i, j)), expected, result2);
+		CPPUNIT_ASSERT_EQUAL_MESSAGE(CPPUNIT_NS::assertion_traits<Vec2i>::toString(Vec2i(i, j)), expected, result1);
+		CPPUNIT_ASSERT_EQUAL_MESSAGE(CPPUNIT_NS::assertion_traits<Vec2i>::toString(Vec2i(i, j)), expected, result2);
 	}
 }
 
@@ -351,7 +351,7 @@ void LegacyMathTest::pointInerpolationTest() {
 			float f = u / 1000.f;
 			
 			Vec3f res1 = interpolatePos(f, v0, v1, v2, v3);
-			Vec3f res2 = glm::catmullRom(v0, v1, v2, v3, f);
+			Vec3f res2 = arx::catmullRom(v0, v1, v2, v3, f);
 			
 			CPPUNIT_ASSERT_EQUAL(res1, res2);
 		}

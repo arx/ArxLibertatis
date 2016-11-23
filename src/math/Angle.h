@@ -23,8 +23,10 @@
 #include <limits>
 #include <cmath>
 
-#include <glm/gtx/quaternion.hpp>
+#include <glm/gtc/constants.hpp>
+#include <glm/gtc/quaternion.hpp>
 
+#include "math/GtxFunctions.h"
 #include "math/Types.h"
 
 inline float MAKEANGLE(float a) {

@@ -615,7 +615,7 @@ consequences on light :
 			const Vec3f nextPos = next->pos;
 			const Vec3f next2Pos = ksuivsuiv->pos;
 			
-			c->pos = glm::catmullRom(prevPos, currentPos, nextPos, next2Pos, a);
+			c->pos = arx::catmullRom(prevPos, currentPos, nextPos, next2Pos, a);
 			
 			c->angz = current->angz + a * GetAngleInterpolation(current->angz, next->angz);
 			

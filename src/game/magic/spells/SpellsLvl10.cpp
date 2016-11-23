@@ -327,7 +327,7 @@ void ControlTargetSpell::Update() {
 
 			float t = toto * delta;
 			
-			Vec3f newpos = glm::catmullRom(v1, v2, v3, v4, t);
+			Vec3f newpos = arx::catmullRom(v1, v2, v3, v4, t);
 			
 			if(fTrail - (i * n + toto) <= 70) {
 				float c = 1.0f - (fTrail - (i * n + toto)) / 70.0f;

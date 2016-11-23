@@ -479,7 +479,7 @@ void ARX_NPC_TryToCutSomething(Entity * target, const Vec3f * pos)
 			}
 
 			if(out < 3) {
-				float dist = glm::distance2(*pos, target->obj->vertexlist3[target->obj->selections[i].selected[0]].v);
+				float dist = arx::distance2(*pos, target->obj->vertexlist3[target->obj->selections[i].selected[0]].v);
 
 				if(dist < mindistSqr) {
 					mindistSqr = dist;

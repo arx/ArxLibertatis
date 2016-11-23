@@ -56,8 +56,6 @@ ZeniMax Media Inc., Suite 120, Rockville, Maryland 20850 USA.
 
 #include <boost/algorithm/string/predicate.hpp>
 
-#include <glm/gtx/norm.hpp>
-
 #include "ai/Paths.h"
 
 #include "animation/Animation.h"
@@ -556,7 +554,7 @@ void PrepareIOTreatZone(long flag) {
 				if(Cam_Room >= 0) {
 					if(io->show == SHOW_FLAG_TELEPORTING) {
 						Vec3f pos = GetItemWorldPosition(io);
-						dists = glm::distance2(cameraPos, pos);
+						dists = arx::distance2(cameraPos, pos);
 					} else {
 						if(io->requestRoomUpdate)
 							UpdateIORoom(io);
@@ -566,10 +564,10 @@ void PrepareIOTreatZone(long flag) {
 				} else {
 					if(io->show == SHOW_FLAG_TELEPORTING) {
 						Vec3f pos = GetItemWorldPosition(io);
-						dists = glm::distance2(cameraPos, pos); //&io->pos,&pos);
+						dists = arx::distance2(cameraPos, pos); //&io->pos,&pos);
 					}
 					else
-						dists = glm::distance2(io->pos, cameraPos);
+						dists = arx::distance2(io->pos, cameraPos);
 				}
 		
 				if(dists < square(TREATZONE_LIMIT))
@@ -1911,8 +1909,8 @@ Entity * GetFirstInterAtPos(const Vec2s & pos, long flag, Vec3f * _pRef, Entity 
 
 
 		if(flag && _pRef) {
-			float flDistanceToRef = glm::distance2(ACTIVECAM->orgTrans.pos, *_pRef);
-			float flDistanceToIO = glm::distance2(ACTIVECAM->orgTrans.pos, io->pos);
+			float flDistanceToRef = arx::distance2(ACTIVECAM->orgTrans.pos, *_pRef);
+			float flDistanceToIO = arx::distance2(ACTIVECAM->orgTrans.pos, io->pos);
 			bPass = bPlayerEquiped || (flDistanceToIO < flDistanceToRef);
 		}
 

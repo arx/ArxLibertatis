@@ -46,11 +46,10 @@ ZeniMax Media Inc., Suite 120, Rockville, Maryland 20850 USA.
 #include <limits>
 #include <algorithm>
 
-#include <glm/gtx/norm.hpp>
-
 #include "graphics/GraphicsTypes.h"
 #include "graphics/Math.h"
 #include "graphics/data/Mesh.h"
+#include "math/GtxFunctions.h"
 #include "math/Random.h"
 #include "math/Vector.h"
 #include "platform/Platform.h"
@@ -387,7 +386,7 @@ PathFinder::NodeId PathFinder::getNearestNode(const Vec3f & pos) const {
 	float distance = std::numeric_limits<float>::max();
 	
 	for(size_t i = 0; i < map_s; i++) {
-		float dist = glm::distance2(map_d[i].pos, pos);
+		float dist = arx::distance2(map_d[i].pos, pos);
 		if(dist < distance && map_d[i].nblinked) {
 			best = i;
 			distance = dist;

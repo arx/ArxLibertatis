@@ -53,8 +53,7 @@ ZeniMax Media Inc., Suite 120, Rockville, Maryland 20850 USA.
 
 #include <boost/numeric/conversion/cast.hpp>
 
-#include <glm/gtx/norm.hpp>
-#include <glm/gtx/spline.hpp>
+#include "math/GtxFunctions.h"
 
 #include "graphics/GraphicsTypes.h"
 #include "graphics/data/Mesh.h"
@@ -227,7 +226,7 @@ inline float focalToFov(float focal) {
  * may use an approximative way of computing sqrt !
  */
 inline float fdist(const Vec3f & from, const Vec3f & to) {
-	return ffsqrt(glm::distance2(from, to));
+	return ffsqrt(arx::distance2(from, to));
 }
 
 /*!
@@ -235,7 +234,7 @@ inline float fdist(const Vec3f & from, const Vec3f & to) {
  * may use an approximative way of computing sqrt !
  */
 inline float fdist(const Vec2f & from, const Vec2f & to) {
-	return ffsqrt(glm::distance2(from, to));
+	return ffsqrt(arx::distance2(from, to));
 }
 
 inline bool PointInCylinder(const Cylinder & cyl, const Vec3f & pt) {

@@ -52,8 +52,6 @@ ZeniMax Media Inc., Suite 120, Rockville, Maryland 20850 USA.
 #include <boost/algorithm/string/case_conv.hpp>
 #include <boost/foreach.hpp>
 
-#include <glm/gtx/norm.hpp>
-
 #include "ai/PathFinderManager.h"
 #include "ai/Paths.h"
 
@@ -1380,7 +1378,7 @@ void ArxGame::updateFirstPersonCamera() {
 			vect.x = subj.orgTrans.pos.x - player.pos.x;
 			vect.y = 0;
 			vect.z = subj.orgTrans.pos.z - player.pos.z;
-			float len = ffsqrt(glm::length2(vect));
+			float len = ffsqrt(arx::length2(vect));
 			
 			if(len > 46.f) {
 				float div = 46.f / len;
