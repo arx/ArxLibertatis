@@ -19,11 +19,10 @@
 
 #include "game/Camera.h"
 
+#include <glm/gtc/matrix_transform.hpp>
+
 #include "graphics/Math.h"
 #include "graphics/Renderer.h"
-
-#include <glm/gtc/matrix_transform.hpp>
-#include <glm/gtx/euler_angles.hpp>
 
 void EERIE_TRANSFORM::updateFromAngle(const Anglef &angle) {
 	float pitch = glm::radians(angle.getPitch());

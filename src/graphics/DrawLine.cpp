@@ -21,8 +21,6 @@
 
 #include <cstring>
 
-#include <glm/gtx/norm.hpp>
-
 #include "math/Angle.h"
 
 #include "graphics/Math.h"

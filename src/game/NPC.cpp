@@ -58,8 +58,6 @@ ZeniMax Media Inc., Suite 120, Rockville, Maryland 20850 USA.
 #include <boost/algorithm/string/predicate.hpp>
 #include <boost/foreach.hpp>
 
-#include <glm/gtx/norm.hpp>
-
 #include "animation/Animation.h"
 
 #include "ai/Paths.h"
@@ -451,7 +449,7 @@ static long ARX_NPC_GetNextAttainableNodeIncrement(Entity * io) {
 	if(!(io->ioflags & IO_NPC) || (io->_npcdata->behavior & BEHAVIOUR_WANDER_AROUND))
 		return 0;
 
-	float dists = glm::distance2(io->pos, ACTIVECAM->orgTrans.pos);
+	float dists = arx::distance2(io->pos, ACTIVECAM->orgTrans.pos);
 
 	if (dists > square(ACTIVECAM->cdepth) * square(1.0f / 2))
 		return 0;
@@ -519,7 +517,7 @@ static long AnchorData_GetNearest(const Vec3f & pos, const Cylinder & cyl, long 
 			continue;
 
 		if(eb->anchors[i].nblinked) {
-			float d = glm::distance2(eb->anchors[i].pos, pos);
+			float d = arx::distance2(eb->anchors[i].pos, pos);
 
 			if ((d < distmax) && (eb->anchors[i].height <= cyl.height)
 			        && (eb->anchors[i].radius >= cyl.radius)
@@ -1507,9 +1505,9 @@ static void ARX_NPC_Manage_Anims(Entity * io, float TOLERANCE) {
 	
 	float tdist = std::numeric_limits<float>::max();
 	if(io->_npcdata->pathfind.listnb && ValidIONum(io->_npcdata->pathfind.truetarget)) {
-		tdist = glm::distance2(io->pos, entities[io->_npcdata->pathfind.truetarget]->pos);
+		tdist = arx::distance2(io->pos, entities[io->_npcdata->pathfind.truetarget]->pos);
 	} else if(ValidIONum(io->targetinfo)) {
-		tdist = glm::distance2(io->pos, entities[io->targetinfo]->pos);
+		tdist = arx::distance2(io->pos, entities[io->targetinfo]->pos);
 	}
 	
 	if(ValidIOAddress(io->_npcdata->weapon)) {
@@ -2604,7 +2602,7 @@ Entity * ARX_NPC_GetFirstNPCInSight(Entity * ioo)
 			continue;
 		}
 
-		float dist_io = glm::distance2(io->pos, ioo->pos);
+		float dist_io = arx::distance2(io->pos, ioo->pos);
 
 		if(dist_io > found_dist || dist_io > square(1800))
 			continue; // too far
@@ -2720,7 +2718,7 @@ void CheckNPCEx(Entity * io) {
 	ARX_PROFILE_FUNC();
 
 	// Distance Between Player and IO
-	float ds = glm::distance2(io->pos, player.basePosition());
+	float ds = arx::distance2(io->pos, player.basePosition());
 	
 	// Start as not visible
 	long Visible = 0;

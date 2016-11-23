@@ -186,7 +186,7 @@ void CMagicMissile::Render()
 
 			float t = toto * (1.0f / iBezierPrecision);
 			
-			v = glm::catmullRom(v1, v2, v3, v4, t);
+			v = arx::catmullRom(v1, v2, v3, v4, t);
 			
 			newpos = v;
 

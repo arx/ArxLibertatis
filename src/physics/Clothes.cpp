@@ -48,7 +48,7 @@ ZeniMax Media Inc., Suite 120, Rockville, Maryland 20850 USA.
 
 #include <cstring>
 
-#include <glm/gtx/norm.hpp>
+#include "math/GtxFunctions.h"
 
 #include "graphics/data/MeshManipulation.h"
 #include "graphics/Math.h"
@@ -189,7 +189,7 @@ void EERIEOBJECT_AddClothesData(EERIE_3DOBJ * obj) {
 					continue; // Cannot add a spring between 1 node :p
 
 				if(IsInSelection(obj, vert, sel)) {
-					float distance = glm::distance2(obj->vertexlist[obj->cdata->cvert[i].idx].v,
+					float distance = arx::distance2(obj->vertexlist[obj->cdata->cvert[i].idx].v,
 					                         obj->vertexlist[vert].v) * square(1.2f);
 
 					// We springed it in the previous part of code
@@ -200,7 +200,7 @@ void EERIEOBJECT_AddClothesData(EERIE_3DOBJ * obj) {
 							if(ver == obj->cdata->cvert[i].idx)
 								continue;
 
-							float distance2 = glm::distance2(obj->vertexlist[obj->cdata->cvert[i].idx].v,
+							float distance2 = arx::distance2(obj->vertexlist[obj->cdata->cvert[i].idx].v,
 							                          obj->vertexlist[ver].v);
 
 							if(distance2 < distance) {
@@ -226,7 +226,7 @@ void EERIEOBJECT_AddClothesData(EERIE_3DOBJ * obj) {
 						short ver = obj->ndata[vert].Nvertex[k];
 
 						if(IsInSelection(obj, ver, sel)) { // This time we have one !
-							float distance = glm::distance2(obj->vertexlist[obj->cdata->cvert[i].idx].v,
+							float distance = arx::distance2(obj->vertexlist[obj->cdata->cvert[i].idx].v,
 							                         obj->vertexlist[ver].v) * square(1.2f);
 
 							for(long k2 = 0; k2 < obj->ndata[ver].nb_Nvertex; k2++) {
@@ -240,7 +240,7 @@ void EERIEOBJECT_AddClothesData(EERIE_3DOBJ * obj) {
 									if(obj->cdata->cvert[(short)GetIDXVert(obj, ve)].flags & CLOTHES_FLAG_FIX)
 										continue;
 
-									float distance2 = glm::distance2(obj->vertexlist[obj->cdata->cvert[i].idx].v,
+									float distance2 = arx::distance2(obj->vertexlist[obj->cdata->cvert[i].idx].v,
 									                          obj->vertexlist[ve].v);
 
 									if(distance2 > distance && distance2 < distance * square(2.f)) {

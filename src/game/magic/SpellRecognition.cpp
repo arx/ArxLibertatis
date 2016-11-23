@@ -251,7 +251,7 @@ void ARX_SPELLS_Analyse() {
 		
 		Vec2f d = Vec2f(plist[i-1] - plist[i]);
 		
-		if(glm::length2(d) > 100) {
+		if(arx::length2(d) > 100) {
 			
 			float a = std::abs(d.x);
 			float b = std::abs(d.y);

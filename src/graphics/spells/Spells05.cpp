@@ -227,7 +227,7 @@ void CPoisonProjectile::Render() {
 			const Vec3f nextPos = pathways[kpsuiv];
 			const Vec3f next2Pos = pathways[kpsuivsuiv];
 			
-			lastpos = glm::catmullRom(prevPos, currentPos, nextPos, next2Pos, t);
+			lastpos = arx::catmullRom(prevPos, currentPos, nextPos, next2Pos, t);
 		}
 	}
 	

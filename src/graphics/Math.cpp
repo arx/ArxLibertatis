@@ -50,7 +50,6 @@ ZeniMax Media Inc., Suite 120, Rockville, Maryland 20850 USA.
 #include <limits>
 
 #include <glm/gtc/type_ptr.hpp>
-#include <glm/gtx/euler_angles.hpp>
 
 #include "graphics/GraphicsTypes.h"
 
@@ -580,9 +579,9 @@ glm::mat4 toRotationMatrix(const Anglef & angle) {
 	float pitch = glm::radians(angle.getPitch());
 	float yaw = glm::radians(angle.getYaw());
 	float roll = glm::radians(angle.getRoll());
-	glm::mat4 rotateX = glm::eulerAngleX(pitch);
-	glm::mat4 rotateY = glm::eulerAngleY(yaw);
-	glm::mat4 rotateZ = glm::eulerAngleZ(-roll);
+	glm::mat4 rotateX = arx::eulerAngleX(pitch);
+	glm::mat4 rotateY = arx::eulerAngleY(yaw);
+	glm::mat4 rotateZ = arx::eulerAngleZ(-roll);
 	return rotateZ * rotateX * rotateY;
 }
 

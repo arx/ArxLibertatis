@@ -49,7 +49,6 @@ ZeniMax Media Inc., Suite 120, Rockville, Maryland 20850 USA.
 #include <algorithm>
 
 #include <boost/format.hpp>
-#include <glm/gtx/norm.hpp>
 
 #include "core/Application.h"
 #include "core/Config.h"
@@ -74,6 +73,7 @@ ZeniMax Media Inc., Suite 120, Rockville, Maryland 20850 USA.
 
 #include "input/Input.h"
 
+#include "math/GtxFunctions.h"
 #include "math/Random.h"
 
 #include "platform/profiler/Profiler.h"
@@ -306,7 +306,7 @@ void ARX_PARTICLES_Spawn_Blood(const Vec3f & pos, float dmgs, EntityHandle sourc
 	long count = entities[source]->obj->grouplist.size();
 	for(long i = 0; i < count; i += 2) {
 		long vertex = entities[source]->obj->grouplist[i].origin;
-		float dist = glm::distance2(pos, entities[source]->obj->vertexlist3[vertex].v);
+		float dist = arx::distance2(pos, entities[source]->obj->vertexlist3[vertex].v);
 		if(dist < nearest_dist) {
 			nearest_dist = dist;
 			nearest = i;
@@ -1006,7 +1006,7 @@ void TreatBackgroundActions() {
 			continue;
 		}
 		
-		float dist = glm::distance2(gl->pos,	ACTIVECAM->orgTrans.pos);
+		float dist = arx::distance2(gl->pos,	ACTIVECAM->orgTrans.pos);
 		if(dist > fZFar) {
 			// Out of treat range
 			ARX_SOUND_Stop(gl->sample);
