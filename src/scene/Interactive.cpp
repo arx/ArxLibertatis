@@ -2496,7 +2496,7 @@ void RenderInter() {
 
 					if(io->obj->pbox && io->obj->pbox->active) {
 						glm::mat4x4 mat = convertToMatrixForDrawEERIEInter(*io->obj->pbox);
-						glm::quat rotation = glm::toQuat(mat);
+						glm::quat rotation = glm::quat_cast(mat);
 						
 						TransformInfo t(io->pos, rotation, io->scale, io->obj->pbox->vert[0].initpos);
 
@@ -2504,7 +2504,7 @@ void RenderInter() {
 
 						DrawEERIEInter(io->obj, t, io, false, invisibility);
 					} else {
-						glm::quat rotation = glm::toQuat(toRotationMatrix(temp));
+						glm::quat rotation = glm::quat_cast(toRotationMatrix(temp));
 						
 						TransformInfo t(io->pos, rotation, io->scale);
 
