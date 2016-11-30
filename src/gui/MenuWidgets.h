@@ -91,11 +91,10 @@ protected:
 private:
 	void updateTextRect(TextWidget * widget);
 	void UpdateText();
-	
-	Widget		*	m_selected;
-	bool					bEdit;
-	
-	bool				bMouseAttack;
+
+	Widget * m_selected;
+	bool bEdit;
+	bool bMouseAttack;
 	
 	PlatformDuration m_blinkTime;
 	bool m_blink;
