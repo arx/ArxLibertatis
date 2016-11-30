@@ -467,6 +467,7 @@ MenuPage::MenuPage(const Vec2f & pos, const Vec2f & size, MENUSTATE _eMenuState)
 	, m_selected(NULL)
 	, bEdit(false)
 	, bMouseAttack(false)
+	, m_disableShortcuts(false)
 	, m_blinkTime(PlatformDuration_ZERO)
 	, m_blink(true)
 {
@@ -792,6 +793,10 @@ MENUSTATE MenuPage::checkShortcuts() {
 			
 			if(w->m_shortcut != ActionKey::UNUSED) {
 				if(GInput->isKeyPressedNowUnPressed(w->m_shortcut)) {
+					if(m_disableShortcuts) {
+						m_disableShortcuts = false;
+						break;
+					}
 					bEdit = w->OnMouseClick();
 					m_selected = w;
 					return w->m_targetMenu;
@@ -890,6 +895,7 @@ void MenuPage::Render() {
 						if(widget->m_isKeybind) {
 							if(inputKeyId == Keyboard::Key_Escape) {
 								inputKeyId = ActionKey::UNUSED;
+								m_disableShortcuts = true;
 							}
 							config.setActionKey(widget->m_keybindAction, widget->m_keybindIndex, inputKeyId);
 						}
