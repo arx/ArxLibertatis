@@ -95,7 +95,7 @@ private:
 	Widget * m_selected;
 	bool bEdit;
 	bool bMouseAttack;
-	
+	bool m_disableShortcuts;
 	PlatformDuration m_blinkTime;
 	bool m_blink;
 };
