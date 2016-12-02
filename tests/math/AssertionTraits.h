@@ -26,7 +26,6 @@
 
 #include <glm/glm.hpp>
 #include <glm/gtc/matrix_access.hpp>
-#include <glm/gtx/string_cast.hpp>
 #include <glm/ext.hpp>
 
 #include <cppunit/TestAssert.h>
@@ -55,7 +54,7 @@ namespace CppUnit {
 			ost << quat.w << ", ";
 			ost << quat.x << ", ";
 			ost << quat.y << ", ";
-			ost << quat.z << ")" << std::endl;			
+			ost << quat.z << ")" << std::endl;
 			return ost.str();
 		}
 	};
@@ -67,7 +66,12 @@ namespace CppUnit {
 		}
 		
 		static std::string toString(const Vec2s &v) {
-			return glm::to_string(Vec2i(v));
+			std::ostringstream ost;
+			ost << std::fixed << std::setprecision(4);
+			ost << "Vec2s(";
+			ost << v.x << ", ";
+			ost << v.y << ")";
+			return ost.str();
 		}
 	};
 	
@@ -78,7 +82,13 @@ namespace CppUnit {
 		}
 		
 		static std::string toString(const Vec3f &v) {
-			return glm::to_string(v);
+			std::ostringstream ost;
+			ost << std::fixed << std::setprecision(4);
+			ost << "Vec3f(";
+			ost << v.x << ", ";
+			ost << v.y << ", ";
+			ost << v.z << ")";
+			return ost.str();
 		}
 	};
 	
@@ -89,7 +99,14 @@ namespace CppUnit {
 		}
 		
 		static std::string toString(const Vec4f &v) {
-			return glm::to_string(v);
+			std::ostringstream ost;
+			ost << std::fixed << std::setprecision(4);
+			ost << "Vec4f(";
+			ost << v.x << ", ";
+			ost << v.y << ", ";
+			ost << v.z << ", ";
+			ost << v.w << ")";
+			return ost.str();
 		}
 	};
 	
