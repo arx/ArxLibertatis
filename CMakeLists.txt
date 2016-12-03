@@ -455,6 +455,17 @@ include_directories(SYSTEM ${Boost_INCLUDE_DIRS})
 add_definitions(-DBOOST_ALL_NO_LIB)
 # We compile with -fno-rtti and boost is not able to detect that for all compilers.
 add_definitions(-DBOOST_NO_RTTI -DBOOST_NO_TYPEID)
+# Boost 1.62 has a bug in the type_index library:
+# BOOST_TYPE_INDEX_REGISTER_CTTI_PARSING_PARAMS are wrong for 32-bit GCC builds in C++14 mode
+# This leads to a static assert when (indirectly) including <boost/type_index/ctti_type_index.hpp>
+#   /usr/include/boost/type_index/detail/compile_time_type_info.hpp:78:9: error: static assertion failed: TypeIndex library is misconfigured for your compiler. Please define BOOST_TYPE_INDEX_CTTI_USER_DEFINED_PARSING to correct values. See section 'RTTI emulation limitations' of the documentation for more information.
+# Fixed in Boost type_index commit b669f0244e4b0bf146f18e9293e6e87842f4bbe0
+if(NOT Boost_VERSION VERSION_LESS 106200 AND Boost_VERSION VERSION_LESS 106300)
+	if(CMAKE_COMPILER_IS_GNUCXX AND CMAKE_SIZEOF_VOID_P EQUAL 4)
+		message("Applying workaround for Boost.TypeIndex bug")
+		add_definitions("-DBOOST_NO_CXX14_CONSTEXPR")
+	endif()
+endif()
 
 # glm
 find_package(GLM 0.9.5.0 REQUIRED)
