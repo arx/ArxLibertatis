@@ -9,7 +9,7 @@ function(enable_cxx11)
 	if(MSVC)
 		if(NOT MSVC_VERSION LESS 1600)
 			if(NOT MSVC_VERSION LESS 2000)
-				set(CMAKE_CXX_FLAGS "${CMAKE_CXX_FLAGS} /std:c++14s")
+				set(CMAKE_CXX_FLAGS "${CMAKE_CXX_FLAGS} /std:c++14")
 			elseif(NOT MSVC_VERSION LESS 1900)
 				# Only introduced with update 3 of MSVC 2015
 				add_cxxflag("/std:c++14")
