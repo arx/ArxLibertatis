@@ -156,7 +156,7 @@ else(MSVC)
 			endif()
 			
 			# -Wuninitialized causes too many false positives in older gcc versions
-			if(CMAKE_CXX_COMPILER_ID STREQUAL "GNU")
+			if(CMAKE_COMPILER_IS_GNUCXX)
 				# GCC is 'clever' and silently accepts -Wno-*  - check for the non-negated variant
 				check_compiler_flag(FLAG_FOUND "-Wmaybe-uninitialized")
 				if(FLAG_FOUND)
