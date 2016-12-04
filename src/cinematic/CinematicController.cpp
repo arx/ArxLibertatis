@@ -175,6 +175,7 @@ void cinematicRender() {
 
 		// !! avant le cine end
 		if(ACTIVECAM) {
+			arx_assert(isallfinite(ePos));
 			ACTIVECAM->orgTrans.pos = ePos;
 		}
 
