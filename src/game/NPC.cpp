@@ -626,7 +626,7 @@ bool ARX_NPC_LaunchPathfind(Entity * io, EntityHandle target)
 	
 	io->_npcdata->pathfind.truetarget = target;
 	
-	if ((closerThan(pos1, ACTIVECAM->orgTrans.pos, ACTIVECAM->cdepth) * square(1.0f / 2))
+	if(   closerThan(pos1, ACTIVECAM->orgTrans.pos, ACTIVECAM->cdepth * 0.5f)
 	        &&	(glm::abs(pos1.y - pos2.y) < 50.f)
 	        && (closerThan(pos1, pos2, 520)) && (io->_npcdata->behavior & BEHAVIOUR_MOVE_TO)
 	        && (!(io->_npcdata->behavior & BEHAVIOUR_SNEAK))
