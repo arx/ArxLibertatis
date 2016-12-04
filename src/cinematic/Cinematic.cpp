@@ -463,6 +463,7 @@ void Cinematic::Render(PlatformDuration frameDuration) {
 			break;
 	}
 	
+	arx_assert(isallfinite(pos));
 	m_camera.orgTrans.pos = pos;
 	m_camera.angle.setPitch(0);
 	m_camera.angle.setYaw(0);
@@ -504,6 +505,8 @@ void Cinematic::Render(PlatformDuration frameDuration) {
 	if(force & 1) {
 		switch(ti) {
 			case INTERP_NO:
+				arx_assert(isallfinite(m_nextPos));
+				
 				m_camera.orgTrans.pos = m_nextPos;
 				m_camera.angle.setPitch(0);
 				m_camera.angle.setYaw(0);

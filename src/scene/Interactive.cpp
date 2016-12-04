@@ -2311,7 +2311,8 @@ void UpdateCameras() {
 		}
 
 		if(io->ioflags & IO_CAMERA) {
-
+			arx_assert(isallfinite(io->pos));
+			
 			io->_camdata->cam.orgTrans.pos = io->pos;
 
 			if(io->targetinfo != EntityHandle(TARGET_NONE)) {

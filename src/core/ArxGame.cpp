@@ -1428,6 +1428,8 @@ void ArxGame::speechControlledCinematic() {
 		if(rtime >= 0.f && rtime <= 1.f && io) {
 			switch(acs.type) {
 			case ARX_CINE_SPEECH_KEEP: {
+				arx_assert(isallfinite(acs.pos1));
+				
 				subj.orgTrans.pos = acs.pos1;
 				subj.angle.setPitch(acs.pos2.x);
 				subj.angle.setYaw(acs.pos2.y);
@@ -1436,6 +1438,8 @@ void ArxGame::speechControlledCinematic() {
 				break;
 									   }
 			case ARX_CINE_SPEECH_ZOOM: {
+				arx_assert(isallfinite(acs.pos1));
+				
 				//need to compute current values
 				float alpha = acs.startangle.getPitch() * itime + acs.endangle.getPitch() * rtime;
 				float beta = acs.startangle.getYaw() * itime + acs.endangle.getYaw() * rtime;
@@ -1457,6 +1461,9 @@ void ArxGame::speechControlledCinematic() {
 			case ARX_CINE_SPEECH_SIDE_LEFT:
 			case ARX_CINE_SPEECH_SIDE: {
 				if(ValidIONum(acs.ionum)) {
+					arx_assert(isallfinite(acs.pos1));
+					arx_assert(isallfinite(acs.pos2));
+					
 					const Vec3f & from = acs.pos1;
 					const Vec3f & to = acs.pos2;
 
@@ -1494,6 +1501,9 @@ void ArxGame::speechControlledCinematic() {
 			case ARX_CINE_SPEECH_CCCTALKER_L: {
 				//need to compute current values
 				if(ValidIONum(acs.ionum)) {
+					arx_assert(isallfinite(acs.pos1));
+					arx_assert(isallfinite(acs.pos2));
+					
 					Vec3f targetpos;
 					if(acs.type == ARX_CINE_SPEECH_CCCLISTENER_L
 						 || acs.type == ARX_CINE_SPEECH_CCCLISTENER_R) {
