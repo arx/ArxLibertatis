@@ -142,8 +142,8 @@ private:
 			return &s_handler; \
 		}
 #endif
-#define ARX_PROGRAM_OPTION(longName, shortName, description, handler, ...) \
-	ARX_PROGRAM_OPTION_ARG(longName, shortName, description, handler, ##__VA_ARGS__)
+#define ARX_PROGRAM_OPTION(longName, shortName, description, handler) \
+	ARX_PROGRAM_OPTION_ARG(longName, shortName, description, handler, NULL)
 
 #undef ARX_PROGRAM_OPTION_ARGS
 
