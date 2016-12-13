@@ -298,7 +298,7 @@ void ReleaseScript(EERIE_SCRIPT * es) {
 ValueType getSystemVar(const EERIE_SCRIPT * es, Entity * entity, const std::string & name,
                        std::string& txtcontent, float * fcontent,long * lcontent) {
 	
-	arx_assert(!name.empty() && name[0] == '^', "bad system variable: \"%s\"", name.c_str());
+	arx_assert_msg(!name.empty() && name[0] == '^', "bad system variable: \"%s\"", name.c_str());
 	
 	char c = (name.length() < 2) ? '\0' : name[1];
 	switch(c) {
@@ -1849,9 +1849,9 @@ void ARX_SCRIPT_Timer_Check() {
 			long increment = (now - st->start) / st->interval;
 			st->start += st->interval * increment;
 			// TODO print full 64-bit time
-			arx_assert(st->start <= now && st->start + st->interval > now,
-			           "start=%ld wait=%ld now=%ld",
-			           long(toMs(st->start)), long(toMs(st->interval)), long(toMs(now)));
+			arx_assert_msg(st->start <= now && st->start + st->interval > now,
+			               "start=%ld wait=%ld now=%ld",
+			               long(toMs(st->start)), long(toMs(st->interval)), long(toMs(now)));
 			continue;
 		}
 		
