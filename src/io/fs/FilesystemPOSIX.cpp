@@ -337,7 +337,7 @@ directory_iterator::directory_iterator(const path & p) : m_buffer(NULL) {
 		
 		do_readdir(m_handle, m_buffer);
 	}
-};
+}
 
 directory_iterator::~directory_iterator() {
 	if(m_handle) {
