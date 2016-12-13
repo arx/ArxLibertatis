@@ -392,8 +392,8 @@ bool SaveBlock::open(bool writable) {
 
 bool SaveBlock::flush(const std::string & important) {
 	
-	arx_assert(important.find_first_of(BADSAVCHAR) == std::string::npos,
-	           "bad save filename: \"%s\"", important.c_str());
+	arx_assert_msg(important.find_first_of(BADSAVCHAR) == std::string::npos,
+	               "bad save filename: \"%s\"", important.c_str());
 	
 	if((usedSize * 2 < totalSize || chunkCount > (files.size() * 4 / 3))) {
 		defragment();
@@ -513,8 +513,8 @@ bool SaveBlock::save(const std::string & name, const char * data, size_t size) {
 		return false;
 	}
 	
-	arx_assert(name.find_first_of(BADSAVCHAR) == std::string::npos,
-	           "bad save filename: \"%s\"", name.c_str());
+	arx_assert_msg(name.find_first_of(BADSAVCHAR) == std::string::npos,
+	               "bad save filename: \"%s\"", name.c_str());
 	
 	File * file = &files[name];
 	
@@ -580,8 +580,8 @@ void SaveBlock::remove(const std::string & name) {
 
 char * SaveBlock::load(const std::string & name, size_t & size) {
 	
-	arx_assert(name.find_first_of(BADSAVCHAR) == std::string::npos,
-	           "bad save filename: \"%s\"", name.c_str());
+	arx_assert_msg(name.find_first_of(BADSAVCHAR) == std::string::npos,
+	               "bad save filename: \"%s\"", name.c_str());
 	
 	Files::const_iterator file = files.find(name);
 	
@@ -589,8 +589,8 @@ char * SaveBlock::load(const std::string & name, size_t & size) {
 }
 
 bool SaveBlock::hasFile(const std::string & name) const {
-	arx_assert(name.find_first_of(BADSAVCHAR) == std::string::npos,
-	           "bad save filename: \"%s\"", name.c_str());
+	arx_assert_msg(name.find_first_of(BADSAVCHAR) == std::string::npos,
+	               "bad save filename: \"%s\"", name.c_str());
 	return (files.find(name) != files.end());
 }
 
@@ -607,8 +607,8 @@ std::vector<std::string> SaveBlock::getFiles() const {
 
 char * SaveBlock::load(const fs::path & savefile, const std::string & filename, size_t & size) {
 	
-	arx_assert(filename.find_first_of(BADSAVCHAR) == std::string::npos,
-	           "bad save filename: \"%s\"", filename.c_str());
+	arx_assert_msg(filename.find_first_of(BADSAVCHAR) == std::string::npos,
+	               "bad save filename: \"%s\"", filename.c_str());
 	
 	LogDebug("reading savefile " << savefile);
 	
