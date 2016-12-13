@@ -265,13 +265,6 @@ namespace ARX_ANONYMOUS_NAMESPACE {
                           Assertions
 ------------------------------------------------------------*/
 
-/*!
- * \def arx_assert(Expression, ...)
- * \brief Abort if \a Expression evaluates to false
- * You may provide a failure message in printf-like syntax and arguments for it as
- * as additional arguments after the expression.
- * Does nothing in release builds.
- */
 #ifdef ARX_DEBUG
 	/*!
 	 * \brief Log that an assertion has failed
@@ -280,16 +273,32 @@ namespace ARX_ANONYMOUS_NAMESPACE {
 	 */
 	void assertionFailed(const char * expression, const char * file, unsigned line,
 	                     const char * message = NULL, ...) ARX_FORMAT_PRINTF(4, 5);
-	#define arx_assert(Expression, ...)  do { \
+	#define arx_assert_impl(Expression, ExpressionString, ...)  do { \
 			if(!(Expression)) { \
-				assertionFailed(#Expression, (ARX_FILE), __LINE__, ##__VA_ARGS__); \
+				assertionFailed(ExpressionString, (ARX_FILE), __LINE__, ##__VA_ARGS__); \
 				ARX_DEBUG_BREAK(); \
 			} \
 		} while(0)
 #else // ARX_DEBUG
-	#define arx_assert(Expression, ...) \
-		ARX_DISCARD(Expression, ##__VA_ARGS__)
+	#define arx_assert_impl(Expression, ExpressionString, ...) \
+		ARX_DISCARD(Expression, ExpressionString, ##__VA_ARGS__)
 #endif // ARX_DEBUG
+
+/*!
+ * \def arx_assert(Expression)
+ * \brief Abort if \a Expression evaluates to false
+ * Does nothing in release builds.
+ */
+#define arx_assert(Expression, ...) arx_assert_impl(Expression, #Expression, ##__VA_ARGS__)
+
+/*!
+ * \def arx_assert_msg(Expression, Message, MessageArguments...)
+ * \brief Abort and print a message if \a Expression evaluates to false
+ * You must provide a failure message in printf-like syntax and arguments for it as
+ * as additional arguments after the expression.
+ * Does nothing in release builds.
+ */
+#define arx_assert_msg(Expression, ...) arx_assert_impl(Expression, #Expression, ##__VA_ARGS__)
 
 /*!
  * \def ARX_DEAD_CODE()
