@@ -88,7 +88,7 @@ FontCache::Impl::Impl() : m_library(NULL) {
 }
 
 FontCache::Impl::~Impl() {
-	arx_assert(m_files.size() == 0, "Someone is probably leaking fonts!");
+	arx_assert_msg(m_files.size() == 0, "Someone is probably leaking fonts!");
 	FT_Done_FreeType(m_library);
 }
 
