@@ -123,12 +123,12 @@ private:
 	Option<Handler> makeProgramOption(ARX_PROGRAM_OPTION_ARGS = NULL) {
 		return Option<Handler>(longName, shortName, description, handler, args);
 	}
-	#define ARX_PROGRAM_OPTION(longName, shortName, description, handler, ...) \
+	#define ARX_PROGRAM_OPTION_ARG(longName, shortName, description, handler, ...) \
 		static auto ARX_UNIQUE_SYMBOL(programOptionRegistrator) = makeProgramOption( \
 			longName, shortName, description, handler, ##__VA_ARGS__ \
 		);
 #else
-	#define ARX_PROGRAM_OPTION(longName, shortName, description, handler, ...) \
+	#define ARX_PROGRAM_OPTION_ARG(longName, shortName, description, handler, ...) \
 		template <typename Handler> \
 		static BaseOption * ARX_UNIQUE_SYMBOL(makeProgramOption)(const Handler &); \
 		static BaseOption * ARX_UNIQUE_SYMBOL(programOptionRegistrator) \
@@ -142,6 +142,8 @@ private:
 			return &s_handler; \
 		}
 #endif
+#define ARX_PROGRAM_OPTION(longName, shortName, description, handler, ...) \
+	ARX_PROGRAM_OPTION_ARG(longName, shortName, description, handler, ##__VA_ARGS__)
 
 #undef ARX_PROGRAM_OPTION_ARGS
 
