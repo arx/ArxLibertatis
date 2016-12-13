@@ -41,7 +41,7 @@ GLTexture2D::~GLTexture2D() {
 
 bool GLTexture2D::Create() {
 	
-	arx_assert(!tex, "leaking OpenGL texture");
+	arx_assert_msg(tex == GL_NONE, "leaking OpenGL texture");
 	
 	glGenTextures(1, &tex);
 	
@@ -84,7 +84,7 @@ void GLTexture2D::Upload() {
 	} else if(mFormat == Image::Format_B8G8R8A8) {
 		internal = GL_RGBA8, format = GL_BGRA;
 	} else {
-		arx_assert(false, "Unsupported image format: %ld", long(mFormat));
+		arx_assert_msg(false, "Unsupported image format: %ld", long(mFormat));
 		return;
 	}
 	
