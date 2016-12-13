@@ -30,43 +30,13 @@ class Rectangle_ {
 	
 public:
 	
-	// TODO can be removed for C++0x
-	class DummyVec2 {
-		
-	public:
-		
-		T x;
-		T y;
-		
-		typename vec2_traits<T>::type toVec2() const {
-			return typename vec2_traits<T>::type(x, y);
-		}
-		
-		DummyVec2 & operator=(const typename vec2_traits<T>::type & vec) {
-			x = vec.x, y = vec.y;
-			return *this;
-		}
-		
-	};
-	
 	typedef T Num;
 	typedef std::numeric_limits<T> Limits;
 	
-	union {
-		struct {
-			T left;
-			T top;
-		};
-		DummyVec2 origin;
-	};
-	
-	union {
-		struct {
-			T right;
-			T bottom;
-		};
-		DummyVec2 end;
-	};
+	T left;
+	T top;
+	T right;
+	T bottom;
 	
 	Rectangle_(const Rectangle_ & other)
 		: left(other.left)
