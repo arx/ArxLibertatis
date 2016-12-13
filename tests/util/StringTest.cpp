@@ -19,8 +19,8 @@
 
 #include "StringTest.h"
 
-#include "../src/platform/Platform.h"
-#include "../src/util/String.h"
+#include "platform/Platform.h"
+#include "util/String.h"
 
 CPPUNIT_TEST_SUITE_REGISTRATION(StringTest);
 
