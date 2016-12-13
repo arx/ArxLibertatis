@@ -48,7 +48,7 @@ public:
 	
 	virtual WidgetType type() const {
 		return WidgetType_Checkbox;
-	};
+	}
 	
 private:
 	TextureContainer * m_textureOff;
