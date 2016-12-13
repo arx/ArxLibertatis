@@ -177,7 +177,7 @@ static void enable() {
 	g_enable = true;
 }
 
-ARX_PROGRAM_OPTION("debug-gl", NULL, "Enable OpenGL debug output", &enable);
+ARX_PROGRAM_OPTION("debug-gl", NULL, "Enable OpenGL debug output", &enable)
 
 static const char * getGLErrorString(GLenum error) {
 	
