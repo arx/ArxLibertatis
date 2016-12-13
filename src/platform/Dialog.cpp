@@ -148,7 +148,7 @@ static std::string formatAsHtml(const std::string & text, bool newline, bool ul 
 		
 		bool quote = false, link = false;
 		
-		size_t link_start;
+		size_t link_start = 0;
 		
 		for(; i < line.length(); i++) {
 			
