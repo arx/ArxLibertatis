@@ -178,7 +178,7 @@ public:
 		clearVertexArray(this);
 		unbindBuffer(m_buffer);
 		glDeleteBuffers(1, &m_buffer);
-	};
+	}
 	
 protected:
 	
@@ -423,7 +423,7 @@ public:
 			}
 		}
 		
-	};
+	}
 	
 protected:
 	
@@ -546,7 +546,7 @@ public:
 			}
 		}
 		
-	};
+	}
 	
 protected:
 	
