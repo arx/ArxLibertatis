@@ -317,6 +317,6 @@ static void enable(util::cmdline::optional<std::string> limit) {
 	g_enabled = true;
 }
 
-ARX_PROGRAM_OPTION("benchmark", "", "Log loading times and framerates", &enable, "TIMELIMIT");
+ARX_PROGRAM_OPTION_ARG("benchmark", "", "Log loading times and framerates", &enable, "TIMELIMIT");
 
 } // namespace benchmark
