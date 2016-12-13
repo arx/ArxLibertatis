@@ -48,7 +48,7 @@ public:
 	
 	virtual WidgetType type() const {
 		return WidgetType_Slider;
-	};
+	}
 	
 private:
 	ButtonWidget		*	pLeftButton;
