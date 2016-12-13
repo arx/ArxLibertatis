@@ -33,8 +33,8 @@ enum BufferFlag {
 	DiscardRange  = (1<<1),
 	NoOverwrite   = (1<<2)
 };
-DECLARE_FLAGS(BufferFlag, BufferFlags);
-DECLARE_FLAGS_OPERATORS(BufferFlags);
+DECLARE_FLAGS(BufferFlag, BufferFlags)
+DECLARE_FLAGS_OPERATORS(BufferFlags)
 
 template <class Index>
 class IndexBuffer : private boost::noncopyable {
