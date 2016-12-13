@@ -127,7 +127,7 @@ public:
 	
 	~GLNoVertexBuffer() {
 		delete[] buffer;
-	};
+	}
 	
 private:
 	
