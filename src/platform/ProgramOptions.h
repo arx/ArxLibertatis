@@ -89,7 +89,7 @@ class Option : public BaseOption {
 	
 public:
 	
-	explicit Option(ARX_PROGRAM_OPTION_ARGS = NULL)
+	explicit Option(ARX_PROGRAM_OPTION_ARGS)
 		: BaseOption(longName, shortName, description)
 		, m_handler(handler), m_argNames(args) { }
 	
@@ -120,15 +120,15 @@ private:
  */
 #if ARX_HAVE_CXX11_AUTO
 	template <typename Handler>
-	Option<Handler> makeProgramOption(ARX_PROGRAM_OPTION_ARGS = NULL) {
+	Option<Handler> makeProgramOption(ARX_PROGRAM_OPTION_ARGS) {
 		return Option<Handler>(longName, shortName, description, handler, args);
 	}
-	#define ARX_PROGRAM_OPTION_ARG(longName, shortName, description, handler, ...) \
+	#define ARX_PROGRAM_OPTION_ARG(longName, shortName, description, handler, args) \
 		static auto ARX_UNIQUE_SYMBOL(programOptionRegistrator) = makeProgramOption( \
-			longName, shortName, description, handler, ##__VA_ARGS__ \
+			longName, shortName, description, handler, args \
 		);
 #else
-	#define ARX_PROGRAM_OPTION_ARG(longName, shortName, description, handler, ...) \
+	#define ARX_PROGRAM_OPTION_ARG(longName, shortName, description, handler, args) \
 		template <typename Handler> \
 		static BaseOption * ARX_UNIQUE_SYMBOL(makeProgramOption)(const Handler &); \
 		static BaseOption * ARX_UNIQUE_SYMBOL(programOptionRegistrator) \
@@ -137,7 +137,7 @@ private:
 		static BaseOption * ARX_UNIQUE_SYMBOL(makeProgramOption)(const Handler &) { \
 			ARX_UNUSED(ARX_UNIQUE_SYMBOL(programOptionRegistrator)); \
 			static Option<Handler> s_handler( \
-				longName, shortName, description, handler, ##__VA_ARGS__ \
+				longName, shortName, description, handler, args \
 			); \
 			return &s_handler; \
 		}
