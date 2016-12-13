@@ -130,7 +130,7 @@ bool SDL2Window::initializeFramework() {
 		m_minimizeOnFocusLost = Enabled;
 	}
 	
-	arx_assert(s_mainWindow == NULL, "SDL only supports one window"); // TODO it supports multiple windows now!
+	arx_assert_msg(s_mainWindow == NULL, "SDL only supports one window"); // TODO it supports multiple windows now!
 	arx_assert(m_displayModes.empty());
 	
 	const char * headerVersion = ARX_STR(SDL_MAJOR_VERSION) "." ARX_STR(SDL_MINOR_VERSION)
