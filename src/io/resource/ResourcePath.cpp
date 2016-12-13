@@ -42,7 +42,7 @@ inline bool is_path_up(const std::string & str, size_t pos) {
 
 void path::check() const {
 	
-	arx_assert(pathstr.find('\\') == std::string::npos, "bad path: \"%s\"", pathstr.c_str());
+	arx_assert_msg(pathstr.find('\\') == std::string::npos, "bad path: \"%s\"", pathstr.c_str());
 	
 	size_t pos = 0;
 	while(is_path_up(pathstr, pos)) {
@@ -55,15 +55,15 @@ void path::check() const {
 		if(next == std::string::npos) {
 			next = pathstr.length();
 		} else {
-			arx_assert(next + 1 != pathstr.length(), "bad path: \"%s\"", pathstr.c_str());
+			arx_assert_msg(next + 1 != pathstr.length(), "bad path: \"%s\"", pathstr.c_str());
 		}
 		
-		arx_assert(next > pos, "bad path: \"%s\"", pathstr.c_str());
+		arx_assert_msg(next > pos, "bad path: \"%s\"", pathstr.c_str());
 		
-		arx_assert(next - pos > 1 || pathstr[pos] != '.', "bad path: \"%s\"", pathstr.c_str());
+		arx_assert_msg(next - pos > 1 || pathstr[pos] != '.', "bad path: \"%s\"", pathstr.c_str());
 		
-		arx_assert(next - pos != 2 || pathstr[pos] != '.' || pathstr[pos + 1] != '.',
-		           "bad path: \"%s\"", pathstr.c_str());
+		arx_assert_msg(next - pos != 2 || pathstr[pos] != '.' || pathstr[pos + 1] != '.',
+		               "bad path: \"%s\"", pathstr.c_str());
 		
 		pos = next + 1;
 	}
@@ -161,10 +161,10 @@ std::string path::ext() const {
 }
 
 path & path::set_ext(const std::string & ext) {
-	arx_assert(ext.empty()
-	           || (ext[0] != dir_sep
-	               && ext.find_first_of(dir_or_ext_sep, 1) == std::string::npos),
-	           "bad file ext: \"%s\"", ext.c_str());
+	arx_assert_msg(ext.empty()
+	               || (ext[0] != dir_sep
+	                   && ext.find_first_of(dir_or_ext_sep, 1) == std::string::npos),
+	               "bad file ext: \"%s\"", ext.c_str());
 	if(!has_info() && !empty()) {
 		return *this;
 	}
@@ -195,9 +195,9 @@ path & path::remove_ext() {
 }
 
 path & path::set_filename(const std::string & filename) {
-	arx_assert(!filename.empty() && filename != "." && filename != ".."
-	           && filename.find(dir_sep) == std::string::npos,
-	           "bad filename: \"%s\"", filename.c_str());
+	arx_assert_msg(!filename.empty() && filename != "." && filename != ".."
+	               && filename.find(dir_sep) == std::string::npos,
+	               "bad filename: \"%s\"", filename.c_str());
 	if(!has_info()) {
 		return ((empty() ? pathstr = filename : (pathstr += dir_sep).append(filename)), *this);
 	}
@@ -213,9 +213,9 @@ path & path::set_filename(const std::string & filename) {
 
 path & path::set_basename(const std::string & basename) {
 	
-	arx_assert(!basename.empty() && basename != "." && basename != ".."
-	           && basename.find(dir_sep) == std::string::npos,
-	           "bad basename: \"%s\"", basename.c_str());
+	arx_assert_msg(!basename.empty() && basename != "." && basename != ".."
+	               && basename.find(dir_sep) == std::string::npos,
+	               "bad basename: \"%s\"", basename.c_str());
 	
 	if(!has_info()) {
 		return ((empty() ? pathstr = basename : (pathstr += dir_sep).append(basename)), *this);
@@ -245,9 +245,9 @@ path & path::set_basename(const std::string & basename) {
 
 path & path::append_basename(const std::string & basename_part) {
 	
-	arx_assert(basename_part != "." && basename_part != ".."
-	           && basename_part.find(dir_sep) == std::string::npos,
-	           "bad basename: \"%s\"", basename_part.c_str());
+	arx_assert_msg(basename_part != "." && basename_part != ".."
+	               && basename_part.find(dir_sep) == std::string::npos,
+	               "bad basename: \"%s\"", basename_part.c_str());
 	
 	if(!has_info()) {
 		return ((empty() ? pathstr = basename_part : (pathstr += dir_sep).append(basename_part)), *this);
@@ -266,8 +266,8 @@ path & path::append_basename(const std::string & basename_part) {
 
 path & path::append(const std::string & str) {
 	
-	arx_assert(str != "." && str != ".." && str.find(dir_sep) == std::string::npos,
-	           "cannot append: \"%s\"", str.c_str());
+	arx_assert_msg(str != "." && str != ".." && str.find(dir_sep) == std::string::npos,
+	               "cannot append: \"%s\"", str.c_str());
 	
 	pathstr += str;
 	return *this;
@@ -275,10 +275,10 @@ path & path::append(const std::string & str) {
 
 bool path::has_ext(const std::string & str) const {
 	
-	arx_assert(str.empty()
-	           || (str[0] != dir_sep
-	               && str.find_first_of(dir_or_ext_sep, 1) == std::string::npos),
-	           "bad file ext: \"%s\"", str.c_str());
+	arx_assert_msg(str.empty()
+	               || (str[0] != dir_sep
+	                   && str.find_first_of(dir_or_ext_sep, 1) == std::string::npos),
+	               "bad file ext: \"%s\"", str.c_str());
 	
 	if(!has_info()) {
 		return false;
