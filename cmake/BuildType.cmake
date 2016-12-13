@@ -137,6 +137,7 @@ else(MSVC)
 		add_cxxflag("-Wbool-conversions")
 		add_cxxflag("-Wheader-guard")
 		add_cxxflag("-Wpessimizing-move")
+		add_cxxflag("-Wextra-semi")
 		
 		if(NOT DEBUG_EXTRA)
 			
