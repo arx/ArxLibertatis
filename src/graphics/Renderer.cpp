@@ -135,6 +135,6 @@ void Renderer::SetRenderState(RenderStateFlag renderState, bool enable) {
 		}
 		
 		default:
-			arx_assert(false, "Unsupported render state: %d", int(renderState));
+			arx_assert_msg(false, "Unsupported render state: %d", int(renderState));
 	}
 }
