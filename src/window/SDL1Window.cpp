@@ -60,7 +60,7 @@ SDL1Window::~SDL1Window() {
 
 bool SDL1Window::initializeFramework() {
 	
-	arx_assert(s_mainWindow == NULL, "SDL only supports one window");
+	arx_assert_msg(s_mainWindow == NULL, "SDL only supports one window");
 	arx_assert(m_displayModes.empty());
 	
 	const char * headerVersion = ARX_STR(SDL_MAJOR_VERSION) "." ARX_STR(SDL_MINOR_VERSION)
