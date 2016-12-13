@@ -53,7 +53,7 @@ public:
 	
 	virtual WidgetType type() const {
 		return WidgetType_CycleText;
-	};
+	}
 	
 private:
 	ButtonWidget		*	pLeftButton;
