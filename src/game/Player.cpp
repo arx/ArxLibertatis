@@ -1236,7 +1236,7 @@ void ARX_PLAYER_LoadHeroAnimsAndMesh(){
 	herowait_2h = EERIE_ANIMMANAGER_Load(ANIM_WAIT_TWOHANDED);
 	
 	Entity * io = new Entity("graph/obj3d/interactive/player/player", EntityInstance(-1));
-	arx_assert(io->index() == EntityHandle_Player, "player entity didn't get index 0");
+	arx_assert_msg(io->index() == EntityHandle_Player, "player entity didn't get index 0");
 	arx_assert(entities.player() == io);
 	
 	io->obj = hero;
