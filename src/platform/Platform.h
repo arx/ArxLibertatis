@@ -289,7 +289,7 @@ namespace ARX_ANONYMOUS_NAMESPACE {
  * \brief Abort if \a Expression evaluates to false
  * Does nothing in release builds.
  */
-#define arx_assert(Expression, ...) arx_assert_impl(Expression, #Expression, ##__VA_ARGS__)
+#define arx_assert(Expression)          arx_assert_impl(Expression, #Expression, NULL)
 
 /*!
  * \def arx_assert_msg(Expression, Message, MessageArguments...)
