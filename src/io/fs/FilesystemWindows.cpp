@@ -271,7 +271,7 @@ directory_iterator::directory_iterator(const path & p) : m_handle(INVALID_HANDLE
 		delete data;
 	}
 	
-};
+}
 
 directory_iterator::~directory_iterator() {
 	
