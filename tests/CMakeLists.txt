@@ -32,6 +32,9 @@ add_executable(arxtest
 	../src/io/fs/FilePath.cpp
 	io/fs/FilePathTest.cpp
 	
+	../src/io/resource/ResourcePath.cpp
+	io/resource/ResourcePathTest.cpp
+	
 	../src/io/IniSection.cpp
 	io/IniTest.h
 	io/IniTest.cpp
