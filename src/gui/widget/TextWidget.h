@@ -61,7 +61,8 @@ public:
 	
 	virtual WidgetType type() const {
 		return WidgetType_Text;
-	};
+	}
+	
 };
 
 #endif // ARX_GUI_WIDGET_TEXTWIDGET_H
