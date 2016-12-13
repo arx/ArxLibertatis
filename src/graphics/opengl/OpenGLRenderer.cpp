@@ -72,7 +72,7 @@ OpenGLRenderer::~OpenGLRenderer() {
 	//	LogWarning << "Texture still loaded: " << it->getFileName();
 	//}
 	
-};
+}
 
 enum GLTransformMode {
 	GL_UnsetTransform,
