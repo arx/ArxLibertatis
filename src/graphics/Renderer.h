@@ -274,7 +274,7 @@ public:
 		ColorBuffer   = (1<<0),
 		DepthBuffer   = (1<<1)
 	};
-	DECLARE_FLAGS(BufferType, BufferFlags);
+	DECLARE_FLAGS(BufferType, BufferFlags)
 	
 	enum Primitive {
 		TriangleList,
