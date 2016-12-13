@@ -61,8 +61,8 @@ enum TweakFlag {
 	TWEAK_TYPE_ICON = (1<<5),
 	TWEAK_TYPE_MESH = (1<<6)
 };
-DECLARE_FLAGS(TweakFlag, TweakType);
-DECLARE_FLAGS_OPERATORS(TweakType);
+DECLARE_FLAGS(TweakFlag, TweakType)
+DECLARE_FLAGS_OPERATORS(TweakType)
 
 struct TWEAK_INFO {
 	
