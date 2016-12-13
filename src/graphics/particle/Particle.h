@@ -87,7 +87,8 @@ public:
 	
 	bool isAlive() {
 		return (m_age < m_timeToLive);
-	};
+	}
+	
 	void Validate();
 	
 };
