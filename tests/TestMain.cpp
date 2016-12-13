@@ -22,9 +22,7 @@
 #include <cppunit/TestResultCollector.h>
 #include <cppunit/extensions/HelperMacros.h>
 
-#include "graphics/ColorTest.h"
-#include "io/IniTest.h"
-#include "math/LegacyMathTest.h"
+#include "platform/Platform.h"
 
 int main(int argc, char *argv[]) {
 	ARX_UNUSED(argc);
