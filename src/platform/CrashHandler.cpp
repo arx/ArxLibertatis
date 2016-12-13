@@ -46,6 +46,8 @@
 static CrashHandlerImpl * gCrashHandlerImpl = 0;
 static int gCrashHandlerInitCount = 0;
 
+#ifdef ARX_DEBUG
+
 typedef void(*AssertHandler)(const char * expr, const char * file, unsigned int line,
                              const char * msg);
 extern AssertHandler g_assertHandler;
@@ -77,7 +79,9 @@ static void crashAssertHandler(const char * expr, const char * file, unsigned in
 	
 }
 
-#endif
+#endif // ARX_DEBUG
+
+#endif // ARX_HAVE_CRASHHANDLER
 
 bool CrashHandler::initialize(int argc, char ** argv) {
 	
@@ -119,7 +123,9 @@ bool CrashHandler::initialize(int argc, char ** argv) {
 			return false;
 		}
 		
+		#ifdef ARX_DEBUG
 		g_assertHandler = crashAssertHandler;
+		#endif
 	}
 	
 	gCrashHandlerInitCount++;
@@ -135,7 +141,9 @@ void CrashHandler::shutdown() {
 #if ARX_HAVE_CRASHHANDLER
 	gCrashHandlerInitCount--;
 	if(gCrashHandlerInitCount == 0) {
+		#ifdef ARX_DEBUG
 		g_assertHandler = NULL;
+		#endif
 		gCrashHandlerImpl->shutdown();
 		delete gCrashHandlerImpl;
 		gCrashHandlerImpl = 0;

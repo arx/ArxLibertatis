@@ -266,14 +266,6 @@ namespace ARX_ANONYMOUS_NAMESPACE {
 ------------------------------------------------------------*/
 
 /*!
- * \brief Log that an assertion has failed
- *
- * This is a low-level implementation, use arx_assert() instead!
- */
-void assertionFailed(const char * expression, const char * file, unsigned line,
-                     const char * message = NULL, ...) ARX_FORMAT_PRINTF(4, 5);
-
-/*!
  * \def arx_assert(Expression, ...)
  * \brief Abort if \a Expression evaluates to false
  * You may provide a failure message in printf-like syntax and arguments for it as
@@ -281,6 +273,13 @@ void assertionFailed(const char * expression, const char * file, unsigned line,
  * Does nothing in release builds.
  */
 #ifdef ARX_DEBUG
+	/*!
+	 * \brief Log that an assertion has failed
+	 *
+	 * This is a low-level implementation, use arx_assert() instead!
+	 */
+	void assertionFailed(const char * expression, const char * file, unsigned line,
+	                     const char * message = NULL, ...) ARX_FORMAT_PRINTF(4, 5);
 	#define arx_assert(Expression, ...)  do { \
 			if(!(Expression)) { \
 				assertionFailed(#Expression, (ARX_FILE), __LINE__, ##__VA_ARGS__); \

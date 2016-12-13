@@ -28,6 +28,8 @@
 #warning "Unknown target platform"
 #endif
 
+#ifdef ARX_DEBUG
+
 typedef void(*AssertHandler)(const char * expr, const char * file, unsigned int line,
                              const char * msg);
 AssertHandler g_assertHandler = 0;
@@ -57,6 +59,8 @@ void assertionFailed(const char * expr, const char * file, unsigned int line,
 	}
 	
 }
+
+#endif // ARX_DEBUG
 
 // When building without exceptions, there's a chance the boost precompiled library are built with exception handling turned on... in that case
 // we would get an undefined symbol at link time.  In order to solve this, we define this symbol here:
