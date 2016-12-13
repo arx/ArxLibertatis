@@ -19,7 +19,7 @@
 
 #include "tests/io/IniTest.h"
 
-#include "src/io/IniSection.h"
+#include "io/IniSection.h"
 
 CPPUNIT_TEST_SUITE_REGISTRATION(IniTest);
 
