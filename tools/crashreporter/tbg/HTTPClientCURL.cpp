@@ -55,7 +55,7 @@ public:
 			// Enable cookies
 			curl_easy_setopt(m_curl, CURLOPT_COOKIEFILE, "");
 		}
-	};
+	}
 	
 	~CURLSession() {
 		if(m_curl) {
