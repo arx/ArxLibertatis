@@ -42,7 +42,7 @@ public:
 	
 	virtual WidgetType type() const {
 		return WidgetType_Panel;
-	};
+	}
 	
 	std::vector<Widget *> m_children;
 };
