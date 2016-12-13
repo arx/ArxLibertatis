@@ -58,7 +58,7 @@ static std::vector<path> getSearchPaths(const char * input) {
 	}
 	
 	return result;
-};
+}
 
 static path findUserPath(const char * name, const path & force,
                          const char * registry, platform::SystemPathId systemPathId,
@@ -463,12 +463,12 @@ static void listSearchDirs() {
 }
 
 ARX_PROGRAM_OPTION("no-data-dir", "n",
-                   "Don't automatically detect data directories", &disableDataDir);
+                   "Don't automatically detect data directories", &disableDataDir)
 ARX_PROGRAM_OPTION_ARG("data-dir",    "d",
-                       "Where to find the data files (can be repeated)", &addDataDir, "DIR");
+                       "Where to find the data files (can be repeated)", &addDataDir, "DIR")
 ARX_PROGRAM_OPTION_ARG("user-dir",    "u",
-                       "Where to store user-specific files", &setUserDir, "DIR");
+                       "Where to store user-specific files", &setUserDir, "DIR")
 ARX_PROGRAM_OPTION_ARG("config-dir",  "c",
-                       "Where to store config files", &setConfigDir, "DIR");
+                       "Where to store config files", &setConfigDir, "DIR")
 ARX_PROGRAM_OPTION("list-dirs",   "l",
-                   "List the searched user and data directories", &listSearchDirs);
+                   "List the searched user and data directories", &listSearchDirs)
