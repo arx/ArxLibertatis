@@ -32,6 +32,7 @@ public:
 	
 	typedef T Num;
 	typedef std::numeric_limits<T> Limits;
+	typedef typename vec2_traits<T>::type Vec2;
 	
 	T left;
 	T top;
@@ -62,14 +63,14 @@ public:
 		, bottom(_bottom)
 	{ }
 	
-	Rectangle_(const typename vec2_traits<T>::type & _origin, T width, T height)
+	Rectangle_(const Vec2 & _origin, T width, T height)
 		: left(_origin.x)
 		, top(_origin.y)
 		, right(_origin.x + width)
 		, bottom(_origin.y + height)
 	{ }
 	
-	Rectangle_(const typename vec2_traits<T>::type & _origin, const typename vec2_traits<T>::type & _end)
+	Rectangle_(const Vec2 & _origin, const Vec2 & _end)
 		: left(_origin.x)
 		, top(_origin.y)
 		, right(_end.x)
@@ -100,11 +101,11 @@ public:
 		return bottom - top;
 	}
 	
-	Rectangle_ operator+(const typename vec2_traits<T>::type & offset) const {
+	Rectangle_ operator+(const Vec2 & offset) const {
 		return Rectangle_(topLeft() + offset, bottomRight() + offset);
 	}
 	
-	Rectangle_ & operator+=(const typename vec2_traits<T>::type & offset) {
+	Rectangle_ & operator+=(const Vec2 & offset) {
 		left += offset.x, top += offset.y, right += offset.x, bottom += offset.y;
 		return *this;
 	}
@@ -113,7 +114,7 @@ public:
 		left += dx, top += dy, right += dx, bottom += dy;
 	}
     
-	bool contains(const typename vec2_traits<T>::type & point) const {
+	bool contains(const Vec2 & point) const {
 		return (point.x >= left && point.x < right && point.y >= top && point.y < bottom);
 	}
 	
@@ -167,33 +168,33 @@ public:
 	}
 	
 	
-	typename vec2_traits<T>::type topLeft() const {
-		return typename vec2_traits<T>::type(left, top);
+	Vec2 topLeft() const {
+		return Vec2(left, top);
 	}
-	typename vec2_traits<T>::type topCenter() const {
-		return typename vec2_traits<T>::type(left + (right - left) / 2, top);
+	Vec2 topCenter() const {
+		return Vec2(left + (right - left) / 2, top);
 	}
-	typename vec2_traits<T>::type topRight() const {
-		return typename vec2_traits<T>::type(right, top);
-	}
-	
-	typename vec2_traits<T>::type center() const {
-		return typename vec2_traits<T>::type(left + (right - left) / 2, top + (bottom - top) / 2);
+	Vec2 topRight() const {
+		return Vec2(right, top);
 	}
 	
-	typename vec2_traits<T>::type bottomLeft() const {
-		return typename vec2_traits<T>::type(left, bottom);
+	Vec2 center() const {
+		return Vec2(left + (right - left) / 2, top + (bottom - top) / 2);
 	}
-	typename vec2_traits<T>::type bottomCenter() const {
-		return typename vec2_traits<T>::type(left + (right - left) / 2, bottom);
+	
+	Vec2 bottomLeft() const {
+		return Vec2(left, bottom);
 	}
-	typename vec2_traits<T>::type bottomRight() const {
-		return typename vec2_traits<T>::type(right, bottom);
+	Vec2 bottomCenter() const {
+		return Vec2(left + (right - left) / 2, bottom);
+	}
+	Vec2 bottomRight() const {
+		return Vec2(right, bottom);
 	}
 	
 	
-	typename vec2_traits<T>::type size() const {
-		return typename vec2_traits<T>::type(right - left, bottom - top);
+	Vec2 size() const {
+		return Vec2(right - left, bottom - top);
 	}
 	
 	bool isValid() const {
