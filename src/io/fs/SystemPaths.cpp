@@ -464,11 +464,11 @@ static void listSearchDirs() {
 
 ARX_PROGRAM_OPTION("no-data-dir", "n",
                    "Don't automatically detect data directories", &disableDataDir);
-ARX_PROGRAM_OPTION("data-dir",    "d",
-                   "Where to find the data files (can be repeated)", &addDataDir, "DIR");
-ARX_PROGRAM_OPTION("user-dir",    "u",
-                   "Where to store user-specific files", &setUserDir, "DIR");
-ARX_PROGRAM_OPTION("config-dir",  "c",
-                   "Where to store config files", &setConfigDir, "DIR");
+ARX_PROGRAM_OPTION_ARG("data-dir",    "d",
+                       "Where to find the data files (can be repeated)", &addDataDir, "DIR");
+ARX_PROGRAM_OPTION_ARG("user-dir",    "u",
+                       "Where to store user-specific files", &setUserDir, "DIR");
+ARX_PROGRAM_OPTION_ARG("config-dir",  "c",
+                       "Where to store config files", &setConfigDir, "DIR");
 ARX_PROGRAM_OPTION("list-dirs",   "l",
                    "List the searched user and data directories", &listSearchDirs);
