@@ -44,13 +44,13 @@ public:
 		OS_FreeBSD = 300, // FreeBSD
 		OS_BSD = 350,     // *BSD
 		OS_Windows = 400, // Windows
-		OS_Other = 0xFFFFFFFF
+		OS_Other = -1
 	};
 	
 	enum Architecture {
 		Arch_Amd64 = 3,
 		Arch_x86 = 2,
-		Arch_Other = 0xFFFFFFFF
+		Arch_Other = -1
 	};
 	
 	explicit Server(const QString & adress, const std::string & userAgent);
