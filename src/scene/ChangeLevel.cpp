@@ -140,7 +140,7 @@ static Entity * convertToValidIO(const std::string & idString) {
 		return NULL;
 	}
 	
-	arx_assert(
+	arx_assert_msg(
 		idString.find_first_not_of("abcdefghijklmnopqrstuvwxyz_0123456789") == std::string::npos,
 		"bad interactive object id: \"%s\"", idString.c_str()
 	);
@@ -148,7 +148,7 @@ static Entity * convertToValidIO(const std::string & idString) {
 	EntityHandle t = entities.getById(idString);
 	
 	if(t.handleData() > 0) {
-		arx_assert(ValidIONum(t), "got invalid IO num %ld", long(t.handleData()));
+		arx_assert_msg(ValidIONum(t), "got invalid IO num %ld", long(t.handleData()));
 		return entities[t];
 	}
 	
@@ -2373,7 +2373,7 @@ static Entity * ARX_CHANGELEVEL_Pop_IO(const std::string & idString, EntityInsta
 		
 	}
 	
-	arx_assert(pos <= size, "pos=%lu size=%lu", (unsigned long)pos, (unsigned long)size);
+	arx_assert_msg(pos <= size, "pos=%lu size=%lu", (unsigned long)pos, (unsigned long)size);
 	
 	free(dat);
 	CONVERT_CREATED = 1;
@@ -2595,7 +2595,7 @@ static void ARX_CHANGELEVEL_Pop_Globals() {
 		LogError << "Error loading globals";
 	}
 	
-	arx_assert(pos <= size, "pos=%lu size=%lu", (unsigned long)pos, (unsigned long)size);
+	arx_assert_msg(pos <= size, "pos=%lu size=%lu", (unsigned long)pos, (unsigned long)size);
 	
 	free(dat);
 }
