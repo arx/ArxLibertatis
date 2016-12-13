@@ -54,16 +54,16 @@ path path::resolve(const path & a, const path & b) {
 		
 		size_t dirpos = a.pathstr.find_last_of(dir_sep, apos - 1);
 		
+		if(is_path_up(a.pathstr, (dirpos == std::string::npos) ? 0 : dirpos + 1)) {
+			return create(a.pathstr.substr(0, apos) + dir_sep + b.pathstr.substr(bpos));
+		}
+		
 		if(dirpos == std::string::npos) {
 			if(bpos + 3 >= b.pathstr.length()) {
 				return create(".");
 			} else {
 				return b.pathstr.substr(bpos + 3);
 			}
-		}
-		
-		if(is_path_up(a.pathstr, dirpos + 1)) {
-			return create(a.pathstr.substr(0, apos) + dir_sep + b.pathstr.substr(bpos));
 		}
 		
 		if(dirpos == 0 || (dirpos == 1 && a.pathstr[0] == dir_sep)) {
