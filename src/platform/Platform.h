@@ -272,16 +272,16 @@ namespace ARX_ANONYMOUS_NAMESPACE {
 	 * This is a low-level implementation, use arx_assert() instead!
 	 */
 	void assertionFailed(const char * expression, const char * file, unsigned line,
-	                     const char * message = NULL, ...) ARX_FORMAT_PRINTF(4, 5);
+	                     const char * message, ...) ARX_FORMAT_PRINTF(4, 5);
 	#define arx_assert_impl(Expression, ExpressionString, ...)  do { \
 			if(!(Expression)) { \
-				assertionFailed(ExpressionString, (ARX_FILE), __LINE__, ##__VA_ARGS__); \
+				assertionFailed(ExpressionString, (ARX_FILE), __LINE__, __VA_ARGS__); \
 				ARX_DEBUG_BREAK(); \
 			} \
 		} while(0)
 #else // ARX_DEBUG
 	#define arx_assert_impl(Expression, ExpressionString, ...) \
-		ARX_DISCARD(Expression, ExpressionString, ##__VA_ARGS__)
+		ARX_DISCARD(Expression, ExpressionString, __VA_ARGS__)
 #endif // ARX_DEBUG
 
 /*!
@@ -298,7 +298,7 @@ namespace ARX_ANONYMOUS_NAMESPACE {
  * as additional arguments after the expression.
  * Does nothing in release builds.
  */
-#define arx_assert_msg(Expression, ...) arx_assert_impl(Expression, #Expression, ##__VA_ARGS__)
+#define arx_assert_msg(Expression, ...) arx_assert_impl(Expression, #Expression, __VA_ARGS__)
 
 /*!
  * \def ARX_DEAD_CODE()
