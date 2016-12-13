@@ -2280,7 +2280,7 @@ void ArxGame::onRendererInit(Renderer & renderer) {
 	
 	GRenderer = &renderer;
 	
-	arx_assert(renderer.GetTextureStageCount() >= 3, "not enough texture units");
+	arx_assert_msg(renderer.GetTextureStageCount() >= 3, "not enough texture units");
 	arx_assert(m_MainWindow);
 	
 	renderer.Clear(Renderer::ColorBuffer);
