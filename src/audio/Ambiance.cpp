@@ -149,7 +149,7 @@ struct KeySetting {
 		}
 		
 		return cur;
-	};
+	}
 	
 };
 
