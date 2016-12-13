@@ -29,6 +29,9 @@ add_executable(arxtest
 	
 	graphics/ColorTest.cpp
 	
+	../src/io/fs/FilePath.cpp
+	io/fs/FilePathTest.cpp
+	
 	../src/io/IniSection.cpp
 	io/IniTest.h
 	io/IniTest.cpp
