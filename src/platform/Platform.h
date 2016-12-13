@@ -305,7 +305,7 @@ namespace ARX_ANONYMOUS_NAMESPACE {
  * \brief Assert that a code branch cannot be reached.
  */
 #ifdef ARX_DEBUG
-#define ARX_DEAD_CODE() arx_assert(false)
+#define ARX_DEAD_CODE() arx_assert_impl(false, "unreachable code", NULL)
 #elif ARX_COMPILER_MSVC
 #define ARX_DEAD_CODE() __assume(0)
 #elif ARX_HAVE_BUILTIN_UNREACHABLE
