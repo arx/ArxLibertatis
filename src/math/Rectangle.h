@@ -68,7 +68,12 @@ public:
 		DummyVec2 end;
 	};
 	
-	Rectangle_(const Rectangle_ & other) : origin(other.origin), end(other.end) { }
+	Rectangle_(const Rectangle_ & other)
+		: left(other.left)
+		, top(other.top)
+		, right(other.right)
+		, bottom(other.bottom)
+	{ }
 	
 	template <class U>
 	explicit Rectangle_(Rectangle_<U> const & other)
@@ -109,11 +114,11 @@ public:
 	{ }
 	
 	bool operator==(const Rectangle_ & o) const {
-		return (origin == o.origin && end == o.end);
+		return (left == o.left && top == o.top && right == o.right && bottom == o.bottom);
 	}
 	
 	Rectangle_ & operator=(const Rectangle_ & other) {
-		origin = other.origin, end = other.end;
+		left = other.left, top = other.top, right = other.right, bottom = other.bottom;
 		return *this;
 	}
 	
@@ -126,11 +131,11 @@ public:
 	}
 	
 	Rectangle_ operator+(const typename vec2_traits<T>::type & offset) const {
-		return Rectangle_(origin + offset, end + offset);
+		return Rectangle_(topLeft() + offset, bottomRight() + offset);
 	}
 	
 	Rectangle_ & operator+=(const typename vec2_traits<T>::type & offset) {
-		origin += offset, end += offset;
+		left += offset.x, top += offset.y, right += offset.x, bottom += offset.y;
 		return *this;
 	}
 	
