@@ -99,7 +99,18 @@ class al_function_ptr {
 public:
 	explicit al_function_ptr(void * func) : m_func(func) { }
 	template <typename T>
-	operator T() { return (T)m_func; }
+	operator T() {
+		#if __cplusplus < 201402L && defined(__GNUC__) && defined(__GNUC_MINOR__) \
+		    && (__GNUC__ > 4 || (__GNUC__ == 4 && __GNUC_MINOR__ >= 7))
+		#pragma GCC diagnostic push
+		#pragma GCC diagnostic ignored "-Wpedantic"
+		// ignore warning: ISO C++ forbids casting between pointer-to-function and pointer-to-object
+		return (T)m_func;
+		#pragma GCC diagnostic pop
+		#else
+		return (T)m_func;
+		#endif
+	}
 };
 } // anonymous namespace
 #endif
