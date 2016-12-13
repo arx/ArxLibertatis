@@ -101,7 +101,7 @@ static void handleHelpOption() {
 	std::exit(EXIT_SUCCESS);
 }
 
-ARX_PROGRAM_OPTION("help", "h", "Show supported options", &handleHelpOption);
+ARX_PROGRAM_OPTION("help", "h", "Show supported options", &handleHelpOption)
 
 static ExitStatus parseCommandLine(int argc, char ** argv) {
 	
