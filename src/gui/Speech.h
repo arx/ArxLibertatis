@@ -135,8 +135,8 @@ enum SpeechFlag {
 	ARX_SPEECH_FLAG_NOTEXT      = (1<<2),
 	ARX_SPEECH_FLAG_DIRECT_TEXT = (1<<3)
 };
-DECLARE_FLAGS(SpeechFlag, SpeechFlags);
-DECLARE_FLAGS_OPERATORS(SpeechFlags);
+DECLARE_FLAGS(SpeechFlag, SpeechFlags)
+DECLARE_FLAGS_OPERATORS(SpeechFlags)
 
 struct ARX_SPEECH {
 	
