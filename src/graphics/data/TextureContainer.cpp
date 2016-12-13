@@ -122,8 +122,8 @@ static void ResetRoomBatches(RoomBatches & roomBatches) {
 TextureContainer::TextureContainer(const res::path & strName, TCFlags flags)
 	: m_texName(strName)
 {
-	arx_assert(!strName.has_ext("bmp") && !strName.has_ext("tga"),
-	           "bad texture name: \"%s\"", strName.string().c_str());
+	arx_assert_msg(!strName.has_ext("bmp") && !strName.has_ext("tga"),
+	               "bad texture name: \"%s\"", strName.string().c_str());
 	
 	m_size = Vec2i_ZERO;
 	m_dwFlags = flags;
