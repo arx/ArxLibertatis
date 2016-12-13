@@ -156,10 +156,10 @@ std::string path::ext() const {
 }
 
 path & path::set_ext(const std::string & ext) {
-	arx_assert(ext.empty()
-	           || (ext[0] != dir_sep
-	               && ext.find_first_of(dir_or_ext_sep, 1) == std::string::npos),
-	           "bad file ext: \"%s\"", ext.c_str());
+	arx_assert_msg(ext.empty()
+	               || (ext[0] != dir_sep
+	                   && ext.find_first_of(dir_or_ext_sep, 1) == std::string::npos),
+	               "bad file ext: \"%s\"", ext.c_str());
 	if(!has_info() && !empty()) {
 		return *this;
 	}
@@ -191,9 +191,9 @@ path & path::remove_ext() {
 }
 
 path & path::set_filename(const std::string & filename) {
-	arx_assert(!filename.empty() && filename != "." && filename != ".."
-	           && filename.find_first_of(any_dir_sep) == std::string::npos,
-	           "bad filename: \"%s\"", filename.c_str());
+	arx_assert_msg(!filename.empty() && filename != "." && filename != ".."
+	               && filename.find_first_of(any_dir_sep) == std::string::npos,
+	               "bad filename: \"%s\"", filename.c_str());
 	if(!has_info()) {
 		return ((empty() ? pathstr = filename : (pathstr += dir_sep).append(filename)), *this);
 	}
@@ -209,9 +209,9 @@ path & path::set_filename(const std::string & filename) {
 
 path & path::set_basename(const std::string & basename) {
 	
-	arx_assert(!basename.empty() && basename != "." && basename != ".."
-	           && basename.find_first_of(any_dir_sep) == std::string::npos,
-	           "bad basename: \"%s\"", basename.c_str());
+	arx_assert_msg(!basename.empty() && basename != "." && basename != ".."
+	               && basename.find_first_of(any_dir_sep) == std::string::npos,
+	               "bad basename: \"%s\"", basename.c_str());
 	
 	if(!has_info()) {
 		return ((empty() ? pathstr = basename : (pathstr += dir_sep).append(basename)), *this);
@@ -241,9 +241,9 @@ path & path::set_basename(const std::string & basename) {
 
 path & path::append_basename(const std::string & basename_part) {
 	
-	arx_assert(basename_part != "." && basename_part != ".." &&
-	           basename_part.find_first_of(any_dir_sep) == std::string::npos,
-	           "bad basename: \"%s\"", basename_part.c_str());
+	arx_assert_msg(basename_part != "." && basename_part != ".." &&
+	               basename_part.find_first_of(any_dir_sep) == std::string::npos,
+	               "bad basename: \"%s\"", basename_part.c_str());
 	
 	if(!has_info()) {
 		return ((empty() ? pathstr = basename_part : (pathstr += dir_sep).append(basename_part)), *this);
@@ -262,9 +262,9 @@ path & path::append_basename(const std::string & basename_part) {
 
 path & path::append(const std::string & str) {
 	
-	arx_assert(str != "." && str != ".."
-	           && str.find_first_of(any_dir_sep) == std::string::npos,
-	           "cannot append: \"%s\"", str.c_str());
+	arx_assert_msg(str != "." && str != ".."
+	               && str.find_first_of(any_dir_sep) == std::string::npos,
+	               "cannot append: \"%s\"", str.c_str());
 	
 	pathstr += str;
 	return *this;
@@ -272,10 +272,10 @@ path & path::append(const std::string & str) {
 
 bool path::has_ext(const std::string & str) const {
 	
-	arx_assert(str.empty()
-	           || (str[0] != dir_sep
-	               && str.find_first_of(dir_or_ext_sep, 1) == std::string::npos),
-	           "bad file ext: \"%s\"", str.c_str());
+	arx_assert_msg(str.empty()
+	               || (str[0] != dir_sep
+	                   && str.find_first_of(dir_or_ext_sep, 1) == std::string::npos),
+	               "bad file ext: \"%s\"", str.c_str());
 	
 	if(!has_info()) {
 		return false;
@@ -394,34 +394,34 @@ std::string path::load(const std::string & str) {
 static void test_resolve(const fs::path & left, const fs::path & right, const std::string & out) {
 	
 	fs::path result = left / right;
-	arx_assert(result.string() == out, "\"%s\" / \"%s\" -> \"%s\" != \"%s\"", 
-	           left.string().c_str(), right.string().c_str(), result.string().c_str(),
-	           out.c_str());
+	arx_assert_msg(result.string() == out, "\"%s\" / \"%s\" -> \"%s\" != \"%s\"", 
+	               left.string().c_str(), right.string().c_str(), result.string().c_str(),
+	               out.c_str());
 	
 	fs::path temp = left;
 	temp /= right;
 	
-	arx_assert(temp.string() == out, "\"%s\" /= \"%s\" -> \"%s\" != \"%s\"",
-	           left.string().c_str(), right.string().c_str(), temp.string().c_str(),
-	           out.c_str());
+	arx_assert_msg(temp.string() == out, "\"%s\" /= \"%s\" -> \"%s\" != \"%s\"",
+	               left.string().c_str(), right.string().c_str(), temp.string().c_str(),
+	               out.c_str());
 }
 
 static void test_path(const std::string & in, const std::string & out) {
 	fs::path p(in);
-	arx_assert(p.string() == out, "\"%s\" -> \"%s\" != \"%s\"", in.c_str(),
-	           p.string().c_str(), out.c_str());
+	arx_assert_msg(p.string() == out, "\"%s\" -> \"%s\" != \"%s\"", in.c_str(),
+	               p.string().c_str(), out.c_str());
 }
 
 static void test_parent(const fs::path & in, const std::string & out) {
 	
 	fs::path p = in.parent();
-	arx_assert(p.string() == out, "\"%s\".parent() -> \"%s\" != \"%s\"",
-	           in.string().c_str(), p.string().c_str(), out.c_str());
+	arx_assert_msg(p.string() == out, "\"%s\".parent() -> \"%s\" != \"%s\"",
+	               in.string().c_str(), p.string().c_str(), out.c_str());
 	
 	fs::path temp = in;
 	temp.up();
-	arx_assert(temp.string() == out, "\"%s\".up() ->\"%s\" != \"%s\"",
-	           in.string().c_str(), temp.string().c_str(), out.c_str());
+	arx_assert_msg(temp.string() == out, "\"%s\".up() ->\"%s\" != \"%s\"",
+	               in.string().c_str(), temp.string().c_str(), out.c_str());
 	
 }
 
