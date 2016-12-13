@@ -19,7 +19,7 @@ include_directories(
 )
 
 add_executable(arxtest
-	testMain.cpp
+	TestMain.cpp
 	
 	../src/graphics/Math.cpp
 	../src/graphics/Color.h
