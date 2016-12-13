@@ -169,8 +169,8 @@ public:
 			} while(count); break;
 			
 			default:
-				arx_assert(false, "too large vertex array (%lu) for primitive %d",
-				           (unsigned long)(count + num), primitive);
+				arx_assert_msg(false, "too large vertex array (%lu) for primitive %d",
+				               (unsigned long)(count + num), primitive);
 			
 		}
 		
