@@ -479,6 +479,8 @@ MenuPage::MenuPage(const Vec2f & pos, const Vec2f & size, MENUSTATE _eMenuState)
 	eMenuState=_eMenuState;
 }
 
+MenuPage::~MenuPage() { }
+
 void MenuPage::add(Widget * widget) {
 	widget->ePlace = NOCENTER;
 	widget->Move(m_rect.topLeft());

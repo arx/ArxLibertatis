@@ -69,6 +69,8 @@ public:
 		: MenuPage(pos, size, NEW_QUEST)
 	{}
 	
+	~NewQuestMenuPage() { }
+	
 	void init() {
 		
 		{
@@ -110,6 +112,8 @@ public:
 	ChooseLoadOrSaveMenuPage(const Vec2f & pos, const Vec2f & size)
 		: MenuPage(pos, size, EDIT_QUEST)
 	{}
+	
+	~ChooseLoadOrSaveMenuPage() { }
 	
 	void init() {
 		
@@ -172,6 +176,8 @@ public:
 	LoadMenuPage(const Vec2f & pos, const Vec2f & size)
 		: MenuPage(pos, size, EDIT_QUEST_LOAD)
 	{}
+	
+	~LoadMenuPage() { }
 	
 	void init() {
 		
@@ -286,6 +292,8 @@ public:
 		: MenuPage(pos, size, EDIT_QUEST_SAVE)
 	{}
 	
+	~SaveMenuPage() { }
+	
 	void init() {
 		
 		{
@@ -369,6 +377,8 @@ public:
 		: MenuPage(pos, size, EDIT_QUEST_SAVE_CONFIRM)
 	{}
 	
+	~SaveConfirmMenuPage() { }
+	
 	void init() {
 		
 		{
@@ -428,6 +438,8 @@ public:
 	OptionsMenuPage(const Vec2f & pos, const Vec2f & size)
 		: MenuPage(pos, size, OPTIONS)
 	{}
+	
+	~OptionsMenuPage() { }
 	
 	void init() {
 		
@@ -493,6 +505,8 @@ public:
 		fullscreenCheckbox = NULL;
 		pMenuSliderResol = NULL;
 	}
+	
+	~VideoOptionsMenuPage() { }
 	
 	CheckboxWidget * fullscreenCheckbox;
 	CycleTextWidget * pMenuSliderResol;
@@ -892,6 +906,8 @@ public:
 		: MenuPage(pos, size, OPTIONS_INTERFACE)
 	{ }
 	
+	~InterfaceOptionsMenuPage() { }
+	
 	void init() {
 		
 		{
@@ -1040,6 +1056,8 @@ public:
 	AudioOptionsMenuPage(const Vec2f & pos, const Vec2f & size)
 		: MenuPage(pos, size, OPTIONS_AUDIO)
 	{}
+	
+	~AudioOptionsMenuPage() { }
 	
 	void init() {
 		
@@ -1207,6 +1225,8 @@ public:
 	InputOptionsMenuPage(const Vec2f & pos, const Vec2f & size)
 		: MenuPage(pos, size, OPTIONS_INPUT)
 	{}
+	
+	~InputOptionsMenuPage() { }
 	
 	void init() {
 		
@@ -1424,6 +1444,8 @@ public:
 		: ControlOptionsPage(pos, size, OPTIONS_INPUT_CUSTOMIZE_KEYS_1)
 	{}
 	
+	~ControlOptionsMenuPage1() { }
+	
 	void init() {
 		
 		long y = static_cast<long>(RATIO_Y(8.f));
@@ -1494,6 +1516,8 @@ public:
 		: ControlOptionsPage(pos, size, OPTIONS_INPUT_CUSTOMIZE_KEYS_2)
 	{}
 	
+	~ControlOptionsMenuPage2() { }
+	
 	void init() {
 		
 		long y = static_cast<long>(RATIO_Y(8.f));
@@ -1551,6 +1575,8 @@ public:
 	QuitConfirmMenuPage(const Vec2f & pos, const Vec2f & size)
 		: MenuPage(pos, size, QUIT)
 	{}
+	
+	~QuitConfirmMenuPage() { }
 	
 	void init() {
 		
