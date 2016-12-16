@@ -65,6 +65,7 @@ class MenuPage {
 	
 public:
 	MenuPage(const Vec2f & pos, const Vec2f & size, MENUSTATE state);
+	virtual ~MenuPage();
 	
 	void add(Widget * widget);
 	void addCenter(Widget * widget, bool centerX = false);
