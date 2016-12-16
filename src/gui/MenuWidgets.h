@@ -47,6 +47,8 @@ ZeniMax Media Inc., Suite 120, Rockville, Maryland 20850 USA.
 #include <vector>
 #include <string>
 
+#include <boost/noncopyable.hpp>
+
 #include "core/TimeTypes.h"
 #include "graphics/Color.h"
 #include "gui/widget/ButtonWidget.h"
@@ -61,7 +63,7 @@ ZeniMax Media Inc., Suite 120, Rockville, Maryland 20850 USA.
 class TextureContainer;
 class Font;
 
-class MenuPage {
+class MenuPage : private boost::noncopyable {
 	
 public:
 	MenuPage(const Vec2f & pos, const Vec2f & size, MENUSTATE state);
@@ -101,7 +103,7 @@ private:
 	bool m_blink;
 };
 
-class CWindowMenu {
+class CWindowMenu : private boost::noncopyable {
 	
 private:
 	Vec2f m_pos;
