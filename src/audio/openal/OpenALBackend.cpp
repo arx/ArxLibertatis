@@ -30,6 +30,7 @@
 #endif
 
 #include <boost/scope_exit.hpp>
+#include <boost/static_assert.hpp>
 #include <boost/algorithm/string/predicate.hpp>
 #include <boost/math/special_functions/fpclassify.hpp>
 
@@ -100,13 +101,12 @@ public:
 	explicit al_function_ptr(void * func) : m_func(func) { }
 	template <typename T>
 	operator T() {
-		#if __cplusplus < 201402L && defined(__GNUC__) && defined(__GNUC_MINOR__) \
-		    && (__GNUC__ > 4 || (__GNUC__ == 4 && __GNUC_MINOR__ >= 7))
-		#pragma GCC diagnostic push
-		#pragma GCC diagnostic ignored "-Wpedantic"
+		#if __cplusplus < 201402L && defined(__GNUC__)
 		// ignore warning: ISO C++ forbids casting between pointer-to-function and pointer-to-object
-		return (T)m_func;
-		#pragma GCC diagnostic pop
+		T funcptr;
+		BOOST_STATIC_ASSERT(sizeof(funcptr) == sizeof(m_func));
+		std::memcpy(&funcptr, &m_func, sizeof(funcptr));
+		return funcptr;
 		#else
 		return (T)m_func;
 		#endif
