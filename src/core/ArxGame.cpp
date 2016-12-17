@@ -855,8 +855,8 @@ bool ArxGame::initGame()
 	LastLoadedScene.clear();
 	
 	DefaultBkg = EERIE_BACKGROUND();
-	ACTIVEBKG=&DefaultBkg;
-	InitBkg(ACTIVEBKG,MAX_BKGX,MAX_BKGZ,BKG_SIZX,BKG_SIZZ);
+	ACTIVEBKG = &DefaultBkg;
+	InitBkg(ACTIVEBKG, MAX_BKGX, MAX_BKGZ, BKG_SIZX, BKG_SIZZ);
 	
 	player.size.y = -player.baseHeight();
 	player.size.x = player.baseRadius();
