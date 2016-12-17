@@ -1085,9 +1085,11 @@ static void EERIE_PORTAL_Blend_Portals_And_Rooms() {
 		for(size_t nroom = 0; nroom < portals->rooms.size(); nroom++) {
 			if(nroom == portal.room_1 || nroom == portal.room_2)
 			{
-				portals->rooms[nroom].portals = (long *)realloc(portals->rooms[nroom].portals, sizeof(long) * (portals->rooms[nroom].nb_portals + 1));
-				portals->rooms[nroom].portals[portals->rooms[nroom].nb_portals] = num;
-				portals->rooms[nroom].nb_portals++;
+				EERIE_ROOM_DATA & room = portals->rooms[nroom];
+				
+				room.portals = (long *)realloc(room.portals, sizeof(long) * (room.nb_portals + 1));
+				room.portals[room.nb_portals] = num;
+				room.nb_portals++;
 			}
 		}
 	}
