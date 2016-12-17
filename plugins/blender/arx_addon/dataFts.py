@@ -178,7 +178,6 @@ class ROOM_DIST_DATA_SAVE(LittleEndianStructure):
 import logging
 
 from ctypes import sizeof
-from .dataFts import *
 from .lib import ArxIO
 
 class FtsSerializer(object):
@@ -187,22 +186,23 @@ class FtsSerializer(object):
         self.ioLib = ioLib
 
     def read_fts(self, data):
+        """If you want to read a fts file use read_fts_container"""
         result = {}
         
         pos = 0
         ftsHeader = FAST_SCENE_HEADER.from_buffer_copy(data, pos)
         pos += sizeof(FAST_SCENE_HEADER)
-        self.log.info("Fts Header version: %f" % ftsHeader.version)
-        self.log.info("Fts Header size x,z: %i,%i" % (ftsHeader.sizex, ftsHeader.sizez))
-        self.log.info("Fts Header playerpos: %f,%f,%f" % (ftsHeader.playerpos.x, ftsHeader.playerpos.y, ftsHeader.playerpos.z))
-        self.log.info("Fts Header Mscenepos: %f,%f,%f" % (ftsHeader.Mscenepos.x, ftsHeader.Mscenepos.y, ftsHeader.Mscenepos.z))
+        self.log.debug("Fts Header version: %f" % ftsHeader.version)
+        self.log.debug("Fts Header size x,z: %i,%i" % (ftsHeader.sizex, ftsHeader.sizez))
+        self.log.debug("Fts Header playerpos: %f,%f,%f" % (ftsHeader.playerpos.x, ftsHeader.playerpos.y, ftsHeader.playerpos.z))
+        self.log.debug("Fts Header Mscenepos: %f,%f,%f" % (ftsHeader.Mscenepos.x, ftsHeader.Mscenepos.y, ftsHeader.Mscenepos.z))
         result["sceneOffset"] = (ftsHeader.Mscenepos.x, ftsHeader.Mscenepos.y, ftsHeader.Mscenepos.z)
         
         texturesType = FAST_TEXTURE_CONTAINER * ftsHeader.nb_textures
         textures = texturesType.from_buffer_copy(data, pos)
         pos += sizeof(texturesType)
         result["textures"] = textures
-        self.log.info("Loaded %i textures" % len(textures))
+        self.log.debug("Loaded %i textures" % len(textures))
 
         #for i in textures:
         #    log.info(i.fic.decode('iso-8859-1'))
@@ -269,7 +269,7 @@ class FtsSerializer(object):
                 dist = ROOM_DIST_DATA_SAVE.from_buffer_copy(data, pos)
                 pos += sizeof(ROOM_DIST_DATA_SAVE)
                 
-        self.log.info("Loaded %i bytes of %i" % (pos, len(data)))
+        self.log.debug("Loaded %i bytes of %i" % (pos, len(data)))
         return result
 
     def read_fts_container(self, filepath):
@@ -277,23 +277,23 @@ class FtsSerializer(object):
         data = f.read()
         f.close()
 
-        self.log.info("Loaded %i bytes from file %s" % (len(data), filepath))
+        self.log.debug("Loaded %i bytes from file %s" % (len(data), filepath))
         
         pos = 0
         
         primaryHeader = UNIQUE_HEADER.from_buffer_copy(data, pos)
         pos += sizeof(UNIQUE_HEADER)
-        self.log.info("Header path: %s" % primaryHeader.path.decode('iso-8859-1'))
-        self.log.info("Header count: %i" % primaryHeader.count)
-        self.log.info("Header version: %f" % primaryHeader.version)
-        self.log.info("Header uncompressedsize: %i" % primaryHeader.uncompressedsize)
+        self.log.debug("Header path: %s" % primaryHeader.path.decode('iso-8859-1'))
+        self.log.debug("Header count: %i" % primaryHeader.count)
+        self.log.debug("Header version: %f" % primaryHeader.version)
+        self.log.debug("Header uncompressedsize: %i" % primaryHeader.uncompressedsize)
             
         secondaryHeadersType = UNIQUE_HEADER3 * primaryHeader.count
         secondaryHeaders = secondaryHeadersType.from_buffer_copy(data, pos)
         pos += sizeof(secondaryHeadersType)
         
         for h in secondaryHeaders:
-            self.log.info("Header2 path: %s" % h.path.decode('iso-8859-1'))
+            self.log.debug("Header2 path: %s" % h.path.decode('iso-8859-1'))
         
         uncompressed = self.ioLib.unpack(data[pos:])
         
