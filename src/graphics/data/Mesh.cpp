@@ -902,9 +902,8 @@ void ClearBackground(EERIE_BACKGROUND * eb) {
 
 int InitBkg(EERIE_BACKGROUND * eb, short sx, short sz, short Xdiv, short Zdiv) {
 	
-	if(!eb)
-		return 0;
-
+	arx_assert(eb);
+	
 	if(eb->exist) {
 		EERIE_PORTAL_Release();
 		ClearBackground(eb);
