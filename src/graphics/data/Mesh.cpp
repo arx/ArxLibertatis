@@ -900,7 +900,7 @@ void ClearBackground(EERIE_BACKGROUND * eb) {
 	NbRoomDistance = 0;
 }
 
-int InitBkg(EERIE_BACKGROUND * eb, short sx, short sz, short Xdiv, short Zdiv) {
+void InitBkg(EERIE_BACKGROUND * eb, short sx, short sz, short Xdiv, short Zdiv) {
 	
 	arx_assert(eb);
 	
@@ -927,8 +927,6 @@ int InitBkg(EERIE_BACKGROUND * eb, short sx, short sz, short Xdiv, short Zdiv) {
 	for(short x = 0; x < eb->Xsize; x++) {
 		eb->fastdata[x][z] = EERIE_BKG_INFO();
 	}
-	
-	return 1;
 }
 
 //*************************************************************************************

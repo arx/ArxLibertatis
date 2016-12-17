@@ -170,7 +170,7 @@ void SceneAddMultiScnToBackground(EERIE_MULTI3DSCENE * ms);
 #endif
 
 void ClearBackground(EERIE_BACKGROUND * eb);
-int InitBkg(EERIE_BACKGROUND * eb, short sx, short sz, short Xdiv, short Zdiv);
+void InitBkg(EERIE_BACKGROUND * eb, short sx, short sz, short Xdiv, short Zdiv);
 
 void EERIEAddPoly(TexturedVertex * vert, TexturedVertex * vert2, TextureContainer * tex, long render, float transval);
 // BACKGROUND MANAGEMENT FUNCTIONS END
