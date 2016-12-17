@@ -117,7 +117,7 @@ directory_iterator::directory_iterator(const path & p) {
 		delete reinterpret_cast<fs_boost::directory_iterator *>(m_handle);
 		m_handle = new fs_boost::directory_iterator();
 	}
-};
+}
 
 directory_iterator::~directory_iterator() {
 	delete reinterpret_cast<fs_boost::directory_iterator *>(m_handle);
