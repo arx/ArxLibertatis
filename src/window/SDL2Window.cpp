@@ -610,6 +610,16 @@ Window::MinimizeSetting SDL2Window::willMinimizeOnFocusLost() {
 	return m_minimizeOnFocusLost;
 }
 
+std::string SDL2Window::getClipboardText() {
+	char * text = SDL_GetClipboardText();
+	std::string result;
+	if(text) {
+		result = text;
+		SDL_free(text);
+	}
+	return result;
+}
+
 InputBackend * SDL2Window::getInputBackend() {
 	if(!m_input) {
 		m_input = new SDL2InputBackend(this);
