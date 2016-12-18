@@ -394,8 +394,8 @@ Font::TextSize Font::process(int x, int y, text_iterator start, text_iterator en
 	return TextSize(Vec2i(x, y), startX, endX, pen.x, getLineHeight());
 }
 
-void Font::draw(int x, int y, text_iterator start, text_iterator end, Color color) {
-	process<true>(x, y, start, end, color);
+Font::TextSize Font::draw(int x, int y, text_iterator start, text_iterator end, Color color) {
+	return process<true>(x, y, start, end, color);
 }
 
 Font::TextSize Font::getTextSize(text_iterator start, text_iterator end) {
