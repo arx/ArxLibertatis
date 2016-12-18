@@ -85,7 +85,11 @@ void ConsoleBuffer::append(const std::string & text) {
 
 void MemoryLogger::log(const logger::Source & file, int line, Logger::LogLevel level, const std::string & str) {
 	std::ostringstream oss;
-	format(oss, file, line, level, str);
+	if(level == Logger::Console) {
+		oss << str << '\n';
+	} else {
+		format(oss, file, line, level, str);
+	}
 	m_buffer->append(oss.str());
 	// TODO This might need additional locking as other threas may log while the main thread has the console open
 }
@@ -152,7 +156,7 @@ void ScriptConsole::close() {
 
 void ScriptConsole::execute() {
 	
-	m_buffer.append("> " + text() + "\n");
+	ARX_LOG(Logger::Console) << "> " << text();
 	
 	Entity * entity = entities.player();
 	

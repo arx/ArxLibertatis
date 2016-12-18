@@ -43,6 +43,7 @@ void ColorConsole::log(const Source & file, int line, Logger::LogLevel level,
 	switch(level) {
 		case Logger::Debug:    std::cout << "\x1b[1;36m[D]\x1b[0;36m", os = &std::cout; break;
 		case Logger::Info:     std::cout << "\x1b[1;32m[I]\x1b[0;32m", os = &std::cout; break;
+		case Logger::Console:  std::cout << "\x1b[1;37m[C]\x1b[0;37m", os = &std::cout; break;
 		case Logger::Warning:  std::cerr << "\x1b[1;33m[W]\x1b[0;33m";
 			                     os = &std::cerr, e = c, c = "\x1b[0;33m"; break;
 		case Logger::Error:    std::cerr << "\x1b[1;31m[E]\x1b[0;31m";
