@@ -60,5 +60,59 @@ public:
 	
 };
 
+class BasicTextInput : protected TextInputHandler {
+	
+	std::string m_text;
+	std::string m_editText;
+	size_t m_cursorPos;
+	size_t m_editCursorPos;
+	size_t m_editCursorLength;
+	
+protected:
+	
+	virtual void textUpdated() { }
+	virtual void cursorUpdated() { }
+	virtual void editUpdated() { }
+	
+public:
+	
+	BasicTextInput()
+		: m_cursorPos(0)
+		, m_editCursorPos(0)
+		, m_editCursorLength(0)
+	{ }
+	
+	void newText(const std::string & text);
+	void editingText(const std::string & composition, size_t cursorStart, size_t cursorLength);
+	bool keyPressed(Keyboard::Key key, KeyModifiers mod);
+	
+	void clear();
+	void setText(const std::string & text, size_t cursorPos = size_t(-1));
+	void insert(const std::string & text);
+	void moveLeft();
+	void moveRight();
+	void eraseLeft();
+	void eraseRight();
+	size_t findWordLeft() const;
+	size_t findWordRight() const;
+	void moveWordLeft();
+	void moveWordRight();
+	void eraseWordLeft();
+	void eraseWordRight();
+	void moveStart();
+	void moveEnd();
+	void eraseStart();
+	void eraseEnd();
+	virtual void paste(const std::string & text);
+	static bool isWordSeparator(char c);
+	
+	const std::string & text() const { return m_text; }
+	size_t cursorPos() const { return m_cursorPos; }
+	const std::string & editText() const { return m_editText; }
+	size_t editCursorPos() const { return m_editCursorPos; }
+	size_t editCursorLength() const { return m_editCursorLength; }
+	
+};
+
 #endif // ARX_INPUT_TEXTINPUT_H
 
