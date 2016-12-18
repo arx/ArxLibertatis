@@ -162,15 +162,15 @@ public:
 	const res::path & getName() const { return info.name; }
 	unsigned int getSize() const { return info.size; }
 	
-	void draw(const Vec2i & p, const std::string & str, const Color & color) {
-		draw(p.x, p.y, str, color);
+	TextSize draw(const Vec2i & p, const std::string & str, const Color & color) {
+		return draw(p.x, p.y, str, color);
 	}
 	
-	void draw(int x, int y, const std::string & str, Color color) {
-		draw(x, y, str.begin(), str.end(), color);
+	TextSize draw(int x, int y, const std::string & str, Color color) {
+		return draw(x, y, str.begin(), str.end(), color);
 	}
 	
-	void draw(int x, int y, text_iterator start, text_iterator end, Color color);
+	TextSize draw(int x, int y, text_iterator start, text_iterator end, Color color);
 	
 	TextSize getTextSize(const std::string & str) {
 		return getTextSize(str.begin(), str.end());
