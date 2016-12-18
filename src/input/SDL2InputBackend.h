@@ -60,6 +60,11 @@ private:
 	
 	SDL2Window * m_window;
 	
+	TextInputHandler * m_textHandler;
+	std::string m_editText;
+	size_t m_editCursorPos;
+	size_t m_editCursorLength;
+	
 	int wheel;
 	Vec2i cursorAbs;
 	Vec2i cursorRel;
