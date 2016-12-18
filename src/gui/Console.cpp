@@ -20,6 +20,7 @@
 #include "gui/Console.h"
 
 #include <algorithm>
+#include <sstream>
 
 #include "core/Config.h"
 #include "core/Core.h"
@@ -32,6 +33,7 @@
 #include "gui/Interface.h"
 #include "gui/Text.h"
 #include "input/Input.h"
+#include "io/log/Logger.h"
 #include "math/Rectangle.h"
 #include "script/ScriptEvent.h"
 #include "util/Unicode.h"
@@ -79,6 +81,13 @@ void ConsoleBuffer::append(const std::string & text) {
 		
 	}
 	
+}
+
+void MemoryLogger::log(const logger::Source & file, int line, Logger::LogLevel level, const std::string & str) {
+	std::ostringstream oss;
+	format(oss, file, line, level, str);
+	m_buffer->append(oss.str());
+	// TODO This might need additional locking as other threas may log while the main thread has the console open
 }
 
 bool ScriptConsole::keyPressed(Keyboard::Key key, KeyModifiers mod) {
