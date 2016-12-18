@@ -31,6 +31,7 @@ void logger::Backend::format(std::ostream & os, const Source & file,
 	switch(level) {
 		case Logger::Debug:    os << "[D]"; break;
 		case Logger::Info:     os << "[I]"; break;
+		case Logger::Console:  os << "[C]"; break;
 		case Logger::Warning:  os << "[W]"; break;
 		case Logger::Error:    os << "[E]"; break;
 		case Logger::Critical: os << "[CRITICAL]", length = 10; break;

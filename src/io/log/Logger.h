@@ -74,6 +74,7 @@ public:
 	enum LogLevel {
 		Debug,
 		Info,
+		Console,
 		Warning,
 		Error,
 		Critical,
