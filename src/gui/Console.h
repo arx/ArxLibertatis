@@ -78,6 +78,8 @@ public:
 class ScriptConsole : protected BasicTextInput {
 	typedef BasicTextInput  Base;
 	
+	static const size_t MaxSuggestions = 100;
+	static const size_t MaxVisibleSuggestions = 20;
 	static const size_t ScrollbackLines = 10;
 	static const size_t ScrollbackColumns = 100;
 	
@@ -86,28 +88,44 @@ class ScriptConsole : protected BasicTextInput {
 	typedef std::pair<size_t, std::string> Suggestion;
 	
 	ConsoleBuffer m_buffer;
+	bool m_updateSuggestions;
+	std::string m_originalText;
+	std::vector<Suggestion> m_suggestions;
+	size_t m_originalCursorPos;
 	Suggestion m_error;
+	int m_selection;
 	PlatformDuration m_blinkTime;
 	bool m_blink;
 	
 	size_t m_contextBegin;
 	size_t m_contextEnd;
 	size_t m_commandBegin;
+	size_t m_suggestionPos;
 	
 	bool keyPressed(Keyboard::Key key, KeyModifiers mod);
 	void textUpdated();
 	void cursorUpdated();
+	
+	void select(int dir);
+	void applySuggestion(const Suggestion & suggestion);
+	
+	static bool addContextSuggestion(void * self, const std::string & suggestion);
+	static bool addCommandSuggestion(void * self, const std::string & suggestion);
 	
 public:
 	
 	ScriptConsole()
 		: m_enabled(false)
 		, m_buffer(ScrollbackLines, ScrollbackColumns)
+		, m_updateSuggestions(true)
+		, m_originalCursorPos(true)
+		, m_selection(0)
 		, m_blinkTime(0)
 		, m_blink(true)
 		, m_contextBegin(0)
 		, m_contextEnd(0)
 		, m_commandBegin(0)
+		, m_suggestionPos(0)
 	{ }
 	
 	void open();
