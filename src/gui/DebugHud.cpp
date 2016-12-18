@@ -438,8 +438,8 @@ void ShowFpsGraph() {
 		oss << std::fixed << std::setprecision(2) << values[i] << " FPS";
 		texts[i] = oss.str();
 		// Calculate widths (could be done more efficiently for monospace fonts...)
-		labelWidth = std::max(labelWidth, float(font->getTextSize(labels[i]).x));
-		widths[i] = font->getTextSize(texts[i]).x;
+		labelWidth = std::max(labelWidth, float(font->getTextSize(labels[i]).width()));
+		widths[i] = font->getTextSize(texts[i]).width();
 		valueWidth = std::max(valueWidth, widths[i]);
 	}
 

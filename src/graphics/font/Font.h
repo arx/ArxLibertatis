@@ -94,6 +94,66 @@ public:
 	
 public:
 	
+	class TextSize {
+		
+		Vec2i m_anchor;
+		s32 m_start;
+		s32 m_end;
+		s32 m_next;
+		s32 m_height;
+		
+	public:
+		
+		TextSize(Vec2i anchor, s32 start, s32 end, s32 next, s32 height)
+			: m_anchor(anchor)
+			, m_start(start)
+			, m_end(end)
+			, m_next(next)
+			, m_height(height)
+		{ }
+		
+		Vec2i anchor() {
+			return m_anchor;
+		}
+		
+		s32 start() {
+			return m_start;
+		}
+		
+		s32 end() {
+			return m_end;
+		}
+		
+		s32 width() {
+			return m_end - m_start;
+		}
+		
+		s32 height() {
+			return m_height;
+		}
+		
+		s32 advance() {
+			return m_next - m_anchor.x;
+		}
+		
+		s32 head() {
+			return m_start - m_anchor.x;
+		}
+		
+		s32 tail() {
+			return m_next - m_end;
+		}
+		
+		s32 next() {
+			return m_next;
+		}
+		
+		operator Vec2i() {
+			return Vec2i(width(), height());
+		}
+		
+	};
+	
 	typedef u32 Char;
 	
 	typedef std::string::const_iterator text_iterator;
@@ -112,11 +172,11 @@ public:
 	
 	void draw(int x, int y, text_iterator start, text_iterator end, Color color);
 	
-	Vec2i getTextSize(const std::string & str) {
+	TextSize getTextSize(const std::string & str) {
 		return getTextSize(str.begin(), str.end());
 	}
 	
-	Vec2i getTextSize(text_iterator start, text_iterator end);
+	TextSize getTextSize(text_iterator start, text_iterator end);
 	
 	int getLineHeight() const;
 	
@@ -152,7 +212,7 @@ private:
 private:
 	
 	template <bool Draw>
-	Vec2i process(int pX, int pY, text_iterator start, text_iterator end, Color color);
+	TextSize process(int pX, int pY, text_iterator start, text_iterator end, Color color);
 	
 	Info info;
 	unsigned int referenceCount;
