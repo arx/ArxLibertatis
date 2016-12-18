@@ -486,29 +486,34 @@ float PtIn2DPolyProj(const std::vector<EERIE_VERTEX> & verts, EERIE_FACE * ef, f
 		return 0.f;
 }
 
-int PointIn2DPolyXZ(const EERIEPOLY * ep, float x, float z) {
+static int PointIn2DPolyXZ(const TexturedVertex (&verts)[4], bool isQuad, float x, float z) {
 	
 	int i, j, c = 0, d = 0;
 
 	for (i = 0, j = 2; i < 3; j = i++)
 	{
-		if ((((ep->v[i].p.z <= z) && (z < ep->v[j].p.z)) ||
-				((ep->v[j].p.z <= z) && (z < ep->v[i].p.z))) &&
-				(x < (ep->v[j].p.x - ep->v[i].p.x) *(z - ep->v[i].p.z) / (ep->v[j].p.z - ep->v[i].p.z) + ep->v[i].p.x))
+		if ((((verts[i].p.z <= z) && (z < verts[j].p.z)) ||
+				((verts[j].p.z <= z) && (z < verts[i].p.z))) &&
+				(x < (verts[j].p.x - verts[i].p.x) *(z - verts[i].p.z) / (verts[j].p.z - verts[i].p.z) + verts[i].p.x))
 			c = !c;
 	}
 
-	if (ep->type & POLY_QUAD)
+	if(isQuad)
 		for (i = 1, j = 3; i < 4; j = i++)
 		{
-			if ((((ep->v[i].p.z <= z) && (z < ep->v[j].p.z)) ||
-					((ep->v[j].p.z <= z) && (z < ep->v[i].p.z))) &&
-					(x < (ep->v[j].p.x - ep->v[i].p.x) *(z - ep->v[i].p.z) / (ep->v[j].p.z - ep->v[i].p.z) + ep->v[i].p.x))
+			if ((((verts[i].p.z <= z) && (z < verts[j].p.z)) ||
+					((verts[j].p.z <= z) && (z < verts[i].p.z))) &&
+					(x < (verts[j].p.x - verts[i].p.x) *(z - verts[i].p.z) / (verts[j].p.z - verts[i].p.z) + verts[i].p.x))
 				d = !d;
 		}
 
 	return c + d;
 }
+
+int PointIn2DPolyXZ(const EERIEPOLY * ep, float x, float z) {
+	return PointIn2DPolyXZ(ep->v, ep->type & POLY_QUAD, x, z);
+}
+
 
 static bool RayIn3DPolyNoCull(const Vec3f & orgn, const Vec3f & dest, const EERIEPOLY & epp) {
 
