@@ -243,18 +243,6 @@ static void ManageLava_VertexBuffer(EERIEPOLY * ep, const long to,
 	}
 }
 
-static void EERIERTPPoly2(PortalPoly & ep) {
-	
-	EE_RTP(ep.v[0].p, ep.tv[0]);
-	EE_RTP(ep.v[1].p, ep.tv[1]);
-	EE_RTP(ep.v[2].p, ep.tv[2]);
-
-	if(ep.type & POLY_QUAD)
-		EE_RTP(ep.v[3].p, ep.tv[3]);
-	else
-		ep.tv[3].p.z=1.f;
-}
-
 bool IsSphereInFrustrum(const Vec3f & point, const EERIE_FRUSTRUM & frustrum, float radius = 0.f);
 
 static bool FrustrumsClipSphere(const EERIE_FRUSTRUM_DATA & frustrums,
@@ -1420,9 +1408,7 @@ static void ARX_PORTALS_Frustrum_ComputeRoom(size_t roomIndex,
 
 		Vec3f pos = epp.center - camPos;
 		float fRes = glm::dot(pos, epp.norm);
-
-		EERIERTPPoly2(epp);
-
+		
 		if(!IsSphereInFrustrum(epp.center, frustrum, epp.v[0].rhw)) {
 			continue;
 		}

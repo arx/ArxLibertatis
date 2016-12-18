@@ -436,7 +436,6 @@ struct PortalPoly {
 	Vec3f		max;
 	Vec3f		norm;
 	TexturedVertex		v[4];
-	TexturedVertex		tv[4];
 	Vec3f		center;
 	
 	PortalPoly()
