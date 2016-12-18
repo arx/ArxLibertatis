@@ -414,7 +414,7 @@ void Credits::addLine(std::string & phrase, float & drawpos, int sourceLineNumbe
 
 void Credits::layout() {
 	
-	m_lineHeight = hFontCredits->getTextSize("aA(").y;
+	m_lineHeight = hFontCredits->getLineHeight();
 	
 	m_lines.clear();
 	
