@@ -451,8 +451,13 @@ void ScriptConsole::select(int dir) {
 
 void ScriptConsole::autocomplete(size_t characters) {
 	
-	arx_assert(m_completion.first <= m_originalCursorPos);
-	size_t n = m_originalCursorPos - m_completion.first;
+	if(m_selection != 0) {
+		// Commit the selection, otherwise we will have no useful tab completion
+		textUpdated();
+	}
+	
+	arx_assert(m_completion.first <= cursorPos());
+	size_t n = cursorPos() - m_completion.first;
 	for(; n < m_completion.second.size(); n++) {
 		if(!util::UTF8::isContinuationByte(m_completion.second[n])) {
 			if(characters == 0) {
@@ -463,13 +468,11 @@ void ScriptConsole::autocomplete(size_t characters) {
 		}
 	}
 	
-	if(n != m_originalCursorPos - m_completion.first) {
-		m_updateSuggestions = false;
+	if(n != cursorPos() - m_completion.first) {
+		arx_assert(m_originalCursorPos == cursorPos());
 		applySuggestion(Suggestion(m_completion.first, m_completion.second.substr(0, n)));
-		m_updateSuggestions = true;
 	}
 	
-	textUpdated();
 }
 
 void ScriptConsole::applySuggestion(const Suggestion & suggestion) {
