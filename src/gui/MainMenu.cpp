@@ -1549,6 +1549,10 @@ public:
 		
 		addControlRow(y, CONTROLS_CUST_TOGGLE_FULLSCREEN, "system_menus_options_input_customize_controls_toggle_fullscreen", "Toggle fullscreen");
 		
+		if(config.input.allowConsole) {
+			addControlRow(y, CONTROLS_CUST_CONSOLE, "system_menus_options_input_customize_controls_console", "Script console");
+		}
+		
 		{
 			ButtonWidget * cb = new ButtonWidget(Vec2f(20, 380), Vec2f(16, 16), "graph/interface/menus/back");
 			cb->m_targetMenu = OPTIONS_INPUT_CUSTOMIZE_KEYS_1;
