@@ -21,6 +21,7 @@
 #define ARX_SCRIPT_SCRIPTEVENT_H
 
 #include <map>
+#include <string>
 
 #include "script/Script.h"
 
@@ -55,6 +56,8 @@ public:
 	
 	static void init();
 	static void shutdown();
+	
+	static bool isCommand(const std::string & command);
 	
 private:
 	
