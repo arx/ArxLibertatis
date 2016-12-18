@@ -109,6 +109,19 @@ bool ScriptConsole::keyPressed(Keyboard::Key key, KeyModifiers mod) {
 			return true;
 		}
 		
+		case Keyboard::Key_Tab: {
+			autocomplete();
+			return true;
+		}
+		
+		case Keyboard::Key_RightArrow: {
+			if(cursorPos() == text().size()) {
+				autocomplete(1);
+				return true;
+			}
+			break;
+		}
+		
 		case Keyboard::Key_PageUp:
 		case Keyboard::Key_UpArrow: {
 			select(-1);
@@ -132,6 +145,19 @@ bool ScriptConsole::keyPressed(Keyboard::Key key, KeyModifiers mod) {
 	
 	if(mod.control) {
 		switch(key) {
+			
+			case Keyboard::Key_F: {
+				if(cursorPos() == text().size()) {
+					autocomplete(1);
+					return true;
+				}
+				break;
+			}
+			
+			case Keyboard::Key_I: {
+				autocomplete();
+				return true;
+			}
 			
 			case Keyboard::Key_J: {
 				execute();
@@ -196,6 +222,7 @@ void ScriptConsole::textUpdated() {
 		++commandEnd;
 	}
 	
+	m_completion = Suggestion(cursorPos(), std::string());
 	m_error = Suggestion(0, std::string());
 	
 	if(m_updateSuggestions) {
@@ -236,6 +263,28 @@ void ScriptConsole::textUpdated() {
 				m_error = Suggestion(m_suggestions[0].first, "...");
 			}
 			m_suggestions.clear();
+		}
+		
+		if(!m_suggestions.empty()) {
+			size_t commonPrefix = m_suggestions[0].second.size();
+			for(size_t i = 1; i < m_suggestions.size(); i++) {
+				if(m_suggestions[i].first != m_suggestions[0].first) {
+					commonPrefix = 0;
+					break;
+				}
+				size_t max = std::min(commonPrefix, m_suggestions[i].second.size());
+				commonPrefix = 0;
+				for(size_t j = 0; j < max && m_suggestions[i].second[j] == m_suggestions[1].second[j]; j++) {
+					commonPrefix++;
+				}
+				if(commonPrefix == 0) {
+					break;
+				}
+			}
+			if(commonPrefix != 0) {
+				m_completion = m_suggestions[0];
+				m_completion.second.resize(commonPrefix);
+			}
 		}
 		
 	}
@@ -329,6 +378,29 @@ void ScriptConsole::select(int dir) {
 		m_updateSuggestions = true;
 	}
 	
+}
+
+void ScriptConsole::autocomplete(size_t characters) {
+	
+	arx_assert(m_completion.first <= m_originalCursorPos);
+	size_t n = m_originalCursorPos - m_completion.first;
+	for(; n < m_completion.second.size(); n++) {
+		if(!util::UTF8::isContinuationByte(m_completion.second[n])) {
+			if(characters == 0) {
+				break;
+			} else {
+				characters--;
+			}
+		}
+	}
+	
+	if(n != m_originalCursorPos - m_completion.first) {
+		m_updateSuggestions = false;
+		applySuggestion(Suggestion(m_completion.first, m_completion.second.substr(0, n)));
+		m_updateSuggestions = true;
+	}
+	
+	textUpdated();
 }
 
 void ScriptConsole::applySuggestion(const Suggestion & suggestion) {
@@ -448,6 +520,12 @@ void ScriptConsole::draw() {
 	
 	// Draw text
 	s32 x = hFontDebug->draw(pos.x, pos.y, begin, end, Color::white).next();
+	
+	// Preview autocomplete
+	const std::string & completion = m_completion.second;
+	if(cursorPos() == text().size() && cursorPos() < completion.size()) {
+		hFontDebug->draw(x, pos.y, completion.begin() + cursorPos(), completion.end(), Color::gray(0.5f));
+	}
 	
 	// Draw cursor
 	if(m_blink) {
