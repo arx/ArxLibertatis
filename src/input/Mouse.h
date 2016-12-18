@@ -26,6 +26,8 @@ public:
 	
 	enum Button {
 		
+		Button_Invalid = -1,
+		
 		ButtonBase = 0x20000000,
 		
 		Button_0 = ButtonBase,
