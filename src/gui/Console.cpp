@@ -339,6 +339,12 @@ Entity * ScriptConsole::contextEntity() {
 
 void ScriptConsole::execute() {
 	
+	m_history.erase(std::remove(m_history.begin(), m_history.end(), text()), m_history.end());
+	m_history.push_back(text());
+	if(m_history.size() > MaxHistorySize) {
+		m_history.pop_front();
+	}
+	
 	ARX_LOG(Logger::Console) << "> " << text();
 	
 	Entity * entity = contextEntity();
@@ -373,14 +379,38 @@ bool ScriptConsole::addCommandSuggestion(void * self, const std::string & sugges
 
 void ScriptConsole::select(int dir) {
 	
-	int selection = glm::clamp(m_selection + dir, 0, int(m_suggestions.size()));
+	int selection = glm::clamp(m_selection + dir, -int(m_history.size()), int(m_suggestions.size()));
+	if(selection < 0) {
+		std::string prefix = m_originalText.substr(0, m_originalCursorPos);
+		while(true) {
+			if(selection == 0) {
+				// Reached history start
+				break;
+			} else if(selection < -int(m_history.size())) {
+				// Reached history end
+				return;
+			} else if(boost::starts_with(m_history[int(m_history.size()) + selection], prefix)) {
+				// Found history entry
+				break;
+			}
+			selection += dir;
+		}
+	}
 	
 	if(selection == m_selection) {
 		return;
 	}
 	m_selection = selection;
 	
-	if(m_selection == 0) {
+	if(m_selection < 0) {
+		arx_assert(int(m_history.size()) + m_selection >= 0);
+		arx_assert(int(m_history.size()) + m_selection < int(m_history.size()));
+		size_t newCursorPos = (m_originalCursorPos == 0) ? size_t(-1) : m_originalCursorPos;
+		m_suggestions.clear();
+		m_updateSuggestions = false;
+		setText(m_history[int(m_history.size()) + m_selection], newCursorPos);
+		m_updateSuggestions = true;
+	} else if(m_selection == 0) {
 		setText(m_originalText, m_originalCursorPos);
 	} else {
 		arx_assert(m_selection > 0);
