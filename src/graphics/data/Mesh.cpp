@@ -1825,7 +1825,7 @@ static void EERIE_PORTAL_Poly_Add(EERIEPOLY * ep, const std::string& name, long 
 
 		portal.room_1 = val1;
 		portal.room_2 = val2;
-		memcpy(&portal.poly, ep, sizeof(EERIEPOLY));
+		portal.poly = *ep;
 
 		float fDistMin = std::numeric_limits<float>::max();
 		float fDistMax = std::numeric_limits<float>::min();
