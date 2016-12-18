@@ -29,9 +29,9 @@
 #define SDL_BUTTON_X2 7
 #endif
 
-static int sdlToArxKey[SDLK_LAST];
+static Keyboard::Key sdlToArxKey[SDLK_LAST];
 
-static int sdlToArxButton[10];
+static Mouse::Button sdlToArxButton[10];
 
 SDL1InputBackend::SDL1InputBackend() {
 	
@@ -44,7 +44,7 @@ SDL1InputBackend::SDL1InputBackend() {
 	SDL_EventState(SDL_MOUSEBUTTONDOWN, SDL_ENABLE);
 	SDL_EventState(SDL_MOUSEBUTTONUP, SDL_ENABLE);
 	
-	std::fill_n(sdlToArxKey, ARRAY_SIZE(sdlToArxKey), -1);
+	std::fill_n(sdlToArxKey, ARRAY_SIZE(sdlToArxKey), Keyboard::Key_Invalid);
 	
 	sdlToArxKey[SDLK_BACKSPACE] = Keyboard::Key_Backspace;
 	sdlToArxKey[SDLK_TAB] = Keyboard::Key_Tab;
@@ -174,7 +174,7 @@ SDL1InputBackend::SDL1InputBackend() {
 	sdlToArxKey[SDLK_COMPOSE] = Keyboard::Key_Apps;
 	sdlToArxKey[SDLK_PRINT] = Keyboard::Key_PrintScreen;
 	
-	std::fill_n(sdlToArxButton, ARRAY_SIZE(sdlToArxButton), -1);
+	std::fill_n(sdlToArxButton, ARRAY_SIZE(sdlToArxButton), Mouse::Button_Invalid);
 	
 	ARX_STATIC_ASSERT(9 < ARRAY_SIZE(sdlToArxButton), "array size mismatch");
 	sdlToArxButton[8] = Mouse::Button_5;
@@ -269,7 +269,7 @@ void SDL1InputBackend::onEvent(const SDL_Event & event) {
 		case SDL_KEYDOWN:
 		case SDL_KEYUP: {
 			SDLKey key = event.key.keysym.sym;
-			if(key >= 0 && size_t(key) < ARRAY_SIZE(sdlToArxKey) && sdlToArxKey[key] >= 0) {
+			if(key >= 0 && size_t(key) < ARRAY_SIZE(sdlToArxKey) && sdlToArxKey[key] != Keyboard::Key_Invalid) {
 				keyStates[sdlToArxKey[key] - Keyboard::KeyBase] = (event.key.state == SDL_PRESSED);
 			} else {
 				LogWarning << "Unmapped SDL key: " << (int)key << " = " << SDL_GetKeyName(key);
@@ -290,7 +290,7 @@ void SDL1InputBackend::onEvent(const SDL_Event & event) {
 				wheel++;
 			} else if(button == SDL_BUTTON_WHEELDOWN) {
 				wheel--;
-			} else if(button < ARRAY_SIZE(sdlToArxButton) && sdlToArxButton[button] >= 0) {
+			} else if(button < ARRAY_SIZE(sdlToArxButton) && sdlToArxButton[button] != Mouse::Button_Invalid) {
 				size_t i = sdlToArxButton[button] - Mouse::ButtonBase;
 				if((event.button.state == SDL_PRESSED)) {
 					buttonStates[i] = true, clickCount[i]++;
