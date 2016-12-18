@@ -534,4 +534,13 @@ std::string ScriptEvent::getName(ScriptMessage msg, const std::string & eventnam
 	}
 }
 
+bool ScriptEvent::isCommand(const std::string & command) {
+	
+	if(boost::starts_with(command, "timer")) {
+		return true;
+	}
+	
+	return commands.find(command) != commands.end();
+}
+
 ScriptEvent::Commands ScriptEvent::commands;
