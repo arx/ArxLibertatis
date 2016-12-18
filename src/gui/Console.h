@@ -23,6 +23,7 @@
 #include <vector>
 #include <string>
 #include <utility>
+#include <deque>
 #include <stddef.h>
 
 #include "core/TimeTypes.h"
@@ -83,6 +84,7 @@ class ScriptConsole : protected BasicTextInput {
 	static const size_t MaxVisibleSuggestions = 20;
 	static const size_t ScrollbackLines = 10;
 	static const size_t ScrollbackColumns = 100;
+	static const size_t MaxHistorySize = 100;
 	
 	bool m_enabled;
 	
@@ -90,6 +92,7 @@ class ScriptConsole : protected BasicTextInput {
 	
 	ConsoleBuffer m_buffer;
 	bool m_updateSuggestions;
+	std::deque<std::string> m_history;
 	std::string m_originalText;
 	std::vector<Suggestion> m_suggestions;
 	size_t m_originalCursorPos;
