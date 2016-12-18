@@ -24,6 +24,7 @@
 
 #include <boost/algorithm/string/predicate.hpp>
 
+#include "core/Application.h"
 #include "core/Config.h"
 #include "core/Core.h"
 #include "core/GameTime.h"
@@ -40,6 +41,7 @@
 #include "scene/Interactive.h"
 #include "script/ScriptEvent.h"
 #include "util/Unicode.h"
+#include "window/RenderWindow.h"
 
 // TODO Share some of this with the save name entry field
 
@@ -308,6 +310,26 @@ void ScriptConsole::textUpdated() {
 }
 
 void ScriptConsole::cursorUpdated() {
+	textUpdated();
+}
+
+void ScriptConsole::paste(const std::string & text) {
+	
+	m_updateSuggestions = false;
+	size_t p = 0;
+	while(true) {
+		size_t newline = text.find('\n', p);
+		if(newline == std::string::npos) {
+			Base::paste(text.substr(p));
+			break;
+		}
+		Base::paste(text.substr(p, newline - p));
+		execute();
+		clear();
+		p = newline + 1;
+	}
+	m_updateSuggestions = true;
+	
 	textUpdated();
 }
 
