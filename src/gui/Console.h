@@ -110,6 +110,7 @@ class ScriptConsole : protected BasicTextInput {
 	size_t m_suggestionPos;
 	
 	bool keyPressed(Keyboard::Key key, KeyModifiers mod);
+	void parse(bool allowEmptyPrefix = false);
 	void textUpdated();
 	void cursorUpdated();
 	void paste(const std::string & text);
