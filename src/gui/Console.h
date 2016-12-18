@@ -22,6 +22,7 @@
 
 #include <vector>
 #include <string>
+#include <utility>
 #include <stddef.h>
 
 #include "core/TimeTypes.h"
@@ -82,7 +83,10 @@ class ScriptConsole : protected BasicTextInput {
 	
 	bool m_enabled;
 	
+	typedef std::pair<size_t, std::string> Suggestion;
+	
 	ConsoleBuffer m_buffer;
+	Suggestion m_error;
 	PlatformDuration m_blinkTime;
 	bool m_blink;
 	
@@ -92,6 +96,7 @@ class ScriptConsole : protected BasicTextInput {
 	
 	bool keyPressed(Keyboard::Key key, KeyModifiers mod);
 	void textUpdated();
+	void cursorUpdated();
 	
 public:
 	
