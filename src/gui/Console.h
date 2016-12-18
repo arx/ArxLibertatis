@@ -80,7 +80,7 @@ public:
 class ScriptConsole : protected BasicTextInput {
 	typedef BasicTextInput  Base;
 	
-	static const size_t MaxSuggestions = 100;
+	static const size_t MaxSuggestions = 1000;
 	static const size_t MaxVisibleSuggestions = 20;
 	static const size_t ScrollbackLines = 10;
 	static const size_t ScrollbackColumns = 100;
