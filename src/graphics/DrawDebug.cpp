@@ -184,7 +184,7 @@ static void drawDebugPortals() {
 
 		drawLine(epp.v[0].p, epp.v[1].p, color);
 		drawLine(epp.v[1].p, epp.v[3].p, color);
-		drawLine(epp.v[2].p, epp.v[3].p, color);
+		drawLine(epp.v[2].p, epp.v[3].p, color, color * 0.5f);
 		drawLine(epp.v[0].p, epp.v[2].p, color);
 		
 	}

@@ -532,7 +532,7 @@ int PointIn2DPolyXZ(const EERIEPOLY * ep, float x, float z) {
 }
 
 int PointIn2DPolyXZ(const PortalPoly * ep, float x, float z) {
-	return PointIn2DPolyXZ(ep->v, ep->type & POLY_QUAD, x, z);
+	return PointIn2DPolyXZ(ep->v, true, x, z);
 }
 
 
@@ -1088,7 +1088,7 @@ static void EERIE_PORTAL_Blend_Portals_And_Rooms() {
 		
 		ep->center = ep->v[0].p;
 
-		long to = (ep->type & POLY_QUAD) ? 4 : 3;
+		long to = 4;
 
 		float divide = ( 1.0f / to );
 		
@@ -1527,13 +1527,21 @@ static bool loadFastScene(const res::path & file, const char * data, const char 
 		portal.room_2 = epo->room_2;
 		portal.useportal = epo->useportal;
 		portal.paddy = epo->paddy;
-		portal.poly.type = PolyType::load(epo->poly.type);
 		portal.poly.center = epo->poly.center.toVec3();
 		portal.poly.max = epo->poly.max.toVec3();
 		portal.poly.min = epo->poly.min.toVec3();
 		portal.poly.norm = epo->poly.norm.toVec3();
 		
 		std::copy(epo->poly.v, epo->poly.v + 4, portal.poly.v);
+		
+		if(epo->poly.type == 0) {
+			// Make sure all portal polys have 4 vertices
+			// This is required to fix two polys in the original gamedata
+			LogDebug("Adding position for non quad portal poly");
+			portal.poly.v[3].p = glm::mix(portal.poly.v[1].p, portal.poly.v[2].p, 0.5f);
+		} else if(epo->poly.type != 64) {
+			LogWarning << "Invalid poly type found in portal " << epo->poly.type;
+		}
 	}
 	
 	
@@ -1831,7 +1839,7 @@ static void EERIE_PORTAL_Poly_Add(EERIEPOLY * ep, const std::string& name, long 
 		portal.room_1 = val1;
 		portal.room_2 = val2;
 		
-		portal.poly.type = ep->type;
+		arx_assert(ep->type == POLY_QUAD);
 		portal.poly.min = ep->min;
 		portal.poly.max = ep->max;
 		portal.poly.norm = ep->norm;
@@ -2306,7 +2314,7 @@ static bool FastSceneSave(const fs::path & partial_path) {
 			epo->useportal = portal.useportal;
 			epo->paddy = portal.paddy;
 			epo->poly.area = 0.f;
-			epo->poly.type = portal.poly.type;
+			epo->poly.type = 64; // Marks the poly as a quad
 			epo->poly.transval = 0.f;
 			epo->poly.room = 0;
 			epo->poly.misc = 0;
