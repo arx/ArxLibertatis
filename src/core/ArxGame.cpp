@@ -108,6 +108,7 @@ ZeniMax Media Inc., Suite 120, Rockville, Maryland 20850 USA.
 #include "graphics/particle/Spark.h"
 #include "graphics/texture/TextureStage.h"
 
+#include "gui/Console.h"
 #include "gui/Cursor.h"
 #include "gui/DebugHud.h"
 #include "gui/Hud.h"
@@ -1748,6 +1749,8 @@ void ArxGame::updateInput() {
 		drawDebugCycleViews();
 	}
 	
+	g_console.update();
+	
 #ifdef ARX_DEBUG
 	if(GInput->isKeyPressedNowPressed(Keyboard::Key_Pause)) {
 		if(!arxtime.is_paused()) {
@@ -2257,6 +2260,8 @@ void ArxGame::render() {
 		default: break;
 		}
 	}
+	
+	g_console.draw();
 	
 	if(ARXmenu.currentmode == AMCM_OFF) {
 		ARX_SCRIPT_AllowInterScriptExec();
