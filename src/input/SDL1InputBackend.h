@@ -55,6 +55,8 @@ public:
 	
 private:
 	
+	TextInputHandler * m_textHandler;
+	
 	int wheel;
 	Vec2i cursorAbs;
 	bool cursorInWindow;

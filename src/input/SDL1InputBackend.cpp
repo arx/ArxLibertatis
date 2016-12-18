@@ -21,6 +21,7 @@
 
 #include "io/log/Logger.h"
 #include "platform/Platform.h"
+#include "util/Unicode.h"
 
 #ifndef SDL_BUTTON_X1
 #define SDL_BUTTON_X1 6
@@ -33,7 +34,7 @@ static Keyboard::Key sdlToArxKey[SDLK_LAST];
 
 static Mouse::Button sdlToArxButton[10];
 
-SDL1InputBackend::SDL1InputBackend() {
+SDL1InputBackend::SDL1InputBackend() : m_textHandler(NULL) {
 	
 	cursorInWindow = false;
 	
@@ -254,12 +255,18 @@ bool SDL1InputBackend::isKeyboardKeyPressed(int keyId) const {
 }
 
 void SDL1InputBackend::startTextInput(const Rect & box, TextInputHandler * handler) {
-	ARX_UNUSED(box), ARX_UNUSED(handler);
-	// TODO Implement
+	ARX_UNUSED(box);
+	if(!m_textHandler) {
+		SDL_EnableUNICODE(1);
+	}
+	m_textHandler = handler;
 }
 
 void SDL1InputBackend::stopTextInput() {
-	// TODO Implement
+	if(m_textHandler) {
+		SDL_EnableUNICODE(0);
+	}
+	m_textHandler = NULL;
 }
 
 void SDL1InputBackend::onEvent(const SDL_Event & event) {
@@ -275,11 +282,33 @@ void SDL1InputBackend::onEvent(const SDL_Event & event) {
 			break;
 		}
 		
-		case SDL_KEYDOWN:
+		case SDL_KEYDOWN: {
+			if(m_textHandler && event.key.keysym.unicode >= 0x20 && event.key.keysym.unicode != 0x7f) {
+				std::string text;
+				text.resize(util::UTF8::length(event.key.keysym.unicode));
+				std::string::iterator end = util::UTF8::write(text.begin(), event.key.keysym.unicode);
+				arx_assert(end == text.end());
+				ARX_UNUSED(end);
+				m_textHandler->newText(text);
+			}
+			// fall-through
+		}
 		case SDL_KEYUP: {
 			SDLKey key = event.key.keysym.sym;
 			if(key >= 0 && size_t(key) < ARRAY_SIZE(sdlToArxKey) && sdlToArxKey[key] != Keyboard::Key_Invalid) {
-				keyStates[sdlToArxKey[key] - Keyboard::KeyBase] = (event.key.state == SDL_PRESSED);
+				Keyboard::Key arxkey = sdlToArxKey[key];
+				if(m_textHandler && event.key.state == SDL_PRESSED) {
+					KeyModifiers mod;
+					mod.shift = (event.key.keysym.mod & KMOD_SHIFT) != 0;
+					mod.control = (event.key.keysym.mod & KMOD_CTRL) != 0;
+					mod.alt = (event.key.keysym.mod & KMOD_ALT) != 0;
+					mod.gui = (event.key.keysym.mod & KMOD_META) != 0;
+					mod.num = (event.key.keysym.mod & KMOD_NUM) != 0;
+					if(m_textHandler->keyPressed(arxkey, mod)) {
+						break;
+					}
+				}
+				keyStates[arxkey - Keyboard::KeyBase] = (event.key.state == SDL_PRESSED);
 			} else {
 				LogWarning << "Unmapped SDL key: " << (int)key << " = " << SDL_GetKeyName(key);
 			}
