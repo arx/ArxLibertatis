@@ -22,6 +22,8 @@
 #include <algorithm>
 #include <sstream>
 
+#include <boost/algorithm/string/predicate.hpp>
+
 #include "core/Config.h"
 #include "core/Core.h"
 #include "core/GameTime.h"
@@ -35,6 +37,7 @@
 #include "input/Input.h"
 #include "io/log/Logger.h"
 #include "math/Rectangle.h"
+#include "scene/Interactive.h"
 #include "script/ScriptEvent.h"
 #include "util/Unicode.h"
 
@@ -287,6 +290,15 @@ void ScriptConsole::textUpdated() {
 			}
 		}
 		
+		if(cursorPos() <= m_contextEnd && ValidIONum(LastSelectedIONum)
+		   && LastSelectedIONum != EntityHandle_Player) {
+			std::string selected = entities[LastSelectedIONum]->idString();
+			if(cursorPos() < m_contextBegin
+			   || boost::starts_with(selected, text().substr(m_contextBegin, cursorPos() - m_contextBegin))) {
+				m_completion = Suggestion(0, selected + ".");
+			}
+		}
+		
 	}
 	
 	if(!hasContext) {
@@ -457,6 +469,12 @@ void ScriptConsole::update() {
 	box.bottom = box.top + lineHeight;
 	box.left += hFontDebug->getTextSize("> ").advance();
 	GInput->startTextInput(box, this);
+	
+	// Update suggestion if the selected entity changed
+	if(m_selection == 0 && (LastSelectedIONum != m_lastSelectedEntity || !ValidIONum(LastSelectedIONum))) {
+		m_lastSelectedEntity = LastSelectedIONum;
+		textUpdated();
+	}
 	
 	{
 		static const PlatformDuration BlinkDuration = PlatformDurationMs(600);
