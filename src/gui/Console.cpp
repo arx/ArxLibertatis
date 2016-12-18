@@ -337,6 +337,8 @@ void ScriptConsole::open() {
 	if(!m_enabled) {
 		config.input.allowConsole = true;
 		m_enabled = true;
+		m_wasPaused =  arxtime.is_paused();
+		arxtime.pause();
 		textUpdated();
 	}
 }
@@ -345,6 +347,9 @@ void ScriptConsole::close() {
 	if(m_enabled) {
 		GInput->stopTextInput();
 		m_enabled = false;
+		if(!m_wasPaused && arxtime.is_paused()) {
+			arxtime.resume();
+		}
 	}
 }
 
