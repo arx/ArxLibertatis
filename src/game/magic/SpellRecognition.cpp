@@ -48,9 +48,9 @@ typedef struct RunePattern{
 } RunePattern;
 
 const RunePattern patternData[] = {
-	{RUNE_AAM,         CheatRune_None,       "6"},
+	{RUNE_AAM,         CheatRune_AAM,        "6"},
 	{RUNE_CETRIUS,     CheatRune_None,       "386"},
-	{RUNE_COMUNICATUM, CheatRune_None,       "62426"},
+	{RUNE_COMUNICATUM, CheatRune_COMUNICATUM,"62426"},
 	{RUNE_COSUM,       CheatRune_None,       "6248"},
 	{RUNE_FOLGORA,     CheatRune_None,       "93"},
 	{RUNE_FRIDD,       CheatRune_None,       "862"},
@@ -61,8 +61,8 @@ const RunePattern patternData[] = {
 	{RUNE_MOVIS,       CheatRune_None,       "616"},
 	{RUNE_NHI,         CheatRune_None,       "4"},
 	{RUNE_RHAA,        CheatRune_None,       "2"},
-	{RUNE_SPACIUM,     CheatRune_None,       "4268"},
-	{RUNE_STREGUM,     CheatRune_None,       "838"},
+	{RUNE_SPACIUM,     CheatRune_SPACIUM,    "4268"},
+	{RUNE_STREGUM,     CheatRune_STREGUM,    "838"},
 	{RUNE_TAAR,        CheatRune_None,       "626"},
 	{RUNE_TEMPUS,      CheatRune_None,       "862686"},
 	{RUNE_TERA,        CheatRune_None,       "926"},
@@ -811,6 +811,7 @@ void ARX_SPELLS_AnalyseSYMBOL() {
 		case 634236 :
 		case 624326 :
 		case 62426  :
+			handleCheatRuneDetection(CheatRune_COMUNICATUM);
 			handleRuneDetection(RUNE_COMUNICATUM);
 			break;
 		// FOLGORA
@@ -828,6 +829,7 @@ void ARX_SPELLS_AnalyseSYMBOL() {
 		case 42678  :
 		case 42698  :
 		case 4268   :
+			handleCheatRuneDetection(CheatRune_SPACIUM);
 			handleRuneDetection(RUNE_SPACIUM);
 			break;
 		// TERA
@@ -879,6 +881,7 @@ void ARX_SPELLS_AnalyseSYMBOL() {
 		case 8938  :
 		case 8238  :
 		case 838   :
+			handleCheatRuneDetection(CheatRune_STREGUM);
 			handleRuneDetection(RUNE_STREGUM);
 			break;
 		// MORTE
@@ -915,6 +918,7 @@ void ARX_SPELLS_AnalyseSYMBOL() {
 		// AAM
 		case 64:
 		case 6:
+			handleCheatRuneDetection(CheatRune_AAM);
 			handleRuneDetection(RUNE_AAM);
 			break;
 		// YOK

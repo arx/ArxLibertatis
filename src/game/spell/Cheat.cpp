@@ -29,6 +29,7 @@
 #include "game/Inventory.h"
 #include "game/Equipment.h"
 
+#include "gui/Console.h"
 #include "gui/MiniMap.h"
 #include "gui/Speech.h"
 
@@ -54,6 +55,7 @@ static long cur_bh = 0;
 long sp_arm=0;
 static long cur_arm = 0;
 static long cur_sos = 0;
+static long cur_console = 0;
 
 long cur_mega=0;
 static PlatformInstant sp_max_start = PlatformInstant_ZERO;
@@ -144,6 +146,7 @@ void CheatReset() {
 	cur_pom = 0;
 	cur_rf = 0;
 	cur_mr = 0;
+	cur_console = 0;
 }
 
 void CheatDetectionReset() {
@@ -171,6 +174,7 @@ void CheatDetectionReset() {
 	
 	cur_bh=0;
 	cur_sos=0;
+	cur_console = 0;
 }
 
 
@@ -379,6 +383,12 @@ static void ApplySPMax() {
 	}
 }
 
+static void ApplyConsole() {
+	MakeSpCol();
+	DisplayCheatText("!!! Arx Libertatis !!!");
+	g_console.open();
+}
+
 extern float PULSATE;
 static TextureContainer * Mr_tc = NULL;
 
@@ -405,6 +415,22 @@ void CheckMr() {
 
 void handleCheatRuneDetection(CheatRune rune) {
 	switch(rune) {
+		case CheatRune_AAM: {
+			if(cur_console == 0) {
+				cur_console++;
+			} else {
+				cur_console = -1;
+			}
+			break;
+		}
+		case CheatRune_COMUNICATUM: {
+			if(cur_console == 3) {
+				cur_console++;
+			} else {
+				cur_console = -1;
+			}
+			break;
+		}
 		case CheatRune_KAOM: {
 			if(cur_arm >= 0 && (cur_arm & 1)){
 				cur_arm++;
@@ -422,7 +448,27 @@ void handleCheatRuneDetection(CheatRune rune) {
 				cur_arm++;
 			else
 				cur_arm=-1;
-			
+			if(cur_console == 1) {
+				cur_console++;
+			} else {
+				cur_console = -1;
+			}
+			break;
+		}
+		case CheatRune_SPACIUM: {
+			if(cur_console == 4) {
+				ApplyConsole();
+			} else {
+				cur_console = -1;
+			}
+			break;
+		}
+		case CheatRune_STREGUM: {
+			if(cur_console == 2) {
+				cur_console++;
+			} else {
+				cur_console = -1;
+			}
 			break;
 		}
 		case CheatRune_U: {
