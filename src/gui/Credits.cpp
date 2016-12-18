@@ -328,7 +328,7 @@ void Credits::addLine(std::string & phrase, float & drawpos, int sourceLineNumbe
 		phrase = phrase.substr(n + 1);
 		
 		// Center the text on the screen
-		int linesize = hFontCredits->getTextSize(infomations.sText).x;
+		int linesize = hFontCredits->getTextSize(infomations.sText).width();
 		infomations.sPos.x = (g_size.width() - linesize) / 2;
 		
 		if(isSimpleLine) {
@@ -384,7 +384,7 @@ void Credits::addLine(std::string & phrase, float & drawpos, int sourceLineNumbe
 			}
 			bool centered = false;
 			if(s != std::string::npos && s!= 0) {
-				int firstsize = hFontCredits->getTextSize(infomations.sText.substr(0, s)).x;
+				int firstsize = hFontCredits->getTextSize(infomations.sText.substr(0, s)).width();
 				if(firstsize < g_size.width() / 2 && linesize - firstsize < g_size.width() / 2) {
 					infomations.sPos.x = g_size.width() / 2 - firstsize;
 					centered = true;
@@ -394,7 +394,7 @@ void Credits::addLine(std::string & phrase, float & drawpos, int sourceLineNumbe
 			if(p != std::string::npos) {
 				CreditsLine prefix = infomations;
 				prefix.sText.resize(p);
-				int prefixsize = hFontCredits->getTextSize(prefix.sText).x;
+				int prefixsize = hFontCredits->getTextSize(prefix.sText).width();
 				if(!centered && p != 0 && prefixsize / 2 < g_size.width() / 2
 					 && linesize - prefixsize / 2 < g_size.width() / 2) {
 					prefix.sPos.x = (g_size.width() - prefixsize) / 2;

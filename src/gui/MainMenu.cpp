@@ -1794,7 +1794,7 @@ void MainMenu::init()
 		version += "\"";
 	}
 
-	float verPosX = 620 - (hFontControls->getTextSize(version).x / g_sizeRatio.y);
+	float verPosX = 620 - (hFontControls->getTextSize(version).width() / g_sizeRatio.y);
 	TextWidget * txt = new TextWidget(BUTTON_INVALID, hFontControls, version, Vec2f(verPosX, 80));
 	
 	txt->SetCheckOff();
