@@ -649,10 +649,18 @@ void ScriptConsole::draw() {
 		Vec2i suggestionPos = pos;
 		size_t position = 0;
 		size_t start = 0;
-		if(m_selection > int(MaxVisibleSuggestions)) {
-			start = m_selection - MaxVisibleSuggestions;
+		if(m_selection >= int(MaxVisibleSuggestions)) {
+			start = m_selection - MaxVisibleSuggestions + 1;
 		}
 		for(size_t i = start; i < m_suggestions.size(); i++) {
+			if(i == start + MaxVisibleSuggestions - (start != 0)) {
+				std::ostringstream oss;
+				oss << "... " << (start + 1) << " - " << (start + MaxVisibleSuggestions - (start != 0))
+				    << " / " << m_suggestions.size();
+				hFontDebug->draw(suggestionPos + Vec2i_ONE, oss.str(), Color::black);
+				hFontDebug->draw(suggestionPos, oss.str(), Color::red);
+				break;
+			}
 			if(m_suggestions[i].first != position) {
 				position = m_suggestions[i].first;
 				suggestionPos.x = pos.x + hFontDebug->getTextSize(text().begin(), text().begin() + position).advance();
@@ -672,11 +680,6 @@ void ScriptConsole::draw() {
 			hFontDebug->draw(suggestionPos + Vec2i_ONE, m_suggestions[i].second, Color::black);
 			hFontDebug->draw(suggestionPos, m_suggestions[i].second, Color::white);
 			suggestionPos.y += hFontDebug->getLineHeight();
-			if(i == start + MaxVisibleSuggestions - (start != 0)) {
-				hFontDebug->draw(suggestionPos + Vec2i_ONE, "...", Color::black);
-				hFontDebug->draw(suggestionPos, "...", Color::red);
-				break;
-			}
 		}
 	}
 	
