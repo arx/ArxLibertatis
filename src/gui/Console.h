@@ -26,6 +26,7 @@
 #include <stddef.h>
 
 #include "core/TimeTypes.h"
+#include "game/GameTypes.h"
 #include "input/TextInput.h"
 #include "io/log/LogBackend.h"
 
@@ -95,6 +96,7 @@ class ScriptConsole : protected BasicTextInput {
 	Suggestion m_completion;
 	Suggestion m_error;
 	int m_selection;
+	EntityHandle m_lastSelectedEntity;
 	PlatformDuration m_blinkTime;
 	bool m_blink;
 	
@@ -122,6 +124,7 @@ public:
 		, m_updateSuggestions(true)
 		, m_originalCursorPos(true)
 		, m_selection(0)
+		, m_lastSelectedEntity(EntityHandle_Player)
 		, m_blinkTime(0)
 		, m_blink(true)
 		, m_contextBegin(0)
