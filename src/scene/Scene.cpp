@@ -243,7 +243,7 @@ static void ManageLava_VertexBuffer(EERIEPOLY * ep, const long to,
 	}
 }
 
-static void EERIERTPPoly2(EERIEPOLY & ep) {
+static void EERIERTPPoly2(PortalPoly & ep) {
 	
 	EE_RTP(ep.v[0].p, ep.tv[0]);
 	EE_RTP(ep.v[1].p, ep.tv[1]);
@@ -558,7 +558,7 @@ long ARX_PORTALS_GetRoomNumForPosition(const Vec3f & pos,long flag) {
 			const EERIE_ROOM_DATA & room = portals->rooms[n];
 			for(long lll = 0; lll < room.nb_portals; lll++) {
 				const EERIE_PORTALS & po = portals->portals[room.portals[lll]];
-				const EERIEPOLY *epp = &po.poly;
+				const PortalPoly *epp = &po.poly;
 
 				if(PointIn2DPolyXZ(epp, pos.x, pos.z)) {
 					float yy;
@@ -690,7 +690,7 @@ static Plane CreatePlane(const Vec3f & orgn, const Vec3f & pt1, const Vec3f & pt
 	return plane;
 }
 
-static EERIE_FRUSTRUM CreateFrustrum(const Vec3f & pos, const EERIEPOLY & ep, bool cull) {
+static EERIE_FRUSTRUM CreateFrustrum(const Vec3f & pos, const PortalPoly & ep, bool cull) {
 	
 	EERIE_FRUSTRUM frustrum;
 	
@@ -1398,7 +1398,7 @@ static void ARX_PORTALS_Frustrum_ComputeRoom(size_t roomIndex,
 		if(po->useportal)
 			continue;
 		
-		EERIEPOLY & epp = po->poly;
+		PortalPoly & epp = po->poly;
 	
 		//clipp NEAR & FAR
 		unsigned char ucVisibilityNear=0;

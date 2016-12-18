@@ -180,7 +180,7 @@ static void drawDebugPortals() {
 			color = Color::green;
 		}
 		
-		EERIEPOLY & epp = po.poly;
+		PortalPoly & epp = po.poly;
 
 		drawLine(epp.v[0].p, epp.v[1].p, color);
 		drawLine(epp.v[1].p, epp.v[3].p, color);
