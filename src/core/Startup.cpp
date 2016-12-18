@@ -47,6 +47,7 @@
 #include "core/Core.h"
 #include "core/Version.h"
 
+#include "gui/Console.h"
 #include "gui/Credits.h"
 
 #include "io/fs/Filesystem.h"
@@ -195,6 +196,8 @@ int utf8_main(int argc, char ** argv) {
 			Logger::add(new logger::File(logFile));
 			CrashHandler::addAttachedFile(logFile);
 		}
+		
+		Logger::add(new MemoryLogger(&g_console.buffer()));
 		
 		profiler::initialize();
 		

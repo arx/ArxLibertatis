@@ -26,6 +26,7 @@
 
 #include "core/TimeTypes.h"
 #include "input/TextInput.h"
+#include "io/log/LogBackend.h"
 
 class Entity;
 
@@ -58,6 +59,18 @@ public:
 	}
 	
 	void append(const std::string & text);
+	
+};
+
+class MemoryLogger : public logger::Backend {
+	
+	ConsoleBuffer * m_buffer;
+	
+public:
+	
+	explicit MemoryLogger(ConsoleBuffer * buffer) : m_buffer(buffer) { }
+	
+	void log(const logger::Source & file, int line, Logger::LogLevel level, const std::string & str);
 	
 };
 
