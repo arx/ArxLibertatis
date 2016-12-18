@@ -25,7 +25,9 @@
 #include "input/InputBackend.h"
 #include "input/Keyboard.h"
 #include "input/Mouse.h"
+#include "input/TextInput.h"
 #include "math/Vector.h"
+#include "math/Types.h"
 #include "window/SDL1Window.h"
 
 class SDL1InputBackend : public InputBackend {
@@ -46,6 +48,8 @@ public:
 	
 	// Keyboard
 	bool isKeyboardKeyPressed(int dikkey) const;
+	void startTextInput(const Rect & box, TextInputHandler * handler);
+	void stopTextInput();
 	
 	void onEvent(const SDL_Event & event);
 	

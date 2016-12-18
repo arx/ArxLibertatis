@@ -23,6 +23,9 @@
 class Window;
 
 #include "input/Mouse.h"
+#include "math/Types.h"
+
+class TextInputHandler;
 
 class InputBackend {
 	
@@ -41,6 +44,8 @@ public:
 	
 	// Keyboard
 	virtual bool isKeyboardKeyPressed(int keyId) const = 0;
+	virtual void startTextInput(const Rect & box, TextInputHandler * handler) = 0;
+	virtual void stopTextInput() = 0;
 	
 protected:
 	

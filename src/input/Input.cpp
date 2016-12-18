@@ -749,6 +749,14 @@ bool Input::getKeyAsText(int keyId, char & result) const {
 	return false;
 }
 
+void Input::startTextInput(const Rect & box, TextInputHandler * handler) {
+	backend->startTextInput(box, handler);
+}
+
+void Input::stopTextInput() {
+	backend->stopTextInput();
+}
+
 bool Input::getMouseButton(int buttonId) const {
 	arx_assert(buttonId >= Mouse::ButtonBase && buttonId < Mouse::ButtonMax);
 
