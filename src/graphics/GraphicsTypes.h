@@ -438,22 +438,10 @@ struct PortalPoly {
 	Vec3f		norm2;
 	TexturedVertex		v[4];
 	TexturedVertex		tv[4];
-	Vec3f		nrml[4];
-	TextureContainer * tex;
 	Vec3f		center;
-	float			transval;
-	float			area;
-	short			room;
-	short			misc;
-	unsigned short	uslInd[4];
 	
 	PortalPoly()
 		: type(0)
-		, tex(NULL)
-		, transval(0)
-		, area(0)
-		, room(0)
-		, misc(0)
 	{ }
 };
 

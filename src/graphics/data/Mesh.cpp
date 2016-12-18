@@ -1534,19 +1534,12 @@ static bool loadFastScene(const res::path & file, const char * data, const char 
 		portal.room_2 = epo->room_2;
 		portal.useportal = epo->useportal;
 		portal.paddy = epo->paddy;
-		portal.poly.area = epo->poly.area;
 		portal.poly.type = PolyType::load(epo->poly.type);
-		portal.poly.transval = epo->poly.transval;
-		portal.poly.room = epo->poly.room;
-		portal.poly.misc = epo->poly.misc;
 		portal.poly.center = epo->poly.center.toVec3();
 		portal.poly.max = epo->poly.max.toVec3();
 		portal.poly.min = epo->poly.min.toVec3();
 		portal.poly.norm = epo->poly.norm.toVec3();
 		portal.poly.norm2 = epo->poly.norm2.toVec3();
-		
-		for(int i = 0; i < 4; i++)
-			portal.poly.nrml[i] = epo->poly.nrml[i].toVec3();
 		
 		std::copy(epo->poly.v, epo->poly.v + 4, portal.poly.v);
 		std::copy(epo->poly.tv, epo->poly.tv + 4, portal.poly.tv);
@@ -1855,16 +1848,8 @@ static void EERIE_PORTAL_Poly_Add(EERIEPOLY * ep, const std::string& name, long 
 		
 		std::copy(ep->v, ep->v + 4, portal.poly.v);
 		std::copy(ep->tv, ep->tv + 4, portal.poly.tv);
-		std::copy(ep->nrml, ep->nrml + 4, portal.poly.nrml);
 		
-		portal.poly.tex = ep->tex;
 		portal.poly.center = ep->center;
-		portal.poly.transval = ep->transval;
-		portal.poly.area = ep->area;
-		portal.poly.room = ep->room;
-		portal.poly.misc = ep->misc;
-		
-		std::copy(ep->uslInd, ep->uslInd + 4, portal.poly.uslInd);
 		
 		float fDistMin = std::numeric_limits<float>::max();
 		float fDistMax = std::numeric_limits<float>::min();
@@ -2331,18 +2316,19 @@ static bool FastSceneSave(const fs::path & partial_path) {
 			epo->room_2 = portal.room_2;
 			epo->useportal = portal.useportal;
 			epo->paddy = portal.paddy;
-			epo->poly.area = portal.poly.area;
+			epo->poly.area = 0.f;
 			epo->poly.type = portal.poly.type;
-			epo->poly.transval = portal.poly.transval;
-			epo->poly.room = portal.poly.room;
-			epo->poly.misc = portal.poly.misc;
+			epo->poly.transval = 0.f;
+			epo->poly.room = 0;
+			epo->poly.misc = 0;
 			epo->poly.center = portal.poly.center;
 			epo->poly.max = portal.poly.max;
 			epo->poly.min = portal.poly.min;
 			epo->poly.norm = portal.poly.norm;
 			epo->poly.norm2 = portal.poly.norm2;
 			
-			std::copy(portal.poly.nrml, portal.poly.nrml + 4, epo->poly.nrml);
+			std::fill(epo->poly.nrml, epo->poly.nrml + 4, Vec3f_ZERO);
+			
 			std::copy(portal.poly.v, portal.poly.v + 4, epo->poly.v);
 			std::copy(portal.poly.tv, portal.poly.tv + 4, epo->poly.tv);
 		}
