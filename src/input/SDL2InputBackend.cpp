@@ -22,9 +22,9 @@
 #include "io/log/Logger.h"
 #include "platform/PlatformConfig.h"
 
-static int sdlToArxKey[SDL_NUM_SCANCODES];
+static Keyboard::Key sdlToArxKey[SDL_NUM_SCANCODES];
 
-static int sdlToArxButton[10];
+static Mouse::Button sdlToArxButton[10];
 
 SDL2InputBackend::SDL2InputBackend(SDL2Window * window) : m_window(window) {
 	
@@ -39,7 +39,7 @@ SDL2InputBackend::SDL2InputBackend(SDL2Window * window) : m_window(window) {
 	SDL_EventState(SDL_MOUSEBUTTONDOWN, SDL_ENABLE);
 	SDL_EventState(SDL_MOUSEBUTTONUP, SDL_ENABLE);
 	
-	std::fill_n(sdlToArxKey, ARRAY_SIZE(sdlToArxKey), -1);
+	std::fill_n(sdlToArxKey, ARRAY_SIZE(sdlToArxKey), Keyboard::Key_Invalid);
 	
 	sdlToArxKey[SDL_SCANCODE_BACKSPACE] = Keyboard::Key_Backspace;
 	sdlToArxKey[SDL_SCANCODE_TAB] = Keyboard::Key_Tab;
@@ -152,7 +152,7 @@ SDL2InputBackend::SDL2InputBackend(SDL2Window * window) : m_window(window) {
 	sdlToArxKey[SDL_SCANCODE_APPLICATION] = Keyboard::Key_Apps;
 	sdlToArxKey[SDL_SCANCODE_PRINTSCREEN] = Keyboard::Key_PrintScreen;
 	
-	std::fill_n(sdlToArxButton, ARRAY_SIZE(sdlToArxButton), -1);
+	std::fill_n(sdlToArxButton, ARRAY_SIZE(sdlToArxButton), Mouse::Button_Invalid);
 	
 	ARX_STATIC_ASSERT(9 < ARRAY_SIZE(sdlToArxButton), "array size mismatch");
 	sdlToArxButton[8] = Mouse::Button_5;
@@ -257,7 +257,7 @@ void SDL2InputBackend::onEvent(const SDL_Event & event) {
 		case SDL_KEYDOWN:
 		case SDL_KEYUP: {
 			SDL_Scancode key = event.key.keysym.scancode;
-			if(key >= 0 && size_t(key) < ARRAY_SIZE(sdlToArxKey) && sdlToArxKey[key] >= 0) {
+			if(key >= 0 && size_t(key) < ARRAY_SIZE(sdlToArxKey) && sdlToArxKey[key] != Keyboard::Key_Invalid) {
 				keyStates[sdlToArxKey[key] - Keyboard::KeyBase] = (event.key.state == SDL_PRESSED);
 			} else {
 				LogWarning << "Unmapped SDL key: " << (int)key << " = " << SDL_GetScancodeName(key);
@@ -279,7 +279,7 @@ void SDL2InputBackend::onEvent(const SDL_Event & event) {
 		case SDL_MOUSEBUTTONDOWN:
 		case SDL_MOUSEBUTTONUP: {
 			Uint8 button = event.button.button;
-			if(button < ARRAY_SIZE(sdlToArxButton) && sdlToArxButton[button] >= 0) {
+			if(button < ARRAY_SIZE(sdlToArxButton) && sdlToArxButton[button] != Mouse::Button_Invalid) {
 				size_t i = sdlToArxButton[button] - Mouse::ButtonBase;
 				if((event.button.state == SDL_PRESSED)) {
 					buttonStates[i] = true, clickCount[i]++;
