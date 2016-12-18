@@ -109,6 +109,18 @@ bool ScriptConsole::keyPressed(Keyboard::Key key, KeyModifiers mod) {
 			return true;
 		}
 		
+		case Keyboard::Key_PageUp:
+		case Keyboard::Key_UpArrow: {
+			select(-1);
+			return true;
+		}
+		
+		case Keyboard::Key_PageDown:
+		case Keyboard::Key_DownArrow: {
+			select(1);
+			return true;
+		}
+		
 		case Keyboard::Key_LeftCtrl:
 		case Keyboard::Key_RightCtrl: {
 			// We use control as a modifier, disable other uses while the console is open
@@ -127,9 +139,19 @@ bool ScriptConsole::keyPressed(Keyboard::Key key, KeyModifiers mod) {
 				return true;
 			}
 			
+			case Keyboard::Key_N: {
+				select(1);
+				return true;
+			}
+			
 			case Keyboard::Key_O: {
 				execute();
 				moveEnd();
+				return true;
+			}
+			
+			case Keyboard::Key_P: {
+				select(-1);
 				return true;
 			}
 			
@@ -176,20 +198,44 @@ void ScriptConsole::textUpdated() {
 	
 	m_error = Suggestion(0, std::string());
 	
-	if(true) {
+	if(m_updateSuggestions) {
 		
-		if(hasContext && cursorPos() > m_contextEnd) {
+		m_suggestions.clear();
+		m_selection = 0;
+		m_originalText = text();
+		m_originalCursorPos = cursorPos();
+		
+		if(cursorPos() > m_contextBegin && cursorPos() <= m_contextEnd) {
+			m_suggestionPos = m_contextBegin;
+			std::string context = text().substr(m_contextBegin, cursorPos() - m_contextBegin);
+			entities.autocomplete(context, addContextSuggestion, this);
+		} else if(hasContext && cursorPos() > m_contextBegin) {
 			if(contextEntity() == NULL) {
 				m_error = Suggestion(m_contextBegin, "^ Unknown entity");
 			}
 		}
 		
 		if(!m_error.second.empty()) {
-			// Error - no need for more checks
-		} else if(cursorPos() > commandEnd) {
+			// Error - no need provide suggestions
+		} else if(cursorPos() > m_commandBegin && cursorPos() <= commandEnd) {
+			m_suggestionPos = m_commandBegin;
+			std::string command = text().substr(m_commandBegin, cursorPos() - m_commandBegin);
+			ScriptEvent::autocomplete(command, addCommandSuggestion, this);
+		} else if(cursorPos() > m_contextBegin && cursorPos() <= m_contextEnd) {
+			m_suggestionPos = m_contextBegin;
+			std::string command = text().substr(m_contextBegin, cursorPos() - m_contextBegin);
+			ScriptEvent::autocomplete(command, addCommandSuggestion, this);
+		} else if(cursorPos() > m_commandBegin) {
 			if(!ScriptEvent::isCommand(text().substr(m_commandBegin, commandEnd - m_commandBegin))) {
 				m_error = Suggestion(m_commandBegin, "^ Unknown command");
 			}
+		}
+		
+		if(m_suggestions.size() > MaxSuggestions) {
+			if(m_error.second.empty()) {
+				m_error = Suggestion(m_suggestions[0].first, "...");
+			}
+			m_suggestions.clear();
 		}
 		
 	}
@@ -208,6 +254,7 @@ void ScriptConsole::open() {
 	if(!m_enabled) {
 		config.input.allowConsole = true;
 		m_enabled = true;
+		textUpdated();
 	}
 }
 
@@ -249,6 +296,77 @@ void ScriptConsole::execute() {
 	// TODO Allow the "context.command" syntax in scripts too
 	long pos = 0;
 	ScriptEvent::send(&es, SM_EXECUTELINE, std::string(), entity, std::string(), pos);
+}
+
+bool ScriptConsole::addContextSuggestion(void * self, const std::string & suggestion) {
+	ScriptConsole * console = static_cast<ScriptConsole *>(self);
+	console->m_suggestions.push_back(Suggestion(console->m_suggestionPos, suggestion + "."));
+	return (console->m_suggestions.size() <= MaxSuggestions);
+}
+
+bool ScriptConsole::addCommandSuggestion(void * self, const std::string & suggestion) {
+	ScriptConsole * console = static_cast<ScriptConsole *>(self);
+	console->m_suggestions.push_back(Suggestion(console->m_suggestionPos, suggestion));
+	return (console->m_suggestions.size() <= MaxSuggestions);
+}
+
+void ScriptConsole::select(int dir) {
+	
+	int selection = glm::clamp(m_selection + dir, 0, int(m_suggestions.size()));
+	
+	if(selection == m_selection) {
+		return;
+	}
+	m_selection = selection;
+	
+	if(m_selection == 0) {
+		setText(m_originalText, m_originalCursorPos);
+	} else {
+		arx_assert(m_selection > 0);
+		arx_assert(m_selection <= int(m_suggestions.size()));
+		m_updateSuggestions = false;
+		applySuggestion(m_suggestions[m_selection - 1]);
+		m_updateSuggestions = true;
+	}
+	
+}
+
+void ScriptConsole::applySuggestion(const Suggestion & suggestion) {
+	
+	arx_assert(suggestion.first <= m_originalText.size());
+	arx_assert(m_originalCursorPos <= m_originalText.size());
+	arx_assert(suggestion.first <= m_originalCursorPos);
+	
+	std::string newText = m_originalText.substr(0, suggestion.first);
+	newText += suggestion.second;
+	size_t tail = m_originalCursorPos;
+	if(!newText.empty() && newText[newText.size() - 1] == '.') {
+		while(true) {
+			if(tail >= m_originalText.size()) {
+				tail = m_originalCursorPos;
+				break;
+			} else if(m_originalText[tail] == '.') {
+				break;
+			} else if(!isScriptContextChar(m_originalText[tail])) {
+				tail = m_originalCursorPos;
+				break;
+			}
+			tail++;
+		}
+		if(tail < m_originalText.size() && isWordSeparator(m_originalText[tail])) {
+			tail++;
+		}
+	} else {
+		while(tail < m_originalText.size() && !isWordSeparator(m_originalText[tail])) {
+			tail++;
+		}
+		if(!newText.empty() && isWordSeparator(newText[newText.size() - 1]) && tail < m_originalText.size()) {
+			tail++;
+		}
+	}
+	newText += m_originalText.substr(tail);
+	
+	setText(newText, suggestion.first + suggestion.second.size());
 }
 
 void ScriptConsole::update() {
@@ -358,6 +476,30 @@ void ScriptConsole::draw() {
 		errorPos.x += hFontDebug->getTextSize(text().begin(), text().begin() + m_error.first).advance();
 		hFontDebug->draw(errorPos + Vec2i_ONE, m_error.second, Color::black);
 		hFontDebug->draw(errorPos, m_error.second, Color::red);
+	} else if(!m_suggestions.empty()) {
+		Vec2i suggestionPos = pos;
+		size_t position = 0;
+		for(size_t i = 0; i < m_suggestions.size(); i++) {
+			if(m_suggestions[i].first != position) {
+				position = m_suggestions[i].first;
+				suggestionPos.x = pos.x + hFontDebug->getTextSize(text().begin(), text().begin() + position).advance();
+			}
+			if(int(i) + 1 == m_selection) {
+				int width = hFontDebug->getTextSize(m_suggestions[i].second).width();
+				int height = hFontDebug->getLineHeight();
+				Rectf highlight(suggestionPos - Vec2i(2, 1), width + 3, height + 2);
+				EERIEDrawBitmap(highlight, 0.f, NULL, selection);
+				drawLineRectangle(highlight, 0.f, background);
+			}
+			hFontDebug->draw(suggestionPos + Vec2i_ONE, m_suggestions[i].second, Color::black);
+			hFontDebug->draw(suggestionPos, m_suggestions[i].second, Color::white);
+			suggestionPos.y += hFontDebug->getLineHeight();
+			if(i == MaxVisibleSuggestions) {
+				hFontDebug->draw(suggestionPos + Vec2i_ONE, "...", Color::black);
+				hFontDebug->draw(suggestionPos, "...", Color::red);
+				break;
+			}
+		}
 	}
 	
 }
