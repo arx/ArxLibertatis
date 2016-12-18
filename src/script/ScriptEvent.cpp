@@ -43,6 +43,10 @@ ZeniMax Media Inc., Suite 120, Rockville, Maryland 20850 USA.
 
 #include "script/ScriptEvent.h"
 
+#include <boost/foreach.hpp>
+#include <boost/algorithm/string/case_conv.hpp>
+#include <boost/algorithm/string/predicate.hpp>
+
 #include "core/GameTime.h"
 #include "core/Core.h"
 
@@ -532,6 +536,27 @@ std::string ScriptEvent::getName(ScriptMessage msg, const std::string & eventnam
 	} else {
 		return "(no event)";
 	}
+}
+
+void ScriptEvent::autocomplete(const std::string & prefix, AutocompleteHandler handler, void * context) {
+	
+	std::string cmd = boost::to_lower_copy(prefix);
+	cmd.resize(std::remove(cmd.begin(), cmd.end(), '_') - cmd.begin());
+	
+	if(boost::starts_with("timer", cmd)) {
+		if(!handler(context, "timer")) {
+			return;
+		}
+	}
+	
+	BOOST_FOREACH(const Commands::value_type & v, commands) {
+		if(boost::starts_with(v.first, cmd)) {
+			if(!handler(context, v.first + " ")) {
+				return;
+			}
+		}
+	}
+	
 }
 
 bool ScriptEvent::isCommand(const std::string & command) {

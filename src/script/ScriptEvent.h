@@ -57,6 +57,9 @@ public:
 	static void init();
 	static void shutdown();
 	
+	typedef bool (*AutocompleteHandler)(void * context, const std::string & suggestion);
+	static void autocomplete(const std::string & prefix, AutocompleteHandler handler, void * context);
+	
 	static bool isCommand(const std::string & command);
 	
 private:
