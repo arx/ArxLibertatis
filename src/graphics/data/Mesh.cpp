@@ -1100,14 +1100,7 @@ static void EERIE_PORTAL_Blend_Portals_And_Rooms() {
 		}
 		
 		ep->center *= divide;
-		float d = 0.f;
-
-		for(long ii = 0; ii < to; ii++) {
-			d = std::max(d, glm::distance(ep->center, ep->v[ii].p));
-		}
-
-		ep->norm2.x = d;
-
+		
 		for(size_t nroom = 0; nroom < portals->rooms.size(); nroom++) {
 			if(nroom == portal.room_1 || nroom == portal.room_2)
 			{
@@ -1539,7 +1532,6 @@ static bool loadFastScene(const res::path & file, const char * data, const char 
 		portal.poly.max = epo->poly.max.toVec3();
 		portal.poly.min = epo->poly.min.toVec3();
 		portal.poly.norm = epo->poly.norm.toVec3();
-		portal.poly.norm2 = epo->poly.norm2.toVec3();
 		
 		std::copy(epo->poly.v, epo->poly.v + 4, portal.poly.v);
 		std::copy(epo->poly.tv, epo->poly.tv + 4, portal.poly.tv);
@@ -1844,7 +1836,6 @@ static void EERIE_PORTAL_Poly_Add(EERIEPOLY * ep, const std::string& name, long 
 		portal.poly.min = ep->min;
 		portal.poly.max = ep->max;
 		portal.poly.norm = ep->norm;
-		portal.poly.norm2 = ep->norm2;
 		
 		std::copy(ep->v, ep->v + 4, portal.poly.v);
 		std::copy(ep->tv, ep->tv + 4, portal.poly.tv);
@@ -2325,7 +2316,7 @@ static bool FastSceneSave(const fs::path & partial_path) {
 			epo->poly.max = portal.poly.max;
 			epo->poly.min = portal.poly.min;
 			epo->poly.norm = portal.poly.norm;
-			epo->poly.norm2 = portal.poly.norm2;
+			epo->poly.norm2 = Vec3f_ZERO;
 			
 			std::fill(epo->poly.nrml, epo->poly.nrml + 4, Vec3f_ZERO);
 			
