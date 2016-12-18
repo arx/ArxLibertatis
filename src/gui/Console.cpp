@@ -589,7 +589,7 @@ void ScriptConsole::draw() {
 		int left = hFontDebug->getTextSize(begin, begin + cursorPos()).advance();
 		int right = hFontDebug->getTextSize(begin, begin + cursorPos() + editText().size()).advance();
 		int height = hFontDebug->getLineHeight();
-		Rectf box = Rectf(pos + Vec2i(left, 0), right - left, height);
+		Rectf box = Rectf(Rect(pos + Vec2i(left, 0), right - left, height));
 		EERIEDrawBitmap(box, 0.f, NULL, selection);
 	}
 	
@@ -640,7 +640,7 @@ void ScriptConsole::draw() {
 			if(int(i) + 1 == m_selection) {
 				int width = hFontDebug->getTextSize(m_suggestions[i].second).width();
 				int height = hFontDebug->getLineHeight();
-				Rectf highlight(suggestionPos - Vec2i(2, 1), width + 3, height + 2);
+				Rectf highlight = Rectf(Rect(suggestionPos - Vec2i(2, 1), width + 3, height + 2));
 				EERIEDrawBitmap(highlight, 0.f, NULL, selection);
 				drawLineRectangle(highlight, 0.f, background);
 			}
