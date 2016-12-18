@@ -27,6 +27,8 @@ public:
 	//! Key enumeration.
 	enum Key {
 		
+		Key_Invalid = -1,
+		
 		KeyBase = 0,
 		
 		Key_0 = KeyBase,
