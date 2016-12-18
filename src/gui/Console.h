@@ -87,6 +87,7 @@ class ScriptConsole : protected BasicTextInput {
 	static const size_t MaxHistorySize = 100;
 	
 	bool m_enabled;
+	bool m_wasPaused;
 	
 	typedef std::pair<size_t, std::string> Suggestion;
 	
@@ -124,6 +125,7 @@ public:
 	
 	ScriptConsole()
 		: m_enabled(false)
+		, m_wasPaused(false)
 		, m_buffer(ScrollbackLines, ScrollbackColumns)
 		, m_updateSuggestions(true)
 		, m_originalCursorPos(true)
