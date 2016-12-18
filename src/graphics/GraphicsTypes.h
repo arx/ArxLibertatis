@@ -431,7 +431,6 @@ struct EERIE_MULTI3DSCENE {
 //Portal Data;
 
 struct PortalPoly {
-	PolyType type;
 	Vec3f		min;
 	Vec3f		max;
 	Vec3f		norm;
@@ -439,7 +438,6 @@ struct PortalPoly {
 	Vec3f		center;
 	
 	PortalPoly()
-		: type(0)
 	{ }
 };
 
