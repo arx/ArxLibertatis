@@ -429,6 +429,23 @@ bool GetTruePolyY(const EERIEPOLY * ep, const Vec3f & pos, float * ret) {
 	return true;
 }
 
+// TODO copy-paste PortalPoly
+bool GetTruePolyY(const PortalPoly * ep, const Vec3f & pos, float * ret) {
+	
+	Vec3f n = glm::cross(ep->v[1].p - ep->v[0].p, ep->v[2].p - ep->v[0].p);
+	if(n.y == 0.f) {
+		return false;
+	}
+	
+	float y = glm::dot(ep->v[0].p - Vec3f(pos.x, 0.f, pos.z), n) / n.y;
+	
+	// Perhaps we can remove the clamp... (need to test)
+	*ret = glm::clamp(y, ep->min.y, ep->max.y);
+	
+	return true;
+}
+
+
 //*************************************************************************************
 //*************************************************************************************
 EERIE_BACKGROUND * ACTIVEBKG = NULL;
@@ -511,6 +528,10 @@ static int PointIn2DPolyXZ(const TexturedVertex (&verts)[4], bool isQuad, float 
 }
 
 int PointIn2DPolyXZ(const EERIEPOLY * ep, float x, float z) {
+	return PointIn2DPolyXZ(ep->v, ep->type & POLY_QUAD, x, z);
+}
+
+int PointIn2DPolyXZ(const PortalPoly * ep, float x, float z) {
 	return PointIn2DPolyXZ(ep->v, ep->type & POLY_QUAD, x, z);
 }
 
@@ -1061,7 +1082,7 @@ static void EERIE_PORTAL_Blend_Portals_And_Rooms() {
 
 	for(size_t num = 0; num < portals->portals.size(); num++) {
 		EERIE_PORTALS & portal = portals->portals[num];
-		EERIEPOLY * ep = &portal.poly;
+		PortalPoly * ep = &portal.poly;
 		
 		portal.poly.norm = CalcFaceNormal(portal.poly.v);
 		
@@ -1825,8 +1846,26 @@ static void EERIE_PORTAL_Poly_Add(EERIEPOLY * ep, const std::string& name, long 
 
 		portal.room_1 = val1;
 		portal.room_2 = val2;
-		portal.poly = *ep;
-
+		
+		portal.poly.type = ep->type;
+		portal.poly.min = ep->min;
+		portal.poly.max = ep->max;
+		portal.poly.norm = ep->norm;
+		portal.poly.norm2 = ep->norm2;
+		
+		std::copy(ep->v, ep->v + 4, portal.poly.v);
+		std::copy(ep->tv, ep->tv + 4, portal.poly.tv);
+		std::copy(ep->nrml, ep->nrml + 4, portal.poly.nrml);
+		
+		portal.poly.tex = ep->tex;
+		portal.poly.center = ep->center;
+		portal.poly.transval = ep->transval;
+		portal.poly.area = ep->area;
+		portal.poly.room = ep->room;
+		portal.poly.misc = ep->misc;
+		
+		std::copy(ep->uslInd, ep->uslInd + 4, portal.poly.uslInd);
+		
 		float fDistMin = std::numeric_limits<float>::max();
 		float fDistMax = std::numeric_limits<float>::min();
 		int nbvert = (ep->type & POLY_QUAD) ? 4 : 3;

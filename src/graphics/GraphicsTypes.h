@@ -430,9 +430,36 @@ struct EERIE_MULTI3DSCENE {
 //-------------------------------------------------------------------------
 //Portal Data;
 
+struct PortalPoly {
+	PolyType type;
+	Vec3f		min;
+	Vec3f		max;
+	Vec3f		norm;
+	Vec3f		norm2;
+	TexturedVertex		v[4];
+	TexturedVertex		tv[4];
+	Vec3f		nrml[4];
+	TextureContainer * tex;
+	Vec3f		center;
+	float			transval;
+	float			area;
+	short			room;
+	short			misc;
+	unsigned short	uslInd[4];
+	
+	PortalPoly()
+		: type(0)
+		, tex(NULL)
+		, transval(0)
+		, area(0)
+		, room(0)
+		, misc(0)
+	{ }
+};
+
 struct EERIE_PORTALS
 {
-	EERIEPOLY	poly;
+	PortalPoly	poly;
 	size_t		room_1; // facing normal
 	size_t		room_2;
 	short		useportal;
