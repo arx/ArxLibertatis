@@ -86,7 +86,12 @@ class ScriptConsole : protected BasicTextInput {
 	PlatformDuration m_blinkTime;
 	bool m_blink;
 	
+	size_t m_contextBegin;
+	size_t m_contextEnd;
+	size_t m_commandBegin;
+	
 	bool keyPressed(Keyboard::Key key, KeyModifiers mod);
+	void textUpdated();
 	
 public:
 	
@@ -95,12 +100,17 @@ public:
 		, m_buffer(ScrollbackLines, ScrollbackColumns)
 		, m_blinkTime(0)
 		, m_blink(true)
+		, m_contextBegin(0)
+		, m_contextEnd(0)
+		, m_commandBegin(0)
 	{ }
 	
 	void open();
 	void close();
 	
-	std::string command() { return text(); }
+	std::string context() { return text().substr(m_contextBegin, m_contextEnd - m_contextBegin); }
+	std::string command() { return text().substr(m_commandBegin); }
+	Entity * contextEntity();
 	
 	void execute();
 	

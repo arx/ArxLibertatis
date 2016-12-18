@@ -140,6 +140,42 @@ bool ScriptConsole::keyPressed(Keyboard::Key key, KeyModifiers mod) {
 	return BasicTextInput::keyPressed(key, mod);
 }
 
+static bool isScriptContextChar(char c) {
+	return isalnum(c) || c == '_';
+}
+
+void ScriptConsole::textUpdated() {
+	
+	m_contextBegin = 0;
+	while(m_contextBegin < text().size() && isspace(text()[m_contextBegin])) {
+		++m_contextBegin;
+	}
+	m_contextEnd = m_contextBegin;
+	while(m_contextEnd < text().size() && isScriptContextChar(text()[m_contextEnd])) {
+		++m_contextEnd;
+	}
+	
+	size_t dot = m_contextEnd;
+	while(dot < text().size() && isspace(text()[dot])) {
+		++dot;
+	}
+	
+	m_commandBegin = m_contextBegin;
+	bool hasContext = false;
+	if(dot < text().size() && text()[dot] == '.') {
+		hasContext = true;
+		m_commandBegin = dot + 1;
+		while(m_commandBegin < text().size() && isspace(text()[m_commandBegin])) {
+			++m_commandBegin;
+		}
+	}
+	
+	if(!hasContext) {
+		m_contextEnd = m_contextBegin;
+	}
+	
+}
+
 void ScriptConsole::open() {
 	if(!m_enabled) {
 		config.input.allowConsole = true;
@@ -154,11 +190,26 @@ void ScriptConsole::close() {
 	}
 }
 
+Entity * ScriptConsole::contextEntity() {
+	
+	Entity * entity = entities.player();
+	std::string id = context();
+	if(!id.empty()) {
+		entity = entities.getById(id, entity);
+	}
+	
+	return entity;
+}
+
 void ScriptConsole::execute() {
 	
 	ARX_LOG(Logger::Console) << "> " << text();
 	
-	Entity * entity = entities.player();
+	Entity * entity = contextEntity();
+	if(!entity) {
+		LogError << "Unknown entity: " + context();
+		return;
+	}
 	
 	std::string script = command() + "\naccept\n";
 	EERIE_SCRIPT es;
@@ -167,6 +218,7 @@ void ScriptConsole::execute() {
 	es.master = entity ? &entity->script : NULL;
 	// TODO Some script commands (timers, etc.) store references to the script
 	
+	// TODO Allow the "context.command" syntax in scripts too
 	long pos = 0;
 	ScriptEvent::send(&es, SM_EXECUTELINE, std::string(), entity, std::string(), pos);
 }
