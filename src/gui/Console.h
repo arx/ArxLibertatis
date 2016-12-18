@@ -92,6 +92,7 @@ class ScriptConsole : protected BasicTextInput {
 	std::string m_originalText;
 	std::vector<Suggestion> m_suggestions;
 	size_t m_originalCursorPos;
+	Suggestion m_completion;
 	Suggestion m_error;
 	int m_selection;
 	PlatformDuration m_blinkTime;
@@ -107,6 +108,7 @@ class ScriptConsole : protected BasicTextInput {
 	void cursorUpdated();
 	
 	void select(int dir);
+	void autocomplete(size_t characters = size_t(-1));
 	void applySuggestion(const Suggestion & suggestion);
 	
 	static bool addContextSuggestion(void * self, const std::string & suggestion);
