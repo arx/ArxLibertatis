@@ -1534,7 +1534,6 @@ static bool loadFastScene(const res::path & file, const char * data, const char 
 		portal.poly.norm = epo->poly.norm.toVec3();
 		
 		std::copy(epo->poly.v, epo->poly.v + 4, portal.poly.v);
-		std::copy(epo->poly.tv, epo->poly.tv + 4, portal.poly.tv);
 	}
 	
 	
@@ -1838,7 +1837,6 @@ static void EERIE_PORTAL_Poly_Add(EERIEPOLY * ep, const std::string& name, long 
 		portal.poly.norm = ep->norm;
 		
 		std::copy(ep->v, ep->v + 4, portal.poly.v);
-		std::copy(ep->tv, ep->tv + 4, portal.poly.tv);
 		
 		portal.poly.center = ep->center;
 		
@@ -2321,7 +2319,8 @@ static bool FastSceneSave(const fs::path & partial_path) {
 			std::fill(epo->poly.nrml, epo->poly.nrml + 4, Vec3f_ZERO);
 			
 			std::copy(portal.poly.v, portal.poly.v + 4, epo->poly.v);
-			std::copy(portal.poly.tv, portal.poly.tv + 4, epo->poly.tv);
+			
+			std::fill(epo->poly.tv, epo->poly.tv + 4, TexturedVertex());
 		}
 		
 		for(size_t i = 0; i < portals->rooms.size(); i++) {
