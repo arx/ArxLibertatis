@@ -183,6 +183,7 @@ public:
 		bool rawMouseInput;
 		bool borderTurning;
 		bool useAltRuneRecognition;
+		bool allowConsole;
 		
 	} input;
 	
