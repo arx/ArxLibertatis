@@ -451,6 +451,11 @@ Window::MinimizeSetting SDL1Window::willMinimizeOnFocusLost() {
 	return AlwaysEnabled;
 }
 
+std::string SDL1Window::getClipboardText() {
+	// Clipboard not supported by SDL 1
+	return std::string();
+}
+
 InputBackend * SDL1Window::getInputBackend() {
 	if(!m_input) {
 		m_input = new SDL1InputBackend();

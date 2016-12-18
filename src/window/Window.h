@@ -94,6 +94,11 @@ public:
 	 * Return if fullscreen windows if they lose focus.
 	 */
 	virtual MinimizeSetting willMinimizeOnFocusLost() = 0;
+	
+	/*!
+	 * Get the current text contents of the clipboard.
+	 */
+	virtual std::string getClipboardText() = 0;
 
 	class Listener {
 		
