@@ -531,8 +531,9 @@ void ScriptConsole::update() {
 	GInput->startTextInput(box, this);
 	
 	// Update suggestion if the selected entity changed
-	if(m_selection == 0 && (LastSelectedIONum != m_lastSelectedEntity || !ValidIONum(LastSelectedIONum))) {
-		m_lastSelectedEntity = LastSelectedIONum;
+	EntityHandle entity = ValidIONum(LastSelectedIONum) ? LastSelectedIONum : EntityHandle_Player;
+	if(m_selection == 0 && entity != m_lastSelectedEntity) {
+		m_lastSelectedEntity = entity;
 		textUpdated();
 	}
 	
