@@ -150,6 +150,7 @@ const ActionKey actions[NUM_ACTION_KEY] = {
 	ActionKey(Keyboard::Key_4), // CANCELCURSPELL
 	ActionKey(Keyboard::Key_R, Keyboard::Key_M), // MINIMAP
 	ActionKey((Keyboard::Key_LeftAlt << 16) | Keyboard::Key_Enter, (Keyboard::Key_RightAlt << 16) | Keyboard::Key_Enter), // TOGGLE_FULLSCREEN
+	ActionKey(Keyboard::Key_Grave), // CONSOLE
 };
 
 } // namespace Default
@@ -269,7 +270,8 @@ const std::string actions[NUM_ACTION_KEY] = {
 	"unequip_weapon",
 	"cancel_current_spell",
 	"minimap",
-	"toggle_fullscreen"
+	"toggle_fullscreen",
+	"console"
 };
 
 // Misc options
