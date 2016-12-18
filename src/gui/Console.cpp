@@ -169,11 +169,39 @@ void ScriptConsole::textUpdated() {
 			++m_commandBegin;
 		}
 	}
+	size_t commandEnd = m_commandBegin;
+	while(commandEnd < text().size() && !isspace(text()[commandEnd])) {
+		++commandEnd;
+	}
+	
+	m_error = Suggestion(0, std::string());
+	
+	if(true) {
+		
+		if(hasContext && cursorPos() > m_contextEnd) {
+			if(contextEntity() == NULL) {
+				m_error = Suggestion(m_contextBegin, "^ Unknown entity");
+			}
+		}
+		
+		if(!m_error.second.empty()) {
+			// Error - no need for more checks
+		} else if(cursorPos() > commandEnd) {
+			if(!ScriptEvent::isCommand(text().substr(m_commandBegin, commandEnd - m_commandBegin))) {
+				m_error = Suggestion(m_commandBegin, "^ Unknown command");
+			}
+		}
+		
+	}
 	
 	if(!hasContext) {
 		m_contextEnd = m_contextBegin;
 	}
 	
+}
+
+void ScriptConsole::cursorUpdated() {
+	textUpdated();
 }
 
 void ScriptConsole::open() {
@@ -321,6 +349,16 @@ void ScriptConsole::draw() {
 	pos.y += 1;
 	
 	drawLine(Vec2f(0, pos.y), Vec2f(g_size.width(), pos.y), 0.f, line);
+	
+	pos.y += 2;
+	
+	// Draw error message and suggestions
+	if(!m_error.second.empty()) {
+		Vec2i errorPos = pos;
+		errorPos.x += hFontDebug->getTextSize(text().begin(), text().begin() + m_error.first).advance();
+		hFontDebug->draw(errorPos + Vec2i_ONE, m_error.second, Color::black);
+		hFontDebug->draw(errorPos, m_error.second, Color::red);
+	}
 	
 }
 
