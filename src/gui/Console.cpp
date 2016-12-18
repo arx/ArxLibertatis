@@ -197,7 +197,7 @@ static bool isScriptContextChar(char c) {
 	return isalnum(c) || c == '_';
 }
 
-void ScriptConsole::textUpdated() {
+void ScriptConsole::parse(bool allowEmptyPrefix) {
 	
 	m_contextBegin = 0;
 	while(m_contextBegin < text().size() && isspace(text()[m_contextBegin])) {
@@ -237,7 +237,12 @@ void ScriptConsole::textUpdated() {
 		m_originalText = text();
 		m_originalCursorPos = cursorPos();
 		
-		if(cursorPos() > m_contextBegin && cursorPos() <= m_contextEnd) {
+		size_t startPos = cursorPos();
+		if(allowEmptyPrefix) {
+			startPos++;
+		}
+		
+		if(startPos > m_contextBegin && cursorPos() <= m_contextEnd) {
 			m_suggestionPos = m_contextBegin;
 			std::string context = text().substr(m_contextBegin, cursorPos() - m_contextBegin);
 			entities.autocomplete(context, addContextSuggestion, this);
@@ -249,11 +254,11 @@ void ScriptConsole::textUpdated() {
 		
 		if(!m_error.second.empty()) {
 			// Error - no need provide suggestions
-		} else if(cursorPos() > m_commandBegin && cursorPos() <= commandEnd) {
+		} else if(startPos > m_commandBegin && cursorPos() <= commandEnd) {
 			m_suggestionPos = m_commandBegin;
 			std::string command = text().substr(m_commandBegin, cursorPos() - m_commandBegin);
 			ScriptEvent::autocomplete(command, addCommandSuggestion, this);
-		} else if(cursorPos() > m_contextBegin && cursorPos() <= m_contextEnd) {
+		} else if(startPos > m_contextBegin && cursorPos() <= m_contextEnd) {
 			m_suggestionPos = m_contextBegin;
 			std::string command = text().substr(m_contextBegin, cursorPos() - m_contextBegin);
 			ScriptEvent::autocomplete(command, addCommandSuggestion, this);
@@ -309,8 +314,12 @@ void ScriptConsole::textUpdated() {
 	
 }
 
+void ScriptConsole::textUpdated() {
+	parse();
+}
+
 void ScriptConsole::cursorUpdated() {
-	textUpdated();
+	parse();
 }
 
 void ScriptConsole::paste(const std::string & text) {
@@ -454,6 +463,9 @@ void ScriptConsole::autocomplete(size_t characters) {
 	if(m_selection != 0) {
 		// Commit the selection, otherwise we will have no useful tab completion
 		textUpdated();
+	} else if(m_completion.second.empty() && m_suggestions.empty()) {
+		parse(true);
+		return;
 	}
 	
 	arx_assert(m_completion.first <= cursorPos());
