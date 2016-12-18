@@ -635,10 +635,19 @@ void ScriptConsole::draw() {
 	} else if(!m_suggestions.empty()) {
 		Vec2i suggestionPos = pos;
 		size_t position = 0;
-		for(size_t i = 0; i < m_suggestions.size(); i++) {
+		size_t start = 0;
+		if(m_selection > int(MaxVisibleSuggestions)) {
+			start = m_selection - MaxVisibleSuggestions;
+		}
+		for(size_t i = start; i < m_suggestions.size(); i++) {
 			if(m_suggestions[i].first != position) {
 				position = m_suggestions[i].first;
 				suggestionPos.x = pos.x + hFontDebug->getTextSize(text().begin(), text().begin() + position).advance();
+			}
+			if(start != 0 && i == start) {
+				hFontDebug->draw(suggestionPos + Vec2i_ONE, "...", Color::black);
+				hFontDebug->draw(suggestionPos, "...", Color::red);
+				suggestionPos.y += hFontDebug->getLineHeight();
 			}
 			if(int(i) + 1 == m_selection) {
 				int width = hFontDebug->getTextSize(m_suggestions[i].second).width();
@@ -650,7 +659,7 @@ void ScriptConsole::draw() {
 			hFontDebug->draw(suggestionPos + Vec2i_ONE, m_suggestions[i].second, Color::black);
 			hFontDebug->draw(suggestionPos, m_suggestions[i].second, Color::white);
 			suggestionPos.y += hFontDebug->getLineHeight();
-			if(i == MaxVisibleSuggestions) {
+			if(i == start + MaxVisibleSuggestions - (start != 0)) {
 				hFontDebug->draw(suggestionPos + Vec2i_ONE, "...", Color::black);
 				hFontDebug->draw(suggestionPos, "...", Color::red);
 				break;
