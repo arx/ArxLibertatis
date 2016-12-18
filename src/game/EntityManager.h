@@ -74,6 +74,9 @@ public:
 	iterator begin() const { return entries.begin(); }
 	iterator end() const { return entries.end(); }
 	
+	typedef bool (*AutocompleteHandler)(void * context, const std::string & suggestion);
+	void autocomplete(const std::string & prefix, AutocompleteHandler handler, void * context);
+	
 private:
 	
 	Entries entries;

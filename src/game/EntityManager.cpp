@@ -46,7 +46,10 @@ ZeniMax Media Inc., Suite 120, Rockville, Maryland 20850 USA.
 #include <cstdlib>
 #include <algorithm>
 
+#include <boost/foreach.hpp>
 #include <boost/unordered_map.hpp>
+#include <boost/algorithm/string/case_conv.hpp>
+#include <boost/algorithm/string/predicate.hpp>
 
 #include "game/Entity.h"
 #include "platform/Platform.h"
@@ -140,6 +143,24 @@ Entity * EntityManager::getById(const std::string & name, Entity * self) const {
 	} else {
 		return entries[handle.handleData()];
 	}
+}
+
+void EntityManager::autocomplete(const std::string & prefix, AutocompleteHandler handler, void * context) {
+	
+	std::string check = boost::to_lower_copy(prefix);
+	
+	// TODO we don't need to iterate over all entities if we have per-class indices
+	BOOST_FOREACH(Entity * entity, entries) {
+		if(entity) {
+			std::string id = entity->idString();
+			if(boost::starts_with(id, check)) {
+				if(!handler(context, id)) {
+					return;
+				}
+			}
+		}
+	}
+	
 }
 
 size_t EntityManager::add(Entity * entity) {
