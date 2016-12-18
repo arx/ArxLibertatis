@@ -47,13 +47,17 @@ ZeniMax Media Inc., Suite 120, Rockville, Maryland 20850 USA.
 #ifndef ARX_INPUT_INPUT_H
 #define ARX_INPUT_INPUT_H
 
+#include <stddef.h>
+
 #include "core/Config.h"
+#include "input/InputKey.h"
 #include "input/Keyboard.h"
 #include "input/Mouse.h"
-#include "input/InputKey.h"
 #include "math/Vector.h"
+#include "math/Types.h"
 
 class Window;
+class TextInputHandler;
 
 extern long EERIEMouseButton;
 extern long LastMouseClick;
@@ -141,6 +145,28 @@ public:
 	bool isKeyPressedNowPressed(int keyId) const;
 	bool isKeyPressedNowUnPressed(int keyId) const;
 	bool getKeyAsText(int keyId, char & result) const;
+	
+	/*!
+	 * Enter text input mode and send all text to the given handler
+	 *
+	 * While text input mode is enabled, all key presses will first be sent to the input handler's
+	 * \ref TextInputHandler::keyPressed method. If that method returns \c true, the key press is not
+	 * hidden from the rest of the input system.
+	 *
+	 * Use \ref stopTextInput() to end text input mode.
+	 *
+	 * This function can be called multiple times in which the box and handler from the last
+	 * call will be used. A single \ref stopTextInput() call will end text input mode and will
+	 * not restore previous boxes or handlers.
+	 *
+	 * \param box Rectangle of the text input field (used to position helper windows by input methods)
+	 */
+	void startTextInput(const Rect & box, TextInputHandler * handler);
+	
+	/*!
+	 * End text input mode
+	 */
+	void stopTextInput();
 	
 private:
 	

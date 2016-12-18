@@ -253,6 +253,15 @@ bool SDL1InputBackend::isKeyboardKeyPressed(int keyId) const {
 	return keyStates[keyId - Keyboard::KeyBase];
 }
 
+void SDL1InputBackend::startTextInput(const Rect & box, TextInputHandler * handler) {
+	ARX_UNUSED(box), ARX_UNUSED(handler);
+	// TODO Implement
+}
+
+void SDL1InputBackend::stopTextInput() {
+	// TODO Implement
+}
+
 void SDL1InputBackend::onEvent(const SDL_Event & event) {
 	
 	switch(event.type) {

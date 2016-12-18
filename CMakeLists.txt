@@ -933,7 +933,10 @@ set(GUI_SOURCES
 	src/gui/widget/WidgetContainer.cpp
 )
 
-set(INPUT_SOURCES src/input/Input.cpp)
+set(INPUT_SOURCES
+	src/input/Input.cpp
+	src/input/TextInput.cpp
+)
 set(INPUT_SDL1_SOURCES src/input/SDL1InputBackend.cpp)
 set(INPUT_SDL2_SOURCES src/input/SDL2InputBackend.cpp)
 
