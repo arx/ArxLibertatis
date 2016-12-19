@@ -1332,6 +1332,15 @@ public:
 		}
 		
 		{
+			std::string szMenuText = getLocalised("system_menus_alt_rune_recognition", "Alternate rune recognition");
+			TextWidget * txt = new TextWidget(BUTTON_INVALID, hFontMenu, szMenuText, Vec2f(20, 0));
+			CheckboxWidget * cb = new CheckboxWidget(txt);
+			cb->stateChanged = boost::bind(&InputOptionsMenuPage::onChangedAltRuneRecognition, this, _1);
+			cb->iState = config.input.useAltRuneRecognition ? 1 : 0;
+			addCenter(cb);
+		}
+		
+		{
 			ButtonWidget * cb = new ButtonWidget(Vec2f(20, 380), Vec2f(16, 16), "graph/interface/menus/back");
 			cb->m_targetMenu = OPTIONS;
 			cb->SetShortCut(Keyboard::Key_Escape);
@@ -1376,6 +1385,10 @@ private:
 	
 	void onChangedBorderTurning(int value) {
 		config.input.borderTurning = (value) ? true : false;
+	}
+	
+	void onChangedAltRuneRecognition(int value) {
+		config.input.useAltRuneRecognition = (value) ? true : false;
 	}
 	
 };
