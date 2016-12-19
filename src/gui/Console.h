@@ -92,31 +92,44 @@ class ScriptConsole : protected BasicTextInput {
 	typedef std::pair<size_t, std::string> Suggestion;
 	
 	ConsoleBuffer m_buffer;
-	bool m_updateSuggestions;
-	std::deque<std::string> m_history;
-	std::string m_originalText;
-	std::vector<Suggestion> m_suggestions;
-	size_t m_originalCursorPos;
-	Suggestion m_completion;
-	Suggestion m_error;
-	int m_selection;
+	bool m_updateSuggestions; //!< Controls whether \ref parse() updates the suggestions/auto-completion
+	std::deque<std::string> m_history; //!< History of unique commands, from oldest to most recently used
+	std::vector<Suggestion> m_suggestions; //!< Suggestions and corresponding start positions in \ref text()
+	std::string m_originalText; //!< \ref text() that was used to generate the suggestions / search the history
+	size_t m_originalCursorPos; //!< Cursor position in the original text
+	Suggestion m_completion; //!< Tab completion and corresponding start position in \ref text()
+	Suggestion m_error; //!< Error message and corresponding position in \ref text()
+	int m_selection; //!< The selected suggestion (positive) history item (negative) or current line (0)
 	EntityHandle m_lastSelectedEntity;
 	PlatformDuration m_blinkTime;
 	bool m_blink;
 	
-	size_t m_contextBegin;
-	size_t m_contextEnd;
-	size_t m_commandBegin;
-	size_t m_suggestionPos;
+	size_t m_contextBegin; //!< Start of the context entity ID in \ref text()
+	size_t m_contextEnd; //!< End of the context entity ID in \ref text()
+	size_t m_commandBegin; //!< Start of the command in \ref text()
+	size_t m_suggestionPos; //!< Start of the command in \ref text()
 	
 	bool keyPressed(Keyboard::Key key, KeyModifiers mod);
-	void parse(bool allowEmptyPrefix = false);
 	void textUpdated();
 	void cursorUpdated();
 	void paste(const std::string & text);
 	
+	/*!
+	 * Parse the current command and update suggestions
+	 */
+	void parse(bool allowEmptyPrefix = false);
+	
+	/*!
+	 * Select a history entry (negative), a suggestion (positive) or the current command (0)
+	 *
+	 * \param dir The direction in which to move the selection. Must be 1 or -1.
+	 */
 	void select(int dir);
+	
+	//! Finalize the selection, apply characters from \ref m_completion, or suggest all entities and commands
 	void autocomplete(size_t characters = size_t(-1));
+	
+	//! Edit a suggestion into \ref m_originalText at \ref m_originalCursorPos and use it as the new text
 	void applySuggestion(const Suggestion & suggestion);
 	
 	static bool addContextSuggestion(void * self, const std::string & suggestion);
@@ -140,18 +153,28 @@ public:
 		, m_suggestionPos(0)
 	{ }
 	
+	//! Show the console and unlock the hotkey
 	void open();
+	
+	//! Hide the console
 	void close();
 	
+	//! ID of the current context entity or an empty string
 	std::string context() { return text().substr(m_contextBegin, m_contextEnd - m_contextBegin); }
+	
+	//! Current command
 	std::string command() { return text().substr(m_commandBegin); }
+	
+	//! Current context entity
 	Entity * contextEntity();
 	
+	//!< Execute the current command
 	void execute();
 	
 	void update();
 	void draw();
 	
+	//! The console's output buffer
 	ConsoleBuffer & buffer() { return m_buffer; }
 	
 };
