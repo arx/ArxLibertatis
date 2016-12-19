@@ -23,7 +23,6 @@
 #include <string>
 
 #include <boost/lexical_cast.hpp>
-#include <glm/gtx/vector_angle.hpp>
 
 #include "core/Config.h"
 #include "game/Equipment.h"
@@ -32,6 +31,7 @@
 #include "game/spell/Cheat.h"
 #include "graphics/Math.h"
 #include "graphics/particle/ParticleEffects.h"
+#include "math/GtxFunctions.h"
 #include "scene/GameSound.h"
 #include "input/Input.h"
 #include "io/log/Logger.h"
@@ -237,7 +237,7 @@ int RuneRecognitionAlt::quantizeAngleToDir(float angle) {
 * The angle is always positive
 */
 float RuneRecognitionAlt::angleVectorX(Vec2f v) {
-	float angle = glm::orientedAngle(glm::normalize(v), Vec2f(1, 0));
+	float angle = arx::orientedAngle(glm::normalize(v), Vec2f(1, 0));
 	
 	if(angle < 0) {
 		angle += 2 * glm::pi<float>();
@@ -286,7 +286,7 @@ void RuneRecognitionAlt::findKeyPoints(std::vector<Vec2f> &in) {
 		float distance = glm::length(lastImp - thisPoint);
 		
 		if(distance > currTolerance) {
-			float angle2 = glm::angle(glm::normalize(lastImp - thisPoint), glm::normalize(nextPoint - thisPoint));
+			float angle2 = arx::angle(glm::normalize(lastImp - thisPoint), glm::normalize(nextPoint - thisPoint));
 			if(angle2 < minAngle) {
 				lastImp = thisPoint;
 				m_indices.push_back(i - 1);
