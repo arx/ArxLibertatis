@@ -284,7 +284,7 @@ void ScriptConsole::parse(bool allowEmptyPrefix) {
 				}
 				size_t max = std::min(commonPrefix, m_suggestions[i].second.size());
 				commonPrefix = 0;
-				for(size_t j = 0; j < max && m_suggestions[i].second[j] == m_suggestions[1].second[j]; j++) {
+				for(size_t j = 0; j < max && m_suggestions[i].second[j] == m_suggestions[0].second[j]; j++) {
 					commonPrefix++;
 				}
 				if(commonPrefix == 0) {
