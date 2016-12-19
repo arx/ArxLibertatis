@@ -528,7 +528,7 @@ static int PointIn2DPolyXZ(const TexturedVertex (&verts)[4], bool isQuad, float 
 }
 
 int PointIn2DPolyXZ(const EERIEPOLY * ep, float x, float z) {
-	return PointIn2DPolyXZ(ep->v, ep->type & POLY_QUAD, x, z);
+	return PointIn2DPolyXZ(ep->v, (ep->type & POLY_QUAD) != 0, x, z);
 }
 
 int PointIn2DPolyXZ(const PortalPoly * ep, float x, float z) {
