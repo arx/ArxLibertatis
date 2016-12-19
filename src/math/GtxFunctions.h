@@ -25,6 +25,9 @@ SOFTWARE OR THE USE OR OTHER DEALINGS IN THE SOFTWARE.
 #ifndef ARX_MATH_GTXFUNCTIONS_H
 #define ARX_MATH_GTXFUNCTIONS_H
 
+#include <glm/glm.hpp>
+#include <glm/gtc/epsilon.hpp>
+
 #include "math/Types.h"
 
 namespace arx
@@ -178,6 +181,44 @@ GLM_FUNC_QUALIFIER bool intersectLineTriangle
 	position.x = glm::dot(edge2, qvec) * inv_det;
 
 	return true;
+}
+
+GLM_FUNC_QUALIFIER Vec2f rotate
+(
+	Vec2f const & v,
+	float const & angle
+)
+{
+	Vec2f Result;
+	float const Cos(glm::cos(angle));
+	float const Sin(glm::sin(angle));
+
+	Result.x = v.x * Cos - v.y * Sin;
+	Result.y = v.x * Sin + v.y * Cos;
+	return Result;
+}
+
+GLM_FUNC_QUALIFIER float angle
+(
+	Vec2f const & x,
+	Vec2f const & y
+)
+{
+	return glm::acos(glm::clamp(glm::dot(x, y), float(-1), float(1)));
+}
+
+GLM_FUNC_QUALIFIER float orientedAngle
+(
+	Vec2f const & x,
+	Vec2f const & y
+)
+{
+	float const Angle(glm::acos(glm::clamp(glm::dot(x, y), float(-1), float(1))));
+
+	if(glm::all(glm::epsilonEqual(y, arx::rotate(x, Angle), float(0.0001))))
+		return Angle;
+	else
+		return -Angle;
 }
 
 }
