@@ -480,13 +480,13 @@ void Cinematic::Render(PlatformDuration frameDuration) {
 	
 	col.a = alpha;
 	
-	CinematicLight lightt, *l = NULL;
+	CinematicLight *l = NULL;
 	
 	static const float SPEEDINTENSITYRND = 60.f / 1000.f;
 	float FDIFF = float(toMs(frameDuration));
 	
 	if(m_light.intensity >= 0.f && m_lightd.intensity >= 0.f) {
-		lightt = m_light;
+		CinematicLight lightt = m_light;
 		
 		lightt.pos = lightt.pos * g_sizeRatio.y + Vec3f(g_size.center(), 0.f);
 		lightt.fallin *= g_sizeRatio.y;
@@ -527,7 +527,7 @@ void Cinematic::Render(PlatformDuration frameDuration) {
 		l = NULL;
 		
 		if(m_light.intensity >= 0.f && m_lightd.intensity >= 0.f) {
-			lightt = m_lightd;
+			CinematicLight lightt = m_lightd;
 			
 			lightt.pos = lightt.pos * g_sizeRatio.y + Vec3f(g_size.center(), 0.f);
 			lightt.fallin *= g_sizeRatio.y;
