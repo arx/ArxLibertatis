@@ -41,7 +41,9 @@ void update2DFX() {
 	size_t nNbInTableIO = 0;
 
 	float temp_increase = toMs(g_platformTime.lastFrameDuration()) * (1.0f/1000) * 4.f;
-
+	
+	const Vec3f camPos = ACTIVECAM->orgTrans.pos;
+	
 	bool bComputeIO = false;
 
 	for(size_t i = 0; i < g_culledDynamicLightsCount; i++) {
@@ -69,7 +71,7 @@ void update2DFX() {
 				ltvv.p.y < (g_size.height()-(cinematicBorder.CINEMA_DECAL * g_sizeRatio.y))
 				)
 			{
-				Vec3f vector = lv - ACTIVECAM->orgTrans.pos;
+				Vec3f vector = lv - camPos;
 				lv -= vector * (50.f / glm::length(vector));
 
 				float fZFar=ACTIVECAM->ProjectionMatrix[2][2]*(1.f/(ACTIVECAM->cdepth*fZFogEnd))+ACTIVECAM->ProjectionMatrix[3][2];
@@ -87,7 +89,7 @@ void update2DFX() {
 				}
 
 				if(ltvv.p.z > fZFar ||
-					EERIELaunchRay3(ACTIVECAM->orgTrans.pos, ee3dlv, hit, 1) ||
+					EERIELaunchRay3(camPos, ee3dlv, hit, 1) ||
 					GetFirstInterAtPos(ees2dlv, 3, &ee3dlv, pTableIO, &nNbInTableIO )
 					)
 				{
