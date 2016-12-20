@@ -118,7 +118,10 @@ Entity::Entity(const res::path & classPath, EntityInstance instance)
 	target = Vec3f_ZERO;
 	targetinfo = EntityHandle(TARGET_NONE);
 	
-	_itemdata = NULL, _fixdata = NULL, _npcdata = NULL, _camdata = NULL;
+	_itemdata = NULL;
+	_fixdata = NULL;
+	_npcdata = NULL;
+	_camdata = NULL;
 	
 	inventory = NULL;
 	show = SHOW_FLAG_IN_SCENE;
