@@ -555,14 +555,12 @@ int EERIELaunchRay3(const Vec3f & orgn, const Vec3f & dest, Vec3f & hit) {
 	Vec3f p; //current ray pos
 	Vec3f i;
 	long lpx, lpz;
-	long voidlast;
 	float pas = 1.5f;
 	
 	long iii = 0;
 	float maxstepp = 20000.f / pas;
 	hit = p = orgn;
 	
-	voidlast = 0;
 	lpx = lpz = -1;
 	
 	// ray incs
@@ -633,13 +631,14 @@ int EERIELaunchRay3(const Vec3f & orgn, const Vec3f & dest, Vec3f & hit) {
 			return -1;
 		}
 		
-		if(lpx == tilex && lpz == tilez && voidlast) {
+		// TODO find out if this should be removed
+		if(lpx == tilex && lpz == tilez && 0) {
 			continue;
 		}
 		
 		lpx = tilex;
 		lpz = tilez;
-		voidlast = 0;
+		
 		long minx = glm::clamp(tilex - 1l, 0l, ACTIVEBKG->Xsize - 1l);
 		long maxx = glm::clamp(tilex + 1l, 0l, ACTIVEBKG->Xsize - 1l);
 		long minz = glm::clamp(tilez - 1l, 0l, ACTIVEBKG->Zsize - 1l);
@@ -669,7 +668,7 @@ int EERIELaunchRay3(const Vec3f & orgn, const Vec3f & dest, Vec3f & hit) {
 				) {
 					continue;
 				}
-				voidlast = 0;
+				
 				if(RayIn3DPolyNoCull(orgn, dest, ep)) {
 					hit = p;
 					return 1;
