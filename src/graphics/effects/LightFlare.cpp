@@ -89,7 +89,7 @@ void update2DFX() {
 				}
 
 				if(ltvv.p.z > fZFar ||
-					EERIELaunchRay3(camPos, ee3dlv, hit, 1) ||
+					EERIELaunchRay3(camPos, ee3dlv, hit) ||
 					GetFirstInterAtPos(ees2dlv, 3, &ee3dlv, pTableIO, &nNbInTableIO )
 					)
 				{

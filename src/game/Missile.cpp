@@ -241,7 +241,7 @@ void ARX_MISSILES_Update() {
 				}
 
 				Vec3f hit;
-				if(EERIELaunchRay3(orgn, dest, hit, 1)) {
+				if(EERIELaunchRay3(orgn, dest, hit)) {
 					ARX_MISSILES_Kill(i);
 					spawnFireHitParticle(hit, 0);
 					PolyBoomAddScorch(hit);

@@ -550,7 +550,7 @@ static bool RayIn3DPolyNoCull(const Vec3f & orgn, const Vec3f & dest, const EERI
 	return hit;
 }
 
-int EERIELaunchRay3(const Vec3f & orgn, const Vec3f & dest, Vec3f & hit, long flag) {
+int EERIELaunchRay3(const Vec3f & orgn, const Vec3f & dest, Vec3f & hit) {
 	
 	Vec3f p; //current ray pos
 	Vec3f i;
@@ -639,7 +639,7 @@ int EERIELaunchRay3(const Vec3f & orgn, const Vec3f & dest, Vec3f & hit, long fl
 		
 		lpx = tilex;
 		lpz = tilez;
-		voidlast = !flag;
+		voidlast = 0;
 		long minx = glm::clamp(tilex - 1l, 0l, ACTIVEBKG->Xsize - 1l);
 		long maxx = glm::clamp(tilex + 1l, 0l, ACTIVEBKG->Xsize - 1l);
 		long minz = glm::clamp(tilez - 1l, 0l, ACTIVEBKG->Zsize - 1l);
