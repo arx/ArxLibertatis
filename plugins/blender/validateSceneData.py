@@ -15,6 +15,16 @@ from arx_addon.dataFts import FtsSerializer
 def validateScenes():
     ioLib = ArxIO()
     ftsSerializer = FtsSerializer(ioLib)
+    
+    totalTriangles = 0
+    totalQuads = 0
+    
+    minPolyPerTile =  999999
+    maxPolyPerTile = -999999
+    
+    avgPolyPerTileSum = 0
+    avgPolyPerTileCount = 0
+    
     for levelId in arxFiles.levels.levels:
         parts = arxFiles.levels.levels[levelId]
         
@@ -23,6 +33,25 @@ def validateScenes():
             continue
         
         data = ftsSerializer.read_fts_container(parts.fts)
+        
+        tiles = data["cells"]
+        for tileX in tiles:
+            for tile in tileX:
+                if tile is not None:
+                    count = len(tile)
+                    minPolyPerTile = min(minPolyPerTile, count)
+                    maxPolyPerTile = max(maxPolyPerTile, count)
+                    
+                    avgPolyPerTileSum += count
+                    avgPolyPerTileCount += 1
+                    
+                    for poly in tile:
+                        if poly.type.POLY_QUAD:
+                            totalQuads += 1
+                        else:
+                            totalTriangles += 1
+        
+        
         portals = data["portals"]
         for portal in portals:
             # Types other than none or quad make no sense for portals
@@ -58,7 +87,12 @@ def validateScenes():
             
             if portal.poly.misc != 0 and portal.poly.misc != 25978:
                 log.info("Portal Poly: bad poly.misc value: {}".format(portal.poly.misc))
-            
+    
+    print("Scene data Stats:")
+    print("Tris: {} Quads: {} ratio: {}".format(str(totalTriangles), str(totalQuads), str(totalTriangles / totalQuads)))
+    print("maxPolyPerTile: {}".format(maxPolyPerTile))
+    print("minPolyPerTile: {}".format(minPolyPerTile))
+    print("avgPolyPerTile: {}".format(avgPolyPerTileSum / avgPolyPerTileCount))
 
 if __name__ == "__main__":
     parser = argparse.ArgumentParser()
