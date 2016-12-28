@@ -26,6 +26,7 @@
 static RaycastResult RaycastMiss() { return RaycastResult(false, Vec3f_ZERO); }
 static RaycastResult RaycastHit(Vec3f hit) { return RaycastResult(true, hit); }
 
+void dbg_addRay(Vec3f start, Vec3f end);
 void dbg_addTile(Vec2i tile);
 void dbg_addPoly(EERIEPOLY * poly, Vec3f hit, Color c);
 
@@ -166,10 +167,18 @@ RaycastResult RaycastLightFlare(const Vec3f & start, const Vec3f & end) {
 	return WalkTiles(start, start + dir, AnyHitRaycast());
 }
 
+
+RaycastResult RaycastLine(const Vec3f & start, const Vec3f & end) {
+	dbg_addRay(start, end);
+	return WalkTiles(start, end, AnyHitRaycast());
+}
+
+
 //#define RAYCAST_DEBUG 1
 
 #ifndef RAYCAST_DEBUG
 
+void dbg_addRay(Vec3f start, Vec3f end) { ARX_UNUSED(start); ARX_UNUSED(end); }
 void dbg_addTile(Vec2i tile){ ARX_UNUSED(tile); }
 void dbg_addPoly(EERIEPOLY * poly, Vec3f hit, Color c){ ARX_UNUSED(poly); ARX_UNUSED(hit); ARX_UNUSED(c);}
 void RaycastDebugClear() {}
@@ -191,8 +200,13 @@ struct DebugPoly {
 	{ }
 };
 
+static std::vector<std::pair<Vec3f, Vec3f> > dbg_rays;
 static std::vector<Vec2i> dbg_tiles;
 static std::vector<DebugPoly> dbg_hits;
+
+void dbg_addRay(Vec3f start, Vec3f end) {
+	dbg_rays.push_back(std::make_pair(start, end));
+}
 
 void dbg_addTile(Vec2i tile) {
 	dbg_tiles.push_back(tile);
@@ -202,8 +216,8 @@ void dbg_addPoly(EERIEPOLY * poly, Vec3f pos, Color c) {
 	dbg_hits.push_back(DebugPoly(poly, pos, c));
 }
 
-void RaycastDebugClear()
-{
+void RaycastDebugClear() {
+	dbg_rays.clear();
 	dbg_tiles.clear();
 	dbg_hits.clear();
 }
@@ -211,6 +225,10 @@ void RaycastDebugClear()
 void RaycastDebugDraw() {
 	
 	GRenderer->SetRenderState(Renderer::DepthTest, false);
+	
+	for(auto & ray: dbg_rays) {
+		drawLine(ray.first, ray.second, Color::magenta);
+	}
 	
 	for(auto & tile: dbg_tiles) {
 		Vec3f foo = Vec3f(tile.x *100, ACTIVECAM->orgTrans.pos.y + 80, tile.y*100);

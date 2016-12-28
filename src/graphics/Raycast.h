@@ -32,6 +32,8 @@ struct RaycastResult {
 };
 
 RaycastResult RaycastLightFlare(const Vec3f & start, const Vec3f & end);
+RaycastResult RaycastLine(const Vec3f & start, const Vec3f & end);
+
 
 void RaycastDebugClear();
 void RaycastDebugDraw();
