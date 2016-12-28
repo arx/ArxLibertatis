@@ -59,6 +59,7 @@ ZeniMax Media Inc., Suite 120, Rockville, Maryland 20850 USA.
 #include "game/effect/ParticleSystems.h"
 
 #include "graphics/Math.h"
+#include "graphics/Raycast.h"
 #include "graphics/data/TextureContainer.h"
 #include "graphics/effects/SpellEffects.h"
 #include "graphics/effects/Fog.h"
@@ -126,20 +127,14 @@ void CPoisonProjectile::Create(Vec3f _eSrc, float _fBeta)
 	bOk = false;
 
 	eMove = Vec3f(-fBetaRadSin * 2, 0.f, fBetaRadCos * 2); 
-
-	Vec3f tempHit;
-	Vec3f dest = eSrc;
-
-	int i = 0;
-	while(Visible(eSrc, dest, &tempHit) && i < 20) {
-		dest.x -= fBetaRadSin * 50;
-		dest.z += fBetaRadCos * 50;
-
-		i++;
-	}
-
-	dest.y += 0.f;
-
+	
+	Vec3f rayEnd;
+	rayEnd.x -= fBetaRadSin * (50 * 20);
+	rayEnd.z += fBetaRadCos * (50 * 20);
+	
+	RaycastResult ray = RaycastLine(eSrc, rayEnd);
+	Vec3f dest = ray.hit ? ray.pos : rayEnd;
+	
 	pathways[0] = eSrc;
 	pathways[9] = dest;
 	
