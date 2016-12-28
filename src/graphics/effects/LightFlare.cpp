@@ -24,6 +24,7 @@
 #include "game/Player.h"
 #include "graphics/Draw.h"
 #include "graphics/GraphicsModes.h"
+#include "graphics/Raycast.h"
 #include "graphics/Renderer.h"
 #include "graphics/effects/Fade.h"
 #include "gui/CinematicBorder.h"
@@ -32,6 +33,8 @@
 #include "scene/Light.h"
 
 void update2DFX() {
+	
+	RaycastDebugClear();
 	
 	ARX_PROFILE_FUNC();
 	
@@ -76,7 +79,6 @@ void update2DFX() {
 
 				float fZFar=ACTIVECAM->ProjectionMatrix[2][2]*(1.f/(ACTIVECAM->cdepth*fZFogEnd))+ACTIVECAM->ProjectionMatrix[3][2];
 
-				Vec3f hit;
 				Vec2s ees2dlv;
 				Vec3f ee3dlv = lv;
 
@@ -88,11 +90,11 @@ void update2DFX() {
 					bComputeIO = true;
 				}
 
-				if(ltvv.p.z > fZFar ||
-					EERIELaunchRay3(camPos, ee3dlv, hit) ||
-					GetFirstInterAtPos(ees2dlv, 3, &ee3dlv, pTableIO, &nNbInTableIO )
-					)
-				{
+				
+				if(   ltvv.p.z > fZFar
+				   || RaycastLightFlare(camPos, el->pos).hit
+				   || GetFirstInterAtPos(ees2dlv, 3, &ee3dlv, pTableIO, &nNbInTableIO)
+				) {
 					el->m_flareFader -= temp_increase * 2.f;
 				} else {
 					el->m_flareFader += temp_increase * 2.f;
@@ -106,9 +108,15 @@ void update2DFX() {
 
 extern TextureContainer * tflare;
 
+
+
 void goFor2DFX() {
 	
 	ARX_PROFILE_FUNC();
+	
+	if(g_debugToggles[6]) {
+		RaycastDebugDraw();
+	}
 	
 	GRenderer->SetRenderState(Renderer::Fog, true);
 	GRenderer->SetBlendFunc(BlendOne, BlendOne);

@@ -850,6 +850,7 @@ set(GRAPHICS_SOURCES
 	src/graphics/DrawDebug.cpp
 	src/graphics/GraphicsModes.cpp
 	src/graphics/Math.cpp
+	src/graphics/Raycast.cpp
 	src/graphics/Renderer.cpp
 	src/graphics/RenderBatcher.cpp
 	src/graphics/data/FTL.cpp
