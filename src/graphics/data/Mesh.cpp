@@ -97,8 +97,6 @@ ZeniMax Media Inc., Suite 120, Rockville, Maryland 20850 USA.
 
 static void EERIE_PORTAL_Release();
 
-static bool RayIn3DPolyNoCull(const Vec3f & orgn, const Vec3f & dest, const EERIEPOLY & epp);
-
 static bool IntersectLinePlane(const Vec3f & l1, const Vec3f & l2, const EERIEPOLY & ep, Vec3f * intersect) {
 	
 	Vec3f v = l2 - l1;
@@ -114,6 +112,28 @@ static bool IntersectLinePlane(const Vec3f & l1, const Vec3f & l2, const EERIEPO
 		return true;
 	}
 
+	return false;
+}
+
+static bool RayIn3DPolyNoCull(const Vec3f & start, const Vec3f & end, const EERIEPOLY & epp) {
+	
+	Vec3f dir = end - start;
+	
+	Vec3f hit;
+	if(arx::intersectLineTriangle(start, dir, epp.v[0].p, epp.v[1].p, epp.v[2].p, hit)) {
+		if(hit.x >= 0.f && hit.x <= 1.f) {
+			return true;
+		}
+	}
+	
+	if((epp.type & POLY_QUAD)) {
+		if(arx::intersectLineTriangle(start, dir, epp.v[1].p, epp.v[3].p, epp.v[2].p, hit)) {
+			if(hit.x >= 0.f && hit.x <= 1.f) {
+				return true;
+			}
+		}
+	}
+	
 	return false;
 }
 
@@ -533,21 +553,6 @@ int PointIn2DPolyXZ(const EERIEPOLY * ep, float x, float z) {
 
 int PointIn2DPolyXZ(const PortalPoly * ep, float x, float z) {
 	return PointIn2DPolyXZ(ep->v, true, x, z);
-}
-
-
-static bool RayIn3DPolyNoCull(const Vec3f & orgn, const Vec3f & dest, const EERIEPOLY & epp) {
-
-	Vec3f dir = dest - orgn;
-	
-	Vec3f hitPos;
-	bool hit = arx::intersectLineTriangle(orgn, dir, epp.v[0].p, epp.v[1].p, epp.v[2].p, hitPos);
-	
-	if(!hit && (epp.type & POLY_QUAD)) {
-		hit = arx::intersectLineTriangle(orgn, dir, epp.v[1].p, epp.v[3].p, epp.v[2].p, hitPos);
-	}
-	
-	return hit;
 }
 
 // TODO visible copy-paste
