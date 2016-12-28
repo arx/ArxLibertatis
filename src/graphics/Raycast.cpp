@@ -123,7 +123,7 @@ static RaycastResult linePolyIntersection(const Vec3f & start, const Vec3f & end
 
 namespace {
 
-struct lightFlareRaycast {
+struct AnyHitRaycast {
 	
 	RaycastResult operator()(const Vec3f & start, const Vec3f & end, const Vec2i & tile) {
 		
@@ -163,7 +163,7 @@ RaycastResult RaycastLightFlare(const Vec3f & start, const Vec3f & end) {
 	}
 	dir *= (length - 20.f) / length;
 	
-	return WalkTiles(start, start + dir, lightFlareRaycast());
+	return WalkTiles(start, start + dir, AnyHitRaycast());
 }
 
 //#define RAYCAST_DEBUG 1
