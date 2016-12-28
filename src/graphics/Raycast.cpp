@@ -20,6 +20,7 @@
 #include "graphics/Raycast.h"
 
 #include "graphics/data/Mesh.h"
+#include "platform/Platform.h"
 #include "platform/profiler/Profiler.h"
 
 static RaycastResult RaycastMiss() { return RaycastResult(false, Vec3f_ZERO); }
@@ -43,9 +44,13 @@ static RaycastResult WalkTiles(const Vec3f & start, const Vec3f & end, F func) {
 	
 	// Determine start grid cell coordinates
 	Vec2i tile = Vec2i(glm::floor(p1 / cellSide));
+	arx_assert(tile.x >= 0 && tile.x < ACTIVEBKG->Xsize);
+	arx_assert(tile.y >= 0 && tile.y < ACTIVEBKG->Zsize);
 	
 	// Determine end grid cell coordinates
 	Vec2i endTile = Vec2i(glm::floor(p2 / cellSide));
+	arx_assert(endTile.x >= 0 && endTile.x < ACTIVEBKG->Xsize);
+	arx_assert(endTile.y >= 0 && endTile.y < ACTIVEBKG->Zsize);
 	
 	// Determine in which primary direction to step
 	Vec2i d;
