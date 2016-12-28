@@ -121,7 +121,11 @@ static RaycastResult linePolyIntersection(const Vec3f & start, const Vec3f & end
 	return RaycastMiss();
 }
 
-static RaycastResult lightFlareRaycast(const Vec3f & start, const Vec3f & end, const Vec2i & tile) {
+namespace {
+
+struct lightFlareRaycast {
+
+RaycastResult operator()(const Vec3f & start, const Vec3f & end, const Vec2i & tile) {
 	
 	const EERIE_BKG_INFO & eg = ACTIVEBKG->fastdata[tile.x][tile.y];
 	for(long k = 0; k < eg.nbpolyin; k++) {
@@ -141,6 +145,10 @@ static RaycastResult lightFlareRaycast(const Vec3f & start, const Vec3f & end, c
 	return RaycastMiss();
 }
 
+};
+
+} // anonymous namespace
+
 
 RaycastResult RaycastLightFlare(const Vec3f & start, const Vec3f & end) {
 	
@@ -155,7 +163,7 @@ RaycastResult RaycastLightFlare(const Vec3f & start, const Vec3f & end) {
 	}
 	dir *= (length - 20.f) / length;
 	
-	return WalkTiles(start, start + dir, lightFlareRaycast);
+	return WalkTiles(start, start + dir, lightFlareRaycast());
 }
 
 //#define RAYCAST_DEBUG 1
