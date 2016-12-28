@@ -55,6 +55,7 @@ ZeniMax Media Inc., Suite 120, Rockville, Maryland 20850 USA.
 #include "graphics/Color.h"
 #include "graphics/GraphicsTypes.h"
 #include "graphics/Math.h"
+#include "graphics/Raycast.h"
 #include "graphics/data/Mesh.h"
 #include "graphics/effects/PolyBoom.h"
 #include "graphics/particle/ParticleEffects.h"
@@ -239,13 +240,13 @@ void ARX_MISSILES_Update() {
 					DoSphericDamage(Sphere(dest, 200.0F), 180.0F, DAMAGE_AREAHALF, DAMAGE_TYPE_FIRE | DAMAGE_TYPE_MAGICAL, EntityHandle());
 					break;
 				}
-
-				Vec3f hit;
-				if(EERIELaunchRay3(orgn, dest, hit)) {
+				
+				RaycastResult ray = RaycastLine(orgn, dest);
+				if(ray.hit) {
 					ARX_MISSILES_Kill(i);
-					spawnFireHitParticle(hit, 0);
-					PolyBoomAddScorch(hit);
-					Add3DBoom(hit);
+					spawnFireHitParticle(ray.pos, 0);
+					PolyBoomAddScorch(ray.pos);
+					Add3DBoom(ray.pos);
 					DoSphericDamage(Sphere(dest, 200.0F), 180.0F, DAMAGE_AREAHALF, DAMAGE_TYPE_FIRE | DAMAGE_TYPE_MAGICAL, EntityHandle());
 					break;
 				}
