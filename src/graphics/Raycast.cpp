@@ -99,15 +99,6 @@ static RaycastResult WalkTiles(const Vec3f & start, const Vec3f & end, F func) {
 	return RaycastMiss();
 }
 
-static Vec3f baryToWorld(Vec3f p0, Vec3f p1, Vec3f p2, Vec3f baryHit) {
-	
-	float u = 1.0f - baryHit.y - baryHit.z;
-	float v = baryHit.y;
-	float w = baryHit.z;
-	
-	return u * p0 + v * p1 + w * p2;
-}
-
 static RaycastResult linePolyIntersection(const Vec3f & start, const Vec3f & end, const EERIEPOLY & epp) {
 
 	Vec3f dir = end - start;
@@ -115,14 +106,14 @@ static RaycastResult linePolyIntersection(const Vec3f & start, const Vec3f & end
 	Vec3f baryHit;
 	if(arx::intersectLineTriangle(start, dir, epp.v[0].p, epp.v[1].p, epp.v[2].p, baryHit)) {
 		if(baryHit.x >= 0.f && baryHit.x <= 1.f) {
-			return RaycastHit(baryToWorld(epp.v[0].p, epp.v[1].p, epp.v[2].p, baryHit));
+			return RaycastHit(start + baryHit.x * dir);
 		}
 	}
 	
 	if((epp.type & POLY_QUAD)) {
 		if(arx::intersectLineTriangle(start, dir, epp.v[1].p, epp.v[3].p, epp.v[2].p, baryHit)) {
 			if(baryHit.x >= 0.f && baryHit.x <= 1.f) {
-				return RaycastHit(baryToWorld(epp.v[1].p, epp.v[3].p, epp.v[2].p, baryHit));
+				return RaycastHit(start + baryHit.x * dir);
 			}
 		}
 	}
