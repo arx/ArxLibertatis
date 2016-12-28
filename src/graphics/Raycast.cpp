@@ -133,14 +133,8 @@ static RaycastResult lightFlareRaycast(const Vec3f & start, const Vec3f & end, c
 		
 		RaycastResult res = linePolyIntersection(start, end, ep);
 		if(res.hit) {
-			// Ignore hits too close to target.
-			// Lights are often inside geometry
-			if(fartherThan(end, res.pos, 20.f)) {
-				dbg_addPoly(&ep, res.pos, Color::green);
-				return res;
-			} else {
-				dbg_addPoly(&ep, res.pos, Color::red);
-			}
+			dbg_addPoly(&ep, res.pos, Color::green);
+			return res;
 		}
 	}
 	
@@ -152,7 +146,16 @@ RaycastResult RaycastLightFlare(const Vec3f & start, const Vec3f & end) {
 	
 	ARX_PROFILE_FUNC();
 	
-	return WalkTiles(start, end, lightFlareRaycast);
+	// Ignore hits too close to target.
+	// Lights are often inside geometry
+	Vec3f dir = end - start;
+	float length = glm::length(dir);
+	if(length <= 20.f) {
+		return RaycastMiss();
+	}
+	dir *= (length - 20.f) / length;
+	
+	return WalkTiles(start, start + dir, lightFlareRaycast);
 }
 
 //#define RAYCAST_DEBUG 1
