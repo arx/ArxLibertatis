@@ -1737,6 +1737,11 @@ void ArxGame::updateInput() {
 				if(GInput->isKeyPressedNowPressed(Keyboard::Key_NumPad0 + i)) {
 					g_debugToggles[i] = !g_debugToggles[i];
 				}
+				if(GInput->isKeyPressed(Keyboard::Key_LeftShift)
+				   && GInput->isKeyPressed(Keyboard::Key_LeftAlt)
+				   && GInput->isKeyPressedNowPressed(Keyboard::Key_0 + i)) {
+					g_debugToggles[i] = !g_debugToggles[i];
+				}
 			}
 		}
 	}
