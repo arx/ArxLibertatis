@@ -28,6 +28,7 @@
 #include "game/Player.h"
 #include "game/Spells.h"
 #include "game/effect/ParticleSystems.h"
+#include "graphics/Raycast.h"
 #include "graphics/effects/PolyBoom.h"
 #include "graphics/particle/Particle.h"
 #include "graphics/particle/ParticleEffects.h"
@@ -432,9 +433,9 @@ void IceProjectileSpell::Launch()
 	Vec3f s = target + Vec3f(0.f, -100.f, 0.f);
 	Vec3f e = s + angleToVectorXZ(angleb) * fspelldist;
 	
-	Vec3f h;
-	if(!Visible(s, e, &h)) {
-		e = h + angleToVectorXZ(angleb) * 20.f;
+	RaycastResult ray = RaycastLine(s, e);
+	if(ray.hit) {
+		e = ray.pos + angleToVectorXZ(angleb) * 20.f;
 	}
 
 	float fd = fdist(s, e);
