@@ -425,7 +425,12 @@ function(_shared_build_add_binary bin)
 		set_target_properties(${bin} PROPERTIES VERSION "${SHARED_BUILD_${bin}_VERSION}")
 	endif()
 	if(NOT SHARED_BUILD_${bin}_SOVERSION STREQUAL "")
-		set_target_properties(${bin} PROPERTIES SOVERSION "${SHARED_BUILD_${bin}_SOVERSION}")
+		set(soversion "${SHARED_BUILD_${bin}_SOVERSION}")
+		if(MACOSX)
+			# CMake treats version number 0 as special for OS X builds.
+			math(EXPR soversion "${soversion} + 1")
+		endif()
+		set_target_properties(${bin} PROPERTIES SOVERSION "${soversion}")
 	endif()
 	
 endfunction()
