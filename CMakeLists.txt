@@ -83,11 +83,7 @@ set(WITH_SDL CACHE STRING "The SDL version to use: 1 or 2 or empty (use any)")
 set(WITH_QT CACHE STRING "The Qt version to use: 4 or 5 or empty (use any)")
 
 # Build types
-if(MACOSX)
-	set(default_UNITY_BUILD OFF)
-else()
-	set(default_UNITY_BUILD OFF)
-endif()
+set(default_UNITY_BUILD ON)
 if(DEVELOPER)
 	set(default_UNITY_BUILD OFF)
 endif()
