@@ -124,27 +124,27 @@ static RaycastResult linePolyIntersection(const Vec3f & start, const Vec3f & end
 namespace {
 
 struct lightFlareRaycast {
-
-RaycastResult operator()(const Vec3f & start, const Vec3f & end, const Vec2i & tile) {
 	
-	const EERIE_BKG_INFO & eg = ACTIVEBKG->fastdata[tile.x][tile.y];
-	for(long k = 0; k < eg.nbpolyin; k++) {
-		EERIEPOLY & ep = *eg.polyin[k];
+	RaycastResult operator()(const Vec3f & start, const Vec3f & end, const Vec2i & tile) {
 		
-		if(ep.type & POLY_TRANS) {
-			continue;
+		const EERIE_BKG_INFO & eg = ACTIVEBKG->fastdata[tile.x][tile.y];
+		for(long k = 0; k < eg.nbpolyin; k++) {
+			EERIEPOLY & ep = *eg.polyin[k];
+			
+			if(ep.type & POLY_TRANS) {
+				continue;
+			}
+			
+			RaycastResult res = linePolyIntersection(start, end, ep);
+			if(res.hit) {
+				dbg_addPoly(&ep, res.pos, Color::green);
+				return res;
+			}
 		}
 		
-		RaycastResult res = linePolyIntersection(start, end, ep);
-		if(res.hit) {
-			dbg_addPoly(&ep, res.pos, Color::green);
-			return res;
-		}
+		return RaycastMiss();
 	}
 	
-	return RaycastMiss();
-}
-
 };
 
 } // anonymous namespace
