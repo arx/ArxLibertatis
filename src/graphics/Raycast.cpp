@@ -103,17 +103,17 @@ static RaycastResult linePolyIntersection(const Vec3f & start, const Vec3f & end
 
 	Vec3f dir = end - start;
 	
-	Vec3f baryHit;
-	if(arx::intersectLineTriangle(start, dir, epp.v[0].p, epp.v[1].p, epp.v[2].p, baryHit)) {
-		if(baryHit.x >= 0.f && baryHit.x <= 1.f) {
-			return RaycastHit(start + baryHit.x * dir);
+	Vec3f hit;
+	if(arx::intersectLineTriangle(start, dir, epp.v[0].p, epp.v[1].p, epp.v[2].p, hit)) {
+		if(hit.x >= 0.f && hit.x <= 1.f) {
+			return RaycastHit(start + hit.x * dir);
 		}
 	}
 	
 	if((epp.type & POLY_QUAD)) {
-		if(arx::intersectLineTriangle(start, dir, epp.v[1].p, epp.v[3].p, epp.v[2].p, baryHit)) {
-			if(baryHit.x >= 0.f && baryHit.x <= 1.f) {
-				return RaycastHit(start + baryHit.x * dir);
+		if(arx::intersectLineTriangle(start, dir, epp.v[1].p, epp.v[3].p, epp.v[2].p, hit)) {
+			if(hit.x >= 0.f && hit.x <= 1.f) {
+				return RaycastHit(start + hit.x * dir);
 			}
 		}
 	}
