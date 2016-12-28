@@ -1875,7 +1875,7 @@ Entity * GetFirstInterAtPos(const Vec2s & pos, long flag, Vec3f * _pRef, Entity 
 		if((io->ioflags & IO_CAMERA) || (io->ioflags & IO_MARKER))
 			continue;
 
-		if(!(io->gameFlags & GFLAG_INTERACTIVITY))
+		if(!flag && !(io->gameFlags & GFLAG_INTERACTIVITY))
 			continue;
 
 		// Is Object in TreatZone ??
