@@ -25,7 +25,7 @@
 static RaycastResult RaycastMiss() { return RaycastResult(false, Vec3f_ZERO); }
 static RaycastResult RaycastHit(Vec3f hit) { return RaycastResult(true, hit); }
 
-void dbg_addTile(Vec2s tile);
+void dbg_addTile(Vec2i tile);
 void dbg_addPoly(EERIEPOLY * poly, Vec3f hit, Color c);
 
 // Based on:
@@ -125,7 +125,7 @@ static RaycastResult linePolyIntersection(const Vec3f & start, const Vec3f & end
 	return RaycastMiss();
 }
 
-static RaycastResult lightFlareRaycast(const Vec3f & start, const Vec3f & end, const Vec2s & tile) {
+static RaycastResult lightFlareRaycast(const Vec3f & start, const Vec3f & end, const Vec2i & tile) {
 	
 	const EERIE_BKG_INFO & eg = ACTIVEBKG->fastdata[tile.x][tile.y];
 	for(long k = 0; k < eg.nbpolyin; k++) {
@@ -163,7 +163,7 @@ RaycastResult RaycastLightFlare(const Vec3f & start, const Vec3f & end) {
 
 #ifndef RAYCAST_DEBUG
 
-void dbg_addTile(Vec2s tile){ ARX_UNUSED(tile); }
+void dbg_addTile(Vec2i tile){ ARX_UNUSED(tile); }
 void dbg_addPoly(EERIEPOLY * poly, Vec3f hit, Color c){ ARX_UNUSED(poly); ARX_UNUSED(hit); ARX_UNUSED(c);}
 void RaycastDebugClear() {}
 void RaycastDebugDraw() {}
@@ -184,10 +184,10 @@ struct DebugPoly {
 	{ }
 };
 
-static std::vector<Vec2s> dbg_tiles;
+static std::vector<Vec2i> dbg_tiles;
 static std::vector<DebugPoly> dbg_hits;
 
-void dbg_addTile(Vec2s tile) {
+void dbg_addTile(Vec2i tile) {
 	dbg_tiles.push_back(tile);
 }
 
