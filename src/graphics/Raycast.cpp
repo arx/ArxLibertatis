@@ -149,6 +149,42 @@ struct AnyHitRaycast {
 	
 };
 
+struct ClosestHitRaycast {
+	
+	RaycastResult operator()(const Vec3f & start, const Vec3f & end, const Vec2i & tile) {
+		
+		Vec3f dir = end - start;
+		
+		float minRelDist = 999999.f;
+		EERIEPOLY * dbg_poly = NULL;
+		
+		const EERIE_BKG_INFO & eg = ACTIVEBKG->fastdata[tile.x][tile.y];
+		for(long k = 0; k < eg.nbpolyin; k++) {
+			EERIEPOLY & ep = *eg.polyin[k];
+			
+			if(ep.type & POLY_TRANS) {
+				continue;
+			}
+			
+			float relDist = linePolyIntersection(start, dir, ep);
+			if(relDist >= 0.f && relDist < minRelDist) {
+				minRelDist = relDist;
+				dbg_poly = &ep;
+			}
+		}
+		
+		if(minRelDist >= 0.f && minRelDist <= 1.f) {
+			Vec3f hitPos = start + minRelDist * dir;
+			dbg_addPoly(dbg_poly, hitPos, Color::green);
+			return RaycastHit(hitPos);
+		} else {
+			return RaycastMiss();
+		}
+	}
+	
+};
+
+
 } // anonymous namespace
 
 
@@ -171,7 +207,7 @@ RaycastResult RaycastLightFlare(const Vec3f & start, const Vec3f & end) {
 
 RaycastResult RaycastLine(const Vec3f & start, const Vec3f & end) {
 	dbg_addRay(start, end);
-	return WalkTiles(start, end, AnyHitRaycast());
+	return WalkTiles(start, end, ClosestHitRaycast());
 }
 
 
