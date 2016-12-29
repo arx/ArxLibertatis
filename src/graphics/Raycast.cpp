@@ -100,26 +100,24 @@ static RaycastResult WalkTiles(const Vec3f & start, const Vec3f & end, F func) {
 	return RaycastMiss();
 }
 
-static RaycastResult linePolyIntersection(const Vec3f & start, const Vec3f & end, const EERIEPOLY & epp) {
-
-	Vec3f dir = end - start;
+static float linePolyIntersection(const Vec3f & start, const Vec3f & dir, const EERIEPOLY & epp) {
 	
 	Vec3f hit;
 	if(arx::intersectLineTriangle(start, dir, epp.v[0].p, epp.v[1].p, epp.v[2].p, hit)) {
 		if(hit.x >= 0.f && hit.x <= 1.f) {
-			return RaycastHit(start + hit.x * dir);
+			return hit.x;
 		}
 	}
 	
 	if((epp.type & POLY_QUAD)) {
 		if(arx::intersectLineTriangle(start, dir, epp.v[1].p, epp.v[3].p, epp.v[2].p, hit)) {
 			if(hit.x >= 0.f && hit.x <= 1.f) {
-				return RaycastHit(start + hit.x * dir);
+				return hit.x;
 			}
 		}
 	}
 	
-	return RaycastMiss();
+	return -1.f;
 }
 
 namespace {
@@ -127,6 +125,8 @@ namespace {
 struct AnyHitRaycast {
 	
 	RaycastResult operator()(const Vec3f & start, const Vec3f & end, const Vec2i & tile) {
+		
+		Vec3f dir = end - start;
 		
 		const EERIE_BKG_INFO & eg = ACTIVEBKG->fastdata[tile.x][tile.y];
 		for(long k = 0; k < eg.nbpolyin; k++) {
@@ -136,10 +136,11 @@ struct AnyHitRaycast {
 				continue;
 			}
 			
-			RaycastResult res = linePolyIntersection(start, end, ep);
-			if(res.hit) {
-				dbg_addPoly(&ep, res.pos, Color::green);
-				return res;
+			float relDist = linePolyIntersection(start, dir, ep);
+			if(relDist >= 0.f) {
+				Vec3f hitPos = start + relDist * dir;
+				dbg_addPoly(&ep, hitPos, Color::green);
+				return RaycastHit(hitPos);
 			}
 		}
 		
