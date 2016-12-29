@@ -119,7 +119,7 @@ static float linePolyIntersection(const Vec3f & start, const Vec3f & dir, const 
 		}
 	}
 	
-	return -1.f;
+	return std::numeric_limits<float>::max();
 }
 
 //#define RAYCAST_DEBUG 1
@@ -141,7 +141,7 @@ struct AnyHitRaycast {
 			}
 			
 			float relDist = linePolyIntersection(start, dir, ep);
-			if(relDist >= 0.f) {
+			if(relDist <= 1.f) {
 				Vec3f hitPos = start + relDist * dir;
 				dbg_addPoly(&ep, hitPos, Color::green);
 				return true;
@@ -182,7 +182,7 @@ struct ClosestHitRaycast {
 			}
 			
 			float relDist = linePolyIntersection(start, dir, ep);
-			if(relDist >= 0.f && relDist < closestHit) {
+			if(relDist < closestHit) {
 				closestHit = relDist;
 				#ifdef RAYCAST_DEBUG
 				hitPoly = &ep;
