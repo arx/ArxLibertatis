@@ -161,10 +161,12 @@ void ManaDrainSpell::Update() {
 		cabalpos.z = player.pos.z;
 		refpos = player.pos.y + 60.f;
 	} else {
-		cabalpos.x = entities[m_caster]->pos.x;
-		cabalpos.y = entities[m_caster]->pos.y - scaley - mov;
-		cabalpos.z = entities[m_caster]->pos.z;
-		refpos = entities[m_caster]->pos.y - scaley;
+		Entity * caster = entities[m_caster];
+		
+		cabalpos.x = caster->pos.x;
+		cabalpos.y = caster->pos.y - scaley - mov;
+		cabalpos.z = caster->pos.z;
+		refpos = caster->pos.y - scaley;
 	}
 	
 	float Es = std::sin(frametime * (1.0f/800) + glm::radians(scaley));
@@ -410,10 +412,12 @@ void LifeDrainSpell::Update() {
 		cabalpos.z = player.pos.z;
 		refpos = player.pos.y + 60.f;
 	} else {
-		cabalpos.x = entities[m_caster]->pos.x;
-		cabalpos.y = entities[m_caster]->pos.y - scaley - mov;
-		cabalpos.z = entities[m_caster]->pos.z;
-		refpos = entities[m_caster]->pos.y - scaley;
+		Entity * caster = entities[m_caster];
+		
+		cabalpos.x = caster->pos.x;
+		cabalpos.y = caster->pos.y - scaley - mov;
+		cabalpos.z = caster->pos.z;
+		refpos = caster->pos.y - scaley;
 	}
 	
 	float Es = std::sin(frametime * (1.0f/800) + glm::radians(scaley));
