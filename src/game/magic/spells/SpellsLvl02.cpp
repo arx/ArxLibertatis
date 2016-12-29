@@ -238,9 +238,9 @@ void ArmorSpell::Launch()
 void ArmorSpell::End()
 {
 	ARX_SOUND_Stop(m_snd_loop);
-	ARX_SOUND_PlaySFX(SND_SPELL_ARMOR_END, &entities[m_target]->pos);
 	
 	if(ValidIONum(m_target)) {
+		ARX_SOUND_PlaySFX(SND_SPELL_ARMOR_END, &entities[m_target]->pos);
 		ARX_HALO_SetToNative(entities[m_target]);
 	}
 	
@@ -308,11 +308,13 @@ void LowerArmorSpell::Launch()
 void LowerArmorSpell::End()
 {
 	ARX_SOUND_PlaySFX(SND_SPELL_LOWER_ARMOR_END);
-	Entity *io = entities[m_target];
 	
 	if(m_haloCreated) {
-		io->halo.flags &= ~HALO_ACTIVE;
-		ARX_HALO_SetToNative(io);
+		if(ValidIONum(m_target)) {
+			Entity *io = entities[m_target];
+			io->halo.flags &= ~HALO_ACTIVE;
+			ARX_HALO_SetToNative(io);
+		}
 	}
 	
 	m_targets.clear();

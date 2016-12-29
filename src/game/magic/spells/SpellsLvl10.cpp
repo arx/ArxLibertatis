@@ -377,7 +377,10 @@ void FreezeTimeSpell::Launch()
 void FreezeTimeSpell::End()
 {
 	GLOBAL_SLOWDOWN += m_slowdown;
-	ARX_SOUND_PlaySFX(SND_SPELL_TELEKINESIS_END, &entities[m_caster]->pos);
+	
+	if(ValidIONum(m_caster)) {
+		ARX_SOUND_PlaySFX(SND_SPELL_TELEKINESIS_END, &entities[m_caster]->pos);
+	}
 }
 
 void MassIncinerateSpell::Launch()

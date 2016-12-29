@@ -66,7 +66,10 @@ void MagicSightSpell::End()
 		player.m_improve = false;
 		ARX_SOUND_Stop(m_snd_loop);
 	}
-	ARX_SOUND_PlaySFX(SND_SPELL_VISION_START, &entities[m_caster]->pos);
+	
+	if(ValidIONum(m_caster)) {
+		ARX_SOUND_PlaySFX(SND_SPELL_VISION_START, &entities[m_caster]->pos);
+	}
 }
 
 void MagicSightSpell::Update() {
