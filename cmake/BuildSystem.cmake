@@ -73,9 +73,9 @@ function(enable_unity_build UB_SUFFIX SOURCE_VARIABLE_NAME)
 	set(currentIdx 1)
 	foreach(source_file IN LISTS files)
 		
-		if(source_file MATCHES ".rc$")
+		if(source_file MATCHES "\\.(rc|mm)$")
 			
-			# .rc files need to be compiled separately
+			# .rc and .mm files need to be compiled separately
 			
 		else()
 			
