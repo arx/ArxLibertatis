@@ -171,6 +171,8 @@ struct ClosestHitRaycast {
 		
 		Vec3f dir = end - start;
 		
+		bool previouslyHadHit = (closestHit <= 1.f);
+		
 		const EERIE_BKG_INFO & eg = ACTIVEBKG->fastdata[tile.x][tile.y];
 		for(long k = 0; k < eg.nbpolyin; k++) {
 			EERIEPOLY & ep = *eg.polyin[k];
@@ -188,7 +190,26 @@ struct ClosestHitRaycast {
 			}
 		}
 		
-		return (closestHit <= 1.f);
+		if(previouslyHadHit) {
+			// Assume that the previous hit was in this tile
+			return true;
+		} else if(closestHit > 1.f) {
+			// No hit, search the next tile
+			return false;
+		}
+		
+		// Determine hit grid cell coordinates
+		const Vec2f cellSide = Vec2f(ACTIVEBKG->Xdiv, ACTIVEBKG->Zdiv);
+		Vec3f hitPos = start + closestHit * dir;
+		Vec2i hitTile = Vec2i(glm::floor(Vec2f(hitPos.x, hitPos.z) / cellSide));
+		if(hitTile == tile) {
+			// Hit in this tile, abort the search
+			return true;
+		} else {
+			// Hit in next tile, need to check other polygons in that tile
+			// first, which may not all be in this tile.
+			return false;
+		}
 	}
 	
 };
