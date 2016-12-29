@@ -110,7 +110,7 @@ static bool WalkTiles(const Vec3f & start, const Vec3f & end, F func) {
 	Vec2f delta = cellSide / glm::abs(dir);
 	
 	// Main loop. Visits cells until last cell reached
-	for (;;) {
+	for(;;) {
 		
 		dbg_addTile(tile);
 		bool abort = func(start, end, tile);
@@ -118,7 +118,7 @@ static bool WalkTiles(const Vec3f & start, const Vec3f & end, F func) {
 			return true;
 		}
 		
-		if (tx <= ty) {
+		if(tx <= ty) {
 			// tx smallest, step in x
 			if(tile.x == endTile.x)
 				break;
