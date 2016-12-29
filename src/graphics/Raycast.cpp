@@ -41,9 +41,15 @@ static bool WalkTiles(const Vec3f & start, const Vec3f & end, F func) {
 	
 	Vec2f p1 = Vec2f(start.x, start.z);
 	Vec2f p2 = Vec2f(end.x, end.z);
+	Vec2f dir = p2 - p1;
 	
 	// Side dimensions of the square cell
 	const Vec2f cellSide = Vec2f(ACTIVEBKG->Xdiv, ACTIVEBKG->Zdiv);
+	
+	// Determine in which primary direction to step
+	Vec2i d;
+	d.x = ((p1.x < p2.x) ? 1 : ((p1.x > p2.x) ? -1 : 0));
+	d.y = ((p1.y < p2.y) ? 1 : ((p1.y > p2.y) ? -1 : 0));
 	
 	// Determine start grid cell coordinates
 	Vec2i tile = Vec2i(glm::floor(p1 / cellSide));
@@ -51,10 +57,42 @@ static bool WalkTiles(const Vec3f & start, const Vec3f & end, F func) {
 	// Determine end grid cell coordinates
 	Vec2i endTile = Vec2i(glm::floor(p2 / cellSide));
 	
-	// Determine in which primary direction to step
-	Vec2i d;
-	d.x = ((p1.x < p2.x) ? 1 : ((p1.x > p2.x) ? -1 : 0));
-	d.y = ((p1.y < p2.y) ? 1 : ((p1.y > p2.y) ? -1 : 0));
+	// Handle invalid start tiles
+	if(tile.x < 0 || tile.x >= ACTIVEBKG->Xsize) {
+		if(d.x == 0 || d.x == (tile.x < 0 ? -1 : 1)) {
+			// Going away from valid tiles
+			return false;
+		}
+		if(tile.x < 0 ? endTile.x < 0 : endTile.x >= ACTIVEBKG->Xsize) {
+			// Not going far enough to reach valid tiles
+			return false;
+		}
+		s32 tilesToSkip = (tile.x < 0 ? -tile.x : tile.x + 1 - ACTIVEBKG->Xsize);
+		p1 += dir * (cellSide.x / dir.x * tilesToSkip);
+		dir = p2 - p1;
+		tile = Vec2i(glm::floor(p1 / cellSide));
+	}
+	if(tile.y < 0 || tile.y >= ACTIVEBKG->Zsize) {
+		if(d.y == 0 || d.y == (tile.y < 0 ? -1 : 1)) {
+			// Going away from valid tiles
+			return false;
+		}
+		if(tile.y < 0 ? endTile.y < 0 : endTile.y >= ACTIVEBKG->Xsize) {
+			// Not going far enough to reach valid tiles
+			return false;
+		}
+		s32 tilesToSkip = (tile.y < 0 ? -tile.y : tile.y + 1 - ACTIVEBKG->Xsize);
+		p1 += dir * (cellSide.y / dir.y * tilesToSkip);
+		dir = p2 - p1;
+		tile = Vec2i(glm::floor(p1 / cellSide));
+	}
+	arx_assert(tile.x >= 0 && tile.x < ACTIVEBKG->Xsize);
+	arx_assert(tile.y >= 0 && tile.y < ACTIVEBKG->Zsize);
+	
+	// Handle invalid end tiles
+	endTile.x = glm::clamp(endTile.x, 0, ACTIVEBKG->Xsize - 1);
+	endTile.y = glm::clamp(endTile.y, 0, ACTIVEBKG->Zsize - 1);
+	
 	
 	// Determine tx and ty, the values of t at which the directed segment
 	// (x1,y1)-(x2,y2) crosses the first horizontal and vertical cell
@@ -69,17 +107,15 @@ static bool WalkTiles(const Vec3f & start, const Vec3f & end, F func) {
 	// Determine deltax/deltay, how far (in units of t) one must step
 	// along the directed line segment for the horizontal/vertical
 	// movement (respectively) to equal the width/height of a cell
-	Vec2f delta = cellSide / glm::abs(p2 - p1);
+	Vec2f delta = cellSide / glm::abs(dir);
 	
 	// Main loop. Visits cells until last cell reached
 	for (;;) {
-		if(   tile.x >= 0 && tile.x < ACTIVEBKG->Xsize
-		   && tile.y >= 0 && tile.y < ACTIVEBKG->Zsize
-		) {
-			dbg_addTile(tile);
-			bool abort = func(start, end, tile);
-			if(abort)
-				return true;
+		
+		dbg_addTile(tile);
+		bool abort = func(start, end, tile);
+		if(abort) {
+			return true;
 		}
 		
 		if (tx <= ty) {
