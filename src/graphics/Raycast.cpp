@@ -37,7 +37,7 @@ void dbg_addPoly(EERIEPOLY * poly, Vec3f hit, Color c);
 // published by Morgan Kaufmann Publishers, © 2005 Elsevier Inc
 // page 326ff
 template <class F>
-static RaycastResult WalkTiles(const Vec3f & start, const Vec3f & end, F func) {
+static bool WalkTiles(const Vec3f & start, const Vec3f & end, F func) {
 	
 	Vec2f p1 = Vec2f(start.x, start.z);
 	Vec2f p2 = Vec2f(end.x, end.z);
@@ -77,9 +77,9 @@ static RaycastResult WalkTiles(const Vec3f & start, const Vec3f & end, F func) {
 		   && tile.y >= 0 && tile.y < ACTIVEBKG->Zsize
 		) {
 			dbg_addTile(tile);
-			RaycastResult res = func(start, end, tile);
-			if(res.hit)
-				return res;
+			bool abort = func(start, end, tile);
+			if(abort)
+				return true;
 		}
 		
 		if (tx <= ty) {
@@ -99,7 +99,7 @@ static RaycastResult WalkTiles(const Vec3f & start, const Vec3f & end, F func) {
 		}
 	}
 	
-	return RaycastMiss();
+	return false;
 }
 
 static float linePolyIntersection(const Vec3f & start, const Vec3f & dir, const EERIEPOLY & epp) {
@@ -122,11 +122,13 @@ static float linePolyIntersection(const Vec3f & start, const Vec3f & dir, const 
 	return -1.f;
 }
 
+//#define RAYCAST_DEBUG 1
+
 namespace {
 
 struct AnyHitRaycast {
 	
-	RaycastResult operator()(const Vec3f & start, const Vec3f & end, const Vec2i & tile) {
+	bool operator()(const Vec3f & start, const Vec3f & end, const Vec2i & tile) {
 		
 		Vec3f dir = end - start;
 		
@@ -142,23 +144,32 @@ struct AnyHitRaycast {
 			if(relDist >= 0.f) {
 				Vec3f hitPos = start + relDist * dir;
 				dbg_addPoly(&ep, hitPos, Color::green);
-				return RaycastHit(hitPos);
+				return true;
 			}
 		}
 		
-		return RaycastMiss();
+		return false;
 	}
 	
 };
 
 struct ClosestHitRaycast {
 	
-	RaycastResult operator()(const Vec3f & start, const Vec3f & end, const Vec2i & tile) {
+	float closestHit;
+	#ifdef RAYCAST_DEBUG
+	EERIEPOLY * hitPoly;
+	#endif
+	
+	ClosestHitRaycast()
+		: closestHit(std::numeric_limits<float>::max())
+		#ifdef RAYCAST_DEBUG
+		, hitPoly(NULL)
+		#endif
+	{ }
+	
+	bool operator()(const Vec3f & start, const Vec3f & end, const Vec2i & tile) {
 		
 		Vec3f dir = end - start;
-		
-		float minRelDist = std::numeric_limits<float>::max();
-		EERIEPOLY * dbg_poly = NULL;
 		
 		const EERIE_BKG_INFO & eg = ACTIVEBKG->fastdata[tile.x][tile.y];
 		for(long k = 0; k < eg.nbpolyin; k++) {
@@ -169,19 +180,15 @@ struct ClosestHitRaycast {
 			}
 			
 			float relDist = linePolyIntersection(start, dir, ep);
-			if(relDist >= 0.f && relDist < minRelDist) {
-				minRelDist = relDist;
-				dbg_poly = &ep;
+			if(relDist >= 0.f && relDist < closestHit) {
+				closestHit = relDist;
+				#ifdef RAYCAST_DEBUG
+				hitPoly = &ep;
+				#endif
 			}
 		}
 		
-		if(minRelDist >= 0.f && minRelDist <= 1.f) {
-			Vec3f hitPos = start + minRelDist * dir;
-			dbg_addPoly(dbg_poly, hitPos, Color::green);
-			return RaycastHit(hitPos);
-		} else {
-			return RaycastMiss();
-		}
+		return (closestHit <= 1.f);
 	}
 	
 };
@@ -203,17 +210,27 @@ bool RaycastLightFlare(const Vec3f & start, const Vec3f & end) {
 	}
 	dir *= (length - 20.f) / length;
 	
-	return WalkTiles(start, start + dir, AnyHitRaycast()).hit;
+	return WalkTiles(start, start + dir, AnyHitRaycast());
 }
 
 
 RaycastResult RaycastLine(const Vec3f & start, const Vec3f & end) {
 	dbg_addRay(start, end);
-	return WalkTiles(start, end, ClosestHitRaycast());
+	ClosestHitRaycast raycast;
+	// TODO With C++11 we can change argument to F && instead of
+	// explicitly specifying the reference type
+	WalkTiles<ClosestHitRaycast &>(start, end, raycast);
+	if(raycast.closestHit <= 1.f) {
+		Vec3f hitPos = start + raycast.closestHit * (end - start);
+		#ifdef RAYCAST_DEBUG
+		dbg_addPoly(raycast.hitPoly, hitPos, Color::green);
+		#endif
+		return RaycastHit(hitPos);
+	} else {
+		return RaycastMiss();
+	}
 }
 
-
-//#define RAYCAST_DEBUG 1
 
 #ifndef RAYCAST_DEBUG
 
