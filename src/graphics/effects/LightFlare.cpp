@@ -92,7 +92,7 @@ void update2DFX() {
 
 				
 				if(   ltvv.p.z > fZFar
-				   || RaycastLightFlare(camPos, el->pos).hit
+				   || RaycastLightFlare(camPos, el->pos)
 				   || GetFirstInterAtPos(ees2dlv, 3, &ee3dlv, pTableIO, &nNbInTableIO)
 				) {
 					el->m_flareFader -= temp_increase * 2.f;
