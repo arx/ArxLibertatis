@@ -71,7 +71,9 @@ static RaycastResult WalkTiles(const Vec3f & start, const Vec3f & end, F func) {
 	
 	// Main loop. Visits cells until last cell reached
 	for (;;) {
-		if(tile.x >= 0 && tile.x < ACTIVEBKG->Xsize) {
+		if(   tile.x >= 0 && tile.x < ACTIVEBKG->Xsize
+		   && tile.y >= 0 && tile.y < ACTIVEBKG->Zsize
+		) {
 			dbg_addTile(tile);
 			RaycastResult res = func(start, end, tile);
 			if(res.hit)
