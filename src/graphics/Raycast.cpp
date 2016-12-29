@@ -81,7 +81,7 @@ static bool WalkTiles(const Vec3f & start, const Vec3f & end, F func) {
 			// Not going far enough to reach valid tiles
 			return false;
 		}
-		s32 tilesToSkip = (tile.y < 0 ? -tile.y : tile.y + 1 - ACTIVEBKG->Xsize);
+		s32 tilesToSkip = (tile.y < 0 ? -tile.y : tile.y + 1 - ACTIVEBKG->Zsize);
 		p1 += dir * (cellSide.y / dir.y * tilesToSkip);
 		dir = p2 - p1;
 		tile = Vec2i(glm::floor(p1 / cellSide));
