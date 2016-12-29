@@ -90,8 +90,8 @@ static bool WalkTiles(const Vec3f & start, const Vec3f & end, F func) {
 	arx_assert(tile.y >= 0 && tile.y < ACTIVEBKG->Zsize);
 	
 	// Handle invalid end tiles
-	endTile.x = glm::clamp(endTile.x, 0, ACTIVEBKG->Xsize - 1);
-	endTile.y = glm::clamp(endTile.y, 0, ACTIVEBKG->Zsize - 1);
+	endTile.x = glm::clamp(endTile.x, s32(0), s32(ACTIVEBKG->Xsize - 1));
+	endTile.y = glm::clamp(endTile.y, s32(0), s32(ACTIVEBKG->Zsize - 1));
 	
 	
 	// Determine tx and ty, the values of t at which the directed segment
