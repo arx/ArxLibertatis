@@ -19,6 +19,8 @@
 
 #include "graphics/Raycast.h"
 
+#include <limits>
+
 #include "graphics/data/Mesh.h"
 #include "platform/Platform.h"
 #include "platform/profiler/Profiler.h"
@@ -155,7 +157,7 @@ struct ClosestHitRaycast {
 		
 		Vec3f dir = end - start;
 		
-		float minRelDist = 999999.f;
+		float minRelDist = std::numeric_limits<float>::max();
 		EERIEPOLY * dbg_poly = NULL;
 		
 		const EERIE_BKG_INFO & eg = ACTIVEBKG->fastdata[tile.x][tile.y];
