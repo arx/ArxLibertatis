@@ -565,7 +565,10 @@ float CheckAnythingInCylinder(const Cylinder & cyl, Entity * ioo, long flags) {
 				||	(	(io->show!=SHOW_FLAG_IN_SCENE)
 					||	((io->ioflags & IO_NO_COLLISIONS)  && !(flags & CFLAG_COLLIDE_NOCOL))
 					) 
-				|| fartherThan(io->pos, cyl.origin, 1000.f)) continue;
+				|| fartherThan(io->pos, cyl.origin, 1000.f)
+			) {
+				continue;
+			}
 	
 			{
 				Cylinder & io_cyl = io->physics.cyl;
