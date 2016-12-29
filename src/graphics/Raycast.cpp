@@ -190,7 +190,7 @@ struct ClosestHitRaycast {
 } // anonymous namespace
 
 
-RaycastResult RaycastLightFlare(const Vec3f & start, const Vec3f & end) {
+bool RaycastLightFlare(const Vec3f & start, const Vec3f & end) {
 	
 	ARX_PROFILE_FUNC();
 	
@@ -199,11 +199,11 @@ RaycastResult RaycastLightFlare(const Vec3f & start, const Vec3f & end) {
 	Vec3f dir = end - start;
 	float length = glm::length(dir);
 	if(length <= 20.f) {
-		return RaycastMiss();
+		return false;
 	}
 	dir *= (length - 20.f) / length;
 	
-	return WalkTiles(start, start + dir, AnyHitRaycast());
+	return WalkTiles(start, start + dir, AnyHitRaycast()).hit;
 }
 
 
