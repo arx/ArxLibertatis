@@ -115,7 +115,9 @@ void FlyingEyeSpell::Launch()
 
 void FlyingEyeSpell::End()
 {
-	ARX_SOUND_PlaySFX(SND_MAGIC_FIZZLE, &entities[m_caster]->pos);
+	if(ValidIONum(m_caster)) {
+		ARX_SOUND_PlaySFX(SND_MAGIC_FIZZLE, &entities[m_caster]->pos);
+	}
 	
 	static TextureContainer * tc4=TextureContainer::Load("graph/particles/smoke");
 	
@@ -552,10 +554,12 @@ void LightningStrikeSpell::Launch() {
 
 void LightningStrikeSpell::End()
 {
-	ARX_SOUND_PlaySFX(SND_SPELL_ELECTRIC, &entities[m_caster]->pos);
-	
 	ARX_SOUND_Stop(m_snd_loop);
-	ARX_SOUND_PlaySFX(SND_SPELL_LIGHTNING_END, &entities[m_caster]->pos);
+	
+	if(ValidIONum(m_caster)) {
+		ARX_SOUND_PlaySFX(SND_SPELL_ELECTRIC, &entities[m_caster]->pos);
+		ARX_SOUND_PlaySFX(SND_SPELL_LIGHTNING_END, &entities[m_caster]->pos);
+	}
 }
 
 static Vec3f GetChestPos(EntityHandle num) {

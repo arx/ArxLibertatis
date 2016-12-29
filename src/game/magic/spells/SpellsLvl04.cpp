@@ -266,11 +266,13 @@ void FireProtectionSpell::Launch()
 void FireProtectionSpell::End()
 {
 	ARX_SOUND_Stop(m_snd_loop);
-	ARX_SOUND_PlaySFX(SND_SPELL_FIRE_PROTECTION_END, &entities[m_target]->pos);
-	m_targets.clear();
 	
-	if(ValidIONum(m_target))
+	if(ValidIONum(m_target)) {
+		ARX_SOUND_PlaySFX(SND_SPELL_FIRE_PROTECTION_END, &entities[m_target]->pos);
 		ARX_HALO_SetToNative(entities[m_target]);
+	}
+	
+	m_targets.clear();
 }
 
 void FireProtectionSpell::Update() {
@@ -325,11 +327,13 @@ void ColdProtectionSpell::Launch()
 void ColdProtectionSpell::End()
 {
 	ARX_SOUND_Stop(m_snd_loop);
-	ARX_SOUND_PlaySFX(SND_SPELL_COLD_PROTECTION_END, &entities[m_target]->pos);
-	m_targets.clear();
 	
-	if(ValidIONum(m_target))
+	if(ValidIONum(m_target)) {
+		ARX_SOUND_PlaySFX(SND_SPELL_COLD_PROTECTION_END, &entities[m_target]->pos);
 		ARX_HALO_SetToNative(entities[m_target]);
+	}
+	
+	m_targets.clear();
 }
 
 void ColdProtectionSpell::Update() {
@@ -371,7 +375,9 @@ void TelekinesisSpell::End()
 	if(m_caster == EntityHandle_Player)
 		player.m_telekinesis = false;
 	
-	ARX_SOUND_PlaySFX(SND_SPELL_TELEKINESIS_END, &entities[m_caster]->pos);
+	if(ValidIONum(m_caster)) {
+		ARX_SOUND_PlaySFX(SND_SPELL_TELEKINESIS_END, &entities[m_caster]->pos);
+	}
 }
 
 

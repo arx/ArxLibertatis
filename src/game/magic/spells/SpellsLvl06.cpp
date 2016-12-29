@@ -247,7 +247,10 @@ void ParalyseSpell::Launch()
 void ParalyseSpell::End()
 {
 	m_targets.clear();
-	entities[m_target]->ioflags &= ~IO_FREEZESCRIPT;
+	
+	if(ValidIONum(m_target)) {
+		entities[m_target]->ioflags &= ~IO_FREEZESCRIPT;
+	}
 	
 	ARX_SOUND_PlaySFX(SND_SPELL_PARALYSE_END);
 }

@@ -99,7 +99,9 @@ void SpeedSpell::End() {
 	if(m_caster == EntityHandle_Player)
 		ARX_SOUND_Stop(m_snd_loop);
 	
-	ARX_SOUND_PlaySFX(SND_SPELL_SPEED_END, &entities[m_target]->pos);
+	if(ValidIONum(m_target)) {
+		ARX_SOUND_PlaySFX(SND_SPELL_SPEED_END, &entities[m_target]->pos);
+	}
 	
 	for(size_t i = 0; i < m_trails.size(); i++) {
 		delete m_trails[i].trail;

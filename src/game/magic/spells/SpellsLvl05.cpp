@@ -203,7 +203,11 @@ void LevitateSpell::Launch()
 void LevitateSpell::End()
 {
 	ARX_SOUND_Stop(m_snd_loop);
-	ARX_SOUND_PlaySFX(SND_SPELL_LEVITATE_END, &entities[m_target]->pos);
+	
+	if(ValidIONum(m_target)) {
+		ARX_SOUND_PlaySFX(SND_SPELL_LEVITATE_END, &entities[m_target]->pos);
+	}
+	
 	m_targets.clear();
 	
 	if(m_target == EntityHandle_Player)
