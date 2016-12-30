@@ -99,8 +99,9 @@ void SpeedSpell::End() {
 	if(m_caster == EntityHandle_Player)
 		ARX_SOUND_Stop(m_snd_loop);
 	
-	if(ValidIONum(m_target)) {
-		ARX_SOUND_PlaySFX(SND_SPELL_SPEED_END, &entities[m_target]->pos);
+	Entity * target = entities.get(m_target);
+	if(target) {
+		ARX_SOUND_PlaySFX(SND_SPELL_SPEED_END, &target->pos);
 	}
 	
 	for(size_t i = 0; i < m_trails.size(); i++) {
@@ -149,9 +150,10 @@ void DispellIllusionSpell::Launch()
 		}
 		
 		if(spell->m_type == SPELL_INVISIBILITY) {
-			if(ValidIONum(spell->m_target) && ValidIONum(m_caster)) {
-				if(closerThan(entities[spell->m_target]->pos,
-				   entities[m_caster]->pos, 1000.f)) {
+			Entity * target = entities.get(spell->m_target);
+			Entity * caster = entities.get(m_caster);
+			if(target && caster) {
+				if(closerThan(target->pos, caster->pos, 1000.f)) {
 					spells.endSpell(spell);
 				}
 			}
@@ -190,8 +192,9 @@ void FireballSpell::Launch() {
 		target = m_hand_pos;
 	} else {
 		target = m_caster_pos;
-		if(ValidIONum(m_caster)) {
-			Entity * c = entities[m_caster];
+		
+		Entity * c = entities.get(m_caster);
+		if(c) {
 			if(c->ioflags & IO_NPC) {
 				target += angleToVectorXZ(c->angle.getYaw()) * 30.f;
 				target += Vec3f(0.f, -80.f, 0.f);
