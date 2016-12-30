@@ -143,13 +143,12 @@ void ARX_THROWN_OBJECT_Throw(EntityHandle source, const Vec3f & position, const 
 	projectile.creation_time = arxtime.now();
 	projectile.flags |= ATO_EXIST | ATO_MOVING;
 	
-	if(source == EntityHandle_Player
-	   && ValidIONum(player.equiped[EQUIP_SLOT_WEAPON])
-	) {
-		Entity * tio = entities[player.equiped[EQUIP_SLOT_WEAPON]];
-		
-		if(tio->ioflags & IO_FIERY)
-			projectile.flags |= ATO_FIERY;
+	if(source == EntityHandle_Player) {
+		Entity * tio = entities.get(player.equiped[EQUIP_SLOT_WEAPON]);
+		if(tio) {
+			if(tio->ioflags & IO_FIERY)
+				projectile.flags |= ATO_FIERY;
+		}
 	}
 }
 
