@@ -224,9 +224,9 @@ static float ARX_THROWN_ComputeDamages(const Projectile & projectile, EntityHand
 	}
 
 	if(io_target == entities.player()) {
-		if(ValidIONum(player.equiped[EQUIP_SLOT_ARMOR])) {
-			Entity * io = entities[player.equiped[EQUIP_SLOT_ARMOR]];
-			if(io && !io->armormaterial.empty()) {
+		Entity * io = entities.get(player.equiped[EQUIP_SLOT_ARMOR]);
+		if(io) {
+			if(!io->armormaterial.empty()) {
 				amat = &io->armormaterial;
 			}
 		}
