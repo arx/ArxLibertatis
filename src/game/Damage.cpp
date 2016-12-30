@@ -1494,8 +1494,8 @@ void ARX_DAMAGES_DamagePlayerEquipment(float damages)
 		ratio = 1.f;
 	
 	for(size_t i = 0; i < MAX_EQUIPED; i++) {
-		if(ValidIONum(player.equiped[i])) {
-			Entity * todamage = entities[player.equiped[i]];
+		Entity * todamage = entities.get(player.equiped[i]);
+		if(todamage) {
 			ARX_DAMAGES_DurabilityCheck(todamage, ratio);
 		}
 	}
