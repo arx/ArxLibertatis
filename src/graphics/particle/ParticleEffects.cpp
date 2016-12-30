@@ -803,10 +803,11 @@ void ARX_PARTICLES_Update(EERIE_CAMERA * cam)  {
 		if(part->delay > 0) {
 			part->timcreation += part->delay;
 			part->delay=0;
-			if((part->m_flags & DELAY_FOLLOW_SOURCE) && part->sourceionum != EntityHandle()
-					&& entities[part->sourceionum]) {
+			
+			Entity * target = entities.get(part->sourceionum);
+			if((part->m_flags & DELAY_FOLLOW_SOURCE) && target) {
 				part->ov = *part->source;
-				Entity * target = entities[part->sourceionum];
+				
 				Vec3f vector = (part->ov - target->pos) * Vec3f(1.f, 0.5f, 1.f);
 				vector = glm::normalize(vector);
 				part->move = vector * Vec3f(18.f, 5.f, 18.f) + randomVec(-0.5f, 0.5f);
