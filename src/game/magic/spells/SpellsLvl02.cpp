@@ -91,8 +91,8 @@ void HealSpell::Update() {
 	
 	if(m_caster == EntityHandle_Player) {
 		m_pos = player.pos;
-	} else if(ValidIONum(m_target)) {
-		m_pos = entities[m_target]->pos;
+	} else if(Entity * target = entities.get(m_target)) {
+		m_pos = target->pos;
 	}
 	
 	EERIE_LIGHT * light = dynLightCreate(m_light);
@@ -224,9 +224,9 @@ void ArmorSpell::Launch()
 	
 	m_hasDuration = true;
 	m_fManaCostPerSecond = 0.2f * m_level;
-		
-	if(ValidIONum(m_target)) {
-		Entity *io = entities[m_target];
+	
+	Entity * io = entities.get(m_target);
+	if(io) {
 		io->halo.flags = HALO_ACTIVE;
 		io->halo.color = Color3f(0.5f, 0.5f, 0.25f);
 		io->halo.radius = 45.f;
@@ -239,9 +239,10 @@ void ArmorSpell::End()
 {
 	ARX_SOUND_Stop(m_snd_loop);
 	
-	if(ValidIONum(m_target)) {
-		ARX_SOUND_PlaySFX(SND_SPELL_ARMOR_END, &entities[m_target]->pos);
-		ARX_HALO_SetToNative(entities[m_target]);
+	Entity * target = entities.get(m_target);
+	if(target) {
+		ARX_SOUND_PlaySFX(SND_SPELL_ARMOR_END, &target->pos);
+		ARX_HALO_SetToNative(target);
 	}
 	
 	m_targets.clear();
@@ -249,8 +250,8 @@ void ArmorSpell::End()
 
 void ArmorSpell::Update() {
 	
-	if(ValidIONum(m_target)) {
-		Entity *io = entities[m_target];
+	Entity * io = entities.get(m_target);
+	if(io) {
 		io->halo.flags = HALO_ACTIVE;
 		io->halo.color = Color3f(0.5f, 0.5f, 0.25f);
 		io->halo.radius = 45.f;
@@ -288,9 +289,8 @@ void LowerArmorSpell::Launch()
 	m_hasDuration = true;
 	m_fManaCostPerSecond = 0.2f * m_level;
 	
-	if(ValidIONum(m_target)) {
-		Entity *io = entities[m_target];
-		
+	Entity * io = entities.get(m_target);
+	if(io) {
 		if(io && !(io->halo.flags & HALO_ACTIVE)) {
 			io->halo.flags |= HALO_ACTIVE;
 			io->halo.color = Color3f(1.f, 0.05f, 0.0f);
@@ -310,8 +310,8 @@ void LowerArmorSpell::End()
 	ARX_SOUND_PlaySFX(SND_SPELL_LOWER_ARMOR_END);
 	
 	if(m_haloCreated) {
-		if(ValidIONum(m_target)) {
-			Entity *io = entities[m_target];
+		Entity * io = entities.get(m_target);
+		if(io) {
 			io->halo.flags &= ~HALO_ACTIVE;
 			ARX_HALO_SetToNative(io);
 		}
@@ -322,9 +322,8 @@ void LowerArmorSpell::End()
 
 void LowerArmorSpell::Update() {
 	
-	if(ValidIONum(m_target)) {
-		Entity *io = entities[m_target];
-		
+	Entity * io = entities.get(m_target);
+	if(io) {
 		if(io && !(io->halo.flags & HALO_ACTIVE)) {
 			io->halo.flags |= HALO_ACTIVE;
 			io->halo.color = Color3f(1.f, 0.05f, 0.0f);
