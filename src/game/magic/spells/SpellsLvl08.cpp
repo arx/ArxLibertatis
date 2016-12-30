@@ -73,11 +73,13 @@ void InvisibilitySpell::End()
 void InvisibilitySpell::Update() {
 	
 	if(m_target != EntityHandle_Player) {
-		if(!(entities[m_target]->gameFlags & GFLAG_INVISIBILITY)) {
-			m_targets.clear();
-			ARX_SPELLS_Fizzle(this);
+		if(ValidIONum(m_target)) {
+			if(!(entities[m_target]->gameFlags & GFLAG_INVISIBILITY)) {
+				m_targets.clear();
+				ARX_SPELLS_Fizzle(this);
+			}
 		}
-	}	
+	}
 }
 
 Vec3f InvisibilitySpell::getPosition() {
