@@ -117,9 +117,8 @@ void SummonCreatureSpell::End() {
 	lightHandleDestroy(m_light);
 	// need to killio
 	
-	if(ValidIONum(m_summonedEntity)) {
-		Entity * io = entities[m_summonedEntity];
-		
+	Entity * io = entities.get(m_summonedEntity);
+	if(io) {
 		ARX_SOUND_PlaySFX(SND_SPELL_ELECTRIC, &io->pos);
 		
 		if(io->scriptload && (io->ioflags & IO_NOSAVE)) {
@@ -234,8 +233,9 @@ void SummonCreatureSpell::Update() {
 					io->speed_modif=1.f;
 				}
 				
-				if(ValidIONum(m_caster)) {
-					EVENT_SENDER = entities[m_caster];
+				Entity * caster = entities.get(m_caster);
+				if(caster) {
+					EVENT_SENDER = caster;
 				} else {
 					EVENT_SENDER = NULL;
 				}
@@ -356,8 +356,9 @@ void NegateMagicSpell::Update() {
 	if(m_target == EntityHandle_Player) {
 		m_pos = player.basePosition();
 	} else {
-		if(ValidIONum(m_target)) {
-			m_pos = entities[m_target]->pos;
+		Entity * target = entities.get(m_target);
+		if(target) {
+			m_pos = target->pos;
 		}
 	}
 	
@@ -469,8 +470,9 @@ void IncinerateSpell::End()
 
 void IncinerateSpell::Update() {
 	
-	if(ValidIONum(m_target)) {
-		ARX_SOUND_RefreshPosition(m_snd_loop, entities[m_target]->pos);
+	Entity * target = entities.get(m_target);
+	if(target) {
+		ARX_SOUND_RefreshPosition(m_snd_loop, target->pos);
 	}	
 }
 
@@ -515,8 +517,9 @@ void MassParalyseSpell::Launch()
 void MassParalyseSpell::End()
 {
 	BOOST_FOREACH(EntityHandle handle, m_targets) {
-		if(ValidIONum(handle)) {
-			entities[handle]->ioflags &= ~IO_FREEZESCRIPT;
+		Entity * target = entities.get(handle);
+		if(target) {
+			target->ioflags &= ~IO_FREEZESCRIPT;
 		}
 	}
 	
