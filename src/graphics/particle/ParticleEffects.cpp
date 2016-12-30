@@ -297,16 +297,17 @@ void ARX_PARTICLES_Spawn_Blood2(const Vec3f & pos, float dmgs, Color col, Entity
 
 void ARX_PARTICLES_Spawn_Blood(const Vec3f & pos, float dmgs, EntityHandle source) {
 	
-	if(!ValidIONum(source)) {
+	Entity * sourceIo = entities.get(source);
+	if(!sourceIo) {
 		return;
 	}
 	
 	float nearest_dist = std::numeric_limits<float>::max();
 	long nearest = -1;
-	long count = entities[source]->obj->grouplist.size();
+	long count = sourceIo->obj->grouplist.size();
 	for(long i = 0; i < count; i += 2) {
-		long vertex = entities[source]->obj->grouplist[i].origin;
-		float dist = arx::distance2(pos, entities[source]->obj->vertexlist3[vertex].v);
+		long vertex = sourceIo->obj->grouplist[i].origin;
+		float dist = arx::distance2(pos, sourceIo->obj->vertexlist3[vertex].v);
 		if(dist < nearest_dist) {
 			nearest_dist = dist;
 			nearest = i;
@@ -331,7 +332,7 @@ void ARX_PARTICLES_Spawn_Blood(const Vec3f & pos, float dmgs, EntityHandle sourc
 		pd->siz = 0.f;
 		pd->scale = Vec3f(float(spawn_nb));
 		pd->m_flags = GRAVITY | ROTATING | DELAY_FOLLOW_SOURCE;
-		pd->source = &entities[source]->obj->vertexlist3[nearest].v;
+		pd->source = &sourceIo->obj->vertexlist3[nearest].v;
 		pd->sourceionum = source;
 		pd->tolive = 1200 + spawn_nb * 5;
 		totdelay += 45 + Random::getu(0, 150 - spawn_nb);
