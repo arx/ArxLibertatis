@@ -114,11 +114,12 @@ void ARX_SPECIAL_ATTRACTORS_ComputeForIO(const Entity & ioo, Vec3f & force) {
 	
 	for(size_t i = 0; i < MAX_ATTRACTORS; i++) {
 		
-		if(attractors[i].ionum == EntityHandle() || !ValidIONum(attractors[i].ionum)) {
+		Entity * iop = entities.get(attractors[i].ionum);
+		if(!iop) {
 			continue;
 		}
 		
-		const Entity & io = *entities[attractors[i].ionum];
+		const Entity & io = *iop;
 		
 		if(io.show != SHOW_FLAG_IN_SCENE || (io.ioflags & IO_NO_COLLISIONS)
 			 || !(io.gameFlags & GFLAG_ISINTREATZONE)) {
