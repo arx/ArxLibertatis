@@ -253,11 +253,14 @@ bool ARX_INTERACTIVE_Attach(EntityHandle n_source, EntityHandle n_target, const 
 
 void ARX_INTERACTIVE_Detach(EntityHandle n_source, EntityHandle n_target)
 {
-	if(!ValidIONum(n_source) || !ValidIONum(n_target))
+	Entity * source = entities.get(n_source);
+	Entity * target = entities.get(n_target);
+	
+	if(!source || !target)
 		return;
 
-	entities[n_source]->show = SHOW_FLAG_IN_SCENE;
-	EERIE_LINKEDOBJ_UnLinkObjectFromObject(entities[n_target]->obj, entities[n_source]->obj);
+	source->show = SHOW_FLAG_IN_SCENE;
+	EERIE_LINKEDOBJ_UnLinkObjectFromObject(target->obj, source->obj);
 }
 
 void ARX_INTERACTIVE_Show_Hide_1st(Entity * io, long state)
