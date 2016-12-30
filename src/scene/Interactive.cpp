@@ -1142,7 +1142,6 @@ void ARX_INTERACTIVE_TeleportBehindTarget(Entity * io)
 		long num = ARX_SCRIPT_Timer_GetFree();
 
 		if(num != -1) {
-			EntityHandle t = io->index();
 			ActiveTimers++;
 			scr_timer[num].es = NULL;
 			scr_timer[num].exist = 1;
@@ -1152,13 +1151,13 @@ void ARX_INTERACTIVE_TeleportBehindTarget(Entity * io)
 			scr_timer[num].pos = -1; 
 			scr_timer[num].start = arxtime.now();
 			scr_timer[num].count = 1;
-			entities[t]->show = SHOW_FLAG_TELEPORTING;
+			io->show = SHOW_FLAG_TELEPORTING;
 			AddRandomSmoke(io, 10);
 			ARX_PARTICLES_Add_Smoke(io->pos, 3, 20);
 			Vec3f pos;
-			pos.x = entities[t]->pos.x;
-			pos.y = entities[t]->pos.y + entities[t]->physics.cyl.height * ( 1.0f / 2 );
-			pos.z = entities[t]->pos.z;
+			pos.x = io->pos.x;
+			pos.y = io->pos.y + io->physics.cyl.height * ( 1.0f / 2 );
+			pos.z = io->pos.z;
 			io->requestRoomUpdate = true;
 			io->room = -1;
 			ARX_PARTICLES_Add_Smoke(pos, 3, 20);
