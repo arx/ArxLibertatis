@@ -202,9 +202,8 @@ static bool IsObjectInField(PHYSICS_BOX_DATA * pbox) {
 		if(spell && spell->m_type == SPELL_CREATE_FIELD) {
 			const CreateFieldSpell * sp = static_cast<const CreateFieldSpell *>(spell);
 			
-			if(ValidIONum(sp->m_entity)) {
-				Entity * pfrm = entities[sp->m_entity];
-				
+			Entity * pfrm = entities.get(sp->m_entity);
+			if(pfrm) {
 				Cylinder cyl = Cylinder(Vec3f_ZERO, 35.f, -35.f);
 				
 				for(long k = 0; k < pbox->nb_physvert; k++) {
