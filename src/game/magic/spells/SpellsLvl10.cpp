@@ -390,7 +390,6 @@ void MassIncinerateSpell::Launch()
 	
 	m_duration = ArxDurationMs(20000);
 	
-	long nb_targets=0;
 	for(size_t ii = 0; ii < entities.size(); ii++) {
 		const EntityHandle handle = EntityHandle(ii);
 		Entity * tio = entities[handle];
@@ -409,11 +408,11 @@ void MassIncinerateSpell::Launch()
 		
 		tio->sfx_flag |= SFX_TYPE_YLSIDE_DEATH | SFX_TYPE_INCINERATE;
 		tio->sfx_time = arxtime.now();
-		nb_targets++;
+		
 		m_targets.push_back(tio->index());
 	}
 	
-	if(nb_targets) {
+	if(!m_targets.empty()) {
 		m_snd_loop = ARX_SOUND_PlaySFX(SND_SPELL_INCINERATE_LOOP, &m_caster_pos, 1.f, ARX_SOUND_PLAY_LOOPED);
 	} else {
 		m_snd_loop = audio::INVALID_ID;
