@@ -60,9 +60,8 @@ static bool IsPointInField(const Vec3f & pos) {
 		if(spell && spell->m_type == SPELL_CREATE_FIELD) {
 			const CreateFieldSpell * sp = static_cast<const CreateFieldSpell *>(spell);
 			
-			if(ValidIONum(sp->m_entity)) {
-				Entity * pfrm = entities[sp->m_entity];
-				
+			Entity * pfrm = entities.get(sp->m_entity);
+			if(pfrm) {
 				Cylinder cyl = Cylinder(pos + Vec3f(0.f, 17.5f, 0.f), 35.f, -35.f);
 				
 				if(CylinderPlatformCollide(cyl, pfrm)) {
