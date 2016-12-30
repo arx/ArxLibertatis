@@ -378,8 +378,9 @@ void FreezeTimeSpell::End()
 {
 	GLOBAL_SLOWDOWN += m_slowdown;
 	
-	if(ValidIONum(m_caster)) {
-		ARX_SOUND_PlaySFX(SND_SPELL_TELEKINESIS_END, &entities[m_caster]->pos);
+	Entity * caster = entities.get(m_caster);
+	if(caster) {
+		ARX_SOUND_PlaySFX(SND_SPELL_TELEKINESIS_END, &caster->pos);
 	}
 }
 
@@ -428,8 +429,9 @@ void MassIncinerateSpell::End()
 
 void MassIncinerateSpell::Update() {
 	
-	if(ValidIONum(m_caster)) {
-		ARX_SOUND_RefreshPosition(m_snd_loop, entities[m_caster]->pos);
+	Entity * caster = entities.get(m_caster);
+	if(caster) {
+		ARX_SOUND_RefreshPosition(m_snd_loop, caster->pos);
 	}	
 }
 
