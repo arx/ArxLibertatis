@@ -257,9 +257,7 @@ void ShowInfoText() {
 	scriptBox.print();
 	}
 	
-	if(ValidIONum(LastSelectedIONum)) {
-		Entity * io = entities[LastSelectedIONum];
-
+		Entity * io = entities.get(LastSelectedIONum);
 		if(io) {
 			DebugBox entityBox = DebugBox(Vec2i(500, 10), "Entity " + io->idString());
 			entityBox.add("Pos", io->pos);
@@ -328,7 +326,6 @@ void ShowInfoText() {
 				column2y = animLayerBox.size().y + 5;
 			}
 		}
-	}
 	
 	ARX_SCRIPT_Init_Event_Stats();
 }
