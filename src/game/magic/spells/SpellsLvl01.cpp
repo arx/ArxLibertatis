@@ -67,8 +67,9 @@ void MagicSightSpell::End()
 		ARX_SOUND_Stop(m_snd_loop);
 	}
 	
-	if(ValidIONum(m_caster)) {
-		ARX_SOUND_PlaySFX(SND_SPELL_VISION_START, &entities[m_caster]->pos);
+	Entity * caster = entities.get(m_caster);
+	if(caster) {
+		ARX_SOUND_PlaySFX(SND_SPELL_VISION_START, &caster->pos);
 	}
 }
 
