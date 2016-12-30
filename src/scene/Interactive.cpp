@@ -2631,9 +2631,9 @@ float ARX_INTERACTIVE_GetArmorClass(Entity * io) {
 
 void ARX_INTERACTIVE_ActivatePhysics(EntityHandle t)
 {
-	if(ValidIONum(t)) {
-		Entity * io = entities[t];
-
+	Entity * io = entities.get(t);
+	if(io) {
+		
 		if(io == DRAGINTER || (io->show != SHOW_FLAG_IN_SCENE))
 			return;
 
