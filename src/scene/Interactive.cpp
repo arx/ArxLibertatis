@@ -242,13 +242,16 @@ void ARX_INTERACTIVE_DestroyDynamicInfo(Entity * io)
 
 bool ARX_INTERACTIVE_Attach(EntityHandle n_source, EntityHandle n_target, const std::string& ap_source, const std::string& ap_target)
 {
-	if(!ValidIONum(n_source) || !ValidIONum(n_target))
+	Entity * source = entities.get(n_source);
+	Entity * target = entities.get(n_target);
+	
+	if(!source || !target)
 		return false;
 
-	entities[n_source]->show = SHOW_FLAG_LINKED;
-	EERIE_LINKEDOBJ_UnLinkObjectFromObject(entities[n_target]->obj, entities[n_source]->obj);
-	return EERIE_LINKEDOBJ_LinkObjectToObject(entities[n_target]->obj,
-	        entities[n_source]->obj, ap_target, ap_source, entities[n_source]);
+	source->show = SHOW_FLAG_LINKED;
+	EERIE_LINKEDOBJ_UnLinkObjectFromObject(target->obj, source->obj);
+	return EERIE_LINKEDOBJ_LinkObjectToObject(target->obj,
+	        source->obj, ap_target, ap_source, source);
 }
 
 void ARX_INTERACTIVE_Detach(EntityHandle n_source, EntityHandle n_target)
