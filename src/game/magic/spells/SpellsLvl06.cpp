@@ -116,9 +116,8 @@ void RiseDeadSpell::Launch()
 
 void RiseDeadSpell::End()
 {
-	if(ValidIONum(m_entity)) {
-		Entity *entity = entities[m_entity];
-		
+	Entity * entity = entities.get(m_entity);
+	if(entity) {
 		ARX_SOUND_PlaySFX(SND_SPELL_ELECTRIC, &entity->pos);
 		
 		if(entity->scriptload && (entity->ioflags & IO_NOSAVE)) {
@@ -193,8 +192,9 @@ void RiseDeadSpell::Update() {
 				ARX_INTERACTIVE_Teleport(io, phys.origin);
 				SendInitScriptEvent(io);
 				
-				if(ValidIONum(m_caster)) {
-					EVENT_SENDER = entities[m_caster];
+				Entity * caster = entities.get(m_caster);
+				if(caster) {
+					EVENT_SENDER = caster;
 				} else {
 					EVENT_SENDER = NULL;
 				}
@@ -248,8 +248,9 @@ void ParalyseSpell::End()
 {
 	m_targets.clear();
 	
-	if(ValidIONum(m_target)) {
-		entities[m_target]->ioflags &= ~IO_FREEZESCRIPT;
+	Entity * target = entities.get(m_target);
+	if(target) {
+		target->ioflags &= ~IO_FREEZESCRIPT;
 	}
 	
 	ARX_SOUND_PlaySFX(SND_SPELL_PARALYSE_END);
@@ -286,8 +287,8 @@ void CreateFieldSpell::Launch()
 		beta = player.angle.getYaw();
 		displace = true;
 	} else {
-		if(ValidIONum(m_caster)) {
-			Entity * io = entities[m_caster];
+		Entity * io = entities.get(m_caster);
+		if(io) {
 			target = io->pos;
 			beta = io->angle.getYaw();
 			displace = (io->ioflags & IO_NPC) == IO_NPC;
@@ -340,16 +341,16 @@ void CreateFieldSpell::End() {
 	
 	endLightDelayed(m_field.lLightId, ArxDurationMs(800));
 	
-	if(ValidIONum(m_entity)) {
-		delete entities[m_entity];
+	Entity * io = entities.get(m_entity);
+	if(io) {
+		delete io;
 	}
 }
 
 void CreateFieldSpell::Update() {
 	
-	if(ValidIONum(m_entity)) {
-		Entity * io = entities[m_entity];
-		
+	Entity * io = entities.get(m_entity);
+	if(io) {
 		io->pos = m_field.eSrc;
 		
 		if (IsAnyNPCInPlatform(io))
