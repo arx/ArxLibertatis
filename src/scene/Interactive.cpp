@@ -499,13 +499,10 @@ void PrepareIOTreatZone(long flag) {
 	short sGlobalPlayerRoom = checked_range_cast<short>(PlayerRoom);
 
 	for(size_t i = 0; i < MAX_EQUIPED; i++) {
-		if(ValidIONum(player.equiped[i])) {
-			Entity *toequip = entities[player.equiped[i]];
-
-			if(toequip) {
-				toequip->room = sGlobalPlayerRoom;
-				toequip->requestRoomUpdate = 0;
-			}
+		Entity * toequip = entities.get(player.equiped[i]);
+		if(toequip) {
+			toequip->room = sGlobalPlayerRoom;
+			toequip->requestRoomUpdate = 0;
 		}
 	}
 
