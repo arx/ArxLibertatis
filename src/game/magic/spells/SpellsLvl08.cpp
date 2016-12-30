@@ -63,9 +63,10 @@ void InvisibilitySpell::Launch()
 
 void InvisibilitySpell::End()
 {
-	if(ValidIONum(m_target)) {
-		entities[m_target]->gameFlags &= ~GFLAG_INVISIBILITY;
-		ARX_SOUND_PlaySFX(SND_SPELL_INVISIBILITY_END, &entities[m_target]->pos);
+	Entity * target = entities.get(m_target);
+	if(target) {
+		target->gameFlags &= ~GFLAG_INVISIBILITY;
+		ARX_SOUND_PlaySFX(SND_SPELL_INVISIBILITY_END, &target->pos);
 		m_targets.clear();
 	}
 }
@@ -73,8 +74,9 @@ void InvisibilitySpell::End()
 void InvisibilitySpell::Update() {
 	
 	if(m_target != EntityHandle_Player) {
-		if(ValidIONum(m_target)) {
-			if(!(entities[m_target]->gameFlags & GFLAG_INVISIBILITY)) {
+		Entity * target = entities.get(m_target);
+		if(target) {
+			if(!(target->gameFlags & GFLAG_INVISIBILITY)) {
 				m_targets.clear();
 				ARX_SPELLS_Fizzle(this);
 			}
