@@ -356,7 +356,9 @@ void NegateMagicSpell::Update() {
 	if(m_target == EntityHandle_Player) {
 		m_pos = player.basePosition();
 	} else {
-		m_pos = entities[m_target]->pos;
+		if(ValidIONum(m_target)) {
+			m_pos = entities[m_target]->pos;
+		}
 	}
 	
 	Vec3f stitepos = m_pos - Vec3f(0.f, 10.f, 0.f);

@@ -282,9 +282,9 @@ void FireProtectionSpell::Update() {
 		io->halo.flags = HALO_ACTIVE;
 		io->halo.color = Color3f(0.5f, 0.3f, 0.f);
 		io->halo.radius = 45.f;
+		
+		ARX_SOUND_RefreshPosition(m_snd_loop, io->pos);
 	}
-	
-	ARX_SOUND_RefreshPosition(m_snd_loop, entities[m_target]->pos);
 }
 
 Vec3f FireProtectionSpell::getPosition() {
@@ -343,9 +343,9 @@ void ColdProtectionSpell::Update() {
 		io->halo.flags = HALO_ACTIVE;
 		io->halo.color = Color3f(0.2f, 0.2f, 0.45f);
 		io->halo.radius = 45.f;
+		
+		ARX_SOUND_RefreshPosition(m_snd_loop, io->pos);
 	}
-	
-	ARX_SOUND_RefreshPosition(m_snd_loop, entities[m_target]->pos);
 }
 
 Vec3f ColdProtectionSpell::getPosition() {
