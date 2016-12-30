@@ -204,8 +204,9 @@ void LevitateSpell::End()
 {
 	ARX_SOUND_Stop(m_snd_loop);
 	
-	if(ValidIONum(m_target)) {
-		ARX_SOUND_PlaySFX(SND_SPELL_LEVITATE_END, &entities[m_target]->pos);
+	Entity * target = entities.get(m_target);
+	if(target) {
+		ARX_SOUND_PlaySFX(SND_SPELL_LEVITATE_END, &target->pos);
 	}
 	
 	m_targets.clear();
@@ -293,8 +294,7 @@ void CurePoisonSpell::Launch()
 	if(m_target == EntityHandle_Player) {
 		player.poison -= std::min(player.poison, cure);
 		ARX_SOUND_PlaySFX(SND_SPELL_CURE_POISON);
-	} else if (ValidIONum(m_target)) {
-		Entity * io = entities[m_target];
+	} else if(Entity * io = entities.get(m_target)) {
 		if(io->ioflags & IO_NPC) {
 			io->_npcdata->poisonned -= std::min(io->_npcdata->poisonned, cure);
 		}
