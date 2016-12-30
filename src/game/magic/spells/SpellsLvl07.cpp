@@ -115,8 +115,9 @@ void FlyingEyeSpell::Launch()
 
 void FlyingEyeSpell::End()
 {
-	if(ValidIONum(m_caster)) {
-		ARX_SOUND_PlaySFX(SND_MAGIC_FIZZLE, &entities[m_caster]->pos);
+	Entity * caster = entities.get(m_caster);
+	if(caster) {
+		ARX_SOUND_PlaySFX(SND_MAGIC_FIZZLE, &caster->pos);
 	}
 	
 	static TextureContainer * tc4=TextureContainer::Load("graph/particles/smoke");
@@ -240,8 +241,8 @@ void FireFieldSpell::Launch() {
 		beta = player.angle.getYaw();
 		displace = true;
 	} else {
-		if(ValidIONum(m_caster)) {
-			Entity * io = entities[m_caster];
+		Entity * io = entities.get(m_caster);
+		if(io) {
 			target = io->pos;
 			beta = io->angle.getYaw();
 			displace = (io->ioflags & IO_NPC) == IO_NPC;
@@ -371,8 +372,8 @@ void IceFieldSpell::Launch()
 		beta = player.angle.getYaw();
 		displace = true;
 	} else {
-		if(ValidIONum(m_caster)) {
-			Entity * io = entities[m_caster];
+		Entity * io = entities.get(m_caster);
+		if(io) {
 			target = io->pos;
 			beta = io->angle.getYaw();
 			displace = (io->ioflags & IO_NPC) == IO_NPC;
@@ -556,9 +557,10 @@ void LightningStrikeSpell::End()
 {
 	ARX_SOUND_Stop(m_snd_loop);
 	
-	if(ValidIONum(m_caster)) {
-		ARX_SOUND_PlaySFX(SND_SPELL_ELECTRIC, &entities[m_caster]->pos);
-		ARX_SOUND_PlaySFX(SND_SPELL_LIGHTNING_END, &entities[m_caster]->pos);
+	Entity * caster = entities.get(m_caster);
+	if(caster) {
+		ARX_SOUND_PlaySFX(SND_SPELL_ELECTRIC, &caster->pos);
+		ARX_SOUND_PlaySFX(SND_SPELL_LIGHTNING_END, &caster->pos);
 	}
 }
 
@@ -567,14 +569,15 @@ static Vec3f GetChestPos(EntityHandle num) {
 	if(num == EntityHandle_Player) {
 		return player.pos + Vec3f(0.f, 70.f, 0.f);
 	}
-
-	if(ValidIONum(num)) {
-		ObjVertHandle idx = GetGroupOriginByName(entities[num]->obj, "chest");
+	
+	Entity * io = entities.get(num);
+	if(io) {
+		ObjVertHandle idx = GetGroupOriginByName(io->obj, "chest");
 
 		if(idx != ObjVertHandle()) {
-			return entities[num]->obj->vertexlist3[idx.handleData()].v;
+			return io->obj->vertexlist3[idx.handleData()].v;
 		} else {
-			return entities[num]->pos + Vec3f(0.f, -120.f, 0.f);
+			return io->pos + Vec3f(0.f, -120.f, 0.f);
 		}
 	} else {
 		// should not happen
