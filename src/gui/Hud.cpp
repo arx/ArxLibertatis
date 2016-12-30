@@ -1261,8 +1261,8 @@ void DamagedEquipmentGui::update() {
 			case 4: eq = EQUIP_SLOT_LEGGINGS; break;
 		}
 		
-		if(ValidIONum(player.equiped[eq])) {
-			Entity *io = entities[player.equiped[eq]];
+		Entity * io = entities.get(player.equiped[eq]);
+		if(io) {
 			float ratio = io->durability / io->max_durability;
 			
 			if(ratio <= 0.5f)
