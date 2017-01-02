@@ -638,9 +638,9 @@ bool ARX_NPC_LaunchPathfind(Entity * io, EntityHandle target)
 		phys.cyl = GetIOCyl(io);
 
 		// Now we try the physical move for real
-		if(io->physics.startpos == io->physics.targetpos
-		        || ((ARX_COLLISION_Move_Cylinder(&phys, io, 40, CFLAG_JUST_TEST | CFLAG_NPC | CFLAG_NO_HEIGHT_MOD)) ))
-		{
+		if(   io->physics.startpos == io->physics.targetpos
+		   || ARX_COLLISION_Move_Cylinder(&phys, io, 40, CFLAG_JUST_TEST | CFLAG_NPC | CFLAG_NO_HEIGHT_MOD)
+		) {
 			if(closerThan(phys.cyl.origin, pos2, 100.f)) {
 				io->_npcdata->pathfind.pathwait = 0;
 				return false;
