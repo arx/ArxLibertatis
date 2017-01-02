@@ -274,27 +274,29 @@ public:
 				return Success;
 			}
 			
-			scr_timer[num2].reset();
+			SCR_TIMER & timer = scr_timer[num2];
+			
+			timer.reset();
 			ActiveTimers++;
-			scr_timer[num2].es = context.getScript();
-			scr_timer[num2].exist = 1;
-			scr_timer[num2].io = context.getEntity();
-			scr_timer[num2].interval = ArxDurationMs(1000);
+			timer.es = context.getScript();
+			timer.exist = 1;
+			timer.io = context.getEntity();
+			timer.interval = ArxDurationMs(1000);
 			// Don't assume that we successfully set the animation - use the current animation
 			if(layer.cur_anim) {
 				arx_assert(layer.altidx_cur >= 0 && layer.altidx_cur < layer.cur_anim->alt_nb);
-				if(layer.cur_anim->anims[layer.altidx_cur]->anim_time > toAnimationDuration(scr_timer[num2].interval)) {
-					scr_timer[num2].interval = toArxDuration(layer.cur_anim->anims[layer.altidx_cur]->anim_time);
+				if(layer.cur_anim->anims[layer.altidx_cur]->anim_time > toAnimationDuration(timer.interval)) {
+					timer.interval = toArxDuration(layer.cur_anim->anims[layer.altidx_cur]->anim_time);
 				}
 			}
-			scr_timer[num2].name = timername;
-			scr_timer[num2].pos = pos;
-			scr_timer[num2].start = arxtime.now();
-			scr_timer[num2].count = 1;
-			scr_timer[num2].longinfo = 0;
+			timer.name = timername;
+			timer.pos = pos;
+			timer.start = arxtime.now();
+			timer.count = 1;
+			timer.longinfo = 0;
 			
 			DebugScript(": scheduled timer #" << num2 << ' ' << timername << " in "
-			            << scr_timer[num2].interval << "ms");
+			            << timer.interval << "ms");
 			
 		}
 		
