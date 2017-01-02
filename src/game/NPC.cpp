@@ -492,9 +492,9 @@ static long ARX_NPC_GetNextAttainableNodeIncrement(Entity * io) {
 		phys.cyl = GetIOCyl(io);
 
 		// Now we try the physical move for real
-		if(io->physics.startpos == io->physics.targetpos
-		        || ((ARX_COLLISION_Move_Cylinder(&phys, io, 40, CFLAG_JUST_TEST | CFLAG_NPC))))
-		{
+		if(   io->physics.startpos == io->physics.targetpos
+		   || ARX_COLLISION_Move_Cylinder(&phys, io, 40, CFLAG_JUST_TEST | CFLAG_NPC)
+		) {
 			if(closerThan(phys.cyl.origin, ACTIVEBKG->anchors[pos].pos, 30.f)) {
 				return l_try;
 			}
