@@ -657,11 +657,10 @@ public:
 		}
 		
 		// Delay destruction of the object to avoid invalid references
-		ARX_INTERACTIVE_DestroyIOdelayed(entity);
+		bool destroyed = ARX_INTERACTIVE_DestroyIOdelayed(entity);
 		
 		// Prevent further script events as the object has been destroyed!
-		// Object is destroyed only if its count is 1 or less
-		if(!(entity->ioflags & IO_ITEM) || entity->_itemdata->count <= 1) {
+		if(destroyed) {
 			entity->show = SHOW_FLAG_MEGAHIDE;
 			entity->ioflags |= IO_FREEZESCRIPT;
 			if(entity == context.getEntity()) {
