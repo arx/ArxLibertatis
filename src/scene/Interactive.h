@@ -102,7 +102,15 @@ void PrepareIOTreatZone(long flag = 0);
 
 void LinkObjToMe(Entity * io, Entity * io2, const std::string & attach);
 
-void ARX_INTERACTIVE_DestroyIOdelayed(Entity * entity);
+/*!
+ * Destroy an entity at the end of the current frame
+ *
+ * For items with a count over 1 the count is (immediately) descreased
+ * and the entity is not destroyed.
+ *
+ * \return true if the entity will be destroyed.
+ */
+bool ARX_INTERACTIVE_DestroyIOdelayed(Entity * entity);
 void ARX_INTERACTIVE_DestroyIOdelayedRemove(Entity * entity);
 void ARX_INTERACTIVE_DestroyIOdelayedExecute();
 
