@@ -2521,11 +2521,11 @@ void RenderInter() {
 
 static std::vector<Entity *> toDestroy;
 
-void ARX_INTERACTIVE_DestroyIOdelayed(Entity * entity) {
+bool ARX_INTERACTIVE_DestroyIOdelayed(Entity * entity) {
 	
 	if((entity->ioflags & IO_ITEM) && entity->_itemdata->count > 1) {
 		entity->_itemdata->count--;
-		return;
+		return false;
 	}
 	
 	LogDebug("will destroy entity " << entity->idString());
@@ -2533,6 +2533,7 @@ void ARX_INTERACTIVE_DestroyIOdelayed(Entity * entity) {
 		toDestroy.push_back(entity);
 	}
 	
+	return true;
 }
 
 void ARX_INTERACTIVE_DestroyIOdelayedRemove(Entity * entity) {
