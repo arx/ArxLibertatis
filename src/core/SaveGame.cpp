@@ -126,9 +126,8 @@ void SaveGameList::update(bool verbose) {
 			// Instead, choose a unique number.
 			res::path thumbnail_res;
 			size_t i = 0;
-			std::ostringstream oss;
 			do {
-				oss.clear();
+				std::ostringstream oss;
 				oss << "thumbnail" << i << SAVEGAME_THUMBNAIL.ext();
 				thumbnail_res = res::path("save") / oss.str();
 				i++;
