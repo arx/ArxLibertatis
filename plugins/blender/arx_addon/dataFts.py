@@ -234,6 +234,7 @@ class FtsSerializer(object):
                     
         result["cells"] = cells
 
+        anchors = []
         for i in range(ftsHeader.nb_anchors):
             anchor = FAST_ANCHOR_DATA.from_buffer_copy(data, pos)
             pos += sizeof(FAST_ANCHOR_DATA)
@@ -242,6 +243,11 @@ class FtsSerializer(object):
                 LinkedAnchorsArrayType = c_int32 * anchor.nb_linked
                 linked = LinkedAnchorsArrayType.from_buffer_copy(data, pos)
                 pos += sizeof(LinkedAnchorsArrayType)
+                anchors.append( ((anchor.pos.x, anchor.pos.y, anchor.pos.z), linked) )
+            else:
+                anchors.append( ((anchor.pos.x, anchor.pos.y, anchor.pos.z), []) )
+        
+        result["anchors"] = anchors
         
         portals = []
         for i in range(ftsHeader.nb_portals):
