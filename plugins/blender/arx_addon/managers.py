@@ -531,10 +531,11 @@ class ArxSceneManager(object):
         for idx, tcId, mat in mappedMaterials:
             obj.data.materials.append(mat)
 
-        # FIXME
+        self.AddScenePathfinderAnchors(scn, ftsData["anchors"])
         self.AddScenePortals(scn, ftsData)
         self.AddSceneLights(scn, llfData, ftsData["sceneOffset"])
-        self.AddSceneObjects(scn, dlfData, ftsData["sceneOffset"])
+        # TODO reenable object import
+        #self.AddSceneObjects(scn, dlfData, ftsData["sceneOffset"])
 
     def AddSceneBackground(self, cells, mappedMaterials):
         bm = bmesh.new()
@@ -583,6 +584,34 @@ class ArxSceneManager(object):
         bm.edges.index_update()
         bm.transform(correctionMatrix)
         return bm
+    
+    def AddScenePathfinderAnchors(self, scene, anchors):
+        
+        bm = bmesh.new()
+        
+        bVerts = []
+        for anchor in anchors:
+            bVerts.append(bm.verts.new(anchor[0]))
+        
+        bm.verts.index_update()
+        
+        for i, anchor in enumerate(anchors):
+            for edge in anchor[1]:
+                #TODO this is a hack
+                try:
+                    bm.edges.new((bVerts[i], bVerts[edge]));
+                except ValueError:
+                    pass
+        
+        bm.transform(correctionMatrix)
+        mesh = bpy.data.meshes.new(scene.name + '-anchors-mesh')
+        bm.to_mesh(mesh)
+        bm.free()
+        obj = bpy.data.objects.new(scene.name + '-anchors', mesh)
+        obj.draw_type = 'WIRE'
+        obj.show_x_ray = True
+        scene.objects.link(obj)
+        
 
     def AddScenePortals(self, scene, data):
         groupObject = bpy.data.objects.new(scene.name + '-portals', None)
