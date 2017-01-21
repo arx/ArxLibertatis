@@ -583,8 +583,8 @@ bool DanaeLoadLevel(const res::path & file, bool loadEntities) {
 	}
 #if BUILD_EDIT_LOADSAVE
 	else if(mse != NULL) {
-		Mscenepos.x = -mse->cub.xmin - (mse->cub.xmax - mse->cub.xmin) * ( 1.0f / 2 ) + ((float)ACTIVEBKG->Xsize * (float)ACTIVEBKG->Xdiv) * ( 1.0f / 2 );
-		Mscenepos.z = -mse->cub.zmin - (mse->cub.zmax - mse->cub.zmin) * ( 1.0f / 2 ) + ((float)ACTIVEBKG->Zsize * (float)ACTIVEBKG->Zdiv) * ( 1.0f / 2 );
+		Mscenepos.x = -mse->cub.xmin - (mse->cub.xmax - mse->cub.xmin) * ( 1.0f / 2 ) + ((float)ACTIVEBKG->Xsize * (float)ACTIVEBKG->m_div.x) * ( 1.0f / 2 );
+		Mscenepos.z = -mse->cub.zmin - (mse->cub.zmax - mse->cub.zmin) * ( 1.0f / 2 ) + ((float)ACTIVEBKG->Zsize * (float)ACTIVEBKG->m_div.y) * ( 1.0f / 2 );
 		float t1 = (float)(long)(mse->point0.x / BKG_SIZX);
 		float t2 = (float)(long)(mse->point0.z / BKG_SIZZ);
 		t1 = mse->point0.x - t1 * BKG_SIZX;
