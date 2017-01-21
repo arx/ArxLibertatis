@@ -857,7 +857,7 @@ bool ArxGame::initGame()
 	
 	DefaultBkg = BackgroundData();
 	ACTIVEBKG = &DefaultBkg;
-	InitBkg(ACTIVEBKG, MAX_BKGX, MAX_BKGZ, BKG_SIZX, BKG_SIZZ);
+	InitBkg(ACTIVEBKG, MAX_BKGX, MAX_BKGZ, Vec2s(BKG_SIZX, BKG_SIZZ));
 	
 	player.size.y = -player.baseHeight();
 	player.size.x = player.baseRadius();

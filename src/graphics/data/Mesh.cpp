@@ -696,7 +696,7 @@ void ClearBackground(BackgroundData * eb) {
 	NbRoomDistance = 0;
 }
 
-void InitBkg(BackgroundData * eb, short sx, short sz, short Xdiv, short Zdiv) {
+void InitBkg(BackgroundData * eb, short sx, short sz, Vec2s tileSize) {
 	
 	arx_assert(eb);
 	
@@ -711,11 +711,10 @@ void InitBkg(BackgroundData * eb, short sx, short sz, short Xdiv, short Zdiv) {
 	eb->m_size.x = sx;
 	eb->m_size.y = sz;
 
-	if (Xdiv < 0) Xdiv = 1;
-	if (Zdiv < 0) Zdiv = 1;
+	if (tileSize.x < 0) tileSize.x = 1;
+	if (tileSize.y < 0) tileSize.y = 1;
 
-	eb->m_tileSize.x = Xdiv;
-	eb->m_tileSize.y = Zdiv;
+	eb->m_tileSize = tileSize;
 	eb->m_mul.x = 1.f / (float)eb->m_tileSize.x;
 	eb->m_mul.y = 1.f / (float)eb->m_tileSize.y;
 	
@@ -1066,7 +1065,7 @@ bool FastSceneLoad(const res::path & partial_path) {
 		
 		// Skip .scn file list and initialize the scene data
 		(void)fts_read<UNIQUE_HEADER3>(data, end, uh->count);
-		InitBkg(ACTIVEBKG, MAX_BKGX, MAX_BKGZ, BKG_SIZX, BKG_SIZZ);
+		InitBkg(ACTIVEBKG, MAX_BKGX, MAX_BKGZ, Vec2s(BKG_SIZX, BKG_SIZZ));
 		progressBarAdvance();
 		LoadLevelScreen();
 		
