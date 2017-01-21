@@ -50,7 +50,7 @@ ZeniMax Media Inc., Suite 120, Rockville, Maryland 20850 USA.
 #include "math/Vector.h"
 #include "util/Flags.h"
 
-struct EERIE_BACKGROUND;
+struct BackgroundData;
 struct Cylinder;
 
 enum AnchorFlag {
@@ -80,9 +80,9 @@ struct ANCHOR_DATA {
 /*!
  * Clears all Anchor data from a Background
  */
-void AnchorData_ClearAll(EERIE_BACKGROUND * eb);
+void AnchorData_ClearAll(BackgroundData * eb);
 bool CylinderAboveInvalidZone(const Cylinder & cyl);
 
-void AnchorData_Create(EERIE_BACKGROUND * eb);
+void AnchorData_Create(BackgroundData * eb);
  
 #endif // ARX_PHYSICS_ANCHORS_H

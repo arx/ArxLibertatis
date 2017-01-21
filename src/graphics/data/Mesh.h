@@ -83,7 +83,7 @@ static const short BKG_SIZZ = 100;
 
 struct ANCHOR_DATA;
 
-struct EERIE_BACKGROUND {
+struct BackgroundData {
 	
 	long		exist;
 	short		Xsize;
@@ -96,7 +96,7 @@ struct EERIE_BACKGROUND {
 	long		  nbanchors;
 	ANCHOR_DATA * anchors;
 	
-	EERIE_BACKGROUND()
+	BackgroundData()
 		: exist(false)
 		, Xsize(0)
 		, Zsize(0)
@@ -111,7 +111,7 @@ struct EERIE_BACKGROUND {
 
 extern long EERIEDrawnPolys;
 
-extern EERIE_BACKGROUND * ACTIVEBKG;
+extern BackgroundData * ACTIVEBKG;
 extern EERIE_CAMERA * ACTIVECAM;
 
 //	Entity Struct End
@@ -160,15 +160,15 @@ void Draw3DObject(EERIE_3DOBJ * eobj, const Anglef & angle, const Vec3f & pos, c
 
 //****************************************************************************
 // BACKGROUND MANAGEMENT FUNCTIONS START
-long BKG_CountPolys(const EERIE_BACKGROUND & eb);
-long BKG_CountIgnoredPolys(const EERIE_BACKGROUND & eb);
+long BKG_CountPolys(const BackgroundData & eb);
+long BKG_CountIgnoredPolys(const BackgroundData & eb);
 
 #if BUILD_EDIT_LOADSAVE
 void SceneAddMultiScnToBackground(EERIE_MULTI3DSCENE * ms);
 #endif
 
-void ClearBackground(EERIE_BACKGROUND * eb);
-void InitBkg(EERIE_BACKGROUND * eb, short sx, short sz, short Xdiv, short Zdiv);
+void ClearBackground(BackgroundData * eb);
+void InitBkg(BackgroundData * eb, short sx, short sz, short Xdiv, short Zdiv);
 
 void EERIEAddPoly(TexturedVertex * vert, TexturedVertex * vert2, TextureContainer * tex, long render, float transval);
 // BACKGROUND MANAGEMENT FUNCTIONS END

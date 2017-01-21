@@ -746,7 +746,7 @@ static bool HandleGameFlowTransitions() {
 
 
 Vec3f PUSH_PLAYER_FORCE;
-static EERIE_BACKGROUND DefaultBkg;
+static BackgroundData DefaultBkg;
 
 EERIE_CAMERA subj;
 EERIE_CAMERA bookcam;
@@ -855,7 +855,7 @@ bool ArxGame::initGame()
 	
 	LastLoadedScene.clear();
 	
-	DefaultBkg = EERIE_BACKGROUND();
+	DefaultBkg = BackgroundData();
 	ACTIVEBKG = &DefaultBkg;
 	InitBkg(ACTIVEBKG, MAX_BKGX, MAX_BKGZ, BKG_SIZX, BKG_SIZZ);
 	

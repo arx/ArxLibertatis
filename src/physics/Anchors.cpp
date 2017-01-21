@@ -515,7 +515,7 @@ static bool ANCHOR_ARX_COLLISION_Move_Cylinder(IO_PHYSICS * ip, Entity * io,
 	return true;
 }
 
-void AnchorData_ClearAll(EERIE_BACKGROUND * eb) {
+void AnchorData_ClearAll(BackgroundData * eb) {
 	
 	//	EERIE_PATHFINDER_Release();
 	EERIE_PATHFINDER_Clear();
@@ -589,7 +589,7 @@ bool CylinderAboveInvalidZone(const Cylinder & cyl) {
 // Adds an Anchor... and tries to generate the best possible cylinder for it
 //*************************************************************************************
 
-static bool DirectAddAnchor_Original_Method(EERIE_BACKGROUND * eb, BackgroundTileData * eg, Vec3f * pos) {
+static bool DirectAddAnchor_Original_Method(BackgroundData * eb, BackgroundTileData * eg, Vec3f * pos) {
 	
 	long found = 0;
 	long stop_radius = 0;
@@ -684,7 +684,7 @@ static bool DirectAddAnchor_Original_Method(EERIE_BACKGROUND * eb, BackgroundTil
 	return true;
 }
 
-static bool AddAnchor_Original_Method(EERIE_BACKGROUND * eb, BackgroundTileData * eg, Vec3f * pos) {
+static bool AddAnchor_Original_Method(BackgroundData * eb, BackgroundTileData * eg, Vec3f * pos) {
 	
 	long found = 0;
 	long best = 0;
@@ -806,7 +806,7 @@ static bool AddAnchor_Original_Method(EERIE_BACKGROUND * eb, BackgroundTileData 
 //**********************************************************************************************
 // Adds an Anchor Link to an Anchor
 //**********************************************************************************************
-static void AddAnchorLink(EERIE_BACKGROUND * eb, long anchor, long linked) {
+static void AddAnchorLink(BackgroundData * eb, long anchor, long linked) {
 	
 	ANCHOR_DATA & a = eb->anchors[anchor];
 	
@@ -826,7 +826,7 @@ static void AddAnchorLink(EERIE_BACKGROUND * eb, long anchor, long linked) {
 // Generates Links between Anchors for a background
 //**********************************************************************************************
 
-static void AnchorData_Create_Links_Original_Method(EERIE_BACKGROUND * eb) {
+static void AnchorData_Create_Links_Original_Method(BackgroundData * eb) {
 	
 	Vec3f p1, p2; 
 	long count = 0;
@@ -991,7 +991,7 @@ static float GetTileMaxY(long i, long j) {
 	return maxf;
 }
 
-static void AnchorData_Create_Phase_II_Original_Method(EERIE_BACKGROUND * eb) {
+static void AnchorData_Create_Phase_II_Original_Method(BackgroundData * eb) {
 	
 	Vec3f pos;
 	float count = 0;
@@ -1084,7 +1084,7 @@ static void AnchorData_Create_Phase_II_Original_Method(EERIE_BACKGROUND * eb) {
 
 }
 
-void AnchorData_Create(EERIE_BACKGROUND * eb) {
+void AnchorData_Create(BackgroundData * eb) {
 	
 	AnchorData_ClearAll(eb);
 	Vec3f pos;
