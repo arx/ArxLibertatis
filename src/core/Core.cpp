@@ -629,6 +629,8 @@ void levelInit() {
 	}
 
 	LastValidPlayerPos = player.pos;
+
+	g_platformTime.updateFrame();
 }
 
 //*************************************************************************************
