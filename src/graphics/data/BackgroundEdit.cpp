@@ -149,8 +149,8 @@ bool TryToQuadify(EERIEPOLY * ep,EERIE_3DOBJ * eobj) {
 	float centerx = (ep->v[0].p.x + ep->v[1].p.x + ep->v[2].p.x) * (1.f/3);
 	float centerz = (ep->v[0].p.z + ep->v[1].p.z + ep->v[2].p.z) * (1.f/3);
 	
-	short tilex = centerx * ACTIVEBKG->Xmul;
-	short tilez = centerz * ACTIVEBKG->Zmul;
+	short tilex = centerx * ACTIVEBKG->m_mul.x;
+	short tilez = centerz * ACTIVEBKG->m_mul.y;
 	short radius = 1;
 	
 	short minx = std::max(tilex - radius, 0);

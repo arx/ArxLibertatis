@@ -399,8 +399,8 @@ void MiniMap::showBookEntireMap(int showLevel) {
 		}
 		
 		Vec2f pos;
-		pos.x = m_mapMarkers[i].m_pos.x * 8 * ratio * m_activeBkg->Xmul * casePos.x + start.x;
-		pos.y = m_mapMarkers[i].m_pos.y * 8 * ratio * m_activeBkg->Zmul * casePos.y + start.y;
+		pos.x = m_mapMarkers[i].m_pos.x * 8 * ratio * m_activeBkg->m_mul.x * casePos.x + start.x;
+		pos.y = m_mapMarkers[i].m_pos.y * 8 * ratio * m_activeBkg->m_mul.y * casePos.y + start.y;
 		
 		float size = 5.f * ratio;
 		verts[0].color = Color(255, 0, 0, 255).toRGBA();
