@@ -599,13 +599,13 @@ void ResetTileLights() {
 void ComputeTileLights(short x,short z)
 {
 	tilelights[x][z].el.clear();
-	float xx = (x + 0.5f) * ACTIVEBKG->m_tileSize.x;
-	float zz = (z + 0.5f) * ACTIVEBKG->m_tileSize.y;
-
+	
+	Vec2f tileCenter = (Vec2f(x, z) + 0.5f) * Vec2f(ACTIVEBKG->m_tileSize);
+	
 	for(size_t i = 0; i < g_culledDynamicLightsCount; i++) {
 		EERIE_LIGHT * light = g_culledDynamicLights[i];
 		
-		if(closerThan(Vec2f(xx, zz), Vec2f(light->pos.x, light->pos.z), light->fallend + 60.f)) {
+		if(closerThan(tileCenter, Vec2f(light->pos.x, light->pos.z), light->fallend + 60.f)) {
 
 			tilelights[x][z].el.push_back(light);
 		}
