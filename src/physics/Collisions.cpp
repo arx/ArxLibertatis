@@ -511,7 +511,7 @@ float CheckAnythingInCylinder(const Cylinder & cyl, Entity * ioo, long flags) {
 		if(nearest > std::max(82.f, cyl.radius))
 			continue;
 		
-		const EERIE_BKG_INFO & feg = ACTIVEBKG->fastdata[x][z];
+		const BackgroundTileData & feg = ACTIVEBKG->fastdata[x][z];
 		for(long k = 0; k < feg.nbpoly; k++) {
 			const EERIEPOLY & ep = feg.polydata[k];
 
@@ -986,7 +986,7 @@ const EERIEPOLY * CheckBackgroundInSphere(const Sphere & sphere) {
 
 	for(int z = minz; z <= maxz; z++)
 	for(int x = minx; x <= maxx; x++) {
-		const EERIE_BKG_INFO & feg = ACTIVEBKG->fastdata[x][z];
+		const BackgroundTileData & feg = ACTIVEBKG->fastdata[x][z];
 
 		for(long k = 0; k < feg.nbpoly; k++) {
 			const EERIEPOLY & ep = feg.polydata[k];
@@ -1025,7 +1025,7 @@ bool CheckAnythingInSphere(const Sphere & sphere, EntityHandle source, CASFlags 
 
 		for(int z = minz; z <= maxz; z++)
 		for(int x = minx; x <= maxx; x++) {
-			const EERIE_BKG_INFO & feg = ACTIVEBKG->fastdata[x][z];
+			const BackgroundTileData & feg = ACTIVEBKG->fastdata[x][z];
 			for(long k = 0; k < feg.nbpoly; k++) {
 				const EERIEPOLY & ep = feg.polydata[k];
 
@@ -1653,7 +1653,7 @@ bool IO_Visible(const Vec3f & orgn, const Vec3f & dest, Vec3f * hit)
 		if(px < 0 || px >= ACTIVEBKG->Xsize || pz < 0 || pz >= ACTIVEBKG->Zsize)
 			break;
 
-		EERIE_BKG_INFO * eg = &ACTIVEBKG->fastdata[px][pz];
+		BackgroundTileData * eg = &ACTIVEBKG->fastdata[px][pz];
 
 		for(long k = 0; k < eg->nbpolyin; k++) {
 			EERIEPOLY * ep = eg->polyin[k];

@@ -55,7 +55,7 @@ ZeniMax Media Inc., Suite 120, Rockville, Maryland 20850 USA.
 
 class Entity;
 
-struct EERIE_BKG_INFO
+struct BackgroundTileData
 {
 	bool				treat;
 	short				nbpoly;
@@ -65,7 +65,7 @@ struct EERIE_BKG_INFO
 	EERIEPOLY **		polyin;
 	long *				ianchors; // index on anchors list
 	
-	EERIE_BKG_INFO()
+	BackgroundTileData()
 		: treat(false)
 		, nbpoly(0)
 		, nbianchors(0)
@@ -85,7 +85,7 @@ struct ANCHOR_DATA;
 
 struct EERIE_BACKGROUND
 {
-	EERIE_BKG_INFO	fastdata[MAX_BKGX][MAX_BKGZ];
+	BackgroundTileData	fastdata[MAX_BKGX][MAX_BKGZ];
 	long		exist;
 	short		Xsize;
 	short		Zsize;
@@ -116,7 +116,7 @@ extern EERIE_CAMERA * ACTIVECAM;
 
 //	Entity Struct End
 
-EERIE_BKG_INFO * getFastBackgroundData(float x, float z);
+BackgroundTileData * getFastBackgroundData(float x, float z);
 
 EERIEPOLY * CheckTopPoly(const Vec3f & pos);
 EERIEPOLY * CheckInPoly(const Vec3f & poss, float * needY = NULL);

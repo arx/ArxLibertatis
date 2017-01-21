@@ -1083,7 +1083,7 @@ static void ARX_PORTALS_Frustrum_RenderRoomTCullSoft(size_t room_num,
 	for(long lll=0; lll<room.nb_polys; lll++) {
 		const EP_DATA & pEPDATA = room.epdata[lll];
 		
-		EERIE_BKG_INFO *feg = &ACTIVEBKG->fastdata[pEPDATA.p.x][pEPDATA.p.y];
+		BackgroundTileData *feg = &ACTIVEBKG->fastdata[pEPDATA.p.x][pEPDATA.p.y];
 
 		if(!feg->treat) {
 			// TODO copy-paste background tiles
@@ -1098,7 +1098,7 @@ static void ARX_PORTALS_Frustrum_RenderRoomTCullSoft(size_t room_num,
 
 			for(int z = minz; z <= maxz; z++)
 			for(int x = minx; x <= maxx; x++) {
-				EERIE_BKG_INFO & feg2 = ACTIVEBKG->fastdata[x][z];
+				BackgroundTileData & feg2 = ACTIVEBKG->fastdata[x][z];
 
 				if(!feg2.treat) {
 					feg2.treat = true;
