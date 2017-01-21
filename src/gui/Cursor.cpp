@@ -444,7 +444,7 @@ static void ARX_INTERFACE_RenderCursorInternal(bool flag) {
 	
 	if(!SPECIAL_DRAGINTER_RENDER) {
 		if(FlyingOverIO || DRAGINTER) {
-			fHighLightAng += g_framedelay * 0.5f;
+			fHighLightAng += toMs(g_platformTime.lastFrameDuration()) * 0.5f;
 			
 			if(fHighLightAng > 90.f)
 				fHighLightAng = 90.f;
