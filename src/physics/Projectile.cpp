@@ -517,7 +517,7 @@ void ARX_THROWN_OBJECT_Manage(float time_offset)
 											if(target->obj->facelist[ii].facetype & POLY_HIDE)
 												continue;
 
-											short vid = target->obj->facelist[ii].vid[0];
+											unsigned short vid = target->obj->facelist[ii].vid[0];
 											float d = glm::distance(sphere.origin, target->obj->vertexlist3[vid].v);
 
 											if(d < curdist) {
