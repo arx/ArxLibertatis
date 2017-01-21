@@ -2385,7 +2385,7 @@ void ComputePortalVertexBuffer() {
 			
 			// Upload all vertices for this texture and remember the indices
 			for(int j = 0; j < room->nb_polys; j++) {
-				Vec2i tilePos = room->epdata[j].tile;
+				Vec2s tilePos = room->epdata[j].tile;
 				BackgroundTileData & tile = ACTIVEBKG->m_tileData[tilePos.x][tilePos.y];
 				EERIEPOLY & poly = tile.polydata[room->epdata[j].idx];
 				
