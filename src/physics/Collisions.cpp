@@ -1683,7 +1683,7 @@ bool IO_Visible(const Vec3f & orgn, const Vec3f & dest, Vec3f * hit)
 
 void ANCHOR_BLOCK_Clear() {
 
-	EERIE_BACKGROUND * eb = ACTIVEBKG;
+	BackgroundData * eb = ACTIVEBKG;
 
 	if(!eb)
 		return;
@@ -1696,7 +1696,7 @@ void ANCHOR_BLOCK_Clear() {
 
 void ANCHOR_BLOCK_By_IO(Entity * io, long status) {
 
-	EERIE_BACKGROUND * eb = ACTIVEBKG;
+	BackgroundData * eb = ACTIVEBKG;
 
 	for(long k = 0; k < eb->nbanchors; k++) {
 		ANCHOR_DATA & ad = eb->anchors[k];

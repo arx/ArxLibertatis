@@ -468,7 +468,7 @@ bool GetTruePolyY(const PortalPoly * ep, const Vec3f & pos, float * ret) {
 
 //*************************************************************************************
 //*************************************************************************************
-EERIE_BACKGROUND * ACTIVEBKG = NULL;
+BackgroundData * ACTIVEBKG = NULL;
 
 Vec3f EE_RT(const Vec3f & in) {
 	return Vec3f(ACTIVECAM->orgTrans.worldToView * Vec4f(in, 1.0f));
@@ -558,7 +558,7 @@ int PointIn2DPolyXZ(const PortalPoly * ep, float x, float z) {
 //*************************************************************************************
 // Counts total number of polys in a background
 //*************************************************************************************
-long BKG_CountPolys(const EERIE_BACKGROUND & eb) {
+long BKG_CountPolys(const BackgroundData & eb) {
 	long count = 0;
 
 	for(long z = 0; z < eb.Zsize; z++)
@@ -574,7 +574,7 @@ long BKG_CountPolys(const EERIE_BACKGROUND & eb) {
 // Counts number of ignored polys in a background
 //*************************************************************************************
 
-long BKG_CountIgnoredPolys(const EERIE_BACKGROUND & eb) {
+long BKG_CountIgnoredPolys(const BackgroundData & eb) {
 	long count = 0;
 
 	for(long z = 0; z < eb.Zsize; z++)
@@ -679,7 +679,7 @@ float SP_GetRoomDist(const Vec3f & pos, const Vec3f & c_pos, long io_room, long 
 }
 
 // Clears a background of its infos
-void ClearBackground(EERIE_BACKGROUND * eb) {
+void ClearBackground(BackgroundData * eb) {
 	
 	if(!eb)
 		return;
@@ -696,7 +696,7 @@ void ClearBackground(EERIE_BACKGROUND * eb) {
 	NbRoomDistance = 0;
 }
 
-void InitBkg(EERIE_BACKGROUND * eb, short sx, short sz, short Xdiv, short Zdiv) {
+void InitBkg(BackgroundData * eb, short sx, short sz, short Xdiv, short Zdiv) {
 	
 	arx_assert(eb);
 	

@@ -104,7 +104,7 @@ extern bool bGCroucheToggle;
 long DanaeSaveLevel(const fs::path & _fic) {
 	
 	long nb_inter = GetNumberInterWithOutScriptLoad(); // Without Player
-	EERIE_BACKGROUND * eb = ACTIVEBKG;
+	BackgroundData * eb = ACTIVEBKG;
 	
 	fs::path fic = _fic;
 	fic.set_ext("dlf");
@@ -997,7 +997,7 @@ void DanaeClearLevel(long flag)
 	FAST_RELEASE = 0;
 }
 
-void RestoreLastLoadedLightning(EERIE_BACKGROUND & eb)
+void RestoreLastLoadedLightning(BackgroundData & eb)
 {
 	long pos = 0;
 	long bcount = CountBkgVertex();

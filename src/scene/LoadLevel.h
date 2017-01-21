@@ -54,7 +54,7 @@ ZeniMax Media Inc., Suite 120, Rockville, Maryland 20850 USA.
 
 class Entity;
 namespace res { class path; }
-struct EERIE_BACKGROUND;
+struct BackgroundData;
 
 extern Vec3f g_loddpos;
 
@@ -65,7 +65,7 @@ long DanaeSaveLevel(const fs::path & file);
 
 bool DanaeLoadLevel(const res::path & file, bool loadEntities = true);
 void DanaeClearLevel(long flags = 0);
-void RestoreLastLoadedLightning(EERIE_BACKGROUND & eb);
+void RestoreLastLoadedLightning(BackgroundData & eb);
 
 extern long FAST_RELEASE;
 

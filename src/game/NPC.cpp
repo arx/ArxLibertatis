@@ -510,7 +510,7 @@ static long ARX_NPC_GetNextAttainableNodeIncrement(Entity * io) {
 static long AnchorData_GetNearest(const Vec3f & pos, const Cylinder & cyl, long except = -1) {
 	long returnvalue = -1;
 	float distmax = std::numeric_limits<float>::max();
-	EERIE_BACKGROUND * eb = ACTIVEBKG;
+	BackgroundData * eb = ACTIVEBKG;
 
 	for(long i = 0; i < eb->nbanchors; i++) {
 		if(except != -1 && i == except)
@@ -2989,7 +2989,7 @@ void ManageIgnition_2(Entity * io) {
 	}
 }
 
-extern EERIE_BACKGROUND * ACTIVEBKG;
+extern BackgroundData * ACTIVEBKG;
 
 void GetTargetPos(Entity * io, unsigned long smoothing) {
 	

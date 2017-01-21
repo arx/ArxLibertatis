@@ -144,13 +144,13 @@ public:
 	void load(const SavedMiniMap *saved, size_t size);
 	void save(SavedMiniMap *toSave, size_t size);
 	
-	void setActiveBackground(EERIE_BACKGROUND *activeBkg);
+	void setActiveBackground(BackgroundData *activeBkg);
 	
 private:
 	
 	int m_currentLevel;
 	EntityManager *m_entities;
-	EERIE_BACKGROUND *m_activeBkg;
+	BackgroundData *m_activeBkg;
 	
 	Vec2f m_miniOffset[MAX_MINIMAP_LEVELS];
 	float m_mapMaxY[MAX_MINIMAP_LEVELS];
