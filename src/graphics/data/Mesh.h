@@ -83,9 +83,8 @@ static const short BKG_SIZZ = 100;
 
 struct ANCHOR_DATA;
 
-struct EERIE_BACKGROUND
-{
-	BackgroundTileData m_tileData[MAX_BKGX][MAX_BKGZ];
+struct EERIE_BACKGROUND {
+	
 	long		exist;
 	short		Xsize;
 	short		Zsize;
@@ -93,6 +92,7 @@ struct EERIE_BACKGROUND
 	short		Zdiv;
 	float		Xmul;
 	float		Zmul;
+	BackgroundTileData m_tileData[MAX_BKGX][MAX_BKGZ];
 	long		  nbanchors;
 	ANCHOR_DATA * anchors;
 	
