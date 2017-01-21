@@ -329,10 +329,10 @@ void PrecalcDynamicLighting(long x0, long z0, long x1, long z1, const Vec3f & ca
 	
 	g_culledDynamicLightsCount = 0;
 	
-	float fx0 = ACTIVEBKG->m_div.x * x0;
-	float fz0 = ACTIVEBKG->m_div.y * z0;
-	float fx1 = ACTIVEBKG->m_div.x * x1;
-	float fz1 = ACTIVEBKG->m_div.y * z1;
+	float fx0 = ACTIVEBKG->m_tileSize.x * x0;
+	float fz0 = ACTIVEBKG->m_tileSize.y * z0;
+	float fx1 = ACTIVEBKG->m_tileSize.x * x1;
+	float fz1 = ACTIVEBKG->m_tileSize.y * z1;
 	
 	for(size_t i = 0; i < g_dynamicLightsMax; i++) {
 		EERIE_LIGHT * el = &g_dynamicLights[i];
@@ -599,8 +599,8 @@ void ResetTileLights() {
 void ComputeTileLights(short x,short z)
 {
 	tilelights[x][z].el.clear();
-	float xx = (x + 0.5f) * ACTIVEBKG->m_div.x;
-	float zz = (z + 0.5f) * ACTIVEBKG->m_div.y;
+	float xx = (x + 0.5f) * ACTIVEBKG->m_tileSize.x;
+	float zz = (z + 0.5f) * ACTIVEBKG->m_tileSize.y;
 
 	for(size_t i = 0; i < g_culledDynamicLightsCount; i++) {
 		EERIE_LIGHT * light = g_culledDynamicLights[i];

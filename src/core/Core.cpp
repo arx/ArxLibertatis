@@ -479,8 +479,8 @@ void levelInit() {
 	}
 #if BUILD_EDIT_LOADSAVE
 	else if(mse) {
-		Mscenepos.x=-mse->cub.xmin-(mse->cub.xmax-mse->cub.xmin)*.5f+((float)ACTIVEBKG->m_size.x*(float)ACTIVEBKG->m_div.x)*.5f;
-		Mscenepos.z=-mse->cub.zmin-(mse->cub.zmax-mse->cub.zmin)*.5f+((float)ACTIVEBKG->m_size.y*(float)ACTIVEBKG->m_div.y)*.5f;
+		Mscenepos.x=-mse->cub.xmin-(mse->cub.xmax-mse->cub.xmin)*.5f+((float)ACTIVEBKG->m_size.x*(float)ACTIVEBKG->m_tileSize.x)*.5f;
+		Mscenepos.z=-mse->cub.zmin-(mse->cub.zmax-mse->cub.zmin)*.5f+((float)ACTIVEBKG->m_size.y*(float)ACTIVEBKG->m_tileSize.y)*.5f;
 		float t1=(float)(long)(mse->point0.x/BKG_SIZX);
 		float t2=(float)(long)(mse->point0.z/BKG_SIZZ);
 		t1=mse->point0.x-t1*BKG_SIZX;
