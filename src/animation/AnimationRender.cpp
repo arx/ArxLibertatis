@@ -507,7 +507,9 @@ static bool Cedric_IO_Visible(const Vec3f & pos) {
 
 /* Object dynamic lighting */
 static void Cedric_ApplyLighting(ShaderLight lights[], int lightsCount, EERIE_3DOBJ * eobj, Skeleton * obj, const ColorMod & colorMod) {
-
+	
+	ARX_PROFILE_FUNC();
+	
 	/* Apply light on all vertices */
 	for(size_t i = 0; i != obj->bones.size(); i++) {
 
@@ -1101,7 +1103,9 @@ static void AddAnimatedObjectHalo(HaloInfo & haloInfo, const unsigned short * pa
 }
 
 static void Cedric_RenderObject(EERIE_3DOBJ * eobj, Skeleton * obj, Entity * io, const Vec3f & pos, float invisibility) {
-
+	
+	ARX_PROFILE_FUNC();
+	
 	if(invisibility == 1.f)
 		return;
 
