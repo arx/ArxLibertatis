@@ -58,40 +58,40 @@ static bool WalkTiles(const Vec3f & start, const Vec3f & end, F func) {
 	Vec2i endTile = Vec2i(glm::floor(p2 / cellSide));
 	
 	// Handle invalid start tiles
-	if(tile.x < 0 || tile.x >= ACTIVEBKG->Xsize) {
+	if(tile.x < 0 || tile.x >= ACTIVEBKG->m_size.x) {
 		if(d.x == 0 || d.x == (tile.x < 0 ? -1 : 1)) {
 			// Going away from valid tiles
 			return false;
 		}
-		if(tile.x < 0 ? endTile.x < 0 : endTile.x >= ACTIVEBKG->Xsize) {
+		if(tile.x < 0 ? endTile.x < 0 : endTile.x >= ACTIVEBKG->m_size.x) {
 			// Not going far enough to reach valid tiles
 			return false;
 		}
-		s32 tilesToSkip = (tile.x < 0 ? -tile.x : tile.x + 1 - ACTIVEBKG->Xsize);
+		s32 tilesToSkip = (tile.x < 0 ? -tile.x : tile.x + 1 - ACTIVEBKG->m_size.x);
 		p1 += dir * (cellSide.x / dir.x * tilesToSkip);
 		dir = p2 - p1;
 		tile = Vec2i(glm::floor(p1 / cellSide));
 	}
-	if(tile.y < 0 || tile.y >= ACTIVEBKG->Zsize) {
+	if(tile.y < 0 || tile.y >= ACTIVEBKG->m_size.y) {
 		if(d.y == 0 || d.y == (tile.y < 0 ? -1 : 1)) {
 			// Going away from valid tiles
 			return false;
 		}
-		if(tile.y < 0 ? endTile.y < 0 : endTile.y >= ACTIVEBKG->Xsize) {
+		if(tile.y < 0 ? endTile.y < 0 : endTile.y >= ACTIVEBKG->m_size.x) {
 			// Not going far enough to reach valid tiles
 			return false;
 		}
-		s32 tilesToSkip = (tile.y < 0 ? -tile.y : tile.y + 1 - ACTIVEBKG->Zsize);
+		s32 tilesToSkip = (tile.y < 0 ? -tile.y : tile.y + 1 - ACTIVEBKG->m_size.y);
 		p1 += dir * (cellSide.y / dir.y * tilesToSkip);
 		dir = p2 - p1;
 		tile = Vec2i(glm::floor(p1 / cellSide));
 	}
-	arx_assert(tile.x >= 0 && tile.x < ACTIVEBKG->Xsize);
-	arx_assert(tile.y >= 0 && tile.y < ACTIVEBKG->Zsize);
+	arx_assert(tile.x >= 0 && tile.x < ACTIVEBKG->m_size.x);
+	arx_assert(tile.y >= 0 && tile.y < ACTIVEBKG->m_size.y);
 	
 	// Handle invalid end tiles
-	endTile.x = glm::clamp(endTile.x, s32(0), s32(ACTIVEBKG->Xsize - 1));
-	endTile.y = glm::clamp(endTile.y, s32(0), s32(ACTIVEBKG->Zsize - 1));
+	endTile.x = glm::clamp(endTile.x, s32(0), s32(ACTIVEBKG->m_size.x - 1));
+	endTile.y = glm::clamp(endTile.y, s32(0), s32(ACTIVEBKG->m_size.y - 1));
 	
 	
 	// Determine tx and ty, the values of t at which the directed segment

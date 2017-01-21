@@ -64,7 +64,7 @@ static EERIEPOLY * ANCHOR_CheckInPolyPrecis(const Vec3f & pos) {
 	long px = pos.x * ACTIVEBKG->m_mul.x;
 	long pz = pos.z * ACTIVEBKG->m_mul.y;
 
-	if(px <= 0 || px >= ACTIVEBKG->Xsize - 1 || pz <= 0 || pz >= ACTIVEBKG->Zsize - 1)
+	if(px <= 0 || px >= ACTIVEBKG->m_size.x - 1 || pz <= 0 || pz >= ACTIVEBKG->m_size.y - 1)
 		return NULL;
 
 	EERIEPOLY * found = NULL;
@@ -97,7 +97,7 @@ static EERIEPOLY * ANCHOR_CheckInPoly(const Vec3f & pos) {
 	long x = pos.x * ACTIVEBKG->m_mul.x;
 	long z = pos.z * ACTIVEBKG->m_mul.y;
 
-	if(x < 0 || x >= ACTIVEBKG->Xsize || z < 0 || z >= ACTIVEBKG->Zsize)
+	if(x < 0 || x >= ACTIVEBKG->m_size.x || z < 0 || z >= ACTIVEBKG->m_size.y)
 		return NULL;
 
 	EERIEPOLY *found = NULL;
@@ -225,11 +225,11 @@ static float ANCHOR_CheckAnythingInCylinder(const Cylinder & cyl, CollisionFlags
 	long px = cyl.origin.x * ACTIVEBKG->m_mul.x;
 	long pz = cyl.origin.z * ACTIVEBKG->m_mul.y;
 	
-	if(px > ACTIVEBKG->Xsize - 2 - rad)
+	if(px > ACTIVEBKG->m_size.x - 2 - rad)
 		return 0.f;
 	if(px < 1 + rad)
 		return 0.f;
-	if(pz > ACTIVEBKG->Zsize - 2 - rad)
+	if(pz > ACTIVEBKG->m_size.y - 2 - rad)
 		return 0.f;
 	if(pz < 1 + rad)
 		return 0.f;
@@ -520,8 +520,8 @@ void AnchorData_ClearAll(BackgroundData * eb) {
 	//	EERIE_PATHFINDER_Release();
 	EERIE_PATHFINDER_Clear();
 
-	for(long j = 0; j < eb->Zsize; j++) {
-		for(long i = 0; i < eb->Xsize; i++) {
+	for(long j = 0; j < eb->m_size.y; j++) {
+		for(long i = 0; i < eb->m_size.x; i++) {
 			BackgroundTileData * eg = &eb->m_tileData[i][j];
 
 			if(eg->nbianchors && eg->ianchors)
@@ -832,10 +832,10 @@ static void AnchorData_Create_Links_Original_Method(BackgroundData * eb) {
 	long count = 0;
 	long per;
 	long lastper = -1;
-	long total = eb->Zsize * eb->Xsize;
+	long total = eb->m_size.y * eb->m_size.x;
 
-	for(long j = 0; j < eb->Zsize; j++)
-	for(long i = 0; i < eb->Xsize; i++) {
+	for(long j = 0; j < eb->m_size.y; j++)
+	for(long i = 0; i < eb->m_size.x; i++) {
 		per = count / total * 100.f;
 		
 		if(per != lastper) {
@@ -858,10 +858,10 @@ static void AnchorData_Create_Links_Original_Method(BackgroundData * eb) {
 		
 		
 		for(long k = 0; k < eg.nbianchors; k++) {
-			long ii = glm::clamp(i - 2, 0l, eb->Xsize - 1l);
-			long ia = glm::clamp(i + 2, 0l, eb->Xsize - 1l);
-			long ji = glm::clamp(j - 2, 0l, eb->Zsize - 1l);
-			long ja = glm::clamp(j + 2, 0l, eb->Zsize - 1l);
+			long ii = glm::clamp(i - 2, 0l, eb->m_size.x - 1l);
+			long ia = glm::clamp(i + 2, 0l, eb->m_size.x - 1l);
+			long ji = glm::clamp(j - 2, 0l, eb->m_size.y - 1l);
+			long ja = glm::clamp(j + 2, 0l, eb->m_size.y - 1l);
 			
 			for(long j2 = ji; j2 <= ja; j2++)
 			for(long i2 = ii; i2 <= ia; i2++) {
@@ -998,10 +998,10 @@ static void AnchorData_Create_Phase_II_Original_Method(BackgroundData * eb) {
 	
 	long lastper	=	-1;
 	long per;
-	float total		=	static_cast<float>(eb->Zsize * eb->Xsize);
+	float total		=	static_cast<float>(eb->m_size.y * eb->m_size.x);
 	
-	for(long z = 0; z < eb->Zsize; z++)
-	for(long x = 0; x < eb->Xsize; x++) {
+	for(long z = 0; z < eb->m_size.y; z++)
+	for(long x = 0; x < eb->m_size.x; x++) {
 		per = count / total * 100.f;
 		
 		if(per != lastper) {
@@ -1092,10 +1092,10 @@ void AnchorData_Create(BackgroundData * eb) {
 	float count = 0;
 	long lastper	=	-1;
 	long per;
-	float total		=	static_cast<float>(eb->Zsize * eb->Xsize * 9);
+	float total		=	static_cast<float>(eb->m_size.y * eb->m_size.x * 9);
 
-	for(long z = 0; z < eb->Zsize; z++)
-	for(long x = 0; x < eb->Xsize; x++) {
+	for(long z = 0; z < eb->m_size.y; z++)
+	for(long x = 0; x < eb->m_size.x; x++) {
 		long LASTFOUND = 0;
 		
 		for(long divv = 0; divv < 9; divv++) {

@@ -1092,9 +1092,9 @@ static void ARX_PORTALS_Frustrum_RenderRoomTCullSoft(size_t room_num,
 			int radius = 1;
 			
 			int minx = std::max(tilex - radius, 0);
-			int maxx = std::min(tilex + radius, ACTIVEBKG->Xsize - 1);
+			int maxx = std::min(tilex + radius, ACTIVEBKG->m_size.x - 1);
 			int minz = std::max(tilez - radius, 0);
-			int maxz = std::min(tilez + radius, ACTIVEBKG->Zsize - 1);
+			int maxz = std::min(tilez + radius, ACTIVEBKG->m_size.y - 1);
 
 			for(int z = minz; z <= maxz; z++)
 			for(int x = minx; x <= maxx; x++) {
@@ -1454,13 +1454,13 @@ void ARX_SCENE_Update() {
 	// TODO copy-paste background tiles
 	int tilex = int(camPos.x * ACTIVEBKG->m_mul.x);
 	int tilez = int(camPos.z * ACTIVEBKG->m_mul.y);
-	tilex = glm::clamp(tilex, 0, ACTIVEBKG->Xsize - 1);
-	tilez = glm::clamp(tilez, 0, ACTIVEBKG->Zsize - 1);
+	tilex = glm::clamp(tilex, 0, ACTIVEBKG->m_size.x - 1);
+	tilez = glm::clamp(tilez, 0, ACTIVEBKG->m_size.y - 1);
 
 	int minx = std::max(tilex - radius, 0);
-	int maxx = std::min(tilex + radius, ACTIVEBKG->Xsize - 1);
+	int maxx = std::min(tilex + radius, ACTIVEBKG->m_size.x - 1);
 	int minz = std::max(tilez - radius, 0);
-	int maxz = std::min(tilez + radius, ACTIVEBKG->Zsize - 1);
+	int maxz = std::min(tilez + radius, ACTIVEBKG->m_size.y - 1);
 
 	ACTIVEBKG->m_tileData[tilex][tilez].treat = true;
 	TreatBackgroundDynlights();

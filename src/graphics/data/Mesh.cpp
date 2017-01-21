@@ -206,7 +206,7 @@ EERIEPOLY * CheckInPoly(const Vec3f & poss, float * needY)
 	long px = poss.x * ACTIVEBKG->m_mul.x;
 	long pz = poss.z * ACTIVEBKG->m_mul.y;
 	
-	if(pz <= 0 || pz >= ACTIVEBKG->Zsize - 1 || px <= 0 || px >= ACTIVEBKG->Xsize - 1)
+	if(pz <= 0 || pz >= ACTIVEBKG->m_size.y - 1 || px <= 0 || px >= ACTIVEBKG->m_size.x - 1)
 		return NULL;
 	
 	float rx = poss.x - ((float)px * ACTIVEBKG->m_div.x);
@@ -293,7 +293,7 @@ BackgroundTileData * getFastBackgroundData(float x, float z) {
 	long px = x * ACTIVEBKG->m_mul.x;
 	long pz = z * ACTIVEBKG->m_mul.y;
 
-	if(px < 0 || px >= ACTIVEBKG->Xsize || pz < 0 || pz >= ACTIVEBKG->Zsize)
+	if(px < 0 || px >= ACTIVEBKG->m_size.x || pz < 0 || pz >= ACTIVEBKG->m_size.y)
 		return NULL;
 	
 	return &ACTIVEBKG->m_tileData[px][pz];
@@ -561,8 +561,8 @@ int PointIn2DPolyXZ(const PortalPoly * ep, float x, float z) {
 long BKG_CountPolys(const BackgroundData & eb) {
 	long count = 0;
 
-	for(long z = 0; z < eb.Zsize; z++)
-	for(long x = 0; x < eb.Xsize; x++) {
+	for(long z = 0; z < eb.m_size.y; z++)
+	for(long x = 0; x < eb.m_size.x; x++) {
 		const BackgroundTileData & eg = eb.m_tileData[x][z];
 		count += eg.nbpoly;
 	}
@@ -577,8 +577,8 @@ long BKG_CountPolys(const BackgroundData & eb) {
 long BKG_CountIgnoredPolys(const BackgroundData & eb) {
 	long count = 0;
 
-	for(long z = 0; z < eb.Zsize; z++)
-	for(long x = 0; x < eb.Xsize; x++) {
+	for(long z = 0; z < eb.m_size.y; z++)
+	for(long x = 0; x < eb.m_size.x; x++) {
 		const BackgroundTileData & eg = eb.m_tileData[x][z];
 
 		for(long k = 0; k < eg.nbpoly; k++){
@@ -686,8 +686,8 @@ void ClearBackground(BackgroundData * eb) {
 	
 	AnchorData_ClearAll(eb);
 	
-	for(long z = 0; z < eb->Zsize; z++)
-	for(long x = 0; x < eb->Xsize; x++) {
+	for(long z = 0; z < eb->m_size.y; z++)
+	for(long x = 0; x < eb->m_size.x; x++) {
 		ReleaseBKG_INFO(&eb->m_tileData[x][z]);
 	}
 	
@@ -708,8 +708,8 @@ void InitBkg(BackgroundData * eb, short sx, short sz, short Xdiv, short Zdiv) {
 	eb->exist = 1;
 	eb->anchors = NULL;
 	eb->nbanchors = 0;
-	eb->Xsize = sx;
-	eb->Zsize = sz;
+	eb->m_size.x = sx;
+	eb->m_size.y = sz;
 
 	if (Xdiv < 0) Xdiv = 1;
 	if (Zdiv < 0) Zdiv = 1;
@@ -719,8 +719,8 @@ void InitBkg(BackgroundData * eb, short sx, short sz, short Xdiv, short Zdiv) {
 	eb->m_mul.x = 1.f / (float)eb->m_div.x;
 	eb->m_mul.y = 1.f / (float)eb->m_div.y;
 	
-	for(short z = 0; z < eb->Zsize; z++)
-	for(short x = 0; x < eb->Xsize; x++) {
+	for(short z = 0; z < eb->m_size.y; z++)
+	for(short x = 0; x < eb->m_size.x; x++) {
 		eb->m_tileData[x][z] = BackgroundTileData();
 	}
 }
@@ -754,8 +754,8 @@ static bool PointInBBox(const Vec3f & point, const Rectf & bb) {
 
 void EERIEPOLY_Compute_PolyIn() {
 	
-	for(long z = 0; z < ACTIVEBKG->Zsize; z++)
-	for(long x = 0; x < ACTIVEBKG->Xsize; x++) {
+	for(long z = 0; z < ACTIVEBKG->m_size.y; z++)
+	for(long x = 0; x < ACTIVEBKG->m_size.x; x++) {
 		BackgroundTileData *eg = &ACTIVEBKG->m_tileData[x][z];
 		
 		free(eg->polyin);
@@ -764,8 +764,8 @@ void EERIEPOLY_Compute_PolyIn() {
 		
 		long minx = std::max(x - 2, 0L);
 		long minz = std::max(z - 2, 0L);
-		long maxx = std::min(x + 2, ACTIVEBKG->Xsize - 1L);
-		long maxz = std::min(z + 2, ACTIVEBKG->Zsize - 1L);
+		long maxx = std::min(x + 2, ACTIVEBKG->m_size.x - 1L);
+		long maxz = std::min(z + 2, ACTIVEBKG->m_size.y - 1L);
 		
 		Vec2f bbmin = Vec2f(x * ACTIVEBKG->m_div.x - 10, z * ACTIVEBKG->m_div.y - 10);
 		Vec2f bbmax = Vec2f(bbmin.x + ACTIVEBKG->m_div.x + 20, bbmin.y + ACTIVEBKG->m_div.y + 20);
@@ -911,8 +911,8 @@ long CountBkgVertex() {
 
 	long count = 0;
 
-	for(long z = 0; z < ACTIVEBKG->Zsize; z++) {
-		for(long x = 0; x < ACTIVEBKG->Xsize; x++) {
+	for(long z = 0; z < ACTIVEBKG->m_size.y; z++) {
+		for(long x = 0; x < ACTIVEBKG->m_size.x; x++) {
 			const BackgroundTileData & eg = ACTIVEBKG->m_tileData[x][z];
 
 			for(long l = 0; l < eg.nbpoly; l++) {
@@ -1116,7 +1116,7 @@ static bool loadFastScene(const res::path & file, const char * data, const char 
 		         << FTS_VERSION << " in " << file;
 		return false;
 	}
-	if(fsh->sizex != ACTIVEBKG->Xsize || fsh->sizez != ACTIVEBKG->Zsize) {
+	if(fsh->sizex != ACTIVEBKG->m_size.x || fsh->sizez != ACTIVEBKG->m_size.y) {
 		LogError << "FTS: size mismatch in FAST_SCENE_HEADER";
 		return false;
 	}
@@ -1657,16 +1657,16 @@ static int BkgAddPoly(EERIEPOLY * ep, EERIE_3DOBJ * eobj) {
 	
 	long posx = (long)(float)(center.x * ACTIVEBKG->m_mul.x);
 	long posz = (long)(float)(center.z * ACTIVEBKG->m_mul.y);
-	long posy = (long)(float)(center.y * ACTIVEBKG->m_mul.x + ACTIVEBKG->Xsize * .5f);
+	long posy = (long)(float)(center.y * ACTIVEBKG->m_mul.x + ACTIVEBKG->m_size.x * .5f);
 	
 	if (posy < 0) return 0;
-	else if (posy >= ACTIVEBKG->Xsize) return 0;
+	else if (posy >= ACTIVEBKG->m_size.x) return 0;
 	
 	if (posx < 0) return 0;
-	else if (posx >= ACTIVEBKG->Xsize) return 0;
+	else if (posx >= ACTIVEBKG->m_size.x) return 0;
 	
 	if (posz < 0) return 0;
-	else if (posz >= ACTIVEBKG->Zsize) return 0;
+	else if (posz >= ACTIVEBKG->m_size.y) return 0;
 	
 	BackgroundTileData *eg = &ACTIVEBKG->m_tileData[posx][posz];
 	
@@ -1884,8 +1884,8 @@ static bool FastSceneSave(const fs::path & partial_path) {
 		allocsize += ACTIVEBKG->anchors[i].nblinked * sizeof(s32);
 	}
 	
-	for(long j = 0; j < ACTIVEBKG->Zsize; j++) {
-		for(long i = 0; i < ACTIVEBKG->Xsize; i++) {
+	for(long j = 0; j < ACTIVEBKG->m_size.y; j++) {
+		for(long i = 0; i < ACTIVEBKG->m_size.x; i++) {
 			allocsize += sizeof(FAST_SCENE_INFO);
 			allocsize += ACTIVEBKG->m_tileData[i][j].nbpoly * (sizeof(EERIEPOLY) + 1);
 		}
@@ -1937,8 +1937,8 @@ static bool FastSceneSave(const fs::path & partial_path) {
 	pos += sizeof(FAST_SCENE_HEADER);
 	
 	fsh->version = FTS_VERSION;
-	fsh->sizex = ACTIVEBKG->Xsize;
-	fsh->sizez = ACTIVEBKG->Zsize;
+	fsh->sizex = ACTIVEBKG->m_size.x;
+	fsh->sizez = ACTIVEBKG->m_size.y;
 	fsh->nb_textures = 0;
 	fsh->playerpos = player.pos;
 	fsh->Mscenepos = Mscenepos;

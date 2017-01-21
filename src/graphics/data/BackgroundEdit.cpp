@@ -154,9 +154,9 @@ bool TryToQuadify(EERIEPOLY * ep,EERIE_3DOBJ * eobj) {
 	short radius = 1;
 	
 	short minx = std::max(tilex - radius, 0);
-	short maxx = std::min(tilex + radius, ACTIVEBKG->Xsize - 1);
+	short maxx = std::min(tilex + radius, ACTIVEBKG->m_size.x - 1);
 	short minz = std::max(tilez - radius, 0);
-	short maxz = std::min(tilez + radius, ACTIVEBKG->Zsize - 1);
+	short maxz = std::min(tilez + radius, ACTIVEBKG->m_size.y - 1);
 	
 	for(long kl = 0; kl < 2; kl++)
 	for(short z = minz; z <= maxz; z++)
@@ -211,8 +211,8 @@ void ARX_PrepareBackgroundNRMLs() {
 	Vec3f cur_nrml;
 	float count;
 	
-	for(short z = 0; z < ACTIVEBKG->Zsize; z++)
-	for(short x = 0; x < ACTIVEBKG->Xsize; x++) {
+	for(short z = 0; z < ACTIVEBKG->m_size.y; z++)
+	for(short x = 0; x < ACTIVEBKG->m_size.x; x++) {
 		BackgroundTileData * eg = &ACTIVEBKG->m_tileData[x][z];
 		for(short l = 0; l < eg->nbpoly; l++) {
 			EERIEPOLY * ep = &eg->polydata[l];
@@ -239,9 +239,9 @@ void ARX_PrepareBackgroundNRMLs() {
 				short radius = 4;
 				
 				short minx = std::max(x - radius, 0);
-				short maxx = std::min(x + radius, ACTIVEBKG->Xsize - 1);
+				short maxx = std::min(x + radius, ACTIVEBKG->m_size.x - 1);
 				short minz = std::max(z - radius, 0);
-				short maxz = std::min(z + radius, ACTIVEBKG->Zsize - 1);
+				short maxz = std::min(z + radius, ACTIVEBKG->m_size.y - 1);
 				
 				for(short j2 = minz; j2 < maxz; j2++)
 				for(short i2 = minx; i2 < maxx; i2++) {
@@ -289,8 +289,8 @@ void ARX_PrepareBackgroundNRMLs() {
 		}
 	}
 	
-	for(short z = 0; z < ACTIVEBKG->Zsize; z++)
-	for(short x = 0; x < ACTIVEBKG->Xsize; x++) {
+	for(short z = 0; z < ACTIVEBKG->m_size.y; z++)
+	for(short x = 0; x < ACTIVEBKG->m_size.x; x++) {
 		BackgroundTileData * eg = &ACTIVEBKG->m_tileData[x][z];
 		for(long l = 0; l < eg->nbpoly; l++) {
 			EERIEPOLY * ep = &eg->polydata[l];

@@ -688,8 +688,8 @@ static void drawDebugMaterials() {
 		}
 	}
 	
-	for(short z = 0; z < ACTIVEBKG->Zsize; z++)
-	for(short x = 0; x < ACTIVEBKG->Xsize; x++) {
+	for(short z = 0; z < ACTIVEBKG->m_size.y; z++)
+	for(short x = 0; x < ACTIVEBKG->m_size.x; x++) {
 		const BackgroundTileData & feg = ACTIVEBKG->m_tileData[x][z];
 		
 		if(!feg.treat) {
