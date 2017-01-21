@@ -964,7 +964,7 @@ void DanaeClearLevel(long flag)
 
 	EERIE_PATHFINDER_Release();
 
-	InitBkg(ACTIVEBKG, MAX_BKGX, MAX_BKGZ, BKG_SIZX, BKG_SIZZ);
+	InitBkg(ACTIVEBKG, MAX_BKGX, MAX_BKGZ, Vec2s(BKG_SIZX, BKG_SIZZ));
 	
 #if BUILD_EDIT_LOADSAVE
 	if(mse != NULL) {
