@@ -467,7 +467,7 @@ void SecondaryInventoryHud::dropEntity() {
 			
 			// SHOP
 			if(io->ioflags & IO_SHOP) {
-				player.gold += price;
+				ARX_PLAYER_AddGold(price);
 				ARX_SOUND_PlayInterface(SND_GOLD);
 			}
 
