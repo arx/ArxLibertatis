@@ -1012,9 +1012,9 @@ static void AnchorData_Create_Phase_II_Original_Method(BackgroundData * eb) {
 		count += 1.f;
 		
 		BackgroundTileData * eg = &eb->m_tileData[x][z];
-		pos.x = float(x) * float(eb->m_div.x);
+		pos.x = float(x) * float(eb->m_tileSize.x);
 		pos.y = 0.f;
-		pos.z = float(z) * float(eb->m_div.y);
+		pos.z = float(z) * float(eb->m_tileSize.y);
 		Cylinder currcyl = Cylinder(pos, 30, -150.f);
 		
 		if(eg->nbpolyin) {
@@ -1040,8 +1040,8 @@ static void AnchorData_Create_Phase_II_Original_Method(BackgroundData * eb) {
 				
 				for(float pposz = 0.f; pposz < 1.f; pposz += 0.1f)
 				for(float pposx = 0.f; pposx < 1.f; pposx += 0.1f) {
-					currcyl.origin.x = pos.x + pposx * eb->m_div.x;
-					currcyl.origin.z = pos.z + pposz * eb->m_div.y;
+					currcyl.origin.x = pos.x + pposx * eb->m_tileSize.x;
+					currcyl.origin.z = pos.z + pposz * eb->m_tileSize.y;
 					currcyl.origin.y = current_y;
 					
 					EERIEPOLY * ep2 = ANCHOR_CheckInPolyPrecis(currcyl.origin + Vec3f(0.f, -10.f, 0.f));
@@ -1153,9 +1153,9 @@ void AnchorData_Create(BackgroundData * eb) {
 				break;
 			
 			BackgroundTileData * eg = &eb->m_tileData[x][z];
-			pos.x = (float)((float)((float)x + 0.33f * (float)divvx) * (float)eb->m_div.x);
+			pos.x = (float)((float)((float)x + 0.33f * (float)divvx) * (float)eb->m_tileSize.x);
 			pos.y = 0.f;
-			pos.z = (float)((float)((float)z + 0.33f * (float)divvy) * (float)eb->m_div.y);
+			pos.z = (float)((float)((float)z + 0.33f * (float)divvy) * (float)eb->m_tileSize.y);
 			EERIEPOLY * ep = GetMinPoly(pos);
 			Cylinder currcyl = Cylinder(pos, 20 - (4.f * divv), -120.f);
 			

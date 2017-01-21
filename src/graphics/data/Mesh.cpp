@@ -209,8 +209,8 @@ EERIEPOLY * CheckInPoly(const Vec3f & poss, float * needY)
 	if(pz <= 0 || pz >= ACTIVEBKG->m_size.y - 1 || px <= 0 || px >= ACTIVEBKG->m_size.x - 1)
 		return NULL;
 	
-	float rx = poss.x - ((float)px * ACTIVEBKG->m_div.x);
-	float rz = poss.z - ((float)pz * ACTIVEBKG->m_div.y);
+	float rx = poss.x - ((float)px * ACTIVEBKG->m_tileSize.x);
+	float rz = poss.z - ((float)pz * ACTIVEBKG->m_tileSize.y);
 	
 	
 	short minx;
@@ -714,10 +714,10 @@ void InitBkg(BackgroundData * eb, short sx, short sz, short Xdiv, short Zdiv) {
 	if (Xdiv < 0) Xdiv = 1;
 	if (Zdiv < 0) Zdiv = 1;
 
-	eb->m_div.x = Xdiv;
-	eb->m_div.y = Zdiv;
-	eb->m_mul.x = 1.f / (float)eb->m_div.x;
-	eb->m_mul.y = 1.f / (float)eb->m_div.y;
+	eb->m_tileSize.x = Xdiv;
+	eb->m_tileSize.y = Zdiv;
+	eb->m_mul.x = 1.f / (float)eb->m_tileSize.x;
+	eb->m_mul.y = 1.f / (float)eb->m_tileSize.y;
 	
 	for(short z = 0; z < eb->m_size.y; z++)
 	for(short x = 0; x < eb->m_size.x; x++) {
@@ -767,8 +767,8 @@ void EERIEPOLY_Compute_PolyIn() {
 		long maxx = std::min(x + 2, ACTIVEBKG->m_size.x - 1L);
 		long maxz = std::min(z + 2, ACTIVEBKG->m_size.y - 1L);
 		
-		Vec2f bbmin = Vec2f(x * ACTIVEBKG->m_div.x - 10, z * ACTIVEBKG->m_div.y - 10);
-		Vec2f bbmax = Vec2f(bbmin.x + ACTIVEBKG->m_div.x + 20, bbmin.y + ACTIVEBKG->m_div.y + 20);
+		Vec2f bbmin = Vec2f(x * ACTIVEBKG->m_tileSize.x - 10, z * ACTIVEBKG->m_tileSize.y - 10);
+		Vec2f bbmax = Vec2f(bbmin.x + ACTIVEBKG->m_tileSize.x + 20, bbmin.y + ACTIVEBKG->m_tileSize.y + 20);
 		
 		Rectf bb = Rectf(bbmin, bbmax);
 		
