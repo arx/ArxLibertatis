@@ -666,7 +666,7 @@ float GetColorz(const Vec3f &pos) {
 		float div = (1.0f / to);
 
 		EP_DATA & epdata = portals->rooms[ep->room].epdata[0];
-		ApplyTileLights(ep, epdata.p);
+		ApplyTileLights(ep, epdata.tile);
 
 		for(long i = 0; i < to; i++) {
 			Color col = Color::fromRGBA(ep->tv[i].color);
