@@ -451,7 +451,7 @@ struct EERIE_PORTALS
 };
 
 struct EP_DATA {
-	Vec2s p;
+	Vec2s tile;
 	short idx;
 	short padd;
 };

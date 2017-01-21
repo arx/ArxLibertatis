@@ -1083,12 +1083,12 @@ static void ARX_PORTALS_Frustrum_RenderRoomTCullSoft(size_t room_num,
 	for(long lll=0; lll<room.nb_polys; lll++) {
 		const EP_DATA & pEPDATA = room.epdata[lll];
 		
-		BackgroundTileData *feg = &ACTIVEBKG->m_tileData[pEPDATA.p.x][pEPDATA.p.y];
+		BackgroundTileData *feg = &ACTIVEBKG->m_tileData[pEPDATA.tile.x][pEPDATA.tile.y];
 
 		if(!feg->treat) {
 			// TODO copy-paste background tiles
-			int tilex = pEPDATA.p.x;
-			int tilez = pEPDATA.p.y;
+			int tilex = pEPDATA.tile.x;
+			int tilez = pEPDATA.tile.y;
 			int radius = 1;
 			
 			int minx = std::max(tilex - radius, 0);
@@ -1180,7 +1180,7 @@ static void ARX_PORTALS_Frustrum_RenderRoomTCullSoft(size_t room_num,
 				}
 			} else {
 				if(!(ep->type & POLY_TRANS)) {
-					ApplyTileLights(ep, pEPDATA.p);
+					ApplyTileLights(ep, pEPDATA.tile);
 
 					pMyVertexCurr[ep->uslInd[0]].color = ep->tv[0].color;
 					pMyVertexCurr[ep->uslInd[1]].color = ep->tv[1].color;
@@ -1206,7 +1206,7 @@ static void ARX_PORTALS_Frustrum_RenderRoomTCullSoft(size_t room_num,
 					continue;
 				}
 
-				ApplyTileLights(ep, pEPDATA.p);
+				ApplyTileLights(ep, pEPDATA.tile);
 
 				for(int k = 0; k < to; k++) {
 					long lr = Color::fromRGBA(ep->tv[k].color).r;

@@ -1423,7 +1423,7 @@ static Vec3f GetRoomCenter(long room_num) {
 	bbox.max = Vec3f(-99999999.f);
 
 	for(long lll = 0; lll < room.nb_polys; lll++) {
-		const BackgroundTileData & feg = ACTIVEBKG->m_tileData[room.epdata[lll].p.x][room.epdata[lll].p.y];
+		const BackgroundTileData & feg = ACTIVEBKG->m_tileData[room.epdata[lll].tile.x][room.epdata[lll].tile.y];
 		const EERIEPOLY & ep = feg.polydata[room.epdata[lll].idx];
 		bbox.min = glm::min(bbox.min, ep.center);
 		bbox.max = glm::max(bbox.max, ep.center);
@@ -1583,8 +1583,8 @@ static void EERIE_PORTAL_Room_Poly_Add(EERIEPOLY * ep, long nr, long px, long py
 	
 	portals->rooms[nr].epdata = (EP_DATA *)realloc(portals->rooms[nr].epdata, sizeof(EP_DATA) * (portals->rooms[nr].nb_polys + 1));
 	portals->rooms[nr].epdata[portals->rooms[nr].nb_polys].idx = checked_range_cast<short>(idx);
-	portals->rooms[nr].epdata[portals->rooms[nr].nb_polys].p.x = checked_range_cast<short>(px);
-	portals->rooms[nr].epdata[portals->rooms[nr].nb_polys].p.y = checked_range_cast<short>(py);
+	portals->rooms[nr].epdata[portals->rooms[nr].nb_polys].tile.x = checked_range_cast<short>(px);
+	portals->rooms[nr].epdata[portals->rooms[nr].nb_polys].tile.y = checked_range_cast<short>(py);
 	ep->room = checked_range_cast<short>(nr);
 	portals->rooms[nr].nb_polys++;
 }
@@ -2281,8 +2281,8 @@ void ComputePortalVertexBuffer() {
 		// Count vertices / indices for each texture and blend types
 		int vertexCount = 0, indexCount = 0, ignored = 0, hidden = 0, notex = 0;
 		for(int j = 0; j < room->nb_polys; j++) {
-			int x = room->epdata[j].p.x;
-			int y = room->epdata[j].p.y;
+			int x = room->epdata[j].tile.x;
+			int y = room->epdata[j].tile.y;
 			BackgroundTileData & cell = ACTIVEBKG->m_tileData[x][y];
 			EERIEPOLY & poly = cell.polydata[room->epdata[j].idx];
 			
@@ -2385,8 +2385,8 @@ void ComputePortalVertexBuffer() {
 			
 			// Upload all vertices for this texture and remember the indices
 			for(int j = 0; j < room->nb_polys; j++) {
-				int x = room->epdata[j].p.x;
-				int y = room->epdata[j].p.y;
+				int x = room->epdata[j].tile.x;
+				int y = room->epdata[j].tile.y;
 				BackgroundTileData & cell = ACTIVEBKG->m_tileData[x][y];
 				EERIEPOLY & poly = cell.polydata[room->epdata[j].idx];
 				
