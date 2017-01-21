@@ -1452,8 +1452,8 @@ void ARX_SCENE_Update() {
 	short radius = clip3D + 4;
 
 	// TODO copy-paste background tiles
-	int tilex = int(camPos.x * ACTIVEBKG->Xmul);
-	int tilez = int(camPos.z * ACTIVEBKG->Zmul);
+	int tilex = int(camPos.x * ACTIVEBKG->m_mul.x);
+	int tilez = int(camPos.z * ACTIVEBKG->m_mul.y);
 	tilex = glm::clamp(tilex, 0, ACTIVEBKG->Xsize - 1);
 	tilez = glm::clamp(tilez, 0, ACTIVEBKG->Zsize - 1);
 

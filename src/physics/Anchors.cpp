@@ -61,8 +61,8 @@ extern bool DIRECT_PATH;
 
 static EERIEPOLY * ANCHOR_CheckInPolyPrecis(const Vec3f & pos) {
 	
-	long px = pos.x * ACTIVEBKG->Xmul;
-	long pz = pos.z * ACTIVEBKG->Zmul;
+	long px = pos.x * ACTIVEBKG->m_mul.x;
+	long pz = pos.z * ACTIVEBKG->m_mul.y;
 
 	if(px <= 0 || px >= ACTIVEBKG->Xsize - 1 || pz <= 0 || pz >= ACTIVEBKG->Zsize - 1)
 		return NULL;
@@ -94,8 +94,8 @@ static EERIEPOLY * ANCHOR_CheckInPolyPrecis(const Vec3f & pos) {
 
 static EERIEPOLY * ANCHOR_CheckInPoly(const Vec3f & pos) {
 	
-	long x = pos.x * ACTIVEBKG->Xmul;
-	long z = pos.z * ACTIVEBKG->Zmul;
+	long x = pos.x * ACTIVEBKG->m_mul.x;
+	long z = pos.z * ACTIVEBKG->m_mul.y;
 
 	if(x < 0 || x >= ACTIVEBKG->Xsize || z < 0 || z >= ACTIVEBKG->Zsize)
 		return NULL;
@@ -220,10 +220,10 @@ static float ANCHOR_CheckAnythingInCylinder(const Cylinder & cyl, CollisionFlags
 	
 	ARX_PROFILE_FUNC();
 	
-	long rad = (cyl.radius + 230) * ACTIVEBKG->Xmul;
+	long rad = (cyl.radius + 230) * ACTIVEBKG->m_mul.x;
 	
-	long px = cyl.origin.x * ACTIVEBKG->Xmul;
-	long pz = cyl.origin.z * ACTIVEBKG->Zmul;
+	long px = cyl.origin.x * ACTIVEBKG->m_mul.x;
+	long pz = cyl.origin.z * ACTIVEBKG->m_mul.y;
 	
 	if(px > ACTIVEBKG->Xsize - 2 - rad)
 		return 0.f;

@@ -203,8 +203,8 @@ long MakeTopObjString(Entity * io, std::string & dest) {
 
 EERIEPOLY * CheckInPoly(const Vec3f & poss, float * needY)
 {
-	long px = poss.x * ACTIVEBKG->Xmul;
-	long pz = poss.z * ACTIVEBKG->Zmul;
+	long px = poss.x * ACTIVEBKG->m_mul.x;
+	long pz = poss.z * ACTIVEBKG->m_mul.y;
 	
 	if(pz <= 0 || pz >= ACTIVEBKG->Zsize - 1 || px <= 0 || px >= ACTIVEBKG->Xsize - 1)
 		return NULL;
@@ -290,8 +290,8 @@ EERIEPOLY * CheckInPoly(const Vec3f & poss, float * needY)
 
 BackgroundTileData * getFastBackgroundData(float x, float z) {
 	
-	long px = x * ACTIVEBKG->Xmul;
-	long pz = z * ACTIVEBKG->Zmul;
+	long px = x * ACTIVEBKG->m_mul.x;
+	long pz = z * ACTIVEBKG->m_mul.y;
 
 	if(px < 0 || px >= ACTIVEBKG->Xsize || pz < 0 || pz >= ACTIVEBKG->Zsize)
 		return NULL;
@@ -716,8 +716,8 @@ void InitBkg(BackgroundData * eb, short sx, short sz, short Xdiv, short Zdiv) {
 
 	eb->Xdiv = Xdiv;
 	eb->Zdiv = Zdiv;
-	eb->Xmul = 1.f / (float)eb->Xdiv;
-	eb->Zmul = 1.f / (float)eb->Zdiv;
+	eb->m_mul.x = 1.f / (float)eb->Xdiv;
+	eb->m_mul.y = 1.f / (float)eb->Zdiv;
 	
 	for(short z = 0; z < eb->Zsize; z++)
 	for(short x = 0; x < eb->Xsize; x++) {
@@ -1655,9 +1655,9 @@ static int BkgAddPoly(EERIEPOLY * ep, EERIE_3DOBJ * eobj) {
 	
 	Vec3f center = (ep->v[0].p + ep->v[1].p + ep->v[2].p) * (1.f/3);
 	
-	long posx = (long)(float)(center.x * ACTIVEBKG->Xmul);
-	long posz = (long)(float)(center.z * ACTIVEBKG->Zmul);
-	long posy = (long)(float)(center.y * ACTIVEBKG->Xmul + ACTIVEBKG->Xsize * .5f);
+	long posx = (long)(float)(center.x * ACTIVEBKG->m_mul.x);
+	long posz = (long)(float)(center.z * ACTIVEBKG->m_mul.y);
+	long posy = (long)(float)(center.y * ACTIVEBKG->m_mul.x + ACTIVEBKG->Xsize * .5f);
 	
 	if (posy < 0) return 0;
 	else if (posy >= ACTIVEBKG->Xsize) return 0;

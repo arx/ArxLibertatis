@@ -101,8 +101,8 @@ void PolyBoomAddScorch(const Vec3f & poss) {
 	static TextureContainer * tc2 = TextureContainer::Load("graph/particles/boom");
 	
 	// TODO copy-paste background tiles
-	int tilex = int(poss.x * ACTIVEBKG->Xmul);
-	int tilez = int(poss.z * ACTIVEBKG->Zmul);
+	int tilex = int(poss.x * ACTIVEBKG->m_mul.x);
+	int tilez = int(poss.z * ACTIVEBKG->m_mul.y);
 	int radius = 3;
 	
 	int minx = std::max(tilex - radius, 0);
@@ -264,8 +264,8 @@ void PolyBoomAddSplat(const Sphere & sp, const Color3f & col, long flags) {
 	}
 	
 	// TODO copy-paste background tiles
-	int tilex = int(poss.x * ACTIVEBKG->Xmul);
-	int tilez = int(poss.z * ACTIVEBKG->Zmul);
+	int tilex = int(poss.x * ACTIVEBKG->m_mul.x);
+	int tilez = int(poss.z * ACTIVEBKG->m_mul.y);
 	int radius = 3;
 	
 	int minx = std::max(tilex - radius, 0);

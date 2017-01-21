@@ -90,8 +90,7 @@ struct BackgroundData {
 	short		Zsize;
 	short		Xdiv;
 	short		Zdiv;
-	float		Xmul;
-	float		Zmul;
+	Vec2f m_mul;
 	BackgroundTileData m_tileData[MAX_BKGX][MAX_BKGZ];
 	long		  nbanchors;
 	ANCHOR_DATA * anchors;
@@ -102,8 +101,7 @@ struct BackgroundData {
 		, Zsize(0)
 		, Xdiv(0)
 		, Zdiv(0)
-		, Xmul(0)
-		, Zmul(0)
+		, m_mul(0, 0)
 		, nbanchors(0)
 		, anchors(NULL)
 	{ }

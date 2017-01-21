@@ -477,9 +477,9 @@ float CheckAnythingInCylinder(const Cylinder & cyl, Entity * ioo, long flags) {
 	float anything = 999999.f;
 	
 	// TODO copy-paste background tiles
-	int tilex = int(cyl.origin.x * ACTIVEBKG->Xmul);
-	int tilez = int(cyl.origin.z * ACTIVEBKG->Zmul);
-	int radius = int((cyl.radius + 100) * ACTIVEBKG->Xmul);
+	int tilex = int(cyl.origin.x * ACTIVEBKG->m_mul.x);
+	int tilez = int(cyl.origin.z * ACTIVEBKG->m_mul.y);
+	int radius = int((cyl.radius + 100) * ACTIVEBKG->m_mul.x);
 	
 	int minx = std::max(tilex - radius, 0);
 	int maxx = std::min(tilex + radius, ACTIVEBKG->Xsize - 1);
@@ -975,9 +975,9 @@ bool CheckEverythingInSphere(const Sphere & sphere, EntityHandle source, EntityH
 const EERIEPOLY * CheckBackgroundInSphere(const Sphere & sphere) {
 	
 	// TODO copy-paste background tiles
-	int tilex = int(sphere.origin.x * ACTIVEBKG->Xmul);
-	int tilez = int(sphere.origin.z * ACTIVEBKG->Zmul);
-	int radius = int(sphere.radius * ACTIVEBKG->Xmul) + 2;
+	int tilex = int(sphere.origin.x * ACTIVEBKG->m_mul.x);
+	int tilez = int(sphere.origin.z * ACTIVEBKG->m_mul.y);
+	int radius = int(sphere.radius * ACTIVEBKG->m_mul.x) + 2;
 
 	int minx = std::max(tilex - radius, 0);
 	int maxx = std::min(tilex + radius, ACTIVEBKG->Xsize - 1);
@@ -1014,9 +1014,9 @@ bool CheckAnythingInSphere(const Sphere & sphere, EntityHandle source, CASFlags 
 		ARX_PROFILE("Background Collision");
 		
 		// TODO copy-paste background tiles
-		int tilex = int(sphere.origin.x * ACTIVEBKG->Xmul);
-		int tilez = int(sphere.origin.z * ACTIVEBKG->Zmul);
-		int radius = int(sphere.radius * ACTIVEBKG->Xmul) + 2;
+		int tilex = int(sphere.origin.x * ACTIVEBKG->m_mul.x);
+		int tilez = int(sphere.origin.z * ACTIVEBKG->m_mul.y);
+		int radius = int(sphere.radius * ACTIVEBKG->m_mul.x) + 2;
 		
 		int minx = std::max(tilex - radius, 0);
 		int maxx = std::min(tilex + radius, ACTIVEBKG->Xsize - 1);
@@ -1647,8 +1647,8 @@ bool IO_Visible(const Vec3f & orgn, const Vec3f & dest, Vec3f * hit)
 			}
 		}
 
-		long px = (long)(tmpPos.x * ACTIVEBKG->Xmul);
-		long pz = (long)(tmpPos.z * ACTIVEBKG->Zmul);
+		long px = (long)(tmpPos.x * ACTIVEBKG->m_mul.x);
+		long pz = (long)(tmpPos.z * ACTIVEBKG->m_mul.y);
 
 		if(px < 0 || px >= ACTIVEBKG->Xsize || pz < 0 || pz >= ACTIVEBKG->Zsize)
 			break;

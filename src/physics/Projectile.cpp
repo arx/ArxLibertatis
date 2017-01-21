@@ -267,8 +267,8 @@ static EERIEPOLY * CheckArrowPolyCollision(const Vec3f & start, const Vec3f & en
 	pol.v[1] = end;
 
 	// TODO copy-paste background tiles
-	int tilex = int(end.x * ACTIVEBKG->Xmul);
-	int tilez = int(end.z * ACTIVEBKG->Zmul);
+	int tilex = int(end.x * ACTIVEBKG->m_mul.x);
+	int tilez = int(end.z * ACTIVEBKG->m_mul.y);
 	int radius = 2;
 	
 	int minx = std::max(tilex - radius, 0);
