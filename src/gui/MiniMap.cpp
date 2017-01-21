@@ -93,9 +93,9 @@ void MiniMap::getData(int showLevel) {
 			float minY = std::numeric_limits<float>::max();
 			float maxY = std::numeric_limits<float>::min();
 			
-			for(int z = 0; z < m_activeBkg->Zsize; z++) {
+			for(int z = 0; z < m_activeBkg->m_size.y; z++) {
 				
-				for(int x = 0; x < m_activeBkg->Xsize; x++) {
+				for(int x = 0; x < m_activeBkg->m_size.x; x++) {
 					const BackgroundTileData & eg = m_activeBkg->m_tileData[x][z];
 					for(int k = 0; k < eg.nbpoly; k++) {
 						const EERIEPOLY & ep = eg.polydata[k];

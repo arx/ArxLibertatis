@@ -490,7 +490,7 @@ static bool Cedric_IO_Visible(const Vec3f & pos) {
 		long xx = pos.x * ACTIVEBKG->m_mul.x;
 		long yy = pos.z * ACTIVEBKG->m_mul.y;
 
-		if(xx >= 1 && yy >= 1 && xx < ACTIVEBKG->Xsize-1 && yy < ACTIVEBKG->Zsize-1) {
+		if(xx >= 1 && yy >= 1 && xx < ACTIVEBKG->m_size.x-1 && yy < ACTIVEBKG->m_size.y-1) {
 			for(short z = yy - 1; z <= yy + 1; z++)
 			for(short x = xx - 1; x <= xx + 1; x++) {
 				const BackgroundTileData & feg = ACTIVEBKG->m_tileData[x][z];

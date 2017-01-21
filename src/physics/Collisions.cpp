@@ -482,9 +482,9 @@ float CheckAnythingInCylinder(const Cylinder & cyl, Entity * ioo, long flags) {
 	int radius = int((cyl.radius + 100) * ACTIVEBKG->m_mul.x);
 	
 	int minx = std::max(tilex - radius, 0);
-	int maxx = std::min(tilex + radius, ACTIVEBKG->Xsize - 1);
+	int maxx = std::min(tilex + radius, ACTIVEBKG->m_size.x - 1);
 	int minz = std::max(tilez - radius, 0);
-	int maxz = std::min(tilez + radius, ACTIVEBKG->Zsize - 1);
+	int maxz = std::min(tilez + radius, ACTIVEBKG->m_size.y - 1);
 	
 	for(int z = minz; z <= maxz; z++)
 	for(int x = minx; x <= maxx; x++) {
@@ -980,9 +980,9 @@ const EERIEPOLY * CheckBackgroundInSphere(const Sphere & sphere) {
 	int radius = int(sphere.radius * ACTIVEBKG->m_mul.x) + 2;
 
 	int minx = std::max(tilex - radius, 0);
-	int maxx = std::min(tilex + radius, ACTIVEBKG->Xsize - 1);
+	int maxx = std::min(tilex + radius, ACTIVEBKG->m_size.x - 1);
 	int minz = std::max(tilez - radius, 0);
-	int maxz = std::min(tilez + radius, ACTIVEBKG->Zsize - 1);
+	int maxz = std::min(tilez + radius, ACTIVEBKG->m_size.y - 1);
 
 	for(int z = minz; z <= maxz; z++)
 	for(int x = minx; x <= maxx; x++) {
@@ -1019,9 +1019,9 @@ bool CheckAnythingInSphere(const Sphere & sphere, EntityHandle source, CASFlags 
 		int radius = int(sphere.radius * ACTIVEBKG->m_mul.x) + 2;
 		
 		int minx = std::max(tilex - radius, 0);
-		int maxx = std::min(tilex + radius, ACTIVEBKG->Xsize - 1);
+		int maxx = std::min(tilex + radius, ACTIVEBKG->m_size.x - 1);
 		int minz = std::max(tilez - radius, 0);
-		int maxz = std::min(tilez + radius, ACTIVEBKG->Zsize - 1);
+		int maxz = std::min(tilez + radius, ACTIVEBKG->m_size.y - 1);
 
 		for(int z = minz; z <= maxz; z++)
 		for(int x = minx; x <= maxx; x++) {
@@ -1650,7 +1650,7 @@ bool IO_Visible(const Vec3f & orgn, const Vec3f & dest, Vec3f * hit)
 		long px = (long)(tmpPos.x * ACTIVEBKG->m_mul.x);
 		long pz = (long)(tmpPos.z * ACTIVEBKG->m_mul.y);
 
-		if(px < 0 || px >= ACTIVEBKG->Xsize || pz < 0 || pz >= ACTIVEBKG->Zsize)
+		if(px < 0 || px >= ACTIVEBKG->m_size.x || pz < 0 || pz >= ACTIVEBKG->m_size.y)
 			break;
 
 		BackgroundTileData * eg = &ACTIVEBKG->m_tileData[px][pz];

@@ -590,8 +590,8 @@ void ResetTileLights() {
 	
 	ARX_PROFILE_FUNC();
 	
-	for(long z = 0; z < ACTIVEBKG->Zsize; z++)
-	for(long x = 0; x < ACTIVEBKG->Xsize; x++) {
+	for(long z = 0; z < ACTIVEBKG->m_size.y; z++)
+	for(long x = 0; x < ACTIVEBKG->m_size.x; x++) {
 		tilelights[x][z].el.clear();
 	}
 }
@@ -818,8 +818,8 @@ void EERIERemovePrecalcLights() {
 	}
 	
 	// TODO copy-paste poly iteration
-	for(short z = 0; z < ACTIVEBKG->Zsize; z++)
-	for(short x = 0; x < ACTIVEBKG->Xsize; x++) {
+	for(short z = 0; z < ACTIVEBKG->m_size.y; z++)
+	for(short x = 0; x < ACTIVEBKG->m_size.x; x++) {
 		BackgroundTileData & eg = ACTIVEBKG->m_tileData[x][z];
 		for(short l = 0; l < eg.nbpoly; l++) {
 			EERIEPOLY & ep = eg.polydata[l];

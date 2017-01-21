@@ -270,9 +270,9 @@ static bool IsFULLObjectVertexInValidPosition(PHYSICS_BOX_DATA * pbox, EERIEPOLY
 	int radius = std::min(1, short(rad * (1.0f/100)) + 1);
 	
 	int minx = std::max(tilex - radius, 0);
-	int maxx = std::min(tilex + radius, ACTIVEBKG->Xsize - 1);
+	int maxx = std::min(tilex + radius, ACTIVEBKG->m_size.x - 1);
 	int minz = std::max(tilez - radius, 0);
-	int maxz = std::min(tilez + radius, ACTIVEBKG->Zsize - 1);
+	int maxz = std::min(tilez + radius, ACTIVEBKG->m_size.y - 1);
 	
 	for(int z = minz; z <= maxz; z++)
 	for(int x = minx; x <= maxx; x++) {
