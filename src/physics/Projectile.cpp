@@ -74,8 +74,8 @@ static bool IsPointInField(const Vec3f & pos) {
 	return false;
 }
 
-static void ARX_THROWN_OBJECT_Kill(long num) {
-	if(num >= 0 && size_t(num) < MAX_THROWN_OBJECTS) {
+static void ARX_THROWN_OBJECT_Kill(size_t num) {
+	if(num < MAX_THROWN_OBJECTS) {
 		g_projectiles[num].flags = 0;
 		delete g_projectiles[num].m_trail;
 		g_projectiles[num].m_trail = NULL;
@@ -105,7 +105,7 @@ static long ARX_THROWN_OBJECT_GetFree() {
 	}
 
 	if(latest_obj >= 0) {
-		ARX_THROWN_OBJECT_Kill(latest_obj);
+		ARX_THROWN_OBJECT_Kill(size_t(latest_obj));
 		return latest_obj;
 	}
 
