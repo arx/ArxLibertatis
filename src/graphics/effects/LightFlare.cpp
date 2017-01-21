@@ -52,7 +52,7 @@ void update2DFX() {
 	for(size_t i = 0; i < g_culledDynamicLightsCount; i++) {
 		EERIE_LIGHT *el = g_culledDynamicLights[i];
 
-		EERIE_BKG_INFO * bkgData = getFastBackgroundData(el->pos.x, el->pos.z);
+		BackgroundTileData * bkgData = getFastBackgroundData(el->pos.x, el->pos.z);
 
 		if(!bkgData || !bkgData->treat) {
 			el->treat=0;

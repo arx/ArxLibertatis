@@ -112,7 +112,7 @@ void PolyBoomAddScorch(const Vec3f & poss) {
 	
 	for(int z = minz; z <= maxz; z++)
 	for(int x = minx; x <= maxx; x++) {
-		EERIE_BKG_INFO & eg = ACTIVEBKG->fastdata[x][z];
+		BackgroundTileData & eg = ACTIVEBKG->fastdata[x][z];
 		for(long l = 0; l < eg.nbpoly; l++) {
 			EERIEPOLY * ep = &eg.polydata[l];
 			
@@ -275,7 +275,7 @@ void PolyBoomAddSplat(const Sphere & sp, const Color3f & col, long flags) {
 	
 	for(int z = minz; z <= maxz; z++)
 	for(int x = minx; x <= maxx; x++) {
-		EERIE_BKG_INFO *eg = &ACTIVEBKG->fastdata[x][z];
+		BackgroundTileData *eg = &ACTIVEBKG->fastdata[x][z];
 		
 		for(long l = 0; l < eg->nbpolyin; l++) {
 			EERIEPOLY *ep = eg->polyin[l];

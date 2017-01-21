@@ -72,7 +72,7 @@ static EERIEPOLY * ANCHOR_CheckInPolyPrecis(const Vec3f & pos) {
 
 	for(short z = pz - 1; z <= pz + 1; z++)
 	for(short x = px - 1; x <= px + 1; x++) {
-			EERIE_BKG_INFO *feg = &ACTIVEBKG->fastdata[x][z];
+			BackgroundTileData *feg = &ACTIVEBKG->fastdata[x][z];
 
 			for(long k = 0; k < feg->nbpolyin; k++) {
 				EERIEPOLY *ep = feg->polyin[k];
@@ -102,7 +102,7 @@ static EERIEPOLY * ANCHOR_CheckInPoly(const Vec3f & pos) {
 
 	EERIEPOLY *found = NULL;
 
-	EERIE_BKG_INFO *feg = &ACTIVEBKG->fastdata[x][z];
+	BackgroundTileData *feg = &ACTIVEBKG->fastdata[x][z];
 
 	for(long k = 0; k < feg->nbpolyin; k++) {
 		EERIEPOLY *ep = feg->polyin[k];
@@ -238,7 +238,7 @@ static float ANCHOR_CheckAnythingInCylinder(const Cylinder & cyl, CollisionFlags
 	
 	for(short z = pz - rad; z <= pz + rad; z++)
 	for(short x = px - rad; x <= px + rad; x++) {
-		const EERIE_BKG_INFO & feg = ACTIVEBKG->fastdata[x][z];
+		const BackgroundTileData & feg = ACTIVEBKG->fastdata[x][z];
 		
 		for(long k = 0; k < feg.nbpoly; k++) {
 			const EERIEPOLY & ep = feg.polydata[k];
@@ -522,7 +522,7 @@ void AnchorData_ClearAll(EERIE_BACKGROUND * eb) {
 
 	for(long j = 0; j < eb->Zsize; j++) {
 		for(long i = 0; i < eb->Xsize; i++) {
-			EERIE_BKG_INFO * eg = &eb->fastdata[i][j];
+			BackgroundTileData * eg = &eb->fastdata[i][j];
 
 			if(eg->nbianchors && eg->ianchors)
 				free(eg->ianchors);
@@ -589,7 +589,7 @@ bool CylinderAboveInvalidZone(const Cylinder & cyl) {
 // Adds an Anchor... and tries to generate the best possible cylinder for it
 //*************************************************************************************
 
-static bool DirectAddAnchor_Original_Method(EERIE_BACKGROUND * eb, EERIE_BKG_INFO * eg, Vec3f * pos) {
+static bool DirectAddAnchor_Original_Method(EERIE_BACKGROUND * eb, BackgroundTileData * eg, Vec3f * pos) {
 	
 	long found = 0;
 	long stop_radius = 0;
@@ -684,7 +684,7 @@ static bool DirectAddAnchor_Original_Method(EERIE_BACKGROUND * eb, EERIE_BKG_INF
 	return true;
 }
 
-static bool AddAnchor_Original_Method(EERIE_BACKGROUND * eb, EERIE_BKG_INFO * eg, Vec3f * pos) {
+static bool AddAnchor_Original_Method(EERIE_BACKGROUND * eb, BackgroundTileData * eg, Vec3f * pos) {
 	
 	long found = 0;
 	long best = 0;
@@ -844,7 +844,7 @@ static void AnchorData_Create_Links_Original_Method(EERIE_BACKGROUND * eb) {
 		}
 		
 		count++;
-		const EERIE_BKG_INFO & eg = eb->fastdata[i][j];
+		const BackgroundTileData & eg = eb->fastdata[i][j];
 		long precise = 0;
 		
 		for(long kkk = 0; kkk < eg.nbpolyin; kkk++) {
@@ -865,7 +865,7 @@ static void AnchorData_Create_Links_Original_Method(EERIE_BACKGROUND * eb) {
 			
 			for(long j2 = ji; j2 <= ja; j2++)
 			for(long i2 = ii; i2 <= ia; i2++) {
-				const EERIE_BKG_INFO & eg2 = eb->fastdata[i2][j2];
+				const BackgroundTileData & eg2 = eb->fastdata[i2][j2];
 				long precise2 = 0;
 				
 				for(long kkk = 0; kkk < eg2.nbpolyin; kkk++) {
@@ -969,7 +969,7 @@ static void AnchorData_Create_Links_Original_Method(EERIE_BACKGROUND * eb) {
 
 static float GetTileMinY(long i, long j) {
 	float minf = 9999999999.f;
-	EERIE_BKG_INFO *eg = &ACTIVEBKG->fastdata[i][j];
+	BackgroundTileData *eg = &ACTIVEBKG->fastdata[i][j];
 
 	for (long kk = 0; kk < eg->nbpolyin; kk++) {
 		EERIEPOLY * ep = eg->polyin[kk];
@@ -981,7 +981,7 @@ static float GetTileMinY(long i, long j) {
 
 static float GetTileMaxY(long i, long j) {
 	float maxf = -9999999999.f;
-	EERIE_BKG_INFO *eg = &ACTIVEBKG->fastdata[i][j];
+	BackgroundTileData *eg = &ACTIVEBKG->fastdata[i][j];
 
 	for(long kk = 0; kk < eg->nbpolyin; kk++) {
 		EERIEPOLY * ep = eg->polyin[kk];
@@ -1011,7 +1011,7 @@ static void AnchorData_Create_Phase_II_Original_Method(EERIE_BACKGROUND * eb) {
 		
 		count += 1.f;
 		
-		EERIE_BKG_INFO * eg = &eb->fastdata[x][z];
+		BackgroundTileData * eg = &eb->fastdata[x][z];
 		pos.x = float(x) * float(eb->Xdiv);
 		pos.y = 0.f;
 		pos.z = float(z) * float(eb->Zdiv);
@@ -1152,7 +1152,7 @@ void AnchorData_Create(EERIE_BACKGROUND * eb) {
 			if(LASTFOUND)
 				break;
 			
-			EERIE_BKG_INFO * eg = &eb->fastdata[x][z];
+			BackgroundTileData * eg = &eb->fastdata[x][z];
 			pos.x = (float)((float)((float)x + 0.33f * (float)divvx) * (float)eb->Xdiv);
 			pos.y = 0.f;
 			pos.z = (float)((float)((float)z + 0.33f * (float)divvy) * (float)eb->Zdiv);

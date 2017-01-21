@@ -690,7 +690,7 @@ static void drawDebugMaterials() {
 	
 	for(short z = 0; z < ACTIVEBKG->Zsize; z++)
 	for(short x = 0; x < ACTIVEBKG->Xsize; x++) {
-		const EERIE_BKG_INFO & feg = ACTIVEBKG->fastdata[x][z];
+		const BackgroundTileData & feg = ACTIVEBKG->fastdata[x][z];
 		
 		if(!feg.treat) {
 			continue;
