@@ -88,8 +88,7 @@ struct BackgroundData {
 	long		exist;
 	short		Xsize;
 	short		Zsize;
-	short		Xdiv;
-	short		Zdiv;
+	Vec2s m_div;
 	Vec2f m_mul;
 	BackgroundTileData m_tileData[MAX_BKGX][MAX_BKGZ];
 	long		  nbanchors;
@@ -99,8 +98,7 @@ struct BackgroundData {
 		: exist(false)
 		, Xsize(0)
 		, Zsize(0)
-		, Xdiv(0)
-		, Zdiv(0)
+		, m_div(0, 0)
 		, m_mul(0, 0)
 		, nbanchors(0)
 		, anchors(NULL)
