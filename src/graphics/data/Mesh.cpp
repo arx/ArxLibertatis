@@ -259,7 +259,7 @@ EERIEPOLY * CheckInPoly(const Vec3f & poss, float * needY)
 	
 	for(short z = minz; z <= maxz; z++)
 	for(short x = minx; x <= maxx; x++) {
-		const BackgroundTileData & feg = ACTIVEBKG->fastdata[x][z];
+		const BackgroundTileData & feg = ACTIVEBKG->m_tileData[x][z];
 		
 		for(short k = 0; k < feg.nbpolyin; k++) {
 			EERIEPOLY * ep = feg.polyin[k];
@@ -296,7 +296,7 @@ BackgroundTileData * getFastBackgroundData(float x, float z) {
 	if(px < 0 || px >= ACTIVEBKG->Xsize || pz < 0 || pz >= ACTIVEBKG->Zsize)
 		return NULL;
 	
-	return &ACTIVEBKG->fastdata[px][pz];
+	return &ACTIVEBKG->m_tileData[px][pz];
 }
 
 EERIEPOLY * CheckTopPoly(const Vec3f & pos) {
@@ -563,7 +563,7 @@ long BKG_CountPolys(const EERIE_BACKGROUND & eb) {
 
 	for(long z = 0; z < eb.Zsize; z++)
 	for(long x = 0; x < eb.Xsize; x++) {
-		const BackgroundTileData & eg = eb.fastdata[x][z];
+		const BackgroundTileData & eg = eb.m_tileData[x][z];
 		count += eg.nbpoly;
 	}
 
@@ -579,7 +579,7 @@ long BKG_CountIgnoredPolys(const EERIE_BACKGROUND & eb) {
 
 	for(long z = 0; z < eb.Zsize; z++)
 	for(long x = 0; x < eb.Xsize; x++) {
-		const BackgroundTileData & eg = eb.fastdata[x][z];
+		const BackgroundTileData & eg = eb.m_tileData[x][z];
 
 		for(long k = 0; k < eg.nbpoly; k++){
 			const EERIEPOLY & pol = eg.polydata[k];
@@ -688,7 +688,7 @@ void ClearBackground(EERIE_BACKGROUND * eb) {
 	
 	for(long z = 0; z < eb->Zsize; z++)
 	for(long x = 0; x < eb->Xsize; x++) {
-		ReleaseBKG_INFO(&eb->fastdata[x][z]);
+		ReleaseBKG_INFO(&eb->m_tileData[x][z]);
 	}
 	
 	free(RoomDistance);
@@ -721,7 +721,7 @@ void InitBkg(EERIE_BACKGROUND * eb, short sx, short sz, short Xdiv, short Zdiv) 
 	
 	for(short z = 0; z < eb->Zsize; z++)
 	for(short x = 0; x < eb->Xsize; x++) {
-		eb->fastdata[x][z] = BackgroundTileData();
+		eb->m_tileData[x][z] = BackgroundTileData();
 	}
 }
 
@@ -756,7 +756,7 @@ void EERIEPOLY_Compute_PolyIn() {
 	
 	for(long z = 0; z < ACTIVEBKG->Zsize; z++)
 	for(long x = 0; x < ACTIVEBKG->Xsize; x++) {
-		BackgroundTileData *eg = &ACTIVEBKG->fastdata[x][z];
+		BackgroundTileData *eg = &ACTIVEBKG->m_tileData[x][z];
 		
 		free(eg->polyin);
 		eg->polyin = NULL;
@@ -776,7 +776,7 @@ void EERIEPOLY_Compute_PolyIn() {
 		
 		for(long z2 = minz; z2 < maxz; z2++)
 		for(long x2 = minx; x2 < maxx; x2++) {
-			BackgroundTileData *eg2 = &ACTIVEBKG->fastdata[x2][z2];
+			BackgroundTileData *eg2 = &ACTIVEBKG->m_tileData[x2][z2];
 			
 			for(long l = 0; l < eg2->nbpoly; l++) {
 				EERIEPOLY *ep2 = &eg2->polydata[l];
@@ -913,7 +913,7 @@ long CountBkgVertex() {
 
 	for(long z = 0; z < ACTIVEBKG->Zsize; z++) {
 		for(long x = 0; x < ACTIVEBKG->Xsize; x++) {
-			const BackgroundTileData & eg = ACTIVEBKG->fastdata[x][z];
+			const BackgroundTileData & eg = ACTIVEBKG->m_tileData[x][z];
 
 			for(long l = 0; l < eg.nbpoly; l++) {
 				const EERIEPOLY & ep = eg.polydata[l];
@@ -1149,7 +1149,7 @@ static bool loadFastScene(const res::path & file, const char * data, const char 
 			
 			const FAST_SCENE_INFO * fsi = fts_read<FAST_SCENE_INFO>(data, end);
 			
-			BackgroundTileData & bkg = ACTIVEBKG->fastdata[i][j];
+			BackgroundTileData & bkg = ACTIVEBKG->m_tileData[i][j];
 			
 			bkg.nbianchors = (short)fsi->nbianchors;
 			bkg.nbpoly = (short)fsi->nbpoly;
@@ -1424,7 +1424,7 @@ static Vec3f GetRoomCenter(long room_num) {
 	bbox.max = Vec3f(-99999999.f);
 
 	for(long lll = 0; lll < room.nb_polys; lll++) {
-		const BackgroundTileData & feg = ACTIVEBKG->fastdata[room.epdata[lll].p.x][room.epdata[lll].p.y];
+		const BackgroundTileData & feg = ACTIVEBKG->m_tileData[room.epdata[lll].p.x][room.epdata[lll].p.y];
 		const EERIEPOLY & ep = feg.polydata[room.epdata[lll].idx];
 		bbox.min = glm::min(bbox.min, ep.center);
 		bbox.max = glm::max(bbox.max, ep.center);
@@ -1668,7 +1668,7 @@ static int BkgAddPoly(EERIEPOLY * ep, EERIE_3DOBJ * eobj) {
 	if (posz < 0) return 0;
 	else if (posz >= ACTIVEBKG->Zsize) return 0;
 	
-	BackgroundTileData *eg = &ACTIVEBKG->fastdata[posx][posz];
+	BackgroundTileData *eg = &ACTIVEBKG->m_tileData[posx][posz];
 	
 	long t = (((eg->nbpoly) >> 1) << 1) + 2; 
 	long tt = (((eg->nbpoly - 1) >> 1) << 1) + 2; 
@@ -1887,7 +1887,7 @@ static bool FastSceneSave(const fs::path & partial_path) {
 	for(long j = 0; j < ACTIVEBKG->Zsize; j++) {
 		for(long i = 0; i < ACTIVEBKG->Xsize; i++) {
 			allocsize += sizeof(FAST_SCENE_INFO);
-			allocsize += ACTIVEBKG->fastdata[i][j].nbpoly * (sizeof(EERIEPOLY) + 1);
+			allocsize += ACTIVEBKG->m_tileData[i][j].nbpoly * (sizeof(EERIEPOLY) + 1);
 		}
 	}
 	
@@ -1960,9 +1960,9 @@ static bool FastSceneSave(const fs::path & partial_path) {
 	s32 texid = 0;
 	for(long j = 0; j < fsh->sizez; j++) {
 		for(long i = 0; i < fsh->sizex; i++) {
-			for(long k = 0; k < ACTIVEBKG->fastdata[i][j].nbpoly; k++) {
+			for(long k = 0; k < ACTIVEBKG->m_tileData[i][j].nbpoly; k++) {
 				
-				EERIEPOLY * ep = &ACTIVEBKG->fastdata[i][j].polydata[k];
+				EERIEPOLY * ep = &ACTIVEBKG->m_tileData[i][j].polydata[k];
 				
 				if(ep && ep->tex) {
 					
@@ -1996,15 +1996,15 @@ static bool FastSceneSave(const fs::path & partial_path) {
 				return false;
 			}
 			
-			fsi->nbianchors = ACTIVEBKG->fastdata[i][j].nbianchors;
-			fsi->nbpoly = ACTIVEBKG->fastdata[i][j].nbpoly;
+			fsi->nbianchors = ACTIVEBKG->m_tileData[i][j].nbianchors;
+			fsi->nbpoly = ACTIVEBKG->m_tileData[i][j].nbpoly;
 			
 			for(long k = 0; k < fsi->nbpoly; k++) {
 				fsh->nb_polys++;
 				
 				FAST_EERIEPOLY * ep = reinterpret_cast<FAST_EERIEPOLY *>(dat + pos);
 				pos += sizeof(FAST_EERIEPOLY);
-				EERIEPOLY * ep2 = &ACTIVEBKG->fastdata[i][j].polydata[k];
+				EERIEPOLY * ep2 = &ACTIVEBKG->m_tileData[i][j].polydata[k];
 				
 				if(pos >= allocsize - 100000) {
 					delete[] dat;
@@ -2037,7 +2037,7 @@ static bool FastSceneSave(const fs::path & partial_path) {
 					delete[] dat;
 					return false;
 				}
-				*ianch = ACTIVEBKG->fastdata[i][j].ianchors[k];
+				*ianch = ACTIVEBKG->m_tileData[i][j].ianchors[k];
 			}
 		}
 	}
@@ -2284,7 +2284,7 @@ void ComputePortalVertexBuffer() {
 		for(int j = 0; j < room->nb_polys; j++) {
 			int x = room->epdata[j].p.x;
 			int y = room->epdata[j].p.y;
-			BackgroundTileData & cell = ACTIVEBKG->fastdata[x][y];
+			BackgroundTileData & cell = ACTIVEBKG->m_tileData[x][y];
 			EERIEPOLY & poly = cell.polydata[room->epdata[j].idx];
 			
 			if(poly.type & POLY_IGNORE) {
@@ -2388,7 +2388,7 @@ void ComputePortalVertexBuffer() {
 			for(int j = 0; j < room->nb_polys; j++) {
 				int x = room->epdata[j].p.x;
 				int y = room->epdata[j].p.y;
-				BackgroundTileData & cell = ACTIVEBKG->fastdata[x][y];
+				BackgroundTileData & cell = ACTIVEBKG->m_tileData[x][y];
 				EERIEPOLY & poly = cell.polydata[room->epdata[j].idx];
 				
 				if((poly.type & POLY_IGNORE) || (poly.type & POLY_HIDE) || !poly.tex) {

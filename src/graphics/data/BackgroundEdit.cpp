@@ -161,7 +161,7 @@ bool TryToQuadify(EERIEPOLY * ep,EERIE_3DOBJ * eobj) {
 	for(long kl = 0; kl < 2; kl++)
 	for(short z = minz; z <= maxz; z++)
 	for(short x = minx; x <= maxx; x++) {
-		BackgroundTileData *eg = &ACTIVEBKG->fastdata[x][z];
+		BackgroundTileData *eg = &ACTIVEBKG->m_tileData[x][z];
 		
 		long val1 = 0;
 
@@ -213,7 +213,7 @@ void ARX_PrepareBackgroundNRMLs() {
 	
 	for(short z = 0; z < ACTIVEBKG->Zsize; z++)
 	for(short x = 0; x < ACTIVEBKG->Xsize; x++) {
-		BackgroundTileData * eg = &ACTIVEBKG->fastdata[x][z];
+		BackgroundTileData * eg = &ACTIVEBKG->m_tileData[x][z];
 		for(short l = 0; l < eg->nbpoly; l++) {
 			EERIEPOLY * ep = &eg->polydata[l];
 			
@@ -245,7 +245,7 @@ void ARX_PrepareBackgroundNRMLs() {
 				
 				for(short j2 = minz; j2 < maxz; j2++)
 				for(short i2 = minx; i2 < maxx; i2++) {
-					BackgroundTileData * eg2 = &ACTIVEBKG->fastdata[i2][j2];
+					BackgroundTileData * eg2 = &ACTIVEBKG->m_tileData[i2][j2];
 					
 					for(long kr = 0; kr < eg2->nbpoly; kr++) {
 						EERIEPOLY * ep2 = &eg2->polydata[kr];
@@ -291,7 +291,7 @@ void ARX_PrepareBackgroundNRMLs() {
 	
 	for(short z = 0; z < ACTIVEBKG->Zsize; z++)
 	for(short x = 0; x < ACTIVEBKG->Xsize; x++) {
-		BackgroundTileData * eg = &ACTIVEBKG->fastdata[x][z];
+		BackgroundTileData * eg = &ACTIVEBKG->m_tileData[x][z];
 		for(long l = 0; l < eg->nbpoly; l++) {
 			EERIEPOLY * ep = &eg->polydata[l];
 			

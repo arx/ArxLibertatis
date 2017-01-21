@@ -1083,7 +1083,7 @@ static void ARX_PORTALS_Frustrum_RenderRoomTCullSoft(size_t room_num,
 	for(long lll=0; lll<room.nb_polys; lll++) {
 		const EP_DATA & pEPDATA = room.epdata[lll];
 		
-		BackgroundTileData *feg = &ACTIVEBKG->fastdata[pEPDATA.p.x][pEPDATA.p.y];
+		BackgroundTileData *feg = &ACTIVEBKG->m_tileData[pEPDATA.p.x][pEPDATA.p.y];
 
 		if(!feg->treat) {
 			// TODO copy-paste background tiles
@@ -1098,7 +1098,7 @@ static void ARX_PORTALS_Frustrum_RenderRoomTCullSoft(size_t room_num,
 
 			for(int z = minz; z <= maxz; z++)
 			for(int x = minx; x <= maxx; x++) {
-				BackgroundTileData & feg2 = ACTIVEBKG->fastdata[x][z];
+				BackgroundTileData & feg2 = ACTIVEBKG->m_tileData[x][z];
 
 				if(!feg2.treat) {
 					feg2.treat = true;
@@ -1462,7 +1462,7 @@ void ARX_SCENE_Update() {
 	int minz = std::max(tilez - radius, 0);
 	int maxz = std::min(tilez + radius, ACTIVEBKG->Zsize - 1);
 
-	ACTIVEBKG->fastdata[tilex][tilez].treat = true;
+	ACTIVEBKG->m_tileData[tilex][tilez].treat = true;
 	TreatBackgroundDynlights();
 	PrecalcDynamicLighting(minx, minz, maxx, maxz, camPos, camDepth);
 
@@ -1471,7 +1471,7 @@ void ARX_SCENE_Update() {
 
 	for(short z = minz; z <= maxz; z++)
 	for(short x = minx; x < maxx; x++) {
-		ACTIVEBKG->fastdata[x][z].treat = false;
+		ACTIVEBKG->m_tileData[x][z].treat = false;
 	}
 
 	ResetTileLights();
