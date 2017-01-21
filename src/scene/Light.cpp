@@ -535,6 +535,8 @@ void setMaxLLights(int count) {
 
 void UpdateLlights(ShaderLight lights[], int & lightsCount, const Vec3f pos, bool forPlayerColor) {
 	
+	ARX_PROFILE_FUNC();
+	
 	boost::array<EERIE_LIGHT *, llightsSize> llights;
 	llights.fill(NULL);
 	boost::array<float, llightsSize> values;
