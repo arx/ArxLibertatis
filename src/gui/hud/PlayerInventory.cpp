@@ -170,7 +170,7 @@ void PlayerInventoryHud::CalculateInventoryCoordinates() {
 //-----------------------------------------------------------------------------
 void PlayerInventoryHud::ARX_INTERFACE_DrawInventory(size_t bag, Vec2i i)
 {
-	fDecPulse += g_framedelay * 0.5f;
+	fDecPulse += toMs(g_platformTime.lastFrameDuration()) * 0.5f;
 	
 	Vec2f anchorPos = anchorPosition();
 	
