@@ -22,6 +22,7 @@
 #include "core/Application.h"
 #include "core/Config.h"
 #include "core/Core.h"
+#include "core/GameTime.h"
 #include "game/Inventory.h"
 #include "game/Item.h"
 #include "game/Player.h"
@@ -584,12 +585,13 @@ void SecondaryInventoryHud::close() {
 void SecondaryInventoryHud::updateFader() {
 	
 	if(m_fadeDirection != Fade_stable) {
+		float frameDelay = toMs(g_platformTime.lastFrameDuration());
 		if((player.Interface & INTER_COMBATMODE) || player.doingmagic >= 2 || m_fadeDirection == Fade_left) {
 			if(m_fadePosition > -160)
-				m_fadePosition -= (g_framedelay * ( 1.0f / 3 )) * m_scale;
+				m_fadePosition -= (frameDelay * ( 1.0f / 3 )) * m_scale;
 		} else {
 			if(m_fadePosition < 0)
-				m_fadePosition += m_fadeDirection * (g_framedelay * ( 1.0f / 3 )) * m_scale;
+				m_fadePosition += m_fadeDirection * (frameDelay * ( 1.0f / 3 )) * m_scale;
 		}
 		
 		if(m_fadePosition <= -160) {
