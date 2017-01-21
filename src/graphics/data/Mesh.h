@@ -85,7 +85,7 @@ struct ANCHOR_DATA;
 
 struct EERIE_BACKGROUND
 {
-	BackgroundTileData	fastdata[MAX_BKGX][MAX_BKGZ];
+	BackgroundTileData m_tileData[MAX_BKGX][MAX_BKGZ];
 	long		exist;
 	short		Xsize;
 	short		Zsize;

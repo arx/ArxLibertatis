@@ -276,7 +276,7 @@ static bool IsFULLObjectVertexInValidPosition(PHYSICS_BOX_DATA * pbox, EERIEPOLY
 	
 	for(int z = minz; z <= maxz; z++)
 	for(int x = minx; x <= maxx; x++) {
-		BackgroundTileData & eg = ACTIVEBKG->fastdata[x][z];
+		BackgroundTileData & eg = ACTIVEBKG->m_tileData[x][z];
 		
 		for(long k = 0; k < eg.nbpoly; k++) {
 			EERIEPOLY & ep = eg.polydata[k];

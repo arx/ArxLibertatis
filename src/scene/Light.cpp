@@ -820,7 +820,7 @@ void EERIERemovePrecalcLights() {
 	// TODO copy-paste poly iteration
 	for(short z = 0; z < ACTIVEBKG->Zsize; z++)
 	for(short x = 0; x < ACTIVEBKG->Xsize; x++) {
-		BackgroundTileData & eg = ACTIVEBKG->fastdata[x][z];
+		BackgroundTileData & eg = ACTIVEBKG->m_tileData[x][z];
 		for(short l = 0; l < eg.nbpoly; l++) {
 			EERIEPOLY & ep = eg.polydata[l];
 			
