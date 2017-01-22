@@ -1201,7 +1201,7 @@ void ComputeVVPos(Entity * io)
 			if(eediff < 15.f) {
 				float val;
 				if(io == entities.player()) {
-					val = g_framedelay * (1.0f / GLOBAL_SLOWDOWN) * (1.0f / 4) * mul;
+					val = toMs(g_platformTime.lastFrameDuration()) * (1.0f / 4) * mul;
 				} else {
 					val = g_framedelay * (1.0f / 4) * mul;
 				}
@@ -1216,7 +1216,7 @@ void ComputeVVPos(Entity * io)
 				fdiff -= val;
 			} else {
 				if(io == entities.player()) {
-					fdiff -= g_framedelay * (1.0f / GLOBAL_SLOWDOWN) * (1.0f / 4) * mul;
+					fdiff -= toMs(g_platformTime.lastFrameDuration()) * (1.0f / 4) * mul;
 				} else {
 					fdiff -= g_framedelay * (1.0f / 4) * mul;
 				}
