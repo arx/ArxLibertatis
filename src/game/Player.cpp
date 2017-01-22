@@ -2322,7 +2322,8 @@ void PlayerMovementIterate(float DeltaTime) {
 		   && player.jumpphase == NotJumping
 		) {
 			g_moveto = player.pos;
-			goto lasuite;
+			setPlayerPositionColor();
+			return;
 		} else {
 			
 			// Need to apply some physics/collision tests
@@ -2461,9 +2462,6 @@ void PlayerMovementIterate(float DeltaTime) {
 	
 	// Finally update player pos !
 	player.pos = g_moveto;
-	
-lasuite:
-	;
 	
 	setPlayerPositionColor();
 }
