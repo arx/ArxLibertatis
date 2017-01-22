@@ -1945,6 +1945,19 @@ static bool Valid_Jump_Pos() {
 	return (tmp <= 50.f);
 }
 
+void setPlayerPositionColor(){
+
+	float grnd_color = GetColorz(Vec3f(player.pos.x, player.pos.y + 90, player.pos.z)) - 15.f;
+	if(CURRENT_PLAYER_COLOR < grnd_color) {
+		CURRENT_PLAYER_COLOR += g_framedelay * (1.0f / 8);
+		CURRENT_PLAYER_COLOR = std::min(CURRENT_PLAYER_COLOR, grnd_color);
+	}
+	if(CURRENT_PLAYER_COLOR > grnd_color) {
+		CURRENT_PLAYER_COLOR -= g_framedelay * (1.0f / 4);
+		CURRENT_PLAYER_COLOR = std::max(CURRENT_PLAYER_COLOR, grnd_color);
+	}
+}
+
 void PlayerMovementIterate(float DelatTime);
 
 void ARX_PLAYER_Manage_Movement() {
@@ -2451,17 +2464,8 @@ void PlayerMovementIterate(float DeltaTime) {
 	
 lasuite:
 	;
-
-	// Get Player position color
-	float grnd_color = GetColorz(Vec3f(player.pos.x, player.pos.y + 90, player.pos.z)) - 15.f;
-	if(CURRENT_PLAYER_COLOR < grnd_color) {
-		CURRENT_PLAYER_COLOR += g_framedelay * (1.0f / 8);
-		CURRENT_PLAYER_COLOR = std::min(CURRENT_PLAYER_COLOR, grnd_color);
-	}
-	if(CURRENT_PLAYER_COLOR > grnd_color) {
-		CURRENT_PLAYER_COLOR -= g_framedelay * (1.0f / 4);
-		CURRENT_PLAYER_COLOR = std::max(CURRENT_PLAYER_COLOR, grnd_color);
-	}
+	
+	setPlayerPositionColor();
 }
 
 /*!
