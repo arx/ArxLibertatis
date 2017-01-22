@@ -1463,6 +1463,7 @@ void HudRoot::draw() {
 	hitStrengthGauge.update();
 	
 	g_secondaryInventoryHud.update();
+	g_secondaryInventoryHud.updateFader();
 	g_playerInventoryHud.update();
 	mecanismIcon.update();
 	screenArrows.update();
