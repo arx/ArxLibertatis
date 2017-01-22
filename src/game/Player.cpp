@@ -2462,8 +2462,6 @@ lasuite:
 		CURRENT_PLAYER_COLOR -= g_framedelay * (1.0f / 4);
 		CURRENT_PLAYER_COLOR = std::max(CURRENT_PLAYER_COLOR, grnd_color);
 	}
-	
-	g_secondaryInventoryHud.updateFader();
 }
 
 /*!
