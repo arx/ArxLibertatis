@@ -34,8 +34,7 @@ def validateScenes():
         
         data = ftsSerializer.read_fts_container(parts.fts)
         
-        tiles = data["cells"]
-        for tileX in tiles:
+        for tileX in data.cells:
             for tile in tileX:
                 if tile is not None:
                     count = len(tile)
@@ -52,8 +51,7 @@ def validateScenes():
                             totalTriangles += 1
         
         
-        portals = data["portals"]
-        for portal in portals:
+        for portal in data.portals:
             # Types other than none or quad make no sense for portals
             if not portal.poly.type in {0, 64}:
                 log.warn("Portal Poly: Weird type: {}".format(portal.poly.type))

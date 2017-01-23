@@ -29,6 +29,7 @@ if "bpy" in locals():
     importlib.reload(sys.modules["arx_addon.dataLlf"])
     # importlib.reload(sys.modules["arx_addon.dataTea"])
 
+import bpy
 import bmesh
 import math
 import mathutils
@@ -509,14 +510,14 @@ class ArxSceneManager(object):
         # Create materials
         mappedMaterials = []
         idx = 0
-        for tex in ftsData['textures']:
+        for tex in ftsData.textures:
             mappedMaterials.append((idx, tex.tc, createMaterial(self.dataPath, tex.fic.decode('iso-8859-1'))))
             idx += 1
 
         scn = bpy.context.scene
 
         # Create mesh
-        bm = self.AddSceneBackground(ftsData["cells"], mappedMaterials)
+        bm = self.AddSceneBackground(ftsData.cells, mappedMaterials)
         mesh = bpy.data.meshes.new(sceneName + "-mesh")
         bm.to_mesh(mesh)
         bm.free()
@@ -531,11 +532,11 @@ class ArxSceneManager(object):
         for idx, tcId, mat in mappedMaterials:
             obj.data.materials.append(mat)
 
-        self.AddScenePathfinderAnchors(scn, ftsData["anchors"])
+        self.AddScenePathfinderAnchors(scn, ftsData.anchors)
         self.AddScenePortals(scn, ftsData)
-        self.AddSceneLights(scn, llfData, ftsData["sceneOffset"])
+        self.AddSceneLights(scn, llfData, ftsData.sceneOffset)
         # TODO reenable object import
-        #self.AddSceneObjects(scn, dlfData, ftsData["sceneOffset"])
+        #self.AddSceneObjects(scn, dlfData, ftsData.sceneOffset)
 
     def AddSceneBackground(self, cells, mappedMaterials):
         bm = bmesh.new()
@@ -617,7 +618,7 @@ class ArxSceneManager(object):
         groupObject = bpy.data.objects.new(scene.name + '-portals', None)
         scene.objects.link(groupObject)
 
-        for portal in data["portals"]:
+        for portal in data.portals:
             bm = bmesh.new()
 
             tempVerts = []
