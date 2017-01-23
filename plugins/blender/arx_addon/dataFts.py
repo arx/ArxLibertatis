@@ -175,6 +175,10 @@ class ROOM_DIST_DATA_SAVE(LittleEndianStructure):
     ]
 
 
+from collections import namedtuple
+
+FtsData = namedtuple('FtsData', ['sceneOffset', 'textures', 'cells', 'anchors', 'portals'])
+
 import logging
 
 from ctypes import sizeof
@@ -185,10 +189,9 @@ class FtsSerializer(object):
         self.log = logging.getLogger('FtsSerializer')
         self.ioLib = ioLib
 
-    def read_fts(self, data):
+    def read_fts(self, data) -> FtsData:
         """If you want to read a fts file use read_fts_container"""
-        result = {}
-        
+
         pos = 0
         ftsHeader = FAST_SCENE_HEADER.from_buffer_copy(data, pos)
         pos += sizeof(FAST_SCENE_HEADER)
@@ -196,12 +199,11 @@ class FtsSerializer(object):
         self.log.debug("Fts Header size x,z: %i,%i" % (ftsHeader.sizex, ftsHeader.sizez))
         self.log.debug("Fts Header playerpos: %f,%f,%f" % (ftsHeader.playerpos.x, ftsHeader.playerpos.y, ftsHeader.playerpos.z))
         self.log.debug("Fts Header Mscenepos: %f,%f,%f" % (ftsHeader.Mscenepos.x, ftsHeader.Mscenepos.y, ftsHeader.Mscenepos.z))
-        result["sceneOffset"] = (ftsHeader.Mscenepos.x, ftsHeader.Mscenepos.y, ftsHeader.Mscenepos.z)
-        
+        sceneOffset = (ftsHeader.Mscenepos.x, ftsHeader.Mscenepos.y, ftsHeader.Mscenepos.z)
+
         texturesType = FAST_TEXTURE_CONTAINER * ftsHeader.nb_textures
         textures = texturesType.from_buffer_copy(data, pos)
         pos += sizeof(texturesType)
-        result["textures"] = textures
         self.log.debug("Loaded %i textures" % len(textures))
 
         #for i in textures:
@@ -232,8 +234,6 @@ class FtsSerializer(object):
                     anchors = AnchorsArrayType.from_buffer_copy(data, pos)
                     pos += sizeof(AnchorsArrayType)
                     
-        result["cells"] = cells
-
         anchors = []
         for i in range(ftsHeader.nb_anchors):
             anchor = FAST_ANCHOR_DATA.from_buffer_copy(data, pos)
@@ -247,27 +247,24 @@ class FtsSerializer(object):
             else:
                 anchors.append( ((anchor.pos.x, anchor.pos.y, anchor.pos.z), []) )
         
-        result["anchors"] = anchors
-        
         portals = []
         for i in range(ftsHeader.nb_portals):
             portal = EERIE_SAVE_PORTALS.from_buffer_copy(data, pos)
             pos += sizeof(EERIE_SAVE_PORTALS)
             portals.append(portal)
-        result["portals"] = portals
-            
+
         for i in range(ftsHeader.nb_rooms + 1): # Off by one in data
             room = EERIE_SAVE_ROOM_DATA.from_buffer_copy(data, pos)
             pos += sizeof(EERIE_SAVE_ROOM_DATA)
             
             if room.nb_portals > 0:
                 PortalsArrayType = c_int32 * room.nb_portals
-                portals = PortalsArrayType.from_buffer_copy(data, pos)
+                portals2 = PortalsArrayType.from_buffer_copy(data, pos)
                 pos += sizeof(PortalsArrayType)
                 
             if room.nb_polys > 0:
                 PolysArrayType = FAST_EP_DATA * room.nb_polys
-                portals = PolysArrayType.from_buffer_copy(data, pos)
+                polys2 = PolysArrayType.from_buffer_copy(data, pos)
                 pos += sizeof(PolysArrayType)
         
         for i in range(ftsHeader.nb_rooms):
@@ -276,9 +273,16 @@ class FtsSerializer(object):
                 pos += sizeof(ROOM_DIST_DATA_SAVE)
                 
         self.log.debug("Loaded %i bytes of %i" % (pos, len(data)))
-        return result
 
-    def read_fts_container(self, filepath):
+        return FtsData(
+            sceneOffset=sceneOffset,
+            textures=textures,
+            cells=cells,
+            anchors=anchors,
+            portals=portals
+        )
+
+    def read_fts_container(self, filepath) -> FtsData:
         f = open(filepath, "rb")
         data = f.read()
         f.close()
