@@ -635,17 +635,17 @@ static void ARX_DAMAGES_PushIO(Entity * io_target, EntityHandle source, float po
 	}
 }
 
-void ARX_DAMAGES_DealDamages(EntityHandle target, float dmg, EntityHandle source, DamageType flags, Vec3f * pos)
-{
-	if(!ValidIONum(target) || !ValidIONum(source))
+void ARX_DAMAGES_DealDamages(EntityHandle target, float dmg, EntityHandle source, DamageType flags, Vec3f * pos) {
+	if(!ValidIONum(target) || !ValidIONum(source)) {
 		return;
+	}
 
 	Entity * io_target = entities[target];
 	Entity * io_source = entities[source];
 	float damagesdone;
 
 	if(flags & DAMAGE_TYPE_PER_SECOND) {
-		dmg = dmg * g_framedelay * ( 1.0f / 1000 );
+		dmg = dmg * g_framedelay * (1.0f / 1000);
 	}
 
 	if(target == EntityHandle_Player) {
@@ -683,8 +683,9 @@ void ARX_DAMAGES_DealDamages(EntityHandle target, float dmg, EntityHandle source
 				}
 			} else {
 				if(flags & DAMAGE_TYPE_FIRE) {
-					if(Random::getf(0.f, 100.f) <= io_target->_npcdata->resist_fire)
+					if(Random::getf(0.f, 100.f) <= io_target->_npcdata->resist_fire) {
 						dmg = 0;
+					}
 
 					ARX_DAMAGES_IgnitIO(io_target, dmg);
 				}
@@ -704,14 +705,17 @@ void ARX_DAMAGES_DealDamages(EntityHandle target, float dmg, EntityHandle source
 		}
 	}
 
-	if(flags & DAMAGE_TYPE_DRAIN_LIFE)
+	if(flags & DAMAGE_TYPE_DRAIN_LIFE) {
 		ARX_DAMAGES_HealInter(io_source, damagesdone);
+	}
 
-	if(flags & DAMAGE_TYPE_DRAIN_MANA)
+	if(flags & DAMAGE_TYPE_DRAIN_MANA) {
 		ARX_DAMAGES_HealManaInter(io_source, damagesdone);
+	}
 
-	if(flags & DAMAGE_TYPE_PUSH)
-		ARX_DAMAGES_PushIO(io_target, source, damagesdone * ( 1.0f / 2 ));
+	if(flags & DAMAGE_TYPE_PUSH) {
+		ARX_DAMAGES_PushIO(io_target, source, damagesdone * (1.0f / 2));
+	}
 }
 
 //*************************************************************************************
