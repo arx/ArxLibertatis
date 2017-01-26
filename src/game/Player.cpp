@@ -2006,52 +2006,53 @@ void ARX_PLAYER_Manage_Movement() {
 
 void PlayerMovementIterate(float DeltaTime) {
 	
-	// A jump is requested so let's go !
-	if(REQUEST_JUMP != ArxInstant_ZERO) {
-		if((player.m_currentMovement & PLAYER_CROUCH)
-		   || player.physics.cyl.height > player.baseHeight()) {
-			float old = player.physics.cyl.height;
-			player.physics.cyl.height = player.baseHeight();
-			player.physics.cyl.origin = player.basePosition();
-			float anything = CheckAnythingInCylinder(player.physics.cyl, entities.player(),
-			                                         CFLAG_JUST_TEST);
-			if(anything < 0.f) {
-				player.m_currentMovement |= PLAYER_CROUCH;
-				player.physics.cyl.height = old;
-				REQUEST_JUMP = ArxInstant_ZERO;
-			} else {
-				bGCroucheToggle = false;
-				player.m_currentMovement &= ~PLAYER_CROUCH;
-				player.physics.cyl.height = player.baseHeight();
-			}
-		}
-		
-		if(!Valid_Jump_Pos()) {
-			REQUEST_JUMP = ArxInstant_ZERO;
-		}
-		
-		if(REQUEST_JUMP != ArxInstant_ZERO) {
-			ArxDuration t = arxtime.now() - REQUEST_JUMP;
-			if(t >= ArxDuration_ZERO && t <= ArxDurationMs(350)) {
-				REQUEST_JUMP = ArxInstant_ZERO;
-				ARX_NPC_SpawnAudibleSound(player.pos, entities.player());
-				ARX_SPEECH_Launch_No_Unicode_Seek("player_jump", entities.player());
-				player.onfirmground = false;
-				player.jumpphase = JumpStart;
-			}
-		}
-	}
-	
-	if(entities.player()->_npcdata->climb_count != 0.f && g_framedelay > 0) {
-		entities.player()->_npcdata->climb_count -= MAX_ALLOWED_PER_SECOND * g_framedelay * 0.1f;
-		if(entities.player()->_npcdata->climb_count < 0) {
-			entities.player()->_npcdata->climb_count = 0.f;
-		}
-	}
-	
 	float d = 0;
 	
 	if(USE_PLAYERCOLLISIONS) {
+		// A jump is requested so let's go !
+		if(REQUEST_JUMP != ArxInstant_ZERO) {
+			if((player.m_currentMovement & PLAYER_CROUCH)
+			   || player.physics.cyl.height > player.baseHeight()) {
+				float old = player.physics.cyl.height;
+				player.physics.cyl.height = player.baseHeight();
+				player.physics.cyl.origin = player.basePosition();
+				float anything = CheckAnythingInCylinder(player.physics.cyl, entities.player(),
+														 CFLAG_JUST_TEST);
+				if(anything < 0.f) {
+					player.m_currentMovement |= PLAYER_CROUCH;
+					player.physics.cyl.height = old;
+					REQUEST_JUMP = ArxInstant_ZERO;
+				} else {
+					bGCroucheToggle = false;
+					player.m_currentMovement &= ~PLAYER_CROUCH;
+					player.physics.cyl.height = player.baseHeight();
+				}
+			}
+			
+			if(!Valid_Jump_Pos()) {
+				REQUEST_JUMP = ArxInstant_ZERO;
+			}
+			
+			if(REQUEST_JUMP != ArxInstant_ZERO) {
+				ArxDuration t = arxtime.now() - REQUEST_JUMP;
+				if(t >= ArxDuration_ZERO && t <= ArxDurationMs(350)) {
+					REQUEST_JUMP = ArxInstant_ZERO;
+					ARX_NPC_SpawnAudibleSound(player.pos, entities.player());
+					ARX_SPEECH_Launch_No_Unicode_Seek("player_jump", entities.player());
+					player.onfirmground = false;
+					player.jumpphase = JumpStart;
+				}
+			}
+		}
+		
+		if(entities.player()->_npcdata->climb_count != 0.f && g_framedelay > 0) {
+			entities.player()->_npcdata->climb_count -= MAX_ALLOWED_PER_SECOND * g_framedelay * 0.1f;
+			if(entities.player()->_npcdata->climb_count < 0) {
+				entities.player()->_npcdata->climb_count = 0.f;
+			}
+		}
+		
+		
 		CollisionFlags levitate = 0;
 		if(player.climbing) {
 			levitate = CFLAG_LEVITATE;
