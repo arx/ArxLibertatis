@@ -672,16 +672,6 @@ void ARX_DAMAGES_DealDamages(EntityHandle target, float dmg, EntityHandle source
 
 		if(flags & DAMAGE_TYPE_FIRE)
 			ARX_DAMAGES_IgnitIO(io_target, damagesdone);
-
-		if(flags & DAMAGE_TYPE_DRAIN_LIFE)
-			ARX_DAMAGES_HealInter(io_source, damagesdone);
-
-		if(flags & DAMAGE_TYPE_DRAIN_MANA)
-			ARX_DAMAGES_HealManaInter(io_source, damagesdone);
-
-		if(flags & DAMAGE_TYPE_PUSH)
-			ARX_DAMAGES_PushIO(io_target, source, damagesdone * ( 1.0f / 2 ));
-		
 	} else {
 		if(io_target->ioflags & IO_NPC) {
 			if(flags & DAMAGE_TYPE_POISON) {
@@ -709,18 +699,19 @@ void ARX_DAMAGES_DealDamages(EntityHandle target, float dmg, EntityHandle source
 					damagesdone = ARX_DAMAGES_DamageNPC(io_target, dmg, source, true, pos);
 				}
 			}
-
-			if(flags & DAMAGE_TYPE_DRAIN_LIFE)
-				ARX_DAMAGES_HealInter(io_source, damagesdone);
-
-			if(flags & DAMAGE_TYPE_DRAIN_MANA)
-				ARX_DAMAGES_HealManaInter(io_source, damagesdone);
-
-			if(flags & DAMAGE_TYPE_PUSH)
-				ARX_DAMAGES_PushIO(io_target, source, damagesdone * ( 1.0f / 2 ));
-			
+		} else {
+			return;
 		}
 	}
+
+	if(flags & DAMAGE_TYPE_DRAIN_LIFE)
+		ARX_DAMAGES_HealInter(io_source, damagesdone);
+
+	if(flags & DAMAGE_TYPE_DRAIN_MANA)
+		ARX_DAMAGES_HealManaInter(io_source, damagesdone);
+
+	if(flags & DAMAGE_TYPE_PUSH)
+		ARX_DAMAGES_PushIO(io_target, source, damagesdone * ( 1.0f / 2 ));
 }
 
 //*************************************************************************************
