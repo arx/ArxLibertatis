@@ -47,7 +47,6 @@ ZeniMax Media Inc., Suite 120, Rockville, Maryland 20850 USA.
 #include <cstring>
 
 #include <boost/foreach.hpp>
-#include <glm/gtc/random.hpp>
 
 #include "core/GameTime.h"
 
@@ -60,6 +59,7 @@ ZeniMax Media Inc., Suite 120, Rockville, Maryland 20850 USA.
 #include "graphics/particle/Particle.h"
 
 #include "math/Random.h"
+#include "math/RandomVector.h"
 
 
 ParticleSystem::ParticleSystem() {
@@ -165,7 +165,7 @@ void ParticleSystem::SetParticleParams(Particle * pP) {
 	
 	if((m_parameters.m_spawnFlags & PARTICLE_CIRCULAR) == PARTICLE_CIRCULAR) {
 		
-		Vec2f pos = glm::circularRand(1.f);
+		Vec2f pos = arx::circularRand(1.f);
 		pP->p3Pos.x = pos.x;
 		pP->p3Pos.z = pos.y;
 		

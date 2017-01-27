@@ -19,8 +19,6 @@
 
 #include "game/magic/spells/SpellsLvl07.h"
 
-#include <glm/gtc/random.hpp>
-
 #include "animation/AnimationRender.h"
 #include "core/Application.h"
 #include "core/Config.h"
@@ -37,6 +35,7 @@
 #include "graphics/particle/ParticleEffects.h"
 
 #include "gui/Interface.h"
+#include "math/RandomVector.h"
 
 #include "scene/GameSound.h"
 #include "scene/Interactive.h"
@@ -706,7 +705,7 @@ void ConfuseSpell::Update() {
 			break;
 		}
 		
-		Vec2f p = glm::diskRand(15.f);
+		Vec2f p = arx::diskRand(15.f);
 		pd->ov = eCurPos + Vec3f(p.x, 0.f, p.y);
 		
 		pd->move = Vec3f(0.f, Random::getf(1.f, 4.f), 0.f);
