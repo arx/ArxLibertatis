@@ -2290,6 +2290,10 @@ void PlayerMovementIterate(float DeltaTime) {
 		// Apply forces to velocity
 		player.physics.velocity += player.physics.forces * DeltaTime;
 		
+		if(player.levitate) {
+			player.physics.velocity.y = 0.0f;
+		}
+
 		// Apply climbing velocity
 		if(player.climbing) {
 			if(player.m_currentMovement & PLAYER_MOVE_WALK_FORWARD) {
