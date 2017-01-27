@@ -19,8 +19,6 @@
 
 #include "game/magic/spells/SpellsLvl05.h"
 
-#include <glm/gtc/random.hpp>
-
 #include "core/Application.h"
 #include "core/Config.h"
 #include "core/Core.h"
@@ -36,6 +34,7 @@
 #include "graphics/particle/Particle.h"
 #include "graphics/particle/ParticleEffects.h"
 #include "graphics/spells/Spells05.h"
+#include "math/RandomVector.h"
 #include "physics/Collisions.h"
 #include "scene/GameSound.h"
 #include "scene/Interactive.h"
@@ -264,7 +263,7 @@ void LevitateSpell::createDustParticle() {
 		return;
 	}
 	
-	Vec2f pos = glm::circularRand(m_baseRadius);
+	Vec2f pos = arx::circularRand(m_baseRadius);
 	
 	pd->ov = m_pos + Vec3f(pos.x, 0.f, pos.y);
 	float t = fdist(pd->ov, m_pos);
@@ -445,7 +444,7 @@ void RepelUndeadSpell::Update() {
 		}
 		
 		// XXX was this supposed to be sphericalRand ?
-		Vec2f d = glm::diskRand(vv);
+		Vec2f d = arx::diskRand(vv);
 		
 		pd->ov = m_pos + Vec3f(d.x, 0.f, d.y);
 		pd->move = Vec3f(Random::getf(-0.8f, 0.8f), Random::getf(-4.f, 0.f), Random::getf(-0.8f, 0.8f));
