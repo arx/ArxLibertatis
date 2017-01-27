@@ -142,19 +142,19 @@ void HitStrengthGauge::updateRect(const Rectf & parent) {
 
 void HitStrengthGauge::update() {
 	
-	if(player.m_aimTime == 0) {
+	if(player.m_aimTime == PlatformDuration_ZERO) {
 		m_intensity = 0.2f;
 	} else {
 		float j;
 		if(player.m_bowAimRatio > 0) {
 			j = player.m_bowAimRatio;
 		} else {
-			const ArxDuration delta = arxtime.now() - player.m_aimTime;
+			const float delta = toMs(player.m_aimTime);
 			
 			//TODO global
 			bIsAiming = delta > 0;
 			
-			float at = delta * (1.f+(1.f-GLOBAL_SLOWDOWN));
+			float at = delta;
 			float aim = static_cast<float>(player.Full_AimTime);
 			j=at/aim;
 		}
