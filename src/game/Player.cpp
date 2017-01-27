@@ -2370,8 +2370,6 @@ void PlayerMovementIterate(float DeltaTime) {
 				if(!test && !LAST_FIRM_GROUND && !TRUE_FIRM_GROUND) {
 					player.physics.velocity.x = 0.f;
 					player.physics.velocity.z = 0.f;
-					player.physics.forces.x = 0.f;
-					player.physics.forces.z = 0.f;
 					if(FALLING_TIME > 0 && player.falling) {
 						float fh = player.pos.y - Falling_Height;
 						if(fh > 400.f) {
