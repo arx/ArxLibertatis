@@ -1197,30 +1197,23 @@ void ComputeVVPos(Entity * io)
 			fdiff = 120.f;
 		} else {
 			float mul = ((fdiff * ( 1.0f / 120 )) * 0.9f + 0.6f);
-
+			
+			float val;
+			if(io == entities.player()) {
+				val = toMs(g_platformTime.lastFrameDuration()) * (1.0f / 4) * mul;
+			} else {
+				val = g_framedelay * (1.0f / 4) * mul;
+			}
+			
 			if(eediff < 15.f) {
-				float val;
-				if(io == entities.player()) {
-					val = toMs(g_platformTime.lastFrameDuration()) * (1.0f / 4) * mul;
-				} else {
-					val = g_framedelay * (1.0f / 4) * mul;
-				}
-
 				if(eediff < 10.f) {
 					val *= ( 1.0f / 10 );
 				} else {
 					float ratio = (eediff - 10.f) * ( 1.0f / 5 );
 					val = val * ratio + val * (1.f - ratio); 
 				}
-
-				fdiff -= val;
-			} else {
-				if(io == entities.player()) {
-					fdiff -= toMs(g_platformTime.lastFrameDuration()) * (1.0f / 4) * mul;
-				} else {
-					fdiff -= g_framedelay * (1.0f / 4) * mul;
-				}
 			}
+			fdiff -= val;
 		}
 
 		if(fdiff > eediff)
