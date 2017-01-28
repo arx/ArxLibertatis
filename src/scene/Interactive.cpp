@@ -1179,8 +1179,7 @@ void ResetVVPos(Entity * io)
 		io->_npcdata->vvpos = io->pos.y;
 }
 
-void ComputeVVPos(Entity * io)
-{
+void ComputeVVPos(Entity * io) {
 	if(io->ioflags & IO_NPC) {
 		float vvp = io->_npcdata->vvpos;
 
@@ -1216,17 +1215,20 @@ void ComputeVVPos(Entity * io)
 			}
 			fdiff -= val;
 		}
-
-		if(fdiff > eediff)
+		
+		if(fdiff > eediff) {
 			fdiff = eediff;
-
-		if(fdiff < 0.f)
+		}
+		
+		if(fdiff < 0.f) {
 			fdiff = 0.f;
-
-		if(diff < 0.f)
+		}
+		
+		if(diff < 0.f) {
 			io->_npcdata->vvpos = io->pos.y + fdiff;
-		else
+		} else {
 			io->_npcdata->vvpos = io->pos.y - fdiff;
+		}
 	}
 }
 
