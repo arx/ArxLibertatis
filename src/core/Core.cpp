@@ -672,10 +672,11 @@ static bool StrikeAimtime() {
 	ARX_PLAYER_Remove_Invisibility();
 	
 	player.m_strikeAimRatio = glm::clamp(toMs(player.m_aimTime) / player.Full_AimTime, 0.1f, 1.0f);
-
-	if(player.m_strikeAimRatio > 0.8f)
+	
+	if(player.m_strikeAimRatio > 0.8f) {
 		return true;
-
+	}
+	
 	return false;
 }
 
