@@ -32,7 +32,7 @@
 #include "game/magic/spells/SpellsLvl07.h"
 #include "gui/Speech.h"
 #include "graphics/particle/ParticleEffects.h"
-
+#include "math/RandomVector.h"
 #include "scene/GameSound.h"
 #include "scene/Interactive.h"
 
@@ -453,7 +453,7 @@ void CurseSpell::Update() {
 		}
 		
 		pd->ov = m_pos;
-		pd->move = Vec3f(Random::getf(-2.f, 2.f), Random::getf(-20.f, -10.f), Random::getf(-2.f, 2.f));
+		pd->move = arx::linearRand(Vec3f(-2.f, -20.f, -2.f), Vec3f(2.f, -10.f, 2.f));
 		pd->siz = 0.015f;
 		pd->tolive = Random::getu(1000, 1600);
 		pd->tc = tex_p1;
