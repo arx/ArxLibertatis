@@ -152,7 +152,7 @@ void BlessSpell::Update() {
 		}
 		
 		pd->ov = m_pos - Vec3f(0.f, 20.f, 0.f);
-		pd->move = Vec3f(Random::getf(-3.f, 3.f), Random::getf(0.f, 0.5f), Random::getf(-3.f, 3.f));
+		pd->move = arx::linearRand(Vec3f(-3.f, 0.f, -3.f), Vec3f(3.f, 0.5f, 3.f));
 		pd->siz = 0.005f;
 		pd->tolive = Random::getu(1000, 2000);
 		pd->tc = tex_p1;
