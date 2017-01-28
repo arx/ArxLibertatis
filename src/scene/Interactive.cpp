@@ -1200,10 +1200,11 @@ void ComputeVVPos(Entity * io)
 			
 			float val;
 			if(io == entities.player()) {
-				val = toMs(g_platformTime.lastFrameDuration()) * (1.0f / 4) * mul;
+				val = toMs(g_platformTime.lastFrameDuration());
 			} else {
-				val = g_framedelay * (1.0f / 4) * mul;
+				val = g_framedelay;
 			}
+			val *= (1.0f / 4) * mul;
 			
 			if(eediff < 15.f) {
 				if(eediff < 10.f) {
