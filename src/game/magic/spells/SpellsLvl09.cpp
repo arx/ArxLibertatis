@@ -380,7 +380,7 @@ void NegateMagicSpell::Update() {
 				break;
 			}
 			
-			pd->ov = stitepos + Vec3f(Random::getf(-150.f, 150.f), 0.f, Random::getf(-150.f, 150.f));
+			pd->ov = stitepos + arx::randomOffsetXZ(150.f);
 			pd->move = Vec3f(0.f, Random::getf(-3.f, 0.f), 0.f);
 			pd->siz = 0.3f;
 			pd->tolive = Random::getu(2000, 4000);
