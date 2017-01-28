@@ -86,6 +86,7 @@ ZeniMax Media Inc., Suite 120, Rockville, Maryland 20850 USA.
 #include "io/resource/ResourcePath.h"
 
 #include "math/Random.h"
+#include "math/RandomVector.h"
 
 #include "physics/Collisions.h"
 #include "platform/profiler/Profiler.h"
@@ -925,12 +926,12 @@ static void ARX_DAMAGES_AddVisual(DAMAGE_INFO & di, const Vec3f & pos, float dmg
 			break;
 		}
 		
-		pd->ov = vertPos + randomVec(-5.f, 5.f);
+		pd->ov = vertPos + arx::randomVec(-5.f, 5.f);
 		pd->siz = glm::clamp(dmg, 5.f, 15.f);
 		pd->scale = Vec3f(-10.f);
 		pd->m_flags = ROTATING | FIRE_TO_SMOKE;
 		pd->tolive = Random::getu(500, 900);
-		pd->move = Vec3f(1.f, 2.f, 1.f) - randomVec3f() * Vec3f(2.f, 16.f, 2.f);
+		pd->move = Vec3f(1.f, 2.f, 1.f) - arx::randomVec3f() * Vec3f(2.f, 16.f, 2.f);
 		if(di.params.type & DAMAGE_TYPE_MAGICAL) {
 			pd->rgb = Color3f(0.3f, 0.3f, 0.8f);
 		} else {

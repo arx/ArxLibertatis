@@ -60,20 +60,6 @@ ZeniMax Media Inc., Suite 120, Rockville, Maryland 20850 USA.
 #include "math/Random.h"
 #include "platform/Platform.h"
 
-/*!
- * Generate a random vertor with independently unform distributed components.
- *
- * \param min minimum value for all components (default: 0.f)
- * \param max maximum value for all components (default: 1.f)
- */
-inline Vec3f randomVec(float min = 0.f, float max = 1.f) {
-	float range = max - min;
-	return Vec3f(Random::getf() * range + min, Random::getf() * range + min, Random::getf() * range + min);
-}
-
-inline Vec3f randomVec3f() {
-	return Vec3f(Random::getf(), Random::getf(), Random::getf());
-}
 
 inline Color3f randomColor3f() {
 	return Color3f(Random::getf(), Random::getf(), Random::getf());

@@ -25,6 +25,7 @@
 #include "graphics/GraphicsModes.h"
 #include "graphics/Math.h"
 #include "graphics/RenderBatcher.h"
+#include "math/RandomVector.h"
 #include "platform/profiler/Profiler.h"
 
 struct SparkParticle {
@@ -85,8 +86,8 @@ void ParticleSparkSpawn(const Vec3f & pos, unsigned int count, SpawnSparkType ty
 		g_sparkParticlesCount++;
 		
 		spark.timcreation = arxtime.now();
-		spark.m_pos = pos + randomVec(-5.f, 5.f);
-		spark.move = randomVec(-6.f, 6.f);
+		spark.m_pos = pos + arx::randomVec(-5.f, 5.f);
+		spark.move = arx::randomVec(-6.f, 6.f);
 		spark.m_duration = len * 90 + count;
 		
 		switch(type) {

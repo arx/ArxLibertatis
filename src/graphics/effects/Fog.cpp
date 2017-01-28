@@ -57,6 +57,7 @@ ZeniMax Media Inc., Suite 120, Rockville, Maryland 20850 USA.
 #include "graphics/particle/ParticleEffects.h"
 
 #include "math/Random.h"
+#include "math/RandomVector.h"
 
 FOG_DEF fogs[MAX_FOG];
 
@@ -122,8 +123,8 @@ void ARX_FOGS_Render() {
 				pd->ov = fog.pos;
 				pd->move = fog.move * (fog.speed * 0.1f);
 			} else {
-				pd->ov = fog.pos + randomVec(-100.f, 100.f);
-				pd->move = Vec3f(fog.speed) - randomVec(0.f, 2.f);
+				pd->ov = fog.pos + arx::randomVec(-100.f, 100.f);
+				pd->move = Vec3f(fog.speed) - arx::randomVec(0.f, 2.f);
 				pd->move *= Vec3f(fog.speed * 0.2f,  1.f / 15, fog.speed * 0.2f);
 			}
 			pd->scale = Vec3f(fog.scale);
