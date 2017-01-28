@@ -27,6 +27,10 @@
 
 namespace arx {
 	
+	inline Vec3f randomOffsetXZ(float range) {
+		return Vec3f(Random::getf(-range, range), 0.f, Random::getf(-range, range));
+	}
+	
 	/*!
 	 * Generate a random vertor with independently unform distributed components.
 	 *
