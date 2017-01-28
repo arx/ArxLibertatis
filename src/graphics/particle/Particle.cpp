@@ -45,10 +45,11 @@ ZeniMax Media Inc., Suite 120, Rockville, Maryland 20850 USA.
 
 #include "graphics/Math.h"
 #include "graphics/effects/SpellEffects.h"
+#include "math/RandomVector.h"
 
 Particle::Particle()
-	: p3Pos(Random::getf(-5.f, 5.f), Random::getf(-5.f, 5.f), Random::getf(-5.f, 5.f))
-	, p3Velocity(Random::getf(-10.f, 10.f), Random::getf(-10.f, 10.f), Random::getf(-10.f, 10.f))
+	: p3Pos(arx::randomVec(-5.f, 5.f))
+	, p3Velocity(arx::randomVec(-10.f, 10.f))
 	, m_age(0)
 	, fSize(1.f)
 	, fSizeStart(1.f)
