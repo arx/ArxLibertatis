@@ -409,7 +409,7 @@ void ARX_PARTICLES_Add_Smoke(const Vec3f & pos, long flags, long amount, const C
 		pd->m_flags = ROTATING | FADE_IN_AND_OUT;
 		pd->tolive = Random::getu(1100, 1500);
 		pd->delay = amount * 120 + Random::getu(0, 100);
-		pd->move = Vec3f(Random::getf(-0.25f, 0.25f), Random::getf(-0.7f, 0.3f), Random::getf(-0.25f, 0.25f));
+		pd->move = arx::linearRand(Vec3f(-0.25f, -0.7f, -0.25f), Vec3f(0.25f, 0.3f, 0.25f));
 		pd->rgb = rgb;
 		pd->tc = smokeparticle;
 		pd->m_rotation = 0.01f;
