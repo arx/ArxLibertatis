@@ -379,7 +379,7 @@ void AddRandomSmoke(Entity * io, long amount) {
 		pd->scale = Vec3f(10.f);
 		pd->m_flags = ROTATING | FADE_IN_AND_OUT;
 		pd->tolive = Random::getu(900, 1300);
-		pd->move = Vec3f(Random::getf(-0.25f, 0.25f), Random::getf(-0.7f, 0.3f), Random::getf(-0.25f, 0.25f));
+		pd->move = arx::linearRand(Vec3f(-0.25f, -0.7f, -0.25f), Vec3f(0.25f, 0.3f, 0.25f));
 		pd->rgb = Color3f(0.3f, 0.3f, 0.34f);
 		pd->tc = smokeparticle;
 		pd->m_rotation = 0.001f;
