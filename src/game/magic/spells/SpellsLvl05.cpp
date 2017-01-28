@@ -129,7 +129,7 @@ void RuneOfGuardingSpell::Update() {
 		}
 		
 		pd->ov = pos + Vec3f(Random::getf(-40.f, 40.f), 0.f, Random::getf(-40.f, 40.f));
-		pd->move = Vec3f(Random::getf(-0.8f, 0.8f), Random::getf(-4.f, 0.f), Random::getf(-0.8f, 0.8f));
+		pd->move = arx::linearRand(Vec3f(-0.8f, -4.f, -0.8f), Vec3f(0.8f, 0.f, 0.8f));
 		pd->scale = Vec3f(-0.1f);
 		pd->tolive = Random::getu(2600, 3200);
 		pd->tc = tex_p2;
