@@ -267,8 +267,8 @@ void LevitateSpell::createDustParticle() {
 	
 	pd->ov = m_pos + Vec3f(pos.x, 0.f, pos.y);
 	float t = fdist(pd->ov, m_pos);
-	pd->move = Vec3f(Random::getf(5.f, 10.f) * ((pd->ov.x - m_pos.x) / t), Random::getf(0.f, 3.f),
-	                 Random::getf(5.f, 10.f) * ((pd->ov.z - m_pos.z) / t));
+	Vec3f moveFactor = Vec3f(Random::getf(5.f, 10.f), Random::getf(0.f, 3.f), Random::getf(5.f, 10.f));
+	pd->move = moveFactor * Vec3f((pd->ov.x - m_pos.x) / t, 1.f, (pd->ov.z - m_pos.z) / t);
 	pd->siz = Random::getf(30.f, 60.f);
 	pd->tolive = 3000;
 	pd->timcreation = -(long(arxtime.now()) + 3000l); // TODO WTF
