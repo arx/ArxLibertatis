@@ -447,7 +447,7 @@ void RepelUndeadSpell::Update() {
 		Vec2f d = arx::diskRand(vv);
 		
 		pd->ov = m_pos + Vec3f(d.x, 0.f, d.y);
-		pd->move = Vec3f(Random::getf(-0.8f, 0.8f), Random::getf(-4.f, 0.f), Random::getf(-0.8f, 0.8f));
+		pd->move = arx::linearRand(Vec3f(-0.8f, -4.f, -0.8f), Vec3f(0.8f, 0.f, 0.8f));
 		pd->scale = Vec3f(-0.1f);
 		pd->tolive = Random::getu(2600, 3200);
 		pd->tc = tex_p2;
