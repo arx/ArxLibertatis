@@ -637,7 +637,7 @@ void ARX_PARTICLES_SpawnWaterSplash(const Vec3f & _ePos) {
 		pd->m_flags = FADE_IN_AND_OUT | ROTATING | DISSIPATING | GRAVITY | SPLAT_WATER;
 		pd->m_rotation = 0.f; // TODO maybe remove ROTATING
 		pd->ov = _ePos + Vec3f(30.f, -20.f, 30.f) * arx::randomVec3f();
-		pd->move = Vec3f(Random::getf(-6.5f, 6.5f), Random::getf(-11.5f, 0.f), Random::getf(-6.5f, 6.5f));
+		pd->move = arx::linearRand(Vec3f(-6.5f, -11.5f, -6.5f), Vec3f(6.5f, 0.f, 6.5f));
 		pd->tolive = Random::getu(1000, 1300);
 		
 		int t = Random::get(0, 2);
