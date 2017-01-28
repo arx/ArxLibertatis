@@ -27,6 +27,21 @@
 
 namespace arx {
 	
+	/*!
+	 * Generate a random vertor with independently unform distributed components.
+	 *
+	 * \param min minimum value for all components (default: 0.f)
+	 * \param max maximum value for all components (default: 1.f)
+	 */
+	inline Vec3f randomVec(float min = 0.f, float max = 1.f) {
+		float range = max - min;
+		return Vec3f(Random::getf() * range + min, Random::getf() * range + min, Random::getf() * range + min);
+	}
+	
+	inline Vec3f randomVec3f() {
+		return Vec3f(Random::getf(), Random::getf(), Random::getf());
+	}
+	
 	inline Vec2f linearRand(Vec2f const & min, Vec2f const & max) {
 		return Vec2f(Random::getf(min.x, max.x), Random::getf(min.y, max.y));
 	}

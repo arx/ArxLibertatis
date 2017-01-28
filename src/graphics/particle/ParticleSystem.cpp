@@ -175,7 +175,7 @@ void ParticleSystem::SetParticleParams(Particle * pP) {
 			pP->p3Pos *= Vec3f(Random::getf(), 1.f, Random::getf());
 		}
 	} else {
-		pP->p3Pos = randomVec(-1.f, 1.f);
+		pP->p3Pos = arx::randomVec(-1.f, 1.f);
 	}
 	
 	pP->p3Pos *= m_parameters.m_pos;

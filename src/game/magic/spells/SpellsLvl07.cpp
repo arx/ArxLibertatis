@@ -95,8 +95,8 @@ void FlyingEyeSpell::Launch()
 			break;
 		}
 		
-		pd->ov = eyeball.pos + randomVec(-5.f, 5.f);
-		pd->move = randomVec(-2.f, 2.f);
+		pd->ov = eyeball.pos + arx::randomVec(-5.f, 5.f);
+		pd->move = arx::randomVec(-2.f, 2.f);
 		pd->siz = 28.f;
 		pd->tolive = Random::getu(2000, 6000);
 		pd->scale = Vec3f(12.f);
@@ -131,8 +131,8 @@ void FlyingEyeSpell::End()
 			break;
 		}
 		
-		pd->ov = eyeball.pos + randomVec(-5.f, 5.f);
-		pd->move = randomVec(-2.f, 2.f);
+		pd->ov = eyeball.pos + arx::randomVec(-5.f, 5.f);
+		pd->move = arx::randomVec(-2.f, 2.f);
 		pd->siz = 28.f;
 		pd->tolive = Random::getu(2000, 6000);
 		pd->scale = Vec3f(12.f);
@@ -166,8 +166,8 @@ static void FlyingEyeSpellUpdateHand(const Vec3f & pos, LightHandle & light) {
 			break;
 		}
 		
-		pd->ov = pos + randomVec(-1.f, 1.f);
-		pd->move = Vec3f(0.1f, 0.f, 0.1f) + Vec3f(-0.2f, -2.2f, -0.2f) * randomVec3f();
+		pd->ov = pos + arx::randomVec(-1.f, 1.f);
+		pd->move = Vec3f(0.1f, 0.f, 0.1f) + Vec3f(-0.2f, -2.2f, -0.2f) * arx::randomVec3f();
 		pd->siz = 5.f;
 		pd->tolive = Random::getu(1500, 3500);
 		pd->scale = Vec3f(0.2f);
@@ -318,8 +318,8 @@ void FireFieldSpell::Update() {
 			float t = Random::getf() * (glm::pi<float>() * 2.f) - glm::pi<float>();
 			float ts = std::sin(t);
 			float tc = std::cos(t);
-			pd->ov = m_pos + Vec3f(120.f * ts, 15.f * ts, 120.f * tc) * randomVec();
-			pd->move = Vec3f(2.f, 1.f, 2.f) + Vec3f(-4.f, -8.f, -4.f) * randomVec3f();
+			pd->ov = m_pos + Vec3f(120.f * ts, 15.f * ts, 120.f * tc) * arx::randomVec();
+			pd->move = Vec3f(2.f, 1.f, 2.f) + Vec3f(-4.f, -8.f, -4.f) * arx::randomVec3f();
 			pd->siz = 7.f;
 			pd->tolive = Random::getu(500, 1500);
 			pd->tc = fire2;
@@ -409,7 +409,7 @@ void IceFieldSpell::Launch()
 			tType[i] = 1;
 		
 		tSize[i] = Vec3f_ZERO;
-		tSizeMax[i] = randomVec3f() + Vec3f(0.f, 0.2f, 0.f);
+		tSizeMax[i] = arx::randomVec3f() + Vec3f(0.f, 0.2f, 0.f);
 		
 		Vec3f minPos;
 		if(tType[i] == 0) {
@@ -506,8 +506,8 @@ void IceFieldSpell::Update() {
 			
 			PARTICLE_DEF * pd = createParticle();
 			if(pd) {
-				pd->ov = tPos[i] + randomVec(-5.f, 5.f);
-				pd->move = randomVec(-2.f, 2.f);
+				pd->ov = tPos[i] + arx::randomVec(-5.f, 5.f);
+				pd->move = arx::randomVec(-2.f, 2.f);
 				pd->siz = 20.f;
 				pd->tolive = Random::getu(2000, 6000);
 				pd->tc = tex_p2;
@@ -520,7 +520,7 @@ void IceFieldSpell::Update() {
 			
 			PARTICLE_DEF * pd = createParticle();
 			if(pd) {
-				pd->ov = tPos[i] + randomVec(-5.f, 5.f) + Vec3f(0.f, 50.f, 0.f);
+				pd->ov = tPos[i] + arx::randomVec(-5.f, 5.f) + Vec3f(0.f, 50.f, 0.f);
 				pd->move = Vec3f(0.f, Random::getf(-2.f, 2.f), 0.f);
 				pd->siz = 0.5f;
 				pd->tolive = Random::getu(2000, 6000);

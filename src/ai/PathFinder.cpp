@@ -51,6 +51,7 @@ ZeniMax Media Inc., Suite 120, Rockville, Maryland 20850 USA.
 #include "graphics/data/Mesh.h"
 #include "math/GtxFunctions.h"
 #include "math/Random.h"
+#include "math/RandomVector.h"
 #include "math/Vector.h"
 #include "platform/Platform.h"
 #include "physics/Anchors.h"
@@ -413,7 +414,7 @@ bool PathFinder::lookFor(NodeId from, const Vec3f & pos, float radius, Result & 
 	unsigned long step_c = Random::getu(4, 9);
 	for(unsigned long i = 0; i < step_c; i++) {
 		
-		Vec3f pos = map_d[to].pos + randomVec(-1.f, 1.f) * radius;
+		Vec3f pos = map_d[to].pos + arx::randomVec(-1.f, 1.f) * radius;
 		
 		NodeId next = getNearestNode(pos);
 		

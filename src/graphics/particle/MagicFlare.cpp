@@ -37,6 +37,7 @@
 #include "graphics/Draw.h"
 #include "graphics/Renderer.h"
 #include "graphics/data/TextureContainer.h"
+#include "math/RandomVector.h"
 
 struct MagicFlare {
 	unsigned char exist;
@@ -287,7 +288,7 @@ void AddFlare(const Vec2f & pos, float sm, short typ, Entity * io, bool bookDraw
 			pd->m_flags = FADE_IN_AND_OUT;
 		}
 
-		pd->ov = flare.v.p + randomVec(-5.f, 5.f);
+		pd->ov = flare.v.p + arx::randomVec(-5.f, 5.f);
 		pd->move = Vec3f(0.f, 5.f, 0.f);
 		pd->scale = Vec3f(-2.f);
 		pd->tolive = 1300 + kk * 100 + Random::getu(0, 800);

@@ -631,7 +631,7 @@ void PoisonProjectileSpell::AddPoisonFog(const Vec3f & pos, float power) {
 		float speed = 1.f;
 		float fval = speed * 0.2f;
 		pd->m_flags = FADE_IN_AND_OUT | ROTATING | DISSIPATING;
-		pd->ov = pos + randomVec(-100.f, 100.f);
+		pd->ov = pos + arx::randomVec(-100.f, 100.f);
 		pd->scale = Vec3f(8.f, 8.f, 10.f);
 		pd->move = Vec3f((speed - Random::getf()) * fval, (speed - speed * Random::getf()) * (1.f / 15),
 		                 (speed - Random::getf()) * fval);

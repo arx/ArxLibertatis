@@ -33,6 +33,7 @@
 #include "graphics/particle/Particle.h"
 #include "graphics/particle/ParticleEffects.h"
 #include "graphics/particle/ParticleParams.h"
+#include "math/RandomVector.h"
 #include "physics/Collisions.h"
 #include "scene/GameSound.h"
 #include "scene/Interactive.h"
@@ -479,7 +480,7 @@ void IceProjectileSpell::Launch()
 		}
 
 		icicle.size = Vec3f_ZERO;
-		icicle.sizeMax = randomVec() + Vec3f(0.f, 0.2f, 0.f);
+		icicle.sizeMax = arx::randomVec() + Vec3f(0.f, 0.2f, 0.f);
 		icicle.sizeMax = glm::max(icicle.sizeMax, minSize);
 		
 		int iNum = static_cast<int>(i / 2);
@@ -553,8 +554,8 @@ void IceProjectileSpell::Update() {
 			
 			PARTICLE_DEF * pd = createParticle();
 			if(pd) {
-				pd->ov = icicle.pos + randomVec(-5.f, 5.f);
-				pd->move = randomVec(-2.f, 2.f);
+				pd->ov = icicle.pos + arx::randomVec(-5.f, 5.f);
+				pd->move = arx::randomVec(-2.f, 2.f);
 				pd->siz = 20.f;
 				float t = std::min(Random::getf(2000.f, 4000.f),
 				              m_duration - ulCurrentTime + Random::getf(0.f, 500.0f));
@@ -569,7 +570,7 @@ void IceProjectileSpell::Update() {
 			
 			PARTICLE_DEF * pd = createParticle();
 			if(pd) {
-				pd->ov = icicle.pos + randomVec(-5.f, 5.f) - Vec3f(0.f, 50.f, 0.f);
+				pd->ov = icicle.pos + arx::randomVec(-5.f, 5.f) - Vec3f(0.f, 50.f, 0.f);
 				pd->move = Vec3f(0.f, Random::getf(-2.f, 2.f), 0.f);
 				pd->siz = 0.5f;
 				float t = std::min(Random::getf(2000.f, 3000.f),
