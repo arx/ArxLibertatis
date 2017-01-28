@@ -27,8 +27,6 @@
 #include "gui/hud/HudCommon.h"
 #include "math/Types.h"
 
-extern bool bIsAiming;
-
 /*!
  * \brief the hit strength diamond shown at the bottom of the UI.
  */

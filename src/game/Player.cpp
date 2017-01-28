@@ -1945,7 +1945,7 @@ static bool Valid_Jump_Pos() {
 	return (tmp <= 50.f);
 }
 
-void setPlayerPositionColor(){
+static void setPlayerPositionColor(){
 
 	float grnd_color = GetColorz(Vec3f(player.pos.x, player.pos.y + 90, player.pos.z)) - 15.f;
 	if(CURRENT_PLAYER_COLOR < grnd_color) {
