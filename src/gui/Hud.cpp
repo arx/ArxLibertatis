@@ -56,6 +56,8 @@
 
 #include "input/Input.h"
 
+#include "math/RandomVector.h"
+
 #include "scene/GameSound.h"
 #include "scene/Interactive.h"
 
@@ -605,7 +607,7 @@ void CurrentTorchIconGui::update() {
 
 void CurrentTorchIconGui::createFireParticle() {
 	
-	Vec2f pos = m_rect.topLeft() + Vec2f(Random::getf(9.f, 12.f), Random::getf(0.f, 6.f)) * m_scale;
+	Vec2f pos = m_rect.topLeft() + arx::linearRand(Vec2f(9.f, 0.f), Vec2f(12.f, 6.f)) * m_scale;
 	spawn2DFireParticle(pos, m_scale);
 }
 
