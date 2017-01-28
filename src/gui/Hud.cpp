@@ -63,9 +63,6 @@
 
 extern bool WILLRETURNTOFREELOOK;
 
-bool bIsAiming = false;
-
-
 static void DrawItemPrice() {
 	
 	Entity *temp = SecondaryInventory->io;
@@ -142,7 +139,7 @@ void HitStrengthGauge::updateRect(const Rectf & parent) {
 
 void HitStrengthGauge::update() {
 	
-	if(player.m_aimTime == PlatformDuration_ZERO) {
+	if(!player.isAiming()) {
 		m_intensity = 0.2f;
 	} else {
 		float j;
@@ -150,10 +147,6 @@ void HitStrengthGauge::update() {
 			j = player.m_bowAimRatio;
 		} else {
 			const float delta = toMs(player.m_aimTime);
-			
-			//TODO global
-			bIsAiming = delta > 0;
-			
 			float at = delta;
 			float aim = static_cast<float>(player.Full_AimTime);
 			j=at/aim;

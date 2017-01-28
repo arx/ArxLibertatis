@@ -1285,7 +1285,7 @@ void ArxGame::managePlayerControls() {
 		}
 	}
 
-	if(((player.Interface & INTER_COMBATMODE) && !bIsAiming) || !player.doingmagic) {
+	if(((player.Interface & INTER_COMBATMODE) && !player.isAiming()) || !player.doingmagic) {
 		if(GInput->actionNowPressed(CONTROLS_CUST_PRECAST1)) {
 			ARX_SPELLS_Precast_Launch(PrecastHandle(0));
 		}

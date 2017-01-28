@@ -398,6 +398,8 @@ struct ARXCHARACTER {
 		return Cylinder(basePosition(), baseRadius(), baseHeight());
 	}
 	
+	bool isAiming() { return m_aimTime > PlatformDuration_ZERO; }
+	
 };
 
 extern float CURRENT_PLAYER_COLOR;
