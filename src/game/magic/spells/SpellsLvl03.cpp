@@ -484,7 +484,7 @@ void IceProjectileSpell::Launch()
 		icicle.sizeMax = glm::max(icicle.sizeMax, minSize);
 		
 		int iNum = static_cast<int>(i / 2);
-		icicle.pos = tv1a[iNum] + randomOffsetXZ(randomRange);
+		icicle.pos = tv1a[iNum] + arx::randomOffsetXZ(randomRange);
 		
 		DamageParameters damage;
 		damage.pos = icicle.pos;

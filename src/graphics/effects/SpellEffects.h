@@ -81,8 +81,6 @@ public:
 	ARX_USE_ALIGNED_NEW(CSpellFx)
 };
 
-Vec3f randomOffsetXZ(float range);
-
 void Draw3DLineTexNew(const RenderMaterial & mat, Vec3f startPos, Vec3f endPos, Color startColor, Color endColor, float startSize, float endSize);
 
 void Split(Vec3f * v, int a, int b, Vec3f f);

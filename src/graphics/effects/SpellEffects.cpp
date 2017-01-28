@@ -188,14 +188,3 @@ void ReleaseSpellModels() {
 	delete stone0, stone0 = NULL;
 	delete stone1, stone1 = NULL;
 }
-
-
-
-Vec3f randomOffsetXZ(float range) {
-	return Vec3f(Random::getf(-range, range), 0.f, Random::getf(-range, range));
-}
-
-
-
-
-
