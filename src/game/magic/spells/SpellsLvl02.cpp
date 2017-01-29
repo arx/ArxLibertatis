@@ -403,7 +403,7 @@ void HarmSpell::Update()
 	else
 		scaley = glm::abs(entities[m_caster]->physics.cyl.height * (1.0f/2)) + 30.f;
 	
-	const float frametime = float(arxtime.get_frame_time());
+	const float frametime = arxtime.get_frame_time();
 	
 	float mov = std::sin(frametime * (1.0f/800)) * scaley;
 	
