@@ -153,11 +153,13 @@ def comp(a, b):
     return True
 
 
-import logging
 from collections import namedtuple
 
 from ctypes import sizeof
 import itertools
+
+import logging
+logging.basicConfig(level=logging.INFO)
 
 FtlData = namedtuple("FtlData", ["metadata", "verts", "faces", "mats", "groups", "actions", "sels"])
 FtlMetadata = namedtuple("FtlMetadata", ["name", "org"])
@@ -180,7 +182,7 @@ class FtlSerializer(object):
     def __init__(self):
         self.log = logging.getLogger('FtlSerializer')
 
-    def read(self, data):
+    def read(self, data) -> FtlData:
         pos = 0
 
         primaryHeader = ARX_FTL_PRIMARY_HEADER.from_buffer_copy(data, pos)
@@ -315,7 +317,7 @@ class FtlSerializer(object):
             sels=sels
         )
 
-    def write(self, data):
+    def write(self, data: FtlData) -> bytearray:
 
         result = bytearray()
 

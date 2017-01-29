@@ -3,6 +3,9 @@
 import argparse
 import os
 
+import logging
+logging.basicConfig(level=logging.INFO)
+
 import bpy
 
 from arx_addon.dataFtl import FtlFace
@@ -187,6 +190,7 @@ def formatError(errorId, file, message):
 
 class RoundtripTester(object):
     def __init__(self, dataDirectory):
+        self.log = logging.getLogger('RoundtripTester')
         self.dataDirectory = dataDirectory
         self.skipExport = False
         self.skipCompare = False
@@ -194,29 +198,33 @@ class RoundtripTester(object):
 
     def loadAddon(self, name, version):
         import addon_utils
+        from bpy import context
+
+        dir_path = os.path.dirname(os.path.realpath(__file__))
+        context.user_preferences.filepaths.script_directory = dir_path
+        addon_utils.modules_refresh()
 
         for module in addon_utils.modules():
             if module.__name__ == name:
                 if version == module.bl_info['version']:
-                    print("Enabling addon: {0}".format(name))
                     addon_utils.enable(name, default_set=True, persistent=False, handle_error=None)
+                    context.user_preferences.addons[name].preferences.arxAssetPath = self.dataDirectory
                     return
                 else:
                     raise Exception("Unexpected addon version: {0}".format(str(module.bl_info['version'])))
 
         raise Exception("Addon not found: {0}".format(name))
 
-
-    def doImport(self, import_file_path):
-        bpy.ops.arx.import_ftl(filepath=import_file_path)
-
-    def doExport(self, export_file_path):
-        bpy.ops.arx.export_ftl(filepath=export_file_path)
+    def setupCleanBlenderEnvironment(self):
+        bpy.ops.wm.read_homefile()
+        self.loadAddon('arx_addon', (0, 0, 1))
+        defaultCube = bpy.context.scene.objects.get('Cube')
+        if defaultCube:
+            defaultCube.select = True
+            bpy.ops.object.delete()
 
     def run(self):
-        self.loadAddon('arx_addon', (0, 0, 1))
-
-        arxFiles = ArxFiles(args.data)
+        arxFiles = ArxFiles(self.dataDirectory)
         arxFiles.updateAll()
 
         result_file = open("test_files.txt", "w")
@@ -231,10 +239,10 @@ class RoundtripTester(object):
             import_file_relative = os.path.relpath(import_file, self.dataDirectory)
             export_file = "test.ftl"
 
-            bpy.ops.wm.read_homefile()
+            self.setupCleanBlenderEnvironment()
 
             try:
-                self.doImport(import_file)
+                bpy.ops.arx.import_ftl(filepath=import_file)
                 import_status = "Ok"
                 import_ok = True
             except RuntimeError as e:
@@ -246,7 +254,7 @@ class RoundtripTester(object):
 
             if not self.skipExport and import_ok:
                 try:
-                    self.doExport(export_file)
+                    bpy.ops.arx.export_ftl(filepath=export_file)
                     export_ok = True
                     export_status = "Ok"
                 except RuntimeError as e:
@@ -279,14 +287,9 @@ class RoundtripTester(object):
 
 if __name__ == '__main__':
     parser = argparse.ArgumentParser()
-    parser.add_argument('-data')
+    parser.add_argument('-d', '--data-dir', help='Where to find the data files', required=True)
     args = parser.parse_args()
+    print("Using data dir: " + args.data_dir)
 
-    if args.data:
-        print("Using data dir: " + args.data)
-    else:
-        print("Data parameter missing")
-        exit()
-
-    tester = RoundtripTester(args.data)
+    tester = RoundtripTester(args.data_dir)
     tester.run()
