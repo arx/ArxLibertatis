@@ -37,7 +37,7 @@ def getBlackTexture():
         return tex
 
 
-def createMaterial(rootDirectory, textureName):
+def createMaterial(rootDirectory, textureName) -> bpy.types.Material:
     relativePath, fileExtension = os.path.splitext(textureName.replace("\\", "/").lower())
     foo, fileName = os.path.split(relativePath)
     

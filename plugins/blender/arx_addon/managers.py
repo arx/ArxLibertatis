@@ -79,7 +79,6 @@ def strip_wires(bm):
 
 import itertools
 
-
 class ArxObjectManager(object):
     def __init__(self, ioLib, dataPath):
         self.log = logging.getLogger('ArxObjectManager')
@@ -102,11 +101,11 @@ class ArxObjectManager(object):
             seenFaceVerts[face.vids] = i
 
         if len(facesToDrop) > 0:
-            print("Dropping faces: " + str(facesToDrop))
+            log.debug("Dropping faces: " + str(facesToDrop))
 
         return facesToDrop
 
-    def createBmesh(self, vertData, faceData):
+    def createBmesh(self, vertData, faceData) -> bmesh.types.BMesh:
 
         facesToDrop = self.analyzeFaceData(faceData)
 
@@ -158,7 +157,7 @@ class ArxObjectManager(object):
 
         return bm
 
-    def createObject(self, bm, data, canonicalId):
+    def createObject(self, bm, data, canonicalId) -> bpy.types.Object:
 
         mesh = bpy.data.meshes.new("/".join(canonicalId))
         bm.to_mesh(mesh)
@@ -225,7 +224,7 @@ class ArxObjectManager(object):
         bpy.ops.object.mode_set(mode='OBJECT')
         return obj
 
-    def createArmature(self, canonicalId, bm, groups):
+    def createArmature(self, canonicalId, bm, groups) -> bpy.types.Object:
 
         amtname = "/".join(canonicalId)
         origin = (0, 0, 0)
@@ -271,8 +270,8 @@ class ArxObjectManager(object):
         print("Name: %s" % ftlFileName)
         return self.loadFile(ftlFileName)
 
-    def loadFile(self, filePath):
-        print("Loading file: %s" % filePath)
+    def loadFile(self, filePath) -> bpy.types.Object:
+        log.debug("Loading file: %s" % filePath)
 
         with open(filePath, "rb") as f:
             data = f.read()
@@ -302,7 +301,7 @@ class ArxObjectManager(object):
 
     # =============================================================
 
-    def toFtlData(self):
+    def toFtlData(self) -> FtlData:
 
         objs = [o for o in bpy.data.objects if o.type == 'MESH' and not o.hide]
 
@@ -312,11 +311,11 @@ class ArxObjectManager(object):
         obj = objs[0]
 
         canonicalId = obj.name.split("/")
-        self.log.info("Exporting Canonical Id: %s" % str(canonicalId))
+        self.log.debug("Exporting Canonical Id: %s" % str(canonicalId))
 
         # obj.update_from_editmode()
 
-        metadata = FtlMetadata(name=obj['arx.ftl.name'], org=obj['arx.ftl.org'])
+        metadata = FtlMetadata(name=obj.get('arx.ftl.name', ''), org=obj.get('arx.ftl.org', ''))
 
         bm = bmesh.new()
         bm.from_object(obj, bpy.context.scene)
@@ -412,7 +411,7 @@ class ArxObjectManager(object):
         with open(path, 'wb') as f:
             f.write(binData)
 
-        self.log.info("Written %i bytes to file %s" % (len(binData), path))
+        self.log.debug("Written %i bytes to file %s" % (len(binData), path))
         
 
 class ArxAnimationManager(object):

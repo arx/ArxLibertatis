@@ -159,7 +159,7 @@ def menu_func_import_tea(self, context):
 # ============= Registration
 
 def register():
-    log.info("register")
+    log.debug("register")
     bpy.utils.register_class(ArxAddonPreferences)
 
     bpy.utils.register_class(ArxScenesUpdateList)
@@ -178,7 +178,7 @@ def register():
 
 
 def unregister():
-    log.info("unregister")
+    log.debug("unregister")
     bpy.utils.unregister_class(ArxAddonPreferences)
 
     bpy.utils.unregister_class(ArxScenesUpdateList)
