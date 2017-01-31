@@ -1162,8 +1162,9 @@ void ActiveSpellsGui::spellsByPlayerUpdate(float intensity) {
 void ActiveSpellsGui::spellsOnPlayerUpdate(float intensity) {
 	for(size_t i = 0; i < MAX_SPELLS; i++) {
 		SpellBase * spell = spells[SpellHandle(i)];
-		if(!spell)
+		if(!spell) {
 			continue;
+		}
 		
 		if(std::find(spell->m_targets.begin(), spell->m_targets.end(), EntityHandle_Player) == spell->m_targets.end()) {
 			continue;
@@ -1184,13 +1185,15 @@ void ActiveSpellsGui::ManageSpellIcon(SpellBase & spell, float intensity, bool f
 	
 	if(spell.m_hasDuration) {
 		if(player.manaPool.current < 20 || spell.m_timcreation + spell.m_duration - arxtime.now() < ArxDurationMs(2000)) {
-			if(ucFlick&1)
+			if(ucFlick & 1) {
 				flicker = false;
+			}
 		}
 	} else {
 		if(player.manaPool.current<20) {
-			if(ucFlick&1)
+			if(ucFlick & 1) {
 				flicker = false;
+			}
 		}
 	}
 	
@@ -1237,11 +1240,13 @@ void DamagedEquipmentGui::updateRect(const Rectf & parent) {
 }
 
 void DamagedEquipmentGui::update() {
-	if(cinematicBorder.isActive() || BLOCK_PLAYER_CONTROLS)
+	if(cinematicBorder.isActive() || BLOCK_PLAYER_CONTROLS) {
 		return;
+	}
 		
-	if(player.Interface & INTER_INVENTORYALL)
+	if(player.Interface & INTER_INVENTORYALL) {
 		return;
+	}
 	
 	for(long i = 0; i < 5; i++) {
 		m_colors[i] = Color::black;
@@ -1260,8 +1265,9 @@ void DamagedEquipmentGui::update() {
 		if(io) {
 			float ratio = io->durability / io->max_durability;
 			
-			if(ratio <= 0.5f)
-				m_colors[i] = Color3f(1.f-ratio, ratio, 0).to<u8>();
+			if(ratio <= 0.5f) {
+				m_colors[i] = Color3f(1.f - ratio, ratio, 0).to<u8>();
+			}
 		}
 	}
 }
@@ -1276,8 +1282,9 @@ void DamagedEquipmentGui::draw() {
 	GRenderer->SetRenderState(Renderer::Fog, false);
 	
 	for(long i = 0; i < 5; i++) {
-		if(m_colors[i] == Color::black)
+		if(m_colors[i] == Color::black) {
 			continue;
+		}
 		
 		EERIEDrawBitmap2(m_rect, 0.001f, iconequip[i], m_colors[i]);
 	}
@@ -1309,10 +1316,11 @@ void StealthGauge::update(const Rectf & parent) {
 		if(CURRENT_PLAYER_COLOR < v) {
 			float t = v - CURRENT_PLAYER_COLOR;
 			
-			if(t >= 15)
+			if(t >= 15) {
 				v = 1.f;
-			else
-				v = (t*( 1.0f / 15 ))* 0.9f + 0.1f;
+			} else {
+				v = (t * (1.0f / 15)) * 0.9f + 0.1f;
+			}
 			
 			m_color = Color3f::gray(v).to<u8>();
 			
@@ -1322,8 +1330,9 @@ void StealthGauge::update(const Rectf & parent) {
 }
 
 void StealthGauge::draw() {
-	if(!m_visible)
+	if(!m_visible) {
 		return;
+	}
 	
 	GRenderer->SetRenderState(Renderer::AlphaBlending, true);
 	GRenderer->SetBlendFunc(BlendOne, BlendOne);
@@ -1354,21 +1363,24 @@ void PlayerInterfaceFader::requestFade(FadeDirection showhide, long smooth) {
 		ARX_INTERFACE_NoteClose();
 	}
 	
-	if(showhide == FadeDirection_In)
+	if(showhide == FadeDirection_In) {
 		PLAYER_INTERFACE_HIDE_COUNT = true;
-	else
+	} else {
 		PLAYER_INTERFACE_HIDE_COUNT = false;
+	}
 	
 	if(smooth) {
-		if(showhide == FadeDirection_In)
+		if(showhide == FadeDirection_In) {
 			m_direction = -1;
-		else
+		} else {
 			m_direction = 1;
+		}
 	} else {
-		if(showhide == FadeDirection_In)
+		if(showhide == FadeDirection_In) {
 			m_current = PlatformDuration_ZERO;
-		else
+		} else {
 			m_current = PlatformDurationMs(1000);
+		}
 		
 		lSLID_VALUE = float(toMs(m_current)) / 10.f;
 	}
@@ -1403,8 +1415,9 @@ void PlayerInterfaceFader::update() {
 		if(bOk) {
 			m_current -= g_platformTime.lastFrameDuration();
 			
-			if(m_current < PlatformDuration_ZERO)
+			if(m_current < PlatformDuration_ZERO) {
 				m_current = PlatformDuration_ZERO;
+			}
 			
 			lSLID_VALUE = float(toMs(m_current)) / 10.f;
 		}
@@ -1487,12 +1500,12 @@ void HudRoot::draw() {
 	
 	if(player.Interface & INTER_COMBATMODE) {
 		hitStrengthGauge.draw();
-	}	
+	}
 	
 	g_secondaryInventoryHud.draw();
 	g_playerInventoryHud.draw();
 	
-	if(FlyingOverIO 
+	if(    FlyingOverIO 
 		&& !(player.Interface & INTER_COMBATMODE)
 		&& !GInput->actionPressed(CONTROLS_CUST_MAGICMODE)
 		&& (!PLAYER_MOUSELOOK_ON || !config.input.autoReadyWeapon)
