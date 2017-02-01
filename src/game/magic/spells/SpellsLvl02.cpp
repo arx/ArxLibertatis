@@ -48,8 +48,8 @@ bool HealSpell::CanLaunch() {
 	return !spells.ExistAnyInstanceForThisCaster(m_type, m_caster);
 }
 
-void HealSpell::Launch()
-{
+void HealSpell::Launch() {
+	
 	if(!(m_flags & SPELLCAST_FLAG_NOSOUND)) {
 		ARX_SOUND_PlaySFX(SND_SPELL_HEALING, &m_caster_pos);
 	}
@@ -135,19 +135,19 @@ void HealSpell::Update() {
 		const EntityHandle handle = EntityHandle(ii);
 		Entity * e = entities[handle];
 		
-		if ((e)
+		if (    e
 			&& (e->show==SHOW_FLAG_IN_SCENE) 
 			&& (e->gameFlags & GFLAG_ISINTREATZONE)
 			&& (e->ioflags & IO_NPC)
 			&& (e->_npcdata->lifePool.current>0.f)
-			)
-		{
+		) {
 			float dist;
 
-			if(handle == m_caster)
-				dist=0;
-			else
-				dist=fdist(m_pos, e->pos);
+			if(handle == m_caster) {
+				dist = 0;
+			} else {
+				dist = fdist(m_pos, e->pos);
+			}
 
 			if(dist<300.f) {
 				float gain = Random::getf(0.8f, 2.4f) * m_level * (300.f - dist) * (1.0f/300) * g_framedelay * (1.0f/1000);
@@ -156,16 +156,16 @@ void HealSpell::Update() {
 					if(!BLOCK_PLAYER_CONTROLS) {
 						player.lifePool.current = std::min(player.lifePool.current + gain, player.Full_maxlife);
 					}
+				} else {
+					e->_npcdata->lifePool.current = std::min(e->_npcdata->lifePool.current + gain, e->_npcdata->lifePool.max);
 				}
-				else
-					e->_npcdata->lifePool.current = std::min(e->_npcdata->lifePool.current+gain, e->_npcdata->lifePool.max);
 			}
 		}
 	}	
 }
 
-void DetectTrapSpell::Launch()
-{
+void DetectTrapSpell::Launch() {
+	
 	spells.endByCaster(m_caster, SPELL_DETECT_TRAP);
 	
 	if(m_caster == EntityHandle_Player) {
@@ -183,8 +183,8 @@ void DetectTrapSpell::Launch()
 	m_targets.push_back(m_target);
 }
 
-void DetectTrapSpell::End()
-{
+void DetectTrapSpell::End() {
+	
 	if(m_caster == EntityHandle_Player) {
 		ARX_SOUND_Stop(m_snd_loop);
 	}
@@ -219,8 +219,9 @@ void ArmorSpell::Launch()
 	
 	m_duration = (m_launchDuration > ArxDuration(-1)) ? m_launchDuration : ArxDurationMs(20000);
 	
-	if(m_caster == EntityHandle_Player)
+	if(m_caster == EntityHandle_Player) {
 		m_duration = ArxDurationMs(20000000);
+	}
 	
 	m_hasDuration = true;
 	m_fManaCostPerSecond = 0.2f * m_level;
@@ -235,8 +236,8 @@ void ArmorSpell::Launch()
 	m_targets.push_back(m_target);
 }
 
-void ArmorSpell::End()
-{
+void ArmorSpell::End() {
+	
 	ARX_SOUND_Stop(m_snd_loop);
 	
 	Entity * target = entities.get(m_target);
@@ -270,8 +271,8 @@ LowerArmorSpell::LowerArmorSpell()
 	
 }
 
-void LowerArmorSpell::Launch()
-{
+void LowerArmorSpell::Launch() {
+	
 	spells.endByTarget(m_target, SPELL_LOWER_ARMOR);
 	spells.endByCaster(m_caster, SPELL_ARMOR);
 	spells.endByCaster(m_caster, SPELL_FIRE_PROTECTION);
@@ -283,8 +284,9 @@ void LowerArmorSpell::Launch()
 	
 	m_duration = (m_launchDuration > ArxDuration(-1)) ? m_launchDuration : ArxDurationMs(20000);
 	
-	if(m_caster == EntityHandle_Player)
+	if(m_caster == EntityHandle_Player) {
 		m_duration = ArxDurationMs(20000000);
+	}
 	
 	m_hasDuration = true;
 	m_fManaCostPerSecond = 0.2f * m_level;
@@ -305,8 +307,8 @@ void LowerArmorSpell::Launch()
 	m_targets.push_back(m_target);
 }
 
-void LowerArmorSpell::End()
-{
+void LowerArmorSpell::End() {
+	
 	ARX_SOUND_PlaySFX(SND_SPELL_LOWER_ARMOR_END);
 	
 	if(m_haloCreated) {
@@ -348,8 +350,8 @@ HarmSpell::HarmSpell()
 	
 }
 
-void HarmSpell::Launch()
-{
+void HarmSpell::Launch() {
+	
 	if(!(m_flags & SPELLCAST_FLAG_NOSOUND)) {
 		ARX_SOUND_PlaySFX(SND_SPELL_HARM, &m_caster_pos);
 	}
@@ -383,8 +385,8 @@ void HarmSpell::Launch()
 	}
 }
 
-void HarmSpell::End()
-{
+void HarmSpell::End() {
+	
 	DamageRequestEnd(m_damage);
 	
 	endLightDelayed(m_light, ArxDurationMs(600));
@@ -393,19 +395,18 @@ void HarmSpell::End()
 }
 
 // TODO copy-paste cabal
-void HarmSpell::Update()
-{
+void HarmSpell::Update() {
 	float refpos;
 	float scaley;
 	
 	if(m_caster == EntityHandle_Player)
 		scaley = 90.f;
 	else
-		scaley = glm::abs(entities[m_caster]->physics.cyl.height * (1.0f/2)) + 30.f;
+		scaley = glm::abs(entities[m_caster]->physics.cyl.height * (1.0f / 2)) + 30.f;
 	
 	const float frametime = arxtime.get_frame_time();
 	
-	float mov = std::sin(frametime * (1.0f/800)) * scaley;
+	float mov = std::sin(frametime * (1.0f / 800)) * scaley;
 	
 	Vec3f cabalpos;
 	if(m_caster == EntityHandle_Player) {
@@ -422,7 +423,7 @@ void HarmSpell::Update()
 		refpos = caster->pos.y - scaley;
 	}
 	
-	float Es = std::sin(frametime * (1.0f/800) + glm::radians(scaley));
+	float Es = std::sin(frametime * (1.0f / 800) + glm::radians(scaley));
 	
 	EERIE_LIGHT * light = lightHandleGet(m_light);
 	if(light) {
@@ -447,17 +448,17 @@ void HarmSpell::Update()
 	Color3f cabalcolor = Color3f(0.8f, 0.4f, 0.f);
 	Draw3DObject(cabal, cabalangle, cabalpos, cabalscale, cabalcolor, mat);
 	
-	mov = std::sin((frametime - 30.f) * (1.0f/800)) * scaley;
+	mov = std::sin((frametime - 30.f) * (1.0f / 800)) * scaley;
 	cabalpos.y = refpos - mov;
 	cabalcolor = Color3f(0.5f, 3.f, 0.f);
 	Draw3DObject(cabal, cabalangle, cabalpos, cabalscale, cabalcolor, mat);
 	
-	mov = std::sin((frametime - 60.f) * (1.0f/800)) * scaley;
+	mov = std::sin((frametime - 60.f) * (1.0f / 800)) * scaley;
 	cabalpos.y = refpos - mov;
 	cabalcolor = Color3f(0.25f, 0.1f, 0.f);
 	Draw3DObject(cabal, cabalangle, cabalpos, cabalscale, cabalcolor, mat);
 	
-	mov = std::sin((frametime - 120.f) * (1.0f/800)) * scaley;
+	mov = std::sin((frametime - 120.f) * (1.0f / 800)) * scaley;
 	cabalpos.y = refpos - mov;
 	cabalcolor = Color3f(0.15f, 0.1f, 0.f);
 	Draw3DObject(cabal, cabalangle, cabalpos, cabalscale, cabalcolor, mat);
