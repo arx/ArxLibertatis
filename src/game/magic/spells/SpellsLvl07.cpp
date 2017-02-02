@@ -185,11 +185,11 @@ void FlyingEyeSpell::Update() {
 	
 	const ArxDuration framediff3 = now - m_lastupdate;
 	
-	eyeball.floating = std::sin(m_lastupdate - m_timcreation * 0.001f);
+	eyeball.floating = std::sin((m_lastupdate - m_timcreation) * 0.001f);
 	eyeball.floating *= 10.f;
 	
 	if(m_lastupdate - m_timcreation <= ArxDurationMs(3000)) {
-		eyeball.exist = m_lastupdate - m_timcreation * (1.0f / 30);
+		eyeball.exist = (m_lastupdate - m_timcreation) * (1.0f / 30);
 		eyeball.size = Vec3f(1.f - float(eyeball.exist) * 0.01f);
 		eyeball.angle.setYaw(eyeball.angle.getYaw() + toMs(framediff3) * 0.6f);
 	} else {
