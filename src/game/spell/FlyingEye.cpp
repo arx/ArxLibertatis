@@ -48,21 +48,21 @@ void FlyingEye_Release() {
 	eyeballobj = NULL;
 }
 
-void DrawMagicSightInterface()
-{
+void DrawMagicSightInterface() {
 	if(eyeball.exist == 1 || !Flying_Eye)
 		return;
-
-
+	
+	
 	GRenderer->SetBlendFunc(BlendZero, BlendInvSrcColor);
 
-	float col = 0.75f + PULSATE * (1.f/20);
+	float col = 0.75f + PULSATE * (1.f / 20);
 
-	if(col > 1.f)
+	if(col > 1.f) {
 		col = 1.f;
+	}
 
 	if(eyeball.exist < 0) {
-		col = -eyeball.exist * (1.f/100);
+		col = -eyeball.exist * (1.f / 100);
 	} else if(eyeball.exist > 2) {
 		col = 1.f - eyeball.size.x;
 	}
@@ -74,10 +74,11 @@ void DrawMagicSightInterface()
 
 		EERIEDrawBitmap(Rectf(g_size), 0.0001f, NULL, Color3f::gray(col).to<u8>());
 
-		MagicSightFader -= toMs(g_platformTime.lastFrameDuration()) * (1.f/400);
+		MagicSightFader -= toMs(g_platformTime.lastFrameDuration()) * (1.f / 400);
 
-		if(MagicSightFader < 0.f)
+		if(MagicSightFader < 0.f) {
 			MagicSightFader = 0.f;
+		}
 	}
 
 	GRenderer->SetBlendFunc(BlendOne, BlendOne);
@@ -85,19 +86,20 @@ void DrawMagicSightInterface()
 
 
 void ARXDRAW_DrawEyeBall() {
-	if(eyeball.exist == 0 || !eyeballobj)
+	if(eyeball.exist == 0 || !eyeballobj) {
 		return;
-
+	}
+	
 	float d;
 
 	if(eyeball.exist < 0) {
-		d = -eyeball.exist * (1.0f/100);
+		d = -eyeball.exist * (1.0f / 100);
 		eyeball.exist++;
 	} else if(eyeball.exist > 2) {
-		d = eyeball.exist * (1.0f/100);
-	}
-	else
+		d = eyeball.exist * (1.0f / 100);
+	} else {
 		return;
+	}
 
 	Anglef angle = eyeball.angle;
 	angle.setYaw(MAKEANGLE(180.f - angle.getYaw()));
