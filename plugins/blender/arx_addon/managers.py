@@ -693,7 +693,7 @@ class ArxSceneManager(object):
 
     def AddSceneObjects(self, scene, dlfData, sceneOffset):
 
-        for e in dlfData['entities']:
+        for e in dlfData.entities:
             classPath = \
             os.path.splitext('/graph' + e.name.decode('iso-8859-1').replace("\\", "/").lower().split("graph", 1)[1])[0]
             ident = e.ident
