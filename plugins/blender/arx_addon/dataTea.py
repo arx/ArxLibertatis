@@ -111,14 +111,14 @@ class TeaSerializer(object):
         f = open(fileName, "rb")
         data = f.read()
         f.close()
-        self.log.info("Read %i bytes from file %s" % (len(data), fileName))
+        self.log.debug("Read %i bytes from file %s" % (len(data), fileName))
         
         pos = 0
         
         header = THEA_HEADER.from_buffer_copy(data, pos)
         pos += sizeof(THEA_HEADER)
         
-        self.log.info("Header - Identity: {0}; Version: {1}; Frames: {2}; Groups {3}; KeyFrames {4}".format(header.identity, header.version, header.nb_frames, header.nb_groups, header.nb_key_frames))
+        self.log.debug("Header - Identity: {0}; Version: {1}; Frames: {2}; Groups {3}; KeyFrames {4}".format(header.identity, header.version, header.nb_frames, header.nb_groups, header.nb_key_frames))
         
         results = []
         for i in range(header.nb_key_frames):
@@ -201,6 +201,21 @@ class TeaSerializer(object):
             #self.log.debug("Pos: {0}".format(pos))
             results.append(frame)
 
-        self.log.info("File loaded")
+        # Sanity check the deserialized data
+        first = True
+        grouplen = 0
+        for f in results:
+            if first:
+                grouplen =  len(f['groups'])
+                first = False
+            else:
+                if grouplen != len(f['groups']):
+                    raise UnexpectedValueException("Group count does not match!")
+
+            for g in f['groups']:
+                if g.key_group not in (0, 1):
+                    raise UnexpectedValueException("key_group = {}".format(g.key_group))
+
+        self.log.debug("File loaded")
 
         return results
