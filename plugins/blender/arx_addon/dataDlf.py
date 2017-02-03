@@ -116,12 +116,16 @@ class DANAE_LS_LIGHT(LittleEndianStructure):
 import logging
 from ctypes import sizeof, create_string_buffer
 
+from collections import namedtuple
+
+DlfData = namedtuple('DlfData', ['entities'])
+
 class DlfSerializer(object):
     def __init__(self, ioLib):
         self.log = logging.getLogger('DlfSerializer')
         self.ioLib = ioLib
     
-    def read(self, data, lsHeader):
+    def read(self, data, lsHeader) -> DlfData:
         pos = 0
         result = {}
         
@@ -132,8 +136,7 @@ class DlfSerializer(object):
         EntitiesType = DANAE_LS_INTER * lsHeader.nb_inter
         entities = EntitiesType.from_buffer_copy(data, pos)
         pos += sizeof(EntitiesType)
-        result["entities"] = entities
-        
+
         if lsHeader.lighting != 0:
             lightingHeader = DANAE_LS_LIGHTINGHEADER.from_buffer_copy(data, pos)
             pos += sizeof(DANAE_LS_LIGHTINGHEADER)
@@ -143,10 +146,12 @@ class DlfSerializer(object):
         # Skip lights
         pos += sizeof(DANAE_LS_LIGHT) * lsHeader.nb_lights
         
-        return result
+        return DlfData(
+            entities=entities
+        )
         
     
-    def readContainer(self, fileName):
+    def readContainer(self, fileName) -> DlfData:
         f = open(fileName, "rb")
         data = f.read()
         f.close()
