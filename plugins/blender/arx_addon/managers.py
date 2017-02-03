@@ -677,7 +677,7 @@ class ArxSceneManager(object):
         scene.objects.link(groupObject)
         groupObject.location = correctionMatrix * mathutils.Vector(sceneOffset)
 
-        for light in llfData["lights"]:
+        for light in llfData.lights:
             lampData = bpy.data.lamps.new(name=scene.name + "-lamp-data", type='POINT')
             lampData.use_specular = False
             lampData.color = (light.rgb.r, light.rgb.g, light.rgb.b)
