@@ -40,8 +40,8 @@
 #include "scene/GameSound.h"
 #include "scene/Interactive.h"
 
-void SummonCreatureSpell::GetTargetAndBeta(Vec3f & target, float & beta)
-{
+void SummonCreatureSpell::GetTargetAndBeta(Vec3f & target, float & beta) {
+	
 	bool displace = false;
 	if(m_caster == EntityHandle_Player) {
 		target = player.basePosition();
@@ -67,8 +67,8 @@ SummonCreatureSpell::SummonCreatureSpell()
 }
 
 
-bool SummonCreatureSpell::CanLaunch()
-{
+bool SummonCreatureSpell::CanLaunch() {
+	
 	Vec3f target;
 	float beta;
 	GetTargetAndBeta(target, beta);
@@ -81,8 +81,8 @@ bool SummonCreatureSpell::CanLaunch()
 	return true;
 }
 
-void SummonCreatureSpell::Launch()
-{
+void SummonCreatureSpell::Launch() {
+	
 	m_hasDuration = true;
 	m_fManaCostPerSecond = 1.9f;
 	m_requestSummon = false;
@@ -148,8 +148,9 @@ void SummonCreatureSpell::End() {
 
 void SummonCreatureSpell::Update() {
 	
-	if(arxtime.is_paused())
+	if(arxtime.is_paused()) {
 		return;
+	}
 	
 	ArxDuration elapsed = arxtime.now() - m_timcreation;
 	
@@ -251,10 +252,11 @@ void SummonCreatureSpell::Update() {
 					MakeCoolFx(pos);
 				}
 				
-				if(tokeep==1)
+				if(tokeep == 1) {
 					m_summonedEntity = io->index();
-				else
+				} else {
 					m_summonedEntity = EntityHandle();
+				}
 			}
 		}
 	} else if(m_summonedEntity == EntityHandle()) {
@@ -262,8 +264,7 @@ void SummonCreatureSpell::Update() {
 	}
 }
 
-bool FakeSummonSpell::CanLaunch()
-{
+bool FakeSummonSpell::CanLaunch() {
 	if(m_caster.handleData() <= EntityHandle_Player.handleData() || !ValidIONum(m_target)) {
 		return false;
 	}
@@ -271,8 +272,8 @@ bool FakeSummonSpell::CanLaunch()
 	return true;
 }
 
-void FakeSummonSpell::Launch()
-{
+void FakeSummonSpell::Launch() {
+	
 	m_hasDuration = true;
 	m_fManaCostPerSecond = 1.9f;
 	m_duration = ArxDurationMs(4000);
@@ -300,8 +301,7 @@ void FakeSummonSpell::Launch()
 	}
 }
 
-void FakeSummonSpell::End()
-{
+void FakeSummonSpell::End() {
 	ARX_SOUND_PlaySFX(SND_SPELL_ELECTRIC, &m_targetPos);
 	
 	lightHandleDestroy(m_light);
@@ -326,8 +326,8 @@ NegateMagicSpell::NegateMagicSpell()
 	, tex_sol(NULL)
 { }
 
-void NegateMagicSpell::Launch()
-{
+void NegateMagicSpell::Launch() {
+	
 	if(m_caster == EntityHandle_Player) {
 		m_target = EntityHandle_Player;
 	}
@@ -410,20 +410,24 @@ void NegateMagicSpell::Update() {
 
 void NegateMagicSpell::LaunchAntiMagicField() {
 	
-	if(!ValidIONum(m_target))
+	if(!ValidIONum(m_target)) {
 		return;
+	}
 	
 	for(size_t i = 0; i < MAX_SPELLS; i++) {
 		SpellBase * spell = spells[SpellHandle(i)];
 		
-		if(!spell)
+		if(!spell) {
 			continue;
+		}
 		
-		if(this == spell)
+		if(this == spell) {
 			continue;
+		}
 		
-		if(m_level < spell->m_level)
+		if(m_level < spell->m_level) {
 			continue;
+		}
 		
 		Vec3f pos = spell->getPosition();
 		if(closerThan(pos, entities[m_target]->pos, 600.f)) {
@@ -436,8 +440,8 @@ void NegateMagicSpell::LaunchAntiMagicField() {
 	}
 }
 
-bool IncinerateSpell::CanLaunch()
-{
+bool IncinerateSpell::CanLaunch() {
+	
 	Entity * tio = entities[m_target];
 	if((tio->ioflags & IO_NPC) && tio->_npcdata->lifePool.current <= 0.f) {
 		return false;
@@ -446,8 +450,8 @@ bool IncinerateSpell::CanLaunch()
 	return true;
 }
 
-void IncinerateSpell::Launch()
-{
+void IncinerateSpell::Launch() {
+	
 	Entity * tio = entities[m_target];
 	
 	ARX_SOUND_PlaySFX(SND_SPELL_INCINERATE, &tio->pos);
@@ -462,8 +466,8 @@ void IncinerateSpell::Launch()
 	m_targets.push_back(m_target);
 }
 
-void IncinerateSpell::End()
-{
+void IncinerateSpell::End() {
+	
 	m_targets.clear();
 	ARX_SOUND_Stop(m_snd_loop);
 	ARX_SOUND_PlaySFX(SND_SPELL_INCINERATE_END);
@@ -478,12 +482,13 @@ void IncinerateSpell::Update() {
 }
 
 Vec3f IncinerateSpell::getPosition() {
+	
 	return getTargetPosition();
 }
 
 
-void MassParalyseSpell::Launch()
-{
+void MassParalyseSpell::Launch() {
+	
 	ARX_SOUND_PlaySFX(SND_SPELL_MASS_PARALYSE);
 	
 	m_duration = (m_launchDuration > ArxDuration(-1)) ? m_launchDuration : ArxDurationMs(10000);
@@ -515,8 +520,8 @@ void MassParalyseSpell::Launch()
 	}
 }
 
-void MassParalyseSpell::End()
-{
+void MassParalyseSpell::End() {
+	
 	BOOST_FOREACH(EntityHandle handle, m_targets) {
 		Entity * target = entities.get(handle);
 		if(target) {
