@@ -445,13 +445,13 @@ class ArxAnimationManager(object):
         for frame in data:
             bpy.context.scene.objects.active = obj
             
-            if 'translation' in frame:
-                translation = frame['translation']
+            if frame.translation:
+                translation = frame.translation
                 obj.location = (translation.x,translation.y,translation.z)
                 obj.keyframe_insert(data_path='location')
                 
-            if 'rotation' in frame:
-                rotation = frame['rotation']
+            if frame.rotation:
+                rotation = frame.rotation
                 obj.rotation_quaternion = (rotation.w,rotation.x,rotation.y,rotation.z)
                 obj.keyframe_insert(data_path='rotation_quaternion')
 
@@ -460,12 +460,16 @@ class ArxAnimationManager(object):
             bpy.context.scene.objects.active = armatureObj
             bpy.ops.object.mode_set(mode='POSE')
 
-            if len(bones) != len(frame['groups']):
+            if len(bones) != len(frame.groups):
                 #raise InconsistentStateException("Bones in amature must match animation groups, existing {} new {}".format(len(bones), len(frame['groups'])))
-                log.warning("Bones in amature must match animation groups, existing {} new {}".format(len(bones), len(frame['groups'])))
-                break
+                log.warning("Bones in amature must match animation groups, existing {} new {}".format(len(bones), len(frame.groups)))
+                #break
 
-            for groupIndex, group in enumerate(frame['groups']): # group index = bone index
+            # This seems to be required to handle mismatched data
+            maxBone = min(len(bones), len(frame.groups))
+
+            for groupIndex in range(maxBone - 1, -1, -1): # group index = bone index
+                group = frame.groups[groupIndex]
                 bone = bones[groupIndex]
                 location = Vector((group.translate.x,group.translate.y,group.translate.z))
                 #self.log.info("moving bone to %s" % str(group.translate))
@@ -485,7 +489,7 @@ class ArxAnimationManager(object):
                 
             bpy.ops.object.mode_set(mode='OBJECT')
             
-            bpy.context.scene.frame_set(bpy.context.scene.frame_current+frame['duration'])  
+            bpy.context.scene.frame_set(bpy.context.scene.frame_current + frame.duration)
             #self.log.info("Loaded Frame")
         bpy.context.scene.frame_end = bpy.context.scene.frame_current
 
