@@ -72,11 +72,12 @@ static std::string sp_max_ch;
 
 void CheatDrawText() {
 	
-	if(sp_max_start == PlatformInstant_ZERO)
+	if(sp_max_start == PlatformInstant_ZERO) {
 		return;
+	}
 	
 	PlatformDuration elapsed = g_platformTime.frameStart() - sp_max_start;
-
+	
 	if(elapsed < PlatformDurationMs(20000)) {
 		float modi = float(toMs(PlatformDurationMs(20000) - elapsed)) * ( 1.0f / 2000 ) * ( 1.0f / 10 );
 		float sizX = 16;
@@ -89,7 +90,7 @@ void CheatDrawText() {
 			
 			sp_max_y[i] = std::sin(d.x + toMs(elapsed) * (1.0f / 100)) * 30.f * modi;
 			std::string tex(1, sp_max_ch[i]);
-
+			
 			UNICODE_ARXDrawTextCenter(hFontInBook, d + Vec2f(-1,-1), tex, Color::none);
 			UNICODE_ARXDrawTextCenter(hFontInBook, d + Vec2f( 1, 1), tex, Color::none);
 			UNICODE_ARXDrawTextCenter(hFontInBook, d, tex, sp_max_col[i]);
@@ -103,40 +104,39 @@ static void DisplayCheatText(const char * text) {
 }
 
 static void MakeSpCol() {
-
+	
 	ARX_SPSound();
-
+	
 	for(long i = 0; i < 64; i++) {
 		sp_max_y[i] = 0;
 	}
-
+	
 	sp_max_col[0] = Color::fromRGBA(ColorRGBA(0x00FF0000));
 	sp_max_col[1] = Color::fromRGBA(ColorRGBA(0x0000FF00));
 	sp_max_col[2] = Color::fromRGBA(ColorRGBA(0x000000FF));
-
+	
 	sp_max_col[3] = Color::fromRGBA(ColorRGBA(0x00FFFF00));
 	sp_max_col[4] = Color::fromRGBA(ColorRGBA(0x00FF00FF));
 	sp_max_col[5] = Color::fromRGBA(ColorRGBA(0x0000FFFF));
-
+	
 	for(size_t i = 6; i < 24; i++) {
 		sp_max_col[i] = sp_max_col[i - 6];
 	}
-
+	
 	for(size_t i = 24; i < 27; i++) {
 		sp_max_col[i] = sp_max_col[i - 3];
 	}
-
+	
 	for(size_t i = 27; i < 33; i++) {
 		sp_max_col[i] = sp_max_col[i - 9];
 	}
-
 }
 
 
 void CheatReset() {
-
+	
 	sp_max_start = PlatformInstant_ZERO;
-
+	
 	sp_arm = 0;
 	cur_arm = 0;
 	cur_sm = 0;
@@ -154,23 +154,29 @@ void CheatDetectionReset() {
 	cur_mega=0;
 	passwall=0;
 	
-	if(cur_mr != 3)
-		cur_mr=0;
+	if(cur_mr != 3) {
+		cur_mr = 0;
+	}
 	
-	if(cur_mx != 3)
-		cur_mx=0;
+	if(cur_mx != 3) {
+		cur_mx = 0;
+	}
 	
-	if(cur_rf != 3)
-		cur_rf=0;
+	if(cur_rf != 3) {
+		cur_rf = 0;
+	}
 	
-	if(cur_pom != 3)
-		cur_pom=0;
+	if(cur_pom != 3) {
+		cur_pom = 0;
+	}
 	
-	if(cur_pnux < 3)
-		cur_pnux=0;
+	if(cur_pnux < 3) {
+		cur_pnux = 0;
+	}
 	
-	if(cur_sm < 3)
-		cur_sm=0;
+	if(cur_sm < 3) {
+		cur_sm = 0;
+	}
 	
 	cur_bh=0;
 	cur_sos=0;
@@ -192,23 +198,22 @@ static void EERIE_OBJECT_SetBHMode()
 }
 
 static void ApplySPWep() {
-
+	
 	if(!sp_wep) {
-
+		
 		ARX_SPSound();
-
+		
 		res::path cls = "graph/obj3d/interactive/items/weapons/sword_mx/sword_mx";
 		Entity * ioo = AddItem(cls);
 		if(ioo) {
-
 			sp_wep = 1;
 			MakeCoolFx(player.pos);
 			MakeCoolFx(player.pos);
 			ioo->scriptload = 1;
 			SendInitScriptEvent(ioo);
-
+			
 			giveToPlayer(ioo);
-
+			
 			MakeSpCol();
 			DisplayCheatText("!!!_Grosbillite_!!!");
 		}
@@ -224,21 +229,21 @@ static void ApplyCurSOS() {
 }
 
 static void ApplySPBow() {
-
+	
 	ARX_SPSound();
-
+	
 	const char * cls = "graph/obj3d/interactive/items/weapons/bow_mx/bow_mx";
 	Entity * ioo = AddItem(cls);
 	if(ioo) {
-
+		
 		MakeCoolFx(player.pos);
 		MakeCoolFx(player.pos);
-
+		
 		ioo->scriptload = 1;
 		SendInitScriptEvent(ioo);
-
+		
 		giveToPlayer(ioo);
-
+		
 		MakeSpCol();
 		DisplayCheatText("!!!_Bow to Samy & Anne_!!!");
 	}
@@ -246,77 +251,63 @@ static void ApplySPBow() {
 
 static void ApplySPArm() {
 	ARX_SPSound();
-
+	
 	res::path cls;
 	switch (sp_arm) {
-		case 0:
-			cls = "graph/obj3d/interactive/items/armor/helmet_plate_cm/helmet_plate_cm";
-		break;
-		case 1:
-			cls = "graph/obj3d/interactive/items/armor/legging_plate_cm/legging_plate_cm";
-		break;
-		case 2:
-			cls = "graph/obj3d/interactive/items/armor/chest_plate_cm/chest_plate_cm";
-		break;
-		default:
-			return;
+		case 0: cls = "graph/obj3d/interactive/items/armor/helmet_plate_cm/helmet_plate_cm"; break;
+		case 1: cls = "graph/obj3d/interactive/items/armor/legging_plate_cm/legging_plate_cm"; break;
+		case 2: cls = "graph/obj3d/interactive/items/armor/chest_plate_cm/chest_plate_cm"; break;
+		default: return;
 	}
-
+	
 	Entity * ioo = AddItem(cls);
 	if(ioo) {
-
+		
 		sp_wep = 1;
 		MakeCoolFx(player.pos);
 		MakeCoolFx(player.pos);
 		ioo->scriptload = 1;
 		SendInitScriptEvent(ioo);
-
+		
 		giveToPlayer(ioo);
-
+		
 		MakeSpCol();
 		
 		const char * text = "!! Toi aussi cherches les Cheats !!";
-
-		switch (sp_arm)
-		{
-		case 0:
-			text = "------ZoliChapo------";
-		break;
-		case 1:
-			text = "-----TiteBottine-----";
-		break;
-		case 2:
-			text = "-----Roooo-La-La-----";
-		break;
-		default:
-			return;
+		
+		switch (sp_arm) {
+			case 0: text = "------ZoliChapo------"; break;
+			case 1: text = "-----TiteBottine-----"; break;
+			case 2: text = "-----Roooo-La-La-----"; break;
+			default: return;
 		}
 		DisplayCheatText(text);
 	}
-
+	
 	sp_arm++;
 }
 
 static void ApplyCurPNux() {
-
+	
 	MakeSpCol();
 	DisplayCheatText("! PhilNux & Gluonne !");
-
+	
 	player.m_cheatPnuxActive = (player.m_cheatPnuxActive + 1) % 3;
-
+	
 	// TODO-RENDERING: Create a post-processing effect for that cheat... see original source...
-
+	
 	cur_pnux=0;
 }
 
 static void ApplyPasswall() {
 	MakeSpCol();
 	DisplayCheatText("!!! PassWall !!!");
-
-	if(USE_PLAYERCOLLISIONS)
+	
+	if(USE_PLAYERCOLLISIONS) {
 		USE_PLAYERCOLLISIONS = false;
-	else
+	} else {
 		USE_PLAYERCOLLISIONS = true;
+	}
 }
 
 static void ApplySPRf() {
@@ -345,19 +336,18 @@ static void ApplySPuw() {
 }
 
 static void ApplySPMax() {
-
+	
 	MakeCoolFx(player.pos);
 	sp_max=~sp_max;
-
-	if (sp_max)
-	{
+	
+	if (sp_max) {
 		MakeSpCol();
 		DisplayCheatText("!!!_FaNt0mAc1e_!!!");
-
-			player.skin=4;
-
-			ARX_EQUIPMENT_RecreatePlayerMesh();
-
+		
+		player.skin=4;
+		
+		ARX_EQUIPMENT_RecreatePlayerMesh();
+		
 		ARX_PLAYER_Rune_Add_All();
 		std::string text = "!!!!!!! FanTomAciE !!!!!!!";
 		ARX_SPEECH_Add(text);
@@ -365,9 +355,7 @@ static void ApplySPMax() {
 		player.Skill_Redistribute+=50;
 		player.level = std::max(short(player.level), short(10));
 		player.xp=GetXPforLevel(10);
-	}
-	else
-	{
+	} else {
 		TextureContainer * tcm;
 		tcm = TextureContainer::Load("graph/obj3d/textures/npc_human_cm_hero_head");
 		if(tcm) {
@@ -393,7 +381,7 @@ extern float PULSATE;
 static TextureContainer * Mr_tc = NULL;
 
 void CheckMr() {
-
+	
 	if(cur_mr == 3) {
 		if(GRenderer && Mr_tc) {
 			Vec2f pos = Vec2f(g_size.topRight());
@@ -435,8 +423,9 @@ void handleCheatRuneDetection(CheatRune rune) {
 			if(cur_arm >= 0 && (cur_arm & 1)){
 				cur_arm++;
 
-				if(cur_arm > 20)
+				if(cur_arm > 20) {
 					ApplySPArm();
+				}
 			}
 			else
 				cur_arm=-1;
@@ -444,10 +433,12 @@ void handleCheatRuneDetection(CheatRune rune) {
 			break;
 		}
 		case CheatRune_MEGA: {
-			if(cur_arm >= 0 && !(cur_arm & 1))
+			if(cur_arm >= 0 && !(cur_arm & 1)) {
 				cur_arm++;
-			else
-				cur_arm=-1;
+			} else {
+				cur_arm = -1;
+			}
+			
 			if(cur_console == 1) {
 				cur_console++;
 			} else {
@@ -472,30 +463,34 @@ void handleCheatRuneDetection(CheatRune rune) {
 			break;
 		}
 		case CheatRune_U: {
-			if(uw_mode_pos == 0)
+			if(uw_mode_pos == 0) {
 				uw_mode_pos++;
-			
+			}
 			break;
 		}
 		case CheatRune_W: {
-			if(uw_mode_pos == 1)
+			if(uw_mode_pos == 1) {
 				ApplySPuw();
-			
+			}
 			break;
 		}
 		case CheatRune_S: {
-			if(cur_sm == 0)
+			if(cur_sm == 0) {
 				cur_sm++;
-
-			if(cur_bh == 0)
+			}
+			
+			if(cur_bh == 0) {
 				cur_bh++;
-
-			if(cur_bh == 2)
+			}
+			
+			if(cur_bh == 2) {
 				cur_bh++;
-
-			if(cur_sos == 0)
+			}
+			
+			if(cur_sos == 0) {
 				cur_sos++;
-
+			}
+			
 			if(cur_sos == 2) {
 				cur_sos = 0;
 				ApplyCurSOS();
@@ -503,18 +498,21 @@ void handleCheatRuneDetection(CheatRune rune) {
 			break;
 		}
 		case CheatRune_P: {
-			if(cur_pom == 0)
+			if(cur_pom == 0) {
 				cur_pom++;
-
-			if(cur_pnux == 0)
+			}
+			if(cur_pnux == 0) {
 				cur_pnux++;
-
-			if(cur_pnux == 2)
+			}
+			
+			if(cur_pnux == 2) {
 				cur_pnux++;
-
-			if(cur_bh == 1)
+			}
+			
+			if(cur_bh == 1) {
 				cur_bh++;
-
+			}
+			
 			if(cur_bh == 3) {
 				cur_bh = 0;
 				EERIE_OBJECT_SetBHMode();
@@ -526,13 +524,15 @@ void handleCheatRuneDetection(CheatRune rune) {
 				cur_sm++;
 				ApplySPBow();
 			}
-
-			if(cur_mx == 0)
+			
+			if(cur_mx == 0) {
 				cur_mx = 1;
-
-			if(cur_mr == 0)
+			}
+			
+			if(cur_mr == 0) {
 				cur_mr = 1;
-
+			}
+			
 			if(cur_pom == 2) {
 				cur_pom++;
 				ApplySPWep();
@@ -544,7 +544,7 @@ void handleCheatRuneDetection(CheatRune rune) {
 				cur_mr = 2;
 				MakeCoolFx(player.pos);
 			}
-
+			
 			if(cur_mx == 1) {
 				cur_mx = 2;
 				MakeCoolFx(player.pos);
@@ -555,9 +555,9 @@ void handleCheatRuneDetection(CheatRune rune) {
 				MakeCoolFx(player.pos);
 			}
 
-			if(cur_sm == 1)
+			if(cur_sm == 1) {
 				cur_sm++;
-			
+			}
 			break;
 		}
 		case CheatRune_X: {
@@ -568,9 +568,10 @@ void handleCheatRuneDetection(CheatRune rune) {
 			break;
 		}
 		case CheatRune_26: {
-			if(cur_pnux == 1)
+			if(cur_pnux == 1) {
 				cur_pnux++;
-
+			}
+			
 			if(cur_pnux == 3) {
 				cur_pnux++;
 				ApplyCurPNux();
@@ -578,12 +579,13 @@ void handleCheatRuneDetection(CheatRune rune) {
 			break;
 		}
 		case CheatRune_O: {
-			if(cur_pom == 1)
+			if(cur_pom == 1) {
 				cur_pom++;
-
-			if(cur_sos == 1)
-				cur_sos++;
+			}
 			
+			if(cur_sos == 1) {
+				cur_sos++;
+			}
 			break;
 		}
 		case CheatRune_R: {
@@ -592,10 +594,10 @@ void handleCheatRuneDetection(CheatRune rune) {
 				MakeCoolFx(player.pos);
 				ApplyCurMr();
 			}
-
-			if(cur_rf == 0)
-				cur_rf = 1;
 			
+			if(cur_rf == 0) {
+				cur_rf = 1;
+			}
 			break;
 		}
 		case CheatRune_F: {
@@ -608,7 +610,7 @@ void handleCheatRuneDetection(CheatRune rune) {
 		}
 		case CheatRune_Passwall: {
 			passwall++;
-
+			
 			if(passwall == 3) {
 				passwall=0;
 				ApplyPasswall();
@@ -618,16 +620,18 @@ void handleCheatRuneDetection(CheatRune rune) {
 		case CheatRune_ChangeSkin: {
 			player.skin++;
 
-			if(player.skin == 4 && Random::getf() < 0.9f)
+			if(player.skin == 4 && Random::getf() < 0.9f) {
 				player.skin++;
-
-			if(player.skin > 5)
+			}
+			
+			if(player.skin > 5) {
 				player.skin = 0;
-
+			}
 			ARX_EQUIPMENT_RecreatePlayerMesh();
 			break;
 		}
-		default:
+		default: {
 			break;
+		}
 	}
 }
