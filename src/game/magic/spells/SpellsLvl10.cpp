@@ -56,8 +56,7 @@ MassLightningStrikeSpell::~MassLightningStrikeSpell() {
 	pTab.clear();
 }
 
-void MassLightningStrikeSpell::Launch()
-{
+void MassLightningStrikeSpell::Launch() {
 	spells.endByType(SPELL_MASS_LIGHTNING_STRIKE);
 	
 	m_duration = ArxDurationMs(5000); // TODO probably never read
@@ -356,13 +355,11 @@ FreezeTimeSpell::FreezeTimeSpell()
 	
 }
 
-bool FreezeTimeSpell::CanLaunch()
-{
+bool FreezeTimeSpell::CanLaunch() {
 	return !spells.ExistAnyInstanceForThisCaster(m_type, m_caster);
 }
 
-void FreezeTimeSpell::Launch()
-{
+void FreezeTimeSpell::Launch() {
 	ARX_SOUND_PlaySFX(SND_SPELL_FREEZETIME);
 	
 	float max_slowdown = std::max(0.f, GLOBAL_SLOWDOWN - 0.01f);
@@ -374,8 +371,7 @@ void FreezeTimeSpell::Launch()
 	m_fManaCostPerSecond = 30.f * m_slowdown;
 }
 
-void FreezeTimeSpell::End()
-{
+void FreezeTimeSpell::End() {
 	GLOBAL_SLOWDOWN += m_slowdown;
 	
 	Entity * caster = entities.get(m_caster);
@@ -384,8 +380,7 @@ void FreezeTimeSpell::End()
 	}
 }
 
-void MassIncinerateSpell::Launch()
-{
+void MassIncinerateSpell::Launch() {
 	ARX_SOUND_PlaySFX(SND_SPELL_MASS_INCINERATE);
 	
 	m_duration = ArxDurationMs(20000);
@@ -419,8 +414,7 @@ void MassIncinerateSpell::Launch()
 	}
 }
 
-void MassIncinerateSpell::End()
-{
+void MassIncinerateSpell::End() {
 	m_targets.clear();
 	ARX_SOUND_Stop(m_snd_loop);
 	ARX_SOUND_PlaySFX(SND_SPELL_INCINERATE_END);
@@ -431,18 +425,16 @@ void MassIncinerateSpell::Update() {
 	Entity * caster = entities.get(m_caster);
 	if(caster) {
 		ARX_SOUND_RefreshPosition(m_snd_loop, caster->pos);
-	}	
+	}
 }
 
 float LASTTELEPORT = 0.0F;
 
-bool TeleportSpell::CanLaunch()
-{
+bool TeleportSpell::CanLaunch() {
 	return !spells.ExistAnyInstanceForThisCaster(m_type, m_caster);
 }
 
-void TeleportSpell::Launch()
-{
+void TeleportSpell::Launch() {
 	m_duration = ArxDurationMs(7000);
 	
 	ARX_SOUND_PlaySFX(SND_SPELL_TELEPORT, &m_caster_pos);
@@ -452,8 +444,7 @@ void TeleportSpell::Launch()
 	}
 }
 
-void TeleportSpell::End()
-{
+void TeleportSpell::End() {
 	ARX_SOUND_PlaySFX(SND_MAGIC_FIZZLE, &m_caster_pos);
 }
 
