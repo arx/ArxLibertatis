@@ -46,8 +46,8 @@ RuneOfGuardingSpell::RuneOfGuardingSpell()
 	, ulCurrentTime(0)
 {}
 
-void RuneOfGuardingSpell::Launch()
-{
+void RuneOfGuardingSpell::Launch() {
+	
 	spells.endByCaster(m_caster, SPELL_RUNE_OF_GUARDING);
 	
 	ARX_SOUND_PlaySFX(SND_SPELL_RUNE_OF_GUARDING);
@@ -162,8 +162,8 @@ LevitateSpell::LevitateSpell()
 	, m_baseRadius(50.f)
 {}
 
-void LevitateSpell::Launch()
-{
+void LevitateSpell::Launch() {
+	
 	spells.endByCaster(m_caster, SPELL_LEVITATE);
 	
 	if(m_caster == EntityHandle_Player) {
@@ -199,8 +199,8 @@ void LevitateSpell::Launch()
 	m_targets.push_back(m_target);
 }
 
-void LevitateSpell::End()
-{
+void LevitateSpell::End() {
+	
 	ARX_SOUND_Stop(m_snd_loop);
 	
 	Entity * target = entities.get(m_target);
@@ -283,8 +283,8 @@ CurePoisonSpell::CurePoisonSpell()
 	, m_currentTime(0)
 {}
 
-void CurePoisonSpell::Launch()
-{
+void CurePoisonSpell::Launch() {
+	
 	if(m_caster == EntityHandle_Player) {
 		m_target = EntityHandle_Player;
 	}
@@ -376,8 +376,8 @@ RepelUndeadSpell::RepelUndeadSpell()
 	, tex_p2(NULL)
 {}
 
-void RepelUndeadSpell::Launch()
-{
+void RepelUndeadSpell::Launch() {
+	
 	spells.endByCaster(m_caster, SPELL_REPEL_UNDEAD);
 	
 	if(m_caster == EntityHandle_Player) {
@@ -483,8 +483,8 @@ PoisonProjectileSpell::~PoisonProjectileSpell() {
 	m_projectiles.clear();
 }
 
-void PoisonProjectileSpell::Launch()
-{
+void PoisonProjectileSpell::Launch() {
+	
 	ARX_SOUND_PlaySFX(SND_SPELL_POISON_PROJECTILE_LAUNCH,
 	                  &m_caster_pos);
 	
