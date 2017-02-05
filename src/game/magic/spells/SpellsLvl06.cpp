@@ -36,8 +36,8 @@
 #include "scene/GameSound.h"
 #include "scene/Interactive.h"
 
-void RiseDeadSpell::GetTargetAndBeta(Vec3f & target, float & beta)
-{
+void RiseDeadSpell::GetTargetAndBeta(Vec3f & target, float & beta) {
+	
 	bool displace = true;
 	
 	if(m_caster == EntityHandle_Player) {
@@ -58,8 +58,8 @@ RiseDeadSpell::RiseDeadSpell()
 	, m_entity()
 { }
 
-bool RiseDeadSpell::CanLaunch()
-{
+bool RiseDeadSpell::CanLaunch() {
+	
 	//TODO always cancel spell even if new one can't be launched ?
 	spells.endByCaster(m_caster, SPELL_RISE_DEAD);
 	
@@ -76,8 +76,8 @@ bool RiseDeadSpell::CanLaunch()
 	return true;
 }
 
-void RiseDeadSpell::Launch()
-{
+void RiseDeadSpell::Launch() {
+	
 	float beta;
 	Vec3f target;
 	
@@ -114,8 +114,8 @@ void RiseDeadSpell::Launch()
 	m_duration = m_fissure.GetDuration();
 }
 
-void RiseDeadSpell::End()
-{
+void RiseDeadSpell::End() {
+	
 	Entity * entity = entities.get(m_entity);
 	if(entity) {
 		ARX_SOUND_PlaySFX(SND_SPELL_ELECTRIC, &entity->pos);
@@ -221,8 +221,8 @@ void RiseDeadSpell::Update() {
 	}
 }
 
-void ParalyseSpell::Launch()
-{
+void ParalyseSpell::Launch() {
+	
 	ARX_SOUND_PlaySFX(SND_SPELL_PARALYSE, &entities[m_target]->pos);
 	
 	m_duration = (m_launchDuration > ArxDuration(-1)) ? m_launchDuration : ArxDurationMs(5000);
@@ -244,8 +244,8 @@ void ParalyseSpell::Launch()
 	ARX_NPC_Kill_Spell_Launch(entities[m_target]);
 }
 
-void ParalyseSpell::End()
-{
+void ParalyseSpell::End() {
+	
 	m_targets.clear();
 	
 	Entity * target = entities.get(m_target);
@@ -257,6 +257,7 @@ void ParalyseSpell::End()
 }
 
 Vec3f ParalyseSpell::getPosition() {
+	
 	return getTargetPosition();
 }
 
@@ -266,8 +267,8 @@ CreateFieldSpell::CreateFieldSpell()
 }
 
 
-void CreateFieldSpell::Launch()
-{
+void CreateFieldSpell::Launch() {
+	
 	ArxInstant start = arxtime.now();
 	if(m_flags & SPELLCAST_FLAG_RESTORE) {
 		// FIXME what is going on here ?
@@ -368,8 +369,8 @@ Vec3f CreateFieldSpell::getPosition() {
 	return m_field.eSrc;
 }
 
-void DisarmTrapSpell::Launch()
-{
+void DisarmTrapSpell::Launch() {
+	
 	ARX_SOUND_PlaySFX(SND_SPELL_DISARM_TRAP);
 	
 	m_duration = ArxDurationMs(1);
@@ -409,8 +410,8 @@ bool SlowDownSpell::CanLaunch() {
 	return true;
 }
 
-void SlowDownSpell::Launch()
-{
+void SlowDownSpell::Launch() {
+	
 	ARX_SOUND_PlaySFX(SND_SPELL_SLOW_DOWN, &entities[m_target]->pos);
 	
 	m_duration = (m_launchDuration > ArxDuration(-1)) ? m_launchDuration : ArxDurationMs(10000);
