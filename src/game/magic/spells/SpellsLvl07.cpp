@@ -51,13 +51,15 @@ FlyingEyeSpell::FlyingEyeSpell()
 	
 }
 
-bool FlyingEyeSpell::CanLaunch()
-{
-	if(eyeball.exist)
+bool FlyingEyeSpell::CanLaunch() {
+	
+	if(eyeball.exist) {
 		return false;
+	}
 
-	if(spells.ExistAnyInstanceForThisCaster(m_type, m_caster))
+	if(spells.ExistAnyInstanceForThisCaster(m_type, m_caster)) {
 		return false;
+	}
 	
 	if(m_caster == EntityHandle_Player) {
 		m_target = EntityHandle_Player;
@@ -70,8 +72,8 @@ bool FlyingEyeSpell::CanLaunch()
 	return true;
 }
 
-void FlyingEyeSpell::Launch()
-{
+void FlyingEyeSpell::Launch() {
+	
 	static TextureContainer * tc4 = TextureContainer::Load("graph/particles/smoke");
 	
 	ARX_SOUND_PlaySFX(SND_SPELL_EYEBALL_IN);
@@ -112,8 +114,8 @@ void FlyingEyeSpell::Launch()
 	config.input.mouseLookToggle = true;
 }
 
-void FlyingEyeSpell::End()
-{
+void FlyingEyeSpell::End() {
+	
 	Entity * caster = entities.get(m_caster);
 	if(caster) {
 		ARX_SOUND_PlaySFX(SND_MAGIC_FIZZLE, &caster->pos);
@@ -276,8 +278,8 @@ void FireFieldSpell::Launch() {
 	pPSStream1.Update(0);
 }
 
-void FireFieldSpell::End()
-{
+void FireFieldSpell::End() {
+	
 	DamageRequestEnd(m_damage);
 	
 	ARX_SOUND_Stop(m_snd_loop);
@@ -352,8 +354,8 @@ IceFieldSpell::IceFieldSpell()
 	, tex_p2(NULL)
 {}
 
-void IceFieldSpell::Launch()
-{
+void IceFieldSpell::Launch() {
+	
 	spells.endByCaster(m_caster, SPELL_ICE_FIELD);
 	
 	ARX_SOUND_PlaySFX(SND_SPELL_ICE_FIELD);
@@ -403,10 +405,11 @@ void IceFieldSpell::Launch()
 	for(int i = 0; i < iMax; i++) {
 		float t = Random::getf();
 
-		if (t < 0.5f)
+		if(t < 0.5f) {
 			tType[i] = 0;
-		else
+		} else {
 			tType[i] = 1;
+		}
 		
 		tSize[i] = Vec3f_ZERO;
 		tSizeMax[i] = arx::randomVec3f() + Vec3f(0.f, 0.2f, 0.f);
@@ -455,8 +458,9 @@ void IceFieldSpell::Update() {
 		el->extras=0;
 	}
 
-	if(!VisibleSphere(Sphere(m_pos - Vec3f(0.f, 120.f, 0.f), 350.f)))
+	if(!VisibleSphere(Sphere(m_pos - Vec3f(0.f, 120.f, 0.f), 350.f))) {
 		return;
+	}
 	
 	RenderMaterial mat;
 	mat.setDepthTest(true);
@@ -481,14 +485,17 @@ void IceFieldSpell::Update() {
 		stitecolor.g = tSizeMax[i].y * 0.7f;
 		stitecolor.b = tSizeMax[i].y * 0.9f;
 
-		if(stitecolor.r > 1)
+		if(stitecolor.r > 1) {
 			stitecolor.r = 1;
+		}
 
-		if(stitecolor.g > 1)
+		if(stitecolor.g > 1) {
 			stitecolor.g = 1;
+		}
 
-		if(stitecolor.b > 1)
+		if(stitecolor.b > 1) {
 			stitecolor.b = 1;
+		}
 
 		stitescale.z = tSize[i].x;
 		stitescale.y = tSize[i].y;
@@ -552,8 +559,8 @@ void LightningStrikeSpell::Launch() {
 	m_snd_loop = ARX_SOUND_PlaySFX(SND_SPELL_LIGHTNING_LOOP, &m_caster_pos, 1.f, ARX_SOUND_PLAY_LOOPED);
 }
 
-void LightningStrikeSpell::End()
-{
+void LightningStrikeSpell::End() {
+	
 	ARX_SOUND_Stop(m_snd_loop);
 	
 	Entity * caster = entities.get(m_caster);
