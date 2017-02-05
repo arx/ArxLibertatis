@@ -48,8 +48,8 @@ SpeedSpell::~SpeedSpell() {
 	m_trails.clear();
 }
 
-void SpeedSpell::Launch()
-{
+void SpeedSpell::Launch() {
+	
 	m_hasDuration = true;
 	m_fManaCostPerSecond = 2.f;
 	
@@ -65,8 +65,9 @@ void SpeedSpell::Launch()
 	
 	m_duration = (m_launchDuration > ArxDuration(-1)) ? m_launchDuration : ArxDurationMs(20000);
 	
-	if(m_caster == EntityHandle_Player)
+	if(m_caster == EntityHandle_Player) {
 		m_duration = ArxDurationMs(200000000);
+	}
 	
 	std::vector<VertexGroup> & grouplist = entities[m_target]->obj->grouplist;
 	
@@ -133,8 +134,8 @@ Vec3f SpeedSpell::getPosition() {
 }
 
 
-void DispellIllusionSpell::Launch()
-{
+void DispellIllusionSpell::Launch() {
+	
 	ARX_SOUND_PlaySFX(SND_SPELL_DISPELL_ILLUSION);
 	
 	m_duration = ArxDurationMs(1000);
@@ -345,8 +346,8 @@ CreateFoodSpell::CreateFoodSpell()
 	, m_currentTime(0)
 {}
 
-void CreateFoodSpell::Launch()
-{
+void CreateFoodSpell::Launch() {
+	
 	ARX_SOUND_PlaySFX(SND_SPELL_CREATE_FOOD, &m_caster_pos);
 	
 	m_duration = (m_launchDuration > ArxDuration(-1)) ? m_launchDuration : ArxDurationMs(3500);
@@ -411,8 +412,8 @@ IceProjectileSpell::IceProjectileSpell()
 	, tex_p2(NULL)
 { }
 
-void IceProjectileSpell::Launch()
-{
+void IceProjectileSpell::Launch() {
+	
 	ARX_SOUND_PlaySFX(SND_SPELL_ICE_PROJECTILE_LAUNCH, &m_caster_pos);
 	
 	m_duration = ArxDurationMs(4200);
@@ -504,12 +505,12 @@ void IceProjectileSpell::End() {
 }
 
 void IceProjectileSpell::Update() {
-
+	
 	ulCurrentTime += g_framedelay;
 
 	if(m_duration - ulCurrentTime < 1000) {
 		fColor = (m_duration - ulCurrentTime) * ( 1.0f / 1000 );
-
+		
 		for(int i = 0; i < iNumber; i++) {
 			m_icicles[i].size.y *= fColor;
 		}
@@ -523,8 +524,9 @@ void IceProjectileSpell::Update() {
 	float fOneOnDuration = 1.f / (float)(m_duration);
 	iMax = (int)((iNumber * 2) * fOneOnDuration * ulCurrentTime);
 
-	if(iMax > iNumber)
+	if(iMax > iNumber) {
 		iMax = iNumber;
+	}
 
 	for(int i = 0; i < iMax; i++) {
 		Icicle & icicle = m_icicles[i];
@@ -558,7 +560,7 @@ void IceProjectileSpell::Update() {
 				pd->move = arx::randomVec(-2.f, 2.f);
 				pd->siz = 20.f;
 				float t = std::min(Random::getf(2000.f, 4000.f),
-				              m_duration - ulCurrentTime + Random::getf(0.f, 500.0f));
+				                   m_duration - ulCurrentTime + Random::getf(0.f, 500.0f));
 				pd->tolive = checked_range_cast<u32>(t);
 				pd->tc = tex_p2;
 				pd->m_flags = FADE_IN_AND_OUT | ROTATING | DISSIPATING;
@@ -581,7 +583,6 @@ void IceProjectileSpell::Update() {
 				pd->m_rotation = 0.0000001f;
 				pd->rgb = Color3f(0.7f, 0.7f, 1.f);
 			}
-			
 		}
 	}
 }
