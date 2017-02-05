@@ -47,13 +47,13 @@ BlessSpell::BlessSpell()
 	, fRot(0)
 { }
 
-bool BlessSpell::CanLaunch()
-{
+bool BlessSpell::CanLaunch() {
+	
 	return !spells.ExistAnyInstanceForThisCaster(m_type, m_caster);
 }
 
-void BlessSpell::Launch()
-{
+void BlessSpell::Launch() {
+	
 	if(m_caster == EntityHandle_Player) {
 		m_target = EntityHandle_Player;
 	}
@@ -166,8 +166,8 @@ Vec3f BlessSpell::getPosition() {
 	return getTargetPosition();
 }
 
-void DispellFieldSpell::Launch()
-{
+void DispellFieldSpell::Launch() {
+	
 	m_duration = ArxDurationMs(10);
 	
 	long valid = 0, dispelled = 0;
@@ -231,8 +231,8 @@ void DispellFieldSpell::Launch()
 }
 
 
-void FireProtectionSpell::Launch()
-{
+void FireProtectionSpell::Launch() {
+	
 	spells.endByTarget(m_target, SPELL_FIRE_PROTECTION);
 	spells.endByCaster(m_caster, SPELL_ARMOR);
 	spells.endByCaster(m_caster, SPELL_LOWER_ARMOR);
@@ -240,8 +240,9 @@ void FireProtectionSpell::Launch()
 	
 	m_duration = (m_launchDuration > ArxDuration(-1)) ? m_launchDuration : ArxDurationMs(20000);
 	
-	if(m_caster == EntityHandle_Player)
+	if(m_caster == EntityHandle_Player) {
 		m_duration = ArxDurationMs(2000000);
+	}
 	
 	if(m_caster == EntityHandle_Player) {
 		m_target = EntityHandle_Player;
@@ -264,8 +265,8 @@ void FireProtectionSpell::Launch()
 	m_snd_loop = ARX_SOUND_PlaySFX(SND_SPELL_FIRE_PROTECTION_LOOP, &entities[m_target]->pos, 1.f, ARX_SOUND_PLAY_LOOPED);
 }
 
-void FireProtectionSpell::End()
-{
+void FireProtectionSpell::End() {
+	
 	ARX_SOUND_Stop(m_snd_loop);
 	
 	Entity * target = entities.get(m_target);
@@ -293,8 +294,8 @@ Vec3f FireProtectionSpell::getPosition() {
 	return getTargetPosition();
 }
 
-void ColdProtectionSpell::Launch()
-{
+void ColdProtectionSpell::Launch() {
+	
 	spells.endByTarget(m_target, SPELL_COLD_PROTECTION);
 	spells.endByCaster(m_caster, SPELL_ARMOR);
 	spells.endByCaster(m_caster, SPELL_LOWER_ARMOR);
@@ -308,8 +309,9 @@ void ColdProtectionSpell::Launch()
 	
 	m_duration = (m_launchDuration > ArxDuration(-1)) ? m_launchDuration : ArxDurationMs(20000);
 	
-	if(m_caster == EntityHandle_Player)
+	if(m_caster == EntityHandle_Player) {
 		m_duration = ArxDurationMs(2000000);
+	}
 	
 	m_hasDuration = true;
 	m_fManaCostPerSecond = 1.f;
@@ -326,8 +328,8 @@ void ColdProtectionSpell::Launch()
 	m_targets.push_back(m_target);
 }
 
-void ColdProtectionSpell::End()
-{
+void ColdProtectionSpell::End() {
+	
 	ARX_SOUND_Stop(m_snd_loop);
 	
 	Entity * target = entities.get(m_target);
@@ -352,16 +354,17 @@ void ColdProtectionSpell::Update() {
 }
 
 Vec3f ColdProtectionSpell::getPosition() {
+	
 	return getTargetPosition();
 }
 
-bool TelekinesisSpell::CanLaunch()
-{
+bool TelekinesisSpell::CanLaunch() {
+	
 	return !spells.ExistAnyInstanceForThisCaster(m_type, m_caster);
 }
 
-void TelekinesisSpell::Launch()
-{
+void TelekinesisSpell::Launch() {
+	
 	m_duration = (m_launchDuration > ArxDuration(-1)) ? m_launchDuration : ArxDurationMs(6000000);
 	m_hasDuration = true;
 	m_fManaCostPerSecond = 0.9f;
@@ -373,8 +376,8 @@ void TelekinesisSpell::Launch()
 	ARX_SOUND_PlaySFX(SND_SPELL_TELEKINESIS_START, &m_caster_pos);
 }
 
-void TelekinesisSpell::End()
-{
+void TelekinesisSpell::End() {
+	
 	if(m_caster == EntityHandle_Player)
 		player.m_telekinesis = false;
 	
@@ -392,8 +395,8 @@ CurseSpell::CurseSpell()
 	, fRot(0.f)
 {}
 
-void CurseSpell::Launch()
-{
+void CurseSpell::Launch() {
+	
 	spells.endByCaster(m_target, SPELL_CURSE);
 	
 	ARX_SOUND_PlaySFX(SND_SPELL_CURSE, &entities[m_target]->pos);
