@@ -106,9 +106,8 @@ public:
 		// viewerCamera.setTargetCamera(Vec3f(0, 0, 0));
 		
 		// Set the angle manually
-		// FIXME confusing yaw pitch names!
-		viewerCamera.angle.setYaw(-latitude);
-		viewerCamera.angle.setPitch(-longitude);
+		viewerCamera.angle.setPitch(-latitude);
+		viewerCamera.angle.setYaw(-longitude);
 		
 		SetActiveCamera(&viewerCamera);
 		PrepareCamera(&viewerCamera, g_size);
@@ -177,7 +176,9 @@ QGLFormat ArxRenderWidget::desiredFormat() {
 }
 
 ArxRenderWidget::ArxRenderWidget(AnimationLayersModel * animationLayersModel, LightsModel * lightsModel, QWidget *parent)
-: QGLWidget(desiredFormat(), parent)
+	: QGLWidget(desiredFormat(), parent)
+	, m_showVertexNormals(false)
+	, m_showFaceNormals(false)
 {
 	m_animationLayersModel = animationLayersModel;
 	m_lightsModel = lightsModel;
