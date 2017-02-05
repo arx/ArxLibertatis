@@ -41,13 +41,13 @@
 #include "scene/Interactive.h"
 #include "scene/Object.h"
 
-bool MagicSightSpell::CanLaunch()
-{
+bool MagicSightSpell::CanLaunch() {
+	
 	return !spells.ExistAnyInstanceForThisCaster(m_type, m_caster);
 }
 
-void MagicSightSpell::Launch()
-{
+void MagicSightSpell::Launch() {
+	
 	m_fManaCostPerSecond = 0.36f;
 	m_hasDuration = true;
 	m_duration = (m_launchDuration > ArxDurationMs(-1)) ? m_launchDuration : ArxDurationMs(6000000);
@@ -60,8 +60,8 @@ void MagicSightSpell::Launch()
 	}
 }
 
-void MagicSightSpell::End()
-{
+void MagicSightSpell::End() {
+	
 	if(m_caster == EntityHandle_Player) {
 		player.m_improve = false;
 		ARX_SOUND_Stop(m_snd_loop);
@@ -262,8 +262,9 @@ void MagicMissileSpell::Update() {
 	for(size_t i = 0; i < pTab.size(); i++) {
 		CMagicMissile * missile = pTab[i];
 		
-		if(missile->bExplo)
+		if(missile->bExplo) {
 			continue;
+		}
 			
 		Sphere sphere = Sphere(missile->eCurPos, 10.f);
 		
@@ -303,12 +304,14 @@ void MagicMissileSpell::Update() {
 		
 		for(size_t i = 0; i < pTab.size(); i++) {
 			CMagicMissile *pMM = pTab[i];
-			if(pMM->bMove)
+			if(pMM->bMove) {
 				nbmissiles++;
+			}
 		}
 		
-		if(nbmissiles == 0)
+		if(nbmissiles == 0) {
 			m_duration = ArxDuration_ZERO;
+		}
 	}
 	
 	for(size_t i = 0; i < pTab.size(); i++) {
@@ -333,8 +336,8 @@ IgnitSpell::IgnitSpell()
 	
 }
 
-void IgnitSpell::Launch()
-{
+void IgnitSpell::Launch() {
+	
 	m_duration = ArxDurationMs(500);
 	
 	if(m_hand_group != ActionPoint()) {
@@ -430,13 +433,14 @@ void IgnitSpell::End() {
 	m_lights.clear();
 }
 
-void IgnitSpell::Update()
-{
+void IgnitSpell::Update() {
+	
 	if(m_elapsed < m_duration) {
 		float a = float(m_elapsed) / float(m_duration);
 		
-		if(a >= 1.f)
+		if(a >= 1.f) {
 			a = 1.f;
+		}
 		
 		std::vector<T_LINKLIGHTTOFX>::iterator itr;
 		for(itr = m_lights.begin(); itr != m_lights.end(); ++itr) {
@@ -455,12 +459,13 @@ void IgnitSpell::Update()
 		}
 	}
 	
-	if(!arxtime.is_paused())
+	if(!arxtime.is_paused()) {
 		m_elapsed += g_framedelay;
+	}
 }
 
-void DouseSpell::Launch()
-{
+void DouseSpell::Launch() {
+	
 	m_duration = ArxDurationMs(500);
 	
 	Vec3f target;
@@ -551,8 +556,8 @@ void DouseSpell::Update() {
 	
 }
 
-void ActivatePortalSpell::Launch()
-{
+void ActivatePortalSpell::Launch() {
+	
 	ARX_SOUND_PlayInterface(SND_SPELL_ACTIVATE_PORTAL);
 	
 	m_duration = ArxDurationMs(20);
