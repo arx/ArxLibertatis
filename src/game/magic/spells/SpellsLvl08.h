@@ -21,6 +21,7 @@
 #define ARX_GAME_MAGIC_SPELLS_SPELLSLVL08_H
 
 #include "game/magic/Spell.h"
+#include "graphics/effects/Cabal.h"
 
 class InvisibilitySpell : public SpellBase {
 public:
@@ -80,9 +81,8 @@ public:
 	Vec3f getPosition();
 	
 private:
-	LightHandle m_light;
 	DamageHandle m_damage;
-	float m_yaw;
+	CabalFx m_cabal;
 };
 
 #endif // ARX_GAME_MAGIC_SPELLS_SPELLSLVL08_H
