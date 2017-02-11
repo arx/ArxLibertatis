@@ -21,7 +21,7 @@
 #define ARX_GAME_MAGIC_SPELLS_SPELLSLVL02_H
 
 #include "game/magic/Spell.h"
-
+#include "graphics/effects/Cabal.h"
 #include "graphics/particle/ParticleSystem.h"
 
 class HealSpell : public SpellBase {
@@ -79,9 +79,8 @@ public:
 	void Update();
 	
 private:
-	LightHandle m_light;
 	DamageHandle m_damage;
-	float m_yaw;
+	CabalFx m_cabal;
 };
 
 #endif // ARX_GAME_MAGIC_SPELLS_SPELLSLVL02_H
