@@ -45,9 +45,8 @@ public:
 	Vec3f getPosition();
 	
 private:
-	LightHandle m_light;
 	DamageHandle m_damage;
-	float m_yaw;
+	CabalFx m_cabal;
 };
 
 class ExplosionSpell : public SpellBase {
