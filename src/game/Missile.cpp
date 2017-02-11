@@ -213,11 +213,11 @@ void ARX_MISSILES_Update() {
 				EERIEPOLY *ep = GetMinPoly(dest);
 				EERIEPOLY *epp = GetMaxPoly(dest);
 
-				if(closerThan(player.pos, pos, 200.f)) {
+				if(closerThan(player.pos, dest, 200.f)) {
 					ARX_MISSILES_Kill(i);
-					spawnFireHitParticle(pos, 0);
-					PolyBoomAddScorch(pos);
-					Add3DBoom(pos);
+					spawnFireHitParticle(dest, 0);
+					PolyBoomAddScorch(dest);
+					Add3DBoom(dest);
 					DoSphericDamage(Sphere(dest, 200.0F), 180.0F, DAMAGE_AREAHALF, DAMAGE_TYPE_FIRE | DAMAGE_TYPE_MAGICAL, EntityHandle());
 					break;
 				}
