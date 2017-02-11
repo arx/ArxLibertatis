@@ -246,7 +246,7 @@ void ARX_MISSILES_Update() {
 					spawnFireHitParticle(ray.pos, 0);
 					PolyBoomAddScorch(ray.pos);
 					Add3DBoom(ray.pos);
-					DoSphericDamage(Sphere(dest, 200.0F), 180.0F, DAMAGE_AREAHALF, DAMAGE_TYPE_FIRE | DAMAGE_TYPE_MAGICAL, EntityHandle());
+					DoSphericDamage(Sphere(ray.pos, 200.0F), 180.0F, DAMAGE_AREAHALF, DAMAGE_TYPE_FIRE | DAMAGE_TYPE_MAGICAL, EntityHandle());
 					break;
 				}
 
