@@ -210,8 +210,6 @@ void ARX_MISSILES_Update() {
 				Vec3f orgn = missiles[i].lastpos;
 				Vec3f dest = pos;
 				
-				Vec3f tro = Vec3f(70.f);
-				
 				EERIEPOLY *ep = GetMinPoly(dest);
 				EERIEPOLY *epp = GetMaxPoly(dest);
 
@@ -260,7 +258,8 @@ void ARX_MISSILES_Update() {
 					DoSphericDamage(Sphere(dest, 200.0F), 180.0F, DAMAGE_AREAHALF, DAMAGE_TYPE_FIRE | DAMAGE_TYPE_MAGICAL, EntityHandle());
 					break;
 				}
-
+				
+				Vec3f tro = Vec3f(70.f);
 				EntityHandle ici = IsCollidingAnyInter(dest, tro);
 
 				if(ici != EntityHandle() && ici != missiles[i].owner) {
