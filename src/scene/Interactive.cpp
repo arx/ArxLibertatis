@@ -687,7 +687,6 @@ void CleanScriptLoadedIO() {
 void RestoreInitialIOStatus() {
 	arx_assert(entities.player());
 	
-	ARX_INTERACTIVE_HideGore(entities.player());
 	ARX_NPC_Behaviour_ResetAll();
 	
 	entities.player()->spellcast_data.castingspell = SPELL_NONE;
