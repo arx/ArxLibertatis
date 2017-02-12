@@ -212,39 +212,29 @@ void ARX_MISSILES_Update() {
 				
 				EERIEPOLY *ep = GetMinPoly(dest);
 				EERIEPOLY *epp = GetMaxPoly(dest);
-
+				
+				bool hit = false;
+				
 				if(closerThan(player.pos, dest, 200.f) || (ep && ep->center.y < dest.y) || (epp && epp->center.y > dest.y)) {
-					ARX_MISSILES_Kill(i);
-					spawnFireHitParticle(dest, 0);
-					PolyBoomAddScorch(dest);
-					Add3DBoom(dest);
-					DoSphericDamage(Sphere(dest, 200.0F), 180.0F, DAMAGE_AREAHALF, DAMAGE_TYPE_FIRE | DAMAGE_TYPE_MAGICAL, EntityHandle());
-					break;
+					hit = true;
+				} else {
+					RaycastResult ray = RaycastLine(orgn, dest);
+					if(ray.hit) {
+						dest = ray.pos;
+						hit = true;
+					} else if(!CheckInPoly(dest) || EEIsUnderWater(dest)) {
+						hit = true;
+					} else {
+						Vec3f tro = Vec3f(70.f);
+						EntityHandle ici = IsCollidingAnyInter(dest, tro);
+						
+						if(ici != EntityHandle() && ici != missiles[i].owner) {
+							hit = true;
+						}
+					}
 				}
 				
-				RaycastResult ray = RaycastLine(orgn, dest);
-				if(ray.hit) {
-					ARX_MISSILES_Kill(i);
-					spawnFireHitParticle(ray.pos, 0);
-					PolyBoomAddScorch(ray.pos);
-					Add3DBoom(ray.pos);
-					DoSphericDamage(Sphere(ray.pos, 200.0F), 180.0F, DAMAGE_AREAHALF, DAMAGE_TYPE_FIRE | DAMAGE_TYPE_MAGICAL, EntityHandle());
-					break;
-				}
-
-				if(!CheckInPoly(dest) || EEIsUnderWater(dest)) {
-					ARX_MISSILES_Kill(i);
-					spawnFireHitParticle(dest, 0);
-					PolyBoomAddScorch(dest);
-					Add3DBoom(dest);
-					DoSphericDamage(Sphere(dest, 200.0F), 180.0F, DAMAGE_AREAHALF, DAMAGE_TYPE_FIRE | DAMAGE_TYPE_MAGICAL, EntityHandle());
-					break;
-				}
-				
-				Vec3f tro = Vec3f(70.f);
-				EntityHandle ici = IsCollidingAnyInter(dest, tro);
-
-				if(ici != EntityHandle() && ici != missiles[i].owner) {
+				if(hit) {
 					ARX_MISSILES_Kill(i);
 					spawnFireHitParticle(dest, 0);
 					PolyBoomAddScorch(dest);
