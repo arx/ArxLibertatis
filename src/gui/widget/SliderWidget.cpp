@@ -100,15 +100,14 @@ bool SliderWidget::OnMouseClick() {
 	if(m_rect.contains(cursor)) {
 		if(pLeftButton->m_rect.contains(cursor)) {
 			m_value--;
-			if(m_value <= m_minimum)
-				m_value = m_minimum;
-		}
-		
-		if(pRightButton->m_rect.contains(cursor)) {
+		} else  if(pRightButton->m_rect.contains(cursor)) {
 			m_value++;
-			if(m_value >= 10)
-				m_value = 10;
+		} else {
+			float width = pRightButton->m_rect.left - pLeftButton->m_rect.right;
+			int value = int(glm::round((cursor.x - pLeftButton->m_rect.right ) / width * 10));
+			m_value = value;
 		}
+		m_value = arx::clamp(m_value, m_minimum, 10);
 	}
 	
 	if(valueChanged) {
