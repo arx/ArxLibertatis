@@ -504,7 +504,8 @@ void ARX_NPC_TryToCutSomething(Entity * target, const Vec3f * pos)
 	}
 
 	if(hid) {
-		ARX_SOUND_PlayCinematic("flesh_critical", false); // TODO why play cinmeatic sound?
+		audio::SampleId sample = ARX_SOUND_Load("flesh_critical");
+		ARX_SOUND_PlaySFX(sample, &target->pos, 1.0f);
 		ARX_NPC_SpawnMember(target, numsel);
 	}
 }
