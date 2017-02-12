@@ -462,29 +462,32 @@ void MiniMap::showBookEntireMap(int showLevel) {
 void MiniMap::revealPlayerPos(int showLevel) {
 	
 	float zoom = 250.f;
+	float maxDistance = 6.0f;
 	Vec2f start = Vec2f(140.f, 120.f);
 	Vec2f cas;
 	cas.x = zoom / MINIMAP_MAX_X;
 	cas.y = zoom / MINIMAP_MAX_Z;
 	
 	Vec2f playerPos = computePlayerPos(zoom, showLevel);
+	Vec2i playerCell = Vec2i(playerPos.x / cas.x, playerPos.y / cas.y);
 	playerPos += start;
 	
-	// TODO this is inefficient - we don't really need to iterate over the whole minimap!
-	// only the area around the player will be modified
-	for(size_t z = 0; z < MINIMAP_MAX_Z; z++) {
-	for(size_t x = 0; x < MINIMAP_MAX_X; x++) {
+	Vec2i startCell = playerCell - Vec2i(glm::ceil(maxDistance / cas.x));
+	Vec2i endCell = playerCell + Vec2i(glm::ceil(maxDistance / cas.y));
+	
+	for(int z = startCell.y; z <= endCell.y; z++) {
+	for(int x = startCell.x; x <= endCell.x; x++) {
 		
 		Vec2f pos;
 		pos.x = start.x + x * cas.x;
 		pos.y = start.y + z * cas.y;
 		
 		float d = fdist(Vec2f(pos.x + cas.x * 0.5f, pos.y), playerPos);
-		if(d > 6.f) {
+		if(d > maxDistance) {
 			continue;
 		}
 		
-		float revealPercent = (6 - d) * (1.f / 6);
+		float revealPercent = (maxDistance - d) * (1.f / maxDistance);
 		revealPercent = arx::clamp(revealPercent * 2.0f, 0.0f, 1.0f);
 		
 		int r = revealPercent * 255.f;
