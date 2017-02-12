@@ -838,7 +838,6 @@ static void ARX_INTERACTIVE_ClearIODynData_II(Entity * io) {
 }
 
 void ARX_INTERACTIVE_ClearAllDynData() {
-	ARX_INTERACTIVE_HideGore(entities.player());
 	ARX_NPC_Behaviour_ResetAll();
 	for(size_t i = 1; i < entities.size(); i++) {
 		const EntityHandle handle = EntityHandle(i);
