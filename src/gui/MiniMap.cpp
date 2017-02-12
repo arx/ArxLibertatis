@@ -485,14 +485,7 @@ void MiniMap::revealPlayerPos(int showLevel) {
 		}
 		
 		float vv = (6 - d) * (1.f / 6);
-		
-		if(vv >= 0.5f) {
-			vv = 1.f;
-		} else if(vv > 0.f) {
-			vv = vv * 2.f;
-		} else {
-			vv = 0.f;
-		}
+		vv = arx::clamp(vv * 2.0f, 0.0f, 1.0f);
 		
 		int r = vv * 255.f;
 		
