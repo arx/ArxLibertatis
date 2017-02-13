@@ -484,10 +484,10 @@ void MiniMap::revealPlayerPos(int showLevel) {
 			continue;
 		}
 		
-		float vv = (6 - d) * (1.f / 6);
-		vv = arx::clamp(vv * 2.0f, 0.0f, 1.0f);
+		float revealPercent = (6 - d) * (1.f / 6);
+		revealPercent = arx::clamp(revealPercent * 2.0f, 0.0f, 1.0f);
 		
-		int r = vv * 255.f;
+		int r = revealPercent * 255.f;
 		
 		int ucLevel = std::max(r, (int)m_levels[showLevel].m_revealed[x][z]);
 		m_levels[showLevel].m_revealed[x][z] = checked_range_cast<unsigned char>(ucLevel);
