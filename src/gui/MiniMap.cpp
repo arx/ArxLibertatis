@@ -483,7 +483,7 @@ void MiniMap::revealPlayerPos(int showLevel) {
 		pos.y = start.y + z * cas.y;
 		
 		float d = fdist(Vec2f(pos.x + cas.x * 0.5f, pos.y), playerPos);
-		if(d > maxDistance) {
+		if(d >= maxDistance) {
 			continue;
 		}
 		
