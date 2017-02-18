@@ -61,6 +61,7 @@ private:
 public:
 	void init();
 	void update();
+	void updateRect();
 	void draw();
 	
 	void updateInputButtons();
