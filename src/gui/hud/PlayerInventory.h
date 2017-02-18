@@ -48,6 +48,7 @@ public:
 	void init();
 	Vec2f anchorPosition();
 	void update();
+	void updateRect();
 	bool updateInput();
 	void draw();
 	
