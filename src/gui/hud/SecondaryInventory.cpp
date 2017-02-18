@@ -182,6 +182,11 @@ void SecondaryInventoryHud::update() {
 	}
 }
 
+void SecondaryInventoryHud::updateRect() {
+	
+	m_rect = Rectf(Vec2f(m_fadePosition * m_scale, 0.f), m_size.x * m_scale, m_size.y * m_scale);
+}
+
 void SecondaryInventoryHud::draw() {
 	const INVENTORY_DATA * inventory = TSecondaryInventory;
 	
@@ -200,8 +205,7 @@ void SecondaryInventoryHud::draw() {
 			ingame_inventory = tc;
 	}
 	
-	Rectf rect = Rectf(Vec2f(m_fadePosition * m_scale, 0.f), m_size.x * m_scale, m_size.y * m_scale);
-	EERIEDrawBitmap(rect, 0.001f, ingame_inventory, Color::white);
+	EERIEDrawBitmap(m_rect, 0.001f, ingame_inventory, Color::white);
 	
 	for(long y = 0; y < inventory->m_size.y; y++) {
 		for(long x = 0; x < inventory->m_size.x; x++) {
