@@ -171,13 +171,12 @@ void SecondaryInventoryHud::update() {
 		// Pick All/Close Secondary Inventory
 		if(TSecondaryInventory) {
 			//These have to be calculated on each frame (to make them move).
-			Rectf parent = Rectf(Vec2f(m_fadePosition, 0), m_defaultBackground->m_size.x * m_scale, m_defaultBackground->m_size.y * m_scale);
 			
 			m_pickAllButton.setScale(m_scale);
 			m_closeButton.setScale(m_scale);
 			
-			m_pickAllButton.update(parent);
-			m_closeButton.update(parent);
+			m_pickAllButton.update(m_rect);
+			m_closeButton.update(m_rect);
 		}
 	}
 }
