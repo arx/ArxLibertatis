@@ -1485,7 +1485,7 @@ void HudRoot::draw() {
 	Vec2f anchorPos = g_playerInventoryHud.anchorPosition();
 	
 	Rectf spacer;
-	spacer.left = std::max(g_secondaryInventoryHud.m_fadePosition + 160, healthGauge.rect().right);
+	spacer.left = std::max(g_secondaryInventoryHud.rect().right, healthGauge.rect().right);
 	spacer.bottom = anchorPos.y;
 	spacer.top = spacer.bottom - 30;
 	spacer.right = spacer.left + 20;
