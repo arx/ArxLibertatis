@@ -1035,7 +1035,7 @@ void PrecastSpellsGui::update() {
 		Color color = Color3f(0, val * (1.0f/2), val).to<u8>();
 		
 		Rectf childRect = createChild(m_rect, Anchor_BottomLeft, m_iconSize * m_scale, Anchor_BottomLeft);
-		childRect.move(i * 33 * m_scale, 0);
+		childRect.move(i * m_iconSize.x * m_scale, 0);
 		
 		SpellType typ = precastSlot.typ;
 		
