@@ -364,7 +364,8 @@ public:
 	StealthGauge();
 	
 	void init();
-	void update(const Rectf & parent);
+	void updateRect(const Rectf & parent);
+	void update();
 	void draw();
 };
 
