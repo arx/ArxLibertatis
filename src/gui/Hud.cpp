@@ -1305,8 +1305,11 @@ void StealthGauge::init() {
 	m_size = Vec2f(32.f, 32.f);
 }
 
-void StealthGauge::update(const Rectf & parent) {
+void StealthGauge::updateRect(const Rectf & parent) {
 	m_rect = createChild(parent, Anchor_TopRight, m_size * m_scale, Anchor_BottomLeft);
+}
+
+void StealthGauge::update() {
 	
 	m_visible = false;
 	
@@ -1490,7 +1493,8 @@ void HudRoot::draw() {
 	spacer.top = spacer.bottom - 30;
 	spacer.right = spacer.left + 20;
 	
-	stealthGauge.update(spacer);
+	stealthGauge.updateRect(spacer);
+	stealthGauge.update();
 	
 	damagedEquipmentGui.updateRect(stealthGauge.rect());
 	damagedEquipmentGui.update();
