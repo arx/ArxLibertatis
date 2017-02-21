@@ -127,7 +127,7 @@ public:
 	}
 	
 	bool overlaps(const Rectangle_ & other) const {
-		return (left < other.right && other.left < right && top < other.bottom && bottom < other.top);
+		return (left < other.right && other.left < right && top < other.bottom && bottom > other.top);
 	}
 	
 	/*!
