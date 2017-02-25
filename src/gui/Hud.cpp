@@ -152,7 +152,7 @@ void HitStrengthGauge::update() {
 			const float delta = toMs(player.m_aimTime);
 			float at = delta;
 			float aim = static_cast<float>(player.Full_AimTime);
-			j=at/aim;
+			j = at / aim;
 		}
 		m_intensity = glm::clamp(j, 0.2f, 1.f);
 	}
@@ -1550,7 +1550,7 @@ void HudRoot::draw() {
 	if(!(player.Interface & INTER_COMBATMODE) && (player.Interface & INTER_MINIBACK)) {
 		
 		if(player.Interface & INTER_STEAL) {
-			stealIconGui.draw();			
+			stealIconGui.draw();
 		}
 	}
 	
