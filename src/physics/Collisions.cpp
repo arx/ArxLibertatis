@@ -974,7 +974,8 @@ bool CheckEverythingInSphere(const Sphere & sphere, EntityHandle source, EntityH
 //except source...
 const EERIEPOLY * CheckBackgroundInSphere(const Sphere & sphere) {
 	
-	// TODO copy-paste background tiles
+	ARX_PROFILE_FUNC();
+	
 	int tilex = int(sphere.origin.x * ACTIVEBKG->m_mul.x);
 	int tilez = int(sphere.origin.z * ACTIVEBKG->m_mul.y);
 	int radius = int(sphere.radius * ACTIVEBKG->m_mul.x) + 2;
@@ -1011,31 +1012,10 @@ bool CheckAnythingInSphere(const Sphere & sphere, EntityHandle source, CASFlags 
 		*num = EntityHandle();
 	
 	if(!(flags & CAS_NO_BACKGROUND_COL)) {
-		ARX_PROFILE("Background Collision");
-		
-		// TODO copy-paste background tiles
-		int tilex = int(sphere.origin.x * ACTIVEBKG->m_mul.x);
-		int tilez = int(sphere.origin.z * ACTIVEBKG->m_mul.y);
-		int radius = int(sphere.radius * ACTIVEBKG->m_mul.x) + 2;
-		
-		int minx = std::max(tilex - radius, 0);
-		int maxx = std::min(tilex + radius, ACTIVEBKG->m_size.x - 1);
-		int minz = std::max(tilez - radius, 0);
-		int maxz = std::min(tilez + radius, ACTIVEBKG->m_size.y - 1);
-
-		for(int z = minz; z <= maxz; z++)
-		for(int x = minx; x <= maxx; x++) {
-			const BackgroundTileData & feg = ACTIVEBKG->m_tileData[x][z];
-			for(long k = 0; k < feg.nbpoly; k++) {
-				const EERIEPOLY & ep = feg.polydata[k];
-
-				if(ep.type & (POLY_WATER | POLY_TRANS | POLY_NOCOL))
-					continue;
-
-				if(IsPolyInSphere(ep, sphere))
-					return true;
-			}
-		}	
+		const EERIEPOLY * poly = CheckBackgroundInSphere(sphere);
+		if(poly) {
+			return true;
+		}
 	}
 
 	if(flags & CAS_NO_NPC_COL)
