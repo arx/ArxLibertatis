@@ -525,7 +525,6 @@ void PurseIconGui::draw() {
 CurrentTorchIconGui::CurrentTorchIconGui()
 	: HudItem()
 	, m_isActive(false)
-	, m_rect()
 	, m_tex(NULL)
 	, m_size()
 {}
