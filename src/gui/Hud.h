@@ -132,7 +132,6 @@ public:
 class CurrentTorchIconGui : public HudItem {
 private:
 	bool m_isActive;
-	Rectf m_rect;
 	TextureContainer * m_tex;
 	Vec2f m_size;
 	
