@@ -63,6 +63,9 @@
 
 extern bool WILLRETURNTOFREELOOK;
 
+static const int indicatorVertSpacing = 30;
+static const int indicatorHorizSpacing = 20;
+
 static void DrawItemPrice() {
 	
 	Entity *temp = SecondaryInventory->io;
@@ -1005,6 +1008,10 @@ void PrecastSpellsGui::updateRect(const Rectf & parent) {
 	Vec2f size = m_iconSize * Vec2f(Precast.size(), 1);
 	
 	m_rect = createChild(parent, Anchor_BottomRight, size * m_scale, Anchor_BottomLeft);
+	
+	if(g_playerInventoryHud.rect().overlaps(m_rect + Vec2f(0.0f, indicatorVertSpacing))) {
+		m_rect.move(0.0f, g_playerInventoryHud.rect().top - parent.bottom - indicatorVertSpacing);
+	}
 }
 
 void PrecastSpellsGui::update() {
@@ -1237,6 +1244,14 @@ void DamagedEquipmentGui::init() {
 
 void DamagedEquipmentGui::updateRect(const Rectf & parent) {
 	m_rect = createChild(parent, Anchor_BottomRight, m_size * m_scale, Anchor_BottomLeft);
+	
+	if(g_playerInventoryHud.rect().overlaps(m_rect + Vec2f(0.0f, indicatorVertSpacing))) {
+		m_rect.move(0.0f, g_playerInventoryHud.rect().top - parent.bottom - indicatorVertSpacing);
+	}
+
+	if(g_secondaryInventoryHud.rect().overlaps(m_rect  + Vec2f(0.0f, -indicatorHorizSpacing))) {
+		m_rect.move(g_secondaryInventoryHud.rect().right - m_rect.left + indicatorHorizSpacing, 0.0f);
+	}
 }
 
 void DamagedEquipmentGui::update() {
@@ -1307,6 +1322,14 @@ void StealthGauge::init() {
 
 void StealthGauge::updateRect(const Rectf & parent) {
 	m_rect = createChild(parent, Anchor_TopRight, m_size * m_scale, Anchor_BottomLeft);
+	
+	if(g_playerInventoryHud.rect().overlaps(m_rect + Vec2f(0.0f, indicatorVertSpacing))) {
+		m_rect.move(0.0f, g_playerInventoryHud.rect().top - parent.top - indicatorVertSpacing);
+	}
+	
+	if(g_secondaryInventoryHud.rect().overlaps(m_rect  + Vec2f(0.0f, -indicatorHorizSpacing))) {
+		m_rect.move(g_secondaryInventoryHud.rect().right - m_rect.left + indicatorHorizSpacing, 0.0f);
+	}
 }
 
 void StealthGauge::update() {
@@ -1484,14 +1507,11 @@ void HudRoot::draw() {
 	
 	quickSaveIconGui.update();
 	
-	
-	Vec2f anchorPos = g_playerInventoryHud.anchorPosition();
-	
 	Rectf spacer;
-	spacer.left = std::max(g_secondaryInventoryHud.rect().right, healthGauge.rect().right);
-	spacer.bottom = anchorPos.y;
-	spacer.top = spacer.bottom - 30;
-	spacer.right = spacer.left + 20;
+	spacer.left = healthGauge.rect().right;
+	spacer.bottom = g_size.bottom;
+	spacer.top = spacer.bottom - indicatorVertSpacing;
+	spacer.right = spacer.left + indicatorHorizSpacing;
 	
 	stealthGauge.updateRect(spacer);
 	stealthGauge.update();
