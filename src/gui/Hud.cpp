@@ -540,12 +540,10 @@ bool CurrentTorchIconGui::isVisible() {
 
 void CurrentTorchIconGui::updateRect(const Rectf & parent) {
 	
-	float secondaryInventoryX = g_secondaryInventoryHud.m_fadePosition + 110.f;
-	
 	m_rect = createChild(parent, Anchor_TopLeft, m_size * m_scale, Anchor_BottomLeft);
 	
-	if(m_rect.left < secondaryInventoryX) {
-		m_rect.move(secondaryInventoryX, 0.f);
+	if(m_rect.left < g_secondaryInventoryHud.rect().right) {
+		m_rect.move(g_secondaryInventoryHud.rect().right, 0.f);
 	}
 }
 
