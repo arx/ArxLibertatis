@@ -150,9 +150,8 @@ void HitStrengthGauge::update() {
 			j = player.m_bowAimRatio;
 		} else {
 			const float delta = toMs(player.m_aimTime);
-			float at = delta;
 			float aim = static_cast<float>(player.Full_AimTime);
-			j = at / aim;
+			j = delta / aim;
 		}
 		m_intensity = glm::clamp(j, 0.2f, 1.f);
 	}
