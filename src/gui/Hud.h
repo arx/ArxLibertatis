@@ -168,9 +168,9 @@ public:
 class QuickSaveIconGui {
 private:
 	//! Time in ms to show the icon
-	u32 m_duration;
-	//! Remaining time for the quick sive icon
-	unsigned m_remainingTime;
+	ArxDuration m_duration;
+	//! Remaining time for the quick save icon
+	ArxDuration m_remainingTime;
 	
 public:
 	QuickSaveIconGui();
