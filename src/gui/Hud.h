@@ -236,7 +236,7 @@ private:
 	Vec2f m_iconSize;
 	TextureContainer * m_tex;
 	Color m_color;
-	long m_timeToDraw;
+	ArxDuration m_timeToDraw;
 	long m_nbToDraw;
 	
 public:

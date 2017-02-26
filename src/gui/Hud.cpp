@@ -864,7 +864,7 @@ MecanismIcon::MecanismIcon()
 	: HudItem()
 	, m_iconSize(32.f, 32.f)
 	, m_tex(NULL)
-	, m_timeToDraw(0)
+	, m_timeToDraw(ArxDuration_ZERO)
 	, m_nbToDraw(0)
 {}
 
@@ -876,20 +876,20 @@ void MecanismIcon::init() {
 }
 
 void MecanismIcon::reset() {
-	m_timeToDraw = 0;
+	m_timeToDraw = ArxDuration_ZERO;
 	m_nbToDraw = 0;
 }
 
 void MecanismIcon::update() {
 	m_color = Color::white;
-	if(m_timeToDraw > 300) {
+	if(m_timeToDraw > ArxDurationMs(300)) {
 		m_color = Color::black;
-		if(m_timeToDraw > 400) {
-			m_timeToDraw=0;
+		if(m_timeToDraw > ArxDurationMs(400)) {
+			m_timeToDraw = ArxDuration_ZERO;
 			m_nbToDraw++;
 		}
 	}
-	m_timeToDraw += static_cast<long>(g_framedelay);
+	m_timeToDraw += ArxDurationMs(g_framedelay);
 	
 	m_rect = createChild(Rectf(g_size), Anchor_TopLeft, m_iconSize * m_scale, Anchor_TopLeft);
 }
