@@ -73,7 +73,7 @@ private:
 	Vec3f m_pos;
 	LightHandle m_light;
 	ParticleSystem m_particles;
-	ArxDuration m_currentTime;
+	ArxDuration m_elapsed;
 };
 
 class RepelUndeadSpell : public SpellBase {

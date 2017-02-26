@@ -280,7 +280,7 @@ void LevitateSpell::createDustParticle() {
 
 CurePoisonSpell::CurePoisonSpell()
 	: SpellBase()
-	, m_currentTime(0)
+	, m_elapsed(0)
 {}
 
 void CurePoisonSpell::Launch() {
@@ -323,14 +323,14 @@ void CurePoisonSpell::End() {
 
 void CurePoisonSpell::Update() {
 	
-	m_currentTime += ArxDurationMs(g_framedelay);
+	m_elapsed += ArxDurationMs(g_framedelay);
 	
 	m_pos = entities[m_target]->pos;
 	
 	if(m_target == EntityHandle_Player)
 		m_pos.y += 200;
 	
-	ArxDuration ff = m_duration - m_currentTime;
+	ArxDuration ff = m_duration - m_elapsed;
 	
 	if(ff < ArxDurationMs(1500)) {
 		m_particles.m_parameters.m_spawnFlags = PARTICLE_CIRCULAR;
