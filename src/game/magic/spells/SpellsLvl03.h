@@ -65,7 +65,7 @@ public:
 private:
 	LightHandle m_light;
 	
-	ArxDuration ulCurrentTime;
+	ArxDuration m_elapsed;
 
 	Vec3f eCurPos;
 	Vec3f eMove;

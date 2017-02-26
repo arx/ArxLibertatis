@@ -171,7 +171,7 @@ void DispellIllusionSpell::Update() {
 
 FireballSpell::FireballSpell()
 	: SpellBase()
-	, ulCurrentTime(ArxDuration_ZERO)
+	, m_elapsed(ArxDuration_ZERO)
 	, bExplo(false)
 	, m_createBallDuration(ArxDurationMs(2000))
 {
@@ -243,9 +243,9 @@ void FireballSpell::End() {
 
 void FireballSpell::Update() {
 	
-	ulCurrentTime += ArxDurationMs(g_framedelay);
+	m_elapsed += ArxDurationMs(g_framedelay);
 	
-	if(ulCurrentTime <= m_createBallDuration) {
+	if(m_elapsed <= m_createBallDuration) {
 		
 		float afAlpha = 0.f;
 		float afBeta = 0.f;
@@ -300,12 +300,12 @@ void FireballSpell::Update() {
 	
 	Sphere sphere = Sphere(eCurPos, std::max(m_level * 2.f, 12.f));
 	
-	if(ulCurrentTime > m_createBallDuration) {
+	if(m_elapsed > m_createBallDuration) {
 		SpawnFireballTail(eCurPos, eMove, m_level, 0);
 	} else {
 		if(Random::getf() < 0.9f) {
 			Vec3f move = Vec3f_ZERO;
-			float dd = float(toMs(ulCurrentTime)) / float(toMs(m_createBallDuration)) * 10;
+			float dd = float(toMs(m_elapsed)) / float(toMs(m_createBallDuration)) * 10;
 			
 			dd = glm::clamp(dd, 1.f, m_level);
 			
