@@ -546,7 +546,7 @@ void ARX_SPELLS_ManageMagic() {
 					pos = Vec2f(MemoMouse);
 				}
 				
-				ArxInstant now = ArxInstant(platform::getTimeMs());
+				ArxInstant now = ArxInstantMs(platform::getTimeMs());
 				
 				const ArxDuration interval = ArxDurationMs(1000 / 60);
 				
