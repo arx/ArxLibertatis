@@ -84,7 +84,7 @@ private:
 	Vec3f m_eSrc;
 	Vec3f m_eDest;
 	TextureContainer * m_tex_light;
-	int m_iTTL;
+	ArxDuration m_iTTL;
 	
 	struct CLightningNode {
 		Vec3f pos;

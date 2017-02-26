@@ -104,7 +104,7 @@ CLightning::CLightning()
 	, m_fLengthMax(40.0f)
 	, m_fAngleMin(5.0f, 5.0f, 5.0f)
 	, m_fAngleMax(32.0f, 32.0f, 32.0f)
-	, m_iTTL(0)
+	, m_iTTL(ArxDuration_ZERO)
 {
 	SetDuration(ArxDurationMs(2000));
 	m_elapsed = m_duration + ArxDurationMs(1);
@@ -257,13 +257,13 @@ void CLightning::ReCreate(float rootSize)
 		BuildS(&LInfo);
 	}
 	
-	m_iTTL = Random::get(500, 1500);
+	m_iTTL = ArxDurationMs(Random::get(500, 1500));
 }
 
 void CLightning::Update(ArxDuration timeDelta)
 {
 	m_elapsed += timeDelta;
-	m_iTTL -= toMs(timeDelta);
+	m_iTTL -= timeDelta;
 	fTotoro += 8;
 
 	if(fMySize > 0.3f)
@@ -275,7 +275,7 @@ void CLightning::Render()
 	if(m_elapsed >= m_duration)
 		return;
 	
-	if(m_iTTL <= 0) {
+	if(m_iTTL <= ArxDuration_ZERO) {
 		fTotoro = 0;
 		fMySize = 2;
 		ReCreate(8);
