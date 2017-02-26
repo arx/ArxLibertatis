@@ -147,7 +147,6 @@ extern float SLID_VALUE;
 float lSLID_VALUE = 0;
 
 extern bool BLOCK_PLAYER_CONTROLS;
-extern long DeadTime;
 
 extern bool WILLRETURNTOFREELOOK;
 

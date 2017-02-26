@@ -172,7 +172,6 @@ InfoPanels g_debugInfo = InfoPanelNone;
 
 extern bool START_NEW_QUEST;
 SavegameHandle LOADQUEST_SLOT = SavegameHandle(); // OH NO, ANOTHER GLOBAL! - TEMP PATCH TO CLEAN CODE FLOW
-extern long DeadTime;
 
 static const float CURRENT_BASE_FOCAL = 310.f;
 static const float defaultCameraFocal = 350.f;
@@ -1550,17 +1549,19 @@ void ArxGame::speechControlledCinematic() {
 	}
 }
 
+extern ArxDuration DeadTime;
+
 void ArxGame::handlePlayerDeath() {
 	if(player.lifePool.current <= 0) {
-		DeadTime += static_cast<long>(g_framedelay);
+		DeadTime += ArxDurationMs(g_framedelay);
 		float mdist = glm::abs(player.physics.cyl.height)-60;
 
 		float startDistance = 40.f;
 
-		float startTime = 2000.f;
-		float endTime = 7000.f;
+		ArxDuration startTime = ArxDurationMs(2000);
+		ArxDuration endTime = ArxDurationMs(7000);
 
-		float DeadCameraDistance = startDistance + (mdist - startDistance) * ((DeadTime - startTime) / (endTime - startTime));
+		float DeadCameraDistance = startDistance + (mdist - startDistance) * (toMs(DeadTime - startTime) / toMs(endTime - startTime));
 
 		Vec3f targetpos = player.pos;
 
