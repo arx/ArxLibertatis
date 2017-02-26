@@ -43,7 +43,7 @@
 RuneOfGuardingSpell::RuneOfGuardingSpell()
 	: SpellBase()
 	, tex_p2(NULL)
-	, ulCurrentTime(ArxDuration_ZERO)
+	, m_elapsed(ArxDuration_ZERO)
 {}
 
 void RuneOfGuardingSpell::Launch() {
@@ -77,7 +77,7 @@ void RuneOfGuardingSpell::End() {
 
 void RuneOfGuardingSpell::Update() {
 	
-	ulCurrentTime += ArxDurationMs(g_framedelay);
+	m_elapsed += ArxDurationMs(g_framedelay);
 	
 	EERIE_LIGHT * light = lightHandleGet(m_light);
 	if(light) {
@@ -99,13 +99,13 @@ void RuneOfGuardingSpell::Update() {
 	Anglef stiteangle;
 	Color3f stitecolor;
 	
-	float stiteangleb = toMs(ulCurrentTime) * 0.01f;
+	float stiteangleb = toMs(m_elapsed) * 0.01f;
 	stiteangle.setPitch(0);
 	stiteangle.setRoll(0);
 	
 	stiteangle.setYaw(stiteangleb * 0.1f);
 	stitecolor = Color3f(0.4f, 0.4f, 0.6f);
-	float scale = std::sin(toMs(ulCurrentTime) * 0.015f);
+	float scale = std::sin(toMs(m_elapsed) * 0.015f);
 	Vec3f stitescale = Vec3f(1.f, -0.1f, 1.f);
 	
 	Draw3DObject(slight, stiteangle, pos, stitescale, stitecolor, mat);
