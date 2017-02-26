@@ -181,8 +181,8 @@ void ParticleSystem::SetParticleParams(Particle * pP) {
 	pP->p3Pos *= m_parameters.m_pos;
 	
 	float fTTL = m_parameters.m_life + Random::getf() * m_parameters.m_lifeRandom;
-	pP->m_timeToLive = checked_range_cast<long>(fTTL);
-	pP->fOneOnTTL = 1.0f / pP->m_timeToLive;
+	pP->m_timeToLive = ArxDurationMs(fTTL);
+	pP->fOneOnTTL = 1.0f / toMs(pP->m_timeToLive);
 
 	float fAngleX = Random::getf() * m_parameters.m_angle; //*0.5f;
  
@@ -325,7 +325,7 @@ void ParticleSystem::Render() {
 				inumtex = p->iTexNum;
 
 				if(iTexTime == 0) {
-					float fNbTex	= (p->m_age * p->fOneOnTTL) * (iNbTex);
+					float fNbTex = (toMs(p->m_age) * p->fOneOnTTL) * (iNbTex);
 
 					inumtex = checked_range_cast<int>(fNbTex);
 					if(inumtex >= iNbTex) {
@@ -358,9 +358,9 @@ void ParticleSystem::Render() {
 			if(m_parameters.m_rotation != 0) {
 				float fRot;
 				if(p->iRot == 1)
-					fRot = (m_parameters.m_rotation) * p->m_age + p->fRotStart;
+					fRot = (m_parameters.m_rotation) * toMs(p->m_age) + p->fRotStart;
 				else
-					fRot = (-m_parameters.m_rotation) * p->m_age + p->fRotStart;
+					fRot = (-m_parameters.m_rotation) * toMs(p->m_age) + p->fRotStart;
 
 				float size = std::max(p->fSize, 0.f);
 				
