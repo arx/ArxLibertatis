@@ -877,18 +877,18 @@ bool ARX_EQUIPMENT_Strike_Check(Entity * io_source, Entity * io_weapon, float ra
 					ARX_DAMAGES_DurabilityCheck(io_weapon, 1.f);
 					io_source->isHit = true;
 					
-						std::string _weapon_material = "metal";
-						const std::string * weapon_material = &_weapon_material;
-						if(!io_weapon->weaponmaterial.empty()) {
-							weapon_material = &io_weapon->weaponmaterial;
-						}
-
-						std::string bkg_material = "earth";
-
-						if(ep && ep->tex && !ep->tex->m_texName.empty())
-							bkg_material = GetMaterialString(ep->tex->m_texName);
-
-						ARX_SOUND_PlayCollision(*weapon_material, bkg_material, 1.f, 1.f, sphere.origin, io_source);
+					std::string _weapon_material = "metal";
+					const std::string * weapon_material = &_weapon_material;
+					if(!io_weapon->weaponmaterial.empty()) {
+						weapon_material = &io_weapon->weaponmaterial;
+					}
+					
+					std::string bkg_material = "earth";
+					
+					if(ep && ep->tex && !ep->tex->m_texName.empty())
+						bkg_material = GetMaterialString(ep->tex->m_texName);
+					
+					ARX_SOUND_PlayCollision(*weapon_material, bkg_material, 1.f, 1.f, sphere.origin, io_source);
 				}
 			}
 
