@@ -36,7 +36,7 @@ public:
 	ArxDuration m_elapsed;
 	ArxDuration m_duration;
 	
-	ArxDuration ulDurationIntro;
+	ArxDuration m_durationIntro;
 	ArxDuration ulDurationRender;
 	ArxDuration ulDurationOuttro;
 	
