@@ -396,7 +396,7 @@ void CreateFoodSpell::Update() {
 	}
 
 	m_particles.SetPos(m_pos);
-	m_particles.Update(g_framedelay);
+	m_particles.Update(ArxDurationMs(g_framedelay));
 	
 	m_particles.Render();
 }

@@ -275,7 +275,7 @@ void FireFieldSpell::Launch() {
 	
 	pPSStream1.SetParams(g_particleParameters[ParticleParam_FireFieldFlame]);
 	pPSStream1.SetPos(m_pos + Vec3f(0, 10, 0));
-	pPSStream1.Update(0);
+	pPSStream1.Update(ArxDuration_ZERO);
 }
 
 void FireFieldSpell::End() {
@@ -288,8 +288,8 @@ void FireFieldSpell::End() {
 
 void FireFieldSpell::Update() {
 	
-	pPSStream.Update(g_framedelay);
-	pPSStream1.Update(g_framedelay);
+	pPSStream.Update(ArxDurationMs(g_framedelay));
+	pPSStream1.Update(ArxDurationMs(g_framedelay));
 	
 	EERIE_LIGHT * el = dynLightCreate(m_light);
 	if(el) {

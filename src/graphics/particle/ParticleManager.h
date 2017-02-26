@@ -46,6 +46,8 @@ ZeniMax Media Inc., Suite 120, Rockville, Maryland 20850 USA.
 
 #include <list>
 
+#include "core/TimeTypes.h"
+
 class ParticleSystem;
 
 class ParticleManager {
@@ -63,7 +65,7 @@ public:
 	
 	void AddSystem(ParticleSystem * ps);
 	
-	void Update(long alTime);
+	void Update(ArxDuration delta);
 	void Render();
 	
 };

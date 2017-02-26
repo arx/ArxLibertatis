@@ -99,11 +99,11 @@ void Particle::Validate() {
 	}
 }
 
-void Particle::Update(long _lTime) {
+void Particle::Update(ArxDuration delta) {
 	
-	m_age += _lTime;
-	iTexTime += _lTime;
-	float fTimeSec = _lTime * (1.f / 1000);
+	m_age += toMs(delta);
+	iTexTime += toMs(delta);
+	float fTimeSec = toMs(delta) * (1.f / 1000);
 	
 	if(m_age < m_timeToLive) {
 		

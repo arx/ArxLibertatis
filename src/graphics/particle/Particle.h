@@ -44,6 +44,7 @@ ZeniMax Media Inc., Suite 120, Rockville, Maryland 20850 USA.
 #ifndef ARX_GRAPHICS_PARTICLE_PARTICLE_H
 #define ARX_GRAPHICS_PARTICLE_PARTICLE_H
 
+#include "core/TimeTypes.h"
 #include "graphics/Color.h"
 #include "math/Vector.h"
 
@@ -83,7 +84,7 @@ public:
 	~Particle();
 	
 	void Regen();
-	void Update(long);
+	void Update(ArxDuration delta);
 	
 	bool isAlive() {
 		return (m_age < m_timeToLive);

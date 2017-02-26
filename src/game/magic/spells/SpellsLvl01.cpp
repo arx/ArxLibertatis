@@ -94,7 +94,7 @@ static void LaunchMagicMissileExplosion(const Vec3f & _ePos, bool mrCheat) {
 	ParticleSystem * pPS = new ParticleSystem();
 	pPS->SetParams(cp);
 	pPS->SetPos(_ePos);
-	pPS->Update(0);
+	pPS->Update(ArxDuration_ZERO);
 	
 	EERIE_LIGHT * light = dynLightCreate();
 	if(light) {
