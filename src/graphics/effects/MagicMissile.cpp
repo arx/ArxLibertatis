@@ -153,8 +153,7 @@ void CMagicMissile::Update(ArxDuration timeDelta)
 void CMagicMissile::Render()
 { 
 	Vec3f lastpos, newpos;
-	Vec3f v;
-
+	
 	if(m_elapsed >= m_duration)
 		return;
 	
@@ -186,9 +185,7 @@ void CMagicMissile::Render()
 
 			float t = toto * (1.0f / iBezierPrecision);
 			
-			v = arx::catmullRom(v1, v2, v3, v4, t);
-			
-			newpos = v;
+			newpos = arx::catmullRom(v1, v2, v3, v4, t);
 
 			if(!((fTrail - (i * iBezierPrecision + toto)) > iLength)) {
 				float c;
