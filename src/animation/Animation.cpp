@@ -627,7 +627,7 @@ void PrepareAnim(AnimLayer & layer, AnimationDuration time, Entity *io) {
 					if (io->animBlend.lastanimtime != ArxInstant_ZERO)
 						AcquireLastAnim(io);
 					else
-						io->animBlend.lastanimtime = ArxInstant(1);
+						io->animBlend.lastanimtime = ArxInstantMs(1);
 					
 					layer.cur_anim = layer.next_anim;
 					layer.altidx_cur = ANIM_GetAltIdx(layer.next_anim, layer.altidx_cur);
@@ -760,7 +760,7 @@ void AcquireLastAnim(Entity * io)
 
 	// Stores Frametime and number of vertex for later interpolation
 	// TODO Mixing of now() and get_frame_time()
-	io->animBlend.lastanimtime = ArxInstant(arxtime.get_frame_time());
+	io->animBlend.lastanimtime = ArxInstantMs(arxtime.get_frame_time());
 	io->animBlend.m_active = true;
 }
 
