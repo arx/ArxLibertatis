@@ -24,6 +24,7 @@
 
 #include <boost/config.hpp>
 #include <boost/operators.hpp>
+#include <boost/type_traits.hpp>
 
 #include "platform/Platform.h"
 
@@ -92,10 +93,17 @@ struct InstantType
 		return *this;
 	}
 };
+
 template <typename TAG, typename T>
 inline DurationType<TAG, T> operator -(InstantType<TAG, T> a, InstantType<TAG, T> b) {
 	return DurationType<TAG, T>(a.t - b.t);
 }
+template <typename TAG, typename T, class IntType>
+inline DurationType<TAG, T> operator *(DurationType<TAG, T> a, IntType b) {
+	ARX_STATIC_ASSERT(boost::is_integral<IntType>::value, "factor must be int type");
+	return DurationType<TAG, T>(a.t * T(b));
+}
+
 template <typename TAG, typename T>
 inline InstantType<TAG, T> operator +(InstantType<TAG, T> a, DurationType<TAG, T> b) {
 	return InstantType<TAG, T>(a.t + b.t);
@@ -104,6 +112,7 @@ template <typename TAG, typename T>
 inline InstantType<TAG, T> operator -(InstantType<TAG, T> a, DurationType<TAG, T> b) {
 	return InstantType<TAG, T>(a.t - b.t);
 }
+
 template <typename TAG, typename T>
 inline InstantType<TAG, T> & operator +=(InstantType<TAG, T> & a, DurationType<TAG, T> b) {
 	a.t += b.t;
@@ -205,7 +214,6 @@ inline AnimationDuration toAnimationDuration(ArxDuration val) {
 inline ArxDuration toArxDuration(AnimationDuration val) {
 	return ArxDuration(val.t / 1000);
 }
-
 
 
 namespace arx {
