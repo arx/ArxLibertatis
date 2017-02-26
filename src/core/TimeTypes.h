@@ -102,19 +102,16 @@ template <typename TAG, typename T>
 inline InstantType<TAG, T> operator -(InstantType<TAG, T> a, DurationType<TAG, T> b) {
 	return InstantType<TAG, T>(a.t - b.t);
 }
-/*
 template <typename TAG, typename T>
 inline InstantType<TAG, T> & operator +=(InstantType<TAG, T> & a, DurationType<TAG, T> b) {
 	a.t += b.t;
 	return a;
 }
-*/
 
 
 // ArxTime
 // in ms
-typedef StrongType<struct ArxInstant_TAG,  s64> ArxInstant;
-
+typedef InstantType <struct ArxTime_TAG, s64> ArxInstant;
 typedef DurationType<struct ArxTime_TAG, s64> ArxDuration;
 
 const ArxInstant  ArxInstant_ZERO  = ArxInstant(0);
@@ -142,10 +139,6 @@ inline ArxInstant operator +(ArxInstant a, ArxDuration b) {
 }
 inline ArxInstant operator -(ArxInstant a, ArxDuration b) {
 	return ArxInstant(a.t - b.t);
-}
-inline ArxInstant & operator +=(ArxInstant & a, ArxDuration b) {
-	a.t += b.t;
-	return a;
 }
 
 

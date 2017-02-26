@@ -383,7 +383,7 @@ ValueType getSystemVar(const EERIE_SCRIPT * es, Entity * entity, const std::stri
 			}
 			
 			if(name == "^#timer1") {
-				if(!entity || entity->script.timers[0] == 0) {
+				if(!entity || entity->script.timers[0] == ArxInstant_ZERO) {
 					*lcontent = 0;
 				} else {
 					*lcontent = toMs(arxtime.now() - es->timers[0]);
@@ -392,7 +392,7 @@ ValueType getSystemVar(const EERIE_SCRIPT * es, Entity * entity, const std::stri
 			}
 			
 			if(name == "^#timer2") {
-				if(!entity || entity->script.timers[1] == 0) {
+				if(!entity || entity->script.timers[1] == ArxInstant_ZERO) {
 					*lcontent = 0;
 				} else {
 					*lcontent = toMs(arxtime.now() - es->timers[1]);
@@ -401,7 +401,7 @@ ValueType getSystemVar(const EERIE_SCRIPT * es, Entity * entity, const std::stri
 			}
 			
 			if(name == "^#timer3") {
-				if(!entity || entity->script.timers[2] == 0) {
+				if(!entity || entity->script.timers[2] == ArxInstant_ZERO) {
 					*lcontent = 0;
 				} else {
 					*lcontent = toMs(arxtime.now() - es->timers[2]);
@@ -410,7 +410,7 @@ ValueType getSystemVar(const EERIE_SCRIPT * es, Entity * entity, const std::stri
 			}
 			
 			if(name == "^#timer4") {
-				if(!entity || entity->script.timers[3] == 0) {
+				if(!entity || entity->script.timers[3] == ArxInstant_ZERO) {
 					*lcontent = 0;
 				} else {
 					*lcontent = toMs(arxtime.now() - es->timers[3]);

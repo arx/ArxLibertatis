@@ -921,7 +921,7 @@ void ARX_PHYSICS_Apply() {
 
 		if(   (io->ioflags & IO_ITEM)
 		   && (io->gameFlags & GFLAG_GOREEXPLODE)
-		   && arxtime.now_f() - io->animBlend.lastanimtime > 300
+		   && arxtime.now_f() - toMs(io->animBlend.lastanimtime) > 300
 		   && io->obj
 		   && !io->obj->vertexlist.empty()
 		) {
@@ -2191,7 +2191,7 @@ static void ManageNPCMovement(Entity * io)
 			} else if(layer0.cur_anim == alist[ANIM_WALK] || layer0.cur_anim == alist[ANIM_RUN]
 			          || layer0.cur_anim == alist[ANIM_WALK_SNEAK]) {
 				layer0.flags &= ~EA_LOOP;
-				if(io->_npcdata->reachedtime + 500 < arxtime.now_f()) {
+				if(toMs(io->_npcdata->reachedtime + ArxDurationMs(500)) < arxtime.now_f()) {
 					changeAnimation(io, ANIM_DEFAULT, EA_LOOP, startAtBeginning);
 				}
 			}
