@@ -1362,7 +1362,7 @@ void StealthGauge::draw() {
 	GRenderer->SetRenderState(Renderer::AlphaBlending, false);
 }
 
-bool PLAYER_INTERFACE_HIDE_COUNT = true;
+bool PLAYER_INTERFACE_SHOW = true;
 
 PlayerInterfaceFader::PlayerInterfaceFader()
 	: m_direction(0)
@@ -1371,7 +1371,7 @@ PlayerInterfaceFader::PlayerInterfaceFader()
 
 void PlayerInterfaceFader::reset() {
 	m_direction = 0;
-	PLAYER_INTERFACE_HIDE_COUNT = true;
+	PLAYER_INTERFACE_SHOW = true;
 }
 
 void PlayerInterfaceFader::resetSlid() {
@@ -1386,9 +1386,9 @@ void PlayerInterfaceFader::requestFade(FadeDirection showhide, long smooth) {
 	}
 	
 	if(showhide == FadeDirection_In) {
-		PLAYER_INTERFACE_HIDE_COUNT = true;
+		PLAYER_INTERFACE_SHOW = true;
 	} else {
-		PLAYER_INTERFACE_HIDE_COUNT = false;
+		PLAYER_INTERFACE_SHOW = false;
 	}
 	
 	if(smooth) {
@@ -1412,7 +1412,7 @@ PlatformInstant SLID_START = PlatformInstant_ZERO; // Charging Weapon
 
 void PlayerInterfaceFader::update() {
 	
-	if(PLAYER_INTERFACE_HIDE_COUNT && !m_direction) {
+	if(PLAYER_INTERFACE_SHOW && !m_direction) {
 		bool bOk = true;
 		
 		if(TRUE_PLAYER_MOUSELOOK_ON) {
