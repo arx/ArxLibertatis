@@ -163,7 +163,7 @@ void ShowInfoText() {
 	frameInfo.add("Particles", getParticleCount());
 	frameInfo.add("Sparks", ParticleSparkCount());
 	frameInfo.add("Polybooms", long(PolyBoomCount()));
-	frameInfo.add("TIME", static_cast<long>(arxtime.now() / 1000));
+	frameInfo.add("TIME", static_cast<long>(toMs(arxtime.now()) / 1000));
 	frameInfo.print();
 	
 	DebugBox camBox = DebugBox(Vec2i(10, frameInfo.size().y + 5), "Camera");

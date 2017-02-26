@@ -901,7 +901,7 @@ static void ARX_DAMAGES_AddVisual(DAMAGE_INFO & di, const Vec3f & pos, float dmg
 	}
 	
 	ArxInstant now = arxtime.now();
-	if(di.lastupd + 200 < now) {
+	if(di.lastupd + ArxDurationMs(200) < now) {
 		di.lastupd = now;
 		if(di.params.type & DAMAGE_TYPE_MAGICAL) {
 			ARX_SOUND_PlaySFX(SND_SPELL_MAGICAL_HIT, &pos, Random::getf(0.8f, 1.2f));

@@ -296,7 +296,7 @@ void ControlTargetSpell::Update() {
 	int n = BEZIERPrecision;
 	float delta = 1.0f / n;
 	
-	float elapsed = arxtime.now_f() - m_timcreation;
+	float elapsed = arxtime.now_f() - toMs(m_timcreation);
 	float fOneOnDuration = 1.f / toMs(m_duration);
 	
 	fTrail = (elapsed * fOneOnDuration) * 9 * (n + 2);
@@ -452,7 +452,7 @@ extern Vec3f lastteleport;
 
 void TeleportSpell::Update() {
 	
-	float elapsed = arxtime.now_f() - m_timcreation;
+	float elapsed = arxtime.now_f() - toMs(m_timcreation);
 	float TELEPORT = elapsed / toMs(m_duration);
 	
 	if(LASTTELEPORT < 0.5f && TELEPORT >= 0.5f) {

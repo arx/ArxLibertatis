@@ -1330,7 +1330,7 @@ void ARX_PLAYER_Manage_Visual() {
 		if(ROTATE_START == ArxInstant_ZERO) {
 			ROTATE_START = now;
 		}
-	} else if (ROTATE_START) {
+	} else if(ROTATE_START != ArxInstant_ZERO) {
 		ArxDuration elapsed = now - ROTATE_START;
 		if(elapsed > ArxDurationMs(100)) {
 			ROTATE_START = ArxInstant_ZERO;
@@ -1445,7 +1445,7 @@ void ARX_PLAYER_Manage_Visual() {
 		request0_loop = true;
 	}
 	
-	if(ROTATE_START
+	if(ROTATE_START != ArxInstant_ZERO
 	   && player.angle.getPitch() > 60.f
 	   && player.angle.getPitch() < 180.f
 	   && LASTPLAYERA > 60.f
