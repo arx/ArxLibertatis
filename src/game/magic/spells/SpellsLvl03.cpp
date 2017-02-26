@@ -343,7 +343,7 @@ Vec3f FireballSpell::getPosition() {
 
 CreateFoodSpell::CreateFoodSpell()
 	: SpellBase()
-	, m_currentTime(ArxDuration_ZERO)
+	, m_elapsed(ArxDuration_ZERO)
 {}
 
 void CreateFoodSpell::Launch() {
@@ -351,7 +351,7 @@ void CreateFoodSpell::Launch() {
 	ARX_SOUND_PlaySFX(SND_SPELL_CREATE_FOOD, &m_caster_pos);
 	
 	m_duration = (m_launchDuration > ArxDuration(-1)) ? m_launchDuration : ArxDurationMs(3500);
-	m_currentTime = ArxDuration_ZERO;
+	m_elapsed = ArxDuration_ZERO;
 	
 	if(m_caster == EntityHandle_Player || m_target == EntityHandle_Player) {
 		player.hunger = 100;
@@ -370,11 +370,11 @@ void CreateFoodSpell::End() {
 
 void CreateFoodSpell::Update() {
 	
-	m_currentTime += ArxDurationMs(g_framedelay);
+	m_elapsed += ArxDurationMs(g_framedelay);
 	
 	m_pos = entities.player()->pos;
 	
-	ArxDuration ff = m_duration - m_currentTime;
+	ArxDuration ff = m_duration - m_elapsed;
 	
 	if(ff < ArxDurationMs(1500)) {
 		m_particles.m_parameters.m_spawnFlags = PARTICLE_CIRCULAR;
