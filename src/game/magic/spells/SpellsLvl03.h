@@ -65,13 +65,13 @@ public:
 private:
 	LightHandle m_light;
 	
-	long ulCurrentTime;
+	ArxDuration ulCurrentTime;
 
 	Vec3f eCurPos;
 	Vec3f eMove;
 	bool bExplo;
 	
-	long m_createBallDuration;
+	ArxDuration m_createBallDuration;
 };
 
 class CreateFoodSpell : public SpellBase {

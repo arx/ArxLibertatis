@@ -171,9 +171,9 @@ void DispellIllusionSpell::Update() {
 
 FireballSpell::FireballSpell()
 	: SpellBase()
-	, ulCurrentTime(0)
+	, ulCurrentTime(ArxDuration_ZERO)
 	, bExplo(false)
-	, m_createBallDuration(2000)
+	, m_createBallDuration(ArxDurationMs(2000))
 {
 }
 
@@ -243,7 +243,7 @@ void FireballSpell::End() {
 
 void FireballSpell::Update() {
 	
-	ulCurrentTime += g_framedelay;
+	ulCurrentTime += ArxDurationMs(g_framedelay);
 	
 	if(ulCurrentTime <= m_createBallDuration) {
 		
@@ -305,7 +305,7 @@ void FireballSpell::Update() {
 	} else {
 		if(Random::getf() < 0.9f) {
 			Vec3f move = Vec3f_ZERO;
-			float dd=(float)ulCurrentTime / (float)m_createBallDuration*10;
+			float dd = float(toMs(ulCurrentTime)) / float(toMs(m_createBallDuration)) * 10;
 			
 			dd = glm::clamp(dd, 1.f, m_level);
 			
