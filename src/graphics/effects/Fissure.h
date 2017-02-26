@@ -37,7 +37,7 @@ public:
 	ArxDuration m_duration;
 	
 	ArxDuration m_durationIntro;
-	ArxDuration ulDurationRender;
+	ArxDuration m_durationRender;
 	ArxDuration ulDurationOuttro;
 	
 	Color3f m_colorBorder;
