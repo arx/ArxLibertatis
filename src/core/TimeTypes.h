@@ -22,8 +22,10 @@
 
 #include <algorithm>
 
+#include <boost/config.hpp>
+#include <boost/operators.hpp>
+
 #include "platform/Platform.h"
-#include "util/StrongType.h"
 
 
 template <typename TAG, typename T>
