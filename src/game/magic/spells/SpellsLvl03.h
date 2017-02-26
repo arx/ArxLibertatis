@@ -98,7 +98,7 @@ public:
 	void Update();
 	
 private:
-	unsigned long ulCurrentTime;
+	ArxDuration ulCurrentTime;
 	int iNumber;
 	int iMax;
 	float fColor;

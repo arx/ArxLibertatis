@@ -404,7 +404,7 @@ void CreateFoodSpell::Update() {
 
 IceProjectileSpell::IceProjectileSpell()
 	: SpellBase()
-	, ulCurrentTime(0)
+	, ulCurrentTime(ArxDuration_ZERO)
 	, iNumber(0)
 	, iMax(0)
 	, fColor(0)
@@ -506,10 +506,10 @@ void IceProjectileSpell::End() {
 
 void IceProjectileSpell::Update() {
 	
-	ulCurrentTime += g_framedelay;
+	ulCurrentTime += ArxDurationMs(g_framedelay);
 
-	if(toMs(m_duration) - ulCurrentTime < 1000) {
-		fColor = (toMs(m_duration) - ulCurrentTime) * ( 1.0f / 1000 );
+	if(m_duration - ulCurrentTime < ArxDurationMs(1000)) {
+		fColor = toMs(m_duration - ulCurrentTime) * ( 1.0f / 1000 );
 		
 		for(int i = 0; i < iNumber; i++) {
 			m_icicles[i].size.y *= fColor;
@@ -522,7 +522,7 @@ void IceProjectileSpell::Update() {
 	mat.setBlendType(RenderMaterial::Screen);
 	
 	float fOneOnDuration = 1.f / toMs(m_duration);
-	iMax = (int)((iNumber * 2) * fOneOnDuration * ulCurrentTime);
+	iMax = (int)((iNumber * 2) * fOneOnDuration * toMs(ulCurrentTime));
 
 	if(iMax > iNumber) {
 		iMax = iNumber;
@@ -560,7 +560,7 @@ void IceProjectileSpell::Update() {
 				pd->move = arx::randomVec(-2.f, 2.f);
 				pd->siz = 20.f;
 				float t = std::min(Random::getf(2000.f, 4000.f),
-				                   toMs(m_duration) - ulCurrentTime + Random::getf(0.f, 500.0f));
+				                   toMs(m_duration - ulCurrentTime) + Random::getf(0.f, 500.0f));
 				pd->tolive = checked_range_cast<u32>(t);
 				pd->tc = tex_p2;
 				pd->m_flags = FADE_IN_AND_OUT | ROTATING | DISSIPATING;
@@ -576,7 +576,7 @@ void IceProjectileSpell::Update() {
 				pd->move = Vec3f(0.f, Random::getf(-2.f, 2.f), 0.f);
 				pd->siz = 0.5f;
 				float t = std::min(Random::getf(2000.f, 3000.f),
-				              toMs(m_duration) - ulCurrentTime + Random::getf(0.f, 500.0f));
+				              toMs(m_duration - ulCurrentTime) + Random::getf(0.f, 500.0f));
 				pd->tolive = checked_range_cast<u32>(t);
 				pd->tc = tex_p1;
 				pd->m_flags = FADE_IN_AND_OUT | ROTATING | DISSIPATING;
