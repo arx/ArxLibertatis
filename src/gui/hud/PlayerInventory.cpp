@@ -479,7 +479,7 @@ void PlayerInventoryHud::dropEntity() {
 	if(!g_playerInventoryHud.containsPos(DANAEMouse))
 		return;
 	
-	Vec2s s = DRAGINTER->m_inventorySize;
+	Vec2s itemSize = DRAGINTER->m_inventorySize;
 	
 	int bag = 0;
 	
@@ -494,7 +494,7 @@ void PlayerInventoryHud::dropEntity() {
 		t.x = t.x / (32 * m_scale); 
 		t.y = t.y / (32 * m_scale); 
 		
-		if((t.x >= 0) && (t.x <= 16 - s.x) && (t.y >= 0) && (t.y <= 3 - s.y)) {
+		if((t.x >= 0) && (t.x <= 16 - itemSize.x) && (t.y >= 0) && (t.y <= 3 - itemSize.y)) {
 			bag = g_currentInventoryBag;
 		} else {
 			return;
@@ -517,7 +517,7 @@ void PlayerInventoryHud::dropEntity() {
 				t.x = t.x / (32 * m_scale); 
 				t.y = t.y / (32 * m_scale); 
 				
-				if((t.x >= 0) && (t.x <= 16 - s.x) && (t.y >= 0) && (t.y <= 3 - s.y)) {
+				if((t.x >= 0) && (t.x <= 16 - itemSize.x) && (t.y >= 0) && (t.y <= 3 - itemSize.y)) {
 					bOk = true;
 					bag = i;
 					break;
@@ -539,8 +539,8 @@ void PlayerInventoryHud::dropEntity() {
 		return;
 	}
 	
-	for(long y = 0; y < s.y; y++)
-	for(long x = 0; x < s.x; x++) {
+	for(long y = 0; y < itemSize.y; y++)
+	for(long x = 0; x < itemSize.x; x++) {
 		Entity * ioo = inventory[bag][t.x + x][t.y + y].io;
 		
 		if(!ioo)
@@ -575,8 +575,8 @@ void PlayerInventoryHud::dropEntity() {
 		return;
 	}
 	
-	for(long y = 0; y < s.y; y++) {
-	for(long x = 0; x < s.x; x++) {
+	for(long y = 0; y < itemSize.y; y++) {
+	for(long x = 0; x < itemSize.x; x++) {
 		inventory[bag][t.x + x][t.y + y].io = DRAGINTER;
 		inventory[bag][t.x + x][t.y + y].show = false;
 	}
