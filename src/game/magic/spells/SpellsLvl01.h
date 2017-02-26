@@ -43,7 +43,7 @@ public:
 	
 private:
 	bool m_mrCheat;
-	std::vector<CMagicMissile *> pTab;
+	std::vector<CMagicMissile *> m_missiles;
 };
 
 class IgnitSpell : public SpellBase {
