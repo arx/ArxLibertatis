@@ -155,7 +155,7 @@ AnimationDuration PLAYER_ROTATION = AnimationDuration_ZERO;
 bool USE_PLAYERCOLLISIONS = true;
 bool BLOCK_PLAYER_CONTROLS = false;
 bool WILLRETURNTOCOMBATMODE = false;
-long DeadTime = 0;
+ArxDuration DeadTime = ArxDuration_ZERO;
 static ArxInstant LastHungerSample = ArxInstant_ZERO;
 static ArxInstant ROTATE_START = ArxInstant_ZERO;
 
@@ -1305,7 +1305,7 @@ void ARX_PLAYER_BecomesDead() {
 
 	player.Interface &= ~INTER_COMBATMODE;
 	player.Interface = 0;
-	DeadTime = 0;
+	DeadTime = ArxDuration_ZERO;
 	
 	spells.endByCaster(EntityHandle_Player);
 }
@@ -2473,15 +2473,15 @@ void PlayerMovementIterate(float DeltaTime) {
  * \brief Manage Player Death Visual
  */
 void ARX_PLAYER_Manage_Death() {
-	if(DeadTime <= 2000)
+	if(DeadTime <= ArxDurationMs(2000))
 		return;
 
 	player.m_paralysed = false;
-	float ratio = (float)(DeadTime - 2000) * ( 1.0f / 5000 );
+	float ratio = toMs(DeadTime - ArxDurationMs(2000)) * ( 1.0f / 5000 );
 
 	if(ratio >= 1.f) {
 		ARX_MENU_Launch(false);
-		DeadTime = 0;
+		DeadTime = ArxDuration_ZERO;
 	}
 
 	GRenderer->SetRenderState(Renderer::AlphaBlending, true);
@@ -2623,7 +2623,7 @@ extern Entity * FlyingOverIO;
 void ARX_GAME_Reset(long type) {
 	arx_assert(entities.player());
 	
-	DeadTime = 0;
+	DeadTime = ArxDuration_ZERO;
 	
 	LastValidPlayerPos = Vec3f_ZERO;
 	
