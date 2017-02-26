@@ -36,22 +36,22 @@ FissureFx::FissureFx()
 	, m_duration(ArxDuration_ZERO)
 	, m_durationIntro(1000)
 	, m_durationRender(1000)
-	, ulDurationOuttro(1000)
+	, m_durationOuttro(1000)
 	, m_colorBorder(Color3f::white)
 	, m_colorRays1(Color3f::white)
 	, m_colorRays2(Color3f::black)
 {
-	m_duration = m_durationIntro + m_durationRender + ulDurationOuttro;
+	m_duration = m_durationIntro + m_durationRender + m_durationOuttro;
 }
 
 void FissureFx::SetDuration(ArxDuration alDurationIntro, ArxDuration alDurationRender, ArxDuration alDurationOuttro)
 {
 	m_durationIntro  = arx::clamp(alDurationIntro,  ArxDurationMs(100), ArxDurationMs(100000));
 	m_durationRender = arx::clamp(alDurationRender, ArxDurationMs(100), ArxDurationMs(100000));
-	ulDurationOuttro = arx::clamp(alDurationOuttro, ArxDurationMs(100), ArxDurationMs(100000));
+	m_durationOuttro = arx::clamp(alDurationOuttro, ArxDurationMs(100), ArxDurationMs(100000));
 	
 	m_elapsed = ArxDuration_ZERO;
-	m_duration = m_durationIntro + m_durationRender + ulDurationOuttro;
+	m_duration = m_durationIntro + m_durationRender + m_durationOuttro;
 }
 
 void FissureFx::SetColorBorder(Color3f color)
@@ -96,7 +96,7 @@ CRiseDead::CRiseDead()
 
 void CRiseDead::Create(Vec3f aeSrc, float afBeta)
 {
-	SetDuration(m_durationIntro, m_durationRender, ulDurationOuttro);
+	SetDuration(m_durationIntro, m_durationRender, m_durationOuttro);
 
 	m_eSrc = aeSrc + Vec3f(0.f, -10.f, 0.f);
 	
@@ -423,7 +423,7 @@ void CRiseDead::Render()
 	// close it all
 	else if (m_elapsed < m_duration)
 	{
-		float fOneOnDurationOuttro = 1.f / toMs(ulDurationOuttro);
+		float fOneOnDurationOuttro = 1.f / toMs(m_durationOuttro);
 		
 		sizeF = iSize - (iSize) * fOneOnDurationOuttro * toMs(m_elapsed - (m_durationIntro + m_durationRender));
 	}
@@ -457,7 +457,7 @@ CSummonCreature::CSummonCreature()
 
 void CSummonCreature::Create(Vec3f aeSrc, float afBeta)
 {
-	SetDuration(m_durationIntro, m_durationRender, ulDurationOuttro);
+	SetDuration(m_durationIntro, m_durationRender, m_durationOuttro);
 
 	m_eSrc = aeSrc + Vec3f(0.f, -50.f, 0.f);
 	
@@ -736,7 +736,7 @@ void CSummonCreature::Render()
 	// close it all
 	else if (m_elapsed < m_duration)
 	{
-		float fOneOnDurationOuttro = 1.f / toMs(ulDurationOuttro);
+		float fOneOnDurationOuttro = 1.f / toMs(m_durationOuttro);
 		
 		sizeF = iSize - (iSize) * fOneOnDurationOuttro * toMs(m_elapsed - (m_durationIntro + m_durationRender));
 	}
