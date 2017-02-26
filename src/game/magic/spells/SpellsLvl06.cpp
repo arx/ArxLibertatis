@@ -165,9 +165,9 @@ void RiseDeadSpell::Update() {
 		light->creationTime = arxtime.now();
 	}
 	
-	unsigned long tim = toMs(m_fissure.m_elapsed);
+	ArxDuration tim = m_fissure.m_elapsed;
 	
-	if(tim > 3000 && m_entity == EntityHandle() && !m_creationFailed) {
+	if(tim > ArxDurationMs(3000) && m_entity == EntityHandle() && !m_creationFailed) {
 		ARX_SOUND_PlaySFX(SND_SPELL_ELECTRIC, &m_targetPos);
 		
 		Cylinder phys = Cylinder(m_targetPos, 50, -200);
@@ -214,7 +214,7 @@ void RiseDeadSpell::Update() {
 			m_creationFailed = true;
 			m_duration = ArxDuration_ZERO;
 		}
-	} else if(!arxtime.is_paused() && tim < 4000) {
+	} else if(!arxtime.is_paused() && tim < ArxDurationMs(4000)) {
 	  if(Random::getf() > 0.95f) {
 			MakeCoolFx(m_fissure.m_eSrc);
 		}
