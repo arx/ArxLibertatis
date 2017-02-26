@@ -57,8 +57,8 @@ public:
 	
 	// time
 	float fOneOnTTL;
-	long m_age;
-	long m_timeToLive;
+	ArxDuration m_age;
+	ArxDuration m_timeToLive;
 	
 	// size
 	float fSize;

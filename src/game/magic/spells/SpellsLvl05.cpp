@@ -323,16 +323,16 @@ void CurePoisonSpell::End() {
 
 void CurePoisonSpell::Update() {
 	
-	m_currentTime += g_framedelay;
+	m_currentTime += ArxDurationMs(g_framedelay);
 	
 	m_pos = entities[m_target]->pos;
 	
 	if(m_target == EntityHandle_Player)
 		m_pos.y += 200;
 	
-	long ff = toMs(m_duration) - m_currentTime;
+	ArxDuration ff = m_duration - m_currentTime;
 	
-	if(ff < 1500) {
+	if(ff < ArxDurationMs(1500)) {
 		m_particles.m_parameters.m_spawnFlags = PARTICLE_CIRCULAR;
 		m_particles.m_parameters.m_gravity = Vec3f_ZERO;
 

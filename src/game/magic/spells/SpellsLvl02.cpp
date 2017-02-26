@@ -106,9 +106,9 @@ void HealSpell::Update() {
 		light->extras = 0;
 	}
 
-	long ff = toMs(m_duration - m_currentTime);
+	ArxDuration ff = m_duration - m_currentTime;
 	
-	if(ff < 1500) {
+	if(ff < ArxDurationMs(1500)) {
 		m_particles.m_parameters.m_spawnFlags = PARTICLE_CIRCULAR;
 		m_particles.m_parameters.m_gravity = Vec3f_ZERO;
 
