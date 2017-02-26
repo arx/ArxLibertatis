@@ -40,7 +40,7 @@
 
 HealSpell::HealSpell()
 	: SpellBase()
-	, m_currentTime(ArxDuration_ZERO)
+	, m_elapsed(ArxDuration_ZERO)
 {}
 
 bool HealSpell::CanLaunch() {
@@ -57,7 +57,7 @@ void HealSpell::Launch() {
 	m_hasDuration = true;
 	m_fManaCostPerSecond = 0.4f * m_level;
 	m_duration = (m_launchDuration > ArxDuration(-1)) ? m_launchDuration : ArxDurationMs(3500);
-	m_currentTime = ArxDuration_ZERO;
+	m_elapsed = ArxDuration_ZERO;
 	
 	if(m_caster == EntityHandle_Player) {
 		m_pos = player.pos;
@@ -87,7 +87,7 @@ void HealSpell::End() {
 
 void HealSpell::Update() {
 	
-	m_currentTime += ArxDurationMs(g_framedelay);
+	m_elapsed += ArxDurationMs(g_framedelay);
 	
 	if(m_caster == EntityHandle_Player) {
 		m_pos = player.pos;
@@ -106,7 +106,7 @@ void HealSpell::Update() {
 		light->extras = 0;
 	}
 
-	ArxDuration ff = m_duration - m_currentTime;
+	ArxDuration ff = m_duration - m_elapsed;
 	
 	if(ff < ArxDurationMs(1500)) {
 		m_particles.m_parameters.m_spawnFlags = PARTICLE_CIRCULAR;
