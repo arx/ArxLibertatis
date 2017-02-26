@@ -389,7 +389,7 @@ void CRiseDead::RenderFissure() {
 
 void CRiseDead::Update(float timeDelta)
 {
-	m_elapsed += timeDelta;
+	m_elapsed += ArxDurationMs(timeDelta);
 	
 	m_stones.Update(timeDelta, m_eSrc);
 }
@@ -404,16 +404,16 @@ void CRiseDead::Render()
 	//-------------------------------------------------------------------------
 	// render intro (opening + rays)
 	if(m_elapsed < ulDurationIntro) {
-		float fOneOnDurationIntro = 1.f / (float)(ulDurationIntro);
+		float fOneOnDurationIntro = 1.f / toMs(ulDurationIntro);
 		
-		if(m_elapsed < ulDurationIntro * 0.666f) {
-			fSizeIntro = (end + 2) * fOneOnDurationIntro * (1.5f) * m_elapsed;
+		if(m_elapsed < ArxDurationMs(toMs(ulDurationIntro) * 0.666f)) {
+			fSizeIntro = (end + 2) * fOneOnDurationIntro * (1.5f) * toMs(m_elapsed);
 			sizeF = 1;
 		} else {
 			if(bIntro != false)
 				bIntro = false;
 
-			sizeF = (iSize) * (fOneOnDurationIntro * 3) * (m_elapsed - ulDurationIntro * 0.666f);
+			sizeF = (iSize) * (fOneOnDurationIntro * 3) * (toMs(m_elapsed) - toMs(ulDurationIntro) * 0.666f);
 		}
 	}
 	// do nothing just render
@@ -423,9 +423,9 @@ void CRiseDead::Render()
 	// close it all
 	else if (m_elapsed < m_duration)
 	{
-		float fOneOnDurationOuttro = 1.f / (float)(ulDurationOuttro);
+		float fOneOnDurationOuttro = 1.f / toMs(ulDurationOuttro);
 		
-		sizeF = iSize - (iSize) * fOneOnDurationOuttro * (m_elapsed - (ulDurationIntro + ulDurationRender));
+		sizeF = iSize - (iSize) * fOneOnDurationOuttro * toMs(m_elapsed - (ulDurationIntro + ulDurationRender));
 	}
 	
 	RenderFissure();
@@ -704,7 +704,7 @@ void CSummonCreature::RenderFissure() {
 
 void CSummonCreature::Update(float timeDelta)
 {
-	m_elapsed += timeDelta;
+	m_elapsed += ArxDurationMs(timeDelta);
 }
 
 //-----------------------------------------------------------------------------
@@ -717,16 +717,16 @@ void CSummonCreature::Render()
 	//-------------------------------------------------------------------------
 	// render intro (opening + rays)
 	if(m_elapsed < ulDurationIntro) {
-		float fOneOnDurationIntro = 1.f / (float)(ulDurationIntro);
+		float fOneOnDurationIntro = 1.f / toMs(ulDurationIntro);
 		
-		if(m_elapsed < ulDurationIntro * 0.666f) {
-			fSizeIntro = (end + 2) * fOneOnDurationIntro * (1.5f) * m_elapsed;
+		if(m_elapsed < ArxDurationMs(toMs(ulDurationIntro) * 0.666f)) {
+			fSizeIntro = (end + 2) * fOneOnDurationIntro * (1.5f) * toMs(m_elapsed);
 			sizeF = 1;
 		} else {
 			if(bIntro != false)
 				bIntro = false;
 
-			sizeF = (iSize) * (fOneOnDurationIntro * 3) * (m_elapsed - ulDurationIntro * 0.666f);
+			sizeF = (iSize) * (fOneOnDurationIntro * 3) * (toMs(m_elapsed) - toMs(ulDurationIntro) * 0.666f);
 		}
 	}
 	// do nothing just render
@@ -736,9 +736,9 @@ void CSummonCreature::Render()
 	// close it all
 	else if (m_elapsed < m_duration)
 	{
-		float fOneOnDurationOuttro = 1.f / (float)(ulDurationOuttro);
+		float fOneOnDurationOuttro = 1.f / toMs(ulDurationOuttro);
 		
-		sizeF = iSize - (iSize) * fOneOnDurationOuttro * (m_elapsed - (ulDurationIntro + ulDurationRender));
+		sizeF = iSize - (iSize) * fOneOnDurationOuttro * toMs(m_elapsed - (ulDurationIntro + ulDurationRender));
 	}
 	
 	RenderFissure();

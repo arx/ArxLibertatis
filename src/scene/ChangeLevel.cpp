@@ -1117,7 +1117,7 @@ static long ARX_CHANGELEVEL_Push_IO(const Entity * io, long level) {
 				ARX_CHANGELEVEL_TIMERS_SAVE * ats = (ARX_CHANGELEVEL_TIMERS_SAVE *)(dat + pos);
 				memset(ats, 0, sizeof(ARX_CHANGELEVEL_TIMERS_SAVE));
 				ats->longinfo = timer.longinfo;
-				ats->interval = timer.interval;
+				ats->interval = toMs(timer.interval);
 				util::storeString(ats->name, timer.name.c_str());
 				ats->pos = timer.pos;
 
@@ -1126,7 +1126,7 @@ static long ARX_CHANGELEVEL_Push_IO(const Entity * io, long level) {
 				else
 					ats->script = 1;
 
-				ats->remaining = (timer.start + timer.interval) - timm;
+				ats->remaining = toMs((timer.start + timer.interval) - timm);
 				arx_assert(ats->remaining <= toMs(timer.interval));
 
 				if(ats->remaining < 0)
@@ -1286,7 +1286,7 @@ static long ARX_CHANGELEVEL_Push_IO(const Entity * io, long level) {
 			as = (ARX_CHANGELEVEL_NPC_IO_SAVE *)(dat + pos);
 			memset(as, 0, sizeof(ARX_CHANGELEVEL_NPC_IO_SAVE));
 			as->absorb = io->_npcdata->absorb;
-			as->aimtime = static_cast<f32>(io->_npcdata->aimtime);
+			as->aimtime = static_cast<f32>(toMs(io->_npcdata->aimtime));
 			as->armor_class = io->_npcdata->armor_class;
 			as->behavior = io->_npcdata->behavior;
 			as->behavior_param = io->_npcdata->behavior_param;
@@ -2159,7 +2159,7 @@ static Entity * ARX_CHANGELEVEL_Pop_IO(const std::string & idString, EntityInsta
 			if(remaining > ArxDurationMs(ats->interval)) {
 				LogWarning << "Found bad script timer " << scr_timer[num].name
 				           << " for entity " << io->idString() << " in save file: remaining time ("
-				           << remaining << "ms) > interval (" << ats->interval << "ms) " << ats->flags;
+				           << toMs(remaining) << "ms) > interval (" << ats->interval << "ms) " << ats->flags;
 				remaining = ArxDurationMs(ats->interval);
 			}
 			

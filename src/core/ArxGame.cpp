@@ -1418,7 +1418,7 @@ void ArxGame::speechControlledCinematic() {
 		const Entity * io = aspeech[valid].io;
 		
 		float elapsed = arxtime.now_f() - aspeech[valid].time_creation;
-		float rtime = elapsed / aspeech[valid].duration;
+		float rtime = elapsed / toMs(aspeech[valid].duration);
 
 		rtime = glm::clamp(rtime, 0.f, 1.f);
 
@@ -1951,7 +1951,7 @@ void ArxGame::updateLevel() {
 		SpellBase * spell = spells.getSpellByCaster(EntityHandle_Player, SPELL_MAGIC_SIGHT);
 		if(spell) {
 			ArxDuration duration = arxtime.now() - spell->m_timcreation;
-			magicSightZoom = glm::clamp(float(duration) / 500.f, 0.f, 1.f);
+			magicSightZoom = glm::clamp(toMs(duration) / 500.f, 0.f, 1.f);
 		}
 		
 		float BASE_FOCAL = CURRENT_BASE_FOCAL

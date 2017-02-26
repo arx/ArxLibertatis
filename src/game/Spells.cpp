@@ -1128,9 +1128,9 @@ void ARX_SPELLS_Update() {
 			ARX_SPELLS_Fizzle(spell);
 		}
 		
-		const long framediff = spell->m_timcreation + spell->m_duration - now;
+		const ArxDuration framediff = spell->m_timcreation + spell->m_duration - now;
 		
-		if(framediff < 0) {
+		if(framediff < ArxDuration_ZERO) {
 			SPELLEND_Notify(*spell);
 			
 			spell->End();

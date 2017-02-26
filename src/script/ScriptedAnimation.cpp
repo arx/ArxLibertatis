@@ -296,7 +296,7 @@ public:
 			timer.longinfo = 0;
 			
 			DebugScript(": scheduled timer #" << num2 << ' ' << timername << " in "
-			            << timer.interval << "ms");
+			            << toMs(timer.interval) << "ms");
 			
 		}
 		

@@ -165,7 +165,7 @@ void ARX_SPELLS_UpdateSymbolDraw() {
 
 		if(io->symboldraw) {
 			SYMBOL_DRAW * sd = entities[handle]->symboldraw;
-			long elapsed = now - sd->starttime;
+			long elapsed = toMs(now - sd->starttime);
 
 			if(elapsed > sd->duration) {
 				endLightDelayed(io->dynlight, ArxDurationMs(600));

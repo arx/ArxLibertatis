@@ -263,7 +263,7 @@ void CLightning::ReCreate(float rootSize)
 void CLightning::Update(ArxDuration timeDelta)
 {
 	m_elapsed += timeDelta;
-	m_iTTL -= timeDelta;
+	m_iTTL -= toMs(timeDelta);
 	fTotoro += 8;
 
 	if(fMySize > 0.3f)

@@ -150,7 +150,7 @@ void RiseDeadSpell::Update() {
 		return;
 	}
 	
-	m_duration+=200;
+	m_duration += ArxDurationMs(200);
 	
 	m_fissure.Update(g_framedelay);
 	m_fissure.Render();
@@ -165,7 +165,7 @@ void RiseDeadSpell::Update() {
 		light->creationTime = arxtime.now();
 	}
 	
-	unsigned long tim = m_fissure.m_elapsed;
+	unsigned long tim = toMs(m_fissure.m_elapsed);
 	
 	if(tim > 3000 && m_entity == EntityHandle() && !m_creationFailed) {
 		ARX_SOUND_PlaySFX(SND_SPELL_ELECTRIC, &m_targetPos);
@@ -235,7 +235,7 @@ void ParalyseSpell::Launch() {
 	}
 	if(Random::getf(0.f, 100.f) < resist_magic) {
 		float mul = std::max(0.5f, 1.f - (resist_magic * 0.005f));
-		m_duration = ArxDurationMs(m_duration * mul);
+		m_duration = ArxDurationMs(toMs(m_duration) * mul);
 	}
 	
 	entities[m_target]->ioflags |= IO_FREEZESCRIPT;

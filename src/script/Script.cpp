@@ -386,7 +386,7 @@ ValueType getSystemVar(const EERIE_SCRIPT * es, Entity * entity, const std::stri
 				if(!entity || entity->script.timers[0] == 0) {
 					*lcontent = 0;
 				} else {
-					*lcontent = long(arxtime.now() - es->timers[0]);
+					*lcontent = toMs(arxtime.now() - es->timers[0]);
 				}
 				return TYPE_LONG;
 			}
@@ -395,7 +395,7 @@ ValueType getSystemVar(const EERIE_SCRIPT * es, Entity * entity, const std::stri
 				if(!entity || entity->script.timers[1] == 0) {
 					*lcontent = 0;
 				} else {
-					*lcontent = long(arxtime.now() - es->timers[1]);
+					*lcontent = toMs(arxtime.now() - es->timers[1]);
 				}
 				return TYPE_LONG;
 			}
@@ -404,7 +404,7 @@ ValueType getSystemVar(const EERIE_SCRIPT * es, Entity * entity, const std::stri
 				if(!entity || entity->script.timers[2] == 0) {
 					*lcontent = 0;
 				} else {
-					*lcontent = long(arxtime.now() - es->timers[2]);
+					*lcontent = toMs(arxtime.now() - es->timers[2]);
 				}
 				return TYPE_LONG;
 			}
@@ -413,7 +413,7 @@ ValueType getSystemVar(const EERIE_SCRIPT * es, Entity * entity, const std::stri
 				if(!entity || entity->script.timers[3] == 0) {
 					*lcontent = 0;
 				} else {
-					*lcontent = long(arxtime.now() - es->timers[3]);
+					*lcontent = toMs(arxtime.now() - es->timers[3]);
 				}
 				return TYPE_LONG;
 			}
@@ -1811,7 +1811,7 @@ static bool Manage_Specific_RAT_Timer(SCR_TIMER * st) {
 		st->count = 1;
 	} else {
 		st->count++;
-		st->interval = ArxDuration(st->interval * ( 1.0f / 2 ));
+		st->interval = ArxDurationMs(toMs(st->interval) * ( 1.0f / 2 ));
 		if(st->interval < ArxDurationMs(100))
 			st->interval = ArxDurationMs(100);
 		
@@ -1846,8 +1846,8 @@ void ARX_SCRIPT_Timer_Check() {
 		
 		// Skip heartbeat timer events for far away objects
 		if((st->flags & 1) && !(st->io->gameFlags & GFLAG_ISINTREATZONE)) {
-			long increment = (now - st->start) / st->interval;
-			st->start += st->interval * increment;
+			long increment = toMs(now - st->start) / toMs(st->interval);
+			st->start += ArxDurationMs(toMs(st->interval) * increment);
 			// TODO print full 64-bit time
 			arx_assert_msg(st->start <= now && st->start + st->interval > now,
 			               "start=%ld wait=%ld now=%ld",
