@@ -964,13 +964,13 @@ static void ARX_DAMAGES_UpdateDamage(DamageHandle j, ArxInstant now) {
 	} else if(damage.params.duration == ArxDuration(-1)) {
 		dmg = damage.params.damages;
 	} else {
-		float FD = g_framedelay;
+		ArxDuration FD = ArxDurationMs(g_framedelay);
 		
 		if(now > damage.start_time + damage.params.duration) {
-			FD -= toMs(damage.start_time + damage.params.duration - now);
+			FD -= damage.start_time + damage.params.duration - now;
 		}
 		
-		dmg = damage.params.damages * FD * ( 1.0f / 1000 );
+		dmg = damage.params.damages * toMs(FD) * ( 1.0f / 1000 );
 	}
 	
 	bool validsource = ValidIONum(damage.params.source);
