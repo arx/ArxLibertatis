@@ -211,7 +211,7 @@ static void ApplyLavaGlowToVertex(const Vec3f & odtv,TexturedVertex * dtv, float
 }
 
 static void ManageWater_VertexBuffer(EERIEPOLY * ep, const long to,
-                                     const unsigned long tim, SMY_VERTEX * _pVertex) {
+                                     ArxInstant tim, SMY_VERTEX * _pVertex) {
 	
 	for(long k = 0; k < to; k++) {
 		ep->tv[k].uv = ep->v[k].uv;
@@ -219,7 +219,7 @@ static void ManageWater_VertexBuffer(EERIEPOLY * ep, const long to,
 		ep->tv[k].uv += getWaterFxUvOffset(ep->v[k].p) * (0.35f * 0.05f);
 			
 		if(ep->type & POLY_FALL) {
-			ep->tv[k].uv.y -= (float)(tim) * (1.f/1000);
+			ep->tv[k].uv.y -= toMs(tim) * (1.f/1000);
 		}
 		
 		_pVertex[ep->uslInd[k]].uv = ep->tv[k].uv;
@@ -227,7 +227,7 @@ static void ManageWater_VertexBuffer(EERIEPOLY * ep, const long to,
 }
 
 static void ManageLava_VertexBuffer(EERIEPOLY * ep, const long to,
-                                    const unsigned long tim, SMY_VERTEX * _pVertex) {
+                                    ArxInstant tim, SMY_VERTEX * _pVertex) {
 	
 	for(long k = 0; k < to; k++) {
 		ep->tv[k].uv = ep->v[k].uv;
@@ -236,7 +236,7 @@ static void ManageLava_VertexBuffer(EERIEPOLY * ep, const long to,
 		ApplyLavaGlowToVertex(ep->v[k].p, &ep->tv[k], 0.6f);
 			
 		if(ep->type & POLY_FALL) {
-			ep->tv[k].uv.y -= (float)(tim) * (1.f/12000);
+			ep->tv[k].uv.y -= toMs(tim) * (1.f/12000);
 		}
 		
 		_pVertex[ep->uslInd[k]].uv = ep->tv[k].uv;
@@ -1059,7 +1059,7 @@ static long EERIERTPPoly(EERIEPOLY *ep) {
 
 static void ARX_PORTALS_Frustrum_RenderRoomTCullSoft(size_t room_num,
                                                      const EERIE_FRUSTRUM_DATA & frustrums,
-                                                     long now,
+                                                     ArxInstant now,
                                                      const Vec3f & camPos
 ) {
 	ARX_PROFILE_FUNC();
@@ -1485,7 +1485,7 @@ void ARX_SCENE_Update() {
 		ARX_PORTALS_Frustrum_ComputeRoom(roomIndex, frustrum, camPos, camDepth);
 
 		for(size_t i = 0; i < RoomDrawList.size(); i++) {
-			ARX_PORTALS_Frustrum_RenderRoomTCullSoft(RoomDrawList[i], RoomDraw[RoomDrawList[i]].frustrum, toMs(now), camPos);
+			ARX_PORTALS_Frustrum_RenderRoomTCullSoft(RoomDrawList[i], RoomDraw[RoomDrawList[i]].frustrum, now, camPos);
 		}
 	} else {
 		RoomDrawRelease();
