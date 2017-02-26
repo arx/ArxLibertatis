@@ -46,6 +46,7 @@ ZeniMax Media Inc., Suite 120, Rockville, Maryland 20850 USA.
 
 #include <list>
 
+#include "core/TimeTypes.h"
 #include "graphics/BaseGraphicsTypes.h"
 #include "graphics/Renderer.h"
 #include "graphics/Draw.h"
@@ -81,7 +82,7 @@ public:
 	void StopEmission();
 	bool IsAlive();
 	
-	void Update(long);
+	void Update(ArxDuration delta);
 	
 private:
 	

@@ -1920,7 +1920,7 @@ void ArxGame::updateLevel() {
 	ARX_SCENE_Update();
 
 	arx_assert(pParticleManager);
-	pParticleManager->Update(static_cast<long>(g_framedelay));
+	pParticleManager->Update(ArxDurationMs(g_framedelay));
 
 	ARX_FOGS_Render();
 

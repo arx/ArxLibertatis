@@ -85,7 +85,7 @@ static void LaunchPoisonExplosion(const Vec3f & aePos) {
 	
 	pPS->SetParams(g_particleParameters[ParticleParam_Poison1]);
 	pPS->SetPos(aePos);
-	pPS->Update(0);
+	pPS->Update(ArxDuration_ZERO);
 
 	std::list<Particle *>::iterator i;
 
@@ -147,7 +147,7 @@ void CPoisonProjectile::Create(Vec3f _eSrc, float _fBeta)
 	
 	pPS.SetParams(pp);
 	pPS.SetPos(eSrc);
-	pPS.Update(0);
+	pPS.Update(ArxDuration_ZERO);
 }
 
 void CPoisonProjectile::Update(ArxDuration timeDelta)
@@ -159,7 +159,7 @@ void CPoisonProjectile::Update(ArxDuration timeDelta)
 	// on passe de 5 à 100 partoches en 1.5secs
 	if(m_elapsed < ArxDurationMs(750)) {
 		pPS.m_parameters.m_nbMax = 2;
-		pPS.Update(toMs(timeDelta));
+		pPS.Update(timeDelta);
 	} else {
 		if(!bOk) {
 			bOk = true;
@@ -172,10 +172,10 @@ void CPoisonProjectile::Update(ArxDuration timeDelta)
 			pPSStream.SetParams(pp);
 		}
 
-		pPSStream.Update(toMs(timeDelta));
+		pPSStream.Update(timeDelta);
 		pPSStream.SetPos(eCurPos);
 
-		pPS.Update(toMs(timeDelta));
+		pPS.Update(timeDelta);
 		pPS.SetPos(eCurPos);
 
 		fTrail = ((toMs(m_elapsed) - 750) * (1.0f / (toMs(m_duration) - 750.0f))) * 9 * (BEZIERPrecision + 2);

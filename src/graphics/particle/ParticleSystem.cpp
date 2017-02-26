@@ -246,12 +246,12 @@ bool ParticleSystem::IsAlive() {
 	return true;
 }
 
-void ParticleSystem::Update(long _lTime) {
+void ParticleSystem::Update(ArxDuration delta) {
 
 	if(arxtime.is_paused())
 		return;
 
-	float fTimeSec = _lTime * ( 1.0f / 1000 );
+	float fTimeSec = toMs(delta) * ( 1.0f / 1000 );
 	
 	iParticleNbAlive = 0;
 	
@@ -260,7 +260,7 @@ void ParticleSystem::Update(long _lTime) {
 		Particle * pP = *i;
 		
 		if(pP->isAlive()) {
-			pP->Update(_lTime);
+			pP->Update(delta);
 			pP->p3Velocity += m_parameters.m_gravity * fTimeSec;
 			iParticleNbAlive ++;
 			++i;
@@ -272,7 +272,7 @@ void ParticleSystem::Update(long _lTime) {
 				pP->Regen();
 				SetParticleParams(pP);
 				pP->Validate();
-				pP->Update(0);
+				pP->Update(ArxDuration_ZERO);
 				iParticleNbAlive++;
 				++i;
 			}
@@ -291,7 +291,7 @@ void ParticleSystem::Update(long _lTime) {
 			Particle * pP  = new Particle();
 			SetParticleParams(pP);
 			pP->Validate();
-			pP->Update(0);
+			pP->Update(ArxDuration_ZERO);
 			listParticle.insert(listParticle.end(), pP);
 			iParticleNbAlive++;
 		}
