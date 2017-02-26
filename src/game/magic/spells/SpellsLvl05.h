@@ -39,7 +39,7 @@ private:
 	LightHandle m_light;
 	
 	TextureContainer * tex_p2;
-	ArxDuration ulCurrentTime;
+	ArxDuration m_elapsed;
 };
 
 class LevitateSpell : public SpellBase {
