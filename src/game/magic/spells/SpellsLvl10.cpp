@@ -158,7 +158,7 @@ void MassLightningStrikeSpell::Update() {
 		ARX_SOUND_PlaySFX(SND_SPELL_ELECTRIC, &position, Random::getf(0.8f, 1.2f));
 	}
 	
-	if(0 > (long(m_duration) - 1800) && !m_soundEffectPlayed) {
+	if(0 > (toMs(m_duration) - 1800) && !m_soundEffectPlayed) {
 		m_soundEffectPlayed = true;
 		ARX_SOUND_PlaySFX(SND_SPELL_ELECTRIC, NULL, Random::getf(0.8f, 1.2f));
 	}
@@ -297,7 +297,7 @@ void ControlTargetSpell::Update() {
 	float delta = 1.0f / n;
 	
 	float elapsed = arxtime.now_f() - m_timcreation;
-	float fOneOnDuration = 1.f / m_duration;
+	float fOneOnDuration = 1.f / toMs(m_duration);
 	
 	fTrail = (elapsed * fOneOnDuration) * 9 * (n + 2);
 
@@ -453,7 +453,7 @@ extern Vec3f lastteleport;
 void TeleportSpell::Update() {
 	
 	float elapsed = arxtime.now_f() - m_timcreation;
-	float TELEPORT = elapsed / m_duration;
+	float TELEPORT = elapsed / toMs(m_duration);
 	
 	if(LASTTELEPORT < 0.5f && TELEPORT >= 0.5f) {
 		Vec3f pos = lastteleport;

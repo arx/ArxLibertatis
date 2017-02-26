@@ -967,7 +967,7 @@ static void ARX_DAMAGES_UpdateDamage(DamageHandle j, ArxInstant now) {
 		float FD = g_framedelay;
 		
 		if(now > damage.start_time + damage.params.duration) {
-			FD -= damage.start_time + damage.params.duration - now;
+			FD -= toMs(damage.start_time + damage.params.duration - now);
 		}
 		
 		dmg = damage.params.damages * FD * ( 1.0f / 1000 );

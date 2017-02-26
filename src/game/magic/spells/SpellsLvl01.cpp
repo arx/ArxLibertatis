@@ -436,7 +436,7 @@ void IgnitSpell::End() {
 void IgnitSpell::Update() {
 	
 	if(m_elapsed < m_duration) {
-		float a = float(m_elapsed) / float(m_duration);
+		float a = float(toMs(m_elapsed)) / float(toMs(m_duration));
 		
 		if(a >= 1.f) {
 			a = 1.f;
@@ -460,7 +460,7 @@ void IgnitSpell::Update() {
 	}
 	
 	if(!arxtime.is_paused()) {
-		m_elapsed += g_framedelay;
+		m_elapsed += ArxDurationMs(g_framedelay);
 	}
 }
 

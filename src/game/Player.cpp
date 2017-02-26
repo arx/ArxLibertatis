@@ -2172,11 +2172,11 @@ void PlayerMovementIterate(float DeltaTime) {
 		// Apply player impulse force
 		
 		float jump_mul = 1.f;
-		ArxDuration diff = ArxDuration((arxtime.now() - LAST_JUMP_ENDTIME) * (1.0f / GLOBAL_SLOWDOWN));
+		ArxDuration diff = ArxDurationMs(float(toMs(arxtime.now() - LAST_JUMP_ENDTIME)) * (1.0f / GLOBAL_SLOWDOWN));
 		if(diff < ArxDurationMs(600)) {
 			jump_mul = 0.5f;
 			if(diff >= ArxDurationMs(300)) {
-				jump_mul += (float)((LAST_JUMP_ENDTIME - arxtime.now()) * (1.0f / GLOBAL_SLOWDOWN) + ArxDurationMs(300)) * (1.f / 300);
+				jump_mul += float(toMs(LAST_JUMP_ENDTIME - arxtime.now()) * (1.0f / GLOBAL_SLOWDOWN) + 300) * (1.f / 300);
 				if(jump_mul > 1.f) {
 					jump_mul = 1.f;
 				}
@@ -2347,7 +2347,7 @@ void PlayerMovementIterate(float DeltaTime) {
 				const float jump_up_time = 200.f;
 				const float jump_up_height = 130.f;
 				const ArxInstant now = arxtime.now();
-				const unsigned long elapsed = (now - player.jumpstarttime) * (1.0f / GLOBAL_SLOWDOWN);
+				const unsigned long elapsed = toMs(now - player.jumpstarttime) * (1.0f / GLOBAL_SLOWDOWN);
 				float position = glm::clamp(float(elapsed) / jump_up_time, 0.f, 1.f);
 				
 				float p = (position - player.jumplastposition) * jump_up_height;

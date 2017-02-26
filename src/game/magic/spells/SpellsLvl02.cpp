@@ -106,7 +106,7 @@ void HealSpell::Update() {
 		light->extras = 0;
 	}
 
-	long ff = m_duration - m_currentTime;
+	long ff = toMs(m_duration) - m_currentTime;
 	
 	if(ff < 1500) {
 		m_particles.m_parameters.m_spawnFlags = PARTICLE_CIRCULAR;

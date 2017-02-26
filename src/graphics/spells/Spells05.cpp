@@ -157,9 +157,9 @@ void CPoisonProjectile::Update(ArxDuration timeDelta)
 	}
 
 	// on passe de 5 à 100 partoches en 1.5secs
-	if(m_elapsed < 750) {
+	if(m_elapsed < ArxDurationMs(750)) {
 		pPS.m_parameters.m_nbMax = 2;
-		pPS.Update(timeDelta);
+		pPS.Update(toMs(timeDelta));
 	} else {
 		if(!bOk) {
 			bOk = true;
@@ -172,13 +172,13 @@ void CPoisonProjectile::Update(ArxDuration timeDelta)
 			pPSStream.SetParams(pp);
 		}
 
-		pPSStream.Update(timeDelta);
+		pPSStream.Update(toMs(timeDelta));
 		pPSStream.SetPos(eCurPos);
 
-		pPS.Update(timeDelta);
+		pPS.Update(toMs(timeDelta));
 		pPS.SetPos(eCurPos);
 
-		fTrail = ((m_elapsed - 750) * (1.0f / (m_duration - 750.0f))) * 9 * (BEZIERPrecision + 2);
+		fTrail = ((toMs(m_elapsed) - 750) * (1.0f / (toMs(m_duration) - 750.0f))) * 9 * (BEZIERPrecision + 2);
 	}
 
 	if(m_elapsed >= m_duration)

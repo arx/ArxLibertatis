@@ -294,7 +294,7 @@ void TreatBackgroundDynlights() {
 	for(size_t i = 0; i < g_dynamicLightsMax; i++) {
 		EERIE_LIGHT * el = &g_dynamicLights[i];
 
-		if(el->exist && el->duration) {
+		if(el->exist && el->duration != ArxDuration_ZERO) {
 			const ArxDuration elapsed = arxtime.now() - el->creationTime;
 			const ArxDuration duration = el->duration;
 

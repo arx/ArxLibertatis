@@ -330,7 +330,7 @@ void CurePoisonSpell::Update() {
 	if(m_target == EntityHandle_Player)
 		m_pos.y += 200;
 	
-	long ff = m_duration - m_currentTime;
+	long ff = toMs(m_duration) - m_currentTime;
 	
 	if(ff < 1500) {
 		m_particles.m_parameters.m_spawnFlags = PARTICLE_CIRCULAR;

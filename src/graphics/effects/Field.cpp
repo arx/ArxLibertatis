@@ -176,8 +176,8 @@ void CCreateField::Render()
 	if(m_elapsed >= m_duration)
 		return;
 
-	float fOneOnDuration = 1.f / (float)(m_duration);
-	falpha = 1.f - (((float)(m_elapsed)) * fOneOnDuration);
+	float fOneOnDuration = 1.f / toMs(m_duration);
+	falpha = 1.f - (toMs(m_elapsed) * fOneOnDuration);
 
 	if (falpha > 1.f) falpha = 1.f;
 	
@@ -197,10 +197,10 @@ void CCreateField::Render()
 		}
 	}
 
-	ysize = std::min(1.0f, m_elapsed * 0.001f);
+	ysize = std::min(1.0f, toMs(m_elapsed) * 0.001f);
 
 	if(ysize >= 1.0f) {
-		size = std::min(1.0f, (m_elapsed - 1000) * 0.001f);
+		size = std::min(1.0f, (toMs(m_elapsed) - 1000) * 0.001f);
 		size = std::max(size, 0.1f);
 	}
 
