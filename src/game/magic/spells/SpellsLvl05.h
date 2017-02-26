@@ -51,7 +51,7 @@ public:
 	void Update();
 	
 private:
-	unsigned long ulCurrentTime;
+	ArxDuration ulCurrentTime;
 	Vec3f m_pos;
 	float m_baseRadius;
 	RotatingCone cone1;

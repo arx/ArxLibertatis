@@ -158,7 +158,7 @@ Vec3f RuneOfGuardingSpell::getPosition() {
 
 LevitateSpell::LevitateSpell()
 	: SpellBase()
-	, ulCurrentTime(0)
+	, ulCurrentTime(ArxDuration_ZERO)
 	, m_baseRadius(50.f)
 {}
 
@@ -216,7 +216,7 @@ void LevitateSpell::End() {
 
 void LevitateSpell::Update() {
 	
-	ulCurrentTime += g_framedelay;
+	ulCurrentTime += ArxDurationMs(g_framedelay);
 	
 	Vec3f target;
 
@@ -232,8 +232,8 @@ void LevitateSpell::Update() {
 	float coneScale = 0.f;
 	int dustParticles = 0;
 	
-	if(ulCurrentTime < 1000) {
-		coneScale = ulCurrentTime / 1000.f;
+	if(ulCurrentTime < ArxDurationMs(1000)) {
+		coneScale = toMs(ulCurrentTime) / 1000.f;
 		dustParticles = 3;
 	} else {
 		coneScale = 1.f;
