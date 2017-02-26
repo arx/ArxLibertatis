@@ -127,10 +127,10 @@ MagicMissileSpell::MagicMissileSpell()
 
 MagicMissileSpell::~MagicMissileSpell() {
 	
-	for(size_t i = 0; i < pTab.size(); i++) {
-		delete pTab[i];
+	for(size_t i = 0; i < m_missiles.size(); i++) {
+		delete m_missiles[i];
 	}
-	pTab.clear();
+	m_missiles.clear();
 }
 
 void MagicMissileSpell::Launch() {
@@ -200,7 +200,7 @@ void MagicMissileSpell::Launch() {
 		number = glm::clamp(long(m_level + 1) / 2, 1l, 5l);
 	}
 	
-	pTab.reserve(number);
+	m_missiles.reserve(number);
 	
 	for(size_t i = 0; i < size_t(number); i++) {
 		CMagicMissile * missile = NULL;
@@ -210,7 +210,7 @@ void MagicMissileSpell::Launch() {
 			missile = new MrMagicMissileFx();
 		}
 		
-		pTab.push_back(missile);
+		m_missiles.push_back(missile);
 		
 		Anglef angles(pitch, yaw, 0.f);
 		
@@ -250,17 +250,17 @@ void MagicMissileSpell::Launch() {
 
 void MagicMissileSpell::End() {
 	
-	for(size_t i = 0; i < pTab.size(); i++) {
-		delete pTab[i];
+	for(size_t i = 0; i < m_missiles.size(); i++) {
+		delete m_missiles[i];
 	}
-	pTab.clear();
+	m_missiles.clear();
 }
 
 void MagicMissileSpell::Update() {
 	
 	
-	for(size_t i = 0; i < pTab.size(); i++) {
-		CMagicMissile * missile = pTab[i];
+	for(size_t i = 0; i < m_missiles.size(); i++) {
+		CMagicMissile * missile = m_missiles[i];
 		
 		if(missile->bExplo) {
 			continue;
@@ -295,15 +295,15 @@ void MagicMissileSpell::Update() {
 		}
 	}
 	
-	for(size_t i = 0 ; i < pTab.size() ; i++) {
-		pTab[i]->Update(ArxDurationMs(g_framedelay));
+	for(size_t i = 0 ; i < m_missiles.size() ; i++) {
+		m_missiles[i]->Update(ArxDurationMs(g_framedelay));
 	}
 	
 	{ // CheckAllDestroyed
 		long nbmissiles	= 0;
 		
-		for(size_t i = 0; i < pTab.size(); i++) {
-			CMagicMissile *pMM = pTab[i];
+		for(size_t i = 0; i < m_missiles.size(); i++) {
+			CMagicMissile *pMM = m_missiles[i];
 			if(pMM->bMove) {
 				nbmissiles++;
 			}
@@ -314,10 +314,10 @@ void MagicMissileSpell::Update() {
 		}
 	}
 	
-	for(size_t i = 0; i < pTab.size(); i++) {
-		pTab[i]->Render();
+	for(size_t i = 0; i < m_missiles.size(); i++) {
+		m_missiles[i]->Render();
 		
-		CMagicMissile * pMM = pTab[i];
+		CMagicMissile * pMM = m_missiles[i];
 		
 		EERIE_LIGHT * el = lightHandleGet(pMM->lLightId);
 		if(el) {
