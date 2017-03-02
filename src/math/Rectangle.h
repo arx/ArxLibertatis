@@ -70,11 +70,11 @@ public:
 		, bottom(_origin.y + height)
 	{ }
 	
-	Rectangle_(const Vec2 & _origin, const Vec2 & _end)
-		: left(_origin.x)
-		, top(_origin.y)
-		, right(_end.x)
-		, bottom(_end.y)
+	Rectangle_(const Vec2 & topLeft, const Vec2 & bottomRight)
+		: left(topLeft.x)
+		, top(topLeft.y)
+		, right(bottomRight.x)
+		, bottom(bottomRight.y)
 	{ }
 	
 	Rectangle_(T width, T height)
