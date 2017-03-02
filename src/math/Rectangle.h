@@ -85,11 +85,18 @@ public:
 	{ }
 	
 	bool operator==(const Rectangle_ & o) const {
-		return (left == o.left && top == o.top && right == o.right && bottom == o.bottom);
+		return left   == o.left
+		    && top    == o.top
+		    && right  == o.right
+		    && bottom == o.bottom;
 	}
 	
 	Rectangle_ & operator=(const Rectangle_ & other) {
-		left = other.left, top = other.top, right = other.right, bottom = other.bottom;
+		left   = other.left;
+		top    = other.top;
+		right  = other.right;
+		bottom = other.bottom;
+		
 		return *this;
 	}
 	
@@ -106,28 +113,47 @@ public:
 	}
 	
 	Rectangle_ & operator+=(const Vec2 & offset) {
-		left += offset.x, top += offset.y, right += offset.x, bottom += offset.y;
+		left   += offset.x;
+		top    += offset.y;
+		right  += offset.x;
+		bottom += offset.y;
+		
 		return *this;
 	}
 	
 	void move(T dx, T dy) {
-		left += dx, top += dy, right += dx, bottom += dy;
+		left   += dx;
+		top    += dy;
+		right  += dx;
+		bottom += dy;
 	}
     
 	bool contains(const Vec2 & point) const {
-		return (point.x >= left && point.x < right && point.y >= top && point.y < bottom);
+		return point.x >= left
+		    && point.x <  right
+		    && point.y >= top
+		    && point.y <  bottom;
 	}
 	
 	bool contains(T x, T y) const {
-		return (x >= left && x < right && y >= top && y < bottom);
+		return x >= left
+		    && x <  right
+		    && y >= top
+		    && y <  bottom;
 	}
 	
 	bool contains(const Rectangle_ & other) const {
-		return (other.left >= left && other.right <= right && other.top >= top && other.bottom <= bottom);
+		return other.left   >= left
+		    && other.right  <= right
+		    && other.top    >= top
+		    && other.bottom <= bottom;
 	}
 	
 	bool overlaps(const Rectangle_ & other) const {
-		return (left < other.right && other.left < right && top < other.bottom && bottom > other.top);
+		return left       < other.right
+		    && other.left < right
+		    && top        < other.bottom
+		    && bottom     > other.top;
 	}
 	
 	/*!
@@ -136,8 +162,10 @@ public:
 	 */
 	Rectangle_ operator&(const Rectangle_ & other) const {
 		Rectangle_ result(
-				std::max(left, other.left), std::max(top, other.top),
-				std::min(right, other.right), std::min(bottom, other.bottom)
+				std::max(left,   other.left),
+				std::max(top,    other.top),
+				std::min(right,  other.right),
+				std::min(bottom, other.bottom)
 		);
 		if(result.left > result.right) {
 			result.left = result.right = T(0);
@@ -154,8 +182,10 @@ public:
 	 */
 	Rectangle_ operator|(const Rectangle_ & other) const {
 		return Rectangle_(
-			std::min(left, other.left), std::min(top, other.top),
-			std::max(right, other.right), std::max(bottom, other.bottom)
+			std::min(left,   other.left),
+			std::min(top,    other.top),
+			std::max(right,  other.right),
+			std::max(bottom, other.bottom)
 		);
 	}
 	
