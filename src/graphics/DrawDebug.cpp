@@ -106,7 +106,7 @@ void drawDebugCycleViews() {
 }
 
 static void drawDebugBoundingBox(const Rectf & box, Color color = Color::white) {
-	if(box.valid()) {
+	if(box.isValid()) {
 		drawLineRectangle(box, 0.01f, color);
 	}
 }
@@ -147,7 +147,7 @@ static void drawDebugLights() {
 			drawLineSphere(fallend, Color(Color3<u8>::red, 200));
 		}
 		
-		if(light->m_screenRect.valid())
+		if(light->m_screenRect.isValid())
 			drawDebugBoundingBox(light->m_screenRect);
 	}
 	

@@ -193,8 +193,8 @@ public:
 		return (left == right || top == bottom);
 	}
 	
-	bool valid() const {
-		return (left <= right && top <= bottom);
+	bool isValid() const {
+		return left < right && top < bottom;
 	}
 	
 	
@@ -225,10 +225,6 @@ public:
 	
 	Vec2 size() const {
 		return Vec2(right - left, bottom - top);
-	}
-	
-	bool isValid() const {
-		return left < right && top < bottom;
 	}
 	
 	static const Rectangle_ ZERO;
