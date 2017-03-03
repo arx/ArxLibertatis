@@ -119,6 +119,11 @@ inline InstantType<TAG, T> & operator +=(InstantType<TAG, T> & a, DurationType<T
 	return a;
 }
 
+template <typename TAG, typename T>
+inline float operator /(DurationType<TAG, T> a, DurationType<TAG, T> b) {
+	return float(a.t) / float(b.t);
+}
+
 
 // ArxTime
 // in ms
