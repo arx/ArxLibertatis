@@ -173,10 +173,10 @@ inline PlatformDuration PlatformDurationMs(s64 val) {
 }
 
 inline float toMs(PlatformDuration val) {
-	return val.t / (1000.f);
+	return float(val.t) / (1000.f);
 }
 inline float toS(PlatformDuration val) {
-	return val.t / (1000.f * 1000.f);
+	return float(val.t) / (1000.f * 1000.f);
 }
 
 // AnimationTime
@@ -199,10 +199,10 @@ inline s64 toMsi(AnimationDuration val) {
 	return val.t / (1000);
 }
 inline float toMsf(AnimationDuration val) {
-	return val.t / (1000.f);
+	return float(val.t) / (1000.f);
 }
 inline float toS(AnimationDuration val) {
-	return val.t / (1000.f * 1000.f);
+	return float(val.t) / (1000.f * 1000.f);
 }
 
 inline AnimationDuration toAnimationDuration(PlatformDuration val) {

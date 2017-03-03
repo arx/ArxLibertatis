@@ -81,11 +81,11 @@ public:
 	}
 	
 	inline PlatformInstant frameStart() {
-		return PlatformInstant(m_frameStartTime);
+		return PlatformInstant(s64(m_frameStartTime));
 	}
 
 	inline PlatformDuration lastFrameDuration() {
-		return PlatformDuration(m_lastFrameDuration);
+		return PlatformDuration(s64(m_lastFrameDuration));
 	}
 };
 
@@ -108,12 +108,12 @@ public:
 	
 	// TODO probably the source of the need to clip frame_delay
 	void force_frame_time_restore(const ArxInstant v) {
-		frame_time_us = toMs(v) * 1000;
-		last_frame_time_us = toMs(v) * 1000;
+		frame_time_us = u64(toMs(v) * 1000);
+		last_frame_time_us = u64(toMs(v) * 1000);
 	}
 	
 	float now_f() const {
-		return m_now_us / 1000.0f;
+		return float(m_now_us) / 1000.0f;
 	}
 	
 	ArxInstant now() const {
@@ -127,7 +127,7 @@ public:
 			m_now_us = platform::getElapsedUs(start_time);
 		}
 		frame_time_us = m_now_us;
-		frame_delay_ms = (frame_time_us - last_frame_time_us) / 1000.f;
+		frame_delay_ms = float(frame_time_us - last_frame_time_us) / 1000.f;
 	}
 	
 	bool is_paused() const { 
@@ -140,7 +140,7 @@ public:
 	}
 	
 	float get_frame_time() const { 
-		return frame_time_us / 1000.0f; 
+		return float(frame_time_us) / 1000.0f;
 	}
 	
 	float get_frame_delay() const {
