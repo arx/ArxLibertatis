@@ -461,7 +461,7 @@ static void ARX_PLAYER_ComputePlayerStats() {
 	if(player.m_misc.damages < 1.f)
 		player.m_misc.damages = 1.f;
 	
-	player.AimTime = 1500;
+	player.AimTime = PlatformDurationMs(1500);
 	
 	float base_close_combat = player.m_skill.closeCombat
 	                          + player.m_attribute.dexterity + player.m_attribute.strength * 2.f;
@@ -491,15 +491,15 @@ void ARX_PLAYER_ComputePlayerFullStats() {
 	float fCalcHandicap	= (player.m_attributeFull.dexterity - 10.f) * 20.f;
 
 	//CAST
-	player.Full_AimTime = checked_range_cast<long>(fFullAimTime);
+	player.Full_AimTime = PlatformDurationMs(fFullAimTime);
 	
-	if(player.Full_AimTime <= 0)
+	if(player.Full_AimTime <= PlatformDuration_ZERO)
 		player.Full_AimTime = player.AimTime;
 	
-	player.Full_AimTime -= checked_range_cast<long>(fCalcHandicap);
+	player.Full_AimTime -= PlatformDurationMs(fCalcHandicap);
 	
-	if(player.Full_AimTime <= 1500)
-		player.Full_AimTime = 1500;
+	if(player.Full_AimTime <= PlatformDurationMs(1500))
+		player.Full_AimTime = PlatformDurationMs(1500);
 	
 	// TODO make these calculations moddable
 	
@@ -564,7 +564,7 @@ void ARX_PLAYER_ComputePlayerFullStats() {
 		miscMod.armorClass = 100;
 		player.m_miscMod.add(miscMod);
 		
-		player.Full_AimTime = 100;
+		player.Full_AimTime = PlatformDurationMs(100);
 	}
 	if(sp_max) {
 		PlayerAttribute attributeMod;
@@ -594,7 +594,7 @@ void ARX_PLAYER_ComputePlayerFullStats() {
 		miscMod.armorClass = 20;
 		player.m_miscMod.add(miscMod);
 		
-		player.Full_AimTime = 100;
+		player.Full_AimTime = PlatformDurationMs(100);
 	}
 	if(player.m_cheatPnuxActive) {
 		PlayerAttribute attributeMod;

@@ -289,7 +289,7 @@ struct ARXCHARACTER {
 	float m_bowAimRatio;
 	
 	float m_strikeAimRatio;
-	long Full_AimTime;
+	PlatformDuration Full_AimTime;
 	
 	float Full_life;
 	float Full_maxlife;
@@ -300,7 +300,7 @@ struct ARXCHARACTER {
 	PlayerSkill m_skill;
 	PlayerMisc m_misc;
 	
-	long AimTime;
+	PlatformDuration AimTime;
 	
 	PlatformDuration m_aimTime;
 	
@@ -357,11 +357,11 @@ struct ARXCHARACTER {
 		, torch(NULL)
 		, m_bowAimRatio(0.f)
 		, m_strikeAimRatio(0.f)
-		, Full_AimTime(0)
+		, Full_AimTime(PlatformDuration_ZERO)
 		, Full_life(0)
 		, Full_maxlife(0)
 		, Full_maxmana(0)
-		, AimTime(0)
+		, AimTime(PlatformDuration_ZERO)
 		, m_aimTime(0)
 		, Attribute_Redistribute(0)
 		, Skill_Redistribute(0)
