@@ -63,7 +63,7 @@ void ManageFade() {
 	if(elapsed < PlatformDuration_ZERO)
 		return;
 
-	float Visibility = float(toMs(elapsed) / toMs(FADEDURATION));
+	float Visibility = elapsed / FADEDURATION;
 
 	if(FADEDIR > 0)
 		Visibility = 1.f - Visibility;
