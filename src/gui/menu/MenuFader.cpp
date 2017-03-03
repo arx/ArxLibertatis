@@ -86,7 +86,7 @@ bool MenuFader_process(bool _bFadeIn) {
 	
 	const PlatformDuration fadeDuration = PlatformDurationMs(1000);
 	
-	float alpha = toMs(menuFadeElapsed) / toMs(fadeDuration);
+	float alpha = menuFadeElapsed / fadeDuration;
 	FadeInOut(alpha);
 
 	if(!g_menuFadeActive)
