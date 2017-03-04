@@ -538,7 +538,7 @@ void CurrentTorchIconGui::updateRect(const Rectf & parent) {
 	
 	m_rect = createChild(parent, Anchor_TopLeft, m_size * m_scale, Anchor_BottomLeft);
 	
-	if(m_rect.left < g_secondaryInventoryHud.rect().right) {
+	if(g_secondaryInventoryHud.rect().overlaps(m_rect)) {
 		m_rect.move(g_secondaryInventoryHud.rect().right, 0.f);
 	}
 }
@@ -1511,6 +1511,11 @@ void HudRoot::draw() {
 	stealthGauge.update();
 	
 	damagedEquipmentGui.updateRect(stealthGauge.rect());
+	if(player.torch && damagedEquipmentGui.rect().overlaps(currentTorchIconGui.rect())) {
+		Vec2f offset = Vec2f(currentTorchIconGui.rect().right - stealthGauge.rect().right + indicatorHorizSpacing, 
+		                     0.0f);
+		damagedEquipmentGui.updateRect(stealthGauge.rect() + offset);
+	}
 	damagedEquipmentGui.update();
 	
 	precastSpellsGui.updateRect(damagedEquipmentGui.rect());
