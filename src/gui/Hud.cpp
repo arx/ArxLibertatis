@@ -1179,7 +1179,6 @@ void ActiveSpellsGui::spellsOnPlayerUpdate(float intensity) {
 
 void ActiveSpellsGui::ManageSpellIcon(SpellBase & spell, float intensity, bool flag) {
 	
-	
 	Color color = (flag) ? Color3f(intensity, 0, 0).to<u8>() : Color3f::gray(intensity).to<u8>();
 	
 	bool flicker = true;
@@ -1191,7 +1190,7 @@ void ActiveSpellsGui::ManageSpellIcon(SpellBase & spell, float intensity, bool f
 			}
 		}
 	} else {
-		if(player.manaPool.current<20) {
+		if(player.manaPool.current < 20) {
 			if(ucFlick & 1) {
 				flicker = false;
 			}
@@ -1242,7 +1241,7 @@ void DamagedEquipmentGui::updateRect(const Rectf & parent) {
 	if(g_playerInventoryHud.rect().overlaps(m_rect + Vec2f(0.0f, indicatorVertSpacing))) {
 		m_rect.move(0.0f, g_playerInventoryHud.rect().top - parent.bottom - indicatorVertSpacing);
 	}
-
+	
 	if(g_secondaryInventoryHud.rect().overlaps(m_rect  + Vec2f(0.0f, -indicatorHorizSpacing))) {
 		m_rect.move(g_secondaryInventoryHud.rect().right - m_rect.left + indicatorHorizSpacing, 0.0f);
 	}
