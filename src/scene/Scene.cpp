@@ -213,13 +213,15 @@ static void ApplyLavaGlowToVertex(const Vec3f & odtv,TexturedVertex * dtv, float
 static void ManageWater_VertexBuffer(EERIEPOLY * ep, const long to,
                                      ArxInstant tim, SMY_VERTEX * _pVertex) {
 	
+	float uvScroll = toMs(tim) * (1.f/1000);
+	
 	for(long k = 0; k < to; k++) {
 		ep->tv[k].uv = ep->v[k].uv;
 		
 		ep->tv[k].uv += getWaterFxUvOffset(ep->v[k].p) * (0.35f * 0.05f);
 			
 		if(ep->type & POLY_FALL) {
-			ep->tv[k].uv.y -= toMs(tim) * (1.f/1000);
+			ep->tv[k].uv.y -= uvScroll;
 		}
 		
 		_pVertex[ep->uslInd[k]].uv = ep->tv[k].uv;
