@@ -227,9 +227,7 @@ static void ManageWater_VertexBuffer(EERIEPOLY * ep, const long to,
 }
 
 static void ManageLava_VertexBuffer(EERIEPOLY * ep, const long to,
-                                    ArxInstant tim, SMY_VERTEX * _pVertex) {
-	
-	float uvScroll = toMs(tim) * (1.f/12000);
+                                    float uvScroll, SMY_VERTEX * _pVertex) {
 	
 	for(long k = 0; k < to; k++) {
 		ep->tv[k].uv = ep->v[k].uv;
@@ -1194,7 +1192,8 @@ static void ARX_PORTALS_Frustrum_RenderRoomTCullSoft(size_t room_num,
 				}
 
 				if(ep->type & POLY_LAVA) {
-					ManageLava_VertexBuffer(ep, to, now, pMyVertexCurr);
+					float uvScroll = toMs(now) * (1.f/12000);
+					ManageLava_VertexBuffer(ep, to, uvScroll, pMyVertexCurr);
 					vPolyLava.push_back(ep);
 				} else if(ep->type & POLY_WATER) {
 					float uvScroll = toMs(now) * (1.f/1000);
