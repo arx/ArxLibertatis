@@ -231,6 +231,8 @@ static void ManageWater_VertexBuffer(EERIEPOLY * ep, const long to,
 static void ManageLava_VertexBuffer(EERIEPOLY * ep, const long to,
                                     ArxInstant tim, SMY_VERTEX * _pVertex) {
 	
+	float uvScroll = toMs(tim) * (1.f/12000);
+	
 	for(long k = 0; k < to; k++) {
 		ep->tv[k].uv = ep->v[k].uv;
 		
@@ -238,7 +240,7 @@ static void ManageLava_VertexBuffer(EERIEPOLY * ep, const long to,
 		ApplyLavaGlowToVertex(ep->v[k].p, &ep->tv[k], 0.6f);
 			
 		if(ep->type & POLY_FALL) {
-			ep->tv[k].uv.y -= toMs(tim) * (1.f/12000);
+			ep->tv[k].uv.y -= uvScroll;
 		}
 		
 		_pVertex[ep->uslInd[k]].uv = ep->tv[k].uv;
