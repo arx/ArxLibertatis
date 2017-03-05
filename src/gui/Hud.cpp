@@ -1105,12 +1105,15 @@ void ActiveSpellsGui::init() {
 	m_slotSize = Vec2f(24.f, 24.f);
 	m_spacerSize = Vec2f(60.f, 50.f);
 	m_slotSpacerSize = Vec2f(0.f, 9.f);
+	m_ucFlick = 0;
 }
 
 void ActiveSpellsGui::update(Rectf parent) {
 	
 	float intensity = 1.f - PULSATE * 0.5f;
 	intensity = glm::clamp(intensity, 0.f, 1.f);
+
+	m_ucFlick++;
 	
 	m_slots.clear();
 	
@@ -1185,13 +1188,13 @@ void ActiveSpellsGui::ManageSpellIcon(SpellBase & spell, float intensity, bool f
 	
 	if(spell.m_hasDuration) {
 		if(player.manaPool.current < 20 || spell.m_timcreation + spell.m_duration - arxtime.now() < ArxDurationMs(2000)) {
-			if(ucFlick & 1) {
+			if(m_ucFlick & 1) {
 				flicker = false;
 			}
 		}
 	} else {
 		if(player.manaPool.current < 20) {
-			if(ucFlick & 1) {
+			if(m_ucFlick & 1) {
 				flicker = false;
 			}
 		}
