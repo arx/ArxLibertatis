@@ -323,7 +323,7 @@ private:
 	Vec2f m_slotSize;
 	Vec2f m_spacerSize;
 	Vec2f m_slotSpacerSize;
-	bool m_ucFlick;
+	bool m_flickNow;
 	
 	std::vector<ActiveSpellIconSlot> m_slots;
 	
