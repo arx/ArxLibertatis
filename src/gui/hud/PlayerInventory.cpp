@@ -146,13 +146,14 @@ void PlayerInventoryHud::update() {
 		}
 	} else if((player.Interface & INTER_INVENTORYALL) || bInventoryClosing) {
 		float fSpeed = (1.f/3);
+		long t = long((framedelay * fSpeed) + 2.f);
 		if((player.Interface & INTER_COMBATMODE) || player.doingmagic >= 2) {
 			if(InventoryY < 121 * player.bag) {
-				InventoryY += long((framedelay * fSpeed) + 2.f);
+				InventoryY += t;
 			}
 		} else {
 			if(bInventoryClosing) {
-				InventoryY += long((framedelay * fSpeed) + 2.f);
+				InventoryY += t;
 				if(InventoryY > 121 * player.bag) {
 					bInventoryClosing = false;
 					if(player.Interface & INTER_INVENTORYALL) {
@@ -161,7 +162,7 @@ void PlayerInventoryHud::update() {
 					lOldInterface=0;
 				}
 			} else if(InventoryY > 0) {
-				InventoryY -= long((framedelay * fSpeed) + 2.f);
+				InventoryY -= t;
 				if(InventoryY < 0) {
 					InventoryY = 0;
 				}
