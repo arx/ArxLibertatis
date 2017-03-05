@@ -305,7 +305,7 @@ void FireballSpell::Update() {
 	} else {
 		if(Random::getf() < 0.9f) {
 			Vec3f move = Vec3f_ZERO;
-			float dd = float(toMs(m_elapsed)) / float(toMs(m_createBallDuration)) * 10;
+			float dd = m_elapsed / m_createBallDuration * 10;
 			
 			dd = glm::clamp(dd, 1.f, m_level);
 			
