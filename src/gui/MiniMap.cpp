@@ -470,10 +470,24 @@ void MiniMap::revealPlayerPos(int showLevel) {
 	
 	Vec2f playerPos = computePlayerPos(zoom, showLevel);
 	Vec2i playerCell = Vec2i(playerPos.x / cas.x, playerPos.y / cas.y);
+	
+	if(   playerCell.x < 0
+	   || playerCell.x >= s32(MINIMAP_MAX_X)
+	   || playerCell.y < 0
+	   || playerCell.y >= s32(MINIMAP_MAX_Z)
+	   ) {
+		return;
+	}
+	
 	playerPos += start;
 	
 	Vec2i startCell = playerCell - Vec2i(glm::ceil(maxDistance / cas.x));
 	Vec2i endCell = playerCell + Vec2i(glm::ceil(maxDistance / cas.y));
+
+	Vec2i maxCell = Vec2i(MINIMAP_MAX_X - 1, MINIMAP_MAX_Z - 1);
+	
+	startCell = glm::clamp(startCell, Vec2i_ZERO, maxCell);
+	endCell = glm::clamp(endCell, Vec2i_ZERO, maxCell);
 	
 	for(int z = startCell.y; z <= endCell.y; z++) {
 	for(int x = startCell.x; x <= endCell.x; x++) {
