@@ -109,24 +109,24 @@ void PlayerInventoryHud::update() {
 	const float framedelay = toMs(g_platformTime.lastFrameDuration());
 	
 	if(player.Interface & INTER_INVENTORY) {
+		long t = long(framedelay * (1.f/5) + 2.0f);
 		if((player.Interface & INTER_COMBATMODE) || player.doingmagic >= 2) {
-			long t = framedelay * (1.f/5) + 2;
+			
 			InventoryY += t;
-
+			
 			if(InventoryY > 110) {
 				InventoryY = 110;
 			}
 		} else {
 			if(bInventoryClosing) {
-				long t = framedelay * (1.f/5) + 2;
 				InventoryY += t;
-
+				
 				if(InventoryY > 110) {
 					InventoryY = 110;
 					bInventoryClosing = false;
-
+					
 					player.Interface &=~ INTER_INVENTORY;
-
+					
 					if(bInventorySwitch) {
 						bInventorySwitch = false;
 						ARX_SOUND_PlayInterface(SND_BACKPACK, Random::getf(0.9f, 1.1f));
@@ -137,8 +137,8 @@ void PlayerInventoryHud::update() {
 					}
 				}
 			} else if(InventoryY > 0) {
-				InventoryY -= long((framedelay * (1.f/5)) + 2.f);
-
+				InventoryY -= t;
+				
 				if(InventoryY < 0) {
 					InventoryY = 0;
 				}
