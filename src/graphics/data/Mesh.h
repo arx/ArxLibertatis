@@ -170,7 +170,8 @@ void EERIEAddPoly(TexturedVertex * vert, TexturedVertex * vert2, TextureContaine
 
 long MakeTopObjString(Entity * io, std::string& dest);
 bool TryToQuadify(EERIEPOLY * ep,EERIE_3DOBJ * eobj);
-Vec2f getWaterFxUvOffset(const Vec3f & odtv);
+
+Vec2f getWaterFxUvOffset(float watereffect, const Vec3f & odtv);
 
 //*************************************************************************************
 //*************************************************************************************

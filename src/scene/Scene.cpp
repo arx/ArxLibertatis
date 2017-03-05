@@ -96,7 +96,7 @@ extern bool EXTERNALVIEW; // *sigh*
 
 EERIE_PORTAL_DATA * portals = NULL;
 
-static float WATEREFFECT = 0.f;
+float WATEREFFECT = 0.f;
 
 CircularVertexBuffer<SMY_VERTEX3> * pDynamicVertexBuffer;
 
@@ -193,9 +193,9 @@ static std::vector<size_t> RoomDrawList;
 
 //*************************************************************************************
 //*************************************************************************************
-Vec2f getWaterFxUvOffset(const Vec3f & odtv)
+Vec2f getWaterFxUvOffset(float watereffect, const Vec3f & odtv)
 {
-	return Vec2f(std::sin(WATEREFFECT + odtv.x), std::cos(WATEREFFECT + odtv.z));
+	return Vec2f(std::sin(watereffect + odtv.x), std::cos(watereffect + odtv.z));
 }
 
 static void ApplyLavaGlowToVertex(const Vec3f & odtv,TexturedVertex * dtv, float power) {
@@ -216,7 +216,7 @@ static void ManageWater_VertexBuffer(EERIEPOLY * ep, const long to,
 	for(long k = 0; k < to; k++) {
 		ep->tv[k].uv = ep->v[k].uv;
 		
-		ep->tv[k].uv += getWaterFxUvOffset(ep->v[k].p) * (0.35f * 0.05f);
+		ep->tv[k].uv += getWaterFxUvOffset(WATEREFFECT, ep->v[k].p) * (0.35f * 0.05f);
 			
 		if(ep->type & POLY_FALL) {
 			ep->tv[k].uv.y -= uvScroll;
@@ -232,7 +232,7 @@ static void ManageLava_VertexBuffer(EERIEPOLY * ep, const long to,
 	for(long k = 0; k < to; k++) {
 		ep->tv[k].uv = ep->v[k].uv;
 		
-		ep->tv[k].uv += getWaterFxUvOffset(ep->v[k].p) * (0.35f * 0.05f); //0.25f
+		ep->tv[k].uv += getWaterFxUvOffset(WATEREFFECT, ep->v[k].p) * (0.35f * 0.05f); //0.25f
 		ApplyLavaGlowToVertex(ep->v[k].p, &ep->tv[k], 0.6f);
 			
 		if(ep->type & POLY_FALL) {
