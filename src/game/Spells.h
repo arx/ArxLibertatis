@@ -103,8 +103,6 @@ private:
 
 extern SpellManager spells;
 
-extern unsigned char ucFlick;
-
 SpellType GetSpellId(const std::string & spell);
 void TryToCastSpell(Entity * io, SpellType spellid, long level, EntityHandle target, SpellcastFlags flags, ArxDuration duration);
 

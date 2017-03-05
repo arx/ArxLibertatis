@@ -138,8 +138,6 @@ long snip=0;
 static Vec2f g_LastFlarePosition;
 static ArxInstant g_LastFlareTime;
 
-unsigned char ucFlick=0;
-
 SpellManager spells;
 
 void SpellManager::init() {
@@ -1108,8 +1106,6 @@ bool ARX_SPELLS_Launch(SpellType typ, EntityHandle source, SpellcastFlags flags,
 void ARX_SPELLS_Update() {
 	
 	ARX_PROFILE_FUNC();
-	
-	ucFlick++;
 	
 	const ArxInstant now = arxtime.now();
 	
