@@ -436,7 +436,7 @@ void IgnitSpell::End() {
 void IgnitSpell::Update() {
 	
 	if(m_elapsed < m_duration) {
-		float a = float(toMs(m_elapsed)) / float(toMs(m_duration));
+		float a = m_elapsed / m_duration;
 		
 		if(a >= 1.f) {
 			a = 1.f;
