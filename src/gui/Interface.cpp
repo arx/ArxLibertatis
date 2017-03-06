@@ -167,8 +167,6 @@ INTERFACE_TC g_bookResouces = INTERFACE_TC();
 
 gui::Note openNote;
 
-bool				bInventoryClosing = false;
-
 extern PlatformInstant SLID_START;
 
 Vec2f				BOOKDEC = Vec2f(0.f, 0.f);
@@ -434,7 +432,7 @@ void InventoryOpenClose(unsigned long t) {
 	ARX_SOUND_PlayInterface(SND_BACKPACK, Random::getf(0.9f, 1.1f));
 
 	if((player.Interface & INTER_INVENTORY) || (player.Interface & INTER_INVENTORYALL)) {
-		bInventoryClosing = true;
+		g_playerInventoryHud.close();
 
 		if(WILLRETURNTOFREELOOK) {
 			TRUE_PLAYER_MOUSELOOK_ON = true;
@@ -452,7 +450,7 @@ void InventoryOpenClose(unsigned long t) {
 	if(((player.Interface & INTER_INVENTORYALL) || TRUE_PLAYER_MOUSELOOK_ON) && (player.Interface & INTER_NOTE))
 		ARX_INTERFACE_NoteClose();
 
-	if(!bInventoryClosing && config.input.autoReadyWeapon == false)
+	if(!g_playerInventoryHud.isClosing() && config.input.autoReadyWeapon == false)
 		TRUE_PLAYER_MOUSELOOK_ON = false;
 }
 
@@ -493,7 +491,7 @@ void ARX_INTERFACE_NoteOpen(gui::Note::Type type, const std::string & text) {
 	}
 	
 	if(player.Interface & INTER_INVENTORYALL) {
-		bInventoryClosing = true;
+		g_playerInventoryHud.close();
 		ARX_SOUND_PlayInterface(SND_BACKPACK, Random::getf(0.9f, 1.1f));
 	}
 }
@@ -1439,12 +1437,12 @@ void ArxGame::managePlayerControls() {
 				InventoryOpenClose(1);
 			}
 		} else {
-			if(!bInventoryClosing) {
+			if(!g_playerInventoryHud.isClosing()) {
 				g_hudRoot.mecanismIcon.reset();
 				
 				if(player.Interface & INTER_INVENTORYALL) {
 					ARX_SOUND_PlayInterface(SND_BACKPACK, Random::getf(0.9f, 1.1f));
-					bInventoryClosing = true;
+					g_playerInventoryHud.close();
 					lOldInterfaceTemp=INTER_INVENTORYALL;
 				}
 
@@ -1463,7 +1461,7 @@ void ArxGame::managePlayerControls() {
 		}
 	} else {
 		if(bInverseInventory) {
-			if(!bInventoryClosing) {
+			if(!g_playerInventoryHud.isClosing()) {
 				bRenderInCursorMode=false;
 
 				InventoryOpenClose(2);

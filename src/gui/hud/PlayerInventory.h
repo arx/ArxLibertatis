@@ -43,6 +43,8 @@ private:
 	Vec2f m_slotSpacing;
 	
 	Vec2f m_bagBackgroundSize;
+
+	bool m_isClosing;
 	
 public:
 	void init();
@@ -60,6 +62,9 @@ public:
 	
 	void dropEntity();
 	void dragEntity(Entity * io, const Vec2s &pos);
+
+	void close();
+	bool isClosing();
 	
 private:
 	void CalculateInventoryCoordinates();

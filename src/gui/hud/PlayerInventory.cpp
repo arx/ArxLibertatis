@@ -55,6 +55,8 @@ void PlayerInventoryHud::init() {
 	m_slotSpacing = Vec2f(7, 6);
 	
 	m_bagBackgroundSize = Vec2f(562, 121);
+
+	m_isClosing = false;
 }
 
 
@@ -118,12 +120,12 @@ void PlayerInventoryHud::update() {
 				InventoryY = 110;
 			}
 		} else {
-			if(bInventoryClosing) {
+			if(m_isClosing) {
 				InventoryY += t;
 				
 				if(InventoryY > 110) {
 					InventoryY = 110;
-					bInventoryClosing = false;
+					m_isClosing = false;
 					
 					player.Interface &=~ INTER_INVENTORY;
 					
@@ -144,7 +146,7 @@ void PlayerInventoryHud::update() {
 				}
 			}
 		}
-	} else if((player.Interface & INTER_INVENTORYALL) || bInventoryClosing) {
+	} else if((player.Interface & INTER_INVENTORYALL) || isClosing()) {
 		float fSpeed = (1.f/3);
 		long t = long((framedelay * fSpeed) + 2.f);
 		if((player.Interface & INTER_COMBATMODE) || player.doingmagic >= 2) {
@@ -152,10 +154,10 @@ void PlayerInventoryHud::update() {
 				InventoryY += t;
 			}
 		} else {
-			if(bInventoryClosing) {
+			if(m_isClosing) {
 				InventoryY += t;
 				if(InventoryY > 121 * player.bag) {
-					bInventoryClosing = false;
+					m_isClosing = false;
 					if(player.Interface & INTER_INVENTORYALL) {
 						player.Interface &= ~INTER_INVENTORYALL;
 					}
@@ -291,7 +293,7 @@ void PlayerInventoryHud::draw() {
 				}
 			}
 		}
-	} else if((player.Interface & INTER_INVENTORYALL) || bInventoryClosing) {				
+	} else if((player.Interface & INTER_INVENTORYALL) || m_isClosing) {				
 		
 		Vec2f anchorPos = anchorPosition();
 		
@@ -656,4 +658,12 @@ void PlayerInventoryHud::dragEntity(Entity * io, const Vec2s &pos) {
 	
 	RemoveFromAllInventories(io);
 	ARX_INVENTORY_IdentifyIO(io);
+}
+
+void PlayerInventoryHud::close() {
+	m_isClosing = true;
+}
+
+bool PlayerInventoryHud::isClosing() {
+	return m_isClosing;
 }
