@@ -315,7 +315,7 @@ void BackpackIconGui::updateInput() {
 			
 			if(player.Interface & INTER_INVENTORYALL) {
 				ARX_SOUND_PlayInterface(SND_BACKPACK, Random::getf(0.9f, 1.1f));
-				bInventoryClosing = true;
+				g_playerInventoryHud.close();
 			} else {
 				bInverseInventory=!bInverseInventory;
 				lOldTruePlayerMouseLook=TRUE_PLAYER_MOUSELOOK_ON;
@@ -325,11 +325,11 @@ void BackpackIconGui::updateInput() {
 			ARX_INVENTORY_OpenClose(NULL);
 			
 			if(player.Interface & INTER_INVENTORYALL) {
-				bInventoryClosing = true;
+				g_playerInventoryHud.close();
 			} else {
 				if(player.Interface & INTER_INVENTORY) {
 					ARX_SOUND_PlayInterface(SND_BACKPACK, Random::getf(0.9f, 1.1f));
-					bInventoryClosing = true;
+					g_playerInventoryHud.close();
 					bInventorySwitch = true;
 				} else {
 					ARX_SOUND_PlayInterface(SND_BACKPACK, Random::getf(0.9f, 1.1f));

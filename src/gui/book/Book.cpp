@@ -36,6 +36,7 @@
 #include "graphics/effects/Halo.h"
 #include "graphics/particle/ParticleEffects.h"
 #include "graphics/texture/TextureStage.h"
+#include "gui/hud/PlayerInventory.h"
 #include "gui/Menu.h"
 #include "gui/MiniMap.h"
 #include "gui/Speech.h"
@@ -199,7 +200,7 @@ void ARX_INTERFACE_BookToggle() {
 
 	if(player.Interface & INTER_INVENTORYALL) {
 		ARX_SOUND_PlayInterface(SND_BACKPACK, Random::getf(0.9f, 1.1f));
-		bInventoryClosing = true;
+		g_playerInventoryHud.close();
 	}
 
 	BOOKZOOM = 0;

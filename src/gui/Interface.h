@@ -202,7 +202,6 @@ extern Vec2s MemoMouse;
 extern long SpecialCursor;
 
 extern float lSLID_VALUE;
-extern bool bInventoryClosing;
 extern E_ARX_STATE_MOUSE eMouseState;
 extern bool bInverseInventory;
 extern bool lOldTruePlayerMouseLook;
