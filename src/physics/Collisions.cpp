@@ -698,7 +698,7 @@ float CheckAnythingInCylinder(const Cylinder & cyl, Entity * ioo, long flags) {
 						std::vector<EERIE_VERTEX> & vlist = io->obj->vertexlist3;
 						
 						if(io->obj->grouplist.size() > 10) {
-							float dealt = 0;
+							bool dealt = false;
 							for(size_t ii = 0; ii < io->obj->grouplist.size(); ii++) {
 								long idx = io->obj->grouplist[ii].origin;
 								sp.origin = vlist[idx].v;
@@ -733,7 +733,7 @@ float CheckAnythingInCylinder(const Cylinder & cyl, Entity * ioo, long flags) {
 										}
 
 										if(!dealt && (ioo->damager_damages > 0 || io->damager_damages > 0)) {
-											dealt = 1;
+											dealt = true;
 
 											if(ioo->damager_damages > 0)
 												ARX_DAMAGES_DealDamages(EntityHandle(i), ioo->damager_damages, ioo->index(), ioo->damager_type, &io->pos);
@@ -767,7 +767,7 @@ float CheckAnythingInCylinder(const Cylinder & cyl, Entity * ioo, long flags) {
 							else
 								step = 6;
 							
-							float dealt = 0;
+							bool dealt = false;
 							for(size_t ii = 1; ii < nbv; ii += step) {
 								if(ii != io->obj->origin) {
 									sp.origin = vlist[ii].v;
@@ -794,7 +794,7 @@ float CheckAnythingInCylinder(const Cylinder & cyl, Entity * ioo, long flags) {
 										}
 					
 										if(!dealt && ioo && (ioo->damager_damages > 0 || io->damager_damages > 0)) {
-											dealt = 1;
+											dealt = true;
 											
 											if(ioo->damager_damages > 0)
 												ARX_DAMAGES_DealDamages(EntityHandle(i), ioo->damager_damages, ioo->index(), ioo->damager_type, &io->pos);
