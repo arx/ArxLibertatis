@@ -110,7 +110,7 @@ public:
 		
 		Entity * io = context.getEntity();
 		
-		if(enable ^ inv) {
+		if(enable != inv) {
 			io->gameFlags |= flag;
 		} else {
 			io->gameFlags &= ~flag;
@@ -139,7 +139,7 @@ public:
 		
 		Entity * io = context.getEntity();
 		
-		if(enable ^ inv) {
+		if(enable != inv) {
 			io->ioflags |= flag;
 		} else {
 			io->ioflags &= ~flag;
