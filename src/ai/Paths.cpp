@@ -215,7 +215,7 @@ void ARX_PATH_UpdateAllZoneInOutInside() {
 							SendIOScriptEvent(entities[t], SM_CONTROLLEDZONE_LEAVE, str);
 						}
 					}
-				} else if(!last && current) { // Entering current zone
+				} else if(!last) { // Entering current zone
 					io->inzone_show = io->show;
 				entering:
 
@@ -285,7 +285,7 @@ void ARX_PATH_UpdateAllZoneInOutInside() {
 					SendIOScriptEvent(entities[t], SM_CONTROLLEDZONE_LEAVE, "player " + last->name);
 				}
 			}
-		} else if(!last && current) { // Entering current zone
+		} else if(!last) { // Entering current zone
 			SendIOScriptEvent(entities.player(), SM_ENTERZONE, current->name);
 
 			if(current->flags & PATH_AMBIANCE && !current->ambiance.empty())
