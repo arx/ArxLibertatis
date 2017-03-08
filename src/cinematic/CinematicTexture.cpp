@@ -112,7 +112,6 @@ CinematicBitmap* CreateCinematicBitmap(const res::path & path, int scale) {
 	
 	bi->grid.AllocGrille(bi->m_count, Vec2f(bi->m_size), Vec2f(((bi->m_size.x > cinMaxSize.x) ? cinMaxSize.x : bi->m_size.x), ((bi->m_size.y > cinMaxSize.y) ? cinMaxSize.y : bi->m_size.y)), scale);
 
-	int num = 0;
 	int h = bi->m_size.y;
 
 	while(nb.y) {
@@ -146,7 +145,6 @@ CinematicBitmap* CreateCinematicBitmap(const res::path & path, int scale) {
 
 			w -= cinMaxSize.x;
 
-			num++;
 			nbxx--;
 		}
 
