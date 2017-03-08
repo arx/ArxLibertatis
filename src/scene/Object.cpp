@@ -834,9 +834,7 @@ EERIE_MULTI3DSCENE * PAK_MultiSceneToEerie(const res::path & dirr) {
 	
 	LogDebug("Loading Multiscene " << dirr);
 	
-	EERIE_MULTI3DSCENE * em = NULL;
-	
-	em = PAK_MultiSceneToEerie_Impl(dirr);
+	EERIE_MULTI3DSCENE * em = PAK_MultiSceneToEerie_Impl(dirr);
 
 	EERIEPOLY_Compute_PolyIn();
 	return em;
