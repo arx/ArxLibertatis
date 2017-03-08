@@ -656,7 +656,7 @@ float CheckAnythingInCylinder(const Cylinder & cyl, Entity * ioo, long flags) {
 									SendIOScriptEvent(ioo, SM_COLLIDE_NPC);
 							}
 
-							if(!dealt && (ioo->damager_damages > 0 || io->damager_damages > 0)) {
+							if(ioo->damager_damages > 0 || io->damager_damages > 0) {
 
 								if(ioo->damager_damages > 0)
 									ARX_DAMAGES_DealDamages(EntityHandle(i), ioo->damager_damages, ioo->index(), ioo->damager_type, &io->pos);
