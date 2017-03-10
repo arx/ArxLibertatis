@@ -163,7 +163,7 @@ static ArxInstant ROTATE_START = ArxInstant_ZERO;
 ANIM_HANDLE * herowaitbook = NULL;
 ANIM_HANDLE * herowait_2h = NULL;
 
-std::vector<std::string> Keyring;
+std::vector<std::string> g_playerKeyring;
 
 static unsigned long FALLING_TIME = 0;
 
@@ -209,7 +209,7 @@ bool ARX_PLAYER_IsInFightMode() {
  * \brief Init/Reset player Keyring structures
  */
 void ARX_KEYRING_Init() {
-	Keyring.clear();
+	g_playerKeyring.clear();
 }
 
 /*!
@@ -217,7 +217,7 @@ void ARX_KEYRING_Init() {
  * \param key
  */
 void ARX_KEYRING_Add(const std::string & key) {
-	Keyring.push_back(key);
+	g_playerKeyring.push_back(key);
 }
 
 /*!
@@ -225,8 +225,8 @@ void ARX_KEYRING_Add(const std::string & key) {
  * \param io
  */
 void ARX_KEYRING_Combine(Entity * io) {
-	for(size_t i = 0; i < Keyring.size(); i++) {
-		if(SendIOScriptEvent(io, SM_COMBINE, Keyring[i]) == REFUSE) {
+	for(size_t i = 0; i < g_playerKeyring.size(); i++) {
+		if(SendIOScriptEvent(io, SM_COMBINE, g_playerKeyring[i]) == REFUSE) {
 			return;
 		}
 	}
