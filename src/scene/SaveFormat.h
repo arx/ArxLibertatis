@@ -92,6 +92,7 @@ enum SavePlayerFlag {
 #pragma pack(push,1)
 
 
+const size_t SAVED_QUEST_SLOT_SIZE = 80;
 const size_t SAVED_KEYRING_SLOT_SIZE = 64;
 const size_t MAX_LINKED_SAVE = 16;
 const size_t SIZE_ID = 64;

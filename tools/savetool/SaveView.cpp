@@ -918,14 +918,14 @@ static int view_player(SaveBlock & save, const char * dat, size_t size) {
 	
 	if(asp.nb_PlayerQuest) {
 		std::cout << "\nQuests:\n";
-		if(size < pos + (asp.nb_PlayerQuest * 80)) {
+		if(size < pos + (asp.nb_PlayerQuest * SAVED_QUEST_SLOT_SIZE)) {
 			std::cerr << "truncated data\n";
 			return -1;
 		}
 		for(int i = 0; i < asp.nb_PlayerQuest; i++) {
-			std::string quest = loadUnlocalized(boost::to_lower_copy(util::loadString(dat + pos, 80)));
+			std::string quest = loadUnlocalized(boost::to_lower_copy(util::loadString(dat + pos, SAVED_QUEST_SLOT_SIZE)));
 			std::cout << "  - " << quest << " = \"" << getLocalised(quest) << "\"\n";
-			pos += 80;
+			pos += SAVED_QUEST_SLOT_SIZE;
 		}
 	}
 	
