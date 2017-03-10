@@ -29,6 +29,8 @@
 
 CabalFx::CabalFx()
 	: m_yaw(0)
+	, m_scaleY(90)
+	, m_offset(60)
 	, m_hasTwoRingSets(true)
 	, m_ringCount(0)
 {
