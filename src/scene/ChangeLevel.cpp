@@ -626,7 +626,7 @@ static long ARX_CHANGELEVEL_Push_Player(long level) {
 	ARX_CHANGELEVEL_PLAYER * asp;
 
 	long allocsize = sizeof(ARX_CHANGELEVEL_PLAYER) + 48000;
-	allocsize += Keyring.size() * 64;
+	allocsize += Keyring.size() * SAVED_KEYRING_SLOT_SIZE;
 	allocsize += 80 * PlayerQuest.size();
 	allocsize += sizeof(SavedMapMarkerData) * g_miniMap.mapMarkerCount();
 
