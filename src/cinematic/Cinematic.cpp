@@ -480,13 +480,17 @@ void Cinematic::Render(PlatformDuration frameDuration) {
 	
 	col.a = alpha;
 	
-	CinematicLight *l = NULL;
+	
 	
 	static const float SPEEDINTENSITYRND = 60.f / 1000.f;
 	float FDIFF = float(toMs(frameDuration));
 	
+	{
+	CinematicLight *l = NULL;
+	CinematicLight lightt;
+	
 	if(m_light.intensity >= 0.f && m_lightd.intensity >= 0.f) {
-		CinematicLight lightt = m_light;
+		lightt = m_light;
 		
 		lightt.pos = lightt.pos * g_sizeRatio.y + Vec3f(g_size.center(), 0.f);
 		lightt.fallin *= g_sizeRatio.y;
@@ -500,6 +504,8 @@ void Cinematic::Render(PlatformDuration frameDuration) {
 	
 	if(tb->grid.m_nbvertexs)
 		DrawGrille(tb, col, fx, l, posgrille, angzgrille, fadegrille);
+	
+	}
 	
 	//PASS #2
 	if(force & 1) {
@@ -524,10 +530,12 @@ void Cinematic::Render(PlatformDuration frameDuration) {
 		alpha = 255 - alpha;
 		col.a = alpha;
 		
-		l = NULL;
+		{
+		CinematicLight *l = NULL;
+		CinematicLight lightt;
 		
 		if(m_light.intensity >= 0.f && m_lightd.intensity >= 0.f) {
-			CinematicLight lightt = m_lightd;
+			lightt = m_lightd;
 			
 			lightt.pos = lightt.pos * g_sizeRatio.y + Vec3f(g_size.center(), 0.f);
 			lightt.fallin *= g_sizeRatio.y;
@@ -541,6 +549,8 @@ void Cinematic::Render(PlatformDuration frameDuration) {
 		
 		if(tb->grid.m_nbvertexs)
 			DrawGrille(tb, col, fx, l, m_nextPosgrille, m_nextAngzgrille, m_nextFadegrille);
+		
+		}
 	}
 	
 	//effets qui continuent avec le temps
