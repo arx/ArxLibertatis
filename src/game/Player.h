@@ -431,7 +431,7 @@ void ARX_PLAYER_RectifyPosition();
 void ARX_PLAYER_Frame_Update();
 void ARX_PLAYER_Manage_Movement();
 void ARX_PLAYER_Manage_Death();
-void ARX_PLAYER_Quest_Add(const std::string & quest, bool _bLoad = false);
+void ARX_PLAYER_Quest_Add(const std::string & quest);
 void ARX_PLAYER_Quest_Init();
 Vec3f ARX_PLAYER_FrontPos();
 void ARX_PLAYER_ComputePlayerFullStats();

@@ -1787,7 +1787,7 @@ static long ARX_CHANGELEVEL_Pop_Player() {
 	}
 	ARX_PLAYER_Quest_Init();
 	for(int i = 0; i < asp->nb_PlayerQuest; i++) {
-		ARX_PLAYER_Quest_Add(script::loadUnlocalized(boost::to_lower_copy(util::loadString(dat + pos, SAVED_QUEST_SLOT_SIZE))), true);
+		ARX_PLAYER_Quest_Add(script::loadUnlocalized(boost::to_lower_copy(util::loadString(dat + pos, SAVED_QUEST_SLOT_SIZE))));
 		pos += SAVED_QUEST_SLOT_SIZE;
 	}
 	

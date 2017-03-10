@@ -396,13 +396,10 @@ void ARX_Player_Rune_Remove(RuneFlag _ulRune)
  * \param quest
  * \param _bLoad
  */
-void ARX_PLAYER_Quest_Add(const std::string & quest, bool _bLoad) {
+void ARX_PLAYER_Quest_Add(const std::string & quest) {
 	
 	PlayerQuest.push_back(STRUCT_QUEST());
 	PlayerQuest.back().ident = quest;
-	
-	if(!_bLoad)
-		g_hudRoot.bookIconGui.requestHalo();
 	
 	gui::updateQuestBook();
 }
