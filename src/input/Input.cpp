@@ -215,12 +215,15 @@ bool Input::init(Window * window) {
 	arx_assert(backend == NULL);
 	
 	backend = window->getInputBackend();
+	if(backend == NULL) {
+		return false;
+	}
 	
 	int x, y;
 	backend->getAbsoluteMouseCoords(x, y);
 	m_lastMousePosition = Vec2s(x, y);
 	
-	return (backend != NULL);
+	return true;
 }
 
 void Input::reset() {
