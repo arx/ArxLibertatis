@@ -626,7 +626,7 @@ static long ARX_CHANGELEVEL_Push_Player(long level) {
 	ARX_CHANGELEVEL_PLAYER * asp;
 
 	long allocsize = sizeof(ARX_CHANGELEVEL_PLAYER) + 48000;
-	allocsize += Keyring.size() * SAVED_KEYRING_SLOT_SIZE;
+	allocsize += g_playerKeyring.size() * SAVED_KEYRING_SLOT_SIZE;
 	allocsize += SAVED_QUEST_SLOT_SIZE * g_playerQuestLogEntries.size();
 	allocsize += sizeof(SavedMapMarkerData) * g_miniMap.mapMarkerCount();
 
@@ -753,7 +753,7 @@ static long ARX_CHANGELEVEL_Push_Player(long level) {
 	
 	asp->xp = player.xp;
 	asp->nb_PlayerQuest = g_playerQuestLogEntries.size();
-	asp->keyring_nb = Keyring.size();
+	asp->keyring_nb = g_playerKeyring.size();
 	asp->Global_Magic_Mode = GLOBAL_MAGIC_MODE;
 	asp->Nb_Mapmarkers = g_miniMap.mapMarkerCount();
 	
@@ -782,10 +782,10 @@ static long ARX_CHANGELEVEL_Push_Player(long level) {
 		pos += SAVED_QUEST_SLOT_SIZE;
 	}
 	
-	for(size_t i = 0; i < Keyring.size(); i++) {
+	for(size_t i = 0; i < g_playerKeyring.size(); i++) {
 		memset(dat + pos, 0, SAVED_KEYRING_SLOT_SIZE);
-		assert(Keyring[i].length() < SAVED_KEYRING_SLOT_SIZE);
-		strcpy((char *)(dat + pos), Keyring[i].c_str());
+		assert(g_playerKeyring[i].length() < SAVED_KEYRING_SLOT_SIZE);
+		strcpy((char *)(dat + pos), g_playerKeyring[i].c_str());
 		pos += SAVED_KEYRING_SLOT_SIZE;
 	}
 	

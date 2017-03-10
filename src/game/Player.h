@@ -415,7 +415,7 @@ extern EERIE_3DOBJ * hero;
 extern ANIM_HANDLE * herowaitbook;
 extern ANIM_HANDLE * herowait_2h;
 extern std::vector<STRUCT_QUEST> g_playerQuestLogEntries;
-extern std::vector<std::string> Keyring;
+extern std::vector<std::string> g_playerKeyring;
 
 extern bool BLOCK_PLAYER_CONTROLS;
 extern bool USE_PLAYERCOLLISIONS;
