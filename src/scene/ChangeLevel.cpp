@@ -783,8 +783,9 @@ static long ARX_CHANGELEVEL_Push_Player(long level) {
 	}
 	
 	for(size_t i = 0; i < Keyring.size(); i++) {
-		assert(sizeof(Keyring[i].slot) == SAVED_KEYRING_SLOT_SIZE);
-		memcpy((char *)(dat + pos), Keyring[i].slot, SAVED_KEYRING_SLOT_SIZE);
+		memset(dat + pos, 0, SAVED_KEYRING_SLOT_SIZE);
+		assert(Keyring[i].length() < SAVED_KEYRING_SLOT_SIZE);
+		strcpy((char *)(dat + pos), Keyring[i].c_str());
 		pos += SAVED_KEYRING_SLOT_SIZE;
 	}
 	
