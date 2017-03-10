@@ -163,7 +163,7 @@ static ArxInstant ROTATE_START = ArxInstant_ZERO;
 ANIM_HANDLE * herowaitbook = NULL;
 ANIM_HANDLE * herowait_2h = NULL;
 
-std::vector<KEYRING_SLOT> Keyring;
+std::vector<std::string> Keyring;
 
 static unsigned long FALLING_TIME = 0;
 
@@ -217,9 +217,7 @@ void ARX_KEYRING_Init() {
  * \param key
  */
 void ARX_KEYRING_Add(const std::string & key) {
-	Keyring.resize(Keyring.size() + 1);
-	memset(&Keyring.back(), 0, sizeof(KEYRING_SLOT));
-	strcpy(Keyring.back().slot, key.c_str());
+	Keyring.push_back(key);
 }
 
 /*!
@@ -228,7 +226,7 @@ void ARX_KEYRING_Add(const std::string & key) {
  */
 void ARX_KEYRING_Combine(Entity * io) {
 	for(size_t i = 0; i < Keyring.size(); i++) {
-		if(SendIOScriptEvent(io, SM_COMBINE, Keyring[i].slot) == REFUSE) {
+		if(SendIOScriptEvent(io, SM_COMBINE, Keyring[i]) == REFUSE) {
 			return;
 		}
 	}

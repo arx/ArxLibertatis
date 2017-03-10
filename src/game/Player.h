@@ -404,11 +404,6 @@ struct ARXCHARACTER {
 
 extern float CURRENT_PLAYER_COLOR;
 
-struct KEYRING_SLOT {
-	char slot[64];
-};
-
-
 // Quests Management (QuestLogBook)
 
 struct STRUCT_QUEST {
@@ -420,7 +415,7 @@ extern EERIE_3DOBJ * hero;
 extern ANIM_HANDLE * herowaitbook;
 extern ANIM_HANDLE * herowait_2h;
 extern std::vector<STRUCT_QUEST> PlayerQuest;
-extern std::vector<KEYRING_SLOT> Keyring;
+extern std::vector<std::string> Keyring;
 
 extern bool BLOCK_PLAYER_CONTROLS;
 extern bool USE_PLAYERCOLLISIONS;
