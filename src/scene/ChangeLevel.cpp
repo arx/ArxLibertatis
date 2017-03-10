@@ -627,7 +627,7 @@ static long ARX_CHANGELEVEL_Push_Player(long level) {
 
 	long allocsize = sizeof(ARX_CHANGELEVEL_PLAYER) + 48000;
 	allocsize += Keyring.size() * SAVED_KEYRING_SLOT_SIZE;
-	allocsize += SAVED_QUEST_SLOT_SIZE * PlayerQuest.size();
+	allocsize += SAVED_QUEST_SLOT_SIZE * g_playerQuestLogEntries.size();
 	allocsize += sizeof(SavedMapMarkerData) * g_miniMap.mapMarkerCount();
 
 	char * dat = new char[allocsize];
@@ -752,7 +752,7 @@ static long ARX_CHANGELEVEL_Push_Player(long level) {
 	asp->skin = player.skin;
 	
 	asp->xp = player.xp;
-	asp->nb_PlayerQuest = PlayerQuest.size();
+	asp->nb_PlayerQuest = g_playerQuestLogEntries.size();
 	asp->keyring_nb = Keyring.size();
 	asp->Global_Magic_Mode = GLOBAL_MAGIC_MODE;
 	asp->Nb_Mapmarkers = g_miniMap.mapMarkerCount();
@@ -775,10 +775,10 @@ static long ARX_CHANGELEVEL_Push_Player(long level) {
 			strcpy(asp->equiped[k], "");
 	}
 	
-	for(size_t i = 0; i < PlayerQuest.size(); i++) {
+	for(size_t i = 0; i < g_playerQuestLogEntries.size(); i++) {
 		memset(dat + pos, 0, SAVED_QUEST_SLOT_SIZE);
-		assert(PlayerQuest[i].ident.length() < SAVED_QUEST_SLOT_SIZE);
-		strcpy((char *)(dat + pos), PlayerQuest[i].ident.c_str());
+		assert(g_playerQuestLogEntries[i].ident.length() < SAVED_QUEST_SLOT_SIZE);
+		strcpy((char *)(dat + pos), g_playerQuestLogEntries[i].ident.c_str());
 		pos += SAVED_QUEST_SLOT_SIZE;
 	}
 	
