@@ -631,7 +631,7 @@ static void manageQuestBook() {
 	if(questBook.text().empty() && !g_playerQuestLogEntries.empty()) {
 		std::string text;
 		for(size_t i = 0; i < g_playerQuestLogEntries.size(); ++i) {
-			std::string quest = getLocalised(g_playerQuestLogEntries[i].ident);
+			std::string quest = getLocalised(g_playerQuestLogEntries[i]);
 			if(!quest.empty()) {
 				text += quest;
 				text += "\n\n";

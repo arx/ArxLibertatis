@@ -777,8 +777,8 @@ static long ARX_CHANGELEVEL_Push_Player(long level) {
 	
 	for(size_t i = 0; i < g_playerQuestLogEntries.size(); i++) {
 		memset(dat + pos, 0, SAVED_QUEST_SLOT_SIZE);
-		assert(g_playerQuestLogEntries[i].ident.length() < SAVED_QUEST_SLOT_SIZE);
-		strcpy((char *)(dat + pos), g_playerQuestLogEntries[i].ident.c_str());
+		assert(g_playerQuestLogEntries[i].length() < SAVED_QUEST_SLOT_SIZE);
+		strcpy((char *)(dat + pos), g_playerQuestLogEntries[i].c_str());
 		pos += SAVED_QUEST_SLOT_SIZE;
 	}
 	
