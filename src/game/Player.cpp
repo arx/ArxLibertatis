@@ -507,33 +507,36 @@ void ARX_PLAYER_ComputePlayerFullStats() {
 	// External modifiers
 	
 	// Calculate for modifiers from spells
-		SpellBase * spell;
-		
-		spell = spells.getSpellOnTarget(EntityHandle_Player, SPELL_ARMOR);
+	{
+		SpellBase * spell = spells.getSpellOnTarget(EntityHandle_Player, SPELL_ARMOR);
 		if(spell) {
 			player.m_miscMod.armorClass += spell->m_level;
 		}
-		
-		spell = spells.getSpellOnTarget(EntityHandle_Player, SPELL_LOWER_ARMOR);
+	}
+	{
+		SpellBase * spell = spells.getSpellOnTarget(EntityHandle_Player, SPELL_LOWER_ARMOR);
 		if(spell) {
 			player.m_miscMod.armorClass -= spell->m_level;
 		}
-		
-		spell = spells.getSpellOnTarget(EntityHandle_Player, SPELL_CURSE);
+	}
+	{
+		SpellBase * spell = spells.getSpellOnTarget(EntityHandle_Player, SPELL_CURSE);
 		if(spell) {
 			player.m_attributeMod.strength -= spell->m_level;
 			player.m_attributeMod.constitution -= spell->m_level;
 			player.m_attributeMod.dexterity -= spell->m_level;
 			player.m_attributeMod.mind -= spell->m_level;
 		}
-	
-		spell = spells.getSpellOnTarget(EntityHandle_Player, SPELL_BLESS);
+	}
+	{
+		SpellBase * spell = spells.getSpellOnTarget(EntityHandle_Player, SPELL_BLESS);
 		if(spell) {
 			player.m_attributeMod.strength += spell->m_level;
 			player.m_attributeMod.dexterity += spell->m_level;
 			player.m_attributeMod.constitution += spell->m_level;
 			player.m_attributeMod.mind += spell->m_level;
 		}
+	}
 	
 	// Calculate for modifiers from cheats
 	if(cur_mr == 3) {
