@@ -404,17 +404,11 @@ struct ARXCHARACTER {
 
 extern float CURRENT_PLAYER_COLOR;
 
-// Quests Management (QuestLogBook)
-
-struct STRUCT_QUEST {
-	std::string ident;
-};
-
 extern ARXCHARACTER player;
 extern EERIE_3DOBJ * hero;
 extern ANIM_HANDLE * herowaitbook;
 extern ANIM_HANDLE * herowait_2h;
-extern std::vector<STRUCT_QUEST> g_playerQuestLogEntries;
+extern std::vector<std::string> g_playerQuestLogEntries;
 extern std::vector<std::string> g_playerKeyring;
 
 extern bool BLOCK_PLAYER_CONTROLS;

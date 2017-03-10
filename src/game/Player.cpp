@@ -167,7 +167,7 @@ std::vector<std::string> g_playerKeyring;
 
 static unsigned long FALLING_TIME = 0;
 
-std::vector<STRUCT_QUEST> g_playerQuestLogEntries;
+std::vector<std::string> g_playerQuestLogEntries;
 
 bool ARX_PLAYER_IsInFightMode() {
 	arx_assert(entities.player());
@@ -398,9 +398,7 @@ void ARX_Player_Rune_Remove(RuneFlag _ulRune)
  */
 void ARX_PLAYER_Quest_Add(const std::string & quest) {
 	
-	g_playerQuestLogEntries.push_back(STRUCT_QUEST());
-	g_playerQuestLogEntries.back().ident = quest;
-	
+	g_playerQuestLogEntries.push_back(quest);
 	gui::updateQuestBook();
 }
 
