@@ -234,6 +234,7 @@ public:
 		DebugScript(' ' << name);
 		
 		ARX_PLAYER_Quest_Add(name);
+		g_hudRoot.bookIconGui.requestHalo();
 		
 		return Success;
 	}
