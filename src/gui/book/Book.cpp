@@ -628,10 +628,10 @@ static gui::Note questBook;
 static void manageQuestBook() {
 	
 	// Cache the questbook data
-	if(questBook.text().empty() && !PlayerQuest.empty()) {
+	if(questBook.text().empty() && !g_playerQuestLogEntries.empty()) {
 		std::string text;
-		for(size_t i = 0; i < PlayerQuest.size(); ++i) {
-			std::string quest = getLocalised(PlayerQuest[i].ident);
+		for(size_t i = 0; i < g_playerQuestLogEntries.size(); ++i) {
+			std::string quest = getLocalised(g_playerQuestLogEntries[i].ident);
 			if(!quest.empty()) {
 				text += quest;
 				text += "\n\n";

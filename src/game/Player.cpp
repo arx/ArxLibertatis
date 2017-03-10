@@ -167,7 +167,7 @@ std::vector<std::string> Keyring;
 
 static unsigned long FALLING_TIME = 0;
 
-std::vector<STRUCT_QUEST> PlayerQuest;
+std::vector<STRUCT_QUEST> g_playerQuestLogEntries;
 
 bool ARX_PLAYER_IsInFightMode() {
 	arx_assert(entities.player());
@@ -325,7 +325,7 @@ static void ARX_PLAYER_ManageTorch() {
  * \brief Init/Reset player Quest structures
  */
 void ARX_PLAYER_Quest_Init() {
-	PlayerQuest.clear();
+	g_playerQuestLogEntries.clear();
 	gui::updateQuestBook();
 }
 
@@ -398,8 +398,8 @@ void ARX_Player_Rune_Remove(RuneFlag _ulRune)
  */
 void ARX_PLAYER_Quest_Add(const std::string & quest) {
 	
-	PlayerQuest.push_back(STRUCT_QUEST());
-	PlayerQuest.back().ident = quest;
+	g_playerQuestLogEntries.push_back(STRUCT_QUEST());
+	g_playerQuestLogEntries.back().ident = quest;
 	
 	gui::updateQuestBook();
 }
