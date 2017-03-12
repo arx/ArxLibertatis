@@ -335,7 +335,7 @@ void BackpackIconGui::updateInput() {
 					ARX_SOUND_PlayInterface(SND_BACKPACK, Random::getf(0.9f, 1.1f));
 					player.Interface |= INTER_INVENTORYALL;
 					
-					InventoryY = 121 * player.bag;
+					g_playerInventoryHud.resetPos();
 					
 					ARX_INTERFACE_NoteClose();
 					

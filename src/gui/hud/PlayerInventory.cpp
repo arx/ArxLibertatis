@@ -40,8 +40,6 @@ short g_currentInventoryBag = 0;
 
 extern PlayerInterfaceFlags lOldInterface;
 
-long InventoryY = 100;
-
 void PlayerInventoryHud::init() {
 	m_heroInventory = TextureContainer::LoadUI("graph/interface/inventory/hero_inventory");
 	m_heroInventoryLink = TextureContainer::LoadUI("graph/interface/inventory/hero_inventory_link");
@@ -58,13 +56,14 @@ void PlayerInventoryHud::init() {
 	m_bagBackgroundSize = Vec2f(562, 121);
 
 	m_isClosing = false;
+	m_inventoryY = 110;
 }
 
 
 Vec2f PlayerInventoryHud::anchorPosition() {
 	
 	return Vec2f(g_size.center().x - (320 * m_scale) + (35 * m_scale) ,
-	g_size.height() - (101 * m_scale) + (InventoryY * m_scale));
+	g_size.height() - (101 * m_scale) + (m_inventoryY * m_scale));
 }
 
 void PlayerInventoryHud::updateRect(){
@@ -115,17 +114,17 @@ void PlayerInventoryHud::update() {
 		long t = long(framedelay * (1.f/5) + 2.0f);
 		if((player.Interface & INTER_COMBATMODE) || player.doingmagic >= 2) {
 			
-			InventoryY += t;
+			m_inventoryY += t;
 			
-			if(InventoryY > 110) {
-				InventoryY = 110;
+			if(m_inventoryY > 110) {
+				m_inventoryY = 110;
 			}
 		} else {
 			if(m_isClosing) {
-				InventoryY += t;
+				m_inventoryY += t;
 				
-				if(InventoryY > 110) {
-					InventoryY = 110;
+				if(m_inventoryY > 110) {
+					m_inventoryY = 110;
 					m_isClosing = false;
 					
 					player.Interface &=~ INTER_INVENTORY;
@@ -135,15 +134,15 @@ void PlayerInventoryHud::update() {
 						ARX_SOUND_PlayInterface(SND_BACKPACK, Random::getf(0.9f, 1.1f));
 						player.Interface |= INTER_INVENTORYALL;
 						ARX_INTERFACE_NoteClose();
-						InventoryY = 121 * player.bag;
+						m_inventoryY = 121 * player.bag;
 						lOldInterface=INTER_INVENTORYALL;
 					}
 				}
-			} else if(InventoryY > 0) {
-				InventoryY -= t;
+			} else if(m_inventoryY > 0) {
+				m_inventoryY -= t;
 				
-				if(InventoryY < 0) {
-					InventoryY = 0;
+				if(m_inventoryY < 0) {
+					m_inventoryY = 0;
 				}
 			}
 		}
@@ -151,23 +150,23 @@ void PlayerInventoryHud::update() {
 		float fSpeed = (1.f/3);
 		long t = long((framedelay * fSpeed) + 2.f);
 		if((player.Interface & INTER_COMBATMODE) || player.doingmagic >= 2) {
-			if(InventoryY < 121 * player.bag) {
-				InventoryY += t;
+			if(m_inventoryY < 121 * player.bag) {
+				m_inventoryY += t;
 			}
 		} else {
 			if(m_isClosing) {
-				InventoryY += t;
-				if(InventoryY > 121 * player.bag) {
+				m_inventoryY += t;
+				if(m_inventoryY > 121 * player.bag) {
 					m_isClosing = false;
 					if(player.Interface & INTER_INVENTORYALL) {
 						player.Interface &= ~INTER_INVENTORYALL;
 					}
 					lOldInterface=0;
 				}
-			} else if(InventoryY > 0) {
-				InventoryY -= t;
-				if(InventoryY < 0) {
-					InventoryY = 0;
+			} else if(m_inventoryY > 0) {
+				m_inventoryY -= t;
+				if(m_inventoryY < 0) {
+					m_inventoryY = 0;
 				}
 			}
 		}
@@ -477,7 +476,7 @@ void PlayerInventoryHud::dropEntity() {
 	if(!(player.Interface & INTER_INVENTORY) && !(player.Interface & INTER_INVENTORYALL))
 		return;
 	
-	if(InventoryY != 0)
+	if(m_inventoryY != 0)
 		return;
 	
 	if(!g_playerInventoryHud.containsPos(DANAEMouse))
@@ -667,4 +666,12 @@ void PlayerInventoryHud::close() {
 
 bool PlayerInventoryHud::isClosing() {
 	return m_isClosing;
+}
+
+void PlayerInventoryHud::resetPos() {
+	if(player.Interface & INTER_INVENTORY) {
+		m_inventoryY = 110;
+	} else if(player.Interface & INTER_INVENTORYALL) {
+		m_inventoryY = 121 * player.bag;
+	}
 }

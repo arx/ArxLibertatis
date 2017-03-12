@@ -441,7 +441,7 @@ void InventoryOpenClose(unsigned long t) {
 		}
 	} else {
 		player.Interface |= INTER_INVENTORY;
-		InventoryY = 100;
+		g_playerInventoryHud.resetPos();
 
 		if(TRUE_PLAYER_MOUSELOOK_ON)
 			WILLRETURNTOFREELOOK = true;

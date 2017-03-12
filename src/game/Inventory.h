@@ -87,7 +87,6 @@ extern INVENTORY_DATA * SecondaryInventory;
 extern INVENTORY_DATA * TSecondaryInventory;
 extern Entity * DRAGINTER;
 extern Entity * ioSteal;
-extern long InventoryY;
 
 inline Vec2s inventorySizeFromTextureSize(Vec2i size) {
 	return Vec2s(glm::clamp((size + Vec2i(31, 31)) / Vec2i(32, 32), Vec2i(1, 1), Vec2i(3, 3)));
