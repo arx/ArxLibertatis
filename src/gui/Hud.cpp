@@ -994,7 +994,7 @@ PrecastSpellsGui::PrecastSpellsGui()
 }
 
 bool PrecastSpellsGui::isVisible() {
-	return !(player.Interface & INTER_INVENTORYALL) && !(player.Interface & INTER_MAP);
+	return !(player.Interface & INTER_MAP);
 }
 
 void PrecastSpellsGui::updateRect(const Rectf & parent) {
