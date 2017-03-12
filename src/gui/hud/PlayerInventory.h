@@ -45,6 +45,7 @@ private:
 	Vec2f m_bagBackgroundSize;
 
 	bool m_isClosing;
+	long m_inventoryY;
 	
 public:
 	void init();
@@ -65,6 +66,7 @@ public:
 
 	void close();
 	bool isClosing();
+	void resetPos();
 	
 private:
 	void CalculateInventoryCoordinates();
