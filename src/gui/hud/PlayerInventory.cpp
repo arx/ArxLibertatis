@@ -198,17 +198,20 @@ void PlayerInventoryHud::ARX_INTERFACE_DrawInventory(size_t bag, Vec2i i)
 	for(size_t x = 0; x < INVENTORY_X; x++) {
 		Entity *io = inventory[bag][x][y].io;
 		
-		if(!io || !inventory[bag][x][y].show)
+		if(!io || !inventory[bag][x][y].show) {
 			continue;
+		}
 		
 		TextureContainer *tc = io->m_icon;
 		TextureContainer *tc2 = NULL;
 		
-		if(NeedHalo(io))
+		if(NeedHalo(io)) {
 			tc2 = io->m_icon->getHalo();
+		}
 		
-		if(!tc)
+		if(!tc) {
 			continue;
+		}
 		
 		const Vec2f p = pos + Vec2f(x, y) * (m_slotSize * m_scale) + (m_slotSpacing * m_scale);
 		
@@ -239,14 +242,15 @@ void PlayerInventoryHud::ARX_INTERFACE_DrawInventory(size_t bag, Vec2i i)
 			ARX_INTERFACE_HALO_Render(io->halo.color, io->halo.flags, tc2, p, Vec2f(m_scale));
 		}
 		
-		if((io->ioflags & IO_ITEM) && io->_itemdata->count != 1)
+		if((io->ioflags & IO_ITEM) && io->_itemdata->count != 1) {
 			ARX_INTERFACE_DrawNumber(p, io->_itemdata->count, 3, Color::white, m_scale);
+		}
 	}
 	}
 }
 
 void PlayerInventoryHud::draw() {
-	if(player.Interface & INTER_INVENTORY) {		
+	if(player.Interface & INTER_INVENTORY) {
 		if(player.bag) {
 			ARX_INTERFACE_DrawInventory(g_currentInventoryBag, Vec2i_ZERO);
 			
@@ -293,7 +297,7 @@ void PlayerInventoryHud::draw() {
 				}
 			}
 		}
-	} else if((player.Interface & INTER_INVENTORYALL) || m_isClosing) {				
+	} else if((player.Interface & INTER_INVENTORYALL) || m_isClosing) {
 		
 		Vec2f anchorPos = anchorPosition();
 		
