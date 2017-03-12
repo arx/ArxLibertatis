@@ -97,7 +97,6 @@ INVENTORY_SLOT inventory[INVENTORY_BAGS][INVENTORY_X][INVENTORY_Y];
 INVENTORY_DATA * SecondaryInventory = NULL;
 Entity * DRAGINTER = NULL;
 Entity * ioSteal = NULL;
-long InventoryY = 100;
 long HERO_OR_SECONDARY = 0;
 
 // 1 player 2 secondary

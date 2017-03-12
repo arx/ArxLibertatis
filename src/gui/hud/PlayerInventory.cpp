@@ -40,6 +40,7 @@ short g_currentInventoryBag = 0;
 
 extern PlayerInterfaceFlags lOldInterface;
 
+long InventoryY = 100;
 
 void PlayerInventoryHud::init() {
 	m_heroInventory = TextureContainer::LoadUI("graph/interface/inventory/hero_inventory");
