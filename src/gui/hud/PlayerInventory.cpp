@@ -316,10 +316,11 @@ void PlayerInventoryHud::draw() {
 			Vec2f pos3 = Vec2f(posx + (m_bagBackgroundSize.x * m_scale) + ((-45-32) * m_scale), linkPosY);
 			
 			TextureContainer * tex = m_heroInventoryLink;
+			Vec2f texSize = Vec2f(tex->m_size) * m_scale;
 			
-			EERIEDrawBitmap(Rectf(pos1, tex->m_size.x, tex->m_size.y), 0.001f, tex, Color::white);
-			EERIEDrawBitmap(Rectf(pos2, tex->m_size.x, tex->m_size.y), 0.001f, tex, Color::white);
-			EERIEDrawBitmap(Rectf(pos3, tex->m_size.x, tex->m_size.y), 0.001f, tex, Color::white);
+			EERIEDrawBitmap(Rectf(pos1, texSize.x, texSize.y), 0.001f, tex, Color::white);
+			EERIEDrawBitmap(Rectf(pos2, texSize.x, texSize.y), 0.001f, tex, Color::white);
+			EERIEDrawBitmap(Rectf(pos3, texSize.x, texSize.y), 0.001f, tex, Color::white);
 			
 			iOffsetY += checked_range_cast<int>(fOffsetY);
 		}
