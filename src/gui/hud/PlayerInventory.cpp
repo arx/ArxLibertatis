@@ -310,9 +310,10 @@ void PlayerInventoryHud::draw() {
 		int posy = checked_range_cast<int>(anchorPos.y + ((-3.f + 25 - 32) * m_scale));
 		
 		for(int i = 0; i < player.bag; i++) {
-			Vec2f pos1 = Vec2f(posx + (45 * m_scale), static_cast<float>(posy + iOffsetY));
-			Vec2f pos2 = Vec2f(posx + (m_bagBackgroundSize.x * m_scale)*0.5f + (-16 * m_scale), posy+iOffsetY + (-5 * m_scale));
-			Vec2f pos3 = Vec2f(posx + (m_bagBackgroundSize.x * m_scale) + ((-45-32) * m_scale), posy+iOffsetY + (-15 * m_scale));
+			float linkPosY = static_cast<float>(posy + iOffsetY);
+			Vec2f pos1 = Vec2f(posx + (45 * m_scale), linkPosY);
+			Vec2f pos2 = Vec2f(posx + (m_bagBackgroundSize.x * m_scale)*0.5f + (-16 * m_scale), linkPosY);
+			Vec2f pos3 = Vec2f(posx + (m_bagBackgroundSize.x * m_scale) + ((-45-32) * m_scale), linkPosY);
 			
 			TextureContainer * tex = m_heroInventoryLink;
 			
