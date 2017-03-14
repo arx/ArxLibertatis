@@ -146,7 +146,7 @@ void CleanInventory() {
 		slot.show = true;
 	}
 	
-	g_currentInventoryBag = 0;
+	g_playerInventoryHud.setCurrentBag(0);
 }
 
 Entity * GetInventoryObj_INVENTORYUSE(const Vec2s & pos)
