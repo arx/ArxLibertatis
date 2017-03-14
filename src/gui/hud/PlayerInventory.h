@@ -70,7 +70,7 @@ public:
 	
 private:
 	void CalculateInventoryCoordinates();
-	void ARX_INTERFACE_DrawInventory(size_t bag, Vec2i i);
+	void drawBag(size_t bag, Vec2i i);
 	bool InPlayerInventoryBag(const Vec2s & pos);
 };
 

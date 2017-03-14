@@ -183,7 +183,7 @@ void PlayerInventoryHud::CalculateInventoryCoordinates() {
 }
 
 //-----------------------------------------------------------------------------
-void PlayerInventoryHud::ARX_INTERFACE_DrawInventory(size_t bag, Vec2i i)
+void PlayerInventoryHud::drawBag(size_t bag, Vec2i i)
 {
 	fDecPulse += toMs(g_platformTime.lastFrameDuration()) * 0.5f;
 	
@@ -252,7 +252,7 @@ void PlayerInventoryHud::ARX_INTERFACE_DrawInventory(size_t bag, Vec2i i)
 void PlayerInventoryHud::draw() {
 	if(player.Interface & INTER_INVENTORY) {
 		if(player.bag) {
-			ARX_INTERFACE_DrawInventory(g_currentInventoryBag, Vec2i_ZERO);
+			drawBag(g_currentInventoryBag, Vec2i_ZERO);
 			
 			CalculateInventoryCoordinates();
 			
@@ -328,7 +328,7 @@ void PlayerInventoryHud::draw() {
 		iOffsetY = checked_range_cast<int>(fBag);
 		
 		for(short i = 0; i < player.bag; i++) {
-			ARX_INTERFACE_DrawInventory(i, Vec2i(0, iOffsetY));
+			drawBag(i, Vec2i(0, iOffsetY));
 			iOffsetY += checked_range_cast<int>(fOffsetY);
 		}
 	}
