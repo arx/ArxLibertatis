@@ -36,7 +36,6 @@
 
 bool bInventorySwitch = false;
 float fDecPulse;
-short g_currentInventoryBag = 0;
 
 extern PlayerInterfaceFlags lOldInterface;
 
@@ -85,14 +84,14 @@ bool PlayerInventoryHud::updateInput() {
 	
 	bool bQuitCombine = true;
 	
-	if(g_currentInventoryBag > 0) {
+	if(m_currentBag > 0) {
 		const Rect mouseTestRect(Vec2i(pos), int(32 * m_scale), int(32 * m_scale));
 		
 		if(mouseTestRect.contains(Vec2i(DANAEMouse)))
 			bQuitCombine = false;
 	}
 
-	if(g_currentInventoryBag < player.bag-1) {
+	if(m_currentBag < player.bag-1) {
 		float fRatio = (32 + 5) * m_scale;
 
 		pos.y += checked_range_cast<int>(fRatio);
@@ -252,11 +251,11 @@ void PlayerInventoryHud::drawBag(size_t bag, Vec2i i)
 void PlayerInventoryHud::draw() {
 	if(player.Interface & INTER_INVENTORY) {
 		if(player.bag) {
-			drawBag(g_currentInventoryBag, Vec2i_ZERO);
+			drawBag(m_currentBag, Vec2i_ZERO);
 			
 			CalculateInventoryCoordinates();
 			
-			if(g_currentInventoryBag > 0) {
+			if(m_currentBag > 0) {
 				Rectf rect = Rectf(m_arrowsAnchor, 32.f * m_scale, 32.f * m_scale);
 				
 				EERIEDrawBitmap(rect, 0.001f, m_heroInventoryUp, Color::white);
@@ -277,7 +276,7 @@ void PlayerInventoryHud::draw() {
 				}
 			}
 			
-			if(g_currentInventoryBag < player.bag-1) {
+			if(m_currentBag < player.bag-1) {
 				Rectf rect = Rectf(m_arrowsAnchor + Vec2f(0.f, 32.f + 5.f) * m_scale, 32.f * m_scale, 32.f * m_scale);
 				
 				EERIEDrawBitmap(rect, 0.001f, m_heroInventoryDown, Color::white);
@@ -338,9 +337,9 @@ void PlayerInventoryHud::nextBag() {
 	
 	if((player.Interface & INTER_INVENTORY)) {
 		if(player.bag) {
-			if(g_currentInventoryBag < player.bag - 1) {
+			if(m_currentBag < player.bag - 1) {
 				ARX_SOUND_PlayInterface(SND_BACKPACK, Random::getf(0.9f, 1.1f));
-				g_currentInventoryBag ++;
+				m_currentBag ++;
 			}
 		}
 	}
@@ -350,9 +349,9 @@ void PlayerInventoryHud::previousBag() {
 	
 	if((player.Interface & INTER_INVENTORY)) {
 		if(player.bag) {
-			if(g_currentInventoryBag > 0) {
+			if(m_currentBag > 0) {
 				ARX_SOUND_PlayInterface(SND_BACKPACK, Random::getf(0.9f, 1.1f));
-				g_currentInventoryBag --;
+				m_currentBag --;
 			}
 		}
 	}
@@ -436,7 +435,7 @@ Entity * PlayerInventoryHud::getObj(const Vec2s & pos) {
 			ty = checked_range_cast<long>((ty - 5 * m_scale) / (32 * m_scale));
 
 			if((tx >= 0) && ((size_t)tx < INVENTORY_X) && (ty >= 0) && ((size_t)ty < INVENTORY_Y)) {
-				Entity *result = inventory[g_currentInventoryBag][tx][ty].io;
+				Entity *result = inventory[m_currentBag][tx][ty].io;
 
 				if(result && (result->gameFlags & GFLAG_INTERACTIVITY)) {
 					HERO_OR_SECONDARY = 1;
@@ -504,7 +503,7 @@ void PlayerInventoryHud::dropEntity() {
 		t.y = t.y / (32 * m_scale); 
 		
 		if((t.x >= 0) && (t.x <= 16 - itemSize.x) && (t.y >= 0) && (t.y <= 3 - itemSize.y)) {
-			bag = g_currentInventoryBag;
+			bag = m_currentBag;
 		} else {
 			return;
 		}
@@ -679,5 +678,11 @@ void PlayerInventoryHud::resetPos() {
 		m_inventoryY = 110;
 	} else if(player.Interface & INTER_INVENTORYALL) {
 		m_inventoryY = 121 * player.bag;
+	}
+}
+
+void PlayerInventoryHud::setCurrentBag(short bag) {
+	if(bag < player.bag) {
+		m_currentBag = bag;
 	}
 }

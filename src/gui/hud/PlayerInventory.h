@@ -28,7 +28,6 @@ class TextureContainer;
 
 extern bool bInventorySwitch;
 extern float fDecPulse;
-extern short g_currentInventoryBag;
 
 class PlayerInventoryHud : public HudItem {
 private:
@@ -46,6 +45,7 @@ private:
 
 	bool m_isClosing;
 	long m_inventoryY;
+	short m_currentBag;
 	
 public:
 	void init();
@@ -57,6 +57,7 @@ public:
 	
 	void nextBag();
 	void previousBag();
+	void setCurrentBag(short bag);
 	
 	bool containsPos(const Vec2s & pos);
 	Entity * getObj(const Vec2s & pos);
