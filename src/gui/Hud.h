@@ -324,6 +324,8 @@ private:
 	Vec2f m_spacerSize;
 	Vec2f m_slotSpacerSize;
 	bool m_flickNow;
+	ArxDuration m_flickTime;
+	ArxDuration m_flickInterval;
 	
 	std::vector<ActiveSpellIconSlot> m_slots;
 	
