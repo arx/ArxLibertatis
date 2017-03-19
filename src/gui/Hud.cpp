@@ -1568,11 +1568,9 @@ void HudRoot::draw() {
 	if((player.Interface & INTER_MAP) && !(player.Interface & INTER_COMBATMODE)) {
 		ARX_INTERFACE_ManageOpenedBook();
 		
-		if((player.Interface & INTER_MAP) && !(player.Interface & INTER_COMBATMODE)) {
-			if(g_guiBookCurrentTopTab == BOOKMODE_SPELLS) {
-				gui::ARX_INTERFACE_ManageOpenedBook_Finish(mousePos);
-				ARX_INTERFACE_ManageOpenedBook_SpellsDraw();
-			}
+		if(g_guiBookCurrentTopTab == BOOKMODE_SPELLS) {
+			gui::ARX_INTERFACE_ManageOpenedBook_Finish(mousePos);
+			ARX_INTERFACE_ManageOpenedBook_SpellsDraw();
 		}
 		
 		setHudTextureState();
