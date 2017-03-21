@@ -315,7 +315,7 @@ void MiniMap::showPlayerMiniMap(int showLevel) {
 	}
 }
 
-void MiniMap::showBookMiniMap(int showLevel) {
+void MiniMap::showBookMiniMap(int showLevel, Rect rect) {
 	
 	UseRenderState state(render2D());
 	
@@ -333,11 +333,11 @@ void MiniMap::showBookMiniMap(int showLevel) {
 		
 		if(showLevel == ARX_LEVELS_GetRealNum(m_currentLevel)) {
 			playerPos = computePlayerPos(zoom, showLevel);
-			start = Vec2f(490.f, 220.f) - playerPos;
+			start = Vec2f(rect.center()) - playerPos;
 			playerPos += start;
 		}
 		
-		drawBackground(showLevel, Rect(360, 85, 555, 355), start, zoom, 20.f);
+		drawBackground(showLevel, rect, start, zoom, 20.f);
 		
 		GRenderer->GetTextureStage(0)->setWrapMode(TextureStage::WrapRepeat);
 		

@@ -127,7 +127,7 @@ public:
 	*
 	* \param int showLevel
 	*/
-	void showBookMiniMap(int showLevel);
+	void showBookMiniMap(int showLevel, Rect rect);
 	
 	/*!
 	* Shows the entire map in the book
