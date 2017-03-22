@@ -657,7 +657,8 @@ void updateQuestBook() {
 
 static void ARX_INTERFACE_ManageOpenedBook_TopTabs() {
 	
-	static const Vec2f BOOKMARKS_POS = Vec2f(216.f, 60.f);
+	Vec2f bookPos = g_bookRect.topLeft();
+	static const Vec2f BOOKMARKS_POS = bookPos + Vec2f(119.f, -4.f);
 	
 	if(g_guiBookCurrentTopTab != BOOKMODE_STATS) {
 		Vec2f pos = BOOKMARKS_POS;
