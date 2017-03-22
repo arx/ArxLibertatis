@@ -788,7 +788,7 @@ static void ARX_INTERFACE_ManageOpenedBook_LeftTabs(bool tabVisibility[10], long
 	{
 	int t = 0;
 	Vec2f pos = Vec2f(100.f, 82.f);
-	Vec2f activePos = Vec2f(102.f, 82.f);
+	Vec2f activePos = pos + Vec2f(2.f, 0.f);
 	
 	ARX_INTERFACE_ManageOpenedBook_LeftTabs_OneTab(tabVisibility, activeTab, t, pos, activePos);
 	}
@@ -796,7 +796,7 @@ static void ARX_INTERFACE_ManageOpenedBook_LeftTabs(bool tabVisibility[10], long
 	{
 	int t = 1;
 	Vec2f pos = Vec2f(98.f, 112.f);
-	Vec2f activePos = Vec2f(100.f, 114.f);
+	Vec2f activePos = pos + Vec2f(2.f, 2.f);
 	
 	ARX_INTERFACE_ManageOpenedBook_LeftTabs_OneTab(tabVisibility, activeTab, t, pos, activePos);
 	}
@@ -804,7 +804,7 @@ static void ARX_INTERFACE_ManageOpenedBook_LeftTabs(bool tabVisibility[10], long
 	{
 	int t = 2;
 	Vec2f pos = Vec2f(97.f, 143.f);
-	Vec2f activePos = Vec2f(101.f, 141.f);
+	Vec2f activePos = pos + Vec2f(4.f, -2.f);
 	
 	ARX_INTERFACE_ManageOpenedBook_LeftTabs_OneTab(tabVisibility, activeTab, t, pos, activePos);
 	}
@@ -812,7 +812,7 @@ static void ARX_INTERFACE_ManageOpenedBook_LeftTabs(bool tabVisibility[10], long
 	{
 	int t = 3;
 	Vec2f pos = Vec2f(95.f, 170.f);
-	Vec2f activePos = Vec2f(100.f, 170.f);
+	Vec2f activePos = pos + Vec2f(5.f, 0.f);
 	
 	ARX_INTERFACE_ManageOpenedBook_LeftTabs_OneTab(tabVisibility, activeTab, t, pos, activePos);
 	}
@@ -820,7 +820,7 @@ static void ARX_INTERFACE_ManageOpenedBook_LeftTabs(bool tabVisibility[10], long
 	{
 	int t = 4;
 	Vec2f pos = Vec2f(95.f, 200.f);
-	Vec2f activePos = Vec2f(97.f, 199.f);
+	Vec2f activePos = pos + Vec2f(2.f, -1.f);
 	
 	ARX_INTERFACE_ManageOpenedBook_LeftTabs_OneTab(tabVisibility, activeTab, t, pos, activePos);
 	}
@@ -828,7 +828,7 @@ static void ARX_INTERFACE_ManageOpenedBook_LeftTabs(bool tabVisibility[10], long
 	{
 	int t = 5;
 	Vec2f pos = Vec2f(94.f, 229.f);
-	Vec2f activePos = Vec2f(103.f, 226.f);
+	Vec2f activePos = pos + Vec2f(9.f, -3.f);
 	
 	ARX_INTERFACE_ManageOpenedBook_LeftTabs_OneTab(tabVisibility, activeTab, t, pos, activePos);
 	}
@@ -836,7 +836,7 @@ static void ARX_INTERFACE_ManageOpenedBook_LeftTabs(bool tabVisibility[10], long
 	{
 	int t = 6;
 	Vec2f pos = Vec2f(94.f, 259.f);
-	Vec2f activePos = Vec2f(101.f, 255.f);
+	Vec2f activePos = pos + Vec2f(7.f, -4.f);
 	
 	ARX_INTERFACE_ManageOpenedBook_LeftTabs_OneTab(tabVisibility, activeTab, t, pos, activePos);
 	}
@@ -844,7 +844,7 @@ static void ARX_INTERFACE_ManageOpenedBook_LeftTabs(bool tabVisibility[10], long
 	{
 	int t = 7;
 	Vec2f pos = Vec2f(92.f, 282.f);
-	Vec2f activePos = Vec2f(99.f, 283.f);
+	Vec2f activePos = pos + Vec2f(7.f, 1.f);
 	
 	ARX_INTERFACE_ManageOpenedBook_LeftTabs_OneTab(tabVisibility, activeTab, t, pos, activePos);
 	}
@@ -852,7 +852,7 @@ static void ARX_INTERFACE_ManageOpenedBook_LeftTabs(bool tabVisibility[10], long
 	{
 	int t = 8;
 	Vec2f pos = Vec2f(90.f, 308.f);
-	Vec2f activePos = Vec2f(99.f, 307.f);
+	Vec2f activePos = pos + Vec2f(9.f, -1.f);
 	
 	ARX_INTERFACE_ManageOpenedBook_LeftTabs_OneTab(tabVisibility, activeTab, t, pos, activePos);
 	}
@@ -860,7 +860,7 @@ static void ARX_INTERFACE_ManageOpenedBook_LeftTabs(bool tabVisibility[10], long
 	{
 	int t = 9;
 	Vec2f pos = Vec2f(97.f, 331.f);
-	Vec2f activePos = Vec2f(104.f, 331.f);
+	Vec2f activePos = pos + Vec2f(7.f, 0.f);
 	
 	ARX_INTERFACE_ManageOpenedBook_LeftTabs_OneTab(tabVisibility, activeTab, t, pos, activePos);
 	}
