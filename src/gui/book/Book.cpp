@@ -786,7 +786,7 @@ static void ARX_INTERFACE_ManageOpenedBook_LeftTabs_OneTab(bool tabVisibility[10
 
 static void ARX_INTERFACE_ManageOpenedBook_LeftTabs(bool tabVisibility[10], long & activeTab) {
 	
-	Vec2f bookPos = bookRect.topLeft();
+	Vec2f bookPos = g_bookRect.topLeft();
 	
 	{
 	int t = 0;
@@ -1388,14 +1388,15 @@ static void ARX_INTERFACE_ManageOpenedBook_Stats()
 static void ARX_INTERFACE_ManageOpenedBook_Map()
 {
 	long SHOWLEVEL = Book_MapPage;
+	Vec2f bookPos = g_bookRect.topLeft();
 
 	if(SHOWLEVEL >= 0 && SHOWLEVEL < 32)
-		g_miniMap.showBookEntireMap(SHOWLEVEL, Rect(Vec2f(140, 120), Vec2f(345, 290)));
+		g_miniMap.showBookEntireMap(SHOWLEVEL, Rect(Vec2i(bookPos + Vec2f(43, 56)), Vec2i(bookPos + Vec2f(248, 226))));
 
 	SHOWLEVEL = ARX_LEVELS_GetRealNum(CURRENTLEVEL);
 
 	if(SHOWLEVEL >= 0 && SHOWLEVEL < 32)
-		g_miniMap.showBookMiniMap(SHOWLEVEL, Rect(Vec2f(360, 85), Vec2f(555, 355)));
+		g_miniMap.showBookMiniMap(SHOWLEVEL, Rect(Vec2i(bookPos + Vec2f(263, 21)), Vec2i(bookPos + Vec2f(458, 291))));
 }
 
 void ARX_INTERFACE_ManageOpenedBook() {
