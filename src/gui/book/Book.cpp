@@ -1390,12 +1390,12 @@ static void ARX_INTERFACE_ManageOpenedBook_Map()
 	long SHOWLEVEL = Book_MapPage;
 
 	if(SHOWLEVEL >= 0 && SHOWLEVEL < 32)
-		g_miniMap.showBookEntireMap(SHOWLEVEL, Rect(140, 120, 345, 290));
+		g_miniMap.showBookEntireMap(SHOWLEVEL, Rect(Vec2f(140, 120), Vec2f(345, 290)));
 
 	SHOWLEVEL = ARX_LEVELS_GetRealNum(CURRENTLEVEL);
 
 	if(SHOWLEVEL >= 0 && SHOWLEVEL < 32)
-		g_miniMap.showBookMiniMap(SHOWLEVEL, Rect(360, 85, 555, 355));
+		g_miniMap.showBookMiniMap(SHOWLEVEL, Rect(Vec2f(360, 85), Vec2f(555, 355)));
 }
 
 void ARX_INTERFACE_ManageOpenedBook() {
