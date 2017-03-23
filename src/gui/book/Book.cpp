@@ -1496,7 +1496,8 @@ void ARX_INTERFACE_ManageOpenedBook_SpellsDraw() {
 		if(!bOk)
 			continue;
 			
-		Vec2f fPos = Vec2f(170.f, 135.f) + tmpPos * Vec2f(85.f, 70.f);
+		Vec2f bookPos = g_bookRect.topLeft();
+		Vec2f fPos = bookPos + Vec2f(73.f, 71.f) + tmpPos * Vec2f(85.f, 70.f);
 		long flyingover = 0;
 		
 		if(MouseInBookRect(fPos, Vec2f(48, 48))) {
@@ -1504,7 +1505,7 @@ void ARX_INTERFACE_ManageOpenedBook_SpellsDraw() {
 			flyingover = 1;
 			
 			SpecialCursor=CURSOR_INTERACTION_ON;
-			DrawBookTextCenter(hFontInBook, Vec2f(208, 90), spellInfo.name, Color::none);
+			DrawBookTextCenter(hFontInBook, bookPos + Vec2f(111, 26), spellInfo.name, Color::none);
 			
 			for(size_t si = 0; si < MAX_SPEECH; si++) {
 				if(speech[si].timecreation > ArxInstant_ZERO)
@@ -1534,8 +1535,8 @@ void ARX_INTERFACE_ManageOpenedBook_SpellsDraw() {
 			for(int j = 0; j < 6; ++j) {
 				if(spellInfo.symbols[j] != RUNE_NONE) {
 					Vec2f pos;
-					pos.x = 240 - (count * 32) * 0.5f + j * 32;
-					pos.y = 306;
+					pos.x = bookPos.x + 143 - (count * 32) * 0.5f + j * 32;
+					pos.y = bookPos.y + 242;
 					DrawBookInterfaceItem(gui::necklace.pTexTab[spellInfo.symbols[j]], Vec2f(pos), Color::white, 0.000001f);
 				}
 			}
