@@ -1418,6 +1418,8 @@ void ARX_INTERFACE_ManageOpenedBook() {
 				                         s32(g_bookRect.height() * 0.25f * g_sizeRatio.y));
 				
 				ARX_SPELLS_UpdateBookSymbolDraw(runeDrawRect);
+				gui::ARX_INTERFACE_ManageOpenedBook_Finish(Vec2f(DANAEMouse));
+				ARX_INTERFACE_ManageOpenedBook_SpellsDraw();
 				break;
 			}
 			case BOOKMODE_MINIMAP: {
@@ -1522,7 +1524,6 @@ void ARX_INTERFACE_ManageOpenedBook_SpellsDraw() {
 				if(spellInfo.symbols[j] != RUNE_NONE)
 					++count;
 			
-			GRenderer->GetTextureStage(0)->setMagFilter(TextureStage::FilterLinear);
 			for(int j = 0; j < 6; ++j) {
 				if(spellInfo.symbols[j] != RUNE_NONE) {
 					Vec2f pos;
@@ -1531,7 +1532,6 @@ void ARX_INTERFACE_ManageOpenedBook_SpellsDraw() {
 					DrawBookInterfaceItem(gui::necklace.pTexTab[spellInfo.symbols[j]], Vec2f(pos), Color::white, 0.000001f);
 				}
 			}
-			GRenderer->GetTextureStage(0)->setMagFilter(TextureStage::FilterNearest);
 		}
 		
 		if(spellInfo.tc) {
