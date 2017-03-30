@@ -315,7 +315,7 @@ static void RenderBookPlayerCharacter() {
 	EERIE_CAMERA * oldcam = ACTIVECAM;
 	bookcam.center = rec.center();
 	SetActiveCamera(&bookcam);
-	PrepareCamera(&bookcam, g_size);
+	PrepareCamera(&bookcam, Rect(g_bookRect));
 	
 	Anglef ePlayerAngle = Anglef::ZERO;
 	
