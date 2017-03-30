@@ -125,13 +125,16 @@ static glm::mat4 Util_SetViewMatrix(EERIE_TRANSFORM &transform) {
 	return Util_LookAt(vFrom, vView, vWorldUp);
 }
 
-static void EERIE_CreateMatriceProj(float width, float height, EERIE_CAMERA * cam) {
+static void EERIE_CreateMatriceProj(const Rect rect, EERIE_CAMERA * cam) {
 
 	float fov = focalToFov(cam->focal);
 	
 	const float nearDist = 1.f;
 	const float farDist = cam->cdepth;
 	const float frustumDepth = farDist - nearDist;
+
+	float width = rect.width();
+	float height = rect.height();
 	
 	float aspect = height / width;
 	float w = aspect * (glm::cos(fov / 2) / glm::sin(fov / 2));
@@ -152,8 +155,8 @@ static void EERIE_CreateMatriceProj(float width, float height, EERIE_CAMERA * ca
 
 	cam->ProjectionMatrix[0][0] *= width * .5f;
 	cam->ProjectionMatrix[1][1] *= height * .5f;
-	
-	GRenderer->SetViewport(Rect(static_cast<s32>(width), static_cast<s32>(height)));
+
+	GRenderer->SetViewport(rect);
 }
 
 void SP_PrepareCamera(EERIE_CAMERA * cam) {
@@ -164,9 +167,7 @@ void SP_PrepareCamera(EERIE_CAMERA * cam) {
 void PrepareCamera(EERIE_CAMERA * cam, const Rect & size) {
 	
 	SP_PrepareCamera(cam);
-	EERIE_CreateMatriceProj(static_cast<float>(size.width()),
-	                        static_cast<float>(size.height()),
-	                        cam);
+	EERIE_CreateMatriceProj(size, cam);
 }
 
 EERIE_CAMERA * ACTIVECAM = NULL;
