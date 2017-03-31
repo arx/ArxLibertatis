@@ -805,6 +805,9 @@ void ApplyTileLights(EERIEPOLY * ep, const Vec2s & pos)
 }
 
 
+#include "graphics/Raycast.h"
+#include "io/log/Logger.h"
+
 /*!
  * \addtogroup Light Baking
  * \{
@@ -812,6 +815,8 @@ void ApplyTileLights(EERIEPOLY * ep, const Vec2s & pos)
 
 void EERIERemovePrecalcLights() {
 
+	LogInfo << "Flushing precalc lights";
+	
 	for(size_t i = 0; i < g_staticLightsMax; i++) {
 		if(g_staticLights[i] != NULL)
 			g_staticLights[i]->treat = 1;
@@ -825,8 +830,125 @@ void EERIERemovePrecalcLights() {
 			EERIEPOLY & ep = eg.polydata[l];
 			
 			ep.v[3].color = ep.v[2].color = ep.v[1].color = ep.v[0].color = Color::white.toRGB();
+			
+			ep.vertColors[0] = Color3f::black;
+			ep.vertColors[1] = Color3f::black;
+			ep.vertColors[2] = Color3f::black;
+			ep.vertColors[3] = Color3f::black;
 		}
 	}
+}
+
+
+void ApplyTileLightsHACKEDUP(EERIEPOLY * ep, const EERIE_LIGHT * light) {
+
+	size_t nbvert = (ep->type & POLY_QUAD) ? 4 : 3;
+
+	for(size_t j = 0; j < nbvert; j++) {
+		Vec3f & position = ep->v[j].p;
+		
+		if(glm::distance(position, light->pos) > light->fallend) {
+			continue;
+		}
+		
+//		if(RaycastLightFlare(position, light->pos)) {
+//			continue;
+//		}
+		
+		
+		Vec3f & normal = ep->nrml[j];
+
+		Vec3f vLight = glm::normalize(light->pos - position);
+
+		float cosangle = glm::dot(normal, vLight);
+
+		if(cosangle > 0.f) {
+			float distance = fdist(light->pos, position);
+
+			if(distance <= light->fallstart) {
+				cosangle *= light->intensity * GLOBAL_LIGHT_FACTOR;
+			} else {
+				float p = ((light->fallend - distance) * light->falldiffmul);
+
+				if(p <= 0.f)
+					cosangle = 0.f;
+				else
+					cosangle *= p * (light->intensity * GLOBAL_LIGHT_FACTOR);
+			}
+			cosangle *= 0.5f;
+
+			ep->vertColors[j] += light->rgb * cosangle;
+		}
+	}
+}
+
+
+
+void EERIEPrecalcLights() {
+	
+	EERIERemovePrecalcLights();
+	
+	LogInfo << "Calculating precalc lights: " << g_staticLightsMax;
+	
+	for(size_t i = 0; i < g_staticLightsMax; i++) {
+		if(g_staticLights[i] != NULL)
+			g_staticLights[i]->treat = 1;
+	}
+	
+	
+	for(size_t i = 0; i < g_staticLightsMax; i++) {
+		EERIE_LIGHT * el = g_staticLights[i];
+		LogInfo << "Calculating light" << i;
+
+		if(   el
+		   && el->exist
+		   && el->m_ignitionStatus
+		   && !(el->extras & EXTRAS_SEMIDYNAMIC)
+		) {
+			RecalcLight(el);
+			
+			// TODO copy-paste poly iteration
+			for(short z = 0; z < ACTIVEBKG->m_size.y; z++)
+			for(short x = 0; x < ACTIVEBKG->m_size.x; x++) {
+				BackgroundTileData & eg = ACTIVEBKG->m_tileData[x][z];
+				for(short l = 0; l < eg.nbpoly; l++) {
+					EERIEPOLY & ep = eg.polydata[l];
+					
+					
+						ApplyTileLightsHACKEDUP(&ep, el);
+					
+					//ep.v[3].color = ep.v[2].color = ep.v[1].color = ep.v[0].color = Color::white.toRGB();
+				}
+			}
+			
+		}
+	}
+	
+	
+	// TODO copy-paste poly iteration
+	for(short z = 0; z < ACTIVEBKG->m_size.y; z++)
+	for(short x = 0; x < ACTIVEBKG->m_size.x; x++) {
+		BackgroundTileData & eg = ACTIVEBKG->m_tileData[x][z];
+		for(short l = 0; l < eg.nbpoly; l++) {
+			EERIEPOLY & ep = eg.polydata[l];
+			
+			size_t nbvert = (ep.type & POLY_QUAD) ? 4 : 3;
+			for(size_t j = 0; j < nbvert; j++) {
+				
+				
+				ep.v[j].color = componentwise_min(ep.vertColors[j], Color3f::white).toRGB(255);
+			}
+			
+		}
+	}
+	
+	
+//	u8 ir = clipByte255(tempColor.r);
+//	u8 ig = clipByte255(tempColor.g);
+//	u8 ib = clipByte255(tempColor.b);
+//	ep->tv[j].color = Color(ir, ig, ib, 255).toRGBA();
+	
+
 }
 
 /*! \} */

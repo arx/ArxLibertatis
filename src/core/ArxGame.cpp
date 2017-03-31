@@ -2226,8 +2226,17 @@ void ArxGame::render() {
 	if(g_debugTriggers[1])
 		g_hudRoot.bookIconGui.requestFX();
 	
-	if(g_debugTriggers[4])
-		EERIERemovePrecalcLights();
+	
+	{
+		if(g_debugTriggers[4])
+			EERIERemovePrecalcLights();
+		
+		if(g_debugTriggers[5])
+			EERIEPrecalcLights();
+		
+		if(g_debugTriggers[6])
+			RestoreLastLoadedLightning(*ACTIVEBKG);
+	}
 	
 	
 	if(isInMenu()) {

@@ -197,6 +197,7 @@ ColorRGBA ApplyLight(const ShaderLight lights[],
 void ApplyTileLights(EERIEPOLY * ep, const Vec2s & pos);
 
 void EERIERemovePrecalcLights();
+void EERIEPrecalcLights();
 
 void TreatBackgroundDynlights();
 

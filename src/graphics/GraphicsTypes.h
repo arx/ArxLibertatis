@@ -117,6 +117,7 @@ struct EERIEPOLY {
 	Vec3f		norm2;
 	TexturedVertex		v[4];
 	TexturedVertex		tv[4];
+	Color3f vertColors[4];
 	Vec3f		nrml[4];
 	TextureContainer * tex;
 	Vec3f		center;

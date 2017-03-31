@@ -1041,7 +1041,7 @@ void RestoreLastLoadedLightning(BackgroundData & eb)
 
 plusloin:
 	;
-	free(LastLoadedLightning);
-	LastLoadedLightning = NULL;
-	LastLoadedLightningNb = 0;
+	//free(LastLoadedLightning);
+	//LastLoadedLightning = NULL;
+	//LastLoadedLightningNb = 0;
 }
