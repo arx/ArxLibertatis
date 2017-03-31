@@ -85,11 +85,6 @@ bool Note::allocate() {
 	
 	Vec2f scale = Vec2f(minSizeRatio(), minSizeRatio());
 	
-	if(_type == QuestBook) {
-		// TODO change this once the aspect ratio in character screen, spell book, etc. is fixed.
-		scale = g_sizeRatio;
-	}
-	
 	switch(_type) {
 		
 		// TODO this information should not be hardcoded
@@ -145,7 +140,11 @@ bool Note::allocate() {
 			prevPage = TextureContainer::LoadUI("graph/interface/book/left_corner_original");
 			nextPage = TextureContainer::LoadUI("graph/interface/book/right_corner_original");
 			if(background) {
-				newPos = Vec2f(97, 64) * scale;
+				Vec2f bookPosOrig = Vec2f(97, 64);
+				Vec2f bookSizeOrig = Vec2f(background->m_size);
+				Vec2f bookPosStretched = (bookPosOrig + bookSizeOrig / 2.0f) * g_sizeRatio;
+				Vec2f bookPosScaled = bookPosOrig + bookSizeOrig / 2.0f * scale;
+				newPos = Vec2i(bookPosOrig + bookPosStretched - bookPosScaled);
 				newTextStart = Vec2f(40.f, 40.f);
 				newTextEnd = Vec2f(background->size()) * Vec2f(0.5f, 1.f) - Vec2f(10.f, 65.f);
 				maxPages = std::numeric_limits<size_t>::max();
