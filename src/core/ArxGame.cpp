@@ -2226,6 +2226,10 @@ void ArxGame::render() {
 	if(g_debugTriggers[1])
 		g_hudRoot.bookIconGui.requestFX();
 	
+	if(g_debugTriggers[4])
+		EERIERemovePrecalcLights();
+	
+	
 	if(isInMenu()) {
 		benchmark::begin(benchmark::Menu);
 		renderMenu();
