@@ -150,7 +150,7 @@ void ARX_INTERFACE_ManageOpenedBook_Finish(const Vec2f & mousePos, Rectf bookRec
 		bookcam.center = (bookPos + Vec2f(285, 36) + Vec2f(tmpPos) * Vec2f(45, 64)) * g_sizeRatio;
 		
 		SetActiveCamera(&bookcam);
-		PrepareCamera(&bookcam, g_size);
+		PrepareCamera(&bookcam, Rect(bookRect));
 		
 		if(player.hasRune((Rune)i)) {
 			
