@@ -1483,7 +1483,7 @@ void ARX_INTERFACE_ManageOpenedBook() {
 				                         s32(g_bookRect.height() * 0.25f));
 				
 				ARX_SPELLS_UpdateBookSymbolDraw(runeDrawRect);
-				gui::ARX_INTERFACE_ManageOpenedBook_Finish(Vec2f(DANAEMouse), g_bookRect);
+				gui::ARX_INTERFACE_ManageOpenedBook_Finish(Vec2f(DANAEMouse), g_bookRect, g_bookScale);
 				ARX_INTERFACE_ManageOpenedBook_SpellsDraw();
 				break;
 			}

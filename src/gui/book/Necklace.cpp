@@ -111,7 +111,7 @@ static void PlayerBookDrawRune(Rune rune) {
 
 
 
-void ARX_INTERFACE_ManageOpenedBook_Finish(const Vec2f & mousePos, Rectf bookRect)
+void ARX_INTERFACE_ManageOpenedBook_Finish(const Vec2f & mousePos, Rectf bookRect, float scale)
 {
 	
 	UseRenderState state(render3D().depthTest(false).fog(false));
@@ -147,7 +147,7 @@ void ARX_INTERFACE_ManageOpenedBook_Finish(const Vec2f & mousePos, Rectf bookRec
 		
 		EERIE_3DOBJ * rune = gui::necklace.runes[i];
 		
-		bookcam.center = (bookPos + Vec2f(285, 36) + Vec2f(tmpPos) * Vec2f(45, 64)) * g_sizeRatio;
+		bookcam.center = bookPos + (Vec2f(285, 36) + Vec2f(tmpPos) * Vec2f(45, 64)) * scale;
 		
 		SetActiveCamera(&bookcam);
 		PrepareCamera(&bookcam, Rect(bookRect));

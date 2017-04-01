@@ -36,7 +36,7 @@ extern ARX_NECKLACE necklace;
 void NecklaceInit();
 void ReleaseNecklace();
 
-void ARX_INTERFACE_ManageOpenedBook_Finish(const Vec2f & mousePos, Rectf bookRect);
+void ARX_INTERFACE_ManageOpenedBook_Finish(const Vec2f & mousePos, Rectf bookRect, float scale);
 
 }
 
