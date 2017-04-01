@@ -160,8 +160,6 @@ gui::Note openNote;
 
 extern PlatformInstant SLID_START;
 
-Vec2f				BOOKDEC = Vec2f(0.f, 0.f);
-
 bool				PLAYER_MOUSELOOK_ON = false;
 bool				TRUE_PLAYER_MOUSELOOK_ON = false;
 static bool MEMO_PLAYER_MOUSELOOK_ON = false;

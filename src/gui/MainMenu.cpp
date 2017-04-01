@@ -38,6 +38,7 @@
 #include "gui/Hud.h"
 #include "gui/Text.h"
 #include "gui/TextManager.h"
+#include "gui/book/Book.h"
 #include "gui/menu/MenuFader.h"
 #include "gui/widget/CheckboxWidget.h"
 #include "gui/widget/CycleTextWidget.h"
