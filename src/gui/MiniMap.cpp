@@ -277,13 +277,16 @@ void MiniMap::showPlayerMiniMap(int showLevel) {
 	UseRenderState state(render2D());
 	
 	ARX_PROFILE_FUNC();
+
+	Vec2f minimapSizeOrig = Vec2f(200, 160);
+	float scale = minSizeRatio();
 	
-	const float miniMapZoom = 300.f; // zoom of the minimap
-	const Vec2f minimapSizeOrig = Vec2f(200.0f, 160.0f);
-	const Rect miniMapRect(Vec2i(390, 135), s32(minimapSizeOrig.x), s32(minimapSizeOrig.y)); // minimap rect on a 640*480 screen
-	const float playerSize = 4.f; // red arrow size
-	
-	static const Vec2f decal = Vec2f(40.f, -150.f);
+	const float miniMapZoom = 300.f * scale; // zoom of the minimap
+	const Vec2f minimapSizeScaled = minimapSizeOrig * scale;
+	const Rect miniMapRect(Vec2i(g_size.right - minimapSizeScaled.x, -10 * scale),
+	                       s32(minimapSizeScaled.x),
+	                       s32(minimapSizeScaled.y));
+	const float playerSize = 4.f * scale; // red arrow size
 	
 	// First Load Minimap TC & DATA if needed
 	if(m_levels[showLevel].m_texContainer == NULL) {
@@ -298,19 +301,19 @@ void MiniMap::showPlayerMiniMap(int showLevel) {
 		
 		if(showLevel == ARX_LEVELS_GetRealNum(m_currentLevel)) {
 			playerPos = computePlayerPos(miniMapZoom, showLevel);
-			start = Vec2f(490.f, 220.f) - playerPos;
+			start = Vec2f(miniMapRect.center()) - playerPos;
 			playerPos += start;
 		}
 		
 		// Draw the background
-		drawBackground(showLevel, miniMapRect, start, miniMapZoom, 20.f, decal, true, 0.5f);
+		drawBackground(showLevel, miniMapRect, start, miniMapZoom, 20.f, true, 0.5f);
 		
 		GRenderer->GetTextureStage(0)->setWrapMode(TextureStage::WrapRepeat);
 		
 		// Draw the player (red arrow)
 		if(showLevel == ARX_LEVELS_GetRealNum(m_currentLevel)) {
-			drawPlayer(playerSize, playerPos + decal, true);
-			drawDetectedEntities(showLevel, start + decal, miniMapZoom);
+			drawPlayer(playerSize, playerPos, true);
+			drawDetectedEntities(showLevel, start, miniMapZoom);
 		}
 		
 	}
@@ -327,7 +330,8 @@ void MiniMap::showBookMiniMap(int showLevel, Rect rect) {
 	
 	if(m_levels[showLevel].m_texContainer) {
 		
-		float zoom = 900.f;
+		float scale = minSizeRatio();
+		float zoom = 900.f * scale;
 		
 		Vec2f start = Vec2f_ZERO;
 		Vec2f playerPos(0.f, 0.f);
@@ -338,12 +342,12 @@ void MiniMap::showBookMiniMap(int showLevel, Rect rect) {
 			playerPos += start;
 		}
 		
-		drawBackground(showLevel, rect, start, zoom, 20.f);
+		drawBackground(showLevel, rect, start, zoom, 20.f * scale);
 		
 		GRenderer->GetTextureStage(0)->setWrapMode(TextureStage::WrapRepeat);
 		
 		if(showLevel == ARX_LEVELS_GetRealNum(m_currentLevel)) {
-			drawPlayer(6.f, playerPos, false);
+			drawPlayer(6.f * scale, playerPos, false);
 			drawDetectedEntities(showLevel, start, zoom);
 		}
 		
@@ -363,7 +367,8 @@ void MiniMap::showBookEntireMap(int showLevel, Rect rect) {
 		return;
 	}
 	
-	float zoom = 250.f;
+	float scale = minSizeRatio();
+	float zoom = 250.f * scale;
 	
 	Vec2f start(rect.topLeft());
 	
@@ -379,7 +384,7 @@ void MiniMap::showBookEntireMap(int showLevel, Rect rect) {
 	GRenderer->GetTextureStage(0)->setWrapMode(TextureStage::WrapRepeat);
 	
 	if(showLevel == ARX_LEVELS_GetRealNum(m_currentLevel)) {
-		drawPlayer(3.f, playerPos, false);
+		drawPlayer(3.f * scale, playerPos, false);
 		drawDetectedEntities(showLevel, start, zoom);
 	}
 	
@@ -391,7 +396,6 @@ void MiniMap::showBookEntireMap(int showLevel, Rect rect) {
 	}
 	
 	Vec2f casePos(zoom / MINIMAP_MAX_X, zoom / MINIMAP_MAX_Z);
-	float ratio = 1.f;
 	
 	for(size_t i = 0; i < m_mapMarkers.size(); i++) {
 		
@@ -400,22 +404,22 @@ void MiniMap::showBookEntireMap(int showLevel, Rect rect) {
 		}
 		
 		Vec2f pos;
-		pos.x = m_mapMarkers[i].m_pos.x * 8 * ratio * m_activeBkg->m_mul.x * casePos.x + start.x;
-		pos.y = m_mapMarkers[i].m_pos.y * 8 * ratio * m_activeBkg->m_mul.y * casePos.y + start.y;
+		pos.x = m_mapMarkers[i].m_pos.x * 8 * m_activeBkg->m_mul.x * casePos.x + start.x;
+		pos.y = m_mapMarkers[i].m_pos.y * 8 * m_activeBkg->m_mul.y * casePos.y + start.y;
 		
-		float size = 5.f * ratio;
+		float size = 5.f * scale;
 		verts[0].color = Color(255, 0, 0, 255).toRGBA();
 		verts[1].color = Color(255, 0, 0, 255).toRGBA();
 		verts[2].color = Color(255, 0, 0, 255).toRGBA();
 		verts[3].color = Color(255, 0, 0, 255).toRGBA();
-		verts[0].p.x = (pos.x - size) * g_sizeRatio.x;
-		verts[0].p.y = (pos.y - size) * g_sizeRatio.y;
-		verts[1].p.x = (pos.x + size) * g_sizeRatio.x;
-		verts[1].p.y = (pos.y - size) * g_sizeRatio.y;
-		verts[2].p.x = (pos.x + size) * g_sizeRatio.x;
-		verts[2].p.y = (pos.y + size) * g_sizeRatio.y;
-		verts[3].p.x = (pos.x - size) * g_sizeRatio.x;
-		verts[3].p.y = (pos.y + size) * g_sizeRatio.y;
+		verts[0].p.x = (pos.x - size);
+		verts[0].p.y = (pos.y - size);
+		verts[1].p.x = (pos.x + size);
+		verts[1].p.y = (pos.y - size);
+		verts[2].p.x = (pos.x + size);
+		verts[2].p.y = (pos.y + size);
+		verts[3].p.x = (pos.x - size);
+		verts[3].p.y = (pos.y + size);
 		verts[0].uv = Vec2f_ZERO;
 		verts[1].uv = Vec2f_X_AXIS;
 		verts[2].uv = Vec2f_ONE;
@@ -431,20 +435,20 @@ void MiniMap::showBookEntireMap(int showLevel, Rect rect) {
 		if(mouseTestRect.contains(Vec2i(DANAEMouse))) {
 			if(!m_mapMarkers[i].m_text.empty()) {
 				
-				Rect bRect(140, 295, 140 + 205, 358);
+				Rect bRect(rect.left, rect.bottom, rect.left + 205 * scale, rect.bottom + 63 * scale);
 				
-				Rect::Num left = checked_range_cast<Rect::Num>((bRect.left) * g_sizeRatio.x);
-				Rect::Num right = checked_range_cast<Rect::Num>((bRect.right) * g_sizeRatio.x);
-				Rect::Num top = checked_range_cast<Rect::Num>((bRect.top) * g_sizeRatio.y);
-				Rect::Num bottom = checked_range_cast<Rect::Num>((bRect.bottom) * g_sizeRatio.y);
+				Rect::Num left = checked_range_cast<Rect::Num>(bRect.left);
+				Rect::Num right = checked_range_cast<Rect::Num>(bRect.right);
+				Rect::Num top = checked_range_cast<Rect::Num>(bRect.top);
+				Rect::Num bottom = checked_range_cast<Rect::Num>(bRect.bottom);
 				Rect rRect = Rect(left, top, right, bottom);
 				
 				long lLengthDraw = ARX_UNICODE_ForceFormattingInRect(hFontInGameNote, m_mapMarkers[i].m_text, rRect);
 				
 				
 				ARX_UNICODE_DrawTextInRect(hFontInGameNote,
-				                           (BOOKDEC + Vec2f(bRect.topLeft())) * g_sizeRatio,
-				                           (BOOKDEC.x + float(bRect.right)) * g_sizeRatio.x,
+				                           BOOKDEC + Vec2f(bRect.topLeft()),
+				                           BOOKDEC.x + float(bRect.right),
 				                           m_mapMarkers[i].m_text.substr(0, lLengthDraw),
 				                           Color::none);
 			}
@@ -534,7 +538,7 @@ Vec2f MiniMap::computePlayerPos(float zoom, int showLevel) {
 	return pos;
 }
 
-void MiniMap::drawBackground(int showLevel, Rect boundaries, Vec2f start, float zoom, float fadeBorder, Vec2f decal, bool invColor, float alpha) {
+void MiniMap::drawBackground(int showLevel, Rect boundaries, Vec2f start, float zoom, float fadeBorder, bool invColor, float alpha) {
 	
 	m_mapVertices.clear();
 	
@@ -559,10 +563,10 @@ void MiniMap::drawBackground(int showLevel, Rect boundaries, Vec2f start, float 
 	
 	if(fadeBorder > 0.f) {
 		fadeDiv = 1.f/fadeBorder;
-		fadeBounds.left = checked_range_cast<Rect::Num>((boundaries.left + fadeBorder) * g_sizeRatio.x);
-		fadeBounds.right = checked_range_cast<Rect::Num>((boundaries.right - fadeBorder) * g_sizeRatio.x);
-		fadeBounds.top = checked_range_cast<Rect::Num>((boundaries.top + fadeBorder) * g_sizeRatio.y);
-		fadeBounds.bottom = checked_range_cast<Rect::Num>((boundaries.bottom - fadeBorder) * g_sizeRatio.y);
+		fadeBounds.left = checked_range_cast<Rect::Num>(boundaries.left + fadeBorder);
+		fadeBounds.right = checked_range_cast<Rect::Num>(boundaries.right - fadeBorder);
+		fadeBounds.top = checked_range_cast<Rect::Num>(boundaries.top + fadeBorder);
+		fadeBounds.bottom = checked_range_cast<Rect::Num>(boundaries.bottom - fadeBorder);
 	}
 	
 	RenderState desiredState = render2D();
@@ -588,13 +592,13 @@ void MiniMap::drawBackground(int showLevel, Rect boundaries, Vec2f start, float 
 		v4.y = (v3.y * div) * d.y;
 		
 		Vec2f pos;
-		pos.x = (start.x + x * cas.x) * g_sizeRatio.x;
-		pos.y = (start.y + z * cas.y) * g_sizeRatio.y;
+		pos.x = (start.x + x * cas.x);
+		pos.y = (start.y + z * cas.y);
 		
-		if((pos.x < boundaries.left * g_sizeRatio.x)
-		   || (pos.x > boundaries.right * g_sizeRatio.x)
-		   || (pos.y < boundaries.top * g_sizeRatio.y)
-		   || (pos.y > boundaries.bottom * g_sizeRatio.y)) {
+		if((pos.x < boundaries.left)
+		   || (pos.x > boundaries.right)
+		   || (pos.y < boundaries.top)
+		   || (pos.y > boundaries.bottom)) {
 			continue; // out of bounds
 		}
 		
@@ -602,8 +606,8 @@ void MiniMap::drawBackground(int showLevel, Rect boundaries, Vec2f start, float 
 		
 		verts[3].p.x = verts[0].p.x = pos.x;
 		verts[1].p.y = verts[0].p.y = pos.y;
-		verts[2].p.x = verts[1].p.x = pos.x + (cas.x * g_sizeRatio.x);
-		verts[3].p.y = verts[2].p.y = pos.y + (cas.y * g_sizeRatio.y);
+		verts[2].p.x = verts[1].p.x = pos.x + cas.x;
+		verts[3].p.y = verts[2].p.y = pos.y + cas.y;
 		
 		verts[3].uv.x = verts[0].uv.x = v4.x;
 		verts[1].uv.y = verts[0].uv.y = v4.y;
@@ -676,16 +680,6 @@ void MiniMap::drawBackground(int showLevel, Rect boundaries, Vec2f start, float 
 		}
 		
 		if(oo > 0.f) {
-			
-			verts[0].p.x += decal.x * g_sizeRatio.x;
-			verts[0].p.y += decal.y * g_sizeRatio.y;
-			verts[1].p.x += decal.x * g_sizeRatio.x;
-			verts[1].p.y += decal.y * g_sizeRatio.y;
-			verts[2].p.x += decal.x * g_sizeRatio.x;
-			verts[2].p.y += decal.y * g_sizeRatio.y;
-			verts[3].p.x += decal.x * g_sizeRatio.x;
-			verts[3].p.y += decal.y * g_sizeRatio.y;
-			
 			m_mapVertices.push_back(verts[0]);
 			m_mapVertices.push_back(verts[1]);
 			m_mapVertices.push_back(verts[2]);
@@ -729,12 +723,12 @@ void MiniMap::drawPlayer(float playerSize, Vec2f playerPos, bool alphaBlending) 
 	float ca = std::cos(angle);
 	float sa = std::sin(angle);
 	
-	verts[0].p.x = (playerPos.x + r2.x * ca + r2.y * sa) * g_sizeRatio.x;
-	verts[0].p.y = (playerPos.y + r2.y * ca - r2.x * sa) * g_sizeRatio.y;
-	verts[1].p.x = (playerPos.x + r1.x * ca + r1.y * sa) * g_sizeRatio.x;
-	verts[1].p.y = (playerPos.y + r1.y * ca - r1.x * sa) * g_sizeRatio.y;
-	verts[2].p.x = (playerPos.x + r3.x * ca + r3.y * sa) * g_sizeRatio.x;
-	verts[2].p.y = (playerPos.y + r3.y * ca - r3.x * sa) * g_sizeRatio.y;
+	verts[0].p.x = (playerPos.x + r2.x * ca + r2.y * sa);
+	verts[0].p.y = (playerPos.y + r2.y * ca - r2.x * sa);
+	verts[1].p.x = (playerPos.x + r1.x * ca + r1.y * sa);
+	verts[1].p.y = (playerPos.y + r1.y * ca - r1.x * sa);
+	verts[2].p.x = (playerPos.x + r3.x * ca + r3.y * sa);
+	verts[2].p.y = (playerPos.y + r3.y * ca - r3.x * sa);
 	
 	GRenderer->ResetTexture(0);
 	
@@ -806,8 +800,6 @@ void MiniMap::drawDetectedEntities(int showLevel, Vec2f start, float zoom) {
 		if(d > 600.f) {
 			col = 1.f - (d - 600.f) * ( 1.0f / 200 );
 		}
-		
-		fp *= g_sizeRatio;
 		
 		Rectf rect(
 			fp,
