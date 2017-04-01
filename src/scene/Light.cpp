@@ -282,7 +282,7 @@ void TreatBackgroundDynlights() {
 					dynamicLight->extras       = light->extras;
 					dynamicLight->duration     = ArxDurationMs(std::numeric_limits<long>::max());
 					
-					dynamicLight->rgb = light->rgb - light->rgb * light->ex_flicker * randomColor3f() * 0.5f;
+					dynamicLight->rgb = light->rgb - light->rgb * light->ex_flicker * /*randomColor3f() **/ 0.5f;
 					
 					dynamicLight->rgb = componentwise_max(dynamicLight->rgb, Color3f::black);
 					RecalcLight(dynamicLight);
@@ -831,10 +831,10 @@ void EERIERemovePrecalcLights() {
 			
 			ep.v[3].color = ep.v[2].color = ep.v[1].color = ep.v[0].color = Color::white.toRGB();
 			
-			ep.vertColors[0] = Color3f::black;
-			ep.vertColors[1] = Color3f::black;
-			ep.vertColors[2] = Color3f::black;
-			ep.vertColors[3] = Color3f::black;
+			ep.vertColors[0] = defaultAmbient;
+			ep.vertColors[1] = defaultAmbient;
+			ep.vertColors[2] = defaultAmbient;
+			ep.vertColors[3] = defaultAmbient;
 		}
 	}
 }
