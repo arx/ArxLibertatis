@@ -82,6 +82,28 @@ void ARX_SPELLS_Init_Rects() {
 	}
 }
 
+static void updateIOLight(Entity * io) {
+	if(io->flarecount) {
+
+		EERIE_LIGHT * light = dynLightCreate(io->dynlight);
+		if(light) {
+			light->pos = io->pos;
+			light->pos += angleToVectorXZ(io->angle.getYaw() - 45.f) * 60.f;
+			light->pos += Vec3f(0.f, -120.f, 0.f);
+
+			float rr = Random::getf();
+			light->fallstart = 140.f + io->flarecount * 0.333333f + rr * 5.f;
+			light->fallend = 220.f + io->flarecount * 0.5f + rr * 5.f;
+			light->intensity = 1.6f;
+			light->rgb.r = 0.01f*io->flarecount * 2;
+			light->rgb.g = 0.009f*io->flarecount * 2;
+			light->rgb.b = 0.008f*io->flarecount * 2;
+		}
+	} else {
+		lightHandleDestroy(io->dynlight);
+	}
+}
+
 void ARX_SPELLS_UpdateSymbolDraw() {
 	
 	ArxInstant now = arxtime.now();
@@ -145,25 +167,7 @@ void ARX_SPELLS_UpdateSymbolDraw() {
 			}
 		}
 
-		if(io->flarecount) {
-			
-			EERIE_LIGHT * light = dynLightCreate(io->dynlight);
-			if(light) {
-				light->pos = io->pos;
-				light->pos += angleToVectorXZ(io->angle.getYaw() - 45.f) * 60.f;
-				light->pos += Vec3f(0.f, -120.f, 0.f);
-				
-				float rr = Random::getf();
-				light->fallstart = 140.f + io->flarecount * 0.333333f + rr * 5.f;
-				light->fallend = 220.f + io->flarecount * 0.5f + rr * 5.f;
-				light->intensity=1.6f;
-				light->rgb.r=0.01f*io->flarecount*2;
-				light->rgb.g=0.009f*io->flarecount*2;
-				light->rgb.b=0.008f*io->flarecount*2;
-			}
-		} else {
-			lightHandleDestroy(io->dynlight);
-		}
+		updateIOLight(io);
 
 		if(io->symboldraw) {
 			SYMBOL_DRAW * sd = entities[handle]->symboldraw;
