@@ -170,7 +170,7 @@ void ARX_SPELLS_UpdateSymbolDraw() {
 		updateIOLight(io);
 
 		if(io->symboldraw) {
-			SYMBOL_DRAW * sd = entities[handle]->symboldraw;
+			SYMBOL_DRAW * sd = io->symboldraw;
 			long elapsed = toMs(now - sd->starttime);
 
 			if(elapsed > sd->duration) {
@@ -237,8 +237,8 @@ void ARX_SPELLS_UpdateSymbolDraw() {
 					if(newtime <= ti) {
 						float ratio = float(newtime) * div_ti;
 						pos1 += Vec2s(Vec2f(vect) * ratio);
-						AddFlare(Vec2f(pos1), 0.1f, 1, entities[handle]);
-						FlareLine(Vec2f(old_pos), Vec2f(pos1), entities[handle]);
+						AddFlare(Vec2f(pos1), 0.1f, 1, io);
+						FlareLine(Vec2f(old_pos), Vec2f(pos1), io);
 						break;
 					}
 
@@ -272,7 +272,7 @@ void ARX_SPELLS_UpdateSymbolDraw() {
 						pos1 += Vec2s(Vec2f(ratio) * Vec2f(vect) * 0.5f);
 						
 						Vec2f pos = Vec2f(pos1) * g_sizeRatio;
-						AddFlare(pos, 0.1f, 1, entities[handle], true);
+						AddFlare(pos, 0.1f, 1, io, true);
 
 						break;
 					}
