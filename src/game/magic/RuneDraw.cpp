@@ -113,32 +113,34 @@ void ARX_SPELLS_UpdateSymbolDraw() {
 					tst = true;
 				}
 
-				if(io->spellcast_data.symb[0] != RUNE_NONE && tst) {
-					Rune symb = io->spellcast_data.symb[0];
+				if(tst) {
+					if(io->spellcast_data.symb[0] != RUNE_NONE) {
+						Rune symb = io->spellcast_data.symb[0];
 
-					for(long j = 0; j < 3; j++) {
-						io->spellcast_data.symb[j] = io->spellcast_data.symb[j+1];
+						for(long j = 0; j < 3; j++) {
+							io->spellcast_data.symb[j] = io->spellcast_data.symb[j + 1];
+						}
+
+						io->spellcast_data.symb[3] = RUNE_NONE;
+						float speedFactor = std::max(io->speed_modif + io->basespeed, 0.01f);
+						float duration = (1000 - (io->spellcast_data.spell_level * 60)) * speedFactor;
+						ARX_SPELLS_RequestSymbolDraw2(io, symb, duration);
+						io->gameFlags &= ~GFLAG_INVISIBILITY;
+					} else { // cast spell !!!
+						io->gameFlags &= ~GFLAG_INVISIBILITY;
+
+						ARX_SPELLS_Launch(io->spellcast_data.castingspell,
+										  handle,
+										  io->spellcast_data.spell_flags,
+										  io->spellcast_data.spell_level,
+										  io->spellcast_data.target,
+										  io->spellcast_data.duration);
+
+						if(!(io->spellcast_data.spell_flags & SPELLCAST_FLAG_NOANIM) && (io->ioflags & IO_NPC)) {
+							changeAnimation(io, 1, io->anims[ANIM_CAST]);
+						}
+						io->spellcast_data.castingspell = SPELL_NONE;
 					}
-
-					io->spellcast_data.symb[3] = RUNE_NONE;
-					float speedFactor = std::max(io->speed_modif + io->basespeed, 0.01f);
-					float duration = (1000 - (io->spellcast_data.spell_level * 60)) * speedFactor;
-					ARX_SPELLS_RequestSymbolDraw2(io, symb, duration);
-					io->gameFlags &= ~GFLAG_INVISIBILITY;
-				} else if(tst) { // cast spell !!!
-					io->gameFlags &= ~GFLAG_INVISIBILITY;
-					
-					ARX_SPELLS_Launch(io->spellcast_data.castingspell,
-					                  handle,
-					                  io->spellcast_data.spell_flags,
-					                  io->spellcast_data.spell_level,
-					                  io->spellcast_data.target,
-					                  io->spellcast_data.duration);
-
-					if(!(io->spellcast_data.spell_flags & SPELLCAST_FLAG_NOANIM) && (io->ioflags & IO_NPC)) {
-						changeAnimation(io, 1, io->anims[ANIM_CAST]);
-					}
-					io->spellcast_data.castingspell = SPELL_NONE;
 				}
 			}
 		}
