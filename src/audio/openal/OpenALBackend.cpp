@@ -399,7 +399,7 @@ aalError OpenALBackend::setListenerPosition(const Vec3f & position) {
 	}
 	
 	alListener3f(AL_POSITION, position.x, position.y, position.z);
-	AL_CHECK_ERROR("setting listener posiotion")
+	AL_CHECK_ERROR("setting listener position")
 	
 	return AAL_OK;
 }
