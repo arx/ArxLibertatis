@@ -397,7 +397,9 @@ public:
 		
 		syncPersistent(flags);
 		
-		memcpy(m_mapping + m_offset + offset, vertices, count * sizeof(Vertex));
+		if(count > 0) {
+			memcpy(m_mapping + m_offset + offset, vertices, count * sizeof(Vertex));
+		}
 		
 	}
 	
