@@ -180,11 +180,11 @@ private:
 			n++;
 		}
 		
-		u8 area = u8(n * 0.5f * 0.5f / 2 * 255);
+		unsigned area = unsigned(n * 0.5f * 0.5f / 2 * 255);
 		for(unsigned i = 0; i < n; i += 2) {
 			
-			u8 remaining = u8((n - i - 2) * 0.5f * float(n - i - 2) / n * 0.5f / 2 * 255);
-			u8 current = area - remaining;
+			unsigned remaining = unsigned((n - i - 2) * 0.5f * float(n - i - 2) / n * 0.5f / 2 * 255);
+			u8 current = u8(area - remaining);
 			if(current > 127) {
 				// ensure (pixel > 127) remains constant
 				current = 127;
