@@ -19,6 +19,8 @@
 
 #include "graphics/image/Image.h"
 
+#include <algorithm>
+
 /*!
  * Morphological antialisaing algorithm for black-white channels.
  *
@@ -183,11 +185,11 @@ private:
 		unsigned area = unsigned(n * 0.5f * 0.5f / 2 * 255);
 		for(unsigned i = 0; i < n; i += 2) {
 			
-			unsigned remaining = unsigned((n - i - 2) * 0.5f * float(n - i - 2) / n * 0.5f / 2 * 255);
-			u8 current = u8(area - remaining);
-			if(current > 127) {
-				// ensure (pixel > 127) remains constant
-				current = 127;
+			u8 current = std::min(area, 127u);
+			if(i + 2 < n) {
+				unsigned remaining = unsigned((n - i - 2) * 0.5f * float(n - i - 2) / n * 0.5f / 2 * 255);
+				current = std::min(area - remaining, 127u);
+				area = remaining;
 			}
 			
 			*p = (filled ? 255 - current : current);
@@ -197,7 +199,6 @@ private:
 			}
 			
 			p += sx * dx + sy * dy;
-			area = remaining;
 		}
 		
 	}
