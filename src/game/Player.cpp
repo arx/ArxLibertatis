@@ -435,10 +435,7 @@ static void ARX_PLAYER_ComputePlayerStats() {
 	player.manaPool.max = player.m_attribute.mind * (player.level + 1);
 	
 	float base_defense = player.m_skill.defense + player.m_attribute.constitution * 3;
-	player.m_misc.armorClass = glm::floor(base_defense * 0.1f - 1);
-	
-	if(player.m_misc.armorClass < 1)
-		player.m_misc.armorClass = 1;
+	player.m_misc.armorClass = std::max(1.f, glm::floor(base_defense * 0.1f - 1));
 	
 	float base_casting = player.m_skill.casting + player.m_attribute.mind * 2.f;
 	player.m_misc.resistMagic = glm::floor(player.m_attribute.mind * 2.f * (1.f + base_casting * ( 1.0f / 200 )));
