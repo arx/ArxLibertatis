@@ -115,7 +115,7 @@ class AbortCommand : public Command {
 	
 public:
 	
-	AbortCommand(std::string command, Result _result) : Command(command), result(_result) { }
+	AbortCommand(const std::string & command, Result _result) : Command(command), result(_result) { }
 	
 	Result execute(Context & context) {
 		
