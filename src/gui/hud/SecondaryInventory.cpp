@@ -231,7 +231,7 @@ void SecondaryInventoryHud::draw() {
 				UpdateGoldObject(io);
 				
 				Vec2f p = Vec2f(
-				(m_fadePosition * m_scale) + (float)x*(32 * m_scale) + (2 * m_scale),
+				m_rect.left + (float)x*(32 * m_scale) + (2 * m_scale),
 				(float)y*(32 * m_scale) + (13 * m_scale)
 				);
 				
