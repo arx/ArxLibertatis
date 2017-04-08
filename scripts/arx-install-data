@@ -2706,16 +2706,20 @@ find_file_impl() {
 	_file_d="$(print "$_file" | sed 's/^\(.*\)\(\.[^.]*\)$/\1_default\2/')"
 	
 	# Prefer files from the patch - if availbale, they are most likely the correct ones
-	set -- -iname "$_file" -print -o -iname "$_file_d" -print
-	[ "$_patchable" = 1 ] && [ ! -z "$patchdir" ]  && find "$patchdir" "$@"
+	[ "$_patchable" = 1 ] && [ ! -z "$patchdir" ]  \
+		&& find "$patchdir" \( -name "$_file" -o -name "$_file_d" \)  -print
 	
 	# Find the file in the source
-	[ ! -z "$sourcedir" ] && find "$sourcedir" "$@"
-	[ -d "$sourcefile" ]  && find "$sourcefile" "$@"
+	[ ! -z "$sourcedir" ] && find "$sourcedir" -iname "$_file" -print
+	[ -d "$sourcefile" ]  && find "$sourcefile" -iname "$_file" -print
+	# Find the _default.pak variant only after the .pak variant
+	# This is required to detect the correct language fro Steam installs
+	# as the english version is always present as speech_default.pak and loc_default.pak
+	[ ! -z "$sourcedir" ] && find "$sourcedir" -iname "$_file_d" -print
+	[ -d "$sourcefile" ]  && find "$sourcefile" -iname "$_file_d" -print
 	
 	# Also find the file if it is already in the data directory, but don't ignore case
-	find "$datadir" -path '*-temp' -prune -o \
-		-name "$_file" -print -o -name "$_file_d" -print
+	find "$datadir" -path '*-temp' -prune \( -name "$_file" -o -name "$_file_d" \) -print
 	
 }
 # Find a file in patch, source and data directories.
@@ -2761,6 +2765,8 @@ data_lang_desc='' # Friendly data language/type label
 # <callback> receives a speech.pak checksum and sets data_lang and data_lang_desc
 detect_data_langauge() {
 	callback="$1"
+	
+	# TODO Add support for installing multiple languages at once
 	
 	if [ $install = 1 ]
 		then _detect_data_langauge_status=40
