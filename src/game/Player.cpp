@@ -435,7 +435,7 @@ static void ARX_PLAYER_ComputePlayerStats() {
 	player.manaPool.max = player.m_attribute.mind * (player.level + 1);
 	
 	float base_defense = player.m_skill.defense + player.m_attribute.constitution * 3;
-	player.m_misc.armorClass = glm::floor(base_defense * ( 1.0f / 10 ) - 1);
+	player.m_misc.armorClass = glm::floor(base_defense * 0.1f - 1);
 	
 	if(player.m_misc.armorClass < 1)
 		player.m_misc.armorClass = 1;
