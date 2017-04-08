@@ -435,18 +435,15 @@ static void ARX_PLAYER_ComputePlayerStats() {
 	player.manaPool.max = player.m_attribute.mind * (player.level + 1);
 	
 	float base_defense = player.m_skill.defense + player.m_attribute.constitution * 3;
-	float armorClass = base_defense * ( 1.0f / 10 ) - 1 ;
-	player.m_misc.armorClass = checked_range_cast<unsigned char>(armorClass);
+	player.m_misc.armorClass = glm::floor(base_defense * ( 1.0f / 10 ) - 1);
 	
 	if(player.m_misc.armorClass < 1)
 		player.m_misc.armorClass = 1;
 	
 	float base_casting = player.m_skill.casting + player.m_attribute.mind * 2.f;
-	player.m_misc.resistMagic = (unsigned char)(float)(player.m_attribute.mind * 2.f
-	                      * (1.f + base_casting * ( 1.0f / 200 )));
+	player.m_misc.resistMagic = glm::floor(player.m_attribute.mind * 2.f * (1.f + base_casting * ( 1.0f / 200 )));
 
-	float resistPoison = player.m_attribute.constitution * 2 + (base_defense * ( 1.0f / 4 ));
-	player.m_misc.resistPoison = checked_range_cast<unsigned char>(resistPoison);
+	player.m_misc.resistPoison = glm::floor(player.m_attribute.constitution * 2 + (base_defense * ( 1.0f / 4 )));
 
 
 	player.m_misc.damages = (player.m_attribute.strength - 10) * ( 1.0f / 2 );
