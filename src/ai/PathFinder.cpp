@@ -164,6 +164,7 @@ public:
 	}
 	
 	void add(Node * node) {
+		arx_assert(!contains(node->getId()));
 		nodes.insert(NodeList::value_type(node->getId(), node));
 	}
 	
