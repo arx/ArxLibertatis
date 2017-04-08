@@ -99,7 +99,7 @@ class GameFlagCommand : public Command {
 	
 public:
 	
-	GameFlagCommand(std::string name, GameFlag _flag, bool _inv = false)
+	GameFlagCommand(const std::string & name, GameFlag _flag, bool _inv = false)
 		: Command(name, AnyEntity), flag(_flag), inv(_inv) { }
 	
 	Result execute(Context & context) {
