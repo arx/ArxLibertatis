@@ -439,10 +439,9 @@ static void ARX_PLAYER_ComputePlayerStats() {
 	
 	float base_casting = player.m_skill.casting + player.m_attribute.mind * 2.f;
 	player.m_misc.resistMagic = glm::floor(player.m_attribute.mind * 2.f * (1.f + base_casting * ( 1.0f / 200 )));
-
+	
 	player.m_misc.resistPoison = glm::floor(player.m_attribute.constitution * 2 + base_defense * 0.25f);
-
-
+	
 	player.m_misc.damages = std::max(1.f, (player.m_attribute.strength - 10) * 0.5f);
 	
 	player.AimTime = PlatformDurationMs(1500);
