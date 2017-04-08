@@ -84,7 +84,7 @@ class GotoCommand : public Command {
 	
 public:
 	
-	GotoCommand(std::string command, bool _sub = false) : Command(command), sub(_sub) { }
+	GotoCommand(const std::string & command, bool _sub = false) : Command(command), sub(_sub) { }
 	
 	Result execute(Context & context) {
 		
