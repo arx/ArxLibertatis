@@ -128,7 +128,7 @@ class IOFlagCommand : public Command {
 	
 public:
 	
-	IOFlagCommand(std::string name, EntityFlag _flag, bool _inv = false)
+	IOFlagCommand(const std::string & name, EntityFlag _flag, bool _inv = false)
 		: Command(name, AnyEntity), flag(_flag), inv(_inv) { }
 	
 	Result execute(Context & context) {
