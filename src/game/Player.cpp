@@ -455,7 +455,7 @@ static void ARX_PLAYER_ComputePlayerStats() {
 	
 	float base_close_combat = player.m_skill.closeCombat
 	                          + player.m_attribute.dexterity + player.m_attribute.strength * 2.f;
-	player.m_misc.criticalHit = (float)(player.m_attribute.dexterity - 9) * 2.f
+	player.m_misc.criticalHit = (player.m_attribute.dexterity - 9) * 2.f
 	                      + base_close_combat * ( 1.0f / 5 );
 }
 
