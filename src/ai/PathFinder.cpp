@@ -45,6 +45,8 @@ ZeniMax Media Inc., Suite 120, Rockville, Maryland 20850 USA.
 
 #include <limits>
 #include <algorithm>
+
+#include <boost/foreach.hpp>
 #include <boost/unordered_map.hpp>
 
 #include "graphics/GraphicsTypes.h"
@@ -158,8 +160,8 @@ class PathFinder::ClosedNodeList {
 public:
 	
 	~ClosedNodeList() {
-		for(boost::unordered_map<NodeId, Node *>::iterator it=nodes.begin(); it != nodes.end(); it++) {
-			delete (*it).second;
+		BOOST_FOREACH(NodeList::value_type & entry, nodes) {
+			delete entry.second;
 		}
 	}
 	
