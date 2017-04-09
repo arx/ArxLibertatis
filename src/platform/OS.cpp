@@ -508,7 +508,7 @@ MemoryInfo getMemoryInfo() {
 	
 	#if ARX_PLATFORM == ARX_PLATFORM_WIN32
 	{
-		LPMEMORYSTATUSEX status;
+		MEMORYSTATUSEX status;
 		status.dwLength = sizeof(status);
 		if(GlobalMemoryStatusEx(&status)) {
 			memory.total = status.ullTotalPhys;
