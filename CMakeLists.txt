@@ -1025,7 +1025,10 @@ endif()
 
 # Crash handler sources
 set(PLATFORM_CRASHHANDLER_SOURCES src/platform/CrashHandler.cpp)
-set(PLATFORM_CRASHHANDLER_IMPL_SOURCES src/platform/crashhandler/CrashHandlerImpl.cpp)
+set(PLATFORM_CRASHHANDLER_IMPL_SOURCES
+	src/platform/crashhandler/CrashHandlerImpl.cpp
+	src/platform/crashhandler/CrashProcessorImpl.cpp
+)
 set(PLATFORM_CRASHHANDLER_POSIX_SOURCES
 	src/platform/crashhandler/CrashHandlerPOSIX.cpp
 	src/platform/crashhandler/CrashProcessorPOSIX.cpp
