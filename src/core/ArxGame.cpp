@@ -176,6 +176,8 @@ SavegameHandle LOADQUEST_SLOT = SavegameHandle(); // OH NO, ANOTHER GLOBAL! - TE
 static const float CURRENT_BASE_FOCAL = 310.f;
 static const float defaultCameraFocal = 350.f;
 
+static const PlatformDuration runeDrawPointInterval = PlatformDuration(1000.0f / 60.0f);
+
 extern EERIE_3DOBJ * arrowobj;
 
 extern Entity * FlyingOverIO;
@@ -1930,7 +1932,19 @@ void ArxGame::updateLevel() {
 	if(!player.m_paralysed) {
 		if(eeMousePressed1()) {
 			if(!ARX_FLARES_Block) {
-				ARX_SPELLS_AddPoint(DANAEMouse);
+				static PlatformDuration runeDrawPointElapsed = PlatformDuration_ZERO;
+				if(!config.input.useAltRuneRecognition) {
+					runeDrawPointElapsed += g_platformTime.lastFrameDuration();
+					
+					if(runeDrawPointElapsed >= runeDrawPointInterval) {
+						ARX_SPELLS_AddPoint(DANAEMouse);
+						while(runeDrawPointElapsed >= runeDrawPointInterval) {
+							runeDrawPointElapsed -= runeDrawPointInterval;
+						}
+					}
+				} else {
+					ARX_SPELLS_AddPoint(DANAEMouse);
+				}
 			} else {
 				spellRecognitionPointsReset();
 				ARX_FLARES_Block = false;
