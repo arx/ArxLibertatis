@@ -618,6 +618,11 @@ else(MSVC)
 	check_symbol_exists(setenv "stdlib.h" ARX_HAVE_SETENV)
 	check_symbol_exists(unsetenv "stdlib.h" ARX_HAVE_UNSETENV)
 	
+	check_symbol_exists(__get_cpuid "cpuid.h" ARX_HAVE_GET_CPUID)
+	if(ARX_HAVE_GET_CPUID)
+		check_symbol_exists(__get_cpuid_max "cpuid.h" ARX_HAVE_GET_CPUID_MAX)
+	endif()
+	
 	find_library(LIBRT_LIBRARY rt)
 	
 	if(LIBRT_LIBRARY)
