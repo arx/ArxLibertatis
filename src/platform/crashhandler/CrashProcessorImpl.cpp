@@ -186,6 +186,10 @@ void CrashHandlerImpl::processCrash() {
 			if(!distro.empty()) {
 				ofs << "- distribution: " << distro << '\n';
 			}
+			std::string cpu = platform::getCPUName();
+			if(!cpu.empty()) {
+				ofs << "- cpu: " << cpu << '\n';
+			}
 			
 			ofs << "\nVariables:\n";
 			size_t nbVariables = std::min(size_t(m_pCrashInfo->nbVariables),
