@@ -20,27 +20,37 @@
 #include "platform/OS.h"
 
 #include "Configure.h"
+#include "platform/Architecture.h"
 #include "platform/Platform.h"
 
+#include <algorithm>
 #include <sstream>
 #include <vector>
+#include <cstring>
+
 #include <boost/algorithm/string/trim.hpp>
 #include <boost/algorithm/string/predicate.hpp>
 
 #if ARX_PLATFORM == ARX_PLATFORM_WIN32
 #include <windows.h>
 #include <cstring>
+#if ARX_ARCH == ARX_ARCH_X86 || ARX_ARCH == ARX_ARCH_X86_64
+#include <intrin.h>
+#endif
 #endif
 
 #if ARX_HAVE_UNAME
 #include <sys/utsname.h>
 #endif
 
+#if ARX_HAVE_GET_CPUID
+#include <cpuid.h>
+#endif
+
 #include "io/fs/FilePath.h"
 #include "io/fs/Filesystem.h"
 #include "io/fs/FileStream.h"
 
-#include "platform/Architecture.h"
 #include "platform/Process.h"
 #include "platform/WindowsUtils.h"
 
@@ -412,6 +422,77 @@ std::string getOSDistribution() {
 	}
 	
 	#endif // ARX_PLATFORM == ARX_PLATFORM_LINUX
+	
+	return std::string();
+}
+
+std::string getCPUName() {
+	
+	#if (ARX_ARCH == ARX_ARCH_X86 || ARX_ARCH == ARX_ARCH_X86_64) \
+	    && (ARX_PLATFORM == ARX_PLATFORM_WIN32 || ARX_HAVE_GET_CPUID)
+	
+	#if ARX_PLATFORM == ARX_PLATFORM_WIN32
+	int cpuinfo[4] = { 0 };
+	__cpuid(cpuinfo, 0x80000000);
+	int max = cpuinfo[0];
+	#elif ARX_HAVE_GET_CPUID_MAX
+	unsigned cpuinfo[4] = { 0 };
+	int max = __get_cpuid_max(0x80000000, NULL);
+	#else
+	unsigned cpuinfo[4] = { 0 };
+	__get_cpuid(0x80000000, &cpuinfo[0], &cpuinfo[1], &cpuinfo[2], &cpuinfo[3]);
+	int max = cpuinfo[0];
+	#endif
+	
+	const int first = 0x80000002;
+	int count = std::min(std::max(max + 1, first) - first, 3);
+	
+	std::string name;
+	name.resize(count * sizeof(cpuinfo));
+	
+	for(int i = 0; i < count; i++) {
+		#if ARX_PLATFORM == ARX_PLATFORM_WIN32
+		__cpuid(cpuinfo, first + i);
+		#else
+		__get_cpuid(first + i, &cpuinfo[0], &cpuinfo[1], &cpuinfo[2], &cpuinfo[3]);
+		#endif
+		memcpy(&*name.begin() + i * sizeof(cpuinfo), cpuinfo, sizeof(cpuinfo));
+	}
+	
+	size_t p = name.find('\0');
+	if(p != std::string::npos) {
+		name.resize(p);
+	}
+	boost::trim(name);
+	return name;
+	
+	#elif ARX_PLATFORM == ARX_PLATFORM_LINUX
+	
+	fs::ifstream ifs("/proc/cpuinfo");
+	
+	std::string line;
+	while(std::getline(ifs, line).good()) {
+		
+		size_t sep = line.find(':');
+		if(sep == std::string::npos) {
+			continue;
+		}
+		
+		std::string label = line.substr(0, sep);
+		boost::trim(label);
+		if(label != "model name") {
+			continue;
+		}
+		
+		std::string name = line.substr(sep + 1);
+		boost::trim(name);
+		if(!name.empty()) {
+			return name;
+		}
+		
+	}
+	
+	#endif
 	
 	return std::string();
 }

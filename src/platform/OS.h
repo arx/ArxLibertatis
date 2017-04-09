@@ -55,6 +55,13 @@ std::string getOSArchitecture();
  */
 std::string getOSDistribution();
 
+/*!
+ * \brief Get the branding name of the CPU in the system
+ *
+ * \return the cpu branding name or an empty string if it could not be determined.
+ */
+std::string getCPUName();
+
 } // namespace platform
 
 #endif // ARX_PLATFORM_OS_H
