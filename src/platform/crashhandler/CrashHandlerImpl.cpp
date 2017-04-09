@@ -88,19 +88,19 @@ bool CrashHandlerImpl::createSharedMemory() {
 		m_SharedMemoryName = oss.str();
 		
 		// Create a shared memory object.
-		m_SharedMemory = boost::interprocess::shared_memory_object(boost::interprocess::create_only, m_SharedMemoryName.c_str(), boost::interprocess::read_write);
+		m_SharedMemory = bip::shared_memory_object(bip::create_only, m_SharedMemoryName.c_str(), bip::read_write);
 		
 		// Resize to fit the CrashInfo structure
 		m_SharedMemory.truncate(sizeof(CrashInfo));
 		
 		// Map the whole shared memory in this process
-		m_MemoryMappedRegion = boost::interprocess::mapped_region(m_SharedMemory, boost::interprocess::read_write);
+		m_MemoryMappedRegion = bip::mapped_region(m_SharedMemory, bip::read_write);
 		
 		// Our CrashInfo will be stored in this shared memory.
 		m_pCrashInfo = new (m_MemoryMappedRegion.get_address()) CrashInfo;
 		m_textLength = 0;
 		
-	} catch(boost::interprocess::interprocess_exception) {
+	} catch(bip::interprocess_exception) {
 		return false;
 	}
 	
@@ -108,8 +108,8 @@ bool CrashHandlerImpl::createSharedMemory() {
 }
 
 void CrashHandlerImpl::destroySharedMemory() {
-	m_MemoryMappedRegion = boost::interprocess::mapped_region();
-	m_SharedMemory = boost::interprocess::shared_memory_object();
+	m_MemoryMappedRegion = bip::mapped_region();
+	m_SharedMemory = bip::shared_memory_object();
 	m_pCrashInfo = 0;
 }
 
