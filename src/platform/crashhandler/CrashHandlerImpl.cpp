@@ -429,7 +429,7 @@ bool CrashHandlerImpl::addAttachedFile(const fs::path & file) {
 	return true;
 }
 
-bool CrashHandlerImpl::setVariable(const std::string& name, const std::string& value) {
+bool CrashHandlerImpl::setVariable(const std::string & name, const std::string & value) {
 	Autolock autoLock(&m_Lock);
 
 	if(name.size() >= CrashInfo::MaxVariableNameLen) {
