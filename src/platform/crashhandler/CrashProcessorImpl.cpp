@@ -190,6 +190,13 @@ void CrashHandlerImpl::processCrash() {
 			if(!cpu.empty()) {
 				ofs << "- cpu: " << cpu << '\n';
 			}
+			platform::MemoryInfo memory = platform::getMemoryInfo();
+			if(memory.total) {
+				ofs << "- total physical memory: " << memory.total << " bytes" << '\n';
+			}
+			if(memory.available) {
+				ofs << "- free physical memory: " << memory.available << " bytes" << '\n';
+			}
 			
 			ofs << "\nVariables:\n";
 			size_t nbVariables = std::min(size_t(m_pCrashInfo->nbVariables),
