@@ -1106,8 +1106,8 @@ void ActiveSpellsGui::init() {
 	m_spacerSize = Vec2f(60.f, 50.f);
 	m_slotSpacerSize = Vec2f(0.f, 9.f);
 	m_flickNow = false;
-	m_flickTime = ArxDuration_ZERO;
-	m_flickInterval = ArxDurationMs(1000.0f / 60.0f);
+	m_flickTime = PlatformDuration_ZERO;
+	m_flickInterval = PlatformDurationMs(1000.0f / 60.0f);
 }
 
 void ActiveSpellsGui::update(Rectf parent) {
@@ -1115,7 +1115,7 @@ void ActiveSpellsGui::update(Rectf parent) {
 	float intensity = 1.f - PULSATE * 0.5f;
 	intensity = glm::clamp(intensity, 0.f, 1.f);
 	
-	m_flickTime += ArxDurationMs(g_framedelay);
+	m_flickTime += g_platformTime.lastFrameDuration();
 	
 	if(m_flickTime >= m_flickInterval) {
 		m_flickNow = !m_flickNow;
