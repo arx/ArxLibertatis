@@ -28,6 +28,7 @@
 #include <vector>
 #include <cstring>
 
+#include <boost/lexical_cast.hpp>
 #include <boost/algorithm/string/trim.hpp>
 #include <boost/algorithm/string/predicate.hpp>
 
@@ -45,6 +46,10 @@
 
 #if ARX_HAVE_GET_CPUID
 #include <cpuid.h>
+#endif
+
+#if ARX_HAVE_SYSCONF
+#include <unistd.h>
 #endif
 
 #include "io/fs/FilePath.h"
@@ -497,5 +502,85 @@ std::string getCPUName() {
 	return std::string();
 }
 
+MemoryInfo getMemoryInfo() {
+	
+	MemoryInfo memory = { 0, 0 };
+	
+	#if ARX_PLATFORM == ARX_PLATFORM_WIN32
+	{
+		LPMEMORYSTATUSEX status;
+		status.dwLength = sizeof(status);
+		if(GlobalMemoryStatusEx(&status)) {
+			memory.total = status.ullTotalPhys;
+			memory.available = status.ullAvailPhys;
+			return memory;
+		}
+	}
+	#endif
+	
+	#if ARX_PLATFORM == ARX_PLATFORM_LINUX
+	{
+		// sysinfo(2) does not report memory used for cache :/ - parse /proc/meminfo instead
+		fs::ifstream ifs("/proc/meminfo");
+		u64 total = u64(-1), free = u64(-1), buffers = u64(-1), cached = u64(-1);
+		std::string line;
+		while(std::getline(ifs, line).good()) {
+			
+			size_t sep = line.find(':');
+			if(sep == std::string::npos) {
+				continue;
+			}
+			
+			size_t end = line.find("kB", sep + 1);
+			if(end == std::string::npos) {
+				continue;
+			}
+			
+			std::string value = line.substr(sep + 1, end - sep - 1);
+			boost::trim(value);
+			
+			u64 number = 0;
+			try {
+				number = boost::lexical_cast<u64>(value) * u64(1024);
+			} catch(...) {
+				continue;
+			}
+			
+			std::string label = line.substr(0, sep);
+			boost::trim(label);
+			if(label == "MemTotal") {
+				total = number;
+			} else if(label == "MemFree") {
+				free = number;
+			} else if(label == "Buffers") {
+				buffers = number;
+			} else if(label == "Cached") {
+				cached = number;
+			} else {
+				continue;
+			}
+			
+			if(total != u64(-1) && free != u64(-1) && buffers != u64(-1) && cached != u64(-1)) {
+				memory.total = total;
+				memory.available = free + buffers + cached;
+				return memory;
+			}
+			
+		}
+	}
+	#endif
+	
+	#if ARX_HAVE_SYSCONF && defined(_SC_PHYS_PAGES) && defined(_SC_PAGESIZE)
+	{
+		long pages = sysconf(_SC_PHYS_PAGES);
+		long pagesize = sysconf(_SC_PAGESIZE);
+		if(pages > 0 && pagesize > 0) {
+			memory.total = u64(pages) * u64(pagesize);
+		}
+	}
+	#endif
+	
+	return memory;
+}
 
 } // namespace platform
