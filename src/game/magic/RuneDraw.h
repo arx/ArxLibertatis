@@ -29,7 +29,6 @@ class Entity;
 
 struct SYMBOL_DRAW {
 	ArxInstant starttime;
-	Vec3f		lastpos;
 	short lastElapsed;
 	short			duration;
 	std::string sequence;
