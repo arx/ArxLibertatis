@@ -25,6 +25,8 @@
 
 #include <string>
 
+#include "platform/Platform.h"
+
 namespace platform {
 
 /*!
@@ -61,6 +63,18 @@ std::string getOSDistribution();
  * \return the cpu branding name or an empty string if it could not be determined.
  */
 std::string getCPUName();
+
+struct MemoryInfo {
+	u64 total;
+	u64 available;
+};
+
+/*!
+ * \brief Get the total and available physical memory size
+ *
+ * \return the total and avaialbe memory size or 0 if it could not be determined.
+ */
+MemoryInfo getMemoryInfo();
 
 } // namespace platform
 
