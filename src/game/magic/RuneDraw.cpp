@@ -310,13 +310,6 @@ static void ARX_SPELLS_RequestSymbolDrawCommon(Entity * io, float duration,
 	sd->starttime = arxtime.now();
 	sd->lastElapsed = 0;
 	
-	float tmpAngle = io->angle.getYaw() - 45.0F + info.startOffset.x * 2;
-	
-	sd->lastpos = io->pos;
-	sd->lastpos += angleToVectorXZ(tmpAngle) * 60.f;
-	sd->lastpos += Vec3f(0.f, -120.0f, 0.f);
-	sd->lastpos += Vec3f(0.f, -info.startOffset.y * 5, 0.f);
-	
 	sd->cPosStart = info.startOffset;
 
 	io->gameFlags &= ~GFLAG_INVISIBILITY;
