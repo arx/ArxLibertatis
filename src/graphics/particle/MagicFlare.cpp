@@ -202,9 +202,9 @@ void AddFlare(const Vec2f & pos, float sm, short typ, Entity * io, bool bookDraw
 		EE_RTP(flare.tv.p, flare.v);
 		flare.v.p += ka.orgTrans.pos;
 
-		float vx = -(flare.pos.x - subj.center.x) * 0.2173913f;
-		float vy = (flare.pos.y - subj.center.y) * 0.1515151515151515f;
 		if(io) {
+			float vx = -(flare.pos.x - subj.center.x) * 0.2173913f;
+			float vy = (flare.pos.y - subj.center.y) * 0.1515151515151515f;
 			flare.v.p = io->pos;
 			flare.v.p += angleToVectorXZ(io->angle.getYaw() + vx) * 100.f;
 			flare.v.p.y += std::sin(glm::radians(MAKEANGLE(io->angle.getPitch() + vy))) * 100.f - 150.f;
