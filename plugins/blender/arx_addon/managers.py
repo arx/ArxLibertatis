@@ -76,9 +76,15 @@ def strip_wires(bm):
     for seq in [bm.verts, bm.faces, bm.edges]: seq.index_update()
     return bm
 
+
+class ArxException(Exception):
+    """Common exception thrown by this addon"""
+    pass
+
 class InconsistentStateException(Exception):
     """Thrown if data supposed to be added to existing data does not match"""
     pass
+
 
 import itertools
 
@@ -88,6 +94,17 @@ class ArxObjectManager(object):
         self.ioLib = ioLib
         self.dataPath = dataPath
         self.ftlSerializer = FtlSerializer()
+
+    def validateAssetDirectory(self):
+        if not os.path.isdir(self.dataPath):
+            raise ArxException("Arx assert directory path [" + self.dataPath + "] is not a directory")
+        
+        if not os.path.exists(self.dataPath):
+            raise ArxException("Arx assert directory path [" + self.dataPath + "] does not exist")
+
+    def validateObjectName(self, name):
+        if len(name.encode('utf-8')) > 63:
+            raise ArxException("Name ["+name+"] too long to be usesd as blender object name")
 
     def analyzeFaceData(self, faceData):
         # find weird face data
@@ -161,8 +178,10 @@ class ArxObjectManager(object):
         return bm
 
     def createObject(self, bm, data, canonicalId) -> bpy.types.Object:
-
-        mesh = bpy.data.meshes.new("/".join(canonicalId))
+        
+        idString = "/".join(canonicalId);
+        self.validateObjectName(idString)
+        mesh = bpy.data.meshes.new(idString)
         bm.to_mesh(mesh)
 
         armatureObj = self.createArmature(canonicalId, bm, data.groups)
@@ -274,6 +293,8 @@ class ArxObjectManager(object):
         return self.loadFile(ftlFileName)
 
     def loadFile(self, filePath) -> bpy.types.Object:
+        self.validateAssetDirectory();
+        
         log.debug("Loading file: %s" % filePath)
 
         with open(filePath, "rb") as f:

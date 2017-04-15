@@ -25,7 +25,7 @@ if "ArxAddon" in locals():
 if "ArxFacePanel" in locals():
     importlib.reload(sys.modules["arx_addon.meshEdit"])
 
-from .managers import ArxAddon
+from .managers import ArxAddon, ArxException
 from .meshEdit import ArxFacePanel
 
 import bpy
@@ -106,8 +106,12 @@ class ImportFTL(bpy.types.Operator, ImportHelper):
     path_mode = path_reference_mode
 
     def execute(self, context):
-        getAddon(context).objectManager.loadFile(self.filepath)
-        return {'FINISHED'}
+        try:
+            getAddon(context).objectManager.loadFile(self.filepath);
+            return {'FINISHED'}
+        except ArxException as e:
+            self.report({'ERROR'}, str(e))
+            return {'CANCELLED'}
 
 
 def menu_func_import_ftl(self, context):
