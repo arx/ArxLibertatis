@@ -339,7 +339,7 @@ class ArxObjectManager(object):
 
         # obj.update_from_editmode()
 
-        metadata = FtlMetadata(name=obj.get('arx.ftl.name', ''), org=obj.get('arx.ftl.org', ''))
+        metadata = FtlMetadata(name=obj.get('arx.ftl.name', ''), org=obj.get('arx.ftl.org', 0))
 
         bm = bmesh.new()
         bm.from_object(obj, bpy.context.scene)
@@ -352,10 +352,44 @@ class ArxObjectManager(object):
         arxTransVal = bm.faces.layers.float.get('arx_transval')
         if not arxTransVal:
             raise ArxException("Mesh is missing arx specific data layer: " + 'arx_transval')
+        
+        if not (math.isclose(obj.location[0], 0.0) and math.isclose(obj.location[1], 0.0) and math.isclose(obj.location[2], 0.0)):
+            raise ArxException("Object is moved, please apply the location to the vertex positions")
+        
+        # TODO rotation ?
+        
+        if not (math.isclose(obj.scale[0], 1.0) and math.isclose(obj.scale[1], 1.0) and math.isclose(obj.scale[2], 1.0)):
+            raise ArxException("Object is scaled, please apply the scale to the vertex positions")
+        
+
+        for f in bm.faces:
+            if len(f.loops) > 4:
+                raise ArxException("Face with more than 4 vertices found")
+
+        for o in bpy.data.objects:
+            for ms in o.material_slots:
+                if not ms.material.name.endswith('-mat'):
+                    raise ArxException("Material slot names must end with: " + '-mat')
+                    
 
         # TODO validate the mesh
 
         verts = []
+        
+        # Add a special zero vertex at index 0
+        verts.append(FtlVertex((0.0, 0.0, 0.0), (0.0, 0.0, 0.0)))
+        
+        # Add action point vertices
+        actions = []
+        actionPointIndex = 1
+        for o in bpy.data.objects:
+            if o.type == 'EMPTY' and o.parent == obj:
+                nameParts = o.name.split(".")
+                #vertex = o.parent_vertices[0]
+                verts.append(FtlVertex((o.location[0], o.location[1], o.location[2]), (0.0, 0.0, 0.0)))
+                actions.append((nameParts[0], actionPointIndex))
+                actionPointIndex += 1
+        
         for v in bm.verts:
             vertexNormals = [sc.normal for sc in bm.verts if sc.co == v.co]
             normal = mathutils.Vector((0.0, 0.0, 0.0))
@@ -364,17 +398,11 @@ class ArxObjectManager(object):
             normal.normalize()
             verts.append(FtlVertex(v.co[:], normal))
 
-        actions = []
-        for o in bpy.data.objects:
-            if o.type == 'EMPTY' and o.parent == obj:
-                nameParts = o.name.split(".")
-                vertex = o.parent_vertices[0]
-                actions.append((nameParts[0], vertex))
-
         uvData = bm.loops.layers.uv.verify()
 
         allXYZ = [v.xyz for v in verts]
         faces = []
+
         for f in bm.faces:
             vertexIndices = []
             vertexUvs = []
