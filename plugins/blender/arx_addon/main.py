@@ -26,7 +26,7 @@ if "ArxFacePanel" in locals():
     importlib.reload(sys.modules["arx_addon.meshEdit"])
 
 from .managers import ArxAddon, ArxException
-from .meshEdit import ArxFacePanel
+from .meshEdit import ArxFacePanel, ArxMeshAddCustomProperties
 
 import bpy
 
@@ -174,6 +174,7 @@ def register():
     bpy.utils.register_class(ArxScenesImportSelected)
     bpy.utils.register_class(ArxScenesPanel)
 
+    bpy.utils.register_class(ArxMeshAddCustomProperties)
     bpy.utils.register_class(ArxFacePanel)
 
     bpy.utils.register_class(ImportFTL)
@@ -193,6 +194,7 @@ def unregister():
     bpy.utils.unregister_class(ArxScenesImportSelected)
     bpy.utils.unregister_class(ArxScenesPanel)
 
+    bpy.utils.unregister_class(ArxMeshAddCustomProperties)
     bpy.utils.unregister_class(ArxFacePanel)
 
     bpy.utils.unregister_class(ImportFTL)
