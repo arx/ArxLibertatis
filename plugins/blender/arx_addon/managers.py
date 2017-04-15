@@ -363,8 +363,8 @@ class ArxObjectManager(object):
         
 
         for f in bm.faces:
-            if len(f.loops) > 4:
-                raise ArxException("Face with more than 4 vertices found")
+            if len(f.loops) > 3:
+                raise ArxException("Face with more than 3 vertices found")
 
         for o in bpy.data.objects:
             for ms in o.material_slots:
