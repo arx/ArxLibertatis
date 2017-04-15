@@ -362,7 +362,13 @@ class FtlSerializer(object):
             face = EERIE_FACE_FTL()
             face.vid = (c_uint16 * 3)(*f.vids)
             face.u, face.v = zip(*f.uvs)
-            face.texid = f[2]
+            
+            if f[2] < len(data.mats):
+                face.texid = f[2]
+            else:
+                face.texid = -1
+            
+            #face.texid = f[2]
             face.facetype.asUInt = f[3]
             face.transval = f[4]
             # face.norm.x = f.normal[0]

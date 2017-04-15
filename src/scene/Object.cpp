@@ -1352,6 +1352,10 @@ static EERIE_3DOBJ * GetExistingEerie(const res::path & file) {
 
 static EERIE_3DOBJ * TheoToEerie_Fast(const res::path & texpath, const res::path & file, bool pbox) {
 	
+//	if(file.filename() == "long_sword.teo") {
+//		LogWarning << file.filename();
+//	}
+	
 	EERIE_3DOBJ * ret = ARX_FTL_Load(file);
 	if(ret) {
 		if(pbox) {
