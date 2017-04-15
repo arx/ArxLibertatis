@@ -46,6 +46,41 @@ faceFlagNames = [
 ]
 
 
+class ArxMeshAddCustomProperties(bpy.types.Operator):
+    bl_idname = "arx.mesh_add_custom_properties"
+    bl_label = "Add custom properties to mesh"
+
+    def execute(self, context):
+        obj = bpy.context.object
+        if obj is None:
+            self.report({'ERROR'}, "No object selected")
+            return {'CANCELLED'}
+        if obj.type != 'MESH':
+            self.report({'ERROR'}, "Selected object not a mesh")
+            return {'CANCELLED'}
+        
+        if obj.data.is_editmode:
+            bm = bmesh.from_edit_mesh(obj.data)
+        else:
+            bm = bmesh.new()
+            bm.from_mesh(obj.data)
+        
+        if not bm.faces.layers.int.get('arx_facetype'):
+            self.report({'INFO'}, "Adding missing " + 'arx_facetype' + " layer")
+            bm.faces.layers.int.new('arx_facetype')
+        
+        if not bm.faces.layers.float.get('arx_transval'):
+            self.report({'INFO'}, "Adding missing " + 'arx_transval' + " layer")
+            bm.faces.layers.float.new('arx_transval')
+        
+        if bm.is_wrapped:
+            bmesh.update_edit_mesh(obj.data, False, False)
+        else:
+            bm.to_mesh(obj.data)
+            obj.data.update()
+        
+        return {'FINISHED'}
+
 class ArxFacePanel(bpy.types.Panel):
     bl_label = "Arx Face Properties"
     bl_space_type = 'VIEW_3D'
@@ -60,7 +95,7 @@ class ArxFacePanel(bpy.types.Panel):
 
         if obj is None:
             return
-
+        
         layout = self.layout
 
         if obj.type != 'MESH':
@@ -73,16 +108,17 @@ class ArxFacePanel(bpy.types.Panel):
             bm = bmesh.new()
             bm.from_mesh(obj.data)
 
-        face = bm.faces.active
-
-        if face is None:
-            return
-
         arxFaceType = bm.faces.layers.int.get('arx_facetype')
         arxTransVal = bm.faces.layers.float.get('arx_transval')
 
         if arxFaceType is None or arxTransVal is None:
             layout.label(text="Not an arx mesh")
+            layout.operator("arx.mesh_add_custom_properties");
+            return
+
+        face = bm.faces.active
+
+        if face is None:
             return
 
         faceType = PolyTypeFlag()
