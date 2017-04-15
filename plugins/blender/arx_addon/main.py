@@ -130,8 +130,12 @@ class ExportFTL(bpy.types.Operator, ExportHelper):
     path_mode = path_reference_mode
 
     def execute(self, context):
-        getAddon(context).objectManager.saveFile(self.filepath)
-        return {'FINISHED'}
+        try:
+            getAddon(context).objectManager.saveFile(self.filepath)
+            return {'FINISHED'}
+        except ArxException as e:
+            self.report({'ERROR'}, str(e))
+            return {'CANCELLED'}
 
 
 def menu_func_export_ftl(self, context):

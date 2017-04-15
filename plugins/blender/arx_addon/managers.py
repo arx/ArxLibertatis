@@ -345,6 +345,14 @@ class ArxObjectManager(object):
         bm.from_object(obj, bpy.context.scene)
         bm.normal_update()
 
+        arxFaceType = bm.faces.layers.int.get('arx_facetype')
+        if not arxFaceType:
+            raise ArxException("Mesh is missing arx specific data layer: " + 'arx_facetype')
+        
+        arxTransVal = bm.faces.layers.float.get('arx_transval')
+        if not arxTransVal:
+            raise ArxException("Mesh is missing arx specific data layer: " + 'arx_transval')
+
         # TODO validate the mesh
 
         verts = []
@@ -362,9 +370,6 @@ class ArxObjectManager(object):
                 nameParts = o.name.split(".")
                 vertex = o.parent_vertices[0]
                 actions.append((nameParts[0], vertex))
-
-        arxFaceType = bm.faces.layers.int.get('arx_facetype')
-        arxTransVal = bm.faces.layers.float.get('arx_transval')
 
         uvData = bm.loops.layers.uv.verify()
 
