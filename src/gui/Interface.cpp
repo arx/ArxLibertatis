@@ -1673,14 +1673,15 @@ void ArxGame::manageKeyMouse() {
 	PLAYER_ROTATION = AnimationDuration_ZERO;
 
 	Vec2f mouseDiff = Vec2f(GInput->getMousePosRel());
+	float timeDiff = toMs(g_platformTime.lastFrameDuration());
 	
-	if(config.input.mouseAcceleration > 0) {
-		Vec2f speed = mouseDiff / g_framedelay;
+	if(config.input.mouseAcceleration > 0 && timeDiff > 0.0f) {
+		Vec2f speed = mouseDiff / timeDiff;
 		Vec2f sign(speed.x < 0 ? -1.f : 1.f, speed.y < 0 ? -1.f : 1.f);
 		float exponent = 1.f + config.input.mouseAcceleration * 0.05f;
 		speed.x = (std::pow(speed.x * sign.x + 1.f, exponent) - 1.f) * sign.x;
 		speed.y = (std::pow(speed.y * sign.y + 1.f, exponent) - 1.f) * sign.y;
-		mouseDiff = speed * g_framedelay;
+		mouseDiff = speed * timeDiff;
 	}
 	
 	ARX_Menu_Manage();
@@ -1812,22 +1813,22 @@ void ArxGame::manageKeyMouse() {
 				
 				if(distLeft < borderSize) {
 					float speed = 1.f - float(distLeft) / float(borderSize);
-					mouseDiff.x -= speed * g_framedelay;
+					mouseDiff.x -= speed * timeDiff;
 				}
 				
 				if(distRight < borderSize) {
 					float speed = 1.f - float(distRight) / float(borderSize);
-					mouseDiff.x += speed * g_framedelay;
+					mouseDiff.x += speed * timeDiff;
 				}
 				
 				if(distTop < borderSize) {
 					float speed = 1.f - float(distTop) / float(borderSize);
-					mouseDiff.y -= speed * g_framedelay;
+					mouseDiff.y -= speed * timeDiff;
 				}
 				
 				if(distBottom < borderSize) {
 					float speed = 1.f - float(distBottom) / float(borderSize);
-					mouseDiff.y += speed * g_framedelay;
+					mouseDiff.y += speed * timeDiff;
 				}
 				
 				if(distLeft >= 3 * borderSize && distRight >= 3 * borderSize
