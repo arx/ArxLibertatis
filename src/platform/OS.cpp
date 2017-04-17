@@ -35,7 +35,7 @@
 #if ARX_PLATFORM == ARX_PLATFORM_WIN32
 #include <windows.h>
 #include <cstring>
-#if ARX_ARCH == ARX_ARCH_X86 || ARX_ARCH == ARX_ARCH_X86_64
+#if ARX_COMPILER_MSVC && (ARX_ARCH == ARX_ARCH_X86 || ARX_ARCH == ARX_ARCH_X86_64)
 #include <intrin.h>
 #endif
 #endif
@@ -434,9 +434,9 @@ std::string getOSDistribution() {
 std::string getCPUName() {
 	
 	#if (ARX_ARCH == ARX_ARCH_X86 || ARX_ARCH == ARX_ARCH_X86_64) \
-	    && (ARX_PLATFORM == ARX_PLATFORM_WIN32 || ARX_HAVE_GET_CPUID)
+	    && (ARX_COMPILER_MSVC || ARX_HAVE_GET_CPUID)
 	
-	#if ARX_PLATFORM == ARX_PLATFORM_WIN32
+	#if ARX_COMPILER_MSVC
 	int cpuinfo[4] = { 0 };
 	__cpuid(cpuinfo, 0x80000000);
 	int max = cpuinfo[0];
@@ -456,7 +456,7 @@ std::string getCPUName() {
 	name.resize(count * sizeof(cpuinfo));
 	
 	for(int i = 0; i < count; i++) {
-		#if ARX_PLATFORM == ARX_PLATFORM_WIN32
+		#if ARX_COMPILER_MSVC
 		__cpuid(cpuinfo, first + i);
 		#else
 		__get_cpuid(first + i, &cpuinfo[0], &cpuinfo[1], &cpuinfo[2], &cpuinfo[3]);
