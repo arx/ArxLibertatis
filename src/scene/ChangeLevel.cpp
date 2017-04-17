@@ -129,8 +129,6 @@ static long CONVERT_CREATED = 0;
 long DONT_WANT_PLAYER_INZONE = 0;
 static SaveBlock * g_currentSavedGame = NULL;
 
-static ARX_CHANGELEVEL_INVENTORY_DATA_SAVE ** Gaids = NULL;
-
 static Entity * convertToValidIO(const std::string & idString) {
 	
 	CONVERT_CREATED = 0;
@@ -1969,11 +1967,6 @@ static Entity * ARX_CHANGELEVEL_Pop_IO(const std::string & idString, EntityInsta
 		LogError << "CHANGELEVEL Error: Unable to load " << idString;
 	} else {
 		
-		EntityHandle Gaids_Number = io->index();
-		Gaids[Gaids_Number.handleData()] = new ARX_CHANGELEVEL_INVENTORY_DATA_SAVE;
-		
-		memset(Gaids[Gaids_Number.handleData()], 0, sizeof(ARX_CHANGELEVEL_INVENTORY_DATA_SAVE));
-		
 		// The current entity should be visible at this point to preven infinite loops while resolving
 		// related entities.
 		arx_assert(entities.getById(idString) == io->index());
@@ -2438,33 +2431,6 @@ static void ARX_CHANGELEVEL_PopAllIO(ARX_CHANGELEVEL_INDEX * asi, ARX_CHANGELEVE
 
 static void ARX_CHANGELEVEL_PopAllIO_FINISH(bool reloadflag, bool firstTime) {
 	
-	bool * treated = new bool[MAX_IO_SAVELOAD];
-	memset(treated, 0, sizeof(unsigned char)*MAX_IO_SAVELOAD);
-	
-	long converted = 1;
-	while(converted) {
-		converted = 0;
-		
-		for(size_t it = 1; it < MAX_IO_SAVELOAD && it < entities.size(); it++) {
-			const EntityHandle handle = EntityHandle(it);
-			Entity * io = entities[handle];
-			
-			if(!io || treated[it]) {
-				continue;
-			}
-			
-			treated[it] = true;
-			
-			const ARX_CHANGELEVEL_INVENTORY_DATA_SAVE * aids = Gaids[it];
-			if(!aids) {
-				continue;
-			}
-			
-		}
-	}
-	
-	delete[] treated;
-	
 	if(reloadflag) {
 		
 		for(size_t i = 0; i < entities.size(); i++) {
@@ -2577,35 +2543,18 @@ static void ARX_CHANGELEVEL_Pop_Globals() {
 	free(dat);
 }
 
-static void ReleaseGaids() {
-	
-	for(size_t i = 0; i < entities.size(); i++) {
-		delete Gaids[i];
-	}
-	
-	delete[] Gaids, Gaids = NULL;
-}
-
 static void ARX_CHANGELEVEL_PopLevel_Abort(ARX_CHANGELEVEL_IO_INDEX * idx_io) {
 	
 	arxtime.resume();
 	
 	delete[] idx_io;
 	
-	ReleaseGaids();
 	FORBID_SCRIPT_IO_CREATION = 0;
 }
 
 static bool ARX_CHANGELEVEL_PopLevel(long instance, bool reloadflag) {
 	
 	LogDebug("Before ARX_CHANGELEVEL_PopLevel Alloc'n'Free");
-	
-	if(Gaids) {
-		ReleaseGaids();
-	}
-	
-	Gaids = new ARX_CHANGELEVEL_INVENTORY_DATA_SAVE *[MAX_IO_SAVELOAD];
-	memset(Gaids, 0, sizeof(*Gaids) * MAX_IO_SAVELOAD);
 	
 	ARX_CHANGELEVEL_INDEX asi;
 	
@@ -2710,8 +2659,6 @@ static bool ARX_CHANGELEVEL_PopLevel(long instance, bool reloadflag) {
 	
 	progressBarAdvance(15.f);
 	LoadLevelScreen();
-	
-	ReleaseGaids();
 	
 	progressBarAdvance(3.f);
 	LoadLevelScreen();
