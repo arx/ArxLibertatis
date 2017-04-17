@@ -129,7 +129,6 @@ static long CONVERT_CREATED = 0;
 long DONT_WANT_PLAYER_INZONE = 0;
 static SaveBlock * g_currentSavedGame = NULL;
 
-static ARX_CHANGELEVEL_IO_INDEX * idx_io = NULL;
 static ARX_CHANGELEVEL_INVENTORY_DATA_SAVE ** Gaids = NULL;
 
 static Entity * convertToValidIO(const std::string & idString) {
@@ -1454,7 +1453,7 @@ static long ARX_CHANGELEVEL_Push_IO(const Entity * io, long level) {
 	return 1;
 }
 
-static long ARX_CHANGELEVEL_Pop_Index(ARX_CHANGELEVEL_INDEX * asi, long num) {
+static long ARX_CHANGELEVEL_Pop_Index(ARX_CHANGELEVEL_INDEX * asi, ARX_CHANGELEVEL_IO_INDEX ** idx_io, long num) {
 	
 	size_t pos = 0;
 	std::string loadfile;
@@ -1473,13 +1472,13 @@ static long ARX_CHANGELEVEL_Pop_Index(ARX_CHANGELEVEL_INDEX * asi, long num) {
 	memcpy(asi, dat, sizeof(ARX_CHANGELEVEL_INDEX));
 	pos += sizeof(ARX_CHANGELEVEL_INDEX);
 	
-	arx_assert(idx_io == NULL);
+	arx_assert(*idx_io == NULL);
 	if(asi->nb_inter) {
-		idx_io = new ARX_CHANGELEVEL_IO_INDEX[asi->nb_inter];
-		memcpy(idx_io, dat + pos, sizeof(ARX_CHANGELEVEL_IO_INDEX)*asi->nb_inter);
+		*idx_io = new ARX_CHANGELEVEL_IO_INDEX[asi->nb_inter];
+		memcpy(*idx_io, dat + pos, sizeof(ARX_CHANGELEVEL_IO_INDEX)*asi->nb_inter);
 		pos += sizeof(ARX_CHANGELEVEL_IO_INDEX) * asi->nb_inter;
 	} else {
-		idx_io = NULL;
+		*idx_io = NULL;
 	}
 	
 	// Skip Path info (used later !)
@@ -2382,7 +2381,7 @@ static Entity * ARX_CHANGELEVEL_Pop_IO(const std::string & idString, EntityInsta
 	return io;
 }
 
-static void ARX_CHANGELEVEL_PopAllIO(ARX_CHANGELEVEL_INDEX * asi) {
+static void ARX_CHANGELEVEL_PopAllIO(ARX_CHANGELEVEL_INDEX * asi, ARX_CHANGELEVEL_IO_INDEX * idx_io) {
 	
 	float increment = 0;
 	if(asi->nb_inter > 0) {
@@ -2610,11 +2609,11 @@ static void ReleaseGaids() {
 	delete[] Gaids, Gaids = NULL;
 }
 
-static void ARX_CHANGELEVEL_PopLevel_Abort() {
+static void ARX_CHANGELEVEL_PopLevel_Abort(ARX_CHANGELEVEL_IO_INDEX * idx_io) {
 	
 	arxtime.resume();
 	
-	delete[] idx_io, idx_io = NULL;
+	delete[] idx_io;
 	
 	ReleaseGaids();
 	FORBID_SCRIPT_IO_CREATION = 0;
@@ -2650,7 +2649,7 @@ static bool ARX_CHANGELEVEL_PopLevel(long instance, bool reloadflag) {
 	
 	// Open Saveblock for read
 	if(!openCurrentSavedGameFile()) {
-		ARX_CHANGELEVEL_PopLevel_Abort();
+		ARX_CHANGELEVEL_PopLevel_Abort(NULL);
 		return false;
 	}
 	
@@ -2670,21 +2669,20 @@ static bool ARX_CHANGELEVEL_PopLevel(long instance, bool reloadflag) {
 	progressBarAdvance(2.f);
 	LoadLevelScreen(instance);
 	
-	arx_assert(idx_io == NULL);
-	
+	ARX_CHANGELEVEL_IO_INDEX * idx_io = NULL;
 	if(!firstTime) {
 		
 		LogDebug("Before ARX_CHANGELEVEL_Pop_Index");
-		if(ARX_CHANGELEVEL_Pop_Index(&asi, instance) != 1) {
+		if(ARX_CHANGELEVEL_Pop_Index(&asi, &idx_io, instance) != 1) {
 			LogError << "Cannot Load Index data";
-			ARX_CHANGELEVEL_PopLevel_Abort();
+			ARX_CHANGELEVEL_PopLevel_Abort(idx_io);
 			return false;
 		}
 		
 		LogDebug("After  ARX_CHANGELEVEL_Pop_Index");
 		if(asi.version != ARX_GAMESAVE_VERSION) {
 			LogError << "Invalid Save Version...";
-			ARX_CHANGELEVEL_PopLevel_Abort();
+			ARX_CHANGELEVEL_PopLevel_Abort(idx_io);
 			return false;
 		}
 		
@@ -2696,7 +2694,7 @@ static bool ARX_CHANGELEVEL_PopLevel(long instance, bool reloadflag) {
 	LogDebug("Before ARX_CHANGELEVEL_Pop_Level");
 	if(ARX_CHANGELEVEL_Pop_Level(&asi, instance, firstTime) != 1) {
 		LogError << "Cannot Load Level data";
-		ARX_CHANGELEVEL_PopLevel_Abort();
+		ARX_CHANGELEVEL_PopLevel_Abort(idx_io);
 		return false;
 	}
 	
@@ -2713,7 +2711,7 @@ static bool ARX_CHANGELEVEL_PopLevel(long instance, bool reloadflag) {
 		}
 	} else {
 		LogDebug("Before ARX_CHANGELEVEL_PopAllIO");
-		ARX_CHANGELEVEL_PopAllIO(&asi);
+		ARX_CHANGELEVEL_PopAllIO(&asi, idx_io);
 		LogDebug("After  ARX_CHANGELEVEL_PopAllIO");
 	}
 	
@@ -2723,7 +2721,7 @@ static bool ARX_CHANGELEVEL_PopLevel(long instance, bool reloadflag) {
 	
 	if(ARX_CHANGELEVEL_Pop_Player() != 1) {
 		LogError << "Cannot Load Player data";
-		ARX_CHANGELEVEL_PopLevel_Abort();
+		ARX_CHANGELEVEL_PopLevel_Abort(idx_io);
 		return false;
 	}
 	LogDebug("After  ARX_CHANGELEVEL_Pop_Player");
@@ -2762,7 +2760,7 @@ static bool ARX_CHANGELEVEL_PopLevel(long instance, bool reloadflag) {
 	LogDebug("After  Player Misc Init");
 	
 	LogDebug("Before Memory Release");
-	delete[] idx_io, idx_io = NULL;
+	delete[] idx_io;
 	FORBID_SCRIPT_IO_CREATION = 0;
 	TIME_INIT = false;
 	LogDebug("After  Memory Release");
