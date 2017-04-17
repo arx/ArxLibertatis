@@ -1974,6 +1974,10 @@ static Entity * ARX_CHANGELEVEL_Pop_IO(const std::string & idString, EntityInsta
 		
 		memset(Gaids[Gaids_Number.handleData()], 0, sizeof(ARX_CHANGELEVEL_INVENTORY_DATA_SAVE));
 		
+		// The current entity should be visible at this point to preven infinite loops while resolving
+		// related entities.
+		arx_assert(entities.getById(idString) == io->index());
+		
 		io->requestRoomUpdate = 1;
 		io->room = -1;
 		io->no_collide = EntityHandle();
