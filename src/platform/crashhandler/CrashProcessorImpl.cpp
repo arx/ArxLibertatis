@@ -27,6 +27,7 @@
 #include <sstream>
 
 #include <boost/date_time/posix_time/posix_time_types.hpp>
+#include <boost/range/size.hpp>
 
 #include "core/URLConstants.h"
 #include "core/Version.h"
