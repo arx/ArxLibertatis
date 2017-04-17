@@ -64,7 +64,7 @@ const std::string
 const int
 	levelOfDetail = 2,
 	fogDistance = 10,
-	vsync = 1,
+	vsync = -1,
 	maxAnisotropicFiltering = 9001,
 	cinematicWidescreenMode = CinematicFadeEdges,
 	hudScaleFilter = UIFilterBilinear,
