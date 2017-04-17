@@ -485,7 +485,7 @@ std::string getCPUName() {
 		
 		std::string label = line.substr(0, sep);
 		boost::trim(label);
-		if(label != "model name") {
+		if(label != "model name" && label != "Processor") {
 			continue;
 		}
 		
