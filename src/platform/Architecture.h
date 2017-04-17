@@ -110,6 +110,42 @@ inline const char * getArchitectureName(unsigned arch) {
 	}
 }
 
+/*!
+ * \def ARX_HAVE_SSE
+ * \brief x86-only: 1 if targeting CPUs with SSE support, 0 otherwise
+ */
+/*!
+ * \def ARX_HAVE_SSE2
+ * \brief x86-only: 1 if targeting CPUs with SSE2 support, 0 otherwise
+ */
+#if ARX_ARCH == ARX_ARCH_X86_64
+#define ARX_HAVE_SSE 1
+#define ARX_HAVE_SSE2 1
+#elif ARX_ARCH == ARX_ARCH_X86
+#if defined(__SSE__) || (defined(_M_IX86_FP) && _M_IX86_FP >= 1)
+#define ARX_HAVE_SSE 1
+#else
+#define ARX_HAVE_SSE 0
+#endif
+#if defined(__SSE2__) || (defined(_M_IX86_FP) && _M_IX86_FP >= 2)
+#define ARX_HAVE_SSE 1
+#else
+#define ARX_HAVE_SSE 0
+#endif
+#endif
+
+/*!
+ * \def ARX_HAVE_VFP
+ * \brief ARM-only: 1 if targeting CPUs with VFP support, 0 otherwise
+ */
+#if ARX_ARCH == ARX_ARCH_ARM
+#if defined(__VFP_FP__)
+#define ARX_HAVE_VFP 1
+#else
+#define ARX_HAVE_VFP 0
+#endif
+#endif
+
 } // namespace platform
 
 #endif // ARX_PLATFORM_ARCHITECTURE_H
