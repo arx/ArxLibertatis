@@ -128,9 +128,9 @@ inline const char * getArchitectureName(unsigned arch) {
 #define ARX_HAVE_SSE 0
 #endif
 #if defined(__SSE2__) || (defined(_M_IX86_FP) && _M_IX86_FP >= 2)
-#define ARX_HAVE_SSE 1
+#define ARX_HAVE_SSE2 1
 #else
-#define ARX_HAVE_SSE 0
+#define ARX_HAVE_SSE2 0
 #endif
 #endif
 
