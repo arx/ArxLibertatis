@@ -544,6 +544,9 @@ if(MSVC)
 	set(ARX_HAVE_ALIGNED_MALLOC 1)
 	set(ARX_HAVE_ALIGNED_FREE 1)
 	
+	set(ARX_HAVE_MM_SET_FLUSH_ZERO_MODE 1)
+	set(ARX_HAVE_MM_SET_DENORMALS_ZERO_MODE 1)
+	
 else(MSVC)
 	
 	if(USE_STATIC_LIBS)
@@ -622,6 +625,10 @@ else(MSVC)
 	if(ARX_HAVE_GET_CPUID)
 		check_symbol_exists(__get_cpuid_max "cpuid.h" ARX_HAVE_GET_CPUID_MAX)
 	endif()
+	
+	# CMake has trouble detecting _MM_SET_FLUSH_ZERO_MODE, check for the includes instead
+	check_include_files("xmmintrin.h" ARX_HAVE_XMMINTRIN)
+	check_include_files("pmmintrin.h" ARX_HAVE_PMMINTRIN)
 	
 	find_library(LIBRT_LIBRARY rt)
 	

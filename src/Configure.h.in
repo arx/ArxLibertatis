@@ -76,8 +76,12 @@
 #cmakedefine01 ARX_HAVE_SYSCTLBYNAME
 #cmakedefine01 ARX_HAVE_SETENV
 #cmakedefine01 ARX_HAVE_UNSETENV
+
+// Architure-specific features
 #cmakedefine01 ARX_HAVE_GET_CPUID
 #cmakedefine01 ARX_HAVE_GET_CPUID_MAX
+#cmakedefine01 ARX_HAVE_XMMINTRIN
+#cmakedefine01 ARX_HAVE_PMMINTRIN
 
 // Arx components
 #cmakedefine01 BUILD_EDIT_LOADSAVE

@@ -105,6 +105,11 @@ public:
 	
 	static thread_id_type getCurrentThreadId();
 	
+	/*!
+	 * \brief Disable denormals for the current thread for faster floating point operations
+	 */
+	static void disableFloatDenormals();
+	
 protected:
 	
 	/*!

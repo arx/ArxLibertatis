@@ -19,6 +19,15 @@
 
 #include "platform/Thread.h"
 
+#if ARX_HAVE_XMMINTRIN
+#include <xmmintrin.h>
+#endif
+
+#if ARX_HAVE_PMMINTRIN
+#include <pmmintrin.h>
+#endif
+
+#include "platform/Architecture.h"
 #include "platform/CrashHandler.h"
 #include "platform/Platform.h"
 #include "platform/profiler/Profiler.h"
@@ -235,6 +244,50 @@ thread_id_type Thread::getCurrentThreadId() {
 }
 
 #endif
+
+void Thread::disableFloatDenormals() {
+	
+	#if ARX_ARCH == ARX_ARCH_X86 && !ARX_HAVE_SSE && !ARX_HAVE_SSE2
+	
+	// Denormals can only be disabled for SSE instructions
+	// We would need to drop support for x86 CPUs without SSE(2) and
+	// compile with -msse(2) -mfpmath=sse for this to have an effect
+	
+	#elif ARX_ARCH == ARX_ARCH_X86 || ARX_ARCH == ARX_ARCH_X86_64
+	
+	#if ARX_HAVE_SSE
+	#if ARX_HAVE_XMMINTRIN
+	_MM_SET_FLUSH_ZERO_MODE(_MM_FLUSH_ZERO_ON); // SSE
+	#else
+	#pragma message ( "Disabling SSE float denormals is not supported for this compiler!" )
+	#endif
+	#endif
+	
+	#if ARX_HAVE_SSE2
+	#if ARX_HAVE_PMMINTRIN
+	_MM_SET_DENORMALS_ZERO_MODE(_MM_DENORMALS_ZERO_ON); // SSE2
+	#else
+	#pragma message ( "Disabling SSE2 float denormals is not supported for this compiler!" )
+	#endif
+	#endif
+	
+	#elif ARX_ARCH == ARX_ARCH_ARM && ARX_HAVE_VFP
+	
+	// Denormals are always disabled for NEON, disable them for VFP instructions as well
+	// Set bit 24 (flush-to-zero) in the floating-point status and control register
+	asm volatile (
+		"vmrs r0, FPSCR \n"
+		"orr r0, r0, #0x1000000 \n"
+		"vmsr FPSCR, r0 \n"
+	);
+	
+	#else
+	
+	#pragma message ( "Disabling float denormals is not supported for this architecture!" )
+	
+	#endif
+	
+}
 
 #if ARX_HAVE_NANOSLEEP
 
