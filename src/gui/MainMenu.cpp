@@ -688,13 +688,27 @@ public:
 		ARX_SetAntiAliasing();
 		
 		{
+			PanelWidget * panel = new PanelWidget;
 			std::string szMenuText = getLocalised("system_menus_options_video_vsync", "VSync");
+			szMenuText += " ";
 			TextWidget * txt = new TextWidget(BUTTON_INVALID, hFontMenu, szMenuText, Vec2f(20, 0));
 			txt->SetCheckOff();
-			CheckboxWidget * cb = new CheckboxWidget(txt);
-			cb->stateChanged = boost::bind(&VideoOptionsMenuPage::onChangedVsync, this, _1);
-			cb->iState = config.video.vsync ? 1 : 0;
-			addCenter(cb);
+			panel->AddElement(txt);
+			
+			CycleTextWidget * cb = new CycleTextWidget;
+			cb->valueChanged = boost::bind(&VideoOptionsMenuPage::onChangedVSync, this, _1, _2);
+			szMenuText = getLocalised("system_menus_options_video_vsync_off", "Off");
+			cb->AddText(new TextWidget(BUTTON_INVALID, hFontMenu, szMenuText));
+			szMenuText = getLocalised("system_menus_options_video_vsync_on", "On");
+			cb->AddText(new TextWidget(BUTTON_INVALID, hFontMenu, szMenuText));
+			szMenuText = getLocalised("system_menus_options_video_vsync_auto", "Automatic");
+			cb->AddText(new TextWidget(BUTTON_INVALID, hFontMenu, szMenuText));
+			cb->setValue(config.video.vsync < 0 ? 2 : config.video.vsync);
+			
+			cb->Move(Vec2f(RATIO_X(m_size.x-9) - cb->m_rect.width(), 0));
+			panel->AddElement(cb);
+			
+			addCenter(panel);
 		}
 		
 		{
@@ -849,8 +863,9 @@ private:
 		ARX_SetAntiAliasing();
 	}
 	
-	void onChangedVsync(int state) {
-		config.video.vsync = state ? true : false;
+	void onChangedVSync(int pos, const std::string & str) {
+		ARX_UNUSED(str);
+		config.video.vsync = pos > 1 ? -1 : pos;
 	}
 	
 	void onChangedMaxAnisotropy(int pos, const std::string & str) {
