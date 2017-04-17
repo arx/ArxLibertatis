@@ -701,7 +701,7 @@ public:
 			cb->AddText(new TextWidget(BUTTON_INVALID, hFontMenu, szMenuText));
 			szMenuText = getLocalised("system_menus_options_video_vsync_on", "On");
 			cb->AddText(new TextWidget(BUTTON_INVALID, hFontMenu, szMenuText));
-			szMenuText = getLocalised("system_menus_options_video_vsync_auto", "Automatic");
+			szMenuText = getLocalised("system_menus_options_video_vsync_auto", "Adaptive");
 			cb->AddText(new TextWidget(BUTTON_INVALID, hFontMenu, szMenuText));
 			cb->setValue(config.video.vsync < 0 ? 2 : config.video.vsync);
 			
