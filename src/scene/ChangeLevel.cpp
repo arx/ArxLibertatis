@@ -2365,9 +2365,9 @@ static Entity * ARX_CHANGELEVEL_Pop_IO(const std::string & idString, EntityInsta
 					io->obj->linked[n].lgroup = ObjVertGroup(ais->linked_data[n].lgroup);
 					io->obj->linked[n].lidx = ActionPoint(ais->linked_data[n].lidx);
 					io->obj->linked[n].lidx2 = ActionPoint(ais->linked_data[n].lidx2);
-					memcpy(Gaids[Gaids_Number.handleData()]->linked_id[n], ais->linked_data[n].linked_id, SIZE_ID);
-					io->obj->linked[n].io = NULL;
-					io->obj->linked[n].obj = NULL;
+					Entity * iooo = ConvertToValidIO(ais->linked_data[n].linked_id);
+					io->obj->linked[n].io = iooo;
+					io->obj->linked[n].obj = iooo ? iooo->obj : NULL;
 				}
 			}
 		}
@@ -2467,16 +2467,6 @@ static void ARX_CHANGELEVEL_PopAllIO_FINISH(bool reloadflag, bool firstTime) {
 						inv->slot[x][y].io = ConvertToValidIO(aids->slot_io[x][y]);
 						converted += CONVERT_CREATED;
 						inv->slot[x][y].show = aids->slot_show[x][y] != 0;
-					}
-				}
-			}
-			
-			if(io->obj && io->obj->linked.size()) {
-				for(size_t n = 0; n < io->obj->linked.size(); n++) {
-					Entity * iooo = ConvertToValidIO(aids->linked_id[n]);
-					if(iooo) {
-						io->obj->linked[n].io = iooo;
-						io->obj->linked[n].obj = iooo->obj;
 					}
 				}
 			}
