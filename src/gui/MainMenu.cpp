@@ -866,6 +866,7 @@ private:
 	void onChangedVSync(int pos, const std::string & str) {
 		ARX_UNUSED(str);
 		config.video.vsync = pos > 1 ? -1 : pos;
+		mainApp->getWindow()->setVSync(config.video.vsync);
 	}
 	
 	void onChangedMaxAnisotropy(int pos, const std::string & str) {
