@@ -2226,7 +2226,9 @@ static Entity * ARX_CHANGELEVEL_Pop_IO(const std::string & idString, EntityInsta
 				std::copy(as->stacked, as->stacked + SAVED_MAX_STACKED_BEHAVIOR, io->_npcdata->stacked);
 				// TODO properly load stacked animations
 				
-				memcpy(Gaids[Gaids_Number.handleData()]->stackedtarget, as->stackedtarget, SIZE_ID * SAVED_MAX_STACKED_BEHAVIOR);
+				for(size_t iii = 0; iii < MAX_STACKED_BEHAVIOR; iii++) {
+					io->_npcdata->stacked[iii].target = ReadTargetInfo(as->stackedtarget[iii]);
+				}
 				
 				io->_npcdata->critical = as->critical;
 				io->_npcdata->reach = as->reach;
@@ -2476,12 +2478,6 @@ static void ARX_CHANGELEVEL_PopAllIO_FINISH(bool reloadflag, bool firstTime) {
 						io->obj->linked[n].io = iooo;
 						io->obj->linked[n].obj = iooo->obj;
 					}
-				}
-			}
-			
-			if(io->ioflags & IO_NPC) {
-				for(size_t iii = 0; iii < MAX_STACKED_BEHAVIOR; iii++) {
-					io->_npcdata->stacked[iii].target = ReadTargetInfo(aids->stackedtarget[iii]);
 				}
 			}
 			
