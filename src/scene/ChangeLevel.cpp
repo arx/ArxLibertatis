@@ -2306,20 +2306,33 @@ static Entity * ARX_CHANGELEVEL_Pop_IO(const std::string & idString, EntityInsta
 			}
 		}
 		
+		arx_assert(io->inventory == NULL);
 		if(ais->system_flags & SYSTEM_FLAG_INVENTORY) {
 			
-			memcpy(Gaids[Gaids_Number.handleData()], dat + pos, sizeof(ARX_CHANGELEVEL_INVENTORY_DATA_SAVE)
-			       - SIZE_ID - SIZE_ID - MAX_LINKED_SAVE * SIZE_ID - SIZE_ID * SAVED_MAX_STACKED_BEHAVIOR);
+			const ARX_CHANGELEVEL_INVENTORY_DATA_SAVE * aids
+				= reinterpret_cast<const ARX_CHANGELEVEL_INVENTORY_DATA_SAVE *>(dat + pos);
 			pos += sizeof(ARX_CHANGELEVEL_INVENTORY_DATA_SAVE);
 			
-			if(io->inventory == NULL) {
-				io->inventory = new INVENTORY_DATA();
+			io->inventory = new INVENTORY_DATA();
+			
+			INVENTORY_DATA * inv = io->inventory;
+			inv->io = ConvertToValidIO(aids->io);
+			
+			inv->m_size = Vec2s(3, 11);
+			if(aids->sizex != 3 || aids->sizey != 11) {
+				for(long x = 0; x < inv->m_size.x; x++)
+				for(long y = 0; y < inv->m_size.y; y++) {
+					inv->slot[x][y].io = NULL;
+					inv->slot[x][y].show = false;
+				}
 			} else {
-				*io->inventory = INVENTORY_DATA();
+				for(long x = 0; x < inv->m_size.x; x++)
+				for(long y = 0; y < inv->m_size.y; y++) {
+					inv->slot[x][y].io = ConvertToValidIO(aids->slot_io[x][y]);
+					inv->slot[x][y].show = aids->slot_show[x][y] != 0;
+				}
 			}
-		} else {
-			delete io->inventory;
-			io->inventory = NULL;
+			
 		}
 		
 		if(ais->system_flags & SYSTEM_FLAG_TWEAKER_INFO) {
@@ -2445,29 +2458,6 @@ static void ARX_CHANGELEVEL_PopAllIO_FINISH(bool reloadflag, bool firstTime) {
 			const ARX_CHANGELEVEL_INVENTORY_DATA_SAVE * aids = Gaids[it];
 			if(!aids) {
 				continue;
-			}
-			
-			if(io->inventory) {
-				
-				INVENTORY_DATA * inv = io->inventory;
-				inv->io = ConvertToValidIO(aids->io);
-				converted += CONVERT_CREATED;
-				
-				inv->m_size = Vec2s(3, 11);
-				if(aids->sizex != 3 || aids->sizey != 11) {
-					for(long x = 0; x < inv->m_size.x; x++)
-					for(long y = 0; y < inv->m_size.y; y++) {
-						inv->slot[x][y].io = NULL;
-						inv->slot[x][y].show = false;
-					}
-				} else {
-					for(long x = 0; x < inv->m_size.x; x++)
-					for(long y = 0; y < inv->m_size.y; y++) {
-						inv->slot[x][y].io = ConvertToValidIO(aids->slot_io[x][y]);
-						converted += CONVERT_CREATED;
-						inv->slot[x][y].show = aids->slot_show[x][y] != 0;
-					}
-				}
 			}
 			
 		}
