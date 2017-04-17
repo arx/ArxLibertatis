@@ -106,6 +106,9 @@ void Thread::waitForCompletion() {
 
 void * Thread::entryPoint(void * param) {
 	
+	// Denormals must be disabled for each thread separately
+	disableFloatDenormals();
+	
 	Thread & thread = *((Thread *)param);
 	
 	// Set the thread name.
@@ -218,6 +221,9 @@ void SetCurrentThreadName(const std::string & threadName) {
 } // anonymous namespace
 
 DWORD WINAPI Thread::entryPoint(LPVOID param) {
+	
+	// Denormals must be disabled for each thread separately
+	disableFloatDenormals();
 	
 	SetCurrentThreadName(((Thread*)param)->threadName);
 	
