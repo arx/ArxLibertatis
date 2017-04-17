@@ -34,7 +34,6 @@
 
 #if ARX_PLATFORM == ARX_PLATFORM_WIN32
 #include <windows.h>
-#include <cstring>
 #if ARX_COMPILER_MSVC && (ARX_ARCH == ARX_ARCH_X86 || ARX_ARCH == ARX_ARCH_X86_64)
 #include <intrin.h>
 #endif
