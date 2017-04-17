@@ -119,7 +119,7 @@ public:
 		int levelOfDetail;
 		float fogDistance;
 		bool antialiasing;
-		bool vsync;
+		int vsync;
 		int maxAnisotropicFiltering;
 		bool colorkeyAlphaToCoverage;
 		bool colorkeyAntialiasing;

@@ -64,6 +64,7 @@ const std::string
 const int
 	levelOfDetail = 2,
 	fogDistance = 10,
+	vsync = 1,
 	maxAnisotropicFiltering = 9001,
 	cinematicWidescreenMode = CinematicFadeEdges,
 	hudScaleFilter = UIFilterBilinear,
@@ -81,7 +82,6 @@ const bool
 	fullscreen = true,
 	showCrosshair = true,
 	antialiasing = true,
-	vsync = true,
 	colorkeyAlphaToCoverage = true,
 	colorkeyAntialiasing = true,
 	limitSpeechWidth = true,
@@ -532,7 +532,8 @@ bool Config::init(const fs::path & file) {
 	video.levelOfDetail = reader.getKey(Section::Video, Key::levelOfDetail, Default::levelOfDetail);
 	video.fogDistance = reader.getKey(Section::Video, Key::fogDistance, Default::fogDistance);;
 	video.antialiasing = reader.getKey(Section::Video, Key::antialiasing, Default::antialiasing);
-	video.vsync = reader.getKey(Section::Video, Key::vsync, Default::vsync);
+	int vsync = reader.getKey(Section::Video, Key::vsync, Default::vsync);
+	video.vsync = glm::clamp(vsync, -1, 1);
 	int anisoFiltering = reader.getKey(Section::Video, Key::maxAnisotropicFiltering, Default::maxAnisotropicFiltering);
 	video.maxAnisotropicFiltering = std::max(anisoFiltering, 1);
 	video.colorkeyAlphaToCoverage = reader.getKey(Section::Video, Key::colorkeyAlphaToCoverage, Default::colorkeyAlphaToCoverage);
