@@ -2182,8 +2182,6 @@ static Entity * ARX_CHANGELEVEL_Pop_IO(const std::string & idString, EntityInsta
 			return io;
 		}
 		
-		Gaids[Gaids_Number.handleData()]->weapon[0] = '\0';
-		
 		switch (ais->savesystem_type) {
 			
 			case TYPE_NPC: {
@@ -2204,7 +2202,7 @@ static Entity * ARX_CHANGELEVEL_Pop_IO(const std::string & idString, EntityInsta
 				io->_npcdata->detect = as->detect;
 				io->_npcdata->fightdecision = as->fightdecision;
 				
-				memcpy(Gaids[Gaids_Number.handleData()]->weapon, as->id_weapon, SIZE_ID);
+				io->_npcdata->weapon = ConvertToValidIO(as->id_weapon);
 				
 				io->_npcdata->lastmouth = as->lastmouth;
 				io->_npcdata->look_around_inc = as->look_around_inc;
@@ -2375,8 +2373,19 @@ static Entity * ARX_CHANGELEVEL_Pop_IO(const std::string & idString, EntityInsta
 		long hidegore = ((io->ioflags & IO_NPC) && io->_npcdata->lifePool.current > 0.f) ? 1 : 0;
 		ARX_INTERACTIVE_HideGore(io, hidegore);
 		
-		if((io->ioflags & IO_NPC) && io->_npcdata->behavior == BEHAVIOUR_NONE) {
-			io->targetinfo = EntityHandle();
+		if(io->ioflags & IO_NPC) {
+			
+			if(io->_npcdata->weaponinhand == 1) {
+				SetWeapon_On(io);
+			} else {
+				SetWeapon_Back(io);
+			}
+			
+			
+			if(io->_npcdata->behavior == BEHAVIOUR_NONE) {
+				io->targetinfo = EntityHandle();
+			}
+			
 		}
 		
 	}
@@ -2467,16 +2476,6 @@ static void ARX_CHANGELEVEL_PopAllIO_FINISH(bool reloadflag, bool firstTime) {
 						io->obj->linked[n].io = iooo;
 						io->obj->linked[n].obj = iooo->obj;
 					}
-				}
-			}
-			
-			if(io->ioflags & IO_NPC) {
-				io->_npcdata->weapon = ConvertToValidIO(aids->weapon);
-				converted += CONVERT_CREATED;
-				if(io->_npcdata->weaponinhand == 1) {
-					SetWeapon_On(io);
-				} else {
-					SetWeapon_Back(io);
 				}
 			}
 			
