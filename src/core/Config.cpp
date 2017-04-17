@@ -535,7 +535,6 @@ bool Config::init(const fs::path & file) {
 	video.vsync = reader.getKey(Section::Video, Key::vsync, Default::vsync);
 	int anisoFiltering = reader.getKey(Section::Video, Key::maxAnisotropicFiltering, Default::maxAnisotropicFiltering);
 	video.maxAnisotropicFiltering = std::max(anisoFiltering, 1);
-	video.maxAnisotropicFiltering = std::max(0, video.maxAnisotropicFiltering);
 	video.colorkeyAlphaToCoverage = reader.getKey(Section::Video, Key::colorkeyAlphaToCoverage, Default::colorkeyAlphaToCoverage);
 	video.colorkeyAntialiasing = reader.getKey(Section::Video, Key::colorkeyAntialiasing, Default::colorkeyAntialiasing);
 	video.bufferSize = std::max(reader.getKey(Section::Video, Key::bufferSize, Default::bufferSize), 0);
