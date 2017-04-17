@@ -125,13 +125,10 @@ static Entity * ARX_CHANGELEVEL_Pop_IO(const std::string & idString, EntityInsta
 static fs::path CURRENT_GAME_FILE;
 
 static ArxInstant ARX_CHANGELEVEL_DesiredTime = ArxInstant_ZERO;
-static long CONVERT_CREATED = 0;
 long DONT_WANT_PLAYER_INZONE = 0;
 static SaveBlock * g_currentSavedGame = NULL;
 
 static Entity * convertToValidIO(const std::string & idString) {
-	
-	CONVERT_CREATED = 0;
 	
 	if(idString.empty() || idString == "none") {
 		return NULL;
@@ -2400,7 +2397,6 @@ static Entity * ARX_CHANGELEVEL_Pop_IO(const std::string & idString, EntityInsta
 	arx_assert_msg(pos <= size, "pos=%lu size=%lu", (unsigned long)pos, (unsigned long)size);
 	
 	free(dat);
-	CONVERT_CREATED = 1;
 	
 	return io;
 }
