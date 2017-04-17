@@ -63,6 +63,7 @@
 #include "platform/Environment.h"
 #include "platform/profiler/Profiler.h"
 #include "platform/ProgramOptions.h"
+#include "platform/Thread.h"
 #include "platform/Time.h"
 #include "platform/WindowsMain.h"
 
@@ -128,6 +129,9 @@ static ExitStatus parseCommandLine(int argc, char ** argv) {
 }
 
 int utf8_main(int argc, char ** argv) {
+	
+	// GCC -ffast-math disables denormal before main() - do the same for other compilers
+	Thread::disableFloatDenormals();
 	
 	// Initialize Random now so that the crash handler can use it
 	Random::seed();
