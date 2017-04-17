@@ -29,6 +29,11 @@
 
 int IniKey::getValue(int defaultValue) const {
 	
+	if(value == "false")
+		return 0;
+	else if(value == "true")
+		return 1;
+	
 	std::istringstream iss(value);
 	
 	int val = defaultValue;
