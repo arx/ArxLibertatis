@@ -110,8 +110,6 @@ extern bool LOAD_N_ERASE;
 extern long FORBID_SCRIPT_IO_CREATION;
 extern bool TIME_INIT;
 
-#define MAX_IO_SAVELOAD 1500
-
 static bool ARX_CHANGELEVEL_Push_Index(long num);
 static bool ARX_CHANGELEVEL_PushLevel(long num, long newnum);
 static bool ARX_CHANGELEVEL_PopLevel(long num, bool reloadflag = false);
