@@ -2126,7 +2126,7 @@ static Entity * ARX_CHANGELEVEL_Pop_IO(const std::string & idString, EntityInsta
 		}
 		
 		// Target Info
-		memcpy(Gaids[Gaids_Number.handleData()]->targetinfo, ais->id_targetinfo, SIZE_ID);
+		io->targetinfo = ReadTargetInfo(ais->id_targetinfo);
 		
 		ARX_SCRIPT_Timer_Clear_For_IO(io);
 		
@@ -2375,6 +2375,10 @@ static Entity * ARX_CHANGELEVEL_Pop_IO(const std::string & idString, EntityInsta
 		long hidegore = ((io->ioflags & IO_NPC) && io->_npcdata->lifePool.current > 0.f) ? 1 : 0;
 		ARX_INTERACTIVE_HideGore(io, hidegore);
 		
+		if((io->ioflags & IO_NPC) && io->_npcdata->behavior == BEHAVIOUR_NONE) {
+			io->targetinfo = EntityHandle();
+		}
+		
 	}
 	
 	arx_assert_msg(pos <= size, "pos=%lu size=%lu", (unsigned long)pos, (unsigned long)size);
@@ -2474,11 +2478,6 @@ static void ARX_CHANGELEVEL_PopAllIO_FINISH(bool reloadflag, bool firstTime) {
 				} else {
 					SetWeapon_Back(io);
 				}
-			}
-			
-			io->targetinfo = ReadTargetInfo(aids->targetinfo);
-			if((io->ioflags & IO_NPC) && io->_npcdata->behavior == BEHAVIOUR_NONE) {
-				io->targetinfo = EntityHandle();
 			}
 			
 			if(io->ioflags & IO_NPC) {
