@@ -31,6 +31,7 @@
 #include "game/Inventory.h"
 #include "game/Levels.h"
 #include "game/Player.h"
+#include "game/magic/RuneDraw.h"
 #include "graphics/Draw.h"
 #include "graphics/Renderer.h"
 #include "graphics/effects/Halo.h"
@@ -1421,6 +1422,7 @@ void ARX_INTERFACE_ManageOpenedBook() {
 			case BOOKMODE_SPELLS: {
 				DrawBookInterfaceItem(g_bookResouces.ptexspellbook, Vec2f(97, 64), Color::white, 0.9999f);
 				ARX_INTERFACE_ManageOpenedBook_LeftTabs_Spells();
+				ARX_SPELLS_UpdateBookSymbolDraw();
 				break;
 			}
 			case BOOKMODE_MINIMAP: {

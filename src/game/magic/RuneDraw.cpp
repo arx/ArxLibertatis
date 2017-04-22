@@ -104,6 +104,91 @@ static void updateIOLight(Entity * io) {
 	}
 }
 
+void ARX_SPELLS_UpdateBookSymbolDraw() {
+
+	ArxInstant now = arxtime.now();
+
+	Entity *io = entities.player();
+
+	updateIOLight(io);
+
+	if(io->symboldraw) {
+		SYMBOL_DRAW * sd = io->symboldraw;
+		long elapsed = toMs(now - sd->starttime);
+
+		if(elapsed > sd->duration) {
+			endLightDelayed(io->dynlight, ArxDurationMs(600));
+			io->dynlight = LightHandle();
+
+			delete io->symboldraw;
+			io->symboldraw = NULL;
+			return;
+		}
+
+		const size_t nbcomponents = sd->sequence.length();
+
+		if(nbcomponents == 0) {
+			delete io->symboldraw;
+			io->symboldraw = NULL;
+			return;
+		}
+
+		float ti = ((float)sd->duration/(float)nbcomponents);
+
+		if(ti <= 0)
+			ti = 1;
+
+		long newtime=elapsed;
+		long oldtime = sd->lastElapsed;
+
+		if(oldtime>sd->duration)
+			oldtime=sd->duration;
+
+		if(newtime>sd->duration)
+			newtime=sd->duration;
+
+		sd->lastElapsed = (short)elapsed;
+
+		float div_ti=1.f/ti;
+
+		Vec2s iMin;
+		Vec2s iMax;
+
+		ReCenterSequence(sd->sequence, iMin, iMax);
+		Vec2s iSize = iMax - iMin;
+		Vec2s pos1 = Vec2s(97, 64);
+
+		Vec2s lPos;
+		lPos.x = (((513>>1)-lMaxSymbolDrawSize.x)>>1);
+		lPos.y = (313-(((313*3/4)-lMaxSymbolDrawSize.y)>>1));
+
+		pos1 += lPos;
+		pos1 += (lMaxSymbolDrawSize - iSize) / Vec2s(2);
+		pos1 -= iMin;
+
+		for(size_t j = 0; j < nbcomponents; j++) {
+
+			Vec2s vect = GetSymbVector(sd->sequence[j]);
+			vect *= symbolVecScale;
+
+			if(newtime < ti) {
+				float ratio = (float)(newtime) * div_ti;
+
+				pos1 += Vec2s(Vec2f(ratio) * Vec2f(vect) * 0.5f);
+
+				Vec2f pos = Vec2f(pos1) * g_sizeRatio;
+				AddFlare(pos, 0.1f, 1, io, true);
+
+				break;
+			}
+
+			pos1 += vect;
+
+			newtime -= (long)ti;
+		}
+	}
+}
+
 void ARX_SPELLS_UpdateSymbolDraw() {
 	
 	ArxInstant now = arxtime.now();
@@ -111,7 +196,7 @@ void ARX_SPELLS_UpdateSymbolDraw() {
 	for(size_t i = 0; i < entities.size(); i++) {
 		const EntityHandle handle = EntityHandle(i);
 		Entity * io = entities[handle];
-		if(!io)
+		if(!io || io == entities.player())
 			continue;
 
 		if(io->spellcast_data.castingspell != SPELL_NONE) {
@@ -208,79 +293,41 @@ void ARX_SPELLS_UpdateSymbolDraw() {
 			
 			float div_ti=1.f/ti;
 
-			if(io != entities.player()) {
-				
-				Vec2s pos1 = Vec2s(subj.center) - symbolVecScale * short(2) + sd->cPosStart * symbolVecScale;
-				
-				Vec2s old_pos = pos1;
+			Vec2s pos1 = Vec2s(subj.center) - symbolVecScale * short(2) + sd->cPosStart * symbolVecScale;
 
-				for(size_t j = 0; j < nbcomponents; j++) {
-					Vec2s vect = GetSymbVector(sd->sequence[j]);
-					vect *= symbolVecScale;
-					vect += vect / Vec2s(2);
+			Vec2s old_pos = pos1;
 
-					if(oldtime <= ti) {
-						float ratio = float(oldtime)*div_ti;
-						old_pos += Vec2s(Vec2f(vect) * ratio);
-						break;
-					}
+			for(size_t j = 0; j < nbcomponents; j++) {
+				Vec2s vect = GetSymbVector(sd->sequence[j]);
+				vect *= symbolVecScale;
+				vect += vect / Vec2s(2);
 
-					old_pos += vect;
-					oldtime -= (long)ti;
+				if(oldtime <= ti) {
+					float ratio = float(oldtime)*div_ti;
+					old_pos += Vec2s(Vec2f(vect) * ratio);
+					break;
 				}
 
-				for(size_t j = 0; j < nbcomponents; j++) {
-					Vec2s vect = GetSymbVector(sd->sequence[j]);
-					vect *= symbolVecScale;
-					vect += vect / Vec2s(2);
+				old_pos += vect;
+				oldtime -= (long)ti;
+			}
 
-					if(newtime <= ti) {
-						float ratio = float(newtime) * div_ti;
-						pos1 += Vec2s(Vec2f(vect) * ratio);
-						AddFlare(Vec2f(pos1), 0.1f, 1, io);
-						FlareLine(Vec2f(old_pos), Vec2f(pos1), io);
-						break;
-					}
+			for(size_t j = 0; j < nbcomponents; j++) {
+				Vec2s vect = GetSymbVector(sd->sequence[j]);
+				vect *= symbolVecScale;
+				vect += vect / Vec2s(2);
 
-					pos1 += vect;
-					newtime -= (long)ti;
+				if(newtime <= ti) {
+					float ratio = float(newtime) * div_ti;
+					pos1 += Vec2s(Vec2f(vect) * ratio);
+					AddFlare(Vec2f(pos1), 0.1f, 1, io);
+					FlareLine(Vec2f(old_pos), Vec2f(pos1), io);
+					break;
 				}
-			} else {
-				Vec2s iMin;
-				Vec2s iMax;
+
+				pos1 += vect;
+				newtime -= (long)ti;
 				
-				ReCenterSequence(sd->sequence, iMin, iMax);
-				Vec2s iSize = iMax - iMin;
-				Vec2s pos1 = Vec2s(97, 64);
-				
-				Vec2s lPos;
-				lPos.x = (((513>>1)-lMaxSymbolDrawSize.x)>>1);
-				lPos.y = (313-(((313*3/4)-lMaxSymbolDrawSize.y)>>1));
-
-				pos1 += lPos;
-				pos1 += (lMaxSymbolDrawSize - iSize) / Vec2s(2);
-				pos1 -= iMin;
-
-				for(size_t j = 0; j < nbcomponents; j++) {
-
-					Vec2s vect = GetSymbVector(sd->sequence[j]);
-					vect *= symbolVecScale;
-
-					if(newtime < ti) {
-						float ratio = (float)(newtime) * div_ti;
-						
-						pos1 += Vec2s(Vec2f(ratio) * Vec2f(vect) * 0.5f);
-						
-						Vec2f pos = Vec2f(pos1) * g_sizeRatio;
-						AddFlare(pos, 0.1f, 1, io, true);
-
-						break;
-					}
-
-					pos1 += vect;
-
-					newtime -= (long)ti;
-				}
 			}
 		}
 	}
