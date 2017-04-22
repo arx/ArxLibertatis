@@ -1422,7 +1422,7 @@ void ARX_INTERFACE_ManageOpenedBook() {
 			case BOOKMODE_SPELLS: {
 				DrawBookInterfaceItem(g_bookResouces.ptexspellbook, Vec2f(97, 64), Color::white, 0.9999f);
 				ARX_INTERFACE_ManageOpenedBook_LeftTabs_Spells();
-				ARX_SPELLS_UpdateBookSymbolDraw();
+				ARX_SPELLS_UpdateBookSymbolDraw(Rect(Vec2s(97, 64), 513, 313));
 				break;
 			}
 			case BOOKMODE_MINIMAP: {

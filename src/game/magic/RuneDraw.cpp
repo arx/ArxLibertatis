@@ -104,7 +104,7 @@ static void updateIOLight(Entity * io) {
 	}
 }
 
-void ARX_SPELLS_UpdateBookSymbolDraw() {
+void ARX_SPELLS_UpdateBookSymbolDraw(Rect rect) {
 
 	ArxInstant now = arxtime.now();
 
@@ -156,11 +156,11 @@ void ARX_SPELLS_UpdateBookSymbolDraw() {
 
 		ReCenterSequence(sd->sequence, iMin, iMax);
 		Vec2s iSize = iMax - iMin;
-		Vec2s pos1 = Vec2s(97, 64);
+		Vec2s pos1 = rect.topLeft();
 
 		Vec2s lPos;
-		lPos.x = (((513>>1)-lMaxSymbolDrawSize.x)>>1);
-		lPos.y = (313-(((313*3/4)-lMaxSymbolDrawSize.y)>>1));
+		lPos.x = (((rect.width()>>1)-lMaxSymbolDrawSize.x)>>1);
+		lPos.y = (rect.height()-(((rect.height()*3/4)-lMaxSymbolDrawSize.y)>>1));
 
 		pos1 += lPos;
 		pos1 += (lMaxSymbolDrawSize - iSize) / Vec2s(2);
