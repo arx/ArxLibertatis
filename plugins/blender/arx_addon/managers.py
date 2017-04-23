@@ -46,8 +46,7 @@ from .files import *
 
 correctionMatrix = \
     mathutils.Matrix.Rotation(math.radians(180), 4, 'Z') * \
-    mathutils.Matrix.Rotation(math.radians(-90), 4, 'X') * \
-    mathutils.Matrix.Scale(0.001, 4)
+    mathutils.Matrix.Rotation(math.radians(-90), 4, 'X')
 
 
 def triangulate(bm):
@@ -717,7 +716,7 @@ class ArxSceneManager(object):
             lampData.use_specular = False
             lampData.color = (light.rgb.r, light.rgb.g, light.rgb.b)
             lampData.use_sphere = True
-            lampData.distance = light.fallend * 0.001  # TODO hardcoded scale
+            lampData.distance = light.fallend;
             lampData.energy = light.intensity
             obj = bpy.data.objects.new(name=scene.name + "-lamp", object_data=lampData)
             obj.location = correctionMatrix * mathutils.Vector([light.pos.x, light.pos.y, light.pos.z])
@@ -732,7 +731,6 @@ class ArxSceneManager(object):
             
             legacyPath = e.name.decode('iso-8859-1').replace("\\", "/").lower().split('/')
             objectId = '/'.join(legacyPath[legacyPath.index('interactive') + 1 : -1])
-            self.log.info("Linking object [{}]".format(objectId))
             
             targetObject = bpy.data.objects.get(objectId)
             
@@ -743,6 +741,7 @@ class ArxSceneManager(object):
             mesh = bpy.data.meshes[objectId]
             
             entityId = objectId + "." + str(e.ident).zfill(4)
+            self.log.info("Creating entity [{}]".format(entityId))
             
             #TODO link the objects instead of jus reusing the mesh
             proxyObject = bpy.data.objects.new("e:" + entityId, mesh)
@@ -754,7 +753,6 @@ class ArxSceneManager(object):
             # FIXME proper rotation conversion
             proxyObject.rotation_mode = 'YXZ'
             proxyObject.rotation_euler = [math.radians(e.angle.a-90), math.radians(e.angle.g+90), math.radians(e.angle.b)]
-            proxyObject.scale = [0.001,0.001,0.001] # TODO hardcoded scale
 
 class ArxAssetManager(object):
     def __init__(self, arxFiles, objectManager, sceneManager):
@@ -781,6 +779,8 @@ class ArxAssetManager(object):
             if scene is None:
                 self.log.info("Creating new scene [{}]".format(sceneName))
                 scene = bpy.data.scenes.new(name=sceneName)
+                scene.unit_settings.system = 'METRIC'
+                scene.unit_settings.scale_length = 0.01
             else:
                 self.log.info("Scene [{}] already exists".format(sceneName))
                 continue
@@ -796,6 +796,8 @@ class ArxAssetManager(object):
             if scene is None:
                 self.log.info("Creating new scene [{}]".format(sceneName))
                 scene = bpy.data.scenes.new(name=sceneName)
+                scene.unit_settings.system = 'METRIC'
+                scene.unit_settings.scale_length = 0.01
             else:
                 self.log.info("Scene [{}] already exists".format(sceneName))
                 continue
