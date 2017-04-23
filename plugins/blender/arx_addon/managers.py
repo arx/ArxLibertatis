@@ -177,14 +177,14 @@ class ArxObjectManager(object):
 
         return bm
 
-    def createObject(self, bm, data, canonicalId) -> bpy.types.Object:
+    def createObject(self, bm, data, canonicalId, scene) -> bpy.types.Object:
         
         idString = "/".join(canonicalId);
         self.validateObjectName(idString)
         mesh = bpy.data.meshes.new(idString)
         bm.to_mesh(mesh)
 
-        armatureObj = self.createArmature(canonicalId, bm, data.groups)
+        #armatureObj = self.createArmature(canonicalId, bm, data.groups)
 
         bm.free()
 
@@ -211,7 +211,7 @@ class ArxObjectManager(object):
 
         for (name, vidx) in data.actions:
             action = bpy.data.objects.new(name, None)
-            bpy.context.scene.objects.link(action)
+            scene.objects.link(action)
             action.parent = obj
             action.parent_type = 'VERTEX'
             action.parent_vertices = [vidx, 0, 0]  # last two are ignored
@@ -222,20 +222,20 @@ class ArxObjectManager(object):
         #armatureModifier = obj.modifiers.new(type='ARMATURE', name="Skeleton")
         #armatureModifier.object = armatureObj
 
-        for toDeSel in bpy.context.scene.objects: #deselect all first just to be sure
+        for toDeSel in scene.objects: #deselect all first just to be sure
             toDeSel.select = False
 
-        bpy.context.scene.objects.link(obj)
+        scene.objects.link(obj)
 
         #FIXME properly bind bones to mesh via vertex groups
-        obj.select = True
-        armatureObj.select = True
-        bpy.context.scene.objects.active = armatureObj #select both the mesh and armature and set armature active
-        bpy.ops.object.parent_set(type='ARMATURE_AUTO') # ctrl+p and automatic weights
-        bpy.context.scene.objects.active = obj
-        armatureObj.select = False
+        #obj.select = True
+        #armatureObj.select = True
+        #bpy.context.scene.objects.active = armatureObj #select both the mesh and armature and set armature active
+        #bpy.ops.object.parent_set(type='ARMATURE_AUTO') # ctrl+p and automatic weights
+        #bpy.context.scene.objects.active = obj
+        #armatureObj.select = False
 
-        bpy.ops.object.mode_set(mode='EDIT')  # initialises UVmap correctly
+        #bpy.ops.object.mode_set(mode='EDIT', toggle=False)  # initialises UVmap correctly
 
         mesh.uv_textures.new()
 
@@ -243,7 +243,7 @@ class ArxObjectManager(object):
             mat = createMaterial(self.dataPath, m)
             obj.data.materials.append(mat)
             
-        bpy.ops.object.mode_set(mode='OBJECT')
+        #bpy.ops.object.mode_set(mode='OBJECT', toggle=False)
         return obj
 
     def createArmature(self, canonicalId, bm, groups) -> bpy.types.Object:
@@ -284,15 +284,7 @@ class ArxObjectManager(object):
 
         return amtobject
 
-    def addInstance(self, scene, classPath, ident):
-        print("Creating new object type %s, id %i" % (classPath, ident))
-
-        entityObject = 'game' + classPath + '.ftl'
-        ftlFileName = os.path.join(self.dataPath, entityObject)
-        print("Name: %s" % ftlFileName)
-        return self.loadFile(ftlFileName)
-
-    def loadFile(self, filePath) -> bpy.types.Object:
+    def loadFile(self, filePath, scene) -> bpy.types.Object:
         self.validateAssetDirectory();
         
         log.debug("Loading file: %s" % filePath)
@@ -319,7 +311,7 @@ class ArxObjectManager(object):
         ftlData = self.ftlSerializer.read(unpacked)
 
         bm = self.createBmesh(ftlData.verts, ftlData.faces)
-        obj = self.createObject(bm, ftlData, canonicalId)
+        obj = self.createObject(bm, ftlData, canonicalId, scene)
 
         return obj
 
@@ -549,41 +541,33 @@ class ArxAnimationManager(object):
 
 
 class ArxSceneManager(object):
-    def __init__(self, ioLib, dataPath, objectManager):
+    def __init__(self, ioLib, dataPath, arxFiles, objectManager):
         self.log = logging.getLogger('ArxSceneManager')
         self.dlfSerializer = DlfSerializer(ioLib)
         self.ftsSerializer = FtsSerializer(ioLib)
         self.llfSerializer = LlfSerializer(ioLib)
         self.dataPath = dataPath
+        self.arxFiles = arxFiles
         self.objectManager = objectManager
 
-        self.arxFtsBaseDirectory = "game/graph/levels/"
-        self.arxLlfBaseDirectory = "graph/levels/"
-
-    def updateSceneList(self):
-        baseDirectory = os.path.join(self.dataPath, self.arxFtsBaseDirectory)
-
-        for sceneName in os.listdir(baseDirectory):
-            if not sceneName in bpy.data.scenes:
-                print("Adding Scene: %s" % sceneName)
-                bpy.data.scenes.new(sceneName)
-
-    def getSceneFiles(self, sceneName):
-        result = {}
-        result["fts"] = os.path.join(self.dataPath, self.arxFtsBaseDirectory, sceneName, "fast.fts")
-        result["dlf"] = os.path.join(self.dataPath, self.arxLlfBaseDirectory, sceneName, sceneName + ".dlf")
-        result["llf"] = os.path.join(self.dataPath, self.arxLlfBaseDirectory, sceneName, sceneName + ".llf")
-
-        return result
-
-    def importScene(self, sceneName):
+    def importScene(self, sceneName, scene):
         self.log.info("Importing scene: %s" % sceneName)
-
-        files = self.getSceneFiles(sceneName)
-
-        dlfData = self.dlfSerializer.readContainer(files["dlf"])
-        ftsData = self.ftsSerializer.read_fts_container(files["fts"])
-        llfData = self.llfSerializer.read(files["llf"])
+        
+        arxLevel = self.arxFiles.levels.levels[sceneName]
+        
+        if arxLevel.dlf is None:
+            self.log.error("dlf file not found")
+            return
+        if arxLevel.fts is None:
+            self.log.error("fts file not found")
+            return
+        if arxLevel.llf is None:
+            self.log.error("llf file not found")
+            return
+        
+        dlfData = self.dlfSerializer.readContainer(arxLevel.dlf)
+        ftsData = self.ftsSerializer.read_fts_container(arxLevel.fts)
+        llfData = self.llfSerializer.read(arxLevel.llf)
 
         # bpy.types.Material.Shader_Name = bpy.props.StringProperty(name='Group Name')
 
@@ -594,8 +578,6 @@ class ArxSceneManager(object):
             mappedMaterials.append((idx, tex.tc, createMaterial(self.dataPath, tex.fic.decode('iso-8859-1'))))
             idx += 1
 
-        scn = bpy.context.scene
-
         # Create mesh
         bm = self.AddSceneBackground(ftsData.cells, mappedMaterials)
         mesh = bpy.data.meshes.new(sceneName + "-mesh")
@@ -604,7 +586,7 @@ class ArxSceneManager(object):
 
         # Create background object
         obj = bpy.data.objects.new(sceneName + "-background", mesh)
-        scn.objects.link(obj)
+        scene.objects.link(obj)
         # scn.objects.active = obj
         # obj.select = True
 
@@ -612,11 +594,10 @@ class ArxSceneManager(object):
         for idx, tcId, mat in mappedMaterials:
             obj.data.materials.append(mat)
 
-        self.AddScenePathfinderAnchors(scn, ftsData.anchors)
-        self.AddScenePortals(scn, ftsData)
-        self.AddSceneLights(scn, llfData, ftsData.sceneOffset)
-        # TODO reenable object import
-        #self.AddSceneObjects(scn, dlfData, ftsData.sceneOffset)
+        self.AddScenePathfinderAnchors(scene, ftsData.anchors)
+        self.AddScenePortals(scene, ftsData)
+        self.AddSceneLights(scene, llfData, ftsData.sceneOffset)
+        self.AddSceneObjects(scene, dlfData, ftsData.sceneOffset)
 
     def AddSceneBackground(self, cells, mappedMaterials):
         bm = bmesh.new()
@@ -748,19 +729,78 @@ class ArxSceneManager(object):
     def AddSceneObjects(self, scene, dlfData, sceneOffset):
 
         for e in dlfData.entities:
-            classPath = \
-            os.path.splitext('/graph' + e.name.decode('iso-8859-1').replace("\\", "/").lower().split("graph", 1)[1])[0]
-            ident = e.ident
+            
+            legacyPath = e.name.decode('iso-8859-1').replace("\\", "/").lower().split('/')
+            objectId = '/'.join(legacyPath[legacyPath.index('interactive') + 1 : -1])
+            self.log.info("Linking object [{}]".format(objectId))
+            
+            targetObject = bpy.data.objects.get(objectId)
+            
+            if targetObject is None:
+                self.log.info("Object not found: [{}]".format(objectId))
+                continue;
+            
+            mesh = bpy.data.meshes[objectId]
+            
+            entityId = objectId + "." + str(e.ident).zfill(4)
+            
+            #TODO link the objects instead of jus reusing the mesh
+            proxyObject = bpy.data.objects.new("e:" + entityId, mesh)
+            scene.objects.link(proxyObject)
 
-            obj = self.objectManager.addInstance(scene, classPath, ident)
-            obj.location = correctionMatrix * mathutils.Vector([e.pos.x, e.pos.y, e.pos.z])
-            obj.location += correctionMatrix * mathutils.Vector(sceneOffset)
+            proxyObject.location = correctionMatrix * mathutils.Vector([e.pos.x, e.pos.y, e.pos.z])
+            proxyObject.location += correctionMatrix * mathutils.Vector(sceneOffset)
 
             # FIXME proper rotation conversion
-            obj.rotation_mode = 'YXZ'
-            obj.rotation_euler = [math.radians(e.angle.a-90), math.radians(e.angle.g+90), math.radians(e.angle.b)]
-            obj.scale = [0.001,0.001,0.001] # TODO hardcoded scale
+            proxyObject.rotation_mode = 'YXZ'
+            proxyObject.rotation_euler = [math.radians(e.angle.a-90), math.radians(e.angle.g+90), math.radians(e.angle.b)]
+            proxyObject.scale = [0.001,0.001,0.001] # TODO hardcoded scale
 
+class ArxAssetManager(object):
+    def __init__(self, arxFiles, objectManager, sceneManager):
+        self.log = logging.getLogger('ArxAssetManager')
+        self.log.setLevel(logging.DEBUG)
+        
+        self.arxFiles = arxFiles
+        self.objectManager = objectManager
+        self.sceneManager = sceneManager
+    
+    def importAll(self):
+        self.importModels()
+        self.importLevels()
+    
+    def importModels(self):
+        sortedModels = sorted(self.arxFiles.models.data.items())
+        
+        for i, (key, val) in enumerate(sortedModels):
+            
+            sceneName = "m:" + '/'.join(key)
+            
+            scene = bpy.data.scenes.get(sceneName)
+            
+            if scene is None:
+                self.log.info("Creating new scene [{}]".format(sceneName))
+                scene = bpy.data.scenes.new(name=sceneName)
+            else:
+                self.log.info("Scene [{}] already exists".format(sceneName))
+                continue
+            
+            import_file = os.path.join(val.path, val.model)
+            self.objectManager.loadFile(import_file, scene);
+    
+    def importLevels(self):
+        for key, value in self.arxFiles.levels.levels.items():
+            sceneName = "level-" + str(int(key[5:])).zfill(3)
+            
+            scene = bpy.data.scenes.get(sceneName)
+            if scene is None:
+                self.log.info("Creating new scene [{}]".format(sceneName))
+                scene = bpy.data.scenes.new(name=sceneName)
+            else:
+                self.log.info("Scene [{}] already exists".format(sceneName))
+                continue
+            
+            self.sceneManager.importScene(key, scene)
 
 class ArxAddon(object):
     def __init__(self, dataPath, allowLibFallback):
@@ -782,7 +822,11 @@ class ArxAddon(object):
                         return decompress_ftl(data)
                         
                 ioLib = ArxIOFallback()
-            
+        
+        self.arxFiles = ArxFiles(dataPath)
+        self.arxFiles.updateAll()
+        
         self.objectManager = ArxObjectManager(ioLib, dataPath)
-        self.sceneManager = ArxSceneManager(ioLib, dataPath, self.objectManager)
+        self.sceneManager = ArxSceneManager(ioLib, dataPath, self.arxFiles, self.objectManager)
         self.animationManager = ArxAnimationManager()
+        self.assetManager = ArxAssetManager(self.arxFiles, self.objectManager, self.sceneManager)

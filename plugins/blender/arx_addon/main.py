@@ -58,26 +58,17 @@ def getAddon(context):
     addon_prefs = context.user_preferences.addons[__package__].preferences
     return ArxAddon(addon_prefs.arxAssetPath, addon_prefs.arxAllowLibFallback)
 
-
-class ArxScenesUpdateList(bpy.types.Operator):
-    bl_idname = "arx.update_scene_list"
-    bl_label = "Update scene list"
-
-    def execute(self, context):
-        getAddon(context).sceneManager.updateSceneList()
-
-        return {'FINISHED'}
-
-
-class ArxScenesImportSelected(bpy.types.Operator):
-    bl_idname = "arx.import_selected_scene"
-    bl_label = "Import scene"
+class ArxImportAllAssets(bpy.types.Operator):
+    bl_idname = "arx.import_all_assets"
+    bl_label = "Import all assets"
 
     def execute(self, context):
-        sceneName = bpy.context.screen.scene.name
-        getAddon(context).sceneManager.importScene(sceneName)
-        return {'FINISHED'}
-
+        try:
+            getAddon(context).assetManager.importAll()
+            return {'FINISHED'}
+        except ArxException as e:
+            self.report({'ERROR'}, str(e))
+            return {'CANCELLED'}
 
 class ArxScenesPanel(bpy.types.Panel):
     bl_idname = "arx.scene.Panel"
@@ -88,9 +79,7 @@ class ArxScenesPanel(bpy.types.Panel):
 
     def draw(self, context):
         layout = self.layout
-        layout.operator("arx.update_scene_list")
-        layout.operator("arx.import_selected_scene")
-
+        layout.operator("arx.import_all_assets")
 
 # ======================================================================================================================
 
@@ -107,7 +96,8 @@ class ImportFTL(bpy.types.Operator, ImportHelper):
 
     def execute(self, context):
         try:
-            getAddon(context).objectManager.loadFile(self.filepath);
+            scene = bpy.context.scene
+            getAddon(context).objectManager.loadFile(self.filepath, scene);
             return {'FINISHED'}
         except ArxException as e:
             self.report({'ERROR'}, str(e))
@@ -170,8 +160,7 @@ def register():
     log.debug("register")
     bpy.utils.register_class(ArxAddonPreferences)
 
-    bpy.utils.register_class(ArxScenesUpdateList)
-    bpy.utils.register_class(ArxScenesImportSelected)
+    bpy.utils.register_class(ArxImportAllAssets)
     bpy.utils.register_class(ArxScenesPanel)
 
     bpy.utils.register_class(ArxMeshAddCustomProperties)
@@ -190,8 +179,7 @@ def unregister():
     log.debug("unregister")
     bpy.utils.unregister_class(ArxAddonPreferences)
 
-    bpy.utils.unregister_class(ArxScenesUpdateList)
-    bpy.utils.unregister_class(ArxScenesImportSelected)
+    bpy.utils.unregister_class(ArxImportAllAssets)
     bpy.utils.unregister_class(ArxScenesPanel)
 
     bpy.utils.unregister_class(ArxMeshAddCustomProperties)
