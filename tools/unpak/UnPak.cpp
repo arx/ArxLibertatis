@@ -101,6 +101,7 @@ static void dump(PakDirectory & dir, const fs::path & dirname, UnpakAction actio
 		}
 		BOOST_FOREACH(const SortedDirs::value_type & entry, subdirs) {
 			fs::path path = dirname / entry.first;
+			std::cout << path.string() << '/' << '\n';
 			dump(*entry.second, path, action);
 		}
 	}
