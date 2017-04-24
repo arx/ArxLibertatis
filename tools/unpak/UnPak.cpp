@@ -23,6 +23,7 @@
 #include <sstream>
 #include <algorithm>
 #include <iostream>
+#include <map>
 
 #include <boost/foreach.hpp>
 
@@ -52,37 +53,56 @@ static void dump(PakDirectory & dir, const fs::path & dirname, UnpakAction actio
 		LogWarning << "Failed to create target directory";
 	}
 	
-	for(PakDirectory::files_iterator i = dir.files_begin(); i != dir.files_end(); ++i) {
-		// TODO this should really be done when loading the pak file
-		fs::path path = dirname / util::convert<util::ISO_8859_1, util::UTF8>(i->first);
-		
-		if(action == UnpakExtract) {
-			
-			fs::ofstream ofs(path, fs::fstream::out | fs::fstream::binary | fs::fstream::trunc);
-			if(!ofs.is_open()) {
-				LogError << "Error opening file for writing: " << path;
-				exit(1);
-			}
-			
-			PakFile * file = i->second;
-			char * data = (char*)file->readAlloc();
-			arx_assert(file->size() == 0 || data != NULL);
-			
-			if(ofs.write(data, file->size()).fail()) {
-				LogError << "Error writing to file: " << path;
-				exit(1);
-			}
-			
-			free(data);
-			
+	{
+		// Copy to map to ensure filenames are sorted
+		typedef std::map<std::string, PakFile *> SortedFiles;
+		SortedFiles files;
+		for(PakDirectory::files_iterator i = dir.files_begin(); i != dir.files_end(); ++i) {
+			// TODO this should really be done when loading the pak file
+			std::string name = util::convert<util::ISO_8859_1, util::UTF8>(i->first);
+			files[name] = i->second;
 		}
-		
-		std::cout << path.string() << '\n';
+		BOOST_FOREACH(const SortedFiles::value_type & entry, files) {
+			fs::path path = dirname / entry.first;
+			
+			if(action == UnpakExtract) {
+				
+				fs::ofstream ofs(path, fs::fstream::out | fs::fstream::binary | fs::fstream::trunc);
+				if(!ofs.is_open()) {
+					LogError << "Error opening file for writing: " << path;
+					exit(1);
+				}
+				
+				PakFile * file = entry.second;
+				char * data = (char*)file->readAlloc();
+				arx_assert(file->size() == 0 || data != NULL);
+				
+				if(ofs.write(data, file->size()).fail()) {
+					LogError << "Error writing to file: " << path;
+					exit(1);
+				}
+				
+				free(data);
+				
+			}
+			
+			std::cout << path.string() << '\n';
+		}
 	}
 	
-	for(PakDirectory::dirs_iterator i = dir.dirs_begin(); i != dir.dirs_end(); ++i) {
-		fs::path path = dirname / util::convert<util::ISO_8859_1, util::UTF8>(i->first);
-		dump(i->second, path, action);
+	{
+		// Copy to map to ensure dirnames are sorted
+		typedef std::map<std::string, PakDirectory *> SortedDirs;
+		SortedDirs subdirs;
+		for(PakDirectory::dirs_iterator i = dir.dirs_begin(); i != dir.dirs_end(); ++i) {
+			// TODO this should really be done when loading the pak file
+			std::string name = util::convert<util::ISO_8859_1, util::UTF8>(i->first);
+			subdirs[name] = &i->second;
+		}
+		BOOST_FOREACH(const SortedDirs::value_type & entry, subdirs) {
+			fs::path path = dirname / entry.first;
+			dump(*entry.second, path, action);
+		}
 	}
 	
 }
