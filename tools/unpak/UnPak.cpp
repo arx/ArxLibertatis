@@ -19,10 +19,10 @@
 
 #include <vector>
 #include <string>
-#include <cstdio>
 #include <cstdlib>
 #include <sstream>
 #include <algorithm>
+#include <iostream>
 
 #include <boost/foreach.hpp>
 
@@ -53,8 +53,6 @@ static void dump(PakDirectory & dir, const fs::path & dirname) {
 		
 		PakFile * file = i->second;
 		
-		printf("%s\n", path.string().c_str());
-		
 		fs::ofstream ofs(path, fs::fstream::out | fs::fstream::binary | fs::fstream::trunc);
 		if(!ofs.is_open()) {
 			LogError << "Error opening file for writing: " << path;
@@ -75,6 +73,7 @@ static void dump(PakDirectory & dir, const fs::path & dirname) {
 			
 		}
 		
+		std::cout << path.string() << '\n';
 	}
 	
 	for(PakDirectory::dirs_iterator i = dir.dirs_begin(); i != dir.dirs_end(); ++i) {
@@ -109,7 +108,7 @@ int utf8_main(int argc, char ** argv) {
 	Logger::initialize();
 	
 	if(g_archives.empty()) {
-		printf("usage: unpak <pakfile> [<pakfile>...]\n");
+		std::cout << "usage: unpak <pakfile> [<pakfile>...]\n";
 		return 1;
 	}
 	
