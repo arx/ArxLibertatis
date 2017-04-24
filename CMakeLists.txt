@@ -1108,6 +1108,10 @@ set(UTIL_CMDLINE_SOURCES
 	src/util/cmdline/CommandLine.cpp
 )
 
+set(UTIL_MD5_SOURCES
+	src/util/MD5.cpp
+)
+
 set(WINDOW_SOURCES
 	src/window/RenderWindow.cpp
 	src/window/Window.cpp
@@ -1567,6 +1571,7 @@ if(BUILD_TOOLS)
 		${IO_RESOURCE_SOURCES}
 		${UTIL_SOURCES}
 		${UTIL_CMDLINE_SOURCES}
+		${UTIL_MD5_SOURCES}
 		tools/unpak/UnPak.cpp
 	)
 	
