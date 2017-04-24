@@ -202,6 +202,19 @@ ARX_PROGRAM_OPTION_ARG("output-dir", "o", "Directory to extract files to", &hand
 
 ARX_PROGRAM_OPTION_ARG("", "", "PAK archives to process", &handlePositionalArgument, "DIRS")
 
+static void addResourceDir(PakReader & resources, const fs::path & base) {
+	
+	// TODO share this list with the game code
+	static const char * const resource_dirs[] = {
+		"editor", "game", "graph", "localisation", "misc", "sfx", "speech",
+	};
+	
+	BOOST_FOREACH(const char * dirname, resource_dirs) {
+		resources.addFiles(base / dirname, dirname);
+	}
+	
+}
+
 int utf8_main(int argc, char ** argv) {
 	
 	ARX_UNUSED(resources);
@@ -220,12 +233,14 @@ int utf8_main(int argc, char ** argv) {
 	
 	if(status == RunProgram) {
 		BOOST_FOREACH(const fs::path & archive, g_archives) {
-			if(fs::exists(archive)) {
+			if(fs::is_regular_file(archive)) {
 				if(!resources.addArchive(archive)) {
 					LogCritical << "Could not open archive " << archive << "!";
 					status = ExitFailure;
 					break;
 				}
+			} else if(fs::is_directory(archive)) {
+				addResourceDir(resources, archive);
 			} else {
 				LogCritical << "File or directory " << archive << " does not exist!";
 				status = ExitFailure;
