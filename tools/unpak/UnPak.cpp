@@ -51,27 +51,22 @@ static void dump(PakDirectory & dir, const fs::path & dirname) {
 		// TODO this should really be done when loading the pak file
 		fs::path path = dirname / util::convert<util::ISO_8859_1, util::UTF8>(i->first);
 		
-		PakFile * file = i->second;
-		
 		fs::ofstream ofs(path, fs::fstream::out | fs::fstream::binary | fs::fstream::trunc);
 		if(!ofs.is_open()) {
 			LogError << "Error opening file for writing: " << path;
 			exit(1);
 		}
 		
-		if(file->size() > 0) {
-			
-			char * data = (char*)file->readAlloc();
-			arx_assert(data != NULL);
-			
-			if(ofs.write(data, file->size()).fail()) {
-				LogError << "Error writing to file: " << path;
-				exit(1);
-			}
-			
-			free(data);
-			
+		PakFile * file = i->second;
+		char * data = (char*)file->readAlloc();
+		arx_assert(file->size() == 0 || data != NULL);
+		
+		if(ofs.write(data, file->size()).fail()) {
+			LogError << "Error writing to file: " << path;
+			exit(1);
 		}
+		
+		free(data);
 		
 		std::cout << path.string() << '\n';
 	}
