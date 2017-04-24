@@ -47,7 +47,7 @@ enum UnpakAction {
 	UnpakList,
 };
 
-static void dump(PakDirectory & dir, const fs::path & dirname, UnpakAction action) {
+static void processDirectory(PakDirectory & dir, const fs::path & dirname, UnpakAction action) {
 	
 	if(action == UnpakExtract && !fs::create_directories(dirname)) {
 		LogWarning << "Failed to create target directory";
@@ -102,10 +102,44 @@ static void dump(PakDirectory & dir, const fs::path & dirname, UnpakAction actio
 		BOOST_FOREACH(const SortedDirs::value_type & entry, subdirs) {
 			fs::path path = dirname / entry.first;
 			std::cout << path.string() << '/' << '\n';
-			dump(*entry.second, path, action);
+			processDirectory(*entry.second, path, action);
 		}
 	}
 	
+}
+
+static void processResources(PakReader & resources, const fs::path & dirname, UnpakAction action) {
+	
+	PakReader::ReleaseFlags release = resources.getReleaseType();
+	std::cout << "Type: ";
+	bool first = true;
+	if(release & PakReader::Demo) {
+		std::cout << "demo";
+		first = false;
+	}
+	if(release & PakReader::FullGame) {
+		if(!first) {
+			std::cout << ", ";
+		}
+		std::cout << "full game";
+		first = false;
+	}
+	if(release & PakReader::Unknown) {
+		if(!first) {
+			std::cout << ", ";
+		}
+		std::cout << "unknown";
+		first = false;
+	}
+	if(release & PakReader::External) {
+		if(!first) {
+			std::cout << ", ";
+		}
+		std::cout << "external";
+	}
+	std::cout << "\n";
+	
+	processDirectory(resources, dirname, action);
 }
 
 static UnpakAction g_action = UnpakExtract;
@@ -169,7 +203,7 @@ int utf8_main(int argc, char ** argv) {
 	}
 	
 	if(status == RunProgram) {
-		dump(resources, g_outputDir, g_action);
+		processResources(resources, g_outputDir, g_action);
 	}
 	
 	return 0;
