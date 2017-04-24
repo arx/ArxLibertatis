@@ -833,8 +833,6 @@ set(CORE_SOURCES
 	src/core/Localisation.cpp
 	src/core/SaveGame.cpp
 	src/core/Startup.cpp
-	src/util/cmdline/Parser.cpp # TODO: move to UTIL_SOURCES once it's used in the tools
-	src/util/cmdline/CommandLine.cpp
 )
 
 set(GAME_SOURCES
@@ -1105,6 +1103,11 @@ set(UTIL_SOURCES
 	src/util/String.cpp
 )
 
+set(UTIL_CMDLINE_SOURCES
+	src/util/cmdline/Parser.cpp
+	src/util/cmdline/CommandLine.cpp
+)
+
 set(WINDOW_SOURCES
 	src/window/RenderWindow.cpp
 	src/window/Window.cpp
@@ -1267,6 +1270,7 @@ set(ARX_SOURCES
 	${SCENE_SOURCES}
 	${SCRIPT_SOURCES}
 	${UTIL_SOURCES}
+	${UTIL_CMDLINE_SOURCES}
 	${WINDOW_SOURCES}
 )
 
@@ -1300,6 +1304,7 @@ set(VERSION_SOURCES  VERSION "VERSION" AUTHORS "AUTHORS" COPYING "COPYING")
 file(MAKE_DIRECTORY "${PROJECT_BINARY_DIR}/core")
 version_file("${VERSION_TEMPLATE}" "${VERSION_FILE}" "${VERSION_SOURCES}" ".git")
 list(APPEND ARX_SOURCES ${VERSION_FILE})
+list(APPEND UTIL_CMDLINE_SOURCES ${VERSION_FILE})
 
 if(WIN32)
 	set(VERSION_RC_TEMPLATE "${SRC_DIR}/core/Version.rc.in")
@@ -1561,6 +1566,7 @@ if(BUILD_TOOLS)
 		${IO_LOGGER_SOURCES}
 		${IO_RESOURCE_SOURCES}
 		${UTIL_SOURCES}
+		${UTIL_CMDLINE_SOURCES}
 		tools/unpak/UnPak.cpp
 	)
 	

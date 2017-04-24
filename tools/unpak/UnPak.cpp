@@ -17,11 +17,14 @@
  * along with Arx Libertatis.  If not, see <http://www.gnu.org/licenses/>.
  */
 
+#include <vector>
 #include <string>
 #include <cstdio>
 #include <cstdlib>
 #include <sstream>
 #include <algorithm>
+
+#include <boost/foreach.hpp>
 
 #include "io/fs/FilePath.h"
 #include "io/fs/Filesystem.h"
@@ -31,9 +34,12 @@
 #include "io/resource/ResourcePath.h"
 #include "io/log/Logger.h"
 
+#include "platform/ProgramOptions.h"
 #include "platform/WindowsMain.h"
 
 #include "util/Unicode.h"
+#include "util/cmdline/CommandLine.h"
+
 
 static void dump(PakDirectory & dir, const fs::path & dirname = fs::path()) {
 	
@@ -80,27 +86,48 @@ static void dump(PakDirectory & dir, const fs::path & dirname = fs::path()) {
 	
 }
 
+static std::vector<fs::path> g_archives;
+
+static void handlePositionalArgument(const std::string & file) {
+	g_archives.push_back(file);
+}
+
+ARX_PROGRAM_OPTION_ARG("", "", "PAK archives to process", &handlePositionalArgument, "DIRS")
+
 int utf8_main(int argc, char ** argv) {
 	
 	ARX_UNUSED(resources);
 	
+	// Parse the command line and process options
+	ExitStatus status = parseCommandLine(argc, argv);
+	
 	Logger::initialize();
 	
-	if(argc < 2) {
+	if(g_archives.empty()) {
 		printf("usage: unpak <pakfile> [<pakfile>...]\n");
 		return 1;
 	}
 	
-	for(int i = 1; i < argc; i++) {
-		
-		PakReader pak;
-		if(!pak.addArchive(argv[i])) {
-			printf("error opening PAK file\n");
-			return 1;
+	PakReader resources;
+	
+	if(status == RunProgram) {
+		BOOST_FOREACH(const fs::path & archive, g_archives) {
+			if(fs::exists(archive)) {
+				if(!resources.addArchive(archive)) {
+					LogCritical << "Could not open archive " << archive << "!";
+					status = ExitFailure;
+					break;
+				}
+			} else {
+				LogCritical << "File or directory " << archive << " does not exist!";
+				status = ExitFailure;
+				break;
+			}
 		}
-		
-		dump(pak);
-		
+	}
+	
+	if(status == RunProgram) {
+		dump(resources);
 	}
 	
 	return 0;
