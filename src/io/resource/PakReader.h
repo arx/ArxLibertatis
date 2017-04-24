@@ -58,7 +58,8 @@ public:
 	enum ReleaseType {
 		Demo     = (1<<0),
 		FullGame = (1<<1),
-		Unknown  = (1<<2)
+		Unknown  = (1<<2),
+		External = (1<<3)
 	};
 	DECLARE_FLAGS(ReleaseType, ReleaseFlags)
 	
