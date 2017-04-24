@@ -249,6 +249,17 @@ struct aligned_allocator {
 	
 };
 
+//! Check if a pointer has aparticular alignment.
+inline bool is_aligned_on(const void * p, size_t alignment) {
+	return alignment == 1 || (size_t(p) % alignment == 0);
+}
+
+//! Check if a pointer is aligned for a specific type.
+template <class T>
+bool is_aligned(const void * p) {
+	return is_aligned_on(p, ARX_ALIGNOF(T));
+}
+
 } // namespace platform
 
 
