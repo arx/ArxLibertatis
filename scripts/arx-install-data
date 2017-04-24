@@ -3093,6 +3093,7 @@ determine_language() {
 		'4edf9f8c799190590b4cd52cfa5f91b1') data_lang='french'        ;;
 		'81f05dea47c52d43f01c9b44dd8fe962') data_lang='italian'       ;;
 		'677163bc319cd1e9aa1b53b5fb3e9402') data_lang='russian'       ;;
+		'5df8ba0d4ec58bd43d04307eb4c06d86') data_lang='russian'       ;;
 		'235b86700fc80b3eb86731d748013a38') data_lang='japanese'      ;;
 		'62ca7b1751c0615ee131a94f0856b389') data_lang='english-demo'  ;;
 		'09038e43508232c44537c162f9e3ecde') data_lang='french-demo'   ;;
@@ -3250,7 +3251,8 @@ case "$data_lang" in
 	data_checksum_original='a91a0b39a046233debbb10b4850e13eb'
 	data_checksum_censored='a88d239dc7919ab113ff45483cb4ad46'
 	data_checksum_frenchcd='7ae3632eef92700cd6c5e143aa0fe67b'
-	f 0 'data.pak' "$data_checksum_original $data_checksum_censored $data_checksum_frenchcd"
+	data_checksum_russiancd='b297ab9ae41a593b13cbdd0ecaf1f999'
+	f 0 'data.pak' "$data_checksum_original $data_checksum_censored $data_checksum_frenchcd $data_checksum_russiancd"
 	
 esac
 
