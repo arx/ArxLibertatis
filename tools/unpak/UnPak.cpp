@@ -171,6 +171,7 @@ static void processResources(PakReader & resources, const fs::path & dirname, Un
 static UnpakAction g_action = UnpakExtract;
 static fs::path g_outputDir;
 static std::vector<fs::path> g_archives;
+static bool g_quiet = false;
 
 static void handleExtractOption() {
 	g_action = UnpakExtract;
@@ -188,6 +189,10 @@ static void handleOutputDirOption(const std::string & outputDir) {
 	g_outputDir = outputDir;
 }
 
+static void handleQuietOption() {
+	g_quiet = true;
+}
+
 static void handlePositionalArgument(const std::string & file) {
 	g_archives.push_back(file);
 }
@@ -199,6 +204,8 @@ ARX_PROGRAM_OPTION("manifest", "m", "Print archive manifest", &handleManifestOpt
 ARX_PROGRAM_OPTION("list", "", "List archive contents", &handleListOption)
 
 ARX_PROGRAM_OPTION_ARG("output-dir", "o", "Directory to extract files to", &handleOutputDirOption, "DIR")
+
+ARX_PROGRAM_OPTION("quiet", "q", "Don't print log output", &handleQuietOption)
 
 ARX_PROGRAM_OPTION_ARG("", "", "PAK archives to process", &handlePositionalArgument, "DIRS")
 
@@ -222,7 +229,9 @@ int utf8_main(int argc, char ** argv) {
 	// Parse the command line and process options
 	ExitStatus status = parseCommandLine(argc, argv);
 	
-	Logger::initialize();
+	if(!g_quiet) {
+		Logger::initialize();
+	}
 	
 	if(g_archives.empty()) {
 		std::cout << "usage: unpak <pakfile> [<pakfile>...]\n";
