@@ -57,7 +57,7 @@ static void dump(PakDirectory & dir, const fs::path & dirname) {
 		
 		fs::ofstream ofs(path, fs::fstream::out | fs::fstream::binary | fs::fstream::trunc);
 		if(!ofs.is_open()) {
-			printf("error opening file for writing: %s\n", path.string().c_str());
+			LogError << "Error opening file for writing: " << path;
 			exit(1);
 		}
 		
@@ -67,7 +67,7 @@ static void dump(PakDirectory & dir, const fs::path & dirname) {
 			arx_assert(data != NULL);
 			
 			if(ofs.write(data, file->size()).fail()) {
-				printf("error writing to file: %s\n", path.string().c_str());
+				LogError << "Error writing to file: " << path;
 				exit(1);
 			}
 			
