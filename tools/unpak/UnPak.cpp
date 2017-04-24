@@ -41,9 +41,14 @@
 #include "util/cmdline/CommandLine.h"
 
 
-static void dump(PakDirectory & dir, const fs::path & dirname) {
+enum UnpakAction {
+	UnpakExtract,
+	UnpakList,
+};
+
+static void dump(PakDirectory & dir, const fs::path & dirname, UnpakAction action) {
 	
-	if(!fs::create_directories(dirname)) {
+	if(action == UnpakExtract && !fs::create_directories(dirname)) {
 		LogWarning << "Failed to create target directory";
 	}
 	
@@ -51,35 +56,48 @@ static void dump(PakDirectory & dir, const fs::path & dirname) {
 		// TODO this should really be done when loading the pak file
 		fs::path path = dirname / util::convert<util::ISO_8859_1, util::UTF8>(i->first);
 		
-		fs::ofstream ofs(path, fs::fstream::out | fs::fstream::binary | fs::fstream::trunc);
-		if(!ofs.is_open()) {
-			LogError << "Error opening file for writing: " << path;
-			exit(1);
+		if(action == UnpakExtract) {
+			
+			fs::ofstream ofs(path, fs::fstream::out | fs::fstream::binary | fs::fstream::trunc);
+			if(!ofs.is_open()) {
+				LogError << "Error opening file for writing: " << path;
+				exit(1);
+			}
+			
+			PakFile * file = i->second;
+			char * data = (char*)file->readAlloc();
+			arx_assert(file->size() == 0 || data != NULL);
+			
+			if(ofs.write(data, file->size()).fail()) {
+				LogError << "Error writing to file: " << path;
+				exit(1);
+			}
+			
+			free(data);
+			
 		}
-		
-		PakFile * file = i->second;
-		char * data = (char*)file->readAlloc();
-		arx_assert(file->size() == 0 || data != NULL);
-		
-		if(ofs.write(data, file->size()).fail()) {
-			LogError << "Error writing to file: " << path;
-			exit(1);
-		}
-		
-		free(data);
 		
 		std::cout << path.string() << '\n';
 	}
 	
 	for(PakDirectory::dirs_iterator i = dir.dirs_begin(); i != dir.dirs_end(); ++i) {
 		fs::path path = dirname / util::convert<util::ISO_8859_1, util::UTF8>(i->first);
-		dump(i->second, path);
+		dump(i->second, path, action);
 	}
 	
 }
 
+static UnpakAction g_action = UnpakExtract;
 static fs::path g_outputDir;
 static std::vector<fs::path> g_archives;
+
+static void handleExtractOption() {
+	g_action = UnpakExtract;
+}
+
+static void handleListOption() {
+	g_action = UnpakList;
+}
 
 static void handleOutputDirOption(const std::string & outputDir) {
 	g_outputDir = outputDir;
@@ -88,6 +106,10 @@ static void handleOutputDirOption(const std::string & outputDir) {
 static void handlePositionalArgument(const std::string & file) {
 	g_archives.push_back(file);
 }
+
+ARX_PROGRAM_OPTION("extract", "e", "Extract archive contents", &handleExtractOption)
+
+ARX_PROGRAM_OPTION("list", "", "List archive contents", &handleListOption)
 
 ARX_PROGRAM_OPTION_ARG("output-dir", "o", "Directory to extract files to", &handleOutputDirOption, "DIR")
 
@@ -126,7 +148,7 @@ int utf8_main(int argc, char ** argv) {
 	}
 	
 	if(status == RunProgram) {
-		dump(resources, g_outputDir);
+		dump(resources, g_outputDir, g_action);
 	}
 	
 	return 0;
