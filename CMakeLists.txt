@@ -817,6 +817,7 @@ set(CORE_SOURCES
 	src/core/SaveGame.cpp
 	src/core/Startup.cpp
 	src/util/cmdline/Parser.cpp # TODO: move to UTIL_SOURCES once it's used in the tools
+	src/util/cmdline/CommandLine.cpp
 )
 
 set(GAME_SOURCES
