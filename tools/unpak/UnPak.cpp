@@ -23,9 +23,11 @@
 #include <sstream>
 #include <algorithm>
 #include <iostream>
+#include <iomanip>
 #include <map>
 
 #include <boost/foreach.hpp>
+#include <boost/range/size.hpp>
 
 #include "io/fs/FilePath.h"
 #include "io/fs/Filesystem.h"
@@ -38,12 +40,14 @@
 #include "platform/ProgramOptions.h"
 #include "platform/WindowsMain.h"
 
+#include "util/MD5.h"
 #include "util/Unicode.h"
 #include "util/cmdline/CommandLine.h"
 
 
 enum UnpakAction {
 	UnpakExtract,
+	UnpakManifest,
 	UnpakList,
 };
 
@@ -65,24 +69,43 @@ static void processDirectory(PakDirectory & dir, const fs::path & dirname, Unpak
 		BOOST_FOREACH(const SortedFiles::value_type & entry, files) {
 			fs::path path = dirname / entry.first;
 			
-			if(action == UnpakExtract) {
-				
-				fs::ofstream ofs(path, fs::fstream::out | fs::fstream::binary | fs::fstream::trunc);
-				if(!ofs.is_open()) {
-					LogError << "Error opening file for writing: " << path;
-					exit(1);
-				}
+			if(action == UnpakExtract || action == UnpakManifest) {
 				
 				PakFile * file = entry.second;
 				char * data = (char*)file->readAlloc();
 				arx_assert(file->size() == 0 || data != NULL);
 				
-				if(ofs.write(data, file->size()).fail()) {
-					LogError << "Error writing to file: " << path;
-					exit(1);
+				if(action == UnpakExtract) {
+					
+					fs::ofstream ofs(path, fs::fstream::out | fs::fstream::binary | fs::fstream::trunc);
+					if(!ofs.is_open()) {
+						LogError << "Error opening file for writing: " << path;
+						std::exit(1);
+					}
+					
+					if(ofs.write(data, file->size()).fail()) {
+						LogError << "Error writing to file: " << path;
+						std::exit(1);
+					}
+					
 				}
 				
-				free(data);
+				if(action == UnpakManifest) {
+					
+					util::md5 hash;
+					hash.init();
+					hash.update(data, file->size());
+					char checksum[hash.size];
+					hash.finalize(checksum);
+					
+					for(size_t i = 0; i < size_t(boost::size(checksum)); i++) {
+						std::cout << std::setfill('0') << std::hex << std::setw(2) << int(u8(checksum[i]));
+					}
+					std::cout << " *";
+					
+				}
+				
+				std::free(data);
 				
 			}
 			
@@ -101,6 +124,9 @@ static void processDirectory(PakDirectory & dir, const fs::path & dirname, Unpak
 		}
 		BOOST_FOREACH(const SortedDirs::value_type & entry, subdirs) {
 			fs::path path = dirname / entry.first;
+			if(action == UnpakManifest) {
+				std::cout << "                                  ";
+			}
 			std::cout << path.string() << '/' << '\n';
 			processDirectory(*entry.second, path, action);
 		}
@@ -150,6 +176,10 @@ static void handleExtractOption() {
 	g_action = UnpakExtract;
 }
 
+static void handleManifestOption() {
+	g_action = UnpakManifest;
+}
+
 static void handleListOption() {
 	g_action = UnpakList;
 }
@@ -163,6 +193,8 @@ static void handlePositionalArgument(const std::string & file) {
 }
 
 ARX_PROGRAM_OPTION("extract", "e", "Extract archive contents", &handleExtractOption)
+
+ARX_PROGRAM_OPTION("manifest", "m", "Print archive manifest", &handleManifestOption)
 
 ARX_PROGRAM_OPTION("list", "", "List archive contents", &handleListOption)
 
