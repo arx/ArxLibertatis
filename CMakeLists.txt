@@ -692,6 +692,23 @@ else(MSVC)
 		check_symbol_exists(sysctlbyname "sys/types.h;sys/sysctl.h" ARX_HAVE_SYSCTLBYNAME)
 	endif()
 	
+	if(CMAKE_CXX_COMPILER_ID STREQUAL "PathScale")
+		# EKOPath recognizes these but then fails to link
+	else()
+		check_builtin(INNOEXTRACT_HAVE_BUILTIN_BSWAP16 "__builtin_bswap16(0)")
+		check_builtin(INNOEXTRACT_HAVE_BUILTIN_BSWAP32 "__builtin_bswap32(0)")
+		check_builtin(INNOEXTRACT_HAVE_BUILTIN_BSWAP64 "__builtin_bswap64(0)")
+	endif()
+	if(NOT INNOEXTRACT_HAVE_BUILTIN_BSWAP16)
+		check_symbol_exists(bswap_16 "byteswap.h" INNOEXTRACT_HAVE_BSWAP_16)
+	endif()
+	if(NOT INNOEXTRACT_HAVE_BUILTIN_BSWAP32)
+		check_symbol_exists(bswap_32 "byteswap.h" INNOEXTRACT_HAVE_BSWAP_32)
+	endif()
+	if(NOT INNOEXTRACT_HAVE_BUILTIN_BSWAP64)
+		check_symbol_exists(bswap_64 "byteswap.h" INNOEXTRACT_HAVE_BSWAP_64)
+	endif()
+	
 	if(USE_NATIVE_FS AND NOT WIN32)
 		
 		# Whether multiple cuncurrent readdir calls with *different* directory streams are threadsafe

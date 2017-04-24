@@ -65,6 +65,14 @@
 #cmakedefine01 ARX_HAVE_CRASHHANDLER_POSIX
 #cmakedefine01 ARX_HAVE_CRASHHANDLER_WINDOWS
 
+// Endianness
+#cmakedefine01 ARX_HAVE_BUILTIN_BSWAP16
+#cmakedefine01 ARX_HAVE_BUILTIN_BSWAP32
+#cmakedefine01 ARX_HAVE_BUILTIN_BSWAP64
+#cmakedefine01 ARX_HAVE_BSWAP_16
+#cmakedefine01 ARX_HAVE_BSWAP_32
+#cmakedefine01 ARX_HAVE_BSWAP_64
+
 // Misc POSIX / Linux features
 #cmakedefine01 ARX_HAVE_BACKTRACE
 #cmakedefine01 ARX_HAVE_WORDEXP
