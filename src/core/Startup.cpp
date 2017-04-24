@@ -22,7 +22,6 @@
 #include <string>
 #include <vector>
 #include <list>
-#include <iostream>
 #include <set>
 #include <sstream>
 #include <algorithm>
@@ -60,15 +59,13 @@
 
 #include "platform/Compiler.h"
 #include "platform/CrashHandler.h"
-#include "platform/Environment.h"
 #include "platform/profiler/Profiler.h"
-#include "platform/ProgramOptions.h"
 #include "platform/Thread.h"
 #include "platform/Time.h"
 #include "platform/WindowsMain.h"
 
 #include "util/String.h"
-#include "util/cmdline/Parser.h"
+#include "util/cmdline/CommandLine.h"
 
 /*
  * Under OS X we want SDLmain to replace the entry point with its own.
@@ -80,53 +77,6 @@
 #else
 	#undef main /* in case SDL.h was already included */
 #endif
-
-
-static void showCommandLineHelp(const util::cmdline::interpreter<std::string> & options,
-                                std::ostream & os) {
-	
-	os << "Usage: arx [options]\n\n";
-	
-	os << arx_name << " Options:\n";
-	os << options << std::endl;
-	
-}
-
-static void handleHelpOption() {
-	
-	// Register all program options in the command line interpreter
-	util::cmdline::interpreter<std::string> cli;
-	BaseOption::registerAll(cli);
-	
-	showCommandLineHelp(cli, std::cout);
-	
-	std::exit(EXIT_SUCCESS);
-}
-
-ARX_PROGRAM_OPTION("help", "h", "Show supported options", &handleHelpOption)
-
-static ExitStatus parseCommandLine(int argc, char ** argv) {
-	
-	platform::initializeEnvironment(argv[0]);
-	
-	// Register all program options in the command line interpreter
-	util::cmdline::interpreter<std::string> cli;
-	BaseOption::registerAll(cli);
-	
-	try {
-		
-		util::cmdline::parse(cli, argc, argv);
-		
-	} catch(util::cmdline::error & e) {
-		
-		std::cerr << e.what() << "\n\n";
-		showCommandLineHelp(cli, std::cerr);
-		
-		return ExitFailure;
-	}
-	
-	return RunProgram;
-}
 
 int utf8_main(int argc, char ** argv) {
 	

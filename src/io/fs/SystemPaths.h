@@ -24,12 +24,7 @@
 #include <ostream>
 
 #include "io/fs/FilePath.h"
-
-enum ExitStatus {
-	ExitSuccess,
-	ExitFailure,
-	RunProgram
-};
+#include "util/cmdline/CommandLine.h"
 
 namespace fs {
 

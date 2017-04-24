@@ -76,10 +76,17 @@ bool getSystemConfiguration(const std::string & name, std::string & result);
 
 /*!
  * \brief Get the path to the current running executable
- * 
+ *
  * \return the executable path if possible or an empty string otherwise
  */
 fs::path getExecutablePath();
+
+/*!
+ * \brief Get the name the executable was invoked as
+ *
+ * \return the executable name if possible or an empty string otherwise
+ */
+std::string getCommandName();
 
 /*!
  * \brief Get the full path to a helper executable

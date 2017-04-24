@@ -263,21 +263,11 @@ std::vector<fs::path> getSystemPaths(SystemPathId id) {
 
 #endif
 
-#if ARX_PLATFORM == ARX_PLATFORM_WIN32 || ARX_PLATFORM == ARX_PLATFORM_MACOSX
-
-void initializeEnvironment(const char * argv0) {
-	ARX_UNUSED(argv0);
-}
-
-#else
-
 static const char * executablePath = NULL;
 
 void initializeEnvironment(const char * argv0) {
 	executablePath = argv0;
 }
-
-#endif
 
 #if ARX_HAVE_READLINK && ARX_PLATFORM != ARX_PLATFORM_MACOSX
 static bool try_readlink(std::vector<char> & buffer, const char * path) {
@@ -377,6 +367,8 @@ fs::path getExecutablePath() {
 	}
 	#endif
 	
+#endif
+	
 	// Fall back to argv[0] if possible
 	if(executablePath != NULL) {
 		std::string path(executablePath);
@@ -385,10 +377,22 @@ fs::path getExecutablePath() {
 		}
 	}
 	
-#endif
-	
 	// Give up - we couldn't determine the exe path.
 	return fs::path();
+}
+
+std::string getCommandName() {
+	
+	// Prefer the name passed on the command-line to the actual executable name
+	fs::path path = executablePath ? fs::path(executablePath) : getExecutablePath();
+	
+	#if ARX_PLATFORM == ARX_PLATFORM_WIN32
+	if(path.ext() == ".exe") {
+		return path.basename();
+	}
+	#endif
+	
+	return path.filename();
 }
 
 fs::path getHelperExecutable(const std::string & name) {
