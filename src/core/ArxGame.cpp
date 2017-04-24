@@ -889,29 +889,19 @@ bool ArxGame::initGame()
 		GameFlow::setTransition(GameFlow::FirstLogo);
 	}
 	
-	switch(resources->getReleaseType()) {
-		
-		case 0: LogWarning << "Neither demo nor full game data files loaded!"; break;
-		
-		case PakReader::Demo: {
-			LogInfo << "Initialized Arx Fatalis (demo)";
-			CrashHandler::setVariable("Data files", "demo");
-			break;
-		}
-		
-		case PakReader::FullGame: {
-			LogInfo << "Initialized Arx Fatalis (full game)";
-			CrashHandler::setVariable("Data files", "full");
-			break;
-		}
-		
-		case (int(PakReader::Demo) | int(PakReader::FullGame)): {
-			LogWarning << "Mixed demo and full game data files!";
-			CrashHandler::setVariable("Data files", "mixed");
-			break;
-		}
-		
-		default: ARX_DEAD_CODE();
+	PakReader::ReleaseFlags release = resources->getReleaseType();
+	if((release & PakReader::Demo) && (release & PakReader::FullGame)) {
+		LogWarning << "Mixed demo and full game data files!";
+		CrashHandler::setVariable("Data files", "mixed");
+	} else if(release & PakReader::Demo) {
+		LogInfo << "Initialized Arx Fatalis (demo)";
+		CrashHandler::setVariable("Data files", "demo");
+	} else if(release & PakReader::FullGame) {
+		LogInfo << "Initialized Arx Fatalis (full game)";
+		CrashHandler::setVariable("Data files", "full");
+	} else {
+		LogWarning << "Neither demo nor full game data files loaded!";
+		CrashHandler::setVariable("Data files", "unknown");
 	}
 	
 	LogDebug("Before Run...");
