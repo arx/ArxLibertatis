@@ -41,7 +41,7 @@
 #include "util/cmdline/CommandLine.h"
 
 
-static void dump(PakDirectory & dir, const fs::path & dirname = fs::path()) {
+static void dump(PakDirectory & dir, const fs::path & dirname) {
 	
 	if(!fs::create_directories(dirname)) {
 		LogWarning << "Failed to create target directory";
@@ -84,11 +84,18 @@ static void dump(PakDirectory & dir, const fs::path & dirname = fs::path()) {
 	
 }
 
+static fs::path g_outputDir;
 static std::vector<fs::path> g_archives;
+
+static void handleOutputDirOption(const std::string & outputDir) {
+	g_outputDir = outputDir;
+}
 
 static void handlePositionalArgument(const std::string & file) {
 	g_archives.push_back(file);
 }
+
+ARX_PROGRAM_OPTION_ARG("output-dir", "o", "Directory to extract files to", &handleOutputDirOption, "DIR")
 
 ARX_PROGRAM_OPTION_ARG("", "", "PAK archives to process", &handlePositionalArgument, "DIRS")
 
@@ -125,7 +132,7 @@ int utf8_main(int argc, char ** argv) {
 	}
 	
 	if(status == RunProgram) {
-		dump(resources);
+		dump(resources, g_outputDir);
 	}
 	
 	return 0;
