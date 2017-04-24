@@ -32,6 +32,7 @@
 #include "io/fs/FilePath.h"
 #include "io/fs/Filesystem.h"
 #include "io/fs/FileStream.h"
+#include "io/fs/SystemPaths.h"
 #include "io/resource/PakReader.h"
 #include "io/resource/PakEntry.h"
 #include "io/resource/ResourcePath.h"
@@ -170,6 +171,7 @@ static void processResources(PakReader & resources, const fs::path & dirname, Un
 
 static UnpakAction g_action = UnpakExtract;
 static fs::path g_outputDir;
+static bool g_addDefaultArchives = false;
 static std::vector<fs::path> g_archives;
 static bool g_quiet = false;
 
@@ -189,6 +191,10 @@ static void handleOutputDirOption(const std::string & outputDir) {
 	g_outputDir = outputDir;
 }
 
+static void handleAllOption() {
+	g_addDefaultArchives = true;
+}
+
 static void handleQuietOption() {
 	g_quiet = true;
 }
@@ -204,6 +210,8 @@ ARX_PROGRAM_OPTION("manifest", "m", "Print archive manifest", &handleManifestOpt
 ARX_PROGRAM_OPTION("list", "", "List archive contents", &handleListOption)
 
 ARX_PROGRAM_OPTION_ARG("output-dir", "o", "Directory to extract files to", &handleOutputDirOption, "DIR")
+
+ARX_PROGRAM_OPTION("all", "a", "Process all pak files loaded by the game", &handleAllOption)
 
 ARX_PROGRAM_OPTION("quiet", "q", "Don't print log output", &handleQuietOption)
 
@@ -233,12 +241,44 @@ int utf8_main(int argc, char ** argv) {
 		Logger::initialize();
 	}
 	
-	if(g_archives.empty()) {
+	if(status == RunProgram && g_archives.empty() && !g_addDefaultArchives) {
 		std::cout << "usage: unpak <pakfile> [<pakfile>...]\n";
-		return 1;
+		status = ExitFailure;
+	}
+	
+	if(status == RunProgram && g_addDefaultArchives) {
+		status = fs::paths.init();
 	}
 	
 	PakReader resources;
+	
+	if(status == RunProgram && g_addDefaultArchives) {
+		// TODO share this list with the game code
+		static const char * const default_paks[][2] = {
+			{ "data.pak", NULL },
+			{ "loc.pak", "loc_default.pak" },
+			{ "data2.pak", NULL },
+			{ "sfx.pak", NULL },
+			{ "speech.pak", "speech_default.pak" },
+		};
+		BOOST_FOREACH(const char * const * const filenames, default_paks) {
+			if(resources.addArchive(fs::paths.find(filenames[0]))) {
+				continue;
+			}
+			if(filenames[1] && resources.addArchive(fs::paths.find(filenames[1]))) {
+				continue;
+			}
+			std::ostringstream oss;
+			oss << "Missing required data file: \"" << filenames[0] << "\"";
+			if(filenames[1]) {
+				oss << " (or \"" << filenames[1] << "\")";
+			}
+			LogError << oss.str();
+		}
+		BOOST_REVERSE_FOREACH(const fs::path & base, fs::paths.data) {
+			addResourceDir(resources, base);
+		}
+	}
 	
 	if(status == RunProgram) {
 		BOOST_FOREACH(const fs::path & archive, g_archives) {
