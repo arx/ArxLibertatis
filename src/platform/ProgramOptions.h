@@ -96,6 +96,9 @@ public:
 	virtual void registerOption(util::cmdline::interpreter<std::string> & l) {
 		std::string shortName = (m_shortName == NULL || *m_shortName == 0) ? "" : std::string("-") + m_shortName;
 		std::string longName = (m_longName == NULL || *m_longName == 0) ? "" : std::string("--") + m_longName;
+		if(shortName.empty() && longName.empty()) {
+			longName = "--";
+		}
 		
 		l.add(m_handler,
 			  util::cmdline::interpreter<std::string>::op_name_t(shortName)(longName)
