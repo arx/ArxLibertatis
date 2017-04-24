@@ -241,13 +241,17 @@ int utf8_main(int argc, char ** argv) {
 		Logger::initialize();
 	}
 	
-	if(status == RunProgram && g_archives.empty() && !g_addDefaultArchives) {
-		std::cout << "usage: unpak <pakfile> [<pakfile>...]\n";
-		status = ExitFailure;
+	if(status == RunProgram && (g_addDefaultArchives || g_archives.empty())) {
+		status = fs::paths.init();
 	}
 	
-	if(status == RunProgram && g_addDefaultArchives) {
-		status = fs::paths.init();
+	// When no archives have been specified, extract all archives to a default location
+	// This is useful for (Windows) users to be able to extract everything by simply launching arxunpak
+	if(status == RunProgram && g_archives.empty() && !g_addDefaultArchives) {
+		g_addDefaultArchives = true;
+		if(g_outputDir.empty() && g_action == UnpakExtract) {
+			g_outputDir = fs::paths.user / "unpacked";
+		}
 	}
 	
 	PakReader resources;
