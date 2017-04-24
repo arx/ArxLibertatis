@@ -610,6 +610,7 @@ bool PakReader::addFiles(const fs::path & path, const res::path & mount) {
 		bool ret = addFiles(addDirectory(mount), path);
 	
 		if(ret) {
+			release |= External;
 			LogInfo << "Added dir " << path;
 		}
 		
