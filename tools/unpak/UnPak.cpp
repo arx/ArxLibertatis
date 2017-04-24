@@ -48,19 +48,16 @@ static void dump(PakDirectory & dir, const fs::path & dirname = fs::path()) {
 	}
 	
 	for(PakDirectory::files_iterator i = dir.files_begin(); i != dir.files_end(); ++i) {
-		
-		fs::path filenameISO = dirname / i->first;
+		// TODO this should really be done when loading the pak file
+		fs::path path = dirname / util::convert<util::ISO_8859_1, util::UTF8>(i->first);
 		
 		PakFile * file = i->second;
 		
-		// TODO this should really be done when loading the pak file
-		std::string filename = util::convert<util::ISO_8859_1, util::UTF8>(filenameISO.string().c_str());
+		printf("%s\n", path.string().c_str());
 		
-		printf("%s\n", filename.c_str());
-		
-		fs::ofstream ofs(filename, fs::fstream::out | fs::fstream::binary | fs::fstream::trunc);
+		fs::ofstream ofs(path, fs::fstream::out | fs::fstream::binary | fs::fstream::trunc);
 		if(!ofs.is_open()) {
-			printf("error opening file for writing: %s\n", filename.c_str());
+			printf("error opening file for writing: %s\n", path.string().c_str());
 			exit(1);
 		}
 		
@@ -70,7 +67,7 @@ static void dump(PakDirectory & dir, const fs::path & dirname = fs::path()) {
 			arx_assert(data != NULL);
 			
 			if(ofs.write(data, file->size()).fail()) {
-				printf("error writing to file: %s\n", filename.c_str());
+				printf("error writing to file: %s\n", path.string().c_str());
 				exit(1);
 			}
 			
@@ -81,7 +78,8 @@ static void dump(PakDirectory & dir, const fs::path & dirname = fs::path()) {
 	}
 	
 	for(PakDirectory::dirs_iterator i = dir.dirs_begin(); i != dir.dirs_end(); ++i) {
-		dump(i->second, dirname / i->first);
+		fs::path path = dirname / util::convert<util::ISO_8859_1, util::UTF8>(i->first);
+		dump(i->second, path);
 	}
 	
 }
