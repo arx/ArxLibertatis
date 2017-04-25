@@ -90,8 +90,7 @@
 #cmakedefine01 ARX_HAVE_GET_CPUID_MAX
 #cmakedefine01 ARX_HAVE_XMMINTRIN
 #cmakedefine01 ARX_HAVE_PMMINTRIN
-#cmakedefine01 ARX_HAVE_FXSRINTRIN
-#cmakedefine01 ARX_HAVE_FXSAVE
+#cmakedefine01 ARX_HAVE_BUILTIN_IA32_FXSAVE
 
 // Arx components
 #cmakedefine01 BUILD_EDIT_LOADSAVE

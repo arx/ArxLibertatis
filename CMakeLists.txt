@@ -626,13 +626,11 @@ else(MSVC)
 		check_symbol_exists(__get_cpuid_max "cpuid.h" ARX_HAVE_GET_CPUID_MAX)
 	endif()
 	
-	# CMake has trouble detecting _MM_SET_FLUSH_ZERO_MODE and _fxsave with GCC, check for the includes instead
+	# CMake has trouble detecting _MM_SET_FLUSH_ZERO_MODE with GCC, check for the includes instead
 	check_include_files("xmmintrin.h" ARX_HAVE_XMMINTRIN)
 	check_include_files("pmmintrin.h" ARX_HAVE_PMMINTRIN)
-	check_include_files("fxsrintrin.h" ARX_HAVE_FXSRINTRIN)
-	if(NOT ARX_HAVE_FXSRINTRIN)
-		check_symbol_exists(_fxsave "immintrin.h" ARX_HAVE_FXSAVE)
-	endif()
+	# _fxsave is unreliable with GCC, use the builtin directly
+	check_builtin(ARX_HAVE_BUILTIN_IA32_FXSAVE "__builtin_ia32_fxsave")
 	
 	find_library(LIBRT_LIBRARY rt)
 	
