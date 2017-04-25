@@ -273,6 +273,17 @@ thread_id_type Thread::getCurrentThreadId() {
 
 #endif
 
+#ifndef _MM_DENORMALS_ZERO_MASK
+#define _MM_DENORMALS_ZERO_MASK  0x0040
+#endif
+#ifndef _MM_DENORMALS_ZERO_ON
+#define _MM_DENORMALS_ZERO_ON    0x0040
+#endif
+#ifndef _MM_SET_DENORMALS_ZERO_MODE
+#define _MM_SET_DENORMALS_ZERO_MODE(mode) \
+  _mm_setcsr((_mm_getcsr() & ~_MM_DENORMALS_ZERO_MASK) | (mode))
+#endif
+
 void Thread::disableFloatDenormals() {
 	
 	#if ARX_ARCH == ARX_ARCH_X86 && !ARX_HAVE_SSE
@@ -289,7 +300,7 @@ void Thread::disableFloatDenormals() {
 
 	_MM_SET_FLUSH_ZERO_MODE(_MM_FLUSH_ZERO_ON); // SSE
 	
-	#if ARX_HAVE_PMMINTRIN && (ARX_HAVE_SSE3 || ARX_COMPILER_MSVC || ARX_HAVE_GET_CPUID)
+	#if ARX_HAVE_SSE3 || ARX_COMPILER_MSVC || ARX_HAVE_GET_CPUID
 	
 	#if ARX_HAVE_SSE3
 	
