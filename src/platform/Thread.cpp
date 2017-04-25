@@ -41,12 +41,6 @@
 #include <cpuid.h>
 #endif
 
-#if ARX_HAVE_FXSRINTRIN
-#include <fxsrintrin.h>
-#elif ARX_HAVE_FXSAVE
-#include <x86intrin.h>
-#endif
-
 #include <boost/static_assert.hpp>
 
 #include "platform/Alignment.h"
@@ -324,10 +318,14 @@ void Thread::disableFloatDenormals() {
 		have_daz = true;
 	}
 	
-	#if ARX_HAVE_FXSRINTRIN || ARX_HAVE_FXSAVE
+	#if ARX_COMPILER_MSVC || ARX_HAVE_BUILTIN_IA32_FXSAVE
 	else if(cpuinfo[3] & ARX_CPUID_EDX_FXSR) {
 		ARX_ALIGNAS(16) char buffer[512];
+		#if ARX_COMPILER_MSVC
 		_fxsave(buffer);
+		#else
+		__builtin_ia32_fxsave(buffer);
+		#endif
 		unsigned mxcsr_mask;
 		std::memcpy(&mxcsr_mask, buffer + 28, sizeof(mxcsr_mask));
 		have_daz = (mxcsr_mask & _MM_DENORMALS_ZERO_ON);
