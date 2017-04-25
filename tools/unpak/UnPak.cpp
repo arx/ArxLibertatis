@@ -305,5 +305,5 @@ int utf8_main(int argc, char ** argv) {
 		processResources(resources, g_outputDir, g_action);
 	}
 	
-	return 0;
+	return (status == ExitFailure) ? EXIT_FAILURE : EXIT_SUCCESS;
 }
