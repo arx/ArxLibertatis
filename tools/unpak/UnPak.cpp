@@ -27,7 +27,6 @@
 #include <map>
 
 #include <boost/foreach.hpp>
-#include <boost/range/size.hpp>
 
 #include "io/fs/FilePath.h"
 #include "io/fs/Filesystem.h"
@@ -99,7 +98,7 @@ static void processDirectory(PakDirectory & dir, const fs::path & dirname, Unpak
 					char checksum[hash.size];
 					hash.finalize(checksum);
 					
-					for(size_t i = 0; i < size_t(boost::size(checksum)); i++) {
+					for(size_t i = 0; i < hash.size; i++) {
 						std::cout << std::setfill('0') << std::hex << std::setw(2) << int(u8(checksum[i]));
 					}
 					std::cout << " *";
