@@ -328,7 +328,7 @@ void Thread::disableFloatDenormals() {
 		#endif
 		unsigned mxcsr_mask;
 		std::memcpy(&mxcsr_mask, buffer + 28, sizeof(mxcsr_mask));
-		have_daz = (mxcsr_mask & _MM_DENORMALS_ZERO_ON);
+		have_daz = (mxcsr_mask & _MM_DENORMALS_ZERO_ON) != 0;
 	}
 	#endif
 	
