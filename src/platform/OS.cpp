@@ -43,7 +43,8 @@
 #include <sys/utsname.h>
 #endif
 
-#if ARX_HAVE_GET_CPUID
+#if ARX_HAVE_GET_CPUID && !defined(ARX_INCLUDED_CPUID_H)
+#define ARX_INCLUDED_CPUID_H
 #include <cpuid.h>
 #endif
 

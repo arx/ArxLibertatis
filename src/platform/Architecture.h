@@ -133,6 +133,13 @@ inline const char * getArchitectureName(unsigned arch) {
 #define ARX_HAVE_SSE2 0
 #endif
 #endif
+#if ARX_ARCH == ARX_ARCH_X86 || ARX_ARCH == ARX_ARCH_X86_64
+#if defined(__SSE3__)
+#define ARX_HAVE_SSE3 1
+#else
+#define ARX_HAVE_SSE3 0
+#endif
+#endif
 
 /*!
  * \def ARX_HAVE_VFP
