@@ -110,16 +110,11 @@ void ARX_SPELLS_UpdateBookSymbolDraw(Rect rect) {
 
 	Entity *io = entities.player();
 
-	updateIOLight(io);
-
 	if(io->symboldraw) {
 		SYMBOL_DRAW * sd = io->symboldraw;
 		long elapsed = toMs(now - sd->starttime);
 
 		if(elapsed > sd->duration) {
-			endLightDelayed(io->dynlight, ArxDurationMs(600));
-			io->dynlight = LightHandle();
-
 			delete io->symboldraw;
 			io->symboldraw = NULL;
 			return;
