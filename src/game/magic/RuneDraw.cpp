@@ -114,20 +114,14 @@ void ARX_SPELLS_UpdateBookSymbolDraw(Rect rect) {
 		SYMBOL_DRAW * sd = io->symboldraw;
 		long elapsed = toMs(now - sd->starttime);
 
-		if(elapsed > sd->duration) {
-			delete io->symboldraw;
-			io->symboldraw = NULL;
-			return;
-		}
-
 		const size_t nbcomponents = sd->sequence.length();
 
-		if(nbcomponents == 0) {
+		if(elapsed > sd->duration || nbcomponents == 0) {
 			delete io->symboldraw;
 			io->symboldraw = NULL;
 			return;
 		}
-
+		
 		float ti = ((float)sd->duration/(float)nbcomponents);
 
 		if(ti <= 0)
