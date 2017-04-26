@@ -189,7 +189,7 @@ void AddFlare(const Vec2f & pos, float sm, short typ, Entity * io, bool bookDraw
 	}
 
 	flare.pos.x = pos.x - Random::getf(0.f, 4.f);
-	flare.pos.y = pos.y - Random::getf(0.f, 4.f) - 50.f;
+	flare.pos.y = pos.y - Random::getf(0.f, 4.f);
 	flare.tv.rhw = flare.v.rhw = 1.f;
 
 	if(!bookDraw) {
@@ -445,7 +445,8 @@ void ARX_MAGICAL_FLARES_Update() {
 			
 			if(flare.bDrawBitmap) {
 				size *= 2.f * minSizeRatio();
-				EERIEAddBitmap(mat, flare.v.p, size, size, surf, Color::fromRGBA(flare.tv.color));
+				Vec3f pos = Vec3f(flare.v.p.x - size / 2.0f, flare.v.p.y - size / 2.0f, flare.v.p.z);
+				EERIEAddBitmap(mat, pos, size, size, surf, Color::fromRGBA(flare.tv.color));
 			} else {
 				EERIEAddSprite(mat, flare.v.p, size * 0.025f + 1.f,
 				               Color::fromRGBA(flare.tv.color), 2.f);
