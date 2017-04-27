@@ -1422,7 +1422,12 @@ void ARX_INTERFACE_ManageOpenedBook() {
 			case BOOKMODE_SPELLS: {
 				DrawBookInterfaceItem(g_bookResouces.ptexspellbook, Vec2f(97, 64), Color::white, 0.9999f);
 				ARX_INTERFACE_ManageOpenedBook_LeftTabs_Spells();
-				ARX_SPELLS_UpdateBookSymbolDraw(Rect(Vec2s(97, 64), 513, 313));
+
+				Rect runeDrawRect = Rect(Vec2i((Vec2f(97, 64) + Vec2f(29, 210)) * g_sizeRatio),
+				                         s32(513 * 0.43f * g_sizeRatio.x),
+				                         s32(313 * 0.25f * g_sizeRatio.y));
+				
+				ARX_SPELLS_UpdateBookSymbolDraw(runeDrawRect);
 				break;
 			}
 			case BOOKMODE_MINIMAP: {

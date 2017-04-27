@@ -145,28 +145,26 @@ void ARX_SPELLS_UpdateBookSymbolDraw(Rect rect) {
 
 		ReCenterSequence(sd->sequence, iMin, iMax);
 		Vec2s iSize = iMax - iMin;
-		Vec2s pos1 = rect.topLeft();
 
-		Vec2s lPos;
-		lPos.x = (((rect.width()>>1)-lMaxSymbolDrawSize.x)>>1);
-		lPos.y = (rect.height()-(((rect.height()*3/4)-lMaxSymbolDrawSize.y)>>1));
+		//keep size ratios among runes
+		Vec2f rectToSymbolsRatio = Vec2f(rect.size()) / (Vec2f(lMaxSymbolDrawSize) * g_sizeRatio);
+		Vec2f scale = glm::min(rectToSymbolsRatio.x, rectToSymbolsRatio.y) * g_sizeRatio;
 
-		pos1 += lPos;
-		pos1 += (lMaxSymbolDrawSize - iSize) / Vec2s(2);
-		pos1 -= iMin;
+		iMin = Vec2s(Vec2f(iMin) * scale);
+		iSize = Vec2s(Vec2f(iSize) * scale);
+
+		Vec2s pos1 = Vec2s(rect.center()) - iSize / Vec2s(2) - iMin;
 
 		for(size_t j = 0; j < nbcomponents; j++) {
 
 			Vec2s vect = GetSymbVector(sd->sequence[j]);
 			vect *= symbolVecScale;
+			vect = Vec2s(Vec2f(vect) * scale);
 
 			if(newtime < ti) {
 				float ratio = (float)(newtime) * div_ti;
-
 				pos1 += Vec2s(Vec2f(ratio) * Vec2f(vect) * 0.5f);
-
-				Vec2f pos = Vec2f(pos1) * g_sizeRatio;
-				AddFlare(pos, 0.1f, 1, io, true);
+				AddFlare(pos1, 0.1f, 1, io, true);
 
 				break;
 			}
