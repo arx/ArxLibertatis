@@ -128,10 +128,6 @@ void ARX_SPELLS_UpdateBookSymbolDraw(Rect rect) {
 			ti = 1;
 
 		long newtime=elapsed;
-		long oldtime = sd->lastElapsed;
-
-		if(oldtime>sd->duration)
-			oldtime=sd->duration;
 
 		if(newtime>sd->duration)
 			newtime=sd->duration;
