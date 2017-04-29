@@ -112,7 +112,7 @@ void ARX_SPELLS_UpdateBookSymbolDraw(Rect rect) {
 	if(io->symboldraw) {
 		SYMBOL_DRAW * sd = io->symboldraw;
 		long elapsed = toMs(now - sd->starttime);
-		sd->elapsed = short(elapsed);
+		sd->elapsed = AnimationDurationMs(elapsed);
 
 		const size_t nbcomponents = sd->sequence.length();
 
@@ -261,7 +261,7 @@ void ARX_SPELLS_UpdateSymbolDraw() {
 				ti = 1;
 			
 			long newtime = elapsed;
-			long oldtime = sd->elapsed;
+			long oldtime = toMsi(sd->elapsed);
 
 			if(oldtime > sd->duration)
 				oldtime = sd->duration;
@@ -269,7 +269,7 @@ void ARX_SPELLS_UpdateSymbolDraw() {
 			if(newtime > sd->duration)
 				newtime = sd->duration;
 
-			sd->elapsed = (short)elapsed;
+			sd->elapsed = AnimationDurationMs(elapsed);
 			
 			float div_ti = 1.f / ti;
 
@@ -335,7 +335,7 @@ static void ARX_SPELLS_RequestSymbolDrawCommon(Entity * io, float duration,
 	sd->sequence = info.sequence;
 
 	sd->starttime = arxtime.now();
-	sd->elapsed = 0;
+	sd->elapsed = AnimationDuration_ZERO;
 	
 	sd->cPosStart = info.startOffset;
 
