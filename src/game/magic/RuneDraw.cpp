@@ -116,21 +116,21 @@ void ARX_SPELLS_UpdateBookSymbolDraw(Rect rect) {
 
 		const size_t nbcomponents = sd->sequence.length();
 
-		if(elapsed > sd->duration || nbcomponents == 0) {
+		if(elapsed > toMsi(sd->duration) || nbcomponents == 0) {
 			delete io->symboldraw;
 			io->symboldraw = NULL;
 			return;
 		}
 		
-		float ti = float(sd->duration) / float(nbcomponents);
+		float ti = toMsf(sd->duration) / float(nbcomponents);
 
 		if(ti <= 0)
 			ti = 1;
 
 		long timeRemaining = elapsed;
 
-		if(timeRemaining > sd->duration)
-			timeRemaining = sd->duration;
+		if(timeRemaining > toMsi(sd->duration))
+			timeRemaining = toMsi(sd->duration);
 
 		float div_ti = 1.f / ti;
 
@@ -238,7 +238,7 @@ void ARX_SPELLS_UpdateSymbolDraw() {
 			SYMBOL_DRAW * sd = io->symboldraw;
 			long elapsed = toMs(now - sd->starttime);
 
-			if(elapsed > sd->duration) {
+			if(elapsed > toMsi(sd->duration)) {
 				endLightDelayed(io->dynlight, ArxDurationMs(600));
 				io->dynlight = LightHandle();
 				
@@ -255,7 +255,7 @@ void ARX_SPELLS_UpdateSymbolDraw() {
 				continue;
 			}
 
-			float ti = ((float)sd->duration/(float)nbcomponents);
+			float ti = toMsf(sd->duration)/(float)nbcomponents;
 
 			if(ti <= 0)
 				ti = 1;
@@ -263,11 +263,11 @@ void ARX_SPELLS_UpdateSymbolDraw() {
 			long newtime = elapsed;
 			long oldtime = toMsi(sd->elapsed);
 
-			if(oldtime > sd->duration)
-				oldtime = sd->duration;
+			if(oldtime > toMsi(sd->duration))
+				oldtime = toMsi(sd->duration);
 
-			if(newtime > sd->duration)
-				newtime = sd->duration;
+			if(newtime > toMsi(sd->duration))
+				newtime = toMsi(sd->duration);
 
 			sd->elapsed = AnimationDurationMs(elapsed);
 			
@@ -331,7 +331,7 @@ static void ARX_SPELLS_RequestSymbolDrawCommon(Entity * io, float duration,
 	
 	SYMBOL_DRAW *sd = io->symboldraw;
 
-	sd->duration = (short)std::max(1l, long(duration));
+	sd->duration = AnimationDurationMs(std::max(1l, long(duration)));
 	sd->sequence = info.sequence;
 
 	sd->starttime = arxtime.now();

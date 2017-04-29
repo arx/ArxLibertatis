@@ -30,7 +30,7 @@ class Entity;
 struct SYMBOL_DRAW {
 	ArxInstant starttime;
 	AnimationDuration elapsed;
-	short			duration;
+	AnimationDuration duration;
 	std::string sequence;
 	Vec2s cPosStart;
 };
