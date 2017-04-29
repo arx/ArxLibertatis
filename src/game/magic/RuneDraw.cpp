@@ -142,10 +142,9 @@ void ARX_SPELLS_UpdateBookSymbolDraw(Rect rect) {
 		Vec2s iMax;
 
 		ReCenterSequence(sd->sequence, iMin, iMax);
-		Vec2f size = iMax - iMin;
+		Vec2f size = Vec2f(iMax - iMin) * scale;
 
 		Vec2f scaledMin = Vec2f(iMin) * scale;
-		size *= scale;
 
 		Vec2f pos = Vec2f(rect.center()) - size / 2.0f - scaledMin;
 
