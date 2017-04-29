@@ -151,13 +151,13 @@ void ARX_SPELLS_UpdateBookSymbolDraw(Rect rect) {
 
 		for(size_t j = 0; j < nbcomponents; j++) {
 
-			Vec2s vect = GetSymbVector(sd->sequence[j]);
+			Vec2f vect = Vec2f(GetSymbVector(sd->sequence[j]));
 			vect *= symbolVecScale;
-			vect = Vec2s(Vec2f(vect) * scale);
+			vect *= scale;
 
 			if(timeRemaining < ti) {
 				float ratio = float(timeRemaining) * div_ti;
-				pos += Vec2f(ratio) * Vec2f(vect) * 0.5f;
+				pos += Vec2f(ratio) * vect * 0.5f;
 				AddFlare(pos, 0.1f, 1, io, true);
 
 				break;
