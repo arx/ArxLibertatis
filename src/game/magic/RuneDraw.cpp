@@ -147,7 +147,7 @@ void ARX_SPELLS_UpdateBookSymbolDraw(Rect rect) {
 		iMin = Vec2s(Vec2f(iMin) * scale);
 		iSize = Vec2s(Vec2f(iSize) * scale);
 
-		Vec2s pos1 = Vec2s(rect.center()) - iSize / Vec2s(2) - iMin;
+		Vec2s pos = Vec2s(rect.center()) - iSize / Vec2s(2) - iMin;
 
 		for(size_t j = 0; j < nbcomponents; j++) {
 
@@ -157,13 +157,13 @@ void ARX_SPELLS_UpdateBookSymbolDraw(Rect rect) {
 
 			if(timeRemaining < ti) {
 				float ratio = float(timeRemaining) * div_ti;
-				pos1 += Vec2s(Vec2f(ratio) * Vec2f(vect) * 0.5f);
-				AddFlare(pos1, 0.1f, 1, io, true);
+				pos += Vec2s(Vec2f(ratio) * Vec2f(vect) * 0.5f);
+				AddFlare(pos, 0.1f, 1, io, true);
 
 				break;
 			}
 
-			pos1 += vect;
+			pos += vect;
 
 			timeRemaining -= long(ti);
 		}
