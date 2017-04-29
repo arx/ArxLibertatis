@@ -260,14 +260,14 @@ void ARX_SPELLS_UpdateSymbolDraw() {
 			if(ti <= 0)
 				ti = 1;
 			
-			long newtime = toMsi(elapsed);
+			AnimationDuration newtime = elapsed;
 			long oldtime = toMsi(sd->elapsed);
 
 			if(oldtime > toMsi(sd->duration))
 				oldtime = toMsi(sd->duration);
 
-			if(newtime > toMsi(sd->duration))
-				newtime = toMsi(sd->duration);
+			if(newtime > sd->duration)
+				newtime = sd->duration;
 
 			sd->elapsed = elapsed;
 			
@@ -297,8 +297,8 @@ void ARX_SPELLS_UpdateSymbolDraw() {
 				vect *= symbolVecScale;
 				vect += vect / Vec2s(2);
 
-				if(newtime <= ti) {
-					float ratio = float(newtime) * div_ti;
+				if(newtime <= AnimationDurationMs(ti)) {
+					float ratio = toMsf(newtime) * div_ti;
 					pos1 += Vec2s(Vec2f(vect) * ratio);
 					AddFlare(Vec2f(pos1), 0.1f, 1, io);
 					FlareLine(Vec2f(old_pos), Vec2f(pos1), io);
@@ -306,7 +306,7 @@ void ARX_SPELLS_UpdateSymbolDraw() {
 				}
 
 				pos1 += vect;
-				newtime -= (long)ti;
+				newtime -= AnimationDurationMs(ti);
 				
 			}
 		}
