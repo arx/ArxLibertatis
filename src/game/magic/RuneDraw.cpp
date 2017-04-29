@@ -33,7 +33,6 @@ extern EERIE_CAMERA subj;
 static const Vec2s symbolVecScale(8*2, 6*2);
 
 
-
 static Vec2s GetSymbVector(char c) {
 	switch(c) {
 		case '1': return Vec2s(-1,  1);
@@ -113,7 +112,7 @@ void ARX_SPELLS_UpdateBookSymbolDraw(Rect rect) {
 	if(io->symboldraw) {
 		SYMBOL_DRAW * sd = io->symboldraw;
 		long elapsed = toMs(now - sd->starttime);
-		sd->elapsed = (short)elapsed;
+		sd->elapsed = short(elapsed);
 
 		const size_t nbcomponents = sd->sequence.length();
 
@@ -123,17 +122,17 @@ void ARX_SPELLS_UpdateBookSymbolDraw(Rect rect) {
 			return;
 		}
 		
-		float ti = ((float)sd->duration/(float)nbcomponents);
+		float ti = float(sd->duration) / float(nbcomponents);
 
 		if(ti <= 0)
 			ti = 1;
 
-		long timeRemaining=elapsed;
+		long timeRemaining = elapsed;
 
-		if(timeRemaining>sd->duration)
-			timeRemaining=sd->duration;
+		if(timeRemaining > sd->duration)
+			timeRemaining = sd->duration;
 
-		float div_ti=1.f/ti;
+		float div_ti = 1.f / ti;
 
 		Vec2s iMin;
 		Vec2s iMax;
@@ -157,7 +156,7 @@ void ARX_SPELLS_UpdateBookSymbolDraw(Rect rect) {
 			vect = Vec2s(Vec2f(vect) * scale);
 
 			if(timeRemaining < ti) {
-				float ratio = (float)(timeRemaining) * div_ti;
+				float ratio = float(timeRemaining) * div_ti;
 				pos1 += Vec2s(Vec2f(ratio) * Vec2f(vect) * 0.5f);
 				AddFlare(pos1, 0.1f, 1, io, true);
 
@@ -166,7 +165,7 @@ void ARX_SPELLS_UpdateBookSymbolDraw(Rect rect) {
 
 			pos1 += vect;
 
-			timeRemaining -= (long)ti;
+			timeRemaining -= long(ti);
 		}
 	}
 }
@@ -262,18 +261,18 @@ void ARX_SPELLS_UpdateSymbolDraw() {
 			if(ti <= 0)
 				ti = 1;
 			
-			long newtime=elapsed;
+			long newtime = elapsed;
 			long oldtime = sd->elapsed;
 
-			if(oldtime>sd->duration)
-				oldtime=sd->duration;
+			if(oldtime > sd->duration)
+				oldtime = sd->duration;
 
-			if(newtime>sd->duration)
-				newtime=sd->duration;
+			if(newtime > sd->duration)
+				newtime = sd->duration;
 
 			sd->elapsed = (short)elapsed;
 			
-			float div_ti=1.f/ti;
+			float div_ti = 1.f / ti;
 
 			Vec2s pos1 = Vec2s(subj.center) - symbolVecScale * short(2) + sd->cPosStart * symbolVecScale;
 
@@ -327,9 +326,9 @@ void ARX_SPELLS_ClearAllSymbolDraw() {
 static void ARX_SPELLS_RequestSymbolDrawCommon(Entity * io, float duration,
                                                RuneInfo & info) {
 	
-	if(!io->symboldraw)
+	if(!io->symboldraw) {
 		io->symboldraw = new SYMBOL_DRAW;
-	
+	}
 	
 	SYMBOL_DRAW *sd = io->symboldraw;
 
