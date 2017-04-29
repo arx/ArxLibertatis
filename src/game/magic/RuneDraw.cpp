@@ -261,10 +261,10 @@ void ARX_SPELLS_UpdateSymbolDraw() {
 				ti = 1;
 			
 			AnimationDuration newtime = elapsed;
-			long oldtime = toMsi(sd->elapsed);
+			AnimationDuration oldtime = sd->elapsed;
 
-			if(oldtime > toMsi(sd->duration))
-				oldtime = toMsi(sd->duration);
+			if(oldtime > sd->duration)
+				oldtime = sd->duration;
 
 			if(newtime > sd->duration)
 				newtime = sd->duration;
@@ -282,14 +282,14 @@ void ARX_SPELLS_UpdateSymbolDraw() {
 				vect *= symbolVecScale;
 				vect += vect / Vec2s(2);
 
-				if(oldtime <= ti) {
-					float ratio = float(oldtime)*div_ti;
+				if(oldtime <= AnimationDurationMs(ti)) {
+					float ratio = toMsf(oldtime)*div_ti;
 					old_pos += Vec2s(Vec2f(vect) * ratio);
 					break;
 				}
 
 				old_pos += vect;
-				oldtime -= (long)ti;
+				oldtime -= AnimationDurationMs(ti);
 			}
 
 			for(size_t j = 0; j < nbcomponents; j++) {
