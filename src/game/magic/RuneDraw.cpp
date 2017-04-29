@@ -157,7 +157,7 @@ void ARX_SPELLS_UpdateBookSymbolDraw(Rect rect) {
 
 			if(timeRemaining < ti) {
 				float ratio = float(timeRemaining) * div_ti;
-				pos += Vec2f(ratio) * vect * 0.5f;
+				pos += vect * ratio * 0.5f;
 				AddFlare(pos, 0.1f, 1, io, true);
 
 				break;
