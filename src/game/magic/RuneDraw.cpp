@@ -111,12 +111,12 @@ void ARX_SPELLS_UpdateBookSymbolDraw(Rect rect) {
 
 	if(io->symboldraw) {
 		SYMBOL_DRAW * sd = io->symboldraw;
-		long elapsed = toMs(now - sd->starttime);
-		sd->elapsed = AnimationDurationMs(elapsed);
+		AnimationDuration elapsed = toAnimationDuration(now - sd->starttime);
+		sd->elapsed = elapsed;
 
 		const size_t nbcomponents = sd->sequence.length();
 
-		if(elapsed > toMsi(sd->duration) || nbcomponents == 0) {
+		if(elapsed > sd->duration || nbcomponents == 0) {
 			delete io->symboldraw;
 			io->symboldraw = NULL;
 			return;
@@ -127,7 +127,7 @@ void ARX_SPELLS_UpdateBookSymbolDraw(Rect rect) {
 		if(ti <= 0)
 			ti = 1;
 
-		long timeRemaining = elapsed;
+		long timeRemaining = toMsi(elapsed);
 
 		if(timeRemaining > toMsi(sd->duration))
 			timeRemaining = toMsi(sd->duration);
