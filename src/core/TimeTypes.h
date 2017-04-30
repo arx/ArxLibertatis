@@ -147,17 +147,6 @@ inline s64 toMs(ArxDuration val) {
 	return val.t;
 }
 
-inline ArxDuration operator -(ArxInstant a, ArxInstant b) {
-	return ArxDuration(a.t - b.t);
-}
-inline ArxInstant operator +(ArxInstant a, ArxDuration b) {
-	return ArxInstant(a.t + b.t);
-}
-inline ArxInstant operator -(ArxInstant a, ArxDuration b) {
-	return ArxInstant(a.t - b.t);
-}
-
-
 // PlatformTime
 // in microseconds
 typedef InstantType <struct PlatformTime_TAG, s64> PlatformInstant;
