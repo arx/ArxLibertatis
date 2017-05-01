@@ -2178,7 +2178,7 @@ static Entity * ARX_CHANGELEVEL_Pop_IO(const std::string & idString, EntityInsta
 				pos += sizeof(ARX_CHANGELEVEL_NPC_IO_SAVE);
 				
 				io->_npcdata->absorb = as->absorb;
-				io->_npcdata->aimtime = static_cast<ArxDuration>(as->aimtime);
+				io->_npcdata->aimtime = ArxDurationMs(as->aimtime);
 				io->_npcdata->armor_class = as->armor_class;
 				io->_npcdata->behavior = Behaviour::load(as->behavior); // TODO save/load flags
 				io->_npcdata->behavior_param = as->behavior_param;
@@ -2821,7 +2821,7 @@ long ARX_CHANGELEVEL_Load(const fs::path & savefile) {
 		progressBarAdvance(2.f);
 		LoadLevelScreen(pld.level);
 		
-		const ArxInstant fPldTime = static_cast<ArxInstant>(pld.time); // TODO save/load time
+		const ArxInstant fPldTime = ArxInstantMs(pld.time); // TODO save/load time
 		DanaeClearLevel();
 		progressBarAdvance(2.f);
 		LoadLevelScreen(pld.level);
