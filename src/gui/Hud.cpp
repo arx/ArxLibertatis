@@ -111,7 +111,7 @@ HitStrengthGauge::HitStrengthGauge()
 	, m_hitTex(NULL)
 	, m_intensity(0.f)
 	, m_flashActive(false)
-	, m_flashTime(0)
+	, m_flashTime(PlatformDuration_ZERO)
 	, m_flashIntensity(0.f)
 {}
 
@@ -218,7 +218,7 @@ void BookIconGui::MakeBookFX() {
 BookIconGui::BookIconGui()
 	: HudIconBase()
 	, m_size(Vec2f(32, 32))
-	, ulBookHaloTime(0)
+	, ulBookHaloTime(PlatformDuration_ZERO)
 {}
 
 void BookIconGui::init() {
@@ -453,7 +453,7 @@ PurseIconGui::PurseIconGui()
 	: HudIconBase()
 	, m_pos()
 	, m_size()
-	, m_haloTime(0)
+	, m_haloTime(PlatformDuration_ZERO)
 {}
 
 void PurseIconGui::init() {

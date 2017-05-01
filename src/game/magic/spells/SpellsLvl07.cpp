@@ -46,7 +46,7 @@ extern PlatformInstant SLID_START;
 bool bOldLookToggle;
 
 FlyingEyeSpell::FlyingEyeSpell()
-	: m_lastupdate(0)
+	: m_lastupdate(ArxInstant_ZERO)
 {
 	
 }

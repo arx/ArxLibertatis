@@ -50,7 +50,7 @@ ZeniMax Media Inc., Suite 120, Rockville, Maryland 20850 USA.
 Particle::Particle()
 	: p3Pos(arx::randomVec(-5.f, 5.f))
 	, p3Velocity(arx::randomVec(-10.f, 10.f))
-	, m_age(0)
+	, m_age(ArxDuration_ZERO)
 	, fSize(1.f)
 	, fSizeStart(1.f)
 	, fSizeEnd(1.f)

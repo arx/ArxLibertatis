@@ -104,7 +104,7 @@ public:
 	Credits()
 		: m_background(NULL)
 		, m_scrollPosition(0.f)
-		, m_lastUpdateTime(0.f)
+		, m_lastUpdateTime(PlatformInstant_ZERO)
 		, m_firstVisibleLine(0)
 		, m_lineHeight(-1)
 		, m_windowSize(Vec2i_ZERO)

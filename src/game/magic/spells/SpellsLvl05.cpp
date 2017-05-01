@@ -280,7 +280,7 @@ void LevitateSpell::createDustParticle() {
 
 CurePoisonSpell::CurePoisonSpell()
 	: SpellBase()
-	, m_elapsed(0)
+	, m_elapsed(ArxDuration_ZERO)
 {}
 
 void CurePoisonSpell::Launch() {
