@@ -70,7 +70,7 @@ struct ARX_INTERFACE_MEMORIZE_SPELL {
 	
 	ARX_INTERFACE_MEMORIZE_SPELL()
 		: bSpell(false)
-		, lTimeCreation(0)
+		, lTimeCreation(ArxInstant_ZERO)
 	{
 		for(size_t i = 0; i < ARRAY_SIZE(iSpellSymbols); i++) {
 			iSpellSymbols[i] = RUNE_NONE;
@@ -342,7 +342,7 @@ struct ARXCHARACTER {
 	ARXCHARACTER()
 		: m_strikeDirection(0)
 		, m_weaponBlocked(-1)
-		, jumpstarttime(0u)
+		, jumpstarttime(ArxInstant_ZERO)
 		, jumplastposition(0.f)
 		, jumpphase(NotJumping)
 		, climbing(false)
@@ -362,7 +362,7 @@ struct ARXCHARACTER {
 		, Full_maxlife(0)
 		, Full_maxmana(0)
 		, AimTime(PlatformDuration_ZERO)
-		, m_aimTime(0)
+		, m_aimTime(PlatformDuration_ZERO)
 		, Attribute_Redistribute(0)
 		, Skill_Redistribute(0)
 		, level(0)
