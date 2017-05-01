@@ -176,7 +176,7 @@ SavegameHandle LOADQUEST_SLOT = SavegameHandle(); // OH NO, ANOTHER GLOBAL! - TE
 static const float CURRENT_BASE_FOCAL = 310.f;
 static const float defaultCameraFocal = 350.f;
 
-static const PlatformDuration runeDrawPointInterval = PlatformDuration(1000.0f / 60.0f);
+static const PlatformDuration runeDrawPointInterval = PlatformDurationMs(16); // ~60fps
 
 extern EERIE_3DOBJ * arrowobj;
 
