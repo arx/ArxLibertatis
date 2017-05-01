@@ -122,10 +122,10 @@ void ARX_SPELLS_UpdateBookSymbolDraw(Rect rect) {
 			return;
 		}
 		
-		AnimationDuration ti = sd->duration * (1.0f / float(nbcomponents));
+		AnimationDuration timePerComponent = sd->duration * (1.0f / float(nbcomponents));
 
-		if(ti <= AnimationDuration_ZERO)
-			ti = AnimationDurationMs(1);
+		if(timePerComponent <= AnimationDuration_ZERO)
+			timePerComponent = AnimationDurationMs(1);
 
 		AnimationDuration timeRemaining = elapsed;
 
@@ -152,8 +152,8 @@ void ARX_SPELLS_UpdateBookSymbolDraw(Rect rect) {
 			vect *= symbolVecScale;
 			vect *= scale;
 
-			if(timeRemaining < ti) {
-				float ratio = timeRemaining / ti;
+			if(timeRemaining < timePerComponent) {
+				float ratio = timeRemaining / timePerComponent;
 				pos += vect * ratio * 0.5f;
 				AddFlare(pos, 0.1f, 1, io, true);
 
@@ -162,7 +162,7 @@ void ARX_SPELLS_UpdateBookSymbolDraw(Rect rect) {
 
 			pos += vect;
 
-			timeRemaining -= ti;
+			timeRemaining -= timePerComponent;
 		}
 	}
 }
