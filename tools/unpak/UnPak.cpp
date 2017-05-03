@@ -56,8 +56,8 @@ static void processDirectory(PakDirectory & dir, const fs::path & prefix,
 	
 	if(action == UnpakExtract) {
 		fs::path dirpath = prefix / dirname.string();
-		if(!fs::create_directories(dirpath)) {
-			LogWarning << "Error creating target directory: " << dirpath;
+		if(!fs::create_directory(dirpath)) {
+			LogWarning << "Error creating directory: " << dirpath;
 		}
 	}
 	
@@ -169,6 +169,12 @@ static void processResources(PakReader & resources, const fs::path & prefix, Unp
 		std::cout << "external";
 	}
 	std::cout << "\n";
+	
+	if(action == UnpakExtract && !prefix.empty()) {
+		if(!fs::create_directories(prefix)) {
+			LogWarning << "Error creating output directory: " << prefix;
+		}
+	}
 	
 	processDirectory(resources, prefix, res::path(), action);
 }
