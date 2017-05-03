@@ -141,6 +141,13 @@ static void processDirectory(PakDirectory & dir, const fs::path & prefix,
 
 static void processResources(PakReader & resources, const fs::path & prefix, UnpakAction action) {
 	
+	if(action == UnpakExtract && !prefix.empty()) {
+		if(!fs::create_directories(prefix)) {
+			LogWarning << "Error creating output directory: " << prefix;
+		}
+		LogInfo << "Extracting files to " << prefix;
+	}
+	
 	PakReader::ReleaseFlags release = resources.getReleaseType();
 	std::cout << "Type: ";
 	bool first = true;
@@ -169,12 +176,6 @@ static void processResources(PakReader & resources, const fs::path & prefix, Unp
 		std::cout << "external";
 	}
 	std::cout << "\n";
-	
-	if(action == UnpakExtract && !prefix.empty()) {
-		if(!fs::create_directories(prefix)) {
-			LogWarning << "Error creating output directory: " << prefix;
-		}
-	}
 	
 	processDirectory(resources, prefix, res::path(), action);
 }
