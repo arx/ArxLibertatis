@@ -6,15 +6,15 @@ arx \- Arx Libertatis, a cross-platform port of Arx Fatalis
 .SH SYNOPSIS
 \fBarx\fP
 [\fB-hnl\fP]
-[\fB-d\fP \fIdata-dir\fP]
-[\fB-u\fP \fIuser-dir\fP]
-[\fB-c\fP \fIconfig-dir\fP]
-[\fB-g\fP \fIdebug-spec\fP]
+[\fB-d\fP \fIdata\-dir\fP]
+[\fB-u\fP \fIuser\-dir\fP]
+[\fB-c\fP \fIconfig\-dir\fP]
+[\fB-g\fP \fIdebug\-spec\fP]
 .SH DESCRIPTION
 \fBarx\fP is the main executable of Arx Libertatis, a cross-platform port of the first-person role-playing game Arx Fatalis. You will need the data from the original Arx Fatalis to run the game. See \fIhttp://arx.vg/data\fP for where you can get it.
 .SH OPTIONS SUMMARY
 .PP
-Here is a short summary of the options available in innoextract. Please refer to the detailed  documentation below for a complete description.
+Here is a short summary of the options available in arx. Please refer to the detailed  documentation below for a complete description.
 .TP
 .B Generic options:
 .nf
@@ -26,77 +26,77 @@ Here is a short summary of the options available in innoextract. Please refer to
 .TP
 .B Search path options:
 .nf
- \-n \-\-no-data-dir        Don't automatically detect data directories
- \-d \-\-data-dir \fIDIR\fP       Where to find the data files (can be repeated)
- \-u \-\-user-dir \fIDIR\fP       Where to store user-specific files
- \-c \-\-config-dir \fIDIR\fP     Where to store config files
- \-l \-\-list-dirs          List the searched user and data directories
+ \-n \-\-no\-data\-dir        Don't automatically detect data directories
+ \-d \-\-data\-dir \fIDIR\fP       Where to find the data files (can be repeated)
+ \-u \-\-user\-dir \fIDIR\fP       Where to store user-specific files
+ \-c \-\-config\-dir \fIDIR\fP     Where to store config files
+ \-l \-\-list\-dirs          List the searched user and data directories
 .fi
 .TP
 .B Startup options:
-    --loadlevel LEVELID  Load a specific level
-    --loadslot SAVESLOT  Load a specific savegame slot
-    --skiplogo           Skip logos at startup
+    \-\-loadlevel LEVELID  Load a specific level
+    \-\-loadslot SAVESLOT  Load a specific savegame slot
+    \-\-skiplogo           Skip logos at startup
 .fi
 .SH OPTIONS
 .TP
-\fB--benchmark\fP[=TIMELIMIT]\fP
+\fB\-\-benchmark\fP[=TIMELIMIT]\fP
 Log time taken for startup, loading levels and shutdown, and the minimum, maximum and average framerate.
 
 If a \fITIMELIMIT\fP argument is given, the game will exit after the specified amout of time has been spent rendering normal frames. This time does not include the startup or loading time. Valid values are a number, optionally followed by a unit. Valid units are "\fIms\fP" (milliseconds), "\fIs\fP" (seconds), "\fIm\fP" (minutes) and "\fIh\fP" (hours). The default unit is milliseconds.
 
 This option can be combined with the \fB--loadlevel\fP or \fB--loadslot\fP options to benchmark a specific scene.
 .TP
-\fB-c\fP, \fB--config-dir\fP=\fIDIR\fP
+\fB\-c\fP, \fB\-\-config-dir\fP=\fIDIR\fP
 By default arx will store configuration files in directories specified by the \fBXDG Base Directory Specification\fP.
 This option overrides the directory where config files are loaded from and saved to.
 .TP
-\fB-d\fP, \fB--data-dir\fP=\fIDIR\fP
-Arx Libertatis will look for data files in directories specified by the \fBXDG Base Directory Specification\fP and in the directory containing the game executable. Besides the system-wide data directory, data files are also loaded from the user directory, which can be set by the \fB--user-dir\fP option.
+\fB\-d\fP, \fB\-\-data-dir\fP=\fIDIR\fP
+Arx Libertatis will look for data files in directories specified by the \fBXDG Base Directory Specification\fP and in the directory containing the game executable. Besides the system-wide data directory, data files are also loaded from the user directory, which can be set by the \fB\-\-user\-dir\fP option.
 
-This option adds additional directories to search for data files before the detected system-wide directories, but after the user directory. To override the detected data directories combine it with the \fB--no-data-dir\fP option.
+This option adds additional directories to search for data files before the detected system-wide directories, but after the user directory. To override the detected data directories combine it with the \fB\-\-no\-data\-dir\fP option.
 
-The \fB--data-dir\fP option can be repeated to add multiple data directories, in which case they are searched in the order provided.
+The \fB\-\-data\-dir\fP option can be repeated to add multiple data directories, in which case they are searched in the order provided.
 
-See \fIhttp://arx.vg/paths\fP and the \fB--list-dirs\fP output for more details.
+See \fIhttp://arx.vg/paths\fP and the \fB\-\-list-dirs\fP output for more details.
 
-Use \fBarx-install-data\fP(1) to extract and install the required data files from the various different Arx Fatalis setup executables, archives, CDROMs and existing installs.
+Use \fBarx\-install\-data\fP(1) to extract and install the required data files from the various different Arx Fatalis setup executables, archives, CDROMs and existing installs.
 .TP
-\fB-g\fP, \fB--debug\fP=\fILEVELS\fP
+\fB\-g\fP, \fB\-\-debug\fP=\fILEVELS\fP
 This option can be used to enable debug output for debug builds of Arx Libertatis. For non-debug build, this option is not very useful but recognized for convenience.
 .TP
-\fB--debug-gl\fP
+\fB\-\-debug\-gl\fP
 Create and OpenGL debug context and, if available, enable enable debug output from the OpenGL driver.
 .TP
-\fB-h\fP, \fB--help\fP
+\fB\-h\fP, \fB\-\-help\fP
 Show a list of the supported options.
 .TP
-\fB-l\fP, \fB--list-dirs\fP
-Show the data, user and config search directories and how they were determined. To adjust the search directories, use the \fB--no-data-dir\fP, \fB--data-dir\fP, \fB--user-dir\fP and \fB--config-dir\fP options.
+\fB\-l\fP, \fB\-\-list\-dirs\fP
+Show the data, user and config search directories and how they were determined. To adjust the search directories, use the \fB\-\-no\-data\-dir\fP, \fB\-\-data\-dir\fP, \fB\-\-user\-dir\fP and \fB\-\-config\-dir\fP options.
 .TP
-\fB--loadlevel\fP=\fILEVELID\fP
+\fB\-\-loadlevel\fP=\fILEVELID\fP
 Load a level immediately after startup, without displaying logos or the main menu. \fILEVELID\fP is the number of the level to be loaded.
 .TP
-\fB--loadslot\fP=\fISAVESLOT\fP
+\fB\-\-loadslot\fP=\fISAVESLOT\fP
 Load a save file immediately after startup, without displaying logos or the main menu. \fISAVESLOT\fP is the index of the save slot to be loaded.
 .TP
-\fB-n\fP, \fB--no-data-dir\fP
-Disables looking for default data directories. Default user and config directories and data directories provided using the \fB--data-dir\fP option are still searched. This option can be used for portable setups where user, config and data files are all in the current directory:
+\fB\-n\fP, \fB\-\-no\-data\-dir\fP
+Disables looking for default data directories. Default user and config directories and data directories provided using the \fB\-\-data\-dir\fP option are still searched. This option can be used for portable setups where user, config and data files are all in the current directory:
 
-.B arx --no-data-dir --user-dir=. --config-dir=.
+.B arx \-\-no-data\-dir \-\-user\-dir=. \-\-config-dir=.
 .TP
-\fB--skiplogo\fP
+\fB\-\-skiplogo\fP
 Don't display Logo images at startup. Currently this will not skip the intro cutscene.
 .TP
-\fB-u\fP, \fB--user-dir\fP=\fIDIR\fP
+\fB\-u\fP, \fB\-\-user\-dir\fP=\fIDIR\fP
 By default arx will store user files (saves, etc.) in directories specified by the \fBXDG Base Directory Specification\fP.
 This option overrides the directory where user files are loaded from and saved to.
 
-Configuration files are not stored in the user directory, but in a separate directory that can be set by the \fB--user-dir\fP option.
+Configuration files are not stored in the user directory, but in a separate directory that can be set by the \fB\-\-user\-dir\fP option.
 
-The user directory will also be used to load data, overwriting resources from the system-wide data directories amd from directories specified by the \fB--data-dir\fP option.
+The user directory will also be used to load data, overwriting resources from the system-wide data directories amd from directories specified by the \fB\-\-data\-dir\fP option.
 .SH SEE ALSO
-\fBarx-install-data\fP(1), \fBarxsavetool\fP(1), \fBarxunpak\fP(1)
+\fBarx\-install\-data\fP(1), \fBarxsavetool\fP(1), \fBarxunpak\fP(1)
 .SH BUGS
 .PP
 To view known bugs and report new ones, please visit \fIhttps://bugs.arx-libertatis.org/\fP.
