@@ -51,10 +51,14 @@ enum UnpakAction {
 	UnpakList,
 };
 
-static void processDirectory(PakDirectory & dir, const fs::path & dirname, UnpakAction action) {
+static void processDirectory(PakDirectory & dir, const fs::path & prefix,
+                             const res::path & dirname, UnpakAction action) {
 	
-	if(action == UnpakExtract && !fs::create_directories(dirname)) {
-		LogWarning << "Failed to create target directory";
+	if(action == UnpakExtract) {
+		fs::path dirpath = prefix / dirname.string();
+		if(!fs::create_directories(dirpath)) {
+			LogWarning << "Error creating target directory: " << dirpath;
+		}
 	}
 	
 	{
@@ -67,7 +71,7 @@ static void processDirectory(PakDirectory & dir, const fs::path & dirname, Unpak
 			files[name] = i->second;
 		}
 		BOOST_FOREACH(const SortedFiles::value_type & entry, files) {
-			fs::path path = dirname / entry.first;
+			res::path path = dirname / entry.first;
 			
 			if(action == UnpakExtract || action == UnpakManifest) {
 				
@@ -77,14 +81,15 @@ static void processDirectory(PakDirectory & dir, const fs::path & dirname, Unpak
 				
 				if(action == UnpakExtract) {
 					
-					fs::ofstream ofs(path, fs::fstream::out | fs::fstream::binary | fs::fstream::trunc);
+					fs::path filepath = prefix / path.string();
+					fs::ofstream ofs(filepath, fs::fstream::out | fs::fstream::binary | fs::fstream::trunc);
 					if(!ofs.is_open()) {
-						LogError << "Error opening file for writing: " << path;
+						LogError << "Error opening file for writing: " << filepath;
 						std::exit(1);
 					}
 					
 					if(ofs.write(data, file->size()).fail()) {
-						LogError << "Error writing to file: " << path;
+						LogError << "Error writing to file: " << filepath;
 						std::exit(1);
 					}
 					
@@ -123,18 +128,18 @@ static void processDirectory(PakDirectory & dir, const fs::path & dirname, Unpak
 			subdirs[name] = &i->second;
 		}
 		BOOST_FOREACH(const SortedDirs::value_type & entry, subdirs) {
-			fs::path path = dirname / entry.first;
+			res::path path = dirname / entry.first;
 			if(action == UnpakManifest) {
 				std::cout << "                                  ";
 			}
 			std::cout << path.string() << '/' << '\n';
-			processDirectory(*entry.second, path, action);
+			processDirectory(*entry.second, prefix, path, action);
 		}
 	}
 	
 }
 
-static void processResources(PakReader & resources, const fs::path & dirname, UnpakAction action) {
+static void processResources(PakReader & resources, const fs::path & prefix, UnpakAction action) {
 	
 	PakReader::ReleaseFlags release = resources.getReleaseType();
 	std::cout << "Type: ";
@@ -165,7 +170,7 @@ static void processResources(PakReader & resources, const fs::path & dirname, Un
 	}
 	std::cout << "\n";
 	
-	processDirectory(resources, dirname, action);
+	processDirectory(resources, prefix, res::path(), action);
 }
 
 static UnpakAction g_action = UnpakExtract;
