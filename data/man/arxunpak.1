@@ -1,21 +1,116 @@
 .\" Manpage for arxunpak.
 .\" Go to http://arx.vg/bug to correct errors or typos.
-.TH arxunpak 1 "2013-06-28" "1.1"
+.TH arxunpak 1 "2017-05-03" "1.1"
 .SH NAME
 arxunpak \- Extract the Arx Fatalis .pak files containing the game assets
 .SH SYNOPSIS
-.B arxunpak
-.I <pakfile>
-[\fI<pakfile>\fP...]
+\fBarxunpak\fP [options] [\fB\-\-\fP] \fIpakfiles\fP ...
+
+\fBarxunpak\fP [options] [\fB\-\-all\fP]
 .SH DESCRIPTION
-.B arxunpak
-extracts the .pak files containing the game assets of the original \fBArx Fatalis\fP.
+\fBarxunpak\fP extracts the .pak files containing the game assets of \fBArx Fatalis\fP.
 
 This is not required to run \fBArx Libertatis\fP but can be useful for development.
 
-All arguments are interpreted as files to extract.
+All no-option arguments are interpreted as files to extract.
 
 Output files are written to the current working directory.
+.SH OPTIONS SUMMARY
+.PP
+Here is a short summary of the options available in arxunpak. Please refer to the detailed  documentation below for a complete description.
+.TP
+.B Generic options:
+.nf
+ \-h \-\-help               Show supported options
+ \-g \-\-debug \fILEVELS\fP       Set debug output levels
+ \-q \-\-quiet              Don't print log output
+.fi
+.TP
+.B Search path options:
+.nf
+ \-n \-\-no-data-dir        Don't automatically detect data directories
+ \-d \-\-data\-dir \fIDIR\fP       Where to find the data files (can be repeated)
+ \-u \-\-user\-dir \fIDIR\fP       Where to store user-specific files
+ \-c \-\-config\-dir \fIDIR\fP     Where to store config files
+ \-l \-\-list-dirs          List the searched user and data directories
+.fi
+.TP
+.B Unpack options:
+ \-a \-\-all                Process all game assets as seen by Arx Libertatis
+ \-e \-\-extract            Extract archive contents (default action)
+    \-\-list               List archive contents
+ \-m \-\-manifest           Print archive manifest
+ \-o \-\-output-dir \fIDIR\fP     Directory to extract files to
+.fi
+.SH OPTIONS
+.TP
+\fB\-\-\fP
+Treat all arguments after this one as files, even if they begin with a dash.
+.TP
+\fB\-a\fP, \fB\-\-all\fP
+Extract or list all resources seen by the game.
+
+If no .pak files are specified on the command-line, this option is enabled by default. In this case all files are extracted to the "\fIunpacked\fP" subdirectory of the user directoy instead of the current directory, unless the \fB\-\-output\-dir\fP option is used to override the output directory.
+.TP
+\fB\-c\fP, \fB\-\-config\-dir\fP=\fIDIR\fP
+By default arx will store configuration files in directories specified by the \fBXDG Base Directory Specification\fP.
+This option overrides the directory where config files are loaded from and saved to.
+.TP
+\fB\-d\fP, \fB\-\-data\-dir\fP=\fIDIR\fP
+Arx Libertatis will look for data files in directories specified by the \fBXDG Base Directory Specification\fP and in the directory containing the game executable. Besides the system-wide data directory, data files are also loaded from the user directory, which can be set by the \fB\-\-user\-dir\fP option.
+
+This option adds additional directories to search for data files before the detected system-wide directories, but after the user directory. To override the detected data directories combine it with the \fB\-\-no\-data\-dir\fP option.
+
+The \fB\-\-data\-dir\fP option can be repeated to add multiple data directories, in which case they are searched in the order provided.
+
+See \fIhttp://arx.vg/paths\fP, the \fB\-\-list\-dirs\fP output and the \fBarx\fP(6) documentation for more details.
+
+This option only affects which archives are loaded when using the \fB\-\-all\fP option -- it has no effect on .pak archives specified on the command-line.
+.TP
+\fB\-g\fP, \fB\-\-debug\fP=\fILEVELS\fP
+This option can be used to enable debug output for debug builds of Arx Libertatis. For non-debug build, this option is not very useful but recognized for convenience.
+.TP
+\fB\-e\fP, \fB\-\-extract\fP
+Extract files from the processed archives. This is the default action unless the \fB\-\-list\fP or \fB\-\-manifest\fP options are used.
+
+By default, files are extracted to the current directory unless neither explicit .pak files nor the \fB\-\-all\fP option were specified on the command-line, in which case files are extracted to the "\fIunpacked\fP" subdirectory of the user directory. The \fB\-\-output\-dir\fP option can be used to override where files are extracted to.
+.TP
+\fB\-h\fP, \fB\-\-help\fP
+Show a list of the supported options.
+.TP
+\fB\-\-list\fP
+List all files and directories in the processed archives.
+
+Each file or directory is printed on a separate line. Directories are indicated using a trailing slash.
+.TP
+\fB\-l\fP, \fB\-\-list\-dirs\fP
+Show the data, user and config search directories and how they were determined. To adjust the search directories, use the \fB\-\-no\-data\-dir\fP, \fB\-\-data\-dir\fP, \fB\-\-user\-dir\fP and \fB\-\-config\-dir\fP options.
+.TP
+\fB\-m\fP, \fB\-\-manifest\fP
+Print checksums of files and list directories in the processed archives.
+
+Each file or directory is printed on a separate line. Directories are indicated using a trailing slash and are preceeded by 34 spaces. Files are preceeded by a 32-character MD5 checksum, one space and one asterisk ("*"). This format is compatible with the \fB\-\-check\fP option of \fBmd5sum\fP(1), which will simply ignore directory lines.
+.TP
+\fB\-n\fP, \fB\-\-no\-data\-dir\fP
+Disables looking for default data directories. Default user and config directories and data directories provided using the \fB\-\-data\-dir\fP option are still searched.
+
+This option only affects which archives are loaded when using the \fB\-\-all\fP option -- it has no effect on .pak archives specified on the command-line.
+.TP
+\fB\-o\fP, \fB\-\-output\-dir\fP \fIDIR\fP
+Extract all files into the given directory. By default, \fBarxunpak\fP will extract all files to the current directory unless neither explicit .pak files nor the \fB\-\-all\fP option were specified on the command-line, in which case files are extracted to the "\fIunpacked\fP" subdirectory of the user directory.
+
+If the specified directory does not exist, it will be created.
+.TP
+\fB\-q\fP, \fB\-\-quiet\fP
+This option disables all log output. Only the archive type and extracted files and directories (or manifest) are still printed.
+.TP
+\fB\-u\fP, \fB\-\-user\-dir\fP=\fIDIR\fP
+By default arx will store user files (saves, etc.) in directories specified by the \fBXDG Base Directory Specification\fP.
+This option overrides the directory where user files are loaded from.
+
+The user directory will be used to load data, overwriting resources from the system-wide data directories amd from directories specified by the \fB\-\-data\-dir\fP option.
+
+This option only affects which archives are loaded when using the \fB\-\-all\fP option -- it has no effect on .pak archives specified on the command-line.
 .SH SEE ALSO
 \fBarx\fP(6), \fBarxsavetool\fP(1)
 .SH BUGS
