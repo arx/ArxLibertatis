@@ -170,8 +170,13 @@ See the `arx --help` and `man arx` output for more details.
 
 ## Tools
 
-* `arxunpak <pakfile> [<pakfile>...]` <br>
-  Extracts the .pak files containing the game assets.
+* `arxunpak [options] <pakfile> [<pakfile>...]` <br>
+  Extracts Arx Fatalis .pak files containing the game assets. <br>
+  See the `arxunpak --help` and `man arxunpak` output for more details.
+
+* `arxunpak [options] [--all]` <br>
+  Extracts all game assets. <br>
+  See the `arxunpak --help` and `man arxunpak` output for more details.
 
 * `arxsavetool <command> <savefile> [<options>...]` - commands are:
   * `extract <savefile>` <br>
