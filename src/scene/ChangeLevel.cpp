@@ -1989,7 +1989,17 @@ static Entity * ARX_CHANGELEVEL_Pop_IO(const std::string & idString, EntityInsta
 		}
 		
 		io->move = ais->move.toVec3();
+		if(!isallfinite(io->move)) {
+			LogWarning << "Found bad entity move in " << io->idString();
+			io->move = Vec3f_ZERO;
+		}
+
 		io->lastmove = ais->lastmove.toVec3();
+		if(!isallfinite(io->lastmove)) {
+			LogWarning << "Found bad entity lastmove in " << io->idString();
+			io->lastmove = Vec3f_ZERO;
+		}
+		
 		io->initangle = ais->initangle;
 		io->angle = ais->angle;
 		io->scale = ais->scale;
