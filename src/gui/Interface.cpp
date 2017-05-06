@@ -1827,9 +1827,8 @@ void ArxGame::manageKeyMouse() {
 					mouseInBorder = true;
 				}
 				
-				if(   borderDelay > PlatformDuration_ZERO
-				   && g_platformTime.frameStart() - mouseInBorderTime < borderDelay
-				) {
+				if(borderDelay > PlatformDuration_ZERO
+				   && g_platformTime.frameStart() - mouseInBorderTime < borderDelay) {
 					mouseDiff = Vec2f_ZERO;
 				} else {
 					bKeySpecialMove = true;
