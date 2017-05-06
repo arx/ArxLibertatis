@@ -263,6 +263,7 @@ bool Credits::init() {
 	m_windowSize = g_size.size();
 	
 	layout();
+	arx_assert(m_lineHeight != -1);
 	
 	if(anchorLine >= 0) {
 		// Find the first credits line that comes from our source anchor line
@@ -284,7 +285,7 @@ bool Credits::init() {
 		}
 	}
 	
-	return m_lineHeight != -1;
+	return true;
 }
 
 void Credits::addLine(std::string & phrase, float & drawpos, int sourceLineNumber) {
