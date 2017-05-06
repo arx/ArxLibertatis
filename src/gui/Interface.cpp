@@ -1755,27 +1755,17 @@ void ArxGame::manageKeyMouse() {
 		}
 
 		if(bKeySpecialMove) {
-			if(   pushTime.turnLeft  != PlatformInstant_ZERO
-			   || pushTime.turnRight != PlatformInstant_ZERO
-			) {
-				if(pushTime.turnLeft < pushTime.turnRight)
-					mouseDiff.x = 10.f;
-				else
-					mouseDiff.x = -10.f;
-			} else {
-				mouseDiff.x = 0.f;
+			
+			mouseDiff = Vec2f_ZERO;
+			
+			if(pushTime.turnLeft != PlatformInstant_ZERO || pushTime.turnRight != PlatformInstant_ZERO) {
+				mouseDiff.x = (pushTime.turnLeft < pushTime.turnRight) ? 10.f : -10.f;
 			}
-
-			if(   pushTime.lookUp   != PlatformInstant_ZERO
-			   || pushTime.lookDown != PlatformInstant_ZERO
-			) {
-				if(pushTime.lookUp < pushTime.lookDown)
-					mouseDiff.y = 10.f;
-				else
-					mouseDiff.y = -10.f;
-			} else {
-				mouseDiff.y = 0.f;
+			
+			if(pushTime.lookUp != PlatformInstant_ZERO || pushTime.lookDown != PlatformInstant_ZERO) {
+				mouseDiff.y = (pushTime.lookUp < pushTime.lookDown) ? 10.f : -10.f;
 			}
+			
 		} else if(config.input.borderTurning) {
 			
 			// Turn the player if the curser is close to the edges
