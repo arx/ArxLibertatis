@@ -1684,6 +1684,8 @@ void ArxGame::manageKeyMouse() {
 		mouseDiff = speed * timeDiff;
 	}
 	
+	Vec2f rotation = mouseDiff * (float(config.input.mouseSensitivity) + 1.f) * 0.02f;
+	
 	ARX_Menu_Manage();
 	
 	if(bRestoreCoordMouse) {
@@ -1753,18 +1755,21 @@ void ArxGame::manageKeyMouse() {
 			else
 				pushTime.lookDown = PlatformInstant_ZERO;
 		}
-
+		
 		if(bKeySpecialMove) {
 			
-			mouseDiff = Vec2f_ZERO;
+			rotation = Vec2f_ZERO;
 			
 			if(pushTime.turnLeft != PlatformInstant_ZERO || pushTime.turnRight != PlatformInstant_ZERO) {
-				mouseDiff.x = (pushTime.turnLeft < pushTime.turnRight) ? 10.f : -10.f;
+				rotation.x = (pushTime.turnLeft < pushTime.turnRight) ? 10.f : -10.f;
 			}
 			
 			if(pushTime.lookUp != PlatformInstant_ZERO || pushTime.lookDown != PlatformInstant_ZERO) {
-				mouseDiff.y = (pushTime.lookUp < pushTime.lookDown) ? 10.f : -10.f;
+				rotation.y = (pushTime.lookUp < pushTime.lookDown) ? 10.f : -10.f;
 			}
+			
+			// TODO use a separate sensitivity setting for this?
+			rotation *= (float(config.input.mouseSensitivity) + 1.f) * 0.02f;
 			
 		} else if(config.input.borderTurning) {
 			
@@ -1799,25 +1804,26 @@ void ArxGame::manageKeyMouse() {
 					borderDelay = PlatformDurationMs(600);
 				}
 				
-				mouseDiff = Vec2f_ZERO;
+				rotation = Vec2f_ZERO;
 				
 				if(distLeft < borderSize) {
-					mouseDiff.x -= 1.f - float(distLeft) / float(borderSize);
+					rotation.x -= 1.f - float(distLeft) / float(borderSize);
 				}
 				
 				if(distRight < borderSize) {
-					mouseDiff.x += 1.f - float(distRight) / float(borderSize);
+					rotation.x += 1.f - float(distRight) / float(borderSize);
 				}
 				
 				if(distTop < borderSize) {
-					mouseDiff.y -= 1.f - float(distTop) / float(borderSize);
+					rotation.y -= 1.f - float(distTop) / float(borderSize);
 				}
 				
 				if(distBottom < borderSize) {
-					mouseDiff.y += 1.f - float(distBottom) / float(borderSize);
+					rotation.y += 1.f - float(distBottom) / float(borderSize);
 				}
 				
-				mouseDiff *= timeDiff;
+				// TODO use a separate sensitivity setting for this?
+				rotation *= (float(config.input.mouseSensitivity) + 1.f) * 0.02f * timeDiff;
 				
 				if(distLeft >= 3 * borderSize && distRight >= 3 * borderSize
 				   && distTop >= 3 * borderSize && distBottom >= 3 * borderSize) {
@@ -1829,7 +1835,7 @@ void ArxGame::manageKeyMouse() {
 				
 				if(borderDelay > PlatformDuration_ZERO
 				   && g_platformTime.frameStart() - mouseInBorderTime < borderDelay) {
-					mouseDiff = Vec2f_ZERO;
+					rotation = Vec2f_ZERO;
 				} else {
 					bKeySpecialMove = true;
 				}
@@ -1845,10 +1851,6 @@ void ArxGame::manageKeyMouse() {
 			player.desiredangle.setRoll(0);
 			player.angle.setRoll(0);
 		}
-		
-		float mouseSensitivity = (float(config.input.mouseSensitivity) + 1.f) * 0.02f;
-		
-		Vec2f rotation = mouseDiff * mouseSensitivity;
 		
 		if(config.input.invertMouse)
 			rotation.y *= -1.f;
