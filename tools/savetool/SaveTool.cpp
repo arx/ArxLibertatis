@@ -25,6 +25,7 @@
 
 #include "io/SaveBlock.h"
 #include "io/fs/Filesystem.h"
+#include "io/fs/SystemPaths.h"
 #include "io/log/Logger.h"
 
 #include "platform/ProgramOptions.h"
@@ -127,6 +128,10 @@ int utf8_main(int argc, char ** argv) {
 	
 	// Parse the command line and process options
 	ExitStatus status = parseCommandLine(argc, argv);
+	
+	if(status == RunProgram) {
+		status = fs::paths.init();
+	}
 	
 	if(status == RunProgram && g_args.size() < 2) {
 		print_help();

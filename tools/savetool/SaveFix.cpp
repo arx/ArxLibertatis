@@ -25,6 +25,7 @@
 #include <map>
 #include <sstream>
 
+#include <boost/foreach.hpp>
 #include <boost/algorithm/string/case_conv.hpp>
 #include <boost/algorithm/string/predicate.hpp>
 #include <boost/io/ios_state.hpp>
@@ -32,6 +33,8 @@
 #include "Configure.h"
 
 #include "io/SaveBlock.h"
+#include "io/fs/FilePath.h"
+#include "io/fs/SystemPaths.h"
 #include "io/log/Logger.h"
 #include "io/resource/PakReader.h"
 #include "scene/SaveFormat.h"
@@ -411,12 +414,19 @@ int main_fix(SaveBlock & save, const std::vector<std::string> & args) {
 	
 	resources = new PakReader();
 	
-	if(!resources->addArchive("data.pak") || !resources->addArchive("data2.pak")) {
-		std::cerr << "could not open pak files, run 'savetool fix' from the game directory\n";
+	// TODO share this list with the game code
+	static const char * const default_paks[] = { "data.pak", "data2.pak" };
+	BOOST_FOREACH(const char * const filename, default_paks) {
+		if(resources->addArchive(fs::paths.find(filename))) {
+			continue;
+		}
+		LogError << "Missing required data file: \"" << filename << "\"";
 		return 3;
 	}
-	
-	resources->addFiles("graph", "graph");
+	BOOST_REVERSE_FOREACH(const fs::path & base, fs::paths.data) {
+		const char * dirname = "graph";
+		resources->addFiles(base / dirname, dirname);
+	}
 	
 	if(!save.open(true)) {
 		return 2;
