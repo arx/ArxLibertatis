@@ -2748,7 +2748,7 @@ bool ARX_CHANGELEVEL_Save(const std::string & name, const fs::path & savefile) {
 	pld.level = CURRENTLEVEL;
 	util::storeString(pld.name, name.c_str());
 	pld.version = ARX_GAMESAVE_VERSION;
-	pld.time = static_cast<u32>(toMs(arxtime.now())); // TODO save/load time
+	pld.time = toMs(arxtime.now());
 	
 	const char * dat = reinterpret_cast<const char *>(&pld);
 	g_currentSavedGame->save("pld", dat, sizeof(ARX_CHANGELEVEL_PLAYER_LEVEL_DATA));
@@ -2831,7 +2831,7 @@ long ARX_CHANGELEVEL_Load(const fs::path & savefile) {
 		progressBarAdvance(2.f);
 		LoadLevelScreen(pld.level);
 		
-		const ArxInstant fPldTime = ArxInstantMs(pld.time); // TODO save/load time
+		const ArxInstant fPldTime = ArxInstantMs(pld.time);
 		DanaeClearLevel();
 		progressBarAdvance(2.f);
 		LoadLevelScreen(pld.level);
