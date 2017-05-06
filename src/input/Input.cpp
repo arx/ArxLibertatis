@@ -227,7 +227,8 @@ bool Input::init(Window * window) {
 }
 
 void Input::reset() {
-	iMouseR = Vec2s_ZERO;
+	
+	m_mouseMovement = Vec2f_ZERO;
 
 	for(size_t i = 0; i < Mouse::ButtonCount; i++) {
 		iMouseTime[i] = 0;
@@ -459,12 +460,13 @@ void Input::update() {
 	if(m_mouseMode == Mouse::Relative) {
 		
 		if(m_useRawMouseInput) {
-			iMouseR = Vec2s(relX * 2, relY * 2);
+			m_mouseMovement = Vec2f(relX * 2, relY * 2);
 		} else {
-			iMouseR = newMousePosition - m_lastMousePosition;
-			m_lastMousePosition = newMousePosition;
-			if(iMouseR != Vec2s_ZERO) {
+			m_mouseMovement = Vec2f(newMousePosition - m_lastMousePosition);
+			if(newMousePosition != m_lastMousePosition) {
 				centerMouse();
+			} else {
+				m_lastMousePosition = newMousePosition;
 			}
 		}
 		
@@ -473,7 +475,7 @@ void Input::update() {
 		float fSensMin = 2.f;
 		float fSens = ( ( fSensMax - fSensMin ) * float(iSensibility) / 10.f ) + fSensMin;
 		fSens = std::pow(0.7f, fSens) * 2.f;
-		iMouseR *= fSens;
+		m_mouseMovement *= fSens;
 		
 		if(!mouseInWindow) {
 			LogWarning << "Cursor escaped the window while in relative input mode";
@@ -481,9 +483,12 @@ void Input::update() {
 		}
 		
 	} else {
-		iMouseR = Vec2s_ZERO;
-		m_lastMousePosition = newMousePosition;
+		m_mouseMovement = Vec2f_ZERO;
+		if(!m_useRawMouseInput) {
+			m_lastMousePosition = newMousePosition;
+		}
 	}
+	
 	
 }
 

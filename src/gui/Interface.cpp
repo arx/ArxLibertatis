@@ -1672,7 +1672,7 @@ void ArxGame::manageKeyMouse() {
 	LAST_PLAYER_MOUSELOOK_ON = mouselook;
 	PLAYER_ROTATION = AnimationDuration_ZERO;
 
-	Vec2f mouseDiff = Vec2f(GInput->getMousePosRel());
+	Vec2f mouseDiff = GInput->getMousePosRel();
 	float timeDiff = toMs(g_platformTime.lastFrameDuration());
 	
 	if(config.input.mouseAcceleration > 0 && timeDiff > 0.0f) {
@@ -1998,7 +1998,7 @@ void ArxGame::manageEditorControls() {
 			DRAGGING = false;
 			dragThreshold = Vec2f_ZERO;
 		} else {
-			dragThreshold += Vec2f(GInput->getMousePosRel());
+			dragThreshold += GInput->getMousePosRel();
 			if((std::abs(DANAEMouse.x - STARTDRAG.x) > 2 && std::abs(DANAEMouse.y - STARTDRAG.y) > 2)
 			   || (std::abs(dragThreshold.x) > 2.f || std::abs(dragThreshold.y) > 2.f)) {
 				DRAGGING = true;
