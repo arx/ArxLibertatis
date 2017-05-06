@@ -469,6 +469,9 @@ void SDL2Window::changeMode(DisplayMode mode, bool makeFullscreen) {
 	}
 	
 	if(!makeFullscreen) {
+		if(wasFullscreen) {
+			SDL_RestoreWindow(m_window);
+		}
 		SDL_SetWindowSize(m_window, mode.resolution.x, mode.resolution.y);
 	}
 	
