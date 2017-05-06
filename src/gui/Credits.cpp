@@ -249,7 +249,7 @@ bool Credits::init() {
 		while(first != m_lines.begin() && (first - 1)->sourceLineNumber == anchorLine) {
 			--first;
 		}
-		// Find the first credits line that comes from this source line
+		// Find the last credits line that comes from this source line
 		Iterator last = it;
 		while((last + 1) != m_lines.end()
 		      && (last + 1)->sourceLineNumber == anchorLine) {
