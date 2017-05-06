@@ -95,7 +95,7 @@ bool SliderWidget::OnMouseClick() {
 	
 	ARX_SOUND_PlayMenu(SND_MENU_CLICK);
 
-	const Vec2f cursor = Vec2f(GInput->getMousePosAbs());
+	const Vec2f cursor = Vec2f(GInput->getMousePosition());
 	
 	if(m_rect.contains(cursor)) {
 		if(pLeftButton->m_rect.contains(cursor)) {
@@ -160,7 +160,7 @@ void SliderWidget::RenderMouseOver() {
 
 	pMenuCursor->SetMouseOver();
 
-	const Vec2f cursor = Vec2f(GInput->getMousePosAbs());
+	const Vec2f cursor = Vec2f(GInput->getMousePosition());
 
 	GRenderer->SetRenderState(Renderer::AlphaBlending, true);
 	GRenderer->SetBlendFunc(BlendOne, BlendOne);

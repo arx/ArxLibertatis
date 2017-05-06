@@ -136,7 +136,7 @@ bool CycleTextWidget::OnMouseClick() {
 	if(iOldPos<0)
 		iOldPos=iPos;
 	
-	const Vec2f cursor = Vec2f(GInput->getMousePosAbs());
+	const Vec2f cursor = Vec2f(GInput->getMousePosition());
 
 	if(m_rect.contains(cursor)) {
 		if(pLeftButton->m_rect.contains(cursor)) {
@@ -200,7 +200,7 @@ void CycleTextWidget::RenderMouseOver() {
 
 	pMenuCursor->SetMouseOver();
 
-	Vec2f cursor = Vec2f(GInput->getMousePosAbs());
+	Vec2f cursor = Vec2f(GInput->getMousePosition());
 	
 	if(!enabled) {
 		return;

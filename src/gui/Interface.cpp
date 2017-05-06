@@ -1678,7 +1678,7 @@ void ArxGame::manageKeyMouse() {
 	ARX_Menu_Manage();
 	
 	if(bRestoreCoordMouse) {
-		DANAEMouse=GInput->getMousePosAbs();
+		DANAEMouse=GInput->getMousePosition();
 	}
 	
 	// Player/Eyeball Freelook Management

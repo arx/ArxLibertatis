@@ -503,8 +503,8 @@ void ARX_Menu_Render() {
 	}
 	
 	EERIE_LIGHT * light = lightHandleGet(torchLightHandle);
-	light->pos.x = 0.f + GInput->getMousePosAbs().x - (g_size.width() >> 1);
-	light->pos.y = 0.f + GInput->getMousePosAbs().y - (g_size.height() >> 1);
+	light->pos.x = 0.f + GInput->getMousePosition().x - (g_size.width() >> 1);
+	light->pos.y = 0.f + GInput->getMousePosition().y - (g_size.height() >> 1);
 	
 	if(pTextManage) {
 		pTextManage->Update(g_platformTime.lastFrameDuration());

@@ -1870,7 +1870,7 @@ MENUSTATE MainMenu::Update() {
 		}
 	}
 	
-	m_selected = m_widgets->getAtPos(Vec2f(GInput->getMousePosAbs()));
+	m_selected = m_widgets->getAtPos(Vec2f(GInput->getMousePosition()));
 	
 	if(m_selected && GInput->getMouseButton(Mouse::Button_0)) {
 		m_selected->OnMouseClick();
