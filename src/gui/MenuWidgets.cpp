@@ -740,7 +740,7 @@ MENUSTATE MenuPage::Update(Vec2f pos) {
 	// Check if mouse over
 	if(!bEdit) {
 		m_selected=NULL;
-		Widget * widget = m_children.getAtPos(Vec2f(GInput->getMousePosAbs()));
+		Widget * widget = m_children.getAtPos(Vec2f(GInput->getMousePosition()));
 		
 		if(widget) {
 			m_selected = widget;
@@ -768,7 +768,7 @@ MENUSTATE MenuPage::Update(Vec2f pos) {
 		}
 	} else {
 		if(!m_selected) {
-			Widget * widget = m_children.getAtPos(Vec2f(GInput->getMousePosAbs()));
+			Widget * widget = m_children.getAtPos(Vec2f(GInput->getMousePosition()));
 			
 			if(widget) {
 				m_selected = widget;

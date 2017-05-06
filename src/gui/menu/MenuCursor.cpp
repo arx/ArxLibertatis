@@ -192,7 +192,7 @@ void MenuCursor::update(PlatformDuration time) {
 	
 	Vec2s iDiff = m_size / Vec2s(2);
 	
-	trail.add(time, GInput->getMousePosAbs() + iDiff);
+	trail.add(time, GInput->getMousePosition() + iDiff);
 }
 
 
@@ -200,7 +200,7 @@ void MenuCursor::DrawCursor() {
 	
 	trail.draw();
 	
-	DrawOneCursor(GInput->getMousePosAbs());
+	DrawOneCursor(GInput->getMousePosition());
 
 	lFrameDiff += g_platformTime.lastFrameDuration();
 
