@@ -1858,12 +1858,8 @@ void ArxGame::manageKeyMouse() {
 			player.desiredangle.setRoll(0);
 			player.angle.setRoll(0);
 		}
-
-		float mouseSensitivity = (((float)GInput->getMouseSensitivity()) + 1.f) * 0.1f;
-		if (mouseSensitivity > 200) {
-			mouseSensitivity = 200;
-		}
-		mouseSensitivity *= (1.0f / 5);
+		
+		float mouseSensitivity = (float(GInput->getMouseSensitivity()) + 1.f) * 0.02f;
 		
 		Vec2f rotation = mouseDiff * mouseSensitivity;
 		
