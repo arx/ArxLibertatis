@@ -471,11 +471,11 @@ void Input::update() {
 		}
 		
 		// Use the sensitivity config value to adjust relative mouse mouvements
-		float fSensMax = 1.f / 6.f;
-		float fSensMin = 2.f;
-		float fSens = ( ( fSensMax - fSensMin ) * float(iSensibility) / 10.f ) + fSensMin;
-		fSens = std::pow(0.7f, fSens) * 2.f;
-		m_mouseMovement *= fSens;
+		const float maxExponent = 1.f / 6.f;
+		const float minExponent = 2.f;
+		float exponent = (maxExponent - minExponent) * float(iSensibility) * 0.1f + minExponent;
+		float sensitivity = std::pow(0.7f, exponent) * 2.f;
+		m_mouseMovement *= sensitivity;
 		
 		if(!mouseInWindow) {
 			LogWarning << "Cursor escaped the window while in relative input mode";
