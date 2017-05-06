@@ -1761,15 +1761,15 @@ void ArxGame::manageKeyMouse() {
 			rotation = Vec2f_ZERO;
 			
 			if(pushTime.turnLeft != PlatformInstant_ZERO || pushTime.turnRight != PlatformInstant_ZERO) {
-				rotation.x = (pushTime.turnLeft < pushTime.turnRight) ? 10.f : -10.f;
+				rotation.x = (pushTime.turnLeft < pushTime.turnRight) ? 1.f : -1.f;
 			}
 			
 			if(pushTime.lookUp != PlatformInstant_ZERO || pushTime.lookDown != PlatformInstant_ZERO) {
-				rotation.y = (pushTime.lookUp < pushTime.lookDown) ? 10.f : -10.f;
+				rotation.y = (pushTime.lookUp < pushTime.lookDown) ? 1.f : -1.f;
 			}
 			
 			// TODO use a separate sensitivity setting for this?
-			rotation *= (float(config.input.mouseSensitivity) + 1.f) * 0.02f;
+			rotation *= (float(config.input.mouseSensitivity) + 1.f) * 0.02f * timeDiff;
 			
 		} else if(config.input.borderTurning) {
 			
