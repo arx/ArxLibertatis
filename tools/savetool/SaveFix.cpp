@@ -403,11 +403,9 @@ static void fix_level(SaveBlock & save, long num, Idents & idents) {
 	
 }
 
-int main_fix(SaveBlock & save, int argc, char ** argv) {
+int main_fix(SaveBlock & save, const std::vector<std::string> & args) {
 	
-	(void)argv;
-	
-	if(argc != 0) {
+	if(!args.empty()) {
 		return -1;
 	}
 	

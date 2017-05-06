@@ -20,8 +20,11 @@
 #ifndef ARX_TOOLS_SAVETOOL_SAVEVIEW_H
 #define ARX_TOOLS_SAVETOOL_SAVEVIEW_H
 
+#include <vector>
+#include <string>
+
 class SaveBlock;
 
-int main_view(SaveBlock & savefile, int argc, char ** argv);
+int main_view(SaveBlock & savefile, const std::vector<std::string> & args);
 
 #endif // ARX_TOOLS_SAVETOOL_SAVEVIEW_H

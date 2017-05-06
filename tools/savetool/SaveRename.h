@@ -20,8 +20,11 @@
 #ifndef ARX_TOOLS_SAVETOOL_SAVERENAME_H
 #define ARX_TOOLS_SAVETOOL_SAVERENAME_H
 
+#include <vector>
+#include <string>
+
 class SaveBlock;
 
-int main_rename(SaveBlock & save, int argc, char ** argv);
+int main_rename(SaveBlock & save, const std::vector<std::string> & args);
 
 #endif // ARX_TOOLS_SAVETOOL_SAVERENAME_H

@@ -1815,9 +1815,9 @@ static bool is_level(const std::string & name) {
 	return (isdigit(name[3]) && isdigit(name[4]) && isdigit(name[5]));
 }
 
-int main_view(SaveBlock & save, int argc, char ** argv) {
+int main_view(SaveBlock & save, const std::vector<std::string> & args) {
 	
-	if(argc > 1) {
+	if(args.size() > 1) {
 		return -1;
 	}
 	
@@ -1837,7 +1837,7 @@ int main_view(SaveBlock & save, int argc, char ** argv) {
 		return 2;
 	}
 	
-	if(argc == 0) {
+	if(args.empty()) {
 		
 		std::cout << "\nInfo: pld\n";
 		std::cout << "\nPlayer: player\n";
@@ -1858,7 +1858,7 @@ int main_view(SaveBlock & save, int argc, char ** argv) {
 		return 0;
 	}
 	
-	std::string name = argv[0];
+	const std::string & name = args[0];
 	
 	size_t size;
 	char * dat = save.load(name, size);

@@ -18,16 +18,23 @@
  */
 
 #include <iostream>
+#include <vector>
+#include <string>
+
+#include <boost/foreach.hpp>
 
 #include "io/SaveBlock.h"
 #include "io/fs/Filesystem.h"
 #include "io/log/Logger.h"
 
+#include "platform/ProgramOptions.h"
 #include "platform/WindowsMain.h"
 
 #include "savetool/SaveFix.h"
 #include "savetool/SaveRename.h"
 #include "savetool/SaveView.h"
+
+#include "util/cmdline/CommandLine.h"
 
 static void print_help() {
 	std::cout << "usage: savetool <command> <savefile> [<options>...]\n"
@@ -39,11 +46,9 @@ static void print_help() {
 	             " - view <savefile> [<ident>]\n";
 }
 
-static int main_extract(SaveBlock & save, int argc, char ** argv) {
+static int main_extract(SaveBlock & save, const std::vector<std::string> & args) {
 	
-	(void)argv;
-	
-	if(argc != 0) {
+	if(!args.empty()) {
 		return -1;
 	}
 	
@@ -79,34 +84,28 @@ static int main_extract(SaveBlock & save, int argc, char ** argv) {
 	return 0;
 }
 
-static int main_add(SaveBlock & save, int argc, char ** argv) {
+static int main_add(SaveBlock & save, const std::vector<std::string> & args) {
 	
 	if(!save.open(true)) {
 		return 2;
 	}
 	
-	for(int i = 0; i < argc; i++) {
+	BOOST_FOREACH(fs::path file, args) {
 		
 		size_t size;
-		char * data = fs::read_file(argv[i], size);
+		char * data = fs::read_file(file, size);
 		
 		if(!data) {
-			std::cerr << "error loading " << argv[i];
-		} else {
-			
-			std::string name = argv[i];
-			size_t pos = name.find_last_of("/\\");
-			if(pos != std::string::npos) {
-				name = name.substr(pos + 1);
-			}
-			
-			if(!save.save(name, data, size)) {
-				std::cerr << "error writing " << name << " to save";
-			}
-			
-			delete[] data;
+			std::cerr << "error loading " << file;
+			continue;
 		}
 		
+		std::string name = file.filename();
+		if(!save.save(name, data, size)) {
+			std::cerr << "error writing " << name << " to save";
+		}
+		
+		delete[] data;
 	}
 	
 	save.flush("pld");
@@ -114,44 +113,61 @@ static int main_add(SaveBlock & save, int argc, char ** argv) {
 	return 0;
 }
 
+static std::vector<std::string> g_args;
+
+static void handlePositionalArgument(const std::string & file) {
+	g_args.push_back(file);
+}
+
+ARX_PROGRAM_OPTION_ARG("", "", "savetool arguments", &handlePositionalArgument, "ARGS")
+
 int utf8_main(int argc, char ** argv) {
 	
 	Logger::initialize();
 	
-	if(argc < 3) {
+	// Parse the command line and process options
+	ExitStatus status = parseCommandLine(argc, argv);
+	
+	if(status == RunProgram && g_args.size() < 2) {
 		print_help();
-		return 1;
+		status = ExitFailure;
 	}
 	
-	std::string command = argv[1];
-	
-	fs::path savefile = argv[2];
-	
-	if(fs::is_directory(savefile)) {
-		savefile /= "gsave.sav";
+	if(status == RunProgram) {
+		
+		std::string command = g_args[0];
+		
+		fs::path savefile = g_args[1];
+		
+		if(fs::is_directory(savefile)) {
+			savefile /= "gsave.sav";
+		}
+		
+		SaveBlock save(savefile);
+		
+		g_args.erase(g_args.begin(), g_args.begin() + 2);
+		
+		int ret = -1;
+		if(command == "e" || command == "extract") {
+			ret = main_extract(save, g_args);
+		} else if(command == "a" || command == "add") {
+			ret = main_add(save, g_args);
+		} else if(command == "f" || command == "fix") {
+			ret = main_fix(save, g_args);
+		} else if(command == "r" || command == "rename") {
+			ret = main_rename(save, g_args);
+		} else if(command == "v" || command == "view") {
+			ret = main_view(save, g_args);
+		}
+		
+		if(ret != 0) {
+			if(ret == -1) {
+				print_help();
+			}
+			status = ExitFailure;
+		}
+		
 	}
 	
-	SaveBlock save(savefile);
-	
-	argc -= 3;
-	argv += 3;
-	
-	int ret = -1;
-	if(command == "e" || command == "extract") {
-		ret = main_extract(save, argc, argv);
-	} else if(command == "a" || command == "add") {
-		ret = main_add(save, argc, argv);
-	} else if(command == "f" || command == "fix") {
-		ret = main_fix(save, argc, argv);
-	} else if(command == "r" || command == "rename") {
-		ret = main_rename(save, argc, argv);
-	} else if(command == "v" || command == "view") {
-		ret = main_view(save, argc, argv);
-	}
-	
-	if(ret == -1) {
-		print_help();
-	}
-	
-	return ret;
+	return (status == ExitFailure) ? EXIT_FAILURE : EXIT_SUCCESS;
 }
