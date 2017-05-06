@@ -125,7 +125,6 @@ public:
 	void setRawMouseInput(bool enabled);
 	
 	void setMouseSensitivity(int sensitivity);
-	int getMouseSensitivity() const { return iSensibility; }
 	
 	bool getMouseButton(int buttonId) const;
 	int getMouseButtonClicked() const;
