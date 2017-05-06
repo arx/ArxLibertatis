@@ -54,6 +54,7 @@ ZeniMax Media Inc., Suite 120, Rockville, Maryland 20850 USA.
 #include <iomanip>
 #include <sstream>
 #include <vector>
+#include <limits>
 
 #include <boost/version.hpp>
 #include <boost/foreach.hpp>
@@ -137,6 +138,7 @@ ZeniMax Media Inc., Suite 120, Rockville, Maryland 20850 USA.
 #include "io/log/Logger.h"
 
 #include "math/Angle.h"
+#include "math/Random.h"
 #include "math/Rectangle.h"
 #include "math/Vector.h"
  
@@ -242,6 +244,8 @@ bool g_debugToggles[10];
 bool g_debugTriggers[10];
 u32 g_debugTriggersTime[10] = {0};
 float g_debugValues[10];
+
+Playthrough g_currentPlathrough;
 
 // Sends ON GAME_READY msg to all IOs
 void SendGameReadyMsg()
@@ -1269,6 +1273,8 @@ void DANAE_StartNewQuest()
 	BLOCK_PLAYER_CONTROLS = false;
 	fadeReset();
 	player.Interface = INTER_LIFE_MANA | INTER_MINIBACK | INTER_MINIBOOK;
+	g_currentPlathrough.startTime = std::time(NULL);
+	g_currentPlathrough.uniqueId = Random::get(u64(1), std::numeric_limits<u64>::max());
 }
 
 void ARX_SetAntiAliasing() {
