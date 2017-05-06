@@ -126,6 +126,7 @@ public:
 	
 	void setMouseSensitivity(int sensitivity);
 	void setMouseAcceleration(int acceletation);
+	void setInvertMouseY(bool invert);
 	
 	bool getMouseButton(int buttonId) const;
 	int getMouseButtonClicked() const;
@@ -184,6 +185,7 @@ private:
 	
 	float m_mouseSensitivity;
 	int   m_mouseAcceleration;
+	bool  m_invertMouseY;
 	int   iWheelDir;
 	
 	bool  bMouseButton[Mouse::ButtonCount];

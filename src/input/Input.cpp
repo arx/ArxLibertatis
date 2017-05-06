@@ -482,6 +482,10 @@ void Input::update(float time) {
 			m_mouseMovement = speed * (time * 0.14f);
 		}
 		
+		if(m_invertMouseY) {
+			m_mouseMovement.y *= -1.f;
+		}
+		
 		if(!mouseInWindow) {
 			LogWarning << "Cursor escaped the window while in relative input mode";
 			centerMouse();
@@ -603,6 +607,10 @@ void Input::setMouseSensitivity(int sensitivity) {
 
 void Input::setMouseAcceleration(int acceleration) {
 	m_mouseAcceleration = acceleration;
+}
+
+void Input::setInvertMouseY(bool invert) {
+	m_invertMouseY = invert;
 }
 
 bool Input::isKeyPressed(int keyId) const {

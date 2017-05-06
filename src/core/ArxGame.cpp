@@ -837,6 +837,7 @@ bool ArxGame::initGame()
 	
 	GInput->setMouseSensitivity(config.input.mouseSensitivity);
 	GInput->setMouseAcceleration(config.input.mouseAcceleration);
+	GInput->setInvertMouseY(config.input.invertMouse);
 	GInput->setRawMouseInput(config.input.rawMouseInput);
 	
 	g_miniMap.firstInit(&player, resources, &entities);
