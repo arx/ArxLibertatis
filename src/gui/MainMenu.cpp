@@ -1385,6 +1385,7 @@ private:
 	
 	void onChangedMouseAcceleration(int value) {
 		config.input.mouseAcceleration = glm::clamp(value, 0, 10);
+		GInput->setMouseAcceleration(config.input.mouseAcceleration);
 	}
 	
 	void onChangedRawMouseInput(int state) {
