@@ -471,11 +471,7 @@ void Input::update(float time) {
 		}
 		
 		// Use the sensitivity config value to adjust relative mouse mouvements
-		const float maxExponent = 1.f / 6.f;
-		const float minExponent = 2.f;
-		float exponent = (maxExponent - minExponent) * float(iSensibility) * 0.1f + minExponent;
-		float sensitivity = std::pow(0.7f, exponent) * (float(iSensibility) + 1.f) * 0.04f;
-		m_mouseMovement *= sensitivity;
+		m_mouseMovement *= m_mouseSensitivity;
 		
 		if(m_mouseAcceleration > 0 && time > 0.0f) {
 			Vec2f speed = m_mouseMovement / (time * 0.14f);
@@ -598,8 +594,11 @@ InputKeyId Input::getKeyId(const std::string & name) {
 	return -1;
 }
 
-void Input::setMouseSensitivity(int _iSensibility) {
-	iSensibility = _iSensibility;
+void Input::setMouseSensitivity(int sensitivity) {
+	const float maxExponent = 1.f / 6.f;
+	const float minExponent = 2.f;
+	float exponent = (maxExponent - minExponent) * float(sensitivity) * 0.1f + minExponent;
+	m_mouseSensitivity = std::pow(0.7f, exponent) * (float(sensitivity) + 1.f) * 0.04f;
 }
 
 void Input::setMouseAcceleration(int acceleration) {
