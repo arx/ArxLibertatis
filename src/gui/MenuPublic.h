@@ -67,7 +67,6 @@ void ARXMenu_Options_Audio_SetMuted(bool mute);
 // Input options
 
 void ARXMenu_Options_Control_SetInvertMouse(bool invert);
-void ARXMenu_Options_Control_SetMouseSensitivity(int sensitivity);
 
 // Resume game
 

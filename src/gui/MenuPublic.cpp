@@ -229,11 +229,6 @@ void ARXMenu_Options_Control_SetInvertMouse(bool enable) {
 	config.input.invertMouse = enable;
 }
 
-void ARXMenu_Options_Control_SetMouseSensitivity(int sensitivity) {
-	config.input.mouseSensitivity = glm::clamp(sensitivity, 0, 10);
-	GInput->setMouseSensitivity(config.input.mouseSensitivity);
-}
-
 void ARXMenu_ResumeGame() {
 	ARX_Menu_Resources_Release();
 	arxtime.resume();
