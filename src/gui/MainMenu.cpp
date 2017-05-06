@@ -1379,7 +1379,8 @@ private:
 	}
 	
 	void onChangedMouseSensitivity(int value) {
-		ARXMenu_Options_Control_SetMouseSensitivity(value);
+		config.input.mouseSensitivity = glm::clamp(value, 0, 10);
+		GInput->setMouseSensitivity(config.input.mouseSensitivity);
 	}
 	
 	void onChangedMouseAcceleration(int value) {

@@ -836,7 +836,7 @@ bool ArxGame::initGame()
 	ARXMenu_Options_Audio_ApplyGameVolumes();
 	
 	ARXMenu_Options_Control_SetInvertMouse(config.input.invertMouse);
-	ARXMenu_Options_Control_SetMouseSensitivity(config.input.mouseSensitivity);
+	GInput->setMouseSensitivity(config.input.mouseSensitivity);
 	GInput->setRawMouseInput(config.input.rawMouseInput);
 	
 	g_miniMap.firstInit(&player, resources, &entities);
