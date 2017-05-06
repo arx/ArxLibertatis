@@ -1675,6 +1675,10 @@ void ArxGame::manageKeyMouse() {
 	Vec2f rotation = GInput->getMousePosRel();
 	float timeDiff = toMs(g_platformTime.lastFrameDuration());
 	
+	if(config.input.invertMouse) {
+		rotation.y *= -1.f;
+	}
+	
 	ARX_Menu_Manage();
 	
 	if(bRestoreCoordMouse) {
@@ -1840,9 +1844,6 @@ void ArxGame::manageKeyMouse() {
 			player.desiredangle.setRoll(0);
 			player.angle.setRoll(0);
 		}
-		
-		if(config.input.invertMouse)
-			rotation.y *= -1.f;
 		
 		if(PLAYER_MOUSELOOK_ON || bKeySpecialMove) {
 
