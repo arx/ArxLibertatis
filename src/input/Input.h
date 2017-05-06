@@ -102,7 +102,7 @@ public:
 	bool init(Window * window);
 	void reset();
 	
-	void update();
+	void update(float time);
 	
 	static std::string getKeyName(InputKeyId key, bool localizedName = false);
 	static InputKeyId getKeyId(const std::string & keyName);
@@ -125,6 +125,7 @@ public:
 	void setRawMouseInput(bool enabled);
 	
 	void setMouseSensitivity(int sensitivity);
+	void setMouseAcceleration(int acceletation);
 	
 	bool getMouseButton(int buttonId) const;
 	int getMouseButtonClicked() const;
@@ -182,6 +183,7 @@ private:
 	bool  mouseInWindow;
 	
 	int   iSensibility;
+	int   m_mouseAcceleration;
 	int   iWheelDir;
 	
 	bool  bMouseButton[Mouse::ButtonCount];

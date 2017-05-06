@@ -837,6 +837,7 @@ bool ArxGame::initGame()
 	
 	ARXMenu_Options_Control_SetInvertMouse(config.input.invertMouse);
 	GInput->setMouseSensitivity(config.input.mouseSensitivity);
+	GInput->setMouseAcceleration(config.input.mouseAcceleration);
 	GInput->setRawMouseInput(config.input.rawMouseInput);
 	
 	g_miniMap.firstInit(&player, resources, &entities);
@@ -1644,7 +1645,7 @@ void ArxGame::updateTime() {
 void ArxGame::updateInput() {
 
 	// Update input
-	GInput->update();
+	GInput->update(toMs(g_platformTime.lastFrameDuration()));
 	
 	// Handle double clicks.
 	const ActionKey & button = config.actions[CONTROLS_CUST_ACTION];

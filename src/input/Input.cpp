@@ -297,7 +297,7 @@ void Input::setMousePosAbs(const Vec2s & mousePos) {
 	m_lastMousePosition = iMouseA = mousePos;
 }
 
-void Input::update() {
+void Input::update(float time) {
 
 	backend->update();
 
@@ -477,6 +477,17 @@ void Input::update() {
 		float sensitivity = std::pow(0.7f, exponent) * 2.f;
 		m_mouseMovement *= sensitivity;
 		
+		if(m_mouseAcceleration > 0 && time > 0.0f) {
+			Vec2f speed = m_mouseMovement / time;
+			Vec2f sign(speed.x < 0 ? -1.f : 1.f, speed.y < 0 ? -1.f : 1.f);
+			float exponent = 1.f + m_mouseAcceleration * 0.05f;
+			speed.x = (std::pow(speed.x * sign.x + 1.f, exponent) - 1.f) * sign.x;
+			speed.y = (std::pow(speed.y * sign.y + 1.f, exponent) - 1.f) * sign.y;
+			m_mouseMovement = speed * time;
+		}
+		
+		m_mouseMovement *= (float(iSensibility) + 1.f) * 0.02f;
+		
 		if(!mouseInWindow) {
 			LogWarning << "Cursor escaped the window while in relative input mode";
 			centerMouse();
@@ -591,6 +602,10 @@ InputKeyId Input::getKeyId(const std::string & name) {
 
 void Input::setMouseSensitivity(int _iSensibility) {
 	iSensibility = _iSensibility;
+}
+
+void Input::setMouseAcceleration(int acceleration) {
+	m_mouseAcceleration = acceleration;
 }
 
 bool Input::isKeyPressed(int keyId) const {
