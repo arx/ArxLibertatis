@@ -1802,24 +1802,22 @@ void ArxGame::manageKeyMouse() {
 				mouseDiff = Vec2f_ZERO;
 				
 				if(distLeft < borderSize) {
-					float speed = 1.f - float(distLeft) / float(borderSize);
-					mouseDiff.x -= speed * timeDiff;
+					mouseDiff.x -= 1.f - float(distLeft) / float(borderSize);
 				}
 				
 				if(distRight < borderSize) {
-					float speed = 1.f - float(distRight) / float(borderSize);
-					mouseDiff.x += speed * timeDiff;
+					mouseDiff.x += 1.f - float(distRight) / float(borderSize);
 				}
 				
 				if(distTop < borderSize) {
-					float speed = 1.f - float(distTop) / float(borderSize);
-					mouseDiff.y -= speed * timeDiff;
+					mouseDiff.y -= 1.f - float(distTop) / float(borderSize);
 				}
 				
 				if(distBottom < borderSize) {
-					float speed = 1.f - float(distBottom) / float(borderSize);
-					mouseDiff.y += speed * timeDiff;
+					mouseDiff.y += 1.f - float(distBottom) / float(borderSize);
 				}
+				
+				mouseDiff *= timeDiff;
 				
 				if(distLeft >= 3 * borderSize && distRight >= 3 * borderSize
 				   && distTop >= 3 * borderSize && distBottom >= 3 * borderSize) {
