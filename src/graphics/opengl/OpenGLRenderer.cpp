@@ -631,25 +631,25 @@ static VertexBuffer<Vertex> * createVertexBufferImpl(OpenGLRenderer * renderer,
 			
 			if(setting.empty() || setting == "persistent-orphan") {
 				if(usage != Renderer::Static) {
-					return new GLPersistentOrphanVertexBuffer<Vertex>(renderer, capacity);
+					return new GLPersistentOrphanVertexBuffer<Vertex>(renderer, capacity, usage);
 				}
 				matched = true;
 			}
 			if(setting.empty() || setting == "persistent-x3") {
 				if(usage == Renderer::Stream) {
-					return new GLPersistentFenceVertexBuffer<Vertex, 3>(renderer, capacity, 3);
+					return new GLPersistentFenceVertexBuffer<Vertex, 3>(renderer, capacity, usage, 3);
 				}
 				matched = true;
 			}
 			if(setting.empty() || setting == "persistent-x2") {
 				if(usage == Renderer::Stream) {
-					return new GLPersistentFenceVertexBuffer<Vertex, 3>(renderer, capacity, 2);
+					return new GLPersistentFenceVertexBuffer<Vertex, 3>(renderer, capacity, usage, 2);
 				}
 				matched = true;
 			}
 			if(setting == "persistent-nosync") {
 				if(usage != Renderer::Static) {
-					return new GLPersistentUnsynchronizedVertexBuffer<Vertex>(renderer, capacity);
+					return new GLPersistentUnsynchronizedVertexBuffer<Vertex>(renderer, capacity, usage);
 				}
 				matched = true;
 			}

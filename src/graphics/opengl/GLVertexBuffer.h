@@ -113,11 +113,12 @@ public:
 	
 	using Base::capacity;
 	
-	BaseGLVertexBuffer(OpenGLRenderer * renderer, size_t capacity)
+	BaseGLVertexBuffer(OpenGLRenderer * renderer, size_t capacity, Renderer::BufferUsage usage)
 		: Base(capacity)
 		, m_renderer(renderer)
 		, m_buffer(GL_NONE)
 		, m_offset(0)
+		, m_usage(usage)
 	{
 		glGenBuffers(1, &m_buffer);
 		arx_assert(m_buffer != GL_NONE);
@@ -185,6 +186,7 @@ protected:
 	OpenGLRenderer * m_renderer;
 	GLuint m_buffer;
 	size_t m_offset;
+	Renderer::BufferUsage m_usage;
 	
 };
 
@@ -204,8 +206,7 @@ public:
 	using Base::capacity;
 	
 	GLVertexBuffer(OpenGLRenderer * renderer, size_t capacity, Renderer::BufferUsage usage)
-		: Base(renderer, capacity)
-		, m_usage(usage)
+		: Base(renderer, capacity, usage)
 		, m_initialized(false)
 	{ }
 	
@@ -274,7 +275,7 @@ protected:
 	}
 	
 	using Base::m_buffer;
-	Renderer::BufferUsage m_usage;
+	using Base::m_usage;
 	bool m_initialized;
 	
 };
@@ -346,9 +347,9 @@ public:
 	
 	using Base::capacity;
 	
-	BaseGLPersistentVertexBuffer(OpenGLRenderer * renderer, size_t capacity,
+	BaseGLPersistentVertexBuffer(OpenGLRenderer * renderer, size_t capacity, Renderer::BufferUsage usage,
 	                             size_t multiplier = 1)
-		: Base(renderer, capacity)
+		: Base(renderer, capacity, usage)
 		, m_multiplier(multiplier)
 		, m_mapping(NULL)
 	{
@@ -369,7 +370,11 @@ protected:
 	
 	Vertex * create() const {
 		
+		arx_assert(m_usage != Renderer::Static);
 		GLbitfield flags = GL_MAP_WRITE_BIT | GL_MAP_PERSISTENT_BIT | GL_MAP_COHERENT_BIT;
+		if(m_usage == Renderer::Stream) {
+			flags |= GL_CLIENT_STORAGE_BIT;
+		}
 		glBufferStorage(GL_ARRAY_BUFFER, size(), NULL, flags);
 		
 		return map(GL_MAP_UNSYNCHRONIZED_BIT);
@@ -431,6 +436,7 @@ protected:
 	
 	using Base::m_buffer;
 	using Base::m_offset;
+	using Base::m_usage;
 	
 	size_t m_multiplier;
 	
@@ -447,8 +453,9 @@ class GLPersistentUnsynchronizedVertexBuffer
 	
 public:
 	
-	GLPersistentUnsynchronizedVertexBuffer(OpenGLRenderer * renderer, size_t capacity)
-		: Base(renderer, capacity)
+	GLPersistentUnsynchronizedVertexBuffer(OpenGLRenderer * renderer, size_t capacity,
+	                                       Renderer::BufferUsage usage)
+		: Base(renderer, capacity, usage)
 	{ }
 	
 	void discardBuffer() {
@@ -473,8 +480,8 @@ class GLPersistentOrphanVertexBuffer
 	
 public:
 	
-	GLPersistentOrphanVertexBuffer(OpenGLRenderer * renderer, size_t capacity)
-		: Base(renderer, capacity)
+	GLPersistentOrphanVertexBuffer(OpenGLRenderer * renderer, size_t capacity, Renderer::BufferUsage usage)
+		: Base(renderer, capacity, usage)
 	{ }
 	
 	void discardBuffer() {
@@ -505,9 +512,9 @@ public:
 	
 	using Base::capacity;
 	
-	GLPersistentFenceVertexBuffer(OpenGLRenderer * renderer, size_t capacity,
+	GLPersistentFenceVertexBuffer(OpenGLRenderer * renderer, size_t capacity, Renderer::BufferUsage usage,
 	                              size_t fenceCount)
-		: Base(renderer, capacity, fenceCount)
+		: Base(renderer, capacity, usage, fenceCount)
 	{
 		
 		m_position = 0;
