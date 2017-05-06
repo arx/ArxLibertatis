@@ -474,19 +474,17 @@ void Input::update(float time) {
 		const float maxExponent = 1.f / 6.f;
 		const float minExponent = 2.f;
 		float exponent = (maxExponent - minExponent) * float(iSensibility) * 0.1f + minExponent;
-		float sensitivity = std::pow(0.7f, exponent) * 2.f;
+		float sensitivity = std::pow(0.7f, exponent) * (float(iSensibility) + 1.f) * 0.04f;
 		m_mouseMovement *= sensitivity;
 		
 		if(m_mouseAcceleration > 0 && time > 0.0f) {
-			Vec2f speed = m_mouseMovement / time;
+			Vec2f speed = m_mouseMovement / (time * 0.14f);
 			Vec2f sign(speed.x < 0 ? -1.f : 1.f, speed.y < 0 ? -1.f : 1.f);
 			float exponent = 1.f + m_mouseAcceleration * 0.05f;
 			speed.x = (std::pow(speed.x * sign.x + 1.f, exponent) - 1.f) * sign.x;
 			speed.y = (std::pow(speed.y * sign.y + 1.f, exponent) - 1.f) * sign.y;
-			m_mouseMovement = speed * time;
+			m_mouseMovement = speed * (time * 0.14f);
 		}
-		
-		m_mouseMovement *= (float(iSensibility) + 1.f) * 0.02f;
 		
 		if(!mouseInWindow) {
 			LogWarning << "Cursor escaped the window while in relative input mode";
