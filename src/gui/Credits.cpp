@@ -237,8 +237,8 @@ bool Credits::init() {
 	LogDebug("Layout credits");
 	
 	// When the screen is resized, try to keep the credits scrolled to the 'same' position
-	static int anchorLine = -1;
-	static float offset;
+	int anchorLine = -1;
+	float offset;
 	typedef std::vector<CreditsLine>::iterator Iterator;
 	if(m_lineHeight != -1 && m_firstVisibleLine < m_lines.size()) {
 		// We use the first line that is still visible as our anchor
