@@ -1544,6 +1544,7 @@ if(BUILD_TOOLS)
 		${IO_LOGGER_SOURCES}
 		${IO_RESOURCE_SOURCES}
 		${UTIL_SOURCES}
+		${UTIL_CMDLINE_SOURCES}
 		src/core/Localisation.cpp
 		src/io/SaveBlock.cpp
 		src/io/IniReader.cpp
