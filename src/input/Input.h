@@ -182,7 +182,7 @@ private:
 	Vec2s m_lastMousePosition;
 	bool  mouseInWindow;
 	
-	int   iSensibility;
+	float m_mouseSensitivity;
 	int   m_mouseAcceleration;
 	int   iWheelDir;
 	
