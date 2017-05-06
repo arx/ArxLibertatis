@@ -560,6 +560,7 @@ void Credits::reset() {
 	m_scrollPosition = 0;
 	m_firstVisibleLine = 0;
 	m_lineHeight = -1;
+	m_windowSize = Vec2i_ZERO;
 	m_lines.clear();
 	delete m_background, m_background = NULL;
 	m_text.clear();
