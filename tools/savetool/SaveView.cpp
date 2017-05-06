@@ -23,6 +23,7 @@
 #include <iomanip>
 #include <sstream>
 
+#include <boost/foreach.hpp>
 #include <boost/algorithm/string/case_conv.hpp>
 #include <boost/io/ios_state.hpp>
 
@@ -34,6 +35,9 @@
 #include "game/Player.h"
 #include "gui/Interface.h"
 #include "io/SaveBlock.h"
+#include "io/fs/FilePath.h"
+#include "io/fs/SystemPaths.h"
+#include "io/log/Logger.h"
 #include "io/resource/PakReader.h"
 #include "scene/SaveFormat.h"
 #include "scene/Interactive.h"
@@ -1821,13 +1825,29 @@ int main_view(SaveBlock & save, const std::vector<std::string> & args) {
 		return -1;
 	}
 	
-	config.language = "english";
+	//config.language = "english";
 	
 	resources = new PakReader();
 	
-	if(!resources->addArchive("loc.pak")) {
-		std::cerr << "could not open loc.pak, run 'savetool view' from the game directory\n";
-		return 3;
+	do {
+		// TODO share this list with the game code
+		static const char * const filenames[2] = { "loc.pak", "loc_default.pak" };
+		if(resources->addArchive(fs::paths.find(filenames[0]))) {
+			continue;
+		}
+		if(filenames[1] && resources->addArchive(fs::paths.find(filenames[1]))) {
+			continue;
+		}
+		std::ostringstream oss;
+		oss << "Missing data file: \"" << filenames[0] << "\"";
+		if(filenames[1]) {
+			oss << " (or \"" << filenames[1] << "\")";
+		}
+		LogWarning << oss.str();
+	} while(false);
+	BOOST_REVERSE_FOREACH(const fs::path & base, fs::paths.data) {
+		const char * dirname = "graph";
+		resources->addFiles(base / dirname, dirname);
 	}
 	
 	initLocalisation();
