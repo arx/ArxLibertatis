@@ -2859,7 +2859,7 @@ long ARX_CHANGELEVEL_Load(const fs::path & savefile) {
 }
 
 long ARX_CHANGELEVEL_GetInfo(const fs::path & savefile, std::string & name, float & version,
-                             long & level, unsigned long & time) {
+                             long & level) {
 	
 	ARX_CHANGELEVEL_PLAYER_LEVEL_DATA pld;
 	
@@ -2868,11 +2868,9 @@ long ARX_CHANGELEVEL_GetInfo(const fs::path & savefile, std::string & name, floa
 		name = util::loadString(pld.name);
 		version = pld.version;
 		level = pld.level;
-		time = (pld.time / 1000); // TODO is this correct ?
 		return 1;
 	} else {
 		name = "Invalid Save...";
-		time = 0;
 		level = 0;
 		version = 0;
 		return -1;
