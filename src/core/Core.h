@@ -49,11 +49,13 @@ ZeniMax Media Inc., Suite 120, Rockville, Maryland 20850 USA.
 
 #include <stddef.h>
 #include <string>
+#include <ctime>
 
 #include "graphics/Color.h"
 #include "graphics/data/Mesh.h"
 #include "io/resource/ResourcePath.h"
 #include "math/Types.h"
+#include "platform/Platform.h"
 
 #include "Configure.h"
 
@@ -149,5 +151,14 @@ Entity * FlyingOverObject(const Vec2s & pos);
 
 void runGame();
 
+struct Playthrough {
+	
+	std::time_t startTime;
+	
+	u64 uniqueId;
+	
+};
+
+extern Playthrough g_currentPlathrough;
 
 #endif // ARX_CORE_CORE_H

@@ -714,6 +714,24 @@ static int view_pld(const char * dat, size_t size) {
 	
 	std::cout << "Game time: " << pld.time << '\n';
 	
+	if(pld.playthroughStart) {
+		std::time_t time = std::time_t(pld.playthroughStart);
+		const struct tm & t = *std::gmtime(&time);
+		std::ostringstream oss;
+		std::cout << "Playthrough start: " << std::setfill('0') << (t.tm_year + 1900)
+		          << "-" << std::setw(2) << (t.tm_mon + 1)
+		          << "-" << std::setw(2) << t.tm_mday
+		          << " " << std::setfill(' ') << std::setw(2) << t.tm_hour
+		          << ":" << std::setfill('0') << std::setw(2) << t.tm_min
+		          << ":" << std::setw(2) << t.tm_sec
+		          << " UTC" << '\n';
+	}
+	
+	if(pld.playthroughId) {
+		std::cout << "Playthrough ID: 0x" << std::setfill('0') << std::setw(16)
+		          << std::hex << pld.playthroughId << std::dec << '\n';
+	}
+	
 	arx_assert(size >= pos); ARX_UNUSED(size), ARX_UNUSED(pos);
 	
 	return 0;
