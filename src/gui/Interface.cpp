@@ -1673,7 +1673,6 @@ void ArxGame::manageKeyMouse() {
 	PLAYER_ROTATION = AnimationDuration_ZERO;
 
 	Vec2f rotation = GInput->getRelativeMouseMovement();
-	float timeDiff = toMs(g_platformTime.lastFrameDuration());
 	
 	ARX_Menu_Manage();
 	
@@ -1758,7 +1757,8 @@ void ArxGame::manageKeyMouse() {
 			}
 			
 			// TODO use a separate sensitivity setting for this?
-			rotation *= (float(config.input.mouseSensitivity) + 1.f) * 0.02f * timeDiff;
+			rotation *= (float(config.input.mouseSensitivity) + 1.f) * 0.02f;
+			rotation *= toMs(g_platformTime.lastFrameDuration());
 			
 		} else if(config.input.borderTurning) {
 			
@@ -1812,7 +1812,8 @@ void ArxGame::manageKeyMouse() {
 				}
 				
 				// TODO use a separate sensitivity setting for this?
-				rotation *= (float(config.input.mouseSensitivity) + 1.f) * 0.02f * timeDiff;
+				rotation *= (float(config.input.mouseSensitivity) + 1.f) * 0.02f;
+				rotation *= toMs(g_platformTime.lastFrameDuration());
 				
 				if(distLeft >= 3 * borderSize && distRight >= 3 * borderSize
 				   && distTop >= 3 * borderSize && distBottom >= 3 * borderSize) {
