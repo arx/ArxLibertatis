@@ -1367,7 +1367,7 @@ public:
 private:
 	
 	void onChangedInvertMouse(int state) {
-		ARXMenu_Options_Control_SetInvertMouse((state)?true:false);
+		config.input.invertMouse = (state) ? true : false;
 	}
 	
 	void onChangedAutoReadyWeapon(int state) {

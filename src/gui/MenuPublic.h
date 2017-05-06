@@ -64,10 +64,6 @@ void ARXMenu_Options_Audio_SetAmbianceVolume(int volume);
 void ARXMenu_Options_Audio_ApplyGameVolumes();
 void ARXMenu_Options_Audio_SetMuted(bool mute);
 
-// Input options
-
-void ARXMenu_Options_Control_SetInvertMouse(bool invert);
-
 // Resume game
 
 void ARXMenu_ResumeGame();

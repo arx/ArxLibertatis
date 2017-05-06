@@ -225,10 +225,6 @@ void ARXMenu_Options_Audio_SetDevice(const std::string & device) {
 	ARX_SOUND_PopAnimSamples();
 }
 
-void ARXMenu_Options_Control_SetInvertMouse(bool enable) {
-	config.input.invertMouse = enable;
-}
-
 void ARXMenu_ResumeGame() {
 	ARX_Menu_Resources_Release();
 	arxtime.resume();
