@@ -835,7 +835,6 @@ bool ArxGame::initGame()
 	ARXMenu_Options_Audio_SetAmbianceVolume(config.audio.ambianceVolume);
 	ARXMenu_Options_Audio_ApplyGameVolumes();
 	
-	ARXMenu_Options_Control_SetInvertMouse(config.input.invertMouse);
 	GInput->setMouseSensitivity(config.input.mouseSensitivity);
 	GInput->setMouseAcceleration(config.input.mouseAcceleration);
 	GInput->setRawMouseInput(config.input.rawMouseInput);
