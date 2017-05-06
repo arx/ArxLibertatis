@@ -31,7 +31,7 @@
 
 const std::string arx_name = "${VERSION_0_NAME}";
 const std::string arx_icon_name = "${VERSION_1_STRING}";
-const std::string arx_version = "${VERSION_0_STRING}${VERSION_SUFFIX}${GIT_SUFFIX_5}";
+const std::string arx_version = "${VERSION_0_STRING}${VERSION_SUFFIX}${GIT_SUFFIX_7}";
 const std::string arx_release_codename = "${VERSION_6}";
 
 // TODO move this to an external file once we ship our own resources
