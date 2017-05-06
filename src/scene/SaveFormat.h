@@ -1148,8 +1148,8 @@ struct ARX_CHANGELEVEL_PLAYER_LEVEL_DATA {
 	f32 version;
 	char name[256];
 	s32 level;
-	u32 time;
-	s32 padd[32];
+	s64 time; // 32-bit before Arx Libertatis 1.2
+	s32 padd[31];
 };
 
 
