@@ -220,6 +220,7 @@ bool SDL1Window::initialize() {
 		glGetIntegerv(GL_MAX_TEXTURE_UNITS, &texunits);
 		if(glGetError() != GL_NO_ERROR || texunits < GLint(m_minTextureUnits)) {
 			if(lastTry) {
+				m_renderer->initialize(); // Log hardware information
 				LogError << "Not enough GL texture units available: have " << texunits
 				         << ", need at least " << m_minTextureUnits;
 				return false;
