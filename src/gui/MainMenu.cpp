@@ -1368,6 +1368,7 @@ private:
 	
 	void onChangedInvertMouse(int state) {
 		config.input.invertMouse = (state) ? true : false;
+		GInput->setInvertMouseY(config.input.invertMouse);
 	}
 	
 	void onChangedAutoReadyWeapon(int state) {
