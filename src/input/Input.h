@@ -118,7 +118,7 @@ public:
 	void setMouseMode(Mouse::Mode mode);
 	
 	const Vec2s & getMousePosAbs() const { return iMouseA; }
-	const Vec2s & getMousePosRel() const { return iMouseR; }
+	const Vec2f & getMousePosRel() const { return m_mouseMovement; }
 	bool isMouseInWindow() const { return mouseInWindow; }
 	void setMousePosAbs(const Vec2s & mousePos);
 	
@@ -177,7 +177,7 @@ private:
 	
 	bool m_useRawMouseInput;
 	Mouse::Mode m_mouseMode;
-	Vec2s iMouseR;
+	Vec2f m_mouseMovement;
 	Vec2s iMouseA;
 	Vec2s m_lastMousePosition;
 	bool  mouseInWindow;
