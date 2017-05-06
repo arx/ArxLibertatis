@@ -1990,17 +1990,17 @@ void ArxGame::manageEditorControls() {
 	}
 	
 	if(eeMousePressed1()) {
-		static Vec2s dragThreshold = Vec2s_ZERO;
+		static Vec2f dragThreshold = Vec2f_ZERO;
 		
 		if(eeMouseDown1()) {
 			
 			STARTDRAG = DANAEMouse;
 			DRAGGING = false;
-			dragThreshold = Vec2s_ZERO;
+			dragThreshold = Vec2f_ZERO;
 		} else {
-			dragThreshold += GInput->getMousePosRel();
+			dragThreshold += Vec2f(GInput->getMousePosRel());
 			if((std::abs(DANAEMouse.x - STARTDRAG.x) > 2 && std::abs(DANAEMouse.y - STARTDRAG.y) > 2)
-			   || (std::abs(dragThreshold.x) > 2 || std::abs(dragThreshold.y) > 2)) {
+			   || (std::abs(dragThreshold.x) > 2.f || std::abs(dragThreshold.y) > 2.f)) {
 				DRAGGING = true;
 			}
 		}
