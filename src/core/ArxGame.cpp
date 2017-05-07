@@ -1990,16 +1990,8 @@ void ArxGame::renderLevel() {
 	
 	cinematicBorder.render();
 	
-	float fogEnd = fZFogEnd;
-	float fogStart = fZFogStart;
-
-	if(GRenderer->isFogInEyeCoordinates()) {
-		fogEnd *= ACTIVECAM->cdepth;
-		fogStart *= ACTIVECAM->cdepth;
-	}
-
 	GRenderer->SetRenderState(Renderer::AlphaBlending, false);
-	GRenderer->SetFogParams(fogStart, fogEnd);
+	GRenderer->SetFogParams(fZFogStart * ACTIVECAM->cdepth, fZFogEnd * ACTIVECAM->cdepth);
 	GRenderer->SetFogColor(ulBKGColor);
 	GRenderer->SetRenderState(Renderer::DepthWrite, true);
 	GRenderer->SetRenderState(Renderer::DepthTest, true);

@@ -868,7 +868,3 @@ void OpenGLRenderer::flushState() {
 	}
 	
 }
-
-bool OpenGLRenderer::isFogInEyeCoordinates() {
-	return true;
-}
