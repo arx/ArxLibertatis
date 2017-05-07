@@ -1275,6 +1275,8 @@ void DANAE_StartNewQuest()
 	player.Interface = INTER_LIFE_MANA | INTER_MINIBACK | INTER_MINIBOOK;
 	g_currentPlathrough.startTime = std::time(NULL);
 	g_currentPlathrough.uniqueId = Random::get(u64(1), std::numeric_limits<u64>::max());
+	g_currentPlathrough.oldestALVersion = arx_version_number;
+	g_currentPlathrough.newestALVersion = arx_version_number;
 }
 
 void ARX_SetAntiAliasing() {

@@ -1151,7 +1151,11 @@ struct ARX_CHANGELEVEL_PLAYER_LEVEL_DATA {
 	s64 time; // 32-bit before Arx Libertatis 1.2
 	s64 playthroughStart; // new in Arx Libertatis 1.2
 	u64 playthroughId; // new in Arx Libertatis 1.2
-	s32 padd[27];
+	u64 oldestALVersion; // new in Arx Libertatis 1.2
+	u64 newestALVersion; // new in Arx Libertatis 1.2
+	u64 lastALVersion; // new in Arx Libertatis 1.2
+	char lastEngineVersion[64]; // new in Arx Libertatis 1.2
+	s32 padd[5];
 };
 
 
