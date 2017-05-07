@@ -32,6 +32,8 @@ extern EERIE_CAMERA subj;
 
 static const Vec2s symbolVecScale(8*2, 6*2);
 
+SYMBOL_DRAW bookSymbolDraw;
+
 
 static Vec2s GetSymbVector(char c) {
 	switch(c) {
@@ -105,65 +107,64 @@ static void updateIOLight(Entity * io) {
 
 void ARX_SPELLS_UpdateBookSymbolDraw(Rect rect) {
 
+	if(bookSymbolDraw.sequence.empty()) {
+		return;
+	}
+	
 	ArxInstant now = arxtime.now();
 
-	Entity *io = entities.player();
+	SYMBOL_DRAW * sd = &bookSymbolDraw;
+	AnimationDuration elapsed = toAnimationDuration(now - sd->starttime);
+	sd->elapsed = elapsed;
 
-	if(io->symboldraw) {
-		SYMBOL_DRAW * sd = io->symboldraw;
-		AnimationDuration elapsed = toAnimationDuration(now - sd->starttime);
-		sd->elapsed = elapsed;
+	const size_t nbcomponents = sd->sequence.length();
 
-		const size_t nbcomponents = sd->sequence.length();
-
-		if(elapsed > sd->duration || nbcomponents == 0) {
-			delete io->symboldraw;
-			io->symboldraw = NULL;
-			return;
-		}
+	if(elapsed > sd->duration || nbcomponents == 0) {
+		sd->sequence.clear();
+		return;
+	}
 		
-		AnimationDuration timePerComponent = sd->duration * (1.0f / float(nbcomponents));
+	AnimationDuration timePerComponent = sd->duration * (1.0f / float(nbcomponents));
 
-		if(timePerComponent <= AnimationDuration_ZERO)
-			timePerComponent = AnimationDurationMs(1);
+	if(timePerComponent <= AnimationDuration_ZERO)
+		timePerComponent = AnimationDurationMs(1);
 
-		AnimationDuration timeRemaining = elapsed;
+	AnimationDuration timeRemaining = elapsed;
 
-		if(timeRemaining > sd->duration)
-			timeRemaining = sd->duration;
+	if(timeRemaining > sd->duration)
+		timeRemaining = sd->duration;
 
-		//keep size ratios among runes
-		Vec2f rectToSymbolsRatio = Vec2f(rect.size()) / (Vec2f(lMaxSymbolDrawSize) * g_sizeRatio);
-		Vec2f scale = glm::min(rectToSymbolsRatio.x, rectToSymbolsRatio.y) * g_sizeRatio;
+	//keep size ratios among runes
+	Vec2f rectToSymbolsRatio = Vec2f(rect.size()) / (Vec2f(lMaxSymbolDrawSize) * g_sizeRatio);
+	Vec2f scale = glm::min(rectToSymbolsRatio.x, rectToSymbolsRatio.y) * g_sizeRatio;
 
-		Vec2s iMin;
-		Vec2s iMax;
+	Vec2s iMin;
+	Vec2s iMax;
 
-		ReCenterSequence(sd->sequence, iMin, iMax);
-		Vec2f size = Vec2f(iMax - iMin) * scale;
+	ReCenterSequence(sd->sequence, iMin, iMax);
+	Vec2f size = Vec2f(iMax - iMin) * scale;
 
-		Vec2f scaledMin = Vec2f(iMin) * scale;
+	Vec2f scaledMin = Vec2f(iMin) * scale;
 
-		Vec2f pos = Vec2f(rect.center()) - size / 2.0f - scaledMin;
+	Vec2f pos = Vec2f(rect.center()) - size / 2.0f - scaledMin;
 
-		for(size_t j = 0; j < nbcomponents; j++) {
+	for(size_t j = 0; j < nbcomponents; j++) {
 
-			Vec2f vect = Vec2f(GetSymbVector(sd->sequence[j]));
-			vect *= symbolVecScale;
-			vect *= scale;
+		Vec2f vect = Vec2f(GetSymbVector(sd->sequence[j]));
+		vect *= symbolVecScale;
+		vect *= scale;
 
-			if(timeRemaining < timePerComponent) {
-				float ratio = timeRemaining / timePerComponent;
-				pos += vect * ratio * 0.5f;
-				AddFlare(pos, 0.1f, 1, io, true);
+		if(timeRemaining < timePerComponent) {
+			float ratio = timeRemaining / timePerComponent;
+			pos += vect * ratio * 0.5f;
+			AddFlare(pos, 0.1f, 1, entities.player(), true);
 
-				break;
-			}
-
-			pos += vect;
-
-			timeRemaining -= timePerComponent;
+			break;
 		}
+
+		pos += vect;
+
+		timeRemaining -= timePerComponent;
 	}
 }
 
@@ -323,11 +324,17 @@ void ARX_SPELLS_ClearAllSymbolDraw() {
 static void ARX_SPELLS_RequestSymbolDrawCommon(Entity * io, float duration,
                                                RuneInfo & info) {
 	
-	if(!io->symboldraw) {
-		io->symboldraw = new SYMBOL_DRAW;
-	}
+	SYMBOL_DRAW *sd;
 	
-	SYMBOL_DRAW *sd = io->symboldraw;
+	if(io != entities.player()) {
+		if(!io->symboldraw) {
+			io->symboldraw = new SYMBOL_DRAW;
+		}
+		
+		sd = io->symboldraw;
+	} else {
+		sd = &bookSymbolDraw;
+	}
 
 	sd->duration = AnimationDurationMs(std::max(1l, long(duration)));
 	sd->sequence = info.sequence;
