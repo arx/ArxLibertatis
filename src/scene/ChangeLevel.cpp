@@ -46,6 +46,7 @@ ZeniMax Media Inc., Suite 120, Rockville, Maryland 20850 USA.
 
 #include "scene/ChangeLevel.h"
 
+#include <algorithm>
 #include <iomanip>
 #include <sstream>
 #include <cstdio>
@@ -54,9 +55,10 @@ ZeniMax Media Inc., Suite 120, Rockville, Maryland 20850 USA.
 
 #include "ai/Paths.h"
 
-#include "core/GameTime.h"
 #include "core/Config.h"
 #include "core/Core.h"
+#include "core/GameTime.h"
+#include "core/Version.h"
 
 #include "game/Camera.h"
 #include "game/Damage.h"
@@ -2751,6 +2753,11 @@ bool ARX_CHANGELEVEL_Save(const std::string & name, const fs::path & savefile) {
 	pld.time = toMs(arxtime.now());
 	pld.playthroughStart = s64(g_currentPlathrough.startTime);
 	pld.playthroughId = g_currentPlathrough.uniqueId;
+	pld.oldestALVersion = std::min(g_currentPlathrough.oldestALVersion, arx_version_number);
+	pld.newestALVersion = std::max(g_currentPlathrough.newestALVersion, arx_version_number);
+	pld.lastALVersion = arx_version_number;
+	std::string engineVersion = arx_name + " " + arx_version;
+	util::storeString(pld.lastEngineVersion, engineVersion.c_str());
 	
 	const char * dat = reinterpret_cast<const char *>(&pld);
 	g_currentSavedGame->save("pld", dat, sizeof(ARX_CHANGELEVEL_PLAYER_LEVEL_DATA));
@@ -2835,6 +2842,8 @@ long ARX_CHANGELEVEL_Load(const fs::path & savefile) {
 		
 		g_currentPlathrough.startTime = std::time_t(pld.playthroughStart);
 		g_currentPlathrough.uniqueId = pld.playthroughId;
+		g_currentPlathrough.oldestALVersion = pld.oldestALVersion;
+		g_currentPlathrough.newestALVersion = pld.newestALVersion;
 		
 		const ArxInstant fPldTime = ArxInstantMs(pld.time);
 		DanaeClearLevel();

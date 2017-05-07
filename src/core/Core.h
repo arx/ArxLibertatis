@@ -157,6 +157,9 @@ struct Playthrough {
 	
 	u64 uniqueId;
 	
+	u64 oldestALVersion;
+	u64 newestALVersion;
+	
 };
 
 extern Playthrough g_currentPlathrough;

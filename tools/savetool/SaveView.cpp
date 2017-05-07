@@ -692,6 +692,21 @@ static void print_item(SaveBlock & save, const char (&ident)[64],  const std::st
 	std::cout << "  " << name << ": "; print_ident(save, i); std::cout << '\n';
 }
 
+static void print_version(u64 version) {
+	
+	if(!version) {
+		std::cout << "(unknown)";
+		return;
+	}
+	
+	u16 major = (version >> 48) & 0xffff;
+	u16 minor = (version >> 32) & 0xffff;
+	u16 patch = (version >> 16) & 0xffff;
+	u16 build = (version >> 0) & 0xffff;
+	
+	std::cout << major << '.' << minor << '.' << patch << '.' << build;
+}
+
 static int view_pld(const char * dat, size_t size) {
 	
 	size_t pos = 0;
@@ -730,6 +745,26 @@ static int view_pld(const char * dat, size_t size) {
 	if(pld.playthroughId) {
 		std::cout << "Playthrough ID: 0x" << std::setfill('0') << std::setw(16)
 		          << std::hex << pld.playthroughId << std::dec << '\n';
+	}
+	
+	if(pld.newestALVersion) {
+		std::cout << "Played using: AL ";
+		if(pld.oldestALVersion != pld.newestALVersion) {
+			print_version(pld.oldestALVersion);
+			std::cout << " to ";
+		}
+		print_version(pld.newestALVersion);
+		std::cout << "\n";
+		if(pld.newestALVersion != pld.oldestALVersion || pld.lastALVersion != pld.newestALVersion) {
+			std::cout << "Last played using: AL ";
+			print_version(pld.lastALVersion);
+			std::cout << "\n";
+		}
+	}
+	
+	std::string engine = util::loadString(pld.lastEngineVersion);
+	if(!engine.empty()) {
+		std::cout << "Saved by: " << engine << '\n';
 	}
 	
 	arx_assert(size >= pos); ARX_UNUSED(size), ARX_UNUSED(pos);
