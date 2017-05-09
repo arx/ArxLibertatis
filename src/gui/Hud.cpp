@@ -1698,6 +1698,10 @@ void HudRoot::setScale(float scale) {
 	g_secondaryInventoryHud.setScale(scale);
 }
 
+float HudRoot::getScale() {
+	return m_scale;
+}
+
 void HudRoot::init() {
 	changeLevelIconGui.init();
 	currentTorchIconGui.init();

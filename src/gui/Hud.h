@@ -393,6 +393,7 @@ public:
 class HudRoot : public HudItem {
 public:
 	void setScale(float scale);
+	float getScale();
 	
 	void init();
 	void updateInput();
