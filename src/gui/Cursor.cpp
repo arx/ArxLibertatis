@@ -706,8 +706,13 @@ void ARX_INTERFACE_RenderCursor(bool flag) {
 	
 	if (!SPECIAL_DRAGINTER_RENDER)
 	{
-		GRenderer->GetTextureStage(0)->setMinFilter(TextureStage::FilterNearest);
-		GRenderer->GetTextureStage(0)->setMagFilter(TextureStage::FilterNearest);
+		
+		TextureStage::FilterMode filter = TextureStage::FilterLinear;
+		if(config.interface.hudScaleFilter == UIFilterNearest) {
+			filter = TextureStage::FilterNearest;
+		}
+		GRenderer->GetTextureStage(0)->setMinFilter(filter);
+		GRenderer->GetTextureStage(0)->setMagFilter(filter);
 		GRenderer->GetTextureStage(0)->setWrapMode(TextureStage::WrapClamp);
 	}
 
