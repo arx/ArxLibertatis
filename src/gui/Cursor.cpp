@@ -51,6 +51,7 @@
 #include "scene/Interactive.h"
 #include "scene/GameSound.h"
 
+#include "gui/Hud.h"
 #include "gui/Interface.h"
 #include "gui/Text.h"
 #include "gui/Menu.h"
@@ -457,6 +458,8 @@ static void ARX_INTERFACE_RenderCursorInternal(bool flag) {
 			iHighLight = 0;
 		}
 	}
+
+	float iconScale = g_hudRoot.getScale();
 	
 	if(   SpecialCursor
 	   || !PLAYER_MOUSELOOK_ON
@@ -513,6 +516,7 @@ static void ARX_INTERFACE_RenderCursorInternal(bool flag) {
 					tc = COMBINE->m_icon;
 				
 				Vec2f size(tc->m_size.x, tc->m_size.y);
+				size *= iconScale;
 				
 				if(SpecialCursor == CURSOR_COMBINEON) {
 					EERIEDrawBitmap(Rectf(mousePos, size.x, size.y), .00001f, tc, Color::white);
@@ -522,7 +526,7 @@ static void ARX_INTERFACE_RenderCursorInternal(bool flag) {
 						
 						if(v > 0.f) {
 							long t = long(v);
-							Vec2f nuberOffset = Vec2f(-16, -10);
+							Vec2f nuberOffset = Vec2f(-16, -10) * iconScale;
 							ARX_INTERFACE_DrawNumber(mousePos + nuberOffset, t, 6, Color::cyan, 1.f);
 						}
 					}
