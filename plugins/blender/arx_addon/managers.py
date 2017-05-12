@@ -216,7 +216,14 @@ class ArxObjectManager(object):
             action.parent_vertices = [vidx, 0, 0]  # last two are ignored
             action.show_x_ray = True
             action.show_name = True
-            action.scale = [3, 3, 3]
+            
+            if name.lower().startswith("hit_"):
+                radius = int(name[4:])
+                action.empty_draw_type = 'SPHERE'
+                action.empty_draw_size = radius
+            else:
+                action.scale = [3, 3, 3]
+                
             
         #armatureModifier = obj.modifiers.new(type='ARMATURE', name="Skeleton")
         #armatureModifier.object = armatureObj
