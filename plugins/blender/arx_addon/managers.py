@@ -372,7 +372,30 @@ class ArxObjectManager(object):
                 if not ms.material.name.endswith('-mat'):
                     raise ArxException("Material slot names must end with: " + '-mat')
                     
-
+        
+        for child in bpy.data.objects:
+            if child.type == 'EMPTY' and child.parent == obj:
+                nameParts = child.name.split(".")
+                name = nameParts[0].lower()
+                print(nameParts)
+                if name.startswith("hit_"):
+                    pass
+                elif name == "view_attach":
+                    pass
+                elif name == "primary_attach":
+                    pass
+                elif name == "left_attach":
+                    pass
+                elif name == "weapon_attach":
+                    pass
+                elif name == "secondary_attach":
+                    pass
+                elif name == "fire":
+                    pass
+                else:
+                    self.log.warn("Unexpected child empty: {}".format(nameParts))
+                    
+        
         # TODO validate the mesh
 
         verts = []
