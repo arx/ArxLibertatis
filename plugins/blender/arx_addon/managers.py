@@ -356,7 +356,8 @@ class ArxObjectManager(object):
         if not (math.isclose(obj.location[0], 0.0) and math.isclose(obj.location[1], 0.0) and math.isclose(obj.location[2], 0.0)):
             raise ArxException("Object is moved, please apply the location to the vertex positions")
         
-        # TODO rotation ?
+        if not (math.isclose(obj.rotation_euler[0], 0.0) and math.isclose(obj.rotation_euler[1], 0.0) and math.isclose(obj.rotation_euler[2], 0.0)):
+            raise ArxException("Object is rotated, please apply the rotation to the vertex positions")
         
         if not (math.isclose(obj.scale[0], 1.0) and math.isclose(obj.scale[1], 1.0) and math.isclose(obj.scale[2], 1.0)):
             raise ArxException("Object is scaled, please apply the scale to the vertex positions")
