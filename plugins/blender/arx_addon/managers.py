@@ -435,8 +435,13 @@ class ArxObjectManager(object):
 
             s = grp.name.split(":")
             if s[0] == "grp":
-                origin = bpy.data.armatures["/".join(canonicalId)].bones[grp.name]["OriginVertex"]
-
+                armature = bpy.data.armatures.get("/".join(canonicalId))
+                if armature:
+                    origin = armature.bones[grp.name]["OriginVertex"]
+                else:
+                    # TODO hardcoded use of mesh vertex at index 0
+                    origin = 0
+                
                 grps.append((s[2], origin, v))
             else:
                 sels.append((s[2], v))
