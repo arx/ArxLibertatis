@@ -339,7 +339,7 @@ class ArxObjectManager(object):
 
         # obj.update_from_editmode()
 
-        metadata = FtlMetadata(name=obj.get('arx.ftl.name', ''), org=obj.get('arx.ftl.org', 0))
+        
 
         bm = bmesh.new()
         bm.from_object(obj, bpy.context.scene)
@@ -377,20 +377,7 @@ class ArxObjectManager(object):
 
         verts = []
         
-        # Add a special zero vertex at index 0
-        verts.append(FtlVertex((0.0, 0.0, 0.0), (0.0, 0.0, 0.0)))
-        
-        # Add action point vertices
-        actions = []
-        actionPointIndex = 1
-        for o in bpy.data.objects:
-            if o.type == 'EMPTY' and o.parent == obj:
-                nameParts = o.name.split(".")
-                #vertex = o.parent_vertices[0]
-                verts.append(FtlVertex((o.location[0], o.location[1], o.location[2]), (0.0, 0.0, 0.0)))
-                actions.append((nameParts[0], actionPointIndex))
-                actionPointIndex += 1
-        
+        # First add all mesh vertices
         for v in bm.verts:
             vertexNormals = [sc.normal for sc in bm.verts if sc.co == v.co]
             normal = mathutils.Vector((0.0, 0.0, 0.0))
@@ -398,6 +385,36 @@ class ArxObjectManager(object):
                 normal += v.normal
             normal.normalize()
             verts.append(FtlVertex(v.co[:], normal))
+        
+        originVertexIndex = -1
+        for index, vert in enumerate(verts):
+            if vert.xyz == (0.0, 0.0, 0.0):
+                self.log.info("Origin vertex found at index {}".format(index))
+                originVertexIndex = index
+        
+        if originVertexIndex == -1:
+            self.log.info("Origin vertex not found, adding new one")
+            # Add a special zero vertex at index 0
+            verts.append(FtlVertex((0.0, 0.0, 0.0), (0.0, 0.0, 0.0)))
+            originVertexIndex = len(verts) - 1
+        
+        metadata = FtlMetadata(name=obj.get('arx.ftl.name', ''), org=originVertexIndex)
+        
+        # Add action point vertices
+        actions = []
+        actionPointIndex = len(verts)
+        for o in bpy.data.objects:
+            if o.type == 'EMPTY' and o.parent == obj:
+                nameParts = o.name.split(".")
+                if o.parent_type == 'VERTEX':
+                    actionVertexIndex = o.parent_vertices[0]
+                    actions.append((nameParts[0], actionVertexIndex))
+                elif o.parent_type == 'OBJECT':
+                    verts.append(FtlVertex((o.location[0], o.location[1], o.location[2]), (0.0, 0.0, 0.0)))
+                    actions.append((nameParts[0], actionPointIndex))
+                    actionPointIndex += 1
+                else:
+                    self.log.warn("Unhandled empty parent type {}".format(o.parent_type))
 
         uvData = bm.loops.layers.uv.verify()
 
