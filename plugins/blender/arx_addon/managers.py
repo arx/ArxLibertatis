@@ -221,6 +221,8 @@ class ArxObjectManager(object):
                 radius = int(name[4:])
                 action.empty_draw_type = 'SPHERE'
                 action.empty_draw_size = radius
+                action.lock_rotation = [True, True, True]
+                action.lock_scale = [True, True, True]
             else:
                 action.scale = [3, 3, 3]
                 
