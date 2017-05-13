@@ -139,6 +139,7 @@ public:
 		
 		float hudScale;
 		bool hudScaleInteger;
+		bool scaleCursorWithHud;
 		UIScaleFilter hudScaleFilter;
 		
 		Vec2i thumbnailSize;

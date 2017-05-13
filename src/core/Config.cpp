@@ -86,6 +86,7 @@ const bool
 	colorkeyAntialiasing = true,
 	limitSpeechWidth = true,
 	hudScaleInteger = true,
+	scaleCursorWithHud = false,
 	minimizeOnFocusLost = true,
 	eax = true,
 	muteOnFocusLost = false,
@@ -194,6 +195,7 @@ const std::string
 	cinematicWidescreenMode = "cinematic_widescreen_mode",
 	hudScale = "hud_scale",
 	hudScaleInteger = "hud_scale_integer",
+	scaleCursorWithHud = "scale_cursor_with_hud",
 	hudScaleFilter = "hud_scale_filter",
 	thumbnailSize = "save_thumbnail_size";
 
@@ -416,6 +418,7 @@ bool Config::save() {
 	writer.writeKey(Key::cinematicWidescreenMode, int(interface.cinematicWidescreenMode));
 	writer.writeKey(Key::hudScale, interface.hudScale);
 	writer.writeKey(Key::hudScaleInteger, interface.hudScaleInteger);
+	writer.writeKey(Key::scaleCursorWithHud, interface.scaleCursorWithHud);
 	writer.writeKey(Key::hudScaleFilter, interface.hudScaleFilter);
 	std::ostringstream osst;
 	osst << interface.thumbnailSize.x << 'x' << interface.thumbnailSize.y;
@@ -550,6 +553,7 @@ bool Config::init(const fs::path & file) {
 	float hudScale = reader.getKey(Section::Interface, Key::hudScale, Default::hudScale);
 	interface.hudScale = glm::clamp(hudScale, 0.f, 1.f);
 	interface.hudScaleInteger = reader.getKey(Section::Interface, Key::hudScaleInteger, Default::hudScaleInteger);
+	interface.scaleCursorWithHud = reader.getKey(Section::Interface, Key::scaleCursorWithHud, Default::scaleCursorWithHud);
 	int hudScaleFilter = reader.getKey(Section::Interface, Key::hudScaleFilter, Default::hudScaleFilter);
 	interface.hudScaleFilter = UIScaleFilter(glm::clamp(hudScaleFilter, 0, 1));
 	std::string thumbnailSize = reader.getKey(Section::Interface, Key::thumbnailSize, Default::thumbnailSize);
