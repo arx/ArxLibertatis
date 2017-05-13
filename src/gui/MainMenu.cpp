@@ -998,6 +998,17 @@ public:
 			cb->iState = config.interface.hudScaleInteger ? 1 : 0;
 			addCenter(cb);
 		}
+
+		{
+			std::string szMenuText = getLocalised("system_menus_options_interface_scale_cursor_with_hud",
+												  "Scale cursor with HUD");
+			TextWidget * txt = new TextWidget(BUTTON_INVALID, hFontMenu, szMenuText, Vec2f(20, 0));
+			txt->SetCheckOff();
+			CheckboxWidget * cb = new CheckboxWidget(txt);
+			cb->stateChanged = boost::bind(&InterfaceOptionsMenuPage::onChangedScaleCursorWithHud, this, _1);
+			cb->iState = config.interface.scaleCursorWithHud ? 1 : 0;
+			addCenter(cb);
+		}
 		
 		{
 			PanelWidget * panel = new PanelWidget;
@@ -1054,6 +1065,10 @@ private:
 	void onChangedHudScaleInteger(int state) {
 		config.interface.hudScaleInteger = state ? true : false;
 		g_hudRoot.recalcScale();
+	}
+
+	void onChangedScaleCursorWithHud(int state) {
+		config.interface.scaleCursorWithHud = state ? true : false;
 	}
 	
 	void onChangedHudScaleFilter(int pos, const std::string & str) {
