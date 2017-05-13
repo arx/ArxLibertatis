@@ -589,8 +589,8 @@ static void ARX_INTERFACE_RenderCursorInternal(bool flag) {
 				
 				UNICODE_ARXDrawTextCenter(hFontInBook, textPos, ss.str(), Color::black);
 			} else {
-				
-				EERIEDrawBitmap(Rectf(mousePos, float(surf->m_size.x), float(surf->m_size.y)), 0.f, surf, Color::white);
+				Vec2f size = Vec2f(surf->m_size) * cursorScale;
+				EERIEDrawBitmap(Rectf(mousePos, size.x, size.y), 0.f, surf, Color::white);
 			}
 			
 			SpecialCursor = 0;
@@ -681,7 +681,8 @@ static void ARX_INTERFACE_RenderCursorInternal(bool flag) {
 					TextureContainer * surf = cursorAnimatedHand.getCurrentTexture();
 					
 					if(surf) {
-						EERIEDrawBitmap(Rectf(mousePos, float(surf->m_size.x), float(surf->m_size.y)), 0.f, surf, Color::white);
+						Vec2f size = Vec2f(surf->m_size) * cursorScale;
+						EERIEDrawBitmap(Rectf(mousePos, size.x, size.y), 0.f, surf, Color::white);
 					}
 				}
 			}
