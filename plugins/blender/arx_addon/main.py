@@ -58,17 +58,7 @@ def getAddon(context):
     addon_prefs = context.user_preferences.addons[__package__].preferences
     return ArxAddon(addon_prefs.arxAssetPath, addon_prefs.arxAllowLibFallback)
 
-class ArxImportAllAssets(bpy.types.Operator):
-    bl_idname = "arx.import_all_assets"
-    bl_label = "Import all assets"
-
-    def execute(self, context):
-        try:
-            getAddon(context).assetManager.importAll()
-            return {'FINISHED'}
-        except ArxException as e:
-            self.report({'ERROR'}, str(e))
-            return {'CANCELLED'}
+# ======================================================================================================================
 
 class ArxScenesPanel(bpy.types.Panel):
     bl_idname = "arx.scene.Panel"
@@ -79,9 +69,34 @@ class ArxScenesPanel(bpy.types.Panel):
 
     def draw(self, context):
         layout = self.layout
-        layout.operator("arx.import_all_assets")
+        layout.operator("arx.operator_import_all_models")
+        layout.operator("arx.operator_import_all_levels")
 
 # ======================================================================================================================
+
+class ArxOperatorImportAllModels(bpy.types.Operator):
+    bl_idname = "arx.operator_import_all_models"
+    bl_label = "Import all models"
+    
+    def execute(self, context):
+        try:
+            getAddon(context).assetManager.importAllModels()
+            return {'FINISHED'}
+        except ArxException as e:
+            self.report({'ERROR'}, str(e))
+            return {'CANCELLED'}
+
+class ArxOperatorImportAllLevels(bpy.types.Operator):
+    bl_idname = "arx.operator_import_all_levels"
+    bl_label = "Import all levels"
+
+    def execute(self, context):
+        try:
+            getAddon(context).assetManager.importAllLevels()
+            return {'FINISHED'}
+        except ArxException as e:
+            self.report({'ERROR'}, str(e))
+            return {'CANCELLED'}
 
 class ImportFTL(bpy.types.Operator, ImportHelper):
     '''Load an Arx Fatalis Model File'''
@@ -160,7 +175,9 @@ def register():
     log.debug("register")
     bpy.utils.register_class(ArxAddonPreferences)
 
-    bpy.utils.register_class(ArxImportAllAssets)
+    bpy.utils.register_class(ArxOperatorImportAllModels)
+    bpy.utils.register_class(ArxOperatorImportAllLevels)
+    
     bpy.utils.register_class(ArxScenesPanel)
 
     bpy.utils.register_class(ArxMeshAddCustomProperties)
@@ -179,7 +196,9 @@ def unregister():
     log.debug("unregister")
     bpy.utils.unregister_class(ArxAddonPreferences)
 
-    bpy.utils.unregister_class(ArxImportAllAssets)
+    bpy.utils.unregister_class(ArxOperatorImportAllModels)
+    bpy.utils.unregister_class(ArxOperatorImportAllLevels)
+    
     bpy.utils.unregister_class(ArxScenesPanel)
 
     bpy.utils.unregister_class(ArxMeshAddCustomProperties)

@@ -816,11 +816,8 @@ class ArxAssetManager(object):
         self.objectManager = objectManager
         self.sceneManager = sceneManager
     
-    def importAll(self):
-        self.importModels()
-        self.importLevels()
     
-    def importModels(self):
+    def importAllModels(self):
         sortedModels = sorted(self.arxFiles.models.data.items())
         
         for i, (key, val) in enumerate(sortedModels):
@@ -841,7 +838,7 @@ class ArxAssetManager(object):
             import_file = os.path.join(val.path, val.model)
             self.objectManager.loadFile(import_file, scene);
     
-    def importLevels(self):
+    def importAllLevels(self):
         for key, value in self.arxFiles.levels.levels.items():
             sceneName = "level-" + str(int(key[5:])).zfill(3)
             
