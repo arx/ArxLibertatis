@@ -460,6 +460,11 @@ static void ARX_INTERFACE_RenderCursorInternal(bool flag) {
 	}
 
 	float iconScale = g_hudRoot.getScale();
+	float cursorScale = 1.0f;
+	
+	if(config.interface.scaleCursorWithHud) {
+		cursorScale = g_hudRoot.getScale();
+	}
 	
 	if(   SpecialCursor
 	   || !PLAYER_MOUSELOOK_ON
@@ -611,6 +616,7 @@ static void ARX_INTERFACE_RenderCursorInternal(bool flag) {
 				}
 				
 				Vec2f size(surf->m_size.x, surf->m_size.y);
+				size *= cursorScale;
 				
 				pos += -size * 0.5f;
 				
