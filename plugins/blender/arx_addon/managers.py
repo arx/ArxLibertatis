@@ -339,8 +339,6 @@ class ArxObjectManager(object):
 
         # obj.update_from_editmode()
 
-        
-
         bm = bmesh.new()
         bm.from_object(obj, bpy.context.scene)
         bm.normal_update()
@@ -373,6 +371,7 @@ class ArxObjectManager(object):
                     raise ArxException("Material slot names must end with: " + '-mat')
                     
         
+        # Validate child empties representing action points
         for child in bpy.data.objects:
             if child.type == 'EMPTY' and child.parent == obj:
                 nameParts = child.name.split(".")
@@ -417,7 +416,6 @@ class ArxObjectManager(object):
         
         if originVertexIndex == -1:
             self.log.info("Origin vertex not found, adding new one")
-            # Add a special zero vertex at index 0
             verts.append(FtlVertex((0.0, 0.0, 0.0), (0.0, 0.0, 0.0)))
             originVertexIndex = len(verts) - 1
         
