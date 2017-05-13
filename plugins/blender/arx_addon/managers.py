@@ -416,24 +416,24 @@ class ArxObjectManager(object):
         
         if originVertexIndex == -1:
             self.log.info("Origin vertex not found, adding new one")
+            originVertexIndex = len(verts)
             verts.append(FtlVertex((0.0, 0.0, 0.0), (0.0, 0.0, 0.0)))
-            originVertexIndex = len(verts) - 1
         
         metadata = FtlMetadata(name=obj.get('arx.ftl.name', ''), org=originVertexIndex)
         
         # Add action point vertices
         actions = []
-        actionPointIndex = len(verts)
         for o in bpy.data.objects:
             if o.type == 'EMPTY' and o.parent == obj:
                 nameParts = o.name.split(".")
+                name = nameParts[0]
                 if o.parent_type == 'VERTEX':
                     actionVertexIndex = o.parent_vertices[0]
-                    actions.append((nameParts[0], actionVertexIndex))
+                    actions.append((name, actionVertexIndex))
                 elif o.parent_type == 'OBJECT':
+                    actionVertexIndex = len(verts)
                     verts.append(FtlVertex((o.location[0], o.location[1], o.location[2]), (0.0, 0.0, 0.0)))
-                    actions.append((nameParts[0], actionPointIndex))
-                    actionPointIndex += 1
+                    actions.append((name, actionVertexIndex))
                 else:
                     self.log.warn("Unhandled empty parent type {}".format(o.parent_type))
 
