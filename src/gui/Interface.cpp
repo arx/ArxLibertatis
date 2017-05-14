@@ -856,7 +856,7 @@ static void GetInfosCombine() {
 // 1 to force Combat Mode On
 // 0 to force Combat Mode Off
 //-----------------------------------------------------------------------------
-void ARX_INTERFACE_Combat_Mode(ARX_INTERFACE_COMBAT_MODE i) {
+void ARX_INTERFACE_setCombatMode(ARX_INTERFACE_COMBAT_MODE i) {
 	arx_assert(entities.player());
 	arx_assert(arrowobj);
 	
@@ -1320,7 +1320,7 @@ void ArxGame::managePlayerControls() {
 
 		if(bGo) {
 			if(player.Interface & INTER_COMBATMODE) {
-				ARX_INTERFACE_Combat_Mode(COMBAT_MODE_OFF);
+				ARX_INTERFACE_setCombatMode(COMBAT_MODE_OFF);
 				SPECIAL_DRAW_WEAPON=0;
 
 				if(config.input.mouseLookToggle)
@@ -1330,7 +1330,7 @@ void ArxGame::managePlayerControls() {
 				SPECIAL_DRAW_WEAPON=1;
 				TRUE_PLAYER_MOUSELOOK_ON = true;
 				SLID_START = g_platformTime.frameStart();
-				ARX_INTERFACE_Combat_Mode(COMBAT_MODE_DRAW_WEAPON);
+				ARX_INTERFACE_setCombatMode(COMBAT_MODE_DRAW_WEAPON);
 			}
 		}
 	}
@@ -1362,7 +1362,7 @@ void ArxGame::managePlayerControls() {
 						TRUE_PLAYER_MOUSELOOK_ON = false;
 
 						if(player.Interface & INTER_COMBATMODE)
-							ARX_INTERFACE_Combat_Mode(COMBAT_MODE_OFF);			
+							ARX_INTERFACE_setCombatMode(COMBAT_MODE_OFF);			
 					}
 				}
 			}
@@ -1370,13 +1370,13 @@ void ArxGame::managePlayerControls() {
 	}
 
 	if((player.Interface & INTER_COMBATMODE) && GInput->actionNowReleased(CONTROLS_CUST_FREELOOK)) {
-		ARX_INTERFACE_Combat_Mode(COMBAT_MODE_OFF);
+		ARX_INTERFACE_setCombatMode(COMBAT_MODE_OFF);
 	}
 
 	// Checks INVENTORY Key Status.
 	if(GInput->actionNowPressed(CONTROLS_CUST_INVENTORY)) {
 		if(player.Interface & INTER_COMBATMODE) {
-			ARX_INTERFACE_Combat_Mode(COMBAT_MODE_OFF);
+			ARX_INTERFACE_setCombatMode(COMBAT_MODE_OFF);
 		}
 
 		bInverseInventory=!bInverseInventory;
@@ -1406,7 +1406,7 @@ void ArxGame::managePlayerControls() {
 			COMBAT_MODE_ON_START_TIME = arxtime.now();
 		} else {
 			if(arxtime.now() - COMBAT_MODE_ON_START_TIME > ArxDurationMs(10)) {
-				ARX_INTERFACE_Combat_Mode(COMBAT_MODE_ON);
+				ARX_INTERFACE_setCombatMode(COMBAT_MODE_ON);
 			}
 		}
 	}

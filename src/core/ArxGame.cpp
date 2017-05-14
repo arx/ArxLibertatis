@@ -1181,7 +1181,7 @@ void ArxGame::onWindowGotFocus(const Window &) {
 void ArxGame::onWindowLostFocus(const Window &) {
 	
 	// TODO(option-control) add a config option for this
-	ARX_INTERFACE_Combat_Mode(COMBAT_MODE_OFF);
+	ARX_INTERFACE_setCombatMode(COMBAT_MODE_OFF);
 	TRUE_PLAYER_MOUSELOOK_ON = false;
 	PLAYER_MOUSELOOK_ON = false;
 	

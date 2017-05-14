@@ -223,7 +223,7 @@ extern gui::Note openNote;
 
 extern EntityHandle LastSelectedIONum;
 
-void ARX_INTERFACE_Combat_Mode(ARX_INTERFACE_COMBAT_MODE i);
+void ARX_INTERFACE_setCombatMode(ARX_INTERFACE_COMBAT_MODE i);
 
 bool ARX_INTERFACE_MouseInBook();
 
