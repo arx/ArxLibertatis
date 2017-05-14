@@ -32,7 +32,7 @@ extern EERIE_CAMERA subj;
 
 static const Vec2s symbolVecScale(8*2, 6*2);
 
-SYMBOL_DRAW bookSymbolDraw;
+SYMBOL_DRAW g_bookSymbolDraw;
 
 
 static Vec2s GetSymbVector(char c) {
@@ -107,13 +107,13 @@ static void updateIOLight(Entity * io) {
 
 void ARX_SPELLS_UpdateBookSymbolDraw(Rect rect) {
 
-	if(bookSymbolDraw.sequence.empty()) {
+	if(g_bookSymbolDraw.sequence.empty()) {
 		return;
 	}
 	
 	ArxInstant now = arxtime.now();
 
-	SYMBOL_DRAW * sd = &bookSymbolDraw;
+	SYMBOL_DRAW * sd = &g_bookSymbolDraw;
 	AnimationDuration elapsed = toAnimationDuration(now - sd->starttime);
 	sd->elapsed = elapsed;
 
@@ -333,7 +333,7 @@ static void ARX_SPELLS_RequestSymbolDrawCommon(Entity * io, float duration,
 		
 		sd = io->symboldraw;
 	} else {
-		sd = &bookSymbolDraw;
+		sd = &g_bookSymbolDraw;
 	}
 
 	sd->duration = AnimationDurationMs(std::max(1l, long(duration)));
