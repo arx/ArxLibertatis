@@ -225,7 +225,6 @@ extern EntityHandle LastSelectedIONum;
 
 void ARX_INTERFACE_Combat_Mode(ARX_INTERFACE_COMBAT_MODE i);
 
-long GetMainSpeakingIO();
 bool ARX_INTERFACE_MouseInBook();
 
 void ARX_INTERFACE_Reset();
