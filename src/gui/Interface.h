@@ -195,6 +195,12 @@ enum ARX_INTERFACE_CURSOR_MODE
 	CURSOR_COMBINEOFF
 };
 
+enum ARX_INTERFACE_COMBAT_MODE {
+	COMBAT_MODE_OFF,
+	COMBAT_MODE_ON,
+	COMBAT_MODE_DRAW_WEAPON
+};
+
 //-----------------------------------------------------------------------------
 extern INTERFACE_TC g_bookResouces;
 extern Vec2s MemoMouse;
@@ -217,7 +223,7 @@ extern gui::Note openNote;
 
 extern EntityHandle LastSelectedIONum;
 
-void ARX_INTERFACE_Combat_Mode(long i);
+void ARX_INTERFACE_Combat_Mode(ARX_INTERFACE_COMBAT_MODE i);
 
 long GetMainSpeakingIO();
 bool ARX_INTERFACE_MouseInBook();

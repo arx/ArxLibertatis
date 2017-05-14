@@ -1280,7 +1280,7 @@ void ARX_INVENTORY_OpenClose(Entity * _io)
 		}
 
 		if(player.Interface & INTER_COMBATMODE) {
-			ARX_INTERFACE_Combat_Mode(0);
+			ARX_INTERFACE_Combat_Mode(COMBAT_MODE_OFF);
 		}
 
 		if(!config.input.autoReadyWeapon) {
