@@ -112,7 +112,7 @@ void ARX_SPELLS_Precast_Check() {
 			
 			if(player.Interface & INTER_COMBATMODE) {
 				WILLRETURNTOCOMBATMODE = true;
-				ARX_INTERFACE_Combat_Mode(0);
+				ARX_INTERFACE_Combat_Mode(COMBAT_MODE_OFF);
 				ResetAnim(layer1);
 				layer1.flags &= ~EA_LOOP;
 			}

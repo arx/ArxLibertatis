@@ -513,7 +513,7 @@ void ARX_SPELLS_ManageMagic() {
 		if(player.Interface & INTER_COMBATMODE) {
 			WILLRETURNTOCOMBATMODE = true;
 
-			ARX_INTERFACE_Combat_Mode(0);
+			ARX_INTERFACE_Combat_Mode(COMBAT_MODE_OFF);
 
 			ResetAnim(io->animlayer[1]);
 			io->animlayer[1].flags &= ~EA_LOOP;
