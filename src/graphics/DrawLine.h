@@ -33,6 +33,7 @@ void drawLine(const Vec3f & orgn, const Vec3f & dest, Color color1, Color color2
 void drawLineRectangle(const Rectf & rect, float z, Color col);
 void drawLineSphere(const Sphere & sphere, Color color);
 void drawLineCylinder(const Cylinder & cyl, Color col);
+void drawLineCross(Vec2f v, float z, Color color, float size);
 void drawLineCross(Vec3f v, Color c, float size = 1.f);
 
 #endif // ARX_GRAPHICS_DRAWLINE_H

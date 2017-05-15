@@ -175,6 +175,12 @@ void drawLine(const Vec3f & orgn, const Vec3f & dest, Color color, float zbias) 
 	drawLine(orgn, dest, color, color, zbias);
 }
 
+void drawLineCross(Vec2f v, float z, Color color, float size) {
+	float halfSize = size / 2.0f;
+	drawLine(Vec2f(v.x, v.y - halfSize), Vec2f(v.x, v.y + halfSize), z, color);
+	drawLine(Vec2f(v.x - halfSize, v.y), Vec2f(v.x + halfSize, v.y), z, color);
+}
+
 void drawLineCross(Vec3f v, Color c, float size) {
 	drawLine(v - Vec3f(size, 0, 0), v + Vec3f(size, 0, 0), c);
 	drawLine(v - Vec3f(0, size, 0), v + Vec3f(0, size, 0), c);
