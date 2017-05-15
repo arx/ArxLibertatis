@@ -669,8 +669,10 @@ static void ARX_INTERFACE_RenderCursorInternal(bool flag) {
 						if(CANNOT_PUT_IT_HERE == EntityMoveCursor_Throw)
 							tcc = cursorThrowObject;
 						
-						if(tcc && tcc != tc) // to avoid movable double red cross...
-							EERIEDrawBitmap(Rectf(Vec2f(pos.x + 16, pos.y), float(tcc->m_size.x), float(tcc->m_size.y)), 0.00001f, tcc, Color::white);
+						if(tcc && tcc != tc) { // to avoid movable double red cross...
+							Vec2f size = Vec2f(tcc->m_size) * cursorScale;
+							EERIEDrawBitmap(Rectf(Vec2f(pos.x + 16, pos.y), size.x, size.y), 0.00001f, tcc, Color::white);
+						}
 					}
 					
 					if(haloTc) {
