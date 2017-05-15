@@ -707,7 +707,8 @@ static void ARX_INTERFACE_RenderCursorInternal(bool flag) {
 			
 			Vec2f pos = Vec2f(g_size.center()) - Vec2f(surf->m_size) * .5f;
 			
-			EERIEDrawBitmap(Rectf(pos, float(surf->m_size.x), float(surf->m_size.y)), 0.f, surf, Color3f::gray(.5f).to<u8>());
+			Vec2f size = Vec2f(surf->m_size) * cursorScale;
+			EERIEDrawBitmap(Rectf(pos, size.x, size.y), 0.f, surf, Color3f::gray(.5f).to<u8>());
 			
 			GRenderer->SetRenderState(Renderer::AlphaBlending, false);
 		}
