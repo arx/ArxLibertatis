@@ -1900,8 +1900,10 @@ void MainMenu::Render() {
 	if(bNoMenu)
 		return;
 
-	if(m_background)
+	if(m_background) {
+		UseRenderState state(render2D().noBlend());
 		EERIEDrawBitmap2(Rectf(Vec2f(0, 0), g_size.width(), g_size.height()), 0.999f, m_background, Color::white);
+	}
 	
 	{Widget * w; BOOST_FOREACH(w, m_widgets->m_widgets) {
 		w->Update();
