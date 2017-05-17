@@ -743,11 +743,11 @@ void MemorizedRunesHud::draw() {
 			
 			TextureContainer *tc = gui::necklace.pTexTab[player.SpellToMemorize.iSpellSymbols[i]];
 			
-			EERIEDrawBitmap2(rect, 0, tc, Color::white);
-			
 			if(bHalo) {
 				ARX_INTERFACE_HALO_Render(Color3f(0.2f, 0.4f, 0.8f), HALO_ACTIVE, tc->getHalo(), pos, Vec2f(m_scale));
 			}
+			
+			EERIEDrawBitmap2(rect, 0, tc, Color::white);
 			
 			if(!player.hasRune(player.SpellToMemorize.iSpellSymbols[i])) {
 				UseRenderState state(render2D().blend(BlendInvDstColor, BlendOne));
