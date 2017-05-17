@@ -444,12 +444,12 @@ static void RenderBookPlayerCharacter() {
 		if(tc) {
 			todraw->bbox2D.min = Vec2f(146.f, 312.f);
 			
+			if(tc2) {
+				ARX_INTERFACE_HALO_Render(todraw->halo.color, todraw->halo.flags, tc2, (todraw->bbox2D.min + BOOKDEC) * g_sizeRatio, g_sizeRatio);
+			}
+			
 			Color color = (todraw->poisonous && todraw->poisonous_count != 0) ? Color::green : Color::white;
 			DrawBookInterfaceItem(tc, todraw->bbox2D.min, color, 0);
-			
-			if(tc2) {
-				ARX_INTERFACE_HALO_Draw(todraw, tc, tc2, (todraw->bbox2D.min + BOOKDEC) * g_sizeRatio, g_sizeRatio);
-			}
 			
 			todraw->bbox2D.max = todraw->bbox2D.min + Vec2f(tc->size());
 			
@@ -471,12 +471,12 @@ static void RenderBookPlayerCharacter() {
 		if(tc) {
 			todraw->bbox2D.min = Vec2f(296.f, 312.f);
 			
+			if(tc2) {
+				ARX_INTERFACE_HALO_Render(todraw->halo.color, todraw->halo.flags, tc2, (todraw->bbox2D.min + BOOKDEC) * g_sizeRatio, g_sizeRatio);
+			}
+			
 			Color color = (todraw->poisonous && todraw->poisonous_count != 0) ? Color::green : Color::white;
 			DrawBookInterfaceItem(tc, todraw->bbox2D.min, color, 0);
-			
-			if(tc2) {
-				ARX_INTERFACE_HALO_Draw(todraw, tc, tc2, (todraw->bbox2D.min + BOOKDEC) * g_sizeRatio, g_sizeRatio);
-			}
 			
 			todraw->bbox2D.max = todraw->bbox2D.min + Vec2f(tc->size());
 			
