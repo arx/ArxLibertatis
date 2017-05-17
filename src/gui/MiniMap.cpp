@@ -757,8 +757,7 @@ void MiniMap::drawDetectedEntities(int showLevel, Vec2f start, float zoom) {
 	const Vec2f of = m_miniOffset[m_currentLevel];
 	const Vec2f of2 = m_levels[showLevel].m_ratio;
 	
-	GRenderer->SetRenderState(Renderer::AlphaBlending, true);
-	GRenderer->SetBlendFunc(BlendOne, BlendOne);
+	UseRenderState state(render2D().blendAdditive());
 	
 	const EntityManager &ents = *m_entities; // for convenience
 	for(size_t lnpc = 1; lnpc < ents.size(); lnpc++) {
@@ -813,7 +812,6 @@ void MiniMap::drawDetectedEntities(int showLevel, Vec2f start, float zoom) {
 		EERIEDrawBitmap(rect, 0, m_pTexDetect, Color3f(col, 0, 0).to<u8>());
 	}
 	
-	GRenderer->SetRenderState(Renderer::AlphaBlending, false);
 }
 
 void MiniMap::clearMarkerTexCont() {
