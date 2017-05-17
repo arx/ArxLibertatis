@@ -2031,14 +2031,8 @@ void ArxGame::renderLevel() {
 		DrawMagicSightInterface();
 
 	if(player.m_paralysed) {
-		GRenderer->SetRenderState(Renderer::DepthWrite, false);
-		GRenderer->SetRenderState(Renderer::AlphaBlending, true);
-		GRenderer->SetBlendFunc(BlendOne, BlendOne);
-
+		UseRenderState state(render2D().blendAdditive());
 		EERIEDrawBitmap(Rectf(g_size), 0.0001f, NULL, Color(71, 71, 255));
-
-		GRenderer->SetRenderState(Renderer::AlphaBlending, false);
-		GRenderer->SetRenderState(Renderer::DepthWrite, true);
 	}
 
 	GRenderer->SetRenderState(Renderer::AlphaBlending, false);
