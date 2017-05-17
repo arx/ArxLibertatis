@@ -107,10 +107,8 @@ void MassLightningStrikeSpell::Launch() {
 	m_snd_loop = ARX_SOUND_PlaySFX(SND_SPELL_LIGHTNING_LOOP, &m_pos, 1.f, ARX_SOUND_PLAY_LOOPED);
 	
 	// Draws White Flash on Screen
-	GRenderer->SetBlendFunc(BlendOne, BlendOne);
-	GRenderer->SetRenderState(Renderer::AlphaBlending, true);
+	UseRenderState state(render2D().blend(BlendOne, BlendOne));
 	EERIEDrawBitmap(Rectf(g_size), 0.00009f, NULL, Color::white);
-	GRenderer->SetRenderState(Renderer::AlphaBlending, false);
 }
 
 void MassLightningStrikeSpell::End() {
