@@ -898,8 +898,10 @@ Entity * GetFromInventory(const Vec2s & pos) {
 		return NULL;
 	
 	Entity * result = g_secondaryInventoryHud.getObj(pos);
-	if(result)
+	if(result) {
+		HERO_OR_SECONDARY = 2;
 		return result;
+	}
 
 	return g_playerInventoryHud.getObj(pos);
 }

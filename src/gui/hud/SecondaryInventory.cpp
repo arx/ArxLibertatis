@@ -313,8 +313,6 @@ bool SecondaryInventoryHud::containsPos(const Vec2s & pos) {
 	return false;
 }
 
-extern long HERO_OR_SECONDARY;
-
 Entity * SecondaryInventoryHud::getObj(const Vec2s & pos) {
 	
 	if(SecondaryInventory != NULL) {
@@ -344,7 +342,6 @@ Entity * SecondaryInventoryHud::getObj(const Vec2s & pos) {
 				if(!(io->gameFlags & GFLAG_INTERACTIVITY))
 					return NULL;
 
-				HERO_OR_SECONDARY = 2;
 				return io;
 			}
 		}
