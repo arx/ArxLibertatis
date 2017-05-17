@@ -228,10 +228,7 @@ bool Menu2_Render() {
 
 	GRenderer->GetTextureStage(0)->setWrapMode(TextureStage::WrapClamp);
 
-	GRenderer->SetRenderState(Renderer::Fog, false);
-	GRenderer->SetRenderState(Renderer::DepthWrite, false);
-	GRenderer->SetRenderState(Renderer::DepthTest, false);
-	GRenderer->SetCulling(CullNone);
+	UseRenderState state(render2D());
 
 	MENUSTATE eOldMenuState=NOP;
 	MENUSTATE eM;
@@ -273,10 +270,7 @@ bool Menu2_Render() {
 		delete pWindowMenu, pWindowMenu = NULL;
 		delete mainMenu, mainMenu = NULL;
 		
-		GRenderer->SetRenderState(Renderer::AlphaBlending, false);
 		GRenderer->GetTextureStage(0)->setWrapMode(TextureStage::WrapRepeat);
-		GRenderer->SetRenderState(Renderer::DepthWrite, true);
-		GRenderer->SetRenderState(Renderer::DepthTest, true);
 		
 		return true;
 	} else if(eMenuState != NOP) {
@@ -314,9 +308,6 @@ bool Menu2_Render() {
 
 	GRenderer->GetTextureStage(0)->setWrapMode(TextureStage::WrapClamp);
 
-	GRenderer->SetRenderState(Renderer::Fog, false);
-	GRenderer->SetRenderState(Renderer::DepthWrite, false);
-	GRenderer->SetCulling(CullNone);
 	pMenuCursor->DrawCursor();
 	
 	g_thumbnailCursor.render();
@@ -342,12 +333,7 @@ bool Menu2_Render() {
 	GRenderer->GetTextureStage(0)->setMinFilter(TextureStage::FilterLinear);
 	GRenderer->GetTextureStage(0)->setMagFilter(TextureStage::FilterLinear);
 	GRenderer->GetTextureStage(0)->setWrapMode(TextureStage::WrapRepeat);
-
-	GRenderer->SetRenderState(Renderer::AlphaBlending, false);
-	GRenderer->SetRenderState(Renderer::DepthWrite, true);
-	GRenderer->SetRenderState(Renderer::DepthTest, true);
-	GRenderer->SetCulling(CullCCW);
-
+	
 	return true;
 }
 
