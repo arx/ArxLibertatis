@@ -1279,12 +1279,7 @@ void DamagedEquipmentGui::update() {
 
 void DamagedEquipmentGui::draw() {
 	
-	GRenderer->SetRenderState(Renderer::AlphaBlending, true);
-	GRenderer->SetBlendFunc(BlendOne, BlendOne);
-	
-	GRenderer->SetCulling(CullNone);
-	GRenderer->SetRenderState(Renderer::DepthWrite, true);
-	GRenderer->SetRenderState(Renderer::Fog, false);
+	UseRenderState state(render2D().blendAdditive());
 	
 	for(long i = 0; i < 5; i++) {
 		if(m_colors[i] == Color::black) {
@@ -1294,7 +1289,6 @@ void DamagedEquipmentGui::draw() {
 		EERIEDrawBitmap2(m_rect, 0.001f, iconequip[i], m_colors[i]);
 	}
 	
-	GRenderer->SetRenderState(Renderer::AlphaBlending, false);
 }
 
 
