@@ -57,6 +57,7 @@ OpenGLRenderer::OpenGLRenderer()
 	, m_maximumAnisotropy(1.f)
 	, m_maximumSupportedAnisotropy(1.f)
 	, m_glcull(GL_NONE)
+	, m_MSAALevel(0)
 	, m_hasMSAA(false)
 	, m_hasTextureNPOT(false)
 { }
@@ -286,6 +287,21 @@ void OpenGLRenderer::reinit() {
 	}
 
 	// Synchronize GL state cache
+	
+	m_MSAALevel = 0;
+	{
+		GLint buffers = 0;
+		glGetIntegerv(GL_SAMPLE_BUFFERS, &buffers);
+		if(buffers) {
+			GLint samples = 0;
+			glGetIntegerv(GL_SAMPLE_BUFFERS, &samples);
+			m_MSAALevel = samples;
+		}
+	}
+	if(m_MSAALevel > 0) {
+		glDisable(GL_MULTISAMPLE);
+	}
+	m_hasMSAA = false;
 	
 	m_glcull = GL_BACK;
 	m_glstate.setCull(CullNone);
@@ -569,6 +585,14 @@ void OpenGLRenderer::SetFogParams(float fogStart, float fogEnd) {
 }
 
 void OpenGLRenderer::SetAntialiasing(bool enable) {
+	
+	if(m_MSAALevel <= 0) {
+		return;
+	}
+	
+	if(enable && !config.video.antialiasing) {
+		return;
+	}
 	
 	if(enable == m_hasMSAA) {
 		return;
