@@ -200,7 +200,6 @@ void PopAllTriangleListOpaque(bool clear) {
 	ARX_PROFILE_FUNC();
 	
 	GRenderer->SetAlphaFunc(Renderer::CmpGreater, .5f);
-	GRenderer->SetCulling(CullNone);
 
 	TextureContainer * pTex = GetTextureList();
 	while(pTex) {
