@@ -206,6 +206,10 @@ public:
 		set<BlendDst, BlendSize>(dst);
 	}
 	
+	void setBlendAdditive() {
+		setBlend(BlendSrcAlpha, BlendOne);
+	}
+	
 	void disableBlend() {
 		setBlend(BlendOne, BlendZero);
 	}
@@ -214,6 +218,12 @@ public:
 	                  BlendingFactor dst = BlendInvSrcAlpha) const {
 		RenderState copy = *this;
 		copy.setBlend(src, dst);
+		return copy;
+	}
+	
+	RenderState blendAdditive() const {
+		RenderState copy = *this;
+		copy.setBlendAdditive();
 		return copy;
 	}
 	
@@ -430,7 +440,7 @@ extern Renderer * GRenderer;
  * Example usage:
  * \code
  * {
- *   UseRenderState state(RenderState().blend(BlendOne, BlendOne);
+ *   UseRenderState state(RenderState().blendAdditive();
  *   // render with additive blending
  * }
  * \endcode
