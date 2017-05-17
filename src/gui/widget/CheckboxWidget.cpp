@@ -91,8 +91,7 @@ void CheckboxWidget::Update() {
 
 void CheckboxWidget::renderCommon() {
 	
-	GRenderer->SetRenderState(Renderer::AlphaBlending, true);
-	GRenderer->SetBlendFunc(BlendOne, BlendOne);
+	UseRenderState state(render2D().blendAdditive());
 	
 	Rectf checkboxRect;
 	checkboxRect.top = m_rect.top;
