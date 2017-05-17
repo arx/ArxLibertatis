@@ -118,14 +118,9 @@ void goFor2DFX() {
 		RaycastDebugDraw();
 	}
 	
-	GRenderer->SetRenderState(Renderer::Fog, true);
-	GRenderer->SetBlendFunc(BlendOne, BlendOne);
-	GRenderer->SetRenderState(Renderer::AlphaBlending, true);
-	GRenderer->SetRenderState(Renderer::DepthWrite, false);
-	GRenderer->SetCulling(CullNone);
-	GRenderer->SetRenderState(Renderer::DepthTest, false);
 	GRenderer->SetFogColor(Color::none);
-
+	UseRenderState state(render3D().blend(BlendOne, BlendOne).depthWrite(false).depthTest(false));
+	
 	for(size_t i = 0; i < g_culledDynamicLightsCount; i++) {
 		const EERIE_LIGHT & el = *g_culledDynamicLights[i];
 
@@ -154,8 +149,5 @@ void goFor2DFX() {
 			}
 		}
 	}
-
-	GRenderer->SetRenderState(Renderer::DepthTest, true);
-	GRenderer->SetRenderState(Renderer::DepthWrite, true);
-	GRenderer->SetRenderState(Renderer::Fog, false);
+	
 }
