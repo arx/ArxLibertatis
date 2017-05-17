@@ -101,6 +101,8 @@ void ARX_INTERFACE_KillARKANE() {
 
 static void DrawCenteredImage(TextureContainer * tc) {
 	
+	UseRenderState state(render2D().noBlend());
+	
 	Vec2f size = Vec2f(tc->size());
 	
 	Vec2f pos = Vec2f(g_size.center());
@@ -116,15 +118,12 @@ static void ARX_INTERFACE_ShowLogo(TextureContainer * logo) {
 	}
 	
 	GRenderer->GetTextureStage(0)->setWrapMode(TextureStage::WrapClamp); 
-	GRenderer->SetRenderState(Renderer::ColorKey, false);
 	
 	GRenderer->Clear(Renderer::ColorBuffer | Renderer::DepthBuffer);
 	
-	GRenderer->SetRenderState(Renderer::Fog, false);
 	DrawCenteredImage(logo);
 	
 	GRenderer->GetTextureStage(0)->setWrapMode(TextureStage::WrapRepeat);
-	GRenderer->SetRenderState(Renderer::ColorKey, true);
 }
 
 void ARX_INTERFACE_ShowFISHTANK() {
