@@ -218,6 +218,10 @@ void PlayerInventoryHud::drawBag(size_t bag, Vec2i i)
 		
 		Rectf rect(p, tc->m_size.x * m_scale, tc->m_size.y * m_scale);
 		
+		if(tc2) {
+			ARX_INTERFACE_HALO_Render(io->halo.color, io->halo.flags, tc2, p, Vec2f(m_scale));
+		}
+		
 		EERIEDrawBitmap(rect, 0.001f, tc, color);
 		
 		Color overlayColor = Color::black;
@@ -231,10 +235,6 @@ void PlayerInventoryHud::drawBag(size_t bag, Vec2i i)
 		if(overlayColor != Color::black) {
 			UseRenderState state(render2D().blendAdditive());
 			EERIEDrawBitmap(rect, 0.001f, tc, overlayColor);
-		}
-		
-		if(tc2) {
-			ARX_INTERFACE_HALO_Render(io->halo.color, io->halo.flags, tc2, p, Vec2f(m_scale));
 		}
 		
 		if((io->ioflags & IO_ITEM) && io->_itemdata->count != 1) {
