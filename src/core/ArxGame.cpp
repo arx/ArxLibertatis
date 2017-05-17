@@ -2246,9 +2246,6 @@ void ArxGame::onRendererInit(Renderer & renderer) {
 	
 	renderer.Clear(Renderer::ColorBuffer);
 	m_MainWindow->showFrame();
-		
-	// Enable Z-buffering RenderState
-	renderer.SetRenderState(Renderer::DepthTest, true);
 	
 	// Restore All Textures RenderState
 	renderer.RestoreAllTextures();
@@ -2265,10 +2262,7 @@ void ArxGame::onRendererInit(Renderer & renderer) {
 	float fogStart = fogEnd * 0.65f;
 	renderer.SetFogParams(fogStart, fogEnd);
 	renderer.SetFogColor(current.depthcolor.to<u8>());
-	renderer.SetRenderState(Renderer::Fog, true);
 	
-	renderer.SetDepthBias(0);
-
 	ComputePortalVertexBuffer();
 	VertexBuffer<SMY_VERTEX3> * vb3 = renderer.createVertexBuffer3(4000, Renderer::Stream);
 	pDynamicVertexBuffer = new CircularVertexBuffer<SMY_VERTEX3>(vb3);
