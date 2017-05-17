@@ -889,9 +889,12 @@ void MecanismIcon::update() {
 }
 
 void MecanismIcon::draw() {
+	
 	if(m_nbToDraw >= 3) {
 		return;
 	}
+	
+	UseRenderState state(render2D().blendAdditive());
 	
 	EERIEDrawBitmap(m_rect, 0.01f, m_tex, m_color);
 }
@@ -935,6 +938,8 @@ void ScreenArrows::draw() {
 	if(!config.input.borderTurning) {
 		return;
 	}
+	
+	UseRenderState state(render2D().blendAdditive());
 	
 	Color lcolor = Color3f::gray(.5f).to<u8>();
 	
@@ -1580,13 +1585,10 @@ void HudRoot::draw() {
 		healthGauge.draw();
 		
 		if(bRenderInCursorMode) {
-			GRenderer->SetRenderState(Renderer::AlphaBlending, true);
-			GRenderer->SetBlendFunc(BlendOne, BlendOne);
 			if(!MAGICMODE) {
 				mecanismIcon.draw();
 			}
 			screenArrows.draw();
-			GRenderer->SetRenderState(Renderer::AlphaBlending, false);
 		}
 	}
 	
