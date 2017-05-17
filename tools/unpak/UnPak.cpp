@@ -317,5 +317,9 @@ int utf8_main(int argc, char ** argv) {
 		processResources(resources, g_outputDir, g_action);
 	}
 	
+	if(!g_quiet) {
+		Logger::shutdown();
+	}
+	
 	return (status == ExitFailure) ? EXIT_FAILURE : EXIT_SUCCESS;
 }
