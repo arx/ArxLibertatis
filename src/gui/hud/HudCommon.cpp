@@ -39,12 +39,8 @@ void HudIconBase::draw() {
 	EERIEDrawBitmap(m_rect, 0.001f, m_tex, Color::white);
 	
 	if(m_isSelected) {
-		GRenderer->SetBlendFunc(BlendOne, BlendOne);
-		GRenderer->SetRenderState(Renderer::AlphaBlending, true);
-		
+		UseRenderState state(render2D().blendAdditive());
 		EERIEDrawBitmap(m_rect, 0.001f, m_tex, Color::white);
-		
-		GRenderer->SetRenderState(Renderer::AlphaBlending, false);
 	}
 	
 	if(m_haloActive && m_tex->getHalo()) {
