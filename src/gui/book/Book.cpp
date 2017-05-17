@@ -665,11 +665,10 @@ static void ARX_INTERFACE_ManageOpenedBook_TopTabs() {
 		
 		// Check for cursor on charcter sheet bookmark
 		if(MouseInBookRect(pos, Vec2f(tcBookmarkChar->m_size.x, tcBookmarkChar->m_size.y))) {
+			
 			// Draw highlighted Character sheet icon
-			GRenderer->SetBlendFunc(BlendOne, BlendOne);
-			GRenderer->SetRenderState(Renderer::AlphaBlending, true);
+			UseRenderState state(render2D().blendAdditive());
 			DrawBookInterfaceItem(tcBookmarkChar, pos, Color::grayb(0x55), 0.000001f);
-			GRenderer->SetRenderState(Renderer::AlphaBlending, false);
 			
 			// Set cursor to interacting
 			SpecialCursor=CURSOR_INTERACTION_ON;
@@ -698,11 +697,10 @@ static void ARX_INTERFACE_ManageOpenedBook_TopTabs() {
 			}
 			
 			if(MouseInBookRect(pos, Vec2f(g_bookResouces.bookmark_magic->m_size.x, g_bookResouces.bookmark_magic->m_size.y))) {
+				
 				// Draw highlighted Magic sheet icon
-				GRenderer->SetBlendFunc(BlendOne, BlendOne);
-				GRenderer->SetRenderState(Renderer::AlphaBlending, true);
+				UseRenderState state(render2D().blendAdditive());
 				DrawBookInterfaceItem(g_bookResouces.bookmark_magic, pos, Color::grayb(0x55), 0.000001f);
-				GRenderer->SetRenderState(Renderer::AlphaBlending, false);
 				
 				// Set cursor to interacting
 				SpecialCursor=CURSOR_INTERACTION_ON;
@@ -723,10 +721,9 @@ static void ARX_INTERFACE_ManageOpenedBook_TopTabs() {
 		DrawBookInterfaceItem(g_bookResouces.bookmark_map, pos, Color::white, 0.000001f);
 		
 		if(MouseInBookRect(pos, Vec2f(g_bookResouces.bookmark_map->m_size.x, g_bookResouces.bookmark_map->m_size.y))) {
-			GRenderer->SetBlendFunc(BlendOne, BlendOne);
-			GRenderer->SetRenderState(Renderer::AlphaBlending, true);
+			
+			UseRenderState state(render2D().blendAdditive());
 			DrawBookInterfaceItem(g_bookResouces.bookmark_map, pos, Color::grayb(0x55), 0.000001f);
-			GRenderer->SetRenderState(Renderer::AlphaBlending, false);
 			
 			// Set cursor to interacting
 			SpecialCursor=CURSOR_INTERACTION_ON;
@@ -746,10 +743,9 @@ static void ARX_INTERFACE_ManageOpenedBook_TopTabs() {
 		DrawBookInterfaceItem(g_bookResouces.bookmark_quest, pos, Color::white, 0.000001f);
 		
 		if(MouseInBookRect(pos, Vec2f(g_bookResouces.bookmark_quest->m_size.x, g_bookResouces.bookmark_quest->m_size.y))) {
-			GRenderer->SetBlendFunc(BlendOne, BlendOne);
-			GRenderer->SetRenderState(Renderer::AlphaBlending, true);
+			
+			UseRenderState state(render2D().blendAdditive());
 			DrawBookInterfaceItem(g_bookResouces.bookmark_quest, pos, Color::grayb(0x55), 0.000001f);
-			GRenderer->SetRenderState(Renderer::AlphaBlending, false);
 			
 			// Set cursor to interacting
 			SpecialCursor=CURSOR_INTERACTION_ON;
@@ -772,10 +768,8 @@ static void ARX_INTERFACE_ManageOpenedBook_LeftTabs_OneTab(bool tabVisibility[10
 			DrawBookInterfaceItem(g_bookResouces.accessibleTab[t], pos, Color::white, 0.000001f);
 
 			if(MouseInBookRect(pos, Vec2f(32, 32))) {
-				GRenderer->SetBlendFunc(BlendOne, BlendOne);
-				GRenderer->SetRenderState(Renderer::AlphaBlending, true);
+				UseRenderState state(render2D().blendAdditive());
 				DrawBookInterfaceItem(g_bookResouces.accessibleTab[t], pos, Color::grayb(0x55), 0.000001f);
-				GRenderer->SetRenderState(Renderer::AlphaBlending, false);
 				SpecialCursor=CURSOR_INTERACTION_ON;
 				if(eeMouseDown1() || eeMouseDown2()) {
 					activeTab = t;
