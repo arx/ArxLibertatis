@@ -249,8 +249,6 @@ static void RenderBookPlayerCharacter() {
 	if(!entities.player()->obj)
 		return;
 	
-	GRenderer->SetRenderState(Renderer::DepthWrite, true);
-	
 	Rect rec;
 	if (BOOKZOOM) {
 		
@@ -369,15 +367,16 @@ static void RenderBookPlayerCharacter() {
 	
 	Halo_Render();
 	
-	GRenderer->SetRenderState(Renderer::DepthTest, true);
 	GRenderer->GetTextureStage(0)->setMipFilter(TextureStage::FilterNone);
-	GRenderer->SetRenderState(Renderer::AlphaBlending, false);
-	PopAllTriangleListOpaque();
-	GRenderer->SetRenderState(Renderer::AlphaBlending, true);
-	PopAllTriangleListTransparency();
-	GRenderer->SetRenderState(Renderer::AlphaBlending, false);
+	{
+		UseRenderState state(render3D());
+		PopAllTriangleListOpaque();
+	}
+	{
+		UseRenderState state(render3D().blend());
+		PopAllTriangleListTransparency();
+	}
 	GRenderer->GetTextureStage(0)->setMipFilter(TextureStage::FilterLinear);
-	GRenderer->SetRenderState(Renderer::DepthTest, false);
 	
 	g_culledDynamicLights[0] = SavePDL[0];
 	g_culledDynamicLights[1] = SavePDL[1];
@@ -392,8 +391,6 @@ static void RenderBookPlayerCharacter() {
 		GRenderer->SetScissor(Rect::ZERO);
 	}
 	
-	GRenderer->SetRenderState(Renderer::AlphaBlending, false);
-	GRenderer->SetCulling(CullNone);
 	SetActiveCamera(oldcam);
 	PrepareCamera(oldcam, g_size);
 	
@@ -404,8 +401,6 @@ static void RenderBookPlayerCharacter() {
 			player.bookAnimation[0].cur_anim = herowait_2h;
 		}
 	}
-	
-	GRenderer->SetCulling(CullNone);
 	
 	if(Entity * tod = entities.get(player.equiped[EQUIP_SLOT_ARMOR])) {
 			tod->bbox2D.min = Vec2f(195.f, 116.f);
