@@ -2469,9 +2469,8 @@ void ARX_PLAYER_Manage_Death() {
 		ARX_MENU_Launch(false);
 		DeadTime = ArxDuration_ZERO;
 	}
-
-	GRenderer->SetRenderState(Renderer::AlphaBlending, true);
-	GRenderer->SetBlendFunc(BlendZero, BlendInvSrcColor);
+	
+	UseRenderState state(render2D().blend(BlendZero, BlendInvSrcColor));
 	EERIEDrawBitmap(Rectf(g_size), 0.000091f, NULL, Color3f::gray(ratio).to<u8>());
 }
 
