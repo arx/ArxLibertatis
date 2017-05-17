@@ -1248,6 +1248,7 @@ void DrawImproveVisionInterface() {
 	if(ombrignon) {
 		float mod = 0.6f + PULSATE * 0.35f;
 		Color3f color = Color3f((0.5f + PULSATE * (1.0f/10)) * mod, 0.f, 0.f);
+		UseRenderState state(render2D().blendAdditive());
 		EERIEDrawBitmap(Rectf(g_size), 0.0001f, ombrignon, color.to<u8>());
 	}
 }
