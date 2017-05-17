@@ -97,7 +97,6 @@ INVENTORY_SLOT inventory[INVENTORY_BAGS][INVENTORY_X][INVENTORY_Y];
 INVENTORY_DATA * SecondaryInventory = NULL;
 Entity * DRAGINTER = NULL;
 Entity * ioSteal = NULL;
-static long HERO_OR_SECONDARY = 0;
 
 // 1 player 2 secondary
 short sInventory = -1;
@@ -149,12 +148,12 @@ void CleanInventory() {
 	g_playerInventoryHud.setCurrentBag(0);
 }
 
-Entity * GetInventoryObj_INVENTORYUSE(const Vec2s & pos)
-{
-	Entity * io = GetFromInventory(pos);
-
-	if(io) {
-		if(HERO_OR_SECONDARY == 2) {
+Entity * GetInventoryObj_INVENTORYUSE(const Vec2s & pos) {
+	
+	std::pair<Entity *, int> result = GetFromInventory(pos);
+	
+	if(result.first) {
+		if(result.second == 2) {
 			if(SecondaryInventory) {
 				Entity *temp = SecondaryInventory->io;
 
@@ -162,16 +161,14 @@ Entity * GetInventoryObj_INVENTORYUSE(const Vec2s & pos)
 					return NULL;
 			}
 		}
-
-		return io;
+		
+		return result.first;
 	}
 
 	if(InInventoryPos(pos))
 		return NULL;
-
-	io = InterClick(pos);
-
-	return io;
+	
+	return InterClick(pos);
 }
 
 /*!
@@ -891,24 +888,23 @@ bool InInventoryPos(const Vec2s & pos) {
 /*!
  * \brief Returns IO under position xx,yy in any INVENTORY or NULL if no IO was found
  */
-Entity * GetFromInventory(const Vec2s & pos) {
-	HERO_OR_SECONDARY = 0;
-
-	if(!InInventoryPos(pos))
-		return NULL;
+std::pair<Entity *, int> GetFromInventory(const Vec2s & pos) {
+	
+	if(!InInventoryPos(pos)) {
+		return std::pair<Entity *, int>(NULL, 0);
+	}
 	
 	Entity * result = g_secondaryInventoryHud.getObj(pos);
 	if(result) {
-		HERO_OR_SECONDARY = 2;
-		return result;
-	}
-
-	result = g_playerInventoryHud.getObj(pos);
-	if(result) {
-		HERO_OR_SECONDARY = 1;
+		return std::pair<Entity *, int>(result, 2);
 	}
 	
-	return result;
+	result = g_playerInventoryHud.getObj(pos);
+	if(result) {
+		return std::pair<Entity *, int>(result, 1);
+	}
+	
+	return std::pair<Entity *, int>(NULL, 0);
 }
 
 /*!
@@ -1093,18 +1089,19 @@ void CheckForInventoryReplaceMe(Entity * io, Entity * old) {
  * \return true if an object was taken
  */
 bool TakeFromInventory(const Vec2s & pos) {
-	Entity * io = GetFromInventory(pos);
 	
-	if(io == NULL) {
+	std::pair<Entity *, int> result = GetFromInventory(pos);
+	
+	if(result.first == NULL) {
 		return false;
 	}
 	
-	switch(HERO_OR_SECONDARY) {
+	switch(result.second) {
 		case 1: //player inventory
-			g_playerInventoryHud.dragEntity(io, pos);
+			g_playerInventoryHud.dragEntity(result.first, pos);
 			break;
 		case 2: //secondary inventory
-			g_secondaryInventoryHud.dragEntity(io, pos);
+			g_secondaryInventoryHud.dragEntity(result.first, pos);
 			break;
 		default:
 			ARX_DEAD_CODE();
