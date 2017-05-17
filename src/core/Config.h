@@ -170,7 +170,7 @@ public:
 		
 		bool eax;
 		bool muteOnFocusLost;
-	
+		
 	} audio;
 	
 	// section 'input'
