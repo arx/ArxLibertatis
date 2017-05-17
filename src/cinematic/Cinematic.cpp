@@ -374,12 +374,6 @@ void Cinematic::Render(PlatformDuration frameDuration) {
 		return;
 	}
 	
-	GRenderer->SetRenderState(Renderer::DepthTest, false);
-	GRenderer->SetRenderState(Renderer::DepthWrite, false);
-	GRenderer->SetCulling(CullNone);
-	GRenderer->GetTextureStage(0)->setWrapMode(TextureStage::WrapClamp);
-	GRenderer->SetRenderState(Renderer::AlphaBlending, true);
-	GRenderer->SetRenderState(Renderer::Fog, false);
 	
 	GRenderer->Clear(Renderer::ColorBuffer);
 	
@@ -389,18 +383,14 @@ void Cinematic::Render(PlatformDuration frameDuration) {
 	if(changekey && idsound >= 0)
 		PlaySoundKeyFramer(idsound);
 	
-	//draw
-	GRenderer->SetBlendFunc(BlendSrcAlpha, BlendInvSrcAlpha);
-	
-	GRenderer->GetTextureStage(0)->setColorOp(TextureStage::OpModulate, TextureStage::ArgTexture, TextureStage::ArgDiffuse);
-	GRenderer->GetTextureStage(0)->setAlphaOp(TextureStage::OpModulate, TextureStage::ArgTexture, TextureStage::ArgDiffuse);
-	
-	GRenderer->GetTextureStage(1)->disableAlpha();
-	
 	if(config.interface.cinematicWidescreenMode == CinematicLetterbox) {
 		float w = 640 * g_sizeRatio.y;
 		GRenderer->SetScissor(Rect(Vec2i((g_size.width() - w) / 2, 0), w, g_size.height()));
 	}
+	
+	UseRenderState state(render2D());
+	GRenderer->GetTextureStage(0)->setWrapMode(TextureStage::WrapClamp);
+	GRenderer->GetTextureStage(0)->setAlphaOp(TextureStage::OpModulate);
 	
 	//image key
 	CinematicBitmap * tb = m_bitmaps[numbitmap];
@@ -526,6 +516,9 @@ void Cinematic::Render(PlatformDuration frameDuration) {
 		}
 	}
 	
+	GRenderer->GetTextureStage(0)->setWrapMode(TextureStage::WrapRepeat);
+	GRenderer->GetTextureStage(0)->setAlphaOp(TextureStage::ArgTexture);
+	
 	//effets qui continuent avec le temps
 	if(FlashBlancEnCours && (fx & CinematicFxPostMask) != FX_FLASH) {
 		speed = OldSpeedFlashBlanc;
@@ -576,4 +569,5 @@ void Cinematic::Render(PlatformDuration frameDuration) {
 		drawLine(Vec2f(c + x, 0.f), Vec2f(c + x, g_size.height()), 1.f, Color::red);
 		GRenderer->SetFillMode(Renderer::FillSolid);
 	}
+	
 }
