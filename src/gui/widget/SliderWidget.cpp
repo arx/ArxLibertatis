@@ -139,8 +139,7 @@ void SliderWidget::Render() {
 
 	Vec2f pos(m_rect.left + pLeftButton->m_rect.width(), m_rect.top);
 	
-	GRenderer->SetRenderState(Renderer::AlphaBlending, true);
-	GRenderer->SetBlendFunc(BlendOne, BlendOne);
+	UseRenderState state(render2D().blendAdditive());
 	
 	for(int i = 0; i < 10; i++) {
 		TextureContainer * pTex = (i < m_value) ? pTex1 : pTex2;
@@ -150,8 +149,7 @@ void SliderWidget::Render() {
 		
 		pos.x += rect.width();
 	}
-
-	GRenderer->SetRenderState(Renderer::AlphaBlending, false);
+	
 }
 
 extern MenuCursor * pMenuCursor;
