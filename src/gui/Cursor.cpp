@@ -643,6 +643,10 @@ static void ARX_INTERFACE_RenderCursorInternal(bool flag) {
 					Vec2f size = Vec2f(tc->m_size) * iconScale;
 					Rectf rect(pos, size.x, size.y);
 					
+					if(haloTc) {
+						ARX_INTERFACE_HALO_Render(DRAGINTER->halo.color, DRAGINTER->halo.flags, haloTc, pos, Vec2f(iconScale));
+					}
+					
 					if(!(DRAGINTER->ioflags & IO_MOVABLE)) {
 						EERIEDrawBitmap(rect, .00001f, tc, color);
 						
@@ -673,9 +677,6 @@ static void ARX_INTERFACE_RenderCursorInternal(bool flag) {
 						}
 					}
 					
-					if(haloTc) {
-						ARX_INTERFACE_HALO_Draw(DRAGINTER, tc, haloTc, pos, Vec2f(iconScale));
-					}
 				} else {
 					cursorAnimatedHand.update2();
 					TextureContainer * surf = cursorAnimatedHand.getCurrentTexture();
