@@ -71,7 +71,6 @@ void ButtonWidget::Update() {
 }
 
 void ButtonWidget::Render() {
-
 	Color color = (bCheck) ? Color::white : Color(63, 63, 63, 255);
 	EERIEDrawBitmap2(m_rect, 0, m_texture, color);
 }
@@ -84,11 +83,7 @@ void ButtonWidget::RenderMouseOver() {
 	
 	const Vec2f cursor = Vec2f(GInput->getMousePosition());
 	if(m_rect.contains(cursor)) {
-		GRenderer->SetRenderState(Renderer::AlphaBlending, true);
-		GRenderer->SetBlendFunc(BlendOne, BlendOne);
-		
+		UseRenderState state(render2D().blendAdditive());
 		Render();
-		
-		GRenderer->SetRenderState(Renderer::AlphaBlending, false);
 	}
 }
