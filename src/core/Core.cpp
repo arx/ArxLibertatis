@@ -316,7 +316,7 @@ Entity * FlyingOverObject(const Vec2s & pos)
 		return player.torch;
 	}
 	
-	if((io = GetFromInventory(pos)) != NULL)
+	if((io = GetFromInventory(pos).first) != NULL)
 		return io;
 
 	if(InInventoryPos(pos))
