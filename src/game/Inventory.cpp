@@ -97,7 +97,7 @@ INVENTORY_SLOT inventory[INVENTORY_BAGS][INVENTORY_X][INVENTORY_Y];
 INVENTORY_DATA * SecondaryInventory = NULL;
 Entity * DRAGINTER = NULL;
 Entity * ioSteal = NULL;
-long HERO_OR_SECONDARY = 0;
+static long HERO_OR_SECONDARY = 0;
 
 // 1 player 2 secondary
 short sInventory = -1;
@@ -903,7 +903,12 @@ Entity * GetFromInventory(const Vec2s & pos) {
 		return result;
 	}
 
-	return g_playerInventoryHud.getObj(pos);
+	result = g_playerInventoryHud.getObj(pos);
+	if(result) {
+		HERO_OR_SECONDARY = 1;
+	}
+	
+	return result;
 }
 
 /*!

@@ -411,8 +411,6 @@ bool PlayerInventoryHud::containsPos(const Vec2s & pos) {
 	return false;
 }
 
-extern long HERO_OR_SECONDARY;
-
 Entity * PlayerInventoryHud::getObj(const Vec2s & pos) {
 	
 	Vec2f anchorPos = anchorPosition();
@@ -431,7 +429,6 @@ Entity * PlayerInventoryHud::getObj(const Vec2s & pos) {
 				Entity *result = inventory[m_currentBag][tx][ty].io;
 
 				if(result && (result->gameFlags & GFLAG_INTERACTIVITY)) {
-					HERO_OR_SECONDARY = 1;
 					return result;
 				}
 			}
@@ -455,7 +452,6 @@ Entity * PlayerInventoryHud::getObj(const Vec2s & pos) {
 				Entity *result = inventory[bag][tx][ty].io;
 
 				if(result && (result->gameFlags & GFLAG_INTERACTIVITY)) {
-					HERO_OR_SECONDARY = 1;
 					return result;
 				}
 
