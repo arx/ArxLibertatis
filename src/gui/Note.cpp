@@ -234,6 +234,8 @@ void Note::render() {
 		return;
 	}
 	
+	UseRenderState state(render2D());
+	
 	float z = 0.000001f;
 	
 	GRenderer->GetTextureStage(0)->setWrapMode(TextureStage::WrapClamp);
