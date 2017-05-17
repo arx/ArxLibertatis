@@ -1573,33 +1573,21 @@ void ARX_SCENE_Render() {
 	PopAllTriangleListTransparency();
 	
 	GRenderer->SetFogColor(Color::none);
-	GRenderer->SetRenderState(Renderer::AlphaBlending, true);
-	GRenderer->SetCulling(CullNone);
-	GRenderer->SetRenderState(Renderer::DepthWrite, false);
 	GRenderer->SetAlphaFunc(Renderer::CmpGreater, .5f);
 	
 	for(size_t i = 0; i < RoomDrawList.size(); i++) {
-		
 		BackgroundRenderTransparent(RoomDrawList[i]);
 	}
 	
-	GRenderer->SetDepthBias(8);
-	GRenderer->SetRenderState(Renderer::DepthWrite, false);
-	GRenderer->SetCulling(CullCW);
 	GRenderer->SetAlphaFunc(Renderer::CmpNotEqual, 0.f);
 	
 	RenderWater();
 	RenderLava();
 	
-	GRenderer->SetDepthBias(0);
 	GRenderer->SetFogColor(ulBKGColor);
 	GRenderer->GetTextureStage(0)->setColorOp(TextureStage::OpModulate);
-	GRenderer->SetRenderState(Renderer::AlphaBlending, false);
 	
 	Halo_Render();
 	
-	GRenderer->SetCulling(CullCCW);
-	GRenderer->SetRenderState(Renderer::AlphaBlending, false);	
-	GRenderer->SetRenderState(Renderer::DepthWrite, true);
 }
 
