@@ -59,7 +59,7 @@ void RenderBatcher::render() {
 	
 	for(Batches::const_iterator it = m_BatchedSprites.begin(); it != m_BatchedSprites.end(); ++it) {
 		if(!it->second.empty()) {
-			it->first.apply();
+			UseRenderState state(it->first.apply());
 			EERIEDRAWPRIM(Renderer::TriangleList, &it->second.front(), it->second.size(), true);
 			GRenderer->GetTextureStage(0)->setAlphaOp(TextureStage::OpSelectArg1);
 		}
@@ -67,10 +67,6 @@ void RenderBatcher::render() {
 
 	GRenderer->ResetTexture(0);
 	GRenderer->GetTextureStage(0)->setWrapMode(TextureStage::WrapRepeat);
-	GRenderer->SetDepthBias(0);
-	GRenderer->SetRenderState(Renderer::DepthTest, true);
-	GRenderer->SetCulling(CullCCW);
-	GRenderer->SetRenderState(Renderer::AlphaBlending, false);
 }
 
 void RenderBatcher::clear() {
@@ -154,51 +150,55 @@ bool RenderMaterial::operator<(const RenderMaterial & other) const {
 	return false;
 }
 
-void RenderMaterial::apply() const {
+RenderState RenderMaterial::apply() const {
 		
 	if(m_texture) {
 		GRenderer->SetTexture(0, m_texture);
 	} else {
 		GRenderer->ResetTexture(0);
 	}
+	
+	RenderState state = render3D();
 
 	GRenderer->GetTextureStage(0)->setWrapMode(m_wrapMode);
-	GRenderer->SetDepthBias(m_depthBias);
+	state.setDepthOffset(m_depthBias);
 
-	GRenderer->SetRenderState(Renderer::DepthTest, m_depthTest);
+	state.setDepthTest(m_depthTest);
+	
+	state.setDepthWrite(false);
 
-	GRenderer->SetCulling(m_cullingMode);
-
+	state.setCull(m_cullingMode);
+	
 	if(m_blendType == Opaque) {
-		GRenderer->SetRenderState(Renderer::AlphaBlending, false);
+		state.disableBlend();
 	} else {
-		GRenderer->SetRenderState(Renderer::AlphaBlending, true);
-		
 		switch(m_blendType) {
 		
 		case Additive:
-			GRenderer->SetBlendFunc(BlendOne, BlendOne);
+			state.setBlend(BlendOne, BlendOne);
 			break;
 		
 		case AlphaAdditive:
-			GRenderer->SetBlendFunc(BlendSrcAlpha, BlendOne);
+			state.setBlend(BlendSrcAlpha, BlendOne);
 			break;
 		
 		case Screen:
-			GRenderer->SetBlendFunc(BlendOne, BlendInvSrcColor);
+			state.setBlend(BlendOne, BlendInvSrcColor);
 			break;
 		
 		case Subtractive:
-			GRenderer->SetBlendFunc(BlendZero, BlendInvSrcColor);
+			state.setBlend(BlendZero, BlendInvSrcColor);
 			break;
 		
 		case Subtractive2:
 			GRenderer->GetTextureStage(0)->setAlphaOp(TextureStage::OpModulate);
-			GRenderer->SetBlendFunc(BlendInvSrcAlpha, BlendInvSrcAlpha);
+			state.setBlend(BlendInvSrcAlpha, BlendInvSrcAlpha);
 			break;
 		
 		default:
 			ARX_DEAD_CODE();
 		}
 	}
+	
+	return state;
 }

@@ -2054,12 +2054,9 @@ void ArxGame::renderLevel() {
 	ARX_SPELLS_Update();
 
 	GRenderer->SetCulling(CullNone);
-	GRenderer->SetRenderState(Renderer::Fog, true);
 		
 	GRenderer->SetFogColor(Color::none);
-	GRenderer->SetRenderState(Renderer::DepthWrite, false);
 	RenderBatcher::getInstance().render();
-	GRenderer->SetRenderState(Renderer::DepthWrite, true);
 	GRenderer->SetFogColor(ulBKGColor);
 	
 	GRenderer->SetAntialiasing(false);
@@ -2072,7 +2069,6 @@ void ArxGame::renderLevel() {
 
 	// Remove the Alphablend State if needed : NO Z Clear
 	GRenderer->SetRenderState(Renderer::AlphaBlending, false);
-	GRenderer->SetRenderState(Renderer::Fog, false);
 	
 	// Draw game interface if needed
 	if(ARXmenu.currentmode == AMCM_OFF && !cinematicBorder.isActive()) {
@@ -2085,9 +2081,7 @@ void ArxGame::renderLevel() {
 		
 		if((player.Interface & INTER_MAP) && !(player.Interface & INTER_COMBATMODE)) {
 			ARX_MAGICAL_FLARES_Update();
-			GRenderer->SetRenderState(Renderer::DepthWrite, false);
 			RenderBatcher::getInstance().render();
-			GRenderer->SetRenderState(Renderer::DepthWrite, true);
 		}
 		
 		GRenderer->SetRenderState(Renderer::DepthTest, true);
