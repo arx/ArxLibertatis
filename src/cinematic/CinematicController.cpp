@@ -151,8 +151,6 @@ void cinematicRender() {
 	}
 
 	PlayTrack(ControlCinematique);
-	ControlCinematique->InitDeviceObjects();
-	GRenderer->SetRenderState(Renderer::AlphaBlending, true);
 
 	ControlCinematique->Render(diff);
 

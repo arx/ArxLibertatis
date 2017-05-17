@@ -223,20 +223,6 @@ void Cinematic::DeleteAllBitmap()
 	m_bitmaps.clear();
 }
 
-// Sets RenderStates
-void Cinematic::InitDeviceObjects() {
-	
-	GRenderer->SetRenderState(Renderer::DepthTest, false);
-	GRenderer->SetRenderState(Renderer::DepthWrite, false);
-	GRenderer->SetCulling(CullNone);
-	GRenderer->GetTextureStage(0)->setWrapMode(TextureStage::WrapClamp);
-	
-	GRenderer->GetTextureStage(0)->setMipMapLODBias(0);
-	GRenderer->SetRenderState(Renderer::AlphaBlending, true);
-	GRenderer->SetRenderState(Renderer::Fog, false);
-	
-}
-
 static float LightRND;
 
 static Color CalculLight(CinematicLight * light, Vec2f pos, Color col) {
@@ -387,6 +373,13 @@ void Cinematic::Render(PlatformDuration frameDuration) {
 	if(!projectload) {
 		return;
 	}
+	
+	GRenderer->SetRenderState(Renderer::DepthTest, false);
+	GRenderer->SetRenderState(Renderer::DepthWrite, false);
+	GRenderer->SetCulling(CullNone);
+	GRenderer->GetTextureStage(0)->setWrapMode(TextureStage::WrapClamp);
+	GRenderer->SetRenderState(Renderer::AlphaBlending, true);
+	GRenderer->SetRenderState(Renderer::Fog, false);
 	
 	GRenderer->Clear(Renderer::ColorBuffer);
 	

@@ -135,7 +135,6 @@ public:
 	explicit Cinematic(Vec2i size);
 	~Cinematic();
 	
-	void InitDeviceObjects();
 	void OneTimeSceneReInit();
 	void Render(PlatformDuration frameDuration);
 	void New();
