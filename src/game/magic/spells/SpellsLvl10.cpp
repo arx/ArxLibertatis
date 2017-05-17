@@ -280,12 +280,6 @@ void ControlTargetSpell::End() {
 
 void ControlTargetSpell::Update() {
 	
-	GRenderer->SetCulling(CullNone);
-	GRenderer->SetRenderState(Renderer::DepthWrite, false);
-	GRenderer->SetRenderState(Renderer::AlphaBlending, true);
-	GRenderer->SetBlendFunc(BlendOne, BlendOne);
-	GRenderer->SetTexture(0, tex_mm);
-
 	// -------------------
 	fTrail += 1;
 
