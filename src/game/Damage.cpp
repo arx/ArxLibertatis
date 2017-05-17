@@ -170,31 +170,23 @@ void ARX_DAMAGE_Show_Hit_Blood()
 		Blood_Pos = 0.f;
 		duration = 0;
 	} else if (Blood_Pos > 1.f) {
-		GRenderer->SetBlendFunc(BlendZero, BlendSrcColor);
-		GRenderer->SetRenderState(Renderer::AlphaBlending, true);
-		GRenderer->SetRenderState(Renderer::DepthWrite, false);
-
+		
 		if(player.poison > 1.f)
 			color = Color3f(Blood_Pos - 1.f, 1.f, Blood_Pos - 1.f).to<u8>();
 		else
 			color = Color3f(1.f, Blood_Pos - 1.f, Blood_Pos - 1.f).to<u8>();
-
+		
+		UseRenderState state(render2D().blend(BlendZero, BlendSrcColor));
 		EERIEDrawBitmap(Rectf(g_size), 0.00009f, NULL, color);
-		GRenderer->SetRenderState(Renderer::DepthWrite, true);
-		GRenderer->SetRenderState(Renderer::AlphaBlending, false);
 	} else if(Blood_Pos > 0.f) {
-		GRenderer->SetBlendFunc(BlendZero, BlendSrcColor);
-		GRenderer->SetRenderState(Renderer::AlphaBlending, true);
-		GRenderer->SetRenderState(Renderer::DepthWrite, false);
-
+		
 		if(player.poison > 1.f)
 			color = Color3f(1.f - Blood_Pos, 1.f, 1.f - Blood_Pos).to<u8>();
 		else
 			color = Color3f(1.f, 1.f - Blood_Pos, 1.f - Blood_Pos).to<u8>();
-
+		
+		UseRenderState state(render2D().blend(BlendZero, BlendSrcColor));
 		EERIEDrawBitmap(Rectf(g_size), 0.00009f, NULL, color);
-		GRenderer->SetRenderState(Renderer::AlphaBlending, false);
-		GRenderer->SetRenderState(Renderer::DepthWrite, true);
 	}
 
 	if(Blood_Pos > 0.f) {
