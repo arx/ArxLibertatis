@@ -324,15 +324,9 @@ void ARX_Menu_Render() {
 	
 	if(ARXmenu.currentmode == AMCM_NEWQUEST && ARXmenu.mda) {
 		
-		GRenderer->SetRenderState(Renderer::Fog, false);
-		GRenderer->SetRenderState(Renderer::AlphaBlending, false);
+		UseRenderState state(render2D().noBlend());
 		
 		if(ARXmenu.mda->BookBackground != NULL) {
-			GRenderer->SetRenderState(Renderer::AlphaBlending, false);
-			GRenderer->SetRenderState(Renderer::Fog, false);
-			GRenderer->SetRenderState(Renderer::DepthWrite, false);
-			GRenderer->SetRenderState(Renderer::DepthTest, false);
-			
 			EERIEDrawBitmap2(Rectf(Vec2f(0, 0), g_size.width(), g_size.height()), 0.9f, ARXmenu.mda->BookBackground, Color::white);
 		}
 		
