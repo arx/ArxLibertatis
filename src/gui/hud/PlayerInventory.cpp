@@ -217,7 +217,7 @@ void PlayerInventoryHud::drawBag(size_t bag, Vec2i i)
 		Color color = (io->poisonous && io->poisonous_count != 0) ? Color::green : Color::white;
 		
 		Rectf rect(p, tc->m_size.x * m_scale, tc->m_size.y * m_scale);
-		// TODO use alpha blending so this will be anti-aliased even w/o alpha to coverage
+		
 		EERIEDrawBitmap(rect, 0.001f, tc, color);
 		
 		Color overlayColor = Color::black;
