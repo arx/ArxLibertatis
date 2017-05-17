@@ -393,6 +393,7 @@ void CheckMr() {
 			Rectf rect = Rectf(pos, size.x, size.y);
 			Color3f color = Color3f::gray(0.5f + PULSATE * (1.0f/10));
 			
+			UseRenderState state(render2D().blendAdditive());
 			EERIEDrawBitmap(rect, 0.0001f, Mr_tc, color.to<u8>());
 		} else {
 			Mr_tc = TextureContainer::LoadUI("graph/particles/(fx)_mr");
