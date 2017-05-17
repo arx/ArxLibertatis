@@ -396,9 +396,6 @@ MENUSTATE CWindowMenu::Render() {
 	if(bNoMenu)
 		return NOP;
 	
-	GRenderer->SetRenderState(Renderer::AlphaBlending, false);
-	GRenderer->SetBlendFunc(BlendOne, BlendOne);
-	
 	MENUSTATE eMS=NOP;
 	
 	{MenuPage * page; BOOST_FOREACH(page, m_pages) {
@@ -411,15 +408,12 @@ MENUSTATE CWindowMenu::Render() {
 	}}
 	
 	// Draw backgound and border
-	GRenderer->SetRenderState(Renderer::AlphaBlending, true);
-	GRenderer->SetBlendFunc(BlendZero, BlendInvSrcColor);
-
-	EERIEDrawBitmap2(Rectf(Vec2f(m_pos.x, m_pos.y),
-	                 RATIO_X(m_background->m_size.x), RATIO_Y(m_background->m_size.y)),
-	                 0, m_background, Color::white);
-
-	GRenderer->SetBlendFunc(BlendOne, BlendOne);
-	GRenderer->SetRenderState(Renderer::AlphaBlending, false);
+	{
+		UseRenderState state(render2D().blend(BlendZero, BlendInvSrcColor));
+		EERIEDrawBitmap2(Rectf(Vec2f(m_pos.x, m_pos.y),
+		                 RATIO_X(m_background->m_size.x), RATIO_Y(m_background->m_size.y)),
+		                 0, m_background, Color::white);
+	}
 	
 	EERIEDrawBitmap2(Rectf(Vec2f(m_pos.x, m_pos.y),
 	                 RATIO_X(m_border->m_size.x), RATIO_Y(m_border->m_size.y)),
@@ -437,8 +431,6 @@ MENUSTATE CWindowMenu::Render() {
 			break;
 		}
 	}}
-	
-	GRenderer->SetRenderState(Renderer::AlphaBlending, false);
 	
 	if(eMS != NOP) {
 		m_currentPageId=eMS;
