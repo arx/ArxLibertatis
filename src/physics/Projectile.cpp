@@ -336,10 +336,9 @@ static void CheckExp(const Projectile & projectile) {
 }
 
 void ARX_THROWN_OBJECT_Render() {
-
-	GRenderer->SetRenderState(Renderer::DepthWrite, true);
-	GRenderer->SetRenderState(Renderer::DepthTest, true);
-
+	
+	UseRenderState state(render3D());
+	
 	for(size_t i = 0; i < MAX_THROWN_OBJECTS; i++) {
 		Projectile & projectile = g_projectiles[i];
 		if(!(projectile.flags & ATO_EXIST))
