@@ -77,7 +77,6 @@ void cinematicKill() {
 	if(ControlCinematique && ControlCinematique->projectload) {
 		ControlCinematique->projectload = false;
 		ControlCinematique->OneTimeSceneReInit();
-		ControlCinematique->DeleteDeviceObjects();
 		PLAY_LOADED_CINEMATIC = Cinematic_Stopped;
 		CINE_PRELOAD = false;
 	}
@@ -164,7 +163,6 @@ void cinematicRender() {
 		ControlCinematique->projectload=false;
 		StopSoundKeyFramer();
 		ControlCinematique->OneTimeSceneReInit();
-		ControlCinematique->DeleteDeviceObjects();
 		arxtime.resume();
 		PLAY_LOADED_CINEMATIC = Cinematic_Stopped;
 
