@@ -77,13 +77,10 @@ void ManageFade() {
 	}
 
 	LAST_FADEVALUE=Visibility;
-	GRenderer->SetBlendFunc(BlendSrcAlpha, BlendInvSrcAlpha);
-	GRenderer->SetRenderState(Renderer::DepthWrite, false);
-	GRenderer->SetRenderState(Renderer::AlphaBlending, true);
+	
+	UseRenderState state(render2D());
 	
 	Color color = Color4f(FADECOLOR, Visibility).to<u8>();
 	EERIEDrawBitmap(Rectf(g_size), 0.0001f, NULL, color);
-
-	GRenderer->SetRenderState(Renderer::AlphaBlending, false);
-	GRenderer->SetRenderState(Renderer::DepthWrite, true);
+	
 }
