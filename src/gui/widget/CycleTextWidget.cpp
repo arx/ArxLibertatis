@@ -203,10 +203,9 @@ void CycleTextWidget::RenderMouseOver() {
 	if(!enabled) {
 		return;
 	}
-
-	GRenderer->SetRenderState(Renderer::AlphaBlending, true);
-	GRenderer->SetBlendFunc(BlendOne, BlendOne);
-
+	
+	UseRenderState state(render2D().blendAdditive());
+	
 	if(m_rect.contains(cursor)) {
 		if(pLeftButton->m_rect.contains(cursor)) {
 			pLeftButton->Render();
