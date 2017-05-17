@@ -34,7 +34,6 @@ public:
 		OpModulate,   //!< Multiply the components of the arguments together.
 		OpModulate2X, //!< Multiply the components of the arguments, and shift the products to the left 1 bit.
 		OpModulate4X, //!< Multiply the components of the arguments, and shift the products to the left 2 bits.
-		OpAddSigned   //!< Add args with -0.5 bias
 	};
 	
 	//! Texture blending arguments

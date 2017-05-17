@@ -188,13 +188,6 @@ void GLTextureStage::setOp(OpType alpha, TextureOp op) {
 			break;
 		}
 		
-		case OpAddSigned: {
-			setOp(alpha, GL_ADD_SIGNED, 1);
-			setArg(alpha, Arg0, args[alpha][Arg0]);
-			setArg(alpha, Arg1, args[alpha][Arg1]);
-			break;
-		}
-		
 	}
 
 	if(mStage != 0) {
