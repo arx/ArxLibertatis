@@ -931,12 +931,13 @@ static void RenderWater() {
 
 static void RenderLavaBatch() {
 	
-	GRenderer->SetBlendFunc(BlendDstColor, BlendOne);
-	GRenderer->GetTextureStage(0)->setColorOp(TextureStage::OpModulate2X, TextureStage::ArgTexture, TextureStage::ArgDiffuse);
-	
 	if(!dynamicVertices.nbindices) {
 		return;
 	}
+	
+	RenderState baseState = render3D().depthWrite(false).cull(CullCW).depthOffset(8);
+	
+	GRenderer->GetTextureStage(0)->setColorOp(TextureStage::OpModulate2X, TextureStage::ArgTexture, TextureStage::ArgDiffuse);
 	
 	GRenderer->GetTextureStage(1)->setColorOp(TextureStage::OpModulate4X, TextureStage::ArgTexture, TextureStage::ArgCurrent);
 	GRenderer->GetTextureStage(1)->disableAlpha();
@@ -944,12 +945,17 @@ static void RenderLavaBatch() {
 	GRenderer->GetTextureStage(2)->setColorOp(TextureStage::OpModulate, TextureStage::ArgTexture, TextureStage::ArgCurrent);
 	GRenderer->GetTextureStage(2)->disableAlpha();
 	
-	dynamicVertices.draw(Renderer::TriangleList);
+	{
+		UseRenderState state(baseState.blend(BlendDstColor, BlendOne));
+		dynamicVertices.draw(Renderer::TriangleList);
+	}
 	
-	GRenderer->SetBlendFunc(BlendZero, BlendInvSrcColor);
 	GRenderer->GetTextureStage(0)->setColorOp(TextureStage::OpModulate);
 	
-	dynamicVertices.draw(Renderer::TriangleList);
+	{
+		UseRenderState state(baseState.blend(BlendZero, BlendInvSrcColor));
+		dynamicVertices.draw(Renderer::TriangleList);
+	}
 	
 	GRenderer->GetTextureStage(1)->disableColor();
 	GRenderer->GetTextureStage(2)->disableColor();
@@ -969,7 +975,6 @@ static void RenderLava() {
 	
 	dynamicVertices.lock();
 	
-	GRenderer->SetBlendFunc(BlendDstColor, BlendOne);
 	GRenderer->SetTexture(0, enviro);
 	GRenderer->SetTexture(1, enviro);
 	GRenderer->SetTexture(2, enviro);
