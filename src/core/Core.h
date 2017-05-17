@@ -132,7 +132,6 @@ extern bool WILL_RESTORE_PLAYER_POSITION_FLAG;
 void SetEditMode(long ed, const bool stop_sound = true);
 
 void SendGameReadyMsg();
-void ARX_SetAntiAliasing();
 void DANAE_StartNewQuest();
 void DanaeRestoreFullScreen();
 bool AdjustUI();

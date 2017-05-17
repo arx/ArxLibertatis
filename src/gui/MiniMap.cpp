@@ -704,6 +704,8 @@ void MiniMap::drawBackground(int showLevel, Rect boundaries, Vec2f start, float 
 
 void MiniMap::drawPlayer(float playerSize, Vec2f playerPos, bool alphaBlending) {
 	
+	GRenderer->SetAntialiasing(true);
+	
 	TexturedVertex verts[4];
 	
 	for(int k = 0; k < 4; k++) {
@@ -738,6 +740,8 @@ void MiniMap::drawPlayer(float playerSize, Vec2f playerPos, bool alphaBlending) 
 	UseRenderState state(alphaBlending ? render2D().blend(BlendOne, BlendInvSrcColor) : render2D());
 	
 	EERIEDRAWPRIM(Renderer::TriangleFan, verts);
+	
+	GRenderer->SetAntialiasing(false);
 	
 }
 

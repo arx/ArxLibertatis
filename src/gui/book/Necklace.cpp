@@ -138,6 +138,8 @@ void ARX_INTERFACE_ManageOpenedBook_Finish(const Vec2f & mousePos)
 	
 	Vec2i tmpPos = Vec2i_ZERO;
 	
+	GRenderer->SetAntialiasing(true);
+	
 	for(size_t i = 0; i < RUNE_COUNT; i++) {
 		if(!gui::necklace.runes[i])
 			continue;
@@ -223,6 +225,9 @@ void ARX_INTERFACE_ManageOpenedBook_Finish(const Vec2f & mousePos)
 	
 	SetActiveCamera(oldcam);
 	PrepareCamera(oldcam, g_size);
+	
+	GRenderer->SetAntialiasing(false);
+	
 }
 
 }

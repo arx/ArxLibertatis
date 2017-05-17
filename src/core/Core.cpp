@@ -1270,8 +1270,3 @@ void DANAE_StartNewQuest()
 	fadeReset();
 	player.Interface = INTER_LIFE_MANA | INTER_MINIBACK | INTER_MINIBOOK;
 }
-
-void ARX_SetAntiAliasing() {
-	bool enabled = config.video.antialiasing && mainApp->getWindow()->getMSAALevel() > 0;
-	GRenderer->SetAntialiasing(enabled);
-}
