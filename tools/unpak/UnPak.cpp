@@ -245,11 +245,13 @@ int utf8_main(int argc, char ** argv) {
 	
 	ARX_UNUSED(resources);
 	
+	Logger::initialize();
+	
 	// Parse the command line and process options
 	ExitStatus status = parseCommandLine(argc, argv);
 	
-	if(!g_quiet) {
-		Logger::initialize();
+	if(g_quiet) {
+		Logger::shutdown();
 	}
 	
 	if(status == RunProgram && (g_addDefaultArchives || g_archives.empty())) {
