@@ -320,14 +320,9 @@ extern MenuCursor * pMenuCursor;
 void TextWidget::RenderMouseOver() {
 
 	pMenuCursor->SetMouseOver();
-
-	GRenderer->SetRenderState(Renderer::AlphaBlending, true);
-	GRenderer->SetBlendFunc(BlendOne, BlendOne);
 	
 	FontRenderText(m_font, m_rect, m_text, lColorHighlight);
-
-	GRenderer->SetRenderState(Renderer::AlphaBlending, false);
-
+	
 	switch(m_id) {
 		case BUTTON_MENUEDITQUEST_LOAD:
 		case BUTTON_MENUEDITQUEST_SAVEINFO: {
