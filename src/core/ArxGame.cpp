@@ -1762,11 +1762,8 @@ bool ArxGame::isInMenu() const {
 
 void ArxGame::renderMenu() {
 	
-	GRenderer->SetRenderState(Renderer::Fog, false);
-	
 	ARX_Menu_Render();
 
-	GRenderer->SetRenderState(Renderer::Fog, true);
 	GRenderer->GetTextureStage(0)->setWrapMode(TextureStage::WrapRepeat); // << NEEDED?
 }
 
