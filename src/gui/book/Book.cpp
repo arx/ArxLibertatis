@@ -374,10 +374,7 @@ static void RenderBookPlayerCharacter() {
 		UseRenderState state(render3D().fog(false));
 		PopAllTriangleListOpaque();
 	}
-	{
-		UseRenderState state(render3D().blend());
-		PopAllTriangleListTransparency();
-	}
+	PopAllTriangleListTransparency();
 	GRenderer->GetTextureStage(0)->setMipFilter(TextureStage::FilterLinear);
 	
 	g_culledDynamicLights[0] = SavePDL[0];
