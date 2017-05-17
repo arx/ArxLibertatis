@@ -1263,10 +1263,11 @@ static void BackgroundRenderOpaque(size_t room_num) {
 	
 	ARX_PROFILE_FUNC();
 	
+	UseRenderState state(render3D());
+	
 	EERIE_ROOM_DATA & room = portals->rooms[room_num];
 	
 	//render opaque
-	GRenderer->SetCulling(CullNone);
 	GRenderer->SetAlphaFunc(Renderer::CmpGreater, .5f);
 	
 	std::vector<TextureContainer *>::const_iterator itr;
@@ -1519,9 +1520,7 @@ void ARX_SCENE_Render() {
 	if(uw_mode)
 		GRenderer->GetTextureStage(0)->setMipMapLODBias(10.f);
 	
-	GRenderer->SetBlendFunc(BlendZero, BlendInvSrcColor);
 	for(size_t i = 0; i < RoomDrawList.size(); i++) {
-		
 		BackgroundRenderOpaque(RoomDrawList[i]);
 	}
 	
