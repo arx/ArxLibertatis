@@ -379,7 +379,7 @@ void OpenGLRenderer::enableTransform() {
 	}
 	
 	if(shader) {
-		glUseProgram(0);
+		glUseProgramObjectARB(0);
 	}
 	
 	glMatrixMode(GL_MODELVIEW);
@@ -401,7 +401,7 @@ void OpenGLRenderer::disableTransform() {
 	// but we still need to change from D3D to OpenGL coordinates
 	
 	if(shader) {
-		glUseProgram(shader);
+		glUseProgramObjectARB(shader);
 	} else {
 		glMatrixMode(GL_MODELVIEW);
 		glLoadIdentity();
