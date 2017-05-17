@@ -159,9 +159,8 @@ void SliderWidget::RenderMouseOver() {
 	pMenuCursor->SetMouseOver();
 
 	const Vec2f cursor = Vec2f(GInput->getMousePosition());
-
-	GRenderer->SetRenderState(Renderer::AlphaBlending, true);
-	GRenderer->SetBlendFunc(BlendOne, BlendOne);
+	
+	UseRenderState state(render2D().blendAdditive());
 	
 	if(m_rect.contains(cursor)) {
 		if(pLeftButton->m_rect.contains(cursor)) {
@@ -173,5 +172,4 @@ void SliderWidget::RenderMouseOver() {
 		}
 	}
 	
-	GRenderer->SetRenderState(Renderer::AlphaBlending, false);
 }
