@@ -1141,8 +1141,7 @@ void ActiveSpellsGui::updateInput(const Vec2f & mousePos) {
 
 void ActiveSpellsGui::draw() {
 	
-	GRenderer->SetBlendFunc(BlendOne, BlendOne);
-	GRenderer->SetRenderState(Renderer::AlphaBlending, true);
+	UseRenderState state(render2D().blendAdditive());
 	
 	BOOST_FOREACH(ActiveSpellIconSlot & slot, m_slots) {
 		slot.draw();
