@@ -296,11 +296,6 @@ bool SDL2Window::initialize() {
 				continue;
 			}
 		}
-		if(msaaEnabled) {
-			m_MSAALevel = msaaValue;
-		} else {
-			m_MSAALevel = 0;
-		}
 		
 		// Verify that we actually got an accelerated context
 		(void)glGetError(); // clear error flags

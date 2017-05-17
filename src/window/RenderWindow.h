@@ -35,7 +35,6 @@ public:
 	RenderWindow()
 		: m_minTextureUnits(1)
 		, m_maxMSAALevel(1)
-		, m_MSAALevel(0)
 		, m_vsync(1)
 		, m_renderer(NULL)
 		{ }
@@ -62,11 +61,6 @@ public:
 	void setMaxMSAALevel(int msaa) { m_maxMSAALevel = std::max(1, msaa); }
 	
 	/*!
-	 * Get the current MSAA level.
-	 */
-	int getMSAALevel() { return m_MSAALevel; }
-	
-	/*!
 	 * Enebly or disable vsync.
 	 * May not have any effect when called after \ref initialize().
 	 *
@@ -88,7 +82,6 @@ protected:
 	
 	int m_minTextureUnits;
 	int m_maxMSAALevel;
-	int m_MSAALevel;
 	int m_vsync;
 	
 	Renderer * m_renderer;
