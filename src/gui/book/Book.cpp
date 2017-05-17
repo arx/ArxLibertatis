@@ -1394,8 +1394,6 @@ static void ARX_INTERFACE_ManageOpenedBook_Map()
 void ARX_INTERFACE_ManageOpenedBook() {
 	arx_assert(entities.player());
 	
-	GRenderer->SetRenderState(Renderer::Fog, false);
-	
 	BOOKDEC.x = 0;
 	BOOKDEC.y = 0;
 	
