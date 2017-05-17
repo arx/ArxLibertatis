@@ -1513,6 +1513,8 @@ void HudRoot::draw() {
 	
 	setHudTextureState();
 	
+	UseRenderState state(render2D());
+	
 	if(player.Interface & INTER_COMBATMODE) {
 		hitStrengthGauge.draw();
 	}
