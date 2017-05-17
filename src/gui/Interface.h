@@ -237,12 +237,9 @@ void ARX_INTERFACE_NoteOpen(gui::Note::Type type, const std::string & tex);
 void ARX_INTERFACE_NoteClose();
 void ARX_INTERFACE_NoteClear();
 
-void ARX_INTERFACE_HALO_Flush();
 bool NeedHalo(Entity * io);
 
 void ARX_INTERFACE_HALO_Render(Color3f color, long _lHaloType, TextureContainer * haloTexture, Vec2f pos, Vec2f ratio);
-void ARX_INTERFACE_HALO_Draw(Entity * io, TextureContainer * tc, TextureContainer * tc2, Vec2f pos, Vec2f ratio);
-void ReleaseHalo();
 void ResetPlayerInterface();
 void Set_DragInter(Entity * io);
 void ARX_INTERFACE_DrawNumber(const Vec2f & pos, const long num, const int _iNb, const Color color, float scale);

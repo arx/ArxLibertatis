@@ -1147,7 +1147,6 @@ void ArxGame::shutdownGame() {
 	ARX_Changelevel_CurGame_Clear();
 	
 	//Halo
-	ReleaseHalo();
 	FreeSnapShot();
 	ARX_INPUT_Release();
 	
@@ -2088,16 +2087,12 @@ void ArxGame::renderLevel() {
 
 	if(DRAGINTER) {
 		ARX_INTERFACE_RenderCursor();
-
 		{
 			UseRenderState state(render3D());
 			PopAllTriangleListOpaque();
 		}
 		PopAllTriangleListTransparency();
-
-		ARX_INTERFACE_HALO_Flush();
 	} else {
-		ARX_INTERFACE_HALO_Flush();
 		ARX_INTERFACE_RenderCursor();
 	}
 

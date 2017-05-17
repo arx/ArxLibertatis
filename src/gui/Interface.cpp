@@ -130,15 +130,6 @@ ZeniMax Media Inc., Suite 120, Rockville, Maryland 20850 USA.
 
 extern EERIE_3DOBJ *arrowobj;
 
-struct ARX_INTERFACE_HALO_STRUCT
-{
-	Entity  * io;
-	TextureContainer * tc;
-	TextureContainer * tc2;
-	Vec2f m_pos;
-	Vec2f ratio;
-};
-
 extern TextureContainer * inventory_font;
 
 extern AnimationDuration PLAYER_ROTATION;
@@ -153,8 +144,6 @@ extern bool WILLRETURNTOFREELOOK;
 extern bool SHOW_INGAME_MINIMAP;
 
 //-----------------------------------------------------------------------------
-
-std::vector<ARX_INTERFACE_HALO_STRUCT> deferredUiHalos;
 
 E_ARX_STATE_MOUSE	eMouseState;
 Vec2s MemoMouse;
@@ -372,35 +361,6 @@ void ARX_INTERFACE_HALO_Render(Color3f color,
 	float height = haloTexture->m_size.y * ratio.y;
 	
 	EERIEDrawBitmap(Rectf(Vec2f(x, y), width, height), 0.00001f, haloTexture, col);
-}
-
-void ARX_INTERFACE_HALO_Draw(Entity * io, TextureContainer * tc, TextureContainer * tc2, Vec2f pos, Vec2f ratio) {
-	
-	ARX_INTERFACE_HALO_STRUCT halo;
-	halo.io = io;
-	halo.tc = tc;
-	halo.tc2 = tc2;
-	halo.m_pos = pos;
-	halo.ratio = ratio;
-	
-	deferredUiHalos.push_back(halo);
-}
-
-void ReleaseHalo() {
-	
-	deferredUiHalos.clear();
-}
-
-void ARX_INTERFACE_HALO_Flush() {
-	
-	BOOST_FOREACH(ARX_INTERFACE_HALO_STRUCT & halo, deferredUiHalos) {
-		ARX_INTERFACE_HALO_Render(
-		halo.io->halo.color,
-		halo.io->halo.flags,
-		halo.tc2, halo.m_pos, halo.ratio);
-	}
-	
-	deferredUiHalos.clear();
 }
 
 //-----------------------------------------------------------------------------
