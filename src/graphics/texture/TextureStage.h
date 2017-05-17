@@ -30,7 +30,6 @@ public:
 	enum TextureOp {
 		OpDisable,    //!< Disables output from this texture stage and all stages with a higher index.
 		OpSelectArg1, //!< Use this texture stage's first color or alpha argument, unmodified, as the output.
-		OpSelectArg2, //!< Use this texture stage's second color or alpha argument, unmodified, as the output.
 		OpModulate,   //!< Multiply the components of the arguments together.
 		OpModulate2X, //!< Multiply the components of the arguments, and shift the products to the left 1 bit.
 		OpModulate4X, //!< Multiply the components of the arguments, and shift the products to the left 2 bits.
