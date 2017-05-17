@@ -101,9 +101,8 @@ void CursorTrail::DrawLine2D(float _fSize, Color3f color) {
 	
 	Color3f currentColor = incColor;
 	
-	GRenderer->SetBlendFunc(BlendDstColor, BlendInvDstColor);
+	UseRenderState state(render2D().blend(BlendDstColor, BlendInvDstColor));
 	GRenderer->ResetTexture(0);
-	GRenderer->SetRenderState(Renderer::AlphaBlending, true);
 	
 	TexturedVertex v[4];
 	v[0].p.z = v[1].p.z = v[2].p.z = v[3].p.z = 0.f;
@@ -136,7 +135,6 @@ void CursorTrail::DrawLine2D(float _fSize, Color3f color) {
 		
 	}
 	
-	GRenderer->SetRenderState(Renderer::AlphaBlending, false);
 }
 
 
@@ -225,8 +223,7 @@ void MenuCursor::DrawCursor() {
 
 		lFrameDiff = PlatformDuration_ZERO;
 	}
-
-	GRenderer->SetRenderState(Renderer::AlphaBlending, false);
+	
 }
 
 ThumbnailCursor g_thumbnailCursor;
