@@ -161,12 +161,6 @@ void GLTextureStage::setOp(OpType alpha, TextureOp op) {
 			break;
 		}
 		
-		case OpSelectArg2: {
-			setOp(alpha, GL_REPLACE, 1);
-			setArg(alpha, Arg0, args[alpha][Arg1]);
-			break;
-		}
-		
 		case OpModulate: {
 			setOp(alpha, GL_MODULATE, 1);
 			setArg(alpha, Arg0, args[alpha][Arg0]);
@@ -198,9 +192,7 @@ void GLTextureStage::setOp(OpType alpha, TextureOp op) {
 void GLTextureStage::setOp(OpType alpha, TextureOp op, TextureArg arg0, TextureArg arg1) {
 	
 	if(op != OpDisable) {
-		if(op != OpSelectArg2) {
-			args[alpha][0] = arg0;
-		}
+		args[alpha][0] = arg0;
 		if(op != OpSelectArg1) {
 			args[alpha][1] = arg1;
 		}
