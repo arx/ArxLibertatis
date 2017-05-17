@@ -239,6 +239,10 @@ void SecondaryInventoryHud::draw() {
 				
 				Color color = (io->poisonous && io->poisonous_count!=0) ? Color::green : Color::white;
 				
+				if(tc2) {
+					ARX_INTERFACE_HALO_Render(io->halo.color, io->halo.flags, tc2, p, Vec2f(m_scale));
+				}
+				
 				Rectf rect(p, size.x * m_scale, size.y * m_scale);
 				// TODO use alpha blending so this will be anti-aliased even w/o alpha to coverage
 				EERIEDrawBitmap(rect, 0.001f, tc, color);
@@ -254,10 +258,6 @@ void SecondaryInventoryHud::draw() {
 				if(overlayColor != Color::black) {
 					UseRenderState state(render2D().blendAdditive());
 					EERIEDrawBitmap(rect, 0.001f, tc, overlayColor);
-				}
-				
-				if(tc2) {
-					ARX_INTERFACE_HALO_Draw(io, tc, tc2, p, Vec2f(m_scale));
 				}
 				
 				if((io->ioflags & IO_ITEM) && io->_itemdata->count != 1)
