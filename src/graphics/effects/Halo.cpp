@@ -50,24 +50,21 @@ void Halo_Render() {
 	
 	if(HALOCUR[0] == 0 && HALOCUR[1] == 0)
 		return;
-
+	
 	GRenderer->ResetTexture(0);
-	GRenderer->SetBlendFunc(BlendSrcColor, BlendOne);
-	GRenderer->SetRenderState(Renderer::AlphaBlending, true);
-	GRenderer->SetCulling(CullNone);
-	GRenderer->SetRenderState(Renderer::DepthWrite, false);
-
+	
+	RenderState baseState = render3D().depthWrite(false);
+	
 	if(HALOCUR[0] > 0) {
-		GRenderer->SetBlendFunc(BlendZero, BlendInvSrcColor);
+		UseRenderState state(baseState.blend(BlendZero, BlendInvSrcColor));
 		EERIEDRAWPRIM(Renderer::TriangleList, LATERDRAWHALO[0], HALOCUR[0] * 6);
 		HALOCUR[0] = 0;
 	}
-
+	
 	if(HALOCUR[1] > 0) {
-		GRenderer->SetBlendFunc(BlendSrcColor, BlendOne);
+		UseRenderState state(baseState.blend(BlendSrcColor, BlendOne));
 		EERIEDRAWPRIM(Renderer::TriangleList, LATERDRAWHALO[1], HALOCUR[1] * 6);
 		HALOCUR[1] = 0;
 	}
-
-	GRenderer->SetRenderState(Renderer::AlphaBlending, false);
+	
 }
