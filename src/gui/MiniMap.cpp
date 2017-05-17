@@ -564,12 +564,13 @@ void MiniMap::drawBackground(int showLevel, Rect boundaries, Vec2f start, float 
 		fadeBounds.bottom = checked_range_cast<Rect::Num>((boundaries.bottom - fadeBorder) * g_sizeRatio.y);
 	}
 	
-	GRenderer->SetRenderState(Renderer::AlphaBlending, true);
+	RenderState desiredState = render2D();
 	if(invColor) {
-		GRenderer->SetBlendFunc(BlendOne, BlendInvSrcColor);
+		desiredState.setBlend(BlendOne, BlendInvSrcColor);
 	} else {
-		GRenderer->SetBlendFunc(BlendZero, BlendInvSrcColor);
+		desiredState.setBlend(BlendZero, BlendInvSrcColor);
 	}
+	UseRenderState state(desiredState);
 	GRenderer->GetTextureStage(0)->setWrapMode(TextureStage::WrapClamp);
 	GRenderer->GetTextureStage(0)->setMinFilter(TextureStage::FilterLinear);
 	GRenderer->GetTextureStage(0)->setMagFilter(TextureStage::FilterLinear);
@@ -699,7 +700,6 @@ void MiniMap::drawBackground(int showLevel, Rect boundaries, Vec2f start, float 
 		EERIEDRAWPRIM(Renderer::TriangleList, &m_mapVertices[0], m_mapVertices.size());
 	}
 	
-	GRenderer->SetRenderState(Renderer::AlphaBlending, false);
 }
 
 void MiniMap::drawPlayer(float playerSize, Vec2f playerPos, bool alphaBlending) {
