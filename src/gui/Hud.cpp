@@ -164,11 +164,12 @@ void HitStrengthGauge::update() {
 }
 
 void HitStrengthGauge::draw() {
-	GRenderer->SetBlendFunc(BlendOne, BlendOne);
-	GRenderer->SetRenderState(Renderer::AlphaBlending, true);
-	EERIEDrawBitmap(m_rect, 0.0001f, m_fullTex, Color3f::gray(m_intensity).to<u8>());
 	
-	GRenderer->SetRenderState(Renderer::AlphaBlending, false);
+	{
+		UseRenderState state(render2D().blendAdditive());
+		EERIEDrawBitmap(m_rect, 0.0001f, m_fullTex, Color3f::gray(m_intensity).to<u8>());
+	}
+	
 	EERIEDrawBitmap(m_rect, 0.0001f, m_emptyTex, Color::white);
 	
 	if(m_flashActive && player.m_skillFull.etheralLink >= 40) {
@@ -176,10 +177,8 @@ void HitStrengthGauge::draw() {
 		float j = 1.0f - m_flashIntensity;
 		Color col = (j < 0.5f) ? Color3f(j*2.0f, 1, 0).to<u8>() : Color3f(1, m_flashIntensity, 0).to<u8>();
 		
-		GRenderer->SetBlendFunc(BlendOne, BlendOne);
-		GRenderer->SetRenderState(Renderer::AlphaBlending, true);
+		UseRenderState state(render2D().blendAdditive());
 		EERIEDrawBitmap(m_hitRect, 0.0001f, m_hitTex, col);
-		GRenderer->SetRenderState(Renderer::AlphaBlending, false);
 	}
 }
 
