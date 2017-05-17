@@ -308,6 +308,8 @@ static void RenderBookPlayerCharacter() {
 	
 	Anglef ePlayerAngle = Anglef::ZERO;
 	
+	GRenderer->SetAntialiasing(true);
+	
 	if(BOOKZOOM) {
 		Rect vp;
 		vp.left = static_cast<int>(rec.left + 52.f * g_sizeRatio.x);
@@ -390,6 +392,8 @@ static void RenderBookPlayerCharacter() {
 	if(BOOKZOOM) {
 		GRenderer->SetScissor(Rect::ZERO);
 	}
+	
+	GRenderer->SetAntialiasing(false);
 	
 	SetActiveCamera(oldcam);
 	PrepareCamera(oldcam, g_size);

@@ -826,7 +826,6 @@ bool ArxGame::initGame()
 		return false;
 	}
 	
-	ARX_SetAntiAliasing();
 	ARXMenu_Options_Video_SetFogDistance(config.video.fogDistance);
 	ARXMenu_Options_Video_SetDetailsQuality(config.video.levelOfDetail);
 	ARXMenu_Options_Audio_SetMasterVolume(config.audio.volume);
@@ -1990,6 +1989,8 @@ void ArxGame::renderLevel() {
 	
 	cinematicBorder.render();
 	
+	GRenderer->SetAntialiasing(true);
+	
 	GRenderer->SetRenderState(Renderer::AlphaBlending, false);
 	GRenderer->SetFogParams(fZFogStart * ACTIVECAM->cdepth, fZFogEnd * ACTIVECAM->cdepth);
 	GRenderer->SetFogColor(ulBKGColor);
@@ -2064,6 +2065,8 @@ void ArxGame::renderLevel() {
 	RenderBatcher::getInstance().render();
 	GRenderer->SetRenderState(Renderer::DepthWrite, true);
 	GRenderer->SetFogColor(ulBKGColor);
+	
+	GRenderer->SetAntialiasing(false);
 	
 	// Manage Death visual & Launch menu...
 	ARX_PLAYER_Manage_Death();
@@ -2320,8 +2323,6 @@ void ArxGame::onRendererInit(Renderer & renderer) {
 	pDynamicVertexBuffer_TLVERTEX = new CircularVertexBuffer<TexturedVertex>(vb);
 	
 	MenuReInitAll();
-	
-	ARX_SetAntiAliasing();
 	
 	// The app is ready to go
 	m_bReady = true;

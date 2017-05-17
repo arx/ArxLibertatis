@@ -685,8 +685,6 @@ public:
 			addCenter(cb);
 		}
 		
-		ARX_SetAntiAliasing();
-		
 		{
 			PanelWidget * panel = new PanelWidget;
 			std::string szMenuText = getLocalised("system_menus_options_video_vsync", "VSync");
@@ -860,7 +858,6 @@ private:
 	
 	void onChangedAntialiasing(int state) {
 		config.video.antialiasing = state ? true : false;
-		ARX_SetAntiAliasing();
 	}
 	
 	void onChangedVSync(int pos, const std::string & str) {
