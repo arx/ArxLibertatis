@@ -2116,11 +2116,11 @@ void ArxGame::renderLevel() {
 	if(DRAGINTER) {
 		ARX_INTERFACE_RenderCursor();
 
-		GRenderer->SetRenderState(Renderer::AlphaBlending, false);
-		PopAllTriangleListOpaque();
-		GRenderer->SetRenderState(Renderer::AlphaBlending, true);
+		{
+			UseRenderState state(render3D());
+			PopAllTriangleListOpaque();
+		}
 		PopAllTriangleListTransparency();
-		GRenderer->SetRenderState(Renderer::AlphaBlending, false);
 
 		ARX_INTERFACE_HALO_Flush();
 	} else {
