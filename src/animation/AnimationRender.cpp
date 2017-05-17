@@ -153,11 +153,13 @@ static void PopOneTriangleListTransparency(TextureContainer *_pTex) {
 	   && !batch.count[BatchBucket_Multiplicative]) {
 		return;
 	}
+	
+	RenderState baseState = render3D().depthWrite(false);
 
 	GRenderer->SetTexture(0, _pTex);
 
 	if(batch.count[BatchBucket_Blended]) {
-		GRenderer->SetBlendFunc(BlendDstColor, BlendSrcColor);
+		UseRenderState state(baseState.blend(BlendDstColor, BlendSrcColor));
 		if(batch.count[BatchBucket_Blended]) {
 			EERIEDRAWPRIM(Renderer::TriangleList, batch.list[BatchBucket_Blended],
 						  batch.count[BatchBucket_Blended]);
@@ -166,7 +168,7 @@ static void PopOneTriangleListTransparency(TextureContainer *_pTex) {
 	}
 
 	if(batch.count[BatchBucket_Additive]) {
-		GRenderer->SetBlendFunc(BlendOne, BlendOne);
+		UseRenderState state(baseState.blend(BlendOne, BlendOne));
 		if(batch.count[BatchBucket_Additive]) {
 			EERIEDRAWPRIM(Renderer::TriangleList, batch.list[BatchBucket_Additive],
 						  batch.count[BatchBucket_Additive]);
@@ -175,7 +177,7 @@ static void PopOneTriangleListTransparency(TextureContainer *_pTex) {
 	}
 
 	if(batch.count[BatchBucket_Subtractive]) {
-		GRenderer->SetBlendFunc(BlendZero, BlendInvSrcColor);
+		UseRenderState state(baseState.blend(BlendZero, BlendInvSrcColor));
 		if(batch.count[BatchBucket_Subtractive]) {
 			EERIEDRAWPRIM(Renderer::TriangleList, batch.list[BatchBucket_Subtractive],
 						  batch.count[BatchBucket_Subtractive]);
@@ -184,7 +186,7 @@ static void PopOneTriangleListTransparency(TextureContainer *_pTex) {
 	}
 
 	if(batch.count[BatchBucket_Multiplicative]) {
-		GRenderer->SetBlendFunc(BlendOne, BlendOne);
+		UseRenderState state(baseState.blend(BlendOne, BlendOne));
 		if(batch.count[BatchBucket_Multiplicative]) {
 			EERIEDRAWPRIM(Renderer::TriangleList, batch.list[BatchBucket_Multiplicative],
 						  batch.count[BatchBucket_Multiplicative]);
@@ -213,14 +215,12 @@ void PopAllTriangleListTransparency() {
 	ARX_PROFILE_FUNC();
 	
 	GRenderer->SetFogColor(Color::none);
-	GRenderer->SetRenderState(Renderer::AlphaBlending, true);
-	GRenderer->SetRenderState(Renderer::DepthWrite, false);
-	GRenderer->SetBlendFunc(BlendDstColor, BlendOne);
 	GRenderer->SetAlphaFunc(Renderer::CmpGreater, .5f);
-
-	GRenderer->SetCulling(CullNone);
-
-	PopOneTriangleList(&TexSpecialColor, true);
+	
+	{
+		UseRenderState state(render3D().depthWrite(false).blend(BlendDstColor, BlendOne));
+		PopOneTriangleList(&TexSpecialColor, true);
+	}
 
 	TextureContainer * pTex = GetTextureList();
 	while(pTex) {
@@ -229,8 +229,6 @@ void PopAllTriangleListTransparency() {
 	}
 
 	GRenderer->SetFogColor(ulBKGColor);
-	GRenderer->SetRenderState(Renderer::AlphaBlending, false);
-	GRenderer->SetRenderState(Renderer::DepthWrite, true);
 	GRenderer->SetAlphaFunc(Renderer::CmpNotEqual, 0.f);
 }
 
