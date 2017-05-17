@@ -387,24 +387,11 @@ public:
 	void setRenderState(RenderState state) { m_state = state; }
 	RenderState getRenderState() const { return m_state; }
 	
-	// TODO remove these when all uses are changed to RenderState
-	void SetBlendFunc(BlendingFactor srcFactor, BlendingFactor dstFactor) {
-		m_srcBlend = srcFactor, m_dstBlend = dstFactor;
-		if(m_hasBlend) {
-			m_state.setBlend(srcFactor, dstFactor);
-		}
-	}
-	
 protected:
 	
 	std::vector<TextureStage *> m_TextureStages;
 	bool m_initialized;
 	RenderState m_state;
-	
-	// TODO remove these when all uses are changed to RenderState
-	bool m_hasBlend;
-	BlendingFactor m_srcBlend;
-	BlendingFactor m_dstBlend;
 	
 	void onRendererInit();
 	void onRendererShutdown();

@@ -61,9 +61,6 @@ void Renderer::SetTexture(unsigned int textureStage, TextureContainer * pTexture
 
 Renderer::Renderer()
 	: m_initialized(false)
-	, m_hasBlend()
-	, m_srcBlend(BlendOne)
-	, m_dstBlend(BlendZero)
 {
 	m_state.setColorKey(true); // TODO only enable this when needed
 }
