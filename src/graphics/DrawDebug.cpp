@@ -113,10 +113,7 @@ static void drawDebugBoundingBox(const Rectf & box, Color color = Color::white) 
 
 static void drawDebugLights() {
 	
-	GRenderer->SetRenderState(Renderer::AlphaBlending, true);
-	GRenderer->SetCulling(CullNone);
-	
-	GRenderer->SetBlendFunc(BlendOne, BlendOne);
+	UseRenderState state(RenderState().blendAdditive());
 	
 	for(size_t i = 0; i < g_staticLightsMax; i++) {
 		
@@ -136,7 +133,7 @@ static void drawDebugLights() {
 		);
 		
 		if(mouseTestRect.contains(Vec2i(DANAEMouse))) {
-			
+			UseRenderState state(RenderState().depthTest(true));
 			Sphere fallstart;
 			fallstart.origin = light->pos;
 			fallstart.radius = light->fallstart;
@@ -161,15 +158,9 @@ static void drawDebugLights() {
 		EERIEDrawSprite(light->pos, 11.f, g_lightSourceTexture, light->rgb.to<u8>(), 0.5f);
 	}
 	
-	GRenderer->SetCulling(CullCCW);
-	GRenderer->SetRenderState(Renderer::AlphaBlending, false);
-	
 }
 
 static void drawDebugPortals() {
-	
-	GRenderer->SetRenderState(Renderer::Fog, false);
-	GRenderer->SetRenderState(Renderer::DepthTest, false);
 	
 	for(size_t i = 0; i < portals->portals.size(); i++) {
 		
@@ -189,14 +180,9 @@ static void drawDebugPortals() {
 		
 	}
 	
-	GRenderer->SetRenderState(Renderer::DepthTest, true);
-	GRenderer->SetRenderState(Renderer::Fog, true);
-	
 }
 
 static void drawDebugPaths() {
-	
-	GRenderer->SetRenderState(Renderer::DepthTest, false);
 	
 	for(long i = 0; i < nbARXpaths; i++) {
 		
@@ -275,11 +261,11 @@ static void drawDebugPaths() {
 		
 	}
 	
-	GRenderer->SetRenderState(Renderer::DepthTest, true);
-	
 }
 
 static void drawDebugPathFinding() {
+	
+	UseRenderState state(RenderState().depthTest(true));
 	
 	if(!ACTIVEBKG || !ACTIVEBKG->anchors) {
 		return;
@@ -350,7 +336,6 @@ static void drawDebugPathFinding() {
 			if(k1 >= 0 && k1 < ACTIVEBKG->nbanchors) {
 				if(closerThan(ACTIVEBKG->anchors[k1].pos, player.pos, DebugTextMaxDistance)) {
 					drawTextAt(hFontDebug, ACTIVEBKG->anchors[k1].pos, entity->idString());
-					GRenderer->SetRenderState(Renderer::DepthTest, true);
 				}
 			}
 		}
@@ -360,6 +345,8 @@ static void drawDebugPathFinding() {
 }
 
 static void drawDebugFogs() {
+	
+	UseRenderState state(RenderState().depthTest(true));
 	
 	RenderMaterial mat;
 	mat.setBlendType(RenderMaterial::Opaque);
@@ -393,8 +380,6 @@ static void drawDebugCollisionShape(EERIE_3DOBJ * obj) {
 	sphere.origin = obj->pbox->vert[0].pos;
 	sphere.radius = obj->pbox->radius;
 	drawLineSphere(sphere, Color::white);
-	
-	GRenderer->SetRenderState(Renderer::DepthTest, false);
 	
 	Color shapeColor = Color::yellow;
 	
@@ -436,6 +421,7 @@ static void drawDebugEntityPhysicsCylinder(Entity * io) {
 }
 
 static void drawDebugEntityPhysicsCylinders() {
+	
 	for(size_t i = 1; i < entities.size(); i++) {
 		const EntityHandle handle = EntityHandle(i);
 		Entity * entity = entities[handle];
@@ -743,8 +729,6 @@ static void drawDebugMaterials() {
 	
 	if(count) {
 		
-		GRenderer->SetRenderState(Renderer::DepthTest, false);
-		
 		drawLine(pp[0], pp[1], 0.1f, Color::magenta);
 		drawLine(pp[2], pp[0], 0.1f, Color::magenta);
 		if(count == 4) {
@@ -821,8 +805,6 @@ static void drawDebugMaterials() {
 			hFontDebug->draw(textpos.x, textpos.y, text, Color::gray(0.7f));
 		}
 		
-		GRenderer->SetRenderState(Renderer::DepthTest, true);
-		
 	}
 	
 }
@@ -876,6 +858,9 @@ void drawDebugRender() {
 	if(g_debugView == DebugView_None) {
 		return;
 	}
+	
+	RenderState nullState;
+	UseRenderState state(nullState);
 	
 	std::stringstream ss;
 	ss << "Debug Display: ";
