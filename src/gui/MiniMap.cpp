@@ -317,14 +317,14 @@ void MiniMap::showPlayerMiniMap(int showLevel) {
 
 void MiniMap::showBookMiniMap(int showLevel) {
 	
+	UseRenderState state(render2D());
+	
 	// First Load Minimap TC & DATA if needed
 	if(m_levels[showLevel].m_texContainer == NULL) {
 		getData(showLevel);
 	}
 	
 	if(m_levels[showLevel].m_texContainer) {
-		
-		GRenderer->SetRenderState(Renderer::DepthTest, false);
 		
 		float zoom = 900.f;
 		
