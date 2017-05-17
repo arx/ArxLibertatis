@@ -521,6 +521,19 @@ static void ARX_INTERFACE_RenderCursorInternal(bool flag) {
 				Vec2f size(tc->m_size.x, tc->m_size.y);
 				size *= iconScale;
 				
+				TextureContainer * haloTc = NULL;
+				
+				if(COMBINE && NeedHalo(COMBINE))
+					haloTc = tc->getHalo();
+				
+				if(haloTc) {
+					Color3f haloColor = COMBINE->halo.color;
+					if(SpecialCursor != CURSOR_COMBINEON) {
+						haloColor *= Color(255, 170, 102).to<float>();
+					}
+					ARX_INTERFACE_HALO_Render(haloColor, COMBINE->halo.flags, haloTc, mousePos, Vec2f(iconScale));
+				}
+				
 				if(SpecialCursor == CURSOR_COMBINEON) {
 					EERIEDrawBitmap(Rectf(mousePos, size.x, size.y), .00001f, tc, Color::white);
 					
