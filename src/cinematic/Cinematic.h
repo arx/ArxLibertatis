@@ -139,7 +139,6 @@ public:
 	void OneTimeSceneReInit();
 	void Render(PlatformDuration frameDuration);
 	void New();
-	void DeleteDeviceObjects();
 	
 	void DeleteAllBitmap();
 	

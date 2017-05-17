@@ -237,26 +237,6 @@ void Cinematic::InitDeviceObjects() {
 	
 }
 
-void Cinematic::DeleteDeviceObjects() {
-	
-	GRenderer->SetRenderState(Renderer::DepthTest, true);
-	GRenderer->SetRenderState(Renderer::DepthWrite, true);
-	GRenderer->SetCulling(CullCCW);
-	GRenderer->GetTextureStage(0)->setWrapMode(TextureStage::WrapRepeat);
-	
-	GRenderer->GetTextureStage(0)->setMipMapLODBias(0);
-	GRenderer->SetRenderState(Renderer::AlphaBlending, false);
-	GRenderer->SetRenderState(Renderer::Fog, true);
-	
-	GRenderer->GetTextureStage(0)->setColorOp(TextureStage::OpModulate,
-	                                          TextureStage::ArgTexture,
-	                                          TextureStage::ArgDiffuse);
-	GRenderer->GetTextureStage(0)->setAlphaOp(TextureStage::OpModulate,
-	                                          TextureStage::ArgTexture,
-	                                          TextureStage::ArgDiffuse);
-	
-}
-
 static float LightRND;
 
 static Color CalculLight(CinematicLight * light, Vec2f pos, Color col) {
