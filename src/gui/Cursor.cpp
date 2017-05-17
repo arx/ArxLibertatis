@@ -303,7 +303,6 @@ bool Manage3DCursor(Entity * io, bool simulate) {
 			}
 		}
 
-		GRenderer->SetCulling(CullNone);
 		return true;
 	} else {
 		CANNOT_PUT_IT_HERE = EntityMoveCursor_Throw;
@@ -435,9 +434,6 @@ static void ARX_INTERFACE_RenderCursorInternal(bool flag) {
 		return;
 	}
 		
-	if(!SPECIAL_DRAGINTER_RENDER)
-		GRenderer->SetCulling(CullNone);
-	
 	if(COMBINE || COMBINEGOLD) {
 		if(SpecialCursor == CURSOR_INTERACTION_ON)
 			SpecialCursor = CURSOR_COMBINEON;
