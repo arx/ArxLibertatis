@@ -358,13 +358,13 @@ void ARX_INTERFACE_HALO_Render(Color3f color,
 	color.b = glm::clamp(color.b * power, 0.f, 1.f);
 	Color col = Color4f(color).to<u8>();
 
+	RenderState desiredState = render2D().blendAdditive();
 	if(_lHaloType & HALO_NEGATIVE) {
-		GRenderer->SetBlendFunc(BlendZero, BlendInvSrcColor);
-	} else {
-		GRenderer->SetBlendFunc(BlendSrcAlpha, BlendOne);
+		desiredState.setColorKey(true); // TODO this is only needed when drawing the halo in front of items
+		desiredState.setBlend(BlendZero, BlendInvSrcColor);
 	}
 	
-	GRenderer->SetRenderState(Renderer::AlphaBlending, true);
+	UseRenderState state(desiredState);
 	
 	float x = pos.x - TextureContainer::HALO_RADIUS * ratio.x;
 	float y = pos.y - TextureContainer::HALO_RADIUS * ratio.y;
@@ -372,8 +372,6 @@ void ARX_INTERFACE_HALO_Render(Color3f color,
 	float height = haloTexture->m_size.y * ratio.y;
 	
 	EERIEDrawBitmap(Rectf(Vec2f(x, y), width, height), 0.00001f, haloTexture, col);
-
-	GRenderer->SetRenderState(Renderer::AlphaBlending, false);
 }
 
 void ARX_INTERFACE_HALO_Draw(Entity * io, TextureContainer * tc, TextureContainer * tc2, Vec2f pos, Vec2f ratio) {
