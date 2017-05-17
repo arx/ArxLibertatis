@@ -1547,7 +1547,10 @@ void ARX_SCENE_Render() {
 		SPECIAL_DRAGINTER_RENDER=0;
 	}
 	
-	PopAllTriangleListOpaque();
+	{
+		UseRenderState state(render3D());
+		PopAllTriangleListOpaque();
+	}
 	
 	// *Now* draw the player
 	if(entities.player()->animlayer[0].cur_anim) {
@@ -1556,10 +1559,10 @@ void ARX_SCENE_Render() {
 		if(!EXTERNALVIEW) {
 			// In first person mode, always render the player over other objects
 			// in order to avoid clipping the player and weapon with walls.
-			GRenderer->SetRenderState(Renderer::DepthTest, false);
+			UseRenderState state(render3D().depthTest(false));
 			PopAllTriangleListOpaque(/*clear=*/false);
-			GRenderer->SetRenderState(Renderer::DepthTest, true);
 		}
+		UseRenderState state(render3D());
 		PopAllTriangleListOpaque();
 	}
 	
