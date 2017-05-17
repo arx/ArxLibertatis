@@ -274,7 +274,8 @@ protected:
 		#ifdef GL_ARB_buffer_storage
 		if(m_usage == Renderer::Static && GLEW_ARB_buffer_storage) {
 			glBufferStorage(GL_ARRAY_BUFFER, capacity() * sizeof(Vertex), data, 0);
-		} else
+		}
+		else
 		#endif
 		{
 			GLenum usage = arxToGlBufferUsage[m_usage];
