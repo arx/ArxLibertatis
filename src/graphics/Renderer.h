@@ -388,7 +388,6 @@ public:
 	RenderState getRenderState() const { return m_state; }
 	
 	// TODO remove these when all uses are changed to RenderState
-	void SetCulling(CullingMode mode) { m_state.setCull(mode); }
 	void SetDepthBias(int depthBias) { m_state.setDepthOffset(depthBias); }
 	void SetBlendFunc(BlendingFactor srcFactor, BlendingFactor dstFactor) {
 		m_srcBlend = srcFactor, m_dstBlend = dstFactor;
