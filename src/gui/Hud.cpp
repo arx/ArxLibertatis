@@ -1340,14 +1340,14 @@ void StealthGauge::update() {
 }
 
 void StealthGauge::draw() {
+	
 	if(!m_visible) {
 		return;
 	}
 	
-	GRenderer->SetRenderState(Renderer::AlphaBlending, true);
-	GRenderer->SetBlendFunc(BlendOne, BlendOne);
+	UseRenderState state(render2D().blendAdditive());
+	
 	EERIEDrawBitmap(m_rect, 0.01f, m_texture, m_color);
-	GRenderer->SetRenderState(Renderer::AlphaBlending, false);
 }
 
 bool PLAYER_INTERFACE_SHOW = true;
