@@ -734,14 +734,11 @@ void MiniMap::drawPlayer(float playerSize, Vec2f playerPos, bool alphaBlending) 
 	verts[2].p.y = (playerPos.y + r3.y * ca - r3.x * sa) * g_sizeRatio.y;
 	
 	GRenderer->ResetTexture(0);
-	GRenderer->SetRenderState(Renderer::AlphaBlending, alphaBlending);
-	if(alphaBlending) {
-		GRenderer->SetBlendFunc(BlendOne, BlendInvSrcColor);
-	}
+	
+	UseRenderState state(alphaBlending ? render2D().blend(BlendOne, BlendInvSrcColor) : render2D());
 	
 	EERIEDRAWPRIM(Renderer::TriangleFan, verts);
 	
-	GRenderer->SetRenderState(Renderer::AlphaBlending, false);
 }
 
 void MiniMap::drawDetectedEntities(int showLevel, Vec2f start, float zoom) {
