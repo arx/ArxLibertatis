@@ -369,7 +369,7 @@ static void RenderBookPlayerCharacter() {
 	
 	GRenderer->GetTextureStage(0)->setMipFilter(TextureStage::FilterNone);
 	{
-		UseRenderState state(render3D());
+		UseRenderState state(render3D().fog(false));
 		PopAllTriangleListOpaque();
 	}
 	{
@@ -431,8 +431,6 @@ static void RenderBookPlayerCharacter() {
 			
 			tod->ioflags |= IO_ICONIC;
 	}
-	
-	GRenderer->SetCulling(CullNone);
 	
 	if(Entity * todraw = entities.get(player.equiped[EQUIP_SLOT_RING_LEFT])) {
 		
@@ -1531,8 +1529,8 @@ void ARX_INTERFACE_ManageOpenedBook_SpellsDraw() {
 		}
 		
 		if(spellInfo.tc) {
-			GRenderer->SetRenderState(Renderer::AlphaBlending, true);
-			GRenderer->SetBlendFunc(BlendZero, BlendInvSrcColor);
+			
+			UseRenderState state(render2D().blend(BlendZero, BlendInvSrcColor));
 			
 			Color color;
 			if(flyingover) {
@@ -1555,7 +1553,6 @@ void ARX_INTERFACE_ManageOpenedBook_SpellsDraw() {
 			DrawBookInterfaceItem(spellInfo.tc, fPos, color, 0.000001f);
 			GRenderer->GetTextureStage(0)->setMagFilter(TextureStage::FilterNearest);
 			
-			GRenderer->SetRenderState(Renderer::AlphaBlending, false);
 		}
 		
 		tmpPos.x ++;
