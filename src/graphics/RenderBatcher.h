@@ -54,7 +54,7 @@ struct RenderMaterial {
 	RenderMaterial();
 
 	bool operator<(const RenderMaterial & other) const;
-	void apply() const;
+	RenderState apply() const;
 
 	Texture * getTexture() const { return m_texture; }
 	void resetTexture() { m_texture = NULL; }
