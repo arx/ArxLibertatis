@@ -57,9 +57,6 @@ void ARXDRAW_DrawInterShadows() {
 	
 	g_shadowBatch.clear();
 	
-	GRenderer->SetFogColor(Color::none);
-	GRenderer->SetDepthBias(1);
-	
 	for(long i=0; i<TREATZONE_CUR; i++) {
 		if(treatio[i].show != 1 || !treatio[i].io)
 			continue;
@@ -117,8 +114,8 @@ void ARXDRAW_DrawInterShadows() {
 				ltv[3].p = in + Vec3f(0, 0, s1);
 				
 				if(ltv[0].p.z > 0.f && ltv[1].p.z > 0.f && ltv[2].p.z > 0.f) {
-					AddToShadowBatch(&ltv[0], &ltv[1], &ltv[2]);
-					AddToShadowBatch(&ltv[0], &ltv[2], &ltv[3]);
+					AddToShadowBatch(&ltv[0], &ltv[2], &ltv[1]);
+					AddToShadowBatch(&ltv[0], &ltv[3], &ltv[2]);
 				}
 			}
 		} else {
@@ -153,24 +150,18 @@ void ARXDRAW_DrawInterShadows() {
 				ltv[2].p = in + Vec3f(s1, 0, s1);
 				ltv[3].p = in + Vec3f(0, 0, s1);
 				
-				AddToShadowBatch(&ltv[0], &ltv[1], &ltv[2]);
-				AddToShadowBatch(&ltv[0], &ltv[2], &ltv[3]);
+				AddToShadowBatch(&ltv[0], &ltv[2], &ltv[1]);
+				AddToShadowBatch(&ltv[0], &ltv[3], &ltv[2]);
 			}
 		}
 	}
 	
-	if(g_shadowBatch.size() > 0)
-	{
-		GRenderer->SetRenderState(Renderer::DepthWrite, false);
-		GRenderer->SetBlendFunc(BlendZero, BlendInvSrcColor);
-		GRenderer->SetRenderState(Renderer::AlphaBlending, true);
+	if(g_shadowBatch.size() > 0) {
+		GRenderer->SetFogColor(Color::none);
+		UseRenderState state(render3D().depthWrite(false).blend(BlendZero, BlendInvSrcColor).depthOffset(1));
 		GRenderer->SetTexture(0, Boom);
-		
 		EERIEDRAWPRIM(Renderer::TriangleList, &g_shadowBatch[0], g_shadowBatch.size());
-		
-		GRenderer->SetRenderState(Renderer::AlphaBlending, false);
-		GRenderer->SetRenderState(Renderer::DepthWrite, true);
-		GRenderer->SetDepthBias(0);
 		GRenderer->SetFogColor(ulBKGColor);
 	}
+	
 }
