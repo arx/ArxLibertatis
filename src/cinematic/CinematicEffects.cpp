@@ -139,12 +139,10 @@ bool FX_FlashBlanc(Vec2f size, float speed, Color color, float fps, float currfp
 	if(FlashAlpha == 0.f)
 		FlashAlpha = 1.f;
 	
-	GRenderer->GetTextureStage(0)->setColorOp(TextureStage::ArgDiffuse);
-	GRenderer->GetTextureStage(0)->setAlphaOp(TextureStage::ArgDiffuse);
-	GRenderer->SetBlendFunc(BlendSrcAlpha, BlendOne);
+	UseRenderState state(render2D().blendAdditive());
+	GRenderer->ResetTexture(0);
 	
-	color.a = 255.f * FlashAlpha;
-	ColorRGBA col = color.toRGBA();
+	ColorRGBA col = (color * FlashAlpha).toRGB();
 	
 	TexturedVertex v[4];
 	v[0].p = Vec3f(0.f, 0.f, 0.01f);
