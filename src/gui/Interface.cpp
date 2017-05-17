@@ -211,6 +211,8 @@ void ARX_INTERFACE_DrawNumber(const Vec2f & pos, const long num, const int _iNb,
 
 	if(inventory_font) {
 		
+		GRenderer->SetTexture(0, inventory_font);
+		
 		char tx[7];
 		float ttx;
 		float divideX = 1.f/((float) inventory_font->m_size.x);
@@ -241,7 +243,6 @@ void ARX_INTERFACE_DrawNumber(const Vec2f & pos, const long num, const int _iNb,
 				ttx = 0.5f * divideY;
 				v[1].uv.y = v[0].uv.y = divideY + ttx;
 				v[2].uv.y = v[3].uv.y = divideY * 12;
-				GRenderer->SetTexture(0, inventory_font);
 
 				EERIEDRAWPRIM(Renderer::TriangleFan, v, 4);
 			}
