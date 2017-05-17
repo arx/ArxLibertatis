@@ -470,7 +470,8 @@ inline RenderState render2D() {
 
 //! Default render state for 3D rendering
 inline RenderState render3D() {
-	return RenderState().depthTest().depthWrite().cull().colorKey();
+	// TODO only enable colorKey when needed
+	return RenderState().depthTest().depthWrite().fog().colorKey();
 }
 
 #endif // ARX_GRAPHICS_RENDERER_H
