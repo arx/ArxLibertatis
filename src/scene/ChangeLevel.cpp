@@ -50,6 +50,8 @@ ZeniMax Media Inc., Suite 120, Rockville, Maryland 20850 USA.
 #include <iomanip>
 #include <sstream>
 #include <cstdio>
+#include <limits>
+#include <ctime>
 
 #include <boost/algorithm/string/case_conv.hpp>
 
@@ -86,6 +88,8 @@ ZeniMax Media Inc., Suite 120, Rockville, Maryland 20850 USA.
 #include "io/fs/SystemPaths.h"
 #include "io/SaveBlock.h"
 #include "io/log/Logger.h"
+
+#include "math/Random.h"
 
 #include "platform/Platform.h"
 
@@ -124,9 +128,21 @@ static Entity * ARX_CHANGELEVEL_Pop_IO(const std::string & idString, EntityInsta
 
 static fs::path CURRENT_GAME_FILE;
 
+struct Playthrough {
+	
+	std::time_t startTime;
+	
+	u64 uniqueId;
+	
+	u64 oldestALVersion;
+	u64 newestALVersion;
+	
+};
+
 static ArxInstant ARX_CHANGELEVEL_DesiredTime = ArxInstant_ZERO;
 long DONT_WANT_PLAYER_INZONE = 0;
 static SaveBlock * g_currentSavedGame = NULL;
+static Playthrough g_currentPlathrough;
 
 static Entity * convertToValidIO(const std::string & idString) {
 	
@@ -238,6 +254,11 @@ static bool openCurrentSavedGameFile() {
 }
 
 bool ARX_CHANGELEVEL_StartNew() {
+	
+	g_currentPlathrough.startTime = std::time(NULL);
+	g_currentPlathrough.uniqueId = Random::get(u64(1), std::numeric_limits<u64>::max());
+	g_currentPlathrough.oldestALVersion = arx_version_number;
+	g_currentPlathrough.newestALVersion = arx_version_number;
 	
 	if(!ARX_Changelevel_CurGame_Clear()) {
 		return false;
