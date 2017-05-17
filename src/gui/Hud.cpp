@@ -750,11 +750,10 @@ void MemorizedRunesHud::draw() {
 			}
 			
 			if(!player.hasRune(player.SpellToMemorize.iSpellSymbols[i])) {
-				GRenderer->SetBlendFunc(BlendInvDstColor, BlendOne);
-				GRenderer->SetRenderState(Renderer::AlphaBlending, true);
+				UseRenderState state(render2D().blend(BlendInvDstColor, BlendOne));
 				EERIEDrawBitmap2(rect, 0, cursorMovable, Color3f::gray(.8f).to<u8>());
-				GRenderer->SetRenderState(Renderer::AlphaBlending, false);
 			}
+			
 			pos.x += 32 * m_scale;
 		}
 	}
