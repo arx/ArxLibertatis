@@ -179,9 +179,7 @@ void CycleTextWidget::Render() {
 	}
 	
 	if(iPos >= 0 && size_t(iPos) < vText.size() && vText[iPos]) {
-		GRenderer->SetRenderState(Renderer::AlphaBlending, false);
 		vText[iPos]->Render();
-		GRenderer->SetRenderState(Renderer::AlphaBlending, false);
 	}
 }
 
