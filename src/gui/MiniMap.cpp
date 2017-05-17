@@ -351,6 +351,8 @@ void MiniMap::showBookMiniMap(int showLevel) {
 
 void MiniMap::showBookEntireMap(int showLevel) {
 	
+	UseRenderState state(render2D());
+	
 	// First Load Minimap TC & DATA if needed
 	if(m_levels[showLevel].m_texContainer == NULL) {
 		getData(showLevel);
@@ -359,8 +361,6 @@ void MiniMap::showBookEntireMap(int showLevel) {
 	if(!m_levels[showLevel].m_texContainer) {
 		return;
 	}
-	
-	GRenderer->SetRenderState(Renderer::DepthTest, false);
 	
 	float zoom = 250.f;
 	
