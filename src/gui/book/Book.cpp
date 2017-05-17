@@ -336,7 +336,6 @@ static void RenderBookPlayerCharacter() {
 		pos = Vec3f(8, 162, 75);
 		eLight1.pos.z = -90.f;
 	} else {
-		GRenderer->SetScissor(rec);
 		
 		ePlayerAngle.setYaw(-20.f);
 		pos = Vec3f(20.f, 96.f, 260.f);
@@ -368,17 +367,17 @@ static void RenderBookPlayerCharacter() {
 	
 	IN_BOOK_DRAW = 0;
 	
-	if(ARXmenu.currentmode == AMCM_NEWQUEST) {
-		GRenderer->SetRenderState(Renderer::DepthTest, true);
-		GRenderer->GetTextureStage(0)->setMipFilter(TextureStage::FilterNone);
-		GRenderer->SetRenderState(Renderer::AlphaBlending, false);
-		PopAllTriangleListOpaque();
-		GRenderer->SetRenderState(Renderer::AlphaBlending, true);
-		PopAllTriangleListTransparency();
-		GRenderer->SetRenderState(Renderer::AlphaBlending, false);
-		GRenderer->GetTextureStage(0)->setMipFilter(TextureStage::FilterLinear);
-		GRenderer->SetRenderState(Renderer::DepthTest, false);
-	}
+	Halo_Render();
+	
+	GRenderer->SetRenderState(Renderer::DepthTest, true);
+	GRenderer->GetTextureStage(0)->setMipFilter(TextureStage::FilterNone);
+	GRenderer->SetRenderState(Renderer::AlphaBlending, false);
+	PopAllTriangleListOpaque();
+	GRenderer->SetRenderState(Renderer::AlphaBlending, true);
+	PopAllTriangleListTransparency();
+	GRenderer->SetRenderState(Renderer::AlphaBlending, false);
+	GRenderer->GetTextureStage(0)->setMipFilter(TextureStage::FilterLinear);
+	GRenderer->SetRenderState(Renderer::DepthTest, false);
 	
 	g_culledDynamicLights[0] = SavePDL[0];
 	g_culledDynamicLights[1] = SavePDL[1];
@@ -389,7 +388,9 @@ static void RenderBookPlayerCharacter() {
 	
 	player.m_improve = ti;
 	
-	GRenderer->SetScissor(Rect::ZERO);
+	if(BOOKZOOM) {
+		GRenderer->SetScissor(Rect::ZERO);
+	}
 	
 	GRenderer->SetRenderState(Renderer::AlphaBlending, false);
 	GRenderer->SetCulling(CullNone);
@@ -495,7 +496,6 @@ static void RenderBookPlayerCharacter() {
 	if(!BOOKZOOM)
 		ARX_EQUIPMENT_AttachPlayerWeaponToBack();
 	
-	Halo_Render();
 }
 
 static void ARX_INTERFACE_RELEASESOUND() {
