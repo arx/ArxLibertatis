@@ -2537,6 +2537,8 @@ void ARX_PLAYER_AddGold(Entity * gold) {
 
 void ARX_PLAYER_Start_New_Quest() {
 	
+	LogInfo << "Starting a new playthrough";
+	
 	player.m_cheatSkinButtonClickCount = 0;
 	player.m_cheatQuickGenButtonClickCount = 0;
 	EERIE_PATHFINDER_Clear();
