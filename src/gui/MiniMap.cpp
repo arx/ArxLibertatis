@@ -274,6 +274,8 @@ void MiniMap::purgeTexContainer() {
 
 void MiniMap::showPlayerMiniMap(int showLevel) {
 	
+	UseRenderState state(render2D());
+	
 	ARX_PROFILE_FUNC();
 	
 	const float miniMapZoom = 300.f; // zoom of the minimap
@@ -288,8 +290,6 @@ void MiniMap::showPlayerMiniMap(int showLevel) {
 	}
 	
 	if(m_levels[showLevel].m_texContainer) {
-		
-		GRenderer->SetRenderState(Renderer::DepthTest, false);
 		
 		Vec2f start = Vec2f_ZERO;
 		
