@@ -52,9 +52,8 @@ void DrawMagicSightInterface() {
 	if(eyeball.exist == 1 || !Flying_Eye)
 		return;
 	
+	UseRenderState state(render2D().blend(BlendZero, BlendInvSrcColor));
 	
-	GRenderer->SetBlendFunc(BlendZero, BlendInvSrcColor);
-
 	float col = 0.75f + PULSATE * (1.f / 20);
 
 	if(col > 1.f) {
@@ -80,8 +79,7 @@ void DrawMagicSightInterface() {
 			MagicSightFader = 0.f;
 		}
 	}
-
-	GRenderer->SetBlendFunc(BlendOne, BlendOne);
+	
 }
 
 
