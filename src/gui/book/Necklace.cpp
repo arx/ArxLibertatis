@@ -113,7 +113,9 @@ static void PlayerBookDrawRune(Rune rune) {
 
 void ARX_INTERFACE_ManageOpenedBook_Finish(const Vec2f & mousePos)
 {
-
+	
+	UseRenderState state(render3D().depthTest(false).fog(false));
+	
 	Vec3f pos = Vec3f(0.f, 0.f, 2100.f);
 	Anglef angle = Anglef::ZERO;
 	
@@ -168,9 +170,6 @@ void ARX_INTERFACE_ManageOpenedBook_Finish(const Vec2f & mousePos)
 			if(rune->angle.getYaw() < 0.f)
 				rune->angle.setYaw(0.f);
 			
-			GRenderer->SetRenderState(Renderer::DepthWrite, true);
-			GRenderer->SetRenderState(Renderer::AlphaBlending, false);
-			
 			// Now draw the rune
 			TransformInfo t2(pos, glm::quat_cast(toRotationMatrix(angle)));
 			DrawEERIEInter(rune, t2, NULL, false, 0.f);
@@ -200,8 +199,8 @@ void ARX_INTERFACE_ManageOpenedBook_Finish(const Vec2f & mousePos)
 				}
 				
 				if(r) {
-					GRenderer->SetRenderState(Renderer::AlphaBlending, true);
-					GRenderer->SetBlendFunc(BlendOne, BlendOne);
+					
+					UseRenderState state(render3D().depthTest(false).fog(false).blendAdditive());
 					
 					TransformInfo t(pos, glm::quat_cast(toRotationMatrix(angle)));
 					DrawEERIEInter(rune, t, NULL, false, 0.f);
@@ -209,8 +208,6 @@ void ARX_INTERFACE_ManageOpenedBook_Finish(const Vec2f & mousePos)
 					rune->angle.setYaw(rune->angle.getYaw() + g_framedelay*2.f);
 					
 					PopAllTriangleListOpaque();
-					
-					GRenderer->SetRenderState(Renderer::AlphaBlending, false);
 					
 					SpecialCursor=CURSOR_INTERACTION_ON;
 					
@@ -221,8 +218,6 @@ void ARX_INTERFACE_ManageOpenedBook_Finish(const Vec2f & mousePos)
 			}
 		}
 	}
-	
-	GRenderer->SetCulling(CullCCW);
 	
 	*light = tl;
 	
