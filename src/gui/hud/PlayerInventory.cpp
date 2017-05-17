@@ -257,13 +257,12 @@ void PlayerInventoryHud::draw() {
 				EERIEDrawBitmap(rect, 0.001f, m_heroInventoryUp, Color::white);
 				
 				if(rect.contains(Vec2f(DANAEMouse))) {
-					GRenderer->SetBlendFunc(BlendOne, BlendOne);
-					GRenderer->SetRenderState(Renderer::AlphaBlending, true);
+					
 					SpecialCursor=CURSOR_INTERACTION_ON;
 					
+					UseRenderState state(render2D().blendAdditive());
 					EERIEDrawBitmap(rect, 0.001f, m_heroInventoryUp, Color::white);
 					
-					GRenderer->SetRenderState(Renderer::AlphaBlending, false);
 					SpecialCursor=CURSOR_INTERACTION_ON;
 					
 					if(eeMouseUp1()) {
@@ -278,12 +277,10 @@ void PlayerInventoryHud::draw() {
 				EERIEDrawBitmap(rect, 0.001f, m_heroInventoryDown, Color::white);
 				
 				if(rect.contains(Vec2f(DANAEMouse))) {
-					GRenderer->SetBlendFunc(BlendOne, BlendOne);
-					GRenderer->SetRenderState(Renderer::AlphaBlending, true);
 					
+					UseRenderState state(render2D().blendAdditive());
 					EERIEDrawBitmap(rect, 0.001f, m_heroInventoryDown, Color::white);
 					
-					GRenderer->SetRenderState(Renderer::AlphaBlending, false);
 					SpecialCursor=CURSOR_INTERACTION_ON;
 					
 					if(eeMouseUp1()) {
