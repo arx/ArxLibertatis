@@ -337,7 +337,8 @@ void RaycastDebugClear() {
 
 void RaycastDebugDraw() {
 	
-	GRenderer->SetRenderState(Renderer::DepthTest, false);
+	RenderState nullState;
+	UseRenderState state(nullState);
 	
 	for(auto & ray: dbg_rays) {
 		drawLine(ray.first, ray.second, Color::magenta);
