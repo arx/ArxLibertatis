@@ -22,6 +22,7 @@
 #include <iostream>
 
 #include "core/Version.h"
+#include "io/log/Logger.h"
 #include "platform/Environment.h"
 #include "platform/ProgramOptions.h"
 #include "util/cmdline/Parser.h"
@@ -64,7 +65,8 @@ ExitStatus parseCommandLine(int argc, char ** argv) {
 		
 	} catch(util::cmdline::error & e) {
 		
-		std::cerr << e.what() << "\n\n";
+		LogCritical << e.what();
+		std::cerr << "\n";
 		showCommandLineHelp(cli, std::cerr);
 		
 		return ExitFailure;
