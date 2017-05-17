@@ -1984,11 +1984,8 @@ void ArxGame::renderLevel() {
 	
 	GRenderer->SetAntialiasing(true);
 	
-	GRenderer->SetRenderState(Renderer::AlphaBlending, false);
 	GRenderer->SetFogParams(fZFogStart * ACTIVECAM->cdepth, fZFogEnd * ACTIVECAM->cdepth);
 	GRenderer->SetFogColor(ulBKGColor);
-	GRenderer->SetRenderState(Renderer::DepthWrite, true);
-	GRenderer->SetRenderState(Renderer::DepthTest, true);
 
 	ARX_SCENE_Render();
 	
@@ -2002,10 +1999,6 @@ void ArxGame::renderLevel() {
 	ParticleSparkUpdate();
 	
 	GRenderer->SetFogColor(ulBKGColor);
-	GRenderer->SetRenderState(Renderer::DepthTest, true);
-	GRenderer->SetBlendFunc(BlendOne, BlendOne);
-	GRenderer->SetRenderState(Renderer::DepthWrite, false);
-	GRenderer->SetRenderState(Renderer::AlphaBlending, false);
 	
 	// End Particles
 
@@ -2013,9 +2006,6 @@ void ArxGame::renderLevel() {
 	if(!((player.Interface & INTER_MAP) && !(player.Interface & INTER_COMBATMODE))) {
 		ARX_MAGICAL_FLARES_Update();
 	}
-
-	GRenderer->SetRenderState(Renderer::AlphaBlending, true);
-	GRenderer->SetRenderState(Renderer::DepthWrite, false);
 
 	// Checks some specific spell FX
 	CheckMr();
@@ -2032,20 +2022,12 @@ void ArxGame::renderLevel() {
 		EERIEDrawBitmap(Rectf(g_size), 0.0001f, NULL, Color(71, 71, 255));
 	}
 
-	GRenderer->SetRenderState(Renderer::AlphaBlending, false);
-	GRenderer->SetRenderState(Renderer::DepthWrite, true);
-
 	// Red screen fade for damages.
 	ARX_DAMAGE_Show_Hit_Blood();
-
-	// Manage Notes/Books opened on screen
-	GRenderer->SetRenderState(Renderer::Fog, false);
 
 	// Update spells
 	ARX_SPELLS_Update();
 
-	GRenderer->SetCulling(CullNone);
-		
 	GRenderer->SetFogColor(Color::none);
 	RenderBatcher::getInstance().render();
 	GRenderer->SetFogColor(ulBKGColor);
