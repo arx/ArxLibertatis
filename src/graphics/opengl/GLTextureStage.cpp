@@ -80,7 +80,6 @@ struct GLTexEnvParam {
 	GLenum operands[2];
 	
 	GLint normal;
-	GLint complement;
 	
 	GLenum scale;
 	
@@ -92,23 +91,20 @@ static const GLTexEnvParam glTexEnv[] = {
 		{ GL_SOURCE0_RGB, GL_SOURCE1_RGB },
 		{ GL_OPERAND0_RGB, GL_OPERAND1_RGB },
 		GL_SRC_COLOR,
-		GL_ONE_MINUS_SRC_COLOR,
 		GL_RGB_SCALE
 	}, {
 		GL_COMBINE_ALPHA,
 		{ GL_SOURCE0_ALPHA, GL_SOURCE1_ALPHA },
 		{ GL_OPERAND0_ALPHA, GL_OPERAND1_ALPHA },
 		GL_SRC_ALPHA,
-		GL_ONE_MINUS_SRC_ALPHA,
 		GL_ALPHA_SCALE
 	}
 };
 
 void GLTextureStage::setArg(OpType alpha, Arg idx, TextureArg arg) {
 	
-	setTexEnv(GL_TEXTURE_ENV, glTexEnv[alpha].sources[idx], glTexSource[arg & ArgMask]);
-	GLint op = (arg & ArgComplement) ? glTexEnv[alpha].complement : glTexEnv[alpha].normal;
-	setTexEnv(GL_TEXTURE_ENV, glTexEnv[alpha].operands[idx], op);
+	setTexEnv(GL_TEXTURE_ENV, glTexEnv[alpha].sources[idx], glTexSource[arg]);
+	setTexEnv(GL_TEXTURE_ENV, glTexEnv[alpha].operands[idx], glTexEnv[alpha].normal);
 }
 
 void GLTextureStage::setOp(OpType alpha, GLint op, GLfloat scale) {

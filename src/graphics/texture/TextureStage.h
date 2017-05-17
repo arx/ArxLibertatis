@@ -40,8 +40,6 @@ public:
 		ArgDiffuse    = 0x00000,
 		ArgCurrent    = 0x00001,
 		ArgTexture    = 0x00002,
-		ArgMask       = 0x0000F,
-		ArgComplement = 0x00010
 	};
 	
 	//! Texture wrapping/addressing mode
