@@ -425,6 +425,8 @@ CursorAnimatedHand cursorAnimatedHand = CursorAnimatedHand();
 
 static void ARX_INTERFACE_RenderCursorInternal(bool flag) {
 	
+	UseRenderState state(render2D());
+	
 	if(SelectSpellTargetCursorRender()) {
 		return;
 	}
