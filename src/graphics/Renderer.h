@@ -388,14 +388,6 @@ public:
 	RenderState getRenderState() const { return m_state; }
 	
 	// TODO remove these when all uses are changed to RenderState
-	enum RenderStateFlag {
-		AlphaBlending,
-		ColorKey,
-		DepthTest,
-		DepthWrite,
-		Fog,
-	};
-	void SetRenderState(RenderStateFlag renderState, bool enable);
 	void SetCulling(CullingMode mode) { m_state.setCull(mode); }
 	void SetDepthBias(int depthBias) { m_state.setDepthOffset(depthBias); }
 	void SetBlendFunc(BlendingFactor srcFactor, BlendingFactor dstFactor) {
