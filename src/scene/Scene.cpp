@@ -1314,6 +1314,8 @@ static void BackgroundRenderTransparent(size_t room_num) {
 	
 	ARX_PROFILE_FUNC();
 	
+	RenderState baseState = render3D().depthWrite(false).depthOffset(2);
+	
 	//render transparency
 	EERIE_ROOM_DATA & room = portals->rooms[room_num];
 	
@@ -1331,6 +1333,7 @@ static void BackgroundRenderTransparent(size_t room_num) {
 			if(!roomMat.count[transType])
 				continue;
 
+			RenderState desiredState = baseState;
 			switch(transType) {
 			case BatchBucket_Opaque: {
 				// This should currently not happen
@@ -1338,27 +1341,25 @@ static void BackgroundRenderTransparent(size_t room_num) {
 				continue;
 			}
 			case BatchBucket_Blended: {
-				GRenderer->SetDepthBias(2);
-				GRenderer->SetBlendFunc(BlendSrcColor, BlendDstColor);
+				desiredState.setBlend(BlendSrcColor, BlendDstColor);
 				break;
 			}
 			case BatchBucket_Multiplicative: {
-				GRenderer->SetDepthBias(2);
-				GRenderer->SetBlendFunc(BlendOne, BlendOne);
+				desiredState.setBlend(BlendOne, BlendOne);
 				break;
 			}
 			case BatchBucket_Additive: {
-				GRenderer->SetDepthBias(2);
-				GRenderer->SetBlendFunc(BlendOne, BlendOne);
+				desiredState.setBlend(BlendOne, BlendOne);
 				break;
 			}
 			case BatchBucket_Subtractive: {
-				GRenderer->SetDepthBias(8);
-				GRenderer->SetBlendFunc(BlendZero, BlendInvSrcColor);
+				desiredState.setDepthOffset(8);
+				desiredState.setBlend(BlendZero, BlendInvSrcColor);
 				break;
 			}
 			}
-
+			
+			UseRenderState state(desiredState);
 			room.pVertexBuffer->drawIndexed(
 				Renderer::TriangleList,
 				roomMat.uslNbVertex,
@@ -1563,8 +1564,6 @@ void ARX_SCENE_Render() {
 	}
 	
 	ARXDRAW_DrawEyeBall();
-	
-	GRenderer->SetRenderState(Renderer::DepthWrite, false);
 	
 	PolyBoomDraw();
 	
