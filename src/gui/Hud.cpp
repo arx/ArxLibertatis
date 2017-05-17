@@ -973,18 +973,6 @@ void PrecastSpellsGui::PrecastSpellIconSlot::updateInput() {
 
 void PrecastSpellsGui::PrecastSpellIconSlot::draw() {
 	EERIEDrawBitmap(m_rect, 0.01f, m_tc, m_color);
-	
-	GRenderer->SetBlendFunc(BlendZero, BlendOne);
-	
-	Rectf rect2 = m_rect;
-	rect2.move(-1, -1);
-	EERIEDrawBitmap(rect2, 0.0001f, m_tc, m_color);
-	
-	Rectf rect3 = m_rect;
-	rect3.move(1, 1);
-	EERIEDrawBitmap(rect3, 0.0001f, m_tc, m_color);
-	
-	GRenderer->SetBlendFunc(BlendOne, BlendOne);
 }
 
 PrecastSpellsGui::PrecastSpellsGui()
