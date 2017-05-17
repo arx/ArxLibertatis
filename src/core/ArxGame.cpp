@@ -2074,7 +2074,7 @@ void ArxGame::renderLevel() {
 	// Remove the Alphablend State if needed : NO Z Clear
 	GRenderer->SetRenderState(Renderer::AlphaBlending, false);
 	GRenderer->SetRenderState(Renderer::Fog, false);
-
+	
 	// Draw game interface if needed
 	if(ARXmenu.currentmode == AMCM_OFF && !cinematicBorder.isActive()) {
 	
