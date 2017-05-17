@@ -170,6 +170,8 @@ static void ARX_SPEECH_Render() {
 	
 	int iEnd = igrec + sSize.y;
 	
+	UseRenderState state(render2D());
+	
 	for(size_t i = 0; i < MAX_SPEECH; i++) {
 		
 		if(speech[i].timecreation == ArxInstant_ZERO || speech[i].text.empty()) {
@@ -182,9 +184,6 @@ static void ARX_SPEECH_Render() {
 			16 * minSizeRatio()
 		);
 		
-		GRenderer->SetRenderState(Renderer::AlphaBlending, true);
-		GRenderer->SetBlendFunc(BlendSrcAlpha, BlendInvSrcAlpha);
-		
 		EERIEDrawBitmap(rect, .00001f, arx_logo_tc, Color::white);
 		
 		igrec += ARX_UNICODE_DrawTextInRect(hFontInBook, Vec2f(120.f * g_sizeRatio.x, igrec), 500 * g_sizeRatio.x,
@@ -195,8 +194,7 @@ static void ARX_SPEECH_Render() {
 			break;
 		}
 	}
-
-	GRenderer->SetRenderState(Renderer::AlphaBlending, false);
+	
 }
 
 void ARX_SPEECH_Check()
