@@ -36,6 +36,10 @@ HudIconBase::HudIconBase()
 void HudIconBase::draw() {
 	arx_assert(m_tex);
 	
+	if(m_haloActive && m_tex->getHalo()) {
+		ARX_INTERFACE_HALO_Render(m_haloColor, HALO_ACTIVE, m_tex->getHalo(), m_rect.topLeft(), Vec2f(m_scale));
+	}
+	
 	EERIEDrawBitmap(m_rect, 0.001f, m_tex, Color::white);
 	
 	if(m_isSelected) {
@@ -43,9 +47,6 @@ void HudIconBase::draw() {
 		EERIEDrawBitmap(m_rect, 0.001f, m_tex, Color::white);
 	}
 	
-	if(m_haloActive && m_tex->getHalo()) {
-		ARX_INTERFACE_HALO_Render(m_haloColor, HALO_ACTIVE, m_tex->getHalo(), m_rect.topLeft(), Vec2f(m_scale));
-	}
 }
 
 
