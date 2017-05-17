@@ -671,9 +671,12 @@ void QuickSaveIconGui::update() {
 }
 
 void QuickSaveIconGui::draw() {
+	
 	if(m_remainingTime == ArxDuration_ZERO) {
 		return;
 	}
+	
+	UseRenderState state(render2D().blend(BlendSrcColor, BlendOne));
 	
 	// Flash the icon twice, starting at about 0.7 opacity
 	float step = 1.f - toMs(m_remainingTime) * (1.f / toMs(m_duration));
@@ -682,13 +685,9 @@ void QuickSaveIconGui::draw() {
 	TextureContainer * tex = TextureContainer::LoadUI("graph/interface/icons/menu_main_save");
 	arx_assert(tex);
 	
-	GRenderer->SetRenderState(Renderer::AlphaBlending, true);
-	GRenderer->SetBlendFunc(BlendSrcColor, BlendOne);
-	
 	Vec2f size = Vec2f(tex->size());
 	EERIEDrawBitmap2(Rectf(Vec2f(0, 0), size.x, size.y), 0.f, tex, Color::gray(alpha));
 	
-	GRenderer->SetRenderState(Renderer::AlphaBlending, false);
 }
 
 
