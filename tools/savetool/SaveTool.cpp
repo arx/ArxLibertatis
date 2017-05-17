@@ -174,5 +174,7 @@ int utf8_main(int argc, char ** argv) {
 		
 	}
 	
+	Logger::shutdown();
+	
 	return (status == ExitFailure) ? EXIT_FAILURE : EXIT_SUCCESS;
 }
