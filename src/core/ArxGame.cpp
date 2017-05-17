@@ -2057,15 +2057,11 @@ void ArxGame::renderLevel() {
 
 	// INTERFACE
 	RenderBatcher::getInstance().clear();
-
-	// Remove the Alphablend State if needed : NO Z Clear
-	GRenderer->SetRenderState(Renderer::AlphaBlending, false);
 	
 	// Draw game interface if needed
 	if(ARXmenu.currentmode == AMCM_OFF && !cinematicBorder.isActive()) {
 	
 		GRenderer->GetTextureStage(0)->setWrapMode(TextureStage::WrapClamp);
-		GRenderer->SetRenderState(Renderer::DepthTest, false);
 		
 		ARX_INTERFACE_NoteManage();
 		g_hudRoot.draw();
@@ -2075,9 +2071,8 @@ void ArxGame::renderLevel() {
 			RenderBatcher::getInstance().render();
 		}
 		
-		GRenderer->SetRenderState(Renderer::DepthTest, true);
 		GRenderer->GetTextureStage(0)->setWrapMode(TextureStage::WrapRepeat);
-		GRenderer->SetRenderState(Renderer::AlphaBlending, false);
+		
 	}
 
 	update2DFX();
@@ -2108,7 +2103,6 @@ void ArxGame::renderLevel() {
 	}
 
 	// CURSOR Rendering
-	GRenderer->SetRenderState(Renderer::AlphaBlending, false);
 
 	if(DRAGINTER) {
 		ARX_INTERFACE_RenderCursor();
@@ -2125,8 +2119,6 @@ void ArxGame::renderLevel() {
 		ARX_INTERFACE_RenderCursor();
 	}
 
-	GRenderer->SetRenderState(Renderer::Fog, true);
-	
 	CheatDrawText();
 
 	if(FADEDIR)
