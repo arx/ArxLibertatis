@@ -1422,9 +1422,9 @@ void ARX_INTERFACE_ManageOpenedBook() {
 				DrawBookInterfaceItem(g_bookResouces.ptexspellbook, bookPos, Color::white, 0.9999f);
 				ARX_INTERFACE_ManageOpenedBook_LeftTabs_Spells();
 
-				Rect runeDrawRect = Rect(Vec2i((Vec2f(97, 64) + Vec2f(29, 210)) * g_sizeRatio),
-				                         s32(513 * 0.43f * g_sizeRatio.x),
-				                         s32(313 * 0.25f * g_sizeRatio.y));
+				Rect runeDrawRect = Rect(Vec2i((Vec2f(g_bookRect.topLeft()) + Vec2f(29, 210)) * g_sizeRatio),
+				                         s32(g_bookRect.width() * 0.43f * g_sizeRatio.x),
+				                         s32(g_bookRect.height() * 0.25f * g_sizeRatio.y));
 				
 				ARX_SPELLS_UpdateBookSymbolDraw(runeDrawRect);
 				break;
