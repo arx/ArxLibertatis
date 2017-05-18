@@ -750,7 +750,7 @@ void MemorizedRunesHud::draw() {
 			EERIEDrawBitmap2(rect, 0, tc, Color::white);
 			
 			if(!player.hasRune(player.SpellToMemorize.iSpellSymbols[i])) {
-				UseRenderState state(render2D().blend(BlendInvDstColor, BlendOne));
+				UseRenderState state(render2D().blend(BlendInvDstColor, BlendOne).colorKey());
 				EERIEDrawBitmap2(rect, 0, cursorMovable, Color3f::gray(.8f).to<u8>());
 			}
 			
