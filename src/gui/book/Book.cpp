@@ -1533,7 +1533,7 @@ void ARX_INTERFACE_ManageOpenedBook_SpellsDraw() {
 		
 		if(spellInfo.tc) {
 			
-			UseRenderState state(render2D().blend(BlendZero, BlendInvSrcColor));
+			UseRenderState state(render2D().blend(BlendZero, BlendInvSrcColor).colorKey());
 			
 			Color color;
 			if(flyingover) {
