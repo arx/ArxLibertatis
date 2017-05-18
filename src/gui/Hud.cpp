@@ -676,7 +676,7 @@ void QuickSaveIconGui::draw() {
 		return;
 	}
 	
-	UseRenderState state(render2D().blend(BlendSrcColor, BlendOne));
+	UseRenderState state(render2D().blend(BlendSrcColor, BlendOne).colorKey());
 	
 	// Flash the icon twice, starting at about 0.7 opacity
 	float step = 1.f - toMs(m_remainingTime) * (1.f / toMs(m_duration));
