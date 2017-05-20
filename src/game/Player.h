@@ -341,7 +341,7 @@ struct ARXCHARACTER {
 	
 	ARXCHARACTER()
 		: m_strikeDirection(0)
-		, m_weaponBlocked(-1)
+		, m_weaponBlocked(AnimationDuration::ofRaw(-1)) // FIXME inband signaling
 		, jumpstarttime(ArxInstant_ZERO)
 		, jumplastposition(0.f)
 		, jumpphase(NotJumping)

@@ -953,7 +953,7 @@ static void ARX_DAMAGES_UpdateDamage(DamageHandle j, ArxInstant now) {
 	float dmg;
 	if(damage.params.flags & DAMAGE_NOT_FRAME_DEPENDANT) {
 		dmg = damage.params.damages;
-	} else if(damage.params.duration == ArxDuration(-1)) {
+	} else if(damage.params.duration == ArxDuration::ofRaw(-1)) {
 		dmg = damage.params.damages;
 	} else {
 		ArxDuration FD = ArxDurationMs(g_framedelay);
@@ -1143,7 +1143,7 @@ static void ARX_DAMAGES_UpdateDamage(DamageHandle j, ArxInstant now) {
 		}
 	}
 	
-	if(damage.params.duration == ArxDuration(-1))
+	if(damage.params.duration == ArxDuration::ofRaw(-1))
 		damage.exist = false;
 	else if(now > damage.start_time + damage.params.duration)
 		damage.exist = false;
