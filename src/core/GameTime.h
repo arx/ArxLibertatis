@@ -81,11 +81,11 @@ public:
 	}
 	
 	inline PlatformInstant frameStart() {
-		return PlatformInstant(s64(m_frameStartTime));
+		return PlatformInstant::ofRaw(s64(m_frameStartTime));
 	}
 
 	inline PlatformDuration lastFrameDuration() {
-		return PlatformDuration(s64(m_lastFrameDuration));
+		return PlatformDuration::ofRaw(s64(m_lastFrameDuration));
 	}
 };
 
@@ -117,7 +117,7 @@ public:
 	}
 	
 	ArxInstant now() const {
-		return checked_range_cast<ArxInstant>(m_now_us / 1000);
+		return ArxInstant::ofRaw(m_now_us / 1000);
 	}
 	
 	void update() {
