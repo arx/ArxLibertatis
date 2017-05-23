@@ -68,6 +68,7 @@
 #include "io/fs/FilePath.h"
 #include "io/fs/Filesystem.h"
 
+#include "platform/Lock.h"
 #include "platform/WindowsUtils.h"
 
 #include "util/String.h"
@@ -494,6 +495,57 @@ bool isFileDescriptorDisabled(int fd) {
 	#endif
 	
 	return false;
+}
+
+static Lock g_environmentLock;
+
+bool hasEnvironmentVariable(const char * name) {
+	#if ARX_PLATFORM == ARX_PLATFORM_WIN32
+	return GetEnvironmentVariable(platform::WideString(name), NULL, 0) != 0;
+	#else
+	return std::getenv(name) != NULL;
+	#endif
+}
+
+void setEnvironmentVariable(const char * name, const char * value) {
+	#if ARX_PLATFORM == ARX_PLATFORM_WIN32
+	SetEnvironmentVariableW(platform::WideString(name), platform::WideString(value));
+	#elif ARX_HAVE_SETENV
+	setenv(name, value, 1);
+	#endif
+}
+
+void unsetEnvironmentVariable(const char * name) {
+	#if ARX_PLATFORM == ARX_PLATFORM_WIN32
+	SetEnvironmentVariableW(platform::WideString(name), NULL);
+	#elif ARX_HAVE_UNSETENV
+	unsetenv(name);
+	#endif
+}
+
+void EnvironmentLock::lock() {
+	g_environmentLock.lock();
+	for(size_t i = 0; i < m_count; i++) {
+		if(m_overrides[i].name) {
+			if(hasEnvironmentVariable(m_overrides[i].name)) {
+				// Don't override variables already set by the user
+				m_overrides[i].name = NULL;
+			} else if(m_overrides[i].value) {
+				setEnvironmentVariable(m_overrides[i].name, m_overrides[i].value);
+			} else {
+				unsetEnvironmentVariable(m_overrides[i].name);
+			}
+		}
+	}
+}
+
+void EnvironmentLock::unlock() {
+	for(size_t i = 0; i < m_count; i++) {
+		if(m_overrides[i].name) {
+			unsetEnvironmentVariable(m_overrides[i].name);
+		}
+	}
+	g_environmentLock.unlock();
 }
 
 } // namespace platform
