@@ -132,16 +132,16 @@ bool SDL2Window::initializeFramework() {
 	                             "." ARX_STR(SDL_PATCHLEVEL);
 	CrashHandler::setVariable("SDL version (headers)", headerVersion);
 	
+	#if ARX_PLATFORM != ARX_PLATFORM_WIN32
 	platform::EnvironmentOverride overrrides[] = {
-		#if ARX_PLATFORM != ARX_PLATFORM_WIN32
 		/*
 		 * We want the X11 WM_CLASS to match the .desktop file and icon name,
 		 * but SDL does not let us set it directly.
 		 */
 		{ "SDL_VIDEO_X11_WMCLASS",  arx_icon_name.c_str() },
-		#endif
 	};
 	platform::EnvironmentLock environment(overrrides);
+	#endif
 	
 	if(SDL_Init(SDL_INIT_VIDEO | SDL_INIT_EVENTS) < 0) {
 		LogError << "Failed to initialize SDL: " << SDL_GetError();
