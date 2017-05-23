@@ -62,7 +62,8 @@ namespace audio {
  * If the audio system was already initialized, it is cleaned first, removing all loaded resources.
  * This is not threadsafe: The caller must ensure that no other audio methods are called at the same time.
  */
-aalError init(const std::string & backend, const std::string & device = std::string());
+aalError init(const std::string & backend, const std::string & device = std::string(),
+              HRTFAttribute hrtf = HRTFDefault);
 
 /*!
  * Get a list of available devices for the current backend.
@@ -80,6 +81,8 @@ aalError setAmbiancePath(const res::path & path);
 aalError setEnvironmentPath(const res::path & path);
 aalError setReverbEnabled(bool enable);
 bool isReverbSupported();
+aalError setHRTFEnabled(HRTFAttribute enable);
+HRTFStatus getHRTFStatus();
 aalError update();
 
 // Resource

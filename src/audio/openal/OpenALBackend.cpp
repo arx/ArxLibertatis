@@ -71,6 +71,11 @@ OpenALBackend::OpenALBackend()
 	, effect(AL_EFFECT_NULL)
 	, effectSlot(AL_EFFECTSLOT_NULL)
 	#endif
+	#if ARX_HAVE_OPENAL_HRTF
+	, m_hasHRTF(false)
+	, alcResetDeviceSOFT(NULL)
+	, m_HRTFAttribute(HRTFDefault)
+	#endif
 	, rolloffFactor(1.f)
 {}
 
@@ -168,7 +173,40 @@ const char * OpenALBackend::shortenDeviceName(const char * deviceName) {
 	return deviceName;
 }
 
-aalError OpenALBackend::init(const char * requestedDeviceName) {
+void OpenALBackend::fillDeviceAttributes(ALCint (&attrs)[3]) {
+	
+	size_t i = 0;
+	
+	#if ARX_HAVE_OPENAL_HRTF
+	if(m_hasHRTF) {
+		attrs[i++] = ALC_HRTF_SOFT;
+		switch(m_HRTFAttribute) {
+			case HRTFDisable: attrs[i++] = ALC_FALSE; break;
+			case HRTFEnable:  attrs[i++] = ALC_TRUE; break;
+			case HRTFDefault: attrs[i++] = ALC_DONT_CARE_SOFT; break;
+			default: ARX_DEAD_CODE();
+		}
+	}
+	#endif
+	
+	attrs[i++] = 0;
+	
+}
+
+static const char * getHRTFStatusString(HRTFStatus status) {
+	
+	switch(status) {
+		case HRTFDisabled:    return "Disabled";
+		case HRTFEnabled:     return "Enabled";
+		case HRTFForbidden:   return "Forbidden";
+		case HRTFRequired:    return "Required";
+		case HRTFUnavailable: return "Unavailable";
+		default: ARX_DEAD_CODE();
+	}
+	
+}
+
+aalError OpenALBackend::init(const char * requestedDeviceName, HRTFAttribute hrtf) {
 	
 	if(device) {
 		return AAL_ERROR_INIT;
@@ -196,7 +234,21 @@ aalError OpenALBackend::init(const char * requestedDeviceName) {
 		return AAL_ERROR_SYSTEM;
 	}
 	
-	context = alcCreateContext(device, NULL);
+	#if ARX_HAVE_OPENAL_HRTF
+	m_hasHRTF = (alcIsExtensionPresent(device, "ALC_SOFT_HRTF") != ALC_FALSE);
+	if(m_hasHRTF) {
+		#define ARX_AL_LOAD_FUNC(Name) \
+			Name = al_function_ptr(alGetProcAddress(ARX_STR(Name))); \
+			hasEFX = hasEFX && Name != NULL
+		ARX_AL_LOAD_FUNC(alcResetDeviceSOFT);
+		#undef ARX_AL_LOAD_FUNC
+	}
+	m_HRTFAttribute = hrtf;
+	#endif
+	
+	ALCint attrs[3];
+	fillDeviceAttributes(attrs);
+	context = alcCreateContext(device, attrs);
 	if(!context) {
 		ALenum error = alcGetError(device);
 		LogError << "Error creating OpenAL context: " << error << " = " << getAlcErrorString(error);
@@ -300,8 +352,10 @@ aalError OpenALBackend::init(const char * requestedDeviceName) {
 	if(!deviceName || *deviceName == '\0') {
 		deviceName = "(unknown)";
 	}
-	LogInfo << " └─ Device: " << deviceName;
+	LogInfo << " ├─ Device: " << deviceName;
 	CrashHandler::setVariable("OpenAL device", deviceName);
+	
+	LogInfo << " └─ HRTF: " << getHRTFStatusString(getHRTFStatus());
 	
 	LogDebug("AL extensions: " << alGetString(AL_EXTENSIONS));
 	LogDebug("ALC extensions: " << alcGetString(device, ALC_EXTENSIONS));
@@ -604,5 +658,61 @@ aalError OpenALBackend::setListenerEnvironment(const Environment & env) {
 }
 
 #endif // !ARX_HAVE_OPENAL_EFX
+
+#if ARX_HAVE_OPENAL_HRTF
+
+aalError OpenALBackend::setHRTFEnabled(HRTFAttribute enable) {
+	
+	if(!m_hasHRTF) {
+		return enable != HRTFDefault ? AAL_ERROR_SYSTEM : AAL_OK;
+	}
+	
+	if(m_HRTFAttribute == enable) {
+		return AAL_OK;
+	}
+	m_HRTFAttribute = enable;
+	
+	OpenALEnvironmentOverrides overrides;
+	platform::EnvironmentLock lock(overrides.m_overrides);
+	
+	ALCint attrs[3];
+	fillDeviceAttributes(attrs);
+	ALCboolean result = alcResetDeviceSOFT(device, attrs);
+	
+	LogInfo << "HRTF: " << getHRTFStatusString(getHRTFStatus());
+	
+	return result ? AAL_OK : AAL_ERROR_SYSTEM;
+}
+
+HRTFStatus OpenALBackend::getHRTFStatus() {
+	
+	if(!m_hasHRTF) {
+		return HRTFUnavailable;
+	}
+	
+	ALCint status = 0;
+	alcGetIntegerv(device, ALC_HRTF_STATUS_SOFT, 1, &status);
+	switch(status) {
+		case ALC_HRTF_DISABLED_SOFT:            return HRTFDisabled;
+		case ALC_HRTF_ENABLED_SOFT:             return HRTFEnabled;
+		case ALC_HRTF_DENIED_SOFT:              return HRTFForbidden;
+		case ALC_HRTF_REQUIRED_SOFT:            return HRTFRequired;
+		case ALC_HRTF_HEADPHONES_DETECTED_SOFT: return HRTFEnabled;
+	}
+	
+	return HRTFUnavailable;
+}
+
+#else // !ARX_HAVE_OPENAL_HRTF
+
+aalError OpenALBackend::setHRTFEnabled(HRTFAttribute enable) {
+	return enable != HRTFDefault ? AAL_ERROR_SYSTEM : AAL_OK;
+}
+
+HRTFStatus OpenALBackend::getHRTFStatus() {
+	return HRTFUnavailable;
+}
+
+#endif // !ARX_HAVE_OPENAL_HRTF
 
 } // namespace audio

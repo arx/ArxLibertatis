@@ -1138,9 +1138,11 @@ if(USE_OPENAL AND OPENAL_FOUND)
 	if(OPENALEFX_FOUND)
 		include_directories(SYSTEM ${OPENAL_EFX_INCLUDE_DIR})
 		set(ARX_HAVE_OPENAL_EFX 1)
-	else()
-		set(ARX_HAVE_OPENAL_NOEFX 1)
 	endif()
+	set(old_CMAKE_REQUIRED_INCLUDES ${CMAKE_REQUIRED_INCLUDES})
+	set(CMAKE_REQUIRED_INCLUDES ${OPENAL_INCLUDE_DIR})
+	check_symbol_exists(ALC_SOFT_HRTF "alext.h" ARX_HAVE_OPENAL_HRTF)
+	set(CMAKE_REQUIRED_INCLUDES ${old_CMAKE_REQUIRED_INCLUDES})
 endif()
 
 # Graphics
@@ -1742,9 +1744,9 @@ print_configuration("Filesystem backend" FIRST
 print_configuration("Renderer"
 	ARX_HAVE_OPENGL "OpenGL"
 )
-print_configuration("Audio backend"
-	ARX_HAVE_OPENAL_NOEFX "OpenAL without EFX"
-	ARX_HAVE_OPENAL_EFX   "OpenAL with EFX"
+print_configuration("Audio features"
+	ARX_HAVE_OPENAL_EFX  "EFX"
+	ARX_HAVE_OPENAL_HRTF "HRTF"
 )
 print_configuration("Windowing"
 	ARX_HAVE_SDL2 "SDL 2"

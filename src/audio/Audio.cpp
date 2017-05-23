@@ -69,7 +69,7 @@ namespace {
 static Lock * mutex = NULL;
 }
 
-aalError init(const std::string & backendName, const std::string & deviceName) {
+aalError init(const std::string & backendName, const std::string & deviceName, HRTFAttribute hrtf) {
 	
 	// Clean any initialized data
 	clean();
@@ -92,14 +92,14 @@ aalError init(const std::string & backendName, const std::string & deviceName) {
 			LogDebug("initializing OpenAL backend");
 			OpenALBackend * _backend = new OpenALBackend();
 			if(!deviceName.empty() && deviceName != "auto") {
-				error = _backend->init(deviceName.c_str());
+				error = _backend->init(deviceName.c_str(), hrtf);
 				if(error) {
 					LogWarning << "Could not open device \"" << deviceName
 					           << "\", retrying with default device";
 				}
 			}
 			if(error) {
-				error = _backend->init();
+				error = _backend->init(NULL, hrtf);
 			}
 			if(!error) {
 				backend = _backend;
@@ -221,6 +221,20 @@ bool isReverbSupported() {
 	AAL_ENTRY_V(false)
 	
 	return backend->isReverbSupported();
+}
+
+aalError setHRTFEnabled(HRTFAttribute enable) {
+	
+	AAL_ENTRY
+	
+	return backend->setHRTFEnabled(enable);
+}
+
+HRTFStatus getHRTFStatus() {
+	
+	AAL_ENTRY_V(HRTFUnavailable)
+	
+	return backend->getHRTFStatus();
 }
 
 aalError update() {

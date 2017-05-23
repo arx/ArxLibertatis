@@ -104,6 +104,20 @@ enum aalError {
 	AAL_ERROR_HANDLE // Invalid resource handle
 };
 
+enum HRTFAttribute {
+	HRTFDisable = 0,
+	HRTFEnable = 1,
+	HRTFDefault = -1,
+};
+
+enum HRTFStatus {
+	HRTFDisabled,
+	HRTFEnabled,
+	HRTFRequired,
+	HRTFForbidden,
+	HRTFUnavailable
+};
+
 // Output format
 struct PCMFormat {
 	size_t frequency; // Samples per second

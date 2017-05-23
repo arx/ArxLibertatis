@@ -68,6 +68,16 @@ public:
 	virtual bool isReverbSupported() = 0;
 	
 	/*!
+	 * Enable or disable HRTF filter.
+	 */
+	virtual aalError setHRTFEnabled(HRTFAttribute enable) = 0;
+	
+	/*!
+	 * Check if HRTF is currently enabled.
+	 */
+	virtual HRTFStatus getHRTFStatus() = 0;
+	
+	/*!
 	 * Set a unit factor to scale all other distance or velocity parameters.
 	 * \param factor The unit factor in meters per unit.
 	 */
