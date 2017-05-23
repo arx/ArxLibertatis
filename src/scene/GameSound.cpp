@@ -338,7 +338,7 @@ bool ARX_SOUND_Init() {
 	
 	if (bIsActive) ARX_SOUND_Release();
 	
-	if(audio::init(config.audio.backend, config.audio.device)) {
+	if(audio::init(config.audio.backend, config.audio.device, config.audio.hrtf)) {
 		audio::clean();
 		return false;
 	}

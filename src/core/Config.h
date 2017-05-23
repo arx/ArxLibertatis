@@ -22,6 +22,8 @@
 
 #include <string>
 
+#include "audio/AudioTypes.h"
+
 #include "input/InputKey.h"
 
 #include "io/fs/FilePath.h"
@@ -169,6 +171,7 @@ public:
 		float ambianceVolume;
 		
 		bool eax;
+		audio::HRTFAttribute hrtf;
 		bool muteOnFocusLost;
 		
 	} audio;

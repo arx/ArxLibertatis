@@ -72,6 +72,7 @@ const int
 	sfxVolume = 10,
 	speechVolume = 10,
 	ambianceVolume = 10,
+	hrtf = audio::HRTFDefault,
 	mouseSensitivity = 6,
 	mouseAcceleration = 0,
 	migration = Config::OriginalAssets,
@@ -214,6 +215,7 @@ const std::string
 	speechVolume = "speech_volume",
 	ambianceVolume = "ambiance_volume",
 	eax = "eax",
+	hrtf = "hrtf",
 	muteOnFocusLost = "mute_on_focus_lost";
 
 // Input options
@@ -441,6 +443,7 @@ bool Config::save() {
 	writer.writeKey(Key::speechVolume, audio.speechVolume);
 	writer.writeKey(Key::ambianceVolume, audio.ambianceVolume);
 	writer.writeKey(Key::eax, audio.eax);
+	writer.writeKey(Key::hrtf, int(audio.hrtf));
 	writer.writeKey(Key::muteOnFocusLost, audio.muteOnFocusLost);
 	
 	// input
@@ -574,6 +577,8 @@ bool Config::init(const fs::path & file) {
 	audio.speechVolume = reader.getKey(Section::Audio, Key::speechVolume, Default::speechVolume);
 	audio.ambianceVolume = reader.getKey(Section::Audio, Key::ambianceVolume, Default::ambianceVolume);
 	audio.eax = reader.getKey(Section::Audio, Key::eax, Default::eax);
+	int hrtf = reader.getKey(Section::Audio, Key::hrtf, int(Default::hrtf));
+	audio.hrtf = audio::HRTFAttribute(glm::clamp(hrtf, -1, 1));
 	audio.muteOnFocusLost = reader.getKey(Section::Audio, Key::muteOnFocusLost, Default::muteOnFocusLost);
 	
 	// Get input settings
