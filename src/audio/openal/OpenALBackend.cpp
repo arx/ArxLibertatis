@@ -132,6 +132,8 @@ class OpenALEnvironmentOverrides {
 	static const size_t s_count = 3;
 	#endif
 	
+	fs::path m_alpath;
+	
 public:
 	
 	platform::EnvironmentOverride m_overrides[s_count];
@@ -153,6 +155,13 @@ public:
 		m_overrides[i].value = arx_name.c_str();
 		i++;
 		#endif
+		
+		m_alpath = fs::paths.find("openal/hrtf");
+		if(!m_alpath.empty()) {
+			m_overrides[i].name = "ALSOFT_LOCAL_PATH";
+			m_overrides[i].value = m_alpath.string().c_str();
+			i++;
+		}
 		
 		for(; i < s_count; i++) {
 			m_overrides[i].name = NULL;
