@@ -29,7 +29,6 @@
 #include <stdlib.h>
 #endif
 
-#include <boost/scope_exit.hpp>
 #include <boost/static_assert.hpp>
 #include <boost/algorithm/string/predicate.hpp>
 #include <boost/math/special_functions/fpclassify.hpp>
@@ -41,8 +40,11 @@
 #include "audio/AudioSource.h"
 #include "core/Version.h"
 #include "gui/Credits.h"
+#include "io/fs/FilePath.h"
+#include "io/fs/SystemPaths.h"
 #include "io/log/Logger.h"
 #include "math/Vector.h"
+#include "platform/Environment.h"
 #include "platform/Platform.h"
 #include "platform/CrashHandler.h"
 
@@ -117,6 +119,45 @@ public:
 
 static const char * const deviceNamePrefixOpenALSoft = "OpenAL Soft on ";
 
+class OpenALEnvironmentOverrides {
+	
+	#if ARX_PLATFORM == ARX_PLATFORM_WIN32
+	static const size_t s_count = 1;
+	#else
+	static const size_t s_count = 3;
+	#endif
+	
+public:
+	
+	platform::EnvironmentOverride m_overrides[s_count];
+	
+	OpenALEnvironmentOverrides() {
+		
+		size_t i = 0;
+		
+		#if ARX_PLATFORM != ARX_PLATFORM_WIN32
+		/*
+		 * OpenAL Soft does not provide a way to pass through these properties, so use
+		 * environment variables.
+		 * Unfortunately it also always clears out PA_PROP_MEDIA_ROLE :(
+		 */
+		m_overrides[i].name = "PULSE_PROP_application.icon_name";
+		m_overrides[i].value = arx_icon_name.c_str();
+		i++;
+		m_overrides[i].name = "PULSE_PROP_application.name";
+		m_overrides[i].value = arx_name.c_str();
+		i++;
+		#endif
+		
+		for(; i < s_count; i++) {
+			m_overrides[i].name = NULL;
+			m_overrides[i].value = NULL;
+		}
+		
+	}
+	
+};
+
 const char * OpenALBackend::shortenDeviceName(const char * deviceName) {
 	
 	if(deviceName && boost::starts_with(deviceName, deviceNamePrefixOpenALSoft)) {
@@ -133,30 +174,8 @@ aalError OpenALBackend::init(const char * requestedDeviceName) {
 		return AAL_ERROR_INIT;
 	}
 	
-	#if ARX_PLATFORM != ARX_PLATFORM_WIN32 && ARX_HAVE_SETENV && ARX_HAVE_UNSETENV
-	/*
-	 * OpenAL Soft does not provide a way to pass through these properties, so use
-	 * environment variables.
-	 * Unfortunately it also always clears out PA_PROP_MEDIA_ROLE :(
-	 */
-	const char * oldClass = std::getenv("PULSE_PROP_application.icon_name");
-	if(!oldClass) {
-		setenv("PULSE_PROP_application.icon_name", arx_icon_name.c_str(), 1);
-	}
-	const char * oldName = std::getenv("PULSE_PROP_application.name");
-	if(!oldName) {
-		setenv("PULSE_PROP_application.name", arx_name.c_str(), 1);
-	}
-	BOOST_SCOPE_EXIT((oldClass)(oldName)) {
-		// Don't the properties of pulse child processes
-		if(!oldClass) {
-			unsetenv("PULSE_PROP_application.icon_name");
-		}
-		if(!oldName) {
-			unsetenv("PULSE_PROP_application.name");
-		}
-	} BOOST_SCOPE_EXIT_END
-	#endif
+	OpenALEnvironmentOverrides overrides;
+	platform::EnvironmentLock lock(overrides.m_overrides);
 	
 	// Clear error
 	ALenum error = alGetError();
