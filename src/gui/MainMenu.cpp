@@ -1198,6 +1198,48 @@ public:
 			addCenter(cb);
 		}
 		
+		audio::HRTFStatus hrtf = audio::getHRTFStatus();
+		if(hrtf != audio::HRTFUnavailable) {
+			
+			PanelWidget * panel = new PanelWidget;
+			std::string szMenuText = getLocalised("system_menus_options_audio_hrtf", "HRTF");
+			szMenuText += "  ";
+			TextWidget * txt = new TextWidget(BUTTON_INVALID, hFontMenu, szMenuText, Vec2f(20, 0));
+			txt->SetCheckOff();
+			panel->AddElement(txt);
+			
+			Widget * value;
+			if(hrtf == audio::HRTFRequired) {
+				value = new TextWidget(BUTTON_INVALID, hFontMenu, "Enabled");
+				value->SetCheckOff();
+			} else if(hrtf == audio::HRTFForbidden) {
+				value = new TextWidget(BUTTON_INVALID, hFontMenu, "Disabled");
+				value->SetCheckOff();
+			} else {
+				CycleTextWidget * slider = new CycleTextWidget;
+				slider->valueChanged = boost::bind(&AudioOptionsMenuPage::onChangedHRTF, this, _1, _2);
+				slider->AddText(new TextWidget(BUTTON_INVALID, hFontMenu, "Disabled"));
+				if(config.audio.hrtf == audio::HRTFDisable) {
+					slider->selectLast();
+				}
+				slider->AddText(new TextWidget(BUTTON_INVALID, hFontMenu, "Automatic"));
+				if(config.audio.hrtf == audio::HRTFDefault) {
+					slider->selectLast();
+				}
+				slider->AddText(new TextWidget(BUTTON_INVALID, hFontMenu, "Enabled"));
+				if(config.audio.hrtf == audio::HRTFEnable) {
+					slider->selectLast();
+				}
+				value = slider;
+			}
+			float fRatio    = (RATIO_X(m_size.x-9) - value->m_rect.width());
+			value->Move(Vec2f(fRatio, 0));
+			panel->AddElement(value);
+			
+			addCenter(panel);
+			
+		}
+		
 		{
 			ButtonWidget * cb = new ButtonWidget(Vec2f(20, 380), Vec2f(16, 16), "graph/interface/menus/back");
 			cb->m_targetMenu = OPTIONS;
@@ -1235,6 +1277,17 @@ private:
 	void onChangedEax(int state) {
 		config.audio.eax = (state != 0);
 		ARX_SOUND_SetReverb(config.audio.eax);
+	}
+	
+	void onChangedHRTF(int pos, const std::string & str) {
+		ARX_UNUSED(str);
+		switch(pos) {
+			case 0: config.audio.hrtf = audio::HRTFDisable; break;
+			case 1: config.audio.hrtf = audio::HRTFDefault; break;
+			case 2: config.audio.hrtf = audio::HRTFEnable; break;
+			default: ARX_DEAD_CODE();
+		}
+		audio::setHRTFEnabled(config.audio.hrtf);
 	}
 	
 	void onChangedMuteOnFocusLost(int state) {
