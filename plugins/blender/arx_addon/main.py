@@ -41,22 +41,46 @@ import logging
 logging.basicConfig(level=logging.DEBUG)
 log = logging.getLogger('ArxAddon')
 
+# ======================================================================================================================
 
-class ArxAddonPreferences(AddonPreferences):
+g_arxAddon = None
+
+def arxAddonReload():
+    log.info("invalidating")
+    global g_arxAddon
+    g_arxAddon = None
+
+def getAddon(context):
+    global g_arxAddon
+    if not g_arxAddon:
+        log.info("creating")
+        addon_prefs = context.user_preferences.addons[__package__].preferences
+        g_arxAddon = ArxAddon(addon_prefs.arxAssetPath, addon_prefs.arxAllowLibFallback)
+    
+    return g_arxAddon
+
+# ======================================================================================================================
+
+class ArxAddonPreferences(bpy.types.AddonPreferences):
     bl_idname = __package__
 
-    arxAssetPath = StringProperty(name="Arx assets root directory", subtype='DIR_PATH')
-    arxAllowLibFallback = BoolProperty(name="Allow use of fallback io library, only import ftl models, scenes are broken!")
+    def reload(self, context):
+        arxAddonReload()
+
+    arxAssetPath = bpy.props.StringProperty(
+        name="Arx assets root directory",
+        subtype='DIR_PATH',
+        update=reload
+    )
+    arxAllowLibFallback = bpy.props.BoolProperty(
+        name="Allow use of fallback io library, only import ftl models, scenes are broken!",
+        update=reload
+    )
 
     def draw(self, context):
         layout = self.layout
         layout.prop(self, "arxAssetPath")
         layout.prop(self, "arxAllowLibFallback")
-
-
-def getAddon(context):
-    addon_prefs = context.user_preferences.addons[__package__].preferences
-    return ArxAddon(addon_prefs.arxAssetPath, addon_prefs.arxAllowLibFallback)
 
 # ======================================================================================================================
 
@@ -247,3 +271,5 @@ def unregister():
 
     bpy.utils.unregister_class(ImportTea)
     bpy.types.INFO_MT_file_import.remove(menu_func_import_tea)
+    
+    arxAddonReload()
