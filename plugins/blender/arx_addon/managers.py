@@ -837,22 +837,6 @@ class ArxAssetManager(object):
             
             import_file = os.path.join(val.path, val.model)
             self.objectManager.loadFile(import_file, scene);
-    
-    def importAllLevels(self):
-        for key, value in self.arxFiles.levels.levels.items():
-            sceneName = "level-" + str(int(key[5:])).zfill(3)
-            
-            scene = bpy.data.scenes.get(sceneName)
-            if scene is None:
-                self.log.info("Creating new scene [{}]".format(sceneName))
-                scene = bpy.data.scenes.new(name=sceneName)
-                scene.unit_settings.system = 'METRIC'
-                scene.unit_settings.scale_length = 0.01
-            else:
-                self.log.info("Scene [{}] already exists".format(sceneName))
-                continue
-            
-            self.sceneManager.importScene(key, scene)
 
 class ArxAddon(object):
     def __init__(self, dataPath, allowLibFallback):
