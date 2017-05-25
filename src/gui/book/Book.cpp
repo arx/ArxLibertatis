@@ -935,18 +935,21 @@ static void ARX_INTERFACE_ManageOpenedBook_Stats()
 	if (MouseInBookRect(bookPos + Vec2f(366, 10) * scale, Vec2f(87, 20) * scale))
 		FLYING_OVER = WND_XP;
 
-	if (MouseInBookRect(bookPos + Vec2f(41, 62) * scale, Vec2f(32, 32) * scale))
-		FLYING_OVER = WND_AC;
-	else if (MouseInBookRect(bookPos + Vec2f(41, 120) * scale, Vec2f(32, 32) * scale))
-		FLYING_OVER = WND_RESIST_MAGIC;
-	else if (MouseInBookRect(bookPos + Vec2f(41,178) * scale, Vec2f(32, 32) * scale))
-		FLYING_OVER = WND_RESIST_POISON;
-	else if (MouseInBookRect(bookPos + Vec2f(211, 62) * scale, Vec2f(32, 32) * scale))
-		FLYING_OVER = WND_HP;
-	else if (MouseInBookRect(bookPos + Vec2f(211, 120) * scale, Vec2f(32, 32) * scale))
-		FLYING_OVER = WND_MANA;
-	else if (MouseInBookRect(bookPos + Vec2f(211, 178) * scale, Vec2f(32, 32) * scale))
-		FLYING_OVER = WND_DAMAGE;
+	{
+		Vec2f attribAreaSize = Vec2f(32, 32) * scale;
+		if(MouseInBookRect(bookPos + Vec2f(41, 62) * scale, attribAreaSize))
+			FLYING_OVER = WND_AC;
+		else if(MouseInBookRect(bookPos + Vec2f(41, 120) * scale, attribAreaSize))
+			FLYING_OVER = WND_RESIST_MAGIC;
+		else if(MouseInBookRect(bookPos + Vec2f(41, 178) * scale, attribAreaSize))
+			FLYING_OVER = WND_RESIST_POISON;
+		else if(MouseInBookRect(bookPos + Vec2f(211, 62) * scale, attribAreaSize))
+			FLYING_OVER = WND_HP;
+		else if(MouseInBookRect(bookPos + Vec2f(211, 120) * scale, attribAreaSize))
+			FLYING_OVER = WND_MANA;
+		else if(MouseInBookRect(bookPos + Vec2f(211, 178) * scale, attribAreaSize))
+			FLYING_OVER = WND_DAMAGE;
+	}
 
 	if(!((player.Attribute_Redistribute == 0) && (ARXmenu.currentmode != AMCM_NEWQUEST))) {
 		// Main Player Attributes
