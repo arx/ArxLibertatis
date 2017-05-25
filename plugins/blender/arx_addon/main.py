@@ -70,6 +70,8 @@ class ArxScenesPanel(bpy.types.Panel):
     def draw(self, context):
         layout = self.layout
         layout.operator("arx.operator_import_all_models")
+        layout.separator()
+        layout.operator("arx.operator_import_level")
         layout.operator("arx.operator_import_all_levels")
 
 # ======================================================================================================================
@@ -86,17 +88,47 @@ class ArxOperatorImportAllModels(bpy.types.Operator):
             self.report({'ERROR'}, str(e))
             return {'CANCELLED'}
 
+class ArxOperatorImportLevel(bpy.types.Operator):
+    bl_idname = "arx.operator_import_level"
+    bl_label = "Import level"
+    
+    levelName = bpy.props.StringProperty()
+    
+    def invoke(self, context, event):
+        wm = context.window_manager
+        return wm.invoke_props_dialog(self)
+    
+    def execute(self, context):
+        levelId = int(self.levelName[5:]) # strip of level prefix
+        sceneName = "level-" + str(levelId).zfill(3)
+        
+        scene = bpy.data.scenes.get(sceneName)
+        if scene:
+            self.report({'INFO'}, "Scene [{}] already exists".format(sceneName))
+            return {'CANCELLED'}
+        
+        self.report({'INFO'}, "Creating new scene [{}]".format(sceneName))
+        scene = bpy.data.scenes.new(name=sceneName)
+        scene.unit_settings.system = 'METRIC'
+        scene.unit_settings.scale_length = 0.01
+        
+        try:
+            getAddon(context).sceneManager.importScene(self.levelName, scene)
+            return {'FINISHED'}
+        except ArxException as e:
+            self.report({'ERROR'}, str(e))
+            return {'CANCELLED'}
+
 class ArxOperatorImportAllLevels(bpy.types.Operator):
     bl_idname = "arx.operator_import_all_levels"
     bl_label = "Import all levels"
 
     def execute(self, context):
-        try:
-            getAddon(context).assetManager.importAllLevels()
-            return {'FINISHED'}
-        except ArxException as e:
-            self.report({'ERROR'}, str(e))
-            return {'CANCELLED'}
+        for levelName, value in getAddon(context).arxFiles.levels.levels.items():
+            bpy.ops.arx.operator_import_level('EXEC_DEFAULT', levelName=levelName)
+        
+        return {'FINISHED'}
+
 
 class ImportFTL(bpy.types.Operator, ImportHelper):
     '''Load an Arx Fatalis Model File'''
@@ -176,6 +208,8 @@ def register():
     bpy.utils.register_class(ArxAddonPreferences)
 
     bpy.utils.register_class(ArxOperatorImportAllModels)
+    
+    bpy.utils.register_class(ArxOperatorImportLevel)
     bpy.utils.register_class(ArxOperatorImportAllLevels)
     
     bpy.utils.register_class(ArxScenesPanel)
@@ -197,6 +231,8 @@ def unregister():
     bpy.utils.unregister_class(ArxAddonPreferences)
 
     bpy.utils.unregister_class(ArxOperatorImportAllModels)
+    
+    bpy.utils.unregister_class(ArxOperatorImportLevel)
     bpy.utils.unregister_class(ArxOperatorImportAllLevels)
     
     bpy.utils.unregister_class(ArxScenesPanel)
