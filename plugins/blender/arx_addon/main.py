@@ -105,6 +105,7 @@ class ArxOperatorCreateLevelEditScreen(bpy.types.Operator):
                     if s.type == 'VIEW_3D':
                         s.clip_end = 100000
                         s.show_relationship_lines = False
+                        s.show_backface_culling = True
         
         return {'FINISHED'}
 
