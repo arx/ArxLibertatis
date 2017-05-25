@@ -936,7 +936,7 @@ static void ARX_INTERFACE_ManageOpenedBook_Stats()
 		FLYING_OVER = WND_XP;
 
 	{
-		Vec2f attribAreaSize = Vec2f(32, 32) * scale;
+		Vec2f attribAreaSize = Vec2f(32, 45) * scale;
 		if(MouseInBookRect(bookPos + Vec2f(41, 62) * scale, attribAreaSize))
 			FLYING_OVER = WND_AC;
 		else if(MouseInBookRect(bookPos + Vec2f(41, 120) * scale, attribAreaSize))
