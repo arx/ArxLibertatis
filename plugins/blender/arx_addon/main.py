@@ -84,6 +84,33 @@ class ArxAddonPreferences(bpy.types.AddonPreferences):
 
 # ======================================================================================================================
 
+class ArxOperatorCreateLevelEditScreen(bpy.types.Operator):
+    bl_idname = "arx.operator_create_level_edit_screen"
+    bl_label = "Create level editing screen"
+    
+    def execute(self, context):
+        name = "Arx Level Edit"
+        
+        if bpy.data.screens.get(name):
+            self.report({'ERROR'}, "Screen already exists")
+            return {'CANCELLED'}
+        
+        bpy.ops.screen.new()
+        screen = bpy.context.window.screen
+        screen.name = "Arx Level Edit"
+        
+        for a in bpy.context.screen.areas:
+            if a.type == 'VIEW_3D':
+                for s in a.spaces:
+                    if s.type == 'VIEW_3D':
+                        s.clip_end = 100000
+                        s.show_relationship_lines = False
+        
+        return {'FINISHED'}
+
+
+# ======================================================================================================================
+
 class ArxScenesPanel(bpy.types.Panel):
     bl_idname = "arx.scene.Panel"
     bl_label = "Arx Libertatis Scenes"
@@ -93,6 +120,8 @@ class ArxScenesPanel(bpy.types.Panel):
 
     def draw(self, context):
         layout = self.layout
+        layout.operator("arx.operator_create_level_edit_screen")
+        layout.separator()
         layout.operator("arx.operator_import_all_models")
         layout.separator()
         layout.operator("arx.operator_import_level")
@@ -230,7 +259,8 @@ def menu_func_import_tea(self, context):
 def register():
     log.debug("register")
     bpy.utils.register_class(ArxAddonPreferences)
-
+    bpy.utils.register_class(ArxOperatorCreateLevelEditScreen)
+    
     bpy.utils.register_class(ArxOperatorImportAllModels)
     
     bpy.utils.register_class(ArxOperatorImportLevel)
@@ -253,6 +283,7 @@ def register():
 def unregister():
     log.debug("unregister")
     bpy.utils.unregister_class(ArxAddonPreferences)
+    bpy.utils.unregister_class(ArxOperatorCreateLevelEditScreen)
 
     bpy.utils.unregister_class(ArxOperatorImportAllModels)
     
