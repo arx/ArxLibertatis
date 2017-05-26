@@ -973,6 +973,20 @@ public:
 		
 		{
 			PanelWidget * panel = new PanelWidget;
+			std::string szMenuText = getLocalised("system_menus_options_interface_book_scale",
+			                                      "Player book size");
+			TextWidget * txt = new TextWidget(BUTTON_INVALID, hFontMenu, szMenuText, Vec2f(20, 0));
+			txt->SetCheckOff();
+			panel->AddElement(txt);
+			SliderWidget * sld = new SliderWidget(Vec2f(200, 0));
+			sld->valueChanged = boost::bind(&InterfaceOptionsMenuPage::onChangedBookScale, this, _1);
+			sld->setValue(config.interface.bookScale * 10.f);
+			panel->AddElement(sld);
+			addCenter(panel);
+		}
+		
+		{
+			PanelWidget * panel = new PanelWidget;
 			std::string szMenuText = getLocalised("system_menus_options_interface_hud_scale",
 			                                      "HUD size");
 			TextWidget * txt = new TextWidget(BUTTON_INVALID, hFontMenu, szMenuText, Vec2f(20, 0));
@@ -1052,6 +1066,10 @@ private:
 		ARX_UNUSED(str);
 		
 		config.interface.cinematicWidescreenMode = CinematicWidescreenMode(pos);
+	}
+
+	void onChangedBookScale(int state) {
+		config.interface.bookScale = float(state) * 0.1f;
 	}
 	
 	void onChangedHudScale(int state) {
