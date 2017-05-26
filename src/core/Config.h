@@ -140,6 +140,7 @@ public:
 		CinematicWidescreenMode cinematicWidescreenMode;
 		
 		float hudScale;
+		float bookScale;
 		bool hudScaleInteger;
 		bool scaleCursorWithHud;
 		UIScaleFilter hudScaleFilter;

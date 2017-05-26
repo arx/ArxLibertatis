@@ -107,7 +107,8 @@ const bool allowConsole = false;
 #endif
 
 const float
-	hudScale = 0.5f;
+	hudScale = 0.5f,
+	bookScale = 1.0f;
 
 const ActionKey actions[NUM_ACTION_KEY] = {
 	ActionKey(Keyboard::Key_Spacebar), // JUMP
@@ -194,6 +195,7 @@ const std::string
 	showCrosshair = "show_crosshair",
 	limitSpeechWidth = "limit_speech_width",
 	cinematicWidescreenMode = "cinematic_widescreen_mode",
+	bookScale = "book_scale",
 	hudScale = "hud_scale",
 	hudScaleInteger = "hud_scale_integer",
 	scaleCursorWithHud = "scale_cursor_with_hud",
@@ -418,6 +420,7 @@ bool Config::save() {
 	writer.writeKey(Key::showCrosshair, interface.showCrosshair);
 	writer.writeKey(Key::limitSpeechWidth, interface.limitSpeechWidth);
 	writer.writeKey(Key::cinematicWidescreenMode, int(interface.cinematicWidescreenMode));
+	writer.writeKey(Key::bookScale, interface.bookScale);
 	writer.writeKey(Key::hudScale, interface.hudScale);
 	writer.writeKey(Key::hudScaleInteger, interface.hudScaleInteger);
 	writer.writeKey(Key::scaleCursorWithHud, interface.scaleCursorWithHud);
@@ -553,6 +556,7 @@ bool Config::init(const fs::path & file) {
 	interface.limitSpeechWidth = reader.getKey(Section::Interface, Key::limitSpeechWidth, Default::limitSpeechWidth);
 	int cinematicMode = reader.getKey(Section::Interface, Key::cinematicWidescreenMode, Default::cinematicWidescreenMode);
 	interface.cinematicWidescreenMode = CinematicWidescreenMode(glm::clamp(cinematicMode, 0, 2));
+	interface.bookScale = reader.getKey(Section::Interface, Key::bookScale, Default::bookScale);
 	float hudScale = reader.getKey(Section::Interface, Key::hudScale, Default::hudScale);
 	interface.hudScale = glm::clamp(hudScale, 0.f, 1.f);
 	interface.hudScaleInteger = reader.getKey(Section::Interface, Key::hudScaleInteger, Default::hudScaleInteger);
