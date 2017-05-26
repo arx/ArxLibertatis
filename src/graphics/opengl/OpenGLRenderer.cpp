@@ -505,6 +505,10 @@ void OpenGLRenderer::SetAlphaFunc(PixelCompareFunc func, float ref) {
 
 void OpenGLRenderer::SetViewport(const Rect & _viewport) {
 	
+	if(_viewport == viewport) {
+		return;
+	}
+	
 	viewport = _viewport;
 	
 	// TODO maybe it's better to always have the viewport cover the whole window and use glScissor instead?
