@@ -1322,16 +1322,23 @@ if(WIN32)
 		if(ARGC GREATER 2)
 			list(APPEND rc_sources ${ARGV2} "${ARGV2}")
 		endif()
-		set(rc_defines
-			"-DEXE=${exe}"
-			"-DNAME=${name}"
-		)
+		set(rc_defines "-DEXE=${exe}" "-DNAME=${name}")
 		set(${exe}-version.rc "${rc_file}" PARENT_SCOPE)
 		version_file("${VERSION_RC_TEMPLATE}"
 		             "${rc_file}" "${rc_sources}" ".git" "${rc_defines}")
 	endfunction()
+	set(APPLICATION_MANIFEST_TEMPLATE "${SRC_DIR}/core/Version.manifest.in")
+	function(create_application_manifest exe)
+		set(manifest_file "${PROJECT_BINARY_DIR}/${exe}.manifest")
+		set(manifest_sources VERSION "VERSION")
+		set(manifest_defines "-DEXE=${exe}")
+		version_file("${APPLICATION_MANIFEST_TEMPLATE}"
+		             "${manifest_file}" "${manifest_sources}" ".git" "${manifest_defines}")
+		set(${exe}.manifest "${manifest_file}" PARENT_SCOPE)
+	endfunction()
 	create_version_resource(arx "${VERSION_NAME}")
-	list(APPEND ARX_SOURCES ${arx-version.rc})
+	create_application_manifest(arx)
+	list(APPEND ARX_SOURCES ${arx-version.rc} ${arx.manifest})
 endif()
 
 
@@ -1379,7 +1386,8 @@ if(ARX_HAVE_CRASHREPORTER)
 	if(WIN32)
 		list(APPEND arxcrashreporter_SOURCES ${arx-libertatis-icon.rc})
 		create_version_resource(arxcrashreporter "${VERSION_NAME} Crash Reporter")
-		list(APPEND arxcrashreporter_SOURCES ${arxcrashreporter-version.rc})
+		create_application_manifest(arxcrashreporter)
+		list(APPEND arxcrashreporter_SOURCES ${arxcrashreporter-version.rc} ${arxcrashreporter.manifest})
 	endif()
 	
 	set(arxcrashreporter_MANUAL_SOURCES
@@ -1481,7 +1489,8 @@ if(ARX_HAVE_PROFILER)
 	if(WIN32)
 		list(APPEND arxprofiler_SOURCES ${arx-libertatis-icon.rc})
 		create_version_resource(arxprofiler "${VERSION_NAME} Profiler")
-		list(APPEND arxprofiler_SOURCES ${arxprofiler-version.rc})
+		create_application_manifest(arxprofiler)
+		list(APPEND arxprofiler_SOURCES ${arxprofiler-version.rc} ${arxprofiler.manifest})
 	endif()
 	
 	set(arxprofiler_MANUAL_SOURCES
@@ -1561,7 +1570,8 @@ if(BUILD_TOOLS)
 	
 	if(WIN32)
 		create_version_resource(arxsavetool "${VERSION_NAME} Save File Tool")
-		list(APPEND arxsavetool_SOURCES ${arxsavetool-version.rc})
+		create_application_manifest(arxsavetool)
+		list(APPEND arxsavetool_SOURCES ${arxsavetool-version.rc} ${arxsavetool.manifest})
 	endif()
 	
 	set(arxsavetool_LIBRARIES ${BASE_LIBRARIES} ${ZLIB_LIBRARIES})
@@ -1582,7 +1592,8 @@ if(BUILD_TOOLS)
 	
 	if(WIN32)
 		create_version_resource(arxunpak "${VERSION_NAME} PAK File Unpacker")
-		list(APPEND arxunpak_SOURCES ${arxunpak-version.rc})
+		create_application_manifest(arxunpak)
+		list(APPEND arxunpak_SOURCES ${arxunpak-version.rc} ${arxunpak.manifest})
 	endif()
 	
 	set(arxunpak_LIBRARIES ${BASE_LIBRARIES})
