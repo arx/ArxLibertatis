@@ -152,13 +152,7 @@ void ARX_INTERFACE_ManageOpenedBook_Finish(const Vec2f & mousePos)
 		SetActiveCamera(&bookcam);
 		PrepareCamera(&bookcam, g_size);
 		
-		// First draw the lace
-		angle.setYaw(0.f);
-		
 		if(player.hasRune((Rune)i)) {
-			
-			TransformInfo t1(pos, glm::quat_cast(toRotationMatrix(angle)));
-			DrawEERIEInter(gui::necklace.lacet, t1, NULL, false, 0.f);
 			
 			if(rune->angle.getYaw() != 0.f) {
 				if(rune->angle.getYaw() > 300.f)
@@ -218,6 +212,15 @@ void ARX_INTERFACE_ManageOpenedBook_Finish(const Vec2f & mousePos)
 					}
 				}
 			}
+			
+			// First draw the lace
+			angle.setYaw(0.f);
+			
+			TransformInfo t1(pos, glm::quat_cast(toRotationMatrix(angle)));
+			DrawEERIEInter(gui::necklace.lacet, t1, NULL, false, 0.f);
+			
+			PopAllTriangleListOpaque();
+			
 		}
 	}
 	
