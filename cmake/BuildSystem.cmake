@@ -302,9 +302,11 @@ function(_shared_build_helper LIB LIST BINARIES FIRST)
 		endif()
 		
 		foreach(source_file IN LISTS common_src)
-			get_short_filename(relative_file "${source_file}")
-			set_property(SOURCE "${source_file}" APPEND PROPERTY COMPILE_DEFINITIONS
-			             "ARX_FILE=\"${relative_file}\"")
+			if(NOT source_file MATCHES "\\.(rc|manifest)$")
+				get_short_filename(relative_file "${source_file}")
+				set_property(SOURCE "${source_file}" APPEND PROPERTY COMPILE_DEFINITIONS
+				             "ARX_FILE=\"${relative_file}\"")
+			endif()
 		endforeach()
 		
 		# Add a new library for the common sources
@@ -440,9 +442,11 @@ function(separate_build)
 	
 	foreach(bin IN LISTS SHARED_BUILD_BINARIES)
 		foreach(source_file IN LISTS SHARED_BUILD_${bin}_SOURCES)
-			get_short_filename(relative_file "${source_file}")
-			set_property(SOURCE "${source_file}" APPEND PROPERTY COMPILE_DEFINITIONS
-			             "ARX_FILE=\"${relative_file}\"")
+			if(NOT source_file MATCHES "\\.(rc|manifest)$")
+				get_short_filename(relative_file "${source_file}")
+				set_property(SOURCE "${source_file}" APPEND PROPERTY COMPILE_DEFINITIONS
+				             "ARX_FILE=\"${relative_file}\"")
+			endif()
 		endforeach()
 		_shared_build_add_binary(${bin})
 	endforeach()
