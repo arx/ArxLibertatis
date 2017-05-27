@@ -1500,7 +1500,7 @@ if(ARX_HAVE_PROFILER)
 	if(WIN32)
 		list(APPEND arxprofiler_SOURCES ${arx-libertatis-icon.rc})
 		create_version_resource(arxprofiler "${VERSION_NAME} Profiler")
-		create_application_manifest(arxprofiler)
+		create_application_manifest(arxprofiler ${qt_dpiaware})
 		list(APPEND arxprofiler_SOURCES ${arxprofiler-version.rc} ${arxprofiler.manifest})
 	endif()
 	
