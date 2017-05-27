@@ -1353,6 +1353,12 @@ add_executable_shared(arx "${ARX_SOURCES}" "${ARX_LIBRARIES}" "${ALL_INCLUDES}")
 set_binary_type(arx WIN32)
 set_binary_installdir(arx "${GAMESBINDIR}")
 
+if(Qt_VERSION VERSION_LESS 5.6)
+	set(qt_dpiaware)
+else()
+	set(qt_dpiaware dpiaware)
+endif()
+
 if(ARX_HAVE_CRASHREPORTER)
 	
 	set(arxcrashreporter_Qt_SOURCES
@@ -1391,7 +1397,7 @@ if(ARX_HAVE_CRASHREPORTER)
 	if(WIN32)
 		list(APPEND arxcrashreporter_SOURCES ${arx-libertatis-icon.rc})
 		create_version_resource(arxcrashreporter "${VERSION_NAME} Crash Reporter")
-		create_application_manifest(arxcrashreporter)
+		create_application_manifest(arxcrashreporter ${qt_dpiaware})
 		list(APPEND arxcrashreporter_SOURCES ${arxcrashreporter-version.rc} ${arxcrashreporter.manifest})
 	endif()
 	
