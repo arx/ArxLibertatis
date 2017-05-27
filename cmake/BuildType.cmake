@@ -28,8 +28,6 @@ if(MSVC)
 		
 		# warning C4127: conditional expression is constant
 		add_definitions(/wd4127)
-		# warning C4201: nonstandard extension used : nameless struct/union
-		add_definitions(/wd4201)
 		# warning C4250: 'xxx' : inherits 'std::basic_{i,o}stream::...' via dominance
 		add_definitions(/wd4250) # harasses you when inheriting from std::basic_{i,o}stream
 		# warning C4503: 'xxx' : decorated name length exceeded, name was truncated
