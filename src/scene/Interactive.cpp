@@ -54,6 +54,7 @@ ZeniMax Media Inc., Suite 120, Rockville, Maryland 20850 USA.
 #include <sstream>
 #include <cstdio>
 
+#include <boost/lexical_cast.hpp>
 #include <boost/algorithm/string/predicate.hpp>
 
 #include "ai/Paths.h"
@@ -2250,12 +2251,10 @@ void UpdateCameras() {
 
 			if(aup->lastWP != last) {
 				if(last == -2) {
-					char str[16];
-					sprintf(str, "%ld", aup->path->nb_pathways - 1);
 					EVENT_SENDER = NULL;
-					SendIOScriptEvent(io, SM_WAYPOINT, str);
-					sprintf(str, "waypoint%ld", aup->path->nb_pathways - 1);
-					SendIOScriptEvent(io, SM_NULL, "", str);
+					std::string waypoint = boost::lexical_cast<std::string>(aup->path->nb_pathways - 1);
+					SendIOScriptEvent(io, SM_WAYPOINT, waypoint);
+					SendIOScriptEvent(io, SM_NULL, "", "waypoint" + waypoint);
 					SendIOScriptEvent(io, SM_PATHEND);
 					aup->lastWP = last;
 				} else {
@@ -2271,12 +2270,10 @@ void UpdateCameras() {
 
 					long ii = _from + 1;
 
-					char str[16];
-					sprintf(str, "%ld", ii);
 					EVENT_SENDER = NULL;
-					SendIOScriptEvent(io, SM_WAYPOINT, str);
-					sprintf(str, "waypoint%ld", ii);
-					SendIOScriptEvent(io, SM_NULL, "", str);
+					std::string waypoint = boost::lexical_cast<std::string>(ii);
+					SendIOScriptEvent(io, SM_WAYPOINT, waypoint);
+					SendIOScriptEvent(io, SM_NULL, "", "waypoint" + waypoint);
 
 					if(ii == aup->path->nb_pathways) {
 						SendIOScriptEvent(io, SM_PATHEND);
