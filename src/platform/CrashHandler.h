@@ -134,7 +134,12 @@ public:
 	 * \return True if the variable could be set, false otherwise.
 	 */
 	static bool setVariable(const std::string& name, const std::string & value);
-
+	
+	/*!
+	 * \brief Set window ID which should be hidden when the process crashes
+	 */
+	static bool setWindow(u64 window);
+	
 	/*!
 	 * \brief Specify the location where crash reports will be written
 	 *
