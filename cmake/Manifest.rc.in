@@ -1,0 +1,4 @@
+
+#include <winuser.h>
+
+1 RT_MANIFEST "${manifest}"

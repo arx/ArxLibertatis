@@ -133,6 +133,45 @@ function(enable_unity_build UB_SUFFIX SOURCE_VARIABLE_NAME)
 	
 endfunction()
 
+set(APPLICATION_MANIFEST_RESOURCE_TEMPLATE "${CMAKE_CURRENT_LIST_DIR}/Manifest.rc.in")
+set(APPLICATION_MANIFEST_RESOURCE_SCRIPT "${CMAKE_CURRENT_LIST_DIR}/ConfigureFileScript.cmake")
+
+function(process_resource_files BINARY SOURCE_VARIABLE_NAME)
+	
+	if(NOT WIN32)
+		# Resource files are only used on Windows
+		return()
+	endif()
+	
+	set(generated_rc_files)
+	
+	# Older CMake versions and MingGW do not support manifest files - manually create the resource file
+	foreach(source_file IN LISTS ${SOURCE_VARIABLE_NAME})
+		
+		if(source_file MATCHES "\\.manifest" AND (NOT MSVC OR CMAKE_VERSION VERSION_LESS 3.4))
+			get_filename_component(manifest_filename "${source_file}" NAME)
+			set(manifest_rc_file "${CMAKE_CURRENT_BINARY_DIR}/${manifest_filename}.rc")
+			add_custom_command(
+				OUTPUT "${manifest_rc_file}"
+				COMMAND ${CMAKE_COMMAND}
+					"-Dmanifest=${source_file}"
+					"-Dtemplate=${APPLICATION_MANIFEST_RESOURCE_TEMPLATE}" "-Doutput=${manifest_rc_file}"
+					-P "${APPLICATION_MANIFEST_RESOURCE_SCRIPT}"
+				DEPENDS "${APPLICATION_MANIFEST_RESOURCE_TEMPLATE}" "${source_file}"
+				MAIN_DEPENDENCY ${source_file}
+				COMMENT ""
+				VERBATIM
+			)
+			set_source_files_properties("${source_file}" PROPERTIES HEADER_FILE_ONLY true)
+			list(APPEND generated_rc_files "${manifest_rc_file}")
+		endif()
+		
+	endforeach()
+	
+	set(${SOURCE_VARIABLE_NAME} ${${SOURCE_VARIABLE_NAME}} ${generated_rc_files} PARENT_SCOPE)
+	
+endfunction()
+
 
 unset(SHARED_BUILD_BINARIES CACHE)
 
@@ -377,6 +416,8 @@ function(_shared_build_cleanup)
 endfunction()
 
 function(_shared_build_add_binary bin)
+	
+	process_resource_files(${bin} SHARED_BUILD_${bin}_SOURCES)
 	
 	set(build_type "${SHARED_BUILD_${bin}_TYPE}")
 	if(build_type STREQUAL "SHARED")
