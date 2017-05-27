@@ -210,7 +210,7 @@ static const char * getHRTFStatusString(HRTFStatus status) {
 		case HRTFForbidden:   return "Forbidden";
 		case HRTFRequired:    return "Required";
 		case HRTFUnavailable: return "Unavailable";
-		default: ARX_DEAD_CODE();
+		default:              return "Unknown";
 	}
 	
 }
