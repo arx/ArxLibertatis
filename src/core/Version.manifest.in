@@ -25,4 +25,10 @@
 		</application>
 	</compatibility>
 	
+	<asmv3:application>
+		<asmv3:windowsSettings xmlns="http://schemas.microsoft.com/SMI/2005/WindowsSettings">
+			<dpiAware>${DPIAWARE}</dpiAware>
+		</asmv3:windowsSettings>
+	</asmv3:application>
+	
 </assembly>
