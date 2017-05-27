@@ -253,6 +253,8 @@ aalError OpenALBackend::init(const char * requestedDeviceName, HRTFAttribute hrt
 		#undef ARX_AL_LOAD_FUNC
 	}
 	m_HRTFAttribute = hrtf;
+	#else
+	ARX_UNUSED(hrtf);
 	#endif
 	
 	ALCint attrs[3];
