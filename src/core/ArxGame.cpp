@@ -876,6 +876,7 @@ bool ArxGame::initGame()
 	bookcam.angle = Anglef::ZERO;
 	bookcam.orgTrans.pos = Vec3f_ZERO;
 	bookcam.focal = defaultCameraFocal;
+	bookcam.cdepth = 2200.f;
 	
 	LoadSysTextures();
 	cursorTexturesInit();
