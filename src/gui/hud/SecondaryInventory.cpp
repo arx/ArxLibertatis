@@ -244,7 +244,6 @@ void SecondaryInventoryHud::draw() {
 				}
 				
 				Rectf rect(p, size.x * m_scale, size.y * m_scale);
-				// TODO use alpha blending so this will be anti-aliased even w/o alpha to coverage
 				EERIEDrawBitmap(rect, 0.001f, tc, color);
 				
 				Color overlayColor = Color::black;
