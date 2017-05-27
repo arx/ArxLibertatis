@@ -89,6 +89,8 @@ struct CrashInfoBase {
 		char value[MaxVariableValueLen];
 	} variables[MaxNbVariables];
 	
+	u64 window;
+	
 	// ID of the crashed process & thread
 	platform::process_id processId;
 	

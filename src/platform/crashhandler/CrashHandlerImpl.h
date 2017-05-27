@@ -42,6 +42,7 @@
 #include "platform/CrashHandler.h"
 #include "platform/crashhandler/CrashInfo.h"
 #include "platform/Lock.h"
+#include "platform/Platform.h"
 
 class CrashHandlerImpl {
 	
@@ -55,6 +56,7 @@ public:
 
 	bool addAttachedFile(const fs::path& file);
 	bool setVariable(const std::string& name, const std::string& value);
+	void setWindow(u64 window);
 	
 	bool addText(const char * text);
 

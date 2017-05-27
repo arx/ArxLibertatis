@@ -183,6 +183,19 @@ bool CrashHandler::setVariable(const std::string & name, const std::string & val
 #endif
 }
 
+bool CrashHandler::setWindow(u64 window) {
+#if ARX_HAVE_CRASHHANDLER
+	if(!isInitialized()) {
+		return false;
+	}
+	gCrashHandlerImpl->setWindow(window);
+	return true;
+#else
+	ARX_UNUSED(window);
+	return false;
+#endif
+}
+
 bool CrashHandler::setReportLocation(const fs::path & location) {
 #if ARX_HAVE_CRASHHANDLER
 	if(!isInitialized()) {

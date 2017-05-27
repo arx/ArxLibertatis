@@ -51,6 +51,7 @@
 #include "platform/CrashHandler.h"
 #include "platform/Environment.h"
 #include "platform/WindowsUtils.h"
+#include "window/SDL2X11Util.h"
 
 // Avoid including SDL_syswm.h without SDL_PROTOTYPES_ONLY on non-Windows systems
 // it includes X11 stuff which pullutes the namespace global namespace.
@@ -344,10 +345,12 @@ bool SDL2Window::initialize() {
 	
 	// Use the executable icon for the window
 	#if ARX_PLATFORM == ARX_PLATFORM_WIN32
+	u64 nativeWindow = 0;
 	{
 		SDL_SysWMinfo info;
 		SDL_VERSION(&info.version);
 		if(SDL_GetWindowWMInfo(m_window, &info) && info.subsystem == SDL_SYSWM_WINDOWS) {
+			nativeWindow = u64(info.info.win.window);
 			platform::WideString filename;
 			filename.allocate(filename.capacity());
 			while(true) {
@@ -369,7 +372,10 @@ bool SDL2Window::initialize() {
 			}
 		}
 	}
+	#else
+	u64 nativeWindow = SDL2X11_getNativeWindowHandle(m_window);
 	#endif
+	CrashHandler::setWindow(nativeWindow);
 	
 	setVSync(m_vsync);
 	

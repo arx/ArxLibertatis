@@ -35,6 +35,7 @@
 #include <QFileInfoList>
 #include <QThread>
 #include <QByteArray>
+#include <QWindow>
 
 // Boost
 #include <boost/date_time/posix_time/posix_time_types.hpp>
@@ -78,6 +79,16 @@ bool ErrorReport::Initialize() {
 		
 		// Our SharedCrashInfo will be stored in this shared memory.
 		m_pCrashInfo = (CrashInfo*)m_MemoryMappedRegion.get_address();
+		
+		if(m_pCrashInfo->window) {
+			QWindow * window = QWindow::fromWinId(m_pCrashInfo->window);
+			if(window) {
+				window->showMinimized();
+				window->hide();
+				window->setMouseGrabEnabled(true);
+				window->setMouseGrabEnabled(false);
+			}
+		}
 		
 	} catch(...) {
 		m_pCrashInfo = NULL;

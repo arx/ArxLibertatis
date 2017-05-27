@@ -126,6 +126,8 @@ void CrashHandlerImpl::fillBasicCrashInfo() {
 	util::storeStringTerminated(m_pCrashInfo->executablePath, exe);
 	util::storeStringTerminated(m_pCrashInfo->executableVersion, arx_name + " " + arx_version);
 	
+	m_pCrashInfo->window = 0;
+	
 	m_pCrashInfo->title[0] = '\0';
 	
 	m_pCrashInfo->description[0] = '\0';
@@ -215,6 +217,12 @@ bool CrashHandlerImpl::setVariable(const std::string & name, const std::string &
 	m_pCrashInfo->nbVariables++;
 
 	return true;
+}
+
+void CrashHandlerImpl::setWindow(u64 window) {
+	Autolock autoLock(&m_Lock);
+	
+	m_pCrashInfo->window = window;
 }
 
 bool CrashHandlerImpl::addText(const char * text) {
