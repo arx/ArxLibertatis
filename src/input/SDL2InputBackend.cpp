@@ -337,6 +337,7 @@ void SDL2InputBackend::onEvent(const SDL_Event & event) {
 		
 		case SDL_MOUSEWHEEL: {
 			wheel += event.wheel.y;
+			break;
 		}
 		
 		case SDL_MOUSEBUTTONDOWN:
