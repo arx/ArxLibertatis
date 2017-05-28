@@ -775,7 +775,7 @@ void ManageCombatModeAnimations() {
 									player.m_weaponBlocked = layer1.ctime;
 								}
 								
-								ParticleSparkSpawn(sphere.origin, static_cast<unsigned int>(dmgs), SpawnSparkType_Success);
+								ParticleSparkSpawnContinous(sphere.origin, unsigned(dmgs), SpawnSparkType_Success);
 								
 								if(ValidIONum(num)) {
 									static PlatformInstant lastHit = PlatformInstant_ZERO;
