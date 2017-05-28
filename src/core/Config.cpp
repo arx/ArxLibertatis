@@ -87,7 +87,7 @@ const bool
 	colorkeyAntialiasing = true,
 	limitSpeechWidth = true,
 	hudScaleInteger = true,
-	scaleCursorWithHud = false,
+	scaleCursorWithHud = true,
 	minimizeOnFocusLost = true,
 	eax = true,
 	muteOnFocusLost = false,
