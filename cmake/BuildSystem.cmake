@@ -503,7 +503,7 @@ function(_shared_build_add_binary bin)
 	install(TARGETS ${bin} ${SHARED_BUILD_${bin}_INSTALL})
 	
 	if(MACOSX)
-		# For OS X, CMake maps VERSION to the -current_version linker propery
+		# For macOS, CMake maps VERSION to the -current_version linker propery
 		# and SOVERSION to *both* the ABI version in the file name and to the 
 		# -compatibility_version linker property.
 		# The -current_version and -compatibility_version have restrictions
@@ -514,14 +514,14 @@ function(_shared_build_add_binary bin)
 		# ELF systems such as Linux.
 		# On the other hand, ELF (and Windows) does not support a concept like
 		# -compatibility_version.
-		# Disable the check on OS X as well by not setting the VERSION property.
+		# Disable the check on macOS as well by not setting the VERSION property.
 	elseif(NOT SHARED_BUILD_${bin}_VERSION STREQUAL "")
 		set_target_properties(${bin} PROPERTIES VERSION "${SHARED_BUILD_${bin}_VERSION}")
 	endif()
 	if(NOT SHARED_BUILD_${bin}_SOVERSION STREQUAL "")
 		set(soversion "${SHARED_BUILD_${bin}_SOVERSION}")
 		if(MACOSX)
-			# CMake treats version number 0 as special for OS X builds.
+			# CMake treats version number 0 as special for macOS builds.
 			math(EXPR soversion "${soversion} + 1")
 		endif()
 		set_target_properties(${bin} PROPERTIES SOVERSION "${soversion}")
