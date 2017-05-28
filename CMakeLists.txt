@@ -1120,7 +1120,7 @@ set(WINDOW_SOURCES
 )
 set(WINDOW_SDL1_SOURCES src/window/SDL1Window.cpp)
 set(WINDOW_SDL2_SOURCES src/window/SDL2Window.cpp)
-if(NOT WIN32)
+if(NOT WIN32 AND NOT MACOS)
 	list(APPEND WINDOW_SDL2_SOURCES src/window/SDL2X11Util.c)
 endif()
 

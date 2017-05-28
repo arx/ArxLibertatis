@@ -133,7 +133,7 @@ bool SDL2Window::initializeFramework() {
 	                             "." ARX_STR(SDL_PATCHLEVEL);
 	CrashHandler::setVariable("SDL version (headers)", headerVersion);
 	
-	#if ARX_PLATFORM != ARX_PLATFORM_WIN32
+	#if ARX_PLATFORM != ARX_PLATFORM_WIN32 && ARX_PLATFORM != ARX_PLATFORM_MACOS
 	platform::EnvironmentOverride overrrides[] = {
 		/*
 		 * We want the X11 WM_CLASS to match the .desktop file and icon name,
@@ -372,7 +372,7 @@ bool SDL2Window::initialize() {
 			}
 		}
 	}
-	#else
+	#elif ARX_PLATFORM != ARX_PLATFORM_MACOS
 	u64 nativeWindow = SDL2X11_getNativeWindowHandle(m_window);
 	#endif
 	CrashHandler::setWindow(nativeWindow);
