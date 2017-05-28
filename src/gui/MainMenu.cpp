@@ -1202,7 +1202,7 @@ public:
 		if(hrtf != audio::HRTFUnavailable) {
 			
 			PanelWidget * panel = new PanelWidget;
-			std::string szMenuText = getLocalised("system_menus_options_audio_hrtf", "HRTF");
+			std::string szMenuText = getLocalised("system_menus_options_audio_hrtf", "Virtual surround");
 			szMenuText += "  ";
 			TextWidget * txt = new TextWidget(BUTTON_INVALID, hFontMenu, szMenuText, Vec2f(20, 0));
 			txt->SetCheckOff();
