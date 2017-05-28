@@ -52,7 +52,7 @@ set(ico_sizes
 	256
 )
 
-# Sizes in the Mac OS X .icns file
+# Sizes in the macOS .icns file
 set(icns_sizes
 	16
 	16@2x
