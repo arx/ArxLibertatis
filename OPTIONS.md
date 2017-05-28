@@ -12,7 +12,7 @@ This file describes additional build options that are recognized by the CMakeLis
 | `DATA_DIR_PREFIXES`   |                                                        |
 | `DATA_DIR`            |                                                        |
 
-| Option                | Mac default                                            |
+| Option                | macOS default                                            |
 |---------------------- | ------------------------------------------------------ |
 | `USER_DIR_PREFIXES`   | `$HOME/Library/Application Support`                    |
 | `USER_DIR`            | `ArxLibertatis`                                        |
@@ -103,7 +103,7 @@ By default, optional components will be automatically disabled if their dependen
 
 * `ICON_TYPE` (default: *platform specific*): Type(s) of icons to generate and install. Valid options are:
  * `ico` Windows .ico files (linked into the appropriate executables) [default on Windows]
- * `icns` Mac OS X .icns files (installed under `ICONDIR`) [default on Mac OS X]
+ * `icns` macOS .icns files (installed under `ICONDIR`) [default on macOS]
  * `iconset` Themable .png icon sets (installed in a `${size}x${size}/apps/${name}.png` hierarchy under `ICONTHEMEDIR`) [default on Linux and other systems]
  * `png` Portable .png  icons (installed under `ICONDIR`)
  * `overview` Icon size comparison montage (not installed)
