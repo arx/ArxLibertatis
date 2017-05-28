@@ -502,7 +502,7 @@ function(_shared_build_add_binary bin)
 	
 	install(TARGETS ${bin} ${SHARED_BUILD_${bin}_INSTALL})
 	
-	if(MACOSX)
+	if(MACOS)
 		# For macOS, CMake maps VERSION to the -current_version linker propery
 		# and SOVERSION to *both* the ABI version in the file name and to the 
 		# -compatibility_version linker property.
@@ -520,7 +520,7 @@ function(_shared_build_add_binary bin)
 	endif()
 	if(NOT SHARED_BUILD_${bin}_SOVERSION STREQUAL "")
 		set(soversion "${SHARED_BUILD_${bin}_SOVERSION}")
-		if(MACOSX)
+		if(MACOS)
 			# CMake treats version number 0 as special for macOS builds.
 			math(EXPR soversion "${soversion} + 1")
 		endif()
