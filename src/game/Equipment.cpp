@@ -812,7 +812,7 @@ bool ARX_EQUIPMENT_Strike_Check(Entity * io_source, Entity * io_weapon, float ra
 							if(io_source == entities.player())
 								HIT_SPARK = true;
 						}
-					} else if((target->ioflags & IO_NPC) && (dmgs <= 0.f || target->spark_n_blood == SP_SPARKING)) {
+					} else if(target->ioflags & IO_NPC) {
 						unsigned int nb;
 
 						if(target->spark_n_blood == SP_SPARKING)
@@ -829,7 +829,7 @@ bool ARX_EQUIPMENT_Strike_Check(Entity * io_source, Entity * io_weapon, float ra
 
 						if(!(target->ioflags & IO_NPC))
 							HIT_SPARK = true;
-					} else if(dmgs <= 0.f && ((target->ioflags & IO_FIX) || (target->ioflags & IO_ITEM))) {
+					} else if((target->ioflags & IO_FIX) || (target->ioflags & IO_ITEM)) {
 						unsigned int nb;
 
 						if(target->spark_n_blood == SP_SPARKING)
