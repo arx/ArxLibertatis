@@ -5,7 +5,7 @@
 # iconutil_FOUND
 # iconutil_EXECUTABLE   Where to find iconutil/icnsutil
 #
-# For non-OS X platforms, icnsutil can be found at https://github.com/pornel/libicns
+# For non-macOS platforms, icnsutil can be found at https://github.com/pornel/libicns
 
 set(_iconutil_EXECUTABLE_NAMES icnsutil)
 if(APPLE)
