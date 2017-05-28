@@ -126,7 +126,7 @@ static const char * const deviceNamePrefixOpenALSoft = "OpenAL Soft on ";
 
 class OpenALEnvironmentOverrides {
 	
-	#if ARX_PLATFORM == ARX_PLATFORM_WIN32
+	#if ARX_PLATFORM == ARX_PLATFORM_WIN32 || ARX_PLATFORM == ARX_PLATFORM_MACOS
 	static const size_t s_count = 1;
 	#else
 	static const size_t s_count = 3;
@@ -142,7 +142,7 @@ public:
 		
 		size_t i = 0;
 		
-		#if ARX_PLATFORM != ARX_PLATFORM_WIN32
+		#if ARX_PLATFORM != ARX_PLATFORM_WIN32 && ARX_PLATFORM != ARX_PLATFORM_MACOS
 		/*
 		 * OpenAL Soft does not provide a way to pass through these properties, so use
 		 * environment variables.
@@ -162,6 +162,8 @@ public:
 			m_overrides[i].value = m_alpath.string().c_str();
 			i++;
 		}
+		
+		arx_assert(i <= s_count);
 		
 		for(; i < s_count; i++) {
 			m_overrides[i].name = NULL;
