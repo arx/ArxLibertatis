@@ -68,7 +68,7 @@
 #include "util/cmdline/CommandLine.h"
 
 /*
- * Under OS X we want SDLmain to replace the entry point with its own.
+ * Under macOS we want SDLmain to replace the entry point with its own.
  * This is needed to initialize NSApplication - otherwise we will later
  * crash when trying to use SDL windowing functions.
  */
