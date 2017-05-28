@@ -225,7 +225,7 @@ bool ErrorReport::SendReport(ErrorReport::IProgressNotifier* pProgressNotifier)
 #elif ARX_PLATFORM == ARX_PLATFORM_LINUX
 		int os_id = TBG::Server::OS_Linux;
 #elif ARX_PLATFORM == ARX_PLATFORM_MACOSX
-		int os_id = TBG::Server::OS_MacOSX;
+		int os_id = TBG::Server::OS_macOS;
 #elif ARX_PLATFORM == ARX_PLATFORM_BSD
 		#if defined(__FreeBSD__)
 		int os_id = TBG::Server::OS_FreeBSD;
