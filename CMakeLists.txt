@@ -435,7 +435,7 @@ if(NOT ARX_HAVE_SDL AND (NOT WITH_SDL OR WITH_SDL EQUAL 2))
 endif()
 if(NOT ARX_HAVE_SDL AND (NOT WITH_SDL OR WITH_SDL EQUAL 1))
 	if(NOT MACOSX)
-		# Required to avoid linking with SDLmain except for OS X where it is necessary
+		# Required to avoid linking with SDLmain except for macOS where it is necessary
 		# due to the need to have NSApplication correctly setup by SDLmain.
 		set(SDL_BUILDING_LIBRARY 1)
 	endif()
