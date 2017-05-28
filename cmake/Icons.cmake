@@ -36,7 +36,7 @@ set(iconutil_OPTIONS)
 # ICO                 Generate a Windows .ico file containing the following sizes
 #                     The path to the .ico file will be stored in ${${name}.ico}.
 #                     The path to a resource script will be stored in ${${name}-icon.rc}.
-# ICNS                Generate a Mac OS X .icns file containing the following sizes
+# ICNS                Generate a macOS .icns file containing the following sizes
 #                     The path to the .icns file will be stored in ${${name}.icns}.
 # ICONSET             Generate a set of .png icons for use with the icon theme spec
 #                     The path to the icon files will be stored in ${${name}-iconset}.
@@ -315,7 +315,7 @@ function(add_icon name)
 			
 		elseif(type STREQUAL "icns")
 			
-			# Mac OS X icon
+			# macOS icon
 			
 			if(icns_sizes)
 				
