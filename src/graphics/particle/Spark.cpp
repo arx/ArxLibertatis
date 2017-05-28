@@ -19,6 +19,8 @@
 
 #include "graphics/particle/Spark.h"
 
+#include <cmath>
+
 #include "core/Core.h"
 #include "core/GameTime.h"
 #include "graphics/Color.h"
@@ -57,6 +59,18 @@ void ParticleSparkClear() {
 
 long ParticleSparkCount() {
 	return g_sparkParticlesCount;
+}
+
+void ParticleSparkSpawnContinous(const Vec3f & pos, unsigned rate, SpawnSparkType type) {
+	
+	float amount = float(rate) * toMs(g_platformTime.lastFrameDuration()) * (15.f / 1000.f);
+	
+	unsigned count = std::floor(amount);
+	if(Random::getf() < (amount - float(count))) {
+		count++;
+	}
+	
+	ParticleSparkSpawn(pos, count, type);
 }
 
 void ParticleSparkSpawn(const Vec3f & pos, unsigned int count, SpawnSparkType type) {
