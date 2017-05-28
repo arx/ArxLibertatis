@@ -23,9 +23,9 @@ endif()
 # Define configuration options
 
 if(CMAKE_SYSTEM_NAME MATCHES "Darwin")
-	set(MACOSX 1)
+	set(MACOS 1)
 else()
-	set(MACOSX 0)
+	set(MACOS 0)
 endif()
 
 macro(suboption _var _comment _type _default)
@@ -47,7 +47,7 @@ endif()
 suboption(BUILD_TESTS "Build tests" BOOL ${default_BUILD_TESTS})
 option(BUILD_TOOLS "Build tools" ON)
 set(def_BUILD_CRASHHANDLER ON)
-if(MACOSX)
+if(MACOS)
 	set(def_BUILD_CRASHHANDLER OFF)
 elseif(WIN32 AND NOT MSVC)
 	set(def_BUILD_CRASHHANDLER OFF)
@@ -121,7 +121,7 @@ suboption(ZLIB_USE_STATIC_LIBS     "Statically link ZLIB"     BOOL ${USE_STATIC_
 # Icons
 if(WIN32)
 	set(default_ICON_TYPE "ico")
-elseif(MACOSX)
+elseif(MACOS)
 	set(default_ICON_TYPE "icns")
 else()
 	set(default_ICON_TYPE "iconset")
@@ -197,7 +197,7 @@ mark_as_advanced(
 # Default runtime user and data directories
 if(WIN32)
 	set(USER_DIR          "Arx Libertatis"                CACHE STRING "User dir names")
-elseif(MACOSX)
+elseif(MACOS)
 	set(DATA_DIR          "ArxLibertatis"                 CACHE STRING "Data dir names")
 	set(DATA_DIR_PREFIXES "/Applications"                 CACHE STRING "Data dir paths")
 	set(USER_DIR          "ArxLibertatis"                 CACHE STRING "User dir names")
@@ -434,7 +434,7 @@ if(NOT ARX_HAVE_SDL AND (NOT WITH_SDL OR WITH_SDL EQUAL 2))
 	endif()
 endif()
 if(NOT ARX_HAVE_SDL AND (NOT WITH_SDL OR WITH_SDL EQUAL 1))
-	if(NOT MACOSX)
+	if(NOT MACOS)
 		# Required to avoid linking with SDLmain except for macOS where it is necessary
 		# due to the need to have NSApplication correctly setup by SDLmain.
 		set(SDL_BUILDING_LIBRARY 1)
@@ -1049,7 +1049,7 @@ set(PLATFORM_EXTRA_SOURCES
 	src/platform/Dialog.cpp
 	src/platform/Thread.cpp
 )
-if(MACOSX)
+if(MACOS)
 	list(APPEND PLATFORM_EXTRA_SOURCES src/platform/Dialog.mm)
 endif()
 
@@ -1711,7 +1711,7 @@ if(INSTALL_SCRIPTS AND NOT WIN32)
 endif()
 
 # Install icon and desktop entry
-if(NOT WIN32 AND NOT MACOSX)
+if(NOT WIN32 AND NOT MACOS)
 	
 	find_program(DESKTOP_FILE_VALIDATE desktop-file-validate)
 	

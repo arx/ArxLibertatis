@@ -167,7 +167,7 @@ else(MSVC)
 			endif()
 			
 			# Xcode does not support -isystem yet
-			if(MACOSX)
+			if(MACOS)
 				add_cxxflag("-Wno-undef")
 			endif()
 			
@@ -211,7 +211,7 @@ else(MSVC)
 		
 		add_cxxflag("-fno-rtti")
 		
-		if(MACOSX)
+		if(MACOS)
 			# TODO For some reason this check succeeds on macOS, but then
 			# flag causes the actual build to fail :(
 		else()
