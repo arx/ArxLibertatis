@@ -478,7 +478,7 @@ bool isFileDescriptorDisabled(int fd) {
 	
 	bool valid = false;
 	#if ARX_HAVE_FCNTL && defined(F_GETPATH) && defined(MAXPATHLEN)
-	// OS X
+	// macOS
 	valid = (fcntl(fd, F_GETPATH, path) != -1 && path[9] == '\0');
 	#elif ARX_HAVE_READLINK
 	// Linux
