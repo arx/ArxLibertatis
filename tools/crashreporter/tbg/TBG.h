@@ -40,7 +40,7 @@ public:
 	
 	enum OperatingSystem {
 		OS_Linux = 100,   // Linux
-		OS_MacOSX = 200,  // Mac
+		OS_macOS = 200,   // macOS
 		OS_FreeBSD = 300, // FreeBSD
 		OS_BSD = 350,     // *BSD
 		OS_Windows = 400, // Windows
