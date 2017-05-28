@@ -212,7 +212,7 @@ else(MSVC)
 		add_cxxflag("-fno-rtti")
 		
 		if(MACOSX)
-			# TODO For some reason this check succeeds on OS X, but then
+			# TODO For some reason this check succeeds on macOS, but then
 			# flag causes the actual build to fail :(
 		else()
 			# Link as few libraries as possible
