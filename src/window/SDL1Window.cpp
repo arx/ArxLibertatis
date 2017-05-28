@@ -371,7 +371,7 @@ void SDL1Window::tick() {
 				// For some reason, release notes from SDL 1.2.12 says a SDL_QUIT message
 				// should be sent when Command+Q is pressed on macOS or ALT-F4 on other platforms
 				// but it doesn't look like it's working as expected...
-				#if ARX_PLATFORM == ARX_PLATFORM_MACOSX
+				#if ARX_PLATFORM == ARX_PLATFORM_MACOS
 				int quitkey = SDLK_q, quitmod = KMOD_META;
 				#else
 				int quitkey = SDLK_F4, quitmod = KMOD_ALT;

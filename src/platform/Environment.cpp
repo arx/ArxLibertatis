@@ -49,7 +49,7 @@
 #include <errno.h>
 #endif
 
-#if ARX_PLATFORM == ARX_PLATFORM_MACOSX
+#if ARX_PLATFORM == ARX_PLATFORM_MACOS
 #include <mach-o/dyld.h>
 #include <sys/param.h>
 #endif
@@ -270,7 +270,7 @@ void initializeEnvironment(const char * argv0) {
 	executablePath = argv0;
 }
 
-#if ARX_HAVE_READLINK && ARX_PLATFORM != ARX_PLATFORM_MACOSX
+#if ARX_HAVE_READLINK && ARX_PLATFORM != ARX_PLATFORM_MACOS
 static bool try_readlink(std::vector<char> & buffer, const char * path) {
 	
 	int ret = readlink(path, &buffer.front(), buffer.size());
@@ -290,7 +290,7 @@ static bool try_readlink(std::vector<char> & buffer, const char * path) {
 
 fs::path getExecutablePath() {
 	
-#if ARX_PLATFORM == ARX_PLATFORM_MACOSX
+#if ARX_PLATFORM == ARX_PLATFORM_MACOS
 	
 	uint32_t bufsize = 0;
 	
