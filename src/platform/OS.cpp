@@ -183,7 +183,7 @@ std::string getOSName() {
 	#elif ARX_PLATFORM == ARX_PLATFORM_WIN32
 	return "Windows";
 	#elif ARX_PLATFORM == ARX_PLATFORM_MACOS
-	return "Darwin";
+	return "macOS";
 	#elif ARX_PLATFORM == ARX_PLATFORM_BSD
 	return "BSD";
 	#elif ARX_PLATFORM == ARX_PLATFORM_UNIX
