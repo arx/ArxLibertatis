@@ -132,7 +132,7 @@ void * Thread::entryPoint(void * param) {
 	// Linux
 	pthread_setname_np(thread.thread, thread.threadName.c_str());
 #elif ARX_HAVE_PTHREAD_SETNAME_NP && ARX_PLATFORM == ARX_PLATFORM_MACOSX
-	// Mac OS X
+	// macOS
 	pthread_setname_np(thread.threadName.c_str());
 #elif ARX_HAVE_PTHREAD_SET_NAME_NP
 	// FreeBSD & OpenBSD
