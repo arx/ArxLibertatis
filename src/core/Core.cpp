@@ -778,7 +778,12 @@ void ManageCombatModeAnimations() {
 								ParticleSparkSpawn(sphere.origin, static_cast<unsigned int>(dmgs), SpawnSparkType_Success);
 								
 								if(ValidIONum(num)) {
-									ARX_SOUND_PlayCollision(entities[num]->material, MATERIAL_FLESH, 1.f, 1.f, sphere.origin, NULL);
+									static PlatformInstant lastHit = PlatformInstant_ZERO;
+									PlatformInstant now = g_platformTime.frameStart();
+									if(now - lastHit > PlatformDurationMs(toMsi(layer1.ctime))) {
+										ARX_SOUND_PlayCollision(entities[num]->material, MATERIAL_FLESH, 1.f, 1.f, sphere.origin, NULL);
+										lastHit = now;
+									}
 								}
 							}
 						}
