@@ -72,7 +72,7 @@
  * This is needed to initialize NSApplication - otherwise we will later
  * crash when trying to use SDL windowing functions.
  */
-#if ARX_PLATFORM == ARX_PLATFORM_MACOSX
+#if ARX_PLATFORM == ARX_PLATFORM_MACOS
 	#include <SDL_main.h>
 #else
 	#undef main /* in case SDL.h was already included */

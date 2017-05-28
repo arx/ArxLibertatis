@@ -468,7 +468,7 @@ void launchDefaultProgram(const std::string & uri) {
 	
 	CoUninitialize();
 	
-	#elif ARX_PLATFORM == ARX_PLATFORM_MACOSX
+	#elif ARX_PLATFORM == ARX_PLATFORM_MACOS
 	
 	const char * command[] = { "open", uri.c_str(), NULL };
 	runHelper(command);

@@ -76,7 +76,7 @@ static bool showDialog(DialogType type, const std::string & message,
 	return false;
 }
 
-#elif ARX_PLATFORM == ARX_PLATFORM_MACOSX
+#elif ARX_PLATFORM == ARX_PLATFORM_MACOS
 
 // See Dialog.mm for the implementation of showDialog
 bool showDialog(DialogType type, const std::string & message, const std::string & title);

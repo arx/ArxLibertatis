@@ -39,7 +39,7 @@ int main(int argc, char * argv[]) {
 	
 	QApplication app(argc, argv);
 	
-	#if ARX_PLATFORM != ARX_PLATFORM_WIN32 && ARX_PLATFORM != ARX_PLATFORM_MACOSX
+	#if ARX_PLATFORM != ARX_PLATFORM_WIN32 && ARX_PLATFORM != ARX_PLATFORM_MACOS
 	QIcon icon = QIcon::fromTheme(arx_icon_name.c_str(), QIcon::fromTheme("dialog-error"));
 	app.setWindowIcon(icon);
 	#endif

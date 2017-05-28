@@ -78,7 +78,7 @@ static void getProcessSatus(platform::process_id pid, u64 & rss, u64 & startTick
 
 void CrashHandlerPOSIX::processCrashInfo() {
 	
-	#if ARX_HAVE_GETRUSAGE && ARX_PLATFORM != ARX_PLATFORM_MACOSX
+	#if ARX_HAVE_GETRUSAGE && ARX_PLATFORM != ARX_PLATFORM_MACOS
 	{
 		struct rusage usage;
 		if(getrusage(m_pCrashInfo->processId, &usage) == 0) {
