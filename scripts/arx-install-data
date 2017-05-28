@@ -111,7 +111,7 @@ platform="$(uname)"
 command="$(basename "$0")"
 scommand="$(printf '%s' "$command" | tr - _)"
 if [ "$platform" = 'Darwin' ] ; then
-	# Mac OS X
+	# macOS
 	data_dirs='/Applications'
 	data_home="$HOME/Library/Application Support"
 	config_home="$HOME/Library/Application Support"
