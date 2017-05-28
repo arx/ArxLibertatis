@@ -767,8 +767,7 @@ bool ARX_EQUIPMENT_Strike_Check(Entity * io_source, Entity * io_weapon, float ra
 							ARX_DAMAGES_DurabilityCheck(io_weapon, 0.2f);
 					}
 
-					if(dmgs > 0.f || ((target->ioflags & IO_NPC) && target->spark_n_blood == SP_BLOODY)) {
-						if(target->ioflags & IO_NPC) {
+						if((target->ioflags & IO_NPC) && (dmgs > 0.f || target->spark_n_blood == SP_BLOODY)) {
 							target->spark_n_blood = SP_BLOODY;
 
 							if(!(flags & 1)) {
@@ -801,7 +800,7 @@ bool ARX_EQUIPMENT_Strike_Check(Entity * io_source, Entity * io_weapon, float ra
 							}
 
 							ARX_PARTICLES_Spawn_Blood2(pos, dmgs, color, target);
-						} else {
+						} else if(!(target->ioflags & IO_NPC) && dmgs > 0.f) {
 							if(target->ioflags & IO_ITEM)
 								ParticleSparkSpawnContinous(pos, Random::getu(0, 3), SpawnSparkType_Default);
 							else
@@ -811,7 +810,6 @@ bool ARX_EQUIPMENT_Strike_Check(Entity * io_source, Entity * io_weapon, float ra
 
 							if(io_source == entities.player())
 								HIT_SPARK = true;
-						}
 					} else if(target->ioflags & IO_NPC) {
 						unsigned int nb;
 
