@@ -92,7 +92,7 @@ Technical Changes:
 * Made the text handling code architecture-independent
 * Enabled C++11 mode for GNU-compatible compilers, if supported
 * Added CMake options to control the custom compiler flags used
-* Mac OS X: Fixed some build issues (YMMV)
+* macOS: Fixed some build issues (YMMV)
 * Fixed build with the Intel C++ compiler
 * Fixed build with some MinGW32 distributions
 * Fixed debug build with libc++
