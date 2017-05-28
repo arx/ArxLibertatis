@@ -31,7 +31,7 @@ Reddit: [http://www.reddit.com/r/ArxFatalis/](http://www.reddit.com/r/ArxFatalis
 * **[GLM](http://glm.g-truc.net/) 0.9.5.0**+
 * **[FreeType](http://www.freetype.org/) 2.3.0**+
 * **OpenAL 1.1**+ ([OpenAL Soft](http://kcat.strangesoft.net/openal.html) strongly recommended!)
-* **iconutil** (from Xcode) or **[icnsutil](https://github.com/pornel/libicns)** (Mac OS X only)
+* **iconutil** (from Xcode) or **[icnsutil](https://github.com/pornel/libicns)** (macOS only)
 
 1. Systems without Win32 or POSIX filesystem support will also the `filesystem` and `system` libraries from Boost.
 
@@ -97,8 +97,8 @@ Getting all the dependencies set up for Windows is more tricky. Pre-built depend
 
 * `BUILD_TOOLS` (default=ON): Build tools
 * `BUILD_IO_LIBRARY` (default=ON): Build helper library for the Blender plugin
-* `BUILD_CRASHHANDLER` (default=ON): Enable the built-in crash handler (default OFF for Mac)
-* `BUILD_CRASHREPORTER` (default=ON): Build the Qt crash reporter gui - requires `BUILD_CRASHHANDLER` (default OFF for Mac)
+* `BUILD_CRASHHANDLER` (default=ON): Enable the built-in crash handler (default OFF for macOS)
+* `BUILD_CRASHREPORTER` (default=ON): Build the Qt crash reporter gui - requires `BUILD_CRASHHANDLER` (default OFF for macOS)
 * `BUILD_PROFILER` (default=OFF unless BUILD_PROFILER_INSTRUMENT is enabled): Build the profiler GUI
 * `BUILD_TEST` (default=OFF): Build tests that can be run using `make check`
 * `BUILD_ALL` (default=OFF): Enable all the BUILD_* options above by default - they can still be disabled individually
@@ -145,7 +145,7 @@ By default, user, config and data files will be loaded from and saved to standar
 *Vista* and up: `%USERPROFILE%\Saved Games\Arx Libertatis`
 * data dir: location stored in `HKCU\Software\ArxLibertatis\DataDir` or `HKLM\Software\ArxLibertatis\DataDir` registry keys
 
-**Mac OS X**:
+**macOS**:
 * user and config dir: `~/Library/Application Support/ArxLibertatis/`
 * data dir: `/Applications/ArxLibertatis/`
 
