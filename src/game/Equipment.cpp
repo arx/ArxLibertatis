@@ -766,50 +766,50 @@ bool ARX_EQUIPMENT_Strike_Check(Entity * io_source, Entity * io_weapon, float ra
 						if(io_source == entities.player())
 							ARX_DAMAGES_DurabilityCheck(io_weapon, 0.2f);
 					}
-
-						if((target->ioflags & IO_NPC) && (dmgs > 0.f || target->spark_n_blood == SP_BLOODY)) {
-							target->spark_n_blood = SP_BLOODY;
-
-							if(!(flags & 1)) {
-								ARX_PARTICLES_Spawn_Splat(pos, dmgs, color);
+					
+					if((target->ioflags & IO_NPC) && (dmgs > 0.f || target->spark_n_blood == SP_BLOODY)) {
+						target->spark_n_blood = SP_BLOODY;
+						
+						if(!(flags & 1)) {
+							ARX_PARTICLES_Spawn_Splat(pos, dmgs, color);
+							
+							Vec3f vertPos = target->obj->vertexlist3[hitpoint].v;
+							
+							float power = (dmgs * ( 1.0f / 40 )) + 0.7f;
+							
+							Vec3f vect;
+							vect.x = vertPos.x - io_source->pos.x;
+							vect.y = 0;
+							vect.z = vertPos.z - io_source->pos.z;
+							vect = glm::normalize(vect);
+							
+							Sphere sp;
+							sp.origin.x = vertPos.x + vect.x * 30.f;
+							sp.origin.y = vertPos.y;
+							sp.origin.z = vertPos.z + vect.z * 30.f;
+							sp.radius = 3.5f * power * 20;
+							
+							if(CheckAnythingInSphere(sp, EntityHandle_Player, CAS_NO_NPC_COL)) {
+								Color3f rgb = color.to<float>();
 								
-								Vec3f vertPos = target->obj->vertexlist3[hitpoint].v;
-								
-								float power = (dmgs * ( 1.0f / 40 )) + 0.7f;
-								
-								Vec3f vect;
-								vect.x = vertPos.x - io_source->pos.x;
-								vect.y = 0;
-								vect.z = vertPos.z - io_source->pos.z;
-								vect = glm::normalize(vect);
-								
-								Sphere sp;
-								sp.origin.x = vertPos.x + vect.x * 30.f;
-								sp.origin.y = vertPos.y;
-								sp.origin.z = vertPos.z + vect.z * 30.f;
-								sp.radius = 3.5f * power * 20;
-
-								if(CheckAnythingInSphere(sp, EntityHandle_Player, CAS_NO_NPC_COL)) {
-									Color3f rgb = color.to<float>();
-									
-									Sphere splatSphere;
-									splatSphere.origin = sp.origin;
-									splatSphere.radius = 30.f;
-									PolyBoomAddSplat(splatSphere, rgb, 1);
-								}
+								Sphere splatSphere;
+								splatSphere.origin = sp.origin;
+								splatSphere.radius = 30.f;
+								PolyBoomAddSplat(splatSphere, rgb, 1);
 							}
-
-							ARX_PARTICLES_Spawn_Blood2(pos, dmgs, color, target);
-						} else if(!(target->ioflags & IO_NPC) && dmgs > 0.f) {
-							if(target->ioflags & IO_ITEM)
-								ParticleSparkSpawnContinous(pos, Random::getu(0, 3), SpawnSparkType_Default);
-							else
-								ParticleSparkSpawnContinous(pos, Random::getu(0, 30), SpawnSparkType_Default);
-
-							ARX_NPC_SpawnAudibleSound(pos, io_source);
-
-							if(io_source == entities.player())
-								HIT_SPARK = true;
+						}
+						
+						ARX_PARTICLES_Spawn_Blood2(pos, dmgs, color, target);
+					} else if(!(target->ioflags & IO_NPC) && dmgs > 0.f) {
+						if(target->ioflags & IO_ITEM)
+							ParticleSparkSpawnContinous(pos, Random::getu(0, 3), SpawnSparkType_Default);
+						else
+							ParticleSparkSpawnContinous(pos, Random::getu(0, 30), SpawnSparkType_Default);
+						
+						ARX_NPC_SpawnAudibleSound(pos, io_source);
+						
+						if(io_source == entities.player())
+							HIT_SPARK = true;
 					} else if(target->ioflags & IO_NPC) {
 						unsigned int nb;
 
