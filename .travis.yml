@@ -20,7 +20,13 @@ addons:
 before_install:
   - wget http://de.archive.ubuntu.com/ubuntu/pool/main/g/glm/libglm-dev_0.9.5.1-1_all.deb
   - sudo dpkg -i libglm-dev_0.9.5.1-1_all.deb
-script: mkdir build && cd build && cmake --version && cmake .. -DICON_TYPE=none -DSTRICT_USE=1 -DBUILD_ALL=1 && make -j1 && make check
+script:
+  - mkdir build
+  - cd build
+  - cmake --version
+  - cmake .. -DICON_TYPE=none -DSTRICT_USE=1 -DBUILD_ALL=1
+  - make -j1
+  - make check
 branches:
   only:
     - master
