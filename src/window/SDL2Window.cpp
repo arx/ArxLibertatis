@@ -374,6 +374,8 @@ bool SDL2Window::initialize() {
 	}
 	#elif ARX_PLATFORM != ARX_PLATFORM_MACOS
 	u64 nativeWindow = SDL2X11_getNativeWindowHandle(m_window);
+	#else
+	u64 nativeWindow = 0;
 	#endif
 	CrashHandler::setWindow(nativeWindow);
 	
