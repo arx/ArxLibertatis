@@ -42,7 +42,6 @@
 #include "platform/CrashHandler.h"
 #include "platform/crashhandler/CrashInfo.h"
 #include "platform/Lock.h"
-#include "platform/Platform.h"
 
 class CrashHandlerImpl {
 	
