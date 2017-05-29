@@ -1,11 +1,25 @@
 language: cpp
 compiler:
   - gcc
+addons:
+  apt:
+    packages:
+      - build-essential
+      - cmake
+      - zlib1g-dev
+      - libfreetype6-dev
+      - libopenal1
+      - libopenal-dev
+      - mesa-common-dev
+      - libgl1-mesa-dev
+      - libboost1.48-dev
+      - libsdl1.2-dev
+      - libglew-dev
+      - libqt4-dev
+      - libcppunit-dev
 before_install:
- - travis_retry sudo apt-get update
- - travis_retry sudo apt-get install build-essential cmake zlib1g-dev libfreetype6-dev libopenal1 libopenal-dev mesa-common-dev libgl1-mesa-dev libboost1.48-dev libsdl1.2-dev libglew-dev libqt4-dev libcppunit-dev
- - wget http://de.archive.ubuntu.com/ubuntu/pool/main/g/glm/libglm-dev_0.9.5.1-1_all.deb
- - sudo dpkg -i libglm-dev_0.9.5.1-1_all.deb
+  - wget http://de.archive.ubuntu.com/ubuntu/pool/main/g/glm/libglm-dev_0.9.5.1-1_all.deb
+  - sudo dpkg -i libglm-dev_0.9.5.1-1_all.deb
 script: mkdir build && cd build && cmake --version && cmake .. -DICON_TYPE=none -DSTRICT_USE=1 -DBUILD_ALL=1 && make -j1 && make check
 branches:
   only:
