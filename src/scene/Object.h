@@ -63,11 +63,6 @@ static T * copyStruct(const T * src, size_t n = 1) {
 	return result;
 }
 
-#if BUILD_EDIT_LOADSAVE
-EERIE_MULTI3DSCENE * PAK_MultiSceneToEerie(const res::path & dir);
-void ReleaseMultiScene(EERIE_MULTI3DSCENE * ms);
-#endif
-
 void MakeUserFlag(TextureContainer * tc);
 ObjVertGroup EERIE_OBJECT_GetGroup(const EERIE_3DOBJ * obj, const std::string & groupname);
 ObjSelection EERIE_OBJECT_GetSelection(const EERIE_3DOBJ * obj, const std::string & selname);
