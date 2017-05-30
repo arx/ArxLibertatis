@@ -1061,7 +1061,6 @@ static bool loadFastScene(const res::path & file, const char * data, const char 
 			
 			BackgroundTileData & bkg = ACTIVEBKG->m_tileData[i][j];
 			
-			bkg.nbianchors = (short)fsi->nbianchors;
 			bkg.nbpoly = (short)fsi->nbpoly;
 			
 			if(fsi->nbpoly > 0) {
@@ -1138,12 +1137,8 @@ static bool loadFastScene(const res::path & file, const char * data, const char 
 				ep2->v[0].rhw = dist;
 			}
 			
-			if(fsi->nbianchors <= 0) {
-				bkg.ianchors = NULL;
-			} else {
-				bkg.ianchors = (long *)malloc(sizeof(long) * fsi->nbianchors);
-				const s32 * anchors = fts_read<s32>(data, end, fsi->nbianchors);
-				std::copy(anchors, anchors + fsi->nbianchors, bkg.ianchors);
+			if(fsi->nbianchors > 0) {
+				fts_read<s32>(data, end, fsi->nbianchors);
 			}
 			
 		}
