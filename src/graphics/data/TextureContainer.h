@@ -217,8 +217,4 @@ DECLARE_FLAGS_OPERATORS(TextureContainer::TCFlags)
  
 TextureContainer * GetTextureList();
 
-// Texture creation and deletion functions
-
-TextureContainer * GetAnyTexture();
-
 #endif // ARX_GRAPHICS_DATA_TEXTURECONTAINER_H
