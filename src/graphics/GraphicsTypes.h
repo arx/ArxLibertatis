@@ -340,18 +340,6 @@ struct EERIE_3DSCENE {
 	CUB3D cub;
 };
 
-
-#if BUILD_EDIT_LOADSAVE
-const size_t MAX_SCENES = 64;
-struct EERIE_MULTI3DSCENE {
-	long nb_scenes;
-	EERIE_3DSCENE * scenes[MAX_SCENES];
-	CUB3D cub;
-	Vec3f pos;
-	Vec3f point0;
-};
-#endif
-
 //-------------------------------------------------------------------------
 //Portal Data;
 

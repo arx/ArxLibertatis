@@ -157,10 +157,6 @@ void Draw3DObject(EERIE_3DOBJ * eobj, const Anglef & angle, const Vec3f & pos, c
 long BKG_CountPolys(const BackgroundData & eb);
 long BKG_CountIgnoredPolys(const BackgroundData & eb);
 
-#if BUILD_EDIT_LOADSAVE
-void SceneAddMultiScnToBackground(EERIE_MULTI3DSCENE * ms);
-#endif
-
 void ClearBackground(BackgroundData * eb);
 void InitBkg(BackgroundData * eb, short sx, short sz, Vec2s tileSize);
 
