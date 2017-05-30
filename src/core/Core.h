@@ -59,7 +59,6 @@ ZeniMax Media Inc., Suite 120, Rockville, Maryland 20850 USA.
 
 class TextureContainer;
 struct EERIE_3DOBJ;
-struct EERIE_MULTI3DSCENE;
 
 const size_t MAX_GOLD_COINS_VISUALS = 7;
 extern TextureContainer * GoldCoinsTC[MAX_GOLD_COINS_VISUALS];
@@ -76,10 +75,6 @@ extern Vec3f g_moveto;
 extern Vec2s STARTDRAG;
 extern EERIE_3DOBJ * GoldCoinsObj[MAX_GOLD_COINS_VISUALS];
 extern Vec3f Mscenepos;
-#if BUILD_EDIT_LOADSAVE
-extern EERIE_MULTI3DSCENE * mse;
-extern long ADDED_IO_NOT_SAVED;
-#endif
 extern Entity * COMBINE;
 extern res::path LastLoadedScene;
 
