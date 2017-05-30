@@ -553,41 +553,8 @@ int PointIn2DPolyXZ(const PortalPoly * ep, float x, float z) {
 }
 
 //*************************************************************************************
-// Counts total number of polys in a background
-//*************************************************************************************
-long BKG_CountPolys(const BackgroundData & eb) {
-	long count = 0;
-
-	for(long z = 0; z < eb.m_size.y; z++)
-	for(long x = 0; x < eb.m_size.x; x++) {
-		const BackgroundTileData & eg = eb.m_tileData[x][z];
-		count += eg.nbpoly;
-	}
-
-	return count;
-}
-
-//*************************************************************************************
 // Counts number of ignored polys in a background
 //*************************************************************************************
-
-long BKG_CountIgnoredPolys(const BackgroundData & eb) {
-	long count = 0;
-
-	for(long z = 0; z < eb.m_size.y; z++)
-	for(long x = 0; x < eb.m_size.x; x++) {
-		const BackgroundTileData & eg = eb.m_tileData[x][z];
-
-		for(long k = 0; k < eg.nbpoly; k++){
-			const EERIEPOLY & pol = eg.polydata[k];
-
-			if(pol.type & POLY_IGNORE)
-				count++;
-		}
-	}
-
-	return count;
-}
 
 // Releases BKG_INFO from a tile
 static void ReleaseBKG_INFO(BackgroundTileData * eg) {

@@ -153,9 +153,6 @@ void Draw3DObject(EERIE_3DOBJ * eobj, const Anglef & angle, const Vec3f & pos, c
 
 //****************************************************************************
 // BACKGROUND MANAGEMENT FUNCTIONS START
-long BKG_CountPolys(const BackgroundData & eb);
-long BKG_CountIgnoredPolys(const BackgroundData & eb);
-
 void ClearBackground(BackgroundData * eb);
 void InitBkg(BackgroundData * eb, short sx, short sz, Vec2s tileSize);
 
