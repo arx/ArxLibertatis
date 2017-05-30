@@ -244,7 +244,6 @@ static void loadObjectData(EERIE_3DOBJ * eerie, const char * adr, size_t * poss,
 	eerie->grouplist.resize(tn->nb_groups);
 	eerie->actionlist.resize(tn->nb_action_point);
 	
-	eerie->ndata = NULL;
 	eerie->pdata = NULL;
 	eerie->cdata = NULL;
 	eerie->sdata = NULL;
@@ -866,7 +865,6 @@ void EERIE_3DOBJ::clear() {
 
 		pbox = 0;
 		pdata = 0;
-		ndata = 0;
 		cdata = 0;
 		sdata = 0;
 		
@@ -894,10 +892,6 @@ EERIE_3DOBJ::~EERIE_3DOBJ() {
 	free(originaltextures);
 	originaltextures = NULL;
 	
-	if(ndata) {
-		KillNeighbours(this);
-	}
-	
 	if(pdata) {
 		KillProgressiveData(this);
 	}
@@ -922,7 +916,6 @@ EERIE_3DOBJ * Eerie_Copy(const EERIE_3DOBJ * obj) {
 	
 	nouvo->vertexlist3 = obj->vertexlist3;
 	
-	nouvo->ndata = NULL;
 	nouvo->pbox = NULL;
 	nouvo->pdata = NULL;
 	nouvo->cdata = NULL;
@@ -948,13 +941,7 @@ EERIE_3DOBJ * Eerie_Copy(const EERIE_3DOBJ * obj) {
 	nouvo->origin = obj->origin;
 	nouvo->point0 = obj->point0;
 	nouvo->quat = obj->quat;
-
-
-	if(obj->ndata)
-		nouvo->ndata = copyStruct(obj->ndata, obj->vertexlist.size());
-	else
-		nouvo->ndata = NULL;
-
+	
 	nouvo->facelist = obj->facelist;
 	nouvo->grouplist = obj->grouplist;
 	nouvo->actionlist = obj->actionlist;

@@ -46,31 +46,10 @@ ZeniMax Media Inc., Suite 120, Rockville, Maryland 20850 USA.
 
 #include "graphics/data/Progressive.h"
 
-#include <stddef.h>
-#include <cstring>
 #include <cstdlib>
-#include <vector>
 
 #include "graphics/GraphicsTypes.h"
 
-
-void KillNeighbours(EERIE_3DOBJ * obj) {
-	
-	if(!obj->ndata) {
-		return;
-	}
-	
-	for(size_t i = 0; i < obj->vertexlist.size(); i++) {
-		free(obj->ndata[i].Nfaces);
-		obj->ndata[i].Nfaces = NULL;
-
-		free(obj->ndata[i].Nvertex);
-		obj->ndata[i].Nvertex = NULL;
-	}
-	
-	free(obj->ndata);
-	obj->ndata = NULL;
-}
 
 void KillProgressiveData(EERIE_3DOBJ * obj) {
 	free(obj->pdata);
