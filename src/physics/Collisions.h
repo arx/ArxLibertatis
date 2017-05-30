@@ -67,7 +67,6 @@ enum CollisionFlag {
 	CFLAG_PLAYER            = (1<<7),
 	CFLAG_RETURN_HEIGHT     = (1<<8),
 	CFLAG_EXTRA_PRECISION   = (1<<9),
-	CFLAG_CHECK_VALID_POS   = (1<<10),
 	CFLAG_ANCHOR_GENERATION = (1<<11),
 	CFLAG_COLLIDE_NOCOL     = (1<<12),
 	CFLAG_NO_NPC_COLLIDE    = (1<<13),
