@@ -49,44 +49,7 @@ ZeniMax Media Inc., Suite 120, Rockville, Maryland 20850 USA.
 #include <cstdio>
 
 #include "ai/PathFinderManager.h"
-#include "game/NPC.h"
-#include "game/Player.h"
-#include "graphics/Math.h"
-#include "io/log/Logger.h"
-#include "physics/Collisions.h"
-#include "platform/profiler/Profiler.h"
-
-static EERIEPOLY * ANCHOR_CheckInPoly(const Vec3f & pos) {
-	
-	long x = pos.x * ACTIVEBKG->m_mul.x;
-	long z = pos.z * ACTIVEBKG->m_mul.y;
-
-	if(x < 0 || x >= ACTIVEBKG->m_size.x || z < 0 || z >= ACTIVEBKG->m_size.y)
-		return NULL;
-
-	EERIEPOLY *found = NULL;
-
-	BackgroundTileData *feg = &ACTIVEBKG->m_tileData[x][z];
-
-	for(long k = 0; k < feg->nbpolyin; k++) {
-		EERIEPOLY *ep = feg->polyin[k];
-
-		if (!(ep->type & (POLY_WATER | POLY_TRANS | POLY_NOCOL))
-		        &&	(ep->max.y >= pos.y)
-		        &&	(ep != found)
-		        &&	((ep->norm.y < 0.f) || ((ep->type & POLY_QUAD) && (ep->norm2.y < 0.f)))
-		        &&	(PointIn2DPolyXZ(ep, pos.x, pos.z)))
-		{
-			if(!found || ep->min.y < found->min.y)
-				found = ep;
-		}
-	}
-
-	if(!found)
-		return CheckInPoly(pos);
-
-	return found;
-}
+#include "graphics/data/Mesh.h"
 
 void AnchorData_ClearAll(BackgroundData * eb) {
 	
@@ -118,41 +81,4 @@ void AnchorData_ClearAll(BackgroundData * eb) {
 
 	eb->anchors = NULL;
 	eb->nbanchors = 0;
-}
-
-bool CylinderAboveInvalidZone(const Cylinder & cyl) {
-	
-	float count = 0;
-	float failcount = 0;
-
-	for(float rad = 0; rad < cyl.radius; rad += 10.f) {
-		for(float ang = 0; ang < 360; ang += 45) {
-			if(rad == 0)
-				ang = 360;
-
-			Vec3f pos = cyl.origin;
-			pos += angleToVectorXZ(ang) * rad;
-			pos += Vec3f(0.f, -20.f, 0.f);
-			
-			EERIEPOLY * ep = ANCHOR_CheckInPoly(pos);
-
-			if(!ep)
-				continue;
-
-			if(ep->type & POLY_NOPATH)
-				return true;
-
-			count += 1.f;
-			float vy;
-			if(GetTruePolyY(ep, pos, &vy) && glm::abs(vy - cyl.origin.y) > 160.f)
-				failcount++;
-		}
-	}
-
-	float failratio = failcount / count;
-
-	if(failratio > 0.75f)
-		return true;
-
-	return false;
 }

@@ -81,6 +81,5 @@ struct ANCHOR_DATA {
  * Clears all Anchor data from a Background
  */
 void AnchorData_ClearAll(BackgroundData * eb);
-bool CylinderAboveInvalidZone(const Cylinder & cyl);
 
 #endif // ARX_PHYSICS_ANCHORS_H
