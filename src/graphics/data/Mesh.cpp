@@ -803,44 +803,6 @@ void EERIEPOLY_Compute_PolyIn() {
 	}
 }
 
-
-
-#define TYPE_PORTAL	1
-#define TYPE_ROOM	2
-bool GetNameInfo(const std::string &name, long &type, long &val1, long &val2)
-{
-	if(name[0] == 'r') {
-		if(name[1] == '_') {
-			type = TYPE_ROOM;
-			val1 = atoi(name.c_str() + 2);
-			val2 = 0;
-			return true;
-		}
-
-		if(name[1] == 'o' && name[2] == 'o' && name[3] == 'm' && name[4] == '_') {
-			type = TYPE_ROOM;
-			val1 = atoi(name.c_str() + 5);
-			val2 = 0;
-			return true;
-		}
-	}
-
-	if ((name[0] == 'p') && (name[1] == 'o') && (name[2] == 'r')
-			&& (name[3] == 't') && (name[4] == 'a') && (name[5] == 'l')
-			&& (name[6] == '_'))
-	{
-		type = TYPE_PORTAL;
-		char temp[16];
-		strcpy(temp, name.c_str() + 7);
-		temp[3] = 0;
-		val1 = atoi(temp);
-		val2 = atoi(name.c_str() + 11);
-		return true;
-	}
-
-	return false;
-}
-
 static void EERIE_PORTAL_Blend_Portals_And_Rooms() {
 	
 	if(!portals)

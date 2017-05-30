@@ -234,7 +234,5 @@ void UpdateIORoom(Entity * io);
 float SP_GetRoomDist(const Vec3f & pos, const Vec3f & c_pos, long io_room, long Cam_Room);
 void EERIE_PORTAL_ReleaseOnlyVertexBuffer();
 void ComputePortalVertexBuffer();
-bool GetNameInfo( const std::string& name1,long& type,long& val1,long& val2);
-
 
 #endif // ARX_GRAPHICS_DATA_MESH_H
