@@ -169,7 +169,6 @@ extern TextManager	*pTextManage;
 extern ArxInstant FORCE_TIME_RESTORE;
 
 extern long		DONT_WANT_PLAYER_INZONE;
-extern long		COLLIDED_CLIMB_POLY;
 
 //-----------------------------------------------------------------------------
 
