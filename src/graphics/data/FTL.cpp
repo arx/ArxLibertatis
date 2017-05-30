@@ -351,24 +351,8 @@ EERIE_3DOBJ * ARX_FTL_Load(const res::path & file) {
 	
 	obj->pbox = NULL; // Reset physics
 	
-	// Alloc'n'Copy Collision Spheres Data
 	if(afsh->offset_collision_spheres != -1) {
-		
-		// Cast to header
-		pos = afsh->offset_collision_spheres;
-		const ARX_FTL_COLLISION_SPHERES_DATA_HEADER * afcsdh;
-		afcsdh = reinterpret_cast<const ARX_FTL_COLLISION_SPHERES_DATA_HEADER*>(dat + pos);
-		pos += sizeof(ARX_FTL_COLLISION_SPHERES_DATA_HEADER);
-		
-		// Alloc the collision sphere data object
-		obj->sdata = new COLLISION_SPHERES_DATA();
-		obj->sdata->spheres.resize(afcsdh->nb_spheres);
-		
-		// Alloc the collision speheres
-		const COLLISION_SPHERE_FTL * begin = reinterpret_cast<const COLLISION_SPHERE_FTL *>(dat + pos);
-		pos += sizeof(COLLISION_SPHERE_FTL) * obj->sdata->spheres.size();
-		const COLLISION_SPHERE_FTL * end = reinterpret_cast<const COLLISION_SPHERE_FTL *>(dat + pos);
-		std::copy(begin, end, obj->sdata->spheres.begin());
+		obj->sdata = true;
 	}
 	
 	// Free the loaded file memory

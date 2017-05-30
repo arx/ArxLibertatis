@@ -154,16 +154,6 @@ struct EERIE_FACE {
 	short ov[IOPOLYVERT];
 };
 
-struct COLLISION_SPHERE {
-	short idx;
-	short flags; // TODO not used?
-	float radius;
-};
-
-struct COLLISION_SPHERES_DATA {
-	std::vector<COLLISION_SPHERE> spheres;
-};
-
 struct PHYSVERT
 {
 	Vec3f	initpos;
@@ -298,7 +288,7 @@ struct EERIE_3DOBJ
 		linked.clear();
 
 		pbox = NULL;
-		sdata = NULL;
+		sdata = false;
 		
 		fastaccess = EERIE_FASTACCESS();
 		
@@ -331,7 +321,7 @@ struct EERIE_3DOBJ
 	std::vector<EERIE_LINKED> linked;
 	
 	PHYSICS_BOX_DATA * pbox;
-	COLLISION_SPHERES_DATA * sdata;
+	bool sdata;
 	EERIE_FASTACCESS fastaccess;
 	Skeleton * m_skeleton;
 	
