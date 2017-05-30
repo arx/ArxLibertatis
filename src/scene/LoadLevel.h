@@ -58,11 +58,6 @@ struct BackgroundData;
 
 extern Vec3f g_loddpos;
 
-#if BUILD_EDIT_LOADSAVE
-namespace fs { class path; }
-long DanaeSaveLevel(const fs::path & file);
-#endif
-
 bool DanaeLoadLevel(const res::path & file, bool loadEntities = true);
 void DanaeClearLevel(long flags = 0);
 void RestoreLastLoadedLightning(BackgroundData & eb);

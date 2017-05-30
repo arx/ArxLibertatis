@@ -1036,23 +1036,6 @@ void ARX_INTERACTIVE_TWEAK_Icon(Entity * io, const res::path & s1) {
 	}
 }
 
-/*!
- * \brief Count IO number ignoring ScriptLoaded IOs
- * \return
- */
-long GetNumberInterWithOutScriptLoad() {
-	long count = 0;
-	for(size_t i = 1; i < entities.size(); i++) {
-		const EntityHandle handle = EntityHandle(i);
-		Entity * e = entities[handle];
-		
-		if(e != NULL && !e->scriptload) {
-			count++;
-		}
-	}
-	return count;
-}
-
 // Be careful with this func...
 Entity * CloneIOItem(Entity * src) {
 	
