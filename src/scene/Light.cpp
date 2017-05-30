@@ -803,30 +803,3 @@ void ApplyTileLights(EERIEPOLY * ep, const Vec2s & pos)
 		ep->tv[j].color = Color(ir, ig, ib, 255).toRGBA();
 	}
 }
-
-
-/*!
- * \addtogroup Light Baking
- * \{
- */
-
-void EERIERemovePrecalcLights() {
-
-	for(size_t i = 0; i < g_staticLightsMax; i++) {
-		if(g_staticLights[i] != NULL)
-			g_staticLights[i]->treat = 1;
-	}
-	
-	// TODO copy-paste poly iteration
-	for(short z = 0; z < ACTIVEBKG->m_size.y; z++)
-	for(short x = 0; x < ACTIVEBKG->m_size.x; x++) {
-		BackgroundTileData & eg = ACTIVEBKG->m_tileData[x][z];
-		for(short l = 0; l < eg.nbpoly; l++) {
-			EERIEPOLY & ep = eg.polydata[l];
-			
-			ep.v[3].color = ep.v[2].color = ep.v[1].color = ep.v[0].color = Color::white.toRGB();
-		}
-	}
-}
-
-/*! \} */
