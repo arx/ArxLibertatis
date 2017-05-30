@@ -63,7 +63,6 @@ if(BUILD_PROFILER_INSTRUMENT OR BUILD_ALL)
 	set(def_BUILD_PROFILER ON)
 endif()
 suboption(BUILD_PROFILER "Build the profiler GUI" BOOL ${def_BUILD_PROFILER})
-option(BUILD_EDIT_LOADSAVE "Build save/load functions only used by the editor" ON)
 option(INSTALL_BLENDER_PLUGIN "Install the Arx Libertatis blender plugin" ON)
 suboption(BUILD_IO_LIBRARY "Build shared library for reading and writing arx data"
           BOOL ${INSTALL_BLENDER_PLUGIN})
