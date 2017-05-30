@@ -103,7 +103,6 @@ ZeniMax Media Inc., Suite 120, Rockville, Maryland 20850 USA.
 #include "physics/Collisions.h"
 #include "physics/CollisionShapes.h"
 #include "physics/Box.h"
-#include "physics/Clothes.h"
 
 #include "platform/Thread.h"
 #include "platform/profiler/Profiler.h"
@@ -777,7 +776,6 @@ static void ARX_INTERACTIVE_ClearIODynData_II(Entity * io) {
 	io->tweaks.clear();
 	io->groups.clear();
 	ARX_INTERACTIVE_HideGore(io);
-	MOLLESS_Clear(io->obj);
 	ARX_SCRIPT_Timer_Clear_For_IO(io);
 	
 	io->stepmaterial.clear();
@@ -1255,7 +1253,6 @@ void ARX_INTERACTIVE_Teleport(Entity * io, const Vec3f & target, bool flag) {
 		}
 	}
 	
-	MOLLESS_Clear(io->obj, 1);
 	ResetVVPos(io);
 }
 

@@ -760,8 +760,6 @@ void EERIE_MESH_TWEAK_Do(Entity * io, TweakType tw, const res::path & path) {
 			return;
 		}
 
-		result->cdata = NULL;
-
 		if (io->tweaky == NULL) io->tweaky = io->obj;
 		else if (io->tweaky != io->obj)
 			delete io->obj;

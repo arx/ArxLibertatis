@@ -1017,7 +1017,6 @@ set(PHYSICS_SOURCES
 	src/physics/Anchors.cpp
 	src/physics/Attractors.cpp
 	src/physics/Box.cpp
-	src/physics/Clothes.cpp
 	src/physics/Collisions.cpp
 	src/physics/CollisionShapes.cpp
 	src/physics/Projectile.cpp
