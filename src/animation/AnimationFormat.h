@@ -44,8 +44,8 @@ ZeniMax Media Inc., Suite 120, Rockville, Maryland 20850 USA.
 //
 // Copyright (c) 1999 ARKANE Studios SA. All rights reserved
 
-#ifndef ARX_SCENE_OBJECTFORMAT_H
-#define ARX_SCENE_OBJECTFORMAT_H
+#ifndef ARX_ANIMATION_ANIMATIONFORMAT_H
+#define ARX_ANIMATION_ANIMATIONFORMAT_H
 
 #include "graphics/GraphicsFormat.h"
 #include "platform/Platform.h"
@@ -143,4 +143,4 @@ struct THEA_SAMPLE {
 #pragma pack(pop)
 
 
-#endif // ARX_SCENE_OBJECTFORMAT_H
+#endif // ARX_ANIMATION_ANIMATIONFORMAT_H

@@ -59,6 +59,8 @@ ZeniMax Media Inc., Suite 120, Rockville, Maryland 20850 USA.
 
 #include "util/String.h"
 
+#include "animation/AnimationFormat.h"
+
 #include "audio/Audio.h"
 
 #include "core/GameTime.h"
@@ -78,7 +80,6 @@ ZeniMax Media Inc., Suite 120, Rockville, Maryland 20850 USA.
 #include "platform/Platform.h"
 
 #include "scene/Object.h"
-#include "scene/ObjectFormat.h"
 #include "scene/GameSound.h"
 
 const size_t MAX_ANIMATIONS = 900;
