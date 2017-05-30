@@ -137,17 +137,6 @@ void EERIE_LIGHT_GlobalInit() {
 	}
 }
 
-long EERIE_LIGHT_GetFree() {
-	
-	for(size_t i = 0; i < g_staticLightsMax; i++) {
-		if(!g_staticLights[i]) {
-			return i;
-		}
-	}
-	
-	return -1;
-}
-
 long EERIE_LIGHT_Create() {
 	
 	for (size_t i = 0; i < g_staticLightsMax; i++) {
@@ -166,40 +155,6 @@ long EERIE_LIGHT_Create() {
 	}
 	
 	return -1;
-}
-
-
-long EERIE_LIGHT_Count() {
-	
-	long count = 0;
-	for(size_t i = 0; i < g_staticLightsMax; i++) {
-		if(g_staticLights[i] && !g_staticLights[i]->m_isIgnitionLight) {
-			count++;
-		}
-	}
-	
-	return count;
-}
-
-void EERIE_LIGHT_GlobalAdd(const EERIE_LIGHT * el)
-{
-	long num = EERIE_LIGHT_GetFree();
-
-	if (num > -1)
-	{
-		g_staticLights[num] = (EERIE_LIGHT *)malloc(sizeof(EERIE_LIGHT));
-		memcpy(g_staticLights[num], el, sizeof(EERIE_LIGHT));
-		g_staticLights[num]->m_ignitionLightHandle = LightHandle();
-		g_staticLights[num]->sample = audio::INVALID_ID;
-	}
-}
-
-void EERIE_LIGHT_MoveAll(const Vec3f & trans) {
-	for(size_t i = 0; i < g_staticLightsMax; i++) {
-		if(g_staticLights[i]) {
-			g_staticLights[i]->pos += trans;
-		}
-	}
 }
 
 static void ComputeLight2DPos(EERIE_LIGHT * _pL) {
