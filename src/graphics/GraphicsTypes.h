@@ -154,17 +154,6 @@ struct EERIE_FACE {
 	short ov[IOPOLYVERT];
 };
 
-struct PROGRESSIVE_DATA {
-	// ingame data
-	short actual_collapse; // -1 = no collapse
-	short need_computing;
-	float collapse_ratio;
-	// static data
-	float collapse_cost;
-	short collapse_candidate;
-	short padd;
-};
-
 struct EERIE_SPRINGS {
 	short startidx;
 	short endidx;
@@ -173,10 +162,6 @@ struct EERIE_SPRINGS {
 	float damping; // spring damping
 	long type;
 };
-
-#define CLOTHES_FLAG_NORMAL	0
-#define CLOTHES_FLAG_FIX	1
-#define CLOTHES_FLAG_NOCOL	2
 
 struct CLOTHESVERTEX {
 	
@@ -350,7 +335,6 @@ struct EERIE_3DOBJ
 		linked.clear();
 
 		pbox = NULL;
-		pdata = NULL;
 		cdata = NULL;
 		sdata = NULL;
 		
@@ -385,7 +369,6 @@ struct EERIE_3DOBJ
 	std::vector<EERIE_LINKED> linked;
 	
 	PHYSICS_BOX_DATA * pbox;
-	PROGRESSIVE_DATA * pdata;
 	CLOTHES_DATA * cdata;
 	COLLISION_SPHERES_DATA * sdata;
 	EERIE_FASTACCESS fastaccess;
