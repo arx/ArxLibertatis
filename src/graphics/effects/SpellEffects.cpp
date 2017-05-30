@@ -162,15 +162,15 @@ EERIE_3DOBJ * stone1 = NULL;
 
 void LoadSpellModels() {
 	// TODO Load dynamically
-	cabal = LoadTheObj("editor/obj3d/cabal.teo", "cabal_teo maps");
-	ssol = LoadTheObj("graph/obj3d/interactive/fix_inter/fx_rune_guard/fx_rune_guard.teo");
-	slight = LoadTheObj("graph/obj3d/interactive/fix_inter/fx_rune_guard/fx_rune_guard02.teo");
-	srune = LoadTheObj("graph/obj3d/interactive/fix_inter/fx_rune_guard/fx_rune_guard03.teo");
-	smotte = LoadTheObj("graph/obj3d/interactive/fix_inter/stalagmite/motte.teo");
-	stite = LoadTheObj("graph/obj3d/interactive/fix_inter/stalagmite/stalagmite.teo");
-	smissile = LoadTheObj("graph/obj3d/interactive/fix_inter/fx_magic_missile/fx_magic_missile.teo");
-	spapi = LoadTheObj("graph/obj3d/interactive/fix_inter/fx_papivolle/fx_papivolle.teo");
-	svoodoo = LoadTheObj("graph/obj3d/interactive/fix_inter/fx_voodoodoll/fx_voodoodoll.teo");
+	cabal = loadObject("editor/obj3d/cabal.teo");
+	ssol = loadObject("graph/obj3d/interactive/fix_inter/fx_rune_guard/fx_rune_guard.teo");
+	slight = loadObject("graph/obj3d/interactive/fix_inter/fx_rune_guard/fx_rune_guard02.teo");
+	srune = loadObject("graph/obj3d/interactive/fix_inter/fx_rune_guard/fx_rune_guard03.teo");
+	smotte = loadObject("graph/obj3d/interactive/fix_inter/stalagmite/motte.teo");
+	stite = loadObject("graph/obj3d/interactive/fix_inter/stalagmite/stalagmite.teo");
+	smissile = loadObject("graph/obj3d/interactive/fix_inter/fx_magic_missile/fx_magic_missile.teo");
+	spapi = loadObject("graph/obj3d/interactive/fix_inter/fx_papivolle/fx_papivolle.teo");
+	svoodoo = loadObject("graph/obj3d/interactive/fix_inter/fx_voodoodoll/fx_voodoodoll.teo");
 	stone0 = loadObject("graph/obj3d/interactive/fix_inter/fx_raise_dead/stone01.teo");
 	stone1 = loadObject("graph/obj3d/interactive/fix_inter/fx_raise_dead/stone02.teo");
 }

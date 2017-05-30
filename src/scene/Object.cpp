@@ -1164,30 +1164,14 @@ void EERIE_CreateCedricData(EERIE_3DOBJ * eobj) {
 	}
 }
 
-static EERIE_3DOBJ * TheoToEerie_Fast(const res::path & texpath, const res::path & file, bool pbox) {
-	
-//	if(file.filename() == "long_sword.teo") {
-//		LogWarning << file.filename();
-//	}
+EERIE_3DOBJ * loadObject(const res::path & file, bool pbox) {
 	
 	EERIE_3DOBJ * ret = ARX_FTL_Load(file);
-	if(ret) {
-		if(pbox) {
-			EERIE_PHYSICS_BOX_Create(ret);
-		}
+	if(ret && pbox) {
+		EERIE_PHYSICS_BOX_Create(ret);
 	}
 	
-	ARX_UNUSED(texpath);
-	
 	return ret;
-}
-
-EERIE_3DOBJ * loadObject(const res::path & file, bool pbox) {
-	return TheoToEerie_Fast("graph/obj3d/textures", file, pbox);
-}
-
-EERIE_3DOBJ * LoadTheObj(const res::path & file, const res::path & texpath) {
-	return TheoToEerie_Fast(file.parent() / texpath, file, true);
 }
 
 void EERIE_OBJECT_CenterObjectCoordinates(EERIE_3DOBJ * ret)

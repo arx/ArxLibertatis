@@ -83,11 +83,6 @@ ObjVertGroup GetActionPointGroup(const EERIE_3DOBJ * eobj, ActionPoint idx);
  */
 EERIE_3DOBJ * loadObject(const res::path & file, bool pbox = true);
 
-/*!
- * \param texpath texture path relative to file
- */
-EERIE_3DOBJ * LoadTheObj(const res::path & file, const res::path & texpath = res::path());
-
 EERIE_3DOBJ * Eerie_Copy(const EERIE_3DOBJ * obj);
 void EERIE_Object_Precompute_Fast_Access(EERIE_3DOBJ * obj);
 void EERIE_3DOBJ_RestoreTextures(EERIE_3DOBJ * eobj);

@@ -40,7 +40,7 @@ extern float PULSATE;
 
 void FlyingEye_Init() {
 	Flying_Eye = TextureContainer::LoadUI("graph/particles/flying_eye_fx");
-	eyeballobj = LoadTheObj("editor/obj3d/eyeball.teo", "eyeball_teo maps");
+	eyeballobj = loadObject("editor/obj3d/eyeball.teo");
 }
 
 void FlyingEye_Release() {
