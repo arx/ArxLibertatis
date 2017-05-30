@@ -49,7 +49,6 @@ ZeniMax Media Inc., Suite 120, Rockville, Maryland 20850 USA.
 
 struct EERIE_3DOBJ;
 
-void KillNeighbours(EERIE_3DOBJ * obj);
 void KillProgressiveData(EERIE_3DOBJ * obj);
 
 #endif // ARX_GRAPHICS_DATA_PROGRESSIVE_H

@@ -154,13 +154,6 @@ struct EERIE_FACE {
 	short ov[IOPOLYVERT];
 };
 
-struct NEIGHBOURS_DATA {
-	short nb_Nvertex;
-	short nb_Nfaces;
-	short * Nvertex;
-	short * Nfaces;
-};
-
 struct PROGRESSIVE_DATA {
 	// ingame data
 	short actual_collapse; // -1 = no collapse
@@ -358,7 +351,6 @@ struct EERIE_3DOBJ
 
 		pbox = NULL;
 		pdata = NULL;
-		ndata = NULL;
 		cdata = NULL;
 		sdata = NULL;
 		
@@ -394,7 +386,6 @@ struct EERIE_3DOBJ
 	
 	PHYSICS_BOX_DATA * pbox;
 	PROGRESSIVE_DATA * pdata;
-	NEIGHBOURS_DATA * ndata;
 	CLOTHES_DATA * cdata;
 	COLLISION_SPHERES_DATA * sdata;
 	EERIE_FASTACCESS fastaccess;

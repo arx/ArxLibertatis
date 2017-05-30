@@ -179,7 +179,6 @@ static void ARX_NPC_SpawnMember(Entity * ioo, ObjSelection num) {
 	nouvo->pdata = NULL;
 	nouvo->cdata = NULL;
 	nouvo->sdata = NULL;
-	nouvo->ndata = NULL;
 	
 	size_t nfaces = 0;
 	for(size_t k = 0; k < from->facelist.size(); k++) {
