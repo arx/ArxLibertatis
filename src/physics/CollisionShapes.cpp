@@ -99,13 +99,3 @@ void EERIE_COLLISION_Cylinder_Create(Entity * io)
 	io->physics.cyl.radius = io->original_radius * io->scale;
 	io->physics.cyl.height = io->original_height * io->scale;
 }
-
-void EERIE_COLLISION_SPHERES_Release(EERIE_3DOBJ * obj) {
-	
-	if(!obj || !obj->sdata) {
-		return;
-	}
-	
-	delete obj->sdata;
-	obj->sdata = NULL;
-}

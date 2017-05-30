@@ -176,7 +176,6 @@ static void ARX_NPC_SpawnMember(Entity * ioo, ObjSelection num) {
 	nouvo->point0 = Vec3f_ZERO;
 	
 	nouvo->pbox = NULL;
-	nouvo->sdata = NULL;
 	
 	size_t nfaces = 0;
 	for(size_t k = 0; k < from->facelist.size(); k++) {

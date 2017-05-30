@@ -242,8 +242,6 @@ static void loadObjectData(EERIE_3DOBJ * eerie, const char * adr, size_t * poss,
 	eerie->grouplist.resize(tn->nb_groups);
 	eerie->actionlist.resize(tn->nb_action_point);
 	
-	eerie->sdata = NULL;
-	
 	// read vertices
 	
 	pos = to->vertex_seek;
@@ -860,7 +858,7 @@ void EERIE_3DOBJ::clear() {
 		linked.clear();
 
 		pbox = 0;
-		sdata = 0;
+		sdata = false;
 		
 		fastaccess = EERIE_FASTACCESS();
 		
@@ -888,7 +886,6 @@ EERIE_3DOBJ::~EERIE_3DOBJ() {
 	
 	EERIE_RemoveCedricData(this);
 	EERIE_PHYSICS_BOX_Release(this);
-	EERIE_COLLISION_SPHERES_Release(this);
 	
 	grouplist.clear();
 	linked.clear();
@@ -903,7 +900,6 @@ EERIE_3DOBJ * Eerie_Copy(const EERIE_3DOBJ * obj) {
 	nouvo->vertexlist3 = obj->vertexlist3;
 	
 	nouvo->pbox = NULL;
-	nouvo->sdata = NULL;
 	nouvo->m_skeleton = NULL;
 	nouvo->vertexlocal = NULL;
 	
