@@ -1249,20 +1249,13 @@ bool AttemptValidCylinderPos(Cylinder & cyl, Entity * io, CollisionFlags flags) 
 		return true;
 	}
 	
-	Cylinder tmp;
-
-	if(!(flags & CFLAG_ANCHOR_GENERATION)) {
-		
-		tmp = cyl;
-
-		while(anything < 0.f) {
-			tmp.origin.y += anything;
-			anything = CheckAnythingInCylinder(tmp, io, flags);
-		}
-
-		anything = tmp.origin.y - cyl.origin.y;
+	Cylinder tmp = cyl;
+	while(anything < 0.f) {
+		tmp.origin.y += anything;
+		anything = CheckAnythingInCylinder(tmp, io, flags);
 	}
-
+	anything = tmp.origin.y - cyl.origin.y;
+	
 	if(MOVING_CYLINDER) {
 		if(flags & CFLAG_NPC) {
 			float tolerate;
