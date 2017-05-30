@@ -204,8 +204,6 @@ bool TIME_INIT = true;
 Rect g_size(640, 480);
 Vec2f g_sizeRatio(1.f, 1.f);
 
-bool PLAYER_POSITION_RESET = true;
-
 bool REQUEST_SPEECH_SKIP = false;
 long CURRENTLEVEL		= -1;
 bool DONT_ERASE_PLAYER = false;
