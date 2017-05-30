@@ -50,7 +50,6 @@ ZeniMax Media Inc., Suite 120, Rockville, Maryland 20850 USA.
 struct EERIE_3DOBJ;
 
 void MOLLESS_Clear(EERIE_3DOBJ * obj, long flag = 0);
-void EERIEOBJECT_AddClothesData(EERIE_3DOBJ * obj);
 void KillClothesData(EERIE_3DOBJ * obj);
 
 #endif // ARX_PHYSICS_CLOTHES_H
