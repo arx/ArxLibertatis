@@ -79,10 +79,6 @@ TextureContainer * GetTextureList() {
 	return g_ptcTextureList;
 }
 
-TextureContainer * GetAnyTexture() {
-	return g_ptcTextureList;
-}
-
 static void ResetModelBatch(ModelBatch * tex) {
 	
 	if(!tex) {
