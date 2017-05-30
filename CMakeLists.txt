@@ -972,7 +972,6 @@ set(INPUT_SDL1_SOURCES src/input/SDL1InputBackend.cpp)
 set(INPUT_SDL2_SOURCES src/input/SDL2InputBackend.cpp)
 
 set(IO_SOURCES
-	src/io/Implode.cpp
 	src/io/IniReader.cpp
 	src/io/IniSection.cpp
 	src/io/IniWriter.cpp
