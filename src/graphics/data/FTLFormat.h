@@ -83,19 +83,6 @@ struct ARX_FTL_SECONDARY_HEADER {
 	s32 offset_physics_box; // -1 = no
 };
 
-struct ARX_FTL_PROGRESSIVE_DATA_HEADER {
-	s32 nb_vertex;
-};
-
-struct ARX_FTL_CLOTHES_DATA_HEADER {
-	s32 nb_cvert;
-	s32 nb_springs;
-};
-
-struct ARX_FTL_COLLISION_SPHERES_DATA_HEADER {
-	s32 nb_spheres;
-};
-
 struct ARX_FTL_3D_DATA_HEADER {
 	s32 nb_vertex;
 	s32 nb_faces;
@@ -192,61 +179,6 @@ struct EERIE_SELECTIONS_FTL {
 	
 };
 
-struct COLLISION_SPHERE_FTL {
-	
-	s16 idx;
-	s16 flags;
-	f32 radius;
-	
-	operator COLLISION_SPHERE() const {
-		COLLISION_SPHERE a;
-		a.idx = idx;
-		a.flags = flags;
-		a.radius = radius;
-		return a;
-	}
-	
-	COLLISION_SPHERE_FTL & operator=(const COLLISION_SPHERE & b) {
-		idx = b.idx;
-		flags = b.flags;
-		radius = b.radius;
-		return *this;
-	}
-	
-};
-
-struct EERIE_SPRINGS_FTL {
-	
-	s16 startidx;
-	s16 endidx;
-	f32 restlength;
-	f32 constant; // spring constant
-	f32 damping; // spring damping
-	s32 type;
-	
-	operator EERIE_SPRINGS() const {
-		EERIE_SPRINGS a;
-		a.startidx = startidx;
-		a.endidx = endidx;
-		a.restlength = restlength;
-		a.constant = constant;
-		a.damping = damping;
-		a.type = type;
-		return a;
-	}
-	
-	EERIE_SPRINGS_FTL & operator=(const EERIE_SPRINGS & b) {
-		startidx = b.startidx;
-		endidx = b.endidx;
-		restlength = b.restlength;
-		constant = b.constant;
-		damping = b.damping;
-		type = b.type;
-		return *this;
-	}
-	
-};
-
 struct EERIE_OLD_VERTEX {
 	
 	SavedTextureVertex vert;
@@ -265,56 +197,6 @@ struct EERIE_OLD_VERTEX {
 	}
 	
 };
-
-struct CLOTHESVERTEX_FTL {
-	
-	s16 idx;
-	u8 flags;
-	s8 coll;
-	SavedVec3 pos;
-	SavedVec3 velocity;
-	SavedVec3 force;
-	f32 mass;
-	
-	SavedVec3 t_pos;
-	SavedVec3 t_velocity;
-	SavedVec3 t_force;
-	
-	SavedVec3 lastpos;
-	
-	operator CLOTHESVERTEX() const {
-		CLOTHESVERTEX a;
-		a.idx = idx;
-		a.flags = flags;
-		a.coll = coll;
-		a.pos = pos.toVec3();
-		a.velocity = velocity.toVec3();
-		a.force = force.toVec3();
-		a.mass = mass;
-		a.t_pos = t_pos.toVec3();
-		a.t_velocity = t_velocity.toVec3();
-		a.t_force = t_force.toVec3();
-		a.lastpos = lastpos.toVec3();
-		return a;
-	}
-	
-	CLOTHESVERTEX_FTL & operator=(const CLOTHESVERTEX & b) {
-		idx = b.idx;
-		flags = b.flags;
-		coll = b.coll;
-		pos = b.pos;
-		velocity = b.velocity;
-		force = b.force;
-		mass = b.mass;
-		t_pos = b.t_pos;
-		t_velocity = b.t_velocity;
-		t_force = b.t_force;
-		lastpos = b.lastpos;
-		return *this;
-	}
-	
-};
-
 
 #pragma pack(pop)
 
