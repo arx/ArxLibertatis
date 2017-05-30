@@ -55,19 +55,7 @@ void AnchorData_ClearAll(BackgroundData * eb) {
 	
 	//	EERIE_PATHFINDER_Release();
 	EERIE_PATHFINDER_Clear();
-
-	for(long j = 0; j < eb->m_size.y; j++) {
-		for(long i = 0; i < eb->m_size.x; i++) {
-			BackgroundTileData * eg = &eb->m_tileData[i][j];
-
-			if(eg->nbianchors && eg->ianchors)
-				free(eg->ianchors);
-
-			eg->nbianchors = 0;
-			eg->ianchors = NULL;
-		}
-	}
-
+	
 	if(eb->anchors && eb->nbanchors) {
 		for(int j = 0; j < eb->nbanchors; j++) {
 			if(eb->anchors[j].nblinked && eb->anchors[j].linked) {

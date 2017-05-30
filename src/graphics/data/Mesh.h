@@ -59,20 +59,16 @@ struct BackgroundTileData
 {
 	bool				treat;
 	short				nbpoly;
-	short				nbianchors;
 	short				nbpolyin;
 	EERIEPOLY *			polydata;
 	EERIEPOLY **		polyin;
-	long *				ianchors; // index on anchors list
 	
 	BackgroundTileData()
 		: treat(false)
 		, nbpoly(0)
-		, nbianchors(0)
 		, nbpolyin(0)
 		, polydata(NULL)
 		, polyin(NULL)
-		, ianchors(NULL)
 	{}
 };
 
