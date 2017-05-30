@@ -224,15 +224,7 @@ bool DanaeLoadLevel(const res::path & file, bool loadEntities) {
 			LogDebug("done loading scene");
 			FASTmse = true;
 		} else {
-#if BUILD_EDIT_LOADSAVE
-			LogDebug("fast loading scene failed");
-			ARX_SOUND_PlayCinematic("editor_humiliation", false);
-			mse = PAK_MultiSceneToEerie(scene);
-			progressBarAdvance(20.f);
-			LoadLevelScreen();
-#else
 			LogError << "Fast loading scene failed";
-#endif
 		}
 		
 		EERIEPOLY_Compute_PolyIn();
@@ -243,28 +235,7 @@ bool DanaeLoadLevel(const res::path & file, bool loadEntities) {
 	if(FASTmse) {
 		trans = Mscenepos;
 		player.pos = g_loddpos + trans;
-	}
-#if BUILD_EDIT_LOADSAVE
-	else if(mse != NULL) {
-		Mscenepos.x = -mse->cub.xmin - (mse->cub.xmax - mse->cub.xmin) * ( 1.0f / 2 ) + ((float)ACTIVEBKG->m_size.x * (float)ACTIVEBKG->m_tileSize.x) * ( 1.0f / 2 );
-		Mscenepos.z = -mse->cub.zmin - (mse->cub.zmax - mse->cub.zmin) * ( 1.0f / 2 ) + ((float)ACTIVEBKG->m_size.y * (float)ACTIVEBKG->m_tileSize.y) * ( 1.0f / 2 );
-		float t1 = (float)(long)(mse->point0.x / BKG_SIZX);
-		float t2 = (float)(long)(mse->point0.z / BKG_SIZZ);
-		t1 = mse->point0.x - t1 * BKG_SIZX;
-		t2 = mse->point0.z - t2 * BKG_SIZZ;
-		Mscenepos.x = (float)((long)(Mscenepos.x / BKG_SIZX)) * BKG_SIZX + (float)BKG_SIZX * ( 1.0f / 2 );
-		Mscenepos.z = (float)((long)(Mscenepos.z / BKG_SIZZ)) * BKG_SIZZ + (float)BKG_SIZZ * ( 1.0f / 2 );
-		mse->pos.x = Mscenepos.x = Mscenepos.x + BKG_SIZX - t1;
-		mse->pos.z = Mscenepos.z = Mscenepos.z + BKG_SIZZ - t2;
-		mse->pos.y = Mscenepos.y = -mse->cub.ymin - 100.f - mse->point0.y;
-		lastteleport = player.pos = subj.orgTrans.pos = g_moveto = mse->pos + mse->point0;
-		lastteleport.y -= 180.f;
-		player.pos.y = subj.orgTrans.pos.y -= 180.f;
-		trans = mse->pos;
-	}
-#endif // BUILD_EDIT_LOADSAVE
-	else
-	{
+	} else {
 		lastteleport = player.baseOffset();
 		Mscenepos = trans = Vec3f_ZERO;
 	}
@@ -628,13 +599,6 @@ void DanaeClearLevel(long flag)
 	EERIE_PATHFINDER_Release();
 
 	InitBkg(ACTIVEBKG, MAX_BKGX, MAX_BKGZ, Vec2s(BKG_SIZX, BKG_SIZZ));
-	
-#if BUILD_EDIT_LOADSAVE
-	if(mse != NULL) {
-		ReleaseMultiScene(mse);
-		mse = NULL;
-	}
-#endif
 	
 	EERIE_LIGHT_GlobalInit();
 	ARX_FOGS_Clear();

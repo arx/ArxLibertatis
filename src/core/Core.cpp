@@ -177,11 +177,6 @@ ParticleManager	*pParticleManager = NULL;
 
 TextureContainer *	GoldCoinsTC[MAX_GOLD_COINS_VISUALS]; // Gold Coins Icons
 
-#if BUILD_EDIT_LOADSAVE
-EERIE_MULTI3DSCENE * mse = NULL;
-long ADDED_IO_NOT_SAVED = 0;
-#endif
-
 Vec2s DANAEMouse;
 Vec3f g_moveto;
 Vec3f Mscenepos;
@@ -476,59 +471,7 @@ void levelInit() {
 		}
 		progressBarAdvance(4.f);
 		LoadLevelScreen();
-	}
-#if BUILD_EDIT_LOADSAVE
-	else if(mse) {
-		Mscenepos.x=-mse->cub.xmin-(mse->cub.xmax-mse->cub.xmin)*.5f+((float)ACTIVEBKG->m_size.x*(float)ACTIVEBKG->m_tileSize.x)*.5f;
-		Mscenepos.z=-mse->cub.zmin-(mse->cub.zmax-mse->cub.zmin)*.5f+((float)ACTIVEBKG->m_size.y*(float)ACTIVEBKG->m_tileSize.y)*.5f;
-		float t1=(float)(long)(mse->point0.x/BKG_SIZX);
-		float t2=(float)(long)(mse->point0.z/BKG_SIZZ);
-		t1=mse->point0.x-t1*BKG_SIZX;
-		t2=mse->point0.z-t2*BKG_SIZZ;
-		Mscenepos.x=(float)((long)(Mscenepos.x/BKG_SIZX))*BKG_SIZX+(float)BKG_SIZX*.5f;
-		Mscenepos.z=(float)((long)(Mscenepos.z/BKG_SIZZ))*BKG_SIZZ+(float)BKG_SIZZ*.5f;
-		mse->pos.x=Mscenepos.x=Mscenepos.x+BKG_SIZX-t1;
-		mse->pos.z=Mscenepos.z=Mscenepos.z+BKG_SIZZ-t2;
-		Mscenepos.y=mse->pos.y=-mse->cub.ymin-100.f-mse->point0.y;
-
-		if (PLAYER_POSITION_RESET)
-		{
-			player.pos.x = mse->pos.x+mse->point0.x;
-			player.pos.z = mse->pos.z+mse->point0.z;
-			player.pos.y = mse->pos.y+mse->point0.y;
-		}
-
-		EERIERemovePrecalcLights();
-
-		progressBarAdvance();
-		LoadLevelScreen();
-
-		SceneAddMultiScnToBackground(mse);
-
-		progressBarAdvance(2.f);
-		LoadLevelScreen();
-
-		Vec3f trans = mse->pos;
-
-		ReleaseMultiScene(mse);
-		mse=NULL;
-
-		if(PLAYER_POSITION_RESET) {
-			if(LOADEDD) {
-				player.pos = g_loddpos + trans;
-			} else {
-				player.pos.y += player.baseHeight();
-			}
-		}
-
-		PLAYER_POSITION_RESET = true;
-
-		progressBarAdvance();
-		LoadLevelScreen();
-	}
-#endif // BUILD_EDIT_LOADSAVE
-	else
-	{
+	} else {
 		progressBarAdvance(4.f);
 		LoadLevelScreen();
 	}
