@@ -59,7 +59,6 @@ ZeniMax Media Inc., Suite 120, Rockville, Maryland 20850 USA.
 enum CollisionFlag {
 	CFLAG_LEVITATE          = (1<<0),
 	CFLAG_NO_INTERCOL       = (1<<1),
-	CFLAG_SPECIAL           = (1<<2),
 	CFLAG_EASY_SLIDING      = (1<<3),
 	CFLAG_CLIMBING          = (1<<4),
 	CFLAG_JUST_TEST         = (1<<5),
