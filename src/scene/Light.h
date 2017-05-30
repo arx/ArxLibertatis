@@ -139,10 +139,6 @@ struct ColorMod {
 void RecalcLight(EERIE_LIGHT * el);
 
 void EERIE_LIGHT_GlobalInit();
-long EERIE_LIGHT_GetFree();
-long EERIE_LIGHT_Count();
-void EERIE_LIGHT_GlobalAdd(const EERIE_LIGHT * el);
-void EERIE_LIGHT_MoveAll(const Vec3f & trans);
 long EERIE_LIGHT_Create();
 void PrecalcIOLighting(const Vec3f & pos, float radius);
 
