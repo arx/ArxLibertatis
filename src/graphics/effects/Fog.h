@@ -93,7 +93,6 @@ static const size_t MAX_FOG = 100;
 extern FOG_DEF fogs[MAX_FOG];
 
 void ARX_FOGS_Render();
-long ARX_FOGS_Count();
 long ARX_FOGS_GetFree();
 void ARX_FOGS_Clear();
 

@@ -78,18 +78,6 @@ long ARX_FOGS_GetFree()
 	return -1;
 }
 
-long ARX_FOGS_Count()
-{
-	long count = 0;
-
-	for(size_t i = 0; i < MAX_FOG; i++) {
-		if(fogs[i].exist)
-			count++;
-	}
-
-	return count;
-}
-
 void ARX_FOGS_Render() {
 	
 	if(arxtime.is_paused()) {
