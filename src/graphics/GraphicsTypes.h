@@ -154,43 +154,6 @@ struct EERIE_FACE {
 	short ov[IOPOLYVERT];
 };
 
-struct EERIE_SPRINGS {
-	short startidx;
-	short endidx;
-	float restlength;
-	float constant; // spring constant
-	float damping; // spring damping
-	long type;
-};
-
-struct CLOTHESVERTEX {
-	
-	short idx;
-	unsigned char flags;
-	char coll;
-	Vec3f pos;
-	Vec3f velocity;
-	Vec3f force;
-	float mass; // 1.f/mass
-	
-	Vec3f t_pos;
-	Vec3f t_velocity;
-	Vec3f t_force;
-	
-	Vec3f lastpos;
-	
-};
-
-struct CLOTHES_DATA {
-	
-	CLOTHESVERTEX * cvert;
-	CLOTHESVERTEX * backup;
-	short nb_cvert;
-	std::vector<EERIE_SPRINGS> springs;
-	
-	CLOTHES_DATA() : cvert(NULL), backup(NULL), nb_cvert(0) { }
-};
-
 struct COLLISION_SPHERE {
 	short idx;
 	short flags; // TODO not used?
@@ -335,7 +298,6 @@ struct EERIE_3DOBJ
 		linked.clear();
 
 		pbox = NULL;
-		cdata = NULL;
 		sdata = NULL;
 		
 		fastaccess = EERIE_FASTACCESS();
@@ -369,7 +331,6 @@ struct EERIE_3DOBJ
 	std::vector<EERIE_LINKED> linked;
 	
 	PHYSICS_BOX_DATA * pbox;
-	CLOTHES_DATA * cdata;
 	COLLISION_SPHERES_DATA * sdata;
 	EERIE_FASTACCESS fastaccess;
 	Skeleton * m_skeleton;

@@ -371,37 +371,6 @@ EERIE_3DOBJ * ARX_FTL_Load(const res::path & file) {
 		std::copy(begin, end, obj->sdata->spheres.begin());
 	}
 	
-	// Alloc'n'Copy Progressive DATA
-	if(afsh->offset_progressive_data != -1) {
-		// Progressive data ignored.
-	}
-	
-	// Alloc'n'Copy Clothes DATA
-	if(afsh->offset_clothes_data != -1) {
-		
-		obj->cdata = new CLOTHES_DATA();
-		
-		const ARX_FTL_CLOTHES_DATA_HEADER * afcdh;
-		afcdh = reinterpret_cast<const ARX_FTL_CLOTHES_DATA_HEADER*>(dat + afsh->offset_clothes_data);
-		obj->cdata->nb_cvert = (short)afcdh->nb_cvert;
-		obj->cdata->springs.resize(afcdh->nb_springs);
-		size_t pos = afsh->offset_clothes_data;
-		pos += sizeof(ARX_FTL_CLOTHES_DATA_HEADER);
-		
-		// now load cvert
-		obj->cdata->cvert = new CLOTHESVERTEX[obj->cdata->nb_cvert];
-		obj->cdata->backup = new CLOTHESVERTEX[obj->cdata->nb_cvert];
-		std::copy(reinterpret_cast<const CLOTHESVERTEX_FTL *>(dat + pos), reinterpret_cast<const CLOTHESVERTEX_FTL *>(dat + pos) + obj->cdata->nb_cvert, obj->cdata->cvert);
-		memcpy(obj->cdata->backup, obj->cdata->cvert, sizeof(CLOTHESVERTEX)*obj->cdata->nb_cvert);
-		pos += sizeof(CLOTHESVERTEX_FTL) * obj->cdata->nb_cvert;
-		
-		// now load springs
-		const EERIE_SPRINGS_FTL * begin = reinterpret_cast<const EERIE_SPRINGS_FTL *>(dat + pos);
-		pos += sizeof(EERIE_SPRINGS_FTL) * obj->cdata->springs.size();
-		const EERIE_SPRINGS_FTL * end = reinterpret_cast<const EERIE_SPRINGS_FTL *>(dat + pos);
-		std::copy(begin, end, obj->cdata->springs.begin());
-	}
-	
 	// Free the loaded file memory
 	free(dat);
 	
