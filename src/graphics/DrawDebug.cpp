@@ -71,8 +71,8 @@ const float DebugPhysicsMaxDistance = 2000.f;
 
 void drawDebugInitialize() {
 	g_lightSourceTexture = TextureContainer::LoadUI("graph/particles/light");
-	g_fogObject = LoadTheObj("editor/obj3d/fog_generator.teo", "node_teo maps");
-	g_nodeObject = LoadTheObj("editor/obj3d/node.teo", "node_teo maps");
+	g_fogObject = loadObject("editor/obj3d/fog_generator.teo");
+	g_nodeObject = loadObject("editor/obj3d/node.teo");
 }
 
 void drawDebugRelease() {
