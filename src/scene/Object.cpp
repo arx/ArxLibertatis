@@ -83,8 +83,6 @@ ZeniMax Media Inc., Suite 120, Rockville, Maryland 20850 USA.
 
 void EERIE_RemoveCedricData(EERIE_3DOBJ * eobj);
 
-void Clear3DScene(EERIE_3DSCENE	* eerie);
-
 ObjVertHandle GetGroupOriginByName(const EERIE_3DOBJ * eobj, const std::string & text) {
 	
 	if(!eobj)
@@ -197,7 +195,7 @@ void MakeUserFlag(TextureContainer * tc) {
 }
 
 //-----------------------------------------------------------------------------------------------------
-// Warning Clear3DObj/Clear3DScene don't release Any pointer Just Clears Structures
+// Warning Clear3DObj don't release Any pointer Just Clears Structures
 void EERIE_3DOBJ::clear() {
 	
 		point0 = pos = Vec3f_ZERO;
@@ -227,16 +225,6 @@ void EERIE_3DOBJ::clear() {
 		
 	cub.xmin = cub.ymin = cub.zmin = std::numeric_limits<float>::max();
 	cub.xmax = cub.ymax = cub.zmax = std::numeric_limits<float>::min();
-}
-
-void Clear3DScene(EERIE_3DSCENE * eerie) {
-	
-	if(!eerie)
-		return;
-	
-	memset(eerie, 0, sizeof(EERIE_3DSCENE));
-	eerie->cub.xmin = eerie->cub.ymin = eerie->cub.zmin = std::numeric_limits<float>::max();
-	eerie->cub.xmax = eerie->cub.ymax = eerie->cub.zmax = std::numeric_limits<float>::min();
 }
 
 // TODO move to destructor?

@@ -327,19 +327,6 @@ struct EERIE_3DOBJ
 	
 };
 
-
-struct EERIE_3DSCENE {
-	long nbobj;
-	EERIE_3DOBJ ** objs;
-	Vec3f pos;
-	Vec3f point0;
-	long nbtex;
-	TextureContainer ** texturecontainer;
-	long nblight;
-	EERIE_LIGHT ** light;
-	CUB3D cub;
-};
-
 //-------------------------------------------------------------------------
 //Portal Data;
 
