@@ -1339,14 +1339,7 @@ bool AttemptValidCylinderPos(Cylinder & cyl, Entity * io, CollisionFlags flags) 
 	} else if(anything < -45) {
 		return false;
 	}
-
-	if((flags & CFLAG_SPECIAL) && anything < -40) {
-		if(flags & CFLAG_RETURN_HEIGHT)
-			cyl.origin.y += anything;
-
-		return false;
-	}
-
+	
 	tmp = cyl;
 	tmp.origin.y += anything;
 	anything = CheckAnythingInCylinder(tmp, io, flags);
