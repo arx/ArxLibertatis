@@ -976,7 +976,6 @@ set(IO_SOURCES
 	src/io/IniReader.cpp
 	src/io/IniSection.cpp
 	src/io/IniWriter.cpp
-	src/io/IO.cpp
 	src/io/SaveBlock.cpp
 	src/io/Screenshot.cpp
 )
