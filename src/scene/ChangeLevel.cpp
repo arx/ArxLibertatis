@@ -109,7 +109,6 @@ ArxInstant FORCE_TIME_RESTORE = ArxInstant_ZERO;
 
 extern bool GMOD_RESET;
 
-extern bool PLAYER_POSITION_RESET;
 extern long HERO_SHOW_1ST;
 extern bool EXTERNALVIEW;
 extern bool LOAD_N_ERASE;
@@ -331,7 +330,6 @@ void ARX_CHANGELEVEL_Change(const std::string & level, const std::string & targe
 		if(t.handleData() > 0 && entities[t]) {
 			Vec3f pos = GetItemWorldPosition(entities[t]);
 			g_moveto = player.pos = pos + player.baseOffset();
-			PLAYER_POSITION_RESET = false;
 		}
 		player.desiredangle.setYaw(angle);
 		player.angle.setYaw(angle);
@@ -362,9 +360,7 @@ void ARX_CHANGELEVEL_Change(const std::string & level, const std::string & targe
 	EntityHandle t = entities.getById(target);
 	if(t.handleData() > 0 && entities[t]) {
 		Vec3f pos = GetItemWorldPosition(entities[t]);
-		
 		g_moveto = player.pos = pos + player.baseOffset();
-		PLAYER_POSITION_RESET = false;
 		WILL_RESTORE_PLAYER_POSITION = g_moveto;
 		WILL_RESTORE_PLAYER_POSITION_FLAG = true;
 	}
@@ -2607,16 +2603,8 @@ static bool ARX_CHANGELEVEL_PopLevel(long instance, bool reloadflag) {
 	}
 	
 	// first time in this level ?
-	bool firstTime;
-	if(!g_currentSavedGame->hasFile(loadfile.str())) {
-		firstTime = true;
-		FORBID_SCRIPT_IO_CREATION = 0;
-		PLAYER_POSITION_RESET = true;
-	} else {
-		firstTime = false;
-		FORBID_SCRIPT_IO_CREATION = 1;
-		PLAYER_POSITION_RESET = false;
-	}
+	bool firstTime = !g_currentSavedGame->hasFile(loadfile.str());
+	FORBID_SCRIPT_IO_CREATION = firstTime ? 0 : 1;
 	LogDebug("firstTime = " << firstTime);
 	
 	progressBarAdvance(2.f);
