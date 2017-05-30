@@ -134,7 +134,6 @@ bool GetTruePolyY(const EERIEPOLY * ep, const Vec3f & pos, float * ret);
 bool GetTruePolyY(const PortalPoly * ep, const Vec3f & pos, float * ret);
 
 bool IsAnyPolyThere(float x, float z);
-bool IsVertexIdxInGroup(EERIE_3DOBJ * eobj, size_t idx, size_t grs);
 EERIEPOLY * GetMinPoly(const Vec3f & pos);
 EERIEPOLY * GetMaxPoly(const Vec3f & pos);
  
