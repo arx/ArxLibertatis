@@ -60,7 +60,6 @@ ZeniMax Media Inc., Suite 120, Rockville, Maryland 20850 USA.
 
 #include "graphics/GraphicsTypes.h"
 #include "graphics/Math.h"
-#include "graphics/data/Progressive.h"
 #include "graphics/data/FTL.h"
 #include "graphics/data/TextureContainer.h"
 
@@ -244,7 +243,6 @@ static void loadObjectData(EERIE_3DOBJ * eerie, const char * adr, size_t * poss,
 	eerie->grouplist.resize(tn->nb_groups);
 	eerie->actionlist.resize(tn->nb_action_point);
 	
-	eerie->pdata = NULL;
 	eerie->cdata = NULL;
 	eerie->sdata = NULL;
 	
@@ -864,7 +862,6 @@ void EERIE_3DOBJ::clear() {
 		linked.clear();
 
 		pbox = 0;
-		pdata = 0;
 		cdata = 0;
 		sdata = 0;
 		
@@ -892,10 +889,6 @@ EERIE_3DOBJ::~EERIE_3DOBJ() {
 	free(originaltextures);
 	originaltextures = NULL;
 	
-	if(pdata) {
-		KillProgressiveData(this);
-	}
-	
 	if(cdata) {
 		KillClothesData(this);
 	}
@@ -917,7 +910,6 @@ EERIE_3DOBJ * Eerie_Copy(const EERIE_3DOBJ * obj) {
 	nouvo->vertexlist3 = obj->vertexlist3;
 	
 	nouvo->pbox = NULL;
-	nouvo->pdata = NULL;
 	nouvo->cdata = NULL;
 	nouvo->sdata = NULL;
 	nouvo->m_skeleton = NULL;
