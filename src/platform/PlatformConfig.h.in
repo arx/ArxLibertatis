@@ -33,6 +33,8 @@
 #cmakedefine01 ARX_HAVE_CXX11_STATIC_ASSERT
 // variadic templates
 #cmakedefine01 ARX_HAVE_CXX11_VARIADIC_TEMPLATES
+// thread_local
+#cmakedefine01 ARX_HAVE_CXX11_THREADLOCAL
 
 // GCC extensions
 // __attribute__((aligned(n)))
@@ -45,12 +47,16 @@
 #cmakedefine01 ARX_HAVE_BUILTIN_UNREACHABLE
 // __alignof__(T)
 #cmakedefine01 ARX_HAVE_GCC_ALIGNOF
+// __thread
+#cmakedefine01 ARX_HAVE_GCC_THREADLOCAL
 
 // MSVC extensions
 // __declspec(align(n))
 #cmakedefine01 ARX_HAVE_DECLSPEC_ALIGN
 // __alignof(T)
 #cmakedefine01 ARX_HAVE_MSVC_ALIGNOF
+// __declspec(thread)
+#cmakedefine01 ARX_HAVE_DECLSPEC_THREADLOCAL
 
 // Code generation options
 #cmakedefine01 BUILD_PROFILER_INSTRUMENT
