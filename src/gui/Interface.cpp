@@ -1897,9 +1897,9 @@ void ArxGame::manageEntityDescription() {
 			pTextManage->Clear();
 			if(!config.input.autoDescription) {
 				PlatformDuration duration = PlatformDurationMs(2000 + description.length() * 60);
-				pTextManage->AddText(hFontInBook, description, rDraw, Color(232, 204, 143), duration);
+				pTextManage->AddText(hFontInGame, description, rDraw, Color(232, 204, 143), duration);
 			} else {
-				pTextManage->AddText(hFontInBook, description, rDraw, Color(232, 204, 143));
+				pTextManage->AddText(hFontInGame, description, rDraw, Color(232, 204, 143));
 			}
 		}
 	}
