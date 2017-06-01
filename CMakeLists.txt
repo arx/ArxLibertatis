@@ -565,6 +565,7 @@ if(USE_CXX11)
 	check_cxx11("noexcept"               ARX_HAVE_CXX11_NOEXCEPT           1900)
 	check_cxx11("static_assert"          ARX_HAVE_CXX11_STATIC_ASSERT      1600)
 	check_cxx11("variadic templates"     ARX_HAVE_CXX11_VARIADIC_TEMPLATES 1800)
+	check_cxx11("thread_local"           ARX_HAVE_CXX11_THREADLOCAL        1900)
 	set(ARX_HAVE_CXX11_LONG_LONG 1) # everyone has had this for ages
 endif()
 
@@ -573,6 +574,7 @@ if(MSVC)
 	# Compiler builtins & language extensions
 	set(ARX_HAVE_DECLSPEC_ALIGN 1)
 	set(ARX_HAVE_MSVC_ALIGNOF 1)
+	set(ARX_HAVE_DECLSPEC_THREADLOCAL 1)
 	
 	# Standard library features
 	set(ARX_HAVE_ALIGNED_MALLOC 1)
@@ -625,6 +627,9 @@ else(MSVC)
 	check_builtin(ARX_HAVE_BUILTIN_UNREACHABLE     "__builtin_unreachable")
 	if(NOT ARX_HAVE_CXX11_ALIGNOF)
 		check_builtin(ARX_HAVE_GCC_ALIGNOF           "__alignof__")
+	endif()
+	if(NOT ARX_HAVE_CXX11_THREADLOCAL)
+		check_builtin(ARX_HAVE_GCC_THREADLOCAL       "__thread")
 	endif()
 	
 	if(WIN32)
