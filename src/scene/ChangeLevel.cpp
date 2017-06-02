@@ -2719,6 +2719,7 @@ static bool ARX_CHANGELEVEL_PopLevel(long instance, bool reloadflag) {
 	TRUE_PLAYER_MOUSELOOK_ON = true;
 	// disable combat mode
 	player.Interface &= ~INTER_COMBATMODE;
+	ARX_EQUIPMENT_AttachPlayerWeaponToBack();
 	
 	progressBarAdvance();
 	LoadLevelScreen();
@@ -2872,6 +2873,7 @@ long ARX_CHANGELEVEL_Load(const fs::path & savefile) {
 	
 	BLOCK_PLAYER_CONTROLS = false;
 	player.Interface &= ~INTER_COMBATMODE;
+	ARX_EQUIPMENT_AttachPlayerWeaponToBack();
 	
 	entities.player()->animlayer[1].cur_anim = NULL;
 	
