@@ -383,10 +383,12 @@ Entity * ScriptConsole::contextEntity() {
 
 void ScriptConsole::execute() {
 	
-	m_history.erase(std::remove(m_history.begin(), m_history.end(), text()), m_history.end());
-	m_history.push_back(text());
-	if(m_history.size() > MaxHistorySize) {
-		m_history.pop_front();
+	if(!text().empty()) {
+		m_history.erase(std::remove(m_history.begin(), m_history.end(), text()), m_history.end());
+		m_history.push_back(text());
+		if(m_history.size() > MaxHistorySize) {
+			m_history.pop_front();
+		}
 	}
 	
 	ARX_LOG(Logger::Console) << "> " << text();
