@@ -21,12 +21,25 @@
 
 #include <ctime>
 
-Random::Generator Random::rng;
+ARX_THREAD_LOCAL Random::Generator * Random::rng = NULL;
 
 void Random::seed() {
-	rng.seed((size_t)std::time(NULL));
+	if(!rng) {
+		rng = new Generator;
+	}
+	
+	rng->seed((size_t)std::time(NULL));
 }
 
 void Random::seed(unsigned int seedVal) {
-	rng.seed(seedVal);
+	if(!rng) {
+		rng = new Generator;
+	}
+	
+	rng->seed(seedVal);
+}
+
+void Random::shutdown() {
+	delete rng;
+	rng = NULL;
 }
