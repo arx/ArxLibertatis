@@ -43,6 +43,8 @@
 
 #include <boost/static_assert.hpp>
 
+#include "math/Random.h"
+
 #include "platform/Alignment.h"
 #include "platform/CrashHandler.h"
 #include "platform/Platform.h"
@@ -146,11 +148,14 @@ void * Thread::entryPoint(void * param) {
 	#pragma message ( "No function available to set thread names!" )
 #endif
 	
+	Random::seed();
 	CrashHandler::registerThreadCrashHandlers();
 	profiler::registerThread(thread.threadName);
 	thread.run();
 	profiler::unregisterThread();
 	CrashHandler::unregisterThreadCrashHandlers();
+	Random::shutdown();
+	
 	return NULL;
 }
 
@@ -243,11 +248,14 @@ DWORD WINAPI Thread::entryPoint(LPVOID param) {
 	
 	SetCurrentThreadName(((Thread*)param)->threadName);
 	
+	Random::seed();
 	CrashHandler::registerThreadCrashHandlers();
 	profiler::registerThread(((Thread*)param)->threadName);
 	((Thread*)param)->run();
 	profiler::unregisterThread();
 	CrashHandler::unregisterThreadCrashHandlers();
+	Random::shutdown();
+	
 	return 0;
 }
 

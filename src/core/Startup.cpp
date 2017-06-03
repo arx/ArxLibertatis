@@ -169,5 +169,7 @@ int utf8_main(int argc, char ** argv) {
 	
 	CrashHandler::shutdown();
 	
+	Random::shutdown();
+	
 	return (status == ExitFailure) ? EXIT_FAILURE : EXIT_SUCCESS;
 }
