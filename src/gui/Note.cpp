@@ -81,8 +81,6 @@ bool Note::allocate() {
 	Vec2f prevButtonOffset;
 	Vec2f nextButtonOffset;
 	
-	size_t maxPages = 1;
-	
 	Vec2f scale = Vec2f(minSizeRatio(), minSizeRatio());
 	
 	switch(_type) {
@@ -115,7 +113,7 @@ bool Note::allocate() {
 				newPos = Vec2f(320 * g_sizeRatio.x - background->m_size.x * 0.5f * scale.x, 47.f * scale.y);
 				newTextStart = Vec2f(40.f, 40.f);
 				newTextEnd = Vec2f(background->size()) * Vec2f(0.5f, 1.f) - Vec2f(10.f, 40.f);
-				maxPages = 2;
+				_maxPages = 2;
 			}
 			break;
 		}
@@ -128,7 +126,7 @@ bool Note::allocate() {
 				newPos = Vec2f(320 * g_sizeRatio.x - background->m_size.x * 0.5f * scale.x, 47.f * scale.y);
 				newTextStart = Vec2f(40.f, 20.f);
 				newTextEnd = Vec2f(background->size()) * Vec2f(0.5f, 1.f) - Vec2f(10.f, 40.f);
-				maxPages = std::numeric_limits<size_t>::max();
+				_maxPages = std::numeric_limits<size_t>::max();
 				prevButtonOffset = Vec2f(8.f, -6.f);
 				nextButtonOffset = Vec2f(-15.f, -6.f);
 			}
@@ -147,7 +145,7 @@ bool Note::allocate() {
 				newPos = Vec2i(bookPosOrig + bookPosStretched - bookPosScaled);
 				newTextStart = Vec2f(40.f, 40.f);
 				newTextEnd = Vec2f(background->size()) * Vec2f(0.5f, 1.f) - Vec2f(10.f, 65.f);
-				maxPages = std::numeric_limits<size_t>::max();
+				_maxPages = std::numeric_limits<size_t>::max();
 				prevButtonOffset = Vec2f(8.f, -6.f);
 				nextButtonOffset = Vec2f(-15.f, -6.f);
 			}
@@ -187,7 +185,7 @@ bool Note::allocate() {
 	while(!buffer.empty()) {
 		
 		// Change the note type if the text is too long.
-		if(pages.size() >= maxPages) {
+		if(pages.size() >= _maxPages) {
 			switch(_type) {
 				case Notice: _type = SmallNote; break;
 				case SmallNote: _type = BigNote; break;

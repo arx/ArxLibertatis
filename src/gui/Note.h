@@ -46,6 +46,7 @@ struct Note {
 		: _type(Undefined)
 		, allocatedForRatio(Vec2f_ZERO)
 		, _page(0)
+		, _maxPages(1)
 		, _pageSpacing(20)
 		, background(NULL)
 		, prevPage(NULL)
@@ -81,6 +82,7 @@ private:
 	
 	std::vector<std::string> pages;
 	size_t _page;
+	size_t _maxPages;
 	
 	Rectf _area;
 	Rect _textArea;
