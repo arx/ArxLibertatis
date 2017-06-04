@@ -1428,10 +1428,14 @@ static void updateBookScale() {
 	ARX_Text_scaleBookFont(g_bookScale);
 }
 
+Rectf ARX_INTERFACE_getBookRect() {
+	return g_bookRect;
+}
+
 /* Book position is not in the center, but slightly to the right to maintain previous
  * behaviour - to avoid collision with secondary inventory.
  */
-Vec2f ARX_INTERFACE_calculatePlayerBookPos() {
+static Vec2f calculatePlayerBookPos() {
 	Vec2f bookPosOrig = g_bookRectOrig.topLeft();
 	Vec2f bookPosStretched = (bookPosOrig + g_bookRectOrig.size() / 2.0f) * g_sizeRatio;
 	Vec2f bookPosScaled = bookPosOrig + g_bookRectOrig.size() / 2.0f * g_bookScale;
@@ -1443,7 +1447,7 @@ static void updateBookRect() {
 	float scale = g_bookScale;
 	if(ARXmenu.currentmode != AMCM_NEWQUEST) {
 		//in-game player book
-		g_bookRect = Rectf(ARX_INTERFACE_calculatePlayerBookPos(),
+		g_bookRect = Rectf(calculatePlayerBookPos(),
 		                 g_bookRectOrig.width() * scale,
 		                 g_bookRectOrig.height() * scale);
 	} else {
