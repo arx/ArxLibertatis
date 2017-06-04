@@ -299,6 +299,10 @@ static bool getFontFile(res::path & result) {
 	return false;
 }
 
+static float smallTextScale(float scale) {
+	return scale > 1.0f ? scale * 0.7f + 0.3f : scale;
+}
+
 bool ARX_Text_Init() {
 	
 	res::path file;
@@ -315,8 +319,7 @@ bool ARX_Text_Init() {
 	created_font_scale = scale;
 	
 	// Keep small font small when increasing resolution
-	// TODO font size jumps around scale = 1
-	float small_scale = scale > 1.0f ? scale * 0.8f : scale;
+	float small_scale = smallTextScale(scale);
 	
 	delete pTextManage;
 	pTextManage = new TextManager();
