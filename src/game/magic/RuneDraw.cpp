@@ -136,15 +136,15 @@ void ARX_SPELLS_UpdateBookSymbolDraw(Rect rect) {
 
 	//keep size ratios among runes
 	Vec2f rectToSymbolsRatio = Vec2f(rect.size()) / (Vec2f(lMaxSymbolDrawSize) * g_sizeRatio);
-	Vec2f scale = glm::min(rectToSymbolsRatio.x, rectToSymbolsRatio.y) * g_sizeRatio;
+	Vec2f drawingScale = glm::min(rectToSymbolsRatio.x, rectToSymbolsRatio.y) * g_sizeRatio;
 
 	Vec2s iMin;
 	Vec2s iMax;
 
 	ReCenterSequence(sd->sequence, iMin, iMax);
-	Vec2f size = Vec2f(iMax - iMin) * scale;
+	Vec2f size = Vec2f(iMax - iMin) * drawingScale;
 
-	Vec2f scaledMin = Vec2f(iMin) * scale;
+	Vec2f scaledMin = Vec2f(iMin) * drawingScale;
 
 	Vec2f pos = Vec2f(rect.center()) - size / 2.0f - scaledMin;
 
@@ -152,7 +152,7 @@ void ARX_SPELLS_UpdateBookSymbolDraw(Rect rect) {
 
 		Vec2f vect = Vec2f(GetSymbVector(sd->sequence[j]));
 		vect *= symbolVecScale;
-		vect *= scale;
+		vect *= drawingScale;
 
 		if(timeRemaining < timePerComponent) {
 			float ratio = timeRemaining / timePerComponent;
