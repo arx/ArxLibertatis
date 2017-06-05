@@ -105,7 +105,7 @@ static void updateIOLight(Entity * io) {
 	}
 }
 
-void ARX_SPELLS_UpdateBookSymbolDraw(Rect rect) {
+void ARX_SPELLS_UpdateBookSymbolDraw(Rect rect, float scale) {
 
 	if(g_bookSymbolDraw.sequence.empty()) {
 		return;
@@ -135,8 +135,8 @@ void ARX_SPELLS_UpdateBookSymbolDraw(Rect rect) {
 		timeRemaining = sd->duration;
 
 	//keep size ratios among runes
-	Vec2f rectToSymbolsRatio = Vec2f(rect.size()) / (Vec2f(lMaxSymbolDrawSize) * g_sizeRatio);
-	Vec2f drawingScale = glm::min(rectToSymbolsRatio.x, rectToSymbolsRatio.y) * g_sizeRatio;
+	Vec2f rectToSymbolsRatio = Vec2f(rect.size()) / (Vec2f(lMaxSymbolDrawSize) * scale);
+	Vec2f drawingScale = glm::min(rectToSymbolsRatio.x, rectToSymbolsRatio.y) * Vec2f(scale);
 
 	Vec2s iMin;
 	Vec2s iMax;
