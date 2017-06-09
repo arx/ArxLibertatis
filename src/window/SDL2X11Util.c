@@ -23,14 +23,29 @@
 
 #include <SDL_syswm.h>
 
+#define ARX_STATIC_ASSERT(Cond, Msg) typedef char static_assertion_ ## Msg[(Cond) ? 1 : -1]
+
 uint64_t SDL2X11_getNativeWindowHandle(SDL_Window * window) {
 	
-	SDL_SysWMinfo info;
+	/*
+	 * The size of the SDL_SysWMinfo structure depends on the build-time configuration of SDL.
+	 * If Arx is built with a SDL install that was configured without Wayland, but is run on
+	 * Wayland (with a Wayland-enabled SDL), the SDL_GetWindowWMInfo call will write past the
+	 * end of the SDL_SysWMinfo struct.
+	 * https://bugzilla.libsdl.org/show_bug.cgi?id=3428 - fixed in SDL 2.0.6
+	 */
+	struct SysWMinfo {
+		SDL_SysWMinfo data;
+		char padding[1024];
+	} info;
 	
-	SDL_VERSION(&info.version);
-	if(!SDL_GetWindowWMInfo(window, &info) || info.subsystem != SDL_SYSWM_X11) {
+	/* Need to increase padding if this fails (also in ARX_SDL_SysWMinfo) */
+	ARX_STATIC_ASSERT(sizeof(info.data) <= sizeof(info.padding), padding_size);
+	
+	SDL_VERSION(&info.data.version);
+	if(!SDL_GetWindowWMInfo(window, (SDL_SysWMinfo *)&info) || info.data.subsystem != SDL_SYSWM_X11) {
 		return 0;
 	}
 	
-	return info.info.x11.window;
+	return info.data.info.x11.window;
 }
