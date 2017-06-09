@@ -340,7 +340,6 @@ void FlareLine(Vec2f tmpPos0, Vec2f tmpPos1, Entity * io) {
 	}
 }
 
-
 void ARX_MAGICAL_FLARES_Update() {
 
 	if(!g_magicFlaresCount)
@@ -419,7 +418,6 @@ void ARX_MAGICAL_FLARES_Update() {
 			mat.setDepthTest(flare.io != NULL);
 			
 			if(flare.bDrawBitmap) {
-				size *= 2.f * minSizeRatio();
 				Vec3f pos = Vec3f(flare.p.x - size / 2.0f, flare.p.y - size / 2.0f, flare.p.z);
 				EERIEAddBitmap(mat, pos, size, size, surf, color.to<u8>());
 			} else {
