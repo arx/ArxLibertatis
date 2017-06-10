@@ -210,16 +210,6 @@ void ARX_INTERFACE_BookToggle() {
 	TRUE_PLAYER_MOUSELOOK_ON = false;
 }
 
-
-static Rectf scaleRectPosAndSize(const Rectf & r, const Vec2f & scale) {
-	
-	return Rectf(
-	r.left * scale.x,
-	r.top * scale.y,
-	r.right * scale.x,
-	r.bottom * scale.y);
-}
-
 static bool MouseInBookRect(const Vec2f pos, const Vec2f size) {
 	
 	Rectf rect = Rectf(pos, size.x, size.y);
