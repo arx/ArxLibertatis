@@ -192,10 +192,6 @@ void ARX_INTERFACE_BookToggle() {
 		player.Interface |= INTER_MAP;
 		Book_MapPage = ARX_LEVELS_GetRealNum(CURRENTLEVEL);
 		Book_MapPage = glm::clamp(Book_MapPage, 0l, 7l);
-		
-		if(!ARXmenu.mda) {
-			ARXmenu.mda = new MENU_DYNAMIC_DATA();
-		}
 	}
 
 	if(player.Interface & INTER_COMBATMODE) {
@@ -1070,7 +1066,10 @@ static void ARX_INTERFACE_ManageOpenedBook_Stats()
 		else if (MouseInBookRect(bookPos + Vec2f(419, 220) * scale, Vec2f(32, 32) * scale))
 			FLYING_OVER=BOOK_DEFENSE;
 	}
-
+	
+	if(!ARXmenu.mda) {
+		ARXmenu.mda = new MENU_DYNAMIC_DATA();
+	}
 	//------------------------------ SEB 04/12/2001
 	if(ARXmenu.mda && !ARXmenu.mda->flyover[FLYING_OVER].empty()) {
 		
