@@ -35,7 +35,6 @@
 #include "core/Config.h"
 #include "gui/Credits.h"
 #include "graphics/opengl/GLDebug.h"
-#include "graphics/opengl/GLNoVertexBuffer.h"
 #include "graphics/opengl/GLTexture2D.h"
 #include "graphics/opengl/GLTextureStage.h"
 #include "graphics/opengl/GLVertexBuffer.h"
