@@ -57,8 +57,7 @@ static const char vertexShaderSource[] = "void main() {\n"
 
 
 OpenGLRenderer::OpenGLRenderer()
-	: useVBOs(false)
-	, maxTextureStage(0)
+	: maxTextureStage(0)
 	, shader(0)
 	, m_maximumAnisotropy(1.f)
 	, m_maximumSupportedAnisotropy(1.f)
@@ -299,15 +298,13 @@ void OpenGLRenderer::reinit() {
 		}
 	}
 	
-	useVBOs = true;
-	
 	m_hasGL_ARB_draw_elements_base_vertex = ARX_HAVE_GL_EXT(ARB_draw_elements_base_vertex);
-	if(useVBOs && !m_hasGL_ARB_draw_elements_base_vertex) {
+	if(!m_hasGL_ARB_draw_elements_base_vertex) {
 		LogWarning << "Missing OpenGL extension ARB_draw_elements_base_vertex.";
 	}
 	
 	m_hasGL_ARB_map_buffer_range = ARX_HAVE_GL_EXT(ARB_map_buffer_range);
-	if(useVBOs && !m_hasGL_ARB_map_buffer_range) {
+	if(!m_hasGL_ARB_map_buffer_range) {
 		LogWarning << "Missing OpenGL extension ARB_map_buffer_range.";
 	}
 	
@@ -368,17 +365,15 @@ void OpenGLRenderer::reinit() {
 	currentTransform = GL_UnsetTransform;
 	switchVertexArray(GL_NoArray, 0, 0);
 	
-	if(useVBOs) {
-		if(!ARX_HAVE_GL_EXT(ARB_shader_objects)) {
-			LogWarning << "Missing OpenGL extension ARB_shader_objects.";
-		} else if(!ARX_HAVE_GL_EXT(ARB_vertex_program)) {
-			LogWarning << "Missing OpenGL extension ARB_vertex_program.";
-		} else {
-			shader = loadVertexShader(vertexShaderSource);
-		}
-		if(!shader) {
-			LogWarning << "Missing vertex shader, cannot use vertex arrays for pre-transformed vertices.";
-		}
+	if(!ARX_HAVE_GL_EXT(ARB_shader_objects)) {
+		LogWarning << "Missing OpenGL extension ARB_shader_objects.";
+	} else if(!ARX_HAVE_GL_EXT(ARB_vertex_program)) {
+		LogWarning << "Missing OpenGL extension ARB_vertex_program.";
+	} else {
+		shader = loadVertexShader(vertexShaderSource);
+	}
+	if(!shader) {
+		LogWarning << "Missing vertex shader, cannot use vertex arrays for pre-transformed vertices.";
 	}
 	
 	if(ARX_HAVE_GL_EXT(EXT_texture_filter_anisotropic)) {
@@ -740,7 +735,7 @@ static VertexBuffer<Vertex> * createVertexBufferImpl(OpenGLRenderer * renderer,
 }
 
 VertexBuffer<TexturedVertex> * OpenGLRenderer::createVertexBufferTL(size_t capacity, BufferUsage usage) {
-	if(useVBOs && shader) {
+	if(shader) {
 		return createVertexBufferImpl<TexturedVertex>(this, capacity, usage); 
 	} else {
 		return new GLNoVertexBuffer<TexturedVertex>(this, capacity);
@@ -748,19 +743,11 @@ VertexBuffer<TexturedVertex> * OpenGLRenderer::createVertexBufferTL(size_t capac
 }
 
 VertexBuffer<SMY_VERTEX> * OpenGLRenderer::createVertexBuffer(size_t capacity, BufferUsage usage) {
-	if(useVBOs) {
-		return createVertexBufferImpl<SMY_VERTEX>(this, capacity, usage);
-	} else {
-		return new GLNoVertexBuffer<SMY_VERTEX>(this, capacity);
-	}
+	return createVertexBufferImpl<SMY_VERTEX>(this, capacity, usage);
 }
 
 VertexBuffer<SMY_VERTEX3> * OpenGLRenderer::createVertexBuffer3(size_t capacity, BufferUsage usage) {
-	if(useVBOs) {
-		return createVertexBufferImpl<SMY_VERTEX3>(this, capacity, usage);
-	} else {
-		return new GLNoVertexBuffer<SMY_VERTEX3>(this, capacity);
-	}
+	return createVertexBufferImpl<SMY_VERTEX3>(this, capacity, usage);
 }
 
 const GLenum arxToGlPrimitiveType[] = {
