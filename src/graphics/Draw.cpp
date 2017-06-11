@@ -60,7 +60,7 @@ void EERIEDRAWPRIM(Renderer::Primitive primitive, const TexturedVertex * vertice
 		EERIEDrawnPolys++;
 	}
 	
-	pDynamicVertexBuffer_TLVERTEX->draw(primitive, vertices, count);
+	pDynamicVertexBuffer_TLVERTEX->draw(primitive, unproject(vertices, count), count);
 }
 
 static const float BASICFOCAL = 350.f;

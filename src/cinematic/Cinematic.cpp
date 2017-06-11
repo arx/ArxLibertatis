@@ -359,7 +359,7 @@ void DrawGrille(CinematicBitmap * bitmap, Color col, int fx, CinematicLight * li
 			uvs++;
 		}
 		
-		GRenderer->drawIndexed(Renderer::TriangleList, AllTLVertex, grille->m_nbvertexs,
+		GRenderer->drawIndexed(Renderer::TriangleList, unproject(AllTLVertex, grille->m_nbvertexs), grille->m_nbvertexs,
 		                       &grille->m_inds.data()->i1 + mat->startind, mat->nbind);
 	}
 	
