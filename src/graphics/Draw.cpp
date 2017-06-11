@@ -65,10 +65,10 @@ void EERIEDRAWPRIM(Renderer::Primitive primitive, const TexturedVertex * vertice
 
 static const float BASICFOCAL = 350.f;
 
-static void SetTextureDrawPrim(TextureContainer * tex, TexturedVertex * v,
+static void SetTextureDrawPrim(TextureContainer * tex, const TexturedVertex * v,
                                Renderer::Primitive prim) {
 	GRenderer->SetTexture(0, tex);
-	EERIEDRAWPRIM(prim, unproject(v, 4), 4);
+	EERIEDRAWPRIM(prim, v, 4);
 }
 
 static bool EERIECreateSprite(TexturedQuad & sprite, const Vec3f & in, float siz,
@@ -146,7 +146,7 @@ void EERIEDrawSprite(const Vec3f & in, float siz, TextureContainer * tex, Color 
 	TexturedQuad s;
 
 	if(EERIECreateSprite(s, in, siz, color, Zpos)) {
-		SetTextureDrawPrim(tex, s.v, Renderer::TriangleFan);
+		SetTextureDrawPrim(tex, unproject(s.v, 4), Renderer::TriangleFan);
 	}
 }
 
