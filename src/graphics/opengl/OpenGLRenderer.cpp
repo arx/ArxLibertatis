@@ -57,8 +57,7 @@ static const char vertexShaderSource[] = "void main() {\n"
 
 
 OpenGLRenderer::OpenGLRenderer()
-	: useVertexArrays(false)
-	, useVBOs(false)
+	: useVBOs(false)
 	, maxTextureStage(0)
 	, shader(0)
 	, m_maximumAnisotropy(1.f)
@@ -300,8 +299,7 @@ void OpenGLRenderer::reinit() {
 		}
 	}
 	
-	useVertexArrays = true;
-	useVBOs = useVertexArrays;
+	useVBOs = true;
 	
 	m_hasGL_ARB_draw_elements_base_vertex = ARX_HAVE_GL_EXT(ARB_draw_elements_base_vertex);
 	if(useVBOs && !m_hasGL_ARB_draw_elements_base_vertex) {
@@ -370,7 +368,7 @@ void OpenGLRenderer::reinit() {
 	currentTransform = GL_UnsetTransform;
 	switchVertexArray(GL_NoArray, 0, 0);
 	
-	if(useVertexArrays && useVBOs) {
+	if(useVBOs) {
 		if(!ARX_HAVE_GL_EXT(ARB_shader_objects)) {
 			LogWarning << "Missing OpenGL extension ARB_shader_objects.";
 		} else if(!ARX_HAVE_GL_EXT(ARB_vertex_program)) {
@@ -777,7 +775,7 @@ void OpenGLRenderer::drawIndexed(Primitive primitive, const TexturedVertex * ver
 	
 	beforeDraw<TexturedVertex>();
 	
-	if(useVertexArrays && shader) {
+	if(shader) {
 		
 		bindBuffer(GL_NONE);
 		

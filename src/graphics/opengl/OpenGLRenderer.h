@@ -105,7 +105,6 @@ private:
 	void shutdown();
 	void reinit();
 	
-	bool useVertexArrays;
 	bool useVBOs;
 	
 	Rect viewport;
