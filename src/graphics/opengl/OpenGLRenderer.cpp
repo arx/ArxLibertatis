@@ -44,14 +44,11 @@
 #include "window/RenderWindow.h"
 
 static const char vertexShaderSource[] = "void main() {\n"
-	"	// Convert pre-transformed D3D vertices to OpenGL vertices.\n"
-	"	float w = 1.0 / gl_Vertex.w;\n"
-	"	vec4 vertex = vec4(gl_Vertex.xyz * w, w);\n"
 	"	// We only need the projection matrix as modelview will always be identity.\n"
-	"	gl_Position = gl_ProjectionMatrix * vertex;\n"
+	"	gl_Position = gl_ProjectionMatrix * gl_Vertex;\n"
 	"	gl_FrontColor = gl_BackColor = gl_Color;\n"
 	"	gl_TexCoord[0] = gl_MultiTexCoord0;\n"
-	"	gl_FogFragCoord = vertex.z;\n"
+	"	gl_FogFragCoord = gl_Vertex.z;\n"
 	"}\n";
 
 

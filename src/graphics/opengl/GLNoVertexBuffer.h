@@ -36,8 +36,7 @@ void renderVertex(const TexturedVertex & vertex) {
 	
 	glMultiTexCoord2f(GL_TEXTURE0, vertex.uv.x, vertex.uv.y);
 	
-	GLfloat w = 1.0f / vertex.rhw; 
-	glVertex4f(vertex.p.x * w, vertex.p.y * w, vertex.p.z * w, w);
+	glVertex4f(vertex.p.x, vertex.p.y, vertex.p.z, vertex.rhw);
 }
 
 extern const GLenum arxToGlPrimitiveType[];
