@@ -105,8 +105,6 @@ private:
 	void shutdown();
 	void reinit();
 	
-	bool useVBOs;
-	
 	Rect viewport;
 	
 	void flushState();
