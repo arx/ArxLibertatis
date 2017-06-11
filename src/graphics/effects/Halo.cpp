@@ -57,13 +57,13 @@ void Halo_Render() {
 	
 	if(HALOCUR[0] > 0) {
 		UseRenderState state(baseState.blend(BlendZero, BlendInvSrcColor));
-		EERIEDRAWPRIM(Renderer::TriangleList, LATERDRAWHALO[0], HALOCUR[0] * 6);
+		EERIEDRAWPRIM(Renderer::TriangleList, unproject(LATERDRAWHALO[0], HALOCUR[0] * 6), HALOCUR[0] * 6);
 		HALOCUR[0] = 0;
 	}
 	
 	if(HALOCUR[1] > 0) {
 		UseRenderState state(baseState.blend(BlendSrcColor, BlendOne));
-		EERIEDRAWPRIM(Renderer::TriangleList, LATERDRAWHALO[1], HALOCUR[1] * 6);
+		EERIEDRAWPRIM(Renderer::TriangleList, unproject(LATERDRAWHALO[1], HALOCUR[1] * 6), HALOCUR[1] * 6);
 		HALOCUR[1] = 0;
 	}
 	

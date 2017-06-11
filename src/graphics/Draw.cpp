@@ -60,7 +60,7 @@ void EERIEDRAWPRIM(Renderer::Primitive primitive, const TexturedVertex * vertice
 		EERIEDrawnPolys++;
 	}
 	
-	pDynamicVertexBuffer_TLVERTEX->draw(primitive, unproject(vertices, count), count);
+	pDynamicVertexBuffer_TLVERTEX->draw(primitive, vertices, count);
 }
 
 static const float BASICFOCAL = 350.f;
@@ -68,7 +68,7 @@ static const float BASICFOCAL = 350.f;
 static void SetTextureDrawPrim(TextureContainer * tex, TexturedVertex * v,
                                Renderer::Primitive prim) {
 	GRenderer->SetTexture(0, tex);
-	EERIEDRAWPRIM(prim, v, 4);
+	EERIEDRAWPRIM(prim, unproject(v, 4), 4);
 }
 
 static bool EERIECreateSprite(TexturedQuad & sprite, const Vec3f & in, float siz,
@@ -179,12 +179,12 @@ static void DrawBitmap(const Rectf & rect, float z, TextureContainer * tex,
 	if(isRhw) {
 		if(tex && tex->hasColorKey()) {
 			GRenderer->SetAlphaFunc(Renderer::CmpGreater, .5f);
-			EERIEDRAWPRIM(Renderer::TriangleFan, s.v, 4);
+			EERIEDRAWPRIM(Renderer::TriangleFan, unproject(s.v, 4), 4);
 			GRenderer->SetAlphaFunc(Renderer::CmpNotEqual, 0.f);
 			return;
 		}
 	}
-	EERIEDRAWPRIM(Renderer::TriangleFan, s.v, 4);
+	EERIEDRAWPRIM(Renderer::TriangleFan, unproject(s.v, 4), 4);
 }
 
 void EERIEAddBitmap(const RenderMaterial & mat, const Vec3f & p, float sx, float sy, TextureContainer * tex, Color color) {

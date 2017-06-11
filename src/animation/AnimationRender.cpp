@@ -130,7 +130,7 @@ static void PopOneTriangleList(TextureContainer * _pTex, bool clear) {
 	}
 
 
-	EERIEDRAWPRIM(Renderer::TriangleList, batch.list[BatchBucket_Opaque], batch.count[BatchBucket_Opaque]);
+	EERIEDRAWPRIM(Renderer::TriangleList, unproject(batch.list[BatchBucket_Opaque], batch.count[BatchBucket_Opaque]), batch.count[BatchBucket_Opaque]);
 	
 	if(clear) {
 		batch.count[BatchBucket_Opaque] = 0;
@@ -161,7 +161,7 @@ static void PopOneTriangleListTransparency(TextureContainer *_pTex) {
 	if(batch.count[BatchBucket_Blended]) {
 		UseRenderState state(baseState.blend(BlendDstColor, BlendSrcColor));
 		if(batch.count[BatchBucket_Blended]) {
-			EERIEDRAWPRIM(Renderer::TriangleList, batch.list[BatchBucket_Blended],
+			EERIEDRAWPRIM(Renderer::TriangleList, unproject(batch.list[BatchBucket_Blended], batch.count[BatchBucket_Blended]),
 						  batch.count[BatchBucket_Blended]);
 			batch.count[BatchBucket_Blended]=0;
 		}
@@ -170,7 +170,7 @@ static void PopOneTriangleListTransparency(TextureContainer *_pTex) {
 	if(batch.count[BatchBucket_Additive]) {
 		UseRenderState state(baseState.blend(BlendOne, BlendOne));
 		if(batch.count[BatchBucket_Additive]) {
-			EERIEDRAWPRIM(Renderer::TriangleList, batch.list[BatchBucket_Additive],
+			EERIEDRAWPRIM(Renderer::TriangleList, unproject(batch.list[BatchBucket_Additive], batch.count[BatchBucket_Additive]),
 						  batch.count[BatchBucket_Additive]);
 			batch.count[BatchBucket_Additive]=0;
 		}
@@ -179,7 +179,7 @@ static void PopOneTriangleListTransparency(TextureContainer *_pTex) {
 	if(batch.count[BatchBucket_Subtractive]) {
 		UseRenderState state(baseState.blend(BlendZero, BlendInvSrcColor));
 		if(batch.count[BatchBucket_Subtractive]) {
-			EERIEDRAWPRIM(Renderer::TriangleList, batch.list[BatchBucket_Subtractive],
+			EERIEDRAWPRIM(Renderer::TriangleList, unproject(batch.list[BatchBucket_Subtractive], batch.count[BatchBucket_Subtractive]),
 						  batch.count[BatchBucket_Subtractive]);
 			batch.count[BatchBucket_Subtractive]=0;
 		}
@@ -188,7 +188,7 @@ static void PopOneTriangleListTransparency(TextureContainer *_pTex) {
 	if(batch.count[BatchBucket_Multiplicative]) {
 		UseRenderState state(baseState.blend(BlendOne, BlendOne));
 		if(batch.count[BatchBucket_Multiplicative]) {
-			EERIEDRAWPRIM(Renderer::TriangleList, batch.list[BatchBucket_Multiplicative],
+			EERIEDRAWPRIM(Renderer::TriangleList, unproject(batch.list[BatchBucket_Multiplicative], batch.count[BatchBucket_Multiplicative]),
 						  batch.count[BatchBucket_Multiplicative]);
 			batch.count[BatchBucket_Multiplicative] = 0;
 		}

@@ -124,7 +124,7 @@ void drawLineSphere(const Sphere & sphere, Color color) {
 	}
 
 	GRenderer->ResetTexture(0);
-	EERIEDRAWPRIM(Renderer::LineStrip, &vertices[0], vertices.size());
+	EERIEDRAWPRIM(Renderer::LineStrip, unproject(&vertices[0], vertices.size()), vertices.size());
 }
 
 void drawLineCylinder(const Cylinder & cyl, Color col) {
@@ -168,7 +168,7 @@ void drawLine(const Vec3f & orgn, const Vec3f & dest, Color color1, Color color2
 	v[0].color = color1.toRGBA();
 	v[1].color = color2.toRGBA();
 	
-	EERIEDRAWPRIM(Renderer::LineList, v, 2);
+	EERIEDRAWPRIM(Renderer::LineList, unproject(v, 2), 2);
 }
 
 void drawLine(const Vec3f & orgn, const Vec3f & dest, Color color, float zbias) {
