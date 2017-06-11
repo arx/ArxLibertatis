@@ -60,7 +60,7 @@ void RenderBatcher::render() {
 	for(Batches::const_iterator it = m_BatchedSprites.begin(); it != m_BatchedSprites.end(); ++it) {
 		if(!it->second.empty()) {
 			UseRenderState state(it->first.apply());
-			EERIEDRAWPRIM(Renderer::TriangleList, &it->second.front(), it->second.size(), true);
+			EERIEDRAWPRIM(Renderer::TriangleList, unproject(&it->second.front(), it->second.size()), it->second.size(), true);
 			GRenderer->GetTextureStage(0)->setAlphaOp(TextureStage::OpSelectArg1);
 		}
 	}
