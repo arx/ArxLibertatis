@@ -119,8 +119,6 @@ private:
 	
 	size_t maxTextureStage; // the highest active texture stage
 	
-	GLuint shader;
-	
 	float m_maximumAnisotropy;
 	float m_maximumSupportedAnisotropy;
 	
