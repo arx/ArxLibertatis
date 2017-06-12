@@ -44,13 +44,13 @@ void RenderBatcher::add(const RenderMaterial& mat, const TexturedQuad& sprite) {
 	
 	VertexBatch & batch = m_BatchedSprites[mat];
 	
-	batch.push_back(unproject(sprite.v[0]));
-	batch.push_back(unproject(sprite.v[1]));
-	batch.push_back(unproject(sprite.v[2]));
+	batch.push_back(sprite.v[0]);
+	batch.push_back(sprite.v[1]);
+	batch.push_back(sprite.v[2]);
 	
-	batch.push_back(unproject(sprite.v[0]));
-	batch.push_back(unproject(sprite.v[2]));
-	batch.push_back(unproject(sprite.v[3]));
+	batch.push_back(sprite.v[0]);
+	batch.push_back(sprite.v[2]);
+	batch.push_back(sprite.v[3]);
 }
 
 void RenderBatcher::render() {

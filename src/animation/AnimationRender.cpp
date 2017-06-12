@@ -457,7 +457,7 @@ void drawQuadRTP(const RenderMaterial & mat, TexturedQuad quat) {
 	EE_RTP(quat.v[2].p, quat.v[2]);
 	EE_RTP(quat.v[3].p, quat.v[3]);
 	
-	RenderBatcher::getInstance().add(mat, quat);
+	RenderBatcher::getInstance().add(mat, unproject(quat));
 }
 
 void drawTriangle(const RenderMaterial & mat, const TexturedVertexUntransformed * vertices) {
