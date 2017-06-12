@@ -167,8 +167,8 @@ void MenuCursor::DrawOneCursor(const Vec2s& mousePos) {
 	GRenderer->GetTextureStage(0)->setMagFilter(TextureStage::FilterNearest);
 	GRenderer->GetTextureStage(0)->setWrapMode(TextureStage::WrapClamp);
 
-	EERIEDrawBitmap2(Rectf(Vec2f(mousePos), m_size.x, m_size.y),
-	                 0.00000001f, scursor[m_currentFrame], Color::white);
+	EERIEDrawBitmap(Rectf(Vec2f(mousePos), m_size.x, m_size.y),
+	                0.00000001f, scursor[m_currentFrame], Color::white);
 
 	GRenderer->GetTextureStage(0)->setMinFilter(TextureStage::FilterLinear);
 	GRenderer->GetTextureStage(0)->setMagFilter(TextureStage::FilterLinear);
