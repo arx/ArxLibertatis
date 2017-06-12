@@ -240,7 +240,7 @@ static void DrawBookInterfaceItem(TextureContainer * tc, Vec2f pos, Color color,
 	arx_assert(tc);
 	
 	Rectf rect = scaleRectPosAndSize(Rectf((pos + BOOKDEC), tc->m_size.x, tc->m_size.y), g_sizeRatio);
-	EERIEDrawBitmap2(rect, z, tc, color);
+	EERIEDrawBitmap(rect, z, tc, color);
 }
 
 static void RenderBookPlayerCharacter() {
@@ -1553,7 +1553,9 @@ void ARX_INTERFACE_ManageOpenedBook_SpellsDraw() {
 			}
 			
 			GRenderer->GetTextureStage(0)->setMagFilter(TextureStage::FilterLinear);
+			GRenderer->SetAlphaFunc(Renderer::CmpGreater, .5f);
 			DrawBookInterfaceItem(spellInfo.tc, fPos, color, 0.000001f);
+			GRenderer->SetAlphaFunc(Renderer::CmpNotEqual, 0.f);
 			GRenderer->GetTextureStage(0)->setMagFilter(TextureStage::FilterNearest);
 			
 		}
