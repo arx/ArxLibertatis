@@ -74,56 +74,57 @@ static void SetTextureDrawPrim(TextureContainer * tex, const TexturedVertex * v,
 static bool EERIECreateSprite(TexturedQuad & sprite, const Vec3f & in, float siz,
                               Color color, float Zpos, float rot = 0) {
 	
-	TexturedVertex out;
-	EE_RTP(in, out);
-	out.rhw *= 3000.f;
-
-	if(   out.p.z > 0.f
-	   && out.p.z < 1000.f
-	   && out.p.x > -1000.f
-	   && out.p.x < 2500.f
-	   && out.p.y > -500.f
-	   && out.p.y < 1800.f
+	Vec4f out = worldToClipSpace(in);
+	if(out.w <= 0.f) {
+		return false;
+	}
+	Vec3f p = Vec3f(out) / out.w;
+	
+	if(   p.z > 0.f
+	   && p.z < 1000.f
+	   && p.x > -1000.f
+	   && p.x < 2500.f
+	   && p.y > -500.f
+	   && p.y < 1800.f
 	) {
 		float t;
 
 		if(siz < 0) {
 			t = -siz * g_sizeRatio.y;
 		} else {
-			t = siz * (out.rhw - 1.f) * BASICFOCAL * g_sizeRatio.y * 0.001f;
+			t = siz * (1.f / out.w * 3000.f - 1.f) * BASICFOCAL * g_sizeRatio.y * 0.001f;
 
 			if(t <= 0.f)
 				t = 0.00000001f;
 		}
 		
 		if(Zpos <= 1.f) {
-			out.p.z = Zpos;
-			out.rhw = 1.f - out.p.z;
-		} else {
-			out.rhw *= (1.f/3000.f);
-		}		
+			p.z = Zpos;
+			out.w = 1.f / (1.f - Zpos);
+		}
 		
 		ColorRGBA col = color.toRGBA();
 		
-		sprite.v[0] = TexturedVertex(Vec3f(), out.rhw, col, Vec2f_ZERO);
-		sprite.v[1] = TexturedVertex(Vec3f(), out.rhw, col, Vec2f_X_AXIS);
-		sprite.v[2] = TexturedVertex(Vec3f(), out.rhw, col, Vec2f(1.f, 1.f));
-		sprite.v[3] = TexturedVertex(Vec3f(), out.rhw, col, Vec2f_Y_AXIS);
+		sprite.v[0] = TexturedVertex(Vec3f(), out.w, col, Vec2f_ZERO);
+		sprite.v[1] = TexturedVertex(Vec3f(), out.w, col, Vec2f_X_AXIS);
+		sprite.v[2] = TexturedVertex(Vec3f(), out.w, col, Vec2f(1.f, 1.f));
+		sprite.v[3] = TexturedVertex(Vec3f(), out.w, col, Vec2f_Y_AXIS);
 		
 		if(rot == 0) {
-			Vec3f maxs = out.p + t;
-			Vec3f mins = out.p - t;
+			Vec3f maxs = p + t;
+			Vec3f mins = p - t;
 
-			sprite.v[0].p = Vec3f(mins.x, mins.y, out.p.z);
-			sprite.v[1].p = Vec3f(maxs.x, mins.y, out.p.z);
-			sprite.v[2].p = Vec3f(maxs.x, maxs.y, out.p.z);
-			sprite.v[3].p = Vec3f(mins.x, maxs.y, out.p.z);
+			sprite.v[0].p = Vec3f(mins.x, mins.y, p.z) * out.w;
+			sprite.v[1].p = Vec3f(maxs.x, mins.y, p.z) * out.w;
+			sprite.v[2].p = Vec3f(maxs.x, maxs.y, p.z) * out.w;
+			sprite.v[3].p = Vec3f(mins.x, maxs.y, p.z) * out.w;
 		} else {
 			for(long i=0;i<4;i++) {
 				float tt = glm::radians(MAKEANGLE(rot+90.f*i+45+90));
-				sprite.v[i].p.x = std::sin(tt) * t + out.p.x;
-				sprite.v[i].p.y = std::cos(tt) * t + out.p.y;
-				sprite.v[i].p.z = out.p.z;
+				sprite.v[i].p.x = std::sin(tt) * t + p.x;
+				sprite.v[i].p.y = std::cos(tt) * t + p.y;
+				sprite.v[i].p.z = p.z;
+				sprite.v[i].p *= out.w;
 			}
 		}
 
@@ -137,7 +138,7 @@ void EERIEAddSprite(const RenderMaterial & mat, const Vec3f & in, float siz, Col
 	TexturedQuad s;
 
 	if(EERIECreateSprite(s, in, siz, color, Zpos, rot)) {
-		RenderBatcher::getInstance().add(mat, unproject(s));
+		RenderBatcher::getInstance().add(mat, s);
 	}
 }
 
@@ -146,7 +147,7 @@ void EERIEDrawSprite(const Vec3f & in, float siz, TextureContainer * tex, Color 
 	TexturedQuad s;
 
 	if(EERIECreateSprite(s, in, siz, color, Zpos)) {
-		SetTextureDrawPrim(tex, unproject(s.v, 4), Renderer::TriangleFan);
+		SetTextureDrawPrim(tex, s.v, Renderer::TriangleFan);
 	}
 }
 
