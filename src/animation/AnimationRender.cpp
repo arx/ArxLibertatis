@@ -682,62 +682,42 @@ static void AddFixedObjectHalo(const EERIE_FACE & face, const TransformInfo & t,
 		}
 
 		if(_ffr[first] > 70.f && _ffr[second] > 60.f) {
-			TexturedVertex vert[4];
-
-			vert[0] = project(tvList[first]);
-			vert[1] = project(tvList[first]);
-			vert[2] = project(tvList[second]);
-			vert[3] = project(tvList[second]);
 			
-			TexturedVertex origin = project(tvList[third]);
-
 			float siz = ddist * (halo.radius * 1.5f * (std::sin(arxtime.get_frame_time() * .01f) * .1f + .7f)) * .6f;
-
-			Vec3f vect1;
-			vect1.x = vert[0].p.x - origin.p.x;
-			vect1.y = vert[0].p.y - origin.p.y;
-			float len1 = 1.f / ffsqrt(vect1.x * vect1.x + vect1.y * vect1.y);
-
-			if(vect1.x < 0.f)
-				len1 *= 1.2f;
-
-			vect1.x *= len1;
-			vect1.y *= len1;
-
-			Vec3f vect2;
-			vect2.x = vert[2].p.x - origin.p.x;
-			vect2.y = vert[2].p.y - origin.p.y;
-			float len2 = 1.f / ffsqrt(vect2.x * vect2.x + vect2.y * vect2.y);
-
-			if(vect2.x < 0.f)
-				len2 *= 1.2f;
-
-			vect2.x *= len2;
-			vect2.y *= len2;
-
-			vert[1].p.x += (vect1.x + Random::getf(0.1f, 0.2f)) * siz;
-			vert[1].p.y += (vect1.y + Random::getf(0.1f, 0.2f)) * siz;
+			
+			TexturedVertex vert[4];
+			vert[0] = tvList[first];
+			vert[1] = tvList[first];
+			vert[2] = tvList[second];
+			vert[3] = tvList[second];
+			
+			Vec3f a = tvList[first].p / tvList[first].rhw;
+			Vec3f b = tvList[second].p / tvList[second].rhw;
+			Vec3f c = tvList[third].p / tvList[third].rhw;
+			
+			Vec2f vect1 = Vec2f(a - c);
+			vect1 /= ffsqrt(arx::length2(vect1));
+			if(vect1.x < 0.f) {
+				vect1 *= 1.2f;
+			}
+			vert[1].p.x += (vect1.x + Random::getf(0.1f, 0.2f)) * siz * vert[1].rhw;
+			vert[1].p.y += (vect1.y + Random::getf(0.1f, 0.2f)) * siz * vert[1].rhw;
+			
+			Vec2f vect2 = Vec2f(b - c);
+			vect2 /= ffsqrt(arx::length2(vect2));
+			if(vect2.x < 0.f) {
+				vect2 *= 1.2f;
+			}
+			vert[2].p.x += (vect2.x + Random::getf(0.1f, 0.2f)) * siz * vert[2].rhw;
+			vert[2].p.y += (vect2.y + Random::getf(0.1f, 0.2f)) * siz * vert[2].rhw;
+			
+			vert[0].p.z += 0.0001f * vert[0].rhw;
+			vert[3].p.z += 0.0001f * vert[3].rhw;
+			
 			vert[1].color = Color(0, 0, 0, 255).toRGBA();
-
-			vert[0].p.z += 0.0001f;
-			vert[3].p.z += 0.0001f;
-			vert[1].rhw *= .8f;
-			vert[2].rhw *= .8f;
-
-			vert[2].p.x += (vect2.x + Random::getf(0.1f, 0.2f)) * siz;
-			vert[2].p.y += (vect2.y + Random::getf(0.1f, 0.2f)) * siz;
-
-			if(halo.flags & HALO_NEGATIVE)
-				vert[2].color = Color(0, 0, 0, 0).toRGBA();
-			else
-				vert[2].color = Color(0, 0, 0, 255).toRGBA();
-
-			TexturedVertex v[4];
-			v[0] = unproject(vert[0]);
-			v[1] = unproject(vert[1]);
-			v[2] = unproject(vert[2]);
-			v[3] = unproject(vert[3]);
-			Halo_AddVertices(v);
+			vert[2].color = Color(0, 0, 0, (halo.flags & HALO_NEGATIVE) ? 0 : 255).toRGBA();
+			
+			Halo_AddVertices(vert);
 		}
 	}
 }
