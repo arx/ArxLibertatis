@@ -63,7 +63,6 @@ void EERIEDrawBitmap2DecalY(Rectf rect, float z, TextureContainer * tex, Color c
 
 void EERIEDrawSprite(const Vec3f & in, float siz, TextureContainer * tex, Color col, float Zpos);
 
-void EERIEDrawBitmap2(const Rectf & rect, float z, TextureContainer * tex, Color color);
 void EERIEDrawBitmap_uv(Rectf rect, float z, TextureContainer * tex, Color col, float u0, float v0, float u1, float v1);
 void EERIEDrawBitmapUVs(Rectf rect, float z, TextureContainer * tex, Color color, Vec2f uv0, Vec2f uv1, Vec2f uv2, Vec2f uv3);
 
