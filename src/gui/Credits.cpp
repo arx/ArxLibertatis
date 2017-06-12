@@ -456,7 +456,7 @@ void Credits::render() {
 	if(m_background) {
 		Rectf rect(Vec2f_ZERO, g_size.width(), g_size.height() + 1);
 		UseRenderState state(render2D().noBlend());
-		EERIEDrawBitmap2(rect, .999f, m_background, Color::white);
+		EERIEDrawBitmap(rect, .999f, m_background, Color::white);
 	}
 	
 	// Use time passed between frame to create scroll effect
