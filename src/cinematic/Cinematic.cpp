@@ -278,9 +278,9 @@ void DrawGrille(CinematicBitmap * bitmap, Color col, int fx, CinematicLight * li
 			t.y = v->y + *dream++;
 			t.z = v->z;
 			Vec3f vtemp = TransformLocalVertex(t, LocalPos, LocalSin, LocalCos);
-			EE_RTP(vtemp, *d3dv);
+			worldToClipSpace(vtemp, *d3dv);
 			if(light) {
-				d3dv->color = CalculLight(light, Vec2f(d3dv->p.x, d3dv->p.y), col).toRGBA();
+				d3dv->color = CalculLight(light, Vec2f(d3dv->p.x, d3dv->p.y) / d3dv->rhw, col).toRGBA();
 			} else {
 				d3dv->color = col.toRGBA();
 			}
@@ -290,9 +290,9 @@ void DrawGrille(CinematicBitmap * bitmap, Color col, int fx, CinematicLight * li
 	} else {
 		while(nb--) {
 			Vec3f vtemp = TransformLocalVertex(*v, LocalPos, LocalSin, LocalCos);
-			EE_RTP(vtemp, *d3dv);
+			worldToClipSpace(vtemp, *d3dv);
 			if(light) {
-				d3dv->color = CalculLight(light, Vec2f(d3dv->p.x, d3dv->p.y), col).toRGBA();
+				d3dv->color = CalculLight(light, Vec2f(d3dv->p.x, d3dv->p.y) / d3dv->rhw, col).toRGBA();
 			} else {
 				d3dv->color = col.toRGBA();
 			}
@@ -359,7 +359,7 @@ void DrawGrille(CinematicBitmap * bitmap, Color col, int fx, CinematicLight * li
 			uvs++;
 		}
 		
-		GRenderer->drawIndexed(Renderer::TriangleList, unproject(AllTLVertex, grille->m_nbvertexs), grille->m_nbvertexs,
+		GRenderer->drawIndexed(Renderer::TriangleList, AllTLVertex, grille->m_nbvertexs,
 		                       &grille->m_inds.data()->i1 + mat->startind, mat->nbind);
 	}
 	
