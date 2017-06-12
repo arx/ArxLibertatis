@@ -108,7 +108,7 @@ static void DrawCenteredImage(TextureContainer * tc) {
 	Vec2f pos = Vec2f(g_size.center());
 	pos += -size * 0.5f;
 	
-	EERIEDrawBitmap2(Rectf(pos, size.x, size.y), 0.001f, tc, Color::white);
+	EERIEDrawBitmap(Rectf(pos, size.x, size.y), 0.001f, tc, Color::white);
 }
 
 static void ARX_INTERFACE_ShowLogo(TextureContainer * logo) {
