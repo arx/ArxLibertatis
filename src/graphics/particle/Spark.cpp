@@ -159,32 +159,25 @@ void ParticleSparkUpdate() {
 		
 		Vec3f in = spark.m_pos + spark.move * val;
 		
-		TexturedVertex out;
-		EE_RTP(in, out);
-		
-		if(out.rhw < 0 || out.p.z > cam->cdepth * fZFogEnd) {
-			continue;
-		}
-		
 		Vec3f tailDirection = glm::normalize(-spark.move);
 		
 		TexturedVertex tv[3];
 		tv[0].color = spark.rgb;
 		tv[1].color = Color(102, 102, 102, 255).toRGBA();
 		tv[2].color = Color(0, 0, 0, 255).toRGBA();
-		tv[0].p = out.p;
-		tv[0].rhw = out.rhw;
+		
+		worldToClipSpace(in, tv[0]);
+		
+		if(tv[0].rhw < 0 || tv[0].p.z > cam->cdepth * fZFogEnd * tv[0].rhw) {
+			continue;
+		}
 		
 		Vec3f temp1 = in + Vec3f(Random::getf(0.f, 0.5f), 0.8f, Random::getf(0.f, 0.5f));
 		Vec3f temp2 = in + tailDirection * spark.m_tailLength;
 		
-		EE_RTP(temp1, tv[1]);
-		EE_RTP(temp2, tv[2]);
+		worldToClipSpace(temp1, tv[1]);
+		worldToClipSpace(temp2, tv[2]);
 		
-		TexturedVertex v[3];
-		v[0] = unproject(tv[0]);
-		v[1] = unproject(tv[1]);
-		v[2] = unproject(tv[2]);
-		RenderBatcher::getInstance().add(sparkMaterial, v);
+		RenderBatcher::getInstance().add(sparkMaterial, tv);
 	}
 }
