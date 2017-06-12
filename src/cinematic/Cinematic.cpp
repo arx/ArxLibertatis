@@ -249,11 +249,11 @@ static Color CalculLight(CinematicLight * light, Vec2f pos, Color col) {
 	}
 }
 
-static Vec3f TransformLocalVertex(const Vec3f & vbase, const Vec3f & LocalPos, float LocalSin, float LocalCos) {
+static Vec3f TransformLocalVertex(const Vec2f & vbase, const Vec3f & LocalPos, float LocalSin, float LocalCos) {
 	Vec3f p;
 	p.x = vbase.x * LocalCos + vbase.y * LocalSin + LocalPos.x;
 	p.y = vbase.x * -LocalSin + vbase.y * LocalCos + LocalPos.y;
-	p.z = vbase.z + LocalPos.z;
+	p.z = LocalPos.z;
 	return p;
 }
 
@@ -262,7 +262,7 @@ void DrawGrille(CinematicBitmap * bitmap, Color col, int fx, CinematicLight * li
 	
 	CinematicGrid * grille = &bitmap->grid;
 	int nb = grille->m_nbvertexs;
-	Vec3f * v = grille->m_vertexs.data();
+	Vec2f * v = grille->m_vertexs.data();
 	TexturedVertex * d3dv = AllTLVertex;
 
 	Vec3f LocalPos = pos;
@@ -273,10 +273,9 @@ void DrawGrille(CinematicBitmap * bitmap, Color col, int fx, CinematicLight * li
 		float * dream = DreamTable;
 
 		while(nb--) {
-			Vec3f t;
+			Vec2f t;
 			t.x = v->x + *dream++;
 			t.y = v->y + *dream++;
-			t.z = v->z;
 			Vec3f vtemp = TransformLocalVertex(t, LocalPos, LocalSin, LocalCos);
 			worldToClipSpace(vtemp, *d3dv);
 			if(light) {
