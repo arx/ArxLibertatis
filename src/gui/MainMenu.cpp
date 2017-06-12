@@ -1955,7 +1955,7 @@ void MainMenu::Render() {
 
 	if(m_background) {
 		UseRenderState state(render2D().noBlend());
-		EERIEDrawBitmap2(Rectf(Vec2f(0, 0), g_size.width(), g_size.height()), 0.999f, m_background, Color::white);
+		EERIEDrawBitmap(Rectf(Vec2f(0, 0), g_size.width(), g_size.height()), 0.999f, m_background, Color::white);
 	}
 	
 	{Widget * w; BOOST_FOREACH(w, m_widgets->m_widgets) {
