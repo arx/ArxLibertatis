@@ -130,7 +130,7 @@ static void PopOneTriangleList(TextureContainer * _pTex, bool clear) {
 	}
 
 
-	EERIEDRAWPRIM(Renderer::TriangleList, unproject(batch.list[BatchBucket_Opaque], batch.count[BatchBucket_Opaque]), batch.count[BatchBucket_Opaque]);
+	EERIEDRAWPRIM(Renderer::TriangleList, batch.list[BatchBucket_Opaque], batch.count[BatchBucket_Opaque]);
 	
 	if(clear) {
 		batch.count[BatchBucket_Opaque] = 0;
@@ -161,7 +161,7 @@ static void PopOneTriangleListTransparency(TextureContainer *_pTex) {
 	if(batch.count[BatchBucket_Blended]) {
 		UseRenderState state(baseState.blend(BlendDstColor, BlendSrcColor));
 		if(batch.count[BatchBucket_Blended]) {
-			EERIEDRAWPRIM(Renderer::TriangleList, unproject(batch.list[BatchBucket_Blended], batch.count[BatchBucket_Blended]),
+			EERIEDRAWPRIM(Renderer::TriangleList, batch.list[BatchBucket_Blended],
 						  batch.count[BatchBucket_Blended]);
 			batch.count[BatchBucket_Blended]=0;
 		}
@@ -170,7 +170,7 @@ static void PopOneTriangleListTransparency(TextureContainer *_pTex) {
 	if(batch.count[BatchBucket_Additive]) {
 		UseRenderState state(baseState.blend(BlendOne, BlendOne));
 		if(batch.count[BatchBucket_Additive]) {
-			EERIEDRAWPRIM(Renderer::TriangleList, unproject(batch.list[BatchBucket_Additive], batch.count[BatchBucket_Additive]),
+			EERIEDRAWPRIM(Renderer::TriangleList, batch.list[BatchBucket_Additive],
 						  batch.count[BatchBucket_Additive]);
 			batch.count[BatchBucket_Additive]=0;
 		}
@@ -179,7 +179,7 @@ static void PopOneTriangleListTransparency(TextureContainer *_pTex) {
 	if(batch.count[BatchBucket_Subtractive]) {
 		UseRenderState state(baseState.blend(BlendZero, BlendInvSrcColor));
 		if(batch.count[BatchBucket_Subtractive]) {
-			EERIEDRAWPRIM(Renderer::TriangleList, unproject(batch.list[BatchBucket_Subtractive], batch.count[BatchBucket_Subtractive]),
+			EERIEDRAWPRIM(Renderer::TriangleList, batch.list[BatchBucket_Subtractive],
 						  batch.count[BatchBucket_Subtractive]);
 			batch.count[BatchBucket_Subtractive]=0;
 		}
@@ -188,7 +188,7 @@ static void PopOneTriangleListTransparency(TextureContainer *_pTex) {
 	if(batch.count[BatchBucket_Multiplicative]) {
 		UseRenderState state(baseState.blend(BlendOne, BlendOne));
 		if(batch.count[BatchBucket_Multiplicative]) {
-			EERIEDRAWPRIM(Renderer::TriangleList, unproject(batch.list[BatchBucket_Multiplicative], batch.count[BatchBucket_Multiplicative]),
+			EERIEDRAWPRIM(Renderer::TriangleList, batch.list[BatchBucket_Multiplicative],
 						  batch.count[BatchBucket_Multiplicative]);
 			batch.count[BatchBucket_Multiplicative] = 0;
 		}
@@ -684,16 +684,18 @@ static void AddFixedObjectHalo(const EERIE_FACE & face, const TransformInfo & t,
 		if(_ffr[first] > 70.f && _ffr[second] > 60.f) {
 			TexturedVertex vert[4];
 
-			vert[0] = tvList[first];
-			vert[1] = tvList[first];
-			vert[2] = tvList[second];
-			vert[3] = tvList[second];
+			vert[0] = project(tvList[first]);
+			vert[1] = project(tvList[first]);
+			vert[2] = project(tvList[second]);
+			vert[3] = project(tvList[second]);
+			
+			TexturedVertex origin = project(tvList[third]);
 
 			float siz = ddist * (halo.radius * 1.5f * (std::sin(arxtime.get_frame_time() * .01f) * .1f + .7f)) * .6f;
 
 			Vec3f vect1;
-			vect1.x = tvList[first].p.x - tvList[third].p.x;
-			vect1.y = tvList[first].p.y - tvList[third].p.y;
+			vect1.x = vert[0].p.x - origin.p.x;
+			vect1.y = vert[0].p.y - origin.p.y;
 			float len1 = 1.f / ffsqrt(vect1.x * vect1.x + vect1.y * vect1.y);
 
 			if(vect1.x < 0.f)
@@ -703,8 +705,8 @@ static void AddFixedObjectHalo(const EERIE_FACE & face, const TransformInfo & t,
 			vect1.y *= len1;
 
 			Vec3f vect2;
-			vect2.x = tvList[second].p.x - tvList[third].p.x;
-			vect2.y = tvList[second].p.y - tvList[third].p.y;
+			vect2.x = vert[2].p.x - origin.p.x;
+			vect2.y = vert[2].p.y - origin.p.y;
 			float len2 = 1.f / ffsqrt(vect2.x * vect2.x + vect2.y * vect2.y);
 
 			if(vect2.x < 0.f)
@@ -790,7 +792,7 @@ void DrawEERIEInter_Render(EERIE_3DOBJ *eobj, const TransformInfo &t, Entity *io
 				eobj->vertexlist3[face.vid[n]].vert.color = ApplyLight(lights, lightsCount, t.rotation, position, normal, colorMod);
 			}
 
-			tvList[n] = eobj->vertexlist[face.vid[n]].vert;
+			tvList[n] = unproject(eobj->vertexlist[face.vid[n]].vert);
 			tvList[n].uv.x = face.u[n];
 			tvList[n].uv.y = face.v[n];
 
@@ -812,7 +814,7 @@ void DrawEERIEInter_Render(EERIE_3DOBJ *eobj, const TransformInfo &t, Entity *io
 				long lr = Color::fromRGBA(tvList[n].color).r;
 				float ffr=(float)(lr);
 
-				float dd = tvList[n].rhw;
+				float dd = 1.f / tvList[n].rhw;
 
 				dd = glm::clamp(dd, 0.f, 1.f);
 
@@ -1033,10 +1035,11 @@ static void AddAnimatedObjectHalo(HaloInfo & haloInfo, const unsigned short * pa
 		if(_ffr[first] > 150.f && _ffr[second] > 110.f) {
 			TexturedVertex vert[4];
 
-			vert[0] = tvList[first];
-			vert[1] = tvList[first];
-			vert[2] = tvList[second];
-			vert[3] = tvList[second];
+			vert[0] = project(tvList[first]);
+			vert[1] = project(tvList[first]);
+			vert[2] = project(tvList[second]);
+			vert[3] = project(tvList[second]);
+			TexturedVertex origin = project(tvList[third]);
 
 			vert[0].color = colors[first];
 			vert[1].color = colors[first];
@@ -1049,8 +1052,8 @@ static void AddAnimatedObjectHalo(HaloInfo & haloInfo, const unsigned short * pa
 				siz *= 1.5f;
 
 			Vec3f vect1;
-			vect1.x = tvList[first].p.x - tvList[third].p.x;
-			vect1.y = tvList[first].p.y - tvList[third].p.y;
+			vect1.x = vert[0].p.x - origin.p.x;
+			vect1.y = vert[0].p.y - origin.p.y;
 			float len1 = 2.f / ffsqrt(vect1.x * vect1.x + vect1.y * vect1.y);
 
 			if(vect1.x < 0.f)
@@ -1060,8 +1063,8 @@ static void AddAnimatedObjectHalo(HaloInfo & haloInfo, const unsigned short * pa
 			vect1.y *= len1;
 
 			Vec3f vect2;
-			vect2.x = tvList[second].p.x - tvList[third].p.x;
-			vect2.y = tvList[second].p.y - tvList[third].p.y;
+			vect2.x = vert[2].p.x - origin.p.x;
+			vect2.y = vert[2].p.y - origin.p.y;
 			float len2 = 1.f / ffsqrt(vect2.x * vect2.x + vect2.y * vect2.y);
 
 			if(vect2.x < 0.f)
@@ -1070,17 +1073,17 @@ static void AddAnimatedObjectHalo(HaloInfo & haloInfo, const unsigned short * pa
 			vect2.x *= len2;
 			vect2.y *= len2;
 
-			vert[1].p.x += (vect1.x + Random::getf(0.1f, 0.2f)) * siz;
-			vert[1].p.y += (vect1.y + Random::getf(0.1f, 0.2f)) * siz;
-			vert[1].color = Color(0, 0, 0, 255).toRGBA();
-
 			float valll;
-			valll = 0.005f + (glm::abs(tvList[first].p.z) - glm::abs(tvList[third].p.z))
-						   + (glm::abs(tvList[second].p.z) - glm::abs(tvList[third].p.z));
+			valll = 0.005f + (glm::abs(vert[0].p.z) - glm::abs(origin.p.z))
+						   + (glm::abs(vert[2].p.z) - glm::abs(origin.p.z));
 			valll = 0.0001f + valll * ( 1.0f / 10 );
 
 			if(valll < 0.f)
 				valll = 0.f;
+
+			vert[1].p.x += (vect1.x + Random::getf(0.1f, 0.2f)) * siz;
+			vert[1].p.y += (vect1.y + Random::getf(0.1f, 0.2f)) * siz;
+			vert[1].color = Color(0, 0, 0, 255).toRGBA();
 
 			vert[1].p.z	+= valll;
 			vert[2].p.z	+= valll;
@@ -1174,9 +1177,7 @@ static void Cedric_RenderObject(EERIE_3DOBJ * eobj, Skeleton * obj, Entity * io,
 		TexturedVertex *tvList = GetNewVertexList(&pTex->m_modelBatch, face, invisibility, fTransp);
 
 		for(size_t n = 0; n < 3; n++) {
-			tvList[n].p     = eobj->vertexlist3[face.vid[n]].vert.p;
-			tvList[n].rhw   = eobj->vertexlist3[face.vid[n]].vert.rhw;
-			tvList[n].color = eobj->vertexlist3[face.vid[n]].vert.color;
+			tvList[n] = unproject(eobj->vertexlist3[face.vid[n]].vert);
 			tvList[n].uv.x  = face.u[n];
 			tvList[n].uv.y  = face.v[n];
 		}
