@@ -102,7 +102,7 @@ void CheckboxWidget::renderCommon() {
 	TextureContainer *pTex = (iState == 0) ? m_textureOff : m_textureOn;
 	Color color = (bCheck) ? Color::white : Color(63, 63, 63, 255);
 	
-	EERIEDrawBitmap2(checkboxRect, 0.f, pTex, color);
+	EERIEDrawBitmap(checkboxRect, 0.f, pTex, color);
 }
 
 void CheckboxWidget::Render() {
