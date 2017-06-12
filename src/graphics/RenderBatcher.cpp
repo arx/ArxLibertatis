@@ -35,9 +35,9 @@ void RenderBatcher::add(const RenderMaterial& mat, const TexturedVertex (&tri)[3
 	
 	VertexBatch & batch = m_BatchedSprites[mat];
 	
-	batch.push_back(unproject(tri[0]));
-	batch.push_back(unproject(tri[1]));
-	batch.push_back(unproject(tri[2]));
+	batch.push_back(tri[0]);
+	batch.push_back(tri[1]);
+	batch.push_back(tri[2]);
 }
 
 void RenderBatcher::add(const RenderMaterial& mat, const TexturedQuad& sprite) {

@@ -473,7 +473,11 @@ void drawTriangle(const RenderMaterial & mat, const TexturedVertexUntransformed 
 	projected[2].color = vertices[2].color;
 	projected[2].uv = vertices[2].uv;
 	
-	RenderBatcher::getInstance().add(mat, projected);
+	TexturedVertex v[3];
+	v[0] = unproject(projected[0]);
+	v[1] = unproject(projected[1]);
+	v[2] = unproject(projected[2]);
+	RenderBatcher::getInstance().add(mat, v);
 }
 
 static bool Cedric_IO_Visible(const Vec3f & pos) {

@@ -920,7 +920,11 @@ void Draw3DObject(EERIE_3DOBJ *eobj, const Anglef & angle, const Vec3f & pos, co
 		else
 			mat.setCulling(CullCW);
 
-		RenderBatcher::getInstance().add(mat, vert_list);
+		TexturedVertex v[3];
+		v[0] = unproject(vert_list[0]);
+		v[1] = unproject(vert_list[1]);
+		v[2] = unproject(vert_list[2]);
+		RenderBatcher::getInstance().add(mat, v);
 	}
 }
 
