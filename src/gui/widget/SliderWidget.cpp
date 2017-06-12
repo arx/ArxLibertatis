@@ -145,7 +145,7 @@ void SliderWidget::Render() {
 		TextureContainer * pTex = (i < m_value) ? pTex1 : pTex2;
 		Rectf rect = Rectf(pos, RATIO_X(pTex->m_size.x), RATIO_Y(pTex->m_size.y));
 		
-		EERIEDrawBitmap2(rect, 0, pTex, Color::white);
+		EERIEDrawBitmap(rect, 0, pTex, Color::white);
 		
 		pos.x += rect.width();
 	}
