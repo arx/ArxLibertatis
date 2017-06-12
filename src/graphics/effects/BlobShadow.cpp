@@ -36,9 +36,9 @@ static void AddToShadowBatch(TexturedVertexUntransformed * _pVertex1, TexturedVe
                              TexturedVertexUntransformed * _pVertex3) {
 	
 	TexturedVertex pPointAdd[3];
-	EE_RTP(_pVertex1->p, pPointAdd[0]);
-	EE_RTP(_pVertex2->p, pPointAdd[1]);
-	EE_RTP(_pVertex3->p, pPointAdd[2]);
+	worldToClipSpace(_pVertex1->p, pPointAdd[0]);
+	worldToClipSpace(_pVertex2->p, pPointAdd[1]);
+	worldToClipSpace(_pVertex3->p, pPointAdd[2]);
 	pPointAdd[0].color = _pVertex1->color;
 	pPointAdd[0].uv = _pVertex1->uv;
 	pPointAdd[1].color = _pVertex2->color;
@@ -160,7 +160,7 @@ void ARXDRAW_DrawInterShadows() {
 		GRenderer->SetFogColor(Color::none);
 		UseRenderState state(render3D().depthWrite(false).blend(BlendZero, BlendInvSrcColor).depthOffset(1));
 		GRenderer->SetTexture(0, Boom);
-		EERIEDRAWPRIM(Renderer::TriangleList, unproject(&g_shadowBatch[0], g_shadowBatch.size()), g_shadowBatch.size());
+		EERIEDRAWPRIM(Renderer::TriangleList, &g_shadowBatch[0], g_shadowBatch.size());
 		GRenderer->SetFogColor(ulBKGColor);
 	}
 	
