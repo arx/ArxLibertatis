@@ -152,23 +152,16 @@ void drawLine(const Vec3f & orgn, const Vec3f & dest, Color color1, Color color2
 	
 	TexturedVertex v[2];
 	
-	EE_RTP(orgn, v[0]);
-	if(v[0].p.z < 0.f) {
-		return;
-	}
+	worldToClipSpace(orgn, v[0]);
+	worldToClipSpace(dest, v[1]);
 	
-	EE_RTP(dest, v[1]);
-	if(v[1].p.z < 0.f) {
-		return;
-	}
-	
-	v[0].p.z -= zbias, v[1].p.z -= zbias;
+	v[0].p.z -= zbias * v[0].rhw, v[1].p.z -= zbias * v[1].rhw;
 	
 	GRenderer->ResetTexture(0);
 	v[0].color = color1.toRGBA();
 	v[1].color = color2.toRGBA();
 	
-	EERIEDRAWPRIM(Renderer::LineList, unproject(v, 2), 2);
+	EERIEDRAWPRIM(Renderer::LineList, v, 2);
 }
 
 void drawLine(const Vec3f & orgn, const Vec3f & dest, Color color, float zbias) {
