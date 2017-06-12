@@ -327,7 +327,7 @@ void ARX_Menu_Render() {
 		UseRenderState state(render2D().noBlend());
 		
 		if(ARXmenu.mda->BookBackground != NULL) {
-			EERIEDrawBitmap2(Rectf(Vec2f(0, 0), g_size.width(), g_size.height()), 0.9f, ARXmenu.mda->BookBackground, Color::white);
+			EERIEDrawBitmap(Rectf(Vec2f(0, 0), g_size.width(), g_size.height()), 0.9f, ARXmenu.mda->BookBackground, Color::white);
 		}
 		
 		BOOKZOOM = 1;
