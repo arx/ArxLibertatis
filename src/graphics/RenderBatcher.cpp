@@ -35,22 +35,22 @@ void RenderBatcher::add(const RenderMaterial& mat, const TexturedVertex (&tri)[3
 	
 	VertexBatch & batch = m_BatchedSprites[mat];
 	
-	batch.push_back(tri[0]);
-	batch.push_back(tri[1]);
-	batch.push_back(tri[2]);
+	batch.push_back(unproject(tri[0]));
+	batch.push_back(unproject(tri[1]));
+	batch.push_back(unproject(tri[2]));
 }
 
 void RenderBatcher::add(const RenderMaterial& mat, const TexturedQuad& sprite) {
 	
 	VertexBatch & batch = m_BatchedSprites[mat];
 	
-	batch.push_back(sprite.v[0]);
-	batch.push_back(sprite.v[1]);
-	batch.push_back(sprite.v[2]);
+	batch.push_back(unproject(sprite.v[0]));
+	batch.push_back(unproject(sprite.v[1]));
+	batch.push_back(unproject(sprite.v[2]));
 	
-	batch.push_back(sprite.v[0]);
-	batch.push_back(sprite.v[2]);
-	batch.push_back(sprite.v[3]);
+	batch.push_back(unproject(sprite.v[0]));
+	batch.push_back(unproject(sprite.v[2]));
+	batch.push_back(unproject(sprite.v[3]));
 }
 
 void RenderBatcher::render() {
@@ -60,7 +60,7 @@ void RenderBatcher::render() {
 	for(Batches::const_iterator it = m_BatchedSprites.begin(); it != m_BatchedSprites.end(); ++it) {
 		if(!it->second.empty()) {
 			UseRenderState state(it->first.apply());
-			EERIEDRAWPRIM(Renderer::TriangleList, unproject(&it->second.front(), it->second.size()), it->second.size(), true);
+			EERIEDRAWPRIM(Renderer::TriangleList, &it->second.front(), it->second.size(), true);
 			GRenderer->GetTextureStage(0)->setAlphaOp(TextureStage::OpSelectArg1);
 		}
 	}
