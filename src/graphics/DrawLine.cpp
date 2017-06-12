@@ -104,7 +104,7 @@ void drawLineSphere(const Sphere & sphere, Color color) {
 			pos += sphere.origin;
 			
 			TexturedVertex out;
-			EE_RTP(pos, out);
+			worldToClipSpace(pos, out);
 
 			if(skip) {
 				skip = false;
@@ -124,7 +124,7 @@ void drawLineSphere(const Sphere & sphere, Color color) {
 	}
 
 	GRenderer->ResetTexture(0);
-	EERIEDRAWPRIM(Renderer::LineStrip, unproject(&vertices[0], vertices.size()), vertices.size());
+	EERIEDRAWPRIM(Renderer::LineStrip, &vertices[0], vertices.size());
 }
 
 void drawLineCylinder(const Cylinder & cyl, Color col) {
