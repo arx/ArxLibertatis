@@ -181,6 +181,10 @@ void ParticleSparkUpdate() {
 		EE_RTP(temp1, tv[1]);
 		EE_RTP(temp2, tv[2]);
 		
-		RenderBatcher::getInstance().add(sparkMaterial, tv);
+		TexturedVertex v[3];
+		v[0] = unproject(tv[0]);
+		v[1] = unproject(tv[1]);
+		v[2] = unproject(tv[2]);
+		RenderBatcher::getInstance().add(sparkMaterial, v);
 	}
 }
