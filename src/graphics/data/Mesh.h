@@ -138,6 +138,8 @@ int PointIn2DPolyXZ(const PortalPoly * ep, float x, float z);
 
 Vec3f EE_RT(const Vec3f & in);
 void EE_RTP(const Vec3f & in, TexturedVertex & out);
+Vec4f worldToClipSpace(const Vec3f & in);
+void worldToClipSpace(const Vec3f & in, TexturedVertex & out);
 
 
 // FAST SAVE LOAD

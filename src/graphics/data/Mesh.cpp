@@ -489,9 +489,31 @@ static void EE_P(const Vec3f & in, TexturedVertex & out) {
 	out.rhw = fZTemp;
 }
 
+static Vec4f viewToClipSpace(const Vec3f & in) {
+	
+	float z = in.z;
+	
+	Vec4f out;
+	out.z =        ACTIVECAM->ProjectionMatrix[2][2] + z * ACTIVECAM->ProjectionMatrix[3][2];
+	out.x = in.x * ACTIVECAM->ProjectionMatrix[0][0] + z * ACTIVECAM->orgTrans.mod.x;
+	out.y = in.y * ACTIVECAM->ProjectionMatrix[1][1] + z * ACTIVECAM->orgTrans.mod.y;
+	out.w = z;
+	return out;
+}
+
 void EE_RTP(const Vec3f & in, TexturedVertex & out) {
 	out.p = EE_RT(in);
 	EE_P(out.p, out);
+}
+
+Vec4f worldToClipSpace(const Vec3f & in) {
+	return viewToClipSpace(EE_RT(in));
+}
+
+void worldToClipSpace(const Vec3f & in, TexturedVertex & out) {
+	Vec4f p = worldToClipSpace(in);
+	out.p = Vec3f(p);
+	out.rhw = p.w;
 }
 
 //*************************************************************************************
