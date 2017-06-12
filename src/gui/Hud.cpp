@@ -686,7 +686,9 @@ void QuickSaveIconGui::draw() {
 	arx_assert(tex);
 	
 	Vec2f size = Vec2f(tex->size());
-	EERIEDrawBitmap2(Rectf(Vec2f(0, 0), size.x, size.y), 0.f, tex, Color::gray(alpha));
+	GRenderer->SetAlphaFunc(Renderer::CmpGreater, .5f);
+	EERIEDrawBitmap(Rectf(Vec2f(0, 0), size.x, size.y), 0.f, tex, Color::gray(alpha));
+	GRenderer->SetAlphaFunc(Renderer::CmpNotEqual, 0.f);
 	
 }
 
@@ -747,11 +749,13 @@ void MemorizedRunesHud::draw() {
 				ARX_INTERFACE_HALO_Render(Color3f(0.2f, 0.4f, 0.8f), HALO_ACTIVE, tc->getHalo(), pos, Vec2f(m_scale));
 			}
 			
-			EERIEDrawBitmap2(rect, 0, tc, Color::white);
+			EERIEDrawBitmap(rect, 0, tc, Color::white);
 			
 			if(!player.hasRune(player.SpellToMemorize.iSpellSymbols[i])) {
 				UseRenderState state(render2D().blend(BlendInvDstColor, BlendOne).colorKey());
-				EERIEDrawBitmap2(rect, 0, cursorMovable, Color3f::gray(.8f).to<u8>());
+				GRenderer->SetAlphaFunc(Renderer::CmpGreater, .5f);
+				EERIEDrawBitmap(rect, 0, cursorMovable, Color3f::gray(.8f).to<u8>());
+				GRenderer->SetAlphaFunc(Renderer::CmpNotEqual, 0.f);
 			}
 			
 			pos.x += 32 * m_scale;
@@ -1286,7 +1290,7 @@ void DamagedEquipmentGui::draw() {
 			continue;
 		}
 		
-		EERIEDrawBitmap2(m_rect, 0.001f, iconequip[i], m_colors[i]);
+		EERIEDrawBitmap(m_rect, 0.001f, iconequip[i], m_colors[i]);
 	}
 	
 }
