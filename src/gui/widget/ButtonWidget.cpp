@@ -72,7 +72,7 @@ void ButtonWidget::Update() {
 
 void ButtonWidget::Render() {
 	Color color = (bCheck) ? Color::white : Color(63, 63, 63, 255);
-	EERIEDrawBitmap2(m_rect, 0, m_texture, color);
+	EERIEDrawBitmap(m_rect, 0, m_texture, color);
 }
 
 extern MenuCursor * pMenuCursor;
