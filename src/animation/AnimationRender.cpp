@@ -729,7 +729,12 @@ static void AddFixedObjectHalo(const EERIE_FACE & face, const TransformInfo & t,
 			else
 				vert[2].color = Color(0, 0, 0, 255).toRGBA();
 
-			Halo_AddVertices(vert);
+			TexturedVertex v[4];
+			v[0] = unproject(vert[0]);
+			v[1] = unproject(vert[1]);
+			v[2] = unproject(vert[2]);
+			v[3] = unproject(vert[3]);
+			Halo_AddVertices(v);
 		}
 	}
 }
@@ -1097,7 +1102,12 @@ static void AddAnimatedObjectHalo(HaloInfo & haloInfo, const unsigned short * pa
 			else
 				vert[2].color = Color(0, 0, 0, 255).toRGBA();
 
-			Halo_AddVertices(vert);
+			TexturedVertex v[4];
+			v[0] = unproject(vert[0]);
+			v[1] = unproject(vert[1]);
+			v[2] = unproject(vert[2]);
+			v[3] = unproject(vert[3]);
+			Halo_AddVertices(v);
 		}
 	}
 }
