@@ -32,6 +32,15 @@ struct TexturedQuad {
 	TexturedVertex v[4];
 };
 
+inline TexturedQuad unproject(TexturedQuad sprite) {
+	TexturedQuad result;
+	result.v[0] = unproject(sprite.v[0]);
+	result.v[1] = unproject(sprite.v[1]);
+	result.v[2] = unproject(sprite.v[2]);
+	result.v[3] = unproject(sprite.v[3]);
+	return result;
+}
+
 struct RenderMaterial {
 
 	enum BlendType {
