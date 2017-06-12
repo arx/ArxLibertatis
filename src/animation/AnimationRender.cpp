@@ -452,12 +452,13 @@ static TexturedVertex * GetNewVertexList(ModelBatch * container,
 }
 
 void drawQuadRTP(const RenderMaterial & mat, TexturedQuad quat) {
-	EE_RTP(quat.v[0].p, quat.v[0]);
-	EE_RTP(quat.v[1].p, quat.v[1]);
-	EE_RTP(quat.v[2].p, quat.v[2]);
-	EE_RTP(quat.v[3].p, quat.v[3]);
 	
-	RenderBatcher::getInstance().add(mat, unproject(quat));
+	worldToClipSpace(quat.v[0].p, quat.v[0]);
+	worldToClipSpace(quat.v[1].p, quat.v[1]);
+	worldToClipSpace(quat.v[2].p, quat.v[2]);
+	worldToClipSpace(quat.v[3].p, quat.v[3]);
+	
+	RenderBatcher::getInstance().add(mat, quat);
 }
 
 void drawTriangle(const RenderMaterial & mat, const TexturedVertexUntransformed * vertices) {
