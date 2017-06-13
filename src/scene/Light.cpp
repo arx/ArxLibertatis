@@ -159,16 +159,20 @@ long EERIE_LIGHT_Create() {
 
 static void ComputeLight2DPos(EERIE_LIGHT * _pL) {
 	
-	TexturedVertex out;
-	EE_RTP(_pL->pos, out);
+	Vec4f p = worldToClipSpace(_pL->pos);
+	if(p.w <= 0.f) {
+		return;
+	}
 	
-	if(out.p.z > 0.f && out.p.z < 1000.f && out.rhw > 0) {
+	Vec3f pos2d = Vec3f(p) / p.w;
+	
+	if(pos2d.z > 0.f && pos2d.z < 1000.f) {
 		float siz = 50;
 		float fMaxdist = player.m_telekinesis ? 850 : 300;
 		
-		float t = siz * (1.0f - 1.0f / (out.rhw * fMaxdist)) + 10;
+		float t = siz * (1.0f - 1.0f * p.w / fMaxdist) + 10;
 
-		_pL->m_screenRect = Rectf(out.p.x - t, out.p.y - t, out.p.x + t, out.p.y + t);
+		_pL->m_screenRect = Rectf(pos2d.x - t, pos2d.y - t, pos2d.x + t, pos2d.y + t);
 	}
 }
 
