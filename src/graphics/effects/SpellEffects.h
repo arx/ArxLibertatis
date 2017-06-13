@@ -55,7 +55,6 @@ ZeniMax Media Inc., Suite 120, Rockville, Maryland 20850 USA.
 #include "platform/Alignment.h"
 #include "scene/Light.h"
 
-struct TexturedVertex;
 struct RenderMaterial;
 
 const int BEZIERPrecision = 32;
