@@ -127,15 +127,6 @@ struct EERIE_GROUPLIST_FTL {
 	s32 indexes;
 	f32 siz;
 	
-	EERIE_GROUPLIST_FTL & operator=(const VertexGroup & b) {
-		util::storeString(name, b.name.c_str());
-		origin = b.origin;
-		nb_index = b.indexes.size();
-		indexes = 0;
-		siz = b.siz;
-		return *this;
-	}
-	
 };
 
 struct EERIE_ACTIONLIST_FTL {
@@ -154,14 +145,6 @@ struct EERIE_ACTIONLIST_FTL {
 		return a;
 	}
 	
-	EERIE_ACTIONLIST_FTL & operator=(const EERIE_ACTIONLIST & b) {
-		util::storeString(name, b.name.c_str());
-		idx = b.idx.handleData();
-		action = b.act;
-		sfx = b.sfx;
-		return *this;
-	}
-	
 };
 
 struct EERIE_SELECTIONS_FTL {
@@ -169,13 +152,6 @@ struct EERIE_SELECTIONS_FTL {
 	char name[64];
 	s32 nb_selected;
 	s32 selected;
-	
-	EERIE_SELECTIONS_FTL & operator=(const EERIE_SELECTIONS & b) {
-		util::storeString(name, b.name.c_str());
-		nb_selected = b.selected.size();
-		selected = 0;
-		return *this;
-	}
 	
 };
 
@@ -189,11 +165,6 @@ struct EERIE_OLD_VERTEX {
 		EERIE_VERTEX a;
 		a.vert = vert, a.v = v.toVec3(), a.norm = norm.toVec3();
 		return a;
-	}
-	
-	EERIE_OLD_VERTEX & operator=(const EERIE_VERTEX & b) {
-		vert = b.vert, v = b.v, norm = b.norm;
-		return *this;
 	}
 	
 };
