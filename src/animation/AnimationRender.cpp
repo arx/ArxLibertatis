@@ -521,7 +521,7 @@ static void Cedric_ApplyLighting(ShaderLight lights[], int lightsCount, EERIE_3D
 			Vec3f & position = eobj->vertexlist3[vertexIndex].v;
 			Vec3f & normal = eobj->vertexlist[vertexIndex].norm;
 
-			eobj->vertexlist3[vertexIndex].vert.color = ApplyLight(lights, lightsCount, quat, position, normal, colorMod);
+			eobj->vertexColors[vertexIndex] = ApplyLight(lights, lightsCount, quat, position, normal, colorMod);
 		}
 	}
 }
@@ -764,12 +764,12 @@ void DrawEERIEInter_Render(EERIE_3DOBJ *eobj, const TransformInfo &t, Entity *io
 				const Vec3f & position = eobj->vertexlist3[face.vid[n]].v;
 				const Vec3f & normal = face.norm;
 
-				eobj->vertexlist3[face.vid[n]].vert.color = ApplyLight(lights, lightsCount, t.rotation, position, normal, colorMod, 0.5f);
+				eobj->vertexColors[face.vid[n]] = ApplyLight(lights, lightsCount, t.rotation, position, normal, colorMod, 0.5f);
 			} else {
 				Vec3f & position = eobj->vertexlist3[face.vid[n]].v;
 				Vec3f & normal = eobj->vertexlist[face.vid[n]].norm;
 
-				eobj->vertexlist3[face.vid[n]].vert.color = ApplyLight(lights, lightsCount, t.rotation, position, normal, colorMod);
+				eobj->vertexColors[face.vid[n]] = ApplyLight(lights, lightsCount, t.rotation, position, normal, colorMod);
 			}
 
 			tvList[n] = unproject(eobj->vertexlist[face.vid[n]].vert);
@@ -786,7 +786,7 @@ void DrawEERIEInter_Render(EERIE_3DOBJ *eobj, const TransformInfo &t, Entity *io
 				tvList[n].color = Color(255, 255, 255, 255).toRGBA();
 			} else {
 				// Normal Illuminations
-				tvList[n].color = eobj->vertexlist3[face.vid[n]].vert.color;
+				tvList[n].color = eobj->vertexColors[face.vid[n]];
 			}
 
 			// TODO copy-paste
@@ -1129,8 +1129,8 @@ static void Cedric_RenderObject(EERIE_3DOBJ * eobj, Skeleton * obj, Entity * io,
 
 		for(size_t n = 0; n < 3; n++) {
 			tvList[n] = unproject(eobj->vertexlist3[face.vid[n]].vert);
-			tvList[n].uv.x  = face.u[n];
-			tvList[n].uv.y  = face.v[n];
+			tvList[n].uv = Vec2f(face.u[n], face.v[n]);
+			tvList[n].color = eobj->vertexColors[face.vid[n]];
 		}
 
 		if((face.facetype & POLY_TRANS) || invisibility > 0.f) {

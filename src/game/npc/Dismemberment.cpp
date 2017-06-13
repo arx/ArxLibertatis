@@ -96,6 +96,7 @@ static void ARX_NPC_SpawnMember(Entity * ioo, ObjSelection num) {
 
 	nouvo->vertexlist.resize(nvertex);
 	nouvo->vertexlist3.resize(nvertex);
+	nouvo->vertexColors.resize(nvertex);
 
 	size_t inpos = 0;
 	long * equival = (long *)malloc(sizeof(long) * from->vertexlist.size());
@@ -120,9 +121,6 @@ static void ARX_NPC_SpawnMember(Entity * ioo, ObjSelection num) {
 		nouvo->vertexlist[k].v = from->vertexlist3[cutSelection.selected[k]].v;
 		nouvo->vertexlist[k].v -= ioo->pos;
 		nouvo->vertexlist[k].vert.p = nouvo->vertexlist[k].v;
-		
-		nouvo->vertexlist[k].vert.color = from->vertexlist[k].vert.color;
-		nouvo->vertexlist[k].vert.uv = from->vertexlist[k].vert.uv;
 		
 		nouvo->vertexlist3[k] = nouvo->vertexlist[k];
 	}
@@ -170,7 +168,6 @@ static void ARX_NPC_SpawnMember(Entity * ioo, ObjSelection num) {
 	
 	for(size_t k = 0; k < nouvo->vertexlist.size(); k++) {
 		nouvo->vertexlist[k].vert.p = nouvo->vertexlist[k].v -= nouvo->point0;
-		nouvo->vertexlist[k].vert.color = Color(255, 255, 255, 255).toRGBA();
 	}
 	
 	nouvo->point0 = Vec3f_ZERO;
