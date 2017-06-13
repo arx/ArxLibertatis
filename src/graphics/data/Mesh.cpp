@@ -1130,12 +1130,7 @@ static bool loadFastScene(const res::path & file, const char * data, const char 
 					ep2->v[kk].rhw = 1;
 					ep2->v[kk].p = Vec3f(ep->v[kk].ssx, ep->v[kk].sy, ep->v[kk].ssz);
 					ep2->v[kk].uv = Vec2f(ep->v[kk].stu, ep->v[kk].stv);
-				}
-				
-				memcpy(ep2->tv, ep2->v, sizeof(TexturedVertex) * 4);
-				
-				for(size_t kk = 0; kk < 4; kk++) {
-					ep2->tv[kk].color = Color(0, 0, 0, 255).toRGBA();
+					ep2->color[kk] = Color(0, 0, 0, 255).toRGBA();
 				}
 				
 				long to = (ep->type & POLY_QUAD) ? 4 : 3;
