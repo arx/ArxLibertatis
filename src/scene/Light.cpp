@@ -628,7 +628,7 @@ float GetColorz(const Vec3f &pos) {
 		ApplyTileLights(ep, epdata.tile);
 
 		for(long i = 0; i < to; i++) {
-			Color col = Color::fromRGBA(ep->tv[i].color);
+			Color col = Color::fromRGBA(ep->color[i]);
 			_ff.r += float(col.r);
 			_ff.g += float(col.g);
 			_ff.b += float(col.b);
@@ -717,7 +717,7 @@ void ApplyTileLights(EERIEPOLY * ep, const Vec2s & pos)
 	for(size_t j = 0; j < nbvert; j++) {
 
 		if(tls->el.empty()) {
-			ep->tv[j].color = ep->v[j].color;
+			ep->color[j] = ep->v[j].color;
 			continue;
 		}
 
@@ -759,6 +759,6 @@ void ApplyTileLights(EERIEPOLY * ep, const Vec2s & pos)
 		u8 ir = clipByte255(tempColor.r);
 		u8 ig = clipByte255(tempColor.g);
 		u8 ib = clipByte255(tempColor.b);
-		ep->tv[j].color = Color(ir, ig, ib, 255).toRGBA();
+		ep->color[j] = Color(ir, ig, ib, 255).toRGBA();
 	}
 }

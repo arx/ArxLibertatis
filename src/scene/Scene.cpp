@@ -198,16 +198,16 @@ Vec2f getWaterFxUvOffset(float watereffect, const Vec3f & odtv)
 	return Vec2f(std::sin(watereffect + odtv.x), std::cos(watereffect + odtv.z));
 }
 
-static void ApplyLavaGlowToVertex(const Vec3f & odtv,TexturedVertex * dtv, float power) {
+static void ApplyLavaGlowToVertex(const Vec3f & odtv, ColorRGBA & color, float power) {
 	
 	power = 1.f - std::sin(WATEREFFECT + odtv.x + odtv.z) * 0.05f * power;
-	Color inColor = Color::fromRGBA(dtv->color);
+	Color inColor = Color::fromRGBA(color);
 	
 	long lr = clipByte(inColor.r * power);
 	long lg = clipByte(inColor.g * power);
 	long lb = clipByte(inColor.b * power);
 
-	dtv->color = Color(lr, lg, lb, 255).toRGBA();
+	color = Color(lr, lg, lb, 255).toRGBA();
 }
 
 static void ManageWater_VertexBuffer(EERIEPOLY * ep, const long to,
@@ -233,7 +233,7 @@ static void ManageLava_VertexBuffer(EERIEPOLY * ep, const long to,
 		Vec2f uv = ep->v[k].uv;
 		
 		uv += getWaterFxUvOffset(WATEREFFECT, ep->v[k].p) * (0.35f * 0.05f); //0.25f
-		ApplyLavaGlowToVertex(ep->v[k].p, &ep->tv[k], 0.6f);
+		ApplyLavaGlowToVertex(ep->v[k].p, ep->color[k], 0.6f);
 			
 		if(ep->type & POLY_FALL) {
 			uv.y -= uvScroll;
@@ -1160,12 +1160,12 @@ static void ARX_PORTALS_Frustrum_RenderRoomTCullSoft(size_t room_num,
 				if(!(ep->type & POLY_TRANS)) {
 					ApplyTileLights(ep, pEPDATA.tile);
 
-					pMyVertexCurr[ep->uslInd[0]].color = ep->tv[0].color;
-					pMyVertexCurr[ep->uslInd[1]].color = ep->tv[1].color;
-					pMyVertexCurr[ep->uslInd[2]].color = ep->tv[2].color;
+					pMyVertexCurr[ep->uslInd[0]].color = ep->color[0];
+					pMyVertexCurr[ep->uslInd[1]].color = ep->color[1];
+					pMyVertexCurr[ep->uslInd[2]].color = ep->color[2];
 
 					if(to&4) {
-						pMyVertexCurr[ep->uslInd[3]].color = ep->tv[3].color;
+						pMyVertexCurr[ep->uslInd[3]].color = ep->color[3];
 					}
 				}
 
@@ -1187,7 +1187,7 @@ static void ARX_PORTALS_Frustrum_RenderRoomTCullSoft(size_t room_num,
 
 				bool valid = true;
 				for(int k = 0; k < to; k++) {
-					long lr = Color::fromRGBA(ep->tv[k].color).r;
+					long lr = Color::fromRGBA(ep->color[k]).r;
 					float ffr=(float)(lr);
 					
 					Vec4f p = worldToClipSpace(ep->v[1].p);
@@ -1217,18 +1217,18 @@ static void ARX_PORTALS_Frustrum_RenderRoomTCullSoft(size_t room_num,
 					u8 lfb = fb;
 					u8 lfg = 0x1E;
 					
-					ep->tv[k].color = Color(lfr, lfg, lfb, 255).toRGBA();
+					ep->color[k] = Color(lfr, lfg, lfb, 255).toRGBA();
 				}
 				if(!valid) {
 					continue;
 				}
 
-				pMyVertexCurr[ep->uslInd[0]].color = ep->tv[0].color;
-				pMyVertexCurr[ep->uslInd[1]].color = ep->tv[1].color;
-				pMyVertexCurr[ep->uslInd[2]].color = ep->tv[2].color;
+				pMyVertexCurr[ep->uslInd[0]].color = ep->color[0];
+				pMyVertexCurr[ep->uslInd[1]].color = ep->color[1];
+				pMyVertexCurr[ep->uslInd[2]].color = ep->color[2];
 
 				if(to == 4) {
-					pMyVertexCurr[ep->uslInd[3]].color = ep->tv[3].color;
+					pMyVertexCurr[ep->uslInd[3]].color = ep->color[3];
 				}
 			}
 		}
