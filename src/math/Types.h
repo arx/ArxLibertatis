@@ -65,15 +65,12 @@ template <class T> struct vec_traits<T, 4> : public vec4_traits<T>{};
 typedef vec_traits<s32, 2>::type Vec2i;
 typedef vec_traits<s16, 2>::type Vec2s;
 typedef vec_traits<f32, 2>::type Vec2f;
-typedef vec_traits<f64, 2>::type Vec2d;
 
 typedef vec_traits<s32, 3>::type Vec3i;
 typedef vec_traits<f32, 3>::type Vec3f;
-typedef vec_traits<f64, 3>::type Vec3d;
 
 typedef vec_traits<s32, 4>::type Vec4i;
 typedef vec_traits<f32, 4>::type Vec4f;
-typedef vec_traits<f64, 4>::type Vec4d;
 
 ARX_USE_ALIGNED_ALLOCATOR(Vec4f)
 
