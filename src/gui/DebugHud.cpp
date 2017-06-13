@@ -404,7 +404,7 @@ void ShowFpsGraph() {
 		vertices[i].p.x = i;
 		vertices[i].p.y = windowSize.y - (time * SCALE_Y);
 		vertices[i].p.z = 1.0f;
-		vertices[i].rhw = 1.0f;
+		vertices[i].w = 1.0f;
 	}
 	avg /= lastFPSArray.size();
 

@@ -70,7 +70,7 @@ struct TexturedVertexUntransformed {
 struct TexturedVertex {
 	
 	Vec3f p;
-	float rhw;
+	float w;
 	
 	ColorRGBA color;
 	
@@ -78,21 +78,21 @@ struct TexturedVertex {
 	
 	TexturedVertex()
 		: p(Vec3f_ZERO)
-		, rhw(1.f)
+		, w(1.f)
 		, color(0x00000000)
 		, uv(0.f, 0.f)
 	{}
 
 	TexturedVertex(const TexturedVertex & o)
 		: p(o.p)
-		, rhw(o.rhw)
+		, w(o.w)
 		, color(o.color)
 		, uv(o.uv)
 	{}
-
-	TexturedVertex(const Vec3f & _p, float _rhw, ColorRGBA _color, Vec2f _uv)
+	
+	TexturedVertex(const Vec3f & _p, float _w, ColorRGBA _color, Vec2f _uv)
 		: p(_p)
-		, rhw(_rhw)
+		, w(_w)
 		, color(_color)
 		, uv(_uv)
 	{}

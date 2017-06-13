@@ -618,7 +618,7 @@ void MenuPage::UpdateText() {
 		GRenderer->ResetTexture(0);
 		v[0].color = v[1].color = v[2].color = v[3].color = Color::white.toRGB();
 		v[0].p.z=v[1].p.z=v[2].p.z=v[3].p.z=0.f;
-		v[0].rhw=v[1].rhw=v[2].rhw=v[3].rhw=1.f;
+		v[0].w=v[1].w=v[2].w=v[3].w=1.f;
 		
 		v[0].p.x = m_selected->m_rect.right;
 		v[0].p.y = m_selected->m_rect.top;

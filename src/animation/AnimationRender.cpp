@@ -673,28 +673,28 @@ static void AddFixedObjectHalo(const EERIE_FACE & face, const TransformInfo & t,
 			vert[2] = tvList[second];
 			vert[3] = tvList[second];
 			
-			Vec3f a = tvList[first].p / tvList[first].rhw;
-			Vec3f b = tvList[second].p / tvList[second].rhw;
-			Vec3f c = tvList[third].p / tvList[third].rhw;
+			Vec3f a = tvList[first].p / tvList[first].w;
+			Vec3f b = tvList[second].p / tvList[second].w;
+			Vec3f c = tvList[third].p / tvList[third].w;
 			
 			Vec2f vect1 = Vec2f(a - c);
 			vect1 /= ffsqrt(arx::length2(vect1));
 			if(vect1.x < 0.f) {
 				vect1 *= 1.2f;
 			}
-			vert[1].p.x += (vect1.x + Random::getf(0.1f, 0.2f)) * siz * vert[1].rhw;
-			vert[1].p.y += (vect1.y + Random::getf(0.1f, 0.2f)) * siz * vert[1].rhw;
+			vert[1].p.x += (vect1.x + Random::getf(0.1f, 0.2f)) * siz * vert[1].w;
+			vert[1].p.y += (vect1.y + Random::getf(0.1f, 0.2f)) * siz * vert[1].w;
 			
 			Vec2f vect2 = Vec2f(b - c);
 			vect2 /= ffsqrt(arx::length2(vect2));
 			if(vect2.x < 0.f) {
 				vect2 *= 1.2f;
 			}
-			vert[2].p.x += (vect2.x + Random::getf(0.1f, 0.2f)) * siz * vert[2].rhw;
-			vert[2].p.y += (vect2.y + Random::getf(0.1f, 0.2f)) * siz * vert[2].rhw;
+			vert[2].p.x += (vect2.x + Random::getf(0.1f, 0.2f)) * siz * vert[2].w;
+			vert[2].p.y += (vect2.y + Random::getf(0.1f, 0.2f)) * siz * vert[2].w;
 			
-			vert[0].p.z += 0.0001f * vert[0].rhw;
-			vert[3].p.z += 0.0001f * vert[3].rhw;
+			vert[0].p.z += 0.0001f * vert[0].w;
+			vert[3].p.z += 0.0001f * vert[3].w;
 			
 			vert[1].color = Color(0, 0, 0, 255).toRGBA();
 			vert[2].color = Color(0, 0, 0, (halo.flags & HALO_NEGATIVE) ? 0 : 255).toRGBA();
@@ -755,7 +755,7 @@ void DrawEERIEInter_Render(EERIE_3DOBJ *eobj, const TransformInfo &t, Entity *io
 			}
 			
 			tvList[n].p = Vec3f(eobj->vertexClipPositions[face.vid[n]]);
-			tvList[n].rhw = eobj->vertexClipPositions[face.vid[n]].w;
+			tvList[n].w = eobj->vertexClipPositions[face.vid[n]].w;
 			tvList[n].uv.x = face.u[n];
 			tvList[n].uv.y = face.v[n];
 
@@ -777,7 +777,7 @@ void DrawEERIEInter_Render(EERIE_3DOBJ *eobj, const TransformInfo &t, Entity *io
 				long lr = Color::fromRGBA(tvList[n].color).r;
 				float ffr=(float)(lr);
 
-				float dd = 1.f / tvList[n].rhw;
+				float dd = 1.f / tvList[n].w;
 
 				dd = glm::clamp(dd, 0.f, 1.f);
 
@@ -1010,9 +1010,9 @@ static void AddAnimatedObjectHalo(HaloInfo & haloInfo, const unsigned short * pa
 			vert[2] = tvList[second];
 			vert[3] = tvList[second];
 			
-			Vec3f a = tvList[first].p / tvList[first].rhw;
-			Vec3f b = tvList[second].p / tvList[second].rhw;
-			Vec3f c = tvList[third].p / tvList[third].rhw;
+			Vec3f a = tvList[first].p / tvList[first].w;
+			Vec3f b = tvList[second].p / tvList[second].w;
+			Vec3f c = tvList[third].p / tvList[third].w;
 			
 			float valll = 0.0006f + (glm::abs(a.z) + glm::abs(b.z) - 2 * glm::abs(c.z)) * 0.1f;
 			valll = std::max(valll, 0.f);
@@ -1024,23 +1024,23 @@ static void AddAnimatedObjectHalo(HaloInfo & haloInfo, const unsigned short * pa
 			} else {
 				vect1 *= 2.f;
 			}
-			vert[1].p.x += (vect1.x + Random::getf(0.1f, 0.2f)) * (siz * vert[1].rhw);
-			vert[1].p.y += (vect1.y + Random::getf(0.1f, 0.2f)) * (siz * vert[1].rhw);
-			vert[1].p.z += valll * vert[1].rhw;
-			vert[1].p.z = (vert[1].p.z + haloInfo.MAX_ZEDE * vert[1].rhw) * 0.5f;
+			vert[1].p.x += (vect1.x + Random::getf(0.1f, 0.2f)) * (siz * vert[1].w);
+			vert[1].p.y += (vect1.y + Random::getf(0.1f, 0.2f)) * (siz * vert[1].w);
+			vert[1].p.z += valll * vert[1].w;
+			vert[1].p.z = (vert[1].p.z + haloInfo.MAX_ZEDE * vert[1].w) * 0.5f;
 			
 			Vec2f vect2 = Vec2f(b - c);
 			vect2 /= ffsqrt(arx::length2(vect2));
 			if(vect2.x < 0.f) {
 				vect2 *= 1.2f;
 			}
-			vert[2].p.x += (vect2.x + Random::getf(0.1f, 0.2f)) * (siz * vert[2].rhw);
-			vert[2].p.y += (vect2.y + Random::getf(0.1f, 0.2f)) * (siz * vert[2].rhw);
-			vert[2].p.z += valll * vert[2].rhw;
-			vert[2].p.z = (vert[2].p.z + haloInfo.MAX_ZEDE * vert[2].rhw) * 0.5f;
+			vert[2].p.x += (vect2.x + Random::getf(0.1f, 0.2f)) * (siz * vert[2].w);
+			vert[2].p.y += (vect2.y + Random::getf(0.1f, 0.2f)) * (siz * vert[2].w);
+			vert[2].p.z += valll * vert[2].w;
+			vert[2].p.z = (vert[2].p.z + haloInfo.MAX_ZEDE * vert[2].w) * 0.5f;
 			
-			vert[0].p.z += 0.0001f * vert[0].rhw;
-			vert[3].p.z += 0.0001f * vert[3].rhw;
+			vert[0].p.z += 0.0001f * vert[0].w;
+			vert[3].p.z += 0.0001f * vert[3].w;
 			
 			vert[0].color = colors[first];
 			vert[1].color = Color(0, 0, 0, 255).toRGBA();
@@ -1114,7 +1114,7 @@ static void Cedric_RenderObject(EERIE_3DOBJ * eobj, Skeleton * obj, Entity * io,
 
 		for(size_t n = 0; n < 3; n++) {
 			tvList[n].p = Vec3f(eobj->vertexClipPositions[face.vid[n]]);
-			tvList[n].rhw = eobj->vertexClipPositions[face.vid[n]].w;
+			tvList[n].w = eobj->vertexClipPositions[face.vid[n]].w;
 			tvList[n].uv = Vec2f(face.u[n], face.v[n]);
 			tvList[n].color = eobj->vertexColors[face.vid[n]];
 		}

@@ -649,7 +649,7 @@ static bool FrustrumsClipPoly(const EERIE_FRUSTRUM_DATA & frustrums,
                               const EERIEPOLY & ep) {
 	
 	for(long i=0; i<frustrums.nb_frustrums; i++) {
-		if(IsSphereInFrustrum(ep.center, frustrums.frustrums[i], ep.v[0].rhw))
+		if(IsSphereInFrustrum(ep.center, frustrums.frustrums[i], ep.v[0].w))
 			return false;
 	}
 
@@ -1099,7 +1099,7 @@ static void ARX_PORTALS_Frustrum_RenderRoomTCullSoft(size_t room_num,
 			continue;
 		}
 
-		if(ep->v[0].rhw < -distanceToPoint(efpPlaneNear, ep->center)) {
+		if(ep->v[0].w < -distanceToPoint(efpPlaneNear, ep->center)) {
 			continue;
 		}
 

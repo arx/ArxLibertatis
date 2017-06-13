@@ -271,22 +271,22 @@ static void addGlyphVertices(std::vector<TexturedVertex> & vertices,
 	quad[0].p = Vec3f(p.x, p.y, 0);
 	quad[0].uv = Vec2f(uStart, vStart);
 	quad[0].color = color.toRGBA();
-	quad[0].rhw = 1.0f;
+	quad[0].w = 1.0f;
 
 	quad[1].p = Vec3f(p.x + w, p.y, 0);
 	quad[1].uv = Vec2f(uEnd, vStart);
 	quad[1].color = color.toRGBA();
-	quad[1].rhw = 1.0f;
+	quad[1].w = 1.0f;
 
 	quad[2].p = Vec3f(p.x + w, p.y + h, 0);
 	quad[2].uv = Vec2f(uEnd, vEnd);
 	quad[2].color = color.toRGBA();
-	quad[2].rhw = 1.0f;
+	quad[2].w = 1.0f;
 
 	quad[3].p = Vec3f(p.x, p.y + h, 0);
 	quad[3].uv = Vec2f(uStart, vEnd);
 	quad[3].color = color.toRGBA();
-	quad[3].rhw = 1.0f;
+	quad[3].w = 1.0f;
 
 	vertices.push_back(quad[0]);
 	vertices.push_back(quad[1]);
