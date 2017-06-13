@@ -685,8 +685,8 @@ static EERIE_3DOBJ * CreateIntermediaryMesh(const EERIE_3DOBJ * obj1, const EERI
 			AddVertexToGroup(work, i, &obj2vertexlist2[obj2->grouplist[i].indexes[j]]);
 		}
 	}
-
-	work->vertexlist3 = work->vertexlist;
+	
+	work->vertexlist3.resize(work->vertexlist.size());
 	work->vertexColors.resize(work->vertexlist.size());
 	
 	return work;
