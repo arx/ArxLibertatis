@@ -689,11 +689,14 @@ static void drawDebugMaterials() {
 			bool bvalid = false;
 			Vec3f p[4];
 			for(size_t i = 0; i < ((ep->type & POLY_QUAD) ? 4u : 3u); i++) {
-				TexturedVertex tv;
-				EE_RTP(ep->v[i].p, tv);
-				bvalid = bvalid || (tv.p.x >= g_size.left && tv.p.x < g_size.right
-				                 && tv.p.y >= g_size.top && tv.p.y < g_size.bottom);
-				p[i] = tv.p;
+				Vec4f pos = worldToClipSpace(ep->v[i].p);
+				if(pos.w <= 0.f) {
+					bvalid = false;
+					break;
+				}
+				p[i] = Vec3f(pos) / pos.w;
+				bvalid = bvalid || (p[i].x >= g_size.left && p[i].x < g_size.right
+				                 && p[i].y >= g_size.top && p[i].y < g_size.bottom);
 			}
 			
 			if(!bvalid) {
