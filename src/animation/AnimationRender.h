@@ -53,7 +53,6 @@ ZeniMax Media Inc., Suite 120, Rockville, Maryland 20850 USA.
 struct EERIE_3DOBJ;
 struct AnimLayer;
 class Entity;
-struct TexturedVertex;
 struct RenderMaterial;
 struct TexturedQuad;
 
