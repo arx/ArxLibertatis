@@ -81,13 +81,7 @@ void MagicFlareLoadTextures() {
 	}
 }
 
-static EERIE_CAMERA * g_magicFlareCamera;
-
 static short shinum = 1;
-
-void MagicFlareSetCamera(EERIE_CAMERA * camera) {
-	g_magicFlareCamera = camera;
-}
 
 void MagicFlareReleaseEntity(Entity * io) {
 	for(size_t i = 0; i < g_magicFlaresMax; i++) {
@@ -191,7 +185,7 @@ void AddFlare(const Vec2f & pos, float sm, short typ, Entity * io, bool bookDraw
 	flare.pos.y = pos.y - Random::getf(0.f, 4.f);
 
 	if(!bookDraw) {
-		EERIE_CAMERA ka = *g_magicFlareCamera;
+		EERIE_CAMERA ka = subj;
 		ka.angle = Anglef(360.f, 360.f, 360.f) - ka.angle;
 		EERIE_CAMERA * oldcam = ACTIVECAM;
 		SetActiveCamera(&ka);
