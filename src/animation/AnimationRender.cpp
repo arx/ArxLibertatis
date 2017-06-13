@@ -1405,7 +1405,7 @@ static void Cedric_ConcatenateTM(Skeleton & rig, const TransformInfo & t) {
 /*!
  * Transform object vertices
  */
-static void Cedric_TransformVerts(EERIE_3DOBJ * eobj, const Vec3f & pos) {
+static void Cedric_TransformVerts(EERIE_3DOBJ * eobj) {
 
 	Skeleton & rig = *eobj->m_skeleton;
 
@@ -1439,15 +1439,9 @@ static void Cedric_TransformVerts(EERIE_3DOBJ * eobj, const Vec3f & pos) {
 			outVert.v = Vec3f(matrix * Vec4f(inVert, 1.f));
 			outVert.v += vector;
 			
-			outVert.vert.p = outVert.v;
 		}
 	}
-
-	if(eobj->sdata) {
-		for(size_t i = 0; i < eobj->vertexlist.size(); i++) {
-			eobj->vertexlist[i].vert.p = eobj->vertexlist3[i].v - pos;
-		}
-	}
+	
 }
 
 static void Cedric_ViewProjectTransform(EERIE_3DOBJ * eobj) {
@@ -1591,7 +1585,7 @@ void EERIEDrawAnimQuatUpdate(EERIE_3DOBJ * eobj,
 	TransformInfo t(pos, rotation, scale, ftr);
 	Cedric_ConcatenateTM(skeleton, t);
 
-	Cedric_TransformVerts(eobj, pos);
+	Cedric_TransformVerts(eobj);
 	if(io) {
 		io->bbox3D = UpdateBbox3d(eobj);
 	}
