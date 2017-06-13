@@ -502,11 +502,6 @@ void EERIE_OBJECT_CenterObjectCoordinates(EERIE_3DOBJ * ret)
 	
 	for(size_t i = 0; i < ret->vertexlist.size(); i++) {
 		ret->vertexlist[i].v -= offset;
-		ret->vertexlist[i].vert.p -= offset;
-		ret->vertexlist3[i].v -= offset;
-		ret->vertexlist3[i].vert.p -= offset;
-		ret->vertexlist3[i].v -= offset;
-		ret->vertexlist3[i].vert.p -= offset;
 	}
 	
 	ret->point0 -= offset;
