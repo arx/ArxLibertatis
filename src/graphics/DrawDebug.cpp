@@ -634,13 +634,9 @@ static void drawDebugMaterials() {
 			Vec2f uv[3];
 			for(size_t i = 0; i < 3; i++) {
 				unsigned short v = face.vid[i];
-				valid = valid && v < entity->obj->vertexlist3.size();
+				valid = valid && v < entity->obj->vertexClipPositions.size();
 				if(valid) {
-					if(entity->animlayer[0].cur_anim) {
-						p[i] = entity->obj->vertexlist3[v].vert.p;
-					} else {
-						p[i] = entity->obj->vertexlist[v].vert.p;
-					}
+					p[i] = Vec3f(entity->obj->vertexClipPositions[v]);
 					uv[i] = Vec2f(face.u[i], face.v[i]);
 					valid = valid && (p[i].z > 0.000001f);
 					bvalid = bvalid || (p[i].x >= g_size.left && p[i].x < g_size.right

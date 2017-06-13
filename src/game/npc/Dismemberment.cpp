@@ -96,6 +96,7 @@ static void ARX_NPC_SpawnMember(Entity * ioo, ObjSelection num) {
 
 	nouvo->vertexlist.resize(nvertex);
 	nouvo->vertexlist3.resize(nvertex);
+	nouvo->vertexClipPositions.resize(nvertex);
 	nouvo->vertexColors.resize(nvertex);
 
 	size_t inpos = 0;

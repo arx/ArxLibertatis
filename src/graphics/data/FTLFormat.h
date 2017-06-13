@@ -163,7 +163,7 @@ struct EERIE_OLD_VERTEX {
 	
 	operator EERIE_VERTEX() const {
 		EERIE_VERTEX a;
-		a.vert = vert, a.v = v.toVec3(), a.norm = norm.toVec3();
+		a.v = v.toVec3(), a.norm = norm.toVec3();
 		return a;
 	}
 	
