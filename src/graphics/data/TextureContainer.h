@@ -67,8 +67,6 @@ ZeniMax Media Inc., Suite 120, Rockville, Maryland 20850 USA.
 #include "math/Vector.h"
 #include "util/Flags.h"
 
-struct EERIEPOLY;
-struct TexturedVertex;
 class Texture2D;
 
 extern long GLOBAL_EERIETEXTUREFLAG_LOADSCENE_RELEASE;
