@@ -638,11 +638,10 @@ static void drawDebugMaterials() {
 				if(valid) {
 					if(entity->animlayer[0].cur_anim) {
 						p[i] = entity->obj->vertexlist3[v].vert.p;
-						uv[i] = entity->obj->vertexlist3[v].vert.uv;
 					} else {
 						p[i] = entity->obj->vertexlist[v].vert.p;
-						uv[i] = entity->obj->vertexlist[v].vert.uv;
 					}
+					uv[i] = Vec2f(face.u[i], face.v[i]);
 					valid = valid && (p[i].z > 0.000001f);
 					bvalid = bvalid || (p[i].x >= g_size.left && p[i].x < g_size.right
 					                 && p[i].y >= g_size.top && p[i].y < g_size.bottom);
