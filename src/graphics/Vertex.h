@@ -139,7 +139,6 @@ struct SMY_VERTEX3 {
 };
 
 struct EERIE_VERTEX {
-	TexturedVertex vert;
 	Vec3f v;
 	Vec3f norm;
 };

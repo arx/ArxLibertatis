@@ -524,20 +524,20 @@ long EERIEDrawnPolys = 0;
 //*************************************************************************************
 //*************************************************************************************
 
-float PtIn2DPolyProj(const std::vector<EERIE_VERTEX> & verts, EERIE_FACE * ef, float x, float z) {
+float PtIn2DPolyProj(const std::vector<Vec4f> & verts, EERIE_FACE * ef, float x, float z) {
 	
 	int i, j, c = 0;
 
 	for (i = 0, j = 2; i < 3; j = i++)
 	{
-		if ((((verts[ef->vid[i]].vert.p.y <= z) && (z < verts[ef->vid[j]].vert.p.y)) ||
-				((verts[ef->vid[j]].vert.p.y <= z) && (z < verts[ef->vid[i]].vert.p.y))) &&
-				(x < (verts[ef->vid[j]].vert.p.x - verts[ef->vid[i]].vert.p.x) *(z - verts[ef->vid[i]].vert.p.y) / (verts[ef->vid[j]].vert.p.y - verts[ef->vid[i]].vert.p.y) + verts[ef->vid[i]].vert.p.x))
+		if ((((verts[ef->vid[i]].y <= z) && (z < verts[ef->vid[j]].y)) ||
+				((verts[ef->vid[j]].y <= z) && (z < verts[ef->vid[i]].y))) &&
+				(x < (verts[ef->vid[j]].x - verts[ef->vid[i]].x) *(z - verts[ef->vid[i]].y) / (verts[ef->vid[j]].y - verts[ef->vid[i]].y) + verts[ef->vid[i]].x))
 			c = !c;
 	}
 
 	if (c)
-		return verts[ef->vid[0]].vert.p.z;
+		return verts[ef->vid[0]].z;
 	else
 		return 0.f;
 }
@@ -892,15 +892,19 @@ void Draw3DObject(EERIE_3DOBJ *eobj, const Anglef & angle, const Vec3f & pos, co
 		
 		eobj->vertexlist3[i].v = (rotated += pos);
 
-		EE_RTP(rotated, eobj->vertexlist[i].vert);
+		Vec4f p = worldToClipSpace(rotated);
+		const float near_clamp = .000001f; // just a random small number
+		float rhw = 1.f / std::max(p.w, near_clamp);
+		eobj->vertexClipPositions[i] = Vec4f(Vec3f(p) * rhw, rhw);
 	}
 
 	for(size_t i = 0; i < eobj->facelist.size(); i++) {
 		EERIE_FACE & face = eobj->facelist[i];
-
-		vert_list[0] = eobj->vertexlist[face.vid[0]].vert;
-		vert_list[1] = eobj->vertexlist[face.vid[1]].vert;
-		vert_list[2] = eobj->vertexlist[face.vid[2]].vert;
+		
+		for(size_t j = 0; j < 3; j++) {
+			vert_list[j].p = Vec3f(eobj->vertexClipPositions[face.vid[j]]);
+			vert_list[j].rhw = eobj->vertexClipPositions[face.vid[j]].w;
+		}
 		
 		vert_list[0].uv.x = face.u[0];
 		vert_list[0].uv.y = face.v[0];
