@@ -57,10 +57,6 @@ void EERIE_PHYSICS_BOX_Launch(EERIE_3DOBJ * obj, const Vec3f & pos, const Anglef
 	
 	obj->pbox->storedtiming = 0;
 	
-	for(size_t i = 0; i < obj->vertexlist.size(); i++) {
-		obj->vertexlist[i].vert.p = obj->vertexlist[i].v;
-	}
-	
 	float surface = 0.f;
 	
 	for(size_t i = 0; i < obj->facelist.size(); i++) {
