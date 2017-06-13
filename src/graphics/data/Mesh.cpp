@@ -471,24 +471,6 @@ Vec3f EE_RT(const Vec3f & in) {
 	return Vec3f(ACTIVECAM->orgTrans.worldToView * Vec4f(in, 1.0f));
 }
 
-// TODO get rid of sw transform
-static float clamp_and_invert(float z) {
-	
-	const float near_clamp = .000001f; // just a random small number
-	
-	return 1.f / std::max(z, near_clamp);
-}
-
-static void EE_P(const Vec3f & in, TexturedVertex & out) {
-	
-	float fZTemp = clamp_and_invert(in.z);
-	
-	out.p.z = fZTemp * ACTIVECAM->ProjectionMatrix[2][2] + ACTIVECAM->ProjectionMatrix[3][2]; //HYPERBOLIC
-	out.p.x = in.x * ACTIVECAM->ProjectionMatrix[0][0] * fZTemp + ACTIVECAM->orgTrans.mod.x;
-	out.p.y = in.y * ACTIVECAM->ProjectionMatrix[1][1] * fZTemp + ACTIVECAM->orgTrans.mod.y;
-	out.rhw = fZTemp;
-}
-
 static Vec4f viewToClipSpace(const Vec3f & in) {
 	
 	float z = in.z;
@@ -499,11 +481,6 @@ static Vec4f viewToClipSpace(const Vec3f & in) {
 	out.y = in.y * ACTIVECAM->ProjectionMatrix[1][1] + z * ACTIVECAM->orgTrans.mod.y;
 	out.w = z;
 	return out;
-}
-
-void EE_RTP(const Vec3f & in, TexturedVertex & out) {
-	out.p = EE_RT(in);
-	EE_P(out.p, out);
 }
 
 Vec4f worldToClipSpace(const Vec3f & in) {
