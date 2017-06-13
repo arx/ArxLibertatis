@@ -446,16 +446,14 @@ static bool CollidedFromBack(Entity * io,Entity * ioo) {
 	ep.v[2].p.x =  std::sin(ft) * 180.f;
 	ep.v[2].p.z = -std::cos(ft) * 180.f;
 
-	{
 	float angle = 270.f - io->angle.getYaw();
-	ep.tv[1].p = VRotateY(ep.v[1].p, angle);
-	ep.tv[2].p = VRotateY(ep.v[2].p, angle);
-	}
+	Vec3f p1 = VRotateY(ep.v[1].p, angle);
+	Vec3f p2 = VRotateY(ep.v[2].p, angle);
 	
-	ep.v[1].p.x=ep.tv[1].p.x+ep.v[0].p.x;
-	ep.v[1].p.z=ep.tv[1].p.z+ep.v[0].p.z;
-	ep.v[2].p.x=ep.tv[2].p.x+ep.v[0].p.x;
-	ep.v[2].p.z=ep.tv[2].p.z+ep.v[0].p.z;
+	ep.v[1].p.x=p1.x+ep.v[0].p.x;
+	ep.v[1].p.z=p1.z+ep.v[0].p.z;
+	ep.v[2].p.x=p2.x+ep.v[0].p.x;
+	ep.v[2].p.z=p2.z+ep.v[0].p.z;
 
 	// To keep if we need some visual debug
 	if(PointIn2DPolyXZ(&ep, ioo->pos.x, ioo->pos.z))
