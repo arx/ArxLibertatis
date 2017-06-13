@@ -876,10 +876,9 @@ void ARX_PARTICLES_Update(EERIE_CAMERA * cam)  {
 			Sphere sp;
 			sp.origin = in;
 			
-			TexturedVertex out;
-			EE_RTP(inn, out);
-			
-			if(out.rhw < 0 || out.p.z > cam->cdepth * fZFogEnd) {
+			Vec4f p = worldToClipSpace(inn);
+			float z = p.z / p.w;
+			if(p.w <= 0.f || z > cam->cdepth * fZFogEnd) {
 				continue;
 			}
 			
@@ -911,9 +910,8 @@ void ARX_PARTICLES_Update(EERIE_CAMERA * cam)  {
 				}
 			}
 			
-			if((part->m_flags & DISSIPATING) && out.p.z < 0.05f) {
-				out.p.z *= 20.f;
-				r *= out.p.z;
+			if((part->m_flags & DISSIPATING) && z < 0.05f) {
+				r *= z * 20.f;
 			}
 		}
 		
