@@ -1128,11 +1128,8 @@ static bool loadFastScene(const res::path & file, const char * data, const char 
 				for(size_t kk = 0; kk < 4; kk++) {
 					ep2->v[kk].color = Color(255, 255, 255, 255).toRGBA();
 					ep2->v[kk].rhw = 1;
-					ep2->v[kk].p.x = ep->v[kk].ssx;
-					ep2->v[kk].p.y = ep->v[kk].sy;
-					ep2->v[kk].p.z = ep->v[kk].ssz;
-					ep2->v[kk].uv.x = ep->v[kk].stu;
-					ep2->v[kk].uv.y = ep->v[kk].stv;
+					ep2->v[kk].p = Vec3f(ep->v[kk].ssx, ep->v[kk].sy, ep->v[kk].ssz);
+					ep2->v[kk].uv = Vec2f(ep->v[kk].stu, ep->v[kk].stv);
 				}
 				
 				memcpy(ep2->tv, ep2->v, sizeof(TexturedVertex) * 4);
