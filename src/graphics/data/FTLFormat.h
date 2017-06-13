@@ -157,7 +157,7 @@ struct EERIE_SELECTIONS_FTL {
 
 struct EERIE_OLD_VERTEX {
 	
-	SavedTextureVertex vert;
+	char unused[32];
 	SavedVec3 v;
 	SavedVec3 norm;
 	
