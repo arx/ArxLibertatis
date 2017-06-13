@@ -153,12 +153,12 @@ static void ARX_NPC_SpawnMember(Entity * ioo, ObjSelection num) {
 		}
 	}
 
-	float min = nouvo->vertexlist[0].vert.p.y;
+	float min = nouvo->vertexlist[0].v.y;
 	long nummm = 0;
 
 	for(size_t k = 1; k < nouvo->vertexlist.size(); k++) {
-		if(nouvo->vertexlist[k].vert.p.y > min) {
-			min = nouvo->vertexlist[k].vert.p.y;
+		if(nouvo->vertexlist[k].v.y > min) {
+			min = nouvo->vertexlist[k].v.y;
 			nummm = k;
 		}
 	}
