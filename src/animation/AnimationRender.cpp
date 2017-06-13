@@ -1433,16 +1433,6 @@ static void Cedric_TransformVerts(EERIE_3DOBJ * eobj) {
 	
 }
 
-static void Cedric_ViewProjectTransform(EERIE_3DOBJ * eobj) {
-	arx_assert(eobj->vertexClipPositions.size() == eobj->vertexWorldPositions.size());
-	for(size_t i = 0; i < eobj->vertexWorldPositions.size(); i++) {
-		Vec4f p = worldToClipSpace(eobj->vertexWorldPositions[i].v);
-		const float near_clamp = .000001f; // just a random small number
-		float rhw = 1.f / std::max(p.w, near_clamp);
-		eobj->vertexClipPositions[i] = Vec4f(Vec3f(p) * rhw, rhw);
-	}
-}
-
 /*!
  * \brief Apply animation and draw object
  */
@@ -1580,8 +1570,8 @@ void EERIEDrawAnimQuatUpdate(EERIE_3DOBJ * eobj,
 	if(io) {
 		io->bbox3D = UpdateBbox3d(eobj);
 	}
-
-	Cedric_ViewProjectTransform(eobj);
+	
+	DrawEERIEInter_ViewProjectTransform(eobj);
 	if(io) {
 		io->bbox2D = UpdateBbox2d(*eobj);
 	}
@@ -1606,9 +1596,9 @@ void EERIEDrawAnimQuatRender(EERIE_3DOBJ *eobj, const Vec3f & pos, Entity *io, f
 }
 
 void AnimatedEntityRender(Entity * entity, float invisibility) {
-
-	Cedric_ViewProjectTransform(entity->obj);
+	
+	DrawEERIEInter_ViewProjectTransform(entity->obj);
 	entity->bbox2D = UpdateBbox2d(*entity->obj);
-
+	
 	EERIEDrawAnimQuatRender(entity->obj, entity->pos, entity, invisibility);
 }
