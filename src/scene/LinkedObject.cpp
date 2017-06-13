@@ -70,10 +70,6 @@ void EERIE_LINKEDOBJ_UnLinkObjectFromObject(EERIE_3DOBJ * obj, EERIE_3DOBJ * tou
 	
 	for(size_t k = 0; k < obj->linked.size(); k++) {
 		if(obj->linked[k].lgroup != ObjVertGroup() && obj->linked[k].obj == tounlink) {
-			for(size_t i = 0; i < tounlink->vertexlist.size(); i++) {
-				tounlink->vertexlist[i].vert.p = tounlink->vertexlist[i].v;
-			}
-			
 			obj->linked.erase(obj->linked.begin() + k);
 			return;
 		}
