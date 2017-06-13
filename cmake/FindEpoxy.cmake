@@ -70,7 +70,7 @@ has_static_libs(Epoxy Epoxy_LIBRARIES)
 if(Epoxy_HAS_STATIC_LIBS)
 	if(_PC_Epoxy_FOUND)
 		foreach(lib IN LISTS PC_Freetype_STATIC_LIBRARIES)
-			if(lib MATCHES "(^|/|\\\\)(lib)?freetype")
+			if(lib MATCHES "(^|/|\\\\)(lib)?epoxy")
 				# The main lib we linked above
 			else()
 				list(APPEND Epoxy_LIBRARIES ${lib})
