@@ -98,31 +98,6 @@ struct TexturedVertex {
 	{}
 };
 
-struct UnprojectVertex {
-	
-	inline TexturedVertex operator()(const TexturedVertex & v) {
-		float w = 1.f / v.rhw;
-		return TexturedVertex(v.p * w, w, v.color, v.uv);
-	}
-	
-};
-
-inline TexturedVertex unproject(TexturedVertex vertex) {
-	return UnprojectVertex()(vertex);
-}
-
-inline const TexturedVertex * unproject(const TexturedVertex * vertices, size_t count) {
-	static std::vector<TexturedVertex> buffer;
-	buffer.resize(count);
-	std::transform(vertices, vertices + count, buffer.begin(), UnprojectVertex());
-	return &buffer[0];
-}
-
-inline TexturedVertex project(TexturedVertex v) {
-	float rhw = 1.f / v.rhw;
-	return TexturedVertex(v.p * rhw, rhw, v.color, v.uv);
-}
-
 template <class Vertex>
 class VertexBuffer;
 
