@@ -528,7 +528,10 @@ float PtIn2DPolyProj(const std::vector<Vec4f> & verts, EERIE_FACE * ef, float x,
 	
 	Vec3f p[3];
 	for(size_t i = 0; i < 3; i++) {
-		p[i] = Vec3f(verts[ef->vid[i]]);
+		if(verts[ef->vid[i]].w <= 0.f) {
+			return 0.f;
+		}
+		p[i] = Vec3f(verts[ef->vid[i]]) / verts[ef->vid[i]].w;
 	}
 	
 	bool c = false;
@@ -893,10 +896,7 @@ void Draw3DObject(EERIE_3DOBJ *eobj, const Anglef & angle, const Vec3f & pos, co
 		
 		eobj->vertexWorldPositions[i].v = (rotated += pos);
 
-		Vec4f p = worldToClipSpace(rotated);
-		const float near_clamp = .000001f; // just a random small number
-		float rhw = 1.f / std::max(p.w, near_clamp);
-		eobj->vertexClipPositions[i] = Vec4f(Vec3f(p) * rhw, rhw);
+		eobj->vertexClipPositions[i] = worldToClipSpace(rotated);
 	}
 
 	for(size_t i = 0; i < eobj->facelist.size(); i++) {
@@ -925,11 +925,7 @@ void Draw3DObject(EERIE_3DOBJ *eobj, const Anglef & angle, const Vec3f & pos, co
 		else
 			mat.setCulling(CullCW);
 
-		TexturedVertex v[3];
-		v[0] = unproject(vert_list[0]);
-		v[1] = unproject(vert_list[1]);
-		v[2] = unproject(vert_list[2]);
-		RenderBatcher::getInstance().add(mat, v);
+		RenderBatcher::getInstance().add(mat, vert_list);
 	}
 }
 
