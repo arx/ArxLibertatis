@@ -170,14 +170,6 @@ struct FAST_EP_DATA {
 		return b;
 	}
 	
-	FAST_EP_DATA & operator=(const EP_DATA & a) {
-		px = a.tile.x;
-		py = a.tile.y;
-		idx = a.idx;
-		padd = a.padd;
-		return *this;
-	}
-	
 };
 
 struct EERIE_SAVE_ROOM_DATA {
