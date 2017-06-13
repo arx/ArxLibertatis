@@ -308,6 +308,7 @@ struct EERIE_3DOBJ
 	Vec3f * vertexlocal;
 	std::vector<EERIE_VERTEX> vertexlist;
 	std::vector<EERIE_VERTEX> vertexlist3;
+	std::vector<ColorRGBA> vertexColors;
 
 	std::vector<EERIE_FACE> facelist;
 	std::vector<VertexGroup> grouplist;

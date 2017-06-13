@@ -236,13 +236,13 @@ EERIE_3DOBJ * ARX_FTL_Load(const res::path & file) {
 			obj->vertexlist[ii] = *reinterpret_cast<const EERIE_OLD_VERTEX *>(dat + pos);
 			pos += sizeof(EERIE_OLD_VERTEX);
 			
-			obj->vertexlist[ii].vert.color = Color(0, 0, 0, 255).toRGBA();
 		}
 		
 		// Set the origin point of the mesh
 		obj->point0 = obj->vertexlist[obj->origin].v;
 		
 		obj->vertexlist3 = obj->vertexlist;
+		obj->vertexColors.resize(obj->vertexlist.size());
 	}
 	
 	// Alloc'n'Copy faces
