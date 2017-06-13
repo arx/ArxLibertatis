@@ -58,12 +58,12 @@ inline void setVertexArray(const TexturedVertex * vertices, const void * ref) {
 	
 	// rhw -> w conversion is done in a vertex shader
 	glEnableClientState(GL_VERTEX_ARRAY);
-	glVertexPointer(4, GL_FLOAT, sizeof(TexturedVertex), &vertices->p);
+	glVertexPointer(4, GL_FLOAT, sizeof(*vertices), &vertices->p);
 
 	glEnableClientState(GL_COLOR_ARRAY);
-	glColorPointer(4, GL_UNSIGNED_BYTE, sizeof(TexturedVertex), &vertices->color);
+	glColorPointer(4, GL_UNSIGNED_BYTE, sizeof(*vertices), &vertices->color);
 
-	setVertexArrayTexCoord(0, &vertices->uv, sizeof(TexturedVertex));
+	setVertexArrayTexCoord(0, &vertices->uv, sizeof(*vertices));
 }
 
 template <>
@@ -74,12 +74,12 @@ inline void setVertexArray(const SMY_VERTEX * vertices, const void * ref) {
 	}
 	
 	glEnableClientState(GL_VERTEX_ARRAY);
-	glVertexPointer(3, GL_FLOAT, sizeof(SMY_VERTEX), &vertices->p.x);
+	glVertexPointer(3, GL_FLOAT, sizeof(*vertices), &vertices->p.x);
 	
 	glEnableClientState(GL_COLOR_ARRAY);
-	glColorPointer(4, GL_UNSIGNED_BYTE, sizeof(SMY_VERTEX), &vertices->color);
+	glColorPointer(4, GL_UNSIGNED_BYTE, sizeof(*vertices), &vertices->color);
 	
-	setVertexArrayTexCoord(0, &vertices->uv, sizeof(SMY_VERTEX));
+	setVertexArrayTexCoord(0, &vertices->uv, sizeof(*vertices));
 }
 
 template <>
@@ -90,14 +90,14 @@ inline void setVertexArray(const SMY_VERTEX3 * vertices, const void * ref) {
 	}
 	
 	glEnableClientState(GL_VERTEX_ARRAY);
-	glVertexPointer(3, GL_FLOAT, sizeof(SMY_VERTEX3), &vertices->p.x);
+	glVertexPointer(3, GL_FLOAT, sizeof(*vertices), &vertices->p.x);
 	
 	glEnableClientState(GL_COLOR_ARRAY);
-	glColorPointer(4, GL_UNSIGNED_BYTE, sizeof(SMY_VERTEX3), &vertices->color);
+	glColorPointer(4, GL_UNSIGNED_BYTE, sizeof(*vertices), &vertices->color);
 	
-	setVertexArrayTexCoord(0, &vertices->uv[0], sizeof(SMY_VERTEX3));
-	setVertexArrayTexCoord(1, &vertices->uv[1], sizeof(SMY_VERTEX3));
-	setVertexArrayTexCoord(2, &vertices->uv[2], sizeof(SMY_VERTEX3));
+	setVertexArrayTexCoord(0, &vertices->uv[0], sizeof(*vertices));
+	setVertexArrayTexCoord(1, &vertices->uv[1], sizeof(*vertices));
+	setVertexArrayTexCoord(2, &vertices->uv[2], sizeof(*vertices));
 }
 
 extern const GLenum arxToGlPrimitiveType[];
