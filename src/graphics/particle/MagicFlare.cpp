@@ -185,12 +185,6 @@ void AddFlare(const Vec2f & pos, float sm, short typ, Entity * io, bool bookDraw
 	flare.pos.y = pos.y - Random::getf(0.f, 4.f);
 
 	if(!bookDraw) {
-		EERIE_CAMERA ka = subj;
-		ka.angle = Anglef(360.f, 360.f, 360.f) - ka.angle;
-		EERIE_CAMERA * oldcam = ACTIVECAM;
-		SetActiveCamera(&ka);
-		PrepareCamera(&ka, g_size);
-
 		if(io) {
 			float vx = -(flare.pos.x - subj.center.x) * 0.2173913f;
 			float vy = (flare.pos.y - subj.center.y) * 0.1515151515151515f;
@@ -201,17 +195,12 @@ void AddFlare(const Vec2f & pos, float sm, short typ, Entity * io, bool bookDraw
 			flare.p.x = 1.0f  * float(pos.x - (g_size.width()  / 2)) * 156.f / (640.f * g_sizeRatio.y);
 			flare.p.y = 0.75f * float(pos.y - (g_size.height() / 2)) * 156.f / (480.f * g_sizeRatio.y);
 			flare.p.z = 75.f;
-			ka = *oldcam;
-			SetActiveCamera(&ka);
-			PrepareCamera(&ka, g_size);
-			float temp = (flare.p.y * -ka.orgTrans.xsin) + (flare.p.z * ka.orgTrans.xcos);
-			flare.p.y = (flare.p.y * ka.orgTrans.xcos) - (-flare.p.z * ka.orgTrans.xsin);
-			flare.p.z = (temp * ka.orgTrans.ycos) - (-flare.p.x * ka.orgTrans.ysin);
-			flare.p.x = (temp * -ka.orgTrans.ysin) + (flare.p.x * ka.orgTrans.ycos);
-			flare.p += oldcam->orgTrans.pos;
+			float temp = (flare.p.y * -ACTIVECAM->orgTrans.xsin) + (flare.p.z * ACTIVECAM->orgTrans.xcos);
+			flare.p.y = (flare.p.y * ACTIVECAM->orgTrans.xcos) - (-flare.p.z * ACTIVECAM->orgTrans.xsin);
+			flare.p.z = (temp * ACTIVECAM->orgTrans.ycos) - (-flare.p.x * ACTIVECAM->orgTrans.ysin);
+			flare.p.x = (temp * -ACTIVECAM->orgTrans.ysin) + (flare.p.x * ACTIVECAM->orgTrans.ycos);
+			flare.p += ACTIVECAM->orgTrans.pos;
 		}
-		SetActiveCamera(oldcam);
-		PrepareCamera(oldcam, g_size);
 	} else {
 		flare.p = Vec3f(flare.pos.x, flare.pos.y, 0.001f);
 	}
