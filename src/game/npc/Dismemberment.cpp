@@ -120,7 +120,6 @@ static void ARX_NPC_SpawnMember(Entity * ioo, ObjSelection num) {
 		nouvo->vertexlist[k] = from->vertexlist[cutSelection.selected[k]];
 		nouvo->vertexlist[k].v = from->vertexlist3[cutSelection.selected[k]].v;
 		nouvo->vertexlist[k].v -= ioo->pos;
-		nouvo->vertexlist[k].vert.p = nouvo->vertexlist[k].v;
 		
 		nouvo->vertexlist3[k] = nouvo->vertexlist[k];
 	}
@@ -140,7 +139,6 @@ static void ARX_NPC_SpawnMember(Entity * ioo, ObjSelection num) {
 						nouvo->vertexlist[count] = from->vertexlist[from->facelist[k].vid[j]];
 						nouvo->vertexlist[count].v = from->vertexlist3[from->facelist[k].vid[j]].v;
 						nouvo->vertexlist[count].v -= ioo->pos;
-						nouvo->vertexlist[count].vert.p = nouvo->vertexlist[count].v;
 
 						nouvo->vertexlist3[count] = nouvo->vertexlist[count];
 					} else {
@@ -167,7 +165,7 @@ static void ARX_NPC_SpawnMember(Entity * ioo, ObjSelection num) {
 	nouvo->point0 = nouvo->vertexlist[nouvo->origin].v;
 	
 	for(size_t k = 0; k < nouvo->vertexlist.size(); k++) {
-		nouvo->vertexlist[k].vert.p = nouvo->vertexlist[k].v -= nouvo->point0;
+		nouvo->vertexlist[k].v -= nouvo->point0;
 	}
 	
 	nouvo->point0 = Vec3f_ZERO;
