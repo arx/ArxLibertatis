@@ -122,16 +122,13 @@ static void drawDebugLights() {
 			continue;
 		}
 		
-		TexturedVertex center;
-		EE_RTP(light->pos, center);
+		Vec4f p = worldToClipSpace(light->pos);
+		if(p.w <= 0.f) {
+			continue;
+		}
 		
-		const Rect mouseTestRect(
-		center.p.x - 20,
-		center.p.y - 20,
-		center.p.x + 20,
-		center.p.y + 20
-		);
-		
+		Vec2f center = Vec2f(p) / p.w;
+		const Rect mouseTestRect(center.x - 20, center.y - 20, center.x + 20, center.y + 20);
 		if(mouseTestRect.contains(Vec2i(DANAEMouse))) {
 			UseRenderState state(RenderState().depthTest(true));
 			Sphere fallstart;
