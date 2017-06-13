@@ -128,8 +128,6 @@ private:
 	TextureContainer * m_border;
 };
 
-struct TexturedVertex;
-
 void MenuReInitAll();
 
 void Menu2_Open();
