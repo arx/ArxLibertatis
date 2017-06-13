@@ -153,9 +153,6 @@ void Draw3DObject(EERIE_3DOBJ * eobj, const Anglef & angle, const Vec3f & pos, c
 // BACKGROUND MANAGEMENT FUNCTIONS START
 void ClearBackground(BackgroundData * eb);
 void InitBkg(BackgroundData * eb, short sx, short sz, Vec2s tileSize);
-
-void EERIEAddPoly(TexturedVertex * vert, TexturedVertex * vert2, TextureContainer * tex, long render, float transval);
-// BACKGROUND MANAGEMENT FUNCTIONS END
 //****************************************************************************
 
 long MakeTopObjString(Entity * io, std::string& dest);
