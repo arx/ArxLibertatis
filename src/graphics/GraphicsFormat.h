@@ -100,16 +100,6 @@ struct SavedTextureVertex {
 		return a;
 	}
 	
-	SavedTextureVertex & operator=(const TexturedVertex & b) {
-		pos.x = b.p.x, pos.y = b.p.y, pos.z = b.p.z;
-		rhw = b.rhw;
-		color = Color::fromRGBA(b.color).toBGRA().t;
-		specular = 0xFF000000; // TODO unused
-		tu = b.uv.x;
-		tv = b.uv.y;
-		return *this;
-	}
-	
 };
 
 
