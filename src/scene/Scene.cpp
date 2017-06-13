@@ -1035,34 +1035,6 @@ static void RenderLava() {
 	vPolyLava.clear();
 }
 
-static long EERIERTPPoly(EERIEPOLY *ep) {
-	
-	EE_RTP(ep->v[0].p, ep->tv[0]);
-	EE_RTP(ep->v[1].p, ep->tv[1]);
-	EE_RTP(ep->v[2].p, ep->tv[2]);
-
-	if(ep->type & POLY_QUAD) {
-		EE_RTP(ep->v[3].p, ep->tv[3]);
-
-		if(   ep->tv[0].p.z <= 0.f
-		   && ep->tv[1].p.z <= 0.f
-		   && ep->tv[2].p.z <= 0.f
-		   && ep->tv[3].p.z <= 0.f
-		) {
-			return 0;
-		}
-	} else {
-		if(   ep->tv[0].p.z <= 0.f
-		   && ep->tv[1].p.z <= 0.f
-		   && ep->tv[2].p.z <= 0.f
-		) {
-			return 0;
-		}
-	}
-
-	return 1;
-}
-
 static void ARX_PORTALS_Frustrum_RenderRoomTCullSoft(size_t room_num,
                                                      const EERIE_FRUSTRUM_DATA & frustrums,
                                                      ArxInstant now,
@@ -1210,17 +1182,21 @@ static void ARX_PORTALS_Frustrum_RenderRoomTCullSoft(size_t room_num,
 
 		} else { // Improve Vision Activated
 			if(!(ep->type & POLY_TRANS)) {
-				if(!EERIERTPPoly(ep)) { // RotTransProject Vertices
-					continue;
-				}
 
 				ApplyTileLights(ep, pEPDATA.tile);
 
+				bool valid = true;
 				for(int k = 0; k < to; k++) {
 					long lr = Color::fromRGBA(ep->tv[k].color).r;
 					float ffr=(float)(lr);
-
-					float dd = ep->tv[k].rhw;
+					
+					Vec4f p = worldToClipSpace(ep->v[1].p);
+					if(p.w <= 0.f || p.z <= 0.f) {
+						valid = false;
+						break;
+					}
+					
+					float dd = 1.f / p.w;
 
 					dd = glm::clamp(dd, 0.f, 1.f);
 
@@ -1242,6 +1218,9 @@ static void ARX_PORTALS_Frustrum_RenderRoomTCullSoft(size_t room_num,
 					u8 lfg = 0x1E;
 					
 					ep->tv[k].color = Color(lfr, lfg, lfb, 255).toRGBA();
+				}
+				if(!valid) {
+					continue;
 				}
 
 				pMyVertexCurr[ep->uslInd[0]].color = ep->tv[0].color;
