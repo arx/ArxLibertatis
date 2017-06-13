@@ -214,15 +214,15 @@ static void ManageWater_VertexBuffer(EERIEPOLY * ep, const long to,
                                      float uvScroll, SMY_VERTEX * _pVertex) {
 	
 	for(long k = 0; k < to; k++) {
-		ep->tv[k].uv = ep->v[k].uv;
+		Vec2f uv = ep->v[k].uv;
 		
-		ep->tv[k].uv += getWaterFxUvOffset(WATEREFFECT, ep->v[k].p) * (0.35f * 0.05f);
+		uv += getWaterFxUvOffset(WATEREFFECT, ep->v[k].p) * (0.35f * 0.05f);
 			
 		if(ep->type & POLY_FALL) {
-			ep->tv[k].uv.y -= uvScroll;
+			uv.y -= uvScroll;
 		}
 		
-		_pVertex[ep->uslInd[k]].uv = ep->tv[k].uv;
+		_pVertex[ep->uslInd[k]].uv = uv;
 	}
 }
 
@@ -230,16 +230,16 @@ static void ManageLava_VertexBuffer(EERIEPOLY * ep, const long to,
                                     float uvScroll, SMY_VERTEX * _pVertex) {
 	
 	for(long k = 0; k < to; k++) {
-		ep->tv[k].uv = ep->v[k].uv;
+		Vec2f uv = ep->v[k].uv;
 		
-		ep->tv[k].uv += getWaterFxUvOffset(WATEREFFECT, ep->v[k].p) * (0.35f * 0.05f); //0.25f
+		uv += getWaterFxUvOffset(WATEREFFECT, ep->v[k].p) * (0.35f * 0.05f); //0.25f
 		ApplyLavaGlowToVertex(ep->v[k].p, &ep->tv[k], 0.6f);
 			
 		if(ep->type & POLY_FALL) {
-			ep->tv[k].uv.y -= uvScroll;
+			uv.y -= uvScroll;
 		}
 		
-		_pVertex[ep->uslInd[k]].uv = ep->tv[k].uv;
+		_pVertex[ep->uslInd[k]].uv = uv;
 	}
 }
 
