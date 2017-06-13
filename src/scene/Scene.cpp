@@ -683,15 +683,15 @@ static EERIE_FRUSTRUM CreateFrustrum(const Vec3f & pos, const PortalPoly & ep, b
 	EERIE_FRUSTRUM frustrum;
 	
 	if(cull) {
-		frustrum.plane[0] = CreatePlane(pos, ep.v[0].p, ep.v[1].p);
-		frustrum.plane[1] = CreatePlane(pos, ep.v[3].p, ep.v[2].p);
-		frustrum.plane[2] = CreatePlane(pos, ep.v[1].p, ep.v[3].p);
-		frustrum.plane[3] = CreatePlane(pos, ep.v[2].p, ep.v[0].p);
+		frustrum.plane[0] = CreatePlane(pos, ep.p[0], ep.p[1]);
+		frustrum.plane[1] = CreatePlane(pos, ep.p[3], ep.p[2]);
+		frustrum.plane[2] = CreatePlane(pos, ep.p[1], ep.p[3]);
+		frustrum.plane[3] = CreatePlane(pos, ep.p[2], ep.p[0]);
 	} else {
-		frustrum.plane[0] = CreatePlane(pos, ep.v[1].p, ep.v[0].p);
-		frustrum.plane[1] = CreatePlane(pos, ep.v[2].p, ep.v[3].p);
-		frustrum.plane[2] = CreatePlane(pos, ep.v[3].p, ep.v[1].p);
-		frustrum.plane[3] = CreatePlane(pos, ep.v[0].p, ep.v[2].p);
+		frustrum.plane[0] = CreatePlane(pos, ep.p[1], ep.p[0]);
+		frustrum.plane[1] = CreatePlane(pos, ep.p[2], ep.p[3]);
+		frustrum.plane[2] = CreatePlane(pos, ep.p[3], ep.p[1]);
+		frustrum.plane[3] = CreatePlane(pos, ep.p[0], ep.p[2]);
 	}
 	
 	return frustrum;
@@ -1381,8 +1381,8 @@ static void ARX_PORTALS_Frustrum_ComputeRoom(size_t roomIndex,
 		unsigned char ucVisibilityNear=0;
 		unsigned char ucVisibilityFar=0;
 
-		for(size_t i=0; i<ARRAY_SIZE(epp.v); i++) {
-			float fDist0 = distanceToPoint(efpPlaneNear, epp.v[i].p);
+		for(size_t i=0; i<ARRAY_SIZE(epp.p); i++) {
+			float fDist0 = distanceToPoint(efpPlaneNear, epp.p[i]);
 
 			if(fDist0 < 0.f)
 				ucVisibilityNear++;
@@ -1398,7 +1398,7 @@ static void ARX_PORTALS_Frustrum_ComputeRoom(size_t roomIndex,
 		Vec3f pos = epp.center - camPos;
 		float fRes = glm::dot(pos, epp.norm);
 		
-		if(!IsSphereInFrustrum(epp.center, frustrum, epp.v[0].rhw)) {
+		if(!IsSphereInFrustrum(epp.center, frustrum, epp.rhw)) {
 			continue;
 		}
 

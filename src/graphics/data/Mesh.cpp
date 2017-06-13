@@ -449,12 +449,12 @@ bool GetTruePolyY(const EERIEPOLY * ep, const Vec3f & pos, float * ret) {
 // TODO copy-paste PortalPoly
 bool GetTruePolyY(const PortalPoly * ep, const Vec3f & pos, float * ret) {
 	
-	Vec3f n = glm::cross(ep->v[1].p - ep->v[0].p, ep->v[2].p - ep->v[0].p);
+	Vec3f n = glm::cross(ep->p[1] - ep->p[0], ep->p[2] - ep->p[0]);
 	if(n.y == 0.f) {
 		return false;
 	}
 	
-	float y = glm::dot(ep->v[0].p - Vec3f(pos.x, 0.f, pos.z), n) / n.y;
+	float y = glm::dot(ep->p[0] - Vec3f(pos.x, 0.f, pos.z), n) / n.y;
 	
 	// Perhaps we can remove the clamp... (need to test)
 	*ret = glm::clamp(y, ep->min.y, ep->max.y);
@@ -546,24 +546,24 @@ float PtIn2DPolyProj(const std::vector<Vec4f> & verts, EERIE_FACE * ef, float x,
 	return c ? p[0].z : 0.f;
 }
 
-static int PointIn2DPolyXZ(const TexturedVertex (&verts)[4], bool isQuad, float x, float z) {
+static int PointIn2DPolyXZ(const Vec3f (&verts)[4], bool isQuad, float x, float z) {
 	
 	int i, j, c = 0, d = 0;
 
 	for (i = 0, j = 2; i < 3; j = i++)
 	{
-		if ((((verts[i].p.z <= z) && (z < verts[j].p.z)) ||
-				((verts[j].p.z <= z) && (z < verts[i].p.z))) &&
-				(x < (verts[j].p.x - verts[i].p.x) *(z - verts[i].p.z) / (verts[j].p.z - verts[i].p.z) + verts[i].p.x))
+		if ((((verts[i].z <= z) && (z < verts[j].z)) ||
+				((verts[j].z <= z) && (z < verts[i].z))) &&
+				(x < (verts[j].x - verts[i].x) *(z - verts[i].z) / (verts[j].z - verts[i].z) + verts[i].x))
 			c = !c;
 	}
 
 	if(isQuad)
 		for (i = 1, j = 3; i < 4; j = i++)
 		{
-			if ((((verts[i].p.z <= z) && (z < verts[j].p.z)) ||
-					((verts[j].p.z <= z) && (z < verts[i].p.z))) &&
-					(x < (verts[j].p.x - verts[i].p.x) *(z - verts[i].p.z) / (verts[j].p.z - verts[i].p.z) + verts[i].p.x))
+			if ((((verts[i].z <= z) && (z < verts[j].z)) ||
+					((verts[j].z <= z) && (z < verts[i].z))) &&
+					(x < (verts[j].x - verts[i].x) *(z - verts[i].z) / (verts[j].z - verts[i].z) + verts[i].x))
 				d = !d;
 		}
 
@@ -571,11 +571,12 @@ static int PointIn2DPolyXZ(const TexturedVertex (&verts)[4], bool isQuad, float 
 }
 
 int PointIn2DPolyXZ(const EERIEPOLY * ep, float x, float z) {
-	return PointIn2DPolyXZ(ep->v, (ep->type & POLY_QUAD) != 0, x, z);
+	Vec3f p[4] = { ep->v[0].p, ep->v[1].p, ep->v[2].p, ep->v[3].p };
+	return PointIn2DPolyXZ(p, (ep->type & POLY_QUAD) != 0, x, z);
 }
 
 int PointIn2DPolyXZ(const PortalPoly * ep, float x, float z) {
-	return PointIn2DPolyXZ(ep->v, true, x, z);
+	return PointIn2DPolyXZ(ep->p, true, x, z);
 }
 
 //*************************************************************************************
@@ -805,19 +806,19 @@ static void EERIE_PORTAL_Blend_Portals_And_Rooms() {
 		EERIE_PORTALS & portal = portals->portals[num];
 		PortalPoly * ep = &portal.poly;
 		
-		portal.poly.norm = CalcFaceNormal(portal.poly.v);
+		portal.poly.norm = CalcFaceNormal(portal.poly.p);
 		
-		ep->center = ep->v[0].p;
+		ep->center = ep->p[0];
 
 		long to = 4;
 
 		float divide = ( 1.0f / to );
 		
-		ep->max = ep->min = ep->v[0].p;
+		ep->max = ep->min = ep->p[0];
 		for(long i = 1; i < to; i++) {
-			ep->center += ep->v[i].p;
-			ep->min = glm::min(ep->min, ep->v[i].p);
-			ep->max = glm::max(ep->max, ep->v[i].p);
+			ep->center += ep->p[i];
+			ep->min = glm::min(ep->min, ep->p[i]);
+			ep->max = glm::max(ep->max, ep->p[i]);
 		}
 		
 		ep->center *= divide;
@@ -1226,13 +1227,16 @@ static bool loadFastScene(const res::path & file, const char * data, const char 
 		portal.poly.min = epo->poly.min.toVec3();
 		portal.poly.norm = epo->poly.norm.toVec3();
 		
-		std::copy(epo->poly.v, epo->poly.v + 4, portal.poly.v);
+		for(size_t i = 0; i < 4; i++) {
+			portal.poly.p[i] = epo->poly.v[i].pos.toVec3();
+		}
+		portal.poly.rhw = epo->poly.v[0].rhw;
 		
 		if(epo->poly.type == 0) {
 			// Make sure all portal polys have 4 vertices
 			// This is required to fix two polys in the original gamedata
 			LogDebug("Adding position for non quad portal poly");
-			portal.poly.v[3].p = glm::mix(portal.poly.v[1].p, portal.poly.v[2].p, 0.5f);
+			portal.poly.p[3] = glm::mix(portal.poly.p[1], portal.poly.p[2], 0.5f);
 		} else if(epo->poly.type != 64) {
 			LogWarning << "Invalid poly type found in portal " << epo->poly.type;
 		}
