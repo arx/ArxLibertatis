@@ -168,7 +168,7 @@ void ParticleSparkUpdate() {
 		
 		worldToClipSpace(in, tv[0]);
 		
-		if(tv[0].rhw < 0 || tv[0].p.z > cam->cdepth * fZFogEnd * tv[0].rhw) {
+		if(tv[0].w < 0 || tv[0].p.z > cam->cdepth * fZFogEnd * tv[0].w) {
 			continue;
 		}
 		

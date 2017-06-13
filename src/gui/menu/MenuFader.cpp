@@ -45,25 +45,25 @@ static void FadeInOut(float _fVal) {
 	vertices[0].p.x=0;
 	vertices[0].p.y=0;
 	vertices[0].p.z=0.f;
-	vertices[0].rhw=1.f;
+	vertices[0].w=1.f;
 	vertices[0].color=iColor;
 
 	vertices[1].p.x=static_cast<float>(g_size.width());
 	vertices[1].p.y=0;
 	vertices[1].p.z=0.f;
-	vertices[1].rhw=1.f;
+	vertices[1].w=1.f;
 	vertices[1].color=iColor;
 
 	vertices[2].p.x=0;
 	vertices[2].p.y=static_cast<float>(g_size.height());
 	vertices[2].p.z=0.f;
-	vertices[2].rhw=1.f;
+	vertices[2].w=1.f;
 	vertices[2].color=iColor;
 
 	vertices[3].p.x=static_cast<float>(g_size.width());
 	vertices[3].p.y=static_cast<float>(g_size.height());
 	vertices[3].p.z=0.f;
-	vertices[3].rhw=1.f;
+	vertices[3].w=1.f;
 	vertices[3].color=iColor;
 	
 	UseRenderState state(render2D().blend(BlendZero, BlendInvSrcColor));

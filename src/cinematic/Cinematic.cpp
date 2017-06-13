@@ -279,7 +279,7 @@ void DrawGrille(CinematicBitmap * bitmap, Color col, int fx, CinematicLight * li
 			Vec3f vtemp = TransformLocalVertex(t, LocalPos, LocalSin, LocalCos);
 			worldToClipSpace(vtemp, *d3dv);
 			if(light) {
-				d3dv->color = CalculLight(light, Vec2f(d3dv->p.x, d3dv->p.y) / d3dv->rhw, col).toRGBA();
+				d3dv->color = CalculLight(light, Vec2f(d3dv->p.x, d3dv->p.y) / d3dv->w, col).toRGBA();
 			} else {
 				d3dv->color = col.toRGBA();
 			}
@@ -291,7 +291,7 @@ void DrawGrille(CinematicBitmap * bitmap, Color col, int fx, CinematicLight * li
 			Vec3f vtemp = TransformLocalVertex(*v, LocalPos, LocalSin, LocalCos);
 			worldToClipSpace(vtemp, *d3dv);
 			if(light) {
-				d3dv->color = CalculLight(light, Vec2f(d3dv->p.x, d3dv->p.y) / d3dv->rhw, col).toRGBA();
+				d3dv->color = CalculLight(light, Vec2f(d3dv->p.x, d3dv->p.y) / d3dv->w, col).toRGBA();
 			} else {
 				d3dv->color = col.toRGBA();
 			}

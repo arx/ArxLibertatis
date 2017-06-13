@@ -106,7 +106,7 @@ void CursorTrail::DrawLine2D(float _fSize, Color3f color) {
 	
 	TexturedVertex v[4];
 	v[0].p.z = v[1].p.z = v[2].p.z = v[3].p.z = 0.f;
-	v[0].rhw = v[1].rhw = v[2].rhw = v[3].rhw = 1.f;
+	v[0].w = v[1].w = v[2].w = v[3].w = 1.f;
 	
 	v[0].color = v[2].color = currentColor.toRGB();
 	

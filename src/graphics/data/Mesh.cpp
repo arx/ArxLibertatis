@@ -490,7 +490,7 @@ Vec4f worldToClipSpace(const Vec3f & in) {
 void worldToClipSpace(const Vec3f & in, TexturedVertex & out) {
 	Vec4f p = worldToClipSpace(in);
 	out.p = Vec3f(p);
-	out.rhw = p.w;
+	out.w = p.w;
 }
 
 //*************************************************************************************
@@ -882,7 +882,7 @@ void Draw3DObject(EERIE_3DOBJ *eobj, const Anglef & angle, const Vec3f & pos, co
 		
 		for(size_t j = 0; j < 3; j++) {
 			vert_list[j].p = Vec3f(eobj->vertexClipPositions[face.vid[j]]);
-			vert_list[j].rhw = eobj->vertexClipPositions[face.vid[j]].w;
+			vert_list[j].w = eobj->vertexClipPositions[face.vid[j]].w;
 		}
 		
 		vert_list[0].uv.x = face.u[0];
@@ -1105,7 +1105,7 @@ static bool loadFastScene(const res::path & file, const char * data, const char 
 				
 				for(size_t kk = 0; kk < 4; kk++) {
 					ep2->v[kk].color = Color(255, 255, 255, 255).toRGBA();
-					ep2->v[kk].rhw = 1;
+					ep2->v[kk].w = 1;
 					ep2->v[kk].p = Vec3f(ep->v[kk].ssx, ep->v[kk].sy, ep->v[kk].ssz);
 					ep2->v[kk].uv = Vec2f(ep->v[kk].stu, ep->v[kk].stv);
 					ep2->color[kk] = Color(0, 0, 0, 255).toRGBA();
@@ -1131,7 +1131,7 @@ static bool loadFastScene(const res::path & file, const char * data, const char 
 					float d = glm::distance(ep2->v[h].p, ep2->center);
 					dist = std::max(dist, d);
 				}
-				ep2->v[0].rhw = dist;
+				ep2->v[0].w = dist;
 			}
 			
 			if(fsi->nbianchors > 0) {

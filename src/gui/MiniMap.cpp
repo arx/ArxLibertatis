@@ -385,7 +385,7 @@ void MiniMap::showBookEntireMap(int showLevel) {
 	TexturedVertex verts[4];
 	for(int k = 0; k < 4; k++) {
 		verts[k].color = Color(255, 255, 255, 255).toRGBA();
-		verts[k].rhw = 1;
+		verts[k].w = 1;
 		verts[k].p.z = 0.00001f;
 	}
 	
@@ -614,7 +614,7 @@ void MiniMap::drawBackground(int showLevel, Rect boundaries, Vec2f start, float 
 		
 		for(int vert = 0; vert < 4; vert++) {
 			verts[vert].color = Color(255, 255, 255, 255).toRGBA();
-			verts[vert].rhw = 1;
+			verts[vert].w = 1;
 			verts[vert].p.z = 0.00001f;
 
 			// Array offset according to "vert"
@@ -710,7 +710,7 @@ void MiniMap::drawPlayer(float playerSize, Vec2f playerPos, bool alphaBlending) 
 	
 	for(int k = 0; k < 4; k++) {
 		verts[k].color = Color(255, 0, 0, 255).toRGBA();
-		verts[k].rhw = 1;
+		verts[k].w = 1;
 		verts[k].p.z = 0.00001f;
 	}
 	
