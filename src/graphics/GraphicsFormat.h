@@ -90,16 +90,6 @@ struct SavedTextureVertex {
 	f32 tu;
 	f32 tv;
 	
-	operator TexturedVertex() const {
-		TexturedVertex a;
-		a.p.x = pos.x, a.p.y = pos.y, a.p.z = pos.z;
-		a.rhw = rhw;
-		a.color = Color::fromBGRA(ColorBGRA(color)).toRGBA();
-		a.uv.x = tu;
-		a.uv.y = tv;
-		return a;
-	}
-	
 };
 
 

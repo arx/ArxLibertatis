@@ -170,10 +170,10 @@ static void drawDebugPortals() {
 		
 		PortalPoly & epp = po.poly;
 
-		drawLine(epp.v[0].p, epp.v[1].p, color);
-		drawLine(epp.v[1].p, epp.v[3].p, color);
-		drawLine(epp.v[2].p, epp.v[3].p, color, color * 0.5f);
-		drawLine(epp.v[0].p, epp.v[2].p, color);
+		drawLine(epp.p[0], epp.p[1], color);
+		drawLine(epp.p[1], epp.p[3], color);
+		drawLine(epp.p[2], epp.p[3], color, color * 0.5f);
+		drawLine(epp.p[0], epp.p[2], color);
 		
 	}
 	

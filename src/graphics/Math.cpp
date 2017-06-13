@@ -676,10 +676,10 @@ Vec3f angleToVector(const Anglef & angle) {
 }
 
 //A x B = <Ay*Bz - Az*By, Az*Bx - Ax*Bz, Ax*By - Ay*Bx>
-Vec3f CalcFaceNormal(const TexturedVertex * v) {
+Vec3f CalcFaceNormal(const Vec3f * v) {
 	
-	Vec3f A = v[1].p - v[0].p;
-	Vec3f B = v[2].p - v[0].p;
+	Vec3f A = v[1] - v[0];
+	Vec3f B = v[2] - v[0];
 	
 	return glm::normalize(Vec3f(A.y * B.z - A.z * B.y, A.z * B.x - A.x * B.z, A.x * B.y - A.y * B.x));
 }
