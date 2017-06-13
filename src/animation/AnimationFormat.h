@@ -76,14 +76,6 @@ struct ArxQuat {
 		return a;
 	}
 	
-	ArxQuat & operator=(const glm::quat & b) {
-		x = b.x;
-		y = b.y;
-		z = b.z;
-		w = b.w;
-		return *this;
-	}
-	
 };
 
 
