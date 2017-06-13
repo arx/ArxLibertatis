@@ -43,8 +43,7 @@ struct MagicFlare {
 	unsigned char exist;
 	char type;
 	short flags;
-	TexturedVertex v;
-	TexturedVertex tv;
+	Vec3f p;
 	Vec2f pos;
 	PlatformDuration tolive;
 	Color3f rgb;
@@ -190,7 +189,6 @@ void AddFlare(const Vec2f & pos, float sm, short typ, Entity * io, bool bookDraw
 
 	flare.pos.x = pos.x - Random::getf(0.f, 4.f);
 	flare.pos.y = pos.y - Random::getf(0.f, 4.f);
-	flare.tv.rhw = flare.v.rhw = 1.f;
 
 	if(!bookDraw) {
 		EERIE_CAMERA ka = *g_magicFlareCamera;
@@ -198,34 +196,30 @@ void AddFlare(const Vec2f & pos, float sm, short typ, Entity * io, bool bookDraw
 		EERIE_CAMERA * oldcam = ACTIVECAM;
 		SetActiveCamera(&ka);
 		PrepareCamera(&ka, g_size);
-		flare.v.p += ka.orgTrans.pos;
-		EE_RTP(flare.tv.p, flare.v);
-		flare.v.p += ka.orgTrans.pos;
 
 		if(io) {
 			float vx = -(flare.pos.x - subj.center.x) * 0.2173913f;
 			float vy = (flare.pos.y - subj.center.y) * 0.1515151515151515f;
-			flare.v.p = io->pos;
-			flare.v.p += angleToVectorXZ(io->angle.getYaw() + vx) * 100.f;
-			flare.v.p.y += std::sin(glm::radians(MAKEANGLE(io->angle.getPitch() + vy))) * 100.f - 150.f;
+			flare.p = io->pos;
+			flare.p += angleToVectorXZ(io->angle.getYaw() + vx) * 100.f;
+			flare.p.y += std::sin(glm::radians(MAKEANGLE(io->angle.getPitch() + vy))) * 100.f - 150.f;
 		} else {
-			flare.v.p.x = 1.0f  * float(pos.x - (g_size.width()  / 2)) * 156.f / (640.f * g_sizeRatio.y);
-			flare.v.p.y = 0.75f * float(pos.y - (g_size.height() / 2)) * 156.f / (480.f * g_sizeRatio.y);
-			flare.v.p.z = 75.f;
+			flare.p.x = 1.0f  * float(pos.x - (g_size.width()  / 2)) * 156.f / (640.f * g_sizeRatio.y);
+			flare.p.y = 0.75f * float(pos.y - (g_size.height() / 2)) * 156.f / (480.f * g_sizeRatio.y);
+			flare.p.z = 75.f;
 			ka = *oldcam;
 			SetActiveCamera(&ka);
 			PrepareCamera(&ka, g_size);
-			float temp = (flare.v.p.y * -ka.orgTrans.xsin) + (flare.v.p.z * ka.orgTrans.xcos);
-			flare.v.p.y = (flare.v.p.y * ka.orgTrans.xcos) - (-flare.v.p.z * ka.orgTrans.xsin);
-			flare.v.p.z = (temp * ka.orgTrans.ycos) - (-flare.v.p.x * ka.orgTrans.ysin);
-			flare.v.p.x = (temp * -ka.orgTrans.ysin) + (flare.v.p.x * ka.orgTrans.ycos);
-			flare.v.p += oldcam->orgTrans.pos;
+			float temp = (flare.p.y * -ka.orgTrans.xsin) + (flare.p.z * ka.orgTrans.xcos);
+			flare.p.y = (flare.p.y * ka.orgTrans.xcos) - (-flare.p.z * ka.orgTrans.xsin);
+			flare.p.z = (temp * ka.orgTrans.ycos) - (-flare.p.x * ka.orgTrans.ysin);
+			flare.p.x = (temp * -ka.orgTrans.ysin) + (flare.p.x * ka.orgTrans.ycos);
+			flare.p += oldcam->orgTrans.pos;
 		}
-		flare.tv.p = flare.v.p;
 		SetActiveCamera(oldcam);
 		PrepareCamera(oldcam, g_size);
 	} else {
-		flare.tv.p = Vec3f(flare.pos.x, flare.pos.y, 0.001f);
+		flare.p = Vec3f(flare.pos.x, flare.pos.y, 0.001f);
 	}
 
 	switch(g_magicFlareCurrentColor) {
@@ -288,7 +282,7 @@ void AddFlare(const Vec2f & pos, float sm, short typ, Entity * io, bool bookDraw
 			pd->m_flags = FADE_IN_AND_OUT;
 		}
 
-		pd->ov = flare.v.p + arx::randomVec(-5.f, 5.f);
+		pd->ov = flare.p + arx::randomVec(-5.f, 5.f);
 		pd->move = Vec3f(0.f, 5.f, 0.f);
 		pd->scale = Vec3f(-2.f);
 		pd->tolive = 1300 + kk * 100 + Random::getu(0, 800);
@@ -429,27 +423,24 @@ void ARX_MAGICAL_FLARES_Update() {
 				z = 0.6f;
 			}
 
-			Color3f c = flare.rgb * z;
-			flare.tv.color = c.toRGB();
-			flare.v.p = flare.tv.p;
+			Color3f color = flare.rgb * z;
 
-			light->rgb = componentwise_max(light->rgb, c);
+			light->rgb = componentwise_max(light->rgb, color);
 			
 			EERIE_LIGHT * el = lightHandleGet(flare.dynlight);
 			if(el) {
-				el->pos = flare.v.p;
-				el->rgb = c;
+				el->pos = flare.p;
+				el->rgb = color;
 			}
 
 			mat.setDepthTest(flare.io != NULL);
 			
 			if(flare.bDrawBitmap) {
 				size *= 2.f * minSizeRatio();
-				Vec3f pos = Vec3f(flare.v.p.x - size / 2.0f, flare.v.p.y - size / 2.0f, flare.v.p.z);
-				EERIEAddBitmap(mat, pos, size, size, surf, Color::fromRGBA(flare.tv.color));
+				Vec3f pos = Vec3f(flare.p.x - size / 2.0f, flare.p.y - size / 2.0f, flare.p.z);
+				EERIEAddBitmap(mat, pos, size, size, surf, color.to<u8>());
 			} else {
-				EERIEAddSprite(mat, flare.v.p, size * 0.025f + 1.f,
-				               Color::fromRGBA(flare.tv.color), 2.f);
+				EERIEAddSprite(mat, flare.p, size * 0.025f + 1.f, color.to<u8>(), 2.f);
 			}
 
 		}
