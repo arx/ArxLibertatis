@@ -136,7 +136,7 @@ struct SAVE_EERIEPOLY {
 	SavedVec3 norm;
 	SavedVec3 norm2;
 	SavedTextureVertex v[4];
-	SavedTextureVertex tv[4];
+	char unused[32 * 4];
 	SavedVec3 nrml[4];
 	s32 tex;
 	SavedVec3 center;
