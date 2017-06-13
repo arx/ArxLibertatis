@@ -109,8 +109,6 @@ public:
 	//! Free all memory pools
 	void reset();
 
-	u32 getMemoryUsed() const;
-
 	static RenderBatcher& getInstance();
 	
 private:
