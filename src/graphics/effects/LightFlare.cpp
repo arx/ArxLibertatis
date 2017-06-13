@@ -38,8 +38,6 @@ void update2DFX() {
 	
 	ARX_PROFILE_FUNC();
 	
-	TexturedVertex ltvv;
-
 	Entity* pTableIO[256];
 	size_t nNbInTableIO = 0;
 
@@ -61,17 +59,20 @@ void update2DFX() {
 
 		if(el->extras & EXTRAS_FLARE) {
 			Vec3f lv = el->pos;
-			EE_RTP(lv, ltvv);
+			
+			Vec4f p = worldToClipSpace(lv);
+			Vec3f pos2d = Vec3f(p) / p.w;
+			
 			el->m_flareFader -= temp_increase;
 
 			if(!(player.Interface & INTER_COMBATMODE) && (player.Interface & INTER_MAP))
 				continue;
 
-			if(ltvv.rhw > 0.f &&
-				ltvv.p.x > 0.f &&
-				ltvv.p.y > (cinematicBorder.CINEMA_DECAL * g_sizeRatio.y) &&
-				ltvv.p.x < g_size.width() &&
-				ltvv.p.y < (g_size.height()-(cinematicBorder.CINEMA_DECAL * g_sizeRatio.y))
+			if(p.w > 0.f &&
+				pos2d.x > 0.f &&
+				pos2d.y > (cinematicBorder.CINEMA_DECAL * g_sizeRatio.y) &&
+				pos2d.x < g_size.width() &&
+				pos2d.y < (g_size.height()-(cinematicBorder.CINEMA_DECAL * g_sizeRatio.y))
 				)
 			{
 				Vec3f vector = lv - camPos;
@@ -82,8 +83,8 @@ void update2DFX() {
 				Vec2s ees2dlv;
 				Vec3f ee3dlv = lv;
 
-				ees2dlv.x = checked_range_cast<short>(ltvv.p.x);
-				ees2dlv.y = checked_range_cast<short>(ltvv.p.y);
+				ees2dlv.x = checked_range_cast<short>(pos2d.x);
+				ees2dlv.y = checked_range_cast<short>(pos2d.y);
 
 				if(!bComputeIO) {
 					GetFirstInterAtPos(ees2dlv, 2, &ee3dlv, pTableIO, &nNbInTableIO);
@@ -91,7 +92,7 @@ void update2DFX() {
 				}
 
 				
-				if(   ltvv.p.z > fZFar
+				if(   pos2d.z > fZFar
 				   || RaycastLightFlare(camPos, el->pos)
 				   || GetFirstInterAtPos(ees2dlv, 3, &ee3dlv, pTableIO, &nNbInTableIO)
 				) {
