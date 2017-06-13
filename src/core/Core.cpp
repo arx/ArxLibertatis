@@ -548,7 +548,7 @@ void levelInit() {
 		player.pos = WILL_RESTORE_PLAYER_POSITION;
 		io->pos = player.basePosition();
 		for(size_t i = 0; i < io->obj->vertexlist.size(); i++) {
-			io->obj->vertexlist3[i].v = io->obj->vertexlist[i].v + io->pos;
+			io->obj->vertexWorldPositions[i].v = io->obj->vertexlist[i].v + io->pos;
 		}
 		WILL_RESTORE_PLAYER_POSITION_FLAG = false;
 	}

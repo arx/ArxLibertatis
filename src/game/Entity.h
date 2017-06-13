@@ -442,7 +442,7 @@ private:
 };
 
 inline Vec3f actionPointPosition(const EERIE_3DOBJ * obj, ActionPoint ap) {
-	return obj->vertexlist3[ap.handleData()].v;
+	return obj->vertexWorldPositions[ap.handleData()].v;
 }
 
 // TODO move this somewhere else

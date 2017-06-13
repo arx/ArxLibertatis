@@ -600,7 +600,7 @@ void ARX_DAMAGES_ForceDeath(Entity * io_dead, Entity * io_killer) {
 			if(ValidIOAddress(ioo)) {
 				ioo->show = SHOW_FLAG_IN_SCENE;
 				ioo->ioflags |= IO_NO_NPC_COLLIDE;
-				ioo->pos = ioo->obj->vertexlist3[ioo->obj->origin].v;
+				ioo->pos = ioo->obj->vertexWorldPositions[ioo->obj->origin].v;
 				ioo->velocity = Vec3f(0.f, 13.f, 0.f);
 				ioo->stopped = 0;
 			}
@@ -904,7 +904,7 @@ static void ARX_DAMAGES_AddVisual(DAMAGE_INFO & di, const Vec3f & pos, float dmg
 	
 	long num = Random::get(0, io->obj->vertexlist.size() / 4 - 1) * 4 + 1;
 	arx_assert(num >= 0);
-	Vec3f vertPos = io->obj->vertexlist3[num].v;
+	Vec3f vertPos = io->obj->vertexWorldPositions[num].v;
 	
 	for(long k = 0 ; k < 14 ; k++) {
 		
@@ -1177,7 +1177,7 @@ static bool SphereInIO(Entity * io, const Sphere & sphere) {
 		step = 7;
 
 	for(size_t i = 0; i < io->obj->vertexlist.size(); i += step) {
-		if(!fartherThan(sphere.origin, io->obj->vertexlist3[i].v, sphere.radius)) {
+		if(!fartherThan(sphere.origin, io->obj->vertexWorldPositions[i].v, sphere.radius)) {
 			return true;
 		}
 	}
@@ -1317,8 +1317,8 @@ void DoSphericDamage(const Sphere & sphere, float dmg, DamageArea flags, DamageT
 			if(ioo->obj->vertexlist.size() < 120) {
 				for(size_t kk = 0; kk < ioo->obj->vertexlist.size(); kk += 1) {
 					if(kk != k) {
-						Vec3f posi = (entities[handle]->obj->vertexlist3[k].v
-									  + entities[handle]->obj->vertexlist3[kk].v) * 0.5f;
+						Vec3f posi = (entities[handle]->obj->vertexWorldPositions[k].v
+									  + entities[handle]->obj->vertexWorldPositions[kk].v) * 0.5f;
 						float dist = fdist(sphere.origin, posi);
 						if(dist <= sphere.radius) {
 							count2++;
@@ -1330,7 +1330,7 @@ void DoSphericDamage(const Sphere & sphere, float dmg, DamageArea flags, DamageT
 			}
 			
 			{
-			float dist = fdist(sphere.origin, entities[handle]->obj->vertexlist3[k].v);
+			float dist = fdist(sphere.origin, entities[handle]->obj->vertexWorldPositions[k].v);
 			
 			if(dist <= sphere.radius) {
 				count++;

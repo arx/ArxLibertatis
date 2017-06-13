@@ -95,7 +95,7 @@ static void ARX_NPC_SpawnMember(Entity * ioo, ObjSelection num) {
 	}
 
 	nouvo->vertexlist.resize(nvertex);
-	nouvo->vertexlist3.resize(nvertex);
+	nouvo->vertexWorldPositions.resize(nvertex);
 	nouvo->vertexClipPositions.resize(nvertex);
 	nouvo->vertexColors.resize(nvertex);
 
@@ -119,10 +119,10 @@ static void ARX_NPC_SpawnMember(Entity * ioo, ObjSelection num) {
 		equival[cutSelection.selected[k]] = k;
 		
 		nouvo->vertexlist[k] = from->vertexlist[cutSelection.selected[k]];
-		nouvo->vertexlist[k].v = from->vertexlist3[cutSelection.selected[k]].v;
+		nouvo->vertexlist[k].v = from->vertexWorldPositions[cutSelection.selected[k]].v;
 		nouvo->vertexlist[k].v -= ioo->pos;
 		
-		nouvo->vertexlist3[k] = nouvo->vertexlist[k];
+		nouvo->vertexWorldPositions[k] = nouvo->vertexlist[k];
 	}
 
 	size_t count = cutSelection.selected.size();
@@ -138,10 +138,10 @@ static void ARX_NPC_SpawnMember(Entity * ioo, ObjSelection num) {
 
 					if(count < nouvo->vertexlist.size()) {
 						nouvo->vertexlist[count] = from->vertexlist[from->facelist[k].vid[j]];
-						nouvo->vertexlist[count].v = from->vertexlist3[from->facelist[k].vid[j]].v;
+						nouvo->vertexlist[count].v = from->vertexWorldPositions[from->facelist[k].vid[j]].v;
 						nouvo->vertexlist[count].v -= ioo->pos;
 
-						nouvo->vertexlist3[count] = nouvo->vertexlist[count];
+						nouvo->vertexWorldPositions[count] = nouvo->vertexlist[count];
 					} else {
 						equival[from->facelist[k].vid[j]] = -1;
 					}
@@ -246,7 +246,7 @@ static void ARX_NPC_SpawnMember(Entity * ioo, ObjSelection num) {
 	io->m_icon = NULL;
 	io->scriptload = 1;
 	io->obj = nouvo;
-	io->lastpos = io->initpos = io->pos = ioo->obj->vertexlist3[inpos].v;
+	io->lastpos = io->initpos = io->pos = ioo->obj->vertexWorldPositions[inpos].v;
 	io->angle = ioo->angle;
 	
 	io->gameFlags = ioo->gameFlags;
@@ -471,7 +471,7 @@ void ARX_NPC_TryToCutSomething(Entity * target, const Vec3f * pos)
 			}
 
 			if(out < 3) {
-				float dist = arx::distance2(*pos, target->obj->vertexlist3[target->obj->selections[i].selected[0]].v);
+				float dist = arx::distance2(*pos, target->obj->vertexWorldPositions[target->obj->selections[i].selected[0]].v);
 
 				if(dist < mindistSqr) {
 					mindistSqr = dist;

@@ -153,7 +153,7 @@ void createObjFireParticles(const EERIE_3DOBJ * obj, int particlePositions, int 
 		}
 		
 		if(notok < 0) {
-			Vec3f pos = obj->vertexlist3[it->vid[0]].v;
+			Vec3f pos = obj->vertexWorldPositions[it->vid[0]].v;
 			
 			createFireParticles(pos, perPos, delay);
 		}
@@ -171,13 +171,13 @@ void ARX_PARTICLES_Spawn_Lava_Burn(Vec3f pos, Entity * io) {
 			if(io->obj->facelist[num].facetype & POLY_HIDE) {
 				continue;
 			}
-			if(glm::abs(pos.y-io->obj->vertexlist3[io->obj->facelist[num].vid[0]].v.y) > 50.f) {
+			if(glm::abs(pos.y-io->obj->vertexWorldPositions[io->obj->facelist[num].vid[0]].v.y) > 50.f) {
 				continue;
 			}
 			notok = -1;
 		}
 		
-		pos = io->obj->vertexlist3[io->obj->facelist[num].vid[0]].v;
+		pos = io->obj->vertexWorldPositions[io->obj->facelist[num].vid[0]].v;
 	}
 	
 	PARTICLE_DEF * pd = createParticle();
@@ -308,7 +308,7 @@ void ARX_PARTICLES_Spawn_Blood(const Vec3f & pos, float dmgs, EntityHandle sourc
 	long count = sourceIo->obj->grouplist.size();
 	for(long i = 0; i < count; i += 2) {
 		long vertex = sourceIo->obj->grouplist[i].origin;
-		float dist = arx::distance2(pos, sourceIo->obj->vertexlist3[vertex].v);
+		float dist = arx::distance2(pos, sourceIo->obj->vertexWorldPositions[vertex].v);
 		if(dist < nearest_dist) {
 			nearest_dist = dist;
 			nearest = i;
@@ -333,7 +333,7 @@ void ARX_PARTICLES_Spawn_Blood(const Vec3f & pos, float dmgs, EntityHandle sourc
 		pd->siz = 0.f;
 		pd->scale = Vec3f(float(spawn_nb));
 		pd->m_flags = GRAVITY | ROTATING | DELAY_FOLLOW_SOURCE;
-		pd->source = &sourceIo->obj->vertexlist3[nearest].v;
+		pd->source = &sourceIo->obj->vertexWorldPositions[nearest].v;
 		pd->sourceionum = source;
 		pd->tolive = 1200 + spawn_nb * 5;
 		totdelay += 45 + Random::getu(0, 150 - spawn_nb);
@@ -371,7 +371,7 @@ void AddRandomSmoke(Entity * io, long amount) {
 		}
 		
 		long vertex = Random::get(0, io->obj->vertexlist.size() - 1);
-		pd->ov = io->obj->vertexlist3[vertex].v + arx::randomVec(-5.f, 5.f);
+		pd->ov = io->obj->vertexWorldPositions[vertex].v + arx::randomVec(-5.f, 5.f);
 		pd->siz = Random::getf(0.f, 8.f);
 		if(pd->siz < 4.f) {
 			pd->siz = 4.f;
@@ -467,7 +467,7 @@ void ManageTorch() {
 	   && entities.player()->obj->fastaccess.head_group_origin != ObjVertHandle()
 	) {
 		s32 vertex = entities.player()->obj->fastaccess.head_group_origin.handleData();
-		el->pos.y = entities.player()->obj->vertexlist3[vertex].v.y;
+		el->pos.y = entities.player()->obj->vertexWorldPositions[vertex].v.y;
 	}
 }
 

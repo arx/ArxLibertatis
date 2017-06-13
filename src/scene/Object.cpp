@@ -204,7 +204,7 @@ void EERIE_3DOBJ::clear() {
 
 		vertexlocal = NULL;
 		vertexlist.clear();
-		vertexlist3.clear();
+		vertexWorldPositions.clear();
 
 		facelist.clear();
 		grouplist.clear();
@@ -245,7 +245,7 @@ EERIE_3DOBJ * Eerie_Copy(const EERIE_3DOBJ * obj) {
 	
 	nouvo->vertexlist = obj->vertexlist;
 	
-	nouvo->vertexlist3 = obj->vertexlist3;
+	nouvo->vertexWorldPositions = obj->vertexWorldPositions;
 	
 	nouvo->pbox = NULL;
 	nouvo->m_skeleton = NULL;

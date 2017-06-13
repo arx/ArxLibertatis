@@ -715,7 +715,7 @@ bool ARX_EQUIPMENT_Strike_Check(Entity * io_source, Entity * io_weapon, float ra
 						if(target->obj->facelist[ii].facetype & POLY_HIDE)
 							continue;
 
-						float d = glm::distance(sphere.origin, target->obj->vertexlist3[target->obj->facelist[ii].vid[0]].v);
+						float d = glm::distance(sphere.origin, target->obj->vertexWorldPositions[target->obj->facelist[ii].vid[0]].v);
 
 						if(d < curdist) {
 							hitpoint = target->obj->facelist[ii].vid[0];
@@ -725,7 +725,7 @@ bool ARX_EQUIPMENT_Strike_Check(Entity * io_source, Entity * io_weapon, float ra
 
 					if(hitpoint >= 0) {
 						color = (target->ioflags & IO_NPC) ? target->_npcdata->blood_color : Color::white;
-						pos = target->obj->vertexlist3[hitpoint].v;
+						pos = target->obj->vertexWorldPositions[hitpoint].v;
 					}
 					else ARX_DEAD_CODE(); 
 					
@@ -734,7 +734,7 @@ bool ARX_EQUIPMENT_Strike_Check(Entity * io_source, Entity * io_weapon, float ra
 						Vec3f posi;
 
 						if(hitpoint >= 0) {
-							posi = target->obj->vertexlist3[hitpoint].v;
+							posi = target->obj->vertexWorldPositions[hitpoint].v;
 							dmgs = ARX_EQUIPMENT_ComputeDamages(io_source, target, ratioaim, &posi);
 						} else {
 							dmgs = ARX_EQUIPMENT_ComputeDamages(io_source, target, ratioaim);
@@ -773,7 +773,7 @@ bool ARX_EQUIPMENT_Strike_Check(Entity * io_source, Entity * io_weapon, float ra
 						if(!(flags & 1)) {
 							ARX_PARTICLES_Spawn_Splat(pos, dmgs, color);
 							
-							Vec3f vertPos = target->obj->vertexlist3[hitpoint].v;
+							Vec3f vertPos = target->obj->vertexWorldPositions[hitpoint].v;
 							
 							float power = (dmgs * ( 1.0f / 40 )) + 0.7f;
 							

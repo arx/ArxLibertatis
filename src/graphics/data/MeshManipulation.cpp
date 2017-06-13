@@ -686,7 +686,7 @@ static EERIE_3DOBJ * CreateIntermediaryMesh(const EERIE_3DOBJ * obj1, const EERI
 		}
 	}
 	
-	work->vertexlist3.resize(work->vertexlist.size());
+	work->vertexWorldPositions.resize(work->vertexlist.size());
 	work->vertexClipPositions.resize(work->vertexlist.size());
 	work->vertexColors.resize(work->vertexlist.size());
 	

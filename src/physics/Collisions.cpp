@@ -282,8 +282,8 @@ bool IsCollidingIO(Entity * io,Entity * ioo) {
 			Cylinder cyl = ioo->physics.cyl;
 			cyl.radius += 25.f;
 			
-			for(size_t j = 0; j < io->obj->vertexlist3.size(); j++) {
-				if(PointInCylinder(cyl, io->obj->vertexlist3[j].v)) {
+			for(size_t j = 0; j < io->obj->vertexWorldPositions.size(); j++) {
+				if(PointInCylinder(cyl, io->obj->vertexWorldPositions[j].v)) {
 					return true;
 				}
 			}
@@ -313,9 +313,9 @@ void PushIO_ON_Top(Entity * ioo, float ydec) {
 				float miny = 9999999.f;
 				float maxy = -9999999.f;
 
-				for(size_t ii = 0; ii < ioo->obj->vertexlist3.size(); ii++) {
-					miny = std::min(miny, ioo->obj->vertexlist3[ii].v.y);
-					maxy = std::max(maxy, ioo->obj->vertexlist3[ii].v.y);
+				for(size_t ii = 0; ii < ioo->obj->vertexWorldPositions.size(); ii++) {
+					miny = std::min(miny, ioo->obj->vertexWorldPositions[ii].v.y);
+					maxy = std::max(maxy, ioo->obj->vertexWorldPositions[ii].v.y);
 				}
 
 				float posy = (io == entities.player()) ? player.basePosition().y : io->pos.y;
@@ -327,7 +327,7 @@ void PushIO_ON_Top(Entity * ioo, float ydec) {
 						float cz = 0;
 
 						for(long kk = 0; kk < 3; kk++) {
-							ep.v[kk].p = ioo->obj->vertexlist3[ioo->obj->facelist[ii].vid[kk]].v;
+							ep.v[kk].p = ioo->obj->vertexWorldPositions[ioo->obj->facelist[ii].vid[kk]].v;
 
 							cx += ep.v[kk].p.x;
 							cz += ep.v[kk].p.z;
@@ -585,27 +585,27 @@ float CheckAnythingInCylinder(const Cylinder & cyl, Entity * ioo, long flags) {
 							if(In3DBBoxTolerance(cyl.origin, io->bbox3D, cyl.radius + 10))
 								anything = -99999.f;
 						} else {
-						for(size_t ii = 0; ii < io->obj->vertexlist3.size(); ii++) {
-							long res = PointInUnderCylinder(cyl, io->obj->vertexlist3[ii].v);
+						for(size_t ii = 0; ii < io->obj->vertexWorldPositions.size(); ii++) {
+							long res = PointInUnderCylinder(cyl, io->obj->vertexWorldPositions[ii].v);
 
 							if(res > 0) {
 								if(res == 2)
 									ON_PLATFORM = 1;
 
-								anything = std::min(anything, io->obj->vertexlist3[ii].v.y - 10.f);
+								anything = std::min(anything, io->obj->vertexWorldPositions[ii].v.y - 10.f);
 							}			
 						}
 
 						for(size_t ii = 0; ii < io->obj->facelist.size(); ii++) {
 							Vec3f c = Vec3f_ZERO;
-							float height = io->obj->vertexlist3[io->obj->facelist[ii].vid[0]].v.y;
+							float height = io->obj->vertexWorldPositions[io->obj->facelist[ii].vid[0]].v.y;
 
 							for(long kk = 0; kk < 3; kk++) {
-								c.x += io->obj->vertexlist3[io->obj->facelist[ii].vid[kk]].v.x;
-								c.y += io->obj->vertexlist3[io->obj->facelist[ii].vid[kk]].v.y;
-								c.z += io->obj->vertexlist3[io->obj->facelist[ii].vid[kk]].v.z;
+								c.x += io->obj->vertexWorldPositions[io->obj->facelist[ii].vid[kk]].v.x;
+								c.y += io->obj->vertexWorldPositions[io->obj->facelist[ii].vid[kk]].v.y;
+								c.z += io->obj->vertexWorldPositions[io->obj->facelist[ii].vid[kk]].v.z;
 
-								height = std::min(height, io->obj->vertexlist3[io->obj->facelist[ii].vid[kk]].v.y);
+								height = std::min(height, io->obj->vertexWorldPositions[io->obj->facelist[ii].vid[kk]].v.y);
 							}
 
 							c.x *= ( 1.0f / 3 );
@@ -695,7 +695,7 @@ float CheckAnythingInCylinder(const Cylinder & cyl, Entity * ioo, long flags) {
 						goto suivant;
 
 					if(In3DBBoxTolerance(cyl.origin, io->bbox3D, cyl.radius + 30.f)) {
-						std::vector<EERIE_VERTEX> & vlist = io->obj->vertexlist3;
+						std::vector<EERIE_VERTEX> & vlist = io->obj->vertexWorldPositions;
 						
 						if(io->obj->grouplist.size() > 10) {
 							bool dealt = false;
@@ -898,7 +898,7 @@ bool CheckEverythingInSphere(const Sphere & sphere, EntityHandle source, EntityH
 						float cz = 0;
 
 						for(long kk = 0; kk < 3; kk++) {
-							ep.v[kk].p = io->obj->vertexlist3[io->obj->facelist[ii].vid[kk]].v;
+							ep.v[kk].p = io->obj->vertexWorldPositions[io->obj->facelist[ii].vid[kk]].v;
 
 							cx += ep.v[kk].p.x;
 							cz += ep.v[kk].p.z;
@@ -926,7 +926,7 @@ bool CheckEverythingInSphere(const Sphere & sphere, EntityHandle source, EntityH
 		if(closerThan(io->pos, sphere.origin, sr180)) {
 
 			long amount = 1;
-			std::vector<EERIE_VERTEX> & vlist = io->obj->vertexlist3;
+			std::vector<EERIE_VERTEX> & vlist = io->obj->vertexWorldPositions;
 
 			if(io->obj->grouplist.size() > 4) {
 				for(size_t ii = 0; ii < io->obj->grouplist.size(); ii++) {
@@ -1078,7 +1078,7 @@ bool CheckAnythingInSphere(const Sphere & sphere, EntityHandle source, CASFlags 
 						float cz = 0;
 
 						for(long kk = 0; kk < 3; kk++) {
-							ep.v[kk].p = io->obj->vertexlist3[io->obj->facelist[ii].vid[kk]].v;
+							ep.v[kk].p = io->obj->vertexWorldPositions[io->obj->facelist[ii].vid[kk]].v;
 
 							cx += ep.v[kk].p.x;
 							cz += ep.v[kk].p.z;
@@ -1105,7 +1105,7 @@ bool CheckAnythingInSphere(const Sphere & sphere, EntityHandle source, CASFlags 
 
 		if(closerThan(io->pos, sphere.origin, sr180)) {
 			long amount = 1;
-			std::vector<EERIE_VERTEX> & vlist = io->obj->vertexlist3;
+			std::vector<EERIE_VERTEX> & vlist = io->obj->vertexWorldPositions;
 
 			if(io->obj->grouplist.size() > 4) {
 				for(size_t ii = 0; ii < io->obj->grouplist.size(); ii++) {
@@ -1154,7 +1154,7 @@ bool CheckIOInSphere(const Sphere & sphere, const Entity & entity, bool ignoreNo
 	   && (entity.obj)
 	) {
 		if(closerThan(entity.pos, sphere.origin, sr180)) {
-			std::vector<EERIE_VERTEX> & vlist = entity.obj->vertexlist3;
+			std::vector<EERIE_VERTEX> & vlist = entity.obj->vertexWorldPositions;
 
 			if(entity.obj->grouplist.size()>10) {
 				long count=0;

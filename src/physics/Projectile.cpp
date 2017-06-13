@@ -517,7 +517,7 @@ void ARX_THROWN_OBJECT_Manage(float time_offset)
 												continue;
 
 											unsigned short vid = target->obj->facelist[ii].vid[0];
-											float d = glm::distance(sphere.origin, target->obj->vertexlist3[vid].v);
+											float d = glm::distance(sphere.origin, target->obj->vertexWorldPositions[vid].v);
 
 											if(d < curdist) {
 												hitpoint = target->obj->facelist[ii].vid[0];
@@ -527,7 +527,7 @@ void ARX_THROWN_OBJECT_Manage(float time_offset)
 
 										if(hitpoint >= 0) {
 											color = target->_npcdata->blood_color;
-											pos = target->obj->vertexlist3[hitpoint].v;
+											pos = target->obj->vertexWorldPositions[hitpoint].v;
 										}
 
 										if(projectile.source == EntityHandle_Player) {
