@@ -526,20 +526,21 @@ long EERIEDrawnPolys = 0;
 
 float PtIn2DPolyProj(const std::vector<Vec4f> & verts, EERIE_FACE * ef, float x, float z) {
 	
-	int i, j, c = 0;
-
-	for (i = 0, j = 2; i < 3; j = i++)
-	{
-		if ((((verts[ef->vid[i]].y <= z) && (z < verts[ef->vid[j]].y)) ||
-				((verts[ef->vid[j]].y <= z) && (z < verts[ef->vid[i]].y))) &&
-				(x < (verts[ef->vid[j]].x - verts[ef->vid[i]].x) *(z - verts[ef->vid[i]].y) / (verts[ef->vid[j]].y - verts[ef->vid[i]].y) + verts[ef->vid[i]].x))
-			c = !c;
+	Vec3f p[3];
+	for(size_t i = 0; i < 3; i++) {
+		p[i] = Vec3f(verts[ef->vid[i]]);
 	}
-
-	if (c)
-		return verts[ef->vid[0]].z;
-	else
-		return 0.f;
+	
+	bool c = false;
+	
+	for(size_t i = 0, j = 2; i < 3; j = i++) {
+		if(((p[i].y <= z && z < p[j].y) || (p[j].y <= z && z < p[i].y))
+		   && x < (p[j].x - p[i].x) *(z - p[i].y) / (p[j].y - p[i].y) + p[i].x) {
+			c = !c;
+		}
+	}
+	
+	return c ? p[0].z : 0.f;
 }
 
 static int PointIn2DPolyXZ(const TexturedVertex (&verts)[4], bool isQuad, float x, float z) {
