@@ -118,7 +118,7 @@ void SpeedSpell::Update() {
 		ARX_SOUND_RefreshPosition(m_snd_loop, entities[m_target]->pos);
 	
 	for(size_t i = 0; i < m_trails.size(); i++) {
-		Vec3f pos = entities[m_target]->obj->vertexlist3[m_trails[i].vertexIndex].v;
+		Vec3f pos = entities[m_target]->obj->vertexWorldPositions[m_trails[i].vertexIndex].v;
 		
 		m_trails[i].trail->SetNextPosition(pos);
 		m_trails[i].trail->Update(g_framedelay);
@@ -256,7 +256,7 @@ void FireballSpell::Update() {
 			ObjVertHandle idx = GetGroupOriginByName(entities[m_caster]->obj, "chest");
 
 			if(idx != ObjVertHandle()) {
-				eCurPos = entities[m_caster]->obj->vertexlist3[idx.handleData()].v;
+				eCurPos = entities[m_caster]->obj->vertexWorldPositions[idx.handleData()].v;
 			} else {
 				eCurPos = player.pos;
 			}

@@ -413,7 +413,7 @@ static void Cedric_PrepareHalo(EERIE_3DOBJ * eobj, Skeleton * obj) {
 			const Vec3f & inVert = eobj->vertexlist[vertIndex].norm;
 
 			// Get cos angle between light and vertex norm
-			eobj->vertexlist3[vertIndex].norm.z =
+			eobj->vertexWorldPositions[vertIndex].norm.z =
 			    (inVert.x * t_vector.x + inVert.y * t_vector.y + inVert.z * t_vector.z);
 
 		}
@@ -518,7 +518,7 @@ static void Cedric_ApplyLighting(ShaderLight lights[], int lightsCount, EERIE_3D
 		for(size_t v = 0; v != obj->bones[i].idxvertices.size(); v++) {
 			size_t vertexIndex = obj->bones[i].idxvertices[v];
 
-			Vec3f & position = eobj->vertexlist3[vertexIndex].v;
+			Vec3f & position = eobj->vertexWorldPositions[vertexIndex].v;
 			Vec3f & normal = eobj->vertexlist[vertexIndex].norm;
 
 			eobj->vertexColors[vertexIndex] = ApplyLight(lights, lightsCount, quat, position, normal, colorMod);
@@ -532,7 +532,7 @@ static EERIE_3D_BBOX UpdateBbox3d(EERIE_3DOBJ *eobj) {
 	box3D.reset();
 
 	for(size_t i = 0 ; i < eobj->vertexlist.size(); i++) {
-		box3D.add(eobj->vertexlist3[i].v);
+		box3D.add(eobj->vertexWorldPositions[i].v);
 	}
 	return box3D;
 }
@@ -589,14 +589,14 @@ void DrawEERIEInter_ModelTransform(EERIE_3DOBJ *eobj, const TransformInfo &t) {
 		temp = t.rotation * temp;
 		temp += t.pos;
 
-		eobj->vertexlist3[i].v = temp;
+		eobj->vertexWorldPositions[i].v = temp;
 	}
 }
 
 void DrawEERIEInter_ViewProjectTransform(EERIE_3DOBJ *eobj) {
-	arx_assert(eobj->vertexClipPositions.size() == eobj->vertexlist3.size());
-	for(size_t i = 0 ; i < eobj->vertexlist3.size(); i++) {
-		Vec4f p = worldToClipSpace(eobj->vertexlist3[i].v);
+	arx_assert(eobj->vertexClipPositions.size() == eobj->vertexWorldPositions.size());
+	for(size_t i = 0 ; i < eobj->vertexWorldPositions.size(); i++) {
+		Vec4f p = worldToClipSpace(eobj->vertexWorldPositions[i].v);
 		const float near_clamp = .000001f; // just a random small number
 		float rhw = 1.f / std::max(p.w, near_clamp);
 		eobj->vertexClipPositions[i] = Vec4f(Vec3f(p) * rhw, rhw);
@@ -606,14 +606,14 @@ void DrawEERIEInter_ViewProjectTransform(EERIE_3DOBJ *eobj) {
 static bool CullFace(const EERIE_3DOBJ * eobj, const EERIE_FACE & face) {
 
 	if(!(face.facetype & POLY_DOUBLESIDED)) {
-		Vec3f normV10 = eobj->vertexlist3[face.vid[1]].v - eobj->vertexlist3[face.vid[0]].v;
-		Vec3f normV20 = eobj->vertexlist3[face.vid[2]].v - eobj->vertexlist3[face.vid[0]].v;
+		Vec3f normV10 = eobj->vertexWorldPositions[face.vid[1]].v - eobj->vertexWorldPositions[face.vid[0]].v;
+		Vec3f normV20 = eobj->vertexWorldPositions[face.vid[2]].v - eobj->vertexWorldPositions[face.vid[0]].v;
 		Vec3f normFace;
 		normFace.x = (normV10.y * normV20.z) - (normV10.z * normV20.y);
 		normFace.y = (normV10.z * normV20.x) - (normV10.x * normV20.z);
 		normFace.z = (normV10.x * normV20.y) - (normV10.y * normV20.x);
 
-		Vec3f nrm = eobj->vertexlist3[face.vid[0]].v - ACTIVECAM->orgTrans.pos;
+		Vec3f nrm = eobj->vertexWorldPositions[face.vid[0]].v - ACTIVECAM->orgTrans.pos;
 
 		if(glm::dot(normFace, nrm) > 0.f)
 			return true;
@@ -765,12 +765,12 @@ void DrawEERIEInter_Render(EERIE_3DOBJ *eobj, const TransformInfo &t, Entity *io
 		for(size_t n = 0; n < 3; n++) {
 
 			if(useFaceNormal) {
-				const Vec3f & position = eobj->vertexlist3[face.vid[n]].v;
+				const Vec3f & position = eobj->vertexWorldPositions[face.vid[n]].v;
 				const Vec3f & normal = face.norm;
 
 				eobj->vertexColors[face.vid[n]] = ApplyLight(lights, lightsCount, t.rotation, position, normal, colorMod, 0.5f);
 			} else {
-				Vec3f & position = eobj->vertexlist3[face.vid[n]].v;
+				Vec3f & position = eobj->vertexWorldPositions[face.vid[n]].v;
 				Vec3f & normal = eobj->vertexlist[face.vid[n]].norm;
 
 				eobj->vertexColors[face.vid[n]] = ApplyLight(lights, lightsCount, t.rotation, position, normal, colorMod);
@@ -973,7 +973,7 @@ static void AddAnimatedObjectHalo(HaloInfo & haloInfo, const unsigned short * pa
 	ColorRGBA colors[3];
 
 	for(size_t o = 0; o < 3; o++) {
-		float tttz	= glm::abs(eobj->vertexlist3[paf[o]].norm.z) * ( 1.0f / 2 );
+		float tttz	= glm::abs(eobj->vertexWorldPositions[paf[o]].norm.z) * ( 1.0f / 2 );
 		float power = 255.f - (255.f * tttz);
 		power *= (1.f - invisibility);
 
@@ -1174,7 +1174,7 @@ static void Cedric_AnimateDrawEntityRender(EERIE_3DOBJ * eobj, const Vec3f & pos
 	Vec3f tv = pos;
 	
 	if(io && io->obj->fastaccess.head_group_origin != ObjVertHandle()) {
-		tv.y = io->obj->vertexlist3[io->obj->fastaccess.head_group_origin.handleData()].v.y + 10;
+		tv.y = io->obj->vertexWorldPositions[io->obj->fastaccess.head_group_origin.handleData()].v.y + 10;
 	} else {
 		tv.y -= 90.f;
 	}
@@ -1444,7 +1444,7 @@ static void Cedric_TransformVerts(EERIE_3DOBJ * eobj) {
 			size_t index = bone.idxvertices[v];
 
 			Vec3f & inVert = eobj->vertexlocal[index];
-			EERIE_VERTEX & outVert = eobj->vertexlist3[index];
+			EERIE_VERTEX & outVert = eobj->vertexWorldPositions[index];
 			
 			outVert.v = Vec3f(matrix * Vec4f(inVert, 1.f));
 			outVert.v += vector;
@@ -1455,9 +1455,9 @@ static void Cedric_TransformVerts(EERIE_3DOBJ * eobj) {
 }
 
 static void Cedric_ViewProjectTransform(EERIE_3DOBJ * eobj) {
-	arx_assert(eobj->vertexClipPositions.size() == eobj->vertexlist3.size());
-	for(size_t i = 0; i < eobj->vertexlist3.size(); i++) {
-		Vec4f p = worldToClipSpace(eobj->vertexlist3[i].v);
+	arx_assert(eobj->vertexClipPositions.size() == eobj->vertexWorldPositions.size());
+	for(size_t i = 0; i < eobj->vertexWorldPositions.size(); i++) {
+		Vec4f p = worldToClipSpace(eobj->vertexWorldPositions[i].v);
 		const float near_clamp = .000001f; // just a random small number
 		float rhw = 1.f / std::max(p.w, near_clamp);
 		eobj->vertexClipPositions[i] = Vec4f(Vec3f(p) * rhw, rhw);

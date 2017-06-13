@@ -154,7 +154,7 @@ long MakeTopObjString(Entity * io, std::string & dest) {
 	box.reset();
 
 	for(size_t i = 0; i < io->obj->vertexlist.size(); i++) {
-		box.add(io->obj->vertexlist3[i].v);
+		box.add(io->obj->vertexWorldPositions[i].v);
 	}
 	box.min.y -= 5.f;
 	box.max.y -= 5.f;
@@ -890,7 +890,7 @@ void Draw3DObject(EERIE_3DOBJ *eobj, const Anglef & angle, const Vec3f & pos, co
 		
 		Vec3f rotated = Vec3f(rotation * Vec4f(scaled, 1.f));
 		
-		eobj->vertexlist3[i].v = (rotated += pos);
+		eobj->vertexWorldPositions[i].v = (rotated += pos);
 
 		Vec4f p = worldToClipSpace(rotated);
 		const float near_clamp = .000001f; // just a random small number

@@ -307,7 +307,7 @@ struct EERIE_3DOBJ
 	size_t origin;
 	Vec3f * vertexlocal;
 	std::vector<EERIE_VERTEX> vertexlist;
-	std::vector<EERIE_VERTEX> vertexlist3;
+	std::vector<EERIE_VERTEX> vertexWorldPositions;
 	std::vector<Vec4f> vertexClipPositions;
 	std::vector<ColorRGBA> vertexColors;
 

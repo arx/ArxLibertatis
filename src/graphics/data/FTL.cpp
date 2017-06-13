@@ -241,7 +241,7 @@ EERIE_3DOBJ * ARX_FTL_Load(const res::path & file) {
 		// Set the origin point of the mesh
 		obj->point0 = obj->vertexlist[obj->origin].v;
 		
-		obj->vertexlist3.resize(obj->vertexlist.size());
+		obj->vertexWorldPositions.resize(obj->vertexlist.size());
 		obj->vertexClipPositions.resize(obj->vertexlist.size());
 		obj->vertexColors.resize(obj->vertexlist.size());
 	}

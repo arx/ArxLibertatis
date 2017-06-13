@@ -188,9 +188,9 @@ static void CheckHit(Entity * source, float ratioaim) {
 		float mindist = std::numeric_limits<float>::max();
 
 		for(size_t k = 0; k < target->obj->vertexlist.size(); k += 2) {
-			float dist = fdist(pos, entities[i]->obj->vertexlist3[k].v);
+			float dist = fdist(pos, entities[i]->obj->vertexWorldPositions[k].v);
 
-			if(dist <= dist_limit && glm::abs(pos.y - entities[i]->obj->vertexlist3[k].v.y) < 60.f) {
+			if(dist <= dist_limit && glm::abs(pos.y - entities[i]->obj->vertexWorldPositions[k].v.y) < 60.f) {
 				count++;
 
 				if(dist < mindist)
@@ -2629,7 +2629,7 @@ Entity * ARX_NPC_GetFirstNPCInSight(Entity * ioo)
 			if(ioo == entities.player())
 				orgn.y = player.pos.y + 90.f;
 		} else {
-			orgn = ioo->obj->vertexlist3[grp.handleData()].v;
+			orgn = ioo->obj->vertexWorldPositions[grp.handleData()].v;
 		}
 		}
 		
@@ -2642,7 +2642,7 @@ Entity * ARX_NPC_GetFirstNPCInSight(Entity * ioo)
 			if(io == entities.player())
 				dest.y = player.pos.y + 90.f;
 		} else {
-			dest = io->obj->vertexlist3[grp.handleData()].v;
+			dest = io->obj->vertexWorldPositions[grp.handleData()].v;
 		}
 		}
 

@@ -353,7 +353,7 @@ static void RenderBookPlayerCharacter() {
 		invisibility = 0.5f;
 	
 	IN_BOOK_DRAW = 1;
-	std::vector<EERIE_VERTEX> vertexlist = entities.player()->obj->vertexlist3;
+	std::vector<EERIE_VERTEX> vertexlist = entities.player()->obj->vertexWorldPositions;
 	
 	arx_assert(player.bookAnimation[0].cur_anim);
 	
@@ -381,7 +381,7 @@ static void RenderBookPlayerCharacter() {
 	g_culledDynamicLights[1] = SavePDL[1];
 	g_culledDynamicLightsCount = iSavePDL;
 	
-	entities.player()->obj->vertexlist3 = vertexlist;
+	entities.player()->obj->vertexWorldPositions = vertexlist;
 	vertexlist.clear();
 	
 	player.m_improve = ti;

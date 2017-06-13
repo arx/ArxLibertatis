@@ -1249,7 +1249,7 @@ void ARX_INTERACTIVE_Teleport(Entity * io, const Vec3f & target, bool flag) {
 			}
 		}
 		for(size_t i = 0; i < io->obj->vertexlist.size(); i++) {
-			io->obj->vertexlist3[i].v += translate;
+			io->obj->vertexWorldPositions[i].v += translate;
 		}
 	}
 	
@@ -2037,7 +2037,7 @@ static bool IsCollidingInter(Entity * io, const Vec3f & pos) {
 
 	if(closerThan(pos, io->pos, 190.f)) {
 		
-		std::vector<EERIE_VERTEX> & vlist = io->obj->vertexlist3;
+		std::vector<EERIE_VERTEX> & vlist = io->obj->vertexWorldPositions;
 
 		if(io->obj->grouplist.size() > 4) {
 			for(size_t i = 0; i < io->obj->grouplist.size(); i++) {
@@ -2048,7 +2048,7 @@ static bool IsCollidingInter(Entity * io, const Vec3f & pos) {
 				}
 			}
 		} else {
-			size_t nbv = io->obj->vertexlist3.size();
+			size_t nbv = io->obj->vertexWorldPositions.size();
 			for(size_t i = 0; i < nbv; i++) {
 				if(i != io->obj->origin)
 					if(!fartherThan(pos, vlist[i].v, 30.f)) {
@@ -2110,7 +2110,7 @@ bool ARX_INTERACTIVE_CheckFULLCollision(PHYSICS_BOX_DATA * pbox, Entity * source
 			else
 				step = 6;
 
-			std::vector<EERIE_VERTEX> & vlist = io->obj->vertexlist3;
+			std::vector<EERIE_VERTEX> & vlist = io->obj->vertexWorldPositions;
 
 			if(io->gameFlags & GFLAG_PLATFORM) {
 				for(long kk = 0; kk < pbox->nb_physvert; kk++) {
@@ -2134,7 +2134,7 @@ bool ARX_INTERACTIVE_CheckFULLCollision(PHYSICS_BOX_DATA * pbox, Entity * source
 									float cz = 0;
 
 									for(long idx = 0 ; idx < 3 ; idx++) {
-										ep.v[idx].p = io->obj->vertexlist3[io->obj->facelist[ii].vid[idx]].v;
+										ep.v[idx].p = io->obj->vertexWorldPositions[io->obj->facelist[ii].vid[idx]].v;
 
 										cx += ep.v[idx].p.x;
 										cz += ep.v[idx].p.z;
@@ -2273,7 +2273,7 @@ void UpdateCameras() {
 
 						for(size_t ri = 0; ri < io->obj->vertexlist.size(); ri += 3) {
 							for(size_t rii = 0; rii < io2->obj->vertexlist.size(); rii += 3) {
-								if(closerThan(io->obj->vertexlist3[ri].v, io2->obj->vertexlist3[rii].v, 20.f)) {
+								if(closerThan(io->obj->vertexWorldPositions[ri].v, io2->obj->vertexWorldPositions[rii].v, 20.f)) {
 									Touched = true;
 									ri = io->obj->vertexlist.size();
 									break;
