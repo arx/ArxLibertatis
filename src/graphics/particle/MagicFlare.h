@@ -26,7 +26,6 @@ struct EERIE_CAMERA;
 class Entity;
 
 void MagicFlareLoadTextures();
-void MagicFlareSetCamera(EERIE_CAMERA * camera);
 
 void MagicFlareReleaseEntity(Entity * io);
 long MagicFlareCountNonFlagged();
