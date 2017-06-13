@@ -541,19 +541,21 @@ EERIE_2D_BBOX UpdateBbox2d(const EERIE_3DOBJ & eobj) {
 	
 	EERIE_2D_BBOX box2D;
 	box2D.reset();
-
+	
 	for(size_t i = 0; i < eobj.vertexClipPositions.size(); i++) {
 		const Vec4f & vertex = eobj.vertexClipPositions[i];
-
-		if(   vertex.w > 0.f
-		   && vertex.x >= -32000
-		   && vertex.x <=  32000
-		   && vertex.y >= -32000
-		   && vertex.y <=  32000
-		) {
-			box2D.add(Vec3f(vertex));
+		
+		if(vertex.w <= 0.f) {
+			continue;
 		}
+		
+		Vec3f p = Vec3f(vertex) / vertex.w;
+		if(p.x >= -32000 && p.x <=  32000 && p.y >= -32000 && p.y <=  32000) {
+			box2D.add(p);
+		}
+		
 	}
+	
 	return box2D;
 }
 
@@ -575,10 +577,7 @@ void DrawEERIEInter_ModelTransform(EERIE_3DOBJ *eobj, const TransformInfo &t) {
 void DrawEERIEInter_ViewProjectTransform(EERIE_3DOBJ *eobj) {
 	arx_assert(eobj->vertexClipPositions.size() == eobj->vertexWorldPositions.size());
 	for(size_t i = 0 ; i < eobj->vertexWorldPositions.size(); i++) {
-		Vec4f p = worldToClipSpace(eobj->vertexWorldPositions[i].v);
-		const float near_clamp = .000001f; // just a random small number
-		float rhw = 1.f / std::max(p.w, near_clamp);
-		eobj->vertexClipPositions[i] = Vec4f(Vec3f(p) * rhw, rhw);
+		eobj->vertexClipPositions[i] = worldToClipSpace(eobj->vertexWorldPositions[i].v);
 	}
 }
 
@@ -755,10 +754,8 @@ void DrawEERIEInter_Render(EERIE_3DOBJ *eobj, const TransformInfo &t, Entity *io
 				eobj->vertexColors[face.vid[n]] = ApplyLight(lights, lightsCount, t.rotation, position, normal, colorMod);
 			}
 			
-			TexturedVertex v;
-			v.p = Vec3f(eobj->vertexClipPositions[face.vid[n]]);
-			v.rhw = eobj->vertexClipPositions[face.vid[n]].w;
-			tvList[n] = unproject(v);
+			tvList[n].p = Vec3f(eobj->vertexClipPositions[face.vid[n]]);
+			tvList[n].rhw = eobj->vertexClipPositions[face.vid[n]].w;
 			tvList[n].uv.x = face.u[n];
 			tvList[n].uv.y = face.v[n];
 
@@ -924,8 +921,10 @@ static void PrepareAnimatedObjectHalo(HaloInfo & haloInfo, const Vec3f & pos,
 
 		haloInfo.MAX_ZEDE = 0.f;
 		for(size_t i = 0; i < eobj->vertexlist.size(); i++) {
-			if(eobj->vertexClipPositions[i].w > 0.f)
-				haloInfo.MAX_ZEDE = std::max(eobj->vertexClipPositions[i].z, haloInfo.MAX_ZEDE);
+			if(eobj->vertexClipPositions[i].w > 0.f) {
+				haloInfo.MAX_ZEDE = std::max(eobj->vertexClipPositions[i].z / eobj->vertexClipPositions[i].w,
+				                             haloInfo.MAX_ZEDE);
+			}
 		}
 }
 
@@ -1114,10 +1113,8 @@ static void Cedric_RenderObject(EERIE_3DOBJ * eobj, Skeleton * obj, Entity * io,
 		TexturedVertex *tvList = GetNewVertexList(&pTex->m_modelBatch, face, invisibility, fTransp);
 
 		for(size_t n = 0; n < 3; n++) {
-			TexturedVertex v;
-			v.p = Vec3f(eobj->vertexClipPositions[face.vid[n]]);
-			v.rhw = eobj->vertexClipPositions[face.vid[n]].w;
-			tvList[n] = unproject(v);
+			tvList[n].p = Vec3f(eobj->vertexClipPositions[face.vid[n]]);
+			tvList[n].rhw = eobj->vertexClipPositions[face.vid[n]].w;
 			tvList[n].uv = Vec2f(face.u[n], face.v[n]);
 			tvList[n].color = eobj->vertexColors[face.vid[n]];
 		}
