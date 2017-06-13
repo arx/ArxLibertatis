@@ -557,27 +557,6 @@ EERIE_2D_BBOX UpdateBbox2d(const EERIE_3DOBJ & eobj) {
 	return box2D;
 }
 
-static EERIE_2D_BBOX Cedric_UpdateBbox2d(const EERIE_3DOBJ & eobj) {
-	
-	EERIE_2D_BBOX box2D;
-	box2D.reset();
-
-	for(size_t i = 0; i < eobj.vertexClipPositions.size(); i++) {
-		const Vec4f & vertex = eobj.vertexClipPositions[i];
-		
-		if(   vertex.w > 0.f
-		   && vertex.x >= -32000
-		   && vertex.x <=  32000
-		   && vertex.y >= -32000
-		   && vertex.y <=  32000
-		) {
-			box2D.add(Vec3f(vertex));
-		}
-	}
-	
-	return box2D;
-}
-
 void DrawEERIEInter_ModelTransform(EERIE_3DOBJ *eobj, const TransformInfo &t) {
 
 	for(size_t i = 0 ; i < eobj->vertexlist.size(); i++) {
@@ -1604,7 +1583,7 @@ void EERIEDrawAnimQuatUpdate(EERIE_3DOBJ * eobj,
 
 	Cedric_ViewProjectTransform(eobj);
 	if(io) {
-		io->bbox2D = Cedric_UpdateBbox2d(*eobj);
+		io->bbox2D = UpdateBbox2d(*eobj);
 	}
 }
 
@@ -1629,7 +1608,7 @@ void EERIEDrawAnimQuatRender(EERIE_3DOBJ *eobj, const Vec3f & pos, Entity *io, f
 void AnimatedEntityRender(Entity * entity, float invisibility) {
 
 	Cedric_ViewProjectTransform(entity->obj);
-	entity->bbox2D = Cedric_UpdateBbox2d(*entity->obj);
+	entity->bbox2D = UpdateBbox2d(*entity->obj);
 
 	EERIEDrawAnimQuatRender(entity->obj, entity->pos, entity, invisibility);
 }
