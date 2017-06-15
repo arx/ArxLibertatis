@@ -1895,8 +1895,8 @@ void MainMenu::init()
 		version += "\"";
 	}
 
-	float verPosX = 620 - (hFontControls->getTextSize(version).width() / g_sizeRatio.y);
-	TextWidget * txt = new TextWidget(BUTTON_INVALID, hFontControls, version, Vec2f(verPosX, 80));
+	float verPosX = g_size.right - 20 * g_sizeRatio.x - hFontControls->getTextSize(version).width();
+	TextWidget * txt = new TextWidget(BUTTON_INVALID, hFontControls, version, Vec2f(verPosX / g_sizeRatio.x, 80));
 	
 	txt->SetCheckOff();
 	txt->lColor=Color(127,127,127);
