@@ -66,7 +66,7 @@ void Note::deallocate() {
 
 bool Note::allocate() {
 	
-	if(allocatedForRatio == g_sizeRatio) {
+	if(allocatedForRatio == g_sizeRatio && !ARX_INTERFACE_updateBook()) {
 		return background ? true : false;
 	}
 	
@@ -81,7 +81,7 @@ bool Note::allocate() {
 	Vec2f prevButtonOffset;
 	Vec2f nextButtonOffset;
 	
-	float scale = minSizeRatio();
+	float scale = ARX_INTERFACE_getBookScale();
 	
 	switch(_type) {
 		

@@ -1417,6 +1417,10 @@ static bool bookNeedsUpdate() {
 	}
 }
 
+float ARX_INTERFACE_getBookScale() {
+	return g_bookScale;
+}
+
 static void updateBookScale() {
 	float maxScale = minSizeRatio();
 	g_bookScale = glm::clamp(1.f, 1.0f + (maxScale - 1.0f) * config.interface.bookScale, maxScale);
@@ -1450,11 +1454,13 @@ static void updateBookRect() {
 	}
 }
 
-static void updateBook() {
+bool ARX_INTERFACE_updateBook() {
 	if(bookNeedsUpdate()) {
 		updateBookScale();
 		updateBookRect();
+		return true;
 	}
+	return false;
 }
 
 void ARX_INTERFACE_ManageOpenedBook() {
@@ -1462,7 +1468,7 @@ void ARX_INTERFACE_ManageOpenedBook() {
 	
 	UseRenderState state(render2D());
 	
-	updateBook();
+	ARX_INTERFACE_updateBook();
 
 	Vec2f bookPos = g_bookRect.topLeft();
 
