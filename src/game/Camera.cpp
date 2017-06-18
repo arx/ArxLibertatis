@@ -142,7 +142,7 @@ static void EERIE_CreateMatriceProj(float width, float height, EERIE_CAMERA * ca
 	cam->ProjectionMatrix[0][0] = w;
 	cam->ProjectionMatrix[1][1] = h;
 	cam->ProjectionMatrix[2][2] = Q;
-	cam->ProjectionMatrix[3][2] = (-Q * nearDist);
+	cam->ProjectionMatrix[3][2] = -Q * nearDist;
 	cam->ProjectionMatrix[2][3] = 1.f;
 	cam->ProjectionMatrix[3][3] = 0.f;
 	GRenderer->SetProjectionMatrix(cam->ProjectionMatrix);
@@ -152,9 +152,9 @@ static void EERIE_CreateMatriceProj(float width, float height, EERIE_CAMERA * ca
 
 	cam->ProjectionMatrix[0][0] *= width * .5f;
 	cam->ProjectionMatrix[1][1] *= height * .5f;
-	cam->ProjectionMatrix[2][2] = -(farDist * nearDist) / frustumDepth;	//HYPERBOLIC
+	cam->ProjectionMatrix[2][2] = -Q * nearDist;
 	cam->ProjectionMatrix[3][2] = Q;
-
+	
 	GRenderer->SetViewport(Rect(static_cast<s32>(width), static_cast<s32>(height)));
 }
 
