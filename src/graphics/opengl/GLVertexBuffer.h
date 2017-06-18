@@ -56,7 +56,6 @@ inline void setVertexArray(const TexturedVertex * vertices, const void * ref) {
 		return;
 	}
 	
-	// rhw -> w conversion is done in a vertex shader
 	glEnableClientState(GL_VERTEX_ARRAY);
 	glVertexPointer(4, GL_FLOAT, sizeof(*vertices), &vertices->p);
 
