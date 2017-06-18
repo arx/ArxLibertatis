@@ -679,14 +679,19 @@ void ConfuseSpell::End() {
 
 void ConfuseSpell::Update() {
 	
-	Vec3f pos = entities[m_target]->pos;
-	if(m_target != EntityHandle_Player) {
-		pos.y += entities[m_target]->physics.cyl.height - 30.f;
+	Entity *target = entities.get(m_target);
+	if(!target) {
+		return;
 	}
 	
-	ObjVertHandle idx = entities[m_target]->obj->fastaccess.head_group_origin;
+	Vec3f pos = target->pos;
+	if(m_target != EntityHandle_Player) {
+		pos.y += target->physics.cyl.height - 30.f;
+	}
+	
+	ObjVertHandle idx = target->obj->fastaccess.head_group_origin;
 	if(idx != ObjVertHandle()) {
-		pos = entities[m_target]->obj->vertexWorldPositions[idx.handleData()].v;
+		pos = target->obj->vertexWorldPositions[idx.handleData()].v;
 		pos.y -= 50.f;
 	}
 	
