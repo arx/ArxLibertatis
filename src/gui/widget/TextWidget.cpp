@@ -180,7 +180,6 @@ bool TextWidget::OnMouseClick() {
 						m_savegame = page->m_savegame;
 						if(m_savegame != SavegameHandle()) {
 							m_targetMenu = MAIN;
-							GRenderer->Clear(Renderer::DepthBuffer);
 							ARXMenu_LoadQuest(m_savegame);
 							bNoMenu=true;
 							if(pTextManage) {
