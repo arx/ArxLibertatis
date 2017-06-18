@@ -86,7 +86,7 @@ void LoadLevelScreen(long num) {
 
 		ratio = glm::clamp(ratio, 0.f, 1.f);
 
-		GRenderer->Clear(Renderer::ColorBuffer | Renderer::DepthBuffer);
+		GRenderer->Clear(Renderer::ColorBuffer);
 		
 		UseRenderState state(render2D().noBlend());
 		
