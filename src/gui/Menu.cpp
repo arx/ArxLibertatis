@@ -316,7 +316,7 @@ void ARX_Menu_Render() {
 		return;
 	
 	
-	GRenderer->Clear(Renderer::ColorBuffer | Renderer::DepthBuffer);
+	GRenderer->Clear(Renderer::ColorBuffer);
 	
 	FLYING_OVER = 0;
 	
