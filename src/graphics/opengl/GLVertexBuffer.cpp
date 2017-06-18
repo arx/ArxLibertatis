@@ -21,18 +21,20 @@
 
 static GLArrayClientState glArrayClientState = GL_NoArray;
 static const void * glArrayClientStateRef = NULL;
-static int glArrayClientStateTexCount = 0;
+static int glArrayClientStateTexCount = 1;
 static GLuint glBoundBuffer = GL_NONE;
 
 std::vector<GLushort> glShortIndexBuffer;
 std::vector<GLuint> glIntIndexBuffer;
 
 void setVertexArrayTexCoord(int index, const void * coord, size_t stride) {
-
+	
 	glClientActiveTexture(GL_TEXTURE0 + index);
-	glEnableClientState(GL_TEXTURE_COORD_ARRAY);
+	if(index > 0) {
+		glEnableClientState(GL_TEXTURE_COORD_ARRAY);
+	}
 	glTexCoordPointer(2, GL_FLOAT, stride, coord);
-
+	
 }
 
 bool switchVertexArray(GLArrayClientState type, const void * ref, int texcount) {
@@ -42,6 +44,7 @@ bool switchVertexArray(GLArrayClientState type, const void * ref, int texcount) 
 	}
 
 	if(glArrayClientState != type) {
+		arx_assert(texcount >= 1);
 		for(int i = texcount; i < glArrayClientStateTexCount; i++) {
 			glClientActiveTexture(GL_TEXTURE0 + i);
 			glDisableClientState(GL_TEXTURE_COORD_ARRAY);
