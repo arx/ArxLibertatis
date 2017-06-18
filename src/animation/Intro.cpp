@@ -71,7 +71,7 @@ static TextureContainer * FISHTANK_img = NULL;
 static TextureContainer * ARKANE_img = NULL;
 
 void LoadScreen() {
-	GRenderer->Clear(Renderer::ColorBuffer | Renderer::DepthBuffer);
+	GRenderer->Clear(Renderer::ColorBuffer);
 }
 
 bool ARX_INTERFACE_InitFISHTANK() {
@@ -119,7 +119,7 @@ static void ARX_INTERFACE_ShowLogo(TextureContainer * logo) {
 	
 	GRenderer->GetTextureStage(0)->setWrapMode(TextureStage::WrapClamp); 
 	
-	GRenderer->Clear(Renderer::ColorBuffer | Renderer::DepthBuffer);
+	GRenderer->Clear(Renderer::ColorBuffer);
 	
 	DrawCenteredImage(logo);
 	
