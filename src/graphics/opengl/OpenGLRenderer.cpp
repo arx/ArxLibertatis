@@ -343,6 +343,8 @@ void OpenGLRenderer::enableTransform() {
 	glMatrixMode(GL_PROJECTION);
 	glLoadMatrixf(glm::value_ptr(projection));
 	
+	glFogi(GL_FOG_COORDINATE_SOURCE, GL_FRAGMENT_DEPTH);
+	
 	currentTransform = GL_ModelViewProjectionTransform;
 }
 
@@ -367,6 +369,8 @@ void OpenGLRenderer::disableTransform() {
 	
 	// Change the viewport and pixel origins
 	glTranslatef(.5f - viewport.left, .5f - viewport.top, 0.f);
+	
+	glFogi(GL_FOG_COORDINATE_SOURCE, GL_FOG_COORDINATE);
 	
 	currentTransform = GL_NoTransform;
 }
