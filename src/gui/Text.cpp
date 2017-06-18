@@ -196,10 +196,8 @@ long ARX_UNICODE_DrawTextInRect(Font* font,
                                 const Rect * pClipRect
                                ) {
 	
-	Rect previousViewport;
 	if(pClipRect) {
-		previousViewport = GRenderer->GetViewport();
-		GRenderer->SetViewport(*pClipRect); 
+		GRenderer->SetScissor(*pClipRect);
 	}
 
 	Rect rect((Rect::Num)pos.x, (Rect::Num)pos.y, (Rect::Num)maxx, Rect::Limits::max());
@@ -211,7 +209,7 @@ long ARX_UNICODE_DrawTextInRect(Font* font,
 	ARX_UNICODE_FormattingInRect(font, _text, rect, col, &height);
 
 	if(pClipRect) {
-		GRenderer->SetViewport(previousViewport);
+		GRenderer->SetScissor(Rect::ZERO);
 	}
 
 	return height;
