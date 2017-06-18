@@ -302,8 +302,13 @@ void OpenGLRenderer::reinit() {
 	// Clear screen
 	Clear(ColorBuffer | DepthBuffer);
 	
+	glEnableClientState(GL_VERTEX_ARRAY);
+	glEnableClientState(GL_COLOR_ARRAY);
+	glClientActiveTexture(GL_TEXTURE0);
+	glEnableClientState(GL_TEXTURE_COORD_ARRAY);
+	
 	currentTransform = GL_UnsetTransform;
-	switchVertexArray(GL_NoArray, 0, 0);
+	switchVertexArray(GL_NoArray, 0, 1);
 	
 	if(ARX_HAVE_GL_EXT(EXT_texture_filter_anisotropic)) {
 		GLfloat limit;
