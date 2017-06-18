@@ -128,6 +128,9 @@ private:
 	RenderState m_glstate;
 	GLenum m_glcull;
 	
+	bool m_glscissor;
+	bool m_scissor;
+	
 	int m_MSAALevel;
 	bool m_hasMSAA;
 	bool m_hasTextureNPOT;

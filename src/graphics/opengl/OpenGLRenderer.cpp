@@ -48,6 +48,8 @@ OpenGLRenderer::OpenGLRenderer()
 	, m_maximumAnisotropy(1.f)
 	, m_maximumSupportedAnisotropy(1.f)
 	, m_glcull(GL_NONE)
+	, m_glscissor(false)
+	, m_scissor(false)
 	, m_MSAALevel(0)
 	, m_hasMSAA(false)
 	, m_hasTextureNPOT(false)
@@ -288,6 +290,8 @@ void OpenGLRenderer::reinit() {
 	glEnable(GL_BLEND);
 	m_glstate.setBlend(BlendOne, BlendZero);
 	
+	m_glscissor = false;
+	
 	glPixelStorei(GL_UNPACK_ALIGNMENT, 1);
 	glPixelStorei(GL_PACK_ALIGNMENT, 1);
 	
@@ -477,11 +481,11 @@ Rect OpenGLRenderer::GetViewport() {
 void OpenGLRenderer::SetScissor(const Rect & rect) {
 	
 	if(rect.isValid()) {
-		glEnable(GL_SCISSOR_TEST);
+		m_scissor = true;
 		int height = mainApp->getWindow()->getSize().y;
 		glScissor(rect.left, height - rect.bottom, rect.width(), rect.height());
 	} else {
-		glDisable(GL_SCISSOR_TEST);
+		m_scissor = false;
 	}
 }
 
@@ -507,7 +511,12 @@ void OpenGLRenderer::Clear(BufferFlags bufferFlags, Color clearColor, float clea
 	
 	if(nrects) {
 		
-		glEnable(GL_SCISSOR_TEST);
+		arx_assert(!m_scissor);
+		
+		if(!m_glscissor) {
+			glEnable(GL_SCISSOR_TEST);
+			m_glscissor = true;
+		}
 		
 		int height = mainApp->getWindow()->getSize().y;
 		
@@ -516,9 +525,12 @@ void OpenGLRenderer::Clear(BufferFlags bufferFlags, Color clearColor, float clea
 			glClear(buffers);
 		}
 		
-		glDisable(GL_SCISSOR_TEST);
-		
 	} else {
+		
+		if(m_glscissor) {
+			glDisable(GL_SCISSOR_TEST);
+			m_glscissor = false;
+		}
 		
 		glClear(buffers);
 		
@@ -735,6 +747,15 @@ static const GLenum arxToGlBlendFactor[] = {
 };
 
 void OpenGLRenderer::flushState() {
+	
+	if(m_glscissor != m_scissor) {
+		if(m_scissor) {
+			glEnable(GL_SCISSOR_TEST);
+		} else {
+			glDisable(GL_SCISSOR_TEST);
+		}
+		m_glscissor = m_scissor;
+	}
 	
 	if(m_glstate != m_state) {
 		
