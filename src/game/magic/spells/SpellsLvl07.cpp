@@ -643,7 +643,12 @@ ConfuseSpell::ConfuseSpell()
 
 void ConfuseSpell::Launch() {
 	
-	ARX_SOUND_PlaySFX(SND_SPELL_CONFUSE, &entities[m_target]->pos);
+	Entity *target = entities.get(m_target);
+	if(!target) {
+		return;
+	}
+	
+	ARX_SOUND_PlaySFX(SND_SPELL_CONFUSE, &target->pos);
 	
 	m_hasDuration = true;
 	m_fManaCostPerSecond = 1.5f;
