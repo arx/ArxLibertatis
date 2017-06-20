@@ -138,16 +138,14 @@ static const GLint arxToGlWrapMode[] = {
 	GL_CLAMP_TO_EDGE // WrapClamp
 };
 
-static const GLint arxToGlFilter[][3] = {
+static const GLint arxToGlFilter[][2] = {
 	// no mipmap
 	{
-		-1, // FilterNone
 		GL_NEAREST, // FilterNearest
 		GL_LINEAR   // FilterLinear
 	},
 	// mipmap
 	{
-		-1, // FilterNone
 		GL_NEAREST_MIPMAP_LINEAR, // FilterNearest TODO does GL_NEAREST_MIPMAP_NEAREST make more sense?
 		GL_LINEAR_MIPMAP_LINEAR   // FilterLinear
 	}
@@ -170,14 +168,12 @@ void GLTexture2D::apply(GLTextureStage * stage) {
 	
 	if(stage->minFilter != minFilter) {
 		minFilter = stage->minFilter;
-		arx_assert(minFilter != TextureStage::FilterNone);
 		int mipFilter = hasMipmaps() ? 1 : 0;
 		glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_MIN_FILTER, arxToGlFilter[mipFilter][minFilter]);
 	}
 	
 	if(stage->magFilter != magFilter) {
 		magFilter = stage->magFilter;
-		arx_assert(magFilter != TextureStage::FilterNone);
 		glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_MAG_FILTER, arxToGlFilter[0][magFilter]);
 	}
 	
