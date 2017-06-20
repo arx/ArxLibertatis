@@ -78,7 +78,6 @@ public:
 	
 	virtual void setMinFilter(FilterMode filterMode) = 0;
 	virtual void setMagFilter(FilterMode filterMode) = 0;
-	virtual void setMipFilter(FilterMode filterMode) = 0;
 	
 	//! Level of detail bias for mipmaps. Can be used to make textures appear more chunky or more blurred.
 	/* Each unit bias (+/-1.0) biases the selection by exactly one MIP map level. 

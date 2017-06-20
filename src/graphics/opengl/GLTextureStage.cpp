@@ -29,7 +29,6 @@ GLTextureStage::GLTextureStage(OpenGLRenderer * _renderer, unsigned stage) : Tex
 	wrapMode = WrapRepeat;
 	minFilter = FilterLinear;
 	magFilter = FilterLinear;
-	mipFilter = FilterLinear;
 	
 	args[Color][Arg0] = ArgTexture;
 	args[Color][Arg1] = ArgCurrent;
@@ -247,10 +246,6 @@ void GLTextureStage::setMagFilter(FilterMode filterMode) {
 	magFilter = filterMode;
 }
 
-void GLTextureStage::setMipFilter(FilterMode filterMode) {
-	mipFilter = filterMode;
-}
-
 void GLTextureStage::setMipMapLODBias(float bias) {
 	
 	if(mStage != 0) {
@@ -286,7 +281,7 @@ void GLTextureStage::apply() {
 			if(stage->tex == tex && stage->isEnabled()) {
 				apply = false;
 #ifdef ARX_DEBUG
-				if(stage->wrapMode != wrapMode || stage->minFilter != minFilter || stage->magFilter != magFilter || stage->mipFilter != mipFilter) {
+				if(stage->wrapMode != wrapMode || stage->minFilter != minFilter || stage->magFilter != magFilter) {
 					static bool warned = false;
 					if(!warned) {
 						LogWarning << "Same texture used in multiple stages with different attributes.";
