@@ -49,7 +49,6 @@ public:
 	
 	void setMinFilter(FilterMode filterMode);
 	void setMagFilter(FilterMode filterMode);
-	void setMipFilter(FilterMode filterMode);
 	
 	void setMipMapLODBias(float bias);
 	
@@ -89,7 +88,6 @@ private:
 	WrapMode wrapMode;
 	FilterMode minFilter;
 	FilterMode magFilter;
-	FilterMode mipFilter;
 
 	typedef std::map<GLenum, GLint> IntegerStateCache;
 	IntegerStateCache m_stateCacheIntegers;
