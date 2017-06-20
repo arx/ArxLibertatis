@@ -55,7 +55,6 @@ private:
 	TextureStage::WrapMode wrapMode;
 	TextureStage::FilterMode minFilter;
 	TextureStage::FilterMode magFilter;
-	TextureStage::FilterMode mipFilter;
 	
 	bool isNPOT;
 	
