@@ -369,13 +369,11 @@ static void RenderBookPlayerCharacter() {
 	
 	Halo_Render();
 	
-	GRenderer->GetTextureStage(0)->setMipFilter(TextureStage::FilterNone);
 	{
 		UseRenderState state(render3D().fog(false));
 		PopAllTriangleListOpaque();
 	}
 	PopAllTriangleListTransparency();
-	GRenderer->GetTextureStage(0)->setMipFilter(TextureStage::FilterLinear);
 	
 	g_culledDynamicLights[0] = SavePDL[0];
 	g_culledDynamicLights[1] = SavePDL[1];
