@@ -509,6 +509,8 @@ static void Cedric_ApplyLighting(ShaderLight lights[], int lightsCount, EERIE_3D
 	
 	ARX_PROFILE_FUNC();
 	
+	arx_assert(eobj->vertexColors.size() == eobj->vertexWorldPositions.size());
+	
 	/* Apply light on all vertices */
 	for(size_t i = 0; i != obj->bones.size(); i++) {
 
@@ -560,7 +562,9 @@ EERIE_2D_BBOX UpdateBbox2d(const EERIE_3DOBJ & eobj) {
 }
 
 void DrawEERIEInter_ModelTransform(EERIE_3DOBJ *eobj, const TransformInfo &t) {
-
+	
+	arx_assert(eobj->vertexWorldPositions.size() == eobj->vertexlist.size());
+	
 	for(size_t i = 0 ; i < eobj->vertexlist.size(); i++) {
 
 		Vec3f temp = eobj->vertexlist[i].v;
@@ -723,6 +727,8 @@ void DrawEERIEInter_Render(EERIE_3DOBJ *eobj, const TransformInfo &t, Entity *io
 	ShaderLight lights[llightsSize];
 	int lightsCount;
 	UpdateLlights(lights, lightsCount, tv, false);
+	
+	arx_assert(eobj->vertexColors.size() == eobj->vertexWorldPositions.size());
 
 	for(size_t i = 0; i < eobj->facelist.size(); i++) {
 		const EERIE_FACE & face = eobj->facelist[i];
@@ -1392,7 +1398,9 @@ static void Cedric_ConcatenateTM(Skeleton & rig, const TransformInfo & t) {
  * Transform object vertices
  */
 static void Cedric_TransformVerts(EERIE_3DOBJ * eobj) {
-
+	
+	arx_assert(eobj->vertexWorldPositions.size() == eobj->vertexlist.size());
+	
 	Skeleton & rig = *eobj->m_skeleton;
 
 	// Transform & project all vertices
