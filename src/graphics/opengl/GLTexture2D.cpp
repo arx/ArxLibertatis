@@ -32,7 +32,6 @@ GLTexture2D::GLTexture2D(OpenGLRenderer * _renderer)
 	, wrapMode(TextureStage::WrapRepeat)
 	, minFilter(TextureStage::FilterLinear)
 	, magFilter(TextureStage::FilterNearest)
-	, mipFilter(TextureStage::FilterLinear)
 	, isNPOT(false)
 {}
 
@@ -48,7 +47,6 @@ bool GLTexture2D::Create() {
 	
 	// Set our state to the default OpenGL state
 	wrapMode = TextureStage::WrapRepeat;
-	mipFilter = TextureStage::FilterLinear;
 	minFilter = TextureStage::FilterNearest;
 	magFilter = TextureStage::FilterLinear;
 	
@@ -141,22 +139,16 @@ static const GLint arxToGlWrapMode[] = {
 };
 
 static const GLint arxToGlFilter[][3] = {
-	// Mipmap: FilterNone
+	// no mipmap
 	{
 		-1, // FilterNone
 		GL_NEAREST, // FilterNearest
 		GL_LINEAR   // FilterLinear
 	},
-	// Mipmap: FilterNearest
+	// mipmap
 	{
 		-1, // FilterNone
-		GL_NEAREST_MIPMAP_NEAREST, // FilterNearest
-		GL_LINEAR_MIPMAP_NEAREST   // FilterLinear
-	},
-	// Mipmap: FilterLinear
-	{
-		-1, // FilterNone
-		GL_NEAREST_MIPMAP_LINEAR, // FilterNearest
+		GL_NEAREST_MIPMAP_LINEAR, // FilterNearest TODO does GL_NEAREST_MIPMAP_NEAREST make more sense?
 		GL_LINEAR_MIPMAP_LINEAR   // FilterLinear
 	}
 };
@@ -176,11 +168,10 @@ void GLTexture2D::apply(GLTextureStage * stage) {
 		glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_WRAP_S, glwrap);
 	}
 	
-	TextureStage::FilterMode newMipFilter = hasMipmaps() ? stage->mipFilter
-	                                                     : TextureStage::FilterNone;
-	if(newMipFilter != mipFilter || stage->minFilter != minFilter) {
-		minFilter = stage->minFilter, mipFilter = newMipFilter;
+	if(stage->minFilter != minFilter) {
+		minFilter = stage->minFilter;
 		arx_assert(minFilter != TextureStage::FilterNone);
+		int mipFilter = hasMipmaps() ? 1 : 0;
 		glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_MIN_FILTER, arxToGlFilter[mipFilter][minFilter]);
 	}
 	
