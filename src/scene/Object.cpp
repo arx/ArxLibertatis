@@ -244,8 +244,9 @@ EERIE_3DOBJ * Eerie_Copy(const EERIE_3DOBJ * obj) {
 	EERIE_3DOBJ * nouvo = new EERIE_3DOBJ(); 
 	
 	nouvo->vertexlist = obj->vertexlist;
-	
-	nouvo->vertexWorldPositions = obj->vertexWorldPositions;
+	nouvo->vertexWorldPositions.resize(nouvo->vertexlist.size());
+	nouvo->vertexClipPositions.resize(nouvo->vertexlist.size());
+	nouvo->vertexColors.resize(nouvo->vertexlist.size());
 	
 	nouvo->pbox = NULL;
 	nouvo->m_skeleton = NULL;
