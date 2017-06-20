@@ -464,6 +464,17 @@ if(NOT ARX_HAVE_SDL AND (NOT WITH_SDL OR WITH_SDL EQUAL 1))
 	endif()
 	find_package(SDL 1.2 ${OPTIONAL_DEPENDENCY})
 	if(SDL_FOUND)
+		if(NOT WIN32 AND NOT MACOS)
+			# Some builds of SDL1 have references to X11 symbols but do not link to libX11.
+			# If we do not use GLEW then we do not indirectly link to libX11 anywhere and those
+			# symbols remain unresolved, resulting in a linker error.
+			# If libX11 was not actually needed, then the linker will discard it.
+			find_package(X11)
+			if(X11_FOUND)
+				list(APPEND SDL_LIBRARY ${X11_LIBRARIES})
+				list(APPEND SDL_INCLUDE_DIR ${X11_INCLUDE_DIR})
+			endif()
+		endif()
 		if(NOT MSVC)
 			check_link_library(SDL SDL_LIBRARY)
 		endif()
