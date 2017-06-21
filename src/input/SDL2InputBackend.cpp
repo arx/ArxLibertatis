@@ -40,6 +40,9 @@ SDL2InputBackend::SDL2InputBackend(SDL2Window * window) : m_window(window), m_te
 	SDL_EventState(SDL_KEYUP, SDL_ENABLE);
 	SDL_EventState(SDL_TEXTINPUT, SDL_ENABLE);
 	SDL_EventState(SDL_TEXTEDITING, SDL_ENABLE);
+	#if SDL_VERSION_ATLEAST(2, 0, 5)
+	SDL_EventState(SDL_DROPTEXT, SDL_ENABLE);
+	#endif
 	SDL_EventState(SDL_MOUSEMOTION, SDL_ENABLE);
 	SDL_EventState(SDL_MOUSEBUTTONDOWN, SDL_ENABLE);
 	SDL_EventState(SDL_MOUSEBUTTONUP, SDL_ENABLE);
@@ -327,6 +330,16 @@ void SDL2InputBackend::onEvent(const SDL_Event & event) {
 			}
 			break;
 		}
+		
+		#if SDL_VERSION_ATLEAST(2, 0, 5)
+		case SDL_DROPTEXT: {
+			if(m_textHandler) {
+				m_textHandler->droppedText(event.drop.file);
+			}
+			SDL_free(event.drop.file);
+			break;
+		}
+		#endif
 		
 		case SDL_MOUSEMOTION: {
 			cursorAbs = Vec2i(event.motion.x, event.motion.y);
