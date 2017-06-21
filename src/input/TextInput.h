@@ -58,6 +58,11 @@ public:
 	 */
 	virtual bool keyPressed(Keyboard::Key key, KeyModifiers mod);
 	
+	/*!
+	 * User has dragged & dropped some text
+	 */
+	virtual void droppedText(const std::string & text) = 0;
+	
 };
 
 class BasicTextInput : protected TextInputHandler {
@@ -85,6 +90,7 @@ public:
 	void newText(const std::string & text);
 	void editingText(const std::string & composition, size_t cursorStart, size_t cursorLength);
 	bool keyPressed(Keyboard::Key key, KeyModifiers mod);
+	void droppedText(const std::string & text);
 	
 	void clear();
 	void setText(const std::string & text, size_t cursorPos = size_t(-1));

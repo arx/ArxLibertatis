@@ -450,3 +450,7 @@ bool BasicTextInput::keyPressed(Keyboard::Key key, KeyModifiers mod) {
 	
 	return TextInputHandler::keyPressed(key, mod);
 }
+
+void BasicTextInput::droppedText(const std::string & text) {
+	paste(text);
+}
