@@ -111,12 +111,17 @@ SDL2Window::~SDL2Window() {
 #ifndef SDL_HINT_NO_SIGNAL_HANDLERS // SDL 2.0.4+
 #define SDL_HINT_NO_SIGNAL_HANDLERS "SDL_NO_SIGNAL_HANDLERS"
 #endif
+#ifndef SDL_HINT_MOUSE_FOCUS_CLICKTHROUGH // SDL 2.0.5+
+#define SDL_HINT_MOUSE_FOCUS_CLICKTHROUGH "SDL_MOUSE_FOCUS_CLICKTHROUGH"
+#endif
 
 bool SDL2Window::initializeFramework() {
 	
 	#if defined(ARX_DEBUG)
 	SDL_SetHint(SDL_HINT_NO_SIGNAL_HANDLERS, "1");
 	#endif
+	
+	SDL_SetHint(SDL_HINT_MOUSE_FOCUS_CLICKTHROUGH, "1");
 	
 	const char * minimize = SDL_GetHint(SDL_HINT_VIDEO_MINIMIZE_ON_FOCUS_LOSS);
 	if(minimize) {
