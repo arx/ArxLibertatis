@@ -62,6 +62,8 @@ ZeniMax Media Inc., Suite 120, Rockville, Maryland 20850 USA.
 #include "animation/Animation.h"
 #include "animation/AnimationRender.h"
 
+#include "cinematic/CinematicController.h"
+
 #include "core/Application.h"
 #include "core/ArxGame.h"
 #include "core/Config.h"
@@ -1610,7 +1612,7 @@ void ArxGame::manageKeyMouse() {
 	bool bRestoreCoordMouse=true;
 
 	static bool LAST_PLAYER_MOUSELOOK_ON = false;
-	bool mouselook = PLAYER_MOUSELOOK_ON && !BLOCK_PLAYER_CONTROLS;
+	bool mouselook = PLAYER_MOUSELOOK_ON && !BLOCK_PLAYER_CONTROLS && !isInCinematic();
 	if(mouselook && !LAST_PLAYER_MOUSELOOK_ON) {
 		
 		MemoMouse = DANAEMouse;
