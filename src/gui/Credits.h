@@ -51,6 +51,8 @@ namespace credits {
 //! Set additional credits for used libraries
 void setLibraryCredits(const std::string & subsystem, const std::string & credits);
 
+void setMessage(const std::string & message);
+
 /*!
  * Render the credits.
  *
