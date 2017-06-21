@@ -146,6 +146,7 @@ bool SDL2Window::initializeFramework() {
 		/*
 		 * We want the X11 WM_CLASS to match the .desktop file and icon name,
 		 * but SDL does not let us set it directly.
+		 * This is also used by SDL's Wayland backend!
 		 */
 		{ "SDL_VIDEO_X11_WMCLASS",  arx_icon_name.c_str() },
 	};
