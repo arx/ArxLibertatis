@@ -112,6 +112,8 @@ public:
 	
 	void setLibraryCredits(const std::string & subsystem, const std::string & credits);
 	
+	void setMessage(const std::string & message) { m_message = message; }
+	
 	void render();
 	
 	void reset();
@@ -122,6 +124,8 @@ private:
 	
 	typedef boost::unordered_map<std::string, std::string> Libraries;
 	Libraries m_libraries;
+	
+	std::string m_message;
 	
 	std::string m_text;
 	
@@ -216,6 +220,10 @@ bool Credits::load() {
 	LogDebug("Final credits length: " << m_text.size());
 	
 	free(credits);
+	
+	if(!m_message.empty()) {
+		m_text = "~" + m_message + "\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n" + m_text;
+	}
 	
 	return true;
 }
@@ -565,12 +573,17 @@ void Credits::reset() {
 	m_lines.clear();
 	delete m_background, m_background = NULL;
 	m_text.clear();
+	m_message.clear();
 }
 
 } // anonymous namespace
 
 void setLibraryCredits(const std::string & subsystem, const std::string & credits) {
 	g_credits.setLibraryCredits(subsystem, credits);
+}
+
+void setMessage(const std::string & message) {
+	g_credits.setMessage(message);
 }
 
 void render() {
