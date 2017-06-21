@@ -108,10 +108,13 @@ SDL2Window::~SDL2Window() {
 	
 }
 
+#ifndef SDL_HINT_NO_SIGNAL_HANDLERS // SDL 2.0.4+
+#define SDL_HINT_NO_SIGNAL_HANDLERS "SDL_NO_SIGNAL_HANDLERS"
+#endif
+
 bool SDL2Window::initializeFramework() {
 	
-	#if defined(ARX_DEBUG) && defined(SDL_HINT_NO_SIGNAL_HANDLERS)
-	// SDL 2.0.4+
+	#if defined(ARX_DEBUG)
 	SDL_SetHint(SDL_HINT_NO_SIGNAL_HANDLERS, "1");
 	#endif
 	
