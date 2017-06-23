@@ -783,6 +783,10 @@ void HealthGauge::init() {
 
 void HealthGauge::updateRect(const Rectf & parent) {
 	m_rect = createChild(parent, Anchor_BottomLeft, m_size * m_scale, Anchor_BottomLeft);
+	
+	// Red gauge texures have a 2 pixel gap at the bottom,
+	// tweak the position to hide it
+	m_rect.move(0, 2.f * m_scale);
 }
 
 void HealthGauge::update() {
