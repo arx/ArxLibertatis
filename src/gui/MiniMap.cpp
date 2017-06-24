@@ -319,7 +319,7 @@ void MiniMap::showPlayerMiniMap(int showLevel) {
 	}
 }
 
-void MiniMap::showBookMiniMap(int showLevel, Rect rect) {
+void MiniMap::showBookMiniMap(int showLevel, Rect rect, float scale) {
 	
 	UseRenderState state(render2D());
 	
@@ -330,7 +330,6 @@ void MiniMap::showBookMiniMap(int showLevel, Rect rect) {
 	
 	if(m_levels[showLevel].m_texContainer) {
 		
-		float scale = minSizeRatio();
 		float zoom = 900.f * scale;
 		
 		Vec2f start = Vec2f_ZERO;
