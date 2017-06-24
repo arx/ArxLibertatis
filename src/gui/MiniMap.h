@@ -134,7 +134,7 @@ public:
 	*
 	* \param int showLevel
 	*/
-	void showBookEntireMap(int showLevel, Rect rect);
+	void showBookEntireMap(int showLevel, Rect rect, float scale);
 	
 	//! Reveals entirely all levels
 	void reveal();

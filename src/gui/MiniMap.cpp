@@ -352,8 +352,9 @@ void MiniMap::showBookMiniMap(int showLevel, Rect rect, float scale) {
 		
 	}
 }
+#include "graphics/DrawLine.h"
 
-void MiniMap::showBookEntireMap(int showLevel, Rect rect) {
+void MiniMap::showBookEntireMap(int showLevel, Rect rect, float scale) {
 	
 	UseRenderState state(render2D());
 	
@@ -366,7 +367,6 @@ void MiniMap::showBookEntireMap(int showLevel, Rect rect) {
 		return;
 	}
 	
-	float scale = minSizeRatio();
 	float zoom = 250.f * scale;
 	
 	Vec2f start(rect.topLeft());
@@ -435,6 +435,8 @@ void MiniMap::showBookEntireMap(int showLevel, Rect rect) {
 			if(!m_mapMarkers[i].m_text.empty()) {
 				
 				Rect bRect(Vec2i(rect.left, rect.bottom), s32(205 * scale), s32(63 * scale));
+
+				drawLineRectangle(Rectf(bRect), 0.0f, Color::red);
 				
 				Rect::Num left = checked_range_cast<Rect::Num>(bRect.left);
 				Rect::Num right = checked_range_cast<Rect::Num>(bRect.right);
