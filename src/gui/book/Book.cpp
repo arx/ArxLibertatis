@@ -413,22 +413,22 @@ static void RenderBookPlayerCharacter() {
 	}
 	
 	if(Entity * tod = entities.get(player.equiped[EQUIP_SLOT_ARMOR])) {
-			tod->bbox2D.min = bookPos + Vec2f(98.f, 52.f) * scale;
-			tod->bbox2D.max = bookPos + Vec2f(187.f, 118.f) * scale;
+			tod->bbox2D.min = bookPos + Vec2f(90.f, 52.f) * scale;
+			tod->bbox2D.max = bookPos + Vec2f(170.f, 118.f) * scale;
 			
 			tod->ioflags |= IO_ICONIC;
 	}
 	
 	if(Entity * tod = entities.get(player.equiped[EQUIP_SLOT_LEGGINGS])) {
-			tod->bbox2D.min = bookPos + Vec2f(121.f, 119.f) * scale;
-			tod->bbox2D.max = bookPos + Vec2f(180.f, 258.f) * scale;
+			tod->bbox2D.min = bookPos + Vec2f(110.f, 119.f) * scale;
+			tod->bbox2D.max = bookPos + Vec2f(170.f, 265.f) * scale;
 			
 			tod->ioflags |= IO_ICONIC;
 	}
 	
 	if(Entity * tod = entities.get(player.equiped[EQUIP_SLOT_HELMET])) {
-			tod->bbox2D.min = bookPos + Vec2f(121.f, 11.f) * scale;
-			tod->bbox2D.max = bookPos + Vec2f(163.f, 51.f) * scale;
+			tod->bbox2D.min = bookPos + Vec2f(115.f, 20.f) * scale;
+			tod->bbox2D.max = bookPos + Vec2f(153.f, 51.f) * scale;
 			
 			tod->ioflags |= IO_ICONIC;
 	}
