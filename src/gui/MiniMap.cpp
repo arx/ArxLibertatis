@@ -451,7 +451,7 @@ void MiniMap::showBookEntireMap(int showLevel, Rect rect, float scale) {
 				                           Vec2f(bRect.topLeft()),
 				                           float(bRect.right),
 				                           m_mapMarkers[i].m_text.substr(0, lLengthDraw),
-				                           Color::none);
+				                           Color::black);
 			}
 		}
 		
