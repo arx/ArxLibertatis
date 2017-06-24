@@ -435,7 +435,7 @@ void MiniMap::showBookEntireMap(int showLevel, Rect rect) {
 		if(mouseTestRect.contains(Vec2i(DANAEMouse))) {
 			if(!m_mapMarkers[i].m_text.empty()) {
 				
-				Rect bRect(rect.left, rect.bottom, rect.left + 205 * scale, rect.bottom + 63 * scale);
+				Rect bRect(Vec2i(rect.left, rect.bottom), s32(205 * scale), s32(63 * scale));
 				
 				Rect::Num left = checked_range_cast<Rect::Num>(bRect.left);
 				Rect::Num right = checked_range_cast<Rect::Num>(bRect.right);
