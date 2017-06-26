@@ -1426,6 +1426,7 @@ static void updateBookScale() {
 	g_bookScale = glm::clamp(1.f, 1.0f + (maxScale - 1.0f) * config.interface.bookScale, maxScale);
 
 	ARX_Text_scaleBookFont(g_bookScale);
+	ARX_Text_scaleNoteFont(g_bookScale);
 }
 
 Rectf ARX_INTERFACE_getBookRect() {
