@@ -78,6 +78,7 @@ ZeniMax Media Inc., Suite 120, Rockville, Maryland 20850 USA.
 #include "graphics/Math.h"
 #include "graphics/data/TextureContainer.h"
 #include "graphics/effects/Fade.h"
+#include "graphics/font/Font.h"
 
 #include "input/Input.h"
 
@@ -360,9 +361,11 @@ void ARX_Menu_Render() {
 				OLD_FLYING_OVER = -1;
 			}
 			
+			Rectf bookRect = ARX_INTERFACE_getBookRect();
+			
 			Vec2f pos;
 			pos.x = 0;
-			pos.y = 313 * g_sizeRatio.y + (g_size.height() - 313 * g_sizeRatio.y) * 0.70f;
+			pos.y = bookRect.bottom + (g_size.height() - bookRect.bottom) * 0.40f;
 			
 			Vec2f size = g_sizeRatio;
 			size *= 100;
@@ -371,7 +374,7 @@ void ARX_Menu_Render() {
 			
 			//---------------------------------------------------------------------
 			// Button QUICK GENERATION
-			pos.x = (g_size.width() - (513 * g_sizeRatio.x)) * 0.5f;
+			pos.x = bookRect.left - 40 * g_sizeRatio.x - hFontMenu->getTextSize(ARXmenu.mda->str_button_quickgen).advance() / 2.0f;
 			
 			const Rectf quickGenerateButtonMouseTestRect(
 				pos,
@@ -409,7 +412,7 @@ void ARX_Menu_Render() {
 			
 			//---------------------------------------------------------------------
 			// Button SKIN
-			pos.x = g_size.width() * 0.5f;
+			pos.x = g_size.width() * 0.5f - hFontMenu->getTextSize(ARXmenu.mda->str_button_skin).advance() / 2.0f;
 			
 			const Rectf skinButtonMouseTestRect(
 				pos,
@@ -442,7 +445,7 @@ void ARX_Menu_Render() {
 			
 			//---------------------------------------------------------------------
 			// Button DONE
-			pos.x = g_size.width() - (g_size.width() - 513 * g_sizeRatio.x) * 0.5f - 40 * g_sizeRatio.x;
+			pos.x = bookRect.right + 40 * g_sizeRatio.x - hFontMenu->getTextSize(ARXmenu.mda->str_button_done).advance() / 2.0f;
 			
 			const Rectf doneButtonMouseTestRect(
 				pos,
