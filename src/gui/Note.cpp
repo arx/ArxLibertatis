@@ -266,7 +266,7 @@ void Note::render() {
 			Vec2f(_area.left + _textArea.left, _area.top + _textArea.top),
 			_area.left + _textArea.right,
 			pages[_page],
-			Color::none
+			Color::black
 		);
 	}
 	
@@ -277,7 +277,7 @@ void Note::render() {
 			Vec2f(_area.left + _textArea.right + _pageSpacing, _area.top + _textArea.top),
 			_area.left + _textArea.right + _pageSpacing + _textArea.width(),
 			pages[_page + 1],
-			Color::none
+			Color::black
 		);
 	}
 	
