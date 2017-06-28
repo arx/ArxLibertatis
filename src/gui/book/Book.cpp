@@ -1561,7 +1561,7 @@ void ARX_INTERFACE_ManageOpenedBook_SpellsDraw() {
 			flyingover = 1;
 			
 			SpecialCursor=CURSOR_INTERACTION_ON;
-			DrawBookTextCenter(hFontInBook, bookPos + Vec2f(111, 26) * scale, spellInfo.name, Color::none);
+			DrawBookTextCenter(hFontInBook, bookPos + Vec2f(111, 26) * scale, spellInfo.name, Color::black);
 			
 			for(size_t si = 0; si < MAX_SPEECH; si++) {
 				if(speech[si].timecreation > ArxInstant_ZERO)
