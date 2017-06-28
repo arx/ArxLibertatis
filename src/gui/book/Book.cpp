@@ -609,13 +609,15 @@ static gui::Note questBook;
 static void manageQuestBook() {
 	
 	// Cache the questbook data
-	if(questBook.text().empty() && !g_playerQuestLogEntries.empty()) {
+	if(questBook.text().empty() && !questBook.isAllocated()) {
 		std::string text;
-		for(size_t i = 0; i < g_playerQuestLogEntries.size(); ++i) {
-			std::string quest = getLocalised(g_playerQuestLogEntries[i]);
-			if(!quest.empty()) {
-				text += quest;
-				text += "\n\n";
+		if(!g_playerQuestLogEntries.empty()) {
+			for(size_t i = 0; i < g_playerQuestLogEntries.size(); ++i) {
+				std::string quest = getLocalised(g_playerQuestLogEntries[i]);
+				if(!quest.empty()) {
+					text += quest;
+					text += "\n\n";
+				}
 			}
 		}
 		questBook.setData(Note::QuestBook, text);

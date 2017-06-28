@@ -62,6 +62,8 @@ void Note::deallocate() {
 	_nextPageButton = Rectf::ZERO;
 	
 	pages.clear();
+
+	allocated = false;
 }
 
 bool Note::allocate() {
@@ -152,6 +154,7 @@ bool Note::allocate() {
 	
 	if(!background) {
 		allocatedForRatio = g_sizeRatio;
+		allocated = false;
 		return false;
 	}
 	
@@ -212,6 +215,7 @@ bool Note::allocate() {
 	setPage(_page);
 	
 	allocatedForRatio = g_sizeRatio;
+	allocated = true;
 	
 	return true;
 }
