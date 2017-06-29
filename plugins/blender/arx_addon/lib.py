@@ -22,12 +22,44 @@ import logging
 
 log = logging.getLogger('arx addon')
 
+import sys
+def getCurrentMachine():
+    if sys.maxsize > 2**32:
+        return 'x64'
+    else:
+        return 'x86'
+
+import struct
+def getDllMachine(dllFile):
+    with open(dllFile, "rb") as f:
+        f.seek(60)
+        e_lfanew, = struct.unpack("<l", f.read(4))
+        f.seek(e_lfanew)
+        pemagic = f.read(4)
+        if pemagic == b'PE\x00\x00':
+            machine, = struct.unpack("<H", f.read(2))
+            if machine == 0x8664:
+                return 'x64'
+            elif machine == 0x014c:
+                return 'x86'
+            else:
+                raise RuntimeError("Unknown machine type in PE header" + str(machine))
+        else:
+            raise RuntimeError("PE magic not found" + str(pemagic))
+
+def checkDll(dllFile):
+    a = getDllMachine(dllFile)
+    b = getCurrentMachine()
+    if a != b:
+        raise RuntimeError("Can not load '"+a+"' '" + dllFile + "' dll in '"+b+"' Blender, please use matching dll")
+
 class ArxIO(object):
     messageBufferSize = 512
 
     def __init__(self):
         if platform.system() == "Windows":
             libPaths = [ os.path.realpath(__file__ + "\..\ArxIO.dll") ]
+            checkDll(libPaths[0])
         else:
             libPaths = [
                 os.path.realpath(__file__ + "/../libArxIO.so.0"),
