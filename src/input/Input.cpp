@@ -206,6 +206,8 @@ Input::Input()
 	, m_mouseMode(Mouse::Absolute)
 	, m_lastMousePosition(Vec2s_ZERO)
 	, mouseInWindow(false)
+	, m_mouseAcceleration(0)
+	, m_invertMouseY(false)
 {
 	setMouseSensitivity(2);
 	reset();
