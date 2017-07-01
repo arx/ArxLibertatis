@@ -39,6 +39,7 @@ struct CrashInfoBase {
 		, architecture(0)
 		, nbFilesAttached(0)
 		, nbVariables(0)
+		, window(0)
 		, processId(0)
 		, memoryUsage(0)
 		, runningTime(0)
