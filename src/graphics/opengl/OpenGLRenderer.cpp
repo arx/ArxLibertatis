@@ -231,6 +231,22 @@ void OpenGLRenderer::reinit() {
 	
 	arx_assert(!isInitialized());
 	
+	#if ARX_HAVE_EPOXY
+	const bool isES = !epoxy_is_desktop_gl();
+	#else
+	const bool isES = false;
+	#endif
+	
+	if(isES) {
+		if(!ARX_HAVE_GLES_VER(1, 0)) {
+			LogError << "OpenGL ES version 1.0 or newer required";
+		}
+	} else {
+		if(!ARX_HAVE_GL_VER(1, 5)) {
+			LogError << "OpenGL version 1.5 or newer required";
+		}
+	}
+	
 	m_hasTextureNPOT = ARX_HAVE_GL_VER(2, 0) \
 		|| ARX_HAVE_GL_EXT(ARB_texture_non_power_of_two);
 	if(!m_hasTextureNPOT) {
