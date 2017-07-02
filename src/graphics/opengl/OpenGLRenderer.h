@@ -96,6 +96,7 @@ public:
 	
 	bool hasTextureNPOT() { return m_hasTextureNPOT; }
 	bool hasIntensityTextures() const { return m_hasIntensityTextures; }
+	bool hasBGRTextureTransfer() const { return m_hasBGRTextureTransfer; }
 	
 	bool hasGL_ARB_map_buffer_range() const { return m_hasGL_ARB_map_buffer_range; }
 	bool hasGL_ARB_draw_elements_base_vertex() const { return m_hasGL_ARB_draw_elements_base_vertex; }
@@ -137,6 +138,7 @@ private:
 	
 	bool m_hasTextureNPOT;
 	bool m_hasIntensityTextures;
+	bool m_hasBGRTextureTransfer;
 	
 	bool m_hasGL_ARB_map_buffer_range;
 	bool m_hasGL_ARB_draw_elements_base_vertex;
