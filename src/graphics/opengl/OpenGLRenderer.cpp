@@ -244,9 +244,7 @@ void OpenGLRenderer::reinit() {
 		LogWarning << "Missing OpenGL extension ARB_map_buffer_range.";
 	}
 	
-	#ifdef GL_ARB_buffer_storage
 	m_hasGL_ARB_buffer_storage = ARX_HAVE_GL_EXT(ARB_buffer_storage);
-	#endif
 	
 	// Synchronize GL state cache
 	

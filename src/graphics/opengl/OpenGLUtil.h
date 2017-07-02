@@ -34,8 +34,8 @@
 
 #include <GL/glew.h>
 
-#define ARX_HAVE_GL_VER(x, y) (GLEW_VERSION_##x##_##y != 0)
-#define ARX_HAVE_GL_EXT(name) (GLEW_##name != 0)
+#define ARX_HAVE_GL_VER(x, y) glewIsSupported("GL_VERSION_" #x "_" #y)
+#define ARX_HAVE_GL_EXT(name) glewIsSupported("GL_" #name)
 
 #else
 #error "OpenGL renderer not supported: need ARX_HAVE_EPOXY or ARX_HAVE_GLEW"
