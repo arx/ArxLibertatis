@@ -95,6 +95,7 @@ public:
 	void beforeDraw() { flushState(); selectTrasform<Vertex>(); }
 	
 	bool hasTextureNPOT() { return m_hasTextureNPOT; }
+	bool hasSizedTextureFormats() const { return m_hasSizedTextureFormats; }
 	bool hasIntensityTextures() const { return m_hasIntensityTextures; }
 	bool hasBGRTextureTransfer() const { return m_hasBGRTextureTransfer; }
 	
@@ -137,6 +138,7 @@ private:
 	bool m_hasMSAA;
 	
 	bool m_hasTextureNPOT;
+	bool m_hasSizedTextureFormats;
 	bool m_hasIntensityTextures;
 	bool m_hasBGRTextureTransfer;
 	
