@@ -29,6 +29,8 @@
 
 #define ARX_HAVE_GL_VER(x, y) (epoxy_gl_version() >= x##y)
 #define ARX_HAVE_GL_EXT(name) epoxy_has_gl_extension("GL_" #name)
+#define ARX_HAVE_GLES_VER(x, y) ARX_HAVE_GL_VER(x, y)
+#define ARX_HAVE_GLES_EXT(name) ARX_HAVE_GL_EXT(name)
 
 #elif ARX_HAVE_GLEW
 
@@ -36,6 +38,8 @@
 
 #define ARX_HAVE_GL_VER(x, y) glewIsSupported("GL_VERSION_" #x "_" #y)
 #define ARX_HAVE_GL_EXT(name) glewIsSupported("GL_" #name)
+#define ARX_HAVE_GLES_VER(x, y) (false)
+#define ARX_HAVE_GLES_EXT(name) (false)
 
 #else
 #error "OpenGL renderer not supported: need ARX_HAVE_EPOXY or ARX_HAVE_GLEW"
