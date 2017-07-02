@@ -247,16 +247,22 @@ void OpenGLRenderer::reinit() {
 		}
 	}
 	
-	m_hasTextureNPOT = ARX_HAVE_GL_VER(2, 0) \
-		|| ARX_HAVE_GL_EXT(ARB_texture_non_power_of_two);
-	if(!m_hasTextureNPOT) {
-		LogWarning << "Missing OpenGL extension ARB_texture_non_power_of_two.";
-	} else if(!ARX_HAVE_GL_VER(3, 0)) {
-		GLint max = 0;
-		glGetIntegerv(GL_MAX_TEXTURE_SIZE, &max);
-		if(max < 8192) {
-			LogWarning << "Old hardware detected, ignoring OpenGL extension ARB_texture_non_power_of_two.";
-			m_hasTextureNPOT = false;
+	if(isES) {
+		m_hasTextureNPOT = ARX_HAVE_GLES_VER(2, 0) || ARX_HAVE_GLES_EXT(OES_texture_npot);
+		if(!m_hasTextureNPOT) {
+			LogWarning << "Missing OpenGL extension OES_texture_npot.";
+		}
+	} else {
+		m_hasTextureNPOT = ARX_HAVE_GL_VER(2, 0) || ARX_HAVE_GL_EXT(ARB_texture_non_power_of_two);
+		if(!m_hasTextureNPOT) {
+			LogWarning << "Missing OpenGL extension ARB_texture_non_power_of_two.";
+		} else if(!ARX_HAVE_GL_VER(3, 0)) {
+			GLint max = 0;
+			glGetIntegerv(GL_MAX_TEXTURE_SIZE, &max);
+			if(max < 8192) {
+				LogWarning << "Old hardware detected, ignoring OpenGL extension ARB_texture_non_power_of_two.";
+				m_hasTextureNPOT = false;
+			}
 		}
 	}
 	
