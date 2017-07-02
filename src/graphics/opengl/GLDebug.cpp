@@ -30,17 +30,17 @@
 
 namespace gldebug {
 
-#if defined(GL_ARB_debug_output)
+#ifdef GL_KHR_debug
 
 static const char * sourceToString(GLenum source) {
 	
 	switch(source) {
-		case GL_DEBUG_SOURCE_API_ARB:             return "API";
-		case GL_DEBUG_SOURCE_WINDOW_SYSTEM_ARB:   return "Window";
-		case GL_DEBUG_SOURCE_SHADER_COMPILER_ARB: return "Shader";
-		case GL_DEBUG_SOURCE_THIRD_PARTY_ARB:     return "Third-party";
-		case GL_DEBUG_SOURCE_APPLICATION_ARB:     return "Application";
-		case GL_DEBUG_SOURCE_OTHER_ARB:           return "Other";
+		case GL_DEBUG_SOURCE_API:             return "API";
+		case GL_DEBUG_SOURCE_WINDOW_SYSTEM:   return "Window";
+		case GL_DEBUG_SOURCE_SHADER_COMPILER: return "Shader";
+		case GL_DEBUG_SOURCE_THIRD_PARTY:     return "Third-party";
+		case GL_DEBUG_SOURCE_APPLICATION:     return "Application";
+		case GL_DEBUG_SOURCE_OTHER:           return "Other";
 		default:                                  return "(unknown)";
 	}
 }
@@ -48,13 +48,13 @@ static const char * sourceToString(GLenum source) {
 static const char * typeToString(GLenum type) {
 	
 	switch(type) {
-		case GL_DEBUG_TYPE_ERROR_ARB:               return "error";
-		case GL_DEBUG_TYPE_DEPRECATED_BEHAVIOR_ARB: return "deprecated";
-		case GL_DEBUG_TYPE_UNDEFINED_BEHAVIOR_ARB:  return "undefined";
-		case GL_DEBUG_TYPE_PORTABILITY_ARB:         return "portability";
-		case GL_DEBUG_TYPE_PERFORMANCE_ARB:         return "performance";
-		case GL_DEBUG_TYPE_OTHER_ARB:               return "info";
-		default:                                    return "(unknown)";
+		case GL_DEBUG_TYPE_ERROR:               return "error";
+		case GL_DEBUG_TYPE_DEPRECATED_BEHAVIOR: return "deprecated";
+		case GL_DEBUG_TYPE_UNDEFINED_BEHAVIOR:  return "undefined";
+		case GL_DEBUG_TYPE_PORTABILITY:         return "portability";
+		case GL_DEBUG_TYPE_PERFORMANCE:         return "performance";
+		case GL_DEBUG_TYPE_OTHER:               return "info";
+		default:                                return "(unknown)";
 	}
 }
 
@@ -85,13 +85,13 @@ static void ARX_GLAPIENTRY callback(GLenum source, GLenum type, GLuint id,
 	buffer.write(message, end - message);
 	
 	switch(severity) {
-	case GL_DEBUG_SEVERITY_HIGH_ARB:
+	case GL_DEBUG_SEVERITY_HIGH:
 		LogError << buffer.str();
 		break;
-	case GL_DEBUG_SEVERITY_MEDIUM_ARB:
+	case GL_DEBUG_SEVERITY_MEDIUM:
 		LogWarning << buffer.str();
 		break;
-	case GL_DEBUG_SEVERITY_LOW_ARB:
+	case GL_DEBUG_SEVERITY_LOW:
 		LogInfo << buffer.str();
 		break;
 	default:
@@ -105,54 +105,58 @@ void initialize() {
 		return;
 	}
 	
-	if(!ARX_HAVE_GL_EXT(ARB_debug_output)) {
-		LogWarning << "OpenGL debug output disabled";
+	bool have_debug = ARX_HAVE_GL_VER(4, 3) || ARX_HAVE_GL_EXT(KHR_debug);
+	#if ARX_HAVE_EPOXY
+	have_debug = have_debug || (epoxy_is_desktop_gl() && ARX_HAVE_GL_EXT(ARB_debug_output));
+	#endif
+	if(!have_debug) {
+		LogWarning << "OpenGL debug output not available";
 		return;
 	}
 	
-	glEnable(GL_DEBUG_OUTPUT_SYNCHRONOUS_ARB);
+	glEnable(GL_DEBUG_OUTPUT_SYNCHRONOUS);
 	
-	// GLEW versions before 1.11.0 define GLDEBUGPROCARB with a non-const user pointer
+	// GLEW versions before 1.11.0 define GLDEBUGPROC with a non-const user pointer
 	#if !ARX_HAVE_GLEW || defined(GLEW_VERSION_4_5)
-	glDebugMessageCallbackARB(gldebug::callback, NULL);
+	glDebugMessageCallback(gldebug::callback, NULL);
 	#else
-	glDebugMessageCallbackARB((GLDEBUGPROCARB)gldebug::callback, NULL);
+	glDebugMessageCallback((GLDEBUGPROC)gldebug::callback, NULL);
 	#endif
 	
 	// Forward messages with high severity level
-	glDebugMessageControlARB(GL_DONT_CARE,
-	                         GL_DONT_CARE,
-	                         GL_DEBUG_SEVERITY_HIGH_ARB,
-	                         0,
-	                         NULL,
-	                         GL_TRUE);
+	glDebugMessageControl(GL_DONT_CARE,
+	                      GL_DONT_CARE,
+	                      GL_DEBUG_SEVERITY_HIGH,
+	                      0,
+	                      NULL,
+	                      GL_TRUE);
 	
 	// Forward messages with medium severity level
-	glDebugMessageControlARB(GL_DONT_CARE,
-	                         GL_DONT_CARE,
-	                         GL_DEBUG_SEVERITY_MEDIUM_ARB,
-	                         0,
-	                         NULL,
-	                         GL_TRUE);
+	glDebugMessageControl(GL_DONT_CARE,
+	                      GL_DONT_CARE,
+	                      GL_DEBUG_SEVERITY_MEDIUM,
+	                      0,
+	                      NULL,
+	                      GL_TRUE);
 	
 	// Forward messages from the application
-	glDebugMessageControlARB(GL_DEBUG_SOURCE_APPLICATION_ARB,
-	                         GL_DONT_CARE,
-	                         GL_DONT_CARE,
-	                         0,
-	                         NULL,
-	                         GL_TRUE);
+	glDebugMessageControl(GL_DEBUG_SOURCE_APPLICATION,
+	                      GL_DONT_CARE,
+	                      GL_DONT_CARE,
+	                      0,
+	                      NULL,
+	                      GL_TRUE);
 	
 	
 	std::string strInitialized("OpenGL debug output enabled");
-	glDebugMessageInsertARB(GL_DEBUG_SOURCE_APPLICATION_ARB,
-	                        GL_DEBUG_TYPE_OTHER_ARB,
-	                        1,
-	                        GL_DEBUG_SEVERITY_LOW_ARB,
-	                        GLsizei(strInitialized.size()), strInitialized.c_str());
+	glDebugMessageInsert(GL_DEBUG_SOURCE_APPLICATION,
+	                     GL_DEBUG_TYPE_OTHER,
+	                     1,
+	                     GL_DEBUG_SEVERITY_LOW,
+	                     GLsizei(strInitialized.size()), strInitialized.c_str());
 }
 
-#else // !defined(GL_ARB_debug_output)
+#else // GL_KHR_debug
 
 void initialize() {
 	LogWarning << "OpenGL debug output not supported in this build";
