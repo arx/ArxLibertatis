@@ -56,6 +56,7 @@ OpenGLRenderer::OpenGLRenderer()
 	, m_MSAALevel(0)
 	, m_hasMSAA(false)
 	, m_hasTextureNPOT(false)
+	, m_hasIntensityTextures(false)
 	, m_hasGL_ARB_map_buffer_range(false)
 	, m_hasGL_ARB_draw_elements_base_vertex(false)
 	, m_hasGL_ARB_buffer_storage(false)
@@ -252,6 +253,7 @@ void OpenGLRenderer::reinit() {
 		if(!m_hasTextureNPOT) {
 			LogWarning << "Missing OpenGL extension OES_texture_npot.";
 		}
+		m_hasIntensityTextures = false;
 	} else {
 		m_hasTextureNPOT = ARX_HAVE_GL_VER(2, 0) || ARX_HAVE_GL_EXT(ARB_texture_non_power_of_two);
 		if(!m_hasTextureNPOT) {
@@ -264,6 +266,7 @@ void OpenGLRenderer::reinit() {
 				m_hasTextureNPOT = false;
 			}
 		}
+		m_hasIntensityTextures = true;
 	}
 	
 	m_hasGL_ARB_draw_elements_base_vertex = ARX_HAVE_GL_EXT(ARB_draw_elements_base_vertex);
