@@ -91,10 +91,11 @@ public:
 		return reinterpret_cast<GLTextureStage *>(Renderer::GetTextureStage(textureStage));
 	}
 	
-	bool hasTextureNPOT() { return m_hasTextureNPOT; }
-
 	template <class Vertex>
 	void beforeDraw() { flushState(); selectTrasform<Vertex>(); }
+	
+	bool hasTextureNPOT() { return m_hasTextureNPOT; }
+	bool hasIntensityTextures() const { return m_hasIntensityTextures; }
 	
 	bool hasGL_ARB_map_buffer_range() const { return m_hasGL_ARB_map_buffer_range; }
 	bool hasGL_ARB_draw_elements_base_vertex() const { return m_hasGL_ARB_draw_elements_base_vertex; }
@@ -133,7 +134,9 @@ private:
 	
 	int m_MSAALevel;
 	bool m_hasMSAA;
+	
 	bool m_hasTextureNPOT;
+	bool m_hasIntensityTextures;
 	
 	bool m_hasGL_ARB_map_buffer_range;
 	bool m_hasGL_ARB_draw_elements_base_vertex;

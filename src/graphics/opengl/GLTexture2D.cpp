@@ -64,6 +64,23 @@ void GLTexture2D::Upload() {
 	glBindTexture(GL_TEXTURE_2D, tex);
 	renderer->GetTextureStage(0)->current = this;
 	
+	// I8 to L8A8
+	if(!renderer->hasIntensityTextures() && (flags & Intensity)) {
+		arx_assert(mFormat == Image::Format_L8);
+		Image converted;
+		converted.Create(storedSize.x, storedSize.y, Image::Format_L8A8);
+		unsigned char * input = mImage.GetData();
+		unsigned char * end = input + storedSize.x * storedSize.y;
+		unsigned char * output = converted.GetData();
+		for(; input != end; input++) {
+			*output++ = *input;
+			*output++ = *input;
+		}
+		mImage = converted;
+		mFormat = Image::Format_L8A8;
+		flags &= ~Intensity;
+	}
+	
 	GLint internal;
 	GLenum format;
 	if(flags & Intensity) {
