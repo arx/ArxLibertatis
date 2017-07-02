@@ -88,28 +88,29 @@ void GLTexture2D::Upload() {
 		mFormat = rgbFormat;
 	}
 	
-	GLint internal;
+	GLint internalUnsized, internalSized;
 	GLenum format;
 	if(flags & Intensity) {
-		internal = GL_INTENSITY8, format = GL_RED;
+		internalUnsized = GL_INTENSITY, internalSized = GL_INTENSITY8, format = GL_RED;
 	} else if(mFormat == Image::Format_L8) {
-		internal = GL_LUMINANCE8, format = GL_LUMINANCE;
+		internalUnsized = GL_LUMINANCE, internalSized = GL_LUMINANCE8, format = GL_LUMINANCE;
 	} else if(mFormat == Image::Format_A8) {
-		internal = GL_ALPHA8, format = GL_ALPHA;
+		internalUnsized = GL_ALPHA, internalSized = GL_ALPHA8, format = GL_ALPHA;
 	} else if(mFormat == Image::Format_L8A8) {
-		internal = GL_LUMINANCE8_ALPHA8, format = GL_LUMINANCE_ALPHA;
+		internalUnsized = GL_LUMINANCE_ALPHA, internalSized = GL_LUMINANCE8_ALPHA8, format = GL_LUMINANCE_ALPHA;
 	} else if(mFormat == Image::Format_R8G8B8) {
-		internal = GL_RGB8, format = GL_RGB;
+		internalUnsized = GL_RGB, internalSized = GL_RGB8, format = GL_RGB;
 	} else if(mFormat == Image::Format_B8G8R8) {
-		internal = GL_RGB8, format = GL_BGR;
+		internalUnsized = GL_RGB, internalSized = GL_RGB8, format = GL_BGR;
 	} else if(mFormat == Image::Format_R8G8B8A8) {
-		internal = GL_RGBA8, format = GL_RGBA;
+		internalUnsized = GL_RGBA, internalSized = GL_RGBA8, format = GL_RGBA;
 	} else if(mFormat == Image::Format_B8G8R8A8) {
-		internal = GL_RGBA8, format = GL_BGRA;
+		internalUnsized = GL_RGBA, internalSized = GL_RGBA8, format = GL_BGRA;
 	} else {
 		arx_assert_msg(false, "Unsupported image format: %ld", long(mFormat));
 		return;
 	}
+	GLint internal = renderer->hasSizedTextureFormats() ? internalSized : internalUnsized;
 	
 	if(storedSize != size) {
 		flags &= ~HasMipmaps;

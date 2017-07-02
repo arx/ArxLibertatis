@@ -56,6 +56,7 @@ OpenGLRenderer::OpenGLRenderer()
 	, m_MSAALevel(0)
 	, m_hasMSAA(false)
 	, m_hasTextureNPOT(false)
+	, m_hasSizedTextureFormats(false)
 	, m_hasIntensityTextures(false)
 	, m_hasBGRTextureTransfer(false)
 	, m_hasGL_ARB_map_buffer_range(false)
@@ -254,6 +255,7 @@ void OpenGLRenderer::reinit() {
 		if(!m_hasTextureNPOT) {
 			LogWarning << "Missing OpenGL extension OES_texture_npot.";
 		}
+		m_hasSizedTextureFormats = ARX_HAVE_GLES_VER(3, 0) || ARX_HAVE_GLES_EXT(OES_required_internalformat);
 		m_hasIntensityTextures = false;
 		m_hasBGRTextureTransfer = false;
 	} else {
@@ -268,6 +270,7 @@ void OpenGLRenderer::reinit() {
 				m_hasTextureNPOT = false;
 			}
 		}
+		m_hasSizedTextureFormats = true;
 		m_hasIntensityTextures = true;
 		m_hasBGRTextureTransfer = true;
 	}
