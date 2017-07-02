@@ -21,6 +21,7 @@
 
 #include <algorithm>
 #include <sstream>
+#include <cstring>
 
 #include <glm/gtc/type_ptr.hpp>
 
@@ -30,6 +31,8 @@
 #if ARX_HAVE_EPOXY && ARX_PLATFORM == ARX_PLATFORM_WIN32
 #include <epoxy/wgl.h>
 #endif
+
+#include <boost/algorithm/string/predicate.hpp>
 
 #include "core/Application.h"
 #include "core/Config.h"
@@ -100,7 +103,14 @@ void OpenGLRenderer::initialize() {
 	
 	#endif
 	
-	const GLubyte * glVersion = glGetString(GL_VERSION);
+	const char * glVersion = reinterpret_cast<const char *>(glGetString(GL_VERSION));
+	if(boost::starts_with(glVersion, "OpenGL ES-CL ")) {
+		LogError << "OpenGL ES common lite profile detected but arx requires floating point functionality";
+	}
+	const char * prefix = "OpenGL ";
+	if(boost::starts_with(glVersion, prefix)) {
+		glVersion += std::strlen(prefix);
+	}
 	LogInfo << "Using OpenGL " << glVersion;
 	CrashHandler::setVariable("OpenGL version", glVersion);
 	
