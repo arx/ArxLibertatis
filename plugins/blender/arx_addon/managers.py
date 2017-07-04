@@ -183,15 +183,7 @@ class ArxObjectManager(object):
         mesh = bpy.data.meshes.new(idString)
         bm.to_mesh(mesh)
 
-        #armatureObj = self.createArmature(canonicalId, bm, data.groups)
-
-        bm.free()
-
-        if bpy.context.active_object:
-            bpy.ops.object.mode_set(mode='OBJECT')
-
         obj = bpy.data.objects.new(name=mesh.name, object_data=mesh)
-        #armatureObj.parent = obj # this created a dependecy recursion, so i commented it
 
         obj['arx.ftl.name'] = data.metadata.name
         obj['arx.ftl.org'] = data.metadata.org
@@ -225,33 +217,32 @@ class ArxObjectManager(object):
                 action.lock_scale = [True, True, True]
             else:
                 action.scale = [3, 3, 3]
-                
-            
-        #armatureModifier = obj.modifiers.new(type='ARMATURE', name="Skeleton")
-        #armatureModifier.object = armatureObj
-
-        for toDeSel in scene.objects: #deselect all first just to be sure
-            toDeSel.select = False
-
-        scene.objects.link(obj)
-
-        #FIXME properly bind bones to mesh via vertex groups
-        #obj.select = True
-        #armatureObj.select = True
-        #bpy.context.scene.objects.active = armatureObj #select both the mesh and armature and set armature active
-        #bpy.ops.object.parent_set(type='ARMATURE_AUTO') # ctrl+p and automatic weights
-        #bpy.context.scene.objects.active = obj
-        #armatureObj.select = False
-
-        #bpy.ops.object.mode_set(mode='EDIT', toggle=False)  # initialises UVmap correctly
-
+        
         mesh.uv_textures.new()
 
         for m in data.mats:
             mat = createMaterial(self.dataPath, m)
             obj.data.materials.append(mat)
+        
+        scene.objects.link(obj)
+        
+        if len(data.groups) > 0:
+            for o in scene.objects: #deselect all first just to be sure
+                o.select = False
             
-        #bpy.ops.object.mode_set(mode='OBJECT', toggle=False)
+            armatureObj = self.createArmature(canonicalId, bm, data.groups)
+            #FIXME properly bind bones to mesh via vertex groups
+            obj.select = True
+            armatureObj.select = True
+            bpy.context.scene.objects.active = armatureObj #select both the mesh and armature and set armature active
+            bpy.ops.object.parent_set(type='ARMATURE_AUTO') # ctrl+p and automatic weights
+            bpy.context.scene.objects.active = obj
+            armatureObj.select = False
+            
+            armatureModifier = obj.modifiers.new(type='ARMATURE', name="Skeleton")
+            armatureModifier.object = armatureObj
+        
+        bm.free()
         return obj
 
     def createArmature(self, canonicalId, bm, groups) -> bpy.types.Object:
@@ -531,7 +522,7 @@ class ArxAnimationManager(object):
             walkObj = walkObj.parent
 
         if not walkObj.name.endswith('-amt'):
-            self.log.warning("Amature object nof found for: {}".format(obj.name))
+            self.log.warning("Amature object nof found for: {}".format(selectedObj.name))
             return
 
         armatureObj = walkObj
