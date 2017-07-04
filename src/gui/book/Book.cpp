@@ -1414,6 +1414,8 @@ void ARX_INTERFACE_ManageOpenedBook() {
 				                         s32(313 * 0.25f * g_sizeRatio.y));
 				
 				ARX_SPELLS_UpdateBookSymbolDraw(runeDrawRect);
+				gui::ARX_INTERFACE_ManageOpenedBook_Finish(Vec2f(DANAEMouse));
+				ARX_INTERFACE_ManageOpenedBook_SpellsDraw();
 				break;
 			}
 			case BOOKMODE_MINIMAP: {
@@ -1517,7 +1519,6 @@ void ARX_INTERFACE_ManageOpenedBook_SpellsDraw() {
 				if(spellInfo.symbols[j] != RUNE_NONE)
 					++count;
 			
-			GRenderer->GetTextureStage(0)->setMagFilter(TextureStage::FilterLinear);
 			for(int j = 0; j < 6; ++j) {
 				if(spellInfo.symbols[j] != RUNE_NONE) {
 					Vec2f pos;
@@ -1526,7 +1527,6 @@ void ARX_INTERFACE_ManageOpenedBook_SpellsDraw() {
 					DrawBookInterfaceItem(gui::necklace.pTexTab[spellInfo.symbols[j]], pos, Color::white, 0.000001f);
 				}
 			}
-			GRenderer->GetTextureStage(0)->setMagFilter(TextureStage::FilterNearest);
 		}
 		
 		if(spellInfo.tc) {
@@ -1550,11 +1550,9 @@ void ARX_INTERFACE_ManageOpenedBook_SpellsDraw() {
 				color = Color(168, 208, 223, 255);
 			}
 			
-			GRenderer->GetTextureStage(0)->setMagFilter(TextureStage::FilterLinear);
 			GRenderer->SetAlphaFunc(Renderer::CmpGreater, .5f);
 			DrawBookInterfaceItem(spellInfo.tc, fPos, color, 0.000001f);
 			GRenderer->SetAlphaFunc(Renderer::CmpNotEqual, 0.f);
-			GRenderer->GetTextureStage(0)->setMagFilter(TextureStage::FilterNearest);
 			
 		}
 		
