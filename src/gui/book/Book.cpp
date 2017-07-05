@@ -110,6 +110,10 @@ ARX_INTERFACE_BOOK_MODE currentBookPage() {
 	return g_guiBookCurrentTopTab;
 }
 
+void forceBookPage(ARX_INTERFACE_BOOK_MODE page) {
+	g_guiBookCurrentTopTab = page;
+}
+
 static void onBookClosePage() {
 	
 	if(g_guiBookCurrentTopTab == BOOKMODE_SPELLS) {
