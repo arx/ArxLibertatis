@@ -52,7 +52,7 @@ public:
 	void manage();
 	void manageNewQuest();
 private:
-	void ARX_INTERFACE_ManageOpenedBook_Stats();
+	void manageStats();
 	void RenderBookPlayerCharacter();
 	bool CheckAttributeClick(Vec2f pos, float * val, TextureContainer * tc);
 	bool CheckSkillClick(Vec2f pos, float * val, TextureContainer * tc, float * oldval);
@@ -925,7 +925,7 @@ static void DrawBookTextCenter(Font* font, const Vec2f & pos, const std::string&
 	UNICODE_ARXDrawTextCenter(font, (BOOKDEC + pos) * g_sizeRatio, text, col);
 }
 
-void StatsPage::ARX_INTERFACE_ManageOpenedBook_Stats()
+void StatsPage::manageStats()
 {
 	FLYING_OVER = 0;
 	
@@ -1582,7 +1582,7 @@ void StatsPage::manage() {
 
 	DrawBookInterfaceItem(g_bookResouces.playerbook, Vec2f(97, 64), Color::white, 0.9999f);
 
-	ARX_INTERFACE_ManageOpenedBook_Stats();
+	manageStats();
 }
 
 void StatsPage::manageNewQuest() {
@@ -1598,6 +1598,6 @@ void StatsPage::manageNewQuest() {
 	BOOKDEC.x = x - 97;
 	// TODO copy paste error ?
 	BOOKDEC.y = x - 64 + 19;
-
-	ARX_INTERFACE_ManageOpenedBook_Stats();
+	
+	manageStats();
 }
