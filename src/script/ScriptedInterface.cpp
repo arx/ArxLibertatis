@@ -70,13 +70,13 @@ public:
 		
 		HandleFlags("aem") {
 			if(flg & flag('a')) { // Magic
-				g_guiBookCurrentTopTab = BOOKMODE_MINIMAP;
+				forceBookPage(BOOKMODE_MINIMAP);
 			}
 			if(flg & flag('e')) { // Equip
-				g_guiBookCurrentTopTab = BOOKMODE_SPELLS;
+				forceBookPage(BOOKMODE_SPELLS);
 			}
 			if(flg & flag('m')) { // Map
-				g_guiBookCurrentTopTab = BOOKMODE_QUESTS;
+				forceBookPage(BOOKMODE_QUESTS);
 			}
 		}
 		
