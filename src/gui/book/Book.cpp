@@ -75,11 +75,17 @@ private:
 	void ARX_INTERFACE_ManageOpenedBook_Map();
 };
 
+class QuestBookPage {
+public:
+	void manage();
+};
+
 class PlayerBook {
 public:
 	StatsPage stats;
 	SpellsPage spells;
 	MapPage map;
+	QuestBookPage questBook;
 };
 
 ARX_INTERFACE_BOOK_MODE g_guiBookCurrentTopTab = BOOKMODE_STATS;
@@ -1448,7 +1454,7 @@ void ARX_INTERFACE_ManageOpenedBook() {
 				break;
 			}
 			case BOOKMODE_QUESTS: {
-				gui::manageQuestBook();
+				g_playerBook.questBook.manage();
 				break;
 			}
 		}
@@ -1623,4 +1629,8 @@ void MapPage::manage() {
 	DrawBookInterfaceItem(g_bookResouces.questbook, Vec2f(97, 64), Color::white, 0.9999f);
 	ARX_INTERFACE_ManageOpenedBook_LeftTabs_Map();
 	ARX_INTERFACE_ManageOpenedBook_Map();
+}
+
+void QuestBookPage::manage() {
+	gui::manageQuestBook();
 }
