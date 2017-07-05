@@ -67,10 +67,19 @@ private:
 	void ARX_INTERFACE_ManageOpenedBook_SpellsDraw();
 };
 
+class MapPage {
+public:
+	void manage();
+private:
+	void ARX_INTERFACE_ManageOpenedBook_LeftTabs_Map();
+	void ARX_INTERFACE_ManageOpenedBook_Map();
+};
+
 class PlayerBook {
 public:
 	StatsPage stats;
 	SpellsPage spells;
+	MapPage map;
 };
 
 ARX_INTERFACE_BOOK_MODE g_guiBookCurrentTopTab = BOOKMODE_STATS;
@@ -910,7 +919,7 @@ void SpellsPage::ARX_INTERFACE_ManageOpenedBook_LeftTabs_Spells() {
 	ARX_INTERFACE_ManageOpenedBook_LeftTabs(tabVisibility, Book_SpellPage);
 }
 
-static void ARX_INTERFACE_ManageOpenedBook_LeftTabs_Map() {
+void MapPage::ARX_INTERFACE_ManageOpenedBook_LeftTabs_Map() {
 	
 	bool tabVisibility[10] = {false};
 	
@@ -1403,7 +1412,7 @@ void StatsPage::manageStats()
 	RenderBookPlayerCharacter();	
 }
 
-static void ARX_INTERFACE_ManageOpenedBook_Map()
+void MapPage::ARX_INTERFACE_ManageOpenedBook_Map()
 {
 	long SHOWLEVEL = Book_MapPage;
 
@@ -1435,8 +1444,7 @@ void ARX_INTERFACE_ManageOpenedBook() {
 				break;
 			}
 			case BOOKMODE_MINIMAP: {
-				DrawBookInterfaceItem(g_bookResouces.questbook, Vec2f(97, 64), Color::white, 0.9999f);
-				ARX_INTERFACE_ManageOpenedBook_LeftTabs_Map();
+				g_playerBook.map.manage();
 				break;
 			}
 			case BOOKMODE_QUESTS: {
@@ -1449,13 +1457,9 @@ void ARX_INTERFACE_ManageOpenedBook() {
 	} else {
 		g_playerBook.stats.manageNewQuest();
 	}
-	
+
 	GRenderer->GetTextureStage(0)->setMinFilter(TextureStage::FilterNearest);
 	GRenderer->GetTextureStage(0)->setMagFilter(TextureStage::FilterNearest);
-
-	if (g_guiBookCurrentTopTab == BOOKMODE_MINIMAP) {
-		ARX_INTERFACE_ManageOpenedBook_Map();
-	}
 }
 
 
@@ -1613,4 +1617,10 @@ void SpellsPage::manage() {
 	ARX_SPELLS_UpdateBookSymbolDraw(runeDrawRect);
 	gui::ARX_INTERFACE_ManageOpenedBook_Finish(Vec2f(DANAEMouse));
 	ARX_INTERFACE_ManageOpenedBook_SpellsDraw();
+}
+
+void MapPage::manage() {
+	DrawBookInterfaceItem(g_bookResouces.questbook, Vec2f(97, 64), Color::white, 0.9999f);
+	ARX_INTERFACE_ManageOpenedBook_LeftTabs_Map();
+	ARX_INTERFACE_ManageOpenedBook_Map();
 }
