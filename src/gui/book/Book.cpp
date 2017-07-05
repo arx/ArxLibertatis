@@ -59,9 +59,18 @@ private:
 	Color attrubuteModToColor(float modValue, float baseValue = 0.f);
 };
 
+class SpellsPage {
+public:
+	void manage();
+private:
+	void ARX_INTERFACE_ManageOpenedBook_LeftTabs_Spells();
+	void ARX_INTERFACE_ManageOpenedBook_SpellsDraw();
+};
+
 class PlayerBook {
 public:
 	StatsPage stats;
+	SpellsPage spells;
 };
 
 ARX_INTERFACE_BOOK_MODE g_guiBookCurrentTopTab = BOOKMODE_STATS;
@@ -880,7 +889,7 @@ static void ARX_INTERFACE_ManageOpenedBook_LeftTabs(bool tabVisibility[10], long
 	}
 }
 
-static void ARX_INTERFACE_ManageOpenedBook_LeftTabs_Spells() {
+void SpellsPage::ARX_INTERFACE_ManageOpenedBook_LeftTabs_Spells() {
 	
 	bool tabVisibility[10] = {false};
 
@@ -1422,16 +1431,7 @@ void ARX_INTERFACE_ManageOpenedBook() {
 				break;
 			}
 			case BOOKMODE_SPELLS: {
-				DrawBookInterfaceItem(g_bookResouces.ptexspellbook, Vec2f(97, 64), Color::white, 0.9999f);
-				ARX_INTERFACE_ManageOpenedBook_LeftTabs_Spells();
-
-				Rect runeDrawRect = Rect(Vec2i((Vec2f(97, 64) + Vec2f(29, 210)) * g_sizeRatio),
-				                         s32(513 * 0.43f * g_sizeRatio.x),
-				                         s32(313 * 0.25f * g_sizeRatio.y));
-				
-				ARX_SPELLS_UpdateBookSymbolDraw(runeDrawRect);
-				gui::ARX_INTERFACE_ManageOpenedBook_Finish(Vec2f(DANAEMouse));
-				ARX_INTERFACE_ManageOpenedBook_SpellsDraw();
+				g_playerBook.spells.manage();
 				break;
 			}
 			case BOOKMODE_MINIMAP: {
@@ -1462,7 +1462,7 @@ void ARX_INTERFACE_ManageOpenedBook() {
 
 
 
-void ARX_INTERFACE_ManageOpenedBook_SpellsDraw() {
+void SpellsPage::ARX_INTERFACE_ManageOpenedBook_SpellsDraw() {
 	
 	// Now Draws Spells for this level...
 	ARX_PLAYER_ComputePlayerFullStats();
@@ -1600,4 +1600,17 @@ void StatsPage::manageNewQuest() {
 	BOOKDEC.y = x - 64 + 19;
 	
 	manageStats();
+}
+
+void SpellsPage::manage() {
+	DrawBookInterfaceItem(g_bookResouces.ptexspellbook, Vec2f(97, 64), Color::white, 0.9999f);
+	ARX_INTERFACE_ManageOpenedBook_LeftTabs_Spells();
+
+	Rect runeDrawRect = Rect(Vec2i((Vec2f(97, 64) + Vec2f(29, 210)) * g_sizeRatio),
+							 s32(513 * 0.43f * g_sizeRatio.x),
+							 s32(313 * 0.25f * g_sizeRatio.y));
+
+	ARX_SPELLS_UpdateBookSymbolDraw(runeDrawRect);
+	gui::ARX_INTERFACE_ManageOpenedBook_Finish(Vec2f(DANAEMouse));
+	ARX_INTERFACE_ManageOpenedBook_SpellsDraw();
 }
