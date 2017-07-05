@@ -47,6 +47,23 @@
 #include "scene/Interactive.h"
 #include "script/Script.h"
 
+class StatsPage {
+public:
+	void manage();
+	void manageNewQuest();
+private:
+	void ARX_INTERFACE_ManageOpenedBook_Stats();
+	void RenderBookPlayerCharacter();
+	bool CheckAttributeClick(Vec2f pos, float * val, TextureContainer * tc);
+	bool CheckSkillClick(Vec2f pos, float * val, TextureContainer * tc, float * oldval);
+	Color attrubuteModToColor(float modValue, float baseValue = 0.f);
+};
+
+class PlayerBook {
+public:
+	StatsPage stats;
+};
+
 ARX_INTERFACE_BOOK_MODE g_guiBookCurrentTopTab = BOOKMODE_STATS;
 
 long Book_MapPage = 0;
@@ -60,6 +77,8 @@ long OLD_FLYING_OVER = 0;
 
 //used to redist points - attributes and skill
 long lCursorRedistValue = 0;
+
+PlayerBook g_playerBook;
 
 static void onBookClosePage() {
 	
@@ -243,7 +262,7 @@ static void DrawBookInterfaceItem(TextureContainer * tc, Vec2f pos, Color color,
 	EERIEDrawBitmap(rect, z, tc, color);
 }
 
-static void RenderBookPlayerCharacter() {
+void StatsPage::RenderBookPlayerCharacter() {
 	
 	// TODO use assert ?
 	if(!entities.player()->obj)
@@ -498,7 +517,7 @@ static void ARX_INTERFACE_ERRORSOUND() {
 	ARX_SOUND_PlayInterface(SND_MENU_CLICK);
 }
 
-static bool CheckAttributeClick(Vec2f pos, float * val, TextureContainer * tc) {
+bool StatsPage::CheckAttributeClick(Vec2f pos, float * val, TextureContainer * tc) {
 	
 	bool rval=false;
 	float t = *val;
@@ -539,7 +558,7 @@ static bool CheckAttributeClick(Vec2f pos, float * val, TextureContainer * tc) {
 	return rval;
 }
 
-static bool CheckSkillClick(Vec2f pos, float * val, TextureContainer * tc,
+bool StatsPage::CheckSkillClick(Vec2f pos, float * val, TextureContainer * tc,
                             float * oldval) {
 	
 	bool rval=false;
@@ -892,7 +911,7 @@ static void ARX_INTERFACE_ManageOpenedBook_LeftTabs_Map() {
 	ARX_INTERFACE_ManageOpenedBook_LeftTabs(tabVisibility, Book_MapPage);
 }
 
-static Color attrubuteModToColor(float modValue, float baseValue = 0.f) {
+Color StatsPage::attrubuteModToColor(float modValue, float baseValue) {
 	if(modValue < baseValue)
 		return Color::red;
 	else if(modValue > baseValue)
@@ -906,7 +925,7 @@ static void DrawBookTextCenter(Font* font, const Vec2f & pos, const std::string&
 	UNICODE_ARXDrawTextCenter(font, (BOOKDEC + pos) * g_sizeRatio, text, col);
 }
 
-static void ARX_INTERFACE_ManageOpenedBook_Stats()
+void StatsPage::ARX_INTERFACE_ManageOpenedBook_Stats()
 {
 	FLYING_OVER = 0;
 	
@@ -1393,16 +1412,13 @@ void ARX_INTERFACE_ManageOpenedBook() {
 	
 	UseRenderState state(render2D());
 	
-	BOOKDEC.x = 0;
-	BOOKDEC.y = 0;
-	
 	GRenderer->GetTextureStage(0)->setMinFilter(TextureStage::FilterLinear);
 	GRenderer->GetTextureStage(0)->setMagFilter(TextureStage::FilterLinear);
 	
 	if(ARXmenu.currentmode != AMCM_NEWQUEST) {
 		switch(g_guiBookCurrentTopTab) {
 			case BOOKMODE_STATS: {
-				DrawBookInterfaceItem(g_bookResouces.playerbook, Vec2f(97, 64), Color::white, 0.9999f);
+				g_playerBook.stats.manage();
 				break;
 			}
 			case BOOKMODE_SPELLS: {
@@ -1431,23 +1447,13 @@ void ARX_INTERFACE_ManageOpenedBook() {
 		
 		ARX_INTERFACE_ManageOpenedBook_TopTabs();
 	} else {
-		arx_assert(g_bookResouces.playerbook);
-		float x = (640 - g_bookResouces.playerbook->m_size.x) / 2.f;
-		float y = (480 - g_bookResouces.playerbook->m_size.y) / 2.f;
-		
-		DrawBookInterfaceItem(g_bookResouces.playerbook, Vec2f(x, y), Color::white, 0.000001f);
-
-		BOOKDEC.x = x - 97;
-		// TODO copy paste error ?
-		BOOKDEC.y = x - 64 + 19;
+		g_playerBook.stats.manageNewQuest();
 	}
 	
 	GRenderer->GetTextureStage(0)->setMinFilter(TextureStage::FilterNearest);
 	GRenderer->GetTextureStage(0)->setMagFilter(TextureStage::FilterNearest);
 
-	if(g_guiBookCurrentTopTab == BOOKMODE_STATS) {
-		ARX_INTERFACE_ManageOpenedBook_Stats();
-	} else if (g_guiBookCurrentTopTab == BOOKMODE_MINIMAP) {
+	if (g_guiBookCurrentTopTab == BOOKMODE_MINIMAP) {
 		ARX_INTERFACE_ManageOpenedBook_Map();
 	}
 }
@@ -1568,4 +1574,30 @@ void ARX_INTERFACE_ManageOpenedBook_SpellsDraw() {
 		OLD_FLYING_OVER = -1;
 		FLYING_OVER = -1;
 	}
+}
+
+void StatsPage::manage() {
+	BOOKDEC.x = 0;
+	BOOKDEC.y = 0;
+
+	DrawBookInterfaceItem(g_bookResouces.playerbook, Vec2f(97, 64), Color::white, 0.9999f);
+
+	ARX_INTERFACE_ManageOpenedBook_Stats();
+}
+
+void StatsPage::manageNewQuest() {
+	BOOKDEC.x = 0;
+	BOOKDEC.y = 0;
+
+	arx_assert(g_bookResouces.playerbook);
+	float x = (640 - g_bookResouces.playerbook->m_size.x) / 2.f;
+	float y = (480 - g_bookResouces.playerbook->m_size.y) / 2.f;
+
+	DrawBookInterfaceItem(g_bookResouces.playerbook, Vec2f(x, y), Color::white, 0.000001f);
+
+	BOOKDEC.x = x - 97;
+	// TODO copy paste error ?
+	BOOKDEC.y = x - 64 + 19;
+
+	ARX_INTERFACE_ManageOpenedBook_Stats();
 }
