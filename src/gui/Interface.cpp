@@ -2062,7 +2062,7 @@ void ArxGame::manageEditorControls() {
 			if(InInventoryPos(DANAEMouse)) {// Attempts to put it in inventory
 				PutInInventory();
 			} else if(ARX_INTERFACE_MouseInBook()) {
-				if(g_guiBookCurrentTopTab == BOOKMODE_STATS) {
+				if(currentBookPage() == BOOKMODE_STATS) {
 					SendIOScriptEvent(DRAGINTER,SM_INVENTORYUSE);
 					COMBINE=NULL;
 				}
