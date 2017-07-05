@@ -1823,7 +1823,7 @@ void ArxGame::updateLevel() {
 	ARX_PLAYER_Manage_Visual();
 
 	g_miniMap.setActiveBackground(ACTIVEBKG);
-	g_miniMap.validatePlayerPos(CURRENTLEVEL, BLOCK_PLAYER_CONTROLS, g_guiBookCurrentTopTab);
+	g_miniMap.validatePlayerPos(CURRENTLEVEL, BLOCK_PLAYER_CONTROLS, currentBookPage());
 
 
 	if(entities.player()->animlayer[0].cur_anim) {
