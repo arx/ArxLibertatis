@@ -86,6 +86,8 @@ public:
 	SpellsPage spells;
 	MapPage map;
 	QuestBookPage questBook;
+
+	void manage();
 };
 
 ARX_INTERFACE_BOOK_MODE g_guiBookCurrentTopTab = BOOKMODE_STATS;
@@ -103,6 +105,10 @@ long OLD_FLYING_OVER = 0;
 long lCursorRedistValue = 0;
 
 PlayerBook g_playerBook;
+
+ARX_INTERFACE_BOOK_MODE currentBookPage() {
+	return g_guiBookCurrentTopTab;
+}
 
 static void onBookClosePage() {
 	
@@ -1468,8 +1474,8 @@ void ARX_INTERFACE_ManageOpenedBook() {
 	GRenderer->GetTextureStage(0)->setMagFilter(TextureStage::FilterNearest);
 }
 
-
-
+void PlayerBook::manage() {
+}
 
 
 void SpellsPage::ARX_INTERFACE_ManageOpenedBook_SpellsDraw() {

@@ -30,14 +30,13 @@ enum ARX_INTERFACE_BOOK_MODE
 	BOOKMODE_QUESTS
 };
 
-extern ARX_INTERFACE_BOOK_MODE g_guiBookCurrentTopTab;
-
 extern long BOOKZOOM;
 
 void ARX_INTERFACE_BookOpen();
 void ARX_INTERFACE_BookClose();
 void ARX_INTERFACE_BookToggle();
 
+ARX_INTERFACE_BOOK_MODE currentBookPage();
 ARX_INTERFACE_BOOK_MODE nextBookPage();
 ARX_INTERFACE_BOOK_MODE prevBookPage();
 void openBookPage(ARX_INTERFACE_BOOK_MODE newPage, bool toggle = false);
