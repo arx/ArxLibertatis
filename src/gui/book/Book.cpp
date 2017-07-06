@@ -47,7 +47,10 @@
 #include "scene/Interactive.h"
 #include "script/Script.h"
 
-class StatsPage {
+class PlayerBookPage {
+};
+
+class StatsPage : public PlayerBookPage {
 public:
 	void manage();
 	void manageNewQuest();
@@ -59,7 +62,7 @@ private:
 	Color attrubuteModToColor(float modValue, float baseValue = 0.f);
 };
 
-class SpellsPage {
+class SpellsPage : public PlayerBookPage {
 public:
 	void manage();
 private:
@@ -67,7 +70,7 @@ private:
 	void ARX_INTERFACE_ManageOpenedBook_SpellsDraw();
 };
 
-class MapPage {
+class MapPage : public PlayerBookPage {
 public:
 	void manage();
 private:
@@ -75,7 +78,7 @@ private:
 	void ARX_INTERFACE_ManageOpenedBook_Map();
 };
 
-class QuestBookPage {
+class QuestBookPage : public PlayerBookPage {
 public:
 	void manage();
 };
