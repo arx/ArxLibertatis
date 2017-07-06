@@ -90,11 +90,11 @@ public:
 	MapPage map;
 	QuestBookPage questBook;
 
-	ARX_INTERFACE_BOOK_MODE g_guiBookCurrentTopTab;
+	ARX_INTERFACE_BOOK_MODE m_currentPage;
 
 	PlayerBook();
 	void manage();
-	ARX_INTERFACE_BOOK_MODE currentPage() { return g_guiBookCurrentTopTab; }
+	ARX_INTERFACE_BOOK_MODE currentPage() { return m_currentPage; }
 	void forcePage(ARX_INTERFACE_BOOK_MODE page);
 };
 
@@ -1485,7 +1485,7 @@ void ARX_INTERFACE_ManageOpenedBook() {
 }
 
 PlayerBook::PlayerBook() 
-	: g_guiBookCurrentTopTab(BOOKMODE_STATS)
+	: m_currentPage(BOOKMODE_STATS)
 {
 }
 
@@ -1493,7 +1493,7 @@ void PlayerBook::manage() {
 }
 
 void PlayerBook::forcePage(ARX_INTERFACE_BOOK_MODE page) {
-	g_guiBookCurrentTopTab = page;
+	m_currentPage = page;
 }
 
 
