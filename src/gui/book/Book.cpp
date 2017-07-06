@@ -64,8 +64,11 @@ private:
 
 class SpellsPage : public PlayerBookPage {
 public:
+	SpellsPage();
 	void manage();
 private:
+	long m_currentTab;
+
 	void ARX_INTERFACE_ManageOpenedBook_LeftTabs_Spells();
 	void ARX_INTERFACE_ManageOpenedBook_SpellsDraw();
 };
@@ -101,8 +104,6 @@ public:
 	ARX_INTERFACE_BOOK_MODE currentPage() { return m_currentPage; }
 	void forcePage(ARX_INTERFACE_BOOK_MODE page);
 };
-
-long Book_SpellPage = 0;
 
 long BOOKZOOM = 0;
 long IN_BOOK_DRAW = 0;
@@ -940,7 +941,7 @@ void SpellsPage::ARX_INTERFACE_ManageOpenedBook_LeftTabs_Spells() {
 		}
 	}
 	
-	ARX_INTERFACE_ManageOpenedBook_LeftTabs(tabVisibility, Book_SpellPage);
+	ARX_INTERFACE_ManageOpenedBook_LeftTabs(tabVisibility, m_currentTab);
 }
 
 void MapPage::ARX_INTERFACE_ManageOpenedBook_LeftTabs_Map() {
@@ -1510,7 +1511,7 @@ void SpellsPage::ARX_INTERFACE_ManageOpenedBook_SpellsDraw() {
 	for(size_t i=0; i < SPELL_TYPES_COUNT; i++) {
 		const SPELL_ICON & spellInfo = spellicons[i];
 		
-		if(spellInfo.level != (Book_SpellPage + 1) || spellInfo.bSecret)
+		if(spellInfo.level != (m_currentTab + 1) || spellInfo.bSecret)
 			continue;
 		
 		// check if player can cast it
@@ -1637,6 +1638,11 @@ void StatsPage::manageNewQuest() {
 	BOOKDEC.y = x - 64 + 19;
 	
 	manageStats();
+}
+
+SpellsPage::SpellsPage()
+	: m_currentTab(0)
+{
 }
 
 void SpellsPage::manage() {
