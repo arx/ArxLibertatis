@@ -72,8 +72,12 @@ private:
 
 class MapPage : public PlayerBookPage {
 public:
+	MapPage();
 	void manage();
+	void setMapLevel(long level);
 private:
+	long m_currentLevel;
+
 	void ARX_INTERFACE_ManageOpenedBook_LeftTabs_Map();
 	void ARX_INTERFACE_ManageOpenedBook_Map();
 };
@@ -98,7 +102,6 @@ public:
 	void forcePage(ARX_INTERFACE_BOOK_MODE page);
 };
 
-long Book_MapPage = 0;
 long Book_SpellPage = 0;
 
 long BOOKZOOM = 0;
@@ -245,8 +248,7 @@ void ARX_INTERFACE_BookToggle() {
 		SendIOScriptEvent(entities.player(),SM_BOOK_OPEN);
 		ARX_INTERFACE_NoteClose();
 		player.Interface |= INTER_MAP;
-		Book_MapPage = ARX_LEVELS_GetRealNum(CURRENTLEVEL);
-		Book_MapPage = glm::clamp(Book_MapPage, 0l, 7l);
+		g_playerBook.map.setMapLevel(glm::clamp(ARX_LEVELS_GetRealNum(CURRENTLEVEL), 0l, 7l));
 		
 		if(!ARXmenu.mda) {
 			ARXmenu.mda = new MENU_DYNAMIC_DATA();
@@ -948,7 +950,7 @@ void MapPage::ARX_INTERFACE_ManageOpenedBook_LeftTabs_Map() {
 	long max_onglet = 7;
 	memset(tabVisibility, true, (max_onglet + 1) * sizeof(*tabVisibility));
 	
-	ARX_INTERFACE_ManageOpenedBook_LeftTabs(tabVisibility, Book_MapPage);
+	ARX_INTERFACE_ManageOpenedBook_LeftTabs(tabVisibility, m_currentLevel);
 }
 
 Color StatsPage::attrubuteModToColor(float modValue, float baseValue) {
@@ -1436,7 +1438,7 @@ void StatsPage::manageStats()
 
 void MapPage::ARX_INTERFACE_ManageOpenedBook_Map()
 {
-	long SHOWLEVEL = Book_MapPage;
+	long SHOWLEVEL = m_currentLevel;
 
 	if(SHOWLEVEL >= 0 && SHOWLEVEL < 32)
 		g_miniMap.showBookEntireMap(SHOWLEVEL);
@@ -1650,10 +1652,19 @@ void SpellsPage::manage() {
 	ARX_INTERFACE_ManageOpenedBook_SpellsDraw();
 }
 
+MapPage::MapPage()
+	: m_currentLevel(0)
+{
+}
+
 void MapPage::manage() {
 	DrawBookInterfaceItem(g_bookResouces.questbook, Vec2f(97, 64), Color::white, 0.9999f);
 	ARX_INTERFACE_ManageOpenedBook_LeftTabs_Map();
 	ARX_INTERFACE_ManageOpenedBook_Map();
+}
+
+void MapPage::setMapLevel(long level) {
+	m_currentLevel = level;
 }
 
 void QuestBookPage::manage() {
