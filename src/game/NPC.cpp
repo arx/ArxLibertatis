@@ -2042,8 +2042,9 @@ static void ManageNPCMovement(Entity * io)
 				}
 
 				for(long n = 0; n < 4; n++) {
+					Anglef & rotation = extraRotation->group_rotate[n];
 					float t = 1.5f - (float)n * ( 1.0f / 5 );
-					extraRotation->group_rotate[n].setYaw(extraRotation->group_rotate[n].getYaw() + io->_npcdata->look_around_inc * g_framedelay * t);
+					rotation.setYaw(rotation.getYaw() + io->_npcdata->look_around_inc * g_framedelay * t);
 				}
 
 				if(extraRotation->group_rotate[0].getYaw() > 30)
