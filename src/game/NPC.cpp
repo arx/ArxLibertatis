@@ -1875,8 +1875,6 @@ static void ManageNPCMovement(Entity * io)
 {
 	ARX_PROFILE_FUNC();
 	
-	float dis = std::numeric_limits<float>::max();
-	
 	// Ignores invalid or dead IO
 	if(!io ||!io->show || !(io->ioflags & IO_NPC))
 		return;
@@ -2098,9 +2096,8 @@ static void ManageNPCMovement(Entity * io)
 			changeAnimation(io, ANIM_DEFAULT, 0, startAtBeginning);
 		} else if(layer0.flags & EA_ANIMEND) {
 			layer0.flags &= ~EA_FORCEPLAY;
-			
 			ManageNPCMovement_REFACTOR_flee_end(io);
-			ManageNPCMovement_REFACTOR_end(io, dis, 0.f);
+			ManageNPCMovement_REFACTOR_end(io, std::numeric_limits<float>::max(), 0.f);
 		}
 		return;
 	}
@@ -2108,7 +2105,7 @@ static void ManageNPCMovement(Entity * io)
 	
 	// XS : Moved to top of func
 	float _dist = glm::distance(Vec2f(io->pos.x, io->pos.z), Vec2f(io->target.x, io->target.z));
-	dis = _dist;
+	float dis = _dist;
 
 	if(io->_npcdata->pathfind.listnb > 0)
 		dis = GetTRUETargetDist(io);
