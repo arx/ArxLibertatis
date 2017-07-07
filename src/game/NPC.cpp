@@ -2028,7 +2028,7 @@ static void ManageNPCMovement(Entity * io)
 			) {
 				io->_npcdata->look_around_inc = 0.f;
 
-				for(long n = 0; n < 4; n++) {
+				for(size_t n = 0; n < MAX_EXTRA_ROTATE; n++) {
 					Anglef & rotation = extraRotation->group_rotate[n];
 					
 					rotation.setYaw(rotation.getYaw() - rotation.getYaw() * (1.0f / 3));
@@ -2041,7 +2041,7 @@ static void ManageNPCMovement(Entity * io)
 					io->_npcdata->look_around_inc = Random::getf(-0.04f, 0.04f);
 				}
 
-				for(long n = 0; n < 4; n++) {
+				for(size_t n = 0; n < MAX_EXTRA_ROTATE; n++) {
 					Anglef & rotation = extraRotation->group_rotate[n];
 					float t = 1.5f - (float)n * ( 1.0f / 5 );
 					rotation.setYaw(rotation.getYaw() + io->_npcdata->look_around_inc * g_framedelay * t);
@@ -2058,7 +2058,7 @@ static void ManageNPCMovement(Entity * io)
 		if(!(io->_npcdata->behavior & BEHAVIOUR_STARE_AT) && io->_npcdata->ex_rotate) {
 			io->_npcdata->look_around_inc = 0.f;
 
-			for(long n = 0; n < 4; n++) {
+			for(size_t n = 0; n < MAX_EXTRA_ROTATE; n++) {
 				Anglef & rotation = io->_npcdata->ex_rotate->group_rotate[n];
 				
 				rotation.setYaw(rotation.getYaw() - rotation.getYaw() * (1.0f / 3));
