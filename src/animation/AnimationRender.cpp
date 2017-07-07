@@ -1438,55 +1438,6 @@ static void Cedric_TransformVerts(EERIE_3DOBJ * eobj) {
 	
 }
 
-/*!
- * \brief Apply animation and draw object
- */
-static void Cedric_AnimateDrawEntity(Skeleton & skeleton, AnimLayer * animlayer,
-                                     EERIE_EXTRA_ROTATE * extraRotation,
-                                     AnimationBlendStatus * animBlend,
-                                     EERIE_EXTRA_SCALE & extraScale) {
-	
-	// Initialize the rig
-	for(size_t i = 0; i != skeleton.bones.size(); i++) {
-		Bone & bone = skeleton.bones[i];
-
-		bone.init.quat = glm::quat();
-		bone.init.trans = bone.transinit_global;
-	}
-
-	// Apply Extra Rotations in Local Space
-	if(extraRotation) {
-		for(size_t k = 0; k < MAX_EXTRA_ROTATE; k++) {
-			ObjVertGroup i = extraRotation->group_number[k];
-
-			if(i != ObjVertGroup()) {
-				size_t boneIndex = size_t(i.handleData());
-				skeleton.bones[boneIndex].init.quat = angleToQuatForExtraRotation(extraRotation->group_rotate[k]);
-			}
-		}
-	}
-
-	// Perform animation in Local space
-	Cedric_AnimateObject(&skeleton, animlayer);
-
-	if(extraScale.groupIndex != ObjVertGroup()) {
-		size_t boneIndex = size_t(extraScale.groupIndex.handleData());
-		Bone & bone = skeleton.bones[boneIndex];
-
-		bone.init.scale += extraScale.scale;
-	}
-
-	// Check for Animation Blending in Local space
-	if(animBlend) {
-		// Is There any Between-Animations Interpolation to make ?
-		Cedric_BlendAnimation(skeleton, animBlend);
-
-		for(size_t i = 0; i < skeleton.bones.size(); i++) {
-			skeleton.bones[i].last = skeleton.bones[i].init;
-		}
-	}
-}
-
 void EERIEDrawAnimQuatUpdate(EERIE_3DOBJ * eobj,
                              AnimLayer * animlayer,
                              const Anglef & angle,
@@ -1545,14 +1496,9 @@ void EERIEDrawAnimQuatUpdate(EERIE_3DOBJ * eobj,
 	}
 
 	EERIE_EXTRA_ROTATE * extraRotation = NULL;
-	AnimationBlendStatus * animBlend = NULL;
 
 	if(io && (io->ioflags & IO_NPC) && io->_npcdata->ex_rotate) {
 		extraRotation = io->_npcdata->ex_rotate;
-	}
-
-	if(io) {
-		animBlend = &io->animBlend;
 	}
 
 	EERIE_EXTRA_SCALE extraScale;
@@ -1565,8 +1511,46 @@ void EERIEDrawAnimQuatUpdate(EERIE_3DOBJ * eobj,
 	arx_assert(eobj->m_skeleton);
 	Skeleton & skeleton = *eobj->m_skeleton;
 
-	Cedric_AnimateDrawEntity(skeleton, animlayer, extraRotation, animBlend, extraScale);
+	// Initialize the rig
+	for(size_t i = 0; i != skeleton.bones.size(); i++) {
+		Bone & bone = skeleton.bones[i];
 
+		bone.init.quat = glm::quat();
+		bone.init.trans = bone.transinit_global;
+	}
+	
+	// Apply Extra Rotations in Local Space
+	if(extraRotation) {
+		for(size_t k = 0; k < MAX_EXTRA_ROTATE; k++) {
+			ObjVertGroup i = extraRotation->group_number[k];
+
+			if(i != ObjVertGroup()) {
+				size_t boneIndex = size_t(i.handleData());
+				skeleton.bones[boneIndex].init.quat = angleToQuatForExtraRotation(extraRotation->group_rotate[k]);
+			}
+		}
+	}
+
+	// Perform animation in Local space
+	Cedric_AnimateObject(&skeleton, animlayer);
+
+	if(extraScale.groupIndex != ObjVertGroup()) {
+		size_t boneIndex = size_t(extraScale.groupIndex.handleData());
+		Bone & bone = skeleton.bones[boneIndex];
+
+		bone.init.scale += extraScale.scale;
+	}
+	
+	// Check for Animation Blending in Local space
+	if(io) {
+		// Is There any Between-Animations Interpolation to make ?
+		Cedric_BlendAnimation(skeleton, &io->animBlend);
+		
+		for(size_t i = 0; i < skeleton.bones.size(); i++) {
+			skeleton.bones[i].last = skeleton.bones[i].init;
+		}
+	}
+	
 	// Build skeleton in Object Space
 	TransformInfo t(pos, rotation, scale, ftr);
 	Cedric_ConcatenateTM(skeleton, t);
