@@ -2110,8 +2110,8 @@ static void ManageNPCMovement(Entity * io)
 		return;
 	}
 	
-	{
-
+	
+	
 	// XS : Moved to top of func
 	_dist = glm::distance(Vec2f(io->pos.x, io->pos.z), Vec2f(io->target.x, io->target.z));
 	dis = _dist;
@@ -2377,9 +2377,9 @@ static void ManageNPCMovement(Entity * io)
 			}
 		}
 	}
-
-	}
-
+	
+	
+	
 	// We are still too far from our target...
 	if(io->_npcdata->pathfind.pathwait == 0) {
 		if(_dist > TOLERANCE && dis > TOLERANCE2) {
