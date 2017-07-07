@@ -2084,9 +2084,7 @@ static void ManageNPCMovement(Entity * io)
 			return;
 		}
 	}
-
-	float _dist = std::numeric_limits<float>::max();
-
+	
 	Vec3f ForcedMove;
 	
 	// GetTargetPos MUST be called before FaceTarget2
@@ -2108,9 +2106,8 @@ static void ManageNPCMovement(Entity * io)
 	}
 	
 	
-	
 	// XS : Moved to top of func
-	_dist = glm::distance(Vec2f(io->pos.x, io->pos.z), Vec2f(io->target.x, io->target.z));
+	float _dist = glm::distance(Vec2f(io->pos.x, io->pos.z), Vec2f(io->target.x, io->target.z));
 	dis = _dist;
 
 	if(io->_npcdata->pathfind.listnb > 0)
