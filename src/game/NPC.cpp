@@ -1803,7 +1803,7 @@ Cylinder GetIOCyl(Entity * io) {
 }
 
 
-static void ManageNPCMovement_REFACTOR_flee_end(Entity * io);
+static void ManageNPCMovement_check_target_reached(Entity * io);
 static void ManageNPCMovement_REFACTOR_end(Entity * io, float TOLERANCE2);
 
 /*!
@@ -2095,7 +2095,7 @@ static void ManageNPCMovement(Entity * io)
 			changeAnimation(io, ANIM_DEFAULT, 0, startAtBeginning);
 		} else if(layer0.flags & EA_ANIMEND) {
 			layer0.flags &= ~EA_FORCEPLAY;
-			ManageNPCMovement_REFACTOR_flee_end(io);
+			ManageNPCMovement_check_target_reached(io);
 			ManageNPCMovement_REFACTOR_end(io, 0.f);
 		}
 		return;
@@ -2463,7 +2463,7 @@ static void ManageNPCMovement(Entity * io)
 			}
 
 			if(io->_npcdata->pathfind.listnb > 0) {
-				ManageNPCMovement_REFACTOR_flee_end(io);
+				ManageNPCMovement_check_target_reached(io);
 			} else if(!io->_npcdata->reachedtarget) {
 				if(ValidIONum(io->targetinfo))
 					EVENT_SENDER = entities[io->targetinfo];
@@ -2493,7 +2493,7 @@ static void ManageNPCMovement(Entity * io)
 	ManageNPCMovement_REFACTOR_end(io, TOLERANCE2);
 }
 
-static void ManageNPCMovement_REFACTOR_flee_end(Entity * io) {
+static void ManageNPCMovement_check_target_reached(Entity * io) {
 	
 	long lMax = std::max(ARX_NPC_GetNextAttainableNodeIncrement(io), 1L);
 
