@@ -1877,9 +1877,7 @@ static void ManageNPCMovement(Entity * io)
 	
 	float dis = std::numeric_limits<float>::max();
 	IO_PHYSICS phys;
-	float TOLERANCE = 0.f;
-	float TOLERANCE2 = 0.f;
-
+	
 	// Ignores invalid or dead IO
 	if(!io ||!io->show || !(io->ioflags & IO_NPC))
 		return;
@@ -2105,7 +2103,7 @@ static void ManageNPCMovement(Entity * io)
 			layer0.flags &= ~EA_FORCEPLAY;
 			
 			ManageNPCMovement_REFACTOR_flee_end(io);
-			ManageNPCMovement_REFACTOR_end(io, dis, TOLERANCE2);
+			ManageNPCMovement_REFACTOR_end(io, dis, 0.f);
 		}
 		return;
 	}
@@ -2251,7 +2249,11 @@ static void ManageNPCMovement(Entity * io)
 		else
 			FaceTarget2(io);
 	}
-
+	
+	
+	float TOLERANCE = 0.f;
+	float TOLERANCE2 = 0.f;
+	
 	// Choose tolerance value depending on target...
 	if(io->_npcdata->pathfind.listnb > 0
 	   && io->_npcdata->pathfind.listpos < io->_npcdata->pathfind.listnb
