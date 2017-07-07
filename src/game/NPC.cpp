@@ -1876,7 +1876,6 @@ static void ManageNPCMovement(Entity * io)
 	ARX_PROFILE_FUNC();
 	
 	float dis = std::numeric_limits<float>::max();
-	IO_PHYSICS phys;
 	
 	// Ignores invalid or dead IO
 	if(!io ||!io->show || !(io->ioflags & IO_NPC))
@@ -2283,7 +2282,8 @@ static void ManageNPCMovement(Entity * io)
 	// Sets Target position to desired position...
 	io->physics.targetpos.x = io->pos.x + io->move.x + ForcedMove.x;
 	io->physics.targetpos.z = io->pos.z + io->move.z + ForcedMove.z;
-	// IO_PHYSICS phys;	// XS : Moved to func beginning
+	
+	IO_PHYSICS phys;
 	phys = io->physics;
 	phys.cyl = GetIOCyl(io);
 
