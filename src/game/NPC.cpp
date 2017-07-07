@@ -2103,7 +2103,9 @@ static void ManageNPCMovement(Entity * io)
 			changeAnimation(io, ANIM_DEFAULT, 0, startAtBeginning);
 		} else if(layer0.flags & EA_ANIMEND) {
 			layer0.flags &= ~EA_FORCEPLAY;
-			goto argh;
+			
+			ManageNPCMovement_REFACTOR_flee_end(io);
+			ManageNPCMovement_REFACTOR_end(io, dis, TOLERANCE2);
 		}
 		return;
 	}
@@ -2465,7 +2467,6 @@ static void ManageNPCMovement(Entity * io)
 			}
 
 			if(io->_npcdata->pathfind.listnb > 0) {
-				argh:;
 				ManageNPCMovement_REFACTOR_flee_end(io);
 			} else if(!io->_npcdata->reachedtarget) {
 				if(ValidIONum(io->targetinfo))
