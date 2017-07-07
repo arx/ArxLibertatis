@@ -2056,10 +2056,12 @@ static void ManageNPCMovement(Entity * io)
 			io->_npcdata->look_around_inc = 0.f;
 
 			for(long n = 0; n < 4; n++) {
-				io->_npcdata->ex_rotate->group_rotate[n].setYaw(io->_npcdata->ex_rotate->group_rotate[n].getYaw() - io->_npcdata->ex_rotate->group_rotate[n].getYaw() * (1.0f / 3));
+				Anglef & rotation = io->_npcdata->ex_rotate->group_rotate[n];
+				
+				rotation.setYaw(rotation.getYaw() - rotation.getYaw() * (1.0f / 3));
 
-				if(glm::abs(io->_npcdata->ex_rotate->group_rotate[n].getYaw()) < 0.01f)
-					io->_npcdata->ex_rotate->group_rotate[n].setYaw(0.f);
+				if(glm::abs(rotation.getYaw()) < 0.01f)
+					rotation.setYaw(0.f);
 			}
 		}
 	}
