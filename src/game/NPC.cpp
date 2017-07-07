@@ -128,9 +128,7 @@ static bool isCurrentAnimation(Entity * entity, size_t layer, AnimationNumber an
 	return animation != NULL && entity->animlayer[layer].cur_anim == animation;
 }
 
-static bool isCurrentAnimation(Entity * entity, AnimationNumber anim) {
-	return isCurrentAnimation(entity, 0, anim);
-}
+
 
 static void changeAnimation(Entity * entity, size_t layer, AnimationNumber anim,
                           AnimUseType flags = 0, bool startAtBeginning = false) {
@@ -785,26 +783,26 @@ void ARX_NPC_ChangeMoveMode(Entity * io, MoveMode MOVEMODE) {
 	
 	switch(MOVEMODE) {
 		case RUNMODE: {
-			if(isCurrentAnimation(io, ANIM_WALK) || isCurrentAnimation(io, ANIM_WALK_SNEAK)) {
+			if(isCurrentAnimation(io, 0, ANIM_WALK) || isCurrentAnimation(io, 0, ANIM_WALK_SNEAK)) {
 				changeAnimation(io, ANIM_RUN, 0, true);
 			}
 			break;
 		}
 		case WALKMODE: {
-			if(isCurrentAnimation(io, ANIM_RUN) || isCurrentAnimation(io, ANIM_WALK_SNEAK)) {
+			if(isCurrentAnimation(io, 0, ANIM_RUN) || isCurrentAnimation(io, 0, ANIM_WALK_SNEAK)) {
 				changeAnimation(io, ANIM_WALK);
 			}
 			break;
 		}
 		case NOMOVEMODE: {
-			if(isCurrentAnimation(io, ANIM_WALK) || isCurrentAnimation(io, ANIM_RUN)
-			   || isCurrentAnimation(io, ANIM_WALK_SNEAK)) {
+			if(isCurrentAnimation(io, 0, ANIM_WALK) || isCurrentAnimation(io, 0, ANIM_RUN)
+			   || isCurrentAnimation(io, 0, ANIM_WALK_SNEAK)) {
 				changeAnimation(io, ANIM_WAIT, 0, true);
 			}
 			break;
 		}
 		case SNEAKMODE: {
-			if(isCurrentAnimation(io, ANIM_WALK) || isCurrentAnimation(io, ANIM_RUN)) {
+			if(isCurrentAnimation(io, 0, ANIM_WALK) || isCurrentAnimation(io, 0, ANIM_RUN)) {
 				changeAnimation(io, ANIM_WALK_SNEAK);
 			}
 			break;
@@ -1442,9 +1440,9 @@ static void ARX_NPC_Manage_Anims_End(Entity * io) {
 		}
 		
 		// some specific code for combat animation end management
-		if(isCurrentAnimation(io, ANIM_FIGHT_STRAFE_LEFT)
-		   || isCurrentAnimation(io, ANIM_FIGHT_STRAFE_RIGHT)
-		   || isCurrentAnimation(io, ANIM_FIGHT_WALK_BACKWARD)) {
+		if(isCurrentAnimation(io, 0, ANIM_FIGHT_STRAFE_LEFT)
+		   || isCurrentAnimation(io, 0, ANIM_FIGHT_STRAFE_RIGHT)
+		   || isCurrentAnimation(io, 0, ANIM_FIGHT_WALK_BACKWARD)) {
 			changeAnimation(io, ANIM_FIGHT_WAIT, EA_LOOP);
 		}
 		
@@ -1521,7 +1519,7 @@ static void ARX_NPC_Manage_Anims(Entity * io, float TOLERANCE) {
 	
 	if((io->_npcdata->behavior & BEHAVIOUR_FIGHT) && tdist <= square(TOLERANCE + 10)
 	   && (tdist <= square(TOLERANCE - 20) || Random::getf() > 0.97f)
-	   && isCurrentAnimation(io, ANIM_FIGHT_WAIT)) {
+	   && isCurrentAnimation(io, 0, ANIM_FIGHT_WAIT)) {
 		// Evade during combat
 		
 		float r = (tdist < square(TOLERANCE - 20)) ? 0.f : Random::getf();
@@ -1535,7 +1533,7 @@ static void ARX_NPC_Manage_Anims(Entity * io, float TOLERANCE) {
 		
 	} else if(((io->_npcdata->behavior & (BEHAVIOUR_MAGIC | BEHAVIOUR_DISTANT))
 	           || io->spellcast_data.castingspell != SPELL_NONE)
-	          && Random::getf() > 0.85f && isCurrentAnimation(io, ANIM_FIGHT_WAIT) ) {
+	          && Random::getf() > 0.85f && isCurrentAnimation(io, 0, ANIM_FIGHT_WAIT) ) {
 		// Evade while (not) casting
 		
 		AcquireLastAnim(io);
@@ -1551,7 +1549,7 @@ static void ARX_NPC_Manage_Anims(Entity * io, float TOLERANCE) {
 		
 	}
 	
-	if(IsPlayerStriking() && isCurrentAnimation(io, ANIM_FIGHT_WAIT)) {
+	if(IsPlayerStriking() && isCurrentAnimation(io, 0, ANIM_FIGHT_WAIT)) {
 		AcquireLastAnim(io);
 		FinishAnim(io, layer0.cur_anim);
 		float r = Random::getf();
@@ -2213,7 +2211,7 @@ static void ManageNPCMovement(Entity * io)
 	}
 	
 	// Reset WAIT Animation if reached end !
-	if(isCurrentAnimation(io, ANIM_DEFAULT) && (layer0.flags & EA_ANIMEND)) {
+	if(isCurrentAnimation(io, 0, ANIM_DEFAULT) && (layer0.flags & EA_ANIMEND)) {
 		bool startAtBeginning = (io->_npcdata->behavior & BEHAVIOUR_FRIENDLY) != 0;
 		changeAnimation(io, ANIM_DEFAULT, 0, startAtBeginning);
 	}
