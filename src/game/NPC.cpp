@@ -1812,7 +1812,7 @@ static void ManageNPCMovement_REFACTOR_end(Entity * io, float dis, float TOLERAN
  * \param targ
  * \param dst
  */
-static void ComputeTolerance(Entity * io, EntityHandle targ, float * dst) {
+static float ComputeTolerance(Entity * io, EntityHandle targ) {
 	
 	float TOLERANCE = 30.f;
 	
@@ -1863,8 +1863,8 @@ static void ComputeTolerance(Entity * io, EntityHandle targ, float * dst) {
 
 	// Tolerance is modified by current moveproblem status
 	TOLERANCE += io->_npcdata->moveproblem * ( 1.0f / 10 );
-	// Now fill our return value with TOLERANCE
-	*dst = TOLERANCE;
+	
+	return TOLERANCE;
 }
 
 //now APOS is computed in Anim but used here and mustn't be used elsewhere...
@@ -2259,10 +2259,10 @@ static void ManageNPCMovement(Entity * io)
 	   && io->_npcdata->pathfind.listpos < io->_npcdata->pathfind.listnb
 	) {
 		// TODO is this cast to EntityHandle correct ?
-		ComputeTolerance(io, EntityHandle(io->_npcdata->pathfind.list[io->_npcdata->pathfind.listpos]), &TOLERANCE);
-		ComputeTolerance(io, io->_npcdata->pathfind.truetarget, &TOLERANCE2);
+		TOLERANCE  = ComputeTolerance(io, EntityHandle(io->_npcdata->pathfind.list[io->_npcdata->pathfind.listpos]));
+		TOLERANCE2 = ComputeTolerance(io, io->_npcdata->pathfind.truetarget);
 	} else {
-		ComputeTolerance(io, io->targetinfo, &TOLERANCE);
+		TOLERANCE  = ComputeTolerance(io, io->targetinfo);
 		TOLERANCE2 = TOLERANCE;
 	}
 
