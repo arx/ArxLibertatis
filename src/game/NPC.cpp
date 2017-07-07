@@ -1789,7 +1789,7 @@ float GetIOHeight(Entity * io) {
 	return std::min(v, -45.f);
 }
 
-float GetIORadius(Entity * io) {
+float GetIORadius(const Entity * io) {
 	
 	if(io == entities.player()) {
 		return player.baseRadius();
@@ -1812,7 +1812,7 @@ static void ManageNPCMovement_REFACTOR_end(Entity * io, float dis, float TOLERAN
  * \param targ
  * \param dst
  */
-static float ComputeTolerance(Entity * io, EntityHandle targ) {
+static float ComputeTolerance(const Entity * io, EntityHandle targ) {
 	
 	float TOLERANCE = 30.f;
 	
