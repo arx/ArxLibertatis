@@ -1803,6 +1803,7 @@ Cylinder GetIOCyl(Entity * io) {
 }
 
 
+static void ManageNPCMovement_REFACTOR_flee_end(Entity * io);
 static void ManageNPCMovement_REFACTOR_end(Entity * io, float dis, float TOLERANCE2);
 
 /*!
@@ -2464,49 +2465,8 @@ static void ManageNPCMovement(Entity * io)
 			}
 
 			if(io->_npcdata->pathfind.listnb > 0) {
-			argh:;
-
-				long lMax = std::max(ARX_NPC_GetNextAttainableNodeIncrement(io), 1L);
-
-				io->_npcdata->pathfind.listpos = checked_range_cast<unsigned short>(io->_npcdata->pathfind.listpos + lMax);
-
-
-				if(io->_npcdata->pathfind.listpos >= io->_npcdata->pathfind.listnb) // || (dis<=120.f))
-				{
-					io->_npcdata->pathfind.listpos = 0;
-					io->_npcdata->pathfind.listnb = -1;
-					io->_npcdata->pathfind.pathwait = 0;
-
-					free(io->_npcdata->pathfind.list);
-					io->_npcdata->pathfind.list = NULL;
-					
-					EVENT_SENDER = NULL;
-
-					if((io->_npcdata->behavior & BEHAVIOUR_FLEE) && !io->_npcdata->pathfind.pathwait)
-						SendIOScriptEvent(io, SM_NULL, "", "flee_end");
-
-					if((io->_npcdata->pathfind.flags & PATHFIND_NO_UPDATE)
-					   && io->_npcdata->pathfind.pathwait == 0
-					) {
-						if(!io->_npcdata->reachedtarget) {
-							EntityHandle num = io->index();
-							io->_npcdata->reachedtarget = 1;
-							io->_npcdata->reachedtime = arxtime.now();
-
-							if(io->targetinfo != num) {
-								SendIOScriptEvent(io, SM_REACHEDTARGET, "fake");
-								io->targetinfo = num;
-							}
-						}
-					} else {
-						io->targetinfo = io->_npcdata->pathfind.truetarget;
-						GetTargetPos(io);
-
-						if(glm::abs(io->pos.y - io->target.y) > 200.f) {
-							io->_npcdata->pathfind.listnb = -2;
-						}
-					}
-				}
+				argh:;
+				ManageNPCMovement_REFACTOR_flee_end(io);
 			} else if(!io->_npcdata->reachedtarget) {
 				if(ValidIONum(io->targetinfo))
 					EVENT_SENDER = entities[io->targetinfo];
@@ -2527,7 +2487,53 @@ static void ManageNPCMovement(Entity * io)
 	
 	ManageNPCMovement_REFACTOR_end(io, dis, TOLERANCE2);
 }
+
+static void ManageNPCMovement_REFACTOR_flee_end(Entity * io) {
 	
+	long lMax = std::max(ARX_NPC_GetNextAttainableNodeIncrement(io), 1L);
+
+	io->_npcdata->pathfind.listpos = checked_range_cast<unsigned short>(io->_npcdata->pathfind.listpos + lMax);
+
+
+	if(io->_npcdata->pathfind.listpos >= io->_npcdata->pathfind.listnb) // || (dis<=120.f))
+	{
+		io->_npcdata->pathfind.listpos = 0;
+		io->_npcdata->pathfind.listnb = -1;
+		io->_npcdata->pathfind.pathwait = 0;
+
+		free(io->_npcdata->pathfind.list);
+		io->_npcdata->pathfind.list = NULL;
+		
+		EVENT_SENDER = NULL;
+
+		if((io->_npcdata->behavior & BEHAVIOUR_FLEE) && !io->_npcdata->pathfind.pathwait)
+			SendIOScriptEvent(io, SM_NULL, "", "flee_end");
+
+		if((io->_npcdata->pathfind.flags & PATHFIND_NO_UPDATE)
+		   && io->_npcdata->pathfind.pathwait == 0
+		) {
+			if(!io->_npcdata->reachedtarget) {
+				EntityHandle num = io->index();
+				io->_npcdata->reachedtarget = 1;
+				io->_npcdata->reachedtime = arxtime.now();
+
+				if(io->targetinfo != num) {
+					SendIOScriptEvent(io, SM_REACHEDTARGET, "fake");
+					io->targetinfo = num;
+				}
+			}
+		} else {
+			io->targetinfo = io->_npcdata->pathfind.truetarget;
+			GetTargetPos(io);
+
+			if(glm::abs(io->pos.y - io->target.y) > 200.f) {
+				io->_npcdata->pathfind.listnb = -2;
+			}
+		}
+	}
+}
+
+
 static void ManageNPCMovement_REFACTOR_end(Entity * io, float dis, float TOLERANCE2) {
 	if(dis < 280.f) {
 		if((io->_npcdata->behavior & BEHAVIOUR_FIGHT) && !(io->_npcdata->behavior & BEHAVIOUR_FLEE)) {
