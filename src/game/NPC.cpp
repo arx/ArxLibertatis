@@ -1802,6 +1802,9 @@ Cylinder GetIOCyl(Entity * io) {
 	return Cylinder(io->pos, GetIORadius(io), GetIOHeight(io));
 }
 
+
+static void ManageNPCMovement_REFACTOR_end(Entity * io, float dis, float TOLERANCE2);
+
 /*!
  * \brief Computes distance tolerance between NPC and its target
  * \param io
@@ -2522,6 +2525,10 @@ static void ManageNPCMovement(Entity * io)
 		}
 	}
 	
+	ManageNPCMovement_REFACTOR_end(io, dis, TOLERANCE2);
+}
+	
+static void ManageNPCMovement_REFACTOR_end(Entity * io, float dis, float TOLERANCE2) {
 	if(dis < 280.f) {
 		if((io->_npcdata->behavior & BEHAVIOUR_FIGHT) && !(io->_npcdata->behavior & BEHAVIOUR_FLEE)) {
 			ARX_NPC_Manage_Fight(io);
@@ -2531,6 +2538,9 @@ static void ManageNPCMovement(Entity * io)
 	}
 	
 	ARX_NPC_Manage_Anims(io, TOLERANCE2);
+	
+	AnimLayer & layer0 = io->animlayer[0];
+	ANIM_HANDLE ** alist = io->anims;
 	
 	// Puts at least WAIT anim on NPC if he has no main animation...
 	if(layer0.cur_anim == NULL) {
