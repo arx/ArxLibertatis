@@ -1804,7 +1804,7 @@ Cylinder GetIOCyl(Entity * io) {
 
 
 static void ManageNPCMovement_REFACTOR_flee_end(Entity * io);
-static void ManageNPCMovement_REFACTOR_end(Entity * io, float dis, float TOLERANCE2);
+static void ManageNPCMovement_REFACTOR_end(Entity * io, float TOLERANCE2);
 
 /*!
  * \brief Computes distance tolerance between NPC and its target
@@ -2097,7 +2097,7 @@ static void ManageNPCMovement(Entity * io)
 		} else if(layer0.flags & EA_ANIMEND) {
 			layer0.flags &= ~EA_FORCEPLAY;
 			ManageNPCMovement_REFACTOR_flee_end(io);
-			ManageNPCMovement_REFACTOR_end(io, std::numeric_limits<float>::max(), 0.f);
+			ManageNPCMovement_REFACTOR_end(io, 0.f);
 		}
 		return;
 	}
@@ -2482,7 +2482,15 @@ static void ManageNPCMovement(Entity * io)
 		}
 	}
 	
-	ManageNPCMovement_REFACTOR_end(io, dis, TOLERANCE2);
+	if(dis < 280.f) {
+		if((io->_npcdata->behavior & BEHAVIOUR_FIGHT) && !(io->_npcdata->behavior & BEHAVIOUR_FLEE)) {
+			ARX_NPC_Manage_Fight(io);
+		} else {
+			ARX_NPC_Manage_NON_Fight(io);
+		}
+	}
+	
+	ManageNPCMovement_REFACTOR_end(io, TOLERANCE2);
 }
 
 static void ManageNPCMovement_REFACTOR_flee_end(Entity * io) {
@@ -2531,14 +2539,7 @@ static void ManageNPCMovement_REFACTOR_flee_end(Entity * io) {
 }
 
 
-static void ManageNPCMovement_REFACTOR_end(Entity * io, float dis, float TOLERANCE2) {
-	if(dis < 280.f) {
-		if((io->_npcdata->behavior & BEHAVIOUR_FIGHT) && !(io->_npcdata->behavior & BEHAVIOUR_FLEE)) {
-			ARX_NPC_Manage_Fight(io);
-		} else {
-			ARX_NPC_Manage_NON_Fight(io);
-		}
-	}
+static void ManageNPCMovement_REFACTOR_end(Entity * io, float TOLERANCE2) {
 	
 	ARX_NPC_Manage_Anims(io, TOLERANCE2);
 	
