@@ -2083,7 +2083,6 @@ static void ManageNPCMovement(Entity * io)
 		}
 	}
 	
-	Vec3f ForcedMove;
 	
 	// GetTargetPos MUST be called before FaceTarget2
 	if(io->_npcdata->pathfind.listnb > 0
@@ -2266,6 +2265,7 @@ static void ManageNPCMovement(Entity * io)
 	// to targetpos (potentially invalid pos)
 	io->physics.startpos = io->physics.cyl.origin = io->pos;
 	
+	Vec3f ForcedMove;
 	if(io->forcedmove == Vec3f_ZERO) {
 		ForcedMove = Vec3f_ZERO;
 	} else {
