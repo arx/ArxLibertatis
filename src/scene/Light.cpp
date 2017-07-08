@@ -232,6 +232,7 @@ void TreatBackgroundDynlights() {
 				
 				EERIE_LIGHT * dynamicLight = lightHandleGet(light->m_ignitionLightHandle);
 				if(dynamicLight) {
+					
 					dynamicLight->pos          = light->pos;
 					dynamicLight->fallstart    = light->fallstart;
 					dynamicLight->fallend      = light->fallend;
@@ -241,7 +242,19 @@ void TreatBackgroundDynlights() {
 					dynamicLight->extras       = light->extras;
 					dynamicLight->duration     = GameDurationMs(std::numeric_limits<long>::max());
 					
-					dynamicLight->rgb = light->rgb - light->rgb * light->ex_flicker * randomColor3f() * 0.5f;
+					if(g_debugToggles[2]) {
+						dynamicLight->m_flicker.update(toMsf(g_gameTime.lastFrameDuration()) / 20);
+						float flicker = dynamicLight->m_flicker.get();
+						
+						dynamicLight->rgb = light->rgb - light->rgb * light->ex_flicker * flicker * 0.5f;
+					} else {
+						dynamicLight->rgb = light->rgb - light->rgb * light->ex_flicker * randomColor3f() * 0.5f;
+					}
+					
+					if(g_debugToggles[3]) {
+						dynamicLight->rgb = light->rgb - light->rgb * light->ex_flicker /** randomColor3f()*/ * 0.5f;
+					}
+					
 					
 					dynamicLight->rgb = componentwise_max(dynamicLight->rgb, Color3f::black);
 					RecalcLight(dynamicLight);

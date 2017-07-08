@@ -54,6 +54,7 @@ ZeniMax Media Inc., Suite 120, Rockville, Maryland 20850 USA.
 #include "audio/AudioTypes.h"
 #include "graphics/BaseGraphicsTypes.h"
 #include "graphics/Color.h"
+#include "math/RandomFlicker.h"
 #include "math/Types.h"
 #include "math/Quantizer.h"
 #include "util/Flags.h"
@@ -125,6 +126,7 @@ struct EERIE_LIGHT {
 	
 	audio::SourceId sample;
 	math::Quantizer m_storedFlameTime;
+	math::RandomFlicker m_flicker;
 };
 
 struct ColorMod {
