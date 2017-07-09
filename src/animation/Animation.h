@@ -123,8 +123,7 @@ DECLARE_FLAGS_OPERATORS(AnimUseType)
 struct AnimLayer {
 
 	AnimLayer()
-		: next_anim(NULL)
-		, cur_anim(NULL)
+		: cur_anim(NULL)
 		, altidx_next(0)
 		, altidx_cur(0)
 		, ctime(AnimationDuration_ZERO)
@@ -135,7 +134,6 @@ struct AnimLayer {
 		, currentFrame(0)
 	{}
 
-	ANIM_HANDLE * next_anim;
 	ANIM_HANDLE * cur_anim;
 	short altidx_next; // idx to alternate anims...
 	short altidx_cur; // idx to alternate anims...

@@ -588,8 +588,6 @@ void PrepareAnim(AnimLayer & layer, AnimationDuration time, Entity *io) {
 			layer.ctime = animTime;
 		}
 		
-		AnimationDuration lost = layer.ctime - animTime;
-		
 		if((layer.flags & EA_LOOP)
 		   || (io && ((layer.cur_anim == io->anims[ANIM_WALK])
 					  || (layer.cur_anim == io->anims[ANIM_WALK2])
@@ -598,49 +596,13 @@ void PrepareAnim(AnimLayer & layer, AnimationDuration time, Entity *io) {
 					  || (layer.cur_anim == io->anims[ANIM_RUN2])
 					  || (layer.cur_anim == io->anims[ANIM_RUN3])))
 		) {
-				if(!layer.next_anim) {
 					layer.ctime = AnimationDuration::ofRaw(layer.ctime.t % animTime.t);
 	
 					if(io)
 						FinishAnim(io, layer.cur_anim);
-				} else {
-					if(io) {
-						FinishAnim(io, layer.cur_anim);
-						
-						if(io->animBlend.lastanimtime != ArxInstant_ZERO)
-							AcquireLastAnim(io);
-						else
-							io->animBlend.lastanimtime = ArxInstantMs(1);
-					}
-					
-					layer.cur_anim = layer.next_anim;
-					layer.altidx_cur = ANIM_GetAltIdx(layer.next_anim, layer.altidx_cur);
-					layer.next_anim = NULL;
-					ResetAnim(layer);
-					layer.ctime = lost;
-					layer.flags = layer.nextflags;
-					layer.flags &= ~EA_ANIMEND;
-				}
 		} else {
-			if(io && layer.next_anim) {
-					FinishAnim(io, layer.cur_anim);
-					
-					if (io->animBlend.lastanimtime != ArxInstant_ZERO)
-						AcquireLastAnim(io);
-					else
-						io->animBlend.lastanimtime = ArxInstantMs(1);
-					
-					layer.cur_anim = layer.next_anim;
-					layer.altidx_cur = ANIM_GetAltIdx(layer.next_anim, layer.altidx_cur);
-					layer.next_anim = NULL;
-					ResetAnim(layer);
-					layer.ctime = lost;
-					layer.flags = layer.nextflags;
-					layer.flags &= ~EA_ANIMEND;
-			} else {
 				layer.flags |= EA_ANIMEND;
 				layer.ctime = layer.cur_anim->anims[layer.altidx_cur]->anim_time;
-			}
 		}
 	
 	}
@@ -873,9 +835,6 @@ void ReleaseAnimFromIO(Entity * io, long num) {
 			layer = AnimLayer();
 			layer.cur_anim = NULL;
 		}
-
-		if(layer.next_anim == io->anims[num])
-			layer.next_anim = NULL;
 	}
 
 	EERIE_ANIMMANAGER_ReleaseHandle(io->anims[num]);

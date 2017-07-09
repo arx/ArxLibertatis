@@ -1378,11 +1378,6 @@ void ARX_PLAYER_Manage_Visual() {
 	AnimLayer & layer2 = io->animlayer[2];
 	AnimLayer & layer3 = io->animlayer[3];
 	
-	layer0.next_anim = NULL;
-	layer1.next_anim = NULL;
-	layer2.next_anim = NULL;
-	layer3.next_anim = NULL;
-	
 	ANIM_HANDLE ** alist = io->anims;
 	
 	if(layer0.flags & EA_FORCEPLAY) {
