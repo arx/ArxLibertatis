@@ -486,7 +486,6 @@ struct SavedAnimUse {
 		a.altidx_cur = altidx_cur;
 		a.ctime = AnimationDurationMs(ctime);
 		a.flags = AnimUseType::load(flags);
-		a.nextflags = AnimUseType::load(nextflags);
 		a.lastframe = lastframe;
 		a.currentInterpolation = pour;
 		a.currentFrame = fr;
@@ -500,7 +499,7 @@ struct SavedAnimUse {
 		altidx_cur = b.altidx_cur;
 		ctime = toMsi(b.ctime);
 		flags = b.flags;
-		nextflags = b.nextflags;
+		nextflags = 0;
 		lastframe = b.lastframe;
 		pour = b.currentInterpolation;
 		fr = b.currentFrame;

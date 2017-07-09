@@ -112,7 +112,6 @@ class ForceAnimCommand : public Command {
 		io.lastmove = Vec3f_ZERO;
 		ANIM_Set(layer0, ea);
 		layer0.flags |= EA_FORCEPLAY;
-		layer0.nextflags = 0;
 		
 		CheckSetAnimOutOfTreatZone(&io, layer0);
 	}
