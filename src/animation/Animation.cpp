@@ -565,7 +565,9 @@ Vec3f GetAnimTotalTranslate(ANIM_HANDLE * eanim, long alt_idx) {
  * \param io Referrence to Interactive Object (NULL if no IO)
  */
 void PrepareAnim(AnimLayer & layer, AnimationDuration time, Entity *io) {
-
+	
+	arx_assert(layer.cur_anim);
+	
 	if(layer.flags & EA_PAUSED)
 		time = AnimationDuration_ZERO;
 
@@ -607,9 +609,6 @@ void PrepareAnim(AnimLayer & layer, AnimationDuration time, Entity *io) {
 	
 	}
 	
-	if (!layer.cur_anim)
-		return;
-
 	AnimationDuration tim;
 	if(layer.flags & EA_REVERSE)
 		tim = animTime - layer.ctime;
