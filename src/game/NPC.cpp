@@ -1759,17 +1759,12 @@ static void ARX_NPC_Manage_Anims(Entity * io, float TOLERANCE) {
 							}
 						}
 					}
-					
 				}
-				
 			}
-			
 		}
-		
 	} else if(io->_npcdata->weapontype & OBJECT_TYPE_BOW) {
 		// TODO ranged combat
 	}
-	
 }
 
 float GetIOHeight(Entity * io) {
