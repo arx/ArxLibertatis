@@ -124,7 +124,6 @@ struct AnimLayer {
 
 	AnimLayer()
 		: cur_anim(NULL)
-		, altidx_next(0)
 		, altidx_cur(0)
 		, ctime(AnimationDuration_ZERO)
 		, flags(0)
@@ -135,7 +134,6 @@ struct AnimLayer {
 	{}
 
 	ANIM_HANDLE * cur_anim;
-	short altidx_next; // idx to alternate anims...
 	short altidx_cur; // idx to alternate anims...
 	AnimationDuration ctime;
 	AnimUseType flags;
