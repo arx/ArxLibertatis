@@ -482,7 +482,6 @@ struct SavedAnimUse {
 	
 	operator AnimLayer() const {
 		AnimLayer a;
-		a.next_anim = NULL;
 		a.cur_anim = NULL;
 		a.altidx_next = altidx_next;
 		a.altidx_cur = altidx_cur;
@@ -496,7 +495,7 @@ struct SavedAnimUse {
 	}
 	
 	SavedAnimUse & operator=(const AnimLayer & b) {
-		next_anim = 0;
+		next_anim = -1;
 		cur_anim = 0;
 		altidx_next = b.altidx_next;
 		altidx_cur = b.altidx_cur;

@@ -1069,7 +1069,6 @@ static long ARX_CHANGELEVEL_Push_IO(const Entity * io, long level) {
 	std::copy(io->animlayer, io->animlayer + SAVED_MAX_ANIM_LAYERS, ais.animlayer);
 	for(size_t k = 0; k < MAX_ANIM_LAYERS; k++) {
 		ais.animlayer[k].cur_anim = GetIOAnimIdx2(io, io->animlayer[k].cur_anim);
-		ais.animlayer[k].next_anim = GetIOAnimIdx2(io, io->animlayer[k].next_anim);
 	}
 
 	// Save Target Infos
@@ -2130,16 +2129,7 @@ static Entity * ARX_CHANGELEVEL_Pop_IO(const std::string & idString, EntityInsta
 				}
 			}
 			
-			nn = (long)ais->animlayer[k].next_anim;
-			if(nn == -1) {
-				layer.next_anim = NULL;
-			} else {
-				layer.next_anim = io->anims[nn];
-				if(layer.next_anim && layer.altidx_next >= layer.next_anim->alt_nb) {
-					LogWarning << "Out of bounds animation alternative index " << layer.altidx_next << " for " << layer.next_anim->path << ", resetting to 0";
-					layer.altidx_next = 0;
-				}
-			}
+			arx_assert(ais->animlayer[k].next_anim == -1);
 		}
 		
 		// Target Info

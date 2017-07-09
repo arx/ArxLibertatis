@@ -179,7 +179,6 @@ class PlayAnimCommand : public Command {
 		
 		FinishAnim(io, layer.cur_anim);
 		ANIM_Set(layer, ea);
-		layer.next_anim = NULL;
 		
 		if(loop) {
 			layer.flags |= EA_LOOP;
@@ -233,7 +232,6 @@ public:
 		
 		if(anim == "none") {
 			layer.cur_anim = NULL;
-			layer.next_anim = NULL;
 			return Success;
 		}
 		

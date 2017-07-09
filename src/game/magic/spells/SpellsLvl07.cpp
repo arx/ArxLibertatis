@@ -662,7 +662,6 @@ void ConfuseSpell::Launch() {
 	ANIM_HANDLE * anim_papii = EERIE_ANIMMANAGER_Load(tex);
 	
 	AnimLayer & au = animlayer[0];
-	au.next_anim = NULL;
 	au.cur_anim = anim_papii;
 	au.ctime = AnimationDuration_ZERO;
 	au.flags = EA_LOOP;

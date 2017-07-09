@@ -1906,10 +1906,6 @@ static void ManageNPCMovement(Entity * io)
 	// Dead ?
 	if(IsDeadNPC(io)) {
 		io->ioflags |= IO_NO_COLLISIONS;
-		io->animlayer[0].next_anim = NULL;
-		io->animlayer[1].next_anim = NULL;
-		io->animlayer[2].next_anim = NULL;
-		io->animlayer[3].next_anim = NULL;
 		return;
 	}
 
@@ -2714,11 +2710,6 @@ void CheckNPC(Entity * io)
 		io->animlayer[1].cur_anim = NULL;
 		io->animlayer[2].cur_anim = NULL;
 		io->animlayer[3].cur_anim = NULL;
-
-		io->animlayer[0].next_anim = NULL;
-		io->animlayer[1].next_anim = NULL;
-		io->animlayer[2].next_anim = NULL;
-		io->animlayer[3].next_anim = NULL;
 	}
 }
 
