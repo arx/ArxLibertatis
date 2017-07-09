@@ -670,7 +670,6 @@ void ConfuseSpell::Launch() {
 	au.currentInterpolation = 0;
 	au.currentFrame = 0;
 	au.altidx_cur = 0;
-	au.altidx_next = 0;
 	
 	m_targets.push_back(m_target);
 }

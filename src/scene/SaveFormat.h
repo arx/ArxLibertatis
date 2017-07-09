@@ -483,7 +483,6 @@ struct SavedAnimUse {
 	operator AnimLayer() const {
 		AnimLayer a;
 		a.cur_anim = NULL;
-		a.altidx_next = altidx_next;
 		a.altidx_cur = altidx_cur;
 		a.ctime = AnimationDurationMs(ctime);
 		a.flags = AnimUseType::load(flags);
@@ -497,7 +496,7 @@ struct SavedAnimUse {
 	SavedAnimUse & operator=(const AnimLayer & b) {
 		next_anim = -1;
 		cur_anim = 0;
-		altidx_next = b.altidx_next;
+		altidx_next = 0;
 		altidx_cur = b.altidx_cur;
 		ctime = toMsi(b.ctime);
 		flags = b.flags;
