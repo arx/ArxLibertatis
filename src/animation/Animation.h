@@ -127,7 +127,6 @@ struct AnimLayer {
 		, altidx_cur(0)
 		, ctime(AnimationDuration_ZERO)
 		, flags(0)
-		, nextflags(0)
 		, lastframe(-1)
 		, currentInterpolation(0.f)
 		, currentFrame(0)
@@ -137,7 +136,6 @@ struct AnimLayer {
 	short altidx_cur; // idx to alternate anims...
 	AnimationDuration ctime;
 	AnimUseType flags;
-	AnimUseType nextflags;
 	long lastframe;
 	float currentInterpolation;
 	long currentFrame;

@@ -665,7 +665,6 @@ void ConfuseSpell::Launch() {
 	au.cur_anim = anim_papii;
 	au.ctime = AnimationDuration_ZERO;
 	au.flags = EA_LOOP;
-	au.nextflags = 0;
 	au.lastframe = 0;
 	au.currentInterpolation = 0;
 	au.currentFrame = 0;
