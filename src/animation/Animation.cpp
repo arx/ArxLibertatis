@@ -598,13 +598,13 @@ void PrepareAnim(AnimLayer & layer, AnimationDuration time, Entity *io) {
 					  || (layer.cur_anim == io->anims[ANIM_RUN2])
 					  || (layer.cur_anim == io->anims[ANIM_RUN3])))
 		) {
-					layer.ctime = AnimationDuration::ofRaw(layer.ctime.t % animTime.t);
-	
-					if(io)
-						FinishAnim(io, layer.cur_anim);
+			layer.ctime = AnimationDuration::ofRaw(layer.ctime.t % animTime.t);
+			
+			if(io)
+				FinishAnim(io, layer.cur_anim);
 		} else {
-				layer.flags |= EA_ANIMEND;
-				layer.ctime = layer.cur_anim->anims[layer.altidx_cur]->anim_time;
+			layer.flags |= EA_ANIMEND;
+			layer.ctime = layer.cur_anim->anims[layer.altidx_cur]->anim_time;
 		}
 	
 	}
