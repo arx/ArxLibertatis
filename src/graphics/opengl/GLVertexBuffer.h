@@ -293,6 +293,61 @@ protected:
 };
 
 template <class Vertex>
+class GLShadowVertexBuffer : public GLVertexBuffer<Vertex> {
+	
+	typedef GLVertexBuffer<Vertex> Base;
+	
+public:
+	
+	using Base::capacity;
+	
+	GLShadowVertexBuffer(OpenGLRenderer * renderer, size_t capacity, Renderer::BufferUsage usage)
+		: Base(renderer, capacity, usage)
+		, m_lockedFlags(0)
+		, m_lockedOffset(0)
+		, m_lockedCount(0)
+	{ }
+	
+	void setData(const Vertex * vertices, size_t count, size_t offset, BufferFlags flags) {
+		
+		if(m_usage == Renderer::Dynamic) {
+			m_shadow.resize(capacity());
+			std::memcpy(&m_shadow[0] + offset, vertices, count * sizeof(Vertex));
+		}
+		
+		Base::setData(vertices, count, offset, flags);
+	}
+	
+	Vertex * lock(BufferFlags flags, size_t offset, size_t count) {
+		
+		m_shadow.resize(capacity());
+		
+		arx_assert(offset < capacity());
+		
+		m_lockedFlags = flags;
+		m_lockedOffset = offset;
+		m_lockedCount = std::min(count, capacity() - offset);
+		
+		return &m_shadow[0] + offset;
+	}
+	
+	void unlock() {
+		Base::setData(&m_shadow[0] + m_lockedOffset, m_lockedCount, m_lockedOffset, m_lockedFlags);
+	}
+	
+protected:
+	
+	using Base::m_usage;
+	using Base::m_initialized;
+	
+	std::vector<Vertex> m_shadow;
+	BufferFlags m_lockedFlags;
+	size_t m_lockedOffset;
+	size_t m_lockedCount;
+	
+};
+
+template <class Vertex>
 class GLMapVertexBuffer : public GLVertexBuffer<Vertex> {
 	
 	typedef GLVertexBuffer<Vertex> Base;
