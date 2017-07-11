@@ -59,6 +59,7 @@ OpenGLRenderer::OpenGLRenderer()
 	, m_hasSizedTextureFormats(false)
 	, m_hasIntensityTextures(false)
 	, m_hasBGRTextureTransfer(false)
+	, m_hasMapBuffer(false)
 	, m_hasMapBufferRange(false)
 	, m_hasBufferStorage(false)
 	, m_hasBufferUsageStream(false)
@@ -298,12 +299,18 @@ void OpenGLRenderer::reinit() {
 		if(!m_hasMapBufferRange) {
 			LogWarning << "Missing OpenGL extension EXT_map_buffer_range.";
 		}
+		// OES_mapbuffer requires OpenGL ES 1.1
+		m_hasMapBuffer = ARX_HAVE_GLES_EXT(OES_mapbuffer);
+		if(!m_hasMapBuffer) {
+			LogWarning << "Missing OpenGL extension OES_mapbuffer.";
+		}
 	} else {
 		// ARB_map_buffer_range requires OpenGL 2.1
 		m_hasMapBufferRange = ARX_HAVE_GL_VER(3, 0) || ARX_HAVE_GL_EXT(ARB_map_buffer_range);
 		if(!m_hasMapBufferRange) {
 			LogWarning << "Missing OpenGL extension ARB_map_buffer_range.";
 		}
+		m_hasMapBuffer = true; // Introduced in OpenGL 1.5
 	}
 	
 	if(isES) {
@@ -719,8 +726,16 @@ static VertexBuffer<Vertex> * createVertexBufferImpl(OpenGLRenderer * renderer,
 		
 	}
 	
-	if(setting.empty() || setting == "map" || setting == "map+subdata") {
-		return new GLMapVertexBuffer<Vertex>(renderer, capacity, usage);
+	if(renderer->hasMapBuffer()) {
+		
+		if(setting.empty() || setting == "map" || setting == "map+subdata") {
+			return new GLMapVertexBuffer<Vertex>(renderer, capacity, usage);
+		}
+		
+	}
+	
+	if(setting.empty() || setting == "shadow" || setting == "shadow+subdata") {
+		return new GLShadowVertexBuffer<Vertex>(renderer, capacity, usage);
 	}
 	
 	static bool warned = false;

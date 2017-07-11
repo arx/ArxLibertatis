@@ -99,6 +99,7 @@ public:
 	bool hasIntensityTextures() const { return m_hasIntensityTextures; }
 	bool hasBGRTextureTransfer() const { return m_hasBGRTextureTransfer; }
 	
+	bool hasMapBuffer() const { return m_hasMapBuffer; }
 	bool hasMapBufferRange() const { return m_hasMapBufferRange; }
 	bool hasBufferStorage() const { return m_hasBufferStorage; }
 	bool hasBufferUsageStream() const { return m_hasBufferUsageStream; }
@@ -144,6 +145,7 @@ private:
 	bool m_hasIntensityTextures;
 	bool m_hasBGRTextureTransfer;
 	
+	bool m_hasMapBuffer;
 	bool m_hasMapBufferRange;
 	bool m_hasBufferStorage;
 	bool m_hasBufferUsageStream;
