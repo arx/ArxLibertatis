@@ -225,12 +225,6 @@ protected:
 	
 };
 
-static const GLenum arxToGlBufferUsage[] = {
-	GL_STATIC_DRAW,  // Static,
-	GL_DYNAMIC_DRAW, // Dynamic,
-	GL_STREAM_DRAW   // Stream
-};
-
 template <class Vertex>
 class GLVertexBuffer : public BaseGLVertexBuffer<Vertex> {
 	
@@ -313,7 +307,10 @@ protected:
 		else
 		#endif
 		{
-			GLenum usage = arxToGlBufferUsage[m_usage];
+			GLenum usage = m_usage == Renderer::Static ? GL_STATIC_DRAW : GL_DYNAMIC_DRAW;
+			if(m_usage == Renderer::Stream && m_renderer->hasBufferUsageStream()) {
+				usage = GL_STREAM_DRAW;
+			}
 			glBufferData(GL_ARRAY_BUFFER, capacity() * sizeof(Vertex), data, usage);
 		}
 		m_initialized = true;

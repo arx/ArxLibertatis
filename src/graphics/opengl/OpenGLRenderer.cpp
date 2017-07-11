@@ -61,6 +61,7 @@ OpenGLRenderer::OpenGLRenderer()
 	, m_hasBGRTextureTransfer(false)
 	, m_hasGL_ARB_map_buffer_range(false)
 	, m_hasBufferStorage(false)
+	, m_hasBufferUsageStream(false)
 	, m_hasDrawRangeElements(false)
 	, m_hasDrawElementsBaseVertex(false)
 { }
@@ -299,8 +300,10 @@ void OpenGLRenderer::reinit() {
 	if(isES) {
 		// EXT_buffer_storage requires OpenGL ES 3.1
 		m_hasBufferStorage = ARX_HAVE_GLES_EXT(EXT_buffer_storage);
+		m_hasBufferUsageStream = ARX_HAVE_GLES_VER(2, 0);
 	} else {
 		m_hasBufferStorage = ARX_HAVE_GL_VER(4, 4) || ARX_HAVE_GL_EXT(ARB_buffer_storage);
+		m_hasBufferUsageStream = true; // Introduced in OpenGL 1.5
 	}
 	
 	// Synchronize GL state cache
