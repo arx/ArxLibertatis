@@ -99,7 +99,7 @@ public:
 	bool hasIntensityTextures() const { return m_hasIntensityTextures; }
 	bool hasBGRTextureTransfer() const { return m_hasBGRTextureTransfer; }
 	
-	bool hasGL_ARB_map_buffer_range() const { return m_hasGL_ARB_map_buffer_range; }
+	bool hasMapBufferRange() const { return m_hasMapBufferRange; }
 	bool hasBufferStorage() const { return m_hasBufferStorage; }
 	bool hasBufferUsageStream() const { return m_hasBufferUsageStream; }
 	bool hasDrawRangeElements() const { return m_hasDrawRangeElements; }
@@ -144,7 +144,7 @@ private:
 	bool m_hasIntensityTextures;
 	bool m_hasBGRTextureTransfer;
 	
-	bool m_hasGL_ARB_map_buffer_range;
+	bool m_hasMapBufferRange;
 	bool m_hasBufferStorage;
 	bool m_hasBufferUsageStream;
 	bool m_hasDrawRangeElements;
