@@ -59,7 +59,7 @@ OpenGLRenderer::OpenGLRenderer()
 	, m_hasSizedTextureFormats(false)
 	, m_hasIntensityTextures(false)
 	, m_hasBGRTextureTransfer(false)
-	, m_hasGL_ARB_map_buffer_range(false)
+	, m_hasMapBufferRange(false)
 	, m_hasBufferStorage(false)
 	, m_hasBufferUsageStream(false)
 	, m_hasDrawRangeElements(false)
@@ -292,9 +292,18 @@ void OpenGLRenderer::reinit() {
 		m_hasDrawRangeElements = true; // Introduced in OpenGL 1.2
 	}
 	
-	m_hasGL_ARB_map_buffer_range = ARX_HAVE_GL_EXT(ARB_map_buffer_range);
-	if(!m_hasGL_ARB_map_buffer_range) {
-		LogWarning << "Missing OpenGL extension ARB_map_buffer_range.";
+	if(isES) {
+		// EXT_map_buffer_range requires OpenGL ES 1.1
+		m_hasMapBufferRange = ARX_HAVE_GLES_VER(3, 0) || ARX_HAVE_GLES_EXT(EXT_map_buffer_range);
+		if(!m_hasMapBufferRange) {
+			LogWarning << "Missing OpenGL extension EXT_map_buffer_range.";
+		}
+	} else {
+		// ARB_map_buffer_range requires OpenGL 2.1
+		m_hasMapBufferRange = ARX_HAVE_GL_VER(3, 0) || ARX_HAVE_GL_EXT(ARB_map_buffer_range);
+		if(!m_hasMapBufferRange) {
+			LogWarning << "Missing OpenGL extension ARB_map_buffer_range.";
+		}
 	}
 	
 	if(isES) {
@@ -669,7 +678,7 @@ static VertexBuffer<Vertex> * createVertexBufferImpl(OpenGLRenderer * renderer,
 	
 	bool matched = false;
 	
-	if(renderer->hasGL_ARB_map_buffer_range()) {
+	if(renderer->hasMapBufferRange()) {
 		
 		#ifdef GL_ARB_buffer_storage
 		
