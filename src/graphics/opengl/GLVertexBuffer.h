@@ -264,6 +264,47 @@ public:
 		
 	}
 	
+protected:
+	
+	void initialize(const Vertex * data = NULL) {
+		arx_assert(!m_initialized || m_usage != Renderer::Static);
+		arx_assert(data || m_usage != Renderer::Static);
+		#ifdef GL_ARB_buffer_storage
+		if(m_usage == Renderer::Static && m_renderer->hasBufferStorage()) {
+			glBufferStorage(GL_ARRAY_BUFFER, capacity() * sizeof(Vertex), data, 0);
+		}
+		else
+		#endif
+		{
+			GLenum usage = m_usage == Renderer::Static ? GL_STATIC_DRAW : GL_DYNAMIC_DRAW;
+			if(m_usage == Renderer::Stream && m_renderer->hasBufferUsageStream()) {
+				usage = GL_STREAM_DRAW;
+			}
+			glBufferData(GL_ARRAY_BUFFER, capacity() * sizeof(Vertex), data, usage);
+		}
+		m_initialized = true;
+	}
+	
+	using Base::m_renderer;
+	using Base::m_buffer;
+	using Base::m_usage;
+	bool m_initialized;
+	
+};
+
+template <class Vertex>
+class GLMapVertexBuffer : public GLVertexBuffer<Vertex> {
+	
+	typedef GLVertexBuffer<Vertex> Base;
+	
+public:
+	
+	using Base::capacity;
+	
+	GLMapVertexBuffer(OpenGLRenderer * renderer, size_t capacity, Renderer::BufferUsage usage)
+		: Base(renderer, capacity, usage)
+	{ }
+	
 	Vertex * lock(BufferFlags flags, size_t offset, size_t count) {
 		ARX_UNUSED(count);
 		
@@ -297,36 +338,17 @@ public:
 	
 protected:
 	
-	void initialize(const Vertex * data = NULL) {
-		arx_assert(!m_initialized || m_usage != Renderer::Static);
-		arx_assert(data || m_usage != Renderer::Static);
-		#ifdef GL_ARB_buffer_storage
-		if(m_usage == Renderer::Static && m_renderer->hasBufferStorage()) {
-			glBufferStorage(GL_ARRAY_BUFFER, capacity() * sizeof(Vertex), data, 0);
-		}
-		else
-		#endif
-		{
-			GLenum usage = m_usage == Renderer::Static ? GL_STATIC_DRAW : GL_DYNAMIC_DRAW;
-			if(m_usage == Renderer::Stream && m_renderer->hasBufferUsageStream()) {
-				usage = GL_STREAM_DRAW;
-			}
-			glBufferData(GL_ARRAY_BUFFER, capacity() * sizeof(Vertex), data, usage);
-		}
-		m_initialized = true;
-	}
+	using Base::initialize;
 	
-	using Base::m_renderer;
 	using Base::m_buffer;
-	using Base::m_usage;
-	bool m_initialized;
+	using Base::m_initialized;
 	
 };
 
 template <class Vertex>
-class GLMapRangeVertexBuffer : public GLVertexBuffer<Vertex> {
+class GLMapRangeVertexBuffer : public GLMapVertexBuffer<Vertex> {
 	
-	typedef GLVertexBuffer<Vertex> Base;
+	typedef GLMapVertexBuffer<Vertex> Base;
 	
 public:
 	

@@ -711,7 +711,7 @@ static VertexBuffer<Vertex> * createVertexBufferImpl(OpenGLRenderer * renderer,
 	}
 	
 	if(setting.empty() || setting == "map" || setting == "map+subdata") {
-		return new GLVertexBuffer<Vertex>(renderer, capacity, usage);
+		return new GLMapVertexBuffer<Vertex>(renderer, capacity, usage);
 	}
 	
 	static bool warned = false;
