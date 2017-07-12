@@ -1806,6 +1806,7 @@ print_configuration("Filesystem backend" FIRST
 )
 print_configuration("Renderer"
 	ARX_HAVE_EPOXY "OpenGL (libepoxy)"
+	ARX_HAVE_EPOXY "OpenGL ES (libepoxy)"
 	ARX_HAVE_GLEW  "OpenGL (GLEW)"
 )
 print_configuration("Audio features"

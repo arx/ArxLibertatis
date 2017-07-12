@@ -331,6 +331,17 @@ bool SDL2Window::initialize() {
 			samples = createWindowAndGLContext("Desktop OpenGL");
 		}
 		
+		#if ARX_HAVE_EPOXY
+		if(samples == 0 && first == (autoRenderer || config.video.renderer == "OpenGL ES")) {
+			matched = true;
+			// TODO OpenGL ES 2.0+ is not supported yet
+			SDL_GL_SetAttribute(SDL_GL_CONTEXT_PROFILE_MASK, SDL_GL_CONTEXT_PROFILE_ES);
+			SDL_GL_SetAttribute(SDL_GL_CONTEXT_MAJOR_VERSION, 1);
+			SDL_GL_SetAttribute(SDL_GL_CONTEXT_MINOR_VERSION, 0);
+			samples = createWindowAndGLContext("OpenGL ES");
+		}
+		#endif
+		
 		if(first && !matched) {
 			LogError << "Unknown renderer: " << config.video.renderer;
 		}
