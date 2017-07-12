@@ -790,16 +790,16 @@ static void RenderWaterBatch() {
 		return;
 	}
 	
-	GRenderer->GetTextureStage(1)->setColorOp(TextureStage::OpModulate4X, TextureStage::ArgTexture, TextureStage::ArgCurrent);
-	GRenderer->GetTextureStage(1)->disableAlpha();
+	GRenderer->GetTextureStage(1)->setColorOp(TextureStage::OpModulate4X);
+	GRenderer->GetTextureStage(1)->setAlphaOp(TextureStage::OpDisable);
 	
-	GRenderer->GetTextureStage(2)->setColorOp(TextureStage::OpModulate, TextureStage::ArgTexture, TextureStage::ArgCurrent);
-	GRenderer->GetTextureStage(2)->disableAlpha();
+	GRenderer->GetTextureStage(2)->setColorOp(TextureStage::OpModulate);
+	GRenderer->GetTextureStage(2)->setAlphaOp(TextureStage::OpDisable);
 	
 	dynamicVertices.draw(Renderer::TriangleList);
 	
-	GRenderer->GetTextureStage(1)->disableColor();
-	GRenderer->GetTextureStage(2)->disableColor();
+	GRenderer->GetTextureStage(1)->setColorOp(TextureStage::OpDisable);
+	GRenderer->GetTextureStage(2)->setColorOp(TextureStage::OpDisable);
 	
 }
 
@@ -937,13 +937,13 @@ static void RenderLavaBatch() {
 	
 	RenderState baseState = render3D().depthWrite(false).cull(CullCW).depthOffset(8);
 	
-	GRenderer->GetTextureStage(0)->setColorOp(TextureStage::OpModulate2X, TextureStage::ArgTexture, TextureStage::ArgDiffuse);
+	GRenderer->GetTextureStage(0)->setColorOp(TextureStage::OpModulate2X);
 	
-	GRenderer->GetTextureStage(1)->setColorOp(TextureStage::OpModulate4X, TextureStage::ArgTexture, TextureStage::ArgCurrent);
-	GRenderer->GetTextureStage(1)->disableAlpha();
+	GRenderer->GetTextureStage(1)->setColorOp(TextureStage::OpModulate4X);
+	GRenderer->GetTextureStage(1)->setAlphaOp(TextureStage::OpDisable);
 	
-	GRenderer->GetTextureStage(2)->setColorOp(TextureStage::OpModulate, TextureStage::ArgTexture, TextureStage::ArgCurrent);
-	GRenderer->GetTextureStage(2)->disableAlpha();
+	GRenderer->GetTextureStage(2)->setColorOp(TextureStage::OpModulate);
+	GRenderer->GetTextureStage(2)->setAlphaOp(TextureStage::OpDisable);
 	
 	{
 		UseRenderState state(baseState.blend(BlendDstColor, BlendOne));
@@ -957,8 +957,8 @@ static void RenderLavaBatch() {
 		dynamicVertices.draw(Renderer::TriangleList);
 	}
 	
-	GRenderer->GetTextureStage(1)->disableColor();
-	GRenderer->GetTextureStage(2)->disableColor();
+	GRenderer->GetTextureStage(1)->setColorOp(TextureStage::OpDisable);
+	GRenderer->GetTextureStage(2)->setColorOp(TextureStage::OpDisable);
 	
 }
 
