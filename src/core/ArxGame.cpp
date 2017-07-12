@@ -2250,8 +2250,6 @@ void ArxGame::onRendererInit(Renderer & renderer) {
 	
 	// Setup Texture Border RenderState
 	renderer.GetTextureStage(0)->setWrapMode(TextureStage::WrapRepeat);
-
-	renderer.GetTextureStage(1)->disableColor();
 	
 	// Fog
 	float fogEnd = 0.48f;
