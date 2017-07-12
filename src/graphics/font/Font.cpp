@@ -365,7 +365,7 @@ Font::TextSize Font::process(int x, int y, text_iterator start, text_iterator en
 		UseRenderState state(render2D());
 		
 		// Fixed pipeline texture stage operation
-		GRenderer->GetTextureStage(0)->setColorOp(TextureStage::ArgDiffuse);
+		GRenderer->GetTextureStage(0)->setColorOp(TextureStage::OpDisable);
 
 		GRenderer->GetTextureStage(0)->setWrapMode(TextureStage::WrapClamp);
 		GRenderer->GetTextureStage(0)->setMinFilter(TextureStage::FilterNearest);
@@ -381,8 +381,7 @@ Font::TextSize Font::process(int x, int y, text_iterator start, text_iterator en
 					
 		GRenderer->ResetTexture(0);
 		TextureStage * stage = GRenderer->GetTextureStage(0);
-		stage->setColorOp(TextureStage::OpModulate,
-		                  TextureStage::ArgTexture, TextureStage::ArgCurrent);
+		stage->setColorOp(TextureStage::OpModulate);
 		stage->setWrapMode(TextureStage::WrapRepeat);
 		stage->setMinFilter(TextureStage::FilterLinear);
 		stage->setMagFilter(TextureStage::FilterLinear);
