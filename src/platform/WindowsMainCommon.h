@@ -27,6 +27,8 @@
 
 #include <math.h>
 
+#include "platform/Architecture.h"
+
 class WindowsMain {
 	
 public:
@@ -52,7 +54,7 @@ public:
 		
 		// Work around a bug in Visual Studio 2013's math library
 		// https://support.microsoft.com/en-us/help/3174417/fix-programs-that-are-built-in-visual-c-2013-crash-with-illegal-instru
-		#if defined(_MSC_VER) && _MSC_VER >= 1800 && _MSC_VER < 1900
+		#if defined(_MSC_VER) && _MSC_VER >= 1800 && _MSC_VER < 1900 && ARX_ARCH == ARX_ARCH_X86_64
 		bool hasAVX = false;
 		HMODULE kernel32 = GetModuleHandleW(L"kernel32.dll");
 		if(kernel32) {
