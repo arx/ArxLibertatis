@@ -531,15 +531,13 @@ public:
 				slider->selectLast();
 			}
 			
-	#if ARX_HAVE_SDL1 || ARX_HAVE_SDL2
 			{
 				TextWidget * txt = new TextWidget(BUTTON_INVALID, hFontMenu, "OpenGL", Vec2f_ZERO);
 				slider->AddText(txt);
-				if(config.window.framework == "SDL") {
+				if(config.video.renderer == "OpenGL") {
 					slider->selectLast();
 				}
 			}
-	#endif
 			
 			float fRatio    = (RATIO_X(m_size.x-9) - slider->m_rect.width());
 			slider->Move(Vec2f(fRatio, 0));
@@ -810,9 +808,9 @@ private:
 		ARX_UNUSED(str);
 		
 		switch(pos) {
-			case 0:  config.window.framework = "auto"; break;
-			case 1:  config.window.framework = "SDL";  break;
-			default: config.window.framework = "auto"; break;
+			case 0:  config.video.renderer = "auto"; break;
+			case 1:  config.video.renderer = "OpenGL";  break;
+			default: config.video.renderer = "auto"; break;
 		}
 	}
 	
