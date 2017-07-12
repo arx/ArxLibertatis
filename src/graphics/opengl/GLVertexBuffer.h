@@ -34,7 +34,7 @@
 #include "io/log/Logger.h"
 
 template <class Vertex>
-static void setVertexArray(const Vertex * vertex, const void * ref);
+static void setVertexArray(OpenGLRenderer * renderer, const Vertex * vertex, const void * ref);
 
 // cached vertex array definitions
 enum GLArrayClientState {
@@ -51,7 +51,7 @@ bool switchVertexArray(GLArrayClientState type, const void * ref, int texcount);
 void clearVertexArray(const void * ref);
 
 template <>
-inline void setVertexArray(const TexturedVertex * vertices, const void * ref) {
+inline void setVertexArray(OpenGLRenderer * renderer, const TexturedVertex * vertices, const void * ref) {
 	
 	ARX_UNUSED(vertices);
 
@@ -61,10 +61,12 @@ inline void setVertexArray(const TexturedVertex * vertices, const void * ref) {
 	
 	glVertexPointer(4, GL_FLOAT, sizeof(*vertices), &vertices->p);
 	
-	// Use clip.w == view.z as the fog depth to match other vertex types
-	// TODO remove GL_FOG_COORDINATE_* uses once vertices are provided in view-space coordinates
-	glEnableClientState(GL_FOG_COORDINATE_ARRAY);
-	glFogCoordPointer(GL_FLOAT, sizeof(*vertices), &vertices->w);
+	if(renderer->hasVertexFogCoordinate()) {
+		// Use clip.w == view.z as the fog depth to match other vertex types
+		// TODO remove GL_FOG_COORDINATE_* uses once vertices are provided in view-space coordinates
+		glEnableClientState(GL_FOG_COORDINATE_ARRAY);
+		glFogCoordPointer(GL_FLOAT, sizeof(*vertices), &vertices->w);
+	}
 	
 	glColorPointer(4, GL_UNSIGNED_BYTE, sizeof(*vertices), &vertices->color);
 	
@@ -72,7 +74,7 @@ inline void setVertexArray(const TexturedVertex * vertices, const void * ref) {
 }
 
 template <>
-inline void setVertexArray(const SMY_VERTEX * vertices, const void * ref) {
+inline void setVertexArray(OpenGLRenderer * renderer, const SMY_VERTEX * vertices, const void * ref) {
 	
 	if(!switchVertexArray(GL_SMY_VERTEX, ref, 1)) {
 		return;
@@ -80,7 +82,9 @@ inline void setVertexArray(const SMY_VERTEX * vertices, const void * ref) {
 	
 	glVertexPointer(3, GL_FLOAT, sizeof(*vertices), &vertices->p.x);
 	
-	glDisableClientState(GL_FOG_COORDINATE_ARRAY);
+	if(renderer->hasVertexFogCoordinate()) {
+		glDisableClientState(GL_FOG_COORDINATE_ARRAY);
+	}
 	
 	glColorPointer(4, GL_UNSIGNED_BYTE, sizeof(*vertices), &vertices->color);
 	
@@ -88,7 +92,7 @@ inline void setVertexArray(const SMY_VERTEX * vertices, const void * ref) {
 }
 
 template <>
-inline void setVertexArray(const SMY_VERTEX3 * vertices, const void * ref) {
+inline void setVertexArray(OpenGLRenderer * renderer, const SMY_VERTEX3 * vertices, const void * ref) {
 	
 	if(!switchVertexArray(GL_SMY_VERTEX3, ref, 3)) {
 		return;
@@ -96,7 +100,9 @@ inline void setVertexArray(const SMY_VERTEX3 * vertices, const void * ref) {
 	
 	glVertexPointer(3, GL_FLOAT, sizeof(*vertices), &vertices->p.x);
 	
-	glDisableClientState(GL_FOG_COORDINATE_ARRAY);
+	if(renderer->hasVertexFogCoordinate()) {
+		glDisableClientState(GL_FOG_COORDINATE_ARRAY);
+	};
 	
 	glColorPointer(4, GL_UNSIGNED_BYTE, sizeof(*vertices), &vertices->color);
 	
@@ -139,7 +145,7 @@ public:
 		
 		bindBuffer(m_buffer);
 		
-		setVertexArray<Vertex>(NULL, this);
+		setVertexArray<Vertex>(m_renderer, NULL, this);
 		
 		glDrawArrays(arxToGlPrimitiveType[primitive], m_offset + offset, count);
 		
@@ -158,7 +164,7 @@ public:
 		
 		bindBuffer(m_buffer);
 		
-		setVertexArray<Vertex>(NULL, this);
+		setVertexArray<Vertex>(m_renderer, NULL, this);
 		
 		GLenum mode = arxToGlPrimitiveType[primitive];
 		GLenum type = GL_UNSIGNED_SHORT;
