@@ -166,7 +166,11 @@ public:
 		
 		if(m_renderer->hasDrawElementsBaseVertex()) {
 			
-			glDrawRangeElementsBaseVertex(mode, 0, count - 1, nbindices, type, data, offset);
+			if(m_renderer->hasDrawRangeElements()) {
+				glDrawRangeElementsBaseVertex(mode, 0, count - 1, nbindices, type, data, offset);
+			} else {
+				glDrawElementsBaseVertex(mode, nbindices, type, data, offset);
+			}
 			
 		} else {
 			
@@ -188,7 +192,11 @@ public:
 				}
 			}
 			
-			glDrawRangeElements(mode, offset, offset + count - 1, nbindices, type, data);
+			if(m_renderer->hasDrawRangeElements()) {
+				glDrawRangeElements(mode, offset, offset + count - 1, nbindices, type, data);
+			} else {
+				glDrawElements(mode, nbindices, type, data);
+			}
 			
 		}
 		
