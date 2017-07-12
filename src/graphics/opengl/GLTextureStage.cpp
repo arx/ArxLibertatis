@@ -71,8 +71,8 @@ struct GLTexEnvParam {
 	
 	GLenum combine;
 	
-	GLenum sources[2];
-	GLenum operands[2];
+	GLenum source;
+	GLenum operand;
 	
 	GLint normal;
 	
@@ -83,23 +83,23 @@ struct GLTexEnvParam {
 static const GLTexEnvParam glTexEnv[] = {
 	{
 		GL_COMBINE_RGB,
-		{ GL_SOURCE0_RGB, GL_SOURCE1_RGB },
-		{ GL_OPERAND0_RGB, GL_OPERAND1_RGB },
+		GL_SOURCE0_RGB,
+		GL_OPERAND0_RGB,
 		GL_SRC_COLOR,
 		GL_RGB_SCALE
 	}, {
 		GL_COMBINE_ALPHA,
-		{ GL_SOURCE0_ALPHA, GL_SOURCE1_ALPHA },
-		{ GL_OPERAND0_ALPHA, GL_OPERAND1_ALPHA },
+		GL_SOURCE0_ALPHA,
+		GL_OPERAND0_ALPHA,
 		GL_SRC_ALPHA,
 		GL_ALPHA_SCALE
 	}
 };
 
-void GLTextureStage::setArg(OpType alpha, Arg idx, TextureArg arg) {
+void GLTextureStage::setArg(OpType alpha, TextureArg arg) {
 	
-	setTexEnv(GL_TEXTURE_ENV, glTexEnv[alpha].sources[idx], glTexSource[arg]);
-	setTexEnv(GL_TEXTURE_ENV, glTexEnv[alpha].operands[idx], glTexEnv[alpha].normal);
+	setTexEnv(GL_TEXTURE_ENV, glTexEnv[alpha].source, glTexSource[arg]);
+	setTexEnv(GL_TEXTURE_ENV, glTexEnv[alpha].operand, glTexEnv[alpha].normal);
 }
 
 void GLTextureStage::setOp(OpType alpha, GLint op, GLint scale) {
@@ -142,34 +142,31 @@ void GLTextureStage::setOp(OpType alpha, TextureOp op) {
 		
 		case OpDisable: {
 			setOp(alpha, GL_REPLACE, 1);
-			setArg(alpha, Arg0, ArgCurrent);
+			setArg(alpha, ArgCurrent);
 			break;
 		}
 		
 		case OpSelectArg1: {
 			setOp(alpha, GL_REPLACE, 1);
-			setArg(alpha, Arg0, ArgTexture);
+			setArg(alpha, ArgTexture);
 			break;
 		}
 		
 		case OpModulate: {
 			setOp(alpha, GL_MODULATE, 1);
-			setArg(alpha, Arg0, ArgTexture);
-			setArg(alpha, Arg1, ArgCurrent);
+			setArg(alpha, ArgTexture);
 			break;
 		}
 		
 		case OpModulate2X: {
 			setOp(alpha, GL_MODULATE, 2);
-			setArg(alpha, Arg0, ArgTexture);
-			setArg(alpha, Arg1, ArgCurrent);
+			setArg(alpha, ArgTexture);
 			break;
 		}
 		
 		case OpModulate4X: {
 			setOp(alpha, GL_MODULATE, 4);
-			setArg(alpha, Arg0, ArgTexture);
-			setArg(alpha, Arg1, ArgCurrent);
+			setArg(alpha, ArgTexture);
 			break;
 		}
 		

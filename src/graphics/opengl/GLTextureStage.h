@@ -69,14 +69,9 @@ private:
 		Alpha
 	};
 	
-	enum Arg {
-		Arg0,
-		Arg1
-	};
-	
 	TextureOp ops[2];
 	
-	void setArg(OpType alpha, Arg idx, TextureArg arg);
+	void setArg(OpType alpha, TextureArg arg);
 	
 	void setOp(OpType alpha, GLint op, GLint scale);
 	void setOp(OpType alpha, TextureOp op);
