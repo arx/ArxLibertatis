@@ -49,6 +49,7 @@ namespace Default {
 
 const std::string
 	language = std::string(),
+	renderer = "auto",
 	resolution = "auto",
 	audioBackend = "auto",
 	audioDevice = "auto",
@@ -177,6 +178,7 @@ const std::string language = "string";
 
 // Video options
 const std::string
+	renderer = "renderer",
 	resolution = "resolution",
 	fullscreen = "full_screen",
 	levelOfDetail = "others_details",
@@ -395,6 +397,7 @@ bool Config::save() {
 	
 	// video
 	writer.beginSection(Section::Video);
+	writer.writeKey(Key::renderer, video.renderer);
 	if(video.resolution == Vec2i_ZERO) {
 		writer.writeKey(Key::resolution, Default::resolution);
 	} else {
@@ -528,6 +531,7 @@ bool Config::init(const fs::path & file) {
 	language = reader.getKey(Section::Language, Key::language, Default::language);
 	
 	// Get video settings
+	video.renderer = reader.getKey(Section::Video, Key::renderer, Default::renderer);
 	std::string resolution = reader.getKey(Section::Video, Key::resolution, Default::resolution);
 	if(resolution == "auto") {
 		video.resolution = Vec2i_ZERO;

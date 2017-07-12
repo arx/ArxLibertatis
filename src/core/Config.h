@@ -115,6 +115,8 @@ public:
 	// section 'video'
 	struct {
 		
+		std::string renderer;
+		
 		Vec2i resolution;
 		
 		bool fullscreen;
