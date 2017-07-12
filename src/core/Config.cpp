@@ -53,7 +53,6 @@ const std::string
 	resolution = "auto",
 	audioBackend = "auto",
 	audioDevice = "auto",
-	windowFramework = "auto",
 	windowSize = BOOST_PP_STRINGIZE(ARX_DEFAULT_WIDTH) "x"
 	             BOOST_PP_STRINGIZE(ARX_DEFAULT_HEIGHT),
 	debugLevels = "",
@@ -204,7 +203,6 @@ const std::string
 
 // Window options
 const std::string
-	windowFramework = "framework",
 	windowSize = "size",
 	minimizeOnFocusLost = "minimize_on_focus_lost";
 
@@ -431,7 +429,6 @@ bool Config::save() {
 	
 	// window
 	writer.beginSection(Section::Window);
-	writer.writeKey(Key::windowFramework, window.framework);
 	std::ostringstream oss;
 	oss << window.size.x << 'x' << window.size.y;
 	writer.writeKey(Key::windowSize, oss.str());
@@ -567,7 +564,6 @@ bool Config::init(const fs::path & file) {
 	interface.thumbnailSize = parseThumbnailSize(thumbnailSize);
 	
 	// Get window settings
-	window.framework = reader.getKey(Section::Window, Key::windowFramework, Default::windowFramework);
 	std::string windowSize = reader.getKey(Section::Window, Key::windowSize, Default::windowSize);
 	window.size = parseResolution(windowSize);
 	window.minimizeOnFocusLost = reader.getKey(Section::Window, Key::minimizeOnFocusLost,

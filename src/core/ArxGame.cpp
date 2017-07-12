@@ -451,15 +451,13 @@ bool ArxGame::initWindow() {
 	
 	arx_assert(m_MainWindow == NULL);
 	
-	bool autoFramework = (config.window.framework == "auto");
-	
 	for(int i = 0; i < 2 && !m_MainWindow; i++) {
 		bool first = (i == 0);
 		
 		bool matched = false;
 		
 		#if ARX_HAVE_SDL2
-		if(!m_MainWindow && first == (autoFramework || config.window.framework == "SDL")) {
+		if(!m_MainWindow && first) {
 			matched = true;
 			RenderWindow * window = new SDL2Window;
 			if(!initWindow(window)) {
@@ -469,7 +467,7 @@ bool ArxGame::initWindow() {
 		#endif
 		
 		#if ARX_HAVE_SDL1
-		if(!m_MainWindow && first == (autoFramework || config.window.framework == "SDL")) {
+		if(!m_MainWindow && first) {
 			matched = true;
 			RenderWindow * window = new SDL1Window;
 			if(!initWindow(window)) {
@@ -478,9 +476,6 @@ bool ArxGame::initWindow() {
 		}
 		#endif
 		
-		if(first && !matched) {
-			LogError << "Unknown windowing framework: " << config.window.framework;
-		}
 	}
 	
 	if(!m_MainWindow) {

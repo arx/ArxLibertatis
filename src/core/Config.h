@@ -153,8 +153,6 @@ public:
 	// section 'window'
 	struct {
 		
-		std::string framework;
-		
 		Vec2i size;
 		
 		bool minimizeOnFocusLost;
