@@ -62,11 +62,6 @@ void GLTextureStage::resetTexture() {
 	tex = NULL;
 }
 
-static const GLint glTexSource[] = {
-	GL_PREVIOUS, // ArgCurrent,
-	GL_TEXTURE // ArgTexture
-};
-
 struct GLTexEnvParam {
 	
 	GLenum combine;
@@ -89,9 +84,9 @@ static const GLTexEnvParam glTexEnv[] = {
 	}
 };
 
-void GLTextureStage::setArg(OpType alpha, TextureArg arg) {
+void GLTextureStage::setArg(OpType alpha, GLint arg) {
 	
-	setTexEnv(GL_TEXTURE_ENV, glTexEnv[alpha].source, glTexSource[arg]);
+	setTexEnv(GL_TEXTURE_ENV, glTexEnv[alpha].source, arg);
 }
 
 void GLTextureStage::setOp(OpType alpha, GLint op, GLint scale) {
@@ -134,31 +129,31 @@ void GLTextureStage::setOp(OpType alpha, TextureOp op) {
 		
 		case OpDisable: {
 			setOp(alpha, GL_REPLACE, 1);
-			setArg(alpha, ArgCurrent);
+			setArg(alpha, GL_PREVIOUS);
 			break;
 		}
 		
 		case OpSelectArg1: {
 			setOp(alpha, GL_REPLACE, 1);
-			setArg(alpha, ArgTexture);
+			setArg(alpha, GL_TEXTURE);
 			break;
 		}
 		
 		case OpModulate: {
 			setOp(alpha, GL_MODULATE, 1);
-			setArg(alpha, ArgTexture);
+			setArg(alpha, GL_TEXTURE);
 			break;
 		}
 		
 		case OpModulate2X: {
 			setOp(alpha, GL_MODULATE, 2);
-			setArg(alpha, ArgTexture);
+			setArg(alpha, GL_TEXTURE);
 			break;
 		}
 		
 		case OpModulate4X: {
 			setOp(alpha, GL_MODULATE, 4);
-			setArg(alpha, ArgTexture);
+			setArg(alpha, GL_TEXTURE);
 			break;
 		}
 		
