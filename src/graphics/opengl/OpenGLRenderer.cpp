@@ -65,6 +65,7 @@ OpenGLRenderer::OpenGLRenderer()
 	, m_hasBufferUsageStream(false)
 	, m_hasDrawRangeElements(false)
 	, m_hasDrawElementsBaseVertex(false)
+	, m_hasClearDepthf(false)
 { }
 
 OpenGLRenderer::~OpenGLRenderer() {
@@ -320,6 +321,13 @@ void OpenGLRenderer::reinit() {
 	} else {
 		m_hasBufferStorage = ARX_HAVE_GL_VER(4, 4) || ARX_HAVE_GL_EXT(ARB_buffer_storage);
 		m_hasBufferUsageStream = true; // Introduced in OpenGL 1.5
+	}
+	
+	if(isES) {
+		m_hasClearDepthf = true;
+	} else {
+		m_hasClearDepthf = ARX_HAVE_GL_VER(4, 1) || ARX_HAVE_GL_EXT(ARB_ES2_compatibility)
+		                   || ARX_HAVE_GL_EXT(OES_single_precision);
 	}
 	
 	// Synchronize GL state cache
@@ -579,7 +587,16 @@ void OpenGLRenderer::Clear(BufferFlags bufferFlags, Color clearColor, float clea
 			glDepthMask(GL_TRUE);
 			m_glstate.setDepthWrite(true);
 		}
-		glClearDepth((GLclampd)clearDepth);
+		#ifdef GL_VERSION_4_1
+		if(hasClearDepthf()) {
+			glClearDepthf(clearDepth);
+		}
+		else
+		#endif
+		{
+			// Not available in OpenGL ES
+			glClearDepth((GLclampd)clearDepth);
+		}
 		buffers |= GL_DEPTH_BUFFER_BIT;
 	}
 	
