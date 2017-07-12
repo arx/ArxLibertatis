@@ -54,6 +54,8 @@ public:
 	
 private:
 	
+	int createWindowAndGLContext(const char * profile);
+	
 	void changeMode(DisplayMode mode, bool fullscreen);
 	void updateSize(bool force = false);
 	

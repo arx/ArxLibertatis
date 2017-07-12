@@ -41,6 +41,7 @@
 #endif
 #include <SDL_syswm.h>
 
+#include "core/Config.h"
 #include "core/Version.h"
 #include "gui/Credits.h"
 #include "graphics/opengl/GLDebug.h"
@@ -221,36 +222,13 @@ static Uint32 getSDLFlagsForMode(const Vec2i & size, bool fullscreen) {
 	return flags;
 }
 
-bool SDL2Window::initialize() {
-	
-	arx_assert(!m_displayModes.empty());
-	
-	SDL_GL_SetAttribute(SDL_GL_DOUBLEBUFFER, 1);
-	SDL_GL_SetAttribute(SDL_GL_DEPTH_SIZE, 24);
-	
-	#if ARX_PLATFORM == ARX_PLATFORM_WIN32
-	// Used on Windows to prevent software opengl fallback.
-	// The linux situation:
-	// Causes SDL to require visuals without caveats.
-	// On linux some drivers only supply multisample capable GLX Visuals
-	// with a GLX_NON_CONFORMANT_VISUAL_EXT caveat.
-	// see: https://www.opengl.org/registry/specs/EXT/visual_rating.txt
-	SDL_GL_SetAttribute(SDL_GL_ACCELERATED_VISUAL, 1);
-	#endif
-	
-	// TODO EGL and core profile are not supported yet
-	SDL_GL_SetAttribute(SDL_GL_CONTEXT_PROFILE_MASK, SDL_GL_CONTEXT_PROFILE_COMPATIBILITY);
-	
-	if(gldebug::isEnabled()) {
-		SDL_GL_SetAttribute(SDL_GL_CONTEXT_FLAGS, SDL_GL_CONTEXT_DEBUG_FLAG);
-	}
-	
+int SDL2Window::createWindowAndGLContext(const char * profile) {
 	
 	int x = SDL_WINDOWPOS_UNDEFINED, y = SDL_WINDOWPOS_UNDEFINED;
 	Uint32 windowFlags = getSDLFlagsForMode(m_size, m_fullscreen);
 	windowFlags |= SDL_WINDOW_OPENGL | SDL_WINDOW_RESIZABLE | SDL_WINDOW_HIDDEN;
 	
-	for(int msaa = m_maxMSAALevel; msaa > 0; msaa--) {
+	for(int msaa = m_maxMSAALevel; true; msaa--) {
 		bool lastTry = (msaa == 1);
 		
 		// Cleanup context and window from previous tries
@@ -272,7 +250,7 @@ bool SDL2Window::initialize() {
 		if(!m_window) {
 			if(lastTry) {
 				LogError << "Could not create window: " << SDL_GetError();
-				return false;
+				return 0;
 			}
 			continue;
 		}
@@ -280,8 +258,8 @@ bool SDL2Window::initialize() {
 		m_glcontext = SDL_GL_CreateContext(m_window);
 		if(!m_glcontext) {
 			if(lastTry) {
-				LogError << "Could not create GL context: " << SDL_GetError();
-				return false;
+				LogError << "Could not create " << profile << " context: " << SDL_GetError();
+				return 0;
 			}
 			continue;
 		}
@@ -303,14 +281,67 @@ bool SDL2Window::initialize() {
 		if(glGetError() != GL_NO_ERROR || texunits < GLint(m_minTextureUnits)) {
 			if(lastTry) {
 				m_renderer->initialize(); // Log hardware information
-				LogError << "Not enough GL texture units available: have " << texunits
+				LogError << "Not enough " << profile << " texture units available: have " << texunits
 				         << ", need at least " << m_minTextureUnits;
-				return false;
+				return 0;
 			}
 			continue;
 		}
 		
-		// All good
+		return msaa;
+	}
+	
+}
+
+bool SDL2Window::initialize() {
+	
+	arx_assert(!m_displayModes.empty());
+	
+	SDL_GL_SetAttribute(SDL_GL_DOUBLEBUFFER, 1);
+	SDL_GL_SetAttribute(SDL_GL_DEPTH_SIZE, 24);
+	
+	#if ARX_PLATFORM == ARX_PLATFORM_WIN32
+	// Used on Windows to prevent software opengl fallback.
+	// The linux situation:
+	// Causes SDL to require visuals without caveats.
+	// On linux some drivers only supply multisample capable GLX Visuals
+	// with a GLX_NON_CONFORMANT_VISUAL_EXT caveat.
+	// see: https://www.opengl.org/registry/specs/EXT/visual_rating.txt
+	SDL_GL_SetAttribute(SDL_GL_ACCELERATED_VISUAL, 1);
+	#endif
+	
+	if(gldebug::isEnabled()) {
+		SDL_GL_SetAttribute(SDL_GL_CONTEXT_FLAGS, SDL_GL_CONTEXT_DEBUG_FLAG);
+	}
+	
+	bool autoRenderer = (config.video.renderer == "auto");
+	
+	int samples = 0;
+	for(int i = 0; i < 2 && samples == 0; i++) {
+		bool first = (i == 0);
+		
+		bool matched = false;
+		
+		if(samples == 0 && first == (autoRenderer || config.video.renderer == "OpenGL")) {
+			matched = true;
+			// TODO core profile are not supported yet
+			SDL_GL_SetAttribute(SDL_GL_CONTEXT_PROFILE_MASK, SDL_GL_CONTEXT_PROFILE_COMPATIBILITY);
+			SDL_GL_SetAttribute(SDL_GL_CONTEXT_MAJOR_VERSION, 1);
+			SDL_GL_SetAttribute(SDL_GL_CONTEXT_MINOR_VERSION, 5);
+			samples = createWindowAndGLContext("Desktop OpenGL");
+		}
+		
+		if(first && !matched) {
+			LogError << "Unknown renderer: " << config.video.renderer;
+		}
+	}
+	
+	if(samples == 0) {
+		return false;
+	}
+	
+	// All good
+	{
 		const char * system = "(unknown)";
 		{
 		  ARX_SDL_SysWMinfo info;
@@ -347,9 +378,8 @@ bool SDL2Window::initialize() {
 		SDL_GL_GetAttribute(SDL_GL_DEPTH_SIZE, &depth);
 		SDL_GL_GetAttribute(SDL_GL_DOUBLEBUFFER, &doublebuffer);
 		LogInfo << "Window: " << system << " r:" << red << " g:" << green << " b:" << blue
-		        << " a:" << alpha << " depth:" << depth << " aa:" << msaa << "x"
+		        << " a:" << alpha << " depth:" << depth << " aa:" << samples << "x"
 		        << " doublebuffer:" << doublebuffer;
-		break;
 	}
 	
 	// Use the executable icon for the window
