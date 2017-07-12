@@ -39,9 +39,7 @@ public:
 	void setTexture(Texture * pTexture);
 	void resetTexture();
 	
-	void setColorOp(TextureOp textureOp, TextureArg arg0, TextureArg arg1);
 	void setColorOp(TextureOp textureOp);
-	void setAlphaOp(TextureOp textureOp, TextureArg arg0, TextureArg arg1);
 	void setAlphaOp(TextureOp textureOp);
 	
 	WrapMode getWrapMode() const;
@@ -77,7 +75,6 @@ private:
 	
 	void setOp(OpType alpha, GLint op, GLfloat scale);
 	void setOp(OpType alpha, TextureOp op);
-	void setOp(OpType alpha, TextureOp op, TextureArg arg0, TextureArg arg1);
 
 	void setTexEnv(GLenum target, GLenum pname, GLint param);
 	void setTexEnv(GLenum target, GLenum pname, GLfloat param);
