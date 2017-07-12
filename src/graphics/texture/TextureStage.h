@@ -35,13 +35,6 @@ public:
 		OpModulate4X, //!< Multiply the components of the arguments, and shift the products to the left 2 bits.
 	};
 	
-	//! Texture blending arguments
-	enum TextureArg {
-		ArgDiffuse    = 0x00000,
-		ArgCurrent    = 0x00001,
-		ArgTexture    = 0x00002,
-	};
-	
 	//! Texture wrapping/addressing mode
 	enum WrapMode {
 		WrapRepeat, //!< Tile the texture at every integer junction. For example, for u values between 0 and 3, the texture is repeated three times; no mirroring is performed.
