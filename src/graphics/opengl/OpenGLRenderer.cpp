@@ -279,6 +279,16 @@ void OpenGLRenderer::reinit() {
 		m_hasBGRTextureTransfer = true;
 	}
 	
+	// EXT_texture_filter_anisotropic is available for both OpenGL ES and desktop OpenGL
+	if(ARX_HAVE_GL_EXT(EXT_texture_filter_anisotropic)) {
+		GLfloat limit;
+		glGetFloatv(GL_MAX_TEXTURE_MAX_ANISOTROPY_EXT, &limit);
+		m_maximumSupportedAnisotropy = limit;
+		setMaxAnisotropy(float(config.video.maxAnisotropicFiltering));
+	} else {
+		m_maximumSupportedAnisotropy = 1.f;
+	}
+	
 	if(isES) {
 		// OES_draw_elements_base_vertex requires OpenGL ES 2.0
 		// EXT_draw_elements_base_vertex requires OpenGL ES 2.0
@@ -395,13 +405,6 @@ void OpenGLRenderer::reinit() {
 	
 	currentTransform = GL_UnsetTransform;
 	switchVertexArray(GL_NoArray, 0, 1);
-	
-	if(ARX_HAVE_GL_EXT(EXT_texture_filter_anisotropic)) {
-		GLfloat limit;
-		glGetFloatv(GL_MAX_TEXTURE_MAX_ANISOTROPY_EXT, &limit);
-		m_maximumSupportedAnisotropy = limit;
-		setMaxAnisotropy(float(config.video.maxAnisotropicFiltering));
-	}
 	
 	onRendererInit();
 	
