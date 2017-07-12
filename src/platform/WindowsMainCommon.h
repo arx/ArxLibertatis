@@ -25,6 +25,8 @@
 #include <windows.h>
 #include <shellapi.h>
 
+#include <math.h>
+
 class WindowsMain {
 	
 public:
@@ -47,6 +49,27 @@ public:
 		}
 		
 		argv[argc] = NULL;
+		
+		// Work around a bug in Visual Studio 2013's math library
+		// https://support.microsoft.com/en-us/help/3174417/fix-programs-that-are-built-in-visual-c-2013-crash-with-illegal-instru
+		#if defined(_MSC_VER) && _MSC_VER >= 1800 && _MSC_VER < 1900
+		bool hasAVX = false;
+		HMODULE kernel32 = GetModuleHandleW(L"kernel32.dll");
+		if(kernel32) {
+			typedef DWORD64 (WINAPI *PGETENABLEDXSTATEFEATURES)();
+			PGETENABLEDXSTATEFEATURES GetEnabledXStateFeatures
+				= (PGETENABLEDXSTATEFEATURES)GetProcAddress(kernel32, "GetEnabledXStateFeatures");
+			if(GetEnabledXStateFeatures) {
+				DWORD64 features = GetEnabledXStateFeatures();
+				if(features & XSTATE_MASK_GSSE) {
+					hasAVX = true;
+				}
+			}
+		}
+		if(!hasAVX) {
+			_set_FMA3_enable(0);
+		}
+		#endif
 		
 	}
 	
