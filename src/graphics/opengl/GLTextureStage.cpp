@@ -72,9 +72,6 @@ struct GLTexEnvParam {
 	GLenum combine;
 	
 	GLenum source;
-	GLenum operand;
-	
-	GLint normal;
 	
 	GLenum scale;
 	
@@ -84,14 +81,10 @@ static const GLTexEnvParam glTexEnv[] = {
 	{
 		GL_COMBINE_RGB,
 		GL_SOURCE0_RGB,
-		GL_OPERAND0_RGB,
-		GL_SRC_COLOR,
 		GL_RGB_SCALE
 	}, {
 		GL_COMBINE_ALPHA,
 		GL_SOURCE0_ALPHA,
-		GL_OPERAND0_ALPHA,
-		GL_SRC_ALPHA,
 		GL_ALPHA_SCALE
 	}
 };
@@ -99,7 +92,6 @@ static const GLTexEnvParam glTexEnv[] = {
 void GLTextureStage::setArg(OpType alpha, TextureArg arg) {
 	
 	setTexEnv(GL_TEXTURE_ENV, glTexEnv[alpha].source, glTexSource[arg]);
-	setTexEnv(GL_TEXTURE_ENV, glTexEnv[alpha].operand, glTexEnv[alpha].normal);
 }
 
 void GLTextureStage::setOp(OpType alpha, GLint op, GLint scale) {
