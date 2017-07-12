@@ -40,8 +40,10 @@ Reddit: [http://www.reddit.com/r/ArxFatalis/](http://www.reddit.com/r/ArxFatalis
 There is currently a single rendering backend for OpenGL:
 
 * **[SDL](http://www.libsdl.org/)** **1.2.10**+ *or* **2.0.0**+
-* **OpenGL 1.5**+ (OpenGL 2.1 or newer is recommended)
+* **OpenGL 1.5**+ (OpenGL 2.1 or newer is recommended) *or* **OpenGL ES-CM 1.x**^1
 * **[libepoxy](https://github.com/anholt/libepoxy) 1.2**+ (recommended) *or* **[GLEW](http://glew.sourceforge.net/) 1.5.2**+
+
+1. OpenGL ES support requires libepoxy
 
 ### Crash Reporter
 
