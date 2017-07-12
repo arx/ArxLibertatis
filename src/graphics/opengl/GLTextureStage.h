@@ -75,7 +75,6 @@ private:
 	};
 	
 	TextureOp ops[2];
-	TextureArg args[2][2];
 	
 	void setArg(OpType alpha, Arg idx, TextureArg arg);
 	

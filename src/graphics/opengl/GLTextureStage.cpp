@@ -30,10 +30,6 @@ GLTextureStage::GLTextureStage(OpenGLRenderer * _renderer, unsigned stage) : Tex
 	minFilter = FilterLinear;
 	magFilter = FilterLinear;
 	
-	args[Color][Arg0] = ArgTexture;
-	args[Color][Arg1] = ArgCurrent;
-	args[Alpha][Arg0] = ArgTexture;
-	args[Alpha][Arg1] = ArgCurrent;
 	if(mStage == 0) {
 		ops[Color] = OpModulate;
 		ops[Alpha] = OpSelectArg1;
@@ -152,28 +148,28 @@ void GLTextureStage::setOp(OpType alpha, TextureOp op) {
 		
 		case OpSelectArg1: {
 			setOp(alpha, GL_REPLACE, 1);
-			setArg(alpha, Arg0, args[alpha][Arg0]);
+			setArg(alpha, Arg0, ArgTexture);
 			break;
 		}
 		
 		case OpModulate: {
 			setOp(alpha, GL_MODULATE, 1);
-			setArg(alpha, Arg0, args[alpha][Arg0]);
-			setArg(alpha, Arg1, args[alpha][Arg1]);
+			setArg(alpha, Arg0, ArgTexture);
+			setArg(alpha, Arg1, ArgCurrent);
 			break;
 		}
 		
 		case OpModulate2X: {
 			setOp(alpha, GL_MODULATE, 2);
-			setArg(alpha, Arg0, args[alpha][Arg0]);
-			setArg(alpha, Arg1, args[alpha][Arg1]);
+			setArg(alpha, Arg0, ArgTexture);
+			setArg(alpha, Arg1, ArgCurrent);
 			break;
 		}
 		
 		case OpModulate4X: {
 			setOp(alpha, GL_MODULATE, 4);
-			setArg(alpha, Arg0, args[alpha][Arg0]);
-			setArg(alpha, Arg1, args[alpha][Arg1]);
+			setArg(alpha, Arg0, ArgTexture);
+			setArg(alpha, Arg1, ArgCurrent);
 			break;
 		}
 		
