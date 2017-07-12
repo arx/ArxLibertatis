@@ -146,7 +146,7 @@ public:
 	}
 	
 	void drawIndexed(Renderer::Primitive primitive, size_t count, size_t offset,
-	                 unsigned short * indices, size_t nbindices) const {
+	                 const unsigned short * indices, size_t nbindices) const {
 		
 		arx_assert(offset < capacity());
 		arx_assert(offset + count <= capacity());
@@ -167,9 +167,17 @@ public:
 		if(m_renderer->hasDrawElementsBaseVertex()) {
 			
 			if(m_renderer->hasDrawRangeElements()) {
+				#if !ARX_HAVE_GLEW || defined(GLEW_VERSION_4_5)
 				glDrawRangeElementsBaseVertex(mode, 0, count - 1, nbindices, type, data, offset);
+				#else
+				glDrawRangeElementsBaseVertex(mode, 0, count - 1, nbindices, type, const_cast<void *>(data), offset);
+				#endif
 			} else {
+				#if !ARX_HAVE_GLEW || defined(GLEW_VERSION_4_5)
 				glDrawElementsBaseVertex(mode, nbindices, type, data, offset);
+				#else
+				glDrawElementsBaseVertex(mode, nbindices, type, const_cast<void *>(data), offset);
+				#endif
 			}
 			
 		} else {

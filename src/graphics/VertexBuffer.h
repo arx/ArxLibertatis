@@ -70,7 +70,7 @@ public:
 	virtual void unlock() = 0;
 	
 	virtual void draw(Renderer::Primitive primitive, size_t count, size_t offset = 0) const = 0;
-	virtual void drawIndexed(Renderer::Primitive primitive, size_t count, size_t offset, unsigned short * indices, size_t nbindices) const = 0;
+	virtual void drawIndexed(Renderer::Primitive primitive, size_t count, size_t offset, const unsigned short * indices, size_t nbindices) const = 0;
 	
 	virtual ~VertexBuffer() { }
 	
