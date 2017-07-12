@@ -20,7 +20,10 @@
 #ifndef ARX_GRAPHICS_OPENGL_GLVERTEXBUFFER_H
 #define ARX_GRAPHICS_OPENGL_GLVERTEXBUFFER_H
 
+#include <algorithm>
 #include <cstring>
+#include <vector>
+#include <limits>
 
 #include "graphics/VertexBuffer.h"
 #include "graphics/Vertex.h"
