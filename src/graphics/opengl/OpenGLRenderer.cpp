@@ -348,7 +348,7 @@ void OpenGLRenderer::reinit() {
 		glGetIntegerv(GL_SAMPLE_BUFFERS, &buffers);
 		if(buffers) {
 			GLint samples = 0;
-			glGetIntegerv(GL_SAMPLE_BUFFERS, &samples);
+			glGetIntegerv(GL_SAMPLES, &samples);
 			m_MSAALevel = samples;
 		}
 	}
