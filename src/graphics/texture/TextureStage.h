@@ -62,15 +62,9 @@ public:
 	virtual void setTexture(Texture * pTexture) = 0;
 	virtual void resetTexture() = 0;
 	
-	virtual void setColorOp(TextureOp textureOp, TextureArg texArg1, TextureArg texArg2) = 0;
 	virtual void setColorOp(TextureOp textureOp) = 0;
-	void setColorOp(TextureArg texArg);
-	void disableColor();
 	
-	virtual void setAlphaOp(TextureOp textureOp, TextureArg texArg1, TextureArg texArg2) = 0;
 	virtual void setAlphaOp(TextureOp textureOp) = 0;
-	void setAlphaOp(TextureArg texArg);
-	void disableAlpha();
 	
 	virtual WrapMode getWrapMode() const = 0;
 	virtual void setWrapMode(WrapMode wrapMode) = 0;
@@ -91,22 +85,5 @@ protected:
 	unsigned int mStage;
 	
 };
-
-
-inline void TextureStage::setColorOp(TextureArg texArg) {
-	setColorOp(OpSelectArg1, texArg, ArgCurrent);
-}
-
-inline void TextureStage::disableColor() {
-	setColorOp(OpDisable, ArgCurrent, ArgCurrent);
-}
-
-inline void TextureStage::setAlphaOp(TextureArg texArg) {
-	setAlphaOp(OpSelectArg1, texArg, ArgCurrent);
-}
-
-inline void TextureStage::disableAlpha() {
-	setAlphaOp(OpDisable, ArgCurrent, ArgCurrent);
-}
 
 #endif // ARX_GRAPHICS_TEXTURE_TEXTURESTAGE_H

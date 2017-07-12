@@ -185,18 +185,6 @@ void GLTextureStage::setOp(OpType alpha, TextureOp op) {
 	}
 }
 
-void GLTextureStage::setOp(OpType alpha, TextureOp op, TextureArg arg0, TextureArg arg1) {
-	
-	if(op != OpDisable) {
-		args[alpha][0] = arg0;
-		if(op != OpSelectArg1) {
-			args[alpha][1] = arg1;
-		}
-	}
-	
-	setOp(alpha, op);
-}
-
 void GLTextureStage::setTexEnv(GLenum target, GLenum pname, GLint param) {
 
 	IntegerStateCache::iterator it = m_stateCacheIntegers.find(pname);
@@ -215,16 +203,8 @@ void GLTextureStage::setTexEnv(GLenum target, GLenum pname, GLfloat param) {
 	}
 }
 
-void GLTextureStage::setColorOp(TextureOp op, TextureArg arg0, TextureArg arg1) {
-	setOp(Color, op, arg0, arg1);
-}
-
 void GLTextureStage::setColorOp(TextureOp op) {
 	setOp(Color, op);
-}
-
-void GLTextureStage::setAlphaOp(TextureOp op, TextureArg arg0, TextureArg arg1) {
-	setOp(Alpha, op, arg0, arg1);
 }
 
 void GLTextureStage::setAlphaOp(TextureOp op) {
