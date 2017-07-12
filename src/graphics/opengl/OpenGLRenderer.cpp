@@ -66,6 +66,7 @@ OpenGLRenderer::OpenGLRenderer()
 	, m_hasDrawRangeElements(false)
 	, m_hasDrawElementsBaseVertex(false)
 	, m_hasClearDepthf(false)
+	, m_hasVertexFogCoordinate(false)
 { }
 
 OpenGLRenderer::~OpenGLRenderer() {
@@ -340,6 +341,9 @@ void OpenGLRenderer::reinit() {
 		                   || ARX_HAVE_GL_EXT(OES_single_precision);
 	}
 	
+	// Introduced in OpenGL 1.4, no extension available for OpenGL ES
+	m_hasVertexFogCoordinate = !isES;
+	
 	// Synchronize GL state cache
 	
 	m_MSAALevel = 0;
@@ -447,7 +451,9 @@ void OpenGLRenderer::enableTransform() {
 	glMatrixMode(GL_PROJECTION);
 	glLoadMatrixf(glm::value_ptr(projection));
 	
-	glFogi(GL_FOG_COORDINATE_SOURCE, GL_FRAGMENT_DEPTH);
+	if(hasVertexFogCoordinate()) {
+		glFogi(GL_FOG_COORDINATE_SOURCE, GL_FRAGMENT_DEPTH);
+	}
 	
 	currentTransform = GL_ModelViewProjectionTransform;
 }
@@ -474,7 +480,9 @@ void OpenGLRenderer::disableTransform() {
 	// Change the viewport and pixel origins
 	glTranslatef(.5f - viewport.left, .5f - viewport.top, 0.f);
 	
-	glFogi(GL_FOG_COORDINATE_SOURCE, GL_FOG_COORDINATE);
+	if(hasVertexFogCoordinate()) {
+		glFogi(GL_FOG_COORDINATE_SOURCE, GL_FOG_COORDINATE);
+	}
 	
 	currentTransform = GL_NoTransform;
 }
@@ -806,7 +814,7 @@ void OpenGLRenderer::drawIndexed(Primitive primitive, const TexturedVertex * ver
 	
 	bindBuffer(GL_NONE);
 	
-	setVertexArray(vertices, vertices);
+	setVertexArray(this, vertices, vertices);
 	
 	if(hasDrawRangeElements()) {
 		glDrawRangeElements(arxToGlPrimitiveType[primitive], 0, nvertices - 1, nindices, GL_UNSIGNED_SHORT, indices);
