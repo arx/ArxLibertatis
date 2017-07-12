@@ -82,7 +82,6 @@ private:
 	void setOp(OpType alpha, TextureOp op);
 
 	void setTexEnv(GLenum target, GLenum pname, GLint param);
-	void setTexEnv(GLenum target, GLenum pname, GLfloat param);
 
 	GLTexture2D * tex;
 	GLTexture2D * current;
@@ -93,9 +92,6 @@ private:
 
 	typedef std::map<GLenum, GLint> IntegerStateCache;
 	IntegerStateCache m_stateCacheIntegers;
-
-	typedef std::map<GLenum, GLfloat> FloatStateCache;
-	FloatStateCache m_stateCacheFloats;
 	
 	friend class GLTexture2D;
 };

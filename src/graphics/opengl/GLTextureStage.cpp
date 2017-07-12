@@ -189,15 +189,6 @@ void GLTextureStage::setTexEnv(GLenum target, GLenum pname, GLint param) {
 	}
 }
 
-void GLTextureStage::setTexEnv(GLenum target, GLenum pname, GLfloat param) {
-
-	FloatStateCache::iterator it = m_stateCacheFloats.find(pname);
-	if(it == m_stateCacheFloats.end() || it->second != param) {
-		glTexEnvf(target, pname, param);
-		m_stateCacheFloats[pname] = param;
-	}
-}
-
 void GLTextureStage::setColorOp(TextureOp op) {
 	setOp(Color, op);
 }
