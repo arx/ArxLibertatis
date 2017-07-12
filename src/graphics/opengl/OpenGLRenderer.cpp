@@ -61,6 +61,7 @@ OpenGLRenderer::OpenGLRenderer()
 	, m_hasBGRTextureTransfer(false)
 	, m_hasGL_ARB_map_buffer_range(false)
 	, m_hasGL_ARB_buffer_storage(false)
+	, m_hasDrawRangeElements(false)
 	, m_hasDrawElementsBaseVertex(false)
 { }
 
@@ -281,11 +282,13 @@ void OpenGLRenderer::reinit() {
 		m_hasDrawElementsBaseVertex = ARX_HAVE_GLES_VER(3, 2)
 		                              || ARX_HAVE_GLES_EXT(OES_draw_elements_base_vertex)
 		                              || ARX_HAVE_GLES_EXT(EXT_draw_elements_base_vertex);
+		m_hasDrawRangeElements = ARX_HAVE_GLES_VER(3, 0);
 	} else {
 		m_hasDrawElementsBaseVertex = ARX_HAVE_GL_VER(3, 2) || ARX_HAVE_GL_EXT(ARB_draw_elements_base_vertex);
 		if(!m_hasDrawElementsBaseVertex) {
 			LogWarning << "Missing OpenGL extension ARB_draw_elements_base_vertex.";
 		}
+		m_hasDrawRangeElements = true; // Introduced in OpenGL 1.2
 	}
 	
 	m_hasGL_ARB_map_buffer_range = ARX_HAVE_GL_EXT(ARB_map_buffer_range);
@@ -747,7 +750,11 @@ void OpenGLRenderer::drawIndexed(Primitive primitive, const TexturedVertex * ver
 	
 	setVertexArray(vertices, vertices);
 	
-	glDrawRangeElements(arxToGlPrimitiveType[primitive], 0, nvertices - 1, nindices, GL_UNSIGNED_SHORT, indices);
+	if(hasDrawRangeElements()) {
+		glDrawRangeElements(arxToGlPrimitiveType[primitive], 0, nvertices - 1, nindices, GL_UNSIGNED_SHORT, indices);
+	} else {
+		glDrawElements(arxToGlPrimitiveType[primitive], nindices, GL_UNSIGNED_SHORT, indices);
+	}
 	
 }
 
