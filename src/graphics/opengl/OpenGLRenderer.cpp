@@ -60,8 +60,8 @@ OpenGLRenderer::OpenGLRenderer()
 	, m_hasIntensityTextures(false)
 	, m_hasBGRTextureTransfer(false)
 	, m_hasGL_ARB_map_buffer_range(false)
-	, m_hasGL_ARB_draw_elements_base_vertex(false)
 	, m_hasGL_ARB_buffer_storage(false)
+	, m_hasDrawElementsBaseVertex(false)
 { }
 
 OpenGLRenderer::~OpenGLRenderer() {
@@ -275,9 +275,17 @@ void OpenGLRenderer::reinit() {
 		m_hasBGRTextureTransfer = true;
 	}
 	
-	m_hasGL_ARB_draw_elements_base_vertex = ARX_HAVE_GL_EXT(ARB_draw_elements_base_vertex);
-	if(!m_hasGL_ARB_draw_elements_base_vertex) {
-		LogWarning << "Missing OpenGL extension ARB_draw_elements_base_vertex.";
+	if(isES) {
+		// OES_draw_elements_base_vertex requires OpenGL ES 2.0
+		// EXT_draw_elements_base_vertex requires OpenGL ES 2.0
+		m_hasDrawElementsBaseVertex = ARX_HAVE_GLES_VER(3, 2)
+		                              || ARX_HAVE_GLES_EXT(OES_draw_elements_base_vertex)
+		                              || ARX_HAVE_GLES_EXT(EXT_draw_elements_base_vertex);
+	} else {
+		m_hasDrawElementsBaseVertex = ARX_HAVE_GL_VER(3, 2) || ARX_HAVE_GL_EXT(ARB_draw_elements_base_vertex);
+		if(!m_hasDrawElementsBaseVertex) {
+			LogWarning << "Missing OpenGL extension ARB_draw_elements_base_vertex.";
+		}
 	}
 	
 	m_hasGL_ARB_map_buffer_range = ARX_HAVE_GL_EXT(ARB_map_buffer_range);
