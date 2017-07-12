@@ -54,6 +54,12 @@ public:
 	
 private:
 	
+	//! Texture blending arguments
+	enum TextureArg {
+		ArgCurrent,
+		ArgTexture,
+	};
+	
 	bool isEnabled() { return ((ops[Color] != OpDisable) || (ops[Alpha] != OpDisable)); }
 	
 	OpenGLRenderer * renderer;
