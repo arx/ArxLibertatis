@@ -360,10 +360,16 @@ void OpenGLRenderer::reinit() {
 	m_glcull = GL_BACK;
 	m_glstate.setCull(CullNone);
 	
-	glFogi(GL_FOG_MODE, GL_LINEAR);
-	if(ARX_HAVE_GL_EXT(NV_fog_distance)) {
-		// TODO Support radial fogs once all vertices are provided in view-space coordinates
-		glFogi(GL_FOG_DISTANCE_MODE_NV, GL_EYE_PLANE);
+	if(isES) {
+		#if ARX_HAVE_EPOXY
+		glFogx(GL_FOG_MODE, GL_LINEAR);
+		#endif
+	} else {
+		glFogi(GL_FOG_MODE, GL_LINEAR);
+		if(ARX_HAVE_GL_EXT(NV_fog_distance)) {
+			// TODO Support radial fogs once all vertices are provided in view-space coordinates
+			glFogi(GL_FOG_DISTANCE_MODE_NV, GL_EYE_PLANE);
+		}
 	}
 	m_glstate.setFog(false);
 	
