@@ -39,6 +39,7 @@ GLTextureStage::GLTextureStage(OpenGLRenderer * _renderer, unsigned stage) : Tex
 		ops[Alpha] = OpSelectArg1;
 		glActiveTexture(GL_TEXTURE0);
 		setTexEnv(GL_TEXTURE_ENV, GL_TEXTURE_ENV_MODE, GL_COMBINE);
+		setTexEnv(GL_TEXTURE_ENV, GL_COMBINE_ALPHA, GL_REPLACE); // TODO change the AL default to match OpenGL
 		glEnable(GL_TEXTURE_2D);
 	} else {
 		ops[Color] = OpDisable;
