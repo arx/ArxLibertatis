@@ -307,7 +307,7 @@ protected:
 		arx_assert(!m_initialized || m_usage != Renderer::Static);
 		arx_assert(data || m_usage != Renderer::Static);
 		#ifdef GL_ARB_buffer_storage
-		if(m_usage == Renderer::Static && m_renderer->hasGL_ARB_buffer_storage()) {
+		if(m_usage == Renderer::Static && m_renderer->hasBufferStorage()) {
 			glBufferStorage(GL_ARRAY_BUFFER, capacity() * sizeof(Vertex), data, 0);
 		}
 		else
