@@ -523,7 +523,7 @@ public:
 		syncPersistent(flags);
 		
 		if(count > 0) {
-			memcpy(m_mapping + m_offset + offset, vertices, count * sizeof(Vertex));
+			std::memcpy(m_mapping + m_offset + offset, vertices, count * sizeof(Vertex));
 		}
 		
 	}
