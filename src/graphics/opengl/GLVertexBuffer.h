@@ -160,23 +160,36 @@ public:
 		
 		setVertexArray<Vertex>(NULL, this);
 		
-		if(m_renderer->hasGL_ARB_draw_elements_base_vertex()) {
-			glDrawRangeElementsBaseVertex(arxToGlPrimitiveType[primitive], 0, count - 1,
-			                              nbindices, GL_UNSIGNED_SHORT, indices, offset);
-		} else if(offset + count - 1 <= std::numeric_limits<GLushort>::max()) {
-			glShortIndexBuffer.resize(std::max(glShortIndexBuffer.size(), nbindices));
-			for(size_t i = 0; i < nbindices; i++) {
-				glShortIndexBuffer[i] = GLushort(indices[i] + offset);
-			}
-			glDrawRangeElements(arxToGlPrimitiveType[primitive], offset, offset + count - 1,
-			                    nbindices, GL_UNSIGNED_SHORT, &glShortIndexBuffer[0]);
+		GLenum mode = arxToGlPrimitiveType[primitive];
+		GLenum type = GL_UNSIGNED_SHORT;
+		const void * data = indices;
+		
+		if(m_renderer->hasDrawElementsBaseVertex()) {
+			
+			glDrawRangeElementsBaseVertex(mode, 0, count - 1, nbindices, type, data, offset);
+			
 		} else {
-			glIntIndexBuffer.resize(std::max(glIntIndexBuffer.size(), nbindices));
-			for(size_t i = 0; i < nbindices; i++) {
-				glIntIndexBuffer[i] = GLuint(indices[i] + offset);
+			
+			if(offset != 0) {
+				if(offset + count - 1 <= std::numeric_limits<GLushort>::max()) {
+					glShortIndexBuffer.resize(std::max(glShortIndexBuffer.size(), size_t(nbindices)));
+					for(size_t i = 0; i < nbindices; i++) {
+						glShortIndexBuffer[i] = GLushort(indices[i] + offset);
+					}
+					type = GL_UNSIGNED_SHORT;
+					data = &glShortIndexBuffer[0];
+				} else {
+					glIntIndexBuffer.resize(std::max(glIntIndexBuffer.size(), size_t(nbindices)));
+					for(size_t i = 0; i < nbindices; i++) {
+						glIntIndexBuffer[i] = GLuint(indices[i] + offset);
+					}
+					type = GL_UNSIGNED_INT;
+					data = &glIntIndexBuffer[0];
+				}
 			}
-			glDrawRangeElements(arxToGlPrimitiveType[primitive], offset, offset + count - 1,
-			                    nbindices, GL_UNSIGNED_INT, &glIntIndexBuffer[0]);
+			
+			glDrawRangeElements(mode, offset, offset + count - 1, nbindices, type, data);
+			
 		}
 		
 	}
