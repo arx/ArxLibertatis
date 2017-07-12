@@ -123,7 +123,7 @@ public:
 		, offset(0)
 	{}
 	
-	void lock() {
+	void lock(size_t count) {
 		
 		arx_assert(!vertices);
 		
@@ -134,7 +134,7 @@ public:
 		
 		BufferFlags flags = (pDynamicVertexBuffer->pos == 0) ? DiscardBuffer : NoOverwrite | DiscardRange;
 		
-		vertices =  pDynamicVertexBuffer->vb->lock(flags, pDynamicVertexBuffer->pos);
+		vertices =  pDynamicVertexBuffer->vb->lock(flags, pDynamicVertexBuffer->pos, count);
 		offset = 0;
 	}
 	
@@ -858,7 +858,7 @@ static void RenderWater() {
 	size_t iNbIndice = 0;
 	int iNb = vPolyWater.size();
 	
-	dynamicVertices.lock();
+	dynamicVertices.lock(iNb * 4);
 	
 	UseRenderState state(render3D().depthWrite(false).cull(CullCW).depthOffset(8).blend(BlendDstColor, BlendOne));
 	
@@ -880,7 +880,7 @@ static void RenderWater() {
 			dynamicVertices.unlock();
 			RenderWaterBatch();
 			dynamicVertices.reset();
-			dynamicVertices.lock();
+			dynamicVertices.lock((iNb + 1) * 4);
 			iNbIndice = 0;
 			indices = dynamicVertices.indices;
 			pVertex = dynamicVertices.append(iNbVertex);
@@ -973,7 +973,7 @@ static void RenderLava() {
 	size_t iNbIndice = 0;
 	int iNb=vPolyLava.size();
 	
-	dynamicVertices.lock();
+	dynamicVertices.lock(iNb * 4);
 	
 	GRenderer->SetTexture(0, enviro);
 	GRenderer->SetTexture(1, enviro);
@@ -993,7 +993,7 @@ static void RenderLava() {
 			dynamicVertices.unlock();
 			RenderLavaBatch();
 			dynamicVertices.reset();
-			dynamicVertices.lock();
+			dynamicVertices.lock((iNb + 1) * 4);
 			iNbIndice = 0;
 			indices = dynamicVertices.indices;
 			pVertex = dynamicVertices.append(iNbVertex);
