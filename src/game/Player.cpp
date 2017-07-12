@@ -1375,7 +1375,6 @@ void ARX_PLAYER_Manage_Visual() {
 	
 	AnimLayer & layer0 = io->animlayer[0];
 	AnimLayer & layer1 = io->animlayer[1];
-	AnimLayer & layer2 = io->animlayer[2];
 	AnimLayer & layer3 = io->animlayer[3];
 	
 	ANIM_HANDLE ** alist = io->anims;
