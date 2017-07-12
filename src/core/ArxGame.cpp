@@ -451,32 +451,23 @@ bool ArxGame::initWindow() {
 	
 	arx_assert(m_MainWindow == NULL);
 	
-	for(int i = 0; i < 2 && !m_MainWindow; i++) {
-		bool first = (i == 0);
-		
-		bool matched = false;
-		
-		#if ARX_HAVE_SDL2
-		if(!m_MainWindow && first) {
-			matched = true;
-			RenderWindow * window = new SDL2Window;
-			if(!initWindow(window)) {
-				delete window;
-			}
+	#if ARX_HAVE_SDL2
+	if(!m_MainWindow) {
+		RenderWindow * window = new SDL2Window;
+		if(!initWindow(window)) {
+			delete window;
 		}
-		#endif
-		
-		#if ARX_HAVE_SDL1
-		if(!m_MainWindow && first) {
-			matched = true;
-			RenderWindow * window = new SDL1Window;
-			if(!initWindow(window)) {
-				delete window;
-			}
-		}
-		#endif
-		
 	}
+	#endif
+	
+	#if ARX_HAVE_SDL1
+	if(!m_MainWindow) {
+		RenderWindow * window = new SDL1Window;
+		if(!initWindow(window)) {
+			delete window;
+		}
+	}
+	#endif
 	
 	if(!m_MainWindow) {
 		LogCritical << "Graphics initialization failed";
