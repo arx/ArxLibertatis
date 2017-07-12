@@ -516,7 +516,7 @@ void Cinematic::Render(PlatformDuration frameDuration) {
 	}
 	
 	GRenderer->GetTextureStage(0)->setWrapMode(TextureStage::WrapRepeat);
-	GRenderer->GetTextureStage(0)->setAlphaOp(TextureStage::ArgTexture);
+	GRenderer->GetTextureStage(0)->setAlphaOp(TextureStage::OpSelectArg1);
 	
 	//effets qui continuent avec le temps
 	if(FlashBlancEnCours && (fx & CinematicFxPostMask) != FX_FLASH) {
