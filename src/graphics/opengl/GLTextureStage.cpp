@@ -102,7 +102,7 @@ void GLTextureStage::setArg(OpType alpha, Arg idx, TextureArg arg) {
 	setTexEnv(GL_TEXTURE_ENV, glTexEnv[alpha].operands[idx], glTexEnv[alpha].normal);
 }
 
-void GLTextureStage::setOp(OpType alpha, GLint op, GLfloat scale) {
+void GLTextureStage::setOp(OpType alpha, GLint op, GLint scale) {
 
 	setTexEnv(GL_TEXTURE_ENV, glTexEnv[alpha].combine, op);
 	setTexEnv(GL_TEXTURE_ENV, glTexEnv[alpha].scale, scale);

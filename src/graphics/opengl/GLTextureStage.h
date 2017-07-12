@@ -78,7 +78,7 @@ private:
 	
 	void setArg(OpType alpha, Arg idx, TextureArg arg);
 	
-	void setOp(OpType alpha, GLint op, GLfloat scale);
+	void setOp(OpType alpha, GLint op, GLint scale);
 	void setOp(OpType alpha, TextureOp op);
 
 	void setTexEnv(GLenum target, GLenum pname, GLint param);
