@@ -100,8 +100,7 @@ public:
 	bool hasBGRTextureTransfer() const { return m_hasBGRTextureTransfer; }
 	
 	bool hasGL_ARB_map_buffer_range() const { return m_hasGL_ARB_map_buffer_range; }
-	bool hasGL_ARB_buffer_storage() const { return m_hasGL_ARB_buffer_storage; }
-	
+	bool hasBufferStorage() const { return m_hasBufferStorage; }
 	bool hasDrawRangeElements() const { return m_hasDrawRangeElements; }
 	bool hasDrawElementsBaseVertex() const { return m_hasDrawElementsBaseVertex; }
 	
@@ -145,8 +144,7 @@ private:
 	bool m_hasBGRTextureTransfer;
 	
 	bool m_hasGL_ARB_map_buffer_range;
-	bool m_hasGL_ARB_buffer_storage;
-	
+	bool m_hasBufferStorage;
 	bool m_hasDrawRangeElements;
 	bool m_hasDrawElementsBaseVertex;
 	

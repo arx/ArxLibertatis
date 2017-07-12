@@ -60,7 +60,7 @@ OpenGLRenderer::OpenGLRenderer()
 	, m_hasIntensityTextures(false)
 	, m_hasBGRTextureTransfer(false)
 	, m_hasGL_ARB_map_buffer_range(false)
-	, m_hasGL_ARB_buffer_storage(false)
+	, m_hasBufferStorage(false)
 	, m_hasDrawRangeElements(false)
 	, m_hasDrawElementsBaseVertex(false)
 { }
@@ -296,7 +296,12 @@ void OpenGLRenderer::reinit() {
 		LogWarning << "Missing OpenGL extension ARB_map_buffer_range.";
 	}
 	
-	m_hasGL_ARB_buffer_storage = ARX_HAVE_GL_EXT(ARB_buffer_storage);
+	if(isES) {
+		// EXT_buffer_storage requires OpenGL ES 3.1
+		m_hasBufferStorage = ARX_HAVE_GLES_EXT(EXT_buffer_storage);
+	} else {
+		m_hasBufferStorage = ARX_HAVE_GL_VER(4, 4) || ARX_HAVE_GL_EXT(ARB_buffer_storage);
+	}
 	
 	// Synchronize GL state cache
 	
@@ -665,7 +670,7 @@ static VertexBuffer<Vertex> * createVertexBufferImpl(OpenGLRenderer * renderer,
 		
 		#ifdef GL_ARB_buffer_storage
 		
-		if(renderer->hasGL_ARB_buffer_storage()) {
+		if(renderer->hasBufferStorage()) {
 			
 			if(setting.empty() || setting == "persistent-orphan") {
 				if(usage != Renderer::Static) {
