@@ -162,7 +162,6 @@ struct PHYSVERT
 	Vec3f	pos;
 	Vec3f	velocity;
 	Vec3f	force;
-	Vec3f	inertia;
 	float		mass;
 
 	PHYSVERT()
@@ -170,7 +169,6 @@ struct PHYSVERT
 		, pos(Vec3f_ZERO)
 		, velocity(Vec3f_ZERO)
 		, force(Vec3f_ZERO)
-		, inertia(Vec3f_ZERO)
 		, mass(0.f)
 	{}
 };

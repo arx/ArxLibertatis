@@ -80,7 +80,6 @@ void EERIE_PHYSICS_BOX_Launch(EERIE_3DOBJ * obj, const Vec3f & pos, const Anglef
 		pv->pos = VRotateZ(pv->pos, angle.getRoll());
 		pv->pos += pos;
 
-		pv->inertia = Vec3f_ZERO;
 		pv->force = Vec3f_ZERO;
 		pv->velocity = vect * (250.f * ratio);
 		pv->mass = 0.4f + ratio * 0.1f;

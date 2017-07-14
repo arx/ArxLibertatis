@@ -80,7 +80,7 @@ static void ComputeForces(PHYSVERT * phys, long nb) {
 		PHYSVERT * pv = &phys[k];
 
 		// Reset Force
-		pv->force = pv->inertia;
+		pv->force = Vec3f_ZERO;
 
 		// Apply Gravity
 		if(pv->mass > 0.f) {
@@ -336,7 +336,6 @@ static void ARX_EERIE_PHYSICS_BOX_Compute(PHYSICS_BOX_DATA * pbox, float framedi
 	for(size_t kk = 0; kk < pbox->vert.size(); kk++) {
 		PHYSVERT *pv = &pbox->vert[kk];
 		oldpos[kk] = pv->pos;
-		pv->inertia = Vec3f_ZERO;
 
 		pv->velocity.x = glm::clamp(pv->velocity.x, -VELOCITY_THRESHOLD, VELOCITY_THRESHOLD);
 		pv->velocity.y = glm::clamp(pv->velocity.y, -VELOCITY_THRESHOLD, VELOCITY_THRESHOLD);
