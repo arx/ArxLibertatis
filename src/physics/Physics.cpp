@@ -400,12 +400,6 @@ void ARX_PHYSICS_BOX_ApplyModel(PHYSICS_BOX_DATA * pbox, float framediff, float 
 	if(framediff == 0.f)
 		return;
 	
-	// Memorizes initpos
-	for(size_t k = 0; k < pbox->vert.size(); k++) {
-		PHYSVERT & pv = pbox->vert[k];
-		pv.temp = pv.pos;
-	}
-
 	float timing = pbox->storedtiming + framediff * rubber * 0.0055f;
 	float t_threshold = 0.18f;
 
