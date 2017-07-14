@@ -494,7 +494,7 @@ void Add3DBoom(const Vec3f & position) {
 			continue;
 		}
 		
-		for(long k = 0; k < entity->obj->pbox->nb_physvert; k++) {
+		for(size_t k = 0; k < entity->obj->pbox->vert.size(); k++) {
 			float dist = fdist(entity->obj->pbox->vert[k].pos, position);
 			if(dist < 300.f) {
 				entity->obj->pbox->active = 1;

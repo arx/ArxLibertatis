@@ -384,7 +384,7 @@ static void drawDebugCollisionShape(EERIE_3DOBJ * obj) {
 		shapeColor = Color::green;
 	}
 	
-	for(long k = 0; k + 1 < obj->pbox->nb_physvert; k++) {
+	for(size_t k = 0; k + 1 < obj->pbox->vert.size(); k++) {
 		drawLine(obj->pbox->vert[k].pos, obj->pbox->vert[k+1].pos, shapeColor);
 	}
 	

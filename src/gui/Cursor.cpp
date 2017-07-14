@@ -185,7 +185,7 @@ bool Manage3DCursor(Entity * io, bool simulate) {
 	if(io->obj->pbox) {
 		Vec2f tmpVert(io->obj->pbox->vert[0].initpos.x, io->obj->pbox->vert[0].initpos.z);
 		
-		for(int i = 1; i < io->obj->pbox->nb_physvert; i++) {
+		for(size_t i = 1; i < io->obj->pbox->vert.size(); i++) {
 			const PHYSVERT & physVert = io->obj->pbox->vert[i];
 			
 			float dist = glm::distance(tmpVert, Vec2f(physVert.initpos.x, physVert.initpos.z)) + 14.f;

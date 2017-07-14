@@ -967,7 +967,7 @@ void ARX_PHYSICS_Apply() {
 				if(io->soundcount > 12) {
 					io->soundtime = ArxInstant_ZERO;
 					io->soundcount = 0;
-					for(long k = 0; k < pbox->nb_physvert; k++) {
+					for(size_t k = 0; k < pbox->vert.size(); k++) {
 						pbox->vert[k].velocity = Vec3f_ZERO;
 					}
 					pbox->active = 2;

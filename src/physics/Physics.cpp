@@ -111,14 +111,14 @@ static void RK4Integrate(PHYSICS_BOX_DATA * pbox, float DeltaTime) {
 
 	for(long jj = 0; jj < 4; jj++) {
 
-		arx_assert(size_t(pbox->nb_physvert) <= ARRAY_SIZE(m_TempSys[jj + 1]));
-		memcpy(m_TempSys[jj + 1], pbox->vert, sizeof(PHYSVERT) * pbox->nb_physvert);
+		arx_assert(size_t(pbox->vert.size()) <= ARRAY_SIZE(m_TempSys[jj + 1]));
+		memcpy(m_TempSys[jj + 1], pbox->vert.data(), sizeof(PHYSVERT) * pbox->vert.size());
 
 		if(jj == 3) {
 			halfDeltaT = DeltaTime;
 		}
 
-		for(long kk = 0; kk < pbox->nb_physvert; kk++) {
+		for(size_t kk = 0; kk < pbox->vert.size(); kk++) {
 
 			PHYSVERT * source = &pbox->vert[kk];
 			PHYSVERT * accum1 = &m_TempSys[jj + 1][kk];
@@ -135,10 +135,10 @@ static void RK4Integrate(PHYSICS_BOX_DATA * pbox, float DeltaTime) {
 			target->pos = source->pos + accum1->velocity;
 		}
 
-		ComputeForces(m_TempSys[0], pbox->nb_physvert); // compute the new forces
+		ComputeForces(m_TempSys[0], pbox->vert.size()); // compute the new forces
 	}
 
-	for(long kk = 0; kk < pbox->nb_physvert; kk++) {
+	for(size_t kk = 0; kk < pbox->vert.size(); kk++) {
 
 		PHYSVERT * source = &pbox->vert[kk]; // current state of particle
 		PHYSVERT * target = &pbox->vert[kk];
@@ -170,7 +170,7 @@ static bool IsObjectInField(PHYSICS_BOX_DATA * pbox) {
 			if(pfrm) {
 				Cylinder cyl = Cylinder(Vec3f_ZERO, 35.f, -35.f);
 				
-				for(long k = 0; k < pbox->nb_physvert; k++) {
+				for(size_t k = 0; k < pbox->vert.size(); k++) {
 					PHYSVERT * pv = &pbox->vert[k];
 					cyl.origin = pv->pos + Vec3f(0.f, 17.5f, 0.f);
 					if(CylinderPlatformCollide(cyl, pfrm)) {
@@ -253,7 +253,7 @@ static bool IsFULLObjectVertexInValidPosition(PHYSICS_BOX_DATA * pbox, EERIEPOLY
 				if(fartherThan(ep.center, pbox->vert[0].pos, rad + 75.f))
 					continue;
 				
-				for(long kk = 0; kk < pbox->nb_physvert; kk++) {
+				for(size_t kk = 0; kk < pbox->vert.size(); kk++) {
 					float radd = 4.f;
 
 					if(!fartherThan(pbox->vert[kk].pos, ep.center, radd)
@@ -269,7 +269,7 @@ static bool IsFULLObjectVertexInValidPosition(PHYSICS_BOX_DATA * pbox, EERIEPOLY
 					}
 					
 					// Last addon
-					for(long kl = 1; kl < pbox->nb_physvert; kl++) {
+					for(size_t kl = 1; kl < pbox->vert.size(); kl++) {
 						if(kl != kk) {
 							Vec3f pos = (pbox->vert[kk].pos + pbox->vert[kl].pos) * .5f;
 							
@@ -333,7 +333,7 @@ static void ARX_EERIE_PHYSICS_BOX_Compute(PHYSICS_BOX_DATA * pbox, float framedi
 
 	Vec3f oldpos[32];
 	
-	for(long kk = 0; kk < pbox->nb_physvert; kk++) {
+	for(size_t kk = 0; kk < pbox->vert.size(); kk++) {
 		PHYSVERT *pv = &pbox->vert[kk];
 		oldpos[kk] = pv->pos;
 		pv->inertia = Vec3f_ZERO;
@@ -366,13 +366,13 @@ static void ARX_EERIE_PHYSICS_BOX_Compute(PHYSICS_BOX_DATA * pbox, float framedi
 		}
 
 		if(!collisionPoly) {
-			for(long k = 0; k < pbox->nb_physvert; k++) {
+			for(size_t k = 0; k < pbox->vert.size(); k++) {
 				PHYSVERT * pv = &pbox->vert[k];
 				pv->velocity *= Vec3f(-0.3f, -0.4f, -0.3f);
 				pv->pos = oldpos[k];
 			}
 		} else {
-			for(long k = 0; k < pbox->nb_physvert; k++) {
+			for(size_t k = 0; k < pbox->vert.size(); k++) {
 				PHYSVERT * pv = &pbox->vert[k];
 
 				float t = glm::dot(collisionPoly->norm, pv->velocity);
@@ -401,7 +401,7 @@ void ARX_PHYSICS_BOX_ApplyModel(PHYSICS_BOX_DATA * pbox, float framediff, float 
 		return;
 	
 	// Memorizes initpos
-	for(long k = 0; k < pbox->nb_physvert; k++) {
+	for(size_t k = 0; k < pbox->vert.size(); k++) {
 		PHYSVERT & pv = pbox->vert[k];
 		pv.temp = pv.pos;
 	}
@@ -414,7 +414,7 @@ void ARX_PHYSICS_BOX_ApplyModel(PHYSICS_BOX_DATA * pbox, float framediff, float 
 		return;
 	} else {
 		while(timing >= t_threshold) {
-			ComputeForces(pbox->vert, pbox->nb_physvert);
+			ComputeForces(pbox->vert.c_array(), pbox->vert.size());
 
 			ARX_EERIE_PHYSICS_BOX_Compute(pbox, std::min(0.11f, timing * 10), source);
 
