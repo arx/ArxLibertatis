@@ -378,22 +378,24 @@ void EERIE_PHYSICS_BOX_Create(EERIE_3DOBJ * obj)
 	obj->pbox->radius = 0.f;
 
 	for(size_t k = 0; k < obj->pbox->vert.size(); k++) {
-		float distt = glm::distance(obj->pbox->vert[k].pos, obj->pbox->vert[0].pos);
+		PHYSVERT & pv = obj->pbox->vert[k];
+		
+		float distt = glm::distance(pv.pos, obj->pbox->vert[0].pos);
 
 		if (distt > 20.f)
 		{
-			obj->pbox->vert[k].pos.x = (obj->pbox->vert[k].pos.x
+			pv.pos.x = (pv.pos.x
 			                            - obj->pbox->vert[0].pos.x) * 0.5f +
 			                           obj->pbox->vert[0].pos.x;
-			obj->pbox->vert[k].pos.z = (obj->pbox->vert[k].pos.z
+			pv.pos.z = (pv.pos.z
 			                            - obj->pbox->vert[0].pos.z) * 0.5f +
 			                           obj->pbox->vert[0].pos.z;
 		}
 
-		obj->pbox->vert[k].initpos = obj->pbox->vert[k].pos;
+		pv.initpos = pv.pos;
 
 		if(k != 0) {
-			float d = glm::distance(obj->pbox->vert[0].pos, obj->pbox->vert[k].pos);
+			float d = glm::distance(obj->pbox->vert[0].pos, pv.pos);
 			obj->pbox->radius = std::max(obj->pbox->radius, d);
 		}
 	}
