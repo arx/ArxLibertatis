@@ -179,3 +179,9 @@ void drawLineCross(Vec3f v, Color c, float size) {
 	drawLine(v - Vec3f(0, size, 0), v + Vec3f(0, size, 0), c);
 	drawLine(v - Vec3f(0, 0, size), v + Vec3f(0, 0, size), c);
 }
+
+void drawLineTriangle(Vec3f v0, Vec3f v1, Vec3f v2, Color color) {
+	drawLine(v0, v1, color);
+	drawLine(v1, v2, color);
+	drawLine(v2, v0, color);
+}

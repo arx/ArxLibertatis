@@ -35,5 +35,6 @@ void drawLineSphere(const Sphere & sphere, Color color);
 void drawLineCylinder(const Cylinder & cyl, Color col);
 void drawLineCross(Vec2f v, float z, Color color, float size);
 void drawLineCross(Vec3f v, Color c, float size = 1.f);
+void drawLineTriangle(Vec3f v0, Vec3f v1, Vec3f v2, Color color);
 
 #endif // ARX_GRAPHICS_DRAWLINE_H
