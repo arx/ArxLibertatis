@@ -56,13 +56,6 @@ static T * allocStructZero(size_t n = 1) {
 	return result;
 }
 
-template <class T>
-static T * copyStruct(const T * src, size_t n = 1) {
-	T * result = (T*)malloc(n * sizeof(T));
-	memcpy(result, src, sizeof(T) * n);
-	return result;
-}
-
 void MakeUserFlag(TextureContainer * tc);
 ObjVertGroup EERIE_OBJECT_GetGroup(const EERIE_3DOBJ * obj, const std::string & groupname);
 ObjSelection EERIE_OBJECT_GetSelection(const EERIE_3DOBJ * obj, const std::string & selname);
