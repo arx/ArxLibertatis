@@ -67,33 +67,6 @@ ZeniMax Media Inc., Suite 120, Rockville, Maryland 20850 USA.
 
 static const float VELOCITY_THRESHOLD = 400.f;
 
-static void ARX_ApplySpring(PHYSVERT * phys, long k, long l, float PHYSICS_constant,
-                            float PHYSICS_Damp) {
-	
-	Vec3f deltaP, deltaV, springforce;
-	PHYSVERT * pv_k = &phys[k];
-	PHYSVERT * pv_l = &phys[l];
-	float Dterm, Hterm;
-
-	float restlength = glm::distance(pv_k->initpos, pv_l->initpos);
-	// Computes Spring Magnitude
-	deltaP = pv_k->pos - pv_l->pos;
-	float dist = glm::length(deltaP); // Magnitude of delta
-	dist = std::max(dist, 0.000001f); //TODO workaround for division by zero
-	float divdist = 1.f / dist;
-	Hterm = (dist - restlength) * PHYSICS_constant;
-
-	deltaV = pv_k->velocity - pv_l->velocity; // Delta Velocity Vector
-	Dterm = glm::dot(deltaV, deltaP) * PHYSICS_Damp * divdist; // Damping Term
-	Dterm = (-(Hterm + Dterm));
-	divdist *= Dterm;
-	springforce = deltaP * divdist; // Normalize Distance Vector & Calc Force
-
-	pv_k->force += springforce; // + force on particle 1
-
-	pv_l->force -= springforce; // - force on particle 2
-}
-
 static void ComputeForces(PHYSVERT * phys, long nb) {
 	
 	const Vec3f PHYSICS_Gravity(0.f, 65.f, 0.f);
@@ -123,15 +96,6 @@ static void ComputeForces(PHYSVERT * phys, long nb) {
 
 		// Apply Damping
 		pv->force += pv->velocity * -PHYSICS_Damping;
-	}
-
-	for(int k = 0; k < nb; k++) {
-		// Now Resolves Spring System
-		for(long l = 0; l < nb; l++) {
-			if(l != k) {
-				ARX_ApplySpring(phys, l, k, 15.f, 0.99f);
-			}
-		}
 	}
 }
 
