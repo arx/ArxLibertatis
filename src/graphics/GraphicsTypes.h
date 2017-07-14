@@ -47,6 +47,8 @@ ZeniMax Media Inc., Suite 120, Rockville, Maryland 20850 USA.
 #include <cmath>
 #include <vector>
 
+#include <boost/array.hpp>
+
 #include "animation/Skeleton.h"
 #include "audio/AudioTypes.h"
 #include "graphics/BaseGraphicsTypes.h"
@@ -177,17 +179,14 @@ struct PHYSVERT
 
 struct PHYSICS_BOX_DATA
 {
-	PHYSVERT * vert;
-	long	nb_physvert;
+	boost::array<PHYSVERT, 15> vert;
 	short	active;
 	short	stopcount;
 	float	radius; //radius around vert[0].pos for spherical collision
 	float	storedtiming;
 	
 	PHYSICS_BOX_DATA()
-		: vert(NULL)
-		, nb_physvert(0)
-		, active(0)
+		: active(0)
 		, stopcount(0)
 		, radius(0.f)
 		, storedtiming(0.f)

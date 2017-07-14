@@ -1068,10 +1068,7 @@ Entity * CloneIOItem(Entity * src) {
 		dest->obj->pbox = new PHYSICS_BOX_DATA();
 		*dest->obj->pbox = *src->obj->pbox;
 		
-		dest->obj->pbox->vert = (PHYSVERT *)malloc(sizeof(PHYSVERT)
-		                                           * src->obj->pbox->nb_physvert);
-		memcpy(dest->obj->pbox->vert, src->obj->pbox->vert,
-		       sizeof(PHYSVERT) * src->obj->pbox->nb_physvert);
+		dest->obj->pbox->vert = src->obj->pbox->vert;
 	}
 	
 	return dest;
@@ -1242,7 +1239,7 @@ void ARX_INTERACTIVE_Teleport(Entity * io, const Vec3f & target, bool flag) {
 	if(io->obj) {
 		if(io->obj->pbox) {
 			if(io->obj->pbox->active) {
-				for(long i = 0; i < io->obj->pbox->nb_physvert; i++) {
+				for(size_t i = 0; i < io->obj->pbox->vert.size(); i++) {
 					io->obj->pbox->vert[i].pos += translate;
 				}
 				io->obj->pbox->active = 0;
@@ -2090,7 +2087,7 @@ bool ARX_INTERACTIVE_CheckFULLCollision(PHYSICS_BOX_DATA * pbox, Entity * source
 		}
 
 		if((io->ioflags & IO_NPC) && io->_npcdata->lifePool.current > 0.f) {
-			for(long kk = 0; kk < pbox->nb_physvert; kk++)
+			for(size_t kk = 0; kk < pbox->vert.size(); kk++)
 				if(PointInCylinder(io->physics.cyl, pbox->vert[kk].pos))
 					return true;
 		} else if(io->ioflags & IO_FIX) {
@@ -2113,7 +2110,7 @@ bool ARX_INTERACTIVE_CheckFULLCollision(PHYSICS_BOX_DATA * pbox, Entity * source
 			std::vector<EERIE_VERTEX> & vlist = io->obj->vertexWorldPositions;
 
 			if(io->gameFlags & GFLAG_PLATFORM) {
-				for(long kk = 0; kk < pbox->nb_physvert; kk++) {
+				for(size_t kk = 0; kk < pbox->vert.size(); kk++) {
 					Sphere sphere;
 					sphere.origin = pbox->vert[kk].pos;
 					sphere.radius = 30.f;
@@ -2162,7 +2159,7 @@ bool ARX_INTERACTIVE_CheckFULLCollision(PHYSICS_BOX_DATA * pbox, Entity * source
 				if(ii != io->obj->origin) {
 					sp.origin = vlist[ii].v;
 
-					for(long kk = 0; kk < pbox->nb_physvert; kk++) {
+					for(size_t kk = 0; kk < pbox->vert.size(); kk++) {
 						if(sp.contains(pbox->vert[kk].pos)) {
 							if(source && (io->gameFlags & GFLAG_DOOR)) {
 								ArxDuration elapsed = arxtime.now() - io->collide_door_time;

@@ -72,7 +72,7 @@ void EERIE_PHYSICS_BOX_Launch(EERIE_3DOBJ * obj, const Vec3f & pos, const Anglef
 
 	ratio = 1.f - (ratio * ( 1.0f / 4 ));
 	
-	for(int i = 0; i < obj->pbox->nb_physvert; i++) {
+	for(size_t i = 0; i < obj->pbox->vert.size(); i++) {
 		PHYSVERT * pv = &obj->pbox->vert[i];
 		pv->pos = pv->initpos;
 		pv->pos = VRotateY(pv->pos, angle.getYaw());
@@ -97,15 +97,15 @@ bool IsObjectVertexCollidingTriangle(PHYSICS_BOX_DATA * pbox, Vec3f * verts)
 	bool ret = false;
 	std::copy(verts, verts + 2, t2.v);
 
-	PHYSVERT * vert = pbox->vert;
+	const boost::array<PHYSVERT, 15> & vert = pbox->vert;
 
 	Vec3f center = (verts[0] + verts[1] + verts[2]) * ( 1.0f / 3 );
 	float rad = fdist(center, verts[0]);
 
 	{
-		long nn = 0;
+		size_t nn = 0;
 
-		for (; nn < pbox->nb_physvert; nn++)
+		for (; nn < pbox->vert.size(); nn++)
 		{
 			if(!fartherThan(center, vert[nn].pos, std::max(60.0f, rad + 25))) {
 				nn = 1000;
@@ -216,9 +216,6 @@ void EERIE_PHYSICS_BOX_Release(EERIE_3DOBJ * obj) {
 		return;
 	}
 	
-	free(obj->pbox->vert);
-	obj->pbox->vert = NULL;
-
 	delete obj->pbox;
 	obj->pbox = NULL;
 }
@@ -235,11 +232,7 @@ void EERIE_PHYSICS_BOX_Create(EERIE_3DOBJ * obj)
 
 	obj->pbox = new PHYSICS_BOX_DATA();
 	
-	obj->pbox->nb_physvert = 15;
 	obj->pbox->stopcount = 0;
-
-	obj->pbox->vert = (PHYSVERT *) malloc(sizeof(PHYSVERT) * obj->pbox->nb_physvert);
-	memset(obj->pbox->vert, 0, sizeof(PHYSVERT)*obj->pbox->nb_physvert);
 	
 	Vec3f cubmin = Vec3f(std::numeric_limits<float>::max());
 	Vec3f cubmax = Vec3f(-std::numeric_limits<float>::max());
@@ -257,7 +250,7 @@ void EERIE_PHYSICS_BOX_Create(EERIE_3DOBJ * obj)
 	obj->pbox->vert[14].pos = obj->pbox->vert[0].pos;
 	obj->pbox->vert[14].pos.y = cubmax.y;
 	
-	for (int k = 1; k < obj->pbox->nb_physvert - 2; k++)
+	for(size_t k = 1; k < obj->pbox->vert.size() - 2; k++)
 	{
 		obj->pbox->vert[k].pos.x = obj->pbox->vert[0].pos.x;
 		obj->pbox->vert[k].pos.z = obj->pbox->vert[0].pos.z;
@@ -274,7 +267,7 @@ void EERIE_PHYSICS_BOX_Create(EERIE_3DOBJ * obj)
 		cubmax.y += 8.f; 
 		cubmin.y -= 8.f; 
 
-		for (int k = 1; k < obj->pbox->nb_physvert - 2; k++)
+		for(size_t k = 1; k < obj->pbox->vert.size() - 2; k++)
 		{
 			obj->pbox->vert[k].pos.x = obj->pbox->vert[0].pos.x;
 			obj->pbox->vert[k].pos.z = obj->pbox->vert[0].pos.z;
@@ -293,7 +286,7 @@ void EERIE_PHYSICS_BOX_Create(EERIE_3DOBJ * obj)
 			if (k == obj->origin) continue;
 
 			Vec3f curr = obj->vertexlist[k].v;
-			long SEC = 1;
+			size_t SEC = 1;
 			obj->pbox->vert[SEC].pos.x = std::min(obj->pbox->vert[SEC].pos.x, curr.x);
 			obj->pbox->vert[SEC].pos.z = std::min(obj->pbox->vert[SEC].pos.z, curr.z);
 
@@ -345,7 +338,7 @@ void EERIE_PHYSICS_BOX_Create(EERIE_3DOBJ * obj)
 			if (k == obj->origin) continue;
 
 			Vec3f curr = obj->vertexlist[k].v;
-			long SEC;
+			size_t SEC;
 
 			if (curr.y < ysec1)
 			{
@@ -374,7 +367,7 @@ void EERIE_PHYSICS_BOX_Create(EERIE_3DOBJ * obj)
 		}
 	}
 
-	for (int k = 0; k < 4; k++)
+	for (size_t k = 0; k < 4; k++)
 	{
 		if (glm::abs(obj->pbox->vert[5+k].pos.x - obj->pbox->vert[0].pos.x) < 2.f)
 			obj->pbox->vert[5+k].pos.x = (obj->pbox->vert[1+k].pos.x + obj->pbox->vert[9+k].pos.x) * .5f;
@@ -385,7 +378,7 @@ void EERIE_PHYSICS_BOX_Create(EERIE_3DOBJ * obj)
 
 	obj->pbox->radius = 0.f;
 
-	for(int k = 0; k < obj->pbox->nb_physvert; k++) {
+	for(size_t k = 0; k < obj->pbox->vert.size(); k++) {
 		float distt = glm::distance(obj->pbox->vert[k].pos, obj->pbox->vert[0].pos);
 
 		if (distt > 20.f)

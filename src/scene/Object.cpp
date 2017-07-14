@@ -282,11 +282,10 @@ EERIE_3DOBJ * Eerie_Copy(const EERIE_3DOBJ * obj) {
 
 	if(obj->pbox) {
 		nouvo->pbox = new PHYSICS_BOX_DATA();
-		nouvo->pbox->nb_physvert = obj->pbox->nb_physvert;
 		nouvo->pbox->stopcount = 0;
 		nouvo->pbox->radius = obj->pbox->radius;
 		
-		nouvo->pbox->vert = copyStruct(obj->pbox->vert, obj->pbox->nb_physvert);
+		nouvo->pbox->vert = obj->pbox->vert;
 	}
 	
 	nouvo->linked.clear();
