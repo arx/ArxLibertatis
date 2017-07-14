@@ -366,6 +366,42 @@ static void drawDebugFogs() {
 	}
 }
 
+// TODO remove too similar colors
+static const Color distinctDebugColors[] = {
+	Color(230,  25,  75), // Red
+	Color( 60, 180,  75), // Green
+	Color(255, 225,  25), // Yellow
+	Color(  0, 130, 200), // Blue
+	Color(245, 130,  48), // Orange
+	Color(145,  30, 180), // Purple
+	Color( 70, 240, 240), // Cyan
+	Color(240,  50, 230), // Magenta
+	Color(250, 190, 190), // Pink
+	Color(  0, 128, 128), // Teal
+	Color(230, 190, 255), // Lavender
+	Color(170, 110,  40), // Brown
+	Color(255, 250, 200), // Beige
+	Color(128,   0,   0), // Maroon
+	Color(170, 255, 195), // Mint
+	Color(128, 128,   0), // Olive
+	Color(255, 215, 180), // Coral
+	Color(  0,   0, 128)  // Navy
+};
+
+#include <boost/lexical_cast.hpp>
+
+static void drawColorChart() {
+	Vec2f p = Vec2f(50, 50);
+	for(size_t i = 0; i < ARRAY_SIZE(distinctDebugColors); i++) {
+		drawLine(p, p + Vec2f(40, 0), 1.f, distinctDebugColors[i]);
+		
+		drawTextCentered(hFontDebug, p + Vec2f(-5, 0), boost::lexical_cast<std::string>(i), Color::white);
+		
+		p += Vec2i(0, 12);
+	}
+}
+
+
 //! Debug function to show the physical box of an object
 static void drawDebugCollisionShape(EERIE_3DOBJ * obj) {
 	
@@ -373,10 +409,7 @@ static void drawDebugCollisionShape(EERIE_3DOBJ * obj) {
 		return;
 	}
 	
-	Sphere sphere;
-	sphere.origin = obj->pbox->vert[0].pos;
-	sphere.radius = obj->pbox->radius;
-	drawLineSphere(sphere, Color::white);
+	drawColorChart();
 	
 	Color shapeColor = Color::yellow;
 	
@@ -384,10 +417,37 @@ static void drawDebugCollisionShape(EERIE_3DOBJ * obj) {
 		shapeColor = Color::green;
 	}
 	
-	for(size_t k = 0; k + 1 < obj->pbox->vert.size(); k++) {
-		drawLine(obj->pbox->vert[k].pos, obj->pbox->vert[k+1].pos, shapeColor);
-	}
+	Sphere sphere;
+	sphere.origin = obj->pbox->vert[0].pos;
+	sphere.radius = obj->pbox->radius;
+	drawLineSphere(sphere, shapeColor);
 	
+	boost::array<PHYSVERT, 15> v = obj->pbox->vert;
+	const Color * c =  distinctDebugColors;
+	
+	// Vert indices copied from
+	// IsObjectVertexCollidingTriangle
+	
+	//TOP
+	drawLineTriangle(v[1].pos, v[2].pos, v[3].pos, c[0]);
+	//BOTTOM
+	drawLineTriangle(v[10].pos, v[9].pos, v[11].pos, c[1]);
+	//UP/FRONT
+	drawLineTriangle(v[1].pos, v[4].pos, v[5].pos, c[2]);
+	//DOWN/FRONT
+	drawLineTriangle(v[5].pos, v[8].pos, v[9].pos, c[3]);
+	//UP/BACK
+	drawLineTriangle(v[3].pos, v[2].pos, v[7].pos, c[4]);
+	//DOWN/BACK
+	drawLineTriangle(v[7].pos, v[6].pos, v[11].pos, c[5]);
+	//UP/LEFT
+	drawLineTriangle(v[6].pos, v[2].pos, v[1].pos, c[6]);
+	//DOWN/LEFT
+	drawLineTriangle(v[10].pos, v[6].pos, v[5].pos, c[7]);
+	//UP/RIGHT
+	drawLineTriangle(v[4].pos, v[3].pos, v[7].pos, c[8]);
+	//DOWN/RIGHT
+	drawLineTriangle(v[8].pos, v[7].pos, v[11].pos, c[9]);
 }
 
 static void drawDebugEntityPhysicsCylinder(Entity * io) {
