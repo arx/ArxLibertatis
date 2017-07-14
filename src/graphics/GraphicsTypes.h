@@ -159,7 +159,6 @@ struct EERIE_FACE {
 struct PHYSVERT
 {
 	Vec3f	initpos;
-	Vec3f	temp;
 	Vec3f	pos;
 	Vec3f	velocity;
 	Vec3f	force;
@@ -168,7 +167,6 @@ struct PHYSVERT
 
 	PHYSVERT()
 		: initpos(Vec3f_ZERO)
-		, temp(Vec3f_ZERO)
 		, pos(Vec3f_ZERO)
 		, velocity(Vec3f_ZERO)
 		, force(Vec3f_ZERO)
