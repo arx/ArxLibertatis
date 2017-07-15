@@ -184,7 +184,7 @@ static bool IsObjectInField(PHYSICS_BOX_DATA * pbox) {
 	return false;
 }
 
-static bool IsObjectVertexCollidingPoly(PHYSICS_BOX_DATA * pbox, const EERIEPOLY & ep) {
+static bool IsObjectVertexCollidingPoly(const PHYSICS_BOX_DATA & pbox, const EERIEPOLY & ep) {
 
 	Vec3f pol[3];
 	pol[0] = ep.v[0].p;
@@ -224,13 +224,13 @@ static Material polyTypeToCollisionMaterial(const EERIEPOLY & ep) {
 	else return MATERIAL_STONE;
 }
 
-static bool IsFULLObjectVertexInValidPosition(PHYSICS_BOX_DATA * pbox, EERIEPOLY *& collisionPoly) {
+static bool IsFULLObjectVertexInValidPosition(const PHYSICS_BOX_DATA & pbox, EERIEPOLY *& collisionPoly) {
 
-	float rad = pbox->radius;
+	float rad = pbox.radius;
 	
 	// TODO copy-paste background tiles
-	int tilex = int(pbox->vert[0].pos.x * ACTIVEBKG->m_mul.x);
-	int tilez = int(pbox->vert[0].pos.z * ACTIVEBKG->m_mul.y);
+	int tilex = int(pbox.vert[0].pos.x * ACTIVEBKG->m_mul.x);
+	int tilez = int(pbox.vert[0].pos.z * ACTIVEBKG->m_mul.y);
 	int radius = std::min(1, short(rad * (1.0f/100)) + 1);
 	
 	int minx = std::max(tilex - radius, 0);
@@ -250,28 +250,28 @@ static bool IsFULLObjectVertexInValidPosition(PHYSICS_BOX_DATA * pbox, EERIEPOLY
 			   && !(ep.type & POLY_TRANS)
 			   && !(ep.type & POLY_NOCOL)
 			) {
-				if(fartherThan(ep.center, pbox->vert[0].pos, rad + 75.f))
+				if(fartherThan(ep.center, pbox.vert[0].pos, rad + 75.f))
 					continue;
 				
-				for(size_t kk = 0; kk < pbox->vert.size(); kk++) {
+				for(size_t kk = 0; kk < pbox.vert.size(); kk++) {
 					float radd = 4.f;
 
-					if(!fartherThan(pbox->vert[kk].pos, ep.center, radd)
-					   || !fartherThan(pbox->vert[kk].pos, ep.v[0].p, radd)
-					   || !fartherThan(pbox->vert[kk].pos, ep.v[1].p, radd)
-					   || !fartherThan(pbox->vert[kk].pos, ep.v[2].p, radd)
-					   || !fartherThan(pbox->vert[kk].pos, (ep.v[0].p + ep.v[1].p) * .5f, radd)
-					   || !fartherThan(pbox->vert[kk].pos, (ep.v[2].p + ep.v[1].p) * .5f, radd)
-					   || !fartherThan(pbox->vert[kk].pos, (ep.v[0].p + ep.v[2].p) * .5f, radd)
+					if(!fartherThan(pbox.vert[kk].pos, ep.center, radd)
+					   || !fartherThan(pbox.vert[kk].pos, ep.v[0].p, radd)
+					   || !fartherThan(pbox.vert[kk].pos, ep.v[1].p, radd)
+					   || !fartherThan(pbox.vert[kk].pos, ep.v[2].p, radd)
+					   || !fartherThan(pbox.vert[kk].pos, (ep.v[0].p + ep.v[1].p) * .5f, radd)
+					   || !fartherThan(pbox.vert[kk].pos, (ep.v[2].p + ep.v[1].p) * .5f, radd)
+					   || !fartherThan(pbox.vert[kk].pos, (ep.v[0].p + ep.v[2].p) * .5f, radd)
 					) {
 						collisionPoly = &ep;
 						return false;
 					}
 					
 					// Last addon
-					for(size_t kl = 1; kl < pbox->vert.size(); kl++) {
+					for(size_t kl = 1; kl < pbox.vert.size(); kl++) {
 						if(kl != kk) {
-							Vec3f pos = (pbox->vert[kk].pos + pbox->vert[kl].pos) * .5f;
+							Vec3f pos = (pbox.vert[kk].pos + pbox.vert[kl].pos) * .5f;
 							
 							if(!fartherThan(pos, ep.center, radd)
 							   || !fartherThan(pos, ep.v[0].p, radd)
@@ -346,7 +346,7 @@ static void ARX_EERIE_PHYSICS_BOX_Compute(PHYSICS_BOX_DATA * pbox, float framedi
 
 	EERIEPOLY * collisionPoly = NULL;
 	
-	if(   !IsFULLObjectVertexInValidPosition(pbox, collisionPoly)
+	if(   !IsFULLObjectVertexInValidPosition(*pbox, collisionPoly)
 	   || ARX_INTERACTIVE_CheckFULLCollision(*pbox, source)
 	   || IsObjectInField(pbox)
 	) {

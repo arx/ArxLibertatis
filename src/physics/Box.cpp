@@ -78,13 +78,13 @@ void EERIE_PHYSICS_BOX_Launch(EERIE_3DOBJ * obj, const Vec3f & pos, const Anglef
 }
 
 // Checks is a triangle of a physical object is colliding a triangle
-bool IsObjectVertexCollidingTriangle(PHYSICS_BOX_DATA * pbox, Vec3f * verts)
+bool IsObjectVertexCollidingTriangle(const PHYSICS_BOX_DATA & pbox, Vec3f * verts)
 {
 	EERIE_TRI t1, t2;
 	bool ret = false;
 	std::copy(verts, verts + 2, t2.v);
 
-	const boost::array<PHYSVERT, 15> & vert = pbox->vert;
+	const boost::array<PHYSVERT, 15> & vert = pbox.vert;
 
 	Vec3f center = (verts[0] + verts[1] + verts[2]) * ( 1.0f / 3 );
 	float rad = fdist(center, verts[0]);
@@ -92,7 +92,7 @@ bool IsObjectVertexCollidingTriangle(PHYSICS_BOX_DATA * pbox, Vec3f * verts)
 	{
 		size_t nn = 0;
 
-		for (; nn < pbox->vert.size(); nn++)
+		for (; nn < pbox.vert.size(); nn++)
 		{
 			if(!fartherThan(center, vert[nn].pos, std::max(60.0f, rad + 25))) {
 				nn = 1000;
