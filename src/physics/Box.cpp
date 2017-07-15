@@ -229,9 +229,9 @@ void EERIE_PHYSICS_BOX_Create(EERIE_3DOBJ * obj)
 
 	if (obj->vertexlist.empty()) return;
 
-	obj->pbox = new PHYSICS_BOX_DATA();
+	PHYSICS_BOX_DATA * pbox = new PHYSICS_BOX_DATA();
 	
-	obj->pbox->stopcount = 0;
+	pbox->stopcount = 0;
 	
 	Vec3f cubmin = Vec3f(std::numeric_limits<float>::max());
 	Vec3f cubmax = Vec3f(-std::numeric_limits<float>::max());
@@ -243,20 +243,20 @@ void EERIE_PHYSICS_BOX_Create(EERIE_3DOBJ * obj)
 		}
 	}
 	
-	obj->pbox->vert[0].pos = cubmin + (cubmax - cubmin) * .5f;
-	obj->pbox->vert[13].pos = obj->pbox->vert[0].pos;
-	obj->pbox->vert[13].pos.y = cubmin.y;
-	obj->pbox->vert[14].pos = obj->pbox->vert[0].pos;
-	obj->pbox->vert[14].pos.y = cubmax.y;
+	pbox->vert[0].pos = cubmin + (cubmax - cubmin) * .5f;
+	pbox->vert[13].pos = pbox->vert[0].pos;
+	pbox->vert[13].pos.y = cubmin.y;
+	pbox->vert[14].pos = pbox->vert[0].pos;
+	pbox->vert[14].pos.y = cubmax.y;
 	
-	for(size_t k = 1; k < obj->pbox->vert.size() - 2; k++)
+	for(size_t k = 1; k < pbox->vert.size() - 2; k++)
 	{
-		obj->pbox->vert[k].pos.x = obj->pbox->vert[0].pos.x;
-		obj->pbox->vert[k].pos.z = obj->pbox->vert[0].pos.z;
+		pbox->vert[k].pos.x = pbox->vert[0].pos.x;
+		pbox->vert[k].pos.z = pbox->vert[0].pos.z;
 
-		if (k < 5)		obj->pbox->vert[k].pos.y = cubmin.y;
-		else if (k < 9)	obj->pbox->vert[k].pos.y = obj->pbox->vert[0].pos.y;
-		else			obj->pbox->vert[k].pos.y = cubmax.y;
+		if (k < 5)		pbox->vert[k].pos.y = cubmin.y;
+		else if (k < 9)	pbox->vert[k].pos.y = pbox->vert[0].pos.y;
+		else			pbox->vert[k].pos.y = cubmax.y;
 	}
 
 	float diff = cubmax.y - cubmin.y;
@@ -266,18 +266,18 @@ void EERIE_PHYSICS_BOX_Create(EERIE_3DOBJ * obj)
 		cubmax.y += 8.f; 
 		cubmin.y -= 8.f; 
 
-		for(size_t k = 1; k < obj->pbox->vert.size() - 2; k++)
+		for(size_t k = 1; k < pbox->vert.size() - 2; k++)
 		{
-			obj->pbox->vert[k].pos.x = obj->pbox->vert[0].pos.x;
-			obj->pbox->vert[k].pos.z = obj->pbox->vert[0].pos.z;
+			pbox->vert[k].pos.x = pbox->vert[0].pos.x;
+			pbox->vert[k].pos.z = pbox->vert[0].pos.z;
 
-			if (k < 5)		obj->pbox->vert[k].pos.y = cubmin.y;
-			else if (k < 9)	obj->pbox->vert[k].pos.y = obj->pbox->vert[0].pos.y;
-			else			obj->pbox->vert[k].pos.y = cubmax.y;
+			if (k < 5)		pbox->vert[k].pos.y = cubmin.y;
+			else if (k < 9)	pbox->vert[k].pos.y = pbox->vert[0].pos.y;
+			else			pbox->vert[k].pos.y = cubmax.y;
 		}
 
-		obj->pbox->vert[14].pos.y = cubmax.y;
-		obj->pbox->vert[13].pos.y = cubmin.y;
+		pbox->vert[14].pos.y = cubmax.y;
+		pbox->vert[13].pos.y = cubmin.y;
 		float RATI = diff * ( 1.0f / 8 );
 
 		for (size_t k = 0; k < obj->vertexlist.size(); k++)
@@ -286,44 +286,44 @@ void EERIE_PHYSICS_BOX_Create(EERIE_3DOBJ * obj)
 
 			Vec3f curr = obj->vertexlist[k].v;
 			size_t SEC = 1;
-			obj->pbox->vert[SEC].pos.x = std::min(obj->pbox->vert[SEC].pos.x, curr.x);
-			obj->pbox->vert[SEC].pos.z = std::min(obj->pbox->vert[SEC].pos.z, curr.z);
+			pbox->vert[SEC].pos.x = std::min(pbox->vert[SEC].pos.x, curr.x);
+			pbox->vert[SEC].pos.z = std::min(pbox->vert[SEC].pos.z, curr.z);
 
-			obj->pbox->vert[SEC+1].pos.x = std::min(obj->pbox->vert[SEC+1].pos.x, curr.x);
-			obj->pbox->vert[SEC+1].pos.z = std::max(obj->pbox->vert[SEC+1].pos.z, curr.z);
+			pbox->vert[SEC+1].pos.x = std::min(pbox->vert[SEC+1].pos.x, curr.x);
+			pbox->vert[SEC+1].pos.z = std::max(pbox->vert[SEC+1].pos.z, curr.z);
 
-			obj->pbox->vert[SEC+2].pos.x = std::max(obj->pbox->vert[SEC+2].pos.x, curr.x);
-			obj->pbox->vert[SEC+2].pos.z = std::max(obj->pbox->vert[SEC+2].pos.z, curr.z);
+			pbox->vert[SEC+2].pos.x = std::max(pbox->vert[SEC+2].pos.x, curr.x);
+			pbox->vert[SEC+2].pos.z = std::max(pbox->vert[SEC+2].pos.z, curr.z);
 
-			obj->pbox->vert[SEC+3].pos.x = std::max(obj->pbox->vert[SEC+3].pos.x, curr.x);
-			obj->pbox->vert[SEC+3].pos.z = std::min(obj->pbox->vert[SEC+3].pos.z, curr.z);
+			pbox->vert[SEC+3].pos.x = std::max(pbox->vert[SEC+3].pos.x, curr.x);
+			pbox->vert[SEC+3].pos.z = std::min(pbox->vert[SEC+3].pos.z, curr.z);
 
 			SEC = 5;
-			obj->pbox->vert[SEC].pos.x = std::min(obj->pbox->vert[SEC].pos.x, curr.x - RATI);
-			obj->pbox->vert[SEC].pos.z = std::min(obj->pbox->vert[SEC].pos.z, curr.z - RATI);
+			pbox->vert[SEC].pos.x = std::min(pbox->vert[SEC].pos.x, curr.x - RATI);
+			pbox->vert[SEC].pos.z = std::min(pbox->vert[SEC].pos.z, curr.z - RATI);
 
-			obj->pbox->vert[SEC+1].pos.x = std::min(obj->pbox->vert[SEC+1].pos.x, curr.x - RATI);
-			obj->pbox->vert[SEC+1].pos.z = std::max(obj->pbox->vert[SEC+1].pos.z, curr.z + RATI);
+			pbox->vert[SEC+1].pos.x = std::min(pbox->vert[SEC+1].pos.x, curr.x - RATI);
+			pbox->vert[SEC+1].pos.z = std::max(pbox->vert[SEC+1].pos.z, curr.z + RATI);
 
-			obj->pbox->vert[SEC+2].pos.x = std::max(obj->pbox->vert[SEC+2].pos.x, curr.x + RATI);
-			obj->pbox->vert[SEC+2].pos.z = std::max(obj->pbox->vert[SEC+2].pos.z, curr.z + RATI);
+			pbox->vert[SEC+2].pos.x = std::max(pbox->vert[SEC+2].pos.x, curr.x + RATI);
+			pbox->vert[SEC+2].pos.z = std::max(pbox->vert[SEC+2].pos.z, curr.z + RATI);
 
-			obj->pbox->vert[SEC+3].pos.x = std::max(obj->pbox->vert[SEC+3].pos.x, curr.x + RATI);
-			obj->pbox->vert[SEC+3].pos.z = std::min(obj->pbox->vert[SEC+3].pos.z, curr.z - RATI);
+			pbox->vert[SEC+3].pos.x = std::max(pbox->vert[SEC+3].pos.x, curr.x + RATI);
+			pbox->vert[SEC+3].pos.z = std::min(pbox->vert[SEC+3].pos.z, curr.z - RATI);
 
 
 			SEC = 9;
-			obj->pbox->vert[SEC].pos.x = std::min(obj->pbox->vert[SEC].pos.x, curr.x);
-			obj->pbox->vert[SEC].pos.z = std::min(obj->pbox->vert[SEC].pos.z, curr.z);
+			pbox->vert[SEC].pos.x = std::min(pbox->vert[SEC].pos.x, curr.x);
+			pbox->vert[SEC].pos.z = std::min(pbox->vert[SEC].pos.z, curr.z);
 
-			obj->pbox->vert[SEC+1].pos.x = std::min(obj->pbox->vert[SEC+1].pos.x, curr.x);
-			obj->pbox->vert[SEC+1].pos.z = std::max(obj->pbox->vert[SEC+1].pos.z, curr.z);
+			pbox->vert[SEC+1].pos.x = std::min(pbox->vert[SEC+1].pos.x, curr.x);
+			pbox->vert[SEC+1].pos.z = std::max(pbox->vert[SEC+1].pos.z, curr.z);
 
-			obj->pbox->vert[SEC+2].pos.x = std::max(obj->pbox->vert[SEC+2].pos.x, curr.x);
-			obj->pbox->vert[SEC+2].pos.z = std::max(obj->pbox->vert[SEC+2].pos.z, curr.z);
+			pbox->vert[SEC+2].pos.x = std::max(pbox->vert[SEC+2].pos.x, curr.x);
+			pbox->vert[SEC+2].pos.z = std::max(pbox->vert[SEC+2].pos.z, curr.z);
 
-			obj->pbox->vert[SEC+3].pos.x = std::max(obj->pbox->vert[SEC+3].pos.x, curr.x);
-			obj->pbox->vert[SEC+3].pos.z = std::min(obj->pbox->vert[SEC+3].pos.z, curr.z);
+			pbox->vert[SEC+3].pos.x = std::max(pbox->vert[SEC+3].pos.x, curr.x);
+			pbox->vert[SEC+3].pos.z = std::min(pbox->vert[SEC+3].pos.z, curr.z);
 		}
 	}
 	else
@@ -352,46 +352,48 @@ void EERIE_PHYSICS_BOX_Create(EERIE_3DOBJ * obj)
 				SEC = 9;
 			}
 
-			obj->pbox->vert[SEC].pos.x = std::min(obj->pbox->vert[SEC].pos.x, curr.x);
-			obj->pbox->vert[SEC].pos.z = std::min(obj->pbox->vert[SEC].pos.z, curr.z);
+			pbox->vert[SEC].pos.x = std::min(pbox->vert[SEC].pos.x, curr.x);
+			pbox->vert[SEC].pos.z = std::min(pbox->vert[SEC].pos.z, curr.z);
 
-			obj->pbox->vert[SEC+1].pos.x = std::min(obj->pbox->vert[SEC+1].pos.x, curr.x);
-			obj->pbox->vert[SEC+1].pos.z = std::max(obj->pbox->vert[SEC+1].pos.z, curr.z);
+			pbox->vert[SEC+1].pos.x = std::min(pbox->vert[SEC+1].pos.x, curr.x);
+			pbox->vert[SEC+1].pos.z = std::max(pbox->vert[SEC+1].pos.z, curr.z);
 
-			obj->pbox->vert[SEC+2].pos.x = std::max(obj->pbox->vert[SEC+2].pos.x, curr.x);
-			obj->pbox->vert[SEC+2].pos.z = std::max(obj->pbox->vert[SEC+2].pos.z, curr.z);
+			pbox->vert[SEC+2].pos.x = std::max(pbox->vert[SEC+2].pos.x, curr.x);
+			pbox->vert[SEC+2].pos.z = std::max(pbox->vert[SEC+2].pos.z, curr.z);
 
-			obj->pbox->vert[SEC+3].pos.x = std::max(obj->pbox->vert[SEC+3].pos.x, curr.x);
-			obj->pbox->vert[SEC+3].pos.z = std::min(obj->pbox->vert[SEC+3].pos.z, curr.z);
+			pbox->vert[SEC+3].pos.x = std::max(pbox->vert[SEC+3].pos.x, curr.x);
+			pbox->vert[SEC+3].pos.z = std::min(pbox->vert[SEC+3].pos.z, curr.z);
 		}
 	}
 
 	for (size_t k = 0; k < 4; k++)
 	{
-		if (glm::abs(obj->pbox->vert[5+k].pos.x - obj->pbox->vert[0].pos.x) < 2.f)
-			obj->pbox->vert[5+k].pos.x = (obj->pbox->vert[1+k].pos.x + obj->pbox->vert[9+k].pos.x) * .5f;
+		if (glm::abs(pbox->vert[5+k].pos.x - pbox->vert[0].pos.x) < 2.f)
+			pbox->vert[5+k].pos.x = (pbox->vert[1+k].pos.x + pbox->vert[9+k].pos.x) * .5f;
 
-		if (glm::abs(obj->pbox->vert[5+k].pos.z - obj->pbox->vert[0].pos.z) < 2.f)
-			obj->pbox->vert[5+k].pos.z = (obj->pbox->vert[1+k].pos.z + obj->pbox->vert[9+k].pos.z) * .5f;
+		if (glm::abs(pbox->vert[5+k].pos.z - pbox->vert[0].pos.z) < 2.f)
+			pbox->vert[5+k].pos.z = (pbox->vert[1+k].pos.z + pbox->vert[9+k].pos.z) * .5f;
 	}
 
-	obj->pbox->radius = 0.f;
+	pbox->radius = 0.f;
 
-	for(size_t k = 0; k < obj->pbox->vert.size(); k++) {
-		PHYSVERT & pv = obj->pbox->vert[k];
+	for(size_t k = 0; k < pbox->vert.size(); k++) {
+		PHYSVERT & pv = pbox->vert[k];
 		
-		float distt = glm::distance(pv.pos, obj->pbox->vert[0].pos);
+		float distt = glm::distance(pv.pos, pbox->vert[0].pos);
 		
 		if(distt > 20.f) {
-			pv.pos.x = (pv.pos.x - obj->pbox->vert[0].pos.x) * 0.5f + obj->pbox->vert[0].pos.x;
-			pv.pos.z = (pv.pos.z - obj->pbox->vert[0].pos.z) * 0.5f + obj->pbox->vert[0].pos.z;
+			pv.pos.x = (pv.pos.x - pbox->vert[0].pos.x) * 0.5f + pbox->vert[0].pos.x;
+			pv.pos.z = (pv.pos.z - pbox->vert[0].pos.z) * 0.5f + pbox->vert[0].pos.z;
 		}
 		
 		pv.initpos = pv.pos;
 		
 		if(k != 0) {
-			float d = glm::distance(obj->pbox->vert[0].pos, pv.pos);
-			obj->pbox->radius = std::max(obj->pbox->radius, d);
+			float d = glm::distance(pbox->vert[0].pos, pv.pos);
+			pbox->radius = std::max(pbox->radius, d);
 		}
 	}
+	
+	obj->pbox = pbox;
 }
