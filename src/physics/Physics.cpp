@@ -158,7 +158,7 @@ static void RK4Integrate(PHYSICS_BOX_DATA * pbox, float DeltaTime) {
 
 }
 
-static bool IsObjectInField(PHYSICS_BOX_DATA * pbox) {
+static bool IsObjectInField(const PHYSICS_BOX_DATA & pbox) {
 
 	for(size_t i = 0; i < MAX_SPELLS; i++) {
 		const SpellBase * spell = spells[SpellHandle(i)];
@@ -170,8 +170,8 @@ static bool IsObjectInField(PHYSICS_BOX_DATA * pbox) {
 			if(pfrm) {
 				Cylinder cyl = Cylinder(Vec3f_ZERO, 35.f, -35.f);
 				
-				for(size_t k = 0; k < pbox->vert.size(); k++) {
-					PHYSVERT * pv = &pbox->vert[k];
+				for(size_t k = 0; k < pbox.vert.size(); k++) {
+					const PHYSVERT * pv = &pbox.vert[k];
 					cyl.origin = pv->pos + Vec3f(0.f, 17.5f, 0.f);
 					if(CylinderPlatformCollide(cyl, pfrm)) {
 						return true;
@@ -348,7 +348,7 @@ static void ARX_EERIE_PHYSICS_BOX_Compute(PHYSICS_BOX_DATA * pbox, float framedi
 	
 	if(   !IsFULLObjectVertexInValidPosition(*pbox, collisionPoly)
 	   || ARX_INTERACTIVE_CheckFULLCollision(*pbox, source)
-	   || IsObjectInField(pbox)
+	   || IsObjectInField(*pbox)
 	) {
 		
 		if(!(source->ioflags & IO_BODY_CHUNK)) {
