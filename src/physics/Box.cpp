@@ -55,12 +55,8 @@ void EERIE_PHYSICS_BOX_Launch(EERIE_3DOBJ * obj, const Vec3f & pos, const Anglef
 	arx_assert(obj);
 	arx_assert(obj->pbox);
 	
-	obj->pbox->storedtiming = 0;
-	
 	float ratio = obj->pbox->surface * ( 1.0f / 10000 );
-
 	ratio = glm::clamp(ratio, 0.f, 0.8f);
-
 	ratio = 1.f - (ratio * ( 1.0f / 4 ));
 	
 	for(size_t i = 0; i < obj->pbox->vert.size(); i++) {
@@ -78,6 +74,7 @@ void EERIE_PHYSICS_BOX_Launch(EERIE_3DOBJ * obj, const Vec3f & pos, const Anglef
 	
 	obj->pbox->active = 1;
 	obj->pbox->stopcount = 0;
+	obj->pbox->storedtiming = 0;
 }
 
 // Checks is a triangle of a physical object is colliding a triangle
