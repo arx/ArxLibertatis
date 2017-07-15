@@ -188,6 +188,6 @@ void ResetVVPos(Entity * io);
 
 void UpdateGoldObject(Entity * io);
 
-bool ARX_INTERACTIVE_CheckFULLCollision(PHYSICS_BOX_DATA * obj, Entity *io_source);
+bool ARX_INTERACTIVE_CheckFULLCollision(const PHYSICS_BOX_DATA & obj, Entity *io_source);
 
 #endif // ARX_SCENE_INTERACTIVE_H

@@ -347,7 +347,7 @@ static void ARX_EERIE_PHYSICS_BOX_Compute(PHYSICS_BOX_DATA * pbox, float framedi
 	EERIEPOLY * collisionPoly = NULL;
 	
 	if(   !IsFULLObjectVertexInValidPosition(pbox, collisionPoly)
-	   || ARX_INTERACTIVE_CheckFULLCollision(pbox, source)
+	   || ARX_INTERACTIVE_CheckFULLCollision(*pbox, source)
 	   || IsObjectInField(pbox)
 	) {
 		
