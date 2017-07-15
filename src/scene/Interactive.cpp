@@ -2063,7 +2063,7 @@ void SetYlsideDeath(Entity * io) {
 	io->sfx_time = arxtime.now();
 }
 
-bool ARX_INTERACTIVE_CheckFULLCollision(PHYSICS_BOX_DATA * pbox, Entity * source) {
+bool ARX_INTERACTIVE_CheckFULLCollision(const PHYSICS_BOX_DATA & pbox, Entity * source) {
 	
 	for(long i = 0; i < TREATZONE_CUR; i++) {
 
@@ -2080,15 +2080,15 @@ bool ARX_INTERACTIVE_CheckFULLCollision(PHYSICS_BOX_DATA * pbox, Entity * source
 		   || (io->ioflags & (IO_CAMERA | IO_MARKER | IO_ITEM))
 		   || io->usepath
 		   || ((io->ioflags & IO_NPC) && source && (source->ioflags & IO_NO_NPC_COLLIDE))
-		   || !closerThan(io->pos, pbox->vert[0].pos, 600.f)
-		   || !In3DBBoxTolerance(pbox->vert[0].pos, io->bbox3D, pbox->radius)
+		   || !closerThan(io->pos, pbox.vert[0].pos, 600.f)
+		   || !In3DBBoxTolerance(pbox.vert[0].pos, io->bbox3D, pbox.radius)
 		) {
 			continue;
 		}
 
 		if((io->ioflags & IO_NPC) && io->_npcdata->lifePool.current > 0.f) {
-			for(size_t kk = 0; kk < pbox->vert.size(); kk++)
-				if(PointInCylinder(io->physics.cyl, pbox->vert[kk].pos))
+			for(size_t kk = 0; kk < pbox.vert.size(); kk++)
+				if(PointInCylinder(io->physics.cyl, pbox.vert[kk].pos))
 					return true;
 		} else if(io->ioflags & IO_FIX) {
 			size_t step;
@@ -2110,9 +2110,9 @@ bool ARX_INTERACTIVE_CheckFULLCollision(PHYSICS_BOX_DATA * pbox, Entity * source
 			std::vector<EERIE_VERTEX> & vlist = io->obj->vertexWorldPositions;
 
 			if(io->gameFlags & GFLAG_PLATFORM) {
-				for(size_t kk = 0; kk < pbox->vert.size(); kk++) {
+				for(size_t kk = 0; kk < pbox.vert.size(); kk++) {
 					Sphere sphere;
-					sphere.origin = pbox->vert[kk].pos;
+					sphere.origin = pbox.vert[kk].pos;
 					sphere.radius = 30.f;
 					float miny, maxy;
 					miny = io->bbox3D.min.y;
@@ -2159,8 +2159,8 @@ bool ARX_INTERACTIVE_CheckFULLCollision(PHYSICS_BOX_DATA * pbox, Entity * source
 				if(ii != io->obj->origin) {
 					sp.origin = vlist[ii].v;
 
-					for(size_t kk = 0; kk < pbox->vert.size(); kk++) {
-						if(sp.contains(pbox->vert[kk].pos)) {
+					for(size_t kk = 0; kk < pbox.vert.size(); kk++) {
+						if(sp.contains(pbox.vert[kk].pos)) {
 							if(source && (io->gameFlags & GFLAG_DOOR)) {
 								ArxDuration elapsed = arxtime.now() - io->collide_door_time;
 								if(elapsed > ArxDurationMs(500)) {
