@@ -180,12 +180,14 @@ struct PHYSICS_BOX_DATA
 	short	stopcount;
 	float	radius; //radius around vert[0].pos for spherical collision
 	float	storedtiming;
+	float surface;
 	
 	PHYSICS_BOX_DATA()
 		: active(0)
 		, stopcount(0)
 		, radius(0.f)
 		, storedtiming(0.f)
+		, surface(0.f)
 	{}
 };
 

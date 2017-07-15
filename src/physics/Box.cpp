@@ -57,16 +57,7 @@ void EERIE_PHYSICS_BOX_Launch(EERIE_3DOBJ * obj, const Vec3f & pos, const Anglef
 	
 	obj->pbox->storedtiming = 0;
 	
-	float surface = 0.f;
-	
-	for(size_t i = 0; i < obj->facelist.size(); i++) {
-		const Vec3f & p0 = obj->vertexlist[obj->facelist[i].vid[0]].v;
-		const Vec3f & p1 = obj->vertexlist[obj->facelist[i].vid[1]].v;
-		const Vec3f & p2 = obj->vertexlist[obj->facelist[i].vid[2]].v;
-		surface += glm::distance((p0 + p1) * .5f, p2) * glm::distance(p0, p1) * .5f;
-	}
-
-	float ratio = surface * ( 1.0f / 10000 );
+	float ratio = obj->pbox->surface * ( 1.0f / 10000 );
 
 	ratio = glm::clamp(ratio, 0.f, 0.8f);
 
@@ -394,6 +385,15 @@ void EERIE_PHYSICS_BOX_Create(EERIE_3DOBJ * obj)
 			pbox->radius = std::max(pbox->radius, d);
 		}
 	}
+	
+	float surface = 0.f;
+	for(size_t i = 0; i < obj->facelist.size(); i++) {
+		const Vec3f & p0 = obj->vertexlist[obj->facelist[i].vid[0]].v;
+		const Vec3f & p1 = obj->vertexlist[obj->facelist[i].vid[1]].v;
+		const Vec3f & p2 = obj->vertexlist[obj->facelist[i].vid[2]].v;
+		surface += glm::distance((p0 + p1) * .5f, p2) * glm::distance(p0, p1) * .5f;
+	}
+	pbox->surface = surface;
 	
 	obj->pbox = pbox;
 }
