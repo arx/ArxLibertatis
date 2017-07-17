@@ -601,7 +601,6 @@ void ARX_DAMAGES_ForceDeath(Entity * io_dead, Entity * io_killer) {
 				ioo->show = SHOW_FLAG_IN_SCENE;
 				ioo->ioflags |= IO_NO_NPC_COLLIDE;
 				ioo->pos = ioo->obj->vertexWorldPositions[ioo->obj->origin].v;
-				ioo->velocity = Vec3f(0.f, 13.f, 0.f);
 				ioo->stopped = 0;
 			}
 		}

@@ -131,7 +131,6 @@ Entity::Entity(const res::path & classPath, EntityInstance instance)
 	
 	weight = 1.f;
 	gameFlags = GFLAG_NEEDINIT | GFLAG_INTERACTIVITY;
-	velocity = Vec3f_ZERO;
 	fall = 0.f;
 	
 	stopped = 1;
