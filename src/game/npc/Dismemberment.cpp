@@ -258,8 +258,6 @@ static void ARX_NPC_SpawnMember(Entity * ioo, ObjSelection num) {
 	io->obj->pbox->active = 1;
 	io->obj->pbox->stopcount = 0;
 	
-	io->stopped = 1;
-	
 	Vec3f vector;
 	vector.x = -std::sin(glm::radians(io->angle.getYaw()));
 	vector.y = std::sin(glm::radians(io->angle.getPitch())) * 2.f;

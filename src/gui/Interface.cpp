@@ -2086,7 +2086,6 @@ void ArxGame::manageEditorControls() {
 						io->obj->pbox->active=1;
 						io->obj->pbox->stopcount=0;
 						io->pos = player.pos + Vec3f(0.f, 80.f, 0.f);
-						io->stopped = 1;
 						
 						Vec2f centerOffset = Vec2f(DANAEMouse) - Vec2f(g_size.center());
 						Vec2f ratio;
