@@ -958,7 +958,7 @@ static long ARX_CHANGELEVEL_Push_IO(const Entity * io, long level) {
 	ais.collision = io->collision;
 	util::storeString(ais.mainevent, io->mainevent.c_str());
 	ais.velocity = Vec3f_ZERO;
-	ais.stopped = io->stopped;
+	ais.stopped = 0;
 	ais.basespeed = io->basespeed;
 	ais.speed_modif = io->speed_modif;
 	ais.frameloss = 0.f;
@@ -2033,7 +2033,6 @@ static Entity * ARX_CHANGELEVEL_Pop_IO(const std::string & idString, EntityInsta
 		io->mainevent = boost::to_lower_copy(util::loadString(ais->mainevent));
 		
 		// Physics data
-		io->stopped = ais->stopped;
 		io->basespeed = 1;
 		io->speed_modif = 0.f; // TODO why are these not loaded from the savegame?
 		io->rubber = ais->rubber;

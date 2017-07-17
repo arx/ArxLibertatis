@@ -273,8 +273,6 @@ bool Manage3DCursor(Entity * io, bool simulate) {
 				io->obj->pbox->stopcount = 0;
 				io->pos = collidpos;
 
-				io->stopped = 1;
-
 				movev.x *= 0.0001f;
 				movev.y = 0.1f;
 				movev.z *= 0.0001f;
@@ -295,7 +293,6 @@ bool Manage3DCursor(Entity * io, bool simulate) {
 				io->angle.setYaw(270.f - angle.getYaw());
 				io->angle.setRoll(angle.getRoll());
 
-				io->stopped = 0;
 				io->show = SHOW_FLAG_IN_SCENE;
 				io->obj->pbox->active = 0;
 				Set_DragInter(NULL);

@@ -133,7 +133,6 @@ Entity::Entity(const res::path & classPath, EntityInstance instance)
 	gameFlags = GFLAG_NEEDINIT | GFLAG_INTERACTIVITY;
 	fall = 0.f;
 	
-	stopped = 1;
 	initpos = Vec3f_ZERO;
 	initangle = Anglef::ZERO;
 	scale = 1.f;

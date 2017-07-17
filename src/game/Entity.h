@@ -296,7 +296,6 @@ public:
 	GameFlags gameFlags;
 	float fall;
 
-	long stopped;
 	Vec3f initpos; // Initial Position
 	Anglef initangle; // Initial Angle
 	float scale;
