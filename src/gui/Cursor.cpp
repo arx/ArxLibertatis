@@ -272,7 +272,6 @@ bool Manage3DCursor(Entity * io, bool simulate) {
 				io->obj->pbox->active = 1;
 				io->obj->pbox->stopcount = 0;
 				io->pos = collidpos;
-				io->velocity = Vec3f_ZERO;
 
 				io->stopped = 1;
 

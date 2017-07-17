@@ -604,7 +604,7 @@ struct ARX_CHANGELEVEL_IO_SAVE {
 	s16 collision;
 	char mainevent[64];
 	// Physics data
-	SavedVec3 velocity;
+	SavedVec3 velocity; // unused
 	s32 stopped;
 	SavedIOPhysics physics;
 	f32 original_radius;

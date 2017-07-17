@@ -294,7 +294,6 @@ public:
 	float weight;
 	std::string locname; //localisation
 	GameFlags gameFlags;
-	Vec3f velocity; // velocity
 	float fall;
 
 	long stopped;

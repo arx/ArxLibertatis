@@ -258,7 +258,6 @@ static void ARX_NPC_SpawnMember(Entity * ioo, ObjSelection num) {
 	io->obj->pbox->active = 1;
 	io->obj->pbox->stopcount = 0;
 	
-	io->velocity = Vec3f_ZERO;
 	io->stopped = 1;
 	
 	Vec3f vector;

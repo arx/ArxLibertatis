@@ -184,9 +184,6 @@ void PutInFrontOfPlayer(Entity * io)
 	io->pos += angleToVectorXZ(player.angle.getYaw()) * 80.f;
 	io->pos += Vec3f(0.f, 20.f, 0.f);
 	
-	io->velocity.y = 0.3f;
-	io->velocity.x = 0; 
-	io->velocity.z = 0; 
 	io->angle = Anglef::ZERO;
 	io->stopped = 0;
 	io->show = SHOW_FLAG_IN_SCENE;
