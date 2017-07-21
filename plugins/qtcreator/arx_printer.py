@@ -1,21 +1,28 @@
 
+def arx_vec2_helper(value):
+    return (value['#1']['x'].value(), value['#2']['y'].value())
+
+def arx_vec3_helper(value):
+    return (value['#1']['x'].value(), value['#2']['y'].value(), value['#3']['z'].value())
+
+def qdump__Vec2s(d, value):
+    x, y = arx_vec2_helper(value)
+    d.putValue('({}, {})'.format(x, y))
+    d.putPlainChildren(value)
+
+def qdump__Vec2i(d, value):
+    x, y = arx_vec2_helper(value)
+    d.putValue('({}, {})'.format(x, y))
+    d.putPlainChildren(value)
+
 def qdump__Vec2f(d, value):
-    x = value['#1']['x'].value()
-    y = value['#2']['y'].value()
-    valueStr = "{:10.4f} {:10.4f}".format(x, y)
-    
-    d.putType("Vec2f")
-    d.putValue(valueStr)
+    x, y = arx_vec2_helper(value)
+    d.putValue('{:10.4f} {:10.4f}'.format(x, y))
     d.putPlainChildren(value)
 
 def qdump__Vec3f(d, value):
-    x = value['#1']['x'].value()
-    y = value['#2']['y'].value()
-    z = value['#3']['z'].value()
-    valueStr = "{:10.4f} {:10.4f} {:10.4f}".format(x, y, z)
-    
-    d.putType("Vec3f")
-    d.putValue(valueStr)
+    x, y, z = arx_vec3_helper(value)
+    d.putValue('{:10.4f} {:10.4f} {:10.4f}'.format(x, y, z))
     d.putPlainChildren(value)
 
 def qdump__Anglef(d, value):
@@ -37,7 +44,6 @@ def qdump__Color3f(d, value):
     d.putType("Color3f")
     d.putValue(valueStr)
     d.putPlainChildren(value)
-
 
 def qdump__Entity(d, value):
     index = value['m_index'].value()
