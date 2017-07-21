@@ -52,16 +52,41 @@ def qdump__Entity(d, value):
     d.putValue("Idx: " + str(index))
     d.putPlainChildren(value)
 
-def qdump__EntityHandle(d, value):
-    val = value['t'].value()
-    
-    d.putType("EntityHandle")
-    d.putValue(val)
-    d.putPlainChildren(value)
+# HandleType ==================================================================
 
-def qdump__LightHandle(d, value):
-    val = value['t'].value()
-    
-    d.putType("LightHandle")
-    d.putValue(val)
-    d.putPlainChildren(value)
+def arx_HandleType_helper(d, v):
+    handleType = v.type.stripTypedefs()
+    templateArgs = handleType.templateArguments()
+    # TODO how to do asserts ?
+    #d.check(len(templateArgs) == 3)
+    invalidValue = templateArgs[2]
+    value = v['t'].value()
+    d.putValue(value if (value != invalidValue) else 'Invalid ('+str(value)+')')
+    d.putPlainChildren(v)
+
+def qdump__MixerId(d, v):
+    arx_HandleType_helper(d, v)
+def qdump__EnvId(d, v):
+    arx_HandleType_helper(d, v)
+def qdump__AmbianceId(d, v):
+    arx_HandleType_helper(d, v)
+def qdump__SavegameHandle(d, v):
+    arx_HandleType_helper(d, v)
+def qdump__EntityHandle(d, v):
+    arx_HandleType_helper(d, v)
+def qdump__SpellHandle(d, v):
+    arx_HandleType_helper(d, v)
+def qdump__PrecastHandle(d, v):
+    arx_HandleType_helper(d, v)
+def qdump__DamageHandle(d, v):
+    arx_HandleType_helper(d, v)
+def qdump__ActionPoint(d, v):
+    arx_HandleType_helper(d, v)
+def qdump__ObjSelection(d, v):
+    arx_HandleType_helper(d, v)
+def qdump__ObjVertGroup(d, v):
+    arx_HandleType_helper(d, v)
+def qdump__ObjVertHandle(d, v):
+    arx_HandleType_helper(d, v)
+def qdump__LightHandle(d, v):
+    arx_HandleType_helper(d, v)
