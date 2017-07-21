@@ -90,3 +90,20 @@ def qdump__ObjVertHandle(d, v):
     arx_HandleType_helper(d, v)
 def qdump__LightHandle(d, v):
     arx_HandleType_helper(d, v)
+
+# Time Types ==================================================================
+
+def arx_TimeType_helper(d, v):
+    d.putValue(v['t'].value())
+    d.putPlainChildren(v)
+
+def qdump__ArxInstant(d, v):
+    arx_TimeType_helper(d, v)
+def qdump__ArxDuration(d, v):
+    arx_TimeType_helper(d, v)
+def qdump__PlatformInstant(d, v):
+    arx_TimeType_helper(d, v)
+def qdump__PlatformDuration(d, v):
+    arx_TimeType_helper(d, v)
+def qdump__AnimationDuration(d, v):
+    arx_TimeType_helper(d, v)
