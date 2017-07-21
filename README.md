@@ -102,7 +102,7 @@ Getting all the dependencies set up for Windows is more tricky. Pre-built depend
 * `BUILD_CRASHHANDLER` (default=ON): Enable the built-in crash handler (default OFF for macOS)
 * `BUILD_CRASHREPORTER` (default=ON): Build the Qt crash reporter gui - requires `BUILD_CRASHHANDLER` (default OFF for macOS)
 * `BUILD_PROFILER` (default=OFF unless BUILD_PROFILER_INSTRUMENT is enabled): Build the profiler GUI
-* `BUILD_TEST` (default=OFF): Build tests that can be run using `make check`
+* `BUILD_TESTS` (default=OFF): Build tests that can be run using `make check`
 * `BUILD_ALL` (default=OFF): Enable all the BUILD_* options above by default - they can still be disabled individually
 * `UNITY_BUILD` (default=ON): Unity build (faster build, better optimizations but no incremental build)
 * `CMAKE_BUILD_TYPE` (default=Release): Set to `Debug` for debug binaries
