@@ -106,6 +106,7 @@ public:
 	ARX_INTERFACE_BOOK_MODE prevPage();
 	ARX_INTERFACE_BOOK_MODE currentPage() { return m_currentPage; }
 	void forcePage(ARX_INTERFACE_BOOK_MODE page);
+	void toggle();
 private:
 	bool canOpenPage(ARX_INTERFACE_BOOK_MODE page);
 };
@@ -145,34 +146,7 @@ bool PlayerBook::canOpenPage(ARX_INTERFACE_BOOK_MODE page) {
 	}
 }
 
-void openBookPage(ARX_INTERFACE_BOOK_MODE newPage, bool toggle) {
-	g_playerBook.openPage(newPage, toggle);
-}
-
-ARX_INTERFACE_BOOK_MODE nextBookPage() {
-	return g_playerBook.nextPage();
-}
-
-ARX_INTERFACE_BOOK_MODE prevBookPage() {
-	return g_playerBook.prevPage();
-}
-
-void ARX_INTERFACE_BookOpen() {
-	if((player.Interface & INTER_MAP))
-		return;
-	
-	ARX_INTERFACE_BookToggle();
-}
-
-void ARX_INTERFACE_BookClose() {
-	if(!(player.Interface & INTER_MAP))
-		return;
-	
-	ARX_INTERFACE_BookToggle();
-}
-
-void ARX_INTERFACE_BookToggle() {
-	
+void PlayerBook::toggle() {
 	if(player.Interface & INTER_MAP) {
 		ARX_SOUND_PlayInterface(SND_BOOK_CLOSE, Random::getf(0.9f, 1.1f));
 		SendIOScriptEvent(entities.player(),SM_BOOK_CLOSE);
@@ -216,6 +190,36 @@ void ARX_INTERFACE_BookToggle() {
 	pTextManage->Clear();
 
 	TRUE_PLAYER_MOUSELOOK_ON = false;
+}
+
+void openBookPage(ARX_INTERFACE_BOOK_MODE newPage, bool toggle) {
+	g_playerBook.openPage(newPage, toggle);
+}
+
+ARX_INTERFACE_BOOK_MODE nextBookPage() {
+	return g_playerBook.nextPage();
+}
+
+ARX_INTERFACE_BOOK_MODE prevBookPage() {
+	return g_playerBook.prevPage();
+}
+
+void ARX_INTERFACE_BookOpen() {
+	if((player.Interface & INTER_MAP))
+		return;
+	
+	ARX_INTERFACE_BookToggle();
+}
+
+void ARX_INTERFACE_BookClose() {
+	if(!(player.Interface & INTER_MAP))
+		return;
+	
+	ARX_INTERFACE_BookToggle();
+}
+
+void ARX_INTERFACE_BookToggle() {
+	g_playerBook.toggle();
 }
 
 
