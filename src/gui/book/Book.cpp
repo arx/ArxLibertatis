@@ -49,7 +49,7 @@
 
 class PlayerBookPage {
 public:
-	void ARX_INTERFACE_RELEASESOUND();
+	void playReleaseSound();
 };
 
 class StatsPage : public PlayerBookPage {
@@ -505,7 +505,7 @@ void StatsPage::RenderBookPlayerCharacter() {
 	
 }
 
-void PlayerBookPage::ARX_INTERFACE_RELEASESOUND() {
+void PlayerBookPage::playReleaseSound() {
 	ARX_SOUND_PlayInterface(SND_MENU_RELEASE);
 }
 
@@ -529,7 +529,7 @@ bool StatsPage::CheckAttributeClick(Vec2f pos, float * val, TextureContainer * t
 				player.Attribute_Redistribute--;
 				t++;
 				*val=t;
-				ARX_INTERFACE_RELEASESOUND();
+				playReleaseSound();
 			}
 			else
 				ARX_INTERFACE_ERRORSOUND();
@@ -541,7 +541,7 @@ bool StatsPage::CheckAttributeClick(Vec2f pos, float * val, TextureContainer * t
 					player.Attribute_Redistribute++;
 					t --;
 					*val=t;
-					ARX_INTERFACE_RELEASESOUND();
+					playReleaseSound();
 				}
 				else
 					ARX_INTERFACE_ERRORSOUND();
@@ -573,7 +573,7 @@ bool StatsPage::CheckSkillClick(Vec2f pos, float * val, TextureContainer * tc,
 				player.Skill_Redistribute--;
 				t++;
 				*val=t;
-				ARX_INTERFACE_RELEASESOUND();
+				playReleaseSound();
 			}
 			else
 				ARX_INTERFACE_ERRORSOUND();
@@ -585,7 +585,7 @@ bool StatsPage::CheckSkillClick(Vec2f pos, float * val, TextureContainer * tc,
 					player.Skill_Redistribute++;
 					t --;
 					*val=t;
-					ARX_INTERFACE_RELEASESOUND();
+					playReleaseSound();
 				}
 				else
 					ARX_INTERFACE_ERRORSOUND();
