@@ -1401,40 +1401,7 @@ void MapPage::ARX_INTERFACE_ManageOpenedBook_Map()
 }
 
 void ARX_INTERFACE_ManageOpenedBook() {
-	arx_assert(entities.player());
-	
-	UseRenderState state(render2D());
-	
-	GRenderer->GetTextureStage(0)->setMinFilter(TextureStage::FilterLinear);
-	GRenderer->GetTextureStage(0)->setMagFilter(TextureStage::FilterLinear);
-	
-	if(ARXmenu.currentmode != AMCM_NEWQUEST) {
-		switch(g_playerBook.currentPage()) {
-			case BOOKMODE_STATS: {
-				g_playerBook.stats.manage();
-				break;
-			}
-			case BOOKMODE_SPELLS: {
-				g_playerBook.spells.manage();
-				break;
-			}
-			case BOOKMODE_MINIMAP: {
-				g_playerBook.map.manage();
-				break;
-			}
-			case BOOKMODE_QUESTS: {
-				g_playerBook.questBook.manage();
-				break;
-			}
-		}
-		
-		ARX_INTERFACE_ManageOpenedBook_TopTabs();
-	} else {
-		g_playerBook.stats.manageNewQuest();
-	}
-
-	GRenderer->GetTextureStage(0)->setMinFilter(TextureStage::FilterNearest);
-	GRenderer->GetTextureStage(0)->setMagFilter(TextureStage::FilterNearest);
+	g_playerBook.manage();
 }
 
 PlayerBook::PlayerBook() 
@@ -1443,6 +1410,40 @@ PlayerBook::PlayerBook()
 }
 
 void PlayerBook::manage() {
+	arx_assert(entities.player());
+	
+	UseRenderState state(render2D());
+	
+	GRenderer->GetTextureStage(0)->setMinFilter(TextureStage::FilterLinear);
+	GRenderer->GetTextureStage(0)->setMagFilter(TextureStage::FilterLinear);
+	
+	if(ARXmenu.currentmode != AMCM_NEWQUEST) {
+		switch(currentPage()) {
+			case BOOKMODE_STATS: {
+				stats.manage();
+				break;
+			}
+			case BOOKMODE_SPELLS: {
+				spells.manage();
+				break;
+			}
+			case BOOKMODE_MINIMAP: {
+				map.manage();
+				break;
+			}
+			case BOOKMODE_QUESTS: {
+				questBook.manage();
+				break;
+			}
+		}
+		
+		ARX_INTERFACE_ManageOpenedBook_TopTabs();
+	} else {
+		stats.manageNewQuest();
+	}
+
+	GRenderer->GetTextureStage(0)->setMinFilter(TextureStage::FilterNearest);
+	GRenderer->GetTextureStage(0)->setMagFilter(TextureStage::FilterNearest);
 }
 
 void PlayerBook::openPage(ARX_INTERFACE_BOOK_MODE newPage, bool toggle) {
