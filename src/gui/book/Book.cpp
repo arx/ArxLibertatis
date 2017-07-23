@@ -102,6 +102,7 @@ public:
 	PlayerBook();
 	void manage();
 	void openPage(ARX_INTERFACE_BOOK_MODE newPage, bool toggle);
+	ARX_INTERFACE_BOOK_MODE nextPage();
 	ARX_INTERFACE_BOOK_MODE currentPage() { return m_currentPage; }
 	void forcePage(ARX_INTERFACE_BOOK_MODE page);
 };
@@ -146,23 +147,7 @@ void openBookPage(ARX_INTERFACE_BOOK_MODE newPage, bool toggle) {
 }
 
 ARX_INTERFACE_BOOK_MODE nextBookPage() {
-	ARX_INTERFACE_BOOK_MODE nextPage = g_playerBook.currentPage(), oldPage;
-	do {
-		oldPage = nextPage;
-		
-		switch(oldPage) {
-			case BOOKMODE_STATS:   nextPage = BOOKMODE_SPELLS;  break;
-			case BOOKMODE_SPELLS:  nextPage = BOOKMODE_MINIMAP; break;
-			case BOOKMODE_MINIMAP: nextPage = BOOKMODE_QUESTS;  break;
-			case BOOKMODE_QUESTS:  nextPage = BOOKMODE_QUESTS;  break;
-		}
-		
-		if(canOpenBookPage(nextPage)) {
-			return nextPage;
-		}
-		
-	} while(nextPage != oldPage);
-	return g_playerBook.currentPage();
+	return g_playerBook.nextPage();
 }
 
 ARX_INTERFACE_BOOK_MODE prevBookPage() {
@@ -1497,6 +1482,27 @@ void PlayerBook::openPage(ARX_INTERFACE_BOOK_MODE newPage, bool toggle) {
 	}
 
 	forcePage(newPage);
+}
+
+ARX_INTERFACE_BOOK_MODE PlayerBook::nextPage() {
+
+	ARX_INTERFACE_BOOK_MODE nextPage = currentPage(), oldPage;
+	do {
+		oldPage = nextPage;
+
+		switch(oldPage) {
+			case BOOKMODE_STATS:   nextPage = BOOKMODE_SPELLS;  break;
+			case BOOKMODE_SPELLS:  nextPage = BOOKMODE_MINIMAP; break;
+			case BOOKMODE_MINIMAP: nextPage = BOOKMODE_QUESTS;  break;
+			case BOOKMODE_QUESTS:  nextPage = BOOKMODE_QUESTS;  break;
+		}
+
+		if(canOpenBookPage(nextPage)) {
+			return nextPage;
+		}
+
+	} while(nextPage != oldPage);
+	return currentPage();
 }
 
 void PlayerBook::forcePage(ARX_INTERFACE_BOOK_MODE page) {
