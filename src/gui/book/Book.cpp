@@ -243,11 +243,6 @@ void updateQuestBook() {
 	g_playerBook.questBook.update();
 }
 
-void QuestBookPage::update() {
-	// Clear the quest book cache - it will be re-created when needed
-	m_questBook.clear();
-}
-
 static void ARX_INTERFACE_ManageOpenedBook_LeftTabs_OneTab(bool tabVisibility[10], long & activeTab, int t, Vec2f pos, Vec2f activePos) {
 	
 	if(tabVisibility[t]) {
@@ -1693,3 +1688,9 @@ void QuestBookPage::manage() {
 
 	m_questBook.render();
 }
+
+void QuestBookPage::update() {
+	// Clear the quest book cache - it will be re-created when needed
+	m_questBook.clear();
+}
+
