@@ -84,7 +84,7 @@ public:
 private:
 	long m_currentLevel;
 
-	void ARX_INTERFACE_ManageOpenedBook_LeftTabs_Map();
+	void drawLeftTabs();
 	void ARX_INTERFACE_ManageOpenedBook_Map();
 };
 
@@ -1608,7 +1608,7 @@ MapPage::MapPage()
 
 void MapPage::manage() {
 	DrawBookInterfaceItem(g_bookResouces.questbook, Vec2f(97, 64), Color::white, 0.9999f);
-	ARX_INTERFACE_ManageOpenedBook_LeftTabs_Map();
+	drawLeftTabs();
 	ARX_INTERFACE_ManageOpenedBook_Map();
 }
 
@@ -1629,7 +1629,7 @@ void MapPage::ARX_INTERFACE_ManageOpenedBook_Map()
 		g_miniMap.showBookMiniMap(SHOWLEVEL);
 }
 
-void MapPage::ARX_INTERFACE_ManageOpenedBook_LeftTabs_Map() {
+void MapPage::drawLeftTabs() {
 
 	bool tabVisibility[10] = { false };
 
