@@ -51,7 +51,7 @@ class PlayerBookPage {
 public:
 	void playReleaseSound();
 	void playErrorSound();
-	void ARX_INTERFACE_ManageOpenedBook_LeftTabs(bool tabVisibility[10], long & activeTab);
+	void manageLeftTabsCommon(bool tabVisibility[10], long & activeTab);
 };
 
 class StatsPage : public PlayerBookPage {
@@ -235,7 +235,7 @@ static void ARX_INTERFACE_ManageOpenedBook_LeftTabs_OneTab(bool tabVisibility[10
 	}
 }
 
-void PlayerBookPage::ARX_INTERFACE_ManageOpenedBook_LeftTabs(bool tabVisibility[10], long & activeTab) {
+void PlayerBookPage::manageLeftTabsCommon(bool tabVisibility[10], long & activeTab) {
 	
 	{
 	int t = 0;
@@ -1485,7 +1485,7 @@ void SpellsPage::drawLeftTabs() {
 		}
 	}
 	
-	ARX_INTERFACE_ManageOpenedBook_LeftTabs(tabVisibility, m_currentTab);
+	PlayerBookPage::manageLeftTabsCommon(tabVisibility, m_currentTab);
 }
 
 void SpellsPage::drawSpells() {
@@ -1631,13 +1631,13 @@ void MapPage::drawMaps()
 }
 
 void MapPage::drawLeftTabs() {
-
+	
 	bool tabVisibility[10] = { false };
-
+	
 	long max_onglet = 7;
 	memset(tabVisibility, true, (max_onglet + 1) * sizeof(*tabVisibility));
-
-	ARX_INTERFACE_ManageOpenedBook_LeftTabs(tabVisibility, m_currentLevel);
+	
+	PlayerBookPage::manageLeftTabsCommon(tabVisibility, m_currentLevel);
 }
 
 void QuestBookPage::manage() {
