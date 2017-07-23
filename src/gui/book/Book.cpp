@@ -91,6 +91,8 @@ private:
 class QuestBookPage : public PlayerBookPage {
 public:
 	void manage();
+private:
+	void manageQuestBook();
 };
 
 class PlayerBook {
@@ -239,7 +241,7 @@ bool manageNoteActions(Note & note) {
 static Note questBook;
 
 //! Update and render the quest book.
-static void manageQuestBook() {
+void QuestBookPage::manageQuestBook() {
 	
 	// Cache the questbook data
 	if(questBook.text().empty() && !g_playerQuestLogEntries.empty()) {
