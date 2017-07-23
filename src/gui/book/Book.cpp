@@ -91,6 +91,7 @@ private:
 class QuestBookPage : public PlayerBookPage {
 public:
 	void manage();
+	void update();
 private:
 	Note m_questBook;
 
@@ -240,6 +241,10 @@ bool manageNoteActions(Note & note) {
 	return false;
 }
 
+void updateQuestBook() {
+	g_playerBook.questBook.update();
+}
+
 //! Update and render the quest book.
 void QuestBookPage::manageQuestBook() {
 	
@@ -262,7 +267,7 @@ void QuestBookPage::manageQuestBook() {
 	m_questBook.render();
 }
 
-void updateQuestBook() {
+void QuestBookPage::update() {
 	// Clear the quest book cache - it will be re-created when needed
 	m_questBook.clear();
 }
