@@ -110,6 +110,7 @@ public:
 private:
 	bool canOpenPage(ARX_INTERFACE_BOOK_MODE page);
 	void onClosePage();
+	void ARX_INTERFACE_ManageOpenedBook_TopTabs();
 };
 
 long BOOKZOOM = 0;
@@ -662,11 +663,11 @@ void updateQuestBook() {
 //-----------------------------------------------------------------------------
 
 
-static void ARX_INTERFACE_ManageOpenedBook_TopTabs() {
+void PlayerBook::ARX_INTERFACE_ManageOpenedBook_TopTabs() {
 	
 	static const Vec2f BOOKMARKS_POS = Vec2f(216.f, 60.f);
 	
-	if(g_playerBook.currentPage() != BOOKMODE_STATS) {
+	if(m_currentPage != BOOKMODE_STATS) {
 		Vec2f pos = BOOKMARKS_POS;
 		
 		TextureContainer* tcBookmarkChar = g_bookResouces.bookmark_char;
@@ -691,7 +692,7 @@ static void ARX_INTERFACE_ManageOpenedBook_TopTabs() {
 		}
 	}
 	
-	if(g_playerBook.currentPage() != BOOKMODE_SPELLS) {
+	if(m_currentPage != BOOKMODE_SPELLS) {
 		if(player.rune_flags) {
 			Vec2f pos = BOOKMARKS_POS + Vec2f(32, 0);
 			
@@ -724,7 +725,7 @@ static void ARX_INTERFACE_ManageOpenedBook_TopTabs() {
 		}
 	}
 	
-	if(g_playerBook.currentPage() != BOOKMODE_MINIMAP) {
+	if(m_currentPage != BOOKMODE_MINIMAP) {
 		Vec2f pos = BOOKMARKS_POS + Vec2f(64, 0);
 		
 		DrawBookInterfaceItem(g_bookResouces.bookmark_map, pos, Color::white, 0.000001f);
@@ -746,7 +747,7 @@ static void ARX_INTERFACE_ManageOpenedBook_TopTabs() {
 		}
 	}
 	
-	if(g_playerBook.currentPage() != BOOKMODE_QUESTS) {
+	if(m_currentPage != BOOKMODE_QUESTS) {
 		Vec2f pos = BOOKMARKS_POS + Vec2f(96, 0);
 		
 		DrawBookInterfaceItem(g_bookResouces.bookmark_quest, pos, Color::white, 0.000001f);
