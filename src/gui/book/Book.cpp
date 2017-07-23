@@ -107,7 +107,7 @@ public:
 	ARX_INTERFACE_BOOK_MODE currentPage() { return m_currentPage; }
 	void forcePage(ARX_INTERFACE_BOOK_MODE page);
 private:
-	bool canOpenBookPage(ARX_INTERFACE_BOOK_MODE page);
+	bool canOpenPage(ARX_INTERFACE_BOOK_MODE page);
 };
 
 long BOOKZOOM = 0;
@@ -138,7 +138,7 @@ static void onBookClosePage() {
 	
 }
 
-bool PlayerBook::canOpenBookPage(ARX_INTERFACE_BOOK_MODE page) {
+bool PlayerBook::canOpenPage(ARX_INTERFACE_BOOK_MODE page) {
 	switch(page) {
 		case BOOKMODE_SPELLS:  return !!player.rune_flags;
 		default:               return true;
@@ -1452,7 +1452,7 @@ void PlayerBook::openPage(ARX_INTERFACE_BOOK_MODE newPage, bool toggle) {
 		return; // nothing to do
 	}
 
-	if(!canOpenBookPage(newPage)) {
+	if(!canOpenPage(newPage)) {
 		return;
 	}
 
@@ -1483,8 +1483,8 @@ ARX_INTERFACE_BOOK_MODE PlayerBook::nextPage() {
 			case BOOKMODE_MINIMAP: nextPage = BOOKMODE_QUESTS;  break;
 			case BOOKMODE_QUESTS:  nextPage = BOOKMODE_QUESTS;  break;
 		}
-
-		if(canOpenBookPage(nextPage)) {
+		
+		if(canOpenPage(nextPage)) {
 			return nextPage;
 		}
 
@@ -1504,8 +1504,8 @@ ARX_INTERFACE_BOOK_MODE PlayerBook::prevPage() {
 			case BOOKMODE_MINIMAP: prevPage = BOOKMODE_SPELLS;  break;
 			case BOOKMODE_QUESTS:  prevPage = BOOKMODE_MINIMAP; break;
 		}
-
-		if(canOpenBookPage(prevPage)) {
+		
+		if(canOpenPage(prevPage)) {
 			return prevPage;
 		}
 
