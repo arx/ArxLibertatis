@@ -51,6 +51,7 @@ class PlayerBookPage {
 public:
 	void playReleaseSound();
 	void playErrorSound();
+	void ARX_INTERFACE_ManageOpenedBook_LeftTabs(bool tabVisibility[10], long & activeTab);
 };
 
 class StatsPage : public PlayerBookPage {
@@ -234,7 +235,7 @@ static void ARX_INTERFACE_ManageOpenedBook_LeftTabs_OneTab(bool tabVisibility[10
 	}
 }
 
-static void ARX_INTERFACE_ManageOpenedBook_LeftTabs(bool tabVisibility[10], long & activeTab) {
+void PlayerBookPage::ARX_INTERFACE_ManageOpenedBook_LeftTabs(bool tabVisibility[10], long & activeTab) {
 	
 	{
 	int t = 0;
