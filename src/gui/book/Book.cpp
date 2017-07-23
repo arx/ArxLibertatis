@@ -101,6 +101,7 @@ public:
 
 	PlayerBook();
 	void manage();
+	void openPage(ARX_INTERFACE_BOOK_MODE newPage, bool toggle);
 	ARX_INTERFACE_BOOK_MODE currentPage() { return m_currentPage; }
 	void forcePage(ARX_INTERFACE_BOOK_MODE page);
 };
@@ -141,34 +142,7 @@ static bool canOpenBookPage(ARX_INTERFACE_BOOK_MODE page) {
 }
 
 void openBookPage(ARX_INTERFACE_BOOK_MODE newPage, bool toggle) {
-	
-	if((player.Interface & INTER_MAP) && g_playerBook.currentPage() == newPage) {
-		
-		if(toggle) {
-			// Close the book
-			ARX_INTERFACE_BookClose();
-		}
-		
-		return; // nothing to do
-	}
-	
-	if(!canOpenBookPage(newPage)) {
-		return;
-	}
-	
-	if(player.Interface & INTER_MAP) {
-		
-		onBookClosePage();
-		
-		// If the book is already open, play the page turn sound
-		ARX_SOUND_PlayInterface(SND_BOOK_PAGE_TURN, Random::getf(0.9f, 1.1f));
-		
-	} else {
-		// Otherwise open the book
-		ARX_INTERFACE_BookToggle();
-	}
-	
-	g_playerBook.forcePage(newPage);
+	g_playerBook.openPage(newPage, toggle);
 }
 
 ARX_INTERFACE_BOOK_MODE nextBookPage() {
@@ -1493,6 +1467,36 @@ PlayerBook::PlayerBook()
 }
 
 void PlayerBook::manage() {
+}
+
+void PlayerBook::openPage(ARX_INTERFACE_BOOK_MODE newPage, bool toggle) {
+	if((player.Interface & INTER_MAP) && currentPage() == newPage) {
+
+		if(toggle) {
+			// Close the book
+			ARX_INTERFACE_BookClose();
+		}
+
+		return; // nothing to do
+	}
+
+	if(!canOpenBookPage(newPage)) {
+		return;
+	}
+
+	if(player.Interface & INTER_MAP) {
+
+		onBookClosePage();
+
+		// If the book is already open, play the page turn sound
+		ARX_SOUND_PlayInterface(SND_BOOK_PAGE_TURN, Random::getf(0.9f, 1.1f));
+
+	} else {
+		// Otherwise open the book
+		ARX_INTERFACE_BookToggle();
+	}
+
+	forcePage(newPage);
 }
 
 void PlayerBook::forcePage(ARX_INTERFACE_BOOK_MODE page) {
