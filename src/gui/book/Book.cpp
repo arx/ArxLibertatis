@@ -50,6 +50,7 @@
 class PlayerBookPage {
 public:
 	void playReleaseSound();
+	void ARX_INTERFACE_ERRORSOUND();
 };
 
 class StatsPage : public PlayerBookPage {
@@ -509,7 +510,7 @@ void PlayerBookPage::playReleaseSound() {
 	ARX_SOUND_PlayInterface(SND_MENU_RELEASE);
 }
 
-static void ARX_INTERFACE_ERRORSOUND() {
+void PlayerBookPage::ARX_INTERFACE_ERRORSOUND() {
 	ARX_SOUND_PlayInterface(SND_MENU_CLICK);
 }
 
