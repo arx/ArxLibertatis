@@ -106,6 +106,8 @@ public:
 	ARX_INTERFACE_BOOK_MODE prevPage();
 	ARX_INTERFACE_BOOK_MODE currentPage() { return m_currentPage; }
 	void forcePage(ARX_INTERFACE_BOOK_MODE page);
+private:
+	bool canOpenBookPage(ARX_INTERFACE_BOOK_MODE page);
 };
 
 long BOOKZOOM = 0;
@@ -136,7 +138,7 @@ static void onBookClosePage() {
 	
 }
 
-static bool canOpenBookPage(ARX_INTERFACE_BOOK_MODE page) {
+bool PlayerBook::canOpenBookPage(ARX_INTERFACE_BOOK_MODE page) {
 	switch(page) {
 		case BOOKMODE_SPELLS:  return !!player.rune_flags;
 		default:               return true;
