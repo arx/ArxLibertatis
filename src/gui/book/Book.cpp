@@ -52,7 +52,7 @@ public:
 	void playReleaseSound();
 	void playErrorSound();
 	void manageLeftTabsCommon(bool tabVisibility[10], long & activeTab);
-	void ARX_INTERFACE_ManageOpenedBook_LeftTabs_OneTab(bool tabVisibility[10], long & activeTab, int t, Vec2f pos, Vec2f activePos);
+	static void manageLeftTabOneCommon(bool tabVisibility[10], long & activeTab, int t, Vec2f pos, Vec2f activePos);
 };
 
 class StatsPage : public PlayerBookPage {
@@ -215,7 +215,7 @@ void updateQuestBook() {
 	g_playerBook.questBook.update();
 }
 
-void PlayerBookPage::ARX_INTERFACE_ManageOpenedBook_LeftTabs_OneTab(bool tabVisibility[10], long & activeTab, int t, Vec2f pos, Vec2f activePos) {
+void PlayerBookPage::manageLeftTabOneCommon(bool tabVisibility[10], long & activeTab, int t, Vec2f pos, Vec2f activePos) {
 	
 	if(tabVisibility[t]) {
 		if(activeTab != t) {
@@ -243,7 +243,7 @@ void PlayerBookPage::manageLeftTabsCommon(bool tabVisibility[10], long & activeT
 	Vec2f pos = Vec2f(100.f, 82.f);
 	Vec2f activePos = Vec2f(102.f, 82.f);
 	
-	ARX_INTERFACE_ManageOpenedBook_LeftTabs_OneTab(tabVisibility, activeTab, t, pos, activePos);
+	manageLeftTabOneCommon(tabVisibility, activeTab, t, pos, activePos);
 	}
 	
 	{
@@ -251,7 +251,7 @@ void PlayerBookPage::manageLeftTabsCommon(bool tabVisibility[10], long & activeT
 	Vec2f pos = Vec2f(98.f, 112.f);
 	Vec2f activePos = Vec2f(100.f, 114.f);
 	
-	ARX_INTERFACE_ManageOpenedBook_LeftTabs_OneTab(tabVisibility, activeTab, t, pos, activePos);
+	manageLeftTabOneCommon(tabVisibility, activeTab, t, pos, activePos);
 	}
 	
 	{
@@ -259,7 +259,7 @@ void PlayerBookPage::manageLeftTabsCommon(bool tabVisibility[10], long & activeT
 	Vec2f pos = Vec2f(97.f, 143.f);
 	Vec2f activePos = Vec2f(101.f, 141.f);
 	
-	ARX_INTERFACE_ManageOpenedBook_LeftTabs_OneTab(tabVisibility, activeTab, t, pos, activePos);
+	manageLeftTabOneCommon(tabVisibility, activeTab, t, pos, activePos);
 	}
 
 	{
@@ -267,7 +267,7 @@ void PlayerBookPage::manageLeftTabsCommon(bool tabVisibility[10], long & activeT
 	Vec2f pos = Vec2f(95.f, 170.f);
 	Vec2f activePos = Vec2f(100.f, 170.f);
 	
-	ARX_INTERFACE_ManageOpenedBook_LeftTabs_OneTab(tabVisibility, activeTab, t, pos, activePos);
+	manageLeftTabOneCommon(tabVisibility, activeTab, t, pos, activePos);
 	}
 	
 	{
@@ -275,7 +275,7 @@ void PlayerBookPage::manageLeftTabsCommon(bool tabVisibility[10], long & activeT
 	Vec2f pos = Vec2f(95.f, 200.f);
 	Vec2f activePos = Vec2f(97.f, 199.f);
 	
-	ARX_INTERFACE_ManageOpenedBook_LeftTabs_OneTab(tabVisibility, activeTab, t, pos, activePos);
+	manageLeftTabOneCommon(tabVisibility, activeTab, t, pos, activePos);
 	}
 	
 	{
@@ -283,7 +283,7 @@ void PlayerBookPage::manageLeftTabsCommon(bool tabVisibility[10], long & activeT
 	Vec2f pos = Vec2f(94.f, 229.f);
 	Vec2f activePos = Vec2f(103.f, 226.f);
 	
-	ARX_INTERFACE_ManageOpenedBook_LeftTabs_OneTab(tabVisibility, activeTab, t, pos, activePos);
+	manageLeftTabOneCommon(tabVisibility, activeTab, t, pos, activePos);
 	}
 	
 	{
@@ -291,7 +291,7 @@ void PlayerBookPage::manageLeftTabsCommon(bool tabVisibility[10], long & activeT
 	Vec2f pos = Vec2f(94.f, 259.f);
 	Vec2f activePos = Vec2f(101.f, 255.f);
 	
-	ARX_INTERFACE_ManageOpenedBook_LeftTabs_OneTab(tabVisibility, activeTab, t, pos, activePos);
+	manageLeftTabOneCommon(tabVisibility, activeTab, t, pos, activePos);
 	}
 	
 	{
@@ -299,7 +299,7 @@ void PlayerBookPage::manageLeftTabsCommon(bool tabVisibility[10], long & activeT
 	Vec2f pos = Vec2f(92.f, 282.f);
 	Vec2f activePos = Vec2f(99.f, 283.f);
 	
-	ARX_INTERFACE_ManageOpenedBook_LeftTabs_OneTab(tabVisibility, activeTab, t, pos, activePos);
+	manageLeftTabOneCommon(tabVisibility, activeTab, t, pos, activePos);
 	}
 	
 	{
@@ -307,7 +307,7 @@ void PlayerBookPage::manageLeftTabsCommon(bool tabVisibility[10], long & activeT
 	Vec2f pos = Vec2f(90.f, 308.f);
 	Vec2f activePos = Vec2f(99.f, 307.f);
 	
-	ARX_INTERFACE_ManageOpenedBook_LeftTabs_OneTab(tabVisibility, activeTab, t, pos, activePos);
+	manageLeftTabOneCommon(tabVisibility, activeTab, t, pos, activePos);
 	}
 	
 	{
@@ -315,7 +315,7 @@ void PlayerBookPage::manageLeftTabsCommon(bool tabVisibility[10], long & activeT
 	Vec2f pos = Vec2f(97.f, 331.f);
 	Vec2f activePos = Vec2f(104.f, 331.f);
 	
-	ARX_INTERFACE_ManageOpenedBook_LeftTabs_OneTab(tabVisibility, activeTab, t, pos, activePos);
+	manageLeftTabOneCommon(tabVisibility, activeTab, t, pos, activePos);
 	}
 }
 
