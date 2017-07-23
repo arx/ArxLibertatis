@@ -52,6 +52,7 @@ public:
 	void playReleaseSound();
 	void playErrorSound();
 	void manageLeftTabsCommon(bool tabVisibility[10], long & activeTab);
+	void ARX_INTERFACE_ManageOpenedBook_LeftTabs_OneTab(bool tabVisibility[10], long & activeTab, int t, Vec2f pos, Vec2f activePos);
 };
 
 class StatsPage : public PlayerBookPage {
@@ -214,7 +215,7 @@ void updateQuestBook() {
 	g_playerBook.questBook.update();
 }
 
-static void ARX_INTERFACE_ManageOpenedBook_LeftTabs_OneTab(bool tabVisibility[10], long & activeTab, int t, Vec2f pos, Vec2f activePos) {
+void PlayerBookPage::ARX_INTERFACE_ManageOpenedBook_LeftTabs_OneTab(bool tabVisibility[10], long & activeTab, int t, Vec2f pos, Vec2f activePos) {
 	
 	if(tabVisibility[t]) {
 		if(activeTab != t) {
