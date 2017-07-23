@@ -209,36 +209,6 @@ void PlayerBookPage::playErrorSound() {
 	ARX_SOUND_PlayInterface(SND_MENU_CLICK);
 }
 
-/*!
- * Manage forward and backward buttons on notes and the quest book.
- * \return true if the note was clicked
- */
-bool manageNoteActions(Note & note) {
-	
-	if(note.prevPageButton().contains(Vec2f(DANAEMouse))) {
-		SpecialCursor = CURSOR_INTERACTION_ON;
-		if(eeMouseUp1()) {
-			ARX_SOUND_PlayInterface(SND_BOOK_PAGE_TURN, Random::getf(0.9f, 1.1f));
-			arx_assert(note.page() >= 2);
-			note.setPage(note.page() - 2);
-		}
-		
-	} else if(note.nextPageButton().contains(Vec2f(DANAEMouse))) {
-		SpecialCursor = CURSOR_INTERACTION_ON;
-		if(eeMouseUp1()) {
-			ARX_SOUND_PlayInterface(SND_BOOK_PAGE_TURN, Random::getf(0.9f, 1.1f));
-			note.setPage(note.page() + 2);
-		}
-		
-	} else if(note.area().contains(Vec2f(DANAEMouse))) {
-		if((eeMouseDown1() && TRUE_PLAYER_MOUSELOOK_ON) || eeMouseDown2()) {
-			return true;
-		}
-	}
-	
-	return false;
-}
-
 void updateQuestBook() {
 	g_playerBook.questBook.update();
 }
@@ -1683,9 +1653,9 @@ void QuestBookPage::manage() {
 		m_questBook.setData(Note::QuestBook, text);
 		m_questBook.setPage(m_questBook.pageCount() - 1);
 	}
-
-	manageNoteActions(m_questBook);
-
+	
+	m_questBook.manageActions();
+	
 	m_questBook.render();
 }
 

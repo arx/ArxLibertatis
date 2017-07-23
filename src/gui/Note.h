@@ -54,6 +54,7 @@ struct Note {
 	void clear();
 	
 	void render();
+	bool manageActions();
 	
 	const Type & type() { return _type; }
 	const std::string & text() { return _text; }

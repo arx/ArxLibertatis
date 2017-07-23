@@ -29,8 +29,10 @@
 #include "graphics/texture/TextureStage.h"
 #include "gui/Interface.h"
 #include "gui/Text.h"
+#include "input/Input.h"
 #include "io/log/Logger.h"
 #include "platform/Platform.h"
+#include "scene/GameSound.h"
 
 void Note::setData(Type type, const std::string & text) {
 	
@@ -286,4 +288,34 @@ void Note::render() {
 		);
 	}
 	
+}
+
+/*!
+* Manage forward and backward buttons on notes and the quest book.
+* \return true if the note was clicked
+*/
+bool Note::manageActions() {
+
+	if(prevPageButton().contains(Vec2f(DANAEMouse))) {
+		SpecialCursor = CURSOR_INTERACTION_ON;
+		if(eeMouseUp1()) {
+			ARX_SOUND_PlayInterface(SND_BOOK_PAGE_TURN, Random::getf(0.9f, 1.1f));
+			arx_assert(page() >= 2);
+			setPage(page() - 2);
+		}
+
+	} else if(nextPageButton().contains(Vec2f(DANAEMouse))) {
+		SpecialCursor = CURSOR_INTERACTION_ON;
+		if(eeMouseUp1()) {
+			ARX_SOUND_PlayInterface(SND_BOOK_PAGE_TURN, Random::getf(0.9f, 1.1f));
+			setPage(page() + 2);
+		}
+
+	} else if(area().contains(Vec2f(DANAEMouse))) {
+		if((eeMouseDown1() && TRUE_PLAYER_MOUSELOOK_ON) || eeMouseDown2()) {
+			return true;
+		}
+	}
+
+	return false;
 }
