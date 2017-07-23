@@ -85,7 +85,7 @@ private:
 	long m_currentLevel;
 
 	void drawLeftTabs();
-	void ARX_INTERFACE_ManageOpenedBook_Map();
+	void drawMaps();
 };
 
 class QuestBookPage : public PlayerBookPage {
@@ -1609,14 +1609,14 @@ MapPage::MapPage()
 void MapPage::manage() {
 	DrawBookInterfaceItem(g_bookResouces.questbook, Vec2f(97, 64), Color::white, 0.9999f);
 	drawLeftTabs();
-	ARX_INTERFACE_ManageOpenedBook_Map();
+	drawMaps();
 }
 
 void MapPage::setMapLevel(long level) {
 	m_currentLevel = level;
 }
 
-void MapPage::ARX_INTERFACE_ManageOpenedBook_Map()
+void MapPage::drawMaps()
 {
 	long SHOWLEVEL = m_currentLevel;
 
