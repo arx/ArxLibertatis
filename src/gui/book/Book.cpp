@@ -50,7 +50,7 @@
 class PlayerBookPage {
 public:
 	void playReleaseSound();
-	void ARX_INTERFACE_ERRORSOUND();
+	void playErrorSound();
 };
 
 class StatsPage : public PlayerBookPage {
@@ -510,7 +510,7 @@ void PlayerBookPage::playReleaseSound() {
 	ARX_SOUND_PlayInterface(SND_MENU_RELEASE);
 }
 
-void PlayerBookPage::ARX_INTERFACE_ERRORSOUND() {
+void PlayerBookPage::playErrorSound() {
 	ARX_SOUND_PlayInterface(SND_MENU_CLICK);
 }
 
@@ -533,7 +533,7 @@ bool StatsPage::CheckAttributeClick(Vec2f pos, float * val, TextureContainer * t
 				playReleaseSound();
 			}
 			else
-				ARX_INTERFACE_ERRORSOUND();
+				playErrorSound();
 		}
 
 		if(eeMouseUp2()) {
@@ -545,10 +545,10 @@ bool StatsPage::CheckAttributeClick(Vec2f pos, float * val, TextureContainer * t
 					playReleaseSound();
 				}
 				else
-					ARX_INTERFACE_ERRORSOUND();
+					playErrorSound();
 			}
 			else
-				ARX_INTERFACE_ERRORSOUND();
+				playErrorSound();
 		}
 	}
 
@@ -577,7 +577,7 @@ bool StatsPage::CheckSkillClick(Vec2f pos, float * val, TextureContainer * tc,
 				playReleaseSound();
 			}
 			else
-				ARX_INTERFACE_ERRORSOUND();
+				playErrorSound();
 		}
 
 		if(eeMouseUp2()) {
@@ -589,10 +589,10 @@ bool StatsPage::CheckSkillClick(Vec2f pos, float * val, TextureContainer * tc,
 					playReleaseSound();
 				}
 				else
-					ARX_INTERFACE_ERRORSOUND();
+					playErrorSound();
 			}
 			else
-				ARX_INTERFACE_ERRORSOUND();
+				playErrorSound();
 		}
 	}
 
