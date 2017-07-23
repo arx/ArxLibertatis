@@ -116,7 +116,7 @@ public:
 private:
 	bool canOpenPage(ARX_INTERFACE_BOOK_MODE page);
 	void onClosePage();
-	void ARX_INTERFACE_ManageOpenedBook_TopTabs();
+	void drawTopTabs();
 };
 
 long BOOKZOOM = 0;
@@ -424,7 +424,7 @@ void PlayerBook::manage() {
 			}
 		}
 		
-		ARX_INTERFACE_ManageOpenedBook_TopTabs();
+		drawTopTabs();
 	} else {
 		stats.manageNewQuest();
 	}
@@ -505,7 +505,7 @@ ARX_INTERFACE_BOOK_MODE PlayerBook::prevPage() {
 	return currentPage();
 }
 
-void PlayerBook::ARX_INTERFACE_ManageOpenedBook_TopTabs() {
+void PlayerBook::drawTopTabs() {
 	
 	static const Vec2f BOOKMARKS_POS = Vec2f(216.f, 60.f);
 	
