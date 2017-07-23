@@ -135,67 +135,6 @@ void forceBookPage(ARX_INTERFACE_BOOK_MODE page) {
 	g_playerBook.forcePage(page);
 }
 
-bool PlayerBook::canOpenPage(ARX_INTERFACE_BOOK_MODE page) {
-	switch(page) {
-		case BOOKMODE_SPELLS:  return !!player.rune_flags;
-		default:               return true;
-	}
-}
-
-void PlayerBook::onClosePage() {
-
-	if(currentPage() == BOOKMODE_SPELLS) {
-		// Closing spell page - clean up any rune flares
-		ARX_SPELLS_ClearAllSymbolDraw();
-	}
-}
-
-void PlayerBook::toggle() {
-	if(player.Interface & INTER_MAP) {
-		ARX_SOUND_PlayInterface(SND_BOOK_CLOSE, Random::getf(0.9f, 1.1f));
-		SendIOScriptEvent(entities.player(),SM_BOOK_CLOSE);
-		player.Interface &=~ INTER_MAP;
-		g_miniMap.purgeTexContainer();
-
-		if(ARXmenu.mda) {
-			for(size_t i = 0; i < MAX_FLYOVER; i++) {
-				ARXmenu.mda->flyover[i].clear();
-			}
-			delete ARXmenu.mda;
-			ARXmenu.mda=NULL;
-		}
-		
-		onClosePage();
-	} else {
-		SendIOScriptEvent(entities.player(),SM_NULL,"","book_open");
-
-		ARX_SOUND_PlayInterface(SND_BOOK_OPEN, Random::getf(0.9f, 1.1f));
-		SendIOScriptEvent(entities.player(),SM_BOOK_OPEN);
-		ARX_INTERFACE_NoteClose();
-		player.Interface |= INTER_MAP;
-		map.setMapLevel(glm::clamp(ARX_LEVELS_GetRealNum(CURRENTLEVEL), 0l, 7l));
-		
-		if(!ARXmenu.mda) {
-			ARXmenu.mda = new MENU_DYNAMIC_DATA();
-		}
-	}
-
-	if(player.Interface & INTER_COMBATMODE) {
-		player.Interface&=~INTER_COMBATMODE;
-		ARX_EQUIPMENT_LaunchPlayerUnReadyWeapon();
-	}
-
-	if(player.Interface & INTER_INVENTORYALL) {
-		ARX_SOUND_PlayInterface(SND_BACKPACK, Random::getf(0.9f, 1.1f));
-		g_playerInventoryHud.close();
-	}
-
-	BOOKZOOM = 0;
-	pTextManage->Clear();
-
-	TRUE_PLAYER_MOUSELOOK_ON = false;
-}
-
 void openBookPage(ARX_INTERFACE_BOOK_MODE newPage, bool toggle) {
 	g_playerBook.openPage(newPage, toggle);
 }
@@ -1413,6 +1352,71 @@ PlayerBook::PlayerBook()
 {
 }
 
+bool PlayerBook::canOpenPage(ARX_INTERFACE_BOOK_MODE page) {
+	switch (page) {
+		case BOOKMODE_SPELLS:  return !!player.rune_flags;
+		default:               return true;
+	}
+}
+
+void PlayerBook::forcePage(ARX_INTERFACE_BOOK_MODE page) {
+	m_currentPage = page;
+}
+
+void PlayerBook::onClosePage() {
+
+	if(currentPage() == BOOKMODE_SPELLS) {
+		// Closing spell page - clean up any rune flares
+		ARX_SPELLS_ClearAllSymbolDraw();
+	}
+}
+
+void PlayerBook::toggle() {
+	if(player.Interface & INTER_MAP) {
+		ARX_SOUND_PlayInterface(SND_BOOK_CLOSE, Random::getf(0.9f, 1.1f));
+		SendIOScriptEvent(entities.player(), SM_BOOK_CLOSE);
+		player.Interface &=~ INTER_MAP;
+		g_miniMap.purgeTexContainer();
+
+		if(ARXmenu.mda) {
+			for(size_t i = 0; i < MAX_FLYOVER; i++) {
+				ARXmenu.mda->flyover[i].clear();
+			}
+			delete ARXmenu.mda;
+			ARXmenu.mda = NULL;
+		}
+
+		onClosePage();
+	} else {
+		SendIOScriptEvent(entities.player(), SM_NULL, "", "book_open");
+
+		ARX_SOUND_PlayInterface(SND_BOOK_OPEN, Random::getf(0.9f, 1.1f));
+		SendIOScriptEvent(entities.player(), SM_BOOK_OPEN);
+		ARX_INTERFACE_NoteClose();
+		player.Interface |= INTER_MAP;
+		map.setMapLevel(glm::clamp(ARX_LEVELS_GetRealNum(CURRENTLEVEL), 0l, 7l));
+
+		if(!ARXmenu.mda) {
+			ARXmenu.mda = new MENU_DYNAMIC_DATA();
+		}
+	}
+
+	if(player.Interface & INTER_COMBATMODE) {
+		player.Interface &= ~INTER_COMBATMODE;
+		ARX_EQUIPMENT_LaunchPlayerUnReadyWeapon();
+	}
+
+	if(player.Interface & INTER_INVENTORYALL) {
+		ARX_SOUND_PlayInterface(SND_BACKPACK, Random::getf(0.9f, 1.1f));
+		g_playerInventoryHud.close();
+	}
+
+	BOOKZOOM = 0;
+	pTextManage->Clear();
+
+	TRUE_PLAYER_MOUSELOOK_ON = false;
+}
+
 void PlayerBook::manage() {
 	arx_assert(entities.player());
 	
@@ -1521,11 +1525,6 @@ ARX_INTERFACE_BOOK_MODE PlayerBook::prevPage() {
 	} while(prevPage != oldPage);
 	return currentPage();
 }
-
-void PlayerBook::forcePage(ARX_INTERFACE_BOOK_MODE page) {
-	m_currentPage = page;
-}
-
 
 void SpellsPage::ARX_INTERFACE_ManageOpenedBook_SpellsDraw() {
 	
