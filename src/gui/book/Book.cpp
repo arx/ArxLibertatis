@@ -73,7 +73,7 @@ private:
 	long m_currentTab;
 
 	void drawLeftTabs();
-	void ARX_INTERFACE_ManageOpenedBook_SpellsDraw();
+	void drawSpells();
 };
 
 class MapPage : public PlayerBookPage {
@@ -1463,7 +1463,7 @@ void SpellsPage::manage() {
 
 	ARX_SPELLS_UpdateBookSymbolDraw(runeDrawRect);
 	gui::ARX_INTERFACE_ManageOpenedBook_Finish(Vec2f(DANAEMouse));
-	ARX_INTERFACE_ManageOpenedBook_SpellsDraw();
+	drawSpells();
 }
 
 void SpellsPage::drawLeftTabs() {
@@ -1487,7 +1487,7 @@ void SpellsPage::drawLeftTabs() {
 	ARX_INTERFACE_ManageOpenedBook_LeftTabs(tabVisibility, m_currentTab);
 }
 
-void SpellsPage::ARX_INTERFACE_ManageOpenedBook_SpellsDraw() {
+void SpellsPage::drawSpells() {
 	
 	// Now Draws Spells for this level...
 	ARX_PLAYER_ComputePlayerFullStats();
