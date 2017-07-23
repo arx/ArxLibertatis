@@ -72,7 +72,7 @@ public:
 private:
 	long m_currentTab;
 
-	void ARX_INTERFACE_ManageOpenedBook_LeftTabs_Spells();
+	void drawLeftTabs();
 	void ARX_INTERFACE_ManageOpenedBook_SpellsDraw();
 };
 
@@ -1455,7 +1455,7 @@ SpellsPage::SpellsPage()
 
 void SpellsPage::manage() {
 	DrawBookInterfaceItem(g_bookResouces.ptexspellbook, Vec2f(97, 64), Color::white, 0.9999f);
-	ARX_INTERFACE_ManageOpenedBook_LeftTabs_Spells();
+	drawLeftTabs();
 
 	Rect runeDrawRect = Rect(Vec2i((Vec2f(97, 64) + Vec2f(29, 210)) * g_sizeRatio),
 							 s32(513 * 0.43f * g_sizeRatio.x),
@@ -1466,7 +1466,7 @@ void SpellsPage::manage() {
 	ARX_INTERFACE_ManageOpenedBook_SpellsDraw();
 }
 
-void SpellsPage::ARX_INTERFACE_ManageOpenedBook_LeftTabs_Spells() {
+void SpellsPage::drawLeftTabs() {
 	
 	bool tabVisibility[10] = {false};
 
