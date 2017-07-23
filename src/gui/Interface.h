@@ -219,7 +219,7 @@ extern bool PLAYER_MOUSELOOK_ON;
 extern bool bRenderInCursorMode;
 extern bool MAGICMODE;
 
-extern gui::Note openNote;
+extern Note openNote;
 
 extern EntityHandle LastSelectedIONum;
 
@@ -232,7 +232,7 @@ void ARX_INTERFACE_Reset();
 void ARX_INTERFACE_ManageOpenedBook();
 void ARX_INTERFACE_NoteManage();
 
-void ARX_INTERFACE_NoteOpen(gui::Note::Type type, const std::string & tex);
+void ARX_INTERFACE_NoteOpen(Note::Type type, const std::string & tex);
 void ARX_INTERFACE_NoteClose();
 void ARX_INTERFACE_NoteClear();
 

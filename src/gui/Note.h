@@ -29,8 +29,6 @@
 
 class TextureContainer;
 
-namespace gui {
-
 struct Note {
 	
 	enum Type {
@@ -93,7 +91,4 @@ private:
 	TextureContainer * nextPage;
 	
 };
-
-} // namespace gui
-
 #endif // ARX_GUI_NOTE_H
