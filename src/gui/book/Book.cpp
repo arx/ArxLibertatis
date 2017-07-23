@@ -48,6 +48,8 @@
 #include "script/Script.h"
 
 class PlayerBookPage {
+public:
+	void ARX_INTERFACE_RELEASESOUND();
 };
 
 class StatsPage : public PlayerBookPage {
@@ -503,7 +505,7 @@ void StatsPage::RenderBookPlayerCharacter() {
 	
 }
 
-static void ARX_INTERFACE_RELEASESOUND() {
+void PlayerBookPage::ARX_INTERFACE_RELEASESOUND() {
 	ARX_SOUND_PlayInterface(SND_MENU_RELEASE);
 }
 
