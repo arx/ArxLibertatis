@@ -837,16 +837,6 @@ void SpellsPage::ARX_INTERFACE_ManageOpenedBook_LeftTabs_Spells() {
 	ARX_INTERFACE_ManageOpenedBook_LeftTabs(tabVisibility, m_currentTab);
 }
 
-void MapPage::ARX_INTERFACE_ManageOpenedBook_LeftTabs_Map() {
-	
-	bool tabVisibility[10] = {false};
-	
-	long max_onglet = 7;
-	memset(tabVisibility, true, (max_onglet + 1) * sizeof(*tabVisibility));
-	
-	ARX_INTERFACE_ManageOpenedBook_LeftTabs(tabVisibility, m_currentLevel);
-}
-
 Color StatsPage::attrubuteModToColor(float modValue, float baseValue) {
 	if(modValue < baseValue)
 		return Color::red;
@@ -1330,19 +1320,6 @@ void StatsPage::manageStats()
 	RenderBookPlayerCharacter();	
 }
 
-void MapPage::ARX_INTERFACE_ManageOpenedBook_Map()
-{
-	long SHOWLEVEL = m_currentLevel;
-
-	if(SHOWLEVEL >= 0 && SHOWLEVEL < 32)
-		g_miniMap.showBookEntireMap(SHOWLEVEL);
-
-	SHOWLEVEL = ARX_LEVELS_GetRealNum(CURRENTLEVEL);
-
-	if(SHOWLEVEL >= 0 && SHOWLEVEL < 32)
-		g_miniMap.showBookMiniMap(SHOWLEVEL);
-}
-
 void ARX_INTERFACE_ManageOpenedBook() {
 	g_playerBook.manage();
 }
@@ -1697,6 +1674,29 @@ void MapPage::manage() {
 
 void MapPage::setMapLevel(long level) {
 	m_currentLevel = level;
+}
+
+void MapPage::ARX_INTERFACE_ManageOpenedBook_Map()
+{
+	long SHOWLEVEL = m_currentLevel;
+
+	if(SHOWLEVEL >= 0 && SHOWLEVEL < 32)
+		g_miniMap.showBookEntireMap(SHOWLEVEL);
+
+	SHOWLEVEL = ARX_LEVELS_GetRealNum(CURRENTLEVEL);
+
+	if(SHOWLEVEL >= 0 && SHOWLEVEL < 32)
+		g_miniMap.showBookMiniMap(SHOWLEVEL);
+}
+
+void MapPage::ARX_INTERFACE_ManageOpenedBook_LeftTabs_Map() {
+
+	bool tabVisibility[10] = { false };
+
+	long max_onglet = 7;
+	memset(tabVisibility, true, (max_onglet + 1) * sizeof(*tabVisibility));
+
+	ARX_INTERFACE_ManageOpenedBook_LeftTabs(tabVisibility, m_currentLevel);
 }
 
 void QuestBookPage::manage() {
