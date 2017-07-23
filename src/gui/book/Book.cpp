@@ -109,6 +109,7 @@ public:
 	void toggle();
 private:
 	bool canOpenPage(ARX_INTERFACE_BOOK_MODE page);
+	void onClosePage();
 };
 
 long BOOKZOOM = 0;
@@ -130,19 +131,18 @@ void forceBookPage(ARX_INTERFACE_BOOK_MODE page) {
 	g_playerBook.forcePage(page);
 }
 
-static void onBookClosePage() {
-	
-	if(g_playerBook.currentPage() == BOOKMODE_SPELLS) {
-		// Closing spell page - clean up any rune flares
-		ARX_SPELLS_ClearAllSymbolDraw();
-	}
-	
-}
-
 bool PlayerBook::canOpenPage(ARX_INTERFACE_BOOK_MODE page) {
 	switch(page) {
 		case BOOKMODE_SPELLS:  return !!player.rune_flags;
 		default:               return true;
+	}
+}
+
+void PlayerBook::onClosePage() {
+
+	if(currentPage() == BOOKMODE_SPELLS) {
+		// Closing spell page - clean up any rune flares
+		ARX_SPELLS_ClearAllSymbolDraw();
 	}
 }
 
@@ -161,7 +161,7 @@ void PlayerBook::toggle() {
 			ARXmenu.mda=NULL;
 		}
 		
-		onBookClosePage();
+		onClosePage();
 	} else {
 		SendIOScriptEvent(entities.player(),SM_NULL,"","book_open");
 
@@ -169,7 +169,7 @@ void PlayerBook::toggle() {
 		SendIOScriptEvent(entities.player(),SM_BOOK_OPEN);
 		ARX_INTERFACE_NoteClose();
 		player.Interface |= INTER_MAP;
-		g_playerBook.map.setMapLevel(glm::clamp(ARX_LEVELS_GetRealNum(CURRENTLEVEL), 0l, 7l));
+		map.setMapLevel(glm::clamp(ARX_LEVELS_GetRealNum(CURRENTLEVEL), 0l, 7l));
 		
 		if(!ARXmenu.mda) {
 			ARXmenu.mda = new MENU_DYNAMIC_DATA();
@@ -1462,7 +1462,7 @@ void PlayerBook::openPage(ARX_INTERFACE_BOOK_MODE newPage, bool toggle) {
 
 	if(player.Interface & INTER_MAP) {
 
-		onBookClosePage();
+		onClosePage();
 
 		// If the book is already open, play the page turn sound
 		ARX_SOUND_PlayInterface(SND_BOOK_PAGE_TURN, Random::getf(0.9f, 1.1f));
