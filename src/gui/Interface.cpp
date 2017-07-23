@@ -488,7 +488,7 @@ void ARX_INTERFACE_NoteManage() {
 		return;
 	}
 	
-	if(manageNoteActions(openNote)) {
+	if(openNote.manageActions()) {
 		ARX_INTERFACE_NoteClose();
 	}
 	

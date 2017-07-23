@@ -42,7 +42,6 @@ ARX_INTERFACE_BOOK_MODE nextBookPage();
 ARX_INTERFACE_BOOK_MODE prevBookPage();
 void openBookPage(ARX_INTERFACE_BOOK_MODE newPage, bool toggle = false);
 
-bool manageNoteActions(Note & note);
 void updateQuestBook();
 
 #endif // ARX_GUI_BOOK_BOOK_H
