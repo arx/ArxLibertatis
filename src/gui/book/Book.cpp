@@ -94,8 +94,6 @@ public:
 	void update();
 private:
 	Note m_questBook;
-
-	void manageQuestBook();
 };
 
 class PlayerBook {
@@ -243,28 +241,6 @@ bool manageNoteActions(Note & note) {
 
 void updateQuestBook() {
 	g_playerBook.questBook.update();
-}
-
-//! Update and render the quest book.
-void QuestBookPage::manageQuestBook() {
-	
-	// Cache the questbook data
-	if(m_questBook.text().empty() && !g_playerQuestLogEntries.empty()) {
-		std::string text;
-		for(size_t i = 0; i < g_playerQuestLogEntries.size(); ++i) {
-			std::string quest = getLocalised(g_playerQuestLogEntries[i]);
-			if(!quest.empty()) {
-				text += quest;
-				text += "\n\n";
-			}
-		}
-		m_questBook.setData(Note::QuestBook, text);
-		m_questBook.setPage(m_questBook.pageCount() - 1);
-	}
-	
-	manageNoteActions(m_questBook);
-	
-	m_questBook.render();
 }
 
 void QuestBookPage::update() {
@@ -1699,5 +1675,21 @@ void MapPage::ARX_INTERFACE_ManageOpenedBook_LeftTabs_Map() {
 }
 
 void QuestBookPage::manage() {
-	manageQuestBook();
+	// Cache the questbook data
+	if(m_questBook.text().empty() && !g_playerQuestLogEntries.empty()) {
+		std::string text;
+		for(size_t i = 0; i < g_playerQuestLogEntries.size(); ++i) {
+			std::string quest = getLocalised(g_playerQuestLogEntries[i]);
+			if(!quest.empty()) {
+				text += quest;
+				text += "\n\n";
+			}
+		}
+		m_questBook.setData(Note::QuestBook, text);
+		m_questBook.setPage(m_questBook.pageCount() - 1);
+	}
+
+	manageNoteActions(m_questBook);
+
+	m_questBook.render();
 }
