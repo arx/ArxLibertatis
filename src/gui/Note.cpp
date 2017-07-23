@@ -32,8 +32,6 @@
 #include "io/log/Logger.h"
 #include "platform/Platform.h"
 
-namespace gui {
-
 void Note::setData(Type type, const std::string & text) {
 	
 	deallocate();
@@ -289,5 +287,3 @@ void Note::render() {
 	}
 	
 }
-
-} // namespace gui

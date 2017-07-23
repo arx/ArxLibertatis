@@ -128,17 +128,17 @@ public:
 	
 	Result execute(Context & context) {
 		
-		gui::Note::Type type;
+		Note::Type type;
 		std::string tpname = context.getWord();
 		if(tpname == "note") {
-			type = gui::Note::SmallNote;
+			type = Note::SmallNote;
 		} else if(tpname == "notice") {
-			type = gui::Note::Notice;
+			type = Note::Notice;
 		} else if(tpname == "book") {
-			type = gui::Note::Book;
+			type = Note::Book;
 		} else {
 			ScriptWarning << "unexpected note type: " << tpname;
-			type = gui::Note::SmallNote;
+			type = Note::SmallNote;
 		}
 		
 		std::string text = loadUnlocalized(context.getWord());

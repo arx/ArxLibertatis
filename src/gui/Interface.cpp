@@ -157,7 +157,7 @@ Entity *	STARTED_ACTION_ON_IO=NULL;
 
 INTERFACE_TC g_bookResouces = INTERFACE_TC();
 
-gui::Note openNote;
+Note openNote;
 
 extern PlatformInstant SLID_START;
 
@@ -421,7 +421,7 @@ void ARX_INTERFACE_NoteClear() {
 	openNote.clear();
 }
 
-void ARX_INTERFACE_NoteOpen(gui::Note::Type type, const std::string & text) {
+void ARX_INTERFACE_NoteOpen(Note::Type type, const std::string & text) {
 	
 	if(player.Interface & INTER_NOTE) {
 		ARX_INTERFACE_NoteClose();
@@ -435,20 +435,20 @@ void ARX_INTERFACE_NoteOpen(gui::Note::Type type, const std::string & text) {
 	player.Interface |= INTER_NOTE;
 	
 	switch(openNote.type()) {
-		case gui::Note::Notice:
+		case Note::Notice:
 			ARX_SOUND_PlayInterface(SND_MENU_CLICK, Random::getf(0.9f, 1.1f));
 			break;
-		case gui::Note::Book:
+		case Note::Book:
 			ARX_SOUND_PlayInterface(SND_BOOK_OPEN, Random::getf(0.9f, 1.1f));
 			break;
-		case gui::Note::SmallNote:
-		case gui::Note::BigNote:
+		case Note::SmallNote:
+		case Note::BigNote:
 			ARX_SOUND_PlayInterface(SND_SCROLL_OPEN, Random::getf(0.9f, 1.1f));
 			break;
 		default: break;
 	}
 	
-	if(TRUE_PLAYER_MOUSELOOK_ON && type == gui::Note::Book) {
+	if(TRUE_PLAYER_MOUSELOOK_ON && type == Note::Book) {
 		TRUE_PLAYER_MOUSELOOK_ON = false;
 	}
 	
@@ -465,15 +465,15 @@ void ARX_INTERFACE_NoteClose() {
 	}
 	
 	switch(openNote.type()) {
-		case gui::Note::Notice: {
+		case Note::Notice: {
 			ARX_SOUND_PlayInterface(SND_MENU_CLICK, Random::getf(0.9f, 1.1f));
 			break;
 		}
-		case gui::Note::Book:
+		case Note::Book:
 			ARX_SOUND_PlayInterface(SND_BOOK_CLOSE, Random::getf(0.9f, 1.1f));
 			break;
-		case gui::Note::SmallNote:
-		case gui::Note::BigNote:
+		case Note::SmallNote:
+		case Note::BigNote:
 			ARX_SOUND_PlayInterface(SND_SCROLL_CLOSE, Random::getf(0.9f, 1.1f));
 			break;
 		default: break;
@@ -488,7 +488,7 @@ void ARX_INTERFACE_NoteManage() {
 		return;
 	}
 	
-	if(gui::manageNoteActions(openNote)) {
+	if(manageNoteActions(openNote)) {
 		ARX_INTERFACE_NoteClose();
 	}
 	

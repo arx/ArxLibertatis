@@ -206,8 +206,6 @@ void PlayerBookPage::playErrorSound() {
 	ARX_SOUND_PlayInterface(SND_MENU_CLICK);
 }
 
-namespace gui {
-
 /*!
  * Manage forward and backward buttons on notes and the quest book.
  * \return true if the note was clicked
@@ -238,7 +236,7 @@ bool manageNoteActions(Note & note) {
 	return false;
 }
 
-static gui::Note questBook;
+static Note questBook;
 
 //! Update and render the quest book.
 static void manageQuestBook() {
@@ -266,10 +264,6 @@ void updateQuestBook() {
 	// Clear the quest book cache - it will be re-created when needed
 	questBook.clear();
 }
-
-} // namespace gui
-
-//-----------------------------------------------------------------------------
 
 static void ARX_INTERFACE_ManageOpenedBook_LeftTabs_OneTab(bool tabVisibility[10], long & activeTab, int t, Vec2f pos, Vec2f activePos) {
 	
@@ -1698,5 +1692,5 @@ void MapPage::ARX_INTERFACE_ManageOpenedBook_LeftTabs_Map() {
 }
 
 void QuestBookPage::manage() {
-	gui::manageQuestBook();
+	manageQuestBook();
 }
