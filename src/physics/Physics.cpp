@@ -145,17 +145,13 @@ static void RK4Integrate(boost::array<PHYSVERT, 15> & particles, float DeltaTime
 		PHYSVERT & accum2 = m_TempSys[2][kk];
 		PHYSVERT & accum3 = m_TempSys[3][kk];
 		PHYSVERT & accum4 = m_TempSys[4][kk];
-
-		// determine the new velocity for the particle using rk4 formula
-		Vec3f dv = accum1.force + ((accum2.force + accum3.force) * 2.f) + accum4.force;
-		particle.velocity += (dv * sixthDeltaT);
 		
-		// determine the new position for the particle using rk4 formula
-		Vec3f dp = accum1.velocity + ((accum2.velocity + accum3.velocity) * 2.f)
-				   + accum4.velocity;
-		particle.pos += (dp * sixthDeltaT * 1.2f);
+		Vec3f dv = accum1.force + ((accum2.force + accum3.force) * 2.f) + accum4.force;
+		Vec3f dp = accum1.velocity + ((accum2.velocity + accum3.velocity) * 2.f) + accum4.velocity;
+		
+		particle.velocity += (dv * sixthDeltaT);
+		particle.pos += (dp * sixthDeltaT * 1.2f); // TODO what is this 1.2 factor doing here ?
 	}
-
 }
 
 static bool IsObjectInField(const PHYSICS_BOX_DATA & pbox) {
