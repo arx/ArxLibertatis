@@ -422,7 +422,7 @@ static void drawDebugCollisionShape(EERIE_3DOBJ * obj) {
 	sphere.radius = obj->pbox->radius;
 	drawLineSphere(sphere, shapeColor);
 	
-	boost::array<PHYSVERT, 15> v = obj->pbox->vert;
+	boost::array<PhysicsParticle, 15> v = obj->pbox->vert;
 	const Color * c =  distinctDebugColors;
 	
 	// Vert indices copied from

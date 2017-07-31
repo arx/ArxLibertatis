@@ -68,7 +68,7 @@ ZeniMax Media Inc., Suite 120, Rockville, Maryland 20850 USA.
 static const float VELOCITY_THRESHOLD = 400.f;
 
 template<size_t N>
-static void ComputeForces(boost::array<PHYSVERT, N> & particles) {
+static void ComputeForces(boost::array<PhysicsParticle, N> & particles) {
 	
 	const Vec3f PHYSICS_Gravity(0.f, 65.f, 0.f);
 	const float PHYSICS_Damping = 0.5f;
@@ -78,7 +78,7 @@ static void ComputeForces(boost::array<PHYSVERT, N> & particles) {
 
 	for(size_t k = 0; k < particles.size(); k++) {
 
-		PHYSVERT * pv = &particles[k];
+		PhysicsParticle * pv = &particles[k];
 
 		// Reset Force
 		pv->force = Vec3f_ZERO;
@@ -103,13 +103,13 @@ static void ComputeForces(boost::array<PHYSVERT, N> & particles) {
 //! Calculate new Positions and Velocities given a deltatime
 //! \param DeltaTime that has passed since last iteration
 template<size_t N>
-static void RK4Integrate(boost::array<PHYSVERT, N> & particles, float DeltaTime) {
+static void RK4Integrate(boost::array<PhysicsParticle, N> & particles, float DeltaTime) {
 	
 	float halfDeltaT, sixthDeltaT;
 	halfDeltaT = DeltaTime * .5f; // some time values i will need
 	sixthDeltaT = ( 1.0f / 6 );
 	
-	boost::array<boost::array<PHYSVERT, N>, 5> m_TempSys;
+	boost::array<boost::array<PhysicsParticle, N>, 5> m_TempSys;
 	
 	for(size_t jj = 0; jj < 4; jj++) {
 
@@ -122,9 +122,9 @@ static void RK4Integrate(boost::array<PHYSVERT, N> & particles, float DeltaTime)
 
 		for(size_t kk = 0; kk < particles.size(); kk++) {
 
-			PHYSVERT & source = particles[kk];
-			PHYSVERT & accum1 = m_TempSys[jj + 1][kk];
-			PHYSVERT & target = m_TempSys[0][kk];
+			PhysicsParticle & source = particles[kk];
+			PhysicsParticle & accum1 = m_TempSys[jj + 1][kk];
+			PhysicsParticle & target = m_TempSys[0][kk];
 
 			accum1.force = source.force * (source.mass * halfDeltaT);
 			accum1.velocity = source.velocity * halfDeltaT;
@@ -141,12 +141,12 @@ static void RK4Integrate(boost::array<PHYSVERT, N> & particles, float DeltaTime)
 	}
 
 	for(size_t kk = 0; kk < particles.size(); kk++) {
-		PHYSVERT & particle = particles[kk];
+		PhysicsParticle & particle = particles[kk];
 		
-		PHYSVERT & accum1 = m_TempSys[1][kk];
-		PHYSVERT & accum2 = m_TempSys[2][kk];
-		PHYSVERT & accum3 = m_TempSys[3][kk];
-		PHYSVERT & accum4 = m_TempSys[4][kk];
+		PhysicsParticle & accum1 = m_TempSys[1][kk];
+		PhysicsParticle & accum2 = m_TempSys[2][kk];
+		PhysicsParticle & accum3 = m_TempSys[3][kk];
+		PhysicsParticle & accum4 = m_TempSys[4][kk];
 		
 		Vec3f dv = accum1.force + ((accum2.force + accum3.force) * 2.f) + accum4.force;
 		Vec3f dp = accum1.velocity + ((accum2.velocity + accum3.velocity) * 2.f) + accum4.velocity;
@@ -169,7 +169,7 @@ static bool IsObjectInField(const PHYSICS_BOX_DATA & pbox) {
 				Cylinder cyl = Cylinder(Vec3f_ZERO, 35.f, -35.f);
 				
 				for(size_t k = 0; k < pbox.vert.size(); k++) {
-					const PHYSVERT * pv = &pbox.vert[k];
+					const PhysicsParticle * pv = &pbox.vert[k];
 					cyl.origin = pv->pos + Vec3f(0.f, 17.5f, 0.f);
 					if(CylinderPlatformCollide(cyl, pfrm)) {
 						return true;
@@ -332,7 +332,7 @@ static void ARX_EERIE_PHYSICS_BOX_Compute(PHYSICS_BOX_DATA * pbox, float framedi
 	Vec3f oldpos[32];
 	
 	for(size_t kk = 0; kk < pbox->vert.size(); kk++) {
-		PHYSVERT *pv = &pbox->vert[kk];
+		PhysicsParticle *pv = &pbox->vert[kk];
 		oldpos[kk] = pv->pos;
 
 		pv->velocity.x = glm::clamp(pv->velocity.x, -VELOCITY_THRESHOLD, VELOCITY_THRESHOLD);
@@ -364,13 +364,13 @@ static void ARX_EERIE_PHYSICS_BOX_Compute(PHYSICS_BOX_DATA * pbox, float framedi
 
 		if(!collisionPoly) {
 			for(size_t k = 0; k < pbox->vert.size(); k++) {
-				PHYSVERT * pv = &pbox->vert[k];
+				PhysicsParticle * pv = &pbox->vert[k];
 				pv->velocity *= Vec3f(-0.3f, -0.4f, -0.3f);
 				pv->pos = oldpos[k];
 			}
 		} else {
 			for(size_t k = 0; k < pbox->vert.size(); k++) {
-				PHYSVERT * pv = &pbox->vert[k];
+				PhysicsParticle * pv = &pbox->vert[k];
 
 				float t = glm::dot(collisionPoly->norm, pv->velocity);
 				pv->velocity -= collisionPoly->norm * (2.f * t);

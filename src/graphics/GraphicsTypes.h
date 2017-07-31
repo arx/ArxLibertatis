@@ -156,7 +156,7 @@ struct EERIE_FACE {
 	short ov[IOPOLYVERT];
 };
 
-struct PHYSVERT
+struct PhysicsParticle
 {
 	Vec3f	initpos;
 	Vec3f	pos;
@@ -164,7 +164,7 @@ struct PHYSVERT
 	Vec3f	force;
 	float		mass;
 
-	PHYSVERT()
+	PhysicsParticle()
 		: initpos(Vec3f_ZERO)
 		, pos(Vec3f_ZERO)
 		, velocity(Vec3f_ZERO)
@@ -175,7 +175,7 @@ struct PHYSVERT
 
 struct PHYSICS_BOX_DATA
 {
-	boost::array<PHYSVERT, 15> vert;
+	boost::array<PhysicsParticle, 15> vert;
 	short	active;
 	short	stopcount;
 	float	radius; //radius around vert[0].pos for spherical collision

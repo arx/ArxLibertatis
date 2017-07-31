@@ -60,7 +60,7 @@ void EERIE_PHYSICS_BOX_Launch(EERIE_3DOBJ * obj, const Vec3f & pos, const Anglef
 	ratio = 1.f - (ratio * ( 1.0f / 4 ));
 	
 	for(size_t i = 0; i < obj->pbox->vert.size(); i++) {
-		PHYSVERT * pv = &obj->pbox->vert[i];
+		PhysicsParticle * pv = &obj->pbox->vert[i];
 		pv->pos = pv->initpos;
 		pv->pos = VRotateY(pv->pos, angle.getYaw());
 		pv->pos = VRotateX(pv->pos, angle.getPitch());
@@ -84,7 +84,7 @@ bool IsObjectVertexCollidingTriangle(const PHYSICS_BOX_DATA & pbox, Vec3f * vert
 	bool ret = false;
 	std::copy(verts, verts + 2, t2.v);
 
-	const boost::array<PHYSVERT, 15> & vert = pbox.vert;
+	const boost::array<PhysicsParticle, 15> & vert = pbox.vert;
 
 	Vec3f center = (verts[0] + verts[1] + verts[2]) * ( 1.0f / 3 );
 	float rad = fdist(center, verts[0]);
@@ -366,7 +366,7 @@ void EERIE_PHYSICS_BOX_Create(EERIE_3DOBJ * obj)
 	pbox->radius = 0.f;
 
 	for(size_t k = 0; k < pbox->vert.size(); k++) {
-		PHYSVERT & pv = pbox->vert[k];
+		PhysicsParticle & pv = pbox->vert[k];
 		
 		float distt = glm::distance(pv.pos, pbox->vert[0].pos);
 		
