@@ -101,7 +101,7 @@ static void ComputeForces(boost::array<PHYSVERT, 15> & particles) {
 
 //! Calculate new Positions and Velocities given a deltatime
 //! \param DeltaTime that has passed since last iteration
-static void RK4Integrate(PHYSICS_BOX_DATA * pbox, float DeltaTime) {
+static void RK4Integrate(boost::array<PHYSVERT, 15> & particles, float DeltaTime) {
 	
 	float halfDeltaT, sixthDeltaT;
 	halfDeltaT = DeltaTime * .5f; // some time values i will need
@@ -111,16 +111,16 @@ static void RK4Integrate(PHYSICS_BOX_DATA * pbox, float DeltaTime) {
 	
 	for(size_t jj = 0; jj < 4; jj++) {
 
-		arx_assert(pbox->vert.size() == m_TempSys[jj + 1].size());
-		m_TempSys[jj + 1] = pbox->vert;
+		arx_assert(particles.size() == m_TempSys[jj + 1].size());
+		m_TempSys[jj + 1] = particles;
 
 		if(jj == 3) {
 			halfDeltaT = DeltaTime;
 		}
 
-		for(size_t kk = 0; kk < pbox->vert.size(); kk++) {
+		for(size_t kk = 0; kk < particles.size(); kk++) {
 
-			PHYSVERT * source = &pbox->vert[kk];
+			PHYSVERT * source = &particles[kk];
 			PHYSVERT * accum1 = &m_TempSys[jj + 1][kk];
 			PHYSVERT * target = &m_TempSys[0][kk];
 
@@ -138,10 +138,10 @@ static void RK4Integrate(PHYSICS_BOX_DATA * pbox, float DeltaTime) {
 		ComputeForces(m_TempSys[0]); // compute the new forces
 	}
 
-	for(size_t kk = 0; kk < pbox->vert.size(); kk++) {
+	for(size_t kk = 0; kk < particles.size(); kk++) {
 
-		PHYSVERT * source = &pbox->vert[kk]; // current state of particle
-		PHYSVERT * target = &pbox->vert[kk];
+		PHYSVERT * source = &particles[kk]; // current state of particle
+		PHYSVERT * target = &particles[kk];
 		PHYSVERT * accum1 = &m_TempSys[1][kk];
 		PHYSVERT * accum2 = &m_TempSys[2][kk];
 		PHYSVERT * accum3 = &m_TempSys[3][kk];
@@ -342,7 +342,7 @@ static void ARX_EERIE_PHYSICS_BOX_Compute(PHYSICS_BOX_DATA * pbox, float framedi
 		pv->velocity.z = glm::clamp(pv->velocity.z, -VELOCITY_THRESHOLD, VELOCITY_THRESHOLD);
 	}
 
-	RK4Integrate(pbox, framediff);
+	RK4Integrate(pbox->vert, framediff);
 
 	EERIEPOLY * collisionPoly = NULL;
 	
