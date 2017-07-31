@@ -67,7 +67,8 @@ ZeniMax Media Inc., Suite 120, Rockville, Maryland 20850 USA.
 
 static const float VELOCITY_THRESHOLD = 400.f;
 
-static void ComputeForces(boost::array<PHYSVERT, 15> & particles) {
+template<size_t N>
+static void ComputeForces(boost::array<PHYSVERT, N> & particles) {
 	
 	const Vec3f PHYSICS_Gravity(0.f, 65.f, 0.f);
 	const float PHYSICS_Damping = 0.5f;
@@ -101,13 +102,14 @@ static void ComputeForces(boost::array<PHYSVERT, 15> & particles) {
 
 //! Calculate new Positions and Velocities given a deltatime
 //! \param DeltaTime that has passed since last iteration
-static void RK4Integrate(boost::array<PHYSVERT, 15> & particles, float DeltaTime) {
+template<size_t N>
+static void RK4Integrate(boost::array<PHYSVERT, N> & particles, float DeltaTime) {
 	
 	float halfDeltaT, sixthDeltaT;
 	halfDeltaT = DeltaTime * .5f; // some time values i will need
 	sixthDeltaT = ( 1.0f / 6 );
 	
-	boost::array<boost::array<PHYSVERT, 15>, 5> m_TempSys;
+	boost::array<boost::array<PHYSVERT, N>, 5> m_TempSys;
 	
 	for(size_t jj = 0; jj < 4; jj++) {
 
