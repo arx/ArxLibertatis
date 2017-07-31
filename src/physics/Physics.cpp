@@ -120,19 +120,19 @@ static void RK4Integrate(boost::array<PHYSVERT, 15> & particles, float DeltaTime
 
 		for(size_t kk = 0; kk < particles.size(); kk++) {
 
-			PHYSVERT * source = &particles[kk];
-			PHYSVERT * accum1 = &m_TempSys[jj + 1][kk];
-			PHYSVERT * target = &m_TempSys[0][kk];
+			PHYSVERT & source = particles[kk];
+			PHYSVERT & accum1 = m_TempSys[jj + 1][kk];
+			PHYSVERT & target = m_TempSys[0][kk];
 
-			accum1->force = source->force * (source->mass * halfDeltaT);
-			accum1->velocity = source->velocity * halfDeltaT;
+			accum1.force = source.force * (source.mass * halfDeltaT);
+			accum1.velocity = source.velocity * halfDeltaT;
 
 			// determine the new velocity for the particle over 1/2 time
-			target->velocity = source->velocity + accum1->force;
-			target->mass = source->mass;
+			target.velocity = source.velocity + accum1.force;
+			target.mass = source.mass;
 
 			// set the new position
-			target->pos = source->pos + accum1->velocity;
+			target.pos = source.pos + accum1.velocity;
 		}
 
 		ComputeForces(m_TempSys[0]); // compute the new forces
