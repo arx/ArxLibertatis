@@ -67,7 +67,7 @@ ZeniMax Media Inc., Suite 120, Rockville, Maryland 20850 USA.
 
 static const float VELOCITY_THRESHOLD = 400.f;
 
-static void ComputeForces(PHYSVERT * phys, long nb) {
+static void ComputeForces(boost::array<PHYSVERT, 15> & particles) {
 	
 	const Vec3f PHYSICS_Gravity(0.f, 65.f, 0.f);
 	const float PHYSICS_Damping = 0.5f;
@@ -75,9 +75,9 @@ static void ComputeForces(PHYSVERT * phys, long nb) {
 	float lastmass = 1.f;
 	float div = 1.f;
 
-	for(long k = 0; k < nb; k++) {
+	for(size_t k = 0; k < particles.size(); k++) {
 
-		PHYSVERT * pv = &phys[k];
+		PHYSVERT * pv = &particles[k];
 
 		// Reset Force
 		pv->force = Vec3f_ZERO;
@@ -106,13 +106,13 @@ static void RK4Integrate(PHYSICS_BOX_DATA * pbox, float DeltaTime) {
 	float halfDeltaT, sixthDeltaT;
 	halfDeltaT = DeltaTime * .5f; // some time values i will need
 	sixthDeltaT = ( 1.0f / 6 );
+	
+	boost::array<boost::array<PHYSVERT, 15>, 5> m_TempSys;
+	
+	for(size_t jj = 0; jj < 4; jj++) {
 
-	PHYSVERT m_TempSys[5][32];
-
-	for(long jj = 0; jj < 4; jj++) {
-
-		arx_assert(size_t(pbox->vert.size()) <= ARRAY_SIZE(m_TempSys[jj + 1]));
-		memcpy(m_TempSys[jj + 1], pbox->vert.data(), sizeof(PHYSVERT) * pbox->vert.size());
+		arx_assert(pbox->vert.size() == m_TempSys[jj + 1].size());
+		m_TempSys[jj + 1] = pbox->vert;
 
 		if(jj == 3) {
 			halfDeltaT = DeltaTime;
@@ -135,7 +135,7 @@ static void RK4Integrate(PHYSICS_BOX_DATA * pbox, float DeltaTime) {
 			target->pos = source->pos + accum1->velocity;
 		}
 
-		ComputeForces(m_TempSys[0], pbox->vert.size()); // compute the new forces
+		ComputeForces(m_TempSys[0]); // compute the new forces
 	}
 
 	for(size_t kk = 0; kk < pbox->vert.size(); kk++) {
@@ -407,7 +407,7 @@ void ARX_PHYSICS_BOX_ApplyModel(PHYSICS_BOX_DATA * pbox, float framediff, float 
 		return;
 	} else {
 		while(timing >= t_threshold) {
-			ComputeForces(pbox->vert.c_array(), pbox->vert.size());
+			ComputeForces(pbox->vert);
 
 			ARX_EERIE_PHYSICS_BOX_Compute(pbox, std::min(0.11f, timing * 10), source);
 
