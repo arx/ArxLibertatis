@@ -139,9 +139,8 @@ static void RK4Integrate(boost::array<PHYSVERT, 15> & particles, float DeltaTime
 	}
 
 	for(size_t kk = 0; kk < particles.size(); kk++) {
-
-		PHYSVERT & source = particles[kk]; // current state of particle
-		PHYSVERT & target = particles[kk];
+		PHYSVERT & particle = particles[kk];
+		
 		PHYSVERT & accum1 = m_TempSys[1][kk];
 		PHYSVERT & accum2 = m_TempSys[2][kk];
 		PHYSVERT & accum3 = m_TempSys[3][kk];
@@ -149,11 +148,12 @@ static void RK4Integrate(boost::array<PHYSVERT, 15> & particles, float DeltaTime
 
 		// determine the new velocity for the particle using rk4 formula
 		Vec3f dv = accum1.force + ((accum2.force + accum3.force) * 2.f) + accum4.force;
-		target.velocity = source.velocity + (dv * sixthDeltaT);
+		particle.velocity += (dv * sixthDeltaT);
+		
 		// determine the new position for the particle using rk4 formula
 		Vec3f dp = accum1.velocity + ((accum2.velocity + accum3.velocity) * 2.f)
 				   + accum4.velocity;
-		target.pos = source.pos + (dp * sixthDeltaT * 1.2f);
+		particle.pos += (dp * sixthDeltaT * 1.2f);
 	}
 
 }
