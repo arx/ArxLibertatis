@@ -64,7 +64,7 @@ private:
 	void RenderBookPlayerCharacter();
 	bool CheckAttributeClick(Vec2f pos, float * val, TextureContainer * tc);
 	bool CheckSkillClick(Vec2f pos, float * val, TextureContainer * tc, float * oldval);
-	Color attrubuteModToColor(float modValue, float baseValue = 0.f);
+	Color attributeModToColor(float modValue, float baseValue = 0.f);
 };
 
 class SpellsPage : public PlayerBookPage {
@@ -836,7 +836,7 @@ void StatsPage::manageStats()
 	std::stringstream ss3;
 	ss3 << std::setw(3) << std::setprecision(0) << std::fixed << player.m_attributeFull.strength;
 	
-	Color color = attrubuteModToColor(player.m_attributeMod.strength);
+	Color color = attributeModToColor(player.m_attributeMod.strength);
 	
 	if(ARXmenu.currentmode == AMCM_NEWQUEST) {
 		if(player.m_attributeFull.strength == 6)
@@ -852,7 +852,7 @@ void StatsPage::manageStats()
 	std::stringstream ss3;
 	ss3 << std::setw(3) << std::setprecision(0) << std::fixed << player.m_attributeFull.mind;
 	
-	Color color = attrubuteModToColor(player.m_attributeMod.mind);
+	Color color = attributeModToColor(player.m_attributeMod.mind);
 	
 	if(ARXmenu.currentmode == AMCM_NEWQUEST) {
 		if(player.m_attributeFull.mind == 6)
@@ -868,7 +868,7 @@ void StatsPage::manageStats()
 	std::stringstream ss3;
 	ss3 << std::setw(3) << std::setprecision(0) << std::fixed << player.m_attributeFull.dexterity;
 	
-	Color color = attrubuteModToColor(player.m_attributeMod.dexterity);
+	Color color = attributeModToColor(player.m_attributeMod.dexterity);
 	
 	if(ARXmenu.currentmode == AMCM_NEWQUEST) {
 		if(player.m_attributeFull.dexterity == 6)
@@ -884,7 +884,7 @@ void StatsPage::manageStats()
 	std::stringstream ss3;
 	ss3 << std::setw(3) << std::setprecision(0) << std::fixed << player.m_attributeFull.constitution;
 	
-	Color color = attrubuteModToColor(player.m_attributeMod.constitution);
+	Color color = attributeModToColor(player.m_attributeMod.constitution);
 	
 	if(ARXmenu.currentmode == AMCM_NEWQUEST) {
 		if(player.m_attributeFull.constitution == 6)
@@ -901,7 +901,7 @@ void StatsPage::manageStats()
 	std::stringstream ss3;
 	ss3 << std::setw(3) << std::setprecision(0) << std::fixed << player.m_skillFull.stealth;
 	
-	Color color = attrubuteModToColor(player.m_skillMod.stealth);
+	Color color = attributeModToColor(player.m_skillMod.stealth);
 	
 	if(ARXmenu.currentmode == AMCM_NEWQUEST) {
 		if(player.m_skill.stealth == 0)
@@ -917,7 +917,7 @@ void StatsPage::manageStats()
 	std::stringstream ss3;
 	ss3 << std::setw(3) << std::setprecision(0) << std::fixed << player.m_skillFull.mecanism;
 	
-	Color color = attrubuteModToColor(player.m_skillMod.mecanism);
+	Color color = attributeModToColor(player.m_skillMod.mecanism);
 	
 	if(ARXmenu.currentmode == AMCM_NEWQUEST) {
 		if(player.m_skill.mecanism == 0)
@@ -933,7 +933,7 @@ void StatsPage::manageStats()
 	std::stringstream ss3;
 	ss3 << std::setw(3) << std::setprecision(0) << std::fixed << player.m_skillFull.intuition;
 	
-	Color color = attrubuteModToColor(player.m_skillMod.intuition);
+	Color color = attributeModToColor(player.m_skillMod.intuition);
 	
 	if(ARXmenu.currentmode == AMCM_NEWQUEST) {
 		if(player.m_skill.intuition == 0)
@@ -949,7 +949,7 @@ void StatsPage::manageStats()
 	std::stringstream ss3;
 	ss3 << std::setw(3) << std::setprecision(0) << std::fixed << player.m_skillFull.etheralLink;
 	
-	Color color = attrubuteModToColor(player.m_skillMod.etheralLink);
+	Color color = attributeModToColor(player.m_skillMod.etheralLink);
 	
 	if(ARXmenu.currentmode == AMCM_NEWQUEST) {
 		if(player.m_skill.etheralLink == 0)
@@ -965,7 +965,7 @@ void StatsPage::manageStats()
 	std::stringstream ss3;
 	ss3 << std::setw(3) << std::setprecision(0) << std::fixed << player.m_skillFull.objectKnowledge;
 	
-	Color color = attrubuteModToColor(player.m_skillMod.objectKnowledge);
+	Color color = attributeModToColor(player.m_skillMod.objectKnowledge);
 	
 	if(ARXmenu.currentmode == AMCM_NEWQUEST) {
 		if(player.m_skill.objectKnowledge == 0)
@@ -981,7 +981,7 @@ void StatsPage::manageStats()
 	std::stringstream ss3;
 	ss3 << std::setw(3) << std::setprecision(0) << std::fixed << player.m_skillFull.casting;
 	
-	Color color = attrubuteModToColor(player.m_skillMod.casting);
+	Color color = attributeModToColor(player.m_skillMod.casting);
 	
 	if(ARXmenu.currentmode == AMCM_NEWQUEST) {
 		if(player.m_skill.casting == 0)
@@ -997,7 +997,7 @@ void StatsPage::manageStats()
 	std::stringstream ss3;
 	ss3 << std::setw(3) << std::setprecision(0) << std::fixed << player.m_skillFull.closeCombat;
 	
-	Color color = attrubuteModToColor(player.m_skillMod.closeCombat);
+	Color color = attributeModToColor(player.m_skillMod.closeCombat);
 	
 	if(ARXmenu.currentmode == AMCM_NEWQUEST) {
 		if(player.m_skill.closeCombat == 0)
@@ -1013,7 +1013,7 @@ void StatsPage::manageStats()
 	std::stringstream ss3;
 	ss3 << std::setw(3) << std::setprecision(0) << std::fixed << player.m_skillFull.projectile;
 	
-	Color color = attrubuteModToColor(player.m_skillMod.projectile);
+	Color color = attributeModToColor(player.m_skillMod.projectile);
 	
 	if(ARXmenu.currentmode == AMCM_NEWQUEST) {
 		if(player.m_skill.projectile == 0)
@@ -1029,7 +1029,7 @@ void StatsPage::manageStats()
 	std::stringstream ss3;
 	ss3 << std::setw(3) << std::setprecision(0) << std::fixed << player.m_skillFull.defense;
 	
-	Color color = attrubuteModToColor(player.m_skillMod.defense);
+	Color color = attributeModToColor(player.m_skillMod.defense);
 	
 	if(ARXmenu.currentmode == AMCM_NEWQUEST) {
 		if(player.m_skill.defense == 0)
@@ -1046,7 +1046,7 @@ void StatsPage::manageStats()
 	std::stringstream ss4;
 	ss4 << F2L_RoundUp(player.Full_maxlife);
 	
-	Color color = attrubuteModToColor(player.Full_maxlife, player.lifePool.max);
+	Color color = attributeModToColor(player.Full_maxlife, player.lifePool.max);
 	
 	DrawBookTextCenter(hFontInBook, pos, ss4.str(), color);
 	}
@@ -1057,7 +1057,7 @@ void StatsPage::manageStats()
 	std::stringstream ss4;
 	ss4 << F2L_RoundUp(player.Full_maxmana);
 	
-	Color color = attrubuteModToColor(player.Full_maxmana, player.manaPool.max);
+	Color color = attributeModToColor(player.Full_maxmana, player.manaPool.max);
 	
 	DrawBookTextCenter(hFontInBook, pos, ss4.str(), color);
 	}
@@ -1068,7 +1068,7 @@ void StatsPage::manageStats()
 	std::stringstream ss4;
 	ss4 << F2L_RoundUp(player.m_miscFull.damages);
 	
-	Color color = attrubuteModToColor(player.m_miscMod.damages);
+	Color color = attributeModToColor(player.m_miscMod.damages);
 	
 	DrawBookTextCenter(hFontInBook, pos, ss4.str(), color);
 	}
@@ -1079,7 +1079,7 @@ void StatsPage::manageStats()
 	std::stringstream ss4;
 	ss4 << F2L_RoundUp(player.m_miscFull.armorClass);
 	
-	Color color = attrubuteModToColor(player.m_miscMod.armorClass);
+	Color color = attributeModToColor(player.m_miscMod.armorClass);
 	
 	DrawBookTextCenter(hFontInBook, pos, ss4.str(), color);
 	}
@@ -1090,7 +1090,7 @@ void StatsPage::manageStats()
 	std::stringstream ss4;
 	ss4 << std::setw(3) << std::setprecision(0) << F2L_RoundUp( player.m_miscFull.resistMagic );
 	
-	Color color = attrubuteModToColor(player.m_miscMod.resistMagic);
+	Color color = attributeModToColor(player.m_miscMod.resistMagic);
 	
 	DrawBookTextCenter(hFontInBook, pos, ss4.str(), color);
 	}
@@ -1101,7 +1101,7 @@ void StatsPage::manageStats()
 	std::stringstream ss4;
 	ss4 << std::setw(3) << std::setprecision(0) << F2L_RoundUp( player.m_miscFull.resistPoison );
 	
-	Color color = attrubuteModToColor(player.m_miscMod.resistPoison);
+	Color color = attributeModToColor(player.m_miscMod.resistPoison);
 	
 	DrawBookTextCenter(hFontInBook, pos, ss4.str(), color);
 	}
@@ -1441,7 +1441,7 @@ bool StatsPage::CheckSkillClick(Vec2f pos, float * val, TextureContainer * tc,
 	return rval;
 }
 
-Color StatsPage::attrubuteModToColor(float modValue, float baseValue) {
+Color StatsPage::attributeModToColor(float modValue, float baseValue) {
 	if(modValue < baseValue)
 		return Color::red;
 	else if(modValue > baseValue)
