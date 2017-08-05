@@ -20,6 +20,7 @@
 #ifndef ARX_GUI_BOOK_BOOK_H
 #define ARX_GUI_BOOK_BOOK_H
 
+#include "graphics/Color.h"
 #include "gui/Note.h"
 
 enum ARX_INTERFACE_BOOK_MODE
@@ -29,6 +30,82 @@ enum ARX_INTERFACE_BOOK_MODE
 	BOOKMODE_MINIMAP,
 	BOOKMODE_QUESTS
 };
+
+class PlayerBookPage {
+public:
+	void playReleaseSound();
+	void playErrorSound();
+	void manageLeftTabsCommon(bool tabVisibility[10], long & activeTab);
+	static void manageLeftTabOneCommon(bool tabVisibility[10], long & activeTab, int t, Vec2f pos, Vec2f activePos);
+};
+
+class StatsPage : public PlayerBookPage {
+public:
+	void manage();
+	void manageNewQuest();
+private:
+	void manageStats();
+	void RenderBookPlayerCharacter();
+	bool CheckAttributeClick(Vec2f pos, float * val, TextureContainer * tc);
+	bool CheckSkillClick(Vec2f pos, float * val, TextureContainer * tc, float * oldval);
+	Color attributeModToColor(float modValue, float baseValue = 0.f);
+};
+
+class SpellsPage : public PlayerBookPage {
+public:
+	SpellsPage();
+	void manage();
+private:
+	long m_currentTab;
+
+	void drawLeftTabs();
+	void drawSpells();
+};
+
+class MapPage : public PlayerBookPage {
+public:
+	MapPage();
+	void manage();
+	void setMapLevel(long level);
+private:
+	long m_currentLevel;
+
+	void drawLeftTabs();
+	void drawMaps();
+};
+
+class QuestBookPage : public PlayerBookPage {
+public:
+	void manage();
+	void update();
+private:
+	Note m_questBook;
+};
+
+class PlayerBook {
+public:
+	StatsPage stats;
+	SpellsPage spells;
+	MapPage map;
+	QuestBookPage questBook;
+
+	ARX_INTERFACE_BOOK_MODE m_currentPage;
+
+	PlayerBook();
+	void manage();
+	void openPage(ARX_INTERFACE_BOOK_MODE newPage, bool toggle);
+	ARX_INTERFACE_BOOK_MODE nextPage();
+	ARX_INTERFACE_BOOK_MODE prevPage();
+	ARX_INTERFACE_BOOK_MODE currentPage() { return m_currentPage; }
+	void forcePage(ARX_INTERFACE_BOOK_MODE page);
+	void toggle();
+private:
+	bool canOpenPage(ARX_INTERFACE_BOOK_MODE page);
+	void onClosePage();
+	void drawTopTabs();
+};
+
+extern PlayerBook g_playerBook;
 
 extern long BOOKZOOM;
 
