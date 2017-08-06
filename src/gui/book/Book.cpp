@@ -62,10 +62,6 @@ ARX_INTERFACE_BOOK_MODE currentBookPage() {
 	return g_playerBook.currentPage();
 }
 
-void forceBookPage(ARX_INTERFACE_BOOK_MODE page) {
-	g_playerBook.forcePage(page);
-}
-
 void openBookPage(ARX_INTERFACE_BOOK_MODE newPage, bool toggle) {
 	g_playerBook.openPage(newPage, toggle);
 }

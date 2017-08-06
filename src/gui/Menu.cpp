@@ -199,7 +199,7 @@ void ARX_MENU_Clicked_NEWQUEST() {
 	g_canResumeGame = false;
 	
 	ARX_PLAYER_Start_New_Quest();
-	forceBookPage(BOOKMODE_STATS);
+	g_playerBook.forcePage(BOOKMODE_STATS);
 	player.skin = 0;
 	ARX_PLAYER_Restore_Skin();
 	ARXmenu.currentmode = AMCM_NEWQUEST;
