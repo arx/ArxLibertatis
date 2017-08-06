@@ -112,7 +112,6 @@ extern long BOOKZOOM;
 void ARX_INTERFACE_BookOpen();
 void ARX_INTERFACE_BookClose();
 
-void forceBookPage(ARX_INTERFACE_BOOK_MODE page);
 ARX_INTERFACE_BOOK_MODE currentBookPage();
 ARX_INTERFACE_BOOK_MODE nextBookPage();
 ARX_INTERFACE_BOOK_MODE prevBookPage();

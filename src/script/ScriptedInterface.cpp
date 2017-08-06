@@ -70,13 +70,13 @@ public:
 		
 		HandleFlags("aem") {
 			if(flg & flag('a')) { // Magic
-				forceBookPage(BOOKMODE_MINIMAP);
+				g_playerBook.forcePage(BOOKMODE_MINIMAP);
 			}
 			if(flg & flag('e')) { // Equip
-				forceBookPage(BOOKMODE_SPELLS);
+				g_playerBook.forcePage(BOOKMODE_SPELLS);
 			}
 			if(flg & flag('m')) { // Map
-				forceBookPage(BOOKMODE_QUESTS);
+				g_playerBook.forcePage(BOOKMODE_QUESTS);
 			}
 		}
 		
