@@ -1351,7 +1351,7 @@ void ArxGame::managePlayerControls() {
 
 	// Checks BOOK Key Status.
 	if(GInput->actionNowPressed(CONTROLS_CUST_BOOK))
-		ARX_INTERFACE_BookToggle();
+		g_playerBook.toggle();
 
 	// Check For Combat Mode ON/OFF
 	if(   eeMousePressed1()
