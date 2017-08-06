@@ -260,7 +260,7 @@ void BookIconGui::updateInput() {
 		SpecialCursor = CURSOR_INTERACTION_ON;
 
 		if(eeMouseDown1()) {
-			ARX_INTERFACE_BookToggle();
+			g_playerBook.toggle();
 		}
 		return;
 	}

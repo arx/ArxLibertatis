@@ -82,20 +82,15 @@ void ARX_INTERFACE_BookOpen() {
 	if((player.Interface & INTER_MAP))
 		return;
 	
-	ARX_INTERFACE_BookToggle();
+	g_playerBook.toggle();
 }
 
 void ARX_INTERFACE_BookClose() {
 	if(!(player.Interface & INTER_MAP))
 		return;
 	
-	ARX_INTERFACE_BookToggle();
-}
-
-void ARX_INTERFACE_BookToggle() {
 	g_playerBook.toggle();
 }
-
 
 static Rectf scaleRectPosAndSize(const Rectf & r, const Vec2f & scale) {
 	
@@ -361,10 +356,10 @@ void PlayerBook::manage() {
 	GRenderer->GetTextureStage(0)->setMagFilter(TextureStage::FilterNearest);
 }
 
-void PlayerBook::openPage(ARX_INTERFACE_BOOK_MODE newPage, bool toggle) {
+void PlayerBook::openPage(ARX_INTERFACE_BOOK_MODE newPage, bool _toggle) {
 	if((player.Interface & INTER_MAP) && currentPage() == newPage) {
 
-		if(toggle) {
+		if(_toggle) {
 			// Close the book
 			ARX_INTERFACE_BookClose();
 		}
@@ -385,7 +380,7 @@ void PlayerBook::openPage(ARX_INTERFACE_BOOK_MODE newPage, bool toggle) {
 
 	} else {
 		// Otherwise open the book
-		ARX_INTERFACE_BookToggle();
+		toggle();
 	}
 
 	forcePage(newPage);
