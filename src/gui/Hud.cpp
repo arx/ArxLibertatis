@@ -320,7 +320,7 @@ void BackpackIconGui::updateInput() {
 				lOldTruePlayerMouseLook=TRUE_PLAYER_MOUSELOOK_ON;
 			}
 		} else if(eeMouseDown2()) {
-			ARX_INTERFACE_BookClose();
+			g_playerBook.close();
 			ARX_INVENTORY_OpenClose(NULL);
 			
 			if(player.Interface & INTER_INVENTORYALL) {
@@ -1377,7 +1377,7 @@ void PlayerInterfaceFader::resetSlid() {
 void PlayerInterfaceFader::requestFade(FadeDirection showhide, long smooth) {
 	if(showhide == FadeDirection_Out) {
 		InventoryOpenClose(2);
-		ARX_INTERFACE_BookClose();
+		g_playerBook.close();
 		ARX_INTERFACE_NoteClose();
 	}
 	

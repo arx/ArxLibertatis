@@ -99,6 +99,7 @@ public:
 	ARX_INTERFACE_BOOK_MODE currentPage() { return m_currentPage; }
 	void forcePage(ARX_INTERFACE_BOOK_MODE page);
 	void open();
+	void close();
 	void toggle();
 private:
 	bool canOpenPage(ARX_INTERFACE_BOOK_MODE page);
@@ -109,8 +110,6 @@ private:
 extern PlayerBook g_playerBook;
 
 extern long BOOKZOOM;
-
-void ARX_INTERFACE_BookClose();
 
 ARX_INTERFACE_BOOK_MODE nextBookPage();
 ARX_INTERFACE_BOOK_MODE prevBookPage();
