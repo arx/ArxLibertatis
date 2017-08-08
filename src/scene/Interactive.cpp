@@ -1863,14 +1863,14 @@ Entity * GetFirstInterAtPos(const Vec2s & pos, long flag, Vec3f * _pRef, Entity 
 		// Is Object in TreatZone ??
 		bPlayerEquiped = IsEquipedByPlayer(io);
 
-		if( !((bPlayerEquiped  && (player.Interface & INTER_MAP)) || (io->gameFlags & GFLAG_ISINTREATZONE)) )
+		if( !((bPlayerEquiped  && (player.Interface & INTER_PLAYERBOOK)) || (io->gameFlags & GFLAG_ISINTREATZONE)) )
 			continue;
 
 		// Is Object Displayed on screen ???
 		if( !((io->show == SHOW_FLAG_IN_SCENE) ||
 			  (bPlayerEquiped && flag) ||
-			  (bPlayerEquiped && (player.Interface & INTER_MAP) && (currentBookPage() == BOOKMODE_STATS))) )
-			//((io->show==9) && (player.Interface & INTER_MAP)) )
+			  (bPlayerEquiped && (player.Interface & INTER_PLAYERBOOK) && (currentBookPage() == BOOKMODE_STATS))) )
+			//((io->show==9) && (player.Interface & INTER_PLAYERBOOK)) )
 		{
 			continue;
 		}

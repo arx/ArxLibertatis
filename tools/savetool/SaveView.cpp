@@ -858,7 +858,7 @@ static int view_player(SaveBlock & save, const char * dat, size_t size) {
 	if(asp.Interface) {
 		std::cout << "Interface:";
 		s16 interface_flags = asp.Interface;
-		print_flag(interface_flags, INTER_MAP, "map");
+		print_flag(interface_flags, INTER_PLAYERBOOK, "player_book");
 		print_flag(interface_flags, INTER_INVENTORY, "inventory");
 		print_flag(interface_flags, INTER_INVENTORYALL, "inventoryall");
 		print_flag(interface_flags, INTER_MINIBOOK, "minibook");

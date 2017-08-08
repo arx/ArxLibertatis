@@ -147,7 +147,7 @@ void MiniMap::validatePlayerPos(int currentLevel, long blockPlayerControls, ARX_
 		
 		float req;
 		
-		if((m_player->Interface & INTER_MAP) && (!(m_player->Interface & INTER_COMBATMODE)) && (bookMode == BOOKMODE_MINIMAP)) {
+		if((m_player->Interface & INTER_PLAYERBOOK) && (!(m_player->Interface & INTER_COMBATMODE)) && (bookMode == BOOKMODE_MINIMAP)) {
 			req = 20.f;
 		} else {
 			req = 80.f;

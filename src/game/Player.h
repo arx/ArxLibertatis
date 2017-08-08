@@ -80,7 +80,7 @@ struct ARX_INTERFACE_MEMORIZE_SPELL {
 
 enum PlayerInterfaceFlag
 {
-	INTER_MAP          = (1<<0),
+	INTER_PLAYERBOOK   = (1<<0),
 	INTER_INVENTORY    = (1<<1),
 	INTER_INVENTORYALL = (1<<2),
 	INTER_MINIBOOK     = (1<<3),

@@ -610,7 +610,7 @@ static void ARX_INTERFACE_RenderCursorInternal(bool flag) {
 			   && ARXmenu.currentmode == AMCM_OFF
 			) {
 				if(!MAGICMODE) {
-					if(player.Interface & INTER_MAP) {
+					if(player.Interface & INTER_PLAYERBOOK) {
 						ARX_INTERFACE_BookClose(); // Forced Closing
 					}
 					MAGICMODE = true;
@@ -705,7 +705,7 @@ static void ARX_INTERFACE_RenderCursorInternal(bool flag) {
 		
 		if(   TRUE_PLAYER_MOUSELOOK_ON
 		   && config.interface.showCrosshair
-		   && !(player.Interface & (INTER_COMBATMODE | INTER_NOTE | INTER_MAP))) {
+		   && !(player.Interface & (INTER_COMBATMODE | INTER_NOTE | INTER_PLAYERBOOK))) {
 			
 			cursorAnimatedHand.reset();
 			
