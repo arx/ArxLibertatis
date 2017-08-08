@@ -58,10 +58,6 @@ long lCursorRedistValue = 0;
 
 PlayerBook g_playerBook;
 
-ARX_INTERFACE_BOOK_MODE currentBookPage() {
-	return g_playerBook.currentPage();
-}
-
 void openBookPage(ARX_INTERFACE_BOOK_MODE newPage, bool toggle) {
 	g_playerBook.openPage(newPage, toggle);
 }
@@ -74,7 +70,7 @@ ARX_INTERFACE_BOOK_MODE prevBookPage() {
 	return g_playerBook.prevPage();
 }
 
-void ARX_INTERFACE_BookOpen() {
+void PlayerBook::open() {
 	if((player.Interface & INTER_PLAYERBOOK))
 		return;
 	

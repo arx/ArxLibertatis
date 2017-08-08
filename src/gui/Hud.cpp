@@ -434,7 +434,7 @@ void LevelUpIconGui::updateInput() {
 		SpecialCursor = CURSOR_INTERACTION_ON;
 		
 		if(eeMouseDown1()) {
-			ARX_INTERFACE_BookOpen();
+			g_playerBook.open();
 		}
 	}
 }
