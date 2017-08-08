@@ -83,7 +83,7 @@ public:
 		std::string command = context.getWord();
 		
 		if(command == "open") {
-			ARX_INTERFACE_BookOpen();
+			g_playerBook.open();
 		} else if(command == "close") {
 			ARX_INTERFACE_BookClose();
 		} else if(command == "change") {
