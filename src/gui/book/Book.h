@@ -93,7 +93,7 @@ public:
 
 	PlayerBook();
 	void manage();
-	void openPage(ARX_INTERFACE_BOOK_MODE newPage, bool toggle);
+	void openPage(ARX_INTERFACE_BOOK_MODE newPage, bool toggle = false);
 	ARX_INTERFACE_BOOK_MODE nextPage();
 	ARX_INTERFACE_BOOK_MODE prevPage();
 	ARX_INTERFACE_BOOK_MODE currentPage() { return m_currentPage; }
@@ -113,7 +113,6 @@ extern long BOOKZOOM;
 
 ARX_INTERFACE_BOOK_MODE nextBookPage();
 ARX_INTERFACE_BOOK_MODE prevBookPage();
-void openBookPage(ARX_INTERFACE_BOOK_MODE newPage, bool toggle = false);
 
 void updateQuestBook();
 
