@@ -65,7 +65,7 @@ void update2DFX() {
 			
 			el->m_flareFader -= temp_increase;
 
-			if(!(player.Interface & INTER_COMBATMODE) && (player.Interface & INTER_MAP))
+			if(!(player.Interface & INTER_COMBATMODE) && (player.Interface & INTER_PLAYERBOOK))
 				continue;
 
 			if(p.w > 0.f &&

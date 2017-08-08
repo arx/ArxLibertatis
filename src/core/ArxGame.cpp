@@ -1989,7 +1989,7 @@ void ArxGame::renderLevel() {
 	// End Particles
 
 	// Renders Magical Flares
-	if(!((player.Interface & INTER_MAP) && !(player.Interface & INTER_COMBATMODE))) {
+	if(!((player.Interface & INTER_PLAYERBOOK) && !(player.Interface & INTER_COMBATMODE))) {
 		ARX_MAGICAL_FLARES_Update();
 	}
 
@@ -2034,7 +2034,7 @@ void ArxGame::renderLevel() {
 		ARX_INTERFACE_NoteManage();
 		g_hudRoot.draw();
 		
-		if((player.Interface & INTER_MAP) && !(player.Interface & INTER_COMBATMODE)) {
+		if((player.Interface & INTER_PLAYERBOOK) && !(player.Interface & INTER_COMBATMODE)) {
 			ARX_MAGICAL_FLARES_Update();
 			RenderBatcher::getInstance().render();
 		}
@@ -2062,7 +2062,7 @@ void ArxGame::renderLevel() {
 		&& cinematicIsStopped()
 		&& !cinematicBorder.isActive()
 		&& !BLOCK_PLAYER_CONTROLS
-		&& !(player.Interface & INTER_MAP))
+		&& !(player.Interface & INTER_PLAYERBOOK))
 	{
 		long SHOWLEVEL = ARX_LEVELS_GetRealNum(CURRENTLEVEL);
 

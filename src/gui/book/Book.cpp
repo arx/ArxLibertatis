@@ -75,14 +75,14 @@ ARX_INTERFACE_BOOK_MODE prevBookPage() {
 }
 
 void ARX_INTERFACE_BookOpen() {
-	if((player.Interface & INTER_MAP))
+	if((player.Interface & INTER_PLAYERBOOK))
 		return;
 	
 	g_playerBook.toggle();
 }
 
 void ARX_INTERFACE_BookClose() {
-	if(!(player.Interface & INTER_MAP))
+	if(!(player.Interface & INTER_PLAYERBOOK))
 		return;
 	
 	g_playerBook.toggle();
@@ -105,7 +105,7 @@ static bool MouseInBookRect(const Vec2f pos, const Vec2f size) {
 }
 
 bool ARX_INTERFACE_MouseInBook() {
-	if((player.Interface & INTER_MAP) && !(player.Interface & INTER_COMBATMODE)) {
+	if((player.Interface & INTER_PLAYERBOOK) && !(player.Interface & INTER_COMBATMODE)) {
 		return MouseInBookRect(Vec2f(99, 65), Vec2f(500, 307));
 	} else {
 		return false;
@@ -270,10 +270,10 @@ void PlayerBook::onClosePage() {
 }
 
 void PlayerBook::toggle() {
-	if(player.Interface & INTER_MAP) {
+	if(player.Interface & INTER_PLAYERBOOK) {
 		ARX_SOUND_PlayInterface(SND_BOOK_CLOSE, Random::getf(0.9f, 1.1f));
 		SendIOScriptEvent(entities.player(), SM_BOOK_CLOSE);
-		player.Interface &=~ INTER_MAP;
+		player.Interface &=~ INTER_PLAYERBOOK;
 		g_miniMap.purgeTexContainer();
 
 		if(ARXmenu.mda) {
@@ -291,7 +291,7 @@ void PlayerBook::toggle() {
 		ARX_SOUND_PlayInterface(SND_BOOK_OPEN, Random::getf(0.9f, 1.1f));
 		SendIOScriptEvent(entities.player(), SM_BOOK_OPEN);
 		ARX_INTERFACE_NoteClose();
-		player.Interface |= INTER_MAP;
+		player.Interface |= INTER_PLAYERBOOK;
 		map.setMapLevel(glm::clamp(ARX_LEVELS_GetRealNum(CURRENTLEVEL), 0l, 7l));
 
 		if(!ARXmenu.mda) {
@@ -353,7 +353,7 @@ void PlayerBook::manage() {
 }
 
 void PlayerBook::openPage(ARX_INTERFACE_BOOK_MODE newPage, bool _toggle) {
-	if((player.Interface & INTER_MAP) && currentPage() == newPage) {
+	if((player.Interface & INTER_PLAYERBOOK) && currentPage() == newPage) {
 
 		if(_toggle) {
 			// Close the book
@@ -367,7 +367,7 @@ void PlayerBook::openPage(ARX_INTERFACE_BOOK_MODE newPage, bool _toggle) {
 		return;
 	}
 
-	if(player.Interface & INTER_MAP) {
+	if(player.Interface & INTER_PLAYERBOOK) {
 
 		onClosePage();
 

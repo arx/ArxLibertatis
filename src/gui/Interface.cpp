@@ -1189,12 +1189,12 @@ void ArxGame::managePlayerControls() {
 
 	if(GInput->actionNowPressed(CONTROLS_CUST_PREVIOUS)) {
 		if(eMouseState == MOUSE_IN_BOOK) {
-			if(player.Interface & INTER_MAP) {
+			if(player.Interface & INTER_PLAYERBOOK) {
 				openBookPage(prevBookPage());
 			}
 		} else if(g_playerInventoryHud.containsPos(DANAEMouse)) {
 			g_playerInventoryHud.previousBag();
-		} else if(player.Interface & INTER_MAP) {
+		} else if(player.Interface & INTER_PLAYERBOOK) {
 			openBookPage(prevBookPage());
 		} else {
 			g_playerInventoryHud.previousBag();
@@ -1203,12 +1203,12 @@ void ArxGame::managePlayerControls() {
 
 	if(GInput->actionNowPressed(CONTROLS_CUST_NEXT)) {
 		if(eMouseState == MOUSE_IN_BOOK) {
-			if(player.Interface & INTER_MAP) {
+			if(player.Interface & INTER_PLAYERBOOK) {
 				openBookPage(nextBookPage());
 			}
 		} else if(g_playerInventoryHud.containsPos(DANAEMouse)) {
 			g_playerInventoryHud.nextBag();
-		} else if(player.Interface & INTER_MAP) {
+		} else if(player.Interface & INTER_PLAYERBOOK) {
 			openBookPage(nextBookPage());
 		} else {
 			g_playerInventoryHud.nextBag();
@@ -1951,7 +1951,7 @@ void ArxGame::manageEditorControls() {
 	g_hudRoot.updateInput();
 	
 	// gros player book
-	if(player.Interface & INTER_MAP) {
+	if(player.Interface & INTER_PLAYERBOOK) {
 		Vec2f pos(97 * g_sizeRatio.x, 64 * g_sizeRatio.y);
 		
 		TextureContainer* playerbook = g_bookResouces.playerbook;

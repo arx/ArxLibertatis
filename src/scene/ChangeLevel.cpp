@@ -1684,7 +1684,7 @@ static long ARX_CHANGELEVEL_Pop_Player() {
 	}
 	
 	player.Interface = PlayerInterfaceFlags::load(asp->Interface); // TODO save/load flags
-	player.Interface &= ~INTER_MAP;
+	player.Interface &= ~INTER_PLAYERBOOK;
 	player.falling = (asp->falling != 0);
 	player.gold = asp->gold;
 	entities.player()->invisibility = asp->invisibility;

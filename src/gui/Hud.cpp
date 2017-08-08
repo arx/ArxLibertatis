@@ -992,7 +992,7 @@ PrecastSpellsGui::PrecastSpellsGui()
 }
 
 bool PrecastSpellsGui::isVisible() {
-	return !(player.Interface & INTER_MAP);
+	return !(player.Interface & INTER_PLAYERBOOK);
 }
 
 void PrecastSpellsGui::updateRect(const Rectf & parent) {
@@ -1565,7 +1565,7 @@ void HudRoot::draw() {
 	quickSaveIconGui.draw();
 	stealthGauge.draw();
 
-	if((player.Interface & INTER_MAP) && !(player.Interface & INTER_COMBATMODE)) {
+	if((player.Interface & INTER_PLAYERBOOK) && !(player.Interface & INTER_COMBATMODE)) {
 		ARX_INTERFACE_ManageOpenedBook();
 		
 		setHudTextureState();
