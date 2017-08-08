@@ -95,7 +95,7 @@ public:
 	void manage();
 	void openPage(ARX_INTERFACE_BOOK_MODE newPage, bool toggle = false);
 	void openNextPage();
-	ARX_INTERFACE_BOOK_MODE prevPage();
+	void openPrevPage();
 	ARX_INTERFACE_BOOK_MODE currentPage() { return m_currentPage; }
 	void forcePage(ARX_INTERFACE_BOOK_MODE page);
 	void open();
@@ -104,6 +104,7 @@ public:
 private:
 	bool canOpenPage(ARX_INTERFACE_BOOK_MODE page);
 	ARX_INTERFACE_BOOK_MODE nextPage();
+	ARX_INTERFACE_BOOK_MODE prevPage();
 	void onClosePage();
 	void drawTopTabs();
 };
@@ -111,8 +112,6 @@ private:
 extern PlayerBook g_playerBook;
 
 extern long BOOKZOOM;
-
-ARX_INTERFACE_BOOK_MODE prevBookPage();
 
 void updateQuestBook();
 
