@@ -1190,12 +1190,12 @@ void ArxGame::managePlayerControls() {
 	if(GInput->actionNowPressed(CONTROLS_CUST_PREVIOUS)) {
 		if(eMouseState == MOUSE_IN_BOOK) {
 			if(player.Interface & INTER_PLAYERBOOK) {
-				g_playerBook.openPage(prevBookPage());
+				g_playerBook.openPrevPage();
 			}
 		} else if(g_playerInventoryHud.containsPos(DANAEMouse)) {
 			g_playerInventoryHud.previousBag();
 		} else if(player.Interface & INTER_PLAYERBOOK) {
-			g_playerBook.openPage(prevBookPage());
+			g_playerBook.openPrevPage();
 		} else {
 			g_playerInventoryHud.previousBag();
 		}
