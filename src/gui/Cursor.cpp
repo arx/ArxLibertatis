@@ -611,7 +611,7 @@ static void ARX_INTERFACE_RenderCursorInternal(bool flag) {
 			) {
 				if(!MAGICMODE) {
 					if(player.Interface & INTER_PLAYERBOOK) {
-						ARX_INTERFACE_BookClose(); // Forced Closing
+						g_playerBook.close(); // Forced Closing
 					}
 					MAGICMODE = true;
 				}

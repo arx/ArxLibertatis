@@ -427,7 +427,7 @@ void ARX_INTERFACE_NoteOpen(Note::Type type, const std::string & text) {
 		ARX_INTERFACE_NoteClose();
 	}
 	
-	ARX_INTERFACE_BookClose();
+	g_playerBook.close();
 	
 	openNote.setData(type, getLocalised(text));
 	openNote.setPage(0);
@@ -843,7 +843,7 @@ void ARX_INTERFACE_setCombatMode(ARX_INTERFACE_COMBAT_MODE i) {
 	} else if(   !entities.player()->animlayer[1].cur_anim
 	           || entities.player()->animlayer[1].cur_anim == entities.player()->anims[ANIM_WAIT]
 	) {
-		ARX_INTERFACE_BookClose();
+		g_playerBook.close();
 
 		player.Interface|=INTER_COMBATMODE;
 
@@ -1317,7 +1317,7 @@ void ArxGame::managePlayerControls() {
 			} else {
 				if(GInput->actionNowPressed(CONTROLS_CUST_FREELOOK)) {
 					if(!TRUE_PLAYER_MOUSELOOK_ON) {
-						ARX_INTERFACE_BookClose();
+						g_playerBook.close();
 						TRUE_PLAYER_MOUSELOOK_ON = true;
 						SLID_START = g_platformTime.frameStart();
 					} else {

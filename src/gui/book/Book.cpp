@@ -77,7 +77,7 @@ void PlayerBook::open() {
 	g_playerBook.toggle();
 }
 
-void ARX_INTERFACE_BookClose() {
+void PlayerBook::close() {
 	if(!(player.Interface & INTER_PLAYERBOOK))
 		return;
 	
@@ -353,7 +353,7 @@ void PlayerBook::openPage(ARX_INTERFACE_BOOK_MODE newPage, bool _toggle) {
 
 		if(_toggle) {
 			// Close the book
-			ARX_INTERFACE_BookClose();
+			g_playerBook.close();
 		}
 
 		return; // nothing to do

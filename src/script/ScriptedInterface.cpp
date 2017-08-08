@@ -85,7 +85,7 @@ public:
 		if(command == "open") {
 			g_playerBook.open();
 		} else if(command == "close") {
-			ARX_INTERFACE_BookClose();
+			g_playerBook.close();
 		} else if(command == "change") {
 			// Nothing to do, mode already changed by flags.
 		} else {
