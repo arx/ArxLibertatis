@@ -1190,12 +1190,12 @@ void ArxGame::managePlayerControls() {
 	if(GInput->actionNowPressed(CONTROLS_CUST_PREVIOUS)) {
 		if(eMouseState == MOUSE_IN_BOOK) {
 			if(player.Interface & INTER_PLAYERBOOK) {
-				openBookPage(prevBookPage());
+				g_playerBook.openPage(prevBookPage());
 			}
 		} else if(g_playerInventoryHud.containsPos(DANAEMouse)) {
 			g_playerInventoryHud.previousBag();
 		} else if(player.Interface & INTER_PLAYERBOOK) {
-			openBookPage(prevBookPage());
+			g_playerBook.openPage(prevBookPage());
 		} else {
 			g_playerInventoryHud.previousBag();
 		}
@@ -1204,31 +1204,31 @@ void ArxGame::managePlayerControls() {
 	if(GInput->actionNowPressed(CONTROLS_CUST_NEXT)) {
 		if(eMouseState == MOUSE_IN_BOOK) {
 			if(player.Interface & INTER_PLAYERBOOK) {
-				openBookPage(nextBookPage());
+				g_playerBook.openPage(nextBookPage());
 			}
 		} else if(g_playerInventoryHud.containsPos(DANAEMouse)) {
 			g_playerInventoryHud.nextBag();
 		} else if(player.Interface & INTER_PLAYERBOOK) {
-			openBookPage(nextBookPage());
+			g_playerBook.openPage(nextBookPage());
 		} else {
 			g_playerInventoryHud.nextBag();
 		}
 	}
 	
 	if(GInput->actionNowPressed(CONTROLS_CUST_BOOKCHARSHEET)) {
-		openBookPage(BOOKMODE_STATS, true);
+		g_playerBook.openPage(BOOKMODE_STATS, true);
 	}
 	
 	if(GInput->actionNowPressed(CONTROLS_CUST_BOOKSPELL) && player.rune_flags) {
-		openBookPage(BOOKMODE_SPELLS, true);
+		g_playerBook.openPage(BOOKMODE_SPELLS, true);
 	}
 	
 	if(GInput->actionNowPressed(CONTROLS_CUST_BOOKMAP)) {
-		openBookPage(BOOKMODE_MINIMAP, true);
+		g_playerBook.openPage(BOOKMODE_MINIMAP, true);
 	}
 	
 	if(GInput->actionNowPressed(CONTROLS_CUST_BOOKQUEST)) {
-		openBookPage(BOOKMODE_QUESTS, true);
+		g_playerBook.openPage(BOOKMODE_QUESTS, true);
 	}
 	
 	if(GInput->actionNowPressed(CONTROLS_CUST_CANCELCURSPELL)) {
