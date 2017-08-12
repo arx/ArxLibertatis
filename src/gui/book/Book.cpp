@@ -114,7 +114,7 @@ void PlayerBookPage::playErrorSound() {
 }
 
 void PlayerBook::clearJournal() {
-	questBook.update();
+	questBook.clear();
 }
 
 void PlayerBookPage::manageLeftTabOneCommon(bool tabVisibility[10], long & activeTab, int t, Vec2f pos, Vec2f activePos) {
@@ -1571,7 +1571,7 @@ void QuestBookPage::manage() {
 	m_questBook.render();
 }
 
-void QuestBookPage::update() {
+void QuestBookPage::clear() {
 	// Clear the quest book cache - it will be re-created when needed
 	m_questBook.clear();
 }
