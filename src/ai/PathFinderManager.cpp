@@ -50,6 +50,8 @@ ZeniMax Media Inc., Suite 120, Rockville, Maryland 20850 USA.
 #include <cstdlib>
 #include <algorithm>
 
+#include "ai/Anchors.h"
+
 #include "ai/PathFinder.h"
 #include "game/Entity.h"
 #include "game/NPC.h"
@@ -57,7 +59,6 @@ ZeniMax Media Inc., Suite 120, Rockville, Maryland 20850 USA.
 #include "platform/Thread.h"
 #include "platform/Lock.h"
 #include "platform/profiler/Profiler.h"
-#include "physics/Anchors.h"
 #include "scene/Light.h"
 
 static const float PATHFINDER_HEURISTIC_MIN = 0.2f;

@@ -60,6 +60,7 @@ ZeniMax Media Inc., Suite 120, Rockville, Maryland 20850 USA.
 
 #include "animation/Animation.h"
 
+#include "ai/Anchors.h"
 #include "ai/Paths.h"
 #include "ai/PathFinderManager.h"
 
@@ -97,7 +98,6 @@ ZeniMax Media Inc., Suite 120, Rockville, Maryland 20850 USA.
 #include "math/Random.h"
 #include "math/Vector.h"
 
-#include "physics/Anchors.h"
 #include "physics/Box.h"
 #include "physics/CollisionShapes.h"
 #include "physics/Collisions.h"

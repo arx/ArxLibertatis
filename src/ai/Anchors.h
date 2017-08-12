@@ -44,8 +44,8 @@ ZeniMax Media Inc., Suite 120, Rockville, Maryland 20850 USA.
 //
 // Copyright (c) 1999-2001 ARKANE Studios SA. All rights reserved
 
-#ifndef ARX_PHYSICS_ANCHORS_H
-#define ARX_PHYSICS_ANCHORS_H
+#ifndef ARX_AI_ANCHORS_H
+#define ARX_AI_ANCHORS_H
 
 #include "math/Vector.h"
 #include "util/Flags.h"
@@ -82,4 +82,4 @@ struct ANCHOR_DATA {
  */
 void AnchorData_ClearAll(BackgroundData * eb);
 
-#endif // ARX_PHYSICS_ANCHORS_H
+#endif // ARX_AI_ANCHORS_H

@@ -49,6 +49,8 @@ ZeniMax Media Inc., Suite 120, Rockville, Maryland 20850 USA.
 #include <boost/foreach.hpp>
 #include <boost/unordered_map.hpp>
 
+#include "ai/Anchors.h"
+
 #include "graphics/GraphicsTypes.h"
 #include "graphics/Math.h"
 #include "graphics/data/Mesh.h"
@@ -57,7 +59,6 @@ ZeniMax Media Inc., Suite 120, Rockville, Maryland 20850 USA.
 #include "math/RandomVector.h"
 #include "math/Vector.h"
 #include "platform/Platform.h"
-#include "physics/Anchors.h"
 #include "scene/Light.h"
 
 static const float MIN_RADIUS = 110.0f;

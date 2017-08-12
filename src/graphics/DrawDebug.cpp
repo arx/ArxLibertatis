@@ -21,6 +21,7 @@
 
 #include <sstream>
 
+#include "ai/Anchors.h"
 #include "ai/Paths.h"
 
 #include "animation/AnimationRender.h"
@@ -52,7 +53,6 @@
 
 #include "math/Vector.h"
 
-#include "physics/Anchors.h"
 #include "physics/Collisions.h"
 #include "platform/profiler/Profiler.h"
 

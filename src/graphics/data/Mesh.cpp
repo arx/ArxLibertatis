@@ -53,6 +53,7 @@ ZeniMax Media Inc., Suite 120, Rockville, Maryland 20850 USA.
 #include <boost/scoped_array.hpp>
 #include <boost/unordered_map.hpp>
 
+#include "ai/Anchors.h"
 #include "ai/PathFinder.h"
 #include "ai/PathFinderManager.h"
 
@@ -83,7 +84,6 @@ ZeniMax Media Inc., Suite 120, Rockville, Maryland 20850 USA.
 #include "io/Blast.h"
 #include "io/log/Logger.h"
 
-#include "physics/Anchors.h"
 #include "platform/profiler/Profiler.h"
 
 #include "scene/Scene.h"

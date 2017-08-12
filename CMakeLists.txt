@@ -821,6 +821,7 @@ endif(MSVC)
 set(SRC_DIR src)
 
 set(AI_SOURCES
+	src/ai/Anchors.cpp
 	src/ai/PathFinder.cpp
 	src/ai/PathFinderManager.cpp
 	src/ai/Paths.cpp
@@ -1050,7 +1051,6 @@ set(MATH_SOURCES
 )
 
 set(PHYSICS_SOURCES
-	src/physics/Anchors.cpp
 	src/physics/Attractors.cpp
 	src/physics/Box.cpp
 	src/physics/Collisions.cpp
