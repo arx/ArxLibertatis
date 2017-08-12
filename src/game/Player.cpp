@@ -59,6 +59,7 @@ ZeniMax Media Inc., Suite 120, Rockville, Maryland 20850 USA.
 
 #include "cinematic/CinematicController.h"
 
+#include "ai/Anchors.h"
 #include "ai/PathFinderManager.h"
 #include "ai/Paths.h"
 
