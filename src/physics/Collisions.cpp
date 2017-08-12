@@ -46,6 +46,8 @@ ZeniMax Media Inc., Suite 120, Rockville, Maryland 20850 USA.
 
 #include "physics/Collisions.h"
 
+#include "ai/Anchors.h"
+
 #include "core/GameTime.h"
 #include "core/Core.h"
 #include "game/Damage.h"
@@ -53,7 +55,6 @@ ZeniMax Media Inc., Suite 120, Rockville, Maryland 20850 USA.
 #include "game/NPC.h"
 #include "game/Player.h"
 #include "graphics/Math.h"
-#include "physics/Anchors.h"
 #include "platform/profiler/Profiler.h"
 #include "scene/Interactive.h"
 
