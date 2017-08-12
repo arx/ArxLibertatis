@@ -113,7 +113,7 @@ void PlayerBookPage::playErrorSound() {
 	ARX_SOUND_PlayInterface(SND_MENU_CLICK);
 }
 
-void updateQuestBook() {
+void clearJournal() {
 	g_playerBook.questBook.update();
 }
 
