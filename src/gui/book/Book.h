@@ -101,6 +101,8 @@ public:
 	void open();
 	void close();
 	void toggle();
+
+	void clearJournal();
 private:
 	bool canOpenPage(ARX_INTERFACE_BOOK_MODE page);
 	ARX_INTERFACE_BOOK_MODE nextPage();
@@ -112,7 +114,5 @@ private:
 extern PlayerBook g_playerBook;
 
 extern long BOOKZOOM;
-
-void clearJournal();
 
 #endif // ARX_GUI_BOOK_BOOK_H

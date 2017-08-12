@@ -113,8 +113,8 @@ void PlayerBookPage::playErrorSound() {
 	ARX_SOUND_PlayInterface(SND_MENU_CLICK);
 }
 
-void clearJournal() {
-	g_playerBook.questBook.update();
+void PlayerBook::clearJournal() {
+	questBook.update();
 }
 
 void PlayerBookPage::manageLeftTabOneCommon(bool tabVisibility[10], long & activeTab, int t, Vec2f pos, Vec2f activePos) {
