@@ -77,7 +77,7 @@ private:
 class QuestBookPage : public PlayerBookPage {
 public:
 	void manage();
-	void update();
+	void clear();
 private:
 	Note m_questBook;
 };
