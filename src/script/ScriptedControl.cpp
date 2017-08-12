@@ -43,6 +43,8 @@ ZeniMax Media Inc., Suite 120, Rockville, Maryland 20850 USA.
 
 #include "script/ScriptedControl.h"
 
+#include "ai/Anchors.h"
+
 #include "core/Core.h"
 #include "core/GameTime.h"
 #include "game/EntityManager.h"

@@ -52,6 +52,7 @@ ZeniMax Media Inc., Suite 120, Rockville, Maryland 20850 USA.
 
 struct BackgroundData;
 struct Cylinder;
+struct Entity;
 
 enum AnchorFlag {
 	ANCHOR_FLAG_BLOCKED    = (1<<3)
@@ -81,5 +82,8 @@ struct ANCHOR_DATA {
  * Clears all Anchor data from a Background
  */
 void AnchorData_ClearAll(BackgroundData * eb);
+
+void ANCHOR_BLOCK_By_IO(Entity * io, long status);
+void ANCHOR_BLOCK_Clear();
 
 #endif // ARX_AI_ANCHORS_H
