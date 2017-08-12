@@ -327,7 +327,7 @@ static void ARX_PLAYER_ManageTorch() {
  */
 void ARX_PLAYER_Quest_Init() {
 	g_playerQuestLogEntries.clear();
-	updateQuestBook();
+	clearJournal();
 }
 
 /*!
@@ -400,7 +400,7 @@ void ARX_Player_Rune_Remove(RuneFlag _ulRune)
 void ARX_PLAYER_Quest_Add(const std::string & quest) {
 	
 	g_playerQuestLogEntries.push_back(quest);
-	updateQuestBook();
+	clearJournal();
 }
 
 /*!

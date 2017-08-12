@@ -113,6 +113,6 @@ extern PlayerBook g_playerBook;
 
 extern long BOOKZOOM;
 
-void updateQuestBook();
+void clearJournal();
 
 #endif // ARX_GUI_BOOK_BOOK_H
