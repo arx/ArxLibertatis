@@ -116,8 +116,9 @@ ZeniMax Media Inc., Suite 120, Rockville, Maryland 20850 USA.
 #include "math/Rectangle.h"
 #include "math/Vector.h"
 
-#include "physics/Box.h"
 #include "physics/Collisions.h"
+#include "physics/Physics.h"
+
 #include "platform/profiler/Profiler.h"
 
 #include "scene/LinkedObject.h"

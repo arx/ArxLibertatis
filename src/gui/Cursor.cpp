@@ -45,8 +45,10 @@
 #include "graphics/Renderer.h"
 
 #include "animation/AnimationRender.h"
+
 #include "physics/Collisions.h"
-#include "physics/Box.h"
+#include "physics/Physics.h"
+
 #include "platform/profiler/Profiler.h"
 #include "scene/Interactive.h"
 #include "scene/GameSound.h"
