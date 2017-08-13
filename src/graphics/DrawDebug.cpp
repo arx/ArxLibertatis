@@ -54,6 +54,8 @@
 #include "math/Vector.h"
 
 #include "physics/Collisions.h"
+#include "physics/Physics.h"
+
 #include "platform/profiler/Profiler.h"
 
 #include "scene/Interactive.h"

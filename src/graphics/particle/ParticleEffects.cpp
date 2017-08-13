@@ -80,6 +80,7 @@ ZeniMax Media Inc., Suite 120, Rockville, Maryland 20850 USA.
 #include "platform/profiler/Profiler.h"
 
 #include "physics/Collisions.h"
+#include "physics/Physics.h"
 
 #include "scene/GameSound.h"
 #include "scene/Interactive.h"
