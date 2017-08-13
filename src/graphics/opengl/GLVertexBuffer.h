@@ -173,13 +173,13 @@ public:
 		if(m_renderer->hasDrawElementsBaseVertex()) {
 			
 			if(m_renderer->hasDrawRangeElements()) {
-				#if !ARX_HAVE_GLEW || defined(GLEW_VERSION_4_5)
+				#if !ARX_HAVE_GLEW
 				glDrawRangeElementsBaseVertex(mode, 0, count - 1, nbindices, type, data, offset);
 				#else
 				glDrawRangeElementsBaseVertex(mode, 0, count - 1, nbindices, type, const_cast<void *>(data), offset);
 				#endif
 			} else {
-				#if !ARX_HAVE_GLEW || defined(GLEW_VERSION_4_5)
+				#if !ARX_HAVE_GLEW
 				glDrawElementsBaseVertex(mode, nbindices, type, data, offset);
 				#else
 				glDrawElementsBaseVertex(mode, nbindices, type, const_cast<void *>(data), offset);
