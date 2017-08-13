@@ -1052,7 +1052,6 @@ set(MATH_SOURCES
 
 set(PHYSICS_SOURCES
 	src/physics/Attractors.cpp
-	src/physics/Box.cpp
 	src/physics/Collisions.cpp
 	src/physics/CollisionShapes.cpp
 	src/physics/Projectile.cpp

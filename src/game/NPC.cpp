@@ -98,7 +98,6 @@ ZeniMax Media Inc., Suite 120, Rockville, Maryland 20850 USA.
 #include "math/Random.h"
 #include "math/Vector.h"
 
-#include "physics/Box.h"
 #include "physics/CollisionShapes.h"
 #include "physics/Collisions.h"
 #include "physics/Physics.h"

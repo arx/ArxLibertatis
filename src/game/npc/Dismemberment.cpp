@@ -29,8 +29,10 @@
 #include "game/NPC.h"
 #include "graphics/GraphicsTypes.h"
 #include "graphics/data/MeshManipulation.h"
-#include "physics/Box.h"
+
 #include "physics/CollisionShapes.h"
+#include "physics/Physics.h"
+
 #include "scene/GameSound.h"
 
 static bool IsNearSelection(EERIE_3DOBJ * obj, long vert, ObjSelection tw) {
