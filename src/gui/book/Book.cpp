@@ -138,81 +138,64 @@ void PlayerBookPage::manageLeftTabOneCommon(long tabNum, long & activeTab, Vec2f
 
 void PlayerBookPage::manageLeftTabsCommon(long tabNum, long & activeTab) {
 
+	Vec2f pos;
+	Vec2f activePos;
 	switch(tabNum) {
 		case 0: {
-			Vec2f pos = Vec2f(100.f, 82.f);
-			Vec2f activePos = Vec2f(102.f, 82.f);
-
-			manageLeftTabOneCommon(tabNum, activeTab, pos, activePos);
+			pos = Vec2f(100.f, 82.f);
+			activePos = Vec2f(102.f, 82.f);
 			break;
 		}
 		case 1: {
-			Vec2f pos = Vec2f(98.f, 112.f);
-			Vec2f activePos = Vec2f(100.f, 114.f);
-
-			manageLeftTabOneCommon(tabNum, activeTab, pos, activePos);
+			pos = Vec2f(98.f, 112.f);
+			activePos = Vec2f(100.f, 114.f);
 			break;
 		}
 		case 2: {
-			Vec2f pos = Vec2f(97.f, 143.f);
-			Vec2f activePos = Vec2f(101.f, 141.f);
-
-			manageLeftTabOneCommon(tabNum, activeTab, pos, activePos);
+			pos = Vec2f(97.f, 143.f);
+			activePos = Vec2f(101.f, 141.f);
 			break;
 		}
 		case 3: {
-			Vec2f pos = Vec2f(95.f, 170.f);
-			Vec2f activePos = Vec2f(100.f, 170.f);
-
-			manageLeftTabOneCommon(tabNum, activeTab, pos, activePos);
+			pos = Vec2f(95.f, 170.f);
+			activePos = Vec2f(100.f, 170.f);
 			break;
 		}
 		case 4: {
-			Vec2f pos = Vec2f(95.f, 200.f);
-			Vec2f activePos = Vec2f(97.f, 199.f);
-
-			manageLeftTabOneCommon(tabNum, activeTab, pos, activePos);
+			pos = Vec2f(95.f, 200.f);
+			activePos = Vec2f(97.f, 199.f);
 			break;
 		}
 		case 5: {
-			Vec2f pos = Vec2f(94.f, 229.f);
-			Vec2f activePos = Vec2f(103.f, 226.f);
-
-			manageLeftTabOneCommon(tabNum, activeTab, pos, activePos);
+			pos = Vec2f(94.f, 229.f);
+			activePos = Vec2f(103.f, 226.f);
 			break;
 		}
 		case 6: {
-			Vec2f pos = Vec2f(94.f, 259.f);
-			Vec2f activePos = Vec2f(101.f, 255.f);
-
-			manageLeftTabOneCommon(tabNum, activeTab, pos, activePos);
+			pos = Vec2f(94.f, 259.f);
+			activePos = Vec2f(101.f, 255.f);
 			break;
 		}
 		case 7: {
-			Vec2f pos = Vec2f(92.f, 282.f);
-			Vec2f activePos = Vec2f(99.f, 283.f);
-
-			manageLeftTabOneCommon(tabNum, activeTab, pos, activePos);
+			pos = Vec2f(92.f, 282.f);
+			activePos = Vec2f(99.f, 283.f);
 			break;
 		}
 		case 8: {
-			Vec2f pos = Vec2f(90.f, 308.f);
-			Vec2f activePos = Vec2f(99.f, 307.f);
-
-			manageLeftTabOneCommon(tabNum, activeTab, pos, activePos);
+			pos = Vec2f(90.f, 308.f);
+			activePos = Vec2f(99.f, 307.f);
 			break;
 		}
 		case 9: {
-			Vec2f pos = Vec2f(97.f, 331.f);
-			Vec2f activePos = Vec2f(104.f, 331.f);
-
-			manageLeftTabOneCommon(tabNum, activeTab, pos, activePos);
+			pos = Vec2f(97.f, 331.f);
+			activePos = Vec2f(104.f, 331.f);
 			break;
 		}
 		default: {
 			return;
 		}
 	}
+	manageLeftTabOneCommon(tabNum, activeTab, pos, activePos);
 }
 
 static void DrawBookTextCenter(Font* font, const Vec2f & pos, const std::string& text, Color col) {
