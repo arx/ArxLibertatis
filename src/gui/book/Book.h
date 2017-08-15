@@ -35,8 +35,8 @@ class PlayerBookPage {
 public:
 	void playReleaseSound();
 	void playErrorSound();
-	void manageLeftTabsCommon(bool tabVisibility[10], long & activeTab);
-	static void manageLeftTabOneCommon(bool tabVisibility[10], long & activeTab, int t, Vec2f pos, Vec2f activePos);
+	void manageLeftTabsCommon(long tabNum, long & activeTab);
+	static void manageLeftTabOneCommon(long tabNum, long & activeTab, Vec2f pos, Vec2f activePos);
 };
 
 class StatsPage : public PlayerBookPage {
