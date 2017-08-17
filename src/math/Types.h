@@ -36,8 +36,13 @@ class Rectangle_;
 typedef Rectangle_<s32> Rect;
 typedef Rectangle_<float> Rectf;
 
+#if GLM_VERSION >= 990
+typedef glm::qualifier vec_precision_type;
+#else
+typedef glm::precision vec_precision_type;
+#endif
 
-template <class T, template <class, glm::precision> class V, int N>
+template <class T, template <class, vec_precision_type> class V, int N>
 struct vec_traits_base {
 	enum { num_components = N };
 	typedef T component_type;
