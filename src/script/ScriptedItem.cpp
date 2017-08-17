@@ -49,6 +49,7 @@ ZeniMax Media Inc., Suite 120, Rockville, Maryland 20850 USA.
 #include "game/Item.h"
 #include "game/Player.h"
 #include "graphics/Math.h"
+#include "gui/Console.h"
 #include "gui/Credits.h"
 #include "gui/Menu.h"
 #include "scene/Interactive.h"
@@ -370,6 +371,7 @@ public:
 		
 		if(entity == entities.player()) {
 			// The player entity must not be destroyed!
+			g_console.close();
 			ARX_MENU_Launch(g_canResumeGame);
 			ARX_MENU_Clicked_CREDITS();
 			credits::setMessage("You have been eaten by a Grue!");
