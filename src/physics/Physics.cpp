@@ -529,7 +529,9 @@ static bool IsObjectVertexCollidingTriangle(const PHYSICS_BOX_DATA & pbox, Vec3f
 	return ret;
 }
 
-static bool IsObjectVertexCollidingPoly(const PHYSICS_BOX_DATA & pbox, const EERIEPOLY & ep) {
+#include "graphics/DrawDebug.h"
+
+static bool IsObjectVertexCollidingPoly(const PHYSICS_BOX_DATA & pbox, EERIEPOLY & ep) {
 
 	Vec3f pol[3];
 	pol[0] = ep.v[0].p;
@@ -539,6 +541,7 @@ static bool IsObjectVertexCollidingPoly(const PHYSICS_BOX_DATA & pbox, const EER
 	if(ep.type & POLY_QUAD) {
 
 		if(IsObjectVertexCollidingTriangle(pbox, pol)) {
+			debug::drawPoly(&ep, Color::green);
 			return true;
 		}
 
@@ -546,16 +549,20 @@ static bool IsObjectVertexCollidingPoly(const PHYSICS_BOX_DATA & pbox, const EER
 		pol[2] = ep.v[3].p;
 
 		if(IsObjectVertexCollidingTriangle(pbox, pol)) {
+			debug::drawPoly(&ep, Color::green);
 			return true;
 		}
-
+		
+		debug::drawPoly(&ep, Color::red);
 		return false;
 	}
 
 	if(IsObjectVertexCollidingTriangle(pbox, pol)) {
+		debug::drawPoly(&ep, Color::green);
 		return true;
 	}
-
+	
+	debug::drawPoly(&ep, Color::red);
 	return false;
 }
 
