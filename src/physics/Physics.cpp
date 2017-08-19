@@ -531,17 +531,118 @@ static bool IsObjectVertexCollidingTriangle(const PHYSICS_BOX_DATA & pbox, Vec3f
 
 #include "graphics/DrawDebug.h"
 
-static bool IsObjectVertexCollidingPoly(const PHYSICS_BOX_DATA & pbox, EERIEPOLY & ep) {
 
+// Based on:
+// Real-Time Collision Detection by Christer Ericson,
+// published by Morgan Kaufmann Publishers, © 2005 Elsevier Inc
+// page 141f
+// page 167f
+Vec3f ClosestPtPointTriangle(Vec3f p, Vec3f a, Vec3f b, Vec3f c) {
+	
+	// Check if P in vertex region outside A
+	Vec3f ab = b - a;
+	Vec3f ac = c - a;
+	Vec3f ap = p - a;
+	float d1 = glm::dot(ab, ap);
+	float d2 = glm::dot(ac, ap);
+	if (d1 <= 0.0f && d2 <= 0.0f) return a; // barycentric coordinates (1,0,0)
+	
+	// Check if P in vertex region outside B
+	Vec3f bp = p - b;
+	float d3 = glm::dot(ab, bp);
+	float d4 = glm::dot(ac, bp);
+	if (d3 >= 0.0f && d4 <= d3) return b; // barycentric coordinates (0,1,0)
+	
+	// Check if P in edge region of AB, if so return projection of P onto AB
+	float vc = d1*d4 - d3*d2;
+	if (vc <= 0.0f && d1 >= 0.0f && d3 <= 0.0f) {
+		float v = d1 / (d1 - d3);
+		return a + v * ab; // barycentric coordinates (1-v,v,0)
+	}
+	
+	// Check if P in vertex region outside C
+	Vec3f cp = p - c;
+	float d5 = glm::dot(ab, cp);
+	float d6 = glm::dot(ac, cp);
+	if (d6 >= 0.0f && d5 <= d6) return c; // barycentric coordinates (0,0,1)
+	
+	// Check if P in edge region of AC, if so return projection of P onto AC
+	float vb = d5*d2 - d1*d6;
+	if (vb <= 0.0f && d2 >= 0.0f && d6 <= 0.0f) {
+		float w = d2 / (d2 - d6);
+		return a + w * ac; // barycentric coordinates (1-w,0,w)
+	}
+	
+	// Check if P in edge region of BC, if so return projection of P onto BC
+	float va = d3*d6 - d5*d4;
+	if (va <= 0.0f && (d4 - d3) >= 0.0f && (d5 - d6) >= 0.0f) {
+		float w = (d4 - d3) / ((d4 - d3) + (d5 - d6));
+		return b + w * (c - b); // barycentric coordinates (0,1-w,w)
+	}
+	
+	// P inside face region. Compute Q through its barycentric coordinates (u,v,w)
+	float denom = 1.0f / (va + vb + vc);
+	float v = vb * denom;
+	float w = vc * denom;
+	return a + ab * v + ac * w; // = u*a + v*b + w*c, u = va * denom = 1.0f - v - w
+}
+
+// Returns true if sphere s intersects triangle ABC, false otherwise.
+// The point p on abc closest to the sphere center is also returned
+bool TestSphereTriangle(Sphere s, Vec3f a, Vec3f b, Vec3f c, Vec3f &p) {
+	// Find point P on triangle ABC closest to sphere center
+	p = ClosestPtPointTriangle(s.origin, a, b, c);
+	// Sphere and triangle intersect if the (squared) distance from sphere
+	// center to point p is less than the (squared) sphere radius
+	Vec3f v = p - s.origin;
+	return glm::dot(v, v) <= s.radius * s.radius;
+}
+
+
+
+
+
+static bool IsObjectVertexCollidingPolyNew(const PHYSICS_BOX_DATA & pbox, EERIEPOLY & ep) {
+	
+	Vec3f foo;
+	
+	Sphere sphere = Sphere(pbox.vert[0].pos, pbox.radius);
+	
+	bool check1 = TestSphereTriangle(sphere, ep.v[0].p, ep.v[1].p, ep.v[2].p, foo);
+	if(check1) {
+		return true;
+	}
+	
+	if((ep.type & POLY_QUAD)) {
+		bool check2 = TestSphereTriangle(sphere, ep.v[1].p, ep.v[3].p, ep.v[2].p, foo);
+		if(check2) {
+			return true;
+		}
+	}
+	
+	return false;
+}
+
+
+static bool IsObjectVertexCollidingPoly(const PHYSICS_BOX_DATA & pbox, EERIEPOLY & ep) {
+	
+	bool foo = IsObjectVertexCollidingPolyNew(pbox, ep);
+	if(foo) {
+		debug::drawPoly(&ep, Color::green);
+		return true;
+	} else {
+		debug::drawPoly(&ep, Color::red);
+	}
+	
+	
 	Vec3f pol[3];
 	pol[0] = ep.v[0].p;
 	pol[1] = ep.v[1].p;
 	pol[2] = ep.v[2].p;
-
+	
 	if(ep.type & POLY_QUAD) {
 
 		if(IsObjectVertexCollidingTriangle(pbox, pol)) {
-			debug::drawPoly(&ep, Color::green);
 			return true;
 		}
 
@@ -549,20 +650,16 @@ static bool IsObjectVertexCollidingPoly(const PHYSICS_BOX_DATA & pbox, EERIEPOLY
 		pol[2] = ep.v[3].p;
 
 		if(IsObjectVertexCollidingTriangle(pbox, pol)) {
-			debug::drawPoly(&ep, Color::green);
 			return true;
 		}
 		
-		debug::drawPoly(&ep, Color::red);
 		return false;
 	}
 
 	if(IsObjectVertexCollidingTriangle(pbox, pol)) {
-		debug::drawPoly(&ep, Color::green);
 		return true;
 	}
 	
-	debug::drawPoly(&ep, Color::red);
 	return false;
 }
 
