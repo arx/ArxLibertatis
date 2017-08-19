@@ -30,8 +30,11 @@ void drawDebugCycleViews();
 
 void drawDebugRender();
 
+struct EERIEPOLY;
+
 namespace debug {
 	void drawRay(Vec3f start, Vec3f dir, Color color = Color::white, float duration = 0.0f);
+	void drawPoly(EERIEPOLY * poly, Color color = Color::white, float duration = 0.0f);
 }
 
 #endif // ARX_GRAPHICS_DRAWDEBUG_H

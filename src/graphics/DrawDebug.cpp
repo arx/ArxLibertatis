@@ -882,11 +882,40 @@ struct DebugRay {
 	{}
 };
 
+struct DebugPoly {
+	EERIEPOLY * p;
+	Color color;
+	float expiration;
+	
+	DebugPoly(EERIEPOLY * poly, Color color, float expiration)
+		: p(poly)
+		, color(color)
+		, expiration(expiration)
+	{}
+	
+	void draw() const {
+		drawLine(p->v[0].p, p->v[1].p, color, color);
+		drawLine(p->v[2].p, p->v[0].p, color, color);
+		if((p->type & POLY_QUAD)) {
+			drawLine(p->v[2].p, p->v[3].p, color, color);
+			drawLine(p->v[3].p, p->v[1].p, color, color);
+		} else {
+			drawLine(p->v[1].p, p->v[2].p, color, color);
+		}
+	}
+};
+
 static std::vector<DebugRay> debugRays;
+static std::vector<DebugPoly> debugPolys;
 
 void debug::drawRay(Vec3f start, Vec3f dir, Color color, float duration) {
 	DebugRay ray = DebugRay(start, dir, color, arxtime.now_f() + duration * 1000);
 	debugRays.push_back(ray);
+}
+
+void debug::drawPoly(EERIEPOLY * poly, Color color, float duration) {
+	DebugPoly p = DebugPoly(poly, color, arxtime.now_f() + duration * 1000);
+	debugPolys.push_back(p);
 }
 
 static void updateAndRenderDebugDrawables() {
@@ -895,12 +924,25 @@ static void updateAndRenderDebugDrawables() {
 		drawLine(ray.start, ray.dir, ray.color);
 	}
 	
+	for(size_t i = 0; i < debugPolys.size(); i++) {
+		const DebugPoly & poly = debugPolys[i];
+		poly.draw();
+	}
+	
 	float now = arxtime.now_f();
 	
 	for(size_t i = 0; i < debugRays.size(); i++) {
 		if(debugRays[i].expiration < now) {
 			std::swap(debugRays[i], debugRays.back());
 			debugRays.pop_back();
+			i--;
+		}
+	}
+	
+	for(size_t i = 0; i < debugPolys.size(); i++) {
+		if(debugPolys[i].expiration < now) {
+			std::swap(debugPolys[i], debugPolys.back());
+			debugPolys.pop_back();
 			i--;
 		}
 	}
