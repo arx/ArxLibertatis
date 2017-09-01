@@ -88,6 +88,47 @@ void EERIE_PHYSICS_BOX_Create(EERIE_3DOBJ * obj)
 		}
 	}
 	
+	
+	{
+		Vec3f center = cubmin + (cubmax - cubmin) * .5f;
+		
+		float dstmax = 0.f;
+		for(size_t k = 0; k < obj->vertexlist.size(); k++) {
+			if(k != obj->origin) {
+				float d = glm::distance(pbox->vert[0].pos, center);
+				dstmax = std::max(dstmax, d);
+			}
+		}
+		pbox->mesh.sphere = Sphere(center, dstmax);
+		
+		pbox->mesh.verts[0] = center - Vec3f(cubmin.x, cubmin.y, cubmin.z);
+		pbox->mesh.verts[1] = center - Vec3f(cubmax.x, cubmin.y, cubmin.z);
+		pbox->mesh.verts[2] = center - Vec3f(cubmin.x, cubmax.y, cubmin.z);
+		pbox->mesh.verts[3] = center - Vec3f(cubmax.x, cubmax.y, cubmin.z);
+		
+		pbox->mesh.verts[4] = center - Vec3f(cubmin.x, cubmin.y, cubmax.z);
+		pbox->mesh.verts[5] = center - Vec3f(cubmax.x, cubmin.y, cubmax.z);
+		pbox->mesh.verts[6] = center - Vec3f(cubmin.x, cubmax.y, cubmax.z);
+		pbox->mesh.verts[7] = center - Vec3f(cubmax.x, cubmax.y, cubmax.z);
+		
+		// xy
+		pbox->mesh.faces[0] = PhysicsFace(0, 1, 2);
+		pbox->mesh.faces[1] = PhysicsFace(1, 3, 2);
+		pbox->mesh.faces[2] = PhysicsFace(4, 5, 6);
+		pbox->mesh.faces[3] = PhysicsFace(5, 7, 6);
+		// xz
+		pbox->mesh.faces[4] = PhysicsFace(0, 4, 1);
+		pbox->mesh.faces[5] = PhysicsFace(1, 4, 5);
+		pbox->mesh.faces[6] = PhysicsFace(2, 3, 6);
+		pbox->mesh.faces[7] = PhysicsFace(3, 7, 6);
+		// yz
+		pbox->mesh.faces[8] = PhysicsFace(0, 2, 4);
+		pbox->mesh.faces[9] = PhysicsFace(2, 6, 4);
+		pbox->mesh.faces[10] = PhysicsFace(1, 5, 3);
+		pbox->mesh.faces[11] = PhysicsFace(3, 5, 7);
+	}
+	
+	
 	pbox->vert[0].pos = cubmin + (cubmax - cubmin) * .5f;
 	pbox->vert[13].pos = pbox->vert[0].pos;
 	pbox->vert[13].pos.y = cubmin.y;
@@ -284,6 +325,15 @@ void EERIE_PHYSICS_BOX_Launch(EERIE_3DOBJ * obj, const Vec3f & pos, const Anglef
 		pv->force = Vec3f_ZERO;
 		pv->velocity = vect * (250.f * ratio);
 		pv->mass = 0.4f + ratio * 0.1f;
+	}
+	
+	for(size_t i = 0; i < obj->pbox->mesh.verts.size(); i++) {
+		Vec3f & rvert = obj->pbox->mesh.rverts[i];
+		
+		rvert = obj->pbox->mesh.verts[i];
+		rvert = VRotateY(rvert, angle.getYaw());
+		rvert = VRotateX(rvert, angle.getPitch());
+		rvert = VRotateZ(rvert, angle.getRoll());
 	}
 	
 	obj->pbox->active = 1;
@@ -623,16 +673,64 @@ static bool IsObjectVertexCollidingPolyNew(const PHYSICS_BOX_DATA & pbox, EERIEP
 	return false;
 }
 
+bool TestMeshTriangle(PhysicsMesh mesh, Vec3f a, Vec3f b, Vec3f c) {
+	
+	EERIE_TRI t1;
+	t1.v[0] = a;
+	t1.v[1] = b;
+	t1.v[2] = c;
+	
+	for(size_t f = 0; f < mesh.faces.size(); f++) {
+		const PhysicsFace & face = mesh.faces[f];
+		
+		EERIE_TRI t2;
+		t2.v[0] = mesh.tverts[face.verts[0]];
+		t2.v[1] = mesh.tverts[face.verts[1]];
+		t2.v[2] = mesh.tverts[face.verts[2]];
+		
+		if(Triangles_Intersect(t1, t2)) {
+			return true;
+		}
+	}
+	return false;
+}
+
+
+static bool IsPhysicsMeshColliding(const PHYSICS_BOX_DATA & pbox, EERIEPOLY & ep) {
+	
+	bool check1 = TestMeshTriangle(pbox.mesh, ep.v[0].p, ep.v[1].p, ep.v[2].p);
+	if(check1) {
+		return true;
+	}
+	
+	if((ep.type & POLY_QUAD)) {
+		bool check2 = TestMeshTriangle(pbox.mesh, ep.v[1].p, ep.v[3].p, ep.v[2].p);
+		if(check2) {
+			return true;
+		}
+	}
+	
+	return false;
+}
 
 static bool IsObjectVertexCollidingPoly(const PHYSICS_BOX_DATA & pbox, EERIEPOLY & ep) {
 	
 	bool foo = IsObjectVertexCollidingPolyNew(pbox, ep);
-	if(foo) {
+	if(!foo) {
+		debug::drawPoly(&ep, Color::yellow);
+		return false;
+	}
+	
+	bool bar = IsPhysicsMeshColliding(pbox, ep);
+	if(!bar) {
+		debug::drawPoly(&ep, Color::red);
+		return false;
+	} else {
 		debug::drawPoly(&ep, Color::green);
 		return true;
-	} else {
-		debug::drawPoly(&ep, Color::red);
 	}
+	
+	
 	
 	
 	Vec3f pol[3];
@@ -913,7 +1011,13 @@ static void ARX_EERIE_PHYSICS_BOX_Compute(PHYSICS_BOX_DATA * pbox, float framedi
 	}
 
 	RK4Integrate(pbox->vert, framediff);
-
+	
+	
+	for(size_t v = 0; v < pbox->mesh.verts.size(); v++) {
+		pbox->mesh.tverts[v] = pbox->mesh.rverts[v] + pbox->vert[0].pos;
+	}
+	
+	
 	EERIEPOLY * collisionPoly = NULL;
 	
 	if(   !IsFULLObjectVertexInValidPosition(*pbox, collisionPoly)

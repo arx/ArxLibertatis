@@ -70,8 +70,33 @@ struct PhysicsParticle
 	{}
 };
 
+struct PhysicsFace {
+	u_int16_t verts[3];
+	
+	PhysicsFace(){
+		verts[0] = 0;
+		verts[1] = 0;
+		verts[2] = 0;
+	}
+	
+	PhysicsFace(u_int16_t v0, u_int16_t v1, u_int16_t v2) {
+		verts[0] = v0;
+		verts[1] = v1;
+		verts[2] = v2;
+	}
+};
+
+struct PhysicsMesh {
+	Sphere sphere;
+	boost::array<PhysicsFace, 12> faces;
+	boost::array<Vec3f, 8> verts;
+	boost::array<Vec3f, 8> rverts;
+	boost::array<Vec3f, 8> tverts;
+};
+
 struct PHYSICS_BOX_DATA
 {
+	PhysicsMesh mesh;
 	boost::array<PhysicsParticle, 15> vert;
 	short	active;
 	short	stopcount;

@@ -285,6 +285,7 @@ EERIE_3DOBJ * Eerie_Copy(const EERIE_3DOBJ * obj) {
 		nouvo->pbox->stopcount = 0;
 		nouvo->pbox->radius = obj->pbox->radius;
 		
+		nouvo->pbox->mesh = obj->pbox->mesh;
 		nouvo->pbox->vert = obj->pbox->vert;
 	}
 	

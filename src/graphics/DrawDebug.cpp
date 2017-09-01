@@ -370,24 +370,24 @@ static void drawDebugFogs() {
 
 // TODO remove too similar colors
 static const Color distinctDebugColors[] = {
-	Color(230,  25,  75), // Red
-	Color( 60, 180,  75), // Green
-	Color(255, 225,  25), // Yellow
-	Color(  0, 130, 200), // Blue
-	Color(245, 130,  48), // Orange
-	Color(145,  30, 180), // Purple
-	Color( 70, 240, 240), // Cyan
-	Color(240,  50, 230), // Magenta
-	Color(250, 190, 190), // Pink
-	Color(  0, 128, 128), // Teal
-	Color(230, 190, 255), // Lavender
-	Color(170, 110,  40), // Brown
-	Color(255, 250, 200), // Beige
-	Color(128,   0,   0), // Maroon
-	Color(170, 255, 195), // Mint
-	Color(128, 128,   0), // Olive
-	Color(255, 215, 180), // Coral
-	Color(  0,   0, 128)  // Navy
+	Color(230,  25,  75), //  0, Red
+	Color( 60, 180,  75), //  1, Green
+	Color(255, 225,  25), //  2, Yellow
+	Color(  0, 130, 200), //  3, Blue
+	Color(245, 130,  48), //  4, Orange
+	Color(145,  30, 180), //  5, Purple
+	Color( 70, 240, 240), //  6, Cyan
+	Color(240,  50, 230), //  7, Magenta
+	Color(250, 190, 190), //  8, Pink
+	Color(  0, 128, 128), //  9, Teal
+	Color(230, 190, 255), // 10, Lavender
+	Color(170, 110,  40), // 11, Brown
+	Color(255, 250, 200), // 12, Beige
+	Color(128,   0,   0), // 13, Maroon
+	Color(170, 255, 195), // 14, Mint
+	Color(128, 128,   0), // 15, Olive
+	Color(255, 215, 180), // 16, Coral
+	Color(  0,   0, 128)  // 17, Navy
 };
 
 #include <boost/lexical_cast.hpp>
@@ -430,6 +430,7 @@ static void drawDebugCollisionShape(EERIE_3DOBJ * obj) {
 	// Vert indices copied from
 	// IsObjectVertexCollidingTriangle
 	
+	if(false) {
 	//TOP
 	drawLineTriangle(v[1].pos, v[2].pos, v[3].pos, c[0]);
 	//BOTTOM
@@ -450,6 +451,31 @@ static void drawDebugCollisionShape(EERIE_3DOBJ * obj) {
 	drawLineTriangle(v[4].pos, v[3].pos, v[7].pos, c[8]);
 	//DOWN/RIGHT
 	drawLineTriangle(v[8].pos, v[7].pos, v[11].pos, c[9]);
+	} else {
+		static int showFace = -1;
+		if(g_debugTriggers[2]) {
+			g_debugTriggers[2] = false;
+			showFace++;
+			if(showFace >= obj->pbox->mesh.faces.size()) {
+				showFace = 0;
+			}
+		}
+		
+		for(size_t f = 0; f < obj->pbox->mesh.faces.size(); f++) {
+			if(showFace >= 0 && f != showFace)
+				continue;
+			
+			const PhysicsFace & face = obj->pbox->mesh.faces[f];
+			
+			Vec3f offset = Vec3f_ONE * 0.05f * float(f);
+			
+			drawLineTriangle(
+				obj->pbox->mesh.tverts[face.verts[0]] + offset,
+				obj->pbox->mesh.tverts[face.verts[1]] + offset,
+				obj->pbox->mesh.tverts[face.verts[2]] + offset,
+				c[f]);
+		}
+	}
 }
 
 static void drawDebugEntityPhysicsCylinder(Entity * io) {
