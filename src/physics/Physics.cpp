@@ -587,7 +587,7 @@ static bool IsObjectVertexCollidingTriangle(const PHYSICS_BOX_DATA & pbox, Vec3f
 // published by Morgan Kaufmann Publishers, © 2005 Elsevier Inc
 // page 141f
 // page 167f
-Vec3f ClosestPtPointTriangle(Vec3f p, Vec3f a, Vec3f b, Vec3f c) {
+static Vec3f ClosestPtPointTriangle(Vec3f p, Vec3f a, Vec3f b, Vec3f c) {
 	
 	// Check if P in vertex region outside A
 	Vec3f ab = b - a;
@@ -639,7 +639,7 @@ Vec3f ClosestPtPointTriangle(Vec3f p, Vec3f a, Vec3f b, Vec3f c) {
 
 // Returns true if sphere s intersects triangle ABC, false otherwise.
 // The point p on abc closest to the sphere center is also returned
-bool TestSphereTriangle(Sphere s, Vec3f a, Vec3f b, Vec3f c, Vec3f &p) {
+static bool TestSphereTriangle(Sphere s, Vec3f a, Vec3f b, Vec3f c, Vec3f &p) {
 	// Find point P on triangle ABC closest to sphere center
 	p = ClosestPtPointTriangle(s.origin, a, b, c);
 	// Sphere and triangle intersect if the (squared) distance from sphere
@@ -673,7 +673,7 @@ static bool IsObjectVertexCollidingPolyNew(const PHYSICS_BOX_DATA & pbox, EERIEP
 	return false;
 }
 
-bool TestMeshTriangle(PhysicsMesh mesh, Vec3f a, Vec3f b, Vec3f c) {
+static bool TestMeshTriangle(PhysicsMesh mesh, Vec3f a, Vec3f b, Vec3f c) {
 	
 	EERIE_TRI t1;
 	t1.v[0] = a;

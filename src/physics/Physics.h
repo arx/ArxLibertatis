@@ -71,7 +71,7 @@ struct PhysicsParticle
 };
 
 struct PhysicsFace {
-	u_int16_t verts[3];
+	uint16_t verts[3];
 	
 	PhysicsFace(){
 		verts[0] = 0;
@@ -79,7 +79,7 @@ struct PhysicsFace {
 		verts[2] = 0;
 	}
 	
-	PhysicsFace(u_int16_t v0, u_int16_t v1, u_int16_t v2) {
+	PhysicsFace(uint16_t v0, uint16_t v1, uint16_t v2) {
 		verts[0] = v0;
 		verts[1] = v1;
 		verts[2] = v2;
