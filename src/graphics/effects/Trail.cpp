@@ -33,7 +33,7 @@ Trail::Trail(long duration, Color4f startColor, Color4f endColor, float startSiz
 	segments = std::max(segments, size_t(4));
 	
 	m_timePerSegment = float(duration) / float(segments);
-	m_timeOfLastSegment = 0;
+	m_lastSegmentDuration = 0;
 	
 	m_positions.set_capacity(segments);
 	m_segments.reserve(segments);
@@ -60,13 +60,13 @@ void Trail::Update(float timeDelta) {
 	if(arxtime.is_paused())
 		return;
 	
-	m_timeOfLastSegment += timeDelta;
+	m_lastSegmentDuration += timeDelta;
 	
-	if(m_timeOfLastSegment < m_timePerSegment) {
+	if(m_lastSegmentDuration < m_timePerSegment) {
 		if(!m_positions.empty())
 			m_positions.pop_front();
 	} else {
-		m_timeOfLastSegment = 0;
+		m_lastSegmentDuration = 0;
 	}
 	
 	m_positions.push_front(m_nextPosition);
