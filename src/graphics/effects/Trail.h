@@ -49,7 +49,7 @@ private:
 	};
 
 	float m_timePerSegment;
-	float m_timeOfLastSegment;
+	float m_lastSegmentDuration;
 	std::vector<TrailSegment> m_segments;
 
 	Vec3f m_nextPosition;
