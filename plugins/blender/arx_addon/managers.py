@@ -22,12 +22,13 @@ import os
 if "bpy" in locals():
     importlib.reload(sys.modules["arx_addon.common"])
     importlib.reload(sys.modules["arx_addon.dataCommon"])
-    importlib.reload(sys.modules["arx_addon.lib"])
     importlib.reload(sys.modules["arx_addon.dataDlf"])
     importlib.reload(sys.modules["arx_addon.dataFtl"])
     importlib.reload(sys.modules["arx_addon.dataFts"])
     importlib.reload(sys.modules["arx_addon.dataLlf"])
-    # importlib.reload(sys.modules["arx_addon.dataTea"])
+    importlib.reload(sys.modules["arx_addon.dataTea"])
+    importlib.reload(sys.modules["arx_addon.files"])
+    importlib.reload(sys.modules["arx_addon.lib"])
 
 import bpy
 import bmesh
