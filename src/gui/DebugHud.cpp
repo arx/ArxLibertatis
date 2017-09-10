@@ -23,6 +23,7 @@
 #include <string>
 #include <iomanip>
 #include <deque>
+#include <numeric>
 
 #include <boost/circular_buffer.hpp>
 #include <boost/format.hpp>
@@ -393,7 +394,7 @@ void ShowFpsGraph() {
 	
 	lastFPSArray.push_front(1.f / toS(g_platformTime.lastFrameDuration()));
 	
-	float avg = 0;
+	float avg = std::accumulate(lastFPSArray.begin(), lastFPSArray.end(), 0.f) / lastFPSArray.size();
 	float worst = lastFPSArray[0];
 
 	const float SCALE_Y = 2.0f;
@@ -402,7 +403,6 @@ void ShowFpsGraph() {
 	{
 		float time = lastFPSArray[i];
 
-		avg += lastFPSArray[i];
 		worst = std::min(worst, lastFPSArray[i]);
 
 		lastFPSVertices[i].color = Color(255, 255, 255, 255).toRGBA();
@@ -411,7 +411,6 @@ void ShowFpsGraph() {
 		lastFPSVertices[i].p.z = 1.0f;
 		lastFPSVertices[i].w = 1.0f;
 	}
-	avg /= lastFPSArray.size();
 
 	EERIEDRAWPRIM(Renderer::LineStrip, &lastFPSVertices[0], lastFPSArray.size());
 
