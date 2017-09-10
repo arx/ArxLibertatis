@@ -19,6 +19,7 @@
 
 #include "gui/DebugHud.h"
 
+#include <algorithm>
 #include <cstdio>
 #include <string>
 #include <iomanip>
@@ -395,16 +396,13 @@ void ShowFpsGraph() {
 	lastFPSArray.push_front(1.f / toS(g_platformTime.lastFrameDuration()));
 	
 	float avg = std::accumulate(lastFPSArray.begin(), lastFPSArray.end(), 0.f) / lastFPSArray.size();
-	float worst = lastFPSArray[0];
+	float worst = *std::min_element(lastFPSArray.begin(), lastFPSArray.end());
 
 	const float SCALE_Y = 2.0f;
 
 	for(size_t i = 0; i < lastFPSArray.size(); ++i)
 	{
 		float time = lastFPSArray[i];
-
-		worst = std::min(worst, lastFPSArray[i]);
-
 		lastFPSVertices[i].color = Color(255, 255, 255, 255).toRGBA();
 		lastFPSVertices[i].p.x = i;
 		lastFPSVertices[i].p.y = windowSize.y - (time * SCALE_Y);
