@@ -24,6 +24,7 @@
 #include <iomanip>
 #include <deque>
 
+#include <boost/circular_buffer.hpp>
 #include <boost/format.hpp>
 
 #include "core/Core.h"
@@ -370,26 +371,30 @@ void ShowDebugToggles() {
 	}
 }
 
+
+static boost::circular_buffer<float> lastFPSArray;
+static std::vector<TexturedVertex> lastFPSVertices;
+
 void ShowFpsGraph() {
 	
 	ARX_PROFILE_FUNC();
-
-	GRenderer->ResetTexture(0);
-
-	static std::deque<float> lastFPSArray;
-	lastFPSArray.push_front(1.f / toS(g_platformTime.lastFrameDuration()));
-
+	
 	Vec2i windowSize = mainApp->getWindow()->getSize();
-	if(lastFPSArray.size() == size_t(windowSize.x))
-	{
-		lastFPSArray.pop_back();
+	size_t maxSamples = size_t(windowSize.x);
+	
+	if(maxSamples != lastFPSArray.capacity()) {
+		lastFPSArray.set_capacity(maxSamples);
 	}
-
+	if(maxSamples != lastFPSVertices.size()) {
+		lastFPSVertices.resize(maxSamples);
+	}
+	
+	GRenderer->ResetTexture(0);
+	
+	lastFPSArray.push_front(1.f / toS(g_platformTime.lastFrameDuration()));
+	
 	float avg = 0;
 	float worst = lastFPSArray[0];
-
-	std::vector<TexturedVertex> vertices;
-	vertices.resize(lastFPSArray.size());
 
 	const float SCALE_Y = 2.0f;
 
@@ -400,15 +405,15 @@ void ShowFpsGraph() {
 		avg += lastFPSArray[i];
 		worst = std::min(worst, lastFPSArray[i]);
 
-		vertices[i].color = Color(255, 255, 255, 255).toRGBA();
-		vertices[i].p.x = i;
-		vertices[i].p.y = windowSize.y - (time * SCALE_Y);
-		vertices[i].p.z = 1.0f;
-		vertices[i].w = 1.0f;
+		lastFPSVertices[i].color = Color(255, 255, 255, 255).toRGBA();
+		lastFPSVertices[i].p.x = i;
+		lastFPSVertices[i].p.y = windowSize.y - (time * SCALE_Y);
+		lastFPSVertices[i].p.z = 1.0f;
+		lastFPSVertices[i].w = 1.0f;
 	}
 	avg /= lastFPSArray.size();
 
-	EERIEDRAWPRIM(Renderer::LineStrip, &vertices[0], vertices.size());
+	EERIEDRAWPRIM(Renderer::LineStrip, &lastFPSVertices[0], lastFPSArray.size());
 
 	Color avgColor = Color::blue * 0.5f + Color::white * 0.5f;
 	float avgPos = windowSize.y - (avg * SCALE_Y);
