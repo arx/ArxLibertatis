@@ -369,6 +369,7 @@ void ARX_THROWN_OBJECT_Manage(float time_offset)
 		BackgroundTileData * bkgData = getFastBackgroundData(projectile.position.x, projectile.position.z);
 
 		if(!bkgData || !bkgData->treat) {
+			ARX_THROWN_OBJECT_Kill(i); //projectile got outside of the world
 			continue;
 		}
 
