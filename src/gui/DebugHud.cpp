@@ -377,7 +377,7 @@ void ShowDebugToggles() {
 static boost::circular_buffer<float> frameDurationPlotValues;
 static std::vector<TexturedVertex> frameDurationPlotVertices;
 
-void ShowFpsGraph() {
+void ShowFrameDurationPlot() {
 	
 	ARX_PROFILE_FUNC();
 	

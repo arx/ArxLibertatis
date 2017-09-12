@@ -2184,7 +2184,7 @@ void ArxGame::render() {
 			break;
 		}
 		case InfoPanelFramerateGraph: {
-			ShowFpsGraph();
+			ShowFrameDurationPlot();
 			break;
 		}
 		case InfoPanelDebug: {
