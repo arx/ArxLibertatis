@@ -22,7 +22,7 @@
 
 void ShowInfoText();
 void ShowFPS();
-void ShowFpsGraph();
+void ShowFrameDurationPlot();
 void ShowDebugToggles();
 
 #endif // ARX_GUI_DEBUGHUD_H
