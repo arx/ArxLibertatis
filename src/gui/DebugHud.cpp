@@ -379,8 +379,6 @@ static std::vector<TexturedVertex> frameDurationPlotVertices;
 
 void ShowFrameDurationPlot() {
 	
-	ARX_PROFILE_FUNC();
-	
 	Vec2i windowSize = mainApp->getWindow()->getSize();
 	size_t maxSamples = size_t(windowSize.x);
 	
