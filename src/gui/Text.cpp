@@ -299,6 +299,32 @@ static bool getFontFile(res::path & result) {
 	return false;
 }
 
+static float smallTextScale(float scale) {
+	return scale > 1.0f ? scale * 0.7f + 0.3f : scale;
+}
+
+void ARX_Text_scaleNoteFont(float scale) {
+	res::path file;
+	if(!getFontFile(file)) {
+		return;
+	}
+
+	Font * nFontInGameNote     = createFont(file, "system_font_note_size", 18, smallTextScale(scale));
+	FontCache::releaseFont(hFontInGameNote);
+	hFontInGameNote = nFontInGameNote;
+}
+
+void ARX_Text_scaleBookFont(float scale) {
+	res::path file;
+	if(!getFontFile(file)) {
+		return;
+	}
+
+	Font *nFontInBook = createFont(file, "system_font_book_size", 18, smallTextScale(scale));
+	FontCache::releaseFont(hFontInBook);
+	hFontInBook = nFontInBook;
+}
+
 bool ARX_Text_Init() {
 	
 	res::path file;
@@ -315,8 +341,7 @@ bool ARX_Text_Init() {
 	created_font_scale = scale;
 	
 	// Keep small font small when increasing resolution
-	// TODO font size jumps around scale = 1
-	float small_scale = scale > 1.0f ? scale * 0.8f : scale;
+	float small_scale = smallTextScale(scale);
 	
 	delete pTextManage;
 	pTextManage = new TextManager();

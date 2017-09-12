@@ -861,7 +861,8 @@ bool ArxGame::initGame()
 	
 	bookcam.angle = Anglef::ZERO;
 	bookcam.orgTrans.pos = Vec3f_ZERO;
-	bookcam.focal = defaultCameraFocal;
+	//factor of 1.5f to compensate for smaller viewport in player book character renders
+	bookcam.focal = defaultCameraFocal * 1.5f;
 	bookcam.cdepth = 2200.f;
 	
 	LoadSysTextures();

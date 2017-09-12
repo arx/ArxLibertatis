@@ -45,7 +45,9 @@ struct Note {
 	Note()
 		: _type(Undefined)
 		, allocatedForRatio(Vec2f_ZERO)
+		, allocated(false)
 		, _page(0)
+		, _maxPages(1)
 		, _pageSpacing(20)
 		, background(NULL)
 		, prevPage(NULL)
@@ -56,6 +58,8 @@ struct Note {
 	void clear();
 	
 	void render();
+
+	bool isAllocated() { return allocated; }
 	
 	const Type & type() { return _type; }
 	const std::string & text() { return _text; }
@@ -78,9 +82,11 @@ private:
 	std::string _text;
 	
 	Vec2f allocatedForRatio;
+	bool allocated;
 	
 	std::vector<std::string> pages;
 	size_t _page;
+	size_t _maxPages;
 	
 	Rectf _area;
 	Rect _textArea;

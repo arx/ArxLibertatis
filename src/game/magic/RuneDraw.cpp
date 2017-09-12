@@ -105,7 +105,7 @@ static void updateIOLight(Entity * io) {
 	}
 }
 
-void ARX_SPELLS_UpdateBookSymbolDraw(Rect rect) {
+void ARX_SPELLS_UpdateBookSymbolDraw(Rect rect, float scale) {
 
 	if(g_bookSymbolDraw.sequence.empty()) {
 		return;
@@ -135,16 +135,16 @@ void ARX_SPELLS_UpdateBookSymbolDraw(Rect rect) {
 		timeRemaining = sd->duration;
 
 	//keep size ratios among runes
-	Vec2f rectToSymbolsRatio = Vec2f(rect.size()) / (Vec2f(lMaxSymbolDrawSize) * g_sizeRatio);
-	Vec2f scale = glm::min(rectToSymbolsRatio.x, rectToSymbolsRatio.y) * g_sizeRatio;
+	Vec2f rectToSymbolsRatio = Vec2f(rect.size()) / (Vec2f(lMaxSymbolDrawSize) * scale);
+	Vec2f drawingScale = glm::min(rectToSymbolsRatio.x, rectToSymbolsRatio.y) * Vec2f(scale);
 
 	Vec2s iMin;
 	Vec2s iMax;
 
 	ReCenterSequence(sd->sequence, iMin, iMax);
-	Vec2f size = Vec2f(iMax - iMin) * scale;
+	Vec2f size = Vec2f(iMax - iMin) * drawingScale;
 
-	Vec2f scaledMin = Vec2f(iMin) * scale;
+	Vec2f scaledMin = Vec2f(iMin) * drawingScale;
 
 	Vec2f pos = Vec2f(rect.center()) - size / 2.0f - scaledMin;
 
@@ -152,12 +152,12 @@ void ARX_SPELLS_UpdateBookSymbolDraw(Rect rect) {
 
 		Vec2f vect = Vec2f(GetSymbVector(sd->sequence[j]));
 		vect *= symbolVecScale;
-		vect *= scale;
+		vect *= drawingScale;
 
 		if(timeRemaining < timePerComponent) {
 			float ratio = timeRemaining / timePerComponent;
 			pos += vect * ratio * 0.5f;
-			AddFlare(pos, 0.1f, 1, entities.player(), true);
+			AddFlare(pos, scale / 7.0f, 1, entities.player(), true);
 
 			break;
 		}

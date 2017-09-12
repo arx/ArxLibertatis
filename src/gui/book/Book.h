@@ -38,6 +38,10 @@ void ARX_INTERFACE_BookOpen();
 void ARX_INTERFACE_BookClose();
 void ARX_INTERFACE_BookToggle();
 
+float ARX_INTERFACE_getBookScale();
+Rectf ARX_INTERFACE_getBookRect();
+bool ARX_INTERFACE_updateBook();
+
 ARX_INTERFACE_BOOK_MODE nextBookPage();
 ARX_INTERFACE_BOOK_MODE prevBookPage();
 void openBookPage(ARX_INTERFACE_BOOK_MODE newPage, bool toggle = false);

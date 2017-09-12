@@ -127,14 +127,14 @@ public:
 	*
 	* \param int showLevel
 	*/
-	void showBookMiniMap(int showLevel);
+	void showBookMiniMap(int showLevel, Rect rect, float scale);
 	
 	/*!
 	* Shows the entire map in the book
 	*
 	* \param int showLevel
 	*/
-	void showBookEntireMap(int showLevel);
+	void showBookEntireMap(int showLevel, Rect rect, float scale);
 	
 	//! Reveals entirely all levels
 	void reveal();
@@ -189,7 +189,7 @@ private:
 	int mapMarkerGetID(const std::string &name);
 	
 	Vec2f computePlayerPos(float zoom, int showLevel);
-	void drawBackground(int showLevel, Rect boundaries, Vec2f start, float zoom, float fadeBorder = 0.f, Vec2f decal = Vec2f(0.f, 0.f), bool invColor = false, float alpha = 1.f);
+	void drawBackground(int showLevel, Rect boundaries, Vec2f start, float zoom, float fadeBorder = 0.f, bool invColor = false, float alpha = 1.f);
 	void drawPlayer(float playerSize, Vec2f playerPos, bool alphaBlending);
 	void drawDetectedEntities(int showLevel, Vec2f start, float zoom);
 	

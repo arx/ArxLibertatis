@@ -62,11 +62,13 @@ void Note::deallocate() {
 	_nextPageButton = Rectf::ZERO;
 	
 	pages.clear();
+
+	allocated = false;
 }
 
 bool Note::allocate() {
 	
-	if(allocatedForRatio == g_sizeRatio) {
+	if(allocatedForRatio == g_sizeRatio && !ARX_INTERFACE_updateBook()) {
 		return background ? true : false;
 	}
 	
@@ -81,14 +83,7 @@ bool Note::allocate() {
 	Vec2f prevButtonOffset;
 	Vec2f nextButtonOffset;
 	
-	size_t maxPages = 1;
-	
-	Vec2f scale = Vec2f(minSizeRatio(), minSizeRatio());
-	
-	if(_type == QuestBook) {
-		// TODO change this once the aspect ratio in character screen, spell book, etc. is fixed.
-		scale = g_sizeRatio;
-	}
+	float scale = ARX_INTERFACE_getBookScale();
 	
 	switch(_type) {
 		
@@ -97,7 +92,7 @@ bool Note::allocate() {
 		case Notice: {
 			background = TextureContainer::LoadUI("graph/interface/book/notice");
 			if(background) {
-				newPos = Vec2f(320 * g_sizeRatio.x - background->m_size.x * 0.5f * scale.x, 47.f * scale.y);
+				newPos = Vec2f(320 * g_sizeRatio.x - background->m_size.x * 0.5f * scale, 47.f * scale);
 				newTextStart = Vec2f(50.f, 50.f);
 				newTextEnd = Vec2f(background->size()) - Vec2f(50.f, 50.f);
 			}
@@ -107,7 +102,7 @@ bool Note::allocate() {
 		case SmallNote: {
 			background = TextureContainer::LoadUI("graph/interface/book/bignote");
 			if(background) {
-				newPos = Vec2f(320 * g_sizeRatio.x - background->m_size.x * 0.5f * scale.x, 47.f * scale.y);
+				newPos = Vec2f(320 * g_sizeRatio.x - background->m_size.x * 0.5f * scale, 47.f * scale);
 				newTextStart = Vec2f(30.f, 30.f);
 				newTextEnd = Vec2f(background->size()) - Vec2f(30.f, 40.f);
 			}
@@ -117,10 +112,10 @@ bool Note::allocate() {
 		case BigNote: {
 			background = TextureContainer::LoadUI("graph/interface/book/very_bignote");
 			if(background) {
-				newPos = Vec2f(320 * g_sizeRatio.x - background->m_size.x * 0.5f * scale.x, 47.f * scale.y);
+				newPos = Vec2f(320 * g_sizeRatio.x - background->m_size.x * 0.5f * scale, 47.f * scale);
 				newTextStart = Vec2f(40.f, 40.f);
 				newTextEnd = Vec2f(background->size()) * Vec2f(0.5f, 1.f) - Vec2f(10.f, 40.f);
-				maxPages = 2;
+				_maxPages = 2;
 			}
 			break;
 		}
@@ -130,10 +125,10 @@ bool Note::allocate() {
 			prevPage = TextureContainer::LoadUI("graph/interface/book/left_corner");
 			nextPage = TextureContainer::LoadUI("graph/interface/book/right_corner");
 			if(background) {
-				newPos = Vec2f(320 * g_sizeRatio.x - background->m_size.x * 0.5f * scale.x, 47.f * scale.y);
+				newPos = Vec2f(320 * g_sizeRatio.x - background->m_size.x * 0.5f * scale, 47.f * scale);
 				newTextStart = Vec2f(40.f, 20.f);
 				newTextEnd = Vec2f(background->size()) * Vec2f(0.5f, 1.f) - Vec2f(10.f, 40.f);
-				maxPages = std::numeric_limits<size_t>::max();
+				_maxPages = std::numeric_limits<size_t>::max();
 				prevButtonOffset = Vec2f(8.f, -6.f);
 				nextButtonOffset = Vec2f(-15.f, -6.f);
 			}
@@ -145,10 +140,10 @@ bool Note::allocate() {
 			prevPage = TextureContainer::LoadUI("graph/interface/book/left_corner_original");
 			nextPage = TextureContainer::LoadUI("graph/interface/book/right_corner_original");
 			if(background) {
-				newPos = Vec2f(97, 64) * scale;
+				newPos = ARX_INTERFACE_getBookRect().topLeft();
 				newTextStart = Vec2f(40.f, 40.f);
 				newTextEnd = Vec2f(background->size()) * Vec2f(0.5f, 1.f) - Vec2f(10.f, 65.f);
-				maxPages = std::numeric_limits<size_t>::max();
+				_maxPages = std::numeric_limits<size_t>::max();
 				prevButtonOffset = Vec2f(8.f, -6.f);
 				nextButtonOffset = Vec2f(-15.f, -6.f);
 			}
@@ -159,24 +154,25 @@ bool Note::allocate() {
 	
 	if(!background) {
 		allocatedForRatio = g_sizeRatio;
+		allocated = false;
 		return false;
 	}
 	
 	_area = Rectf(newPos,
-	             background->m_size.x * scale.x, background->m_size.y * scale.y);
+	             background->m_size.x * scale, background->m_size.y * scale);
 	_textArea = Rect(Vec2i(newTextStart * scale), Vec2i(newTextEnd * scale));
-	_pageSpacing = 20 * scale.x;
+	_pageSpacing = 20 * scale;
 	if(prevPage) {
 		Vec2f pos = Vec2f(0.f, background->m_size.y - prevPage->m_size.y) + prevButtonOffset;
 		pos *= scale;
 		_prevPageButton = Rectf(newPos + pos,
-		                       prevPage->m_size.x * scale.x, prevPage->m_size.y * scale.y);
+		                       prevPage->m_size.x * scale, prevPage->m_size.y * scale);
 	}
 	if(nextPage) {
 		Vec2f pos = Vec2f(background->size() - nextPage->size()) + nextButtonOffset;
 		pos *= scale;
 		_nextPageButton = Rectf(newPos + pos,
-		                       nextPage->m_size.x * scale.x, nextPage->m_size.y * scale.y);
+		                       nextPage->m_size.x * scale, nextPage->m_size.y * scale);
 	}
 	
 	// Split text into pages
@@ -188,7 +184,7 @@ bool Note::allocate() {
 	while(!buffer.empty()) {
 		
 		// Change the note type if the text is too long.
-		if(pages.size() >= maxPages) {
+		if(pages.size() >= _maxPages) {
 			switch(_type) {
 				case Notice: _type = SmallNote; break;
 				case SmallNote: _type = BigNote; break;
@@ -219,6 +215,7 @@ bool Note::allocate() {
 	setPage(_page);
 	
 	allocatedForRatio = g_sizeRatio;
+	allocated = true;
 	
 	return true;
 }
@@ -273,7 +270,7 @@ void Note::render() {
 			Vec2f(_area.left + _textArea.left, _area.top + _textArea.top),
 			_area.left + _textArea.right,
 			pages[_page],
-			Color::none
+			Color::black
 		);
 	}
 	
@@ -284,7 +281,7 @@ void Note::render() {
 			Vec2f(_area.left + _textArea.right + _pageSpacing, _area.top + _textArea.top),
 			_area.left + _textArea.right + _pageSpacing + _textArea.width(),
 			pages[_page + 1],
-			Color::none
+			Color::black
 		);
 	}
 	
