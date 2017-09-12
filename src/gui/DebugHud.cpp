@@ -375,7 +375,7 @@ void ShowDebugToggles() {
 
 
 static boost::circular_buffer<float> frameDurationPlotValues;
-static std::vector<TexturedVertex> lastFPSVertices;
+static std::vector<TexturedVertex> frameDurationPlotVertices;
 
 void ShowFpsGraph() {
 	
@@ -387,8 +387,8 @@ void ShowFpsGraph() {
 	if(maxSamples != frameDurationPlotValues.capacity()) {
 		frameDurationPlotValues.set_capacity(maxSamples);
 	}
-	if(maxSamples != lastFPSVertices.size()) {
-		lastFPSVertices.resize(maxSamples);
+	if(maxSamples != frameDurationPlotVertices.size()) {
+		frameDurationPlotVertices.resize(maxSamples);
 	}
 	
 	GRenderer->ResetTexture(0);
@@ -404,14 +404,14 @@ void ShowFpsGraph() {
 	for(size_t i = 0; i < frameDurationPlotValues.size(); ++i)
 	{
 		float time = frameDurationPlotValues[i];
-		lastFPSVertices[i].color = Color(255, 255, 255, 255).toRGBA();
-		lastFPSVertices[i].p.x = i;
-		lastFPSVertices[i].p.y = OFFSET_Y + (time * SCALE_Y);
-		lastFPSVertices[i].p.z = 1.0f;
-		lastFPSVertices[i].w = 1.0f;
+		frameDurationPlotVertices[i].color = Color(255, 255, 255, 255).toRGBA();
+		frameDurationPlotVertices[i].p.x = i;
+		frameDurationPlotVertices[i].p.y = OFFSET_Y + (time * SCALE_Y);
+		frameDurationPlotVertices[i].p.z = 1.0f;
+		frameDurationPlotVertices[i].w = 1.0f;
 	}
 
-	EERIEDRAWPRIM(Renderer::LineStrip, &lastFPSVertices[0], frameDurationPlotValues.size());
+	EERIEDRAWPRIM(Renderer::LineStrip, &frameDurationPlotVertices[0], frameDurationPlotValues.size());
 
 	Color avgColor = Color::blue * 0.5f + Color::white * 0.5f;
 	float avgPos = OFFSET_Y + (avg * SCALE_Y);
