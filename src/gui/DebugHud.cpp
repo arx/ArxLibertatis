@@ -393,19 +393,20 @@ void ShowFpsGraph() {
 	
 	GRenderer->ResetTexture(0);
 	
-	lastFPSArray.push_front(1.f / toS(g_platformTime.lastFrameDuration()));
+	lastFPSArray.push_front(toMs(g_platformTime.lastFrameDuration()));
 	
 	float avg = std::accumulate(lastFPSArray.begin(), lastFPSArray.end(), 0.f) / lastFPSArray.size();
-	float worst = *std::min_element(lastFPSArray.begin(), lastFPSArray.end());
-
-	const float SCALE_Y = 2.0f;
+	float worst = *std::max_element(lastFPSArray.begin(), lastFPSArray.end());
+	
+	const float OFFSET_Y = 80.f;
+	const float SCALE_Y = 4.0f;
 
 	for(size_t i = 0; i < lastFPSArray.size(); ++i)
 	{
 		float time = lastFPSArray[i];
 		lastFPSVertices[i].color = Color(255, 255, 255, 255).toRGBA();
 		lastFPSVertices[i].p.x = i;
-		lastFPSVertices[i].p.y = windowSize.y - (time * SCALE_Y);
+		lastFPSVertices[i].p.y = OFFSET_Y + (time * SCALE_Y);
 		lastFPSVertices[i].p.z = 1.0f;
 		lastFPSVertices[i].w = 1.0f;
 	}
@@ -413,11 +414,11 @@ void ShowFpsGraph() {
 	EERIEDRAWPRIM(Renderer::LineStrip, &lastFPSVertices[0], lastFPSArray.size());
 
 	Color avgColor = Color::blue * 0.5f + Color::white * 0.5f;
-	float avgPos = windowSize.y - (avg * SCALE_Y);
+	float avgPos = OFFSET_Y + (avg * SCALE_Y);
 	drawLine(Vec2f(0, avgPos), Vec2f(windowSize.x, avgPos), 1.0f, Color::blue);
 
 	Color worstColor = Color::red * 0.5f + Color::white * 0.5f;
-	float worstPos = windowSize.y - (worst * SCALE_Y);
+	float worstPos = OFFSET_Y + (worst * SCALE_Y);
 	drawLine(Vec2f(0, worstPos), Vec2f(windowSize.x, worstPos), 1.0f, Color::red);
 
 	Font * font = hFontDebug;
@@ -434,7 +435,7 @@ void ShowFpsGraph() {
 	for(size_t i = 0; i < 3; i++) {
 		// Format value
 		std::ostringstream oss;
-		oss << std::fixed << std::setprecision(2) << values[i] << " FPS";
+		oss << std::fixed << std::setprecision(2) << values[i] << " ms ("<< 1.f / (values[i] * 0.001f) << " FPS)";
 		texts[i] = oss.str();
 		// Calculate widths (could be done more efficiently for monospace fonts...)
 		labelWidth = std::max(labelWidth, float(font->getTextSize(labels[i]).width()));
