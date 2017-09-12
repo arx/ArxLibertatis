@@ -374,7 +374,7 @@ void ShowDebugToggles() {
 }
 
 
-static boost::circular_buffer<float> lastFPSArray;
+static boost::circular_buffer<float> frameDurationPlotValues;
 static std::vector<TexturedVertex> lastFPSVertices;
 
 void ShowFpsGraph() {
@@ -384,8 +384,8 @@ void ShowFpsGraph() {
 	Vec2i windowSize = mainApp->getWindow()->getSize();
 	size_t maxSamples = size_t(windowSize.x);
 	
-	if(maxSamples != lastFPSArray.capacity()) {
-		lastFPSArray.set_capacity(maxSamples);
+	if(maxSamples != frameDurationPlotValues.capacity()) {
+		frameDurationPlotValues.set_capacity(maxSamples);
 	}
 	if(maxSamples != lastFPSVertices.size()) {
 		lastFPSVertices.resize(maxSamples);
@@ -393,17 +393,17 @@ void ShowFpsGraph() {
 	
 	GRenderer->ResetTexture(0);
 	
-	lastFPSArray.push_front(toMs(g_platformTime.lastFrameDuration()));
+	frameDurationPlotValues.push_front(toMs(g_platformTime.lastFrameDuration()));
 	
-	float avg = std::accumulate(lastFPSArray.begin(), lastFPSArray.end(), 0.f) / lastFPSArray.size();
-	float worst = *std::max_element(lastFPSArray.begin(), lastFPSArray.end());
+	float avg = std::accumulate(frameDurationPlotValues.begin(), frameDurationPlotValues.end(), 0.f) / frameDurationPlotValues.size();
+	float worst = *std::max_element(frameDurationPlotValues.begin(), frameDurationPlotValues.end());
 	
 	const float OFFSET_Y = 80.f;
 	const float SCALE_Y = 4.0f;
 
-	for(size_t i = 0; i < lastFPSArray.size(); ++i)
+	for(size_t i = 0; i < frameDurationPlotValues.size(); ++i)
 	{
-		float time = lastFPSArray[i];
+		float time = frameDurationPlotValues[i];
 		lastFPSVertices[i].color = Color(255, 255, 255, 255).toRGBA();
 		lastFPSVertices[i].p.x = i;
 		lastFPSVertices[i].p.y = OFFSET_Y + (time * SCALE_Y);
@@ -411,7 +411,7 @@ void ShowFpsGraph() {
 		lastFPSVertices[i].w = 1.0f;
 	}
 
-	EERIEDRAWPRIM(Renderer::LineStrip, &lastFPSVertices[0], lastFPSArray.size());
+	EERIEDRAWPRIM(Renderer::LineStrip, &lastFPSVertices[0], frameDurationPlotValues.size());
 
 	Color avgColor = Color::blue * 0.5f + Color::white * 0.5f;
 	float avgPos = OFFSET_Y + (avg * SCALE_Y);
@@ -426,7 +426,7 @@ void ShowFpsGraph() {
 
 	std::string labels[3] = { "Average: ", "Worst: ", "Current: " };
 	Color colors[3] = { avgColor, worstColor, Color::white };
-	float values[3] = { avg, worst, lastFPSArray[0] };
+	float values[3] = { avg, worst, frameDurationPlotValues[0] };
 
 	std::string texts[3];
 	float widths[3];
