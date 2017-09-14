@@ -58,10 +58,12 @@ ZeniMax Media Inc., Suite 120, Rockville, Maryland 20850 USA.
 #include "game/EntityManager.h"
 #include "game/magic/spells/SpellsLvl06.h"
 
-#include "scene/GameSound.h"
-#include "scene/Interactive.h"
+#include "io/log/Logger.h"
 
 #include "physics/Collisions.h"
+
+#include "scene/GameSound.h"
+#include "scene/Interactive.h"
 
 
 // Creation of the physics box... quite cabalistic and extensive func...
@@ -795,6 +797,27 @@ static void ARX_TEMPORARY_TrySound(Entity * source, Material collisionMaterial, 
 	}
 }
 
+bool EERIE_PHYSICS_BOX_IsValidPosition(const Vec3f & pos) {
+	
+	BackgroundTileData * tile = getFastBackgroundData(pos.x, pos.z);
+	if(!tile) {
+		// Position is outside the world grid
+		return false;
+	}
+	
+	if(tile->nbpolyin <= 0) {
+		// Position is in an empty tile
+		return false;
+	}
+	
+	if(pos.y > tile->maxy) {
+		// Position is below the lowest part of the tile
+		return false;
+	}
+	
+	return true;
+}
+
 static void ARX_EERIE_PHYSICS_BOX_Compute(PHYSICS_BOX_DATA * pbox, float framediff, Entity * source) {
 
 	Vec3f oldpos[32];
@@ -809,11 +832,22 @@ static void ARX_EERIE_PHYSICS_BOX_Compute(PHYSICS_BOX_DATA * pbox, float framedi
 	}
 
 	RK4Integrate(pbox->vert, framediff);
-
+	
 	EERIEPOLY * collisionPoly = NULL;
+	
+	bool invalidPosition = false;
+	for(size_t i = 0; i < pbox->vert.size(); i += 2) {
+		if(!EERIE_PHYSICS_BOX_IsValidPosition(pbox->vert[i].pos - Vec3f(0.f, 10.f, 0.f))) {
+			// This indicaties that entity-world collisions are broken
+			LogWarning << "Entity " << source->idString() << " escaped the world";
+			invalidPosition = true;
+			break;
+		}
+	}
 	
 	if(   !IsFULLObjectVertexInValidPosition(*pbox, collisionPoly)
 	   || ARX_INTERACTIVE_CheckFULLCollision(*pbox, source)
+	   || invalidPosition
 	   || IsObjectInField(*pbox)
 	) {
 		

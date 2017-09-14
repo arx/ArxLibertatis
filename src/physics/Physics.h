@@ -88,6 +88,8 @@ struct PHYSICS_BOX_DATA
 	{}
 };
 
+bool EERIE_PHYSICS_BOX_IsValidPosition(const Vec3f & pos);
+
 void EERIE_PHYSICS_BOX_Create(EERIE_3DOBJ * obj);
 void EERIE_PHYSICS_BOX_Release(EERIE_3DOBJ * obj);
 void EERIE_PHYSICS_BOX_Launch(EERIE_3DOBJ * obj, const Vec3f & pos, const Anglef & angle, const Vec3f & vect);
