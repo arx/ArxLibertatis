@@ -49,6 +49,7 @@ ZeniMax Media Inc., Suite 120, Rockville, Maryland 20850 USA.
 #include <cstdlib>
 #include <cstdio>
 #include <map>
+#include <limits>
 
 #include <boost/scoped_array.hpp>
 #include <boost/unordered_map.hpp>
@@ -771,6 +772,13 @@ void EERIEPOLY_Compute_PolyIn() {
 				}
 			}
 		}
+		
+		eg->maxy = -std::numeric_limits<float>::infinity();
+		for(long i = 0; i < eg->nbpolyin; i++) {
+			EERIEPOLY * ep = eg->polyin[i];
+			eg->maxy = std::max(eg->maxy, ep->max.y);
+		}
+		
 	}
 }
 
