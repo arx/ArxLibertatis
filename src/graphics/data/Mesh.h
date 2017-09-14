@@ -62,6 +62,7 @@ struct BackgroundTileData
 	short				nbpolyin;
 	EERIEPOLY *			polydata;
 	EERIEPOLY **		polyin;
+	float maxy;
 	
 	BackgroundTileData()
 		: treat(false)
@@ -69,6 +70,7 @@ struct BackgroundTileData
 		, nbpolyin(0)
 		, polydata(NULL)
 		, polyin(NULL)
+		, maxy(0.f)
 	{}
 };
 
