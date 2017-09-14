@@ -2444,6 +2444,25 @@ static void ARX_CHANGELEVEL_PopAllIO(ARX_CHANGELEVEL_INDEX * asi, ARX_CHANGELEVE
 
 static void ARX_CHANGELEVEL_PopAllIO_FINISH(bool reloadflag, bool firstTime) {
 	
+	for(size_t i = 0; i < entities.size(); i++) {
+		const EntityHandle handle = EntityHandle(i);
+		Entity * entity = entities[handle];
+		
+		if(!entity->obj || entity->show != SHOW_FLAG_IN_SCENE || entity->pos == entity->initpos) {
+			continue;
+		}
+		
+		if(!EERIE_PHYSICS_BOX_IsValidPosition(entity->pos - Vec3f(0.f, 20.f, 0.f))) {
+			LogWarning << "Found entity " << entity->idString() << " outside the world";
+			if((entity->ioflags & (IO_ITEM |IO_MOVABLE)) && (entity->gameFlags & GFLAG_INTERACTIVITY)) {
+				PutInFrontOfPlayer(entity);
+			} else {
+				entity->pos = entity->initpos;
+			}
+		}
+		
+	}
+	
 	if(reloadflag) {
 		
 		for(size_t i = 0; i < entities.size(); i++) {
