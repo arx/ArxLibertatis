@@ -153,11 +153,9 @@ bool ARX_QuickLoad() {
 		return false;
 	}
 
+	ARX_SOUND_MixerPause(ARX_SOUND_MixerMenu);
 	ARX_SOUND_MixerPause(ARX_SOUND_MixerGame);
-	loaded = ARX_LoadGame(*save);
-	ARX_SOUND_MixerResume(ARX_SOUND_MixerGame);
-	
-	return loaded;
+	return ARX_LoadGame(*save);
 }
 
 bool ARX_SlotLoad(SavegameHandle slotIndex) {
@@ -167,6 +165,7 @@ bool ARX_SlotLoad(SavegameHandle slotIndex) {
 	}
 
 	ARX_SOUND_MixerPause(ARX_SOUND_MixerMenu);
+	ARX_SOUND_MixerPause(ARX_SOUND_MixerGame);
 	return ARX_LoadGame(savegames[slotIndex.handleData()]);
 }
 
