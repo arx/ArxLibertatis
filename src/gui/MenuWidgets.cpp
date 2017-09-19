@@ -145,25 +145,25 @@ static bool ARX_LoadGame(const SaveGame & save) {
 }
 
 bool ARX_QuickLoad() {
-	bool loaded;
-
+	
 	SaveGameList::iterator save = savegames.quickload();
 	if(save == savegames.end()) {
 		// No saves found!
 		return false;
 	}
-
+	
 	ARX_SOUND_MixerPause(ARX_SOUND_MixerMenu);
 	ARX_SOUND_MixerPause(ARX_SOUND_MixerGame);
 	return ARX_LoadGame(*save);
 }
 
 bool ARX_SlotLoad(SavegameHandle slotIndex) {
+	
 	if(slotIndex.handleData() >= (int)savegames.size()) {
 		// Invalid slot!
 		return false;
 	}
-
+	
 	ARX_SOUND_MixerPause(ARX_SOUND_MixerMenu);
 	ARX_SOUND_MixerPause(ARX_SOUND_MixerGame);
 	return ARX_LoadGame(savegames[slotIndex.handleData()]);
