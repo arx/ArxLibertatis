@@ -51,6 +51,7 @@ ZeniMax Media Inc., Suite 120, Rockville, Maryland 20850 USA.
 #include <cmath>
 
 #include <boost/lexical_cast.hpp>
+#include <boost/static_assert.hpp>
 
 #include "core/Application.h"
 #include "core/Config.h"
@@ -538,6 +539,7 @@ std::string Input::getKeyName(InputKeyId key, bool localizedName) {
 		name = "WheelDown";
 
 	} else {
+		BOOST_STATIC_ASSERT(ARRAY_SIZE(keysDescriptions) == Keyboard::KeyMax);
 		arx_assert(key >= 0 && key < int(ARRAY_SIZE(keysDescriptions)));
 		const KeyDescription & entity = keysDescriptions[key];
 		
