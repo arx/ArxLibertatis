@@ -76,7 +76,7 @@ static void processDirectory(PakDirectory & dir, const fs::path & prefix,
 			if(action == UnpakExtract || action == UnpakManifest) {
 				
 				PakFile * file = entry.second;
-				char * data = (char*)file->readAlloc();
+				char * data = file->readAlloc();
 				arx_assert(file->size() == 0 || data != NULL);
 				
 				if(action == UnpakExtract) {
