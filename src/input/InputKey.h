@@ -30,9 +30,4 @@ typedef int InputKeyId;
 #define INPUT_MASK             (INPUT_KEYBOARD_MASK | INPUT_MOUSE_MASK | INPUT_MOUSEWHEEL_MASK)
 #define INPUT_COMBINATION_MASK (~INPUT_MASK)
 
-struct KeyDescription {
-	InputKeyId id;
-	std::string name;
-};
-
 #endif // ARX_INPUT_INPUTKEY_H

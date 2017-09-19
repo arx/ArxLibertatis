@@ -66,6 +66,11 @@ Input * GInput = NULL;
 long EERIEMouseButton = 0;
 long LastMouseClick = 0;
 
+struct KeyDescription {
+	InputKeyId id;
+	const char * name;
+};
+
 // All standard keys
 // "+" should not appear in names as it is used as a separator
 static const KeyDescription keysDescriptions[] = {
