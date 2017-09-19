@@ -243,7 +243,7 @@ process_id getProcessId(process_handle process) {
 	#if ARX_PLATFORM == ARX_PLATFORM_WIN32
 	return process ? GetProcessId(process) : 0;
 	#else
-	return process_id(process);
+	return process;
 	#endif
 }
 
