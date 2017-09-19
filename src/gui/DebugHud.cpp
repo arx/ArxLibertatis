@@ -318,7 +318,7 @@ void ShowInfoText() {
 				animLayerBox.add("ctime", long(layer.ctime.t));
 				animLayerBox.add("flags", flagNames(AnimUseFlagNames, layer.flags));
 				
-				animLayerBox.add("currentFrame", long(layer.currentFrame));
+				animLayerBox.add("currentFrame", layer.currentFrame);
 				if(layer.cur_anim) {
 					animLayerBox.add("cur_anim", layer.cur_anim->path.string());
 				} else {
