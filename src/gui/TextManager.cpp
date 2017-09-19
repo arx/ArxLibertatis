@@ -137,7 +137,7 @@ void TextManager::Update(PlatformDuration _iDiffFrame) {
 		
 		if(pArxText->lTimeScroll < PlatformDuration_ZERO &&
 		   pArxText->fDeltaY < (pArxText->rRect.bottom - pArxText->rRectClipp.bottom)) {
-			pArxText->fDeltaY += pArxText->fSpeedScrollY * float(toMs(_iDiffFrame));
+			pArxText->fDeltaY += pArxText->fSpeedScrollY * toMs(_iDiffFrame);
 			
 			if(pArxText->fDeltaY >= (pArxText->rRect.bottom - pArxText->rRectClipp.bottom)) {
 				pArxText->fDeltaY = static_cast<float>(pArxText->rRect.bottom - pArxText->rRectClipp.bottom);
