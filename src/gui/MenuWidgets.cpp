@@ -384,7 +384,7 @@ void CWindowMenu::Update(PlatformDuration _fDTime) {
 	float fCalc	= fPosXCalc + (fDist * glm::sin(glm::radians(fAngle)));
 
 	m_pos.x = checked_range_cast<int>(fCalc);
-	fAngle += float(toMs(_fDTime)) * 0.08f;
+	fAngle += toMs(_fDTime) * 0.08f;
 
 	if(fAngle > 90.f)
 		fAngle = 90.f;
