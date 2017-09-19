@@ -385,7 +385,7 @@ static unsigned char *stbi_write_png_to_mem(const unsigned char *pixels, int str
             }
             if (p) break;
             for (i=0; i < x*n; ++i)
-               est += abs((signed char) line_buffer[i]);
+               est += abs(line_buffer[i]);
             if (est < bestval) { bestval = est; best = k; }
          }
       }
