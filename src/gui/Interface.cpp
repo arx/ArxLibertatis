@@ -228,7 +228,7 @@ void ARX_INTERFACE_DrawNumber(const Vec2f & pos, const long num, const int _iNb,
 				v[2].p.y = v[3].p.y = pos.y + (10 * scale);
 				v[0].color = v[1].color = v[2].color = v[3].color = col;
 
-				ttx = ((float)tt * (float)11.f) + 1.5f;
+				ttx = float(tt) * 11.f + 1.5f;
 				v[3].uv.x = v[0].uv.x = ttx * divideX;
 				v[1].uv.x = v[2].uv.x = (ttx + 10.f) * divideX;
 
