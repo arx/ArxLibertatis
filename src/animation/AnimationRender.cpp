@@ -1297,7 +1297,7 @@ static void Cedric_AnimateObject(Skeleton * obj, AnimLayer * animlayer)
 		
 		// FIXME animation indices are sometimes negative
 		//arx_assert(animuse->fr >= 0 && animuse->fr < eanim->nb_key_frames);
-		layer.currentFrame = glm::clamp(layer.currentFrame, 0l, long(eanim->nb_key_frames - 1));
+		layer.currentFrame = glm::clamp(layer.currentFrame, 0l, eanim->nb_key_frames - 1l);
 		
 		// Now go for groups rotation/translation/scaling, And transform Linked objects by the way
 		int l = std::min(long(obj->bones.size() - 1), eanim->nb_groups - 1);
