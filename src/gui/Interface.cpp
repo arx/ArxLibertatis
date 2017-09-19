@@ -566,7 +566,7 @@ static void GetInfosCombineWithIO(Entity * combine, Entity * _pWithIO) {
 		char *pcFound = NULL;
 		
 		if(pCopyOverScript) {
-			pcFound = strstr((char*)pCopyOverScript, "on combine");
+			pcFound = strstr(pCopyOverScript, "on combine");
 			
 			if(pcFound) {
 				unsigned int uiNbOpen = 0;
@@ -679,7 +679,7 @@ static void GetInfosCombineWithIO(Entity * combine, Entity * _pWithIO) {
 			return;
 		}
 		
-		pcFound = strstr((char*)pCopyScript, "on combine");
+		pcFound = strstr(pCopyScript, "on combine");
 		
 		if(pcFound) {
 			unsigned int uiNbOpen=0;
