@@ -123,12 +123,6 @@ else(MSVC)
 		add_cxxflag("-Wdouble-promotion")
 		add_cxxflag("-Wvla")
 		
-		if(SET_NOISY_WARNING_FLAGS)
-			# TODO enable by default as soon as most are silenced
-			add_cxxflag("-Wconversion") # very noisy
-			# add_cxxflag("-Wsign-conversion") # very noisy
-		endif()
-		
 		# clang
 		add_cxxflag("-Wliteral-conversion")
 		add_cxxflag("-Wshift-overflow")
@@ -137,7 +131,15 @@ else(MSVC)
 		add_cxxflag("-Wpessimizing-move")
 		add_cxxflag("-Wextra-semi")
 		
-		if(NOT DEBUG_EXTRA)
+		if(SET_NOISY_WARNING_FLAGS)
+			
+			# These are too noisy to enable right now but we still want to track new warnings.
+			# TODO enable by default as soon as most are silenced
+			add_cxxflag("-Wconversion") # very noisy
+			# add_cxxflag("-Wsign-conversion") # very noisy
+			add_cxxflag("-Wstrict-aliasing=1") # has false positives
+			
+		else()
 			
 			# icc
 			if(CMAKE_CXX_COMPILER_ID STREQUAL "Intel")
@@ -171,7 +173,7 @@ else(MSVC)
 				add_cxxflag("-Wno-undef")
 			endif()
 			
-		endif(NOT DEBUG_EXTRA)
+		endif()
 		
 	endif(SET_WARNING_FLAGS)
 	
@@ -179,7 +181,6 @@ else(MSVC)
 		add_cxxflag("-ftrapv") # to add checks for (undefined) signed integer overflow
 		add_cxxflag("-fbounds-checking")
 		add_cxxflag("-fcatch-undefined-behavior")
-		add_cxxflag("-Wstrict-aliasing=1")
 		add_cxxflag("-fstack-protector-all")
 		
 		check_compiler_flag(FLAG_FOUND "-fsanitize=address")
