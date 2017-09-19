@@ -289,7 +289,7 @@ void LegacyMathTest::angleToVectorXZ_Test() {
 		Vec3f expected = angleToVectorXZ(angle);
 		Vec3f result = angleToVectorXZ_180offset(angle + 180);
 		
-		Vec3f result2 = VRotateY(Vec3f(0.f, 0.f, 1.f), float(360 - angle));
+		Vec3f result2 = VRotateY(Vec3f(0.f, 0.f, 1.f), 360.f - angle);
 		
 		CPPUNIT_ASSERT_EQUAL(expected, result);
 		CPPUNIT_ASSERT_EQUAL(expected, result2);
