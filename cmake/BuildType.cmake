@@ -122,6 +122,8 @@ else(MSVC)
 		add_cxxflag("-Wredundant-decls")
 		add_cxxflag("-Wdouble-promotion")
 		add_cxxflag("-Wvla")
+		add_cxxflag("-Wduplicated-cond")
+		add_cxxflag("-Wduplicated-branches")
 		
 		# clang
 		add_cxxflag("-Wliteral-conversion")
@@ -137,7 +139,9 @@ else(MSVC)
 			# TODO enable by default as soon as most are silenced
 			add_cxxflag("-Wconversion") # very noisy
 			# add_cxxflag("-Wsign-conversion") # very noisy
+			add_cxxflag("-Wshadow") # very noisy
 			add_cxxflag("-Wstrict-aliasing=1") # has false positives
+			add_cxxflag("-Wuseless-cast") # has false positives
 			
 		else()
 			
