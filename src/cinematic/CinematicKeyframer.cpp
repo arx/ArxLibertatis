@@ -649,7 +649,7 @@ consequences on light :
 	if(play) {
 	
 	c->flTime = c->flTime + frameDuration;
-	CKTrack->currframe = (float(toMs(c->flTime)) / 1000.f) * ((float)(GetEndFrame() - GetStartFrame())) / (float)GetTimeKeyFramer();
+	CKTrack->currframe = toMs(c->flTime) / 1000.f * float(GetEndFrame() - GetStartFrame()) / GetTimeKeyFramer();
 	
 	// TODO this assert fails if you pause the gametime before a cinematic starts and unpause after
 	arx_assert(CKTrack->currframe >= 0);
