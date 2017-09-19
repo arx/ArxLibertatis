@@ -554,7 +554,7 @@ float ARX_EQUIPMENT_ComputeDamages(Entity * io_source, Entity * io_target, float
 		else
 			critical = false;
 
-		if(Random::getf(0.f, 100.f) <= (float)io_source->_npcdata->backstab_skill) {
+		if(Random::getf(0.f, 100.f) <= io_source->_npcdata->backstab_skill) {
 			if(SendIOScriptEvent(io_source, SM_BACKSTAB) != REFUSE)
 				backstab = 1.5f; 
 		}
