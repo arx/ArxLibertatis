@@ -113,7 +113,7 @@ void ARX_GLOBALMODS_Apply() {
 		current.depthcolor.b = Approach(current.depthcolor.b, 0, incdiv1000);
 	}
 	
-	float fZclipp = ((((float)config.video.fogDistance) * 1.2f) * (DEFAULT_ZCLIP - DEFAULT_MINZCLIP) / 10.f) + DEFAULT_MINZCLIP;
+	float fZclipp = config.video.fogDistance * 1.2f * (DEFAULT_ZCLIP - DEFAULT_MINZCLIP) / 10.f + DEFAULT_MINZCLIP;
 	fZclipp += (ACTIVECAM->focal - 310.f) * 5.f;
 	ACTIVECAM->cdepth = std::min(current.zclip, fZclipp);
 
