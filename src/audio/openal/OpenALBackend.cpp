@@ -415,7 +415,7 @@ Source * OpenALBackend::createSource(SampleId sampleId, const Channel & channel)
 	OpenALSource * orig = NULL;
 	for(size_t i = 0; i < sources.size(); i++) {
 		if(sources[i] && sources[i]->getSample() == sample) {
-			orig = (OpenALSource*)sources[i];
+			orig = sources[i];
 			break;
 		}
 	}
