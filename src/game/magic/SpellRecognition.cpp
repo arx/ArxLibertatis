@@ -674,7 +674,7 @@ void ARX_SPELLS_Analyse() {
 
 	for(size_t i = 1; i < plist.size() ; i++) {
 		
-		Vec2f d = Vec2f(plist[i-1] - plist[i]);
+		Vec2f d = plist[i - 1] - plist[i];
 		
 		if(arx::length2(d) > 100) {
 			
