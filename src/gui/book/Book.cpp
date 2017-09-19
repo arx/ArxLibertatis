@@ -1523,7 +1523,7 @@ void ARX_INTERFACE_ManageOpenedBook_SpellsDraw() {
 					Vec2f pos;
 					pos.x = 240 - (count * 32) * 0.5f + j * 32;
 					pos.y = 306;
-					DrawBookInterfaceItem(gui::necklace.pTexTab[spellInfo.symbols[j]], Vec2f(pos), Color::white, 0.000001f);
+					DrawBookInterfaceItem(gui::necklace.pTexTab[spellInfo.symbols[j]], pos, Color::white, 0.000001f);
 				}
 			}
 			GRenderer->GetTextureStage(0)->setMagFilter(TextureStage::FilterNearest);
