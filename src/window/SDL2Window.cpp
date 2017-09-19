@@ -278,7 +278,7 @@ int SDL2Window::createWindowAndGLContext(const char * profile) {
 		(void)glGetError(); // clear error flags
 		GLint texunits = 0;
 		glGetIntegerv(GL_MAX_TEXTURE_UNITS, &texunits);
-		if(glGetError() != GL_NO_ERROR || texunits < GLint(m_minTextureUnits)) {
+		if(glGetError() != GL_NO_ERROR || texunits < m_minTextureUnits) {
 			if(lastTry) {
 				m_renderer->initialize(); // Log hardware information
 				LogError << "Not enough " << profile << " texture units available: have " << texunits
