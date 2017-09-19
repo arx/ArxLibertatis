@@ -300,7 +300,7 @@ aalError OpenALSource::fillBuffer(size_t i, size_t size) {
 	
 	arx_assert(loadCount > 0);
 	
-	size_t left = std::min(size, (size_t)sample->getLength() - written);
+	size_t left = std::min(size, sample->getLength() - written);
 	if(loadCount == 1) {
 		size = left;
 	}
