@@ -353,7 +353,7 @@ static void ApplySPMax() {
 		ARX_SPEECH_Add(text);
 		player.Attribute_Redistribute+=10;
 		player.Skill_Redistribute+=50;
-		player.level = std::max(short(player.level), short(10));
+		player.level = std::max(player.level, short(10));
 		player.xp=GetXPforLevel(10);
 	} else {
 		TextureContainer * tcm;
