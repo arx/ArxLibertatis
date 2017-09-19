@@ -2157,7 +2157,7 @@ void PlayerMovementIterate(float DeltaTime) {
 		if(diff < ArxDurationMs(600)) {
 			jump_mul = 0.5f;
 			if(diff >= ArxDurationMs(300)) {
-				jump_mul += float(toMs(LAST_JUMP_ENDTIME - arxtime.now()) * (1.0f / GLOBAL_SLOWDOWN) + 300) * (1.f / 300);
+				jump_mul += (toMs(LAST_JUMP_ENDTIME - arxtime.now()) * (1.0f / GLOBAL_SLOWDOWN) + 300.f) * (1.f / 300);
 				if(jump_mul > 1.f) {
 					jump_mul = 1.f;
 				}
