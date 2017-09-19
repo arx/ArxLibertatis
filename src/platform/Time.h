@@ -98,7 +98,7 @@ inline u32 getElapsedMs(u32 startMs) {
 }
 
 inline u32 getElapsedMs(u32 startMs, u32 endMs) {
-	return (u32)(((u64)endMs - (u64)startMs) & 0xffffffff);
+	return endMs - startMs;
 }
 
 inline u64 getElapsedUs(u64 startUs) {
