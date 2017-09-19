@@ -79,7 +79,7 @@ void CheatDrawText() {
 	PlatformDuration elapsed = g_platformTime.frameStart() - sp_max_start;
 	
 	if(elapsed < PlatformDurationMs(20000)) {
-		float modi = float(toMs(PlatformDurationMs(20000) - elapsed)) * ( 1.0f / 2000 ) * ( 1.0f / 10 );
+		float modi = toMs(PlatformDurationMs(20000) - elapsed) * ( 1.0f / 2000 ) * ( 1.0f / 10 );
 		float sizX = 16;
 		
 		Vec2f p = Vec2f(g_size.center());
