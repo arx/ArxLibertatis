@@ -469,7 +469,7 @@ void Credits::render() {
 	
 	// Use time passed between frame to create scroll effect
 	PlatformInstant now = g_platformTime.frameStart();
-	float elapsed = float(toMs(now - m_lastUpdateTime));
+	float elapsed = toMs(now - m_lastUpdateTime);
 	
 	static PlatformInstant lastKeyPressTime   = PlatformInstant_ZERO;
 	static PlatformInstant lastUserScrollTime = PlatformInstant_ZERO;
