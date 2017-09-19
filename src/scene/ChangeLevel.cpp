@@ -510,7 +510,7 @@ static bool ARX_CHANGELEVEL_Push_Index(long num) {
 	}
 	
 	if(asi.ambiances_data_size > 0) {
-		memcpy((char *)(dat + pos), playlist, asi.ambiances_data_size);
+		memcpy(dat + pos, playlist, asi.ambiances_data_size);
 		pos += asi.ambiances_data_size;
 		free(playlist);
 	}
@@ -791,14 +791,14 @@ static long ARX_CHANGELEVEL_Push_Player(long level) {
 	for(size_t i = 0; i < g_playerQuestLogEntries.size(); i++) {
 		memset(dat + pos, 0, SAVED_QUEST_SLOT_SIZE);
 		assert(g_playerQuestLogEntries[i].length() < SAVED_QUEST_SLOT_SIZE);
-		strcpy((char *)(dat + pos), g_playerQuestLogEntries[i].c_str());
+		strcpy(dat + pos, g_playerQuestLogEntries[i].c_str());
 		pos += SAVED_QUEST_SLOT_SIZE;
 	}
 	
 	for(size_t i = 0; i < g_playerKeyring.size(); i++) {
 		memset(dat + pos, 0, SAVED_KEYRING_SLOT_SIZE);
 		assert(g_playerKeyring[i].length() < SAVED_KEYRING_SLOT_SIZE);
-		strcpy((char *)(dat + pos), g_playerKeyring[i].c_str());
+		strcpy(dat + pos, g_playerKeyring[i].c_str());
 		pos += SAVED_KEYRING_SLOT_SIZE;
 	}
 	
