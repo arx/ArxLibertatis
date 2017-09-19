@@ -281,7 +281,7 @@ void OpenGLRenderer::reinit() {
 	}
 	
 	// EXT_texture_filter_anisotropic is available for both OpenGL ES and desktop OpenGL
-	if(ARX_HAVE_GL_EXT(EXT_texture_filter_anisotropic)) {
+	if(ARX_HAVE_GL_EXT(EXT_texture_filter_anisotropic) || ARX_HAVE_GL_EXT(ARB_texture_filter_anisotropic)) {
 		GLfloat limit;
 		glGetFloatv(GL_MAX_TEXTURE_MAX_ANISOTROPY_EXT, &limit);
 		m_maximumSupportedAnisotropy = limit;
