@@ -460,7 +460,7 @@ bool DanaeLoadLevel(const res::path & file, bool loadEntities) {
 		// using compression
 		if(dlh.version >= 1.44f) {
 			char * compressed = lightingFile->readAlloc();
-			dat = (char*)blastMemAlloc(compressed, lightingFile->size(), FileSize);
+			dat = blastMemAlloc(compressed, lightingFile->size(), FileSize);
 			free(compressed);
 		} else {
 			dat = lightingFile->readAlloc();
