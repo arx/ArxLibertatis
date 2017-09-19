@@ -187,7 +187,7 @@ void OpenGLRenderer::initialize() {
 		#elif ARX_HAVE_GLEW
 		oss << "GLEW " << glewVersion << '\n';
 		#endif
-		const char * start = reinterpret_cast<const char *>(glVersion);
+		const char * start = glVersion;
 		while(*start == ' ') {
 			start++;
 		}
