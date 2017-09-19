@@ -84,6 +84,6 @@ void WidgetContainer::drawDebug()
 		return;
 	
 	{Widget * w; BOOST_FOREACH(w, m_widgets) {
-		drawLineRectangle(Rectf(w->m_rect), 0.f, Color::red);
+		drawLineRectangle(w->m_rect, 0.f, Color::red);
 	}}
 }
