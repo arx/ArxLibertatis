@@ -1052,7 +1052,7 @@ void ARX_PLAYER_FrameCheck(PlatformDuration delta)
 	
 	//	ARX_PLAYER_QuickGeneration();
 	if(delta > PlatformDuration_ZERO) {
-		float Framedelay = float(toMs(delta));
+		float Framedelay = toMs(delta);
 		
 		UpdateIOInvisibility(entities.player());
 		// Natural LIFE recovery
