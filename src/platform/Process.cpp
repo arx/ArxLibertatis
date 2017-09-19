@@ -363,7 +363,7 @@ void reapZombies() {
 	#if ARX_PLATFORM != ARX_PLATFORM_WIN32 && ARX_HAVE_WAITPID
 	std::vector<process_handle>::iterator it = g_childProcesses.begin();
 	while(it != g_childProcesses.end()) {
-		if(waitpid(*it, NULL, WNOHANG) == 0) {
+		if(waitpid(*it, NULL, WNOHANG) != 0) {
 			it = g_childProcesses.erase(it);
 		} else {
 			++it;
