@@ -309,7 +309,7 @@ void FireballSpell::Update() {
 			
 			dd = glm::clamp(dd, 1.f, m_level);
 			
-			SpawnFireballTail(eCurPos, move, (float)dd, 1);
+			SpawnFireballTail(eCurPos, move, dd, 1);
 		}
 	}
 	
