@@ -106,11 +106,7 @@ inline u64 getElapsedUs(u64 startUs) {
 }
 
 inline u64 getElapsedUs(u64 startUs, u64 endUs) {
-	if(endUs >= startUs) {
-		return endUs - startUs;
-	} else {
-		return (((u64)-1) - startUs) + endUs + 1;
-	}
+	return endUs - startUs;
 }
 
 } // namespace platform
