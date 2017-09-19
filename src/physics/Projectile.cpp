@@ -180,8 +180,8 @@ static float ARX_THROWN_ComputeDamages(const Projectile & projectile, EntityHand
 	if(source == EntityHandle_Player) {
 		attack = projectile.damages;
 
-		if(Random::getf(0.f, 100.f) <= float(player.m_attributeFull.dexterity - 9) * 2.f
-						   + float(player.m_skillFull.projectile * 0.2f)) {
+		if(Random::getf(0.f, 100.f) <= (player.m_attributeFull.dexterity - 9.f) * 2.f
+		                               + player.m_skillFull.projectile * 0.2f) {
 			if(SendIOScriptEvent(io_source, SM_CRITICAL, "bow") != REFUSE)
 				critical = true;
 		}
