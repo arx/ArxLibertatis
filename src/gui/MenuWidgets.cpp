@@ -471,8 +471,8 @@ void MenuPage::addCenter(Widget * widget, bool centerX) {
 	if(centerX) {
 		widget->ePlace = CENTER;
 		
-		int iDx = widget->m_rect.width();
-		dx  = ((m_rect.width() - iDx) / 2) - widget->m_rect.left;
+		float iDx = widget->m_rect.width();
+		dx  = int(((m_rect.width() - iDx) / 2) - widget->m_rect.left);
 	
 		if(dx < 0) {
 			dx = 0;
@@ -481,27 +481,27 @@ void MenuPage::addCenter(Widget * widget, bool centerX) {
 		dx = 0;
 	}
 	
-	int iDy = widget->m_rect.height();
+	float iDy = widget->m_rect.height();
 	
 	{Widget * w; BOOST_FOREACH(w, m_children.m_widgets) {
 		iDy += m_rowSpacing;
 		iDy += w->m_rect.height();
 	}}
 
-	int iDepY = m_rect.left;
+	int iDepY = int(m_rect.left);
 
 	if(iDy < m_rect.height()) {
-		iDepY += ((m_rect.height() - iDy) / 2);
+		iDepY += int((m_rect.height() - iDy) / 2);
 	}
 
 	int dy = 0;
 
 	if(!m_children.m_widgets.empty()) {
-		dy = iDepY - m_children.m_widgets[0]->m_rect.top;
+		dy = int(iDepY - m_children.m_widgets[0]->m_rect.top);
 	}
 	
 	{Widget * w; BOOST_FOREACH(w, m_children.m_widgets) {
-		iDepY += (w->m_rect.height()) + m_rowSpacing;
+		iDepY += int(w->m_rect.height()) + m_rowSpacing;
 		
 		w->Move(Vec2f(0, dy));
 	}}
