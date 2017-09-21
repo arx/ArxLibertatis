@@ -139,15 +139,16 @@ void ARXMenu_Options_Video_SetDetailsQuality(int _iQuality) {
 	}
 }
 
-void ARXMenu_Options_Audio_SetMasterVolume(int _iVolume) {
-	_iVolume = glm::clamp(_iVolume, 0, 10);
+void ARXMenu_Options_Audio_SetMasterVolume(float volume) {
 	
-	float fVolume = _iVolume * 0.1f;
+	config.audio.volume = glm::clamp(volume, 0.f, 10.f);
+	
+	float fVolume = config.audio.volume * 0.1f;
 	if(config.audio.muteOnFocusLost && !mainApp->getWindow()->hasFocus()) {
 		fVolume = 0.f;
 	}
+	
 	ARX_SOUND_MixerSetVolume(ARX_SOUND_MixerMenu, fVolume);
-	config.audio.volume = _iVolume;
 }
 
 void ARXMenu_Options_Audio_SetSfxVolume(int _iVolume) {
