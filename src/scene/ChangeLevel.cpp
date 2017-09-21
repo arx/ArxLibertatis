@@ -652,7 +652,7 @@ static long ARX_CHANGELEVEL_Push_Player(long level) {
 
 	memset(asp, 0, sizeof(ARX_CHANGELEVEL_PLAYER));
 
-	asp->AimTime = toMs(player.AimTime);
+	asp->AimTime = s32(toMs(player.AimTime));
 	asp->angle = player.angle;
 	asp->armor_class = player.m_misc.armorClass;
 	asp->Attribute_Constitution = player.m_attribute.constitution;
