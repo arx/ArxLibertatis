@@ -586,7 +586,7 @@ static void print_spellcast_flags(s32 flags) {
 }
 
 static void print_physics(const SavedIOPhysics & physics) {
-	if(physics.cyl.origin.toVec3() != Vec3f_ZERO || physics.cyl.radius || physics.cyl.height) std::cout << "  Cylinder: origin=" << physics.cyl.origin << " radius=" << physics.cyl.radius << " height=" << physics.cyl.height << '\n';
+	if(physics.cyl.origin.toVec3() != Vec3f_ZERO || physics.cyl.radius != 0.f || physics.cyl.height != 0.f) std::cout << "  Cylinder: origin=" << physics.cyl.origin << " radius=" << physics.cyl.radius << " height=" << physics.cyl.height << '\n';
 	if(physics.startpos.toVec3() != Vec3f_ZERO) std::cout << "  Start position: " << physics.startpos << '\n';
 	if(physics.targetpos.toVec3() != Vec3f_ZERO) std::cout << "  Target position: " << physics.targetpos << '\n';
 	if(physics.velocity.toVec3() != Vec3f_ZERO) std::cout << "  Velocity: " << physics.velocity << '\n';
@@ -828,7 +828,7 @@ static int view_player(SaveBlock & save, const char * dat, size_t size) {
 		std::cout << "Current movement:"; print_player_movement(asp.Current_Movement); std::cout << '\n';
 	}
 	
-	if(asp.damages) std::cout << "Damages: " << asp.damages << '\n';
+	if(asp.damages != 0.f) std::cout << "Damages: " << asp.damages << '\n';
 	if(asp.doingmagic) std::cout << "Doing magic: " << asp.doingmagic << '\n';
 	
 	if(asp.playerflags) {
@@ -874,7 +874,7 @@ static int view_player(SaveBlock & save, const char * dat, size_t size) {
 	
 	if(asp.falling) std::cout << "Falling: " << asp.falling << '\n';
 	std::cout << "Gold: " << asp.gold << '\n';
-	if(asp.invisibility) std::cout << "Invisibility: " << asp.invisibility << '\n';
+	if(asp.invisibility != 0.f) std::cout << "Invisibility: " << asp.invisibility << '\n';
 	std::string inzone = boost::to_lower_copy(util::loadString(asp.inzone));
 	if(!inzone.empty()) std::cout << "In zone: " << inzone << '\n';
 	
@@ -897,8 +897,8 @@ static int view_player(SaveBlock & save, const char * dat, size_t size) {
 	std::cout << "Level: " << asp.level << '\n';
 	std::cout << "Life: " << asp.life << " / " << asp.maxlife << '\n';
 	std::cout << "Mana: " << asp.mana << " / " << asp.maxmana << '\n';
-	if(asp.poison) std::cout << "Poison: " << asp.poison << '\n';
-	if(asp.hunger) std::cout << "Hunger: " << asp.hunger << '\n';
+	if(asp.poison != 0.f) std::cout << "Poison: " << asp.poison << '\n';
+	if(asp.hunger != 0.f) std::cout << "Hunger: " << asp.hunger << '\n';
 	std::cout << "Number of bags: " << asp.bag << '\n';
 	
 	if(asp.misc_flags) {
@@ -1210,8 +1210,8 @@ static int view_io(SaveBlock & save, const char * dat, size_t size) {
 		}
 		std::cout << '\n';
 	}
-	if(ais.scale != 1) std::cout << "Scale: " << ais.scale << '\n';
-	if(ais.weight) std::cout << "Weight: " << ais.weight << '\n';
+	if(ais.scale != 1.f) std::cout << "Scale: " << ais.scale << '\n';
+	if(ais.weight != 0.f) std::cout << "Weight: " << ais.weight << '\n';
 	
 	std::string locname = loadUnlocalized(boost::to_lower_copy(util::loadString(ais.locname)));
 	if(!locname.empty()) std::cout << "Name: " << locname << " = \"" << getLocalised(locname) << "\"\n";
@@ -1297,9 +1297,9 @@ static int view_io(SaveBlock & save, const char * dat, size_t size) {
 	if(target != "self") {
 		std::cout << "Target: "; print_ident(save, target); std::cout << '\n';
 	}
-	if(ais.basespeed != 1) std::cout << "Base speed: " << ais.basespeed << '\n';
-	if(ais.speed_modif) std::cout << "Speed modifier: " << ais.speed_modif << '\n';
-	if(ais.frameloss) std::cout << "Frame loss: " << ais.frameloss << '\n';
+	if(ais.basespeed != 1.f) std::cout << "Base speed: " << ais.basespeed << '\n';
+	if(ais.speed_modif != 0.f) std::cout << "Speed modifier: " << ais.speed_modif << '\n';
+	if(ais.frameloss != 0.f) std::cout << "Frame loss: " << ais.frameloss << '\n';
 	
 	if(ais.spellcast_data.castingspell >= 0 || ais.spellcast_data.spell_flags) {
 	
@@ -1332,7 +1332,7 @@ static int view_io(SaveBlock & save, const char * dat, size_t size) {
 	if(ais.poisonous) std::cout << "Poisonous: " << ais.poisonous << '\n';
 	if(ais.poisonous_count) std::cout << "Poisonous count: " << ais.poisonous_count << '\n';
 	
-	if(ais.head_rot) std::cout << "Head rotation: " << ais.head_rot << '\n';
+	if(ais.head_rot != 0.f) std::cout << "Head rotation: " << ais.head_rot << '\n';
 	if(ais.damager_damages) std::cout << "Damage dealt: " << ais.damager_damages << '\n';
 	
 	if(ais.damager_type) {
@@ -1384,7 +1384,7 @@ static int view_io(SaveBlock & save, const char * dat, size_t size) {
 		std::cout << '\n';
 	}
 	
-	if(ais.ignition) std::cout << "Ignition: " << ais.ignition << '\n';
+	if(ais.ignition != 0.f) std::cout << "Ignition: " << ais.ignition << '\n';
 	
 	res::path invskin = res::path::load(util::loadString(ais.inventory_skin));
 	if(!invskin.empty()) std::cout << "Inventory skin: " << invskin << '\n';
@@ -1397,8 +1397,8 @@ static int view_io(SaveBlock & save, const char * dat, size_t size) {
 	if(ais.velocity.toVec3() != Vec3f_ZERO) std::cout << "  Velocity: " << ais.velocity << '\n';
 	if(ais.stopped) std::cout << "  Stopped: " << ais.stopped << '\n';
 	print_physics(ais.physics);
-	if(ais.original_radius) std::cout << "  Original radius: " << ais.original_radius << '\n';
-	if(ais.original_height) std::cout << "  Original height: " << ais.original_height << '\n';
+	if(ais.original_radius != 0.f) std::cout << "  Original radius: " << ais.original_radius << '\n';
+	if(ais.original_height != 0.f) std::cout << "  Original height: " << ais.original_height << '\n';
 	
 	for(size_t i = 0; (s32)i < ais.nb_linked; i++) {
 		std::cout << "\nLinked object #" << i << ":\n";
@@ -1517,30 +1517,30 @@ static int view_io(SaveBlock & save, const char * dat, size_t size) {
 			as = reinterpret_cast<const ARX_CHANGELEVEL_NPC_IO_SAVE *>(dat + pos);
 			pos += sizeof(ARX_CHANGELEVEL_NPC_IO_SAVE);
 			
-			if(as->absorb) std::cout << "  Absorption: " << as->absorb << '\n';
-			if(as->aimtime) std::cout << "  Aim time: " << as->aimtime << '\n';
+			if(as->absorb != 0.f) std::cout << "  Absorption: " << as->absorb << '\n';
+			if(as->aimtime != 0.f) std::cout << "  Aim time: " << as->aimtime << '\n';
 			std::cout << "  Armor class: " << as->armor_class << '\n';
 			
 			if(as->behavior != BEHAVIOUR_NONE) print_behavior(std::cout << "  Behavior:", as->behavior) << '\n';
-			if(as->behavior_param) std::cout << "  Behavior parameter: " << as->behavior_param << '\n';
+			if(as->behavior_param != 0.f) std::cout << "  Behavior parameter: " << as->behavior_param << '\n';
 			
 			if(as->collid_state) std::cout << "  Collision state: " << as->collid_state << '\n';
 			if(as->collid_time) std::cout << "  Collision time: " << as->collid_time << '\n';
 			if(as->cut) std::cout << "  Cut: " << as->cut << '\n';
-			if(as->damages) std::cout << "  Damages: " << as->damages << '\n';
+			if(as->damages != 0.f) std::cout << "  Damages: " << as->damages << '\n';
 			if(as->detect) std::cout << "  Detect: " << as->detect << '\n';
 			if(as->fightdecision) std::cout << "  Fight decision: " << as->fightdecision << '\n';
 			
 			print_item(save, as->id_weapon, "Weapon");
 			
-			if(as->lastmouth) std::cout << "  Last mouth: " << as->lastmouth << '\n';
-			if(as->look_around_inc) std::cout << "  Look around status: " << as->look_around_inc << '\n';
+			if(as->lastmouth != 0.f) std::cout << "  Last mouth: " << as->lastmouth << '\n';
+			if(as->look_around_inc != 0.f) std::cout << "  Look around status: " << as->look_around_inc << '\n';
 			std::cout << "  Life: " << as->life << " / " << as->maxlife << '\n';
 			std::cout << "  Mana: " << as->mana << " / " << as->maxmana << '\n';
 			
 			print_movemode(std::cout << "  Movement mode: ", as->movemode) << '\n';
 			
-			if(as->moveproblem) std::cout << "  Movement problem: " << as->moveproblem << '\n';
+			if(as->moveproblem != 0.f) std::cout << "  Movement problem: " << as->moveproblem << '\n';
 			if(as->reachedtarget) std::cout << "  Reached target: " << as->reachedtarget << '\n';
 			if(as->speakpitch != 1) std::cout << "  Speak pitch: " << as->speakpitch << '\n';
 			
@@ -1585,8 +1585,8 @@ static int view_io(SaveBlock & save, const char * dat, size_t size) {
 			
 			std::cout << "  Critical: " << as->critical << '\n';
 			std::cout << "  Reach: " << as->reach << '\n';
-			if(as->backstab_skill) std::cout << "  Backstab skill: " << as->backstab_skill << '\n';
-			if(as->poisonned) std::cout << "  Poisoned: " << as->poisonned << '\n';
+			if(as->backstab_skill != 0.f) std::cout << "  Backstab skill: " << as->backstab_skill << '\n';
+			if(as->poisonned != 0.f) std::cout << "  Poisoned: " << as->poisonned << '\n';
 			std::cout << "  Resist poison: " << (int)as->resist_poison << '\n';
 			std::cout << "  Resist magic: " << (int)as->resist_magic << '\n';
 			std::cout << "  Resist fire: " << (int)as->resist_fire << '\n';
