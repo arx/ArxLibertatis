@@ -992,7 +992,7 @@ void Image::FlipY(unsigned char * pData, unsigned int pWidth, unsigned int pHeig
 
 bool Image::save(const fs::path & filename) const {
 	
-	if(mFormat < 0 || mFormat >= Format_Unknown) {
+	if(mFormat >= Format_Unknown) {
 		return false;
 	}
 	
