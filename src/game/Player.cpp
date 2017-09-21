@@ -475,12 +475,12 @@ void ARX_PLAYER_ComputePlayerFullStats() {
 	float fCalcHandicap	= (player.m_attributeFull.dexterity - 10.f) * 20.f;
 
 	//CAST
-	player.Full_AimTime = PlatformDurationMs(fFullAimTime);
+	player.Full_AimTime = PlatformDurationMsf(fFullAimTime);
 	
 	if(player.Full_AimTime <= PlatformDuration_ZERO)
 		player.Full_AimTime = player.AimTime;
 	
-	player.Full_AimTime -= PlatformDurationMs(fCalcHandicap);
+	player.Full_AimTime -= PlatformDurationMsf(fCalcHandicap);
 	
 	if(player.Full_AimTime <= PlatformDurationMs(1500))
 		player.Full_AimTime = PlatformDurationMs(1500);
