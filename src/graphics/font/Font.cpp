@@ -354,7 +354,7 @@ Font::TextSize Font::process(int x, int y, text_iterator start, text_iterator en
 		if(startX == endX) {
 			startX = glyph.draw_offset.x;
 		}
-		endX = pen.x + glyph.draw_offset.x + glyph.size.x;
+		endX = s32(pen.x) + glyph.draw_offset.x + glyph.size.x;
 		
 		// Advance
 		pen.x += glyph.advance.x;
@@ -388,7 +388,7 @@ Font::TextSize Font::process(int x, int y, text_iterator start, text_iterator en
 		
 	}
 	
-	return TextSize(Vec2i(x, y), startX, endX, pen.x, getLineHeight());
+	return TextSize(Vec2i(x, y), startX, endX, s32(pen.x), getLineHeight());
 }
 
 Font::TextSize Font::draw(int x, int y, text_iterator start, text_iterator end, Color color) {
