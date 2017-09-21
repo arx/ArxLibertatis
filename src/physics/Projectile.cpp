@@ -392,7 +392,7 @@ void ARX_THROWN_OBJECT_Manage(float time_offset)
 				light->pos = projectile.position;
 				light->ex_flaresize = 40.f;
 				light->extras |= EXTRAS_FLARE;
-				light->duration = ArxDurationMs(g_framedelay * 0.5f);
+				light->duration = ArxDurationMsf(g_framedelay * 0.5f);
 			}
 			
 			createObjFireParticles(projectile.obj, 6, 2, 180);
