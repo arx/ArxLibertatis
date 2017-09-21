@@ -1105,7 +1105,7 @@ void ActiveSpellsGui::init() {
 	m_slotSpacerSize = Vec2f(0.f, 9.f);
 	m_flickNow = false;
 	m_flickTime = PlatformDuration_ZERO;
-	m_flickInterval = PlatformDurationMs(1000.0f / 60.0f);
+	m_flickInterval = PlatformDurationMsf(1000.0f / 60.0f);
 }
 
 void ActiveSpellsGui::update(Rectf parent) {
