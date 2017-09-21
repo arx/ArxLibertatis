@@ -16,8 +16,8 @@ if(MSVC)
 		add_definitions(-D_CRT_NONSTDC_NO_DEPRECATE)
 		add_definitions(-D_SCL_SECURE_NO_WARNINGS)
 		
-		# TODO TEMP - disable warning caused by the F2L removal
-		# Conversion from 'float' to 'long', possible loss of data
+		# TODO TEMP - disable very noisy warning
+		# Conversion from 'A' to 'B', possible loss of data
 		add_definitions(/wd4244)
 		
 		# TODO TEMP - disable warning caused by conversion from a 64-bit type to a 32-bit one...
