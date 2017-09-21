@@ -2153,7 +2153,7 @@ void PlayerMovementIterate(float DeltaTime) {
 		// Apply player impulse force
 		
 		float jump_mul = 1.f;
-		ArxDuration diff = ArxDurationMs(float(toMs(arxtime.now() - LAST_JUMP_ENDTIME)) * (1.0f / GLOBAL_SLOWDOWN));
+		ArxDuration diff = ArxDurationMsf(float(toMs(arxtime.now() - LAST_JUMP_ENDTIME)) * (1.0f / GLOBAL_SLOWDOWN));
 		if(diff < ArxDurationMs(600)) {
 			jump_mul = 0.5f;
 			if(diff >= ArxDurationMs(300)) {
