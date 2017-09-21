@@ -423,7 +423,7 @@ void ARX_Text_Close() {
 void drawTextCentered(Font * font, Vec2f center, const std::string & text, Color color) {
 	Vec2i size = font->getTextSize(text);
 	Vec2f corner = center - Vec2f(size) / 2.f;
-	font->draw(corner.x, corner.y, text, color);
+	font->draw(int(corner.x), int(corner.y), text, color);
 }
 
 void drawTextAt(Font * font, const Vec3f & pos, const std::string & text, Color color,
