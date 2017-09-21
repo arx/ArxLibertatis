@@ -287,26 +287,26 @@ static void enable(util::cmdline::optional<std::string> limit) {
 	if(limit && !limit->empty()) {
 		boost::trim(*limit);
 		size_t pos = limit->find_first_not_of("0123456789.");
-		u64 multiplier = 1;
+		float multiplier = 1.f;
 		if(pos != std::string::npos) {
 			std::string unit = boost::trim_copy(limit->substr(pos));
 			limit->resize(pos);
 			boost::trim_right(*limit);
 			if(unit == "ms") {
-				multiplier = 1;
+				multiplier = 1.f;
 			} else if(unit == "s" || unit == "sec" || unit == "seconds" || unit == "second") {
-				multiplier = 1000;
+				multiplier = 1000.f;
 			} else if(unit == "m" || unit == "min" || unit == "minutes" || unit == "minute") {
-				multiplier = 60 * 1000;
+				multiplier = 60.f * 1000.f;
 			} else if(unit == "h" || unit == "hours" || unit == "hour") {
-				multiplier = 60 * 60 * 1000;
+				multiplier = 60.f * 60.f * 1000.f;
 			} else {
 				throw util::cmdline::error(util::cmdline::error::invalid_cmd_syntax,
 				                           "unknown unit \"" + unit + "\"");
 			}
 		}
 		try {
-			g_timeLimit = multiplier * boost::lexical_cast<float>(*limit);
+			g_timeLimit = u64(multiplier * boost::lexical_cast<float>(*limit));
 		} catch(...) {
 			throw util::cmdline::error(util::cmdline::error::invalid_cmd_syntax,
 			                           "inavlid number \"" + *limit + "\"");
