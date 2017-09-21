@@ -315,12 +315,12 @@ bool SecondaryInventoryHud::containsPos(const Vec2s & pos) {
 Entity * SecondaryInventoryHud::getObj(const Vec2s & pos) {
 	
 	if(SecondaryInventory != NULL) {
-		short tx = pos.x + checked_range_cast<short>(m_fadePosition) - (2 * m_scale);
-		short ty = pos.y - (13 * m_scale);
+		short tx = short(pos.x + checked_range_cast<short>(m_fadePosition) - (2 * m_scale));
+		short ty = short(pos.y - (13 * m_scale));
 
 		if(tx >= 0 && ty >= 0) {
-			tx = tx / (32 * m_scale); 
-			ty = ty / (32 * m_scale); 
+			tx = short(tx / (32 * m_scale));
+			ty = short(ty / (32 * m_scale));
 
 			if(   tx >= 0
 			   && tx <= SecondaryInventory->m_size.x
