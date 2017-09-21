@@ -597,12 +597,12 @@ static void drawDebugMaterialTexture(Vec2f & textpos, const std::string & type,
 	oss << ")";
 	std::string format = oss.str();
 	
-	float type_s = hFontDebug->getTextSize(type).width() + 10;
-	float name_s = hFontDebug->getTextSize(name).width() + 10;
-	float format_s = hFontDebug->getTextSize(format).width();
+	s32 type_s = hFontDebug->getTextSize(type).width() + 10;
+	s32 name_s = hFontDebug->getTextSize(name).width() + 10;
+	s32 format_s = hFontDebug->getTextSize(format).width();
 	
 	Vec2i pos = Vec2i(textpos);
-	pos.x -= (type_s + name_s + format_s) * 0.5f;
+	pos.x -= s32(float(type_s + name_s + format_s) * 0.5f);
 	if(pos.x < g_size.left + 5) {
 		pos.x = g_size.left + 5;
 	} else if(pos.x + type_s + name_s + format_s > g_size.right - 5) {
