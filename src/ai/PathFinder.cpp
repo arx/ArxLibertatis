@@ -345,7 +345,7 @@ bool PathFinder::wanderAround(NodeId from, float rad, Result & rlist, bool steal
 		NodeId next = from;
 		
 		// Select the next node.
-		unsigned int nb = Random::getu(0, rad / 50);
+		unsigned int nb = Random::getu(0, unsigned(rad / 50));
 		for(unsigned int j = 0; j < nb && map_d[next].nblinked; j++) {
 			for(int notfinished = 0; notfinished < 4; notfinished++) {
 				
