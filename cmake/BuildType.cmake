@@ -108,32 +108,33 @@ else(MSVC)
 	
 	if(SET_WARNING_FLAGS)
 		
-		# GCC (and compatible)
+		# GCC or Clang (and compatible)
+		
 		add_cxxflag("-Wall")
 		add_cxxflag("-Wextra")
-		add_cxxflag("-Wformat=2")
-		add_cxxflag("-Wundef")
-		add_cxxflag("-Wpointer-arith")
-		add_cxxflag("-Wcast-qual")
-		add_cxxflag("-Woverloaded-virtual")
-		add_cxxflag("-Wlogical-op")
-		add_cxxflag("-Woverflow")
-		add_cxxflag("-Wmissing-declarations")
-		add_cxxflag("-Wredundant-decls")
-		add_cxxflag("-Wdouble-promotion")
-		add_cxxflag("-Wvla")
-		add_cxxflag("-Wduplicated-cond")
 		
-		# clang
+		add_cxxflag("-Wcast-qual")
+		add_cxxflag("-Wdouble-promotion")
+		add_cxxflag("-Wduplicated-cond")
+		add_cxxflag("-Wextra-semi")
+		add_cxxflag("-Wformat=2")
+		add_cxxflag("-Wheader-guard")
+		add_cxxflag("-Wlogical-op")
+		add_cxxflag("-Wmissing-declarations")
+		add_cxxflag("-Woverflow")
+		add_cxxflag("-Woverloaded-virtual")
+		add_cxxflag("-Wpessimizing-move")
+		add_cxxflag("-Wpointer-arith")
+		add_cxxflag("-Wredundant-decls")
 		add_cxxflag("-Wshift-overflow")
+		add_cxxflag("-Wundef")
+		add_cxxflag("-Wvla")
+		
 		add_cxxflag("-Wliteral-conversion") # part of -Wconversion
 		add_cxxflag("-Wbool-conversion") # part of -Wconversion
 		add_cxxflag("-Wfloat-conversion") # part of -Wconversion
 		add_cxxflag("-Wstring-conversion") # part of -Wconversion
 		add_cxxflag("-Wint-conversion") # part of -Wconversion
-		add_cxxflag("-Wheader-guard")
-		add_cxxflag("-Wpessimizing-move")
-		add_cxxflag("-Wextra-semi")
 		
 		if(SET_NOISY_WARNING_FLAGS OR NOT CMAKE_CXX_COMPILER_ID STREQUAL "GNU" OR NOT CMAKE_SIZEOF_VOID_P EQUAL 4)
 			# TODO for some reason this warns in /usr/include/boost/type_traits/alignment_of.hpp for -m32 builds
