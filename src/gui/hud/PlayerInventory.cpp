@@ -355,8 +355,8 @@ PlayerInventoryHud g_playerInventoryHud;
 bool PlayerInventoryHud::InPlayerInventoryBag(const Vec2s & pos) {
 	if(pos.x >= 0 && pos.y >= 0) {
 		Vec2s t;
-		t.x = pos.x / (32 * m_scale);
-		t.y = (pos.y + 5 * m_scale) / (32 * m_scale);
+		t.x = s16(pos.x / (32 * m_scale));
+		t.y = s16((pos.y + 5 * m_scale) / (32 * m_scale));
 
 		if(   t.x >= 0
 		   && (size_t)t.x <= INVENTORY_X
