@@ -41,8 +41,8 @@ void FloatingStones::Init(float radius) {
 
 void FloatingStones::Update(float timeDelta, Vec3f pos) {
 	
-	m_timestone -= timeDelta;
-	m_currframetime = timeDelta;
+	m_timestone -= int(timeDelta);
+	m_currframetime = int(timeDelta);
 	
 	if(m_timestone <= 0) {
 		m_timestone = Random::get(50, 150);
