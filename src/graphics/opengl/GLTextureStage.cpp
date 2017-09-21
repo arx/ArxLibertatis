@@ -203,7 +203,7 @@ void GLTextureStage::setMipMapLODBias(float bias) {
 		glActiveTexture(GL_TEXTURE0 + mStage);
 	}
 	
-	setTexEnv(GL_TEXTURE_FILTER_CONTROL, GL_TEXTURE_LOD_BIAS, bias);
+	glTexEnvf(GL_TEXTURE_FILTER_CONTROL, GL_TEXTURE_LOD_BIAS, bias);
 	
 	if(mStage != 0) {
 		glActiveTexture(GL_TEXTURE0);
