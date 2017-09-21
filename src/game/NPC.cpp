@@ -753,7 +753,7 @@ bool ARX_NPC_SetStat(Entity& io, const std::string & statname, float value) {
 	} else if(statname == "tohit") {
 		io._npcdata->tohit = value < 0 ? 0 : value;
 	} else if(statname == "aimtime") {
-		io._npcdata->aimtime = ArxDurationMs(value < 0 ? 0 : value);
+		io._npcdata->aimtime = ArxDurationMsf(value < 0.f ? 0.f : value);
 	} else if(statname == "life") {
 		io._npcdata->lifePool.max = io._npcdata->lifePool.current = value < 0 ? 0.0000001f : value;
 	} else if(statname == "mana") {
@@ -1621,7 +1621,7 @@ static void ARX_NPC_Manage_Anims(Entity * io, float TOLERANCE) {
 				
 				ArxDuration elapsed = arxtime.now() - io->_npcdata->aiming_start;
 				ArxDuration aimtime = io->_npcdata->aimtime;
-				if((elapsed > aimtime || (elapsed > ArxDurationMs(toMs(aimtime) * 0.5f) && Random::getf() > 0.9f))
+				if((elapsed > aimtime || (elapsed > ArxDurationMsf(toMs(aimtime) * 0.5f) && Random::getf() > 0.9f))
 				    && tdist < square(STRIKE_DISTANCE)) {
 					changeAnimation(io, 1, strike);
 					SendIOScriptEvent(io, SM_STRIKE, "bare");
@@ -1722,7 +1722,7 @@ static void ARX_NPC_Manage_Anims(Entity * io, float TOLERANCE) {
 					
 					ArxDuration elapsed = arxtime.now() - io->_npcdata->aiming_start;
 					ArxDuration aimtime = io->_npcdata->aimtime;
-					if((elapsed > aimtime || (elapsed > ArxDurationMs(toMs(aimtime) * 0.5f) && Random::getf() > 0.9f))
+					if((elapsed > aimtime || (elapsed > ArxDurationMsf(toMs(aimtime) * 0.5f) && Random::getf() > 0.9f))
 					   && tdist < square(STRIKE_DISTANCE)) {
 						changeAnimation(io, 1, strike);
 						if(io->_npcdata->weapontype & OBJECT_TYPE_1H) {
