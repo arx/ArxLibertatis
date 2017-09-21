@@ -722,7 +722,7 @@ void AcquireLastAnim(Entity * io)
 
 	// Stores Frametime and number of vertex for later interpolation
 	// TODO Mixing of now() and get_frame_time()
-	io->animBlend.lastanimtime = ArxInstantMs(arxtime.get_frame_time());
+	io->animBlend.lastanimtime = ArxInstantMs(s64(arxtime.get_frame_time()));
 	io->animBlend.m_active = true;
 }
 
