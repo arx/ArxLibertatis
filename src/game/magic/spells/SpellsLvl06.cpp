@@ -235,7 +235,7 @@ void ParalyseSpell::Launch() {
 	}
 	if(Random::getf(0.f, 100.f) < resist_magic) {
 		float mul = std::max(0.5f, 1.f - (resist_magic * 0.005f));
-		m_duration = ArxDurationMs(toMs(m_duration) * mul);
+		m_duration = ArxDurationMsf(toMs(m_duration) * mul);
 	}
 	
 	entities[m_target]->ioflags |= IO_FREEZESCRIPT;
@@ -359,7 +359,7 @@ void CreateFieldSpell::Update() {
 			m_duration=ArxDuration_ZERO;
 		}
 		
-		m_field.Update(ArxDurationMs(g_framedelay));
+		m_field.Update(ArxDurationMsf(g_framedelay));
 		m_field.Render();
 	}
 }
