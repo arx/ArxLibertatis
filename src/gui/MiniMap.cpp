@@ -481,8 +481,8 @@ void MiniMap::revealPlayerPos(int showLevel) {
 	
 	playerPos += start;
 	
-	Vec2i startCell = playerCell - Vec2i(glm::ceil(maxDistance / cas.x));
-	Vec2i endCell = playerCell + Vec2i(glm::ceil(maxDistance / cas.y));
+	Vec2i startCell = playerCell - Vec2i(s32(glm::ceil(maxDistance / cas.x)));
+	Vec2i endCell = playerCell + Vec2i(s32(glm::ceil(maxDistance / cas.y)));
 
 	Vec2i maxCell = Vec2i(MINIMAP_MAX_X - 1, MINIMAP_MAX_Z - 1);
 	
@@ -504,7 +504,7 @@ void MiniMap::revealPlayerPos(int showLevel) {
 		float revealPercent = (maxDistance - d) * (1.f / maxDistance);
 		revealPercent = arx::clamp(revealPercent * 2.0f, 0.0f, 1.0f);
 		
-		int r = revealPercent * 255.f;
+		int r = int(revealPercent * 255.f);
 		
 		int ucLevel = std::max(r, (int)m_levels[showLevel].m_revealed[x][z]);
 		m_levels[showLevel].m_revealed[x][z] = checked_range_cast<unsigned char>(ucLevel);
