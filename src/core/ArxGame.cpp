@@ -2165,7 +2165,7 @@ void ArxGame::render() {
 		benchmark::begin(benchmark::Cinematic);
 		cinematicRender();
 	} else {
-		benchmark::begin(cinematicBorder.CINEMA_DECAL ? benchmark::Cutscene : benchmark::Scene);
+		benchmark::begin(cinematicBorder.CINEMA_DECAL != 0.f ? benchmark::Cutscene : benchmark::Scene);
 		updateLevel();
 		
 		renderLevel();
