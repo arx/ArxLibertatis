@@ -60,7 +60,7 @@ void ARXMenu_Options_Audio_SetDevice(const std::string & device);
 void ARXMenu_Options_Audio_SetMasterVolume(float volume);
 void ARXMenu_Options_Audio_SetSfxVolume(float volume);
 void ARXMenu_Options_Audio_SetSpeechVolume(float volume);
-void ARXMenu_Options_Audio_SetAmbianceVolume(int volume);
+void ARXMenu_Options_Audio_SetAmbianceVolume(float volume);
 void ARXMenu_Options_Audio_ApplyGameVolumes();
 void ARXMenu_Options_Audio_SetMuted(bool mute);
 
