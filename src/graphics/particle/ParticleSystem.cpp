@@ -181,7 +181,7 @@ void ParticleSystem::SetParticleParams(Particle * pP) {
 	pP->p3Pos *= m_parameters.m_pos;
 	
 	float fTTL = m_parameters.m_life + Random::getf() * m_parameters.m_lifeRandom;
-	pP->m_timeToLive = ArxDurationMs(fTTL);
+	pP->m_timeToLive = ArxDurationMsf(fTTL);
 	pP->fOneOnTTL = 1.0f / toMs(pP->m_timeToLive);
 
 	float fAngleX = Random::getf() * m_parameters.m_angle; //*0.5f;
