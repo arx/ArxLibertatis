@@ -718,7 +718,7 @@ void GenerateMatrixUsingVector(glm::mat4x4 & matrix, const Vec3f & vect, float r
 	// a reference vector.
 	Vec3f yAxis;
 
-	if (!zAxis.x && !zAxis.z)
+	if(zAxis.x == 0.f && zAxis.z == 0.f)
 		yAxis = Vec3f(-zAxis.y, 0.f, 0.f);
 	else
 		yAxis = Vec3f(0.f, 1.f, 0.f);
