@@ -73,7 +73,7 @@ void MassLightningStrikeSpell::Launch() {
 	}
 	m_pos += angleToVectorXZ(beta) * 500.f;
 	
-	ArxDuration minDuration = ArxDurationMs(500 * m_level);
+	ArxDuration minDuration = ArxDurationMsf(500 * m_level);
 	ArxDuration maxDuration = ArxDuration_ZERO;
 	
 	int number = glm::clamp(int(m_level), 1, 10);
@@ -132,7 +132,7 @@ void MassLightningStrikeSpell::Update() {
 		lightning->m_caster = m_caster;
 		lightning->m_level = m_level;
 		
-		lightning->Update(ArxDurationMs(g_framedelay));
+		lightning->Update(ArxDurationMsf(g_framedelay));
 	}
 	
 	for(size_t i = 0; i < pTab.size(); i++) {
