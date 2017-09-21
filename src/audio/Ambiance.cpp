@@ -666,7 +666,7 @@ aalError Ambiance::play(const Channel & _channel, bool _loop,
 	loop = _loop;
 	
 	fade_interval = (float)_fade_interval;
-	if(fade_interval) {
+	if(fade_interval != 0.f) {
 		fade = FadeUp;
 		fade_max = channel.volume;
 		channel.volume = 0.0F;
@@ -720,7 +720,7 @@ aalError Ambiance::stop(size_t _fade_interval) {
 	}
 	
 	fade_interval = static_cast<float>(_fade_interval);
-	if(fade_interval) {
+	if(fade_interval != 0.f) {
 		fade = FadeDown;
 		fade_time = 0;
 		return AAL_OK;
@@ -795,7 +795,7 @@ aalError Ambiance::update() {
 	LogDebug("ambiance \"" << name << "\": update to time=" << time);
 	
 	// Fading
-	if(fade_interval && fade != None) {
+	if(fade_interval != 0.f && fade != None) {
 		fade_time += interval;
 		if(fade == FadeUp) {
 			channel.volume = fade_max * fade_time / fade_interval;
