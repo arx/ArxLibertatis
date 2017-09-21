@@ -668,7 +668,7 @@ public:
 			panel->AddElement(txt);
 			SliderWidget * sld = new SliderWidget(Vec2f(200, 0));
 			sld->valueChanged = boost::bind(&VideoOptionsMenuPage::onChangedFogDistance, this, _1);
-			sld->setValue(config.video.fogDistance);
+			sld->setValue(int(config.video.fogDistance));
 			panel->AddElement(sld);
 			addCenter(panel);
 		}
