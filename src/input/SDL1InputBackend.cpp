@@ -295,8 +295,8 @@ void SDL1InputBackend::onEvent(const SDL_Event & event) {
 		}
 		case SDL_KEYUP: {
 			SDLKey key = event.key.keysym.sym;
-			if(key >= 0 && size_t(key) < ARRAY_SIZE(sdlToArxKey) && sdlToArxKey[key] != Keyboard::Key_Invalid) {
-				Keyboard::Key arxkey = sdlToArxKey[key];
+			if(size_t(key) < ARRAY_SIZE(sdlToArxKey) && sdlToArxKey[size_t(key)] != Keyboard::Key_Invalid) {
+				Keyboard::Key arxkey = sdlToArxKey[size_t(key)];
 				if(m_textHandler && event.key.state == SDL_PRESSED) {
 					KeyModifiers mod;
 					mod.shift = (event.key.keysym.mod & KMOD_SHIFT) != 0;
