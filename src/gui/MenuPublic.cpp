@@ -116,8 +116,8 @@ void ARXMenu_Private_Options_Video_SetResolution(bool fullscreen, int _iWidth, i
 	}
 }
 
-void ARXMenu_Options_Video_SetFogDistance(int _iFog) {
-	config.video.fogDistance = glm::clamp(_iFog, 0, 10);
+void ARXMenu_Options_Video_SetFogDistance(float distance) {
+	config.video.fogDistance = glm::clamp(distance, 0.f, 10.f);
 }
 
 void ARXMenu_Options_Video_SetDetailsQuality(int _iQuality) {
