@@ -396,7 +396,7 @@ static CinematicFadeOut getFadeOut(const Cinematic & c, const CinematicKeyframe 
 	// Project the bitmap corners onto a 640x480 screen.
 	Vec3f s = key.posgrille - Vec3f(bitmap->m_size.x, bitmap->m_size.y, 0) * 0.5f;
 	Vec3f e = key.posgrille + Vec3f(bitmap->m_size.x, bitmap->m_size.y, 0) * 0.5f;
-	float fFOV = glm::radians(69.75);
+	float fFOV = glm::radians(69.75f);
 	float k = glm::cos(fFOV / 2) / glm::sin(fFOV / 2) * 0.5f;
 	s -= key.pos;
 	s.x = s.x * 0.75f * k * 640 / s.z;
