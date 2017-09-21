@@ -327,7 +327,7 @@ void PolyBoomAddSplat(const Sphere & sp, const Color3f & col, long flags) {
 						long num = Random::get(0, 5);
 						pb.tc = bloodsplat[num];
 						
-						pb.tolive = ArxDurationMs(16000 * size * (1.0f/40));
+						pb.tolive = ArxDurationMsf((16000.f / 40) * size);
 					}
 					
 					pb.ep=ep;
