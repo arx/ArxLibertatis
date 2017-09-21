@@ -1811,7 +1811,7 @@ static bool Manage_Specific_RAT_Timer(SCR_TIMER * st) {
 		st->count = 1;
 	} else {
 		st->count++;
-		st->interval = ArxDurationMs(toMs(st->interval) * ( 1.0f / 2 ));
+		st->interval = ArxDurationMsf(toMs(st->interval) * 0.5f);
 		if(st->interval < ArxDurationMs(100))
 			st->interval = ArxDurationMs(100);
 		
