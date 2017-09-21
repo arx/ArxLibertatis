@@ -795,7 +795,7 @@ void HealthGauge::update() {
 	
 	if(player.poison > 0.f) {
 		float val = std::min(player.poison, 0.2f) * 255.f * 5.f;
-		long g = val;
+		long g = long(val);
 		m_color = Color(u8(255 - g), u8(g) , 0);
 	} else {
 		m_color = Color::red;
