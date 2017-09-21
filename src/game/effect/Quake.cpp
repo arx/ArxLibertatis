@@ -38,7 +38,7 @@ void AddQuakeFX(float intensity, float duration, float period, bool sound) {
 	if(QuakeFx.intensity > 0.f) {
 		QuakeFx.intensity += intensity;
 
-		QuakeFx.duration += ArxDurationMs(s64(duration));
+		QuakeFx.duration += ArxDurationMsf(duration);
 		QuakeFx.frequency += period;
 		QuakeFx.frequency *= .5f;
 		QuakeFx.sound = QuakeFx.sound || sound;
@@ -50,7 +50,7 @@ void AddQuakeFX(float intensity, float duration, float period, bool sound) {
 
 		QuakeFx.start = arxtime.now();
 
-		QuakeFx.duration = ArxDurationMs(s64(duration));
+		QuakeFx.duration = ArxDurationMsf(duration);
 		QuakeFx.frequency = period;
 		QuakeFx.sound = sound;
 
