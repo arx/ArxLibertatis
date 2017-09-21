@@ -2197,7 +2197,7 @@ static Entity * ARX_CHANGELEVEL_Pop_IO(const std::string & idString, EntityInsta
 				pos += sizeof(ARX_CHANGELEVEL_NPC_IO_SAVE);
 				
 				io->_npcdata->absorb = as->absorb;
-				io->_npcdata->aimtime = ArxDurationMs(as->aimtime);
+				io->_npcdata->aimtime = ArxDurationMsf(as->aimtime);
 				io->_npcdata->armor_class = as->armor_class;
 				io->_npcdata->behavior = Behaviour::load(as->behavior); // TODO save/load flags
 				io->_npcdata->behavior_param = as->behavior_param;
