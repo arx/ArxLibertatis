@@ -165,7 +165,7 @@ bool Note::allocate() {
 	_area = Rectf(newPos,
 	             background->m_size.x * scale.x, background->m_size.y * scale.y);
 	_textArea = Rect(Vec2i(newTextStart * scale), Vec2i(newTextEnd * scale));
-	_pageSpacing = 20 * scale.x;
+	_pageSpacing = s32(20 * scale.x);
 	if(prevPage) {
 		Vec2f pos = Vec2f(0.f, background->m_size.y - prevPage->m_size.y) + prevButtonOffset;
 		pos *= scale;
