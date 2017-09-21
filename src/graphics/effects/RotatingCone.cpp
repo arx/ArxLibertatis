@@ -70,8 +70,8 @@ void RotatingCone::Init(float rbase, float rhaut, float hauteur) {
 
 void RotatingCone::Update(float timeDelta, Vec3f pos, float coneScale) {
 	
-	m_currdurationang += timeDelta;
-	ulCurrentTime += timeDelta;
+	m_currdurationang += int(timeDelta);
+	ulCurrentTime += static_cast<unsigned long>(timeDelta);
 	
 	m_pos = pos;
 	m_coneScale = coneScale;
