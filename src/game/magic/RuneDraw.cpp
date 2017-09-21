@@ -281,14 +281,14 @@ void ARX_SPELLS_UpdateSymbolDraw() {
 				vect *= symbolVecScale;
 				vect += vect / Vec2s(2);
 
-				if(oldtime <= AnimationDurationMs(ti)) {
+				if(oldtime <= AnimationDurationMsf(ti)) {
 					float ratio = toMsf(oldtime)*div_ti;
 					old_pos += Vec2s(Vec2f(vect) * ratio);
 					break;
 				}
 
 				old_pos += vect;
-				oldtime -= AnimationDurationMs(ti);
+				oldtime -= AnimationDurationMsf(ti);
 			}
 
 			for(size_t j = 0; j < nbcomponents; j++) {
@@ -296,7 +296,7 @@ void ARX_SPELLS_UpdateSymbolDraw() {
 				vect *= symbolVecScale;
 				vect += vect / Vec2s(2);
 
-				if(newtime <= AnimationDurationMs(ti)) {
+				if(newtime <= AnimationDurationMsf(ti)) {
 					float ratio = toMsf(newtime) * div_ti;
 					pos1 += Vec2s(Vec2f(vect) * ratio);
 					AddFlare(Vec2f(pos1), 0.1f, 1, io);
@@ -305,7 +305,7 @@ void ARX_SPELLS_UpdateSymbolDraw() {
 				}
 
 				pos1 += vect;
-				newtime -= AnimationDurationMs(ti);
+				newtime -= AnimationDurationMsf(ti);
 				
 			}
 		}
