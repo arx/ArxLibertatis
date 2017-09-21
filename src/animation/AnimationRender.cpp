@@ -800,8 +800,8 @@ void DrawEERIEInter_Render(EERIE_3DOBJ *eobj, const TransformInfo &t, Entity *io
 				fr=std::min(fr,255.f);
 				fb*=255.f;
 				fb=std::min(fb,255.f);
-				u8 lfr = fr;
-				u8 lfb = fb;
+				u8 lfr = u8(fr);
+				u8 lfb = u8(fb);
 				u8 lfg = 0x1E;
 				tvList[n].color = Color(lfr, lfg, lfb, 255).toRGBA();
 			}
