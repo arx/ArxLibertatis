@@ -48,10 +48,10 @@ public:
 	
 	template <class U>
 	explicit Rectangle_(Rectangle_<U> const & other)
-		: left(other.left)
-		, top(other.top)
-		, right(other.right)
-		, bottom(other.bottom)
+		: left(T(other.left))
+		, top(T(other.top))
+		, right(T(other.right))
+		, bottom(T(other.bottom))
 	{}
 	
 	Rectangle_() { }
