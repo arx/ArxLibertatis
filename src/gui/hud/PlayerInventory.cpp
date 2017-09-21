@@ -488,8 +488,8 @@ void PlayerInventoryHud::dropEntity() {
 	if(player.Interface & INTER_INVENTORY) {
 		t.x = DANAEMouse.x - iPos.x;
 		t.y = DANAEMouse.y - iPos.y;
-		t.x = t.x / (32 * m_scale); 
-		t.y = t.y / (32 * m_scale); 
+		t.x = s16(t.x / (32 * m_scale));
+		t.y = s16(t.y / (32 * m_scale));
 		
 		if((t.x >= 0) && (t.x <= 16 - itemSize.x) && (t.y >= 0) && (t.y <= 3 - itemSize.y)) {
 			bag = m_currentBag;
@@ -511,8 +511,8 @@ void PlayerInventoryHud::dropEntity() {
 			t.y = DANAEMouse.y - iPos.y - iY;
 			
 			if((t.x >= 0) && (t.y >= 0)) {
-				t.x = t.x / (32 * m_scale); 
-				t.y = t.y / (32 * m_scale); 
+				t.x = s16(t.x / (32 * m_scale));
+				t.y = s16(t.y / (32 * m_scale));
 				
 				if((t.x >= 0) && (t.x <= 16 - itemSize.x) && (t.y >= 0) && (t.y <= 3 - itemSize.y)) {
 					bOk = true;
