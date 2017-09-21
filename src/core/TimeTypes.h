@@ -153,6 +153,9 @@ inline ArxInstant ArxInstantMs(s64 val) {
 inline ArxDuration ArxDurationMs(s64 val) {
 	return ArxDuration::ofRaw(val);
 }
+inline ArxDuration ArxDurationMsf(float val) {
+	return ArxDuration::ofRaw(s64(val)); // TODO loss of precision
+}
 
 inline s64 toMs(ArxInstant val) {
 	return val.t;
@@ -179,6 +182,9 @@ inline PlatformDuration PlatformDurationUs(s64 val) {
 inline PlatformDuration PlatformDurationMs(s64 val) {
 	return PlatformDuration::ofRaw(val * 1000);
 }
+inline PlatformDuration PlatformDurationMsf(float val) {
+	return PlatformDuration::ofRaw(s64(val * 1000.f));
+}
 
 inline float toMs(PlatformDuration val) {
 	return float(val.t) / (1000.f);
@@ -201,6 +207,9 @@ inline AnimationDuration AnimationDurationUs(s64 val) {
 }
 inline AnimationDuration AnimationDurationMs(s64 val) {
 	return AnimationDuration::ofRaw(val * 1000);
+}
+inline AnimationDuration AnimationDurationMsf(float val) {
+	return AnimationDuration::ofRaw(s64(val * 1000.f));
 }
 
 inline s64 toMsi(AnimationDuration val) {
