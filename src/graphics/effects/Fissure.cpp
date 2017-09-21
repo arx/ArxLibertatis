@@ -389,7 +389,7 @@ void CRiseDead::RenderFissure() {
 
 void CRiseDead::Update(float timeDelta)
 {
-	m_elapsed += ArxDurationMs(timeDelta);
+	m_elapsed += ArxDurationMsf(timeDelta);
 	
 	m_stones.Update(timeDelta, m_eSrc);
 }
@@ -406,7 +406,7 @@ void CRiseDead::Render()
 	if(m_elapsed < m_durationIntro) {
 		float fOneOnDurationIntro = 1.f / toMs(m_durationIntro);
 		
-		if(m_elapsed < ArxDurationMs(toMs(m_durationIntro) * 0.666f)) {
+		if(m_elapsed < ArxDurationMsf(toMs(m_durationIntro) * 0.666f)) {
 			fSizeIntro = (end + 2) * fOneOnDurationIntro * (1.5f) * toMs(m_elapsed);
 			sizeF = 1;
 		} else {
@@ -704,7 +704,7 @@ void CSummonCreature::RenderFissure() {
 
 void CSummonCreature::Update(float timeDelta)
 {
-	m_elapsed += ArxDurationMs(timeDelta);
+	m_elapsed += ArxDurationMsf(timeDelta);
 }
 
 //-----------------------------------------------------------------------------
@@ -719,7 +719,7 @@ void CSummonCreature::Render()
 	if(m_elapsed < m_durationIntro) {
 		float fOneOnDurationIntro = 1.f / toMs(m_durationIntro);
 		
-		if(m_elapsed < ArxDurationMs(toMs(m_durationIntro) * 0.666f)) {
+		if(m_elapsed < ArxDurationMsf(toMs(m_durationIntro) * 0.666f)) {
 			fSizeIntro = (end + 2) * fOneOnDurationIntro * (1.5f) * toMs(m_elapsed);
 			sizeF = 1;
 		} else {
