@@ -296,7 +296,7 @@ void MagicMissileSpell::Update() {
 	}
 	
 	for(size_t i = 0 ; i < m_missiles.size() ; i++) {
-		m_missiles[i]->Update(ArxDurationMs(g_framedelay));
+		m_missiles[i]->Update(ArxDurationMsf(g_framedelay));
 	}
 	
 	{ // CheckAllDestroyed
@@ -460,7 +460,7 @@ void IgnitSpell::Update() {
 	}
 	
 	if(!arxtime.is_paused()) {
-		m_elapsed += ArxDurationMs(g_framedelay);
+		m_elapsed += ArxDurationMsf(g_framedelay);
 	}
 }
 
