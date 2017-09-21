@@ -945,7 +945,7 @@ static void ARX_DAMAGES_UpdateDamage(DamageHandle j, ArxInstant now) {
 	} else if(damage.params.duration == ArxDuration::ofRaw(-1)) {
 		dmg = damage.params.damages;
 	} else {
-		ArxDuration FD = ArxDurationMs(g_framedelay);
+		ArxDuration FD = ArxDurationMsf(g_framedelay);
 		
 		if(now > damage.start_time + damage.params.duration) {
 			FD -= damage.start_time + damage.params.duration - now;
