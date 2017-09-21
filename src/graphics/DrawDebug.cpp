@@ -531,8 +531,8 @@ static void drawDebugEntities() {
 		if(closerThan(entity->pos, player.pos, DebugTextMaxDistance)) {
 			
 			if(visible && entity->bbox2D.valid()) {
-				int x = (entity->bbox2D.min.x + entity->bbox2D.max.x) / 2;
-				int y = entity->bbox2D.min.y - hFontDebug->getLineHeight() - 2;
+				int x = int(entity->bbox2D.min.x + entity->bbox2D.max.x) / 2;
+				int y = int(entity->bbox2D.min.y - hFontDebug->getLineHeight() - 2);
 				UNICODE_ARXDrawTextCenter(hFontDebug, Vec2f(x, y), entity->idString(), color);
 			} else {
 				drawTextAt(hFontDebug, entity->pos, entity->idString(), color);
