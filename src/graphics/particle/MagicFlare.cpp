@@ -310,7 +310,7 @@ void FlareLine(Vec2f tmpPos0, Vec2f tmpPos1, Entity * io) {
 			long z = Random::get(0, FLARELINERND);
 			z += FLARELINESTEP;
 			if(!io) {
-				z *= g_sizeRatio.y;
+				z = long(z * g_sizeRatio.y);
 			}
 			i += z;
 			tmpPos0.y += m * z;
@@ -330,7 +330,7 @@ void FlareLine(Vec2f tmpPos0, Vec2f tmpPos1, Entity * io) {
 			long z = Random::get(0, FLARELINERND);
 			z += FLARELINESTEP;
 			if(!io) {
-				z *= g_sizeRatio.y;
+				z = long(z * g_sizeRatio.y);
 			}
 			i += z;
 			tmpPos0.x += m * z;
