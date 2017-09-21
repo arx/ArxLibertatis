@@ -151,12 +151,12 @@ void ARXMenu_Options_Audio_SetMasterVolume(float volume) {
 	ARX_SOUND_MixerSetVolume(ARX_SOUND_MixerMenu, fVolume);
 }
 
-void ARXMenu_Options_Audio_SetSfxVolume(int _iVolume) {
-	_iVolume = glm::clamp(_iVolume, 0, 10);
+void ARXMenu_Options_Audio_SetSfxVolume(float volume) {
 	
-	float fVolume = _iVolume * 0.1f;
+	config.audio.sfxVolume = glm::clamp(volume, 0.f, 10.f);
+	
+	float fVolume = config.audio.sfxVolume * 0.1f;
 	ARX_SOUND_MixerSetVolume(ARX_SOUND_MixerMenuSample, fVolume);
-	config.audio.sfxVolume = _iVolume;
 }
 
 void ARXMenu_Options_Audio_SetSpeechVolume(int _iVolume) {

@@ -58,7 +58,7 @@ void ARXMenu_Options_Video_SetDetailsQuality(int lod);
 
 void ARXMenu_Options_Audio_SetDevice(const std::string & device);
 void ARXMenu_Options_Audio_SetMasterVolume(float volume);
-void ARXMenu_Options_Audio_SetSfxVolume(int volume);
+void ARXMenu_Options_Audio_SetSfxVolume(float volume);
 void ARXMenu_Options_Audio_SetSpeechVolume(int volume);
 void ARXMenu_Options_Audio_SetAmbianceVolume(int volume);
 void ARXMenu_Options_Audio_ApplyGameVolumes();
