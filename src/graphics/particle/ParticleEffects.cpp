@@ -951,7 +951,7 @@ void ARX_PARTICLES_Update(EERIE_CAMERA * cam)  {
 		
 		if(part->m_flags & PARTICLE_SUB2) {
 			mat.setBlendType(RenderMaterial::Subtractive2);
-			color.a = glm::clamp(r * 1.5f, 0.f, 1.f) * 255;
+			color.a = u8(glm::clamp(r * 1.5f, 0.f, 1.f) * 255);
 		} else if(part->m_flags & SUBSTRACT) {
 			mat.setBlendType(RenderMaterial::Subtractive);
 		} else {
