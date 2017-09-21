@@ -160,7 +160,7 @@ bool ValidIOAddress(const Entity * io) {
 	return false;
 }
 
-static float ARX_INTERACTIVE_fGetPrice(Entity * io, Entity * shop) {
+long ARX_INTERACTIVE_GetPrice(Entity * io, Entity * shop) {
 	
 	if(!io || !(io->ioflags & IO_ITEM))
 		return 0;
@@ -168,11 +168,7 @@ static float ARX_INTERACTIVE_fGetPrice(Entity * io, Entity * shop) {
 	float shop_multiply = shop ? shop->shop_multiply : 1.f;
 	float durability_ratio = io->durability / io->max_durability;
 	
-	return io->_itemdata->price * shop_multiply * durability_ratio;
-}
-
-long ARX_INTERACTIVE_GetPrice(Entity * io, Entity * shop) {
-	return ARX_INTERACTIVE_fGetPrice(io, shop);
+	return long(io->_itemdata->price * shop_multiply * durability_ratio);
 }
 
 static void ARX_INTERACTIVE_ForceIOLeaveZone(Entity * io, long flags) {
