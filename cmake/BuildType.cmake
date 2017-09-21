@@ -123,7 +123,6 @@ else(MSVC)
 		add_cxxflag("-Wdouble-promotion")
 		add_cxxflag("-Wvla")
 		add_cxxflag("-Wduplicated-cond")
-		add_cxxflag("-Wduplicated-branches")
 		
 		# clang
 		add_cxxflag("-Wshift-overflow")
@@ -135,6 +134,11 @@ else(MSVC)
 		add_cxxflag("-Wheader-guard")
 		add_cxxflag("-Wpessimizing-move")
 		add_cxxflag("-Wextra-semi")
+		
+		if(SET_NOISY_WARNING_FLAGS OR NOT CMAKE_CXX_COMPILER_ID STREQUAL "GNU" OR NOT CMAKE_SIZEOF_VOID_P EQUAL 4)
+			# TODO for some reason this warns in /usr/include/boost/type_traits/alignment_of.hpp for -m32 builds
+			add_cxxflag("-Wduplicated-branches")
+		endif()
 		
 		if(SET_NOISY_WARNING_FLAGS)
 			
