@@ -978,7 +978,7 @@ public:
 			panel->AddElement(txt);
 			SliderWidget * sld = new SliderWidget(Vec2f(200, 0));
 			sld->valueChanged = boost::bind(&InterfaceOptionsMenuPage::onChangedHudScale, this, _1);
-			sld->setValue(config.interface.hudScale * 10.f);
+			sld->setValue(int(config.interface.hudScale * 10.f));
 			panel->AddElement(sld);
 			addCenter(panel);
 		}
