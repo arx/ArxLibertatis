@@ -203,9 +203,9 @@ static void ApplyLavaGlowToVertex(const Vec3f & odtv, ColorRGBA & color, float p
 	power = 1.f - std::sin(WATEREFFECT + odtv.x + odtv.z) * 0.05f * power;
 	Color inColor = Color::fromRGBA(color);
 	
-	long lr = clipByte(inColor.r * power);
-	long lg = clipByte(inColor.g * power);
-	long lb = clipByte(inColor.b * power);
+	u8 lr = clipByte(int(inColor.r * power));
+	u8 lg = clipByte(int(inColor.g * power));
+	u8 lb = clipByte(int(inColor.b * power));
 
 	color = Color(lr, lg, lb, 255).toRGBA();
 }
