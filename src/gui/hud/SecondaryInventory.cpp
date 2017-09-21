@@ -295,10 +295,10 @@ void SecondaryInventoryHud::updateInputButtons() {
 bool SecondaryInventoryHud::containsPos(const Vec2s & pos) {
 	if(SecondaryInventory != NULL) {
 		Vec2s t;
-		t.x = pos.x + checked_range_cast<short>(m_fadePosition) - (2 * m_scale);
-		t.y = pos.y - (13 * m_scale);
-		t.x = t.x / (32 * m_scale);
-		t.y = t.y / (32 * m_scale);
+		t.x = s16(pos.x + checked_range_cast<short>(m_fadePosition) - (2 * m_scale));
+		t.y = s16(pos.y - (13 * m_scale));
+		t.x = s16(t.x / (32 * m_scale));
+		t.y = s16(t.y / (32 * m_scale));
 		
 		if(t.x < 0 || t.x >= SecondaryInventory->m_size.x)
 			return false;
