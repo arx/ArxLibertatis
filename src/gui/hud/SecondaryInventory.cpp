@@ -391,10 +391,10 @@ void SecondaryInventoryHud::dropEntity() {
 		}
 		
 		Vec2s t = Vec2s_ZERO;
-		t.x = DANAEMouse.x + static_cast<short>(m_fadePosition) - (2 * m_scale);
-		t.y = DANAEMouse.y - (13 * m_scale);
-		t.x = t.x / (32 * m_scale);
-		t.y = t.y / (32 * m_scale);
+		t.x = s16(DANAEMouse.x + static_cast<short>(m_fadePosition) - (2 * m_scale));
+		t.y = s16(DANAEMouse.y - (13 * m_scale));
+		t.x = s16(t.x / (32 * m_scale));
+		t.y = s16(t.y / (32 * m_scale));
 		
 		Vec2s s = DRAGINTER->m_inventorySize;
 		
