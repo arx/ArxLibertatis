@@ -405,7 +405,7 @@ long ARX_SPEECH_AddSpeech(Entity * io, const std::string & data, long mood,
 
 	if ((io->ioflags & IO_NPC) && !(aspeech[num].flags & ARX_SPEECH_FLAG_OFFVOICE)) {
 		float fDiv = toMs(aspeech[num].duration) / io->_npcdata->speakpitch;
-		aspeech[num].duration = ArxDurationMs(fDiv);
+		aspeech[num].duration = ArxDurationMsf(fDiv);
 	}
 
 	if (aspeech[num].duration < ArxDurationMs(500))
