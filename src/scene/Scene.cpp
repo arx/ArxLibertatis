@@ -1436,7 +1436,7 @@ void ARX_SCENE_Update() {
 	const Vec3f camPos = ACTIVECAM->orgTrans.pos;
 	const float camDepth = ACTIVECAM->cdepth;
 	
-	long l = camDepth * 0.42f;
+	long l = long(camDepth * 0.42f);
 	long clip3D = (l / (long)BKG_SIZX) + 1;
 	short radius = clip3D + 4;
 
