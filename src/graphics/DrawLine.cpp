@@ -82,7 +82,7 @@ void drawLineSphere(const Sphere & sphere, Color color) {
 
 	static const size_t sections = 64;
 
-	size_t rings = sphere.radius / 10;
+	size_t rings = size_t(sphere.radius / 10);
 	if(rings < 7)
 		rings = 7;
 
