@@ -151,7 +151,7 @@ public:
 	}
 	
 	Color3 operator*(float factor) const {
-		return Color3(r * factor, g * factor, b * factor);
+		return Color3(T(r * factor), T(g * factor), T(b * factor));
 	}
 
 	Color3 & operator+=(const Color3 & right) {
