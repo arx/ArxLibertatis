@@ -187,7 +187,7 @@ public:
 	Result execute(Context & context) {
 		
 		std::string inout = context.getWord();
-		const PlatformDuration duration = PlatformDurationMs(context.getFloat());
+		const PlatformDuration duration = PlatformDurationMsf(context.getFloat());
 		
 		if(inout == "out") {
 			
