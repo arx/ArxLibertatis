@@ -134,7 +134,6 @@ else(MSVC)
 		add_cxxflag("-Wbool-conversion") # part of -Wconversion
 		add_cxxflag("-Wfloat-conversion") # part of -Wconversion
 		add_cxxflag("-Wstring-conversion") # part of -Wconversion
-		add_cxxflag("-Wint-conversion") # part of -Wconversion
 		
 		if(SET_NOISY_WARNING_FLAGS OR NOT CMAKE_CXX_COMPILER_ID STREQUAL "GNU" OR NOT CMAKE_SIZEOF_VOID_P EQUAL 4)
 			# TODO for some reason this warns in /usr/include/boost/type_traits/alignment_of.hpp for -m32 builds
