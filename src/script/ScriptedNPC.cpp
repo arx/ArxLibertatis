@@ -193,7 +193,7 @@ public:
 			
 			if(flg & flag('d')) {
 				spflags |= SPELLCAST_FLAG_NOCHECKCANCAST;
-				duration = context.getFloat();
+				duration = long(context.getFloat());
 				if(duration <= 0) {
 					duration = 99999999; // TODO should this be FLT_MAX?
 				}
