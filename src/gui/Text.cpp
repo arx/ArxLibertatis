@@ -259,7 +259,7 @@ static Font * createFont(const res::path & fontFace,
 		LogError << "Invalid font size for: " << configSizeKey;
 	}
 	
-	fontSize *= scaleFactor;
+	fontSize = unsigned(fontSize * scaleFactor);
 
 	Font * newFont = FontCache::getFont(fontFace, fontSize);
 	if(!newFont) {
