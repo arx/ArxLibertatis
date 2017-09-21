@@ -966,9 +966,9 @@ static void AddAnimatedObjectHalo(HaloInfo & haloInfo, const unsigned short * pa
 		tot += power;
 		_ffr[o] = power;
 
-		u8 lfr = curhalo->color.r * power;
-		u8 lfg = curhalo->color.g * power;
-		u8 lfb = curhalo->color.b * power;
+		u8 lfr = u8(curhalo->color.r * power);
+		u8 lfg = u8(curhalo->color.g * power);
+		u8 lfb = u8(curhalo->color.b * power);
 		colors[o] = Color(lfr, lfg, lfb, 255).toRGBA();
 	}
 
