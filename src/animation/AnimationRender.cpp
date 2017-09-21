@@ -630,9 +630,9 @@ static void AddFixedObjectHalo(const EERIE_FACE & face, const TransformInfo & t,
 		tot += power;
 		_ffr[o] = power;
 
-		u8 lfr = halo.color.r * power;
-		u8 lfg = halo.color.g * power;
-		u8 lfb = halo.color.b * power;
+		u8 lfr = u8(halo.color.r * power);
+		u8 lfg = u8(halo.color.g * power);
+		u8 lfb = u8(halo.color.b * power);
 		tvList[o].color = Color(lfr, lfg, lfb, 255).toRGBA();
 	}
 
