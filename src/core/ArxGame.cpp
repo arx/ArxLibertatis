@@ -1527,7 +1527,7 @@ extern ArxDuration DeadTime;
 
 void ArxGame::handlePlayerDeath() {
 	if(player.lifePool.current <= 0) {
-		DeadTime += ArxDurationMs(g_framedelay);
+		DeadTime += ArxDurationMsf(g_framedelay);
 		float mdist = glm::abs(player.physics.cyl.height)-60;
 
 		float startDistance = 40.f;
@@ -1891,7 +1891,7 @@ void ArxGame::updateLevel() {
 	ARX_SCENE_Update();
 
 	arx_assert(pParticleManager);
-	pParticleManager->Update(ArxDurationMs(g_framedelay));
+	pParticleManager->Update(ArxDurationMsf(g_framedelay));
 
 	ARX_FOGS_Render();
 
