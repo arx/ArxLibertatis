@@ -146,8 +146,8 @@ void ARX_INTERFACE_ManageOpenedBook_Finish(const Vec2f & mousePos)
 		
 		EERIE_3DOBJ * rune = gui::necklace.runes[i];
 		
-		bookcam.center.x = (382 + tmpPos.x * 45 + BOOKDEC.x) * g_sizeRatio.x;
-		bookcam.center.y = (100 + tmpPos.y * 64 + BOOKDEC.y) * g_sizeRatio.y;
+		bookcam.center.x = s32((382 + tmpPos.x * 45 + BOOKDEC.x) * g_sizeRatio.x);
+		bookcam.center.y = s32((100 + tmpPos.y * 64 + BOOKDEC.y) * g_sizeRatio.y);
 		
 		SetActiveCamera(&bookcam);
 		PrepareCamera(&bookcam, g_size);
