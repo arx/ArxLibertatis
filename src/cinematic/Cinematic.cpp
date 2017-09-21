@@ -383,7 +383,7 @@ void Cinematic::Render(PlatformDuration frameDuration) {
 		PlaySoundKeyFramer(idsound);
 	
 	if(config.interface.cinematicWidescreenMode == CinematicLetterbox) {
-		float w = 640 * g_sizeRatio.y;
+		s32 w = s32(640 * g_sizeRatio.y);
 		GRenderer->SetScissor(Rect(Vec2i((g_size.width() - w) / 2, 0), w, g_size.height()));
 	}
 	
