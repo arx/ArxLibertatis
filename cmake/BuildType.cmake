@@ -126,9 +126,12 @@ else(MSVC)
 		add_cxxflag("-Wduplicated-branches")
 		
 		# clang
-		add_cxxflag("-Wliteral-conversion")
 		add_cxxflag("-Wshift-overflow")
-		add_cxxflag("-Wbool-conversions")
+		add_cxxflag("-Wliteral-conversion") # part of -Wconversion
+		add_cxxflag("-Wbool-conversion") # part of -Wconversion
+		add_cxxflag("-Wfloat-conversion") # part of -Wconversion
+		add_cxxflag("-Wstring-conversion") # part of -Wconversion
+		add_cxxflag("-Wint-conversion") # part of -Wconversion
 		add_cxxflag("-Wheader-guard")
 		add_cxxflag("-Wpessimizing-move")
 		add_cxxflag("-Wextra-semi")
@@ -138,7 +141,8 @@ else(MSVC)
 			# These are too noisy to enable right now but we still want to track new warnings.
 			# TODO enable by default as soon as most are silenced
 			add_cxxflag("-Wconversion") # very noisy
-			# add_cxxflag("-Wsign-conversion") # very noisy
+			# add_cxxflag("-Wsign-conversion") # part of -Wconversion
+			# add_cxxflag("-Wshorten-64-to-32") # part of -Wconversion
 			add_cxxflag("-Wshadow") # very noisy
 			add_cxxflag("-Wstrict-aliasing=1") # has false positives
 			add_cxxflag("-Wuseless-cast") # has false positives
