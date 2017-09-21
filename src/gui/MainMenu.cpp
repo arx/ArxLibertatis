@@ -1525,7 +1525,7 @@ protected:
 		
 		panel->Move(Vec2f(0, y));
 		add(panel);
-		y += panel->m_rect.height() + RATIO_Y(3.f);
+		y = long(y + panel->m_rect.height() + RATIO_Y(3.f));
 	}
 	
 };
