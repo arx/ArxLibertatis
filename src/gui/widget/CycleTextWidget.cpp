@@ -80,7 +80,7 @@ void CycleTextWidget::AddText(TextWidget *_pText) {
 	pRightButton->SetPos(Vec2f(m_rect.right - pRightButton->m_rect.width(),
 	                           m_rect.top + m_rect.height() / 2 - pRightButton->m_rect.height() / 2));
 
-	int dx=m_rect.width()-pLeftButton->m_rect.width()-pRightButton->m_rect.width();
+	float dx = m_rect.width() - pLeftButton->m_rect.width() - pRightButton->m_rect.width();
 	//on recentre tout
 	std::vector<TextWidget*>::iterator it;
 
