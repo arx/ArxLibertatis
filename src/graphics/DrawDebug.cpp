@@ -130,7 +130,7 @@ static void drawDebugLights() {
 		}
 		
 		Vec2f center = Vec2f(p) / p.w;
-		const Rect mouseTestRect(center.x - 20, center.y - 20, center.x + 20, center.y + 20);
+		const Rect mouseTestRect(s32(center.x) - 20, s32(center.y) - 20, s32(center.x) + 20, s32(center.y) + 20);
 		if(mouseTestRect.contains(Vec2i(DANAEMouse))) {
 			UseRenderState state(RenderState().depthTest(true));
 			Sphere fallstart;
