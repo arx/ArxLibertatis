@@ -486,8 +486,8 @@ static bool Cedric_IO_Visible(const Vec3f & pos) {
 		//if(fartherThan(io->pos, ACTIVECAM->orgTrans.pos, ACTIVECAM->cdepth * 0.6f))
 		//	return false;
 
-		long xx = pos.x * ACTIVEBKG->m_mul.x;
-		long yy = pos.z * ACTIVEBKG->m_mul.y;
+		long xx = long(pos.x * ACTIVEBKG->m_mul.x);
+		long yy = long(pos.z * ACTIVEBKG->m_mul.y);
 
 		if(xx >= 1 && yy >= 1 && xx < ACTIVEBKG->m_size.x-1 && yy < ACTIVEBKG->m_size.y-1) {
 			for(short z = yy - 1; z <= yy + 1; z++)
