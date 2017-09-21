@@ -87,7 +87,7 @@ void HealSpell::End() {
 
 void HealSpell::Update() {
 	
-	m_elapsed += ArxDurationMs(g_framedelay);
+	m_elapsed += ArxDurationMsf(g_framedelay);
 	
 	if(m_caster == EntityHandle_Player) {
 		m_pos = player.pos;
@@ -128,7 +128,7 @@ void HealSpell::Update() {
 	}
 
 	m_particles.SetPos(m_pos);
-	m_particles.Update(ArxDurationMs(g_framedelay));
+	m_particles.Update(ArxDurationMsf(g_framedelay));
 	m_particles.Render();
 	
 	for(size_t ii = 0; ii < entities.size(); ii++) {
