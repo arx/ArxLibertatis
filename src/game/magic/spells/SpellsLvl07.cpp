@@ -288,8 +288,8 @@ void FireFieldSpell::End() {
 
 void FireFieldSpell::Update() {
 	
-	pPSStream.Update(ArxDurationMs(g_framedelay));
-	pPSStream1.Update(ArxDurationMs(g_framedelay));
+	pPSStream.Update(ArxDurationMsf(g_framedelay));
+	pPSStream1.Update(ArxDurationMsf(g_framedelay));
 	
 	EERIE_LIGHT * el = dynLightCreate(m_light);
 	if(el) {
@@ -550,7 +550,7 @@ void LightningStrikeSpell::Launch() {
 	
 	Vec3f target(0.f, 0.f, -500.f);
 	m_lightning.Create(Vec3f_ZERO, target);
-	m_lightning.SetDuration(ArxDurationMs(500 * m_level));
+	m_lightning.SetDuration(ArxDurationMsf(500 * m_level));
 	m_lightning.m_isMassLightning = false;
 	m_duration = m_lightning.m_duration;
 	
@@ -627,7 +627,7 @@ void LightningStrikeSpell::Update() {
 	m_lightning.m_caster = m_caster;
 	m_lightning.m_level = m_level;
 	
-	m_lightning.Update(ArxDurationMs(g_framedelay));
+	m_lightning.Update(ArxDurationMsf(g_framedelay));
 	m_lightning.Render();
 	
 	ARX_SOUND_RefreshPosition(m_snd_loop, entities[m_caster]->pos);
