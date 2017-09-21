@@ -201,8 +201,8 @@ long MakeTopObjString(Entity * io, std::string & dest) {
 
 EERIEPOLY * CheckInPoly(const Vec3f & poss, float * needY)
 {
-	long px = poss.x * ACTIVEBKG->m_mul.x;
-	long pz = poss.z * ACTIVEBKG->m_mul.y;
+	long px = long(poss.x * ACTIVEBKG->m_mul.x);
+	long pz = long(poss.z * ACTIVEBKG->m_mul.y);
 	
 	if(pz <= 0 || pz >= ACTIVEBKG->m_size.y - 1 || px <= 0 || px >= ACTIVEBKG->m_size.x - 1)
 		return NULL;
@@ -288,8 +288,8 @@ EERIEPOLY * CheckInPoly(const Vec3f & poss, float * needY)
 
 BackgroundTileData * getFastBackgroundData(float x, float z) {
 	
-	long px = x * ACTIVEBKG->m_mul.x;
-	long pz = z * ACTIVEBKG->m_mul.y;
+	long px = long(x * ACTIVEBKG->m_mul.x);
+	long pz = long(z * ACTIVEBKG->m_mul.y);
 
 	if(px < 0 || px >= ACTIVEBKG->m_size.x || pz < 0 || pz >= ACTIVEBKG->m_size.y)
 		return NULL;
