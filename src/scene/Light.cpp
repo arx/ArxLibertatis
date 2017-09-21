@@ -696,9 +696,9 @@ ColorRGBA ApplyLight(const ShaderLight lights[],
 	tempColor *= colorMod.factor;
 	tempColor += colorMod.term;
 
-	u8 ir = clipByte255(tempColor.r);
-	u8 ig = clipByte255(tempColor.g);
-	u8 ib = clipByte255(tempColor.b);
+	u8 ir = clipByte255(int(tempColor.r));
+	u8 ig = clipByte255(int(tempColor.g));
+	u8 ib = clipByte255(int(tempColor.b));
 
 	return Color(ir, ig, ib, 255).toRGBA();
 }
