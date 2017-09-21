@@ -77,7 +77,7 @@ void RuneOfGuardingSpell::End() {
 
 void RuneOfGuardingSpell::Update() {
 	
-	m_elapsed += ArxDurationMs(g_framedelay);
+	m_elapsed += ArxDurationMsf(g_framedelay);
 	
 	EERIE_LIGHT * light = lightHandleGet(m_light);
 	if(light) {
@@ -216,7 +216,7 @@ void LevitateSpell::End() {
 
 void LevitateSpell::Update() {
 	
-	m_elapsed += ArxDurationMs(g_framedelay);
+	m_elapsed += ArxDurationMsf(g_framedelay);
 	
 	Vec3f target;
 
@@ -323,7 +323,7 @@ void CurePoisonSpell::End() {
 
 void CurePoisonSpell::Update() {
 	
-	m_elapsed += ArxDurationMs(g_framedelay);
+	m_elapsed += ArxDurationMsf(g_framedelay);
 	
 	m_pos = entities[m_target]->pos;
 	
@@ -352,7 +352,7 @@ void CurePoisonSpell::Update() {
 	}
 
 	m_particles.SetPos(m_pos);
-	m_particles.Update(ArxDurationMs(g_framedelay));
+	m_particles.Update(ArxDurationMsf(g_framedelay));
 	
 	EERIE_LIGHT * light = dynLightCreate(m_light);
 	if(light) {
@@ -572,7 +572,7 @@ void PoisonProjectileSpell::Update() {
 	for(size_t i = 0; i < m_projectiles.size(); i++) {
 		CPoisonProjectile * projectile = m_projectiles[i];
 		
-		projectile->Update(ArxDurationMs(g_framedelay));
+		projectile->Update(ArxDurationMsf(g_framedelay));
 	}
 	
 	for(size_t i = 0; i < m_projectiles.size(); i++) {
@@ -601,7 +601,7 @@ void PoisonProjectileSpell::Update() {
 			float v = 4.f + m_level * ( 1.0f / 10 ) * 6.f ;
 			damage.damages = v * ( 1.0f / 1000 ) * g_framedelay;
 			damage.area = DAMAGE_FULL;
-			damage.duration = ArxDurationMs(g_framedelay);
+			damage.duration = ArxDurationMsf(g_framedelay);
 			damage.source = m_caster;
 			damage.flags = 0;
 			damage.type = DAMAGE_TYPE_MAGICAL | DAMAGE_TYPE_POISON;
