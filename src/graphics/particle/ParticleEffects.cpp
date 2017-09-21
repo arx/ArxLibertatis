@@ -1065,7 +1065,7 @@ void TreatBackgroundActions() {
 					pd->move = Vec3f(2.f, 2.f, 2.f) - Vec3f(4.f, 22.f, 4.f) * arx::randomVec3f();
 					pd->move *= gl->ex_speed;
 					pd->siz = 7.f * gl->ex_size;
-					pd->tolive = 500 + Random::getu(0, 1000 * gl->ex_speed);
+					pd->tolive = 500 + Random::getu(0, unsigned(1000 * gl->ex_speed));
 					if((gl->extras & EXTRAS_SPAWNFIRE) && (gl->extras & EXTRAS_SPAWNSMOKE)) {
 						pd->m_flags = FIRE_TO_SMOKE;
 					}
@@ -1091,7 +1091,7 @@ void TreatBackgroundActions() {
 					float d = (gl->extras & EXTRAS_FIREPLACE) ? 6.f : 4.f;
 					pd->move = Vec3f(vect.x * d, Random::getf(-18.f, -10.f), vect.z * d) * gl->ex_speed;
 					pd->siz = 4.f * gl->ex_size * 0.3f;
-					pd->tolive = 1200 + Random::getu(0, 500 * gl->ex_speed);
+					pd->tolive = 1200 + Random::getu(0, unsigned(500 * gl->ex_speed));
 					pd->tc = fire2;
 					pd->m_flags |= ROTATING | GRAVITY;
 					pd->m_rotation = 0.1f - Random::getf(0.f, 0.2f) * gl->ex_speed;
