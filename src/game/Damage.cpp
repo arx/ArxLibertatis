@@ -136,7 +136,7 @@ void DamageRequestEnd(DamageHandle handle) {
 extern Vec3f PUSH_PLAYER_FORCE;
 
 static float Blood_Pos = 0.f;
-static long Blood_Duration = 0;
+static float Blood_Duration = 0.f;
 
 static void ARX_DAMAGES_IgnitIO(Entity * io, float dmg)
 {
@@ -157,18 +157,18 @@ static void ARX_DAMAGES_IgnitIO(Entity * io, float dmg)
 void ARX_DAMAGE_Reset_Blood_Info()
 {
 	Blood_Pos = 0.f;
-	Blood_Duration = 0;
+	Blood_Duration = 0.f;
 }
 
 void ARX_DAMAGE_Show_Hit_Blood()
 {
 	Color color;
 	static float Last_Blood_Pos = 0.f;
-	static long duration;
+	static float duration;
 
 	if(Blood_Pos > 2.f) { // end of blood flash
 		Blood_Pos = 0.f;
-		duration = 0;
+		duration = 0.f;
 	} else if (Blood_Pos > 1.f) {
 		
 		if(player.poison > 1.f)
@@ -193,13 +193,13 @@ void ARX_DAMAGE_Show_Hit_Blood()
 		if(Blood_Pos > 1.f) {
 			if(Last_Blood_Pos <= 1.f) {
 				Blood_Pos = 1.0001f;
-				duration = 0;
+				duration = 0.f;
 			}
 
 			if(duration > Blood_Duration)
 				Blood_Pos += g_framedelay * ( 1.0f / 300 );
 
-			duration += static_cast<long>(g_framedelay);
+			duration += g_framedelay;
 		}
 		else
 			Blood_Pos += g_framedelay * ( 1.0f / 40 );
@@ -319,10 +319,9 @@ float ARX_DAMAGES_DamagePlayer(float dmg, DamageType type, EntityHandle source) 
 
 		if(Blood_Pos == 0.f) {
 			Blood_Pos = 0.000001f;
-			Blood_Duration = 100 + (t * 200.f);
+			Blood_Duration = 100.f + t * 200.f;
 		} else {
-			long temp = t * 800.f;
-			Blood_Duration += temp;
+			Blood_Duration += t * 800.f;
 		}
 	}
 
