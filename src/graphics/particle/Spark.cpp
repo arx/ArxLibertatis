@@ -65,7 +65,7 @@ void ParticleSparkSpawnContinous(const Vec3f & pos, unsigned rate, SpawnSparkTyp
 	
 	float amount = float(rate) * toMs(g_platformTime.lastFrameDuration()) * (15.f / 1000.f);
 	
-	unsigned count = std::floor(amount);
+	unsigned count = unsigned(amount);
 	if(Random::getf() < (amount - float(count))) {
 		count++;
 	}
