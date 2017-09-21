@@ -1958,10 +1958,10 @@ void ArxGame::manageEditorControls() {
 		arx_assert(g_bookResouces.playerbook);
 		
 		const Rect mouseTestRect(
-		pos.x,
-		pos.y,
-		pos.x + playerbook->m_size.x * g_sizeRatio.x,
-		pos.y + playerbook->m_size.y * g_sizeRatio.y
+		s32(pos.x),
+		s32(pos.y),
+		s32(pos.x + playerbook->m_size.x * g_sizeRatio.x),
+		s32(pos.y + playerbook->m_size.y * g_sizeRatio.y)
 		);
 		
 		if(mouseTestRect.contains(Vec2i(DANAEMouse))) {
