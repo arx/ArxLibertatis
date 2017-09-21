@@ -421,10 +421,10 @@ void MiniMap::showBookEntireMap(int showLevel) {
 		verts[3].uv = Vec2f_Y_AXIS;
 		
 		const Rect mouseTestRect(
-			verts[0].p.x,
-			verts[0].p.y,
-			verts[2].p.x,
-			verts[2].p.y
+			s32(verts[0].p.x),
+			s32(verts[0].p.y),
+			s32(verts[2].p.x),
+			s32(verts[2].p.y)
 		);
 		
 		if(mouseTestRect.contains(Vec2i(DANAEMouse))) {
