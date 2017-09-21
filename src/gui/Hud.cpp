@@ -662,8 +662,8 @@ void QuickSaveIconGui::hide() {
 
 void QuickSaveIconGui::update() {
 	if(m_remainingTime != ArxDuration_ZERO) {
-		if(m_remainingTime > ArxDurationMs(g_framedelay)) {
-			m_remainingTime -= ArxDurationMs(g_framedelay);
+		if(m_remainingTime > ArxDurationMsf(g_framedelay)) {
+			m_remainingTime -= ArxDurationMsf(g_framedelay);
 		} else {
 			m_remainingTime = ArxDuration_ZERO;
 		}
@@ -891,7 +891,7 @@ void MecanismIcon::update() {
 			m_nbToDraw++;
 		}
 	}
-	m_timeToDraw += ArxDurationMs(g_framedelay);
+	m_timeToDraw += ArxDurationMsf(g_framedelay);
 	
 	m_rect = createChild(Rectf(g_size), Anchor_TopLeft, m_iconSize * m_scale, Anchor_TopLeft);
 }
