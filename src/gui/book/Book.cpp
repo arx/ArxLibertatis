@@ -137,65 +137,8 @@ void PlayerBookPage::manageLeftTabOneCommon(long tabNum, long & activeTab, Vec2f
 }
 
 void PlayerBookPage::manageLeftTabsCommon(long tabNum, long & activeTab) {
-
-	Vec2f pos;
-	Vec2f activePos;
-	switch(tabNum) {
-		case 0: {
-			pos = Vec2f(100.f, 82.f);
-			activePos = Vec2f(102.f, 82.f);
-			break;
-		}
-		case 1: {
-			pos = Vec2f(98.f, 112.f);
-			activePos = Vec2f(100.f, 114.f);
-			break;
-		}
-		case 2: {
-			pos = Vec2f(97.f, 143.f);
-			activePos = Vec2f(101.f, 141.f);
-			break;
-		}
-		case 3: {
-			pos = Vec2f(95.f, 170.f);
-			activePos = Vec2f(100.f, 170.f);
-			break;
-		}
-		case 4: {
-			pos = Vec2f(95.f, 200.f);
-			activePos = Vec2f(97.f, 199.f);
-			break;
-		}
-		case 5: {
-			pos = Vec2f(94.f, 229.f);
-			activePos = Vec2f(103.f, 226.f);
-			break;
-		}
-		case 6: {
-			pos = Vec2f(94.f, 259.f);
-			activePos = Vec2f(101.f, 255.f);
-			break;
-		}
-		case 7: {
-			pos = Vec2f(92.f, 282.f);
-			activePos = Vec2f(99.f, 283.f);
-			break;
-		}
-		case 8: {
-			pos = Vec2f(90.f, 308.f);
-			activePos = Vec2f(99.f, 307.f);
-			break;
-		}
-		case 9: {
-			pos = Vec2f(97.f, 331.f);
-			activePos = Vec2f(104.f, 331.f);
-			break;
-		}
-		default: {
-			return;
-		}
-	}
-	manageLeftTabOneCommon(tabNum, activeTab, pos, activePos);
+	
+	manageLeftTabOneCommon(tabNum, activeTab, m_tabPositions[tabNum], m_activeTabPositions[tabNum]);
 }
 
 static void DrawBookTextCenter(Font* font, const Vec2f & pos, const std::string& text, Color col) {
