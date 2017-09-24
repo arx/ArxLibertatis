@@ -44,7 +44,7 @@ private:
 
 	void drawTab(long tabNum);
 	void drawActiveTab(long tabNum);
-	void checkTabClick(long tabNum, long &activeTab, Vec2f pos);
+	void checkTabClick(long tabNum, long &activeTab);
 };
 
 class StatsPage : public PlayerBookPage {
