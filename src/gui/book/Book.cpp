@@ -137,7 +137,7 @@ void PlayerBookPage::checkTabClick(long tabNum, long &activeTab) {
 	}
 }
 
-void PlayerBookPage::manageLeftTabsCommon(long tabNum, long & activeTab) {
+void PlayerBookPage::manageLeftTabs(long tabNum, long & activeTab) {
 	
 	if(activeTab != tabNum) {
 		drawTab(tabNum);
@@ -1316,7 +1316,7 @@ void SpellsPage::drawLeftTabs() {
 			}
 
 			if(bOk)
-				PlayerBookPage::manageLeftTabsCommon(spellicons[i].level - 1, m_currentTab);
+				PlayerBookPage::manageLeftTabs(spellicons[i].level - 1, m_currentTab);
 		}
 	}
 }
@@ -1468,7 +1468,7 @@ void MapPage::drawLeftTabs() {
 	long max_onglet = 7;
 	
 	for(int i = 0; i <= max_onglet; i++) {
-		PlayerBookPage::manageLeftTabsCommon(i, m_currentLevel);
+		PlayerBookPage::manageLeftTabs(i, m_currentLevel);
 	}
 }
 
