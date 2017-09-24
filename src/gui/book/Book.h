@@ -42,7 +42,7 @@ private:
 	Vec2f m_tabPositions[10] = { Vec2f(100.f, 82.f), Vec2f(98.f, 112.f), Vec2f(97.f, 143.f), Vec2f(95.f, 170.f), Vec2f(95.f, 200.f),
 	                           Vec2f(94.f, 229.f), Vec2f(94.f, 259.f), Vec2f(92.f, 282.f), Vec2f(90.f, 308.f), Vec2f(97.f, 331.f) };
 
-	void drawTab(long tabNum, Vec2f pos);
+	void drawTab(long tabNum);
 	void drawActiveTab(long tabNum, Vec2f pos);
 	void checkTabClick(long tabNum, long &activeTab, Vec2f pos);
 };

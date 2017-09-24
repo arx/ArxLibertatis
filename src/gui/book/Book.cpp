@@ -117,8 +117,8 @@ void PlayerBook::clearJournal() {
 	questBook.clear();
 }
 
-void PlayerBookPage::drawTab(long tabNum, Vec2f pos) {
-	DrawBookInterfaceItem(g_bookResouces.accessibleTab[tabNum], pos, Color::white, 0.000001f);
+void PlayerBookPage::drawTab(long tabNum) {
+	DrawBookInterfaceItem(g_bookResouces.accessibleTab[tabNum], m_tabPositions[tabNum], Color::white, 0.000001f);
 }
 
 void PlayerBookPage::drawActiveTab(long tabNum, Vec2f pos) {
@@ -140,7 +140,7 @@ void PlayerBookPage::checkTabClick(long tabNum, long &activeTab, Vec2f pos) {
 void PlayerBookPage::manageLeftTabsCommon(long tabNum, long & activeTab) {
 	
 	if(activeTab != tabNum) {
-		drawTab(tabNum, m_tabPositions[tabNum]);
+		drawTab(tabNum);
 		checkTabClick(tabNum, activeTab, m_tabPositions[tabNum]);
 	} else {
 		drawActiveTab(tabNum, m_activeTabPositions[tabNum]);
