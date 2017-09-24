@@ -121,6 +121,10 @@ void PlayerBookPage::drawTab(long tabNum, Vec2f pos) {
 	DrawBookInterfaceItem(g_bookResouces.accessibleTab[tabNum], pos, Color::white, 0.000001f);
 }
 
+void PlayerBookPage::drawActiveTab(long tabNum, Vec2f pos) {
+	DrawBookInterfaceItem(g_bookResouces.currentTab[tabNum], pos, Color::white, 0.000001f);
+}
+
 void PlayerBookPage::checkTabClick(long tabNum, long &activeTab, Vec2f pos) {
 	if(MouseInBookRect(pos, Vec2f(32, 32))) {
 		UseRenderState state(render2D().blendAdditive());
@@ -133,20 +137,14 @@ void PlayerBookPage::checkTabClick(long tabNum, long &activeTab, Vec2f pos) {
 	}
 }
 
-void PlayerBookPage::manageLeftTabOneCommon(long tabNum, long & activeTab, Vec2f pos, Vec2f activePos) {
-	
-	if(activeTab == tabNum) {
-		DrawBookInterfaceItem(g_bookResouces.currentTab[tabNum], activePos, Color::white, 0.000001f);
-	}
-}
-
 void PlayerBookPage::manageLeftTabsCommon(long tabNum, long & activeTab) {
 	
 	if(activeTab != tabNum) {
 		drawTab(tabNum, m_tabPositions[tabNum]);
 		checkTabClick(tabNum, activeTab, m_tabPositions[tabNum]);
+	} else {
+		drawActiveTab(tabNum, m_activeTabPositions[tabNum]);
 	}
-	manageLeftTabOneCommon(tabNum, activeTab, m_tabPositions[tabNum], m_activeTabPositions[tabNum]);
 }
 
 static void DrawBookTextCenter(Font* font, const Vec2f & pos, const std::string& text, Color col) {
