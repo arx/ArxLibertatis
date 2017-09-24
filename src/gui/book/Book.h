@@ -35,7 +35,7 @@ class PlayerBookPage {
 public:
 	void playReleaseSound();
 	void playErrorSound();
-	void manageLeftTabsCommon(long tabNum, long & activeTab);
+	void manageLeftTabs(long tabNum, long & activeTab);
 private:
 	Vec2f m_activeTabPositions[10] = { Vec2f(102.f, 82.f), Vec2f(98.f, 112.f), Vec2f(101.f, 141.f), Vec2f(100.f, 170.f), Vec2f(97.f, 199.f),
 	                                 Vec2f(103.f, 226.f), Vec2f(101.f, 255.f), Vec2f(99.f, 283.f), Vec2f(99.f, 307.f), Vec2f(104.f, 331.f) };
