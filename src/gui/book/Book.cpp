@@ -117,11 +117,13 @@ void PlayerBook::clearJournal() {
 	questBook.clear();
 }
 
+void PlayerBookPage::drawTab(long tabNum, Vec2f pos) {
+	DrawBookInterfaceItem(g_bookResouces.accessibleTab[tabNum], pos, Color::white, 0.000001f);
+}
+
 void PlayerBookPage::manageLeftTabOneCommon(long tabNum, long & activeTab, Vec2f pos, Vec2f activePos) {
 	
 	if(activeTab != tabNum) {
-			
-		DrawBookInterfaceItem(g_bookResouces.accessibleTab[tabNum], pos, Color::white, 0.000001f);
 		
 		if(MouseInBookRect(pos, Vec2f(32, 32))) {
 			UseRenderState state(render2D().blendAdditive());
@@ -138,6 +140,9 @@ void PlayerBookPage::manageLeftTabOneCommon(long tabNum, long & activeTab, Vec2f
 
 void PlayerBookPage::manageLeftTabsCommon(long tabNum, long & activeTab) {
 	
+	if(activeTab != tabNum) {
+		drawTab(tabNum, m_tabPositions[tabNum]);
+	}
 	manageLeftTabOneCommon(tabNum, activeTab, m_tabPositions[tabNum], m_activeTabPositions[tabNum]);
 }
 
