@@ -43,7 +43,7 @@ private:
 	                           Vec2f(94.f, 229.f), Vec2f(94.f, 259.f), Vec2f(92.f, 282.f), Vec2f(90.f, 308.f), Vec2f(97.f, 331.f) };
 
 	void drawTab(long tabNum);
-	void drawActiveTab(long tabNum, Vec2f pos);
+	void drawActiveTab(long tabNum);
 	void checkTabClick(long tabNum, long &activeTab, Vec2f pos);
 };
 

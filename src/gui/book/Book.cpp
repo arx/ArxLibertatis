@@ -121,8 +121,8 @@ void PlayerBookPage::drawTab(long tabNum) {
 	DrawBookInterfaceItem(g_bookResouces.accessibleTab[tabNum], m_tabPositions[tabNum], Color::white, 0.000001f);
 }
 
-void PlayerBookPage::drawActiveTab(long tabNum, Vec2f pos) {
-	DrawBookInterfaceItem(g_bookResouces.currentTab[tabNum], pos, Color::white, 0.000001f);
+void PlayerBookPage::drawActiveTab(long tabNum) {
+	DrawBookInterfaceItem(g_bookResouces.currentTab[tabNum], m_activeTabPositions[tabNum], Color::white, 0.000001f);
 }
 
 void PlayerBookPage::checkTabClick(long tabNum, long &activeTab, Vec2f pos) {
@@ -143,7 +143,7 @@ void PlayerBookPage::manageLeftTabsCommon(long tabNum, long & activeTab) {
 		drawTab(tabNum);
 		checkTabClick(tabNum, activeTab, m_tabPositions[tabNum]);
 	} else {
-		drawActiveTab(tabNum, m_activeTabPositions[tabNum]);
+		drawActiveTab(tabNum);
 	}
 }
 
