@@ -125,10 +125,10 @@ void PlayerBookPage::drawActiveTab(long tabNum) {
 	DrawBookInterfaceItem(g_bookResouces.currentTab[tabNum], m_activeTabPositions[tabNum], Color::white, 0.000001f);
 }
 
-void PlayerBookPage::checkTabClick(long tabNum, long &activeTab, Vec2f pos) {
-	if(MouseInBookRect(pos, Vec2f(32, 32))) {
+void PlayerBookPage::checkTabClick(long tabNum, long &activeTab) {
+	if(MouseInBookRect(m_tabPositions[tabNum], Vec2f(32, 32))) {
 		UseRenderState state(render2D().blendAdditive());
-		DrawBookInterfaceItem(g_bookResouces.accessibleTab[tabNum], pos, Color::grayb(0x55), 0.000001f);
+		DrawBookInterfaceItem(g_bookResouces.accessibleTab[tabNum], m_tabPositions[tabNum], Color::grayb(0x55), 0.000001f);
 		SpecialCursor=CURSOR_INTERACTION_ON;
 		if(eeMouseDown1() || eeMouseDown2()) {
 			ARX_SOUND_PlayInterface(SND_BOOK_PAGE_TURN, Random::getf(0.9f, 1.1f));
@@ -141,7 +141,7 @@ void PlayerBookPage::manageLeftTabsCommon(long tabNum, long & activeTab) {
 	
 	if(activeTab != tabNum) {
 		drawTab(tabNum);
-		checkTabClick(tabNum, activeTab, m_tabPositions[tabNum]);
+		checkTabClick(tabNum, activeTab);
 	} else {
 		drawActiveTab(tabNum);
 	}
