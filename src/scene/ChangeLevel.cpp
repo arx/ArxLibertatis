@@ -1743,8 +1743,8 @@ static long ARX_CHANGELEVEL_Pop_Player() {
 	WILL_RESTORE_PLAYER_POSITION = asp->pos.toVec3();
 	WILL_RESTORE_PLAYER_POSITION_FLAG = true;
 	
-	player.m_misc.resistMagic = checked_range_cast<unsigned char>(asp->resist_magic);
-	player.m_misc.resistPoison = checked_range_cast<unsigned char>(asp->resist_poison);
+	player.m_misc.resistMagic = glm::floor(asp->resist_magic);
+	player.m_misc.resistPoison = glm::floor(asp->resist_poison);
 	
 	player.Attribute_Redistribute = checked_range_cast<unsigned char>(asp->Attribute_Redistribute);
 	player.Skill_Redistribute = checked_range_cast<unsigned char>(asp->Skill_Redistribute);
