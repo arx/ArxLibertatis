@@ -1746,8 +1746,8 @@ static long ARX_CHANGELEVEL_Pop_Player() {
 	player.m_misc.resistMagic = glm::floor(asp->resist_magic);
 	player.m_misc.resistPoison = glm::floor(asp->resist_poison);
 	
-	player.Attribute_Redistribute = checked_range_cast<unsigned char>(asp->Attribute_Redistribute);
-	player.Skill_Redistribute = checked_range_cast<unsigned char>(asp->Skill_Redistribute);
+	player.Attribute_Redistribute = glm::clamp(asp->Attribute_Redistribute, s16(0), s16(std::numeric_limits<unsigned char>::max()));
+	player.Skill_Redistribute = glm::clamp(asp->Skill_Redistribute, s16(0), s16(std::numeric_limits<unsigned char>::max()));
 	
 	player.rune_flags = RuneFlags::load(asp->rune_flags); // TODO save/load flags
 	player.size = asp->size.toVec3();
