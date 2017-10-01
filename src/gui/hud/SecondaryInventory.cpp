@@ -580,13 +580,14 @@ void SecondaryInventoryHud::close() {
 void SecondaryInventoryHud::updateFader() {
 	
 	if(m_fadeDirection != Fade_stable) {
-		float frameDelay = toMs(g_platformTime.lastFrameDuration());
+		float frameDelay = g_platformTime.lastFrameDuration() / PlatformDurationMs(3);
+		
 		if((player.Interface & INTER_COMBATMODE) || player.doingmagic >= 2 || m_fadeDirection == Fade_left) {
 			if(m_fadePosition > -160)
-				m_fadePosition -= (frameDelay * ( 1.0f / 3 )) * m_scale;
+				m_fadePosition -= frameDelay * m_scale;
 		} else {
 			if(m_fadePosition < 0)
-				m_fadePosition += m_fadeDirection * (frameDelay * ( 1.0f / 3 )) * m_scale;
+				m_fadePosition += m_fadeDirection * frameDelay * m_scale;
 		}
 		
 		if(m_fadePosition <= -160) {
