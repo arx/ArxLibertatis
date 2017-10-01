@@ -997,14 +997,12 @@ bool Image::save(const fs::path & filename) const {
 	}
 	
 	int ret = 0;
-	if(filename.ext() == ".png") {
-		ret = stbi::stbi_write_png(filename.string().c_str(), mWidth, mHeight, GetSize(mFormat), mData, 0);
-	} else if(filename.ext() == ".bmp") {
+	if(filename.ext() == ".bmp") {
 		ret = stbi::stbi_write_bmp(filename.string().c_str(), mWidth, mHeight, GetSize(mFormat), mData);
 	} else if(filename.ext() == ".tga") {
 		ret = stbi::stbi_write_tga(filename.string().c_str(), mWidth, mHeight, GetSize(mFormat), mData);
 	} else {
-		LogError << "Unsupported file extension.";
+		LogError << "Unsupported file extension: " << filename.ext();
 	}
 	
 	return ret != 0;
