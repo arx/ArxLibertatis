@@ -166,8 +166,7 @@ void CMagicMissile::Render()
 		mat.setTexture(tex_mm);
 	
 	if(bMove) {
-		float fOneOnDuration = 1.f / toMs(m_duration);
-		fTrail = (toMs(m_elapsed) * fOneOnDuration) * (iBezierPrecision + 2) * 5;
+		fTrail = (m_elapsed / m_duration) * (iBezierPrecision + 2) * 5;
 	}
 	
 	newpos = lastpos = pathways[0];
