@@ -1398,7 +1398,7 @@ void PlayerInterfaceFader::requestFade(FadeDirection showhide, long smooth) {
 			m_current = PlatformDurationMs(1000);
 		}
 		
-		lSLID_VALUE = toMs(m_current) / 10.f;
+		lSLID_VALUE = m_current / PlatformDurationMs(10);
 	}
 }
 
@@ -1421,7 +1421,7 @@ void PlayerInterfaceFader::update() {
 					if(m_current > PlatformDurationMs(1000))
 						m_current = PlatformDurationMs(1000);
 					
-					lSLID_VALUE = toMs(m_current) / 10.f;
+					lSLID_VALUE = m_current / PlatformDurationMs(10);
 				} else {
 					bOk = true;
 				}
@@ -1435,7 +1435,7 @@ void PlayerInterfaceFader::update() {
 				m_current = PlatformDuration_ZERO;
 			}
 			
-			lSLID_VALUE = toMs(m_current) / 10.f;
+			lSLID_VALUE = m_current / PlatformDurationMs(10);
 		}
 	}
 	
@@ -1446,7 +1446,7 @@ void PlayerInterfaceFader::update() {
 			m_current = PlatformDurationMs(1000);
 			m_direction = 0;
 		}
-		lSLID_VALUE = toMs(m_current) / 10.f;
+		lSLID_VALUE = m_current / PlatformDurationMs(10);
 	} else if(m_direction == -1) {
 		m_current -= g_platformTime.lastFrameDuration();
 		
@@ -1454,7 +1454,7 @@ void PlayerInterfaceFader::update() {
 			m_current = PlatformDuration_ZERO;
 			m_direction = 0;
 		}
-		lSLID_VALUE = toMs(m_current) / 10.f;
+		lSLID_VALUE = m_current / PlatformDurationMs(10);
 	}
 }
 
