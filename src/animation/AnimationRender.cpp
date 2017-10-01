@@ -326,12 +326,12 @@ void Cedric_ApplyLightingFirstPartRefactor(Entity *io) {
 
 			if(elapsed > ArxDuration_ZERO) {
 				if(elapsed < ArxDurationMs(3000)) { // 5 seconds to red
-					float ratio = toMs(elapsed) * (1.0f / 3000);
+					float ratio = elapsed / ArxDurationMs(3000);
 					io->special_color = Color3f(1.f, 1.f - ratio, 1.f - ratio);
 					io->highlightColor += Color3f(std::max(ratio - 0.5f, 0.f), 0.f, 0.f) * 255;
 					AddRandomSmoke(io, 1);
 				} else if(elapsed < ArxDurationMs(6000)) { // 5 seconds to White
-					float ratio = toMs(elapsed) * (1.0f / 3000);
+					float ratio = elapsed / ArxDurationMs(3000);
 					io->special_color = Color3f::red;
 					io->highlightColor += Color3f(std::max(ratio - 0.5f, 0.f), 0.f, 0.f) * 255;
 					AddRandomSmoke(io, 2);
@@ -1092,7 +1092,7 @@ static void Cedric_RenderObject(EERIE_3DOBJ * eobj, Skeleton * obj, Entity * io,
 	if(io && (io->sfx_flag & SFX_TYPE_YLSIDE_DEATH) && io->show != SHOW_FLAG_TELEPORTING) {
 		const ArxDuration elapsed = arxtime.now() - io->sfx_time;
 		if(elapsed >= ArxDurationMs(3000) && elapsed < ArxDurationMs(6000)) {
-			float ratio = toMs(elapsed - ArxDurationMs(3000)) * (1.0f / 3000);
+			float ratio = (elapsed - ArxDurationMs(3000)) / ArxDurationMs(3000);
 			glowColor = Color::gray(ratio).toRGB();
 			glow = true;
 		}
