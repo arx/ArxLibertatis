@@ -103,7 +103,7 @@ void Particle::Update(ArxDuration delta) {
 	
 	m_age += delta;
 	iTexTime += toMs(delta);
-	float fTimeSec = toMs(delta) * (1.f / 1000);
+	float fTimeSec = delta / ArxDurationMs(1000);
 	
 	if(m_age < m_timeToLive) {
 		
