@@ -196,10 +196,10 @@ void CCreateField::Render()
 		}
 	}
 
-	ysize = std::min(1.0f, toMs(m_elapsed) * 0.001f);
+	ysize = std::min(1.0f, m_elapsed / ArxDurationMs(1000));
 
 	if(ysize >= 1.0f) {
-		size = std::min(1.0f, (toMs(m_elapsed) - 1000) * 0.001f);
+		size = std::min(1.0f, (m_elapsed - ArxDurationMs(1000)) / ArxDurationMs(1000));
 		size = std::max(size, 0.1f);
 	}
 
