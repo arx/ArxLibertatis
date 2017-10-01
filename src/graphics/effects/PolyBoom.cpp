@@ -466,9 +466,7 @@ void PolyBoomDraw() {
 			}
 			
 			case 2: { // Water
-				
-				float div = 1.f / toMs(pb.tolive);
-				float tt = toMs(t) * div;
+				float tt = t / pb.tolive;
 				float tr = std::max(1.f, tt * 2 - 0.5f);
 				float ttt = tt * 0.5f;
 				ColorRGBA col = (pb.rgb * ttt).toRGB();
