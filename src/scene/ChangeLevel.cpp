@@ -77,6 +77,7 @@ ZeniMax Media Inc., Suite 120, Rockville, Maryland 20850 USA.
 #include "gui/MiniMap.h"
 #include "gui/Hud.h"
 #include "gui/Interface.h"
+#include "gui/Speech.h"
 #include "gui/hud/SecondaryInventory.h"
 
 #include "graphics/GraphicsModes.h"
@@ -2444,6 +2445,8 @@ static void ARX_CHANGELEVEL_PopAllIO(ARX_CHANGELEVEL_INDEX * asi, ARX_CHANGELEVE
 
 static void ARX_CHANGELEVEL_PopAllIO_FINISH(bool reloadflag, bool firstTime) {
 	
+	bool movedOOBItems = false;
+	
 	for(size_t i = 0; i < entities.size(); i++) {
 		const EntityHandle handle = EntityHandle(i);
 		Entity * entity = entities[handle];
@@ -2456,11 +2459,16 @@ static void ARX_CHANGELEVEL_PopAllIO_FINISH(bool reloadflag, bool firstTime) {
 			LogWarning << "Found entity " << entity->idString() << " outside the world";
 			if((entity->ioflags & (IO_ITEM |IO_MOVABLE)) && (entity->gameFlags & GFLAG_INTERACTIVITY)) {
 				PutInFrontOfPlayer(entity);
+				movedOOBItems = true;
 			} else {
 				entity->pos = entity->initpos;
 			}
 		}
 		
+	}
+	
+	if(movedOOBItems) {
+		ARX_SPEECH_Add("Found out of bounds items and dropped them in front of the player.");
 	}
 	
 	if(reloadflag) {
