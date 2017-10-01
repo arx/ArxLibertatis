@@ -918,7 +918,7 @@ void ARX_PHYSICS_Apply() {
 
 		if(   (io->ioflags & IO_ITEM)
 		   && (io->gameFlags & GFLAG_GOREEXPLODE)
-		   && arxtime.now_f() - toMs(io->animBlend.lastanimtime) > 300
+		   && arxtime.now() - io->animBlend.lastanimtime > ArxDurationMs(300)
 		   && io->obj
 		   && !io->obj->vertexlist.empty()
 		) {
