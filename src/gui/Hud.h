@@ -87,7 +87,6 @@ public:
 class StealIconGui : public HudIconBase {
 private:
 	Vec2f m_size;
-	Vec2f m_pos;
 	
 public:
 	void init();
@@ -98,7 +97,6 @@ public:
 
 class LevelUpIconGui : public HudIconBase {
 private:
-	Vec2f m_pos;
 	Vec2f m_size;
 	bool m_visible;
 	
@@ -113,7 +111,6 @@ public:
 
 class PurseIconGui : public HudIconBase {
 private:
-	Vec2f m_pos;
 	Vec2f m_size;
 	
 	PlatformDuration m_haloTime;
