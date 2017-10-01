@@ -288,10 +288,9 @@ void ControlTargetSpell::Update() {
 	int n = BEZIERPrecision;
 	float delta = 1.0f / n;
 	
-	float elapsed = arxtime.now_f() - toMs(m_timcreation);
-	float fOneOnDuration = 1.f / toMs(m_duration);
+	const ArxDuration elapsed = arxtime.now() - m_timcreation;
 	
-	fTrail = (elapsed * fOneOnDuration) * 9 * (n + 2);
+	fTrail = (elapsed / m_duration) * 9 * (n + 2);
 
 	Vec3f lastpos = pathways[0];
 	
