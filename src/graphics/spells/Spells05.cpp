@@ -178,7 +178,7 @@ void CPoisonProjectile::Update(ArxDuration timeDelta)
 		pPS.Update(timeDelta);
 		pPS.SetPos(eCurPos);
 
-		fTrail = ((toMs(m_elapsed) - 750) * (1.0f / (toMs(m_duration) - 750.0f))) * 9 * (BEZIERPrecision + 2);
+		fTrail = ((m_elapsed - ArxDurationMs(750)) / (m_duration - ArxDurationMs(750))) * 9 * (BEZIERPrecision + 2);
 	}
 
 	if(m_elapsed >= m_duration)
