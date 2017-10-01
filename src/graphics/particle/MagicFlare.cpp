@@ -387,7 +387,7 @@ void ARX_MAGICAL_FLARES_Update() {
 				flare.tolive -= diff * 6;
 			}
 
-			float z = toMs(flare.tolive) * 0.00025f;
+			float z = flare.tolive / PlatformDurationMs(4000);
 			float size;
 			if(flare.type == 1) {
 				size = flare.size * 2 * z;
