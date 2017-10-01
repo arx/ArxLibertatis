@@ -251,7 +251,7 @@ void ParticleSystem::Update(ArxDuration delta) {
 	if(arxtime.is_paused())
 		return;
 
-	float fTimeSec = toMs(delta) * ( 1.0f / 1000 );
+	float fTimeSec = delta / ArxDurationMs(1000);
 	
 	iParticleNbAlive = 0;
 	
