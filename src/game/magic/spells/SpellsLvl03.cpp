@@ -508,7 +508,7 @@ void IceProjectileSpell::Update() {
 	m_elapsed += ArxDurationMsf(g_framedelay);
 
 	if(m_duration - m_elapsed < ArxDurationMs(1000)) {
-		fColor = toMs(m_duration - m_elapsed) * ( 1.0f / 1000 );
+		fColor = (m_duration - m_elapsed) / ArxDurationMs(1000);
 		
 		for(int i = 0; i < iNumber; i++) {
 			m_icicles[i].size.y *= fColor;
