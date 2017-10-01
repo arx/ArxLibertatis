@@ -99,13 +99,13 @@ void RuneOfGuardingSpell::Update() {
 	Anglef stiteangle;
 	Color3f stitecolor;
 	
-	float stiteangleb = toMs(m_elapsed) * 0.01f;
+	float stiteangleb = m_elapsed / ArxDurationMs(100);
 	stiteangle.setPitch(0);
 	stiteangle.setRoll(0);
 	
 	stiteangle.setYaw(stiteangleb * 0.1f);
 	stitecolor = Color3f(0.4f, 0.4f, 0.6f);
-	float scale = std::sin(toMs(m_elapsed) * 0.015f);
+	float scale = std::sin(m_elapsed / ArxDurationMsf(66.6666666f));
 	Vec3f stitescale = Vec3f(1.f, -0.1f, 1.f);
 	
 	Draw3DObject(slight, stiteangle, pos, stitescale, stitecolor, mat);
