@@ -180,12 +180,6 @@ public:
 	
 	int getLineHeight() const;
 	
-	/*!
-	 * For debugging purpose... will write one image file per page
-	 * under "name_style_size_pagen.png"
-	 */
-	bool writeToDisk();
-	
 private:
 	
 	// Construction/destruction handled by FontCache only

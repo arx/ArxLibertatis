@@ -179,31 +179,6 @@ bool Font::insertGlyph(Char character) {
 	return true;
 }
 
-bool Font::writeToDisk() {
-	
-	bool ok = true;
-	
-	for(unsigned int i = 0; i < textures->getTextureCount(); ++i) {
-		Texture2D & tex = textures->getTexture(i);
-		
-		std::stringstream ss;
-		ss << face->family_name;
-		if(face->style_name != NULL) {
-			ss << "_";
-			ss << face->style_name;
-		}
-		ss << "_";
-		ss << info.size;
-		ss << "_page";
-		ss << i;
-		ss << ".png";
-		
-		ok = ok && tex.GetImage().save(ss.str());
-	}
-	
-	return ok;
-}
-
 bool Font::insertMissingGlyphs(text_iterator begin, text_iterator end) {
 	
 	Char chr;
