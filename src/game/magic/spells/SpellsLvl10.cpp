@@ -156,7 +156,7 @@ void MassLightningStrikeSpell::Update() {
 		ARX_SOUND_PlaySFX(SND_SPELL_ELECTRIC, &position, Random::getf(0.8f, 1.2f));
 	}
 	
-	if(0 > (toMs(m_duration) - 1800) && !m_soundEffectPlayed) {
+	if(ArxDuration_ZERO > m_duration - ArxDurationMs(1800) && !m_soundEffectPlayed) {
 		m_soundEffectPlayed = true;
 		ARX_SOUND_PlaySFX(SND_SPELL_ELECTRIC, NULL, Random::getf(0.8f, 1.2f));
 	}
