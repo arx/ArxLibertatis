@@ -443,8 +443,8 @@ extern Vec3f lastteleport;
 
 void TeleportSpell::Update() {
 	
-	float elapsed = arxtime.now_f() - toMs(m_timcreation);
-	float TELEPORT = elapsed / toMs(m_duration);
+	const ArxDuration elapsed = arxtime.now() - m_timcreation;
+	float TELEPORT = elapsed / m_duration;
 	
 	if(LASTTELEPORT < 0.5f && TELEPORT >= 0.5f) {
 		Vec3f pos = lastteleport;
