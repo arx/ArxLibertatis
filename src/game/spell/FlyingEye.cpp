@@ -73,7 +73,7 @@ void DrawMagicSightInterface() {
 
 		EERIEDrawBitmap(Rectf(g_size), 0.0001f, NULL, Color3f::gray(col).to<u8>());
 
-		MagicSightFader -= toMs(g_platformTime.lastFrameDuration()) * (1.f / 400);
+		MagicSightFader -= g_platformTime.lastFrameDuration() / PlatformDurationMs(400);
 
 		if(MagicSightFader < 0.f) {
 			MagicSightFader = 0.f;
