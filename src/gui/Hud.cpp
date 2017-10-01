@@ -407,7 +407,6 @@ void StealIconGui::draw() {
 
 LevelUpIconGui::LevelUpIconGui()
 	: HudIconBase()
-	, m_pos(0.f, 0.f)
 	, m_size(32.f, 32.f)
 	, m_visible(false)
 {}
@@ -450,7 +449,6 @@ void LevelUpIconGui::draw() {
 
 PurseIconGui::PurseIconGui()
 	: HudIconBase()
-	, m_pos()
 	, m_size()
 	, m_haloTime(PlatformDuration_ZERO)
 {}
