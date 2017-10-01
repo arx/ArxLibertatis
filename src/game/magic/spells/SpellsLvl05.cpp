@@ -233,7 +233,7 @@ void LevitateSpell::Update() {
 	int dustParticles = 0;
 	
 	if(m_elapsed < ArxDurationMs(1000)) {
-		coneScale = toMs(m_elapsed) / 1000.f;
+		coneScale = m_elapsed / ArxDurationMs(1000);
 		dustParticles = 3;
 	} else {
 		coneScale = 1.f;
