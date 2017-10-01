@@ -441,9 +441,7 @@ void PolyBoomDraw() {
 			}
 			
 			case 1: { // Blood
-				
-				float div = 1.f / toMs(pb.tolive);
-				float tt = toMs(t) * div;
+				float tt = t / pb.tolive;
 				float tr = std::max(1.f, tt * 2 - 0.5f);
 				ColorRGBA col = Color4f(pb.rgb * tt, glm::clamp(tt * 1.5f, 0.f, 1.f)).toRGBA();
 				
