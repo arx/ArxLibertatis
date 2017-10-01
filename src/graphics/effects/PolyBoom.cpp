@@ -412,8 +412,7 @@ void PolyBoomDraw() {
 		switch(typp) {
 			
 			case 0: { // Scorch mark
-				
-				float tt = toMs(t) / float(toMs(pb.tolive)) * 0.8f;
+				float tt = t / pb.tolive * 0.8f;
 				ColorRGBA col = (player.m_improve ? (Color3f::red * (tt*.5f)) : Color3f::gray(tt)).toRGB();
 				
 				TexturedVertexUntransformed ltv[4];
