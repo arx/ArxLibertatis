@@ -2180,7 +2180,7 @@ static void ManageNPCMovement(Entity * io)
 			} else if(layer0.cur_anim == alist[ANIM_WALK] || layer0.cur_anim == alist[ANIM_RUN]
 			          || layer0.cur_anim == alist[ANIM_WALK_SNEAK]) {
 				layer0.flags &= ~EA_LOOP;
-				if(toMs(io->_npcdata->reachedtime + ArxDurationMs(500)) < arxtime.now_f()) {
+				if(io->_npcdata->reachedtime + ArxDurationMs(500) < arxtime.now()) {
 					changeAnimation(io, ANIM_DEFAULT, EA_LOOP, startAtBeginning);
 				}
 			}
