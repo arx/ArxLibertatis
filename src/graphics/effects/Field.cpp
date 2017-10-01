@@ -175,9 +175,8 @@ void CCreateField::Render()
 
 	if(m_elapsed >= m_duration)
 		return;
-
-	float fOneOnDuration = 1.f / toMs(m_duration);
-	falpha = 1.f - (toMs(m_elapsed) * fOneOnDuration);
+	
+	falpha = 1.f - (m_elapsed / m_duration);
 
 	if (falpha > 1.f) falpha = 1.f;
 	
