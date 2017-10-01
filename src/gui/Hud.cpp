@@ -1021,7 +1021,7 @@ void PrecastSpellsGui::update() {
 		float val = intensity;
 		
 		if(precastSlot.launch_time > ArxInstant_ZERO && arxtime.now() >= precastSlot.launch_time) {
-			float tt = toMs(arxtime.now() - precastSlot.launch_time) * (1.0f/1000);
+			float tt = (arxtime.now() - precastSlot.launch_time) / ArxDurationMs(1000);
 			
 			if(tt > 1.f)
 				tt = 1.f;
