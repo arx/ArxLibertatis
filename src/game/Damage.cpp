@@ -951,7 +951,7 @@ static void ARX_DAMAGES_UpdateDamage(DamageHandle j, ArxInstant now) {
 			FD -= damage.start_time + damage.params.duration - now;
 		}
 		
-		dmg = damage.params.damages * toMs(FD) * ( 1.0f / 1000 );
+		dmg = damage.params.damages * (FD / ArxDurationMs(1000));
 	}
 	
 	bool validsource = ValidIONum(damage.params.source);
