@@ -32,19 +32,22 @@ enum ARX_INTERFACE_BOOK_MODE
 };
 
 class PlayerBookPage {
+	
 public:
+	
 	void playReleaseSound();
 	void playErrorSound();
 	void manageLeftTabs(long tabNum, long & activeTab);
+	
 private:
-	Vec2f m_activeTabPositions[10] = { Vec2f(102.f, 82.f), Vec2f(98.f, 112.f), Vec2f(101.f, 141.f), Vec2f(100.f, 170.f), Vec2f(97.f, 199.f),
-	                                 Vec2f(103.f, 226.f), Vec2f(101.f, 255.f), Vec2f(99.f, 283.f), Vec2f(99.f, 307.f), Vec2f(104.f, 331.f) };
-	Vec2f m_tabPositions[10] = { Vec2f(100.f, 82.f), Vec2f(98.f, 112.f), Vec2f(97.f, 143.f), Vec2f(95.f, 170.f), Vec2f(95.f, 200.f),
-	                           Vec2f(94.f, 229.f), Vec2f(94.f, 259.f), Vec2f(92.f, 282.f), Vec2f(90.f, 308.f), Vec2f(97.f, 331.f) };
-
+	
+	static const Vec2f m_activeTabPositions[10];
+	static const Vec2f m_tabPositions[10];
+	
 	void drawTab(long tabNum);
 	void drawActiveTab(long tabNum);
 	void checkTabClick(long tabNum, long &activeTab);
+	
 };
 
 class StatsPage : public PlayerBookPage {
