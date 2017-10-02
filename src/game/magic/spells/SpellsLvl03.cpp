@@ -448,7 +448,7 @@ void IceProjectileSpell::Launch() {
 	float fd = fdist(s, e);
 
 	float fCalc = toMs(m_duration) * (fd / fspelldist);
-	m_duration = ArxDurationMs(checked_range_cast<unsigned long>(fCalc));
+	m_duration = ArxDurationMsf(fCalc);
 
 	float fDist = (fd / fspelldist) * iMax ;
 
