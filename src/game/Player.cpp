@@ -1034,7 +1034,7 @@ void ARX_PLAYER_Modify_XP(long val) {
  */
 void ARX_PLAYER_Poison(float val) {
 	// Make a poison saving throw to see if player is affected
-	if(Random::getf(0.f, 100.f) > player.m_misc.resistPoison) {
+	if(Random::getf(0.f, 100.f) > player.m_miscFull.resistPoison) {
 		player.poison += val;
 		ARX_SOUND_PlayInterface(SND_PLAYER_POISONED);
 	}
@@ -1114,7 +1114,7 @@ void ARX_PLAYER_FrameCheck(PlatformDuration delta)
 				if(faster < 0.f)
 					faster = 0.f;
 
-				if(Random::getf(0.f, 100.f) > player.m_misc.resistPoison + faster) {
+				if(Random::getf(0.f, 100.f) > player.m_miscFull.resistPoison + faster) {
 					float dmg = cp * ( 1.0f / 3 );
 
 					if(player.lifePool.current - dmg <= 0.f)
