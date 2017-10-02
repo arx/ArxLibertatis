@@ -258,7 +258,7 @@ float ARX_DAMAGES_DamagePlayer(float dmg, DamageType type, EntityHandle source) 
 				pio = entities[source];
 
 			if(pio && pio->poisonous && pio->poisonous_count != 0) {
-				if(Random::getf(0.f, 100.f) > player.m_misc.resistPoison) {
+				if(Random::getf(0.f, 100.f) > player.m_miscFull.resistPoison) {
 					player.poison += pio->poisonous;
 				}
 
@@ -640,7 +640,7 @@ void ARX_DAMAGES_DealDamages(EntityHandle target, float dmg, EntityHandle source
 
 	if(target == EntityHandle_Player) {
 		if(flags & DAMAGE_TYPE_POISON) {
-			if(Random::getf(0.f, 100.f) > player.m_misc.resistPoison) {
+			if(Random::getf(0.f, 100.f) > player.m_miscFull.resistPoison) {
 				damagesdone = dmg;
 				player.poison += damagesdone;
 			} else {
@@ -1058,7 +1058,7 @@ static void ARX_DAMAGES_UpdateDamage(DamageHandle j, ArxInstant now) {
 						// TODO copy-paste
 						if(handle == EntityHandle_Player) {
 							if(damage.params.type & DAMAGE_TYPE_POISON) {
-								if(Random::getf(0.f, 100.f) > player.m_misc.resistPoison) {
+								if(Random::getf(0.f, 100.f) > player.m_miscFull.resistPoison) {
 									// Failed Saving Throw
 									damagesdone = dmg; 
 									player.poison += damagesdone;
