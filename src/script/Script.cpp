@@ -1851,7 +1851,7 @@ void ARX_SCRIPT_Timer_Check() {
 			// TODO print full 64-bit time
 			arx_assert_msg(st->start <= now && st->start + st->interval > now,
 			               "start=%ld wait=%ld now=%ld",
-			               long(toMs(st->start)), long(toMs(st->interval)), long(toMs(now)));
+			               long(toMsi(st->start)), long(toMs(st->interval)), long(toMsi(now)));
 			continue;
 		}
 		

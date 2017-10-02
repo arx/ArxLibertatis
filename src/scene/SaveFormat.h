@@ -300,7 +300,7 @@ struct SavedPrecast {
 	SavedPrecast & operator=(const PRECAST_STRUCT & b) {
 		typ = (b.typ == SPELL_NONE) ? -1 : b.typ;
 		level = b.level;
-		launch_time = toMs(b.launch_time); // TODO save/load time
+		launch_time = toMsi(b.launch_time); // TODO save/load time
 		flags = b.flags;
 		duration = toMs(b.duration); // TODO save/load time
 		return *this;

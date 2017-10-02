@@ -375,11 +375,11 @@ void PolyBoomDraw() {
 		
 		// FIXME what exactly does pb.type do ?
 		if(pb.type & 128) {
-			if(toMs(pb.timecreation) - g_framedelay > 0) {
+			if(toMsf(pb.timecreation) - g_framedelay > 0) {
 				pb.timecreation = pb.timecreation - ArxDurationMsf(g_framedelay);
 			}
 			
-			if(toMs(pb.timecreation) - g_framedelay > 0) {
+			if(toMsf(pb.timecreation) - g_framedelay > 0) {
 				pb.timecreation = pb.timecreation - ArxDurationMsf(g_framedelay);
 			}
 		}

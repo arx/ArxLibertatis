@@ -99,7 +99,7 @@ void ParticleSparkSpawn(const Vec3f & pos, unsigned int count, SpawnSparkType ty
 		
 		g_sparkParticlesCount++;
 		
-		spark.timcreation = toMs(arxtime.now());
+		spark.timcreation = toMsi(arxtime.now());
 		spark.m_pos = pos + arx::randomVec(-5.f, 5.f);
 		spark.move = arx::randomVec(-6.f, 6.f);
 		spark.m_duration = len * 90 + count;
@@ -142,8 +142,8 @@ void ParticleSparkUpdate() {
 			continue;
 		}
 
-		long framediff = spark.timcreation + spark.m_duration - toMs(now);
-		long framediff2 = toMs(now) - spark.timcreation;
+		long framediff = spark.timcreation + spark.m_duration - toMsi(now);
+		long framediff2 = toMsi(now) - spark.timcreation;
 		
 		if(framediff2 < 0) {
 			continue;
