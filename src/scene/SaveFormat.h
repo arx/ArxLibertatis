@@ -302,7 +302,7 @@ struct SavedPrecast {
 		level = b.level;
 		launch_time = toMsi(b.launch_time); // TODO save/load time
 		flags = b.flags;
-		duration = toMs(b.duration); // TODO save/load time
+		duration = toMsi(b.duration); // TODO save/load time
 		return *this;
 	}
 	
@@ -539,7 +539,7 @@ struct SavedSpellcastData {
 		spell_flags = b.spell_flags;
 		spell_level = b.spell_level;
 		target = b.target.handleData();
-		duration = toMs(b.duration); // TODO save/load time
+		duration = toMsi(b.duration); // TODO save/load time
 		return *this;
 	}
 	

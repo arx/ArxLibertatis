@@ -404,16 +404,16 @@ void CRiseDead::Render()
 	//-------------------------------------------------------------------------
 	// render intro (opening + rays)
 	if(m_elapsed < m_durationIntro) {
-		float fOneOnDurationIntro = 1.f / toMs(m_durationIntro);
+		float fOneOnDurationIntro = 1.f / toMsf(m_durationIntro);
 		
-		if(m_elapsed < ArxDurationMsf(toMs(m_durationIntro) * 0.666f)) {
-			fSizeIntro = (end + 2) * fOneOnDurationIntro * (1.5f) * toMs(m_elapsed);
+		if(m_elapsed < ArxDurationMsf(toMsf(m_durationIntro) * 0.666f)) {
+			fSizeIntro = (end + 2) * fOneOnDurationIntro * (1.5f) * toMsf(m_elapsed);
 			sizeF = 1;
 		} else {
 			if(bIntro != false)
 				bIntro = false;
 
-			sizeF = (iSize) * (fOneOnDurationIntro * 3) * (toMs(m_elapsed) - toMs(m_durationIntro) * 0.666f);
+			sizeF = (iSize) * (fOneOnDurationIntro * 3) * (toMsf(m_elapsed) - toMsf(m_durationIntro) * 0.666f);
 		}
 	}
 	// do nothing just render
@@ -715,16 +715,16 @@ void CSummonCreature::Render()
 	//-------------------------------------------------------------------------
 	// render intro (opening + rays)
 	if(m_elapsed < m_durationIntro) {
-		float fOneOnDurationIntro = 1.f / toMs(m_durationIntro);
+		float fOneOnDurationIntro = 1.f / toMsf(m_durationIntro);
 		
-		if(m_elapsed < ArxDurationMsf(toMs(m_durationIntro) * 0.666f)) {
-			fSizeIntro = (end + 2) * fOneOnDurationIntro * (1.5f) * toMs(m_elapsed);
+		if(m_elapsed < ArxDurationMsf(toMsf(m_durationIntro) * 0.666f)) {
+			fSizeIntro = (end + 2) * fOneOnDurationIntro * (1.5f) * toMsf(m_elapsed);
 			sizeF = 1;
 		} else {
 			if(bIntro != false)
 				bIntro = false;
 
-			sizeF = (iSize) * (fOneOnDurationIntro * 3) * (toMs(m_elapsed) - toMs(m_durationIntro) * 0.666f);
+			sizeF = (iSize) * (fOneOnDurationIntro * 3) * (toMsf(m_elapsed) - toMsf(m_durationIntro) * 0.666f);
 		}
 	}
 	// do nothing just render

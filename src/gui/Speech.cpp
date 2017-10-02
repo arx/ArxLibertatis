@@ -404,7 +404,7 @@ long ARX_SPEECH_AddSpeech(Entity * io, const std::string & data, long mood,
 	aspeech[num].duration = ARX_SOUND_GetDuration(aspeech[num].sample);
 
 	if ((io->ioflags & IO_NPC) && !(aspeech[num].flags & ARX_SPEECH_FLAG_OFFVOICE)) {
-		float fDiv = toMs(aspeech[num].duration) / io->_npcdata->speakpitch;
+		float fDiv = toMsf(aspeech[num].duration) / io->_npcdata->speakpitch;
 		aspeech[num].duration = ArxDurationMsf(fDiv);
 	}
 
@@ -524,12 +524,12 @@ void ARX_SPEECH_Update() {
 					duration = ArxDurationMs(4000);
 				}
 
-				fDTime = (height * g_framedelay) / toMs(duration); //speech->duration;
+				fDTime = (height * g_framedelay) / toMsf(duration); //speech->duration;
 				float fTimeOneLine = sSize.y * fDTime;
 
 				if(speech->iTimeScroll >= fTimeOneLine) {
 					float fResteLine = sSize.y - speech->fPixelScroll;
-					float fTimePlus = (fResteLine * g_framedelay) / toMs(duration);
+					float fTimePlus = (fResteLine * g_framedelay) / toMsf(duration);
 					fDTime -= fTimePlus;
 					speech->fPixelScroll = 0.f;
 					speech->iTimeScroll = 0;

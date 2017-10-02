@@ -200,7 +200,7 @@ void ARX_MISSILES_Update() {
 			case MISSILE_FIREBALL: {
 				Vec3f pos;
 
-				pos = missiles[i].startpos + missiles[i].velocity * Vec3f(toMs(framediff3));
+				pos = missiles[i].startpos + missiles[i].velocity * Vec3f(toMsf(framediff3));
 				
 				EERIE_LIGHT * light = lightHandleGet(missiles[i].m_light);
 				if(light) {

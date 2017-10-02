@@ -447,7 +447,7 @@ void IceProjectileSpell::Launch() {
 
 	float fd = fdist(s, e);
 
-	float fCalc = toMs(m_duration) * (fd / fspelldist);
+	float fCalc = toMsf(m_duration) * (fd / fspelldist);
 	m_duration = ArxDurationMsf(fCalc);
 
 	float fDist = (fd / fspelldist) * iMax ;
@@ -558,7 +558,7 @@ void IceProjectileSpell::Update() {
 				pd->move = arx::randomVec(-2.f, 2.f);
 				pd->siz = 20.f;
 				float t = std::min(Random::getf(2000.f, 4000.f),
-				                   toMs(m_duration - m_elapsed) + Random::getf(0.f, 500.0f));
+				                   toMsf(m_duration - m_elapsed) + Random::getf(0.f, 500.0f));
 				pd->tolive = checked_range_cast<u32>(t);
 				pd->tc = tex_p2;
 				pd->m_flags = FADE_IN_AND_OUT | ROTATING | DISSIPATING;
@@ -574,7 +574,7 @@ void IceProjectileSpell::Update() {
 				pd->move = Vec3f(0.f, Random::getf(-2.f, 2.f), 0.f);
 				pd->siz = 0.5f;
 				float t = std::min(Random::getf(2000.f, 3000.f),
-				              toMs(m_duration - m_elapsed) + Random::getf(0.f, 500.0f));
+				              toMsf(m_duration - m_elapsed) + Random::getf(0.f, 500.0f));
 				pd->tolive = checked_range_cast<u32>(t);
 				pd->tc = tex_p1;
 				pd->m_flags = FADE_IN_AND_OUT | ROTATING | DISSIPATING;
