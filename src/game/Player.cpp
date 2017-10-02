@@ -445,8 +445,6 @@ static void ARX_PLAYER_ComputePlayerStats() {
 	
 	player.m_misc.damages = std::max(1.f, (player.m_attribute.strength - 10) * 0.5f);
 	
-	player.AimTime = PlatformDurationMs(1500);
-	
 	float base_close_combat = player.m_skill.closeCombat
 	                          + player.m_attribute.dexterity + player.m_attribute.strength * 2.f;
 	player.m_misc.criticalHit = (player.m_attribute.dexterity - 9) * 2.f
@@ -478,7 +476,7 @@ void ARX_PLAYER_ComputePlayerFullStats() {
 	player.Full_AimTime = PlatformDurationMsf(fFullAimTime);
 	
 	if(player.Full_AimTime <= PlatformDuration_ZERO)
-		player.Full_AimTime = player.AimTime;
+		player.Full_AimTime = PlatformDurationMs(1500);
 	
 	player.Full_AimTime -= PlatformDurationMsf(fCalcHandicap);
 	

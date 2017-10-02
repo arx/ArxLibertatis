@@ -653,7 +653,7 @@ static long ARX_CHANGELEVEL_Push_Player(long level) {
 
 	memset(asp, 0, sizeof(ARX_CHANGELEVEL_PLAYER));
 
-	asp->AimTime = s32(toMs(player.AimTime));
+	asp->AimTime = 1500;
 	asp->angle = player.angle;
 	asp->Attribute_Constitution = player.m_attribute.constitution;
 	asp->Attribute_Dexterity = player.m_attribute.dexterity;
@@ -1638,7 +1638,6 @@ static long ARX_CHANGELEVEL_Pop_Player() {
 	const ARX_CHANGELEVEL_PLAYER * asp = reinterpret_cast<const ARX_CHANGELEVEL_PLAYER *>(dat + pos);
 	pos += sizeof(ARX_CHANGELEVEL_PLAYER);
 	
-	player.AimTime = PlatformDurationMs(asp->AimTime);
 	player.angle = asp->angle;
 	player.desiredangle = player.angle;
 	
