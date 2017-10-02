@@ -734,9 +734,7 @@ void CSummonCreature::Render()
 	// close it all
 	else if (m_elapsed < m_duration)
 	{
-		float fOneOnDurationOuttro = 1.f / toMs(m_durationOuttro);
-		
-		sizeF = iSize - (iSize) * fOneOnDurationOuttro * toMs(m_elapsed - (m_durationIntro + m_durationRender));
+		sizeF = iSize - (iSize) * ((m_elapsed - (m_durationIntro + m_durationRender)) / m_durationOuttro);
 	}
 	
 	RenderFissure();
