@@ -300,8 +300,6 @@ struct ARXCHARACTER {
 	PlayerSkill m_skill;
 	PlayerMisc m_misc;
 	
-	PlatformDuration AimTime;
-	
 	PlatformDuration m_aimTime;
 	
 	ResourcePool lifePool;
@@ -361,7 +359,6 @@ struct ARXCHARACTER {
 		, Full_life(0)
 		, Full_maxlife(0)
 		, Full_maxmana(0)
-		, AimTime(PlatformDuration_ZERO)
 		, m_aimTime(PlatformDuration_ZERO)
 		, Attribute_Redistribute(0)
 		, Skill_Redistribute(0)
