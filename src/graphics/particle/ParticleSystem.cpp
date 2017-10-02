@@ -182,8 +182,7 @@ void ParticleSystem::SetParticleParams(Particle * pP) {
 	
 	float fTTL = m_parameters.m_life + Random::getf() * m_parameters.m_lifeRandom;
 	pP->m_timeToLive = ArxDurationMsf(fTTL);
-	pP->fOneOnTTL = 1.0f / toMs(pP->m_timeToLive);
-
+	
 	float fAngleX = Random::getf() * m_parameters.m_angle; //*0.5f;
  
 	Vec3f vv1, vvz;
@@ -325,7 +324,7 @@ void ParticleSystem::Render() {
 				inumtex = p->iTexNum;
 
 				if(iTexTime == 0) {
-					float fNbTex = (toMs(p->m_age) * p->fOneOnTTL) * (iNbTex);
+					float fNbTex = (p->m_age / p->m_timeToLive) * (iNbTex);
 
 					inumtex = checked_range_cast<int>(fNbTex);
 					if(inumtex >= iNbTex) {
