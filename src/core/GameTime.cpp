@@ -93,7 +93,7 @@ void GameTime::resume() {
 
 void GameTime::force_time_restore(const ArxInstant time) {
 	
-	u64 requested_time = u64(toMs(time) * 1000);
+	u64 requested_time = u64(toUs(time));
 	
 	start_time = platform::getElapsedUs(requested_time);
 	m_now_us = requested_time;
