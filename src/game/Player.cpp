@@ -765,9 +765,9 @@ void ARX_PLAYER_ComputePlayerFullStats() {
 	);
 	
 	// Calculate full stats
-	player.m_miscFull.armorClass = (int)std::max(0.f, base_armor_class + player.m_miscMod.armorClass);
-	player.m_miscFull.resistMagic = (int)std::max(0.f, base_resist_magic + player.m_miscMod.resistMagic);
-	player.m_miscFull.resistPoison = (int)std::max(0.f, base_resist_poison + player.m_miscMod.resistPoison);
+	player.m_miscFull.armorClass = std::floor(std::max(0.f, base_armor_class + player.m_miscMod.armorClass));
+	player.m_miscFull.resistMagic = std::floor(std::max(0.f, base_resist_magic + player.m_miscMod.resistMagic));
+	player.m_miscFull.resistPoison = std::floor(std::max(0.f, base_resist_poison + player.m_miscMod.resistPoison));
 	player.m_miscFull.criticalHit = std::max(0.f, base_critical_hit + player.m_miscMod.criticalHit);
 	player.m_miscFull.damages = std::max(1.f, base_damages + player.m_miscMod.damages
 	                                          + player.m_skillFull.closeCombat * 0.1f);
