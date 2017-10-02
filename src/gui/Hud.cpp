@@ -677,7 +677,7 @@ void QuickSaveIconGui::draw() {
 	UseRenderState state(render2D().blend(BlendSrcColor, BlendOne).colorKey());
 	
 	// Flash the icon twice, starting at about 0.7 opacity
-	float step = 1.f - toMs(m_remainingTime) * (1.f / toMs(m_duration));
+	float step = 1.f - (m_remainingTime / m_duration);
 	float alpha = std::min(1.f, 0.6f * (std::sin(step * (7.f / 2.f * glm::pi<float>())) + 1.f));
 	
 	TextureContainer * tex = TextureContainer::LoadUI("graph/interface/icons/menu_main_save");
