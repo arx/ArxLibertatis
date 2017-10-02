@@ -117,7 +117,7 @@ public:
 	}
 	
 	ArxInstant now() const {
-		return ArxInstant::ofRaw(m_now_us / 1000);
+		return ArxInstantUs(s64(m_now_us));
 	}
 	
 	void update() {
