@@ -298,7 +298,6 @@ struct ARXCHARACTER {
 	// true (naked) Player Values
 	PlayerAttribute m_attribute;
 	PlayerSkill m_skill;
-	PlayerMisc m_misc;
 	
 	PlatformDuration m_aimTime;
 	
