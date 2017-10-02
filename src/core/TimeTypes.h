@@ -231,6 +231,9 @@ inline AnimationDuration toAnimationDuration(ArxDuration val) {
 inline ArxDuration toArxDuration(AnimationDuration val) {
 	return ArxDuration::ofRaw(val.t / 1000);
 }
+inline PlatformDuration toPlatformDuration(AnimationDuration val) {
+	return PlatformDuration::ofRaw(val.t);
+}
 
 
 namespace arx {
