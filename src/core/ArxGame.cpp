@@ -1535,7 +1535,7 @@ void ArxGame::handlePlayerDeath() {
 		ArxDuration startTime = ArxDurationMs(2000);
 		ArxDuration endTime = ArxDurationMs(7000);
 
-		float DeadCameraDistance = startDistance + (mdist - startDistance) * (toMs(DeadTime - startTime) / toMs(endTime - startTime));
+		float DeadCameraDistance = startDistance + (mdist - startDistance) * ((DeadTime - startTime) / (endTime - startTime));
 
 		Vec3f targetpos = player.pos;
 
