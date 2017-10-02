@@ -632,11 +632,7 @@ void ARX_PLAYER_ComputePlayerFullStats() {
 	// Attributes
 	
 	// Calculate base attributes
-	PlayerAttribute attributeBase;
-	attributeBase.strength     = player.m_attribute.strength;
-	attributeBase.dexterity    = player.m_attribute.dexterity;
-	attributeBase.constitution = player.m_attribute.constitution;
-	attributeBase.mind         = player.m_attribute.mind;
+	PlayerAttribute attributeBase = player.m_attribute;
 	
 	// Calculate equipment modifiers for attributes
 	player.m_attributeMod.strength += getEquipmentModifier(
