@@ -339,7 +339,7 @@ struct ARX_CHANGELEVEL_PLAYER {
 	f32 Skill_Close_Combat;
 	f32 Skill_Defense;
 	
-	f32 Critical_Hit;
+	f32 Critical_Hit; // TODO remove
 	s32 AimTime;
 	f32 life;
 	f32 maxlife;
@@ -349,13 +349,13 @@ struct ARX_CHANGELEVEL_PLAYER {
 	s16 Attribute_Redistribute;
 	s16 Skill_Redistribute;
 	
-	f32 armor_class;
-	f32 resist_magic;
-	f32 resist_poison;
+	f32 armor_class; // TODO remove
+	f32 resist_magic; // TODO remove
+	f32 resist_poison; // TODO remove
 	s32 xp;
 	s32 skin;
 	u32 rune_flags;
-	f32 damages;
+	f32 damages; // TODO remove
 	f32 poison;
 	f32 hunger;
 	SavedVec3 pos;

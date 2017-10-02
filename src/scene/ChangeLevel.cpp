@@ -655,14 +655,11 @@ static long ARX_CHANGELEVEL_Push_Player(long level) {
 
 	asp->AimTime = s32(toMs(player.AimTime));
 	asp->angle = player.angle;
-	asp->armor_class = player.m_misc.armorClass;
 	asp->Attribute_Constitution = player.m_attribute.constitution;
 	asp->Attribute_Dexterity = player.m_attribute.dexterity;
 	asp->Attribute_Mind = player.m_attribute.mind;
 	asp->Attribute_Strength = player.m_attribute.strength;
-	asp->Critical_Hit = player.m_misc.criticalHit;
 	asp->Current_Movement = player.m_currentMovement;
-	asp->damages = player.m_misc.damages;
 	asp->doingmagic = player.doingmagic;
 	asp->Interface = player.Interface;
 	asp->playerflags = player.playerflags;
@@ -748,8 +745,6 @@ static long ARX_CHANGELEVEL_Push_Player(long level) {
 
 
 	asp->pos = player.pos;
-	asp->resist_magic = player.m_misc.resistMagic;
-	asp->resist_poison = player.m_misc.resistPoison;
 	asp->Attribute_Redistribute = player.Attribute_Redistribute;
 	asp->Skill_Redistribute = player.Skill_Redistribute;
 	asp->rune_flags = player.rune_flags;
@@ -1647,15 +1642,11 @@ static long ARX_CHANGELEVEL_Pop_Player() {
 	player.angle = asp->angle;
 	player.desiredangle = player.angle;
 	
-	player.m_misc.armorClass = checked_range_cast<unsigned char>(asp->armor_class);
-	
 	player.m_attribute.constitution = asp->Attribute_Constitution;
 	player.m_attribute.dexterity = asp->Attribute_Dexterity;
 	player.m_attribute.mind = asp->Attribute_Mind;
 	player.m_attribute.strength = asp->Attribute_Strength;
-	player.m_misc.criticalHit = asp->Critical_Hit;
 	player.m_currentMovement = PlayerMovement::load(asp->Current_Movement); // TODO save/load flags
-	player.m_misc.damages = asp->damages;
 	player.doingmagic = asp->doingmagic;
 	player.playerflags = PlayerFlags::load(asp->playerflags); // TODO save/load flags
 	
@@ -1743,9 +1734,6 @@ static long ARX_CHANGELEVEL_Pop_Player() {
 	
 	WILL_RESTORE_PLAYER_POSITION = asp->pos.toVec3();
 	WILL_RESTORE_PLAYER_POSITION_FLAG = true;
-	
-	player.m_misc.resistMagic = glm::floor(asp->resist_magic);
-	player.m_misc.resistPoison = glm::floor(asp->resist_poison);
 	
 	player.Attribute_Redistribute = glm::clamp(asp->Attribute_Redistribute, s16(0), s16(std::numeric_limits<unsigned char>::max()));
 	player.Skill_Redistribute = glm::clamp(asp->Skill_Redistribute, s16(0), s16(std::numeric_limits<unsigned char>::max()));
