@@ -1621,7 +1621,7 @@ static void ARX_NPC_Manage_Anims(Entity * io, float TOLERANCE) {
 				
 				ArxDuration elapsed = arxtime.now() - io->_npcdata->aiming_start;
 				ArxDuration aimtime = io->_npcdata->aimtime;
-				if((elapsed > aimtime || (elapsed > ArxDurationMsf(toMs(aimtime) * 0.5f) && Random::getf() > 0.9f))
+				if((elapsed > aimtime || (elapsed * 2 > aimtime && Random::getf() > 0.9f))
 				    && tdist < square(STRIKE_DISTANCE)) {
 					changeAnimation(io, 1, strike);
 					SendIOScriptEvent(io, SM_STRIKE, "bare");
@@ -1722,7 +1722,7 @@ static void ARX_NPC_Manage_Anims(Entity * io, float TOLERANCE) {
 					
 					ArxDuration elapsed = arxtime.now() - io->_npcdata->aiming_start;
 					ArxDuration aimtime = io->_npcdata->aimtime;
-					if((elapsed > aimtime || (elapsed > ArxDurationMsf(toMs(aimtime) * 0.5f) && Random::getf() > 0.9f))
+					if((elapsed > aimtime || (elapsed * 2 > aimtime && Random::getf() > 0.9f))
 					   && tdist < square(STRIKE_DISTANCE)) {
 						changeAnimation(io, 1, strike);
 						if(io->_npcdata->weapontype & OBJECT_TYPE_1H) {
