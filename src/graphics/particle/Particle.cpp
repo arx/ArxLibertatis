@@ -61,7 +61,6 @@ Particle::Particle()
 {
 	
 	m_timeToLive = ArxDurationMs(Random::get(2000, 5000));
-	fOneOnTTL = 1.0f / toMs(m_timeToLive);
 	
 	fColorStart = Color4f(1, 1, 1, 0.5f);
 	fColorEnd = Color4f(1, 1, 1, 0.1f);
@@ -95,7 +94,6 @@ void Particle::Validate() {
 	
 	if(m_timeToLive < ArxDurationMs(100)) {
 		m_timeToLive = ArxDurationMs(100);
-		fOneOnTTL = 1.0f / toMs(m_timeToLive);
 	}
 }
 
@@ -107,7 +105,7 @@ void Particle::Update(ArxDuration delta) {
 	
 	if(m_age < m_timeToLive) {
 		
-		float ft = fOneOnTTL * toMs(m_age);
+		float ft = m_age / m_timeToLive;
 		
 		// update new pos
 		p3Pos += p3Velocity * fTimeSec;
