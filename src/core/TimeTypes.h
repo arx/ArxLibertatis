@@ -147,6 +147,9 @@ typedef DurationType<struct ArxTime_TAG, s64> ArxDuration;
 const ArxInstant  ArxInstant_ZERO  = ArxInstant::ofRaw(0);
 const ArxDuration ArxDuration_ZERO = ArxDuration::ofRaw(0);
 
+inline ArxInstant ArxInstantUs(s64 val) {
+	return ArxInstant::ofRaw(val / 1000);
+}
 inline ArxInstant ArxInstantMs(s64 val) {
 	return ArxInstant::ofRaw(val);
 }
