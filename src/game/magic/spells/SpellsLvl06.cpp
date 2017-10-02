@@ -235,7 +235,7 @@ void ParalyseSpell::Launch() {
 	}
 	if(Random::getf(0.f, 100.f) < resist_magic) {
 		float mul = std::max(0.5f, 1.f - (resist_magic * 0.005f));
-		m_duration = ArxDurationMsf(toMs(m_duration) * mul);
+		m_duration = ArxDurationMsf(toMsf(m_duration) * mul);
 	}
 	
 	entities[m_target]->ioflags |= IO_FREEZESCRIPT;

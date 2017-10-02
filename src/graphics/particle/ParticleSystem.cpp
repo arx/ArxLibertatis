@@ -357,9 +357,9 @@ void ParticleSystem::Render() {
 			if(m_parameters.m_rotation != 0) {
 				float fRot;
 				if(p->iRot == 1)
-					fRot = (m_parameters.m_rotation) * toMs(p->m_age) + p->fRotStart;
+					fRot = (m_parameters.m_rotation) * toMsf(p->m_age) + p->fRotStart;
 				else
-					fRot = (-m_parameters.m_rotation) * toMs(p->m_age) + p->fRotStart;
+					fRot = (-m_parameters.m_rotation) * toMsf(p->m_age) + p->fRotStart;
 
 				float size = std::max(p->fSize, 0.f);
 				

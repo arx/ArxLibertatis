@@ -100,7 +100,7 @@ void Particle::Validate() {
 void Particle::Update(ArxDuration delta) {
 	
 	m_age += delta;
-	iTexTime += toMs(delta);
+	iTexTime += toMsi(delta); // FIXME time, this will break with sub ms deltas
 	float fTimeSec = delta / ArxDurationMs(1000);
 	
 	if(m_age < m_timeToLive) {

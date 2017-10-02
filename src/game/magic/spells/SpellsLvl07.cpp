@@ -193,7 +193,7 @@ void FlyingEyeSpell::Update() {
 	if(m_lastupdate - m_timcreation <= ArxDurationMs(3000)) {
 		eyeball.exist = long((m_lastupdate - m_timcreation) / ArxDurationMs(30));
 		eyeball.size = Vec3f(1.f - float(eyeball.exist) * 0.01f);
-		eyeball.angle.setYaw(eyeball.angle.getYaw() + toMs(framediff3) * 0.6f);
+		eyeball.angle.setYaw(eyeball.angle.getYaw() + toMsf(framediff3) * 0.6f);
 	} else {
 		eyeball.exist = 2;
 	}

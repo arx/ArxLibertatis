@@ -386,7 +386,7 @@ ValueType getSystemVar(const EERIE_SCRIPT * es, Entity * entity, const std::stri
 				if(!entity || entity->script.timers[0] == ArxInstant_ZERO) {
 					*lcontent = 0;
 				} else {
-					*lcontent = toMs(arxtime.now() - es->timers[0]);
+					*lcontent = toMsi(arxtime.now() - es->timers[0]);
 				}
 				return TYPE_LONG;
 			}
@@ -395,7 +395,7 @@ ValueType getSystemVar(const EERIE_SCRIPT * es, Entity * entity, const std::stri
 				if(!entity || entity->script.timers[1] == ArxInstant_ZERO) {
 					*lcontent = 0;
 				} else {
-					*lcontent = toMs(arxtime.now() - es->timers[1]);
+					*lcontent = toMsi(arxtime.now() - es->timers[1]);
 				}
 				return TYPE_LONG;
 			}
@@ -404,7 +404,7 @@ ValueType getSystemVar(const EERIE_SCRIPT * es, Entity * entity, const std::stri
 				if(!entity || entity->script.timers[2] == ArxInstant_ZERO) {
 					*lcontent = 0;
 				} else {
-					*lcontent = toMs(arxtime.now() - es->timers[2]);
+					*lcontent = toMsi(arxtime.now() - es->timers[2]);
 				}
 				return TYPE_LONG;
 			}
@@ -413,7 +413,7 @@ ValueType getSystemVar(const EERIE_SCRIPT * es, Entity * entity, const std::stri
 				if(!entity || entity->script.timers[3] == ArxInstant_ZERO) {
 					*lcontent = 0;
 				} else {
-					*lcontent = toMs(arxtime.now() - es->timers[3]);
+					*lcontent = toMsi(arxtime.now() - es->timers[3]);
 				}
 				return TYPE_LONG;
 			}
@@ -1811,7 +1811,7 @@ static bool Manage_Specific_RAT_Timer(SCR_TIMER * st) {
 		st->count = 1;
 	} else {
 		st->count++;
-		st->interval = ArxDurationMsf(toMs(st->interval) * 0.5f);
+		st->interval = ArxDurationMsf(toMsf(st->interval) * 0.5f);
 		if(st->interval < ArxDurationMs(100))
 			st->interval = ArxDurationMs(100);
 		
@@ -1846,12 +1846,12 @@ void ARX_SCRIPT_Timer_Check() {
 		
 		// Skip heartbeat timer events for far away objects
 		if((st->flags & 1) && !(st->io->gameFlags & GFLAG_ISINTREATZONE)) {
-			long increment = toMs(now - st->start) / toMs(st->interval);
-			st->start += ArxDurationMs(toMs(st->interval) * increment);
+			long increment = toMsi(now - st->start) / toMsi(st->interval);
+			st->start += ArxDurationMs(toMsi(st->interval) * increment);
 			// TODO print full 64-bit time
 			arx_assert_msg(st->start <= now && st->start + st->interval > now,
 			               "start=%ld wait=%ld now=%ld",
-			               long(toMsi(st->start)), long(toMs(st->interval)), long(toMsi(now)));
+			               long(toMsi(st->start)), long(toMsi(st->interval)), long(toMsi(now)));
 			continue;
 		}
 		

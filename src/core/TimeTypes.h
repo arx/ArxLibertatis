@@ -169,8 +169,12 @@ inline s64 toMsi(ArxInstant val) {
 inline float toMsf(ArxInstant val) {
 	return float(val.t);
 }
-inline s64 toMs(ArxDuration val) {
+
+inline s64 toMsi(ArxDuration val) {
 	return val.t;
+}
+inline float toMsf(ArxDuration val) {
+	return float(val.t);
 }
 
 // PlatformTime
