@@ -1935,7 +1935,7 @@ void ArxGame::updateLevel() {
 		SpellBase * spell = spells.getSpellByCaster(EntityHandle_Player, SPELL_MAGIC_SIGHT);
 		if(spell) {
 			ArxDuration duration = arxtime.now() - spell->m_timcreation;
-			magicSightZoom = glm::clamp(toMs(duration) / 500.f, 0.f, 1.f);
+			magicSightZoom = glm::clamp(duration / ArxDurationMs(500), 0.f, 1.f);
 		}
 		
 		float BASE_FOCAL = CURRENT_BASE_FOCAL
