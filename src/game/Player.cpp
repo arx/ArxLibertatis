@@ -427,6 +427,19 @@ static PlayerSkill getAttributeSkillModifiers(const PlayerAttribute & attribute)
 	return skillMod;
 }
 
+static PlayerMisc getMiscStats(const PlayerAttribute & attribute, const PlayerSkill & skill) {
+	
+	PlayerMisc stats;
+	
+	stats.armorClass   = std::max(1.f, skill.defense * 0.1f - 1.0f);
+	stats.resistMagic  = attribute.mind * 2.f * (1.f + skill.casting * 0.005f); // TODO why *?
+	stats.resistPoison = attribute.constitution * 2.f + skill.defense * 0.25f;
+	stats.criticalHit  = attribute.dexterity * 2.f + skill.closeCombat * 0.2f - 18.f;
+	stats.damages      = std::max(1.f, attribute.strength * 0.5f - 5.f);
+	
+	return stats;
+}
+
 /*!
  * \brief Compute secondary attributes for player
  */
@@ -712,40 +725,31 @@ void ARX_PLAYER_ComputePlayerFullStats() {
 	// Other stats
 	
 	// Calculate base stats
-	float base_armor_class   = std::max(1.f, player.m_skillFull.defense * 0.1f
-	                           + -1.0f);
-	float base_resist_magic  = player.m_attributeFull.mind * 2.f
-	                           * (1.f + player.m_skillFull.casting * 0.005f); // TODO why *?
-	float base_resist_poison = player.m_attributeFull.constitution * 2.f
-	                           + player.m_skillFull.defense * 0.25f;
-	float base_critical_hit  = player.m_attributeFull.dexterity * 2.f
-	                           + player.m_skillFull.closeCombat * 0.2f
-	                           + -18.f;
-	float base_damages       = std::max(1.f, player.m_attributeFull.strength * 0.5f - 5.f);
+	PlayerMisc miscBase = getMiscStats(player.m_attributeFull, player.m_skillFull);
 	
 	// Calculate equipment modifiers for stats
 	player.m_miscMod.armorClass += getEquipmentModifier(
-		IO_EQUIPITEM_ELEMENT_Armor_Class, base_armor_class
+		IO_EQUIPITEM_ELEMENT_Armor_Class, miscBase.armorClass
 	);
 	player.m_miscMod.resistMagic += getEquipmentModifier(
-		IO_EQUIPITEM_ELEMENT_Resist_Magic, base_resist_magic
+		IO_EQUIPITEM_ELEMENT_Resist_Magic, miscBase.resistMagic
 	);
 	player.m_miscMod.resistPoison += getEquipmentModifier(
-		IO_EQUIPITEM_ELEMENT_Resist_Poison, base_resist_poison
+		IO_EQUIPITEM_ELEMENT_Resist_Poison, miscBase.resistPoison
 	);
 	player.m_miscMod.criticalHit += getEquipmentModifier(
-		IO_EQUIPITEM_ELEMENT_Critical_Hit, base_critical_hit
+		IO_EQUIPITEM_ELEMENT_Critical_Hit, miscBase.criticalHit
 	);
 	player.m_miscMod.damages += getEquipmentModifier(
-		IO_EQUIPITEM_ELEMENT_Damages, base_damages
+		IO_EQUIPITEM_ELEMENT_Damages, miscBase.damages
 	);
 	
 	// Calculate full stats
-	player.m_miscFull.armorClass = std::floor(std::max(0.f, base_armor_class + player.m_miscMod.armorClass));
-	player.m_miscFull.resistMagic = std::floor(std::max(0.f, base_resist_magic + player.m_miscMod.resistMagic));
-	player.m_miscFull.resistPoison = std::floor(std::max(0.f, base_resist_poison + player.m_miscMod.resistPoison));
-	player.m_miscFull.criticalHit = std::max(0.f, base_critical_hit + player.m_miscMod.criticalHit);
-	player.m_miscFull.damages = std::max(1.f, base_damages + player.m_miscMod.damages
+	player.m_miscFull.armorClass = std::floor(std::max(0.f, miscBase.armorClass + player.m_miscMod.armorClass));
+	player.m_miscFull.resistMagic = std::floor(std::max(0.f, miscBase.resistMagic + player.m_miscMod.resistMagic));
+	player.m_miscFull.resistPoison = std::floor(std::max(0.f, miscBase.resistPoison + player.m_miscMod.resistPoison));
+	player.m_miscFull.criticalHit = std::max(0.f, miscBase.criticalHit + player.m_miscMod.criticalHit);
+	player.m_miscFull.damages = std::max(1.f, miscBase.damages + player.m_miscMod.damages
 	                                          + player.m_skillFull.closeCombat * 0.1f);
 	
 	
