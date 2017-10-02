@@ -140,7 +140,7 @@ inline float operator /(DurationType<TAG, T> a, DurationType<TAG, T> b) {
 
 
 // ArxTime
-// in ms
+// in microseconds
 typedef InstantType <struct ArxTime_TAG, s64> ArxInstant;
 typedef DurationType<struct ArxTime_TAG, s64> ArxDuration;
 
@@ -148,33 +148,33 @@ const ArxInstant  ArxInstant_ZERO  = ArxInstant::ofRaw(0);
 const ArxDuration ArxDuration_ZERO = ArxDuration::ofRaw(0);
 
 inline ArxInstant ArxInstantUs(s64 val) {
-	return ArxInstant::ofRaw(val / 1000);
-}
-inline ArxInstant ArxInstantMs(s64 val) {
 	return ArxInstant::ofRaw(val);
 }
+inline ArxInstant ArxInstantMs(s64 val) {
+	return ArxInstant::ofRaw(val * 1000);
+}
 inline ArxDuration ArxDurationMs(s64 val) {
-	return ArxDuration::ofRaw(val);
+	return ArxDuration::ofRaw(val * 1000);
 }
 inline ArxDuration ArxDurationMsf(float val) {
-	return ArxDuration::ofRaw(s64(val)); // TODO loss of precision
+	return ArxDuration::ofRaw(s64(val * 1000.f));
 }
 
 inline s64 toUs(ArxInstant val) {
-	return val.t * 1000;
-}
-inline s64 toMsi(ArxInstant val) {
 	return val.t;
 }
+inline s64 toMsi(ArxInstant val) {
+	return val.t / 1000;
+}
 inline float toMsf(ArxInstant val) {
-	return float(val.t);
+	return float(val.t) / 1000.f;
 }
 
 inline s64 toMsi(ArxDuration val) {
-	return val.t;
+	return val.t / 1000;
 }
 inline float toMsf(ArxDuration val) {
-	return float(val.t);
+	return float(val.t) / 1000.f;
 }
 
 // PlatformTime
@@ -242,10 +242,10 @@ inline AnimationDuration toAnimationDuration(PlatformDuration val) {
 	return AnimationDuration::ofRaw(val.t);
 }
 inline AnimationDuration toAnimationDuration(ArxDuration val) {
-	return AnimationDuration::ofRaw(val.t * 1000);
+	return AnimationDuration::ofRaw(val.t);
 }
 inline ArxDuration toArxDuration(AnimationDuration val) {
-	return ArxDuration::ofRaw(val.t / 1000);
+	return ArxDuration::ofRaw(val.t);
 }
 inline PlatformDuration toPlatformDuration(AnimationDuration val) {
 	return PlatformDuration::ofRaw(val.t);
