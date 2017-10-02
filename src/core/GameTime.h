@@ -81,11 +81,11 @@ public:
 	}
 	
 	inline PlatformInstant frameStart() {
-		return PlatformInstant::ofRaw(s64(m_frameStartTime));
+		return PlatformInstantUs(s64(m_frameStartTime));
 	}
 
 	inline PlatformDuration lastFrameDuration() {
-		return PlatformDuration::ofRaw(s64(m_lastFrameDuration));
+		return PlatformDurationUs(s64(m_lastFrameDuration));
 	}
 };
 

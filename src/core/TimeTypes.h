@@ -172,6 +172,9 @@ typedef DurationType<struct PlatformTime_TAG, s64> PlatformDuration;
 const PlatformInstant  PlatformInstant_ZERO  = PlatformInstant::ofRaw(0);
 const PlatformDuration PlatformDuration_ZERO = PlatformDuration::ofRaw(0);
 
+inline PlatformInstant PlatformInstantUs(s64 val) {
+	return PlatformInstant::ofRaw(val);
+}
 inline PlatformInstant PlatformInstantMs(s64 val) {
 	return PlatformInstant::ofRaw(val * 1000);
 }
