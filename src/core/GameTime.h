@@ -108,8 +108,8 @@ public:
 	
 	// TODO probably the source of the need to clip frame_delay
 	void force_frame_time_restore(const ArxInstant v) {
-		frame_time_us = u64(toMs(v) * 1000);
-		last_frame_time_us = u64(toMs(v) * 1000);
+		frame_time_us = u64(toUs(v));
+		last_frame_time_us = u64(toUs(v));
 	}
 	
 	float now_f() const {

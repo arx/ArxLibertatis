@@ -160,6 +160,9 @@ inline ArxDuration ArxDurationMsf(float val) {
 	return ArxDuration::ofRaw(s64(val)); // TODO loss of precision
 }
 
+inline s64 toUs(ArxInstant val) {
+	return val.t * 1000;
+}
 inline s64 toMs(ArxInstant val) {
 	return val.t;
 }
