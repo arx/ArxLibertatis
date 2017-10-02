@@ -410,22 +410,22 @@ void ARX_PLAYER_Remove_Invisibility() {
 	spells.endByCaster(EntityHandle_Player, SPELL_INVISIBILITY);
 }
 
-/* TODO use this table instead of the copied functions below!
-static const size_t max_skills = 9;
-static const size_t max_attributes = 4;
-static const float skill_attribute_factors[max_skills][max_attributes] = {
-	// Str   Men   Dex   Con
-	{ 0.0f, 0.0f, 2.0f, 0.0f }, // Stealth
-	{ 0.0f, 1.0f, 1.0f, 0.0f }, // Technical
-	{ 0.0f, 2.0f, 0.0f, 0.0f }, // Intuition
-	{ 0.0f, 2.0f, 0.0f, 0.0f }, // Ethereal link
-	{ 0.5f, 1.5f, 0.5f, 0.0f }, // Object knowledge
-	{ 0.0f, 2.0f, 0.0f, 0.0f }, // Casting
-	{ 2.0f, 0.0f, 1.0f, 0.0f }, // Close combat
-	{ 1.0f, 0.0f, 2.0f, 0.0f }, // Projectile
-	{ 0.0f, 0.0f, 0.0f, 1.0f }, // Defense
-};
-*/
+static PlayerSkill getAttributeSkillModifiers(const PlayerAttribute & attribute) {
+	
+	PlayerSkill skillMod;
+	
+	skillMod.stealth         = attribute.dexterity * 2.f;
+	skillMod.mecanism        = attribute.dexterity + attribute.mind;
+	skillMod.intuition       = attribute.mind * 2.f;
+	skillMod.etheralLink     = attribute.mind * 2.f;
+	skillMod.objectKnowledge = attribute.mind * 1.5f + attribute.dexterity * 0.5f + attribute.strength * 0.5f;
+	skillMod.casting         = attribute.mind * 2.f;
+	skillMod.projectile      = attribute.dexterity * 2.f + attribute.strength;
+	skillMod.closeCombat     = attribute.dexterity + attribute.strength * 2.f;
+	skillMod.defense         = attribute.constitution * 3.f;
+	
+	return skillMod;
+}
 
 /*!
  * \brief Compute secondary attributes for player
@@ -664,30 +664,8 @@ void ARX_PLAYER_ComputePlayerFullStats() {
 	// Skills
 	
 	// Calculate base skills
-	PlayerSkill skillBase;
-	skillBase.stealth          = player.m_skill.stealth
-	                              + player.m_attributeFull.dexterity * 2.f;
-	skillBase.mecanism         = player.m_skill.mecanism
-	                              + player.m_attributeFull.dexterity
-	                              + player.m_attributeFull.mind;
-	skillBase.intuition        = player.m_skill.intuition
-	                              + player.m_attributeFull.mind * 2.f;
-	skillBase.etheralLink    = player.m_skill.etheralLink
-	                              + player.m_attributeFull.mind * 2.f;
-	skillBase.objectKnowledge = player.m_skill.objectKnowledge
-	                              + player.m_attributeFull.mind * 1.5f
-	                              + player.m_attributeFull.dexterity * 0.5f
-	                              + player.m_attributeFull.strength * 0.5f;
-	skillBase.casting          = player.m_skill.casting
-	                              + player.m_attributeFull.mind * 2.f;
-	skillBase.projectile       = player.m_skill.projectile
-	                              + player.m_attributeFull.dexterity * 2.f
-	                              + player.m_attributeFull.strength;
-	skillBase.closeCombat     = player.m_skill.closeCombat
-	                              + player.m_attributeFull.dexterity
-	                              + player.m_attributeFull.strength * 2.f;
-	skillBase.defense          = player.m_skill.defense
-	                              + player.m_attributeFull.constitution * 3;
+	PlayerSkill skillBase = player.m_skill;
+	skillBase.add(getAttributeSkillModifiers(player.m_attributeFull));
 	
 	// Calculate equipment modifiers for skills
 	player.m_skillMod.stealth += getEquipmentModifier(
