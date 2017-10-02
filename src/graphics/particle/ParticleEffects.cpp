@@ -565,7 +565,7 @@ PARTICLE_DEF * createParticle(bool allocateWhilePaused) {
 		
 		ParticleCount++;
 		pd->exist = true;
-		pd->timcreation = toMs(arxtime.now());
+		pd->timcreation = toMsi(arxtime.now());
 		
 		pd->is2D = false;
 		pd->rgb = Color3f::white;
@@ -796,8 +796,8 @@ void ARX_PARTICLES_Update(EERIE_CAMERA * cam)  {
 			continue;
 		}
 
-		long framediff = part->timcreation + part->tolive - toMs(now);
-		long framediff2 = toMs(now) - part->timcreation;
+		long framediff = part->timcreation + part->tolive - toMsi(now);
+		long framediff2 = toMsi(now) - part->timcreation;
 		
 		if(framediff2 < long(part->delay)) {
 			continue;
@@ -841,7 +841,7 @@ void ARX_PARTICLES_Update(EERIE_CAMERA * cam)  {
 				part->rgb = Color3f::gray(.45f);
 				part->move *= 0.5f;
 				part->siz *= 1.f / 3;
-				part->timcreation = toMs(now);
+				part->timcreation = toMsi(now);
 				
 				framediff = part->tolive;
 				
@@ -960,7 +960,7 @@ void ARX_PARTICLES_Update(EERIE_CAMERA * cam)  {
 		
 		if(part->m_flags & ROTATING) {
 			if(!part->is2D) {
-				float rott = MAKEANGLE(float(toMs(now) + framediff2) * part->m_rotation);
+				float rott = MAKEANGLE(float(toMsi(now) + framediff2) * part->m_rotation);
 				
 				float temp = (part->zdec) ? 0.0001f : 2.f;
 				float size = std::max(siz, 0.f);

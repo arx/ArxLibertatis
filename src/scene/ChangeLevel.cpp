@@ -441,7 +441,7 @@ static bool ARX_CHANGELEVEL_Push_Index(long num) {
 	asi.version       = ARX_GAMESAVE_VERSION;
 	asi.nb_inter      = 0;
 	asi.nb_paths      = nbARXpaths;
-	asi.time          = toMs(arxtime.now());
+	asi.time          = toMsi(arxtime.now()); // TODO save/load time
 	asi.nb_lights     = 0;
 	asi.gmods_stacked = GLOBAL_MODS();
 	asi.gmods_stacked.zclip = 6400.f;
@@ -702,7 +702,7 @@ static long ARX_CHANGELEVEL_Push_Player(long level) {
 	asp->invisibility = entities.player()->invisibility;
 
 	asp->jumpphase = player.jumpphase;
-	asp->jumpstarttime = static_cast<u32>(toMs(player.jumpstarttime)); // TODO save/load time
+	asp->jumpstarttime = static_cast<u32>(toMsi(player.jumpstarttime)); // TODO save/load time
 	asp->Last_Movement = player.m_lastMovement;
 	asp->level = player.level;
 	
@@ -1355,7 +1355,7 @@ static long ARX_CHANGELEVEL_Push_IO(const Entity * io, long level) {
 			as->resist_fire = io->_npcdata->resist_fire;
 			as->strike_time = io->_npcdata->strike_time;
 			as->walk_start_time = io->_npcdata->walk_start_time;
-			as->aiming_start = static_cast<s32>(toMs(io->_npcdata->aiming_start)); // TODO save/load time
+			as->aiming_start = static_cast<s32>(toMsi(io->_npcdata->aiming_start)); // TODO save/load time
 			as->npcflags = io->_npcdata->npcflags;
 			as->pathfind = IO_PATHFIND();
 
@@ -2777,7 +2777,7 @@ bool ARX_CHANGELEVEL_Save(const std::string & name, const fs::path & savefile) {
 	pld.level = CURRENTLEVEL;
 	util::storeString(pld.name, name.c_str());
 	pld.version = ARX_GAMESAVE_VERSION;
-	pld.time = toMs(arxtime.now());
+	pld.time = toMsi(arxtime.now()); // TODO save/load time
 	pld.playthroughStart = s64(g_currentPlathrough.startTime);
 	pld.playthroughId = g_currentPlathrough.uniqueId;
 	pld.oldestALVersion = std::min(g_currentPlathrough.oldestALVersion, arx_version_number);

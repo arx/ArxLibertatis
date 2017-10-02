@@ -163,8 +163,11 @@ inline ArxDuration ArxDurationMsf(float val) {
 inline s64 toUs(ArxInstant val) {
 	return val.t * 1000;
 }
-inline s64 toMs(ArxInstant val) {
+inline s64 toMsi(ArxInstant val) {
 	return val.t;
+}
+inline float toMsf(ArxInstant val) {
+	return float(val.t);
 }
 inline s64 toMs(ArxDuration val) {
 	return val.t;

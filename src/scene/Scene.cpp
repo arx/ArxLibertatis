@@ -1170,11 +1170,11 @@ static void ARX_PORTALS_Frustrum_RenderRoomTCullSoft(size_t room_num,
 				}
 
 				if(ep->type & POLY_LAVA) {
-					float uvScroll = toMs(now) * (1.f/12000);
+					float uvScroll = toMsf(now) * (1.f/12000);
 					ManageLava_VertexBuffer(ep, to, uvScroll, pMyVertexCurr);
 					vPolyLava.push_back(ep);
 				} else if(ep->type & POLY_WATER) {
-					float uvScroll = toMs(now) * (1.f/1000);
+					float uvScroll = toMsf(now) * (1.f/1000);
 					ManageWater_VertexBuffer(ep, to, uvScroll, pMyVertexCurr);
 					vPolyWater.push_back(ep);
 				}
@@ -1431,7 +1431,7 @@ void ARX_SCENE_Update() {
 	
 	ArxInstant now = arxtime.now();
 	
-	WATEREFFECT = (toMs(now) % long(2 * glm::pi<float>() / 0.0005f)) * 0.0005f;
+	WATEREFFECT = (toMsi(now) % long(2 * glm::pi<float>() / 0.0005f)) * 0.0005f;
 	
 	const Vec3f camPos = ACTIVECAM->orgTrans.pos;
 	const float camDepth = ACTIVECAM->cdepth;
