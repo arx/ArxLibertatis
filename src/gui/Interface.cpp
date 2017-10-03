@@ -343,7 +343,7 @@ void ARX_INTERFACE_HALO_Render(Color3f color,
 							   Vec2f pos, Vec2f ratio)
 {
 	float power = 0.9f;
-	power -= std::sin(toMsf(arxtime.get_frame_time()) * 0.01f) * 0.3f;
+	power -= std::sin(toMsf(arxtime.now()) * 0.01f) * 0.3f;
 
 	color.r = glm::clamp(color.r * power, 0.f, 1.f);
 	color.g = glm::clamp(color.g * power, 0.f, 1.f);

@@ -625,7 +625,7 @@ bool ChangeLevelIconGui::isVisible() {
 void ChangeLevelIconGui::update(const Rectf & parent) {
 	m_rect = createChild(parent, Anchor_TopRight, m_size * m_scale, Anchor_TopRight);
 	
-	m_intensity = 0.9f - std::sin(toMsf(arxtime.get_frame_time()) * 0.02f) * 0.5f + Random::getf(0.f, 0.1f);
+	m_intensity = 0.9f - std::sin(toMsf(arxtime.now()) * 0.02f) * 0.5f + Random::getf(0.f, 0.1f);
 	m_intensity = glm::clamp(m_intensity, 0.f, 1.f);
 }
 

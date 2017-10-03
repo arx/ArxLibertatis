@@ -868,7 +868,7 @@ static void RenderWater() {
 	
 	unsigned short * indices = dynamicVertices.indices;
 	
-	float time = toMsf(arxtime.get_frame_time());
+	float time = toMsf(arxtime.now());
 
 	while(iNb--) {
 		EERIEPOLY * ep = vPolyWater[iNb];
@@ -981,7 +981,7 @@ static void RenderLava() {
 	
 	unsigned short * indices = dynamicVertices.indices;
 	
-	float time = toMsf(arxtime.get_frame_time());
+	float time = toMsf(arxtime.now());
 
 	while(iNb--) {
 		EERIEPOLY * ep = vPolyLava[iNb];
