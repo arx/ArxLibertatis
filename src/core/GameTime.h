@@ -139,10 +139,6 @@ public:
 		start_time += inc;
 	}
 	
-	ArxInstant get_frame_time() const {
-		return ArxInstantUs(s64(frame_time_us));
-	}
-	
 	float get_frame_delay() const {
 		return frame_delay_ms;
 	}
