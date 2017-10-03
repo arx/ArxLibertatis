@@ -20,12 +20,14 @@
 #ifndef ARX_GUI_CINEMATICBORDER_H
 #define ARX_GUI_CINEMATICBORDER_H
 
+#include "core/TimeTypes.h"
+
 class CinematicBorder {
 public:
 	CinematicBorder();
 	
 	bool isActive();
-	float elapsedTime();
+	ArxDuration elapsedTime();
 	
 	void reset();
 	
@@ -39,7 +41,7 @@ public:
 private:
 	bool m_active;
 	long m_direction;
-	float m_startTime;
+	ArxInstant m_startTime;
 };
 
 extern CinematicBorder cinematicBorder;
