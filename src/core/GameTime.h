@@ -139,8 +139,8 @@ public:
 		start_time += inc;
 	}
 	
-	float get_frame_time() const { 
-		return float(frame_time_us) / 1000.0f;
+	ArxInstant get_frame_time() const {
+		return ArxInstantUs(s64(frame_time_us));
 	}
 	
 	float get_frame_delay() const {

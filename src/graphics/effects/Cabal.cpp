@@ -91,7 +91,7 @@ Color3f CabalFx::randomizeLightColor() {
 Vec3f CabalFx::update(Vec3f casterPos) {
 
 	float refpos;
-	const float frametime = arxtime.get_frame_time();
+	const float frametime = toMsf(arxtime.get_frame_time());
 	float mov = std::sin(frametime * (1.0f / 800)) * m_scaleY;
 
 	Vec3f cabalpos;
