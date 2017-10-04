@@ -153,6 +153,10 @@ inline ArxInstant ArxInstantUs(s64 val) {
 inline ArxInstant ArxInstantMs(s64 val) {
 	return ArxInstant::ofRaw(val * 1000);
 }
+
+inline ArxDuration ArxDurationUs(s64 val) {
+	return ArxDuration::ofRaw(val);
+}
 inline ArxDuration ArxDurationMs(s64 val) {
 	return ArxDuration::ofRaw(val * 1000);
 }

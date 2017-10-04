@@ -127,7 +127,7 @@ public:
 			m_now_us = platform::getElapsedUs(start_time);
 		}
 		frame_time_us = m_now_us;
-		frame_delay_ms = float(frame_time_us - last_frame_time_us) / 1000.f;
+		m_frameDelay = ArxDurationUs(s64(frame_time_us - last_frame_time_us));
 	}
 	
 	bool is_paused() const { 
@@ -140,7 +140,7 @@ public:
 	}
 	
 	float get_frame_delay() const {
-		return frame_delay_ms;
+		return toMsf(m_frameDelay);
 	}
 	
 	void update_last_frame_time() {
@@ -160,7 +160,7 @@ private:
 	
 	u64 last_frame_time_us;
 	u64 frame_time_us;
-	float frame_delay_ms;
+	ArxDuration m_frameDelay;
 };
 
 extern GameTime arxtime;
