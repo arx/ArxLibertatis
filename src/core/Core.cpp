@@ -196,6 +196,7 @@ long TELEPORT_TO_ANGLE;
 res::path LastLoadedScene;
 
 float g_framedelay = 0.f;
+ArxDuration g_framedelay2 = ArxDuration_ZERO;
 
 bool LOAD_N_ERASE = true;
 bool TIME_INIT = true;

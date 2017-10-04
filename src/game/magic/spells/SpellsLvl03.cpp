@@ -243,7 +243,7 @@ void FireballSpell::End() {
 
 void FireballSpell::Update() {
 	
-	m_elapsed += ArxDurationMsf(g_framedelay);
+	m_elapsed += g_framedelay2;
 	
 	if(m_elapsed <= m_createBallDuration) {
 		
@@ -370,7 +370,7 @@ void CreateFoodSpell::End() {
 
 void CreateFoodSpell::Update() {
 	
-	m_elapsed += ArxDurationMsf(g_framedelay);
+	m_elapsed += g_framedelay2;
 	
 	m_pos = entities.player()->pos;
 	
@@ -396,7 +396,7 @@ void CreateFoodSpell::Update() {
 	}
 
 	m_particles.SetPos(m_pos);
-	m_particles.Update(ArxDurationMsf(g_framedelay));
+	m_particles.Update(g_framedelay2);
 	
 	m_particles.Render();
 }
@@ -505,7 +505,7 @@ void IceProjectileSpell::End() {
 
 void IceProjectileSpell::Update() {
 	
-	m_elapsed += ArxDurationMsf(g_framedelay);
+	m_elapsed += g_framedelay2;
 
 	if(m_duration - m_elapsed < ArxDurationMs(1000)) {
 		fColor = (m_duration - m_elapsed) / ArxDurationMs(1000);

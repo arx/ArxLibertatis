@@ -132,7 +132,7 @@ void MassLightningStrikeSpell::Update() {
 		lightning->m_caster = m_caster;
 		lightning->m_level = m_level;
 		
-		lightning->Update(ArxDurationMsf(g_framedelay));
+		lightning->Update(g_framedelay2);
 	}
 	
 	for(size_t i = 0; i < pTab.size(); i++) {

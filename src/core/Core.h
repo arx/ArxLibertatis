@@ -50,6 +50,7 @@ ZeniMax Media Inc., Suite 120, Rockville, Maryland 20850 USA.
 #include <stddef.h>
 #include <string>
 
+#include "core/TimeTypes.h"
 #include "graphics/Color.h"
 #include "graphics/data/Mesh.h"
 #include "io/resource/ResourcePath.h"
@@ -82,7 +83,9 @@ extern std::string TELEPORT_TO_LEVEL;
 extern std::string TELEPORT_TO_POSITION;
 
 extern float PULSATE;
+
 extern float g_framedelay;
+extern ArxDuration g_framedelay2;
 
 extern bool g_requestLevelInit;
 
