@@ -1615,12 +1615,14 @@ void ArxGame::updateTime() {
 		arxtime.update();
 	}
 
-	g_framedelay = toMsf(arxtime.get_frame_delay());
-	arx_assert(g_framedelay >= 0.0f);
+	ArxDuration framedelay = arxtime.get_frame_delay();
+	arx_assert(framedelay >= ArxDuration_ZERO);
 
 	// limit fps above 10fps
-	const float max_framedelay = 1000.0f / 10.0f;
-	g_framedelay = g_framedelay > max_framedelay ? max_framedelay : g_framedelay;
+	const ArxDuration max_framedelay = ArxDurationMs(100);
+	framedelay = framedelay > max_framedelay ? max_framedelay : framedelay;
+	
+	g_framedelay = toMsf(framedelay);
 }
 
 void ArxGame::updateInput() {
