@@ -359,7 +359,7 @@ void CreateFieldSpell::Update() {
 			m_duration=ArxDuration_ZERO;
 		}
 		
-		m_field.Update(ArxDurationMsf(g_framedelay));
+		m_field.Update(g_framedelay2);
 		m_field.Render();
 	}
 }
