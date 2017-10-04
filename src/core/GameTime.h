@@ -139,8 +139,8 @@ public:
 		start_time += inc;
 	}
 	
-	float get_frame_delay() const {
-		return toMsf(m_frameDelay);
+	ArxDuration get_frame_delay() const {
+		return m_frameDelay;
 	}
 	
 	void update_last_frame_time() {
