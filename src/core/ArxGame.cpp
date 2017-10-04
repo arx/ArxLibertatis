@@ -1602,20 +1602,20 @@ void ArxGame::updateTime() {
 	arxtime.update();
 
 	// before modulation by "GLOBAL_SLOWDOWN"
-	float Original_framedelay = arxtime.get_frame_delay();
-	arx_assert(Original_framedelay >= 0.f);
+	ArxDuration Original_framedelay = arxtime.get_frame_delay();
+	arx_assert(Original_framedelay >= ArxDuration_ZERO);
 
 	// TODO this code shouldn't exist. ARXStartTime should be constant.
 	if (GLOBAL_SLOWDOWN != 1.0f) {
 		
-		float drift = Original_framedelay * (1.0f - GLOBAL_SLOWDOWN) * 1000.f;
+		float drift = toMsf(Original_framedelay) * (1.0f - GLOBAL_SLOWDOWN) * 1000.f;
 		arxtime.increment_start_time(static_cast<u64>(drift));
 
 		// recalculate frame delta
 		arxtime.update();
 	}
 
-	g_framedelay = arxtime.get_frame_delay();
+	g_framedelay = toMsf(arxtime.get_frame_delay());
 	arx_assert(g_framedelay >= 0.0f);
 
 	// limit fps above 10fps
