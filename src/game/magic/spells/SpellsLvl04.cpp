@@ -169,6 +169,7 @@ Vec3f BlessSpell::getPosition() {
 void DispellFieldSpell::Launch() {
 	
 	m_duration = ArxDurationMs(10);
+	m_hasDuration = true;
 	
 	long valid = 0, dispelled = 0;
 
