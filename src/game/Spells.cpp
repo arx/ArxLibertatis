@@ -169,9 +169,13 @@ SpellBase * SpellManager::operator[](const SpellHandle handle) {
 	return m_spells[handle.handleData()];
 }
 
+static void SPELLEND_Notify(const SpellBase & spell);
+
 void SpellManager::endSpell(SpellBase * spell)
 {
-	spell->m_duration = ArxDuration_ZERO;
+	SPELLEND_Notify(*spell);
+	spell->End();
+	spells.freeSlot(spell);
 }
 
 void SpellManager::endByCaster(EntityHandle caster) {
@@ -1127,10 +1131,7 @@ void ARX_SPELLS_Update() {
 		spell->m_elapsed += g_framedelay2;
 		
 		if(spell->m_hasDuration && spell->m_elapsed > spell->m_duration) {
-			SPELLEND_Notify(*spell);
-			
-			spell->End();
-			spells.freeSlot(spell);
+			spells.endSpell(spell);
 			continue;
 		}
 
