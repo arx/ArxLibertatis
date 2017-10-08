@@ -415,12 +415,14 @@ void SlowDownSpell::Launch() {
 	
 	ARX_SOUND_PlaySFX(SND_SPELL_SLOW_DOWN, &entities[m_target]->pos);
 	
-	m_duration = (m_launchDuration >= ArxDuration_ZERO) ? m_launchDuration : ArxDurationMs(10000);
+	if(m_caster == EntityHandle_Player) {
+		m_duration = ArxDuration_ZERO;
+		m_hasDuration = false;
+	} else {
+		m_duration = (m_launchDuration >= ArxDuration_ZERO) ? m_launchDuration : ArxDurationMs(10000);
+		m_hasDuration = true;
+	}
 	
-	if(m_caster == EntityHandle_Player)
-		m_duration = ArxDurationMs(10000000);
-	
-	m_hasDuration = true;
 	m_fManaCostPerSecond = 1.2f;
 	
 	m_targets.push_back(m_target);
