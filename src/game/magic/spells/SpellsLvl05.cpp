@@ -52,7 +52,8 @@ void RuneOfGuardingSpell::Launch() {
 	
 	ARX_SOUND_PlaySFX(SND_SPELL_RUNE_OF_GUARDING);
 	
-	m_duration = (m_launchDuration >= ArxDuration_ZERO) ? m_launchDuration : ArxDurationMs(99999999);
+	m_hasDuration = m_launchDuration >= ArxDuration_ZERO;
+	m_duration = m_hasDuration ? m_launchDuration : ArxDuration_ZERO;
 	
 	m_pos = entities[m_caster]->pos;
 	
