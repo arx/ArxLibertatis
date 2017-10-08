@@ -408,7 +408,6 @@ void CreateFoodSpell::Update() {
 
 IceProjectileSpell::IceProjectileSpell()
 	: SpellBase()
-	, m_elapsed(ArxDuration_ZERO)
 	, iNumber(0)
 	, iMax(0)
 	, fColor(0)
@@ -510,8 +509,6 @@ void IceProjectileSpell::End() {
 
 void IceProjectileSpell::Update() {
 	
-	m_elapsed += g_framedelay2;
-
 	if(m_duration - m_elapsed < ArxDurationMs(1000)) {
 		fColor = (m_duration - m_elapsed) / ArxDurationMs(1000);
 		
