@@ -225,6 +225,7 @@ void ParalyseSpell::Launch() {
 	ARX_SOUND_PlaySFX(SND_SPELL_PARALYSE, &entities[m_target]->pos);
 	
 	m_duration = (m_launchDuration >= ArxDuration_ZERO) ? m_launchDuration : ArxDurationMs(5000);
+	m_hasDuration = true;
 	
 	float resist_magic = 0.f;
 	if(m_target == EntityHandle_Player && m_level <= player.level) {
