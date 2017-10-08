@@ -86,9 +86,8 @@ void RiseDeadSpell::Launch() {
 	m_targetPos = target;
 	ARX_SOUND_PlaySFX(SND_SPELL_RAISE_DEAD, &m_targetPos);
 	
-	// TODO this tolive value is probably never read
-	m_duration = (m_launchDuration >= ArxDuration_ZERO) ? m_launchDuration : ArxDurationMs(2000000);
-	m_hasDuration = true;
+	m_hasDuration = m_launchDuration >= ArxDuration_ZERO;
+	m_duration = m_hasDuration ? m_launchDuration : ArxDuration_ZERO;
 	m_fManaCostPerSecond = 1.2f;
 	
 	m_creationFailed = false;
