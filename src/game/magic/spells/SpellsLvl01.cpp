@@ -137,6 +137,7 @@ MagicMissileSpell::~MagicMissileSpell() {
 void MagicMissileSpell::Launch() {
 	
 	m_duration = ArxDurationMs(6000);
+	m_hasDuration = true;
 	
 	m_hand_group = GetActionPointIdx(entities[m_caster]->obj, "primary_attach");
 	
