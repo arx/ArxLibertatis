@@ -217,13 +217,14 @@ void ArmorSpell::Launch()
 	
 	m_snd_loop = ARX_SOUND_PlaySFX(SND_SPELL_ARMOR_LOOP, &entities[m_target]->pos, 1.f, ARX_SOUND_PLAY_LOOPED);
 	
-	m_duration = (m_launchDuration >= ArxDuration_ZERO) ? m_launchDuration : ArxDurationMs(20000);
-	
 	if(m_caster == EntityHandle_Player) {
-		m_duration = ArxDurationMs(20000000);
+		m_duration = ArxDuration_ZERO;
+		m_hasDuration = false;
+	} else {
+		m_duration = (m_launchDuration >= ArxDuration_ZERO) ? m_launchDuration : ArxDurationMs(20000);
+		m_hasDuration = true;
 	}
 	
-	m_hasDuration = true;
 	m_fManaCostPerSecond = 0.2f * m_level;
 	
 	Entity * io = entities.get(m_target);
