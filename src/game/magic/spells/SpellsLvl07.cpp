@@ -79,8 +79,8 @@ void FlyingEyeSpell::Launch() {
 	ARX_SOUND_PlaySFX(SND_SPELL_EYEBALL_IN);
 	
 	m_lastupdate = m_timcreation;
-	m_duration = ArxDurationMs(1000000);
-	m_hasDuration = true;
+	m_duration = ArxDuration_ZERO;
+	m_hasDuration = false;
 	m_fManaCostPerSecond = 3.2f;
 	eyeball.exist = 1;
 	
