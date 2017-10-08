@@ -375,9 +375,9 @@ void CreateFoodSpell::Update() {
 	
 	m_pos = entities.player()->pos;
 	
-	ArxDuration ff = m_duration - m_elapsed;
+	ArxDuration timeRemaining = m_duration - m_elapsed;
 	
-	if(ff < ArxDurationMs(1500)) {
+	if(timeRemaining < ArxDurationMs(1500)) {
 		m_particles.m_parameters.m_spawnFlags = PARTICLE_CIRCULAR;
 		m_particles.m_parameters.m_gravity = Vec3f_ZERO;
 		
@@ -389,8 +389,8 @@ void CreateFoodSpell::Update() {
 			if(pP->isAlive()) {
 				pP->fColorEnd.a = 0;
 					
-				if(pP->m_age + ff < pP->m_timeToLive) {
-					pP->m_age = pP->m_timeToLive - ff;
+				if(pP->m_age + timeRemaining < pP->m_timeToLive) {
+					pP->m_age = pP->m_timeToLive - timeRemaining;
 				}
 			}
 		}
