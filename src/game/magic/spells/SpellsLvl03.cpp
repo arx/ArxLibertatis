@@ -420,6 +420,7 @@ void IceProjectileSpell::Launch() {
 	ARX_SOUND_PlaySFX(SND_SPELL_ICE_PROJECTILE_LAUNCH, &m_caster_pos);
 	
 	m_duration = ArxDurationMs(4200);
+	m_hasDuration = true;
 	
 	Vec3f target;
 	float angleb;
