@@ -334,9 +334,9 @@ void NegateMagicSpell::Launch() {
 	
 	ARX_SOUND_PlaySFX(SND_SPELL_NEGATE_MAGIC, &entities[m_target]->pos);
 	
-	m_hasDuration = true;
 	m_fManaCostPerSecond = 2.f;
-	m_duration = (m_launchDuration >= ArxDuration_ZERO) ? m_launchDuration : ArxDurationMs(1000000);
+	m_hasDuration = m_launchDuration >= ArxDuration_ZERO;
+	m_duration = m_hasDuration ? m_launchDuration : ArxDuration_ZERO;
 	
 	m_pos = getTargetPos(m_caster, m_target);
 	
