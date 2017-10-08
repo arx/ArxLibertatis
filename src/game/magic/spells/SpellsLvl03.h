@@ -85,7 +85,6 @@ public:
 private:
 	Vec3f m_pos;
 	ParticleSystem m_particles;
-	ArxDuration m_elapsed;
 };
 
 
