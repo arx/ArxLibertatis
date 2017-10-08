@@ -377,6 +377,7 @@ void MassIncinerateSpell::Launch() {
 	ARX_SOUND_PlaySFX(SND_SPELL_MASS_INCINERATE);
 	
 	m_duration = ArxDurationMs(20000);
+	m_hasDuration = true;
 	
 	for(size_t ii = 0; ii < entities.size(); ii++) {
 		const EntityHandle handle = EntityHandle(ii);
