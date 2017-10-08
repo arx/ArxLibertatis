@@ -42,8 +42,8 @@ bool InvisibilitySpell::CanLaunch() {
 }
 
 void InvisibilitySpell::Launch() {
-	m_duration = (m_launchDuration >= ArxDuration_ZERO) ? m_launchDuration : ArxDurationMs(6000000);
-	m_hasDuration = true;
+	m_hasDuration = m_launchDuration >= ArxDuration_ZERO;
+	m_duration = m_hasDuration ? m_launchDuration : ArxDuration_ZERO;
 	m_fManaCostPerSecond = 3.f;
 	
 	if(m_caster == EntityHandle_Player) {
