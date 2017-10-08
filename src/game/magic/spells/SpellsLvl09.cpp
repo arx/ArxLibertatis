@@ -83,11 +83,11 @@ bool SummonCreatureSpell::CanLaunch() {
 
 void SummonCreatureSpell::Launch() {
 	
-	m_hasDuration = true;
 	m_fManaCostPerSecond = 1.9f;
 	m_requestSummon = false;
 	m_summonedEntity = EntityHandle();
-	m_duration = (m_launchDuration >= ArxDuration_ZERO) ? m_launchDuration : ArxDurationMs(2000000);
+	m_hasDuration = m_launchDuration >= ArxDuration_ZERO;
+	m_duration = m_hasDuration ? m_launchDuration : ArxDuration_ZERO;
 	
 	Vec3f target;
 	float beta;
