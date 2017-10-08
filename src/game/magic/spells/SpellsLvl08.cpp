@@ -172,6 +172,7 @@ void ExplosionSpell::Launch() {
 	ARX_SOUND_PlaySFX(SND_SPELL_EXPLOSION);
 	
 	m_duration = ArxDurationMs(2000);
+	m_hasDuration = true;
 	
 	Vec3f target = entities[m_caster]->pos;
 	if(m_caster == EntityHandle_Player) {
