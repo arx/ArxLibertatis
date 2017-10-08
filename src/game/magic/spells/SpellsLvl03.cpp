@@ -346,7 +346,6 @@ Vec3f FireballSpell::getPosition() {
 
 CreateFoodSpell::CreateFoodSpell()
 	: SpellBase()
-	, m_elapsed(ArxDuration_ZERO)
 {}
 
 void CreateFoodSpell::Launch() {
@@ -373,8 +372,6 @@ void CreateFoodSpell::End() {
 }
 
 void CreateFoodSpell::Update() {
-	
-	m_elapsed += g_framedelay2;
 	
 	m_pos = entities.player()->pos;
 	
