@@ -430,6 +430,7 @@ bool TeleportSpell::CanLaunch() {
 
 void TeleportSpell::Launch() {
 	m_duration = ArxDurationMs(7000);
+	m_hasDuration = true;
 	
 	ARX_SOUND_PlaySFX(SND_SPELL_TELEPORT, &m_caster_pos);
 	
