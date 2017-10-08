@@ -565,4 +565,5 @@ void ActivatePortalSpell::Launch() {
 	ARX_SOUND_PlayInterface(SND_SPELL_ACTIVATE_PORTAL);
 	
 	m_duration = ArxDurationMs(20);
+	m_hasDuration = true;
 }
