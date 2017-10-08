@@ -98,7 +98,6 @@ public:
 	void Update();
 	
 private:
-	ArxDuration m_elapsed;
 	int iNumber;
 	int iMax;
 	float fColor;
