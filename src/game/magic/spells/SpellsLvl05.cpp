@@ -532,6 +532,7 @@ void PoisonProjectileSpell::Launch() {
 	}
 	
 	m_duration = ArxDurationMs(8000);
+	m_hasDuration = true;
 	
 	ArxDuration lMax = ArxDuration_ZERO;
 	
