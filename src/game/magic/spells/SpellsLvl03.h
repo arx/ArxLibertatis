@@ -65,8 +65,6 @@ public:
 private:
 	LightHandle m_light;
 	
-	ArxDuration m_elapsed;
-
 	Vec3f eCurPos;
 	Vec3f eMove;
 	bool bExplo;
