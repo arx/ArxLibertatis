@@ -340,6 +340,7 @@ IgnitSpell::IgnitSpell()
 void IgnitSpell::Launch() {
 	
 	m_duration = ArxDurationMs(500);
+	m_hasDuration = true;
 	
 	if(m_hand_group != ActionPoint()) {
 		m_srcPos = m_hand_pos;
