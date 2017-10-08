@@ -238,6 +238,7 @@ void ControlTargetSpell::Launch()
 	ARX_SOUND_PlaySFX(SND_SPELL_CONTROL_TARGET);
 	
 	m_duration = ArxDurationMs(1000);
+	m_hasDuration = true;
 	
 	eSrc = Vec3f_ZERO;
 	eTarget = Vec3f_ZERO;
