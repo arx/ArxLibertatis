@@ -173,17 +173,18 @@ void LevitateSpell::Launch() {
 	
 	ARX_SOUND_PlaySFX(SND_SPELL_LEVITATE_START, &entities[m_target]->pos);
 	
-	m_duration = (m_launchDuration >= ArxDuration_ZERO) ? m_launchDuration : ArxDurationMs(2000000000);
-	m_hasDuration = true;
 	m_fManaCostPerSecond = 1.f;
 	
 	Vec3f target;
 	if(m_target == EntityHandle_Player) {
 		target = player.pos + Vec3f(0.f, 150.f, 0.f);
-		m_duration = ArxDurationMs(200000000);
+		m_duration = ArxDuration_ZERO;
+		m_hasDuration = false;
 		player.levitate = true;
 	} else {
 		target = entities[m_target]->pos;
+		m_hasDuration = m_launchDuration >= ArxDuration_ZERO;
+		m_duration = m_hasDuration ? m_launchDuration : ArxDuration_ZERO;
 	}
 	
 	m_pos = target;
