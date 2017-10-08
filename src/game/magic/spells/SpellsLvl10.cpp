@@ -59,7 +59,8 @@ MassLightningStrikeSpell::~MassLightningStrikeSpell() {
 void MassLightningStrikeSpell::Launch() {
 	spells.endByType(SPELL_MASS_LIGHTNING_STRIKE);
 	
-	m_duration = ArxDurationMs(5000); // TODO probably never read
+	m_hasDuration = true;
+	m_duration = ArxDurationMs(5000);
 	m_soundEffectPlayed = false;
 	
 	float beta;
