@@ -276,8 +276,8 @@ void CreateFieldSpell::Launch() {
 	}
 	m_timcreation = start;
 	
-	m_duration = (m_launchDuration >= ArxDuration_ZERO) ? m_launchDuration : ArxDurationMs(800000);
-	m_hasDuration = true;
+	m_hasDuration = m_launchDuration >= ArxDuration_ZERO;
+	m_duration = m_hasDuration ? m_launchDuration : ArxDuration_ZERO;
 	m_fManaCostPerSecond = 1.2f;
 	
 	Vec3f target;
