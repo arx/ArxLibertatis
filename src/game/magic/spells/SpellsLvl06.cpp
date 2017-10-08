@@ -374,6 +374,7 @@ void DisarmTrapSpell::Launch() {
 	ARX_SOUND_PlaySFX(SND_SPELL_DISARM_TRAP);
 	
 	m_duration = ArxDurationMs(1);
+	m_hasDuration = true;
 	
 	Sphere sphere;
 	sphere.origin = player.pos;
