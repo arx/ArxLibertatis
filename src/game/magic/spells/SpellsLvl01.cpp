@@ -470,6 +470,7 @@ void IgnitSpell::Update() {
 void DouseSpell::Launch() {
 	
 	m_duration = ArxDurationMs(500);
+	m_hasDuration = true;
 	
 	Vec3f target;
 	if(m_hand_group != ActionPoint()) {
