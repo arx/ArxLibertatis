@@ -303,6 +303,7 @@ void CurePoisonSpell::Launch() {
 	}
 	
 	m_duration = ArxDurationMs(3500);
+	m_hasDuration = true;
 	
 	m_particles.SetParams(g_particleParameters[ParticleParam_CurePoison]);
 	
