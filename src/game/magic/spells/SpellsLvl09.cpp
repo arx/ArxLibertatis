@@ -451,6 +451,7 @@ void IncinerateSpell::Launch() {
 	m_snd_loop = ARX_SOUND_PlaySFX(SND_SPELL_INCINERATE_LOOP, &tio->pos, 1.f, ARX_SOUND_PLAY_LOOPED);
 	
 	m_duration = ArxDurationMs(20000);
+	m_hasDuration = true;
 	
 	tio->sfx_flag |= SFX_TYPE_YLSIDE_DEATH | SFX_TYPE_INCINERATE;
 	tio->sfx_time = arxtime.now();
