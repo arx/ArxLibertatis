@@ -485,6 +485,7 @@ void MassParalyseSpell::Launch() {
 	ARX_SOUND_PlaySFX(SND_SPELL_MASS_PARALYSE);
 	
 	m_duration = (m_launchDuration >= ArxDuration_ZERO) ? m_launchDuration : ArxDurationMs(10000);
+	m_hasDuration = true;
 	
 	for(size_t ii = 0; ii < entities.size(); ii++) {
 		const EntityHandle handle = EntityHandle(ii);
