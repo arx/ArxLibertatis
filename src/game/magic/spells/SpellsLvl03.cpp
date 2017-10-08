@@ -186,6 +186,7 @@ FireballSpell::~FireballSpell() {
 void FireballSpell::Launch() {
 	
 	m_duration = ArxDurationMs(6000);
+	m_hasDuration = true;
 	
 	if(m_caster != EntityHandle_Player) {
 		m_hand_group = ActionPoint();
