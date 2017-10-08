@@ -170,6 +170,7 @@ public:
 	
 	bool m_hasDuration;
 	ArxDuration m_duration;
+	ArxDuration m_elapsed;
 	
 	float m_fManaCostPerSecond;
 	
