@@ -404,8 +404,8 @@ void CurseSpell::Launch() {
 	
 	ARX_SOUND_PlaySFX(SND_SPELL_CURSE, &entities[m_target]->pos);
 	
-	m_duration = (m_launchDuration >= ArxDuration_ZERO) ? m_launchDuration : ArxDurationMs(2000000);
-	m_hasDuration = true;
+	m_hasDuration = m_launchDuration >= ArxDuration_ZERO;
+	m_duration = m_hasDuration ? m_launchDuration : ArxDuration_ZERO;
 	m_fManaCostPerSecond = 0.5f * m_level;
 	
 	Vec3f target = getTargetPos(m_caster, m_target);
