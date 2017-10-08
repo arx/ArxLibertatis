@@ -173,7 +173,6 @@ void DispellIllusionSpell::Update() {
 
 FireballSpell::FireballSpell()
 	: SpellBase()
-	, m_elapsed(ArxDuration_ZERO)
 	, bExplo(false)
 	, m_createBallDuration(ArxDurationMs(2000))
 {
@@ -245,8 +244,6 @@ void FireballSpell::End() {
 }
 
 void FireballSpell::Update() {
-	
-	m_elapsed += g_framedelay2;
 	
 	if(m_elapsed <= m_createBallDuration) {
 		
