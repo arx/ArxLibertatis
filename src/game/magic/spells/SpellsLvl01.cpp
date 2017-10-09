@@ -436,27 +436,25 @@ void IgnitSpell::End() {
 
 void IgnitSpell::Update() {
 	
-	if(m_elapsed < m_duration) {
-		float a = m_elapsed / m_duration;
+	float a = m_elapsed / m_duration;
 		
-		if(a >= 1.f) {
-			a = 1.f;
-		}
+	if(a >= 1.f) {
+		a = 1.f;
+	}
 		
-		std::vector<T_LINKLIGHTTOFX>::iterator itr;
-		for(itr = m_lights.begin(); itr != m_lights.end(); ++itr) {
+	std::vector<T_LINKLIGHTTOFX>::iterator itr;
+	for(itr = m_lights.begin(); itr != m_lights.end(); ++itr) {
 			
-			EERIE_LIGHT * targetLight = g_staticLights[itr->m_targetLight];
+		EERIE_LIGHT * targetLight = g_staticLights[itr->m_targetLight];
 			
-			Vec3f pos = glm::mix(m_srcPos, targetLight->pos, a);
+		Vec3f pos = glm::mix(m_srcPos, targetLight->pos, a);
 			
-			LightHandle id = itr->m_effectLight;
+		LightHandle id = itr->m_effectLight;
 			
-			EERIE_LIGHT * light = lightHandleGet(id);
-			if(light) {
-				light->intensity = Random::getf(0.7f, 2.7f);
-				light->pos = pos;
-			}
+		EERIE_LIGHT * light = lightHandleGet(id);
+		if(light) {
+			light->intensity = Random::getf(0.7f, 2.7f);
+			light->pos = pos;
 		}
 	}
 }
