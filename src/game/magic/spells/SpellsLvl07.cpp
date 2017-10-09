@@ -229,7 +229,7 @@ void FireFieldSpell::Launch() {
 	
 	ARX_SOUND_PlaySFX(SND_SPELL_FIRE_FIELD_START);
 	
-	m_duration = (m_launchDuration > ArxDuration::ofRaw(-1)) ? m_launchDuration : ArxDurationMs(100000);
+	m_duration = (m_launchDuration >= ArxDuration_ZERO) ? m_launchDuration : ArxDurationMs(100000);
 	m_hasDuration = true;
 	m_fManaCostPerSecond = 2.8f;
 	m_light = LightHandle();
@@ -360,7 +360,7 @@ void IceFieldSpell::Launch() {
 	
 	ARX_SOUND_PlaySFX(SND_SPELL_ICE_FIELD);
 	
-	m_duration = (m_launchDuration > ArxDuration::ofRaw(-1)) ? m_launchDuration : ArxDurationMs(100000);
+	m_duration = (m_launchDuration >= ArxDuration_ZERO) ? m_launchDuration : ArxDurationMs(100000);
 	m_hasDuration = true;
 	m_fManaCostPerSecond = 2.8f;
 	m_light = LightHandle();
@@ -652,7 +652,7 @@ void ConfuseSpell::Launch() {
 	
 	m_hasDuration = true;
 	m_fManaCostPerSecond = 1.5f;
-	m_duration = (m_launchDuration > ArxDuration::ofRaw(-1)) ? m_launchDuration : ArxDurationMs(5000);
+	m_duration = (m_launchDuration >= ArxDuration_ZERO) ? m_launchDuration : ArxDurationMs(5000);
 	
 	
 	tex_p1 = TextureContainer::Load("graph/obj3d/textures/(fx)_tsu_blueting");
