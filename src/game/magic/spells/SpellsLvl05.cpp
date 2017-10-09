@@ -156,7 +156,6 @@ Vec3f RuneOfGuardingSpell::getPosition() {
 
 LevitateSpell::LevitateSpell()
 	: SpellBase()
-	, m_elapsed(ArxDuration_ZERO)
 	, m_baseRadius(50.f)
 {}
 
@@ -214,8 +213,6 @@ void LevitateSpell::End() {
 }
 
 void LevitateSpell::Update() {
-	
-	m_elapsed += g_framedelay2;
 	
 	Vec3f target;
 
