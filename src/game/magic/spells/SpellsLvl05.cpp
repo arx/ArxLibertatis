@@ -276,7 +276,6 @@ void LevitateSpell::createDustParticle() {
 
 CurePoisonSpell::CurePoisonSpell()
 	: SpellBase()
-	, m_elapsed(ArxDuration_ZERO)
 {}
 
 void CurePoisonSpell::Launch() {
@@ -319,8 +318,6 @@ void CurePoisonSpell::End() {
 }
 
 void CurePoisonSpell::Update() {
-	
-	m_elapsed += g_framedelay2;
 	
 	m_pos = entities[m_target]->pos;
 	
