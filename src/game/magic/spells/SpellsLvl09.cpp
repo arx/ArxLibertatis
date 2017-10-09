@@ -87,7 +87,7 @@ void SummonCreatureSpell::Launch() {
 	m_fManaCostPerSecond = 1.9f;
 	m_requestSummon = false;
 	m_summonedEntity = EntityHandle();
-	m_duration = (m_launchDuration > ArxDuration::ofRaw(-1)) ? m_launchDuration : ArxDurationMs(2000000);
+	m_duration = (m_launchDuration >= ArxDuration_ZERO) ? m_launchDuration : ArxDurationMs(2000000);
 	
 	Vec3f target;
 	float beta;
@@ -336,7 +336,7 @@ void NegateMagicSpell::Launch() {
 	
 	m_hasDuration = true;
 	m_fManaCostPerSecond = 2.f;
-	m_duration = (m_launchDuration > ArxDuration::ofRaw(-1)) ? m_launchDuration : ArxDurationMs(1000000);
+	m_duration = (m_launchDuration >= ArxDuration_ZERO) ? m_launchDuration : ArxDurationMs(1000000);
 	
 	m_pos = getTargetPos(m_caster, m_target);
 	
@@ -483,7 +483,7 @@ void MassParalyseSpell::Launch() {
 	
 	ARX_SOUND_PlaySFX(SND_SPELL_MASS_PARALYSE);
 	
-	m_duration = (m_launchDuration > ArxDuration::ofRaw(-1)) ? m_launchDuration : ArxDurationMs(10000);
+	m_duration = (m_launchDuration >= ArxDuration_ZERO) ? m_launchDuration : ArxDurationMs(10000);
 	
 	for(size_t ii = 0; ii < entities.size(); ii++) {
 		const EntityHandle handle = EntityHandle(ii);
