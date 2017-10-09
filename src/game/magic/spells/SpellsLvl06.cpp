@@ -87,7 +87,7 @@ void RiseDeadSpell::Launch() {
 	ARX_SOUND_PlaySFX(SND_SPELL_RAISE_DEAD, &m_targetPos);
 	
 	// TODO this tolive value is probably never read
-	m_duration = (m_launchDuration > ArxDuration::ofRaw(-1)) ? m_launchDuration : ArxDurationMs(2000000);
+	m_duration = (m_launchDuration >= ArxDuration_ZERO) ? m_launchDuration : ArxDurationMs(2000000);
 	m_hasDuration = true;
 	m_fManaCostPerSecond = 1.2f;
 	
@@ -225,7 +225,7 @@ void ParalyseSpell::Launch() {
 	
 	ARX_SOUND_PlaySFX(SND_SPELL_PARALYSE, &entities[m_target]->pos);
 	
-	m_duration = (m_launchDuration > ArxDuration::ofRaw(-1)) ? m_launchDuration : ArxDurationMs(5000);
+	m_duration = (m_launchDuration >= ArxDuration_ZERO) ? m_launchDuration : ArxDurationMs(5000);
 	
 	float resist_magic = 0.f;
 	if(m_target == EntityHandle_Player && m_level <= player.level) {
@@ -276,7 +276,7 @@ void CreateFieldSpell::Launch() {
 	}
 	m_timcreation = start;
 	
-	m_duration = (m_launchDuration > ArxDuration::ofRaw(-1)) ? m_launchDuration : ArxDurationMs(800000);
+	m_duration = (m_launchDuration >= ArxDuration_ZERO) ? m_launchDuration : ArxDurationMs(800000);
 	m_hasDuration = true;
 	m_fManaCostPerSecond = 1.2f;
 	
@@ -414,7 +414,7 @@ void SlowDownSpell::Launch() {
 	
 	ARX_SOUND_PlaySFX(SND_SPELL_SLOW_DOWN, &entities[m_target]->pos);
 	
-	m_duration = (m_launchDuration > ArxDuration::ofRaw(-1)) ? m_launchDuration : ArxDurationMs(10000);
+	m_duration = (m_launchDuration >= ArxDuration_ZERO) ? m_launchDuration : ArxDurationMs(10000);
 	
 	if(m_caster == EntityHandle_Player)
 		m_duration = ArxDurationMs(10000000);
