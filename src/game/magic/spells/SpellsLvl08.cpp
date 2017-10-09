@@ -42,7 +42,7 @@ bool InvisibilitySpell::CanLaunch() {
 }
 
 void InvisibilitySpell::Launch() {
-	m_duration = (m_launchDuration > ArxDuration::ofRaw(-1)) ? m_launchDuration : ArxDurationMs(6000000);
+	m_duration = (m_launchDuration >= ArxDuration_ZERO) ? m_launchDuration : ArxDurationMs(6000000);
 	m_hasDuration = true;
 	m_fManaCostPerSecond = 3.f;
 	
@@ -99,7 +99,7 @@ void ManaDrainSpell::Launch() {
 	spells.endByCaster(m_caster, SPELL_LIFE_DRAIN);
 	spells.endByCaster(m_caster, SPELL_HARM);
 	
-	m_duration = (m_launchDuration > ArxDuration::ofRaw(-1)) ? m_launchDuration : ArxDurationMs(6000000);
+	m_duration = (m_launchDuration >= ArxDuration_ZERO) ? m_launchDuration : ArxDurationMs(6000000);
 	m_hasDuration = true;
 	m_fManaCostPerSecond = 2.f;
 	
@@ -272,7 +272,7 @@ void LifeDrainSpell::Launch() {
 	spells.endByCaster(m_caster, SPELL_HARM);
 	spells.endByCaster(m_caster, SPELL_MANA_DRAIN);
 	
-	m_duration = (m_launchDuration > ArxDuration::ofRaw(-1)) ? m_launchDuration : ArxDurationMs(6000000);
+	m_duration = (m_launchDuration >= ArxDuration_ZERO) ? m_launchDuration : ArxDurationMs(6000000);
 	m_hasDuration = true;
 	m_fManaCostPerSecond = 12.f;
 	
