@@ -63,7 +63,7 @@ void SpeedSpell::Launch() {
 		m_snd_loop = ARX_SOUND_PlaySFX(SND_SPELL_SPEED_LOOP, &entities[m_target]->pos, 1.f, ARX_SOUND_PLAY_LOOPED);
 	}
 	
-	m_duration = (m_launchDuration > ArxDuration::ofRaw(-1)) ? m_launchDuration : ArxDurationMs(20000);
+	m_duration = (m_launchDuration >= ArxDuration_ZERO) ? m_launchDuration : ArxDurationMs(20000);
 	
 	if(m_caster == EntityHandle_Player) {
 		m_duration = ArxDurationMs(200000000);
@@ -350,7 +350,7 @@ void CreateFoodSpell::Launch() {
 	
 	ARX_SOUND_PlaySFX(SND_SPELL_CREATE_FOOD, &m_caster_pos);
 	
-	m_duration = (m_launchDuration > ArxDuration::ofRaw(-1)) ? m_launchDuration : ArxDurationMs(3500);
+	m_duration = (m_launchDuration >= ArxDuration_ZERO) ? m_launchDuration : ArxDurationMs(3500);
 	m_elapsed = ArxDuration_ZERO;
 	
 	if(m_caster == EntityHandle_Player || m_target == EntityHandle_Player) {
