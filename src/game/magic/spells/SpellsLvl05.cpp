@@ -43,7 +43,6 @@
 RuneOfGuardingSpell::RuneOfGuardingSpell()
 	: SpellBase()
 	, tex_p2(NULL)
-	, m_elapsed(ArxDuration_ZERO)
 {}
 
 void RuneOfGuardingSpell::Launch() {
@@ -77,8 +76,6 @@ void RuneOfGuardingSpell::End() {
 }
 
 void RuneOfGuardingSpell::Update() {
-	
-	m_elapsed += g_framedelay2;
 	
 	EERIE_LIGHT * light = lightHandleGet(m_light);
 	if(light) {
