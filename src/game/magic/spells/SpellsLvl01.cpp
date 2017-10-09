@@ -333,7 +333,6 @@ void MagicMissileSpell::Update() {
 
 IgnitSpell::IgnitSpell()
 	: m_srcPos(Vec3f_ZERO)
-	, m_elapsed(ArxDuration_ZERO)
 {
 	
 }
@@ -362,7 +361,6 @@ void IgnitSpell::Launch() {
 	float fPerimeter = 400.f + m_level * 30.f;
 	
 	m_lights.clear();
-	m_elapsed = ArxDuration_ZERO;
 	
 	CheckForIgnition(Sphere(m_srcPos, fPerimeter), 1, 1);
 	
@@ -460,10 +458,6 @@ void IgnitSpell::Update() {
 				light->pos = pos;
 			}
 		}
-	}
-	
-	if(!arxtime.is_paused()) {
-		m_elapsed += g_framedelay2;
 	}
 }
 
