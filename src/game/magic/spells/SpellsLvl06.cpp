@@ -330,6 +330,8 @@ void CreateFieldSpell::Launch() {
 		m_duration = m_field.m_duration;
 		
 		if(m_flags & SPELLCAST_FLAG_RESTORE) {
+			//fast forward the field's animation so that players don't see it
+			//being casted in front of them on game load
 			m_field.Update(ArxDurationMs(4000));
 		}
 		
