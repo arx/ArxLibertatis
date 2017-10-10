@@ -588,7 +588,7 @@ void PoisonProjectileSpell::Update() {
 
 		AddPoisonFog(projectile->eCurPos, m_level + 7);
 
-		if(m_timcreation + ArxDurationMs(1600) < arxtime.now()) {
+		if(m_elapsed > ArxDurationMs(1600)) {
 			
 			DamageParameters damage;
 			damage.pos = projectile->eCurPos;
