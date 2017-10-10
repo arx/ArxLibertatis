@@ -1191,7 +1191,7 @@ void ActiveSpellsGui::ManageSpellIcon(SpellBase & spell, float intensity, bool f
 	bool flicker = true;
 	
 	if(spell.m_hasDuration) {
-		if(player.manaPool.current < 20 || spell.m_timcreation + spell.m_duration - arxtime.now() < ArxDurationMs(2000)) {
+		if(player.manaPool.current < 20 || spell.m_duration - spell.m_elapsed < ArxDurationMs(2000)) {
 			flicker = m_flickNow;
 		}
 	} else {
