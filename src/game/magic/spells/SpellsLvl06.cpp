@@ -303,7 +303,10 @@ void CreateFieldSpell::Launch() {
 		target += angleToVectorXZ(beta) * 250.f;
 	}
 	
-	ARX_SOUND_PlaySFX(SND_SPELL_CREATE_FIELD, &target);
+	//don't play sound for persistent fields
+	if(!(m_flags & SPELLCAST_FLAG_RESTORE)) {
+		ARX_SOUND_PlaySFX(SND_SPELL_CREATE_FIELD, &target);
+	}
 	
 	res::path cls = "graph/obj3d/interactive/fix_inter/blue_cube/blue_cube";
 	Entity * io = AddFix(cls, -1, IO_IMMEDIATELOAD);
