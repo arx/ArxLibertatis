@@ -82,7 +82,7 @@ void cinematicKill() {
 	}
 }
 
-Vec3f ePos;
+static Vec3f ePos;
 
 void cinematicLaunchWaiting() {
 
