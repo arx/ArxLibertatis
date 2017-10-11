@@ -61,7 +61,7 @@ GLOBAL_MODS g_desiredFogParameters;
 static const float DEFAULT_ZCLIP = 6400.f;
 static const float DEFAULT_MINZCLIP = 1200.f;
 
-Color ulBKGColor = Color::none;
+Color g_fogColor = Color::none;
 
 void ARX_GLOBALMODS_Reset() {
 
@@ -121,5 +121,5 @@ void ARX_GLOBALMODS_Apply() {
 	fZclipp += (ACTIVECAM->focal - 310.f) * 5.f;
 	ACTIVECAM->cdepth = std::min(current.zclip, fZclipp);
 
-	ulBKGColor = current.depthcolor.to<u8>();
+	g_fogColor = current.depthcolor.to<u8>();
 }

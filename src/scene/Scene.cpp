@@ -1562,7 +1562,7 @@ void ARX_SCENE_Render() {
 	RenderWater();
 	RenderLava();
 	
-	GRenderer->SetFogColor(ulBKGColor);
+	GRenderer->SetFogColor(g_fogColor);
 	GRenderer->GetTextureStage(0)->setColorOp(TextureStage::OpModulate);
 	
 	Halo_Render();

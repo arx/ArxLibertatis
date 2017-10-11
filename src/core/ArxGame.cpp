@@ -1963,7 +1963,7 @@ void ArxGame::renderLevel() {
 	if(g_desiredFogParameters.flags & GMOD_DCOLOR) {
 		GRenderer->Clear(Renderer::ColorBuffer | Renderer::DepthBuffer, g_currentFogParameters.depthcolor.to<u8>());
 	} else {
-		GRenderer->Clear(Renderer::ColorBuffer | Renderer::DepthBuffer, ulBKGColor);
+		GRenderer->Clear(Renderer::ColorBuffer | Renderer::DepthBuffer, g_fogColor);
 	}
 	
 	cinematicBorder.render();
@@ -1971,7 +1971,7 @@ void ArxGame::renderLevel() {
 	GRenderer->SetAntialiasing(true);
 	
 	GRenderer->SetFogParams(fZFogStart * ACTIVECAM->cdepth, fZFogEnd * ACTIVECAM->cdepth);
-	GRenderer->SetFogColor(ulBKGColor);
+	GRenderer->SetFogColor(g_fogColor);
 
 	ARX_SCENE_Render();
 	
@@ -1984,7 +1984,7 @@ void ArxGame::renderLevel() {
 	ARX_PARTICLES_Update(&subj);
 	ParticleSparkUpdate();
 	
-	GRenderer->SetFogColor(ulBKGColor);
+	GRenderer->SetFogColor(g_fogColor);
 	
 	// End Particles
 
@@ -2016,7 +2016,7 @@ void ArxGame::renderLevel() {
 
 	GRenderer->SetFogColor(Color::none);
 	RenderBatcher::getInstance().render();
-	GRenderer->SetFogColor(ulBKGColor);
+	GRenderer->SetFogColor(g_fogColor);
 	
 	GRenderer->SetAntialiasing(false);
 	
