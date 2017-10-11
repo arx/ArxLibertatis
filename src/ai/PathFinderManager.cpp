@@ -109,8 +109,10 @@ public:
 
 void PathFinderThread::queueRequest(const PATHFINDER_REQUEST & request) {
 	
+	arx_assert(request.ioid && (request.ioid->ioflags & IO_NPC));
+	
 	Autolock lock(&m_mutex);
-
+	
 	// If this NPC is already requesting a Pathfinding then either
 	// try to Override it or add it to queue if it is currently being
 	// processed.
@@ -150,10 +152,6 @@ void PathFinderThread::run() {
 		m_queue.pop_front();
 		
 		// TODO potentially unsafe Entity access
-		if(!request.ioid || !(request.ioid->ioflags & IO_NPC)) {
-			continue;
-		}
-		
 		if(request.ioid->_npcdata->behavior == BEHAVIOUR_NONE) {
 			continue;
 		}
